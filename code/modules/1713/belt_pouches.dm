@@ -55,10 +55,11 @@
 			return FALSE
 	return ..()
 
-// Plain leather waist belt worn in the belt slot. Pouches hang from it.
+// Plain leather waist belt worn in the belt slot. Pouches, a sheath or holster
+// and a tool loop hang from it.
 /obj/item/clothing/pouch_belt
 	name = "leather belt"
-	desc = "A plain leather belt with a buckle. Hang a pouch or two from it to keep small things close at hand."
+	desc = "A plain leather belt with a buckle. Hang a pouch or two, a sheath or holster and a tool loop from it to keep things close at hand."
 	icon = 'icons/obj/belt_pouches.dmi'
 	icon_state = "pouch_belt"
 	item_state = "pouch_belt"
@@ -66,10 +67,16 @@
 	slot_flags = SLOT_BELT
 	w_class = ITEM_SIZE_SMALL
 	body_parts_covered = 0
-	valid_accessory_slots = list("decor")
+	// Two pouches, one sheath or holster, and one tool loop.
+	valid_accessory_slots = list("decor", "utility", "loop")
+	restricted_accessory_slots = list("utility", "loop")
 	value = 3
-	// Accessory types that may hang from this belt (other carried gear can be added).
-	var/list/belt_attachable = list(/obj/item/clothing/accessory/storage/belt_pouch)
+	// Accessory types that may hang from this belt.
+	var/list/belt_attachable = list(
+		/obj/item/clothing/accessory/storage/belt_pouch,
+		/obj/item/clothing/accessory/storage/sheath,
+		/obj/item/clothing/accessory/holster,
+		/obj/item/clothing/accessory/storage/tool_loop)
 
 /obj/item/clothing/pouch_belt/can_attach_accessory(obj/item/clothing/accessory/A)
 	if (!is_type_in_list(A, belt_attachable))
@@ -85,7 +92,7 @@
 // It is a garment accessory, so it needs no second belt slot.
 /obj/item/clothing/accessory/storage/baldric
 	name = "shoulder belt"
-	desc = "A leather strap worn across the body from shoulder to hip. A pouch or two can hang from it."
+	desc = "A leather strap worn across the body from shoulder to hip. A pouch or two can hang from it, or a sword and a pouch."
 	icon = 'icons/obj/belt_pouches.dmi'
 	icon_state = "baldric"
 	icon_override = 'icons/mob/belt_pouches.dmi'
@@ -97,8 +104,40 @@
 
 /obj/item/clothing/accessory/storage/baldric/New()
 	..()
-	hold.max_w_class = ITEM_SIZE_SMALL
+	hold.max_w_class = ITEM_SIZE_NORMAL
+	hold.max_storage_space = 8
+	hold.can_hold = list(/obj/item/clothing/accessory/storage/belt_pouch, /obj/item/weapon/material/sword)
+
+// A shoulder belt carries one sword at the hip; the other place is for a pouch.
+/obj/item/clothing/accessory/storage/baldric/internal_storage_accepts(obj/item/W, stop_messages = FALSE)
+	if (istype(W, /obj/item/weapon/material/sword) && hold && (locate(/obj/item/weapon/material/sword) in hold))
+		if (!stop_messages)
+			to_chat(usr, SPAN_NOTICE("\The [src] already carries a sword."))
+		return FALSE
+	return TRUE
+
+// Leather loop for a belt: one hand tool or other thing made to hang from a belt.
+/obj/item/clothing/accessory/storage/tool_loop
+	name = "tool loop"
+	desc = "A leather loop that hangs from a belt and holds one hand tool, or anything else made to be worn on a belt."
+	icon = 'icons/obj/clothing/ties.dmi'
+	icon_state = "knifeholster"
+	item_state = "knifeholster"
+	slot = "loop"
+	slots = 1
+	w_class = ITEM_SIZE_SMALL
+	ripable = FALSE
+	value = 2
+
+/obj/item/clothing/accessory/storage/tool_loop/New()
+	..()
+	hold.max_w_class = ITEM_SIZE_NORMAL
 	hold.max_storage_space = 4
-	hold.can_hold = list(/obj/item/clothing/accessory/storage/belt_pouch)
+
+/obj/item/clothing/accessory/storage/tool_loop/internal_storage_accepts(obj/item/W, stop_messages = FALSE)
+	var/fits = (W.slot_flags & SLOT_BELT) && !istype(W, /obj/item/weapon/storage) && !istype(W, /obj/item/clothing) && !istype(W, /obj/item/weapon/gun)
+	if (!fits && !stop_messages)
+		to_chat(usr, SPAN_NOTICE("\The [W] is not made to hang from a belt."))
+	return fits
 
 #undef MAX_BELT_POUCHES_PER_OUTFIT
