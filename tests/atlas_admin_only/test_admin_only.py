@@ -10,7 +10,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'scripts'))
 
-from atlas.admin_only import SOURCE, admin_only_types, check_public, covers, leaks  # noqa: E402
+from atlas.admin_only import SOURCE, admin_only_types, check_public, covers, leaks, without_mentions  # noqa: E402
 
 
 def read(path):
@@ -41,6 +41,15 @@ class AdminOnlyAtlasTests(unittest.TestCase):
         self.assertEqual(leaks(hidden, '"/obj/item/weapon/book/divinely_bound"'), [])
         with self.assertRaises(SystemExit):
             check_public(hidden, '{"id":"/obj/item/weapon/book/divine"}', 'a test output')
+
+    def test_spawn_sites_of_listed_types_leave_the_public_site_index(self):
+        hidden = {'/obj/item/cursedtreasure': 'note'}
+        rows = [dict(text='var/obj/item/cursedtreasure/T = new/obj/item/cursedtreasure(loc)'),
+                dict(text='new/obj/item/cursedtreasure_map(loc)'), dict(text='new/obj/item/stack/money(loc)')]
+        self.assertEqual(without_mentions(hidden, rows, 'text'), rows[1:])
+        text = read('scripts/build-crafting-atlas.py')
+        self.assertLess(text.index("data['production_sites']=without_mentions(admin_only,data['production_sites'],'text')"),
+                        text.index("check_public(admin_only,json.dumps(data),'the published web atlas')"))
 
     def test_unreadable_or_missing_list_fails_the_build(self):
         with self.assertRaises(SystemExit):

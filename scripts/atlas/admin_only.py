@@ -41,6 +41,12 @@ def leaks(hidden, text):
     return sorted(path for path in hidden if re.search(re.escape(path) + r'(?![\w])', text))
 
 
+def without_mentions(hidden, rows, field):
+    """Rows whose `field` text names no listed type; the raw source-site index
+    is public, so a site that spawns admin-only loot is left out of it."""
+    return [row for row in rows if not leaks(hidden, row.get(field, ''))]
+
+
 def check_public(hidden, text, where):
     found = leaks(hidden, text)
     if found:
