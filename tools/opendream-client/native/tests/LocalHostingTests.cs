@@ -41,6 +41,12 @@ static class LocalHostingTests {
             Require(LocalHosting.RegionDetails(eventRegion.RootElement).Contains("event region"), "event region on the region row: " + LocalHosting.RegionDetails(eventRegion.RootElement));
             Require(HostBoard.Card("fair", "Fair", false, eventRegion.RootElement, 0).Notes.StartsWith("port 1760, event region"), "event region on the board card");
         }
+        using (var land = JsonDocument.Parse("{\"port\":1740,\"land\":{\"stage\":\"OPEN\",\"paused\":true,\"readiness\":{\"homes\":12,\"suggest\":\"RESUME\"}}}")) {
+            Require(LocalHosting.RegionDetails(land.RootElement).EndsWith("settled land (new starts paused), 12 homes, ready to resume new starts"), "land stage on the region row: " + LocalHosting.RegionDetails(land.RootElement));
+            Require(HostBoard.Card("europe", "Europe", false, land.RootElement, 0).Notes.Contains("settled land (new starts paused)"), "land stage on the board card");
+        }
+        using (var mainlandLand = JsonDocument.Parse("{\"port\":1714,\"land\":{\"stage\":\"MAINLAND\",\"paused\":false}}"))
+            Require(LocalHosting.RegionDetails(mainlandLand.RootElement) == ", port 1714", "no land stage on the mainland: " + LocalHosting.RegionDetails(mainlandLand.RootElement));
         using (var awayCard = JsonDocument.Parse("{\"state\":\"awake\",\"region_view\":{\"event_away\":1}}"))
             Require(HostBoard.Card("gaia", "Gaia", true, awayCard.RootElement, 0).Notes.Contains("1 player away at an event"), "event away count on the board card");
         using (var down = JsonDocument.Parse("{\"port\":1714,\"listening\":false,\"watchdog\":{\"last_refusal\":\"the save still has BYOND lock files\"}}"))

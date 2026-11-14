@@ -10,7 +10,8 @@ import unittest
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.insert(0, ROOT)
 from tools.transfer_storage.agent import make_server  # noqa: E402
-from tools.transfer_storage.coordinator import Coordinator, call  # noqa: E402
+from tools.transfer_storage import coordinator as coordinator_module  # noqa: E402
+from tools.transfer_storage.coordinator import Coordinator, call, read_lands  # noqa: E402
 from tools.transfer_storage.region import RegionStore  # noqa: E402
 
 TOKENS = {'alpha': 'a' * 40, 'beta': 'b' * 40, 'gamma': 'c' * 40}
@@ -109,6 +110,52 @@ class LandStageTests(unittest.TestCase):
         self.assertNotEqual(0, bad.returncode)
         self.coordinator = Coordinator(self.db, 'g', 'alpha')
 
+    def fill(self, region, players, living, hours, now):
+        for h in range(hours):
+            self.coordinator.record_land_sample(region, {'players': players, 'living': living, 'at': int(now - h * 3600)},
+                                                now=now - h * 3600)
+
+    def test_worlds_samples_reach_the_weekly_numbers(self):
+        answer = call(self.urls['beta'], TOKENS['beta'], '/land/sample', {'players': 4, 'living': 6})
+        self.assertTrue(answer.get('ok'), answer)
+        self.assertFalse(call(self.urls['beta'], TOKENS['beta'], '/land/sample', {'players': -1, 'living': 0}).get('ok'))
+        self.coordinator.homes_once()
+        ready = self.lands('gamma')['lands']['beta']['readiness']
+        self.assertEqual((4.0, 4, 6, 1), (ready['players_avg'], ready['players_peak'], ready['living'], ready['hours']))
+        self.assertIsNone(ready['suggest'])
+
+    def test_an_old_sample_counts_for_nothing(self):
+        now = 1_800_000_000
+        self.assertFalse(self.coordinator.record_land_sample('beta', {'players': 9, 'living': 9, 'at': now - 600}, now=now))
+        self.assertFalse(self.coordinator.record_land_sample('beta', {'players': 9, 'living': 9}, now=now))
+        self.assertTrue(self.coordinator.record_land_sample('beta', {'players': 9, 'living': 9, 'at': now - 30}, now=now))
+
+    def test_suggestions_follow_the_placeholder_gates(self):
+        now = 1_800_000_000
+        c = self.coordinator
+        for i in range(coordinator_module.OPEN_HOMES):
+            c._set_home('p%d' % i, 'beta')
+        c.set_land('beta', 'COLONY', False, 'val')
+        # Under a day of mainland numbers decides nothing.
+        self.fill('alpha', 25, 30, coordinator_module.READY_MIN_HOURS - 1, now)
+        self.fill('beta', 3, 12, 5, now)
+        self.assertIsNone(c.lands(now)['beta']['readiness']['suggest'])
+        self.fill('alpha', 25, 30, coordinator_module.READY_MIN_HOURS, now)
+        self.assertEqual('OPEN', c.lands(now)['beta']['readiness']['suggest'])
+        self.assertIsNone(c.lands(now)['alpha']['readiness']['suggest'], 'the mainland is never suggested')
+        c.set_land('beta', 'OPEN', False, 'val')
+        self.assertIsNone(c.lands(now)['beta']['readiness']['suggest'])
+        # The land outgrows the mainland: pause, then resume once it no longer does.
+        self.fill('beta', 3, 40, 1, now)
+        self.assertEqual('PAUSE', c.lands(now)['beta']['readiness']['suggest'])
+        c.set_land('beta', 'OPEN', True, 'val')
+        self.assertIsNone(c.lands(now)['beta']['readiness']['suggest'])
+        self.fill('beta', 3, 12, 1, now)
+        self.assertEqual('RESUME', c.lands(now)['beta']['readiness']['suggest'])
+        # Read-only view for the host tool matches the coordinator's own.
+        self.assertEqual(c.lands(now), read_lands(self.db, 'alpha', now))
+        self.assertEqual({}, read_lands(os.path.join(self.tmp.name, 'missing.sqlite'), 'alpha', now))
+
 
 def read(path):
     with open(os.path.join(ROOT, path), encoding='utf-8') as f:
@@ -141,6 +188,14 @@ class LandStageSourceTests(unittest.TestCase):
         self.assertGreaterEqual(verb.count('check_rights(R_ADMIN)'), 4)
         self.assertIn('transfer_bridge.request("/land/set"', verb)
         self.assertIn('"admin" = M.ckey', verb)
+
+    def test_the_poll_loop_samples_population_and_suggestions_only_inform(self):
+        loop = self.group[self.group.index('/datum/shard_group/proc/start_polling()'):]
+        self.assertIn('land_sample_post()', loop[:loop.index('/datum/shard_group/proc/start_saving()')])
+        tell = self.land[self.land.index('/proc/land_suggestions_tell()'):]
+        tell = tell[:tell.index('/proc/land_sample_post()')]
+        self.assertIn('message_admins(', tell)
+        self.assertNotIn('/land/set', tell)
 
     def test_only_lived_in_kinds_take_a_stage_and_the_mainland_is_fixed(self):
         self.assertIn('return kind in list("SURFACE", "OCEANIC", "UNDERGROUND", "OTHER")', self.land)

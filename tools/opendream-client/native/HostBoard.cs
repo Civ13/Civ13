@@ -150,6 +150,7 @@ public static class HostBoard {
             }
         }
         if (Str(entry, "kind") == "EVENT") notes.Insert(0, "event region");
+        if (LocalHosting.LandText(entry) is { } land) notes.Add(land);
         if (entry.TryGetProperty("port", out var portValue) && portValue.ValueKind == JsonValueKind.Number && portValue.TryGetInt32(out var port) && port is > 0 and < 65536)
             notes.Insert(0, "port " + port);
 

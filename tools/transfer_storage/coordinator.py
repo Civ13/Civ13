@@ -44,6 +44,84 @@ from tools.transfer_storage.train_custody import TrainCustody
 from tools.transfer_storage.region import LAND_STAGES, account_key_valid, land_id_valid
 
 
+# Land readiness (docs/land-stages.md). Placeholder thresholds for Val to tune:
+# a land is suggested for OPEN once this many accounts call it home and the
+# mainland averages this many players; an OPEN land is suggested for a pause
+# when the mainland falls under PAUSE_MAINLAND_AVG or the land holds more
+# living characters than the mainland. Suggestions need READY_MIN_HOURS of
+# mainland samples in the window, so a quiet restart decides nothing.
+READY_WINDOW_HOURS = 7 * 24
+READY_MIN_HOURS = 24
+OPEN_HOMES = 10
+OPEN_MAINLAND_AVG = 20
+PAUSE_MAINLAND_AVG = 15
+SAMPLE_FRESH_SECONDS = 180  # worlds sample about once a minute
+
+
+def land_rows(db, regions, mainland):
+    """Every enrolled land's stage: the mainland is MAINLAND, a land no
+    admin has set is CLOSED."""
+    rows = {r: (st, p, b, a) for r, st, p, b, a in db.execute('SELECT region, stage, paused, by, at FROM land')}
+    result = {}
+    for region in regions:
+        if region == mainland:
+            result[region] = {'stage': 'MAINLAND', 'paused': False, 'by': None, 'at': 0}
+            continue
+        stage, paused, by, at = rows.get(region, ('CLOSED', 0, None, 0))
+        result[region] = {'stage': stage, 'paused': bool(paused), 'by': by, 'at': int(at)}
+    return result
+
+
+def land_readiness(db, lands, mainland, now):
+    """Population numbers for each land over the last week, and the stage
+    change they suggest (None, 'OPEN', 'PAUSE' or 'RESUME'). Adds a 'readiness'
+    entry to each land in lands and returns lands."""
+    since = int(now // 3600) - READY_WINDOW_HOURS
+    homes = dict(db.execute('SELECT region, COUNT(*) FROM home WHERE region IS NOT NULL GROUP BY region'))
+    stats = {}
+    for region, hours, avg, peak in db.execute(
+            'SELECT region, COUNT(*), AVG(players_sum * 1.0 / samples), MAX(players_peak) FROM land_hour '
+            'WHERE hour > ? AND samples > 0 GROUP BY region', (since,)):
+        stats[region] = (hours, avg or 0.0, peak or 0)
+    living = {r: l for r, l in db.execute(
+        'SELECT region, living FROM land_hour h WHERE hour = (SELECT MAX(hour) FROM land_hour WHERE region = h.region)')}
+    main_hours, main_avg, _ = stats.get(mainland, (0, 0.0, 0))
+    main_living = living.get(mainland, 0)
+    for region, entry in lands.items():
+        hours, avg, peak = stats.get(region, (0, 0.0, 0))
+        ready = {'homes': homes.get(region, 0), 'players_avg': round(avg, 1), 'players_peak': peak,
+                 'living': living.get(region, 0), 'hours': hours, 'suggest': None}
+        if region != mainland and main_hours >= READY_MIN_HOURS:
+            busy = main_avg >= OPEN_MAINLAND_AVG
+            outgrown = ready['living'] > main_living
+            if entry['stage'] in ('FRONTIER', 'COLONY') and ready['homes'] >= OPEN_HOMES and busy and not outgrown:
+                ready['suggest'] = 'OPEN'
+            elif entry['stage'] == 'OPEN' and not entry['paused'] and (main_avg < PAUSE_MAINLAND_AVG or outgrown):
+                ready['suggest'] = 'PAUSE'
+            elif entry['stage'] == 'OPEN' and entry['paused'] and busy and not outgrown:
+                ready['suggest'] = 'RESUME'
+        entry['readiness'] = ready
+    return lands
+
+
+def read_lands(path, mainland, now=None):
+    """The stages and readiness from a coordinator database, read-only (for
+    the host tool and launcher while the coordinator runs). {} when the
+    database or its land tables do not exist yet."""
+    try:
+        db = sqlite3.connect('file:%s?mode=ro' % path, uri=True)
+    except sqlite3.Error:
+        return {}
+    try:
+        regions = [r for (r,) in db.execute('SELECT region FROM region ORDER BY region')]
+        lands = land_rows(db, regions, mainland)
+        return land_readiness(db, lands, mainland, time.time() if now is None else now)
+    except sqlite3.Error:
+        return {}
+    finally:
+        db.close()
+
+
 class Coordinator(TrainCustody):
     def __init__(self, path, group, mainland=None, bootstrap_new_group=False):
         self.group = group
@@ -60,6 +138,11 @@ class Coordinator(TrainCustody):
         self.db.execute('''CREATE TABLE IF NOT EXISTS land(
             region TEXT PRIMARY KEY, stage TEXT NOT NULL, paused INTEGER NOT NULL,
             by TEXT, at INTEGER NOT NULL)''')
+        # Hourly population per land from the worlds' samples (land readiness).
+        self.db.execute('''CREATE TABLE IF NOT EXISTS land_hour(
+            region TEXT NOT NULL, hour INTEGER NOT NULL, samples INTEGER NOT NULL,
+            players_sum INTEGER NOT NULL, players_peak INTEGER NOT NULL, living INTEGER NOT NULL,
+            PRIMARY KEY(region, hour))''')
         # Requests already decided but not yet acknowledged by their agent, so a
         # lost acknowledgement never replays an old request over newer ones.
         self.db.execute('''CREATE TABLE IF NOT EXISTS decided(
@@ -137,18 +220,31 @@ class Coordinator(TrainCustody):
                         (region, stage, 1 if paused else 0, by, int(now if now is not None else time.time())))
         return True
 
-    def lands(self):
-        """Every enrolled land's stage: the mainland is MAINLAND, a land no
-        admin has set is CLOSED."""
-        rows = {r: (st, p, b, a) for r, st, p, b, a in self.db.execute('SELECT region, stage, paused, by, at FROM land')}
-        result = {}
-        for region in self.regions():
-            if region == self.mainland:
-                result[region] = {'stage': 'MAINLAND', 'paused': False, 'by': None, 'at': 0}
-                continue
-            stage, paused, by, at = rows.get(region, ('CLOSED', 0, None, 0))
-            result[region] = {'stage': stage, 'paused': bool(paused), 'by': by, 'at': int(at)}
-        return result
+    def lands(self, now=None):
+        """Every enrolled land's stage and readiness (land_rows, land_readiness)."""
+        lands = land_rows(self.db, self.regions(), self.mainland)
+        return land_readiness(self.db, lands, self.mainland, time.time() if now is None else now)
+
+    def record_land_sample(self, region, sample, now=None):
+        """Adds one world's population sample to its hourly bucket and forgets
+        buckets older than the readiness window."""
+        if type(sample) is not dict or type(sample.get('players')) is not int or type(sample.get('living')) is not int:
+            return False
+        now = time.time() if now is None else now
+        # A world that stopped sampling (asleep, stopped) leaves its last
+        # sample in the agent; an old one counts for nothing.
+        if type(sample.get('at')) is not int or not now - SAMPLE_FRESH_SECONDS <= sample['at'] <= now + 60:
+            return False
+        players, living = sample['players'], sample['living']
+        if not 0 <= players <= 1000 or not 0 <= living <= 10000:
+            return False
+        hour = int(now // 3600)
+        self.db.execute('INSERT INTO land_hour VALUES (?, ?, 1, ?, ?, ?) ON CONFLICT(region, hour) DO UPDATE SET '
+                        'samples = samples + 1, players_sum = players_sum + excluded.players_sum, '
+                        'players_peak = MAX(players_peak, excluded.players_peak), living = excluded.living',
+                        (region, hour, players, players, living))
+        self.db.execute('DELETE FROM land_hour WHERE hour <= ?', (hour - READY_WINDOW_HOURS - 24,))
+        return True
 
     def decide(self, source, request):
         """Apply one account request from region source to the ledger."""
@@ -295,6 +391,7 @@ class Coordinator(TrainCustody):
                         self.set_land(r.get('region'), r.get('stage'), r.get('paused'), r.get('admin'))
                         self.db.execute('INSERT OR IGNORE INTO decided VALUES (?, ?)', (store, r['id']))
                 land_done[name] = ids
+                self.record_land_sample(name, a.get('land_sample'))
             self.db.execute('COMMIT')
         except Exception:
             self.db.execute('ROLLBACK')
