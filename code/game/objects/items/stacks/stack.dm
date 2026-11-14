@@ -325,7 +325,8 @@
 	qdel(A)
 
 /mob/var/can_build_recipe = TRUE
-/obj/item/stack/proc/produce_recipe(datum/stack_recipe/recipe, var/quantity, mob/user)
+// options: answers to the recipe's craft_product prompts (craft_products.dm); missing ones are asked.
+/obj/item/stack/proc/produce_recipe(datum/stack_recipe/recipe, var/quantity, mob/user, list/options = null)
 	var/required = quantity*recipe.req_amount
 	var/produced = min(quantity*recipe.res_amount, recipe.max_res_amount)
 	var/atom/movable/build_override_object = null
@@ -374,12 +375,11 @@
 	var/obj/structure/vending/sales/build_override_vending = null
 	var/obj/structure/supplier/build_override_supply = null
 	if (findtext(recipe.title, "custom") && findtext(recipe.title, "sign"))
-		customname = player_input(user, "Choose a name for this sign:", null, null, "text", null, TRUE)
-		if (customname == null)
-			customname = "Sign"
-		customdesc = player_input(user, "Choose a description for this sign:", null, null, "text", null, TRUE)
-		if (customdesc == null)
-			customdesc = "An empty sign."
+		var/list/chosen = craft_product_options(user, recipe, options)
+		if (!chosen)
+			return
+		customname = chosen["name"]
+		customdesc = chosen["desc"]
 	else if (findtext(recipe.title, "castle gate control"))
 		for(var/obj/structure/gatecontrol/GC in range(6, user.loc))
 			to_chat(user, "<span class = 'danger'>You cannot build a control so close to another one!</span>")
@@ -389,21 +389,10 @@
 			to_chat(user, "<span class = 'danger'>You cannot build a control so close to another one!</span>")
 			return
 	else if (findtext(recipe.title, "signpost"))
-		var/indesc = player_input(user, "Add a West sign? Leave empty to not add one.", "Signpost", "", "text", null, TRUE)
-		if (indesc != null && indesc != "")
-			customdesc = "<b>West:</b> [indesc]"
-		indesc = null
-		indesc = player_input(user, "Add a North sign? Leave empty to not add one.", "Signpost", "", "text", null, TRUE)
-		if (indesc != null && indesc != "")
-			customdesc += "<br><b>North:</b> [indesc]"
-		indesc = null
-		indesc = player_input(user, "Add a East sign? Leave empty to not add one.", "Signpost", "", "text", null, TRUE)
-		if (indesc != null && indesc != "")
-			customdesc += "<br><b>East:</b> [indesc]"
-		indesc = null
-		indesc = player_input(user, "Add a South sign? Leave empty to not add one.", "Signpost", "", "text", null, TRUE)
-		if (indesc != null && indesc != "")
-			customdesc += "<br><b>South:</b> [indesc]"
+		var/list/chosen = craft_product_options(user, recipe, options)
+		if (!chosen)
+			return
+		customdesc = chosen["desc"]
 
 	else if (findtext(recipe.title, "carriage"))
 		if (H.getStatCoeff("crafting") < 1.7)
@@ -457,9 +446,10 @@
 			return // should never happen
 
 		if (key)
-			var/keyname = player_input(user, "Choose a name for the door:", null, null, "text", null, TRUE)
-			if (keyname == null)
-				keyname = "Locked"
+			var/list/chosen = craft_product_options(user, recipe, options)
+			if (!chosen)
+				return
+			var/keyname = chosen["name"]
 			if (findtext(recipe.title, "iron door"))
 				build_override_door = new /obj/structure/simple_door/key_door/custom
 			if (findtext(recipe.title, "jail door"))
@@ -470,28 +460,26 @@
 			build_override_door.custom_code = key.code
 
 	else if (findtext(recipe.title, "tin can"))
-		customname = player_input(user, "Choose a brand for this can:", "Tin Can Brand", "", "text", null, FALSE)
-		if (customname == "" || customname == null)
-			customname = ""
-		customcolor1 = WWinput(user, "Choose a main color:", "Tin Can Main Color" , "#000000", "color")
-		if (customcolor1 == null || customcolor1 == "")
-			customcolor1 = "#000000"
-
-		customcolor2 = WWinput(user, "Choose a secondary color:", "Tin Can Secondary Color" , "#FFFFFF", "color")
-		if (customcolor2 == null || customcolor2 == "")
-			customcolor2 = "#FFFFFF"
+		var/list/chosen = craft_product_options(user, recipe, options)
+		if (!chosen)
+			return
+		customname = chosen["name"]
+		customcolor1 = chosen["color1"]
+		customcolor2 = chosen["color2"]
 
 	else if (findtext(recipe.title, "cigarette pack"))
-		customname = player_input(user, "Choose a name for this pack:", "Cigarette Pack Name", "cigarette pack", "text", null, FALSE)
-		if (customname == "" || customname == null)
-			customname = "cigarette pack"
-		customcolor = WWinput(user, "Choose a color:", "Cigarette Pack Color" , "#000000", "color")
-		if (customcolor == null || customcolor == "")
+		var/list/chosen = craft_product_options(user, recipe, options)
+		if (!chosen)
 			return
+		customname = chosen["name"]
+		customcolor = chosen["color"]
 
 	else if (recipe.result_type == /obj/structure/religious/statue)
-		customname = player_input(usr, "What name to give to the statue?", "Statue", "[recipe.use_material] statue", "text", null, FALSE)
-		customdesc = player_input(usr, "What description to add to the statue?", "Statue", "A [recipe.use_material] statue.", "text", null, FALSE)
+		var/list/chosen = craft_product_options(user, recipe, options)
+		if (!chosen)
+			return
+		customname = chosen["name"]
+		customdesc = chosen["desc"]
 
 	else if (recipe.result_type == /obj/structure/research_bench)
 		if (!H || !H.civilization || H.civilization == "none")
@@ -529,12 +517,11 @@
 		if (H.getStatCoeff("crafting") < 1.35)
 			to_chat(H, "<span class = 'danger'>This is too complex for your skill level.</span>")
 			return
-		customname = player_input(user, "Choose a name for this vehicle:", "Vehicle Name", "motorcycle", "text", null, FALSE)
-		if (customname == "" || customname == null)
-			customname = "motorcycle"
-		customcolor = WWinput(user, "Choose a color:", "Vehicle Color" , "#FFFFFF", "color")
-		if (customcolor == null || customcolor == "")
+		var/list/chosen = craft_product_options(user, recipe, options)
+		if (!chosen)
 			return
+		customname = chosen["name"]
+		customcolor = chosen["color"]
 
 	else if (findtext(recipe.title, "locomotive"))
 		if (H.getStatCoeff("crafting") < 1.9)
@@ -546,23 +533,12 @@
 			to_chat(H, "<span class = 'danger'>This is too complex for your skill level.</span>")
 			return
 
-		var/list/clist = list()
-		for(var/i in map.custom_company_nr)
-			for(var/list/L in map.custom_company[i])
-				if (L[1]==H)
-					clist += i
-		if (isemptylist(clist))
-			to_chat(H, "You are not part of any companies!")
+		var/list/chosen = craft_product_options(user, recipe, options)
+		if (!chosen)
 			return
-		clist += "Cancel"
-		customvar = WWinput(user, "Which company will own this [recipe.title]?","[recipe.title]","Cancel",clist)
-
-		customname = player_input(user, "Choose a name for this pump:", "Fuel Pump Name", "fuel pump", "text", null, FALSE)
-		if (customname == "" || customname == null)
-			customname = "fuel pump"
-		customcolor = WWinput(user, "Fuel Pump - Choose a color:", "Fuel Pump Color" , "#FFFFFF", "color")
-		if (customcolor == null || customcolor == "")
-			return
+		customvar = chosen["company"]
+		customname = chosen["name"]
+		customcolor = chosen["color"]
 
 	else if (findtext(recipe.title, "oil deposit"))
 		if (H.civilization == null || H.civilization == "none")
@@ -581,7 +557,10 @@
 		if (H.getStatCoeff("philosophy") < 2.4 || H.religion == "none" || (H.religious_leader == FALSE && H.religious_leader != "Clerics"))
 			to_chat(H, "<span class = 'danger'>You can't make a holy book.</span>")
 			return
-		customname = player_input(user, "Choose a title for the holy book:", "Holy Book Name", "[H.religion]'s Holy Book", "text", null, FALSE)
+		var/list/chosen = craft_product_options(user, recipe, options)
+		if (!chosen)
+			return
+		customname = chosen["name"]
 
 	else if (findtext(recipe.title, "farmer's almanac"))
 		if (H.getStatCoeff("farming") < GET_MIN_STAT_COEFF(STAT_HIGH))
@@ -835,47 +814,26 @@
 				qdelHandReturn(H.r_hand, H)
 
 	if (findtext(recipe.title, "gravestone"))
-		customname = player_input(user, "Choose a name to inscribe on this gravestone:", null, null, "text", null, TRUE)
-		if (customname == "" || customname == null)
-			customname = "gravestone"
-		customdesc = player_input(user, "Choose an epitaph to inscribe on this gravestone:", null, null, "text", null, TRUE)
-		if (customdesc == "" || customdesc == null)
-			customdesc = "A gravestone made with polished stone."
+		var/list/chosen = craft_product_options(user, recipe, options)
+		if (!chosen)
+			return
+		customname = chosen["name"]
+		customdesc = chosen["desc"]
 
 	else if (findtext(recipe.title, "market stall") || findtext(recipe.title, "vending machine"))
-		customname = player_input(user, "Choose a name for this [recipe.title]:", null, null, "text", null, TRUE)
-		if (customname == "" || customname == null)
-			customname = recipe.title
-		var/list/clist = list()
-		for(var/i in map.custom_company_nr)
-			for(var/list/L in map.custom_company[i])
-				if (L[1]==H)
-					clist += i
-		if (isemptylist(clist))
-			to_chat(H, "You are not part of any companies!")
+		var/list/chosen = craft_product_options(user, recipe, options)
+		if (!chosen)
 			return
+		customname = chosen["name"]
+		customvar = chosen["company"]
 		customvar2 = recipe.title
-		clist += "Cancel"
-		customvar = WWinput(user, "Which company will own this [recipe.title]?","[recipe.title]","Cancel",clist)
-		if (customvar == "Cancel")
-			return
 	else if (findtext(recipe.title, "supply stall"))
-		customname = player_input(user, "Choose a name for this [recipe.title]:", null, null, "text", null, TRUE)
-		if (customname == "" || customname == null)
-			customname = recipe.title
-		var/list/clist = list()
-		for(var/i in map.custom_company_nr)
-			for(var/list/L in map.custom_company[i])
-				if (L[1]==H)
-					clist += i
-		if (isemptylist(clist))
-			to_chat(H, "You are not part of any companies!")
+		var/list/chosen = craft_product_options(user, recipe, options)
+		if (!chosen)
 			return
+		customname = chosen["name"]
+		customvar = chosen["company"]
 		customvar2 = recipe.title
-		clist += "Cancel"
-		customvar = WWinput(user, "Which company will own this [recipe.title]?","[recipe.title]","Cancel",clist)
-		if (customvar == "Cancel")
-			return
 
 	if (findtext(recipe.title, "well") && !findtext(recipe.title, "oil well"))
 		var/puddly = FALSE

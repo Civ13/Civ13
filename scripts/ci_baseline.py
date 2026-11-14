@@ -847,6 +847,8 @@ SUITES = {
     # source scan of code/.
     'craft_guards': {'files': ('tests/craft_guards/test_craft_guards.py',),
         'paths': ('tests/craft_guards/', 'code/game/objects/items/stacks/craft_guards.dm'), 'shared_paths': ()},
+    'craft_products': {'files': ('tests/craft_products/test_craft_products.py',),
+        'paths': ('tests/craft_products/', 'code/game/objects/items/stacks/craft_products.dm'), 'shared_paths': ()},
     # Tool quality declarations match the base paths is_tool() replaced, and
     # legacy istype checks on base tool paths only shrink; source scan of code/.
     'tool_qualities': {'files': ('tests/tool_qualities/test_tool_qualities.py',),
