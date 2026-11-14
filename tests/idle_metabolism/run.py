@@ -32,7 +32,7 @@ def production(control):
     helpers = life[life.index('/mob/living/human/proc/survival_metabolism_time()'):
                    life.index('/mob/living/human/Life()')]
     fields = re.findall(r'^\tvar/tmp/survival_[^\n]+', life, re.M)
-    if len(fields) != 2:
+    if len(fields) != 3:
         raise ValueError('Runtime field extraction changed')
     start = life.index('\t\tvar/water_m = 1')
     end = life.index('\t\tif (find_trait("Extroverted"))', start)
@@ -45,7 +45,7 @@ def production(control):
         assert source.count('>= 600 ? 0.1 : 1') == 1
         source = source.replace('>= 600 ? 0.1 : 1', '>= 600 ? 1 : 1')
     elif control == 'action':
-        source = source.replace('\tuser.survival_action_started()', '\t// omitted start')
+        source = re.sub(r'\tuser\.survival_action_started\([^)\n]*\)', '\t// omitted start', source)
         source = source.replace('survival_actions || !may_do_after || !may_do_mob || ', '')
     elif control == 'persistence':
         source = source.replace(', "survival_rest_since", "survival_actions"', '')

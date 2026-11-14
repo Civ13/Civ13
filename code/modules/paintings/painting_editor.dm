@@ -17,6 +17,8 @@ var/global/list/painting_editors = list() // mob -> canvas being painted
 		return !C.needs_easel
 	if (istype(C.loc, /obj/structure/easel))
 		return get_dist(user, C.loc) <= 1
+	if (istype(C.loc, /obj/structure/rock_art)) // rock_art.dm: stand on its tile
+		return get_turf(user) == get_turf(C.loc)
 	return FALSE
 
 /proc/painting_open_editor(mob/user, obj/item/canvas/C)
@@ -26,7 +28,7 @@ var/global/list/painting_editors = list() // mob -> canvas being painted
 		painting_show_full(user, C)
 		return
 	if (!painting_can_reach(user, C))
-		to_chat(user, SPAN_WARNING(C.needs_easel ? "Set \the [C] on an easel and stand beside it to paint it." : "Hold \the [C] to paint it."))
+		to_chat(user, SPAN_WARNING(istype(C.loc, /obj/structure/rock_art) ? "Stand in front of the rock to paint it." : (C.needs_easel ? "Set \the [C] on an easel and stand beside it to paint it." : "Hold \the [C] to paint it.")))
 		return
 	if (C.editing && C.editing != user && C.editing.client && painting_editors[C.editing] == C)
 		to_chat(user, SPAN_WARNING("[C.editing] is already painting \the [C]."))

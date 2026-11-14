@@ -485,7 +485,9 @@ var/global/list/ecology_species_table = null
 			continue
 		used += T
 		var/path = S.spawn_types[((i + offset - 1) % S.spawn_types.len) + 1]
-		new path(T)
+		var/mob/living/simple_animal/A = new path(T)
+		if (istype(A))
+			A.make_wild()
 		placed++
 	return placed
 

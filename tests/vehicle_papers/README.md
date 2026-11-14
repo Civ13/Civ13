@@ -25,9 +25,10 @@ builds a boat of ship frames: refused on dry land, a car axis not taking ship
 frames, a hull with a wheel and a mast assembled facing east, moved, turned,
 taken apart and assembled again. Last it builds a tank with a built turret
 (`code/modules/craft/vehicle_turret.dm`): what an empty turret needs, the
-cannon and seats on its tile taken in at assembly, a seat fitted later, the
-turret riding along, the styles by age, and everything set down again when
-the tank is taken apart.
+cannon and seats on its tile taken in at assembly, a seat fitted later, one
+emplaced machine gun fitted beside the cannon (a second one riding along loose
+on the frames), the turret riding along, the styles by age, and everything set down again when
+the tank is taken apart, and a turret armed with only a machine gun.
 
     python3 tests/ecology_spawning/run_linux.py . tests/vehicle_papers/assembly_probe.dm 300
 
