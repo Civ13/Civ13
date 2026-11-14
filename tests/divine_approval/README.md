@@ -65,5 +65,29 @@ exists anywhere in this world, including restored from a save, another cannot
 be written; burning, destroying or deleting it frees the god to write a new one,
 and staff are told when it is gone. The verb waits while a save runs or a load
 is still restoring characters. Players can copy the original with a printing
-press or a monk, which makes an ordinary book; only the god writes in the
-original. `test_divine_book.py` guards these rules from source.
+press or a monk, which makes an ordinary book containing only public pages.
+Ordinary writing, research, cipher and page-removal interactions remain unchanged. `test_divine_book.py` guards these rules from source.
+
+
+## Ordinary-book confidentiality correction (2026-11-14)
+
+The original-book subtype remains only for durable registry compatibility. It
+inherits ordinary book appearance, examination and editing; new originals do not
+label the author as a deity. Staff choose a mundane public title and optional
+public pages separately from private contents. The latter are saved outside
+`dat` and `written_pages` and shown only through the fail-closed initiation gate
+introduced in #5154. Until that service is implemented, nobody can read them.
+This change does not enable spells or grant initiation.
+
+On `after_load`, an older original preserves both legacy `dat` and a copy of
+`written_pages` in private saved fields before clearing their public projection.
+The saved migration flag makes this one-time, preserving subsequent ordinary
+writing. Only exact automatically generated author/description values are
+cleared; chosen cover titles and other metadata are not rewritten. Legacy HTML
+is escaped for private display. Ordinary printing, monk copying and torn pages
+copy public material only, never private notes or original status.
+
+Already distributed ordinary copies and text already read cannot be recalled or
+identified reliably. Staff must inspect old chosen titles separately if they
+reveal secrets. Live migration, native round trips, regional transfer and client
+rendering remain unverified; no operational migration is performed by this PR.

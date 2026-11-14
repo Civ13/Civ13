@@ -14,11 +14,13 @@
 	if (problem)
 		to_chat(usr, SPAN_WARNING(problem))
 		return
-	var/title = sanitize(input(usr, "Title of the book:", "God's Book", "The Book of [deity]") as text|null)
+	var/title = sanitize(input(usr, "Ordinary public title (visible to everyone):", "God's Book", "book") as text|null)
 	if (!title)
 		return
-	var/raw = input(usr, "Contents of the book:", "God's Book") as message|null
-	var/text = raw ? replacetext(sanitize(raw, MAX_BOOK_MESSAGE_LEN), "\n", "<br>") : null
+	var/raw = input(usr, "Private contents (sealed until character initiation is implemented):", "God's Book") as message|null
+	var/text = raw ? copytext(raw, 1, MAX_BOOK_MESSAGE_LEN + 1) : null
+	var/cover = input(usr, "Optional ordinary pages (visible and copyable by everyone):", "God's Book") as message|null
+	var/public_text = cover ? replacetext(sanitize(cover, MAX_BOOK_MESSAGE_LEN), "\n", "<br>") : null
 	var/list/choices = list()
 	for (var/mob/living/human/H in human_mob_list)
 		if (!QDELETED(H) && H.stat != DEAD && H.client && get_turf(H))
@@ -32,14 +34,16 @@
 	if (recipient && (QDELETED(recipient) || !get_turf(recipient)))
 		to_chat(usr, SPAN_WARNING("[pick] is no longer there."))
 		return
-	var/result = create_divine_book(deity, title, text, destination)
+	if (!check_rights(R_ADMIN))
+		return
+	var/result = create_divine_book(deity, title, text, destination, public_text)
 	if (istext(result))
 		to_chat(usr, SPAN_WARNING(result))
 		return
 	var/obj/item/weapon/book/divine/B = result
 	if (recipient)
 		recipient.put_in_hands(B)
-		to_chat(recipient, SPAN_NOTICE("\The [B] appears in your hands."))
+		to_chat(recipient, SPAN_NOTICE("You receive \the [B]."))
 	log_admin("[key_name(usr)] wrote the original book of [B.divine_deity] ([B.title])[recipient ? " for [key_name(recipient)]" : ""].")
 	message_admins("[key_name_admin(usr)] wrote the original book of [B.divine_deity] ([B.title])[recipient ? " for [key_name_admin(recipient)]" : ""].")
 	to_chat(usr, SPAN_NOTICE("You wrote [B.title][recipient ? " and entrusted it to [recipient.real_name]" : ""]."))
