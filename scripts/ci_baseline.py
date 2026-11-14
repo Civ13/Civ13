@@ -1103,6 +1103,11 @@ SUITES = {
     'barter': {'files': ('tests/barter/test_source.py',),
         'paths': ('tests/barter/',), 'shared_paths': (
             'code/modules/1713/barter.dm', 'icons/obj/barter.dmi')},
+    # Bone flute, frame drum, flint sickle and bison herds: source contracts only.
+    'stone_age_extras': {'files': ('tests/stone_age_extras/test_source.py',),
+        'paths': ('tests/stone_age_extras/',), 'shared_paths': (
+            'code/modules/1713/stone_age_extras.dm', 'icons/obj/stone_age_extras.dmi',
+            'code/modules/1713/processing_recipes.dm')},
     'door_intents': {'files': ('tests/door_intents/test_door_intents.py', 'tests/door_intents/test_jail_keys.py'),
         'paths': ('tests/door_intents/',), 'shared_paths': (
             'code/game/objects/structures/door.dm',

@@ -52,6 +52,7 @@ var/global/list/processing_recipes = null
 			new /datum/processing_recipe("flint knapping", "Three arrowheads", /obj/item/weapon/flint, /obj/item/stack/arrowhead/flint, 3, 60, 25),
 			new /datum/processing_recipe("flint knapping", "Flint knife", /obj/item/weapon/flint, /obj/item/weapon/material/kitchen/utensil/knife/flint, 1, 80, 35),
 			new /datum/processing_recipe("flint knapping", "Spearhead", /obj/item/weapon/flint, /obj/item/weapon/flint_spearhead, 1, 80, 30),
+			new /datum/processing_recipe("flint knapping", "Sickle teeth", /obj/item/weapon/flint, /obj/item/weapon/flint_sickle_teeth, 1, 70, 25),
 			new /datum/processing_recipe("flint knapping", "Hand axe", /obj/item/weapon/flint, /obj/item/weapon/material/hatchet/tribal/hand_axe, 1, 100, 30, TRUE),
 			new /datum/processing_recipe("flint knapping", "Hide scraper", /obj/item/weapon/flint, /obj/item/weapon/material/hide_scraper, 1, 50, 15, TRUE),
 
