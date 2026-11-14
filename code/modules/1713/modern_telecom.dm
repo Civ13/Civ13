@@ -248,6 +248,7 @@ var/global/civ_telecom_cursor = 1
 			var/heard = speaking && !listener.say_understands(H, speaking) ? speaking.scramble(message, listener) : message
 			listener.hear_station_line("\[[label]\] [voice]: [heard]")
 	if (!television) civ_relay_outbound(frequency, H, "\[[label]\] [voice]: [message]")
+	if (!television) rusty_bolt_reradiate(src, message, speaking)
 	return delivered.len
 
 /mob/living/human/proc/hear_station_line(message)
@@ -288,6 +289,8 @@ var/global/civ_telecom_cursor = 1
 		program_line = 0
 		return
 	program_line = line
+	if (!television)
+		rusty_bolt_reradiate(src, telecom_lesson_text(program, line), null)
 	civ_relay_log_line("COURSE", "[broadcast_label()] ([frequency]): [announcement] [program] lesson [line]: [telecom_lesson_text(program, line)]")
 	var/list/delivered = list()
 	for (var/obj/structure/telecom/R in civ_telecom_devices)

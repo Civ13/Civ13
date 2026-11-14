@@ -350,6 +350,8 @@ var/global/FREQM = rand(101,120)
 		O.hear_radio(msg, verbage, speaker.default_language, speaker, R, R)
 	// other lands, through a keyed relay station (radio_relay.dm)
 	civ_relay_outbound(R:freq, speaker, msg, verbage)
+	// strong sets make nearby rusty metal hum along (rusty_bolt.dm)
+	rusty_bolt_from_radio(R, msg, speaker)
 
 //broadcasts an announcement on the Police/Emergency frequency
 /proc/global_broadcast(var/tfreq, var/msg)
