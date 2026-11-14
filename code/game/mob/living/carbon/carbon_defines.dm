@@ -18,7 +18,7 @@
 	var/lastpuke = FALSE
 	var/cpr_time = TRUE
 	var/list/addictions = list("cocaine" = 0, "opium" = 0, "alcohol" = 0, "tobacco" = 0)
-	var/nutrition = 400.0 // hunger in some units... 
-	var/max_nutrition = 400.0
-	var/water = 350.0 // thirst in some units... 
-	var/max_water = 350.0
+	var/nutrition = 600.0 // hunger in some units; workload and climate set the drain (human_life.dm)
+	var/max_nutrition = 600.0
+	var/water = 500.0 // thirst in some units
+	var/max_water = 500.0

@@ -48,7 +48,7 @@ def source_contract(files):
     failures=[key for key,(text,anchor) in required.items() if anchor not in text]
     if 'wait_lease(' in ''.join(files.values()): failures.append('ambient_lookup')
     start=helper.index('/proc/do_after(');body=helper[start:]
-    if not body.index('claim_gather_wait(user, target)')<body.index('user.survival_action_started()'): failures.append('callback_entry_order')
+    if not body.index('claim_gather_wait(user, target)')<body.index('user.survival_action_started(target, mining_context)'): failures.append('callback_entry_order')
     if not body.rindex('gameplay_lease.valid()')>body.index('user.survival_action_finished()'): failures.append('callback_final_order')
     return failures,required
 
@@ -133,9 +133,9 @@ class GatherContextTests(unittest.TestCase):
             except ValueError:failures=['missing_order_anchor']
             self.assertTrue(failures,name)
     def test_callback_placement_unsafe_control_and_no_unconverted_readiness(self):
-        h=self.files[PATHS[0]];capture=h[h.index('\tvar/datum/gameplay_action_lease/gameplay_lease'):h.index('\tuser.survival_action_started()',h.index('/proc/do_after('))]
+        h=self.files[PATHS[0]];capture=h[h.index('\tvar/datum/gameplay_action_lease/gameplay_lease'):h.index('\tuser.survival_action_started(target, mining_context)',h.index('/proc/do_after('))]
         start=h.index('/proc/do_after(')
-        changed=dict(self.files);changed[PATHS[0]]=h[:start]+h[start:].replace(capture,'',1).replace('\tuser.survival_action_started()\n','\tuser.survival_action_started()\n'+capture,1)
+        changed=dict(self.files);changed[PATHS[0]]=h[:start]+h[start:].replace(capture,'',1).replace('\tuser.survival_action_started(target, mining_context)\n','\tuser.survival_action_started(target, mining_context)\n'+capture,1)
         self.assertIn('callback_entry_order',source_contract(changed)[0])
         mechanics=self.files[PATHS[3]]
         readiness=mechanics.split('/datum/gameplay_bridge/proc/wait_guards_ready(kind)\n',1)[1].split('/datum/gameplay_bridge/proc/sharp_flint()',1)[0]
@@ -159,7 +159,7 @@ class GatherContextTests(unittest.TestCase):
         helper=self.files[PATHS[0]]
         a=helper.index('/proc/do_after(');b=helper.index('//Returns a list of all mobs',a)
         wait=helper[a:b]
-        self.assertEqual(wait.count('user.survival_action_started()'),1)
+        self.assertEqual(wait.count('user.survival_action_started(target, mining_context)'),1)
         self.assertEqual(wait.count('user.survival_action_finished()'),1)
         self.assertLess(wait.index('user.may_do_after = TRUE'),wait.index('user.survival_action_finished()'))
 
