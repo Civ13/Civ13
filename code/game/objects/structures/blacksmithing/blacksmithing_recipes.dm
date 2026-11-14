@@ -372,3 +372,26 @@ var/global/list/anvil_recipes = list(
 )
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Poured mold metal pays from one cost column of an anvil_recipes row, scaled.
+// Columns: 5 steel, 6 iron, 7 bronze. A metal missing here has no mold recipes.
+var/global/list/anvil_mold_costs = list(
+	"bronze" = list(7, 1),
+	"copper" = list(7, 1.2),
+	"tin" = list(7, 1.4),
+	"gold" = list(5, 1),
+	"silver" = list(5, 1),
+	"lead" = list(5, 1),
+	"iron" = list(6, 1),
+	"steel" = list(5, 1),
+)
+
+/proc/anvil_mold_cost(list/row, material)
+	var/list/rule = anvil_mold_costs[material]
+	if (!row || !rule)
+		return 0
+	return row[rule[1]] * rule[2]
+
+// A row is on the menu when it is in this category, inside the era range, and costs something.
+/proc/anvil_recipe_offered(list/row, category, cost)
+	return row && row[2] == category && map.ordinal_age >= row[3] && recipe_age_allowed(row[4]) && cost > 0

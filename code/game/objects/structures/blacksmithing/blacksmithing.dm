@@ -54,6 +54,45 @@
 			update_icon()
 			return
 
+// Poured mold metal pays anvil_mold_cost(); the menu, wait and payment mirror forge_stack_recipe.
+/obj/structure/anvil/proc/forge_mold_recipe(obj/item/weapon/clay/mold/ML, mob/user, mob/living/human/H, category, list/materials = null)
+	var/material = ML.current_material
+	var/list/newlist = list("Cancel")
+	if (!materials || (material in materials))
+		for(var/i in anvil_recipes)
+			var/mat = anvil_mold_cost(anvil_recipes[i], material)
+			if (anvil_recipe_offered(anvil_recipes[i], category, mat))
+				newlist += "[anvil_recipes[i][1]] - [mat] [material]" + crafting_recipe_manual_suffix(H, "[anvil_recipes[i][9]]")
+	if (newlist.len <= 1)
+		to_chat(user, "There is nothing that you can craft of this type.")
+		return
+	var/choice2 = WWinput(H, "What do you want to craft?", "Anvil", "Cancel", newlist)
+	if (choice2 == "Cancel")
+		return
+	var/list/parsed_choice2 = splittext(choice2," - ")
+	var/list/row = anvil_recipes[parsed_choice2[1]]
+	if (!row || !crafting_recipe_allowed(H, "[row[9]]"))
+		return
+	var/mat = anvil_mold_cost(row, material)
+	if (mat <= 0 || ML.capacity < mat)
+		return
+	to_chat(user, "You begin crafting \the [parsed_choice2[1]]...")
+	in_use = TRUE
+	update_icon()
+	if (do_after(user,10*mat,src,can_move=FALSE))
+		if (ML.current_material == material && ML.capacity >= mat && crafting_recipe_allowed(H, "[row[9]]"))
+			ML.capacity -= mat
+			to_chat(user, "You finish crafting \the [parsed_choice2[1]].")
+			var/obj/item/weapon/material/rtype = row[9]
+			new rtype (loc,material)
+			note_craft_practice(user, "[rtype]")
+			if (ML.capacity < 1)
+				ML.current_material = null
+				ML.capacity = 0
+				ML.update_icon()
+	in_use = FALSE
+	update_icon()
+
 /obj/structure/anvil/attackby(obj/item/P as obj, mob/user as mob)
 	var/mob/living/human/H = user
 	if (is_tool(P, TOOL_WRENCH))
@@ -132,18 +171,14 @@
 					return
 				return forge_stack_recipe(P, user, H, choice, 6, "iron")
 			else
-				if (map.ordinal_age <= 1)
-					optlist = list("cancel","shields","helmets","armor")
-				else if (map.ordinal_age == 2)
-					optlist = list("cancel","shields","helmets","other helmets","armor","other armor","other weapons","sallet helmets","japanese armor","japanese helmets","japanese headwear")
-				else if (map.ordinal_age == 3)
-					optlist = list("cancel","guns","helmets","other helmets","armor","other armor","other weapons","sallet helmets","japanese armor","japanese helmets","japanese headwear")
-				else if (map.ordinal_age == 4)
-					optlist = list("cancel","helmets")
-				else if (map.ordinal_age == 5)
-					optlist = list("cancel","helmets")
-				else if (map.ordinal_age >= 8)
-					optlist = list("cancel","armor")
+				optlist = era_pick(list(
+					"0" = list("cancel","shields","helmets","armor"),
+					"1" = list("cancel","shields","helmets","armor"),
+					"2" = list("cancel","shields","helmets","other helmets","armor","other armor","other weapons","sallet helmets","japanese armor","japanese helmets","japanese headwear"),
+					"3" = list("cancel","guns","helmets","other helmets","armor","other armor","other weapons","sallet helmets","japanese armor","japanese helmets","japanese headwear"),
+					"4" = list("cancel","helmets"),
+					"5" = list("cancel","helmets"),
+					"8+" = list("cancel","armor")), optlist)
 				if (blackpowder_part_options(P, H).len > 1)
 					optlist += "flintlock parts"
 				var/choice = WWinput(H, "What do you want to craft?", "Anvil", "cancel", optlist)
@@ -166,20 +201,14 @@
 					return
 				return forge_stack_recipe(P, user, H, choice, 5, "steel")
 			else
-				if (map.ordinal_age == 2)
-					optlist = list("cancel","japanese armor","japanese helmets","japanese headwear", "other weapons")
-				else if (map.ordinal_age == 3)
-					optlist = list("cancel","japanese armor","japanese helmets","japanese headwear", "other weapons")
-				else if (map.ordinal_age == 4)
-					optlist = list("cancel","guns")
-				else if (map.ordinal_age == 5)
-					optlist = list("cancel","helmets","mk1 brodie","m15 adrian")
-				else if (map.ordinal_age == 6)
-					optlist = list("cancel","helmets")
-				else if (map.ordinal_age == 7)
-					optlist = list("cancel","helmets","ussr heavy visored helmets","guns")
-				else if (map.ordinal_age >= 8)
-					optlist = list("cancel","helmets","guns")
+				optlist = era_pick(list(
+					"2" = list("cancel","japanese armor","japanese helmets","japanese headwear", "other weapons"),
+					"3" = list("cancel","japanese armor","japanese helmets","japanese headwear", "other weapons"),
+					"4" = list("cancel","guns"),
+					"5" = list("cancel","helmets","mk1 brodie","m15 adrian"),
+					"6" = list("cancel","helmets"),
+					"7" = list("cancel","helmets","ussr heavy visored helmets","guns"),
+					"8+" = list("cancel","helmets","guns")), optlist)
 
 				if (blackpowder_part_options(P, H).len > 1)
 					optlist += "flintlock parts"
@@ -202,10 +231,11 @@
 /////////BRONZE//////////
 		else if (istype(P, /obj/item/stack/material/bronze))
 			var/list/optlist = list("cancel")
-			if (map.ordinal_age <= 2)
-				optlist = list("cancel","shields","helmets","armor")
-			else if (map.ordinal_age == 3)
-				optlist = list("cancel","helmets")
+			optlist = era_pick(list(
+				"0" = list("cancel","shields","helmets","armor"),
+				"1" = list("cancel","shields","helmets","armor"),
+				"2" = list("cancel","shields","helmets","armor"),
+				"3" = list("cancel","helmets")), optlist)
 
 			var/choice = WWinput(H, "What do you want to craft?", "Anvil", "cancel", optlist)
 			if (choice == "cancel")
@@ -309,137 +339,9 @@
 						update_icon()
 						return
 					if ("knives")
-						var/list/newlist = list("Cancel")
-						var/mat = 0
-						for(var/i in anvil_recipes)
-							if (anvil_recipes[i])
-								mat = 0
-								if (ML.current_material == "bronze")
-									mat = anvil_recipes[i][7]
-								if (ML.current_material == "copper")
-									mat = anvil_recipes[i][7]*1.2
-								if (ML.current_material == "tin")
-									mat = anvil_recipes[i][7]*1.4
-								if (ML.current_material == "gold")
-									mat = anvil_recipes[i][5]
-								if (ML.current_material == "silver")
-									mat = anvil_recipes[i][5]
-								if (ML.current_material == "lead")
-									mat = anvil_recipes[i][5]
-								if (ML.current_material == "iron")
-									mat = anvil_recipes[i][6]
-								if (ML.current_material == "steel")
-									mat = anvil_recipes[i][5]
-								if (anvil_recipes[i][2] == "knives" && map.ordinal_age >= anvil_recipes[i][3] && recipe_age_allowed(anvil_recipes[i][4]) && mat > 0)
-									newlist += "[anvil_recipes[i][1]] - [mat] [ML.current_material]" + crafting_recipe_manual_suffix(H, "[anvil_recipes[i][9]]")
-						var/choice2 = WWinput(H, "What do you want to craft?", "Anvil", "Cancel", newlist)
-						if (choice2 == "Cancel")
-							return
-						var/list/parsed_choice2 = splittext(choice2," - ")
-						if (anvil_recipes[parsed_choice2[1]] && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
-							if (ML.current_material == "bronze")
-								mat = anvil_recipes[parsed_choice2[1]][7]
-							if (ML.current_material == "copper")
-								mat = anvil_recipes[parsed_choice2[1]][7]*1.2
-							if (ML.current_material == "tin")
-								mat = anvil_recipes[parsed_choice2[1]][7]*1.4
-							if (ML.current_material == "gold")
-								mat = anvil_recipes[parsed_choice2[1]][5]
-							if (ML.current_material == "silver")
-								mat = anvil_recipes[parsed_choice2[1]][5]
-							if (ML.current_material == "lead")
-								mat = anvil_recipes[parsed_choice2[1]][5]
-							if (ML.current_material == "iron")
-								mat = anvil_recipes[parsed_choice2[1]][6]
-							if (ML.current_material == "steel")
-								mat = anvil_recipes[parsed_choice2[1]][5]
-							if (ML.capacity >= mat && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
-								to_chat(user, "You begin crafting \the [parsed_choice2[1]]...")
-								in_use = TRUE
-								update_icon()
-								if (do_after(user,10*mat,src,can_move=FALSE))
-									if (ML.capacity >= mat && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
-										ML.capacity -= mat
-										to_chat(user, "You finish crafting \the [parsed_choice2[1]].")
-										var/obj/item/weapon/material/rtype = anvil_recipes[parsed_choice2[1]][9]
-										new rtype (loc,ML.current_material)
-										note_craft_practice(user, "[rtype]")
-										if (ML.capacity < 1)
-											ML.current_material = null
-											ML.capacity = 0
-											ML.update_icon()
-
-									in_use = FALSE
-								else
-									in_use = FALSE
-								update_icon()
-								return
+						return forge_mold_recipe(ML, user, H, "knives")
 					if ("axes")
-						var/list/newlist = list("Cancel")
-						var/mat = 0
-						for(var/i in anvil_recipes)
-							if (anvil_recipes[i])
-								mat = 0
-								if (ML.current_material == "bronze")
-									mat = anvil_recipes[i][7]
-								if (ML.current_material == "copper")
-									mat = anvil_recipes[i][7]*1.2
-								if (ML.current_material == "tin")
-									mat = anvil_recipes[i][7]*1.4
-								if (ML.current_material == "gold")
-									mat = anvil_recipes[i][5]
-								if (ML.current_material == "silver")
-									mat = anvil_recipes[i][5]
-								if (ML.current_material == "lead")
-									mat = anvil_recipes[i][5]
-								if (ML.current_material == "iron")
-									mat = anvil_recipes[i][6]
-								if (ML.current_material == "steel")
-									mat = anvil_recipes[i][5]
-								if (anvil_recipes[i][2] == "axes" && map.ordinal_age >= anvil_recipes[i][3] && recipe_age_allowed(anvil_recipes[i][4]) && mat > 0)
-									newlist += "[anvil_recipes[i][1]] - [mat] [ML.current_material]" + crafting_recipe_manual_suffix(H, "[anvil_recipes[i][9]]")
-						var/choice2 = WWinput(H, "What do you want to craft?", "Anvil", "Cancel", newlist)
-						if (choice2 == "Cancel")
-							return
-						var/list/parsed_choice2 = splittext(choice2," - ")
-						if (anvil_recipes[parsed_choice2[1]] && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
-							if (ML.current_material == "bronze")
-								mat = anvil_recipes[parsed_choice2[1]][7]
-							if (ML.current_material == "copper")
-								mat = anvil_recipes[parsed_choice2[1]][7]*1.2
-							if (ML.current_material == "tin")
-								mat = anvil_recipes[parsed_choice2[1]][7]*1.4
-							if (ML.current_material == "gold")
-								mat = anvil_recipes[parsed_choice2[1]][5]
-							if (ML.current_material == "silver")
-								mat = anvil_recipes[parsed_choice2[1]][5]
-							if (ML.current_material == "lead")
-								mat = anvil_recipes[parsed_choice2[1]][5]
-							if (ML.current_material == "iron")
-								mat = anvil_recipes[parsed_choice2[1]][6]
-							if (ML.current_material == "steel")
-								mat = anvil_recipes[parsed_choice2[1]][5]
-							if (ML.capacity >= mat && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
-								to_chat(user, "You begin crafting \the [parsed_choice2[1]]...")
-								in_use = TRUE
-								update_icon()
-								if (do_after(user,10*mat,src,can_move=FALSE))
-									if (ML.capacity >= mat && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
-										ML.capacity -= mat
-										to_chat(user, "You finish crafting \the [parsed_choice2[1]].")
-										var/obj/item/weapon/material/rtype = anvil_recipes[parsed_choice2[1]][9]
-										new rtype (loc,ML.current_material)
-										note_craft_practice(user, "[rtype]")
-										if (ML.capacity < 1)
-											ML.current_material = null
-											ML.capacity = 0
-											ML.update_icon()
-
-									in_use = FALSE
-								else
-									in_use = FALSE
-								update_icon()
-								return
+						return forge_mold_recipe(ML, user, H, "axes")
 					if ("swords")
 						var/list/optlist = list("cancel")
 						if (H.orc)
@@ -453,60 +355,7 @@
 						var/choice = WWinput(H, "What do you want to craft?", "Anvil", "cancel", optlist)
 						if (choice == "cancel")
 							return
-						var/list/newlist = list("Cancel")
-						var/mat = 0
-						var/valid_recipes = FALSE
-						for(var/i in anvil_recipes)
-							if (anvil_recipes[i])
-								mat = 0
-								if (ML.current_material == "bronze")
-									mat = anvil_recipes[i][7]
-								if (ML.current_material == "copper")
-									mat = anvil_recipes[i][7]*1.2
-								if (ML.current_material == "iron")
-									mat = anvil_recipes[i][6]
-								if (ML.current_material == "steel")
-									mat = anvil_recipes[i][5]
-								if (anvil_recipes[i][2] == choice && map.ordinal_age >= anvil_recipes[i][3] && recipe_age_allowed(anvil_recipes[i][4]) && mat > 0)
-									newlist += "[anvil_recipes[i][1]] - [mat] [ML.current_material]" + crafting_recipe_manual_suffix(H, "[anvil_recipes[i][9]]")
-									valid_recipes = TRUE // At least one valid recipe found
-						if (!valid_recipes) // No valid recipes found
-							to_chat(user, "There is nothing that you can craft of this type.")
-							return 
-						var/choice2 = WWinput(H, "What do you want to craft?", "Anvil", "Cancel", newlist)
-						if (choice2 == "Cancel")
-							return
-						var/list/parsed_choice2 = splittext(choice2," - ")
-						if (anvil_recipes[parsed_choice2[1]] && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
-							if (ML.current_material == "bronze")
-								mat = anvil_recipes[parsed_choice2[1]][7]
-							if (ML.current_material == "copper")
-								mat = anvil_recipes[parsed_choice2[1]][7]*1.2
-							if (ML.current_material == "iron")
-								mat = anvil_recipes[parsed_choice2[1]][6]
-							if (ML.current_material == "steel")
-								mat = anvil_recipes[parsed_choice2[1]][5]
-							if (ML.capacity >= mat && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
-								to_chat(user, "You begin crafting \the [parsed_choice2[1]]...")
-								in_use = TRUE
-								update_icon()
-								if (do_after(user,10*mat,src,can_move=FALSE))
-									if (ML.capacity >= mat && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
-										ML.capacity -= mat
-										to_chat(user, "You finish crafting \the [parsed_choice2[1]].")
-										var/obj/item/weapon/material/rtype = anvil_recipes[parsed_choice2[1]][9]
-										new rtype (loc,ML.current_material)
-										note_craft_practice(user, "[rtype]")
-										if (ML.capacity < 1)
-											ML.current_material = null
-											ML.capacity = 0
-											ML.update_icon()
-
-									in_use = FALSE
-								else
-									in_use = FALSE
-								update_icon()
-								return
+						return forge_mold_recipe(ML, user, H, choice, list("bronze", "copper", "iron", "steel"))
 					if ("spearheads")
 						if (!crafting_recipe_allowed(H, "/obj/item/weapon/material/part/spearhead")) return
 						to_chat(user, "You begin crafting the [ML.current_material] spearheads...")
@@ -604,71 +453,7 @@
 							update_icon()
 							return
 					if ("keys")
-						var/list/newlist = list("Cancel")
-						var/mat = 0
-						for(var/i in anvil_recipes)
-							if (anvil_recipes[i])
-								mat = 0
-								if (ML.current_material == "bronze")
-									mat = anvil_recipes[i][7]
-								if (ML.current_material == "copper")
-									mat = anvil_recipes[i][7]*1.2
-								if (ML.current_material == "tin")
-									mat = anvil_recipes[i][7]*1.4
-								if (ML.current_material == "gold")
-									mat = anvil_recipes[i][5]
-								if (ML.current_material == "silver")
-									mat = anvil_recipes[i][5]
-								if (ML.current_material == "lead")
-									mat = anvil_recipes[i][5]
-								if (ML.current_material == "iron")
-									mat = anvil_recipes[i][6]
-								if (ML.current_material == "steel")
-									mat = anvil_recipes[i][5]
-								if (anvil_recipes[i][2] == "keys" && map.ordinal_age >= anvil_recipes[i][3] && recipe_age_allowed(anvil_recipes[i][4]) && mat > 0)
-									newlist += "[anvil_recipes[i][1]] - [mat] [ML.current_material]" + crafting_recipe_manual_suffix(H, "[anvil_recipes[i][9]]")
-						var/choice2 = WWinput(H, "What do you want to craft?", "Anvil", "Cancel", newlist)
-						if (choice2 == "Cancel")
-							return
-						var/list/parsed_choice2 = splittext(choice2," - ")
-						if (anvil_recipes[parsed_choice2[1]] && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
-							if (ML.current_material == "bronze")
-								mat = anvil_recipes[parsed_choice2[1]][7]
-							if (ML.current_material == "copper")
-								mat = anvil_recipes[parsed_choice2[1]][7]*1.2
-							if (ML.current_material == "tin")
-								mat = anvil_recipes[parsed_choice2[1]][7]*1.4
-							if (ML.current_material == "gold")
-								mat = anvil_recipes[parsed_choice2[1]][5]
-							if (ML.current_material == "silver")
-								mat = anvil_recipes[parsed_choice2[1]][5]
-							if (ML.current_material == "lead")
-								mat = anvil_recipes[parsed_choice2[1]][5]
-							if (ML.current_material == "iron")
-								mat = anvil_recipes[parsed_choice2[1]][6]
-							if (ML.current_material == "steel")
-								mat = anvil_recipes[parsed_choice2[1]][5]
-							if (ML.capacity >= mat && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
-								to_chat(user, "You begin crafting \the [parsed_choice2[1]]...")
-								in_use = TRUE
-								update_icon()
-								if (do_after(user,10*mat,src,can_move=FALSE))
-									if (ML.capacity >= mat && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
-										ML.capacity -= mat
-										to_chat(user, "You finish crafting \the [parsed_choice2[1]].")
-										var/obj/item/weapon/material/rtype = anvil_recipes[parsed_choice2[1]][9]
-										new rtype (loc,ML.current_material)
-										note_craft_practice(user, "[rtype]")
-										if (ML.capacity < 1)
-											ML.current_material = null
-											ML.capacity = 0
-											ML.update_icon()
-
-									in_use = FALSE
-								else
-									in_use = FALSE
-								update_icon()
-								return
+						return forge_mold_recipe(ML, user, H, "keys")
 /obj/structure/anvil/steel
 	name = "steel anvil"
 	desc = "An advanced steel anvil. The blacksmith's main work tool."
