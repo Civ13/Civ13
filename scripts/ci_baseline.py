@@ -840,6 +840,12 @@ SUITES = {
     # branches gave; per-era equality checks only shrink. Source scan of code/.
     'era_helpers': {'files': ('tests/era_helpers/test_era_helpers.py',),
         'paths': ('tests/era_helpers/',), 'shared_paths': ()},
+    # Material properties and part roles: frozen ratings, the balance rule
+    # and the untouched legacy weapon numbers.
+    'material_roles': {'files': ('tests/material_roles/test_material_roles.py',),
+        'paths': ('tests/material_roles/', 'code/modules/materials/material_properties.dm',
+                  'code/modules/materials/part_roles.dm', 'code/__defines/material_roles.dm'),
+        'shared_paths': ('code/modules/materials/materials.dm',)},
     'anvil_mold_costs': {'files': ('tests/anvil_mold_costs/test_anvil_mold_costs.py',),
         'paths': ('tests/anvil_mold_costs/',), 'shared_paths': ()},
     'anchoring': {'files': ('tests/anchoring/test_anchoring.py',),
