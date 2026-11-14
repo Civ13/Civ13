@@ -197,6 +197,7 @@ class SofaMaterials(unittest.TestCase):
                    do_after=lambda *args: after(furniture),
                    to_chat=lambda *args: None, SPAN_NOTICE=lambda text: text,
                    playsound=lambda *args: None,
+                   machine_drop_fitted_parts=lambda obj: None,
                    istype=lambda obj, path: getattr(obj, 'type', '').startswith(path))
         stool = kind.startswith('/obj/item/weapon/stool')
         source = (ROOT / 'code/game/objects/structures/stool_bed_chair_nest/stools.dm').read_text() if stool else BED

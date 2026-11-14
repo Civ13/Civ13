@@ -172,6 +172,7 @@
 				"<span class='notice'>Somebody dismantled something.</span>")
 			H.give_exp(list("crafting","strength","dexterity","stamina"), list(85,5,5,5), I)
 			I = 1
+			machine_drop_fitted_parts(src)
 			for (var/P in components)
 				new P(src.loc, quantities[I])
 				I++
@@ -1824,6 +1825,7 @@
 			to_chat(user, "<span class='notice'>You dismantle \the [src].</span>")
 			for (var/i=1, i<=5, i++)
 				new /obj/item/stack/material/wood(loc) //5 out of 12 to craft
+			machine_drop_fitted_parts(src)
 			qdel(src)
 
 	else
@@ -1873,7 +1875,7 @@
 			copying = TRUE
 			visible_message("Copying \the [base[1]]...")
 			icon_state = "printingpress1"
-			if (do_after(H, spawntimer, src))
+			if (do_after(H, machine_work_time(src, spawntimer), src))
 				if (!isemptylist(base) && !isemptylist(copy))
 					visible_message("The printing press finishes copying.")
 					icon_state = "printingpress0"

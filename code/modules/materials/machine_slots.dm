@@ -20,6 +20,11 @@
 #define MACHINE_JAM_CHANCE 15
 // A rough part someone fitted to a machine that needs precision does no better than this.
 #define MACHINE_ROUGH_CAP 0.6
+// A generator is charged wear now and then, not every second: on average one
+// job each MACHINE_RUNNING_JOB_SECONDS of output, so a standard set lasts
+// about 110 hours of running.
+#define MACHINE_RUNNING_WEAR_CHANCE 1
+#define MACHINE_RUNNING_JOB_SECONDS 1000
 
 /obj/structure
 	var/part_key
@@ -45,10 +50,25 @@ var/global/list/machine_slot_tables = list(
 	/obj/structure/loom = list(
 		"shaft" = list(/obj/item/machine_part/shaft, "wood"),
 		"bearing" = list(/obj/item/machine_part/bearing, "wood")),
+	// The press screw.
+	/obj/structure/printingpress = list(
+		"shaft" = list(/obj/item/machine_part/shaft, "wood")),
+	/obj/structure/civ_generator/waterwheel = list(
+		"shaft" = list(/obj/item/machine_part/shaft, "wood"),
+		"bearing" = list(/obj/item/machine_part/bearing, "wood")),
+	/obj/structure/civ_generator/wind/charger = list(
+		"gears" = list(/obj/item/machine_part/gear, "iron"),
+		"shaft" = list(/obj/item/machine_part/shaft, "iron"),
+		"bearing" = list(/obj/item/machine_part/bearing, "iron")),
+	/obj/structure/civ_generator/wind/turbine = list(
+		"gears" = list(/obj/item/machine_part/gear, "steel"),
+		"shaft" = list(/obj/item/machine_part/shaft, "steel"),
+		"bearing" = list(/obj/item/machine_part/bearing, "steel")),
 )
 // Machines from the Industrial era on: a rough replacement part is capped at MACHINE_ROUGH_CAP.
 var/global/list/machine_precision_types = list(
 	/obj/structure/sawmill/powered,
+	/obj/structure/civ_generator/wind,
 )
 var/global/list/machine_slot_cache = list()  // type -> slot table, or 0
 var/global/list/machine_key_cache = list()   // part_key -> list(slot = list(material, precise))
@@ -208,7 +228,7 @@ var/global/list/machine_key_cache = list()   // part_key -> list(slot = list(mat
 		var/obj/item/machine_part/part = slots[slot][1]
 		var/material/mat = get_material_by_name(fill[1])
 		lines += "[fill[2] ? "precise " : ""][mat ? mat.display_name : fill[1]] [initial(part.part_noun)] ([machine_wear_word(machine_slot_wear(M, slot))])"
-	to_chat(user, "Its parts: [english_list(lines)]. It runs at [round(machine_performance(M) * 100)]% of its usual speed. Use a gear set, shaft or bearing on it to fit a replacement.")
+	to_chat(user, "Its parts: [english_list(lines)]. It works at [round(machine_performance(M) * 100)]% of its usual rate. Use a gear set, shaft or bearing on it to fit a replacement.")
 
 // Fit a part item into the slot it belongs to. TRUE when the item was handled.
 /proc/machine_install_part(obj/structure/M, obj/item/machine_part/P, mob/living/human/H)
@@ -253,6 +273,26 @@ var/global/list/machine_key_cache = list()   // part_key -> list(slot = list(mat
 	H.drop_from_inventory(P)
 	qdel(P)
 	return TRUE
+
+// Taking a machine apart hands back the parts someone fitted, with their wear.
+// The parts it was built with are scrap, and so is a worn-out one.
+/proc/machine_drop_fitted_parts(obj/structure/M)
+	var/list/slots = machine_slots(M)
+	if (!slots || !M.part_key)
+		return
+	var/turf/T = get_turf(M)
+	for (var/slot in slots)
+		var/list/fill = machine_slot_fill(M, slot)
+		var/wear = machine_slot_wear(M, slot)
+		if (!T || !fill[3] || wear >= MACHINE_PART_WORN_OUT)
+			continue
+		var/part_type = slots[slot][1]
+		var/obj/item/machine_part/out = new part_type(T, fill[1])
+		out.precise = fill[2]
+		out.wear = wear
+		out.apply_part_material()
+	M.part_key = null
+	M.part_wear = 0
 
 // --- The first machines with slots. Each wraps its own procs; the bodies in
 // code/modules/1713/production.dm are untouched apart from the speed hooks.
@@ -313,3 +353,48 @@ var/global/list/machine_key_cache = list()   // part_key -> list(slot = list(mat
 	if (current_work)
 		machine_wear(src)
 	..()
+
+
+// The press: its screw wears with every finished run. The bodies in
+// production.dm and research_tree/ are untouched apart from the speed hooks.
+/obj/structure/printingpress/examine(mob/user, distance = -1)
+	. = ..(user, distance)
+	machine_examine_parts(src, user)
+
+/obj/structure/printingpress/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/machine_part) && machine_install_part(src, W, user))
+		return
+	return ..(W, user)
+
+/obj/structure/printingpress/attack_hand(var/mob/living/human/H)
+	if (copying)
+		return ..(H)
+	var/loaded = length(base) && length(copy)
+	if (loaded && machine_work_refusal(src, H))
+		return
+	var/started = world.time
+	. = ..(H)
+	// A run that took its time and used up the blank stock was a print.
+	if (loaded && !QDELETED(src) && !length(copy) && world.time - started >= 50)
+		machine_wear(src)
+
+// Generators: output follows the weakest part, and running wears the set slowly.
+/obj/structure/civ_generator/examine(mob/user)
+	..(user)
+	machine_examine_parts(src, user)
+
+/obj/structure/civ_generator/attackby(obj/item/W, mob/user)
+	if (istype(W, /obj/item/machine_part) && machine_install_part(src, W, user))
+		return
+	..(W, user)
+
+/obj/structure/civ_generator/settle_generation()
+	..()
+	if (output_power > 0 && prob(MACHINE_RUNNING_WEAR_CHANCE))
+		machine_wear(src, 100 / (MACHINE_RUNNING_WEAR_CHANCE * MACHINE_RUNNING_JOB_SECONDS))
+
+/obj/structure/civ_generator/wind/rated_output()
+	return round(..() * machine_performance(src), 0.1)
+
+/obj/structure/civ_generator/waterwheel/rated_output()
+	return round(..() * machine_performance(src), 0.1)

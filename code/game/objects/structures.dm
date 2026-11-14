@@ -59,6 +59,7 @@
 					return
 			to_chat(user, SPAN_NOTICE("You dismantle \the [src]."))
 			new /obj/item/stack/material/wood(get_turf(src))
+			machine_drop_fitted_parts(src)
 			for (var/obj/item/weapon/book/b in contents)
 				b.loc = (get_turf(src))
 			qdel(src)
