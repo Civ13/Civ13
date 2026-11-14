@@ -65,6 +65,84 @@
 /proc/flood_douses(atom/A)
 	return flood_depth_at(get_turf(A)) > 0
 
+// ---- crops ---------------------------------------------------
+// A crop under knee-deep water or more drowns: after 6 growth minutes at the
+// knee, 3 at the waist or deeper. Rice grows in standing water. A crop that
+// comes through a flood alive leaves fresh silt in the soil.
+
+#define FLOOD_SILT_NUTRITION 40
+
+/obj/structure/farming/plant
+	var/flood_tolerant = FALSE
+	var/tmp/flooded_minutes = 0
+
+/obj/structure/farming/plant/rice
+	flood_tolerant = TRUE
+
+/obj/structure/farming/plant/persistence_runtime_var(key)
+	return key == "flooded_minutes" || ..()
+
+// One growth minute. Returns TRUE while the plant stands in floodwater, which
+// waters it fully.
+/obj/structure/farming/plant/proc/flood_plant_step()
+	var/turf/T = get_turf(src)
+	var/band = flood_band_at(T)
+	if (!band)
+		if (flooded_minutes && stage <= readyStageMax)
+			flooded_minutes = 0
+			var/turf/floor/dirt/D = T
+			if (istype(D))
+				D.soil_nutrition = min(D.max_soil_nutrition, D.soil_nutrition + FLOOD_SILT_NUTRITION)
+				plant_nutrition = D.soil_nutrition
+		return FALSE
+	water = max_water
+	flooded_minutes++
+	if (!flood_tolerant && band >= FLOOD_BAND_KNEE && flooded_minutes >= (band >= FLOOD_BAND_WAIST ? 3 : 6))
+		set_dead("drowned")
+	return TRUE
+
+#undef FLOOD_SILT_NUTRITION
+
+// ---- wells -----------------------------------------------------
+// Floodwater over a well fouls it until it is scrubbed clean with soap.
+
+/obj/structure/sink/well/proc/flood_foul()
+	if (!dirty && flood_depth_at(get_turf(src)) > 0)
+		dirty = TRUE
+	return dirty
+
+// ---- clothes -----------------------------------------------------
+// Waist-deep floodwater soaks clothes like wading in a river.
+
+/proc/flood_soaks(turf/T)
+	return T && !T.iscovered() && flood_band_at(T) >= FLOOD_BAND_WAIST
+
+// ---- flood marks -------------------------------------------------
+// The last floods leave a line of dried silt on trees, walls and the ground.
+
+/proc/flood_mark_text(turf/T)
+	var/depth = flood_depth_at(T)
+	if (depth > 0)
+		return "It stands in [flood_band_name(flood_band(depth))] floodwater."
+	var/mark = flood_mark_at(T)
+	if (mark <= 0)
+		return null
+	switch (flood_band(mark))
+		if (FLOOD_BAND_ANKLE)
+			return "A thin line of dried silt shows a recent flood stood ankle-deep here."
+		if (FLOOD_BAND_KNEE)
+			return "A line of dried silt shows a recent flood stood knee-deep here."
+		if (FLOOD_BAND_WAIST)
+			return "A line of dried silt at waist height shows how high a recent flood rose here."
+	return "Dried silt and wrack sit high above your head: a recent flood ran deep here."
+
+/proc/flood_mark_examine(atom/A, mob/user)
+	if (!user || get_dist(A, user) > 2)
+		return
+	var/text = flood_mark_text(get_turf(A))
+	if (text)
+		to_chat(user, SPAN_NOTICE(text))
+
 // ---- currents -------------------------------------------------
 // A river in flood carries things further; at low water it barely moves them.
 // Steps per current pulse (5 seconds): 0 or 1 at low water, 1 normally, 2 in

@@ -99,6 +99,13 @@ export function CraftingWindow(ui: ScreenProps) {
   const [readyOnly, setReadyOnly] = useState(!!data.makeable_only);
   const [selected, setSelected] = useState('');
   const [showLocked, setShowLocked] = useState(false);
+  // The Atlas can hand over a recipe: show it whatever tab or search was left open.
+  useEffect(() => {
+    const focus = text(data.focus);
+    if (!focus || !rows.some(row => row.id === focus)) return;
+    setSelected(focus); setQuery(''); setPurpose('');
+    if (rows.find(row => row.id === focus)?.state === 'locked') setShowLocked(true);
+  }, [data.focus_seq]);
   // Pictures arrive a batch at a time; ask for the next batch once per snapshot.
   useEffect(() => {
     if (data.more_images && !data.working && ui.interactive) ui.act('images', { images: 1 });

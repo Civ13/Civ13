@@ -21,6 +21,10 @@
 	return recipe_knowledge_enabled() && book_research
 
 #define BOOK_RESEARCH_REACH 1
+// Taking a sample apart at a bench: the first kinds of thing per subject are
+// worth this share of it; later kinds the usual sample share.
+#define BOOK_SAMPLE_FIRST_KINDS 2
+#define BOOK_SAMPLE_FIRST_FRACTION 0.2
 #define BOOK_STUDY_TIME(tier) (600 + 300 * max(0, tier))
 
 /obj/item/weapon/book
@@ -351,7 +355,8 @@
 			to_chat(user, SPAN_WARNING("You have already learned all you can from studying \a [W]."))
 			return
 		studied_samples += W.type
-		var/boost = max(1, round(N.cost_ticks * RESEARCH_SAMPLE_BOOST_FRACTION))
+		// The first kinds of thing taken apart teach the most.
+		var/boost = max(1, round(N.cost_ticks * (studied_samples.len <= BOOK_SAMPLE_FIRST_KINDS ? BOOK_SAMPLE_FIRST_FRACTION : RESEARCH_SAMPLE_BOOST_FRACTION)))
 		var/done = B.add_research_work(assigned_node, boost)
 		user.gain_active_scholarship(assigned_node, boost, "sample:[assigned_node]:[W.type]")
 		to_chat(user, SPAN_NOTICE("You dismantle and study \the [W], advancing <b>[N.name]</b> by [boost] points[done ? " and finishing the chapter" : ""]."))

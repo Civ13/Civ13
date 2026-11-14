@@ -286,6 +286,16 @@ class LandChoiceTests(unittest.TestCase):
         self.assertFalse(self.c.claim('far2', 'civ:gaia:Rome Empire'))
         self.assertEqual('LANDED', self.c.template(*other)['state'])
 
+    def test_a_faction_gives_up_its_claim_and_may_claim_another(self):
+        self.assertFalse(self.c.unclaim('far1', 'civ:gaia:Rome Empire'))
+        self.assertTrue(self.c.claim('far1', 'civ:gaia:Rome Empire', 'val'))
+        self.assertFalse(self.c.unclaim('far1', 'civ:gaia:Carthage'))
+        self.assertTrue(self.c.unclaim('far1', 'civ:gaia:Rome Empire', 'val'))
+        self.assertEqual('SETTLED', self.state())
+        self.assertEqual({}, self.c.snapshot()['claims'])
+        self.assertFalse(self.c.abandon('far1'), 'the land stays')
+        self.assertTrue(self.c.claim('far1', 'civ:gaia:Carthage'))
+
     def test_abandoning_loses_the_land_and_frees_its_slot_once_archived(self):
         self.assertTrue(self.c.abandon('far1', 'val', now=2000))
         tile = self.c.template(self.x, self.y)
@@ -413,6 +423,13 @@ class ChartAgentTests(unittest.TestCase):
         self.coordinator.homes_once()
         self.assertEqual('COLONY', self.coordinator.lands()['beta']['stage'])
         self.assertEqual({'civ:alpha:Rome Empire': '%d,%d' % (x, y)}, self.chart('alpha')['chart']['claims'])
+        # Giving the claim up: the land drops back to the frontier and stays.
+        call(self.urls['beta'], TOKENS['beta'], '/chart/request',
+             {'op': 'unclaim', 'x': x, 'y': y, 'admin': 'val', 'owner': 'civ:alpha:Rome Empire'})
+        self.coordinator.homes_once()
+        self.assertEqual('FRONTIER', self.coordinator.lands()['beta']['stage'])
+        self.assertEqual({}, self.chart('alpha')['chart']['claims'])
+        self.assertEqual('SETTLED', chart_.template(x, y)['state'])
 
     def test_an_unchanged_chart_is_not_sent_again(self):
         self.assertEqual(self.coordinator.chart.key(), self.stores['alpha'].account_requests()['chart_rev'])

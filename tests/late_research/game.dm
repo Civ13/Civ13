@@ -828,6 +828,76 @@ var/late_wait_result = TRUE
 	map.book_research = TRUE
 	var/list/clean = clean_trade_watched(list("a" = 1, "b" = 99, "c" = "x", 5))
 	late_check(clean.len == 2 && clean["b"] == 3, "saved watching records are cleaned")
+/proc/late_test_compare_notes()
+	var/obj/structure/research_bench/late_fixture/bench = new(locate(7,3,1))
+	bench.tier = 8
+	for(var/mob/living/human/other in range(2, bench))
+		other.loc = locate(1,1,1)
+	var/datum/research_node/N = get_research_node("selfloading_firearms")
+	var/obj/item/weapon/book/ours = new(bench)
+	ours.name = "our book"
+	var/mob/living/human/late_fixture/scholar/lead = new(locate(7,2,1))
+	lead.name = "Ada"
+	lead.real_name = "Ada"
+	lead.prepare("selfloading_firearms", 100)
+	var/mob/living/human/late_fixture/scholar/visitor = new(locate(1,1,1))
+	visitor.name = "Bede"
+	visitor.real_name = "Bede"
+	visitor.prepare("selfloading_firearms", 100)
+	ours.add_research_work("selfloading_firearms", round(N.cost_ticks * 0.6))
+	late_check(!bench.comparable_subjects().len && !bench.compare_notes(lead), "one book has nothing to compare with")
+	var/obj/item/weapon/book/theirs = new(bench)
+	theirs.name = "their book"
+	late_check(!bench.comparable_subjects().len, "the other book must hold part of the same chapter")
+	theirs.add_research_work("selfloading_firearms", round(N.cost_ticks * 0.3))
+	late_check(bench.comparable_subjects().len == 1 && bench.comparable_subjects()[1] == "selfloading_firearms", "two part-written chapters on one subject can be compared")
+	late_check(findtext(bench.compare_notes_problem(lead, "selfloading_firearms"), "takes two") && !bench.compare_notes_commit(lead, "selfloading_firearms"), "a lone scholar cannot compare notes")
+	visitor.loc = locate(8,3,1)
+	var/before = ours.research_ticks("selfloading_firearms")
+	var/lead_before = lead.scholar_level(node_discipline("selfloading_firearms"))
+	lead.scholarship[node_discipline("selfloading_firearms")] = 90
+	visitor.scholarship[node_discipline("selfloading_firearms")] = 90
+	lead_before = 90
+	late_check(isnull(bench.compare_notes_problem(lead, "selfloading_firearms")), "with a second scholar at the bench it can be done")
+	var/points = bench.compare_notes(lead)
+	var/expected = round(round(N.cost_ticks * 0.3) * 0.5)
+	late_check(points == expected && ours.research_ticks("selfloading_firearms") == before + expected && theirs.research_ticks("selfloading_firearms") == round(N.cost_ticks * 0.3), "the fuller chapter gains half of the other's points ([points]) and the other keeps its own")
+	late_check(lead.scholar_level(node_discipline("selfloading_firearms")) > lead_before && visitor.scholar_level(node_discipline("selfloading_firearms")) > 90, "both scholars learn from it")
+	late_check(ours.has_compared("selfloading_firearms") && theirs.has_compared("selfloading_firearms") && !bench.comparable_subjects().len && !bench.compare_notes_commit(lead, "selfloading_firearms"), "a book is compared on a subject once")
+	// A third book cannot be milked by a book already compared.
+	theirs.loc = locate(1,1,1)
+	var/obj/item/weapon/book/third = new(bench)
+	third.add_research_work("selfloading_firearms", round(N.cost_ticks * 0.3))
+	late_check(!bench.comparable_subjects().len, "nor again with a fresh book")
+	// The lesser book may lie first; the gain never passes the chapter's cost.
+	ours.loc = locate(1,1,1)
+	var/obj/item/weapon/book/nearly = new(bench)
+	nearly.add_research_work("selfloading_firearms", N.cost_ticks - 3)
+	late_check(bench.placed_books()[1] == third && bench.compare_notes_commit(lead, "selfloading_firearms") == 3 && nearly.has_research_chapter("selfloading_firearms"), "the fuller book gains whichever lies first, up to a finished chapter")
+	map.book_research = FALSE
+	late_check(!bench.compare_notes(lead), "no comparing where book research is off")
+	map.book_research = TRUE
+	// Samples: the first two kinds taken apart teach a fifth each, later kinds less.
+	bench.assigned_node = null
+	for(var/obj/item/weapon/book/old in bench)
+		old.loc = locate(1,1,1)
+	var/obj/item/weapon/book/samples = new(bench)
+	var/list/kinds = list()
+	for(var/path in get_node_recipe_paths("selfloading_firearms"))
+		if(ispath(path, /obj/item) && kinds.len < 3)
+			kinds += path
+	bench.assigned_node = "selfloading_firearms"
+	bench.studied_samples = null
+	if(kinds.len >= 3)
+		var/list/gains = list()
+		for(var/path in kinds)
+			var/obj/item/sample = new path(lead)
+			var/had = samples.research_ticks("selfloading_firearms")
+			bench.book_attackby(sample, lead)
+			gains += samples.research_ticks("selfloading_firearms") - had
+		late_check(gains[1] == round(N.cost_ticks * 0.2) && gains[2] == gains[1] && gains[3] == round(N.cost_ticks * 0.12), "the first two kinds of sample write a fifth each, the third the usual share ([gains[1]], [gains[2]], [gains[3]])")
+	else
+		late_check(FALSE, "Self-loading Firearms has three kinds of thing to sample")
 /world/New()
 	OpenPort("none")
 	generate_gameid()
@@ -850,6 +920,7 @@ var/late_wait_result = TRUE
 		late_test_learning_by_doing()
 		late_test_trial_and_error()
 		late_test_trade_learning()
+		late_test_compare_notes()
 		late_test_teams()
 		late_test_ciphers()
 		late_test_late_lines()

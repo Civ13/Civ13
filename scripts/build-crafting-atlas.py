@@ -292,7 +292,7 @@ if assembly:
     rock_path='code/game/objects/structures/rocks.dm'
     rock=uncomment(files.get(rock_path,''))
     if 'var/obj/item/weapon/flint/newflint = new/obj/item/weapon/flint' in rock:
-        add('Gather flint from rocks','Flintlock preparation',[],[('/obj/item/weapon/flint',1)],rock_path,rock[:rock.index('/obj/structure/wild/rock/attack_hand')].count('\n')+1,'Grab intent; rock flint_amount > 0; 50-tick action; rock stock regenerates. Rock is a source, not consumed.', 'rock attack_hand finite stocked flint')
+        add('Gather flint from rocks','Flintlock preparation',[],[('/obj/item/weapon/flint',1)],rock_path,rock[:rock.index('/obj/structure/wild/rock/attack_hand')].count('\n')+1,'Grab intent; rock flint stock above 0 (five, one back every 30 minutes); 50-tick action. Rock is a source, not consumed.', 'rock attack_hand finite stocked flint')
         records[-1]['inputs']=[dict(id='/obj/structure/wild/rock',name='stocked rock source (not consumed)',quantity='source')]
     if '/obj/item/weapon/flint/proc/sharpen()' in rock and 'icon_state = "sharpened_flint"' in rock:
         add('Sharpen flint against a rock','Flintlock preparation',[('/obj/item/weapon/flint',1)],[('/obj/item/weapon/flint/sharpened',1)],rock_path,rock[:rock.index('/obj/item/weapon/flint/proc/sharpen()')].count('\n')+1,'Use unsharpened flint against a rock; 20% chance per strike; rock is not consumed. State change retains the original flint object; output node denotes sharpened state.', 'flint sharpen() state transition')

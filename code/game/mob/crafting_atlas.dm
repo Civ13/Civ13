@@ -10,6 +10,10 @@ var/global/datum/crafting_atlas_presenter/crafting_atlas_presenter
 /datum/crafting_atlas_presenter/proc/navigate(datum/crafting_atlas_reference/reference, mob/viewer, payload, state)
 	return FALSE
 
+// "Craft this": only the full game has a Crafting window to hand over to.
+/datum/crafting_atlas_presenter/proc/craft(mob/viewer, product, state)
+	return FALSE
+
 // Optional per-reader knowledge presentation. Never write it into cached catalog rows.
 /datum/crafting_atlas_presenter/proc/manual_hint(mob/viewer, list/recipe)
 	return ""
@@ -355,6 +359,11 @@ var/global/datum/crafting_atlas_presenter/crafting_atlas_presenter
 	if (href_list["atlas_navigate"])
 		if (crafting_atlas_presenter)
 			return crafting_atlas_presenter.navigate(src, viewer, href_list["atlas_navigate"], state)
+		return
+	if (href_list["atlas_craft"])
+		// Hand-off to the Crafting window, which owns every check before anything is made.
+		if (crafting_atlas_presenter)
+			crafting_atlas_presenter.craft(viewer, copytext("[href_list["atlas_craft"]]", 1, 257), state)
 		return
 	if (href_list["atlas_resource"])
 		var/resource_id = copytext("[href_list["atlas_resource"]]", 1, 257)
