@@ -220,5 +220,7 @@ function drawArt(cv,w,h,pal,plain,k){cv.width=w*k;cv.height=h*k;var g=cv.getCont
 	var/by = C.author_name ? "by [html_encode(C.author_name)]" : ""
 	var/list/html = list("<html><head><meta charset='utf-8'><title>[title]</title><style>body{background:#2b2622;color:#e9dfc8;font-family:Georgia,serif;text-align:center;margin:8px}canvas{image-rendering:pixelated;border:6px solid #5a3d22;box-shadow:0 0 0 2px #c9a24a}</style></head><body>")
 	html += "<canvas id='a'></canvas><h3 style='margin:6px 0 0'>[title]</h3><div>[by]</div>"
+	if (C.finished && painting_code_allowed(user, C.author_ckey))
+		html += painting_code_box(painting_design_code(C.canvas_w, C.canvas_h, C.palette, C.paint_data))
 	html += "<script>[painting_draw_script()]drawArt(document.getElementById('a'),[C.canvas_w],[C.canvas_h],'[C.palette]'.split(','),unpackArt('[C.paint_data]',[C.canvas_w * C.canvas_h]),[k]);</script></body></html>"
-	show_browse(user, jointext(html, ""), "window=painting_view;size=[C.canvas_w * k + 60]x[C.canvas_h * k + 120]")
+	show_browse(user, jointext(html, ""), "window=painting_view;size=[max(320, C.canvas_w * k + 60)]x[C.canvas_h * k + 220]")
