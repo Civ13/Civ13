@@ -27,6 +27,10 @@ var/flood_runtime_error = FALSE
 /world/New()
 	OpenPort("none")
 	try
+		GLOB.all_observable_events = list()
+		GLOB.moved_event = new
+		GLOB.dir_set_event = new
+		GLOB.destroyed_event = new
 		map = new /obj/map_metadata/flood_probe
 		flood_checks()
 	catch(var/exception/e)
@@ -76,6 +80,16 @@ var/flood_runtime_error = FALSE
 	flood_check(river_current_steps(locate(1, 2, 1)) == 2 && abs(river_current_power_factor(locate(1, 2, 1)) - 1.5) < 0.001, "a river in flood runs faster")
 	F.stages_changed()
 	flood_check(F.flooding && flood_anywhere(), "a reach above stage 0 counts as flooding")
+	var/obj/item/weapon/reagent_containers/food/condiment/flour/sack = new(locate(1, 3, 1))
+	var/obj/item/drifter = new /obj/item(locate(2, 3, 1))
+	drifter.w_class = ITEM_SIZE_SMALL
+	flood_items_at(locate(1, 3, 1), flood_band_at(locate(1, 3, 1)))
+	flood_items_at(locate(2, 3, 1), flood_band_at(locate(2, 3, 1)))
+	flood_check(QDELETED(sack) || !sack.reagents || !sack.reagents.total_volume, "floodwater ruins flour on the floor")
+	flood_check(drifter.loc == locate(1, 3, 1), "small things float toward deeper water")
+	drifter.Move(locate(2, 3, 1))
+	flood_items_at(locate(2, 3, 1), FLOOD_BAND_WAIST)
+	flood_check(drifter.loc == locate(2, 3, 1), "each tile is visited once per river tick")
 	var/revision = flood_draw_revision
 	var/s1 = F.stage[1]
 	var/s2 = F.stage[2]
