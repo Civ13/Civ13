@@ -151,8 +151,8 @@
 	desc = "A steam locomotive cased in riveted steel plate. Works with coal, wood, and so on."
 	health = 3000
 	max_fuel = 150
-	max_train_speed = 3
-	train_speed = 3
+	max_train_speed = 2.4
+	train_speed = 2.4
 	train_weight = 5
 	haul = 20
 	var/disabled = FALSE

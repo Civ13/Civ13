@@ -18,8 +18,9 @@ stops it faster. Neither stops it on the spot.
 ## Speed and load
 
 Speeds are tiles per second. `max_train_speed` is a locomotive's step delay in
-deciseconds at full throttle with a light train: diesel 2 (5 tiles/s), steam
-2.5 (4 tiles/s), armored 3. Each notch is a third of that top speed.
+deciseconds at full throttle with a light train, from the targets in
+[vehicle-speeds.md](vehicle-speeds.md): diesel 1.2 (about 8 tiles/s), steam 2
+(5 tiles/s), armored 2.4. Each notch is a third of that top speed.
 
 Every car has a `train_weight` (wagon 1, platform segment 0.5 so a car is 2,
 steam locomotive 3, armored 5) plus its load: cargo strapped on, people on its

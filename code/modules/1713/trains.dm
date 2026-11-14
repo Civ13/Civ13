@@ -338,24 +338,6 @@
 // car's Move() does not drag its follower as well.
 var/global/train_solo_move = FALSE
 
-/obj/structure/trains/proc/rail_movement()
-	if (!automovement)
-		playsound(src.loc, 'sound/machines/train/stopping.ogg', 100, TRUE)
-		on = FALSE
-		return FALSE
-	spawn(train_speed)
-		if (!automovement)
-			playsound(src.loc, 'sound/machines/train/stopping.ogg', 100, TRUE)
-			on = FALSE
-		process_rail_movement()
-		rail_movement()
-		rail_sound()
-
-/obj/structure/trains/proc/rail_sound()
-	if (automovement)
-		spawn(10)
-			playsound(src.loc, 'sound/machines/train/moving.ogg', 100, TRUE)
-
 // Where a car standing here goes next when it rolls towards mdir:
 // list(target turf, facing after the step), or null at the end of the track.
 /obj/structure/trains/proc/rail_target(mdir)
@@ -684,8 +666,8 @@ var/global/train_solo_move = FALSE
 /obj/structure/trains/locomotive
 	name = "locomotive"
 	icon_state = "tractor"
-	train_speed = 2 //deciseconds of delay, so lower is better
-	max_train_speed = 2
+	train_speed = 1.2 //deciseconds of delay, so lower is better
+	max_train_speed = 1.2 // docs/vehicle-speeds.md
 	locomotive = TRUE
 	on = FALSE
 	train_weight = 3
@@ -976,9 +958,9 @@ var/global/train_solo_move = FALSE
 	name = "steam locomotive"
 	desc = "A steam-powered locomotive. Works with coal, wood, and so on. Use it to start the engine, set the throttle, brake or move the reverser."
 	icon_state = "locomotive"
-	train_speed = 2.5
+	train_speed = 2
 	max_fuel = 100
-	max_train_speed = 2.5
+	max_train_speed = 2
 	haul = 14
 
 /obj/structure/trains/locomotive/examine(mob/user)
