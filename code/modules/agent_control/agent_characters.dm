@@ -331,6 +331,12 @@
 	if (istype(held_stack) && held_stack.recipes)
 		out["craftable"] = agent_stack_recipes(held_stack, TRUE)
 	out["can_move"] = M.canmove && !M.restrained() && !M.buckled && M.stat == CONSCIOUS
+	// walk_to: the route being walked, and how the last one ended.
+	if (M.click_route)
+		var/datum/click_route/R = M.click_route
+		out["route"] = list("goal" = list(R.goal.x, R.goal.y, R.goal.z), "steps_left" = R.left())
+	if (M.click_route_last)
+		out["route_last"] = M.click_route_last
 	var/list/driving = agent_driving_row(M) // the driver's seat HUD: gear, direction, engine, height
 	if (driving)
 		out["driving"] = driving
@@ -618,13 +624,13 @@
 
 // Actions a character can take, directly or from its queue.
 /proc/agent_character_actions()
-	return list("move", "face", "say", "emote", "click", "use", "craft", "equip", "take", "examine", "drop", "swap_hand", "intent", "resist", "board", "disembark", "drag", "verb", "throw", "ooc", "bug_report", "topic", "close_window", "stance", "drive", "screen")
+	return list("move", "face", "say", "emote", "click", "use", "craft", "equip", "take", "examine", "drop", "swap_hand", "intent", "resist", "board", "disembark", "drag", "verb", "throw", "ooc", "bug_report", "topic", "close_window", "stance", "drive", "screen", "walk_to")
 
 // Ticks until the character may take this action: the agent pacing plus the
 // mob's own click cooldown (next_move/next_click) and a speech spacing.
 /datum/agent_character/proc/wait_for(action)
 	var/ready = world.time
-	if (action in list("move", "click", "use", "craft", "equip", "take", "drop", "board", "disembark", "drag", "verb", "throw", "topic", "drive", "screen"))
+	if (action in list("move", "walk_to", "click", "use", "craft", "equip", "take", "drop", "board", "disembark", "drag", "verb", "throw", "topic", "drive", "screen"))
 		ready = max(ready, next_action)
 		// Timed work (do_after) in progress: acting now would cancel it.
 		if (!body.may_do_after)
@@ -675,6 +681,9 @@
 			// The player's movement rules, timing and costs (agent_movement.dm).
 			// hold: ticks an arrow key stays down for held turret and drone controls.
 			return agent_walk_step(A, C, d, from_queue, clamp(round(text2num("[req["hold"]]") || 5), 1, 50))
+		if ("walk_to")
+			// Click-to-move routing: one step of the planned route per call (agent_movement.dm).
+			return agent_walk_to_step(A, C, req, from_queue)
 		if ("face")
 			var/d = agent_dir(req["dir"])
 			M.set_dir(d)
@@ -984,6 +993,11 @@
 		agent_fail("bad_args", "do must be wait or one of [jointext(agent_character_actions(), ", ")]")
 	if (action in list("move", "face"))
 		agent_dir(step["dir"])
+	if (action == "walk_to")
+		if (isnull(step["target"]) && (!isnum(text2num("[step["x"]]")) || !isnum(text2num("[step["y"]]"))))
+			agent_fail("bad_args", "walk_to needs target or x and y")
+		if (!isnull(step["target"]))
+			agent_resolve_target(step["target"])
 	if (action in list("say", "emote", "ooc"))
 		agent_text_arg(step, "text", 256)
 	if (action == "bug_report")
@@ -1042,7 +1056,7 @@
 			else
 				agent_fail("bad_args", "until takes message, holding or amount")
 		out["until"] = kept_until
-	for (var/key in list("dir", "text", "target", "onto", "modifier", "intent", "recipe", "amount", "item", "choose", "zone", "name", "expect_name", "window", "link", "label", "move", "defense", "tactic", "secondary", "face_lock", "aim", "slot"))
+	for (var/key in list("x", "y", "dir", "text", "target", "onto", "modifier", "intent", "recipe", "amount", "item", "choose", "zone", "name", "expect_name", "window", "link", "label", "move", "defense", "tactic", "secondary", "face_lock", "aim", "slot"))
 		if (!isnull(step[key]))
 			out[key] = step[key]
 	return out
@@ -1132,7 +1146,18 @@
 			step["count"] = count
 			var/repeat = step["repeat"] || 1
 			var/stopped = C.until_met(step)
-			if (result["moved"] == FALSE)
+			if (action == "walk_to")
+				// A route runs one step per call until it arrives or stops.
+				if (!result["route_done"])
+					C.queue.Insert(1, list(step))
+				else
+					C.record(step, result["arrived"] ? TRUE : FALSE, result["route_result"])
+					if (!result["arrived"] && step["stop_on_failure"])
+						for (var/list/rest in C.queue)
+							C.record(rest, FALSE, "skipped: the route stopped")
+						C.queue.Cut()
+						break
+			else if (result["moved"] == FALSE)
 				C.record(step, TRUE, repeat > 1 ? "blocked after [count]" : "blocked")
 				if (step["stop_on_failure"])
 					for (var/list/rest in C.queue)
