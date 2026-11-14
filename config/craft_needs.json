@@ -36,5 +36,21 @@
       "knife"
     ],
     "inputs": {}
+  },
+  "/obj/structure/workshop_machine/lathe/pole": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/stack/material/rope": 2
+    }
+  },
+  "/obj/structure/workshop_machine/lathe/engine": {
+    "tools": [
+      "wrench"
+    ],
+    "inputs": {
+      "/obj/item/machine_part/gear": 1,
+      "/obj/item/machine_part/shaft": 1,
+      "/obj/item/machine_part/bearing": 2
+    }
   }
 }
