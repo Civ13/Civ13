@@ -44,6 +44,8 @@ var/global/list/region_trail_next_request = list()
 		if(peer["kind"] == "ORBIT") continue
 		// The tutorial is reached from the lobby, never on foot.
 		if(peer["kind"] == "TUTORIAL") continue
+		// Lands across the sea are reached only by ship (expedition_land.dm).
+		if(peer["kind"] == "EXPEDITION") continue
 		choices["[peer["name"]] ([id])"] = id
 	return choices
 
