@@ -17,7 +17,7 @@
 // the turf registry and has no lighting. The world restore leaves such cells
 // unlit and a sparse save takes them as the baseline without comparing fields.
 /proc/building_cell_asleep(turf/T)
-	return istype(T, /turf/sky/building) && !turf_registry_members[T] && !T.lighting_overlay
+	return istype(T, /turf/sky/building) && !turf_registry_has(T) && !T.lighting_overlay
 
 // Added levels where an open-air cell became another turf. Until then a lazy
 // level holds nothing but open air, and scans for ground turfs skip it. The
@@ -35,9 +35,8 @@ var/global/list/building_levels_with_ground = list()
 			T.building_wake()
 
 /turf/sky/building/proc/building_wake()
-	if (turf_registry_members[src])
+	if (!turf_registry_add(src))
 		return
-	turf_registry_members[src] = TRUE
 	turfs += src
 	calculate_window_coeff()
 	if (map && map.zlevels_without_lighting.Find(z))

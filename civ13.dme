@@ -818,6 +818,7 @@
 #include "code\game\turfs\turf.dm"
 #include "code\game\turfs\turf_changing.dm"
 #include "code\game\turfs\turf_flick_animations.dm"
+#include "code\game\turfs\turf_registry.dm"
 #include "code\game\turfs\wall_attacks.dm"
 #include "code\game\turfs\wall_decay.dm"
 #include "code\game\turfs\wall_icon_exp.dm"

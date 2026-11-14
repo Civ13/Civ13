@@ -1,6 +1,6 @@
 """Hand-placed sprites for the building-site kit in
 icons/obj/building_site.dmi: the hand-cranked cement mixer with its turning
-loop, and cast concrete blocks. Every pixel is placed by this script from a
+loop, cast concrete blocks, and the pile driver with its drop-hammer loop. Every pixel is placed by this script from a
 fixed palette (Pillow only); no external or generated artwork.
 
 Run with Pillow to reproduce the sheet. `--check` verifies the committed
@@ -135,6 +135,57 @@ def concrete(pile=1):
     return f
 
 
+# ------------------------------------------------------------ pile driver --
+
+def pile_driver(step=None):
+    """A drop-hammer pile driver: two tall timber leaders on a sled, braced
+    from behind, with an iron ram hauled up on a rope and let fall on the
+    head of a log pile. Working, the ram climbs and drops."""
+    f = Frame()
+    rise = 0 if step is None else (0, 4, 8, 1)[step % 4]
+    # sled base
+    f.rect(3, 27, 28, 28, TIMBER[2])
+    f.hline(3, 28, 27, TIMBER[1])
+    f.hline(3, 28, 29, TIMBER[4])
+    # back brace, leaning from the sled up to the head
+    for i in range(22):
+        x = 4 + i * 8 // 22
+        y = 26 - i
+        f.put(x, y, TIMBER[3])
+        f.put(x + 1, y, TIMBER[2])
+    # the two leaders and the head block
+    for x in (13, 20):
+        f.vline(x, 2, 26, TIMBER[1])
+        f.vline(x + 1, 2, 26, TIMBER[3])
+    f.rect(11, 1, 23, 3, TIMBER[2])
+    f.hline(11, 23, 1, TIMBER[0])
+    f.hline(11, 23, 3, TIMBER[4])
+    f.pts(IRON[0], (17, 2))                 # sheave pin
+    # the pile standing between the leaders
+    f.rect(16, 21, 18, 29, TIMBER[2])
+    f.vline(16, 21, 29, TIMBER[0])
+    f.vline(18, 21, 29, TIMBER[4])
+    f.hline(16, 18, 21, TIMBER[0] if rise else TIMBER[3])
+    # the ram and its rope
+    top = 14 - rise
+    f.vline(17, 3, top - 1, (226, 208, 160))
+    f.rect(15, top, 19, top + 5, IRON[1])
+    f.hline(15, 19, top, IRON[0])
+    f.vline(15, top, top + 5, IRON[0])
+    f.hline(15, 19, top + 5, IRON[2])
+    f.vline(19, top + 1, top + 5, IRON[2])
+    # hauling rope down the back to the windlass on the sled
+    for i in range(20):
+        f.put(11 - i * 5 // 20, 4 + i, (186, 164, 112))
+    f.rect(5, 23, 8, 26, TIMBER[3])
+    f.hline(5, 8, 23, TIMBER[1])
+    f.put(4, 24 + (rise // 4) % 2, IRON[0])
+    if step is not None and step % 4 == 3:
+        f.pts((238, 232, 214), (14, 20), (20, 20), (13, 22), (21, 22))   # the blow
+    f.outline()
+    return f
+
+
 def states():
     """[(state, frames, delay)] in sheet order."""
     return [
@@ -143,6 +194,8 @@ def states():
         ('concrete', [concrete(1)], 0),
         ('concrete_2', [concrete(2)], 0),
         ('concrete_3', [concrete(3)], 0),
+        ('pile_driver', [pile_driver()], 0),
+        ('pile_driver_on', [pile_driver(i) for i in range(4)], 3),
     ]
 
 

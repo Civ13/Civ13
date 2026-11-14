@@ -1,4 +1,4 @@
-# Building site: cement mixer and concrete
+# Building site: cement mixer, concrete and the pile driver
 
 `code/modules/1713/building_site.dm`, sprites `icons/obj/building_site.dmi`
 (drawn by `tests/sprites/create_building_site.py`), suite `tests/building_site`.
@@ -24,3 +24,21 @@ their clay and quicklime route at the brick mould bench.
   and the research. Mixing is refused during saves.
 - Wrench to unfasten, hammer on harm intent to dismantle; the charge in the
   drum drops out. As a workshop machine it needs a hoist to change levels.
+
+## Pile driver and timber piers
+
+Pile driver: 14 wood, Imperial Architecture. Timber pier span: 8 wood,
+Imperial Architecture.
+
+- The timber pier span is a `/obj/item/weapon/bridge_span` subtype, so it is
+  laid, checked and taken apart by the same code as the steel and concrete
+  spans in `code/modules/1713/bridges.dm`: water only, deep water included,
+  from firm footing, and roads or railway track can go on the deck.
+- Its `build_span()` first asks `pile_driver_for(T)` for a fastened, idle pile
+  driver within 2 tiles of the water tile, standing on the shore, in the
+  shallows or on a deck. Without one the span is refused. The driver shows its
+  hammer loop and is busy while the span goes down.
+- The deck (`/obj/covers/bridge/timber`) is weaker than steel or concrete
+  (200 health). Taking it apart with a hammer returns the span.
+- To carry a pier further out, unfasten the driver, pull it onto the new deck
+  and fasten it again.
