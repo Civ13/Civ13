@@ -13,7 +13,7 @@ var/global/datum/painting_admin/painting_admin = new
 		return
 	painting_admin.show(usr)
 
-/datum/painting_admin/proc/painting_place(obj/item/canvas/C)
+/datum/painting_admin/proc/painting_place(atom/C)
 	var/turf/T = get_turf(C)
 	if (!T)
 		return "nowhere"
@@ -42,8 +42,22 @@ var/global/datum/painting_admin/painting_admin = new
 			html += "<a href='?_src_=holder;adminplayerobservecoodjump=1;X=[T.x];Y=[T.y];Z=[T.z]'>Jump</a> "
 		html += "<a href='?src=\ref[src];remove=\ref[C]'>Remove</a></td></tr>"
 		thumbs += "\['p[i]',[C.art_w],[C.art_h],'[C.small]'\]"
-	html += "</table><script>var T=\[[jointext(thumbs, ",")]\];"
-	html += {"for(var i=0;i<T.length;i++){var t=T[i],cv=document.getElementById(t[0]),k=Math.max(1,Math.floor(48/Math.max(t[1],t[2])));cv.width=t[1]*k;cv.height=t[2]*k;var g=cv.getContext('2d'),s=t[3];for(var j=0;j<t[1]*t[2]&&j*3<s.length;j++){var c=s.substr(j*3,3);g.fillStyle='#'+c;g.fillRect((j%t[1])*k,Math.floor(j/t[1])*k,k,k);}}"}
+	html += "</table>"
+	drawing_holders_refresh()
+	var/list/drawn = list()
+	for (var/atom/A in drawing_holders)
+		var/list/items = drawing_list(A)
+		for (var/n = 1, n <= items.len, n++)
+			var/list/D = items[n]
+			if (!drawing_valid(D))
+				continue
+			i++
+			drawn += "<tr><td><canvas id='p[i]'></canvas></td><td>[html_encode(D["title"])]</td><td>[html_encode(D["by"])] ([html_encode(D["ckey"])])</td><td>[html_encode(A.name)]</td><td>[D["date"]]</td><td>[html_encode(painting_place(A))]</td><td><a href='?src=\ref[src];remove_drawing=\ref[A];n=[n]'>Remove</a></td></tr>"
+			thumbs += "\['p[i]',[D["w"]],[D["h"]],'',\[[json_encode(painting_palette_list(D["palette"]))],'[painting_unpack(D["data"], D["w"] * D["h"])]'\]\]"
+	if (drawn.len)
+		html += "<h3>Drawings on paper and in books</h3><table><tr><th></th><th>Title</th><th>Drawn by</th><th>On</th><th>Drawn</th><th>Where</th><th></th></tr>[jointext(drawn, "")]</table>"
+	html += "<script>var T=\[[jointext(thumbs, ",")]\];"
+	html += {"for(var i=0;i<T.length;i++){var t=T\[i],cv=document.getElementById(t\[0]),k=Math.max(1,Math.floor(48/Math.max(t\[1],t\[2])));cv.width=t\[1]*k;cv.height=t\[2]*k;var g=cv.getContext('2d'),s=t\[3];if(t\[4]){for(var j=0;j<t\[1]*t\[2];j++){g.fillStyle=t\[4]\[0]\[parseInt(t\[4]\[1].charAt(j),16)];g.fillRect((j%t\[1])*k,Math.floor(j/t\[1])*k,k,k);}continue;}for(var j=0;j<t\[1]*t\[2]&&j*3<s.length;j++){var c=s.substr(j*3,3);g.fillStyle='#'+c;g.fillRect((j%t\[1])*k,Math.floor(j/t\[1])*k,k,k);}}"}
 	html += "</script></body></html>"
 	show_browse(user, jointext(html, ""), "window=player_art;size=900x600")
 
@@ -55,6 +69,25 @@ var/global/datum/painting_admin/painting_admin = new
 		var/obj/item/canvas/C = locate(href_list["view"])
 		if (istype(C) && (C in painting_registry))
 			painting_show_full(user, C)
+		return
+	if (href_list["remove_drawing"])
+		var/atom/A = locate(href_list["remove_drawing"])
+		var/n = text2num(href_list["n"])
+		var/list/items = A ? drawing_list(A) : null
+		if (!items || !isnum(n) || n < 1 || n > items.len)
+			return
+		var/list/D = items[n]
+		if (WWinput(user, "Remove the drawing \"[D["title"]]\" by [D["by"]] ([D["ckey"]])?", "Player Art", "Cancel", list("Remove", "Cancel")) != "Remove")
+			return
+		items = drawing_list(A)
+		if (!check_rights(R_ADMIN) || QDELETED(A) || !items || n > items.len || items[n] != D)
+			return
+		log_admin("[key_name(user)] removed the drawing \"[D["title"]]\" by [D["by"]] ([D["ckey"]]) from [A] at [painting_place(A)].")
+		message_admins("[key_name_admin(user)] removed the drawing \"[html_encode(D["title"])]\" by [html_encode(D["by"])] ([D["ckey"]]).")
+		var/list/kept = items.Copy()
+		kept.Cut(n, n + 1)
+		drawing_set_list(A, kept.len ? kept : null)
+		show(user)
 		return
 	if (href_list["remove"])
 		var/obj/item/canvas/C = locate(href_list["remove"])

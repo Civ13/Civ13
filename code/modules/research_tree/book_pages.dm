@@ -342,14 +342,18 @@ var/global/list/book_research_writing_supplies = list(
 	if (!bindable_loose_page(P))
 		to_chat(H, SPAN_WARNING("[P] is a document with marks of its own; binding it would lose them."))
 		return FALSE
+	if (!page_drawings_fit(P))
+		to_chat(H, SPAN_WARNING("[src] has no room left for the pictures on [P]."))
+		return FALSE
 	to_chat(H, SPAN_NOTICE("You begin binding [P] into [src]."))
 	page_busy = TRUE
 	var/done = do_after(H, BOOK_REINSERT_TIME, src)
 	page_busy = FALSE
-	if (!done || QDELETED(src) || QDELETED(P) || !recipe_held(H, P) || !bindable_loose_page(P))
+	if (!done || QDELETED(src) || QDELETED(P) || !recipe_held(H, P) || !bindable_loose_page(P) || !page_drawings_fit(P))
 		return FALSE
 	if (!bind_loose_page(P))
 		return FALSE
+	take_page_drawings(P)
 	H.remove_from_mob(P)
 	qdel(P)
 	to_chat(H, SPAN_NOTICE("You bind the page into [src]."))

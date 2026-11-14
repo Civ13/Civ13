@@ -88,7 +88,7 @@
 // Colours the user may paint with: the canvas colour, every carried
 // pigment's colours, and any two of those mixed half and half.
 /proc/painting_allowed_colours(mob/user, obj/item/canvas/C)
-	var/list/base = list(C.base_colour)
+	var/list/base = list(C.base_colour) | C.extra_colours(user)
 	for (var/obj/item/pigment/P in user.get_contents())
 		if (P.pigment_uses <= 0)
 			continue
@@ -232,6 +232,18 @@
 	if (!painting_is_wall(target))
 		return ..()
 	painting_hang(user, src, target)
+
+// Colours this canvas offers besides pigments (a sketch offers the pen's ink).
+/obj/item/canvas/proc/extra_colours(mob/user)
+	return list()
+
+// After a finish has been kept and the editor closed.
+/obj/item/canvas/proc/on_finished(mob/user)
+	return
+
+// The painter closed the editor.
+/obj/item/canvas/proc/editor_closed()
+	return
 
 /obj/item/canvas/proc/painting_name_text()
 	return title ? "\"[title]\"" : "an untitled painting"
