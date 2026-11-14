@@ -49,11 +49,7 @@
 /obj/structure/furnace/proc/handle_structure_tool(var/obj/item/I, var/mob/living/human/H)
 	if (istype(I, /obj/item/weapon/wrench) || (istype(I, /obj/item/weapon/hammer)))
 		if (istype(I, /obj/item/weapon/wrench))
-			visible_message("<span class='warning'>[H] starts to [anchored ? "unsecure" : "secure"] \the [src] [anchored ? "from" : "to"] the ground.</span>")
-			playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
-			if (do_after(H,50,src))
-				visible_message("<span class='warning'>[H] [anchored ? "unsecures" : "secures"] \the [src] [anchored ? "from" : "to"] the ground.</span>")
-				anchored = !anchored
+			if (timed_toggle_anchor(H))
 				return TRUE
 		else if (istype(I, /obj/item/weapon/hammer))
 			visible_message("<span class='warning'>[H] starts to deconstruct \the [src].</span>")

@@ -58,9 +58,7 @@
 		if (M == user)
 			do_html(M)
 	else if (is_tool(W, TOOL_HAMMER))
-		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-		to_chat(user, (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>"))
-		anchored = !anchored
+		toggle_anchor(user)
 	else
 		..()
 

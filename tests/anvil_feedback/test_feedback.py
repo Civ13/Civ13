@@ -135,7 +135,7 @@ class AnvilFeedback(unittest.TestCase):
         self.assertEqual(bystander.calls,[])
     def test_wrench_order_and_following_species_guards_remain(self):
         source=ANVIL.read_text(encoding='utf-8-sig')
-        self.assertLess(source.index('anchored = !anchored'),source.index('var/crafting_coefficient'))
+        self.assertLess(source.index('toggle_anchor(user)'),source.index('var/crafting_coefficient'))
         self.assertIn('if (crafting_coefficient < 1.2)',source)
         self.assertIn('(H.gorillaman || H.ant || H.wolfman || H.lizard || H.crab)',source)
         self.assertEqual(source_prefix().count('getStatCoeff("crafting")'),1)

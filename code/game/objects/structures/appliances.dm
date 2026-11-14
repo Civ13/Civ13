@@ -142,9 +142,7 @@
 
 /obj/structure/TV/television/attackby(obj/O as obj, mob/living/human/user as mob)
 	if (istype(O,/obj/item/weapon/wrench))
-		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-		to_chat(user, (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>"))
-		anchored = !anchored
+		toggle_anchor(user)
 	else if (istype(O,/obj/item/weapon/hammer/modern))
 		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
 		to_chat(user, "<span class='notice'>You begin dismantling \the [src].</span>")
@@ -170,9 +168,7 @@
 
 /obj/structure/TV/grandfather/attackby(obj/O as obj, mob/living/human/user as mob)
 	if (istype(O,/obj/item/weapon/wrench))
-		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-		to_chat(user, (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>"))
-		anchored = !anchored
+		toggle_anchor(user)
 	else if (istype(O,/obj/item/weapon/hammer/modern))
 		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
 		to_chat(user, "<span class='notice'>You begin dismantling \the [src].</span>")
