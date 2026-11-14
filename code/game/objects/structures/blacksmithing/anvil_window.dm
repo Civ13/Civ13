@@ -58,7 +58,7 @@
 		if (R[2] == "flintlock parts")
 			if (key in parts)
 				found += key
-		else if ((R[2] in kinds) && map.ordinal_age >= R[3] && recipe_age_allowed(R[4]) && R[metal[1]] > 0)
+		else if ((R[2] in kinds) && anvil_recipe_offered(R, R[2], R[metal[1]], metal[2]))
 			found += key
 	return found
 

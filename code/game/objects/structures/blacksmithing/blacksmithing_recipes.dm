@@ -384,6 +384,12 @@ var/global/list/anvil_recipes = list(
 
 			/*Modern*/
 	"SWAT Heavy Vest" = list("SWAT Heavy Vest","helmets",8,8,0,0,0,16,/obj/item/clothing/suit/swat),
+	/*Machine parts (code/modules/materials/machine_parts.dm): forged from sheet metal, or cast from a parts mold*/
+	"Gear Set" = list("Gear Set","parts",0,8,4,4,4,0,/obj/item/machine_part/gear),
+	"Shaft" = list("Shaft","parts",0,8,2,2,2,0,/obj/item/machine_part/shaft),
+	"Bushing" = list("Bushing","parts",0,8,2,2,2,0,/obj/item/machine_part/bearing),
+	"Spring" = list("Spring","parts",0,8,2,2,2,0,/obj/item/machine_part/spring),
+	"Drive Chain" = list("Drive Chain","parts",0,8,3,3,3,0,/obj/item/machine_part/belt),
 	/*gulag*/
 	"Guard Key" = list("Guard Key","keys",6,6,3,3,3,0,/obj/item/weapon/key/soviet/guard),
 )
@@ -394,6 +400,7 @@ var/global/list/anvil_recipes = list(
 // Columns: 5 steel, 6 iron, 7 bronze. A metal missing here has no mold recipes.
 var/global/list/anvil_mold_costs = list(
 	"bronze" = list(7, 1),
+	"brass" = list(7, 1),
 	"copper" = list(7, 1.2),
 	"tin" = list(7, 1.4),
 	"gold" = list(5, 1),
@@ -410,5 +417,8 @@ var/global/list/anvil_mold_costs = list(
 	return row[rule[1]] * rule[2]
 
 // A row is on the menu when it is in this category, inside the era range, and costs something.
-/proc/anvil_recipe_offered(list/row, category, cost)
-	return row && row[2] == category && map.ordinal_age >= row[3] && recipe_age_allowed(row[4]) && cost > 0
+/proc/anvil_recipe_offered(list/row, category, cost, material = null, cast = FALSE)
+	if (!(row && row[2] == category && map.ordinal_age >= row[3] && recipe_age_allowed(row[4]) && cost > 0))
+		return FALSE
+	// A machine part is only offered in a metal that can do its job.
+	return !material || !machine_part_refusal(row[9], material, cast)

@@ -10,5 +10,31 @@
     "inputs": {
       "/obj/item/stack/material/rope": 20
     }
+  },
+  "/obj/item/machine_part/gear": {
+    "tools": [
+      "chisel"
+    ],
+    "inputs": {}
+  },
+  "/obj/item/machine_part/shaft": {
+    "tools": [
+      "hatchet"
+    ],
+    "inputs": {}
+  },
+  "/obj/item/machine_part/bearing": {
+    "tools": [
+      "chisel"
+    ],
+    "inputs": {
+      "/obj/item/weapon/reagent_containers/food/snacks/animalfat": 1
+    }
+  },
+  "/obj/item/machine_part/belt": {
+    "tools": [
+      "knife"
+    ],
+    "inputs": {}
   }
 }

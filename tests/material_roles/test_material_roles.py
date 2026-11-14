@@ -203,6 +203,10 @@ BEATS_STANDARD = {
     'vessel': set(),
     'conductor': {'silver'},
     'wheel': set(),
+    'shaft': set(),
+    # leather is the standard belt; a chain outdoes it
+    'belt': {'barbedwire', 'brass', 'bronze', 'copper', 'indestructable', 'iron', 'kevlar', 'steel',
+             'submarine hull'},
 }
 
 

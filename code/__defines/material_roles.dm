@@ -25,6 +25,8 @@
 #define ROLE_VESSEL    "vessel"    // boiler, pot, tank
 #define ROLE_CONDUCTOR "conductor" // wire, cable
 #define ROLE_WHEEL     "wheel"
+#define ROLE_SHAFT     "shaft"     // shaft, axle, spindle
+#define ROLE_BELT      "belt"      // drive belt, rope drive or chain
 #define ROLE_FRAME     "frame"     // rated by the vehicle materials work
 #define ROLE_PLATE     "plate"     // rated by the vehicle materials work
 
