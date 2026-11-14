@@ -436,46 +436,8 @@
 		sails_on = FALSE
 		return
 	if (sails && sails_on)
-		switch(map.windspeedvar)
-			if (0)
-				timer = 40
-			if (1)
-				timer = 15
-			if (2)
-				timer = 11
-			if (3)
-				timer = 7
-			if (4)
-				timer = 4
-		switch(map.winddirection)
-			if ("North")
-				if (dir == SOUTH)
-					timer /= 1
-				if  (dir == WEST || dir == EAST)
-					timer /= 0.4
-				if (dir == NORTH)
-					timer /= 0.1
-			if ("South")
-				if (dir == NORTH)
-					timer /= 1
-				if  (dir == WEST || dir == EAST)
-					timer /= 0.4
-				if (dir == SOUTH)
-					timer /= 0.1
-			if ("East")
-				if (dir == WEST)
-					timer /= 1
-				if  (dir == NORTH || dir == SOUTH)
-					timer /= 0.4
-				if (dir == EAST)
-					timer /= 0.1
-			if ("West")
-				if (dir == EAST)
-					timer /= 1
-				if  (dir == NORTH || dir == SOUTH)
-					timer /= 0.4
-				if (dir == WEST)
-					timer /= 0.1
+		// How the wind stands to her bow sets the pace (naval/points_of_sail.dm).
+		timer = sail_step_time(src, dir)
 	spawn(timer)
 		for (var/mob/living/ML in ontop)
 			ML.forceMove(get_step(src, dir))

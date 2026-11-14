@@ -24,7 +24,8 @@
 	if (!craft)
 		return VOYAGE_TILE_SAIL
 	craft.fit_drives()
-	return craft.max_speed() >= VESSEL_SPEED_FULL ? VOYAGE_TILE_ENGINE : VOYAGE_TILE_SAIL
+	// Oars tire (rowing_bench.dm): only engines keep up full ahead for a voyage.
+	return craft.sustained_full_ahead() ? VOYAGE_TILE_ENGINE : VOYAGE_TILE_SAIL
 
 // Every food item aboard, looking into crates, closets, bags and pockets.
 /obj/structure/hull_tiller/proc/voyage_rations()
