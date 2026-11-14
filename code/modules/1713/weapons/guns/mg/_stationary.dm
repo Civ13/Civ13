@@ -40,6 +40,8 @@
 	var/mob/used_by_mob = null
 
 	var/zoom_amount = 10
+	// Weight on a vehicle's frame, gun and mount together (a crewman is 40).
+	var/vehicle_weight = 30
 	is_hmg = TRUE
 
 	gun_type = GUN_TYPE_MG
@@ -53,6 +55,17 @@
 	..()
 	if (islist(good_mags) && good_mags.len)
 		good_mags |= /obj/item/ammo_magazine/emptybelt
+
+// A wrench bolts an unmanned gun down or frees it to be pushed elsewhere,
+// such as onto a vehicle or a flak car. Autocannons come bolted down.
+/obj/item/weapon/gun/projectile/automatic/stationary/attackby(obj/item/W, mob/user)
+	if (istype(W, /obj/item/weapon/wrench) && isturf(loc))
+		if (used_by_mob)
+			to_chat(user, SPAN_WARNING("Someone is manning \the [src]."))
+			return
+		timed_toggle_anchor(user, 30)
+		return
+	return ..()
 
 /obj/item/weapon/gun/projectile/automatic/stationary/Destroy()
 	if(used_by_mob)

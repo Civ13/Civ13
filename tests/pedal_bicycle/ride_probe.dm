@@ -217,8 +217,8 @@ var/global/datum/pedal_ride_probe/pedal_ride_probe = new
 		var/list/s = notes[leg]
 		if(s["travelled"] < 8)
 			problems += "[leg]: stopped after [s["travelled"]] tiles"
-		if(s["set_delay"] != 1.5 || !near(s["interval"], 1.5))
-			problems += "[leg]: [s["interval"]] ds per tile, expected 1.5"
+		if(s["set_delay"] != 1.8 || !near(s["interval"], 1.8))
+			problems += "[leg]: [s["interval"]] ds per tile, expected 1.8"
 		if(s["stamina_used"] <= 0)
 			problems += "[leg]: pedaling was free"
 	var/list/loaded = notes["loaded"]

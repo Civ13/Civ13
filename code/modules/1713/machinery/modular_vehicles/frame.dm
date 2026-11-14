@@ -77,8 +77,18 @@
 /obj/structure/vehicleparts/frame/proc/total_weight()
 	var/tmpsum = 10
 	for (var/obj/O in loc)
-		if (!(istype(O, /obj/structure/rails)))
-			tmpsum += O.w_class*2
+		if (istype(O, /obj/structure/rails))
+			continue
+		// An emplaced gun counts its whole mount; a turret its fitted guns.
+		if (istype(O, /obj/item/weapon/gun/projectile/automatic/stationary))
+			var/obj/item/weapon/gun/projectile/automatic/stationary/G = O
+			tmpsum += G.vehicle_weight
+			continue
+		tmpsum += O.w_class*2
+		if (istype(O, /obj/structure/turret))
+			var/obj/structure/turret/TU = O
+			for (var/obj/item/weapon/gun/projectile/automatic/stationary/TG in TU.weapons)
+				tmpsum += TG.vehicle_weight
 	for(var/mob/living/L in loc)
 		tmpsum += L.mob_size*2
 	return tmpsum
