@@ -868,10 +868,7 @@ var/global/list/research_benches = list()
 	if (using_wrench)
 		if (not_movable || powersource || anchored != was_anchored)
 			return
-		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-		to_chat(user, (anchored ? SPAN_NOTICE("You unfasten \the [src] from the floor.") : SPAN_NOTICE("You secure \the [src] to the floor.")))
-		anchored = !anchored
-		anchor_changed()
+		toggle_anchor(user)
 		return
 	if (not_disassemblable)
 		return
