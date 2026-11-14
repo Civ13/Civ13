@@ -10,10 +10,15 @@ var/global/list/painting_editors = list() // mob -> canvas being painted
 /proc/painting_can_reach(mob/user, obj/item/canvas/C)
 	if (!user || !C || QDELETED(C) || user.incapacitated())
 		return FALSE
+	if (istype(C, /obj/item/canvas/sketch))
+		var/obj/item/canvas/sketch/S = C
+		return !QDELETED(S.target) && (S.target in user.get_contents()) && drawing_tool(user)
 	if (C.loc == user || (C in user.get_contents()))
 		return !C.needs_easel
 	if (istype(C.loc, /obj/structure/easel))
 		return get_dist(user, C.loc) <= 1
+	if (istype(C.loc, /obj/structure/rock_art)) // rock_art.dm: stand on its tile
+		return get_turf(user) == get_turf(C.loc)
 	return FALSE
 
 /proc/painting_open_editor(mob/user, obj/item/canvas/C)
@@ -23,7 +28,7 @@ var/global/list/painting_editors = list() // mob -> canvas being painted
 		painting_show_full(user, C)
 		return
 	if (!painting_can_reach(user, C))
-		to_chat(user, SPAN_WARNING(C.needs_easel ? "Set \the [C] on an easel and stand beside it to paint it." : "Hold \the [C] to paint it."))
+		to_chat(user, SPAN_WARNING(istype(C.loc, /obj/structure/rock_art) ? "Stand in front of the rock to paint it." : (C.needs_easel ? "Set \the [C] on an easel and stand beside it to paint it." : "Hold \the [C] to paint it.")))
 		return
 	if (C.editing && C.editing != user && C.editing.client && painting_editors[C.editing] == C)
 		to_chat(user, SPAN_WARNING("[C.editing] is already painting \the [C]."))
@@ -47,6 +52,8 @@ var/global/list/painting_editors = list() // mob -> canvas being painted
 		C.upload_parts = null
 	if (user && user.client)
 		show_browse(user, null, "window=[PAINT_WINDOW]")
+	if (C && !C.finished)
+		C.editor_closed()
 
 /proc/painting_editor_scale(obj/item/canvas/C)
 	return clamp(round(512 / max(C.canvas_w, C.canvas_h)), 3, 32)
@@ -83,7 +90,7 @@ var/global/list/painting_editors = list() // mob -> canvas being painted
 	return jointext(html, "")
 
 /proc/painting_base_colours(mob/user, obj/item/canvas/C)
-	var/list/out = list(C.base_colour)
+	var/list/out = list(C.base_colour) | C.extra_colours(user)
 	for (var/obj/item/pigment/P in painting_carried_pigments(user))
 		for (var/hex in P.pigment_colors)
 			out |= painting_hex(hex)
@@ -139,6 +146,8 @@ tool('pen');size(1);mark();draw();
 		if (editing == user)
 			editing = null
 			upload_parts = null
+			if (!finished)
+				editor_closed()
 		return
 	if (!href_list["paint"])
 		return ..()
@@ -190,7 +199,7 @@ tool('pen');size(1);mark();draw();
 		if (!(hex in allowed) && !(hex in kept))
 			return "You no longer carry the pigment for one of these colours. Pick it up again or paint over it."
 	if (finish)
-		if (painting_weight_total() + format_weight > PAINTING_REGION_CAP)
+		if (format_weight > 0 && painting_weight_total() + format_weight > PAINTING_REGION_CAP)
 			return "This land already holds as many finished paintings as it can. An admin can make room."
 		new_title = sanitizeSafe(new_title, PAINT_TITLE_LENGTH)
 		if (!length(new_title))
@@ -219,7 +228,9 @@ tool('pen');size(1);mark();draw();
 		E.update_icon()
 	if (finish)
 		painting_close_editor(user)
-		to_chat(user, SPAN_NOTICE("You finish [painting_name_text()]."))
+		if (format != "sketch")
+			to_chat(user, SPAN_NOTICE("You finish [painting_name_text()]."))
+		on_finished(user)
 		return null
 	return "Saved."
 

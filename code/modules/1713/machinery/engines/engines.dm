@@ -192,9 +192,7 @@
 		if (!isemptylist(connections))
 			to_chat(user, "<span class='notice'>Remove the cables first.</span>")
 			return
-		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-		to_chat(user, (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>"))
-		anchored = !anchored
+		toggle_anchor(user)
 		for(var/obj/structure/vehicleparts/frame/F in src.loc)
 			if (F.axis)
 				if (anchored)

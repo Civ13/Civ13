@@ -15,7 +15,7 @@ MARKER = "CIV13_GAMEPLAY_WAIT_GUARDS"
 PATHS = ("code/_helpers/mobs.dm", "code/game/turfs/floor_attackby.dm",
          "code/modules/gameplay_bridge/bridge.dm", "code/modules/gameplay_bridge/mechanics.dm")
 DISABLED_SHA256 = {
- PATHS[0]: "65300bd76e9f96a461eb0a7faf486239d78deeedb27df183c2f0447dee365904",
+ PATHS[0]: "e1e63d07be6fe2973b27a26438d28a009d7f5d78e4ff883f04cce41df81990ce",
  PATHS[1]: "2a3511843b595a41be660ab0d2c7c4967b83398a5b2a3fe7e13b0bb4bf7b9850",
  PATHS[2]: "03d24a6cfbdbce40b25d1d085f5eea5871970b64365579dc40d8dddad85ba37d",
  PATHS[3]: "0864eee5ae079c6d3f98bfc50fec6388e499168e21a0ec09a6b0df45edd7ea4b",

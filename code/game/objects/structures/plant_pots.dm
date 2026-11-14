@@ -439,9 +439,7 @@
 
 /obj/structure/plant_pot/attackby(obj/O as obj, mob/living/human/user as mob)
 	if (is_tool(O, TOOL_WRENCH))
-		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-		to_chat(user, (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>"))
-		anchored = !anchored
+		toggle_anchor(user)
 	else if (is_tool(O, TOOL_HAMMER) || istype(O,/obj/item/weapon/hammer/modern))
 		playsound(loc, 'sound/weapons/smash.ogg', 75, 1)
 		to_chat(user, "<span class='notice'>You begin smashing apart \the [src].</span>")

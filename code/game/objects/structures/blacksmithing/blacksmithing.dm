@@ -46,8 +46,9 @@
 						qdel(P)
 					to_chat(user, "You finish crafting \the [parsed_choice2[1]].")
 					var/rtype = anvil_recipes[parsed_choice2[1]][9]
-					new rtype (loc,material_name)
-					note_craft_practice(user, "[rtype]")
+					if (!trial_craft_ruined(user, "[rtype]"))
+						new rtype (loc,material_name)
+						note_craft_practice(user, "[rtype]")
 				in_use = FALSE
 			else
 				in_use = FALSE
@@ -84,8 +85,9 @@
 			ML.capacity -= mat
 			to_chat(user, "You finish crafting \the [parsed_choice2[1]].")
 			var/obj/item/weapon/material/rtype = row[9]
-			new rtype (loc,material)
-			note_craft_practice(user, "[rtype]")
+			if (!trial_craft_ruined(user, "[rtype]"))
+				new rtype (loc,material)
+				note_craft_practice(user, "[rtype]")
 			if (ML.capacity < 1)
 				ML.current_material = null
 				ML.capacity = 0
@@ -96,9 +98,7 @@
 /obj/structure/anvil/attackby(obj/item/P as obj, mob/user as mob)
 	var/mob/living/human/H = user
 	if (is_tool(P, TOOL_WRENCH))
-		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-		to_chat(user, (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>"))
-		anchored = !anchored
+		toggle_anchor(user)
 	var/crafting_coefficient = H.getStatCoeff("crafting")
 	if (crafting_coefficient < 1.2)
 		to_chat(user, "This anvil requires an effective Crafting coefficient of at least 1.20x; yours is [num2text(crafting_coefficient, 9)]x. Check IC > Skill Progress for Crafting progress; mood and traits affect the effective coefficient.")

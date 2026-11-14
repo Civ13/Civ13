@@ -795,9 +795,7 @@
 		to_chat(user, SPAN_NOTICE("Fix \the [src] in place with a wrench first."))
 		return
 	if (istype(B,/obj/item/weapon/wrench))
-		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-		to_chat(user, (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>"))
-		anchored = !anchored
+		toggle_anchor(user)
 
 	if (istype(B, /obj/item/weapon/reagent_containers/glass))
 

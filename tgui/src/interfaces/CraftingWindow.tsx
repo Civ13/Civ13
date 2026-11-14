@@ -14,9 +14,9 @@ const GROUPS: [Row['state'], string, string][] = [
   ['locked', 'Not learned yet', 'craft-lock'],
 ];
 
-export function matches(row: Data, words: string[], category: string, readyOnly: boolean) {
+export function matches(row: Data, words: string[], purpose: string, readyOnly: boolean) {
   if (readyOnly && row.state !== 'ready') return false;
-  if (category && text(row.category) !== category) return false;
+  if (purpose && text(row.purpose) !== purpose) return false;
   const hay = (text(row.name) + ' ' + text(row.category)).toLowerCase();
   return words.every(word => hay.includes(word));
 }
@@ -68,7 +68,10 @@ function Card({ ui, row, working }: { ui: ScreenProps; row: Row; working: Data |
     {row.tools ? <p className="craft-tools">Tools: {text(row.tools)}</p> : null}
     {row.built ? <p className="craft-place">Builds on the tile you stand on, facing the way you face.
       {row.one_per_turf ? ' Only one per tile.' : ''}{row.on_floor ? ' Needs a floor under you.' : ''}</p> : null}
-    {row.atlas ? <p><button type="button" className="craft-link" disabled={!ui.interactive} onClick={() => ui.act('atlas', { atlas: row.id })}>Open in Atlas</button></p> : null}
+    <p className="craft-links">
+      <button type="button" className="craft-link" aria-pressed={!!row.pinned} disabled={!ui.interactive || busy} onClick={() => ui.act('pin', { pin: row.id })}>{row.pinned ? 'Unpin' : 'Pin this recipe'}</button>
+      {row.atlas ? <button type="button" className="craft-link" disabled={!ui.interactive} onClick={() => ui.act('atlas', { atlas: row.id })}>Open in Atlas</button> : null}
+    </p>
     {mine && <div className="craft-progress" role="status">
       <p>Making {text(working?.name)}...</p>
       <div className="craft-track"><div key={row.id} className="craft-fill" style={{ animationDuration: Math.max(0.1, (Number(working?.time) || 0) / 10) + 's' }} /></div>
@@ -92,7 +95,7 @@ export function CraftingWindow(ui: ScreenProps) {
   const rows = list(data.rows) as Row[];
   const working: Data | null = data.working ?? null;
   const [query, setQuery] = useState('');
-  const [category, setCategory] = useState('');
+  const [purpose, setPurpose] = useState('');
   const [readyOnly, setReadyOnly] = useState(!!data.makeable_only);
   const [selected, setSelected] = useState('');
   const [showLocked, setShowLocked] = useState(false);
@@ -101,7 +104,15 @@ export function CraftingWindow(ui: ScreenProps) {
     if (data.more_images && !data.working && ui.interactive) ui.act('images', { images: 1 });
   }, [data]);
   const words = useMemo(() => query.toLowerCase().trim().split(/\s+/).filter(Boolean).slice(0, 6), [query]);
-  const visible = useMemo(() => rows.filter(row => matches(row, words, words.length ? '' : category, readyOnly)), [rows, words, category, readyOnly]);
+  const visible = useMemo(() => rows.filter(row => matches(row, words, words.length ? '' : purpose, readyOnly)), [rows, words, purpose, readyOnly]);
+  // Tabs come from what this material can make, in the server's fixed order.
+  const tabs = useMemo(() => list(data.purposes).map(name => text(name))
+    .map(name => [name, rows.filter(row => text(row.purpose) === name).length] as [string, number]).filter(tab => tab[1] > 0), [rows, data.purposes]);
+  const active = words.length ? '' : purpose;
+  const recent = useMemo(() => rows.filter(row => Number(row.recent) > 0).sort((a, b) => Number(a.recent) - Number(b.recent)).slice(0, 6), [rows]);
+  const pinned = useMemo(() => rows.filter(row => !!row.pinned), [rows]);
+  const chip = (row: Row) => <button key={row.id} type="button" className={'craft-chip' + (row.id === selected ? ' craft-chip-selected' : '')}
+    title={text(row.name)} onClick={() => setSelected(row.id)}><Sprite image={row.image} /><span>{text(row.name)}</span></button>;
   const chosen = rows.find(row => row.id === selected) ?? null;
   const toggleReady = (next: boolean) => { setReadyOnly(next); ui.act('makeable_only', { makeable_only: next ? 1 : 0 }); };
   const quick = (row: Row) => { if (ui.interactive && row.state === 'ready' && !working) ui.act('make', { make: row.id, quantity: 1 }); };
@@ -117,22 +128,28 @@ export function CraftingWindow(ui: ScreenProps) {
           <input type="search" aria-label="Search recipes" placeholder="Search recipes..." maxLength={64} value={query}
             onChange={event => setQuery(event.target.value)}
             onKeyDown={event => { if (event.key === 'Enter') event.preventDefault(); if (event.key === 'Escape') setQuery(''); }} />
-          <select aria-label="Category" value={words.length ? '' : category} onChange={event => { setQuery(''); setCategory(event.target.value); }}>
-            <option value="">All categories</option>
-            {rows.some(row => text(row.category) === 'General') && <option value="General">General</option>}
-            {list(data.categories).map((name, i) => <option key={i} value={text(name)}>{text(name)}</option>)}
-          </select>
           <label className="craft-tick"><input type="checkbox" checked={readyOnly} disabled={!ui.interactive} onChange={event => toggleReady(event.target.checked)} /> Only what I can make</label>
         </div>
+        {tabs.length > 1 && <div className="craft-tabs" role="tablist" aria-label="What it is for">
+          {[['', rows.length] as [string, number], ...tabs].map(([name, count]) => <button key={name || 'all'} type="button" role="tab" aria-selected={active === name}
+            className={'craft-tab' + (active === name ? ' craft-tab-on' : '')} onClick={() => { setQuery(''); setPurpose(name); }}>{name || 'All'} <small>{count}</small></button>)}
+        </div>}
+        {(recent.length > 0 || pinned.length > 0) && <div className="craft-strip">
+          {recent.length > 0 && <div className="craft-strip-row" role="group" aria-label="Recent"><span className="craft-strip-label">Recent</span>{recent.map(chip)}</div>}
+          {pinned.length > 0 && <div className="craft-strip-row" role="group" aria-label="Pinned"><span className="craft-strip-label">Pinned</span>{pinned.map(chip)}</div>}
+        </div>}
         <div className="craft-list">
           {GROUPS.map(([state, title, tone]) => {
             const group = visible.filter(row => row.state === state);
             if (readyOnly && state !== 'ready') return null;
+            // The old categories stay as sub-headings wherever a group mixes several.
+            const mixed = new Set(group.map(row => text(row.category))).size > 1;
             const folded = state === 'locked' && !showLocked && !words.length && group.length > 0;
             return <div key={state} className="craft-group">
               <h3 className={tone}>{title} <small>{group.length} {group.length === 1 ? 'recipe' : 'recipes'}</small>
                 {state === 'locked' && group.length > 0 && !words.length && <button type="button" className="craft-link" onClick={() => setShowLocked(!showLocked)}>{showLocked ? 'Hide' : 'Show'}</button>}</h3>
-              {!folded && <ul>{group.map(row => <li key={row.id}>
+              {!folded && <ul>{group.map((row, i) => <li key={row.id}>
+                {mixed && (i === 0 || text(group[i - 1].category) !== text(row.category)) && <h4 className="craft-sub">{text(row.category)}</h4>}
                 <button type="button" className={'craft-row craft-row-' + row.state + (row.id === selected ? ' craft-row-selected' : '')}
                   aria-pressed={row.id === selected} onClick={() => setSelected(row.id)} onDoubleClick={() => quick(row)}>
                   <Sprite image={row.image} />
@@ -142,7 +159,7 @@ export function CraftingWindow(ui: ScreenProps) {
               </li>)}</ul>}
             </div>;
           })}
-          {visible.length === 0 && <p className="craft-empty">No matching recipes. Try another name, another category or untick Only what I can make.</p>}
+          {visible.length === 0 && <p className="craft-empty">No matching recipes. Try another name, another tab or untick Only what I can make.</p>}
         </div>
       </div>
       <div className="craft-right">

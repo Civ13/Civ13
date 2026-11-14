@@ -117,6 +117,10 @@
 	if (do_after(H, assembly_time, src)) M = finish_assembly(H, P, B, choice)
 	busy = FALSE
 	assembler = null
+	// A failed early attempt (subject_prototypes.dm) leaves nothing to retrieve.
+	if (M && trial_craft_ruined(H, "[M.type]"))
+		qdel(M)
+		M = null
 	if (M)
 		to_chat(H, "You finish [M]. Retrieve it from [src].")
 		note_craft_practice(H, "[M.type]")
