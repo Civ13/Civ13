@@ -60,7 +60,9 @@ class DivineBook(unittest.TestCase):
 
     def test_original_is_not_added_to_player_catalog(self):
         import json
-        self.assertNotRegex(TEXT, r'(?m)^\t(name|desc|icon|icon_state) =')
+        self.assertNotRegex(TEXT, r'(?m)^\t(desc|icon|icon_state) =')
+        self.assertIn('\tname = "book"', TEXT)
+        self.assertIn('\ttitle = "book"', TEXT)
         self.assertNotIn('/obj/item/weapon/book/divine', json.loads((ROOT / 'UI/crafting-atlas.json').read_text())['resources'])
 
     def test_no_automatic_public_deity_or_private_text(self):
