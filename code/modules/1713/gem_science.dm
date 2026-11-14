@@ -5,6 +5,10 @@
 #define JEWEL_DRILL_TIME 60
 #define JEWEL_FIT_TIME 40
 #define JEWELS_PER_INSTRUMENT 2
+#define DIAMOND_GRIT_PER_STONE 3
+#define LAP_CHARGES_PER_GRIT 3
+#define LAP_MAX_CHARGES 30
+#define DRILL_BIT_CHARGES 6
 
 /obj/item
 	var/jewelled = FALSE // pivots run in jewel bearings (watches, compasses)
@@ -141,6 +145,146 @@
 			hr -= 12
 	return "It is about [hr < 10 ? "0[hr]" : "[hr]"]:[min < 10 ? "0[min]" : "[min]"] [ampm]. The movement runs unevenly."
 
+// ---- Diamond grit, the lapping wheel and the diamond drill bit ----
+
+/obj/item/stack/diamond_grit
+	name = "diamond grit"
+	singular_name = "pinch of diamond grit"
+	desc = "Crushed diamond, the hardest abrasive there is. Mixed with oil it charges a lapping wheel for cutting gems."
+	icon = 'icons/obj/gem_science.dmi'
+	icon_state = "diamond_grit"
+	w_class = ITEM_SIZE_TINY
+	max_amount = 50
+	amount = 1
+	flammable = FALSE
+	value = 6
+
+// A hammer crushes a rough diamond into grit.
+/obj/item/stack/ore/diamond/attackby(obj/item/W, mob/user)
+	if (istype(W, /obj/item/weapon/hammer) && ishuman(user))
+		var/mob/living/human/H = user
+		if (!H.may_do_after || !crafting_node_allowed_or_warn(H, "regalia"))
+			return
+		to_chat(H, SPAN_NOTICE("You start crushing \a [singular_name] into grit..."))
+		if (!do_after(H, 30, src))
+			return
+		if (QDELETED(src) || amount < 1 || H.get_active_hand() != W || !(loc == H || (isturf(loc) && get_dist(src, H) <= 1)))
+			return
+		var/turf/T = get_turf(src)
+		if (!use(1))
+			return
+		var/obj/item/stack/diamond_grit/G = new(T)
+		G.amount = DIAMOND_GRIT_PER_STONE
+		G.update_icon()
+		to_chat(H, SPAN_NOTICE("You crush the diamond into [DIAMOND_GRIT_PER_STONE] pinches of grit."))
+		return
+	..()
+
+// What a cut that splits along a flaw leaves behind, as a phrase for the
+// message, or null for nothing useful.
+/proc/gem_flaw_leftovers(turf/T, cut_type)
+	if (ispath(cut_type, /obj/item/stack/gemstone/diamond))
+		new /obj/item/stack/diamond_grit(T)
+		return "a pinch of diamond grit"
+	return null
+
+// Iron lap for gem cutting (the scaife). Charged with diamond grit, it
+// halves cutting time and takes stones down without splitting them.
+/obj/structure/lapping_wheel
+	name = "lapping wheel"
+	desc = "A flat iron disc on a stand, turned by a crank. Charged with diamond grit and oil, it grinds gemstones down without splitting them. Cut stones next to it."
+	icon = 'icons/obj/gem_science.dmi'
+	icon_state = "lapping_wheel"
+	density = TRUE
+	anchored = TRUE
+	flammable = FALSE
+	not_movable = FALSE
+	not_disassemblable = FALSE
+	var/charges = 0
+
+/obj/structure/lapping_wheel/examine(mob/user)
+	..()
+	to_chat(user, charges ? "Its face is charged with grit for about [charges] more stone\s." : "Its face is bare. Rub diamond grit into it to charge it.")
+
+/obj/structure/lapping_wheel/proc/use_charge()
+	if (charges < 1)
+		return FALSE
+	charges--
+	return TRUE
+
+/obj/structure/lapping_wheel/attackby(obj/item/W, mob/user)
+	if (istype(W, /obj/item/stack/diamond_grit))
+		var/obj/item/stack/diamond_grit/G = W
+		if (charges >= LAP_MAX_CHARGES)
+			to_chat(user, SPAN_NOTICE("\The [src] is fully charged."))
+			return
+		if (!G.use(1))
+			return
+		charges = min(LAP_MAX_CHARGES, charges + LAP_CHARGES_PER_GRIT)
+		to_chat(user, SPAN_NOTICE("You rub the grit into \the [src] with a little oil."))
+		return
+	if (istype(W, /obj/item/stack/material/steel) && ishuman(user))
+		make_drill_bit(W, user)
+		return
+	..()
+
+// Grinding diamond-set cutting edges onto a steel crown makes a core bit
+// for the industrial drill (rotary diamond drilling, 1863).
+/obj/structure/lapping_wheel/proc/make_drill_bit(obj/item/stack/material/steel/S, mob/living/human/H)
+	if (!H.may_do_after || !crafting_node_allowed_or_warn(H, "machined_tools"))
+		return
+	if (charges < DRILL_BIT_CHARGES)
+		to_chat(H, SPAN_WARNING("\The [src] needs at least [DRILL_BIT_CHARGES] charges of grit to set a drill crown."))
+		return
+	to_chat(H, SPAN_NOTICE("You start setting a steel crown with diamond on \the [src]..."))
+	if (!do_after(H, 80, src))
+		return
+	if (QDELETED(S) || charges < DRILL_BIT_CHARGES || S.loc != H || !S.use(1))
+		return
+	charges -= DRILL_BIT_CHARGES
+	new /obj/item/diamond_drill_bit(get_turf(src))
+	to_chat(H, SPAN_NOTICE("You finish a diamond drill bit."))
+
+/proc/gem_lap_near(mob/living/human/H)
+	for (var/obj/structure/lapping_wheel/L in range(1, H))
+		if (L.charges > 0)
+			return L
+	return null
+
+/obj/item/diamond_drill_bit
+	name = "diamond drill bit"
+	desc = "A hollow steel crown set with diamond. Fitted to an industrial drill, it cuts rock faster and brings up more ore."
+	icon = 'icons/obj/gem_science.dmi'
+	icon_state = "diamond_drill_bit"
+	w_class = ITEM_SIZE_SMALL
+	flags = CONDUCT
+	value = 40
+
+/obj/structure/drill
+	var/diamond_bit = FALSE
+
+/obj/structure/drill/attackby(obj/item/W, mob/living/human/H)
+	if (istype(W, /obj/item/diamond_drill_bit) && type == /obj/structure/drill)
+		if (diamond_bit)
+			to_chat(H, SPAN_NOTICE("\The [src] already has a diamond bit."))
+			return
+		H.drop_from_inventory(W)
+		qdel(W)
+		diamond_bit = TRUE
+		to_chat(H, SPAN_NOTICE("You fit the diamond bit to \the [src]."))
+		return
+	..()
+
+/obj/structure/drill/produce_minerals(var/ore_type, var/quantity)
+	if (diamond_bit)
+		quantity++
+	return ..(ore_type, quantity)
+
+/obj/structure/drill/examine(mob/user)
+	..()
+	if (diamond_bit)
+		to_chat(user, "It is fitted with a diamond drill bit.")
+
 /obj/item/examine(mob/user, var/distance = -1)
 	. = ..()
 	if (jewelled)
@@ -149,3 +293,7 @@
 #undef JEWEL_DRILL_TIME
 #undef JEWEL_FIT_TIME
 #undef JEWELS_PER_INSTRUMENT
+#undef DIAMOND_GRIT_PER_STONE
+#undef LAP_CHARGES_PER_GRIT
+#undef LAP_MAX_CHARGES
+#undef DRILL_BIT_CHARGES
