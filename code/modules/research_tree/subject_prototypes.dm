@@ -91,6 +91,7 @@
 	B.add_prototype_made(node_id)
 	var/points = max(1, round(N.cost_ticks * SUBJECT_PROTO_POINTS))
 	var/finished = B.add_research_work(node_id, points)
+	H.gain_active_scholarship(node_id, points, "prototype:[node_id]:[B.prototypes_made(node_id)]")
 	to_chat(H, SPAN_NOTICE("You note how the prototype came out in [B]: <b>[N.name]</b> advances by [points] points[finished ? " and the chapter is finished" : ""]. ([B.prototypes_made(node_id)] of [SUBJECT_PROTO_MAX] prototypes for this book.)"))
 	return points
 
@@ -175,7 +176,8 @@
 		P.update_icon()
 		return 1
 	var/obj/item/weapon/book/B = carrier
-	return B.record_field_study(node_id, kind)
+	. = B.record_field_study(node_id, kind)
+	H.gain_active_scholarship(node_id, ., "study:[node_id]:[kind]")
 
 /mob/living/human/proc/study_in_field(obj/item/carrier)
 	if (!map || !map.book_research_enabled())
@@ -258,6 +260,7 @@
 	var/kind = P.field_study_type
 	qdel(P)
 	var/points = B.record_field_study(N.id, kind)
+	user.gain_active_scholarship(N.id, points, "study:[N.id]:[kind]")
 	to_chat(user, SPAN_NOTICE("You copy the field notes into [B]: <b>[N.name]</b> advances by [points] points[B.has_research_chapter(N.id) ? " and the chapter is finished" : ""]."))
 	book_refresh_ui()
 	return TRUE

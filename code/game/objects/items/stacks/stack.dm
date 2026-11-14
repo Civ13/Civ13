@@ -1650,7 +1650,7 @@
 		if (press_construction && !press_construction.valid())
 			return
 		if (H && !joinery && !carving && !cloth_payment)
-			H.adaptStat("crafting", 1*recipe.req_amount)
+			H.adaptStat("crafting", 1*recipe.req_amount, recipe.result_type)
 	if (findtext(recipe.title, "coil"))
 		produced = 10
 //this only works for stacks!!
@@ -1773,11 +1773,11 @@
 		if (joinery)
 			joinery.consume_component()
 		if ((joinery || carving) && H && recipe.time)
-			H.adaptStat("crafting", 1*recipe.req_amount)
+			H.adaptStat("crafting", 1*recipe.req_amount, recipe.result_type)
 		if (cloth_payment)
 			cloth_payment.consume_secondary()
 			if (H && recipe.time)
-				H.adaptStat("crafting", 1*recipe.req_amount)
+				H.adaptStat("crafting", 1*recipe.req_amount, recipe.result_type)
 		if (needs_crafting_handle)
 			// No wait between revalidation and commit. Clear the actual equipment slot.
 			H.remove_from_mob(crafting_handle)

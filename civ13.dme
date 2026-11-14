@@ -1567,6 +1567,7 @@
 #include "code\modules\research_tree\scholar_practice.dm"
 #include "code\modules\research_tree\scholar_tools.dm"
 #include "code\modules\research_tree\scholarship.dm"
+#include "code\modules\research_tree\learning_by_doing.dm"
 #include "code\modules\research_tree\study_progress.dm"
 #include "code\modules\research_tree\team_research.dm"
 #include "code\modules\research_tree\recipe_gates.dm"
