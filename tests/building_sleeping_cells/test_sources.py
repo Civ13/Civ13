@@ -26,13 +26,13 @@ class SleepingCellTests(unittest.TestCase):
         lighting = read('code/modules/multiz/building_lighting.dm')
         proc = body(lighting, '/proc/building_cell_asleep(turf/T)')
         self.assertIn('istype(T, /turf/sky/building)', proc)
-        self.assertIn('!turf_registry_members[T]', proc)
+        self.assertIn('!turf_registry_has(T)', proc)
         self.assertIn('!T.lighting_overlay', proc)
 
     def test_waking_registers_the_cell(self):
         lighting = read('code/modules/multiz/building_lighting.dm')
         wake = body(lighting, '/turf/sky/building/proc/building_wake()')
-        self.assertIn('turf_registry_members[src] = TRUE', wake)
+        self.assertIn('if (!turf_registry_add(src))', wake)
 
     def test_restore_leaves_sleeping_cells_unlit(self):
         zones = read('code/modules/persistence/zone_topology.dm')
