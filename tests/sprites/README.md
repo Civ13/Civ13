@@ -143,3 +143,5 @@ listing was retained. These limits are not waived by a green workflow.
 `create_building_site.py` owns `icons/obj/building_site.dmi`: the cement mixer with its turning loop, the concrete block piles and the pile driver with its hammer loop. `--check` verifies the committed sheet, `--preview <png>` writes a review sheet.
 
 `create_mechanical_power.py` owns `icons/obj/mechanical_power.dmi`: the treadwheel, horse gin, mill wheel and windmill, standing and turning, and the trip hammer. `--check` verifies the committed sheet, `--preview <png>` writes a review sheet.
+
+`create_machine_shop.py` owns `icons/obj/machine_shop.dmi`: the steam hammer, drill press and hydraulic press, standing and working. `--check` verifies the committed sheet, `--preview <png>` writes a review sheet.

@@ -1324,7 +1324,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/plating_bath" = "electricity",
 		"/obj/structure/aluminium_works/digester" = "aluminium_refining",
 		"/obj/structure/aluminium_works/reduction_pot" = "aluminium_refining",
-		// --- factories (28) ---
+		// --- factories (29) ---
+		"/obj/structure/workshop_machine/fitting/hydraulic_press" = "factories",
 		// Steam-era factory floor: plain belts, their drive, parts bins and
 		// the feeder arm run on a steam engine and plain cable.
 		"/obj/item/factory_belt_assembly" = "factories",
@@ -1786,7 +1787,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/pillory" = "law_order",
 		"/obj/structure/simple_door/key_door/custom/jail/steeljail" = "law_order",
 		"/obj/structure/simple_door/key_door/custom/jail/woodjail" = "law_order",
-		// --- machined_tools (5) ---
+		// --- machined_tools (6) ---
+		"/obj/structure/workshop_machine/fitting/drill_press" = "machined_tools",
 		"/obj/item/weapon/enginemaker" = "machined_tools",
 		"/obj/item/weapon/fishing/modern" = "machined_tools",
 		"/obj/item/weapon/reagent_containers/glass/fire_extinguisher/empty" = "machined_tools",
@@ -2223,7 +2225,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/catapult_ball" = "siege_engines",
 		"/obj/item/weapon/siegeladder" = "siege_engines",
 		"/obj/structure/catapult" = "siege_engines",
-		// --- steam_power (1) ---
+		// --- steam_power (2) ---
+		"/obj/structure/workshop_machine/trip_hammer/steam" = "steam_power",
 		"/obj/structure/engine/external/steam" = "steam_power",
 		// --- steel_blades (6) ---
 		"/obj/item/wrist_loop/sword_knot" = "steel_blades",

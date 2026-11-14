@@ -98,5 +98,27 @@
       "/obj/item/stack/material/iron": 6,
       "/obj/item/machine_part/shaft": 1
     }
+  },
+  "/obj/structure/workshop_machine/trip_hammer/steam": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/machine_part/shaft": 1,
+      "/obj/item/machine_part/spring": 1
+    }
+  },
+  "/obj/structure/workshop_machine/fitting/drill_press": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/machine_part/gear": 1,
+      "/obj/item/machine_part/shaft": 1,
+      "/obj/item/machine_part/belt": 1
+    }
+  },
+  "/obj/structure/workshop_machine/fitting/hydraulic_press": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/machine_part/shaft": 1,
+      "/obj/item/machine_part/bearing": 2
+    }
   }
 }
