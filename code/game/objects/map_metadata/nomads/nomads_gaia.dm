@@ -92,6 +92,10 @@
 	return null
 
 /obj/map_metadata/nomads/gaia/proc/new_player_destination(mob/new_player/lobby)
+	// A member who chose to start with their faction (faction_roster.dm).
+	var/turf/faction_turf = lobby.faction_start_destination()
+	if (faction_turf)
+		return faction_turf
 	// Existing home-bed respawns are distinct from first starts, just as saved
 	// body reclaim is. Match the established region_home_bed_spawn contract.
 	if (region_home_enabled() && lobby.client && !IsGuestKey(lobby.client.key))

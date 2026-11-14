@@ -202,12 +202,17 @@ class GaiaSpawn(unittest.TestCase):
 
     def test_established_home_bed_and_guest_fallback(self):
         f=Fixture(); target=f.patch(); f.draws=[10,10]
-        lobby=NS(client=NS(ckey='owner',key='Owner'))
+        lobby=NS(client=NS(ckey='owner',key='Owner'),faction_start_destination=lambda:None)
         bed_turf=tile(z=1)
         f.bed=NS(turf=bed_turf,valid_character_bed=lambda human:True)
         f.region=True
         self.assertIs(f.new_player_destination(lobby),bed_turf)
         self.assertEqual(f.draw_count,0)
+        # A member who chose to start with their faction starts at its station, before the bed.
+        station_turf=tile(z=2)
+        lobby.faction_start_destination=lambda:station_turf
+        self.assertIs(f.new_player_destination(lobby),station_turf)
+        lobby.faction_start_destination=lambda:None
         lobby.client.key='Guest-1'
         self.assertIs(f.new_player_destination(lobby),target)
 

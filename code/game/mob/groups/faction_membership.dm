@@ -56,6 +56,8 @@
 		return "They must leave [civilization] first."
 	if (faction_rejoin_blocked(faction))
 		return "They left [faction] recently and cannot rejoin yet."
+	if (map && map.faction_full_for(faction, faction_roster_account(src)))
+		return "[faction] is full ([map.faction_member_limit(faction)] members)."
 	return null
 
 // The one membership transition into a faction. Rechecks eligibility, leaves
@@ -69,6 +71,9 @@
 		faction_leaving_proc()
 	clear_faction_privileges()
 	civilization = faction
+	// Joining in play earns the account its place (faction_roster.dm).
+	if (map)
+		map.faction_roster_add(faction, faction_roster_account(src))
 	return TRUE
 
 // Strip leadership, permissions, title, research appointment and the role

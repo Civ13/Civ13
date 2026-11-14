@@ -1206,6 +1206,8 @@ var/global/redirect_all_players = null
 	// A character that travelled here is waiting: take it instead of a new one.
 	if(region_home_enabled() && region_travel_claim(src)) return FALSE
 	if(!map_storage.allow_new_character(src)) return FALSE
+	// A faction member may start with their faction (faction_roster.dm).
+	if(map && map.uses_random_new_player_spawn(job_master.GetJob(rank)) && !faction_start_prompt()) return FALSE
 	if (!client || !client.prefs)
 		return FALSE
 	if (get_trait_selection_error(client.prefs.traits))
@@ -1724,6 +1726,7 @@ var/global/redirect_all_players = null
 	new_character.force_update_limbs()
 	new_character.update_eyes()
 	new_character.regenerate_icons()
+	faction_start_apply(new_character)
 	new_character.key = key		//Manually transfer the key to log them in
 
 	return new_character

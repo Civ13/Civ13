@@ -16,7 +16,7 @@ def read(path):
 class FactionRecruitmentSource(unittest.TestCase):
     def test_controls_and_extracted_procs_are_unique(self):
         for control in (None, *run.CONTROLS):
-            for path in (run.RECRUITMENT, run.MEMBERSHIP, run.FACTIONS, run.RESEARCH, run.RENAME):
+            for path in (run.RECRUITMENT, run.MEMBERSHIP, run.FACTIONS, run.RESEARCH, run.RENAME, run.ROSTER):
                 run.read(path, control)
         self.assertIn('#include "code\\game\\mob\\groups\\faction_recruitment.dm"', read('civ13.dme'))
 
@@ -72,6 +72,53 @@ class FactionRecruitmentSource(unittest.TestCase):
         # The client only ever sends opaque ids or fixed values.
         template = read('UI/templates/recruitment_station.tmpl')
         self.assertNotIn("'name': ", template)
+
+
+
+class FactionMemberStartSource(unittest.TestCase):
+    """Val's rule (2026-11-14): only accounts that joined a faction in play may start with it."""
+
+    def setUp(self):
+        self.start = read('code/game/mob/groups/faction_start.dm')
+        self.roster = read(run.ROSTER)
+
+    def test_included_and_the_roster_is_filled_only_in_play(self):
+        dme = read('civ13.dme')
+        self.assertLess(dme.index('faction_recruitment.dm"'), dme.index('faction_roster.dm"'))
+        self.assertLess(dme.index('faction_roster.dm"'), dme.index('faction_start.dm"'))
+        enroll = run.proc_text(read(run.MEMBERSHIP), '/mob/living/human/proc/enroll_in_faction(')
+        self.assertIn('map.faction_roster_add(faction, faction_roster_account(src))', enroll)
+        found = run.proc_text(read('code/game/mob/groups/faction_creation.dm'), '/datum/nano_module/faction_creation/proc/found_faction(')
+        self.assertIn('map.faction_roster_add(newname, faction_roster_account(owner))', found)
+        # Nothing in the lobby adds anyone to a roster.
+        prompt = run.proc_text(self.start, '/mob/new_player/proc/faction_start_prompt(')
+        self.assertNotIn('faction_roster_add', prompt)
+        self.assertIn('map.faction_start_choices(client.ckey)', prompt)
+        choices = run.proc_text(self.start, '/obj/map_metadata/proc/faction_start_choices(')
+        self.assertIn('faction_on_roster(faction, account)', choices)
+
+    def test_a_start_rechecks_the_roster_and_beats_the_bed(self):
+        apply = run.proc_text(self.start, '/mob/new_player/proc/faction_start_apply(')
+        self.assertLess(apply.index('map.faction_on_roster(faction, client.ckey)'), apply.index('H.civilization = faction'))
+        destination = run.proc_text(self.start, '/mob/new_player/proc/faction_start_destination(')
+        self.assertIn('map.faction_on_roster(faction_start_choice, client.ckey)', destination)
+        gaia = run.proc_text(read('code/game/objects/map_metadata/nomads/nomads_gaia.dm'), '/obj/map_metadata/nomads/gaia/proc/new_player_destination(')
+        self.assertLess(gaia.index('lobby.faction_start_destination()'), gaia.index('region_home_bed('))
+        character = run.proc_text(read('code/game/mob/new_player/new_player.dm'), '/mob/new_player/proc/create_character(')
+        self.assertLess(character.index('faction_start_apply(new_character)'), character.index('new_character.key = key'))
+        late = run.proc_text(read('code/game/mob/new_player/new_player.dm'), '/mob/new_player/proc/AttemptLateSpawn(')
+        self.assertLess(late.index('map_storage.allow_new_character(src)'), late.index('faction_start_prompt()'))
+
+    def test_stations_register_and_limits_are_configurable(self):
+        station = read('code/game/mob/groups/recruitment_station.dm')
+        self.assertIn('recruitment_stations |= src', station)
+        self.assertIn('recruitment_stations -= src', station)
+        config = read('code/datums/configuration.dm')
+        text = read('config/config.txt')
+        for key in ('faction_member_limit', 'faction_roster_idle_days'):
+            self.assertIn(f'var/{key} = ', config)
+            self.assertIn(key.upper() + ' ', text)
+        self.assertIn('verbs += /mob/living/human/proc/set_faction_member_limit', read(run.FACTIONS))
 
 
 if __name__ == '__main__':
