@@ -153,6 +153,27 @@ class ToolMaterials(unittest.TestCase):
         helpers = (ROOT / 'code/_helpers/tools.dm').read_text(encoding='utf-8')
         self.assertIn('delay = tool_work_time(user.get_active_hand(), delay)', helpers)
 
+    def test_only_sparking_materials_spark(self):
+        sparking = {name for name, material in self.materials.items() if material['sparks']}
+        self.assertEqual(sparking & {'iron', 'steel', 'flint'}, {'iron', 'steel', 'flint'})
+        for safe in ('copper', 'bronze', 'brass', 'wood', 'bone', 'stone', 'lead', 'gold'):
+            self.assertNotIn(safe, sparking)
+
+    def test_sparks_need_a_deliberate_blow_on_powder_or_fuel(self):
+        struck = SOURCE[SOURCE.index('/barrel/struck_by_tool('):SOURCE.index('#undef TOOL_SPARK_CHANCE')]
+        gate = 'if (!user || user.a_intent != I_HARM || !tool_throws_sparks(I) || !spark_volatile())\n\t\treturn FALSE'
+        self.assertIn(gate, struck)
+        self.assertLess(struck.index(gate), struck.index('prob(TOOL_SPARK_CHANCE)'))
+        self.assertLess(struck.index('message_admins('), struck.index('spark_explode()'))
+        self.assertIn('#define TOOL_SPARK_CHANCE 4\n', SOURCE)
+        self.assertIn('if (!isitem(I) || !I.tool_flags)\n\t\treturn FALSE', SOURCE)
+        glass = (ROOT / 'code/modules/reagents/reagent_containers/glass.dm').read_text(encoding='utf-8', errors='ignore').replace('\r', '')
+        click = (ROOT / 'code/_onclick/item_attack.dm').read_text(encoding='utf-8', errors='ignore').replace('\r', '')
+        self.assertLess(click.index('if (A.struck_by_tool(src, user))\n\t\treturn TRUE'), click.index('resolved = A.attackby(src, user, icon_x, icon_y)'))
+        self.assertIn('/atom/proc/struck_by_tool(obj/item/I, mob/living/user)\n\treturn FALSE', SOURCE)
+        self.assertIn('\tspark_warning(user)\n', glass)
+        self.assertIn('bronze, copper, wood and bone are safe', SOURCE)
+
 
 if __name__ == '__main__':
     unittest.main()

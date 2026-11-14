@@ -32,6 +32,9 @@ avoid code duplication. This includes items that may sometimes act as a standard
 		resolved = src.resolve_attack_turf(A, user, icon_x, icon_y)
 		if (resolved)
 			return TRUE
+	// A hard tool struck against powder or fuel can spark (tool_materials.dm).
+	if (A.struck_by_tool(src, user))
+		return TRUE
 	resolved = A.attackby(src, user, icon_x, icon_y)
 	if (resolved)
 		return TRUE

@@ -83,3 +83,52 @@
 
 /obj/item/weapon/crowbar/prybar
 	tool_noun = "prybar"
+
+// Sparks. A tool whose material sparks (iron, steel, flint) can set off powder
+// or fuel when it is struck against the barrel on harm intent. Bronze, copper,
+// wood and bone tools never do, which is why powder mills used them.
+#define TOOL_SPARK_CHANCE 4
+
+/proc/tool_throws_sparks(obj/item/I)
+	if (!isitem(I) || !I.tool_flags)
+		return FALSE
+	var/material/M = get_material_by_name(tool_material_name(I))
+	return M ? M.sparks : FALSE
+
+// Enough powder or fuel to go up: the same amounts a bullet sets off.
+/obj/item/weapon/reagent_containers/glass/barrel/proc/spark_volatile()
+	if (!reagents)
+		return FALSE
+	return reagents.has_reagent("gasoline", 10) || reagents.has_reagent("diesel", 30) || reagents.has_reagent("biodiesel", 30) || reagents.has_reagent("ethanol", 10) || reagents.has_reagent("petroleum", 40) || reagents.has_reagent("gunpowder", 30)
+
+/obj/item/weapon/reagent_containers/glass/barrel/proc/spark_explode()
+	explosion(loc, 1, 2, 2, 0)
+	qdel(src)
+
+/obj/item/weapon/reagent_containers/glass/barrel/gunpowder/spark_explode()
+	explode()
+
+// Asked before every attackby(). TRUE means the blow was dealt with here.
+/atom/proc/struck_by_tool(obj/item/I, mob/living/user)
+	return FALSE
+
+// A deliberate blow with a tool. Returns TRUE when the barrel went up.
+/obj/item/weapon/reagent_containers/glass/barrel/struck_by_tool(obj/item/I, mob/living/user)
+	if (!user || user.a_intent != I_HARM || !tool_throws_sparks(I) || !spark_volatile())
+		return FALSE
+	if (!prob(TOOL_SPARK_CHANCE))
+		to_chat(user, SPAN_DANGER("Sparks fly off \the [I] as it hits \the [src]!"))
+		return FALSE
+	visible_message(SPAN_DANGER("A spark from [user]'s [I.name] sets off \the [src]!"))
+	message_admins("[key_name_admin(user)] set off \a [src] with sparks from \a [I] at ([x],[y],[z]).")
+	spark_explode()
+	return TRUE
+
+#undef TOOL_SPARK_CHANCE
+
+/obj/item/weapon/reagent_containers/glass/proc/spark_warning(mob/user)
+	return
+
+/obj/item/weapon/reagent_containers/glass/barrel/spark_warning(mob/user)
+	if (spark_volatile())
+		to_chat(user, SPAN_WARNING("What is inside could go up at a spark. Do not strike it with iron, steel or flint tools; bronze, copper, wood and bone are safe."))

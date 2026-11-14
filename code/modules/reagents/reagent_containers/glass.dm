@@ -49,6 +49,7 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 		to_chat(user, SPAN_NOTICE("It contains [reagents.total_volume] units of liquid."))
 	else
 		to_chat(user, SPAN_NOTICE("It is empty."))
+	spark_warning(user)
 	if (!is_open_container())
 		to_chat(user, SPAN_NOTICE("the airtight lid seals it completely!"))
 
