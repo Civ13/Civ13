@@ -95,6 +95,9 @@ def check_magic(files, text, where):
     named = {path for path, fields in magic.items() if prose(fields.get('name'))}
     found = sorted(path for path in named if re.search(re.escape(path) + r'(?![\w/])', text))
     found += sorted(source for source in MAGIC_SOURCES if source in text)
+    # The catalog names reagents by id, so an unlisted magic reagent shows up by id, not path.
+    ids = {prose(magic[path].get('id')) for path in named if path.startswith('/datum/reagent/')} - {None, ''}
+    found += sorted(rid for rid in ids if '"' + rid + '"' in text)
     if found:
         raise SystemExit('Magic is not available on Nomads, so magic types must be admin-only, but these reached '
                          + where + ': ' + ', '.join(found) + '. Add them to ' + SOURCE + '.')
