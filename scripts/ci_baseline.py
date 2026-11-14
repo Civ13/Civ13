@@ -834,6 +834,9 @@ SUITES = {
     # code/, run by full and preflight sweeps (not per-file selection).
     'duplicate_overrides': {'files': ('tests/duplicate_overrides/test_duplicate_overrides.py',),
         'paths': ('tests/duplicate_overrides/',), 'shared_paths': ()},
+    # Solid fuel kinds and per-device rates keep the old hard-coded values.
+    'solid_fuel': {'files': ('tests/solid_fuel/test_solid_fuel.py',),
+        'paths': ('tests/solid_fuel/',), 'shared_paths': ()},
     # Stack recipe build guards keep produce_recipe()'s old order and phases;
     # source scan of code/.
     'craft_guards': {'files': ('tests/craft_guards/test_craft_guards.py',),
@@ -1028,6 +1031,10 @@ SUITES = {
         'paths': ('tests/obsidian/',), 'shared_paths': (
             'code/modules/1713/obsidian.dm', 'code/game/turfs/floor_attackby.dm',
             'icons/obj/obsidian.dmi', 'code/modules/research_tree/research_node.dm')},
+    # Snares, deadfalls, fish weirs and pit traps: source contracts only.
+    'stone_age_traps': {'files': ('tests/stone_age_traps/test_source.py',),
+        'paths': ('tests/stone_age_traps/',), 'shared_paths': (
+            'code/modules/1713/stone_age_traps.dm', 'icons/obj/stone_age_traps.dmi')},
     'door_intents': {'files': ('tests/door_intents/test_door_intents.py', 'tests/door_intents/test_jail_keys.py'),
         'paths': ('tests/door_intents/',), 'shared_paths': (
             'code/game/objects/structures/door.dm',

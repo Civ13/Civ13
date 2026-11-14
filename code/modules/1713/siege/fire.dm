@@ -39,38 +39,8 @@
 					visible_message("<span class='warning'>[user] deconstructs \the [src].</span>")
 					qdel(src)
 					return
-		else if (istype(W, /obj/item/stack/ore/coal))
-			fuel += (220)*W.amount
-			user.visible_message(SPAN_NOTICE("[user] places \the [W] in \the [src], refueling it."), SPAN_NOTICE("You place \the [W] in the [src], refueling it."))
-			qdel(W)
-			return
-		else if (istype(W, /obj/item/stack/ore/charcoal))
-			fuel += (180)*W.amount
-			user.visible_message(SPAN_NOTICE("[user] places \the [W] in \the [src], refueling it."), SPAN_NOTICE("You place \the [W] in the [src], refueling it."))
-			qdel(W)
-			return
-		else if (istype(W, /obj/item/stack/material/wood) || istype(W, /obj/item/stack/material/woodplank))
-			fuel += (80)*W.amount
-			user.visible_message(SPAN_NOTICE("[user] places \the [W] in \the [src], refueling it."), SPAN_NOTICE("You place \the [W] in the [src], refueling it."))
-			qdel(W)
-			return
-		else if (istype(W, /obj/item/stack/material/bamboo))
-			fuel += (80)*W.amount
-			user.visible_message(SPAN_NOTICE("[user] places \the [W] in \the [src], refueling it."), SPAN_NOTICE("You place \the [W] in the [src], refueling it."))
-			qdel(W)
-			return
-		else if(istype(W, /obj/item/stack/dung))
-			fuel += (90)*W.amount
-			user.visible_message(SPAN_NOTICE("[user] places \the [W] in \the [src], refueling it."), SPAN_NOTICE("You place \the [W] in the [src], refueling it."))
-			qdel(W)
-			return
-		else if (istype(W, /obj/item/weapon/branch))
-			fuel += (60)*W.amount
-			user.visible_message(SPAN_NOTICE("[user] places \the [W] in \the [src], refueling it."), SPAN_NOTICE("You place \the [W] in the [src], refueling it."))
-			qdel(W)
-			return
-		else if (istype(W, /obj/item/stack/material/leaf))
-			fuel += (60)*W.amount
+		else if (solid_fuel_kind(W) && solid_fuel_value(W, brazier_fuel_rates))
+			fuel += solid_fuel_value(W, brazier_fuel_rates)
 			user.visible_message(SPAN_NOTICE("[user] places \the [W] in \the [src], refueling it."), SPAN_NOTICE("You place \the [W] in the [src], refueling it."))
 			qdel(W)
 			return

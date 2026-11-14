@@ -75,9 +75,11 @@ start new characters with a faction only after joining it in play.
   (`enroll_in_faction`), or logs in as a living member. Leaving the faction
   removes it. Death does not. An account that has not played a member for
   `FACTION_ROSTER_IDLE_DAYS` (14) drops off.
-- **Limit.** `FACTION_MEMBER_LIMIT` (20) accounts per faction; a leader may set
-  a lower one with **Faction > Set Member Limit**. A full faction cannot enrol
-  a new account; accounts already on the roster are never refused by it.
+- **Limit.** A faction's limit is what its hall and colonies support (see
+  "Faction halls"), never above the server's `FACTION_MEMBER_LIMIT` (50). A
+  leader may set a lower one with **Faction > Set Member Limit**. A full
+  faction cannot enrol a new account; accounts already on the roster are never
+  refused by it.
 - **Member start.** On a starting land (a Nomads map with `new_player_start_z`, `nomads_start.dm`), an account on a roster is asked at Join where to
   start: in the wilds as usual, or with one of its factions. The character
   starts beside one of that faction's recruitment stations and is a member at
@@ -125,3 +127,22 @@ starts as any new character there (at random on a land with
 `new_player_start_z`, otherwise at its usual join points). A death there
 without a bed sends the home back to the mainland as before, where the choice
 is offered again. Brand-new players always start on the mainland.
+
+## Faction halls
+
+Val (2026-11-14): factions (and later nations) grow through meaningful
+infrastructure. Without a hall a faction holds 10 accounts. A leader
+designates a **faction hall seat** (crafted from 20 soft wood planks) and
+members deliver materials to raise it a tier at a time:
+
+| Tier | Limit | Needs the | Indoors | Materials |
+| --- | --- | --- | --- | --- |
+| Council fire | 15 | Stone Age | no | 40 wood, 40 stone |
+| Longhouse | 25 | Classical Age | yes | 150 wood, 100 stone, 30 cloth |
+| Town hall | 35 | Medieval Age | yes | 300 stone, 60 iron, 40 glass |
+| Capitol | 50 | Industrial Age | yes | 600 stone, 150 steel, 80 glass, 20 gold |
+
+The highest tier among the faction's standing halls counts; an indoor tier
+moved outdoors counts for nothing, and a destroyed hall takes its tiers with
+it. Each standing colony of the faction in another land adds 5. The numbers
+are placeholders. Code: `code/game/mob/groups/faction_hall.dm`.

@@ -43,7 +43,7 @@ var/global/list/land_suggestions_told = list() // region id -> the suggestion ad
 			continue
 		clean[id] = list("stage" = entry["stage"], "paused" = entry["paused"] ? TRUE : FALSE,
 			"by" = istext(entry["by"]) ? ckey(entry["by"]) : null, "at" = isnum(entry["at"]) ? entry["at"] : 0,
-			"readiness" = land_readiness_clean(entry["readiness"]))
+			"readiness" = land_readiness_clean(entry["readiness"]), "colonies" = land_colonies_clean(entry["colonies"]))
 	var/list/waiting = list()
 	if(islist(result["pending"]))
 		for(var/list/request in result["pending"])
@@ -63,11 +63,25 @@ var/global/list/land_suggestions_told = list() // region id -> the suggestion ad
 	for(var/key in list("homes", "players_peak", "living", "hours"))
 		clean[key] = isnum(ready[key]) ? max(0, round(ready[key])) : 0
 	clean["players_avg"] = isnum(ready["players_avg"]) ? max(0, ready["players_avg"]) : 0
-	clean["suggest"] = (ready["suggest"] in list("OPEN", "PAUSE", "RESUME")) ? ready["suggest"] : null
+	clean["suggest"] = (ready["suggest"] in list("COLONY", "OPEN", "PAUSE", "RESUME")) ? ready["suggest"] : null
+	return clean
+
+// The colonies standing in one land (colony_charter.dm), as the coordinator
+// last heard of them: parent faction id, local name and living members.
+/proc/land_colonies_clean(list/colonies)
+	var/list/clean = list()
+	if(!islist(colonies))
+		return clean
+	for(var/list/colony in colonies)
+		if(clean.len >= 50)
+			break
+		if(islist(colony) && colony_parent_valid(colony["parent"]) && istext(colony["name"]) && length(colony["name"]) <= 64)
+			clean += list(list("parent" = colony["parent"], "name" = colony["name"], "members" = isnum(colony["members"]) ? max(0, round(colony["members"])) : 0))
 	return clean
 
 /proc/land_suggestion_text(suggest)
 	switch(suggest)
+		if("COLONY") return "a colony has stood there for days with members living in it"
 		if("OPEN") return "ready to settle: enough people live there and the mainland can spare them"
 		if("PAUSE") return "consider pausing new starts: the mainland is quiet or this land has outgrown it"
 		if("RESUME") return "ready to resume new starts"

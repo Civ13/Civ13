@@ -10,6 +10,11 @@
 #define LAP_MAX_CHARGES 30
 #define DRILL_BIT_CHARGES 6
 #define CRYSTAL_SET_WIRE 10
+#define READING_STONE_LIGHT 0.5
+#define GARNET_PAPER_SHEETS 4
+#define BOULE_EMERY 4
+#define BOULE_BEARINGS 10
+#define ROD_CHARGES 2
 
 /obj/item
 	var/jewelled = FALSE // pivots run in jewel bearings (watches, compasses)
@@ -190,6 +195,9 @@
 	if (ispath(cut_type, /obj/item/stack/gemstone/diamond))
 		new /obj/item/stack/diamond_grit(T)
 		return "a pinch of diamond grit"
+	if (ispath(cut_type, /obj/item/stack/gemstone/ruby) || ispath(cut_type, /obj/item/stack/gemstone/sapphire))
+		new /obj/item/stack/emery_powder(T)
+		return "a pinch of emery"
 	return null
 
 // Iron lap for gem cutting (the scaife). Charged with diamond grit, it
@@ -204,13 +212,30 @@
 	flammable = FALSE
 	not_movable = FALSE
 	not_disassemblable = FALSE
-	var/charges = 0
+	var/charges = 0 // diamond grit, for any stone
+	var/emery_charges = 0 // emery, for stones softer than corundum
 
 /obj/structure/lapping_wheel/examine(mob/user)
 	..()
-	to_chat(user, charges ? "Its face is charged with grit for about [charges] more stone\s." : "Its face is bare. Rub diamond grit into it to charge it.")
+	if (!charges && !emery_charges)
+		to_chat(user, "Its face is bare. Rub diamond grit or emery into it to charge it.")
+		return
+	if (charges)
+		to_chat(user, "It is charged with diamond grit for about [charges] more stone\s.")
+	if (emery_charges)
+		to_chat(user, "It is charged with emery for about [emery_charges] more soft stone\s.")
 
-/obj/structure/lapping_wheel/proc/use_charge()
+// Emery (impure corundum) cuts only stones softer than itself; diamond cuts all.
+/proc/gem_needs_diamond(cut_type)
+	return ispath(cut_type, /obj/item/stack/gemstone/diamond) || ispath(cut_type, /obj/item/stack/gemstone/ruby) || ispath(cut_type, /obj/item/stack/gemstone/sapphire)
+
+/obj/structure/lapping_wheel/proc/can_cut(cut_type)
+	return charges > 0 || (emery_charges > 0 && !gem_needs_diamond(cut_type))
+
+/obj/structure/lapping_wheel/proc/use_charge(cut_type)
+	if (emery_charges > 0 && !gem_needs_diamond(cut_type))
+		emery_charges--
+		return TRUE
 	if (charges < 1)
 		return FALSE
 	charges--
@@ -227,8 +252,21 @@
 		charges = min(LAP_MAX_CHARGES, charges + LAP_CHARGES_PER_GRIT)
 		to_chat(user, SPAN_NOTICE("You rub the grit into \the [src] with a little oil."))
 		return
+	if (istype(W, /obj/item/stack/emery_powder))
+		var/obj/item/stack/emery_powder/E = W
+		if (emery_charges >= LAP_MAX_CHARGES)
+			to_chat(user, SPAN_NOTICE("\The [src] is fully charged with emery."))
+			return
+		if (!E.use(1))
+			return
+		emery_charges = min(LAP_MAX_CHARGES, emery_charges + LAP_CHARGES_PER_GRIT)
+		to_chat(user, SPAN_NOTICE("You rub the emery into \the [src] with a little oil."))
+		return
 	if (istype(W, /obj/item/stack/material/steel) && ishuman(user))
 		make_drill_bit(W, user)
+		return
+	if (istype(W, /obj/item/ruby_boule) && ishuman(user))
+		make_ruby_rod(W, user)
 		return
 	..()
 
@@ -249,9 +287,9 @@
 	new /obj/item/diamond_drill_bit(get_turf(src))
 	to_chat(H, SPAN_NOTICE("You finish a diamond drill bit."))
 
-/proc/gem_lap_near(mob/living/human/H)
+/proc/gem_lap_near(mob/living/human/H, cut_type)
 	for (var/obj/structure/lapping_wheel/L in range(1, H))
-		if (L.charges > 0)
+		if (L.can_cut(cut_type))
 			return L
 	return null
 
@@ -303,7 +341,7 @@
 /obj/item/stack/gemstone/quartz
 	name = "quartz crystals"
 	singular_name = "quartz crystal"
-	desc = "A clear, cut rock crystal. Set it into clothing as a stone, or with a sheet of tin in your other hand use it to mount it as a radio crystal."
+	desc = "A clear, cut rock crystal. Set it into clothing as a stone, use it with a sheet of tin in your other hand to make a radio crystal, or shape it with a chisel and hammer into a reading stone."
 	icon = 'icons/obj/gem_science.dmi'
 	icon_state = "quartz"
 	gem_colour = "#e8eef2"
@@ -466,6 +504,221 @@
 	throwforce = 1
 	value = 8
 
+// ---- Reading stones, emery and garnet paper ----
+
+// Cut quartz polished into a reading stone (Visby lenses, 11th-12th c.).
+/obj/item/stack/gemstone/quartz/attackby(obj/item/W, mob/user)
+	if (is_tool(W, TOOL_CHISEL) && ishuman(user))
+		var/mob/living/human/H = user
+		if (!is_tool(H.get_inactive_hand(), TOOL_HAMMER))
+			to_chat(H, SPAN_WARNING("You need a hammer in your other hand to shape a reading stone."))
+			return
+		if (!H.may_do_after || !crafting_node_allowed_or_warn(H, "glassworking"))
+			return
+		to_chat(H, SPAN_NOTICE("You start grinding \a [singular_name] into a reading stone..."))
+		if (!do_after(H, 60, src))
+			return
+		if (QDELETED(src) || amount < 1 || H.get_active_hand() != W || !(loc == H || (isturf(loc) && get_dist(src, H) <= 1)))
+			return
+		var/turf/T = get_turf(src)
+		if (!use(1))
+			return
+		new /obj/item/reading_stone(T)
+		to_chat(H, SPAN_NOTICE("You polish a reading stone."))
+		return
+	..()
+
+/obj/item/reading_stone
+	name = "reading stone"
+	desc = "A clear, domed lens of rock crystal. Held in your other hand over a page, it makes the letters large enough to read and write by poorer light."
+	icon = 'icons/obj/gem_science.dmi'
+	icon_state = "rock_crystal_lens"
+	w_class = ITEM_SIZE_TINY
+	slot_flags = SLOT_POCKET
+	value = 10
+
+/mob/living/human/reading_light_problem()
+	. = ..()
+	if (. && (istype(l_hand, /obj/item/reading_stone) || istype(r_hand, /obj/item/reading_stone)))
+		var/turf/T = get_turf(src)
+		if (T && T.get_lumcount() >= SCHOLAR_MIN_LIGHT * READING_STONE_LIGHT)
+			return null
+
+/obj/item/stack/emery_powder
+	name = "emery"
+	singular_name = "pinch of emery"
+	desc = "Dark, gritty powder of crushed corundum. Rubbed into a lapping wheel it cuts the softer stones: garnet, amethyst, topaz, emerald and quartz."
+	icon = 'icons/obj/gem_science.dmi'
+	icon_state = "emery_powder"
+	w_class = ITEM_SIZE_TINY
+	max_amount = 50
+	amount = 1
+	flammable = FALSE
+	value = 2
+
+// Crushed garnet glued to paper (1878): rough garnet with paper in the other hand.
+/obj/item/stack/ore/gem/garnet/attack_self(mob/user)
+	var/mob/living/human/H = user
+	if (!istype(H) || !istype(H.get_inactive_hand(), /obj/item/weapon/paper))
+		return ..()
+	var/obj/item/weapon/paper/P = H.get_inactive_hand()
+	if (!H.may_do_after || !crafting_node_allowed_or_warn(H, "factories"))
+		return
+	to_chat(H, SPAN_NOTICE("You start crushing \a [singular_name] and gluing it to the paper..."))
+	if (!do_after(H, 40, src))
+		return
+	if (QDELETED(src) || QDELETED(P) || P.loc != H || loc != H || !use(1))
+		return
+	H.drop_from_inventory(P)
+	qdel(P)
+	var/obj/item/stack/garnet_paper/G = new(get_turf(H))
+	G.amount = GARNET_PAPER_SHEETS
+	G.update_icon()
+	H.put_in_hands(G)
+	to_chat(H, SPAN_NOTICE("You make [GARNET_PAPER_SHEETS] sheets of garnet paper."))
+
+/obj/item/stack/garnet_paper
+	name = "garnet paper"
+	singular_name = "sheet of garnet paper"
+	desc = "Paper faced with crushed garnet. Use a sheet with a worn wooden tool or weapon in your other hand to sand it smooth again."
+	icon = 'icons/obj/gem_science.dmi'
+	icon_state = "garnet_paper"
+	w_class = ITEM_SIZE_TINY
+	max_amount = 20
+	amount = 1
+	value = 1
+
+// Garnet paper in the active hand sands the wear out of a wooden tool or
+// weapon held in the other hand, as a grindstone does for steel.
+/obj/item/stack/garnet_paper/attack_self(mob/user)
+	var/mob/living/human/H = user
+	var/obj/item/weapon/material/M = istype(H) ? H.get_inactive_hand() : null
+	if (!istype(M) || !istype(M.material, /material/wood))
+		to_chat(user, SPAN_WARNING("Hold a wooden tool or weapon in your other hand to sand it."))
+		return
+	if (M.health >= M.maxhealth)
+		to_chat(user, SPAN_NOTICE("\The [M] is already smooth."))
+		return
+	if (!H.may_do_after)
+		return
+	to_chat(H, SPAN_NOTICE("You start sanding \the [M]..."))
+	playsound(get_turf(H), 'sound/effects/woodfile.ogg', 40, TRUE)
+	if (!do_after(H, 30, M))
+		return
+	if (QDELETED(src) || QDELETED(M) || H.get_inactive_hand() != M || !use(1))
+		return
+	M.maxhealth = max(1, M.maxhealth - 1)
+	M.health = min(M.maxhealth, M.health + round(M.maxhealth / 4))
+	to_chat(H, SPAN_NOTICE("You sand the wear out of \the [M]."))
+
+// ---- Synthetic ruby (flame fusion, 1902) and the ruby laser rod (1960) ----
+
+// Four pinches of emery fused in the flame of a lit furnace beside you.
+/obj/item/stack/emery_powder/attack_self(mob/user)
+	var/mob/living/human/H = user
+	if (!istype(H))
+		return ..()
+	var/obj/structure/furnace/F = null
+	for (var/obj/structure/furnace/candidate in range(1, H))
+		if (candidate.is_open_flame())
+			F = candidate
+			break
+	if (!F)
+		return ..()
+	if (amount < BOULE_EMERY)
+		to_chat(H, SPAN_WARNING("You need [BOULE_EMERY] pinches of emery to grow a boule."))
+		return
+	if (!H.may_do_after || !crafting_node_allowed_or_warn(H, "electricity"))
+		return
+	to_chat(H, SPAN_NOTICE("You start sifting emery into the hottest part of \the [F]'s flame, a little at a time..."))
+	if (!do_after(H, 100, F))
+		return
+	if (QDELETED(src) || QDELETED(F) || !F.is_open_flame() || loc != H || !use(BOULE_EMERY))
+		return
+	H.put_in_hands(new /obj/item/ruby_boule(get_turf(H)))
+	to_chat(H, SPAN_NOTICE("A pink boule of synthetic ruby grows in the flame."))
+
+/obj/item/ruby_boule
+	name = "synthetic ruby boule"
+	desc = "A pear-shaped crystal of ruby grown drop by drop in a flame. It is cheap: chisel it into jewel bearings, or grind it into a laser rod on a lapping wheel charged with diamond."
+	icon = 'icons/obj/gem_science.dmi'
+	icon_state = "ruby_boule"
+	w_class = ITEM_SIZE_SMALL
+	flammable = FALSE
+	value = 4
+
+// A boule makes a whole batch of cheap watch jewels.
+/obj/item/ruby_boule/attackby(obj/item/W, mob/user)
+	if (is_tool(W, TOOL_CHISEL) && ishuman(user))
+		var/mob/living/human/H = user
+		if (!is_tool(H.get_inactive_hand(), TOOL_HAMMER))
+			to_chat(H, SPAN_WARNING("You need a hammer in your other hand to drill jewel bearings."))
+			return
+		if (!H.may_do_after || !crafting_node_allowed_or_warn(H, "optics_instruments"))
+			return
+		to_chat(H, SPAN_NOTICE("You start slicing \the [src] and drilling the slices..."))
+		if (!do_after(H, 80, src))
+			return
+		if (QDELETED(src) || H.get_active_hand() != W || !(loc == H || (isturf(loc) && get_dist(src, H) <= 1)))
+			return
+		var/obj/item/stack/jewel_bearing/J = new(get_turf(src))
+		J.amount = BOULE_BEARINGS
+		J.update_icon()
+		to_chat(H, SPAN_NOTICE("You drill [BOULE_BEARINGS] jewel bearings from \the [src]."))
+		qdel(src)
+		return
+	..()
+
+/obj/structure/lapping_wheel/proc/make_ruby_rod(obj/item/ruby_boule/B, mob/living/human/H)
+	if (!H.may_do_after || !crafting_node_allowed_or_warn(H, "consumer_electronics"))
+		return
+	if (charges < ROD_CHARGES)
+		to_chat(H, SPAN_WARNING("\The [src] needs at least [ROD_CHARGES] charges of diamond grit to grind a rod."))
+		return
+	to_chat(H, SPAN_NOTICE("You start grinding \the [B] into a rod and polishing its ends flat..."))
+	if (!do_after(H, 100, src))
+		return
+	if (QDELETED(B) || B.loc != H || charges < ROD_CHARGES)
+		return
+	charges -= ROD_CHARGES
+	H.drop_from_inventory(B)
+	qdel(B)
+	H.put_in_hands(new /obj/item/ruby_rod(get_turf(H)))
+	to_chat(H, SPAN_NOTICE("You finish a ruby rod and silver its ends."))
+
+/obj/item/ruby_rod
+	name = "ruby rod"
+	desc = "A polished rod of synthetic ruby with silvered ends: the heart of a ruby laser. Fit it into a pair of binoculars to make a laser rangefinder."
+	icon = 'icons/obj/gem_science.dmi'
+	icon_state = "ruby_rod"
+	w_class = ITEM_SIZE_TINY
+	flammable = FALSE
+	value = 20
+
+/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars/attackby(obj/item/W, mob/user)
+	if (istype(W, /obj/item/ruby_rod) && type == /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars && ishuman(user))
+		var/mob/living/human/H = user
+		if (!H.may_do_after || !crafting_node_allowed_or_warn(H, "consumer_electronics"))
+			return
+		to_chat(H, SPAN_NOTICE("You start fitting the ruby rod and a flash lamp into \the [src]..."))
+		if (!do_after(H, 60, src))
+			return
+		if (QDELETED(src) || QDELETED(W) || W.loc != H || !(loc == H || (isturf(loc) && get_dist(src, H) <= 1)))
+			return
+		var/turf/T = get_turf(src)
+		var/was_held = (loc == H)
+		H.drop_from_inventory(W)
+		qdel(W)
+		if (was_held)
+			H.drop_from_inventory(src)
+		var/obj/item/R = new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars/rangefinder(T)
+		qdel(src)
+		if (was_held)
+			H.put_in_hands(R)
+		to_chat(H, SPAN_NOTICE("You turn the binoculars into a laser rangefinder."))
+		return
+	..()
+
 /obj/item/examine(mob/user, var/distance = -1)
 	. = ..()
 	if (jewelled)
@@ -479,3 +732,8 @@
 #undef LAP_MAX_CHARGES
 #undef DRILL_BIT_CHARGES
 #undef CRYSTAL_SET_WIRE
+#undef READING_STONE_LIGHT
+#undef GARNET_PAPER_SHEETS
+#undef BOULE_EMERY
+#undef BOULE_BEARINGS
+#undef ROD_CHARGES

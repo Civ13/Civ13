@@ -1419,6 +1419,7 @@ RECIPE: /material/bone/,bone dart,/obj/item/ammo_casing/chemdart/bone,2,30,0,1,n
 //**************************************************************
 
 RECIPE: /material/stone/,stone brazier,/obj/structure/brazier/stone,3,100,1,1,none,0,0,0,8,null
+RECIPE: /material/stone/,deadfall trap,/obj/item/weapon/trap_kit/deadfall,2,60,0,1,none,0,0,0,8,null
 RECIPE: /material/stone/,well,/obj/structure/sink/well,7,250,1,1,none,21,0,0,8,null
 RECIPE: /material/stone/,stone crusher,/obj/structure/stone_crusher,10,150,1,1,none,19,0,0,8,null
 RECIPE: /material/stone/,ashtray,/obj/item/weapon/material/ashtray/stone,3,30,0,1,none,14,0,0,8,null
@@ -1657,6 +1658,7 @@ RECIPE: /material/flax/,rope,/obj/item/stack/material/rope,1,10,0,1,none,0,0,0,8
 RECIPE: /material/rope/,noose,/obj/structure/noose,1,20,1,1,none,0,0,0,8,null
 RECIPE: /material/rope/,rope handcuffs,/obj/item/weapon/handcuffs/rope,1,50,0,1,none,0,0,0,8,null
 RECIPE: /material/rope/,bola,/obj/item/weapon/legcuffs/bola,2,50,0,1,none,0,0,0,1,null
+RECIPE: /material/rope/,snare,/obj/item/weapon/trap_kit/snare,2,40,0,1,none,0,0,0,8,null
 RECIPE: /material/rope/,fishing net,/obj/item/weapon/fishing/net,4,100,0,1,none,0,0,0,8,null
 RECIPE: /material/rope/,rope hammock,/obj/structure/bed/hammock,6,180,1,1,furniture,0,0,0,8,rope
 RECIPE: /material/rope/,leash,/obj/item/weapon/leash,1,20,0,1,none,0,0,0,8,null
@@ -2280,6 +2282,7 @@ RECIPE: /material/wood/soft/,market stall,/obj/structure/vending/sales/market_st
 RECIPE: /material/wood/soft/,supply stall,/obj/structure/supplier,25,150,1,1,economy & production,24,0,0,8,null
 RECIPE: /material/wood/soft/,recruitment station,/obj/structure/recruitment_station,10,150,1,1,economy & production,24,0,0,8,null
 RECIPE: /material/wood/soft/,colony charter,/obj/structure/colony_charter,8,120,1,1,economy & production,24,0,0,8,null
+RECIPE: /material/wood/soft/,faction hall seat,/obj/structure/faction_hall,20,150,1,1,economy & production,24,0,0,8,null
 RECIPE: /material/wood/soft/,stock market,/obj/structure/stockmarket,25,150,1,1,economy & production,24,0,0,8,null
 RECIPE: /material/wood/soft/,money printer,/obj/structure/money_printer,50,150,1,1,economy & production,27,0,0,8,null
 RECIPE: /material/wood/soft/,armourer's post,/obj/structure/specialist_trader/armourer,25,150,1,1,economy & production,24,0,0,8,null
@@ -2355,6 +2358,8 @@ RECIPE: /material/wood/soft/,female outhouse,/obj/structure/toilet/outhouse/fema
 RECIPE: /material/wood/,empty dynamite stick,/obj/item/weapon/grenade/dynamite,1,30,0,1,weapons,0,92,0,8,null
 
 RECIPE: /material/wood/,punji sticks trap,/obj/item/weapon/punji_sticks,4,70,0,1,weapons,0,0,0,8,null
+RECIPE: /material/wood/,pit cover,/obj/item/weapon/pit_cover,3,40,0,1,weapons,0,0,0,8,null
+RECIPE: /material/wood/,weir stakes,/obj/item/weapon/trap_kit/weir,6,120,0,1,tools,0,0,0,8,null
 
 RECIPE: /material/wood/,quarterstaff,/obj/item/weapon/material/quarterstaff,2,50,0,1,weapons,0,0,0,8,wood
 RECIPE: /material/wood/,wood club,/obj/item/weapon/melee/classic_baton/club,3,50,0,1,weapons,0,0,0,0,wood
@@ -2415,6 +2420,7 @@ RECIPE: /material/wood/,produce basket,/obj/item/weapon/storage/produce_basket,5
 
 RECIPE: /material/wood/soft/,fishing cage,/obj/structure/fishing_cage,12,200,1,1,tools,12,0,12,8,null
 RECIPE: /material/wood/soft/,fish pen,/obj/structure/fish_pen,10,200,1,1,tools,12,0,12,8,null
+RECIPE: /material/wood/soft/,weir stakes,/obj/item/weapon/trap_kit/weir,6,120,0,1,tools,0,0,0,8,null
 
 RECIPE: /material/wood/soft/,wearable sign,/obj/item/clothing/accessory/wearable_sign,2.5,55,0,1,tools,0,0,0,8,null
 
