@@ -18,26 +18,20 @@
 	selection_color = "#153043"
 
 /datum/job/american/siberiad/commander/job_stats = list("strength" = STAT_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_HIGH, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_NORMAL)
+/datum/job/american/siberiad/commander/job_loadout = list(
+	/obj/item/clothing/shoes/usmc = slot_shoes,
+	/obj/item/clothing/under/us_uni/us_camo_woodland = slot_w_uniform,
+	/obj/item/clothing/mask/balaclava/snow = slot_wear_mask,
+	/obj/item/weapon/gun/projectile/submachinegun/hk417/att = slot_shoulder,
+	/obj/item/weapon/storage/belt/smallpouches/hk417 = slot_belt,
+	/obj/item/clothing/head/beret_black/insig = slot_head,
+	/obj/item/clothing/gloves/thick/leather/white = slot_gloves,
+	/obj/item/weapon/radio/walkietalkie/faction1 = slot_wear_id,
+	/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars = slot_l_store)
 /datum/job/american/siberiad/commander/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/usmc(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo_woodland(H), slot_w_uniform)
-//mask
-	H.equip_to_slot_or_del(new /obj/item/clothing/mask/balaclava/snow(H), slot_wear_mask)
-//gun
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/hk417/att(H), slot_shoulder)
-//belt
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/hk417(H), slot_belt)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/beret_black/insig(H), slot_head)
-//glove
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/leather/white(H), slot_gloves)
-//id
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
-//other shit
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
+	equip_loadout(H)
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armband/french/blue = new /obj/item/clothing/accessory/armband/french(null)
@@ -70,12 +64,13 @@
 	selection_color = "#153043"
 
 /datum/job/american/siberiad/squadlead/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_MEDIUM_HIGH)
+/datum/job/american/siberiad/squadlead/job_loadout = list(
+	/obj/item/clothing/shoes/usmc = slot_shoes,
+	/obj/item/clothing/under/us_uni/us_camo = slot_w_uniform)
 /datum/job/american/siberiad/squadlead/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/usmc(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo(H), slot_w_uniform)
+	equip_loadout(H)
 //eyes
 	if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/clothing/glasses/tactical_goggles/ballistic(H), slot_eyes)
@@ -145,12 +140,13 @@
 	selection_color = "#153043"
 
 /datum/job/american/siberiad/spec/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_LOW, "machinegun" = STAT_MEDIUM_HIGH)
+/datum/job/american/siberiad/spec/job_loadout = list(
+	/obj/item/clothing/shoes/usmc = slot_shoes,
+	/obj/item/clothing/under/us_uni/us_camo = slot_w_uniform)
 /datum/job/american/siberiad/spec/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/usmc(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo(H), slot_w_uniform)
+	equip_loadout(H)
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armband/french/red = new /obj/item/clothing/accessory/armband/french(null)
@@ -211,12 +207,13 @@
 	selection_color = "#153043"
 
 /datum/job/american/siberiad/medic/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_NORMAL, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_LOW, "medical" = STAT_HIGH, "machinegun" = STAT_LOW)
+/datum/job/american/siberiad/medic/job_loadout = list(
+	/obj/item/clothing/shoes/usmc = slot_shoes,
+	/obj/item/clothing/under/us_uni/us_camo = slot_w_uniform)
 /datum/job/american/siberiad/medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/usmc(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo(H), slot_w_uniform)
+	equip_loadout(H)
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armband/redcross/armband  = new /obj/item/clothing/accessory/armband/redcross(null)
@@ -266,12 +263,13 @@
 	selection_color = "#153043"
 
 /datum/job/american/siberiad/infantry/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_LOW, "machinegun" = STAT_MEDIUM_LOW)
+/datum/job/american/siberiad/infantry/job_loadout = list(
+	/obj/item/clothing/shoes/usmc = slot_shoes,
+	/obj/item/clothing/under/us_uni/us_camo = slot_w_uniform)
 /datum/job/american/siberiad/infantry/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/usmc(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo(H), slot_w_uniform)
+	equip_loadout(H)
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armband/french/red = new /obj/item/clothing/accessory/armband/french(null)
@@ -339,25 +337,20 @@
 	selection_color = "#CC0000"
 
 /datum/job/russian/siberiad/commander/job_stats = list("strength" = STAT_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_NORMAL)
+/datum/job/russian/siberiad/commander/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots/soviet = slot_shoes,
+	/obj/item/clothing/under/gorka = slot_w_uniform,
+	/obj/item/clothing/suit/storage/coat/ww2/soviet_officer/alt = slot_wear_suit,
+	/obj/item/weapon/gun/projectile/submachinegun/ak74/pso1 = slot_shoulder,
+	/obj/item/weapon/storage/belt/smallpouches/green/sov_74 = slot_belt,
+	/obj/item/clothing/head/sov_ushanka_new = slot_head,
+	/obj/item/clothing/gloves/thick = slot_gloves,
+	/obj/item/weapon/radio/walkietalkie/faction2 = slot_wear_id,
+	/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars = slot_l_store)
 /datum/job/russian/siberiad/commander/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/soviet(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/gorka(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/soviet_officer/alt(H), slot_wear_suit)
-//gun
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74/pso1(H), slot_shoulder)
-//belt
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/sov_74(H), slot_belt)
-//helmet
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/sov_ushanka_new(H), slot_head)
-//glove
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick(H), slot_gloves)
-//id
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
-//misc
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
+	equip_loadout(H)
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armband/british/red = new /obj/item/clothing/accessory/armband/british(null)
@@ -458,14 +451,14 @@
 	selection_color = "#CC0000"
 
 /datum/job/russian/siberiad/heavy/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_NORMAL, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_MEDIUM_HIGH)
+/datum/job/russian/siberiad/heavy/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots/modern = slot_shoes,
+	/obj/item/clothing/under/ww2/soviet_berezka = slot_w_uniform,
+	/obj/item/clothing/mask/headscarfgrey/asbestos = slot_wear_mask)
 /datum/job/russian/siberiad/heavy/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/soviet_berezka(H), slot_w_uniform)
-//mask
-	H.equip_to_slot_or_del(new /obj/item/clothing/mask/headscarfgrey/asbestos(H), slot_wear_mask)
+	equip_loadout(H)
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armband/british/red = new /obj/item/clothing/accessory/armband/british(null)

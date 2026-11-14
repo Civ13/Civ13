@@ -10,12 +10,13 @@
 	max_positions = 5
 
 /datum/job/american/eft/usec/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_NORMAL)
+/datum/job/american/eft/usec/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots = slot_shoes,
+	/obj/item/clothing/under/us_uni/us_lightuni_modern = slot_w_uniform)
 /datum/job/american/eft/usec/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_lightuni_modern(H), slot_w_uniform)
+	equip_loadout(H)
 //jacket
 
 //head
@@ -43,12 +44,13 @@
 	max_positions = 5
 
 /datum/job/russian/eft/bear/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_NORMAL)
+/datum/job/russian/eft/bear/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots = slot_shoes,
+	/obj/item/clothing/under/tactical1 = slot_w_uniform)
 /datum/job/russian/eft/bear/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/tactical1(H), slot_w_uniform)
+	equip_loadout(H)
 //jacket
 
 //head

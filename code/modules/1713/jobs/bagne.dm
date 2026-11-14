@@ -61,20 +61,18 @@
 	allowed_maps = list(MAP_BAGNE13)
 
 /datum/job/french/bagneguard/job_stats = list("strength" = STAT_VERY_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_VERY_HIGH, "dexterity" = STAT_VERY_HIGH, "swords" = STAT_HIGH, "pistol" = STAT_VERY_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/french/bagneguard/job_loadout = list(
+	/obj/item/clothing/shoes/leatherboots = slot_shoes,
+	/obj/item/clothing/under/ww2/british/french = slot_w_uniform,
+	/obj/item/clothing/head/helmet/modern/pith = slot_head,
+	/obj/item/weapon/radio/faction1 = slot_back,
+	/obj/item/weapon/gun/projectile/boltaction/lebel = slot_shoulder,
+	/obj/item/weapon/key/french/guard = slot_l_store,
+	/obj/item/weapon/storage/belt/gulagguard/filled = slot_belt)
 /datum/job/french/bagneguard/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/british/french(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pith(H), slot_head)
-//back
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction1(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/lebel(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/french/guard(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/gulagguard/filled(H), slot_belt)
+	equip_loadout(H)
 
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a guard of the Bagne, the labour camp. Keep the prisoners in place!")

@@ -32,17 +32,16 @@
 	max_positions = 1
 
 /datum/job/roman/skyrim/imperial/balgruuf/job_stats = list("strength" = STAT_MAX, "crafting" = STAT_NORMAL, "rifle" = STAT_LOW, "dexterity" = STAT_MAX, "swords" = STAT_MAX, "pistol" = STAT_LOW, "bows" = STAT_MAX, "medical" = STAT_MAX)
+/datum/job/roman/skyrim/imperial/balgruuf/job_loadout = list(
+	/obj/item/clothing/shoes/leatherboots = slot_shoes,
+	/obj/item/clothing/under/tes13/imperial/bolgruf = slot_w_uniform,
+	/obj/item/weapon/material/sword/tes13/steel/balgruuf = slot_l_hand,
+	/obj/item/weapon/shield/tes13/whiterun = slot_back,
+	/obj/item/weapon/reagent_containers/food/drinks/bottle/small/healing/draught = slot_belt)
 /datum/job/roman/skyrim/imperial/balgruuf/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
-		//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/tes13/imperial/bolgruf(H), slot_w_uniform)
-		//head
-		//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/tes13/steel/balgruuf(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/shield/tes13/whiterun(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/bottle/small/healing/draught(H), slot_belt)
+	equip_loadout(H)
 	H.add_note("Role", "You are <b>[title]</b>, the Jarl of the <b>Whiterun</b>, an imperial aligned city. Organize your men and lead the defense to victory, for the Empire and all her people!</b>.")
 	apply_job_stats(H)
 	H.real_name = "Balgruuf"
@@ -72,19 +71,18 @@
 	max_positions = 1
 
 /datum/job/roman/skyrim/imperial/captain/job_stats = list("strength" = STAT_VERY_VERY_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_LOW, "dexterity" = STAT_VERY_VERY_HIGH, "swords" = STAT_VERY_VERY_HIGH, "pistol" = STAT_LOW, "bows" = STAT_VERY_VERY_HIGH, "medical" = STAT_MEDIUM_LOW)
+/datum/job/roman/skyrim/imperial/captain/job_loadout = list(
+	/obj/item/clothing/shoes/leatherboots = slot_shoes,
+	/obj/item/clothing/under/tes13/imperial = slot_w_uniform,
+	/obj/item/clothing/suit/armor/tes13/imperial = slot_wear_suit,
+	/obj/item/clothing/head/helmet/medieval/tes13/imperial/officer = slot_head,
+	/obj/item/weapon/reagent_containers/food/drinks/bottle/small/healing/vigorous = slot_belt,
+	/obj/item/weapon/material/sword/tes13/steel = slot_l_hand,
+	/obj/item/weapon/shield/tes13/imperial = slot_back)
 /datum/job/roman/skyrim/imperial/captain/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
-		//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/tes13/imperial(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/tes13/imperial(H), slot_wear_suit)
-		//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/tes13/imperial/officer(H), slot_head)
-		//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/bottle/small/healing/vigorous(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/tes13/steel(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/shield/tes13/imperial(H), slot_back)
+	equip_loadout(H)
 	H.add_note("Role", "You are a <b>[title]</b>, the leader of a <b>Captain</b>, a company of Legionaries. Organize your <b>Lieutenants</b> and lead your soldiers to victory!</b>.")
 	apply_job_stats(H)
 	give_random_name(H)
@@ -107,19 +105,18 @@
 	max_positions = 1
 
 /datum/job/roman/skyrim/imperial/lieutenant/job_stats = list("strength" = STAT_VERY_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_LOW, "dexterity" = STAT_VERY_HIGH, "swords" = STAT_VERY_HIGH, "pistol" = STAT_LOW, "bows" = STAT_VERY_HIGH, "medical" = STAT_MEDIUM_LOW)
+/datum/job/roman/skyrim/imperial/lieutenant/job_loadout = list(
+	/obj/item/clothing/shoes/leatherboots = slot_shoes,
+	/obj/item/clothing/under/tes13/imperial = slot_w_uniform,
+	/obj/item/clothing/suit/armor/tes13/imperial = slot_wear_suit,
+	/obj/item/clothing/head/helmet/medieval/tes13/imperial/officer = slot_head,
+	/obj/item/weapon/reagent_containers/food/drinks/bottle/small/healing/plentiful = slot_belt,
+	/obj/item/weapon/material/sword/tes13/steel = slot_l_hand,
+	/obj/item/weapon/shield/tes13/imperial = slot_back)
 /datum/job/roman/skyrim/imperial/lieutenant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
-		//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/tes13/imperial(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/tes13/imperial(H), slot_wear_suit)
-		//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/tes13/imperial/officer(H), slot_head)
-		//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/bottle/small/healing/plentiful(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/tes13/steel(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/shield/tes13/imperial(H), slot_back)
+	equip_loadout(H)
 	H.add_note("Role", "You are a <b>[title]</b>, the second in command as a <b>lieutenant</b>, a platoon of Legionaries. Organize your <b>sergeants</b> and lead your soldiers to victory!</b>.")
 	apply_job_stats(H)
 	give_random_name(H)
@@ -143,18 +140,17 @@
 	max_positions = 4
 
 /datum/job/roman/skyrim/imperial/sergeant/job_stats = list("strength" = STAT_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_LOW, "dexterity" = STAT_HIGH, "swords" = STAT_HIGH, "pistol" = STAT_LOW, "bows" = STAT_HIGH, "medical" = STAT_MEDIUM_LOW)
+/datum/job/roman/skyrim/imperial/sergeant/job_loadout = list(
+	/obj/item/clothing/shoes/leatherboots = slot_shoes,
+	/obj/item/clothing/under/tes13/imperial = slot_w_uniform,
+	/obj/item/clothing/head/helmet/medieval/tes13/imperial = slot_head,
+	/obj/item/weapon/reagent_containers/food/drinks/bottle/small/healing/plentiful = slot_belt,
+	/obj/item/weapon/material/sword/tes13/steel = slot_l_hand,
+	/obj/item/weapon/shield/tes13/imperial = slot_back)
 /datum/job/roman/skyrim/imperial/sergeant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
-		//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/tes13/imperial(H), slot_w_uniform)
-		//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/tes13/imperial(H), slot_head)
-		//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/bottle/small/healing/plentiful(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/tes13/steel(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/shield/tes13/imperial(H), slot_back)
+	equip_loadout(H)
 	H.add_note("Role", "You are a <b>[title]</b>, the squad leader <b>sergeant</b>, a squad of Legionaries. Organize your <b>men</b> and lead your soldiers to victory!</b>.")
 	apply_job_stats(H)
 	give_random_name(H)
@@ -176,18 +172,17 @@
 	max_positions = 200
 
 /datum/job/roman/skyrim/imperial/soldier/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_LOW, "dexterity" = STAT_HIGH, "swords" = STAT_HIGH, "pistol" = STAT_LOW, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/roman/skyrim/imperial/soldier/job_loadout = list(
+	/obj/item/clothing/shoes/leatherboots = slot_shoes,
+	/obj/item/clothing/under/tes13/imperial = slot_w_uniform,
+	/obj/item/clothing/head/helmet/medieval/tes13/imperial = slot_head,
+	/obj/item/weapon/reagent_containers/food/drinks/bottle/small/healing/minor = slot_r_store,
+	/obj/item/weapon/material/sword/tes13/steel = slot_belt,
+	/obj/item/weapon/shield/tes13/imperial = slot_back)
 /datum/job/roman/skyrim/imperial/soldier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
-		//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/tes13/imperial(H), slot_w_uniform)
-		//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/tes13/imperial(H), slot_head)
-		//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/bottle/small/healing/minor(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/tes13/steel(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/shield/tes13/imperial(H), slot_back)
+	equip_loadout(H)
 	H.add_note("Role", "You are a <b>[title]</b>, the infantry and backbone of the Empire. Fight for the glory of the Empire!</b>.")
 	apply_job_stats(H)
 	give_random_name(H)
@@ -209,19 +204,18 @@
 	max_positions = 200
 
 /datum/job/roman/skyrim/imperial/archer/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_LOW, "dexterity" = STAT_HIGH, "swords" = STAT_MEDIUM_HIGH, "pistol" = STAT_LOW, "bows" = STAT_VERY_HIGH, "medical" = STAT_MEDIUM_LOW)
+/datum/job/roman/skyrim/imperial/archer/job_loadout = list(
+	/obj/item/clothing/shoes/leatherboots = slot_shoes,
+	/obj/item/clothing/under/tes13/imperial = slot_w_uniform,
+	/obj/item/clothing/head/helmet/medieval/tes13/imperial = slot_head,
+	/obj/item/weapon/material/sword/tes13/steel = slot_belt,
+	/obj/item/weapon/storage/backpack/quiver/medieval = slot_back,
+	/obj/item/weapon/gun/projectile/bow/longbow = slot_r_hand,
+	/obj/item/weapon/reagent_containers/food/drinks/bottle/small/healing/minor = slot_r_store)
 /datum/job/roman/skyrim/imperial/archer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
-		//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/tes13/imperial(H), slot_w_uniform)
-		//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/tes13/imperial(H), slot_head)
-		//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/tes13/steel(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/quiver/medieval(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/bow/longbow(H), slot_r_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/bottle/small/healing/minor(H), slot_r_store)
+	equip_loadout(H)
 	H.add_note("Role", "You are a <b>[title]</b>, the ranged support of the Empire. Keep the enemy full of arrows and allow the infantry to charge in!</b>.")
 	apply_job_stats(H)
 	give_random_name(H)
@@ -339,17 +333,16 @@
 	max_positions = 1
 
 /datum/job/civilian/skyrim/stormcloak/ulfric/job_stats = list("strength" = STAT_MAX, "crafting" = STAT_NORMAL, "rifle" = STAT_LOW, "dexterity" = STAT_MAX, "swords" = STAT_MAX, "pistol" = STAT_LOW, "bows" = STAT_MAX, "medical" = STAT_MAX)
+/datum/job/civilian/skyrim/stormcloak/ulfric/job_loadout = list(
+	/obj/item/clothing/shoes/leatherboots = slot_shoes,
+	/obj/item/clothing/under/tes13/stormcloak/ulfirc = slot_w_uniform,
+	/obj/item/weapon/material/hatchet/battleaxe/tes13/ulfric = slot_l_hand,
+	/obj/item/weapon/shield/tes13/stormcloak = slot_back,
+	/obj/item/weapon/reagent_containers/food/drinks/bottle/small/healing/draught = slot_belt)
 /datum/job/civilian/skyrim/stormcloak/ulfric/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
-		//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/tes13/stormcloak/ulfirc(H), slot_w_uniform)
-		//head
-		//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/battleaxe/tes13/ulfric(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/shield/tes13/stormcloak(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/bottle/small/healing/draught(H), slot_belt)
+	equip_loadout(H)
 	H.add_note("Role", "You are a <b>[title]</b>, the leader of the <b>Stormcloaks</b>, an entire rebellion. Organize your men and lead the rebellion to victory, for Skyrim and all her people!</b>.")
 	apply_job_stats(H)
 	H.real_name = "Ulfric Stormcloak"
@@ -380,18 +373,17 @@
 	max_positions = 1
 
 /datum/job/civilian/skyrim/stormcloak/lieutenant/job_stats = list("strength" = STAT_VERY_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_LOW, "dexterity" = STAT_VERY_HIGH, "swords" = STAT_VERY_HIGH, "pistol" = STAT_LOW, "bows" = STAT_VERY_HIGH, "medical" = STAT_MEDIUM_LOW)
+/datum/job/civilian/skyrim/stormcloak/lieutenant/job_loadout = list(
+	/obj/item/clothing/shoes/heavyboots/wrappedboots = slot_shoes,
+	/obj/item/clothing/under/tes13/stormcloak = slot_w_uniform,
+	/obj/item/clothing/suit/armor/tes13/stormcloak = slot_wear_suit,
+	/obj/item/clothing/head/helmet/medieval/tes13/stormcloak = slot_head,
+	/obj/item/weapon/material/sword/tes13/steel = slot_belt,
+	/obj/item/weapon/shield/tes13/stormcloak = slot_back)
 /datum/job/civilian/skyrim/stormcloak/lieutenant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
-		//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/tes13/stormcloak(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/tes13/stormcloak(H), slot_wear_suit)
-		//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/tes13/stormcloak(H), slot_head)
-		//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/tes13/steel(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/shield/tes13/stormcloak(H), slot_back)
+	equip_loadout(H)
 	H.add_note("Role", "You are a <b>[title]</b>, the second in command as a <b>lieutenant</b>, a platoon of Legionaries. Organize your <b>sergeants</b> and lead your soldiers to victory!</b>.")
 	apply_job_stats(H)
 	give_random_name(H)

@@ -17,6 +17,13 @@
 	max_positions = 10
 
 /datum/job/russian/perma/banditL/job_stats = list("strength" = STAT_HIGH, "crafting" = STAT_MEDIUM, "rifle" = STAT_NORMAL, "dexterity" = STAT_HIGH, "swords" = STAT_HIGH, "pistol" = STAT_NORMAL, "bows" = STAT_HIGH, "medical" = STAT_HIGH, "machinegun" = STAT_NORMAL)
+/datum/job/russian/perma/banditL/job_loadout = list(
+	/obj/item/clothing/under/indian3 = slot_w_uniform,
+	/obj/item/clothing/gloves/thick/combat = slot_gloves,
+	/obj/item/clothing/glasses/tactical_goggles = slot_eyes,
+	/obj/item/clothing/head/helmet/scrap = slot_head,
+	/obj/item/weapon/storage/belt/medical/full_vc = slot_belt,
+	/obj/item/weapon/radio/walkietalkie/faction2 = slot_wear_id)
 /datum/job/russian/perma/banditL/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
@@ -31,14 +38,7 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/winterboots(H), slot_shoes)
 
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/indian3(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/combat(H), slot_gloves)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/glasses/tactical_goggles(H), slot_eyes)
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/scrap(H), slot_head)
-//back
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/medical/full_vc(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
+	equip_loadout(H)
 
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/nomads/civiliankevlar/under/armor = new /obj/item/clothing/accessory/armor/nomads/civiliankevlar/under(null)
@@ -146,19 +146,17 @@
 	max_positions = 3
 
 /datum/job/civilian/russian/perma/bunkL/job_stats = list("strength" = STAT_MEDIUM, "crafting" = STAT_MEDIUM, "rifle" = STAT_HIGH, "dexterity" = STAT_MEDIUM, "swords" = STAT_MEDIUM, "pistol" = STAT_HIGH, "bows" = STAT_MEDIUM, "medical" = STAT_HIGH, "machinegun" = STAT_MEDIUM)
+/datum/job/civilian/russian/perma/bunkL/job_loadout = list(
+	/obj/item/clothing/shoes/laceup = slot_shoes,
+	/obj/item/clothing/under/combat = slot_w_uniform,
+	/obj/item/clothing/suit/storage/coat/ww2/soviet_officer = slot_wear_suit,
+	/obj/item/weapon/radio/walkietalkie/faction1 = slot_wear_id,
+	/obj/item/clothing/gloves/watch/goldwatch = slot_gloves,
+	/obj/item/stack/medical/bruise_pack/gauze = slot_l_store)
 /datum/job/civilian/russian/perma/bunkL/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
-
-
-//under
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/combat(H), slot_w_uniform)
-
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/soviet_officer(H), slot_wear_suit)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/watch/goldwatch(H), slot_gloves)
-	H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/gauze(H), slot_l_store)
+	equip_loadout(H)
     H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/tt30/silenced(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt(H), slot_belt)
 	var/obj/item/clothing/under/uniform = H.w_uniform

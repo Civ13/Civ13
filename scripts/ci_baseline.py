@@ -921,6 +921,8 @@ SUITES = {
         'paths': ('tests/resource_stock/', 'code/_helpers/resource_stock.dm'), 'shared_paths': (
             'code/game/objects/structures/rocks.dm', 'code/modules/1713/obsidian.dm',
             'code/game/objects/structures/ocean_fishing.dm')},
+    'job_loadouts': {'files': ('tests/job_loadouts/test_job_loadouts.py',),
+        'paths': ('tests/job_loadouts/', 'code/game/jobs/job.dm'), 'shared_paths': ()},
     'liquid_fuels': {'files': ('tests/liquid_fuels/test_liquid_fuels.py',),
         'paths': ('tests/liquid_fuels/', 'code/_helpers/liquid_fuels.dm', 'code/__defines/liquid_fuels.dm'), 'shared_paths': ()},
     'water_turfs': {'files': ('tests/water_turfs/test_water_turfs.py',),

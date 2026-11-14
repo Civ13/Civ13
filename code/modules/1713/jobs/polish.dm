@@ -22,22 +22,18 @@
 	max_positions = 2
 
 /datum/job/polish/warsaw/lead/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_MEDIUM_LOW, "swords" = STAT_MEDIUM_HIGH, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_MEDIUM_LOW)
+/datum/job/polish/warsaw/lead/job_loadout = list(
+	/obj/item/clothing/shoes/combat = slot_shoes,
+	/obj/item/clothing/under/ww1/trenchsuit/poland = slot_w_uniform,
+	/obj/item/clothing/head/helmet/ww/adrianm26 = slot_head,
+	/obj/item/clothing/gloves/thick/combat = slot_gloves,
+	/obj/item/weapon/radio/faction2 = slot_back,
+	/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars = slot_wear_id,
+	/obj/item/clothing/suit/storage/coat/japcoat2/trench = slot_wear_suit)
 /datum/job/polish/warsaw/lead/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/combat(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww1/trenchsuit/poland(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww/adrianm26(H), slot_head)
-//gloves
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/combat(H), slot_gloves)
-//back
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction2(H), slot_back)
-//id
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_wear_id)
-//coat
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/japcoat2/trench(H), slot_wear_suit)
+	equip_loadout(H)
 //weapon
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/randimpw = rand(1,3)
@@ -80,16 +76,15 @@
 	max_positions = 4
 
 /datum/job/polish/warsaw/sl/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_MEDIUM_LOW, "swords" = STAT_MEDIUM_HIGH, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_MEDIUM_LOW)
+/datum/job/polish/warsaw/sl/job_loadout = list(
+	/obj/item/clothing/shoes/combat = slot_shoes,
+	/obj/item/clothing/under/ww1/trenchsuit/poland = slot_w_uniform,
+	/obj/item/clothing/head/helmet/ww/adrianm26 = slot_head,
+	/obj/item/clothing/gloves/thick/combat = slot_gloves)
 /datum/job/polish/warsaw/sl/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/combat(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww1/trenchsuit/poland(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww/adrianm26(H), slot_head)
-//gloves
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/combat(H), slot_gloves)
+	equip_loadout(H)
 //back
 	if (prob(45))
 		H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction2(H), slot_back)
@@ -136,6 +131,9 @@
 	max_positions = 6
 
 /datum/job/polish/warsaw/medic/job_stats = list("strength" = STAT_MEDIUM_LOW, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_MEDIUM_LOW, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_HIGH)
+/datum/job/polish/warsaw/medic/job_loadout = list(
+	/obj/item/clothing/under/ww1/trenchsuit/poland = slot_w_uniform,
+	/obj/item/clothing/suit/storage/jacket/doctor = slot_wear_suit)
 /datum/job/polish/warsaw/medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -151,9 +149,7 @@
 	else if (randshoe2 == 5)
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/winterboots(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww1/trenchsuit/poland(H), slot_w_uniform)
-//coat
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/doctor(H), slot_wear_suit)
+	equip_loadout(H)
 //head
 	if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww/adrianm26medic(H), slot_head)
@@ -467,22 +463,19 @@
 	max_positions = 2
 
 /datum/job/polish/warsaw/redarmypolsl/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_MEDIUM_HIGH)
+/datum/job/polish/warsaw/redarmypolsl/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots/soviet = slot_shoes,
+	/obj/item/clothing/under/ww2/soviet_officer = slot_w_uniform,
+	/obj/item/weapon/storage/belt/smallpouches/rusoff = slot_belt,
+	/obj/item/clothing/head/ww2/sov_officercap = slot_head,
+	/obj/item/weapon/gun/projectile/submachinegun/ppsh = slot_shoulder,
+	/obj/item/weapon/radio/faction2 = slot_back,
+	/obj/item/weapon/grenade/ww2/rgd33 = slot_l_store,
+	/obj/item/ammo_magazine/c762x25_ppsh = slot_r_store)
 /datum/job/polish/warsaw/redarmypolsl/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/soviet(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/soviet_officer(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/rusoff(H), slot_belt)
-
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/sov_officercap(H), slot_head)
-//back
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ppsh(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction2(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/grenade/ww2/rgd33(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c762x25_ppsh(H), slot_r_store)
+	equip_loadout(H)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 //armband webbing

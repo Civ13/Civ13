@@ -15,14 +15,15 @@
 	additional_languages = list("English" = 100)
 
 /datum/job/russian/robber/job_stats = list("strength" = STAT_VERY_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_HIGH, "machinegun" = STAT_VERY_VERY_HIGH, "dexterity" = STAT_VERY_HIGH, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_HIGH, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_HIGH)
+/datum/job/russian/robber/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots = slot_shoes,
+	/obj/item/clothing/under/expensive/red = slot_w_uniform)
 /datum/job/russian/robber/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = "Rednikov"
 	give_random_name(H)
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/expensive/red(H), slot_w_uniform)
+	equip_loadout(H)
 //head
 	var/randcloth = rand(1,5)
 	switch(randcloth)
@@ -110,6 +111,10 @@
 	additional_languages = list("English" = 100)
 
 /datum/job/russian/rednikov/tatarin/job_stats = list("strength" = STAT_VERY_VERY_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_VERY_VERY_HIGH, "machinegun" = STAT_VERY_VERY_HIGH, "dexterity" = STAT_VERY_VERY_HIGH, "swords" = STAT_MEDIUM_HIGH, "pistol" = STAT_VERY_VERY_HIGH, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_MEDIUM_HIGH)
+/datum/job/russian/rednikov/tatarin/job_loadout = list(
+	/obj/item/clothing/shoes/black = slot_shoes,
+	/obj/item/clothing/under/trackpants = slot_w_uniform,
+	/obj/item/clothing/suit/storage/jacket/tracksuit = slot_wear_suit)
 /datum/job/russian/rednikov/tatarin/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = "Rednikov"
@@ -118,10 +123,7 @@
 	H.h_style = "Bald"
 	H.f_style = "Shaved"
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/black(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/trackpants(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/tracksuit(H), slot_wear_suit)
+	equip_loadout(H)
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarrierblack/plate_armor = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarrierblack(null)
