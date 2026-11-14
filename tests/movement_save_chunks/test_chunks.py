@@ -241,6 +241,19 @@ class ProductionBoundaryTests(unittest.TestCase):
     def test_capture_budget_diagnostics_keep_original_limits(self):
         self.assertIn('if(++work > 8192 || tick_delta)', SAVING)
 
+    def test_root_change_names_reason_and_demotes_root(self):
+        # Gaia 2026-11-14: "Moving save root changed during capture" named
+        # neither the animal nor the cause, and nothing kept the same root from
+        # refusing the retry.
+        root = SAVING.split('/map_storage/proc/capture_moving_save_root(', 1)[1].split('\n/map_storage/proc/', 1)[0]
+        self.assertIn('throw EXCEPTION("Moving save root changed during capture: root=[root_type] [moving_save_root_change(A, ref, origin)]")', root)
+        self.assertIn('if(findtext("[error]", "root changed during capture")) moving_save_demoted[record["identity"]] = TRUE', root)
+        change = SAVING.split('/map_storage/proc/moving_save_root_change(', 1)[1].split('\n/map_storage/proc/', 1)[0]
+        supported = SAVING.split('/map_storage/proc/moving_save_root_supported(', 1)[1].split('\n/map_storage/proc/', 1)[0]
+        for key in re.findall(r'"([a-z_]+)"', ' '.join(re.findall(r'for\(var/key in list\(([^\n]+)\)\)', supported))):
+            self.assertIn('"%s"' % key, change)
+        self.assertIn('root-change', (ROOT / 'tests/movement_save_chunks/correctness.py').read_text(encoding='utf-8'))
+
     def test_wall_clock_overrun_keeps_capture_and_demotes_root(self):
         # 2026-11-13: a drift jelly (work 162, tick_delta 0) took elapsed_ds 2
         # on a lagging host and the throw failed the whole save. Wall clock is
