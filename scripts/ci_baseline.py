@@ -1888,7 +1888,9 @@ SUITES = {
     # Source and injected-help contracts only; this suite does not run DM.
     'mechanical_power': {'files': ('tests/mechanical_power/test_contract.py',), 'paths': (
         'tests/mechanical_power/', 'code/modules/1713/mechanical_power.dm', 'config/craft_needs.json',
-        'icons/obj/mechanical_power.dmi', 'tests/sprites/create_mechanical_power.py')},
+        'icons/obj/mechanical_power.dmi', 'tests/sprites/create_mechanical_power.py',
+        'code/modules/1713/machine_shop.dm', 'icons/obj/machine_shop.dmi', 'tests/sprites/create_machine_shop.py',
+        'code/game/objects/structures/blacksmithing/blacksmithing_recipes.dm')},
     'building_site': {'files': ('tests/building_site/test_contract.py',), 'paths': (
         'tests/building_site/', 'code/modules/1713/building_site.dm',
         'icons/obj/building_site.dmi', 'tests/sprites/create_building_site.py')},

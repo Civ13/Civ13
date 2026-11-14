@@ -167,26 +167,47 @@ var/global/list/horse_gin_animals = list(
 // anvil takes half the time. The anvil asks forge_time() when a job starts.
 
 #define TRIP_HAMMER_FACTOR 0.5
-#define TRIP_HAMMER_MIN_TIME 10
+#define FORGE_MIN_TIME 10
+
+// Machines that help at an anvil. A "hammer" takes the heavy striking for
+// every job; a "fitting" machine (machine_shop.dm) takes one class of work.
+// The best hammer and the best fitting machine next to the anvil both count.
+/obj/structure/workshop_machine
+	var/forge_role = null
+
+// The share of a forging job of this recipe category left to do by hand with
+// this machine helping: 1 when it gives no help right now.
+/obj/structure/workshop_machine/proc/forge_factor(category)
+	return 1
+
+// Called when a job this machine helps with starts.
+/obj/structure/workshop_machine/proc/forge_used()
+	flick("[initial(icon_state)]_on", src)
 
 /obj/structure/workshop_machine/trip_hammer
 	name = "trip hammer"
 	desc = "A heavy iron hammer head on a pivoted beam, lifted and dropped by a cam shaft. Fasten it next to an anvil and next to a turning treadwheel, horse gin, mill wheel or windmill: forging at that anvil then takes half the time."
 	icon = 'icons/obj/mechanical_power.dmi'
 	icon_state = "trip_hammer"
+	forge_role = "hammer"
+	var/working_text = "The cam shaft is turning. Forging at an anvil next to it takes half the time."
+	var/idle_text = "Nothing is turning its cam shaft. It needs a turning prime mover next to it."
 
 // TRUE while a prime mover next to the fastened hammer is turning.
 /obj/structure/workshop_machine/trip_hammer/proc/striking()
 	return anchored && isturf(loc) && mechanical_drive_factor(src) < 1
+
+/obj/structure/workshop_machine/trip_hammer/forge_factor(category)
+	return striking() ? TRIP_HAMMER_FACTOR : 1
 
 /obj/structure/workshop_machine/trip_hammer/examine(mob/user, distance)
 	..(user, distance)
 	if (!anchored)
 		to_chat(user, SPAN_WARNING("It is not fastened down."))
 	else if (striking())
-		to_chat(user, SPAN_NOTICE("The cam shaft is turning. Forging at an anvil next to it takes half the time."))
+		to_chat(user, SPAN_NOTICE(working_text))
 	else
-		to_chat(user, SPAN_WARNING("Nothing is turning its cam shaft. It needs a turning prime mover next to it."))
+		to_chat(user, SPAN_WARNING(idle_text))
 
 /obj/structure/workshop_machine/trip_hammer/attack_hand(mob/living/human/H)
 	if (istype(H))
@@ -199,16 +220,26 @@ var/global/list/horse_gin_animals = list(
 		return
 	return ..()
 
-// How long a forging job of base_time takes at this anvil right now.
-/obj/structure/anvil/proc/forge_time(base_time)
-	for (var/obj/structure/workshop_machine/trip_hammer/T in range(1, src))
-		if (T.striking())
-			flick("trip_hammer_on", T)
-			return max(TRIP_HAMMER_MIN_TIME, round(base_time * TRIP_HAMMER_FACTOR))
-	return base_time
+// How long a forging job of base_time takes at this anvil right now. category
+// is the recipe's anvil category, or null for work that has none.
+/obj/structure/anvil/proc/forge_time(base_time, category = null)
+	var/list/best = list()
+	var/list/share = list()
+	for (var/obj/structure/workshop_machine/W in range(1, src))
+		if (!W.forge_role)
+			continue
+		var/left = W.forge_factor(category)
+		if (left < 1 && (!best[W.forge_role] || left < share[W.forge_role]))
+			best[W.forge_role] = W
+			share[W.forge_role] = left
+	if (!length(best))
+		return base_time
+	var/time = base_time
+	for (var/role in best)
+		var/obj/structure/workshop_machine/W = best[role]
+		W.forge_used()
+		time *= share[role]
+	return max(FORGE_MIN_TIME, round(time))
 
 #undef TRIP_HAMMER_FACTOR
-#undef TRIP_HAMMER_MIN_TIME
-
-#undef MECHANICAL_DRIVE_REACH
-#undef MECHANICAL_MIN_TIME
+#undef FORGE_MIN_TIME
