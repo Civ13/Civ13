@@ -1894,6 +1894,7 @@ RECIPE: /material/silver/,silver medal,/obj/item/clothing/accessory/medal/silver
 //*****************| SILVER DECORATION |***************************
 
 RECIPE: /material/silver/,silver statue,/obj/structure/religious/statue,10,250,1,1,none,10,0,0,8,silver
+RECIPE: /material/silver/,silver cable coil (10m),/obj/item/stack/cable_coil/silver,1,35,0,1,electrical,105,0,0,8,null
 
 //*********************************************************
 //*********************| TIN |*****************************
@@ -3023,11 +3024,14 @@ RECIPE: /material/glass/,small telescope,/obj/item/weapon/attachment/scope/adjus
 RECIPE: /material/wood/soft/,shamisen,/obj/item/shamisen,10,135,0,1,entertainment & other,50,0,0,8,null
 RECIPE: /material/wood/soft/,pencil,/obj/item/weapon/pen/pencil,1,40,0,1,paper & printing,19,0,0,8,null
 RECIPE: /material/gold/,fancy pen,/obj/item/weapon/pen/fancy,1,60,0,1,paper & printing,19,0,0,8,null
+RECIPE: /material/gold/,gold cable coil (10m),/obj/item/stack/cable_coil/gold,1,35,0,1,electrical,105,0,0,8,null
 RECIPE: /material/stone/,writing slate,/obj/item/weapon/writing_slate,2,60,0,1,paper & printing,0,0,0,8,null
 RECIPE: /material/wood/soft/,abacus,/obj/item/weapon/abacus,3,80,0,1,paper & printing,0,0,0,8,null
 RECIPE: /material/iron/,drafting set,/obj/item/weapon/drafting_set,2,100,0,1,paper & printing,0,0,0,8,null
 RECIPE: /material/iron/,lapping wheel,/obj/structure/lapping_wheel,4,120,1,1,production,0,0,0,8,null
 RECIPE: /material/iron/,iron pipe,/obj/structure/fluid_pipe/plain,1,40,1,1,plumbing,0,0,0,8,iron
+RECIPE: /material/iron/,iron cable coil (10m),/obj/item/stack/cable_coil/iron,1,35,0,1,electrical,105,0,0,8,null
+RECIPE: /material/aluminium/,aluminium cable coil (10m),/obj/item/stack/cable_coil/aluminium,1,35,0,1,electrical,105,0,0,8,null
 RECIPE: /material/wood/soft/,model kit,/obj/item/weapon/scholar_practice/model_kit,3,80,0,1,paper & printing,0,0,0,8,null
 RECIPE: /material/wood/soft/,specimen box,/obj/item/weapon/scholar_practice/specimen_box,2,60,0,1,paper & printing,0,0,0,8,null
 RECIPE: /material/bone/,study bones,/obj/item/weapon/scholar_practice/study_bones,2,60,0,1,paper & printing,0,0,0,8,null

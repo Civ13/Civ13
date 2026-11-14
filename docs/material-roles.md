@@ -269,6 +269,35 @@ to it (`mechanical_drive_factor()`). It reuses the unused `pump_s` art in
 the large cask in `icons/obj/barrel.dmi`. Corrosion, clay pipe and plastic
 pipe are not modelled yet.
 
+## Wire
+
+`code/modules/materials/wire_materials.dm` adds cable of iron, aluminium,
+silver and gold. Copper cable is the standard and loses nothing, as before. A
+cable stores no material: the coil subtype's `cable_color` names the metal
+(`cable_wire_materials`), so a run is one metal (cables only join their own
+colour), a connector joins two metals as it joins two colours, and a cut cable
+gives back the matching coil (`cable_coil_type()`).
+
+Each tile of such cable costs the grid a share of its supply:
+`0.5% * (100 / conductivity - 1)`.
+
+| Wire | Loss a tile |
+| --- | --- |
+| Iron | 2.4% |
+| Aluminium | 0.3% |
+| Gold | 0.2% |
+| Silver, copper | none |
+
+`rebuild_supply()` adds the shares up as it visits each cable and takes the
+total off the capacity before any request is judged (`cable_delivered()`); a
+grid always delivers at least a tenth. Copper cable pays one list lookup a
+visit. The loss counts every tile of lossy cable on the grid, not only the
+tiles between a source and a consumer. Examining a cable shows its metal and
+the grid's total loss.
+
+Stable paths: `/obj/item/stack/cable_coil` (copper) and
+`/obj/item/stack/cable_coil/{iron,aluminium,silver,gold}`.
+
 ## Sparks
 
 A tool whose material has `sparks` set (iron, steel, flint) can set off a
