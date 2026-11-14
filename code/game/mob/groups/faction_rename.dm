@@ -152,6 +152,8 @@ var/global/list/faction_rename_text_vars = list("faction", "tgtcmp")
 	party_train_rename_faction(old_name, new_name)
 	// Recruitment policy, applications and audit (faction_recruitment.dm).
 	recruitment_rename_faction(old_name, new_name)
+	// Its place in a nation (nation.dm).
+	nation_rename_faction(old_name, new_name)
 	return TRUE
 
 /mob/living/human/proc/rename_own_faction()

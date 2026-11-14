@@ -23,6 +23,7 @@
 /process/weather/fire()
 	if(persistence_save_in_progress) return
 	weather_systems_step()
+	river_flood_step()
 	// Author policy gates random selection only, not independent event service.
 	if (!map || map.weather_policy_valid())
 		var/mod_interval = map ? map.weather_timing_value("mod_interval", mod_weather_interval) : mod_weather_interval

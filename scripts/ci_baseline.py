@@ -409,9 +409,11 @@ SUITES = {
         'paths': ('tests/weather_systems/', 'tools/weather/'),
         'shared_paths': ('icons/effects/weather.dmi', 'icons/effects/weather_chunks.dmi',
                          'icons/effects/weather_roof.dmi', 'code/modules/1713/weather.dm')},
-    'river_flow': {'files': ('tests/river_flow/test_generation.py',),
-        'paths': ('tests/river_flow/', 'scripts/river_flow.py'),
-        'shared_paths': ('code/modules/1713/river_flow.dm',
+    'river_flow': {'files': ('tests/river_flow/test_generation.py', 'tests/river_flow/test_flood.py'),
+        'paths': ('tests/river_flow/', 'scripts/river_flow.py', 'scripts/river_flood.py'),
+        'shared_paths': ('code/modules/1713/river_flow.dm', 'code/modules/1713/river_flood.dm',
+                         'code/processes/weather.dm', 'code/modules/persistence/durable_contract.dm',
+                         'maps/nomads/nomads_desert.dmm',
                          'code/processes/river_current.dm',
                          'code/modules/1713/machinery/renewable_generation.dm',
                          'scripts/terrain_heights.py', 'maps/heights/',
@@ -1002,6 +1004,10 @@ SUITES = {
             'code/modules/research_tree/book_research.dm',
             'code/modules/research_tree/book_pages.dm',
             'code/modules/research_tree/research_bench.dm')},
+    # Research tree groundwork order: real-need prerequisites, skippable side nodes, civil free of military; offline only.
+    'research_tree_order': {'files': ('tests/research_tree_order/test_order.py',),
+        'paths': ('tests/research_tree_order/',), 'shared_paths': (
+            'code/modules/research_tree/research_node.dm',)},
     # Late research: node effects, field work, teams, rushing and ciphers on book-research worlds; offline only.
     'late_research': {'files': ('tests/late_research/test_contract.py',),
         'paths': ('tests/late_research/',), 'shared_paths': (

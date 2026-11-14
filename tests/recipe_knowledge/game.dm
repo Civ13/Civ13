@@ -232,6 +232,7 @@ var/knowledge_failures = 0
 	bench.analysis_tick()
 	knowledge_check(!journal.research_ticks("iron_tools"), "no progress without someone who knows the groundwork")
 	knowledge_check(scholar.can_learn_recipe_node("basic_tools") && scholar.learn_recipe_node("basic_tools"), "a root node can be learned without faction research")
+	knowledge_check(!scholar.can_learn_recipe_node("iron_smithing") && scholar.learn_recipe_node("bronze_working") && scholar.learn_recipe_node("iron_smithing"), "groundwork is learned in order: Iron Tools also needs Iron Smithing")
 	bench.analysis_tick()
 	knowledge_check(!journal.research_ticks("iron_tools") && node_discipline("iron_tools") == "engineering" && node_scholar_requirement("iron_tools") == 24, "no progress without the discipline's skill")
 	var/list/open_disciplines = list()
@@ -625,7 +626,7 @@ var/knowledge_failures = 0
 	scholar.stats["stamina"][1] = 100
 	knowledge_check(diary.commit_written_chapter(scholar, "basic_tools", sheet) && diary.has_research_chapter("basic_tools") && QDELETED(sheet) && scholar.stats["stamina"][1] == 100 - BOOK_WRITE_STAMINA(0), "writing a known node uses a sheet and stamina")
 	var/obj/item/weapon/paper/spare = new(locate(6,6,1))
-	knowledge_check(!diary.commit_written_chapter(novice, "basic_tools", spare) && !diary.commit_written_chapter(scholar, "iron_smithing", spare), "only known, unwritten nodes can be written")
+	knowledge_check(!diary.commit_written_chapter(novice, "basic_tools", spare) && !diary.commit_written_chapter(scholar, "steelmaking", spare), "only known, unwritten nodes can be written")
 	scholar.stats["stamina"][1] = 1
 	var/obj/item/weapon/book/tired = new(locate(6,6,1))
 	knowledge_check(!tired.commit_written_chapter(scholar, "basic_tools", spare) && !QDELETED(spare), "too tired to write")

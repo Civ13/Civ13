@@ -348,7 +348,7 @@ var/space_runtime_error = FALSE
 	build_research_tree()
 	var/datum/research_node/rocketry = get_research_node("rocketry")
 	var/datum/research_node/survey = get_research_node("planetary_survey")
-	space_check(rocketry && rocketry.era_tier == 9 && rocketry.prereqs ~= list("missiles") && rocketry.min_bench_tier == 7, "Rocketry follows Missiles and a Cold War bench can research it")
+	space_check(rocketry && rocketry.era_tier == 9 && rocketry.prereqs ~= list("aviation_rocketry") && rocketry.min_bench_tier == 7, "Rocketry follows Aviation & Rocketry and a Cold War bench can research it")
 	space_check(survey && survey.mode == RESEARCH_MODE_ANALYSIS && survey.era_tier == 9 && ("rocketry" in survey.prereqs), "Planetary Survey follows Rocketry and is not an era capstone")
 	space_check(get_recipe_node_req("/obj/item/space_probe") == "rocketry" && get_recipe_node_req("/obj/structure/launch_rail") == "rocketry" && get_recipe_node_req("/obj/structure/survey_console") == "rocketry" && get_recipe_node_req("/obj/item/space_probe/advanced") == "planetary_survey", "probe recipes are gated on the spaceflight nodes")
 	var/obj/item/space_sample/rock/sample = new(C.loc)

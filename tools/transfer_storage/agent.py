@@ -84,12 +84,18 @@ def _routes(store, radio):
         '/homes': lambda body: store.apply_homes(body['epoch'], body['rev'], body['rows'], body['done'],
                                                  body.get('reset') in (True, 1), body.get('mainland'), body.get('train_locks'), body.get('train_decisions'),
                                                  body.get('lands'), body.get('land_done'), body.get('chart'),
-                                                 body.get('chart_done'), body.get('colony_grants')),
+                                                 body.get('chart_done'), body.get('colony_grants'),
+                                                 body.get('nations'), body.get('nation_results')),
         # Land stages (docs/land-stages.md): DM reads /lands, admins queue /land/set.
         '/lands': lambda body: store.lands(),
         '/land/sample': lambda body: store.land_sample(body.get('players'), body.get('living'), body.get('colonies')),
         '/land/set': lambda body: store.request_land(body['region'], body['stage'], body.get('paused') in (True, 1),
                                                      body['admin']),
+        # Nations (docs/land-stages.md): DM reads /nations, leaders queue
+        # /nation/request, and DM drops told outcomes with /nation/seen.
+        '/nations': lambda body: store.nations(),
+        '/nation/request': lambda body: store.request_nation(body),
+        '/nation/seen': lambda body: store.nation_seen(body.get('ids')),
         # The world chart (docs/world-chart.md): DM reads /chart, admins queue /chart/request.
         '/chart': lambda body: store.chart(),
         '/chart/request': lambda body: store.request_chart(body.get('op'), body.get('x'), body.get('y'), body.get('admin'),
