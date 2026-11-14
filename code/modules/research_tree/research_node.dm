@@ -1741,6 +1741,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/flashlight/flare/glowstick/red" = "synthetics",
 		"/obj/item/flashlight/flare/glowstick/yellow" = "synthetics",
 		"/obj/structure/display_case" = "glassworking",
+		"/obj/structure/workshop_machine/glass_bench" = "glassworking",
 		"/obj/item/weapon/attachment/under/bipod" = "gunsmithing",
 		"/obj/item/weapon/storage/lockbox" = "pottery_storage",
 		"/obj/item/weapon/attachment/under/weapon_light" = "consumer_electronics",
@@ -2250,6 +2251,7 @@ var/global/list/node_grid_col_cache = null
 		// --- stone_masonry (44) ---
 		"/obj/covers/cobblestone" = "stone_masonry",
 		"/obj/structure/furnace/lime_kiln" = "stone_masonry",
+		"/obj/structure/workshop_machine/masons_saw" = "stone_masonry",
 		"/obj/covers/cobblestone/stairs" = "stone_masonry",
 		"/obj/covers/roads/sandstone" = "stone_masonry",
 		"/obj/covers/sandstone" = "stone_masonry",
