@@ -241,7 +241,7 @@
 		qdel(src)
 		qdel(I)
 		return
-	if (!istype(I, /obj/item/weapon/material/kitchen/utensil/knife))
+	if (!is_tool(I, TOOL_KNIFE))
 		to_chat(user, "You need a knife to cut the [src].")
 		return
 	if (reagents.get_reagent_amount("cocaine") <= 0)

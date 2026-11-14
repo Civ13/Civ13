@@ -205,9 +205,9 @@
 		return ..()
 
 /obj/covers/attackby(obj/item/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/wrench) && not_movable == TRUE)
+	if (is_tool(W, TOOL_WRENCH) && not_movable == TRUE)
 		return
-	if (istype(W, /obj/item/weapon/hammer))
+	if (is_tool(W, TOOL_HAMMER))
 		if (!wall)
 			to_chat(user, "You start removing \the [src]...")
 			if (do_after(user, 50, src))

@@ -46,7 +46,7 @@
 
 // Grab intent reserves knife preparation for casings; other intents retain meat cutting.
 /obj/item/weapon/reagent_containers/food/snacks/meat/offal/intestines/attackby(obj/item/weapon/W, mob/user)
-	if (!istype(W, /obj/item/weapon/material/kitchen/utensil/knife) || !user || user.a_intent != I_GRAB)
+	if (!is_tool(W, TOOL_KNIFE) || !user || user.a_intent != I_GRAB)
 		return ..()
 	if (QDELETED(src) || QDELETED(W) || QDELETED(user) || user.stat != CONSCIOUS || user.get_active_hand() != W)
 		return

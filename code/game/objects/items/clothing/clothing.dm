@@ -231,7 +231,7 @@ BLIND	 // can't see anything
 	return FALSE // return TRUE to cancel attack_hand()
 
 /obj/item/clothing/gloves/attackby(obj/item/weapon/W, mob/user)
-	if (istype(W, /obj/item/weapon/wirecutters) || istype(W, /obj/item/weapon/surgery/scalpel))
+	if (is_tool(W, TOOL_WIRECUTTER) || istype(W, /obj/item/weapon/surgery/scalpel))
 		if (clipped)
 			to_chat(user, SPAN_NOTICE("\The [src] have already been clipped!"))
 			update_icon()

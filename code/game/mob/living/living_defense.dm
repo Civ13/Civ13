@@ -30,7 +30,7 @@
 		absorb -= 1
 	var/dmg = 0
 	if (damage_source)
-		if (istype(damage_source, /obj/item/weapon/melee) || istype(damage_source, /obj/item/weapon/material/hatchet))
+		if (istype(damage_source, /obj/item/weapon/melee) || is_tool(damage_source, TOOL_HATCHET))
 			dmg = 8
 		else
 			dmg = 0.8

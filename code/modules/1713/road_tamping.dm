@@ -125,7 +125,7 @@
 	return TRUE
 
 /turf/floor/tamped_earth/attackby(obj/item/C, mob/user)
-	if (!istype(C, /obj/item/weapon/material/shovel))
+	if (!is_tool(C, TOOL_SHOVEL))
 		return ..()
 	if (weather_snow > 0 && user.a_intent != I_HARM)
 		return ..() // Shovels clear snow first, as on other ground.
@@ -254,13 +254,13 @@
 	return T
 
 /turf/floor/tamped_earth/attackby(obj/item/C, mob/user)
-	if (istype(C, /obj/item/weapon/material/shovel) && user.a_intent == I_DISARM && !(weather_snow > 0))
+	if (is_tool(C, TOOL_SHOVEL) && user.a_intent == I_DISARM && !(weather_snow > 0))
 		terrain_grade_work(src, user, -1, C)
 		return TRUE
 	return ..()
 
 /turf/floor/dirt/attackby(obj/item/C, mob/user)
-	if (istype(C, /obj/item/weapon/material/shovel) && user.a_intent == I_DISARM && !(weather_snow > 0))
+	if (is_tool(C, TOOL_SHOVEL) && user.a_intent == I_DISARM && !(weather_snow > 0))
 		terrain_grade_work(src, user, -1, C)
 		return TRUE
 	return ..()

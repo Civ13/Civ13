@@ -106,7 +106,7 @@
 	color = "#FFD700"
 /obj/structure/curtain/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (user.a_intent == I_HELP)
-		if ((istype(W, /obj/item/weapon/material/kitchen/utensil/knife)))
+		if ((is_tool(W, TOOL_KNIFE)))
 			visible_message("<span class='warning'>[user] starts to cut down \the [src].</span>")
 			playsound(src, 'sound/items/poster_ripped.ogg', 100, TRUE)
 			if (do_after(user,50,src))

@@ -126,7 +126,7 @@ var/global/list/civ_generators = list()
 	to_chat(user, "Generator [enabled ? "enabled" : "off"].")
 
 /obj/structure/civ_generator/attackby(obj/item/W, mob/user)
-	if (istype(W, /obj/item/weapon/wrench))
+	if (is_tool(W, TOOL_WRENCH))
 		if (powersource)
 			to_chat(user, "Cut the cable first.")
 			return

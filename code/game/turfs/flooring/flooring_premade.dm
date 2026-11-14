@@ -420,9 +420,9 @@
 
 /turf/floor/dirt/underground/attackby(obj/item/W as obj, mob/user as mob)
 	var/mob/living/human/H = user
-	if(istype(W, /obj/item/weapon/chisel))
+	if(is_tool(W, TOOL_CHISEL))
 		var design = "smooth"
-		if (!istype(H.l_hand, /obj/item/weapon/hammer) && !istype(H.r_hand, /obj/item/weapon/hammer))
+		if (!is_tool(H.l_hand, TOOL_HAMMER) && !is_tool(H.r_hand, TOOL_HAMMER))
 			to_chat(user, "<span class = 'warning'>You need to have a hammer in one of your hands to use a chisel.</span>")
 			return
 		else
@@ -487,7 +487,7 @@
 	New()
 		..()
 /turf/floor/dirt/underground/sandy/attackby(obj/item/W as obj, mob/user as mob)
-	if(istype(W, /obj/item/weapon/chisel))
+	if(is_tool(W, TOOL_CHISEL))
 		to_chat(user, "The sandy rock is too brittle to carve!")
 		return//Temp until I feel like improving chisel system.
 	..()
@@ -503,7 +503,7 @@
 	name = "icy rock"
 
 /turf/floor/dirt/underground/icy/attackby(obj/item/W as obj, mob/user as mob)
-	if(istype(W, /obj/item/weapon/chisel))
+	if(is_tool(W, TOOL_CHISEL))
 		to_chat(user, "The frozen rock is too hard to carve!")
 		return //Temp until I feel like improving chisel system.
 	..()

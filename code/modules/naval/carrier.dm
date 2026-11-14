@@ -54,7 +54,7 @@
 	overlays.Cut()
 
 /turf/floor/plating/carrier_deck/attackby(obj/item/weapon/W, mob/user)
-	if (istype(W, /obj/item/weapon/weldingtool) && cratered)
+	if (is_tool(W, TOOL_WELDER) && cratered)
 		to_chat(user, SPAN_NOTICE("You begin welding new plating over the crater..."))
 		if (do_after(user, 100, src) && cratered)
 			repair_crater()
