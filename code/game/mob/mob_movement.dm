@@ -457,6 +457,15 @@
 		if (N.hanging == mob)
 			return
 
+	// On top of a vehicle: walk across its roof or jump off (vehicle_decks.dm).
+	if (mob.vehicle_deck && ishuman(mob))
+		var/mob/living/human/deck_rider = mob
+		if (deck_rider.vehicle_deck_busy)
+			return
+		move_delay = world.time + mob.movement_delay()
+		deck_rider.vehicle_deck_step(direct)
+		return
+
 	// Up a tree: a movement key climbs down (tree_climbing.dm).
 	if (mob.climbed_tree && ishuman(mob))
 		var/mob/living/human/tree_climber = mob

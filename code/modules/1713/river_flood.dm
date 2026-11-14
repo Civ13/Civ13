@@ -302,6 +302,8 @@ var/global/next_river_flood_tick = 0
 	// A save loaded since the last tick brings its own water.
 	if (map.river_flood_state != F.published)
 		F.restore(map.river_flood_state)
+	// Grading and walls built since the last tick (flood_ground.dm).
+	F.process_windows()
 	F.step_minute()
 	F.publish()
 
@@ -325,7 +327,7 @@ var/global/next_river_flood_tick = 0
 	var/r = F.reach_at(T.x, T.y)
 	if (!r || F.stage[r] <= 0)
 		return 0
-	var/threshold = F.threshold_at(T.x, T.y)
+	var/threshold = F.effective_threshold(T)
 	if (isnull(threshold))
 		return 0
 	return max(0, F.stage[r] - flood_ground_level(T, threshold))
@@ -346,7 +348,7 @@ var/global/next_river_flood_tick = 0
 	var/r = F.reach_at(T.x, T.y)
 	if (!r || F.peak[r] <= 0)
 		return 0
-	var/threshold = F.threshold_at(T.x, T.y)
+	var/threshold = F.effective_threshold(T)
 	if (isnull(threshold))
 		return 0
 	return max(0, F.peak[r] - flood_ground_level(T, threshold))

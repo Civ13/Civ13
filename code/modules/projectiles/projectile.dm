@@ -34,6 +34,7 @@
 	var/overcoming_trench = FALSE 				// If bullet flies out of trench, it will be more difficult to hit a target in another trench
 
 	var/fired_from_turret = FALSE
+	var/fired_from_deck_axis = null // Fired from on top of this vehicle (vehicle_decks.dm).
 	var/obj/structure/vehicleparts/axis/fired_from_axis = null
 
 	var/p_x = 16
@@ -199,6 +200,8 @@
 	if (istype(curloc, /turf/floor/trench))
 		launch_from_trench = TRUE
 
+	// Fired from on top of a vehicle: its own walls never stop the shot.
+	fired_from_deck_axis = vehicle_deck_axis(user)
 	if(user.buckled)
 		for (var/obj/structure/turret/T in curloc)
 			fired_from_turret = TRUE
@@ -552,7 +555,7 @@
 		return FALSE
 
 	var/T_density = T.density
-	for (var/atom/movable/AM in T.contents)
+	for (var/atom/movable/AM in projectile_tile_order(T))
 		if (untouchable.Find(AM))
 			continue
 
@@ -563,6 +566,9 @@
 				forceMove(T)
 				permutated += T
 				return TRUE
+			// A shot from on top of this vehicle flies over its own walls.
+			if (fired_from_deck_axis && fired_from_deck_axis == F.axis)
+				continue
 			
 			// Embrasure handling (flying out)
 			var/back_penloc = F.get_wall_name(opposite_direction(direction))
@@ -897,6 +903,20 @@
 	return segment_crosses_box(cx - hx, cy - hy, cx + hx, cy + hy, bx, by, bx + L.bound_width, by + L.bound_height)
 
 // A rider's own shots leave from the mount's tile; the mount must not catch them.
+// What a projectile meets on T, in order. Someone standing on top of a
+// vehicle (vehicle_decks.dm) is above its walls: a shot aimed at them, or
+// fired from on top of a vehicle, reaches them before the walls below.
+/obj/item/projectile/proc/projectile_tile_order(turf/T)
+	var/list/riders = null
+	for (var/mob/living/L in T)
+		if (los_on_vehicle_deck(L) && (L == original || fired_from_deck_axis))
+			if (!riders)
+				riders = list()
+			riders += L
+	if (!riders)
+		return T.contents
+	return riders + (T.contents - riders)
+
 /obj/item/projectile/proc/is_firer_mount(var/atom/movable/AM)
 	if (!ishuman(firer))
 		return FALSE

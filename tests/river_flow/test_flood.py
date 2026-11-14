@@ -125,6 +125,25 @@ class WiringTest(unittest.TestCase):
         for rel in ('code/game/objects/structures/tree_climbing.dm', 'code/game/turfs/wall_decay.dm', 'code/modules/ecology/pollution.dm'):
             self.assertIn('flood_mark_examine(src, user)', read(rel), rel)
 
+    def test_ground_changes_mark_windows(self):
+        ground = (ROOT / 'code/modules/1713/flood_ground.dm').read_text(encoding='utf-8')
+        self.assertIn('flood_ground_changed(src) // Floodwater follows the new ground', (ROOT / 'code/modules/1713/road_tamping.dm').read_text(encoding='utf-8'))
+        self.assertIn('\tF.process_windows()\n\tF.step_minute()', MODULE)
+        self.assertIn('var/threshold = F.effective_threshold(T)', MODULE)
+        # Walls hook New(); barriers/sandbag.dm's New() does not call ..(), so this file must come after it.
+        dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
+        self.assertLess(dme.index('barriers\\sandbag.dm"'), dme.index('1713\\flood_ground.dm"'))
+        window = ground.split('/datum/river_flood/proc/recompute_window(', 1)[1].split('\n/', 1)[0]
+        self.assertNotIn('in world', window)
+        self.assertNotIn('heapq', window)
+        self.assertIn('#define FLOOD_WINDOWS_PER_TICK 6', ground)
+
+    def test_floor_items_only_where_players_look(self):
+        effects = (ROOT / 'code/modules/1713/flood_effects.dm').read_text(encoding='utf-8')
+        view = effects.split('/client/proc/flood_refresh_view()', 1)[1].split('\n/', 1)[0]
+        self.assertIn('flood_items_at(T, band)', view)
+        self.assertEqual(effects.count('flood_items_at('), 2, 'floor items are only visited from the viewer scan')
+
     def test_crops_drown_unless_they_grow_in_water(self):
         effects = (ROOT / 'code/modules/1713/flood_effects.dm').read_text(encoding='utf-8')
         step = effects.split('/obj/structure/farming/plant/proc/flood_plant_step()', 1)[1].split('\n/', 1)[0]

@@ -16,7 +16,7 @@ python3 -m tools.procedural_maps land --template template.json --out lands/24-16
 | --- | --- |
 | `land.dmm` | the region map, two levels (underground z1, surface z2), map **A New Land** (`/obj/map_metadata/nomads/expedition`) |
 | `land.json` | the report: template, attempt, map hash, starts, supplies, timings and `slot_world` |
-| `bundle/` | the generator bundle with a preview image |
+| `bundle/` | the generator's seed manifest and a preview image; `--full-bundle` also keeps the typed IR and its sidecar (about 80 MB for a small land, 880 MB at a million tiles), which `verify` and `playable` read |
 
 ## From template to land
 
@@ -35,17 +35,28 @@ python3 -m tools.procedural_maps land --template template.json --out lands/24-16
   (for example too much water) is retried with a derived seed, at most 8 times;
   the report lists the rejected attempts.
 
-## Timings
+## Timings and sizes
 
-Measured in a cloud container, one run each:
+Measured in a cloud container, one run each, surface lands (islands are a
+little faster):
 
-| Size | Tiles | Total |
-| --- | --- | --- |
-| Tiny | about 200 x 200 | about 11 s |
-| Small | about 300 x 300 | about 29 s |
+| Size | Tiles | Total | Python memory |
+| --- | --- | --- | --- |
+| Tiny | about 200 x 200 | about 3 s | 116 MB |
+| Small | about 300 x 300 | about 7 s | 233 MB |
+| Medium (Gaia) | about 500 x 350 | about 14 s | 431 MB |
+| Massive, at its largest | 690 x 690 | about 42 s | 1.1 GB |
+| Americas size, tool only | 1132 x 920 | about 84 s | 2.0 GB |
 
 Every biome built on its first attempt. The host will be faster or slower; the
 expedition slots will measure the time on Val's host before a crew waits on it.
+
+A side may be 64 to 1280 tiles. A land's world holds both levels of its map,
+and the largest world measured on BYOND so far is about 1.04 million cells, so
+a template is refused when width x height x 2 is more than 1,050,000
+(`MEASURED_CELLS` in `tools/procedural_maps/land.py`): 724 x 724 at most. The
+generator itself runs past that (last row), but such a map is not a land a
+slot may open until a world that size has been measured.
 
 ## Ore, rare finds and game
 

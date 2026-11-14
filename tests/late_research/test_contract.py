@@ -395,5 +395,43 @@ class CompareNotes(unittest.TestCase):
         self.assertIn("#define BOOK_SAMPLE_FIRST_FRACTION 0.2", research)
         self.assertIn("studied_samples.len <= BOOK_SAMPLE_FIRST_KINDS ? BOOK_SAMPLE_FIRST_FRACTION : RESEARCH_SAMPLE_BOOST_FRACTION", research)
 
+class NaturalistFinds(unittest.TestCase):
+    def setUp(self):
+        self.src = read("code/modules/research_tree/naturalist_finds.dm")
+    def test_included(self):
+        self.assertIn('research_tree\\naturalist_finds.dm"', read("civ13.dme"))
+    def test_limits(self):
+        self.assertIn("#define FIND_POINTS 0.05", self.src)
+        self.assertIn("#define FIND_CHAPTER_CAP 0.3", self.src)
+        room = proc(self.src, "/obj/item/weapon/book/proc/find_room")
+        for guard in ("has_research_chapter(node_id)", "has_find(kind)", "FIND_CHAPTER_CAP", "double ? 2 : 1"):
+            self.assertIn(guard, room)
+    def test_gates(self):
+        subjects = proc(self.src, "/proc/find_subjects")
+        for guard in ("map.book_research_enabled()", "node_discipline(node_id) != discipline", "H.knows_recipe_node(node_id) || !H.knows_research_prereqs(node_id)"):
+            self.assertIn(guard, subjects)
+        verb = proc(self.src, "/mob/living/human/proc/record_a_find")
+        for guard in ("held_writing_pen()", "do_reading(", "player_input("):
+            self.assertIn(guard, verb)
+        self.assertIn('gain_active_scholarship(node_id, ., "find:[kind]")', proc(self.src, "/proc/commit_find"))
+    def test_bench_takes_notes(self):
+        self.assertIn("take_find_notes(W, user)", read("code/modules/research_tree/book_research.dm"))
+
+class SubjectDeeds(unittest.TestCase):
+    def setUp(self):
+        self.src = read("code/modules/research_tree/practice_work.dm")
+    def test_deeds_replace_generated_practice(self):
+        build = proc(self.src, "/proc/build_practice_experiments")
+        self.assertLess(build.index("islist(subject_deeds[N.id])"), build.index("practice_items_needed(N)"))
+        self.assertIn('field_experiments["deed_[N.id]_[D[1]]"]', build)
+    def test_crafting_counts_deeds_first(self):
+        note = proc(self.src, "/proc/note_craft_practice")
+        self.assertLess(note.index("note_deed_work(user, result_path_string)"), note.index("get_recipe_node_req(result_path_string)"))
+        self.assertIn('findtext(result_path_string, "[path]/") != 1', proc(self.src, "/proc/note_deed_work"))
+    def test_ten_subjects(self):
+        import re
+        block = self.src[self.src.index("var/global/list/subject_deeds = list("):self.src.index("var/global/list/deed_paths")]
+        self.assertEqual(len(re.findall(r'^\t"\w+" = list\($', block, re.M)), 10)
+
 if __name__ == "__main__":
     unittest.main()

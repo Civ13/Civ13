@@ -1,7 +1,7 @@
 import copy
 import unittest
 from tools.procedural_maps.configuration import preset,validate_config,seed_manifest
-from tools.procedural_maps.validator import canonical_hash
+from tools.procedural_maps.validator import canonical_hash,MAX_SIDE
 
 
 class ConfigurationTests(unittest.TestCase):
@@ -12,7 +12,8 @@ class ConfigurationTests(unittest.TestCase):
     def test_no_invariant_switch(self):
         d=preset();d["disable_river_rules"]=True;self.has(d,"CONFIG_SCHEMA")
     def test_bounds(self):
-        d=preset();d["dimensions"]["width"]=513;self.has(d,"CONFIG_SCHEMA")
+        d=preset();d["dimensions"]["width"]=MAX_SIDE+1;self.has(d,"CONFIG_SCHEMA")
+        d=preset();d["dimensions"]["width"]=MAX_SIDE;self.assertEqual([],validate_config(d))
     def test_mixed_profile_preset(self):
         d=preset();d["preset"]="ARCHIPELAGO";self.has(d,"CONFIG_SCHEMA")
     def test_biome_sum(self):

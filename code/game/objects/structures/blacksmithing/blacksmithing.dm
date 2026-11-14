@@ -19,7 +19,7 @@
 	else
 		icon_state = "[base_icon]_anvil"
 
-/obj/structure/anvil/proc/forge_stack_recipe(obj/item/P, mob/user, mob/living/human/H, choice, material_index, material_name)
+/obj/structure/anvil/proc/forge_stack_recipe(obj/item/P, mob/user, mob/living/human/H, choice, material_index, material_name, picked = null)
 	var/list/newlist = list("Cancel")
 	var/valid_recipes = FALSE // Tracking if any valid recipes are found
 	for(var/i in anvil_recipes)
@@ -30,7 +30,10 @@
 	if (!valid_recipes) // No valid recipes found
 		to_chat(user, "There is nothing that you can craft of this type.")
 		return
-	var/choice2 = WWinput(H, "What do you want to craft?", "Anvil", "Cancel", newlist)
+	// The Crafting window passes the row it already checked; everyone else is asked.
+	var/choice2 = picked
+	if (!choice2)
+		choice2 = WWinput(H, "What do you want to craft?", "Anvil", "Cancel", newlist)
 	if (choice2 == "Cancel")
 		return
 	var/list/parsed_choice2 = splittext(choice2," - ")
@@ -157,86 +160,38 @@
 			else
 				in_use = FALSE
 			update_icon()
+/////////SHEET METALS//////////
+		// The Crafting window lists everything this metal makes here; the pop-up menus below stay as its fallback.
+		else if (anvil_window_shown(P, H))
+			return
 /////////IRON//////////
 		else if (istype(P, /obj/item/stack/material/iron))
-			var/list/optlist = list("cancel")
-			if (H.orc)
-				optlist = list("cancel", "orkish shields", "orkish headwear", "orkish helmets", "orkish armor")
-				if (blackpowder_part_options(P, H).len > 1)
-					optlist += "flintlock parts"
-				var/choice = WWinput(H, "What do you want to craft?", "Anvil", "cancel", optlist)
-				if (choice == "flintlock parts")
-					return forge_blackpowder_part(P, H)
-				if (choice == "cancel")
-					return
-				return forge_stack_recipe(P, user, H, choice, 6, "iron")
-			else
-				optlist = era_pick(list(
-					"0" = list("cancel","shields","helmets","armor"),
-					"1" = list("cancel","shields","helmets","armor"),
-					"2" = list("cancel","shields","helmets","other helmets","armor","other armor","other weapons","sallet helmets","japanese armor","japanese helmets","japanese headwear"),
-					"3" = list("cancel","guns","helmets","other helmets","armor","other armor","other weapons","sallet helmets","japanese armor","japanese helmets","japanese headwear"),
-					"4" = list("cancel","helmets"),
-					"5" = list("cancel","helmets"),
-					"8+" = list("cancel","armor")), optlist)
-				if (blackpowder_part_options(P, H).len > 1)
-					optlist += "flintlock parts"
-				var/choice = WWinput(H, "What do you want to craft?", "Anvil", "cancel", optlist)
-				if (choice == "flintlock parts")
-					return forge_blackpowder_part(P, H)
-				if (choice == "cancel")
-					return
-				return forge_stack_recipe(P, user, H, choice, 6, "iron")
+			var/list/optlist = stack_categories(P, H)
+			var/choice = WWinput(H, "What do you want to craft?", "Anvil", "cancel", optlist)
+			if (choice == "flintlock parts")
+				return forge_blackpowder_part(P, H)
+			if (choice == "cancel")
+				return
+			return forge_stack_recipe(P, user, H, choice, 6, "iron")
 /////////STEEL//////////
 		else if (istype(P, /obj/item/stack/material/steel))
-			var/list/optlist = list("cancel")
-			if (H.orc)
-				//optlist = list("cancel", "orkish shields", "orkish headwear", "orkish helmets") //disabled for now, as no Orkish armour and weapons require steel at the moment
-				if (blackpowder_part_options(P, H).len > 1)
-					optlist += "flintlock parts"
-				var/choice = WWinput(H, "What do you want to craft?", "Anvil", "cancel", optlist)
-				if (choice == "flintlock parts")
-					return forge_blackpowder_part(P, H)
-				if (choice == "cancel")
-					return
-				return forge_stack_recipe(P, user, H, choice, 5, "steel")
-			else
-				optlist = era_pick(list(
-					"2" = list("cancel","japanese armor","japanese helmets","japanese headwear", "other weapons"),
-					"3" = list("cancel","japanese armor","japanese helmets","japanese headwear", "other weapons"),
-					"4" = list("cancel","guns"),
-					"5" = list("cancel","helmets","mk1 brodie","m15 adrian","machine guns"),
-					"6" = list("cancel","helmets","machine guns"),
-					"7" = list("cancel","helmets","ussr heavy visored helmets","guns","machine guns"),
-					"8+" = list("cancel","helmets","guns","machine guns")), optlist)
-
-				if (blackpowder_part_options(P, H).len > 1)
-					optlist += "flintlock parts"
-				var/choice = WWinput(H, "What do you want to craft?", "Anvil", "cancel", optlist)
-				if (choice == "flintlock parts")
-					return forge_blackpowder_part(P, H)
-				if (choice == "cancel")
-					return
-				return forge_stack_recipe(P, user, H, choice, 5, "steel")
+			var/list/optlist = stack_categories(P, H)
+			var/choice = WWinput(H, "What do you want to craft?", "Anvil", "cancel", optlist)
+			if (choice == "flintlock parts")
+				return forge_blackpowder_part(P, H)
+			if (choice == "cancel")
+				return
+			return forge_stack_recipe(P, user, H, choice, 5, "steel")
 ///////////////KEVLAR//////////////
 		else if (istype(P, /obj/item/stack/material/kevlar))
-			var/list/optlist = list("cancel")
-			if (map.ordinal_age >= 7)
-				optlist = list("cancel","helmets","us lwt helmets","pasgt helmets","pasgt armor","armor")
-
+			var/list/optlist = stack_categories(P, H)
 			var/choice = WWinput(H, "What do you want to craft?", "Anvil", "cancel", optlist)
 			if (choice == "cancel")
 				return
 			return forge_stack_recipe(P, user, H, choice, 8, "kevlar")
 /////////BRONZE//////////
 		else if (istype(P, /obj/item/stack/material/bronze))
-			var/list/optlist = list("cancel")
-			optlist = era_pick(list(
-				"0" = list("cancel","shields","helmets","armor"),
-				"1" = list("cancel","shields","helmets","armor"),
-				"2" = list("cancel","shields","helmets","armor"),
-				"3" = list("cancel","helmets")), optlist)
-
+			var/list/optlist = stack_categories(P, H)
 			var/choice = WWinput(H, "What do you want to craft?", "Anvil", "cancel", optlist)
 			if (choice == "cancel")
 				return
@@ -454,6 +409,61 @@
 							return
 					if ("keys")
 						return forge_mold_recipe(ML, user, H, "keys")
+// The cost column and name of a sheet metal the anvil works by hand, or null.
+/obj/structure/anvil/proc/stack_metal(obj/item/P)
+	if (istype(P, /obj/item/stack/material/iron))
+		return list(6, "iron")
+	if (istype(P, /obj/item/stack/material/steel))
+		return list(5, "steel")
+	if (istype(P, /obj/item/stack/material/kevlar))
+		return list(8, "kevlar")
+	if (istype(P, /obj/item/stack/material/bronze))
+		return list(7, "bronze")
+	return null
+
+// The kinds of thing this anvil offers for a sheet metal in hand, "cancel"
+// first, as the menus list them. One table for the menus and the Crafting window.
+/obj/structure/anvil/proc/stack_categories(obj/item/P, mob/living/human/H)
+	var/list/optlist = list("cancel")
+	if (istype(P, /obj/item/stack/material/iron))
+		if (H.orc)
+			optlist = list("cancel", "orkish shields", "orkish headwear", "orkish helmets", "orkish armor")
+		else
+			optlist = era_pick(list(
+				"0" = list("cancel","shields","helmets","armor"),
+				"1" = list("cancel","shields","helmets","armor"),
+				"2" = list("cancel","shields","helmets","other helmets","armor","other armor","other weapons","sallet helmets","japanese armor","japanese helmets","japanese headwear"),
+				"3" = list("cancel","guns","helmets","other helmets","armor","other armor","other weapons","sallet helmets","japanese armor","japanese helmets","japanese headwear"),
+				"4" = list("cancel","helmets"),
+				"5" = list("cancel","helmets"),
+				"8+" = list("cancel","armor")), optlist)
+	else if (istype(P, /obj/item/stack/material/steel))
+		// No Orkish armour or weapons need steel at the moment.
+		if (!H.orc)
+			optlist = era_pick(list(
+				"2" = list("cancel","japanese armor","japanese helmets","japanese headwear", "other weapons"),
+				"3" = list("cancel","japanese armor","japanese helmets","japanese headwear", "other weapons"),
+				"4" = list("cancel","guns"),
+				"5" = list("cancel","helmets","mk1 brodie","m15 adrian","machine guns"),
+				"6" = list("cancel","helmets","machine guns"),
+				"7" = list("cancel","helmets","ussr heavy visored helmets","guns","machine guns"),
+				"8+" = list("cancel","helmets","guns","machine guns")), optlist)
+	else if (istype(P, /obj/item/stack/material/kevlar))
+		if (map.ordinal_age >= 7)
+			optlist = list("cancel","helmets","us lwt helmets","pasgt helmets","pasgt armor","armor")
+	else if (istype(P, /obj/item/stack/material/bronze))
+		optlist = era_pick(list(
+			"0" = list("cancel","shields","helmets","armor"),
+			"1" = list("cancel","shields","helmets","armor"),
+			"2" = list("cancel","shields","helmets","armor"),
+			"3" = list("cancel","helmets")), optlist)
+	else
+		return null
+	// Only iron and steel have flintlock parts; the options proc says so for the rest.
+	if (blackpowder_part_options(P, H).len > 1)
+		optlist += "flintlock parts"
+	return optlist
+
 /obj/structure/anvil/steel
 	name = "steel anvil"
 	desc = "An advanced steel anvil. The blacksmith's main work tool."

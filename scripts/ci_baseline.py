@@ -415,7 +415,8 @@ SUITES = {
                          'icons/effects/weather_roof.dmi', 'code/modules/1713/weather.dm')},
     'river_flow': {'files': ('tests/river_flow/test_generation.py', 'tests/river_flow/test_flood.py'),
         'paths': ('tests/river_flow/', 'scripts/river_flow.py', 'scripts/river_flood.py'),
-        'shared_paths': ('code/modules/1713/river_flow.dm', 'code/modules/1713/river_flood.dm', 'code/modules/1713/flood_effects.dm',
+        'shared_paths': ('code/modules/1713/river_flow.dm', 'code/modules/1713/river_flood.dm', 'code/modules/1713/flood_effects.dm', 'code/modules/1713/flood_ground.dm',
+                         'code/modules/1713/road_tamping.dm', 'code/modules/1713/barriers/sandbag.dm',
                          'code/game/objects/farming.dm', 'code/game/objects/structures/watercloset.dm',
                          'code/modules/1713/rain_gear.dm', 'code/game/mob/mob_movement.dm',
                          'code/processes/weather.dm', 'code/modules/persistence/durable_contract.dm',
@@ -465,6 +466,15 @@ SUITES = {
             'code/modules/1713/barriers/snow_walls.dm',
             'code/game/objects/covers.dm',
             'code/modules/multiz/open_space.dm')},
+    'vehicle_decks': {'files': ('tests/vehicle_decks/test_sources.py',),
+        'paths': ('tests/vehicle_decks/', 'code/modules/1713/machinery/modular_vehicles/vehicle_decks.dm'), 'shared_paths': (
+            'code/modules/visibility/los_terrain.dm',
+            'code/modules/visibility/los_context.dm',
+            'code/_onclick/other_mobs.dm',
+            'code/game/mob/mob_movement.dm',
+            'code/game/objects/structures/tree_climbing.dm',
+            'code/modules/projectiles/projectile.dm',
+            'code/game/mob/living/carbon/human/human.dm')},
     'tree_climbing': {'files': ('tests/tree_climbing/test_sources.py',),
         'paths': ('tests/tree_climbing/', 'code/game/objects/structures/tree_climbing.dm'), 'shared_paths': (
             'code/modules/visibility/los_terrain.dm',
@@ -873,6 +883,10 @@ SUITES = {
         'paths': ('tests/resource_stock/', 'code/_helpers/resource_stock.dm'), 'shared_paths': (
             'code/game/objects/structures/rocks.dm', 'code/modules/1713/obsidian.dm',
             'code/game/objects/structures/ocean_fishing.dm')},
+    'item_wear': {'files': ('tests/item_wear/test_item_wear.py',),
+        'paths': ('tests/item_wear/', 'code/_helpers/item_wear.dm'), 'shared_paths': (
+            'code/game/objects/items/weapons/material/material_weapons.dm',
+            'code/game/objects/items/weapons/shields.dm', 'code/game/objects/items/clothing/clothing.dm')},
     'anchoring': {'files': ('tests/anchoring/test_anchoring.py',),
         'paths': ('tests/anchoring/',), 'shared_paths': ('code/_helpers/tools.dm',)},
     # Solid fuel kinds and per-device rates keep the old hard-coded values.
@@ -1114,6 +1128,11 @@ SUITES = {
     'barter': {'files': ('tests/barter/test_source.py',),
         'paths': ('tests/barter/',), 'shared_paths': (
             'code/modules/1713/barter.dm', 'icons/obj/barter.dmi')},
+    # Bone flute, frame drum, flint sickle and bison herds: source contracts only.
+    'stone_age_extras': {'files': ('tests/stone_age_extras/test_source.py',),
+        'paths': ('tests/stone_age_extras/',), 'shared_paths': (
+            'code/modules/1713/stone_age_extras.dm', 'icons/obj/stone_age_extras.dmi',
+            'code/modules/1713/processing_recipes.dm')},
     'door_intents': {'files': ('tests/door_intents/test_door_intents.py', 'tests/door_intents/test_jail_keys.py'),
         'paths': ('tests/door_intents/',), 'shared_paths': (
             'code/game/objects/structures/door.dm',
@@ -1810,6 +1829,9 @@ SUITES = {
         'shared_paths': ('scripts/build-crafting-atlas.py', 'code/game/mob/crafting_atlas_tgui.dm', 'UI/crafting-atlas.json', 'civ13.dme',
                          'code/modules/magic/')},
     # Source and injected-help contracts only; this suite does not run DM.
+    'clay_lime_fire': {'files': ('tests/clay_lime_fire/test_contract.py',), 'paths': (
+        'tests/clay_lime_fire/', 'code/modules/1713/clay_lime_fire.dm',
+        'icons/obj/workshop_machines.dmi', 'tests/sprites/create_clay_lime_fire.py')},
     # Keep shared production and Atlas sources unmapped so their existing
     # conservative all-suite fallback remains intact.
     'sawmill': {'files': ('tests/sawmill/test_contract.py',
