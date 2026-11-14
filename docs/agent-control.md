@@ -218,6 +218,23 @@ movement delay and is logged to the game log; other character actions reach
 the admin log.
 Controlled characters are not treated as SSD.
 
+### Walk to
+
+`walk_to` (queue only) walks the quickest route to `target`, or to `x`,`y` on
+the character's level, up to 32 tiles away: the route a player gets with
+Ctrl+click (`code/modules/1713/click_route.dm`). The planner weighs each step by
+what Check Movement says it costs (pace, snow, mud, flood, wading and hills),
+goes round walls, locked doors, deep water, lava, open air and fire, never cuts
+a corner, and ends next to a goal that cannot be stood on. The queue takes one
+step per movement delay through the same rules as `move`, and plans again (at
+most three times) when a step is blocked. The step's receipt is `arrived`, or
+`stopped: <reason>` such as `stopped: you are hurt`, `stopped: the wolf is
+close` (a hostile animal that came within 5 tiles) or `stopped: there is no way
+to get there`; a stopped route fails the step, so `stop_on_failure` applies.
+While it walks, `character_observe` `self.route` gives the `goal` and
+`steps_left`; `self.route_last` keeps how the last route ended. For longer
+trips, or across deep water, plan legs with `character_route` first.
+
 ### Change lists, prompts and sounds
 
 Every `character_observe` returns a `rev`. Passing it back as `since_rev`
