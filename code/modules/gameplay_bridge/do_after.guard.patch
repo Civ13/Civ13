@@ -28,7 +28,7 @@
  	if (!isnull(mining_context) && (!istype(mining_context, /datum/pickaxe_mining_action) || !mining_context.claim(user, target)))
  		return FALSE
  	if (mining_context)
-@@ -216,6 +234,11 @@
+@@ -218,6 +236,11 @@
  	. = TRUE
  	while (world.time < endtime)
  		sleep(0.1)
@@ -40,7 +40,7 @@
  		if (mining_context && !mining_context.valid(user, target))
  			. = FALSE
  			break
-@@ -249,6 +272,10 @@
+@@ -253,6 +276,10 @@
  
  	if (progbar)
  		qdel(progbar)

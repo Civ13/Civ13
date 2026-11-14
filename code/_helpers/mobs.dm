@@ -137,7 +137,7 @@ Proc for attack log creation, because really why not
 		log_attack("<font color='red'>[user ? "[user.name][(ismob(user) && user.ckey) ? "([user.ckey])" : ""]" : "NON-EXISTANT SUBJECT"] [what_done] [target ? "[target.name][(ismob(target) && target.ckey)? "([target.ckey])" : ""]" : "NON-EXISTANT SUBJECT"][object ? " with [object]" : " "][addition]</font>")
 
 /mob/var/may_do_mob = TRUE
-/mob/proc/survival_action_started()
+/mob/proc/survival_action_started(atom/target, datum/pickaxe_mining_action/mining_context)
 	return
 /mob/proc/survival_action_finished()
 	return
@@ -147,7 +147,7 @@ Proc for attack log creation, because really why not
 		return FALSE
 
 	user.may_do_mob = FALSE
-	user.survival_action_started()
+	user.survival_action_started(target)
 
 	var/holding = user.get_active_hand()
 	var/datum/progressbar/progbar
@@ -209,7 +209,7 @@ Proc for attack log creation, because really why not
 		return FALSE
 	if (mining_context)
 		mining_context.wait_started = TRUE
-	user.survival_action_started()
+	user.survival_action_started(target, mining_context)
 
 	if (check_for_repeats)
 		user.may_do_after = FALSE

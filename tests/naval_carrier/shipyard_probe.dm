@@ -57,7 +57,7 @@ var/naval_runtime_error = FALSE
 
 	// Research: Naval Aviation follows Powered Flight and Submarines and gates the office.
 	var/datum/research_node/N = get_research_node("naval_aviation")
-	naval_check(N && ("powered_flight" in N.prereqs) && ("submarines" in N.prereqs) && N.category == "Industrial", "Naval Aviation needs Powered Flight and Submarines")
+	naval_check(N && ("powered_flight" in N.prereqs) && ("wagons_ships" in N.prereqs) && N.category == "Industrial", "Naval Aviation needs Powered Flight and Wagons & Ships")
 	naval_check(get_recipe_node_req("/obj/structure/car_workshop/shipyard") == "naval_aviation", "the shipyard office recipe is gated on Naval Aviation")
 
 	// The office stands on a shore tile at (4, 25); the ship's corner is (5, 26).

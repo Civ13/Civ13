@@ -22,7 +22,7 @@ class FactionRecruitmentSource(unittest.TestCase):
 
     def test_state_is_a_durable_map_field(self):
         contract = read('code/modules/persistence/durable_contract.dm')
-        self.assertIn('"faction_renames", "faction_recruitment"),', contract)
+        self.assertIn('"faction_renames", "faction_recruitment"', contract)
         self.assertIn('if(!("faction_recruitment" in schema)) result["faction_recruitment"] = list()', contract)
 
     def test_lifecycle_hooks(self):

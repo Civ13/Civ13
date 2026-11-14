@@ -52,7 +52,8 @@
 	return (digit >> (bit % 4)) & 1
 
 // The chart tile this world sits on: a land across the sea's own tile, else
-// its pin, else the mainland's.
+// its own pin (the mainland is pinned when the chart is made). Other worlds
+// (the Moon, Mars, the rail yard) are not on the chart.
 /proc/voyage_origin()
 	var/key = expedition_land_key()
 	if (key)
@@ -64,8 +65,6 @@
 	if (!islist(pins))
 		return null
 	var/list/at = pins[shard_group.region]
-	if (!islist(at))
-		at = pins[shard_group.mainland]
 	if (!islist(at) || length(at) != 2 || !isnum(at[1]) || !isnum(at[2]))
 		return null
 	return at
@@ -135,6 +134,9 @@
 	var/reason = crossing_refusal(H)
 	if (reason)
 		return reason
+	craft.fit_drives()
+	if (craft.max_speed() < VESSEL_SPEED_SLOW)
+		return "She cannot make a voyage without a way to sail: rig a mast or fit a running engine."
 	if (length(voyage_crew()) < VOYAGE_MIN_CREW)
 		return "A voyage needs at least [VOYAGE_MIN_CREW] of her crew aboard and awake."
 	return null

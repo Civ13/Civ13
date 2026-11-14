@@ -10,14 +10,28 @@ operator can also give a slot a land by hand.
 ## The group config
 
 ```json
-{ "id": "far1", "name": "Far Land 1", "kind": "EXPEDITION", "port": 1751,
-  "transfer_port": 1851, "map": "maps/expedition/slot.dmm" }
+{ "id": "far1", "name": "Far Land 1", "kind": "EXPEDITION", "port": 1811,
+  "transfer_port": 1831, "map": "maps/expedition/slot.dmm" }
 ```
 
 `map` is the placeholder a free slot compiles: open sea over bedrock, 32 x 32.
 A slot cannot be the mainland or the relay gate, and no region may be called
 `expeditions` (the slots keep their lands in that folder of the group root).
 The plan proposes four slots, `far1` to `far4`; the group limit is 16 regions.
+
+### Adding slots to a running group
+
+1. Add the slots to the group config (`far1` to `far4`: ports 1811-1814,
+   transfer ports 1831-1834; each standby port defaults to its port + 10).
+   Check `status` first: the group takes at most 16 regions.
+2. `setup.bat far1` (and so on) for each: it checks out and compiles the
+   placeholder and enrols the slot's agent while the other worlds keep running.
+   Do not start the slots: a free slot stays stopped until a ship needs it.
+3. Open the slots' ports to players as for the other regions.
+4. Within a minute the host service restarts the coordinator with the slots
+   (`coordinator.json` keeps the slot list it was started with).
+5. Check: `expedition-status` lists each slot `FREE`. In game, a ship off the
+   mainland's edge offers **Set out on a voyage**.
 
 ## A slot's life
 
