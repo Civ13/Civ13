@@ -1662,6 +1662,8 @@ RECIPE: /material/rope/,rope hammock,/obj/structure/bed/hammock,6,180,1,1,furnit
 RECIPE: /material/rope/,leash,/obj/item/weapon/leash,1,20,0,1,none,0,0,0,8,null
 RECIPE: /material/rope/,garrote,/obj/item/garrote,3,120,0,1,none,0,43,0,8,null
 RECIPE: /material/rope/,grass carry net,/obj/item/weapon/storage/belt/carry_net,3,60,0,1,none,0,0,0,8,null
+RECIPE: /material/rope/,neck cord,/obj/item/clothing/accessory/storage/lanyard,1,20,0,1,none,0,0,0,8,null
+RECIPE: /material/rope/,pistol lanyard,/obj/item/clothing/accessory/storage/lanyard/pistol,1,40,0,1,none,0,0,0,8,null
 
 //*************************************************************
 //*********************| GLASS |*******************************
@@ -2212,6 +2214,7 @@ RECIPE: /material/brass/,pistol casing (x3),/obj/item/stack/ammopart/casing/pist
 RECIPE: /material/brass/,artillery casing,/obj/item/stack/ammopart/casing/artillery,2,35,0,1,ammunition,105,0,0,8,null
 RECIPE: /material/brass/,field cannon casing,/obj/item/stack/ammopart/casing/tank,2,35,0,1,ammunition,105,0,0,8,null
 RECIPE: /material/brass/,grenade casing,/obj/item/stack/ammopart/casing/grenade,2,35,0,1,ammunition,115,0,0,8,null
+RECIPE: /material/brass/,fob chain,/obj/item/clothing/accessory/storage/lanyard/fob_chain,1,60,0,1,none,0,0,0,8,null
 
 //*******************************************************
 //*********************| WOOD |**************************
@@ -2276,6 +2279,7 @@ RECIPE: /material/wood/,primitive saw mill,/obj/structure/sawmill,28,60,1,1,econ
 RECIPE: /material/wood/soft/,market stall,/obj/structure/vending/sales/market_stall,25,150,1,1,economy & production,24,0,0,8,null
 RECIPE: /material/wood/soft/,supply stall,/obj/structure/supplier,25,150,1,1,economy & production,24,0,0,8,null
 RECIPE: /material/wood/soft/,recruitment station,/obj/structure/recruitment_station,10,150,1,1,economy & production,24,0,0,8,null
+RECIPE: /material/wood/soft/,colony charter,/obj/structure/colony_charter,8,120,1,1,economy & production,24,0,0,8,null
 RECIPE: /material/wood/soft/,stock market,/obj/structure/stockmarket,25,150,1,1,economy & production,24,0,0,8,null
 RECIPE: /material/wood/soft/,money printer,/obj/structure/money_printer,50,150,1,1,economy & production,27,0,0,8,null
 RECIPE: /material/wood/soft/,armourer's post,/obj/structure/specialist_trader/armourer,25,150,1,1,economy & production,24,0,0,8,null
@@ -2936,6 +2940,8 @@ RECIPE: /material/steel/,reactor fuel processor,/obj/structure/reactor_fuel_proc
 RECIPE: /material/leather/,leather saddle,/obj/item/animal_tack/saddle,6,80,0,1,none,0,0,0,8,null
 RECIPE: /material/leather/,leather animal harness,/obj/item/animal_tack/harness,4,60,0,1,none,0,0,0,8,null
 RECIPE: /material/leather/,hide sling bag,/obj/item/weapon/storage/backpack/sling_bag,3,80,0,1,storage,0,0,0,8,null
+RECIPE: /material/leather/,wrist thong,/obj/item/wrist_loop,1,20,0,1,none,0,0,0,8,null
+RECIPE: /material/leather/,sword knot,/obj/item/wrist_loop/sword_knot,1,30,0,1,none,0,0,0,8,null
 //**| SUPPLIED-ITEM RECIPES (#3563) |**
 RECIPE: /material/iron/,screwdriver,/obj/item/weapon/screwdriver,2,50,0,1,tools,18,0,0,8,null
 RECIPE: /material/iron/,lockpick,/obj/item/weapon/lockpick,1,60,0,1,tools,18,0,0,8,null
@@ -2987,6 +2993,7 @@ RECIPE: /material/electronics/,standard power cell,/obj/item/weapon/cell/standar
 RECIPE: /material/plastic/,autoinjector,/obj/item/weapon/reagent_containers/syringe/autoinjector,1,45,0,1,medical,0,0,0,8,null
 RECIPE: /material/plastic/,body bag,/obj/item/bodybag,3,60,0,1,medical,0,0,0,8,null
 RECIPE: /material/plastic/,rubber boots,/obj/item/clothing/shoes/weather/rubber_boots,3,60,0,1,foot wear,0,0,0,8,null
+RECIPE: /material/plastic/,retention lanyard,/obj/item/clothing/accessory/storage/lanyard/retention,1,40,0,1,none,0,0,0,8,null
 RECIPE: /material/steel/,foldable mortar,/obj/item/weapon/foldable/generic,20,400,0,1,weapons,0,0,0,8,null
 RECIPE: /material/steel/,mortar shell,/obj/item/cannon_ball/mortar_shell,6,120,0,1,ammunition,0,0,0,8,null
 RECIPE: /material/steel/,smoke mortar shell,/obj/item/cannon_ball/mortar_shell/smoke,5,120,0,1,ammunition,0,0,0,8,null

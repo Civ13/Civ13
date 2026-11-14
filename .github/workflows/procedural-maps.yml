@@ -5,6 +5,7 @@ on:
     paths:
       - tools/procedural_maps/**
       - tests/procedural_maps/**
+      - tools/transfer_storage/world_chart.py
       - docs/procedural-maps.md
       - .github/workflows/procedural-maps.yml
   push:
@@ -12,6 +13,7 @@ on:
     paths:
       - tools/procedural_maps/**
       - tests/procedural_maps/**
+      - tools/transfer_storage/world_chart.py
       - .github/workflows/procedural-maps.yml
 permissions:
   contents: read

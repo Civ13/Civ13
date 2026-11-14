@@ -948,7 +948,9 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/table/rack" = "basic_furniture",
 		"/obj/structure/table/wood" = "basic_furniture",
 		"/obj/structure/recruitment_station" = "basic_furniture",
-		// --- basic_tools (27) ---
+		"/obj/structure/colony_charter" = "basic_furniture",
+		// --- basic_tools (28) ---
+		"/obj/item/wrist_loop" = "basic_tools",
 		"/obj/structure/converter/tanning" = "basic_tools",
 		"/obj/structure/dehydrator" = "basic_tools",
 		"/obj/item/stack/wooden_dowels" = "basic_tools",
@@ -1028,7 +1030,8 @@ var/global/list/node_grid_col_cache = null
 		// --- cannon (2) ---
 		"/obj/item/cannon_ball" = "cannon",
 		"/obj/structure/cannon" = "cannon",
-		// --- cartridge_ammo (4) ---
+		// --- cartridge_ammo (5) ---
+		"/obj/item/clothing/accessory/storage/lanyard/pistol" = "cartridge_ammo",
 		"/obj/item/ammo_magazine/emptybelt" = "cartridge_ammo",
 		"/obj/item/ammo_magazine/emptymagazine" = "cartridge_ammo",
 		"/obj/item/ammo_magazine/emptymagazine/rifle" = "cartridge_ammo",
@@ -1785,7 +1788,8 @@ var/global/list/node_grid_col_cache = null
 		// geiger counter deliberately NOT here: it's this node's prototype
 		// item, so it must be craftable earlier (it's under factories, era4).
 		"/obj/structure/sign/radiation" = "nuclear_power",
-		// --- optics_instruments (16) ---
+		// --- optics_instruments (17) ---
+		"/obj/item/clothing/accessory/storage/lanyard/fob_chain" = "optics_instruments",
 		"/obj/item/camera/early" = "optics_instruments",
 		"/obj/item/camera_film" = "optics_instruments",
 		"/obj/item/clothing/glasses/gglasses" = "optics_instruments",
@@ -2135,7 +2139,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/catapult" = "siege_engines",
 		// --- steam_power (1) ---
 		"/obj/structure/engine/external/steam" = "steam_power",
-		// --- steel_blades (5) ---
+		// --- steel_blades (6) ---
+		"/obj/item/wrist_loop/sword_knot" = "steel_blades",
 		"/obj/item/clothing/accessory/storage/sheath" = "steel_blades",
 		"/obj/item/clothing/accessory/storage/sheath/daisho" = "steel_blades",
 		"/obj/item/clothing/accessory/storage/sheath/katana" = "steel_blades",
@@ -2229,7 +2234,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/surgery/surgicaldrill" = "surgical_theory",
 		"/obj/structure/bed/chair/wheelchair" = "surgical_theory",
 		"/obj/structure/iv_drip" = "surgical_theory",
-		// --- synthetics (21) ---
+		// --- synthetics (22) ---
+		"/obj/item/clothing/accessory/storage/lanyard/retention" = "synthetics",
 		"/obj/item/clothing/glasses/univisorcyan" = "synthetics",
 		"/obj/item/clothing/glasses/univisorflashy" = "synthetics",
 		"/obj/item/clothing/glasses/univisorgreen" = "synthetics",
@@ -2429,7 +2435,8 @@ var/global/list/node_grid_col_cache = null
 		// --- watermills (2) ---
 		"/obj/structure/sawmill/large" = "watermills",
 		"/obj/structure/sawmill/powered" = "watermills",
-		// --- weaving (89) ---
+		// --- weaving (90) ---
+		"/obj/item/clothing/accessory/storage/lanyard" = "weaving",
 		"/obj/item/clothing/accessory/storage/belt_pouch/cloth" = "weaving",
 		"/obj/structure/component_workbench/armor" = "weaving",
 		"/obj/item/clothing/accessory/armband/armbangle" = "weaving",

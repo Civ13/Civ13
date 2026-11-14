@@ -97,7 +97,8 @@ var/global/list/land_suggestions_told = list() // region id -> the suggestion ad
 	for(var/mob/living/human/H in human_mob_list)
 		if(H.persistence_owner_ckey && H.stat != DEAD && !QDELETED(H))
 			living++
-	var/list/answer = transfer_bridge.request("/land/sample", list("players" = length(clients), "living" = living))
+	var/list/colonies = map ? map.colony_report() : list()
+	var/list/answer = transfer_bridge.request("/land/sample", list("players" = length(clients), "living" = living, "colonies" = colonies))
 	return answer && answer["ok"]
 
 // A refresh when the copy is older than LAND_STAGE_REFRESH; called by the
