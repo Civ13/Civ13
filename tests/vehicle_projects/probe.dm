@@ -8,7 +8,7 @@
 	hub = ""
 	hub_password = ""
 	maxx = 40
-	maxy = 30
+	maxy = 40
 	maxz = 1
 	turf = /turf
 	area = /area
@@ -211,7 +211,7 @@ var/project_runtime_error = FALSE
 	for (var/model in works_vehicle_specs)
 		spots[model] = list(5 + 7 * (spot_index % 5), 12 + 8 * round(spot_index / 5))
 		spot_index++
-	project_check(spots.len == 10, "ten works models ([spots.len])")
+	project_check(spots.len == 11, "eleven works models ([spots.len])")
 	for (var/model in spots)
 		var/list/spot = spots[model]
 		var/obj/structure/car_workshop/project_probe/V = new(locate(spot[1], spot[2], 1))
@@ -244,8 +244,8 @@ var/project_runtime_error = FALSE
 		var/shells = 0
 		var/turrets = 0
 		var/frames = 0
-		for (var/dx = 1, dx <= 4, dx++)
-			for (var/dy = 1, dy <= 4, dy++)
+		for (var/dx = 1, dx <= size, dx++)
+			for (var/dy = 1, dy <= size, dy++)
 				var/turf/T = locate(V.x + dx, V.y + dy, 1)
 				for (var/atom/movable/O in T)
 					if (istype(O, /obj/item/weapon/gun) || istype(O, /obj/item/ammo_magazine) || istype(O, /obj/structure/supply_crate) || istype(O, /obj/structure/bed/chair/mgunner))
