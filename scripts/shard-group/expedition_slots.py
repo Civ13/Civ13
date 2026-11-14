@@ -31,6 +31,12 @@ if str(ROOT) not in sys.path:
 SLOT_SCHEMA = 'civ13-expedition-slot/1'
 # What the slot world reads about its land (code/modules/persistence/expedition_land.dm).
 WORLD_FILE = 'config/expedition_land.json'
+# The land's hill levels, river currents and flood reaches (tools/procedural_maps/terrain_files.py),
+# beside its map in the land folder and where the slot world reads them. The game finds the
+# other two from the first name.
+TERRAIN_FILES = (('land.heights.txt', 'config/expedition_heights.txt'),
+                 ('land.flow.txt', 'config/expedition_heights.flow.txt'),
+                 ('land.flood.txt', 'config/expedition_heights.flood.txt'))
 # A world's save: moved aside together when a slot is archived (as fresh_world.WORLD_PATHS).
 WORLD_PATHS = ('map_saves', 'map_backups', 'map_rollback')
 STATES = ('FREE', 'LAND')
@@ -250,10 +256,17 @@ def land_map(group, region):
 
 
 def place_world_file(group, region, path):
-    """Write (or, for a free slot, remove) the slot world's WORLD_FILE in a region worktree.
-    Returns the slot's land map path, or None."""
+    """Write (or, for a free slot, remove) the slot world's WORLD_FILE and its land's
+    terrain files in a region worktree. Returns the slot's land map path, or None."""
     target = Path(path) / WORLD_FILE
     held = land_map(group, region)
+    for name, place in TERRAIN_FILES:
+        source = held[0].parent / name if held else None
+        if source is not None and source.is_file():
+            (Path(path) / place).parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(source, Path(path) / place)
+        else:  # a free slot, or a land made before lands had them: the world is flat
+            (Path(path) / place).unlink(missing_ok=True)
     if held is None:
         target.unlink(missing_ok=True)
         return None
