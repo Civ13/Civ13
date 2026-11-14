@@ -27,6 +27,7 @@ MEMBERSHIP = 'code/game/mob/groups/faction_membership.dm'
 FACTIONS = 'code/game/mob/groups/factions.dm'
 RESEARCH = 'code/modules/research_tree/research_faction.dm'
 RENAME = 'code/game/mob/groups/faction_rename.dm'
+ROSTER = 'code/game/mob/groups/faction_roster.dm'
 
 # Each control breaks one rule; the probe must then fail.
 CONTROLS = {
@@ -36,6 +37,8 @@ CONTROLS = {
     'reviewer': (RECRUITMENT, '\tif (!can_recruit_for_faction(R, faction))\n\t\treturn "You can\'t review', '\tif (FALSE)\n\t\treturn "You can\'t review'),
     'leader-policy': (RECRUITMENT, '\tif (!is_faction_leader(H, faction) || H.stat == DEAD)\n', '\tif (H.stat == DEAD)\n'),
     'cooldown': (MEMBERSHIP, '\tif (faction_rejoin_blocked(faction))\n', '\tif (FALSE)\n'),
+    'member-limit': (MEMBERSHIP, '\tif (map && map.faction_full_for(faction, faction_roster_account(src)))\n', '\tif (FALSE)\n'),
+    'leave-roster': (FACTIONS, '\t\tmap.faction_roster_remove(civilization, faction_roster_account(src))\n', ''),
 }
 
 
@@ -52,6 +55,7 @@ def build(directory, control):
         'leaving.dm': proc_text(read(FACTIONS, control), '/mob/living/human/proc/faction_leaving_proc()'),
         'leader.dm': proc_text(research, '/obj/map_metadata/proc/is_faction_leader(') + '\n' + proc_text(research, '/proc/faction_is_extant('),
         'rename.dm': proc_text(read(RENAME, control), '/proc/faction_rename_assoc_key('),
+        'roster.dm': read(ROSTER, control),
     }
     for name, text in parts.items():
         (directory / name).write_text(text, encoding='utf-8')

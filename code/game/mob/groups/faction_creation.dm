@@ -182,6 +182,8 @@
 
 	var/newname = draft_name
 	owner.civilization = newname
+	// The founder is the first member on the roster (faction_roster.dm).
+	map.faction_roster_add(newname, faction_roster_account(owner))
 	owner.leader = TRUE
 	owner.faction_perms = list(1,1,1,1)
 	map.custom_faction_nr += newname

@@ -43,6 +43,12 @@ RECRUITMENT_EXPIRY_DAYS 7
 RECRUITMENT_QUEUE_LIMIT 50
 RECRUITMENT_COOLDOWN_MINUTES 5
 
+## Faction members: accounts a faction may hold (2-500; a leader may set a lower
+## limit) and days without playing a member before an account leaves the roster
+## (1-90). Members on the roster may start new characters with their faction.
+FACTION_MEMBER_LIMIT 20
+FACTION_ROSTER_IDLE_DAYS 14
+
 ## log OOC channel
 LOG_OOC
 

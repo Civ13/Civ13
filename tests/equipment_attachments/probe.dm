@@ -113,3 +113,46 @@ var/ea_runtime_error = FALSE
 	ea_check(!H.w_uniform && H.belt == belt, "the belt stays on without clothes")
 	shirt.loc = T
 	ea_check(!attachment_strip_valid(first, shirt, H), "attachments on dropped clothes are not strip targets")
+
+	// Belt points: two pouches, one sheath or holster, one tool loop.
+	var/obj/item/clothing/pouch_belt/rig = new(T)
+	var/obj/item/clothing/accessory/storage/sheath/sheath = new(T)
+	var/obj/item/clothing/accessory/storage/sheath/knife/knife_sheath = new(T)
+	var/obj/item/clothing/accessory/holster/holster = new(T)
+	var/obj/item/clothing/accessory/storage/webbing/webbing = new(T)
+	var/obj/item/clothing/accessory/storage/tool_loop/tool_loop = new(T)
+	var/obj/item/clothing/accessory/storage/tool_loop/spare_loop = new(T)
+	ea_check(rig.can_attach_accessory(sheath) && rig.can_attach_accessory(holster) && rig.can_attach_accessory(tool_loop), "a belt takes a sheath, a holster or a tool loop")
+	ea_check(!rig.can_attach_accessory(webbing), "a belt does not take webbing")
+	rig.accessories += sheath
+	sheath.on_attached(rig, H)
+	ea_check(!rig.can_attach_accessory(knife_sheath) && !rig.can_attach_accessory(holster), "one sheath or holster per belt")
+	ea_check(rig.can_attach_accessory(tool_loop) && rig.can_attach_accessory(second), "a sheath leaves the loop and pouch points free")
+	rig.accessories += tool_loop
+	tool_loop.on_attached(rig, H)
+	ea_check(!rig.can_attach_accessory(spare_loop), "one tool loop per belt")
+	ea_check(/obj/item/clothing/accessory/storage/sheath/verb/sheathe_verb in rig.verbs, "a belt with a sheath offers the draw and sheathe verb")
+
+	// The tool loop holds one thing made for the belt.
+	var/obj/item/weapon/hammer/hammer = new(T)
+	var/obj/item/weapon/hammer/hammer_two = new(T)
+	var/obj/item/stack/material/wood/planks = new(T)
+	ea_check(hammer.slot_flags & SLOT_BELT, "a hammer is belt gear")
+	ea_check(tool_loop.hold.can_be_inserted(hammer, TRUE), "a hammer hangs in the tool loop")
+	ea_check(!tool_loop.hold.can_be_inserted(planks, TRUE), "planks do not hang in the tool loop")
+	ea_check(!tool_loop.hold.can_be_inserted(second, TRUE), "a pouch does not hang in the tool loop")
+	hammer.loc = tool_loop.hold
+	ea_check(!tool_loop.hold.can_be_inserted(hammer_two, TRUE), "the tool loop holds one thing")
+
+	// The shoulder belt: two pouches, or one sword and a pouch.
+	var/obj/item/clothing/accessory/storage/baldric/baldric = new(T)
+	var/obj/item/weapon/material/sword/sword = new(T)
+	var/obj/item/weapon/material/sword/sword_two = new(T)
+	var/obj/item/clothing/accessory/storage/belt_pouch/third = new(T)
+	ea_check(baldric.hold.can_be_inserted(sword, TRUE), "a sword hangs from the shoulder belt")
+	sword.loc = baldric.hold
+	ea_check(!baldric.hold.can_be_inserted(sword_two, TRUE), "only one sword hangs from the shoulder belt")
+	ea_check(baldric.hold.can_be_inserted(second, TRUE), "a pouch still fits beside the sword")
+	second.loc = baldric.hold
+	ea_check(!baldric.hold.can_be_inserted(third, TRUE), "the shoulder belt has two places")
+	ea_check(!baldric.hold.can_be_inserted(hammer_two, TRUE), "the shoulder belt does not carry tools")

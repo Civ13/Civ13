@@ -27,7 +27,14 @@ Belts: the leather belt (1 leather) is worn in the belt slot and takes up to
 two pouches, drawn on the wearer; clicking the worn belt opens them. The
 shoulder belt (2 leather) is a cross-body strap attached to clothing in the
 sash accessory slot, so it is worn together with the waist belt without a
-second belt slot; it holds two pouches. Both need Basic Toolmaking.
+second belt slot; it holds two pouches, or one sword and a pouch. Both need
+Basic Toolmaking.
+
+Belt points: besides its two pouches the leather belt takes one sheath or
+holster and one tool loop (1 leather, Basic Toolmaking). The loop holds one
+item that can be worn in the belt slot, other than bags, clothing and guns.
+A worn belt with several attachments opens the attachment strip
+(`code/_onclick/hud/attachment_strip.dm`).
 
 ## Art
 

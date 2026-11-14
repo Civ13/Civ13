@@ -9,6 +9,7 @@
 		verbs += /mob/living/human/proc/create_company
 		verbs += /mob/living/human/proc/transfer_company_stock
 		verbs += /mob/living/human/proc/recruitment_applications
+		verbs += /mob/living/human/proc/set_faction_member_limit
 
 /mob/living/human/proc/make_nation()
 	if (map.civilizations)
@@ -22,6 +23,7 @@
 		verbs += /mob/living/human/proc/create_company
 		verbs += /mob/living/human/proc/transfer_company_stock
 		verbs += /mob/living/human/proc/recruitment_applications
+		verbs += /mob/living/human/proc/set_faction_member_limit
 
 /mob/living/human/proc/make_tribesman()
 	verbs += /mob/living/human/proc/transfer_faction
@@ -131,6 +133,8 @@
 	left_factions += list(list(civilization,world.realtime+864000)) //24 hours
 	if (map)
 		map.clear_faction_leader(src, civilization)
+		// Leaving ends the account's membership (faction_roster.dm).
+		map.faction_roster_remove(civilization, faction_roster_account(src))
 	// Shed any research-tree appointment so it can't carry into a new faction.
 	if (map && map.faction_research_director[civilization] == src)
 		map.faction_research_director[civilization] = null
