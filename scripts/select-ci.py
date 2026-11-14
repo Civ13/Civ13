@@ -122,7 +122,7 @@ FIREMAN_CARRY_OFFLINE_TESTS = frozenset({'tests/fireman_carry/test_source.py', '
                                          'tests/fireman_carry/run_native.py'})
 
 # Offline source contract plus the opt-in native probe (run by hand, not CI).
-DIVINE_APPROVAL_OFFLINE_TESTS = frozenset({'tests/divine_approval/test_contract.py', 'tests/divine_approval/test_divine_book.py', 'tests/divine_approval/probe.dm'})
+DIVINE_APPROVAL_OFFLINE_TESTS = frozenset({'tests/divine_approval/test_contract.py', 'tests/divine_approval/test_divine_book.py', 'tests/divine_approval/test_mundane_gear.py', 'tests/divine_approval/probe.dm'})
 
 # Exact stdlib-only mood projections, registered in the bounded offline baseline.
 MOOD_SLEEP_OFFLINE_TESTS = frozenset({'tests/mood_sleep/test_mood_sleep.py'})
