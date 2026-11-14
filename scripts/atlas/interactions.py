@@ -25,6 +25,7 @@ GROWN_STEEP = 'code/modules/1713/herb_garden.dm'
 MORTAR = 'code/modules/1713/herbalism.dm'
 KNAP = 'code/modules/1713/flint_mining.dm'
 KNAP_EXTRA = 'code/modules/1713/stone_age_arms.dm'
+OBSIDIAN = 'code/modules/1713/obsidian.dm'
 FARMING = 'code/game/objects/farming.dm'
 SHELL = 'code/modules/1713/herb_garden.dm'
 FISH = 'code/modules/reagents/reagent_containers/food/snacks/meat.dm'
@@ -186,6 +187,38 @@ def add_interactions(files, add, records, covered):
                f'"{choice}" ({delay // 10} seconds before dexterity).',),
               'The flint can shatter into a shard; crafting skill lowers the chance.', ('Hammerstone',),
               era='Basic Toolmaking research rules apply where the recipe is gated.')
+
+    # Obsidian: knapping a nodule, pressure blades off a core, nodules from rough obsidian.
+    obs = files[OBSIDIAN]
+    require(obs, OBSIDIAN, '/obj/item/weapon/obsidian_nodule/proc/knap(mob/living/human/H, obj/item/hammer)',
+            'obsidian_is_hammerstone(W)', 'var/delay = 40', 'var/fail_chance = 5',
+            '/obj/item/weapon/obsidian_core/attackby(obj/item/W, mob/user)', 'is_pressure_flaker(W)',
+            'new /obj/item/stack/obsidian_blades(T, count)', '/obj/item/stack/ore/obsidian/attackby(obj/item/W, mob/user)')
+    body = obs[obs.index('/obj/item/weapon/obsidian_nodule/proc/knap('):].split('\n/', 1)[0]
+    delays = dict(re.findall(r'if \("([^"]+)"\)\s*\n\s*delay = (\d+)', body))
+    products = re.findall(r'if \("([^"]+)"\)\s*\n(?:\s*if \([^\n]*\n\s*note_craft_practice[^\n]*\n)?'
+                          r'\s*result = new (/[\w/]+)\(T(?:, (\w+))?\)', body)
+    if not products:
+        raise ValueError(f'{OBSIDIAN} changed (no knapping results found): review scripts/atlas/interactions.py')
+    for choice, product, count in products:
+        amount = int(count) if count.isdigit() else numbers.get(count, 1) if count else 1
+        delay = int(delays.get(choice, 40))
+        route(f'Knap {choice.lower()} from obsidian', 'Knapping', [('/obj/item/weapon/obsidian_nodule', 1)],
+              [(product, amount)], OBSIDIAN, line_of(obs, f'if ("{choice}")'),
+              ('Hold a hammerstone and use it on an obsidian nodule in your other hand or next to you, then choose '
+               f'"{choice}" ({delay // 10} seconds before dexterity).',),
+              'The glass can shatter into a shard; crafting skill lowers the chance.', ('Hammerstone',),
+              era='Basic Toolmaking or Stone Arms research rules apply where the result is gated.')
+    route('Press prismatic blades off an obsidian core', 'Knapping', [('/obj/item/weapon/obsidian_core', 1)],
+          [('/obj/item/stack/obsidian_blades', numbers.get('OBSIDIAN_BLADES_PER_CORE', 6))], OBSIDIAN,
+          line_of(obs, '/obj/item/weapon/obsidian_core/attackby'),
+          ('Hold an antler pick or a piece of bone and use it on the blade core (8 seconds before dexterity).',),
+          'The core can snap and give only 2 blades; crafting skill lowers the chance.',
+          ('/obj/item/weapon/material/pickaxe/antler',))
+    route('Knock a nodule off rough obsidian', 'Knapping', [('/obj/item/stack/ore/obsidian', 1)],
+          [('/obj/item/weapon/obsidian_nodule', 1)], OBSIDIAN, line_of(obs, '/obj/item/stack/ore/obsidian/attackby'),
+          ('Hold a hammerstone and use it on rough obsidian (3 seconds).',), 'One rough obsidian per nodule.',
+          ('Hammerstone',))
 
     # Wild herb patches: pick by hand on help intent.
     for typepath in sorted(types):

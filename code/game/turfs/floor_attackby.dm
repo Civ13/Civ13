@@ -897,6 +897,7 @@
 		H.adaptStat("strength", 1) // One completed action, even with several ores.
 	mining_flint_nodules(H, area_above) // Independent of the ore rolls; see flint_mining.dm.
 	mining_gem_pocket(H) // Independent of the ore rolls; see gemstones.dm.
+	mining_obsidian(H) // Independent of the ore rolls; see obsidian.dm.
 	if (prob(12))
 		var/obj/item/stack/ore/copper/mineral = new/obj/item/stack/ore/copper(src)
 		mineral.amount = rand(12,24)
@@ -1040,17 +1041,6 @@
 		if (H)
 			var/material/M = get_material_by_name("marble")
 			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[M.icon_colour]><b>marble</font> rocks</b>!"))
-		change_the_turf()
-		return
-	else if(geology_allowed && (prob(20) && (area_above && area_above.climate == "jungle") && map.ordinal_age >=1 && map.ordinal_age <= 3))
-		var/obj/item/stack/ore/obsidian/mineral = new/obj/item/stack/ore/obsidian(src)
-		var/obj/item/stack/material/stone/bonusstone = new/obj/item/stack/material/stone(src)
-		bonusstone.amount = rand(8,12)
-		mineral.amount = rand(16,24)
-		if (istype(get_area(src), /area/caribbean/void/caves/special))
-			mineral.amount *= 2
-		if (H)
-			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=#060606><b>obsidian</font> rocks</b>!"))
 		change_the_turf()
 		return
 	else if(geology_allowed && (prob(20) && (map.ID == MAP_NOMADS_PANGEA || map.ID == MAP_NOMADS_CONTINENTAL || map.ID == MAP_NOMADS_NEW_WORLD && map.ID == MAP_NOMADS_MEDITERRANEAN) && area_above && area_above.climate == "temperate" || area_above && area_above.climate == "semiarid" && map.ordinal_age >=1))
