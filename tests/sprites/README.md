@@ -127,3 +127,5 @@ listing was retained. These limits are not waived by a green workflow.
 `create_clay_lime_fire.py` owns `icons/obj/workshop_machines.dmi`: the potter's wheel, bellows, brick mould bench, lime kiln and quicklime. `--check` verifies the committed sheet, `--preview <png>` writes a review sheet on grass, stone, snow and night.
 
 `create_glass_stone.py` owns `icons/obj/glass_stone_machines.dmi`: the glassblowing bench and the mason's saw with their working loops. `--check` verifies the committed sheet, `--preview <png>` writes a review sheet.
+
+`create_lifting.py` owns `icons/obj/lifting_machines.dmi`: the shear legs and their hauling loop. `--check` verifies the committed sheet, `--preview <png>` writes a review sheet.
