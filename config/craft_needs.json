@@ -91,5 +91,11 @@
       "/obj/item/machine_part/bearing": 2,
       "/obj/item/machine_part/belt": 1
     }
+  },
+  "/obj/structure/fluid_pump/hand": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/machine_part/shaft": 1
+    }
   }
 }
