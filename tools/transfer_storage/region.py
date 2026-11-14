@@ -12,6 +12,7 @@ lacks a journaled effect gets it back to replay, so a trip takes seconds rather
 than two world saves.
 """
 import hashlib
+import re
 import secrets
 import json
 import sqlite3
@@ -204,6 +205,12 @@ class RegionStore(TrainLeaseQueue):
         db.execute('''CREATE TABLE IF NOT EXISTS land_request(
             id INTEGER PRIMARY KEY AUTOINCREMENT, region TEXT NOT NULL, stage TEXT NOT NULL,
             paused INTEGER NOT NULL, admin TEXT NOT NULL)''')
+        # The world chart (docs/world-chart.md): this region's copy, and admin
+        # chart requests waiting for the coordinator's next pass.
+        db.execute("INSERT OR IGNORE INTO meta VALUES ('chart', '{}')")
+        db.execute('''CREATE TABLE IF NOT EXISTS chart_request(
+            id INTEGER PRIMARY KEY AUTOINCREMENT, op TEXT NOT NULL, x INTEGER NOT NULL, y INTEGER NOT NULL,
+            owner TEXT, admin TEXT NOT NULL)''')
         db.execute("INSERT OR IGNORE INTO meta VALUES ('train_history', '0')")
         self.init_train_leases()
         db.execute('CREATE TABLE IF NOT EXISTS train_home_lock(ckey TEXT PRIMARY KEY)')
@@ -773,10 +780,13 @@ class RegionStore(TrainLeaseQueue):
                 'land_sample': json.loads(self._meta('land_sample') or 'null'),
                 'land_requests': [dict(zip(('id', 'region', 'stage', 'paused', 'admin'), (i, r, st, bool(p), a)))
                                   for i, r, st, p, a in self.db.execute(
-                                      'SELECT id, region, stage, paused, admin FROM land_request ORDER BY id')]}
+                                      'SELECT id, region, stage, paused, admin FROM land_request ORDER BY id')],
+                'chart_rev': json.loads(self._meta('chart')).get('key'),
+                'chart_requests': [dict(zip(('id', 'op', 'x', 'y', 'owner', 'admin'), row)) for row in self.db.execute(
+                    'SELECT id, op, x, y, owner, admin FROM chart_request ORDER BY id')]}
 
     def apply_homes(self, epoch, rev, rows, done, reset=False, mainland=None, train_locks=None, train_decisions=None,
-                    lands=None, land_done=None):
+                    lands=None, land_done=None, chart=None, chart_done=None):
         """The coordinator's answer: ledger rows newer than our copy (region
         None removes a home) and the request ids it has decided."""
         if not isinstance(epoch, str) or not epoch or not isinstance(rev, int) or rev < 0:
@@ -816,6 +826,14 @@ class RegionStore(TrainLeaseQueue):
                 self._set_meta('lands', json.dumps(lands, sort_keys=True))
             for request_id in land_done or []:
                 self.db.execute('DELETE FROM land_request WHERE id = ?', (int(request_id),))
+            # The chart comes only when ours is older; keep ours otherwise.
+            if chart is not None:
+                if type(chart) is not dict or not isinstance(chart.get('key'), str) or type(chart.get('rows')) is not list \
+                        or not all(isinstance(r, str) for r in chart['rows']) or type(chart.get('tiles')) is not dict:
+                    raise TransferError('invalid world chart snapshot')
+                self._set_meta('chart', json.dumps(chart, sort_keys=True))
+            for request_id in chart_done or []:
+                self.db.execute('DELETE FROM chart_request WHERE id = ?', (int(request_id),))
         return {'rev': rev}
 
     # -- land stages ---------------------------------------------------------
@@ -855,6 +873,32 @@ class RegionStore(TrainLeaseQueue):
                 'pending': [dict(zip(('region', 'stage', 'paused', 'admin'), (r, st, bool(p), a)))
                             for r, st, p, a in self.db.execute(
                                 'SELECT region, stage, paused, admin FROM land_request ORDER BY id')]}
+
+    # -- world chart ---------------------------------------------------------
+
+    def request_chart(self, op, x, y, admin, owner=None):
+        """An admin's chart change from this world, decided on the
+        coordinator's next pass: 'reroll' a charted tile, or 'reveal' the tiles
+        round one for an owner."""
+        if op not in ('reroll', 'reveal'):
+            raise TransferError('unknown chart request')
+        if type(x) is not int or type(y) is not int or not 0 <= x < 1000 or not 0 <= y < 1000:
+            raise TransferError('bad chart tile')
+        if not account_key_valid(admin):
+            raise TransferError('bad admin key')
+        if op == 'reveal' and not (isinstance(owner, str) and re.match(r'^(admin|faction:[a-z0-9_\-]{1,40}|crew:[a-z0-9_\-]{1,40})$', owner)):
+            raise TransferError('bad chart owner')
+        with self._tx():
+            cursor = self.db.execute('INSERT INTO chart_request(op, x, y, owner, admin) VALUES (?, ?, ?, ?, ?)',
+                                     (op, x, y, owner if op == 'reveal' else None, admin))
+        return {'id': cursor.lastrowid}
+
+    def chart(self):
+        """The world chart as last sent by the coordinator, and the admin
+        changes still waiting for it."""
+        return {'chart': json.loads(self._meta('chart')),
+                'pending': [dict(zip(('op', 'x', 'y', 'owner', 'admin'), row)) for row in self.db.execute(
+                    'SELECT op, x, y, owner, admin FROM chart_request ORDER BY id')]}
 
     # -- inspection ---------------------------------------------------------
 
