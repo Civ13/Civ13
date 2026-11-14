@@ -496,7 +496,7 @@
 					catch
 						// Diagnostics must not replace the original refusal.
 						last_save_reference_failure = null
-					if(content) delete_unheld_save_animal(content, "turf contents")
+					if(content) fail_save_on_animal(content, "turf contents")
 					throw EXCEPTION("Child moved or disappeared during capture")
 				add_export_content(frame, child_ref)
 				save_work_check()
@@ -1249,6 +1249,7 @@
 		if(world.tick_usage >= 80)
 			no_headroom = TRUE
 	if(!A || record["atom"] != A || "\ref[A]" != record["identity"] || !moving_save_root_supported(A) || A.z != record["z"] || A.z != saving_z)
+		if(A && record["atom"] == A) fail_save_on_animal(A, "changed while the save waited for headroom")
 		throw EXCEPTION("Admitted moving save root changed containment, level or identity")
 	// Admission ran when the save began; a level can take minutes to reach
 	// this animal. If it has since picked up a reference to another movable
@@ -1291,9 +1292,12 @@
 		// A save hook changed the root itself (Gaia, 2026-11-14, a sea animal
 		// during a handover save): the same root must not refuse the next save.
 		if(findtext("[error]", "root changed during capture")) moving_save_demoted[record["identity"]] = TRUE
-		// It moved although its level is held still: delete it, so the next save
-		// cannot fail on it again (Val, 2026-11-14).
-		if(A && origin && A.loc != origin) delete_unheld_save_animal(A, "moving-save capture")
+		// An animal must never fail a save (Val, 2026-11-14). One that moved or
+		// changed although its level is held still is deleted; either way
+		// savemap() saves again at once without it on the moving path.
+		var/changed = !A || A.gcDestroyed || A.loc != origin || findtext("[error]", "root changed during capture")
+		if(A) fail_save_on_animal(A, "moving-save capture", changed)
+		else save_animal_failure = "[root_type] (deleted during moving-save capture)"
 		throw error
 	moving_save_chunk = null
 	if(chunk.overrun_usage || chunk.overrun_elapsed_ds)
@@ -1338,10 +1342,21 @@
 		if(islist(value) ? length(value) : value) return "reason=field [key] set"
 	return "reason=unknown"
 
-// The fallback for an animal that moved while its level was held still
-// (ecology_animal_frozen): its capture already failed this save, so it is
-// deleted and the next save cannot fail on it. Only an uncontrolled, living or
-// dead simple animal; players, their mobs and everything else are left alone.
+// An animal must never be why a save fails (Val, 2026-11-14). When its capture
+// fails, the animal is deleted (remove = FALSE leaves it to the caller's
+// demotion off the moving path) and save_animal_failure tells savemap() to save again at once, so the
+// attempt never reaches the host as a failure. Only uncontrolled simple
+// animals: a player's mob is never deleted and its failure stays a failure.
+/map_storage/var/tmp/save_animal_failure
+
+/map_storage/proc/fail_save_on_animal(mob/living/simple_animal/A, where, remove = TRUE)
+	if(!istype(A) || A.client || A.ckey) return FALSE
+	save_animal_failure = "[A.type] ([where])"
+	if(remove) delete_unheld_save_animal(A, where)
+	return TRUE
+
+// Deletes an animal that moved or changed while its level was held still
+// (ecology_animal_frozen), after its capture failed.
 /map_storage/proc/delete_unheld_save_animal(mob/living/simple_animal/A, where)
 	if(!istype(A) || A.gcDestroyed || A.client || A.ckey) return FALSE
 	var/turf/T = get_turf(A)
@@ -1412,7 +1427,7 @@
 			// Capture yields. Apply the traversal's post-child rule: only a
 			// step to another tile of this level keeps the captured origin.
 			if(!A || A.gcDestroyed || !isturf(A.loc) || A.z != saving_z || saving_reference_pins[ref] != A)
-				if(A && !A.gcDestroyed && A.loc != origin) delete_unheld_save_animal(A, "uncaptured animal sweep")
+				if(A) fail_save_on_animal(A, "uncaptured animal sweep")
 				throw EXCEPTION("Swept mob moved or disappeared during capture")
 			if(saving_reference_pins[parent_ref] != origin)
 				throw EXCEPTION("Uncaptured mob origin turf was replaced")
@@ -1440,6 +1455,14 @@
 		// left to persist; omitting it matches the live world.
 		if(!ref && (!A || A.gcDestroyed)) continue
 		if(!A || "\ref[A]" != identity || !moving_save_root_supported(A) || A.z != saving_z)
+			// Not captured yet: nothing is reserved for it, so it leaves the
+			// roster and the straggler sweep saves it like any other animal
+			// instead of failing the save (Val, 2026-11-14).
+			if(!ref)
+				moving_save_roots -= identity
+				continue
+			if(A && record["atom"] == A) fail_save_on_animal(A, "moving-save roster")
+			else if(!A || A.gcDestroyed) save_animal_failure = "a moving-save root deleted during the save (moving-save roster)"
 			throw EXCEPTION("Moving save roster member disappeared or changed ownership")
 		if(!ref)
 			ref = capture_moving_save_root(F, record)
@@ -1448,6 +1471,8 @@
 			if(!ref) continue
 		// Replay yields too: match the ordinary traversal post-capture refusal.
 		if(!A || record["atom"] != A || "\ref[A]" != identity || !moving_save_root_supported(A) || A.z != saving_z)
+			if(A && record["atom"] == A) fail_save_on_animal(A, "moving-save replay")
+			else if(!A || A.gcDestroyed) save_animal_failure = "a moving-save root deleted during the save (moving-save replay)"
 			throw EXCEPTION("Moving save roster member changed during chunk replay")
 		var/turf/origin = record["origin"]
 		var/parent_ref = origin ? saving_references[origin] : null
@@ -1473,6 +1498,9 @@
 		save_work_check()
 		// The work check can yield after attaching the saved edge. Keep the
 		// existing strict roster invariant through that final checkpoint too.
+		// Flag (and delete) a root that changed, ahead of the strict guard below.
+		if(!A || A.gcDestroyed) save_animal_failure = "a moving-save root deleted during the save (moving-save drain checkpoint)"
+		else if(record["atom"] == A && (!moving_save_root_supported(A) || A.z != saving_z)) fail_save_on_animal(A, "moving-save drain checkpoint")
 		if(!A || record["atom"] != A || "\ref[A]" != identity || !moving_save_root_supported(A) || A.z != saving_z)
 			throw EXCEPTION("Moving save roster member changed after drain checkpoint")
 

@@ -101,12 +101,37 @@ class LevelFreeze(unittest.TestCase):
         delete = proc_body(self.saving, '/map_storage/proc/delete_unheld_save_animal(mob/living/simple_animal/A, where)')
         self.assertIn('if(!istype(A) || A.gcDestroyed || A.client || A.ckey) return FALSE', delete)
         self.assertIn('qdel(A)', delete)
+        fail = proc_body(self.saving, '/map_storage/proc/fail_save_on_animal(mob/living/simple_animal/A, where, remove = TRUE)')
+        self.assertIn('if(!istype(A) || A.client || A.ckey) return FALSE', fail)
+        self.assertIn('save_animal_failure = "[A.type] ([where])"', fail)
+        self.assertIn('if(remove) delete_unheld_save_animal(A, where)', fail)
         capture = proc_body(self.saving, '/map_storage/proc/capture_moving_save_root(savefile/destination, list/record)')
-        self.assertIn('if(A && origin && A.loc != origin) delete_unheld_save_animal(A, "moving-save capture")', capture)
+        self.assertIn('if(A) fail_save_on_animal(A, "moving-save capture", changed)', capture)
+        self.assertIn('fail_save_on_animal(A, "changed while the save waited for headroom")', capture)
         sweep = proc_body(self.saving, '/map_storage/proc/sweep_uncaptured_animals(savefile/F)')
-        self.assertLess(sweep.index('delete_unheld_save_animal(A, "uncaptured animal sweep")'), sweep.index('throw EXCEPTION("Swept mob moved or disappeared during capture")'))
+        self.assertLess(sweep.index('fail_save_on_animal(A, "uncaptured animal sweep")'), sweep.index('throw EXCEPTION("Swept mob moved or disappeared during capture")'))
         export = proc_body(self.saving, '/map_storage/proc/export_saved_entry(')
-        self.assertIn('if(content) delete_unheld_save_animal(content, "turf contents")', export)
+        self.assertIn('if(content) fail_save_on_animal(content, "turf contents")', export)
+        drain = proc_body(self.saving, '/map_storage/proc/drain_moving_save_roster(savefile/F)')
+        for where in ('moving-save roster', 'moving-save replay', 'moving-save drain checkpoint'):
+            self.assertIn('fail_save_on_animal(A, "%s")' % where, drain)
+
+    def test_an_uncaptured_roster_animal_that_changed_never_fails_the_save(self):
+        drain = proc_body(self.saving, '/map_storage/proc/drain_moving_save_roster(savefile/F)')
+        decline = drain.index('if(!ref)\n\t\t\t\tmoving_save_roots -= identity\n\t\t\t\tcontinue')
+        self.assertLess(decline, drain.index('throw EXCEPTION("Moving save roster member disappeared or changed ownership")'))
+
+    def test_a_save_that_failed_on_an_animal_saves_again(self):
+        functions = read(FUNCTIONS)
+        savemap = proc_body(functions, '/datum/controller/gameticker/proc/savemap(')
+        self.assertIn('#define PERSISTENCE_ANIMAL_SAVE_ATTEMPTS 4', functions)
+        self.assertLess(savemap.index('map_storage.save_animal_failure = null'), savemap.index('begin_persistence_operation('))
+        retry = savemap.index('if(animal && !debug_policy && map_storage.save_animal_retries < PERSISTENCE_ANIMAL_SAVE_ATTEMPTS - 1)')
+        self.assertLess(savemap.index('var/released = operation.finish(FALSE)'), retry)
+        self.assertLess(retry, savemap.index('return savemap(transaction, debug_policy, shutdown)'))
+        abandoned = savemap[savemap.index('if(operation.abandoned)'):]
+        self.assertLess(abandoned.index('map_storage.save_animal_failure = null'), abandoned.index('return 0'))
+        self.assertIn('map_storage.save_animal_retries = 0\n\tvar/released_success = operation.finish(TRUE)', savemap)
 
 
 if __name__ == '__main__':

@@ -103,3 +103,15 @@ include after `probe.dm` in a reviewed isolated full-game fixture and explicitly
 invoke `divine_journal_probe()`. Neither file is a runner or network sandbox.
 No unrestricted native launch is authorized. Real-client UI, lifecycle revocation,
 save/load and regional transfer are still acceptance work, not passed checks.
+
+## God's book (`code/modules/divine/divine_book.dm`)
+
+Included in the game build; the verb lives in `code/modules/admin/verbs/divine_book.dm`. Staff playing a god use the admin verb Write God's
+Book to write that god's one original and hand it to a player (or drop it where
+they stand). While an original of that god (matched by name, ignoring case)
+exists anywhere in this world, including restored from a save, another cannot
+be written; burning, destroying or deleting it frees the god to write a new one,
+and staff are told when it is gone. The verb waits while a save runs or a load
+is still restoring characters. Players can copy the original with a printing
+press or a monk, which makes an ordinary book; only the god writes in the
+original. `test_divine_book.py` guards these rules from source.
