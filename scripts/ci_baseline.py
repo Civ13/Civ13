@@ -813,6 +813,16 @@ SUITES = {
             'code/game/objects/random.dm',
             'code/game/objects/effects/spawners/loot.dm',
             'code/game/objects/map_metadata/eft_factory.dm', 'civ13.dme')},
+    # Generated Americas region maps (north and south continent): DMM parse,
+    # land share, starts, isthmus trail posts and source registration; no BYOND runtime.
+    'americas_maps': {'files': ('tests/americas_maps/test_americas_maps.py',),
+        'paths': ('tests/americas_maps/', 'maps/nomads/nomads_americas_north.dmm',
+                  'maps/nomads/nomads_americas_south.dmm',
+                  'code/game/objects/map_metadata/nomads/nomads_americas.dm',
+                  'scripts/shard-group/americas.example.json'), 'shared_paths': (
+            'code/modules/persistence/region_trails.dm',
+            'code/modules/persistence/durable_nomads.dm',
+            'code/__defines/maps.dm', 'civ13.dme')},
     # Generated inactive Extraction party safehouse template: DMM parse, airlock
     # topology, room routes, account markers and descriptor; no BYOND runtime.
     'safehouse_map': {'files': ('tests/safehouse_map/test_layout.py',),

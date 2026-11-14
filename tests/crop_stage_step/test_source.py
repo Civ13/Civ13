@@ -24,6 +24,9 @@ HELPER = BASE + 'proc/advance_stage_if_allowed(allow_stage)'
 GROWTH = BASE + 'proc/growth()'
 CROPS = ('potato', 'carrot', 'cabbage', 'tomato', 'beans', 'wheat')
 MAPS = ('CONTINENTAL', 'PANGEA', 'NEW_WORLD', 'MEDITERRANEAN', 'EUROPE', 'GAIA')
+# Climate-restricted maps added after the historical baseline. The baseline has
+# no rule for them, so they are names for the projection, not parity cases.
+LATER_MAPS = ('AMERICAS_NORTH', 'AMERICAS_SOUTH')
 COMPARISONS = 0
 
 
@@ -179,7 +182,7 @@ class Program:
         env = {'__builtins__': {}, 'DMList': DMList, 'get_turf': get_turf,
                'get_area': get_area, 'istype': istype, 'season': season,
                'map': State(ID=map_id), 'winter_crop_plot_error': lambda tile: tile.blocked}
-        env.update({'MAP_NOMADS_' + name: name.lower() for name in MAPS})
+        env.update({'MAP_NOMADS_' + name: name.lower() for name in MAPS + LATER_MAPS})
         def attach(code):
             exec(code, env)
             return MethodType(env['projected'], p)
@@ -222,6 +225,10 @@ class CropStageStep(unittest.TestCase):
         payload = restored.encode('utf-8')
         blob = hashlib.sha1(b'blob ' + str(len(payload)).encode() + b'\0' + payload).hexdigest()
         self.assertEqual(blob, PIN['reviewed_farming_projection_blob'])
+
+    def test_later_maps_join_both_climate_lists(self):
+        restricted = ', '.join('MAP_NOMADS_' + name for name in MAPS + LATER_MAPS)
+        self.assertEqual(SOURCE.count('list(' + restricted + ')'), 2)
 
     def test_sampling_and_wait_prefix_are_identical(self):
         self.assertEqual(callback(BASE_GROWTH)[0], callback(CURRENT_GROWTH)[0])

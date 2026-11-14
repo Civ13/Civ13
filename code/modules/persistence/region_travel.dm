@@ -334,7 +334,7 @@ var/global/list/region_travel_carry_types = list(
 	for(var/obj/structure/region_gate/gate in region_gates)
 		if(gate.type == /obj/structure/region_gate && !QDELETED(gate) && isturf(gate.loc)) return gate.loc
 	for(var/obj/structure/region_gate/gate in region_gates)
-		if(gate.accepts_arrivals() && !QDELETED(gate) && isturf(gate.loc)) return gate.loc
+		if(gate.accepts_arrivals() && gate.accepts_strangers() && !QDELETED(gate) && isturf(gate.loc)) return gate.loc
 	var/list/starts = latejoin_turfs ? latejoin_turfs["JoinLateCiv"] : null
 	if(length(starts)) return pick(starts)
 	return null
@@ -581,6 +581,11 @@ var/global/list/region_travel_carry_types = list(
 	return ..()
 
 /obj/structure/region_gate/proc/accepts_arrivals()
+	return TRUE
+
+// FALSE for a trail that only joins this land to its own destination (a trail
+// drawn on the map): travellers from any other land arrive elsewhere.
+/obj/structure/region_gate/proc/accepts_strangers()
 	return TRUE
 
 // The party train a trip through this gate belongs to (party_train.dm), if any.

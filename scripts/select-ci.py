@@ -100,6 +100,9 @@ LOCAL_CI_OFFLINE_TESTS = frozenset({'tests/local_ci/test_local_ci.py'})
 FARMERS_ALMANAC_OFFLINE_TESTS = frozenset({'tests/farmers_almanac/test_farmers_almanac.py'})
 CROSSROADS_MALL_OFFLINE_TESTS = frozenset({'tests/crossroads_mall/test_crossroads_mall.py',
                                            'tests/crossroads_mall/build.py'})
+AMERICAS_MAPS_OFFLINE_TESTS = frozenset({'tests/americas_maps/test_americas_maps.py',
+                                         'tests/americas_maps/build.py',
+                                         'tests/americas_maps/continents.py'})
 MAP_VARIATIONS_OFFLINE_TESTS = frozenset({'tests/map_variations/test_map_variations.py',
                                           'tests/map_variations/build_inserts.py',
                                           'tests/map_variations/native_probe.py',
@@ -453,6 +456,10 @@ def introduced_tests(base, head, event):
             continue
         if path in CROSSROADS_MALL_OFFLINE_TESTS:
             continue
+        if path in AMERICAS_MAPS_OFFLINE_TESTS:
+            continue
+        if path.startswith('tests/americas_maps/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
+            raise RuntimeError('Unregistered americas-maps executable test requires explicit CI review')
         if path in SAFEHOUSE_MAP_OFFLINE_TESTS:
             continue
         if path.startswith('tests/safehouse_map/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
