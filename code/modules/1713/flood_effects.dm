@@ -143,6 +143,49 @@
 	if (text)
 		to_chat(user, SPAN_NOTICE(text))
 
+// ---- things on the floor --------------------------------------------
+// Floodwater ruins flour and gunpowder left on the floor (the flour sack falls
+// apart, a gunpowder pouch is left empty) and floats small light things toward deeper water. A table
+// keeps things above anything shallower than the waist. It runs for the tiles
+// a player can see (the drawing scan below), once per river tick per tile, so
+// unwatched land costs nothing.
+
+var/global/list/flood_items_done = list()
+var/global/flood_items_revision = -1
+
+/proc/flood_ruins(obj/item/I)
+	return istype(I, /obj/item/weapon/reagent_containers/food/condiment/flour) || istype(I, /obj/item/weapon/reagent_containers/food/drinks/gunpowder)
+
+/proc/flood_items_at(turf/T, band)
+	if (flood_items_revision != flood_draw_revision)
+		flood_items_revision = flood_draw_revision
+		flood_items_done.Cut()
+	if (flood_items_done[T])
+		return
+	flood_items_done[T] = TRUE
+	if (band < FLOOD_BAND_WAIST && (locate(/obj/structure/table) in T))
+		return
+	var/turf/deeper = null
+	if (band >= FLOOD_BAND_KNEE)
+		var/best = flood_depth_at(T)
+		for (var/d in cardinal)
+			var/turf/N = get_step(T, d)
+			if (!N || N.density)
+				continue
+			var/depth = istype(N, /turf/floor/beach/water) ? 99 : flood_depth_at(N)
+			if (depth > best)
+				best = depth
+				deeper = N
+	for (var/obj/item/I in T)
+		if (I.anchored)
+			continue
+		if (flood_ruins(I) && I.reagents && I.reagents.total_volume)
+			// An emptied flour sack falls apart; a gunpowder pouch stays, empty.
+			I.visible_message(SPAN_WARNING("Floodwater soaks \the [I] and ruins what was inside."))
+			I.reagents.clear_reagents()
+		else if (deeper && I.w_class <= ITEM_SIZE_SMALL)
+			I.Move(deeper)
+
 // ---- currents -------------------------------------------------
 // A river in flood carries things further; at low water it barely moves them.
 // Steps per current pulse (5 seconds): 0 or 1 at low water, 1 normally, 2 in
@@ -214,6 +257,7 @@ var/global/list/flood_band_alpha = list(90, 140, 190, 230)
 			var/band = flood_band_at(T)
 			if (!band)
 				continue
+			flood_items_at(T, band)
 			var/image/I = image('icons/turf/beach.dmi', T, "seashallow", 2.04)
 			I.alpha = flood_band_alpha[band]
 			I.mouse_opacity = 0

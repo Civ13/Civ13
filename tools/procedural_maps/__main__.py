@@ -9,7 +9,7 @@ from .io import read_json,new_output,json_text
 from .river_graph import river_graph_preset
 from .source_audit import audit
 from .generator import generate
-from .validator import validate
+from .validator import validate,unchanged
 
 
 def main(argv=None):
@@ -44,6 +44,7 @@ def main(argv=None):
     p.add_argument('--out',required=True,type=Path,help='a new folder for bundle/, land.dmm and land.json')
     p.add_argument('--catalog-root',type=Path)
     p.add_argument('--lapse',type=float,default=6.5)
+    p.add_argument('--full-bundle',action='store_true',help='also keep the typed IR and sidecar in bundle/ (hundreds of megabytes for a large land)')
     p=commands.add_parser('survey',help='write the coarse survey map a mission console shows, from a SURFACE bundle')
     p.add_argument('directory',type=Path);p.add_argument('--out',required=True,type=Path);p.add_argument('--catalog-root',type=Path)
     p.add_argument('--cell-tiles',type=int,default=5,help='tiles per survey cell, 1..16')
@@ -83,7 +84,9 @@ def main(argv=None):
             if r['document'] is None:
                 (folder/'rejection.json').write_text(json_text(r),encoding='utf-8',newline='\n')
                 print(json_text(r));return 1
-            result=write_bundle(folder,r['document'],r['manifest'],a.catalog_root,not a.no_preview,fresh=True)
+            # Just validated and hashed by the generator, and not changed below.
+            with unchanged(r['document'],[],r['manifest']['generation_result']['ir_sha256']):
+                result=write_bundle(folder,r['document'],r['manifest'],a.catalog_root,not a.no_preview,fresh=True)
         elif a.command=='export':
             doc=read_json(a.ir);manifest=read_json(a.manifest);folder=new_output(a.out,True)
             result=write_bundle(folder,doc,manifest,a.catalog_root,not a.no_preview,a.catalog_version)
@@ -93,7 +96,7 @@ def main(argv=None):
             result=write(a.directory,a.out,a.catalog_root,a.lapse,a.skin)
         elif a.command=='land':
             from .land import build_land
-            result=build_land(read_json(a.template),a.out,a.catalog_root,a.lapse)
+            result=build_land(read_json(a.template),a.out,a.catalog_root,a.lapse,a.full_bundle)
         elif a.command=='survey':
             from .survey import write as survey_write
             result=survey_write(a.directory,a.out,a.catalog_root,a.cell_tiles)

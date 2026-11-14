@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = 'cd683440b4928963a5e1bae430849ea3ea142466'
+WIKI_REVIEWED_REVISION = 'fa5329723c25a15195b76d2b19d1932f3430bc57'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('a567364dd25ed2d333915df91f4328eb4b79ac9a1af92f9f98db306eed911c8c', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('aae5510bcfb98ca648ee303cdea48af583f0a9ce383eed2fd585c98551fc663d', 'character skills traits languages'),
@@ -118,12 +118,12 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Aircraft_Carriers.md': ('d0009e9680476ab3b7c220e0f4dda18191b0c23d94271ab32219ed8fedf1bf53', 'carrier carriers aircraft carrier flight deck shipyard office arresting wires elevator bunkers'),
     'guides/Guide_to_Races.md': ('46ef1bf361c519e71acbd679119429e838348827e25dbcac27282f67bee51097', 'race races species human humans'),
     'guides/Guide_to_Slang.md': ('52f9f6370922d7dede523e51247ae6ea0723d24118cecd26e594c051278dfc3f', 'slang terms jargon abbreviation meaning mean word words'),
-    'guides/Guide_to_Books_and_Scholars.md': ('be3da7d69e47bf73a2458b0a4d9efdca7de5da8562cd56b68238973dab9b9328', 'books scholars scholarship study chapter research bench apprentice tutor library writing slate abacus'),
+    'guides/Guide_to_Books_and_Scholars.md': ('a3b82a5ad6b02850e8300eebb9459fff2d38fffc77c902926fba34cd62e6cb17', 'books scholars scholarship study chapter research bench apprentice tutor library writing slate abacus'),
     'guides/Guide_to_Your_First_Day.md': ('41c51b3654c25d70f52c1ce0345468a81cce67a05df364d4da5de04a5e8dbb43', 'first day new character start starting survive survival research book study chapter food water shelter bag bags carry carrying basket travois'),
     'guides/Guide_to_Paperwork.md': ('a1a5f705ece3027336005a5fe08e5554eabe1bb6da16cc4294db54b39ad63b69', 'paper paperwork writing write pen book sign signature stamp'),
     'Crafting_Skill_Level_Requirements.md': ('eae4e1c91ce28009f16ec79d0e942f76895d80262e618320eaf44d3a7c5808a9', 'crafting skill level levels requirement requirements unlock'),
     'Food_Decay_Times.md': ('d2d63372eddc79fd7c3c9bffb390587fff7a5cb21c53d829ab5ec29ab9f11126', 'food decay rot spoil spoils spoiled expire expires lasts preserve storage'),
-    'Miscellaneous_Crafting.md': ('affe211da1a3cb88f4557ecb0201ad6a873c1b083fc717f69d0c13c1e75666fc', 'miscellaneous crafting misc items dress dresses dressmaking tailoring tailor tailored sew sewing pattern patterns design clothes shirt gown cloak sleeves collar dye dyes wool linen fabric candle candles'),
+    'Miscellaneous_Crafting.md': ('7034605cef6f7f3f9b65326d516c98371252746b228e05a9f7c3a761ea7eccc7', 'miscellaneous crafting misc items dress dresses dressmaking tailoring tailor tailored sew sewing pattern patterns design clothes shirt gown cloak sleeves collar candle candles'),
     'maps/Gaia.md': ('28a851bbbe27f13c32eeaaac1dac9400541f84ab16a37e97f1af77b720947aee', 'gaia persistent persistence map world'),
     'maps/Nomads_Maps.md': ('fdcb67459889783669de97dcd8d686c2be3e332d7a243f86a5d67528e560480e', 'nomads maps map terrain biome biomes'),
     'gamemodes/Voyage.md': ('9922f438d0253c6b4d812bc852422a54c37f428b4c3221b2a732397ef245ddfe', 'voyage expedition ship mode'),
