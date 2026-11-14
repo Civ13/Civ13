@@ -12,6 +12,9 @@
 #define CRYSTAL_SET_WIRE 10
 #define READING_STONE_LIGHT 0.5
 #define GARNET_PAPER_SHEETS 4
+#define BOULE_EMERY 4
+#define BOULE_BEARINGS 10
+#define ROD_CHARGES 2
 
 /obj/item
 	var/jewelled = FALSE // pivots run in jewel bearings (watches, compasses)
@@ -261,6 +264,9 @@
 		return
 	if (istype(W, /obj/item/stack/material/steel) && ishuman(user))
 		make_drill_bit(W, user)
+		return
+	if (istype(W, /obj/item/ruby_boule) && ishuman(user))
+		make_ruby_rod(W, user)
 		return
 	..()
 
@@ -605,6 +611,114 @@
 	M.health = min(M.maxhealth, M.health + round(M.maxhealth / 4))
 	to_chat(H, SPAN_NOTICE("You sand the wear out of \the [M]."))
 
+// ---- Synthetic ruby (flame fusion, 1902) and the ruby laser rod (1960) ----
+
+// Four pinches of emery fused in the flame of a lit furnace beside you.
+/obj/item/stack/emery_powder/attack_self(mob/user)
+	var/mob/living/human/H = user
+	if (!istype(H))
+		return ..()
+	var/obj/structure/furnace/F = null
+	for (var/obj/structure/furnace/candidate in range(1, H))
+		if (candidate.is_open_flame())
+			F = candidate
+			break
+	if (!F)
+		return ..()
+	if (amount < BOULE_EMERY)
+		to_chat(H, SPAN_WARNING("You need [BOULE_EMERY] pinches of emery to grow a boule."))
+		return
+	if (!H.may_do_after || !crafting_node_allowed_or_warn(H, "electricity"))
+		return
+	to_chat(H, SPAN_NOTICE("You start sifting emery into the hottest part of \the [F]'s flame, a little at a time..."))
+	if (!do_after(H, 100, F))
+		return
+	if (QDELETED(src) || QDELETED(F) || !F.is_open_flame() || loc != H || !use(BOULE_EMERY))
+		return
+	H.put_in_hands(new /obj/item/ruby_boule(get_turf(H)))
+	to_chat(H, SPAN_NOTICE("A pink boule of synthetic ruby grows in the flame."))
+
+/obj/item/ruby_boule
+	name = "synthetic ruby boule"
+	desc = "A pear-shaped crystal of ruby grown drop by drop in a flame. It is cheap: chisel it into jewel bearings, or grind it into a laser rod on a lapping wheel charged with diamond."
+	icon = 'icons/obj/gem_science.dmi'
+	icon_state = "ruby_boule"
+	w_class = ITEM_SIZE_SMALL
+	flammable = FALSE
+	value = 4
+
+// A boule makes a whole batch of cheap watch jewels.
+/obj/item/ruby_boule/attackby(obj/item/W, mob/user)
+	if (is_tool(W, TOOL_CHISEL) && ishuman(user))
+		var/mob/living/human/H = user
+		if (!is_tool(H.get_inactive_hand(), TOOL_HAMMER))
+			to_chat(H, SPAN_WARNING("You need a hammer in your other hand to drill jewel bearings."))
+			return
+		if (!H.may_do_after || !crafting_node_allowed_or_warn(H, "optics_instruments"))
+			return
+		to_chat(H, SPAN_NOTICE("You start slicing \the [src] and drilling the slices..."))
+		if (!do_after(H, 80, src))
+			return
+		if (QDELETED(src) || H.get_active_hand() != W || !(loc == H || (isturf(loc) && get_dist(src, H) <= 1)))
+			return
+		var/obj/item/stack/jewel_bearing/J = new(get_turf(src))
+		J.amount = BOULE_BEARINGS
+		J.update_icon()
+		to_chat(H, SPAN_NOTICE("You drill [BOULE_BEARINGS] jewel bearings from \the [src]."))
+		qdel(src)
+		return
+	..()
+
+/obj/structure/lapping_wheel/proc/make_ruby_rod(obj/item/ruby_boule/B, mob/living/human/H)
+	if (!H.may_do_after || !crafting_node_allowed_or_warn(H, "consumer_electronics"))
+		return
+	if (charges < ROD_CHARGES)
+		to_chat(H, SPAN_WARNING("\The [src] needs at least [ROD_CHARGES] charges of diamond grit to grind a rod."))
+		return
+	to_chat(H, SPAN_NOTICE("You start grinding \the [B] into a rod and polishing its ends flat..."))
+	if (!do_after(H, 100, src))
+		return
+	if (QDELETED(B) || B.loc != H || charges < ROD_CHARGES)
+		return
+	charges -= ROD_CHARGES
+	H.drop_from_inventory(B)
+	qdel(B)
+	H.put_in_hands(new /obj/item/ruby_rod(get_turf(H)))
+	to_chat(H, SPAN_NOTICE("You finish a ruby rod and silver its ends."))
+
+/obj/item/ruby_rod
+	name = "ruby rod"
+	desc = "A polished rod of synthetic ruby with silvered ends: the heart of a ruby laser. Fit it into a pair of binoculars to make a laser rangefinder."
+	icon = 'icons/obj/gem_science.dmi'
+	icon_state = "ruby_rod"
+	w_class = ITEM_SIZE_TINY
+	flammable = FALSE
+	value = 20
+
+/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars/attackby(obj/item/W, mob/user)
+	if (istype(W, /obj/item/ruby_rod) && type == /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars && ishuman(user))
+		var/mob/living/human/H = user
+		if (!H.may_do_after || !crafting_node_allowed_or_warn(H, "consumer_electronics"))
+			return
+		to_chat(H, SPAN_NOTICE("You start fitting the ruby rod and a flash lamp into \the [src]..."))
+		if (!do_after(H, 60, src))
+			return
+		if (QDELETED(src) || QDELETED(W) || W.loc != H || !(loc == H || (isturf(loc) && get_dist(src, H) <= 1)))
+			return
+		var/turf/T = get_turf(src)
+		var/was_held = (loc == H)
+		H.drop_from_inventory(W)
+		qdel(W)
+		if (was_held)
+			H.drop_from_inventory(src)
+		var/obj/item/R = new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars/rangefinder(T)
+		qdel(src)
+		if (was_held)
+			H.put_in_hands(R)
+		to_chat(H, SPAN_NOTICE("You turn the binoculars into a laser rangefinder."))
+		return
+	..()
+
 /obj/item/examine(mob/user, var/distance = -1)
 	. = ..()
 	if (jewelled)
@@ -620,3 +734,6 @@
 #undef CRYSTAL_SET_WIRE
 #undef READING_STONE_LIGHT
 #undef GARNET_PAPER_SHEETS
+#undef BOULE_EMERY
+#undef BOULE_BEARINGS
+#undef ROD_CHARGES
