@@ -269,6 +269,7 @@ var/late_wait_result = TRUE
 	var/mob/living/human/late_fixture/watcher = new(locate(2,5,1))
 	watcher.name = "Ilse"
 	watcher.teach("watermills")
+	watcher.teach("iron_smithing")
 	var/list/seen = demonstrations_in_view(watcher)
 	late_check(seen.len == 1 && seen["steam_power"] == engine, "someone who knows the groundwork sees the steam engine demonstration")
 	late_check(find_demonstration_machine(watcher, "steam_power") == engine, "the running engine is found within reach")
@@ -326,6 +327,7 @@ var/late_wait_result = TRUE
 	var/mob/living/human/late_fixture/maker = new(locate(7,2,1))
 	maker.name = "Wulf"
 	maker.teach("basic_tools")
+	maker.teach("iron_smithing")
 	late_check(!subject_prototype_allowed(maker, item_path) && !crafting_recipe_allowed(maker, item_path), "no book, no prototypes")
 	var/obj/item/weapon/book/notebook = new(maker)
 	notebook.add_research_work("iron_tools", round(IN.cost_ticks * 0.2))
@@ -371,10 +373,10 @@ var/late_wait_result = TRUE
 // Practice and gathering for early nodes (practice_work.dm).
 /proc/late_test_practice_work()
 	build_practice_experiments()
-	var/list/iron = node_field_experiments("iron_tools")
-	late_check(iron.len == 1 && iron[1] == "practice_iron_tools_basic_tools", "Iron Tools is advanced by practising Basic Toolmaking")
-	var/list/E = field_experiments["practice_iron_tools_basic_tools"]
-	var/datum/research_node/IN = get_research_node("iron_tools")
+	var/list/iron = node_field_experiments("cooperage")
+	late_check(iron.len == 1 && iron[1] == "practice_cooperage_basic_tools", "Cooperage is advanced by practising Basic Toolmaking")
+	var/list/E = field_experiments["practice_cooperage_basic_tools"]
+	var/datum/research_node/IN = get_research_node("cooperage")
 	late_check(E[2] == "craft:basic_tools" && E[3] == practice_items_needed(IN) && E[4] == 0.5, "the experiment asks for [E[3]] things for half the node")
 	var/list/concrete = node_field_experiments("reinforced_concrete")
 	late_check(concrete.len == 2 && field_experiments[concrete[1]][4] == 0.25, "two prerequisites split the practice share")
@@ -399,11 +401,11 @@ var/late_wait_result = TRUE
 	var/obj/structure/research_bench/late_fixture/bench = new(locate(4,3,1))
 	bench.tier = 8
 	var/obj/item/weapon/book/notes = new(bench)
-	bench.assigned_node = "iron_tools"
-	var/list/rows = bench.field_work_rows(smith, "iron_tools")
+	bench.assigned_node = "cooperage"
+	var/list/rows = bench.field_work_rows(smith, "cooperage")
 	late_check(rows.len == 1 && rows[1]["percent"] == 50 && rows[1]["have"] == E[3], "the bench lists the practice and the smith's own count")
 	var/expected = round(IN.cost_ticks * 0.5)
-	late_check(bench.credit_field_work() && notes.research_ticks("iron_tools") == expected && !bench.credit_field_work(), "the practice is written into the book once ([expected] of [IN.cost_ticks] points)")
+	late_check(bench.credit_field_work() && notes.research_ticks("cooperage") == expected && !bench.credit_field_work(), "the practice is written into the book once ([expected] of [IN.cost_ticks] points)")
 	qdel(bench)
 // A scholar with the given levels who knows a subject's groundwork.
 /mob/living/human/late_fixture/scholar/research_tool_rate()

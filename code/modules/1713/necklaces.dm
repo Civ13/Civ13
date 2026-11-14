@@ -27,6 +27,7 @@
 		var/image/P = image(icon, "necklace_pendant")
 		P.color = set_gem_colour
 		overlays += P
+	add_locket_overlay(src, FALSE)
 	mob_overlay = null
 	inv_overlay = null
 
@@ -37,6 +38,7 @@
 			var/image/P = image(icon_override, "necklace_pendant")
 			P.color = set_gem_colour
 			mob_overlay.overlays += P
+		add_locket_overlay(mob_overlay, TRUE)
 	return mob_overlay
 
 /obj/item/clothing/accessory/necklace/bead
