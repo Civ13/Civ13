@@ -125,6 +125,20 @@ class WiringTest(unittest.TestCase):
         for rel in ('code/game/objects/structures/tree_climbing.dm', 'code/game/turfs/wall_decay.dm', 'code/modules/ecology/pollution.dm'):
             self.assertIn('flood_mark_examine(src, user)', read(rel), rel)
 
+    def test_drawn_states_exist_in_the_sheet(self):
+        from PIL import Image
+        meta = Image.open(ROOT / 'icons/effects/floodwater.dmi').info['Description']
+        states = {line.split('"')[1]: None for line in meta.splitlines() if line.startswith('state = ')}
+        for band in range(1, 5):
+            self.assertIn(f'flood{band}', states)
+            self.assertIn(f'flood_edge{band}', states)
+        for band in range(2, 5):
+            self.assertIn(f'flood_step{band}', states)
+        effects = (ROOT / 'code/modules/1713/flood_effects.dm').read_text(encoding='utf-8')
+        self.assertIn('"flood[band]"', effects)
+        self.assertIn('"flood_edge[band]", d', effects)
+        self.assertIn('"flood_step[band]", d', effects)
+
     def test_ground_changes_mark_windows(self):
         ground = (ROOT / 'code/modules/1713/flood_ground.dm').read_text(encoding='utf-8')
         self.assertIn('flood_ground_changed(src) // Floodwater follows the new ground', (ROOT / 'code/modules/1713/road_tamping.dm').read_text(encoding='utf-8'))

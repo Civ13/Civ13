@@ -495,6 +495,7 @@
 #include "code\game\objects\items\stacks\civ_recipes.dm"
 #include "code\game\objects\items\stacks\cloth_crafting.dm"
 #include "code\game\objects\items\stacks\craft_guards.dm"
+#include "code\game\objects\items\stacks\craft_needs.dm"
 #include "code\game\objects\items\stacks\craft_products.dm"
 #include "code\game\objects\items\stacks\crafting_window.dm"
 #include "code\game\objects\items\stacks\medical.dm"

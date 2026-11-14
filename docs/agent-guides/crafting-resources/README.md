@@ -11,6 +11,16 @@ activation still apply to those actions. Missing native, graphical or
 save/load evidence belongs in the report and never blocks a source fix.
 Do not turn an evidence limitation into a new approval requirement.
 
+<!-- 2026-11-14: data-driven tools and second materials -->
+A stack recipe that needs a tool quality or a second material declares it in
+`config/craft_needs.json` by product type (`craft_needs.dm`); do not add
+another title-matched block to `produce_recipe()`. Tools and second stacks count
+when held, worn in a real slot or at the builder's feet (at most 32 atoms, no
+containers). `produce_recipe()` checks before the wait, rechecks with the real
+batch size after it and pays only then. The guard reports each line to the
+Crafting window and the Atlas reads the same file. Raft (2 rope) and carriage
+(20 rope) use it; the remaining legacy hand-checked blocks are unchanged.
+
 <!-- 2026-10-28: portable cloth bedding -->
 Portable bedding variants use static rolled/unrolled typepaths; folding must not
 convert cloth into leather. Bedrolls refuse the generic wooden-structure hammer

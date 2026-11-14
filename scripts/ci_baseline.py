@@ -339,6 +339,8 @@ SUITES = {
     'gong_fastening': {'files': ('tests/gong_fastening/test_fastening.py',), 'paths': (
         'tests/gong_fastening/', 'code/game/objects/structures/gong.dm'), 'shared_paths': (
         'tests/save_movement/source_adapter.py',)},
+    'lighting_overlay_idle': {'files': ('tests/lighting_idle/test_idle.py',),
+        'paths': ('tests/lighting_idle/', 'code/processes/lighting/overlays.dm')},
     'curtain_lighting': {'files': ('tests/curtain_lighting/test_curtain_lighting.py',), 'paths': (
         'tests/curtain_lighting/', 'code/game/objects/structures/curtains.dm'), 'shared_paths': (
         'tests/save_movement/source_adapter.py',)},
@@ -868,6 +870,11 @@ SUITES = {
                          'code/modules/1713/tools.dm', 'code/game/objects/items/weapons/tools.dm',
                          'code/game/objects/items/weapons/material/material_weapons.dm',
                          'code/game/objects/items/weapons/material/misc.dm')},
+    'craft_needs': {'files': ('tests/craft_needs/test_craft_needs.py',),
+        'paths': ('tests/craft_needs/', 'code/game/objects/items/stacks/craft_needs.dm',
+                  'config/craft_needs.json'),
+        'shared_paths': ('code/game/objects/items/stacks/stack.dm', 'code/game/objects/items/stacks/craft_guards.dm',
+                         'scripts/build-crafting-atlas.py')},
     'anvil_mold_costs': {'files': ('tests/anvil_mold_costs/test_anvil_mold_costs.py',),
         'paths': ('tests/anvil_mold_costs/',), 'shared_paths': ()},
     'processing_recipes': {'files': ('tests/processing_recipes/test_processing_recipes.py',),

@@ -261,6 +261,17 @@
 		return "She is too big and too laden to cross. Put some of her cargo ashore."
 	return list("record" = record, "crew" = crew)
 
+// Measures what crossing would carry now, without moving anything: the
+// refusal text, or the share of the record budget she fills, 0 to 100. A
+// voyage asks before she sails (ship_voyage.dm), so a ship too big or too
+// laden is told at the tiller, not at landfall minutes later. Until voyage
+// records are sent in chunks this budget is the hull size cap.
+/proc/sea_crossing_load(obj/structure/hull_tiller/tiller)
+	var/list/packed = sea_crossing_pack(tiller)
+	if (istext(packed))
+		return packed
+	return round(100 * length(json_encode(packed["record"])) / SEA_CROSSING_RECORD_MAX)
+
 // TRUE when a record could be built: types, numbers and items all as packing makes them.
 /proc/sea_crossing_record_ok(list/R)
 	if (!islist(R) || R["v"] != 1 || !istext(R["name"]) || length(R["name"]) > 40 || !(R["dir"] in cardinal))
