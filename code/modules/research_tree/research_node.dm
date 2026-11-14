@@ -290,7 +290,14 @@ var/global/list/node_grid_col_cache = null
 	register_research_node(new /datum/research_node("workshops", "Workshops", "Industrial", 130, 1, RESEARCH_MODE_ANALYSIS, list("bronze_working"), 2))
 	register_research_node(new /datum/research_node("glassworking", "Glassworking", "Industrial", 130, 1, RESEARCH_MODE_ANALYSIS, list("pottery_storage"), 2))
 	register_research_node(new /datum/research_node("papermaking", "Papermaking", "Industrial", 130, 1, RESEARCH_MODE_ANALYSIS, null, 2))
-	register_research_node(new /datum/research_node("printing_currency", "Printing Press", "Industrial", 165, 2, RESEARCH_MODE_ANALYSIS, list("papermaking"), 3))
+	// Peaceful era milestones (Val, 2026-11-14): civil and military progress stay
+	// independent, so each weapon-era capstone has a civil twin that opens the
+	// same era - Printing Press beside Gunpowder (Imperial), Powered Flight
+	// beside Mechanized Warfare (WW2). Either one moves the world; the era is
+	// kept while a written record of either survives (era_loss.dm).
+	// Prototype: a carved stamp, the first movable type (gated on papermaking,
+	// its own direct prereq).
+	register_research_node(new /datum/research_node("printing_currency", "Printing Press", "Industrial", 165, 2, RESEARCH_MODE_PROTOTYPE, list("papermaking"), 3, /obj/item/weapon/stamp/mail))
 	register_research_node(new /datum/research_node("optics_instruments", "Optics & Instruments", "Industrial", 165, 2, RESEARCH_MODE_ANALYSIS, list("glassworking"), 3))
 	register_research_node(new /datum/research_node("factories", "Factories", "Industrial", 200, 3, RESEARCH_MODE_ANALYSIS, list("workshops","steam_power"), 4))
 	register_research_node(new /datum/research_node("assembly_line", "Assembly Line", "Industrial", 235, 4, RESEARCH_MODE_ANALYSIS, list("factories"), 5))
@@ -356,7 +363,9 @@ var/global/list/node_grid_col_cache = null
 	register_research_node(new /datum/research_node("rail_steam", "Rail & Steam", "Industrial", 200, 3, RESEARCH_MODE_ANALYSIS, list("wagons_ships","steam_power"), 4))
 	register_research_node(new /datum/research_node("automobiles", "Automobiles", "Industrial", 235, 4, RESEARCH_MODE_ANALYSIS, list("wagons_ships","combustion"), 5))
 	// Powered Flight (1903) unlocks the aircraft hangar that builds the light plane.
-	register_research_node(new /datum/research_node("powered_flight", "Powered Flight", "Industrial", 270, 5, RESEARCH_MODE_ANALYSIS, list("combustion"), 6))
+	// The civil twin of Mechanized Warfare: also opens WW2. Prototype: a small
+	// fuel tank (gated on combustion, its own direct prereq).
+	register_research_node(new /datum/research_node("powered_flight", "Powered Flight", "Industrial", 270, 5, RESEARCH_MODE_PROTOTYPE, list("combustion"), 6, /obj/item/weapon/reagent_containers/glass/barrel/fueltank/small))
 	// Submarines (1900s) unlock the submarine pen that launches a diving boat.
 	register_research_node(new /datum/research_node("submarines", "Submarines", "Industrial", 270, 5, RESEARCH_MODE_ANALYSIS, list("wagons_ships","combustion","electricity"), 6))
 	register_research_node(new /datum/research_node("aviation_rocketry", "Aviation & Rocketry", "Industrial", 305, 6, RESEARCH_MODE_ANALYSIS, list("powered_flight","alloys"), 7))

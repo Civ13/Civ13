@@ -602,6 +602,7 @@ var/late_wait_result = TRUE
 	var/datum/research_node/IN = get_research_node("iron_tools")
 	var/mob/living/human/late_fixture/maker = new(locate(7,5,1))
 	maker.teach("basic_tools")
+	maker.teach("iron_smithing")
 	var/obj/item/weapon/book/notebook = new(maker)
 	notebook.add_research_work("iron_tools", round(IN.cost_ticks * 0.4))
 	var/proto_points = record_subject_prototype(maker, item_path)
