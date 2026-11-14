@@ -199,6 +199,58 @@
 	tailoring_named_items = list()
 
 // Sewing patterns, design names, the staff registry and the name block list.
+// Writes in its own proc so the savefile closes before it is read back.
+/proc/dressmaking_ci_write_book(path, list/designs)
+	var/savefile/S = new(path)
+	S["designs"] << designs
+
+// Pattern book: per-account designs saved beside the player notes.
+/proc/dressmaking_ci_book(mob/living/human/handle_ci/dress_ci/H, turf/site, datum/save_epoch)
+	dressmaking_ci_clear(site)
+	var/key = "dresscibook"
+	var/path = tailoring_book_path(key)
+	dressmaking_ci_expect(path == "data/player_saves/d/dresscibook/tailoring_patterns.sav" && !tailoring_book_path(""), "books live in the account's player save folder")
+	if (fexists(path))
+		fdel(path)
+	tailoring_books = list()
+	dressmaking_ci_expect(islist(tailoring_book(key)) && !length(tailoring_book(key)), "a new account starts with an empty book")
+	var/list/first = tailoring_book_add(key, "laced_dress", "#FFFFFF|#bb4455|#223344", null, "Tom & Jerry", "Ann Smith", "dressci")
+	dressmaking_ci_expect(islist(first) && first["colors"] == "#ffffff|#bb4455|#223344" && first["name"] == "Tom &amp; Jerry" && fexists(path), "a design is noted and written to disk")
+	dressmaking_ci_expect(tailoring_book_add(key, "laced_dress", "#ffffff|#bb4455|#223344", null, "Tom &amp; Jerry", "Ann Smith", "dressci") == "duplicate", "the same design is not noted twice")
+	dressmaking_ci_expect(!tailoring_book_add(key, "no_such_body", "#ffffff", null, null, null, null) && !tailoring_book_add(key, "laced_dress", "not a colour", null, null, null, null), "invalid designs are refused")
+	var/shirt_pieces = tailoring_pieces_text(tailoring_pieces("made_shirt", null))
+	var/list/shirt = tailoring_book_add(key, "made_shirt", jointext(tailoring_colors("made_shirt", null), "|"), shirt_pieces, null, "Ann Smith", "dressci")
+	dressmaking_ci_expect(islist(shirt) && shirt["pieces"] == shirt_pieces, "piece choices are kept")
+	for (var/i = 3, i <= 20, i++)
+		tailoring_book_add(key, "long_tunic", rgb(i, i, i), null, null, null, null)
+	dressmaking_ci_expect(length(tailoring_book(key)) == 20 && tailoring_book_add(key, "long_tunic", "#123456", null, null, null, null) == "full", "a book holds 20 designs")
+	// Reading the book back from disk.
+	tailoring_books = list()
+	var/list/reread = tailoring_book(key)
+	dressmaking_ci_expect(length(reread) == 20 && tailoring_book_same(reread[1], first) && reread[2]["pieces"] == shirt_pieces, "the book reads back from disk unchanged")
+	dressmaking_ci_expect(tailoring_book_label(reread[1]) == "Tom &amp; Jerry (laced dress)" && tailoring_book_label(reread[3]) == "long tunic", "entries are listed by name and garment")
+	dressmaking_ci_expect(tailoring_book_remove(key, reread[3]) && !tailoring_book_remove(key, list("body" = "long_tunic")), "a design can be struck from the book")
+	tailoring_books = list()
+	dressmaking_ci_expect(length(tailoring_book(key)) == 19, "removal is written to disk")
+	// Entries that no longer match the catalogue are dropped on reading.
+	fdel(path)
+	dressmaking_ci_write_book(path, list(list("body" = "gone_body", "colors" = "#ffffff"), "junk", list("body" = "long_tunic", "colors" = "#334455")))
+	tailoring_books = list()
+	var/list/cleaned = tailoring_book(key)
+	dressmaking_ci_expect(length(cleaned) == 1 && cleaned[1]["colors"] == "#334455", "stale entries are dropped")
+	// Loading a book entry onto a project uses the same checks as a pattern.
+	var/obj/item/tailoring_project/dress_ci/target = new(site)
+	dressmaking_ci_expect(target.load_design(H, first["body"], first["colors"], first["pieces"], first["name"], first["maker"], first["author"], "design") && target.design_body == "laced_dress" && target.design_name == "Tom &amp; Jerry" && target.design_maker == "Ann Smith" && (target in tailoring_named_items), "a book design loads onto an uncut project")
+	tailoring_name_block_list = list("dressci")
+	dressmaking_ci_expect(tailoring_book_label(first) == "laced dress" && target.load_design(H, first["body"], first["colors"], first["pieces"], first["name"], first["maker"], first["author"], "design") && !target.design_name && !(target in tailoring_named_items), "a blocked author's name is not copied")
+	tailoring_name_block_list = list()
+	target.stage = 1
+	dressmaking_ci_expect(!target.load_design(H, "long_tunic", "#ffffff", null, null, null, null, "design") && target.design_body == "laced_dress", "a cut project keeps its design")
+	qdel(target)
+	fdel(path)
+	tailoring_books = list()
+	dressmaking_ci_clear(site)
+
 /proc/dressmaking_ci_patterns(mob/living/human/handle_ci/dress_ci/H, turf/site, datum/save_epoch)
 	dressmaking_ci_clear(site)
 	dressmaking_ci_expect(tailoring_clean_name("  Sunday <b>best</b>  ") == "Sunday  b best /b", "names lose markup and edge spaces")
@@ -496,6 +548,7 @@
 	dressmaking_ci_pieces(H, site, save_epoch)
 	dressmaking_ci_fabric_and_dyes(H, site, save_epoch)
 	dressmaking_ci_patterns(H, site, save_epoch)
+	dressmaking_ci_book(H, site, save_epoch)
 	qdel(H)
 	dressmaking_ci_clear(site)
 	map_storage.clear_bookkeeping()
