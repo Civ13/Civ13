@@ -220,3 +220,12 @@
 	civa_research = list(default_research,default_research,default_research,null)
 	civb_research = list(default_research,default_research,default_research,null)
 	civc_research = list(default_research,default_research,default_research,null)
+
+/obj/map_metadata/nationsrp/coldwar/faction_hud_icon(mob/living/human/H, faction_flag)
+	if (faction_flag == CIVILIAN)
+		switch (H.original_job_title)
+			if ("Civilization A Citizen")
+				return "us_basic"
+			if ("Civilization B Citizen")
+				return "sov_basic"
+	return ..()

@@ -140,3 +140,11 @@
 		else
 			return !faction1_can_cross_blocks()
 	return FALSE
+/obj/map_metadata/syria/faction_hud_icon(mob/living/human/H, faction_flag)
+	switch (faction_flag)
+		if (ARAB)
+			return H.original_job.title == "Wagner Group PMC" ? "wagner" : "syria_basic"
+		if (AMERICAN)
+			if (H.original_job.title != "Delta Force Operator")
+				return "syria_fsa"
+	return ..()

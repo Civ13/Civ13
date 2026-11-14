@@ -274,3 +274,5 @@
 				new/obj/item/ammo_casing/rocket/og7v(user.loc)
 				new/obj/item/ammo_casing/rocket/og7v(user.loc)
 			return
+
+/obj/map_metadata/tadojsville/faction_hud_icons = list(CIVILIAN = "un")
