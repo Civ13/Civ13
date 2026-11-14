@@ -17,6 +17,7 @@ import { BookReader } from './BookReader';
 import { PaperEditor } from './PaperEditor';
 import { Prompt } from './Prompt';
 import { RecruitmentStation } from './RecruitmentStation';
+import { CraftingWindow } from './CraftingWindow';
 export const interfaces: Record<string, ComponentType<ScreenProps>> = {
   'appearance_changer.tmpl': Appearance,
   'chem_disp.tmpl': Chemistry,
@@ -42,4 +43,5 @@ export const interfaces: Record<string, ComponentType<ScreenProps>> = {
   'paper_editor.tmpl': PaperEditor,
   'prompt.tmpl': Prompt,
   'recruitment_station.tmpl': RecruitmentStation,
+  'crafting_window.tmpl': CraftingWindow,
 };
