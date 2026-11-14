@@ -193,6 +193,22 @@ class ExpeditionSlotTests(unittest.TestCase):
         request.assert_called_once_with('stop')
         self.assertEqual([], launched)
 
+    def test_open_refusal_preserves_existing_land_and_save(self):
+        self.give('other-voyage')
+        before = slots.read_slot(self.group, 'far1')
+        saved = self.host.repo / 'map.txt'
+        saved.write_text('existing world')
+        update = mock.Mock()
+        for valid_wish in (False, True):
+            with self.subTest(valid_wish=valid_wish):
+                if valid_wish:
+                    self.want('new-voyage')
+                answer = slots.open_land(self.group, self.host, 'far1', update, build=fake_build)
+                self.assertIn('failed', answer)
+                self.assertEqual(before, slots.read_slot(self.group, 'far1'))
+                self.assertEqual('existing world', saved.read_text())
+                update.assert_not_called()
+
     def test_a_land_that_cannot_be_built_is_given_up_and_the_coordinator_told(self):
         self.want()
         update = mock.Mock(return_value={'accepted': {}, 'skipped': {'far1': 'busy: start'}})
