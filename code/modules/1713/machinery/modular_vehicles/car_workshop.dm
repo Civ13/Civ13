@@ -11,7 +11,9 @@
 	not_disassemblable = TRUE
 	// stock["woolcloth"] tracks the wool portion of stock["cloth"] for refunds.
 	// Missing in old saves means all stored cloth is ordinary cloth.
-	var/list/stock = list("steel" = 0, "glass" = 0, "cloth" = 0, "cable" = 0, "wheels" = 0)
+	// Wood and aluminium are airframe materials (aircraft_hangar.dm); missing
+	// in old saves means none stored.
+	var/list/stock = list("steel" = 0, "glass" = 0, "cloth" = 0, "cable" = 0, "wheels" = 0, "wood" = 0, "aluminium" = 0)
 	var/tmp/busy = FALSE
 	var/tmp/assembly_time = 100
 
@@ -92,7 +94,7 @@ var/global/list/car_workshop_prototypes = list()
 	if (!required)
 		return FALSE
 	for (var/key in required)
-		if (stock[key] < required[key])
+		if ((stock[key] || 0) < required[key])
 			return FALSE
 	return TRUE
 
@@ -165,15 +167,17 @@ var/global/list/car_workshop_prototypes = list()
 		return
 	var/key
 	if (istype(I, /obj/item/stack/material/steel)) key = "steel"
+	else if (istype(I, /obj/item/stack/material/wood)) key = "wood"
+	else if (istype(I, /obj/item/stack/material/aluminium)) key = "aluminium"
 	else if (istype(I, /obj/item/stack/material/glass)) key = "glass"
 	else if (is_cloth_sheet(I)) key = "cloth"
 	else if (istype(I, /obj/item/stack/cable_coil)) key = "cable"
 	if (key)
 		var/obj/item/stack/S = I
 		var/wool_payment = key == "cloth" && istype(S, /obj/item/stack/material/woolcloth)
-		var/payment = min(S.amount, 200 - stock[key])
+		var/payment = min(S.amount, 200 - (stock[key] || 0))
 		if (payment > 0 && S.use(payment))
-			stock[key] += payment
+			stock[key] = (stock[key] || 0) + payment
 			if (wool_payment) stock["woolcloth"] = (stock["woolcloth"] || 0) + payment
 		return
 	return ..()
@@ -290,7 +294,7 @@ var/global/list/car_workshop_prototypes = list()
 	// Separate the paid textile kinds before creating refundable stacks.
 	stock["woolcloth"] = min(stock["woolcloth"] || 0, stock["cloth"])
 	stock["cloth"] -= stock["woolcloth"]
-	var/list/paths = list("steel" = /obj/item/stack/material/steel, "glass" = /obj/item/stack/material/glass, "cloth" = /obj/item/stack/material/cloth, "woolcloth" = /obj/item/stack/material/woolcloth, "cable" = /obj/item/stack/cable_coil)
+	var/list/paths = list("steel" = /obj/item/stack/material/steel, "glass" = /obj/item/stack/material/glass, "cloth" = /obj/item/stack/material/cloth, "woolcloth" = /obj/item/stack/material/woolcloth, "cable" = /obj/item/stack/cable_coil, "wood" = /obj/item/stack/material/wood, "aluminium" = /obj/item/stack/material/aluminium)
 	for (var/key in paths)
 		var/path = paths[key]
 		while (stock[key] > 0)

@@ -27,6 +27,12 @@ plant.
 Sprites are in `icons/obj/aluminium.dmi`, drawn by
 `tests/sprites/create_aluminium.py`.
 
+## Uses
+
+- Aircraft: the hangar's cabin plane, cargo plane and twin-engine plane have
+  aluminium airframes (48, 44 and 64 ingots) with steel engines; the trainer
+  and light plane are wood, cloth and wire (docs/piece-projects.md).
+
 ## Tests
 
     python3 tests/ecology_spawning/run_linux.py . tests/aluminium/probe.dm 300
