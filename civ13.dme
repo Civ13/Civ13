@@ -1771,6 +1771,7 @@
 #include "code\modules\1713\glass_stone_machines.dm"
 #include "code\modules\1713\lifting_machines.dm"
 #include "code\modules\1713\building_site.dm"
+#include "code\modules\1713\mechanical_power.dm"
 #include "code\modules\1713\necklaces.dm"
 #include "code\modules\1713\belt_pouches.dm"
 #include "code\modules\1713\lanyards.dm"

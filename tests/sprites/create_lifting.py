@@ -1,6 +1,6 @@
 """Hand-placed sprites for the shear legs hoist in
 icons/obj/lifting_machines.dmi: empty, with a load slung, and the hauling
-loop. Every pixel is placed by this script from a fixed palette (Pillow
+loop, plus the treadwheel crane and its hauling loop. Every pixel is placed by this script from a fixed palette (Pillow
 only); no external or generated artwork.
 
 Run with Pillow to reproduce the sheet. `--check` verifies the committed
@@ -92,11 +92,67 @@ def shear_legs(loaded=False, step=None):
     return f
 
 
+def treadwheel_crane(step=None):
+    """A timber crane: a stout mast on a braced base, a long jib raking up to
+    the right with a hook on its fall, and a winding drum at the foot.
+    Hauling, a crate climbs under the jib and the drum turns."""
+    f = Frame()
+    # base sills and mast
+    f.rect(3, 27, 22, 28, TIMBER[2])
+    f.hline(3, 22, 27, TIMBER[1])
+    f.hline(3, 22, 29, TIMBER[4])
+    f.rect(9, 5, 11, 26, TIMBER[2])
+    f.vline(9, 5, 26, TIMBER[1])
+    f.vline(11, 5, 26, TIMBER[3])
+    # raking braces either side of the mast
+    for i in range(10):
+        f.put(4 + i // 2, 26 - i, TIMBER[3])
+        f.put(17 - i // 2, 26 - i, TIMBER[3])
+    # the jib, from the mast head out and up to the right
+    for i in range(19):
+        x = 10 + i
+        y = 7 - i * 5 // 18
+        f.put(x, y, POLE[0])
+        f.put(x, y + 1, POLE[1])
+    f.pts(IRON[1], (28, 2), (29, 2), (28, 3))        # jib sheave
+    # stay from the mast head back to the tail of the base
+    for i in range(11):
+        f.put(9 - i // 2, 5 + i * 2, ROPE[2])
+    # winding drum at the foot, its spokes turning
+    turn = 0 if step is None else step % 4
+    f.rect(12, 20, 17, 25, TIMBER[3])
+    f.hline(12, 17, 20, TIMBER[1])
+    spoke = ((14, 21), (16, 22), (15, 24), (13, 23))[turn]
+    f.put(spoke[0], spoke[1], ROPE[0])
+    f.put(14, 22, IRON[0])
+    # the fall from the sheave to the hook
+    lift = 0 if step is None else (0, 2, 4, 6)[step % 4]
+    hook_y = (11 if step is None else 17) - lift
+    for y in range(4, hook_y):
+        f.put(28, y, ROPE[0] if y % 2 else ROPE[1])
+    f.pts(IRON[1], (28, hook_y), (28, hook_y + 1), (29, hook_y + 2), (28, hook_y + 3), (27, hook_y + 2))
+    if step is not None:
+        top = hook_y + 4
+        for y in range(top, top + 6):
+            for x in range(24, 31):
+                c = CRATE[1]
+                if y == top or x == 24:
+                    c = CRATE[0]
+                elif y == top + 5 or x == 30:
+                    c = CRATE[2]
+                f.put(x, y, c)
+        f.hline(24, 30, top + 2, ROPE[1])
+    f.outline()
+    return f
+
+
 def states():
     """[(state, frames, delay)] in sheet order."""
     return [
         ('shear_legs', [shear_legs()], 0),
         ('shear_legs_haul', [shear_legs(True, i) for i in range(4)], 3),
+        ('treadwheel_crane', [treadwheel_crane()], 0),
+        ('treadwheel_crane_haul', [treadwheel_crane(i) for i in range(4)], 3),
     ]
 
 

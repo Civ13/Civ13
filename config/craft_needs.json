@@ -52,5 +52,44 @@
       "/obj/item/machine_part/shaft": 1,
       "/obj/item/machine_part/bearing": 2
     }
+  },
+  "/obj/structure/workshop_machine/mover/treadwheel": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/machine_part/shaft": 1,
+      "/obj/item/machine_part/bearing": 2
+    }
+  },
+  "/obj/structure/workshop_machine/mover/horse_gin": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/machine_part/gear": 1,
+      "/obj/item/machine_part/shaft": 1,
+      "/obj/item/machine_part/bearing": 1
+    }
+  },
+  "/obj/structure/workshop_machine/mover/mill_wheel": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/machine_part/gear": 1,
+      "/obj/item/machine_part/shaft": 1,
+      "/obj/item/machine_part/bearing": 2
+    }
+  },
+  "/obj/structure/workshop_machine/mover/windmill": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/machine_part/gear": 1,
+      "/obj/item/machine_part/shaft": 1,
+      "/obj/item/machine_part/bearing": 2
+    }
+  },
+  "/obj/structure/workshop_machine/shear_legs/crane": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/machine_part/shaft": 1,
+      "/obj/item/machine_part/bearing": 2,
+      "/obj/item/machine_part/belt": 1
+    }
   }
 }

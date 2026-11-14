@@ -108,15 +108,25 @@ class LiftingMachines(unittest.TestCase):
         self.assertIn('landing_on(multiz_level_below(z), TRUE)', choices)
         self.assertIn('edge_open_air(locate(T.x, T.y, z))', proc_body(SOURCE, LEGS + '/proc/loads_below('))
 
+    def test_crane_is_the_same_hoist_with_a_longer_reach(self):
+        crane = SOURCE[SOURCE.index('\n' + LEGS + '/crane\n'):]
+        self.assertIn('reach = 3', crane)
+        self.assertNotIn('/proc/', crane)
+        self.assertIn('var/reach = 2', SOURCE)
+        self.assertIn('range(reach, centre)', proc_body(SOURCE, LEGS + '/proc/landing_on('))
+        self.assertIn('range(reach, centre)', proc_body(SOURCE, LEGS + '/proc/loads_below('))
+
     def test_sprite_sheet_states_and_script(self):
         data = DMI.read_bytes()
         at = data.index(b'zTXtDescription\x00\x00') + len(b'zTXtDescription\x00\x00')
         text = zlib.decompressobj().decompress(data[at:]).decode()
         states = {m.group(1): int(m.group(2))
                   for m in re.finditer(r'state = "([^"]+)"\n\tdirs = 1\n\tframes = (\d+)', text)}
-        self.assertEqual(states, {'shear_legs': 1, 'shear_legs_haul': 4})
-        for state in states:
-            self.assertIn('"%s"' % state, SOURCE)
+        self.assertEqual(states, {'shear_legs': 1, 'shear_legs_haul': 4,
+                                  'treadwheel_crane': 1, 'treadwheel_crane_haul': 4})
+        for state in ('shear_legs', 'treadwheel_crane'):
+            self.assertIn('base_state = "%s"' % state, SOURCE)
+        self.assertIn('icon_state = "[base_state]_haul"', SOURCE)
         try:
             import PIL  # noqa: F401
         except ImportError:

@@ -25,10 +25,17 @@ nothing is stored in the legs and nothing ticks.
   the legs with clear ground under it).
 - Click the legs with an empty hand to haul up a load lying below, under open
   air within 2 tiles; it lands on the nearest clear tile beside the legs.
-- A haul takes 6 seconds, 10 for a hoist-only load. The load moves only when
+- A haul takes 6 seconds, 10 for a hoist-only load, less with a prime mover
+  turning next to the hoist (`docs/mechanical-power.md`). The load moves only when
   the wait finishes and the hauler, load and landing are all still valid.
 - Fastened objects, anything with someone inside, and hauls during a save are
   refused. Wrench to unfasten the legs, hammer on harm intent to dismantle.
 
 Scaffolding was planned beside the legs and left out: placed ladders already
 give a way up, and floors already extend over open air.
+
+## Treadwheel crane
+
+`/obj/structure/workshop_machine/shear_legs/crane`: 16 wood plus a shaft, two
+bearings and a belt, Imperial Architecture. It is the same hoist with
+`reach = 3` and its own sprites; it adds no procs.
