@@ -1084,6 +1084,11 @@ SUITES = {
         'paths': ('tests/tribal_deeds/',), 'shared_paths': (
             'code/modules/1713/tribal_deeds.dm', 'code/modules/1713/dugout_canoe.dm',
             'code/modules/1713/domestication.dm', 'code/modules/1713/rock_art.dm')},
+    # Burial mounds, cairns and feasts: source contracts only.
+    'stone_age_rites': {'files': ('tests/stone_age_rites/test_source.py',),
+        'paths': ('tests/stone_age_rites/',), 'shared_paths': (
+            'code/modules/1713/stone_age_rites.dm', 'icons/obj/stone_age_rites.dmi',
+            'code/game/objects/items/stacks/stack.dm')},
     'door_intents': {'files': ('tests/door_intents/test_door_intents.py', 'tests/door_intents/test_jail_keys.py'),
         'paths': ('tests/door_intents/',), 'shared_paths': (
             'code/game/objects/structures/door.dm',
