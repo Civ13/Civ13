@@ -16,6 +16,7 @@
 	min_positions = 1
 	max_positions = 3
 
+/datum/job/arab/civilian/chechen/leader/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_HIGH, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_NORMAL)
 /datum/job/arab/civilian/chechen/leader/equip(var/mob/living/human/H)
 
 //shoes
@@ -57,15 +58,7 @@
 	H.civilization = "Militia"
 	give_random_name(H)
 	H.add_note("Role", "You are a Warlord! Organize the militia and fend off the russian invaders!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_HIGH)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_HIGH)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("machinegun", STAT_NORMAL)
+	apply_job_stats(H)
 	return TRUE
 
 /datum/job/arab/civilian/chechen/militia
@@ -76,6 +69,7 @@
 	max_positions = 200
 	allowed_maps = list(MAP_GROZNY)
 
+/datum/job/arab/civilian/chechen/militia/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_HIGH, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_LOW, "machinegun" = STAT_NORMAL)
 /datum/job/arab/civilian/chechen/militia/equip(var/mob/living/human/H)
 
 //shoes
@@ -235,15 +229,7 @@
 	H.add_note("Role", "You are a <b>[title]</b> insurging against the Russian occupants! Do all it takes to prevent them from crossing the bridge south of the city and listen to your Warlords!")
 	H.civilization = "Militia"
 	give_random_name(H)
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_HIGH)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_LOW)
-	H.setStat("machinegun", STAT_NORMAL)
+	apply_job_stats(H)
 	return TRUE
 
 /datum/job/arab/civilian/chechen/medic
@@ -258,6 +244,7 @@
 	min_positions = 3
 	max_positions = 10
 
+/datum/job/arab/civilian/chechen/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_VERY_HIGH, "machinegun" = STAT_MEDIUM_LOW)
 /datum/job/arab/civilian/chechen/equip(var/mob/living/human/H)
 
 //shoes
@@ -300,15 +287,7 @@
 	H.add_note("Role", "You are a <b>[title]</b>. Keep your brothers healthy and motivated!")
 	H.civilization = "Militia"
 	give_random_name(H)
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_HIGH)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_VERY_HIGH)
-	H.setStat("machinegun", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	return TRUE
 
 /////////Russian Federal Forces//////////////
@@ -328,6 +307,7 @@
 	min_positions = 1
 	max_positions = 1
 
+/datum/job/russian/ruff_lieutenant/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_HIGH, "rifle" = STAT_HIGH, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_NORMAL, "machinegun" = STAT_NORMAL)
 /datum/job/russian/ruff_lieutenant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -371,15 +351,7 @@
 	H.civilization = "Russian"
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>. You are in charge of the whole platoon. Organize your troops accordingly!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_HIGH)
-	H.setStat("rifle", STAT_HIGH)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_NORMAL)
-	H.setStat("machinegun", STAT_NORMAL)
+	apply_job_stats(H)
 	return TRUE
 
 /datum/job/russian/ruff_sergeant
@@ -398,6 +370,7 @@
 	min_positions = 2
 	max_positions = 8
 
+/datum/job/russian/ruff_sergeant/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_HIGH, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_LOW, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_MEDIUM_HIGH)
 /datum/job/russian/ruff_sergeant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
@@ -444,15 +417,7 @@
 	H.civilization = "Russian"
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, lead and coordinate your squad with your officer! Remember to issue coordinates to your Radio Operator.")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_HIGH)
-	H.setStat("rifle", STAT_MEDIUM_HIGH)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_LOW)
-	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("machinegun", STAT_MEDIUM_HIGH)
+	apply_job_stats(H)
 	return TRUE
 
 
@@ -469,6 +434,7 @@
 	min_positions = 2
 	max_positions = 8
 
+/datum/job/russian/ruff_medic/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_NORMAL, "bows" = STAT_LOW, "medical" = STAT_VERY_HIGH, "machinegun" = STAT_MEDIUM_LOW)
 /datum/job/russian/ruff_medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -519,15 +485,7 @@
 	H.civilization = "Russian"
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>. Keep your fellow soldiers healthy and alive!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_LOW)
-	H.setStat("medical", STAT_VERY_HIGH)
-	H.setStat("machinegun", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	return TRUE
 
 /datum/job/russian/ruff_radioman
@@ -544,6 +502,7 @@
 	min_positions = 1
 	max_positions = 5
 
+/datum/job/russian/ruff_radioman/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_HIGH, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_LOW, "medical" = STAT_LOW, "machinegun" = STAT_NORMAL)
 /datum/job/russian/ruff_radioman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -613,15 +572,7 @@
 	H.civilization = "Russian"
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, follow orders given by your superiors and call in airstrikes using the coordinates given to you.")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_MEDIUM_HIGH)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_LOW)
-	H.setStat("medical", STAT_LOW)
-	H.setStat("machinegun", STAT_NORMAL)
+	apply_job_stats(H)
 	return TRUE
 
 /datum/job/russian/ruff_soldier
@@ -638,6 +589,7 @@
 	min_positions = 10
 	max_positions = 80
 
+/datum/job/russian/ruff_soldier/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_LOW, "medical" = STAT_LOW, "machinegun" = STAT_NORMAL)
 /datum/job/russian/ruff_soldier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -714,15 +666,7 @@
 	H.civilization = "Russian"
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, you were conscripted right after your 18th birthday; What a joy! Follow orders given by your superiors and defeat the enemy!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_LOW)
-	H.setStat("medical", STAT_LOW)
-	H.setStat("machinegun", STAT_NORMAL)
+	apply_job_stats(H)
 	return TRUE
 
 /datum/job/russian/ruff_spetsnaz
@@ -739,6 +683,7 @@
 	min_positions = 1
 	max_positions = 8
 
+/datum/job/russian/ruff_spetsnaz/job_stats = list("strength" = STAT_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_HIGH, "dexterity" = STAT_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_HIGH, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_MEDIUM_HIGH)
 /datum/job/russian/ruff_spetsnaz/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -798,13 +743,5 @@
 	H.civilization = "Russian"
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, part of the Spetsnaz GRU. You are the best of the best; put an end to this conflict!")
-	H.setStat("strength", STAT_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_HIGH)
-	H.setStat("dexterity", STAT_HIGH)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_HIGH)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("machinegun", STAT_MEDIUM_HIGH)
+	apply_job_stats(H)
 	return TRUE

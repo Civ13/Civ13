@@ -27,6 +27,7 @@
 	min_positions = 1
 	max_positions = 1
 
+/datum/job/civilian/ukrainian/upa_officer/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_VERY_VERY_HIGH, "dexterity" = STAT_VERY_VERY_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_VERY_VERY_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_VERY_VERY_HIGH)
 /datum/job/civilian/ukrainian/upa_officer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -49,15 +50,7 @@
 	H.s_tone = rand(-35,-25)
 	H.add_note("Role", "You are a <b>[title]</b>, lead the UPA in the fight against the invaders!")
 	H.add_note("Partisan Mechanics", "- Press <b>C</b> to place a booby trap while holding a grenade.")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_VERY_VERY_HIGH)
-	H.setStat("dexterity", STAT_VERY_VERY_HIGH)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_VERY_VERY_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("machinegun", STAT_VERY_VERY_HIGH)
+	apply_job_stats(H)
 	return TRUE
 
 /datum/job/civilian/ukrainian/upa_doctor
@@ -75,6 +68,7 @@
 	min_positions = 2
 	max_positions = 2
 
+/datum/job/civilian/ukrainian/upa_doctor/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_VERY_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MAX, "machinegun" = STAT_MEDIUM_LOW)
 /datum/job/civilian/ukrainian/upa_doctor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -102,15 +96,7 @@
 	H.s_tone = rand(-35,-25)
 	H.add_note("Role", "You are a <b>[title]</b>. Keep your comrades healthy!")
 	H.add_note("Partisan Mechanics", "- Press <b>C</b> to place a booby trap while holding a grenade.")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_VERY_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MAX)
-	H.setStat("machinegun", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	return TRUE
 
 /datum/job/civilian/ukrainian/sergeant_upa
@@ -129,6 +115,7 @@
 	min_positions = 1
 	max_positions = 2
 
+/datum/job/civilian/ukrainian/sergeant_upa/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_HIGH, "dexterity" = STAT_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_VERY_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_MEDIUM_LOW, "stamina" = STAT_VERY_HIGH)
 /datum/job/civilian/ukrainian/sergeant_upa/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -155,16 +142,7 @@
 
 	H.add_note("Role", "You are a <b>[title]</b>, a sergeant in the Ukrayins'ka Povstans'ka Armiya, in charge of a squad.")
 	H.add_note("Partisan Mechanics", "- Press <b>C</b> to place a booby trap while holding a grenade.")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_HIGH)
-	H.setStat("dexterity", STAT_HIGH)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_VERY_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("machinegun", STAT_MEDIUM_LOW)
-	H.setStat("stamina", STAT_VERY_HIGH)
+	apply_job_stats(H)
 
 	return TRUE
 
@@ -183,6 +161,7 @@
 	min_positions = 5
 	max_positions = 15
 
+/datum/job/civilian/ukrainian/upa_infantry/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_NORMAL, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_MEDIUM_LOW)
 /datum/job/civilian/ukrainian/upa_infantry/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -244,14 +223,6 @@
 	H.s_tone = rand(-35,-25)
 	H.add_note("Role", "You are a <b>[title]</b>, a soldier in the Ukrayins'ka Povstans'ka Armiya. Fight for the freedom of <b>Ukraine</b>!")
 	H.add_note("Partisan Mechanics", "- Press <b>C</b> to place a booby trap while holding a grenade.")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("machinegun", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 
 	return TRUE

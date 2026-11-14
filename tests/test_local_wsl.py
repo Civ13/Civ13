@@ -38,6 +38,7 @@ class LocalWslTests(unittest.TestCase):
                            if path.is_file() and '__pycache__' not in path.parts)
             for name in (*atlas, 'scripts/build-crafting-atlas.py',
                          'config/crafting/furniture_joinery.json',
+                         'config/craft_needs.json',
                          'code/modules/1713/rope_making.dm',
                          'code/modules/1713/dressmaking.dm',
                          'code/modules/1713/primitive_woodworking.dm',
