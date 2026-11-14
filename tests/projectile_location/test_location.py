@@ -258,5 +258,114 @@ class ProjectileLocationTest(unittest.TestCase):
             self.assertEqual(duplicate.calls, 1)
 
 
+# The frozen pre-change cover seam is independent of Git history. This is an
+# offline source projection, not native collision or performance evidence.
+ORIGINAL_COVER = r"""		if (ismob(firer) && (!firer.prone && !firer.lying))
+			if (firstmove)
+				for (var/obj/structure/window/barrier/S in src_loc)
+					_untouchable += S
+			else
+				if (firer)
+					for (var/obj/structure/barricade/B in src_loc)
+						if (get_dist(firer, B) == 1)
+							_untouchable += B
+
+					// Incompleted wall (half walls)
+					for (var/obj/covers/dirt_wall/blocks/incomplete/B in src_loc)
+						if (get_dist(firer, B) == 1)
+							_untouchable += B
+					for (var/obj/covers/clay_wall/incomplete/B in src_loc)
+						if (get_dist(firer, B) == 1)
+							_untouchable += B
+					for (var/obj/covers/clay_wall/sumerian/incomplete/B in src_loc)
+						if (get_dist(firer, B) == 1)
+							_untouchable += B
+					for (var/obj/covers/brick_wall/incomplete/B in src_loc)
+						if (get_dist(firer, B) == 1)
+							_untouchable += B
+"""
+
+
+def cover_seam():
+    text = PROJECTILE.read_text(encoding='utf-8')
+    body = text.split('/obj/item/projectile/process()', 1)[1]
+    return 'if (ismob(firer) && (!firer.prone && !firer.lying))' + body.split('if (ismob(firer) && (!firer.prone && !firer.lying))', 1)[1].split('\n\t\thandleTurf(', 1)[0]
+
+
+def project_cover(source):
+    import textwrap
+    translated = ['def cover(firer, firstmove, src_loc):', '    selected = []']
+    for raw in textwrap.dedent(source.expandtabs(4)).splitlines():
+        line = raw.strip()
+        if not line or line.startswith('//'):
+            continue
+        indent = '    ' + raw[:len(raw) - len(raw.lstrip())]
+        conditions = {
+            'if (ismob(firer) && (!firer.prone && !firer.lying))': 'if ismob(firer) and not firer.prone and not firer.lying:',
+            'if (firstmove)': 'if firstmove:',
+            'if (!firstmove)': 'if not firstmove:',
+            'if (firer)': 'if firer:',
+            'else': 'else:',
+            'if (get_dist(firer, B) == 1)': 'if get_dist(firer, B) == 1:',
+            'if (get_dist(firer, B) == 2)': 'if get_dist(firer, B) == 2:',
+            '_untouchable += S': 'selected.append(S)',
+            '_untouchable += B': 'selected.append(B)',
+        }
+        if line in conditions:
+            translated.append(indent + conditions[line])
+            continue
+        match = re.fullmatch(r'for \(var(/[^ ]+)/([BS]) in src_loc\)', line)
+        if not match:
+            raise AssertionError('Unknown cover statement: ' + line)
+        translated.append(indent + 'for ' + match[2] + ' in by_type(src_loc, ' + repr(match[1]) + '):')
+    translated.append('    return selected')
+    scope = {
+        'ismob': lambda obj: isinstance(obj, CoverMob),
+        'by_type': lambda objects, kind: [obj for obj in objects if obj[0] == kind or obj[0].startswith(kind + '/')],
+        'get_dist': lambda _firer, obj: obj[2],
+    }
+    exec('\n'.join(translated), scope)
+    return scope['cover']
+
+
+@dataclass
+class CoverMob:
+    prone: bool = False
+    lying: bool = False
+
+
+class ProjectileCoverSeamTest(unittest.TestCase):
+    def setUp(self):
+        self.before = project_cover(ORIGINAL_COVER)
+        self.after = project_cover(cover_seam())
+        self.objects = [
+            ('/obj/structure/window/barrier', 'barrier', 1),
+            ('/obj/structure/barricade', 'near barricade', 1),
+            ('/obj/structure/barricade', 'far barricade', 2),
+            ('/obj/covers/dirt_wall/blocks/incomplete', 'dirt', 1),
+            ('/obj/covers/clay_wall/incomplete', 'clay', 1),
+            ('/obj/covers/clay_wall/sumerian/incomplete', 'sumerian', 1),
+            ('/obj/covers/brick_wall/incomplete', 'brick', 1),
+            ('/obj/other', 'other', 1),
+        ]
+
+    def test_original_and_candidate_preserve_ordered_cover(self):
+        for firer in (None, 'not a mob', CoverMob(), CoverMob(prone=True), CoverMob(lying=True)):
+            for first in (False, True):
+                with self.subTest(firer=firer, first=first):
+                    self.assertEqual(self.after(firer, first, self.objects), self.before(firer, first, self.objects))
+        self.assertEqual([obj[1] for obj in self.after(CoverMob(), True, self.objects)], ['barrier'])
+        self.assertEqual([obj[1] for obj in self.after(CoverMob(), False, self.objects)],
+                         ['near barricade', 'dirt', 'clay', 'sumerian', 'brick'])
+
+    def test_negative_controls_detect_reversed_first_move_and_distance(self):
+        seam = cover_seam()
+        wrong_move = project_cover(seam.replace('if (firstmove)', 'if (!firstmove)', 1))
+        wrong_distance = project_cover(seam.replace('get_dist(firer, B) == 1', 'get_dist(firer, B) == 2'))
+        firer = CoverMob()
+        self.assertNotEqual(wrong_move(firer, True, self.objects), self.before(firer, True, self.objects))
+        self.assertNotEqual(wrong_distance(firer, False, self.objects), self.before(firer, False, self.objects))
+
+
 if __name__ == '__main__':
     unittest.main()

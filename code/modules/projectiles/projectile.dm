@@ -852,24 +852,23 @@
 				for (var/obj/structure/window/barrier/S in src_loc)
 					_untouchable += S
 			else
-				if (firer)
-					for (var/obj/structure/barricade/B in src_loc)
-						if (get_dist(firer, B) == 1)
-							_untouchable += B
+				for (var/obj/structure/barricade/B in src_loc)
+					if (get_dist(firer, B) == 1)
+						_untouchable += B
 
-					// Incompleted wall (half walls)
-					for (var/obj/covers/dirt_wall/blocks/incomplete/B in src_loc)
-						if (get_dist(firer, B) == 1)
-							_untouchable += B
-					for (var/obj/covers/clay_wall/incomplete/B in src_loc)
-						if (get_dist(firer, B) == 1)
-							_untouchable += B
-					for (var/obj/covers/clay_wall/sumerian/incomplete/B in src_loc)
-						if (get_dist(firer, B) == 1)
-							_untouchable += B
-					for (var/obj/covers/brick_wall/incomplete/B in src_loc)
-						if (get_dist(firer, B) == 1)
-							_untouchable += B
+				// Incompleted wall (half walls)
+				for (var/obj/covers/dirt_wall/blocks/incomplete/B in src_loc)
+					if (get_dist(firer, B) == 1)
+						_untouchable += B
+				for (var/obj/covers/clay_wall/incomplete/B in src_loc)
+					if (get_dist(firer, B) == 1)
+						_untouchable += B
+				for (var/obj/covers/clay_wall/sumerian/incomplete/B in src_loc)
+					if (get_dist(firer, B) == 1)
+						_untouchable += B
+				for (var/obj/covers/brick_wall/incomplete/B in src_loc)
+					if (get_dist(firer, B) == 1)
+						_untouchable += B
 
 		handleTurf(loc, untouchable = _untouchable)
 		before_move()
