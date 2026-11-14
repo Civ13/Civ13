@@ -4,8 +4,9 @@ A slot is FREE (no land; it runs its placeholder map if started) or holds a
 LAND built from a world-chart template (docs/expedition-lands.md). Giving a
 slot a land generates the map into the group root; the slot's next update
 compiles it as the region's map (place_map in shard_group.py). Archiving moves
-the slot's saved world aside and frees the slot for the next land. Nothing is
-ever deleted: lands and archived saves stay under <root>/expeditions/.
+the slot's saved world aside and frees the slot for the next land. An archived
+save (and the land it was built on) is kept 7 days so an admin can restore it
+by hand, then deleted by the host service (prune_archives).
 
     python shard_group.py --config group.json expedition-land --region far1 --template T.json
     python shard_group.py --config group.json update-offline --region far1
@@ -47,6 +48,7 @@ OPENING = 'opening'
 ABANDONED = 'abandon'  # a land given up for good: the host archives the slot
 OPENING_STALE_SECONDS = 3600
 BUILDING_GIVE_UP_SECONDS = 3 * 3600
+ARCHIVE_KEEP_SECONDS = 7 * 86400  # an archived land is deleted after this
 
 
 def slots_dir(group):
@@ -318,6 +320,38 @@ def opening(group, region_id, now):
     except OSError:
         return False
 
+def prune_archives(group, now=None):
+    """Deletes archived saves older than ARCHIVE_KEEP_SECONDS, with the land
+    folder each was built from when no slot holds that land now. Returns the
+    archive folder names deleted."""
+    now = time.time() if now is None else now
+    folder = slots_dir(group) / 'archive'
+    if not folder.is_dir():
+        return []
+    held = set()
+    for region in group['regions']:
+        if region['kind'] == 'EXPEDITION' and slot_file(group, region['id']).exists():
+            record = read_slot(group, region['id'])
+            if record.get('land_dir'):
+                held.add(str(Path(record['land_dir']).resolve()))
+    lands = (slots_dir(group) / 'lands').resolve()
+    gone = []
+    for entry in sorted(folder.iterdir()):
+        if not entry.is_dir() or now - entry.stat().st_mtime < ARCHIVE_KEEP_SECONDS:
+            continue
+        land = None
+        try:
+            land = json.loads((entry / 'slot.json').read_text(encoding='utf-8')).get('land_dir')
+        except (OSError, ValueError, AttributeError):
+            land = None
+        shutil.rmtree(entry, ignore_errors=True)
+        gone.append(entry.name)
+        if land:
+            land = Path(land).resolve()
+            if land.parent == lands and str(land) not in held and land.is_dir():
+                shutil.rmtree(land, ignore_errors=True)
+    return gone
+
 
 def serve(group, hosts, launch, now=None):
     """One host service pass over the expedition slots: open a wanted land in
@@ -326,6 +360,13 @@ def serve(group, hosts, launch, now=None):
     Returns what it did, by region."""
     now = time.time() if now is None else now
     done = {}
+    try:
+        pruned = prune_archives(group, now)
+    except (OSError, Refused) as error:
+        pruned = []
+        done['archive'] = {'error': str(error)[:200]}
+    if pruned:
+        done['archive'] = {'deleted': pruned}
     for region, host in hosts:
         if region['kind'] != 'EXPEDITION':
             continue

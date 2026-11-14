@@ -126,6 +126,22 @@ class ExpeditionSlotTests(unittest.TestCase):
         self.assertFalse((self.slot / slots.WORLD_FILE).exists())
         self.give('5,6')  # the next land
 
+    def test_an_archived_land_is_deleted_after_7_days(self):
+        self.give()
+        (self.slot / 'map_saves' / 'map.txt').write_text('saved')
+        answer = slots.archive(self.group, self.host, 'far1')
+        archived = Path(answer['archive'])
+        land = Path(json.loads((archived / 'slot.json').read_text())['land_dir'])
+        self.give('5,6')  # the slot's next land is kept whatever happens
+        held = Path(slots.read_slot(self.group, 'far1')['land_dir'])
+        made = archived.stat().st_mtime
+        self.assertEqual([], slots.prune_archives(self.group, now=made + 6 * 86400))
+        self.assertTrue(archived.is_dir() and land.is_dir(), 'kept for 7 days')
+        self.assertEqual([archived.name], slots.prune_archives(self.group, now=made + 7 * 86400 + 1))
+        self.assertFalse(archived.exists() or land.exists(), 'the save and its land are gone')
+        self.assertTrue(held.is_dir(), 'the land a slot holds now is never deleted')
+        self.assertEqual({}, slots.serve(self.group, [], lambda name: None))
+
     def test_a_missing_land_map_stops_the_build(self):
         self.give()
         Path(slots.read_slot(self.group, 'far1')['map']).unlink()

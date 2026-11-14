@@ -321,13 +321,16 @@ class Coordinator(TrainCustody):
             return self.chart.set_course(request.get('voyage'), owner, x, y, origin) is not None
         # A land's own world, for its crew: x and y name the land it holds, as a check.
         found = self.chart.land_in(origin)
-        if op not in ('settle', 'claim', 'abandon') or not found or found[:2] != (x, y):
+        if op not in ('settle', 'claim', 'unclaim', 'abandon') or not found or found[:2] != (x, y):
             return False
         if op == 'settle' and self.chart.settle(origin, admin):
             self.set_land(origin, 'FRONTIER', False)
             return True
         if op == 'claim' and self.chart.claim(origin, owner, admin):
             self.set_land(origin, 'COLONY', False)
+            return True
+        if op == 'unclaim' and self.chart.unclaim(origin, owner, admin):
+            self.set_land(origin, 'FRONTIER', False)
             return True
         if op == 'abandon' and self.chart.abandon(origin, admin):
             self.land_lost(origin)
