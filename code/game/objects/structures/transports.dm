@@ -21,7 +21,7 @@
 	var/obj/structure/engine/internal/engine = null
 	var/obj/structure/vehicleparts/axis/axis = null
 	var/obj/item/weapon/reagent_containers/glass/barrel/fueltank/fueltank = null
-	var/health = 100
+	health = 100
 	var/customcolor = "#FFFFFF"
 	var/sails = FALSE
 	var/sails_on = FALSE

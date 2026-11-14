@@ -10,8 +10,8 @@
 	flags = ON_BORDER
 	icon_state = "railing0"
 	var/broken = FALSE
-	var/health=70
-	var/maxhealth=70
+	health=70
+	maxhealth=70
 	var/check = FALSE
 	flammable = TRUE
 	not_movable = TRUE

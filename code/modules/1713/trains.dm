@@ -220,7 +220,7 @@
 	density = TRUE
 	opacity = FALSE
 	var/automovement = FALSE
-	var/health = 1000
+	health = 1000
 	var/train_speed = 6 //deciseconds of delay, so lower is better
 	var/max_train_speed = 6
 	var/locomotive = FALSE

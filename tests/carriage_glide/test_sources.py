@@ -116,6 +116,10 @@ class Sources(unittest.TestCase):
         # (the earlier frozen projection with the carriage block cut off).
         self.assertNotIn('/obj/structure/vehicle/carriage',self.s.split('// Appearance-only leases.')[0])
         s=self.s.split('// Appearance-only leases.')[0].removesuffix('\n\n')
+        # health moved up to /obj/structure (shared structure damage).
+        shared_health='\thealth = 100\n\tvar/customcolor'
+        self.assertEqual(s.count(shared_health),1)
+        s=s.replace(shared_health,'\tvar/health = 100\n\tvar/customcolor')
         retake='\tif (retake_controls(user))\n\t\treturn\n'
         self.assertEqual(s.count(retake),2)
         s=s.replace(retake,'')

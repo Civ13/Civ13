@@ -6,8 +6,8 @@
 	
 	anchored = TRUE
 	density = TRUE
-	var/health = 100
-	var/maxhealth = 100
+	health = 100
+	maxhealth = 100
 	var/can_damage = TRUE
 	var/material/material
 	var/material_name = "wood"
@@ -122,12 +122,11 @@
 		return
 	..()
 
-/obj/structure/barricade/proc/try_destroy()
-	if (health <= 0)
-		visible_message(SPAN_DANGER("The barricade is smashed apart!"))
-		dismantle()
-		qdel(src)
-		return
+/obj/structure/barricade/break_message()
+	return "The barricade is smashed apart!"
+
+/obj/structure/barricade/on_break()
+	dismantle()
 
 /obj/structure/barricade/proc/dismantle()
 	qdel(src)

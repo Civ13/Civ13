@@ -536,7 +536,7 @@
 	flammable = FALSE
 	var/storedvalue = 0
 	var/faction = null
-	var/health = 200
+	health = 200
 	not_movable = FALSE
 	not_disassemblable = TRUE
 /obj/structure/oil_deposits/attackby(obj/item/W as obj, mob/user as mob)
@@ -551,11 +551,6 @@
 	try_destroy()
 	..()
 
-/obj/structure/oil_deposits/proc/try_destroy()
-	if (health <= 0)
-		visible_message("<span class='danger'>[src] is broken into pieces!</span>")
-		qdel(src)
-		return
 
 /obj/structure/oil_deposits/New()
 	..()

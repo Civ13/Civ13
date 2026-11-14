@@ -9,7 +9,7 @@ var/global/list/sub_physical_machines = list()
 	icon_state = "transponder"
 	density = TRUE
 	anchored = TRUE
-	var/health = 100
+	health = 100
 	var/max_health = 100
 	var/panel_open = FALSE
 	var/datum/submarine/my_sub
@@ -91,7 +91,7 @@ var/global/list/sub_physical_machines = list()
 	icon = 'icons/obj/machines/submarine.dmi'
 	density = TRUE
 	anchored = TRUE
-	var/health = 100
+	health = 100
 	var/max_health = 100
 	var/datum/submarine/my_sub
 

@@ -88,7 +88,7 @@
 	var/obj/item/drone_controller/connected_controller = null
 	var/movement_delay = 5
 	
-	var/health = 100
+	health = 100
 	var/broken = FALSE
 	var/can_move = TRUE
 	var/can_fly = FALSE
@@ -163,7 +163,7 @@
 					icon_state = initial(icon_state)
 					layer = initial(layer)
 
-/obj/structure/drone/proc/try_destroy()
+/obj/structure/drone/try_destroy()
 	if (health <= 0)
 		health = 0
 		visible_message(SPAN_DANGER("<big>\The [src] took too much damage and explodes!</big>"))
