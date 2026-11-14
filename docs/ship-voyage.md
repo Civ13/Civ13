@@ -11,8 +11,9 @@ At the tiller, **Set out on a voyage** is offered when she lies within 4 tiles
 of the map edge of a region group world: the mainland, or a land across the
 sea (an onward voyage, from that land's own chart tile).
 She must meet the crossing rules ([ship crossing](ship-crossing.md): all stop,
-no grapple, the transfer agent reachable, no save running) and have at least
-2 crew aboard and awake.
+no grapple, the transfer agent reachable, no save running), be able to make
+way (a rigged mast or a running engine) and have at least 2 crew aboard and
+awake.
 
 The chart shown is her owner's: the captain's faction (`faction:<name>` from
 the character's civilization), or the captain alone (`crew:<ckey>`). The world

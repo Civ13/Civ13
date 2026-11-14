@@ -70,10 +70,10 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '4658da0357a1e66b3d8b86d886a3fbc93b5e4aeb'
+WIKI_REVIEWED_REVISION = '46a94289639258855c93b9bae151f62251e5157a'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('a567364dd25ed2d333915df91f4328eb4b79ac9a1af92f9f98db306eed911c8c', 'animals dog dogs taming tame mount riding horse carriage'),
-    'guides/Guide_to_Character.md': ('af81934c60bde5421a801ddf5fb2fa7c9415d559c1de0e41f9c3bc097b8da367', 'character skills traits languages'),
+    'guides/Guide_to_Character.md': ('aae5510bcfb98ca648ee303cdea48af583f0a9ce383eed2fd585c98551fc663d', 'character skills traits languages'),
     'guides/Guide_to_Chemistry.md': ('cd18de133c5e560a495c22e26c5a33088d59ff81bbaf77e53ea267d646975230', 'chemistry chemicals reactions reagents'),
     'guides/Guide_to_Combat.md': ('f1318b85ea629b85d14d5411d2412a2e78944ed2c8d0904c99bb26f8de4ee799', 'combat fight fighting intent aim shoot melee grenade cover'),
     'guides/Guide_to_Communications.md': ('11259c01cf9a78d7782b066b3f8c2211a3714fe4053d275a2c518607ca1d752c', 'communications radio transmit'),
@@ -97,7 +97,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Tanks.md': ('9250b410333e0da30224b09ed2126ce2ed676225aa2dda2be3b13c8f7ff3442a', 'tank driving crew ammunition'),
     'guides/Guide_to_Trains.md': ('f962a648103ad3d248058e89c60bb7c46e409d710a134b85c3b5a2e2bb2abdc8', 'train trains railway track locomotive station switcher rails wagon'),
     'guides/Guide_to_Trenches.md': ('04bed9fb3d409455d466928f071ddfc509ba49a9d7b450815595f0bc27c9670b', 'trench trenches fortification sandbag dig shovel'),
-    'guides/Guide_to_Weapons.md': ('97506f64ac6d4213d3e5cf72e6d82e6c845d70aa752e0402657acb8caccfe269', 'weapons gun reload ammunition'),
+    'guides/Guide_to_Weapons.md': ('c62e936a0ce9d55cfc40a7e8c6e9f0fcc75d4575653aa3a383d965265536009c', 'weapons gun reload ammunition'),
     'New_Player_Guide.md': ('70691e17262f75ee998bcddac0aea6ad6bf9fa994e10fecbdf06535e9a7b3397', 'new player beginner start first round basics'),
     'Hotkeys.md': ('5198ecb4aee6e0bf72cf322106b65664f317f78e9d8629fdb232b7350008b88f', 'hotkeys hotkey keys keyboard controls key press'),
     'role_guides.md': ('4117070c23ff3cfd2581b612cd08ae70ee170637381972cffebdf9c0161d78d5', 'role roles job jobs responsibilities'),
@@ -118,7 +118,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Aircraft_Carriers.md': ('d0009e9680476ab3b7c220e0f4dda18191b0c23d94271ab32219ed8fedf1bf53', 'carrier carriers aircraft carrier flight deck shipyard office arresting wires elevator bunkers'),
     'guides/Guide_to_Races.md': ('46ef1bf361c519e71acbd679119429e838348827e25dbcac27282f67bee51097', 'race races species human humans'),
     'guides/Guide_to_Slang.md': ('52f9f6370922d7dede523e51247ae6ea0723d24118cecd26e594c051278dfc3f', 'slang terms jargon abbreviation meaning mean word words'),
-    'guides/Guide_to_Books_and_Scholars.md': ('e4df11467f79df37c8380d8d66625cd07f0587c0f3a84421d1fd44432d8ef9ea', 'books scholars scholarship study chapter research bench apprentice tutor library writing slate abacus'),
+    'guides/Guide_to_Books_and_Scholars.md': ('e6abe97ea5f9ece0c9d64ea00d08f3a636941d426cb70a18675a8be61156c70c', 'books scholars scholarship study chapter research bench apprentice tutor library writing slate abacus'),
     'guides/Guide_to_Your_First_Day.md': ('41c51b3654c25d70f52c1ce0345468a81cce67a05df364d4da5de04a5e8dbb43', 'first day new character start starting survive survival research book study chapter food water shelter bag bags carry carrying basket travois'),
     'guides/Guide_to_Paperwork.md': ('a1a5f705ece3027336005a5fe08e5554eabe1bb6da16cc4294db54b39ad63b69', 'paper paperwork writing write pen book sign signature stamp'),
     'Crafting_Skill_Level_Requirements.md': ('eae4e1c91ce28009f16ec79d0e942f76895d80262e618320eaf44d3a7c5808a9', 'crafting skill level levels requirement requirements unlock'),
@@ -128,7 +128,7 @@ WIKI_REVIEWED_GUIDES = {
     'maps/Nomads_Maps.md': ('fdcb67459889783669de97dcd8d686c2be3e332d7a243f86a5d67528e560480e', 'nomads maps map terrain biome biomes'),
     'gamemodes/Voyage.md': ('9922f438d0253c6b4d812bc852422a54c37f428b4c3221b2a732397ef245ddfe', 'voyage expedition ship mode'),
     'gamemodes/Events.md': ('de6e6133e735e5da8a03a290f45e599b82cee216d9b150d25c583e3c34606336', 'events event special rounds'),
-    'guides_overview.md': ('2f90e206932b5a10144b8cf3e19f9280541e49cd02de6628ad500a2074964dde', 'guides overview list of guides index'),
+    'guides_overview.md': ('7a97a0a82e9553ab16430e87ea6ef37e2ce3b5891b08db0b6dfc9cea02870467', 'guides overview list of guides index'),
 }
 WIKI_LEGACY_GUIDES = ('guides/Guide_to_Crafting.md', 'guides/Guide_to_Metallurgy.md', 'Starter_Guide.md')
 

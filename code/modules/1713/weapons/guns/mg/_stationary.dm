@@ -46,6 +46,14 @@
 
 	KD_chance = KD_CHANCE_HIGH
 
+// A crafted gun has no maker's belts, so any emplaced gun also takes a
+// generic ammo belt filled by hand. The caliber check in load_ammo() still
+// decides which rounds the belt may hold.
+/obj/item/weapon/gun/projectile/automatic/stationary/New()
+	..()
+	if (islist(good_mags) && good_mags.len)
+		good_mags |= /obj/item/ammo_magazine/emptybelt
+
 /obj/item/weapon/gun/projectile/automatic/stationary/Destroy()
 	if(used_by_mob)
 		stopped_using(used_by_mob, FALSE)
