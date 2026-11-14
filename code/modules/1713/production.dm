@@ -249,6 +249,7 @@
 	icon_state = "loom1"
 	work_time_amount = round(1000/(W.amount*3+47)) //The efficiency increases with the amount of material. For 1 material we get 20 deciseconds, for 50 material - 254 deciseconds.
 	work_time_amount = work_time_amount*(0.67/H.getStatCoeff("crafting") + 0.33/H.getStatCoeff("dexterity"))
+	work_time_amount = machine_work_time(src, work_time_amount)
 	if (do_after(H, work_time_amount, src.loc))
 		finish_work()
 	else
@@ -481,7 +482,7 @@
 			if (batch_id != my_batch)
 				return // the batch finished during the wait and finish_work() already paid this worker
 			if (finished_work && crafting_recipe_allowed(H, "[type]"))
-				complete_percent += 6*H.getStatCoeff("strength") + 6*H.getStatCoeff("stamina") + 3*H.getStatCoeff("dexterity")
+				complete_percent += (6*H.getStatCoeff("strength") + 6*H.getStatCoeff("stamina") + 3*H.getStatCoeff("dexterity")) * machine_performance(src)
 				total_work += 10
 				workers_work[H] = total_work
 				H.stats["stamina"] -= STAMINA_LOSS_BASE_PER_DECISECOND_SDS_OF_WORK*10
@@ -2555,6 +2556,7 @@
 		"<span class='notice'>You start to produce \the [current_work.name].</span>",
 		"<span class='notice'>You hear someone begin to cut on \the [src.name].</span>")
 	work_time_amount = work_time_amount*(0.67/H.getStatCoeff("crafting") + 0.33/H.getStatCoeff("dexterity"))
+	work_time_amount = machine_work_time(src, work_time_amount)
 	if (do_after(H, work_time_amount, src.loc))
 		if (!crafting_recipe_allowed(H, "[type]"))
 			qdel(current_work)
