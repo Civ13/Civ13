@@ -834,6 +834,10 @@ SUITES = {
     # code/, run by full and preflight sweeps (not per-file selection).
     'duplicate_overrides': {'files': ('tests/duplicate_overrides/test_duplicate_overrides.py',),
         'paths': ('tests/duplicate_overrides/',), 'shared_paths': ()},
+    # Era helpers keep the statue, anvil and kit options the old per-era
+    # branches gave; per-era equality checks only shrink. Source scan of code/.
+    'era_helpers': {'files': ('tests/era_helpers/test_era_helpers.py',),
+        'paths': ('tests/era_helpers/',), 'shared_paths': ()},
     # Solid fuel kinds and per-device rates keep the old hard-coded values.
     'solid_fuel': {'files': ('tests/solid_fuel/test_solid_fuel.py',),
         'paths': ('tests/solid_fuel/',), 'shared_paths': ()},
