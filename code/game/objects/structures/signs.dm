@@ -21,7 +21,7 @@
 	return
 
 /obj/structure/sign/attackby(obj/item/tool as obj, mob/user as mob)	//deconstruction
-	if (istype(tool, /obj/item/weapon/hammer))
+	if (is_tool(tool, TOOL_HAMMER))
 		var/obj/item/sign/S = new(loc)
 		S.name = name
 		S.desc = desc
@@ -42,7 +42,7 @@
 	var/sign_state = ""
 	value = 0
 /obj/item/sign/attackby(obj/item/tool as obj, mob/user as mob)	//construction
-	if (istype(tool, /obj/item/weapon/hammer) && isturf(user.loc))
+	if (is_tool(tool, TOOL_HAMMER) && isturf(user.loc))
 		var/direction = WWinput(user, "Fasten it to which direction?", "Select a direction.", "North", WWinput_list_or_null(list("North", "East", "South", "West")))
 		if (direction)
 			var/obj/structure/sign/S = new(user.loc)

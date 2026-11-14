@@ -90,7 +90,7 @@
 		var/obj/item/weapon/shoring_kit/K = W
 		K.use_on_hull(src, user)
 		return
-	if(istype(W, /obj/item/weapon/weldingtool))
+	if(is_tool(W, TOOL_WELDER))
 		if(breached)
 			to_chat(user, "<span class='notice'>You begin welding the hull breach shut...</span>")
 			playsound(src.loc, 'sound/machines/submarine/gas.ogg', 50, 1)
@@ -141,7 +141,7 @@
 		var/obj/item/weapon/shoring_kit/K = W
 		K.use_on_bulkhead(src, user)
 		return
-	if(istype(W, /obj/item/weapon/weldingtool))
+	if(is_tool(W, TOOL_WELDER))
 		if(health >= max_health && watertight)
 			to_chat(user, "<span class='notice'>[src] is already in good condition.</span>")
 			return

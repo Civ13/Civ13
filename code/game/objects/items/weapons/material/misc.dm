@@ -350,6 +350,7 @@
 	cooldownw = 6
 
 /obj/item/weapon/material/hatchet
+	tool_flags = TOOL_HATCHET
 	name = "hatchet"
 	desc = "A very sharp axe blade upon a short wood handle. It has a long history of chopping things. This one is intended for chopping wood."
 	icon = 'icons/obj/weapons.dmi'

@@ -159,7 +159,7 @@
 		disconnect_cables()
 		anchored = FALSE
 /obj/item/connector/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/wrench))
+	if (is_tool(W, TOOL_WRENCH))
 		var/mob/living/human/H = user
 		if (!istype(H) || H.stat != CONSCIOUS || !H.can_use_hands() || !H.item_is_in_hands(W) || H.z != z || get_dist(H,src) > 1 || !isturf(loc))
 			return

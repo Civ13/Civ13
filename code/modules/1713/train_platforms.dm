@@ -345,10 +345,10 @@ var/global/train_platform_plan_time = -1
 		to_chat(user, "Its outriggers are down: the car is braced and cannot move.")
 
 /obj/structure/trains/platform/attackby(obj/item/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/crowbar))
+	if (is_tool(W, TOOL_CROWBAR))
 		dismantle_car(user)
 		return
-	if (istype(W, /obj/item/weapon/weldingtool))
+	if (is_tool(W, TOOL_WELDER))
 		weld_repair(user)
 		return
 	return ..()
@@ -660,7 +660,7 @@ var/global/train_platform_plan_time = -1
 		to_chat(user, "Its fittings were left behind when it was taken apart.")
 
 /obj/structure/train_car_kit/attackby(obj/item/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/hammer))
+	if (is_tool(W, TOOL_HAMMER))
 		var/heading = user.dir
 		var/problem = assembly_problem(heading)
 		if (problem)

@@ -173,7 +173,7 @@ var/global/list/power_points = list()
 
 /obj/structure/power_point/attackby(obj/item/W, mob/user)
 	var/mob/living/human/H = user
-	if (istype(W, /obj/item/weapon/wrench))
+	if (is_tool(W, TOOL_WRENCH))
 		if (!istype(H) || H.stat != CONSCIOUS || get_dist(H, src) > 1)
 			return
 		if (anchored)
@@ -303,7 +303,7 @@ var/global/list/power_points = list()
 	face_wall()
 
 /obj/structure/power_point/outlet/attackby(obj/item/W, mob/user)
-	if (istype(W, /obj/item/weapon/wrench) && !anchored)
+	if (is_tool(W, TOOL_WRENCH) && !anchored)
 		face_wall()
 	..()
 
@@ -458,7 +458,7 @@ var/global/list/power_pole_span_start = list()
 
 /obj/structure/power_point/pole/attackby(obj/item/W, mob/user)
 	var/mob/living/human/H = user
-	if (istype(W, /obj/item/weapon/wirecutters))
+	if (is_tool(W, TOOL_WIRECUTTER))
 		if (!istype(H) || H.stat != CONSCIOUS || get_dist(H, src) > 1)
 			return
 		if (!span_poles.len)
@@ -468,7 +468,7 @@ var/global/list/power_pole_span_start = list()
 		playsound(loc, 'sound/items/Wirecutter.ogg', 100, TRUE)
 		to_chat(user, "<span class='notice'>You take down the overhead wires on \the [src].</span>")
 		return
-	if (istype(W, /obj/item/weapon/wrench) && anchored && span_poles.len)
+	if (is_tool(W, TOOL_WRENCH) && anchored && span_poles.len)
 		cut_spans()
 		to_chat(user, "<span class='notice'>You take down its overhead wires first.</span>")
 	if (istype(W, /obj/item/stack/cable_coil) && in_service())

@@ -391,7 +391,7 @@
 	overlays += roof
 
 /obj/structure/lean_to/attackby(obj/item/W, mob/user)
-	if (istype(W, /obj/item/weapon/material/hatchet) || istype(W, /obj/item/weapon/material/machete))
+	if (is_tool(W, TOOL_HATCHET) || istype(W, /obj/item/weapon/material/machete))
 		to_chat(user, SPAN_NOTICE("You start pulling down \the [src]..."))
 		if (do_after(user, 40, src))
 			to_chat(user, SPAN_NOTICE("You pull down \the [src]."))

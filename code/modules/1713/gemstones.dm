@@ -108,10 +108,10 @@ var/global/list/gem_pocket_weights = list(
 // Chisel in the active hand, hammer in the other. Cuts one stone per action.
 // Returns TRUE when the click was a cutting attempt (handled), else FALSE.
 /obj/item/stack/proc/cut_gemstone(obj/item/W, mob/user, cut_type)
-	if (!cut_type || !istype(W, /obj/item/weapon/chisel) || !ishuman(user))
+	if (!cut_type || !is_tool(W, TOOL_CHISEL) || !ishuman(user))
 		return FALSE
 	var/mob/living/human/H = user
-	if (!istype(H.l_hand, /obj/item/weapon/hammer) && !istype(H.r_hand, /obj/item/weapon/hammer))
+	if (!is_tool(H.l_hand, TOOL_HAMMER) && !is_tool(H.r_hand, TOOL_HAMMER))
 		to_chat(H, SPAN_WARNING("You need a hammer in your other hand to use a chisel."))
 		return TRUE
 	if (!H.may_do_after)

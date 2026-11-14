@@ -71,14 +71,14 @@
 	return FALSE
 
 /obj/structure/toilet/attackby(obj/item/I as obj, mob/living/user as mob)
-	if (istype(I, /obj/item/weapon/hammer) && !istype(src, /obj/structure/toilet/pit_latrine))
+	if (is_tool(I, TOOL_HAMMER) && !istype(src, /obj/structure/toilet/pit_latrine))
 		user.visible_message("<span class='warning'>[user] starts to deconstruct \the [src].</span>", "<span class='warning'>You start to deconstruct \the [src].</span>", "<span class='warning'>You hear the sound of some ratchetting nearby.</span>")
 		playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
 		if (do_after(user,50,src))
 			user.visible_message("<span class='warning'>[user] deconstructs \the [src].</span>", "<span class='warning'>You deconstruct \the [src].</span>", "<span class='warning'>You hear the sound of some ratchetting nearby.</span>")
 			qdel(src)
 			return
-	if (istype(I, /obj/item/weapon/material/kitchen/utensil/knife))
+	if (is_tool(I, TOOL_KNIFE))
 		if (istype(src, /obj/structure/toilet/outhouse))
 			if (open == FALSE)
 				return
@@ -507,7 +507,7 @@
 /obj/structure/shower/attackby(obj/item/I as obj, mob/user as mob)
 //	if (I.type == /obj/item/analyzer)
 	//	to_chat(user, "<span class='notice'>The water temperature seems to be [watertemp].</span>")
-	if (istype(I, /obj/item/weapon/wrench))
+	if (is_tool(I, TOOL_WRENCH))
 		var/newtemp = WWinput(user, "What setting would you like to set the temperature valve to?", "Water Temperature Valve", WWinput_first_choice(temperature_settings), WWinput_list_or_null(temperature_settings))
 		user.visible_message("<span class='notice'>[user] begins to adjust the temperature valve with \the [I].</span>", "<span class='notice'>You begin to adjust the temperature valve with \the [I].</span>", "<span class='notice'>You hear the sound of a valve being adjusted nearby.</span>")
 		playsound(loc, 'sound/items/Ratchet.ogg', 50, TRUE)
@@ -516,7 +516,7 @@
 			user.visible_message("<span class='notice'>\The [user] adjusts \the [src] with \the [I].</span>", "<span class='notice'>You adjust the shower with \the [I].</span>")
 			add_fingerprint(user)
 
-	if (istype(I, /obj/item/weapon/hammer))
+	if (is_tool(I, TOOL_HAMMER))
 		user.visible_message("<span class='warning'>[user] starts to deconstruct \the [src].</span>", "<span class='warning'>You start to deconstruct \the [src].</span>", "<span class='warning'>You hear the sound of some ratchetting nearby.</span>")
 		playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
 		if (do_after(user,50,src))
@@ -969,7 +969,7 @@
 	volume = 750
 
 /obj/structure/sink/well/attackby(obj/item/O as obj, mob/user as mob)
-	if (istype(O, /obj/item/weapon/hammer) || istype(O, /obj/item/weapon/wrench))
+	if (is_tool(O, TOOL_HAMMER) || is_tool(O, TOOL_WRENCH))
 		return
 	else
 		..()

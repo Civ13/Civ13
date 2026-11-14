@@ -40,7 +40,7 @@
 				user.drop_from_inventory(src)
 				throw_at(get_edge_target_turf(src, pick(alldirs)), rand(1,3), throw_speed)//Throw that sheesh away
 
-		else if (istype(damage_source, /obj/item/weapon/melee) || istype(damage_source, /obj/item/weapon/material/hatchet))
+		else if (istype(damage_source, /obj/item/weapon/melee) || is_tool(damage_source, TOOL_HATCHET))
 			health -= plating_wear(5)
 			if(prob(15))
 				user.visible_message("<font color='#E55300'><big>\The [src] flies out of \the [user]'s hand!</big></font>")

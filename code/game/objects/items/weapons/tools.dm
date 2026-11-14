@@ -15,6 +15,7 @@
  * Wrench
  */
 /obj/item/weapon/wrench
+	tool_flags = TOOL_WRENCH
 	name = "wrench"
 	desc = "A wrench with many common uses, usually held."
 	icon = 'icons/obj/items.dmi'
@@ -126,6 +127,7 @@
  * Screwdriver
  */
 /obj/item/weapon/screwdriver
+	tool_flags = TOOL_SCREWDRIVER
 	name = "screwdriver"
 	desc = "Your archetypal flathead screwdriver, with a nice and heavy polymer handle."
 	icon = 'icons/obj/items.dmi'
@@ -145,6 +147,7 @@
  * Hammers
  */
 /obj/item/weapon/hammer
+	tool_flags = TOOL_HAMMER
 	name = "hammer"
 	desc = "Hit stuff apart with this."
 	icon = 'icons/obj/items.dmi'
@@ -218,6 +221,7 @@
  */
 
 /obj/item/weapon/wirecutters
+	tool_flags = TOOL_WIRECUTTER
 	name = "wirecutters"
 	desc = "This cuts wires."
 	icon = 'icons/obj/items.dmi'
@@ -247,6 +251,7 @@
  */
 
 /obj/item/weapon/crowbar
+	tool_flags = TOOL_CROWBAR
 	name = "crowbar"
 	desc = "Used to remove floors and to pry open doors."
 	icon = 'icons/obj/items.dmi'
@@ -466,6 +471,7 @@
 
 //////////////////////////////////////////////////////WELDER///////////////////////////////////////////////////////////
 /obj/item/weapon/weldingtool
+	tool_flags = TOOL_WELDER
 	name = "welding tool"
 	desc = "used to weld metals together"
 	icon = 'icons/obj/items.dmi'

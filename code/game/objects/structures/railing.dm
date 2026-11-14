@@ -177,7 +177,7 @@
 
 /obj/structure/railing/attackby(obj/item/W as obj, mob/user as mob)
 	// Dismantle
-	if (istype(W, /obj/item/weapon/hammer) && !anchored)
+	if (is_tool(W, TOOL_HAMMER) && !anchored)
 		playsound(loc, 'sound/items/Ratchet.ogg', 50, TRUE)
 		if (do_after(user, 20, src))
 			// Another player may fasten or dismantle the railing during the wait.
@@ -195,7 +195,7 @@
 
 
 	// Install
-	if (istype(W, /obj/item/weapon/wrench))
+	if (is_tool(W, TOOL_WRENCH))
 		user.visible_message(anchored ? "<span class='notice'>\The [user] begins to unfasten \the [src].</span>" : "<span class='notice'>\The [user] begins to fasten \the [src].</span>" )
 		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
 		if (do_after(user, 10, src))

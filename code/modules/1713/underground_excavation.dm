@@ -95,7 +95,7 @@
 	return opened
 
 /turf/floor/dirt/underground/attackby(obj/item/C, mob/user)
-	if (istype(C, /obj/item/weapon/material/shovel) && ishuman(user) && density)
+	if (is_tool(C, TOOL_SHOVEL) && ishuman(user) && density)
 		underground_excavate(src, user, C)
 		return TRUE
 	return ..()

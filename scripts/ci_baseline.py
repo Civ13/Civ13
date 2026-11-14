@@ -833,6 +833,10 @@ SUITES = {
     # code/, run by full and preflight sweeps (not per-file selection).
     'duplicate_overrides': {'files': ('tests/duplicate_overrides/test_duplicate_overrides.py',),
         'paths': ('tests/duplicate_overrides/',), 'shared_paths': ()},
+    # Tool quality declarations match the base paths is_tool() replaced, and
+    # legacy istype checks on base tool paths only shrink; source scan of code/.
+    'tool_qualities': {'files': ('tests/tool_qualities/test_tool_qualities.py',),
+        'paths': ('tests/tool_qualities/', 'code/__defines/tools.dm', 'code/_helpers/tools.dm'), 'shared_paths': ()},
     # istype/ispath/locate calls that join type paths with || (only the first
     # path is tested); source scan of code/, run by full and preflight sweeps.
     'istype_or_paths': {'files': ('tests/istype_or_paths/test_istype_or_paths.py',),

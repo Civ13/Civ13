@@ -118,6 +118,7 @@
 	value = 55
 
 /obj/item/weapon/material/shovel
+	tool_flags = TOOL_SHOVEL
 	name = "shovel"
 	desc = "A long tool for digging and moving dirt."
 	icon = 'icons/obj/items.dmi'
@@ -282,6 +283,7 @@
 	usespeed = 0.9
 
 /obj/item/weapon/material/pickaxe
+	tool_flags = TOOL_PICKAXE
 	name = "pickaxe"
 	desc = "Miner's favorite."
 	icon = 'icons/obj/items.dmi'
@@ -403,6 +405,7 @@
 	flags = FALSE
 
 /obj/item/weapon/chisel
+	tool_flags = TOOL_CHISEL
 	name = "stone chisel"
 	desc = "A stone chisel, for carving stone walls."
 	icon = 'icons/obj/items.dmi'
@@ -630,7 +633,7 @@
 		icon_state = "grapplehook"
 
 /obj/structure/grapplehook/attackby(obj/item/I, mob/living/human/H)
-	if (deployed && istype(I, /obj/item/weapon/wrench))
+	if (deployed && is_tool(I, TOOL_WRENCH))
 		return
 	..()
 
