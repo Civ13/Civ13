@@ -70,6 +70,11 @@ var/load_runtime_error = FALSE
 /proc/load_person(turf/T)
 	var/mob/living/human/load_probe/H = new(T)
 	H.mob_size = MOB_MEDIUM
+	// A crew member takes the seat on their tile, as a driver does.
+	var/obj/structure/bed/chair/C = locate() in T
+	if (C && !C.buckled_mob)
+		H.buckled = C
+		C.buckled_mob = H
 	return H
 
 /proc/load_checks()
@@ -171,6 +176,14 @@ var/load_runtime_error = FALSE
 	for (var/i = 1, i <= 2, i++)
 		load_person(locate(16, 16, 1))
 	load_check(tank.get_load_factor(TRUE) == 1, "a full crew is within the allowance ([tank.load_factor])")
+	var/mob/living/human/load_probe/rider = load_person(locate(16, 16, 1))
+	var/standing = vehicle_rider_weight(rider)
+	rider.buckled = locate(/obj/structure/bed/chair) in locate(16, 15, 1)
+	if (!rider.buckled)
+		rider.buckled = new /obj/structure/bed/chair(locate(18, 18, 1))
+	load_check(standing == MOB_MEDIUM * 2 && vehicle_rider_weight(rider) == MOB_MEDIUM, "a seated rider counts half a standing one ([standing], [vehicle_rider_weight(rider)])")
+	rider.buckled = null
+	qdel(rider)
 	load_check(tank.do_move(), "and it still drives")
 
 	// ---- Boats and aircraft keep their own speeds ----

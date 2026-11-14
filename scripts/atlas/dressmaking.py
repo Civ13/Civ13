@@ -14,7 +14,8 @@ def add_dressmaking(files, add, records):
     line = source[:source.index(marker)].count('\n') + 1
     routes = []
     for output, kind in (('/obj/item/clothing/under/tailored', 'clothing'),
-                         ('/obj/item/clothing/suit/storage/jacket/tailored', 'overclothes')):
+                         ('/obj/item/clothing/suit/storage/jacket/tailored', 'overclothes'),
+                         ('/obj/item/clothing/head/tailored', 'headwear')):
         name = f'Design, cut and sew your own {kind}'
         steps = [
             'Craft a tailoring project from one cloth sheet (woolcloth also works) in Clothing. Weaving is required.',

@@ -41,6 +41,9 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    # Stdlib-only: compost bins keep their stock through a save of a running world (#5292).
+    'compost_save': {'files': ('tests/compost_save/test_compost_save.py',), 'paths': (
+        'tests/compost_save/',), 'shared_paths': ('code/modules/1713/production.dm',)},
     # Stdlib-only: poisonous frog meat coats crossbow bolts as well as arrows (#5258).
     'poison_frog_bolts': {'files': ('tests/poison_frog_bolts/test_bolts.py',), 'paths': (
         'tests/poison_frog_bolts/',), 'shared_paths': (
@@ -876,6 +879,13 @@ SUITES = {
                          'code/modules/1713/tools.dm', 'code/game/objects/items/weapons/tools.dm',
                          'code/game/objects/items/weapons/material/material_weapons.dm',
                          'code/game/objects/items/weapons/material/misc.dm')},
+    'tool_materials': {'files': ('tests/tool_materials/test_tool_materials.py',),
+        'paths': ('tests/tool_materials/', 'code/modules/materials/tool_materials.dm',
+                  'config/recipe_variants.json', 'scripts/recipe_variants.py'),
+        'shared_paths': ('code/modules/materials/part_roles.dm', 'code/modules/materials/material_properties.dm',
+                         'code/modules/1713/tools.dm', 'code/game/objects/items/weapons/tools.dm',
+                         'code/game/objects/weapons.dm', 'code/_helpers/tools.dm',
+                         'config/crafting/material_recipes_global.txt')},
     'craft_needs': {'files': ('tests/craft_needs/test_craft_needs.py',),
         'paths': ('tests/craft_needs/', 'code/game/objects/items/stacks/craft_needs.dm',
                   'config/craft_needs.json'),
@@ -1142,6 +1152,11 @@ SUITES = {
     'barter': {'files': ('tests/barter/test_source.py',),
         'paths': ('tests/barter/',), 'shared_paths': (
             'code/modules/1713/barter.dm', 'icons/obj/barter.dmi')},
+    # Sewers phase S1: source contracts (the native probe is tests/sewers/probe.dm).
+    'sewers': {'files': ('tests/sewers/test_sewers.py',),
+        'paths': ('tests/sewers/',), 'shared_paths': (
+            'code/modules/1713/sewers.dm', 'icons/obj/sewers.dmi', 'tests/sprites/create_sewers.py',
+            'code/game/objects/structures/watercloset.dm', 'code/game/mob/living/carbon/human/shit_piss.dm')},
     # Bone flute, frame drum, flint sickle and bison herds: source contracts only.
     'stone_age_extras': {'files': ('tests/stone_age_extras/test_source.py',),
         'paths': ('tests/stone_age_extras/',), 'shared_paths': (

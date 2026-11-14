@@ -62,7 +62,7 @@ class VehicleDeckSources(unittest.TestCase):
         self.assertIn('start_vehicle_deck_down()', proc(CLIMB, '/mob/living/human/verb/climb_down_tree_verb('))
 
     def test_melee_and_animals(self):
-        self.assertIn('return attacker_deck != target_deck', proc(CLIMB, '/proc/tree_melee_blocked('))
+        self.assertIn('return !vehicle_deck_same_roof(attacker, target)', proc(CLIMB, '/proc/tree_melee_blocked('))
         self.assertIn('los_on_vehicle_deck(M)', proc(CLIMB, '/mob/living/simple_animal/proc/can_reach_tree_climber('))
 
     def test_shots(self):
@@ -77,6 +77,15 @@ class VehicleDeckSources(unittest.TestCase):
         self.assertIn('/obj/structure/vehicle_stairs', proc(DECKS, '/proc/vehicle_deck_hatch('))
         self.assertIn('"Double-decker bus" = list(', WORKS)
         self.assertNotIn('spawn(', BUS)
+
+
+    def test_train_roofs(self):
+        life = read('code/game/mob/living/carbon/human/human_life.dm')
+        self.assertIn('process_train_roofs()', life)
+        trains = read('code/modules/1713/train_platforms.dm')
+        self.assertIn('train_deck_clearance(cargo, OPPOSITE_DIR(newdir))', trains)
+        self.assertIn('hang_roof_images()', trains)
+        self.assertIn('train_deck_segment(D)', proc(DECKS, '/proc/vehicle_deck_walkable('))
 
 
 if __name__ == '__main__':

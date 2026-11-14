@@ -126,6 +126,7 @@
 				return "Wait for the train to stop."
 	for (var/obj/structure/trains/platform/S in P.car_segments())
 		S.braced = !!state
+		S.update_car_overlays()
 	icon_state = state ? "brace_down" : "brace_up"
 	return null
 
@@ -151,9 +152,14 @@
 	desc = "A steam locomotive cased in riveted steel plate. Works with coal, wood, and so on."
 	health = 3000
 	max_fuel = 150
-	max_train_speed = 6
-	train_speed = 6
+	max_train_speed = 2.4
+	train_speed = 2.4
+	train_weight = 5
+	haul = 20
 	var/disabled = FALSE
+
+/obj/structure/trains/locomotive/coal/armored/engine_disabled()
+	return disabled
 
 /obj/structure/trains/locomotive/coal/armored/New()
 	..()

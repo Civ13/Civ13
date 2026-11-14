@@ -199,6 +199,48 @@
 	tailoring_named_items = list()
 
 // Sewing patterns, design names, the staff registry and the name block list.
+// Headwear: the head slot sews its own garment type, veils hide hair, and a
+// saved cap rebuilds its layers.
+/proc/dressmaking_ci_headwear(mob/living/human/handle_ci/dress_ci/H, turf/site, datum/save_epoch)
+	dressmaking_ci_clear(site)
+	var/list/heads = list()
+	for (var/body_id in tailoring_bodies())
+		var/list/body = tailoring_body(body_id)
+		if (body["slot"] == "head")
+			heads += body_id
+	dressmaking_ci_expect(heads.len >= 10 && tailoring_garment_type(tailoring_body("beret")) == /obj/item/clothing/head/tailored, "headwear bodies sew tailored headwear")
+	dressmaking_ci_expect(tailoring_slot_name(tailoring_body("beret")) == "headwear" && tailoring_slot_name(tailoring_body("poncho")) == "overclothes" && tailoring_slot_name(tailoring_body("toga")) == "clothing", "garment menu names each slot")
+	var/obj/item/clothing/head/tailored/veil = new(site)
+	veil.design_body = "hijab"
+	veil.design_colors = "#3e5a86"
+	veil.design_fabric = "cloth"
+	veil.tailoring_refresh()
+	dressmaking_ci_expect((veil.flags_inv & BLOCKHAIR) && veil.name == "veil" && veil.icon == 'icons/obj/clothing/hats.dmi' && veil.item_state == "hijab", "a veil hides the hair")
+	veil.design_body = "beret"
+	veil.tailoring_refresh()
+	dressmaking_ci_expect(!(veil.flags_inv & BLOCKHAIR) && veil.name == "beret", "a beret leaves the hair visible")
+	qdel(veil)
+	var/obj/item/clothing/head/tailored/cap = new(site)
+	cap.design_body = "peaked_cap"
+	cap.design_colors = "#232f58|#b01c30|#e0b030"
+	cap.design_fabric = "woolcloth"
+	cap.tailoring_refresh()
+	var/expected = length(cap.worn_design_layers())
+	dressmaking_ci_expect(expected == 3 && cap.overlays.len == 3 && cap.armor["melee"] == 5, "a peaked cap draws body, band and badge")
+	var/savefile/F = new("dressmaking-headwear.sav")
+	F["/format_version"] << 2
+	map_storage.clear_bookkeeping()
+	map_storage.saving_z = 1
+	var/ref = map_storage.BuildVarDirectory(F, cap, 1)
+	map_storage.clear_bookkeeping()
+	var/obj/item/clothing/head/tailored/loaded = map_storage.Load_Entry(F, ref, starting_loc = site)
+	if (loaded)
+		loaded.after_load()
+		loaded.after_load()
+	dressmaking_ci_expect(loaded && loaded.design_body == "peaked_cap" && loaded.design_colors == "#232f58|#b01c30|#e0b030" && loaded.overlays.len == expected && loaded.name == "peaked cap", "headwear round trip rebuilds its layers once")
+	qdel(cap); qdel(loaded)
+	dressmaking_ci_clear(site)
+
 // Writes in its own proc so the savefile closes before it is read back.
 /proc/dressmaking_ci_write_book(path, list/designs)
 	var/savefile/S = new(path)
@@ -468,7 +510,7 @@
 			if (body["slot"] == "under")
 				dressmaking_ci_expect(G.item_state_slots[slot_w_uniform_str] == body["base"], "worn base tracks chosen body [body_id]")
 			else
-				dressmaking_ci_expect(G.icon_state == body["base"], "worn suit base tracks chosen body [body_id]")
+				dressmaking_ci_expect(G.item_state == body["base"] && G.icon_state == (body["item_base"] ? body["item_base"] : body["base"]), "worn base tracks chosen body [body_id]")
 			G.tailoring_refresh()
 			dressmaking_ci_expect(G.overlays.len == worn.len, "refresh does not accumulate layers [body_id]")
 		dressmaking_ci_clear(site)
@@ -549,6 +591,7 @@
 	dressmaking_ci_fabric_and_dyes(H, site, save_epoch)
 	dressmaking_ci_patterns(H, site, save_epoch)
 	dressmaking_ci_book(H, site, save_epoch)
+	dressmaking_ci_headwear(H, site, save_epoch)
 	qdel(H)
 	dressmaking_ci_clear(site)
 	map_storage.clear_bookkeeping()
