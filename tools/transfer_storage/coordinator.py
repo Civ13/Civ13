@@ -43,6 +43,7 @@ if __package__ in (None, ''):
 from tools.transfer_storage.train_custody import TrainCustody
 from tools.transfer_storage.region import LAND_STAGES, account_key_valid, colony_valid, faction_id_valid, land_id_valid
 from tools.transfer_storage.world_chart import WorldChart, owner_valid, tile_valid
+from tools.transfer_storage.nations import Nations
 
 
 # Land readiness (docs/land-stages.md). Placeholder thresholds for Val to tune:
@@ -187,6 +188,11 @@ class Coordinator(TrainCustody):
             self.db.execute("UPDATE ledger SET value = '1' WHERE key = 'bootstrap'")
         # The world chart for boat expeditions (docs/world-chart.md).
         self.chart = WorldChart(self.db, mainland, slots, expeditions)
+        # Nations (docs/land-stages.md, "Nations"), and the outcome of each
+        # leader's request until its agent acknowledges it.
+        self.nations = Nations(self.db)
+        self.db.execute('''CREATE TABLE IF NOT EXISTS nation_result(
+            store TEXT NOT NULL, id INTEGER NOT NULL, text TEXT, PRIMARY KEY(store, id))''')
 
     def close(self):
         self.db.close()
@@ -264,6 +270,8 @@ class Coordinator(TrainCustody):
         players, living = sample['players'], sample['living']
         if not 0 <= players <= 1000 or not 0 <= living <= 10000:
             return False
+        if players:
+            self.chart.visit(region, now)
         colonies = sample.get('colonies', [])
         if type(colonies) is not list or not all(colony_valid(c) for c in colonies):
             return False
@@ -296,7 +304,27 @@ class Coordinator(TrainCustody):
             return bool(self.chart.reveal(owner, x, y))
         if op == 'course' and owner_valid(owner):
             return self.chart.set_course(request.get('voyage'), owner, x, y, origin) is not None
+        # A land's own world, for its crew: x and y name the land it holds, as a check.
+        found = self.chart.land_in(origin)
+        if op not in ('settle', 'claim', 'abandon') or not found or found[:2] != (x, y):
+            return False
+        if op == 'settle' and self.chart.settle(origin, admin):
+            self.set_land(origin, 'FRONTIER', False)
+            return True
+        if op == 'claim' and self.chart.claim(origin, owner, admin):
+            self.set_land(origin, 'COLONY', False)
+            return True
+        if op == 'abandon' and self.chart.abandon(origin, admin):
+            self.land_lost(origin)
+            return True
         return False
+
+    def land_lost(self, region):
+        """An abandoned land: whoever was homed there starts on the mainland again,
+        and the slot's next land starts unexplored."""
+        for (ckey,) in self.db.execute('SELECT ckey FROM home WHERE region = ?', (region,)).fetchall():
+            self._set_home(ckey, self.mainland)
+        self.db.execute('DELETE FROM land WHERE region = ?', (region,))
 
     def decide(self, source, request):
         """Apply one account request from region source to the ledger."""
@@ -484,16 +512,36 @@ class Coordinator(TrainCustody):
                         self.chart_request(r, name)
                         self.db.execute('INSERT OR IGNORE INTO decided VALUES (?, ?)', (store, r['id']))
                 chart_done[name] = ids
+            # Nation requests, each region's in its own order. An outcome is
+            # kept until the agent drops the request, so a lost answer is
+            # sent again rather than decided twice.
+            nation_results = {}
+            for name, a in asked.items():
+                store = 'nation:' + str(a.get('store') or '')
+                requests = [r for r in a.get('nation_requests') or [] if type(r) is dict and isinstance(r.get('id'), int)]
+                ids = {r['id'] for r in requests}
+                old = dict(self.db.execute('SELECT id, text FROM nation_result WHERE store = ?', (store,)))
+                for i in set(old) - ids:
+                    self.db.execute('DELETE FROM nation_result WHERE store = ? AND id = ?', (store, i))
+                for r in requests:
+                    if r['id'] not in old:
+                        old[r['id']] = self.nations.decide(name, r)
+                        self.db.execute('INSERT INTO nation_result VALUES (?, ?, ?)', (store, r['id'], old[r['id']]))
+                nation_results[name] = [{'id': i, 'text': old[i]} for i in sorted(ids)]
             self.db.execute('COMMIT')
         except Exception:
             self.db.execute('ROLLBACK')
             raise
         rev = int(self._ledger('rev'))
         lands = self.lands()
-        # Courses whose land the host has opened (or could not) since the last pass.
+        # Courses whose land the host has opened (or could not) since the last pass,
+        # and lands nobody has been to for 7 days.
         self.chart.refresh_courses()
+        for region in self.chart.expire():
+            self.land_lost(region)
         chart_rev = self.chart.key()
         chart = None
+        nations = self.nations.snapshot()
         for name, answer in asked.items():
             url, token = regions[name]
             since = answer.get('rev', 0) if answer.get('epoch') == epoch else 0
@@ -504,6 +552,7 @@ class Coordinator(TrainCustody):
                     'train_decisions': lease_decisions.get(name, []),
                     'lands': lands, 'land_done': land_done.get(name, []),
                     'chart_done': chart_done.get(name, []),
+                    'nations': nations, 'nation_results': nation_results.get(name, []),
                     'colony_grants': [{'ckey': c, 'faction': f} for c, f in self.db.execute(
                         'SELECT ckey, faction FROM colony_grant WHERE region = ? ORDER BY ckey', (name,))],
                     'done': [r['id'] for r in answer.get('requests', [])]}
