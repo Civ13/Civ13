@@ -739,7 +739,7 @@
 			qdel(W)
 			to_chat(user, "You refuel \the [src].")
 			return
-		else if (istype(S, /obj/item/stack/material/wood || /material/wood/soft))
+		else if (istype(S, /obj/item/stack/material/wood))
 			if (fuel>=max_fuel)
 				to_chat(user, "<span class = 'notice'>The combustion chamber is full!</span>")
 				return
