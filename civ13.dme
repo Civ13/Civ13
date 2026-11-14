@@ -677,6 +677,7 @@
 #include "code\game\objects\map_metadata\nomads\nomads_europe.dm"
 #include "code\game\objects\map_metadata\nomads\nomads_extended.dm"
 #include "code\game\objects\map_metadata\nomads\nomads_gaia.dm"
+#include "code\game\objects\map_metadata\nomads\nomads_start.dm"
 #include "code\game\objects\map_metadata\nomads\nomads_ice_age.dm"
 #include "code\game\objects\map_metadata\nomads\nomads_island.dm"
 #include "code\game\objects\map_metadata\nomads\nomads_jungle.dm"
