@@ -1217,6 +1217,12 @@ var/global/world_save_notice_started = null
 	var/area/A = locate(world.area)
 	return A ? "\ref[A]" : "prospective:[world.area]"
 
+// Attempts one savemap() call makes when each failed one failed on an animal
+// (fail_save_on_animal in saving.dm).
+#define PERSISTENCE_ANIMAL_SAVE_ATTEMPTS 4
+// Retries already made by the savemap() call in progress.
+/map_storage/var/tmp/save_animal_retries = 0
+
 // shutdown: the server stops right after this save (players were warned), so
 // the export yields only to queued work instead of sleeping whole ticks.
 /datum/controller/gameticker/proc/savemap(datum/persistence_restart_transaction/transaction, datum/save_debug_recovery/debug_policy, shutdown = FALSE)
@@ -1228,8 +1234,11 @@ var/global/world_save_notice_started = null
 		world.log << "World save refused: this standby world has not loaded the save yet."
 		return FALSE
 	map_storage.wait_for_durable_world_settle()
+	map_storage.save_animal_failure = null
 	var/datum/persistence_world_operation/operation = begin_persistence_operation(map_storage, "save", transaction)
-	if(!operation) return FALSE
+	if(!operation)
+		map_storage.save_animal_retries = 0
+		return FALSE
 	operation.shutdown_save = shutdown || !!transaction
 	if(debug_policy)
 		if(transaction || !debug_policy.bind(operation))
@@ -1252,6 +1261,8 @@ var/global/world_save_notice_started = null
 		// and a later save may own the bookkeeping now.
 		if(operation.abandoned)
 			world.log << "Abandoned world save stopped: [e] on [e.file]:[e.line]"
+			map_storage.save_animal_failure = null // Never retried over the watchdog.
+			map_storage.save_animal_retries = 0
 			return 0
 		var/cleanup_ok = TRUE
 		if(debug_policy)
@@ -1270,7 +1281,20 @@ var/global/world_save_notice_started = null
 				message_admins("Save capture diagnostic: operation=[failure["operation_id"]] generation=[failure["generation"]] stage=[failure["stage"]] saved_z=[failure["saved_z"]] state=[failure["child_state"]]. Inspect map_storage.last_save_reference_failure for structural details.")
 		catch
 			world.log << "Save capture diagnostic delivery unavailable."
+		// An animal is never why a save fails (Val, 2026-11-14): the failed
+		// attempt deleted it or took it off the moving path, so save again at
+		// once. Bounded: each failed attempt costs its scratch memory.
+		var/animal = map_storage.save_animal_failure
+		map_storage.save_animal_failure = null
+		if(animal && !debug_policy && map_storage.save_animal_retries < PERSISTENCE_ANIMAL_SAVE_ATTEMPTS - 1)
+			map_storage.save_animal_retries++
+			var/retry_line = "World save: the attempt failed on an animal, [animal]; saving again (retry [map_storage.save_animal_retries])."
+			world.log << retry_line
+			persistence_game_log(retry_line)
+			return savemap(transaction, debug_policy, shutdown)
+		map_storage.save_animal_retries = 0
 		return 0
+	map_storage.save_animal_retries = 0
 	var/released_success = operation.finish(TRUE)
 	if(debug_policy && (!released_success || !debug_policy.finish_success(operation)))
 		debug_policy.stop_reason = "commit_outcome_unknown_owner_lost"
