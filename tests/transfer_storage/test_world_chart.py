@@ -19,11 +19,18 @@ from tools.transfer_storage.region import RegionStore  # noqa: E402
 TOKENS = {'alpha': 'a' * 40, 'beta': 'b' * 40}
 
 
-def chart(seed='fixed-seed', mainland='alpha'):
+def chart(seed='fixed-seed', mainland='alpha', slots=(), expeditions=None):
     db = sqlite3.connect(':memory:', isolation_level=None)
     db.execute('CREATE TABLE chart_meta(key TEXT PRIMARY KEY, value TEXT NOT NULL)')
     db.execute("INSERT INTO chart_meta VALUES ('seed', ?)", (seed,))
-    return wc.WorldChart(db, mainland)
+    return wc.WorldChart(db, mainland, slots, expeditions)
+
+
+def slot_record(expeditions, slot, **values):
+    path = os.path.join(expeditions, 'slots', slot + '.json')
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, 'w', encoding='utf-8') as f:
+        json.dump(dict({'region': slot}, **values), f)
 
 
 def first_land(c, coastal=True):
@@ -125,6 +132,98 @@ class ChartTests(unittest.TestCase):
         self.assertEqual('MAINLAND', c.terrain(2, 2))
 
 
+class CourseTests(unittest.TestCase):
+    """A ship sets course for a land: a free slot is asked for its world, and
+    the course is ready once the host has started it."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.exp = os.path.join(self.tmp.name, 'expeditions')
+        self.c = chart(slots=['far1', 'far2'], expeditions=self.exp)
+        self.x, self.y = first_land(self.c)
+        self.c.reveal('faction:rome', self.x, self.y)
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def wanted(self, slot):
+        path = os.path.join(self.exp, 'wanted', slot + '.json')
+        if not os.path.exists(path):
+            return None
+        with open(path, encoding='utf-8') as f:
+            return json.load(f)
+
+    def test_a_course_opens_a_free_slot_and_is_ready_once_the_host_starts_it(self):
+        course = self.c.set_course('alpha-1-1', 'faction:rome', self.x, self.y, 'alpha', now=1000)
+        self.assertEqual(('ASSIGNED', 'far1', 'alpha'), (course['state'], course['region'], course['origin']))
+        wanted = self.wanted('far1')
+        self.assertEqual('%d,%d' % (self.x, self.y), wanted['key'])
+        self.assertEqual(self.c.template(self.x, self.y)['template'], wanted['template'])
+        self.assertEqual(('LANDED', 'far1'), (self.c.template(self.x, self.y)['state'], self.c.template(self.x, self.y)['region']))
+        # A second ship for the same land takes the same slot; asking again changes nothing.
+        self.assertEqual('far1', self.c.set_course('alpha-2-2', 'faction:rome', self.x, self.y, now=1001)['region'])
+        self.assertEqual(course, self.c.set_course('alpha-1-1', 'faction:rome', self.x, self.y, now=1002))
+        self.assertFalse(self.c.refresh_courses(now=1003))
+        # The host takes the wish, builds the land, then starts the slot.
+        os.remove(os.path.join(self.exp, 'wanted', 'far1.json'))
+        slot_record(self.exp, 'far1', state='LAND', key='%d,%d' % (self.x, self.y), phase='building')
+        self.assertFalse(self.c.refresh_courses(now=1004))
+        slot_record(self.exp, 'far1', state='LAND', key='%d,%d' % (self.x, self.y), phase='started')
+        rev = self.c.rev()
+        self.assertTrue(self.c.refresh_courses(now=1005))
+        self.assertGreater(self.c.rev(), rev)
+        snapshot = self.c.snapshot()
+        self.assertEqual('READY', snapshot['courses']['alpha-1-1']['state'])
+        self.assertEqual('READY', snapshot['courses']['alpha-2-2']['state'])
+        # Old courses are forgotten.
+        self.assertTrue(self.c.refresh_courses(now=1005 + wc.COURSE_KEEP_SECONDS + 10))
+        self.assertEqual({}, self.c.courses())
+
+    def test_a_failed_land_refuses_its_courses_and_frees_the_tile(self):
+        self.c.set_course('v1', 'faction:rome', self.x, self.y, now=10)
+        os.remove(os.path.join(self.exp, 'wanted', 'far1.json'))
+        failed = os.path.join(self.exp, 'failed', 'far1.json')
+        os.makedirs(os.path.dirname(failed))
+        with open(failed, 'w', encoding='utf-8') as f:
+            json.dump({'key': '%d,%d' % (self.x, self.y), 'reason': 'compile failed'}, f)
+        self.assertTrue(self.c.refresh_courses(now=11))
+        course = self.c.course('v1')
+        self.assertEqual('REFUSED', course['state'])
+        self.assertIn('compile failed', course['reason'])
+        self.assertFalse(os.path.exists(failed))
+        tile = self.c.template(self.x, self.y)
+        self.assertEqual(('CHARTED', None), (tile['state'], tile['region']))
+        # The next try gets a slot again, with the same template.
+        self.assertEqual('ASSIGNED', self.c.set_course('v2', 'faction:rome', self.x, self.y, now=12)['state'])
+
+    def test_courses_are_refused_without_a_slot_or_a_reachable_charted_land(self):
+        for slot in ('far1', 'far2'):
+            slot_record(self.exp, slot, state='LAND', key='0,0')
+        refused = self.c.set_course('v1', 'faction:rome', self.x, self.y, now=1)
+        self.assertEqual(('REFUSED', None), (refused['state'], refused['region']))
+        self.assertIn('harbour master', refused['reason'])
+        self.assertIsNone(self.wanted('far1'))
+        self.assertIn('does not show', self.c.set_course('v2', 'faction:gaul', self.x, self.y, now=1)['reason'])
+        self.assertIn('no charted land', self.c.set_course('v3', 'faction:rome', 0, 0, now=1)['reason'])
+        inland = first_land(self.c, coastal=False)
+        self.c.reveal('faction:rome', *inland)
+        self.assertIn('no coast', self.c.set_course('v4', 'faction:rome', inland[0], inland[1], now=1)['reason'])
+        self.assertIsNone(self.c.set_course('Bad Voyage!', 'faction:rome', self.x, self.y))
+        self.assertIsNone(self.c.set_course('v5', 'everyone', self.x, self.y))
+        # A chart with no slots refuses every new land.
+        bare = chart()
+        bare.reveal('admin', self.x, self.y)
+        self.assertIn('harbour master', bare.set_course('v1', 'admin', self.x, self.y)['reason'])
+
+    def test_the_snapshot_carries_each_owners_seen_tiles(self):
+        mask = int(self.c.snapshot()['seen']['faction:rome'], 16)
+        for x, y in self.c.seen('faction:rome'):
+            self.assertTrue(mask >> (y * wc.CHART_WIDTH + x) & 1)
+        self.assertEqual(len(self.c.seen('faction:rome')), bin(mask).count('1'))
+        self.assertEqual(wc.CHART_WIDTH * wc.CHART_HEIGHT // 4, len(self.c.snapshot()['seen']['faction:rome']))
+        self.assertNotIn('seen', self.c.snapshot('faction:rome'))
+
+
 class ChartAgentTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
@@ -176,6 +275,25 @@ class ChartAgentTests(unittest.TestCase):
         tile = self.chart('alpha')['chart']['tiles']['%d,%d' % (x, y)]
         self.assertEqual(1, tile['reroll'])
         self.assertNotEqual(seed, tile['template']['seed'])
+
+    def test_a_ship_sets_course_through_its_agent(self):
+        exp = os.path.join(self.tmp.name, 'expeditions')
+        self.coordinator.chart.slots, self.coordinator.chart.expeditions = ['far1'], wc.Path(exp)
+        x, y = first_land(self.coordinator.chart)
+        call(self.urls['alpha'], TOKENS['alpha'], '/chart/request', {'op': 'scout', 'x': x, 'y': y, 'owner': 'crew:val', 'admin': 'val'})
+        self.coordinator.homes_once()
+        self.assertIn('%d,%d' % (x, y), self.chart('alpha')['chart']['tiles'])
+        answer = call(self.urls['alpha'], TOKENS['alpha'], '/chart/request',
+                      {'op': 'course', 'x': x, 'y': y, 'owner': 'crew:val', 'admin': 'val', 'voyage': 'alpha-5-6'})
+        self.assertTrue(answer.get('ok'), answer)
+        self.coordinator.homes_once()
+        course = self.chart('beta')['chart']['courses']['alpha-5-6']
+        self.assertEqual(('ASSIGNED', 'far1', 'alpha'), (course['state'], course['region'], course['origin']))
+        slot_record(exp, 'far1', state='LAND', key='%d,%d' % (x, y), phase='started')
+        self.coordinator.homes_once()
+        self.assertEqual('READY', self.chart('alpha')['chart']['courses']['alpha-5-6']['state'])
+        self.assertFalse(call(self.urls['alpha'], TOKENS['alpha'], '/chart/request',
+                              {'op': 'course', 'x': x, 'y': y, 'owner': 'crew:val', 'admin': 'val'}).get('ok'))
 
     def test_an_unchanged_chart_is_not_sent_again(self):
         self.assertEqual(self.coordinator.chart.key(), self.stores['alpha'].account_requests()['chart_rev'])

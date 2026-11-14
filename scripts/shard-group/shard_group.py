@@ -66,7 +66,7 @@ from shard_map_selection import select_map_block  # noqa: E402
 GROUP_ACTIONS = ('setup', 'status', 'start', 'stop', 'restart', 'update', 'freeze', 'thaw', 'adopt', 'check-update',
                  'kill', 'force-restart', 'stage', 'enrol', 'help-status', 'help-start', 'help-stop', 'unlock', 'force-unlock',
                  'config-apply', 'config-migrate', 'handover', 'epoch', 'fresh-world', 'group-fresh-world', 'update-offline',
-                 'update-unsaved', 'expedition-land', 'expedition-archive', 'expedition-status')
+                 'update-unsaved', 'expedition-land', 'expedition-archive', 'expedition-status', 'expedition-open')
 HELP_STOP_SECONDS = 60  # help-stop waits this long for bridges to finish their answers before ending them
 HELP_STARTING_SECONDS = 300  # a bridge we started may load its corpus this long before it takes the lock
 # code/modules/persistence/functions.dm epoch_names, in order: a map's ordinal_age indexes it from 0.
@@ -2105,6 +2105,10 @@ def ensure_coordinator(group, start=detach, refresh=False, terminate=None):
     for region in group['regions']:
         token = region_dir(group, region['id']) / 'config' / 'transfer-token.txt'
         argv += ['--region', '%s=http://127.0.0.1:%d=%s' % (region['id'], region['transfer_port'], token)]
+    slots = [r['id'] for r in group['regions'] if r['kind'] == 'EXPEDITION']
+    if slots:
+        # Ships' courses open lands in these (docs/expedition-slots.md).
+        argv += ['--slots', ','.join(slots), '--expeditions', str(expedition_slots.slots_dir(group))]
     pid = start(argv, root, root / 'coordinator.log')
     (root / 'coordinator.pid').write_text('%d\n' % pid, encoding='utf-8')
     write_record(root / 'coordinator.json', pid=pid, code=code)
@@ -2513,6 +2517,21 @@ def ensure_save_validation(group, start=None, free_mb=None, now=time.time, alive
     return {}
 
 
+def serve_expeditions(group, start=detach, platform=None):
+    """Open the lands ships' courses asked for in the group's EXPEDITION slots
+    and start each once built (expedition_slots.serve)."""
+    if not any(r['kind'] == 'EXPEDITION' for r in group['regions']):
+        return {}
+    folder = expedition_slots.slots_dir(group)
+
+    def launch(region_id):
+        folder.mkdir(parents=True, exist_ok=True)
+        start([sys.executable, '-I', '-B', str(Path(__file__).resolve()), '--config', group['_path'], 'expedition-open',
+               '--region', region_id], folder, folder / ('open-%s.log' % region_id))
+
+    return expedition_slots.serve(group, hosts(group, platform=platform), launch)
+
+
 def supervise(group, start=detach):
     """Start the group's routing relay, transfer agents, coordinator or Player Help bridges if any is not running.
 
@@ -2532,6 +2551,13 @@ def supervise(group, start=detach):
         started['player_help'] = helped
     if help_errors:
         started['player_help_errors'] = help_errors
+    # Lands that ships' courses asked for (expedition_slots.serve): a side job too.
+    try:
+        opened = serve_expeditions(group, start)
+        if opened:
+            started['expeditions'] = opened
+    except (OSError, RuntimeError, ValueError, KeyError) as error:
+        started['expeditions_error'] = str(error)[:300]
     # The validator is a side job: its failure must not keep the helpers down.
     try:
         started.update(ensure_save_validation(group, start))
@@ -2736,6 +2762,13 @@ def main(argv=None):
                 parser.error('expedition-archive needs --region')
             (region, host), = hosts(group, args.region)
             result = expedition_slots.archive(group, host, args.region)
+        elif args.action == 'expedition-open':
+            # The host service's worker for a land a ship's course asked for (expedition_slots.serve).
+            if not args.region:
+                parser.error('expedition-open needs --region')
+            (region, host), = hosts(group, args.region)
+            expedition_slots.expedition_region(group, args.region)
+            result = expedition_slots.open_land(group, host, args.region, update_offline)
         elif args.action == 'expedition-status':
             result = {'slots': expedition_slots.status(group)}
         elif args.action == 'config-apply':
