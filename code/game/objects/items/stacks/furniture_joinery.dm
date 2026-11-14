@@ -116,5 +116,4 @@ var/global/list/furniture_joinery_specs
 		component.use(spec["component_cost"])
 	var/obj/item/weapon/material/blade = tools["shaping"]
 	if (istype(blade))
-		blade.health -= 0.25
-		blade.check_health()
+		blade.apply_wear(0.25, WEAR_WORK)

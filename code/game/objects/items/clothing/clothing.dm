@@ -42,7 +42,7 @@
 	..()
 	gunshot_residue = null
 
-/obj/item/clothing/proc/check_health()
+/obj/item/clothing/check_health(consumed)
 	if (health <= 0)
 		visible_message("\The [src] falls apart!")
 		if (ripable && rag_amount > 0)

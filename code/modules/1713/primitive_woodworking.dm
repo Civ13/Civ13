@@ -236,12 +236,10 @@
 	// Flint has no material-tool wear contract. Material knives/wedges use tool wear.
 	if (mode != "flatten" && istype(tool, /obj/item/weapon/material))
 		var/obj/item/weapon/material/M = tool
-		M.health -= 0.25
-		M.check_health()
+		M.apply_wear(0.25, WEAR_WORK)
 	if (mode == "plank" && !QDELETED(wedge))
 		var/obj/item/weapon/material/W = wedge
-		W.health -= 0.25
-		W.check_health()
+		W.apply_wear(0.25, WEAR_WORK)
 	return TRUE
 
 /datum/primitive_woodwork_action/proc/perform()

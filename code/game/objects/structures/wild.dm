@@ -238,9 +238,7 @@ var/list/seed_list_jungle
 		if (completed)
 			health = 0
 			try_destroy()
-			HT.health -= 0.25
-			if (HT.health <=0)
-				HT.shatter()
+			HT.apply_wear(0.25, WEAR_WORK)
 			if (istype(user, /mob/living/human))
 				var/mob/living/human/H = user
 				H.adaptStat("strength", 1)

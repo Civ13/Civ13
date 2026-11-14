@@ -158,7 +158,7 @@ class Contracts(unittest.TestCase):
         self.assertLess(stock.index('if (joinery && !joinery.valid())'),stock.index('if (use(required, (joinery || carving) ? null : H))'))
         self.assertLess(stock.index('if (use(required, (joinery || carving) ? null : H))'),stock.index('joinery.consume_component()'))
         self.assertIn('component.use(spec["component_cost"])',TEXT)
-        self.assertIn('blade.health -= 0.25',TEXT)
+        self.assertIn('blade.apply_wear(0.25, WEAR_WORK)',TEXT)
 
     def test_guard_rejects_changed_inputs_tools_research_and_saves(self):
         f=Fixture();self.assertTrue(f.valid())
