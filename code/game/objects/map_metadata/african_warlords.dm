@@ -227,3 +227,15 @@
 			new/obj/item/ammo_casing/rocket/og7v(user.loc)
 		return
 
+
+/obj/map_metadata/african_warlords/faction_hud_icon(mob/living/human/H, faction_flag)
+	if (faction_flag == INDIANS)
+		switch (H.nationality)
+			if ("Yellowagwana")
+				return "civ4"
+			if ("Redkantu")
+				return "civ1"
+			if ("Blugisi")
+				return "civ3"
+		return ""
+	return ..()

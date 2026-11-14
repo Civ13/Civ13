@@ -343,3 +343,9 @@
 	qdel(I)
 	blocks_amount += 1
 	update_icon()
+/obj/map_metadata/drug_bust/faction_hud_icons = list(RUSSIAN = "rednikov")
+
+/obj/map_metadata/drug_bust/faction_hud_icon(mob/living/human/H, faction_flag)
+	if (faction_flag == CIVILIAN && H.original_job.is_law)
+		return "police"
+	return ..()

@@ -110,3 +110,4 @@ var/no_loop_tantive = FALSE
 
 /obj/map_metadata/tantiveiv/check_caribbean_block(var/mob/living/human/H, var/turf/T)
 	return check_faction_grace_wall(H, T, faction2, faction1)
+/obj/map_metadata/tantiveiv/faction_hud_icons = list(AMERICAN = "imp_basic", CIVILIAN = "rebel_basic")
