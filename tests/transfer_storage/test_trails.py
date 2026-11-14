@@ -103,7 +103,11 @@ class TrailMarkerTests(unittest.TestCase):
         stack = read('code/game/objects/items/stacks/stack.dm')
         # produce_recipe has column-0 comments, so search from its start.
         body = stack[stack.index('/obj/item/stack/proc/produce_recipe('):]
-        check = body.index('region_trail_build_refusal(user, recipe.result_type)')
+        # The trail marker refusal is a build guard (craft_guards.dm) that runs at the start only.
+        guard = proc(TRAILS, '/datum/craft_guard/region_trail/refusal')
+        self.assertIn('region_trail_build_refusal(H, R.result_type)', guard)
+        self.assertNotIn('after_wait = TRUE', TRAILS[TRAILS.index('/datum/craft_guard/region_trail\n'):])
+        check = body.index('craft_guard_refusal(H, recipe, CRAFT_GUARD_START)')
         # Refused before any wood is spent or the build wait starts.
         self.assertLess(check, body.index('if (recipe.time)'))
         self.assertLess(check, body.index('if (!can_use(required))'))

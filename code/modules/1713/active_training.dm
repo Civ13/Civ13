@@ -248,3 +248,11 @@
 	H.cancel_exercise()
 	to_chat(H, "Set complete. Fatigue: [H.exercise_fatigue]/6; one point recovers per running-server minute. Gains diminish with fatigue and at 100 trained skill.")
 	return TRUE
+
+// Stack recipe guard: training equipment needs its era, research and skill.
+/datum/craft_guard/skill_gate/exercise
+	order = 20
+	message = "This training equipment requires its era, completed research and crafting skill."
+
+/datum/craft_guard/skill_gate/exercise/allowed(mob/living/human/H, result_type)
+	return exercise_can_build(H, result_type)

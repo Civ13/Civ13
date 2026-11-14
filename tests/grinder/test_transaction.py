@@ -784,6 +784,9 @@ class AcquisitionProjection(Projection):
             exercise_can_build=lambda *_args: True, civ_telecom_can_build=lambda *_args: True,
             civ_generation_can_build=lambda *_args: True, car_workshop_build_refusal=lambda *_args: None,
             waterwheel_build_refusal=lambda *_args: None, offshore_rig_build_refusal=lambda *_args: None,
+            # Build guards (craft_guards.dm) never refuse this grinder recipe.
+            craft_guard_refusal=lambda *_args: None, CRAFT_GUARD_START=1, CRAFT_GUARD_FINISH=2,
+            isnull=lambda value: value is None,
             # One floor and one wall per tile: a machine takes neither slot.
             tile_build_refusal=lambda *_args: None,
             # Mirrors /proc/recipe_age_allowed: max era 8 (RECIPE_OPEN_ENDED_AGE) never retires a row.

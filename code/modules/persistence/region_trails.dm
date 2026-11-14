@@ -284,3 +284,11 @@ var/global/list/region_trail_next_request = list()
 #undef REGION_TRAIL_REQUEST_COOLDOWN
 #undef REGION_TRAIL_PENDING_MAX
 #undef REGION_TRAIL_EDGE_TILES
+
+// Stack recipe guard: trail markers are built at the edge of the land (checked once, before the build).
+/datum/craft_guard/region_trail
+	order = 40
+
+/datum/craft_guard/region_trail/refusal(mob/living/human/H, datum/stack_recipe/R, phase)
+	var/message = region_trail_build_refusal(H, R.result_type)
+	return message ? SPAN_WARNING(message) : null

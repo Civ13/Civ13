@@ -67,3 +67,8 @@
 #define CHART_SECTOR_HARBOUR "harbour"
 #define CHART_SECTOR_WILD "wild"
 #define CHART_SECTOR_HELD "held"
+
+// Build guard phases, see code/game/objects/items/stacks/craft_guards.dm.
+#define CRAFT_GUARD_START 1
+#define CRAFT_GUARD_FINISH 2
+#define CRAFT_GUARD_MENU 3
