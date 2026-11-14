@@ -98,7 +98,7 @@ var/crush_runtime_error = FALSE
 	crush_check(!(/obj/item/stack/ore/iron in stone_age) && (/obj/item/stack/ore/iron in bronze), "iron unlocks in the Bronze Age")
 	crush_check(!(/obj/item/stack/ore/coal in bronze) && (/obj/item/stack/ore/coal in medieval) && (/obj/item/stack/ore/sulphur in medieval), "coal and powder minerals unlock in the Medieval age")
 	crush_check(crush_table_total(stone_age) == 2650 && crush_table_total(medieval) == 3650, "manual odds: 6.5% ore in the Stone Age, 16.5% ore by the Medieval age, plus 20% sand")
-	crush_check(crush_table_total(powered) == 4975 && powered[/obj/item/stack/ore/glass] == 2500 && powered[/obj/item/stack/ore/iron] == 450 && powered[/obj/item/stack/ore/diamond] == 15, "powered odds recover half again as much ore and 25% sand")
+	crush_check(crush_table_total(powered) == 5200 && powered[/obj/item/stack/ore/glass] == 2500 && powered[/obj/item/stack/ore/iron] == 450 && powered[/obj/item/stack/ore/diamond] == 15 && powered[/obj/item/stack/ore/bauxite] == 225, "powered odds recover half again as much ore (bauxite too, from the Industrial age) and 25% sand")
 	crush_check(roll_stone_crushing(medieval, 1) == /obj/item/stack/ore/glass && roll_stone_crushing(medieval, 2001) == /obj/item/stack/ore/copper, "weighted roll walks the table in order")
 	crush_check(isnull(roll_stone_crushing(medieval, 3651)) && isnull(roll_stone_crushing(powered, 10000)), "rolls past the table leave rubble")
 	var/obj/item/stack/material/sandstone/sandstone = new(null)
