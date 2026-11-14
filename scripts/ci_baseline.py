@@ -41,6 +41,14 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'extraction_account_directories': {
+        'files': ('tests/extraction/test_account_directories.py',),
+        'paths': ('tests/extraction/test_account_directories.py',
+                  'code/modules/1713/extraction/account_store.dm',
+                  'code/modules/1713/extraction/insurance.dm',
+                  'code/modules/1713/extraction/settlement.dm',
+                  'code/modules/1713/extraction/surface_loot.dm',
+                  'code/modules/1713/extraction/home_replica.dm')},
     # Stdlib-only: poisonous frog meat coats crossbow bolts as well as arrows (#5258).
     'poison_frog_bolts': {'files': ('tests/poison_frog_bolts/test_bolts.py',), 'paths': (
         'tests/poison_frog_bolts/',), 'shared_paths': (
