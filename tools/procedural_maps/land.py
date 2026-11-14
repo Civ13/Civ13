@@ -9,9 +9,9 @@ area (which sets the in-game climate), ground turfs and trees.
 
 Ore richness and food density follow the size class: smaller lands are given
 more stone and supply sites per land tile, larger lands more forage. The
-template's ore kinds, rare finds and game animals are written to the land
-report for the slot world to apply (docs/expedition-lands.md); this step only
-places what the playable layer already knows how to place.
+template's ore richness and kinds, rare finds and game animals are written to
+the land report for the slot world to apply on load
+(code/modules/naval/land_resources.dm).
 
 Same template, same land: everything depends on the template's seed. Nothing
 here launches the game. Run it with `python3 -m tools.procedural_maps land`.
@@ -267,7 +267,7 @@ def build_land(t, out, catalog_root=None, lapse=DEFAULT_LAPSE):
         "supplies": dict(sorted(counts.items())),
         "skin": skin_counts,
         # Applied by the slot world, not placed in the map (docs/expedition-lands.md).
-        "slot_world": {"ores": t["resources"].get("ores", []), "rare": t["resources"].get("rare", []),
+        "slot_world": {"ore": t["resources"]["ore"], "ores": t["resources"].get("ores", []), "rare": t["resources"].get("rare", []),
                        "game": t["resources"].get("game", [])},
         "seconds": {"generate": round(generated - started, 2), "total": round(finished - started, 2)},
     }

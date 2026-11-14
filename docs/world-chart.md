@@ -34,7 +34,7 @@ rolls its **template** once and keeps it:
 | `size`, `width`, `height` | the size class and the real tiles a side, within about 15% of the class |
 | `coast` | the sides that face open water (N, S, E, W); an inland tile has none and cannot be reached by sea |
 | `features` | rivers, lakes, ridges and caves for the map generator |
-| `resources` | ore richness and kinds, a rare find, soil fertility and game |
+| `resources` | ore richness and kinds, a rare find, soil fertility and game; the land world places them ([expedition lands](expedition-lands.md#ore-rare-finds-and-game)) |
 | `seed` | chart seed, tile and reroll count: the same template always gives the same land |
 
 Only an admin reroll (or a later scripted event) gives a tile a new template,
