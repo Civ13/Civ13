@@ -56,6 +56,20 @@ var/global/list/tailoring_catalogue = null
 	C["blazer"] = list("name" = "blazer", "slot" = "suit", "base" = "customblazer", "panels" = list(), "node" = "ready_made", "cost" = 4)
 	C["hoodie"] = list("name" = "hoodie", "slot" = "suit", "base" = "customhoodie", "panels" = list(), "node" = "ready_made", "cost" = 3)
 	C["tracksuit"] = list("name" = "tracksuit jacket", "slot" = "suit", "base" = "customtracksuit", "panels" = list("Jacket" = "customtracksuit_base", "Stripes" = "customtracksuit_lines"), "node" = "synthetics", "cost" = 3)
+	// Headwear (head slot). "hides_hair" bodies cover the hair like a veil.
+	C["hood"] = list("name" = "hood", "slot" = "head", "base" = "wool_hood", "panels" = list(), "node" = "weaving", "cost" = 1)
+	C["bandana"] = list("name" = "bandana", "slot" = "head", "base" = "custombandana_hat", "panels" = list(), "node" = "weaving", "cost" = 1)
+	C["beanie"] = list("name" = "beanie", "slot" = "head", "base" = "custom_beanie", "panels" = list(), "node" = "weaving", "cost" = 1)
+	C["taqiyah"] = list("name" = "skullcap", "slot" = "head", "base" = "taqiyah", "panels" = list(), "node" = "classical_dress", "cost" = 1)
+	C["hijab"] = list("name" = "veil", "slot" = "head", "base" = "hijab", "panels" = list(), "node" = "classical_dress", "cost" = 2, "hides_hair" = TRUE)
+	C["keffiyeh"] = list("name" = "keffiyeh", "slot" = "head", "base" = "keffiyeh_custom", "panels" = list("Checks" = "keffiyeh_custom_color"), "node" = "classical_dress", "cost" = 2)
+	C["beret"] = list("name" = "beret", "slot" = "head", "base" = "customberet_hat", "panels" = list(), "node" = "tailoring", "cost" = 1)
+	C["feathered_cap"] = list("name" = "feathered cap", "slot" = "head", "base" = "custfeathercap_b_hat", "panels" = list("Feather" = "custfeathercap_f_hat"), "node" = "tailoring", "cost" = 1)
+	C["hennin"] = list("name" = "hennin", "slot" = "head", "base" = "custom_hennin_point", "panels" = list(), "fixed" = list("custom_hennin_lining"), "node" = "tailoring", "cost" = 2)
+	C["noble_hat"] = list("name" = "noble hat", "slot" = "head", "base" = "customnoblehat_hat", "panels" = list(), "node" = "fine_garments", "cost" = 2)
+	C["shako"] = list("name" = "infantry cap", "slot" = "head", "base" = "custom_nap_lea_infantry_cap_f", "panels" = list(), "fixed" = list("custom_nap_lea_infantry_cap_b"), "node" = "fine_garments", "cost" = 2)
+	C["peaked_cap"] = list("name" = "peaked cap", "slot" = "head", "base" = "customcap", "panels" = list("Band" = "customcap_l2", "Badge" = "customcap_l3"), "node" = "textile_mills", "cost" = 1)
+	C["field_cap"] = list("name" = "field cap", "slot" = "head", "base" = "fieldcap_custom", "panels" = list(), "node" = "ready_made", "cost" = 1)
 	// Mix-and-match bodies, drawn on one shared template so every sleeve,
 	// neckline and belt fits every body of its layer. Options draw in the
 	// order listed (patterns right on the cloth, closures over trim). Each
@@ -271,6 +285,8 @@ var/global/list/tailoring_dye_tiers = list(
 		return worn ? 'icons/mob/tailoring.dmi' : 'icons/obj/clothing/tailoring.dmi'
 	if (body["slot"] == "suit")
 		return worn ? 'icons/mob/suit.dmi' : 'icons/obj/clothing/suits.dmi'
+	if (body["slot"] == "head")
+		return worn ? 'icons/mob/head.dmi' : 'icons/obj/clothing/hats.dmi'
 	return worn ? 'icons/mob/uniform.dmi' : 'icons/obj/clothing/uniforms.dmi'
 
 // "Body" first, then the pattern pieces in drawing order.
@@ -287,6 +303,14 @@ var/global/list/tailoring_dye_tiers = list(
 	var/list/body = tailoring_body(body_id)
 	return body && crafting_node_allowed(H, body["node"])
 
+/proc/tailoring_slot_name(list/body)
+	switch (body["slot"])
+		if ("suit")
+			return "overclothes"
+		if ("head")
+			return "headwear"
+	return "clothing"
+
 // Bodies this person knows how to cut, as display name -> id.
 /proc/tailoring_known_bodies(mob/living/human/H)
 	var/list/known = list()
@@ -294,7 +318,7 @@ var/global/list/tailoring_dye_tiers = list(
 	for (var/body_id in C)
 		var/list/body = C[body_id]
 		if (crafting_node_allowed(H, body["node"]))
-			known["[body["name"]] ([body["slot"] == "suit" ? "overclothes" : "clothing"], [body["cost"]] fabric)"] = body_id
+			known["[body["name"]] ([tailoring_slot_name(body)], [body["cost"]] fabric)"] = body_id
 	return known
 
 // Opaque RGB only: transparent or malformed input must never hide the garment.
@@ -413,6 +437,8 @@ var/global/list/tailoring_dye_tiers = list(
 		if (!item_state_slots)
 			item_state_slots = list()
 		item_state_slots[slot_w_uniform_str] = body["base"]
+	if (body["slot"] == "head")
+		flags_inv = body["hides_hair"] ? BLOCKHAIR : initial(flags_inv)
 	var/covers = tailoring_design_covers(design_body, design_pieces)
 	if (covers)
 		body_parts_covered = covers
@@ -514,8 +540,47 @@ var/global/list/tailoring_dye_tiers = list(
 	tailoring_named_items -= src
 	return ..()
 
+/obj/item/clothing/head/tailored
+	name = "tailored headwear"
+	desc = "Headwear sewn to its owner's own design, with every panel coloured by hand."
+	icon = 'icons/obj/clothing/hats.dmi'
+	icon_state = "customberet_hat"
+	item_state = "customberet_hat"
+	design_body = "beret"
+	design_colors = "#ffffff"
+	body_parts_covered = HEAD
+	cold_protection = HEAD
+
+/obj/item/clothing/head/tailored/on_runtime_spawn()
+	..()
+	tailoring_refresh()
+
+/obj/item/clothing/head/tailored/after_load()
+	..()
+	tailoring_rebuild_after_load()
+	tailoring_register(src)
+
+/obj/item/clothing/head/tailored/attackby(obj/item/W, mob/user)
+	if (recipe_blank_paper(W))
+		tailoring_trace_pattern(user, W, src, design_body, design_colors, design_name, design_maker, design_author, design_pieces)
+		return
+	return ..()
+
+/obj/item/clothing/head/tailored/examine(mob/user)
+	..()
+	tailoring_examine_credit(user, design_body, design_maker)
+
+/obj/item/clothing/head/tailored/Destroy()
+	tailoring_named_items -= src
+	return ..()
+
 /proc/tailoring_garment_type(list/body)
-	return body["slot"] == "suit" ? /obj/item/clothing/suit/storage/jacket/tailored : /obj/item/clothing/under/tailored
+	switch (body["slot"])
+		if ("suit")
+			return /obj/item/clothing/suit/storage/jacket/tailored
+		if ("head")
+			return /obj/item/clothing/head/tailored
+	return /obj/item/clothing/under/tailored
 
 // Live preview: four HUD tiles, one per facing, drawn from the same overlays
 // as the worn garment. They belong to the client and are never saved.
