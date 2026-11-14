@@ -46,15 +46,14 @@ and only while no world has been built from it.
 | --- | --- | --- | --- | --- |
 | Tiny | 200 | rich | poor | yes |
 | Small | 300 | good | thin | yes |
-| Medium | 500 x 350 (Gaia) | fair | fair | no |
-| Large | 500 | thin | good | no |
-| Massive | 600 | poor | rich | no |
+| Medium | 500 x 350 (Gaia) | fair | fair | yes |
+| Large | 500 | thin | good | yes |
+| Massive | 600 | poor | rich | yes |
 
 Smaller lands have richer, more concentrated ore and more often a rare find;
 larger lands feed a settlement better. Only the sizes in `SIZES_ENABLED` are
-rolled. The largest massive land has since been measured in a cloud container
-([expedition lands](expedition-lands.md#one-level-and-its-measurement)); the
-other sizes stay off until Val enables them.
+rolled, and all five are: the largest massive land was measured in a cloud
+container ([expedition lands](expedition-lands.md#one-level-and-its-measurement)).
 
 ### Tile states
 
