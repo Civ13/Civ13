@@ -506,7 +506,9 @@
 
 /mob/living/human/proc/in_soaking_water()
 	var/turf/T = get_turf(src)
-	return istype(T, /turf/floor/beach/water) && !istype(T, /turf/floor/beach/water/ice) && !T.iscovered() && !seabed_diving_rating()
+	if (seabed_diving_rating())
+		return FALSE
+	return (istype(T, /turf/floor/beach/water) && !istype(T, /turf/floor/beach/water/ice) && !T.iscovered()) || flood_soaks(T)
 
 /mob/living/human/verb/wring_out_clothes()
 	set name = "Wring Out Clothes"
