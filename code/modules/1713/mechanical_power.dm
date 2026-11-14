@@ -159,5 +159,56 @@ var/global/list/horse_gin_animals = list(
 			return drive_factor
 	return 0.4
 
+//////////////////////////////////////////////////////////////////////////////
+// Trip hammer: a driven hammer beside an anvil.
+//
+// It does nothing by hand. Fastened next to an anvil, with a prime mover
+// turning next to the hammer, it does the heavy striking: forging at that
+// anvil takes half the time. The anvil asks forge_time() when a job starts.
+
+#define TRIP_HAMMER_FACTOR 0.5
+#define TRIP_HAMMER_MIN_TIME 10
+
+/obj/structure/workshop_machine/trip_hammer
+	name = "trip hammer"
+	desc = "A heavy iron hammer head on a pivoted beam, lifted and dropped by a cam shaft. Fasten it next to an anvil and next to a turning treadwheel, horse gin, mill wheel or windmill: forging at that anvil then takes half the time."
+	icon = 'icons/obj/mechanical_power.dmi'
+	icon_state = "trip_hammer"
+
+// TRUE while a prime mover next to the fastened hammer is turning.
+/obj/structure/workshop_machine/trip_hammer/proc/striking()
+	return anchored && isturf(loc) && mechanical_drive_factor(src) < 1
+
+/obj/structure/workshop_machine/trip_hammer/examine(mob/user, distance)
+	..(user, distance)
+	if (!anchored)
+		to_chat(user, SPAN_WARNING("It is not fastened down."))
+	else if (striking())
+		to_chat(user, SPAN_NOTICE("The cam shaft is turning. Forging at an anvil next to it takes half the time."))
+	else
+		to_chat(user, SPAN_WARNING("Nothing is turning its cam shaft. It needs a turning prime mover next to it."))
+
+/obj/structure/workshop_machine/trip_hammer/attack_hand(mob/living/human/H)
+	if (istype(H))
+		examine(H, 1)
+
+/obj/structure/workshop_machine/trip_hammer/attackby(obj/item/I, mob/living/human/H)
+	if (!istype(H))
+		return
+	if (handle_machine_tool(I, H))
+		return
+	return ..()
+
+// How long a forging job of base_time takes at this anvil right now.
+/obj/structure/anvil/proc/forge_time(base_time)
+	for (var/obj/structure/workshop_machine/trip_hammer/T in range(1, src))
+		if (T.striking())
+			flick("trip_hammer_on", T)
+			return max(TRIP_HAMMER_MIN_TIME, round(base_time * TRIP_HAMMER_FACTOR))
+	return base_time
+
+#undef TRIP_HAMMER_FACTOR
+#undef TRIP_HAMMER_MIN_TIME
+
 #undef MECHANICAL_DRIVE_REACH
 #undef MECHANICAL_MIN_TIME

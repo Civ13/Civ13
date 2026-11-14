@@ -3,6 +3,7 @@ give exactly the results of the slow way, and a land may not outgrow what a
 world has been measured to hold."""
 import hashlib
 import json
+import re
 import tempfile
 import unittest
 from pathlib import Path
@@ -119,13 +120,32 @@ class LightBundleTests(unittest.TestCase):
 
 class LandBudgetTests(unittest.TestCase):
     def test_a_land_fits_the_measured_world(self):
-        self.assertEqual([], land.template_errors(land_template(724, 724)))
-        self.assertEqual([], land.template_errors(land_template(MAX_SIDE, 400)))
-        for width, height in ((725, 725), (MAX_SIDE, 420), (1132, 920)):
+        self.assertEqual([], land.template_errors(land_template(692, 692)))
+        self.assertEqual([], land.template_errors(land_template(MAX_SIDE, 375)))
+        for width, height in ((693, 693), (MAX_SIDE, 376), (1132, 920)):
             problems = land.template_errors(land_template(width, height))
             self.assertTrue(any("measured" in p for p in problems), (width, height, problems))
         self.assertTrue(land.template_errors(land_template(MAX_SIDE + 1, 64)))
-        self.assertTrue(land.template_errors(land_template("724", 724)))
+        self.assertTrue(land.template_errors(land_template("692", 692)))
+
+    def test_a_land_is_its_surface_alone_on_level_one(self):
+        # The solid rock level under a land held a boulder on every tile and
+        # took a large land's save past what a world can hold.
+        with tempfile.TemporaryDirectory() as tmp:
+            report = land.build_land(land_template(96, 96, land_type="HIGHLANDS"), Path(tmp) / "one")
+            text = (Path(tmp) / "one" / "land.dmm").read_text(encoding="utf-8")
+            self.assertEqual(["(1,1,1)"], re.findall(r"^\(\d+,\d+,\d+\)", text, re.M))
+            self.assertEqual(1, text.count(land.EXPEDITION_METADATA))
+            metadata = re.search(r'elevation_regions_text = "([^"]*)"', text)
+            self.assertTrue(metadata and all(region.split()[4] == "1" for region in metadata.group(1).split("|")))
+            self.assertEqual(1, report["terrain"]["z"])
+            self.assertEqual("z 1", (Path(tmp) / "one" / "land.heights.txt").read_text().split("\n")[2])
+            # Mountains stand on the surface as rock to mine.
+            self.assertIn("/obj/structure/wild/rock/basalt", text)
+        # The land's map asks for its cave level to be dug on demand instead.
+        source = (Path(__file__).resolve().parents[2] / "code/modules/persistence/expedition_land.dm").read_text(encoding="utf-8")
+        declared = source.split("/obj/map_metadata/nomads/expedition\n", 1)[1].split("\n/", 1)[0]
+        self.assertIn("\tdig_down_underground = TRUE\n", declared)
 
     def test_every_chart_size_class_fits_at_its_largest(self):
         from tools.transfer_storage import world_chart as wc

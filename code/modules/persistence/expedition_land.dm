@@ -16,6 +16,10 @@ var/global/list/expedition_land_info = null
 	description = "A land across the sea, reached only by ship."
 	battle_name = "new land"
 	mission_start_message = "<big>A land across the sea. Whoever came here came by ship.</big>"
+	// A land's map is its surface alone (tools/procedural_maps/land.py). The first
+	// tunnel dug down makes its cave level, where the level budget allows one
+	// (docs/new-z-budget.md); the two-level placeholder of a free slot is unaffected.
+	dig_down_underground = TRUE
 
 /obj/map_metadata/nomads/expedition/New()
 	..()

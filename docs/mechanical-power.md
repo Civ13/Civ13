@@ -31,3 +31,16 @@ owns that design).
 Movers are workshop machines: wrench to fasten, hammer on harm intent to
 dismantle, and too heavy for a ladder. The treadwheel is not dense so that a
 person can stand in it.
+
+## Trip hammer
+
+`/obj/structure/workshop_machine/trip_hammer`: 10 wood plus 6 iron and a
+shaft, Watermills. It does nothing by hand. `/obj/structure/anvil` asks
+`forge_time(base)` at both forging waits in `blacksmithing.dm`: when a
+fastened trip hammer within one tile has a turning prime mover next to it
+(`striking()`), the job takes half the time, never less than a second. The
+hammer plays its striking loop once when a job starts. Costs, recipes and
+research checks at the anvil are unchanged.
+
+A rolling mill was planned beside it and is not built: the game has no plate,
+sheet or rail stock for it to roll.

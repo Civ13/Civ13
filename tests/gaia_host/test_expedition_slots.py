@@ -306,7 +306,7 @@ class ExpeditionSlotTests(unittest.TestCase):
         for name, place in slots.TERRAIN_FILES:
             self.assertEqual((Path(answer['map']).parent / name).read_bytes(), (self.slot / place).read_bytes())
         heights = (self.slot / 'config/expedition_heights.txt').read_text().split('\n')
-        self.assertEqual(['civ13-terrain-heights 2', 'size 96 96', 'z 2'], heights[:3])
+        self.assertEqual(['civ13-terrain-heights 2', 'size 96 96', 'z 1'], heights[:3])
 
 
 if __name__ == '__main__':
