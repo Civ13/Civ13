@@ -105,7 +105,7 @@
 
 	playsound(epicenter, sound, 100, TRUE, round(power*5,1))
 	for (var/mob/living/human/M in range(10, epicenter))
-		var/dist = get_dist(get_turf(M), epicenter)
+		var/dist = max(1, get_dist(get_turf(M), epicenter))
 		shake_camera(M, min(60,max(2,(power*18*0.25) / dist)), min(3.5,((power*3*0.25) / dist)),0.05)
 	
 

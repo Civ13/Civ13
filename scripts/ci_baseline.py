@@ -41,6 +41,10 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'human_hazard_regressions': {'files': ('tests/human_hazard_regressions/test_guards.py',),
+        'paths': ('tests/human_hazard_regressions/',), 'shared_paths': (
+            'code/game/area/areas.dm', 'code/game/mob/living/carbon/human/human_damage.dm',
+            'code/game/mob/living/carbon/human/human_mutations.dm', 'code/processes/explosion.dm')},
     # Stdlib-only: poisonous frog meat coats crossbow bolts as well as arrows (#5258).
     'poison_frog_bolts': {'files': ('tests/poison_frog_bolts/test_bolts.py',), 'paths': (
         'tests/poison_frog_bolts/',), 'shared_paths': (

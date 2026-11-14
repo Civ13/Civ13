@@ -82,9 +82,8 @@
 		if(stat == DEAD) //if dead.
 			if(!istype(get_area(src), /area/caribbean/admin)) //To prevent people from mutating into zombies in the sleepzone.
 				if (prob(30)) //decent chance.
-					var/i
-					for(i=1,i<contents.len,i++)//dump all items on ground
-						drop_item(contents[i])
+					for(var/obj/item/I in contents.Copy())//dropping changes contents; visit every original item
+						drop_from_inventory(I, loc)
 					var/mob/living/simple_animal/hostile/human/zombie/playerzombie //make a var for the zombie
 					playerzombie = new /mob/living/simple_animal/hostile/human/zombie/ //make a zombie!
 					//transferring vars.
