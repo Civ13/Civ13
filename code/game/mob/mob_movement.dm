@@ -637,7 +637,7 @@
 			standing_on_snow *= footwear_terrain_mult(H, "wade")
 			if ((weather_at(F) == WEATHER_WET && findtext(weather_look_at(F),"rain")) || weather_at(F) == WEATHER_EXTREME)
 				if (F.may_become_muddy)
-					if (!(F_area.climate in list("semiarid", "jungle", "desert", "savanna")) || season == SEASON_WINTER || season == SEASON_SPRING)
+					if (rain_soaks_ground(F_area))
 						F.muddy = TRUE
 					else
 						F.muddy = FALSE

@@ -9,3 +9,11 @@
 // Spring or the wet season: snowmelt and rain swell rivers.
 /proc/season_is_wet()
 	return season == SEASON_SPRING || findtext(season, "Wet")
+
+// Rain soaks the ground here: always outside dry climates, and in dry climates
+// during winter, spring or the wet season. Rain then makes mud and can put out
+// an oil fire.
+/proc/rain_soaks_ground(area/A)
+	if (!A || !(A.climate in list("semiarid", "jungle", "desert", "savanna")))
+		return TRUE
+	return season == SEASON_WINTER || season_is_wet()

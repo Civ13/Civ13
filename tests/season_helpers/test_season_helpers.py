@@ -34,6 +34,16 @@ class SeasonHelpersTest(unittest.TestCase):
                       '|| season == SEASON_FALL || season == SEASON_WINTER\n', text)
         self.assertIn('/proc/season_is_wet()\n\treturn season == SEASON_SPRING || findtext(season, "Wet")\n', text)
 
+    def test_rain_soaks_ground_for_mud_and_oil_fires(self):
+        text = (ROOT / 'code/_helpers/seasons.dm').read_text(encoding='utf-8')
+        self.assertIn('/proc/rain_soaks_ground(area/A)\n'
+                      '\tif (!A || !(A.climate in list("semiarid", "jungle", "desert", "savanna")))\n'
+                      '\t\treturn TRUE\n\treturn season == SEASON_WINTER || season_is_wet()\n', text)
+        # Mud and oil fires share the rule; the oil-fire check used to be
+        # `climate != a || climate != b ...`, which was always true.
+        self.assertIn('if (rain_soaks_ground(F_area))', (ROOT / 'code/game/mob/mob_movement.dm').read_text(encoding='utf-8'))
+        self.assertIn('if (rain_soaks_ground(A))', (ROOT / 'code/modules/1713/oil_fires.dm').read_text(encoding='utf-8'))
+
     def test_raw_season_names_only_go_down(self):
         extra = []
         for path in (ROOT / 'code').rglob('*.dm'):
