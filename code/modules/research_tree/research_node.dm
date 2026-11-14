@@ -1002,6 +1002,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/trap_kit/snare" = "basic_tools",
 		"/obj/item/weapon/trap_kit/deadfall" = "basic_tools",
 		"/obj/item/weapon/trap_kit/weir" = "basic_tools",
+		"/obj/structure/dugout_log" = "basic_tools",
+		"/obj/item/weapon/paddle" = "basic_tools",
 		// --- brickmaking (12) ---
 		"/obj/covers/stone_wall/brick" = "brickmaking",
 		"/obj/covers/stone_wall/brick/archway" = "brickmaking",
