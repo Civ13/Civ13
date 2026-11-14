@@ -132,6 +132,10 @@
 	var/list/options = list("Sea chart", "Ship's papers", "Hail a ship", "Make for a berth")
 	if (open_sea_world())
 		options.Insert(2, "Open sea chart")
+	// Off the edge of the map she can cross to a land across the sea (ship_crossing.dm).
+	var/datum/craft_body/built/edge_body = craft.body
+	if (istype(edge_body) && edge_body.at_map_edge() && length(sea_crossing_destinations()))
+		options.Insert(2, "Leave these waters")
 	var/best = craft.max_speed()
 	if (best >= VESSEL_SPEED_FULL)
 		options += "Full ahead"
@@ -161,6 +165,9 @@
 		if (CRAFT_HELM_FORCE)
 			if (!craft.force_helm(H, src) || !craft)
 				return
+	if (choice == "Leave these waters")
+		crossing_menu(H)
+		return
 	if (choice == "Make for a berth")
 		if (craft.grapple)
 			to_chat(H, SPAN_WARNING(craft.grapple_refusal()))
