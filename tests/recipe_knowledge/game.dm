@@ -343,7 +343,12 @@ var/knowledge_failures = 0
 	knowledge_check(!crafting_recipe_allowed(novice, "/obj/structure/writing_desk") && scholar.learn_recipe_node("basic_furniture") && crafting_recipe_allowed(scholar, "/obj/structure/writing_desk"), "the writing desk is Basic Furniture")
 	// A new character's first fire needs no research (Val, 2026-11-13).
 	knowledge_check(!novice.knows_recipe_node("basic_furniture") && crafting_recipe_allowed(novice, "/obj/structure/oven/fireplace") && !get_recipe_node_req("/obj/structure/oven/fireplace"), "a novice can make a campfire")
+	// Beside someone who knows it, a prepared novice may make it as guided work
+	// (trade_learning.dm); alone, the subject is still needed.
+	var/turf/scholar_spot = scholar.loc
+	scholar.loc = null
 	knowledge_check(!crafting_recipe_allowed(novice, "/obj/structure/brazier"), "a brazier still needs Basic Furniture")
+	scholar.loc = scholar_spot
 	var/obj/structure/research_bench/knowledge_fixture/bench = new(locate(2,2,1))
 	var/obj/structure/bookcase/near = new(locate(3,2,1))
 	var/obj/structure/bookcase/far = new(locate(8,8,1))
