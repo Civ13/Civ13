@@ -350,6 +350,29 @@ class TrialAndError(unittest.TestCase):
         for guard in ("lessons_learned(node_id) < TRIAL_LESSON_MAX", "gain_active_scholarship(", "/obj/item/trash/failed_attempt"):
             self.assertIn(guard, failure)
         self.assertIn("player_input(", proc(self.src, "/mob/living/human/proc/attempt_a_subject"))
+class TradeLearning(unittest.TestCase):
+    def setUp(self):
+        self.src = read("code/modules/research_tree/trade_learning.dm")
+    def test_included_and_wired(self):
+        dme = read("civ13.dme")
+        self.assertLess(dme.index('research_tree\\learning_by_doing.dm"'), dme.index('research_tree\\trade_learning.dm"'))
+        self.assertIn("|| guided_work_allowed(H, result_path_string)", read("code/modules/research_tree/recipe_gates.dm"))
+        practice = read("code/modules/research_tree/practice_work.dm")
+        self.assertIn("if (!record_guided_work(user, result_path_string))\n\t\trecord_subject_prototype(user, result_path_string)", practice)
+        self.assertIn("note_craft_watched(user, result_path_string)", practice)
+        ruined = proc(read("code/modules/research_tree/subject_prototypes.dm"), "/proc/trial_craft_ruined")
+        self.assertLess(ruined.index("guided_work_node(H, result_path_string)"), ruined.index("subject_prototype_node(H, result_path_string)"))
+    def test_gates(self):
+        learn = proc(self.src, "/mob/living/human/proc/can_learn_trade")
+        for guard in ("map.book_research_enabled()", "knows_recipe_node(node_id)", "knows_research_prereqs(node_id)", "trade_learning_cap(N)"):
+            self.assertIn(guard, learn)
+        teacher = proc(self.src, "/mob/living/human/proc/trade_teacher")
+        for guard in ("M.stat != CONSCIOUS", "M.research_presence()", "M.knows_recipe_node(node_id)"):
+            self.assertIn(guard, teacher)
+        watched = proc(self.src, "/proc/note_craft_watched")
+        for guard in ("maker.knows_recipe_node(node_id)", "TRADE_WATCH_MAX", "watcher.can_learn_trade(node_id)"):
+            self.assertIn(guard, watched)
+        self.assertIn("learn_recipe_node(node_id)", proc(self.src, "/mob/living/human/proc/add_trade_learning"))
 
 if __name__ == "__main__":
     unittest.main()

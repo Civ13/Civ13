@@ -77,7 +77,8 @@ var/global/list/basic_crafting_recipes = list("/obj/structure/oven/fireplace")
 		return crafting_node_world_allowed(H.civilization, node_id)
 	// A crude experimental machine for a capstone demonstration (demonstrations.dm).
 	// Or a prototype of a subject the actor's book is a third into (subject_prototypes.dm).
-	return crafting_node_allowed(H, node_id) || demonstration_kit_allowed(H, result_path_string) || subject_prototype_allowed(H, result_path_string)
+	// Or guided work beside someone who knows the subject (trade_learning.dm).
+	return crafting_node_allowed(H, node_id) || demonstration_kit_allowed(H, result_path_string) || subject_prototype_allowed(H, result_path_string) || guided_work_allowed(H, result_path_string)
 
 // The only recipes that skip personal manuals are the ones needed to reach the
 // next research level: the research bench, the legacy research desk and every

@@ -753,6 +753,81 @@ var/late_wait_result = TRUE
 	offbook.trial_subject = "iron_tools"
 	late_check(!subject_prototype_allowed(other, item_path) && !trial_craft_ruined(other, item_path), "no attempts where book research is off")
 	map.book_research = TRUE
+/proc/late_test_trade_learning()
+	var/item_path = null
+	var/other_path = null
+	for(var/path in recipe_node_requirements)
+		if(recipe_node_requirements[path] == "iron_tools" && ispath(text2path(path), /obj/item/weapon))
+			if(!item_path)
+				item_path = path
+			else if(!other_path)
+				other_path = path
+	var/datum/research_node/IN = get_research_node("iron_tools")
+	late_check(item_path && other_path, "Iron Tools has two things to make")
+	// Kept clear of the other tests' characters.
+	var/mob/living/human/late_fixture/master = new(locate(1,4,1))
+	master.name = "Weland"
+	var/mob/living/human/late_fixture/pupil = new(locate(1,5,1))
+	pupil.name = "Egil"
+	var/mob/living/human/late_fixture/stranger = new(locate(1,6,1))
+	for(var/mob/living/human/other in range(3, master))
+		if(!(other in list(master, pupil, stranger)))
+			other.loc = locate(8,1,1)
+	for(var/req in IN.prereqs)
+		master.teach(req)
+		pupil.teach(req)
+	master.teach("iron_tools")
+	late_check(trade_learning_cap(IN) == 1 && trade_learning_cap(get_research_node("cartridge_ammo")) == 0.5, "early subjects can be learned wholly from a teacher, later ones half")
+	late_check(pupil.can_learn_trade("iron_tools") && !master.can_learn_trade("iron_tools") && !stranger.can_learn_trade("iron_tools"), "only someone with the groundwork and without the subject can learn it")
+	late_check(pupil.trade_teacher("iron_tools") == master && !master.trade_teacher("iron_tools"), "the teacher is someone within reach who knows it")
+	// Watching.
+	late_check(note_craft_watched(master, item_path) == 1 && pupil.study_percent("iron_tools") == 15, "watching a thing being made fills 15% of the subject")
+	late_check(!note_craft_watched(master, item_path) && pupil.study_percent("iron_tools") == 15, "the same thing twice shows nothing new")
+	late_check(note_craft_watched(master, other_path) == 1 && pupil.study_percent("iron_tools") == 30, "a different thing does")
+	late_check(!stranger.study_fraction("iron_tools"), "someone without the groundwork picks up nothing")
+	late_check(!note_craft_watched(pupil, item_path), "watching someone who does not know the subject teaches nothing")
+	pupil.trade_watched["iron_tools"] = 3
+	late_check(!note_craft_watched(master, "/obj/item/weapon/third") && pupil.study_percent("iron_tools") == 30, "three kinds of thing per subject is all watching gives")
+	// Guided work.
+	late_check(guided_work_node(pupil, item_path) == "iron_tools" && crafting_recipe_allowed(pupil, item_path), "beside the teacher, the pupil may make the subject's things")
+	late_check(!guided_work_allowed(stranger, item_path) && !guided_work_allowed(master, item_path), "the unprepared and the teacher get no guided work")
+	late_check(record_guided_work(pupil, item_path) && pupil.study_percent("iron_tools") == 50, "each thing made under guidance fills 20%")
+	late_check(pupil.guided_fail_chance() == 30, "an ordinary pupil spoils 30 in 100")
+	pupil.stats["crafting"] = list(150, 150)
+	late_check(pupil.guided_fail_chance() == 5, "a skilled pupil seldom spoils one")
+	pupil.stats["crafting"] = list(100, 100)
+	late_check(abs(commit_guided_failure(pupil, "iron_tools", item_path) - 0.1) < 0.001 && pupil.study_percent("iron_tools") == 60 && (locate(/obj/item/trash/failed_attempt) in get_turf(pupil)), "a spoiled attempt leaves a ruined piece and still teaches half as much")
+	master.loc = locate(5,1,1)
+	late_check(!guided_work_allowed(pupil, item_path) && !crafting_recipe_allowed(pupil, item_path) && !record_guided_work(pupil, item_path), "with the teacher gone there is no guided work")
+	master.loc = locate(1,4,1)
+	master.stat = UNCONSCIOUS
+	late_check(!guided_work_allowed(pupil, item_path), "an unconscious teacher guides nobody")
+	master.stat = CONSCIOUS
+	// A half-read chapter and a half-served apprenticeship add up, and it ends in knowing.
+	var/master_before = master.scholar_level(node_discipline("iron_tools"))
+	record_guided_work(pupil, item_path)
+	late_check(pupil.study_percent("iron_tools") == 80 && !pupil.knows_recipe_node("iron_tools"), "four fifths is not yet knowing")
+	record_guided_work(pupil, item_path)
+	late_check(pupil.knows_recipe_node("iron_tools") && !pupil.study_fraction("iron_tools"), "the last piece teaches the subject, with no book")
+	late_check(pupil.scholar_level(node_discipline("iron_tools")) >= 2.5 && master.scholar_level(node_discipline("iron_tools")) > master_before, "pupil and teacher both gain scholarship")
+	late_check(!guided_work_allowed(pupil, item_path) && crafting_recipe_allowed(pupil, item_path), "after that it is ordinary work")
+	// Later subjects stop at half.
+	var/datum/research_node/CN = get_research_node("cartridge_ammo")
+	var/mob/living/human/late_fixture/gunsmith = new(locate(1,8,1))
+	var/mob/living/human/late_fixture/learner = new(locate(2,8,1))
+	for(var/req in CN.prereqs)
+		gunsmith.teach(req)
+		learner.teach(req)
+	gunsmith.teach("cartridge_ammo")
+	learner.add_trade_learning("cartridge_ammo", 0.4, gunsmith)
+	late_check(abs(learner.add_trade_learning("cartridge_ammo", 0.4, gunsmith) - 0.1) < 0.001 && learner.study_percent("cartridge_ammo") == 50 && !learner.knows_recipe_node("cartridge_ammo"), "a later subject fills to half and no further")
+	late_check(!learner.can_learn_trade("cartridge_ammo") && !learner.add_trade_learning("cartridge_ammo", 0.4, gunsmith), "the rest has to be read")
+	// Off where book research is off; saved records are cleaned.
+	map.book_research = FALSE
+	late_check(!learner.can_learn_trade("iron_tools") && !note_craft_watched(master, item_path), "nothing passes hand to hand where book research is off")
+	map.book_research = TRUE
+	var/list/clean = clean_trade_watched(list("a" = 1, "b" = 99, "c" = "x", 5))
+	late_check(clean.len == 2 && clean["b"] == 3, "saved watching records are cleaned")
 /world/New()
 	OpenPort("none")
 	generate_gameid()
@@ -774,6 +849,7 @@ var/late_wait_result = TRUE
 		late_test_subject_prototypes()
 		late_test_learning_by_doing()
 		late_test_trial_and_error()
+		late_test_trade_learning()
 		late_test_teams()
 		late_test_ciphers()
 		late_test_late_lines()
