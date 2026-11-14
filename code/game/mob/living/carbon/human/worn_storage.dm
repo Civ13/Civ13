@@ -28,11 +28,11 @@
 		if ("back")
 			items = list(back)
 		if ("belt")
-			items = list(belt)
+			items = list(belt, wear_id)
 		if ("worn")
 			items = list(w_uniform, wear_suit, l_store, r_store)
 		else
-			items = list(back, belt, w_uniform, wear_suit, l_store, r_store)
+			items = list(back, belt, wear_id, w_uniform, wear_suit, l_store, r_store)
 	var/list/storages = list()
 	for (var/obj/item/I in items)
 		storages |= worn_item_storages(I)
@@ -68,7 +68,7 @@
 /mob/living/human/verb/open_belt_storage()
 	set name = "open-belt-storage"
 	set hidden = TRUE
-	cycle_worn_storage("belt", "You have nothing on your belt slot that you can open.")
+	cycle_worn_storage("belt", "You have nothing on your belt or hip that you can open.")
 
 /mob/living/human/verb/open_clothing_storage()
 	set name = "open-clothing-storage"
