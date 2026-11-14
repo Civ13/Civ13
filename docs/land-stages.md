@@ -113,3 +113,15 @@ start new characters with a faction only after joining it in play.
   one of the colony's stations) and joins it, and `colony_used` clears the
   grant. On lands without random starts, job relocation places the body
   (`faction_start_turf`).
+
+## Open-land wild start
+
+At Join, a player whose account is past its first two days
+(`new_player_marks.is_new`) is also offered "In the wilds of <land>" for every
+OPEN, unpaused land. Choosing it sends `/account` op `start`; the coordinator
+accepts it only from the account's home land and only while the land is OPEN
+and unpaused, and moves the home there. The player then joins that land and
+starts as any new character there (at random on a land with
+`new_player_start_z`, otherwise at its usual join points). A death there
+without a bed sends the home back to the mainland as before, where the choice
+is offered again. Brand-new players always start on the mainland.

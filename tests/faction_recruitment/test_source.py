@@ -125,6 +125,13 @@ class FactionMemberStartSource(unittest.TestCase):
         relocate = run.proc_text(read('code/game/jobs/job_controller.dm'), '/datum/controller/occupations/proc/relocate(')
         self.assertLess(relocate.index('H.faction_start_turf'), relocate.index('uses_random_new_player_spawn'))
 
+    def test_open_land_wild_starts_skip_new_players_and_go_through_the_coordinator(self):
+        wilds = run.proc_text(self.start, '/mob/new_player/proc/wild_start_choices(')
+        for need in ('new_player_marks.is_new(client)', 'entry["stage"] != "OPEN"', 'entry["paused"]', 'land == shard_group.region'):
+            self.assertIn(need, wilds)
+        prompt = run.proc_text(self.start, '/mob/new_player/proc/faction_start_prompt(')
+        self.assertIn('region_home_ask(account, "start", land)', prompt)
+
     def test_stations_register_and_limits_are_configurable(self):
         station = read('code/game/mob/groups/recruitment_station.dm')
         self.assertIn('recruitment_stations |= src', station)

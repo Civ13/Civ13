@@ -3,7 +3,7 @@
 // stations; only an account on the roster is offered one, so nobody starts
 // with a faction before joining it in play (Val, 2026-11-14).
 
-#define FACTION_START_WILDS "In the wilds, as a nomad"
+#define FACTION_START_WILDS "Here, on your own"
 
 var/global/list/recruitment_stations = list() // every recruitment station, for member starts
 
@@ -22,6 +22,21 @@ var/global/list/recruitment_stations = list() // every recruitment station, for 
 		map.faction_roster_touch(src)
 
 // --- Member starts ---------------------------------------------------------
+
+// Open lands (docs/land-stages.md) whose wilds a player may start in from
+// here: OPEN and not paused. Players in their first two days always start in
+// the land they joined, near the most people. Returns label -> land id.
+/mob/new_player/proc/wild_start_choices()
+	var/list/choices = list()
+	if (!client || IsGuestKey(client.key) || !shard_group.enabled || !region_home_enabled() || new_player_marks.is_new(client))
+		return choices
+	for (var/land in land_stages)
+		var/list/entry = land_stages[land]
+		if (land == shard_group.region || !islist(entry) || entry["stage"] != "OPEN" || entry["paused"])
+			continue
+		var/list/peer = shard_group.peers[land]
+		choices["In the wilds of [peer ? peer["name"] : land]"] = land
+	return choices
 
 // A turf beside one of the faction's recruitment stations or its colony
 // charter where a new character can stand.
@@ -93,17 +108,28 @@ var/global/list/recruitment_stations = list() // every recruitment station, for 
 	var/account = client.ckey
 	var/list/choices = map.faction_start_choices(account, colony_start_grant)
 	var/list/abroad = map.faction_colony_choices(account)
-	if (!choices.len && !abroad.len)
+	var/list/wilds = wild_start_choices()
+	if (!choices.len && !abroad.len && !wilds.len)
 		return TRUE
 	var/list/options = list(FACTION_START_WILDS)
 	for (var/faction in choices)
 		options += "With [faction]"
 	options += abroad
-	var/answer = WWinput(src, "You are a member of a faction. Where should your new character start?", "Starting place", FACTION_START_WILDS, options)
+	options += wilds
+	var/answer = WWinput(src, "Where should your new character start?", "Starting place", FACTION_START_WILDS, options)
 	if (!client || client.mob != src)
 		return FALSE
 	if (!istext(answer) || answer == FACTION_START_WILDS)
 		return TRUE
+	if (answer in wilds)
+		// The coordinator moves this account's home to that open land.
+		var/land = wilds[answer]
+		if (!region_home_ask(account, "start", land))
+			to_chat(src, SPAN_WARNING("The world directory cannot be reached right now. Try again in a minute."))
+		else
+			to_chat(src, SPAN_NOTICE("Your next character will start in the wilds there. In a few seconds, join that land:"))
+			region_home_tell(src, land)
+		return FALSE
 	if (answer in abroad)
 		// The coordinator moves this account's home to that land and grants
 		// the start there; the player joins that land's server to take it.

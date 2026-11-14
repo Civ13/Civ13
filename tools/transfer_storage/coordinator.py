@@ -319,12 +319,20 @@ class Coordinator(TrainCustody):
             # stand in a land open to colony starts.
             self._set_home(ckey, region)
             self.db.execute('INSERT OR REPLACE INTO colony_grant VALUES (?, ?, ?)', (ckey, region, request['faction']))
+        elif op == 'start' and home == source and region != source and self.wild_start_allowed(region):
+            # An open land's wilds, chosen in the lobby of the account's home.
+            self._set_home(ckey, region)
         elif op == 'colony_used' and region == source:
             self.db.execute('DELETE FROM colony_grant WHERE ckey = ? AND region = ?', (ckey, source))
         elif op == 'custody' and home is None and region == source:
             # A living character of an unhomed account is here (a lost ledger
             # forgot it); it stays where it lives.
             self._set_home(ckey, source)
+
+    def wild_start_allowed(self, region):
+        """New characters may start in region's wilds: an OPEN land, not paused."""
+        entry = land_rows(self.db, [region], self.mainland).get(region) if region in self.regions() else None
+        return bool(entry) and entry['stage'] == 'OPEN' and not entry['paused']
 
     def colony_start_allowed(self, source, region, faction):
         """A member of faction (founded in source) may start at its colony in
