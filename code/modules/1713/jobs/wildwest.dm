@@ -15,6 +15,7 @@
 	min_positions = 1
 	max_positions = 1
 
+/datum/job/civilian/sheriff/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
 /datum/job/civilian/sheriff/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -55,14 +56,7 @@
 
 	give_random_name(H)
 	H.add_note("Role", "You are the <b>[title]</b>, responsible for keeping the law and order in Little Creek. Organize your <b>Deputies</b> and prevent the <b>Outlaws</b> from robbing the bank!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_MEDIUM_HIGH)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 
 	return TRUE
 
@@ -79,6 +73,7 @@
 	min_positions = 3
 	max_positions = 20
 
+/datum/job/civilian/deputy/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
 /datum/job/civilian/deputy/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -117,14 +112,7 @@
 
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a subordinate of the <b>Sheriff</b>. Follow his orders and prevent the <b>Outlaws</b> from robbing the bank!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 
 	return TRUE
 
@@ -141,6 +129,7 @@
 	min_positions = 6
 	max_positions = 100
 
+/datum/job/civilian/deputy2/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
 /datum/job/civilian/deputy2/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -179,14 +168,7 @@
 
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a subordinate of the <b>Sheriff</b>. Follow his orders and prevent the <b>Outlaws</b> from robbing the bank!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 
 	return TRUE
 
@@ -203,6 +185,7 @@
 	min_positions = 1
 	max_positions = 6
 
+/datum/job/civilian/bank/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
 /datum/job/civilian/bank/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -222,14 +205,7 @@
 
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a functionary of <b>Little Creek Banking Co.</b>. Your job is to keep the bank's vault safe, so work with the <b>Sheriff</b> and his <b>Deputies</b>!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 
 	return TRUE
 
@@ -246,6 +222,7 @@
 	min_positions = 8
 	max_positions = 100
 
+/datum/job/civilian/townsmen/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_HIGH, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_NORMAL)
 /datum/job/civilian/townsmen/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -307,14 +284,7 @@
 
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, living in Little Creek. You've heard of the robbery, and your job is to survive!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_MEDIUM_HIGH)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_NORMAL)
+	apply_job_stats(H)
 
 	return TRUE
 
@@ -331,6 +301,7 @@
 	min_positions = 1
 	max_positions = 4
 
+/datum/job/civilian/towndoctor/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_HIGH, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_VERY_HIGH)
 /datum/job/civilian/towndoctor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -376,14 +347,7 @@
 
 	give_random_name(H)
 	H.add_note("Role", "You are the <b>Town's Doctor</b>, living in Little Creek. Take care of the (many) wounded...")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_MEDIUM_HIGH)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_VERY_HIGH)
+	apply_job_stats(H)
 
 	return TRUE
 
@@ -400,6 +364,7 @@
 	min_positions = 1
 	max_positions = 3
 
+/datum/job/civilian/townbartender/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_NORMAL)
 /datum/job/civilian/townbartender/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -414,14 +379,7 @@
 
 	give_random_name(H)
 	H.add_note("Role", "You are the <b>Saloon's Bartender</b>, living in Little Creek. Take care of the Saloon, shooting the drunkards out if need be.")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_MEDIUM_HIGH)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_NORMAL)
+	apply_job_stats(H)
 
 	return TRUE
 
@@ -438,6 +396,7 @@
 	min_positions = 2
 	max_positions = 8
 
+/datum/job/civilian/townrancher/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_NORMAL, "farming" = STAT_VERY_HIGH)
 /datum/job/civilian/townrancher/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -478,15 +437,7 @@
 
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>Rancher</b>, living in Little Creek. Take care of your farm and keep the town fed!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_MEDIUM_HIGH)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_NORMAL)
-	H.setStat("farming", STAT_VERY_HIGH)
+	apply_job_stats(H)
 
 	return TRUE
 
@@ -504,6 +455,7 @@
 	min_positions = 2
 	max_positions = 8
 
+/datum/job/civilian/townprospector/job_stats = list("strength" = STAT_VERY_HIGH, "crafting" = STAT_MEDIUM_HIGH, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_NORMAL)
 /datum/job/civilian/townprospector/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -539,14 +491,7 @@
 
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>Prospector</b>, living in Little Creek. Mine and keep the town supplied with raw materials.")
-	H.setStat("strength", STAT_VERY_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_HIGH)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_NORMAL)
+	apply_job_stats(H)
 
 	return TRUE
 
@@ -563,6 +508,7 @@
 	min_positions = 1
 	max_positions = 2
 
+/datum/job/civilian/townpriest/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_MEDIUM_HIGH)
 /datum/job/civilian/townpriest/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -581,14 +527,7 @@
 
 	give_random_name(H)
 	H.add_note("Role", "You are the <b>Priest</b>, living in Little Creek. Take care of the church, act as undertaker, and make sure the population follows the Lord's commandments.")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_MEDIUM_HIGH)
+	apply_job_stats(H)
 
 	return TRUE
 
@@ -605,6 +544,7 @@
 	min_positions = 1
 	max_positions = 2
 
+/datum/job/civilian/townblacksmith/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = 200, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_MEDIUM_LOW)
 /datum/job/civilian/townblacksmith/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -643,14 +583,7 @@
 
 	give_random_name(H)
 	H.add_note("Role", "You are the <b>Town's Blacksmith</b>, living in Little Creek. Take care of the smithy and the stables!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", 200)
-	H.setStat("rifle", STAT_MEDIUM_HIGH)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 
 	return TRUE
 
@@ -668,6 +601,7 @@
 	min_positions = 6
 	max_positions = 100
 
+/datum/job/civilian/outlaw/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_MEDIUM_LOW)
 /datum/job/civilian/outlaw/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -734,14 +668,7 @@
 	if (map && map.ID == MAP_LITTLE_CREEK_TDM)
 		H.add_note("Horse", "You start in the saddle. Ride hard, shoot from horseback, and carry the loot back to the stagecoach. Click your horse to climb down; drag yourself onto a horse to mount again.")
 		addtimer(CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(wildwest_mount_outlaw), H), 1 SECOND)
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_MEDIUM_HIGH)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_HIGH)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 
 	return TRUE
 
@@ -758,6 +685,7 @@
 	min_positions = 2
 	max_positions = 9
 
+/datum/job/civilian/outlaw1/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_MEDIUM_LOW)
 /datum/job/civilian/outlaw1/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -818,14 +746,7 @@
 
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b> member. Find your partners in crime and organize the bank robbery! Get the gold from the Bank's vault and bring it to the North stagecoach storage!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_MEDIUM_HIGH)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_HIGH)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 
 	return TRUE
 
@@ -841,6 +762,7 @@
 	min_positions = 2
 	max_positions = 9
 
+/datum/job/civilian/outlaw2/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_MEDIUM_LOW)
 /datum/job/civilian/outlaw2/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -901,13 +823,6 @@
 
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b> member. Find your partners in crime and organize the bank robbery! Get the gold from the Bank's vault and bring it to the North stagecoach storage!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_MEDIUM_HIGH)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_HIGH)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 
 	return TRUE

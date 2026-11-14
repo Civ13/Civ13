@@ -24,6 +24,7 @@
 	min_positions = 1
 	max_positions = 1
 
+/datum/job/roman/captain/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_HIGH, "pistol" = STAT_LOW, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
 /datum/job/roman/captain/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
@@ -37,14 +38,7 @@
 		//weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/gladius/iron(H), slot_belt)
 	H.add_note("Role", "You are a <b>[title]</b>, the leader of a <b>Centuria</b>, a company of Legionaries. Organize your <b>Decurions</b> and lead your soldiers to victory!</b>.")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_HIGH)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	give_random_name(H)
 
 	return TRUE
@@ -62,6 +56,7 @@
 	min_positions = 2
 	max_positions = 10
 
+/datum/job/roman/squad_leader/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_HIGH, "pistol" = STAT_LOW, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
 /datum/job/roman/squad_leader/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
@@ -77,14 +72,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/shield/roman/praetorian(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/pilum(H), slot_r_hand)
 	H.add_note("Role", "You are a <b>[title]</b>, the leader of a Roman legionary squad. Lead your <b>Legionaries</b> to battle, following the orders of the <b>Centurion</b>!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_HIGH)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	give_random_name(H)
 	return TRUE
 
@@ -98,6 +86,7 @@
 	min_positions = 1
 	max_positions = 6
 
+/datum/job/roman/bearer/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_HIGH, "pistol" = STAT_LOW, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
 /datum/job/roman/bearer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
@@ -118,14 +107,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/roman_standard(H), slot_r_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/horn(H), slot_r_store)
 	H.add_note("Role", "You are a <b>[title]</b>, the Legion's standard bearer. Lead your soldiers to battle and keep troops organized! Use your horn!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_HIGH)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	give_random_name(H)
 	return TRUE
 
@@ -140,6 +122,7 @@
 	min_positions = 12
 	max_positions = 200
 
+/datum/job/roman/soldier/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_HIGH, "pistol" = STAT_LOW, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
 /datum/job/roman/soldier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
@@ -155,14 +138,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/shield/roman(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/pilum(H), slot_r_hand)
 	H.add_note("Role", "You are a <b>[title]</b>, a soldier of the Roman Army. You are equipped with two <b>Pila</b> javelins, your shield and a <b>Gladius</b>.")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_HIGH)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	give_random_name(H)
 
 	return TRUE
@@ -178,6 +154,7 @@
 
 	min_positions = 8
 	max_positions = 100
+/datum/job/roman/velites/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_LOW, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_LOW, "bows" = STAT_HIGH, "medical" = STAT_MEDIUM_LOW)
 /datum/job/roman/velites/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
@@ -198,14 +175,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/bow/shortbow(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/quiver/full(H), slot_back)
 	H.add_note("Role", "You are a <b>[title]</b>, a skirmisher in the Roman Army. Your job is to harass the enemy frontline before the <b>Legionaries</b> charge.")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_HIGH)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	give_random_name(H)
 	return TRUE
 
@@ -223,6 +193,7 @@
 
 	min_positions = 100
 	max_positions = 100
+/datum/job/roman/gladiator/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_HIGH)
 /datum/job/roman/gladiator/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
@@ -237,14 +208,7 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/celtic_blue(H), slot_w_uniform)
 
 	H.add_note("Role", "You are a <b>[title]</b>, fighting in the area. Can you become the best? You can use the beds at the Sleeping Quarters to save your character's name, stats and victories. You will be able to load on respawn.")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_HIGH)
+	apply_job_stats(H)
 	give_random_name(H)
 	H.check_profiles() //this will trigger the "give a custom name" proc
 	return TRUE
@@ -263,6 +227,7 @@
 
 	min_positions = 3
 	max_positions = 8
+/datum/job/roman/doctor/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_HIGH, "rifle" = STAT_NORMAL, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL)
 /datum/job/roman/doctor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
@@ -273,13 +238,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/doctor_handbook(H), slot_r_store)
 
 	H.add_note("Role", "You are a <b>[title]</b>. Keep the arena clean and the men alive.")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_MEDIUM_HIGH)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
+	apply_job_stats(H)
 	give_random_name(H)
 	return TRUE
 
@@ -300,6 +259,7 @@
 	min_positions = 2
 	max_positions = 8
 
+/datum/job/roman/guard/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_HIGH, "rifle" = STAT_LOW, "dexterity" = STAT_HIGH, "swords" = STAT_HIGH, "pistol" = STAT_LOW, "bows" = STAT_HIGH, "medical" = STAT_NORMAL)
 /datum/job/roman/guard/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
@@ -312,14 +272,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/melee/classic_baton/whip(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/gladius/iron(H), slot_back)
 	H.add_note("Role", "You are a <b>[title]</b>, guarding the arena. Keep the gladiators organized and following the rules, while protecting the Emperor!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_HIGH)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_HIGH)
-	H.setStat("swords", STAT_HIGH)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_HIGH)
-	H.setStat("medical", STAT_NORMAL)
+	apply_job_stats(H)
 	give_random_name(H)
 	return TRUE
 
@@ -340,6 +293,7 @@
 
 	min_positions = 1
 	max_positions = 1
+/datum/job/roman/emperor/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_HIGH, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_MEDIUM_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_MEDIUM_HIGH, "medical" = STAT_VERY_HIGH)
 /datum/job/roman/emperor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
@@ -352,14 +306,7 @@
 
 	H.add_note("Role", "You are the <b>[title]</b>. You are responsible for organizing the games. You can use the interface of the <b>Gladiator Combat Organizer</b> to turn automatic mode on and off. If you decide to manage the games yourself, you will need to attribute the victory using the <b>Gladiator Ledger</b> - click on it and choose the winner!")
 
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_HIGH)
-	H.setStat("rifle", STAT_MEDIUM_HIGH)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_MEDIUM_HIGH)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_MEDIUM_HIGH)
-	H.setStat("medical", STAT_VERY_HIGH)
+	apply_job_stats(H)
 	give_random_name(H)
 	return TRUE
 
@@ -380,6 +327,7 @@
 	min_positions = 1
 	max_positions = 5
 
+/datum/job/german/chieftain/job_stats = list("strength" = STAT_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_HIGH, "pistol" = STAT_LOW, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
 /datum/job/german/chieftain/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
@@ -395,14 +343,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/shield/scutum(H), slot_r_store)
 	H.add_note("Role", "You are a <b>[title]</b>, the chieftain of your tribe. Lead your men to victory!")
 
-	H.setStat("strength", STAT_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_HIGH)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	give_random_name(H)
 
 	return TRUE
@@ -420,6 +361,7 @@
 	min_positions = 10
 	max_positions = 100
 
+/datum/job/german/swordsman/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_HIGH, "pistol" = STAT_LOW, "bows" = STAT_LOW, "medical" = STAT_LOW)
 /datum/job/german/swordsman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
@@ -439,14 +381,7 @@
 
 	H.add_note("Role", "You are a <b>[title]</b>, a germanic swordsman.")
 
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_HIGH)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_LOW)
-	H.setStat("medical", STAT_LOW)
+	apply_job_stats(H)
 	give_random_name(H)
 
 	return TRUE
@@ -463,6 +398,7 @@
 	min_positions = 10
 	max_positions = 100
 
+/datum/job/german/axeman/job_stats = list("strength" = STAT_VERY_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_LOW, "dexterity" = STAT_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_LOW, "bows" = STAT_LOW, "medical" = STAT_LOW)
 /datum/job/german/axeman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
@@ -480,14 +416,7 @@
 
 	H.add_note("Role", "You are a <b>[title]</b>, a celtic axeman. Use your speed to maneuver around the enemy and your axe to destroy their armor and shields.")
 
-	H.setStat("strength", STAT_VERY_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_HIGH)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_LOW)
-	H.setStat("medical", STAT_LOW)
+	apply_job_stats(H)
 	give_random_name(H)
 
 	return TRUE
@@ -505,6 +434,7 @@
 	min_positions = 20
 	max_positions = 200
 
+/datum/job/german/spearman/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_LOW, "dexterity" = STAT_VERY_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_LOW, "bows" = STAT_LOW, "medical" = STAT_LOW)
 /datum/job/german/spearman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
@@ -526,14 +456,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/shield/scutum(H), slot_back)
 	H.add_note("Role", "You are a <b>[title]</b>, a germanic spearman.")
 
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_VERY_HIGH)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_LOW)
-	H.setStat("medical", STAT_LOW)
+	apply_job_stats(H)
 	give_random_name(H)
 
 	return TRUE
@@ -550,6 +473,7 @@
 	min_positions = 10
 	max_positions = 100
 
+/datum/job/german/skirmisher/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_LOW, "dexterity" = STAT_VERY_HIGH, "swords" = STAT_LOW, "pistol" = STAT_LOW, "bows" = STAT_HIGH, "medical" = STAT_LOW)
 /datum/job/german/skirmisher/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
@@ -567,14 +491,7 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/goatpelt(H), slot_head)
 	H.add_note("Role", "You are a <b>[title]</b>, a germanic skirmisher.")
 
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_VERY_HIGH)
-	H.setStat("swords", STAT_LOW)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_HIGH)
-	H.setStat("medical", STAT_LOW)
+	apply_job_stats(H)
 	give_random_name(H)
 
 	return TRUE
