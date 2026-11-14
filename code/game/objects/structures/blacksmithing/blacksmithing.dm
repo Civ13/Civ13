@@ -106,10 +106,10 @@
 	if (crafting_coefficient < 1.2)
 		to_chat(user, "This anvil requires an effective Crafting coefficient of at least 1.20x; yours is [num2text(crafting_coefficient, 9)]x. Check IC > Skill Progress for Crafting progress; mood and traits affect the effective coefficient.")
 		return
-	if (!map.civilizations && map.ID != MAP_TRIBES && map.ID != MAP_THREE_TRIBES && map.ID != MAP_FOUR_KINGDOMS && map.ID !=MAP_GULAG13 && (user.original_job_title != "Blacksmith" && user.original_job_title != "Pioneer Blacksmith" && user.original_job_title != "Town Blacksmith" && user.original_job_title != "Ferreiro" && user.original_job_title != "Ferrero" && user.original_job_title != "Grofsmid" && user.original_job_title != "Forgeron" && user.original_job_title != "British Blacksmith" && user.original_job_title != "Marooned Pirate Crew" && user.original_job_title != "Schmied"))
+	if (!map.civilizations && !map.tribes && map.ID !=MAP_GULAG13 && (user.original_job_title != "Blacksmith" && user.original_job_title != "Pioneer Blacksmith" && user.original_job_title != "Town Blacksmith" && user.original_job_title != "Ferreiro" && user.original_job_title != "Ferrero" && user.original_job_title != "Grofsmid" && user.original_job_title != "Forgeron" && user.original_job_title != "British Blacksmith" && user.original_job_title != "Marooned Pirate Crew" && user.original_job_title != "Schmied"))
 		to_chat(user, "Your job is not permitted to use this anvil on this map. Ask a blacksmith.")
 		return
-	if ((map.ID == MAP_TRIBES || map.ID == MAP_THREE_TRIBES || map.ID == MAP_FOUR_KINGDOMS) && (H.gorillaman || H.ant || H.wolfman || H.lizard || H.crab))
+	if (map.tribes && (H.gorillaman || H.ant || H.wolfman || H.lizard || H.crab))
 		to_chat(user, "You don't know how to use this.")
 		return
 	if (map.ID == MAP_FOUR_KINGDOMS && (H.gorillaman || H.ant || H.wolfman || H.lizard || H.crab))

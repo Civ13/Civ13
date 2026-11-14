@@ -2603,6 +2603,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/clothing/shoes/weather/snowshoes" = "weaving",
 		"/obj/item/tailoring_project" = "weaving",
 		"/obj/item/clothing/under/tailored" = "weaving",
+		"/obj/item/clothing/head/tailored" = "weaving",
 		// --- workshops (25) ---
 		"/obj/structure/lapping_wheel" = "workshops",
 		"/obj/item/flashlight/lantern/bronze" = "workshops",

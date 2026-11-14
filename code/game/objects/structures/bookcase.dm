@@ -136,7 +136,7 @@
 	return TRUE
 
 /obj/structure/bookcase/proc/check_research()
-	if (!map.civilizations || map.ID == MAP_TRIBES || map.ID == MAP_FOUR_KINGDOMS || map.ID == MAP_THREE_TRIBES)
+	if (!map.civilizations || map.tribes)
 		return
 	else
 		sum_i = 0
@@ -175,7 +175,7 @@
 				b.loc = (get_turf(src))
 			qdel(src)
 	else if (istype(O, /obj/item/weapon/researchkit))
-		if (!map.civilizations || map.ID == MAP_TRIBES || map.ID == MAP_FOUR_KINGDOMS || map.ID == MAP_THREE_TRIBES)
+		if (!map.civilizations || map.tribes)
 			return
 		if(!contents.len)
 			to_chat(user, "The [name] is empty.")
