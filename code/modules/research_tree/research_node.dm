@@ -1837,7 +1837,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/clothing/mask/gas/modern2" = "modern_armor",
 		"/obj/item/clothing/suit/nbc" = "modern_armor",
 		"/obj/item/clothing/suit/nbc/olive" = "modern_armor",
-		// --- modern_construction (10) ---
+		// --- modern_construction (11) ---
+		"/obj/structure/workshop_machine/shear_legs/crane/steam/tower" = "modern_construction",
 		"/obj/covers/sidewalk" = "modern_construction",
 		"/obj/item/clothing/head/helmet/modern/hardhat" = "modern_construction",
 		"/obj/item/clothing/head/helmet/modern/hardhat/orange" = "modern_construction",
@@ -2234,7 +2235,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/catapult_ball" = "siege_engines",
 		"/obj/item/weapon/siegeladder" = "siege_engines",
 		"/obj/structure/catapult" = "siege_engines",
-		// --- steam_power (2) ---
+		// --- steam_power (3) ---
+		"/obj/structure/workshop_machine/shear_legs/crane/steam" = "steam_power",
 		"/obj/structure/workshop_machine/trip_hammer/steam" = "steam_power",
 		"/obj/structure/engine/external/steam" = "steam_power",
 		// --- steel_blades (6) ---
