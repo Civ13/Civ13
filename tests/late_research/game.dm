@@ -181,7 +181,7 @@ var/late_wait_result = TRUE
 	for(var/id in field_experiments)
 		var/list/E = field_experiments[id]
 		var/datum/research_node/N = get_research_node(E[1])
-		var/practice = findtext(E[2], "craft:") == 1
+		var/practice = findtext(E[2], "craft:") == 1 || findtext(E[2], "deed:") == 1
 		if(!N || (practice && N.era_tier >= 5) || (!practice && !(E[2] in field_activities)) || E[3] < 1 || E[4] <= 0 || !length(E[5]))
 			formed = FALSE
 			world.log << "FAIL: experiment [id] is malformed"
@@ -373,11 +373,11 @@ var/late_wait_result = TRUE
 // Practice and gathering for early nodes (practice_work.dm).
 /proc/late_test_practice_work()
 	build_practice_experiments()
-	var/list/iron = node_field_experiments("cooperage")
-	late_check(iron.len == 1 && iron[1] == "practice_cooperage_basic_tools", "Cooperage is advanced by practising Basic Toolmaking")
-	var/list/E = field_experiments["practice_cooperage_basic_tools"]
-	var/datum/research_node/IN = get_research_node("cooperage")
-	late_check(E[2] == "craft:basic_tools" && E[3] == practice_items_needed(IN) && E[4] == 0.5, "the experiment asks for [E[3]] things for half the node")
+	var/list/iron = node_field_experiments("workshops")
+	late_check(iron.len == 1 && iron[1] == "practice_workshops_bronze_working", "Workshops is advanced by practising Bronze Working")
+	var/list/E = field_experiments["practice_workshops_bronze_working"]
+	var/datum/research_node/IN = get_research_node("workshops")
+	late_check(E[2] == "craft:bronze_working" && E[3] == practice_items_needed(IN) && E[4] == 0.5, "the experiment asks for [E[3]] things for half the node")
 	var/list/concrete = node_field_experiments("reinforced_concrete")
 	late_check(concrete.len == 2 && field_experiments[concrete[1]][4] == 0.25, "two prerequisites split the practice share")
 	late_check(!node_field_experiments("power_tools").len, "late nodes keep only their own field work")
@@ -397,16 +397,62 @@ var/late_wait_result = TRUE
 	map.book_research = TRUE
 	late_check(note_field_work(smith, "forage", 3) && smith.field_work_amount("forage") == 3, "foraging is counted")
 	// Credited at a bench once enough has been made.
-	note_field_work(smith, "craft:basic_tools", 50)
+	note_field_work(smith, "craft:bronze_working", 50)
 	var/obj/structure/research_bench/late_fixture/bench = new(locate(4,3,1))
 	bench.tier = 8
 	var/obj/item/weapon/book/notes = new(bench)
-	bench.assigned_node = "cooperage"
-	var/list/rows = bench.field_work_rows(smith, "cooperage")
+	bench.assigned_node = "workshops"
+	var/list/rows = bench.field_work_rows(smith, "workshops")
 	late_check(rows.len == 1 && rows[1]["percent"] == 50 && rows[1]["have"] == E[3], "the bench lists the practice and the smith's own count")
 	var/expected = round(IN.cost_ticks * 0.5)
-	late_check(bench.credit_field_work() && notes.research_ticks("cooperage") == expected && !bench.credit_field_work(), "the practice is written into the book once ([expected] of [IN.cost_ticks] points)")
+	late_check(bench.credit_field_work() && notes.research_ticks("workshops") == expected && !bench.credit_field_work(), "the practice is written into the book once ([expected] of [IN.cost_ticks] points)")
 	qdel(bench)
+// Hand-written deeds for the first ages (practice_work.dm).
+/proc/late_test_subject_deeds()
+	build_practice_experiments()
+	var/sound = TRUE
+	for(var/node_id in subject_deeds)
+		var/datum/research_node/N = get_research_node(node_id)
+		var/total = 0
+		if(!N || N.era_tier > 1 || !N.prereqs.len)
+			sound = FALSE
+			world.log << "bad deed subject [node_id]"
+			continue
+		for(var/list/D in subject_deeds[node_id])
+			total += D[4]
+			for(var/path in D[2])
+				// Every deed must be something the groundwork teaches, or anyone can make.
+				var/req = recipe_node_requirements[path]
+				if(!ispath(text2path(path)) || (req && !(req in N.prereqs)))
+					sound = FALSE
+					world.log << "bad deed path [path] for [node_id] (taught by [req])"
+		if(abs(total - 0.5) > 0.001)
+			sound = FALSE
+			world.log << "deeds of [node_id] add up to [total]"
+		for(var/id in node_field_experiments(node_id))
+			if(findtext(id, "practice_") == 1)
+				sound = FALSE
+	late_check(sound && subject_deeds.len == 10, "every subject of the first two ages has deeds its groundwork teaches, worth half the chapter, and no counter")
+	var/list/coop = node_field_experiments("cooperage")
+	late_check(coop.len == 3 && ("deed_cooperage_handles" in coop), "Cooperage asks for three deeds")
+	var/mob/living/human/late_fixture/cooper = new(locate(4,6,1))
+	cooper.name = "Hild"
+	late_check(note_craft_practice(cooper, "/obj/item/weapon/material/handle") && cooper.field_work_amount("deed:cooperage:handles") == 1, "making a handle counts towards its deed")
+	late_check(note_craft_practice(cooper, "/obj/item/weapon/material/handle/subtype_for_test") && cooper.field_work_amount("deed:cooperage:handles") == 2 && !note_deed_work(cooper, "/obj/item/weapon/material/handlebar"), "a kind of handle counts too, a lookalike name does not")
+	note_craft_practice(cooper, "/obj/item/weapon/material/handle")
+	late_check(cooper.field_work_amount("deed:cooperage:handles") == 2, "counting stops at what the deed asks")
+	note_craft_practice(cooper, "/obj/structure/furnace/kiln")
+	late_check(cooper.field_work_amount("deed:early_cells:kiln") == 1 && cooper.field_work_amount("deed:bronze_weapons:kiln") == 1, "one kiln serves both subjects that ask for it")
+	var/obj/structure/research_bench/late_fixture/bench = new(locate(4,7,1))
+	bench.tier = 8
+	var/obj/item/weapon/book/notes = new(bench)
+	bench.assigned_node = "cooperage"
+	var/datum/research_node/CN = get_research_node("cooperage")
+	var/list/rows = bench.field_work_rows(cooper, "cooperage")
+	late_check(rows.len == 3 && rows[1]["label"] == "Make 2 tool handles" && rows[1]["have"] == 2, "the bench lists the deeds by name")
+	late_check(bench.credit_field_work() && notes.research_ticks("cooperage") == round(CN.cost_ticks * 0.2) && !bench.credit_field_work(), "a finished deed is written into the book once")
+	qdel(bench)
+	cooper.loc = locate(1,1,1)
 // A scholar with the given levels who knows a subject's groundwork.
 /mob/living/human/late_fixture/scholar/research_tool_rate()
 	return 1
@@ -965,6 +1011,7 @@ var/late_wait_result = TRUE
 		late_test_trade_learning()
 		late_test_compare_notes()
 		late_test_naturalist_finds()
+		late_test_subject_deeds()
 		late_test_teams()
 		late_test_ciphers()
 		late_test_late_lines()
