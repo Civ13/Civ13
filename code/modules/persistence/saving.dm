@@ -1269,10 +1269,11 @@
 	chunk.start_clock = world.timeofday
 	moving_save_chunk = chunk
 	var/ref
+	var/root_type = A.type
 	try
 		ref = BuildVarDirectory(staged, A, 1)
 		chunk.check()
-		if(!ref || !A || A.loc != origin || !moving_save_root_supported(A)) throw EXCEPTION("Moving save root changed during capture")
+		if(!ref || !A || A.loc != origin || !moving_save_root_supported(A)) throw EXCEPTION("Moving save root changed during capture: root=[root_type] [moving_save_root_change(A, ref, origin)]")
 	catch(var/exception/error)
 		moving_save_chunk = null
 		// IDs, durable bindings and list aliases may already be reserved. Abort
@@ -1282,6 +1283,9 @@
 		if(findtext("[error]", "capture budget")) moving_save_demoted[record["identity"]] = TRUE
 		// A save hook can still add an outside reference after the recheck.
 		if(findtext("[error]", "uncaptured external movable")) moving_save_demoted[record["identity"]] = TRUE
+		// A save hook changed the root itself (Gaia, 2026-11-14, a sea animal
+		// during a handover save): the same root must not refuse the next save.
+		if(findtext("[error]", "root changed during capture")) moving_save_demoted[record["identity"]] = TRUE
 		throw error
 	moving_save_chunk = null
 	if(chunk.overrun_usage || chunk.overrun_elapsed_ds)
@@ -1303,6 +1307,28 @@
 		destination[path] << value
 		save_work_check()
 	return ref
+
+// What changed on a root during its capture, for the refusal message: the
+// first failed condition of capture_moving_save_root's final check.
+/map_storage/proc/moving_save_root_change(mob/living/simple_animal/A, ref, turf/origin)
+	if(!ref) return "reason=no entry written"
+	if(!A) return "reason=deleted"
+	if(A.loc != origin)
+		var/atom/now = A.loc
+		return "reason=moved from=[origin ? "[origin.x],[origin.y],[origin.z]" : "null"] to=[now ? "[now.type] [now.x],[now.y],[now.z]" : "null"]"
+	if(!A.should_save) return "reason=should_save cleared"
+	if(A.client) return "reason=client attached"
+	if(A.contents.len) return "reason=contents gained ([A.contents.len], first [A.contents[1]:type])"
+	for(var/ignored in ignore_types)
+		if(istype(A, ignored)) return "reason=ignored type"
+	#ifdef CIV13_SUBTILE_PULL_PAIRS
+	if(subtile_pull_ownership.owners[A]) return "reason=pull pair"
+	#endif
+	for(var/key in list("corpse_decay_record", "pulling", "pulledby", "buckled", "npc_subtile_pulse", "ride", "rider", "control_object", "handcuffed", "legcuffed", "following_mob", "origin", "grab_list", "grabbed_by", "pinned", "friends"))
+		if(!(key in A.vars)) continue
+		var/value = A.vars[key]
+		if(islist(value) ? length(value) : value) return "reason=field [key] set"
+	return "reason=unknown"
 
 /map_storage/proc/moving_save_root_edge(atom/movable/A, atom/parent)
 	var/identity = "\ref[A]"
