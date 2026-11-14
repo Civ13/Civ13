@@ -16,6 +16,10 @@ var/global/list/broadside_tillers = list()
 /obj/covers/repairedfloor/ship/afloat
 	afloat = TRUE
 
+// The pirate's deck: the same planking, grey with weather.
+/obj/covers/repairedfloor/ship/afloat/weathered
+	icon_state = "wooden_floor_s4"
+
 /obj/structure/hull_tiller/broadside
 	desc = "The ship's tiller. Weigh anchor, set the sails and steer her into the enemy."
 	var/side = null              // The faction that sails her.
