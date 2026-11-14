@@ -565,7 +565,7 @@ which only take their own sections (`vehicle_assembly_kind_matches()`).
 `axis.assembly_refusal(S)` adds a kind's shape rules and `assembly_max_size()`
 its longest side. Airframe controls (`aircraft/aircraft_assembly.dm`) take a
 3-wide airframe 3 to 5 long and reshape each section into the nose, wing,
-cockpit, fuselage or tail its place calls for. Submarine controls
+cockpit, fuselage or tail its place calls for, or a 5-wide, 4-long airframe into the twin-engine plane (`aircraft/aircraft_twin.dm`), whose wing engines run with the pilot's. Submarine controls
 (`ships/submarine_assembly.dm`) take a hull 3 wide and 5 (Scout) or 7
 (Explorer) long on surface water, reshape each section from
 `submarine_layouts` (hull art tile, walls, lock-out hatches), and want a

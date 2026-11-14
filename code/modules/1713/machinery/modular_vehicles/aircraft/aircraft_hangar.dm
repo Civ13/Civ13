@@ -17,6 +17,12 @@
 /obj/structure/car_workshop/hangar/model_size(model)
 	return aircraft_model_size(model)
 
+// The hangar only has to fit the light planes where it stands; a twin-engine
+// plane needs its larger square clear when it is built, and is too big to
+// hangar.
+/obj/structure/car_workshop/hangar/largest_model_size()
+	return model_size("Light plane")
+
 /obj/structure/car_workshop/hangar/costs(model)
 	if (!(model in models()))
 		return null
@@ -27,10 +33,12 @@
 			return list("steel" = 35, "glass" = 4, "cloth" = 4, "cable" = 6, "wheels" = 4)
 		if ("Cargo plane")
 			return list("steel" = 60, "glass" = 6, "cloth" = 2, "cable" = 8, "wheels" = 4)
+		if ("Twin-engine plane")
+			return list("steel" = 90, "glass" = 8, "cloth" = 6, "cable" = 14, "wheels" = 4)
 	return list("steel" = 50, "glass" = 6, "cloth" = 4, "cable" = 8, "wheels" = 4)
 
 /obj/structure/car_workshop/hangar/menu_text()
-	return "Stored: [stock["steel"]] steel, [stock["glass"]] glass, [stock["cloth"]] cloth, [stock["cable"]] cable, [stock["wheels"]] wheels. The light plane (2 seats) costs 50/6/4/8/4; the cabin plane (4 seats) costs 65/8/8/8/4 and needs a slightly longer roll; the trainer (2 seats, 3x3) costs 35/4/4/6/4 and lifts off soonest; the cargo plane (pilot and three cargo bays) costs 60/6/2/8/4. Keep the northeast 4x4 bay empty; the plane needs a long clear roll to take off, shorter on a runway. Taxi a landed plane into the bay to hangar it."
+	return "Stored: [stock["steel"]] steel, [stock["glass"]] glass, [stock["cloth"]] cloth, [stock["cable"]] cable, [stock["wheels"]] wheels. The light plane (2 seats) costs 50/6/4/8/4; the cabin plane (4 seats) costs 65/8/8/8/4 and needs a slightly longer roll; the trainer (2 seats, 3x3) costs 35/4/4/6/4 and lifts off soonest; the cargo plane (pilot and three cargo bays) costs 60/6/2/8/4; the twin-engine plane (4 seats, two engines) costs 90/8/6/14/4 and needs the 5x5 square northeast of the press clear. Keep the northeast 4x4 bay empty; the plane needs a long clear roll to take off, shorter on a runway. Taxi a landed plane into the bay to hangar it."
 
 /obj/structure/car_workshop/hangar/assembled_message(model)
 	var/obj/structure/vehicleparts/axis/aircraft/kind = aircraft_models()[model]
@@ -45,12 +53,17 @@
 	var/obj/structure/vehicleparts/axis/aircraft/A = build_aircraft_model(model, origin)
 	if (!A)
 		return null
-	if (A.engine && A.engine.fueltank)
-		var/obj/item/weapon/reagent_containers/glass/barrel/fueltank/old = A.engine.fueltank
+	var/list/engines = A.wing_engines()
+	if (A.engine)
+		engines += A.engine
+	for (var/obj/structure/engine/internal/E in engines)
+		if (!E.fueltank)
+			continue
+		var/obj/item/weapon/reagent_containers/glass/barrel/fueltank/old = E.fueltank
 		var/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/empty = new(old.loc)
 		empty.anchored = TRUE
 		empty.icon_state = "fueltank_incar"
-		A.engine.fueltank = empty
+		E.fueltank = empty
 		qdel(old)
 	var/list/required = costs(model)
 	for (var/key in required)
