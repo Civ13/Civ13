@@ -47,11 +47,23 @@ Measured in a cloud container, one run each:
 Every biome built on its first attempt. The host will be faster or slower; the
 expedition slots will measure the time on Val's host before a crew waits on it.
 
+## Ore, rare finds and game
+
+The report's `slot_world` (ore richness, ore kinds, rare finds, game) goes to
+the slot's `config/expedition_land.json`, and the land world applies it
+(`code/modules/naval/land_resources.dm`):
+
+- **Ore:** every mined wall rolls once more for a lode of one of the land's
+  ore kinds: 12% of walls on a rich land, 9% good, 6% fair, 4% thin, 2% poor.
+  Iron and zinc need the Classical age and coal, lead, saltpeter and sulphur
+  the Medieval age, as in ordinary mining. A volcanic isle adds obsidian.
+- **Rare find:** gems (4% of walls give a rough gemstone), a rich gold or
+  silver vein (3%, 8 ore) or diamonds (1%).
+- **Game:** the land's animals are three times as common as usual, up to
+  twice their usual cap (ecology spawning).
+
 ## Not placed yet
 
-- The template's ore kinds, rare finds and game animals are in the report's
-  `slot_world` for the slot world to apply on load; the map only has the
-  generator's generic stone and supply sites.
 - A surface land's sea strip is narrow (a few percent of the map); the ship
   arrives on the open-sea side.
 
