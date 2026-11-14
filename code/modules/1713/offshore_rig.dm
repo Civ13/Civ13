@@ -117,3 +117,12 @@
 #undef OFFSHORE_FIELD_ODDS
 #undef OFFSHORE_FIELD_HASH_MOD
 #undef OFFSHORE_RIG_YIELD_PER_RICHNESS
+
+// Stack recipe guard: the deck is checked again after the wait.
+/datum/craft_guard/offshore_rig
+	order = 70
+	after_wait = TRUE
+
+/datum/craft_guard/offshore_rig/refusal(mob/living/human/H, datum/stack_recipe/R, phase)
+	var/message = offshore_rig_build_refusal(H, R.result_type)
+	return message ? SPAN_WARNING(message) : null

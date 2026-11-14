@@ -387,3 +387,12 @@ var/global/list/car_workshop_prototypes = list()
 	for (var/obj/O in parts)
 		O.update_icon()
 	return A
+
+// Stack recipe guard: the bay or cable may change during the wait, so it is checked again.
+/datum/craft_guard/car_workshop
+	order = 50
+	after_wait = TRUE
+
+/datum/craft_guard/car_workshop/refusal(mob/living/human/H, datum/stack_recipe/R, phase)
+	var/message = car_workshop_build_refusal(H, R.result_type)
+	return message ? SPAN_WARNING(message) : null

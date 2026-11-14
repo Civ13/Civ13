@@ -188,7 +188,7 @@ class HammockContracts(unittest.TestCase):
         source=(ROOT/'code/game/objects/items/stacks/stack.dm').read_text()
         production=block(source,'/obj/item/stack/proc/produce_recipe(')
         start=production.index('\t\tif (recipe.result_type == /obj/structure/bed/hammock')
-        end=production.index('\t\tif (!exercise_can_build',start)
+        end=production.index('\t\t// The builder may have moved, turned',start)
         self.assertLess(production.index('if (!do_after(user, buildtime) || !crafting_recipe_allowed(H, "[recipe.result_type]"))'),start)
         self.assertLess(start,production.index('H.adaptStat("crafting"'))
         self.assertLess(start,production.index('\tif (use(required,'))
