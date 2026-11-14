@@ -44,8 +44,8 @@ down when a furnished kit is assembled and the edges (side, which edge, style).
 | dining | dining car | assembly_line | stove, sink, fridge, counter, two booths |
 | storage | storage car | assembly_line | cabinets and large crates behind compartment doors |
 | railgun | railway gun car | field_artillery | railway gun on the centre, outrigger lever, shell rack |
-| armored | armored wagon | automatic_weapons | armor plate with firing doors, four machine guns |
-| flak | flak car | automatic_weapons | low armor, two autocannons, ammunition crates |
+| armored | armored wagon | automatic_weapons | armor plate with firing doors; emplaced machine guns are forged separately |
+| flak | flak car | automatic_weapons | low armor, ammunition crates; autocannons are forged separately |
 
 ## Kits, assembly and dismantling
 

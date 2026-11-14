@@ -58,7 +58,7 @@ var/global/list/vehicle_axes = list()
 	currentspeed = 0
 	speeds = 3
 	maxpower = 10
-	speedlist = alist(1=3,2=2,3=1)
+	speedlist = alist(1=3,2=2,3=0.6)
 	reg_number = ""
 	turntimer = 5
 	vehicle_type = "bike"
@@ -104,7 +104,7 @@ var/global/list/vehicle_axes = list()
 /obj/structure/vehicleparts/axis/heavy/is1
 	name = "IS-1"
 	speeds = 4
-	speedlist = alist(1=12,2=8,3=6,4=5)
+	speed_class = "tracked_slow"
 	reg_number = ""
 	color = "#4a5243"
 	broken_icon = 'icons/obj/vehicles/tankparts96x96_damaged.dmi'
@@ -115,7 +115,7 @@ var/global/list/vehicle_axes = list()
 /obj/structure/vehicleparts/axis/heavy/is2
 	name = "IS-2"
 	speeds = 4
-	speedlist = alist(1=12,2=8,3=6,4=5)
+	speed_class = "tracked_slow"
 	reg_number = ""
 	color = "#4a5243"
 	broken_icon = 'icons/obj/vehicles/tankparts96x96_damaged.dmi'
@@ -126,7 +126,7 @@ var/global/list/vehicle_axes = list()
 /obj/structure/vehicleparts/axis/heavy/is3
 	name = "IS-3"
 	speeds = 4
-	speedlist = alist(1=12,2=8,3=6,4=5)
+	speed_class = "tracked_slow"
 	reg_number = ""
 	color = "#4a5243"
 	broken_icon = 'icons/obj/vehicles/tankparts96x96_damaged.dmi'
@@ -137,7 +137,7 @@ var/global/list/vehicle_axes = list()
 /obj/structure/vehicleparts/axis/heavy/t34
 	name = "T-34"
 	speeds = 4
-	speedlist = alist(1=12,2=8,3=6,4=5)
+	speed_class = "tracked_quick"
 	reg_number = ""
 	color = "#3d5931"
 	broken_icon = 'icons/obj/vehicles/tankparts96x96_damaged.dmi'
@@ -152,7 +152,7 @@ var/global/list/vehicle_axes = list()
 /obj/structure/vehicleparts/axis/heavy/su100
 	name = "SU-100"
 	speeds = 4
-	speedlist = alist(1=12,2=8,3=6,4=5)
+	speed_class = "tracked_quick"
 	reg_number = ""
 	color = "#4a5243"
 	broken_icon = 'icons/obj/vehicles/tankparts96x96_damaged.dmi'
@@ -166,7 +166,7 @@ var/global/list/vehicle_axes = list()
 /obj/structure/vehicleparts/axis/heavy/bt7
 	name = "BT-7"
 	speeds = 7
-	speedlist = alist(1=12,2=8,3=6,4=5,5=4,6=3,7=2)
+	speed_class = "tracked_sprint"
 	reg_number = ""
 	color = "#5c784f"
 	New()
@@ -176,7 +176,7 @@ var/global/list/vehicle_axes = list()
 /obj/structure/vehicleparts/axis/heavy/su85
 	name = "SU-85"
 	speeds = 4
-	speedlist = alist(1=12,2=8,3=6,4=5)
+	speed_class = "tracked_quick"
 	reg_number = ""
 	color = "#506945"
 	New()
@@ -186,7 +186,7 @@ var/global/list/vehicle_axes = list()
 /obj/structure/vehicleparts/axis/heavy/kv1a
 	name = "KV-1A"
 	speeds = 4
-	speedlist = alist(1=12,2=8,3=6,4=5)
+	speed_class = "tracked_slow"
 	reg_number = ""
 	color = "#3d5931"
 	New()
@@ -196,7 +196,7 @@ var/global/list/vehicle_axes = list()
 /obj/structure/vehicleparts/axis/heavy/mtlb
 	name = "MT-LB"
 	speeds = 4
-	speedlist = alist(1=12,2=8,3=6,4=5)
+	speed_class = "tracked_quick"
 	reg_number = ""
 	color = "#4a5243"
 	vehicle_type = "apc"
@@ -207,7 +207,7 @@ var/global/list/vehicle_axes = list()
 /obj/structure/vehicleparts/axis/heavy/m113
 	name = "M113 APC"
 	speeds = 4
-	speedlist = alist(1=14,2=10,3=8)
+	speed_class = "tracked_fast"
 	reg_number = ""
 	color = "#939276"
 	vehicle_type = "apc"
@@ -218,7 +218,7 @@ var/global/list/vehicle_axes = list()
 /obj/structure/vehicleparts/axis/heavy/m41
 	name = "M41"
 	speeds = 4
-	speedlist = alist(1=14,2=10,3=8)
+	speed_class = "tracked_fast"
 	reg_number = ""
 	color = "#494224"
 	New()
@@ -228,7 +228,7 @@ var/global/list/vehicle_axes = list()
 /obj/structure/vehicleparts/axis/heavy/bmd1
 	name = "BMD-1"
 	speeds = 4
-	speedlist = alist(1=12,2=8,3=6,4=5)
+	speed_class = "tracked_fast"
 	reg_number = ""
 	color = "#787859"
 	broken_icon = 'icons/obj/vehicles/apcparts96x96_damaged.dmi'
@@ -240,7 +240,7 @@ var/global/list/vehicle_axes = list()
 /obj/structure/vehicleparts/axis/heavy/bmd2
 	name = "BMD-2"
 	speeds = 4
-	speedlist = alist(1=9,2=6,3=4,4=3)
+	speed_class = "tracked_fast"
 	reg_number = ""
 	color = "#787859"
 	broken_icon = 'icons/obj/vehicles/apcparts96x96_damaged.dmi'
@@ -252,7 +252,7 @@ var/global/list/vehicle_axes = list()
 /obj/structure/vehicleparts/axis/heavy/btr80
 	name = "BTR-80"
 	speeds = 5
-	speedlist = alist(1=10,2=6,3=5,4=4,5=3)
+	speed_class = "tracked_fast"
 	reg_number = ""
 	color = "#4a5243"
 	broken_icon = 'icons/obj/vehicles/apcparts96x96_damaged.dmi'
@@ -266,7 +266,7 @@ var/global/list/vehicle_axes = list()
 /obj/structure/vehicleparts/axis/heavy/bradley
 	name = "M2 Bradley"
 	speeds = 5
-	speedlist = alist(1=10,2=6,3=5,4=4,5=3)
+	speed_class = "tracked_fast"
 	reg_number = ""
 	color = "#787859"
 	vehicle_type = "apc"
@@ -277,7 +277,7 @@ var/global/list/vehicle_axes = list()
 /obj/structure/vehicleparts/axis/heavy/cv90
 	name = "CV-90"
 	speeds = 5
-	speedlist = alist(1=10,2=6,3=5,4=4,5=3)
+	speed_class = "tracked_fast"
 	reg_number = ""
 	color = "#5C5C4C"
 	vehicle_type = "apc"
@@ -288,7 +288,7 @@ var/global/list/vehicle_axes = list()
 /obj/structure/vehicleparts/axis/heavy/t80u
 	name = "T-80U"
 	speeds = 4
-	speedlist = alist(1=10,2=7,3=5,4=4)
+	speed_class = "tracked_fast"
 	reg_number = ""
 	color = "#5C5C4C"
 	New()
@@ -298,7 +298,7 @@ var/global/list/vehicle_axes = list()
 /obj/structure/vehicleparts/axis/heavy/t80uk
 	name = "T-80UK"
 	speeds = 4
-	speedlist = alist(1=10,2=7,3=5,4=4)
+	speed_class = "tracked_fast"
 	reg_number = ""
 	color = "#5C5C4C"
 	New()
@@ -308,7 +308,7 @@ var/global/list/vehicle_axes = list()
 /obj/structure/vehicleparts/axis/heavy/t72
 	name = "T-72"
 	speeds = 4
-	speedlist = alist(1=10,2=7,3=5,4=4)
+	speed_class = "tracked_quick"
 	reg_number = ""
 	color = "#5C5C4C"
 	New()
@@ -318,7 +318,7 @@ var/global/list/vehicle_axes = list()
 /obj/structure/vehicleparts/axis/heavy/t72m1
 	name = "T-72M1"
 	speeds = 4
-	speedlist = alist(1=10,2=7,3=5,4=4)
+	speed_class = "tracked_quick"
 	reg_number = ""
 	color = "#5C5C4C"
 	New()
@@ -328,7 +328,7 @@ var/global/list/vehicle_axes = list()
 /obj/structure/vehicleparts/axis/heavy/t72b3
 	name = "T-72B3"
 	speeds = 4
-	speedlist = alist(1=10,2=7,3=5,4=4)
+	speed_class = "tracked_quick"
 	reg_number = ""
 	color = "#5C5C4C"
 	New()
@@ -338,7 +338,7 @@ var/global/list/vehicle_axes = list()
 /obj/structure/vehicleparts/axis/heavy/t64bm
 	name = "T-64BM"
 	speeds = 4
-	speedlist = alist(1=10,2=7,3=5,4=4)
+	speed_class = "tracked_quick"
 	reg_number = ""
 	color = "#5C5C4C"
 	New()
@@ -348,7 +348,7 @@ var/global/list/vehicle_axes = list()
 /obj/structure/vehicleparts/axis/heavy/t64bv
 	name = "T-64BV"
 	speeds = 4
-	speedlist = alist(1=10,2=7,3=5,4=4)
+	speed_class = "tracked_quick"
 	reg_number = ""
 	color = "#5C5C4C"
 	New()
@@ -358,7 +358,7 @@ var/global/list/vehicle_axes = list()
 /obj/structure/vehicleparts/axis/heavy/t62a
 	name = "T-62A"
 	speeds = 4
-	speedlist = alist(1=10,2=7,3=5,4=4)
+	speed_class = "tracked_quick"
 	reg_number = ""
 	color = "#5C5C4C"
 	New()
@@ -368,7 +368,7 @@ var/global/list/vehicle_axes = list()
 /obj/structure/vehicleparts/axis/heavy/t62m
 	name = "T-62M"
 	speeds = 4
-	speedlist = alist(1=10,2=7,3=5,4=4)
+	speed_class = "tracked_quick"
 	reg_number = ""
 	color = "#5C5C4C"
 	New()
@@ -378,7 +378,7 @@ var/global/list/vehicle_axes = list()
 /obj/structure/vehicleparts/axis/heavy/t62mv
 	name = "T-62MV"
 	speeds = 4
-	speedlist = alist(1=10,2=7,3=5,4=4)
+	speed_class = "tracked_quick"
 	reg_number = ""
 	color = "#5C5C4C"
 	New()
@@ -388,7 +388,7 @@ var/global/list/vehicle_axes = list()
 /obj/structure/vehicleparts/axis/heavy/t55
 	name = "T-55"
 	speeds = 4
-	speedlist = alist(1=10,2=7,3=5,4=4)
+	speed_class = "tracked_quick"
 	reg_number = ""
 	color = "#5C5C4C"
 	New()
@@ -398,7 +398,7 @@ var/global/list/vehicle_axes = list()
 /obj/structure/vehicleparts/axis/heavy/panzeriv
 	name = "Panzer IV"
 	speeds = 3
-	speedlist = alist(1=12,2=8,3=6)
+	speed_class = "tracked_medium"
 	reg_number = ""
 	color = "#585A5C"
 	New()
@@ -408,7 +408,7 @@ var/global/list/vehicle_axes = list()
 /obj/structure/vehicleparts/axis/heavy/panzervi
 	name = "Panzer VI Tiger"
 	speeds = 4
-	speedlist = alist(1=14,2=11,3=9,4=7)
+	speed_class = "tracked_medium"
 	reg_number = ""
 	color = "#3B3F41"
 	New()
@@ -418,42 +418,42 @@ var/global/list/vehicle_axes = list()
 /obj/structure/vehicleparts/axis/heavy/l3
 	name = "L3/33"
 	speeds = 4
-	speedlist = alist(1=10,2=6,3=4,4=3)
+	speed_class = "tracked_quick"
 	reg_number = ""
 	color = "#D79E57"
 
 /obj/structure/vehicleparts/axis/heavy/l3cc
 	name = "L3/33 CC"
 	speeds = 4
-	speedlist = alist(1=9,2=5,3=3,4=2)
+	speed_class = "tracked_quick"
 	reg_number = ""
 	color = "#c4a567"
 
 /obj/structure/vehicleparts/axis/heavy/m13
 	name = "M13/40"
 	speeds = 4
-	speedlist = alist(1=12,2=8,3=6,4=5)
+	speed_class = "tracked_medium"
 	reg_number = ""
 	color = "#778687"
 
 /obj/structure/vehicleparts/axis/heavy/omw22_2
 	name = "OMW-22 mk. II"
 	speeds = 4
-	speedlist = alist(1=10,2=7,3=5,4=4)
+	speed_class = "tracked_quick"
 	reg_number = ""
 	color = "#774D4C"
 
 /obj/structure/vehicleparts/axis/heavy/baf1_a
 	name = "BAF I mod. A"
 	speeds = 4
-	speedlist = alist(1=9,2=6,3=4,4=3)
+	speed_class = "tracked_fast"
 	reg_number = ""
 	color = "#8383C2"
 
 /obj/structure/vehicleparts/axis/heavy/t90a
 	name = "T-90A"
 	speeds = 4
-	speedlist = alist(1=10,2=7,3=5,4=4)
+	speed_class = "tracked_quick"
 	reg_number = ""
 	color = "#5C5C4C"
 	New()
@@ -463,21 +463,21 @@ var/global/list/vehicle_axes = list()
 /obj/structure/vehicleparts/axis/heavy/leopard
 	name = "Leopard 2A6"
 	speeds = 4
-	speedlist = alist(1=9,2=6,3=4,4=3)
+	speed_class = "tracked_fast"
 	reg_number = ""
 	color = "#5C5C4C"
 
 /obj/structure/vehicleparts/axis/heavy/challenger2
 	name = "FV4034 Challenger 2"
 	speeds = 4
-	speedlist = alist(1=9,2=6,3=4,4=3)
+	speed_class = "tracked_quick"
 	reg_number = ""
 	color = "#CCC0A6"
 
 /obj/structure/vehicleparts/axis/heavy/m1a1_abrams
 	name = "M1A1 Abrams"
 	speeds = 4
-	speedlist = alist(1=9,2=6,3=4,4=3)
+	speed_class = "tracked_fast"
 	reg_number = ""
 	color = "#58564a"
 	New()
@@ -487,7 +487,7 @@ var/global/list/vehicle_axes = list()
 /obj/structure/vehicleparts/axis/heavy/i_go
 	name = "Type 89 I-Go"
 	speeds = 4
-	speedlist = alist(1=10,2=7,3=5,4=4)
+	speed_class = "tracked_slow"
 	color = "#6a5a3d"
 	reg_number = ""
 	New()
@@ -497,7 +497,7 @@ var/global/list/vehicle_axes = list()
 /obj/structure/vehicleparts/axis/heavy/chi_ha
 	name = "Type 97 Chi-Ha"
 	speeds = 4
-	speedlist = alist(1=10,2=7,3=5,4=4)
+	speed_class = "tracked_medium"
 	color = "#6a5a3d"
 	reg_number = ""
 	New()
@@ -507,7 +507,7 @@ var/global/list/vehicle_axes = list()
 /obj/structure/vehicleparts/axis/heavy/hago
 	name = "Type 95 Ha-Go"
 	speeds = 4
-	speedlist = alist(1=8,2=5,3=3,4=2)
+	speed_class = "tracked_quick"
 	color = "#6a5a3d"
 	reg_number = ""
 	New()
@@ -517,7 +517,7 @@ var/global/list/vehicle_axes = list()
 /obj/structure/vehicleparts/axis/heavy/m4
 	name = "M-4 Sherman"
 	speeds = 4
-	speedlist = alist(1=12,2=8,3=6,4=5)
+	speed_class = "tracked_medium"
 	color = "#494224"
 	reg_number = ""
 	New()
@@ -527,7 +527,7 @@ var/global/list/vehicle_axes = list()
 /obj/structure/vehicleparts/axis/heavy/m48a1
 	name = "M-48A1 Patton"
 	speeds = 4
-	speedlist = alist(1=12,2=8,3=6,4=5)
+	speed_class = "tracked_medium"
 	color = "#494224"
 	reg_number = ""
 	New()
@@ -537,7 +537,7 @@ var/global/list/vehicle_axes = list()
 /obj/structure/vehicleparts/axis/heavy/m60a3
 	name = "M60A3 Patton"
 	speeds = 4
-	speedlist = alist(1=12,2=8,3=6,4=5)
+	speed_class = "tracked_medium"
 	color = "#4B4D40"
 	reg_number = ""
 	New()
@@ -547,14 +547,14 @@ var/global/list/vehicle_axes = list()
 /obj/structure/vehicleparts/axis/heavy/bmv1_1
 	name = "BMV-1 mk. I"
 	speeds = 4
-	speedlist = alist(1=10,2=7,3=6,4=4)
+	speed_class = "tracked_quick"
 	reg_number = ""
 	color = "#4D5D53"
 
 /obj/structure/vehicleparts/axis/heavy/smf1_a
 	name = "SMF I mod. A"
 	speeds = 4
-	speedlist = alist(1=10,2=7,3=6,4=4)
+	speed_class = "tracked_quick"
 	reg_number = ""
 	color = "#555346"
 
@@ -565,7 +565,7 @@ var/global/list/vehicle_axes = list()
 	icon_state = "axis_powered"
 	speeds = 5
 	maxpower = 800
-	speedlist = alist(1=8,2=6,3=4,4=3,5=2)
+	speed_class = "car"
 	turntimer = 8
 	vehicle_type = "car"
 
@@ -590,7 +590,7 @@ var/global/list/vehicle_axes = list()
 		var/delay = gear_delay(currentspeed)
 		if (!delay)
 			return 0
-		return delay * factor
+		return loaded_step_delay(delay, factor)
 
 /obj/structure/vehicleparts/axis/proc/check_enginepower(var/esize = 0)
 	return
@@ -598,10 +598,11 @@ var/global/list/vehicle_axes = list()
 /obj/structure/vehicleparts/axis/bike/check_enginepower(var/esize = 0)
 	if (esize == 0)
 		return
+	// Step delays; the ride loop adds one tick (docs/vehicle-speeds.md).
 	if (esize >= 120)
-		speedlist = alist(1=3,2=2,3=1)
+		speedlist = alist(1=3,2=2,3=0.6)
 	else if (esize >= 95)
-		speedlist = alist(1=4,2=3,3=2)
+		speedlist = alist(1=4,2=3,3=1)
 	else
 		speedlist = alist(1=5,2=4,3=3)
 		return

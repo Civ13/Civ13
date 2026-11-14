@@ -368,14 +368,21 @@
 
 //Splashing reagents is messier than trans_to, the target's loc gets some of the reagents as well.
 /datum/reagents/proc/splash(var/atom/target, var/amount = TRUE, copy = FALSE)
-	// Crops only drink the water in the splash, not other reagents (#5302).
-	var/water_splashed = 0
-	if (istype(target, /turf/floor/dirt) && total_volume > 0)
-		water_splashed = get_reagent_amount("water") * min(amount, total_volume) / total_volume
+	// Crops only drink the water share of the splash, measured before it leaves this holder.
+	var/water_given = splash_water_share(amount)
 	trans_to(target, amount, 1, copy)
-	if (water_splashed > 0)
+	if (water_given > 0 && istype(target, /turf/floor/dirt))
 		for (var/obj/structure/farming/plant/P in target)
-			P.water = min(P.water+water_splashed,P.max_water)
+			P.water = min(P.water+water_given,P.max_water)
+
+/datum/reagents/proc/splash_water_share(var/amount)
+	if (amount <= 0 || total_volume <= 0)
+		return 0
+	var/water = 0
+	for (var/datum/reagent/R in reagent_list)
+		if (istype(R, /datum/reagent/water))
+			water += R.volume
+	return min(amount, total_volume) * water / total_volume
 
 
 /datum/reagents/proc/trans_id_to(var/atom/target, var/id, var/amount = TRUE)

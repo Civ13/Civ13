@@ -123,6 +123,13 @@ var/naval_runtime_error = FALSE
 	tiller.voyage_eat(fed)
 	naval_check(length(tiller.voyage_rations()) == rations_left, "and only once")
 	tiller.end_voyage(null)
+	// ---- Her load is measured before she sails (ship_crossing.dm) ----
+	var/load = tiller.craft ? sea_crossing_load(tiller) : null
+	naval_check(isnum(load) && load >= 0 && load <= 100, "her load is measured as a share of what a crossing carries ([load])")
+	var/obj/structure/bed/cot = new(locate(65, 32, 2))
+	load = sea_crossing_load(tiller)
+	naval_check(istext(load) && findtext(load, "Put these ashore first"), "what would stop her at landfall stops her at the tiller ([load])")
+	qdel(cot)
 
 	// ---- Landfall waits on the world directory ----
 	tiller.voyage = list("id" = "gaia-1-2", "kind" = "course", "x" = 1, "y" = 2, "owner" = "faction:romeempire", "label" = "a desert", "by" = "probe", "ends" = world.time - 10, "said" = null)

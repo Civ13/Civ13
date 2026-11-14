@@ -206,6 +206,31 @@ var/vehicle_decks_probe_checks = 0
 	var/mob/living/human/vehicle_decks_probe/gus = vehicle_decks_probe_actor(stairs.x, stairs.y - 1, "Gus")
 	vehicle_decks_probe_assert(findtext(gus.vehicle_deck_refusal(vehicle_decks_probe_frame(bus, gus.loc), TRUE), "no hatch"), "only_the_stairs_lead_up")
 
+	// Crashes, hard turns and low roofs throw riders off the top.
+	var/obj/structure/vehicleparts/axis/C = vehicle_decks_probe_car(24, 20)
+	var/mob/living/human/vehicle_decks_probe/hal = vehicle_decks_probe_actor(23, 21, "Hal")
+	vehicle_decks_probe_assert(hal.board_vehicle_deck(vehicle_decks_probe_frame(C, locate(24, 21, 1))) && C.deck_riders().len == 1, "hal_up")
+	C.deck_jolt(100, NORTH, "Crash!")
+	vehicle_decks_probe_assert(!hal.vehicle_deck && hal.loc == locate(24, 23, 1), "crash_throws_ahead_past_the_edge")
+	vehicle_decks_probe_assert(hal.board_vehicle_deck(vehicle_decks_probe_frame(C, locate(24, 22, 1))), "hal_up_again")
+	C.currentspeed = 2
+	vehicle_decks_probe_assert(C.do_matrix(C.dir, TURN_LEFT(C.dir), "left") && hal.vehicle_deck, "slow_turn_keeps_rider")
+	sleep(20)
+	C.currentspeed = 5
+	vehicle_decks_probe_assert(C.do_matrix(C.dir, TURN_LEFT(C.dir), "left") && !hal.vehicle_deck && !vehicle_deck_frame_at(get_turf(hal)), "hard_turn_flings_rider")
+	sleep(20)
+	C.currentspeed = 0
+	var/obj/structure/vehicleparts/frame/lead = null
+	for (var/obj/structure/vehicleparts/frame/F in C.components)
+		var/turf/ahead = get_step(F.loc, C.dir)
+		if (ahead && !vehicle_deck_frame_at(ahead))
+			lead = F
+			break
+	var/mob/living/human/vehicle_decks_probe/ivy = vehicle_decks_probe_actor(hal.x, hal.y, "Ivy")
+	vehicle_decks_probe_assert(lead && ivy.board_vehicle_deck(lead), "ivy_up_front")
+	new /obj/roof(get_step(lead.loc, C.dir))
+	vehicle_decks_probe_assert(C.do_move() && !ivy.vehicle_deck && !(locate(/obj/roof) in get_turf(ivy)), "low_roof_sweeps_rider_off")
+
 /world/New()
 	OpenPort("none")
 	var/error = null
