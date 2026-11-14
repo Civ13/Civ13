@@ -128,7 +128,7 @@ var/global/datum/practice_rooms/practice_rooms = new
 		wipe_room(slot)
 		for (var/turf/T in slot_turfs(slot))
 			turfs -= T
-			turf_registry_members -= T
+			turf_registry_remove(T)
 			new_turfs -= T
 	var/z = practice_room_z
 	practice_room_z = 0
