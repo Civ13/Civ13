@@ -12,6 +12,7 @@
 #define CRAFTING_WINDOW_ICONS_PER_PUSH 60
 #define CRAFTING_WINDOW_PIN_LIMIT 60
 #define CRAFTING_WINDOW_RECENT_LIMIT 30
+#define CRAFTING_WINDOW_REACH_LIMIT 12
 
 /client
 	// Set once this client's browser fell back, or the player asked for the classic list.
@@ -84,6 +85,9 @@ var/global/list/crafting_purpose_cache = list()
 	var/list/working
 	// The last full snapshot, reused while a craft is in progress.
 	var/list/cached
+	// Opened with the craft key: the material may be in either hand or loose
+	// on a tile next to the player, and the window offers the others in reach.
+	var/reach = FALSE
 
 /datum/crafting_window/New(mob/living/human/H, obj/item/stack/S)
 	viewer = H
@@ -106,7 +110,56 @@ var/global/list/crafting_purpose_cache = list()
 		return FALSE
 	if (QDELETED(source) || source.amount <= 0 || !source.recipes)
 		return FALSE
+	if (reach)
+		return source.crafting_stack_accessible(H)
 	return source.loc == H && H.get_active_hand() == source
+
+// Every material this character could craft from without picking anything up:
+// both hands first, then loose stacks on their own tile and the tiles around it.
+/mob/living/human/proc/crafting_stacks_within_reach()
+	var/list/found = list()
+	for (var/obj/item/stack/held in list(get_active_hand(), get_inactive_hand()))
+		if (held.amount > 0 && held.recipes && held.recipes.len)
+			found += held
+	var/turf/here = get_turf(src)
+	if (!here)
+		return found
+	for (var/turf/T in range(1, here))
+		for (var/obj/item/stack/loose in T)
+			if (found.len >= CRAFTING_WINDOW_REACH_LIMIT)
+				return found
+			if (loose.amount > 0 && loose.recipes && loose.recipes.len && loose.crafting_stack_accessible(src))
+				found += loose
+	return found
+
+// The craft key and the IC tab entry. Nothing is picked up or spent here.
+/mob/living/human/verb/craft_within_reach()
+	set name = "craft-within-reach"
+	set hidden = TRUE
+	open_crafting_within_reach()
+
+/mob/living/human/verb/craft_within_reach_listed()
+	set name = "Craft With Nearby Materials"
+	set category = "IC"
+	set desc = "Open the Crafting window for the materials in your hands and on the tiles around you."
+	open_crafting_within_reach()
+
+/mob/living/human/proc/open_crafting_within_reach()
+	if (!client || stat || restrained())
+		return
+	var/list/near = crafting_stacks_within_reach()
+	if (!near.len)
+		to_chat(src, "<span class='notice'>Nothing to craft with is within reach. Hold a material, or stand next to one.</span>")
+		return
+	var/obj/item/stack/first = near[1]
+	if (first.crafting_window_shown(src, TRUE))
+		return
+	// The classic list only knows the material in the active hand.
+	var/obj/item/stack/held = get_active_hand()
+	if (istype(held))
+		held.attack_self(src)
+	else
+		to_chat(src, "<span class='notice'>The classic crafting list needs the material in your active hand.</span>")
 
 /datum/topic_state/crafting_window/can_use_topic(var/datum/crafting_window/W, var/mob/user)
 	if (!istype(W) || !W.still_valid(user))
@@ -135,20 +188,27 @@ var/global/list/crafting_purpose_cache = list()
 
 // TRUE when the modern window took this request; FALSE sends the caller on to
 // the classic list.
-/obj/item/stack/proc/crafting_window_shown(mob/user)
+/obj/item/stack/proc/crafting_window_shown(mob/user, reach = FALSE)
 	var/mob/living/human/H = user
 	if (!istype(H) || !H.client || H.client.crafting_window_classic || H.client.modern_ui_failed)
 		return FALSE
-	if (loc != H || H.get_active_hand() != src)
+	if (reach ? !crafting_stack_accessible(H) : (loc != H || H.get_active_hand() != src))
 		return FALSE
 	var/datum/crafting_window/W = H.crafting_window
-	if (W && W.source != src)
+	if (W && W.working)
+		// A craft is under way: leave its window as it is.
+		return TRUE
+	if (W && W.source != src && !(reach && W.reach))
 		GLOB.nanomanager.close_uis(W)
 		W.closed()
 		W = null
 	if (!W)
 		W = new /datum/crafting_window(H, src)
 		H.crafting_window = W
+	W.source = src
+	W.reach = reach
+	if (reach)
+		W.load_recipes()
 	show_browse(H, null, "window=stack")
 	H.set_using_object(src)
 	W.cached = null
@@ -170,14 +230,31 @@ var/global/list/crafting_purpose_cache = list()
 
 // Push a fresh snapshot to the open window without reopening it.
 /datum/crafting_window/proc/refresh()
-	if (!viewer || !still_valid(viewer))
+	if (!viewer)
+		return
+	if (reach && !still_valid(viewer) && !QDELETED(viewer) && viewer.client)
+		// The material in use ran out or moved: carry on with the next one in reach.
+		var/list/near = viewer.crafting_stacks_within_reach()
+		if (near.len)
+			source = near[1]
+			viewer.set_using_object(source)
+	if (!still_valid(viewer))
 		return
 	cached = null
-	// Material stacks rebuild their list for this character, as the classic list does on opening.
+	load_recipes()
+	ui_interact(viewer, force_open = FALSE)
+
+// Material stacks rebuild their list for this character, as the classic list does on opening.
+/datum/crafting_window/proc/load_recipes()
 	if (istype(source, /obj/item/stack/material))
 		var/obj/item/stack/material/M = source
 		M.recipes = M.material.get_recipes_civs(viewer)
-	ui_interact(viewer, force_open = FALSE)
+
+// Where a material is, in the player's words.
+/datum/crafting_window/proc/where(obj/item/stack/S)
+	if (S.loc == viewer)
+		return "in your hand"
+	return get_turf(S) == get_turf(viewer) ? "at your feet" : "next to you"
 
 /proc/crafting_window_row_id(datum/stack_recipe/R, sublist, index)
 	return "[sublist]:[index]:[copytext(md5("[R.title]|[R.result_type]"), 1, 9)]"
@@ -329,7 +406,20 @@ var/global/list/crafting_purpose_cache = list()
 					rows += list(row_data(srl.recipes[j], i, j, srl.title, budget, pinned, recent))
 		else if (istype(E, /datum/stack_recipe))
 			rows += list(row_data(E, 0, i, "General", budget, pinned, recent))
+	var/list/sources = list()
+	if (reach)
+		for (var/obj/item/stack/near in viewer.crafting_stacks_within_reach())
+			sources += list(list(
+				"key" = "\ref[near]",
+				"name" = html_encode("[near.name]"),
+				"amount" = near.amount,
+				"where" = where(near),
+				"current" = near == S ? 1 : 0,
+				"image" = product_image(near.type, budget)))
 	return list(
+		"reach" = reach ? 1 : 0,
+		"sources" = sources,
+		"where" = where(S),
 		"material" = html_encode("[S.name]"),
 		"unit" = html_encode("[S.singular_name]"),
 		"amount" = S.amount,
@@ -362,6 +452,16 @@ var/global/list/crafting_purpose_cache = list()
 		var/datum/stack_recipe/shown = find_recipe(href_list["atlas"])
 		if (shown && crafting_atlas_reference && crafting_atlas_reference.resource_exists("[shown.result_type]"))
 			crafting_atlas_reference.show(H, "[shown.result_type]", 1, "[shown.result_type]")
+		return FALSE
+	if (href_list["source"])
+		// Another material in reach: only ones the server can still see next to the player.
+		if (!reach || working)
+			return FALSE
+		var/obj/item/stack/picked = locate(href_list["source"])
+		if (istype(picked) && (picked in H.crafting_stacks_within_reach()))
+			picked.crafting_window_shown(H, TRUE)
+		else
+			refresh()
 		return FALSE
 	if (href_list["pin"])
 		// Pinning spends nothing and changes no recipe: it only marks the row.
@@ -416,7 +516,7 @@ var/global/list/crafting_purpose_cache = list()
 			if (H.client.craft_recent.len > CRAFTING_WINDOW_RECENT_LIMIT)
 				H.client.craft_recent.len = CRAFTING_WINDOW_RECENT_LIMIT
 		// The craft may have used the stack up or the window may have closed.
-		if (viewer == H && source == S)
+		if (viewer == H && (source == S || reach))
 			refresh()
 		return FALSE
 	return FALSE
@@ -424,3 +524,4 @@ var/global/list/crafting_purpose_cache = list()
 #undef CRAFTING_WINDOW_ICONS_PER_PUSH
 #undef CRAFTING_WINDOW_PIN_LIMIT
 #undef CRAFTING_WINDOW_RECENT_LIMIT
+#undef CRAFTING_WINDOW_REACH_LIMIT

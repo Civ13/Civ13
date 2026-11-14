@@ -134,7 +134,7 @@
 		if ("recruitment_station.tmpl")
 			return list("designate", "unbind", "apply", "withdraw", "confirm", "approve", "reject", "revoke", "set_mode", "set_open", "set_language", "set_skill", "set_nonmatch", "refresh")
 		if ("crafting_window.tmpl")
-			return list("make", "makeable_only", "images", "atlas", "pin")
+			return list("make", "makeable_only", "images", "atlas", "pin", "source")
 		if ("faction_symbol.tmpl")
 			return list("set_tool", "pick_color", "paint", "stroke", "stamp", "clear", "undo", "save")
 		if ("faction_creation.tmpl")
