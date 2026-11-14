@@ -2,7 +2,8 @@
 struck flake, a polyhedral blade core, prismatic blades, arrowheads, a
 spearhead, the hafted spear, knife and end-scraper, and the obsidian-tipped
 arrow as an item and as a four-direction projectile; then the macuahuitl
-with its edge slots empty and the tepoztopilli, bladed and bare. Every pixel is placed by
+with its edge slots empty, the tepoztopilli, bladed and bare, a plaster-set
+hand mirror and polished cabochons. Every pixel is placed by
 this script from a fixed palette (Pillow only); no external or generated
 artwork.
 The glass is black with blue-grey sheen, sharp specular glints, conchoidal
@@ -14,7 +15,9 @@ icons/obj/weapons.dmi and icons/obj/projectiles.dmi. Lit from the upper left.
 Run with Pillow to reproduce icons/obj/obsidian.dmi. `--preview <png>` also
 writes a review sheet (8x, with a 1x and 2x strip underneath, and the flint
 equivalents alongside for comparison). `--preview-weapons <png>` writes the
-three edged-weapon states at 8x beside weapons.dmi "macuahuitl".
+three edged-weapon states at 8x beside weapons.dmi "macuahuitl", and
+`--preview-mirror <png>` the mirror and cabochons beside the wall mirror and
+a cut garnet.
 Released under Civ13 AGPL-3.0.
 """
 import math
@@ -51,6 +54,8 @@ PF = (168, 168, 168)
 MW = [(163, 115, 80), (138, 97, 67), (92, 64, 45), (77, 54, 38), (48, 36, 28), (110, 77, 54)]
 # and its grip, light to dark
 MG = [(125, 107, 95), (94, 77, 65), (74, 61, 51)]
+# pale clay / lime-plaster setting of the hand mirror, light to dark
+PL = [(232, 224, 206), (204, 193, 170), (166, 153, 130), (124, 112, 94)]
 # preview backgrounds
 GROUND = (120, 124, 112)
 LAVA = (66, 58, 54)
@@ -736,6 +741,84 @@ def tepoztopilli(bladed):
     return f
 
 
+# ------------------------------------------------------------------ mirror
+
+def obsidian_hand_mirror():
+    f = Frame()
+    # short wooden grip, whipped with cord below the setting
+    bar(f, (15.5, 20.0), (15.5, 29.0), 1.6, lambda s, t: WD[1] if s < -0.1 else WD[2] if s < 0.6 else WD[3])
+    f.pts(WD[0], (14, 26), (14, 27)); f.pts(WD[3], (14, 28), (15, 28), (16, 28))
+    for y in (22, 24):
+        f.pts(CD[0], (14, y)); f.pts(CD[1], (15, y)); f.pts(CD[2], (16, y))
+    f.outline()
+    d = Frame()
+    cx, cy = 15.5, 12.0
+    for y in range(32):
+        for x in range(32):
+            u, v = x + 0.5 - cx, y + 0.5 - cy
+            r = math.hypot(u / 8.4, v / 8.9)
+            if r > 1.0:
+                continue
+            g = math.hypot(u / 6.4, v / 6.9)
+            if g > 1.0:
+                # the plaster rim, lit from the upper left
+                k = (u + v) / 9.0
+                d.put(x, y, PL[0] if k < -0.75 else PL[1] if k < 0.1 else PL[2] if k < 0.85 else PL[3])
+                continue
+            # the polished face: black, with the rim's shadow along the top
+            # left, a soft reflected band across it and a paler return of
+            # light low on the right
+            band = (u + v) / 1.4142
+            c = OB[5]
+            if g > 0.8 and u + v < -1.0:
+                c = OBO
+            elif -3.4 <= band < -1.4:
+                c = OB[2] if g < 0.86 else OB[3]
+            elif -1.4 <= band < -0.4:
+                c = OB[3]
+            elif 0.9 <= band < 1.7:
+                c = OB[3] if g < 0.8 else OB[4]
+            elif band >= 3.2 and g > 0.62:
+                c = OB[4]
+            d.put(x, y, c)
+    d.tint(OB[1], (12, 9), (13, 8), (14, 7), (11, 11), (12, 10))
+    d.tint(OB[0], (12, 8), (13, 7), (11, 9), (12, 7))                      # the specular dot
+    d.tint(OB[1], (19, 16), (18, 17)); d.tint(OB[2], (17, 18))
+    d.outline()
+    f.over(d)
+    return f
+
+
+# ----------------------------------------------------------------- polished
+
+def cabochon(f, cx, cy, rx, ry):
+    """A smooth domed bead: black, a sheen crescent on the lit shoulder, one
+    hard glint, and a faint rim of reflected light low on the far side."""
+    for y in range(32):
+        for x in range(32):
+            u, v = (x + 0.5 - cx) / rx, (y + 0.5 - cy) / ry
+            r = math.hypot(u, v)
+            if r > 1.0:
+                continue
+            d = math.hypot(u + 0.42, v + 0.46)
+            c = OB[1] if d < 0.24 else OB[2] if d < 0.46 else OB[3] if d < 0.72 else OB[5]
+            if r > 0.8:
+                c = OBO
+            elif r > 0.5 and u + v > 0.7:
+                c = OB[4]
+            f.put(x, y, c)
+    f.put(int(cx - 0.42 * rx), int(cy - 0.46 * ry), OB[0])
+
+
+def obsidian_polished():
+    # three cabochons in the footprint of a cut gem of icons/obj/gemstones.dmi
+    f = Frame()
+    cabochon(f, 19.5, 14.0, 4.0, 3.7)
+    cabochon(f, 13.5, 13.5, 4.3, 4.0)
+    cabochon(f, 16.0, 19.5, 4.8, 4.0)
+    return f
+
+
 # each state is a list of frames: one, or four in BYOND order S, N, E, W
 STATES = {
     'obsidian_outcrop1': [obsidian_outcrop1()],
@@ -755,6 +838,8 @@ STATES = {
     'macuahuitl_bare': [macuahuitl_bare()],
     'tepoztopilli': [tepoztopilli(True)],
     'tepoztopilli_bare': [tepoztopilli(False)],
+    'obsidian_hand_mirror': [obsidian_hand_mirror()],
+    'obsidian_polished': [obsidian_polished()],
 }
 COLUMNS = 4
 
@@ -803,6 +888,8 @@ COMPARE = {
     'arrow_obsidian_flight': ('icons/obj/projectiles.dmi', 'arrow_flint'),
     'macuahuitl_bare': ('icons/obj/weapons.dmi', 'macuahuitl'),
     'tepoztopilli': ('icons/obj/weapons.dmi', 'spear'),
+    'obsidian_hand_mirror': ('icons/obj/watercloset.dmi', 'obsidian_mirror'),
+    'obsidian_polished': ('icons/obj/gemstones.dmi', 'garnet'),
 }
 
 
@@ -850,12 +937,16 @@ def write_preview(path, scale=8, per_row=6):
 WEAPONS = ('macuahuitl_bare', 'tepoztopilli', 'tepoztopilli_bare')
 
 
-def write_weapons_preview(path, scale=8):
-    """The edged-club states at 8x beside weapons.dmi "macuahuitl", each with
-    a 1x and 2x strip on the grass-grey ground and on dark dry lava."""
+MIRROR = ('obsidian_hand_mirror', 'obsidian_polished')
+
+
+def write_weapons_preview(path, scale=8, names=WEAPONS, beside=(('icons/obj/weapons.dmi', 'macuahuitl'),)):
+    """The named states at 8x beside existing art (weapons.dmi "macuahuitl"
+    for the edged clubs), each with a 1x and 2x strip on the grass-grey
+    ground and on dark dry lava."""
     cell = 32 * scale
-    tiles = [STATES[name][0].image() for name in WEAPONS]
-    tiles.append(read_dmi(ROOT / 'icons/obj/weapons.dmi')['macuahuitl'][0])
+    tiles = [STATES[name][0].image() for name in names]
+    tiles += [read_dmi(ROOT / src)[state][0] for src, state in beside]
     sheet = Image.new('RGBA', (cell * len(tiles), cell + 80), DARK + (255,))
     for i, im in enumerate(tiles):
         for ground, k, pos in ((GROUND, scale, (0, 0)), (GROUND, 1, (8, cell + 24)), (GROUND, 2, (48, cell + 8)),
@@ -867,10 +958,19 @@ def write_weapons_preview(path, scale=8):
     sheet.convert('RGB').save(path)
 
 
+def write_mirror_preview(path):
+    """The hand mirror and the polished stones beside the wall mirror of
+    watercloset.dmi and a cut garnet."""
+    write_weapons_preview(path, names=MIRROR, beside=(('icons/obj/watercloset.dmi', 'obsidian_mirror'),
+                                                      ('icons/obj/gemstones.dmi', 'garnet')))
+
+
 def main():
     write_dmi(ROOT / 'icons/obj/obsidian.dmi', STATES)
     if '--preview-weapons' in sys.argv[1:-1]:
         write_weapons_preview(sys.argv[sys.argv.index('--preview-weapons') + 1])
+    if '--preview-mirror' in sys.argv[1:-1]:
+        write_mirror_preview(sys.argv[sys.argv.index('--preview-mirror') + 1])
     if '--preview' in sys.argv[1:-1]:
         write_preview(sys.argv[sys.argv.index('--preview') + 1])
 

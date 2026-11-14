@@ -18,6 +18,8 @@
 #define OBSIDIAN_EDGE_HARVEST 0.75 // butchering and skinning time with an obsidian edge in hand
 #define OBSIDIAN_CHIP_CHANCE 10 // chance a hit knocks a blade out of a macuahuitl or tepoztopilli
 #define OBSIDIAN_CHIP_CHANCE_ARMOUR 20
+#define OBSIDIAN_POLISH_TIME 80
+#define OBSIDIAN_POLISH_FLAW_CHANCE 10
 
 // Knapped obsidian. The building stone (/material/obsidian, cut blocks for
 // pillars and braziers) keeps its own very high integrity; tools use this
@@ -224,6 +226,9 @@ var/global/list/obsidian_volcano_cells = list()
 /obj/item/weapon/obsidian_nodule/attackby(obj/item/W, mob/user)
 	if (ishuman(user) && obsidian_is_hammerstone(W))
 		knap(user, W)
+		return
+	if (ishuman(user) && istype(W, /obj/item/weapon/chisel))
+		polish(user, W)
 		return
 	..()
 
@@ -605,6 +610,82 @@ var/global/list/obsidian_volcano_cells = list()
 /obj/item/weapon/macuahuitl/tepoztopilli/unedged
 	blades = 0
 
+// ---------------------------------------------------------------- polished stone
+// Chisel in the active hand, hammer in the other: grind a nodule into a
+// polished bead, set into clothing or necklaces like the cut gemstones.
+/obj/item/weapon/obsidian_nodule/proc/polish(mob/living/human/H, obj/item/chisel)
+	if (!istype(H.l_hand, /obj/item/weapon/hammer) && !istype(H.r_hand, /obj/item/weapon/hammer))
+		to_chat(H, SPAN_WARNING("You need a hammer in your other hand to use a chisel."))
+		return
+	if (!H.may_do_after || !obsidian_work_reachable(H, src, chisel))
+		return
+	H.visible_message(SPAN_NOTICE("[H] starts shaping and polishing \the [src]."), SPAN_NOTICE("You start shaping and polishing \the [src]."))
+	if (!do_after(H, OBSIDIAN_POLISH_TIME / max(0.5, H.getStatCoeff("dexterity")), src) || !obsidian_work_reachable(H, src, chisel))
+		return
+	H.adaptStat("crafting", 1)
+	var/turf/T = get_turf(src)
+	var/in_hand = loc == H
+	qdel(src)
+	if (prob(OBSIDIAN_POLISH_FLAW_CHANCE / max(0.5, H.getStatCoeff("crafting"))))
+		to_chat(H, SPAN_WARNING("The glass flakes apart under the chisel. Only a sharp shard is left."))
+		obsidian_shatter(H, T, in_hand)
+		return
+	var/obj/item/stack/gemstone/obsidian/G = new /obj/item/stack/gemstone/obsidian(T)
+	if (in_hand)
+		H.put_in_hands(G)
+	to_chat(H, SPAN_NOTICE("You polish \a [G.singular_name]."))
+
+/obj/item/stack/gemstone/obsidian
+	name = "polished obsidian"
+	singular_name = "polished obsidian stone"
+	desc = "A smooth bead of polished volcanic glass. Set it into clothing or jewellery with a chisel held in your other hand."
+	icon = OBSIDIAN_ICON
+	icon_state = "obsidian_polished"
+	gem_colour = "#1d1c24"
+	value = 5
+
+// ---------------------------------------------------------------- mirrors
+// Polished obsidian mirrors, as at Catalhoyuk and in Aztec Mexico. A hand
+// mirror is crafted from cut obsidian; fasten it to a wall with a hammer like
+// the glass mirror, and unfasten it the same way.
+/obj/item/mirror/obsidian
+	name = "obsidian mirror"
+	desc = "A disc of volcanic glass ground flat and polished until it reflects, set in a plaster rim with a short grip. Fasten it to a wall with a hammer."
+	icon = OBSIDIAN_ICON
+	icon_state = "obsidian_hand_mirror"
+	w_class = ITEM_SIZE_SMALL
+	value = 6
+
+/obj/item/mirror/obsidian/attack_self(mob/user)
+	to_chat(user, SPAN_NOTICE("You gaze into \the [src]. Your reflection looks back, dark and smoky."))
+
+/obj/item/mirror/obsidian/attackby(obj/item/H as obj, mob/user as mob)
+	if (!istype(H, /obj/item/weapon/hammer) || !isturf(user.loc))
+		return ..()
+	var/direction = WWinput(user, "Fasten it to which direction?", "Select a direction.", "North", WWinput_list_or_null(list("North", "East", "South", "West")))
+	if (!direction || !can_fasten(user, H))
+		return
+	var/obj/structure/mirror/obsidian/S = new /obj/structure/mirror/obsidian(user.loc)
+	switch (direction)
+		if ("North")
+			S.pixel_y = 32
+		if ("East")
+			S.pixel_x = 32
+		if ("South")
+			S.pixel_y = -32
+		if ("West")
+			S.pixel_x = -32
+	to_chat(user, "You fasten \the [S] with your [H].")
+	qdel(src)
+
+/obj/structure/mirror/obsidian/attackby(obj/item/I as obj, mob/user as mob)
+	if (istype(I, /obj/item/weapon/hammer) && !shattered)
+		var/obj/item/mirror/obsidian/M = new /obj/item/mirror/obsidian(loc)
+		to_chat(user, "You unfasten \the [M] with your [I].")
+		qdel(src)
+		return
+	return ..()
+
 #undef OBSIDIAN_ICON
 #undef OBSIDIAN_VOLCANO_RANGE
 #undef OBSIDIAN_VOLCANO_BUCKET
@@ -619,3 +700,5 @@ var/global/list/obsidian_volcano_cells = list()
 #undef OBSIDIAN_EDGE_HARVEST
 #undef OBSIDIAN_CHIP_CHANCE
 #undef OBSIDIAN_CHIP_CHANCE_ARMOUR
+#undef OBSIDIAN_POLISH_TIME
+#undef OBSIDIAN_POLISH_FLAW_CHANCE
