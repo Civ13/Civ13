@@ -212,7 +212,17 @@ proc
 #define ENVIRONMENT_SWEEP_BATCH 4096
 #define ENVIRONMENT_SWEEP_MIN_BATCH 512
 #define ENVIRONMENT_SWEEP_TICK_LIMIT 20
+// While the world lights its map at start-up (create_lighting) no round is
+// running, and a pause every 512 steps kept a 952,200-cell world asleep for
+// three quarters of a ten-minute boot. The start-up sweeps work this many
+// percent of a tick between pauses instead; the lobby still gets every pause.
+#define ENVIRONMENT_SWEEP_STARTUP_TICK_LIMIT 500
 /proc/environment_sweep_pause(work)
+	if (lighting_startup_in_progress)
+		if (work >= ENVIRONMENT_SWEEP_MIN_BATCH && world.tick_usage >= ENVIRONMENT_SWEEP_STARTUP_TICK_LIMIT)
+			sleep(world.tick_lag)
+			return TRUE
+		return FALSE
 	if (work >= ENVIRONMENT_SWEEP_BATCH || (work >= ENVIRONMENT_SWEEP_MIN_BATCH && world.tick_usage >= ENVIRONMENT_SWEEP_TICK_LIMIT))
 		sleep(world.tick_lag)
 		return TRUE
