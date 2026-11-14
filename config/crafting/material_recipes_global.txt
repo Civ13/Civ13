@@ -2309,6 +2309,8 @@ RECIPE: /material/wood/,mason's saw,/obj/structure/workshop_machine/masons_saw,8
 RECIPE: /material/wood/,shear legs,/obj/structure/workshop_machine/shear_legs,10,120,1,1,economy & production,0,0,0,8,null
 RECIPE: /material/iron/,cement mixer,/obj/structure/workshop_machine/cement_mixer,8,150,1,1,economy & production,103,0,0,8,null
 RECIPE: /material/wood/,pile driver,/obj/structure/workshop_machine/pile_driver,14,180,1,1,economy & production,70,0,0,8,null
+RECIPE: /material/wood/,pole lathe,/obj/structure/workshop_machine/lathe/pole,8,150,1,1,economy & production,0,0,0,8,null
+RECIPE: /material/iron/,engine lathe,/obj/structure/workshop_machine/lathe/engine,12,200,1,1,economy & production,0,0,0,8,null
 RECIPE: /material/wood/,timber pier span,/obj/item/weapon/bridge_span/timber,8,100,0,1,construction,70,0,0,8,null
 RECIPE: /material/wood/,treadwheel,/obj/structure/workshop_machine/mover/treadwheel,12,200,1,1,economy & production,60,0,0,8,null
 RECIPE: /material/wood/,horse gin,/obj/structure/workshop_machine/mover/horse_gin,10,200,1,1,economy & production,60,0,0,8,null

@@ -32,8 +32,6 @@
 	// Poured metal can take this shape in a parts mould.
 	var/castable = TRUE
 
-#define MACHINE_PART_WORN_OUT 63
-
 /obj/item/machine_part/New(newloc, material_name)
 	..(newloc)
 	if (istext(material_name) && get_material_by_name(material_name))

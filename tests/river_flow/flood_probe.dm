@@ -57,6 +57,13 @@ var/flood_runtime_error = FALSE
 	flood_check(F.reach_at(1, 3) == 1 && F.reach_at(4, 3) == 2 && F.reach_at(1, 1) == 0, "reach ids per tile")
 	flood_check(F.threshold_at(1, 3) == 0.5 && F.threshold_at(3, 3) == 2 && F.threshold_at(4, 3) == 13 && isnull(F.threshold_at(5, 3)), "thresholds in half levels")
 	flood_check(F.stage[2] < 0 && F.stage[1] < 0 && F.stage[2] < F.stage[1], "dry-spell rivers sit below normal, big ones lower")
+	// Ground at the thresholds: these banks rise from the river, not behind a ridge.
+	var/datum/terrain_heights/H = new
+	H.maxx = 6
+	H.maxy = 3
+	H.rows_by_z["1"] = list("A12d00", "000000", "000000")
+	map.terrain_height_file = "probe"
+	map.terrain_heights_cache = H
 	map.river_flood_cache = F
 	map.river_flood_loaded = TRUE
 	map.river_flood_state = list()
@@ -133,7 +140,7 @@ var/flood_runtime_error = FALSE
 
 	// Saved water comes back, and a loaded save replaces the live water.
 	var/list/state = F.snapshot()
-	flood_check(state.len == 7 && state[1] == 2, "snapshot holds every reach")
+	flood_check(state.len == 8 && state[1] == 2 && state[8] == 0, "snapshot holds every reach, then no hollows")
 	var/datum/river_flood/G = river_flood_parse(flood_probe_text(), 6, 3, 1)
 	flood_check(G.restore(state) && abs(G.storage[1] - F.storage[1]) < 0.01 && abs(G.snow[2] - F.snow[2]) < 0.01 && abs(G.peak[1] - F.peak[1]) < 0.01, "restore round trip")
 	flood_check(G.restore(list(2, 10, 10, 0, 0)) && G.peak[1] == G.stage[1], "saves without flood marks still load")

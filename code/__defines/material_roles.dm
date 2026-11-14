@@ -40,3 +40,6 @@
 #define PART_FRAGILE_TOUGHNESS 10
 // Below this firmness a material smears or strips as a gear, bearing or wheel.
 #define PART_SOFT_FIRMNESS 18
+
+// A machine part's wear runs from 0 (new) to this.
+#define MACHINE_PART_WORN_OUT 63

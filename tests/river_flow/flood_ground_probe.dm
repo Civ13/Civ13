@@ -66,7 +66,8 @@ var/ground_runtime_error = FALSE
 	ground_check(F.overrides[locate(3, 6, 1)] == 1 && F.overrides[locate(3, 7, 1)] == 1 && isnull(F.overrides[locate(3, 3, 1)]), "land behind the wall needs the wall's crest")
 	ground_check(flood_depth_at(locate(3, 6, 1)) == 0 && abs(flood_depth_at(locate(3, 3, 1)) - 0.5) < 0.001, "the far bank still floods")
 	F.stage[1] = 1.5
-	ground_check(abs(flood_depth_at(locate(3, 6, 1)) - 0.5) < 0.001, "a flood over the crest pours in")
+	// Over the crest the water stands on the ground behind the wall, not on the wall.
+	ground_check(abs(flood_depth_at(locate(3, 6, 1)) - 1.5) < 0.001, "a flood over the crest pours in")
 	F.stage[1] = 0.5
 
 	// A gap in the wall lets the water through.
