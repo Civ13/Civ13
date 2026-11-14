@@ -603,6 +603,9 @@ var/global/list/region_travel_carry_types = list(
 	// Event regions are reached only by an admin's event transfer (region_event.dm).
 	if(peer && peer["kind"] == "EVENT")
 		return "The trail is overgrown. It leads nowhere for now."
+	// Lands across the sea are reached only by ship (expedition_land.dm).
+	if(peer && peer["kind"] == "EXPEDITION")
+		return "That land lies across the sea. Only a ship can reach it."
 	// A sleeping region is woken when someone sets off (travel()). A stopped
 	// one stays down until the host starts it again, so the traveller is told
 	// so plainly and the admins hear someone is waiting at the trail.
