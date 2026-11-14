@@ -923,7 +923,6 @@ var/global/list/node_grid_col_cache = null
 		// --- basic_agriculture (10) ---
 		"/obj/item/stack/material/wool" = "basic_agriculture",
 		"/obj/item/weapon/berriesgatherer" = "basic_agriculture",
-		"/obj/item/weapon/leash" = "basic_agriculture",
 		"/obj/item/animal_tack/saddle" = "basic_agriculture",
 		"/obj/item/animal_tack/harness" = "basic_agriculture",
 		"/obj/item/weapon/material/pitchfork" = "basic_agriculture",
@@ -1017,6 +1016,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/trap_kit/weir" = "basic_tools",
 		"/obj/structure/dugout_log" = "basic_tools",
 		"/obj/item/weapon/paddle" = "basic_tools",
+		"/obj/item/weapon/leash" = "basic_tools",
 		// --- brickmaking (12) ---
 		"/obj/covers/stone_wall/brick" = "brickmaking",
 		"/obj/covers/stone_wall/brick/archway" = "brickmaking",

@@ -1058,6 +1058,11 @@ SUITES = {
     'dugout_canoe': {'files': ('tests/dugout_canoe/test_source.py',),
         'paths': ('tests/dugout_canoe/',), 'shared_paths': (
             'code/modules/1713/dugout_canoe.dm', 'icons/obj/vehicles/dugout_canoe.dmi')},
+    # Wild and tame farm animals, taming by hand feeding: source contracts only.
+    'domestication': {'files': ('tests/domestication/test_source.py',),
+        'paths': ('tests/domestication/',), 'shared_paths': (
+            'code/modules/1713/domestication.dm', 'code/modules/ecology/ecology_spawning.dm',
+            'code/game/objects/effects/spawner.dm')},
     'door_intents': {'files': ('tests/door_intents/test_door_intents.py', 'tests/door_intents/test_jail_keys.py'),
         'paths': ('tests/door_intents/',), 'shared_paths': (
             'code/game/objects/structures/door.dm',
