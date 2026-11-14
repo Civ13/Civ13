@@ -10,6 +10,7 @@ Val's rule: anything not available on Nomads stays out of the public atlas.
 Magic is Wizard Boy (and a few other maps) only, so every named type declared
 under MAGIC_SOURCES must be covered by the list; `check_magic` enforces it.
 """
+import json
 import re
 
 from .facts import declared, prose
@@ -49,6 +50,19 @@ def leaks(hidden, text):
     return sorted(path for path in hidden if re.search(re.escape(path) + r'(?![\w])', text))
 
 
+def without_mentions(hidden, rows, reagent_ids=()):
+    """Rows that name no covered type or reagent id in any field; the raw source
+    indexes (spawn sites, unresolved records, source audit) are public, so a row
+    about an admin-only thing, or from a magic source file, is left out of them."""
+    kept = []
+    for row in rows:
+        text = json.dumps(row)
+        if any(source in text for source in MAGIC_SOURCES) or leaks(hidden, text) or any(re.search(r'(?<![\w])' + re.escape(rid) + r'(?![\w])', text) for rid in reagent_ids):
+            continue
+        kept.append(row)
+    return kept
+
+
 def check_public(hidden, text, where, reagent_ids=()):
     found = leaks(hidden, text) + sorted(rid for rid in reagent_ids if '"' + rid + '"' in text)
     if found:
@@ -80,6 +94,7 @@ def check_magic(files, text, where):
     magic = declared({path: source for path, source in files.items() if path.startswith(MAGIC_SOURCES)})
     named = {path for path, fields in magic.items() if prose(fields.get('name'))}
     found = sorted(path for path in named if re.search(re.escape(path) + r'(?![\w/])', text))
+    found += sorted(source for source in MAGIC_SOURCES if source in text)
     if found:
         raise SystemExit('Magic is not available on Nomads, so magic types must be admin-only, but these reached '
                          + where + ': ' + ', '.join(found) + '. Add them to ' + SOURCE + '.')

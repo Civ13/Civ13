@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'scripts'))
 
 from atlas.admin_only import (SOURCE, admin_only_types, check_magic, check_public, covers,  # noqa: E402
-                              hidden_reactions, hidden_reagent_ids, leaks)
+                              hidden_reactions, hidden_reagent_ids, leaks, without_mentions)
 
 
 def read(path):
@@ -54,6 +54,19 @@ class AdminOnlyAtlasTests(unittest.TestCase):
         self.assertEqual(leaks(hidden, '"/obj/item/weapon/book/divinely_bound"'), [])
         with self.assertRaises(SystemExit):
             check_public(hidden, '{"id":"/obj/item/weapon/book/divine"}', 'a test output')
+
+    def test_spawn_sites_of_listed_types_leave_the_public_site_index(self):
+        hidden = {'/obj/item/cursedtreasure': 'note'}
+        rows = [dict(text='var/obj/item/cursedtreasure/T = new/obj/item/cursedtreasure(loc)'),
+                dict(text='new/obj/item/cursedtreasure_map(loc)'), dict(text='new/obj/item/stack/money(loc)'),
+                dict(text='reagents.add_reagent("toad_mixture", 5)')]
+        self.assertEqual(without_mentions(hidden, rows, ['toad_mixture']), rows[1:3])
+        self.assertEqual(without_mentions(hidden, [dict(file='code/modules/magic/magic_jobs.dm', text='new /obj/item/clothing/shoes/laceup(H)')]), [])
+        text = read('scripts/build-crafting-atlas.py')
+        self.assertIn("data['issues']=without_mentions(admin_only,data['issues'],admin_reagents)", text)
+        self.assertIn("data['sources']={k:(without_mentions(admin_only,v,admin_reagents) if isinstance(v,list) else v) for k,v in data['sources'].items()}", text)
+        self.assertLess(text.index("data['production_sites']=without_mentions(admin_only,data['production_sites'],admin_reagents)"),
+                        text.index("check_admin_only(json.dumps(data),'the published web atlas')"))
 
     def test_unlisted_magic_type_fails_the_build(self):
         files = {'code/modules/magic/x.dm': '/obj/item/new_charm\n\tname = "charm"\n'}

@@ -12,7 +12,7 @@ from atlas.research_coverage import annotate_research
 from atlas.titles import display_titles
 from atlas.facts import resource_facts
 from atlas.entities import entity_resources
-from atlas.admin_only import admin_only_types, check_magic, check_public, covers, hidden_reactions, hidden_reagent_ids
+from atlas.admin_only import admin_only_types, check_magic, check_public, covers, hidden_reactions, hidden_reagent_ids, without_mentions
 from atlas.interactions import add_interactions
 
 
@@ -498,6 +498,12 @@ for resource in resource_ids:
     row=rows[typepath.split('#')[0]]
     mode='source symbol; abstract or dynamic appearance unresolved' if not direct else 'reviewed state; runtime overlays may differ' if '#' in resource else 'material exemplar; runtime recoloring may differ' if resource.startswith('/material/') else 'compiled default'
     data['resources'][resource]=dict(type=typepath.split('#')[0],icon=row['icon'],state=typepath.split('#')[1] if '#' in typepath else row['state'],dir=row['dir'],image='sprites/'+exports[typepath],label=mode,source_symbol=not direct)
+# Spawning sites of admin-only things (loot, event setup, magic) stay out of the public index.
+data['production_sites']=without_mentions(admin_only,data['production_sites'],admin_reagents)
+data['issues']=without_mentions(admin_only,data['issues'],admin_reagents)
+# The reviewed source audit is published too; drop its rows about admin-only things.
+if isinstance(data['sources'],dict):
+    data['sources']={k:(without_mentions(admin_only,v,admin_reagents) if isinstance(v,list) else v) for k,v in data['sources'].items()}
 game=game_catalog()
 game_text=catalog_text(game)
 check_admin_only(game_text,'the game atlas')
