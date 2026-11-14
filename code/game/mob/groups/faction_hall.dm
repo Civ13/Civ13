@@ -85,6 +85,13 @@ var/global/list/faction_hall_tiers = list(
 	var/faction = null
 	var/tier = 0 // tiers built (faction_hall_tiers)
 	var/list/delivered = list() // materials handed over toward the next tier
+	var/seat_name = "hall seat" // its name before the first tier
+	var/hall_word = "hall" // what it is called in messages
+	var/last_words = "It is a capitol, the greatest hall." // said once fully built
+
+// The tiers this seat is raised through (faction_hall_tiers' layout).
+/obj/structure/faction_hall/proc/tiers()
+	return faction_hall_tiers
 
 /obj/structure/faction_hall/New()
 	..()
@@ -96,26 +103,26 @@ var/global/list/faction_hall_tiers = list(
 	return ..()
 
 /obj/structure/faction_hall/update_icon()
-	name = faction ? (tier ? "[faction] [faction_hall_tiers[tier][1]]" : "[faction] hall seat") : initial(name)
+	name = faction ? (tier ? "[faction] [tiers()[tier][1]]" : "[faction] [seat_name]") : initial(name)
 
 // A tier counts only where it may stand: indoor tiers need a roof.
 /obj/structure/faction_hall/proc/tier_stands(t)
-	if (t < 1 || t > faction_hall_tiers.len)
+	if (t < 1 || t > tiers().len)
 		return FALSE
-	if (!faction_hall_tiers[t][4])
+	if (!tiers()[t][4])
 		return TRUE
 	var/area/A = get_area(src)
 	return A && A.location != AREA_OUTSIDE
 
 /obj/structure/faction_hall/proc/next_tier()
-	return tier < faction_hall_tiers.len ? tier + 1 : 0
+	return tier < tiers().len ? tier + 1 : 0
 
 /obj/structure/faction_hall/proc/remaining()
 	var/list/left = list()
 	var/t = next_tier()
 	if (!t)
 		return left
-	var/list/needs = faction_hall_tiers[t][5]
+	var/list/needs = tiers()[t][5]
 	for (var/kind in needs)
 		var/list/need = needs[kind]
 		var/missing = need[2] - (delivered[kind] || 0)
@@ -126,23 +133,23 @@ var/global/list/faction_hall_tiers = list(
 /obj/structure/faction_hall/proc/progress_text()
 	var/t = next_tier()
 	if (!t)
-		return "It is a capitol, the greatest hall."
+		return last_words
 	var/list/parts = list()
-	var/list/needs = faction_hall_tiers[t][5]
+	var/list/needs = tiers()[t][5]
 	for (var/kind in needs)
 		var/list/need = needs[kind]
 		parts += "[need[3]] [delivered[kind] || 0]/[need[2]]"
-	return "Toward a [faction_hall_tiers[t][1]]: [jointext(parts, ", ")]."
+	return "Toward a [tiers()[t][1]]: [jointext(parts, ", ")]."
 
 // Why the next tier cannot be built here yet, or null.
 /obj/structure/faction_hall/proc/tier_block(t)
 	if (!t)
 		return "This hall cannot grow any further."
-	if (!map || map.ordinal_age < faction_hall_tiers[t][3])
-		return "A [faction_hall_tiers[t][1]] needs the [ordinal_age_name(faction_hall_tiers[t][3])]."
+	if (!map || map.ordinal_age < tiers()[t][3])
+		return "A [tiers()[t][1]] needs the [ordinal_age_name(tiers()[t][3])]."
 	var/area/A = get_area(src)
-	if (faction_hall_tiers[t][4] && (!A || A.location == AREA_OUTSIDE))
-		return "A [faction_hall_tiers[t][1]] must stand indoors, under a roof."
+	if (tiers()[t][4] && (!A || A.location == AREA_OUTSIDE))
+		return "A [tiers()[t][1]] must stand indoors, under a roof."
 	return null
 
 /obj/structure/faction_hall/examine(mob/user)
@@ -151,10 +158,25 @@ var/global/list/faction_hall_tiers = list(
 		to_chat(user, "No faction holds it yet. A faction leader can designate it as their faction's hall.")
 		return
 	if (tier && !tier_stands(tier))
-		to_chat(user, SPAN_WARNING("A [faction_hall_tiers[tier][1]] must stand indoors; out in the open it counts for nothing."))
-	if (map)
-		to_chat(user, "[faction] may take in up to [map.faction_member_limit(faction)] members.")
+		to_chat(user, SPAN_WARNING("A [tiers()[tier][1]] must stand indoors; out in the open it counts for nothing."))
+	var/limit = limit_text()
+	if (limit)
+		to_chat(user, limit)
 	to_chat(user, progress_text())
+
+// What the seat's tiers do for its faction now, or null.
+/obj/structure/faction_hall/proc/limit_text()
+	return map ? "[faction] may take in up to [map.faction_member_limit(faction)] members." : null
+
+// Why user cannot designate this seat for their faction, or null.
+/obj/structure/faction_hall/proc/designate_block(mob/living/human/user)
+	if (!map || !map.allows_custom_factions() || !user.civilization || user.civilization == "none" || !map.is_faction_leader(user, user.civilization))
+		return "Only a faction's leader can designate a hall."
+	return null
+
+/obj/structure/faction_hall/proc/designate_prompt(name)
+	return "Make this the hall of [name]? Only a hall that stands lets the faction grow, and raiders can burn it."
+
 
 /obj/structure/faction_hall/attack_hand(mob/living/human/user)
 	if (!ishuman(user))
@@ -162,17 +184,18 @@ var/global/list/faction_hall_tiers = list(
 	if (faction)
 		examine(user)
 		return
-	if (!map || !map.allows_custom_factions() || !user.civilization || user.civilization == "none" || !map.is_faction_leader(user, user.civilization))
-		to_chat(user, SPAN_WARNING("Only a faction's leader can designate a hall."))
+	var/block = designate_block(user)
+	if (block)
+		to_chat(user, SPAN_WARNING(block))
 		return
 	var/name = user.civilization
-	var/answer = WWinput(user, "Make this the hall of [name]? Only a hall that stands lets the faction grow, and raiders can burn it.", "Faction Hall", "Cancel", list("Designate", "Cancel"))
-	if (answer != "Designate" || faction || user.civilization != name || !map.is_faction_leader(user, name) || get_dist(user, src) > 1 || user.stat)
+	var/answer = WWinput(user, designate_prompt(name), initial(src.name), "Cancel", list("Designate", "Cancel"))
+	if (answer != "Designate" || faction || user.civilization != name || designate_block(user) || get_dist(user, src) > 1 || user.stat)
 		return
 	faction = name
 	update_icon()
-	map.recruitment_audit(name, "[user.real_name] designated a hall at [x],[y].", faction_roster_account(user) || "")
-	visible_message(SPAN_NOTICE("[user] makes this the hall of [name]."))
+	map.recruitment_audit(name, "[user.real_name] designated a [hall_word] at [x],[y].", faction_roster_account(user) || "")
+	visible_message(SPAN_NOTICE("[user] makes this the [hall_word] of [name]."))
 
 /obj/structure/faction_hall/attackby(obj/item/W, mob/living/human/user)
 	if (!istype(W, /obj/item/stack) || !faction || !ishuman(user))
@@ -186,14 +209,14 @@ var/global/list/faction_hall_tiers = list(
 		to_chat(user, SPAN_WARNING(block))
 		return TRUE
 	var/obj/item/stack/S = W
-	var/list/needs = faction_hall_tiers[t][5]
+	var/list/needs = tiers()[t][5]
 	for (var/kind in needs)
 		var/list/need = needs[kind]
 		if (!stack_matches_recipe_material(S, need[1]))
 			continue
 		var/missing = need[2] - (delivered[kind] || 0)
 		if (missing <= 0)
-			to_chat(user, SPAN_NOTICE("The [faction_hall_tiers[t][1]] needs no more [need[3]]."))
+			to_chat(user, SPAN_NOTICE("The [tiers()[t][1]] needs no more [need[3]]."))
 			return TRUE
 		var/amount = min(missing, S.amount)
 		if (amount < 1 || !S.use(amount))
@@ -212,10 +235,10 @@ var/global/list/faction_hall_tiers = list(
 	tier = t
 	delivered = list()
 	update_icon()
-	log_game("Faction hall: [faction] raised its hall at [x],[y],[z] to a [faction_hall_tiers[t][1]][user ? " ([key_name(user)])" : ""].")
+	log_game("Faction [hall_word]: [faction] raised its [hall_word] at [x],[y],[z] to a [tiers()[t][1]][user ? " ([key_name(user)])" : ""].")
 	if (map)
-		map.recruitment_audit(faction, "The hall became a [faction_hall_tiers[t][1]]; the faction may take in [map.faction_member_limit(faction)] members.", user ? (faction_roster_account(user) || "") : "")
-	visible_message(SPAN_NOTICE("The hall of [faction] is now a [faction_hall_tiers[t][1]]."))
+		map.recruitment_audit(faction, "The [hall_word] became a [tiers()[t][1]]. [limit_text()]", user ? (faction_roster_account(user) || "") : "")
+	visible_message(SPAN_NOTICE("The [hall_word] of [faction] is now a [tiers()[t][1]]."))
 
 #undef FACTION_HALL_BASE_LIMIT
 #undef FACTION_HALL_COLONY_BONUS
