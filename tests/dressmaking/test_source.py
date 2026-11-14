@@ -100,10 +100,24 @@ class TailoringTests(unittest.TestCase):
                 self.assertGreaterEqual(worn.get(state, 0), 4)
                 self.assertIn(state, item)
         info = re.search(r'var/global/list/tailoring_piece_info = list\((.*?)\)\n\n', SOURCE, re.S)[1]
-        for state, node, cost in re.findall(r'"(tl_\w+)" = list\("(\w+)", (\d+)\)', info):
+        for state, node, cost in re.findall(r'"(tl_\w+)" = list\("(\w+)", (\d+), [^)]*\)', info):
             with self.subTest(piece=state):
                 self.assertIn(state, states)
                 self.assertTrue(0 <= int(cost) <= 2)
+
+    def test_fabric_and_dyes(self):
+        fabrics = re.search(r'var/global/list/tailoring_fabrics = list\((.*?)\)\n\n', SOURCE, re.S)[1]
+        self.assertIn('"cloth" = list("stack" = /obj/item/stack/material/cloth', fabrics)
+        self.assertIn('"woolcloth" = list("stack" = /obj/item/stack/material/woolcloth', fabrics)
+        dyes = re.search(r'var/global/list/tailoring_dye_tiers = list\((.*?)\)\n\n', SOURCE, re.S)[1]
+        colors = re.findall(r'"(#[0-9a-f]{6})"', dyes)
+        self.assertEqual(len(colors), len(set(colors)))
+        self.assertIn('"undyed" = "#ffffff"', dyes)
+        self.assertIn('#define TAILORING_ANY_DYE_NODE "textile_mills"', SOURCE)
+        stack = (ROOT / 'code/game/objects/items/stacks/stack.dm').read_text()
+        self.assertIn('project.fabric_kind = tailoring_fabric_kind_of(src) || project.fabric_kind', stack)
+        attack = adapter.extract(SOURCE, '/obj/item/tailoring_project/attackby')
+        self.assertLess(attack.index('if (sheet_kind != fabric_kind)'), attack.index('S.use(1)'))
 
     def test_actor_guard_checks_hands_ability_research_and_save_identity(self):
         body = adapter.extract(SOURCE, '/obj/item/tailoring_project/proc/actor_ready')
@@ -115,7 +129,7 @@ class TailoringTests(unittest.TestCase):
             self.assertIn(term, body)
         for name in ('cut_fabric', 'sew_garment'):
             proc = adapter.extract(SOURCE, '/obj/item/tailoring_project/proc/' + name)
-            self.assertIn('tailoring_design_allowed(user, design_body, design_pieces)', proc)
+            self.assertIn('tailoring_design_allowed(user, design_body, design_pieces, design_colors)', proc)
             # Re-check after every wait: the world can change while cutting.
             wait = proc.index('wait_for_tailoring(')
             self.assertIn('!actor_ready(user, site, save_epoch)', proc[wait:])
@@ -165,7 +179,7 @@ class TailoringTests(unittest.TestCase):
         self.assertIn('crafting_node_allowed_or_warn(user, "weaving")', trace)
         load = adapter.extract(SOURCE, '/obj/item/tailoring_project/proc/load_pattern')
         self.assertIn('if (stage != 0)', load)
-        self.assertIn('tailoring_design_allowed(user, P.design_body, P.design_pieces)', load)
+        self.assertIn('tailoring_design_allowed(user, P.design_body, P.design_pieces, P.design_colors)', load)
         self.assertIn('tailoring_name_blocked(design_author)', load)
         clean = adapter.extract(SOURCE, '/proc/tailoring_clean_name')
         self.assertIn('sanitizeSafe(text, TAILORING_NAME_MAX + 1)', clean)

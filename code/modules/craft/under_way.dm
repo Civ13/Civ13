@@ -22,6 +22,7 @@
 	var/tmp/hop_timer = 0
 	var/tmp/warn_timer = 0
 	var/tmp/turning_to = 0
+	var/tmp/turn_held_for_save = FALSE // The crew was told a turn waits for a save.
 	var/tmp/list/path_markers = list()
 	var/tmp/sailing_at = 0       // The telegraph step the running timer was set for.
 	var/tmp/tiles_since_burn = 0 // Tiles glided since her drives last paid.
@@ -234,9 +235,18 @@
 
 /datum/craft/proc/finish_turn()
 	var/heading = turning_to
-	turning_to = 0
 	if (!heading)
 		return FALSE
+	// A turn that falls due while the world saves waits for the save to end:
+	// a template body rewrites every deck when it turns.
+	if (persistence_save_in_progress && body && body.placed() && !anchored)
+		if (!turn_held_for_save)
+			turn_held_for_save = TRUE
+			crew_message(SPAN_NOTICE("She holds her turn while the world saves."))
+		addtimer(CALLBACK(src, PROC_REF(finish_turn)), VESSEL_PATH_WARNING)
+		return FALSE
+	turn_held_for_save = FALSE
+	turning_to = 0
 	if (!body || !body.placed() || anchored)
 		clear_path()
 		return FALSE

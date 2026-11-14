@@ -33,6 +33,74 @@
 	for (var/obj/item/I in site)
 		qdel(I)
 
+// Fabric sets warmth, padding and tone; dyes follow knowledge.
+/proc/dressmaking_ci_fabric_and_dyes(mob/living/human/handle_ci/dress_ci/H, turf/site, datum/save_epoch)
+	dressmaking_ci_clear(site)
+	dressmaking_ci_expect(tailoring_tint("#ffffff", "#e6dccb") == "#e6dccb" && tailoring_tint("#808080", "#ffffff") == "#808080", "fabric tone multiplies dyes")
+	dressmaking_ci_expect(tailoring_dye_node("#A8342C") == "classical_dress" && tailoring_dye_node("#ffffff") == "weaving" && tailoring_dye_node("#123456") == "textile_mills", "every colour has a dye tier")
+	dressmaking_ci_expect(!tailoring_known_dyes(H), "textile mills dye any colour")
+	var/old_persistence = map.persistence
+	map.persistence = FALSE
+	var/list/mills = map.ensure_node_entry("recipe_ci", "textile_mills")
+	var/list/fine = map.ensure_node_entry("recipe_ci", "fine_garments")
+	mills[RNODE_ENTRY_STATUS] = RNODE_LOCKED
+	var/list/dyes = tailoring_known_dyes(H)
+	dressmaking_ci_expect(dyes && dyes["undyed"] == "#ffffff" && dyes["madder red"] && dyes["kermes crimson"] && !("#123456" in dyes), "known dye tiers without textile mills")
+	dressmaking_ci_expect(tailoring_design_allowed(H, "made_shirt", null, "#ffffff|#a8342c|#b01c30") && !tailoring_design_allowed(H, "made_shirt", null, "#ffffff|#123456") && tailoring_missing_node(H, "made_shirt", null, "#ffffff|#123456") == "textile_mills", "a mixed colour needs textile mills")
+	fine[RNODE_ENTRY_STATUS] = RNODE_LOCKED
+	dressmaking_ci_expect(!tailoring_design_allowed(H, "made_shirt", null, "#b01c30") && tailoring_missing_node(H, "made_shirt", null, "#b01c30") == "fine_garments", "a costly dye needs fine garments")
+	var/obj/item/tailoring_project/dress_ci/dyed = new(H)
+	H.r_hand = dyed
+	dyed.design_body = "made_shirt"
+	dyed.design_colors = "#123456"
+	dyed.fabric = 8
+	dressmaking_ci_expect(!dyed.cut_fabric(H, site, save_epoch) && dyed.stage == 0, "an unknown dye cannot be cut")
+	fine[RNODE_ENTRY_STATUS] = RNODE_DONE
+	mills[RNODE_ENTRY_STATUS] = RNODE_DONE
+	map.persistence = old_persistence
+	// A wool shirt with long sleeves and trousers: warmer, padded, toned, covered.
+	dyed.fabric_kind = "woolcloth"
+	dyed.design_colors = "#ffffff|#ffffff|#ffffff|#ffffff"
+	dyed.design_pieces = "Plain|Long|Plain|Trousers"
+	dressmaking_ci_expect(dyed.cut_fabric(H, site, save_epoch), "a wool design cuts")
+	var/obj/item/stack/material/woolcloth/spare = locate() in site
+	dressmaking_ci_expect(spare && spare.amount == 3 && !(locate(/obj/item/stack/material/cloth) in site), "spare wool comes back as wool")
+	if (spare)
+		qdel(spare)
+	dressmaking_ci_expect(dyed.sew_garment(H, site, save_epoch), "a wool design sews")
+	var/obj/item/clothing/under/tailored/wool = locate() in site
+	if (!wool)
+		dressmaking_ci_expect(FALSE, "wool shirt exists")
+		return
+	var/list/layers = wool.worn_design_layers()
+	var/image/main = layers[1]
+	dressmaking_ci_expect(wool.design_fabric == "woolcloth" && wool.min_cold_protection_temperature == 225 && wool.armor["melee"] == 5 && wool.armor["arrow"] == 5 && main.color == "#e6dccb", "wool is warmer, padded and darker")
+	dressmaking_ci_expect(wool.body_parts_covered == (UPPER_TORSO|LOWER_TORSO|LEGS|ARMS) && wool.cold_protection == wool.body_parts_covered, "sleeves and trousers add coverage")
+	// Linen keeps the ordinary stats and exact dyes.
+	var/obj/item/clothing/suit/storage/jacket/tailored/linen = new(site)
+	linen.design_body = "made_cloak"
+	linen.design_colors = "#a8342c"
+	linen.design_pieces = "Hood"
+	linen.design_fabric = "cloth"
+	linen.tailoring_refresh()
+	var/list/cloak_layers = linen.worn_design_layers()
+	var/image/cloak = cloak_layers[1]
+	dressmaking_ci_expect(linen.min_cold_protection_temperature == 225 && linen.armor["melee"] == 0 && cloak.color == "#a8342c" && (linen.body_parts_covered & HEAD), "a linen cloak with a hood")
+	// Fabric survives a save.
+	var/savefile/F = new("dressmaking-fabric.sav")
+	F["/format_version"] << 2
+	map_storage.clear_bookkeeping()
+	map_storage.saving_z = 1
+	var/ref = map_storage.BuildVarDirectory(F, wool, 1)
+	map_storage.clear_bookkeeping()
+	var/obj/item/clothing/loaded = map_storage.Load_Entry(F, ref, starting_loc = site)
+	if (loaded)
+		loaded.after_load()
+	dressmaking_ci_expect(loaded && loaded.design_fabric == "woolcloth" && loaded.min_cold_protection_temperature == 225 && loaded.armor["melee"] == 5, "wool round trip keeps its stats")
+	qdel(loaded)
+	dressmaking_ci_clear(site)
+	tailoring_named_items = list()
+
 // Mix-and-match pieces: every variant draws, costs and validates; unknown
 // pieces are refused; research gates pieces; patterns and saves keep them.
 /proc/dressmaking_ci_pieces(mob/living/human/handle_ci/dress_ci/H, turf/site, datum/save_epoch)
@@ -261,9 +329,15 @@
 		stock.produce_recipe(R, 1, H)
 		var/obj/item/tailoring_project/paid = locate() in site
 		dressmaking_ci_expect(paid && paid.fabric == 1 && stock.amount == 5, "project pays one sheet of [material_path]")
+		dressmaking_ci_expect(paid && paid.fabric_kind == (material_path == /material/cloth ? "cloth" : "woolcloth"), "project is made of the paying fabric [material_path]")
 		if (paid)
 			paid.attackby(stock, H)
 			dressmaking_ci_expect(paid.fabric == 2 && stock.amount == 4, "a held sheet adds fabric for [material_path]")
+			var/other_type = material_path == /material/cloth ? /obj/item/stack/material/woolcloth : /obj/item/stack/material/cloth
+			var/obj/item/stack/other = new other_type(site, 3, FALSE)
+			paid.attackby(other, H)
+			dressmaking_ci_expect(paid.fabric == 2 && other.amount == 3, "another fabric is refused [material_path]")
+			qdel(other)
 			paid.fabric = 8
 			paid.attackby(stock, H)
 			dressmaking_ci_expect(paid.fabric == 8 && stock.amount == 4, "a full project refuses more fabric for [material_path]")
@@ -420,6 +494,7 @@
 	dressmaking_ci_expect(old_project.design_body == "layered_dress" && old_project.fabric == 4 && old_project.stage == 1, "old dress project restores as tailoring")
 	qdel(old_project)
 	dressmaking_ci_pieces(H, site, save_epoch)
+	dressmaking_ci_fabric_and_dyes(H, site, save_epoch)
 	dressmaking_ci_patterns(H, site, save_epoch)
 	qdel(H)
 	dressmaking_ci_clear(site)
