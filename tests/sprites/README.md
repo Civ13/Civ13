@@ -122,4 +122,6 @@ the runner's `finally` unlink path, and the second run's generated-file prefligh
 confirmed the first run's files were absent; no separate post-negative filesystem
 listing was retained. These limits are not waived by a green workflow.
 
+`create_craft_button.py` owns the `craft` HUD button (hammer over an anvil) in `icons/mob/screen/1713Style.dmi`, `litewebStyle.dmi` and `FoFStyle.dmi`, drawn on each sheet's own blank button frame in that sheet's picture colours. Rerun `python3 tools/hud-skin/build_console_style.py` afterwards so `ConsoleStyle.dmi` follows. `--check` verifies the committed sheets, `--preview <png>` writes a review sheet. It leaves every other state in those sheets untouched.
+
 `create_clay_lime_fire.py` owns `icons/obj/workshop_machines.dmi`: the potter's wheel, bellows, brick mould bench, lime kiln and quicklime. `--check` verifies the committed sheet, `--preview <png>` writes a review sheet on grass, stone, snow and night.
