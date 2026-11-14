@@ -819,7 +819,8 @@ class AcquisitionProjection(Projection):
             tile_build_refusal=lambda *_args: None,
             # Mirrors /proc/recipe_age_allowed: max era 8 (RECIPE_OPEN_ENDED_AGE) never retires a row.
             recipe_age_allowed=lambda max_age: max_age >= 8 or self.globals['map'].ordinal_age <= max_age,
-            construct=self.construct, handReturnMap={})
+            construct=self.construct, handReturnMap={},
+            secondary_forget=lambda *args: None, secondary_refund=lambda *args: None)
 
     def expression(self, text, receiver, local):
         # Known DM interpolation/ternary and dynamic-constructor adapters only.

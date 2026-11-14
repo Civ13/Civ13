@@ -1,6 +1,7 @@
 """Source contracts for modern bridges. Never launches BYOND."""
 from pathlib import Path
 import glob
+import re
 import sys
 import unittest
 
@@ -21,8 +22,10 @@ class ModernBridgeSourceTests(unittest.TestCase):
             text = Path(path).read_text(encoding='utf-8')
             if ',/obj/covers/steelplating,' in text:
                 self.assertIn('RECIPE: /material/steel/,steel bridge span,/obj/item/weapon/bridge_span,', text, path)
-            if ',/obj/covers/concretefloor,' in text:
-                self.assertIn('RECIPE: /material/clay/,concrete bridge span,/obj/item/weapon/bridge_span/concrete,', text, path)
+            # the span is cast from whatever that file builds concrete floors from
+            floor = re.search(r'(?m)^RECIPE: (/material/\w+/),[^,]*,/obj/covers/concretefloor,', text)
+            if floor:
+                self.assertIn('RECIPE: %s,concrete bridge span,/obj/item/weapon/bridge_span/concrete,' % floor.group(1), text, path)
 
     def test_spans_need_industrial_research(self):
         nodes = (ROOT / 'code/modules/research_tree/research_node.dm').read_text(encoding='utf-8')
