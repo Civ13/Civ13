@@ -629,6 +629,27 @@ The carriage saves the register in `register_state`.
   step newly covers must be clear: people and large animals stop it (and are
   run into), small animals are run over, deep water needs a bridge.
 
+## Vehicle load
+
+`code/modules/1713/machinery/modular_vehicles/vehicle_load.dm` makes what a
+land vehicle carries set its pace. `get_speed()` multiplies the gear's listed
+delay by `get_load_factor()`: the vehicle as loaded against the same body with
+steel walls and a normal load (one person per seat plus 10 per frame). Wall
+sides weigh 0.5 per point of armour (`frame.wall_weight()`), so a lighter hull
+material only has to override that proc. Loose items other than the fuel
+tank, crates and the contents of crates are cargo; everything else on the
+frames is fitted.
+
+- A normally loaded vehicle reads exactly 1.0 and drives as before; the factor
+  runs from 0.7 to 1.5. At 0.8 or less `top_gear()` allows one gear above the
+  list, a tick quicker than the last (`gear_delay()`).
+- Turning time is `loaded_turntimer()`, the same factor held to 0.7 to 1.3.
+- The factor is cached and rechecked at most every 2 seconds, and the movement
+  loop refreshes the delay after each step, so boarding or unloading on the
+  move changes the pace.
+- Boats, ships and aircraft opt out (`uses_load_factor()`); the engine stall
+  limit in `check_engine()` is unchanged.
+
 ## Tests
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/craft_probe.dm 300
@@ -637,6 +658,7 @@ The carriage saves the register in `register_state`.
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/papers_probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/vehicle_papers/probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/draft_carriage/probe.dm 300
+    python3 tests/ecology_spawning/run_linux.py . tests/vehicle_load/probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/freight_probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/depot_jobs_probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/built_hull_probe.dm 300

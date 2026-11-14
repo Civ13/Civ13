@@ -62,6 +62,7 @@
 					NB.author = NC.author
 					NB.unique = NC.unique
 					NB.title = NC.title
+					drawing_set_list(NB, drawings_copy(NC.drawings))
 					qdel(B)
 				else if (istype(src, /obj/item/weapon/book/holybook))
 					var/obj/item/weapon/book/holybook/NC = src
@@ -143,6 +144,7 @@
 	return
 
 /obj/item/weapon/book/proc/show_content(var/mob/user, var/forceshow=0)
+	show_drawings(user)
 	var/display_snapshot
 	if (!(istype(user, /mob/living/human) || isghost(user) && !forceshow))
 		display_snapshot = stars(dat)

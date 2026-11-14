@@ -334,7 +334,7 @@ var/list/material/name_to_material
 /material/gold
 	name = "gold"
 	icon_colour = "#EDD12F"
-	hardness = 70
+	hardness = 30
 	weight = 24
 	door_icon_base = "metal"
 	sheet_singular_name = "ingot"
