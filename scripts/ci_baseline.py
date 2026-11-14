@@ -846,6 +846,12 @@ SUITES = {
         'paths': ('tests/material_roles/', 'code/modules/materials/material_properties.dm',
                   'code/modules/materials/part_roles.dm', 'code/__defines/material_roles.dm'),
         'shared_paths': ('code/modules/materials/materials.dm',)},
+    'tool_material_speeds': {'files': ('tests/tool_material_speeds/test_tool_material_speeds.py',),
+        'paths': ('tests/tool_material_speeds/', 'code/modules/materials/tool_speeds.dm'),
+        'shared_paths': ('code/modules/materials/part_roles.dm', 'code/modules/materials/material_properties.dm',
+                         'code/modules/1713/tools.dm', 'code/game/objects/items/weapons/tools.dm',
+                         'code/game/objects/items/weapons/material/material_weapons.dm',
+                         'code/game/objects/items/weapons/material/misc.dm')},
     'anvil_mold_costs': {'files': ('tests/anvil_mold_costs/test_anvil_mold_costs.py',),
         'paths': ('tests/anvil_mold_costs/',), 'shared_paths': ()},
     'processing_recipes': {'files': ('tests/processing_recipes/test_processing_recipes.py',),
@@ -1256,7 +1262,7 @@ SUITES = {
     # Razor grooming guard and hygiene-gated razor recipes; source checks only.
     'razor_grooming': {'files': ('tests/razor_grooming/test_razor.py',),
         'paths': ('tests/razor_grooming/',), 'shared_paths': (
-            'code/game/objects/items/weapons/material/kitchen.dm',
+            'code/game/objects/items/weapons/material/misc.dm',
             'config/crafting/material_recipes_global.txt',
             'code/modules/research_tree/research_node.dm',
             'code/modules/research_tree/book_pages.dm')},

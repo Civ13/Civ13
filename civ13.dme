@@ -1351,6 +1351,7 @@
 #include "code\modules\1713\primitive_woodworking.dm"
 #include "code\modules\materials\materials.dm"
 #include "code\modules\materials\part_roles.dm"
+#include "code\modules\materials\tool_speeds.dm"
 #include "code\modules\multiz\_stubs.dm"
 #include "code\modules\multiz\area_teleporter.dm"
 #include "code\modules\multiz\building_admission.dm"
