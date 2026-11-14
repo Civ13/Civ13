@@ -261,11 +261,23 @@ var/global/probe_people = 0
 	map.faction_roster_rename("Alpha", "Alpha Two")
 	check(!map.faction_rosters()["Alpha"] && map.faction_limits()["Alpha Two"], "a rename carries the roster and limit")
 	map.faction_roster_rename("Alpha Two", "Alpha")
+	var/had_alpha = ("Alpha" in map.custom_civs)
+	if (!had_alpha)
+		map.custom_civs["Alpha"] = list(0, 0, 0, null, 0)
+	map.faction_colonies()["Alpha"] = list("civ:europe:Alpha", 5)
+	map.faction_colonies()["Junk"] = list("Alpha", 5)
+	check(map.colony_named_for("civ:europe:Alpha") == "Alpha" && !map.colony_named_for("civ:asia:Alpha"), "a colony is found by its parent")
+	map.faction_roster_rename("Alpha", "Alpha Two")
+	check(map.faction_colonies()["Alpha Two"] && !map.faction_colonies()["Alpha"], "a rename carries the colony")
+	map.faction_roster_rename("Alpha Two", "Alpha")
+	if (!had_alpha)
+		map.custom_civs -= "Alpha"
 	map.faction_rosters()["Alpha"]["Bad Key"] = list(1, 2)
 	map.faction_rosters()["Alpha"]["short"] = list(1)
 	map.faction_limits()["Beta"] = 0
 	map.recruitment_normalize()
 	check(!map.faction_rosters()["Alpha"]["Bad Key"] && !map.faction_rosters()["Alpha"]["short"] && !map.faction_limits()["Beta"], "malformed roster rows and limits are dropped")
+	check(map.faction_colonies()["Alpha"] && !map.faction_colonies()["Junk"], "a colony with a bad parent is dropped")
 
 	// Queue limit (3 in this fixture) and malformed state.
 	for (var/i = 1, i <= 4, i++)

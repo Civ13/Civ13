@@ -62,6 +62,25 @@ def land_stage_valid(entry):
             and isinstance(entry.get('at'), int))
 
 
+
+MAX_COLONIES = 50
+FACTION_NAME_MAX = 64
+
+
+def faction_id_valid(value):
+    """A faction named with the land it was founded in: civ:<land>:<name>
+    (party_train.dm party_train_faction_party)."""
+    if type(value) is not str or len(value) > 100 or not value.startswith('civ:'):
+        return False
+    land, sep, name = value[4:].partition(':')
+    return bool(sep) and land_id_valid(land) and 0 < len(name) <= FACTION_NAME_MAX
+
+
+def colony_valid(c):
+    return (type(c) is dict and faction_id_valid(c.get('parent')) and type(c.get('name')) is str
+            and 0 < len(c['name']) <= FACTION_NAME_MAX and type(c.get('age_hours')) is int
+            and 0 <= c['age_hours'] <= 1_000_000 and type(c.get('members')) is int and 0 <= c['members'] <= 1000)
+
 def account_key_valid(ckey):
     """A BYOND ckey: lowercase letters, digits and @, 1 to 32 characters."""
     return isinstance(ckey, str) and 0 < len(ckey) <= 32 and all(c.isdigit() or ('a' <= c <= 'z') or c == '@' for c in ckey)
@@ -856,14 +875,20 @@ class RegionStore(TrainLeaseQueue):
                                      (region, stage, 1 if paused else 0, admin))
         return {'id': cursor.lastrowid}
 
-    def land_sample(self, players, living):
+    def land_sample(self, players, living, colonies=None):
         """The world's population now: players connected and living characters
-        that belong to an account. The coordinator reads the latest one each pass."""
+        that belong to an account, and the colonies planted here (each with the
+        faction it was planted for, its local name, its age in hours, and its living
+        members). The coordinator reads the latest one each pass."""
         if type(players) is not int or type(living) is not int or not 0 <= players <= 1000 or not 0 <= living <= 10000:
             raise TransferError('bad population sample')
+        colonies = [] if colonies is None else colonies
+        if type(colonies) is not list or len(colonies) > MAX_COLONIES or not all(colony_valid(c) for c in colonies):
+            raise TransferError('bad colony list')
+        sample = {'players': players, 'living': living, 'at': int(time.time()),
+                  'colonies': [{k: c[k] for k in ('parent', 'name', 'age_hours', 'members')} for c in colonies]}
         with self._tx():
-            self._set_meta('land_sample', json.dumps({'players': players, 'living': living, 'at': int(time.time())},
-                                                     sort_keys=True))
+            self._set_meta('land_sample', json.dumps(sample, sort_keys=True))
         return {}
 
     def lands(self):

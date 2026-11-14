@@ -41,7 +41,7 @@ def call(url, token, path, body=None, timeout=5):
 if __package__ in (None, ''):
     sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 from tools.transfer_storage.train_custody import TrainCustody
-from tools.transfer_storage.region import LAND_STAGES, account_key_valid, land_id_valid
+from tools.transfer_storage.region import LAND_STAGES, account_key_valid, colony_valid, land_id_valid
 from tools.transfer_storage.world_chart import WorldChart, owner_valid, tile_valid
 
 
@@ -57,6 +57,10 @@ OPEN_HOMES = 10
 OPEN_MAINLAND_AVG = 20
 PAUSE_MAINLAND_AVG = 15
 SAMPLE_FRESH_SECONDS = 180  # worlds sample about once a minute
+# A colony (a faction planted in another land with a colony charter) moves its
+# land to COLONY once it has stood this long with this many living members.
+COLONY_MEMBERS = 3
+COLONY_SECONDS = 3 * 24 * 3600
 
 
 def land_rows(db, regions, mainland):
@@ -74,9 +78,9 @@ def land_rows(db, regions, mainland):
 
 
 def land_readiness(db, lands, mainland, now):
-    """Population numbers for each land over the last week, and the stage
-    change they suggest (None, 'OPEN', 'PAUSE' or 'RESUME'). Adds a 'readiness'
-    entry to each land in lands and returns lands."""
+    """Population numbers for each land over the last week, its colonies, and
+    the stage change they suggest (None, 'COLONY', 'OPEN', 'PAUSE' or 'RESUME').
+    Adds 'readiness' and 'colonies' entries to each land in lands and returns lands."""
     since = int(now // 3600) - READY_WINDOW_HOURS
     homes = dict(db.execute('SELECT region, COUNT(*) FROM home WHERE region IS NOT NULL GROUP BY region'))
     stats = {}
@@ -88,11 +92,20 @@ def land_readiness(db, lands, mainland, now):
         'SELECT region, living FROM land_hour h WHERE hour = (SELECT MAX(hour) FROM land_hour WHERE region = h.region)')}
     main_hours, main_avg, _ = stats.get(mainland, (0, 0.0, 0))
     main_living = living.get(mainland, 0)
+    colonies = {}
+    for region, parent, name, founded, members in db.execute(
+            'SELECT region, parent, name, founded, members FROM colony ORDER BY region, founded, name'):
+        colonies.setdefault(region, []).append({'parent': parent, 'name': name, 'founded': founded, 'members': members})
     for region, entry in lands.items():
         hours, avg, peak = stats.get(region, (0, 0.0, 0))
         ready = {'homes': homes.get(region, 0), 'players_avg': round(avg, 1), 'players_peak': peak,
                  'living': living.get(region, 0), 'hours': hours, 'suggest': None}
-        if region != mainland and main_hours >= READY_MIN_HOURS:
+        entry['colonies'] = colonies.get(region, [])
+        settled = any(c['members'] >= COLONY_MEMBERS and now - c['founded'] >= COLONY_SECONDS for c in entry['colonies'])
+        if region != mainland and entry['stage'] in ('CLOSED', 'FRONTIER') and settled:
+            # A standing colony needs no mainland numbers: people live there.
+            ready['suggest'] = 'COLONY'
+        elif region != mainland and main_hours >= READY_MIN_HOURS:
             busy = main_avg >= OPEN_MAINLAND_AVG
             outgrown = ready['living'] > main_living
             if entry['stage'] in ('FRONTIER', 'COLONY') and ready['homes'] >= OPEN_HOMES and busy and not outgrown:
@@ -144,6 +157,10 @@ class Coordinator(TrainCustody):
             region TEXT NOT NULL, hour INTEGER NOT NULL, samples INTEGER NOT NULL,
             players_sum INTEGER NOT NULL, players_peak INTEGER NOT NULL, living INTEGER NOT NULL,
             PRIMARY KEY(region, hour))''')
+        # Colonies each land reported in its latest sample (colony charters).
+        self.db.execute('''CREATE TABLE IF NOT EXISTS colony(
+            region TEXT NOT NULL, parent TEXT NOT NULL, name TEXT NOT NULL, founded INTEGER NOT NULL,
+            members INTEGER NOT NULL, PRIMARY KEY(region, name))''')
         # Requests already decided but not yet acknowledged by their agent, so a
         # lost acknowledgement never replays an old request over newer ones.
         self.db.execute('''CREATE TABLE IF NOT EXISTS decided(
@@ -241,6 +258,14 @@ class Coordinator(TrainCustody):
         players, living = sample['players'], sample['living']
         if not 0 <= players <= 1000 or not 0 <= living <= 10000:
             return False
+        colonies = sample.get('colonies', [])
+        if type(colonies) is not list or not all(colony_valid(c) for c in colonies):
+            return False
+        # The world's own list is the truth: a colony it no longer reports is gone.
+        self.db.execute('DELETE FROM colony WHERE region = ?', (region,))
+        for c in colonies:
+            self.db.execute('INSERT OR REPLACE INTO colony VALUES (?, ?, ?, ?, ?)',
+                            (region, c['parent'], c['name'], int(now) - c['age_hours'] * 3600, c['members']))
         hour = int(now // 3600)
         self.db.execute('INSERT INTO land_hour VALUES (?, ?, 1, ?, ?, ?) ON CONFLICT(region, hour) DO UPDATE SET '
                         'samples = samples + 1, players_sum = players_sum + excluded.players_sum, '
