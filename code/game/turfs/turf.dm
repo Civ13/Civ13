@@ -315,6 +315,8 @@ var/const/enterloopsanity = 100
 
 		if (istype(M, /mob/living/human))
 			var/mob/living/human/H = M
+			// Walking onto stairs the way they climb goes up (edge_climbing.dm).
+			stairs_step_on(H, src, OL)
 			if (!istype(src, /turf/floor/beach/water) && !istype(src, /turf/floor/trench/flooded) && !H.on_fire)
 				if (H.overlays_standing[25])
 					H.overlays_standing[25] = null

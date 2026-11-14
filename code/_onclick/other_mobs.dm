@@ -17,6 +17,10 @@
 	if (grab_climb_ledge(A))
 		return
 
+	// On an upper level: grab the open air beside you to climb down (edge_climbing.dm).
+	if (grab_climb_down_edge(A))
+		return
+
 	// Grab a tree with a free hand to climb it (tree_climbing.dm).
 	if (grab_climb_tree(A))
 		return

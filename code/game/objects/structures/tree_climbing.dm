@@ -338,8 +338,9 @@ var/global/list/tree_canopy_tops = list()
 /mob/living/human/verb/climb_down_tree_verb()
 	set name = "Climb Down"
 	set category = "IC"
+	set desc = "Climb down from a tree, or over the edge of an upper floor onto the ground below. Keep a hand free."
 	if (!climbed_tree)
-		to_chat(src, SPAN_WARNING("You are not up a tree."))
+		climb_down_any_edge() // Not up a tree: climb down over open air (edge_climbing.dm).
 		return
 	start_climb_down()
 
