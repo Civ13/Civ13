@@ -76,7 +76,9 @@
 		/obj/item/clothing/accessory/storage/belt_pouch,
 		/obj/item/clothing/accessory/storage/sheath,
 		/obj/item/clothing/accessory/holster,
-		/obj/item/clothing/accessory/storage/tool_loop)
+		/obj/item/clothing/accessory/storage/tool_loop,
+		/obj/item/clothing/accessory/storage/lanyard/fob_chain,
+		/obj/item/clothing/accessory/storage/lanyard/retention)
 
 /obj/item/clothing/pouch_belt/can_attach_accessory(obj/item/clothing/accessory/A)
 	if (!is_type_in_list(A, belt_attachable))
