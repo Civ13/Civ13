@@ -247,6 +247,18 @@ class ExpeditionSlotTests(unittest.TestCase):
                                            start=lambda argv, cwd, log: started.append(argv) or 4242)
         argv = started[0]
         self.assertEqual('far1', argv[argv.index('--slots') + 1])
+        # A running coordinator restarts on refresh only when the slots changed.
+        killed = []
+        with mock.patch.object(shard_group, 'coordinator_pid', return_value=4242), \
+                mock.patch.object(shard_group, 'transfer_code', return_value=shard_group.read_record(
+                    Path(self.group['root']) / 'coordinator.json')['code']):
+            self.assertFalse(shard_group.ensure_coordinator(group, start=lambda *a: started.append(a[0]) or 4243,
+                                                            refresh=True, terminate=killed.append))
+            group['regions'] = [dict(r, kind='SURFACE') for r in group['regions']]
+            self.assertTrue(shard_group.ensure_coordinator(group, start=lambda *a: started.append(a[0]) or 4243,
+                                                           refresh=True, terminate=killed.append))
+        self.assertEqual([4242], killed)
+        self.assertNotIn('--slots', started[-1])
         self.assertEqual(str(Path(self.group['root']) / 'expeditions'), argv[argv.index('--expeditions') + 1])
 
     def test_command_line(self):
