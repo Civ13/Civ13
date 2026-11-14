@@ -1768,6 +1768,9 @@ SUITES = {
         'code/modules/persistence/functions.dm', 'code/modules/persistence/saving.dm',
         'code/modules/persistence/save_validator.dm', 'code/modules/persistence/stream/',
         'code/modules/persistence/train_body_graph.dm', 'code/modules/persistence/derived_assets.dm')},
+    # Offline source contracts for the disabled per-use divine approval foundation.
+    'divine_approval': {'files': ('tests/divine_approval/test_contract.py',), 'paths': (
+        'tests/divine_approval/', 'code/modules/divine/'), 'shared_paths': ('civ13.dme',)},
     # Offline source contracts for the fireman carry (grab on a downed human).
     'fireman_carry': {'files': ('tests/fireman_carry/test_source.py',), 'paths': (
         'tests/fireman_carry/', 'code/game/mob/grab_carry.dm'),
