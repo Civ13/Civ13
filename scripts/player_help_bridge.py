@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '78c76ce716c1d5ab2777a11bbdc060d0d053cf4e'
+WIKI_REVIEWED_REVISION = '6289d979ba4dc9db0880f9d2652fae44b9ca01dd'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('a567364dd25ed2d333915df91f4328eb4b79ac9a1af92f9f98db306eed911c8c', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('af81934c60bde5421a801ddf5fb2fa7c9415d559c1de0e41f9c3bc097b8da367', 'character skills traits languages'),
@@ -87,7 +87,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Leadership.md': ('d8fa16a65959d1c7f632c782de1129a9c6dfade1614a9e55ebcdd92851e972df', 'leadership squad leader officer commander artillery coordinates'),
     'guides/Guide_to_Medical.md': ('b498c1d49dd99afd1465489d71bb16bca59f108cc1ca71ba74bbe611465c3e77', 'medical heal injury wound surgery'),
     'guides/Guide_to_Pollution.md': ('f084e6ca8e6592361aba0dbc37f37d58b3f09bd20686bd067fdecdd71543f7ef', 'pollution polluted soot smog smoke charcoal clean ground growth'),
-    'guides/Guide_to_Power.md': ('2c86a3b73c4efdf01a21e2f17b18727c4d9066bcab5b47af8d3882e3f0291a59', 'power battery batteries electricity generator'),
+    'guides/Guide_to_Power.md': ('97e7324c9c32590744703371b1c25b3288c3f1ea9af1a5affab49479f53dedab', 'power battery batteries electricity generator'),
     'guides/Guide_to_Radiation.md': ('6b6295a3bb2bf0eb54d559e32a49eb18d512a50bec9366757df81b049e0e8d00', 'radiation radioactive exposure'),
     'guides/Guide_to_Ranching.md': ('2930c0b9e4d553e66bb3b3f78a74f742b9c7d19786fb1ac25326d95a952341c1', 'ranching livestock animal breeding'),
     'guides/Guide_to_Religion.md': ('8f2cba3283be55c895860478ffd6969b9ee7ad70ec90ecde479cd0ef622e9943', 'religion worship clergy shrine'),
@@ -99,7 +99,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Trenches.md': ('04bed9fb3d409455d466928f071ddfc509ba49a9d7b450815595f0bc27c9670b', 'trench trenches fortification sandbag dig shovel'),
     'guides/Guide_to_Weapons.md': ('97506f64ac6d4213d3e5cf72e6d82e6c845d70aa752e0402657acb8caccfe269', 'weapons gun reload ammunition'),
     'New_Player_Guide.md': ('70691e17262f75ee998bcddac0aea6ad6bf9fa994e10fecbdf06535e9a7b3397', 'new player beginner start first round basics'),
-    'Hotkeys.md': ('f89455a4be687613cece646e9c59748cb92d3df90ad5b8517eea53672c7d7d9d', 'hotkeys hotkey keys keyboard controls key press'),
+    'Hotkeys.md': ('5198ecb4aee6e0bf72cf322106b65664f317f78e9d8629fdb232b7350008b88f', 'hotkeys hotkey keys keyboard controls key press'),
     'role_guides.md': ('4117070c23ff3cfd2581b612cd08ae70ee170637381972cffebdf9c0161d78d5', 'role roles job jobs responsibilities'),
     'Governor.md': ('131ef4f1f37d1bd38c1cd0c71bf6805cd677f308bef000c39ddb3cf0e7cd584d', 'governor role laws treasury colony'),
     'Merchant.md': ('d02b7a67d0c47e32fbe37fec1425600a80e32e9daf08756f64c57d8e6b3cd4b4', 'merchant role supplies export trade colony'),
@@ -107,14 +107,14 @@ WIKI_REVIEWED_GUIDES = {
     'Blacksmith.md': ('73e814dbe4cda23643b735dc3d694e8c5b081bb082d6688a1e5d9cc81ee8816e', 'blacksmith role anvil forge colony'),
     'gamemodes/Game_Modes.md': ('aa29af667563cabab26238b30efc94f6e5ec44de1e1ef198bc3c96995e7da01b', 'game mode modes gamemode'),
     'gamemodes/Team_Combat.md': ('37102cd630a71889feff9884e1cc2cf8521fed380ad9404ad7ff6fa037748975', 'team combat tdm deathmatch siege king hill area control objectives grace'),
-    'gamemodes/Civilizations_and_Nomads.md': ('d35d82f634297b9f0e3ddd8d72cb13b9b9cf5ad970bab84ea04900b44613b9f3', 'civilizations nomads gaia faction'),
+    'gamemodes/Civilizations_and_Nomads.md': ('ce92b1134dcfd792876263d0daad723aad8bc5d0ce69c4e54bfd951d665ef0cf', 'civilizations nomads gaia faction'),
     'gamemodes/Colony_Building.md': ('498a18c35178fc60be2ab365642ff9d2540dcc2033018472df5ec9d8e1cbbace', 'colony building colonist colonists'),
     'gamemodes/Survival_Scenarios.md': ('d0102e9cd9e34835ee673175271b91be2b1d69a69473569f2c0e4422d92c67d4', 'survival scenario scenarios stranded wasteland zombie'),
     'gamemodes/Battle_Royale.md': ('18d1e4cf951f943bd7a0f5030c1825bd82a77427349b086842a309e492c4d841', 'battle royale battleroyale'),
     'gamemodes/Gladiators.md': ('36ac7d70edff2c99d78351585450428ad5cd02542b0cc3dfc5c178bca7d1ffb6', 'gladiator gladiators arena imperator custodes medicus'),
     'gamemodes/Prison_Roleplay.md': ('8da37041c99c23ab18012006e8afd8475acdd1485f8cb3eb48d23152f9cfb613', 'prison prisoner guard gulag nkvd'),
     'guides/Guide_to_Boats.md': ('a6c5918d48966cefe905677ff488956db8fb9ec2f9c5f616d632e7db8b1c00aa', 'boat boats ship sailing sail raft canoe rowing oars anchor swim swimming drown drowning current currents lifejacket naval torpedo torpedoes degaussing minesweeping'),
-    'guides/Guide_to_Aircraft.md': ('dd16a24217e86a1cd246882a60f3868ffc59dca26a6c489767d1fd05acacf918', 'aircraft airplane plane planes flying fly flight runway hangar pilot takeoff landing'),
+    'guides/Guide_to_Aircraft.md': ('2251ae9e40d50e29529cf247ed324fca792baaf85cfae8fd7bfc9b36c561933e', 'aircraft airplane plane planes flying fly flight runway hangar pilot takeoff landing'),
     'guides/Guide_to_Aircraft_Carriers.md': ('d0009e9680476ab3b7c220e0f4dda18191b0c23d94271ab32219ed8fedf1bf53', 'carrier carriers aircraft carrier flight deck shipyard office arresting wires elevator bunkers'),
     'guides/Guide_to_Races.md': ('46ef1bf361c519e71acbd679119429e838348827e25dbcac27282f67bee51097', 'race races species human humans'),
     'guides/Guide_to_Slang.md': ('52f9f6370922d7dede523e51247ae6ea0723d24118cecd26e594c051278dfc3f', 'slang terms jargon abbreviation meaning mean word words'),
@@ -128,7 +128,7 @@ WIKI_REVIEWED_GUIDES = {
     'maps/Nomads_Maps.md': ('fdcb67459889783669de97dcd8d686c2be3e332d7a243f86a5d67528e560480e', 'nomads maps map terrain biome biomes'),
     'gamemodes/Voyage.md': ('9922f438d0253c6b4d812bc852422a54c37f428b4c3221b2a732397ef245ddfe', 'voyage expedition ship mode'),
     'gamemodes/Events.md': ('de6e6133e735e5da8a03a290f45e599b82cee216d9b150d25c583e3c34606336', 'events event special rounds'),
-    'guides_overview.md': ('c99674a7060bf4e416a7a675759000093d9a7dce923724af7d1061d5071d56d5', 'guides overview list of guides index'),
+    'guides_overview.md': ('662dd7fa09d14a5fdd065162e9fb7b3a58d012980bd64216e5da5629c66699f3', 'guides overview list of guides index'),
 }
 WIKI_LEGACY_GUIDES = ('guides/Guide_to_Crafting.md', 'guides/Guide_to_Metallurgy.md', 'Starter_Guide.md')
 
