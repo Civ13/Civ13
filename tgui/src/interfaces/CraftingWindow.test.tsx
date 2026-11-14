@@ -212,6 +212,18 @@ describe('Crafting window', () => {
     fireEvent.click(card.getByText('Craft'));
     expect(props.act).toHaveBeenLastCalledWith('make', { make: '2:1:bbbbbbbb', quantity: 6 });
   });
+  it('names the station when a workstation opened the window', () => {
+    const props = ui({ station: 'iron anvil', material: 'iron', rows: [row('a1b2c3d4e5f60718', 'Conical Helmet', 'ready', { category: 'Helmets', purpose: 'Armor', cost: '5 iron', time: 50 })] });
+    render(<CraftingWindow {...props} />);
+    expect(screen.getByText('At the iron anvil')).toBeTruthy();
+    fireEvent.click(rowButton('Conical Helmet'));
+    fireEvent.click(within(screen.getByLabelText('Selected recipe')).getByText('Craft'));
+    expect(props.act).toHaveBeenLastCalledWith('make', { make: 'a1b2c3d4e5f60718', quantity: 1 });
+    cleanup();
+    render(<CraftingWindow {...ui()} />);
+    expect(screen.queryByText(/^At the/)).toBeNull();
+  });
+
   it('blocks further crafts and shows progress while one is under way', () => {
     const props = ui({ working: { id: '0:1:aaaaaaaa', name: 'campfire', time: 140 } }); render(<CraftingWindow {...props} />);
     expect(screen.getByText('Making campfire...')).toBeTruthy();

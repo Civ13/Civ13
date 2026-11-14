@@ -987,6 +987,7 @@ class BlockingTreeSurface(unittest.TestCase):
         method('opaque_borders_visible','target_tile_x, target_tile_y',['blocking_tiles','blockers','radius_x','radius_y','clear_footprints','blocks_target'])
         _offline.project(source,'/proc/los_own_tree(',env)
         env['los_up_tree']=lambda M:getattr(M,'up_tree',False)
+        env['los_on_vehicle_deck']=lambda M:getattr(M,'on_deck',False)
         snapshot.blocks_target=lambda tx,ty,tile_x,tile_y,opaque:any(env['los_target_blocked'](tx,ty,b.cell_x,b.cell_y,tile_x,tile_y,b.tile_x,b.tile_y,opaque) for b in snapshot.blockers)
         own_turf=Atom(type='/turf/floor',x=10,y=10,z=1,contents=[])
         body=N(type='/mob/living/human',see_invisible=25,x=10,y=10,z=1,loc=own_turf)

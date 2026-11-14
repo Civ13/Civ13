@@ -177,3 +177,39 @@ class Bypasses(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class RecipePlacement(unittest.TestCase):
+    """Recipes sit under the subject they belong to (Val, 2026-11-14)."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.nodes, _ = load()
+        text = (ROOT / "code/modules/research_tree/research_node.dm").read_text(encoding="utf-8-sig")
+        cls.gates = dict(re.findall(r'^\s*"(/[^"]+)"\s*=\s*"(\w+)"', text, re.M))
+
+    def test_firearm_and_blade_subjects_teach_no_armour(self):
+        armour = ("/obj/item/clothing/head/helmet/", "/obj/item/clothing/suit/armor/",
+                  "/obj/item/clothing/accessory/armor/", "/obj/item/clothing/gloves/gauntlets")
+        for path, node in self.gates.items():
+            if path.startswith(armour):
+                self.assertNotIn(node, ("steel_blades", "rifling", "cartridge_ammo", "selfloading_firearms",
+                                        "automatic_weapons"), path)
+
+    def test_metal_armour_needs_its_metal(self):
+        self.assertIn("iron_smithing", ancestors(self.nodes, "mail_plate"))
+        self.assertIn("steelmaking", ancestors(self.nodes, "trench_warfare"))
+        self.assertIn("alloys", ancestors(self.nodes, "modern_armor"))
+
+    def test_single_items_sit_with_their_kind(self):
+        for path, node in (
+                ("/obj/item/ammo_casing/bolt", "crossbows"),
+                ("/obj/item/weapon/material/pickaxe/stone", "basic_tools"),
+                ("/obj/item/weapon/material/kitchen/utensil/knife/bone", "basic_tools"),
+                ("/obj/structure/simple_door/key_door/anyone/ship", "wagons_ships"),
+                ("/obj/structure/closet/crate/cart/bronze", "carts"),
+                ("/obj/item/stack/cable_coil/white", "electricity")):
+            self.assertEqual(self.gates.get(path), node, path)
+
+    def test_a_proof_is_taught_by_a_prerequisite_of_its_milestone(self):
+        self.assertIn(self.gates["/obj/item/weapon/geiger_counter"], self.nodes["nuclear_power"]["prereqs"])

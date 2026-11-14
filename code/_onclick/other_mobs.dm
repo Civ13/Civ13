@@ -25,6 +25,11 @@
 	if (grab_climb_tree(A))
 		return
 
+	// Grab a vehicle from outside with a free hand to climb onto its roof
+	// (vehicle_decks.dm).
+	if (grab_climb_vehicle(A))
+		return
+
 	// Special glove functions:
 	// If the gloves do anything, have them return TRUE to stop
 	// normal attack_hand() here.

@@ -57,11 +57,10 @@
 		icon_state = activesprite
 		playsound(src,noise,40,1)
 		if (do_after(user, delay, src))
-			M.maxhealth -= damageamount
-			M.health = min(M.health + repairamount, M.maxhealth)
+			var/broke = M.repair_wear(repairamount, damageamount)
 			icon_state = idlesprite
 			visible_message("<span class='notice'>[user] finishes [actiontext]ing the [M.name].</span>")
-			if(M.maxhealth <= 0 || M.health <= 0)
+			if(broke)
 				qdel(M)
 				playsound(src, "shatter", 70, TRUE)
 				visible_message("<span class='alert'>The [M.name] breaks from strain!</span>")

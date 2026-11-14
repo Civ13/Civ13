@@ -88,13 +88,17 @@
 	if (!unbreakable)
 		if (material.is_brittle())
 			health = FALSE
+			check_health()
 		else if (!prob(material.hardness))
-			health -= plating_wear(1)
-		check_health()
+			apply_wear(1, WEAR_BLOW)
+		else
+			check_health()
 
-/obj/item/weapon/material/proc/check_health(var/consumed)
+/obj/item/weapon/material/check_health(consumed)
 	if (health<=0 || maxhealth <=0)
 		shatter(consumed)
+		return TRUE
+	return FALSE
 
 /obj/item/weapon/material/proc/shatter(var/consumed)
 	var/turf/T = get_turf(src)
@@ -126,10 +130,11 @@
 			H.adaptStat("strength", 1)
 		playsound(user.loc, pick('sound/weapons/blade_parry1.ogg', 'sound/weapons/blade_parry2.ogg', 'sound/weapons/blade_parry3.ogg'), 50, 1)
 		if (istype(damage_source, /obj/item/weapon/melee) || is_tool(damage_source, TOOL_HATCHET))
-			health -= plating_wear(5)
+			apply_wear(5, WEAR_BLOW)
 		else
-			health -= plating_wear(0.5)
-		check_health()
+			apply_wear(0.5, WEAR_BLOW)
+		if(QDELETED(src))
+			return 1
 		if(prob(15))
 			user.visible_message("<font color='#E55300'><big>\The [src] flies out of \the [user]'s hand!</big></font>")
 			user.drop_from_inventory(src)

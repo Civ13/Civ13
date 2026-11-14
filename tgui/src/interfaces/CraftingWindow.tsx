@@ -169,6 +169,7 @@ export function CraftingWindow(ui: ScreenProps) {
       <Sprite image={data.image} />
       <h2>{text(data.material)}</h2>
       <span className="craft-amount">{text(data.amount)} {text(data.where) || 'in your hand'}</span>
+      {data.station ? <span className="craft-station">At the {text(data.station)}</span> : null}
     </div>
     {!!data.reach && list(data.sources).length > 1 && <div className="craft-reach" role="group" aria-label="Materials within reach">
       <span className="craft-strip-label">In reach</span>
