@@ -91,9 +91,9 @@ class ChartTests(unittest.TestCase):
         self.assertEqual(c.coast(x, y), template['coast'])
         self.assertEqual(template, wc.roll_template(c.seed, x, y, 0, template['biome'], template['coast']))
 
-    def test_only_tiny_and_small_lands_are_rolled_for_now(self):
+    def test_every_size_of_land_is_rolled(self):
         sizes = {wc.roll_template('s', x, 1, 0, 'GRASSLAND', ['N'])['size'] for x in range(300)}
-        self.assertEqual({'TINY', 'SMALL'}, sizes)
+        self.assertEqual(set(wc.SIZES), sizes)
         for x in range(50):
             t = wc.roll_template('s', x, 2, 0, 'BOREAL', ['S'])
             base_w, base_h = wc.SIZE_TILES[t['size']]
@@ -350,7 +350,7 @@ class ChartAgentTests(unittest.TestCase):
     def test_every_agent_gets_the_chart_and_admin_requests_wait_for_the_pass(self):
         seen = self.chart('beta')['chart']
         self.assertEqual(self.coordinator.chart.key(), seen['key'])
-        self.assertEqual(['TINY', 'SMALL'], seen['sizes_enabled'])
+        self.assertEqual(list(wc.SIZES), seen['sizes_enabled'])
         self.assertEqual(list(self.coordinator.chart.pins()['alpha']), seen['pins']['alpha'])
         x, y = first_land(self.coordinator.chart)
         answer = call(self.urls['alpha'], TOKENS['alpha'], '/chart/request',

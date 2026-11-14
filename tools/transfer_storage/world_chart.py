@@ -58,12 +58,12 @@ LAND_TYPE_WEIGHTS = {
 }
 
 # Sizes, smallest first: tiles a side (width, height) and roll weight. Only the
-# enabled sizes are rolled for now (Val, 2026-11-14): tiny and small. Medium is
-# Gaia's size; large and massive wait for a memory measurement.
+# enabled sizes are rolled. Medium is Gaia's size; the largest massive land was
+# measured as a one-level land (docs/expedition-lands.md).
 SIZES = ('TINY', 'SMALL', 'MEDIUM', 'LARGE', 'MASSIVE')
 SIZE_TILES = {'TINY': (200, 200), 'SMALL': (300, 300), 'MEDIUM': (500, 350), 'LARGE': (500, 500), 'MASSIVE': (600, 600)}
 SIZE_WEIGHTS = {'TINY': 4, 'SMALL': 6, 'MEDIUM': 8, 'LARGE': 4, 'MASSIVE': 2}
-SIZES_ENABLED = ('TINY', 'SMALL')
+SIZES_ENABLED = SIZES
 # Smaller lands are richer per tile; larger ones feed a settlement better.
 SIZE_ORE = {'TINY': 'rich', 'SMALL': 'good', 'MEDIUM': 'fair', 'LARGE': 'thin', 'MASSIVE': 'poor'}
 SIZE_FERTILITY = {'TINY': 'poor', 'SMALL': 'thin', 'MEDIUM': 'fair', 'LARGE': 'good', 'MASSIVE': 'rich'}
