@@ -92,7 +92,8 @@ var/global/list/tree_canopy_tops = list()
 // TRUE when this animal can still reach and fight someone up a tree. Human NPCs
 // with guns or bows keep shooting; beasts and melee NPCs are left at the foot.
 /mob/living/simple_animal/proc/can_reach_tree_climber(mob/M)
-	if (!los_up_tree(M))
+	// On top of a vehicle (vehicle_decks.dm) counts as up a tree.
+	if (!los_up_tree(M) && !los_on_vehicle_deck(M))
 		return TRUE
 	if (can_climb_trees)
 		return TRUE
@@ -118,6 +119,12 @@ var/global/list/tree_canopy_tops = list()
 /proc/tree_melee_blocked(mob/attacker, mob/target)
 	if (!ismob(attacker) || !ismob(target) || attacker == target)
 		return FALSE
+	// On top of a vehicle (vehicle_decks.dm): only others on the same vehicle's
+	// top are in reach.
+	var/attacker_deck = vehicle_deck_axis(attacker)
+	var/target_deck = vehicle_deck_axis(target)
+	if (attacker_deck || target_deck)
+		return attacker_deck != target_deck
 	var/attacker_up = los_up_tree(attacker)
 	var/target_up = los_up_tree(target)
 	if (!attacker_up && !target_up)
@@ -134,6 +141,12 @@ var/global/list/tree_canopy_tops = list()
 /proc/tree_melee_refused(mob/attacker, mob/target)
 	if (!tree_melee_blocked(attacker, target))
 		return FALSE
+	if (vehicle_deck_axis(attacker))
+		to_chat(attacker, SPAN_WARNING("You can't reach [target] from up here."))
+		return TRUE
+	if (vehicle_deck_axis(target))
+		to_chat(attacker, SPAN_WARNING("[target] is up on the vehicle, out of reach."))
+		return TRUE
 	if (los_up_tree(attacker))
 		to_chat(attacker, SPAN_WARNING("You can't reach [target] from up the tree."))
 	else
@@ -338,7 +351,10 @@ var/global/list/tree_canopy_tops = list()
 /mob/living/human/verb/climb_down_tree_verb()
 	set name = "Climb Down"
 	set category = "IC"
-	set desc = "Climb down from a tree, or over the edge of an upper floor onto the ground below. Keep a hand free."
+	set desc = "Climb down from a tree or the top of a vehicle, or over the edge of an upper floor onto the ground below. Keep a hand free."
+	if (vehicle_deck)
+		start_vehicle_deck_down() // On top of a vehicle (vehicle_decks.dm).
+		return
 	if (!climbed_tree)
 		climb_down_any_edge() // Not up a tree: climb down over open air (edge_climbing.dm).
 		return
