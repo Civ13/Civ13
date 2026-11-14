@@ -844,6 +844,9 @@
 				if (istype(src, /obj/structure/sink/well) || istype(src, /obj/structure/sink/puddle))
 					if (has_nearby_fecal_waste())
 						dirty = TRUE
+					if (istype(src, /obj/structure/sink/well))
+						var/obj/structure/sink/well/W = src
+						W.flood_foul()
 					if (dirty || (istype(src, /obj/structure/sink/puddle) && prob(15)))
 						RG.reagents.add_reagent("cholera", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.05)
 						RG.note_food_toxin(dirty ? "unboiled water from a dirty [name] (fecal waste nearby) at ([x],[y],[z])" : "unboiled puddle water (15% fill roll) at ([x],[y],[z])")
@@ -951,6 +954,9 @@
 
 /obj/structure/sink/well/examine(mob/user, distance = -1)
 	. = ..()
+	if (. && flood_depth_at(get_turf(src)) > 0 && get_dist(src, user) <= 1)
+		flood_foul()
+		to_chat(user, SPAN_WARNING("Floodwater has run into the well and fouled it. Scrub it with soap once the water goes down."))
 	if (. && has_observable_fecal_odor(user))
 		to_chat(user, SPAN_WARNING("A foul smell rises from the well."))
 

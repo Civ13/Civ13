@@ -319,6 +319,7 @@ var/global/pollution_cleaned_total = 0
 			var/mob/living/human/H = user
 			if (H.getStatCoeff("farming") >= 2.2)
 				to_chat(user, "The ground's pollution is at <b>[round(pollution)]/[POLLUTION_MAX]</b>.")
+	flood_mark_examine(src, user)
 
 /client/proc/pollution_status()
 	set category = "Debug"

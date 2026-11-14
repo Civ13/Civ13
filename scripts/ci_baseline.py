@@ -412,6 +412,8 @@ SUITES = {
     'river_flow': {'files': ('tests/river_flow/test_generation.py', 'tests/river_flow/test_flood.py'),
         'paths': ('tests/river_flow/', 'scripts/river_flow.py', 'scripts/river_flood.py'),
         'shared_paths': ('code/modules/1713/river_flow.dm', 'code/modules/1713/river_flood.dm', 'code/modules/1713/flood_effects.dm',
+                         'code/game/objects/farming.dm', 'code/game/objects/structures/watercloset.dm',
+                         'code/modules/1713/rain_gear.dm', 'code/game/mob/mob_movement.dm',
                          'code/processes/weather.dm', 'code/modules/persistence/durable_contract.dm',
                          'maps/nomads/nomads_desert.dmm',
                          'code/processes/river_current.dm',
