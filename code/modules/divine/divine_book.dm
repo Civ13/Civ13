@@ -18,6 +18,8 @@
 var/global/list/divine_book_originals = list()
 
 /obj/item/weapon/book/divine
+	name = "book"
+	title = "book"
 	var/divine_deity = null      // the god who wrote it
 	var/divine_original = FALSE  // TRUE only for the god's own book; copies are plain books
 	var/divine_text_sealed = FALSE
