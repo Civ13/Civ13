@@ -1743,6 +1743,9 @@
 			// No wait between revalidation and commit. Clear the actual equipment slot.
 			H.remove_from_mob(crafting_handle)
 			qdel(crafting_handle)
+		// Trial and error: an early attempt at an unknown subject can fail (subject_prototypes.dm).
+		if (trial_craft_ruined(user, "[recipe.result_type]"))
+			return
 		var/atom/O
 		if (recipe && recipe.use_material && recipe.result_type)
 			O = new recipe.result_type(user.loc, recipe.use_material)

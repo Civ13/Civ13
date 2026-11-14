@@ -155,6 +155,8 @@
 			heads -= head
 			qdel(head)
 		qdel(shaft)
+		// A failed early attempt (subject_prototypes.dm) ends the batch.
+		if (trial_craft_ruined(H, "[result_type]")) break
 		new result_type(T)
 		note_craft_practice(H, "[result_type]")
 		made++
@@ -322,6 +324,8 @@
 	metal.use(R["metal"])
 	wood.use(1)
 	var/result_type = R["result"]
+	// A failed early attempt (subject_prototypes.dm) spends the materials and ends the batch.
+	if (trial_craft_ruined(H, "[result_type]")) return null
 	note_craft_practice(H, "[result_type]")
 	return new result_type(get_turf(src), metal_kind)
 
@@ -452,6 +456,8 @@
 	pot.update_icon()
 	wood.use(1)
 	var/result_type = R["result"]
+	// A failed early attempt (subject_prototypes.dm) spends the materials and ends the batch.
+	if (trial_craft_ruined(H, "[result_type]")) return null
 	note_craft_practice(H, "[result_type]")
 	return new result_type(get_turf(src), metal_kind)
 
