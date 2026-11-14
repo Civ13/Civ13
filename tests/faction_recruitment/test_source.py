@@ -93,7 +93,7 @@ class FactionMemberStartSource(unittest.TestCase):
         # Nothing in the lobby adds anyone to a roster.
         prompt = run.proc_text(self.start, '/mob/new_player/proc/faction_start_prompt(')
         self.assertNotIn('faction_roster_add', prompt)
-        self.assertIn('map.faction_start_choices(client.ckey)', prompt)
+        self.assertIn('map.faction_start_choices(account, colony_start_grant)', prompt)
         choices = run.proc_text(self.start, '/obj/map_metadata/proc/faction_start_choices(')
         self.assertIn('faction_on_roster(faction, account)', choices)
 
@@ -108,6 +108,29 @@ class FactionMemberStartSource(unittest.TestCase):
         self.assertLess(character.index('faction_start_apply(new_character)'), character.index('new_character.key = key'))
         late = run.proc_text(read('code/game/mob/new_player/new_player.dm'), '/mob/new_player/proc/AttemptLateSpawn(')
         self.assertLess(late.index('map_storage.allow_new_character(src)'), late.index('faction_start_prompt()'))
+
+    def test_colony_starts_need_a_grant_from_the_factions_own_land(self):
+        # Abroad: only factions founded here, only lands taking colony starts.
+        abroad = run.proc_text(self.start, '/obj/map_metadata/proc/faction_colony_choices(')
+        for need in ('colonies[faction]', 'faction_on_roster(faction, account)', 'list("COLONY", "OPEN")'):
+            self.assertIn(need, abroad)
+        prompt = run.proc_text(self.start, '/mob/new_player/proc/faction_start_prompt(')
+        self.assertIn('region_home_ask(account, "colony", pick[1], pick[2])', prompt)
+        self.assertIn('region_home_ask(account, "colony_used", null, colony_start_grant)', prompt)
+        # Here: a grant stands in for the roster only for its own colony.
+        for name in ('/mob/new_player/proc/faction_start_apply(', '/mob/new_player/proc/faction_start_destination('):
+            self.assertIn('map.colony_home_faction(colony_start_grant) == faction', run.proc_text(self.start, name))
+        admit = run.proc_text(read('code/modules/persistence/region_home.dm'), '/proc/region_home_admit(')
+        self.assertIn('lobby.colony_start_grant = colony_parent_valid(result["colony_grant"])', admit)
+        relocate = run.proc_text(read('code/game/jobs/job_controller.dm'), '/datum/controller/occupations/proc/relocate(')
+        self.assertLess(relocate.index('H.faction_start_turf'), relocate.index('uses_random_new_player_spawn'))
+
+    def test_open_land_wild_starts_skip_new_players_and_go_through_the_coordinator(self):
+        wilds = run.proc_text(self.start, '/mob/new_player/proc/wild_start_choices(')
+        for need in ('new_player_marks.is_new(client)', 'entry["stage"] != "OPEN"', 'entry["paused"]', 'land == shard_group.region'):
+            self.assertIn(need, wilds)
+        prompt = run.proc_text(self.start, '/mob/new_player/proc/faction_start_prompt(')
+        self.assertIn('region_home_ask(account, "start", land)', prompt)
 
     def test_stations_register_and_limits_are_configurable(self):
         station = read('code/game/mob/groups/recruitment_station.dm')

@@ -208,6 +208,13 @@ var/global/datum/controller/occupations/job_master
 
 	if (!H)
 		return
+	// A member start (faction_start.dm) chose the destination: beside the
+	// faction's station or colony charter.
+	if (isturf(H.faction_start_turf))
+		var/turf/start = H.faction_start_turf
+		H.faction_start_turf = null
+		H.forceMove(start)
+		return TRUE
 	// Gaia chose the destination before constructing the new body. EquipRank
 	// and late join both call relocate; neither may reroll it or use landmarks.
 	if (map && map.uses_random_new_player_spawn(H.original_job))

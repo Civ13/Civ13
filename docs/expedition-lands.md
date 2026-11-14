@@ -4,7 +4,7 @@ A land a crew sails to is built from its world-chart template
 ([world chart](world-chart.md), [plan](https://claude.ai/artifact/61LciJHKi6eKEUsYMfFgwE)).
 The chart only keeps the template; the land is generated when a crew decides
 to go there. This step is the generator: it turns a template into a region map.
-Nothing loads the map in game yet; the expedition slots come next.
+An expedition slot compiles the map as its region map ([expedition slots](expedition-slots.md)).
 
 ```sh
 python3 -m tools.procedural_maps land --template template.json --out lands/24-16
@@ -14,7 +14,7 @@ python3 -m tools.procedural_maps land --template template.json --out lands/24-16
 
 | File | What it is |
 | --- | --- |
-| `land.dmm` | the region map, two levels (underground z1, surface z2) |
+| `land.dmm` | the region map, two levels (underground z1, surface z2), map **A New Land** (`/obj/map_metadata/nomads/expedition`) |
 | `land.json` | the report: template, attempt, map hash, starts, supplies, timings and `slot_world` |
 | `bundle/` | the generator bundle with a preview image |
 

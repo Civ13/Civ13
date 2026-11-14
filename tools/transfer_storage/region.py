@@ -42,7 +42,7 @@ REMOVE, CREDIT, RETURN = 'remove', 'credit', 'return'
 TENTATIVE, CONFIRMED, JOURNALED = 'tentative', 'confirmed', 'journaled'
 
 
-ACCOUNT_OPS = ('claim', 'arrive', 'depart', 'release')
+ACCOUNT_OPS = ('claim', 'arrive', 'depart', 'release', 'colony', 'colony_used', 'start')
 
 # A land's settlement stage (docs/land-stages.md). The mainland is always
 # MAINLAND; the coordinator keeps every other land's stage.
@@ -233,10 +233,14 @@ class RegionStore(TrainLeaseQueue):
         db.execute("INSERT OR IGNORE INTO meta VALUES ('train_history', '0')")
         self.init_train_leases()
         db.execute('CREATE TABLE IF NOT EXISTS train_home_lock(ckey TEXT PRIMARY KEY)')
+        # Colony starts granted to accounts whose home the coordinator moved
+        # here for one (colony_charter.dm): ckey -> the colony's parent faction.
+        db.execute('CREATE TABLE IF NOT EXISTS colony_grant(ckey TEXT PRIMARY KEY, faction TEXT NOT NULL)')
         db.execute('CREATE TABLE IF NOT EXISTS train_home_wait(ckey TEXT PRIMARY KEY, target TEXT NOT NULL, epoch TEXT NOT NULL)')
         db.execute('CREATE TABLE IF NOT EXISTS train_custody_witness(transfer_id TEXT PRIMARY KEY, epoch TEXT NOT NULL)')
         columns = {r[1] for r in db.execute('PRAGMA table_info(account_request)')}
-        for column, sql in (('homes_epoch', "TEXT NOT NULL DEFAULT ''"), ('home_rev', 'INTEGER NOT NULL DEFAULT 0')):
+        for column, sql in (('homes_epoch', "TEXT NOT NULL DEFAULT ''"), ('home_rev', 'INTEGER NOT NULL DEFAULT 0'),
+                            ('faction', "TEXT NOT NULL DEFAULT ''")):
             if column not in columns:
                 db.execute('ALTER TABLE account_request ADD COLUMN ' + column + ' ' + sql)
 
@@ -736,7 +740,7 @@ class RegionStore(TrainLeaseQueue):
 
     # -- home worlds --------------------------------------------------------
 
-    def account(self, ckey, op, region=None, body=False):
+    def account(self, ckey, op, region=None, body=False, faction=None):
         """One account question or request from DM.
 
         claim: may this account play here? HOME, ELSEWHERE (with its home) or
@@ -746,14 +750,21 @@ class RegionStore(TrainLeaseQueue):
         for the coordinator's next pass. A claim with body (a living character of
         the account is here) asks for custody when the account has no home, so a
         lost coordinator ledger cannot strand a character off the mainland.
+        colony: start the account's next character at its faction's colony in
+        region (faction names the parent; the coordinator checks the colony
+        stands there and grants the start). colony_used: that start was taken.
+        A HOME claim says which colony start, if any, is granted here. start:
+        start the account's next character in the wilds of region, an OPEN land.
         """
         if not account_key_valid(ckey):
             raise TransferError('bad account key')
         if op not in ACCOUNT_OPS:
             raise TransferError('unknown account operation')
-        target = self.region if op != 'depart' else region
-        if op == 'depart' and (not isinstance(region, str) or not region or region == self.region):
-            raise TransferError('depart needs another region')
+        target = region if op in ('depart', 'colony', 'start') else self.region
+        if op in ('depart', 'colony', 'start') and (not isinstance(region, str) or not region or region == self.region):
+            raise TransferError(op + ' needs another region')
+        if op in ('colony', 'colony_used') and not faction_id_valid(faction):
+            raise TransferError('bad faction id')
         with self._tx():
             locked = self.db.execute('SELECT 1 FROM train_home_lock WHERE ckey = ?', (ckey,)).fetchone() or self.db.execute('SELECT 1 FROM train_home_wait WHERE ckey = ?', (ckey,)).fetchone()
             for (request,) in self.db.execute("SELECT request FROM train_lease WHERE state IN ('pending','granted','cancel_pending','sealed')"):
@@ -771,7 +782,8 @@ class RegionStore(TrainLeaseQueue):
             home = self.home_of(ckey)
             if op == 'claim':
                 if not queued and home == self.region:
-                    return {'verdict': 'HOME', 'home': home}
+                    grant = self.db.execute('SELECT faction FROM colony_grant WHERE ckey = ?', (ckey,)).fetchone()
+                    return {'verdict': 'HOME', 'home': home, 'colony_grant': grant[0] if grant else None}
                 if not queued and home is not None:
                     return {'verdict': 'ELSEWHERE', 'home': home}
                 mainland = self._meta('mainland')
@@ -782,8 +794,10 @@ class RegionStore(TrainLeaseQueue):
                     return {'verdict': 'ELSEWHERE', 'home': mainland}
                 if op in queued or 'claim' in queued:
                     return {'verdict': 'PENDING', 'home': home}
-            self.db.execute('INSERT INTO account_request(ckey, op, region, homes_epoch, home_rev) VALUES (?, ?, ?, ?, ?)',
-                            (ckey, op, target, self._meta('homes_epoch'), int(self._meta('homes_rev'))))
+            if op == 'colony_used':
+                self.db.execute('DELETE FROM colony_grant WHERE ckey = ?', (ckey,))
+            self.db.execute('INSERT INTO account_request(ckey, op, region, homes_epoch, home_rev, faction) VALUES (?, ?, ?, ?, ?, ?)',
+                            (ckey, op, target, self._meta('homes_epoch'), int(self._meta('homes_rev')), faction or ''))
         return {'verdict': 'PENDING', 'home': home}
 
     def home_of(self, ckey):
@@ -792,8 +806,8 @@ class RegionStore(TrainLeaseQueue):
 
     def account_requests(self):
         """For the coordinator: queued requests and how current our ledger copy is."""
-        return {'requests': [dict(zip(('id', 'ckey', 'op', 'region', 'homes_epoch', 'home_rev'), r)) for r in self.db.execute(
-                    'SELECT id, ckey, op, region, homes_epoch, home_rev FROM account_request ORDER BY id')],
+        return {'requests': [dict(zip(('id', 'ckey', 'op', 'region', 'homes_epoch', 'home_rev', 'faction'), r)) for r in self.db.execute(
+                    'SELECT id, ckey, op, region, homes_epoch, home_rev, faction FROM account_request ORDER BY id')],
                 'epoch': self._meta('homes_epoch'), 'rev': int(self._meta('homes_rev')),
                 'store': self._meta('store_id'), 'train_history': self._meta('train_history') == '1', 'train_requests': self.train_lease_requests(),
                 'land_sample': json.loads(self._meta('land_sample') or 'null'),
@@ -805,7 +819,7 @@ class RegionStore(TrainLeaseQueue):
                     'SELECT id, op, x, y, owner, admin FROM chart_request ORDER BY id')]}
 
     def apply_homes(self, epoch, rev, rows, done, reset=False, mainland=None, train_locks=None, train_decisions=None,
-                    lands=None, land_done=None, chart=None, chart_done=None):
+                    lands=None, land_done=None, chart=None, chart_done=None, colony_grants=None):
         """The coordinator's answer: ledger rows newer than our copy (region
         None removes a home) and the request ids it has decided."""
         if not isinstance(epoch, str) or not epoch or not isinstance(rev, int) or rev < 0:
@@ -845,6 +859,16 @@ class RegionStore(TrainLeaseQueue):
                 self._set_meta('lands', json.dumps(lands, sort_keys=True))
             for request_id in land_done or []:
                 self.db.execute('DELETE FROM land_request WHERE id = ?', (int(request_id),))
+            # The coordinator's grants for this land replace ours; an older
+            # coordinator sends none, and we keep what we have.
+            if colony_grants is not None:
+                if type(colony_grants) is not list or not all(
+                        type(g) is dict and account_key_valid(g.get('ckey')) and faction_id_valid(g.get('faction'))
+                        for g in colony_grants):
+                    raise TransferError('invalid colony grants')
+                self.db.execute('DELETE FROM colony_grant')
+                for g in colony_grants:
+                    self.db.execute('INSERT OR REPLACE INTO colony_grant VALUES (?, ?)', (g['ckey'], g['faction']))
             # The chart comes only when ours is older; keep ours otherwise.
             if chart is not None:
                 if type(chart) is not dict or not isinstance(chart.get('key'), str) or type(chart.get('rows')) is not list \

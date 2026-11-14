@@ -624,9 +624,10 @@ var/global/list/human_face_icon_cache = list()
 		//need to append _s to the icon state for legacy compatibility
 		var/image/standing = image(icon = under_icon, icon_state = under_state, layer = layer + 0.01)
 		standing.color = w_uniform.color
-		if (istype(w_uniform, /obj/item/clothing/under/tailored_dress))
-			var/obj/item/clothing/under/tailored_dress/dress = w_uniform
-			standing.overlays += dress.worn_design_layers()
+		// Tailored clothing (dressmaking.dm) draws its coloured design layers.
+		var/obj/item/clothing/tailored_under = w_uniform
+		if (tailored_under.design_body)
+			standing.overlays += tailored_under.worn_design_layers()
 		else if (istype(w_uniform, /obj/item/clothing/under/customuniform))
 			var/obj/item/clothing/under/customuniform/CU = w_uniform
 			if (!CU.uncolored)
@@ -1158,7 +1159,10 @@ var/global/list/human_face_icon_cache = list()
 		standing = image(icon = t_icon, icon_state = wear_suit.icon_state, layer = layer + 0.01)
 		standing.color = wear_suit.color
 
-		if (istype(wear_suit, /obj/item/clothing/suit/storage/jacket/customcolonialcoat))
+		var/obj/item/clothing/tailored_suit = wear_suit
+		if (istype(tailored_suit) && tailored_suit.design_body)
+			standing.overlays += tailored_suit.worn_design_layers()
+		else if (istype(wear_suit, /obj/item/clothing/suit/storage/jacket/customcolonialcoat))
 			var/obj/item/clothing/suit/storage/jacket/customcolonialcoat/CU = wear_suit
 			base = image("icon" = 'icons/mob/suit.dmi', "icon_state" = "customcolonialcoat_top")
 			base.color = CU.topcolor

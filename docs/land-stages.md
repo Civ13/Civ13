@@ -102,3 +102,26 @@ start new characters with a faction only after joining it in play.
   suggests COLONY for a CLOSED or FRONTIER land once one has stood for
   `COLONY_SECONDS` (3 days) with `COLONY_MEMBERS` (3) living members. An admin
   confirms the stage. Code: `code/game/mob/groups/colony_charter.dm`.
+- **Colony start.** In the faction's own land, a member (an account on its
+  roster) is also offered "With <colony> in <land>" for each standing colony
+  in a COLONY or OPEN land (a pause stops wild starts only). Choosing it sends
+  `/account` op `colony` with the faction id; the coordinator checks the
+  request came from the faction's own land and the colony stands there, moves
+  the account's home to that land and grants the start (`colony_grant`, sent
+  to that land's agent). There, a HOME claim carries the grant, the lobby
+  offers "With <colony>", the character starts beside the colony charter (or
+  one of the colony's stations) and joins it, and `colony_used` clears the
+  grant. On lands without random starts, job relocation places the body
+  (`faction_start_turf`).
+
+## Open-land wild start
+
+At Join, a player whose account is past its first two days
+(`new_player_marks.is_new`) is also offered "In the wilds of <land>" for every
+OPEN, unpaused land. Choosing it sends `/account` op `start`; the coordinator
+accepts it only from the account's home land and only while the land is OPEN
+and unpaused, and moves the home there. The player then joins that land and
+starts as any new character there (at random on a land with
+`new_player_start_z`, otherwise at its usual join points). A death there
+without a bed sends the home back to the mainland as before, where the choice
+is offered again. Brand-new players always start on the mainland.
