@@ -1893,6 +1893,7 @@ RECIPE: /material/silver/,silver statue,/obj/structure/religious/statue,10,250,1
 //*********************| TIN |*****************************
 //*********************************************************
 
+RECIPE: /material/tin/,box of oil paints,/obj/item/pigment/oil_paints,1,60,0,1,none,0,0,0,8,null
 RECIPE: /material/tin/,small tin pot,/obj/item/weapon/reagent_containers/glass/small_pot,3,120,0,1,none,0,0,0,8,null
 RECIPE: /material/tin/,dummy armor,/obj/item/weapon/dummy_armor,4,120,1,1,none,18,0,0,8,null
 RECIPE: /material/tin/,messtin,/obj/item/weapon/storage/ww2,8,180,0,1,none,115,110,0,8,null
@@ -2295,6 +2296,8 @@ RECIPE: /material/steel/,tanning drum,/obj/structure/tanning_drum,10,200,1,1,eco
 RECIPE: /material/wood/,primitive saw mill,/obj/structure/sawmill,28,60,1,1,economy & production,15,0,0,8,null
 RECIPE: /material/wood/,potter's wheel,/obj/structure/workshop_machine/potters_wheel,6,120,1,1,economy & production,0,0,0,8,null
 RECIPE: /material/wood/,brick mould bench,/obj/structure/workshop_machine/brick_bench,6,100,1,1,economy & production,18,0,0,8,null
+RECIPE: /material/wood/,glassblowing bench,/obj/structure/workshop_machine/glass_bench,6,120,1,1,economy & production,35,0,0,8,null
+RECIPE: /material/wood/,mason's saw,/obj/structure/workshop_machine/masons_saw,8,120,1,1,economy & production,35,0,0,8,null
 
 RECIPE: /material/wood/soft/,market stall,/obj/structure/vending/sales/market_stall,25,150,1,1,economy & production,24,0,0,8,null
 RECIPE: /material/wood/soft/,supply stall,/obj/structure/supplier,25,150,1,1,economy & production,24,0,0,8,null
@@ -2599,6 +2602,8 @@ RECIPE: /material/wood/,easel,/obj/structure/easel,4,80,1,1,paintings,0,0,0,8,nu
 RECIPE: /material/wood/,miniature panel,/obj/item/canvas/miniature,1,30,0,1,paintings,0,0,0,8,null
 RECIPE: /material/wood/,table picture panel,/obj/item/canvas/table,1,40,0,1,paintings,0,0,0,8,null
 RECIPE: /material/wood/,wall canvas,/obj/item/canvas,2,60,0,1,paintings,0,0,0,8,null
+RECIPE: /material/wood/,gallery canvas,/obj/item/canvas/gallery,4,120,0,1,paintings,0,0,0,8,null
+RECIPE: /material/wood/,wide gallery canvas,/obj/item/canvas/gallery/wide,3,100,0,1,paintings,0,0,0,8,null
 RECIPE: /material/wood/soft/,stormy sea,/obj/structure/sign/painting1,3,40,1,1,paintings,65,0,0,8,null
 RECIPE: /material/wood/soft/,city street,/obj/structure/sign/painting2,3,40,1,1,paintings,65,0,0,8,null
 RECIPE: /material/wood/soft/,sea sunset,/obj/structure/sign/painting3,3,40,1,1,paintings,65,0,0,8,null

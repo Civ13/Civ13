@@ -90,6 +90,7 @@
       "code/game/objects/effects/spawner.dm": 7,
       "code/game/objects/effects/step_triggers.dm": 1,
       "code/game/objects/farming.dm": 1,
+      "code/game/objects/items.dm": 1,
       "code/game/objects/items/bodybag.dm": 1,
       "code/game/objects/items/clothing/under/accessories/armband.dm": 1,
       "code/game/objects/items/devices/drone.dm": 5,
@@ -109,6 +110,7 @@
       "code/game/objects/items/weapons/grenades/smokebomb.dm": 9,
       "code/game/objects/items/weapons/material/material_weapons.dm": 1,
       "code/game/objects/items/weapons/material/misc.dm": 2,
+      "code/game/objects/items/weapons/mines.dm": 4,
       "code/game/objects/items/weapons/nomadstuff.dm": 2,
       "code/game/objects/items/weapons/policetape.dm": 1,
       "code/game/objects/items/weapons/storage/storage.dm": 1,
@@ -427,6 +429,7 @@
       "code/modules/1713/roundstart_etc.dm": 1,
       "code/modules/1713/telephone.dm": 5,
       "code/modules/1713/tools.dm": 1,
+      "code/modules/admin/admin.dm": 5,
       "code/modules/admin/admin_verbs.dm": 1,
       "code/modules/admin/topic.dm": 1,
       "code/modules/admin/verbs/1713.dm": 1,
@@ -460,7 +463,8 @@
       "code/setup.dm": 1
     },
     "wwinput_untyped_result": {
-      "code/_helpers/WWinput.dm": 1
+      "code/_helpers/WWinput.dm": 1,
+      "code/modules/admin/admin.dm": 3
     },
     "merge_marker": {}
   }

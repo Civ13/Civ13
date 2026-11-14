@@ -205,7 +205,7 @@ var/list/slot_equipment_priority = list( \
 					playsound(loc, MD.origin.engine.ending_snd, 65, FALSE, 2)
 					MD.origin.attackby(MD,src)
 					return TRUE
-		if (W.nodrop || W.nodrop_special_check() || ignore_nodrop)
+		if ((W.nodrop || W.nodrop_special_check()) && !ignore_nodrop)
 			return FALSE
 
 		if (!Target)

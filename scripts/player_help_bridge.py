@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '9697bef629c4fa0233bf3b318b7b252b1422afbf'
+WIKI_REVIEWED_REVISION = '466128e3ee41607680a3659a340543a93abf0c60'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('a567364dd25ed2d333915df91f4328eb4b79ac9a1af92f9f98db306eed911c8c', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('aae5510bcfb98ca648ee303cdea48af583f0a9ce383eed2fd585c98551fc663d', 'character skills traits languages'),
@@ -95,9 +95,9 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Resource_Extraction.md': ('4b02b4e5c0953e58a28374ba57d702403ea98f702e81a45cbeeaf555293d4120', 'resource extraction gathering oil petroleum well fracturing'),
     'guides/Guide_to_Survival.md': ('a449eed1a1668a02a460076c3a08e61b512202b1cdfa95e13b18226238967bba', 'survival winter cold warm freezing hypothermia shelter debris footwear boots snowshoes shoes ice mud rain wet umbrella raincoat cape storm storms lightning thunder blizzard sandstorm heat wave weather fire fires wildfire firefighting beater flapper smother burning bucket blanket extinguish smoke signal signals hook firebreak pump engine nozzle hose jet reel extinguisher'),
     'guides/Guide_to_Tanks.md': ('9250b410333e0da30224b09ed2126ce2ed676225aa2dda2be3b13c8f7ff3442a', 'tank driving crew ammunition'),
-    'guides/Guide_to_Trains.md': ('f962a648103ad3d248058e89c60bb7c46e409d710a134b85c3b5a2e2bb2abdc8', 'train trains railway track locomotive station switcher rails wagon'),
+    'guides/Guide_to_Trains.md': ('0d832b65c773809777156b080158838e426cdde696ce1cb61790ba8391ada64f', 'train trains railway track locomotive station switcher rails wagon'),
     'guides/Guide_to_Trenches.md': ('04bed9fb3d409455d466928f071ddfc509ba49a9d7b450815595f0bc27c9670b', 'trench trenches fortification sandbag dig shovel'),
-    'guides/Guide_to_Weapons.md': ('c62e936a0ce9d55cfc40a7e8c6e9f0fcc75d4575653aa3a383d965265536009c', 'weapons gun reload ammunition'),
+    'guides/Guide_to_Weapons.md': ('f4912630ee265fb33c96d03d1a0831d1ce0e3d8a4760ebd5538a07842bd9ce7b', 'weapons gun reload ammunition'),
     'New_Player_Guide.md': ('70691e17262f75ee998bcddac0aea6ad6bf9fa994e10fecbdf06535e9a7b3397', 'new player beginner start first round basics'),
     'Hotkeys.md': ('05090c224e1f78aac61ba054366f3138634ce2c47cdaf4b9c98be908818ae55e', 'hotkeys hotkey keys keyboard controls key press'),
     'role_guides.md': ('4117070c23ff3cfd2581b612cd08ae70ee170637381972cffebdf9c0161d78d5', 'role roles job jobs responsibilities'),
@@ -123,7 +123,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Paperwork.md': ('a1a5f705ece3027336005a5fe08e5554eabe1bb6da16cc4294db54b39ad63b69', 'paper paperwork writing write pen book sign signature stamp'),
     'Crafting_Skill_Level_Requirements.md': ('eae4e1c91ce28009f16ec79d0e942f76895d80262e618320eaf44d3a7c5808a9', 'crafting skill level levels requirement requirements unlock'),
     'Food_Decay_Times.md': ('d2d63372eddc79fd7c3c9bffb390587fff7a5cb21c53d829ab5ec29ab9f11126', 'food decay rot spoil spoils spoiled expire expires lasts preserve storage'),
-    'Miscellaneous_Crafting.md': ('affe211da1a3cb88f4557ecb0201ad6a873c1b083fc717f69d0c13c1e75666fc', 'miscellaneous crafting misc items dress dresses dressmaking tailoring tailor tailored sew sewing pattern patterns design clothes shirt gown cloak sleeves collar dye dyes wool linen fabric candle candles'),
+    'Miscellaneous_Crafting.md': ('5812f97b73c5144c25ec72225cd56233c88db1d9d4fb01aa4271bd54be5571a1', 'miscellaneous crafting misc items dress dresses dressmaking tailoring tailor tailored sew sewing pattern patterns design clothes shirt gown cloak sleeves collar dye dyes wool linen fabric book candle candles'),
     'maps/Gaia.md': ('28a851bbbe27f13c32eeaaac1dac9400541f84ab16a37e97f1af77b720947aee', 'gaia persistent persistence map world'),
     'maps/Nomads_Maps.md': ('fdcb67459889783669de97dcd8d686c2be3e332d7a243f86a5d67528e560480e', 'nomads maps map terrain biome biomes'),
     'gamemodes/Voyage.md': ('9922f438d0253c6b4d812bc852422a54c37f428b4c3221b2a732397ef245ddfe', 'voyage expedition ship mode'),
@@ -1596,7 +1596,7 @@ class Bridge:
                     continue
                 if response.exists():
                     existing = bounded_json(response, 24000)
-                    if existing.get('id') == marker:
+                    if isinstance(existing, dict) and existing.get('id') == marker:
                         continue
                     response.unlink()
                 request = bounded_json(self.root / f'{slot}.request.json', 16384)
