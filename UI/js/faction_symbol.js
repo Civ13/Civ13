@@ -107,9 +107,11 @@ function fsSuppressClicksInFlight(e) {
 	var ev = e || window.event;
 	var t = ev.target || ev.srcElement;
 	while (t && t.nodeType === 1) {
-		if (t.tagName === 'A') {
+		if (t.tagName === 'A' || /(^|\s)linkActive(\s|$)/.test(t.className || '')) {
 			if (ev.preventDefault) ev.preventDefault();
+			if (ev.stopPropagation) ev.stopPropagation();
 			ev.returnValue = false;
+			ev.cancelBubble = true;
 			return false;
 		}
 		t = t.parentNode;

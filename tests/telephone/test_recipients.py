@@ -232,6 +232,11 @@ class TelephoneCharacterization(unittest.TestCase):
     def setUp(self):
         self.before = BEFORE.read_text()
         self.after = SOURCE.read_text()
+        # Approved delta: an unanswered wireless call stops the caller ringing.
+        unanswered = ('Nobody picked up the phone at [tgtnum].")\n\t\t\t\t\t\tconnected = FALSE\n'
+                      '\t\t\t\t\t\tringing = FALSE\n')
+        self.assertEqual(self.after.count(unanswered), 1)
+        self.after = self.after.replace(unanswered, unanswered.replace('\t\t\t\t\t\tringing = FALSE\n', ''))
 
     def recipients(self, text, wake=False):
         n = Network(text);speaker=n.human('speaker');a=n.human('same name');b=n.human('same name');c=n.human('sleeping')

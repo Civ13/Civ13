@@ -510,12 +510,6 @@
 	var/obj/item/weapon/attachment/silencer/pistol/SP = new/obj/item/weapon/attachment/silencer/pistol(src)
 	SP.attached(null,src,TRUE)
 
-/obj/item/weapon/gun/projectile/pistol/tt30/silenced/New()
-	..()
-
-	var/obj/item/weapon/attachment/silencer/pistol/SP = new/obj/item/weapon/attachment/silencer/pistol(src)
-	SP.attached(null,src,TRUE)
-
 /obj/item/weapon/gun/projectile/pistol/makarov
 	name = "Makarov PM"
 	desc = "The standard issue pistol of the Soviet Union and Russian Federation after the 1950's. Chambered in 9x18mm Makarov."

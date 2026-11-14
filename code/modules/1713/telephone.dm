@@ -197,6 +197,7 @@ var/list/global/phone_numbers = list()
 					if (!connected)
 						to_chat(user, "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Nobody picked up the phone at [tgtnum].")
 						connected = FALSE
+						ringing = FALSE
 						origincall = null
 						return
 			else

@@ -185,6 +185,12 @@
 /proc/sea_crossing_sail_ok(path)
 	return ispath(path, /obj/structure/vehicleparts/movement/sail)
 
+/proc/sea_crossing_bench_ok(path)
+	return ispath(path, /obj/structure/bed/chair/wood/rowing_bench)
+
+/proc/sea_crossing_helm_ok(path)
+	return ispath(path, /obj/structure/hull_tiller)
+
 // Packs the hull of tiller T: list("record" = record, "crew" = humans aboard)
 // or a text reason. Writes nothing.
 /proc/sea_crossing_pack(obj/structure/hull_tiller/tiller)
@@ -227,6 +233,9 @@
 					continue
 				entries += list(list("s", "[S.type]", S.dir, S.sails ? 1 : 0, S.broken ? 1 : 0))
 				continue
+			if (sea_crossing_bench_ok(M.type))
+				entries += list(list("o", "[M.type]", M.dir))
+				continue
 			if (sea_crossing_closet_ok(M.type))
 				var/obj/structure/closet/K = M
 				var/list/held = list()
@@ -256,7 +265,7 @@
 	if (items > SEA_CROSSING_ITEMS_MAX)
 		return "She carries too much loose cargo to cross. Stow it in chests or put some ashore."
 	var/list/record = list("v" = 1, "name" = B.hull_name, "dir" = B.dir, "from" = list(B.px, B.py, B.z),
-		"papers" = (C.register && C.register.party) ? C.register.register_state() : "", "tiles" = tiles)
+		"papers" = (C.register && C.register.party) ? C.register.register_state() : "", "tiles" = tiles, "helm" = "[tiller.type]")
 	if (length(json_encode(record)) > SEA_CROSSING_RECORD_MAX)
 		return "She is too big and too laden to cross. Put some of her cargo ashore."
 	return list("record" = record, "crew" = crew)
@@ -277,6 +286,8 @@
 	if (!islist(R) || R["v"] != 1 || !istext(R["name"]) || length(R["name"]) > 40 || !(R["dir"] in cardinal))
 		return FALSE
 	if (!istext(R["papers"]) || length(R["papers"]) > 4000)
+		return FALSE
+	if (!isnull(R["helm"]) && (!istext(R["helm"]) || !sea_crossing_helm_ok(text2path(R["helm"]))))
 		return FALSE
 	var/list/from = R["from"]
 	if (!islist(from) || from.len != 3)
@@ -313,6 +324,9 @@
 					floors++
 				if ("s")
 					if (E.len != 5 || !sea_crossing_sail_ok(text2path(E[2])) || !(E[3] in alldirs + list(0)) || !(E[4] in list(0, 1)) || !(E[5] in list(0, 1)))
+						return FALSE
+				if ("o")
+					if (E.len != 3 || !sea_crossing_bench_ok(text2path(E[2])) || !(E[3] in alldirs + list(0)))
 						return FALSE
 				if ("k")
 					if (E.len != 4 || !sea_crossing_closet_ok(text2path(E[2])) || !(E[3] in alldirs + list(0)) || !islist(E[4]) || length(E[4]) > SEA_CROSSING_CHEST_ITEMS_MAX)
@@ -368,6 +382,10 @@
 					S.broken = E[5] ? TRUE : FALSE
 					S.update_icon()
 					made += S
+				if ("o")
+					var/obj/structure/bed/chair/wood/rowing_bench/O = new path(T)
+					O.set_dir(E[3])
+					made += O
 				if ("k")
 					var/obj/structure/closet/K = new path(T)
 					K.dir = E[3]
@@ -383,7 +401,10 @@
 					var/obj/item/loose = region_travel_make_item(E[2], E[3], T)
 					if (loose)
 						made += loose
-	var/obj/structure/hull_tiller/tiller = new(pivot)
+	var/helm = istext(R["helm"]) ? text2path(R["helm"]) : null
+	if (!sea_crossing_helm_ok(helm))
+		helm = /obj/structure/hull_tiller
+	var/obj/structure/hull_tiller/tiller = new helm(pivot)
 	var/problem = tiller.commission(R["name"], R["dir"])
 	if (problem)
 		log_game("Sea crossing: the [R["name"]] could not be commissioned at [pivot.x],[pivot.y],[pivot.z]: [problem].")

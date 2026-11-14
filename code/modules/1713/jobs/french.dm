@@ -32,11 +32,11 @@
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon(H), slot_belt)
+	give_random_name(H)
 	to_chat(world, "<big><b>[H.real_name] is the Captain of the French Navy ship!</b></big>")
 	H.add_note("Role", "You are a <b>[title]</b>, the highest ranking officer present. Your job is to command the ship.")
 	broadside_give_call(H)
 	apply_job_stats(H)
-	give_random_name(H)
 
 	return TRUE
 
@@ -67,10 +67,10 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/tricorne_french(H), slot_head)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon(H), slot_belt)
+	give_random_name(H)
 	to_chat(world, "<big><b>[H.real_name] is the Quartermaster of the French Navy ship!</b></big>")
 	H.add_note("Role", "You are a <b>[title]</b>, an officer in charge of the ship's supply allocation. You are also the second in command, after the <b>Capitaine</b>.")
 	apply_job_stats(H)
-	give_random_name(H)
 
 	return TRUE
 
@@ -104,10 +104,10 @@
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon(H), slot_belt)
+	give_random_name(H)
 	to_chat(world, "<big><b>[H.real_name] is the Boatswain of the French Navy ship!</b></big>")
 	H.add_note("Role", "You are a <b>[title]</b>, an officer in charge of the crew and their job allocation. The whole ship relies on you!")
 	apply_job_stats(H)
-	give_random_name(H)
 
 	return TRUE
 

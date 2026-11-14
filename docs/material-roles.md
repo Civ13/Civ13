@@ -106,3 +106,13 @@ catalog row to copy and the other materials. `python3 scripts/recipe_variants.py
 `config/crafting/material_recipes_global.txt` as ordinary `RECIPE:` rows, so
 every reader of the catalog keeps working. `tests/tool_materials` fails when
 the block is stale and pins each pair's speed.
+
+## Sparks
+
+A tool whose material has `sparks` set (iron, steel, flint) can set off a
+barrel holding powder or fuel when it is struck against it on harm intent:
+`/atom/proc/struck_by_tool()` is asked before every `attackby()` and the
+barrel's override in `tool_materials.dm` rolls 4% a blow, logged to admins.
+Bronze, copper, wood and bone tools never spark. The barrel's examine text
+warns while its contents are volatile. Ordinary use of a barrel (filling,
+pouring, carrying) never rolls.

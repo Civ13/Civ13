@@ -460,6 +460,8 @@
 			stored_ammo += new ammo_type(src)
 	update_icon()
 	if (istype(src, /obj/item/ammo_magazine/emptyclip))
+		icon_keys = icon_keys ? icon_keys.Copy() : list()
+		ammo_states = ammo_states ? ammo_states.Copy() : list()
 		for (var/i = FALSE, i <= max_ammo, i++)
 			var/ammo_state = "clip-[i]"
 			icon_keys += i

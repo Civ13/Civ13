@@ -395,3 +395,43 @@
 	..()
 	wconfig = get_wheel_config("m41_track_right_back")
 	load_config(wconfig)
+
+/obj/structure/vehicleparts/movement/tracks/hago/left/New()
+	..()
+	wconfig = get_wheel_config("hago_track_left_front")
+	load_config(wconfig)
+
+/obj/structure/vehicleparts/movement/tracks/hago/left/reversed/New()
+	..()
+	wconfig = get_wheel_config("hago_track_left_back")
+	load_config(wconfig)
+
+/obj/structure/vehicleparts/movement/tracks/hago/right/New()
+	..()
+	wconfig = get_wheel_config("hago_track_right_front")
+	load_config(wconfig)
+
+/obj/structure/vehicleparts/movement/tracks/hago/right/reversed/New()
+	..()
+	wconfig = get_wheel_config("hago_track_right_back")
+	load_config(wconfig)
+
+/obj/structure/vehicleparts/movement/tracks/m113/left/New()
+	..()
+	wconfig = get_wheel_config("m113_track_left_front")
+	load_config(wconfig)
+
+/obj/structure/vehicleparts/movement/tracks/m113/left/reversed/New()
+	..()
+	wconfig = get_wheel_config("m113_track_left_back")
+	load_config(wconfig)
+
+/obj/structure/vehicleparts/movement/tracks/m113/right/New()
+	..()
+	wconfig = get_wheel_config("m113_track_right_front")
+	load_config(wconfig)
+
+/obj/structure/vehicleparts/movement/tracks/m113/right/reversed/New()
+	..()
+	wconfig = get_wheel_config("m113_track_right_back")
+	load_config(wconfig)

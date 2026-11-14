@@ -451,7 +451,7 @@
 					hoverlay.Blend(rgb(target.s_tone, target.s_tone, target.s_tone), ICON_ADD)
 				else
 					hoverlay.Blend(rgb(-target.s_tone,  -target.s_tone,  -target.s_tone), ICON_SUBTRACT)
-					overlays += hoverlay
+			overlays += hoverlay
 
 /obj/structure/pillory/attack_hand(var/mob/living/human/H)
 	if (!istype(H))

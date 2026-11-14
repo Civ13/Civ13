@@ -89,7 +89,7 @@ def fragments(name="Civilization 13", discord="https://discord.gg/hBEtg4x",
     if links:
         parts.append(status_template('s += "[jointext', {'jointext(community_links, " | ")': " | ".join(links)}))
     if banner:
-        parts.append(status_template('s += "<img', {}))
+        parts.append(status_template('s += "<img', {"config.hub_banner_url": "https://i.imgur.com/napac0L.png"}))
     if map_title is not None:
         parts.append(status_template('s += "<b>Map:', {"hub_status_text(map.title)": encode(map_title),
                                                      "hub_status_text(roundduration2text())": encode(duration)}))
@@ -123,8 +123,9 @@ class HubStatusTests(unittest.TestCase):
             "hub_status_link(config.discordurl, customserver_name(), config.open_hub_discord_in_new_window)",
             "server_title = hub_status_text(customserver_name())",
             "if (world.port == config.testing_port)\n\t\tvisibility = FALSE",
-            'config.hub_body = replacetext(config.hub_body, "ROUNDTIME", capitalize(lowertext(roundduration2text())))',
-            "if (config.hub_body)\n\t\ts += config.hub_body", "status = s",
+            's += "<img src=\\"[config.hub_banner_url]\\"><br>"',
+            'var/hub_body = replacetext(config.hub_body, "ROUNDTIME", capitalize(lowertext(roundduration2text())))',
+            "if (hub_body)\n\t\ts += hub_body", "status = s",
         ):
             self.assertIn(expected, STATUS)
         self.assertNotIn("game_state =", STATUS)
