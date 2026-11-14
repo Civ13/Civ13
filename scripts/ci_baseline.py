@@ -876,6 +876,11 @@ SUITES = {
     # parity against the frozen structure bodies, no BYOND runtime.
     'radio_shared': {'files': ('tests/radio_shared/test_radio_shared.py',),
         'paths': ('tests/radio_shared/',), 'shared_paths': ('code/modules/1713/radio.dm',)},
+    # Rusty bolt effect: metal near strong AM transmitters hums broadcasts.
+    'rusty_bolt': {'files': ('tests/rusty_bolt/test_sources.py',),
+        'paths': ('tests/rusty_bolt/', 'code/modules/1713/rusty_bolt.dm'), 'shared_paths': (
+            'code/modules/1713/radio.dm', 'code/modules/1713/modern_telecom.dm',
+            'code/modules/1713/radio_relay.dm')},
     # Copied capture chains in map update_win_condition use capture_step;
     # source parity against the frozen chains, no BYOND runtime.
     'capture_chain': {'files': ('tests/capture_chain/test_capture_chain.py',), 'paths': ('tests/capture_chain/',), 'shared_paths': ('code/game/objects/map_metadata/_map_metadata.dm',

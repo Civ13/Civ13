@@ -26,6 +26,9 @@ def normalise(text):
         line = re.sub(r'//.*', '', line).rstrip()
         if not line.strip() or line.strip() == 'var/mob/user = usr':
             continue
+        # The rusty bolt hook (rusty_bolt.dm) was added after the freeze.
+        if line.strip() == 'rusty_bolt_from_radio(R, msg, speaker)':
+            continue
         line = re.sub(r'\bR[:.]', '', line)
         line = re.sub(r'\bsrc\b', 'R', line)
         lines.append(line)
