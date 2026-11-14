@@ -11,6 +11,8 @@ given, so `apply_speed_class()` hands it the interval less that overhead.
 
 | Vehicle | Deciseconds per tile | Source |
 | --- | --- | --- |
+| Propeller plane at cruise, full throttle | 0.8 | ladder `car` x 0.5, `aircraft_step_delay` |
+| Propeller plane in low flight, full throttle | 1.2 | ladder `car` x 0.75, floor 1.2 |
 | Car with a light hull (extra top gear) | 1.2 | ladder, load factor floor |
 | Car, 5th gear | 1.6 | ladder `car` |
 | Motorcycle, 120cc or larger | 1.6 | `axis/bike/check_enginepower` |
@@ -24,9 +26,11 @@ given, so `apply_speed_class()` hands it the interval less that overhead.
 | Sherman, Panzer IV, Tiger, M13/40, Chi-Ha, M48, M60 | 6 | ladder `tracked_medium` |
 | KV-1, IS-1/2/3, I-Go | 7 | ladder `tracked_slow` |
 
-Trains, aircraft, ships and boats still carry their own figures. Targets for
-the work that moves them onto the ladder: steam locomotive 2, diesel
-locomotive 1.2, propeller aircraft 0.8 in cruise, jets 0.4.
+Aircraft taxi on the `car` row and fly faster than it
+(`aircraft/aircraft_load.dm`): a heavy load stretches the cruise interval.
+Trains, ships and boats still carry their own figures. Targets for the work
+that moves them onto the ladder: steam locomotive 2, diesel locomotive 1.2,
+jets 0.4.
 
 ## Rules
 

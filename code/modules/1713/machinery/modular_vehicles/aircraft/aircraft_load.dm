@@ -11,13 +11,16 @@
 // - the climb rate per tile flown (aircraft_climb_rate()): heavy planes climb
 //   one level a tile, light ones three, the rest two;
 // - flight fuel (burn_flight_fuel()), in proportion;
-// - cruise pace: a heavy plane cruises one tick slower per tile.
+// - cruise pace: a heavy plane's cruise interval stretches with its load.
 // Past AIRCRAFT_LOAD_LIMIT the wheels never leave the ground.
 //
-// Step pace (aircraft_step_delay()): on the ground a plane taxis at the car
-// pace of its gear. In low flight it holds at least two ticks a tile, so a
-// landing approach stays controllable; at cruise it flies one tick quicker
-// than its gear's delay, down to one tick a tile, about three times a car.
+// Step pace (aircraft_step_delay(), true tenths of a second per tile): on the
+// ground a plane taxis at the car row of the speed ladder (vehicle_speeds.dm,
+// 1.6 at full throttle). In the air each gear flies faster than the same gear
+// on the road: three quarters of the time in low flight, never under 1.2 so a
+// landing approach stays controllable, and half the time at cruise, 0.8 at
+// full throttle (the ladder's propeller target, twice a car). A heavy load
+// stretches the cruise interval in proportion.
 // Today's planes with a normal load take off, climb and burn as before.
 // ============================================================
 
@@ -29,7 +32,14 @@
 #define AIRCRAFT_LOAD_RECHECK 20
 // Weight of one steel airframe section (vehicle_load_weights() counts 10).
 #define AIRFRAME_STEEL_WEIGHT 10
-#define AIRCRAFT_LOW_FLIGHT_MIN_DELAY 2
+// Flight pace against the same gear on the ground, and the low-flight floor.
+#define AIRCRAFT_LOW_FLIGHT_PACE 0.75
+#define AIRCRAFT_CRUISE_PACE 0.5
+#define AIRCRAFT_LOW_FLIGHT_MIN_INTERVAL 1.2
+// The server tick (config TICKLAG): intervals land on whole ticks.
+#define AIRCRAFT_TICK 0.4
+// VEHICLE_STEP_OVERHEAD (vehicle_speeds.dm, compiled after this file).
+#define AIRCRAFT_STEP_OVERHEAD 1
 
 // How heavy this frame's own structure is. Steel is AIRFRAME_STEEL_WEIGHT;
 // hull materials override it (the aluminium thread's material hook).
@@ -81,15 +91,15 @@
 		return 3
 	return 2
 
-// Ticks per tile at the current gear and flight state.
+// Tenths of a second per tile at the current gear and flight state. The
+// aircraft loop schedules this interval directly, with no added overhead.
 /obj/structure/vehicleparts/axis/aircraft/proc/aircraft_step_delay()
+	var/interval = vehicle_m_delay + AIRCRAFT_STEP_OVERHEAD
 	if (!airborne())
-		return vehicle_m_delay + 1
+		return interval
 	if (flight_state != AIRCRAFT_CRUISE)
-		return max(AIRCRAFT_LOW_FLIGHT_MIN_DELAY, vehicle_m_delay)
-	. = max(1, vehicle_m_delay - 1)
-	if (load_scale() > AIRCRAFT_HEAVY_LOAD)
-		.++
+		return max(AIRCRAFT_LOW_FLIGHT_MIN_INTERVAL, round(interval * AIRCRAFT_LOW_FLIGHT_PACE, AIRCRAFT_TICK))
+	return max(AIRCRAFT_TICK, round(interval * AIRCRAFT_CRUISE_PACE * max(1, load_scale()), AIRCRAFT_TICK))
 
 /obj/structure/vehicleparts/axis/aircraft/glide_step_time()
 	return aircraft_step_delay()
@@ -109,7 +119,11 @@
 		return "It is light and lifts off a little sooner than usual."
 	return null
 
-#undef AIRCRAFT_LOW_FLIGHT_MIN_DELAY
+#undef AIRCRAFT_STEP_OVERHEAD
+#undef AIRCRAFT_TICK
+#undef AIRCRAFT_LOW_FLIGHT_MIN_INTERVAL
+#undef AIRCRAFT_CRUISE_PACE
+#undef AIRCRAFT_LOW_FLIGHT_PACE
 #undef AIRFRAME_STEEL_WEIGHT
 #undef AIRCRAFT_LOAD_RECHECK
 #undef AIRCRAFT_LIGHT_LOAD

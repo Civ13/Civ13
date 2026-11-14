@@ -39,9 +39,12 @@ var/global/list/airborne_aircraft = list()
 	name = "aircraft"
 	desc = "The controls and frame of a light aircraft."
 	vehicle_type = "car"
+	// On the ground it taxis at a car's pace (vehicle_speeds.dm); in the air
+	// aircraft_step_delay() (aircraft_load.dm) flies faster than that.
+	speed_class = "car"
 	speeds = 5
 	maxpower = 800
-	speedlist = alist(1=8,2=6,3=4,4=3,5=2)
+	speedlist = alist(1=8,2=5,3=3,4=1.4,5=0.6)
 	turntimer = 10
 	var/flight_state = AIRCRAFT_GROUND
 	// Tiles rolled at full throttle on runway before the wheels leave it.

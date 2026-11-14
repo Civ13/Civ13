@@ -42,8 +42,8 @@
 	var/normal_burn = A.burn_flight_fuel()
 	A.flight_state = AIRCRAFT_GROUND
 
-	// Step pace: car pace on the ground, at least two ticks in low flight, and
-	// one tick quicker than the gear at cruise.
+	// Step pace: the ladder's car row on the ground, three quarters of it in
+	// low flight and half of it at cruise.
 	A.currentspeed = A.speeds
 	A.vehicle_m_delay = A.get_speed()
 	var/ground_delay = A.aircraft_step_delay()
@@ -52,11 +52,11 @@
 	A.flight_state = AIRCRAFT_CRUISE
 	var/cruise_delay = A.aircraft_step_delay()
 	A.flight_state = AIRCRAFT_GROUND
-	aircraft_check(ground_delay == A.vehicle_m_delay + 1 && low_delay == 2 && cruise_delay == 1, "full throttle taxis at car pace and cruises three times as fast ([ground_delay] / [low_delay] / [cruise_delay] ticks a tile)")
-	A.currentspeed = 1
+	aircraft_check(abs(ground_delay - 1.6) < 0.01 && abs(low_delay - 1.2) < 0.01 && abs(cruise_delay - 0.8) < 0.01, "full throttle taxis at the ladder's car pace and cruises twice as fast ([ground_delay] / [low_delay] / [cruise_delay] tenths a tile)")
+	A.currentspeed = 2
 	A.vehicle_m_delay = A.get_speed()
 	A.flight_state = AIRCRAFT_LOW
-	aircraft_check(A.aircraft_step_delay() == A.vehicle_m_delay, "a slow gear in low flight keeps its own pace")
+	aircraft_check(abs(A.aircraft_step_delay() - 4.4) < 0.01, "a slow gear in low flight takes three quarters of its road time ([A.aircraft_step_delay()])")
 	A.flight_state = AIRCRAFT_GROUND
 	A.currentspeed = 0
 
@@ -71,7 +71,7 @@
 	var/heavy_cruise = A.aircraft_step_delay()
 	A.flight_state = AIRCRAFT_GROUND
 	A.currentspeed = 0
-	aircraft_check(normal_burn > 0 && heavy_burn > normal_burn && heavy_cruise == 2, "it burns more fuel in the air ([normal_burn] -> [heavy_burn]) and cruises a tick slower ([heavy_cruise])")
+	aircraft_check(normal_burn > 0 && heavy_burn > normal_burn && heavy_cruise > cruise_delay, "it burns more fuel in the air ([normal_burn] -> [heavy_burn]) and cruises a tick slower ([heavy_cruise])")
 	A.takeoff_armed = TRUE
 	A.currentspeed = 1
 	aircraft_check(findtext(A.load_description(), "heavily loaded") && findtext(A.takeoff_hint(), "after [A.takeoff_distance(TRUE)] tiles of runway or [A.takeoff_distance(FALSE)] tiles of open ground"), "examine and the takeoff hint give the loaded roll")
