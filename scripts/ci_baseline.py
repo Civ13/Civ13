@@ -1805,6 +1805,9 @@ SUITES = {
         'shared_paths': ('scripts/build-crafting-atlas.py', 'code/game/mob/crafting_atlas_tgui.dm', 'UI/crafting-atlas.json', 'civ13.dme',
                          'code/modules/magic/')},
     # Source and injected-help contracts only; this suite does not run DM.
+    'clay_lime_fire': {'files': ('tests/clay_lime_fire/test_contract.py',), 'paths': (
+        'tests/clay_lime_fire/', 'code/modules/1713/clay_lime_fire.dm',
+        'icons/obj/workshop_machines.dmi', 'tests/sprites/create_clay_lime_fire.py')},
     # Keep shared production and Atlas sources unmapped so their existing
     # conservative all-suite fallback remains intact.
     'sawmill': {'files': ('tests/sawmill/test_contract.py',
