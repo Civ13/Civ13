@@ -64,6 +64,7 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 	if (moving && !movement_processes)
 		get_weight()
 		movement_processes++
+		var/speed_before = currentspeed
 		if (do_vehicle_check() && currentspeed > 0)
 			for (var/obj/structure/vehicleparts/movement/W in wheels)
 				if (W.broken)
@@ -80,6 +81,9 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 				if (loaded_delay > 0)
 					vehicle_m_delay = loaded_delay
 		else
+			// A crash or a stall at speed throws riders off the roof.
+			if (speed_before >= 2)
+				deck_jolt(speed_before >= 3 ? 100 : 50, reverse ? OPPOSITE_DIR(dir) : dir, "The sudden stop throws you off!")
 			currentspeed = 0
 			moving = FALSE
 			movement_processes--
@@ -370,6 +374,7 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 	release_transform_tiles(move_turfs)
 	glide_step(origins)
 	refresh_passenger_vision()
+	deck_clearance(OPPOSITE_DIR(m_dir))
 	if (rover_trailers.len)
 		rover_trailers_follow(src)
 	return TRUE
@@ -877,6 +882,10 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 	release_transform_tiles(turn_turfs)
 	glide_turn(was_at)
 	refresh_passenger_vision()
+	// A hard turn at speed can fling riders off the outside of the turn.
+	if (currentspeed >= 3)
+		deck_jolt((currentspeed - 2) * 35, turn(olddir, tdir == "left" ? -90 : 90), "The turn flings you off!")
+	deck_clearance(0)
 	return TRUE
 
 /obj/effect/pseudovehicle

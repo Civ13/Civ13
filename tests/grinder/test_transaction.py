@@ -798,7 +798,7 @@ class AcquisitionProjection(Projection):
                         '\n\t\tvar/atom/O\n' + constructor)
         # Only the pre-existing circuit skill predicate is needed here; payment
         # and held secondary iron are separately source-backed below.
-        circuit_gate = stack.split('else if (recipe.result_type == /obj/item/stack/material/electronics)\n', 1)[1].split(
+        circuit_gate = stack.split('if (recipe.result_type == /obj/item/stack/material/electronics)\n', 1)[1].split(
             '\t\tif (!electronics_construction_iron', 1)[0]
         self.source += '\n/datum/acquisition/proc/circuit_skill()\n' + circuit_gate + '\treturn TRUE\n'
         self.globals |= dict(recipe_node_requirements=NodeRequirements(re.findall(

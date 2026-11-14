@@ -13,6 +13,7 @@
 	min_positions = 1
 	max_positions = 1
 
+/datum/job/american/hvt/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_NORMAL, "machinegun" = STAT_NORMAL)
 /datum/job/american/hvt/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -29,15 +30,7 @@
 	var/obj/item/clothing/accessory/armor/nomads/civiliankevlar/under/armor = new /obj/item/clothing/accessory/armor/nomads/civiliankevlar/under(null)
 	uniform.attackby(armor, H)
 	H.add_note("Role", "You are an essential member of the U.S. Government. They are out to get you! Rely on the feds and stay alive!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_NORMAL)
-	H.setStat("machinegun", STAT_NORMAL)
+	apply_job_stats(H)
 	if (map && map.ID == MAP_CAPITOL_HILL)
 		var/obj/map_metadata/capitol_hill/CP = map
 		CP.HVT_list |= H
@@ -157,6 +150,7 @@
 	min_positions = 1
 	max_positions = 2
 
+/datum/job/american/ng_lieutenant/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_VERY_HIGH, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_NORMAL, "machinegun" = STAT_MEDIUM_LOW)
 /datum/job/american/ng_lieutenant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -176,15 +170,7 @@
 	give_random_name(H)
 	H.civilization = "National Guard"
 	H.add_note("Role", "You are a <b>[title]</b>. You are in charge of the whole platoon. Organize your troops accordingly!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_VERY_HIGH)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_NORMAL)
-	H.setStat("machinegun", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	return TRUE
 
 /datum/job/american/ng_sergeant
@@ -204,6 +190,7 @@
 	min_positions = 2
 	max_positions = 8
 
+/datum/job/american/ng_sergeant/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_NORMAL, "machinegun" = STAT_MEDIUM_LOW)
 /datum/job/american/ng_sergeant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -226,15 +213,7 @@
 	give_random_name(H)
 	H.civilization = "National Guard"
 	H.add_note("Role", "You are a <b>[title]</b>, lead a squad against the Insurgents!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_NORMAL)
-	H.setStat("machinegun", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	return TRUE
 
 /datum/job/american/ng_medic
@@ -250,6 +229,7 @@
 	min_positions = 2
 	max_positions = 8
 
+/datum/job/american/ng_medic/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_NORMAL, "medical" = STAT_VERY_HIGH, "machinegun" = STAT_MEDIUM_LOW)
 /datum/job/american/ng_medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -276,15 +256,7 @@
 	give_random_name(H)
 	H.civilization = "National Guard"
 	H.add_note("Role", "You are a <b>[title]</b>. Keep your fellow soldiers healthy!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_VERY_HIGH)
-	H.setStat("machinegun", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	return TRUE
 
 /datum/job/american/ng_soldier
@@ -299,6 +271,7 @@
 	min_positions = 10
 	max_positions = 100
 
+/datum/job/american/ng_soldier/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_MEDIUM_LOW)
 /datum/job/american/ng_soldier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -320,15 +293,7 @@
 	give_random_name(H)
 	H.civilization = "National Guard"
 	H.add_note("Role", "You are a <b>[title]</b>, a basic grunt. Follow orders and defeat the enemy!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_MEDIUM_HIGH)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("machinegun", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	return TRUE
 
 /////////FEDS & HVTs//////////////
@@ -345,6 +310,7 @@
 	min_positions = 4
 	max_positions = 4
 
+/datum/job/american/fbi/job_stats = list("strength" = STAT_HIGH, "crafting" = STAT_HIGH, "rifle" = STAT_VERY_HIGH, "dexterity" = STAT_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_VERY_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_HIGH, "machinegun" = STAT_HIGH)
 /datum/job/american/fbi/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -368,15 +334,7 @@
 	uniform.attackby(holsterh, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>FBI officer</b>.<br> Keep the High Value Target safe at all costs!<br><i>You can use the \"Find HVT\" command under the \"Officer\" tab to locate the HVT(s).</i>")
-	H.setStat("strength", STAT_HIGH)
-	H.setStat("crafting", STAT_HIGH)
-	H.setStat("rifle", STAT_VERY_HIGH)
-	H.setStat("dexterity", STAT_HIGH)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_VERY_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_HIGH)
-	H.setStat("machinegun", STAT_HIGH)
+	apply_job_stats(H)
 	return TRUE
 
 ////////////MILITIAS/////////////
@@ -391,6 +349,7 @@
 	can_be_female = TRUE
 	allowed_maps = list(MAP_CAPITOL_HILL)
 
+/datum/job/civilian/us_militia/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
 /datum/job/civilian/us_militia/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -437,14 +396,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/us_stanag(H), slot_belt)
 	H.civilization = "Militia"
 	H.add_note("Role", "You are a <b>[title]</b>, insurging against the U.S. Government's tyranny. You've trained for this all your life, so go for it!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_MEDIUM_HIGH)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	return TRUE
 
 /datum/job/civilian/us_patriot
@@ -457,6 +409,7 @@
 	can_be_female = TRUE
 	allowed_maps = list(MAP_CAPITOL_HILL)
 
+/datum/job/civilian/us_patriot/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_HIGH, "rifle" = STAT_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
 /datum/job/civilian/us_patriot/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -487,14 +440,7 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/shotgun/pump(H), slot_shoulder)
 	H.civilization = "Militia"
 	H.add_note("Role", "You are a <b>[title]</b>, insurging against the U.S. Government's tyranny. You've trained for this all your life, so go for it!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_MEDIUM_HIGH)
-	H.setStat("rifle", STAT_HIGH)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	return TRUE
 
 /datum/job/civilian/us_shaman
@@ -510,6 +456,7 @@
 	min_positions = 3
 	max_positions = 10
 
+/datum/job/civilian/us_shaman/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_NORMAL, "medical" = STAT_VERY_HIGH, "machinegun" = STAT_MEDIUM_LOW)
 /datum/job/civilian/us_shaman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -533,13 +480,5 @@
 		H.f_style = pick("Full Beard","Medium Beard","Long Beard")
 	H.civilization = "Militia"
 	H.add_note("Role", "You are a <b>[title]</b>. Keep your fellow patriots healthy and motivated!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_VERY_HIGH)
-	H.setStat("machinegun", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	return TRUE

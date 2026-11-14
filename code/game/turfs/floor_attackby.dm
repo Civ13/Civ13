@@ -889,8 +889,9 @@
 	legacy_remaining -= gold_chance
 	var/diamond_chance = legacy_remaining * 0.01
 	legacy_remaining -= diamond_chance
+	var/bauxite_chance = mining_bauxite_chance(area_above) // Aluminium ore, from the Industrial age (aluminium.dm).
 	var/no_ore_chance = 100
-	for (var/chance in list(12, 8, iron_chance, zinc_chance, 2 * fuel_chance, fuel_chance, fuel_chance, fuel_chance, uranium_chance, silver_chance, gold_chance, diamond_chance))
+	for (var/chance in list(12, 8, iron_chance, zinc_chance, 2 * fuel_chance, fuel_chance, fuel_chance, fuel_chance, uranium_chance, silver_chance, gold_chance, diamond_chance, bauxite_chance))
 		no_ore_chance *= 1 - chance / 100
 	var/found_ore = FALSE
 	if (H)
@@ -1003,6 +1004,14 @@
 		if (H)
 			var/material/M = get_material_by_name("diamond")
 			to_chat(H, SPAN_GREEN_BOLD("You found some raw <font color=[M.icon_colour]><b>diamonds</b></font>!"))
+		found_ore = TRUE
+	if (prob(bauxite_chance) && bauxite_chance)
+		var/obj/item/stack/ore/bauxite/mineral = new/obj/item/stack/ore/bauxite(src)
+		mineral.amount = rand(24,36)
+		if (istype(get_area(src), /area/caribbean/void/caves/special))
+			mineral.amount *= 2
+		if (H)
+			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=#b5603a><b>bauxite</b></font> (aluminium ore)!"))
 		found_ore = TRUE
 	if (found_ore)
 		change_the_turf()

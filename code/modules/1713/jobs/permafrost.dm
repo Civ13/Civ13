@@ -16,6 +16,7 @@
 	min_positions = 5
 	max_positions = 10
 
+/datum/job/russian/perma/banditL/job_stats = list("strength" = STAT_HIGH, "crafting" = STAT_MEDIUM, "rifle" = STAT_NORMAL, "dexterity" = STAT_HIGH, "swords" = STAT_HIGH, "pistol" = STAT_NORMAL, "bows" = STAT_HIGH, "medical" = STAT_HIGH, "machinegun" = STAT_NORMAL)
 /datum/job/russian/perma/banditL/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
@@ -53,15 +54,7 @@
 	H.civilization = "Bandit"
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, lead your Bandits into the Underground complex, murder and eat them all!")
-	H.setStat("strength", STAT_HIGH)
-	H.setStat("crafting", STAT_MEDIUM)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_HIGH)
-	H.setStat("swords", STAT_HIGH)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_HIGH)
-	H.setStat("medical", STAT_HIGH)
-	H.setStat("machinegun", STAT_NORMAL)
+	apply_job_stats(H)
 	return TRUE
 
 
@@ -77,6 +70,7 @@
 	min_positions = 10
 	max_positions = 190
 
+/datum/job/russian/perma/bandit/job_stats = list("strength" = STAT_MEDIUM, "crafting" = STAT_MEDIUM, "rifle" = STAT_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_HIGH, "pistol" = STAT_LOW, "bows" = STAT_MEDIUM_HIGH, "medical" = STAT_MEDIUM, "machinegun" = STAT_LOW)
 /datum/job/russian/perma/bandit/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -132,15 +126,7 @@
 	H.civilization = "Bandit"
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, Follow your leader!")
-	H.setStat("strength", STAT_MEDIUM)
-	H.setStat("crafting", STAT_MEDIUM)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_HIGH)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_MEDIUM_HIGH)
-	H.setStat("medical", STAT_MEDIUM)
-	H.setStat("machinegun", STAT_LOW)
+	apply_job_stats(H)
 	return TRUE
 
 /////////BUNKER//////////////
@@ -159,6 +145,7 @@
 	min_positions = 1
 	max_positions = 3
 
+/datum/job/civilian/russian/perma/bunkL/job_stats = list("strength" = STAT_MEDIUM, "crafting" = STAT_MEDIUM, "rifle" = STAT_HIGH, "dexterity" = STAT_MEDIUM, "swords" = STAT_MEDIUM, "pistol" = STAT_HIGH, "bows" = STAT_MEDIUM, "medical" = STAT_HIGH, "machinegun" = STAT_MEDIUM)
 /datum/job/civilian/russian/perma/bunkL/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -184,15 +171,7 @@
 	H.civilization = "Bunker"
 	H.add_note("Role", "You Are One of the Bunker Leaders, the bandits are out to get you, rely on Firearms and Fortifications with your bunker crew to survive!")
 	give_random_name(H)
-	H.setStat("strength", STAT_MEDIUM)
-	H.setStat("crafting", STAT_MEDIUM)
-	H.setStat("rifle", STAT_HIGH)
-	H.setStat("dexterity", STAT_MEDIUM)
-	H.setStat("swords", STAT_MEDIUM)
-	H.setStat("pistol", STAT_HIGH)
-	H.setStat("bows", STAT_MEDIUM)
-	H.setStat("medical", STAT_HIGH)
-	H.setStat("machinegun", STAT_MEDIUM)
+	apply_job_stats(H)
 	return TRUE
 
 /datum/job/civilian/russian/perma/bunk
@@ -204,6 +183,7 @@
 	is_permfrb = TRUE
 	uses_squads = TRUE
 
+/datum/job/civilian/russian/perma/bunk/job_stats = list("strength" = STAT_MEDIUM, "crafting" = STAT_MEDIUM, "rifle" = STAT_MEDIUM, "dexterity" = STAT_MEDIUM, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
 /datum/job/civilian/russian/perma/bunk/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -273,12 +253,5 @@
 	H.add_note("Role", "You are a <b>[title]</b>, Protect the Bunker!")
 	H.civilization = "Bunker"
 	give_random_name(H)
-	H.setStat("strength", STAT_MEDIUM)
-	H.setStat("crafting", STAT_MEDIUM)
-	H.setStat("rifle", STAT_MEDIUM)
-	H.setStat("dexterity", STAT_MEDIUM)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_MEDIUM)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	return TRUE

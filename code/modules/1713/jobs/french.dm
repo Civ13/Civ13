@@ -18,6 +18,7 @@
 	min_positions = 1
 	max_positions = 1
 
+/datum/job/french/captain/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
 /datum/job/french/captain/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -34,14 +35,7 @@
 	to_chat(world, "<big><b>[H.real_name] is the Captain of the French Navy ship!</b></big>")
 	H.add_note("Role", "You are a <b>[title]</b>, the highest ranking officer present. Your job is to command the ship.")
 	broadside_give_call(H)
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_HIGH)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	give_random_name(H)
 
 	return TRUE
@@ -60,6 +54,7 @@
 	min_positions = 1
 	max_positions = 1
 
+/datum/job/french/qm/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
 /datum/job/french/qm/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -74,14 +69,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon(H), slot_belt)
 	to_chat(world, "<big><b>[H.real_name] is the Quartermaster of the French Navy ship!</b></big>")
 	H.add_note("Role", "You are a <b>[title]</b>, an officer in charge of the ship's supply allocation. You are also the second in command, after the <b>Capitaine</b>.")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	give_random_name(H)
 
 	return TRUE
@@ -102,6 +90,7 @@
 	min_positions = 1
 	max_positions = 1
 
+/datum/job/french/boatswain/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
 /datum/job/french/boatswain/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -117,14 +106,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon(H), slot_belt)
 	to_chat(world, "<big><b>[H.real_name] is the Boatswain of the French Navy ship!</b></big>")
 	H.add_note("Role", "You are a <b>[title]</b>, an officer in charge of the crew and their job allocation. The whole ship relies on you!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	give_random_name(H)
 
 	return TRUE
@@ -142,6 +124,7 @@
 	min_positions = 1
 	max_positions = 10
 
+/datum/job/french/midshipman/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_HIGH, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
 /datum/job/french/midshipman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -154,14 +137,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon(H), slot_belt)
 	H.add_note("Role", "You are a <b>[title]</b>, a petty officer in the ship. Organize your group according to the <b>Chef d'equipage</b> orders!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_HIGH)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	give_random_name(H)
 
 	return TRUE
@@ -180,6 +156,7 @@
 	min_positions = 1
 	max_positions = 10
 
+/datum/job/french/surgeon/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_NORMAL, "medical" = STAT_VERY_HIGH)
 /datum/job/french/surgeon/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -193,14 +170,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/doctor_handbook(H), slot_l_store)
 
 	H.add_note("Role", "You are a <b>[title]</b>, the most qualified medic present, and you are in charge of keeping the sailors healthy.")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_VERY_HIGH)
+	apply_job_stats(H)
 	give_random_name(H)
 
 	return TRUE
@@ -216,6 +186,7 @@
 	min_positions = 1
 	max_positions = 10
 
+/datum/job/french/carpenter/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_HIGH, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
 /datum/job/french/carpenter/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -233,14 +204,7 @@
 	H.equip_to_slot_or_del(new 	/obj/item/weapon/material/hatchet(H), slot_belt)
 	H.equip_to_slot_or_del(new 	/obj/item/weapon/wrench(H), slot_l_store)
 	H.add_note("Role", "You are a <b>[title]</b>, in charge of keeping the ship in good condition. Work with the <b>Quartier-ma�tre</b> to ensure everything is in good conditions!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_HIGH)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	give_random_name(H)
 
 	return TRUE
@@ -258,6 +222,7 @@
 	min_positions = 1
 	max_positions = 10
 
+/datum/job/french/cook/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
 /datum/job/french/cook/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -277,14 +242,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/chef(H), slot_wear_suit)
 
 	H.add_note("Role", "You are the cook of the ship. Feed the whole crew according to the <b>Quartier-ma�tre</b> orders!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	give_random_name(H)
 
 	return TRUE
@@ -305,6 +263,7 @@
 	min_positions = 6
 	max_positions = 200
 
+/datum/job/french/seaman/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
 /datum/job/french/seaman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -329,14 +288,7 @@
 		H.equip_to_slot_or_del(new 	/obj/item/weapon/material/harpoon(H), slot_belt)
 
 	H.add_note("Role", "You are a <b>[title]</b>, a simple seaman employed by the french Marine Royale. Follow your <b>Capitaine</b> orders!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	give_random_name(H)
 
 	return TRUE
@@ -357,6 +309,7 @@
 	min_positions = 1
 	max_positions = 1
 
+/datum/job/french/army_commander/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_VERY_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
 /datum/job/french/army_commander/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -382,14 +335,7 @@
 	uniform.attackby(h, H)
 
 	H.add_note("Role", "You are a <b>[title]</b>, the commander or this company. Organize your <b>Sergent</b> and lead your country to victory!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_VERY_HIGH)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	give_random_name(H)
 
 	return TRUE
@@ -409,6 +355,7 @@
 	min_positions = 2
 	max_positions = 20
 
+/datum/job/french/army_officer/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
 /datum/job/french/army_officer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -431,14 +378,7 @@
 	uniform.attackby(h, H)
 
 	H.add_note("Role", "You are a <b>[title]</b>, squad leader. Organize your group of <b>Soldat</b> according to your <b>Lieutenant</b>'s orders!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_HIGH)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	give_random_name(H)
 
 	return TRUE
@@ -457,6 +397,7 @@
 	min_positions = 1
 	max_positions = 6
 
+/datum/job/french/field_medic/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_VERY_HIGH)
 /datum/job/french/field_medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -476,14 +417,7 @@
 	uniform.attackby(h, H)
 
 	H.add_note("Role", "You are a <b>[title]</b>, the most qualified medic present, and you are in charge of keeping the infantry healthy.")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_VERY_HIGH)
+	apply_job_stats(H)
 	give_random_name(H)
 
 	return TRUE
@@ -502,6 +436,7 @@
 	min_positions = 12
 	max_positions = 100
 
+/datum/job/french/soldier/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
 /datum/job/french/soldier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -522,14 +457,7 @@
 	uniform.attackby(h, H)
 
 	H.add_note("Role", "You are a <b>[title]</b>, a basic infantry soldier of the French Colonial Army. Follow your Officer's orders!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_MEDIUM_HIGH)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	give_random_name(H)
 
 
@@ -549,6 +477,7 @@
 	min_positions = 4
 	max_positions = 20
 
+/datum/job/french/chasseur/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_VERY_HIGH, "swords" = STAT_VERY_HIGH, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
 /datum/job/french/chasseur/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -571,14 +500,7 @@
 	uniform.attackby(h, H)
 
 	H.add_note("Role", "You are a <b>[title]</b>, a light infantry soldier. You are very skilled in melee weapons and can move fast. Your job relies on hit-and-run tactics.")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_MEDIUM_HIGH)
-	H.setStat("dexterity", STAT_VERY_HIGH)
-	H.setStat("swords", STAT_VERY_HIGH)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	give_random_name(H)
 
 	return TRUE
@@ -602,6 +524,7 @@
 	min_positions = 1
 	max_positions = 1
 
+/datum/job/french/ww1captain/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
 /datum/job/french/ww1captain/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -625,14 +548,7 @@
 	give_random_name(H)
 	to_chat(world, "<big><b>[H.real_name] is the Captain of the French Forces!</b></big>")
 	H.add_note("Role", "You are a <b>[title]</b>, the highest ranking officer present. Your job is to command the company.")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_HIGH)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	give_random_name(H)
 
 	return TRUE
@@ -654,6 +570,7 @@
 	min_positions = 1
 	max_positions = 1
 
+/datum/job/french/ww1lieutenant/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
 /datum/job/french/ww1lieutenant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -675,14 +592,7 @@
 	give_random_name(H)
 	to_chat(world, "<big><b>[H.real_name] is the 1st Lieutenant of the French Forces!</b></big>")
 	H.add_note("Role", "You are a <b>[title]</b>, an officer in charge of the troops and their orders. The whole operation relies on you!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	give_random_name(H)
 
 	return TRUE
@@ -705,6 +615,7 @@
 	min_positions = 1
 	max_positions = 1
 
+/datum/job/french/ww1second_lieutenant/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
 /datum/job/french/ww1second_lieutenant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -726,14 +637,7 @@
 	give_random_name(H)
 	to_chat(world, "<big><b>[H.real_name] is the 2nd Lieutenant of the French Forces!</b></big>")
 	H.add_note("Role", "You are a <b>[title]</b>, an officer in charge of the troops and their orders. The whole operation relies on you!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	give_random_name(H)
 
 	return TRUE
@@ -755,6 +659,7 @@
 	min_positions = 1
 	max_positions = 10
 
+/datum/job/french/ww1sergeant/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_HIGH, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
 /datum/job/french/ww1sergeant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -776,14 +681,7 @@
 	uniform.attackby(holsterh, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a sergeant leading a squad. Organize your group according to the <b>Captain or Lieutenant's</b> orders!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_HIGH)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	give_random_name(H)
 
 	return TRUE
@@ -803,6 +701,7 @@
 	min_positions = 1
 	max_positions = 10
 
+/datum/job/french/ww1doctor/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_NORMAL, "medical" = STAT_VERY_HIGH)
 /datum/job/french/ww1doctor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -821,14 +720,7 @@
 	uniform.attackby(white, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, the most qualified medic present, and you are in charge of keeping the soldiers healthy.")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_VERY_HIGH)
+	apply_job_stats(H)
 	give_random_name(H)
 
 	return TRUE
@@ -848,6 +740,7 @@
 	min_positions = 6
 	max_positions = 200
 
+/datum/job/french/ww1shocktroop/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
 /datum/job/french/ww1shocktroop/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -867,14 +760,7 @@
 	uniform.attackby(newplate, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a soldier specialized in infiltration and shock tactics. Lead the way for your fellow soldiers to the enemy trenches!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	give_random_name(H)
 
 	return TRUE
@@ -894,6 +780,7 @@
 	min_positions = 12
 	max_positions = 400
 
+/datum/job/french/ww1infantry/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
 /datum/job/french/ww1infantry/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -915,14 +802,7 @@
 	fullwebbing.attackby(new/obj/item/ammo_magazine/c8x50, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a simple soldier of the French Army. Follow your <b>Sergeant's</b> orders!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	give_random_name(H)
 
 	return TRUE

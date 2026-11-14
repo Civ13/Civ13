@@ -19,7 +19,7 @@ def add_dressmaking(files, add, records):
         steps = [
             'Craft a tailoring project from one cloth sheet (woolcloth also works) in Clothing. Weaving is required.',
             'Use more sheets of the same fabric on the project, up to eight. Wool garments are warmer and lightly padded; linen is lighter and takes dyes brighter.',
-            f'Use the project in hand. Choose the {kind} to make from the garments your tailoring knowledge allows, and dye the body and each pattern piece from the dyes your knowledge allows (any colour with Textile Mills). Shirts, knee tunics, gowns, jackets, coats and cloaks also let you choose Pieces such as sleeves, necklines, legwear, belts, collars, closures, trims and patterns; some pieces need more fabric or knowledge. A live preview shows all four sides.',
+            f'Use the project in hand. Choose the {kind} to make from the garments your tailoring knowledge allows, and dye the body and each pattern piece from the dyes your knowledge allows (any colour with Textile Mills). Pattern book keeps up to 20 of your designs for every character you play on that server. Shirts, knee tunics, gowns, jackets, coats and cloaks also let you choose Pieces such as sleeves, necklines, legwear, belts, collars, closures, trims and patterns; some pieces need more fabric or knowledge. A live preview shows all four sides.',
             'Choose Cut fabric (30 ticks) once the project holds enough fabric for that garment. Cutting locks the design and sets spare sheets aside.',
             'Use the cut pieces in hand and choose Sew (60 ticks). One paid project becomes one wearable garment. Finished garments accept ordinary clothing accessories.',
         ]

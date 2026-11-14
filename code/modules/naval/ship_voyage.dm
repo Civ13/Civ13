@@ -138,6 +138,10 @@
 		return "She cannot make a voyage without a way to sail: rig a mast or fit a running engine."
 	if (length(voyage_crew()) < VOYAGE_MIN_CREW)
 		return "A voyage needs at least [VOYAGE_MIN_CREW] of her crew aboard and awake."
+	// Whatever would stop her crossing at landfall stops her setting out (ship_crossing.dm).
+	var/load = sea_crossing_load(src)
+	if (istext(load))
+		return load
 	return null
 
 /obj/structure/hull_tiller/proc/voyage_menu(mob/living/human/H)
@@ -157,7 +161,9 @@
 	var/list/lands = voyage_destinations(owner, origin)
 	var/list/scouting = list("Scout the unknown water to the north" = NORTH, "Scout the unknown water to the east" = EAST,
 		"Scout the unknown water to the south" = SOUTH, "Scout the unknown water to the west" = WEST)
-	var/text = length(lands) ? "Where does she sail? A chart tile takes about a minute. Her crew are those aboard when she sets out." : "Your chart shows no land a ship can reach yet. Scout the unknown water to chart some: she sails [VOYAGE_SCOUT_RANGE] tiles out and back."
+	var/load = sea_crossing_load(src)
+	var/text = isnum(load) ? "She is loaded to [load]% of what a crossing carries. " : ""
+	text += length(lands) ? "Where does she sail? A chart tile takes about a minute. Her crew are those aboard when she sets out." : "Your chart shows no land a ship can reach yet. Scout the unknown water to chart some: she sails [VOYAGE_SCOUT_RANGE] tiles out and back."
 	var/choice = WWinput(H, text, craft.name, "Stay", lands + scouting + list("Stay"))
 	if (!choice || choice == "Stay" || get_dist(H, src) > 1 || !craft)
 		return

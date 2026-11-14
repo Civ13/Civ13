@@ -59,6 +59,7 @@
 		"toggle gun mode" = 	list("type" = /obj/screen/gun/mode,	   "loc" = "-2,6"),
 		"allow movement" = 		list("type" = /obj/screen/gun/move,	   "loc" = "-2,7"),
 		"allow item use" = 		list("type" = /obj/screen/gun/item,	   "loc" = "-1,7"),
+		"craft" = 				list("type" = /obj/screen/craft,	   "loc" = "0,7"),
 		)
 
 	slot_data = list (
@@ -133,6 +134,7 @@
 		"allow movement" = 		list("type" = /obj/screen/gun/move,	   "loc" = "5,2"),
 		"allow item use" = 		list("type" = /obj/screen/gun/item,	   "loc" = "6,2"),
 		"toggle inventory" = 	list("type" = /obj/screen/toggle_inventory,	   "loc" = "1,1"),
+		"craft" = 				list("type" = /obj/screen/craft,	   "loc" = "13,2"),
 		)
 
 	slot_data = list (
@@ -217,6 +219,7 @@
 		"allow item use" = 		list("type" = /obj/screen/gun/item,	   "loc" = "EAST-1,SOUTH+2:2"),
 		// Clothing corner.
 		"toggle inventory" = 	list("type" = /obj/screen/toggle_inventory,	   "loc" = "WEST:2,SOUTH:2"),
+		"craft" = 				list("type" = /obj/screen/craft,	   "loc" = "WEST+2:2,SOUTH:2"),
 		)
 
 	slot_data = list (
@@ -285,6 +288,7 @@
 		"allow movement"	= list("type" = /obj/screen/gun/move,	   "loc" = "5,2"),
 		"allow item use" 	 = list("type" = /obj/screen/gun/item,	   "loc" = "6,2"),
 		"toggle inventory"   = list("type" = /obj/screen/toggle_inventory,	   "loc" = "1,1"),
+		"craft" = 				list("type" = /obj/screen/craft,	   "loc" = "13,2"),
 		)
 
 	slot_data = list (
@@ -351,6 +355,7 @@
 		"allow movement"	= list("type" = /obj/screen/gun/move,	   "loc" = "5,2"),
 		"allow item use" 	 = list("type" = /obj/screen/gun/item,	   "loc" = "6,2"),
 		"toggle inventory"   = list("type" = /obj/screen/toggle_inventory,	   "loc" = "1,1"),
+		"craft" = 				list("type" = /obj/screen/craft,	   "loc" = "13,2"),
 		)
 
 	slot_data = list (
