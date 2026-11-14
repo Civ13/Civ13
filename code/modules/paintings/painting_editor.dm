@@ -81,8 +81,9 @@ var/global/list/painting_editors = list() // mob -> canvas being painted
 	html += "<div style='margin-top:4px;color:#b0a080'>Pigments carried: [pigments.len ? jointext(pigments, ", ") : "none"]. A painting may use [PAINT_MAX_COLOURS] colours.</div>"
 	html += "<div style='margin-top:8px'>Title: <input id='ti' maxlength='[PAINT_TITLE_LENGTH]' value='[html_encode(C.title)]'></div>"
 	html += "<div style='margin-top:6px'><button onclick=\"send('save')\">Save</button><button onclick=\"if(confirm('Finish the painting? It cannot be changed afterwards.'))send('finish')\">Finish</button></div>"
+	html += "<div style='margin-top:8px'>Design code: <button onclick='exportCode()'>Export</button><button onclick='importCode()'>Import</button><br><textarea id='code' style='width:240px;height:54px;font-family:monospace;font-size:10px' placeholder='Paste a design code here, then press Import'></textarea><div style='color:#b0a080'>Export gives this picture as text to keep outside the game. Import draws a code onto this canvas, fitted to its size, with each colour changed to the nearest one you can paint.</div></div>"
 	html += "<div id='st'></div></div></div><script>"
-	html += "var W=[C.canvas_w],H=[C.canvas_h],K=[k],REF='\ref[C]',BASE='[C.base_colour]',MAXC=[PAINT_MAX_COLOURS],PART=[PAINT_PART_LENGTH];"
+	html += "var W=[C.canvas_w],H=[C.canvas_h],K=[k],REF='\ref[C]',BASE='[C.base_colour]',MAXC=[PAINT_MAX_COLOURS],PART=[PAINT_PART_LENGTH],MAXSIDE=[PAINT_MAX_SIDE],MAXCODE=[DESIGN_CODE_ART_MAX];"
 	html += "var BASECOLS=[json_encode(painting_base_colours(user, C))],ALLOWED=[json_encode(allowed)],PAL=[json_encode(pal)],PLAIN='[plain]';"
 	html += painting_draw_script()
 	html += painting_editor_script()
@@ -121,11 +122,26 @@ cv.onmousedown=function(e){var p=pos(e);if(t=='pick'){var c=grid[p[1]*W+p[0]];if
 cv.onmousemove=function(e){if(!down||t!='pen')return;var p=pos(e);paint(p[0],p[1]);};
 document.onmouseup=function(){down=false;};
 function go(q){window.location='byond://?src='+REF+'&'+q;}
-function send(m){if(busy)return;var r=used();var pal=[BASE],idx={};idx[BASE]=0;for(var c in r[0]){if(!(c in idx)){idx[c]=pal.length;pal.push(c);}}
-if(pal.length>MAXC){st('Too many colours.');return;}var s=[];for(var i=0;i<grid.length;i++)s.push(idx[grid[i]].toString(16));var p=packArt(s.join(''));
+function encode(){var r=used();var pal=[BASE],idx={};idx[BASE]=0;for(var c in r[0]){if(!(c in idx)){idx[c]=pal.length;pal.push(c);}}
+if(pal.length>MAXC)return null;var s=[];for(var i=0;i<grid.length;i++)s.push(idx[grid[i]].toString(16));return [pal,packArt(s.join(''))];}
+function send(m){if(busy)return;var e=encode();if(!e){st('Too many colours.');return;}var pal=e[0],p=e[1];
 parts=[];for(var j=0;j<p.length;j+=PART)parts.push(p.substring(j,j+PART));mode=m;busy=true;st('Sending...');go('paint=begin&n='+parts.length+'&pal='+encodeURIComponent(pal.join(',')));}
 function paintAck(n){n=parseInt(n,10);if(!parts)return;if(n<parts.length){go('paint=part&i='+n+'&d='+encodeURIComponent(parts[n]));return;}
-parts=null;go('paint=end&mode='+mode+'&title='+encodeURIComponent(document.getElementById('ti').value));}
+parts=null;go('paint=end&mode='+mode+(IMPORTED?'&imported=1':'')+'&title='+encodeURIComponent(document.getElementById('ti').value));}
+var IMPORTED=false;
+function exportCode(){var e=encode();if(!e){st('Too many colours.');return;}var h=[];for(var i=0;i<e[0].length;i++)h.push(e[0][i].substring(1));var b=document.getElementById('code');b.value='C13ART/1/'+W+'x'+H+'/'+h.join(',')+'/'+e[1];b.focus();b.select();st('Design code ready. Press Ctrl+C to copy it.');}
+function readCode(s){s=(s||'').replace(/\s+/g,'');if(s.length>MAXCODE)return 'That design code is too long.';var m=/^C13ART\/1\/(\d{1,3})x(\d{1,3})\/([0-9a-fA-F,]+)\/([0-9a-f~.]+)$/i.exec(s);if(!m)return 'That is not a picture design code.';
+var w=parseInt(m[1],10),h=parseInt(m[2],10);if(w<1||h<1||w>MAXSIDE||h>MAXSIDE)return 'That picture is too big.';var pal=m[3].split(',');if(!pal.length||pal.length>MAXC)return 'That picture has too many colours.';
+for(var i=0;i<pal.length;i++){if(!/^[0-9a-fA-F]{6}$/.test(pal[i]))return 'That design code is damaged.';pal[i]='#'+pal[i].toLowerCase();}
+var p=m[4].toLowerCase(),o=[],n=w*h,j=0;while(j<p.length){var c=p.charAt(j++);if(c=='~'||c=='.')return 'That design code is damaged.';var d=parseInt(c,16);if(d>=pal.length)return 'That design code is damaged.';var r=1;if(p.charAt(j)=='~'){var e=p.indexOf('.',j);if(e<0||e-j>6)return 'That design code is damaged.';r=parseInt(p.substring(j+1,e),10);if(!(r>=4))return 'That design code is damaged.';j=e+1;}if(o.length+r>n)return 'That design code is damaged.';for(var k=0;k<r;k++)o.push(d);}
+if(o.length!=n)return 'That design code is damaged.';return [w,h,pal,o];}
+function rgbOf(c){return [parseInt(c.substr(1,2),16),parseInt(c.substr(3,2),16),parseInt(c.substr(5,2),16)];}
+function nearest(c){if(ALLOWED.indexOf(c)>=0)return c;var a=rgbOf(c),best=BASE,bd=1e9;for(var i=0;i<ALLOWED.length;i++){var b=rgbOf(ALLOWED[i]),d=(a[0]-b[0])*(a[0]-b[0])+(a[1]-b[1])*(a[1]-b[1])+(a[2]-b[2])*(a[2]-b[2]);if(d<bd){bd=d;best=ALLOWED[i];}}return best;}
+function importCode(){var r=readCode(document.getElementById('code').value);if(typeof r=='string'){st(r);return;}var w=r[0],h=r[1],pal=r[2],px=r[3],map=[],changed=0;
+for(var i=0;i<pal.length;i++){map.push(nearest(pal[i]));if(map[i]!=pal[i])changed++;}
+var sc=Math.min(W/w,H/h),nw=Math.max(1,Math.round(w*sc)),nh=Math.max(1,Math.round(h*sc)),ox=Math.floor((W-nw)/2),oy=Math.floor((H-nh)/2);snap();
+for(var y=0;y<H;y++)for(var x=0;x<W;x++){var u=x-ox,v=y-oy;grid[y*W+x]=(u<0||v<0||u>=nw||v>=nh)?BASE:map[px[Math.floor(v*h/nh)*w+Math.floor(u*w/nw)]];}
+IMPORTED=true;draw();st('Design imported'+(w!=W||h!=H?' and fitted from '+w+'x'+h:'')+'.'+(changed?' '+changed+' colour'+(changed>1?'s were':' was')+' changed to the nearest paint you have.':'')+' Undo puts the canvas back.');}
 function paintStatus(s){busy=false;st(decodeURIComponent((s+'').replace(/\+/g,' ')));}
 for(var i=0;i<BASECOLS.length;i++)swatch(BASECOLS[i],false,document.getElementById('pal'));
 for(var i=0;i<ALLOWED.length;i++)if(BASECOLS.indexOf(ALLOWED[i])<0)swatch(ALLOWED[i],true,document.getElementById('mix'));
@@ -181,12 +197,12 @@ tool('pen');size(1);mark();draw();
 			if (!got || got.len != upload_count)
 				painting_editor_status(user, "The painting could not be sent.")
 				return
-			var/result = accept_painting(user, jointext(got, ""), upload_palette, href_list["mode"] == "finish", href_list["title"])
+			var/result = accept_painting(user, jointext(got, ""), upload_palette, href_list["mode"] == "finish", href_list["title"], href_list["imported"] == "1")
 			if (result)
 				painting_editor_status(user, result)
 
 // Checks and keeps an upload. Returns a status line for the editor.
-/obj/item/canvas/proc/accept_painting(mob/user, packed, palette_text, finish, new_title)
+/obj/item/canvas/proc/accept_painting(mob/user, packed, palette_text, finish, new_title, imported = FALSE)
 	var/list/pal = painting_palette_list(palette_text)
 	if (!pal || pal[1] != base_colour)
 		return "The painting could not be read."
@@ -206,6 +222,9 @@ tool('pen');size(1);mark();draw();
 			return "Give the painting a title before finishing it."
 	palette = jointext(pal, ",")
 	paint_data = painting_pack(plain)
+	if (imported && !imported_design)
+		imported_design = TRUE
+		design_code_log(user, "picture", "[src]", painting_design_code(canvas_w, canvas_h, palette, paint_data))
 	if (!author_ckey)
 		author_ckey = user.ckey
 		author_name = user.real_name
@@ -218,7 +237,7 @@ tool('pen');size(1);mark();draw();
 		finished = TRUE
 		name = "\"[title]\""
 		painting_registry |= src
-		log_game("[key_name(user)] finished the [format] painting \"[title]\" ([canvas_w]x[canvas_h]) at ([user.x],[user.y],[user.z]).")
+		log_game("[key_name(user)] finished the [format] painting \"[title]\" ([canvas_w]x[canvas_h])[imported_design ? " from an imported design code" : ""] at ([user.x],[user.y],[user.z]).")
 	else if (length(new_title))
 		title = sanitizeSafe(new_title, PAINT_TITLE_LENGTH)
 	refresh_small()

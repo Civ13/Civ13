@@ -89,6 +89,12 @@ class TerrainFileTests(unittest.TestCase):
             for x in range(size):
                 if self.cells[size - 1 - y][x]["terrain"] == "WATER":
                     self.assertIsNone(thresholds[y][x], (x, y))
+        hollows, ids = self.flood_script.read_hollows(self.folder / terrain_files.FLOOD_FILE)
+        self.assertEqual(self.summary["hollows"], len(hollows))
+        self.assertEqual((size, size), (len(ids), len(ids[0])))
+        text = (self.folder / terrain_files.FLOOD_FILE).read_text(encoding="ascii")
+        self.assertTrue(text.startswith(self.flood_script.HEADER + "\n"), "the version the game reads now")
+        self.assertIn("\nhollows %d\n" % len(hollows), text)
         banks = sum(v is not None and v <= 2 for row in thresholds for v in row)
         self.assertGreater(banks, 200, "low ground by the rivers floods first")
 
