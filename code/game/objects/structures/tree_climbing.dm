@@ -348,6 +348,7 @@ var/global/list/tree_canopy_tops = list()
 	. = ..()
 	if (user && tree_climber && tree_climber.climbed_tree == src && get_dist(user, src) <= 2)
 		to_chat(user, SPAN_NOTICE("[tree_climber] is up in its branches."))
+	flood_mark_examine(src, user)
 
 #undef TREE_CLIMB_TIME
 #undef TREE_CLIMB_DOWN_TIME

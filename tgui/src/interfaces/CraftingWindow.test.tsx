@@ -121,6 +121,19 @@ describe('Crafting window', () => {
     render(<CraftingWindow {...ui()} />);
     expect(screen.getByText('6 in your hand')).toBeTruthy();
   });
+  it('selects the recipe the Atlas handed over, even an unlearned one behind another tab', () => {
+    const props = ui(); const view = render(<CraftingWindow {...props} />);
+    fireEvent.click(screen.getByRole('tab', { name: /Furniture/ }));
+    view.rerender(<CraftingWindow {...ui({ focus: '2:2:eeeeeeee', focus_seq: 1 })} />);
+    expect(within(screen.getByLabelText('Selected recipe')).getByText('Needs the Archery manual')).toBeTruthy();
+    expect(screen.getByRole('tab', { name: /All/ }).getAttribute('aria-selected')).toBe('true');
+    expect(view.container.querySelector('.craft-row-selected')?.textContent).toContain('shortbow');
+    expect(props.act).not.toHaveBeenCalled();
+    // A later click is not undone by the same hand-off arriving again in a refresh.
+    fireEvent.click(rowButton('travois'));
+    view.rerender(<CraftingWindow {...ui({ focus: '2:2:eeeeeeee', focus_seq: 1, amount: 5 })} />);
+    expect(view.container.querySelector('.craft-row-selected')?.textContent).toContain('travois');
+  });
   it('searches across tabs and never crafts from the search box', () => {
     const props = ui(); render(<CraftingWindow {...props} />);
     fireEvent.click(screen.getByRole('tab', { name: /Weapons/ }));

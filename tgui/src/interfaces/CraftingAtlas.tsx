@@ -107,6 +107,9 @@ function Recipe({ ui, recipe, choose, lead }: { ui: ScreenProps; recipe: Data; c
   const optional = site === 'bench';
   const { facts, rest } = notes(recipe.conditions);
   const until = Number(recipe.maximum_era);
+  // Only recipes made from a held material have a Crafting window to open.
+  const product = list(recipe.outputs)[0];
+  const craftable = text(recipe.kind).split(' / ')[0] === 'Material' && !recipe.elsewhere && !recipe.retired && product && typeof product.id === 'string' ? product.id : '';
   return <article className="atlas-card" aria-label="Recipe">
     {!!lead && <p className="atlas-eyebrow">{lead}</p>}
     <h2 style={recipe.manual_hint ? { color: '#aaa' } : undefined}>{text(recipe.name)}</h2>
@@ -118,6 +121,8 @@ function Recipe({ ui, recipe, choose, lead }: { ui: ScreenProps; recipe: Data; c
       {!!recipe.retired && <span className="atlas-chip atlas-warn">Retired in the current era</span>}
     </p>
     {!!recipe.manual_hint && <p role="status" className="atlas-locked">{text(recipe.manual_hint)}</p>}
+    {craftable && <p><button type="button" className="atlas-craft" disabled={!ui.interactive} onClick={() => ui.act('atlas_craft', { atlas_craft: craftable })}>Craft this</button>
+      <span className="atlas-craft-note">Opens the Crafting window on this recipe when its material is in your hands or beside you.</span></p>}
     {familyVariants.length > 1 && <label className="atlas-field">Recipe variant ({familyVariants.length} ways to make this)
       <select aria-label="Recipe variant" disabled={!ui.interactive} value={String(recipe.id)} onChange={event => choose(event.target.value)}>
         {familyVariants.map(variant => <option key={String(variant.id)} value={String(variant.id)}>{text(variant.label)}{variant.research === 'needed' ? ' - needs research' : ''}{variant.elsewhere ? ' - other maps' : ''}</option>)}

@@ -25,6 +25,9 @@
 #define RIVER_FLOOD_STAGE_MIN -1.5
 // Above this the plains drown; no river rises past it.
 #define RIVER_FLOOD_STAGE_CAP 3
+// Levels a reach's high-water mark fades each minute, so flood marks show the
+// last few years' floods rather than the highest ever.
+#define RIVER_FLOOD_MARK_FADE 0.005
 // Deciseconds between river ticks.
 #define RIVER_FLOOD_TICK 600
 
@@ -33,7 +36,7 @@
 /obj/map_metadata
 	var/tmp/datum/river_flood/river_flood_cache = null
 	var/tmp/river_flood_loaded = FALSE
-	// Saved water in each reach: list(reach count, storage..., snowpack...).
+	// Saved water in each reach: list(reach count, storage..., snowpack..., high-water mark...).
 	var/list/river_flood_state = list()
 
 var/global/list/river_flood_id_values = river_flood_id_table()
@@ -68,6 +71,8 @@ var/global/next_river_flood_tick = 0
 	var/list/snow = list()
 	var/list/flow = list()
 	var/list/stage = list()
+	// Highest recent stage, fading slowly: the flood marks on the banks.
+	var/list/peak = list()
 	// The state list last written to the map; anything else there was loaded from a save.
 	var/list/published = null
 	// TRUE while some reach is above stage 0, so some bank may be under water.
@@ -133,6 +138,7 @@ var/global/next_river_flood_tick = 0
 	F.snow = new /list(F.count)
 	F.flow = new /list(F.count)
 	F.stage = new /list(F.count)
+	F.peak = new /list(F.count)
 	for (var/i in 1 to F.count)
 		F.settle(i)
 	return F
@@ -166,20 +172,26 @@ var/global/next_river_flood_tick = 0
 	storage[i] = flow[i] / RIVER_FLOOD_RELEASE
 	snow[i] = 0
 	stage[i] = stage_for(i, flow[i])
+	peak[i] = stage[i]
 
+// Older saves hold no high-water marks; the marks then start at the water.
 /datum/river_flood/proc/restore(list/state)
-	if (!islist(state) || state.len != count * 2 + 1 || state[1] != count)
+	if (!islist(state) || (state.len != count * 2 + 1 && state.len != count * 3 + 1) || state[1] != count)
 		return FALSE
+	var/marks = state.len == count * 3 + 1
 	for (var/i in 1 to count)
 		var/s = state[i + 1]
 		var/w = state[count + i + 1]
 		if (!isnum(s) || !isnum(w) || s < 0 || w < 0)
+			return FALSE
+		if (marks && !isnum(state[count * 2 + i + 1]))
 			return FALSE
 	for (var/i in 1 to count)
 		storage[i] = state[i + 1]
 		snow[i] = state[count + i + 1]
 		flow[i] = storage[i] * RIVER_FLOOD_RELEASE
 		stage[i] = stage_for(i, flow[i])
+		peak[i] = marks ? clamp(state[count * 2 + i + 1], RIVER_FLOOD_STAGE_MIN, RIVER_FLOOD_STAGE_CAP) : stage[i]
 	stages_changed()
 	return TRUE
 
@@ -203,6 +215,8 @@ var/global/next_river_flood_tick = 0
 		. += round(storage[i], 0.001)
 	for (var/i in 1 to count)
 		. += round(snow[i], 0.001)
+	for (var/i in 1 to count)
+		. += round(peak[i], 0.001)
 
 // Big rivers rise furthest: a stream draining a few hundred tiles moves about
 // half as much for the same rain.
@@ -264,6 +278,7 @@ var/global/next_river_flood_tick = 0
 		storage[i] -= released
 		flow[i] = released
 		stage[i] = stage_for(i, released)
+		peak[i] = max(stage[i], peak[i] - RIVER_FLOOD_MARK_FADE)
 		if (down[i])
 			incoming[down[i]] = (incoming[down[i]] || 0) + released
 	stages_changed()
@@ -313,8 +328,25 @@ var/global/next_river_flood_tick = 0
 	var/threshold = F.threshold_at(T.x, T.y)
 	if (isnull(threshold))
 		return 0
-	// Ground a player has raised stays dry until the water tops it.
+	return max(0, F.stage[r] - flood_ground_level(T, threshold))
+
+// The stage at which floodwater stands on a tile: its threshold, or higher
+// where a player has raised the ground.
+/proc/flood_ground_level(turf/T, threshold)
 	var/own = terrain_height_at(T)
-	if (own > threshold)
-		threshold = own
-	return max(0, F.stage[r] - threshold)
+	return own > threshold ? own : threshold
+
+// How high the last floods stood on a land tile, in levels (0 for none).
+/proc/flood_mark_at(turf/T)
+	if (!T || !map)
+		return 0
+	var/datum/river_flood/F = map.river_flood()
+	if (!F || T.z != F.z_level || T.x < 1 || T.x > F.maxx || T.y < 1 || T.y > F.maxy)
+		return 0
+	var/r = F.reach_at(T.x, T.y)
+	if (!r || F.peak[r] <= 0)
+		return 0
+	var/threshold = F.threshold_at(T.x, T.y)
+	if (isnull(threshold))
+		return 0
+	return max(0, F.peak[r] - flood_ground_level(T, threshold))

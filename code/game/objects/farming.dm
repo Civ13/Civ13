@@ -1258,6 +1258,10 @@
 	if (istype(src, /obj/structure/farming/plant/mushroom) || istype(src, /obj/structure/farming/plant/mushroompsy))
 		return
 
+	// River floodwater (flood_effects.dm): waters, drowns, or leaves silt.
+	if (flood_plant_step())
+		return
+
 	// Check for rain or monsoon and increase water level
 	var/area/A = get_area(loc)
 	if (!A)

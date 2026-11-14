@@ -41,6 +41,10 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    # Stdlib-only: poisonous frog meat coats crossbow bolts as well as arrows (#5258).
+    'poison_frog_bolts': {'files': ('tests/poison_frog_bolts/test_bolts.py',), 'paths': (
+        'tests/poison_frog_bolts/',), 'shared_paths': (
+        'code/modules/reagents/reagent_containers/food/snacks/meat.dm',)},
     'intestine_casings': {'files': ('tests/organ_utilities/test_casings.py',),
         'paths': ('tests/organ_utilities/',),
         'shared_paths': ('code/modules/1713/animal_harvest.dm', 'scripts/atlas/catalog_metadata.py')},
@@ -412,6 +416,8 @@ SUITES = {
     'river_flow': {'files': ('tests/river_flow/test_generation.py', 'tests/river_flow/test_flood.py'),
         'paths': ('tests/river_flow/', 'scripts/river_flow.py', 'scripts/river_flood.py'),
         'shared_paths': ('code/modules/1713/river_flow.dm', 'code/modules/1713/river_flood.dm', 'code/modules/1713/flood_effects.dm',
+                         'code/game/objects/farming.dm', 'code/game/objects/structures/watercloset.dm',
+                         'code/modules/1713/rain_gear.dm', 'code/game/mob/mob_movement.dm',
                          'code/processes/weather.dm', 'code/modules/persistence/durable_contract.dm',
                          'maps/nomads/nomads_desert.dmm',
                          'code/processes/river_current.dm',
@@ -1093,6 +1099,10 @@ SUITES = {
         'paths': ('tests/stone_age_rites/',), 'shared_paths': (
             'code/modules/1713/stone_age_rites.dm', 'icons/obj/stone_age_rites.dmi',
             'code/game/objects/items/stacks/stack.dm')},
+    # Bead trade goods and the two-sided barter mat: source contracts only.
+    'barter': {'files': ('tests/barter/test_source.py',),
+        'paths': ('tests/barter/',), 'shared_paths': (
+            'code/modules/1713/barter.dm', 'icons/obj/barter.dmi')},
     'door_intents': {'files': ('tests/door_intents/test_door_intents.py', 'tests/door_intents/test_jail_keys.py'),
         'paths': ('tests/door_intents/',), 'shared_paths': (
             'code/game/objects/structures/door.dm',

@@ -40,7 +40,7 @@ var/global/datum/crafting_atlas_presenter/tgui/crafting_atlas_tgui_presenter = n
 	var/scope = ""
 
 /datum/nanoui/tgui/crafting_atlas/allowed_actions()
-	return list("atlas_navigate")
+	return list("atlas_navigate", "atlas_craft")
 
 /datum/nanoui/tgui/crafting_atlas/get_html()
 	if (legacy_renderer)
@@ -125,6 +125,15 @@ var/global/datum/crafting_atlas_presenter/tgui/crafting_atlas_tgui_presenter = n
 	// show() owns the original per-client throttle and updates only this reader.
 	// Do not broadcast one reader's query to every viewer of the global catalog.
 	return FALSE
+
+// The same current-window checks as navigation, then the Crafting window takes over.
+/datum/crafting_atlas_presenter/tgui/craft(mob/viewer, product, state)
+	var/datum/nanoui/tgui/crafting_atlas/ui = GLOB.nanomanager.get_open_ui(viewer, crafting_atlas_reference, "crafting_atlas")
+	if (!istype(ui) || ui.user != viewer || !state || ui.state != state || ui.legacy_renderer || !ui.frontend_ready || !ui.frontend_acknowledged)
+		return FALSE
+	if (!istext(product) || !crafting_atlas_reference.resource_exists(product))
+		return FALSE
+	return crafting_window_from_atlas(viewer, product)
 
 // Each reader keeps the preview filenames already sent to them, so browsing
 // does not rebuild and resend the same sprites on every navigation.

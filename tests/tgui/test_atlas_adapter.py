@@ -99,7 +99,7 @@ class AtlasAdapterContract(unittest.TestCase):
   for marker in ('!istype(ui)','ui.user != viewer','ui.src_object != reference','ui.state != state','STATUS_INTERACTIVE','ui.legacy_renderer','!ui.frontend_ready','!ui.frontend_acknowledged','length(payload) > 1024','params.len > 6','!istext(params["route"])'):
    self.assertIn(marker,NAV)
    self.assertLess(NAV.index(marker),NAV.index('var/route = params["route"]'))
-  self.assertIn('return list("atlas_navigate")',ADAPTER)
+  self.assertIn('return list("atlas_navigate", "atlas_craft")',ADAPTER)
   shared=(ROOT/'code/modules/nano/tgui.dm').read_text()
   self.assertNotIn('atlas_navigate',shared)
   topic=CORE.split('/datum/crafting_atlas_reference/Topic(href, list/href_list, state)',1)[1]
