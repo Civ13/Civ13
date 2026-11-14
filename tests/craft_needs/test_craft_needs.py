@@ -35,6 +35,7 @@ LOOSE_INPUTS = {
     '/obj/item/machine_part/shaft': 'code/modules/materials/machine_parts.dm',
     '/obj/item/machine_part/bearing': 'code/modules/materials/machine_parts.dm',
     '/obj/item/machine_part/belt': 'code/modules/materials/machine_parts.dm',
+    '/obj/item/machine_part/spring': 'code/modules/materials/machine_parts.dm',
 }
 
 

@@ -44,3 +44,25 @@ research checks at the anvil are unchanged.
 
 A rolling mill was planned beside it and is not built: the game has no plate,
 sheet or rail stock for it to roll.
+
+## Machine shop
+
+`code/modules/1713/machine_shop.dm` adds three more machines that stand next
+to an anvil. `forge_time(base, category)` asks every fastened
+`/obj/structure/workshop_machine` within one tile for `forge_factor(category)`
+and takes the best machine of each `forge_role`; the shares multiply, and no
+job takes less than a second. Each machine used plays its working loop once
+(`forge_used()`). Nothing ticks.
+
+| Machine | Role | Built from | Research | Works when | Share left |
+| --- | --- | --- | --- | --- | --- |
+| Trip hammer | hammer | 10 wood, 6 iron, shaft | Watermills | a prime mover turns next to it | 0.5 |
+| Steam hammer | hammer | 16 iron, shaft, spring | Steam Power | it has fuel; one job burns one | 0.35 |
+| Drill press | fitting | 10 iron, gear set, shaft, drive belt | Machined Tools | a prime mover turns next to it | 0.6 for guns, gun parts and machine parts |
+| Hydraulic press | fitting | 14 iron, shaft, 2 bearings | Factories | always (hand pumped) | 0.6 for helmets, armour and shields |
+
+Steam hammer fuel is counted in jobs (`steam_hammer_fuel_rates`): coal 4,
+charcoal 3, wood, planks or bamboo 1 a unit, up to 60. The drill press list is
+`drill_press_categories`; the press matches `hydraulic_press_words` against
+the anvil recipe category. A milling machine is not built: the engine lathe
+already cuts every precise part.

@@ -42,7 +42,7 @@
 			to_chat(user, "You begin crafting \the [parsed_choice2[1]]...")
 			in_use = TRUE
 			update_icon()
-			if (do_after(user,forge_time(10*anvil_recipes[parsed_choice2[1]][material_index]),src,can_move=FALSE))
+			if (do_after(user,forge_time(10*anvil_recipes[parsed_choice2[1]][material_index],anvil_recipes[parsed_choice2[1]][2]),src,can_move=FALSE))
 				if (P.amount >= anvil_recipes[parsed_choice2[1]][material_index] && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
 					P.amount -= anvil_recipes[parsed_choice2[1]][material_index]
 					if (P.amount <= 0)
@@ -85,7 +85,7 @@
 	to_chat(user, "You begin crafting \the [parsed_choice2[1]]...")
 	in_use = TRUE
 	update_icon()
-	if (do_after(user,forge_time(10*mat),src,can_move=FALSE))
+	if (do_after(user,forge_time(10*mat,row[2]),src,can_move=FALSE))
 		if (ML.current_material == material && ML.capacity >= mat && crafting_recipe_allowed(H, "[row[9]]"))
 			ML.capacity -= mat
 			to_chat(user, "You finish crafting \the [parsed_choice2[1]].")
