@@ -102,7 +102,7 @@ var/load_runtime_error = FALSE
 	var/loaded = car.get_load_factor(TRUE)
 	load_check(loaded > 1 && loaded < VEHICLE_LOAD_MAX, "packing one with buckets slows it down ([loaded])")
 	car.currentspeed = car.speeds
-	load_check(car.get_speed() == car.speedlist[car.speeds] * loaded, "its top gear delay grows with the load ([car.get_speed()])")
+	load_check(abs(car.get_speed() + 1 - (car.speedlist[car.speeds] + 1) * loaded) < 0.001, "the time its top gear takes per tile grows with the load ([car.get_speed()])")
 	load_check(car.loaded_turntimer() > turn_was, "and turns take longer ([car.loaded_turntimer()])")
 	load_check(findtext(car.load_description(), "loaded down"), "examine says it is loaded down ([car.load_description()])")
 	for (var/i = 1, i <= 40, i++)
@@ -130,7 +130,32 @@ var/load_runtime_error = FALSE
 	load_check(car.top_gear() == car.speeds + 1, "a light vehicle can shift into one more gear")
 	car.currentspeed = car.speeds + 1
 	var/bonus = car.get_speed()
-	load_check(bonus == max(1, car.speedlist[car.speeds] - 1) * 0.75, "that gear is a tick quicker than the last, then lightened ([bonus])")
+	load_check(car.gear_delay(car.speeds + 1) < car.speedlist[car.speeds], "that gear is quicker than the last ([car.gear_delay(car.speeds + 1)])")
+	load_check(bonus <= car.gear_delay(car.speeds + 1) && bonus >= 0.2, "and lightened, down to the floor ([bonus])")
+	car.currentspeed = car.speeds
+	var/base_top = car.speedlist[car.speeds] + 1
+	load_check(car.get_speed() + 1 <= max(1.2, base_top * 0.75) + 0.001, "a hull a quarter lighter takes a quarter less time per tile ([car.get_speed() + 1] against [base_top])")
+	car.currentspeed = car.speeds + 1
+
+	// ---- The speed ladder (vehicle_speeds.dm) ----
+	load_check(car.gear_interval(car.speeds) == 1.6, "a car's top gear takes 1.6 a tile ([car.gear_interval(car.speeds)])")
+	load_check(car.gear_interval(car.speeds) < bicycle_step_delay(0), "which beats an unloaded bicycle ([bicycle_step_delay(0)])")
+	var/obj/structure/vehicleparts/axis/heavy/m41/bulldog = new(locate(2, 2, 1))
+	var/obj/structure/vehicleparts/axis/heavy/kv1a/heavy_tank = new(locate(2, 2, 1))
+	var/obj/structure/vehicleparts/axis/heavy/t34/medium_tank = new(locate(2, 2, 1))
+	var/obj/structure/vehicleparts/axis/heavy/hago/hago = new(locate(2, 2, 1))
+	load_check(bulldog.gear_interval(bulldog.speeds) < medium_tank.gear_interval(medium_tank.speeds), "an M41 outruns a T-34")
+	load_check(medium_tank.gear_interval(medium_tank.speeds) < heavy_tank.gear_interval(heavy_tank.speeds), "which outruns a KV-1")
+	load_check(hago.gear_interval(hago.speeds) > car.gear_interval(car.speeds), "and no Ha-Go keeps up with a car")
+	var/ordered = TRUE
+	for (var/class in vehicle_speed_ladder)
+		var/list/row = vehicle_speed_ladder[class]
+		for (var/g = 2, g <= row.len, g++)
+			if (row[g] >= row[g - 1])
+				ordered = FALSE
+	load_check(ordered, "every ladder row gets quicker gear by gear")
+	for (var/obj/O in list(bulldog, heavy_tank, medium_tank, hago))
+		qdel(O)
 	load_check(car.loaded_turntimer() == car.turntimer * 0.75, "and turns a little faster ([car.loaded_turntimer()])")
 	car.load_factor = 1
 	car.currentspeed = car.speeds + 1
