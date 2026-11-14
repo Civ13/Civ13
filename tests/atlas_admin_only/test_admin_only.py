@@ -73,6 +73,10 @@ class AdminOnlyAtlasTests(unittest.TestCase):
         with self.assertRaises(SystemExit):
             check_magic(files, '{"/obj/item/new_charm":{}}', 'a test output')
         check_magic(files, '{"/obj/item/new_charmed_rock":{}}', 'a test output')
+        brew = {'code/modules/magic/y.dm': '/datum/reagent/moon_brew\n\tname = "Moon Brew"\n\tid = "moon_brew"\n'}
+        with self.assertRaises(SystemExit):
+            check_magic(brew, '{"moon_brew":{"name":"moon brew"}}', 'a test output')
+        check_magic(brew, '{"moon_brewery":{}}', 'a test output')
         with self.assertRaises(SystemExit):
             check_public({'/datum/reagent/x': ''}, '{"id":"secret_brew"}', 'a test output', ['secret_brew'])
 
