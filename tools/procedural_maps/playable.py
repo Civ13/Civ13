@@ -311,8 +311,11 @@ def _rectangles(grid, default):
     return [{"x1": a + 1, "x2": b + 1, "y1": c + 1, "y2": d + 1, "metres": m} for a, b, c, d, m in done]
 
 
-def elevation_profile(doc, lapse=DEFAULT_LAPSE):
+def elevation_profile(doc, lapse=DEFAULT_LAPSE, levels=None):
     """Return the metadata elevation profile for an IR document.
+
+    levels maps the layers to profile to the map level each is written on
+    (every layer on its own native level by default).
 
     Elevations are rounded to the finest band that fits in the DM limit of 256
     rectangles; of the three most common bands, the one needing the fewest
@@ -324,8 +327,10 @@ def elevation_profile(doc, lapse=DEFAULT_LAPSE):
     for step in ELEVATION_STEPS:
         planes, counts = {}, {}
         for layer, level in doc["layers"].items():
+            if levels is not None and layer not in levels:
+                continue
             grid = [[int(round(c["elevation_m"] / step)) * step for c in row] for row in level["cells"]]
-            planes[level["native_z"]] = grid
+            planes[level["native_z"] if levels is None else levels[layer]] = grid
             for row in grid:
                 for value in row:
                     counts[value] = counts.get(value, 0) + 1
@@ -379,7 +384,7 @@ def apply_elevation(layout, profile, metadata=METADATA):
     return keys[0]
 
 
-def write_text(doc, layout):
+def write_text(doc, layout, levels=(1, 2)):
     recipes = sorted(set(layout.values()))
     alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
     width = 2 if len(recipes) <= 52 ** 2 else 3
@@ -392,7 +397,7 @@ def write_text(doc, layout):
     keys = {recipe: key(i) for i, recipe in enumerate(recipes)}
     lines = ["// Generated playable layout (%s). Rebuild it from the bundle; do not edit by hand." % SUPPLY_VERSION]
     lines.extend('"' + keys[recipe] + '" = (' + recipe + ")" for recipe in recipes)
-    for z in [1, 2]:
+    for z in levels:
         lines.extend(["", "(1,1,%d) = {\"" % z])
         for y in range(doc["height"], 0, -1):
             lines.append("".join(keys[layout[(x, y, z)]] for x in range(1, doc["width"] + 1)))

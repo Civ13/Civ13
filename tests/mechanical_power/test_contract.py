@@ -25,6 +25,7 @@ DMI = ROOT / 'icons/obj/mechanical_power.dmi'
 BASE = '/obj/structure/workshop_machine/mover'
 GEAR, SHAFT, BEARING, BELT = ('/obj/item/machine_part/' + n for n in ('gear', 'shaft', 'bearing', 'belt'))
 CRANE = '/obj/structure/workshop_machine/shear_legs/crane'
+HAMMER = '/obj/structure/workshop_machine/trip_hammer'
 # path: (wood, node, part inputs, share of hand time)
 MOVERS = {
     BASE + '/treadwheel': (12, 'stone_masonry', {SHAFT: 1, BEARING: 2}, 0.65),
@@ -120,6 +121,30 @@ class MechanicalPower(unittest.TestCase):
             self.assertIn(call, (ROOT / path).read_text(encoding='utf-8'), path)
         self.assertLess(DME.index('clay_lime_fire.dm'), DME.index('mechanical_power.dm'))
 
+    def test_trip_hammer_recipe_parts_and_node(self):
+        rows = recipe_rows()[HAMMER]
+        self.assertEqual(len(rows), 1)
+        self.assertEqual((rows[0][0], float(rows[0][3])), ('/material/wood/', 10))
+        self.assertIn('"%s" = "watermills"' % HAMMER, NODES)
+        self.assertEqual(NEEDS[HAMMER], {'tools': [], 'inputs': {'/obj/item/stack/material/iron': 6, SHAFT: 1}})
+
+    def test_trip_hammer_only_helps_when_fastened_and_driven(self):
+        self.assertIn('return anchored && isturf(loc) && mechanical_drive_factor(src) < 1',
+                      proc_body(SOURCE, HAMMER + '/proc/striking()'))
+        body = proc_body(SOURCE, '/obj/structure/anvil/proc/forge_time(base_time)')
+        self.assertIn('for (var/obj/structure/workshop_machine/trip_hammer/T in range(1, src))', body)
+        self.assertIn('if (T.striking())', body)
+        self.assertIn('max(TRIP_HAMMER_MIN_TIME, round(base_time * TRIP_HAMMER_FACTOR))', body)
+        self.assertIn('\n\treturn base_time', body)
+        self.assertIn('#define TRIP_HAMMER_FACTOR 0.5', SOURCE)
+
+    def test_both_anvil_forging_waits_ask_the_hammer(self):
+        anvil = (ROOT / 'code/game/objects/structures/blacksmithing/blacksmithing.dm').read_text(encoding='utf-8')
+        self.assertIn('do_after(user,forge_time(10*anvil_recipes[parsed_choice2[1]][material_index]),src,can_move=FALSE)', anvil)
+        self.assertIn('do_after(user,forge_time(10*mat),src,can_move=FALSE)', anvil)
+        self.assertNotIn('do_after(user,10*anvil_recipes', anvil)
+        self.assertNotIn('do_after(user,10*mat', anvil)
+
     def test_sprite_sheet_states_and_script(self):
         data = DMI.read_bytes()
         at = data.index(b'zTXtDescription\x00\x00') + len(b'zTXtDescription\x00\x00')
@@ -131,6 +156,7 @@ class MechanicalPower(unittest.TestCase):
             name = path.rsplit('/', 1)[1]
             expected[name] = 1
             expected[name + '_on'] = 4
+        expected.update({'trip_hammer': 1, 'trip_hammer_on': 4})
         self.assertEqual(states, expected)
         self.assertIn('icon_state = turning() ? "[base_state]_on" : base_state', SOURCE)
         try:

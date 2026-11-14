@@ -83,10 +83,12 @@ def land_levels(doc):
     return [level[y * w:(y + 1) * w] for y in range(h)]
 
 
-def turf_rows(doc, layout):
-    """The surface's turf paths, north row first, as the sidecar builders read a map."""
+def turf_rows(doc, layout, z=None):
+    """The surface's turf paths, north row first, as the sidecar builders read a
+    map. z is the layout's level holding the surface (the document's own by default)."""
     w, h = doc["width"], doc["height"]
-    z = doc["layers"][doc["active_layer"]]["native_z"]
+    if z is None:
+        z = doc["layers"][doc["active_layer"]]["native_z"]
     turf_of = {}
     rows = []
     for y in range(h, 0, -1):
@@ -102,14 +104,16 @@ def turf_rows(doc, layout):
     return rows
 
 
-def write_terrain_files(folder, doc, layout):
-    """Writes the three files into folder and returns what they hold."""
+def write_terrain_files(folder, doc, layout, z=None):
+    """Writes the three files into folder and returns what they hold. z is the
+    map level of the surface in layout and in the files (the document's own by default)."""
     terrain_heights, river_flow, river_flood = _scripts()
     w, h = doc["width"], doc["height"]
-    z = doc["layers"][doc["active_layer"]]["native_z"]
+    if z is None:
+        z = doc["layers"][doc["active_layer"]]["native_z"]
     folder = Path(folder)
     levels = [[v / 2 for v in row] for row in reversed(land_levels(doc))]
-    rows = turf_rows(doc, layout)
+    rows = turf_rows(doc, layout, z)
     terrain_heights.write_heights(folder / HEIGHTS_FILE, w, h, {z: levels})
     flow = river_flow.build(rows, heights=levels)
     (folder / FLOW_FILE).write_text("%s\nsize %d %d\nz %d\n%s\n" % (river_flow.HEADER, w, h, z, "\n".join(flow)),

@@ -36,14 +36,16 @@ from .source_audit import parse_classic
 from .terrain_files import write_terrain_files
 from .validator import MAX_SIDE, unchanged
 
-LAND_VERSION = "civ13-expedition-land/2"
+LAND_VERSION = "civ13-expedition-land/3"
 MAX_ATTEMPTS = 8
-# A land's world holds both planes of its map. The largest world measured on
-# BYOND 516.1688 so far is about 1.04 million cells (the Americas drafts: a
-# reload peak near half the 32-bit memory limit), so a land may not ask for
-# more than this without a new measurement.
-LAND_PLANES = 2
-MEASURED_CELLS = 1050000
+# A land's map is its surface alone, on level 1. The generator's solid rock
+# level held a boulder on every tile: a 690 x 690 land booted at 1.3 GB and its
+# save climbed past the 3 GB a 32-bit world can hold. Caves are dug on demand
+# instead (dig_down_underground on the land's map), where the world's level
+# budget allows one. The largest land measured this way is 690 x 690, so a
+# land may not ask for more cells than this without a new measurement.
+LAND_Z = 1
+MEASURED_CELLS = 480000
 SIZES = ("TINY", "SMALL", "MEDIUM", "LARGE", "MASSIVE")
 LAND_TYPES = ("COASTAL_PLAIN", "RIVER_DELTA", "HIGHLANDS", "ARCHIPELAGO", "FJORD_COAST", "MARSH", "VOLCANIC_ISLE",
               "PLATEAU")
@@ -135,9 +137,9 @@ def template_errors(t):
     for key in ("width", "height"):
         if type(t.get(key)) is not int or not 64 <= t[key] <= MAX_SIDE:
             problems.append(key + " must be 64..%d tiles" % MAX_SIDE)
-    if all(type(t.get(key)) is int for key in ("width", "height")) and t["width"] * t["height"] * LAND_PLANES > MEASURED_CELLS:
-        problems.append("%d x %d on %d levels is more than the %d cells a world has been measured to hold"
-                        % (t["width"], t["height"], LAND_PLANES, MEASURED_CELLS))
+    if all(type(t.get(key)) is int for key in ("width", "height")) and t["width"] * t["height"] > MEASURED_CELLS:
+        problems.append("%d x %d is more than the %d cells a land has been measured to hold"
+                        % (t["width"], t["height"], MEASURED_CELLS))
     coast = t.get("coast")
     if type(coast) is not list or not coast or not all(s in SIDES for s in coast):
         problems.append("a land needs at least one coast side (N, S, E or W)")
@@ -266,6 +268,29 @@ def reskin(doc, layout, t):
     return counts
 
 
+def surface_level(doc, layout):
+    """The land's map: the surface layer alone, on LAND_Z, with the map's
+    metadata object moved onto it from wherever the projection put it."""
+    z = doc["layers"]["SURFACE"]["native_z"]
+    out = {}
+    metadata = None
+    for (x, y, level), recipe in layout.items():
+        at = recipe.find(EXPEDITION_METADATA)
+        if at >= 0 and metadata is None:
+            end = at + len(EXPEDITION_METADATA)
+            if recipe[end:end + 1] == "{":
+                end = recipe.index("}", end) + 1
+            metadata = (x, y, recipe[at:end])
+            recipe = (recipe[:at] + recipe[end + 1:]) if recipe[end:end + 1] == "," else recipe[:at].rstrip(",")
+        if level == z:
+            out[(x, y, LAND_Z)] = recipe
+    if metadata is None:
+        raise ValueError("LAND_METADATA")
+    x, y, atom = metadata
+    out[(x, y, LAND_Z)] = atom + "," + out[(x, y, LAND_Z)]
+    return out
+
+
 def build_land(t, out, catalog_root=None, lapse=DEFAULT_LAPSE, full_bundle=False):
     """Generates the land for template t into the new folder out: the
     generator's seed manifest and preview (bundle/), the region map
@@ -298,14 +323,15 @@ def build_land(t, out, catalog_root=None, lapse=DEFAULT_LAPSE, full_bundle=False
                      light=not full_bundle)
         layout, counts = playable_layout(doc, "native")
         skin_counts = reskin(doc, layout, t)
-        profile = elevation_profile(doc, lapse)
+        profile = elevation_profile(doc, lapse, {"SURFACE": LAND_Z})
         apply_elevation(layout, profile, EXPEDITION_METADATA)
-        text = write_text(doc, layout)
-        _, parsed, dims = parse_classic(text)
-        if parsed != layout or sorted(dims) != [[doc["width"], doc["height"], 1], [doc["width"], doc["height"], 2]]:
+        layout = surface_level(doc, layout)
+        text = write_text(doc, layout, (LAND_Z,))
+        _, parsed, dims = parse_classic(text, (LAND_Z,))
+        if parsed != layout or dims != [[doc["width"], doc["height"], LAND_Z]]:
             raise ValueError("LAND_LAYOUT_MISMATCH")
         (folder / "land.dmm").write_text(text, encoding="utf-8", newline="\n")
-        terrain = write_terrain_files(folder, doc, layout)
+        terrain = write_terrain_files(folder, doc, layout, LAND_Z)
     finished = time.monotonic()
     report = {
         "schema": LAND_VERSION,
