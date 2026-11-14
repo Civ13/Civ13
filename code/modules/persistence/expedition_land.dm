@@ -5,6 +5,9 @@
 // placeholder map (maps/expedition/slot.dmm), open sea over bedrock.
 
 #define EXPEDITION_LAND_FILE "config/expedition_land.json"
+// The land's hill levels; its river currents and flood reaches lie beside it
+// (.flow.txt, .flood.txt). The host copies all three from the land's folder.
+#define EXPEDITION_HEIGHT_FILE "config/expedition_heights.txt"
 
 var/global/list/expedition_land_info = null
 
@@ -19,6 +22,9 @@ var/global/list/expedition_land_info = null
 	var/list/info = expedition_land()
 	if(info)
 		title = "A New Land ([expedition_land_text(info)])"
+	// A free slot and a land made without them stay flat.
+	if(fexists(EXPEDITION_HEIGHT_FILE))
+		terrain_height_file = EXPEDITION_HEIGHT_FILE
 
 // The land this slot holds, as the host described it, or null for a free slot.
 /proc/expedition_land()
@@ -45,3 +51,4 @@ var/global/list/expedition_land_info = null
 	return lowertext(replacetext("[info["size"]] [info["biome"]] [info["land_type"]]", "_", " "))
 
 #undef EXPEDITION_LAND_FILE
+#undef EXPEDITION_HEIGHT_FILE

@@ -72,7 +72,7 @@ var/global/train_platform_plan_time = -1
 				list("edges" = rails)))
 		layouts["coach"] = list(
 			"name" = "passenger coach", "desc" = "A carriage with rows of seats either side of a carpeted aisle.",
-			"center" = "carpet", "side" = "floor",
+			"center" = "carpet", "side" = "floor", "roof" = "coach",
 			"segments" = list(
 				list("edges" = vestibule),
 				list("edges" = windows, "fit" = list(/obj/structure/bed/chair/comfy/blue, null, /obj/structure/bed/chair/comfy/blue)),
@@ -80,7 +80,7 @@ var/global/train_platform_plan_time = -1
 				list("edges" = windows + back_end, "fit" = list(/obj/structure/bed/chair/comfy/blue, null, /obj/structure/bed/chair/comfy/blue))))
 		layouts["sleeper"] = list(
 			"name" = "sleeper car", "desc" = "A carriage of private sleeping compartments, each with a bed and a sliding door.",
-			"center" = "carpet", "side" = "floor",
+			"center" = "carpet", "side" = "floor", "roof" = "coach",
 			"segments" = list(
 				list("edges" = vestibule),
 				list("edges" = windows + compartment, "fit" = list(/obj/structure/bed, null, /obj/structure/bed)),
@@ -88,7 +88,7 @@ var/global/train_platform_plan_time = -1
 				list("edges" = windows + compartment + back_end, "fit" = list(/obj/structure/bed, null, /obj/structure/bed))))
 		layouts["dining"] = list(
 			"name" = "dining car", "desc" = "A galley kitchen with a stove, sink and fridge, and booths to eat at.",
-			"center" = "floor", "side" = "floor",
+			"center" = "floor", "side" = "floor", "roof" = "coach",
 			"segments" = list(
 				list("edges" = vestibule),
 				list("edges" = windows, "fit" = list(/obj/structure/oven/stove, null, /obj/structure/sink)),
@@ -96,7 +96,7 @@ var/global/train_platform_plan_time = -1
 				list("edges" = windows + back_end, "fit" = list(/obj/structure/bed/chair/comfy/diner_booth, null, /obj/structure/bed/chair/comfy/diner_booth))))
 		layouts["storage"] = list(
 			"name" = "storage car", "desc" = "A steel car of lockable-looking storage compartments either side of a walkway.",
-			"center" = "steel", "side" = "steel",
+			"center" = "steel", "side" = "steel", "roof" = "steel",
 			"segments" = list(
 				list("edges" = vestibule),
 				list("edges" = walls + compartment, "fit" = list(/obj/structure/closet/cabinet, null, /obj/structure/closet/cabinet)),
@@ -117,7 +117,7 @@ var/global/train_platform_plan_time = -1
 				list("edges" = rails)))
 		layouts["armored"] = list(
 			"name" = "armored wagon", "desc" = "A steel-plated car. Its armor stops bullets from outside while the crew fires through the slits; bring your own emplaced machine guns.",
-			"center" = "steel", "side" = "steel", "armored" = TRUE,
+			"center" = "steel", "side" = "steel", "armored" = TRUE, "roof" = "armor",
 			"segments" = list(
 				list("edges" = armor_doors),
 				list("edges" = armor_sides),
@@ -181,6 +181,7 @@ var/global/train_platform_plan_time = -1
 	var/wrecked = FALSE // knocked off the track by explosions until welded back
 	var/tmp/last_moved = -1000
 	var/tmp/list/deck_parts = null
+	var/tmp/list/roof_images = null // left, centre, right (vehicle_decks.dm)
 	train_weight = 0.5 // per segment, so a four-tile car weighs 2
 
 // A deck's weight counts the people and furniture on its three tiles.
@@ -235,17 +236,19 @@ var/global/train_platform_plan_time = -1
 	name = wrecked ? "wrecked [L["name"]]" : L["name"]
 	desc = L["desc"]
 	icon_state = "deck_center_[L["center"]]"
-	overlays.Cut()
-	if (wrecked)
-		overlays += image(icon, "wreck", layer = layer + 0.01)
 	clear_parts()
+	update_car_overlays()
 	// Stored in a rail warehouse (rail_warehouse.dm): no deck until it rolls out.
 	if (!isturf(loc))
 		return
 	deck_parts = list()
+	make_roof_images()
+	var/end_row = car_end_row()
 	for (var/side in list(TRAIN_LEFT, TRAIN_RIGHT))
 		var/obj/structure/train_part/deck/D = new(null)
 		D.setup(src, side, "out", "deck_side_[L["side"]]")
+		if (end_row)
+			D.overlays += "end_[end_row][side == TRAIN_LEFT ? "l" : "r"]"
 		deck_parts += D
 	var/list/edges = segment_layout()["edges"]
 	for (var/i in 1 to edges.len)
@@ -255,10 +258,41 @@ var/global/train_platform_plan_time = -1
 		G.setup(src, E[1], E[2], E[3])
 		G.set_open(open_doors & (1 << (i - 1)))
 		deck_parts += G
+	hang_roof_images()
 	place_parts(loc, dir)
+
+// "f" on the car's front segment, "b" on its last one: where the headstock,
+// buffers and coupling are drawn.
+/obj/structure/trains/platform/proc/car_end_row()
+	if (seg_index == 1)
+		return "f"
+	if (seg_index == TRAIN_CAR_LENGTH)
+		return "b"
+	return null
+
+// The segment's own overlays. The headstock states turn with the segment;
+// outriggers are only down while the car is braced and cannot move.
+/obj/structure/trains/platform/proc/update_car_overlays()
+	overlays.Cut()
+	if (wrecked)
+		overlays += image(icon, "wreck", layer = layer + 0.01)
+	if (!isturf(loc))
+		return
+	var/end_row = car_end_row()
+	if (!end_row)
+		return
+	overlays += "end_[end_row]c"
+	if (braced)
+		for (var/out in list(turn(dir, 90), turn(dir, -90)))
+			var/image/leg = image(icon, "outrigger", dir = out, layer = layer + 0.01)
+			leg.pixel_x = 2 * world.icon_size * ((out == EAST) - (out == WEST))
+			leg.pixel_y = 2 * world.icon_size * ((out == NORTH) - (out == SOUTH))
+			overlays += leg
 
 /obj/structure/trains/platform/proc/place_parts(turf/T, heading)
 	var/list/tiles = train_platform_tiles(T, heading)
+	for (var/image/R in roof_images)
+		R.dir = heading
 	for (var/obj/structure/train_part/P in deck_parts)
 		var/turf/where = tiles[P.side + 2]
 		if (!where)
@@ -330,6 +364,7 @@ var/global/train_platform_plan_time = -1
 				if (M.client)
 					M.update_vision_cone()
 	place_parts(newloc, newdir)
+	train_deck_clearance(cargo, OPPOSITE_DIR(newdir))
 	if (connected && !train_solo_move)
 		connected.Move(oldloc, newdir)
 	moving_train = FALSE

@@ -1,7 +1,7 @@
 // Player construction of aircraft: an assembly press like the automobile
-// workshop, gated on Powered Flight research. It builds the light plane, cabin
-// plane, trainer or cargo plane in the clear bay northeast of the press with an
-// empty fuel tank.
+// workshop, gated on Powered Flight research. It builds the light plane or
+// trainer, and with Aviation & Rocketry the cabin, cargo or twin-engine plane,
+// in the clear bay northeast of the press with an empty fuel tank.
 
 /obj/structure/car_workshop/hangar
 	name = "aircraft hangar"
@@ -13,6 +13,24 @@
 
 /obj/structure/car_workshop/hangar/required_nodes()
 	return list("powered_flight")
+
+// Powered Flight builds the wood-and-cloth trainer and light plane; the
+// heavier all-metal cabin, cargo and twin-engine planes of the 1920s and
+// 1930s need Aviation & Rocketry as well.
+/proc/aircraft_model_node(model)
+	switch (model)
+		if ("Cabin plane", "Cargo plane", "Twin-engine plane", "Airliner")
+			return "aviation_rocketry"
+	return "powered_flight"
+
+/obj/structure/car_workshop/hangar/model_missing_research(mob/living/human/H, model)
+	. = list()
+	var/node_id = aircraft_model_node(model)
+	if (node_id in required_nodes())
+		return
+	if (!H || !map || !research_node_known(H, node_id))
+		var/datum/research_node/N = get_research_node(node_id)
+		. += N ? N.name : node_id
 
 /obj/structure/car_workshop/hangar/model_size(model)
 	return aircraft_model_size(model)
@@ -37,10 +55,12 @@
 			return list("aluminium" = 44, "steel" = 16, "glass" = 6, "cloth" = 2, "cable" = 8, "wheels" = 4)
 		if ("Twin-engine plane")
 			return list("aluminium" = 64, "steel" = 26, "glass" = 8, "cloth" = 6, "cable" = 14, "wheels" = 4)
+		if ("Airliner")
+			return list("aluminium" = 90, "steel" = 26, "glass" = 14, "cloth" = 12, "cable" = 16, "wheels" = 4)
 	return list("wood" = 40, "steel" = 10, "glass" = 6, "cloth" = 8, "cable" = 8, "wheels" = 4)
 
 /obj/structure/car_workshop/hangar/menu_text()
-	return "Stored: [stock["wood"] || 0] wood, [stock["aluminium"] || 0] aluminium, [stock["steel"]] steel, [stock["glass"]] glass, [stock["cloth"]] cloth, [stock["cable"]] cable, [stock["wheels"]] wheels. Costs are airframe/steel/glass/cloth/cable/wheels. Wooden airframes: the light plane (2 seats) costs 40 wood/10/6/8/8/4; the trainer (2 seats, 3x3) costs 28 wood/8/4/6/6/4 and lifts off soonest. Aluminium airframes: the cabin plane (4 seats) costs 48 aluminium/16/8/8/8/4 and needs a slightly longer roll; the cargo plane (pilot and three cargo bays) costs 44 aluminium/16/6/2/8/4; the twin-engine plane (4 seats, two engines) costs 64 aluminium/26/8/6/14/4 and needs the 5x5 square northeast of the press clear. Keep the northeast 4x4 bay empty; the plane needs a long clear roll to take off, shorter on a runway. Taxi a landed plane into the bay to hangar it."
+	return "Stored: [stock["wood"] || 0] wood, [stock["aluminium"] || 0] aluminium, [stock["steel"]] steel, [stock["glass"]] glass, [stock["cloth"]] cloth, [stock["cable"]] cable, [stock["wheels"]] wheels. Costs are airframe/steel/glass/cloth/cable/wheels. Wooden airframes: the light plane (2 seats) costs 40 wood/10/6/8/8/4; the trainer (2 seats, 3x3) costs 28 wood/8/4/6/6/4 and lifts off soonest. Aluminium airframes: the cabin plane (4 seats) costs 48 aluminium/16/8/8/8/4 and needs a slightly longer roll; the cargo plane (pilot and three cargo bays) costs 44 aluminium/16/6/2/8/4; the twin-engine plane (4 seats, two engines) costs 64 aluminium/26/8/6/14/4 and needs the 5x5 square northeast of the press clear; the airliner (pilot and six cabin seats either side of an aisle, two engines) costs 90 aluminium/26/14/12/16/4 and needs a 6x6 square clear. Keep the northeast 4x4 bay empty; the plane needs a long clear roll to take off, shorter on a runway. Taxi a landed plane into the bay to hangar it."
 
 /obj/structure/car_workshop/hangar/assembled_message(model)
 	var/obj/structure/vehicleparts/axis/aircraft/kind = aircraft_models()[model]

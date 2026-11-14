@@ -11,7 +11,12 @@
 //     full ahead at all. Sails cannot.
 //
 // A ship mast (15 planks) with a sail rigged on it is the first drive: one
-// rigged mast pushes CRAFT_SAIL_THRUST tiles of hull at half ahead.
+// rigged mast pushes CRAFT_SAIL_THRUST tiles of hull at half ahead on a reach,
+// less running before the wind and much less beating into it
+// (points_of_sail.dm).
+//
+// A manned rowing bench is the third (rowing_bench.dm): it can make full
+// ahead, and its rower's stamina is the fuel.
 //
 // Any engine standing aboard and running is the second: it pushes its power
 // output, can make full ahead, and burns from its own fuel tank at every hop
@@ -27,6 +32,9 @@
 	var/top_step = VESSEL_SPEED_FULL
 	// What the helm calls it.
 	var/kind = "drive"
+	// FALSE for a drive that tires (oars): a voyage on the world chart is
+	// paced by the drives that can keep it up for days.
+	var/sustained = TRUE
 
 // Told when the craft gets under way or stops, for sails and smoke.
 /datum/craft_drive/proc/under_way(state)
@@ -63,6 +71,13 @@
 /datum/craft_drive/fitted/sail/ready()
 	var/obj/structure/vehicleparts/movement/sail/M = source
 	return ..() && istype(M) && M.sails && !M.broken
+
+// A sail pushes as the wind stands to her bow.
+/datum/craft_drive/fitted/sail/push()
+	if (!ready())
+		return 0
+	var/heading = craft && craft.body ? craft.body.heading() : 0
+	return round(thrust / sail_delay_factor(heading))
 
 /datum/craft_drive/fitted/sail/under_way(state)
 	var/obj/structure/vehicleparts/movement/sail/M = source
@@ -136,6 +151,16 @@
 		return VESSEL_SPEED_HALF
 	return VESSEL_SPEED_SLOW
 
+// TRUE when drives that never tire can make full ahead: engines, not oars.
+/datum/craft/proc/sustained_full_ahead()
+	if (running_dark)
+		return FALSE
+	var/fast = 0
+	for (var/datum/craft_drive/D in drives)
+		if (D.sustained && D.top_step >= VESSEL_SPEED_FULL)
+			fast += D.push()
+	return fast / mass() >= CRAFT_THRUST_FULL
+
 // Sails are set while she is under way and furled when she is not.
 /datum/craft/proc/show_drives()
 	var/moving = speed > 0 && !anchored
@@ -153,19 +178,27 @@
 	var/list/speeds = list("all stop", "slow ahead", "half ahead", "full ahead")
 	var/sails = 0
 	var/engines = 0
+	var/oars = 0
 	for (var/datum/craft_drive/D in drives)
 		if (!D.ready())
 			continue
-		if (D.kind == "sail")
-			sails++
-		else
-			engines++
-	if (!sails && !engines)
-		return "No sail is rigged and no engine is running: she is poled along at slow ahead."
+		switch (D.kind)
+			if ("sail")
+				sails++
+			if ("oars")
+				oars++
+			else
+				engines++
+	if (!sails && !engines && !oars)
+		return "No sail is rigged, no engine is running and nobody is at the oars: she is poled along at slow ahead."
 	var/list/under = list()
 	if (sails)
 		under += "[sails] sail[sails == 1 ? "" : "s"]"
+	if (oars)
+		under += "[oars] manned bench[oars == 1 ? "" : "es"] of oars"
 	if (engines)
 		under += "[engines] engine[engines == 1 ? "" : "s"]"
 	var/tiles = mass()
-	return "Under [jointext(under, " and ")]: [speeds[max_speed() + 1]] at best. Her drives push [thrust()]; [tiles] tile[tiles == 1 ? "" : "s"] of hull need [tiles * CRAFT_THRUST_HALF] for half ahead and [tiles * CRAFT_THRUST_FULL] from engines for full ahead."
+	. = "Under [english_list(under)]: [speeds[max_speed() + 1]] at best. Her drives push [thrust()]; [tiles] tile[tiles == 1 ? "" : "s"] of hull need [tiles * CRAFT_THRUST_HALF] for half ahead and [tiles * CRAFT_THRUST_FULL] from engines or oars for full ahead."
+	if (sails && body)
+		. += " Her sails are [point_of_sail_name(body.heading())]."

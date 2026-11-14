@@ -702,6 +702,29 @@ var/aircraft_runtime_error = FALSE
 	else
 		aircraft_check(FALSE, "the twin-engine plane builds")
 
+	// The airliner: the twin's airframe with a three-row walk-through cabin.
+	aircraft_check(hangar.model_size("Airliner") == 6 && hangar.costs("Airliner")["aluminium"] == 90 && hangar.largest_model_size() == 4 && aircraft_model_node("Airliner") == "aviation_rocketry", "the hangar offers the airliner in a 6x6 square, after Aviation & Rocketry")
+	var/list/liner_layout = hangar.project_layout("Airliner")
+	aircraft_check(liner_layout && liner_layout.len == 30 && ("5,6" in liner_layout), "an airliner built piece by piece fills a 5 by 6 body")
+	aircraft_clear_ground(13, 29, 20, 36)
+	var/obj/structure/vehicleparts/axis/aircraft/liner = build_aircraft_model("Airliner", locate(14, 30, 1))
+	if (istype(liner))
+		var/lseats = 0
+		var/aisle = 0
+		for (var/obj/structure/vehicleparts/frame/F in liner.frames())
+			for (var/obj/structure/bed/chair/seat in F.loc)
+				lseats++
+			if (istype(F, /obj/structure/vehicleparts/frame/car/aircraft/fuselage/center) && !(locate(/obj/structure/bed/chair) in F.loc))
+				aisle++
+		aircraft_check(liner.frames().len == 30 && liner.maxdist == 6 && lseats == 7 && aisle == 3 && liner.wing_engines().len == 1 && liner.takeoff_roll == 16, "the airliner has thirty frames, a pilot and six cabin seats along a three-tile aisle, and two engines ([liner.frames().len] frames, maxdist [liner.maxdist], [lseats] seats, [aisle] aisle)")
+		for (var/atom/movable/part in liner.components.Copy())
+			if (part != liner)
+				qdel(part)
+		aircraft_clear_ground(13, 29, 20, 36)
+		qdel(liner)
+	else
+		aircraft_check(FALSE, "the airliner builds")
+
 	// Enough hits break the airframe up: the plane comes down where it is.
 	if (istype(built))
 		for (var/bx = 15, bx <= 18, bx++)
@@ -720,12 +743,14 @@ var/aircraft_runtime_error = FALSE
 // Kept in this admitted fixture; no additional runner or runtime entry point.
 #include "level_shift.dm"
 #include "taxi.dm"
+#include "weight.dm"
 #include "assembly.dm"
 
 /proc/aircraft_run()
 	try
 		level_shift_checks()
 		aircraft_taxi_checks()
+		aircraft_weight_checks()
 		aircraft_assembly_checks()
 		aircraft_checks()
 	catch(var/exception/e)

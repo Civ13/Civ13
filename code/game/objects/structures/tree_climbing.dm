@@ -120,11 +120,9 @@ var/global/list/tree_canopy_tops = list()
 	if (!ismob(attacker) || !ismob(target) || attacker == target)
 		return FALSE
 	// On top of a vehicle (vehicle_decks.dm): only others on the same vehicle's
-	// top are in reach.
-	var/attacker_deck = vehicle_deck_axis(attacker)
-	var/target_deck = vehicle_deck_axis(target)
-	if (attacker_deck || target_deck)
-		return attacker_deck != target_deck
+	// top, or the next train car's, are in reach.
+	if (vehicle_deck_group(attacker) || vehicle_deck_group(target))
+		return !vehicle_deck_same_roof(attacker, target)
 	var/attacker_up = los_up_tree(attacker)
 	var/target_up = los_up_tree(target)
 	if (!attacker_up && !target_up)
@@ -141,10 +139,10 @@ var/global/list/tree_canopy_tops = list()
 /proc/tree_melee_refused(mob/attacker, mob/target)
 	if (!tree_melee_blocked(attacker, target))
 		return FALSE
-	if (vehicle_deck_axis(attacker))
+	if (vehicle_deck_group(attacker))
 		to_chat(attacker, SPAN_WARNING("You can't reach [target] from up here."))
 		return TRUE
-	if (vehicle_deck_axis(target))
+	if (vehicle_deck_group(target))
 		to_chat(attacker, SPAN_WARNING("[target] is up on the vehicle, out of reach."))
 		return TRUE
 	if (los_up_tree(attacker))

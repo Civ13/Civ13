@@ -16,7 +16,7 @@ proc/is_complete_print(var/print)
 	new /obj/item/weapon/reagent_containers/spray/luminol(src)
 	new /obj/item/weapon/forensics/sample_kit(src)
 	new /obj/item/weapon/storage/box/csi_markers(src)
-	new /obj/item/clothing/gloves/color/white
+	new /obj/item/clothing/gloves/color/white(src)
 	new /obj/item/device/uv_light(src)
 
 // Crime scene kit
@@ -271,7 +271,7 @@ proc/is_complete_print(var/print)
 		HU << SPAN_WARNING("\The [H] is wearing gloves.")
 		return 1
 
-	if (H.restrained()) // Can't resist if you're cufffed
+	if (!H.restrained()) // Can't resist if you're cufffed
 		if (H.a_intent != I_HELP && !H.lying)
 			HU.visible_message(SPAN_DANGER("\The [HU] tries to take prints from \the [H], but they resist."))
 			return 1
@@ -365,7 +365,7 @@ proc/is_complete_print(var/print)
 		HU << SPAN_WARNING("They don't seem to have DNA!")
 		return
 
-	if (H.restrained()) // Can't resist if you're cufffed
+	if (!H.restrained()) // Can't resist if you're cufffed
 		if (H.a_intent != I_HELP && !H.lying)
 			HU.visible_message(SPAN_DANGER("\The [HU] tries to take a swab sample from \the [H], but they resist."))
 			return

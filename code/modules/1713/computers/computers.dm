@@ -100,8 +100,6 @@
 	set category = null
 	set name = "Turn On"
 	set src in range(1)
-	if(src.active)
-		name = "Turn Off"
 	if(!powersource && powerneeded)
 		to_chat(H, "<span class = 'notice'>You need to plug in the [src].</span>")
 		return

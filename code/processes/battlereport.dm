@@ -14,10 +14,10 @@
 
 /process/battle_report/statProcess(client/C)
 	..(C)
-	C.add_stat("Next battle report: [max_BR_ticks - BR_ticks] seconds")
+	C.add_stat("Next battle report: [(max_BR_ticks - BR_ticks) * schedule_interval / 10] seconds")
 
 /process/battle_report/htmlProcess()
-	return ..() + "Next battle report: [max_BR_ticks - BR_ticks] seconds"
+	return ..() + "Next battle report: [(max_BR_ticks - BR_ticks) * schedule_interval / 10] seconds"
 
 /process/battle_report/fire()
 	++BR_ticks

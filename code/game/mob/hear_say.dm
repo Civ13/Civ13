@@ -370,7 +370,7 @@
 		var/list/messages = splittext(message, " ")
 		var/R = rand(1, messages.len)
 		var/heardword = messages[R]
-		if (copytext(heardword,1, TRUE) in punctuation)
+		if (copytext(heardword,1,2) in punctuation)
 			heardword = copytext(heardword,2)
 		if (copytext(heardword,-1) in punctuation)
 			heardword = copytext(heardword,1,length(heardword))

@@ -901,20 +901,24 @@
 		"<span class='notice'>[user] washes \a [I] using \the [src].</span>", \
 		"<span class='notice'>You wash \a [I] using \the [src].</span>")
 
-// Loose animal or human waste near the source; compost is safe, and waste on a
-// plumbed toilet's tile is carried away rather than seeping into the ground.
+// Loose animal or human waste near the source; compost is safe. Where there are
+// no sewers, waste on a plumbed toilet's tile is carried away rather than
+// seeping into the ground; where there are, waste a toilet backs up counts, and
+// so does sewage close by (sewers.dm).
 /obj/structure/sink/proc/has_nearby_fecal_waste()
+	var/sewers = sewers_apply()
 	for (var/obj/item/weapon/reagent_containers/food/snacks/poo/PP in range(4,src))
 		if (istype(PP, /obj/item/weapon/reagent_containers/food/snacks/poo/fertilizer))
 			continue
 		var/plumbed = FALSE
-		for (var/obj/structure/toilet/T in PP.loc)
-			if (T.is_plumbed())
-				plumbed = TRUE
-				break
+		if (!sewers)
+			for (var/obj/structure/toilet/T in PP.loc)
+				if (T.is_plumbed())
+					plumbed = TRUE
+					break
 		if (!plumbed)
 			return TRUE
-	return FALSE
+	return sewers && sewer_fouls_near(src)
 
 /obj/structure/sink/AltClick(var/mob/living/user)
 	var/H = user.get_active_hand()

@@ -362,6 +362,7 @@ var/global/list/node_grid_col_cache = null
 	// --- Industrial: Vehicles ---
 	register_research_node(new /datum/research_node("carts", "Carts", "Industrial", 95, 0, RESEARCH_MODE_ANALYSIS, null, 1))
 	register_research_node(new /datum/research_node("wagons_ships", "Wagons & Ships", "Industrial", 165, 2, RESEARCH_MODE_ANALYSIS, list("carts"), 3))
+	register_research_node(new /datum/research_node("oared_ships", "Oared Ships", "Industrial", 95, 0, RESEARCH_MODE_ANALYSIS, list("carts"), 1))
 	register_research_node(new /datum/research_node("rail_steam", "Rail & Steam", "Industrial", 200, 3, RESEARCH_MODE_ANALYSIS, list("wagons_ships","steam_power"), 4))
 	register_research_node(new /datum/research_node("automobiles", "Automobiles", "Industrial", 235, 4, RESEARCH_MODE_ANALYSIS, list("wagons_ships","combustion"), 5))
 	// Powered Flight (1903) unlocks the aircraft hangar that builds the light plane.
@@ -1973,9 +1974,10 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/drill/sifter/panner" = "electricity",
 		"/obj/structure/drill/stamp_mill" = "electricity",
 		"/obj/item/weapon/resource_sieve" = "basic_tools",
-		// --- primitive_construction (24) ---
+		// --- primitive_construction (25) ---
 		"/obj/covers/fancywood" = "primitive_construction",
 		"/obj/covers/straw_wall" = "primitive_construction",
+		"/obj/structure/workshop_machine/shear_legs" = "primitive_construction",
 		"/obj/covers/tatami" = "primitive_construction",
 		"/obj/covers/tatami_dark" = "primitive_construction",
 		"/obj/covers/tatami_dark_vertical" = "primitive_construction",
@@ -2192,7 +2194,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/religious/totem_pole" = "ritual_worship",
 		"/obj/structure/religious/woodcross1" = "ritual_worship",
 		"/obj/structure/religious/woodcross2" = "ritual_worship",
-		// --- sanitation (9) ---
+		// --- sanitation (10) ---
 		"/obj/structure/mirror" = "sanitation",
 		"/obj/structure/shower" = "sanitation",
 		"/obj/structure/shower/bathtub/big/bronze" = "sanitation",
@@ -2202,6 +2204,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/sink" = "sanitation",
 		"/obj/structure/sink/kitchen" = "sanitation",
 		"/obj/structure/toilet" = "sanitation",
+		"/obj/structure/sewer_piece/drain/stone" = "sanitation",
 		// --- siege_engines (3) ---
 		"/obj/item/catapult_ball" = "siege_engines",
 		"/obj/item/weapon/siegeladder" = "siege_engines",
@@ -2480,6 +2483,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/berth/quay/depot" = "wagons_ships",
 		"/obj/structure/berth/deck" = "wagons_ships",
 		"/obj/structure/hull_tiller" = "wagons_ships",
+		"/obj/structure/hull_tiller/steering_oar" = "oared_ships",
+		"/obj/structure/bed/chair/wood/rowing_bench" = "oared_ships",
 		"/obj/item/sail" = "wagons_ships",
 		"/obj/item/sail/wool" = "wagons_ships",
 		"/obj/item/vehicleparts/frame/boat" = "wagons_ships",

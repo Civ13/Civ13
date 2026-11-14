@@ -235,6 +235,8 @@ var/global/list/research_benches = list()
 		return
 	faction = H.civilization
 	assigned_node = null // was another faction's research subject
+	studied_samples = null
+	set_queue(null)
 	to_chat(H, SPAN_NOTICE("Your faction claims the abandoned research bench."))
 
 // ------------------------------------------------------------

@@ -897,6 +897,7 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 	New()
 		..()
 		base_name = "steel barrel"
+		reagents.remove_reagent("diesel",250)
 		reagents.add_reagent("diesel",30)
 
 /obj/item/weapon/reagent_containers/glass/barrel/modern/biodiesel

@@ -98,10 +98,9 @@ var/global/list/valid_coordinates = list()
 			message = replacetext(message, "\n", "<br>") // required since we're putting it in a <p> tag
 		for (var/mob/living/human/M)
 			if (!map.civilizations)
-				if (faction_text == M.faction_text)
+				if (faction_text == M.faction_text && world.time > announcement_cooldown)
 					messaget = "[name] announces:"
 					M.show_message("<big><span class=notice><b>[messaget]</b></big><p style='text-indent: 50px'>[message]</p></span>", 2)
-				log_admin("Governor Announcement: [key_name(usr)] - [messaget] : [message]")
 			else
 				if (civilization == M.civilization && civilization != "none" && world.time > announcement_cooldown)
 					messaget = "[name] announces:"

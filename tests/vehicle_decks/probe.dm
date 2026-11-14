@@ -146,7 +146,7 @@ var/vehicle_decks_probe_checks = 0
 	var/turf/edge = null
 	for (var/d in list(NORTH, SOUTH, EAST, WEST))
 		var/turf/T = get_step(now.loc, d)
-		if (T && !vehicle_deck_frame_at(T))
+		if (T && !vehicle_deck_at(T))
 			edge = T
 			ann.dir = d
 			break
@@ -178,7 +178,7 @@ var/vehicle_decks_probe_checks = 0
 	vehicle_decks_probe_assert(eve.board_vehicle_deck(back), "eve_up")
 	eve.weakened = 3
 	eve.vehicle_deck_check()
-	vehicle_decks_probe_assert(!eve.vehicle_deck && !vehicle_deck_frame_at(get_turf(eve)), "stun_falls_beside")
+	vehicle_decks_probe_assert(!eve.vehicle_deck && !vehicle_deck_at(get_turf(eve)), "stun_falls_beside")
 
 	// The double-decker bus: built from the works layout, every frame an
 	// upper deck, stairs inside lead up and back down without leaving it.
@@ -217,19 +217,61 @@ var/vehicle_decks_probe_checks = 0
 	vehicle_decks_probe_assert(C.do_matrix(C.dir, TURN_LEFT(C.dir), "left") && hal.vehicle_deck, "slow_turn_keeps_rider")
 	sleep(20)
 	C.currentspeed = 5
-	vehicle_decks_probe_assert(C.do_matrix(C.dir, TURN_LEFT(C.dir), "left") && !hal.vehicle_deck && !vehicle_deck_frame_at(get_turf(hal)), "hard_turn_flings_rider")
+	vehicle_decks_probe_assert(C.do_matrix(C.dir, TURN_LEFT(C.dir), "left") && !hal.vehicle_deck && !vehicle_deck_at(get_turf(hal)), "hard_turn_flings_rider")
 	sleep(20)
 	C.currentspeed = 0
 	var/obj/structure/vehicleparts/frame/lead = null
 	for (var/obj/structure/vehicleparts/frame/F in C.components)
 		var/turf/ahead = get_step(F.loc, C.dir)
-		if (ahead && !vehicle_deck_frame_at(ahead))
+		if (ahead && !vehicle_deck_at(ahead))
 			lead = F
 			break
 	var/mob/living/human/vehicle_decks_probe/ivy = vehicle_decks_probe_actor(hal.x, hal.y, "Ivy")
 	vehicle_decks_probe_assert(lead && ivy.board_vehicle_deck(lead), "ivy_up_front")
 	new /obj/roof(get_step(lead.loc, C.dir))
 	vehicle_decks_probe_assert(C.do_move() && !ivy.vehicle_deck && !(locate(/obj/roof) in get_turf(ivy)), "low_roof_sweeps_rider_off")
+
+	// Train roofs: two coaches facing east, coupled; ride on top, walk from
+	// car to car, ride along, jump off. Flatbeds have no roof.
+	var/obj/structure/train_car_kit/coach/K1 = new(locate(14, 4, 1))
+	var/obj/structure/trains/platform/car1 = K1.assemble(EAST)
+	var/obj/structure/train_car_kit/coach/K2 = new(locate(10, 4, 1))
+	var/obj/structure/trains/platform/car2 = K2.assemble(EAST)
+	var/obj/structure/trains/platform/tail1 = car1
+	while (tail1.connected)
+		tail1 = tail1.connected
+	tail1.connected = car2
+	vehicle_decks_probe_assert(car1.roofed() && car2.roofed() && car1.car_id != car2.car_id, "coaches_have_roofs")
+	var/obj/structure/train_car_kit/flat_kit = new(locate(25, 4, 1))
+	var/obj/structure/trains/platform/flat = flat_kit.assemble(EAST)
+	vehicle_decks_probe_assert(!flat.roofed() && !vehicle_deck_at(flat.loc), "flatbed_has_no_roof")
+	var/atom/side_deck = vehicle_deck_at(locate(12, 5, 1))
+	vehicle_decks_probe_assert(istype(side_deck, /obj/structure/train_part/deck) && istype(vehicle_deck_at(locate(12, 4, 1)), /obj/structure/trains/platform), "car_tiles_are_deck_surfaces")
+	vehicle_decks_probe_assert(car1.roof_images && car1.roof_images.len == 3, "coach_has_roof_pictures")
+	var/image/roof_left = car1.roof_images[1]
+	var/image/roof_mid = car1.roof_images[2]
+	vehicle_decks_probe_assert(roof_mid.loc == car1 && istype(roof_left.loc, /obj/structure/train_part/deck) && roof_mid.icon_state == "roof_coach_fc" && roof_mid.dir == EAST, "roof_pictures_ride_the_car")
+	vehicle_decks_probe_assert(isnull(flat.roof_images), "flatbed_has_no_roof_picture")
+	var/mob/living/human/vehicle_decks_probe/jo = vehicle_decks_probe_actor(12, 6, "Jo")
+	var/mob/living/human/vehicle_decks_probe/kim = vehicle_decks_probe_actor(13, 4, "Kim")
+	vehicle_decks_probe_assert(isnull(jo.vehicle_deck_refusal(side_deck)), "climb_onto_coach_from_beside")
+	vehicle_decks_probe_assert(findtext(kim.vehicle_deck_refusal(vehicle_deck_at(locate(13, 5, 1))), "inside it"), "inside_the_coach_cannot_climb")
+	vehicle_decks_probe_assert(jo.board_vehicle_deck(side_deck) && los_eye_level(jo) == LOS_EYE_DECK, "on_the_coach_roof")
+	vehicle_decks_probe_assert(jo.vehicle_deck_step(SOUTH) && istype(jo.vehicle_deck, /obj/structure/trains/platform) && jo.loc == locate(12, 4, 1), "walk_onto_the_centre")
+	vehicle_decks_probe_assert(jo.vehicle_deck_step(WEST) && jo.vehicle_deck_step(WEST) && vehicle_deck_group(jo) == car2.car_id, "walk_car_to_car")
+	vehicle_decks_probe_assert(tree_melee_blocked(kim, jo), "no_melee_inside_to_roof")
+	var/mob/living/human/vehicle_decks_probe/lee = vehicle_decks_probe_actor(11, 6, "Lee")
+	vehicle_decks_probe_assert(lee.board_vehicle_deck(vehicle_deck_at(locate(11, 5, 1))) && !tree_melee_blocked(lee, jo), "melee_across_the_coupling")
+	lee.leave_vehicle_deck(locate(11, 6, 1))
+	var/turf/jo_was = get_turf(jo)
+	vehicle_decks_probe_assert(car1.Move(get_step(car1.loc, EAST), EAST) && get_turf(jo) == get_step(jo_was, EAST), "rides_along_the_track")
+	jo.vehicle_deck_check()
+	vehicle_decks_probe_assert(los_on_vehicle_deck(jo) && vehicle_deck_group(jo) == car2.car_id, "still_on_the_roof_after_moving")
+	new /obj/roof(get_turf(jo))
+	train_deck_clearance(list(jo), WEST)
+	vehicle_decks_probe_assert(!jo.vehicle_deck && !vehicle_deck_at(get_turf(jo)), "low_roof_sweeps_train_rider")
+	var/mob/living/human/vehicle_decks_probe/max = vehicle_decks_probe_actor(14, 6, "Max")
+	vehicle_decks_probe_assert(max.board_vehicle_deck(vehicle_deck_at(locate(14, 5, 1))) && max.vehicle_deck_step(NORTH) && !max.vehicle_deck && max.loc == locate(14, 6, 1), "jump_off_the_coach")
 
 /world/New()
 	OpenPort("none")

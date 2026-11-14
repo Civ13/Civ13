@@ -41,6 +41,13 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'pulled_punches': {'files': ('tests/pulled_punches/test_pulled_punches.py',), 'paths': (
+        'tests/pulled_punches/',), 'shared_paths': (
+        'code/game/mob/living/carbon/human/human_attackhand.dm',
+        'code/game/mob/living/carbon/human/unarmed_attack.dm')},
+    # Stdlib-only: compost bins keep their stock through a save of a running world (#5292).
+    'compost_save': {'files': ('tests/compost_save/test_compost_save.py',), 'paths': (
+        'tests/compost_save/',), 'shared_paths': ('code/modules/1713/production.dm',)},
     # Stdlib-only: poisonous frog meat coats crossbow bolts as well as arrows (#5258).
     'poison_frog_bolts': {'files': ('tests/poison_frog_bolts/test_bolts.py',), 'paths': (
         'tests/poison_frog_bolts/',), 'shared_paths': (
@@ -1148,6 +1155,11 @@ SUITES = {
     'barter': {'files': ('tests/barter/test_source.py',),
         'paths': ('tests/barter/',), 'shared_paths': (
             'code/modules/1713/barter.dm', 'icons/obj/barter.dmi')},
+    # Sewers phase S1: source contracts (the native probe is tests/sewers/probe.dm).
+    'sewers': {'files': ('tests/sewers/test_sewers.py',),
+        'paths': ('tests/sewers/',), 'shared_paths': (
+            'code/modules/1713/sewers.dm', 'icons/obj/sewers.dmi', 'tests/sprites/create_sewers.py',
+            'code/game/objects/structures/watercloset.dm', 'code/game/mob/living/carbon/human/shit_piss.dm')},
     # Bone flute, frame drum, flint sickle and bison herds: source contracts only.
     'stone_age_extras': {'files': ('tests/stone_age_extras/test_source.py',),
         'paths': ('tests/stone_age_extras/',), 'shared_paths': (
@@ -1849,6 +1861,9 @@ SUITES = {
         'shared_paths': ('scripts/build-crafting-atlas.py', 'code/game/mob/crafting_atlas_tgui.dm', 'UI/crafting-atlas.json', 'civ13.dme',
                          'code/modules/magic/')},
     # Source and injected-help contracts only; this suite does not run DM.
+    'lifting_machines': {'files': ('tests/lifting_machines/test_contract.py',), 'paths': (
+        'tests/lifting_machines/', 'code/modules/1713/lifting_machines.dm',
+        'icons/obj/lifting_machines.dmi', 'tests/sprites/create_lifting.py')},
     'glass_stone_machines': {'files': ('tests/glass_stone_machines/test_contract.py',), 'paths': (
         'tests/glass_stone_machines/', 'code/modules/1713/glass_stone_machines.dm',
         'icons/obj/glass_stone_machines.dmi', 'tests/sprites/create_glass_stone.py')},

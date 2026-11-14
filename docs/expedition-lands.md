@@ -16,6 +16,7 @@ python3 -m tools.procedural_maps land --template template.json --out lands/24-16
 | --- | --- |
 | `land.dmm` | the region map, two levels (underground z1, surface z2), map **A New Land** (`/obj/map_metadata/nomads/expedition`) |
 | `land.json` | the report: template, attempt, map hash, starts, supplies, timings and `slot_world` |
+| `land.heights.txt`, `land.flow.txt`, `land.flood.txt` | the land's hill levels, river currents and flood reaches (below) |
 | `bundle/` | the generator's seed manifest and a preview image; `--full-bundle` also keeps the typed IR and its sidecar (about 80 MB for a small land, 880 MB at a million tiles), which `verify` and `playable` read |
 
 ## From template to land
@@ -60,6 +61,28 @@ ranges and arrival spots, not the same few stretched.
   derived seed, at most 8 times; the report lists the rejected attempts. In a
   test of 288 lands (every biome with every land type, four sizes) 287 built
   on the first attempt and one on the second.
+
+## Hills, currents and floods
+
+A hand-made map gets its [hill levels](terrain-height.md), river currents and
+[flood reaches](river-flood.md) from three tools its author runs. A generated
+land has no author, so `tools/procedural_maps/terrain_files.py` writes all
+three beside the map, for the surface level:
+
+- **Hills** follow the land's height above its sea, one level to 70 m of
+  relief, from 0.5 on the beach to 15 on the highest ground. The game keeps
+  water flat, so every sea, lake, river and swamp tile is level 0 and the
+  ground climbs out of it one level a tile: a river high in the hills runs in
+  a valley. No two neighbouring tiles differ by more than two levels.
+- **Currents** and **flood reaches** come from the same builders the hand-made
+  maps use (`scripts/river_flow.py`, `scripts/river_flood.py`), read from the
+  land's turfs and hills, so the files are the ones the game already reads.
+
+The host copies them to the slot world as `config/expedition_heights.txt`,
+`.flow.txt` and `.flood.txt` ([slots](expedition-slots.md)), and the land's
+map reads them from there. A slot without them (a free slot, or a land made
+before lands had them) is flat, still and never floods. They add about 6 s to
+a 690 x 690 land and well under a second to a tiny one.
 
 ## Timings and sizes
 
