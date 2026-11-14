@@ -9,7 +9,7 @@
 	var/obj/item/weapon/book/J = new(locate(1, 1, 1))
 	divine_probe_assert(!J.record_divine_advancement(H, "secret", "secret text"), "outsider cannot write")
 	var/before = J.divine_journal_html(H)
-	J.divine_advancement_entries["secret"] = "secret text"
+	J.divine_advancement_entries = list("secret" = "secret text")
 	divine_probe_assert(J.divine_journal_html(H) == before, "outsider projection independent of contents")
 	H.scholarship = list("mathematics" = 100)
 	divine_probe_assert(J.divine_journal_html(H) == "", "mathematics cannot project contents")
