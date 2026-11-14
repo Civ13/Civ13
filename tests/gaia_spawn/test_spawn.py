@@ -9,8 +9,8 @@ import unittest
 from types import SimpleNamespace as NS
 
 ROOT = Path(__file__).resolve().parents[2]
-PATH = 'code/game/objects/map_metadata/nomads/nomads_gaia.dm'
-BASE = '/obj/map_metadata/nomads/gaia/proc/'
+PATH = 'code/game/objects/map_metadata/nomads/nomads_start.dm'
+BASE = '/obj/map_metadata/nomads/proc/'
 spec = importlib.util.spec_from_file_location('gaia_source_adapter', ROOT / 'tests/save_movement/source_adapter.py')
 adapter = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(adapter)
@@ -66,9 +66,9 @@ class Fixture:
         self.check_count = 0
         self.bed = None
         self.region = False
-        self.env = dict(re.findall(r'^#define (GAIA_\w+) (\d+)$', self.source, re.M))
+        self.env = dict(re.findall(r'^#define (START_\w+) (\d+)$', self.source, re.M))
         self.env = {key: int(value) for key, value in self.env.items()}
-        self.env.update(istype=istype, list=lambda *args: DMList(args),
+        self.env.update(new_player_start_z=2, istype=istype, list=lambda *args: DMList(args),
                         typed_iter=lambda values, kind: (v for v in values if kind == "/atom/movable" or istype(v, kind)),
                         get_area=lambda value: value.area, AREA_OUTSIDE=1,
                         cardinal=((0, 1), (1, 0), (0, -1), (-1, 0)),
@@ -83,11 +83,11 @@ class Fixture:
                         get_turf=lambda bed: bed.turf)
         for name, args in [('new_player_ground', 'T'), ('new_player_has_exit', 'start'),
                            ('pick_new_player_ground', ''), ('new_player_destination', 'lobby')]:
-            body = adapter.extract(self.source.split('\n#undef GAIA_SURFACE_Z')[0], BASE+name)
+            body = adapter.extract(self.source.split('\n#undef START_SPAWN_ATTEMPTS')[0], BASE+name)
             # Exactly translate DM type literals and finite integer loops. No
             # executable guards or branches are removed or reimplemented.
             body = re.sub(r'(?<![\w"\'])/(?:turf|area|obj|mob)(?:/\w+)+', lambda m: repr(m[0]), body)
-            body = re.sub(r'for \(var/(\w+) = 1, \1 <= (GAIA_\w+), \1\+\+\)',
+            body = re.sub(r'for \(var/(\w+) = 1, \1 <= (START_\w+), \1\+\+\)',
                           r'for (var/\1 in dm_range(1, \2))', body)
             fn = adapter.project(BASE+name+'()\n'+body+'\n', BASE+name, args, self.env)
             self.env[name] = fn
@@ -219,8 +219,8 @@ class GaiaSpawn(unittest.TestCase):
     def test_new_body_selected_after_reclaim_before_creation_and_handoff(self):
         src=(ROOT/'code/game/mob/new_player/new_player.dm').read_text()
         body=adapter.extract(src,'/mob/new_player/proc/create_character')
-        self.assertLess(body.index('allow_new_character'),body.index('gaia.new_player_destination(src)'))
-        self.assertLess(body.index('gaia.new_player_destination(src)'),body.index('new mobtype'))
+        self.assertLess(body.index('allow_new_character'),body.index('start_land.new_player_destination(src)'))
+        self.assertLess(body.index('start_land.new_player_destination(src)'),body.index('new mobtype'))
         self.assertEqual(body.count('new mobtype(initial_location'),2)
         failure=body[body.index('if (!initial_location)'):body.index('if (delayed_spawning_as_job)')]
         for token in ('original_job.current_positions - 1','mind.assigned_role = null',
@@ -232,6 +232,16 @@ class GaiaSpawn(unittest.TestCase):
         relocate=adapter.extract((ROOT/'code/game/jobs/job_controller.dm').read_text(),
                                  '/datum/controller/occupations/proc/relocate')
         self.assertLess(relocate.index('uses_random_new_player_spawn'),relocate.index('latejoin_turfs'))
+
+    def test_only_maps_with_a_start_level_start_new_players_at_random(self):
+        start=(ROOT/PATH).read_text()
+        self.assertIn('/obj/map_metadata/nomads/var/new_player_start_z = 0',start)
+        self.assertIn('return new_player_start_z && istype(job, /datum/job/civilian/civnomad)',start)
+        gaia=(ROOT/'code/game/objects/map_metadata/nomads/nomads_gaia.dm').read_text()
+        self.assertIn('new_player_start_z = 2',gaia)
+        f=Fixture(); f.env['new_player_start_z']=1  # a one-level map
+        self.assertTrue(f.new_player_ground(tile(z=1)))
+        self.assertFalse(f.new_player_ground(tile(z=2)))
 
     def test_language_uses_birth_area_and_saved_identity_is_untouched(self):
         human=(ROOT/'code/game/mob/living/carbon/human/human.dm').read_text()

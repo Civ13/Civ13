@@ -1634,8 +1634,8 @@ var/global/redirect_all_players = null
 
 	var/atom/initial_location = loc
 	if (map && map.uses_random_new_player_spawn(original_job))
-		var/obj/map_metadata/nomads/gaia/gaia = map
-		initial_location = gaia.new_player_destination(src)
+		var/obj/map_metadata/nomads/start_land = map
+		initial_location = start_land.new_player_destination(src)
 		if (!initial_location)
 			// AssignRole reserved a slot before create_character. Release it while
 			// keeping the lobby, client and mind intact for another Join attempt.

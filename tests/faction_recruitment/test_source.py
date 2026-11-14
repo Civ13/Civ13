@@ -102,7 +102,7 @@ class FactionMemberStartSource(unittest.TestCase):
         self.assertLess(apply.index('map.faction_on_roster(faction, client.ckey)'), apply.index('H.civilization = faction'))
         destination = run.proc_text(self.start, '/mob/new_player/proc/faction_start_destination(')
         self.assertIn('map.faction_on_roster(faction_start_choice, client.ckey)', destination)
-        gaia = run.proc_text(read('code/game/objects/map_metadata/nomads/nomads_gaia.dm'), '/obj/map_metadata/nomads/gaia/proc/new_player_destination(')
+        gaia = run.proc_text(read('code/game/objects/map_metadata/nomads/nomads_start.dm'), '/obj/map_metadata/nomads/proc/new_player_destination(')
         self.assertLess(gaia.index('lobby.faction_start_destination()'), gaia.index('region_home_bed('))
         character = run.proc_text(read('code/game/mob/new_player/new_player.dm'), '/mob/new_player/proc/create_character(')
         self.assertLess(character.index('faction_start_apply(new_character)'), character.index('new_character.key = key'))
