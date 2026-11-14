@@ -719,6 +719,145 @@
 		return
 	..()
 
+// ---- Gem testing: scratch test, loupe, hydrostatic scale, refractometer ----
+
+// list(species, Mohs hardness, specific gravity, refractive index or 0 when
+// over the instrument's range, synthetic) for a stone, or null.
+/proc/gem_test_data(atom/A)
+	if (istype(A, /obj/item/ruby_boule))
+		return list("ruby", 9, 4.0, 1.77, TRUE)
+	var/path = A.type
+	if (istype(A, /obj/item/stack/ore/gem))
+		var/obj/item/stack/ore/gem/R = A
+		path = R.cut_type
+	else if (istype(A, /obj/item/stack/ore/diamond))
+		path = /obj/item/stack/gemstone/diamond
+	if (ispath(path, /obj/item/stack/gemstone/diamond))
+		return list("diamond", 10, 3.52, 0, FALSE)
+	if (ispath(path, /obj/item/stack/gemstone/ruby))
+		return list("ruby", 9, 4.0, 1.77, FALSE)
+	if (ispath(path, /obj/item/stack/gemstone/sapphire))
+		return list("sapphire", 9, 4.0, 1.77, FALSE)
+	if (ispath(path, /obj/item/stack/gemstone/topaz))
+		return list("topaz", 8, 3.55, 1.62, FALSE)
+	if (ispath(path, /obj/item/stack/gemstone/emerald))
+		return list("emerald", 7.5, 2.75, 1.58, FALSE)
+	if (ispath(path, /obj/item/stack/gemstone/garnet))
+		return list("garnet", 7, 3.9, 1.76, FALSE)
+	if (ispath(path, /obj/item/stack/gemstone/amethyst))
+		return list("amethyst", 7, 2.65, 1.55, FALSE)
+	if (ispath(path, /obj/item/stack/gemstone/quartz))
+		return list("quartz", 7, 2.65, 1.55, FALSE)
+	return null
+
+/obj/item/stack
+	var/inclusions_mapped = FALSE // rough stone looked over with a loupe before cutting
+
+/obj/item/gem_tester
+	name = "jeweller's loupe"
+	desc = "A folding brass lens. Use it on a rough stone to map its inclusions before you cut, so fewer stones split."
+	icon = 'icons/obj/gem_science.dmi'
+	icon_state = "loupe"
+	w_class = ITEM_SIZE_TINY
+	slot_flags = SLOT_POCKET
+	flammable = FALSE
+	value = 6
+	var/node = "optics_instruments"
+
+/obj/item/gem_tester/scale
+	name = "gem scale"
+	desc = "A small brass balance with a cup of water beneath one pan. Weighing a stone in air and in water gives its specific gravity, which names the stone and its weight in carats."
+	icon_state = "gem_scale"
+	w_class = ITEM_SIZE_SMALL
+	slot_flags = 0
+	value = 10
+
+/obj/item/gem_tester/refractometer
+	name = "gem refractometer"
+	desc = "A brass instrument with a glass window and an eyepiece. A cut stone laid on the window shows its refractive index, which names it for certain and shows a stone grown in a flame for what it is."
+	icon_state = "refractometer"
+	w_class = ITEM_SIZE_SMALL
+	slot_flags = 0
+	value = 18
+	node = "electricity"
+
+/obj/item/gem_tester/proc/test_stone(atom/A, mob/living/human/H, list/data)
+	return
+
+/obj/item/gem_tester/test_stone(atom/A, mob/living/human/H, list/data)
+	var/obj/item/stack/ore/O = A
+	if (!istype(O))
+		to_chat(H, SPAN_NOTICE("A loupe is for planning the cut of a rough stone."))
+		return
+	if (O.inclusions_mapped)
+		to_chat(H, SPAN_NOTICE("You have already mapped the inclusions in \the [O]."))
+		return
+	O.inclusions_mapped = TRUE
+	to_chat(H, SPAN_NOTICE("You turn \the [O] under the loupe and mark its inclusions. Cuts planned around them will split half as often."))
+
+/obj/item/gem_tester/scale/test_stone(atom/A, mob/living/human/H, list/data)
+	var/obj/item/I = A
+	var/obj/item/stack/S = A
+	var/stones = istype(S) ? max(1, S.amount) : 1
+	to_chat(H, SPAN_NOTICE("Specific gravity [data[3]]: [data[1]]. About [stones * (istype(A, /obj/item/stack/ore) ? 6 : 2)] carats in all, worth about [I.value * stones]."))
+
+/obj/item/gem_tester/refractometer/test_stone(atom/A, mob/living/human/H, list/data)
+	if (istype(A, /obj/item/stack/ore))
+		to_chat(H, SPAN_NOTICE("A rough stone has no flat face to read. Cut it first."))
+		return
+	if (!data[4])
+		to_chat(H, SPAN_NOTICE("The reading runs past the top of the scale: only diamond bends light that far."))
+		return
+	to_chat(H, SPAN_NOTICE("Refractive index [data[4]]: [data[1]].[data[5] ? " Curved growth lines show it was grown in a flame: synthetic." : " Natural."]"))
+
+/proc/gem_test_attempt(obj/item/W, atom/A, mob/user)
+	if (!ishuman(user))
+		return FALSE
+	var/mob/living/human/H = user
+	var/list/data = gem_test_data(A)
+	if (!data)
+		return FALSE
+	// Scratch test: a cut quartz point scratches only what is softer than it.
+	if (istype(W, /obj/item/stack/gemstone/quartz) && W != A)
+		if (!crafting_node_allowed_or_warn(H, "regalia"))
+			return TRUE
+		if (data[2] > 7)
+			to_chat(H, SPAN_NOTICE("The quartz point skates off \the [A] without a mark: it is harder than quartz."))
+		else
+			to_chat(H, SPAN_NOTICE("The quartz point and \the [A] scratch each other alike: it is about as hard as quartz."))
+		return TRUE
+	if (!istype(W, /obj/item/gem_tester))
+		return FALSE
+	var/obj/item/gem_tester/T = W
+	if (!H.may_do_after || !crafting_node_allowed_or_warn(H, T.node))
+		return TRUE
+	if (!do_after(H, 20, A))
+		return TRUE
+	if (QDELETED(A) || QDELETED(T))
+		return TRUE
+	T.test_stone(A, H, data)
+	return TRUE
+
+/obj/item/stack/ore/gem/attackby(obj/item/W, mob/user)
+	if (gem_test_attempt(W, src, user))
+		return
+	..()
+
+/obj/item/stack/ore/diamond/attackby(obj/item/W, mob/user)
+	if (gem_test_attempt(W, src, user))
+		return
+	..()
+
+/obj/item/stack/gemstone/attackby(obj/item/W, mob/user)
+	if (gem_test_attempt(W, src, user))
+		return
+	..()
+
+/obj/item/ruby_boule/attackby(obj/item/W, mob/user)
+	if (gem_test_attempt(W, src, user))
+		return
+	..()
+
 /obj/item/examine(mob/user, var/distance = -1)
 	. = ..()
 	if (jewelled)

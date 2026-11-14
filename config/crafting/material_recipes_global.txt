@@ -2217,6 +2217,9 @@ RECIPE: /material/brass/,artillery casing,/obj/item/stack/ammopart/casing/artill
 RECIPE: /material/brass/,field cannon casing,/obj/item/stack/ammopart/casing/tank,2,35,0,1,ammunition,105,0,0,8,null
 RECIPE: /material/brass/,grenade casing,/obj/item/stack/ammopart/casing/grenade,2,35,0,1,ammunition,115,0,0,8,null
 RECIPE: /material/brass/,fob chain,/obj/item/clothing/accessory/storage/lanyard/fob_chain,1,60,0,1,none,0,0,0,8,null
+RECIPE: /material/brass/,jeweller's loupe,/obj/item/gem_tester,1,40,0,1,tools,0,0,0,8,null
+RECIPE: /material/brass/,gem scale,/obj/item/gem_tester/scale,2,60,0,1,tools,0,0,0,8,null
+RECIPE: /material/brass/,gem refractometer,/obj/item/gem_tester/refractometer,3,80,0,1,tools,0,0,0,8,null
 
 //*******************************************************
 //*********************| WOOD |**************************

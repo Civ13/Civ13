@@ -135,7 +135,7 @@ var/global/list/gem_pocket_weights = list(
 	H.adaptStat("crafting", 1)
 	if (lap && !QDELETED(lap) && lap.use_charge(cut_type))
 		to_chat(H, SPAN_NOTICE("You finish the stone on \the [lap]."))
-	else if (prob(GEM_CUT_FLAW_CHANCE / max(0.5, H.getStatCoeff("crafting"))))
+	else if (prob(GEM_CUT_FLAW_CHANCE / max(0.5, H.getStatCoeff("crafting")) / (inclusions_mapped ? 2 : 1)))
 		var/leftover = gem_flaw_leftovers(T, cut_type)
 		to_chat(H, SPAN_WARNING("The [stone_name] cracks along a hidden flaw and splinters into [leftover ? leftover : "worthless chips"]."))
 		return TRUE
