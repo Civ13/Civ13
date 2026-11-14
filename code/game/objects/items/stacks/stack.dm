@@ -1062,30 +1062,6 @@
 					to_chat(user, "<span class = 'warning'>You need a stack of at least 3 copper ingots in one of your hands in order to make this.</span>")
 					return
 
-	else if (findtext(recipe.title, "macuahuitl"))
-		if (!istype(H.l_hand, /obj/item/stack/material/obsidian) && !istype(H.r_hand, /obj/item/stack/material/obsidian))
-			to_chat(user, "<span class = 'warning'>You need a stack of at least 4 cut rocks of obsidian in one of your hands in order to make this.</span>")
-			return
-		else
-			if (istype(H.l_hand, /obj/item/stack/material/obsidian))
-				var/obj/item/stack/material/obsidian/NB = H.l_hand
-				if (NB.amount >= 4)
-					NB.amount -= 4
-					if (NB.amount <= 0)
-						qdelHandReturn(H.l_hand, H)
-				else
-					to_chat(user, "<span class = 'warning'>You need a stack of at least 4 cut rocks of obsidian in one of your hands in order to make this.</span>")
-					return
-			else if (istype(H.r_hand, /obj/item/stack/material/obsidian))
-				var/obj/item/stack/material/obsidian/NB = H.r_hand
-				if (NB.amount >= 4)
-					NB.amount -= 4
-					if (NB.amount <= 0)
-						qdelHandReturn(H.r_hand, H)
-				else
-					to_chat(user, "<span class = 'warning'>You need a stack of at least 4 cut rocks of obsidian in one of your hands in order to make this.</span>")
-					return
-
 	else if (findtext(recipe.title, "chimalli"))
 		if (!istype(H.l_hand, /obj/item/stack/material/leather) && !istype(H.r_hand, /obj/item/stack/material/leather))
 			to_chat(user, "<span class = 'warning'>You need a stack of at least 2 leather sheets in one of your hands in order to make this.</span>")
