@@ -35,6 +35,7 @@
 	var/healing_stage = 0 //for beds
 	var/tmp/survival_rest_since = null
 	var/tmp/survival_actions = 0
+	var/tmp/survival_workload = 0 // heaviest running timed action: 0 none, 1 light, 2 ordinary, 3 heavy
 
 // Existing input and movement clocks avoid a per-mob timer or world scan.
 /mob/living/human/proc/survival_metabolism_time()
@@ -43,13 +44,64 @@
 /mob/living/human/proc/survival_input_inactivity()
 	return client ? client.inactivity : -1
 
-/mob/living/human/survival_action_started()
+/mob/living/human/survival_action_started(atom/target, datum/pickaxe_mining_action/mining_context)
 	survival_actions++
+	survival_workload = max(survival_workload, mining_context ? 3 : survival_workload_for(target))
 	survival_rest_since = survival_metabolism_time()
 
 /mob/living/human/survival_action_finished()
 	survival_actions = max(0, survival_actions - 1)
+	if (!survival_actions)
+		survival_workload = 0
 	survival_rest_since = survival_metabolism_time()
+
+// Food and water burn with the work being done, as multiples of the ordinary
+// working rate (0.0864 per second). Walking, running and fighting count as
+// ordinary work; standing about awake is resting. Full pools of 600 food and
+// 500 water last about 3 hours resting, 2 hours of ordinary work and 1 hour of
+// heavy labour; sixty seconds without input still drops use by 90%.
+/mob/living/human/proc/survival_current_workload()
+	if (survival_actions)
+		return max(1, survival_workload)
+	var/now = survival_metabolism_time()
+	if ((last_movement <= now && now - last_movement < 20) || next_move > now) // moved in the last 2 seconds or fighting
+		return 2
+	return 0
+
+/mob/living/human/proc/survival_work_food_m(workload)
+	if (workload >= 3)
+		return 1.75 // heavy: mining, digging, felling, sawing, smithing
+	if (workload == 2)
+		return 1 // ordinary handwork, walking, fighting
+	if (workload == 1)
+		return 0.8 // light: reading, writing, sewing, weaving, study
+	return 0.6 // awake and resting
+
+/mob/living/human/proc/survival_work_water_m(workload)
+	if (workload >= 3)
+		return 2 // heavy labour sweats
+	return survival_work_food_m(workload)
+
+// Climate works through body temperature, so clothing matters: a chilled body
+// burns food to keep warm and an overheated one sweats. The very cold burn
+// below cold_level_1 (handle_bodytemperature) still applies on top.
+/mob/living/human/proc/survival_climate_food_m()
+	if (!species)
+		return 1
+	var/chill = species.body_temperature - bodytemperature
+	if (chill >= 15)
+		return 1.6
+	if (chill >= 5)
+		return 1.3
+	return 1
+
+/mob/living/human/proc/survival_climate_water_m()
+	var/m = 1
+	if (map.ID == MAP_NOMADS_DESERT || weather_heat_at(src)) // dry heat and sun
+		m = 2.2
+	if (species && bodytemperature >= species.body_temperature + 3) // overheated, too much clothing or near a fire
+		m *= 1.5
+	return m
 
 /mob/living/human/proc/survival_idle_multiplier()
 	var/now = survival_metabolism_time()
@@ -232,13 +284,10 @@
 			nutrition -= ((0.01) * HUNGER_THIRST_MULTIPLIER * food_m)
 			water -= ((0.01) * HUNGER_THIRST_MULTIPLIER * water_m)
 
-		else if (stat == CONSCIOUS) // about 77 minutes of food while active, ten times longer while idle
-			if (map.ID == MAP_NOMADS_DESERT || weather_heat_at(src)) // about 26 minutes of water while active
-				nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER * food_m * activity_m)
-				water -= ((0.7) * HUNGER_THIRST_MULTIPLIER * water_m * activity_m)
-			else
-				nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER * food_m * activity_m)
-				water -= ((0.27) * HUNGER_THIRST_MULTIPLIER * water_m * activity_m)
+		else if (stat == CONSCIOUS) // workload and climate set the rate (survival_work_food_m), idle is a tenth
+			var/workload = survival_current_workload()
+			nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER * food_m * activity_m * survival_work_food_m(workload) * survival_climate_food_m())
+			water -= ((0.27) * HUNGER_THIRST_MULTIPLIER * water_m * activity_m * survival_work_water_m(workload) * survival_climate_water_m())
 		if (find_trait("Extroverted"))
 			if (prob(20))
 				var/ct = 0
