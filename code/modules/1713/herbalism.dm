@@ -6,6 +6,7 @@
 // - shelled sunflower seeds: 5 sunflower oil
 // - one flax seed: 2 linseed oil
 // - olives: 6 olive oil
+// - charcoal, iron ore, clay or bone: a painting pigment (paintings.dm)
 // Sunflower and linseed oil burn in lamps and torches like other plant oils.
 
 #define MORTAR_GRIND_TIME 30
@@ -52,6 +53,9 @@
 	return null
 
 /obj/item/weapon/reagent_containers/glass/mortar/attackby(obj/item/W, mob/user)
+	if (mortar_pigment_result(W))
+		grind_pigment(W, user)
+		return TRUE
 	var/list/result = mortar_grind_result(W)
 	if (!result)
 		return ..()

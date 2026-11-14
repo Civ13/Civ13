@@ -1,0 +1,160 @@
+// Native paintings probe, included by tests/ecology_spawning/run_linux.py, never
+// by the game DME. It drives code/modules/paintings/.
+/world
+	hub = ""
+	hub_password = ""
+	maxx = 20
+	maxy = 20
+	maxz = 1
+	turf = /turf
+	area = /area
+	visibility = 0
+/world/OpenPort(port)
+	if (port == "none")
+		return ..()
+	return FALSE
+/obj/map_metadata/paint_probe/New()
+	map = src
+/mob/living/human/paint_probe/New()
+	icon_update = FALSE
+	return
+var/paint_failures = 0
+var/paint_runtime_error = FALSE
+/proc/paint_check(condition, label)
+	if (!condition)
+		paint_failures++
+	world.log << "[condition ? "PASS" : "FAIL"]: [label]"
+/world/Error(exception/e)
+	paint_runtime_error = TRUE
+	world.log << "runtime error [e] [e.file]:[e.line]"
+/world/New()
+	OpenPort("none")
+	try
+		GLOB.all_observable_events = list()
+		GLOB.moved_event = new
+		GLOB.dir_set_event = new
+		GLOB.destroyed_event = new
+		movementMachine = new
+		new /obj/map_metadata/paint_probe
+		for (var/turf/T in block(locate(1, 1, 1), locate(20, 20, 1)))
+			T.ChangeTurf(/turf/floor/grass, FALSE, FALSE)
+		paint_codec_checks()
+		paint_upload_checks()
+		paint_hang_checks()
+		paint_locket_checks()
+	catch(var/exception/e)
+		paint_check(FALSE, "exception [e] [e.file]:[e.line]")
+	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = paint_failures, "runtime_error" = paint_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")
+	del(world)
+
+/proc/paint_codec_checks()
+	var/plain = "0000000012" + painting_repeat("f", 30) + "3"
+	var/packed = painting_pack(plain)
+	paint_check(packed == "0~8.12f~30.3", "runs of four or more pack ([packed])")
+	paint_check(painting_unpack(packed, length(plain)) == plain, "packed pixels unpack unchanged")
+	paint_check(isnull(painting_unpack(packed, length(plain) + 1)), "a wrong pixel count is refused")
+	paint_check(isnull(painting_unpack("0~3.", 3)) && isnull(painting_unpack("g", 1)) && isnull(painting_unpack("0~9999999.", 9999999)), "malformed runs and digits are refused")
+	paint_check(painting_palette_list("#000000,#FFFFFF") ~= list("#000000", "#ffffff"), "palette text reads in lower case")
+	paint_check(isnull(painting_palette_list("#000000,red")), "a palette with a bad colour is refused")
+	// Black and white checkerboard 2x2 -> one pixel: linear-light mean is sRGB 188 (b).
+	paint_check(painting_shrink("0110", list("#000000", "#ffffff"), 2, 2, 1, 1) == "bbb", "shrinking averages in linear light")
+	paint_check(painting_shrink("0123", list("#000000", "#ff0000", "#00ff00", "#0000ff"), 2, 2, 2, 2) == "000f000f000f", "same-size shrink keeps every pixel")
+	var/icon/I = painting_build_icon("f00" + painting_repeat("0", 3 * 15), 4, 4, 8, 6, 'icons/obj/paintings.dmi', "canvas_table")
+	paint_check(I && I.GetPixel(9, 26) == "#ff0000" && !I.GetPixel(1, 1), "the shrunk copy lands in the art window and nothing else is drawn")
+	paint_check(painting_build_icon("f00" + painting_repeat("0", 3 * 15), 4, 4, 8, 6, 'icons/obj/paintings.dmi', "canvas_table") == I, "identical paintings share one icon")
+	paint_check(painting_mix("#000000", "#ffffff") == "#7f7f7f", "mixing averages two colours")
+
+/proc/paint_upload_checks()
+	var/turf/T = locate(5, 5, 1)
+	var/mob/living/human/paint_probe/H = new(T)
+	H.ckey = null
+	H.real_name = "Ada Painter"
+	var/obj/item/canvas/table/C = new(H)
+	var/list/blank_allowed = painting_allowed_colours(H, C)
+	paint_check(blank_allowed.len == 1 && blank_allowed[1] == C.base_colour, "without pigment only the canvas colour is allowed")
+	var/obj/item/pigment/charcoal/P = new(H)
+	new /obj/item/pigment/ochre_red(H)
+	new /obj/item/pigment/ochre_yellow(H)
+	new /obj/item/pigment/bone_white(H)
+	text2file(painting_editor_html(H, C, painting_allowed_colours(H, C)), "editor.html")
+	for (var/obj/item/pigment/X in H)
+		if (X != P)
+			qdel(X)
+	var/list/allowed = painting_allowed_colours(H, C)
+	paint_check(allowed.len == 6 && ("#1e1b19" in allowed) && (painting_mix(C.base_colour, "#1e1b19") in allowed), "charcoal adds two colours and their mixes")
+	var/count = C.canvas_w * C.canvas_h
+	var/plain = painting_repeat("1", 300) + painting_repeat("0", count - 300)
+	var/pal = "[C.base_colour],#1e1b19"
+	paint_check(C.accept_painting(H, painting_pack(plain), "#ffffff,#1e1b19", FALSE, "") != "Saved.", "a palette that does not start with the canvas colour is refused")
+	paint_check(C.accept_painting(H, painting_pack(plain), "[C.base_colour],#0000ff", FALSE, "") != "Saved.", "an uncarried colour is refused")
+	paint_check(C.accept_painting(H, painting_pack(plain + "0"), pal, FALSE, "") != "Saved.", "a painting of the wrong size is refused")
+	paint_check(C.accept_painting(H, painting_pack(painting_repeat("2", count)), pal, FALSE, "") != "Saved.", "a pixel past the palette is refused")
+	paint_check(C.accept_painting(H, painting_pack(plain), pal, FALSE, "") == "Saved." && !C.finished && length(C.small) == 16 * 16 * 3, "a save keeps the painting and its shrunk copy")
+	paint_check(C.author_name == "Ada Painter", "the first painter is recorded")
+	paint_check(C.accept_painting(H, painting_pack(plain), pal, TRUE, "") != null && !C.finished, "finishing needs a title")
+	var/uses = P.pigment_uses
+	paint_check(isnull(C.accept_painting(H, painting_pack(plain), pal, TRUE, "Night <b>Sky</b>")) && C.finished, "finishing locks the painting")
+	paint_check(!findtext(C.title, "<"), "the title is sanitised ([C.title])")
+	paint_check(C in painting_registry, "a finished painting is listed for admins")
+	paint_check(P.pigment_uses == uses - 2, "300 charcoal pixels use two charcoal ([uses] -> [P.pigment_uses])")
+	paint_check(C.overlays.len == 2, "the picture shows its art and frame")
+	// Kept colours stay valid after the pigment is gone.
+	var/obj/item/canvas/table/D = new(H)
+	D.accept_painting(H, painting_pack(plain), pal, FALSE, "")
+	qdel(P)
+	paint_check(D.accept_painting(H, painting_pack(plain), pal, FALSE, "") == "Saved.", "colours already on the canvas stay after the pigment runs out")
+	var/old = painting_registry.Copy()
+	painting_registry.Cut()
+	for (var/i = 1, i <= PAINTING_REGION_CAP, i++)
+		painting_registry += new /obj/item/canvas
+	paint_check(D.accept_painting(H, painting_pack(plain), pal, TRUE, "Too many") != null && !D.finished, "the region cap stops new finished paintings")
+	for (var/obj/O in painting_registry)
+		qdel(O)
+	painting_registry = old
+	qdel(C)
+	paint_check(!(C in painting_registry), "a deleted painting leaves the admin list")
+	qdel(D)
+	qdel(H)
+
+/proc/paint_hang_checks()
+	var/turf/wall = locate(9, 5, 1)
+	wall.density = TRUE
+	var/turf/stand = locate(8, 5, 1)
+	var/mob/living/human/paint_probe/H = new(stand)
+	var/obj/item/canvas/C = new(H)
+	var/count = C.canvas_w * C.canvas_h
+	C.accept_painting(H, painting_pack(painting_repeat("0", count)), C.base_colour, TRUE, "Wall")
+	paint_check(C.finished && length(C.small) == 32 * 32 * 3, "a 64x64 wall painting shrinks to 32x32")
+	paint_check(painting_hang(H, C, wall), "a finished painting hangs on a wall")
+	var/obj/structure/painting_frame/F = locate() in stand
+	paint_check(F && F.dir == EAST && F.pixel_x == 32 && C.loc == F && F.overlays.len == 2, "the frame sits against the wall with the painting in it")
+	qdel(F)
+	paint_check(C.loc == stand, "taking the frame down leaves the painting")
+	var/obj/structure/easel/E = new(stand)
+	var/obj/item/canvas/B = new(stand)
+	E.attackby(B, H)
+	paint_check(B.loc == E && E.held_canvas() == B, "an easel holds a canvas")
+	qdel(E)
+	paint_check(B.loc == stand, "a broken easel drops its canvas")
+	paint_check(mortar_pigment_result(new /obj/item/stack/ore/charcoal(stand)) == /obj/item/pigment/charcoal && mortar_pigment_result(new /obj/item/stack/ore/iron(stand)) == /obj/item/pigment/ochre_red && mortar_pigment_result(new /obj/item/stack/material/clay(stand)) == /obj/item/pigment/ochre_yellow && mortar_pigment_result(new /obj/item/stack/material/bone(stand)) == /obj/item/pigment/bone_white, "the mortar grinds charcoal, iron ore, clay and bone into pigments")
+	qdel(H)
+
+/proc/paint_locket_checks()
+	var/turf/T = locate(12, 12, 1)
+	var/mob/living/human/paint_probe/H = new(T)
+	var/obj/item/canvas/miniature/M = new(H)
+	var/obj/item/pigment/ochre_red/P = new(H)
+	M.accept_painting(H, painting_pack(painting_repeat("1", 256)), "[M.base_colour],#7d2f1e", TRUE, "Rose")
+	paint_check(M.finished && length(M.small) == 16 * 16 * 3, "a miniature keeps all 16x16 pixels")
+	var/obj/item/clothing/accessory/necklace/N = new(T)
+	N.attackby(M, H)
+	paint_check(M.loc == N && N.held_miniature() == M, "a finished miniature sets into a necklace")
+	N.mob_overlay = null
+	var/image/O = N.get_mob_overlay()
+	paint_check(O && O.overlays.len == 2 && length(M.get_worn_small()) == 8 * 8 * 3, "the worn necklace shows the locket and its 8x8 art")
+	var/obj/item/canvas/miniature/M2 = new(H)
+	N.attackby(M2, H)
+	paint_check(M2.loc == H, "an unfinished miniature or a second one is refused")
+	qdel(P)
+	qdel(N)
+	qdel(H)

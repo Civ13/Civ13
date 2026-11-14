@@ -28,7 +28,8 @@ var/list/admin_verbs_admin = list(
 	/client/proc/disable_campaign_whitelist,
 	/datum/admins/proc/event_transfer,	//send players to an event region and back, characters kept safe
 	/datum/admins/proc/place_region_trail,	//place an open trail to another land where you stand, ghosts too
-	/datum/admins/proc/land_status,	//see and set each land's settlement stage (frontier, colonised, settled)
+	/datum/admins/proc/land_status,
+	/datum/admins/proc/player_art,	//see every finished player painting, who painted it, and remove offensive ones	//see and set each land's settlement stage (frontier, colonised, settled)
 	/datum/admins/proc/world_chart_panel,	//see the world chart for boat expeditions and reroll charted lands
 	/client/proc/player_panel_new,		//shows an interface for all players, with links to various panels,
 	/client/proc/admin_player_map,	//live map of a level with every player on it,
