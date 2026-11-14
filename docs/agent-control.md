@@ -537,8 +537,11 @@ It requires complete integer tokens, which may carry list punctuation such as
 notation, multiple target numbers and trailing numeric punctuation (such as
 `click 1.`) are refused, and the feedback quotes the unreadable step.
 Skills such as `find_flint`, `break_branch`, `drink` or `chop` name a
-target; the autopilot walks next to the target (stepping around blocked
-tiles), swaps to the right hand and intent before the click, stows (or drops) a
+target; the autopilot walks next to the target with one routed `walk_to`
+step (see [Walk to](#walk-to); `explore` routes about 10 tiles that way),
+stepping tile by tile only for the last stretch or when the server has no
+`walk_to`, and does not retry a route the game stopped (hurt, a predator close,
+no way there); it then swaps to the right hand and intent before the click, stows (or drops) a
 spare item rather than a tool when it needs a free hand, works a fallen
 branch where it lies (leaves, then stick) instead of trying to pick it up, and refuses a skill whose
 tool is not in either hand or a branch skill on a tree with no branches. The

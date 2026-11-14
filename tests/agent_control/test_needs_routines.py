@@ -405,6 +405,59 @@ class LoopTests(unittest.TestCase):
         self.assertIn("YOU ARE ASKED BECAUSE: first look", seen[0])
 
 
+class RouteClient:
+    """A game that answers walk_to with a scripted receipt and counts tile-by-tile moves."""
+
+    def __init__(self, receipt, accept=True, target_offset=(1, 0)):
+        self.receipt, self.accept, self.offset = receipt, accept, target_offset
+        self.steps, self.moves, self.results = [], 0, []
+
+    def request(self, action, params=None):
+        if action == "character_queue":
+            step = params["actions"][0]
+            self.steps.append(step)
+            if step["do"] == "walk_to":
+                if not self.accept:
+                    return {"ok": False, "error": "bad_args", "detail": "unknown action walk_to"}
+                ok, detail = self.receipt
+                self.results = [{"id": len(self.steps), "do": "walk_to", "ok": ok, "detail": detail}]
+            else:
+                self.moves += 1
+                self.results = [{"id": len(self.steps), "do": "move", "ok": True, "detail": "done"}]
+            return {"ok": True}
+        dx, dy = self.offset
+        nearby = [{"ref": "[0xt]", "name": "tree", "dx": dx, "dy": dy}]
+        return {"ok": True, "result": {"self": {"x": 50, "y": 50, "can_move": True}, "nearby": nearby, "surroundings": {},
+                                       "queue": {"pending": [], "running": False, "results": self.results}}}
+
+
+class RouteTests(unittest.TestCase):
+    def test_go_uses_the_games_route_then_stands_next_to_it(self):
+        client = RouteClient((True, "arrived"))
+        ok, detail, _ = autopilot.approach(client, "[0xme]", "[0xt]", 0)
+        self.assertEqual((ok, detail), (True, "next to it"))
+        self.assertEqual(client.steps[0], {"do": "walk_to", "target": "[0xt]"})
+        self.assertEqual(client.moves, 0)
+
+    def test_a_stopped_route_is_not_retried_tile_by_tile(self):
+        client = RouteClient((False, "stopped: the wolf is close"), target_offset=(6, 0))
+        ok, detail, _ = autopilot.approach(client, "[0xme]", "[0xt]", 0)
+        self.assertEqual((ok, detail), (False, "the wolf is close"))
+        self.assertEqual(client.moves, 0)
+
+    def test_an_older_server_falls_back_to_tile_steps(self):
+        client = RouteClient(None, accept=False, target_offset=(2, 0))
+        ok, _, _ = autopilot.approach(client, "[0xme]", "[0xt]", 0, limit=1)
+        self.assertGreaterEqual(client.moves, 1)
+
+    def test_explore_routes_toward_a_point_in_that_direction(self):
+        client = RouteClient((True, "arrived"))
+        ok, detail, _ = autopilot.explore_route(client, "[0xme]", 0, "east")
+        self.assertTrue(ok)
+        self.assertEqual(client.steps[0], {"do": "walk_to", "x": 50 + autopilot.EXPLORE_TILES, "y": 50})
+        self.assertIn("walked about", detail)
+
+
 class SourceTests(unittest.TestCase):
     def test_character_state_reports_every_need_bar(self):
         source = (ROOT / "code/modules/agent_control/agent_characters.dm").read_text(encoding="utf-8")

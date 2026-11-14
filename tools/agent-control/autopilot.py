@@ -1797,7 +1797,43 @@ def choose_step(dx, dy, blocked=(), visited=(), here=(0, 0)):
     return min(options)[3] if options else None
 
 
+ROUTE_TIMEOUT = 90.0  # seconds a routed walk (up to 32 tiles at a slow pace) may take
+ROUTE_STEPS = {"north": (0, 1), "south": (0, -1), "east": (1, 0), "west": (-1, 0)}
+EXPLORE_TILES = 10  # how far one routed explore step aims
+
+
+def route(client, character, queue_since, step):
+    """One walk_to step through the queue, the route a player gets with Ctrl+click (docs/agent-control.md#walk-to).
+
+    Returns (status, detail, queue_since): status is "arrived", "stopped" (the game ended the route: hurt, a
+    predator close, no way there) or "unsupported" (an older server without walk_to, or too far to plan),
+    where the caller falls back to stepping tile by tile.
+    """
+    queued = client.request("character_queue", {"character": character, "actions": [step]})
+    if not queued.get("ok"):
+        return "unsupported", f"{queued.get('error')} {queued.get('detail', '')}".strip(), queue_since
+    results = wait_for_queue(client, character, queue_since, limit=ROUTE_TIMEOUT)
+    if results:
+        queue_since = max(r.get("id", 0) for r in results)
+    detail = next((str(r.get("detail", "")) for r in results if r.get("do") == "walk_to"), "")
+    ok = any(r.get("ok") for r in results if r.get("do") == "walk_to")
+    if ok:
+        return "arrived", detail or "arrived", queue_since
+    if not detail or "too far" in detail or "unknown" in detail or "not_found" in detail:
+        return "unsupported", detail or "no result", queue_since
+    return "stopped", detail.removeprefix("stopped: "), queue_since
+
+
 def approach(client, character, ref, queue_since, limit=MAX_APPROACH, reach=1):
+    """Walk next to ref (onto it with reach 0): a routed walk_to first, then tile steps for the last stretch.
+    Returns (ok, detail, queue_since)."""
+    status, detail, queue_since = route(client, character, queue_since, {"do": "walk_to", "target": ref})
+    if status == "stopped":
+        return False, detail, queue_since
+    return step_to(client, character, ref, queue_since, limit, reach)
+
+
+def step_to(client, character, ref, queue_since, limit=MAX_APPROACH, reach=1):
     """Walk next to ref (onto it with reach 0), stepping around obstacles. Returns (ok, detail, queue_since)."""
     visited = set()
     blocked = {}
@@ -1841,6 +1877,21 @@ def approach(client, character, ref, queue_since, limit=MAX_APPROACH, reach=1):
             if any(r.get("detail") == "blocked" for r in results):
                 blocked.setdefault(here, set()).add(direction)
     return False, "still not there after walking", queue_since
+
+
+def explore_route(client, character, queue_since, direction):
+    """Explore: a routed walk about EXPLORE_TILES tiles in a direction, else tile steps. Returns (ok, detail, queue_since)."""
+    look = client.request("character_observe", {"character": character, "radius": 1, "queue_since": queue_since})
+    me = look.get("result", {}).get("self", {}) if look.get("ok") else {}
+    x, y = me.get("x"), me.get("y")
+    if isinstance(x, int) and isinstance(y, int) and direction in ROUTE_STEPS:
+        dx, dy = ROUTE_STEPS[direction]
+        status, detail, queue_since = route(client, character, queue_since, {"do": "walk_to", "x": x + dx * EXPLORE_TILES, "y": y + dy * EXPLORE_TILES})
+        if status == "arrived":
+            return True, f"walked about {EXPLORE_TILES} tiles {direction}", queue_since
+        if status == "stopped" and "no way" not in detail:
+            return False, detail, queue_since  # hurt or a predator close: do not keep walking
+    return walk(client, character, queue_since, direction=direction)
 
 
 def walk(client, character, queue_since, direction=None, away_from=None, moves=6):
@@ -1972,7 +2023,7 @@ def execute(client, character, steps, queue_since):
         elif step["do"] == "flee":
             ok, detail, queue_since = walk(client, character, queue_since, away_from=step["target"])
         else:
-            ok, detail, queue_since = walk(client, character, queue_since, direction=step["dir"])
+            ok, detail, queue_since = explore_route(client, character, queue_since, step["dir"])
         parts.append(f"{step['do']} {'ok' if ok else 'failed'} ({detail})")
         if not ok:
             return "; ".join(parts) + "; stopped there", queue_since
