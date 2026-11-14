@@ -362,6 +362,7 @@ var/global/list/node_grid_col_cache = null
 	// --- Industrial: Vehicles ---
 	register_research_node(new /datum/research_node("carts", "Carts", "Industrial", 95, 0, RESEARCH_MODE_ANALYSIS, null, 1))
 	register_research_node(new /datum/research_node("wagons_ships", "Wagons & Ships", "Industrial", 165, 2, RESEARCH_MODE_ANALYSIS, list("carts"), 3))
+	register_research_node(new /datum/research_node("oared_ships", "Oared Ships", "Industrial", 95, 0, RESEARCH_MODE_ANALYSIS, list("carts"), 1))
 	register_research_node(new /datum/research_node("rail_steam", "Rail & Steam", "Industrial", 200, 3, RESEARCH_MODE_ANALYSIS, list("wagons_ships","steam_power"), 4))
 	register_research_node(new /datum/research_node("automobiles", "Automobiles", "Industrial", 235, 4, RESEARCH_MODE_ANALYSIS, list("wagons_ships","combustion"), 5))
 	// Powered Flight (1903) unlocks the aircraft hangar that builds the light plane.
@@ -2473,6 +2474,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/berth/quay/depot" = "wagons_ships",
 		"/obj/structure/berth/deck" = "wagons_ships",
 		"/obj/structure/hull_tiller" = "wagons_ships",
+		"/obj/structure/hull_tiller/steering_oar" = "oared_ships",
+		"/obj/structure/bed/chair/wood/rowing_bench" = "oared_ships",
 		"/obj/item/sail" = "wagons_ships",
 		"/obj/item/sail/wool" = "wagons_ships",
 		"/obj/item/vehicleparts/frame/boat" = "wagons_ships",
