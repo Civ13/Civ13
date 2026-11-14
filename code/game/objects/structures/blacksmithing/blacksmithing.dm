@@ -24,7 +24,7 @@
 	var/valid_recipes = FALSE // Tracking if any valid recipes are found
 	for(var/i in anvil_recipes)
 		if (anvil_recipes[i])
-			if (anvil_recipes[i][2] == choice && map.ordinal_age >= anvil_recipes[i][3] && recipe_age_allowed(anvil_recipes[i][4]) && anvil_recipes[i][material_index] > 0)
+			if (anvil_recipe_offered(anvil_recipes[i], choice, anvil_recipes[i][material_index], material_name))
 				newlist += "[anvil_recipes[i][1]] - [anvil_recipes[i][material_index]] [material_name]" + crafting_recipe_manual_suffix(H, "[anvil_recipes[i][9]]")
 				valid_recipes = TRUE // At least one valid recipe found
 	if (!valid_recipes) // No valid recipes found
@@ -65,7 +65,7 @@
 	if (!materials || (material in materials))
 		for(var/i in anvil_recipes)
 			var/mat = anvil_mold_cost(anvil_recipes[i], material)
-			if (anvil_recipe_offered(anvil_recipes[i], category, mat))
+			if (anvil_recipe_offered(anvil_recipes[i], category, mat, material, TRUE))
 				newlist += "[anvil_recipes[i][1]] - [mat] [material]" + crafting_recipe_manual_suffix(H, "[anvil_recipes[i][9]]")
 	if (newlist.len <= 1)
 		to_chat(user, "There is nothing that you can craft of this type.")
@@ -78,6 +78,8 @@
 	if (!row || !crafting_recipe_allowed(H, "[row[9]]"))
 		return
 	var/mat = anvil_mold_cost(row, material)
+	if (!anvil_recipe_offered(row, category, mat, material, TRUE))
+		return
 	if (mat <= 0 || ML.capacity < mat)
 		return
 	to_chat(user, "You begin crafting \the [parsed_choice2[1]]...")
@@ -293,6 +295,8 @@
 							in_use = FALSE
 						update_icon()
 						return
+					if ("parts")
+						return forge_mold_recipe(ML, user, H, "parts")
 					if ("knives")
 						return forge_mold_recipe(ML, user, H, "knives")
 					if ("axes")
@@ -459,6 +463,9 @@
 			"3" = list("cancel","helmets")), optlist)
 	else
 		return null
+	// Machine parts are forged in every era; orcs keep their own lists.
+	if (!H.orc && (istype(P, /obj/item/stack/material/iron) || istype(P, /obj/item/stack/material/steel) || istype(P, /obj/item/stack/material/bronze)))
+		optlist += "parts"
 	// Only iron and steel have flintlock parts; the options proc says so for the rest.
 	if (blackpowder_part_options(P, H).len > 1)
 		optlist += "flintlock parts"

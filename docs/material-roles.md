@@ -51,8 +51,8 @@ Performance is bounded to 25%-125% of the standard part and lifetime to
 at all: too fragile for shocks, too soft for a gear, bearing or wheel, below
 the role's heat floor, flammable for a vessel, or zero in a property the role's performance depends on.
 
-Roles: edge, work_head (pick, axe and shovel heads), striker, handle, gear, bearing, spring (in a mechanism), limb
-(bow or crossbow), pipe, vessel, conductor, wheel. `ROLE_FRAME` and `ROLE_PLATE` are reserved ids rated by the vehicle
+Roles: edge, work_head (pick, axe and shovel heads), striker, handle, gear, shaft, bearing, spring (in a mechanism),
+belt (a drive belt, rope drive or chain; leather is its standard), limb (bow or crossbow), pipe, vessel, conductor, wheel. `ROLE_FRAME` and `ROLE_PLATE` are reserved ids rated by the vehicle
 materials work.
 
 Ratings are worked out once per role and material and cached. Materials and
@@ -106,6 +106,38 @@ catalog row to copy and the other materials. `python3 scripts/recipe_variants.py
 `config/crafting/material_recipes_global.txt` as ordinary `RECIPE:` rows, so
 every reader of the catalog keeps working. `tests/tool_materials` fails when
 the block is stale and pins each pair's speed.
+
+## Machine parts
+
+`code/modules/materials/machine_parts.dm` defines the standard parts a machine
+is built from. Each is one item type that takes a material name when created,
+like a knife:
+
+| Type | Role | By hand (tool) | Anvil, Parts kind | Parts mould |
+| --- | --- | --- | --- | --- |
+| `/obj/item/machine_part/gear` | `ROLE_GEAR` | wood, bone (chisel) | bronze, iron, steel | copper, bronze, brass, iron, steel |
+| `/obj/item/machine_part/shaft` | `ROLE_SHAFT` | wood (hatchet) | bronze, iron, steel | copper, bronze, brass, iron, steel |
+| `/obj/item/machine_part/bearing` | `ROLE_BEARING` | wood (chisel, 1 animal fat) | bronze, iron, steel | copper, bronze, brass, iron, steel |
+| `/obj/item/machine_part/spring` | `ROLE_SPRING` | - | bronze, iron, steel | - |
+| `/obj/item/machine_part/belt` | `ROLE_BELT` | rope, leather, cloth (knife) | bronze, iron, steel (a chain) | - |
+
+A part stores `part_role`, `part_material` (a name), `precise` (cut on a
+lathe; hand, forged and cast parts are rough) and `wear` (0 to
+`MACHINE_PART_WORN_OUT`). It holds no list and no material datum:
+`P.rating()` asks `part_rating()` for performance, lifetime and mass. Examine
+shows the percentages. These type paths are stable; machines and other work
+may name them.
+
+Hand rows are ordinary catalog rows whose last field is the material; their
+tools and the bearing's animal fat are in `config/craft_needs.json` (an input
+that is not a stack pays whole items). The anvil rows are in `anvil_recipes`
+under the kind "parts", offered for iron, steel and bronze sheets in every
+era. `/obj/item/weapon/clay/mold/parts` is fired like any mould, filled from a
+blacksmith pot and worked on an anvil, where the shape is picked.
+`anvil_recipe_offered()` asks `machine_part_refusal()` so no menu offers a part
+in a metal that cannot do its job (no lead or tin gears) or a shape that
+cannot be cast (springs, chains). Brass joined `anvil_mold_costs`, so brass
+pours into every mould at the bronze cost.
 
 ## Sparks
 

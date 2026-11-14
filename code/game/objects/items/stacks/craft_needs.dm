@@ -3,8 +3,9 @@
 // config/craft_needs.json maps a product's type path to
 // - "tools": tool qualities (names in craft_tool_qualities) the builder must
 //   have. A tool is reused, never consumed.
-// - "inputs": stack type path = amount per product, paid when the build
-//   completes. Nothing is taken if the build is cancelled.
+// - "inputs": item type path = amount per product, paid when the build
+//   completes: units of a stack, or whole items of any other type. Nothing is
+//   taken if the build is cancelled.
 // Tools and inputs count when held, worn in a real equipment slot or lying at
 // the builder's feet; containers are never searched. The same file feeds the
 // Crafting Atlas, and the guard below reports each line to the Crafting window.
@@ -77,6 +78,17 @@ var/global/list/craft_tool_qualities = list(
 			return S
 	return null
 
+// The loose items that pay for an input which is not a stack, or null when
+// there are too few.
+/proc/craft_need_items(item_type, amount, list/candidates)
+	var/list/found = list()
+	for (var/obj/item/I in candidates)
+		if (istype(I, item_type))
+			found += I
+			if (found.len >= amount)
+				return found
+	return null
+
 // One list("kind", "label", "met", "item", "amount") per requirement, in file
 // order, or null when the product needs nothing extra.
 /proc/craft_need_lines(mob/living/human/H, datum/stack_recipe/R, quantity = 1, obj/item/stack/paying = null)
@@ -92,11 +104,16 @@ var/global/list/craft_tool_qualities = list(
 		lines[++lines.len] = list("kind" = "tool", "label" = "a [quality_name] (held, worn or at your feet)", "met" = tool ? TRUE : FALSE, "item" = tool, "amount" = 0)
 	var/list/inputs = spec["inputs"]
 	for (var/type_text in inputs)
-		var/stack_type = text2path(type_text)
+		var/input_type = text2path(type_text)
 		var/amount = inputs[type_text] * max(1, quantity)
-		var/obj/item/stack/stack_name = stack_type
-		var/obj/item/stack/S = stack_type ? craft_need_stack(stack_type, amount, candidates, paying) : null
-		lines[++lines.len] = list("kind" = "input", "label" = "[amount] [stack_type ? lowertext(initial(stack_name.name)) : type_text] (held or at your feet)", "met" = S ? TRUE : FALSE, "item" = S, "amount" = amount)
+		var/obj/item/input_name = input_type
+		// A stack pays from one pile; anything else pays whole items.
+		var/found = null
+		if (ispath(input_type, /obj/item/stack))
+			found = craft_need_stack(input_type, amount, candidates, paying)
+		else if (input_type)
+			found = craft_need_items(input_type, amount, candidates)
+		lines[++lines.len] = list("kind" = "input", "label" = "[amount] [input_type ? lowertext(initial(input_name.name)) : type_text] (held or at your feet)", "met" = found ? TRUE : FALSE, "item" = found, "amount" = amount)
 	return lines
 
 // The message for the first thing missing, or null when everything is there.
@@ -110,9 +127,16 @@ var/global/list/craft_tool_qualities = list(
 // returned null, with no wait in between.
 /proc/craft_needs_pay(mob/living/human/H, datum/stack_recipe/R, quantity = 1, obj/item/stack/paying = null)
 	for (var/list/line in craft_need_lines(H, R, quantity, paying))
+		if (line["kind"] != "input")
+			continue
 		var/obj/item/stack/S = line["item"]
-		if (line["kind"] == "input" && istype(S))
+		if (istype(S))
 			S.use(line["amount"])
+		else if (islist(line["item"]))
+			for (var/obj/item/I in line["item"])
+				if (I.loc == H)
+					H.drop_from_inventory(I)
+				qdel(I)
 
 // Hides the recipe from "makeable only" lists and refuses at the start.
 // produce_recipe() rechecks with the real batch size before it pays.

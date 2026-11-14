@@ -137,6 +137,22 @@
 	lifetime_terms = list("wear" = 1)
 	min_firmness = PART_SOFT_FIRMNESS
 
+/datum/part_role/shaft
+	id = ROLE_SHAFT
+	name = "shaft"
+	performance_terms = list("firmness" = 0.2, "toughness" = 0.5)
+	lifetime_terms = list("toughness" = 0.5, "wear" = 0.5)
+	min_toughness = PART_FRAGILE_TOUGHNESS
+	min_firmness = PART_SOFT_FIRMNESS
+
+/datum/part_role/belt
+	id = ROLE_BELT
+	name = "drive belt"
+	standard = "leather"
+	performance_terms = list("toughness" = 0.5)
+	lifetime_terms = list("wear" = 1)
+	min_toughness = 20 // anything that snaps when bent round a pulley
+
 var/global/list/part_roles          // id -> /datum/part_role
 var/global/list/part_rating_cache = list() // "role|material" -> rating list, or 0 when refused
 
