@@ -60,7 +60,7 @@ function Card({ ui, row, working }: { ui: ScreenProps; row: Row; working: Data |
     </div>
     <h3>Needs</h3>
     <ul className="craft-needs">
-      <Need met={batches > 0}>{text(row.cost)} <small>you have {text(data.amount)}</small></Need>
+      <Need met={batches > 0}>{text(row.cost)} <small>{data.where && text(data.where) !== 'in your hand' ? text(data.where) + ': ' : 'you have '}{text(data.amount)}</small></Need>
       {row.state === 'locked' && <Need met={false}>{text(row.why)}</Need>}
       {row.state === 'missing' && batches > 0 && <Need met={false}>{text(row.why)}</Need>}
       {row.state === 'ready' && <Need met>Everything else is in place</Need>}
@@ -120,8 +120,14 @@ export function CraftingWindow(ui: ScreenProps) {
     <div className="craft-head">
       <Sprite image={data.image} />
       <h2>{text(data.material)}</h2>
-      <span className="craft-amount">{text(data.amount)} in your hand</span>
+      <span className="craft-amount">{text(data.amount)} {text(data.where) || 'in your hand'}</span>
     </div>
+    {!!data.reach && list(data.sources).length > 1 && <div className="craft-reach" role="group" aria-label="Materials within reach">
+      <span className="craft-strip-label">In reach</span>
+      {list(data.sources).map((source, i) => <button key={i} type="button" className={'craft-chip' + (source.current ? ' craft-chip-selected' : '')} aria-pressed={!!source.current}
+        disabled={!ui.interactive || !!working} onClick={() => { if (!source.current) ui.act('source', { source: text(source.key) }); }}>
+        <Sprite image={source.image} /><span>{text(source.name)}</span><small>{text(source.amount)} {text(source.where)}</small></button>)}
+    </div>}
     <div className="craft-columns">
       <div className="craft-left">
         <div className="craft-tools-bar">

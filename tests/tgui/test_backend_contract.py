@@ -160,7 +160,7 @@ class BackendContract(unittest.TestCase):
         branch = re.search(r'if \("crafting_window\.tmpl"\)\s+return list\(([^\n]+)\)', DM)
         self.assertIsNotNone(branch, 'Crafting window buttons need a transport allowlist')
         allowed = set(re.findall(r'"([^"\n]+)"', branch.group(1)))
-        self.assertEqual(allowed, {'make', 'makeable_only', 'images', 'atlas', 'pin'})
+        self.assertEqual(allowed, {'make', 'makeable_only', 'images', 'atlas', 'pin', 'source'})
         self.assertEqual(set(re.findall(r'href_list\["([^"\n]+)"\]', topic)), allowed | {'quantity'})
         self.assertEqual(set(re.findall(r"ui\.act\('([^'\n]+)'", frontend)), allowed)
         transport = DM.split('/datum/nanoui/tgui/Topic', 1)[1]
@@ -216,6 +216,19 @@ class BackendContract(unittest.TestCase):
         self.assertGreater(len(found), 1500)
         self.assertLess(found.count('Other') / len(found), 0.10)
         self.assertIn('file2text("config/crafting_purposes.json")', source)
+
+    def test_crafting_window_reach_mode_only_uses_materials_the_server_sees(self):
+        source = (ROOT / 'code/game/objects/items/stacks/crafting_window.dm').read_text()
+        valid = source.split('/datum/crafting_window/proc/still_valid', 1)[1].split('/mob/living/human/proc/crafting_stacks_within_reach', 1)[0]
+        self.assertLess(valid.index('if (reach)'), valid.index('source.crafting_stack_accessible(H)'))
+        topic = source.split('/datum/crafting_window/Topic', 1)[1]
+        switch = topic.split('if (href_list["source"])', 1)[1].split('if (href_list["pin"])', 1)[0]
+        # A switch is refused mid-craft and outside reach mode, and the named
+        # stack must be one the server finds next to the player right now.
+        self.assertLess(switch.index('!reach || working'), switch.index('locate(href_list["source"])'))
+        self.assertIn('picked in H.crafting_stacks_within_reach()', switch)
+        shown = source.split('/obj/item/stack/proc/crafting_window_shown', 1)[1].split('/datum/crafting_window/ui_interact', 1)[0]
+        self.assertIn('reach ? !crafting_stack_accessible(H) : (loc != H || H.get_active_hand() != src)', shown)
 
     def test_crafting_window_falls_back_to_the_classic_list(self):
         source = (ROOT / 'code/game/objects/items/stacks/crafting_window.dm').read_text()
