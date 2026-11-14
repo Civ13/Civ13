@@ -125,3 +125,24 @@ var/global/list/religious_work_rules = list(
 	if (H.original_job_title == "Ant tribesman" && (findtext(R.title, "wall") || findtext(R.title, "door")))
 		return "<span class = 'danger'>You don't know how to make this.</span>"
 	return null
+
+// One requirement line for a crafting screen: list("kind", "label", "met").
+// The default reports only an unmet guard, read from refusal() at the start
+// phase without building anything; a guard may override to also list a met one.
+/datum/craft_guard/proc/describe(mob/living/human/H, datum/stack_recipe/R)
+	var/message = refusal(H, R, CRAFT_GUARD_START)
+	if (isnull(message))
+		return null
+	var/label = strip_html_properly(message)
+	return list("kind" = "[type]", "label" = label ? label : "Not available to you here.", "met" = FALSE)
+
+// Every requirement the guards report for this recipe. Nothing is spent or built.
+/proc/craft_recipe_requirements(mob/living/human/H, datum/stack_recipe/R)
+	var/list/found = list()
+	if (!R)
+		return found
+	for (var/datum/craft_guard/G in craft_guard_list())
+		var/list/line = G.describe(H, R)
+		if (line)
+			found[++found.len] = line
+	return found
