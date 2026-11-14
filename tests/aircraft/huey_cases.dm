@@ -153,7 +153,7 @@
 
 	// Leave the fixture as the plane cases expect it: the airframe, its seats,
 	// skids, engine, tank and the passenger gone, and plain turfs again.
-	var/list/leftovers = list(A) | A.components
+	var/list/leftovers = list(A) | A.components | A.wheels
 	for (var/z = 1, z <= 2, z++)
 		for (var/turf/T in block(locate(11, 30, z), locate(20, 56, z)))
 			for (var/atom/movable/AM in T)

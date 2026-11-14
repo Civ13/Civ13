@@ -236,7 +236,7 @@ var/global/list/aircraft_light_plane_layout = list(
 	A.link_fuel_tanks()
 	for (var/obj/structure/vehicleparts/movement/W in parts)
 		var/obj/structure/vehicleparts/frame/F = locate() in W.loc
-		W.MouseDrop(F)
+		A.mount_wheel(W, F)
 	for (var/dx = 0, dx < size, dx++)
 		for (var/dy = 0, dy < size, dy++)
 			var/turf/T = locate(origin.x + dx, origin.y + dy, origin.z)
@@ -251,6 +251,10 @@ var/global/list/aircraft_light_plane_layout = list(
 	for (var/obj/O in parts)
 		O.update_icon()
 	return A
+
+// Planes take their wheels on the four corner sections, as cars do.
+/obj/structure/vehicleparts/axis/aircraft/proc/mount_wheel(obj/structure/vehicleparts/movement/W, obj/structure/vehicleparts/frame/F)
+	W.MouseDrop(F)
 
 /proc/build_light_plane(turf/origin)
 	return build_aircraft(origin, /obj/structure/vehicleparts/axis/aircraft/light_plane, aircraft_light_plane_layout, 3, 4)

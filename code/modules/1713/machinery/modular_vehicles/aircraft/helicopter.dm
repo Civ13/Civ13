@@ -357,6 +357,18 @@ var/global/list/aircraft_huey_layout = list(
 	"3,7" = list(/obj/structure/vehicleparts/frame/car/aircraft/huey/tail/fin/left),
 	)
 
+// A helicopter's skids sit under the cabin, not on the corner sections a
+// car's wheels need, so they fix to whichever section they stand on.
+/obj/structure/vehicleparts/axis/aircraft/helicopter/mount_wheel(obj/structure/vehicleparts/movement/W, obj/structure/vehicleparts/frame/F)
+	if (!F || F.axis != src || F.mwheel)
+		return
+	W.dir = dir
+	wheels += W
+	W.axis = src
+	W.connected = F
+	F.mwheel = W
+	W.forceMove(F)
+
 /proc/build_huey(turf/origin)
 	return build_aircraft(origin, /obj/structure/vehicleparts/axis/aircraft/helicopter/huey, aircraft_huey_layout, 3, 7)
 
