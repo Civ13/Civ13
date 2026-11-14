@@ -63,7 +63,7 @@ var/global/list/drawing_holders = list() // papers and books with drawings
 	return TRUE
 
 // Every drawing on a page or book, for the reader's browser.
-/proc/drawings_html(atom/A)
+/proc/drawings_html(atom/A, mob/reader = null)
 	var/list/items = drawing_list(A)
 	if (!length(items))
 		return ""
@@ -75,7 +75,7 @@ var/global/list/drawing_holders = list() // papers and books with drawings
 			continue
 		i++
 		var/k = D["w"] >= 64 ? 4 : 6
-		html += "<div style='display:inline-block;margin:6px;text-align:center;vertical-align:top'><canvas id='drawing[i]' style='image-rendering:pixelated;border:1px solid #999'></canvas><br><i>[html_encode(D["title"])]</i></div>"
+		html += "<div style='display:inline-block;margin:6px;text-align:center;vertical-align:top'><canvas id='drawing[i]' style='image-rendering:pixelated;border:1px solid #999'></canvas><br><i>[html_encode(D["title"])]</i>[painting_code_allowed(reader, D["ckey"]) ? painting_code_box(painting_design_code(D["w"], D["h"], D["palette"], D["data"])) : ""]</div>"
 		calls += "drawArt(document.getElementById('drawing[i]'),[D["w"]],[D["h"]],'[D["palette"]]'.split(','),unpackArt('[D["data"]]',[D["w"] * D["h"]]),[k]);"
 	if (!i)
 		return ""
@@ -86,7 +86,7 @@ var/global/list/drawing_holders = list() // papers and books with drawings
 /obj/item/weapon/book/proc/show_drawings(mob/user)
 	if (!length(drawings) || !user || !user.client)
 		return
-	show_browse(user, "<html><head><meta charset='utf-8'><title>Pictures in [html_encode(title || name)]</title></head><body style='background:#f4efe1;font-family:Georgia,serif'>[drawings_html(src)]</body></html>", "window=book_pictures;size=420x[min(700, 160 + 280 * round((drawings.len + 1) / 2))]")
+	show_browse(user, "<html><head><meta charset='utf-8'><title>Pictures in [html_encode(title || name)]</title></head><body style='background:#f4efe1;font-family:Georgia,serif'>[drawings_html(src, user)]</body></html>", "window=book_pictures;size=420x[min(700, 160 + 280 * round((drawings.len + 1) / 2))]")
 
 // The printing press and the mail copy a page's drawings with it.
 /obj/item/weapon/paper/proc/copy_drawings_from(obj/item/weapon/paper/source)
@@ -178,6 +178,8 @@ var/global/list/drawing_holders = list() // papers and books with drawings
 /obj/item/canvas/sketch/on_finished(mob/user)
 	painting_registry -= src
 	var/list/D = list("w" = canvas_w, "h" = canvas_h, "palette" = palette, "data" = paint_data, "title" = title, "by" = author_name, "ckey" = author_ckey, "date" = painted_at)
+	if (imported_design)
+		D["imported"] = 1
 	if (QDELETED(target) || !drawing_add(target, D))
 		to_chat(user, SPAN_WARNING("The picture would not fit on \the [target]."))
 	else

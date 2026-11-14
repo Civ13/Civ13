@@ -408,7 +408,7 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 	var/can_explode = FALSE
 	if (!reagents)
 		return ..(proj, def_zone)
-	if (reagents.has_reagent("gasoline",10) || reagents.has_reagent("diesel",30) || reagents.has_reagent("biodiesel",30) || reagents.has_reagent("ethanol",10) || reagents.has_reagent("petroleum",40) || reagents.has_reagent("gunpowder",30))
+	if (liquid_fuel_can_explode(reagents) || reagents.has_reagent("gunpowder",30))
 		can_explode = TRUE
 	if (!can_explode)
 		if (prob(30))

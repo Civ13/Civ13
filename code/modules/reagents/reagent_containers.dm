@@ -156,13 +156,7 @@
 		F = new/obj/effect/flooding(TGT)
 		F.flood_level = min(3, watercount)
 		F.update_icon()
-	watercount = reagents.get_reagent_amount("petroleum") * spill_amount / reagents.total_volume //using now for count oil effect //TO DO: different oil types
-	watercount += reagents.get_reagent_amount("gasoline") * spill_amount / reagents.total_volume
-	watercount += reagents.get_reagent_amount("diesel") * spill_amount / reagents.total_volume / 2
-	watercount += reagents.get_reagent_amount("biodiesel") * spill_amount / reagents.total_volume / 2
-	watercount += reagents.get_reagent_amount("olive_oil") * spill_amount / reagents.total_volume / 3
-	watercount += reagents.get_reagent_amount("fat_oil") * spill_amount / reagents.total_volume / 3
-	watercount = round(watercount)
+	watercount = round(liquid_fuel_slick_units(reagents, spill_amount))
 	var/obj/effect/decal/cleanable/blood/oil/O
 	if (watercount > 0)
 		O = new/obj/effect/decal/cleanable/blood/oil(TGT)

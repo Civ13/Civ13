@@ -168,6 +168,10 @@ the nearest listed ancestor applies.
 | `/obj/structure/sawmill/large` | gears, shaft, bearing | wood |
 | `/obj/structure/sawmill/powered` | gears, shaft, bearing | iron; needs precision |
 | `/obj/structure/loom` | shaft, bearing | wood |
+| `/obj/structure/printingpress` | shaft (the screw) | wood |
+| `/obj/structure/civ_generator/waterwheel` | shaft, bearing | wood |
+| `/obj/structure/civ_generator/wind/charger` | gears, shaft, bearing | iron; needs precision |
+| `/obj/structure/civ_generator/wind/turbine` | gears, shaft, bearing | steel; needs precision |
 
 A machine built the usual way stores nothing and runs at 100%. Two values on
 `/obj/structure` hold everything else, so no machine carries a list:
@@ -183,6 +187,7 @@ machine_work_refusal(M, user) // TRUE: a part is worn out, or a failing part jam
 machine_wear(M, jobs)         // charge wear; a part lasts by its material's lifetime rating
 machine_install_part(M, P, H) // fit a part item; a part someone fitted earlier comes back out
 machine_examine_parts(M, user)
+machine_drop_fitted_parts(M)  // on dismantling: hand back the fitted parts with their wear
 ```
 
 A standard part lasts `MACHINE_PART_BASE_LIFE` (400) jobs in its own design.
@@ -197,6 +202,19 @@ before work, scale its time or progress with `machine_work_time()` or
 `machine_performance()`, call `machine_wear()` when a job finishes, and pass
 part items to `machine_install_part()`. The mills, saw mills and loom do this
 by wrapping their own procs in `machine_slots.dm`.
+
+The printing press charges its screw one job a finished print, and its print
+times go through `machine_work_time()`. A wind or water generator multiplies
+`rated_output()` by `machine_performance()`, so a worn-out part means no
+output, and never jams. It runs every second, so it is charged wear at a 1%
+chance a second, a tenth of a job each time: a standard set lasts about 110
+hours of output (`MACHINE_RUNNING_JOB_SECONDS`).
+
+Taking a machine apart with a hammer (`hammer_action()`, the plain structure
+dismantle and the press's own) calls `machine_drop_fitted_parts()`: parts
+someone fitted come back with their wear, the built-in ones and worn-out ones
+do not. The standing clock and hand-held machines such as crossbows have no
+slots; slots live on `/obj/structure` only.
 
 ## Sparks
 

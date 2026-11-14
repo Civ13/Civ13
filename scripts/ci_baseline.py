@@ -919,6 +919,8 @@ SUITES = {
         'paths': ('tests/resource_stock/', 'code/_helpers/resource_stock.dm'), 'shared_paths': (
             'code/game/objects/structures/rocks.dm', 'code/modules/1713/obsidian.dm',
             'code/game/objects/structures/ocean_fishing.dm')},
+    'liquid_fuels': {'files': ('tests/liquid_fuels/test_liquid_fuels.py',),
+        'paths': ('tests/liquid_fuels/', 'code/_helpers/liquid_fuels.dm', 'code/__defines/liquid_fuels.dm'), 'shared_paths': ()},
     'water_turfs': {'files': ('tests/water_turfs/test_water_turfs.py',),
         'paths': ('tests/water_turfs/', 'code/_helpers/water_turfs.dm'), 'shared_paths': ()},
     'faction_hud': {'files': ('tests/faction_hud/test_faction_hud.py',),
@@ -2142,6 +2144,10 @@ SUITES = {
     'paintings': {'files': ('tests/paintings/test_paintings.py',),
         'paths': ('tests/paintings/', 'code/modules/paintings/', 'icons/obj/paintings.dmi', 'icons/mob/paintings.dmi', 'icons/obj/paintings_gallery.dmi',
                   'tests/sprites/create_paintings.py')},
+    'design_codes': {'files': ('tests/design_codes/test_design_codes.py',),
+        'paths': ('tests/design_codes/', 'code/modules/paintings/design_codes.dm'), 'shared_paths': (
+            'code/modules/paintings/', 'code/game/objects/structures/sign_flags.dm',
+            'code/modules/1713/structures.dm', 'code/modules/1713/dressmaking.dm')},
     'herb_garden': {'files': ('tests/herb_garden/test_herb_garden.py',),
         'paths': ('tests/herb_garden/', 'code/modules/1713/herb_garden.dm', 'code/modules/ecology/flora_regrowth.dm',
                   'code/modules/ecology/foraging.dm', 'icons/farming/plants.dmi', 'icons/farming/seeds.dmi',

@@ -1,7 +1,8 @@
 """Part slots on machines (docs/material-roles.md, "Machine slots").
 
-code/modules/materials/machine_slots.dm gives the mills, the saw mills and
-the loom wearing slots for the standard parts.
+code/modules/materials/machine_slots.dm gives the mills, the saw mills, the
+loom, the printing press and the wind and water generators wearing slots for
+the standard parts.
 
 - No machine has more than four slots: the packed wear number holds four.
 - Every slot names a real part type and a standard material that can do the
@@ -9,7 +10,9 @@ the loom wearing slots for the standard parts.
 - The packed number round-trips every wear level in every slot.
 - The speed, refusal, wear, examine and fitting hooks are all in place, and
   a slotted machine keeps no list of its own.
-- Only a part someone fitted comes back out when it is replaced.
+- Only a part someone fitted comes back out when it is replaced, and the
+  same parts come back when the machine is taken apart.
+- A generator's output follows its parts and running wears them slowly.
 """
 from pathlib import Path
 import importlib.util
@@ -40,7 +43,13 @@ EXPECTED = {
     '/obj/structure/sawmill/large': {'gears': 'wood', 'shaft': 'wood', 'bearing': 'wood'},
     '/obj/structure/sawmill/powered': {'gears': 'iron', 'shaft': 'iron', 'bearing': 'iron'},
     '/obj/structure/loom': {'shaft': 'wood', 'bearing': 'wood'},
+    '/obj/structure/printingpress': {'shaft': 'wood'},
+    '/obj/structure/civ_generator/waterwheel': {'shaft': 'wood', 'bearing': 'wood'},
+    '/obj/structure/civ_generator/wind/charger': {'gears': 'iron', 'shaft': 'iron', 'bearing': 'iron'},
+    '/obj/structure/civ_generator/wind/turbine': {'gears': 'steel', 'shaft': 'steel', 'bearing': 'steel'},
 }
+PRINTING = (ROOT / 'code/modules/research_tree/book_printing.dm').read_text(encoding='utf-8', errors='ignore')
+STRUCTURES = (ROOT / 'code/game/objects/structures.dm').read_text(encoding='utf-8', errors='ignore')
 
 
 def number(name):
@@ -120,9 +129,9 @@ class MachineSlots(unittest.TestCase):
     def test_precision_machines(self):
         listed = re.findall(r'^\t(/obj/structure/[\w/]+),$',
                             SOURCE[SOURCE.index('var/global/list/machine_precision_types'):SOURCE.index('var/global/list/machine_slot_cache')], re.M)
-        self.assertEqual(listed, ['/obj/structure/sawmill/powered'])
+        self.assertEqual(listed, ['/obj/structure/sawmill/powered', '/obj/structure/civ_generator/wind'])
         for machine in listed:
-            self.assertIn(machine, EXPECTED)
+            self.assertTrue(any(known == machine or known.startswith(machine + '/') for known in EXPECTED), machine)
 
     def test_wear_follows_the_material(self):
         wear = proc('/proc/machine_wear(')
@@ -150,6 +159,45 @@ class MachineSlots(unittest.TestCase):
         self.assertEqual(PRODUCTION.count('work_time_amount = machine_work_time(src, work_time_amount)'), 2)
         self.assertEqual(PRODUCTION.count(') * machine_performance(src)'), 1)
         self.assertLess(DME.index('modules\\1713\\production.dm'), DME.index('modules\\materials\\machine_slots.dm'))
+
+    def test_fitted_parts_come_back_when_a_machine_is_taken_apart(self):
+        drop = proc('/proc/machine_drop_fitted_parts(')
+        # nothing for a usual build, the built-in part or a worn-out one
+        self.assertIn('if (!slots || !M.part_key)\n\t\treturn', drop)
+        self.assertIn('if (!T || !fill[3] || wear >= MACHINE_PART_WORN_OUT)\n\t\t\tcontinue', drop)
+        self.assertIn('out.precise = fill[2]\n\t\tout.wear = wear', drop)
+        # a second call hands out nothing
+        self.assertIn('M.part_key = null', drop)
+        # the three ways a structure is taken apart, each before it is deleted
+        for text in (PRODUCTION[PRODUCTION.index('/obj/structure/proc/hammer_action('):PRODUCTION.index('/obj/structure/proc/hammer_action(') + 3000],
+                     PRODUCTION[PRODUCTION.index('/obj/structure/printingpress/attackby('):PRODUCTION.index('/obj/structure/printingpress/attack_hand(')],
+                     STRUCTURES):
+            self.assertEqual(text.count('machine_drop_fitted_parts(src)'), 1)
+            self.assertLess(text.index('machine_drop_fitted_parts(src)'), text.index('qdel(src)', text.index('machine_drop_fitted_parts(src)')))
+
+    def test_the_press_is_hooked(self):
+        self.assertIn('/obj/structure/printingpress/examine(mob/user, distance = -1)\n\t. = ..(user, distance)\n\tmachine_examine_parts(src, user)', SOURCE)
+        self.assertRegex(SOURCE, r'/obj/structure/printingpress/attackby\([^\n]*\n\tif \(istype\(W, /obj/item/machine_part\) && machine_install_part\(src, W, user\)\)\n\t\treturn\n\treturn \.\.\(W, user\)')
+        hand = proc('/obj/structure/printingpress/attack_hand(')
+        # a press already at work is left alone; an idle loaded one may refuse
+        self.assertLess(hand.index('if (copying)\n\t\treturn ..(H)'), hand.index('machine_work_refusal(src, H)'))
+        self.assertIn('if (loaded && !QDELETED(src) && !length(copy) && world.time - started >= 50)\n\t\tmachine_wear(src)', hand)
+        self.assertEqual(PRODUCTION.count('do_after(H, machine_work_time(src, spawntimer), src)'), 1)
+        self.assertEqual(PRINTING.count('do_after(H, machine_work_time(src, PRESS_PRINT_TIME), src)'), 1)
+
+    def test_generators_follow_their_parts(self):
+        for machine in ('/obj/structure/civ_generator/wind', '/obj/structure/civ_generator/waterwheel'):
+            self.assertIn('%s/rated_output()\n\treturn round(..() * machine_performance(src), 0.1)' % machine, SOURCE)
+        self.assertIn('/obj/structure/civ_generator/examine(mob/user)\n\t..(user)\n\tmachine_examine_parts(src, user)', SOURCE)
+        settle = proc('/obj/structure/civ_generator/settle_generation(')
+        self.assertIn('if (output_power > 0 && prob(MACHINE_RUNNING_WEAR_CHANCE))', settle)
+        self.assertIn('machine_wear(src, 100 / (MACHINE_RUNNING_WEAR_CHANCE * MACHINE_RUNNING_JOB_SECONDS))', settle)
+        # a standard set lasts days of running, not minutes
+        hours = number('MACHINE_PART_BASE_LIFE') * number('MACHINE_RUNNING_JOB_SECONDS') / 3600
+        self.assertGreaterEqual(hours, 48)
+        # the wrappers must come after the generators they wrap
+        for earlier in ('modules\\1713\\machinery\\modern_generation.dm', 'modules\\1713\\machinery\\renewable_generation.dm'):
+            self.assertLess(DME.index(earlier), DME.index('modules\\materials\\machine_slots.dm'), earlier)
 
 
 if __name__ == '__main__':
