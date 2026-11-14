@@ -88,6 +88,9 @@
 	if (axis)
 		if (user in range(1,src))
 			to_chat(user, "<span class='notice'>Current Weight: <b>[axis.get_weight()]</b>.</span>")
+			var/load_text = axis.uses_load_factor() ? axis.load_description() : null
+			if (load_text)
+				to_chat(user, "<span class='notice'>[load_text]</span>")
 
 /obj/structure/vehicleparts/frame/MouseDrop(var/obj/structure/vehicleparts/frame/VP)
 	if (istype(VP, /obj/structure/vehicleparts/frame) && VP.axis && !axis)

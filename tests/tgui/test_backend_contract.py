@@ -1,5 +1,6 @@
 """Bounded source-contract checks. Not a DM execution or gameplay substitute."""
 from pathlib import Path
+import json
 import re
 import unittest
 
@@ -159,7 +160,7 @@ class BackendContract(unittest.TestCase):
         branch = re.search(r'if \("crafting_window\.tmpl"\)\s+return list\(([^\n]+)\)', DM)
         self.assertIsNotNone(branch, 'Crafting window buttons need a transport allowlist')
         allowed = set(re.findall(r'"([^"\n]+)"', branch.group(1)))
-        self.assertEqual(allowed, {'make', 'makeable_only', 'images', 'atlas'})
+        self.assertEqual(allowed, {'make', 'makeable_only', 'images', 'atlas', 'pin'})
         self.assertEqual(set(re.findall(r'href_list\["([^"\n]+)"\]', topic)), allowed | {'quantity'})
         self.assertEqual(set(re.findall(r"ui\.act\('([^'\n]+)'", frontend)), allowed)
         transport = DM.split('/datum/nanoui/tgui/Topic', 1)[1]
@@ -184,6 +185,37 @@ class BackendContract(unittest.TestCase):
         for action in ('.use(', 'new R.result_type', 'recipes.Cut(', 'recipes.Remove(', 'qdel('):
             self.assertNotIn(action, source)
         self.assertEqual(source.count('produce_recipe('), 3)  # two comments and the one call
+
+    def test_crafting_window_pins_and_purposes_only_mark_rows(self):
+        source = (ROOT / 'code/game/objects/items/stacks/crafting_window.dm').read_text()
+        topic = source.split('/datum/crafting_window/Topic', 1)[1]
+        pin = topic.split('if (href_list["pin"])', 1)[1].split('if (href_list["make"])', 1)[0]
+        # A pin names a row the same way a craft does, is capped, and never reaches the craft proc.
+        self.assertLess(pin.index('find_recipe(href_list["pin"])'), pin.index('pinned += pin_key'))
+        self.assertIn('pinned.len < CRAFTING_WINDOW_PIN_LIMIT', pin)
+        self.assertNotIn('produce_recipe', pin)
+        saving = (ROOT / 'code/modules/client/preferencesSQLite/preferences_saving&loading&del.dm').read_text()
+        self.assertIn('"craft_pinned"', saving)
+        # Every purpose a rule names is a tab the window can show, and most
+        # recipes land somewhere better than Other.
+        rules = json.loads((ROOT / 'config/crafting_purposes.json').read_text())
+        order = rules['order']
+        self.assertEqual(order[-1], 'Other')
+        self.assertEqual(len(order), len(set(order)))
+        named = set(rules['categories'].values()) | {rule[1] for rule in rules['types']}
+        self.assertLessEqual(named, set(order))
+        self.assertTrue(all(key == key.strip().lower() for key in rules['categories']))
+        def purpose(path, category):
+            category = category.strip().lower()
+            if category in rules['categories']:
+                return rules['categories'][category]
+            return next((name for prefix, name in rules['types'] if path == prefix or path.startswith(prefix + '/')), 'Other')
+        found = [purpose(fields[2], fields[7]) for fields in (line.split(',') for line in
+                 (ROOT / 'config/crafting/material_recipes_global.txt').read_text(encoding='utf-8', errors='replace').splitlines()
+                 if line.startswith('RECIPE')) if len(fields) > 7]
+        self.assertGreater(len(found), 1500)
+        self.assertLess(found.count('Other') / len(found), 0.10)
+        self.assertIn('file2text("config/crafting_purposes.json")', source)
 
     def test_crafting_window_falls_back_to_the_classic_list(self):
         source = (ROOT / 'code/game/objects/items/stacks/crafting_window.dm').read_text()

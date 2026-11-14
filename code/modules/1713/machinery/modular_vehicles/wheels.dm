@@ -35,7 +35,7 @@
 	if (!control.axis.key_access(mob)) return FALSE
 	if (world.time <= lastdirchange)
 		return FALSE
-	lastdirchange = world.time + control.axis.turntimer
+	lastdirchange = world.time + control.axis.loaded_turntimer()
 	if (control.axis.moving == FALSE || control.axis.currentspeed == 0)
 		return FALSE
 	for(var/obj/effect/pseudovehicle/O in control.axis.components)
@@ -117,8 +117,8 @@
 	if (control.axis.currentspeed < 0)
 		control.axis.currentspeed = 0
 	control.axis.currentspeed++
-	if (control.axis.currentspeed>control.axis.speeds)
-		control.axis.currentspeed = control.axis.speeds
+	if (control.axis.currentspeed>control.axis.top_gear())
+		control.axis.currentspeed = control.axis.top_gear()
 
 	else
 		var/spd = control.axis.get_speed()
@@ -133,7 +133,10 @@
 			return
 		else
 			control.axis.vehicle_m_delay = spd
-			if (control.axis.currentspeed < control.axis.speedlist.len+1)
+			if (control.axis.currentspeed > control.axis.speeds)
+				to_chat(H, "The light vehicle has power to spare: you shift into an extra top gear.")
+				playsound(loc, 'sound/effects/lever.ogg',40, TRUE)
+			else if (control.axis.currentspeed < control.axis.speedlist.len+1)
 				to_chat(H, "You increase the speed.")
 				playsound(loc, 'sound/effects/lever.ogg',40, TRUE)
 			return

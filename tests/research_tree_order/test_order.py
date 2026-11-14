@@ -27,6 +27,14 @@ def load():
     return nodes, recipes
 
 
+def milestones_by_era(nodes):
+    found = {}
+    for node_id, node in nodes.items():
+        if node["milestone"]:
+            found.setdefault(node["era"], set()).add(node_id)
+    return found
+
+
 def ancestors(nodes, node_id, seen=None):
     seen = set() if seen is None else seen
     for req in nodes[node_id]["prereqs"]:
@@ -140,12 +148,32 @@ class Bypasses(unittest.TestCase):
                      "archery", "field_defenses", "padded_armor", "herbalism", "hygiene", "law_order"):
             self.assertEqual(self.nodes[root]["prereqs"], [], root)
 
-    def test_milestones_keep_their_eras(self):
-        milestones = {n["era"]: i for i, n in self.nodes.items() if n["milestone"]}
+    def test_milestones_and_their_peaceful_twins(self):
+        milestones = {}
+        for node_id, node in self.nodes.items():
+            if node["milestone"]:
+                milestones.setdefault(node["era"], set()).add(node_id)
         self.assertEqual(milestones, {
-            1: "bronze_working", 2: "iron_smithing", 3: "gunpowder", 4: "steam_power", 5: "electricity",
-            6: "mechanized_war", 7: "nuclear_power", 8: "digital_computing", 9: "digital_networks"})
+            1: {"bronze_working"}, 2: {"iron_smithing"}, 3: {"gunpowder", "printing_currency"},
+            4: {"steam_power"}, 5: {"electricity"}, 6: {"mechanized_war", "powered_flight"},
+            7: {"nuclear_power"}, 8: {"digital_computing"}, 9: {"digital_networks"}})
 
+    def test_weapon_eras_can_be_opened_without_weapons(self):
+        for era, twins in milestones_by_era(self.nodes).items():
+            civil = [i for i in twins if self.nodes[i]["category"] not in MILITARY]
+            self.assertTrue(civil, "era %d opens only through weapons" % era)
+            for node_id in civil:
+                for req in ancestors(self.nodes, node_id):
+                    self.assertNotIn(self.nodes[req]["category"], MILITARY, node_id)
+
+    def test_milestone_proofs_are_taught_by_earlier_groundwork(self):
+        # A proof item must not be gated on the milestone it proves.
+        text = (ROOT / "code/modules/research_tree/research_node.dm").read_text(encoding="utf-8-sig")
+        for node_id, proof in re.findall(r'research_node\("(\w+)", [^\n]*RESEARCH_MODE_PROTOTYPE, [^\n]*?, \d+, (/obj/[\w/]+)\)', text):
+            owner = re.search(r'^\s*"%s"\s*=\s*"(\w+)"' % re.escape(proof), text, re.M)
+            if owner:
+                self.assertNotEqual(owner[1], node_id, proof)
+                self.assertLessEqual(self.nodes[owner[1]]["era"], self.nodes[node_id]["era"], proof)
 
 if __name__ == "__main__":
     unittest.main()

@@ -9,6 +9,11 @@
 // - Field study: take paper, parchment or a book to something that already
 //   exists and that the subject makes (a building, a machine, a tool...) and
 //   study it. Each kind of thing counts once per book.
+// - Trial and error (Val, 2026-11-14): a book can be set to attempt a subject
+//   from its very first page. Early attempts mostly fail: the materials are
+//   used, a ruined piece is left, and the lesson is written into the book.
+//   The chance improves with the chapter, with each failure on that thing and
+//   with scholarship, and reaches certainty at the old one-third mark.
 // Only on book-research worlds. Capstones still need their demonstration or
 // prototype part (demonstrations.dm).
 // ============================================================
@@ -23,10 +28,32 @@
 #define FIELD_STUDY_MAX 3
 #define FIELD_STUDY_RANGE 1
 #define FIELD_STUDY_TIME 300
+// Trial and error: chance of a working piece from an empty chapter (percent),
+// what each earlier failure on the same thing adds, and the most scholarship
+// above or below the requirement can add or take away.
+#define TRIAL_BASE_CHANCE 15
+#define TRIAL_FAILURE_STEP 10
+#define TRIAL_SKILL_BONUS 15
+#define TRIAL_SKILL_PENALTY 10
+// Share of the chapter a failure's lesson writes, and how many count per book.
+#define TRIAL_LESSON_POINTS 0.04
+#define TRIAL_LESSON_MAX 5
+// Working pieces one character can make of a subject before its book is a
+// third written, across every book they carry.
+#define TRIAL_CHARACTER_MAX 5
+// From this era tier on, a failure can hurt (percent of failures).
+#define TRIAL_MISHAP_TIER 4
+#define TRIAL_MISHAP_CHANCE 25
+#define TRIAL_RECORD_LIMIT 400
 
 /obj/item/weapon/book
 	var/research_prototypes = "" // "node=count;node=count" prototypes made from this book
 	var/research_fieldstudies = "" // "node>/type/path;..." kinds of things studied into this book
+	var/research_lessons = "" // "node=count;node=count" lessons from failed attempts written into this book
+	var/trial_subject = null // the subject this book's carrier is attempting by trial and error
+
+/mob/living/human
+	var/list/trial_work = null // "node" => early working pieces, "node>path" => failures on that thing, "node!path" => made it work once
 
 /obj/item/weapon/paper
 	var/field_study_node = null // subject these field notes are about
@@ -59,12 +86,18 @@
 	var/datum/research_node/N = get_research_node(node_id)
 	if (!N)
 		return null
+	var/obj/item/weapon/book/trial = null
 	for (var/obj/item/weapon/book/B in get_demonstration_carried())
 		if (istype(B, /obj/item/weapon/book/research/tree_book) || B.has_research_chapter(node_id))
 			continue
-		if (B.research_ticks(node_id) >= N.cost_ticks * SUBJECT_PROTO_SHARE && B.prototypes_made(node_id) < SUBJECT_PROTO_MAX)
+		if (B.prototypes_made(node_id) >= SUBJECT_PROTO_MAX)
+			continue
+		if (B.research_ticks(node_id) >= N.cost_ticks * SUBJECT_PROTO_SHARE)
 			return B
-	return null
+		// Not a third written yet: only by trial and error (below).
+		if (!trial && B.trial_subject == node_id && trial_count(node_id) < TRIAL_CHARACTER_MAX)
+			trial = B
+	return trial
 
 // The subject a prototype of result_path_string would be for, if H may make one.
 /proc/subject_prototype_node(mob/living/human/H, result_path_string)
@@ -88,12 +121,215 @@
 		return 0
 	var/datum/research_node/N = get_research_node(node_id)
 	var/obj/item/weapon/book/B = H.prototype_book(node_id)
+	// Made before the chapter is a third written: trial and error paid off.
+	if (B.research_ticks(node_id) < N.cost_ticks * SUBJECT_PROTO_SHARE)
+		H.note_trial_success(node_id, result_path_string)
 	B.add_prototype_made(node_id)
 	var/points = max(1, round(N.cost_ticks * SUBJECT_PROTO_POINTS))
 	var/finished = B.add_research_work(node_id, points)
 	H.gain_active_scholarship(node_id, points, "prototype:[node_id]:[B.prototypes_made(node_id)]")
 	to_chat(H, SPAN_NOTICE("You note how the prototype came out in [B]: <b>[N.name]</b> advances by [points] points[finished ? " and the chapter is finished" : ""]. ([B.prototypes_made(node_id)] of [SUBJECT_PROTO_MAX] prototypes for this book.)"))
 	return points
+
+// ---------- Trial and error ----------
+
+/obj/item/trash/failed_attempt
+	name = "ruined piece"
+	desc = "What is left of an attempt that did not work."
+	icon_state = "trash_3"
+
+/mob/living/human/proc/trial_count(key)
+	if (!islist(trial_work))
+		return 0
+	var/value = trial_work[key]
+	return isnum(value) ? max(0, value) : 0
+
+/mob/living/human/proc/add_trial_count(key, most = 9)
+	if (!islist(trial_work))
+		trial_work = list()
+	if (isnull(trial_work[key]) && trial_work.len >= TRIAL_RECORD_LIMIT)
+		return
+	trial_work[key] = min(most, trial_count(key) + 1)
+
+/proc/clean_trial_work(value)
+	var/list/result = list()
+	if (islist(value))
+		for (var/key in value)
+			if (!istext(key) || !length(key) || length(key) > 200 || result.len >= TRIAL_RECORD_LIMIT)
+				continue
+			var/count = value[key]
+			if (isnum(count) && count >= 1)
+				result[key] = min(9, round(count))
+	return result
+
+/mob/living/human/persistence_import_fields(list/saved_fields)
+	. = ..()
+	trial_work = clean_trial_work(trial_work)
+	if (stat == DEAD)
+		trial_work = list()
+
+/mob/living/human/forget_recipe_knowledge()
+	..()
+	trial_work = list()
+
+/obj/item/weapon/book/proc/lesson_counts()
+	var/list/counts = list()
+	if (istext(research_lessons) && length(research_lessons))
+		for (var/part in splittext(research_lessons, ";"))
+			var/list/pair = splittext(part, "=")
+			if (pair.len == 2 && valid_recipe_node_id(pair[1]))
+				counts[pair[1]] = max(0, text2num(pair[2]) || 0)
+	return counts
+
+/obj/item/weapon/book/proc/lessons_learned(node_id)
+	return lesson_counts()[node_id] || 0
+
+/obj/item/weapon/book/proc/add_lesson_learned(node_id)
+	var/list/counts = lesson_counts()
+	counts[node_id] = (counts[node_id] || 0) + 1
+	var/list/parts = list()
+	for (var/id in counts)
+		parts += "[id]=[counts[id]]"
+	research_lessons = jointext(parts, ";")
+
+// Subjects H could set a book to attempt: groundwork known, subject not.
+/mob/living/human/proc/trial_subject_choices(obj/item/weapon/book/B)
+	var/list/names = list()
+	if (!istype(B) || !B.can_hold_research() || istype(B, /obj/item/weapon/book/research/tree_book))
+		return names
+	for (var/node_id in research_nodes)
+		var/datum/research_node/N = research_nodes[node_id]
+		if (research_node_dormant(N) || N.mode == RESEARCH_MODE_BOOK || knows_recipe_node(node_id) || !knows_research_prereqs(node_id))
+			continue
+		if (B.has_research_chapter(node_id) || !length(get_node_recipe_paths(node_id)))
+			continue
+		names[N.name] = node_id
+	return names
+
+// Sets what the book's carrier attempts. No waiting here.
+/mob/living/human/proc/set_trial_subject(obj/item/weapon/book/B, node_id)
+	var/datum/research_node/N = get_research_node(node_id)
+	var/offered = FALSE
+	var/list/choices = trial_subject_choices(B)
+	for (var/name in choices)
+		if (choices[name] == node_id)
+			offered = TRUE
+	if (!N || !offered)
+		return FALSE
+	B.trial_subject = node_id
+	to_chat(src, SPAN_NOTICE("You open [B] to a fresh page headed <b>[N.name]</b>. While you carry it you can try to make that subject's things. Expect most early attempts to fail: the materials are used either way, and each failure teaches something."))
+	return TRUE
+
+/mob/living/human/proc/attempt_a_subject(obj/item/weapon/book/B)
+	if (!map || !map.book_research_enabled())
+		to_chat(src, SPAN_WARNING("There is nothing to attempt here."))
+		return FALSE
+	var/list/names = trial_subject_choices(B)
+	if (!names.len)
+		to_chat(src, SPAN_WARNING("There is no subject you could attempt in [B]. You need to know what a subject builds on, and the book must not hold its chapter already."))
+		return FALSE
+	var/choice = player_input(src, "Which subject do you attempt by trial and error?", "Attempt a Subject", null, "anything", names, TRUE)
+	if (!choice || !(B in get_demonstration_carried()))
+		return FALSE
+	return set_trial_subject(B, names[choice])
+
+/obj/item/weapon/book/verb/attempt_a_subject_book()
+	set name = "Attempt a Subject"
+	set category = "Object"
+	set src in usr
+	var/mob/living/human/H = usr
+	if (istype(H) && !H.incapacitated())
+		H.attempt_a_subject(src)
+
+// Percent chance that H's next attempt at result_path_string works.
+/mob/living/human/proc/trial_success_chance(node_id, result_path_string, obj/item/weapon/book/B)
+	var/datum/research_node/N = get_research_node(node_id)
+	if (!N || !istype(B))
+		return 100
+	var/share = B.research_ticks(node_id) / max(1, N.cost_ticks)
+	if (share >= SUBJECT_PROTO_SHARE)
+		return 100
+	var/margin = clamp(scholar_level(node_discipline(node_id)) - node_scholar_requirement(node_id), -TRIAL_SKILL_PENALTY, TRIAL_SKILL_BONUS)
+	var/chance = TRIAL_BASE_CHANCE + (100 - TRIAL_BASE_CHANCE) * share / SUBJECT_PROTO_SHARE + TRIAL_FAILURE_STEP * trial_count("[node_id]>[result_path_string]") + margin
+	return clamp(round(chance), 5, 95)
+
+// A working piece made early: counted on the character, and the first of
+// each thing is a breakthrough worth telling people about.
+/mob/living/human/proc/note_trial_success(node_id, result_path_string)
+	add_trial_count(node_id, TRIAL_CHARACTER_MAX)
+	var/first_key = "[node_id]![result_path_string]"
+	if (trial_count(first_key))
+		return FALSE
+	add_trial_count(first_key, 1)
+	var/datum/research_node/N = get_research_node(node_id)
+	visible_message(SPAN_NOTICE("<b>[src]</b> turns the finished piece over. It works: a breakthrough in <b>[N ? N.name : "the craft"]</b>!"), SPAN_NOTICE("It works! After the failures, you have found how this is made."))
+	return TRUE
+
+// Writes down a failed attempt. Returns the points its lesson wrote (0 once
+// the book has all the lessons it takes).
+/proc/commit_trial_failure(mob/living/human/H, node_id, result_path_string, obj/item/weapon/book/B)
+	var/datum/research_node/N = get_research_node(node_id)
+	if (!istype(H) || !N || !istype(B))
+		return 0
+	H.add_trial_count("[node_id]>[result_path_string]")
+	var/points = 0
+	var/finished = FALSE
+	if (B.lessons_learned(node_id) < TRIAL_LESSON_MAX && !B.has_research_chapter(node_id))
+		B.add_lesson_learned(node_id)
+		points = max(1, round(N.cost_ticks * TRIAL_LESSON_POINTS))
+		finished = B.add_research_work(node_id, points)
+		H.gain_active_scholarship(node_id, points, "lesson:[node_id]:[B.lessons_learned(node_id)]")
+	var/turf/T = get_turf(H)
+	if (T)
+		var/obj/item/trash/failed_attempt/ruin = new(T)
+		var/atom/made = text2path(result_path_string)
+		if (ispath(made))
+			ruin.name = "ruined [initial(made.name)]"
+	if (points)
+		to_chat(H, SPAN_WARNING("The attempt fails and the materials are spoiled. You write down what went wrong in [B]: <b>[N.name]</b> advances by [points] points[finished ? " and the chapter is finished" : ""]. ([B.lessons_learned(node_id)] of [TRIAL_LESSON_MAX] lessons for this book.) Your next try at this is likelier to work."))
+	else
+		to_chat(H, SPAN_WARNING("The attempt fails and the materials are spoiled. [B] has every lesson failure can teach about <b>[N.name]</b>, but your next try at this is likelier to work."))
+	return points
+
+// What a failed attempt at a dangerous subject does to its maker, or null.
+/proc/trial_mishap(mob/living/human/H, datum/research_node/N)
+	if (!istype(H) || !N || N.era_tier < TRIAL_MISHAP_TIER)
+		return null
+	var/kind = rush_accident_kind(N.id)
+	switch (kind)
+		if ("radiation")
+			H.apply_effect(10, IRRADIATE, blocked = 0)
+			to_chat(H, SPAN_DANGER("Something in the failed piece leaves your skin tingling."))
+		if ("blast")
+			H.apply_damage(rand(5, 10), BURN)
+			to_chat(H, SPAN_DANGER("The failed piece flares up and burns you!"))
+		if ("poison")
+			H.apply_damage(rand(5, 10), TOX)
+			to_chat(H, SPAN_DANGER("The fumes from the failed batch make you feel sick."))
+		if ("injury")
+			H.apply_damage(rand(5, 10), BRUTE, pick("l_hand", "r_hand"))
+			to_chat(H, SPAN_DANGER("The failed piece slips and gashes your hand."))
+		else
+			return null
+	return kind
+
+// Called by whatever makes things, once the materials are spent and before
+// (or just after) the result exists. TRUE means the attempt failed: the
+// caller must not hand over the result.
+/proc/trial_craft_ruined(mob/user, result_path_string)
+	var/mob/living/human/H = user
+	if (!istype(H))
+		return FALSE
+	var/node_id = subject_prototype_node(H, result_path_string)
+	if (!node_id)
+		return FALSE
+	var/obj/item/weapon/book/B = H.prototype_book(node_id)
+	if (prob(H.trial_success_chance(node_id, result_path_string, B)))
+		return FALSE
+	commit_trial_failure(H, node_id, result_path_string, B)
+	if (prob(TRIAL_MISHAP_CHANCE))
+		trial_mishap(H, get_research_node(node_id))
+	return TRUE
 
 // ---------- Field study ----------
 
@@ -272,3 +508,13 @@
 #undef FIELD_STUDY_MAX
 #undef FIELD_STUDY_RANGE
 #undef FIELD_STUDY_TIME
+#undef TRIAL_BASE_CHANCE
+#undef TRIAL_FAILURE_STEP
+#undef TRIAL_SKILL_BONUS
+#undef TRIAL_SKILL_PENALTY
+#undef TRIAL_LESSON_POINTS
+#undef TRIAL_LESSON_MAX
+#undef TRIAL_CHARACTER_MAX
+#undef TRIAL_MISHAP_TIER
+#undef TRIAL_MISHAP_CHANCE
+#undef TRIAL_RECORD_LIMIT

@@ -42,6 +42,7 @@ var/paint_runtime_error = FALSE
 		paint_upload_checks()
 		paint_hang_checks()
 		paint_locket_checks()
+		paint_drawing_checks()
 	catch(var/exception/e)
 		paint_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = paint_failures, "runtime_error" = paint_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")
@@ -157,4 +158,59 @@ var/paint_runtime_error = FALSE
 	paint_check(M2.loc == H, "an unfinished miniature or a second one is refused")
 	qdel(P)
 	qdel(N)
+	qdel(H)
+
+/proc/paint_draw(mob/user, atom/target, colour, title, size = 32)
+	var/obj/item/canvas/sketch/S = new(null)
+	S.target = target
+	S.canvas_w = size
+	S.canvas_h = size
+	S.art_w = size
+	S.art_h = size
+	S.accept_painting(user, painting_pack(painting_repeat("1", size * size)), "[S.base_colour],[colour]", TRUE, title)
+	return QDELETED(S)
+
+/proc/paint_drawing_checks()
+	var/turf/T = locate(14, 14, 1)
+	var/mob/living/human/paint_probe/H = new(T)
+	H.real_name = "Ada Painter"
+	var/obj/item/weapon/pen/pen = new(H)
+	H.hand = 0
+	H.r_hand = pen
+	paint_check(drawing_tool(H) == pen, "a held pen is a drawing tool")
+	var/obj/item/weapon/paper/P = new(H)
+	var/ink = painting_hex(book_page_ink(pen.colour))
+	paint_check(paint_draw(H, P, ink, "Ink Hills") && length(P.drawings) == 1 && P.drawings[1]["title"] == "Ink Hills" && P.drawings[1]["by"] == "Ada Painter", "a finished sketch lands on the paper as a drawing")
+	paint_check((P in drawing_holders) && !(locate(/obj/item/canvas/sketch) in painting_registry), "the paper is listed for admins and the sketch is not a painting")
+	paint_check(!paint_draw(H, P, "#0000fe", "Stolen blue") || length(P.drawings) == 1, "a colour the drawer lacks is refused")
+	paint_check(paint_draw(H, P, ink, "Large", 64) && length(P.drawings) == 2, "a large drawing fits as the second picture")
+	paint_draw(H, P, ink, "Third")
+	paint_check(length(P.drawings) == 2, "a page holds only two pictures")
+	var/html = drawings_html(P)
+	paint_check(findtext(html, "drawing2") && findtext(html, "Ink Hills") && findtext(html, "unpackArt"), "the reader draws the pictures in the browser")
+	var/list/copy = drawings_copy(P.drawings)
+	paint_check(copy.len == 2 && copy[1] != P.drawings[1] && copy[1]["data"] == P.drawings[1]["data"], "copies are separate records")
+	paint_check(isnull(drawings_copy(list(list("w" = 48, "h" = 48)))), "a bad record is not copied")
+	var/list/snapshot = paper_document_copy_snapshot(P)
+	var/obj/item/weapon/paper/C = snapshot ? paper_document_create_copy(snapshot) : null
+	paint_check(C && length(C.drawings) == 2 && (C in drawing_holders), "a printed copy keeps the drawings")
+	var/obj/item/weapon/book/B = new(H)
+	paint_check(B.page_drawings_fit(P), "an empty book has room for a page's pictures")
+	B.take_page_drawings(P)
+	paint_check(length(B.drawings) == 2 && (B in drawing_holders), "a bound page brings its pictures into the book")
+	B.drawings = null
+	for (var/i = 1, i <= 11, i++)
+		B.drawings = (B.drawings || list()) + list(P.drawings[1])
+	paint_check(!B.page_drawings_fit(P), "a nearly full book refuses a page with two pictures")
+	drawing_holders -= B
+	B.after_load()
+	paint_check(B in drawing_holders, "a loaded book with pictures rejoins the admin list")
+	drawing_set_list(C, null)
+	paint_check(!(C in drawing_holders), "a page without pictures leaves the admin list")
+	qdel(C)
+	qdel(B)
+	qdel(P)
+	H.r_hand = null
+	qdel(pen)
+	paint_check(!drawing_tool(H), "an empty hand cannot draw")
 	qdel(H)

@@ -1,0 +1,330 @@
+{
+ "/material": {
+  "hardness": "60",
+  "weight": "20",
+  "integrity": "150"
+ },
+ "/material/antpelt": {
+  "hardness": "50"
+ },
+ "/material/bamboo": {
+  "hardness": "45",
+  "weight": "15",
+  "integrity": "45"
+ },
+ "/material/barbedwire": {
+  "hardness": "30"
+ },
+ "/material/bearpelt/black": {
+  "hardness": "30"
+ },
+ "/material/bearpelt/brown": {
+  "hardness": "30"
+ },
+ "/material/bearpelt/white": {
+  "hardness": "30"
+ },
+ "/material/bisonpelt": {
+  "hardness": "30"
+ },
+ "/material/bone": {
+  "hardness": "45",
+  "integrity": "55"
+ },
+ "/material/brass": {
+  "hardness": "44",
+  "weight": "16",
+  "integrity": "120"
+ },
+ "/material/brick": {
+  "hardness": "40",
+  "weight": "8",
+  "integrity": "350"
+ },
+ "/material/bronze": {
+  "hardness": "47",
+  "weight": "17",
+  "integrity": "150"
+ },
+ "/material/carpet": {
+  "hardness": "12"
+ },
+ "/material/catpelt": {
+  "hardness": "30"
+ },
+ "/material/chitin": {
+  "hardness": "51"
+ },
+ "/material/clay": {
+  "hardness": "90",
+  "integrity": "60"
+ },
+ "/material/cloth": {
+  "hardness": "10"
+ },
+ "/material/cloth_beige": {
+  "hardness": "6"
+ },
+ "/material/cloth_black": {
+  "hardness": "6"
+ },
+ "/material/cloth_blue": {
+  "hardness": "6"
+ },
+ "/material/cloth_green": {
+  "hardness": "6"
+ },
+ "/material/cloth_lime": {
+  "hardness": "6"
+ },
+ "/material/cloth_puple": {
+  "hardness": "6"
+ },
+ "/material/cloth_teal": {
+  "hardness": "6"
+ },
+ "/material/coca": {
+  "hardness": "10"
+ },
+ "/material/concrete": {
+  "hardness": "50",
+  "weight": "18",
+  "integrity": "400"
+ },
+ "/material/copper": {
+  "hardness": "42",
+  "weight": "14",
+  "integrity": "90"
+ },
+ "/material/cotton": {
+  "hardness": "6"
+ },
+ "/material/cowpelt": {
+  "hardness": "30"
+ },
+ "/material/crystal": {
+  "hardness": "75"
+ },
+ "/material/crystal/blue": {
+  "hardness": "75"
+ },
+ "/material/crystal/green": {
+  "hardness": "75"
+ },
+ "/material/crystal/magenta": {
+  "hardness": "75"
+ },
+ "/material/crystal/orange": {
+  "hardness": "75"
+ },
+ "/material/crystal/purple": {
+  "hardness": "75"
+ },
+ "/material/crystal/red": {
+  "hardness": "65"
+ },
+ "/material/diamond": {
+  "hardness": "100",
+  "integrity": "30000"
+ },
+ "/material/electronics": {
+  "hardness": "20",
+  "weight": "14"
+ },
+ "/material/flax": {
+  "hardness": "10"
+ },
+ "/material/flint": {
+  "hardness": "50",
+  "weight": "22",
+  "integrity": "110"
+ },
+ "/material/foxpelt": {
+  "hardness": "30"
+ },
+ "/material/gatorpelt": {
+  "hardness": "30"
+ },
+ "/material/glass": {
+  "hardness": "30",
+  "weight": "15",
+  "integrity": "15"
+ },
+ "/material/goatpelt": {
+  "hardness": "30"
+ },
+ "/material/gold": {
+  "hardness": "30",
+  "weight": "24",
+  "integrity": "75"
+ },
+ "/material/gorillapelt": {
+  "hardness": "30"
+ },
+ "/material/hairlesshide": {
+  "hardness": "30"
+ },
+ "/material/hemp": {
+  "hardness": "10"
+ },
+ "/material/humanpelt": {
+  "hardness": "30"
+ },
+ "/material/iron": {
+  "hardness": "55",
+  "weight": "22",
+  "integrity": "250"
+ },
+ "/material/iron/indestructable": {
+  "hardness": "1000000",
+  "integrity": "1000000"
+ },
+ "/material/kevlar": {
+  "hardness": "45",
+  "weight": "15"
+ },
+ "/material/lead": {
+  "hardness": "35",
+  "weight": "30",
+  "integrity": "50"
+ },
+ "/material/leaf": {
+  "hardness": "10"
+ },
+ "/material/leather": {
+  "hardness": "25",
+  "weight": "10"
+ },
+ "/material/lionpelt": {
+  "hardness": "30"
+ },
+ "/material/lizardpelt": {
+  "hardness": "30"
+ },
+ "/material/marble": {
+  "hardness": "45",
+  "weight": "22",
+  "integrity": "160"
+ },
+ "/material/monkeypelt": {
+  "hardness": "30"
+ },
+ "/material/obsidian": {
+  "hardness": "85",
+  "integrity": "15000"
+ },
+ "/material/orcpelt": {
+  "hardness": "45"
+ },
+ "/material/pantherpelt": {
+  "hardness": "30"
+ },
+ "/material/paper": {
+  "hardness": "25",
+  "integrity": "35"
+ },
+ "/material/pelt": {
+  "hardness": "30"
+ },
+ "/material/plastic": {
+  "hardness": "36",
+  "weight": "8",
+  "integrity": "30"
+ },
+ "/material/poppy": {
+  "hardness": "10"
+ },
+ "/material/preparedkevlar": {
+  "hardness": "7"
+ },
+ "/material/rags": {
+  "hardness": "7"
+ },
+ "/material/rawkevlar": {
+  "hardness": "7"
+ },
+ "/material/rettedfabric": {
+  "hardness": "7"
+ },
+ "/material/rope": {
+  "hardness": "10"
+ },
+ "/material/sandstone": {
+  "hardness": "45",
+  "weight": "22",
+  "integrity": "90"
+ },
+ "/material/sheeppelt": {
+  "hardness": "30"
+ },
+ "/material/silver": {
+  "hardness": "65",
+  "weight": "22",
+  "integrity": "100"
+ },
+ "/material/steel": {
+  "hardness": "60",
+  "integrity": "350"
+ },
+ "/material/stone": {
+  "hardness": "50",
+  "weight": "22",
+  "integrity": "200"
+ },
+ "/material/stonebrick": {
+  "hardness": "50",
+  "weight": "11",
+  "integrity": "450"
+ },
+ "/material/tin": {
+  "hardness": "40",
+  "weight": "11",
+  "integrity": "60"
+ },
+ "/material/tobacco": {
+  "hardness": "10"
+ },
+ "/material/whitefoxpelt": {
+  "hardness": "30"
+ },
+ "/material/whitewolfpelt": {
+  "hardness": "30"
+ },
+ "/material/wolfpelt": {
+  "hardness": "30"
+ },
+ "/material/wood": {
+  "hardness": "40",
+  "weight": "18",
+  "integrity": "39"
+ },
+ "/material/wood/hard": {
+  "hardness": "200",
+  "weight": "13",
+  "integrity": "175"
+ },
+ "/material/wood/log": {
+  "hardness": "200",
+  "integrity": "175"
+ },
+ "/material/wood/soft": {
+  "hardness": "90",
+  "weight": "10",
+  "integrity": "80"
+ },
+ "/material/wood/straw": {
+  "hardness": "35",
+  "integrity": "55"
+ },
+ "/material/wool": {
+  "hardness": "6"
+ },
+ "/material/woolcloth": {
+  "hardness": "10"
+ },
+ "/material/zinc": {
+  "hardness": "30",
+  "weight": "13",
+  "integrity": "50"
+ }
+}

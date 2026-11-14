@@ -326,6 +326,30 @@ class LearningByDoing(unittest.TestCase):
         source = read("code/modules/research_tree/learning_by_doing.dm")
         for name in ("/mob/living/human/proc/gain_active_scholarship", "/mob/living/human/proc/skill_variety_mult", "/mob/living/human/proc/skill_master_nearby"):
             self.assertIn("learning_by_doing_enabled()", proc(source, name))
+class TrialAndError(unittest.TestCase):
+    def setUp(self):
+        self.src = read("code/modules/research_tree/subject_prototypes.dm")
+    def test_every_bench_and_menu_asks_before_handing_over_the_result(self):
+        for path, call, count in (("code/game/objects/items/stacks/stack.dm", 'if (trial_craft_ruined(user, "[recipe.result_type]"))', 1),
+                                  ("code/game/objects/structures/blacksmithing/blacksmithing.dm", 'if (!trial_craft_ruined(user, "[rtype]"))', 2),
+                                  ("code/game/objects/structures/blacksmithing/dedicated_workbenches.dm", 'if (trial_craft_ruined(H, "[result_type]"))', 3),
+                                  ("code/game/objects/structures/blacksmithing/component_workbench.dm", 'if (M && trial_craft_ruined(H, "[M.type]"))', 1)):
+            with self.subTest(path=path):
+                self.assertEqual(read(path).count(call), count)
+    def test_materials_are_spent_before_the_attempt_is_judged(self):
+        stack = read("code/game/objects/items/stacks/stack.dm")
+        self.assertLess(stack.index("if (use(required, (joinery || carving) ? null : H))"), stack.index("trial_craft_ruined(user"))
+        self.assertLess(stack.index("trial_craft_ruined(user"), stack.index("O = new recipe.result_type(user.loc, recipe.use_material)"))
+    def test_gates(self):
+        book = proc(self.src, "/mob/living/human/proc/prototype_book")
+        for guard in ("B.trial_subject == node_id", "trial_count(node_id) < TRIAL_CHARACTER_MAX", "SUBJECT_PROTO_SHARE"):
+            self.assertIn(guard, book)
+        chance = proc(self.src, "/mob/living/human/proc/trial_success_chance")
+        self.assertIn("if (share >= SUBJECT_PROTO_SHARE)\n\t\treturn 100", chance)
+        failure = proc(self.src, "/proc/commit_trial_failure")
+        for guard in ("lessons_learned(node_id) < TRIAL_LESSON_MAX", "gain_active_scholarship(", "/obj/item/trash/failed_attempt"):
+            self.assertIn(guard, failure)
+        self.assertIn("player_input(", proc(self.src, "/mob/living/human/proc/attempt_a_subject"))
 
 if __name__ == "__main__":
     unittest.main()

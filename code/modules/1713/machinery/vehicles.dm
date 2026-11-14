@@ -577,11 +577,20 @@ var/global/list/vehicle_axes = list()
 	else
 		var/spd = (currentspeed/speeds)*maxpower
 		powerneeded = spd
-		if (currentspeed > speeds)
-			currentspeed = speeds
-		if (currentspeed == null || !speedlist[currentspeed])
+		if (!uses_load_factor())
+			if (currentspeed > speeds)
+				currentspeed = speeds
+			if (currentspeed == null || !speedlist || !speedlist[currentspeed])
+				return 0
+			return speedlist[currentspeed]
+		// Land vehicles: the load sets the delay (vehicle_load.dm).
+		var/factor = get_load_factor()
+		if (currentspeed > top_gear())
+			currentspeed = top_gear()
+		var/delay = gear_delay(currentspeed)
+		if (!delay)
 			return 0
-		return speedlist[currentspeed]
+		return delay * factor
 
 /obj/structure/vehicleparts/axis/proc/check_enginepower(var/esize = 0)
 	return

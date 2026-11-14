@@ -840,6 +840,12 @@ SUITES = {
     # branches gave; per-era equality checks only shrink. Source scan of code/.
     'era_helpers': {'files': ('tests/era_helpers/test_era_helpers.py',),
         'paths': ('tests/era_helpers/',), 'shared_paths': ()},
+    # Material properties and part roles: frozen ratings, the balance rule
+    # and the untouched legacy weapon numbers.
+    'material_roles': {'files': ('tests/material_roles/test_material_roles.py',),
+        'paths': ('tests/material_roles/', 'code/modules/materials/material_properties.dm',
+                  'code/modules/materials/part_roles.dm', 'code/__defines/material_roles.dm'),
+        'shared_paths': ('code/modules/materials/materials.dm',)},
     'anvil_mold_costs': {'files': ('tests/anvil_mold_costs/test_anvil_mold_costs.py',),
         'paths': ('tests/anvil_mold_costs/',), 'shared_paths': ()},
     'processing_recipes': {'files': ('tests/processing_recipes/test_processing_recipes.py',),
@@ -1073,6 +1079,11 @@ SUITES = {
     'rock_art': {'files': ('tests/rock_art/test_source.py',),
         'paths': ('tests/rock_art/',), 'shared_paths': (
             'code/modules/1713/rock_art.dm', 'code/modules/paintings/painting_editor.dm')},
+    # Deeds carved into tribal totem poles: source contracts only.
+    'tribal_deeds': {'files': ('tests/tribal_deeds/test_source.py',),
+        'paths': ('tests/tribal_deeds/',), 'shared_paths': (
+            'code/modules/1713/tribal_deeds.dm', 'code/modules/1713/dugout_canoe.dm',
+            'code/modules/1713/domestication.dm', 'code/modules/1713/rock_art.dm')},
     'door_intents': {'files': ('tests/door_intents/test_door_intents.py', 'tests/door_intents/test_jail_keys.py'),
         'paths': ('tests/door_intents/',), 'shared_paths': (
             'code/game/objects/structures/door.dm',

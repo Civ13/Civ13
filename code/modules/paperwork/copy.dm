@@ -100,6 +100,7 @@
 	if (!isnull(record))
 		record["document_id"] = paper_document_mint_id(result)
 	result.document_record = record
+	result.copy_drawings_from(snapshot["paper"])
 	// Rebuild src hrefs for this object; source info_links is never copied.
 	result.updateinfolinks()
 	result.update_icon()
