@@ -36,6 +36,32 @@ item that can be worn in the belt slot, other than bags, clothing and guns.
 A worn belt with several attachments opens the attachment strip
 (`code/_onclick/hud/attachment_strip.dm`).
 
+## Lanyards and wrist loops
+
+`code/modules/1713/lanyards.dm`. Each tether fits only what it was made for
+(history reviewed by Fable, 2026-11-14):
+
+| Item | Material, research | Fits | Worn |
+| --- | --- | --- | --- |
+| Wrist thong | 1 leather, Basic Toolmaking | hatchet, machete, knife, club, mace, hammer | bound to the tool |
+| Sword knot | 1 leather, Steel Blades | one-handed swords | bound to the sword |
+| Neck cord | 1 rope, Weaving | knife, whistle, key | outfit (decor) |
+| Fob chain | 1 brass, Optics & Instruments | compass, key | outfit or leather belt |
+| Pistol lanyard | 1 rope, Cartridge Firearms | revolver, pistol, whistle, compass, knife | outfit (decor) |
+| Retention lanyard | 1 plastic, Synthetic Fabrics | pistol, knife, compass, key, whistle, small tools | outfit or leather belt |
+
+A wrist loop is bound to a tool held in the other hand (use the loop). The
+Wrist Loop verb slips the hand in or out (1 s / 0.5 s). While looped, a
+dropped or knocked away tool returns to the hand with a short regrip delay.
+A lanyard ties the item stowed on it; when that item is dropped it goes back
+into the lanyard instead of the ground. Untie Lanyard (1 s) frees it.
+Tethered items cannot be thrown. Putting the item in another container or
+another person's hands, or the holder dying, releases the tether. Only
+boolean vars are kept on the item (`wrist_loop`, `wrist_looped`,
+`lanyard_tied`), so saves hold no tether pointers. One lanyard per garment.
+Long guns, bows, spears, flintlock pistols and two-handed weapons are left
+out on purpose. Cutting a lanyard from someone else is not implemented.
+
 ## Art
 
 - `icons/obj/pocket_stronghold_gems.dmi`: ruby, sapphire (cut and rough) and
@@ -44,3 +70,5 @@ A worn belt with several attachments opens the attachment strip
 - `icons/obj/gemstones.dmi`, `icons/obj/belt_pouches.dmi`,
   `icons/mob/belt_pouches.dmi`: drawn for Civ13 by placing pixels from
   `tests/sprites/create_gemstones.py` and `tests/sprites/create_belt_pouches.py`.
+- `icons/obj/lanyards.dmi`, `icons/mob/lanyards.dmi`: drawn for Civ13 from
+  `tests/sprites/create_lanyards.py`.
