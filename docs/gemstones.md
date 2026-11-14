@@ -74,6 +74,14 @@ or compass make it `jewelled`. Plain watches read only to the quarter hour
 (`watch_reading()`); jewelled ones read the exact minute. A jewelled compass
 has `max_offset` 2 and reads in 6 s.
 
+Diamond grit: a hammer on a rough diamond gives 3 grit (Regalia), and a
+diamond that splits on a flaw leaves 1 grit. The lapping wheel (4 iron,
+Workshops) takes 3 charges per grit, up to 30. Cutting a stone next to a
+charged wheel takes half the time, uses a charge and never splits the stone.
+A steel sheet on a wheel with 6 charges makes a diamond drill bit (Machined
+Tools); fitted to the base industrial drill it adds one ore per cycle.
+Diamond is kept off the jackhammer because it shatters under percussion.
+
 ## Art
 
 - `icons/obj/pocket_stronghold_gems.dmi`: ruby, sapphire (cut and rough) and

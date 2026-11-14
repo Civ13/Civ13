@@ -2529,7 +2529,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/religious/tribalmask" = "weaving",
 		"/obj/item/clothing/shoes/weather/mukluks" = "weaving",
 		"/obj/item/clothing/shoes/weather/snowshoes" = "weaving",
-		// --- workshops (24) ---
+		// --- workshops (25) ---
+		"/obj/structure/lapping_wheel" = "workshops",
 		"/obj/item/flashlight/lantern/bronze" = "workshops",
 		"/obj/item/flashlight/lantern/copper" = "workshops",
 		"/obj/item/weapon/storage/belt/keychain" = "workshops",

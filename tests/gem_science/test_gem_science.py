@@ -45,6 +45,21 @@ class GemScienceTest(unittest.TestCase):
             self.assertNotIn('It is now [clock_time()]', text)
         self.assertIn('min = round(min / 15) * 15', self.text)
 
+    def test_diamond_grit_and_lap(self):
+        gems = (ROOT / 'code/modules/1713/gemstones.dm').read_text(encoding='utf-8')
+        self.assertIn('gem_lap_near(H)', gems)
+        self.assertIn('lap.use_charge()', gems)
+        self.assertIn('gem_flaw_leftovers(T, cut_type)', gems)
+        self.assertIn('/obj/item/stack/ore/diamond/attackby', self.text)
+        self.assertIn('crafting_node_allowed_or_warn(H, "machined_tools")', self.text)
+        # Diamond goes on the rotary drill, never the percussive jackhammer.
+        self.assertNotIn('jackhammer', self.text)
+        self.assertIn('type == /obj/structure/drill', self.text)
+        recipes = (ROOT / 'config/crafting/material_recipes_global.txt').read_text(encoding='utf-8')
+        nodes = (ROOT / 'code/modules/research_tree/research_node.dm').read_text(encoding='utf-8')
+        self.assertIn(',lapping wheel,/obj/structure/lapping_wheel,', recipes)
+        self.assertIn('"/obj/structure/lapping_wheel" = "workshops",', nodes)
+
     def test_included_after_lanyards(self):
         dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
         self.assertLess(dme.index('lanyards.dm'), dme.index('gem_science.dm'))
