@@ -23,7 +23,7 @@ A land can also be **paused**: it keeps its stage, but new starts there wait.
   and `land_done`). A land no admin has set is `CLOSED`.
 - Each world reads its agent's copy (`/lands`) about once a minute
   (`code/modules/persistence/land_stage.dm`) and shows it in the Regions panel.
-- Only lands of kind `SURFACE`, `OCEANIC`, `UNDERGROUND` or `OTHER` take a
+- Only lands of kind `SURFACE`, `OCEANIC`, `UNDERGROUND`, `OTHER` or `EXPEDITION` take a
   stage; transit, event, practice and battle worlds never do.
 - A stage change never moves a home or a character.
 
@@ -146,3 +146,50 @@ The highest tier among the faction's standing halls counts; an indoor tier
 moved outdoors counts for nothing, and a destroyed hall takes its tiers with
 it. Each standing colony of the faction in another land adds 5. The numbers
 are placeholders. Code: `code/game/mob/groups/faction_hall.dm`.
+
+## Nations
+
+Val (2026-11-14): factions band together into nations that represent them all
+while each keeps its own leaders, research, treasury and members, and may still
+oppose the others. The coordinator keeps the registry for the whole group
+(`tools/transfer_storage/nations.py`), so a nation can hold factions from
+several lands. A faction is known by its land-qualified id; a colony's members
+are citizens of their parent faction's nation, but only leaders in the
+faction's own land act for it.
+
+Leaders use the **Nation** verb (Faction tab):
+
+- **Found**: two faction leaders of the same land stand together, name the
+  nation and both agree. The one who asked becomes its head.
+- **Apply**: a faction outside any nation applies to one; the member factions'
+  leaders vote, and a majority of members admits it (half or more refusing
+  ends it). Applications lapse after 3 days.
+- **Vote for a head**: a majority of member factions chooses the head, whose
+  role is symbolic.
+- **Secede**: at any time. The faction cannot reapply to that nation for 3
+  days, and a nation left with one faction dissolves. A seceding head passes
+  the title to the longest-standing member until a vote.
+
+A request waits with the world's agent (`/nation/request`) until the
+coordinator's next pass; its outcome comes back with `/homes` and the world
+tells the leader on its next read of `/nations` (kept 7 days). Examining a
+character shows their nation. A faction renamed in its own land keeps its
+place (`rename` op).
+
+### Nation assemblies
+
+A nation holds 3 factions. A member faction's leader designates a **nation
+assembly seat** (30 soft wood planks) in the faction's own land, and members
+raise it like a faction hall:
+
+| Tier | Factions | Needs the | Indoors | Materials |
+| --- | --- | --- | --- | --- |
+| Meeting ground | 4 | Classical Age | no | 120 wood, 120 stone |
+| Assembly hall | 6 | Medieval Age | yes | 400 stone, 80 iron, 40 glass, 60 cloth |
+| Parliament | 8 | Industrial Age | yes | 800 stone, 200 steel, 100 glass, 40 gold |
+
+The best standing assembly of any member counts. Each world compares its
+member factions' assemblies with the registry when it reads it and reports a
+change (`assembly` op), so a burned or unroofed assembly lowers the cap within
+a few minutes. A lower cap removes no one; it only stops new members. Code:
+`code/game/mob/groups/nation.dm`.

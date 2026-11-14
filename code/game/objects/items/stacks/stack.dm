@@ -238,6 +238,9 @@
 	if (!src || amount <= 0)
 		user << browse(null, "window=stack")
 		return
+	// The Crafting window (crafting_window.dm) takes over where the client can run it.
+	if (crafting_window_shown(user))
+		return
 	user.set_using_object(src) //for correct work of onclose
 	// Flatten only the display, never the source recipe lists. Every action keeps
 	// its original category and index for Topic and produce_recipe validation.

@@ -80,7 +80,7 @@ class BackendContract(unittest.TestCase):
             source = path.read_text(errors='replace')
             templates.update(re.findall(r'new /datum/nanoui/tgui(?:/\w+)*\((?:user, src|reader, src|viewer, src|viewer, reference), ui_key, "([^"]+)"', source))
             self.assertNotRegex(source, r'ui = new\(user, src, ui_key, "[^"\n]+\.tmpl"')
-        self.assertEqual(templates, {'appearance_changer.tmpl', 'book_reader.tmpl', 'character_flavor.tmpl', 'character_notes.tmpl', 'chem_disp.tmpl', 'crafting_atlas.tmpl', 'crew_log.tmpl', 'faction_creation.tmpl', 'faction_list.tmpl', 'faction_symbol.tmpl', 'known_languages.tmpl', 'photo_viewer.tmpl', 'recruitment_station.tmpl', 'religion_list.tmpl', 'research_bench.tmpl', 'research_book.tmpl', 'ship_stocks.tmpl', 'vending_machine.tmpl', 'vending_machine2.tmpl', 'vending_machine_gulag.tmpl', 'vending_machine_taotd.tmpl', 'warehouse_book.tmpl'})
+        self.assertEqual(templates, {'appearance_changer.tmpl', 'book_reader.tmpl', 'character_flavor.tmpl', 'character_notes.tmpl', 'chem_disp.tmpl', 'crafting_atlas.tmpl', 'crafting_window.tmpl', 'crew_log.tmpl', 'faction_creation.tmpl', 'faction_list.tmpl', 'faction_symbol.tmpl', 'known_languages.tmpl', 'photo_viewer.tmpl', 'recruitment_station.tmpl', 'religion_list.tmpl', 'research_bench.tmpl', 'research_book.tmpl', 'ship_stocks.tmpl', 'vending_machine.tmpl', 'vending_machine2.tmpl', 'vending_machine_gulag.tmpl', 'vending_machine_taotd.tmpl', 'warehouse_book.tmpl'})
 
     def test_recovery_without_bootstrap_and_close_ownership(self):
         self.assertIn('href="byond://?src=\\ref[src]&amp;window_id=', DM)
@@ -150,6 +150,51 @@ class BackendContract(unittest.TestCase):
         for template in ('research_bench.tmpl', 'research_book.tmpl'):
             classic = (ROOT / 'UI/templates' / template).read_text()
             self.assertLessEqual(set(re.findall(r"\{\s*['\"](\w+)['\"]\s*:", classic)), allowed(template), template)
+
+    def test_crafting_window_actions_reach_its_topic(self):
+        # The same transport allowlist that once swallowed recruitment actions.
+        source = (ROOT / 'code/game/objects/items/stacks/crafting_window.dm').read_text()
+        frontend = (ROOT / 'tgui/src/interfaces/CraftingWindow.tsx').read_text()
+        topic = source.split('/datum/crafting_window/Topic', 1)[1]
+        branch = re.search(r'if \("crafting_window\.tmpl"\)\s+return list\(([^\n]+)\)', DM)
+        self.assertIsNotNone(branch, 'Crafting window buttons need a transport allowlist')
+        allowed = set(re.findall(r'"([^"\n]+)"', branch.group(1)))
+        self.assertEqual(allowed, {'make', 'makeable_only', 'images', 'atlas'})
+        self.assertEqual(set(re.findall(r'href_list\["([^"\n]+)"\]', topic)), allowed | {'quantity'})
+        self.assertEqual(set(re.findall(r"ui\.act\('([^'\n]+)'", frontend)), allowed)
+        transport = DM.split('/datum/nanoui/tgui/Topic', 1)[1]
+        self.assertRegex(transport, r'if \("make"\)\s+keys \+= "quantity"')
+
+    def test_crafting_window_requests_keep_server_admission(self):
+        source = (ROOT / 'code/game/objects/items/stacks/crafting_window.dm').read_text()
+        topic = source.split('/datum/crafting_window/Topic', 1)[1]
+        make = topic.split('if (href_list["make"])', 1)[1]
+        # Held, conscious and unrestrained before any branch; then the row id,
+        # the batch limit and the busy lock before the unchanged craft proc.
+        self.assertLess(topic.index('!still_valid(H) || H.stat || H.restrained()'), topic.index('href_list["makeable_only"]'))
+        for earlier, later in (('working || !H.can_build_recipe', 'find_recipe('), ('find_recipe(', 'batch_limit(R)'),
+                               ('quantity > limit', 'H.can_build_recipe = FALSE'), ('H.can_build_recipe = FALSE', 'S.produce_recipe(R, quantity, H)'),
+                               ('S.produce_recipe(R, quantity, H)', 'H.can_build_recipe = TRUE')):
+            self.assertLess(make.index(earlier), make.index(later), (earlier, later))
+        valid = source.split('/datum/crafting_window/proc/still_valid', 1)[1].split('/datum/topic_state', 1)[0]
+        self.assertIn('source.loc == H && H.get_active_hand() == source', valid)
+        finder = source.split('/datum/crafting_window/proc/find_recipe', 1)[1].split('/datum/crafting_window/proc/batch_limit', 1)[0]
+        self.assertIn('crafting_window_row_id(R, sublist, index) != id', finder)
+        # The window never pays, builds or edits recipe lists itself.
+        for action in ('.use(', 'new R.result_type', 'recipes.Cut(', 'recipes.Remove(', 'qdel('):
+            self.assertNotIn(action, source)
+        self.assertEqual(source.count('produce_recipe('), 3)  # two comments and the one call
+
+    def test_crafting_window_falls_back_to_the_classic_list(self):
+        source = (ROOT / 'code/game/objects/items/stacks/crafting_window.dm').read_text()
+        fallback = source.split('/datum/nanoui/tgui/crafting_window/use_legacy_renderer()', 1)[1].split('/obj/item/stack/proc/crafting_window_shown', 1)[0]
+        self.assertLess(fallback.index('crafting_window_classic = TRUE'), fallback.index('S.list_recipes(H)'))
+        shown = source.split('/obj/item/stack/proc/crafting_window_shown', 1)[1].split('/datum/crafting_window/ui_interact', 1)[0]
+        self.assertIn('!H.client || H.client.crafting_window_classic || H.client.modern_ui_failed', shown)
+        stack = (ROOT / 'code/game/objects/items/stacks/stack.dm').read_text()
+        menu = stack.split('/obj/item/stack/proc/list_recipes(', 1)[1].split('// Custom qdel', 1)[0]
+        self.assertLess(menu.index('if (crafting_window_shown(user))'), menu.index('user.set_using_object(src)'))
+        self.assertIn("<title>Crafting</title>", menu)
 
     def test_assets_registered(self):
         assets = (ROOT / 'code/modules/client/asset_cache.dm').read_text()

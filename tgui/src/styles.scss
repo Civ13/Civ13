@@ -197,3 +197,65 @@ button.rs-row-main { cursor: pointer; }
 .paper-editor .NoticeBox { margin: 0; }
 .civ13-prompt-message { white-space: pre-wrap; overflow-wrap: anywhere; }
 .civ13-prompt-choices { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 4px; }
+
+// Crafting window: recipe list on the left, the selected recipe's card on the right.
+.craft { display: flex; flex-direction: column; gap: 8px; height: calc(100vh - 80px); min-height: 420px; }
+.craft ul { list-style: none; margin: 0; padding: 0; }
+.craft h2, .craft h3 { margin: 0; }
+.craft-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+.craft-head { display: flex; align-items: center; gap: 10px; padding: 6px 10px; background: #30271e; border: 1px solid #66513b; }
+.craft-amount { color: #bfae96; font-size: 13px; }
+.craft-columns { display: grid; grid-template-columns: minmax(300px, 55%) minmax(0, 1fr); gap: 10px; flex: 1; min-height: 0; }
+.craft-left { display: flex; flex-direction: column; min-height: 0; background: #30271e; border: 1px solid #66513b; }
+.craft-tools-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 8px; border-bottom: 1px solid #66513b; }
+.craft-tools-bar input[type=search] { flex: 1 1 160px; min-width: 0; }
+.craft-tools-bar input[type=search], .craft-tools-bar select { font: inherit; color: #eee5d3; background: #211c16; border: 1px solid #66513b; border-radius: 3px; padding: 5px 7px; max-width: 100%; }
+.craft-tick { display: inline-flex; align-items: center; gap: 5px; font-size: 13px; white-space: nowrap; }
+.craft-list { flex: 1; overflow: auto; min-height: 0; padding: 0 6px 6px; }
+.craft-group h3 { position: sticky; top: 0; z-index: 1; display: flex; align-items: baseline; gap: 8px; padding: 8px 4px 5px; background: #30271e; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; }
+.craft-group h3 small { color: #a99b87; font-weight: normal; letter-spacing: 0; text-transform: none; }
+.craft-ok { color: #a8d57a; } .craft-miss { color: #f0b062; } .craft-lock { color: #bfae96; }
+.craft-row { display: flex; align-items: center; gap: 8px; width: 100%; padding: 3px 6px; font: inherit; text-align: left; color: inherit; background: transparent; border: 1px solid transparent; border-left: 3px solid transparent; border-radius: 3px; cursor: pointer; }
+.craft-row:hover { background: #3a3020; }
+.craft-row:focus-visible, .craft select:focus-visible { outline: 2px solid #ffd985; outline-offset: 1px; }
+.craft-row-selected { background: #4a3b22; border-color: #66513b; border-left-color: #ffd985; }
+.craft-row-selected strong { color: #ffd985; }
+.craft-row-text { display: flex; flex: 1; flex-direction: column; min-width: 0; overflow-wrap: anywhere; }
+.craft-row-text strong { font-weight: 600; }
+.craft-row-text small { font-size: 12px; color: #f0b062; }
+.craft-row-missing strong { color: #cbbda6; } .craft-row-missing .craft-sprite { opacity: .6; }
+.craft-row-locked strong { color: #a99b87; } .craft-row-locked small { color: #bfae96; } .craft-row-locked .craft-sprite { opacity: .4; }
+.craft-cost { flex: none; font-size: 12px; color: #bfae96; white-space: nowrap; }
+.craft-sprite { flex: none; width: 32px; height: 32px; image-rendering: pixelated; }
+.craft-sprite-large { width: 64px; height: 64px; }
+.craft-sprite-empty { display: inline-block; }
+.craft-empty { margin: 12px 4px; color: #bfae96; }
+.craft-right { min-height: 0; display: flex; }
+.craft-card { flex: 1; display: flex; flex-direction: column; min-height: 0; overflow: auto; padding: 12px 14px; background: #30271e; border: 1px solid #66513b; overflow-wrap: anywhere; }
+.craft-card-empty { color: #bfae96; }
+.craft-card-top { display: flex; gap: 12px; align-items: center; }
+.craft-pic { flex: none; display: flex; align-items: center; justify-content: center; width: 84px; height: 84px; background: #211c16; border: 1px solid #66513b; }
+.craft-card h2 { font-size: 18px; color: #ffd985; }
+.craft-card h3 { margin-top: 12px; padding-bottom: 3px; border-bottom: 1px solid #54432f; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: #bfae96; }
+.craft-desc { margin: 3px 0; font-size: 13px; color: #e8dcc8; }
+.craft-meta { margin: 3px 0 0; font-size: 12px; color: #bfae96; }
+.craft-need { display: flex; gap: 8px; align-items: baseline; padding: 4px 0; }
+.craft-need small { color: #bfae96; }
+.craft-mark { width: 16px; text-align: center; font-weight: bold; }
+.craft-need-ok .craft-mark { color: #a8d57a; } .craft-need-no .craft-mark { color: #ef8a80; } .craft-need-no { color: #ffd9d4; }
+.craft-tools, .craft-place { margin: 8px 0 0; padding: 6px 9px; font-size: 13px; background: #262019; border-left: 3px solid #66513b; }
+.craft-link { font: inherit; background: none; border: 0; padding: 0; color: #9ed2ff; text-decoration: underline; cursor: pointer; text-transform: none; letter-spacing: 0; }
+.craft-link:disabled { opacity: .5; cursor: default; }
+.craft-hint { margin: 4px 0; font-size: 12px; color: #bfae96; }
+.craft-progress { margin-top: 10px; }
+.craft-progress p { margin: 0 0 4px; }
+.craft-track { height: 12px; background: #211c16; border: 1px solid #66513b; }
+.craft-fill { height: 100%; width: 100%; background: #b48c4d; transform-origin: left; animation: craft-fill linear both; }
+@keyframes craft-fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.craft-foot { display: flex; align-items: center; gap: 10px; margin-top: auto; padding-top: 12px; border-top: 1px solid #54432f; }
+.craft-qty { display: inline-flex; align-items: center; gap: 2px; }
+.craft-qty button { font: inherit; min-width: 30px; padding: 5px 8px; color: #eee5d3; background: #443623; border: 1px solid #66513b; border-radius: 3px; cursor: pointer; }
+.craft-qty output { min-width: 38px; padding: 5px 6px; text-align: center; background: #211c16; border: 1px solid #66513b; }
+.craft-qty button:disabled, .craft-go:disabled { opacity: .5; cursor: default; }
+.craft-note { color: #f0b062; font-size: 13px; }
+.craft-go { margin-left: auto; font: inherit; font-weight: bold; padding: 8px 26px; color: #211c16; background: #d9a441; border: 1px solid #ffd985; border-radius: 3px; cursor: pointer; }

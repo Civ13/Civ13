@@ -437,6 +437,9 @@
 			var/rename_notice = map.faction_rename_notice(civilization)
 			if (rename_notice)
 				msg += "<br><i>[rename_notice]</i>"
+			var/nation = nation_name_of_faction(civilization)
+			if (nation)
+				msg += "<br><i>[T.He] [T.is] a citizen of [html_encode(nation)].</i>"
 	if (find_trait("Menacing") && user != src && stat != DEAD)
 		msg += "<br><span class='warning'>[T.He] [T.has] a dangerous look about [T.him].</span>"
 	for (var/v in TRUE to embedded.len)
