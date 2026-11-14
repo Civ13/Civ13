@@ -20,7 +20,7 @@ var/global/list/land_suggestions_told = list() // region id -> the suggestion ad
 // Lands whose stage means something: places people can live. Transit worlds,
 // event and practice worlds and battle worlds never get one.
 /proc/land_stage_kind_ok(kind)
-	return kind in list("SURFACE", "OCEANIC", "UNDERGROUND", "OTHER")
+	return kind in list("SURFACE", "OCEANIC", "UNDERGROUND", "OTHER", "EXPEDITION")
 
 // Reads the stage list from this world's transfer agent. Sleeps; returns FALSE
 // and keeps the last list when the agent cannot answer.
@@ -120,6 +120,9 @@ var/global/list/land_suggestions_told = list() // region id -> the suggestion ad
 /proc/land_stages_refresh_due()
 	if(land_stages_checked && world.time - land_stages_checked < LAND_STAGE_REFRESH)
 		return FALSE
+	// A land across the sea keeps its chart current too: whether it is settled (land_choices.dm).
+	if(shard_group.kind == "EXPEDITION")
+		world_chart_refresh()
 	return land_stages_refresh()
 
 // The stage of a land: MAINLAND, CLOSED, FRONTIER, COLONY or OPEN.

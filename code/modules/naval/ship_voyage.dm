@@ -1,8 +1,8 @@
 // ============================================================
 // Voyages on the world chart (boat expeditions, docs/ship-voyage.md)
 // ------------------------------------------------------------
-// A built hull lying off the edge of a mainland region can set out on a
-// voyage across the world chart (world_chart.dm). Her crew pick a land their
+// A built hull lying off the edge of a mainland region, or of a land across
+// the sea, can set out on a voyage across the world chart (world_chart.dm). Her crew pick a land their
 // chart shows, or scout unknown water. About a minute a chart tile passes while
 // she lies off the coast under way: nobody steers and nothing changes aboard.
 //
@@ -51,8 +51,15 @@
 	var/digit = text2num(copytext(mask, position, position + 1), 16)
 	return (digit >> (bit % 4)) & 1
 
-// The chart tile this world sits on: its own pin, else the mainland's.
+// The chart tile this world sits on: a land across the sea's own tile, else
+// its pin, else the mainland's.
 /proc/voyage_origin()
+	var/key = expedition_land_key()
+	if (key)
+		var/list/xy = splittext(key, ",")
+		if (length(xy) == 2 && isnum(text2num(xy[1])) && isnum(text2num(xy[2])))
+			return list(text2num(xy[1]), text2num(xy[2]))
+		return null
 	var/list/pins = world_chart["pins"]
 	if (!islist(pins))
 		return null
@@ -85,7 +92,10 @@
 			continue
 		var/x = text2num(xy[1])
 		var/y = text2num(xy[2])
-		if (!isnum(x) || !isnum(y) || !voyage_seen(owner, x, y))
+		// A settled or claimed land is on everyone's chart; the land she lies off is not a voyage.
+		if (!isnum(x) || !isnum(y) || (x == origin[1] && y == origin[2]))
+			continue
+		if (!voyage_seen(owner, x, y) && !(found["state"] in list("SETTLED", "CLAIMED")))
 			continue
 		var/tiles_away = voyage_distance(origin, x, y)
 		.["[capitalize(world_chart_tile_label(template))] at [x],[y]: [tiles_away] tile\s, about [tiles_away] minute\s[found["region"] ? " (a land already opened)" : ""]"] = list(x, y, tiles_away)
@@ -120,7 +130,7 @@
 /obj/structure/hull_tiller/proc/voyage_refusal(mob/living/human/H)
 	if (voyage)
 		return "She is already on a voyage."
-	if (!shard_group || !shard_group.enabled || shard_group.kind == "EXPEDITION")
+	if (!shard_group || !shard_group.enabled)
 		return "No world chart reaches these waters."
 	var/reason = crossing_refusal(H)
 	if (reason)
@@ -165,7 +175,10 @@
 		return
 	if (WWinput(H, "Set out for [choice]? Everyone aboard sails with her; whoever stays ashore is left behind.", craft.name, "No", list("Yes", "No")) != "Yes" || get_dist(H, src) > 1 || !craft)
 		return
-	set_out(H, "course", land[1], land[2], owner, land[3], copytext(choice, 1, findtext(choice, ":")))
+	// Sailing on from a land nobody settled or claimed, the captain may give it up (land_choices.dm).
+	var/abandon = abandon_choice(H)
+	if (set_out(H, "course", land[1], land[2], owner, land[3], copytext(choice, 1, findtext(choice, ":"))) && abandon && voyage)
+		voyage["abandon"] = TRUE
 
 // Sets her on a voyage of minutes chart tiles' time. A course asks the world
 // directory for the land at once, so it can be opened while she sails.
@@ -257,6 +270,8 @@
 		else
 			problem = cross(id, null, mine["id"])
 			if (!problem)
+				if (mine["abandon"])
+					expedition_land_ask("abandon", mine["by"])
 				return TRUE
 	if (overdue)
 		log_game("Voyage: the [craft.name] gave up waiting off chart tile [mine["x"]],[mine["y"]]: [problem] (voyage [mine["id"]]).")
