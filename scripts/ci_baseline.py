@@ -838,6 +838,8 @@ SUITES = {
     # branches gave; per-era equality checks only shrink. Source scan of code/.
     'era_helpers': {'files': ('tests/era_helpers/test_era_helpers.py',),
         'paths': ('tests/era_helpers/',), 'shared_paths': ()},
+    'anvil_mold_costs': {'files': ('tests/anvil_mold_costs/test_anvil_mold_costs.py',),
+        'paths': ('tests/anvil_mold_costs/',), 'shared_paths': ()},
     # Solid fuel kinds and per-device rates keep the old hard-coded values.
     'solid_fuel': {'files': ('tests/solid_fuel/test_solid_fuel.py',),
         'paths': ('tests/solid_fuel/',), 'shared_paths': ()},
