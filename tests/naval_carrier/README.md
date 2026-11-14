@@ -40,7 +40,7 @@ The carrier lies bow north in the same fixture so the light plane, which is buil
 
 The probe's map metadata answers `is_node_done()` from a global toggle, so the research gate can be exercised without a faction.
 
-- **Research:** the Naval Aviation node needs Powered Flight and Submarines; the shipyard office recipe is gated on it.
+- **Research:** the Naval Aviation node needs Powered Flight and Wagons & Ships; the shipyard office recipe is gated on it.
 - **Office:** without research the placement refusal names the research and the missing cable but not the sea; with research only the cable. A carrier fits bow east or west on the sea north-east of the office; bow north it would run off the map; fit checks lay nothing down. Laying down costs 400 steel, 20 glass and 40 cable and leaves the ship anchored with empty bunkers; an office whose sea is under another ship lays nothing down.
 - **Bunkers:** a dry ship stops with the reason; pouring a barrel takes its diesel and petroleum and leaves the water; the bunkers hold 1000 units; a hop at full ahead burns 6 and the last hop stops the ship.
 - **Chart:** heading, telegraph, fuel, hops left, the map edge or rock ahead with the distance, and the last refusal.
@@ -311,3 +311,4 @@ The fixture is sand ashore (x 1-10) and deep sea beyond, with the boathouse at 1
 - **The crew's chart:** a crew sails for their faction; the seen mask shows only that owner's tiles; only a seen land with a coast is offered, with its size, biome and voyage time from this world's pinned tile; scouting turns round within the chart.
 - **Setting out:** no voyages outside a region group or from a land across the sea; she sets out at anchor, and the tiller tells how long is left.
 - **Landfall:** with no answer, while the land is being opened, or while its world does not answer, she waits off the coast; she turns back after waiting too long or at once when the course is refused.
+- **A land across the sea:** voyages sail on from the land's own chart tile; a settled land is on every chart and the land she lies off is not offered; settling needs a mooring post and 3 beds slept in by different people within 40 tiles of it; a settled land, or the mainland, is never undecided.

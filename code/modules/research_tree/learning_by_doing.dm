@@ -1,0 +1,163 @@
+// ============================================================
+// Research Tree - learning by doing (Val, 2026-11-14)
+// ------------------------------------------------------------
+// "There should be ways to advance research that aren't only sitting around
+// waiting for a timer." On book-research worlds:
+//  - Scholarship from active work: field work, practice, prototypes, field
+//    study, samples and demonstrations wrote chapter points but taught no
+//    scholarship, so the skill each era needs still came from bench time.
+//    Each now teaches the scholarship the same points would have earned at
+//    the bench, and half as much again. Each piece of work teaches a
+//    character once, so swapping in a fresh book teaches nothing new.
+//  - Variety: the first time a character makes, performs or harvests each
+//    different thing teaches its body skill far more than a repeat, and long
+//    runs of the same thing teach less.
+//  - Beside a master: working within reach of someone clearly more skilled
+//    doubles what the action teaches.
+// ============================================================
+
+// Scholarship for points written by active work, against the same points
+// earned at the bench (SCHOLAR_RESEARCH_GAIN each).
+#define SCHOLAR_ACTIVE_GAIN_RATE 1.5
+// A demonstration writes no points; it teaches as this share of the subject.
+#define SCHOLAR_DEMONSTRATION_SHARE 0.2
+// The most lessons and kinds of work a character keeps track of.
+#define SCHOLAR_LESSON_LIMIT 600
+#define SKILL_VARIETY_LIMIT 500
+// Skill gain by how often this character has done this exact thing before.
+#define SKILL_VARIETY_FIRST 5      // never before
+#define SKILL_VARIETY_NORMAL_UNTIL 5 // the 2nd to 5th time: the usual gain
+#define SKILL_VARIETY_TIRED_UNTIL 10 // the 6th to 10th time
+#define SKILL_VARIETY_TIRED 0.5
+#define SKILL_VARIETY_ROTE 0.25    // from then on
+// Beside a master: how close, how much better they must be, and the gain.
+#define SKILL_MASTER_REACH 2
+#define SKILL_MASTER_LEAD 1.25
+#define SKILL_MASTER_GAIN 2
+
+// Body skills a master can pass on by example.
+var/global/list/skill_master_stats = list("crafting", "medical", "farming", "hunting", "throwing", "swords", "bows", "rifle", "pistol", "machinegun", "philosophy")
+
+/mob/living/human
+	var/list/scholar_lessons = null // lesson keys this character has already learned from
+	var/list/skill_variety = null   // "stat:thing" => times done, up to SKILL_VARIETY_TIRED_UNTIL
+
+/proc/learning_by_doing_enabled()
+	return map && map.book_research_enabled()
+
+// ---------- Scholarship from active work ----------
+
+// Teaches the scholarship of `points` chapter points written by active work
+// on node_id. lesson_key names the piece of work; each teaches once.
+// Returns the discipline levels gained.
+/mob/living/human/proc/gain_active_scholarship(node_id, points, lesson_key)
+	if (!learning_by_doing_enabled() || stat == DEAD || !isnum(points) || points <= 0 || !istext(lesson_key) || !valid_recipe_node_id(node_id))
+		return 0
+	if (!islist(scholar_lessons))
+		scholar_lessons = list()
+	if ((lesson_key in scholar_lessons) || scholar_lessons.len >= SCHOLAR_LESSON_LIMIT)
+		return 0
+	scholar_lessons += lesson_key
+	var/discipline = node_discipline(node_id)
+	var/before = scholar_level(discipline)
+	gain_scholarship(node_id, points * SCHOLAR_RESEARCH_GAIN * SCHOLAR_ACTIVE_GAIN_RATE)
+	var/gained = round(scholar_level(discipline) - before, 0.01)
+	if (gained > 0)
+		to_chat(src, SPAN_NOTICE("The work teaches you something of [scholar_disciplines[discipline]]."))
+	return gained
+
+// What a demonstration teaches: it writes no points of its own.
+/proc/demonstration_lesson_points(datum/research_node/N)
+	return N ? max(1, round(N.cost_ticks * SCHOLAR_DEMONSTRATION_SHARE)) : 0
+
+/proc/clean_scholar_lessons(value)
+	var/list/result = list()
+	if (islist(value))
+		for (var/key in value)
+			if (istext(key) && length(key) && length(key) <= 160 && result.len < SCHOLAR_LESSON_LIMIT)
+				result |= key
+	return result
+
+// ---------- Variety and masters for body skills ----------
+
+/proc/clean_skill_variety(value)
+	var/list/result = list()
+	if (islist(value))
+		for (var/key in value)
+			if (!istext(key) || !length(key) || length(key) > 160 || result.len >= SKILL_VARIETY_LIMIT)
+				continue
+			var/count = value[key]
+			if (isnum(count) && count >= 1)
+				result[key] = min(SKILL_VARIETY_TIRED_UNTIL, round(count))
+	return result
+
+// The multiplier for doing variety_key once more, by how often before.
+/proc/skill_variety_factor(times_before)
+	if (times_before <= 0)
+		return SKILL_VARIETY_FIRST
+	if (times_before < SKILL_VARIETY_NORMAL_UNTIL)
+		return 1
+	if (times_before < SKILL_VARIETY_TIRED_UNTIL)
+		return SKILL_VARIETY_TIRED
+	return SKILL_VARIETY_ROTE
+
+// Counts one more of variety_key for statname and returns its multiplier.
+/mob/living/human/proc/skill_variety_mult(statname, variety_key)
+	if (!learning_by_doing_enabled() || isnull(variety_key))
+		return 1
+	var/key = "[statname]:[variety_key]"
+	if (length(key) > 160)
+		return 1
+	if (!islist(skill_variety))
+		skill_variety = list()
+	var/before = skill_variety[key]
+	if (!isnum(before))
+		// A full record stops counting new things; they teach as usual.
+		if (skill_variety.len >= SKILL_VARIETY_LIMIT)
+			return 1
+		before = 0
+	if (before < SKILL_VARIETY_TIRED_UNTIL)
+		skill_variety[key] = before + 1
+	return skill_variety_factor(before)
+
+// Someone nearby, awake and clearly better at statname.
+/mob/living/human/proc/skill_master_nearby(statname)
+	if (!learning_by_doing_enabled() || !(statname in skill_master_stats) || !isturf(loc) || !islist(stats[statname]))
+		return null
+	var/mine = stats[statname][1]
+	for (var/mob/living/human/M in range(SKILL_MASTER_REACH, src))
+		if (M == src || M.stat != CONSCIOUS || !M.research_presence() || !islist(M.stats) || !islist(M.stats[statname]))
+			continue
+		if (M.stats[statname][1] >= mine * SKILL_MASTER_LEAD)
+			return M
+	return null
+
+/mob/living/human/proc/skill_master_mult(statname)
+	return skill_master_nearby(statname) ? SKILL_MASTER_GAIN : 1
+
+// ---------- Saved with the character ----------
+
+/mob/living/human/persistence_import_fields(list/saved_fields)
+	. = ..()
+	scholar_lessons = clean_scholar_lessons(scholar_lessons)
+	skill_variety = clean_skill_variety(skill_variety)
+	if (stat == DEAD)
+		scholar_lessons = list()
+		skill_variety = list()
+
+/mob/living/human/forget_recipe_knowledge()
+	..()
+	scholar_lessons = list()
+
+#undef SCHOLAR_ACTIVE_GAIN_RATE
+#undef SCHOLAR_DEMONSTRATION_SHARE
+#undef SCHOLAR_LESSON_LIMIT
+#undef SKILL_VARIETY_LIMIT
+#undef SKILL_VARIETY_FIRST
+#undef SKILL_VARIETY_NORMAL_UNTIL
+#undef SKILL_VARIETY_TIRED_UNTIL
+#undef SKILL_VARIETY_TIRED
+#undef SKILL_VARIETY_ROTE
+#undef SKILL_MASTER_REACH
+#undef SKILL_MASTER_LEAD
+#undef SKILL_MASTER_GAIN

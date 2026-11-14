@@ -240,23 +240,32 @@ var/global/list/node_grid_col_cache = null
 	// Args: id, name, category(layer), cost_ticks, min_bench_tier, mode, prereqs, era_tier
 	// Three intersecting layers (Industrial/Military/Health) plus the Tailoring
 	// and Agriculture specialist trees, laddered across the 9 eras. Capstones
-	// (PROTOTYPE mode) advance the age. Cross-branch prereqs make it a tree.
+	// (PROTOTYPE mode) advance the age.
+	// Groundwork order (Val, 2026-11-14): a prereq must be a real need - the
+	// same craft one step earlier, the material the thing is made of, or the
+	// power that drives it - never just "the previous era's node". Tools,
+	// metals and power are the trunk every late branch may lean on; a node
+	// that is one era's flavour of a craft (Irrigation, Imperial Architecture,
+	// Classical Dress, Siege Engines, Mail & Plate) is a side node nothing
+	// later needs. No civil node needs a military one. tests/research_tree_order
+	// holds these rules.
 	// Rebalanced 2026-07: recipe unlocks re-clustered from the actual crafting
 	// catalogue so every node earns its place (see recipe_node_requirements).
 	// --- Industrial: Toolmaking ---
 	register_research_node(new /datum/research_node("basic_tools", "Basic Toolmaking", "Industrial", 60, 0, RESEARCH_MODE_ANALYSIS, null, 0))
-	register_research_node(new /datum/research_node("iron_tools", "Iron Tools", "Industrial", 130, 1, RESEARCH_MODE_ANALYSIS, list("basic_tools"), 2))
+	register_research_node(new /datum/research_node("iron_tools", "Iron Tools", "Industrial", 130, 1, RESEARCH_MODE_ANALYSIS, list("basic_tools","iron_smithing"), 2))
 	register_research_node(new /datum/research_node("machined_tools", "Machined Tools", "Industrial", 200, 3, RESEARCH_MODE_ANALYSIS, list("iron_tools","steelmaking"), 4))
 	register_research_node(new /datum/research_node("power_tools", "Power Tools", "Industrial", 270, 5, RESEARCH_MODE_ANALYSIS, list("machined_tools","electricity"), 6))
 	// --- Industrial: Metallurgy ---
 	// Prototype: a cast axehead mold (gated on stone_arms, era-0 baseline --
 	// always available, so it can never be circular with bronze_working itself).
-	register_research_node(new /datum/research_node("bronze_working", "Bronze Working", "Industrial", 142, 0, RESEARCH_MODE_PROTOTYPE, null, 1, /obj/item/weapon/clay/mold/axehead))
+	register_research_node(new /datum/research_node("bronze_working", "Bronze Working", "Industrial", 142, 0, RESEARCH_MODE_PROTOTYPE, list("basic_tools"), 1, /obj/item/weapon/clay/mold/axehead))
 	// Prototype: a bronze ingot mold (gated on bronze_working, its own direct prereq).
 	register_research_node(new /datum/research_node("iron_smithing", "Iron Smithing", "Industrial", 195, 1, RESEARCH_MODE_PROTOTYPE, list("bronze_working"), 2, /obj/item/weapon/clay/mold))
 	register_research_node(new /datum/research_node("steelmaking", "Steelmaking", "Industrial", 200, 3, RESEARCH_MODE_ANALYSIS, list("iron_smithing"), 4))
 	register_research_node(new /datum/research_node("alloys", "Alloys", "Industrial", 270, 5, RESEARCH_MODE_ANALYSIS, list("steelmaking"), 6))
-	// Chemical cells precede electrical power distribution.
+	// Chemical cells precede electrical power distribution: Galvanic Cells are
+	// groundwork for Electricity.
 	register_research_node(new /datum/research_node("early_cells", "Early Chemical Cells", "Industrial", 95, 0, RESEARCH_MODE_ANALYSIS, list("bronze_working"), 1))
 	register_research_node(new /datum/research_node("galvanic_cells", "Galvanic Cells", "Industrial", 200, 3, RESEARCH_MODE_ANALYSIS, list("early_cells"), 4))
 	// --- Industrial: Construction (one node per building era) ---
@@ -264,7 +273,7 @@ var/global/list/node_grid_col_cache = null
 	register_research_node(new /datum/research_node("stone_masonry", "Stone Masonry", "Industrial", 95, 0, RESEARCH_MODE_ANALYSIS, list("primitive_construction"), 1))
 	register_research_node(new /datum/research_node("brickmaking", "Brickmaking", "Industrial", 130, 1, RESEARCH_MODE_ANALYSIS, list("stone_masonry"), 2))
 	register_research_node(new /datum/research_node("imperial_architecture", "Imperial Architecture", "Industrial", 165, 2, RESEARCH_MODE_ANALYSIS, list("brickmaking"), 3))
-	register_research_node(new /datum/research_node("reinforced_concrete", "Reinforced Concrete", "Industrial", 200, 3, RESEARCH_MODE_ANALYSIS, list("imperial_architecture","steelmaking"), 4))
+	register_research_node(new /datum/research_node("reinforced_concrete", "Reinforced Concrete", "Industrial", 200, 3, RESEARCH_MODE_ANALYSIS, list("brickmaking","steelmaking"), 4))
 	register_research_node(new /datum/research_node("modern_construction", "Modern Construction", "Industrial", 270, 5, RESEARCH_MODE_ANALYSIS, list("reinforced_concrete"), 6))
 	// --- Industrial: Culture & Faith ---
 	register_research_node(new /datum/research_node("ritual_worship", "Ritual & Worship", "Industrial", 60, 0, RESEARCH_MODE_ANALYSIS, null, 0))
@@ -272,18 +281,18 @@ var/global/list/node_grid_col_cache = null
 	// faction is founded (they were ungated before the rebalance).
 	register_research_node(new /datum/research_node("regalia", "Regalia & Heraldry", "Industrial", 60, 0, RESEARCH_MODE_ANALYSIS, list("weaving"), 0))
 	register_research_node(new /datum/research_node("monuments", "Monuments & Statuary", "Industrial", 130, 1, RESEARCH_MODE_ANALYSIS, list("stone_masonry","ritual_worship"), 2))
-	register_research_node(new /datum/research_node("fine_arts", "Fine Arts & Leisure", "Industrial", 165, 2, RESEARCH_MODE_ANALYSIS, list("monuments"), 3))
+	register_research_node(new /datum/research_node("fine_arts", "Fine Arts & Leisure", "Industrial", 165, 2, RESEARCH_MODE_ANALYSIS, list("ritual_worship"), 3))
 	// --- Industrial: Production & Trade ---
 	register_research_node(new /datum/research_node("pottery_storage", "Pottery & Cookware", "Industrial", 60, 0, RESEARCH_MODE_ANALYSIS, null, 0))
 	register_research_node(new /datum/research_node("cooperage", "Cooperage & Containers", "Industrial", 95, 0, RESEARCH_MODE_ANALYSIS, list("basic_tools"), 1))
 	register_research_node(new /datum/research_node("resource_processing", "Resource Processing", "Industrial", 95, 0, RESEARCH_MODE_ANALYSIS, list("basic_tools"), 1))
 	register_research_node(new /datum/research_node("early_economy", "Trade & Coinage", "Industrial", 95, 0, RESEARCH_MODE_ANALYSIS, null, 1))
-	register_research_node(new /datum/research_node("workshops", "Workshops", "Industrial", 130, 1, RESEARCH_MODE_ANALYSIS, list("pottery_storage"), 2))
+	register_research_node(new /datum/research_node("workshops", "Workshops", "Industrial", 130, 1, RESEARCH_MODE_ANALYSIS, list("bronze_working"), 2))
 	register_research_node(new /datum/research_node("glassworking", "Glassworking", "Industrial", 130, 1, RESEARCH_MODE_ANALYSIS, list("pottery_storage"), 2))
 	register_research_node(new /datum/research_node("papermaking", "Papermaking", "Industrial", 130, 1, RESEARCH_MODE_ANALYSIS, null, 2))
 	register_research_node(new /datum/research_node("printing_currency", "Printing Press", "Industrial", 165, 2, RESEARCH_MODE_ANALYSIS, list("papermaking"), 3))
 	register_research_node(new /datum/research_node("optics_instruments", "Optics & Instruments", "Industrial", 165, 2, RESEARCH_MODE_ANALYSIS, list("glassworking"), 3))
-	register_research_node(new /datum/research_node("factories", "Factories", "Industrial", 200, 3, RESEARCH_MODE_ANALYSIS, list("printing_currency","steam_power"), 4))
+	register_research_node(new /datum/research_node("factories", "Factories", "Industrial", 200, 3, RESEARCH_MODE_ANALYSIS, list("workshops","steam_power"), 4))
 	register_research_node(new /datum/research_node("assembly_line", "Assembly Line", "Industrial", 235, 4, RESEARCH_MODE_ANALYSIS, list("factories"), 5))
 	register_research_node(new /datum/research_node("automation", "Automation", "Industrial", 305, 6, RESEARCH_MODE_ANALYSIS, list("assembly_line","electricity"), 7))
 	// Prototype: an early electronic device (gated on assembly_line, era5, well
@@ -291,20 +300,20 @@ var/global/list/node_grid_col_cache = null
 	register_research_node(new /datum/research_node("digital_computing", "Digital Computing", "Industrial", 510, 7, RESEARCH_MODE_PROTOTYPE, list("automation","electricity"), 8, /obj/item/camera/coldwar))
 	// Capstone into the Digital Age (2026). Prototype: a mobile phone (gated on
 	// digital_computing, era8, so it is always buildable before this node).
-	register_research_node(new /datum/research_node("additive_manufacturing", "3D Printing", "Industrial", 420, 8, RESEARCH_MODE_ANALYSIS, list("digital_networks","automation"), 9))
+	register_research_node(new /datum/research_node("additive_manufacturing", "3D Printing", "Industrial", 420, 8, RESEARCH_MODE_ANALYSIS, list("digital_computing"), 9))
 	register_research_node(new /datum/research_node("digital_networks", "Digital Networks", "Industrial", 560, 8, RESEARCH_MODE_PROTOTYPE, list("digital_computing"), 9, /obj/item/weapon/telephone/mobile))
 	// Digital Age consumer hardware: smartphones, LED lighting, lithium-ion storage.
 	register_research_node(new /datum/research_node("consumer_electronics", "Consumer Electronics", "Industrial", 420, 8, RESEARCH_MODE_ANALYSIS, list("digital_networks"), 9))
 	// Smart home (2026): a hub that runs lights, plugs and locks by voice.
 	register_research_node(new /datum/research_node("smart_home", "Smart Home", "Industrial", 380, 8, RESEARCH_MODE_ANALYSIS, list("consumer_electronics"), 9))
-	register_research_node(new /datum/research_node("uav_drones", "Drones", "Military", 450, 8, RESEARCH_MODE_ANALYSIS, list("consumer_electronics","missiles"), 9))
+	register_research_node(new /datum/research_node("uav_drones", "Drones", "Military", 450, 8, RESEARCH_MODE_ANALYSIS, list("consumer_electronics","powered_flight"), 9))
 	// Spaceflight (space settlement phase 1): probes fly over a survey map of a
 	// barren world. Samples a probe brings home are analysed into notes on
 	// Planetary Survey. Not PROTOTYPE mode: that marks an era-changing capstone.
 	// The Moon opens in 1969 (Val, 2026-11-06), so the chain follows Missiles and
 	// a Cold War bench (tier 7) can research it; era 9 keeps it from being
 	// granted for free before 2026. Mars waits for 2026 (survey_region_open).
-	register_research_node(new /datum/research_node("rocketry", "Rocketry", "Industrial", 480, 7, RESEARCH_MODE_ANALYSIS, list("missiles"), 9))
+	register_research_node(new /datum/research_node("rocketry", "Rocketry", "Industrial", 480, 7, RESEARCH_MODE_ANALYSIS, list("aviation_rocketry"), 9))
 	register_research_node(new /datum/research_node("planetary_survey", "Planetary Survey", "Industrial", 420, 7, RESEARCH_MODE_ANALYSIS, list("rocketry"), 9))
 	register_research_node(new /datum/research_node("crewed_flight", "Crewed Flight", "Industrial", 560, 7, RESEARCH_MODE_ANALYSIS, list("planetary_survey"), 9))
 	register_research_node(new /datum/research_node("orbital_flight", "Orbital Flight", "Industrial", 600, 7, RESEARCH_MODE_ANALYSIS, list("crewed_flight"), 9))
@@ -329,37 +338,37 @@ var/global/list/node_grid_col_cache = null
 	// --- Industrial: Power ---
 	// Era 3: its unlocks (large/powered saw mills) carried ~era-4 legacy
 	// thresholds, so era 2 would have leaked them via the baseline grant.
-	register_research_node(new /datum/research_node("watermills", "Watermills", "Industrial", 165, 2, RESEARCH_MODE_ANALYSIS, null, 3))
+	register_research_node(new /datum/research_node("watermills", "Watermills", "Industrial", 165, 2, RESEARCH_MODE_ANALYSIS, list("resource_processing"), 3))
 	// Prototype: a machined component (gated on basic_tools, era0 baseline --
 	// placeholder until a dedicated "engine prototype" item exists).
-	register_research_node(new /datum/research_node("steam_power", "Steam Power", "Industrial", 300, 3, RESEARCH_MODE_PROTOTYPE, list("watermills"), 4, /obj/item/weapon/material/handle))
+	register_research_node(new /datum/research_node("steam_power", "Steam Power", "Industrial", 300, 3, RESEARCH_MODE_PROTOTYPE, list("watermills","iron_smithing"), 4, /obj/item/weapon/material/handle))
 	// Prototype: a spool of cable (gated on paved_infrastructure, era3, well
 	// before this node's era5).
-	register_research_node(new /datum/research_node("hydraulic_fracturing", "Hydraulic Fracturing", "Industrial", 400, 7, RESEARCH_MODE_ANALYSIS, list("electricity", "modern_construction"), 8))
-	register_research_node(new /datum/research_node("electricity", "Electricity", "Industrial", 352, 4, RESEARCH_MODE_PROTOTYPE, list("steam_power"), 5, /obj/item/stack/cable_coil))
+	register_research_node(new /datum/research_node("hydraulic_fracturing", "Hydraulic Fracturing", "Industrial", 400, 7, RESEARCH_MODE_ANALYSIS, list("combustion","electricity"), 8))
+	register_research_node(new /datum/research_node("electricity", "Electricity", "Industrial", 352, 4, RESEARCH_MODE_PROTOTYPE, list("steam_power","galvanic_cells"), 5, /obj/item/stack/cable_coil))
 	register_research_node(new /datum/research_node("combustion", "Combustion Engine", "Industrial", 235, 4, RESEARCH_MODE_ANALYSIS, list("steam_power","steelmaking"), 5))
 	// Prototype: a geiger counter (gated on factories, era4, well before this
 	// node's era7).
-	register_research_node(new /datum/research_node("nuclear_power", "Nuclear Power", "Industrial", 458, 6, RESEARCH_MODE_PROTOTYPE, list("combustion"), 7, /obj/item/weapon/geiger_counter))
+	register_research_node(new /datum/research_node("nuclear_power", "Nuclear Power", "Industrial", 458, 6, RESEARCH_MODE_PROTOTYPE, list("electricity","alloys"), 7, /obj/item/weapon/geiger_counter))
 	// --- Industrial: Vehicles ---
 	register_research_node(new /datum/research_node("carts", "Carts", "Industrial", 95, 0, RESEARCH_MODE_ANALYSIS, null, 1))
 	register_research_node(new /datum/research_node("wagons_ships", "Wagons & Ships", "Industrial", 165, 2, RESEARCH_MODE_ANALYSIS, list("carts"), 3))
 	register_research_node(new /datum/research_node("rail_steam", "Rail & Steam", "Industrial", 200, 3, RESEARCH_MODE_ANALYSIS, list("wagons_ships","steam_power"), 4))
-	register_research_node(new /datum/research_node("automobiles", "Automobiles", "Industrial", 235, 4, RESEARCH_MODE_ANALYSIS, list("rail_steam","combustion"), 5))
+	register_research_node(new /datum/research_node("automobiles", "Automobiles", "Industrial", 235, 4, RESEARCH_MODE_ANALYSIS, list("wagons_ships","combustion"), 5))
 	// Powered Flight (1903) unlocks the aircraft hangar that builds the light plane.
-	register_research_node(new /datum/research_node("powered_flight", "Powered Flight", "Industrial", 270, 5, RESEARCH_MODE_ANALYSIS, list("automobiles","combustion"), 6))
+	register_research_node(new /datum/research_node("powered_flight", "Powered Flight", "Industrial", 270, 5, RESEARCH_MODE_ANALYSIS, list("combustion"), 6))
 	// Submarines (1900s) unlock the submarine pen that launches a diving boat.
 	register_research_node(new /datum/research_node("submarines", "Submarines", "Industrial", 270, 5, RESEARCH_MODE_ANALYSIS, list("wagons_ships","combustion","electricity"), 6))
 	register_research_node(new /datum/research_node("aviation_rocketry", "Aviation & Rocketry", "Industrial", 305, 6, RESEARCH_MODE_ANALYSIS, list("powered_flight","alloys"), 7))
 	// Naval Aviation (1920s) unlocks the shipyard office that lays down an aircraft carrier.
-	register_research_node(new /datum/research_node("naval_aviation", "Naval Aviation", "Industrial", 305, 6, RESEARCH_MODE_ANALYSIS, list("powered_flight","submarines"), 7))
+	register_research_node(new /datum/research_node("naval_aviation", "Naval Aviation", "Industrial", 305, 6, RESEARCH_MODE_ANALYSIS, list("powered_flight","wagons_ships"), 7))
 	// Naval Mines (1850s) unlock the contact mine; Magnetic Mines & Degaussing
 	// (1939) the magnetic mine and the counters to it (naval/naval_mines.dm).
-	register_research_node(new /datum/research_node("naval_mines", "Naval Mines", "Military", 235, 4, RESEARCH_MODE_ANALYSIS, list("field_artillery","rail_steam"), 5))
-	register_research_node(new /datum/research_node("magnetic_mines", "Magnetic Mines & Degaussing", "Military", 305, 6, RESEARCH_MODE_ANALYSIS, list("naval_mines","submarines"), 7))
+	register_research_node(new /datum/research_node("naval_mines", "Naval Mines", "Military", 235, 4, RESEARCH_MODE_ANALYSIS, list("gunpowder","wagons_ships"), 5))
+	register_research_node(new /datum/research_node("magnetic_mines", "Magnetic Mines & Degaussing", "Military", 305, 6, RESEARCH_MODE_ANALYSIS, list("naval_mines","electricity"), 7))
 	// --- Industrial: Infrastructure ---
 	register_research_node(new /datum/research_node("paved_infrastructure", "Paved Infrastructure", "Industrial", 165, 2, RESEARCH_MODE_ANALYSIS, list("stone_masonry"), 3))
-	register_research_node(new /datum/research_node("utilities", "Utilities", "Industrial", 235, 4, RESEARCH_MODE_ANALYSIS, list("paved_infrastructure","electricity"), 5))
+	register_research_node(new /datum/research_node("utilities", "Utilities", "Industrial", 235, 4, RESEARCH_MODE_ANALYSIS, list("electricity"), 5))
 	// --- Industrial: Agriculture ---
 	// Basic Agriculture is the Bronze Age gateway for farming: it unlocks the
 	// basic farming tools AND opens the specialized Agriculture tree below.
@@ -369,12 +378,12 @@ var/global/list/node_grid_col_cache = null
 	// Irrigation gates the "dig an irrigation channel" shovel action -- see
 	// /obj/item/weapon/material/shovel/attack_self() in code/modules/1713/tools.dm.
 	register_research_node(new /datum/research_node("irrigation", "Irrigation", "Agriculture", 165, 1, RESEARCH_MODE_ANALYSIS, list("basic_agriculture"), 2, null, "Agriculture"))
-	register_research_node(new /datum/research_node("advanced_agriculture", "Advanced Agriculture", "Agriculture", 235, 3, RESEARCH_MODE_ANALYSIS, list("irrigation"), 4, null, "Agriculture"))
-	// Hydroponics (docs/hydroponics-design.md H5): era 6, after Advanced Agriculture and Electricity.
-	register_research_node(new /datum/research_node("hydroponics", "Hydroponics", "Agriculture", 305, 5, RESEARCH_MODE_ANALYSIS, list("advanced_agriculture","electricity"), 6, null, "Agriculture"))
+	register_research_node(new /datum/research_node("advanced_agriculture", "Advanced Agriculture", "Agriculture", 235, 3, RESEARCH_MODE_ANALYSIS, list("basic_agriculture"), 4, null, "Agriculture"))
+	// Hydroponics (docs/hydroponics-design.md H5): era 6, the end of the water line, after Irrigation and Electricity.
+	register_research_node(new /datum/research_node("hydroponics", "Hydroponics", "Agriculture", 305, 5, RESEARCH_MODE_ANALYSIS, list("irrigation","electricity"), 6, null, "Agriculture"))
 	// --- Military: Melee ---
 	register_research_node(new /datum/research_node("stone_arms", "Stone Arms", "Military", 60, 0, RESEARCH_MODE_ANALYSIS, null, 0))
-	register_research_node(new /datum/research_node("bronze_weapons", "Bronze Arms & Armor", "Military", 95, 0, RESEARCH_MODE_ANALYSIS, list("stone_arms"), 1))
+	register_research_node(new /datum/research_node("bronze_weapons", "Bronze Arms & Armor", "Military", 95, 0, RESEARCH_MODE_ANALYSIS, list("stone_arms","bronze_working"), 1))
 	register_research_node(new /datum/research_node("steel_blades", "Steel Blades", "Military", 130, 1, RESEARCH_MODE_ANALYSIS, list("bronze_weapons","iron_smithing"), 2))
 	// --- Military: Archery ---
 	register_research_node(new /datum/research_node("archery", "Archery", "Military", 60, 0, RESEARCH_MODE_ANALYSIS, null, 0))
@@ -406,23 +415,23 @@ var/global/list/node_grid_col_cache = null
 	register_research_node(new /datum/research_node("selfloading_firearms", "Self-Loading Firearms", "Military", 270, 5, RESEARCH_MODE_ANALYSIS, list("cartridge_ammo"), 6))
 	register_research_node(new /datum/research_node("automatic_weapons", "Automatic Weapons", "Military", 305, 6, RESEARCH_MODE_ANALYSIS, list("selfloading_firearms"), 7))
 	// --- Military: Artillery ---
-	register_research_node(new /datum/research_node("siege_engines", "Siege Engines", "Military", 130, 1, RESEARCH_MODE_ANALYSIS, null, 2))
-	register_research_node(new /datum/research_node("cannon", "Cannon", "Military", 165, 2, RESEARCH_MODE_ANALYSIS, list("siege_engines","imperial_architecture"), 3))
+	register_research_node(new /datum/research_node("siege_engines", "Siege Engines", "Military", 130, 1, RESEARCH_MODE_ANALYSIS, list("primitive_construction"), 2))
+	register_research_node(new /datum/research_node("cannon", "Cannon", "Military", 165, 2, RESEARCH_MODE_ANALYSIS, list("gunpowder"), 3))
 	register_research_node(new /datum/research_node("field_artillery", "Field Artillery", "Military", 200, 3, RESEARCH_MODE_ANALYSIS, list("cannon","steelmaking"), 4))
 	// Prototype: a tank shell casing (gated on field_artillery, its own direct prereq).
 	register_research_node(new /datum/research_node("mechanized_war", "Mechanized Warfare", "Military", 405, 5, RESEARCH_MODE_PROTOTYPE, list("field_artillery","combustion","steelmaking"), 6, /obj/item/stack/ammopart/casing/tank))
-	register_research_node(new /datum/research_node("missiles", "Missiles", "Military", 305, 6, RESEARCH_MODE_ANALYSIS, list("mechanized_war","aviation_rocketry"), 7))
+	register_research_node(new /datum/research_node("missiles", "Missiles", "Military", 305, 6, RESEARCH_MODE_ANALYSIS, list("aviation_rocketry","gunpowder"), 7))
 	// --- Military: Armor gateway (advanced armour lives in the Tailoring tree) ---
 	register_research_node(new /datum/research_node("padded_armor", "Primitive Armor", "Military", 60, 0, RESEARCH_MODE_ANALYSIS, null, 0))
 	// --- Health: Medicine ---
 	register_research_node(new /datum/research_node("herbalism", "Herbalism", "Health", 60, 0, RESEARCH_MODE_ANALYSIS, null, 0))
 	register_research_node(new /datum/research_node("apothecary", "Apothecary", "Health", 130, 1, RESEARCH_MODE_ANALYSIS, list("herbalism"), 2))
-	register_research_node(new /datum/research_node("pharmacology", "Pharmacology", "Health", 235, 4, RESEARCH_MODE_ANALYSIS, list("apothecary","printing_currency"), 5))
+	register_research_node(new /datum/research_node("pharmacology", "Pharmacology", "Health", 235, 4, RESEARCH_MODE_ANALYSIS, list("apothecary"), 5))
 	register_research_node(new /datum/research_node("modern_medicine", "Modern Medicine", "Health", 305, 6, RESEARCH_MODE_ANALYSIS, list("pharmacology"), 7))
 	// --- Health: Surgery ---
-	register_research_node(new /datum/research_node("field_surgery", "Field Surgery", "Health", 95, 0, RESEARCH_MODE_ANALYSIS, list("bronze_working"), 1))
-	register_research_node(new /datum/research_node("surgical_theory", "Surgical Theory", "Health", 165, 2, RESEARCH_MODE_ANALYSIS, list("field_surgery","printing_currency"), 3))
-	register_research_node(new /datum/research_node("anesthetic_surgery", "Anesthetic Surgery", "Health", 235, 4, RESEARCH_MODE_ANALYSIS, list("surgical_theory"), 5))
+	register_research_node(new /datum/research_node("field_surgery", "Field Surgery", "Health", 95, 0, RESEARCH_MODE_ANALYSIS, list("herbalism"), 1))
+	register_research_node(new /datum/research_node("surgical_theory", "Surgical Theory", "Health", 165, 2, RESEARCH_MODE_ANALYSIS, list("field_surgery","papermaking"), 3))
+	register_research_node(new /datum/research_node("anesthetic_surgery", "Anesthetic Surgery", "Health", 235, 4, RESEARCH_MODE_ANALYSIS, list("surgical_theory","apothecary"), 5))
 	// --- Health: Sanitation ---
 	register_research_node(new /datum/research_node("hygiene", "Hygiene", "Health", 95, 0, RESEARCH_MODE_ANALYSIS, null, 1))
 	register_research_node(new /datum/research_node("sanitation", "Sanitation", "Health", 165, 2, RESEARCH_MODE_ANALYSIS, list("hygiene"), 3))
@@ -430,15 +439,15 @@ var/global/list/node_grid_col_cache = null
 	register_research_node(new /datum/research_node("public_health", "Public Health", "Health", 305, 6, RESEARCH_MODE_ANALYSIS, list("germ_theory"), 7))
 	// --- Tailoring tree: Textiles (clothing by era, reachable via Weaving) ---
 	register_research_node(new /datum/research_node("classical_dress", "Classical Dress", "Textiles", 95, 0, RESEARCH_MODE_ANALYSIS, list("weaving"), 1, null, "Tailoring"))
-	register_research_node(new /datum/research_node("tailoring", "Tailoring", "Textiles", 130, 1, RESEARCH_MODE_ANALYSIS, list("classical_dress"), 2, null, "Tailoring"))
+	register_research_node(new /datum/research_node("tailoring", "Tailoring", "Textiles", 130, 1, RESEARCH_MODE_ANALYSIS, list("weaving"), 2, null, "Tailoring"))
 	register_research_node(new /datum/research_node("fine_garments", "Fine Garments", "Textiles", 165, 2, RESEARCH_MODE_ANALYSIS, list("tailoring"), 3, null, "Tailoring"))
 	register_research_node(new /datum/research_node("haberdashery", "Haberdashery", "Textiles", 165, 2, RESEARCH_MODE_ANALYSIS, list("tailoring"), 3, null, "Tailoring"))
-	register_research_node(new /datum/research_node("textile_mills", "Textile Mills", "Textiles", 200, 3, RESEARCH_MODE_ANALYSIS, list("fine_garments","steam_power"), 4, null, "Tailoring"))
+	register_research_node(new /datum/research_node("textile_mills", "Textile Mills", "Textiles", 200, 3, RESEARCH_MODE_ANALYSIS, list("tailoring","steam_power"), 4, null, "Tailoring"))
 	register_research_node(new /datum/research_node("ready_made", "Ready-Made Clothing", "Textiles", 235, 4, RESEARCH_MODE_ANALYSIS, list("textile_mills"), 5, null, "Tailoring"))
-	register_research_node(new /datum/research_node("synthetics", "Synthetic Fabrics", "Textiles", 305, 6, RESEARCH_MODE_ANALYSIS, list("ready_made"), 7, null, "Tailoring"))
+	register_research_node(new /datum/research_node("synthetics", "Synthetic Fabrics", "Textiles", 305, 6, RESEARCH_MODE_ANALYSIS, list("textile_mills","combustion"), 7, null, "Tailoring"))
 	// --- Tailoring tree: Armour ---
 	register_research_node(new /datum/research_node("mail_plate", "Mail & Plate", "Armour", 130, 1, RESEARCH_MODE_ANALYSIS, list("padded_armor"), 2, null, "Tailoring"))
-	register_research_node(new /datum/research_node("trench_warfare", "Trench Warfare", "Armour", 235, 4, RESEARCH_MODE_ANALYSIS, list("mail_plate"), 5, null, "Tailoring"))
+	register_research_node(new /datum/research_node("trench_warfare", "Trench Warfare", "Armour", 235, 4, RESEARCH_MODE_ANALYSIS, list("padded_armor","field_defenses"), 5, null, "Tailoring"))
 	register_research_node(new /datum/research_node("modern_armor", "Modern Armor", "Armour", 305, 6, RESEARCH_MODE_ANALYSIS, list("trench_warfare","alloys"), 7, null, "Tailoring"))
 
 	// --- Late lines for book-research worlds (Val, 2026-11-12) ---
@@ -446,8 +455,8 @@ var/global/list/node_grid_col_cache = null
 	// rest of the tree. These carry them on, and exist only where research is
 	// done in books (book_only).
 	register_research_node(new /datum/research_node("emergency_medicine", "Emergency Medicine", "Health", 400, 7, RESEARCH_MODE_ANALYSIS, list("modern_medicine","anesthetic_surgery"), 8))
-	register_research_node(new /datum/research_node("soil_science", "Soil Science", "Agriculture", 340, 6, RESEARCH_MODE_ANALYSIS, list("hydroponics"), 7, null, "Agriculture"))
-	register_research_node(new /datum/research_node("crop_breeding", "Crop Breeding", "Agriculture", 400, 7, RESEARCH_MODE_ANALYSIS, list("soil_science"), 8, null, "Agriculture"))
+	register_research_node(new /datum/research_node("soil_science", "Soil Science", "Agriculture", 340, 6, RESEARCH_MODE_ANALYSIS, list("advanced_agriculture"), 7, null, "Agriculture"))
+	register_research_node(new /datum/research_node("crop_breeding", "Crop Breeding", "Agriculture", 400, 7, RESEARCH_MODE_ANALYSIS, list("advanced_agriculture"), 8, null, "Agriculture"))
 	register_research_node(new /datum/research_node("support_weapons", "Infantry Support Weapons", "Military", 340, 6, RESEARCH_MODE_ANALYSIS, list("field_artillery","automatic_weapons"), 7))
 	register_research_node(new /datum/research_node("guided_weapons", "Guided Missiles", "Military", 400, 7, RESEARCH_MODE_ANALYSIS, list("missiles","support_weapons"), 8))
 	for (var/late_id in book_only_research_nodes)
@@ -950,6 +959,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/recruitment_station" = "basic_furniture",
 		"/obj/structure/colony_charter" = "basic_furniture",
 		"/obj/structure/faction_hall" = "basic_furniture",
+		"/obj/structure/faction_hall/nation_assembly" = "basic_furniture",
 		// --- basic_tools (28) ---
 		"/obj/item/wrist_loop" = "basic_tools",
 		"/obj/structure/converter/tanning" = "basic_tools",
@@ -961,6 +971,10 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/clothing/accessory/storage/harness" = "basic_tools",
 		"/obj/item/clothing/accessory/storage/belt_pouch" = "basic_tools",
 		"/obj/item/clothing/accessory/necklace" = "basic_tools",
+		"/obj/structure/easel" = "basic_tools",
+		"/obj/item/canvas" = "basic_tools",
+		"/obj/item/canvas/miniature" = "basic_tools",
+		"/obj/item/canvas/table" = "basic_tools",
 		"/obj/item/clothing/accessory/necklace/bead" = "basic_tools",
 		"/obj/item/clothing/pouch_belt" = "basic_tools",
 		"/obj/item/clothing/accessory/storage/baldric" = "basic_tools",

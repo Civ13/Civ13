@@ -85,11 +85,23 @@ Courses are kept for 6 hours. Each snapshot sent to the worlds carries them
 bit `y * width + x`), so a world shows a crew its own chart. A ship's `scout`
 request charts the tiles round a tile for its owner, as an admin `reveal` does.
 
+## Settling, claiming and abandoning
+
+A land's own world asks for its crew (`/chart/request` ops `settle`, `claim`
+with the colony's parent faction as owner, `abandon`; x and y must name the
+land it holds). Settle: tile `SETTLED`, land stage `FRONTIER`. Claim: tile
+`CLAIMED`, stage `COLONY`, one claim per faction (`chart_claim`, sent to the
+worlds as `claims`). Abandon, or 7 days with no players on a land still
+`LANDED` (`chart_landed`, refreshed by land samples): tile `LOST` for good, the
+homes there go to the mainland and the host archives the slot. See
+[voyages](ship-voyage.md#settle-claim-or-abandon).
+
 ## Where it lives
 
 - Coordinator database: `chart_tile` (templates and states), `chart_seen`
   (each owner's tiles), `chart_pin`, `chart_meta` (seed and revision),
-  `chart_course` (ships' courses).
+  `chart_course` (ships' courses), `chart_landed` (lands opened and last
+  visited), `chart_claim` (faction claims).
 - Each home pass sends the whole chart to any agent whose copy is older
   (`/homes`, key `chart`); a world reads it from its agent (`/chart`).
 - Requests from a world (`/chart/request`: admin ops `reroll` and `reveal`,

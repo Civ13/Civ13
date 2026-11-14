@@ -238,6 +238,9 @@
 	if (!src || amount <= 0)
 		user << browse(null, "window=stack")
 		return
+	// The Crafting window (crafting_window.dm) takes over where the client can run it.
+	if (crafting_window_shown(user))
+		return
 	user.set_using_object(src) //for correct work of onclose
 	// Flatten only the display, never the source recipe lists. Every action keeps
 	// its original category and index for Topic and produce_recipe validation.
@@ -1650,7 +1653,7 @@
 		if (press_construction && !press_construction.valid())
 			return
 		if (H && !joinery && !carving && !cloth_payment)
-			H.adaptStat("crafting", 1*recipe.req_amount)
+			H.adaptStat("crafting", 1*recipe.req_amount, recipe.result_type)
 	if (findtext(recipe.title, "coil"))
 		produced = 10
 //this only works for stacks!!
@@ -1773,11 +1776,11 @@
 		if (joinery)
 			joinery.consume_component()
 		if ((joinery || carving) && H && recipe.time)
-			H.adaptStat("crafting", 1*recipe.req_amount)
+			H.adaptStat("crafting", 1*recipe.req_amount, recipe.result_type)
 		if (cloth_payment)
 			cloth_payment.consume_secondary()
 			if (H && recipe.time)
-				H.adaptStat("crafting", 1*recipe.req_amount)
+				H.adaptStat("crafting", 1*recipe.req_amount, recipe.result_type)
 		if (needs_crafting_handle)
 			// No wait between revalidation and commit. Clear the actual equipment slot.
 			H.remove_from_mob(crafting_handle)

@@ -10,14 +10,28 @@ operator can also give a slot a land by hand.
 ## The group config
 
 ```json
-{ "id": "far1", "name": "Far Land 1", "kind": "EXPEDITION", "port": 1751,
-  "transfer_port": 1851, "map": "maps/expedition/slot.dmm" }
+{ "id": "far1", "name": "Far Land 1", "kind": "EXPEDITION", "port": 1811,
+  "transfer_port": 1831, "map": "maps/expedition/slot.dmm" }
 ```
 
 `map` is the placeholder a free slot compiles: open sea over bedrock, 32 x 32.
 A slot cannot be the mainland or the relay gate, and no region may be called
 `expeditions` (the slots keep their lands in that folder of the group root).
 The plan proposes four slots, `far1` to `far4`; the group limit is 16 regions.
+
+### Adding slots to a running group
+
+1. Add the slots to the group config (`far1` to `far4`: ports 1811-1814,
+   transfer ports 1831-1834; each standby port defaults to its port + 10).
+   Check `status` first: the group takes at most 16 regions.
+2. `setup.bat far1` (and so on) for each: it checks out and compiles the
+   placeholder and enrols the slot's agent while the other worlds keep running.
+   Do not start the slots: a free slot stays stopped until a ship needs it.
+3. Open the slots' ports to players as for the other regions.
+4. Within a minute the host service restarts the coordinator with the slots
+   (`coordinator.json` keeps the slot list it was started with).
+5. Check: `expedition-status` lists each slot `FREE`. In game, a ship off the
+   mainland's edge offers **Set out on a voyage**.
 
 ## A slot's life
 
@@ -75,6 +89,11 @@ courses, frees the tile (its template stays) and deletes the report. The
 coordinator learns the slots and this folder from `--slots` and
 `--expeditions`, which `ensure_coordinator` passes when the group has slots.
 
+An abandoned land (by its crew, or after 7 days with nobody there) is
+reported in `<root>/expeditions/abandon/<slot>.json`: the pass stops the slot
+(it saves first), archives it and frees it. The coordinator has already moved
+any home there to the mainland. See [voyages](ship-voyage.md#settle-claim-or-abandon).
+
 ## In game
 
 - The Regions panel calls a slot "land across the sea" and has no Join link for it.
@@ -83,7 +102,5 @@ coordinator learns the slots and this folder from `--slots` and
 ## Not done yet
 
 - Placing the template's ore kinds, rare finds and game in the slot world.
-- What happens to characters still homed in a slot when it is archived
-  (settle, claim and abandon step).
 
 Tests: `python3 -B tests/gaia_host/test_expedition_slots.py`.

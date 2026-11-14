@@ -2288,6 +2288,7 @@ RECIPE: /material/wood/soft/,supply stall,/obj/structure/supplier,25,150,1,1,eco
 RECIPE: /material/wood/soft/,recruitment station,/obj/structure/recruitment_station,10,150,1,1,economy & production,24,0,0,8,null
 RECIPE: /material/wood/soft/,colony charter,/obj/structure/colony_charter,8,120,1,1,economy & production,24,0,0,8,null
 RECIPE: /material/wood/soft/,faction hall seat,/obj/structure/faction_hall,20,150,1,1,economy & production,24,0,0,8,null
+RECIPE: /material/wood/soft/,nation assembly seat,/obj/structure/faction_hall/nation_assembly,30,150,1,1,economy & production,24,0,0,8,null
 RECIPE: /material/wood/soft/,stock market,/obj/structure/stockmarket,25,150,1,1,economy & production,24,0,0,8,null
 RECIPE: /material/wood/soft/,money printer,/obj/structure/money_printer,50,150,1,1,economy & production,27,0,0,8,null
 RECIPE: /material/wood/soft/,armourer's post,/obj/structure/specialist_trader/armourer,25,150,1,1,economy & production,24,0,0,8,null
@@ -2581,6 +2582,10 @@ RECIPE: /material/wood/soft/,farmer's almanac,/obj/item/weapon/farmers_almanac,1
 
 //*********************| WOOD PAINTINGS |**************************
 
+RECIPE: /material/wood/,easel,/obj/structure/easel,4,80,1,1,paintings,0,0,0,8,null
+RECIPE: /material/wood/,miniature panel,/obj/item/canvas/miniature,1,30,0,1,paintings,0,0,0,8,null
+RECIPE: /material/wood/,table picture panel,/obj/item/canvas/table,1,40,0,1,paintings,0,0,0,8,null
+RECIPE: /material/wood/,wall canvas,/obj/item/canvas,2,60,0,1,paintings,0,0,0,8,null
 RECIPE: /material/wood/soft/,stormy sea,/obj/structure/sign/painting1,3,40,1,1,paintings,65,0,0,8,null
 RECIPE: /material/wood/soft/,city street,/obj/structure/sign/painting2,3,40,1,1,paintings,65,0,0,8,null
 RECIPE: /material/wood/soft/,sea sunset,/obj/structure/sign/painting3,3,40,1,1,paintings,65,0,0,8,null

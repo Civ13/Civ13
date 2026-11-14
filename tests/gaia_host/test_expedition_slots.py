@@ -221,6 +221,22 @@ class ExpeditionSlotTests(unittest.TestCase):
         self.assertEqual({'far1': {'refused': '3,4'}}, self.serve()[0])
         self.assertIn('already holds land 1,1', slots.read_wish(self.group, slots.FAILED, 'far1')['reason'])
 
+    def test_an_abandoned_land_is_stopped_then_archived(self):
+        self.give('3,4')
+        (self.slot / 'map_saves').mkdir(exist_ok=True)
+        (self.slot / 'map_saves' / 'level.sav').write_text('x')
+        slots.write_wish(self.group, slots.ABANDONED, 'far1', {'region': 'far1', 'key': '3,4'})
+        self.machine.up.add(1721)
+        with mock.patch.object(self.host, 'request', return_value={'accepted': True}) as request:
+            self.serve()
+        request.assert_called_once_with('stop')
+        self.assertEqual('LAND', slots.read_slot(self.group, 'far1')['state'])
+        self.machine.up.discard(1721)
+        self.assertEqual({'far1': {'archived': '3,4'}}, self.serve()[0])
+        self.assertEqual('FREE', slots.read_slot(self.group, 'far1')['state'])
+        self.assertFalse((self.slot / 'map_saves').exists())
+        self.assertIsNone(slots.read_wish(self.group, slots.ABANDONED, 'far1'))
+
     def test_the_coordinator_is_told_the_slots(self):
         started = []
         (Path(self.group['root']) / 'coordinator.pid').unlink(missing_ok=True)
@@ -231,6 +247,18 @@ class ExpeditionSlotTests(unittest.TestCase):
                                            start=lambda argv, cwd, log: started.append(argv) or 4242)
         argv = started[0]
         self.assertEqual('far1', argv[argv.index('--slots') + 1])
+        # A running coordinator restarts on refresh only when the slots changed.
+        killed = []
+        with mock.patch.object(shard_group, 'coordinator_pid', return_value=4242), \
+                mock.patch.object(shard_group, 'transfer_code', return_value=shard_group.read_record(
+                    Path(self.group['root']) / 'coordinator.json')['code']):
+            self.assertFalse(shard_group.ensure_coordinator(group, start=lambda *a: started.append(a[0]) or 4243,
+                                                            refresh=True, terminate=killed.append))
+            group['regions'] = [dict(r, kind='SURFACE') for r in group['regions']]
+            self.assertTrue(shard_group.ensure_coordinator(group, start=lambda *a: started.append(a[0]) or 4243,
+                                                           refresh=True, terminate=killed.append))
+        self.assertEqual([4242], killed)
+        self.assertNotIn('--slots', started[-1])
         self.assertEqual(str(Path(self.group['root']) / 'expeditions'), argv[argv.index('--expeditions') + 1])
 
     def test_command_line(self):

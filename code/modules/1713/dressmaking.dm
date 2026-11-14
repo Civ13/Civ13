@@ -159,6 +159,11 @@ var/global/list/tailoring_catalogue = null
 /obj/item/clothing
 	var/design_body = null
 	var/design_colors = null
+	// A player's own name for the design, the character who designed it (shown
+	// to players) and that player's ckey (shown only to staff).
+	var/design_name = null
+	var/design_maker = null
+	var/design_author = null
 	var/tmp/list/tailoring_overlays = null
 
 /obj/item/clothing/persistence_runtime_var(key)
@@ -168,7 +173,7 @@ var/global/list/tailoring_catalogue = null
 	var/list/body = tailoring_body(design_body)
 	if (!body || !tailoring_design_valid(design_body, design_colors))
 		return FALSE
-	name = body["name"]
+	name = design_name ? design_name : body["name"]
 	icon_state = body["item_base"] ? body["item_base"] : body["base"]
 	item_state = body["base"]
 	if (body["slot"] == "under")
@@ -221,6 +226,21 @@ var/global/list/tailoring_catalogue = null
 /obj/item/clothing/under/tailored/after_load()
 	..()
 	tailoring_rebuild_after_load()
+	tailoring_register(src)
+
+/obj/item/clothing/under/tailored/attackby(obj/item/W, mob/user)
+	if (recipe_blank_paper(W))
+		tailoring_trace_pattern(user, W, src, design_body, design_colors, design_name, design_maker, design_author)
+		return
+	return ..()
+
+/obj/item/clothing/under/tailored/examine(mob/user)
+	..()
+	tailoring_examine_credit(user, design_body, design_maker)
+
+/obj/item/clothing/under/tailored/Destroy()
+	tailoring_named_items -= src
+	return ..()
 
 /obj/item/clothing/suit/storage/jacket/tailored
 	name = "tailored overclothes"
@@ -237,6 +257,21 @@ var/global/list/tailoring_catalogue = null
 /obj/item/clothing/suit/storage/jacket/tailored/after_load()
 	..()
 	tailoring_rebuild_after_load()
+	tailoring_register(src)
+
+/obj/item/clothing/suit/storage/jacket/tailored/attackby(obj/item/W, mob/user)
+	if (recipe_blank_paper(W))
+		tailoring_trace_pattern(user, W, src, design_body, design_colors, design_name, design_maker, design_author)
+		return
+	return ..()
+
+/obj/item/clothing/suit/storage/jacket/tailored/examine(mob/user)
+	..()
+	tailoring_examine_credit(user, design_body, design_maker)
+
+/obj/item/clothing/suit/storage/jacket/tailored/Destroy()
+	tailoring_named_items -= src
+	return ..()
 
 /proc/tailoring_garment_type(list/body)
 	return body["slot"] == "suit" ? /obj/item/clothing/suit/storage/jacket/tailored : /obj/item/clothing/under/tailored
@@ -290,6 +325,9 @@ var/global/list/tailoring_catalogue = null
 	flammable = TRUE
 	var/design_body = "long_tunic"
 	var/design_colors = "#ffffff"
+	var/design_name = null
+	var/design_maker = null
+	var/design_author = null
 	// Sheets of fabric held, including the one the project was made from.
 	var/fabric = 1
 	// 0: editable fabric; 1: cut pieces; 2: consumed, never usable again.
@@ -309,7 +347,21 @@ var/global/list/tailoring_catalogue = null
 	var/list/body = tailoring_body(design_body)
 	return body ? body["cost"] : TAILORING_MAX_FABRIC + 1
 
+/obj/item/tailoring_project/after_load()
+	..()
+	tailoring_register(src)
+
+/obj/item/tailoring_project/Destroy()
+	tailoring_named_items -= src
+	return ..()
+
 /obj/item/tailoring_project/attackby(obj/item/W, mob/user)
+	if (recipe_blank_paper(W))
+		tailoring_trace_pattern(user, W, src, design_body, design_colors, design_name, design_maker, design_author)
+		return
+	if (istype(W, /obj/item/sewing_pattern))
+		load_pattern(user, W)
+		return
 	if (istype(W, /obj/item/stack/material/cloth) || istype(W, /obj/item/stack/material/woolcloth))
 		var/obj/item/stack/material/S = W
 		if (stage != 0)
@@ -345,7 +397,7 @@ var/global/list/tailoring_catalogue = null
 		if (user.client)
 			user.client.show_tailoring_preview(design_body, design_colors)
 		var/garment = body ? body["name"] : "garment"
-		var/list/options = stage == 0 ? list("Choose garment", "Colours", "Cut fabric", "Close") : list("Sew", "Close")
+		var/list/options = stage == 0 ? list("Choose garment", "Colours", "Name", "Cut fabric", "Close") : list("Sew", "Close")
 		var/status = stage == 0 ? "Designing a [garment]: it needs [body_cost()] fabric and the project holds [fabric]." : "The [garment] is cut and ready to sew."
 		var/choice = WWinput(user, status, "Tailoring", "Close", options)
 		if (!actor_ready(user, site, save_epoch) || !choice || choice == "Close")
@@ -361,6 +413,7 @@ var/global/list/tailoring_catalogue = null
 				if (actor_ready(user, site, save_epoch) && stage == 0 && (selected in known) && tailoring_body_allowed(user, known[selected]))
 					design_body = known[selected]
 					design_colors = jointext(tailoring_colors(design_body, design_colors), "|")
+					claim_design(user)
 			if ("Colours")
 				if (stage != 0 || !body)
 					return
@@ -374,6 +427,11 @@ var/global/list/tailoring_catalogue = null
 				if (!actor_ready(user, site, save_epoch) || stage != 0 || !tailoring_color_valid(selected_color))
 					continue
 				design_colors = tailoring_set_color(design_body, design_colors, index, selected_color)
+				claim_design(user)
+			if ("Name")
+				if (stage != 0)
+					return
+				choose_name(user, site, save_epoch)
 			if ("Cut fabric")
 				if (fabric < body_cost())
 					to_chat(user, SPAN_WARNING("A [garment] needs [body_cost()] fabric. Add cloth or woolcloth sheets to the project first."))
@@ -412,11 +470,17 @@ var/global/list/tailoring_catalogue = null
 	if (!user.transfer_held_item_to(src, site))
 		return FALSE
 	stage = 2
+	if (!design_maker)
+		claim_design(user)
 	var/garment_type = tailoring_garment_type(tailoring_body(design_body))
 	var/obj/item/clothing/garment = new garment_type(site)
 	garment.design_body = design_body
 	garment.design_colors = design_colors
+	garment.design_name = design_name
+	garment.design_maker = design_maker
+	garment.design_author = design_author
 	garment.tailoring_refresh()
+	tailoring_register(garment)
 	qdel(src)
 	user.put_in_any_hand_if_possible(garment)
 	to_chat(user, SPAN_NOTICE("You finish sewing the [garment.name]."))
@@ -476,6 +540,292 @@ var/global/list/tailoring_catalogue = null
 		design_colors = converted[2]
 		dress_cut = null
 	..()
+
+// Sewing patterns, design names and staff moderation.
+//
+// A design can be traced onto a blank sheet of paper or parchment from a
+// tailoring project or a tailored garment. A pattern can be copied onto
+// another blank sheet, traded like any item, and used on an uncut project to
+// load its design. Names are the only free text in a design: they are
+// sanitised and short, and staff can rename them or stop an account naming.
+
+#define TAILORING_NAME_MAX 32
+#define TAILORING_TRACE_TIME 30
+#define TAILORING_BLOCK_FILE "data/tailoring_name_blocks.sav"
+
+// Every live item carrying a player-chosen design name, for the staff panel.
+var/global/list/tailoring_named_items = list()
+var/global/list/tailoring_name_block_list = null
+
+/proc/tailoring_register(obj/item/I)
+	if (istype(I) && !QDELETED(I) && ("design_name" in I.vars) && I.vars["design_name"])
+		tailoring_named_items |= I
+
+/proc/tailoring_clean_name(text)
+	if (!istext(text))
+		return null
+	text = sanitizeSafe(text, TAILORING_NAME_MAX + 1)
+	if (!text || length(text) < 2)
+		return null
+	return text
+
+/proc/tailoring_name_blocks()
+	if (!tailoring_name_block_list)
+		tailoring_name_block_list = list()
+		if (fexists(TAILORING_BLOCK_FILE))
+			var/savefile/S = new(TAILORING_BLOCK_FILE)
+			var/list/saved
+			S["ckeys"] >> saved
+			if (islist(saved))
+				for (var/key in saved)
+					if (istext(key))
+						tailoring_name_block_list |= ckey(key)
+	return tailoring_name_block_list
+
+/proc/tailoring_name_blocked(key)
+	return key && (ckey(key) in tailoring_name_blocks())
+
+/proc/tailoring_set_name_block(key, blocked)
+	key = ckey(key)
+	if (!key)
+		return
+	var/list/blocks = tailoring_name_blocks()
+	if (blocked)
+		blocks |= key
+	else
+		blocks -= key
+	var/savefile/S = new(TAILORING_BLOCK_FILE)
+	S["ckeys"] << blocks
+
+/proc/tailoring_examine_credit(mob/user, body_id, maker)
+	var/list/body = tailoring_body(body_id)
+	if (!body)
+		return
+	to_chat(user, "It is a [body["name"]][maker ? ", designed by [maker]" : ""].")
+
+/obj/item/tailoring_project/proc/claim_design(mob/living/human/user)
+	design_maker = user.real_name
+	design_author = user.ckey
+
+/obj/item/tailoring_project/proc/choose_name(mob/living/human/user, turf/site, datum/save_epoch)
+	if (tailoring_name_blocked(user.ckey))
+		to_chat(user, SPAN_WARNING("Staff have stopped you naming designs."))
+		return
+	var/typed = WWinput(user, "Name this design (up to [TAILORING_NAME_MAX] letters), or leave it empty to use the garment's own name.", "Design name", design_name ? html_decode(design_name) : "", "text")
+	if (!actor_ready(user, site, save_epoch) || stage != 0)
+		return
+	if (!typed || !length(trim("[typed]")))
+		design_name = null
+		tailoring_named_items -= src
+		return
+	var/clean = tailoring_clean_name("[typed]")
+	if (!clean)
+		to_chat(user, SPAN_WARNING("That name can't be used."))
+		return
+	design_name = clean
+	claim_design(user)
+	tailoring_register(src)
+
+/obj/item/tailoring_project/proc/load_pattern(mob/living/human/user, obj/item/sewing_pattern/P)
+	if (stage != 0)
+		to_chat(user, SPAN_WARNING("The fabric is already cut."))
+		return FALSE
+	if (!crafting_node_allowed_or_warn(user, "weaving") || !tailoring_design_valid(P.design_body, P.design_colors))
+		return FALSE
+	var/list/body = tailoring_body(P.design_body)
+	if (!tailoring_body_allowed(user, P.design_body))
+		var/datum/research_node/N = get_research_node(body["node"])
+		to_chat(user, SPAN_WARNING("You don't know how to make a [body["name"]] yet[N ? ". It needs <b>[N.name]</b>" : ""]."))
+		return FALSE
+	design_body = P.design_body
+	design_colors = P.design_colors
+	design_name = P.design_name
+	design_maker = P.design_maker
+	design_author = P.design_author
+	if (design_name && tailoring_name_blocked(design_author))
+		design_name = null
+	tailoring_register(src)
+	to_chat(user, SPAN_NOTICE("You copy the [design_name ? "\"[design_name]\"" : body["name"]] pattern onto the project. It needs [body["cost"]] fabric."))
+	return TRUE
+
+/mob/living/human/proc/tailoring_trace_wait(obj/item/source)
+	return do_after(src, TAILORING_TRACE_TIME, source)
+
+// Traces a design onto a blank sheet the user holds, which becomes a pattern.
+/proc/tailoring_trace_pattern(mob/living/human/user, obj/item/weapon/paper/sheet, obj/item/source, body_id, colors_text, design_name, maker, author)
+	if (!istype(user) || !recipe_blank_paper(sheet) || sheet.loc != user || !source)
+		return FALSE
+	if (!tailoring_design_valid(body_id, colors_text))
+		to_chat(user, SPAN_WARNING("There is no finished design on \the [source] to trace yet."))
+		return FALSE
+	if (!crafting_node_allowed_or_warn(user, "weaving"))
+		return FALSE
+	var/parchment = istype(sheet, /obj/item/weapon/paper/parchment)
+	to_chat(user, SPAN_NOTICE("You start tracing the pattern pieces onto \the [sheet]."))
+	if (!user.tailoring_trace_wait(source) || QDELETED(source) || !recipe_blank_paper(sheet) || sheet.loc != user)
+		return FALSE
+	if (!user.transfer_held_item_to(sheet, get_turf(user)))
+		return FALSE
+	qdel(sheet)
+	var/obj/item/sewing_pattern/P = new(get_turf(user))
+	P.set_design(body_id, colors_text, design_name, maker, author, parchment)
+	user.put_in_any_hand_if_possible(P)
+	to_chat(user, SPAN_NOTICE("You finish \the [P]."))
+	return P
+
+/obj/item/sewing_pattern
+	name = "sewing pattern"
+	desc = "Pattern pieces traced on a sheet, with the colour of every piece noted. Use it on an uncut tailoring project to copy the design, or use a blank sheet on it to copy the pattern."
+	icon = 'icons/obj/bureaucracy.dmi'
+	icon_state = "paper_words"
+	w_class = ITEM_SIZE_TINY
+	flammable = TRUE
+	var/design_body = null
+	var/design_colors = null
+	var/design_name = null
+	var/design_maker = null
+	var/design_author = null
+
+/obj/item/sewing_pattern/proc/set_design(body_id, colors_text, new_name, maker, author, parchment)
+	design_body = body_id
+	design_colors = colors_text
+	design_name = new_name
+	design_maker = maker
+	design_author = author
+	if (parchment)
+		color = "#e8d8b0"
+	update_pattern_name()
+	tailoring_register(src)
+
+/obj/item/sewing_pattern/proc/update_pattern_name()
+	var/list/body = tailoring_body(design_body)
+	name = "sewing pattern ([design_name ? design_name : (body ? body["name"] : "blank")])"
+
+/obj/item/sewing_pattern/after_load()
+	..()
+	tailoring_register(src)
+
+/obj/item/sewing_pattern/Destroy()
+	tailoring_named_items -= src
+	return ..()
+
+/obj/item/sewing_pattern/attackby(obj/item/W, mob/user)
+	if (recipe_blank_paper(W))
+		tailoring_trace_pattern(user, W, src, design_body, design_colors, design_name, design_maker, design_author)
+		return
+	return ..()
+
+/obj/item/sewing_pattern/examine(mob/user)
+	..()
+	var/list/body = tailoring_body(design_body)
+	if (!body)
+		return
+	tailoring_examine_credit(user, design_body, design_maker)
+	var/list/labels = tailoring_piece_labels(body)
+	var/list/colors = tailoring_colors(design_body, design_colors)
+	var/list/lines = list()
+	for (var/i = 1, i <= labels.len, i++)
+		lines += "<font color='[colors[i]]'>&#9632;</font> [lowertext(labels[i])]"
+	to_chat(user, "Pieces: [jointext(lines, ", ")]. It needs [body["cost"]] fabric.")
+
+/obj/item/sewing_pattern/attack_self(mob/user)
+	examine(user)
+
+// Staff panel: every named design in the world, its designer and account.
+/proc/tailoring_admin_allowed(client/C)
+	return C && C.holder && (C.holder.rights & (R_ADMIN|R_MOD))
+
+var/global/datum/tailoring_admin_panel/tailoring_admin = new
+
+/datum/tailoring_admin_panel
+
+/client/proc/admin_clothing_designs()
+	set category = "Admin"
+	set name = "Clothing Designs"
+	set desc = "List player-named clothing designs, rename or clear them, and stop an account naming designs."
+	if (!tailoring_admin_allowed(src))
+		return
+	tailoring_admin.open(src)
+
+/datum/tailoring_admin_panel/proc/open(client/C)
+	if (!tailoring_admin_allowed(C))
+		return
+	var/page = "<html><head><title>Clothing Designs</title></head><body style='font-family:Verdana;font-size:12px'>"
+	page += "<h2>Named clothing designs</h2><table border='1' cellpadding='3' style='border-collapse:collapse'><tr><th>Name</th><th>Item</th><th>Designer</th><th>Account</th><th>Where</th><th></th></tr>"
+	var/count = 0
+	for (var/obj/item/I in tailoring_named_items)
+		if (QDELETED(I) || !I.vars["design_name"])
+			tailoring_named_items -= I
+			continue
+		count++
+		var/author = I.vars["design_author"]
+		var/turf/T = get_turf(I)
+		var/holder = ismob(I.loc) ? "held by [I.loc]" : (T ? "[T.x],[T.y],[T.z]" : "nowhere")
+		page += "<tr><td>[I.vars["design_name"]]</td><td>[I.type]</td><td>[html_encode("[I.vars["design_maker"]]")]</td><td>[author ? author : "-"]</td><td>[html_encode(holder)]</td>"
+		page += "<td><a href='?src=\ref[src];tailoring=rename;item=\ref[I]'>Rename</a> <a href='?src=\ref[src];tailoring=clear;item=\ref[I]'>Clear name</a>"
+		if (author)
+			page += " <a href='?src=\ref[src];tailoring=block;key=[author]'>Stop naming</a>"
+		page += "</td></tr>"
+	page += "</table>[count ? "" : "<p>No named designs exist right now.</p>"]"
+	var/list/blocks = tailoring_name_blocks()
+	page += "<h3>Accounts that can't name designs</h3>"
+	if (!blocks.len)
+		page += "<p>None.</p>"
+	for (var/key in blocks)
+		page += "<div>[key] <a href='?src=\ref[src];tailoring=unblock;key=[key]'>Allow again</a></div>"
+	page += "</body></html>"
+	show_browse(C, page, "window=tailoring_designs;size=820x520")
+
+/datum/tailoring_admin_panel/Topic(href, href_list)
+	var/client/C = usr ? usr.client : null
+	if (!tailoring_admin_allowed(C))
+		return
+	var/obj/item/I = href_list["item"] ? locate(href_list["item"]) : null
+	if (I && !(I in tailoring_named_items))
+		I = null
+	switch (href_list["tailoring"])
+		if ("rename")
+			if (!I)
+				return
+			var/typed = WWinput(C, "New name for this design:", "Rename design", html_decode(I.vars["design_name"]), "text")
+			var/clean = tailoring_clean_name("[typed]")
+			if (!clean || QDELETED(I))
+				return
+			log_admin("[key_name(C)] renamed the clothing design \"[I.vars["design_name"]]\" by [I.vars["design_author"]] to \"[clean]\".")
+			message_admins("[key_name_admin(C)] renamed the clothing design \"[I.vars["design_name"]]\" to \"[clean]\".")
+			tailoring_apply_name(I, clean)
+		if ("clear")
+			if (!I)
+				return
+			log_admin("[key_name(C)] cleared the clothing design name \"[I.vars["design_name"]]\" by [I.vars["design_author"]].")
+			message_admins("[key_name_admin(C)] cleared the clothing design name \"[I.vars["design_name"]]\".")
+			tailoring_apply_name(I, null)
+		if ("block", "unblock")
+			var/key = ckey(href_list["key"])
+			if (!key)
+				return
+			var/blocked = href_list["tailoring"] == "block"
+			tailoring_set_name_block(key, blocked)
+			log_admin("[key_name(C)] [blocked ? "stopped" : "allowed"] [key] [blocked ? "from naming" : "to name"] clothing designs.")
+			message_admins("[key_name_admin(C)] [blocked ? "stopped" : "allowed"] [key] [blocked ? "from naming" : "to name"] clothing designs.")
+	open(C)
+
+/proc/tailoring_apply_name(obj/item/I, new_name)
+	I.vars["design_name"] = new_name
+	if (istype(I, /obj/item/clothing))
+		var/obj/item/clothing/C = I
+		C.tailoring_refresh()
+	else if (istype(I, /obj/item/sewing_pattern))
+		var/obj/item/sewing_pattern/P = I
+		P.update_pattern_name()
+	if (new_name)
+		tailoring_register(I)
+	else
+		tailoring_named_items -= I
+
+#undef TAILORING_NAME_MAX
+#undef TAILORING_TRACE_TIME
+#undef TAILORING_BLOCK_FILE
 
 #undef TAILORING_MAX_FABRIC
 #undef TAILORING_MAX_COLOURS

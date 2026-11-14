@@ -108,6 +108,7 @@ describe('standard screen parity', () => {
       'character_notes.tmpl',
       'chem_disp.tmpl',
       'crafting_atlas.tmpl',
+      'crafting_window.tmpl',
       'crew_log.tmpl',
       'faction_creation.tmpl',
       'faction_list.tmpl',

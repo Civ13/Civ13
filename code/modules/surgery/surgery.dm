@@ -140,7 +140,7 @@ proc/do_surgery(mob/living/human/M, mob/living/human/user, obj/item/tool)
 					var/mod = 1
 					if (user.religious_clergy == "Shamans")
 						mod = 2
-					H.adaptStat("medical", 1.5*mod)
+					H.adaptStat("medical", 1.5*mod, S.type)
 				M.op_stage.in_progress -= zone 									// Clear the in-progress flag.
 			else
 				if (M)

@@ -10,6 +10,7 @@
 		verbs += /mob/living/human/proc/transfer_company_stock
 		verbs += /mob/living/human/proc/recruitment_applications
 		verbs += /mob/living/human/proc/set_faction_member_limit
+		verbs += /mob/living/human/proc/nation_menu
 
 /mob/living/human/proc/make_nation()
 	if (map.civilizations)
@@ -24,6 +25,7 @@
 		verbs += /mob/living/human/proc/transfer_company_stock
 		verbs += /mob/living/human/proc/recruitment_applications
 		verbs += /mob/living/human/proc/set_faction_member_limit
+		verbs += /mob/living/human/proc/nation_menu
 
 /mob/living/human/proc/make_tribesman()
 	verbs += /mob/living/human/proc/transfer_faction

@@ -44,6 +44,7 @@ SLOTS_FOLDER = 'expeditions'  # under the group root, beside the region worktree
 WANTED = 'wanted'
 FAILED = 'failed'
 OPENING = 'opening'
+ABANDONED = 'abandon'  # a land given up for good: the host archives the slot
 OPENING_STALE_SECONDS = 3600
 BUILDING_GIVE_UP_SECONDS = 3 * 3600
 
@@ -331,6 +332,19 @@ def serve(group, hosts, launch, now=None):
         name = region['id']
         try:
             record = read_slot(group, name)
+            gone = read_wish(group, ABANDONED, name)
+            if gone:
+                # The land was abandoned (or nobody came for 7 days): save, stop, archive, free.
+                if host.lock.exists():
+                    continue
+                if host.frozen() or host.platform.listening(host.config['port']):
+                    done[name] = {'stopping': host.request('stop')}
+                    continue
+                if record['state'] == 'LAND':
+                    archive(group, host, name)
+                wish_file(group, ABANDONED, name).unlink(missing_ok=True)
+                done[name] = {'archived': gone.get('key')}
+                continue
             wish = read_wish(group, WANTED, name)
             if wish and record['state'] == 'FREE':
                 if opening(group, name, now) or host.lock.exists():

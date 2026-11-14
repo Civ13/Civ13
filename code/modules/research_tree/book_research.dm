@@ -353,6 +353,7 @@
 		studied_samples += W.type
 		var/boost = max(1, round(N.cost_ticks * RESEARCH_SAMPLE_BOOST_FRACTION))
 		var/done = B.add_research_work(assigned_node, boost)
+		user.gain_active_scholarship(assigned_node, boost, "sample:[assigned_node]:[W.type]")
 		to_chat(user, SPAN_NOTICE("You dismantle and study \the [W], advancing <b>[N.name]</b> by [boost] points[done ? " and finishing the chapter" : ""]."))
 		qdel(W)
 		book_refresh_ui()

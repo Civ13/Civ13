@@ -224,6 +224,70 @@ class CourseTests(unittest.TestCase):
         self.assertNotIn('seen', self.c.snapshot('faction:rome'))
 
 
+class LandChoiceTests(unittest.TestCase):
+    """A land opened for a ship is settled, claimed or abandoned by its crew,
+    or abandoned after 7 days with nobody there."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.exp = os.path.join(self.tmp.name, 'expeditions')
+        self.c = chart(slots=['far1', 'far2'], expeditions=self.exp)
+        self.x, self.y = first_land(self.c)
+        self.c.reveal('faction:rome', self.x, self.y)
+        self.c.set_course('v1', 'faction:rome', self.x, self.y, now=1000)
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def state(self):
+        return self.c.template(self.x, self.y)['state']
+
+    def test_settling_then_claiming_keeps_the_land(self):
+        self.assertEqual((self.x, self.y), self.c.land_in('far1')[:2])
+        self.assertFalse(self.c.settle('far2'))
+        self.assertTrue(self.c.settle('far1', 'val'))
+        self.assertFalse(self.c.settle('far1', 'val'))
+        self.assertEqual('SETTLED', self.state())
+        self.assertFalse(self.c.claim('far1', 'not a faction'))
+        self.assertTrue(self.c.claim('far1', 'civ:gaia:Rome Empire', 'val'))
+        self.assertEqual('CLAIMED', self.state())
+        self.assertEqual({'civ:gaia:Rome Empire': '%d,%d' % (self.x, self.y)}, self.c.snapshot()['claims'])
+        # One faction per land; a settled or claimed land is never abandoned or expired.
+        self.assertFalse(self.c.claim('far1', 'civ:gaia:Carthage'))
+        self.assertFalse(self.c.abandon('far1'))
+        self.assertEqual([], self.c.expire(now=1000 + wc.UNVISITED_SECONDS + 10))
+
+    def test_one_claim_per_faction(self):
+        self.assertTrue(self.c.claim('far1', 'civ:gaia:Rome Empire'))
+        other = next((x, y) for y in range(wc.CHART_HEIGHT) for x in range(wc.CHART_WIDTH)
+                     if (x, y) != (self.x, self.y) and self.c.terrain(x, y) not in ('OCEAN', 'MAINLAND') and self.c.coast(x, y))
+        self.c.reveal('faction:rome', *other)
+        self.assertEqual('far2', self.c.set_course('v2', 'faction:rome', other[0], other[1], now=1001)['region'])
+        self.assertFalse(self.c.claim('far2', 'civ:gaia:Rome Empire'))
+        self.assertEqual('LANDED', self.c.template(*other)['state'])
+
+    def test_abandoning_loses_the_land_and_frees_its_slot_once_archived(self):
+        self.assertTrue(self.c.abandon('far1', 'val', now=2000))
+        tile = self.c.template(self.x, self.y)
+        self.assertEqual(('LOST', None), (tile['state'], tile['region']))
+        with open(os.path.join(self.exp, 'abandon', 'far1.json'), encoding='utf-8') as f:
+            self.assertEqual('%d,%d' % (self.x, self.y), json.load(f)['key'])
+        self.assertEqual('REFUSED', self.c.course('v1')['state'])
+        # Nobody sails to a lost land; the slot waits for the host to archive it.
+        self.assertIn('abandoned', self.c.set_course('v3', 'faction:rome', self.x, self.y, now=2001)['reason'])
+        self.assertFalse(self.c.slot_free('far1'))
+        os.remove(os.path.join(self.exp, 'abandon', 'far1.json'))
+        os.remove(os.path.join(self.exp, 'wanted', 'far1.json'))
+        self.assertTrue(self.c.slot_free('far1'))
+
+    def test_a_land_nobody_visits_for_7_days_is_abandoned(self):
+        self.assertEqual([], self.c.expire(now=1000 + wc.UNVISITED_SECONDS - 10))
+        self.assertTrue(self.c.visit('far1', now=5000))
+        self.assertEqual([], self.c.expire(now=1000 + wc.UNVISITED_SECONDS + 10))
+        self.assertEqual(['far1'], self.c.expire(now=5000 + wc.UNVISITED_SECONDS + 10))
+        self.assertEqual('LOST', self.state())
+
+
 class ChartAgentTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
@@ -294,6 +358,41 @@ class ChartAgentTests(unittest.TestCase):
         self.assertEqual('READY', self.chart('alpha')['chart']['courses']['alpha-5-6']['state'])
         self.assertFalse(call(self.urls['alpha'], TOKENS['alpha'], '/chart/request',
                               {'op': 'course', 'x': x, 'y': y, 'owner': 'crew:val', 'admin': 'val'}).get('ok'))
+
+    def test_a_lands_world_settles_or_abandons_it_and_homes_go_back_to_the_mainland(self):
+        exp = os.path.join(self.tmp.name, 'expeditions')
+        chart_ = self.coordinator.chart
+        chart_.slots, chart_.expeditions = ['beta'], wc.Path(exp)
+        x, y = first_land(chart_)
+        chart_.reveal('crew:val', x, y)
+        self.assertEqual('beta', chart_.set_course('alpha-1-1', 'crew:val', x, y, 'alpha')['region'])
+        self.coordinator._set_home('val', 'beta')
+        # A request naming another tile than the land it holds is ignored.
+        call(self.urls['beta'], TOKENS['beta'], '/chart/request', {'op': 'settle', 'x': x + 1, 'y': y, 'admin': 'val'})
+        self.coordinator.homes_once()
+        self.assertEqual('LANDED', chart_.template(x, y)['state'])
+        call(self.urls['beta'], TOKENS['beta'], '/chart/request', {'op': 'abandon', 'x': x, 'y': y, 'admin': 'val'})
+        self.coordinator.homes_once()
+        self.assertEqual('LOST', self.chart('alpha')['chart']['tiles']['%d,%d' % (x, y)]['state'])
+        self.assertEqual('alpha', self.coordinator.home('val'))
+        self.assertFalse(call(self.urls['beta'], TOKENS['beta'], '/chart/request',
+                              {'op': 'claim', 'x': x, 'y': y, 'admin': 'val', 'owner': 'faction:rome'}).get('ok'))
+
+    def test_settling_and_claiming_set_the_land_stage(self):
+        exp = os.path.join(self.tmp.name, 'expeditions')
+        chart_ = self.coordinator.chart
+        chart_.slots, chart_.expeditions = ['beta'], wc.Path(exp)
+        x, y = first_land(chart_)
+        chart_.reveal('crew:val', x, y)
+        chart_.set_course('alpha-1-1', 'crew:val', x, y, 'alpha')
+        call(self.urls['beta'], TOKENS['beta'], '/chart/request', {'op': 'settle', 'x': x, 'y': y, 'admin': 'val'})
+        self.coordinator.homes_once()
+        self.assertEqual('FRONTIER', self.coordinator.lands()['beta']['stage'])
+        call(self.urls['beta'], TOKENS['beta'], '/chart/request',
+             {'op': 'claim', 'x': x, 'y': y, 'admin': 'val', 'owner': 'civ:alpha:Rome Empire'})
+        self.coordinator.homes_once()
+        self.assertEqual('COLONY', self.coordinator.lands()['beta']['stage'])
+        self.assertEqual({'civ:alpha:Rome Empire': '%d,%d' % (x, y)}, self.chart('alpha')['chart']['claims'])
 
     def test_an_unchanged_chart_is_not_sent_again(self):
         self.assertEqual(self.coordinator.chart.key(), self.stores['alpha'].account_requests()['chart_rev'])

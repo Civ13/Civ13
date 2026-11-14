@@ -23,13 +23,18 @@ def main():
         'code/game/objects/map_metadata/_map_metadata.dm',
         'code/modules/research_tree/research_faction.dm',
         'code/game/mob/groups/faction_creation.dm',
-        'code/game/mob/groups/faction_symbol.dm')]
+        'code/game/mob/groups/faction_symbol.dm',
+        'code/game/mob/groups/faction_recruitment.dm',
+        'code/modules/1713/river_flood.dm')]
     declarations = set()
     for path in paths:
         owner = None
         for line in path.read_text(encoding='utf-8').splitlines():
             if re.match(r'^/[^/]', line):
                 owner = line.strip()
+            one_line = re.match(r'^/obj/map_metadata/var/(?:[\w]+/)*([\w]+)\s*(?:=|$)', line)
+            if one_line:
+                declarations.add(one_line.group(1))
             if owner == '/obj/map_metadata':
                 match = re.match(r'\tvar/(?:[\w]+/)*([\w]+)(?:\[.*\])?\s*(?:=|$)', line)
                 if match:

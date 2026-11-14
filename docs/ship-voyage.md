@@ -8,18 +8,21 @@ a land across the sea, or to scout unknown water. Code:
 ## Setting out
 
 At the tiller, **Set out on a voyage** is offered when she lies within 4 tiles
-of the map edge of a region group world that is not itself an expedition land.
+of the map edge of a region group world: the mainland, or a land across the
+sea (an onward voyage, from that land's own chart tile).
 She must meet the crossing rules ([ship crossing](ship-crossing.md): all stop,
-no grapple, the transfer agent reachable, no save running) and have at least
-2 crew aboard and awake.
+no grapple, the transfer agent reachable, no save running), be able to make
+way (a rigged mast or a running engine) and have at least 2 crew aboard and
+awake.
 
 The chart shown is her owner's: the captain's faction (`faction:<name>` from
 the character's civilization), or the captain alone (`crew:<ckey>`). The world
 reads the chart from its agent; its own tile is its pin on the chart, or the
 mainland's.
 
-- **A land:** every land on the owner's chart that has a coast and is not
-  lost, with its size, biome, land type and voyage time.
+- **A land:** every land on the owner's chart, or settled or claimed by
+  anyone, that has a coast and is not lost, with its size, biome, land type
+  and voyage time.
 - **Scouting:** north, east, south or west, 4 tiles out and back (8 minutes).
   Coming home, she charts the tiles round the turning point and halfway there
   for her owner.
@@ -46,13 +49,31 @@ When her time is up she looks at the course on the chart:
 A voyage is not saved: a world restarted mid-voyage finds her lying off the
 coast where she set out.
 
+## Settle, claim or abandon
+
+A land opened for a ship is undecided until its crew choose
+(`code/modules/naval/land_choices.dm`; the world directory keeps the choice in
+`world_chart.py` and the land stage, [land stages](land-stages.md)):
+
+| Choice | Who and what it takes | Then |
+| --- | --- | --- |
+| **Settle this land** (tiller) | any crew member: a mooring post that takes ships and 3 beds slept in by different people within 40 tiles of it | tile `SETTLED`, land stage `FRONTIER`: kept for good, on everyone's chart |
+| **Claim** | a faction leader plants the colony charter (`colony_charter.dm`); one claim per faction, one faction per land | tile `CLAIMED`, stage `COLONY`; the world directory keeps `chart_claim` |
+| **Abandon** | the captain, asked as she leaves (Leave these waters or a voyage onward) | tile `LOST` for good; homes there go to the mainland; the host saves, stops and archives the slot (`<root>/expeditions/abandon/<slot>.json`) and frees it |
+| nobody chooses | the land waits | abandoned after 7 days with no players there (the coordinator's land samples) |
+
+A settled land can still be claimed. Until a land is settled or claimed, a
+death there always sends the character home to the mainland: a bed there
+does not keep the home. A land world reads its chart about once a minute to
+know.
+
 ## Not done yet
 
 - Rations, voyage events (storm, sighting, short rations) and engines sailing
   faster.
-- Onward voyages from a land to another tile, settling, claiming and
-  abandoning lands (next step of the plan).
+- Giving up a faction's claim; deleting archived lands after 7 days.
+- Placing the template's ore kinds, rare finds and game in the slot world.
 
 Tests: `tests/naval_carrier/voyage_probe.dm` (see `tests/naval_carrier/README.md`),
-`python3 -B tests/transfer_storage/test_world_chart.py` (courses),
+`python3 -B tests/transfer_storage/test_world_chart.py` (courses, land choices),
 `python3 -B tests/gaia_host/test_expedition_slots.py` (opening lands).
