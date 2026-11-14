@@ -1591,6 +1591,7 @@
 #include "code\modules\research_tree\trade_learning.dm"
 #include "code\modules\research_tree\study_progress.dm"
 #include "code\modules\research_tree\team_research.dm"
+#include "code\modules\research_tree\compare_notes.dm"
 #include "code\modules\research_tree\recipe_gates.dm"
 #include "code\modules\player_changelog\player_changelog.dm"
 #include "code\modules\server_build\host_controls.dm"

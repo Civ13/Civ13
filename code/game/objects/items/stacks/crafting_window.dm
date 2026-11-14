@@ -88,6 +88,10 @@ var/global/list/crafting_purpose_cache = list()
 	// Opened with the craft key: the material may be in either hand or loose
 	// on a tile next to the player, and the window offers the others in reach.
 	var/reach = FALSE
+	// A row the window should select when it next opens, and a counter so the
+	// same row can be asked for twice. Set by the Atlas hand-off only.
+	var/focus = ""
+	var/focus_seq = 0
 
 /datum/crafting_window/New(mob/living/human/H, obj/item/stack/S)
 	viewer = H
@@ -188,7 +192,7 @@ var/global/list/crafting_purpose_cache = list()
 
 // TRUE when the modern window took this request; FALSE sends the caller on to
 // the classic list.
-/obj/item/stack/proc/crafting_window_shown(mob/user, reach = FALSE)
+/obj/item/stack/proc/crafting_window_shown(mob/user, reach = FALSE, focus = "")
 	var/mob/living/human/H = user
 	if (!istype(H) || !H.client || H.client.crafting_window_classic || H.client.modern_ui_failed)
 		return FALSE
@@ -207,6 +211,9 @@ var/global/list/crafting_purpose_cache = list()
 		H.crafting_window = W
 	W.source = src
 	W.reach = reach
+	W.focus = "[focus]"
+	if (length(W.focus))
+		W.focus_seq++
 	if (reach)
 		W.load_recipes()
 	show_browse(H, null, "window=stack")
@@ -249,6 +256,51 @@ var/global/list/crafting_purpose_cache = list()
 	if (istype(source, /obj/item/stack/material))
 		var/obj/item/stack/material/M = source
 		M.recipes = M.material.get_recipes_civs(viewer)
+
+// The row id of the first recipe in this stack's lists that makes the given type, or "".
+/obj/item/stack/proc/crafting_window_row_for(wanted)
+	if (!ispath(wanted) || !recipes)
+		return ""
+	for (var/i = 1, i <= recipes.len, i++)
+		var/E = recipes[i]
+		if (istype(E, /datum/stack_recipe_list))
+			var/datum/stack_recipe_list/srl = E
+			for (var/j = 1, j <= srl.recipes.len, j++)
+				var/datum/stack_recipe/inner = srl.recipes[j]
+				if (istype(inner) && inner.result_type == wanted)
+					return crafting_window_row_id(inner, i, j)
+		else if (istype(E, /datum/stack_recipe))
+			var/datum/stack_recipe/top = E
+			if (top.result_type == wanted)
+				return crafting_window_row_id(top, 0, i)
+	return ""
+
+// "Craft this" on an Atlas recipe: open the Crafting window on that recipe when
+// a material that makes it is within reach. A hand-off only; nothing is made
+// here and the window applies its own checks before anything is.
+/proc/crafting_window_from_atlas(mob/viewer, product)
+	var/mob/living/human/H = viewer
+	if (!istype(H) || !H.client || H.stat || H.restrained())
+		if (viewer)
+			to_chat(viewer, "<span class='notice'>You cannot craft right now.</span>")
+		return FALSE
+	var/wanted = text2path("[product]")
+	if (!ispath(wanted, /atom))
+		return FALSE
+	for (var/obj/item/stack/near in H.crafting_stacks_within_reach())
+		// Material stacks list recipes per character, as they do when used in hand.
+		if (istype(near, /obj/item/stack/material))
+			var/obj/item/stack/material/M = near
+			M.recipes = M.material.get_recipes_civs(H)
+		var/row = near.crafting_window_row_for(wanted)
+		if (!length(row))
+			continue
+		if (near.crafting_window_shown(H, TRUE, row))
+			return TRUE
+		to_chat(H, "<span class='notice'>You can make that from the [near.name] within reach. Use it in your hand to open the classic crafting list.</span>")
+		return FALSE
+	to_chat(H, "<span class='notice'>Nothing within reach makes that. Hold the material the recipe needs, or stand next to it, and try again.</span>")
+	return FALSE
 
 // Where a material is, in the player's words.
 /datum/crafting_window/proc/where(obj/item/stack/S)
@@ -417,6 +469,8 @@ var/global/list/crafting_purpose_cache = list()
 				"current" = near == S ? 1 : 0,
 				"image" = product_image(near.type, budget)))
 	return list(
+		"focus" = focus,
+		"focus_seq" = focus_seq,
 		"reach" = reach ? 1 : 0,
 		"sources" = sources,
 		"where" = where(S),

@@ -113,9 +113,9 @@
 /obj/item/weapon/reagent_containers/food/snacks/meat/poisonfrog/attack_self(mob/user as mob)
 
 	var/obj/item/ammo_casing/CURRENT = null
-	if (user.l_hand == src && istype(user.r_hand, /obj/item/ammo_casing/arrow) && uses >= 1)
+	if (user.l_hand == src && (istype(user.r_hand, /obj/item/ammo_casing/arrow) || istype(user.r_hand, /obj/item/ammo_casing/bolt)) && uses >= 1)
 		CURRENT = user.r_hand
-	else if (user.r_hand == src && istype(user.l_hand, /obj/item/ammo_casing/arrow) && uses >= 1)
+	else if (user.r_hand == src && (istype(user.l_hand, /obj/item/ammo_casing/arrow) || istype(user.l_hand, /obj/item/ammo_casing/bolt)) && uses >= 1)
 		CURRENT = user.l_hand
 	if (CURRENT)
 		if (istype(CURRENT, /obj/item/ammo_casing/arrow))

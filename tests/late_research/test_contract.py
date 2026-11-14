@@ -373,6 +373,27 @@ class TradeLearning(unittest.TestCase):
         for guard in ("maker.knows_recipe_node(node_id)", "TRADE_WATCH_MAX", "watcher.can_learn_trade(node_id)"):
             self.assertIn(guard, watched)
         self.assertIn("learn_recipe_node(node_id)", proc(self.src, "/mob/living/human/proc/add_trade_learning"))
+class CompareNotes(unittest.TestCase):
+    def setUp(self):
+        self.src = read("code/modules/research_tree/compare_notes.dm")
+    def test_included_after_teams(self):
+        dme = read("civ13.dme")
+        self.assertLess(dme.index('research_tree\\team_research.dm"'), dme.index('research_tree\\compare_notes.dm"'))
+    def test_gates(self):
+        problem = proc(self.src, "/obj/structure/research_bench/proc/compare_notes_problem")
+        for guard in ("comparable_subjects()", "cipher_refuses(H)", "research_lit()", "H.can_research_node_at(src, node_id)", "second_scholar(node_id, H)"):
+            self.assertIn(guard, problem)
+        subjects = proc(self.src, "/obj/structure/research_bench/proc/comparable_subjects")
+        for guard in ("book_mode()", "A.has_compared(node_id) || B.has_compared(node_id)", "has_research_chapter(node_id)"):
+            self.assertIn(guard, subjects)
+        commit = proc(self.src, "/obj/structure/research_bench/proc/compare_notes_commit")
+        self.assertIn("fuller.mark_compared(node_id)\n\tlesser.mark_compared(node_id)", commit)
+        self.assertIn("player_input(", proc(self.src, "/obj/structure/research_bench/proc/compare_notes"))
+    def test_first_samples_teach_more(self):
+        research = read("code/modules/research_tree/book_research.dm")
+        self.assertIn("#define BOOK_SAMPLE_FIRST_KINDS 2", research)
+        self.assertIn("#define BOOK_SAMPLE_FIRST_FRACTION 0.2", research)
+        self.assertIn("studied_samples.len <= BOOK_SAMPLE_FIRST_KINDS ? BOOK_SAMPLE_FIRST_FRACTION : RESEARCH_SAMPLE_BOOST_FRACTION", research)
 
 if __name__ == "__main__":
     unittest.main()

@@ -7,7 +7,7 @@ def add_dressmaking(files, add, records):
     source = files[PATH]
     required = ('wait_for_tailoring(user, 30)', 'wait_for_tailoring(user, 60)',
                 'stage = 1', 'stage = 2', 'var/obj/item/clothing/garment = new garment_type(site)',
-                'crafting_node_allowed(user, "weaving")', 'tailoring_design_allowed(user, design_body, design_pieces)')
+                'crafting_node_allowed(user, "weaving")', 'tailoring_design_allowed(user, design_body, design_pieces, design_colors)')
     if any(text not in source for text in required):
         raise ValueError('Tailoring source changed; review Atlas costs and stages')
     marker = '/obj/item/tailoring_project/proc/sew_garment'
@@ -18,8 +18,8 @@ def add_dressmaking(files, add, records):
         name = f'Design, cut and sew your own {kind}'
         steps = [
             'Craft a tailoring project from one cloth sheet (woolcloth also works) in Clothing. Weaving is required.',
-            'Use cloth or woolcloth sheets on the project to add fabric, up to eight sheets.',
-            f'Use the project in hand. Choose the {kind} to make from the garments your tailoring knowledge allows, and colour the body and each pattern piece. Shirts, knee tunics, gowns, jackets, coats and cloaks also let you choose Pieces such as sleeves, necklines, legwear, belts, collars, closures, trims and patterns; some pieces need more fabric or knowledge. A live preview shows all four sides.',
+            'Use more sheets of the same fabric on the project, up to eight. Wool garments are warmer and lightly padded; linen is lighter and takes dyes brighter.',
+            f'Use the project in hand. Choose the {kind} to make from the garments your tailoring knowledge allows, and dye the body and each pattern piece from the dyes your knowledge allows (any colour with Textile Mills). Shirts, knee tunics, gowns, jackets, coats and cloaks also let you choose Pieces such as sleeves, necklines, legwear, belts, collars, closures, trims and patterns; some pieces need more fabric or knowledge. A live preview shows all four sides.',
             'Choose Cut fabric (30 ticks) once the project holds enough fabric for that garment. Cutting locks the design and sets spare sheets aside.',
             'Use the cut pieces in hand and choose Sew (60 ticks). One paid project becomes one wearable garment. Finished garments accept ordinary clothing accessories.',
         ]
