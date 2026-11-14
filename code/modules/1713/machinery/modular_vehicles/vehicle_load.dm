@@ -1,6 +1,7 @@
 // Vehicle load: what a land vehicle carries sets how fast it drives.
 // ------------------------------------------------------------
-// Each gear's step delay (speedlist) is multiplied by a load factor. The
+// The time a tile takes in each gear (vehicle_speeds.dm) is multiplied by a
+// load factor. The
 // factor compares the vehicle as loaded against the same vehicle with steel
 // walls and a normal load: one person per seat plus a little payload per
 // frame. Today's vehicles with a normal load drive exactly as before (factor
@@ -113,14 +114,17 @@
 		return speeds + 1
 	return speeds
 
-// The base step delay for gear, before load: the bonus gear is one tick
-// quicker than the last listed gear.
+// The base step delay for gear, before load. The bonus gear is a tenth of a
+// second per tile quicker than the last listed gear, or one server tick
+// quicker when that gear is already close to the floor.
 /obj/structure/vehicleparts/axis/proc/gear_delay(gear)
 	if (!speedlist || gear <= 0)
 		return 0
 	if (gear > speeds)
 		var/top = speedlist[speeds]
-		return top ? max(1, top - 1) : 0
+		if (!top)
+			return 0
+		return top > 1 ? max(1, top - 1) : max(0.2, top - 0.4) // VEHICLE_MIN_DELAY (vehicle_speeds.dm)
 	return speedlist[gear] || 0
 
 // How long a turn takes with this load.

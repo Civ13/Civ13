@@ -203,16 +203,18 @@ var/global/flood_items_revision = -1
 	return clamp(1 + river_stage_at(T) / 3, 0.5, 2)
 
 // ---- drawing ----------------------------------------------------
-// Placeholder floodwater: the flooded-dirt water drawn over land, deeper bands
-// more opaque, as images only the viewer's client holds. Rebuilt when the
-// viewer has moved a few tiles or the rivers have changed (once a minute).
-// Fable's depth and edge art replaces the placeholder later.
+// Floodwater over land (icons/effects/floodwater.dmi, drawn by Fable with
+// tests/sprites/create_floodwater.py) as images only the viewer's client
+// holds: one depth band per flooded tile, a waterline on each dry neighbour
+// and a soft step where a deeper band meets a shallower one. The ripple runs
+// in step with the river's own water. Rebuilt when the viewer has moved a few
+// tiles or the rivers have changed (once a minute).
 
 #define FLOOD_VIEW_RADIUS 12
 #define FLOOD_VIEW_MOVE 4
+#define FLOOD_LAYER 2.04
 
 var/global/flood_draw_revision = 0
-var/global/list/flood_band_alpha = list(90, 140, 190, 230)
 
 /client
 	var/tmp/list/flood_images = null
@@ -231,6 +233,11 @@ var/global/list/flood_band_alpha = list(90, 140, 190, 230)
 		images -= flood_images
 		flood_images = null
 
+/proc/flood_image(turf/T, state, direction = SOUTH)
+	var/image/I = image('icons/effects/floodwater.dmi', T, state, FLOOD_LAYER, direction)
+	I.mouse_opacity = 0
+	return I
+
 /client/proc/flood_refresh_view()
 	var/turf/centre = get_turf(eye)
 	if (!centre || !flood_anywhere())
@@ -247,24 +254,50 @@ var/global/list/flood_band_alpha = list(90, 140, 190, 230)
 	var/datum/river_flood/F = map.river_flood()
 	if (centre.z != F.z_level)
 		return
-	var/list/drawn = list()
-	for (var/x in max(1, centre.x - FLOOD_VIEW_RADIUS) to min(F.maxx, centre.x + FLOOD_VIEW_RADIUS))
-		for (var/y in max(1, centre.y - FLOOD_VIEW_RADIUS) to min(F.maxy, centre.y + FLOOD_VIEW_RADIUS))
+	// Bands over the view and a one-tile ring, so edges at the rim are right.
+	var/x0 = max(1, centre.x - FLOOD_VIEW_RADIUS - 1)
+	var/y0 = max(1, centre.y - FLOOD_VIEW_RADIUS - 1)
+	var/x1 = min(F.maxx, centre.x + FLOOD_VIEW_RADIUS + 1)
+	var/y1 = min(F.maxy, centre.y + FLOOD_VIEW_RADIUS + 1)
+	var/w = x1 - x0 + 1
+	var/list/bands = new /list(w * (y1 - y0 + 1))
+	var/any = FALSE
+	for (var/y in y0 to y1)
+		for (var/x in x0 to x1)
 			var/r = F.reach_at(x, y)
 			if (!r || F.stage[r] <= 0)
 				continue
-			var/turf/T = locate(x, y, centre.z)
-			var/band = flood_band_at(T)
+			var/band = flood_band_at(locate(x, y, centre.z))
+			if (band)
+				bands[(y - y0) * w + (x - x0) + 1] = band
+				any = TRUE
+	if (!any)
+		return
+	var/list/drawn = list()
+	for (var/y in y0 + 1 to y1 - 1)
+		for (var/x in x0 + 1 to x1 - 1)
+			var/band = bands[(y - y0) * w + (x - x0) + 1]
 			if (!band)
 				continue
-			flood_items_at(T, band)
-			var/image/I = image('icons/turf/beach.dmi', T, "seashallow", 2.04)
-			I.alpha = flood_band_alpha[band]
-			I.mouse_opacity = 0
-			drawn += I
-	if (drawn.len)
-		flood_images = drawn
-		images += drawn
+			var/turf/T = locate(x, y, centre.z)
+			if (abs(x - centre.x) <= FLOOD_VIEW_RADIUS && abs(y - centre.y) <= FLOOD_VIEW_RADIUS)
+				flood_items_at(T, band)
+			drawn += flood_image(T, "flood[band]")
+			for (var/d in cardinal)
+				var/turf/D = get_step(T, d)
+				if (!D)
+					continue
+				var/other = bands[(D.y - y0) * w + (D.x - x0) + 1] || 0
+				if (other >= band)
+					continue
+				if (!other)
+					// The river's own water needs no waterline.
+					if (!istype(D, /turf/floor/beach/water))
+						drawn += flood_image(D, "flood_edge[band]", d)
+				else
+					drawn += flood_image(D, "flood_step[band]", d)
+	flood_images = drawn
+	images += drawn
 
 /mob/living/human/proc/flood_life_tick()
 	if (client)
@@ -272,3 +305,4 @@ var/global/list/flood_band_alpha = list(90, 140, 190, 230)
 
 #undef FLOOD_VIEW_RADIUS
 #undef FLOOD_VIEW_MOVE
+#undef FLOOD_LAYER

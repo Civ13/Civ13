@@ -18,12 +18,15 @@
 //     back through a hatch when you stand on one.
 //   - Up there you see over walls (los_terrain.dm), cannot reach anyone below
 //     in melee, and can be shot at directly (projectile.dm).
+//   - A crash or a hard turn at speed throws riders off, and driving under a
+//     roof sweeps them off backwards (deck_jolt, deck_clearance).
 // ============================================================
 
 #define VEHICLE_DECK_CLIMB_TIME 30
 #define VEHICLE_DECK_DOWN_TIME 20
 #define VEHICLE_DECK_PIXEL_Y 14
 #define VEHICLE_DECK_LAYER 11.5
+#define VEHICLE_DECK_THROW_RANGE 6
 
 // A frame whose top people may stand on even without a roof (an open-top
 // upper deck).
@@ -279,6 +282,61 @@
 		vehicle_deck_old_layer = null
 		pixel_y = initial(pixel_y)
 
+// Thrown off the top towards throw_dir: past the vehicle's edge onto clear
+// ground, else onto any clear tile beside it, else down onto the frame's own
+// tile. why: what the rider is told.
+/mob/living/human/proc/vehicle_deck_thrown(throw_dir, why)
+	if (!vehicle_deck)
+		return
+	var/turf/dest = null
+	if (throw_dir)
+		var/turf/T = loc
+		for (var/i = 1 to VEHICLE_DECK_THROW_RANGE)
+			T = get_step(T, throw_dir)
+			if (!T)
+				break
+			if (vehicle_deck_frame_at(T))
+				continue
+			if (vehicle_deck_landing_clear(T))
+				dest = T
+			break
+	if (!dest)
+		for (var/d in shuffle(list(NORTH, SOUTH, EAST, WEST)))
+			var/turf/T = get_step(loc, d)
+			if (T && !vehicle_deck_frame_at(T) && vehicle_deck_landing_clear(T))
+				dest = T
+				break
+	if (why)
+		to_chat(src, SPAN_DANGER(why))
+	leave_vehicle_deck(dest, "fall")
+
+// Everyone riding on top of this vehicle.
+/obj/structure/vehicleparts/axis/proc/deck_riders()
+	. = list()
+	for (var/obj/structure/vehicleparts/frame/F in components)
+		if (!isturf(F.loc))
+			continue
+		for (var/mob/living/human/H in F.loc)
+			if (H.vehicle_deck == F)
+				. += H
+
+// A crash, a stall or a hard turn at speed: each rider on top is thrown off
+// with chance percent.
+/obj/structure/vehicleparts/axis/proc/deck_jolt(chance, throw_dir, why)
+	if (chance <= 0)
+		return
+	for (var/mob/living/human/H in deck_riders())
+		if (prob(chance))
+			H.vehicle_deck_thrown(throw_dir, why)
+
+// After a step or a turn: a roof overhead sweeps riders off the top,
+// backwards (back_dir) when driving under it.
+/obj/structure/vehicleparts/axis/proc/deck_clearance(back_dir)
+	for (var/mob/living/human/H in deck_riders())
+		var/obj/roof/R = locate(/obj/roof) in H.loc
+		if (R)
+			H.vehicle_deck_thrown(back_dir, "You hit \the [R] overhead and are knocked off!")
+
 // Grab intent and a free hand on a vehicle from outside: climb onto its roof.
 /mob/living/human/proc/grab_climb_vehicle(atom/A)
 	if (a_intent != I_GRAB || get_active_hand() || vehicle_deck)
@@ -329,3 +387,4 @@
 #undef VEHICLE_DECK_DOWN_TIME
 #undef VEHICLE_DECK_PIXEL_Y
 #undef VEHICLE_DECK_LAYER
+#undef VEHICLE_DECK_THROW_RANGE

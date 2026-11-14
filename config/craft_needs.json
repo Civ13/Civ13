@@ -1,0 +1,14 @@
+{
+  "/obj/structure/vehicle/raft": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/stack/material/rope": 2
+    }
+  },
+  "/obj/structure/vehicle/carriage": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/stack/material/rope": 20
+    }
+  }
+}

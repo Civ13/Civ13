@@ -23,6 +23,7 @@ EXPECTED = {
     'offshore_rig': (70, True, False),
     'deep_water': (80, False, False),
     'religious_work': (90, False, False),
+    'needs': (95, False, True),
     'tribe_knowledge': (100, False, False),
 }
 DECL = re.compile(r'^/datum/craft_guard/([\w/]+)\r?\n((?:\t[^\n]*\r?\n)*)', re.M)
