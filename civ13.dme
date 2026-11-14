@@ -946,6 +946,7 @@
 #include "code\modules\1713\researchcost.dm"
 #include "code\modules\1713\road_tamping.dm"
 #include "code\modules\1713\movement_check.dm"
+#include "code\modules\1713\clay_lime_fire.dm"
 #include "code\modules\1713\click_route.dm"
 #include "code\modules\1713\round_facts.dm"
 #include "code\modules\1713\roundstart_etc.dm"

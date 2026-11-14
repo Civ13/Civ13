@@ -717,6 +717,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/reagent_containers/pill" = "pharmacology",
 		// pottery_storage
 		"/obj/item/weapon/reagent_containers/food/snacks/boiledrice" = "pottery_storage",
+		"/obj/structure/workshop_machine/potters_wheel" = "pottery_storage",
 		"/obj/item/weapon/reagent_containers/food/snacks/boiledspagetti" = "pottery_storage",
 		"/obj/item/weapon/reagent_containers/food/snacks/ramen" = "pottery_storage",
 		"/obj/item/weapon/reagent_containers/food/snacks/rawlobster/boiled" = "pottery_storage",
@@ -1034,6 +1035,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/stack/material/marblebrick" = "brickmaking",
 		"/obj/covers/marble_wall/plain/brick" = "brickmaking",
 		"/obj/item/weapon/clay/advclaybricks" = "brickmaking",
+		"/obj/structure/workshop_machine/brick_bench" = "brickmaking",
 		"/obj/item/weapon/clay/advclaybricks/cement" = "brickmaking",
 		"/obj/item/weapon/clay/roofing/black" = "brickmaking",
 		"/obj/item/weapon/clay/roofing/blue" = "brickmaking",
@@ -1056,6 +1058,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/furnace/kiln" = "bronze_working",
 		"/obj/structure/furnace/kiln/sandstone" = "bronze_working",
 		"/obj/structure/furnace/kiln/stone" = "bronze_working",
+		"/obj/structure/workshop_machine/bellows" = "bronze_working",
 		// --- cannon (2) ---
 		"/obj/item/cannon_ball" = "cannon",
 		"/obj/structure/cannon" = "cannon",
@@ -2240,6 +2243,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/noose" = "stone_arms",
 		// --- stone_masonry (44) ---
 		"/obj/covers/cobblestone" = "stone_masonry",
+		"/obj/structure/furnace/lime_kiln" = "stone_masonry",
 		"/obj/covers/cobblestone/stairs" = "stone_masonry",
 		"/obj/covers/roads/sandstone" = "stone_masonry",
 		"/obj/covers/sandstone" = "stone_masonry",
