@@ -503,7 +503,7 @@
 			return
 		drowning = FALSE
 		swim_rest()
-		if ((((istype(T, /turf/floor/beach/water) && !istype(T, /turf/floor/beach/water/ice)) || istype(T, /turf/floor/trench/flooded)) && !T.iscovered()) || flood_band >= FLOOD_BAND_KNEE)
+		if ((is_open_water(T) && !T.iscovered()) || flood_band >= FLOOD_BAND_KNEE)
 			water_overlay = TRUE
 			life_water_refresh()
 			return

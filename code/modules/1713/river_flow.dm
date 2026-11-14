@@ -48,7 +48,7 @@
 
 /proc/river_current_direction(turf/T)
 	// Ice holds what lies on it; the water under it is not this turf's affair.
-	if (!istype(T, /turf/floor/beach/water) || istype(T, /turf/floor/beach/water/ice) || !map)
+	if (!is_liquid_water(T) || !map)
 		return 0
 	var/datum/river_flow/F = map.river_flow()
 	if (!F || F.z_level != T.z || T.x < 1 || T.x > world.maxx || T.y < 1 || T.y > world.maxy)

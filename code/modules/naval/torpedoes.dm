@@ -154,7 +154,7 @@
 	detonate(null)
 
 /proc/torpedo_water(turf/T)
-	return istype(T, /turf/floor/beach/water) && !istype(T, /turf/floor/beach/water/ice)
+	return is_liquid_water(T)
 
 // The craft over this turf, modular boats included.
 /proc/torpedo_craft_at(turf/T)
