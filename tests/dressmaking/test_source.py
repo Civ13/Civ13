@@ -170,6 +170,22 @@ class TailoringTests(unittest.TestCase):
         self.assertIn('standing.overlays += tailored_under.worn_design_layers()', icons)
         self.assertIn('standing.overlays += tailored_suit.worn_design_layers()', icons)
 
+    def test_pattern_book(self):
+        self.assertIn('#define TAILORING_BOOK_MAX 20', SOURCE)
+        path = adapter.extract(SOURCE, '/proc/tailoring_book_path')
+        self.assertIn('key = ckey(key)', path)
+        self.assertIn('get_player_notes_file_dir()', path)
+        entry = adapter.extract(SOURCE, '/proc/tailoring_book_entry')
+        self.assertIn('tailoring_design_valid(body_id, colors_text, pieces_text)', entry)
+        self.assertIn('tailoring_clean_name(html_decode(design_name))', entry)
+        add = adapter.extract(SOURCE, '/proc/tailoring_book_add')
+        self.assertLess(add.index('"duplicate"'), add.index('book.len >= TAILORING_BOOK_MAX'))
+        book = adapter.extract(SOURCE, '/proc/tailoring_book')
+        self.assertIn('if (book.len >= TAILORING_BOOK_MAX)', book)
+        menu = adapter.extract(SOURCE, '/obj/item/tailoring_project/proc/pattern_book_menu')
+        self.assertIn('!actor_ready(user, site, save_epoch) || stage != 0', menu)
+        self.assertIn('load_design(user, entry["body"]', menu)
+
     def test_patterns_names_and_staff_panel(self):
         trace = adapter.extract(SOURCE, '/proc/tailoring_trace_pattern')
         # The sheet must be blank, held, and still blank and held after the wait.
@@ -177,9 +193,11 @@ class TailoringTests(unittest.TestCase):
         self.assertIn('recipe_blank_paper(sheet) || sheet.loc != user', trace[wait:])
         self.assertLess(wait, trace.index('qdel(sheet)'))
         self.assertIn('crafting_node_allowed_or_warn(user, "weaving")', trace)
-        load = adapter.extract(SOURCE, '/obj/item/tailoring_project/proc/load_pattern')
+        pattern_load = adapter.extract(SOURCE, '/obj/item/tailoring_project/proc/load_pattern')
+        self.assertIn('load_design(user, P.design_body, P.design_colors, P.design_pieces', pattern_load)
+        load = adapter.extract(SOURCE, '/obj/item/tailoring_project/proc/load_design')
         self.assertIn('if (stage != 0)', load)
-        self.assertIn('tailoring_design_allowed(user, P.design_body, P.design_pieces, P.design_colors)', load)
+        self.assertIn('tailoring_design_allowed(user, body_id, pieces_text, colors_text)', load)
         self.assertIn('tailoring_name_blocked(design_author)', load)
         clean = adapter.extract(SOURCE, '/proc/tailoring_clean_name')
         self.assertIn('sanitizeSafe(text, TAILORING_NAME_MAX + 1)', clean)

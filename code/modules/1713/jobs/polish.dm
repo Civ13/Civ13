@@ -21,6 +21,7 @@
 	min_positions = 1
 	max_positions = 2
 
+/datum/job/polish/warsaw/lead/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_MEDIUM_LOW, "swords" = STAT_MEDIUM_HIGH, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_MEDIUM_LOW)
 /datum/job/polish/warsaw/lead/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -59,14 +60,7 @@
 	H.add_note("Role", "You are a <b>[title]</b>, As a Commander You are in charge of the uprising, command your comrades and lead them to victory!")
 
 	give_random_name(H)
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_MEDIUM_LOW)
-	H.setStat("swords", STAT_MEDIUM_HIGH)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	return TRUE
 
 /datum/job/polish/warsaw/sl
@@ -85,6 +79,7 @@
 	min_positions = 2
 	max_positions = 4
 
+/datum/job/polish/warsaw/sl/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_MEDIUM_LOW, "swords" = STAT_MEDIUM_HIGH, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_MEDIUM_LOW)
 /datum/job/polish/warsaw/sl/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -120,14 +115,7 @@
 	H.add_note("Role", "You are a <b>[title]</b>,a Squad Leader of the polish home army, Lead and organize your Squad according to the <b>Commander's</b> orders!!")
 
 	give_random_name(H)
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_MEDIUM_LOW)
-	H.setStat("swords", STAT_MEDIUM_HIGH)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	return TRUE
 
 /datum/job/polish/warsaw/medic
@@ -147,6 +135,7 @@
 	min_positions = 2
 	max_positions = 6
 
+/datum/job/polish/warsaw/medic/job_stats = list("strength" = STAT_MEDIUM_LOW, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_MEDIUM_LOW, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_HIGH)
 /datum/job/polish/warsaw/medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -189,14 +178,7 @@
 
 	H.add_note("Role", "You are a <b>[title]</b>, a well trained medic,heal your comrades and make sure everyone is in a good state, Follow your <b>Squad Leader's</b> orders!")
 	give_random_name(H)
-	H.setStat("strength", STAT_MEDIUM_LOW)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_MEDIUM_LOW)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_HIGH)
+	apply_job_stats(H)
 	return TRUE
 
 /datum/job/polish/warsaw/armedmilita
@@ -213,6 +195,7 @@
 	min_positions = 10
 	max_positions = 45
 
+/datum/job/polish/warsaw/armedmilita/job_stats = list("strength" = STAT_MEDIUM_LOW, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_MEDIUM_LOW, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
 /datum/job/polish/warsaw/armedmilita/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -313,14 +296,7 @@
 	H.add_note("Role", "You are a <b>[title]</b>, A simple Milita of the polish home army, Follow your <b>Squad Leader's</b> orders!!")
 
 	give_random_name(H)
-	H.setStat("strength", STAT_MEDIUM_LOW)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_MEDIUM_LOW)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	return TRUE
 
 /datum/job/polish/warsaw/unarmedmilita
@@ -337,6 +313,7 @@
 	min_positions = 10
 	max_positions = 90
 
+/datum/job/polish/warsaw/unarmedmilita/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_NORMAL)
 /datum/job/polish/warsaw/unarmedmilita/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -400,14 +377,7 @@
 
 	H.add_note("Role", "You are a <b>[title]</b>, you are a inexperienced pole who decided to join the uprising,use teamwork and ambushes in order to destroy the fascists! Follow your <b>Squad Leader's</b> orders!")
 	give_random_name(H)
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_NORMAL)
+	apply_job_stats(H)
 	return TRUE
 
 /datum/job/polish/warsaw/greyrank
@@ -425,6 +395,7 @@
 	min_positions = 10
 	max_positions = 20
 
+/datum/job/polish/warsaw/greyrank/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_LOW, "dexterity" = STAT_LOW, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_LOW, "medical" = STAT_LOW)
 /datum/job/polish/warsaw/greyrank/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -472,14 +443,7 @@
 	H.add_note("Role", "You are a <b>[title]</b>, a polish teenager scout. you volunteered to fight for poland, Follow your <b>Squad Leader's</b> orders!")
 	H.add_note("Age", "Due to your young age you are overall less skilled than the regular soldier. Instead of directly fighting, you should assist with static weaponry, help out with logistics and distract enemies.")
 	give_random_name(H)
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_LOW)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_LOW)
-	H.setStat("medical", STAT_LOW)
+	apply_job_stats(H)
 	return TRUE
 
 /////////////////////////////////////////////Red army warsaw reinforcements////////////////////////////////////
@@ -502,6 +466,7 @@
 	min_positions = 1
 	max_positions = 2
 
+/datum/job/polish/warsaw/redarmypolsl/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_MEDIUM_HIGH)
 /datum/job/polish/warsaw/redarmypolsl/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -531,15 +496,7 @@
 	give_random_name(H)
 
 	H.add_note("Role", "You are a <b>[title]</b>, you were sent here to help the polish, coordinate with them and defeat the germans. command your squad!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_MEDIUM_HIGH)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("machinegun", STAT_MEDIUM_HIGH)
+	apply_job_stats(H)
 
 	return TRUE
 
@@ -559,6 +516,7 @@
 	min_positions = 10
 	max_positions = 10
 
+/datum/job/polish/warsaw/redarmypol/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_NORMAL, "dexterity" = STAT_MEDIUM_LOW, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_MEDIUM_LOW)
 /datum/job/polish/warsaw/redarmypol/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -600,13 +558,5 @@
 	uniform.attackby(white, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a simple soldier from the People's Army of Poland. You were sent here to assist the troops. Follow your <b>Sergeant's</b> orders!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_MEDIUM_LOW)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("machinegun", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	return TRUE

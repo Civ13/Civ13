@@ -878,6 +878,8 @@ SUITES = {
         'paths': ('tests/resource_stock/', 'code/_helpers/resource_stock.dm'), 'shared_paths': (
             'code/game/objects/structures/rocks.dm', 'code/modules/1713/obsidian.dm',
             'code/game/objects/structures/ocean_fishing.dm')},
+    'job_stats': {'files': ('tests/job_stats/test_job_stats.py',),
+        'paths': ('tests/job_stats/', 'code/modules/1713/jobs/'), 'shared_paths': ('code/game/jobs/job.dm',)},
     'item_wear': {'files': ('tests/item_wear/test_item_wear.py',),
         'paths': ('tests/item_wear/', 'code/_helpers/item_wear.dm'), 'shared_paths': (
             'code/game/objects/items/weapons/material/material_weapons.dm',
@@ -1123,6 +1125,11 @@ SUITES = {
     'barter': {'files': ('tests/barter/test_source.py',),
         'paths': ('tests/barter/',), 'shared_paths': (
             'code/modules/1713/barter.dm', 'icons/obj/barter.dmi')},
+    # Bone flute, frame drum, flint sickle and bison herds: source contracts only.
+    'stone_age_extras': {'files': ('tests/stone_age_extras/test_source.py',),
+        'paths': ('tests/stone_age_extras/',), 'shared_paths': (
+            'code/modules/1713/stone_age_extras.dm', 'icons/obj/stone_age_extras.dmi',
+            'code/modules/1713/processing_recipes.dm')},
     'door_intents': {'files': ('tests/door_intents/test_door_intents.py', 'tests/door_intents/test_jail_keys.py'),
         'paths': ('tests/door_intents/',), 'shared_paths': (
             'code/game/objects/structures/door.dm',

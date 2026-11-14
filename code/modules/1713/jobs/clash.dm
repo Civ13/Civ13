@@ -24,6 +24,7 @@
 	min_positions = 1
 	max_positions = 1
 
+/datum/job/norwegian/bear_clan/king/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_LOW, "dexterity" = STAT_HIGH, "swords" = STAT_HIGH, "pistol" = STAT_LOW, "bows" = STAT_HIGH, "medical" = STAT_MEDIUM_LOW)
 /datum/job/norwegian/bear_clan/king/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	//shoes
@@ -40,14 +41,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/map_tdm/clash(H), slot_l_store)
 	H.f_style = pick("Lumberjack Beard")
 	H.add_note("Role", "You are the <b>[title]</b>, the leader of the <b>Bear Clan</b>, a fearsome clan. Organize your <b>Clan</b> and lead your fighters to victory!</b>.")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_HIGH)
-	H.setStat("swords", STAT_HIGH)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_HIGH)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	give_random_name(H)
 
 	return TRUE
@@ -66,6 +60,7 @@
 	min_positions = 1
 	max_positions = 1
 
+/datum/job/norwegian/bear_clan/jarl/job_stats = list("strength" = STAT_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_LOW, "dexterity" = STAT_HIGH, "swords" = STAT_HIGH, "pistol" = STAT_LOW, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
 /datum/job/norwegian/bear_clan/jarl/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	//shoes
@@ -83,14 +78,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/dagger/iron(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/horn(H), slot_l_store)
 	H.add_note("Role", "You are a <b>[title]</b>, a vassal of the King. Lead your <b>Clan</b> to battle according to the orders of the <b>King</b>!")
-	H.setStat("strength", STAT_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_HIGH)
-	H.setStat("swords", STAT_HIGH)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	H.f_style = pick("Dwarf Beard", "Biker Beard","Long Beard","Very Long Beard")
 	give_random_name(H)
 	return TRUE
@@ -109,6 +97,7 @@
 	min_positions = 5
 	max_positions = 8
 
+/datum/job/norwegian/bear_clan/berserker/job_stats = list("strength" = STAT_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_LOW, "dexterity" = STAT_HIGH, "swords" = STAT_HIGH, "pistol" = STAT_LOW, "bows" = STAT_LOW, "medical" = STAT_HIGH)
 /datum/job/norwegian/bear_clan/berserker/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	//shoes
@@ -139,14 +128,7 @@
 	uniform.attackby(h, H)
 
 	H.add_note("Role", "You are a <b>[title]</b>, a warrior capable of supernatural frenzy in battle. Lead your fellow clan members to battle and destroy your foes!")
-	H.setStat("strength", STAT_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_HIGH)
-	H.setStat("swords", STAT_HIGH)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_LOW)
-	H.setStat("medical", STAT_HIGH)
+	apply_job_stats(H)
 	H.f_style = pick("Dwarf Beard","Very Long Beard")
 	give_random_name(H)
 	return TRUE
@@ -165,6 +147,7 @@
 	min_positions = 20
 	max_positions = 100
 
+/datum/job/norwegian/bear_clan/warrior/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_HIGH, "pistol" = STAT_LOW, "bows" = STAT_MEDIUM_HIGH, "medical" = STAT_LOW)
 /datum/job/norwegian/bear_clan/warrior/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
@@ -193,14 +176,7 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/dagger/iron(H), slot_belt)
 
 	H.add_note("Role", "You are a <b>[title]</b>, a warrior of the Bear clan. Follow your leaders and help your brothers in battle.")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_HIGH)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_MEDIUM_HIGH)
-	H.setStat("medical", STAT_LOW)
+	apply_job_stats(H)
 	if (prob(80))
 		H.f_style = pick("Dwarf Beard", "Biker Beard","Long Beard","Medium Beard","Full Beard","Long Beard")
 	give_random_name(H)
@@ -222,6 +198,7 @@
 	min_positions = 4
 	max_positions = 5
 
+/datum/job/norwegian/bear_clan/healer/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_LOW, "bows" = STAT_LOW, "medical" = STAT_HIGH)
 /datum/job/norwegian/bear_clan/healer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
@@ -242,14 +219,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/dagger/iron(H), slot_r_hand)
 
 	H.add_note("Role", "You are a <b>[title]</b>, the clan's healer. Your task is to keep your fellow clanmembers fit for battle, Valhalla awaits them as victors!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_LOW)
-	H.setStat("medical", STAT_HIGH)
+	apply_job_stats(H)
 	give_random_name(H)
 	return TRUE
 ////////////////////////////////////////////////////////////////////////////////////
@@ -281,6 +251,7 @@
 	min_positions = 1
 	max_positions = 1
 
+/datum/job/danish/raven_clan/king/job_stats = list("strength" = STAT_HIGH, "crafting" = STAT_LOW, "rifle" = STAT_LOW, "dexterity" = STAT_HIGH, "swords" = STAT_HIGH, "pistol" = STAT_LOW, "bows" = STAT_HIGH, "medical" = STAT_MEDIUM_LOW)
 /datum/job/danish/raven_clan/king/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -293,14 +264,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/shield/iron(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/dagger/iron(H), slot_r_hand)
 	H.add_note("Role", "You are the <b>[title]</b>, the leader of the <b>Raven clan</b>, a prosperous clan. Defend and lead your kingdom to victory!</b>.")
-	H.setStat("strength", STAT_HIGH)
-	H.setStat("crafting", STAT_LOW)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_HIGH)
-	H.setStat("swords", STAT_HIGH)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_HIGH)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	H.f_style = pick("Sailor Beard")
 	give_random_name(H)
 	return TRUE
@@ -319,6 +283,7 @@
 	min_positions = 1
 	max_positions = 1
 
+/datum/job/danish/raven_clan/jarl/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_LOW, "dexterity" = STAT_HIGH, "swords" = STAT_HIGH, "pistol" = STAT_LOW, "bows" = STAT_NORMAL, "medical" = STAT_HIGH)
 /datum/job/danish/raven_clan/jarl/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -340,14 +305,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/shield/iron(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/horn(H), slot_r_store)
 	H.add_note("Role", "You are a <b>[title]</b>, a vassal of the King. Lead your <b>Clan</b> to battle, following the orders of your <b>King</b>!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_HIGH)
-	H.setStat("swords", STAT_HIGH)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_HIGH)
+	apply_job_stats(H)
 	H.f_style = pick("Dwarf Beard", "Biker Beard","Long Beard","Very Long Beard")
 	give_random_name(H)
 	return TRUE
@@ -365,6 +323,7 @@
 	min_positions = 5
 	max_positions = 8
 
+/datum/job/danish/raven_clan/huntsman/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_HIGH, "rifle" = STAT_LOW, "dexterity" = STAT_HIGH, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_LOW, "bows" = STAT_HIGH, "medical" = STAT_MEDIUM_LOW)
 /datum/job/danish/raven_clan/huntsman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -392,14 +351,7 @@
 	uniform.attackby(h, H)
 
 	H.add_note("Role", "You are a <b>[title]</b>, a very skilled archer. help your fellow clanmembers win!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_HIGH)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_HIGH)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_HIGH)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	give_random_name(H)
 	if (prob(80))
 		H.f_style = pick("Dwarf Beard", "Biker Beard","Long Beard","Medium Beard","Full Beard","Long Beard")
@@ -419,6 +371,7 @@
 	min_positions = 8
 	max_positions = 100
 
+/datum/job/danish/raven_clan/warrior/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_LOW, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_MEDIUM_HIGH, "pistol" = STAT_LOW, "bows" = STAT_MEDIUM_HIGH, "medical" = STAT_LOW)
 /datum/job/danish/raven_clan/warrior/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -448,14 +401,7 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/dagger/iron(H), slot_belt)
 
 	H.add_note("Role", "You are a <b>[title]</b>, a warrior of the Raven clan. Help your other clanmembers defend your settlement.")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_MEDIUM_HIGH)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_MEDIUM_HIGH)
-	H.setStat("medical", STAT_LOW)
+	apply_job_stats(H)
 	if (prob(80))
 		H.f_style = pick("Dwarf Beard", "Biker Beard","Long Beard","Medium Beard","Full Beard","Long Beard")
 
@@ -477,6 +423,7 @@
 	min_positions = 3
 	max_positions = 4
 
+/datum/job/danish/raven_clan/shaman/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_HIGH, "rifle" = STAT_LOW, "dexterity" = STAT_HIGH, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_LOW, "bows" = STAT_LOW, "medical" = STAT_HIGH)
 /datum/job/danish/raven_clan/shaman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -493,13 +440,6 @@
 	H.equip_to_slot_or_del(new /obj/item/stack/medical/advanced/herbs(H), slot_l_store)
 
 	H.add_note("Role", "You are a <b>[title]</b>, a magico-religious initiate. Your task is to use your mystical knowledge of medicine to aid your fellow clan members.")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_HIGH)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_HIGH)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_LOW)
-	H.setStat("medical", STAT_HIGH)
+	apply_job_stats(H)
 	give_random_name(H)
 	return TRUE

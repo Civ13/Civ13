@@ -264,6 +264,8 @@ var/global/list/node_grid_col_cache = null
 	register_research_node(new /datum/research_node("iron_smithing", "Iron Smithing", "Industrial", 195, 1, RESEARCH_MODE_PROTOTYPE, list("bronze_working"), 2, /obj/item/weapon/clay/mold))
 	register_research_node(new /datum/research_node("steelmaking", "Steelmaking", "Industrial", 200, 3, RESEARCH_MODE_ANALYSIS, list("iron_smithing"), 4))
 	register_research_node(new /datum/research_node("alloys", "Alloys", "Industrial", 270, 5, RESEARCH_MODE_ANALYSIS, list("steelmaking"), 6))
+	// Hall-Heroult (1886) and Bayer (1888): aluminium from bauxite (aluminium.dm).
+	register_research_node(new /datum/research_node("aluminium_refining", "Aluminium Refining", "Industrial", 305, 5, RESEARCH_MODE_ANALYSIS, list("electricity","alloys"), 6))
 	// Chemical cells precede electrical power distribution: Galvanic Cells are
 	// groundwork for Electricity.
 	register_research_node(new /datum/research_node("early_cells", "Early Chemical Cells", "Industrial", 95, 0, RESEARCH_MODE_ANALYSIS, list("bronze_working"), 1))
@@ -1308,6 +1310,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/power_point/pole" = "electricity",
 		"/obj/structure/civ_generator/waterwheel" = "electricity",
 		"/obj/structure/plating_bath" = "electricity",
+		"/obj/structure/aluminium_works/digester" = "aluminium_refining",
+		"/obj/structure/aluminium_works/reduction_pot" = "aluminium_refining",
 		// --- factories (28) ---
 		// Steam-era factory floor: plain belts, their drive, parts bins and
 		// the feeder arm run on a steam engine and plain cable.
@@ -1367,7 +1371,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/train_car_kit/railgun" = "field_artillery",
 		"/obj/structure/trains/locomotive/coal/armored" = "field_artillery",
 		// --- field_defenses (14) ---
-		"/obj/item/weapon/beartrap" = "field_defenses",
+		"/obj/item/weapon/beartrap" = "iron_tools",
 		"/obj/item/weapon/pit_cover" = "field_defenses",
 		"/obj/item/weapon/dummy_armor" = "field_defenses",
 		"/obj/item/weapon/material/shovel/trench" = "field_defenses",
@@ -2167,6 +2171,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/stack/barter_beads/stone" = "regalia",
 		"/obj/item/stack/barter_beads/bone" = "regalia",
 		"/obj/structure/barter_mat" = "basic_tools",
+		"/obj/item/stone_age_instrument/bone_flute" = "ritual_worship",
+		"/obj/item/stone_age_instrument/frame_drum" = "ritual_worship",
 		"/obj/structure/religious/impaledskull" = "ritual_worship",
 		"/obj/structure/religious/moai" = "ritual_worship",
 		"/obj/structure/religious/moai/long" = "ritual_worship",

@@ -103,6 +103,9 @@ var/global/list/car_workshop_prototypes = list()
 /obj/structure/car_workshop/proc/largest_model_size()
 	. = 0
 	for (var/model in models())
+		var/list/spec = works_spec(model)
+		if (spec && spec["oversize"])
+			continue
 		. = max(., model_size(model))
 
 // Why a press placed on origin by H could never assemble anything, or null.

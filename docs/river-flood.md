@@ -96,9 +96,12 @@ or person; nothing loops over the map.
   tile): flour sacks are ruined and gunpowder pouches emptied; at knee depth
   or more, small items float one tile toward deeper water, and into the river's
   current. A table keeps things dry below waist depth.
-- Placeholder drawing: shallow water over flooded land as images only the
-  viewer holds, more opaque when deeper, redrawn when the viewer has moved 4
-  tiles or the rivers changed. Nothing is drawn while every reach is at or
+- Drawing: `icons/effects/floodwater.dmi` (Fable, `tests/sprites/create_floodwater.py`)
+  as images only the viewer holds: `flood1`-`flood4` by band on each flooded
+  tile, `flood_edge<band>` on each dry neighbour (dir from the water to the dry
+  tile) and `flood_step<band>` on a shallower flooded neighbour. The ripple
+  shares the river water's 12-frame loop. Redrawn when the viewer has moved 4
+  tiles or the rivers changed; nothing is drawn while every reach is at or
   below stage 0.
 
 ## Ground changes

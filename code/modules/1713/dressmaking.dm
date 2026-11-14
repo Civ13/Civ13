@@ -12,6 +12,8 @@
 
 #define TAILORING_MAX_FABRIC 8
 #define TAILORING_MAX_COLOURS 6
+#define TAILORING_BOOK_MAX 20
+#define TAILORING_BOOK_FIELDS list("body", "colors", "pieces", "name", "maker", "author")
 
 var/global/list/tailoring_catalogue = null
 
@@ -646,6 +648,8 @@ var/global/list/tailoring_dye_tiers = list(
 		var/list/options = stage == 0 ? list("Choose garment", "Colours", "Name", "Cut fabric", "Close") : list("Sew", "Close")
 		if (stage == 0 && body && length(body["options"]))
 			options.Insert(2, "Pieces")
+		if (stage == 0 && user.ckey)
+			options.Insert(options.len, "Pattern book")
 		var/status = stage == 0 ? "Designing a [garment]: it needs [body_cost()] fabric and the project holds [fabric]." : "The [garment] is cut and ready to sew."
 		var/choice = WWinput(user, status, "Tailoring", "Close", options)
 		if (!actor_ready(user, site, save_epoch) || !choice || choice == "Close")
@@ -686,6 +690,10 @@ var/global/list/tailoring_dye_tiers = list(
 				if (stage != 0)
 					return
 				choose_name(user, site, save_epoch)
+			if ("Pattern book")
+				if (stage != 0)
+					return
+				pattern_book_menu(user, site, save_epoch)
 			if ("Cut fabric")
 				if (fabric < body_cost())
 					to_chat(user, SPAN_WARNING("A [garment] needs [body_cost()] fabric. Add cloth or woolcloth sheets to the project first."))
@@ -946,26 +954,33 @@ var/global/list/tailoring_name_block_list = null
 	tailoring_register(src)
 
 /obj/item/tailoring_project/proc/load_pattern(mob/living/human/user, obj/item/sewing_pattern/P)
+	return load_design(user, P.design_body, P.design_colors, P.design_pieces, P.design_name, P.design_maker, P.design_author, "pattern")
+
+// Copies a saved design (from a pattern or the pattern book) onto the uncut project.
+/obj/item/tailoring_project/proc/load_design(mob/living/human/user, body_id, colors_text, pieces_text, new_name, maker, author, source = "pattern")
 	if (stage != 0)
 		to_chat(user, SPAN_WARNING("The fabric is already cut."))
 		return FALSE
-	if (!crafting_node_allowed_or_warn(user, "weaving") || !tailoring_design_valid(P.design_body, P.design_colors, P.design_pieces))
+	if (!crafting_node_allowed_or_warn(user, "weaving") || !tailoring_design_valid(body_id, colors_text, pieces_text))
 		return FALSE
-	var/list/body = tailoring_body(P.design_body)
-	if (!tailoring_design_allowed(user, P.design_body, P.design_pieces, P.design_colors))
-		var/datum/research_node/N = get_research_node(tailoring_missing_node(user, P.design_body, P.design_pieces, P.design_colors))
+	var/list/body = tailoring_body(body_id)
+	if (!tailoring_design_allowed(user, body_id, pieces_text, colors_text))
+		var/datum/research_node/N = get_research_node(tailoring_missing_node(user, body_id, pieces_text, colors_text))
 		to_chat(user, SPAN_WARNING("You don't know how to make this [body["name"]] yet[N ? ". It needs <b>[N.name]</b>" : ""]."))
 		return FALSE
-	design_body = P.design_body
-	design_colors = P.design_colors
-	design_pieces = P.design_pieces
-	design_name = P.design_name
-	design_maker = P.design_maker
-	design_author = P.design_author
+	design_body = body_id
+	design_colors = colors_text
+	design_pieces = pieces_text
+	design_name = new_name
+	design_maker = maker
+	design_author = author
 	if (design_name && tailoring_name_blocked(design_author))
 		design_name = null
-	tailoring_register(src)
-	to_chat(user, SPAN_NOTICE("You copy the [design_name ? "\"[design_name]\"" : body["name"]] pattern onto the project. It needs [body_cost()] fabric."))
+	if (design_name)
+		tailoring_register(src)
+	else
+		tailoring_named_items -= src
+	to_chat(user, SPAN_NOTICE("You copy the [design_name ? "\"[design_name]\"" : body["name"]] [source] onto the project. It needs [body_cost()] fabric."))
 	return TRUE
 
 /mob/living/human/proc/tailoring_trace_wait(obj/item/source)
@@ -1047,6 +1062,149 @@ var/global/list/tailoring_name_block_list = null
 
 /obj/item/sewing_pattern/attack_self(mob/user)
 	examine(user)
+	if (!user.ckey || !tailoring_design_valid(design_body, design_colors, design_pieces))
+		return
+	var/choice = WWinput(user, "Copy this pattern into your own pattern book? Your book keeps up to [TAILORING_BOOK_MAX] designs for every character you play here.", "Sewing pattern", "Close", list("Copy into pattern book", "Close"))
+	if (choice != "Copy into pattern book" || QDELETED(src) || loc != user)
+		return
+	tailoring_book_add_feedback(user, user.ckey, design_body, design_colors, design_pieces, design_name, design_maker, design_author)
+
+// Pattern book: each account keeps up to TAILORING_BOOK_MAX designs that any
+// of its characters on this server can load onto a project. Books live in the
+// account's player save folder, which every region keeps separately.
+
+// Account key -> list of saved designs, each list("body" = ..., "colors" = ..., ...).
+var/global/list/tailoring_books = list()
+
+/proc/tailoring_book_path(key)
+	key = ckey(key)
+	if (!key)
+		return null
+	return "[get_player_notes_file_dir()][copytext(key, 1, 2)]/[key]/tailoring_patterns.sav"
+
+/proc/tailoring_book_entry(body_id, colors_text, pieces_text, design_name, maker, author)
+	if (!tailoring_design_valid(body_id, colors_text, pieces_text))
+		return null
+	var/list/body = tailoring_body(body_id)
+	if (!length(body["options"]))
+		pieces_text = null
+	return list("body" = body_id, "colors" = lowertext(colors_text), "pieces" = pieces_text, "name" = istext(design_name) ? tailoring_clean_name(html_decode(design_name)) : null, "maker" = istext(maker) ? copytext(maker, 1, MAX_NAME_LEN + 1) : null, "author" = istext(author) ? ckey(author) : null)
+
+// The account's book, read once from disk; entries that no longer fit the
+// catalogue are dropped.
+/proc/tailoring_book(key)
+	key = ckey(key)
+	if (!key)
+		return null
+	if (tailoring_books[key])
+		return tailoring_books[key]
+	var/list/book = list()
+	var/path = tailoring_book_path(key)
+	if (fexists(path))
+		var/savefile/S = new(path)
+		var/list/saved
+		S["designs"] >> saved
+		if (islist(saved))
+			for (var/list/E in saved)
+				if (book.len >= TAILORING_BOOK_MAX)
+					break
+				if (!istype(E))
+					continue
+				var/list/entry = tailoring_book_entry(E["body"], E["colors"], E["pieces"], E["name"], E["maker"], E["author"])
+				if (entry)
+					book += list(entry)
+	tailoring_books[key] = book
+	return book
+
+/proc/tailoring_book_write(key)
+	key = ckey(key)
+	var/list/book = tailoring_books[key]
+	var/path = tailoring_book_path(key)
+	if (!path || !islist(book))
+		return FALSE
+	if (fexists(path))
+		fdel(path)
+	var/savefile/S = new(path)
+	S["designs"] << book
+	return TRUE
+
+/proc/tailoring_book_same(list/A, list/B)
+	for (var/field in TAILORING_BOOK_FIELDS)
+		if (A[field] != B[field])
+			return FALSE
+	return TRUE
+
+// Adds a design; returns the entry, "full", "duplicate" or null when invalid.
+/proc/tailoring_book_add(key, body_id, colors_text, pieces_text, design_name, maker, author)
+	var/list/book = tailoring_book(key)
+	var/list/entry = tailoring_book_entry(body_id, colors_text, pieces_text, design_name, maker, author)
+	if (!book || !entry)
+		return null
+	for (var/list/E in book)
+		if (tailoring_book_same(E, entry))
+			return "duplicate"
+	if (book.len >= TAILORING_BOOK_MAX)
+		return "full"
+	book += list(entry)
+	tailoring_book_write(key)
+	return entry
+
+/proc/tailoring_book_add_feedback(mob/user, key, body_id, colors_text, pieces_text, design_name, maker, author)
+	var/result = tailoring_book_add(key, body_id, colors_text, pieces_text, design_name, maker, author)
+	if (result == "full")
+		to_chat(user, SPAN_WARNING("Your pattern book is full. Remove a design from it first (use a tailoring project in hand and open Pattern book)."))
+	else if (result == "duplicate")
+		to_chat(user, SPAN_NOTICE("That design is already in your pattern book."))
+	else if (islist(result))
+		to_chat(user, SPAN_NOTICE("You note \"[tailoring_book_label(result)]\" in your pattern book."))
+	else
+		to_chat(user, SPAN_WARNING("There is no finished design to note down."))
+	return islist(result)
+
+/proc/tailoring_book_remove(key, list/entry)
+	var/list/book = tailoring_book(key)
+	if (!book || !(entry in book))
+		return FALSE
+	book -= list(entry)
+	tailoring_book_write(key)
+	return TRUE
+
+/proc/tailoring_book_label(list/entry)
+	var/list/body = tailoring_body(entry["body"])
+	var/garment = body ? body["name"] : "garment"
+	if (entry["name"] && !tailoring_name_blocked(entry["author"]))
+		return "[entry["name"]] ([garment])"
+	return garment
+
+/obj/item/tailoring_project/proc/pattern_book_menu(mob/living/human/user, turf/site, datum/save_epoch)
+	var/list/book = tailoring_book(user.ckey)
+	if (!book)
+		return
+	var/list/menu = list()
+	var/list/entries = list()
+	for (var/i = 1, i <= book.len, i++)
+		var/label = "[i]. [tailoring_book_label(book[i])]"
+		menu += label
+		entries[label] = book[i]
+	menu += "Save this design"
+	if (book.len)
+		menu += "Remove a design"
+	var/picked = WWinput(user, "Your pattern book holds [book.len] of [TAILORING_BOOK_MAX] designs, shared by every character you play here. Choose one to copy onto the project.", "Pattern book", null, menu)
+	if (!actor_ready(user, site, save_epoch) || stage != 0 || !(picked in menu))
+		return
+	if (picked == "Save this design")
+		tailoring_book_add_feedback(user, user.ckey, design_body, design_colors, design_pieces, design_name, design_maker, design_author)
+		return
+	if (picked == "Remove a design")
+		var/list/remove_menu = list()
+		for (var/label in entries)
+			remove_menu += label
+		var/removed = WWinput(user, "Remove which design from your pattern book?", "Pattern book", null, remove_menu)
+		if (actor_ready(user, site, save_epoch) && (removed in entries) && tailoring_book_remove(user.ckey, entries[removed]))
+			to_chat(user, SPAN_NOTICE("You strike \"[tailoring_book_label(entries[removed])]\" from your pattern book."))
+		return
+	var/list/entry = entries[picked]
+	load_design(user, entry["body"], entry["colors"], entry["pieces"], entry["name"], entry["maker"], entry["author"], "design")
 
 // Staff panel: every named design in the world, its designer and account.
 /proc/tailoring_admin_allowed(client/C)
@@ -1142,6 +1300,8 @@ var/global/datum/tailoring_admin_panel/tailoring_admin = new
 
 #undef TAILORING_NAME_MAX
 #undef TAILORING_TRACE_TIME
+#undef TAILORING_BOOK_MAX
+#undef TAILORING_BOOK_FIELDS
 #undef TAILORING_BLOCK_FILE
 
 #undef TAILORING_ANY_DYE_NODE
