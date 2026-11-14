@@ -139,6 +139,8 @@
 
 /obj/item/weapon/material/examine(mob/user)
 	..()
+	if (material)
+		to_chat(user, "<b>Material:</b> [material.display_name] - [material.property_summary()].")
 	if (tool_head_material && tool_handle_material)
 		to_chat(user, "<b>Components:</b> [tool_head_material] head (quality [tool_head_quality]), [tool_handle_material] handle (quality [tool_handle_quality]).")
 	switch(crafting_quality)
