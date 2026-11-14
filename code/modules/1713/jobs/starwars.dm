@@ -13,6 +13,7 @@
 	min_positions = 1
 	max_positions = 1
 
+/datum/job/civilian/starwars/rebel/lieutenant/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_VERY_VERY_HIGH, "dexterity" = STAT_VERY_VERY_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_VERY_VERY_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_VERY_VERY_HIGH)
 /datum/job/civilian/starwars/rebel/lieutenant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -32,15 +33,7 @@
 	uniform.attackby(holsterh, H)
 	H.s_tone = rand(-35,-25)
 	H.add_note("Role", "You are a <b>[title]</b>, lead the Rebel Alliance forced in the fight against the Extra-Galactic Empire!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_VERY_VERY_HIGH)
-	H.setStat("dexterity", STAT_VERY_VERY_HIGH)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_VERY_VERY_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("machinegun", STAT_VERY_VERY_HIGH)
+	apply_job_stats(H)
 	return TRUE
 
 /datum/job/civilian/starwars/rebel/doctor
@@ -54,6 +47,7 @@
 	min_positions = 1
 	max_positions = 2
 
+/datum/job/civilian/starwars/rebel/doctor/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_VERY_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MAX, "machinegun" = STAT_MEDIUM_LOW)
 /datum/job/civilian/starwars/rebel/doctor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -73,15 +67,7 @@
 	uniform.attackby(holsterh, H)
 	H.s_tone = rand(-35,-25)
 	H.add_note("Role", "You are a <b>[title]</b>. Keep the Rebel Marines fighting on!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_VERY_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MAX)
-	H.setStat("machinegun", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	return TRUE
 
 /datum/job/civilian/starwars/rebel/radio_technician
@@ -96,6 +82,7 @@
 	min_positions = 1
 	max_positions = 10
 
+/datum/job/civilian/starwars/rebel/radio_technician/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_VERY_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_MEDIUM_LOW)
 /datum/job/civilian/starwars/rebel/radio_technician/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	//shoes
@@ -118,15 +105,7 @@
 	uniform.attackby(holsterh, H)
 	H.s_tone = rand(-35,-25)
 	H.add_note("Role", "You are a <b>[title]</b>. Keep the Rebel forces informed and updated!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_VERY_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("machinegun", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	return TRUE
 
 /datum/job/civilian/starwars/rebel/sergeant
@@ -141,6 +120,7 @@
 	min_positions = 4
 	max_positions = 8
 
+/datum/job/civilian/starwars/rebel/sergeant/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_HIGH, "dexterity" = STAT_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_VERY_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_MEDIUM_HIGH, "stamina" = STAT_VERY_HIGH)
 /datum/job/civilian/starwars/rebel/sergeant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -162,16 +142,7 @@
 	uniform.attackby(holsterh, H)
 	H.add_note("Role", "You are a <b>[title]</b>, a sergeant in the Rebel Alliance, in charge of a squad. Lead your men and fight against the Extra-Galactic Empire!")
 	H.add_note("Partisan Mechanics", "- Press <b>C</b> to place a booby trap while holding a thermal detonator.")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_HIGH)
-	H.setStat("dexterity", STAT_HIGH)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_VERY_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("machinegun", STAT_MEDIUM_HIGH)
-	H.setStat("stamina", STAT_VERY_HIGH)
+	apply_job_stats(H)
 	return TRUE
 
 /datum/job/civilian/starwars/rebel/soldierheavy
@@ -185,6 +156,7 @@
 	min_positions = 1
 	max_positions = 10
 
+/datum/job/civilian/starwars/rebel/soldierheavy/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_VERY_HIGH)
 /datum/job/civilian/starwars/rebel/soldierheavy/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	//shoes
@@ -201,15 +173,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/laser/z6/empire(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/grenade/modern/thermaldetonator(H), slot_r_store)
 	H.add_note("Role", "You are a <b>[title]</b>, a heavy soldier in the Rebel Army. Fight for the freedom of <b>the Galaxy</b>! Fight against the Galactic Empire!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_MEDIUM_HIGH)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("machinegun", STAT_VERY_HIGH)
+	apply_job_stats(H)
 	return TRUE
 
 /datum/job/civilian/starwars/rebel/soldier
@@ -223,6 +187,7 @@
 	min_positions = 24
 	max_positions = 124
 
+/datum/job/civilian/starwars/rebel/soldier/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_MEDIUM_HIGH)
 /datum/job/civilian/starwars/rebel/soldier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	//shoes
@@ -241,15 +206,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/grenade/modern/thermaldetonator(H), slot_r_store)
 	H.add_note("Role", "You are a <b>[title]</b>, a soldier in the Rebel Alliance. Fight for the freedom of <b>the Galaxy</b>! Fight against the Galactic Empire!")
 	H.add_note("Partisan Mechanics", "- Press <b>C</b> to place a booby trap while holding a thermal detonator.")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_MEDIUM_HIGH)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("machinegun", STAT_MEDIUM_HIGH)
+	apply_job_stats(H)
 	return TRUE
 
 
@@ -272,6 +229,7 @@
 	min_positions = 1
 	max_positions = 1
 
+/datum/job/american/starwars/empire/lieutenant/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_VERY_VERY_HIGH, "dexterity" = STAT_VERY_VERY_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_VERY_VERY_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_VERY_VERY_HIGH)
 /datum/job/american/starwars/empire/lieutenant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -291,15 +249,7 @@
 	uniform.attackby(holsterh, H)
 	H.s_tone = rand(-35,-25)
 	H.add_note("Role", "You are a <b>[title]</b>, lead the Galactic Imperial Forces in the fight against the Rebel Alliance!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_VERY_VERY_HIGH)
-	H.setStat("dexterity", STAT_VERY_VERY_HIGH)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_VERY_VERY_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("machinegun", STAT_VERY_VERY_HIGH)
+	apply_job_stats(H)
 	return TRUE
 
 /datum/job/american/starwars/empire/doctor
@@ -313,6 +263,7 @@
 	min_positions = 1
 	max_positions = 2
 
+/datum/job/american/starwars/empire/doctor/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_VERY_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MAX, "machinegun" = STAT_MEDIUM_LOW)
 /datum/job/american/starwars/empire/doctor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -334,15 +285,7 @@
 	uniform.attackby(holsterh, H)
 	H.s_tone = rand(-35,-25)
 	H.add_note("Role", "You are a <b>[title]</b>. Keep the Extra-Galactic Empire fighting on!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_VERY_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MAX)
-	H.setStat("machinegun", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	return TRUE
 
 /datum/job/american/starwars/empire/technician
@@ -357,6 +300,7 @@
 	min_positions = 1
 	max_positions = 10
 
+/datum/job/american/starwars/empire/technician/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_VERY_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_MEDIUM_LOW)
 /datum/job/american/starwars/empire/technician/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -378,15 +322,7 @@
 	uniform.attackby(holsterh, H)
 	H.s_tone = rand(-35,-25)
 	H.add_note("Role", "You are a <b>[title]</b>. Keep the Imperial Forces Informed and Updated!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_VERY_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("machinegun", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	return TRUE
 
 /datum/job/american/starwars/empire/sergeant
@@ -401,6 +337,7 @@
 	min_positions = 4
 	max_positions = 8
 
+/datum/job/american/starwars/empire/sergeant/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_HIGH, "dexterity" = STAT_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_VERY_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_MEDIUM_HIGH, "stamina" = STAT_VERY_HIGH)
 /datum/job/american/starwars/empire/sergeant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -420,16 +357,7 @@
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
 	H.add_note("Role", "You are a <b>[title]</b>, in the Extra-Galactic Imperial Army, in charge of a squad. Lead your men and fight against the Rebel Alliance!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_HIGH)
-	H.setStat("dexterity", STAT_HIGH)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_VERY_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("machinegun", STAT_MEDIUM_HIGH)
-	H.setStat("stamina", STAT_VERY_HIGH)
+	apply_job_stats(H)
 	return TRUE
 
 
@@ -444,6 +372,7 @@
 	min_positions = 1
 	max_positions = 10
 
+/datum/job/american/starwars/empire/soldierheavy/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_VERY_HIGH)
 /datum/job/american/starwars/empire/soldierheavy/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	//shoes
@@ -460,15 +389,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/grenade/flashbang/galaxywars(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/white/stormtroomper/flash(H), slot_belt)
 	H.add_note("Role", "You are a <b>[title]</b>, a soldier in the Extra-Galactic Imperial Army. Fight for the freedom of <b>the Galaxy</b>! Fight against the Rebel Alliance!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_MEDIUM_HIGH)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("machinegun", STAT_VERY_HIGH)
+	apply_job_stats(H)
 	return TRUE
 
 /datum/job/american/starwars/empire/soldier
@@ -482,6 +403,7 @@
 	min_positions = 24
 	max_positions = 124
 
+/datum/job/american/starwars/empire/soldier/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_MEDIUM_HIGH)
 /datum/job/american/starwars/empire/soldier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	//shoes
@@ -497,13 +419,5 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/grenade/flashbang/galaxywars(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/white/stormtroomper/basic(H), slot_belt)
 	H.add_note("Role", "You are a <b>[title]</b>, a soldier in the Extra-Galactic Imperial Army. Fight for the freedom of <b>the Galaxy</b>! Fight against the Rebel Alliance!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_MEDIUM_HIGH)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("machinegun", STAT_MEDIUM_HIGH)
+	apply_job_stats(H)
 	return TRUE

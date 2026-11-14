@@ -12,6 +12,7 @@
 	max_positions = 1
 	allowed_maps = list(MAP_CONSTANTINOPOLI)
 
+/datum/job/roman/colonel/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_MAX, "dexterity" = STAT_NORMAL, "swords" = STAT_MAX, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_NORMAL)
 /datum/job/roman/colonel/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
@@ -28,14 +29,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/gladius/iron(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/g3(H), slot_r_hand)
 	H.add_note("Role", "You are a <b>[title]</b>, the commander of <b>your entire regiment</b>. Organize your <b>Sergenti</b> and lead your soldiers to victory!</b>.")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_MAX)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MAX)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_NORMAL)
+	apply_job_stats(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/fj = new /obj/item/clothing/accessory/armor/coldwar/pasgt(null)
 	uniform.attackby(fj, H)
@@ -76,6 +70,7 @@
 	max_positions = 10
 	allowed_maps = list(MAP_CONSTANTINOPOLI)
 
+/datum/job/roman/sergeant/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_MAX, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_NORMAL)
 /datum/job/roman/sergeant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
@@ -91,14 +86,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/gladius/iron(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/g3(H), slot_shoulder)
 	H.add_note("Role", "You are a <b>[title]</b>, the leader of a squad. Lead your <b>Fanti and Stratiotes</b> to battle, following the orders of the <b>Colonellus</b>!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_MEDIUM_HIGH)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MAX)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_NORMAL)
+	apply_job_stats(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/fj = new /obj/item/clothing/accessory/armor/coldwar/pasgt(null)
 	uniform.attackby(fj, H)
@@ -138,6 +126,7 @@
 	uses_squads = TRUE
 	allowed_maps = list(MAP_CONSTANTINOPOLI)
 
+/datum/job/roman/stratiotes/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_LOW, "pistol" = STAT_LOW, "bows" = STAT_LOW, "medical" = STAT_MEDIUM_LOW)
 /datum/job/roman/stratiotes/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
@@ -153,14 +142,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/grenade/coldwar/m67(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/g3(H), slot_shoulder)
 	H.add_note("Role", "You are a <b>[title]</b>, a Greek-speaking soldier of the <i>Latinike Katoche</i>. You are equipped with a G3, an M67 grenade, and a bayonet.")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_LOW)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_LOW)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	H.name = H.species.get_random_greek_name(H.gender)
 	H.real_name = H.name
 	var/obj/item/clothing/under/uniform = H.w_uniform
@@ -192,6 +174,7 @@
 	max_positions = 80
 	allowed_maps = list(MAP_CONSTANTINOPOLI)
 
+/datum/job/roman/fante/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_LOW, "pistol" = STAT_LOW, "bows" = STAT_LOW, "medical" = STAT_MEDIUM_LOW)
 /datum/job/roman/fante/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
@@ -207,14 +190,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/grenade/coldwar/m67(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/g3(H), slot_shoulder)
 	H.add_note("Role", "You are a <b>[title]</b>, a Latin-speaking soldier of the <i>Imperium Constantinopolitanum</i>. You are equipped with a G3, an M67 grenade, and a bayonet.")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_MEDIUM_HIGH)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_LOW)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_LOW)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/fj = new /obj/item/clothing/accessory/armor/coldwar/pasgt(null)
 	uniform.attackby(fj, H)
@@ -254,6 +230,7 @@
 	max_positions = 12
 	allowed_maps = list(MAP_CONSTANTINOPOLI)
 
+/datum/job/roman/latinsniper/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_MAX, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_LOW, "pistol" = STAT_LOW, "bows" = STAT_LOW, "medical" = STAT_MEDIUM_LOW)
 /datum/job/roman/latinsniper/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
@@ -269,14 +246,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/grenade/smokebomb/m18smoke(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m14/sniper(H), slot_shoulder)
 	H.add_note("Role", "You are a <b>[title]</b>, a French-speaking sniper of the <i>Imperium Constantinopolitanum</i>. You are equipped with an M14, binoculars, and a smoke grenade.")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_MAX)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_LOW)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_LOW)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/fj = new /obj/item/clothing/accessory/armor/coldwar/pasgt(null)
 	uniform.attackby(fj, H)
@@ -316,6 +286,7 @@
 	max_positions = 4
 	allowed_maps = list(MAP_CONSTANTINOPOLI)
 
+/datum/job/roman/ceremonialguard/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_MAX, "pistol" = STAT_LOW, "bows" = STAT_MAX, "medical" = STAT_MEDIUM_LOW)
 /datum/job/roman/ceremonialguard/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
@@ -330,14 +301,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/gladius/iron(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/shield/roman/praetorian(H), slot_l_hand)
 	H.add_note("Role", "You are a <b>[title]</b>, a French-speaking ceremonial guardsman of the <i>Imperium Constantinopolitanum</i>. You are equipped with a Gladius, a pike, and a shield.")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_MAX)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_MAX)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	var/picklang = rand(1,3)
 	switch(picklang)
 		if (1)
