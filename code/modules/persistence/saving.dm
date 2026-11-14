@@ -1254,7 +1254,11 @@
 	// (a target, a herd mate, a held item), the chunk cannot capture it.
 	// Repeat the side-effect-free closure walk and hand the animal back to
 	// the ordinary path instead (Gaia, 2026-11-09). Nothing is allocated yet.
-	if(no_headroom || !moving_save_root_closed(A))
+	// A wild animal the save leaves out (no player near its chunk, #5127) is
+	// declined too: BuildVarDirectory below would write no entry for it, and
+	// the refusal failed every Gaia save from 2026-11-13 23:05 until the
+	// retries ran Dream Daemon out of memory. The ordinary path skips it.
+	if(no_headroom || save_skips_wildlife(A) || !moving_save_root_closed(A))
 		moving_save_roots -= record["identity"]
 		return 0
 	var/turf/origin = A.loc
