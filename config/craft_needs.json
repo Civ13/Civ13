@@ -142,5 +142,21 @@
     "inputs": {
       "/obj/item/machine_part/shaft": 1
     }
+  },
+  "/obj/structure/workshop_machine/steam_site/road_roller": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/machine_part/gear": 1,
+      "/obj/item/machine_part/shaft": 2,
+      "/obj/item/machine_part/bearing": 2
+    }
+  },
+  "/obj/structure/workshop_machine/steam_site/steam_shovel": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/machine_part/gear": 1,
+      "/obj/item/machine_part/shaft": 1,
+      "/obj/item/machine_part/bearing": 2
+    }
   }
 }

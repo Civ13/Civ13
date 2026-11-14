@@ -1902,6 +1902,10 @@ SUITES = {
     'power_cranes': {'files': ('tests/power_cranes/test_contract.py',), 'paths': (
         'tests/power_cranes/', 'code/modules/1713/power_cranes.dm', 'code/modules/1713/lifting_machines.dm',
         'config/craft_needs.json', 'icons/obj/power_cranes.dmi', 'tests/sprites/create_power_cranes.py')},
+    # Source contracts only; this suite does not run DM.
+    'earthworks': {'files': ('tests/earthworks/test_contract.py',), 'paths': (
+        'tests/earthworks/', 'code/modules/1713/earthworks.dm', 'config/craft_needs.json',
+        'icons/obj/earthworks.dmi', 'tests/sprites/create_earthworks.py')},
     'lifting_machines': {'files': ('tests/lifting_machines/test_contract.py',), 'paths': (
         'tests/lifting_machines/', 'code/modules/1713/lifting_machines.dm',
         'icons/obj/lifting_machines.dmi', 'tests/sprites/create_lifting.py')},
