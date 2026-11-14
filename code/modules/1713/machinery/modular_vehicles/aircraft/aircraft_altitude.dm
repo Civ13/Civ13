@@ -8,11 +8,12 @@
 // altitude is flown into. Only once it climbs past the top of that scale does
 // it count as cruising, above the upper storeys of the level it rides on.
 //
-// Climb and Descend set a target altitude; the aircraft climbs or sinks toward
-// it by AIRCRAFT_CLIMB_RATE levels for every tile it flies. Each step costs a
+// Climb and Descend set a target altitude; the aircraft climbs toward it by
+// aircraft_climb_rate() levels for every tile it flies (one to three, by its
+// load, aircraft_load.dm) and sinks by AIRCRAFT_CLIMB_RATE. Each step costs a
 // handful of turf lookups under the footprint and a short look ahead.
 
-// Levels gained or lost per tile flown.
+// Levels lost per tile flown; a normal load also climbs this fast.
 #define AIRCRAFT_CLIMB_RATE 2
 // Altitude above the ground when the wheels leave it, and the target it climbs to.
 #define AIRCRAFT_LIFTOFF_CLEARANCE 2
@@ -97,7 +98,7 @@
 		ground = ground_level()
 	var/want = max(target_altitude, ground + 1)
 	if (altitude < want)
-		return min(want, altitude + AIRCRAFT_CLIMB_RATE)
+		return min(want, altitude + aircraft_climb_rate())
 	if (altitude > want)
 		return max(want, altitude - AIRCRAFT_CLIMB_RATE)
 	return altitude

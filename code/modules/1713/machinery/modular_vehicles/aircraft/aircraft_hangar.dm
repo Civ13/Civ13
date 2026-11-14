@@ -1,7 +1,7 @@
 // Player construction of aircraft: an assembly press like the automobile
-// workshop, gated on Powered Flight research. It builds the light plane, cabin
-// plane, trainer or cargo plane in the clear bay northeast of the press with an
-// empty fuel tank.
+// workshop, gated on Powered Flight research. It builds the light plane or
+// trainer, and with Aviation & Rocketry the cabin, cargo or twin-engine plane,
+// in the clear bay northeast of the press with an empty fuel tank.
 
 /obj/structure/car_workshop/hangar
 	name = "aircraft hangar"
@@ -13,6 +13,24 @@
 
 /obj/structure/car_workshop/hangar/required_nodes()
 	return list("powered_flight")
+
+// Powered Flight builds the wood-and-cloth trainer and light plane; the
+// heavier all-metal cabin, cargo and twin-engine planes of the 1920s and
+// 1930s need Aviation & Rocketry as well.
+/proc/aircraft_model_node(model)
+	switch (model)
+		if ("Cabin plane", "Cargo plane", "Twin-engine plane")
+			return "aviation_rocketry"
+	return "powered_flight"
+
+/obj/structure/car_workshop/hangar/model_missing_research(mob/living/human/H, model)
+	. = list()
+	var/node_id = aircraft_model_node(model)
+	if (node_id in required_nodes())
+		return
+	if (!H || !map || !research_node_known(H, node_id))
+		var/datum/research_node/N = get_research_node(node_id)
+		. += N ? N.name : node_id
 
 /obj/structure/car_workshop/hangar/model_size(model)
 	return aircraft_model_size(model)

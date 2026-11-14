@@ -41,6 +41,9 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    # Stdlib-only: compost bins keep their stock through a save of a running world (#5292).
+    'compost_save': {'files': ('tests/compost_save/test_compost_save.py',), 'paths': (
+        'tests/compost_save/',), 'shared_paths': ('code/modules/1713/production.dm',)},
     # Stdlib-only: poisonous frog meat coats crossbow bolts as well as arrows (#5258).
     'poison_frog_bolts': {'files': ('tests/poison_frog_bolts/test_bolts.py',), 'paths': (
         'tests/poison_frog_bolts/',), 'shared_paths': (
