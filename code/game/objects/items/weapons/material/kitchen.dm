@@ -88,6 +88,7 @@
 #define BASH 3
 
 /obj/item/weapon/material/kitchen/utensil/knife
+	tool_flags = TOOL_KNIFE
 	name = "knife"
 	desc = "A knife for eating with. Can cut through any food."
 	icon_state = "knife"

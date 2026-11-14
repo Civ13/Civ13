@@ -123,7 +123,7 @@
 		return ..()
 
 	attackby(var/obj/item/I, var/mob/living/human/H)
-		if (broken && istype(I, /obj/item/weapon/weldingtool))
+		if (broken && is_tool(I, TOOL_WELDER))
 			var/repair_type = src.type_name
 			if (wconfig)
 				repair_type = wconfig.type_name

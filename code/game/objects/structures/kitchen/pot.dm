@@ -59,7 +59,7 @@
 	if (meal_portions)
 		serve_meal(I, H)
 		return TRUE
-	if (istype(I, /obj/item/weapon/wrench))
+	if (is_tool(I, TOOL_WRENCH))
 		visible_message("<span class='warning'>[H] starts to [anchored ? "unsecure" : "secure"] the pot [anchored ? "from" : "to"] the ground.</span>")
 		playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
 		if (do_after(H,50,src))

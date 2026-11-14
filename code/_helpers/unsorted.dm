@@ -456,12 +456,12 @@ var/global/list/common_tools = list(
 /obj/item/weapon/crowbar)
 
 /proc/iswirecutter(O)
-	if (istype(O, /obj/item/weapon/wirecutters))
+	if (is_tool(O, TOOL_WIRECUTTER))
 		return TRUE
 	return FALSE
 
 /proc/isscrewdriver(O)
-	if (istype(O, /obj/item/weapon/hammer)|| istype(O, /obj/item/weapon/screwdriver)) // TO DO: separate hammers and screwdrivers in the whole codebase
+	if (is_tool(O, TOOL_HAMMER)|| is_tool(O, TOOL_SCREWDRIVER)) // TO DO: separate hammers and screwdrivers in the whole codebase
 		return TRUE
 	return FALSE
 proc/is_hot(obj/item/W as obj)
@@ -506,12 +506,12 @@ proc/is_hot(obj/item/W as obj)
 	if (W.sharp) return TRUE
 	return ( \
 		W.sharp													  || \
-		istype(W, /obj/item/weapon/hammer)				   || \
+		is_tool(W, TOOL_HAMMER)				   || \
 		istype(W, /obj/item/weapon/pen)						   || \
 		istype(W, /obj/item/weapon/flame/lighter/zippo)			  || \
 		istype(W, /obj/item/weapon/flame/match)					  || \
 		istype(W, /obj/item/clothing/mask/smokable/cigarette) 			  || \
-		istype(W, /obj/item/weapon/material/shovel) \
+		is_tool(W, TOOL_SHOVEL) \
 	)
 
 //check if mob is lying down on something we can operate him on.

@@ -121,13 +121,13 @@ var/global/list/factory_active_arms = list()
 
 /obj/structure/factory_arm/attackby(obj/item/W, mob/user)
 	// A wrench fastens or unfastens the arm through /obj/structure.
-	if (istype(W, /obj/item/weapon/wrench) && on)
+	if (is_tool(W, TOOL_WRENCH) && on)
 		to_chat(user, SPAN_WARNING("Switch \the [src] off first."))
 		return
 	if (istype(W, /obj/item/stack/cable_coil))
 		connect_cable(user, W)
 		return
-	if (can_filter && !istype(W, /obj/item/weapon/hammer) && !istype(W, /obj/item/weapon/crowbar))
+	if (can_filter && !is_tool(W, TOOL_HAMMER) && !is_tool(W, TOOL_CROWBAR))
 		filter_type = W.type
 		to_chat(user, SPAN_NOTICE("\The [src] will now only move [factory_filter_name(filter_type)]."))
 		return

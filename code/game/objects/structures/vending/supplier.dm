@@ -50,7 +50,7 @@
 
 /** Logic for stall maintenance, adding operating funds, configuring new buy orders, or selling items to the stall. */
 /obj/structure/supplier/attackby(obj/item/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/wrench))
+	if (is_tool(W, TOOL_WRENCH))
 		if (owner != "Global" && find_company_member(user,owner))
 			playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
 			if (anchored)

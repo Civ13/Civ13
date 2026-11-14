@@ -21,12 +21,17 @@ STATES = {
     'obsidian_nodule': 1, 'obsidian_flake': 1, 'obsidian_core': 1, 'obsidian_blades': 1,
     'obsidian_arrowheads': 1, 'obsidian_spearhead': 1, 'obsidian_spear': 1,
     'obsidian_knife': 1, 'obsidian_scraper': 1, 'arrow_obsidian': 1, 'arrow_obsidian_flight': 4,
+    'macuahuitl_bare': 1, 'tepoztopilli': 1, 'tepoztopilli_bare': 1,
+    'obsidian_hand_mirror': 1, 'obsidian_polished': 1,
 }
 RESEARCH = {
     '/obj/item/ammo_casing/arrow/obsidian': 'archery',
     '/obj/item/ammo_casing/atlatl_dart/obsidian': 'archery',
     '/obj/item/weapon/material/hide_scraper/obsidian': 'basic_tools',
     '/obj/item/weapon/obsidian_core': 'stone_arms',
+    '/obj/item/weapon/macuahuitl/unedged': 'stone_arms',
+    '/obj/item/weapon/macuahuitl/tepoztopilli/unedged': 'stone_arms',
+    '/obj/item/mirror/obsidian': 'basic_furniture',
 }
 OVERRIDES = [
     '/turf/floor/lava/New()', '/turf/floor/lava/dryproc()', '/turf/floor/dirt/dry_lava/New()',
@@ -37,6 +42,12 @@ OVERRIDES = [
     '/obj/item/ammo_casing/atlatl_dart/attackby(obj/item/W, mob/user)',
     '/obj/item/weapon/branch/attackby(obj/item/weapon/W as obj, mob/user as mob)',
     '/mob/living/simple_animal/harvest_wait(mob/user, delay)',
+    '/obj/item/weapon/macuahuitl/New()', '/obj/item/weapon/macuahuitl/after_load()',
+    '/obj/item/weapon/macuahuitl/attack(mob/living/M, mob/living/user, target_zone)',
+    '/obj/item/weapon/macuahuitl/attackby(obj/item/W, mob/user)',
+    '/obj/item/weapon/obsidian_nodule/attackby(obj/item/W, mob/user)',
+    '/obj/item/mirror/obsidian/attackby(obj/item/H as obj, mob/user as mob)',
+    '/obj/structure/mirror/obsidian/attackby(obj/item/I as obj, mob/user as mob)',
 ]
 
 
@@ -81,7 +92,7 @@ class ObsidianSource(unittest.TestCase):
 
     def test_sprite_states(self):
         self.assertEqual(dmi_states(DMI), STATES)
-        used = set(re.findall(r'icon_state = "([a-z_0-9]+)"', self.text))
+        used = set(re.findall(r'(?:icon_state|bare_icon_state) = "([a-z_0-9]+)"', self.text)) - {'macuahuitl'}
         used.add('obsidian_outcrop1')
         self.assertTrue(used <= set(STATES), used - set(STATES))
 
@@ -117,6 +128,29 @@ class ObsidianSource(unittest.TestCase):
         self.assertIn('"/obj/item/ammo_casing/arrow"', body)
         self.assertIn('"/obj/item/ammo_casing/atlatl_dart"', body)
         self.assertNotIn('bolt', body)
+
+
+    def test_bladed_clubs(self):
+        for name in ('global', 'carib', 'gorilla', 'battle_ships'):
+            rows = (ROOT / ('config/crafting/material_recipes_%s.txt' % name)).read_text(encoding='utf-8')
+            self.assertIn(',macuahuitl,/obj/item/weapon/macuahuitl/unedged,', rows)
+            self.assertIn(',tepoztopilli,/obj/item/weapon/macuahuitl/tepoztopilli/unedged,', rows)
+            self.assertNotIn(',/obj/item/weapon/macuahuitl,', rows)
+        stack = (ROOT / 'code/game/objects/items/stacks/stack.dm').read_text(encoding='utf-8')
+        self.assertNotIn('findtext(recipe.title, "macuahuitl")', stack)
+        self.assertIn('/obj/item/weapon/macuahuitl/unedged\n\tblades = 0', self.text)
+        self.assertIn('/obj/item/weapon/macuahuitl/tepoztopilli/unedged\n\tblades = 0', self.text)
+
+
+    def test_mirror_and_polished_stone(self):
+        rows = (ROOT / 'config/crafting/material_recipes_global.txt').read_text(encoding='utf-8')
+        self.assertIn('RECIPE: /material/obsidian/,obsidian hand mirror,/obj/item/mirror/obsidian,2,', rows)
+        self.assertIn('/obj/item/stack/gemstone/obsidian\n', self.text)
+        fasten = proc_body(self.text, '/obj/item/mirror/obsidian/attackby(obj/item/H as obj, mob/user as mob)')
+        self.assertIn('new /obj/structure/mirror/obsidian(', fasten)
+        self.assertIn('can_fasten(user, H)', fasten)
+        unfasten = proc_body(self.text, '/obj/structure/mirror/obsidian/attackby(obj/item/I as obj, mob/user as mob)')
+        self.assertIn('new /obj/item/mirror/obsidian(', unfasten)
 
 
 if __name__ == '__main__':

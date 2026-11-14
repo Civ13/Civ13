@@ -330,10 +330,10 @@
 	if (istype(W, /obj/item/stack/material/wool))
 		produce(W, H, /obj/item/stack/material/woolcloth)
 		return
-	if (istype(W,/obj/item/weapon/wrench))
+	if (is_tool(W, TOOL_WRENCH))
 		wrench_action(H)
 		return
-	if (istype(W,/obj/item/weapon/hammer))
+	if (is_tool(W, TOOL_HAMMER))
 		hammer_action(H, W, 150, list("/obj/item/stack/material/wood"), list(6))
 		return
 	..(W, H)
@@ -529,10 +529,10 @@
 	if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/rice))
 		produce(W, H, /obj/item/weapon/reagent_containers/food/snacks/rice)
 		return
-	if (istype(W,/obj/item/weapon/wrench))
+	if (is_tool(W, TOOL_WRENCH))
 		wrench_action(H)
 		return
-	if (istype(W,/obj/item/weapon/hammer))
+	if (is_tool(W, TOOL_HAMMER))
 		hammer_action(H, W, 90, list("/obj/item/stack/material/wood"), list(3))
 		return
 	..(W, H)
@@ -746,11 +746,11 @@
 	I.name = splicetext(I.name, findtext(I.name,"TIMER_")+6, findtext(I.name,"TIMER_")+14, num2text(new_timer, 8, 10))
 
 /obj/structure/dehydrator/attackby(var/obj/item/W, var/mob/living/human/H as mob, icon_x, icon_y)
-	if (istype(W, /obj/item/weapon/wrench))
+	if (is_tool(W, TOOL_WRENCH))
 		if (H)
 			wrench_action(H)
 			return TRUE
-	if (istype(W, /obj/item/weapon/hammer))
+	if (is_tool(W, TOOL_HAMMER))
 		if (H)
 			hammer_action(H, W, 110, list("/obj/item/stack/material/wood"), list(4))
 			return TRUE
@@ -1203,7 +1203,7 @@
 		qdel(O)
 		yeast_growth()
 		return
-	else if (istype(O,/obj/item/weapon/hammer) || istype(O,/obj/item/weapon/hammer/modern))
+	else if (is_tool(O, TOOL_HAMMER) || istype(O,/obj/item/weapon/hammer/modern))
 		playsound(loc, 'sound/weapons/smash.ogg', 75, 1)
 		to_chat(user, "<span class='notice'>You begin smashing apart \the [src].</span>")
 		if (do_after(user, 25, src))
@@ -1680,7 +1680,7 @@
 		else
 			to_chat(user, "<span class='warning'>There is already a connected [work_barrel].</span>")
 		return
-	if (istype(W,/obj/item/weapon/hammer))
+	if (is_tool(W, TOOL_HAMMER))
 		hammer_action(user, W, 270, list("/obj/item/stack/material/wood"), list(30))
 		return
 	..(W, user)
@@ -1814,11 +1814,11 @@
 			W.forceMove(locate(0,0,0))
 			return
 
-	if (istype(W,/obj/item/weapon/wrench))
+	if (is_tool(W, TOOL_WRENCH))
 		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
 		to_chat(user, (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>"))
 		anchored = !anchored
-	else if (istype(W,/obj/item/weapon/hammer) || istype(W,/obj/item/weapon/hammer/modern))
+	else if (is_tool(W, TOOL_HAMMER) || istype(W,/obj/item/weapon/hammer/modern))
 		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
 		to_chat(user, "<span class='notice'>You begin dismantling \the [src].</span>")
 		if (do_after(user,60,src))
@@ -1967,12 +1967,12 @@
 			else
 				icon_state = "canner"
 		return
-	if (istype(W, /obj/item/weapon/wrench))
+	if (is_tool(W, TOOL_WRENCH))
 		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
 		to_chat(H, (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>"))
 		anchored = !anchored
 		return
-	if (istype(W, /obj/item/weapon/hammer))
+	if (is_tool(W, TOOL_HAMMER))
 		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
 		to_chat(H, "<span class='notice'>You begin dismantling \the [src].</span>")
 		if (do_after(H, 50, src))
@@ -2058,7 +2058,7 @@
 		else
 			to_chat(H, "<span class='notice'>\the [src] is full!</span>")
 		return
-	if (istype(W, /obj/item/weapon/material/kitchen/utensil/knife) || istype(W, /obj/item/weapon/attachment/bayonet))
+	if (is_tool(W, TOOL_KNIFE) || istype(W, /obj/item/weapon/attachment/bayonet))
 		if (!open)
 			open = TRUE
 			update_icon()
@@ -2235,7 +2235,7 @@
 	qdel(W)
 
 /obj/structure/compost/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)
-	if (nitrary_mode && !istype(W, /obj/item/weapon/wrench) && !istype(W, /obj/item/weapon/hammer))
+	if (nitrary_mode && !is_tool(W, TOOL_WRENCH) && !is_tool(W, TOOL_HAMMER))
 		nitrary_feed(W, H)
 		return TRUE
 	if (current>=10)
@@ -2250,10 +2250,10 @@
 		H.drop_item(src.loc)
 		auto_load(H)
 		return TRUE
-	if (istype(W,/obj/item/weapon/wrench))
+	if (is_tool(W, TOOL_WRENCH))
 		wrench_action(H)
 		return TRUE
-	if (istype(W,/obj/item/weapon/hammer))
+	if (is_tool(W, TOOL_HAMMER))
 		hammer_action(H, W, 150, list("/obj/item/stack/material/wood"), list(7))
 		return TRUE
 	to_chat(H, "<span class='warning'>\the [W] is not suitable for compost.</span>")
@@ -2661,10 +2661,10 @@
 	if (istype(W, /obj/item/stack/material/wood))
 		produce(W, H, /obj/item/stack/material/woodplank)
 		return
-	if (istype(W,/obj/item/weapon/wrench))
+	if (is_tool(W, TOOL_WRENCH))
 		wrench_action(H)
 		return
-	if (istype(W,/obj/item/weapon/hammer))
+	if (is_tool(W, TOOL_HAMMER))
 		hammer_action(H, W, 150, list("/obj/item/stack/material/wood"), list(6))
 		return
 	if (istype(W, /obj/item/stack/cable_coil))

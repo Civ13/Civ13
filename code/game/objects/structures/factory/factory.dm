@@ -36,15 +36,15 @@
 	if (!istype(H))
 		return
 	if (H.a_intent == I_HELP)
-		if (istype(I, /obj/item/weapon/wrench) || (istype(I, /obj/item/weapon/hammer)))
-			if (istype(I, /obj/item/weapon/wrench))
+		if (is_tool(I, TOOL_WRENCH) || (is_tool(I, TOOL_HAMMER)))
+			if (is_tool(I, TOOL_WRENCH))
 				visible_message("<span class='warning'>[H] starts to [anchored ? "unsecure" : "secure"] \the [src] [anchored ? "from" : "to"] the ground.</span>")
 				playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
 				if (do_after(H,50,src))
 					visible_message("<span class='warning'>[H] [anchored ? "unsecures" : "secures"] \the [src] [anchored ? "from" : "to"] the ground.</span>")
 					anchored = !anchored
 					return
-			else if (istype(I, /obj/item/weapon/hammer))
+			else if (is_tool(I, TOOL_HAMMER))
 				visible_message("<span class='warning'>[H] starts to deconstruct \the [src].</span>")
 				playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
 				if (do_after(H,50,src))
@@ -279,15 +279,15 @@
 	if (!istype(H))
 		return
 	if (H.a_intent == I_HELP)
-		if (istype(I, /obj/item/weapon/wrench) || (istype(I, /obj/item/weapon/hammer)))
-			if (istype(I, /obj/item/weapon/wrench))
+		if (is_tool(I, TOOL_WRENCH) || (is_tool(I, TOOL_HAMMER)))
+			if (is_tool(I, TOOL_WRENCH))
 				visible_message("<span class='warning'>[H] starts to [anchored ? "unsecure" : "secure"] \the [src] [anchored ? "from" : "to"] the ground.</span>")
 				playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
 				if (do_after(H,50,src))
 					visible_message("<span class='warning'>[H] [anchored ? "unsecures" : "secures"] \the [src] [anchored ? "from" : "to"] the ground.</span>")
 					anchored = !anchored
 					return
-			else if (istype(I, /obj/item/weapon/hammer))
+			else if (is_tool(I, TOOL_HAMMER))
 				visible_message("<span class='warning'>[H] starts to deconstruct \the [src].</span>")
 				playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
 				if (do_after(H,50,src))

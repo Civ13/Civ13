@@ -53,3 +53,26 @@ material is unchanged.
 
 Obsidian arrowheads fit arrows and atlatl darts, not crossbow bolts. Butchering and skinning take
 25% less time with an obsidian knife, scraper, flake or blade in either hand.
+
+## Macuahuitl and tepoztopilli
+
+Both weapons hold prismatic blades in grooves along their edges (`blades`, `max_blades`). A crafted
+one (the `/unedged` subtypes, from the wood recipes) starts bare; one placed on a map or spawned by an
+event starts fully edged. Use prismatic blades on the weapon (3 s) to set as many as it has room for.
+
+| Weapon | Blades | Edged | Bare |
+| --- | ---: | --- | --- |
+| Macuahuitl | 8 | force 26, sharp | force 14, blunt |
+| Tepoztopilli | 6 | force 24, sharp | force 12, blunt |
+
+Each hit has a 10% chance to knock a blade out, or 20% against a target with melee armour on the
+struck zone. The old recipe's 4 cut obsidian blocks are no longer needed: the blades are the obsidian.
+
+## Mirror and polished stone
+
+- **Polished obsidian:** a chisel in the active hand and a hammer in the other, used on a nodule (8 s,
+  10% flaw into a shard), gives a `polished obsidian stone` (`/obj/item/stack/gemstone/obsidian`,
+  value 5). It sets into clothing and necklaces like the cut gemstones.
+- **Obsidian hand mirror:** 2 cut obsidian in the crafting menu (Basic Furniture research, every
+  recipe list that has the obsidian altar). A hammer fastens it to a wall as the existing
+  `/obj/structure/mirror/obsidian`, and a hammer takes that back down as the hand mirror.

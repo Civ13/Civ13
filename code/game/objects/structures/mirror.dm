@@ -46,19 +46,19 @@
 	..()
 
 /obj/structure/mirror/attackby(obj/item/I as obj, mob/user as mob)
-	if ((istype(I, /obj/item/weapon/hammer)) && (!shattered))
+	if ((is_tool(I, TOOL_HAMMER)) && (!shattered))
 		var/obj/item/mirror/S = new(loc)
 		to_chat(user, "You unfasten \the [S] with your [I].")
 		qdel(src)
 		return
-	else if ((istype(I, /obj/item/weapon/hammer)) && (shattered))
+	else if ((is_tool(I, TOOL_HAMMER)) && (shattered))
 		visible_message("<span class='warning'>[user] starts to deconstruct \the [src].</span>")
 		playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
 		if (do_after(user,50,src))
 			visible_message("<span class='warning'>[user] deconstructs \the [src].</span>")
 			qdel(src)
 			return
-	else if ((!istype(I, /obj/item/weapon/hammer)) && (shattered))
+	else if ((!is_tool(I, TOOL_HAMMER)) && (shattered))
 		playsound(loc, 'sound/effects/hit_on_shattered_glass.ogg', 70, TRUE)
 		return
 
@@ -102,7 +102,7 @@
 	value = 0
 
 /obj/item/mirror/attackby(obj/item/H as obj, mob/user as mob)
-	if (istype(H, /obj/item/weapon/hammer) && isturf(user.loc))
+	if (is_tool(H, TOOL_HAMMER) && isturf(user.loc))
 		var/direction = WWinput(user, "Fasten it to which direction?", "Select a direction.", "North", WWinput_list_or_null(list("North", "East", "South", "West")))
 		if (direction)
 			if (!can_fasten(user, H))

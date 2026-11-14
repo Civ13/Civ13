@@ -195,7 +195,7 @@ var/global/list/power_meters = list()
 
 /obj/structure/power_meter/attackby(obj/item/W, mob/user)
 	var/mob/living/human/H = user
-	if (istype(W, /obj/item/weapon/wrench))
+	if (is_tool(W, TOOL_WRENCH))
 		if (!istype(H) || H.stat != CONSCIOUS || get_dist(H, src) > 1)
 			return
 		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)

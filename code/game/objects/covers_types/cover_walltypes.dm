@@ -278,8 +278,8 @@
 
 /obj/covers/stone_wall/attackby(obj/item/W as obj, mob/user as mob)
 	var/mob/living/human/H = user
-	if(istype(W, /obj/item/weapon/chisel))
-		if (istype(H.l_hand, /obj/item/weapon/hammer) && istype(H.r_hand, /obj/item/weapon/hammer))
+	if(is_tool(W, TOOL_CHISEL))
+		if (is_tool(H.l_hand, TOOL_HAMMER) && is_tool(H.r_hand, TOOL_HAMMER))
 			to_chat(user, SPAN_WARNING("This surface is too rough to chisel upon."))
 			return
 	else
@@ -295,9 +295,9 @@
 
 /obj/covers/stone_wall/plain/attackby(obj/item/W as obj, mob/user as mob)
 	var/mob/living/human/H = user
-	if(istype(W, /obj/item/weapon/chisel))
+	if(is_tool(W, TOOL_CHISEL))
 		var design = "smooth"
-		if (!istype(H.l_hand, /obj/item/weapon/hammer) && !istype(H.r_hand, /obj/item/weapon/hammer))
+		if (!is_tool(H.l_hand, TOOL_HAMMER) && !is_tool(H.r_hand, TOOL_HAMMER))
 			to_chat(user, SPAN_WARNING("You need to have a hammer in one of your hands to use a chisel."))
 			return
 		else
@@ -384,8 +384,8 @@
 
 /obj/covers/marble_wall/attackby(obj/item/W as obj, mob/user as mob)
 	var/mob/living/human/H = user
-	if(istype(W, /obj/item/weapon/chisel))
-		if (istype(H.l_hand, /obj/item/weapon/hammer) && istype(H.r_hand, /obj/item/weapon/hammer))
+	if(is_tool(W, TOOL_CHISEL))
+		if (is_tool(H.l_hand, TOOL_HAMMER) && is_tool(H.r_hand, TOOL_HAMMER))
 			to_chat(user, SPAN_WARNING("This surface is too rough to chisel upon."))
 			return
 	else
@@ -396,9 +396,9 @@
 
 /obj/covers/marble_wall/plain/attackby(obj/item/W as obj, mob/user as mob)
 	var/mob/living/human/H = user
-	if(istype(W, /obj/item/weapon/chisel))
+	if(is_tool(W, TOOL_CHISEL))
 		var design = "smooth"
-		if (!istype(H.l_hand, /obj/item/weapon/hammer) && !istype(H.r_hand, /obj/item/weapon/hammer))
+		if (!is_tool(H.l_hand, TOOL_HAMMER) && !is_tool(H.r_hand, TOOL_HAMMER))
 			to_chat(user, "<span class = 'warning'>You need to have a hammer in one of your hands to use a chisel.</span>")
 			return
 		else
@@ -506,9 +506,9 @@
 
 /obj/covers/sandstone_smooth_wall/plain/attackby(obj/item/W as obj, mob/user as mob)
 	var/mob/living/human/H = user
-	if(istype(W, /obj/item/weapon/chisel))
+	if(is_tool(W, TOOL_CHISEL))
 		var design = "smooth"
-		if (!istype(H.l_hand, /obj/item/weapon/hammer) && !istype(H.r_hand, /obj/item/weapon/hammer))
+		if (!is_tool(H.l_hand, TOOL_HAMMER) && !is_tool(H.r_hand, TOOL_HAMMER))
 			to_chat(user, "<span class = 'warning'>You need to have a hammer in one of your hands to use a chisel.</span>")
 			return
 		else

@@ -179,13 +179,13 @@
 	return
 
 /obj/structure/engine/attackby(obj/item/W as obj, mob/user as mob)
-	if (broken && istype(W, /obj/item/weapon/weldingtool))
+	if (broken && is_tool(W, TOOL_WELDER))
 		visible_message("[user] starts repairing \the [src]...")
 		if (do_after(user, 200, src))
 			visible_message("[user] successfully repairs \the [src].")
 			broken = FALSE
 			return
-	else if (istype(W,/obj/item/weapon/wrench) && !not_movable)
+	else if (is_tool(W, TOOL_WRENCH) && !not_movable)
 		if (powersource)
 			to_chat(user, "<span class='notice'>Remove the cables first.</span>")
 			return

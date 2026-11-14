@@ -84,12 +84,12 @@
 	not_disassemblable = FALSE
 
 /obj/structure/writing_desk/attackby(obj/item/W, mob/living/human/user)
-	if (istype(W, /obj/item/weapon/wrench))
+	if (is_tool(W, TOOL_WRENCH))
 		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
 		to_chat(user, SPAN_NOTICE(anchored ? "You unfasten \the [src] from the floor." : "You fasten \the [src] to the floor."))
 		anchored = !anchored
 		return
-	if (istype(W, /obj/item/weapon/hammer))
+	if (is_tool(W, TOOL_HAMMER))
 		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
 		to_chat(user, SPAN_NOTICE("You begin dismantling \the [src]."))
 		if (do_after(user, 25, src) && !QDELETED(src))

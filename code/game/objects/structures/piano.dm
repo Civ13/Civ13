@@ -226,7 +226,7 @@
 	instrument_topic(src, usr, href_list, "Piano", "piano", MAX_LINES)
 
 /obj/structure/piano/attackby(obj/item/O as obj, mob/user as mob)
-	if (istype(O, /obj/item/weapon/wrench))
+	if (is_tool(O, TOOL_WRENCH))
 		if (anchored)
 			playsound(loc, 'sound/items/Ratchet.ogg', 50, TRUE)
 			to_chat(user, "<span class='notice'>You begin to loosen \the [src]'s casters...</span>")

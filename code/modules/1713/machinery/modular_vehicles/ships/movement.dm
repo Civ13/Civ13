@@ -37,7 +37,7 @@
 		playsound(loc, 'sound/effects/lever.ogg',80, TRUE)
 
 /obj/structure/vehicleparts/movement/sail/attackby(var/obj/item/I, var/mob/living/human/H)
-	if (istype(I, /obj/item/weapon/weldingtool))
+	if (is_tool(I, TOOL_WELDER))
 		return
 	if (istype(I, /obj/item/sail) && !sails)
 		to_chat(H, SPAN_NOTICE("You begin adding \the [I] to \the [src]."))
@@ -47,7 +47,7 @@
 			I.forceMove(src)
 			to_chat(H, SPAN_NOTICE("You add \the [I] to \the [src]."))
 			update_icon()
-	if (istype(I,/obj/item/weapon/hammer) && sails)
+	if (is_tool(I, TOOL_HAMMER) && sails)
 		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
 		to_chat(H, SPAN_NOTICE("You begin taking down \the [sails]."))
 		if (do_after(H,25,src))

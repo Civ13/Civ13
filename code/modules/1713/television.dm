@@ -110,7 +110,7 @@ var/global/list/civ_tv_receivers = list()
 		battery_charge += C.use(max(0, 1000 - battery_charge))
 		to_chat(H, "Camera battery: [round(battery_charge)]/1000.")
 		return
-	if (!portable && istype(W, /obj/item/weapon/wrench))
+	if (!portable && is_tool(W, TOOL_WRENCH))
 		anchored = !anchored
 		if (!anchored && powersource)
 			powersource.update_power(-powerneeded, 1, src)

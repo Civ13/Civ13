@@ -46,7 +46,7 @@
 			icon_state = base_icon
 			update_icon()
 			return
-	if (istype(W,/obj/item/weapon/wrench) && !not_movable)
+	if (is_tool(W, TOOL_WRENCH) && !not_movable)
 		if (powersource)
 			to_chat(user, "<span class='notice'>Remove the cables first.</span>")
 			return

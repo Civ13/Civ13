@@ -137,7 +137,7 @@
 	to_chat(user, "Battery mode: [mode].")
 
 /obj/structure/battery/attackby(obj/item/W, mob/user)
-	if (istype(W, /obj/item/weapon/wrench))
+	if (is_tool(W, TOOL_WRENCH))
 		if (powersource)
 			to_chat(user, "Cut the cable first.")
 			return

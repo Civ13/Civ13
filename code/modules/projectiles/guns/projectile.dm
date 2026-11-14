@@ -430,7 +430,7 @@
 		if (!service_firearm(user,A,null))
 			to_chat(user,SPAN_WARNING("Unload first. A cleaning kit works only from 50% up to 80% condition; worse damage needs a firearm maintenance bench."))
 		return
-	if (istype(A, /obj/item/weapon/material/kitchen/utensil/knife))
+	if (is_tool(A, TOOL_KNIFE))
 		file_serial(A,user)
 		return
 	..()

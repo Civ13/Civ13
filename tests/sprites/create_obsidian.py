@@ -1,7 +1,9 @@
 """Hand-placed 32px obsidian art: three ground outcrops, the raw nodule, a
 struck flake, a polyhedral blade core, prismatic blades, arrowheads, a
 spearhead, the hafted spear, knife and end-scraper, and the obsidian-tipped
-arrow as an item and as a four-direction projectile. Every pixel is placed by
+arrow as an item and as a four-direction projectile; then the macuahuitl
+with its edge slots empty, the tepoztopilli, bladed and bare, a plaster-set
+hand mirror and polished cabochons. Every pixel is placed by
 this script from a fixed palette (Pillow only); no external or generated
 artwork.
 The glass is black with blue-grey sheen, sharp specular glints, conchoidal
@@ -12,7 +14,10 @@ icons/obj/weapons.dmi and icons/obj/projectiles.dmi. Lit from the upper left.
 
 Run with Pillow to reproduce icons/obj/obsidian.dmi. `--preview <png>` also
 writes a review sheet (8x, with a 1x and 2x strip underneath, and the flint
-equivalents alongside for comparison).
+equivalents alongside for comparison). `--preview-weapons <png>` writes the
+three edged-weapon states at 8x beside weapons.dmi "macuahuitl", and
+`--preview-mirror <png>` the mirror and cabochons beside the wall mirror and
+a cut garnet.
 Released under Civ13 AGPL-3.0.
 """
 import math
@@ -45,6 +50,12 @@ AF = [(171, 171, 149), (156, 138, 128), (99, 88, 82)]
 # the flying arrow of projectiles.dmi: shaft and feathers
 PS = [(120, 68, 68), (113, 55, 43)]
 PF = (168, 168, 168)
+# the macuahuitl of weapons.dmi: paddle lit face, face, tip, edge, shade, pommel
+MW = [(163, 115, 80), (138, 97, 67), (92, 64, 45), (77, 54, 38), (48, 36, 28), (110, 77, 54)]
+# and its grip, light to dark
+MG = [(125, 107, 95), (94, 77, 65), (74, 61, 51)]
+# pale clay / lime-plaster setting of the hand mirror, light to dark
+PL = [(232, 224, 206), (204, 193, 170), (166, 153, 130), (124, 112, 94)]
 # preview backgrounds
 GROUND = (120, 124, 112)
 LAVA = (66, 58, 54)
@@ -631,6 +642,183 @@ def flight(direction):
     return f
 
 
+# -------------------------------------------------------------- macuahuitl
+
+# icons/obj/weapons.dmi "macuahuitl" with the blades taken out of the edges:
+# c d e f g paddle wood (edge, tip, lit, face, shade), h pommel, i j k grip,
+# s an empty slot cut in the edge, S a snapped-off stub of glass
+MACUAHUITL_BARE = (
+    '................................',
+    '.........................cdc....',
+    '.......................sceeec...',
+    '......................sceefffd..',
+    '......................ccefffcs..',
+    '....................scefffcgs...',
+    '...................scefffcgc....',
+    '...................ccefffcgs....',
+    '.................scefffcgs......',
+    '................scefffcgc.......',
+    '................ccefffcgs.......',
+    '..............scefffcgs.........',
+    '.............scefffcgS..........',
+    '.............Scefffcgs..........',
+    '...........scefffcgs............',
+    '..........scefffcgc.............',
+    '..........ccefffcgs.............',
+    '.........chfffcgs...............',
+    '.........chffcgc................',
+    '.........gchcgs.................',
+    '........ijgggc..................',
+    '.......ikg......................',
+    '......ikg.......................',
+    '.....ikg........................',
+    '....ikg.........................',
+    '...gjg..........................',
+    '.hffg...........................',
+    '.chh............................',
+    '..cc............................',
+)
+
+
+def macuahuitl_bare():
+    f = Frame()
+    stamp(f, MACUAHUITL_BARE, {'c': MW[3], 'd': MW[2], 'e': MW[0], 'f': MW[1], 'g': MW[4], 'h': MW[5],
+                               'i': MG[2], 'j': MG[1], 'k': MG[0], 's': MW[4], 'S': OB[2]}, top=2)
+    return f
+
+
+# ------------------------------------------------------------ tepoztopilli
+
+TEPOZ_BASE, TEPOZ_TIP = (16.5, 15.5), (29.5, 2.5)
+
+
+def tepoztopilli(bladed):
+    f = Frame()
+    bar(f, (3.5, 28.5), (17.5, 14.5), 1.05, lambda s, t: WD[1] if s < 0 else WD[2])
+    f.pts(WD[3], (3, 28), (4, 28)); f.pts(WD[0], (8, 23), (12, 19))
+    f.outline()
+    # the broad wooden head: a long leaf, lit on the upper-left half
+    h = Frame()
+    bar(h, TEPOZ_BASE, TEPOZ_TIP, lambda t: 0.6 + 2.9 * min(1.0, 0.4 + 2.4 * t) * (1.0 - t) ** 0.8,
+        lambda s, t: WD[0] if s < -0.45 else WD[1] if s < 0.25 else WD[2])
+    wood = set(h.px)
+    h.outline()
+    # the groove down each edge: the ring round the head, cut into one slot
+    # per blade. s < 0 is the lit flank, t runs from socket to point.
+    (x0, y0), (x1, y1) = TEPOZ_BASE, TEPOZ_TIP
+    dx, dy = x1 - x0, y1 - y0
+    ln2 = dx * dx + dy * dy
+
+    def along(x, y):
+        px, py = x + 0.5 - x0, y + 0.5 - y0
+        return (px * dx + py * dy) / ln2, px * dy - py * dx
+
+    def slot(t):
+        k = (t - 0.1) * 6.3
+        return 0.0 <= k < 5.0 and k % 1.0 < 0.72
+
+    ring = [p for p in h.px if p not in wood]
+    for (x, y) in ring:
+        t, s = along(x, y)
+        if bladed and 0.1 <= t <= 0.9:
+            h.put(x, y, OB[5])              # blades butted end to end in the groove
+        if not slot(t):
+            continue
+        if not bladed:
+            # an empty slot: a dark notch through the rim and into the wood
+            h.put(x, y, MW[4])
+            for n in ((x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)):
+                if n in wood and slot(along(*n)[0]):
+                    h.put(n[0], n[1], WD[3])
+            continue
+        # the blade stands proud of the wood by a pixel
+        for n in ((x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)):
+            if n not in h.px and slot(along(*n)[0]):
+                h.put(n[0], n[1], OB[2] if s > 0 else OB[4])
+    f.over(h)
+    # cord whipping where the head is socketed on the shaft
+    f.pts(CD[0], (16, 15), (17, 16)); f.pts(CD[1], (15, 15), (16, 16), (17, 17)); f.pts(CD[2], (16, 17), (18, 17))
+    return f
+
+
+# ------------------------------------------------------------------ mirror
+
+def obsidian_hand_mirror():
+    f = Frame()
+    # short wooden grip, whipped with cord below the setting
+    bar(f, (15.5, 20.0), (15.5, 29.0), 1.6, lambda s, t: WD[1] if s < -0.1 else WD[2] if s < 0.6 else WD[3])
+    f.pts(WD[0], (14, 26), (14, 27)); f.pts(WD[3], (14, 28), (15, 28), (16, 28))
+    for y in (22, 24):
+        f.pts(CD[0], (14, y)); f.pts(CD[1], (15, y)); f.pts(CD[2], (16, y))
+    f.outline()
+    d = Frame()
+    cx, cy = 15.5, 12.0
+    for y in range(32):
+        for x in range(32):
+            u, v = x + 0.5 - cx, y + 0.5 - cy
+            r = math.hypot(u / 8.4, v / 8.9)
+            if r > 1.0:
+                continue
+            g = math.hypot(u / 6.4, v / 6.9)
+            if g > 1.0:
+                # the plaster rim, lit from the upper left
+                k = (u + v) / 9.0
+                d.put(x, y, PL[0] if k < -0.75 else PL[1] if k < 0.1 else PL[2] if k < 0.85 else PL[3])
+                continue
+            # the polished face: black, with the rim's shadow along the top
+            # left, a soft reflected band across it and a paler return of
+            # light low on the right
+            band = (u + v) / 1.4142
+            c = OB[5]
+            if g > 0.8 and u + v < -1.0:
+                c = OBO
+            elif -3.4 <= band < -1.4:
+                c = OB[2] if g < 0.86 else OB[3]
+            elif -1.4 <= band < -0.4:
+                c = OB[3]
+            elif 0.9 <= band < 1.7:
+                c = OB[3] if g < 0.8 else OB[4]
+            elif band >= 3.2 and g > 0.62:
+                c = OB[4]
+            d.put(x, y, c)
+    d.tint(OB[1], (12, 9), (13, 8), (14, 7), (11, 11), (12, 10))
+    d.tint(OB[0], (12, 8), (13, 7), (11, 9), (12, 7))                      # the specular dot
+    d.tint(OB[1], (19, 16), (18, 17)); d.tint(OB[2], (17, 18))
+    d.outline()
+    f.over(d)
+    return f
+
+
+# ----------------------------------------------------------------- polished
+
+def cabochon(f, cx, cy, rx, ry):
+    """A smooth domed bead: black, a sheen crescent on the lit shoulder, one
+    hard glint, and a faint rim of reflected light low on the far side."""
+    for y in range(32):
+        for x in range(32):
+            u, v = (x + 0.5 - cx) / rx, (y + 0.5 - cy) / ry
+            r = math.hypot(u, v)
+            if r > 1.0:
+                continue
+            d = math.hypot(u + 0.42, v + 0.46)
+            c = OB[1] if d < 0.24 else OB[2] if d < 0.46 else OB[3] if d < 0.72 else OB[5]
+            if r > 0.8:
+                c = OBO
+            elif r > 0.5 and u + v > 0.7:
+                c = OB[4]
+            f.put(x, y, c)
+    f.put(int(cx - 0.42 * rx), int(cy - 0.46 * ry), OB[0])
+
+
+def obsidian_polished():
+    # three cabochons in the footprint of a cut gem of icons/obj/gemstones.dmi
+    f = Frame()
+    cabochon(f, 19.5, 14.0, 4.0, 3.7)
+    cabochon(f, 13.5, 13.5, 4.3, 4.0)
+    cabochon(f, 16.0, 19.5, 4.8, 4.0)
+    return f
+
+
 # each state is a list of frames: one, or four in BYOND order S, N, E, W
 STATES = {
     'obsidian_outcrop1': [obsidian_outcrop1()],
@@ -647,6 +835,11 @@ STATES = {
     'obsidian_scraper': [obsidian_scraper()],
     'arrow_obsidian': [arrow_obsidian()],
     'arrow_obsidian_flight': [flight('south'), flight('north'), flight('east'), flight('west')],
+    'macuahuitl_bare': [macuahuitl_bare()],
+    'tepoztopilli': [tepoztopilli(True)],
+    'tepoztopilli_bare': [tepoztopilli(False)],
+    'obsidian_hand_mirror': [obsidian_hand_mirror()],
+    'obsidian_polished': [obsidian_polished()],
 }
 COLUMNS = 4
 
@@ -693,6 +886,10 @@ COMPARE = {
     'obsidian_scraper': ('icons/obj/stone_age_arms.dmi', 'hide_scraper'),
     'arrow_obsidian': ('icons/obj/weapons.dmi', 'arrow_flint'),
     'arrow_obsidian_flight': ('icons/obj/projectiles.dmi', 'arrow_flint'),
+    'macuahuitl_bare': ('icons/obj/weapons.dmi', 'macuahuitl'),
+    'tepoztopilli': ('icons/obj/weapons.dmi', 'spear'),
+    'obsidian_hand_mirror': ('icons/obj/watercloset.dmi', 'obsidian_mirror'),
+    'obsidian_polished': ('icons/obj/gemstones.dmi', 'garnet'),
 }
 
 
@@ -737,8 +934,43 @@ def write_preview(path, scale=8, per_row=6):
     sheet.convert('RGB').save(path)
 
 
+WEAPONS = ('macuahuitl_bare', 'tepoztopilli', 'tepoztopilli_bare')
+
+
+MIRROR = ('obsidian_hand_mirror', 'obsidian_polished')
+
+
+def write_weapons_preview(path, scale=8, names=WEAPONS, beside=(('icons/obj/weapons.dmi', 'macuahuitl'),)):
+    """The named states at 8x beside existing art (weapons.dmi "macuahuitl"
+    for the edged clubs), each with a 1x and 2x strip on the grass-grey
+    ground and on dark dry lava."""
+    cell = 32 * scale
+    tiles = [STATES[name][0].image() for name in names]
+    tiles += [read_dmi(ROOT / src)[state][0] for src, state in beside]
+    sheet = Image.new('RGBA', (cell * len(tiles), cell + 80), DARK + (255,))
+    for i, im in enumerate(tiles):
+        for ground, k, pos in ((GROUND, scale, (0, 0)), (GROUND, 1, (8, cell + 24)), (GROUND, 2, (48, cell + 8)),
+                               (LAVA, 1, (128, cell + 24)), (LAVA, 2, (168, cell + 8))):
+            tile = Image.new('RGBA', (32, 32), ground + (255,))
+            tile.alpha_composite(im)
+            sheet.alpha_composite(tile.resize((32 * k, 32 * k), Image.NEAREST), (i * cell + pos[0], pos[1]))
+    Path(path).parent.mkdir(parents=True, exist_ok=True)
+    sheet.convert('RGB').save(path)
+
+
+def write_mirror_preview(path):
+    """The hand mirror and the polished stones beside the wall mirror of
+    watercloset.dmi and a cut garnet."""
+    write_weapons_preview(path, names=MIRROR, beside=(('icons/obj/watercloset.dmi', 'obsidian_mirror'),
+                                                      ('icons/obj/gemstones.dmi', 'garnet')))
+
+
 def main():
     write_dmi(ROOT / 'icons/obj/obsidian.dmi', STATES)
+    if '--preview-weapons' in sys.argv[1:-1]:
+        write_weapons_preview(sys.argv[sys.argv.index('--preview-weapons') + 1])
+    if '--preview-mirror' in sys.argv[1:-1]:
+        write_mirror_preview(sys.argv[sys.argv.index('--preview-mirror') + 1])
     if '--preview' in sys.argv[1:-1]:
         write_preview(sys.argv[sys.argv.index('--preview') + 1])
 

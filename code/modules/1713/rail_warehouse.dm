@@ -286,7 +286,7 @@
 
 // A wrench turns the post to face the track.
 /obj/structure/rail_warehouse/attackby(obj/item/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/wrench) && !busy && !stored_units().len)
+	if (is_tool(W, TOOL_WRENCH) && !busy && !stored_units().len)
 		set_dir(turn(dir, -90))
 		playsound(loc, 'sound/items/Ratchet.ogg', 50, TRUE)
 		to_chat(user, "You turn \the [src] to face [dir2text(dir)].")

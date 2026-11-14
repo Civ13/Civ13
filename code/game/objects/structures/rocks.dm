@@ -116,7 +116,7 @@
 				visible_message("<span class='alert'>The [M.name] breaks from strain!</span>")
 		else
 			visible_message("<span class='notice'>[user] stops [actiontext]ing the [M.name].</span>")
-	else if (istype(M, /obj/item/weapon/hammer) || istype(M, /obj/item/weapon/wrench))
+	else if (is_tool(M, TOOL_HAMMER) || is_tool(M, TOOL_WRENCH))
 		..()
 		return
 	else
