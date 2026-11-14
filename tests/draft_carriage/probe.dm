@@ -126,6 +126,7 @@ var/carriage_owners_about = FALSE
 	C.hitch(h2)
 	carriage_check(C.team.len == 2 && h1.buckled == C && h2.buckled == C && h1.loc == C.loc && C.team_pull() == 4 && C.lane_depth() == 2, "two horses in harness pull 4 and stand in a two-tile lane")
 	carriage_check(h1.pixel_y < 0 && h2.pixel_y < 0 && h1.pixel_x != h2.pixel_x && h1.dir == SOUTH, "they are drawn side by side ahead of it ([h1.pixel_x],[h1.pixel_y] / [h2.pixel_x],[h2.pixel_y])")
+	carriage_check(C.overlays.len == 3 && C.pixel_x == -16, "one rank of harness is drawn ahead of it and a lap rug over each of the two seated people ([C.overlays.len])")
 	carriage_check(findtext(C.status_text(), "Top pace: canter"), "it reads its best pace ([C.status_text()])")
 
 	// ---- Urging and stepping ----

@@ -126,7 +126,7 @@ var/global/list/carriage_gear_delays = list(7, 4, 2.2)
 	wheeled = TRUE
 	bound_width = 64
 	bound_height = 96
-	pixel_x = -18
+	pixel_x = -16
 	mobcapacity = CARRIAGE_SEATS + 1
 	storagecapacity = CARRIAGE_SEATS
 	leave_time = 20
@@ -224,21 +224,14 @@ var/global/list/carriage_gear_delays = list(7, 4, 2.2)
 	var/list/size = carriage_footprint_size(facing)
 	bound_width = size[1] * world.icon_size
 	bound_height = size[2] * world.icon_size
-	// Centre the sprite's wheels over the footprint (measured from the icon).
-	var/narrow = (icon_state == "simple_carriage2")
-	switch (facing)
-		if (SOUTH)
-			pixel_x = -18
-			pixel_y = 0
-		if (NORTH)
-			pixel_x = -15
-			pixel_y = 0
-		if (EAST)
-			pixel_x = 0
-			pixel_y = narrow ? -10 : -18
-		if (WEST)
-			pixel_x = 0
-			pixel_y = narrow ? -10 : -15
+	// Both carriage sprites are drawn centred on the footprint in a 96 px icon
+	// (tests/sprites/create_carriages.py).
+	if (facing == NORTH || facing == SOUTH)
+		pixel_x = -16
+		pixel_y = 0
+	else
+		pixel_x = 0
+		pixel_y = -16
 
 // Where a seat, the driver or a team animal is drawn: list(along, across).
 /obj/structure/vehicle/carriage/proc/seat_point(seat)
@@ -280,6 +273,43 @@ var/global/list/carriage_gear_delays = list(7, 4, 2.2)
 			place_at(A, seat_point(i))
 	for (var/i = 1 to team.len)
 		place_at(team[i], team_point(i))
+	update_fittings()
+
+// The lower left corner of a w x h picture laid over the carriage from `along`
+// (measured from the rear), as an overlay offset from the carriage's own icon.
+/obj/structure/vehicle/carriage/proc/fitting_offset(along, across, w, h)
+	var/list/p
+	switch (facing)
+		if (SOUTH) p = list(64 - across - w, 96 - along - h)
+		if (EAST) p = list(along, 64 - across - w)
+		if (WEST) p = list(96 - along - h, across)
+		else p = list(across, along)
+	return list(p[1] - pixel_x, p[2] - pixel_y)
+
+// Harness ahead of the carriage for each rank of the team, and a lap rug (a
+// seat back from behind) over each seated person so they read as sitting.
+/obj/structure/vehicle/carriage/proc/update_fittings()
+	overlays.Cut()
+	var/rank_length = team_rank_length()
+	var/harness_state = rank_length > 30 ? "harness_horse" : "harness_ox"
+	for (var/rank = 0 to round((team.len + 1) / 2) - 1)
+		var/image/H = image('icons/obj/vehicles/carriage_fittings.dmi', harness_state, dir = facing)
+		var/list/at = fitting_offset(96 + 2 + rank * rank_length, 0, 64, 64)
+		H.pixel_x = at[1]
+		H.pixel_y = at[2]
+		overlays += H
+	var/list/sitters = list()
+	if (driver)
+		sitters[driver] = 0
+	for (var/i = 1 to CARRIAGE_SEATS)
+		if (isliving(seats[i]))
+			sitters[seats[i]] = i
+	for (var/mob/living/M in sitters)
+		var/list/p = carriage_local_point(facing, seat_point(sitters[M])[1], seat_point(sitters[M])[2])
+		var/image/R = image('icons/obj/vehicles/carriage_fittings.dmi', "lap", dir = facing, layer = MOB_LAYER + 0.1)
+		R.pixel_x = round(p[1] - 16) - pixel_x
+		R.pixel_y = round(p[2] - 16) - pixel_y
+		overlays += R
 
 /obj/structure/vehicle/carriage/update_icon()
 	dir = facing
@@ -475,6 +505,8 @@ var/global/list/carriage_gear_delays = list(7, 4, 2.2)
 		A.forceMove(to_turf)
 	if (team_pull() <= 0)
 		stopmovementloop()
+	if (!QDELETED(src))
+		update_fittings()
 
 // A clear turf next to the carriage, or its own corner when there is none.
 /obj/structure/vehicle/carriage/proc/beside_turf(atom/movable/A)

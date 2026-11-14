@@ -24,6 +24,8 @@ See [the audit and provenance](../../docs/sprite-audit.md). `run.py` compiles pr
 
 `create_trains.py` owns `icons/obj/vehicles/train_platforms.dmi` (platform car decks, sides, doors, headstocks, roofs, the car kit, outriggers and the three 3x4 locomotive bodies) and `icons/obj/vehicles/railway_gun.dmi`, with shared helpers in `trainkit.py`: art is drawn once heading north and placed into each direction with the light kept at the upper left. `--check` verifies the committed sheets, `--preview <dir>` writes the state sheet and whole trains laid out as the game does. State names are listed in `docs/train-platforms.md`.
 
+`create_carriages.py` owns the two carriage states (`simple_carriage`, `simple_carriage2`) of `icons/obj/vehicles/vehicles96x96.dmi`, leaving every other state in that sheet untouched, and `icons/obj/vehicles/carriage_fittings.dmi` (the harness drawn ahead of the carriage for each rank of the team and the lap rug or seat back over a seated rider). `--check` verifies the committed sheets, `--preview <png>` writes a review sheet with a team and riders laid out as `carriage.dm` does.
+
 No live server, player data, game instances or external-effect tests are involved. Constructors and overlay/worn/held rendering are outside this defaults inventory. Add meaningful dedicated checks for those behaviors when introducing dynamic graphics.
 
 ## Current Linux toolchain and historical fixtures
