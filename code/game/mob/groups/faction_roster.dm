@@ -1,6 +1,7 @@
 // Faction rosters, member limits and member starts (docs/land-stages.md,
 // "Faction members"). Val's rules (2026-11-14):
-// - A faction has a member limit.
+// - A faction has a member limit. It grows with the faction's hall and
+//   colonies (faction_hall.dm), up to the server's FACTION_MEMBER_LIMIT.
 // - Joining a faction in character puts the player's account on its roster.
 //   From then on that account's new characters may start with the faction.
 // - Nobody may start with a faction before joining it in play.
@@ -15,7 +16,7 @@
 // Nothing here sleeps.
 
 /proc/faction_member_limit_default()
-	return config && isnum(config.faction_member_limit) ? config.faction_member_limit : 20
+	return config && isnum(config.faction_member_limit) ? config.faction_member_limit : 50
 
 /proc/faction_roster_idle_time()
 	var/days = config && isnum(config.faction_roster_idle_days) ? config.faction_roster_idle_days : 14
@@ -75,8 +76,13 @@
 			roster -= account
 	return roster
 
+// The server ceiling, what the faction's hall and colonies support
+// (faction_hall.dm), and any lower limit its leader set.
+/obj/map_metadata/proc/faction_member_cap(faction)
+	return min(faction_member_limit_default(), faction_infrastructure_limit(faction))
+
 /obj/map_metadata/proc/faction_member_limit(faction)
-	var/limit = faction_member_limit_default()
+	var/limit = faction_member_cap(faction)
 	var/list/limits = faction_limits()
 	if (isnum(limits[faction]))
 		limit = min(limit, limits[faction])

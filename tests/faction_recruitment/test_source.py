@@ -185,5 +185,45 @@ class ColonyCharterSource(unittest.TestCase):
         self.assertIn('"colonies" = colonies', read('code/modules/persistence/land_stage.dm'))
 
 
+class FactionHallSource(unittest.TestCase):
+    """Val (2026-11-14): factions grow through infrastructure, not purchases."""
+
+    def setUp(self):
+        self.hall = read('code/game/mob/groups/faction_hall.dm')
+
+    def test_tiers_grow_with_the_age_and_the_limit_and_later_ones_stand_indoors(self):
+        import re
+        tiers = re.findall(r'list\("([a-z ]+)", (\d+), (\d+), (TRUE|FALSE), list\(', self.hall)
+        self.assertEqual(['council fire', 'longhouse', 'town hall', 'capitol'], [t[0] for t in tiers])
+        limits = [int(t[1]) for t in tiers]
+        ages = [int(t[2]) for t in tiers]
+        self.assertEqual(sorted(limits), limits)
+        self.assertEqual(sorted(ages), ages)
+        self.assertEqual(['FALSE', 'TRUE', 'TRUE', 'TRUE'], [t[3] for t in tiers])
+        self.assertIn('#define FACTION_HALL_BASE_LIMIT 10', self.hall)
+        self.assertLess(10, limits[0])
+        # Materials only: no coins, nothing bought from an NPC.
+        self.assertNotIn('coin', self.hall)
+
+    def test_limits_follow_halls_that_stand_and_leaders_and_members_act(self):
+        roster = read(run.ROSTER)
+        cap = run.proc_text(roster, '/obj/map_metadata/proc/faction_member_cap(')
+        self.assertIn('min(faction_member_limit_default(), faction_infrastructure_limit(faction))', cap)
+        self.assertIn('var/limit = faction_member_cap(faction)', run.proc_text(roster, '/obj/map_metadata/proc/faction_member_limit('))
+        tier = run.proc_text(self.hall, '/obj/map_metadata/proc/faction_hall_tier(')
+        self.assertIn('H.tier_stands(H.tier)', tier)
+        attack = run.proc_text(self.hall, '/obj/structure/faction_hall/attack_hand(')
+        self.assertEqual(2, attack.count('map.is_faction_leader(user'))
+        self.assertLess(attack.index('WWinput('), attack.rindex('map.is_faction_leader(user'))
+        deliver = run.proc_text(self.hall, '/obj/structure/faction_hall/attackby(')
+        self.assertLess(deliver.index('user.civilization != faction'), deliver.index('S.use(amount)'))
+        self.assertLess(deliver.index('tier_block(t)'), deliver.index('S.use(amount)'))
+        verb = run.proc_text(read('code/game/mob/groups/faction_start.dm'), '/mob/living/human/proc/set_faction_member_limit(')
+        self.assertIn('map.faction_member_cap(faction)', verb)
+        self.assertIn('faction hall seat,/obj/structure/faction_hall,', read('config/crafting/material_recipes_global.txt'))
+        self.assertIn('faction_halls |= src', self.hall)
+        self.assertIn('faction_halls -= src', self.hall)
+
+
 if __name__ == '__main__':
     unittest.main()
