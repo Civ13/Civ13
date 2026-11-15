@@ -1,11 +1,14 @@
-# Builds the Phase 2 push-to-talk prototype (issue #5122) against an external
-# Discord Social SDK directory, then packs it for a second tester. Not run in
-# CI: the SDK is a vendor download and is never committed.
+# Builds the launcher voice apps (issue #5122) against an external Discord
+# Social SDK directory, then packs them for testers. Not run in CI: the SDK is
+# a vendor download and is never committed.
 #
 #   .\Build-VoiceProto.ps1 -SdkRoot D:\GitHub\discord-social-sdk-1.10.19337
 #
-# Output: build\voice\civ13-voice-proto.exe with the SDK runtime beside it,
-# and build\civ13-voice-proto.zip holding the same files.
+# Output in build\voice, with the SDK runtime beside them:
+# - civ13-voice.exe: Phase 3 region voice, started by the launcher.
+# - civ13-voice-proto.exe: the Phase 2 two-player prototype.
+# build\civ13-voice.zip holds the same files. Unzip it so the launcher has
+# voice\civ13-voice.exe beside Civ13.exe.
 param([Parameter(Mandatory = $true)][string]$SdkRoot)
 $ErrorActionPreference = 'Stop'
 $root = $PSScriptRoot
@@ -35,6 +38,8 @@ $commands = @(
     'if errorlevel 1 exit /b 1',
     "cl $flags /external:I`"$include`" /I`"$root/voice`" /Fo:`"$out/`" /Fe:`"$out/civ13-voice-proto.exe`" `"$root/voice/voice_proto.cpp`" `"$lib`" user32.lib",
     'if errorlevel 1 exit /b 1',
+    "cl $flags /external:I`"$include`" /I`"$root/voice`" /Fo:`"$out/`" /Fe:`"$out/civ13-voice.exe`" `"$root/voice/voice_client.cpp`" `"$lib`" ws2_32.lib winhttp.lib bcrypt.lib",
+    'if errorlevel 1 exit /b 1',
     'exit /b 0'
 )
 $batch = Join-Path $out 'compile.cmd'
@@ -43,13 +48,13 @@ $log = Join-Path $root 'build/voice-compile.log'
 & $env:ComSpec /d /s /c "`"$batch`" > `"$log`" 2>&1"
 $code = $LASTEXITCODE
 Get-Content -LiteralPath $log
-if ($code -ne 0) { throw "Voice prototype compile failed with exit $code." }
+if ($code -ne 0) { throw "Voice compile failed with exit $code." }
 Copy-Item -Path (Join-Path $bin '*') -Destination $out -Force
 $notices = Join-Path $SdkRoot 'License-Notices.txt'
 if (Test-Path -LiteralPath $notices) { Copy-Item -LiteralPath $notices -Destination $out -Force }
 Remove-Item -Path (Join-Path $out '*.obj'), $batch -ErrorAction SilentlyContinue
-$zip = Join-Path $root 'build/civ13-voice-proto.zip'
+$zip = Join-Path $root 'build/civ13-voice.zip'
 if (Test-Path -LiteralPath $zip) { Remove-Item -LiteralPath $zip }
 Compress-Archive -Path (Join-Path $out '*') -DestinationPath $zip
-Write-Output "Built $(Join-Path $out 'civ13-voice-proto.exe')"
-Write-Output "Packed $zip for the second tester"
+Write-Output "Built $(Join-Path $out 'civ13-voice.exe') and $(Join-Path $out 'civ13-voice-proto.exe')"
+Write-Output "Packed $zip; unzip it into a folder named voice beside Civ13.exe"

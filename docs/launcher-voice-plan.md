@@ -135,8 +135,15 @@ faction in the region hears you.
   nobody in the region call. Knocked-out players hear but cannot talk.
 - Hearing policy: same level, line of sight (walls block, darkness does not),
   10 tiles; volume 100 within 2 tiles, then 75, 50 and 30.
+- The launcher turns voice on when `voice\civ13-voice.exe` sits beside it,
+  adds the key to the join link and hands it to that app on stdin
+  (`tools/opendream-client/native/VoiceChat.cs`,
+  `companion/voice/voice_client.cpp`). Without the app, joining is unchanged.
 - Status: game side source implemented and native-probe tested
-  (`tests/voice_chat/`). The bot and launcher sides follow.
+  (`tests/voice_chat/`, `tests/action_keybindings/`). Bot side in
+  Civilizationbot `VoiceLobbies.php`, offline tested. Voice app rules and CNG
+  crypto offline tested (`companion/tests/region_voice_tests.cpp`). Not yet
+  runtime verified with real players.
 
 ### 4. Proximity and scale
 
