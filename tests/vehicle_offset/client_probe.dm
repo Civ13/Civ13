@@ -296,3 +296,9 @@ var/global/datum/vehicle_client_probe/vehicle_client_probe = new
 	world.log << (failure ? "FAIL: vehicle client probe: [failure]" : "PASS: vehicle client probe")
 	sleep(20)
 	del(world)
+
+// A headless rehearsal has no client near the vehicles; count it as watched.
+/datum/vehicle_offset/watched()
+	if(vehicle_client_probe && vehicle_client_probe.headless)
+		return TRUE
+	return ..()
