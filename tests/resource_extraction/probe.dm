@@ -64,7 +64,7 @@ var/extraction_runtime_error = FALSE
 		build_research_tree()
 		extraction_check(get_recipe_node_req("/obj/structure/drill") == "electricity", "drill unlock at electricity")
 		extraction_check(get_recipe_node_req("/obj/item/stack/material/electronics") == "electricity", "electronics unlock at electricity")
-		extraction_check(get_recipe_node_req("/obj/item/stack/cable_coil/white") == "paved_infrastructure", "plain cable prototype precedes electricity")
+		extraction_check(get_recipe_node_req("/obj/item/stack/cable_coil/white") == "galvanic_cells", "plain cable prototype precedes electricity")
 		var/datum/research_node/electricity = research_nodes["electricity"]
 		var/obj/item/stack/cable_coil/white/prototype = new(locate(1,1,1))
 		extraction_check(electricity && istype(prototype, electricity.prototype_type), "reachable plain cable satisfies electricity prototype type")

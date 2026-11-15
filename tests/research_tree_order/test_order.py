@@ -208,8 +208,10 @@ class RecipePlacement(unittest.TestCase):
                 ("/obj/item/weapon/material/kitchen/utensil/knife/bone", "basic_tools"),
                 ("/obj/structure/simple_door/key_door/anyone/ship", "wagons_ships"),
                 ("/obj/structure/closet/crate/cart/bronze", "carts"),
-                ("/obj/item/stack/cable_coil/white", "electricity")):
+                ("/obj/item/stack/cable_coil/white", "galvanic_cells")):
             self.assertEqual(self.gates.get(path), node, path)
 
     def test_a_proof_is_taught_by_a_prerequisite_of_its_milestone(self):
         self.assertIn(self.gates["/obj/item/weapon/geiger_counter"], self.nodes["nuclear_power"]["prereqs"])
+        # Electricity's proof is a spool of cable: plain cable is taught by its prerequisite.
+        self.assertIn(self.gates["/obj/item/stack/cable_coil/white"], self.nodes["electricity"]["prereqs"])
