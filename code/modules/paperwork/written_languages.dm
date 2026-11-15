@@ -87,7 +87,8 @@
 	// Rebind to the actor's real member after import; singleton object identity
 	// is not a durable language ID. No knowledge is inferred from client labels.
 	for (var/datum/language/known in actor.languages)
-		if (known.type == L.type && actor.can_speak(known))
+		// Reading and writing take a real command of the language (proficiency.dm).
+		if (known.type == L.type && actor.can_speak(known) && actor.language_score(known) >= LANGUAGE_CONVERSATIONAL)
 			return TRUE
 	return FALSE
 

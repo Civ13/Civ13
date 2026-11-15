@@ -97,7 +97,7 @@
 	colour = "Dutch"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = DUTCH_SYLLABLES
-	mutual_intelligibility = list(/datum/language/english = 70, /datum/language/english = 10, /datum/language/german = 40, /datum/language/oldnorse = 15)
+	mutual_intelligibility = list(/datum/language/afrikaans = 70, /datum/language/english = 10, /datum/language/german = 40, /datum/language/oldnorse = 15)
 
 /datum/language/afrikaans
 	name = "Afrikaans"

@@ -34,11 +34,17 @@
 				langtolearn = lang2
 			if(H.too_dark_to_read())
 				return
-			H.visible_message("<span class='notice'>[user] begins to read the [src].</span>", "<span class='notice'>You begin reading translations for [langtolearn.name] in the [src]. This will take around 80 seconds, and you need to stand or sit still.</span>")
+			// A primer: each sitting teaches a little, up to broken speech, and
+			// only so much sinks in per day. The rest takes people.
+			if (!H.language_day_left(langtolearn, "study"))
+				to_chat(user, "<span class = 'warning'>You have taken in all the [langtolearn.name] you can from books today.</span>")
+				return
+			H.visible_message("<span class='notice'>[user] begins to read the [src].</span>", "<span class='notice'>You begin a sitting with the [langtolearn.name] translations in the [src]. This will take around 80 seconds, and you need to stand or sit still.</span>")
 			if(do_reading(user, 800, src))
-				// A book gets a reader as far as broken speech; the rest takes people.
-				H.visible_message("<span class='notice'>[user] finishes reading the [src].</span>", "<span class='notice'>You finish reading translations in the [src]. It has taught you what a book can of [langtolearn.name]; the rest you must learn from people who speak it.</span>")
-				H.gain_language(langtolearn, 100, LANGUAGE_BROKEN, FALSE)
+				if (H.gain_language(langtolearn, LANGUAGE_STUDY_GAIN, LANGUAGE_BROKEN, "study"))
+					H.visible_message("<span class='notice'>[user] finishes reading the [src].</span>", "<span class='notice'>You finish a sitting with the [src]. You now understand about [round(H.language_score(langtolearn))]% of [langtolearn.name].</span>")
+				else
+					to_chat(user, "<span class='notice'>The [src] has taught you what a book can of [langtolearn.name]; the rest you must learn from people who speak it.</span>")
 	else
 		to_chat(user, "<span class = 'warning'>You can't read a language book with nothing in it!</span>")
 

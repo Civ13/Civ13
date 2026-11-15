@@ -27,9 +27,20 @@ language) is at 100. A learned one joins the `languages` list at Broken through
 - **Speaking**: 0.1 per line when a better speaker hears it, same 20 second
   limit.
 - Both halve from Conversational and stop at 12 per language per real day.
-- **Language book** and **Study Writing**: up to Broken only, no daily cap.
+- **Lessons** (`teaching.dm`): the Teach Language verb. A fluent speaker
+  teaches someone standing next to them who accepts. Both stay put for two
+  minutes and the learner gains 1, up to 8 per language per real day, on top
+  of hearing and speaking. With daily lessons Conversational takes about
+  three days instead of five or more.
+- **Language book**: a primer. Each 80 second sitting gives 5, up to Broken.
+- **Study Writing**: as before, up to Broken.
+- Books and writing share an allowance of 10 per language per real day.
 - Related languages start from the `mutual_intelligibility` table, scaled by
-  the score in the language that grants it.
+  the score in the language that grants it. `symmetrize_language_kinship()`
+  makes every pair agree at world start by taking the stronger value.
+
+Reading and writing paper in a language needs Conversational. Paper stays all
+or nothing: the paper system's projection never sends partly hidden text.
 
 Nothing lowers a score.
 
