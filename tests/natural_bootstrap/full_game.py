@@ -82,7 +82,7 @@ def sample(pid):
         return None
 
 
-def run(command, output, stage, deadline):
+def run(command, output, stage, deadline, stall):
     samples = []
     started = time.monotonic()
     with (output / f'stdout-{stage}.log').open('w') as out, (output / f'stderr-{stage}.log').open('w') as err:
@@ -92,6 +92,12 @@ def run(command, output, stage, deadline):
                 elapsed = time.monotonic() - started
                 if elapsed > deadline:
                     raise RuntimeError(f'{stage} stage passed its {deadline}-second deadline')
+                try:
+                    quiet = time.time() - (output / 'phase.json').stat().st_mtime
+                except FileNotFoundError:
+                    quiet = elapsed
+                if quiet > stall:
+                    raise RuntimeError(f'{stage} stage made no phase progress for {stall} seconds')
                 row = sample(process.pid)
                 if row:
                     try:
@@ -137,7 +143,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--byond-bin', type=Path, required=True)
     parser.add_argument('--output', type=Path)
-    parser.add_argument('--deadline', type=int, default=5400, help='seconds allowed for each daemon run')
+    parser.add_argument('--deadline', type=int, default=3600, help='seconds allowed for each daemon run')
+    parser.add_argument('--stall', type=int, default=1500, help='seconds one probe phase may take before the run is stopped')
     parser.add_argument('--seed', type=int, default=3048, help='random seed: fixes the start tile the production picker draws')
     parser.add_argument('--stage', choices=('both', 'write', 'read'), default='both',
                         help='development only: read reuses the save in an existing --output directory')
@@ -181,7 +188,7 @@ def main():
             (output / 'phase.json').unlink(missing_ok=True)
             command = [str(daemon), 'probe.dmb', '-trusted', '-ip', '127.0.0.1', '-params',
                        f'tested_commit={head}&stage={stage}&seed={args.seed}', '-log', f'startup-{stage}.log']
-            code, wall, samples = run(command, output, stage, args.deadline)
+            code, wall, samples = run(command, output, stage, args.deadline, args.stall)
             (output / f'phase-summary-{stage}.json').write_text(json.dumps(phase_summary(samples), indent=2), encoding='utf-8')
             errors = runtime_errors(output, stage)
             (output / f'runtime-errors-{stage}.json').write_text(json.dumps(errors, indent=2), encoding='utf-8')

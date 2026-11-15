@@ -542,10 +542,10 @@ var/global/datum/natural_bootstrap_probe/natural_bootstrap_probe = new
 	require(crafting_recipe_allowed(H, "/obj/item/weapon/plough/digging_stick"), "The digging stick is still not allowed")
 	pass("founded_and_studied", list("faction" = H.civilization, "book" = "[book.type]", "chapters" = book.research_chapter_list(), "study_seconds" = (world.time - study_start) / 10, "time_of_day" = time_of_day))
 	// The book and slate stay at the camp beside the plots.
-	while(H.get_active_hand() || H.get_inactive_hand())
-		free_hand()
-		if(H.get_active_hand())
-			act(list("do" = "drop", "label" = "[H.get_active_hand()]"))
+	for(var/obj/item/I in list(H.get_active_hand(), H.get_inactive_hand()))
+		hold(I)
+		act(list("do" = "drop", "label" = "[I]"))
+	require(!H.get_active_hand() && !H.get_inactive_hand(), "The book and slate could not be put down")
 
 // Two flints from a rock, one knapped with the other into a flint knife.
 /datum/natural_bootstrap_probe/proc/make_knife()
