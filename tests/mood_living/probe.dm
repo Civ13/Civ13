@@ -154,15 +154,29 @@ var/ml_runtime_error = FALSE
 	roll.loc = null
 	ml_rest(H)
 	ml_check(H.sleep_comfort == 0, "a sheet on the bare ground is no bed")
-	new /obj/structure/bed/ml_bed(T)
+	var/obj/structure/bed/ml_bed/bed = new(T)
 	sheet.loc = null
 	ml_rest(H)
 	ml_check(H.sleep_comfort == 4, "a proper bed is comfortable")
+	bed.padding_material = new /material/cloth()
+	ml_rest(H)
+	ml_check(H.sleep_comfort == 6, "padding makes the bed finer ([H.sleep_comfort])")
+	roll.loc = T
+	roll.padding_material = bed.padding_material
+	bed.loc = null
+	ml_rest(H)
+	ml_check(H.sleep_comfort == 2, "padding does nothing for a bedroll ([H.sleep_comfort])")
+	roll.loc = null
+	roll.padding_material = null
+	bed.loc = T
 	sheet.loc = T
+	ml_rest(H)
+	ml_check(H.sleep_comfort == 8 && H.sleep_comfort_name() == "a padded bed with sheets to sleep in", "padding and sheets together are the best bed ([H.sleep_comfort])")
+	bed.padding_material = null
 	ml_check(ml_rest(H) == 50 && H.sleep_comfort == 6, "a sleeper's resting level waits until they wake")
 	H.inducedSSD = FALSE
 	H.sleeping = 0
-	ml_check(ml_rest(H) == 56 && H.mood_rest_parts["a fine bed with sheets to sleep in"] == 6, "a fine bed counts after waking ([H.mood_rest])")
+	ml_check(ml_rest(H) == 56 && H.mood_rest_parts["a fine bed to sleep in"] == 6, "a fine bed counts after waking ([H.mood_rest])")
 	H.loc = locate(10, 10, 1)
 	ml_check(ml_rest(H) == 56, "and keeps counting away from the bed")
 

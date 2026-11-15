@@ -6,6 +6,7 @@
 #define LIVING_BED 4          // last slept in a proper bed
 #define LIVING_BEDROLL 2      // or on a bedroll
 #define LIVING_SHEET 2        // with a sheet or blanket on it
+#define LIVING_PADDING 2      // a proper bed padded with cloth or leather
 #define LIVING_DIET 5         // three of the four food groups adequate
 #define LIVING_DIET_GROUPS 3
 #define LIVING_CLEAN 4
@@ -25,7 +26,7 @@
 #define LIVING_ART_REACH 4
 #define LIVING_HUNGER_SHARE 0.25 // of a full stomach or full water
 
-// How well the character last slept: 0 to LIVING_BED + LIVING_SHEET. Saved
+// How well the character last slept: 0 to LIVING_BED + LIVING_PADDING + LIVING_SHEET. Saved
 // with the body, so a good bed still counts after the world restarts.
 /mob/living/human/var/sleep_comfort = 0
 
@@ -38,13 +39,18 @@
 	for (var/obj/structure/bed/B in T)
 		if (istype(B, /obj/structure/bed/chair))
 			continue
-		. = max(., istype(B, /obj/structure/bed/bedroll) ? LIVING_BEDROLL : LIVING_BED)
+		if (istype(B, /obj/structure/bed/bedroll))
+			. = max(., LIVING_BEDROLL)
+		else
+			. = max(., B.padding_material ? LIVING_BED + LIVING_PADDING : LIVING_BED)
 	if (. && locate(/obj/item/weapon/bedsheet) in T)
 		. += LIVING_SHEET
 
 /mob/living/human/proc/sleep_comfort_name()
+	if (sleep_comfort >= LIVING_BED + LIVING_PADDING + LIVING_SHEET)
+		return "a padded bed with sheets to sleep in"
 	if (sleep_comfort >= LIVING_BED + LIVING_SHEET)
-		return "a fine bed with sheets to sleep in"
+		return "a fine bed to sleep in"
 	if (sleep_comfort >= LIVING_BED)
 		return "a comfortable place to sleep"
 	return "a simple place to sleep"
@@ -171,6 +177,7 @@
 #undef LIVING_BED
 #undef LIVING_BEDROLL
 #undef LIVING_SHEET
+#undef LIVING_PADDING
 #undef LIVING_DIET
 #undef LIVING_DIET_GROUPS
 #undef LIVING_CLEAN
