@@ -104,11 +104,19 @@ var/rg_runtime_error = FALSE
 	rg_check(rg_close(H.get_rain_protection(), 1 - 0.2 * 0.7), "a closed umbrella does nothing")
 	U.open = TRUE
 	rg_check(rg_close(H.get_rain_protection(), 0.95), "an open umbrella over a raincoat hits the cap")
+	U.update_icon()
+	var/image/held = image('icons/mob/items/righthand_rain_gear.dmi', U.item_state, layer = H.layer + 0.02)
+	U.add_held_underlay(held, 'icons/mob/items/righthand_rain_gear.dmi', U.item_state, H.layer)
+	var/image/shaft = held.overlays.len ? held.overlays[1] : null
+	rg_check(U.item_state == "umbrella_cloth_open" && shaft && shaft.icon_state == "umbrella_cloth_open_shaft" && shaft.layer < H.layer, "an open umbrella's shaft is drawn under the holder")
 	U.wind_flip_chance = 100
 	U.wind_step(null, 2)
 	rg_check(!U.inside_out, "a stiff breeze does not flip an umbrella")
 	U.wind_step(null, 3)
 	rg_check(U.inside_out && !U.shelters(), "a gale turns an umbrella inside out")
+	var/image/flipped = image('icons/mob/items/righthand_rain_gear.dmi', "umbrella_cloth")
+	U.add_held_underlay(flipped, 'icons/mob/items/righthand_rain_gear.dmi', "umbrella_cloth", H.layer)
+	rg_check(!flipped.overlays.len, "a closed or inside-out umbrella adds no shaft underlay")
 	H.r_hand = null
 
 	// Grease finish: replaces a weaker rating and wears off only in rain.
