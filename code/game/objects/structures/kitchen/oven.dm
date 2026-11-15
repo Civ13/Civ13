@@ -17,6 +17,7 @@
 	var/cooking_time = 50
 	var/tmp/fire_epoch = 0 // Changes on every light/extinguish so stale cooking and loop callbacks stop.
 	var/open_flame = TRUE // Electric stoves, griddles and fryers cannot light a candle.
+	var/fuel_per_cycle = 1 // Fuel each fire_loop burns; campfires burn a log slowly.
 
 /obj/structure/oven/persistence_runtime_var(key)
 	return key == "fire_epoch" || ..()
@@ -106,7 +107,7 @@
 
 /obj/structure/oven/proc/fire_loop()
 	if (on && fuel > 0)
-		burn_structure_fuel(1)
+		burn_structure_fuel(fuel_per_cycle)
 		update_icon()
 		if (name == "campfire" || name == "furnace")
 			set_light(5)
@@ -265,6 +266,9 @@
 	consume_itself = TRUE
 	looping = TRUE
 	cooking_time = 300
+	// keep_fire_on runs once a minute, so one log burns for 8 minutes. A night
+	// (Evening + Night, 20 minutes each) takes 5 logs; 8 logs reach daybreak.
+	fuel_per_cycle = 0.125
 	light_power = 0.75
 	light_color = "#E38F46"
 	var/tmp/stone_boil_busy = FALSE
@@ -337,6 +341,13 @@
 		M.apply_damage(rand(2,4), BURN, "l_leg")
 		M.apply_damage(rand(2,4), BURN, "r_leg")
 		M.visible_message(SPAN_WARNING("[M] gets <big>burnt</big> by \the [name]!"), SPAN_WARNING("You get <big>burnt</big> by \the [name]!"))
+
+/obj/structure/oven/fireplace/examine(mob/user)
+	..()
+	if (fuel > 0 && fuel_per_cycle > 0)
+		to_chat(user, "It has fuel to burn for about <b>[round(fuel / fuel_per_cycle)] minutes</b>.")
+	else
+		to_chat(user, "It has no fuel left.")
 
 /obj/structure/oven/fireplace/pit
 	name = "fire pit"

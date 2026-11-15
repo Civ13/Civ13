@@ -976,7 +976,7 @@ SUITES = {
     'anchoring': {'files': ('tests/anchoring/test_anchoring.py',),
         'paths': ('tests/anchoring/',), 'shared_paths': ('code/_helpers/tools.dm',)},
     # Solid fuel kinds and per-device rates keep the old hard-coded values.
-    'solid_fuel': {'files': ('tests/solid_fuel/test_solid_fuel.py',),
+    'solid_fuel': {'files': ('tests/solid_fuel/test_solid_fuel.py', 'tests/solid_fuel/test_campfire_night.py'),
         'paths': ('tests/solid_fuel/',), 'shared_paths': ()},
     # Stack recipe build guards keep produce_recipe()'s old order and phases;
     # source scan of code/.
