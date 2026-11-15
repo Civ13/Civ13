@@ -17,6 +17,8 @@
 	wild_plant_cap = 550
 	// The isthmus runs off the south edge into the southern continent.
 	edge_crossings = list("south" = "southamerica")
+	// Gaia lies across the sea to the east (sea_lanes.dm); ships from there come in on the east coast.
+	sea_lanes = list("gaia" = list("tiles" = 6, "coast" = "E", "bearing" = "east"))
 	new_player_start_z = 1
 	// One standing open-air level, so aircraft can fly (building_admission.dm).
 	building_levels = 1
@@ -33,6 +35,7 @@
 	ecology_wildlife_cap = 1200
 	wild_plant_cap = 650
 	edge_crossings = list("north" = "northamerica")
+	sea_lanes = list("gaia" = list("tiles" = 8, "coast" = "E", "bearing" = "northeast"))
 	new_player_start_z = 1
 	// One standing open-air level, so aircraft can fly (building_admission.dm).
 	building_levels = 1

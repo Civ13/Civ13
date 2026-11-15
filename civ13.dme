@@ -1543,6 +1543,7 @@
 #include "code\modules\naval\open_sea_sites.dm"
 #include "code\modules\naval\points_of_sail.dm"
 #include "code\modules\naval\rowing_bench.dm"
+#include "code\modules\naval\sea_lanes.dm"
 #include "code\modules\naval\sea_office.dm"
 #include "code\modules\naval\depot_jobs.dm"
 #include "code\modules\naval\sea_weather.dm"

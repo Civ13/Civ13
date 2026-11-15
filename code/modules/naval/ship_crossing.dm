@@ -79,9 +79,13 @@
 			continue
 		.["[peer["name"]]"] = id
 
-// The sides of the map a ship arrives on: a land's coasts first, then the rest.
-/proc/sea_crossing_sides()
+// The sides of the map a ship arrives on: the coast a sea lane from region
+// from comes in on (sea_lanes.dm), a land's coasts, then the rest.
+/proc/sea_crossing_sides(from = null)
 	. = list()
+	var/lane_side = sea_lane_coast(from)
+	if (lane_side)
+		. += lane_side
 	var/list/land = expedition_land()
 	if (land && islist(land["coast"]))
 		for (var/side in land["coast"])
@@ -634,7 +638,7 @@ var/global/list/sea_crossing_tillers = list()
 			if (sea_crossing_fits(offsets, from[1], from[2], from[3]))
 				pivot = locate(from[1], from[2], from[3])
 		if (!pivot)
-			pivot = sea_crossing_anchorage(offsets, incoming ? sea_crossing_sides() : cardinal)
+			pivot = sea_crossing_anchorage(offsets, incoming ? sea_crossing_sides(P["from"]) : cardinal)
 		if (pivot)
 			tiller = sea_crossing_build(R, pivot, P["voyage"])
 		if (tiller)
@@ -657,7 +661,7 @@ var/global/list/sea_crossing_tillers = list()
 		return
 	var/obj/structure/hull_tiller/tiller = sea_crossing_ship(P["voyage"])
 	if (tiller && get_dist(H, tiller) <= 30)
-		to_chat(H, SPAN_NOTICE(incoming ? "The [tiller.craft.name] lies at anchor off an unknown coast." : "The crossing was turned back. The [tiller.craft.name] lies at anchor where she set out."))
+		to_chat(H, SPAN_NOTICE(incoming ? "The [tiller.craft.name] lies at anchor off [sea_lane(P["from"]) ? "the coast" : "an unknown coast"]." : "The crossing was turned back. The [tiller.craft.name] lies at anchor where she set out."))
 	else if (islist(P["ship"]))
 		to_chat(H, SPAN_WARNING("There was no water to bring her in. What she carried is ashore here."))
 

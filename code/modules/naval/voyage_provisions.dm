@@ -91,7 +91,8 @@
 		done += "storm"
 		voyage_storm(mine)
 		return TRUE
-	if (!("sighting" in done) && prob(VOYAGE_SIGHTING_CHANCE))
+	// A sea lane (sea_lanes.dm) crosses no chart: nothing to sight on it.
+	if (!("sighting" in done) && mine["kind"] != "lane" && prob(VOYAGE_SIGHTING_CHANCE))
 		done += "sighting"
 		voyage_sighting(mine)
 		return TRUE

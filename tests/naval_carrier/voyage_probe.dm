@@ -146,6 +146,44 @@ var/naval_runtime_error = FALSE
 	naval_check(tiller.voyage_landfall(mine) && isnull(tiller.voyage), "a refused course turns her back at once")
 	naval_check(tiller.craft && !QDELETED(tiller), "she is still here, off the coast where she set out")
 
+	// ---- A sea lane to a known land (sea_lanes.dm) ----
+	var/list/old_lanes = map.sea_lanes
+	map.sea_lanes = list("northamerica" = list("tiles" = 6, "coast" = "W", "bearing" = "west"))
+	shard_group.peers["northamerica"] = list("name" = "North America", "kind" = "SURFACE", "state" = "STOPPED")
+	naval_check(!length(sea_lane_destinations()), "a stopped land is not offered as a lane")
+	shard_group.peers["northamerica"]["state"] = "UP"
+	var/list/known = sea_lane_destinations()
+	naval_check(known.len == 1 && findtext(known[1], "North America, across the sea to the west: 6 tiles, about 6 minutes"), "a known land across the sea is offered ([known.len ? known[1] : "none"])")
+	var/list/lane_pick = known.len ? known[known[1]] : null
+	naval_check(islist(lane_pick) && lane_pick[1] == "northamerica" && lane_pick[2] == 6, "with its region and sailing time")
+	naval_check(sea_lane_coast("northamerica") == WEST && isnull(sea_lane_coast("far1")) && isnull(sea_lane_coast(null)), "ships from the lane's land come in on its coast, others anywhere")
+	var/list/sides = sea_crossing_sides("northamerica")
+	naval_check(sides.len == 4 && sides[1] == WEST, "the lane's coast is tried first ([list2params(sides)])")
+	sides = sea_crossing_sides()
+	naval_check(sides.len == 4 && sides[1] == NORTH, "without a lane every side is tried in turn")
+	tiller.voyage = null
+	naval_check(tiller.set_out(H, "lane", "northamerica", 0, null, 6, "North America"), "she sets out along the lane with no chart owner")
+	mine = tiller.voyage
+	naval_check(islist(mine) && mine["kind"] == "lane" && mine["x"] == "northamerica", "the voyage names the land's region")
+	naval_check(findtext(tiller.voyage_status_text(), "bound for North America: about 6 minutes to go"), "the tiller tells where and how long ([tiller.voyage_status_text()])")
+	mine["stores"] = mine["rations"]
+	var/sighted = FALSE
+	for (var/i = 1, i <= 200, i++)
+		mine["events"] = list()
+		tiller.voyage_event(mine)
+		if ("sighting" in mine["events"])
+			sighted = TRUE
+	naval_check(!sighted, "a lane crosses no chart, so the lookout sights nothing")
+	mine["ends"] = world.time - 10
+	shard_group.peers["northamerica"]["state"] = "STOPPED"
+	naval_check(!tiller.voyage_lane_landfall(mine) && tiller.voyage == mine && mine["said"] == "The coast is not yet in sight.", "she waits off a coast whose world is down")
+	naval_check(findtext(tiller.voyage_status_text(), "stands off North America"), "and the tiller says so ([tiller.voyage_status_text()])")
+	mine["ends"] = world.time - 18010
+	naval_check(tiller.voyage_lane_landfall(mine) && isnull(tiller.voyage), "she turns back after waiting too long")
+	naval_check(tiller.craft && !QDELETED(tiller), "and is still here where she set out")
+	shard_group.peers -= "northamerica"
+	map.sea_lanes = old_lanes
+
 	// ---- A land across the sea: onward voyages and settling ----
 	shard_group.kind = "EXPEDITION"
 	expedition_land_info = list("biome" = "DESERT", "land_type" = "COASTAL_PLAIN", "size" = "TINY", "key" = "1,2")
