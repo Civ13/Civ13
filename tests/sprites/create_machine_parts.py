@@ -1,5 +1,5 @@
 """Hand-placed 32px art for the standard machine parts: the gear set, shaft,
-bearing, spring, drive belt and drive chain, the visibly different wooden
+bearing, spring, drive belt, drive chain and wheel, the visibly different wooden
 gear set, shaft and bearing block, and the parts mould (raw, fired and
 poured). Every pixel is placed by this script from a fixed palette (Pillow
 only); no external or generated artwork.
@@ -52,6 +52,7 @@ SHOWN_IN = {
     'bearing': ('bronze', 'brass', 'iron', 'copper'), 'bearing_wood': ('wood',),
     'spring': ('bronze', 'iron', 'steel'), 'belt': ('leather', 'rope'),
     'chain': ('iron', 'steel', 'bronze'),
+    'wheel': ('iron', 'steel', 'bronze'), 'wheel_wood': ('wood',), 'wheel_shod': (),
 }
 
 
@@ -194,6 +195,71 @@ def gear_wood():
     small.outline()
     f.px.update(small.px)
     return f
+
+
+# ------------------------------------------------------------------- wheel
+
+def spoked(f, cx, cy, outer, rim, hub, spokes, width, ramp=None, phase=0.0):
+    """A wheel seen face on: rim, hub with a bore, and straight spokes."""
+    ramp = ramp or G
+    for y in range(32):
+        for x in range(32):
+            dx, dy = x - cx, y - cy
+            r = math.hypot(dx, dy)
+            if r > outer + 0.3:
+                continue
+            if r >= outer - rim:
+                f.put(x, y, ramp[lit(dx, dy, outer)])
+            elif r <= hub + 0.3:
+                f.put(x, y, ramp[1] if dx + dy < 0 else ramp[3])
+            else:
+                a = (math.atan2(dy, dx) + phase) % (2 * math.pi)
+                k = (a * spokes / (2 * math.pi)) % 1.0
+                # distance from the spoke's centre line, in pixels
+                off = abs(math.sin((min(k, 1 - k)) * 2 * math.pi / spokes)) * r
+                if off <= width:
+                    f.put(x, y, ramp[2] if dx + dy < 0 else ramp[3])
+    for y in range(32):
+        for x in range(32):
+            if math.hypot(x - cx, y - cy) <= 1.1:
+                f.put(x, y, HOLE)
+
+
+def wheel():
+    f = Frame()
+    spoked(f, 15.5, 15.5, 13.2, 2.0, 2.6, 8, 0.55)
+    return f.outline()
+
+
+def wheel_wood():
+    f = Frame()
+    spoked(f, 15.5, 15.5, 13.2, 3.4, 3.4, 6, 1.0, phase=0.3)
+    # joints between the six felloes of the rim
+    for k in range(6):
+        a = k * math.pi / 3
+        for r in (10.6, 11.6, 12.6):
+            x, y = int(round(15.5 + math.cos(a) * r - 0.5)), int(round(15.5 + math.sin(a) * r - 0.5))
+            f.tint(G[4], (x, y))
+    return f.outline()
+
+
+# an iron-shod wooden wheel is drawn in its own colours and is not tinted
+WOOD_RAMP = [(196, 140, 92), (170, 112, 66), (146, 90, 50), (116, 68, 36), (88, 50, 26)]
+IRON_RAMP = [(214, 214, 220), (176, 176, 184), (140, 140, 150), (104, 104, 114), (76, 76, 86)]
+
+
+def wheel_shod():
+    f = Frame()
+    spoked(f, 15.5, 15.5, 12.0, 3.0, 3.4, 6, 1.0, ramp=WOOD_RAMP, phase=0.3)
+    for y in range(32):
+        for x in range(32):
+            dx, dy = x - 15.5, y - 15.5
+            r = math.hypot(dx, dy)
+            if 12.0 < r <= 13.5:
+                f.put(x, y, IRON_RAMP[lit(dx, dy, 13.5)])     # the iron tyre
+            elif r <= 2.0 and r > 1.1:
+                f.put(x, y, IRON_RAMP[2])                     # hub band
+    return f.outline()
 
 
 # ------------------------------------------------------------------- shaft
@@ -465,7 +531,8 @@ def build():
     for name, draw in (('gear', gear), ('gear_wood', gear_wood), ('shaft', shaft),
                        ('shaft_wood', shaft_wood), ('bearing', bearing),
                        ('bearing_wood', bearing_wood), ('spring', spring), ('belt', belt),
-                       ('chain', chain)):
+                       ('chain', chain), ('wheel', wheel), ('wheel_wood', wheel_wood),
+                       ('wheel_shod', wheel_shod)):
         states[name] = ([draw()], None)
     states['parts_mold_raw'] = ([mould(RAW)], None)
     states['parts_mold_empty'] = ([mould(FIRED)], None)

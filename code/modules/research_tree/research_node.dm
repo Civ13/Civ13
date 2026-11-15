@@ -637,6 +637,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/machine_part/shaft" = "basic_tools",
 		"/obj/item/machine_part/bearing" = "basic_tools",
 		"/obj/item/machine_part/belt" = "basic_tools",
+		"/obj/item/machine_part/wheel" = "basic_tools",
+		"/obj/item/machine_part/wheel/shod" = "basic_tools",
 		"/obj/item/machine_part/spring" = "bronze_working",
 		"/obj/item/weapon/clay/mold/parts" = "bronze_working",
 		"/obj/structure/workshop_machine/lathe/pole" = "workshops",
@@ -1109,6 +1111,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/closet/crate/cart/stone" = "carts",
 		"/obj/structure/closet/crate/cart/wooden" = "carts",
 		"/obj/structure/vehicle/carriage" = "carts",
+		"/obj/structure/vehicle/bicycle/running" = "carts",
 		"/obj/structure/vehicle/raft" = "carts",
 		"/obj/structure/safehouse_depot" = "carts",
 		// --- classical_dress (37) ---
