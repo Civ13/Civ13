@@ -4,7 +4,7 @@
 // A fresh Persistence world with book research starts in the Stone Age
 // (a restored save keeps its own era). Each new faction's founder gets
 // the Stone Age master book, holding every era-0 chapter, and a writing
-// slate (pencils need Papermaking, so a Stone Age founder starts with chalk).
+// slate (a pencil can still be cut from a plank by anyone, for writing in books).
 // ============================================================
 
 /obj/map_metadata/proc/start_book_research_world()
