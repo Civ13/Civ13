@@ -198,6 +198,24 @@
 	eyes = list("Brown", "Black")
 	skin = list(-60, -95)
 
+/datum/origin/inca
+	id = "inca"
+	name = "Inca"
+	language = "Quechua"
+	name_style = "quechua"
+	hair = list("Black", "Dark Brown")
+	eyes = list("Brown", "Black")
+	skin = list(-60, -95)
+
+/datum/origin/tupi
+	id = "tupi"
+	name = "Tupi"
+	language = "Tupi"
+	name_style = "tupi"
+	hair = list("Black", "Dark Brown")
+	eyes = list("Brown", "Black")
+	skin = list(-70, -105)
+
 /datum/origin/caribs
 	id = "caribs"
 	name = "Caribs"
@@ -206,6 +224,14 @@
 	hair = list("Black", "Dark Brown")
 	eyes = list("Brown", "Black")
 	skin = list(-80, -115)
+
+// Names of the peoples added with this file. They live here rather than in
+// config/names so that the offline fixtures, which stage an exact pinned set
+// of name files, are not affected by a new people.
+var/global/list/first_names_male_quechua = list("Amaru", "Apu", "Atoc", "Auqui", "Cusi", "Guaman", "Inti", "Illapa", "Kunturi", "Manco", "Mayta", "Ninan", "Rumi", "Sinchi", "Titu", "Tupaq", "Wayra", "Yupanqui", "Ollanta", "Kusi", "Urqu", "Katari", "Sayri", "Waman", "Huascar", "Atauchi", "Paullu", "Roca", "Capac", "Yawar")
+var/global/list/first_names_female_quechua = list("Chaska", "Illari", "Killa", "Nayra", "Ocllo", "Qori", "Quilla", "Sami", "Sisa", "Sumaq", "Tika", "Urpi", "Wayta", "Yachay", "Nusta", "Chimpu", "Kukuli", "Suyana", "Tamya", "Wara", "Yana", "Achiq", "Cori", "Anka", "Asiri", "Kusi", "Pacha", "Qoyllur", "Micay", "Cava")
+var/global/list/first_names_male_tupi = list("Abaete", "Acir", "Aimbere", "Apoena", "Araribo", "Caua", "Guaraci", "Ibere", "Itagiba", "Jaguare", "Moacir", "Peri", "Piata", "Poti", "Raoni", "Ruda", "Tabajara", "Taua", "Tibirica", "Ubirajara", "Ubirata", "Upiara", "Cunhambebe", "Arati", "Coaraci", "Itauna", "Anhangu", "Pindobu", "Japi", "Cairu")
+var/global/list/first_names_female_tupi = list("Iracema", "Jaci", "Jacira", "Janaina", "Jandira", "Jurema", "Moema", "Potira", "Yara", "Iara", "Araci", "Ceci", "Maiara", "Mayara", "Taina", "Jussara", "Iraci", "Indaia", "Bartira", "Anahi", "Kauane", "Tuane", "Yacy", "Guaraciaba", "Ibotira", "Jupira", "Aracema", "Jacui", "Irupe", "Paraguacu")
 
 var/global/list/origins_by_id = null
 
@@ -258,9 +284,11 @@ var/global/list/origins_by_id = null
 			"savanna" = "aztecs", "jungle" = "aztecs",
 			"default" = "cherokee")
 		var/list/americas_south = list(
-			"sea" = "caribs", "savanna" = "caribs",
-			"jungle" = "maya",
-			"default" = "aztecs")
+			"tundra" = "inca", "taiga" = "inca", "temperate" = "inca",
+			"semiarid" = "inca", "desert" = "inca",
+			"jungle" = "tupi", "savanna" = "tupi",
+			"sea" = "caribs",
+			"default" = "inca")
 		var/list/jungle = list(
 			"sea" = "caribs",
 			"default" = "maya")
@@ -297,6 +325,8 @@ var/global/list/origins_by_id = null
 // Saved with the character: which people they belong to and where they were born.
 /mob/living/human/var/origin_id = null
 /mob/living/human/var/origin_land = null
+// Not saved: a people requested before the character first picks one.
+/mob/living/human/var/tmp/origin_wish = null
 
 /mob/living/human/proc/get_origin()
 	return origin_by_id(origin_id)
@@ -338,6 +368,12 @@ var/global/list/origins_by_id = null
 	if (!map || origin_id)
 		return FALSE
 	var/datum/origin/O = land_origin_for(map.ID, climate)
+	// A people asked for when the character was made (agent spawn), if this land has it.
+	if (origin_wish)
+		var/datum/origin/wished = origin_by_id(origin_wish)
+		if (wished && (wished.name in land_peoples(map.ID)))
+			O = wished
+		origin_wish = null
 	var/keep_setup = FALSE
 	if (client)
 		var/list/peoples = land_peoples(map.ID)

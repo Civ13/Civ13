@@ -245,6 +245,20 @@
 			agent_fail("bad_type", "a job needs a human character")
 		if (!agent_job_allowed(job_title))
 			agent_fail("bad_job", "jobs on this map: [jointext(agent_map_jobs(), ", ")]")
+	// "origin": one of this land's peoples, as a player picks theirs on joining.
+	var/origin_wish = istext(req["origin"]) ? lowertext(trim(req["origin"])) : null
+	if (origin_wish)
+		var/list/peoples = (map && land_has_origins(map.ID)) ? land_peoples(map.ID) : list()
+		var/list/offered = list()
+		var/found = FALSE
+		for (var/people in peoples)
+			var/datum/origin/O = peoples[people]
+			offered += O.id
+			if (O.id == origin_wish || lowertext(O.name) == origin_wish)
+				origin_wish = O.id
+				found = TRUE
+		if (!ispath(path, /mob/living/human) || !found)
+			agent_fail("bad_origin", offered.len ? "peoples of this land: [jointext(offered, ", ")]" : "this land has no peoples to choose from")
 	var/list/before = list()
 	for (var/mob/living/L in T)
 		before += L
@@ -255,6 +269,9 @@
 		reserved.current_positions++
 	try
 		M = new path(T)
+		if (origin_wish && ishuman(M))
+			var/mob/living/human/born = M
+			born.origin_wish = origin_wish // read by choose_origin when the character picks a map identity
 		// A mind holds the job's notes; without one the join path complains it is missing.
 		if (!M.mind)
 			var/datum/mind/agent_mind = new /datum/mind("agent_[A.name]")
@@ -388,6 +405,11 @@
 		out["items"] = details
 		if (H.original_job_title)
 			out["job"] = H.original_job_title
+		// What the Known Languages window and the Origin note tell a player.
+		var/origin = H.origin_summary()
+		if (origin)
+			out["origin"] = origin
+		out["languages"] = H.language_rows()
 		// Injuries a player would see on the health doll: bleeding first, so the agent can stop blood loss.
 		var/list/wounds = agent_wound_rows(H)
 		out["wounds"] = wounds

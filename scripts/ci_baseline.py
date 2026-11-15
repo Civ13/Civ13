@@ -2334,7 +2334,8 @@ SUITES = {
         'paths': ('tests/surgery_drinking/', 'code/modules/surgery/surgery.dm')},
     # Peoples of the Nomads lands: origin table against languages, names, colours.
     'origins': {'files': ('tests/origins/test_origins.py',),
-        'paths': ('tests/origins/', 'code/game/mob/living/carbon/human/origins.dm'),
+        'paths': ('tests/origins/', 'code/game/mob/living/carbon/human/origins.dm',
+            'code/modules/admin/verbs/origin_languages.dm'),
         'shared_paths': ('code/game/mob/living/carbon/human/nomads_spawn.dm',
             'code/game/mob/language/earth.dm', 'code/_helpers/global_lists.dm',
             'code/game/mob/living/carbon/human/species/species.dm')},

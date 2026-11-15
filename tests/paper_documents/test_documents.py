@@ -24,7 +24,7 @@ class Documents(unittest.TestCase):
   self.assertNotIn('language_id',record['legacy']);self.assertNotIn('author',record)
   self.assertFalse(self.service.initialize(self.actor,self.pen))
  def test_explicit_language_ids_are_type_mapped_and_unknown_ids_close(self):
-  self.assertEqual(len(IDS),60)
+  self.assertEqual(len(IDS),62)
   for value in [None,1,True,[],{},'English',':e','[0x123]','civ13:unknown:v1']:
    self.assertIsNone(self.env['paper_written_language'](value))
   self.assertIs(self.env['paper_written_language'](EN),self.languages[EN])
