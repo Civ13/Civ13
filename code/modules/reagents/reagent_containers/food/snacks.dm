@@ -202,6 +202,7 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 		//TODO: replace with standard_feed_mob() call.
 		var/mob/living/human/C = M
 		var/fullness = C.get_fullness()
+		var/fullness_limit = C.food_fullness_limit()
 		if (C == user)								//If you're eating it yourself
 			if (istype(C,/mob/living/human))
 				var/mob/living/human/H = M
@@ -225,9 +226,9 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 				to_chat(C, "<span class='danger'>You hungrily chew out a piece of [src] and gobble it!</span>")
 			if (fullness > 50 && fullness <= 150)
 				to_chat(C, "<span class='notice'>You hungrily begin to eat [src].</span>")
-			if (fullness > 150 && fullness <= 580)
+			if (fullness > 150 && fullness <= fullness_limit)
 				to_chat(C, "<span class='notice'>You take a bite of [src].</span>")
-			if (fullness > 580)
+			if (fullness > fullness_limit)
 				to_chat(C, "<span class='danger'>You cannot force any more of [src] to go down your throat.</span>")
 				return FALSE
 		else //If you're feeding somebody
@@ -243,7 +244,7 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 					if (!non_vegetarian)
 						to_chat(user, "<span class='warning'>[H] is a carnivore! They can't eat this!</span>")
 						return
-			if (fullness <= 580)
+			if (fullness <= fullness_limit)
 				user.visible_message("<span class='danger'>[user] attempts to feed [M] [src].</span>")
 			else
 				user.visible_message("<span class='danger'>[user] cannot force anymore of [src] down [M]'s throat.</span>")

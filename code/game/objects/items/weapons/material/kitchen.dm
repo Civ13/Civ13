@@ -42,7 +42,7 @@
 		if (M == user)
 			if (!M.can_eat(loaded))
 				return
-			else if (M.get_fullness() > 580)
+			else if (M.get_fullness() > M.food_fullness_limit())
 				to_chat(user, "<span class='danger'>You cannot force any more food to go down your throat.</span>")
 				return
 			M.visible_message("<span class='notice'>\The [user] eats some [loaded] from \the [src].</span>")
@@ -50,7 +50,7 @@
 			user.visible_message("<span class='warning'>\The [user] begins to feed \the [M]!</span>")
 			if (!(M.can_force_feed(user, loaded) && do_mob(user, M, 5 SECONDS)))
 				return
-			else if (M.get_fullness() > 580)
+			else if (M.get_fullness() > M.food_fullness_limit())
 				to_chat(user, "<span class='danger'>You cannot force any more food to go down [M]'s throat.</span>")
 				return
 			M.visible_message("<span class='notice'>\The [user] feeds some [loaded] to \the [M] with \the [src].</span>")

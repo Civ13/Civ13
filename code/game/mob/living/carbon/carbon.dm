@@ -470,5 +470,12 @@
 /mob/living/human/proc/get_fullness()
 	return (nutrition + (reagents.get_reagent_amount("nutriment") * 25)) + 160
 
+// Fullness above which a character refuses more food. It was a fixed 580, set
+// when a full stomach was 400 nutrition (400 + 160 = 560, so only food still
+// being digested could pass it). It follows max_nutrition so that a larger
+// stomach does not turn people away while their hunger bar still has room.
+/mob/living/human/proc/food_fullness_limit()
+	return max_nutrition + 180
+
 /mob/living/human/proc/can_feel_pain(var/check_organ)
 	return !(species && species.flags & NO_PAIN)
