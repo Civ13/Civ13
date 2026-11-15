@@ -18,19 +18,24 @@
 	if (mob)
 		all_verbs += mob.verbs
 
-	// 2) Try to find and execute by name or path
+	// 2) Try to find and execute by name or path. Exact names win over every
+	// looser match, so "Crafting Atlas" never lands on "Open Web Crafting Atlas".
 	for (var/v in all_verbs)
 		if (!v) continue
-		// Match against display name or path string
 		if (v:name == verb_name || "[v]" == verb_name)
 			var/cmd_name = replacetext(verb_name, " ", "-")
 			winset(src, null, "command='[cmd_name]'")
 			return TRUE
-		
-		// If verb_name has spaces, try matching against underscored version
-		if (findtext(verb_name, " "))
-			var/und_name = replacetext(verb_name, " ", "_")
-			if (v:name == und_name || "[v]" == und_name || findtext("[v]", und_name))
+
+	// If verb_name has spaces, try the underscored version: the verb's own
+	// name, or a path that ends in exactly that proc name (not one containing it).
+	if (findtext(verb_name, " "))
+		var/und_name = replacetext(verb_name, " ", "_")
+		var/path_tail = "/[und_name]"
+		for (var/v in all_verbs)
+			if (!v) continue
+			var/v_path = "[v]"
+			if (v:name == und_name || v_path == und_name || (length(v_path) >= length(path_tail) && cmptext(copytext(v_path, length(v_path) - length(path_tail) + 1), path_tail)))
 				var/cmd_name = replacetext(v:name, " ", "-")
 				winset(src, null, "command='[cmd_name]'")
 				return TRUE
