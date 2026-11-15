@@ -64,10 +64,12 @@ var/admins_file_path = null
 	load_admins()
 	return TRUE
 
-// Every region of a shard group reads the mainland's admins file, which the Discord
-// bot keeps in step with staff roles. Region worktrees are siblings under the group
-// root (scripts/shard-group/shard_group.py region_dir), so the mainland's file is
-// ../<mainland>/SQL/admins.txt. A lone server, and the mainland itself, use their own.
+// Every region of a shard group reads the admins file of the world CivilizationBot
+// watches (the relay's gate, else the mainland), which the bot keeps in step with
+// staff roles. Region worktrees are siblings under the group root
+// (scripts/shard-group/shard_group.py region_dir), so that file is
+// ../<gate>/SQL/admins.txt. A lone server, and that world itself, use their own.
+// The gate stays put when the host moves the mainland (Gaia, 2026-11-15).
 /proc/admins_file()
 	if (admins_file_path)
 		return admins_file_path
@@ -79,10 +81,10 @@ var/admins_file_path = null
 		catch
 			settings = null
 		if (islist(settings))
-			var/mainland = settings["mainland"]
+			var/source = istext(settings["gate"]) ? settings["gate"] : settings["mainland"]
 			var/region = settings["region"]
-			var/shared = "../[mainland]/SQL/admins.txt"
-			if (shard_id_valid(mainland) && shard_id_valid(region) && mainland != region && fexists(shared))
+			var/shared = "../[source]/SQL/admins.txt"
+			if (shard_id_valid(source) && shard_id_valid(region) && source != region && fexists(shared))
 				admins_file_path = shared
 	return admins_file_path
 

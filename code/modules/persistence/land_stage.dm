@@ -33,6 +33,14 @@ var/global/list/land_suggestions_told = list() // region id -> the suggestion ad
 	if(!answer || !answer["ok"] || !islist(answer["result"]))
 		return FALSE
 	var/list/result = answer["result"]
+	// The host can move the mainland while worlds run (earth.json "mainland" and the
+	// coordinator's --mainland): the era source and the lander's home follow it here
+	// within a minute, with no restart. config/shard_region.json catches up at the
+	// next config-apply or setup.
+	var/main = result["mainland"]
+	if(istext(main) && main != shard_group.mainland && shard_id_valid(main) && (main == shard_group.region || (main in shard_group.peers)))
+		log_game("Region group: the mainland is now [main] (was [shard_group.mainland]).")
+		shard_group.mainland = main
 	// The host can move the start region while worlds run (launcher Start region).
 	var/start = result["start_region"]
 	if(istext(start) && shard_id_valid(start) && (start == shard_group.region || (start in shard_group.peers)))

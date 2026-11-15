@@ -5,15 +5,16 @@
 //
 // The sending world applies its own mutes, bans, spam and advertising checks
 // and posts the line to Discord (webhook and ooc.log) when its own webhook is
-// on. CivilizationBot knows one game server per group, so usually only the
-// mainland has a webhook: a line from a region without one ("posted" FALSE)
-// is posted by the mainland instead, tagged with its region, and by no other
+// on. CivilizationBot knows one game server per group, so usually only that
+// world (the relay's gate, else the mainland: shard_group.discord_region) has
+// a webhook: a line from a region without one ("posted" FALSE) is posted by
+// that world instead, tagged with its region, and by no other
 // world, so the bot sees each line once (Rail Yard, 2026-11-08). A receiving
 // world shows it to its clients with OOC enabled, unless OOC is globally muted
 // here or the speaker holds an OOC ban in this world's ban list too.
 //
 // Discord OOC: CivilizationBot writes Discord messages to SQL/discord2ooc.txt
-// of one world only (the mainland). That world shows them and hands them on as
+// of one world only (the one it watches). That world shows them and hands them on as
 // "discord" envelopes, which every other region shows with the Discord tag and
 // never posts back to Discord (Val, 2026-11-08).
 //
@@ -164,7 +165,7 @@ var/global/region_ooc_next_poll = 0
 	var/region_name = html_encode(region_ooc_region_name(source))
 	name = html_encode(name)
 	// Before the mute check: a mute here hides the line here, not on Discord.
-	if (!envelope["posted"] && shard_group.region == shard_group.mainland)
+	if (!envelope["posted"] && shard_group.region == shard_group.discord_region())
 		region_ooc_post_to_discord(region_name, name, msg)
 	if (!config.ooc_allowed && style == "everyone")
 		return FALSE

@@ -1627,7 +1627,10 @@ def apply_config(group, region_id=None, platform=None):
     """Write the overlays and config.local.txt into set-up regions without a checkout
     or compile. The region's config/config.txt is first restored from its checkout.
     A world reads config.txt when it starts, so the change takes effect at its next
-    restart; host.txt is read at each login."""
+    restart; host.txt is read at each login. The mainland and start region in each
+    region's config/shard_region.json are brought up to the group config too, so a
+    world started later agrees with the coordinator (running worlds take both from
+    their transfer agent within a minute)."""
     platform = platform or Platform()
     chosen = [r for r in group['regions'] if region_id in (None, r['id'])]
     if not chosen:
@@ -1648,8 +1651,24 @@ def apply_config(group, region_id=None, platform=None):
         except (RuntimeError, OSError) as error:
             refused[region['id']] = str(error)
             continue
-        done[region['id']] = {'copied': copied, 'running': platform.listening(region['port'])}
+        done[region['id']] = {'copied': copied, 'running': platform.listening(region['port']),
+                              'shard_region': refresh_shard_region(group, path)}
     return done, refused
+
+
+def refresh_shard_region(group, path):
+    """Rewrite the mainland and start region of a region's config/shard_region.json
+    when the group config moved them. True when the file changed; None without one."""
+    target = path / 'config' / 'shard_region.json'
+    if not target.exists():
+        return None
+    settings = json.loads(target.read_text(encoding='utf-8'))
+    wanted = {'mainland': group['mainland'], 'start_region': group['start_region']}
+    if all(settings.get(key) == value for key, value in wanted.items()):
+        return False
+    settings.update(wanted)
+    write_json_atomic(target, settings)
+    return True
 
 
 def adopt(group, region_id, source, platform=None):

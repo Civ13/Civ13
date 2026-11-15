@@ -7,9 +7,10 @@
 // line instead of showing it to players as OOC.
 //
 // Discord: the sending world posts the line itself when its webhook is on;
-// otherwise the mainland posts it, tagged with its region ("posted" FALSE), so
+// otherwise the bot's world (shard_group.discord_region) posts it, tagged with
+// its region ("posted" FALSE), so
 // CivilizationBot's admin channel sees each line once. Discord admin-channel
-// messages reach the mainland only (SQL/discord2admin.txt); it shows them and
+// messages reach the bot's world only (SQL/discord2admin.txt); it shows them and
 // hands them on as "discord" lines that no world posts back to Discord.
 #define REGION_ASAY_QUEUE_LIMIT 50
 #define REGION_ASAY_SEND_LIMIT 10
@@ -59,7 +60,7 @@ var/global/region_asay_next_poll = 0
 		log_discord_asay("\[[region_name]\] [name]: [msg]")
 		return admin_say_show(name, msg, "", region_name, TRUE)
 	log_admin("ASAY: \[[region_name]\] [name] : [msg]")
-	if (!envelope["posted"] && shard_group.region == shard_group.mainland)
+	if (!envelope["posted"] && shard_group.region == shard_group.discord_region())
 		discord_asay_log(name, msg, region_name)
 	return admin_say_show(name, msg, rank, region_name)
 

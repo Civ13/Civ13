@@ -69,13 +69,23 @@ instead of starting a new one. Accounts that already call a land home keep it.
 
 The start region and the mainland are separate settings. The mainland stays
 the group's era source, the land-stage reference, the moon/space return and
-the region the bot and front door use; `start_region` only says where new
+the bot's region when there is no relay gate; `start_region` only says where new
 characters begin. It cannot be a `RAID`, `ORBIT`, `BATTLE`, `EVENT`,
 `EXPEDITION` or `TUTORIAL` region. Change it with the launcher's **All regions
 > More > Start region…** or by editing the group config: the host service
 restarts the coordinator on the new value at its next helper check, and
 running worlds pick it up from their agent within about a minute (no world
 restart). `status` reports both `mainland` and `start_region`.
+
+The mainland can move while the regions run too. With a relay, set `gate` to
+the region on the public port before changing `mainland`, so the front door,
+the bot's admins file (`../<gate>/SQL/admins.txt`) and Discord OOC/ASAY
+posting stay where the bot is (they follow the gate, else the mainland). The
+host service restarts the coordinator on the new mainland, and running worlds
+take it from their agent within about a minute: the era source, land stages
+and the lander's home follow with no world restart. `config-apply` then brings
+each region's `config/shard_region.json` up to date, so a world started later
+agrees. Moving a region's port still needs that region restarted.
 
 ## TDM: Barracks and battle worlds
 
