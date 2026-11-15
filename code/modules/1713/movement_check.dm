@@ -143,7 +143,7 @@
 		else
 			movement_check_add(., "wading through [F.name]", F.move_delay)
 	if (!(F.has_snow_cover() && !covered))
-		movement_check_add(., "snow footwear off the snow", footwear_offsnow_slowdown(src))
+		movement_check_add(., "footwear off the snow or out of the water", footwear_offsnow_slowdown(src, F))
 
 // The run delay at this velocity without load or orders (mob/get_run_delay).
 /mob/living/human/proc/movement_check_unloaded_run_delay()

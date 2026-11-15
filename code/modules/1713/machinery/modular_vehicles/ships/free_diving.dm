@@ -9,7 +9,8 @@
 // suits. When the breath runs out the diver kicks for the surface and arrives
 // half drowned, or drowns where they are if a hull is overhead; anyone who
 // passes out down there drowns. Breath refills at the surface three seconds a
-// second, so a long dive needs a rest between.
+// second, so a long dive needs a rest between. A dive mask and a scuba set
+// breathe for the diver instead (scuba.dm).
 
 #define FREE_DIVE_DESCENT (2 SECONDS)
 #define FREE_DIVE_ASCENT_SHELF (3 SECONDS)
@@ -21,6 +22,8 @@
 
 // The deepest zone this diver may reach on a breath.
 /mob/living/human/proc/free_dive_zone_limit()
+	if (scuba_ready())
+		return SEA_ZONE_OPEN // breathing from a scuba set (scuba.dm)
 	return swimming_skill() >= FREE_DIVE_OPEN_SKILL ? SEA_ZONE_OPEN : SEA_ZONE_SHELF
 
 // A free diver only goes as deep as their skill; suits are limited by wear.
@@ -71,7 +74,7 @@
 	if (swim_under || swim_tiredness >= 80)
 		to_chat(src, SPAN_WARNING("You are too tired to dive. Rest first."))
 		return FALSE
-	if (swim_breath >= 0 && swim_breath < swim_breath_max() / 2)
+	if (!scuba_ready() && swim_breath >= 0 && swim_breath < swim_breath_max() / 2)
 		to_chat(src, SPAN_WARNING("You are still catching your breath."))
 		return FALSE
 	visible_message(SPAN_NOTICE("[src] takes a deep breath and dives."))
@@ -87,6 +90,8 @@
 	forceMove(B)
 	if (seabed_diving_rating())
 		to_chat(src, SPAN_NOTICE("You sink to the seabed. Your suit holds the water out."))
+	else if (scuba_ready())
+		to_chat(src, SPAN_NOTICE("You reach the seabed, breathing from your scuba set. Use Ascend Slowly to come up after a long dive in open water."))
 	else
 		to_chat(src, SPAN_NOTICE("You reach the seabed, holding your breath: [round(swim_breath)] seconds. Use Surface before it runs out."))
 	return TRUE
@@ -116,6 +121,7 @@
 			return FALSE
 	free_diving = FALSE
 	forceMove(up)
+	scuba_surfaced()
 	if (forced)
 		adjustOxyLoss(FREE_DIVE_SPENT_OXYLOSS)
 		to_chat(src, SPAN_DANGER("Your lungs burn and you claw for the surface, gasping and choking!"))
@@ -137,6 +143,14 @@
 		drowning = TRUE
 		adjustOxyLoss(10)
 		return
+	if (scuba_ready())
+		// Breathing from the set (scuba.dm): the held breath stays full.
+		scuba_breathe(T)
+		swim_refill_breath()
+		swim_train(T, sea_zone_of(T) >= SEA_ZONE_OPEN ? FREE_DIVE_OPEN_TRAIN : 1)
+		return
+	if (nitrogen_load > 0)
+		scuba_nitrogen_step(T)
 	if (swim_breath < 0)
 		swim_breath = swim_breath_max()
 	swim_breath = max(0, swim_breath - 1)

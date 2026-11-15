@@ -374,6 +374,8 @@ var/global/list/node_grid_col_cache = null
 	register_research_node(new /datum/research_node("aviation_rocketry", "Aviation & Rocketry", "Industrial", 305, 6, RESEARCH_MODE_ANALYSIS, list("powered_flight","alloys"), 7))
 	// Naval Aviation (1920s) unlocks the shipyard office that lays down an aircraft carrier.
 	register_research_node(new /datum/research_node("naval_aviation", "Naval Aviation", "Industrial", 305, 6, RESEARCH_MODE_ANALYSIS, list("powered_flight","wagons_ships"), 7))
+	// Scuba Diving (1940s aqualung) unlocks the dive mask, swim fins and scuba set.
+	register_research_node(new /datum/research_node("scuba_diving", "Scuba Diving", "Industrial", 305, 6, RESEARCH_MODE_ANALYSIS, list("submarines"), 7))
 	// Naval Mines (1850s) unlock the contact mine; Magnetic Mines & Degaussing
 	// (1939) the magnetic mine and the counters to it (naval/naval_mines.dm).
 	register_research_node(new /datum/research_node("naval_mines", "Naval Mines", "Military", 235, 4, RESEARCH_MODE_ANALYSIS, list("gunpowder","wagons_ships"), 5))
@@ -923,6 +925,9 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/pressure_tank/diving" = "submarines",
 		"/obj/item/clothing/suit/pressure_suit/diving/hard" = "naval_aviation",
 		"/obj/item/clothing/head/pressure_helmet/diving/hard" = "naval_aviation",
+		"/obj/item/clothing/mask/dive_mask" = "scuba_diving",
+		"/obj/item/clothing/shoes/swim_fins" = "scuba_diving",
+		"/obj/item/pressure_tank/scuba" = "scuba_diving",
 		"/obj/item/sub_hull_plating" = "naval_aviation",
 		"/obj/item/naval_mine" = "naval_mines",
 		"/obj/item/naval_mine/magnetic" = "magnetic_mines",

@@ -469,6 +469,8 @@
 	var/drowning = FALSE
 	var/water_overlay = FALSE
 /mob/living/human/proc/handle_drowning()
+	if (bends)
+		bends_tick() // decompression sickness (scuba.dm)
 	var/turf/T = get_turf(src)
 	// A sealed diver walks the seabed (seabed.dm) and breathes from the bottle.
 	if (sea_layer_cell(T) && !T.iscovered() && seabed_diving_rating())

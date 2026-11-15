@@ -106,6 +106,29 @@ water 1.5x. Suited divers may use Dive too, and Surface drops their weights.
 
     python3 tests/ecology_spawning/run_linux.py . tests/river_flow/dive_probe.dm
 
+## Scuba
+
+The Scuba Diving node (Industrial, era 7, after Submarines) unlocks a dive
+mask (glass, mask slot), swim fins (plastic, shoes: wading and swimming steps
+0.6x, `land_slowdown` 1.5 ds a step out of the water) and a scuba set (steel,
+back slot, a `pressure_tank` that refills where the diving bottles do).
+Art: `tests/sprites/create_diving_gear.py` (states `dive_mask`, `swim_fins`,
+`scuba_set`; no in-hand states). Code: `ships/scuba.dm`.
+
+Mask plus a set with air (`scuba_ready()`) lets a swimmer Dive like a free
+diver, breathe from the set instead of holding their breath, and reach open
+water at any skill; the deep still needs a hard suit. Air use is 3 seconds of
+tank a second times sqrt(100 / skill): ten minutes from a full set at 100,
+about fourteen at 200. An empty set falls back on the held breath.
+
+Breathing from the set in open water adds 1.5 nitrogen a second (cap 300); the
+shelf releases 1 a second, so a stop there is a safety stop. Surfacing with a
+load over 60 gives the bends at the excess: each second it drains stamina by
+severity / 30, deals severity / 100 brute, and from 60 may knock the diver
+down; it falls 0.5 a second, 1.5 lying down or in a bed. **Ascend Slowly**
+takes load / 5 x 100 / skill seconds (20 to 60) and clears the load.
+
+
 ## Flow lines
 
 Flowing water, river or sea, shows which way it runs: a few pale streaks
