@@ -95,8 +95,12 @@ Nothing stands there: no trail post and no gate. Each map names its neighbour
 - One animal led by hand (pulled) crosses the same way, as long as it is not
   wild, carries nothing and nobody rides it. It arrives as a new animal of its kind with its
   name and health; anything else about it (milk, wool, age) starts fresh.
+- A hand cart or a travois pulled by hand crosses with what is shut inside it
+  (up to 60 things, by the same rules as what the traveller carries). The
+  refusal names anything in it that cannot cross. A cart hitched to an animal
+  or a carriage has to be unhitched and pulled by hand.
 - A driver or anyone dragging anything else is told to go on foot.
-  **Wheeled vehicles and carts do not cross yet.**
+  **Driven vehicles (carriages, cars, bicycles) do not cross yet.**
 
 Both regions must run in the same group under the ids above. A neighbour that
 is asleep is woken by the first walker; one that is stopped on the host is
