@@ -6,7 +6,8 @@ and reports coordinates of clear plain grass/dirt within two tiles of non-ice
 fresh water. Unused tile definitions do not count. It does not launch the game or
 change maps, saves, research, herbs or resource quantities.
 
-Inventory at master `98be298dc`:
+The first six rows are the inventory at master `98be298dc`; the two Americas
+rows were taken on 2026-11-15 with their fertile river banks.
 
 | Map | JoinLateCiv landmarks | Small bushes | Placed seed stacks | Fresh water tiles | Clear soil within two tiles of water |
 | --- | ---: | ---: | ---: | ---: | ---: |
@@ -16,6 +17,45 @@ Inventory at master `98be298dc`:
 | Mediterranean | 12 | 1149 | 159 | 3730 | 1670 |
 | Gaia | 9 | 135 | 0 | 12299 | 7981 |
 | Europe | 18 | 502 | 76 | 18441 | 4216 |
+| Americas, north | 18 | 0 | 0 | 31937 | 18208 |
+| Americas, south | 18 | 0 | 0 | 49124 | 31287 |
+
+## Seeded maps: the Americas
+
+The Americas maps place no bushes or seeds: `seed_the_map()` grows the wild
+plants at round start from each tile's ground and climate, and a new nomad
+starts on a random open tile. The report therefore also gives, per climate,
+`bush_seeding_ground_by_climate` (clear ground whose `plant()` can grow a small
+bush) and `farm_ground_by_climate`: clear ground a plough or digging stick
+works directly, how much of it lies within two tiles of fresh water, and how
+much ground beside water becomes workable through ordinary play (authored snow
+cleared with a spade, flooded ground in the dry season).
+
+| Map | Climate | Bush-seeding ground | Ploughable | Ploughable by water | Clearable by water |
+| --- | --- | ---: | ---: | ---: | ---: |
+| North | tundra | 4601 | 0 | 0 | 4580 |
+| North | taiga | 75916 | 5389 | 690 | 17493 |
+| North | temperate | 43212 | 43212 | 9329 | 0 |
+| North | semiarid | 46452 | 29067 | 5406 | 0 |
+| North | desert | 4792 | 1695 | 1695 | 0 |
+| North | savanna | 4116 | 200 | 180 | 0 |
+| North | jungle | 11753 | 1563 | 908 | 255 |
+| South | tundra | 991 | 0 | 0 | 431 |
+| South | taiga | 7389 | 313 | 3 | 1587 |
+| South | temperate | 48987 | 48987 | 6761 | 0 |
+| South | semiarid | 58168 | 35870 | 4955 | 0 |
+| South | desert | 3783 | 1477 | 1477 | 0 |
+| South | savanna | 91975 | 14959 | 13015 | 0 |
+| South | jungle | 152558 | 7520 | 5076 | 2756 |
+
+Dry savanna grass, jungle grass, dust and desert sand cannot be ploughed. Before
+2026-11-15 the Americas' savanna and desert had no other ground, so a nomad who
+started there could not farm in their own climate at all, and no desert ground
+grew a seed bush. The generator now lays plain grass and dirt along savanna
+rivers and lakes and dirt along desert ones (`tests/americas_maps/build.py`),
+and desert dirt and dust grow sparse scrub bushes. The `americas_maps` suite
+fails if any land climate on either map lacks bush ground or farm ground beside
+fresh water.
 
 Pangea has direct seed placements, including food crops, and no placed small
 bushes. Its bush-foraging route is not established by the catalog test. Gaia has

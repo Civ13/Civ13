@@ -34,6 +34,11 @@ loosely; nothing is copied from another map.
   scrub in the middle, temperate grassland in the south and a cold cape with
   ice at the bottom.
 
+Dry savanna grass and desert sand cannot be ploughed, so the rivers and lakes of
+both dry lands carry a strip of plain grass and dirt: farming there starts on
+the banks, within a crop's reach of the water
+([outdoor-map-inventory.md](outdoor-map-inventory.md)).
+
 Each map is a single surface level. Mountains are rock to mine at ground level
 (`/turf/floor/dirt/underground` and its icy and sandy kinds, with unbreakable
 cores), so neither map has or needs an underground level. Trees, bushes and

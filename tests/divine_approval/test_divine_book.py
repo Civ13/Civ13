@@ -49,13 +49,56 @@ class DivineBook(unittest.TestCase):
         self.assertIn('divine_book_originals += src', body('/obj/item/weapon/book/divine/New()'))
         self.assertIn('divine_book_originals -= src', body('/obj/item/weapon/book/divine/Destroy()'))
 
-    def test_copies_are_plain_books_and_original_is_sealed(self):
+    def test_copies_are_plain_books_and_public_interactions_unchanged(self):
         # Copy paths build /obj/item/weapon/book, never the divine type.
         press = (ROOT / 'code/modules/research_tree/book_printing.dm').read_text()
         self.assertNotIn('book/divine', press)
         self.assertNotIn('book/divine', (ROOT / 'code/modules/1713/book.dm').read_text())
         self.assertNotRegex(TEXT, r'\n\tunique = TRUE')
-        self.assertIn('divine_original ? FALSE', body('/obj/item/weapon/book/divine/can_hold_notes()'))
+        self.assertNotIn('/obj/item/weapon/book/divine/can_hold_notes()', TEXT)
+        self.assertNotIn('/obj/item/weapon/book/divine/examine(', TEXT)
+
+    def test_original_is_not_added_to_player_catalog(self):
+        import json
+        self.assertNotRegex(TEXT, r'(?m)^\t(desc|icon|icon_state) =')
+        self.assertIn('\tname = "book"', TEXT)
+        self.assertIn('\ttitle = "book"', TEXT)
+        self.assertNotIn('/obj/item/weapon/book/divine', json.loads((ROOT / 'UI/crafting-atlas.json').read_text())['resources'])
+
+    def test_no_automatic_public_deity_or_private_text(self):
+        create = body('/proc/create_divine_book(')
+        self.assertNotIn('B.author =', create)
+        self.assertNotIn('B.desc =', create)
+        self.assertNotIn('add_written_page(text)', create)
+        self.assertIn('B.divine_private_text =', create)
+        self.assertIn('B.add_written_page(public_text)', create)
+        self.assertIn('B.divine_text_sealed = TRUE', create)
+        self.assertNotIn('The Book of [deity]', VERB)
+        self.assertNotIn('appears in your hands', VERB)
+
+    def test_projection_is_gated_and_escaped(self):
+        projection = body('/obj/item/weapon/book/divine/divine_journal_html(')
+        self.assertLess(projection.index('!divine_journal_reader_allowed(H)'), projection.index('istext(divine_private_text)'))
+        self.assertIn('html_encode(copytext(divine_private_text', projection)
+        self.assertIn('html_encode(copytext(divine_legacy_dat', projection)
+        self.assertIn('if (++count > 32)', projection)
+        self.assertNotIn('divine_deity', projection)
+
+    def test_legacy_migration_preserves_before_clearing_and_is_once(self):
+        migration = body('/obj/item/weapon/book/divine/after_load()')
+        self.assertIn('divine_original && !divine_text_sealed', migration)
+        self.assertLess(migration.index('divine_legacy_dat = dat'), migration.index('dat = null'))
+        self.assertLess(migration.index('written_pages.Copy()'), migration.index('written_pages = null'))
+        self.assertIn('divine_text_sealed = TRUE', migration)
+        self.assertIn('author == divine_deity', migration)
+        self.assertNotIn('title =', migration)
+        self.assertNotIn('name =', migration)
+
+    def test_copies_do_not_transfer_private_fields(self):
+        for file in ('code/modules/research_tree/book_printing.dm', 'code/modules/1713/book.dm'):
+            source = (ROOT / file).read_text()
+            for field in ('divine_private_text', 'divine_legacy_pages', 'divine_legacy_dat', 'divine_original'):
+                self.assertNotIn(field, source)
 
     def test_no_new_original_from_copy_paths(self):
         self.assertEqual(len(re.findall(r'divine_original = TRUE', TEXT)), 1)

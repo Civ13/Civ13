@@ -1,5 +1,5 @@
 // Include only in an isolated full-game fixture after civ13.dme.
-#include "../../code/modules/divine/approval.dm"
+// Approval and ritual source are included by civ13.dme.
 
 /datum/divine_covenant_runtime/probe
 	var/permit = TRUE

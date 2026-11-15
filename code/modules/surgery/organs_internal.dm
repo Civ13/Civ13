@@ -274,13 +274,24 @@
 		user.visible_message("[user] starts transplanting \the [tool] into [target]'s [affected.name].", \
 		"You start transplanting \the [tool] into [target]'s [affected.name].")
 		target.custom_pain("Someone's rooting around in your [affected.name]!",80)
+		var/obj/item/organ/O = tool
+		if (istype(O))
+			// Readable warnings only; the surgeon may still go ahead.
+			if (O.germ_level >= INFECTION_LEVEL_ONE)
+				to_chat(user, SPAN_WARNING("\The [O] has started to spoil and will carry an infection."))
+			if (O.dna && target.dna && blood_incompatible(O.dna.b_type, target.dna.b_type, O.species, target.species))
+				to_chat(user, SPAN_WARNING("\The [O] does not match [target]'s blood. The body will reject it."))
 		..()
 
 	end_step(mob/living/user, mob/living/human/target, target_zone, obj/item/tool)
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)
+		var/obj/item/organ/O = tool
+		// Two surgeons can start on one empty slot; only the first one fills it.
+		if (!istype(O) || !affected || target.internal_organs_by_name[O.organ_tag] || O.loc != user || (O.status & ORGAN_DEAD))
+			to_chat(user, SPAN_WARNING("You can't place \the [tool] there any more."))
+			return
 		user.visible_message("<span class='notice'>[user] has transplanted \the [tool] into [target]'s [affected.name].</span>", \
 		"<span class='notice'>You have transplanted \the [tool] into [target]'s [affected.name].</span>")
-		var/obj/item/organ/O = tool
 		if (istype(O))
 			user.remove_from_mob(O)
 			O.replaced(target,affected)

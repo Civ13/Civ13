@@ -131,6 +131,8 @@
 					new/obj/structure/wild/tree/dead_tree(src)
 				else if (prob(1.5))
 					new/obj/structure/wild/tallgrass2(src)
+				else if (prob(1)) // desert scrub: the only forage for desert seeds on seeded maps
+					new/obj/structure/wild/smallbush(src)
 /turf/floor/winter/grass/plant()
 	if (locate(/obj/structure) in src)
 		return

@@ -497,6 +497,12 @@ def build(name, width=None, height=None):
     put(b['jungle'] & (n_b < -0.55) & (d_water <= 5) & (d_water >= 1), T_FLOODED)
     put(b['savanna'], T_SAVANNA)
     put(b['savanna'] & (n_a > 0.35), T_DUST)
+    # Fertile banks: dry grass and desert sand cannot be ploughed, so the dry
+    # lands are farmed beside their rivers and lakes, within reach of the water.
+    d_bank = distance(river | lake | channel | lake_deep, 5)
+    put(b['savanna'] & (d_bank <= 3), T_GRASS)
+    put(b['savanna'] & (d_bank <= 3) & (n_b > 0.3), T_DIRT)
+    put(b['desert'] & (d_bank <= 2), T_DIRT)
     put(b['swamp'], T_GRASS)
     put(b['swamp'] & (n_b > 0.25), T_DIRT)
     put(b['swamp'] & (n_b < -0.22), T_SWAMP)

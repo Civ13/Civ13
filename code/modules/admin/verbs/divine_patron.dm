@@ -1,0 +1,131 @@
+// Staff playing a god: speak as the god, initiate followers, teach and take
+// back invocations, and answer pending prayers (code/modules/divine/covenant.dm).
+// Hidden mechanic: keep it out of changelog lines and the wiki.
+/client/proc/cmd_admin_divine_patron()
+	set category = "Admin"
+	set name = "Divine Patron"
+	set desc = "Speak as a god: initiate followers, teach invocations and answer their prayers."
+	if (!check_rights(R_ADMIN))
+		return
+	var/claim = divine_claim_of(src)
+	var/list/actions = list()
+	if (claim)
+		actions += list("Initiate a follower", "Teach an invocation", "Take back an invocation", "Release a follower", "List followers", "Pending prayers", "Stop speaking as a god")
+	else
+		actions += "Speak as a god"
+	var/action = input(usr, claim ? "You speak as [claim]." : "You are not speaking as any god.", "Divine Patron") as null|anything in actions
+	if (!action || !check_rights(R_ADMIN))
+		return
+	claim = divine_claim_of(src)
+	switch (action)
+		if ("Speak as a god")
+			var/deity = sanitize(input(usr, "Which god do you speak as? Followers pray to this name.", "Divine Patron") as text|null, 40)
+			var/key = divine_book_key(deity)
+			if (!key || divine_claim_of(src))
+				return
+			if (!islist(divine_patron_claims[key]))
+				divine_patron_claims[key] = list()
+			divine_patron_claims[key] |= ckey
+			to_chat(usr, SPAN_NOTICE("You now speak as [deity]. Prayers from its followers come to you."))
+			log_admin("[key_name(usr)] speaks as the god [deity].")
+		if ("Stop speaking as a god")
+			if (claim && islist(divine_patron_claims[claim]))
+				divine_patron_claims[claim] -= ckey
+				if (!length(divine_patron_claims[claim]))
+					divine_patron_claims -= claim
+			to_chat(usr, SPAN_NOTICE("You no longer speak as [claim]."))
+			log_admin("[key_name(usr)] stopped speaking as the god [claim].")
+		if ("Initiate a follower")
+			var/mob/living/human/H = divine_pick_human("Initiate whom as a follower of [claim]?")
+			if (!H || divine_claim_of(src) != claim)
+				return
+			if (H.divine_patron && divine_book_key(H.divine_patron) != claim)
+				if (alert(usr, "[H.real_name] already follows [H.divine_patron]. Make them follow [claim] instead? They forget everything taught before.", "Divine Patron", "Yes", "No") != "Yes")
+					return
+				H.divine_known = list()
+			var/words = sanitize(input(usr, "What does [H.real_name] hear or see when you call them? Leave empty for nothing.", "Divine Patron") as message|null)
+			if (QDELETED(H) || divine_claim_of(src) != claim)
+				return
+			H.divine_patron = claim
+			if (!islist(H.divine_known))
+				H.divine_known = list()
+			H.divine_refresh_verbs()
+			if (words)
+				to_chat(H, "<span class='notice'><i>[words]</i></span>")
+			to_chat(usr, SPAN_NOTICE("[H.real_name] now follows [claim]. Teach them an invocation next."))
+			log_admin("[key_name(usr)] initiated [key_name(H)] as a follower of [claim].")
+		if ("Teach an invocation", "Take back an invocation")
+			var/teaching = action == "Teach an invocation"
+			var/mob/living/human/H = divine_pick_human("[teaching ? "Teach" : "Take back from"] which follower?", claim)
+			if (!H)
+				return
+			var/list/options = list()
+			for (var/spell in divine_invocation_names)
+				if (teaching != (spell in H.divine_known))
+					options[divine_invocation_names[spell]] = spell
+			if (!options.len)
+				to_chat(usr, SPAN_WARNING(teaching ? "[H.real_name] already knows every invocation." : "[H.real_name] knows no invocations."))
+				return
+			var/picked = input(usr, "Which invocation?", "Divine Patron") as null|anything in options
+			var/spell = options[picked]
+			if (!spell || QDELETED(H) || divine_book_key(H.divine_patron) != claim || divine_claim_of(src) != claim)
+				return
+			if (!islist(H.divine_known))
+				H.divine_known = list()
+			if (teaching)
+				H.divine_known |= spell
+				to_chat(H, SPAN_NOTICE("You understand a new prayer: [picked]. Use Beseech, with your stick in hand and something in your pouch."))
+			else
+				H.divine_known -= spell
+				if (H.divine_covenant)
+					H.divine_break_covenant()
+				to_chat(H, SPAN_NOTICE("The prayer of [picked] slips from your mind."))
+			to_chat(usr, SPAN_NOTICE("[teaching ? "Taught" : "Took back"] [picked] [teaching ? "to" : "from"] [H.real_name]."))
+			log_admin("[key_name(usr)] as [claim] [teaching ? "taught" : "took back"] [spell] [teaching ? "to" : "from"] [key_name(H)].")
+		if ("Release a follower")
+			var/mob/living/human/H = divine_pick_human("Release which follower of [claim]?", claim)
+			if (!H || divine_claim_of(src) != claim)
+				return
+			if (H.divine_covenant)
+				H.divine_break_covenant()
+			H.divine_patron = null
+			H.divine_known = null
+			H.divine_refresh_verbs()
+			to_chat(usr, SPAN_NOTICE("[H.real_name] no longer follows [claim]."))
+			log_admin("[key_name(usr)] released [key_name(H)] from following [claim].")
+		if ("List followers")
+			var/list/lines = list()
+			for (var/mob/living/human/H in human_mob_list)
+				if (!QDELETED(H) && divine_book_key(H.divine_patron) == claim)
+					var/list/known = list()
+					for (var/spell in H.divine_known)
+						known += divine_invocation_names[spell]
+					lines += "[H.real_name] ([H.ckey ? H.ckey : "no player"])[H.stat == DEAD ? ", dead" : ""]: [known.len ? english_list(known) : "nothing taught"][H.divine_slot_spent ? ", spent until rested" : ""]"
+			to_chat(usr, "<b>Followers of [claim] in this world:</b><br>[lines.len ? jointext(lines, "<br>") : "none"]")
+		if ("Pending prayers")
+			var/found = FALSE
+			for (var/datum/divine_use_request/R in divine_pending_requests)
+				if (R.covenant && R.covenant.deity_id == claim && (ckey in R.covenant.operator_ckeys))
+					found = TRUE
+					if (R.state == "requested")
+						divine_alert_operators(R)
+					else
+						to_chat(usr, SPAN_NOTICE("[R.covenant.caster.real_name]: [divine_invocation_names[R.spell_id]], already granted and under way."))
+			if (!found)
+				to_chat(usr, SPAN_NOTICE("No prayers are waiting for [claim]."))
+
+/client/proc/divine_pick_human(question, follower_of = null)
+	var/list/choices = list()
+	for (var/mob/living/human/H in human_mob_list)
+		if (QDELETED(H) || H.stat == DEAD || !get_turf(H))
+			continue
+		if (follower_of && divine_book_key(H.divine_patron) != follower_of)
+			continue
+		if (!follower_of && !H.client)
+			continue
+		choices["[H.real_name] ([H.ckey ? H.ckey : "no player"])"] = H
+	if (!choices.len)
+		to_chat(usr, SPAN_WARNING(follower_of ? "No living followers are in this world." : "No one is playing a character here."))
+		return null
+	var/pick = input(usr, question, "Divine Patron") as null|anything in sortList(choices)
+	return pick ? choices[pick] : null

@@ -155,3 +155,33 @@ def add_intestine_casings(files, add, records):
         'held or on your tile. Refuses bitten, spoiled, irradiated, above-ambient germ-contaminated '
         'or chemically modified food. One portion is consumed per casing; no transplant use.')
     records[-1].update(min_era=1, interaction=True)
+
+
+def add_organ_uses(files, add, records):
+    """Specimen preservation and catgut from code/modules/organs/organ_uses.dm (issue 5126)."""
+    path = 'code/modules/organs/organ_uses.dm'
+    source = files.get(path, '')
+    preserve = '/obj/structure/table/wood/anatomy/proc/preserve_specimen('
+    catgut = '/obj/item/stack/sausagecasing/attack_self('
+    if preserve not in source or catgut not in source:
+        return
+    for contract in ('qdel(organ_item)\n\tqdel(J)', '#define SPECIMEN_FLUID 10', 'new(get_turf(user), 2, FALSE)'):
+        if contract not in source:
+            raise ValueError('Organ use contract changed: ' + contract)
+    line = source[:source.index(preserve)].count('\n') + 1
+    for organ in ('heart', 'liver', 'kidneys', 'lungs', 'brain', 'intestines'):
+        add('Preserve animal ' + organ + ' specimen', 'Processor',
+            [('/obj/item/weapon/reagent_containers/food/snacks/meat/offal/' + organ, 1),
+             ('/obj/item/weapon/reagent_containers/glass/preserve_jar', 1)],
+            [('/obj/item/organ_specimen', 1)], path, line,
+            'At an anatomy table: the whole raw organ in hand, an open preserve jar holding at least '
+            '10 units of spirits or vinegar in the other hand; 10 second wait. Rotten, cooked or bitten '
+            'organs are refused. The specimen is no longer food and can be recorded three times as a '
+            'Medicine find while it sits on an anatomy table.')
+        records[-1].update(processor='anatomy_table', processor_name='Anatomy table',
+                           station='/obj/structure/table/wood/anatomy')
+    add('Twist catgut', 'Hand crafting', [('/obj/item/stack/sausagecasing', 1)],
+        [('/obj/item/stack/catgut', 2)], path,
+        source[:source.index(catgut)].count('\n') + 1,
+        'Use a sausage casing in hand. Catgut clamps bleeders and mends torn veins in surgery.')
+    records[-1].update(interaction=True)

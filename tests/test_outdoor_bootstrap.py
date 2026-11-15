@@ -33,6 +33,36 @@ class MapInventoryParser(unittest.TestCase):
         with self.assertRaises(ValueError):
             bootstrap.resolve({}, "/turf/floor/beach/water")
 
+    def test_bush_ground_follows_the_round_start_seeder(self):
+        self.assertTrue(bootstrap.seeds_bushes("/turf/floor/grass/jungle/savanna", "savanna"))
+        self.assertTrue(bootstrap.seeds_bushes("/turf/floor/winter/grass", "taiga"))
+        self.assertTrue(bootstrap.seeds_bushes("/turf/floor/dirt/dust", "desert"))
+        self.assertFalse(bootstrap.seeds_bushes("/turf/floor/grass", "desert"))
+        self.assertFalse(bootstrap.seeds_bushes("/turf/floor/winter/grass", "jungle"))
+        self.assertFalse(bootstrap.seeds_bushes("/turf/floor/dirt/underground", "temperate"))
+        self.assertFalse(bootstrap.seeds_bushes("/turf/floor/beach/sand/desert", "desert"))
+        source = (bootstrap.ROOT / "code/game/turfs/flooring/flooring_premade.dm").read_text(encoding="utf-8")
+        dirt = source[source.index("/turf/floor/dirt/plant()"):source.index("/turf/floor/winter/grass/plant()")]
+        for climate in bootstrap.DIRT_BUSH_CLIMATES:
+            branch = dirt[dirt.index(f'if ("{climate}")') + 4:]
+            branch = branch.split('if ("')[0]
+            self.assertIn("/obj/structure/wild/smallbush", branch, climate)
+
+    def test_classification_separates_ploughable_and_clearable_ground(self):
+        climates = {"/area/test": "savanna"}
+        salt = {"/turf/floor/beach/water": "FALSE", "/turf/floor/beach/water/deep/saltwater": "TRUE"}
+        dry = bootstrap.classify("/turf/floor/grass/jungle/savanna,/area/test", climates, salt)
+        self.assertFalse(dry["soil"] or dry["clearable"])
+        self.assertTrue(dry["bush_ground"])
+        bank = bootstrap.classify("/turf/floor/grass,/area/test", climates, salt)
+        self.assertTrue(bank["soil"])
+        blocked = bootstrap.classify("/obj/structure/wild/rock,/turf/floor/grass,/area/test", climates, salt)
+        self.assertFalse(blocked["soil"] or blocked["bush_ground"])
+        snow = bootstrap.classify("/turf/floor/winter/grass,/area/test", climates, salt)
+        self.assertTrue(snow["clearable"] and not snow["soil"])
+        self.assertTrue(bootstrap.classify("/turf/floor/beach/water,/area/test", climates, salt)["fresh"])
+        self.assertFalse(bootstrap.classify("/turf/floor/beach/water/deep/saltwater,/area/test", climates, salt)["fresh"])
+
 
 if __name__ == "__main__":
     unittest.main()

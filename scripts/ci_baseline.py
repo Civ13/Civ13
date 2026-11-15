@@ -52,9 +52,13 @@ SUITES = {
     'poison_frog_bolts': {'files': ('tests/poison_frog_bolts/test_bolts.py',), 'paths': (
         'tests/poison_frog_bolts/',), 'shared_paths': (
         'code/modules/reagents/reagent_containers/food/snacks/meat.dm',)},
-    'intestine_casings': {'files': ('tests/organ_utilities/test_casings.py',),
-        'paths': ('tests/organ_utilities/',),
-        'shared_paths': ('code/modules/1713/animal_harvest.dm', 'scripts/atlas/catalog_metadata.py')},
+    # Issue 5126: casings, specimens, organ spoiling, transplant guard, catgut.
+    'intestine_casings': {'files': ('tests/organ_utilities/test_casings.py',
+        'tests/organ_utilities/test_organ_uses.py'),
+        'paths': ('tests/organ_utilities/', 'code/modules/organs/organ_uses.dm'),
+        'shared_paths': ('code/modules/1713/animal_harvest.dm', 'scripts/atlas/catalog_metadata.py',
+            'code/modules/organs/organ.dm', 'code/modules/surgery/organs_internal.dm',
+            'code/modules/research_tree/naturalist_finds.dm')},
     'vehicle_level_shift': {'files': ('tests/vehicle_level_shift/test_shift.py',),
         'paths': ('tests/vehicle_level_shift/',
                   'code/modules/1713/machinery/modular_vehicles/axis.dm',
@@ -976,7 +980,7 @@ SUITES = {
     'anchoring': {'files': ('tests/anchoring/test_anchoring.py',),
         'paths': ('tests/anchoring/',), 'shared_paths': ('code/_helpers/tools.dm',)},
     # Solid fuel kinds and per-device rates keep the old hard-coded values.
-    'solid_fuel': {'files': ('tests/solid_fuel/test_solid_fuel.py',),
+    'solid_fuel': {'files': ('tests/solid_fuel/test_solid_fuel.py', 'tests/solid_fuel/test_campfire_night.py'),
         'paths': ('tests/solid_fuel/',), 'shared_paths': ()},
     # Stack recipe build guards keep produce_recipe()'s old order and phases;
     # source scan of code/.
@@ -2023,9 +2027,8 @@ SUITES = {
         'code/modules/persistence/save_validator.dm', 'code/modules/persistence/stream/',
         'code/modules/persistence/train_body_graph.dm', 'code/modules/persistence/derived_assets.dm')},
     # Offline source contracts for the disabled per-use divine approval foundation.
-    'divine_approval': {'files': ('tests/divine_approval/test_contract.py', 'tests/divine_approval/test_divine_book.py', 'tests/divine_approval/test_mundane_gear.py'), 'paths': (
-        'tests/divine_approval/', 'code/modules/divine/', 'code/modules/admin/verbs/divine_book.dm',
-        'code/modules/magic/'), 'shared_paths': ('civ13.dme',)},
+    'divine_approval': {'files': ('tests/divine_approval/test_contract.py', 'tests/divine_approval/test_divine_book.py', 'tests/divine_approval/test_journal.py', 'tests/divine_approval/test_mundane_gear.py', 'tests/divine_approval/test_ritual.py', 'tests/divine_approval/test_covenant.py'), 'paths': (
+        'tests/divine_approval/', 'code/modules/divine/', 'code/modules/admin/verbs/divine_book.dm', 'code/modules/admin/verbs/divine_patron.dm', 'code/modules/magic/'), 'shared_paths': ('civ13.dme', 'code/modules/1713/book.dm')},
     # Offline source contracts for the fireman carry (grab on a downed human).
     'fireman_carry': {'files': ('tests/fireman_carry/test_source.py',), 'paths': (
         'tests/fireman_carry/', 'code/game/mob/grab_carry.dm'),

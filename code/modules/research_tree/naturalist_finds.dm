@@ -40,6 +40,10 @@ var/global/list/find_not_animals = list(
 
 // The discipline a thing's record belongs to, or null when it is no find.
 /proc/find_discipline(atom/A)
+	// Preserved organs on an anatomy table (organ_uses.dm), a few records each.
+	if (istype(A, /obj/item/organ_specimen))
+		var/obj/item/organ_specimen/S = A
+		return S.studyable() ? "medicine" : null
 	if (istype(A, /mob/living/simple_animal))
 		var/mob/living/simple_animal/S = A
 		if (S.stat == DEAD || is_type_in_list(S, find_not_animals))
@@ -143,8 +147,12 @@ var/global/list/find_not_animals = list(
 		if (!discipline)
 			continue
 		var/label = "[A.name] ([scholar_disciplines[discipline]])"
+		var/kind = "[A.type]"
+		if (istype(A, /obj/item/organ_specimen))
+			var/obj/item/organ_specimen/S = A
+			kind = S.find_kind()
 		if (!(label in found))
-			found[label] = list("[A.type]", discipline, A)
+			found[label] = list(kind, discipline, A)
 	if (find_sky_visible(H))
 		found["[FIND_SKY] ([scholar_disciplines["mathematics"]])"] = list(find_sky_kind(), "mathematics", null)
 	return found
@@ -188,7 +196,7 @@ var/global/list/find_not_animals = list(
 		return FALSE
 	var/list/found = find_targets(src)
 	if (!found.len)
-		to_chat(src, SPAN_WARNING("Nothing near you is worth recording. Stand within [FIND_RANGE] tiles of a living animal, a wild plant, an ore or a rock, or stand outdoors at night to record the sky."))
+		to_chat(src, SPAN_WARNING("Nothing near you is worth recording. Stand within [FIND_RANGE] tiles of a living animal, a wild plant, an ore or a rock, a preserved specimen on an anatomy table, or stand outdoors at night to record the sky."))
 		return FALSE
 	var/choice = found[1]
 	if (found.len > 1)
@@ -234,6 +242,10 @@ var/global/list/find_not_animals = list(
 	if (!points)
 		to_chat(src, SPAN_WARNING("The record came to nothing."))
 		return FALSE
+	// Same tick as the check above, so two scholars can't share a last study.
+	if (istype(thing, /obj/item/organ_specimen))
+		var/obj/item/organ_specimen/S = thing
+		S.use_study()
 	if (is_paper)
 		to_chat(src, SPAN_NOTICE("You finish your notes on [thing_name]. Use them on a research bench working on a subject of <b>[scholar_disciplines[discipline]]</b>."))
 	else

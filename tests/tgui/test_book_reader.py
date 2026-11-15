@@ -57,6 +57,9 @@ class BookReaderContract(unittest.TestCase):
    'var/display_snapshot':'display_snapshot=None',
    'if (!(istype(user, /mob/living/human) || isghost(user) && !forceshow))':'if not (human or ghost and not forceshow):',
    'display_snapshot = stars(dat)':'display_snapshot=stars(dat)', 'else':'else:', 'display_snapshot = dat':'display_snapshot=dat',
+   '// Optional sealed notes never enter dat, normal pages or copying APIs.':'# Optional server-authorized projection',
+   'if (hascall(src, "divine_journal_html"))':'if has_journal:',
+   'display_snapshot += call(src, "divine_journal_html")(user)':'display_snapshot += journal()',
   }
   selection=SHOW[:SHOW.index('\tvar/legacy_snapshot')]
   # Execute all actual selection statements; unknown statements fail closed.
@@ -67,9 +70,17 @@ class BookReaderContract(unittest.TestCase):
     self.assertIn(raw.strip(),mapping)
     lines.append('    '*(len(raw)-len(raw.lstrip('\t')))+mapping[raw.strip()])
    lines.append('    return display_snapshot')
-   calls=[];env=dict(human=human,ghost=ghost,forceshow=force,dat='SECRET',stars=lambda v:calls.append(v) or '******')
+   calls=[];env=dict(human=human,ghost=ghost,forceshow=force,dat='SECRET',stars=lambda v:calls.append(v) or '******',has_journal=True,journal=lambda:'')
    exec('\n'.join(lines),env);self.assertEqual(env['choose'](),'SECRET' if full else '******')
    self.assertEqual(len(calls),0 if full else 1)
+   # Missing hook preserves old fixtures; a permitted projection uses the same
+   # one snapshot passed to both renderers, never the public dat field.
+   env['has_journal']=False
+   self.assertEqual(env['choose'](),'SECRET' if full else '******')
+   if human:
+    env['has_journal']=True;env['journal']=lambda:'<p>SEALED</p>'
+    self.assertEqual(env['choose'](),'SECRET<p>SEALED</p>')
+    self.assertEqual(env['dat'],'SECRET')
   self.assertEqual(SHOW.count('stars(dat)'),1)
   self.assertIn('<BODY>[display_snapshot]</BODY>',SHOW)
   self.assertIn('(user, legacy_snapshot, "[display_snapshot]", "[title]", "[name]")',SHOW)

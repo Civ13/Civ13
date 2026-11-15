@@ -631,6 +631,7 @@ var/global/list/node_grid_col_cache = null
 		// herbalism
 		"/obj/item/stack/medical/bruise_pack/silver" = "herbalism",
 		"/obj/item/stack/medical/splint/wooden" = "herbalism",
+		"/obj/structure/table/wood/anatomy" = "herbalism",
 		// iron_tools
 		"/obj/item/weapon/saw" = "iron_tools",
 		"/obj/item/weapon/crowbar" = "iron_tools",
@@ -1429,9 +1430,10 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/practice_dummy/target" = "field_defenses",
 		"/obj/structure/window/barrier/rock" = "field_defenses",
 		"/obj/structure/window/barrier/sandstone" = "field_defenses",
-		// --- field_surgery (14) ---
+		// --- field_surgery (15) ---
 		"/obj/item/weapon/reagent_containers/syringe" = "field_surgery",
 		"/obj/item/weapon/storage/firstaid/surgery_empty" = "field_surgery",
+		"/obj/item/weapon/storage/organ_box" = "field_surgery",
 		"/obj/item/weapon/surgery/bone_saw" = "field_surgery",
 		"/obj/item/weapon/surgery/bone_saw/bronze" = "field_surgery",
 		"/obj/item/weapon/surgery/bonesetter" = "field_surgery",

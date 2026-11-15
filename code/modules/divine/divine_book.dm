@@ -22,6 +22,10 @@ var/global/list/divine_book_originals = list()
 	title = "book"
 	var/divine_deity = null      // the god who wrote it
 	var/divine_original = FALSE  // TRUE only for the god's own book; copies are plain books
+	var/divine_text_sealed = FALSE
+	var/divine_private_text = null
+	var/divine_legacy_dat = null
+	var/list/divine_legacy_pages = null
 
 /obj/item/weapon/book/divine/New()
 	..()
@@ -34,14 +38,45 @@ var/global/list/divine_book_originals = list()
 		message_admins("The original book of [divine_deity] ([title]) is gone; [divine_deity] may write a new one.")
 	return ..()
 
-// Only the god writes in the original. Players read it, copy it or burn it.
-/obj/item/weapon/book/divine/can_hold_notes()
-	return divine_original ? FALSE : ..()
+// Ordinary writing, examination, page removal and ciphers remain inherited.
+// Older originals placed the god's text in public pages. Preserve those bytes
+// privately before clearing the old public projection. Subsequent player writing
+// stays public. Copies already distributed by old code cannot be identified.
+/obj/item/weapon/book/divine/after_load()
+	. = ..()
+	if (divine_original && !divine_text_sealed)
+		divine_legacy_dat = dat
+		divine_legacy_pages = islist(written_pages) ? written_pages.Copy() : null
+		dat = null
+		written_pages = null
+		divine_text_sealed = TRUE
+		if (author == divine_deity)
+			author = initial(author)
+		if (desc == "A book written by [divine_deity].")
+			desc = initial(desc)
 
-/obj/item/weapon/book/divine/examine(mob/user)
-	..()
-	if (divine_original && divine_deity)
-		to_chat(user, "<i>This is the original, written by [divine_deity] alone.</i>")
+// The god's private text is for that god's own followers only.
+/obj/item/weapon/book/divine/divine_journal_reader_allowed(mob/living/human/H)
+	return ..() && divine_original && divine_book_key(H.divine_patron) == divine_book_key(divine_deity)
+
+// Builds on the ordinary-book projection in #5154. No private bytes enter
+// dat, page_list(), printing, copying, torn sheets or ordinary cipher metadata.
+/obj/item/weapon/book/divine/divine_journal_html(mob/living/human/H)
+	. = ..()
+	if (!divine_journal_reader_allowed(H))
+		return .
+	if (istext(divine_private_text) && length(divine_private_text))
+		. += "<p>[html_encode(copytext(divine_private_text, 1, MAX_BOOK_MESSAGE_LEN + 1))]</p>"
+	// Old formatting is escaped rather than interpreted as active markup.
+	if (istext(divine_legacy_dat) && length(divine_legacy_dat))
+		. += "<p>[html_encode(copytext(divine_legacy_dat, 1, MAX_BOOK_MESSAGE_LEN + 1))]</p>"
+	else if (islist(divine_legacy_pages))
+		var/count = 0
+		for (var/page in divine_legacy_pages)
+			if (++count > 32)
+				break
+			if (istext(page))
+				. += "<p>[html_encode(copytext(page, 1, MAX_BOOK_MESSAGE_LEN + 1))]</p>"
 
 /proc/divine_book_key(deity)
 	return istext(deity) ? lowertext(trim(deity)) : null
@@ -72,7 +107,7 @@ var/global/list/divine_book_originals = list()
 	return null
 
 // Writes the god's original book. Returns the book, or a text reason.
-/proc/create_divine_book(deity, title, text, atom/destination)
+/proc/create_divine_book(deity, title, text, atom/destination, public_text = null)
 	var/problem = divine_book_problem(deity)
 	if (problem)
 		return problem
@@ -84,8 +119,8 @@ var/global/list/divine_book_originals = list()
 	B.divine_original = TRUE
 	B.title = title
 	B.name = title
-	B.author = B.divine_deity
-	B.desc = "A book written by [B.divine_deity]."
-	if (text)
-		B.add_written_page(text)
+	B.divine_text_sealed = TRUE
+	B.divine_private_text = istext(text) ? copytext(text, 1, MAX_BOOK_MESSAGE_LEN + 1) : null
+	if (istext(public_text) && length(public_text))
+		B.add_written_page(public_text)
 	return B

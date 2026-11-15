@@ -189,7 +189,8 @@ var/global/processScheduler/processScheduler
 				else
 					// Deferred runs keep any unfinished snapshot for their next pass.
 					tmpQueued -= p
-				if (used_tick_usage >= max_tick_usage)
+				// Dispatch may have consumed the remaining budget; do not use its pre-run sample.
+				if ((world.tick_usage-initial_tick_usage) >= max_tick_usage)
 					break main
 
 	for (var/process/p in queued-processed)

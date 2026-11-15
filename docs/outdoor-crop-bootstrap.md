@@ -4,8 +4,8 @@ Small bushes yield seeds when harvested with a knife using Help intent. A bush
 then waits 10 minutes before offering seeds again. The yield is random, not a
 promise that a particular food crop is available immediately.
 
-On Continental, Pangea, New World, Mediterranean, Gaia and Europe Nomads maps,
-foraged seeds are selected for the area's biome. Eight biome catalogs are
+On Continental, Pangea, New World, Mediterranean, Gaia, Europe and both Americas
+Nomads maps, foraged seeds are selected for the area's biome. Eight biome catalogs are
 nonempty: sea, temperate, tundra, taiga, desert, semiarid, savanna and jungle.
 Pangea's checked-in map has direct seed stacks and no placed small bushes; catalog
 selection alone does not establish a bush-foraging route there. See
