@@ -1431,7 +1431,13 @@ RECIPE: /material/bone/,bone gear set,/obj/item/machine_part/gear,4,150,0,1,mach
 
 RECIPE: /material/stone/,stone brazier,/obj/structure/brazier/stone,3,100,1,1,none,0,0,0,8,null
 RECIPE: /material/stone/,stone drain,/obj/structure/sewer_piece/drain/stone,2,80,1,1,construction,0,0,0,8,null
+RECIPE: /material/stone/,stone plinth,/obj/structure/flood_platform/plinth,4,120,1,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,flap gate,/obj/structure/sewer_flap_gate,3,80,1,1,construction,0,0,0,8,null
+RECIPE: /material/wood/,stilt platform,/obj/structure/flood_platform/stilts,4,100,1,1,construction,0,0,0,8,null
+RECIPE: /material/wood/,sluice gate,/obj/structure/sluice_gate,6,120,1,1,construction,0,0,0,8,null
+RECIPE: /material/wood/,shaduf,/obj/structure/water_lift/shaduf,4,100,1,1,construction,0,0,0,8,null
+RECIPE: /material/wood/,Archimedes screw,/obj/structure/water_lift/archimedes_screw,8,150,1,1,construction,0,0,0,8,null
+RECIPE: /material/wood/,river gauge,/obj/structure/river_gauge,2,60,1,1,construction,0,0,0,8,null
 RECIPE: /material/stone/,deadfall trap,/obj/item/weapon/trap_kit/deadfall,2,60,0,1,none,0,0,0,8,null
 RECIPE: /material/stone/,well,/obj/structure/sink/well,7,250,1,1,none,21,0,0,8,null
 RECIPE: /material/stone/,stone crusher,/obj/structure/stone_crusher,10,150,1,1,none,19,0,0,8,null
