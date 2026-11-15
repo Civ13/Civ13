@@ -14,8 +14,8 @@ Nothing here starts or changes a live server.
 | Metadata | `/obj/map_metadata/nomads/americas_north` | `/obj/map_metadata/nomads/americas_south` |
 | Region id | `northamerica` | `southamerica` |
 | Size | 1132 x 920, one level | 848 x 1224, one level |
-| Land | about 386,000 tiles | about 485,000 tiles |
-| Walkable ground | about 311,000 tiles | about 416,000 tiles |
+| Walkable ground | about 302,000 tiles | about 397,000 tiles |
+| Fresh water | about 31,000 tiles | about 44,000 tiles |
 
 Gaia, for comparison, has about 100,000 tiles of land on a 500 x 350 surface.
 
@@ -42,8 +42,24 @@ animals by the ecology spawner; the map files hold only ground, water, rock
 and a few hundred markers (groves, puddles in dry country, oil seeps, wolf
 dens, volcanoes).
 
-Hills come from `maps/heights/nomads_americas_{north,south}.txt` and river
-currents from the matching `.flow.txt` files (see [terrain-height.md](terrain-height.md)).
+## Relief, rivers and floods
+
+The generator builds an elevation field (distance inland, rolling noise and
+the hand-placed mountain chains), fills its hollows and lets every tile drain
+to the sea. The hand-drawn rivers and lakes are kept; tributaries are added
+where enough ground drains through one tile, and ponds where a hollow fills.
+The same field gives three files beside each map in `maps/heights/`:
+
+- `nomads_americas_{north,south}.txt` - terrain heights in half levels
+  (water is level 0, banks climb away from it, summits reach level 15), made by
+  `tools/procedural_maps/terrain_files.py` like every generated land.
+- `.flow.txt` - river currents, flowing downhill (`scripts/river_flow.py`).
+- `.flood.txt` - river reaches, their flood thresholds and the hollows that
+  fill ([river-flood.md](river-flood.md)). North has 485 reaches and 126
+  hollows, south 712 and 282.
+
+The test suite rebuilds the current and flood files from the committed map and
+heights and fails when they differ, so the three never drift apart.
 
 ## The isthmus trail
 
@@ -75,14 +91,8 @@ travellers. A random start can fall on one of the islands.
 The generator needs numpy and Pillow; the test suite needs neither.
 
 ```sh
-python3 -I -B tests/americas_maps/build.py                    # rewrite both maps
+python3 -I -B tests/americas_maps/build.py                    # rewrite both maps and their height, current and flood files
 python3 -I -B tests/americas_maps/build.py --only north --preview north.png
-for n in north south; do
-  python3 scripts/terrain_heights.py design --map maps/nomads/nomads_americas_$n.dmm --z 1 \
-    --spec maps/heights/nomads_americas_$n.design.json --out maps/heights/nomads_americas_$n.txt
-  python3 scripts/river_flow.py --map maps/nomads/nomads_americas_$n.dmm --z 1 \
-    --heights maps/heights/nomads_americas_$n.txt --out maps/heights/nomads_americas_$n.flow.txt
-done
 python3 tests/americas_maps/test_americas_maps.py
 ```
 
@@ -106,6 +116,7 @@ is `PERSISTENCE_MEMORY_LIMIT_MB` (3072).
 | North 960 x 780 | 748,800 | 803 MB | 865 MB | 1085 MB | 53 s | 66 s |
 | North 1132 x 920 | 1,041,440 | 1037 MB | 1128 MB | 1432 MB | 75 s | 92 s |
 | South 848 x 1224 | 1,037,952 | 1087 MB | 1257 MB | 1652 MB | 104 s | 92 s |
+| North 1132 x 920, reworked relief and floods (2026-11-15) | 1,041,440 | 1037 MB | 1095 MB | 1401 MB | 72 s | 92 s |
 
 Memory grows a little under 1 KB per map cell plus what stands on it (the
 south's jungle seeds about 67,000 wild plants against the north's 29,000).
@@ -124,11 +135,12 @@ it.
 
 ## Limits
 
-- **No upper floors or dug caves yet.** A new level allocates the whole plane,
+- **No upper floors, dug caves or flight yet.** A new level allocates the whole plane,
   and the admission limits (`NEW_Z_BUILDING_MEASURED_CELLS`, `NEW_Z_MEASURED_CELLS`,
   see [new-z-budget.md](new-z-budget.md)) are sized for Gaia. Neither map sets
   `building_levels` or `dig_down_underground`, so roofs give shelter but no
-  second storey. Raising those limits for a plane this large needs its own
+  second storey, and there is no standing open-air level for aircraft.
+  Raising those limits for a plane this large needs its own
   measurement.
 - The time-of-day lighting pass takes about three times as long as Gaia's.
 - The wildlife caps (`ecology_wildlife_cap` 1000 north, 1200 south) and wild
