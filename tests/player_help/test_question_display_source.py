@@ -47,11 +47,16 @@ class QuestionDisplaySourceTests(unittest.TestCase):
         needs = (SOURCE.parents[0] / 'living/carbon/human/human_needs.dm').read_text(encoding='utf-8')
         visible = needs.split('/mob/living/human/proc/print_mood()', 1)[1].split('/mob/living/human/proc/flash_sadness', 1)[0]
         category = text.split('/datum/player_help_service/proc/mood_category(value)', 1)[1].split('// Read public map metadata', 1)[0]
-        for bound, name in (('-5000000 to 20', 'Horrible'), ('20 to 40', 'Bad'),
-                            ('40 to 60', 'Neutral'), ('60 to 80', 'Good'), ('80 to 10000', 'Excellent')):
-            self.assertIn('if(' + bound + ')\n\t\t\treturn "' + name + '"', category)
-            self.assertIn('if(' + bound + ')', visible)
+        # Both read the one shared scale, so they cannot disagree at a boundary.
+        self.assertIn('capitalize(mood_tier_name(value))', category)
+        self.assertIn('switch(mood_tier(mood))', visible)
+        names = needs.split('/proc/mood_tier_name(value)', 1)[1].split('/proc/mood_stat_modifier', 1)[0]
+        for name in ('Horrible', 'Bad', 'Neutral', 'Good', 'Excellent'):
+            self.assertIn('if(MOOD_TIER_' + name.upper() + ')', visible)
             self.assertIn('Your mood is ' + name.lower(), visible)
+            if name != 'Excellent':
+                self.assertIn('if (tier == MOOD_TIER_' + name.upper() + ')\n\t\treturn "' + name.lower() + '"', names)
+        self.assertIn('\treturn "excellent"', names)
         context = text.split('/datum/player_help_service/proc/game_context(', 1)[1].split('/datum/player_help_service/proc/submit', 1)[0]
         self.assertIn('condition["mood_category"] = mood_category(H.mood)', context)
         self.assertNotIn('condition["mood"]', context)

@@ -402,16 +402,16 @@
 				msg += "<br><i>[T.He] [T.is] a member of <b>[civilization]</b>.</i>"
 			if (user.find_trait("Empathetic"))
 				var/md
-				switch(mood)
-					if(-5000000 to 20)
+				switch(mood_tier(mood))
+					if(MOOD_TIER_HORRIBLE)
 						md = "seems to be in a horrible mood!"
-					if(20 to 40)
+					if(MOOD_TIER_BAD)
 						md = "seems to be in a bad mood."
-					if(40 to 60)
+					if(MOOD_TIER_NEUTRAL)
 						md = "seems to be in a neutral mood."
-					if(60 to 80)
+					if(MOOD_TIER_GOOD)
 						md = "seems to be in a good mood."
-					if(80 to 10000)
+					if(MOOD_TIER_EXCELLENT)
 						md = "seems to be in an excellent mood!"
 				msg += "<br><i>[T.He] [md]</b>.</i>"
 		else if (isobserver(user))

@@ -10,7 +10,7 @@ Run with Pillow to reproduce
   icons/mob/items/righthand_rain_gear.dmi
   icons/obj/rain_shelter.dmi                lean-to, four directions
 The held sheets are 48px tall so an open umbrella's canopy sits above the head
-without extra code. The cape and coat are drawn one pixel wider than the widest
+without extra code; the open shaft ends in the fist, not at the shins. The cape and coat are drawn one pixel wider than the widest
 coat sleeves so they cover whatever is worn underneath. `--preview <png>` also
 writes a review sheet. Released under Civ13 AGPL-3.0.
 """
@@ -362,14 +362,24 @@ def grip(f, kind, x, y):
         f.pts(PL[1], (x - 1, y + 3)); f.pts(PL[2], (x - 1, y + 2))
 
 
-def held_open(kind, hand_x, centre):
-    """Open umbrella held at hand_x, canopy centred over `centre`."""
+HAND_Y = 18  # last row of a held open umbrella's shaft: the top of the fist
+
+
+def held_open(kind, hand_x, centre, part='all'):
+    """Open umbrella held at hand_x, canopy centred over `centre`.
+
+    The shaft stops at the fist (y 18, sheet row 34) and the grip is hidden in
+    the hand, so nothing hangs below hand height. `part` 'canopy' or 'shaft'
+    draws one half only: seen from behind the umbrella is carried in front of
+    the holder, so the game draws the shaft under the body and the canopy over
+    the head."""
     spec = KINDS[kind]
     f = Tall()
     rim = spec['top'] + spec['canopy'].height
-    shaft(f, hand_x, rim - 1, 19, spec['shaft'] if kind != 'umbrella_nylon' else [L[0], L[1], L[2], L[3]])
-    grip(f, kind, hand_x, 20)
-    spec['canopy'].draw(f, centre, spec['top'], spec['trim'])
+    if part != 'canopy':
+        shaft(f, hand_x, rim - 1, HAND_Y, spec['shaft'] if kind != 'umbrella_nylon' else [L[0], L[1], L[2], L[3]])
+    if part != 'shaft':
+        spec['canopy'].draw(f, centre, spec['top'], spec['trim'])
     return f
 
 
@@ -512,8 +522,10 @@ def held_frames():
     for kind in KINDS:
         left[kind] = four(lambda x, k=kind: held_closed(k, x), 22, 8, 17, 12)
         # canopy leans in over the head
-        left[kind + '_open'] = [held_open(kind, 21, 17), held_open(kind, 9, 13), held_open(kind, 13, 15),
+        left[kind + '_open'] = [held_open(kind, 21, 17), held_open(kind, 9, 13, 'canopy'), held_open(kind, 13, 15),
                                 held_open(kind, 17, 15)]
+        # facing north the shaft is hidden by the body: the game layers this under the holder
+        left[kind + '_open_shaft'] = [Tall(), held_open(kind, 9, 13, 'shaft'), Tall(), Tall()]
     return left, {name: right_of(frames) for name, frames in left.items()}
 
 
@@ -739,13 +751,16 @@ def write_preview(path, scale=5):
     for row, (below, worn, held) in enumerate(figures):
         for direction in range(4):
             figure = Image.new('RGBA', (32, 48))
+            hand = HELD_L if held and held[1] == 'L' else HELD_R
+            if held and held[0] + '_shaft' in hand:
+                figure.alpha_composite(hand[held[0] + '_shaft'][direction].image(48))   # under the body, as in game
             figure.alpha_composite(base_body(direction), (0, 16))
             if below:
                 figure.alpha_composite(clothing(direction, *below), (0, 16))
             for state in worn:
                 figure.alpha_composite(WORN[state][direction].image(48))
             if held:
-                figure.alpha_composite((HELD_L if held[1] == 'L' else HELD_R)[held[0]][direction].image(48))
+                figure.alpha_composite(hand[held[0]][direction].image(48))
             sheet.alpha_composite(figure.resize((cell, tall), Image.NEAREST), (direction * cell, row * tall))
     # held closed umbrellas and bundles, facing the viewer, on the right
     extras = [('umbrella_paper', 'L'), ('umbrella_nylon', 'R'), ('straw_rain_cape', 'L'), ('oilskin_coat', 'R'),

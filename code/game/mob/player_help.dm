@@ -396,18 +396,7 @@ var/global/datum/player_help_service/player_help_service = new
 
 // Match the categories shown to the character by print_mood(), not raw mood.
 /datum/player_help_service/proc/mood_category(value)
-	switch(value)
-		if(-5000000 to 20)
-			return "Horrible"
-		if(20 to 40)
-			return "Bad"
-		if(40 to 60)
-			return "Neutral"
-		if(60 to 80)
-			return "Good"
-		if(80 to 10000)
-			return "Excellent"
-	return null
+	return isnum(value) ? capitalize(mood_tier_name(value)) : null
 
 // Read public map metadata directly; never accept player text as server state.
 /datum/player_help_service/proc/game_context(mob/asking_player)

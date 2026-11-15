@@ -503,7 +503,7 @@ class BridgeTests(unittest.TestCase):
             destination.parent.mkdir(parents=True, exist_ok=True)
             destination.write_bytes((ROOT / relative).read_bytes())
         life = self.root / 'code/game/mob/living/carbon/human/human_life.dm'
-        life.write_bytes(life.read_bytes().replace(b'adjust_mood(-(0.05))', b'adjust_mood(-(0.06))'))
+        life.write_bytes(life.read_bytes().replace(b'mood_drift()', b'mood_settle()'))
         with self.assertRaisesRegex(ValueError, 'Reviewed mood mechanics changed'):
             bridge.mood_knowledge(self.root)
 

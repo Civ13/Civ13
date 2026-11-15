@@ -672,6 +672,48 @@ class ShardGroupTests(unittest.TestCase):
         host.work('update', host.request('update')['operation'])
         self.assertIn('not a file in the repository', host.read_state()['error'])
 
+    def test_update_retries_a_compiler_that_died_while_loading(self):
+        group = self.write_group()
+        shard_group.setup(group, self.machine)
+        host = self.host(group, 'gaia')
+        died = 'DM compiler version 516.1688\nloading region.dme\nloading interface/skin.dmf'
+        run = self.machine.run
+        outputs = [died]
+        def run_once_dead(argv, cwd=None, timeout=1800, low_priority=False):
+            if argv[-1] == 'region.dme' and outputs:
+                self.machine.calls.append((list(argv), str(cwd)))
+                return 1, outputs.pop()
+            return run(argv, cwd, timeout, low_priority)
+        self.machine.run = run_once_dead
+        host.work('update', host.request('update')['operation'])
+        self.assertEqual('done', host.read_state()['phase'], host.read_state())
+        self.assertEqual(2, sum(1 for call in self.machine.calls if call[0][-1] == 'region.dme'))
+        self.assertIn(str(host.repo), self.machine.low_priority, 'an update compiles at low priority')
+        self.assertFalse((host.repo.parent / '.staging' / 'compile.lock').exists(), 'the slot is released')
+        outputs[:] = [died, died]
+        host.work('update', host.request('update')['operation'])
+        self.assertEqual('failed', host.read_state()['phase'])
+        self.assertIn('loading interface/skin.dmf', host.read_state()['error'])
+        self.assertFalse((host.repo.parent / '.staging' / 'compile.lock').exists(), 'released after a failure')
+
+    def test_update_waits_for_the_group_compile_slot(self):
+        group = self.write_group()
+        shard_group.setup(group, self.machine)
+        host = self.host(group, 'gaia')
+        lock = host.repo.parent / '.staging' / 'compile.lock'
+        lock.parent.mkdir(parents=True, exist_ok=True)
+        lock.write_text('777')
+        self.machine.pids.add(777)
+        seen = []
+        def sleep(seconds):
+            seen.append(host.read_state().get('phase'))
+            self.machine.pids.discard(777)  # the other region's compile finishes
+            self.machine.clock += seconds
+        self.machine.sleep = sleep
+        host.work('update', host.request('update')['operation'])
+        self.assertEqual('done', host.read_state()['phase'], host.read_state())
+        self.assertIn("waiting for another region's compile", seen)
+
     def opens_port_on_start(self, port):
         start = self.machine.start_task
         def start_task(name, dmb='region.dmb'):
@@ -1534,7 +1576,7 @@ class StagedBuildTests(unittest.TestCase):
         self.assertEqual(host.read_json(host.stage_file)['phase'], 'ready', host.read_json(host.stage_file))
         self.assertFalse(host.stage_lock.exists())
         self.assertIn((['git', 'worktree', 'add', '--detach', str(staging), NEWER], str(self.base / 'repo')), self.machine.calls)
-        self.assertEqual(self.machine.low_priority, [str(staging)])
+        self.assertEqual(self.machine.low_priority[-1:], [str(staging)])
         self.assertIn('#include "maps\\small\\tiny.dmm"', (staging / 'region.dme').read_text())
         self.assertEqual((1, 1), (self.compiles(live), self.compiles(staging)), 'the running region is not touched')
         self.assertEqual(host.staged_revision(), NEWER)
@@ -1603,7 +1645,7 @@ class StagedBuildTests(unittest.TestCase):
     def test_regions_take_turns_at_the_staging_compiler(self):
         group, host = self.built()
         lock = self.base / 'regions' / '.staging' / 'compile.lock'
-        lock.parent.mkdir(parents=True)
+        lock.parent.mkdir(parents=True, exist_ok=True)
         lock.write_text('77')
         self.machine.pids = {77}
         real_sleep = self.machine.sleep
@@ -1619,7 +1661,7 @@ class StagedBuildTests(unittest.TestCase):
     def test_an_empty_compile_lock_is_a_claim_in_progress_not_stale(self):
         group, host = self.built()
         lock = self.base / 'regions' / '.staging' / 'compile.lock'
-        lock.parent.mkdir(parents=True)
+        lock.parent.mkdir(parents=True, exist_ok=True)
         lock.write_text('')  # another region created it and has not written its pid yet
         seen = []
         real_sleep = self.machine.sleep
@@ -1638,7 +1680,7 @@ class StagedBuildTests(unittest.TestCase):
     def test_an_empty_compile_lock_left_behind_is_cleared_after_a_minute(self):
         group, host = self.built()
         lock = self.base / 'regions' / '.staging' / 'compile.lock'
-        lock.parent.mkdir(parents=True)
+        lock.parent.mkdir(parents=True, exist_ok=True)
         lock.write_text('')
         host.work('stage', host.request_stage()['operation'])
         self.assertEqual(host.read_json(host.stage_file)['phase'], 'ready')
@@ -1647,7 +1689,7 @@ class StagedBuildTests(unittest.TestCase):
     def test_a_compile_lock_windows_will_not_delete_is_waited_on(self):
         group, host = self.built()
         lock = self.base / 'regions' / '.staging' / 'compile.lock'
-        lock.parent.mkdir(parents=True)
+        lock.parent.mkdir(parents=True, exist_ok=True)
         lock.write_text('77')  # a dead holder, but the file is still open somewhere
         real_unlink, refusals = Path.unlink, []
         def unlink(path, missing_ok=False):

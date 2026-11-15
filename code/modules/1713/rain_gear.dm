@@ -286,7 +286,8 @@
 /*
  * Umbrellas: held open in either hand they keep most rain off and give shade
  * in hot sun. A gale can blow one inside out until it is bent back. The held
- * sheets are 32x48, so the open canopy draws above the holder's head.
+ * sheets are 32x48, so the open canopy draws above the holder's head while
+ * the shaft ends in the fist at hand height.
  */
 /obj/item/weapon/umbrella
 	name = "umbrella"
@@ -337,6 +338,13 @@
 	icon_state = shelters() ? "[base_state]_open" : base_state
 	item_state = icon_state
 	update_held_icon()
+
+// Seen from behind, an open umbrella is carried in front of the holder: its
+// "_shaft" state (north frame only) sits under the body, the canopy over it.
+/obj/item/weapon/umbrella/add_held_underlay(image/held, icon_file, state, mob_layer)
+	if (!shelters() || !icon_has_state(icon_file, "[state]_shaft"))
+		return
+	held.overlays += image(icon = icon_file, icon_state = "[state]_shaft", layer = mob_layer - 0.01)
 
 /obj/item/weapon/umbrella/attack_self(mob/user)
 	if (inside_out)

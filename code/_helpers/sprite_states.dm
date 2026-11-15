@@ -52,3 +52,10 @@
 // Points icon_state at a state that the item's own icon has.
 /obj/item/proc/settle_icon_state()
 	icon_state = sprite_state_for(icon, icon_state)
+
+// Parts of the in-hand sprite that belong behind the holder's body, such as
+// an open umbrella's shaft carried in front of someone seen from behind. The
+// held image is drawn above the body, so these go on it as an overlay on a
+// layer just under the mob. Nothing by default.
+/obj/item/proc/add_held_underlay(image/held, icon_file, state, mob_layer)
+	return

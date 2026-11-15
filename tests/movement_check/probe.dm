@@ -68,7 +68,7 @@ var/movement_check_runtime_error = FALSE
 	H.loc = locate(5, 5, 1)
 	H.nutrition = H.max_nutrition
 	H.water = H.max_water
-	H.mood = 100
+	H.mood = 40 // the bottom of Neutral: no low-mood slowdown
 	H.next_calculate_tally = -1
 	text = jointext(H.movement_check_report(), "\n")
 	movement_check_probe(findtext(text, "Nothing on you or under you is slowing you down."), "rested report is clear")

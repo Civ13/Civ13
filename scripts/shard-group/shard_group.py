@@ -1364,11 +1364,22 @@ class RegionHost(Host):
             self.record_build(revision, DMB_SLOTS[0])
             self.record(phase='compiled', revision=revision, map=region['map'], staged=True)
             return
-        self.record(phase='compiling', revision=revision)
-        before = dmb_mtime(path / 'region.dmb')
-        code, out = self.platform.run([self.config['compiler'], 'region.dme'], cwd=path, timeout=1800)
-        if not compile_succeeded(code, out, path / 'region.dmb', before):
-            raise RuntimeError('compile failed: ' + out.strip()[-300:])
+        # Val (2026-11-15): updating every stopped region at once ran twelve DreamMakers side by
+        # side and Jungle's died right after "loading interface/skin.dmf", with no error line.
+        # The update now takes the group's compile slot like a stage does, and a compiler that
+        # died before reporting any result is run once more.
+        with self.group_slot('compile.lock', 'compile', self.record, 7200):
+            self.record(phase='compiling', revision=revision)
+            for attempt in range(2):
+                before = dmb_mtime(path / 'region.dmb')
+                code, out = self.platform.run([self.config['compiler'], 'region.dme'], cwd=path, timeout=1800,
+                                              low_priority=True)
+                if compile_succeeded(code, out, path / 'region.dmb', before):
+                    break
+                if attempt or compile_reported(out):
+                    raise RuntimeError('compile failed: ' + out.strip()[-300:])
+                self.record(phase='compiling (the compiler stopped without a result; trying again)',
+                            revision=revision)
         self.record_build(revision, DMB_SLOTS[0])
         self.record(phase='compiled', revision=revision, map=region['map'])
 
@@ -1389,6 +1400,12 @@ def compile_succeeded(code, out, dmb, before):
     if code == 0:
         return True
     return dmb_mtime(dmb) != before and bool(re.search(r'\.dmb - 0 errors', out))
+
+
+def compile_reported(out):
+    """Whether DreamMaker got as far as reporting a result ("N errors"); a compiler that was
+    killed or crashed while loading leaves only its loading lines."""
+    return bool(re.search(r'\d+ errors?\b', out or ''))
 
 
 def prepare_tree(group, region, path, revision, platform, git):
