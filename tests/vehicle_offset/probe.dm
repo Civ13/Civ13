@@ -35,6 +35,20 @@
 	name = "probe crate"
 	density = TRUE
 
+/mob/living/human/vehicle_offset_probe_rider/ssd_check()
+	return FALSE
+
+// Seats H as V's driver with the controls in hand, as getting on does.
+/proc/vehicle_offset_probe_seat(obj/structure/vehicle/V, mob/living/human/H)
+	H.forceMove(V.loc)
+	if (V.dwheel)
+		H.put_in_active_hand(V.dwheel)
+	V.buckle_mob(H)
+	V.driver = H
+	H.driver = TRUE
+	H.driver_vehicle = V
+	V.ontop |= H
+
 /obj/structure/vehicle_offset_probe_wall
 	name = "probe wall"
 	density = TRUE
@@ -298,6 +312,73 @@ var/list/vehicle_offset_probe_receipt = list()
 	moto.offset_mover.draw()
 	vehicle_offset_snap_all()
 	vehicle_offset_probe_assert(!moto.step_x && !moto.offset_mover.speed_x, "save_snaps_ridden_vehicles")
+
+	// A bicycle pedals by pixels on its own loop; each tile still pays stamina.
+	var/obj/structure/vehicle/bicycle/cycle = new(locate(5, 36, 1))
+	var/mob/living/human/vehicle_offset_probe_rider/cyclist = new(locate(5, 36, 1))
+	vehicle_offset_probe_seat(cycle, cyclist)
+	cyclist.dir = EAST
+	vehicle_offset_probe_assert(cycle.rider_ready() && cycle.vehicle_offset_drives(), "bike_rolls_by_pixels_when_near")
+	var/stamina_before = cyclist.getStat("stamina")
+	cycle.moving = TRUE
+	cycle.movement_processes = 1
+	var/list/cycle_start = vehicle_offset_probe_px(cycle)
+	var/cycle_offset_seen = FALSE
+	for (var/i = 1 to 20)
+		cycle.movementloop()
+		if (cycle.pedal_timer)
+			deltimer(cycle.pedal_timer)
+			cycle.pedal_timer = null
+		if (cycle.step_x)
+			cycle_offset_seen = TRUE
+		vehicle_offset_probe_assert(cyclist.loc == cycle.loc && cyclist.step_x == cycle.step_x, "bike_tick_[i]_rider_seated")
+	var/pedalled = vehicle_offset_probe_px(cycle)[1] - cycle_start[1]
+	vehicle_offset_probe_assert(cycle.moving && cycle_offset_seen && cycle.x > 5 && pedalled > 32, "bike_pedals_by_pixels ([pedalled],[cycle.x],[cycle.step_x],[cycle.moving])")
+	vehicle_offset_probe_assert(cyclist.getStat("stamina") < stamina_before, "bike_pays_stamina_per_tile")
+	vehicle_offset_probe_receipt["bike_px_in_20_ticks"] = pedalled
+	cycle.stopmovementloop()
+	vehicle_offset_probe_assert(!cycle.moving && cycle.offset_mover, "bike_brakes")
+
+	// A raft paddles by pixels while the key is held, then drifts to a stop.
+	for (var/rx = 2 to 20)
+		for (var/ry = 37 to 39)
+			new /turf/floor/beach/water(locate(rx, ry, 1))
+	var/obj/structure/vehicle/raft/R = new(locate(3, 38, 1))
+	var/mob/living/human/vehicle_offset_probe_rider/rafter = new(locate(3, 38, 1))
+	vehicle_offset_probe_seat(R, rafter)
+	rafter.dir = EAST
+	rafter.movement_eastwest = EAST
+	var/list/raft_start = vehicle_offset_probe_px(R)
+	R.processmove(EAST)
+	vehicle_offset_probe_assert(R.offset_paddling, "raft_starts_paddling")
+	for (var/i = 1 to 30)
+		R.vehicle_offset_paddle()
+	var/paddled = vehicle_offset_probe_px(R)[1] - raft_start[1]
+	vehicle_offset_probe_assert(abs(paddled - 31 * vehicle_offset_speed(R.vehicle_m_delay)) <= 1 && rafter.loc == R.loc && rafter.step_x == R.step_x, "raft_paddles_its_speed ([paddled])")
+	rafter.movement_eastwest = null
+	var/drift_from = vehicle_offset_probe_px(R)[1]
+	var/drift_ticks = 0
+	while (R.offset_paddling && drift_ticks < 100)
+		R.vehicle_offset_paddle()
+		drift_ticks++
+	var/drifted = vehicle_offset_probe_px(R)[1] - drift_from
+	vehicle_offset_probe_assert(drifted > 0 && drifted <= 16 && !R.offset_coast, "raft_drifts_to_a_stop ([drifted])")
+	// Off the water's edge: the raft's own check stops it flush.
+	rafter.movement_eastwest = EAST
+	R.processmove(EAST)
+	for (var/i = 1 to 1500)
+		if (!R.offset_paddling)
+			break
+		R.vehicle_offset_paddle()
+	vehicle_offset_probe_assert(R.x == 20 && R.step_x == 0 && !R.offset_paddling, "raft_stops_at_the_shore ([R.x],[R.step_x])")
+	vehicle_offset_probe_watched = FALSE
+	rafter.dir = WEST
+	R.dir = WEST
+	var/raft_x = R.x
+	R.lastmove = -100
+	R.processmove(WEST)
+	vehicle_offset_probe_assert(!R.offset_paddling && R.x == raft_x - 1 && !R.step_x, "unwatched_raft_paddles_by_tiles ([R.x],[R.step_x])")
+	vehicle_offset_probe_watched = TRUE
 
 	// A carriage: one object with 64x96 bounds covers six tiles.
 	var/obj/structure/vehicle/carriage/C = new(locate(25, 20, 1))
