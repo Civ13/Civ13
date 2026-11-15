@@ -202,6 +202,30 @@ fouls nothing, and digests one load per 30 minutes of real time, counted from
 server being down counts too. Saved: pump `on` and `fuel`, `sludge`, septic
 `waste` and `digested_at`.
 
+## Defences (Stone and Classical)
+
+`flood_defences.dm`. Nothing here ticks.
+
+- **Stilt platform** (4 wood, Primitive Construction) and **stone plinth**
+  (4 stone, Stone Masonry) set the unsaved turf var `flood_raise` (2 and 1),
+  rebuilt as platforms are built, loaded or destroyed. `flood_depth_at()`
+  takes it off the depth on that tile, so everything that reads depth
+  (wading, soaking, items, fires, drawing) sees the raised floor.
+- **Sluice gate** (6 wood, Irrigation): a dense timber gate that, shut, adds a
+  crest of 1.5 in `flood_tile_ground()` like a half-wall. Drawn up by hand
+  (3 seconds), it is passable and adds nothing, letting floodwater through a
+  levee onto fields for their silt. Opening, shutting, building and breaking
+  mark the flood window like a half-wall.
+- **Shaduf** (4 wood, Basic Agriculture) and **Archimedes screw** (8 wood,
+  Irrigation) on a hollow tile beside ground outside that hollow lift 0.5
+  and 1.5 tile-levels of its water per 3-second working, repeated until the
+  worker stops or the hollow is dry.
+- **River gauge** (2 wood, Basic Agriculture) within 2 tiles of river water
+  reads the reach's stage against the bank (the tile's effective threshold)
+  and the reach's high-water mark on examine.
+
+Saved: the gate's `open`.
+
 ## Saving
 
 The water held, the snowpack and the high-water mark of every reach are the
@@ -227,4 +251,5 @@ tiles around you, blue where the water is now).
     python3 tests/ecology_spawning/run_linux.py . tests/sewers/probe.dm
     python3 tests/ecology_spawning/run_linux.py . tests/sewers/s2_probe.dm
     python3 tests/ecology_spawning/run_linux.py . tests/sewers/s3_probe.dm
+    python3 tests/ecology_spawning/run_linux.py . tests/river_flow/defences_probe.dm
     python3 tests/durable_map_migration/run.py --byond-bin <dir>

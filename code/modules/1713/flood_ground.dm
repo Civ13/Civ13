@@ -53,13 +53,16 @@
 	F.dirty_windows["[round((T.x - 1) / FLOOD_CELL)],[round((T.y - 1) / FLOOD_CELL)]"] = TRUE
 
 // The height floodwater must reach to stand on a tile: its ground, graded, plus
-// the crest of any finished half-wall on it.
+// the crest of any finished half-wall or shut sluice gate on it (flood_defences.dm).
 /proc/flood_tile_ground(turf/T)
 	. = terrain_height_at(T)
 	var/crest = 0
 	for (var/obj/structure/window/barrier/B in T)
 		if (B.flood_crest > crest)
 			crest = B.flood_crest
+	for (var/obj/structure/sluice_gate/G in T)
+		if (G.crest() > crest)
+			crest = G.crest()
 	. += crest
 
 // A tile's threshold after player changes (null for water or none).

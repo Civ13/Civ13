@@ -2,6 +2,7 @@
 import importlib.util
 import sys
 import tempfile
+import re
 import unittest
 from pathlib import Path
 
@@ -225,6 +226,41 @@ class WiringTest(unittest.TestCase):
         self.assertIn('var/tmp/datum/river_flood/river_flood_cache', MODULE)
         contract = (ROOT / 'code/modules/persistence/durable_contract.dm').read_text(encoding='utf-8')
         self.assertIn('"river_flood_state"', contract)
+
+
+
+class DefencesTest(unittest.TestCase):
+    """Stone and Classical defences; behaviour is in defences_probe.dm."""
+
+    def test_wiring(self):
+        defences = (ROOT / 'code/modules/1713/flood_defences.dm').read_text(encoding='utf-8')
+        self.assertIn('/turf/var/tmp/flood_raise = 0', defences)
+        self.assertIn('. = max(0, . - T.flood_raise)', MODULE)
+        ground = (ROOT / 'code/modules/1713/flood_ground.dm').read_text(encoding='utf-8')
+        self.assertIn('for (var/obj/structure/sluice_gate/G in T)', ground)
+        self.assertIsNone(re.search(r'(?<![_\w])spawn\(', defences))
+        self.assertNotIn('in world', defences)
+        dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
+        self.assertLess(dme.index('1713\\sewers.dm"'), dme.index('1713\\flood_defences.dm"'))
+
+    def test_recipes_and_art(self):
+        recipes = (ROOT / 'config/crafting/material_recipes_global.txt').read_text(encoding='utf-8')
+        research = (ROOT / 'code/modules/research_tree/research_node.dm').read_text(encoding='utf-8')
+        for name, path, node in (
+                ('stilt platform', '/obj/structure/flood_platform/stilts', 'primitive_construction'),
+                ('stone plinth', '/obj/structure/flood_platform/plinth', 'stone_masonry'),
+                ('sluice gate', '/obj/structure/sluice_gate', 'irrigation'),
+                ('shaduf', '/obj/structure/water_lift/shaduf', 'basic_agriculture'),
+                ('Archimedes screw', '/obj/structure/water_lift/archimedes_screw', 'irrigation'),
+                ('river gauge', '/obj/structure/river_gauge', 'basic_agriculture')):
+            self.assertRegex(recipes, rf'RECIPE: /material/\w+/,{name},{path},')
+            self.assertIn(f'"{path}" = "{node}",', research)
+        from PIL import Image
+        meta = Image.open(ROOT / 'icons/obj/flood_defences.dmi').info['Description']
+        states = {line.split('"')[1] for line in meta.splitlines() if line.startswith('state = ')}
+        for state in ('stilts', 'plinth', 'sluice_gate', 'sluice_gate_open', 'shaduf', 'shaduf_use',
+                      'archimedes_screw', 'archimedes_screw_use', 'river_gauge'):
+            self.assertIn(state, states)
 
 
 if __name__ == '__main__':
