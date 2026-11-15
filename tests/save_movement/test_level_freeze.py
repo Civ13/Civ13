@@ -78,6 +78,18 @@ class LevelFreeze(unittest.TestCase):
         living = read('code/game/mob/living/living.dm')
         self.assertIn('!persistence_life_frozen(src))\n\t\t\t\tLife()', living)
 
+    def test_restoring_bodies_do_not_tick_until_the_load_finishes(self):
+        # A body is in the world before its organs and health are restored. A
+        # Life() tick then read it as critical, paralysed it and emptied its
+        # hands, so a held tool came back on the ground (natural bootstrap run).
+        functions = read(FUNCTIONS)
+        helper = proc_body(functions, '/proc/persistence_load_active()')
+        self.assertIn('persistence_active_operation.kind == "load"', helper)
+        life = read('code/game/mob/living/carbon/human/human_life.dm')
+        body = proc_body(life, '/mob/living/human/Life()')
+        self.assertIn('if (persistence_load_active())\n\t\treturn', body)
+        self.assertLess(body.index('persistence_load_active()'), body.index('handle_look_stuff()'))
+
     def test_animals_hold_still_while_their_level_is_saved(self):
         # Val (2026-11-14): simple animals are held like players while their
         # level is captured; ai_step, the mob process and dog walking all ask

@@ -120,6 +120,11 @@
 
 /mob/living/human/Life()
 
+	// A body the world is still restoring has no organs or health yet: a tick now
+	// would read it as critical, knock it out and empty its hands.
+	if (persistence_load_active())
+		return
+
 	handle_look_stuff()
 	if (map && !map.civilizations && !map.nomads && !map.is_RP)
 		process_awards()
