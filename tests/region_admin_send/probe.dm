@@ -238,10 +238,19 @@ var/region_admin_send_probe_checks = 0
 	var/list/diff = region_admin_send_fingerprint_diff(before, after)
 	region_admin_send_probe_assert(!diff.len, "one_to_one: [jointext(diff, "; ")] | before [json_encode(before)] | after [json_encode(after)]")
 	region_admin_send_probe_assert(md5(json_encode(after)) == landing["check"], "arrival_check_matches")
+	var/list/sent_checks = region_admin_send_checks(before)
+	region_admin_send_probe_assert(!length(region_admin_send_checks_diff(sent_checks, region_admin_send_checks(after))), "part_checks_match")
+	// Heavy wounds arrive whole, on the same limbs, with nothing broken or cut off by the trip.
+	var/list/hurt = P.Copy()
+	hurt["limbs"] = list("chest" = list(70, 0, 0), "l_arm" = list(55, 20, 0))
+	var/mob/living/human/hurt_arrival = region_travel_build(hurt, locate(26, 15, 1))
+	var/list/hurt_limbs = hurt_arrival.region_travel_limbs()
+	region_admin_send_probe_assert(json_encode(hurt_limbs["chest"]) == "\[70,0,0]" && json_encode(hurt_limbs["l_arm"]) == "\[55,20,0]" && hurt_limbs.len == 2, "heavy_wounds_carried_exactly: [json_encode(hurt_limbs)]")
 	// The check catches a lost item, a changed amount and a dropped language.
 	var/obj/item/stack/material/bone/b2 = locate() in arrived.back
 	b2.amount = 6
 	region_admin_send_probe_assert(length(region_admin_send_fingerprint_diff(before, region_admin_send_fingerprint(arrived, TRUE))) == 1, "changed_amount_caught")
+	region_admin_send_probe_assert(("items:back" in region_admin_send_checks_diff(sent_checks, region_admin_send_checks(region_admin_send_fingerprint(arrived, TRUE)))), "changed_amount_named")
 	b2.amount = 7
 	qdel(arrived.l_hand)
 	region_admin_send_probe_assert(length(region_admin_send_fingerprint_diff(before, region_admin_send_fingerprint(arrived, TRUE))) == 1, "lost_item_caught")

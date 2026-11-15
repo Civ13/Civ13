@@ -66,6 +66,9 @@ class RegionAdminSendSeams(unittest.TestCase):
         self.assertIn('return FALSE', body(SEND, '/obj/structure/region_gate/admin_send/accepts_arrivals()'))
         run = body(SEND, '/proc/region_admin_send_run(list/bodies, id, list/landing, ship, by, mob/requester)')
         self.assertIn('if(region_admin_send_running)', run)
+        # A runtime part way through never leaves every later send refused.
+        self.assertLess(run.index('try'), run.index('region_admin_send_each('))
+        self.assertLess(run.index('catch'), run.rindex('region_admin_send_running = FALSE'))
         self.assertIn('sleep(ADMIN_SEND_GAP)', body(SEND, '/proc/region_admin_send_each(list/bodies, id, list/landing, ship, by)'))
         # Event regions keep their own transfer, which stashes the home character.
         self.assertIn('region_admin_send_kind_refusal(peer)', body(SEND, '/proc/region_admin_send_destination_refusal(id, wake = TRUE)'))
@@ -74,7 +77,7 @@ class RegionAdminSendSeams(unittest.TestCase):
         one = body(SEND, '/proc/region_admin_send_one(mob/living/human/H, id, list/landing)')
         self.assertIn('.["check"] = md5(json_encode(print))', body(SEND, '/proc/region_admin_send_checked_landing(mob/living/human/H, id, list/landing)'))
         arrived = body(SEND, '/proc/region_admin_send_arrived(mob/living/human/H, list/P, incoming, turf/at)')
-        self.assertIn('md5(json_encode(region_admin_send_fingerprint(H, TRUE))) == S["check"]', arrived)
+        self.assertIn('var/list/print = region_admin_send_fingerprint(H, TRUE)\n\t\tif(md5(json_encode(print)) == S["check"])', arrived)
         print_ = body(SEND, '/proc/region_admin_send_fingerprint(mob/living/human/H, arrived = FALSE)')
         for field in ('"skills"', '"research"', '"scholarship"', '"reading"', '"tongues"', '"faction"', '"items"', '"wounds"', '"tox"'):
             self.assertIn(field, print_)
@@ -83,6 +86,9 @@ class RegionAdminSendSeams(unittest.TestCase):
         self.assertIn('arrived ? H.colony_origin : colony_faction_id(H)', print_)
         # Ship crews are checked 1:1 too.
         self.assertIn('gate.pending["admin_send"] = region_admin_send_crew_landing(H, id, admin_crossing_by)', SHIP)
+        # A mismatch names the parts that differ (sent as one check per part).
+        self.assertIn('region_admin_send_checks_diff(S["checks"], region_admin_send_checks(print))', arrived)
+        self.assertIn('.["checks"] = region_admin_send_checks(print)', body(SEND, '/proc/region_admin_send_checked_landing(mob/living/human/H, id, list/landing)'))
         self.assertIn('region_admin_send_probe_roundtrip()', read('tests/region_admin_send/probe.dm'))
 
     def test_ship_override_only_skips_the_map_edge(self):

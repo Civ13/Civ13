@@ -33,9 +33,15 @@ The ship must be at all stop, not grappled, with the world not saving. Then:
    how it looked, what it wore and its wounds, laid down dead again on
    arrival. Still refused, and named at the tiller with an arrow on deck: an
    animal a player or agent controls, a ridden animal, an engine or vehicle,
-   anything strapped into a seat that is not crew, and a body holding a
-   creature. At most 400 loose things and 40 animals, bodies and structures;
-   chests hold at most 30.
+   anything strapped into a seat that is not crew, a body holding a
+   creature, and what only an admin or the map places (spawners, traders,
+   money printers, level links, docks, helms). A barrel holds at most 10000
+   units. At most 400 loose things and 40 animals, bodies and structures;
+   chests hold at most 30. The animals and dead wait in the crossing gate
+   while the crew depart and are removed only once the ship has gone; if
+   nobody can take her they are put back aboard the rebuilt ship. A
+   structure's contents are removed with it, so a case or workbench that
+   drops what it holds when deleted leaves no copy behind.
 2. **The crew** are everyone standing on her: each must be conscious, not
    restrained, with an account, and carry only what a traveller may carry.
 3. She is taken off the water at once (the crew wait aboard, out of reach),

@@ -86,5 +86,16 @@ class VehicleOffsetSources(unittest.TestCase):
         for label in ('bike_pedals_by_pixels', 'bike_pays_stamina_per_tile', 'raft_paddles_its_speed', 'raft_drifts_to_a_stop', 'raft_stops_at_the_shore', 'unwatched_raft_paddles_by_tiles'):
             self.assertIn(label, PROBE)
 
+    def test_carriages_roll_by_pixels(self):
+        self.assertIn('/obj/structure/vehicle/carriage\n\toffset_drive = TRUE', RIDE)
+        loop = proc(RIDE, '/obj/structure/vehicle/carriage/movementloop(')
+        self.assertIn('return ..()', loop)
+        self.assertIn('next_step = world.time', loop)
+        self.assertIn('return facing', proc(RIDE, '/obj/structure/vehicle/carriage/vehicle_offset_heading('))
+        self.assertIn('hitched_cart', proc(RIDE, '/obj/structure/vehicle/carriage/vehicle_offset_aboard('))
+        self.assertIn('vehicle_offset_release()', proc(RIDE, '/obj/structure/vehicle/carriage/updatepassdir('))
+        for label in ('coach_rolls_by_pixels', 'coach_stops_flush_before_a_wall', 'coach_turn_squares_first', 'coach_cart_hitched'):
+            self.assertIn(label, PROBE)
+
 if __name__ == '__main__':
     unittest.main()

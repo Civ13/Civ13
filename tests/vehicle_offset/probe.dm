@@ -380,6 +380,52 @@ var/list/vehicle_offset_probe_receipt = list()
 	vehicle_offset_probe_assert(!R.offset_paddling && R.x == raft_x - 1 && !R.step_x, "unwatched_raft_paddles_by_tiles ([R.x],[R.step_x])")
 	vehicle_offset_probe_watched = TRUE
 
+	// A carriage with a horse in harness rolls by pixels the way it faces.
+	var/obj/structure/vehicle/carriage/coach = new(locate(33, 3, 1))
+	coach.facing = NORTH
+	coach.apply_shape()
+	var/mob/living/simple_animal/horse/nag = new(locate(33, 3, 1))
+	coach.hitch(nag)
+	var/mob/living/human/vehicle_offset_probe_rider/coachman = new(locate(33, 3, 1))
+	vehicle_offset_probe_assert(coach.take_reins(coachman) && coach.driver_ready() && coach.team_pull() > 0, "coach_ready")
+	vehicle_offset_probe_assert(coach.vehicle_offset_drives() && coach.vehicle_offset_heading() == NORTH, "coach_rolls_the_way_it_faces")
+	var/obj/structure/closet/crate/cart/trailer = new(coach.hitch_turf(coach.facing))
+	vehicle_offset_probe_assert(trailer.hitch_to(coach), "coach_cart_hitched")
+	coach.gear = 1
+	coach.moving = TRUE
+	coach.movement_processes = 1
+	var/coach_from = vehicle_offset_probe_px(coach)[2]
+	for (var/i = 1 to 40)
+		coach.movementloop()
+		if (coach.step_timer)
+			deltimer(coach.step_timer)
+			coach.step_timer = null
+		vehicle_offset_probe_assert(coachman.loc == coach.loc && nag.loc == coach.loc && coachman.step_y == coach.step_y && nag.step_y == coach.step_y && trailer.step_y == coach.step_y && trailer.loc == coach.hitch_turf(coach.facing), "coach_tick_[i]_rig_together")
+	var/coach_rolled = vehicle_offset_probe_px(coach)[2] - coach_from
+	vehicle_offset_probe_assert(coach.moving && coach.y > 3 && coach_rolled > 32 && !coach.step_x, "coach_rolls_by_pixels ([coach_rolled],[coach.y],[coach.step_y])")
+	vehicle_offset_probe_receipt["coach_px_in_40_ticks"] = coach_rolled
+	// A wall across the team's lane stops it before the horse overlaps it.
+	var/coach_wall = coach.y + 6
+	new /obj/structure/vehicle_offset_probe_wall(locate(33, coach_wall, 1))
+	new /obj/structure/vehicle_offset_probe_wall(locate(34, coach_wall, 1))
+	for (var/i = 1 to 200)
+		if (!coach.moving)
+			break
+		coach.movementloop()
+		if (coach.step_timer)
+			deltimer(coach.step_timer)
+			coach.step_timer = null
+	var/list/coach_cells = coach.cells_at(coach.loc, coach.facing)
+	var/turf/wall_cell = locate(33, coach_wall, 1)
+	var/turf/last_cell = locate(33, coach_wall - 1, 1)
+	vehicle_offset_probe_assert(!coach.moving && coach.step_y == 0 && !(wall_cell in coach_cells) && (last_cell in coach_cells), "coach_stops_flush_before_a_wall ([coach.y],[coach.step_y],[coach.moving])")
+	// Turning squares it on its tile first.
+	coach.offset_mover.oy = 9
+	coach.offset_mover.draw()
+	coach.dir = EAST
+	coach.updatepassdir()
+	vehicle_offset_probe_assert(!coach.step_y && !coachman.step_y, "coach_turn_squares_first")
+
 	// A carriage: one object with 64x96 bounds covers six tiles.
 	var/obj/structure/vehicle/carriage/C = new(locate(25, 20, 1))
 	var/datum/vehicle_offset/CA = new(C)

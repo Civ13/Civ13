@@ -138,8 +138,13 @@ var/global/region_admin_send_running = FALSE
 	if(!islist(S) || !(S["landing"] in list(ADMIN_SEND_SHORE, ADMIN_SEND_COORDS, ADMIN_SEND_ARRIVAL))) return FALSE
 	if(!istext(S["by"]) || !length(S["by"]) || length(S["by"]) > 32) return FALSE
 	for(var/key in S)
-		if(!(key in list("landing", "by", "at", "check"))) return FALSE
+		if(!(key in list("landing", "by", "at", "check", "checks"))) return FALSE
 	if(!isnull(S["check"]) && (!istext(S["check"]) || length(S["check"]) != 32)) return FALSE
+	if(!isnull(S["checks"]))
+		var/list/checks = S["checks"]
+		if(!islist(checks) || checks.len > 64) return FALSE
+		for(var/part in checks)
+			if(!istext(part) || length(part) > 40 || !istext(checks[part]) || length(checks[part]) != 32) return FALSE
 	if(S["landing"] != ADMIN_SEND_COORDS) return isnull(S["at"])
 	var/list/at = S["at"]
 	if(!islist(at) || at.len != 3) return FALSE
@@ -361,6 +366,7 @@ var/global/region_admin_send_running = FALSE
 	region_admin_send_snapshot(H, id, landing, print)
 	. = landing.Copy()
 	.["check"] = md5(json_encode(print))
+	.["checks"] = region_admin_send_checks(print)
 
 // What each of a ship's crew carries on an admin's crossing (ship_crossing.dm):
 // she anchors as a crossing does, and each is checked 1:1 like anyone sent.
@@ -394,6 +400,18 @@ var/global/region_admin_send_running = FALSE
 		// The faction travels as its id; the arrival keeps it as its origin and
 		// rejoins it only where it has a colony (colony_charter.dm).
 		"faction" = arrived ? H.colony_origin : colony_faction_id(H), "items" = items)
+
+// One short check per part of a fingerprint (each item slot on its own), so an
+// arrival can say what differs, not only that something does.
+/proc/region_admin_send_checks(list/print)
+	. = list()
+	for(var/key in print)
+		if(key == "items")
+			var/list/items = print["items"]
+			for(var/slot_name in items)
+				.["items:[slot_name]"] = md5(json_encode(items[slot_name]))
+		else
+			.[key] = md5(json_encode(print[key]))
 
 // An associative list as sorted "key=value" text, nested lists included, so
 // the order a world happened to fill it in never counts.
@@ -474,10 +492,12 @@ var/global/region_admin_send_running = FALSE
 		if(requester) to_chat(requester, SPAN_WARNING("Another region transfer is still running here. Try again when it finishes."))
 		return FALSE
 	region_admin_send_running = TRUE
+	// A runtime part way through must never leave every later send refused.
 	try
 		region_admin_send_each(bodies, id, landing, ship, by)
-	catch(var/exception/E)
-		region_admin_send_tell("[by]'s transfer to [id] stopped on an error: [E.name]. Anyone not reported as sent is still here.")
+	catch(var/exception/e)
+		log_game("Region admin send: stopped part way: [e.name] ([e.file]:[e.line]).")
+		region_admin_send_tell("[by]'s region transfer stopped part way: [e.name]. Check who was sent before trying again.")
 	region_admin_send_running = FALSE
 	return TRUE
 
@@ -601,8 +621,23 @@ var/global/region_admin_send_running = FALSE
 		placed = P["admin_placed"] ? " ([region_admin_send_landing_name(S["landing"])])" : " (the normal arrival point: [region_admin_send_landing_name(S["landing"])] was not found)"
 	var/exact = ""
 	if(istext(S["check"]))
-		exact = md5(json_encode(region_admin_send_fingerprint(H, TRUE))) == S["check"] ? " Everything arrived exactly as it left." : " WARNING: the character differs from what left; compare with the snapshot in [P["from"]]'s data/transfer-snapshots."
+		var/list/print = region_admin_send_fingerprint(H, TRUE)
+		if(md5(json_encode(print)) == S["check"])
+			exact = " Everything arrived exactly as it left."
+		else
+			var/list/differs = region_admin_send_checks_diff(S["checks"], region_admin_send_checks(print))
+			exact = " WARNING: the character differs from what left[differs.len ? " ([english_list(differs)])" : ""]; compare with the snapshot in [P["from"]]'s data/transfer-snapshots."
 	region_admin_send_tell("[P["owner"]]'s character [H.real_name] arrived in [here] from [region_ooc_region_name(P["from"])] at [at.x],[at.y],[at.z][placed], sent by [S["by"]].[exact] Waiting for them to join.")
+
+// The parts whose checks differ, by name ("skills", "items:back"), or an empty
+// list when the sender sent none (an older sender).
+/proc/region_admin_send_checks_diff(list/sent, list/here)
+	. = list()
+	if(!islist(sent))
+		return
+	for(var/part in sent | here)
+		if(sent[part] != here[part])
+			. += part
 
 // The player took the character an admin sent here.
 /proc/region_admin_send_claimed(mob/living/human/H)

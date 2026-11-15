@@ -403,7 +403,7 @@ var/global/list/sea_crossing_marked = list()
 
 // Builds a ship from record R with her tiller at pivot. Returns the tiller,
 // or null (nothing is left half built: a failed commission strips her again).
-/proc/sea_crossing_build(list/R, turf/pivot, voyage = null)
+/proc/sea_crossing_build(list/R, turf/pivot, voyage = null, skip_mobs = FALSE)
 	if (!sea_crossing_record_ok(R) || !istype(pivot))
 		return null
 	var/list/offsets = list()
@@ -458,10 +458,14 @@ var/global/list/sea_crossing_marked = list()
 					if (loose)
 						made += loose
 				if ("g")
+					if (skip_mobs && sea_crossing_entry_mob(E))
+						continue
 					var/atom/movable/thing = sea_crossing_cargo_build(E, T)
 					if (thing)
 						made += thing
 				if ("b")
+					if (skip_mobs)
+						continue
 					var/mob/living/human/body = sea_crossing_body_build(E, T)
 					if (body)
 						made += body
@@ -490,7 +494,7 @@ var/global/list/sea_crossing_marked = list()
 
 // Everything a record holds, put down at T when no ship can be built: her
 // floors and masts are lost, nothing carried is, the animals and dead included.
-/proc/sea_crossing_wreck(list/R, turf/T)
+/proc/sea_crossing_wreck(list/R, turf/T, skip_mobs = FALSE)
 	if (!islist(R) || !istype(T))
 		return
 	for (var/list/tile in R["tiles"])
@@ -500,33 +504,67 @@ var/global/list/sea_crossing_marked = list()
 					region_travel_make_worn(I[1], I[2], T)
 			else if (E[1] == "i")
 				region_travel_make_worn(E[2], E[3], T)
-			else if (E[1] == "g")
+			else if (E[1] == "g" && !(skip_mobs && sea_crossing_entry_mob(E)))
 				sea_crossing_cargo_build(E, T)
-			else if (E[1] == "b")
+			else if (E[1] == "b" && !skip_mobs)
 				sea_crossing_body_build(E, T)
 
 // Takes the packed ship off the water: every floor, mast, chest and thing on her deck.
 // The tiller itself and any gate stay; the caller deals with them. cargo: the
 // animals and dead she packed go too (her living crew are never on deck then).
-/proc/sea_crossing_strip(obj/structure/hull_tiller/tiller, cargo = FALSE)
+// hold: they wait inside it instead, until the crossing is known to have gone
+// (sea_crossing_cargo_gone) or failed; returns them, each with the turf it left.
+/proc/sea_crossing_strip(obj/structure/hull_tiller/tiller, cargo = FALSE, atom/movable/hold = null)
+	var/list/parked = list()
 	var/datum/craft_body/built/B = tiller.body()
 	if (!istype(B))
-		return
+		return parked
 	var/list/turfs = B.cells()
 	tiller.decommission()
 	for (var/turf/T in turfs)
 		for (var/atom/movable/M in T)
 			if (cargo && M.loc == T && sea_crossing_packed_mob(M))
-				// A player still in their dead body watches it go as a ghost.
-				var/mob/living/L = M
-				if (L.client)
-					L.ghostize()
-				qdel(M)
+				if (hold)
+					parked[M] = T
+					M.forceMove(hold)
+				else
+					sea_crossing_cargo_gone(M)
 				continue
 			if (M.loc != T || M == tiller || ismob(M) || istype(M, /obj/structure/region_gate) || istype(M, /atom/movable/lighting_overlay) || istype(M, /atom/movable/lighting_fullbright) || M.craft_left_behind())
 				continue
+			if (istype(M, /obj/structure))
+				sea_crossing_empty(M, T)
 			if (istype(M, /obj/covers) || istype(M, /obj/item) || istype(M, /obj/structure) || istype(M, /obj/effect))
 				qdel(M)
+	return parked
+
+// Deletes what structure M holds before M itself goes: it crossed in M's
+// record, and many structures put their contents down as they are deleted,
+// which would leave a second copy behind. A creature inside is put out at T.
+/proc/sea_crossing_empty(atom/movable/M, turf/T)
+	for (var/atom/movable/inside in M)
+		if (ismob(inside))
+			inside.forceMove(T)
+		else
+			qdel(inside)
+
+// An animal or body that crossed is removed from here. A player still in
+// their dead body watches it go as a ghost.
+/proc/sea_crossing_cargo_gone(mob/living/L)
+	if (QDELETED(L))
+		return
+	if (L.client)
+		L.ghostize()
+	qdel(L)
+
+// TRUE for a deck entry that rebuilds a creature: a body, or an animal's record.
+/proc/sea_crossing_entry_mob(list/E)
+	if (E[1] == "b")
+		return TRUE
+	if (E[1] != "g")
+		return FALSE
+	var/list/R = region_travel_generic_record(E[2], TRUE)
+	return R && ispath(text2path(R["t"]), /mob)
 
 // TRUE for a mob a crossing packed as cargo: an animal nobody plays, or a body.
 /proc/sea_crossing_packed_mob(atom/movable/M)
@@ -654,7 +692,8 @@ var/global/list/sea_crossing_marked = list()
 			H.persistence_owner_ckey = agent_travel_account(H)
 		H.forceMove(gate)
 	log_game("Sea crossing: the [record["name"]] ([length(record["tiles"])] tiles, [crew.len] crew) leaves [pivot.x],[pivot.y],[pivot.z] for [id] (voyage [voyage]).")
-	sea_crossing_strip(src, TRUE)
+	// The animals and dead wait in the gate too: they go only once she has.
+	var/list/parked = sea_crossing_strip(src, TRUE, gate)
 	// The struck tiller leaves the water too; it is deleted once she is away.
 	loc = null
 	var/carried = FALSE
@@ -679,16 +718,23 @@ var/global/list/sea_crossing_marked = list()
 			to_chat(H, SPAN_WARNING("You stay behind: [result]"))
 	gate.pending = null
 	if (!carried)
-		// Nobody could take her: she is built again where she lay.
-		var/obj/structure/hull_tiller/again = sea_crossing_build(record, pivot)
+		// Nobody could take her: she is built again where she lay, and the
+		// animals and dead who waited are put back aboard as they were.
+		var/obj/structure/hull_tiller/again = sea_crossing_build(record, pivot, null, TRUE)
 		if (!again)
-			sea_crossing_wreck(record, pivot)
+			sea_crossing_wreck(record, pivot, TRUE)
+		for (var/mob/M in parked)
+			if (!QDELETED(M))
+				M.forceMove(again ? parked[M] : pivot)
 		for (var/mob/living/human/H in stayed)
 			H.forceMove(pivot)
 		qdel(gate)
 		log_game("Sea crossing: nobody could take the [record["name"]] to [id]; she lies where she was.")
 		return "Nobody could make the crossing."
-	// She has gone; whoever could not follow is put ashore.
+	// She has gone, and her animals and dead with her.
+	for (var/mob/M in parked)
+		sea_crossing_cargo_gone(M)
+	// Whoever could not follow is put ashore.
 	var/turf/ashore = region_travel_arrival_turf() || pivot
 	for (var/mob/living/human/H in stayed)
 		H.forceMove(ashore)
