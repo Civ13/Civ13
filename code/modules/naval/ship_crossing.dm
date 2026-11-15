@@ -621,7 +621,8 @@ var/global/list/sea_crossing_marked = list()
 		return "Nobody is aboard to sail her."
 	for (var/mob/living/human/H in crew)
 		var/problem = null
-		if (H.client ? IsGuestKey(H.client.key) : !agent_travel_account(H))
+		// An admin's crossing (region_admin_send.dm) also takes a logged-out player's body.
+		if (H.client ? IsGuestKey(H.client.key) : !(agent_travel_account(H) || (admin_crossing && H.persistence_owner_ckey)))
 			problem = "only players with a BYOND account can make the crossing"
 		else if (H.stat != CONSCIOUS || H.restrained())
 			problem = "[H.real_name] cannot make the crossing like this"
@@ -649,7 +650,7 @@ var/global/list/sea_crossing_marked = list()
 			H.buckled.unbuckle_mob()
 		if (H.client)
 			H.record_persistence_owner()
-		else
+		else if (agent_travel_account(H) || !admin_crossing)
 			H.persistence_owner_ckey = agent_travel_account(H)
 		H.forceMove(gate)
 	log_game("Sea crossing: the [record["name"]] ([length(record["tiles"])] tiles, [crew.len] crew) leaves [pivot.x],[pivot.y],[pivot.z] for [id] (voyage [voyage]).")
@@ -664,7 +665,7 @@ var/global/list/sea_crossing_marked = list()
 			continue
 		gate.pending = list("voyage" = voyage)
 		if (admin_crossing_by)
-			gate.pending["admin_send"] = list("landing" = "arrival", "by" = admin_crossing_by)
+			gate.pending["admin_send"] = region_admin_send_crew_landing(H, id, admin_crossing_by)
 		if (!carried)
 			gate.pending["ship"] = record
 		var/result = gate.depart(H)

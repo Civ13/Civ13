@@ -147,6 +147,8 @@ public static class RegionPlayers {
     }
     private static string? Str(JsonElement json, string name) =>
         json.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.String ? value.GetString() : null;
+    // BYOND's json_encode writes TRUE and FALSE as 1 and 0.
     private static bool Bool(JsonElement json, string name) =>
-        json.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.True;
+        json.TryGetProperty(name, out var value) && (value.ValueKind == JsonValueKind.True
+            || (value.ValueKind == JsonValueKind.Number && value.TryGetDouble(out var number) && number != 0));
 }

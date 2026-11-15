@@ -187,6 +187,9 @@ var/region_admin_send_probe_checks = 0
 		basket.handle_item_insertion(I, TRUE)
 	var/obj/item/stack/material/bone/more_bones = new(T, 3)
 	satchel.handle_item_insertion(more_bones, TRUE)
+	// A preset coin pile travels as coins of the same amount.
+	var/obj/item/stack/money/coppercoin/twohundred/coins = new(T)
+	satchel.handle_item_insertion(coins, TRUE)
 	var/obj/item/weapon/paddle/paddle = new(T)
 	V.equip_to_slot_or_del(leaves, slot_w_uniform)
 	V.equip_to_slot_or_del(coat, slot_wear_suit)
@@ -197,11 +200,28 @@ var/region_admin_send_probe_checks = 0
 	region_admin_send_probe_assert(V.back == basket && V.r_hand == satchel && V.w_uniform == leaves, "voyager_dressed")
 	var/list/first = V.stats["crafting"]
 	if (islist(first))
-		V.stats["crafting"] = list(first[1] + 7, first[2] + 3)
+		// Trained skills are long fractions; JSON keeps six digits of them.
+		V.stats["crafting"] = list(first[1] + 7.364746123, first[2] + 3.0049871)
 	V.region_travel_restore_tongues(list("known" = list("Latin" = 100, "Old Norse" = 41.5), "default" = "Latin", "origin" = "latins", "land" = "Gaia"))
 	V.nutrition = 321
 	V.water = 222
-	V.adjustBruteLoss(12)
+	// Wounds stay on their own limbs: a cut leg, a burnt arm, a broken leg,
+	// a lost foot and some poisoning, none of it worse on arrival.
+	var/obj/item/organ/external/leg = V.organs_by_name["l_leg"]
+	leg.createwound(CUT, 15)
+	leg.update_damages()
+	var/obj/item/organ/external/arm = V.organs_by_name["r_arm"]
+	arm.createwound(BURN, 8)
+	arm.update_damages()
+	var/obj/item/organ/external/shin = V.organs_by_name["r_leg"]
+	shin.status |= ORGAN_BROKEN
+	var/obj/item/organ/external/foot = V.organs_by_name["l_foot"]
+	foot.removed(null)
+	qdel(foot)
+	V.setToxLoss(5)
+	V.updatehealth()
+	var/list/limbs = V.region_travel_limbs()
+	region_admin_send_probe_assert(json_encode(limbs["l_leg"]) == "\[15,0,0]" && json_encode(limbs["r_arm"]) == "\[0,8,0]" && json_encode(limbs["r_leg"]) == "\[0,0,1]" && limbs["l_foot"] == "missing", "limbs_recorded: [json_encode(limbs)]")
 	var/list/before = region_admin_send_fingerprint(V)
 	region_admin_send_probe_assert(length(before["items"]) == 6 && length(before["tongues"]) >= 3, "fingerprint_sees_everything")
 	var/list/carried = V.region_travel_items()
@@ -210,19 +230,23 @@ var/region_admin_send_probe_checks = 0
 	var/list/P = region_travel_decode(V.region_travel_payload(carried, null, FALSE, list("admin_send" = landing)))
 	region_admin_send_probe_assert(islist(P), "payload_decodes")
 	var/mob/living/human/arrived = region_travel_build(P, locate(25, 15, 1))
-	var/list/after = region_admin_send_fingerprint(arrived)
+	var/list/after = region_admin_send_fingerprint(arrived, TRUE)
+	var/obj/item/organ/external/arrived_shin = arrived.organs_by_name["r_leg"]
+	var/obj/item/organ/external/arrived_leg = arrived.organs_by_name["l_leg"]
+	region_admin_send_probe_assert(arrived_shin && (arrived_shin.status & ORGAN_BROKEN) && !arrived.organs_by_name["l_foot"] && arrived_leg && !(arrived_leg.status & ORGAN_BROKEN), "wounds_where_they_were")
+	region_admin_send_probe_assert(arrived.getToxLoss() == 5, "poison_carried")
 	var/list/diff = region_admin_send_fingerprint_diff(before, after)
 	region_admin_send_probe_assert(!diff.len, "one_to_one: [jointext(diff, "; ")] | before [json_encode(before)] | after [json_encode(after)]")
 	region_admin_send_probe_assert(md5(json_encode(after)) == landing["check"], "arrival_check_matches")
 	// The check catches a lost item, a changed amount and a dropped language.
 	var/obj/item/stack/material/bone/b2 = locate() in arrived.back
 	b2.amount = 6
-	region_admin_send_probe_assert(length(region_admin_send_fingerprint_diff(before, region_admin_send_fingerprint(arrived))) == 1, "changed_amount_caught")
+	region_admin_send_probe_assert(length(region_admin_send_fingerprint_diff(before, region_admin_send_fingerprint(arrived, TRUE))) == 1, "changed_amount_caught")
 	b2.amount = 7
 	qdel(arrived.l_hand)
-	region_admin_send_probe_assert(length(region_admin_send_fingerprint_diff(before, region_admin_send_fingerprint(arrived))) == 1, "lost_item_caught")
+	region_admin_send_probe_assert(length(region_admin_send_fingerprint_diff(before, region_admin_send_fingerprint(arrived, TRUE))) == 1, "lost_item_caught")
 	arrived.region_travel_restore_tongues(list("known" = list("Latin" = 100), "default" = "Latin", "origin" = "latins", "land" = "Gaia"))
-	region_admin_send_probe_assert(length(region_admin_send_fingerprint_diff(before, region_admin_send_fingerprint(arrived))) == 2, "lost_language_caught")
+	region_admin_send_probe_assert(length(region_admin_send_fingerprint_diff(before, region_admin_send_fingerprint(arrived, TRUE))) == 2, "lost_language_caught")
 
 /world/New()
 	OpenPort("none")

@@ -78,7 +78,7 @@ var/global/region_admin_send_running = FALSE
 	for(var/id in shard_group.order)
 		if(id == shard_group.region) continue
 		var/list/peer = shard_group.peers[id]
-		if(!islist(peer) || peer["kind"] == "EVENT") continue
+		if(!islist(peer) || region_admin_send_kind_refusal(peer)) continue
 		.["[peer["name"]] ([lowertext(peer["state"] || "unknown")])"] = id
 
 // Null when players can be sent to id now (wake: a sleeping land counts as
@@ -88,13 +88,33 @@ var/global/region_admin_send_running = FALSE
 	if(!istext(id) || id == shard_group.region) return "Choose another region."
 	var/list/peer = shard_group.peers[id]
 	if(!islist(peer)) return "[id] is not a region of this group."
-	if(peer["kind"] == "EVENT") return "[peer["name"]] is an event region: use Event Transfer, which keeps their characters here."
+	var/kind = region_admin_send_kind_refusal(peer)
+	if(kind) return kind
 	if(!transfer_bridge.ready()) return "The transfer agent is not ready here, so nobody can travel."
 	if(!(id in transfer_bridge.peers)) return "The transfer agent here has no route to [peer["name"]]."
 	if(peer["state"] == "STOPPED") return "[peer["name"]] is stopped. Start it from the launcher or host first."
 	if(peer["state"] != "UP" && !(wake && shard_group.peer_wakeable(id))) return "[peer["name"]] is not answering ([lowertext(peer["state"] || "unknown")])."
 	if(persistence_save_active()) return "This world is saving. Try again in a moment."
 	return null
+
+// Why nobody can be sent to peer for good, or null. Event regions keep their
+// own transfer; the TDM worlds and the tutorial never keep a character; a free
+// expedition slot holds no land yet.
+/proc/region_admin_send_kind_refusal(list/peer)
+	switch(peer["kind"])
+		if("EVENT") return "[peer["name"]] is an event region: use Event Transfer, which keeps their characters here."
+		if("BARRACKS", "BATTLE", "TUTORIAL") return "[peer["name"]] never keeps a character, so nobody can be sent there."
+		if("EXPEDITION")
+			if(peer["state"] == "UP" && peer["map"] == "A New Land") return "[peer["name"]] is a free slot with no land in it yet."
+	return null
+
+// The regions a ship can be sent to: those an ordinary crossing could reach,
+// since only they make room for her off their coasts (naval/ship_crossing.dm).
+/proc/region_admin_send_ship_destinations()
+	. = list()
+	var/list/lands = sea_crossing_destinations()
+	for(var/name in lands)
+		. += lands[name]
 
 // list("landing" = mode, "by" = who, and "at" = list(x, y, z) for coordinates),
 // or a text reason. at_text: "x,y,z".
@@ -148,23 +168,85 @@ var/global/region_admin_send_running = FALSE
 	if(event_stash_holds(H)) return "They are away at an event."
 	if(!isturf(H.loc)) return "They are inside \the [H.loc]. Get them out first."
 	var/list/items = H.region_travel_items()
-	if(istext(items)) return items
+	// What cannot travel is left here on their tile (region_admin_send_leave_behind),
+	// so only refuse when that would not be enough.
+	if(istext(items) && !length(region_admin_send_left_behind(H))) return items
 	return null
+
+// What H wears or holds that cannot travel, as the things themselves: an item
+// the record has no way to carry, or what in a bag stops the bag travelling
+// (the bag and the rest of it go). Grabs and organs are never counted.
+/proc/region_admin_send_left_behind(mob/living/human/H)
+	. = list()
+	var/list/known = list()
+	for(var/slot_name in region_travel_slots)
+		var/obj/item/I = H.get_equipped_item(region_travel_slots[slot_name])
+		if(!I) continue
+		known += I
+		if(region_travel_worn_kind(I)) continue
+		var/list/inside = list()
+		if(istype(I, /obj/item/weapon/storage))
+			for(var/atom/movable/A in I.contents)
+				var/obj/item/C = A
+				if(!istype(C) || !(region_travel_item_kind(C) || region_travel_loose_kind(C) || region_travel_generic_kind(C)))
+					inside += A
+		. += inside.len ? inside : list(I)
+	for(var/obj/item/I in H)
+		if(istype(I, /obj/item/organ) || istype(I, /obj/item/weapon/grab)) continue
+		if(!(I in known)) . += I
+
+// Leaves what cannot travel on H's tile, so the rest goes 1:1. Returns the
+// names left and where, as text, or null when nothing was.
+/proc/region_admin_send_leave_behind(mob/living/human/H)
+	if(!istext(H.region_travel_items())) return null
+	var/list/left = region_admin_send_left_behind(H)
+	if(!left.len) return null
+	var/turf/T = get_turf(H)
+	var/list/names = list()
+	for(var/atom/movable/A in left)
+		names += A.name
+		var/obj/item/weapon/storage/S = A.loc
+		if(istype(S) && istype(A, /obj/item))
+			S.remove_from_storage(A, T)
+		else if(A.loc == H && istype(A, /obj/item))
+			H.drop_from_inventory(A, T)
+		if(A.loc != T)
+			A.forceMove(T)
+	return "[english_list(names)] at [T.x],[T.y],[T.z]"
 
 // What stays behind when H is sent, as a list of text (never a refusal).
 /proc/region_admin_send_warnings(mob/living/human/H)
 	. = list()
-	if(H.buckled) . += "they leave \the [H.buckled] behind"
+	if(H.riding && H.riding_mob) . += "they get off \the [H.riding_mob], which stays here"
+	else if(H.buckled) . += "they leave \the [H.buckled] behind"
 	if(H.pulling) . += "they let go of \the [H.pulling]"
-	if(H.health < H.maxHealth) . += "they travel hurt, as they are"
-	if(!H.client) . += "they are offline: their character waits there for them"
+	if(istext(H.region_travel_items()))
+		var/list/names = list()
+		for(var/atom/movable/A in region_admin_send_left_behind(H))
+			names += A.name
+		. += "these cannot travel and are left on their tile here: [english_list(names)]"
+	if(H.health < H.maxHealth) . += "they travel hurt, every wound as it is"
+	if(!H.client)
+		. += "they are offline: their character waits there for them"
+		var/account = H.persistence_owner_ckey
+		for(var/client/C in clients)
+			if(C.ckey == account)
+				. += "[account] is online here as [C.mob ? C.mob.name : "someone else"] and must join the other region to take the character"
+				break
 
-// One preflight row per character: ckey, name, ok, reason, warnings.
+// One preflight row per character, in the order of bodies: ckey, name, ok,
+// reason, warnings. A body gone since it was picked keeps its row, refused.
 /proc/region_admin_send_preflight(list/bodies, id, list/landing, ship = FALSE)
 	. = list()
 	var/destination = region_admin_send_destination_refusal(id)
+	if(!destination && ship && !(id in region_admin_send_ship_destinations()))
+		destination = "A ship sails only to a land across the sea, or from there home to the mainland."
 	var/list/tillers = list()
-	for(var/mob/living/human/H in bodies)
+	for(var/i = 1 to length(bodies))
+		var/mob/living/human/H = bodies[i]
+		if(!istype(H) || QDELETED(H))
+			. += list(list("ckey" = null, "name" = null, "ok" = FALSE, "reason" = "They are gone.", "warnings" = list()))
+			continue
 		var/list/row = list("ckey" = H.client ? H.client.ckey : H.persistence_owner_ckey, "name" = H.real_name, "ok" = FALSE, "reason" = destination, "warnings" = list())
 		if(!row["reason"] && ship)
 			var/obj/structure/hull_tiller/tiller = region_admin_send_tiller(H)
@@ -182,12 +264,15 @@ var/global/region_admin_send_running = FALSE
 			if(!row["reason"])
 				// The destination decodes with the same rules; never send what it would drop.
 				// The send records the owner first (region_admin_send_one); measure as it will.
-				var/recorded = H.persistence_owner_ckey
-				if(H.client && !recorded) H.persistence_owner_ckey = H.client.ckey
-				var/payload = H.region_travel_payload(H.region_travel_items(), null, FALSE, list("admin_send" = landing))
-				H.persistence_owner_ckey = recorded
-				if(length(payload) > (findtext(payload, "\"ship\":") ? 393216 : 131072) || !region_travel_decode(payload))
-					row["reason"] = "Something about them cannot make the journey (their record is too big or does not pass its check)."
+				// With things to leave behind the record is measured again as they go.
+				var/list/items = H.region_travel_items()
+				if(islist(items))
+					var/recorded = H.persistence_owner_ckey
+					if(H.client && !recorded) H.persistence_owner_ckey = H.client.ckey
+					var/payload = H.region_travel_payload(items, null, FALSE, list("admin_send" = landing))
+					H.persistence_owner_ckey = recorded
+					if(length(payload) > (findtext(payload, "\"ship\":") ? 393216 : 131072) || !region_travel_decode(payload))
+						row["reason"] = "Something about them cannot make the journey (their record is too big or does not pass its check)."
 		if(!row["reason"])
 			row["ok"] = TRUE
 			row["warnings"] += region_admin_send_warnings(H)
@@ -204,7 +289,7 @@ var/global/region_admin_send_running = FALSE
 	var/list/crew = packed["crew"]
 	if(!crew.len) return "Nobody is aboard to sail her."
 	for(var/mob/living/human/H in crew)
-		if(H.client ? IsGuestKey(H.client.key) : !agent_travel_account(H))
+		if(H.client ? IsGuestKey(H.client.key) : !(agent_travel_account(H) || H.persistence_owner_ckey))
 			return "[H.real_name] aboard has no BYOND account."
 		if(H.stat != CONSCIOUS || H.restrained())
 			return "[H.real_name] aboard cannot make the crossing like this."
@@ -244,7 +329,7 @@ var/global/region_admin_send_running = FALSE
 
 // Sends one character. Returns "departed" or why not. Sleeps.
 /proc/region_admin_send_one(mob/living/human/H, id, list/landing)
-	var/reason = region_admin_send_refusal(H)
+	var/reason = region_admin_send_destination_refusal(id) || region_admin_send_refusal(H)
 	if(reason) return reason
 	var/list/peer = shard_group.peers[id]
 	if(peer["state"] != "UP")
@@ -255,17 +340,32 @@ var/global/region_admin_send_running = FALSE
 	H.stop_pulling()
 	if(H.buckled)
 		H.buckled.unbuckle_mob()
+	var/left = region_admin_send_leave_behind(H)
+	if(left)
+		region_admin_send_tell("[H.real_name] could not take [left]; left there in [shard_group.name].")
+		reason = region_admin_send_refusal(H)
+		if(reason) return reason
 	if(H.client)
 		H.record_persistence_owner()
-	var/list/print = region_admin_send_fingerprint(H)
-	region_admin_send_snapshot(H, id, landing, print)
 	var/obj/structure/region_gate/admin_send/gate = new(get_turf(H))
 	gate.destination = id
-	gate.landing = landing.Copy()
-	// The destination checks the arrival against this (region_admin_send_arrived).
-	gate.landing["check"] = md5(json_encode(print))
+	gate.landing = region_admin_send_checked_landing(H, id, landing)
 	. = gate.depart(H)
 	qdel(gate)
+
+// The landing an admin send carries, with the fingerprint the destination
+// checks the arrival against (region_admin_send_arrived), after keeping the
+// snapshot on disk.
+/proc/region_admin_send_checked_landing(mob/living/human/H, id, list/landing)
+	var/list/print = region_admin_send_fingerprint(H)
+	region_admin_send_snapshot(H, id, landing, print)
+	. = landing.Copy()
+	.["check"] = md5(json_encode(print))
+
+// What each of a ship's crew carries on an admin's crossing (ship_crossing.dm):
+// she anchors as a crossing does, and each is checked 1:1 like anyone sent.
+/proc/region_admin_send_crew_landing(mob/living/human/H, id, by)
+	return region_admin_send_checked_landing(H, id, list("landing" = ADMIN_SEND_ARRIVAL, "by" = by))
 
 // ---------------------------------------------------------------- 1:1
 
@@ -274,7 +374,7 @@ var/global/region_admin_send_running = FALSE
 // worn or held with everything inside it, at any depth (type, name, amount,
 // reagents, colour). Two characters with the same fingerprint left and arrived
 // alike. Contents are sorted, so the order things lie in a bag never counts.
-/proc/region_admin_send_fingerprint(mob/living/human/H)
+/proc/region_admin_send_fingerprint(mob/living/human/H, arrived = FALSE)
 	var/list/items = list()
 	for(var/slot_name in region_travel_slots)
 		var/obj/item/I = H.get_equipped_item(region_travel_slots[slot_name])
@@ -282,13 +382,18 @@ var/global/region_admin_send_running = FALSE
 	var/list/skills = list()
 	for(var/stat in H.stats)
 		var/list/pair = H.stats[stat]
-		if(islist(pair) && pair.len == 2) skills[stat] = list(round(pair[1], 0.01), round(pair[2], 0.01))
+		// As the record carries them: JSON keeps six significant digits.
+		if(islist(pair) && pair.len == 2)
+			var/list/carried = json_decode(json_encode(pair))
+			skills[stat] = list(round(carried[1], 0.01), round(carried[2], 0.01))
 	return list("name" = H.real_name, "gender" = H.gender, "age" = H.age, "skills" = region_admin_send_sorted(skills),
 		"research" = sortList(clean_recipe_node_ids(H.known_recipe_nodes)), "scholarship" = region_admin_send_sorted(clean_scholarship(H.scholarship)),
 		"reading" = region_admin_send_sorted(clean_study_progress(H.study_progress)), "tongues" = region_admin_send_sorted(H.region_travel_tongues()),
 		"nutrition" = clamp(round(H.nutrition), 0, 1000), "water" = clamp(round(H.water), 0, 1000),
-		"wounds" = clamp(round(H.getBruteLoss()), 0, 200) + clamp(round(H.getBurnLoss()), 0, 200),
-		"faction" = colony_faction_id(H), "items" = items)
+		"wounds" = region_admin_send_sorted(H.region_travel_limbs()), "tox" = clamp(round(H.getToxLoss()), 0, 200),
+		// The faction travels as its id; the arrival keeps it as its origin and
+		// rejoins it only where it has a colony (colony_charter.dm).
+		"faction" = arrived ? H.colony_origin : colony_faction_id(H), "items" = items)
 
 // An associative list as sorted "key=value" text, nested lists included, so
 // the order a world happened to fill it in never counts.
@@ -305,6 +410,11 @@ var/global/region_admin_send_running = FALSE
 	if(istype(I, /obj/item/stack))
 		var/obj/item/stack/S = I
 		R["amount"] = S.amount
+		// A stack travels as its good (a two-hundred coin pile is coins), not its exact type.
+		var/kind = region_travel_item_kind(I)
+		if(copytext(kind, 1, 7) == "stack:")
+			R["type"] = kind
+			R["name"] = null
 	if(I.color) R["color"] = "[I.color]"
 	if(I.reagents && I.reagents.reagent_list.len)
 		var/list/held = list()
@@ -364,6 +474,21 @@ var/global/region_admin_send_running = FALSE
 		if(requester) to_chat(requester, SPAN_WARNING("Another region transfer is still running here. Try again when it finishes."))
 		return FALSE
 	region_admin_send_running = TRUE
+	try
+		region_admin_send_each(bodies, id, landing, ship, by)
+	catch(var/exception/E)
+		region_admin_send_tell("[by]'s transfer to [id] stopped on an error: [E.name]. Anyone not reported as sent is still here.")
+	region_admin_send_running = FALSE
+	return TRUE
+
+// Waits out a save here (a departure asks for one soon after), up to two minutes.
+/proc/region_admin_send_wait_for_save()
+	var/waited = 0
+	while(persistence_save_active() && waited < 1200)
+		sleep(10)
+		waited += 10
+
+/proc/region_admin_send_each(list/bodies, id, list/landing, ship, by)
 	var/list/peer = shard_group.peers[id]
 	var/where = peer ? peer["name"] : id
 	var/list/sent_ships = list()
@@ -371,6 +496,8 @@ var/global/region_admin_send_running = FALSE
 	for(var/mob/living/human/H in bodies)
 		if(!first) sleep(ADMIN_SEND_GAP)
 		first = FALSE
+		region_admin_send_wait_for_save()
+		if(QDELETED(H)) continue
 		var/account = H.client ? H.client.ckey : H.persistence_owner_ckey
 		var/name = H.real_name
 		var/result
@@ -381,7 +508,7 @@ var/global/region_admin_send_running = FALSE
 			var/ship_name = tiller && tiller.craft ? tiller.craft.name : "ship"
 			result = region_admin_send_ship(tiller, id, by)
 			if(!result)
-				region_admin_send_tell("[by] sent the [ship_name] (with [account]'s character [name] and everyone aboard) to [where].")
+				region_admin_send_tell("[by] sent the [ship_name] (with [account]'s character [name] and the crew aboard; anyone who had to stay was told why) to [where].")
 			else
 				region_admin_send_tell("[by] could not send the [ship_name] to [where]: [result]")
 			continue
@@ -390,8 +517,6 @@ var/global/region_admin_send_running = FALSE
 			region_admin_send_tell("[by] sent [account]'s character [name] to [where] ([region_admin_send_landing_name(landing["landing"])]). Waiting for [where] to confirm the arrival.")
 		else
 			region_admin_send_tell("[by] could not send [account]'s character [name] to [where]: [result]")
-	region_admin_send_running = FALSE
-	return TRUE
 
 // ---------------------------------------------------------------- arriving
 
@@ -476,7 +601,7 @@ var/global/region_admin_send_running = FALSE
 		placed = P["admin_placed"] ? " ([region_admin_send_landing_name(S["landing"])])" : " (the normal arrival point: [region_admin_send_landing_name(S["landing"])] was not found)"
 	var/exact = ""
 	if(istext(S["check"]))
-		exact = md5(json_encode(region_admin_send_fingerprint(H))) == S["check"] ? " Everything arrived exactly as it left." : " WARNING: the character differs from what left; compare with the snapshot in [P["from"]]'s data/transfer-snapshots."
+		exact = md5(json_encode(region_admin_send_fingerprint(H, TRUE))) == S["check"] ? " Everything arrived exactly as it left." : " WARNING: the character differs from what left; compare with the snapshot in [P["from"]]'s data/transfer-snapshots."
 	region_admin_send_tell("[P["owner"]]'s character [H.real_name] arrived in [here] from [region_ooc_region_name(P["from"])] at [at.x],[at.y],[at.z][placed], sent by [S["by"]].[exact] Waiting for them to join.")
 
 // The player took the character an admin sent here.

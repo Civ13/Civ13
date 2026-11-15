@@ -58,25 +58,31 @@ class RegionAdminSendSeams(unittest.TestCase):
         one = body(SEND, '/proc/region_admin_send_one(mob/living/human/H, id, list/landing)')
         self.assertIn('. = gate.depart(H)', one)
         # The record is kept on disk before the body leaves.
-        self.assertLess(one.index('region_admin_send_snapshot(H, id, landing, print)'), one.index('gate.depart(H)'))
+        self.assertLess(one.index('region_admin_send_checked_landing(H, id, landing)'), one.index('gate.depart(H)'))
+        self.assertIn('region_admin_send_snapshot(H, id, landing, print)', body(SEND, '/proc/region_admin_send_checked_landing(mob/living/human/H, id, list/landing)'))
         self.assertIn('qdel(gate)', one)
         gate = SEND.split('/obj/structure/region_gate/admin_send\n', 1)[1].split('\n\n', 1)[0]
         self.assertIn('should_save = FALSE', gate)
         self.assertIn('return FALSE', body(SEND, '/obj/structure/region_gate/admin_send/accepts_arrivals()'))
         run = body(SEND, '/proc/region_admin_send_run(list/bodies, id, list/landing, ship, by, mob/requester)')
         self.assertIn('if(region_admin_send_running)', run)
-        self.assertIn('sleep(ADMIN_SEND_GAP)', run)
+        self.assertIn('sleep(ADMIN_SEND_GAP)', body(SEND, '/proc/region_admin_send_each(list/bodies, id, list/landing, ship, by)'))
         # Event regions keep their own transfer, which stashes the home character.
-        self.assertIn('peer["kind"] == "EVENT"', body(SEND, '/proc/region_admin_send_destination_refusal(id, wake = TRUE)'))
+        self.assertIn('region_admin_send_kind_refusal(peer)', body(SEND, '/proc/region_admin_send_destination_refusal(id, wake = TRUE)'))
 
     def test_every_send_is_checked_one_to_one(self):
         one = body(SEND, '/proc/region_admin_send_one(mob/living/human/H, id, list/landing)')
-        self.assertIn('gate.landing["check"] = md5(json_encode(print))', one)
+        self.assertIn('.["check"] = md5(json_encode(print))', body(SEND, '/proc/region_admin_send_checked_landing(mob/living/human/H, id, list/landing)'))
         arrived = body(SEND, '/proc/region_admin_send_arrived(mob/living/human/H, list/P, incoming, turf/at)')
-        self.assertIn('md5(json_encode(region_admin_send_fingerprint(H))) == S["check"]', arrived)
-        print_ = body(SEND, '/proc/region_admin_send_fingerprint(mob/living/human/H)')
-        for field in ('"skills"', '"research"', '"scholarship"', '"reading"', '"tongues"', '"faction"', '"items"'):
+        self.assertIn('md5(json_encode(region_admin_send_fingerprint(H, TRUE))) == S["check"]', arrived)
+        print_ = body(SEND, '/proc/region_admin_send_fingerprint(mob/living/human/H, arrived = FALSE)')
+        for field in ('"skills"', '"research"', '"scholarship"', '"reading"', '"tongues"', '"faction"', '"items"', '"wounds"', '"tox"'):
             self.assertIn(field, print_)
+        # Skills are compared as the record carries them, and the faction as the arrival keeps it.
+        self.assertIn('json_decode(json_encode(pair))', print_)
+        self.assertIn('arrived ? H.colony_origin : colony_faction_id(H)', print_)
+        # Ship crews are checked 1:1 too.
+        self.assertIn('gate.pending["admin_send"] = region_admin_send_crew_landing(H, id, admin_crossing_by)', SHIP)
         self.assertIn('region_admin_send_probe_roundtrip()', read('tests/region_admin_send/probe.dm'))
 
     def test_ship_override_only_skips_the_map_edge(self):
@@ -84,7 +90,31 @@ class RegionAdminSendSeams(unittest.TestCase):
         self.assertIn('if (!admin_crossing && !B.at_map_edge())', refusal)
         self.assertIn('if (craft.speed || craft.turning_to)', refusal)
         self.assertIn('var/tmp/admin_crossing = FALSE', SHIP)
-        self.assertIn('gate.pending["admin_send"] = list("landing" = "arrival", "by" = admin_crossing_by)', SHIP)
+        # A ship goes only where a crossing could anchor her.
+        self.assertIn('region_admin_send_ship_destinations()', body(SEND, '/proc/region_admin_send_preflight(list/bodies, id, list/landing, ship = FALSE)'))
+
+    def test_wounds_travel_limb_by_limb(self):
+        build = body(TRAVEL, '/proc/region_travel_build(list/P, turf/T)')
+        self.assertIn('H.region_travel_restore_limbs(P["limbs"])', build)
+        # A travel wound is never a sharp blow that could break or sever more.
+        self.assertIn('H.take_overall_damage(brute, burn, FALSE, FALSE, "travel")', build)
+        restore = body(TRAVEL, '/mob/living/human/proc/region_travel_restore_limbs(list/limbs)')
+        self.assertIn('E.createwound(BRUISE, V[1])', restore)
+        self.assertNotIn('take_damage', restore)
+        self.assertIn('region_travel_limbs_valid(P["limbs"])', body(TRAVEL, '/proc/region_travel_decode(payload)'))
+
+    def test_admin_send_never_strands_anyone(self):
+        run = body(SEND, '/proc/region_admin_send_run(list/bodies, id, list/landing, ship, by, mob/requester)')
+        # The lock is always released, even when a send fails part way.
+        self.assertIn('try\n\t\tregion_admin_send_each(', run)
+        self.assertLess(run.index('catch'), run.index('region_admin_send_running = FALSE'))
+        self.assertIn('region_admin_send_wait_for_save()', body(SEND, '/proc/region_admin_send_each(list/bodies, id, list/landing, ship, by)'))
+        kinds = body(SEND, '/proc/region_admin_send_kind_refusal(list/peer)')
+        for kind in ('"EVENT"', '"BARRACKS", "BATTLE", "TUTORIAL"', '"A New Land"'):
+            self.assertIn(kind, kinds)
+        # What cannot travel is left on the tile, logged, and the rest goes.
+        one = body(SEND, '/proc/region_admin_send_one(mob/living/human/H, id, list/landing)')
+        self.assertLess(one.index('region_admin_send_leave_behind(H)'), one.index('gate.depart(H)'))
 
     def test_host_request_and_launcher(self):
         handle = body(LIFECYCLE, '/datum/nomads_lifecycle_control/proc/handle(list/input, addr)')

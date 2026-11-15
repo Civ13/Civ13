@@ -197,13 +197,13 @@ static class LocalHostingTests {
                 (["ann"], "northamerica", "shore", null), (["ann"], "--to", "shore", null), (["ann"], "gaia", "sky", null), (["ann"], "gaia", "coords", null),
                 (["ann"], "gaia", "shore", "1,2,3"), (["ann"], "gaia", "coords", "1,2"), (["ann"], "gaia", "coords", "1,2,3;x") })
             try { RegionPlayers.SendStep(host.Control!, "northamerica", keys, to, landing, at, false, false); throw new Exception("unsafe send accepted: " + string.Join(",", keys) + " " + to + " " + landing + " " + at); } catch (ArgumentException) { assertions++; }
-        var roster = RegionPlayers.ParseRoster(0, "noise\n{\"ok\": true, \"players\": [{\"ckey\": \"ann\", \"name\": \"Ann\\u0007 Smith\", \"playing\": true, \"at\": [5, 6, 1], \"aboard\": \"Gnome 2\"}, {\"ckey\": \"<b>\"}], " +
+        var roster = RegionPlayers.ParseRoster(0, "noise\n{\"ok\": true, \"players\": [{\"ckey\": \"ann\", \"name\": \"Ann\\u0007 Smith\", \"playing\": 1, \"at\": [5, 6, 1], \"aboard\": \"Gnome 2\"}, {\"ckey\": \"<b>\"}], " +
             "\"destinations\": {\"Gaia (up)\": \"gaia\", \"Bad\": \"--x\"}, \"recent\": [{\"time\": 1, \"text\": \"host sent ann\"}], \"running\": false}");
         Require(roster.Ok && roster.Players.Count == 1 && roster.Players[0] is { Ckey: "ann", Name: "Ann Smith", Playing: true, Aboard: "Gnome 2", At: "5,6,1" }
             && roster.Destinations.Count == 1 && roster.Destinations[0].Id == "gaia" && roster.Recent.SequenceEqual(["host sent ann"]), "roster parse");
         Require(!RegionPlayers.ParseRoster(1, "{\"ok\": false, \"refused\": \"gaia is asleep\"}").Ok, "roster refusal");
-        var dry = RegionPlayers.ParseSend(0, "{\"ok\": true, \"send\": \"dry_run\", \"rows\": [{\"ckey\": \"ann\", \"name\": \"Ann\", \"ok\": true, \"warnings\": [\"they leave the horse behind\"]}, " +
-            "{\"ckey\": \"bob\", \"name\": \"Bob\", \"ok\": false, \"reason\": \"They are dead.\"}]}");
+        var dry = RegionPlayers.ParseSend(0, "{\"ok\": true, \"send\": \"dry_run\", \"rows\": [{\"ckey\": \"ann\", \"name\": \"Ann\", \"ok\": 1, \"warnings\": [\"they leave the horse behind\"]}, " +
+            "{\"ckey\": \"bob\", \"name\": \"Bob\", \"ok\": 0, \"reason\": \"They are dead.\"}]}");
         Require(dry.Ok && dry.Ready == 1 && !dry.Started && RegionPlayers.Describe(dry).Contains("Refused: bob (Bob): They are dead.") && RegionPlayers.Describe(dry).Contains("Nothing has moved yet"), "dry run parse");
         Require(RegionPlayers.ParseSend(0, "{\"ok\": true, \"send\": \"started\", \"rows\": []}").Started, "started parse");
         Require(RegionPlayers.Describe(RegionPlayers.ParseSend(0, "{\"ok\": true, \"send\": \"refused:another transfer is running\", \"rows\": []}")).Contains("Not sent: another transfer is running."), "refused send");

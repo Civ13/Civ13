@@ -223,6 +223,12 @@ var/global/list/region_travel_carry_types = list(
 	var/burn = clamp(round(getBurnLoss()), 0, 200)
 	if(brute) P["brute"] = brute
 	if(burn) P["burn"] = burn
+	// Each limb's wounds, fractures and lost limbs travel as they are, so the
+	// body arrives hurt exactly where it was; the totals above stay for older readers.
+	var/list/limbs = region_travel_limbs()
+	if(limbs.len) P["limbs"] = limbs
+	var/tox = clamp(round(getToxLoss()), 0, 200)
+	if(tox) P["tox"] = tox
 	// Every trip says where it left from: a raid trip (region_raid.dm) goes
 	// home there, a party train (party_train.dm) records its way back, and an
 	// ordinary traveller arrives at the trail leading back there.
@@ -276,8 +282,9 @@ var/global/list/region_travel_carry_types = list(
 	if(!istext(P["name"]) || !length(P["name"]) || length(P["name"]) > MAX_NAME_LEN) return null
 	if(!(P["gender"] in list(MALE, FEMALE, PLURAL, NEUTER))) return null
 	if(!isnum(P["age"]) || P["age"] < 1 || P["age"] > 200) return null
-	for(var/field in list("brute", "burn"))
+	for(var/field in list("brute", "burn", "tox"))
 		if(!isnull(P[field]) && (!isnum(P[field]) || P[field] < 0 || P[field] > 200)) return null
+	if(!isnull(P["limbs"]) && !region_travel_limbs_valid(P["limbs"])) return null
 	for(var/field in list("nutrition", "water"))
 		if(!isnum(P[field]) || P[field] < 0 || P[field] > 1000) return null
 	if(!islist(P["look"]) || !islist(P["skills"]) || !islist(P["items"]) || length(P["items"]) > REGION_TRAVEL_ITEMS_MAX) return null
@@ -473,15 +480,20 @@ var/global/list/region_travel_carry_types = list(
 			H.stats[stat] = pair.Copy()
 	H.nutrition = P["nutrition"]
 	H.water = P["water"]
-	var/brute = P["brute"] || 0
-	var/burn = P["burn"] || 0
-	// Spread over the body differently than before, so never let it kill.
-	if(brute + burn > 90)
-		var/scale = 90 / (brute + burn)
-		brute = round(brute * scale)
-		burn = round(burn * scale)
-	if(brute || burn)
-		H.take_overall_damage(brute, burn, "travel")
+	if(islist(P["limbs"]))
+		H.region_travel_restore_limbs(P["limbs"])
+	else
+		var/brute = P["brute"] || 0
+		var/burn = P["burn"] || 0
+		// Spread over the body differently than before, so never let it kill.
+		if(brute + burn > 90)
+			var/scale = 90 / (brute + burn)
+			brute = round(brute * scale)
+			burn = round(burn * scale)
+		if(brute || burn)
+			H.take_overall_damage(brute, burn, FALSE, FALSE, "travel")
+	if(P["tox"])
+		H.setToxLoss(P["tox"])
 	// Dressed from the skin out: a uniform goes on before a suit over it, and
 	// what still does not fit (an ID or belt needs the uniform) is tried again
 	// once everything else is on.
@@ -844,3 +856,62 @@ var/global/list/region_stopped_alerted = list()
 #undef REGION_TRAVEL_PAYLOAD_MAX
 #undef REGION_TRAVEL_SHIP_PAYLOAD_MAX
 #undef REGION_TRAVEL_ITEMS_MAX
+
+// ---------------------------------------------------------------- wounds
+
+// Limbs a trip never takes off a body: losing one is death, not a wound.
+var/global/list/region_travel_vital_limbs = list("head", "chest", "groin")
+
+// Each hurt, broken or lost limb, as organ tag = list(brute, burn, broken)
+// or "missing". Unhurt limbs are left out.
+/mob/living/human/proc/region_travel_limbs()
+	. = list()
+	if(!species) return
+	for(var/tag in species.has_limbs)
+		var/obj/item/organ/external/E = organs_by_name[tag]
+		if(!E || E.is_stump())
+			if(!(tag in region_travel_vital_limbs)) .[tag] = "missing"
+			continue
+		var/brute = clamp(round(E.brute_dam), 0, 200)
+		var/burn = clamp(round(E.burn_dam), 0, 200)
+		var/broken = (E.status & ORGAN_BROKEN) ? 1 : 0
+		if(brute || burn || broken) .[tag] = list(brute, burn, broken)
+
+/proc/region_travel_limbs_valid(list/L)
+	if(!islist(L) || L.len > 20) return FALSE
+	for(var/tag in L)
+		if(!istext(tag) || length(tag) > 16) return FALSE
+		var/value = L[tag]
+		if(value == "missing")
+			if(tag in region_travel_vital_limbs) return FALSE
+			continue
+		var/list/V = value
+		if(!islist(V) || V.len != 3) return FALSE
+		for(var/i = 1 to 2)
+			if(!isnum(V[i]) || V[i] < 0 || V[i] > 200 || V[i] != round(V[i])) return FALSE
+		if(!(V[3] in list(0, 1))) return FALSE
+	return TRUE
+
+// Puts back what region_travel_limbs() recorded on a fresh body: lost limbs
+// come off cleanly, and each wound is laid on its own limb as a bruise or a
+// burn of the same size, never as a blow that could break, cut or sever more.
+/mob/living/human/proc/region_travel_restore_limbs(list/limbs)
+	for(var/tag in limbs)
+		if(limbs[tag] != "missing") continue
+		var/obj/item/organ/external/E = organs_by_name[tag]
+		if(!E || E.is_stump() || (tag in region_travel_vital_limbs)) continue
+		E.removed(null)
+		qdel(E)
+	for(var/tag in limbs)
+		var/list/V = limbs[tag]
+		if(!islist(V)) continue
+		var/obj/item/organ/external/E = organs_by_name[tag]
+		if(!E || E.is_stump()) continue
+		if(V[1]) E.createwound(BRUISE, V[1])
+		if(V[2]) E.createwound(BURN, V[2])
+		E.update_damages()
+		if(V[3])
+			E.status |= ORGAN_BROKEN
+			E.broken_description = "broken"
+			E.perma_injury = E.brute_dam
+	updatehealth()
