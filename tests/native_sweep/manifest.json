@@ -48,6 +48,7 @@
   "tests/extraction/run_economics.py": "needs PHP and a Civilizationbot checkout",
   "tests/fishing_stock/run_native.py": "needs --execute with an acquisition receipt",
   "tests/human_subtile/run-npc.py": "needs --prepare-only or --compile-only",
+  "tests/los_cost_probe/run.py": "manual line-of-sight cost measurement (needs --map and --out)",
   "tests/nomads_lifecycle/run_variable_probe_linux.py": "needs --expected-head",
   "tests/perf_probes/native_probe.py": "manual performance probe (takes a probe name)",
   "tests/roof_area_recovery/run_linux.py": "needs a recovery packet and --expected-head",

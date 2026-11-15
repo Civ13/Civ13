@@ -24,6 +24,11 @@ var/bs_failures = 0
 	spawn(5)
 		bs_run()
 
+// No explosion subsystem in the probe. discharge() resets explosion to its
+// compiled value on every shot, so the probe's guns compile with it off.
+/obj/structure/cannon
+	explosion = FALSE
+
 /obj/map_metadata/broadside/faction1_can_cross_blocks()
 	return TRUE
 /obj/map_metadata/broadside/faction2_can_cross_blocks()
@@ -64,6 +69,9 @@ var/bs_failures = 0
 	bs_check(FB.dir == EAST && PB.dir == WEST, "the French bow points east, the pirate bow west")
 	bs_check(FC.anchored && PC.anchored, "both ships start at anchor")
 	bs_check(F.start_planks == FB.tile_count() && F.start_planks > 100, "the planking is counted ([F.start_planks] of [FB.tile_count()])")
+	// The ships sail east and west; a north wind puts both on a beam reach
+	// (points_of_sail.dm), where the masts are rated.
+	map.winddirection = "North"
 	bs_check(FC.max_speed() >= VESSEL_SPEED_HALF && PC.max_speed() >= VESSEL_SPEED_HALF, "four rigged masts drive each ship at half ahead")
 
 	// Crewmen join on their own ship.
@@ -76,7 +84,6 @@ var/bs_failures = 0
 	var/list/guns = list()
 	var/loaded = 0
 	for (var/obj/structure/cannon/C in world)
-		C.explosion = FALSE // no explosion subsystem in the probe
 		if (craft_at(get_turf(C)) == FC)
 			guns += C
 			if (C.loaded.len)
