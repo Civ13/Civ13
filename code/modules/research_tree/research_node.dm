@@ -985,7 +985,8 @@ var/global/list/node_grid_col_cache = null
 		// --- hydroponics (2) ---
 		"/obj/structure/hydroponics_frame" = "hydroponics",
 		"/obj/structure/hydroponics_tray" = "hydroponics",
-		// --- basic_furniture (18) ---
+		// --- basic_furniture (19) ---
+		"/obj/item/game_board/senet" = "basic_furniture",
 		"/obj/item/weapon/stool/wood" = "basic_furniture",
 		"/obj/item/weapon/bedsheet" = "basic_furniture",
 		"/obj/item/weapon/bedsheet/blue" = "basic_furniture",
@@ -1196,7 +1197,8 @@ var/global/list/node_grid_col_cache = null
 		// refineries in the Main tree. Under the specialist Tailoring tree
 		// (Synthetic Fabrics) factionless players could never unlock it.
 		"/obj/structure/bakelizer" = "combustion",
-		// --- cooperage (16) ---
+		// --- cooperage (17) ---
+		"/obj/structure/closet/ice_house" = "cooperage",
 		"/obj/structure/well_fitting/windlass" = "cooperage",
 		"/obj/item/weapon/reagent_containers/glass/barrel" = "cooperage",
 		"/obj/structure/fluid_tank/cistern" = "cooperage",
@@ -1455,7 +1457,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/surgery/retractor/bronze" = "field_surgery",
 		"/obj/item/weapon/surgery/scalpel" = "field_surgery",
 		"/obj/item/weapon/surgery/scalpel/bronze" = "field_surgery",
-		// --- fine_arts (42) ---
+		// --- fine_arts (43) ---
+		"/obj/item/game_board/chess" = "fine_arts",
 		"/obj/item/canvas/gallery" = "fine_arts",
 		"/obj/item/canvas/gallery/wide" = "fine_arts",
 		"/obj/item/pigment/oil_paints" = "fine_arts",
@@ -2003,7 +2006,9 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/chemical_dispenser" = "pharmacology",
 		"/obj/structure/chemical_dispenser/full/laboratory" = "pharmacology",
 		"/obj/structure/closet/fridge" = "pharmacology",
-		// --- pottery_storage (35) ---
+		// --- pottery_storage (37) ---
+		"/obj/item/weapon/paper/clay_tablet" = "pottery_storage",
+		"/obj/item/weapon/pen/stylus" = "pottery_storage",
 		"/obj/structure/water_clock" = "pottery_storage",
 		"/obj/item/kitchen/wood_bowl" = "pottery_storage",
 		"/obj/item/stack/material/stone" = "pottery_storage",

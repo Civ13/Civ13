@@ -190,6 +190,9 @@
 			contents += new /obj/item/weapon/reagent_containers/food/snacks/fries(src)
 			contents -= I
 			qdel(I)
+		else if (istype(I, /obj/item/weapon/paper/clay_tablet))
+			var/obj/item/weapon/paper/clay_tablet/CT = I
+			CT.fire_tablet() // The same tablet bakes hard, keeping its writing.
 		else if (istype(I, /obj/item/weapon/clay))
 			var/obj/item/weapon/clay/CL = I
 			if (stone_mold_type(CL.type))
