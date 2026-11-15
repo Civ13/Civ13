@@ -8,6 +8,11 @@ the slot's saved world aside and frees the slot for the next land. An archived
 save (and the land it was built on) is kept 7 days so an admin can restore it
 by hand, then deleted by the host service (prune_archives).
 
+Slots are the lands awake at once, not the lands there are: an idle land is
+parked (its save moved to <root>/expeditions/parked/<x>-<y>/, the slot freed)
+and restored into whichever slot is free when a ship or a resident next needs
+it. A parked land is never pruned; only the coordinator discards one.
+
     python shard_group.py --config group.json expedition-land --region far1 --template T.json
     python shard_group.py --config group.json update-offline --region far1
     python shard_group.py --config group.json expedition-archive --region far1
@@ -52,6 +57,9 @@ WANTED = 'wanted'
 FAILED = 'failed'
 OPENING = 'opening'
 ABANDONED = 'abandon'  # a land given up for good: the host archives the slot
+PARK = 'park'  # an idle land gives its slot up: the host parks it (by slot)
+DISCARD = 'discard'  # a parked land given up for good: its folder goes to the archive (by land)
+PARKED = 'parked'
 OPENING_STALE_SECONDS = 3600
 BUILDING_GIVE_UP_SECONDS = 3 * 3600
 ARCHIVE_KEEP_SECONDS = 7 * 86400  # an archived land is deleted after this
@@ -132,12 +140,111 @@ def saved_world(path):
 
 
 def check_stopped(host):
-    """Refuse unless the slot's world is stopped: not listening, not asleep, not waking."""
+    """Refuse unless the slot's world is stopped: not listening, not asleep, not waking.
+    A slot asleep on disk (cold: it saved, then was shut down) is stopped."""
     if host.platform.listening(host.config['port']) or host.platform.listening(host.standby_port()):
         raise Refused('the slot is running; save and stop it first')
+    cold = host.cold()
     for marker in (host.freeze_file, host.running_file):
-        if marker.exists():
+        if marker.exists() and not (cold and marker == host.running_file):
             raise Refused('the slot is not explicitly stopped (%s remains); save and stop it first' % marker.name)
+
+
+def parked_dir(group, key):
+    """Where the land of chart tile key ("x,y") is kept while parked."""
+    x, _, y = str(key).partition(',')
+    if not (x.isdigit() and y.isdigit()):
+        raise Refused('a parked land is named by its chart tile, X,Y')
+    return slots_dir(group) / PARKED / ('%d-%d' % (int(x), int(y)))
+
+
+def move_world(source, target):
+    """Move the world paths that hold anything from source to target. Returns their names."""
+    moved = []
+    for name in saved_world(source):
+        target.mkdir(parents=True, exist_ok=True)
+        if (target / name).is_dir() and not any((target / name).iterdir()):
+            (target / name).rmdir()
+        shutil.move(str(Path(source) / name), str(target / name))
+        moved.append(name)
+    return moved
+
+
+def free_slot(group, host, record):
+    for field in ('key', 'land_dir', 'map', 'world', 'given_at', 'seconds', 'phase', 'voyage', 'refusal', 'building_since', 'restored'):
+        record.pop(field, None)
+    record['state'] = 'FREE'
+    write_slot(group, record)
+    forget_build(host)
+    # A slot that slept on disk keeps its running mark; without the land the watchdog must not start it.
+    host.running_file.unlink(missing_ok=True)
+
+
+def park(group, host, region_id, now=None):
+    """Move a stopped slot's land and saved world to the parked folder and free
+    the slot. The land comes back, save and all, with restore."""
+    expedition_region(group, region_id)
+    check_stopped(host)
+    record = read_slot(group, region_id)
+    if record['state'] != 'LAND' or not record.get('key'):
+        raise Refused('slot %s holds no land of the chart to park' % region_id)
+    target = parked_dir(group, record['key'])
+    if target.exists():
+        raise Refused('land %s is already parked in %s' % (record['key'], target))
+    target.mkdir(parents=True)
+    moved = move_world(host.repo, target)
+    host.cold_file.unlink(missing_ok=True)  # it starts from its save wherever it is restored
+    kept = {field: record.get(field) for field in ('key', 'land_dir', 'map', 'world', 'given_at', 'seconds')}
+    (target / 'slot.json').write_text(json.dumps(dict(kept, parked_at=stamp(now), parked_from=region_id), indent=1) + '\n',
+                                      encoding='utf-8')
+    record['history'].append({'at': stamp(now), 'event': 'park', 'key': record['key'], 'parked': str(target)})
+    key = record['key']
+    free_slot(group, host, record)
+    return {'region': region_id, 'state': 'FREE', 'parked': key, 'moved': moved, 'folder': str(target)}
+
+
+def restore(group, host, region_id, key, now=None):
+    """Give a FREE, stopped slot the parked land of chart tile key, with its
+    saved world. The slot's next update compiles the land."""
+    expedition_region(group, region_id)
+    check_stopped(host)
+    record = read_slot(group, region_id)
+    if record['state'] != 'FREE':
+        raise Refused('slot %s already holds land %s' % (region_id, record.get('key')))
+    held = saved_world(host.repo)
+    if held:
+        raise Refused('slot %s still holds a saved world (%s); archive it first' % (region_id, ', '.join(held)))
+    source = parked_dir(group, key)
+    try:
+        kept = json.loads((source / 'slot.json').read_text(encoding='utf-8'))
+    except (OSError, ValueError):
+        raise Refused('no parked land %s' % key)
+    if not isinstance(kept, dict) or kept.get('key') != key or not Path(str(kept.get('map') or '')).is_file():
+        raise Refused('parked land %s is damaged (%s); fix it by hand' % (key, source))
+    moved = move_world(source, host.repo)
+    host.cold_file.unlink(missing_ok=True)
+    # A new placement: the slot's transfer agent adopts this land's save history (region.py reconcile_load).
+    world = dict(kept.get('world') or {}, placed='%s@%s' % (region_id, stamp(now)))
+    record.update(state='LAND', key=key, land_dir=kept.get('land_dir'), map=kept['map'], world=world,
+                  given_at=kept.get('given_at'), seconds=kept.get('seconds'), restored=True)
+    record['history'].append({'at': stamp(now), 'event': 'restore', 'key': key, 'moved': moved})
+    write_slot(group, record)
+    forget_build(host)
+    shutil.rmtree(source, ignore_errors=True)
+    return {'region': region_id, 'state': 'LAND', 'key': key, 'restored': moved, 'map': record['map']}
+
+
+def discard_parked(group, key, now=None):
+    """A parked land given up for good: its folder goes to the archive, to be
+    pruned like any archived land. Returns the archive folder or None."""
+    source = parked_dir(group, key)
+    if not source.is_dir():
+        return None
+    target = unused(slots_dir(group) / 'archive', 'parked-%s-%s' % (source.name, stamp(now)))
+    target.parent.mkdir(parents=True, exist_ok=True)
+    shutil.move(str(source), str(target))
+    os.utime(target, (time.time() if now is None else now,) * 2)
+    return target
 
 
 def stamp(now=None):
@@ -185,8 +292,10 @@ def give_land(group, host, region_id, template, key=None, build=None, now=None):
     except ValueError as error:
         raise Refused('the land could not be built: %s' % str(error)[:300])
     report = dict(report, key=key)
+    # placed: the slot's transfer agent tells one land's saves from the next by it (region.py reconcile_load).
     record.update(state='LAND', key=key, land_dir=str(out), map=str(out / 'land.dmm'),
-                  world=world_summary(report), given_at=stamp(now), seconds=report.get('seconds'))
+                  world=dict(world_summary(report), placed='%s@%s' % (region_id, stamp(now))),
+                  given_at=stamp(now), seconds=report.get('seconds'))
     record['history'].append({'at': stamp(now), 'event': 'land', 'key': key, 'land_dir': str(out)})
     write_slot(group, record)
     forget_build(host)
@@ -214,11 +323,7 @@ def archive(group, host, region_id, now=None):
         (target / 'slot.json').write_text(json.dumps(record, indent=1) + '\n', encoding='utf-8')
     record['history'].append({'at': stamp(now), 'event': 'archive', 'key': record.get('key'),
                               'archive': str(target) if moved else None})
-    for field in ('key', 'land_dir', 'map', 'world', 'given_at', 'seconds', 'phase', 'voyage', 'refusal'):
-        record.pop(field, None)
-    record['state'] = 'FREE'
-    write_slot(group, record)
-    forget_build(host)
+    free_slot(group, host, record)
     return {'region': region_id, 'state': 'FREE', 'archived': moved, 'archive': str(target) if moved else None,
             'next': 'update-offline --region %s compiles the placeholder map again' % region_id}
 
@@ -241,6 +346,19 @@ def status(group):
         if read_wish(group, WANTED, region['id']):
             entry['wanted'] = read_wish(group, WANTED, region['id']).get('key')
         answer[region['id']] = entry
+    return answer
+
+
+def parked(group):
+    """Every parked land: chart tile -> when it was parked and from which slot."""
+    folder = slots_dir(group) / PARKED
+    answer = {}
+    for entry in sorted(folder.iterdir()) if folder.is_dir() else ():
+        try:
+            kept = json.loads((entry / 'slot.json').read_text(encoding='utf-8'))
+            answer[str(kept['key'])] = {'parked_at': kept.get('parked_at'), 'from': kept.get('parked_from')}
+        except (OSError, ValueError, KeyError, TypeError):
+            answer[entry.name] = {'error': 'damaged'}
     return answer
 
 
@@ -288,9 +406,11 @@ def load_template(path):
 
 # ---------------------------------------------------------------- opening lands for ships
 
-def fail_wish(group, region_id, key, reason, now=None):
-    """Tell the coordinator the land for key could not be opened in this slot."""
-    write_wish(group, FAILED, region_id, {'region': region_id, 'key': key, 'reason': str(reason)[:300], 'at': stamp(now)})
+def fail_wish(group, region_id, key, reason, now=None, parked=False):
+    """Tell the coordinator the land for key could not be opened in this slot.
+    parked: it was a parked land, and is parked still."""
+    write_wish(group, FAILED, region_id, {'region': region_id, 'key': key, 'reason': str(reason)[:300], 'at': stamp(now),
+                                          'parked': bool(parked)})
     wish_file(group, WANTED, region_id).unlink(missing_ok=True)
 
 
@@ -305,7 +425,10 @@ def open_land(group, host, region_id, update, build=None, now=None):
         if not wish or not isinstance(wish.get('template'), dict):
             raise Refused('no land is wanted in slot %s' % region_id)
         key = wish.get('key')
-        give_land(group, host, region_id, wish['template'], key=key, build=build, now=now)
+        if wish.get('parked'):
+            restore(group, host, region_id, key, now=now)
+        else:
+            give_land(group, host, region_id, wish['template'], key=key, build=build, now=now)
         given = True
         record = read_slot(group, region_id)
         record.update(phase='building', voyage=wish.get('voyage'), building_since=int(time.time() if now is None else now))
@@ -320,10 +443,11 @@ def open_land(group, host, region_id, update, build=None, now=None):
         # Only free a land this call gave; a refusal from give_land means the slot held someone else's land.
         if given and read_slot(group, region_id)['state'] == 'LAND':
             try:
-                archive(group, host, region_id, now=now)
+                # A restored land goes back to the parked folder: it is somebody's, never archived for a failed build.
+                (park if wish.get('parked') else archive)(group, host, region_id, now=now)
             except (Refused, OSError) as again:
                 error = '%s (and the slot could not be freed: %s)' % (error, again)
-        fail_wish(group, region_id, key, error, now)
+        fail_wish(group, region_id, key, error, now, parked=bool(wish and wish.get('parked')))
         return {'region': region_id, 'key': key, 'failed': str(error)[:300]}
     finally:
         marker.unlink(missing_ok=True)
@@ -383,12 +507,46 @@ def serve(group, hosts, launch, now=None):
         done['archive'] = {'error': str(error)[:200]}
     if pruned:
         done['archive'] = {'deleted': pruned}
+    # Parked lands the coordinator gave up for good (nobody settled them, nobody came for 7 days).
+    folder = slots_dir(group) / DISCARD
+    for wish in sorted(folder.glob('*.json')) if folder.is_dir() else ():
+        try:
+            key = (json.loads(wish.read_text(encoding='utf-8')) or {}).get('key')
+            moved = discard_parked(group, key, now)
+            wish.unlink(missing_ok=True)
+            done.setdefault('discarded', []).append({'key': key, 'archive': str(moved) if moved else None})
+        except (OSError, ValueError, AttributeError, Refused) as error:
+            done.setdefault('discard_errors', []).append(str(error)[:200])
     for region, host in hosts:
         if region['kind'] != 'EXPEDITION':
             continue
         name = region['id']
         try:
             record = read_slot(group, name)
+            idle = read_wish(group, PARK, name)
+            if idle and not read_wish(group, ABANDONED, name):
+                # An idle land gives its slot to another: save, stop, park, free. Somebody
+                # there again (a ship that was already under way) calls the parking off.
+                if host.lock.exists():
+                    continue
+                if record['state'] != 'LAND' or record.get('key') != idle.get('key') or record.get('phase') == 'building':
+                    wish_file(group, PARK, name).unlink(missing_ok=True)
+                    done[name] = {'park_dropped': idle.get('key')}
+                    continue
+                if host.platform.listening(host.config['port']) and not host.frozen():
+                    world = host.world() or {}
+                    if world.get('clients'):
+                        # The coordinator finds the wish gone and the land still here: called off.
+                        wish_file(group, PARK, name).unlink(missing_ok=True)
+                        done[name] = {'park_called_off': idle.get('key')}
+                        continue
+                if host.frozen() or host.platform.listening(host.config['port']):
+                    done[name] = {'stopping': host.request('stop')}
+                    continue
+                park(group, host, name, now=now)
+                wish_file(group, PARK, name).unlink(missing_ok=True)
+                done[name] = {'parked': idle.get('key')}
+                continue
             gone = read_wish(group, ABANDONED, name)
             if gone:
                 # The land was abandoned (or nobody came for 7 days): save, stop, archive, free.
@@ -416,7 +574,8 @@ def serve(group, hosts, launch, now=None):
                 launch(name)
                 done[name] = {'opening': wish.get('key')}
             elif wish and record['state'] == 'LAND' and not opening(group, name, now):
-                fail_wish(group, name, wish.get('key'), 'the slot already holds land %s' % record.get('key'), now)
+                fail_wish(group, name, wish.get('key'), 'the slot already holds land %s' % record.get('key'), now,
+                          parked=bool(wish.get('parked')))
                 done[name] = {'refused': wish.get('key')}
             elif record['state'] == 'LAND' and record.get('phase') == 'building':
                 done[name] = start_when_built(group, host, record, now)
@@ -445,8 +604,9 @@ def start_when_built(group, host, record, now):
         problem = 'its build took too long'
     if problem:
         key = record.get('key')
-        archive(group, host, name)
-        fail_wish(group, name, key, problem, now)
+        # A restored land is somebody's: back to the parked folder, never the archive.
+        (park if record.get('restored') else archive)(group, host, name)
+        fail_wish(group, name, key, problem, now, parked=bool(record.get('restored')))
         return {'failed': problem}
     if not host.built_revision():
         return None

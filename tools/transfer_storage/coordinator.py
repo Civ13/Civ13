@@ -45,7 +45,7 @@ if __package__ in (None, ''):
     sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 from tools.transfer_storage.train_custody import TrainCustody
 from tools.transfer_storage.region import LAND_STAGES, account_key_valid, colony_valid, faction_id_valid, land_id_valid
-from tools.transfer_storage.world_chart import WorldChart, owner_valid, tile_valid
+from tools.transfer_storage.world_chart import WorldChart, land_home, owner_valid, tile_valid
 from tools.transfer_storage.nations import Nations
 
 
@@ -325,6 +325,9 @@ class Coordinator(TrainCustody):
             return bool(self.chart.reveal(owner, x, y))
         if op == 'course' and owner_valid(owner):
             return self.chart.set_course(request.get('voyage'), owner, x, y, origin, by=admin) is not None
+        if op == 'summon':
+            # Somebody whose character is on a parked land came back: only they can wake it.
+            return self.home(admin) == land_home(x, y) and self.chart.summon(x, y)
         # A land's own world, for its crew: x and y name the land it holds, as a check.
         found = self.chart.land_in(origin)
         if op not in ('settle', 'claim', 'unclaim', 'abandon') or not found or found[:2] != (x, y):
@@ -342,6 +345,31 @@ class Coordinator(TrainCustody):
             self.land_lost(origin)
             return True
         return False
+
+    def chart_moves(self):
+        """Lands the chart parked or gave a slot again since the last pass: the
+        homes there follow the land, and its stage waits with it. A parked
+        land is no region, so its residents' home is 'land:x,y' until then."""
+        restored, self.chart.restored_now = self.chart.restored_now, []
+        parked, self.chart.parked_now = self.chart.parked_now, []
+        for slot, x, y, kept in restored:
+            for (ckey,) in self.db.execute('SELECT ckey FROM home WHERE region = ?', (land_home(x, y),)).fetchall():
+                self._set_home(ckey, slot)
+            try:
+                kept = json.loads(kept) if kept else {}
+            except ValueError:
+                kept = {}
+            if kept.get('stage') in LAND_STAGES:
+                self.set_land(slot, kept['stage'], bool(kept.get('paused')))
+        for slot, x, y in parked:
+            row = self.db.execute('SELECT stage, paused FROM land WHERE region = ?', (slot,)).fetchone()
+            self.chart.keep(x, y, json.dumps({'stage': row[0], 'paused': bool(row[1])}) if row else None)
+            for (ckey,) in self.db.execute('SELECT ckey FROM home WHERE region = ?', (slot,)).fetchall():
+                self._set_home(ckey, land_home(x, y))
+            # The slot's next land starts unexplored; the world reports its colonies again when it is back.
+            for table in ('land', 'colony', 'colony_grant', 'land_hour'):
+                self.db.execute('DELETE FROM %s WHERE region = ?' % table, (slot,))
+        return bool(restored or parked)
 
     def land_lost(self, region):
         """An abandoned land: whoever was homed there starts in the start region
@@ -565,6 +593,7 @@ class Coordinator(TrainCustody):
         self.chart.refresh_courses()
         for region in self.chart.expire():
             self.land_lost(region)
+        self.chart_moves()
         chart_rev = self.chart.key()
         chart = None
         nations = self.nations.snapshot()

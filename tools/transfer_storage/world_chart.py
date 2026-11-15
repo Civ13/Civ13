@@ -104,14 +104,26 @@ NO_SLOT = 'every harbour master is busy: no new land can be opened for a crew ri
 # the tiller, opens one new land in this long, and none while a land it opened
 # still stands undecided.
 OPEN_COOLDOWN_SECONDS = 3 * 3600
-# With every slot taken, an undecided land nobody has been on for this long
-# gives its slot to the next crew: it is lost as if abandoned. A state left
-# out (settled and claimed lands) never gives way.
-PRESSURE_SECONDS = {'LANDED': 24 * 3600}
+# Slots are the lands awake at once, not the lands there are. With every slot
+# taken, the land nobody has been on longest, and at least this long, is parked:
+# the host moves its save aside (expedition_slots.park) and frees the slot. A
+# parked land keeps its state and is restored into any free slot when a ship
+# sets course for it or somebody who lives there comes back.
+PARK_IDLE_SECONDS = 3600
+PARK_GIVE_UP_SECONDS = 3600  # a parking the host never carried out is forgotten
+COURSE_UNDER_WAY_SECONDS = 2 * 3600  # a land with a course this fresh has a ship coming
+SLOT_PARK = 'park'
+SLOT_DISCARD = 'discard'
 CLEARING = 'a harbour is being cleared for a new land. Set out for it again in about ten minutes.'
 
 _VOYAGE = re.compile(r'^[a-z0-9_\-]{1,80}$')
 _OWNER = re.compile(r'^(admin|faction:[a-z0-9_\-]{1,40}|crew:[a-z0-9_\-]{1,40})$')
+
+
+def land_home(x, y):
+    """The home of an account whose character is on the parked land of tile
+    (x, y): no region, until the land has a slot again."""
+    return 'land:%d,%d' % (x, y)
 
 
 def owner_valid(owner):
@@ -264,7 +276,16 @@ class WorldChart:
         db.execute('''CREATE TABLE IF NOT EXISTS chart_opened(
             x INTEGER NOT NULL, y INTEGER NOT NULL, slot TEXT NOT NULL, owner TEXT NOT NULL, by TEXT,
             at INTEGER NOT NULL, PRIMARY KEY(x, y))''')
-        self.released = []  # regions set_course gave up to make room; expire() hands them on
+        # A parked land: when, when anyone was last there, and what the coordinator keeps for it (its land stage).
+        db.execute('''CREATE TABLE IF NOT EXISTS chart_parked(
+            x INTEGER NOT NULL, y INTEGER NOT NULL, at INTEGER NOT NULL, visited INTEGER NOT NULL, kept TEXT,
+            PRIMARY KEY(x, y))''')
+        # A parking asked of the host and not yet carried out.
+        db.execute('''CREATE TABLE IF NOT EXISTS chart_parking(
+            slot TEXT PRIMARY KEY, x INTEGER NOT NULL, y INTEGER NOT NULL, at INTEGER NOT NULL)''')
+        # For the coordinator (Coordinator.chart_moves): lands parked, (slot, x, y), and
+        # lands given a slot again, (slot, x, y, kept), since it last asked.
+        self.parked_now, self.restored_now = [], []
         # One claim per faction, one faction per land.
         db.execute('''CREATE TABLE IF NOT EXISTS chart_claim(
             faction TEXT PRIMARY KEY, x INTEGER NOT NULL, y INTEGER NOT NULL, by TEXT, at INTEGER NOT NULL)''')
@@ -332,8 +353,15 @@ class WorldChart:
                               (x, y)).fetchone()
         if not row:
             return None
-        return {'template': json.loads(row[0]), 'reroll': row[1], 'state': row[2], 'region': row[3],
+        tile = {'template': json.loads(row[0]), 'reroll': row[1], 'state': row[2], 'region': row[3],
                 'by': row[4], 'at': row[5]}
+        if not row[3] and self.parked(x, y):
+            tile['parked'] = True
+        return tile
+
+    def parked(self, x, y):
+        """(at, visited, kept) of a parked land, or None."""
+        return self.db.execute('SELECT at, visited, kept FROM chart_parked WHERE x = ? AND y = ?', (x, y)).fetchone()
 
     def _roll(self, x, y, reroll, by, now):
         biome = self.terrain(x, y)
@@ -450,7 +478,7 @@ class WorldChart:
         if record is not None and record.get('state') != 'FREE':
             return False
         return not any((self.expeditions / folder / (slot + '.json')).exists()
-                       for folder in (SLOT_WANTED, SLOT_FAILED, SLOT_ABANDONED))
+                       for folder in (SLOT_WANTED, SLOT_FAILED, SLOT_ABANDONED, SLOT_PARK))
 
     def slot_ready(self, slot, x, y):
         """True when the host has started slot on the land of tile (x, y)."""
@@ -469,7 +497,7 @@ class WorldChart:
         who = (owner, by or '')
         row = self.db.execute(
             "SELECT o.x, o.y FROM chart_opened o JOIN chart_tile t ON t.x = o.x AND t.y = o.y "
-            "WHERE t.state = 'LANDED' AND t.region = o.slot AND (o.owner = ? OR o.by = ?) ORDER BY o.at LIMIT 1",
+            "WHERE t.state = 'LANDED' AND (o.owner = ? OR o.by = ?) ORDER BY o.at LIMIT 1",
             who).fetchone()
         if row:
             return ('your crew still has the land at %d,%d undecided: settle it, or give it up as you leave it, '
@@ -481,28 +509,107 @@ class WorldChart:
         return None
 
     def make_room(self, now):
-        """With no slot free: gives up the land that has stood empty longest past
-        its PRESSURE_SECONDS. Returns its region or None.
-        The slot is free once the host has archived it."""
-        best = None
-        for slot, x, y, visited in self.db.execute('SELECT slot, x, y, visited FROM chart_landed ORDER BY visited, slot'):
+        """With no slot free: asks the host to park the land nobody has been on
+        longest, at least PARK_IDLE_SECONDS, with no ship on her way to it.
+        Returns its slot or None. The slot is free once the host has parked it
+        (refresh_parks)."""
+        coming = {slot for (slot,) in self.db.execute(
+            "SELECT DISTINCT slot FROM chart_course WHERE state IN ('ASSIGNED', 'READY') AND at > ?",
+            (now - COURSE_UNDER_WAY_SECONDS,))}
+        for slot, x, y, visited in self.db.execute('SELECT slot, x, y, visited FROM chart_landed ORDER BY visited, slot').fetchall():
             tile = self.template(x, y)
-            if not tile or tile['region'] != slot or tile['state'] not in PRESSURE_SECONDS:
+            if not tile or tile['region'] != slot or tile['state'] not in ('LANDED', 'SETTLED', 'CLAIMED'):
                 continue
-            if now - visited < PRESSURE_SECONDS[tile['state']]:
+            if now - visited < PARK_IDLE_SECONDS or slot in coming or not self.slot_ready(slot, x, y):
                 continue
-            rank = (('LANDED', 'SETTLED', 'CLAIMED').index(tile['state']), visited)
-            if best is None or rank < best[0]:
-                best = (rank, slot)
-        if best is None or not self._lose(best[1], 'room', now):
-            return None
-        self.released.append(best[1])
-        return best[1]
+            if self.db.execute('SELECT 1 FROM chart_parking WHERE slot = ?', (slot,)).fetchone():
+                continue
+            _write_json(self.expeditions / SLOT_PARK / (slot + '.json'),
+                        {'region': slot, 'key': '%d,%d' % (x, y), 'at': now})
+            self.db.execute('INSERT INTO chart_parking VALUES (?, ?, ?, ?)', (slot, x, y, now))
+            return slot
+        return None
+
+    def refresh_parks(self, now):
+        """A parking the host carried out takes the land off its slot; one it
+        called off (somebody was there) or never did is forgotten. True when
+        the chart changed."""
+        changed = False
+        for slot, x, y, at in self.db.execute('SELECT slot, x, y, at FROM chart_parking').fetchall():
+            wish = self.expeditions / SLOT_PARK / (slot + '.json') if self.expeditions else None
+            if wish is not None and wish.exists():
+                if now - at > PARK_GIVE_UP_SECONDS:
+                    wish.unlink(missing_ok=True)
+                    self.db.execute('DELETE FROM chart_parking WHERE slot = ?', (slot,))
+                continue
+            self.db.execute('DELETE FROM chart_parking WHERE slot = ?', (slot,))
+            record = self._slot_record(slot)
+            tile = self.template(x, y)
+            if not tile or tile['region'] != slot:
+                continue
+            if record is not None and record.get('state') == 'LAND' and record.get('key') == '%d,%d' % (x, y):
+                continue  # called off: the land is still in its slot
+            self._park(slot, x, y, now)
+            changed = True
+        return changed
+
+    def _park(self, slot, x, y, now, kept=None):
+        """The land of tile (x, y) is off slot and in the parked folder."""
+        row = self.db.execute('SELECT visited FROM chart_landed WHERE slot = ?', (slot,)).fetchone()
+        self.db.execute('UPDATE chart_tile SET region = NULL WHERE x = ? AND y = ?', (x, y))
+        self.db.execute('DELETE FROM chart_landed WHERE slot = ?', (slot,))
+        self.db.execute('INSERT OR REPLACE INTO chart_parked VALUES (?, ?, ?, ?, ?)', (x, y, now, row[0] if row else now, kept))
+        self.db.execute("UPDATE chart_course SET state = 'REFUSED', reason = ? WHERE slot = ? AND state != 'REFUSED'",
+                        ('that land was laid up while nobody was there. Set out for it again and its harbour is made ready', slot))
+        self.parked_now.append((slot, x, y))
+        self._bump()
+
+    def keep(self, x, y, kept):
+        """What the coordinator wants back when the parked land of (x, y) is restored."""
+        self.db.execute('UPDATE chart_parked SET kept = ? WHERE x = ? AND y = ?', (kept, x, y))
 
     def clearing(self):
-        """True while the host still has a given-up land to archive."""
-        return bool(self.expeditions) and any(
-            (self.expeditions / SLOT_ABANDONED / (slot + '.json')).exists() for slot in self.slots)
+        """True while the host still has a land to archive or park."""
+        if not self.expeditions:
+            return False
+        if self.db.execute('SELECT 1 FROM chart_parking LIMIT 1').fetchone():
+            return True
+        return any((self.expeditions / SLOT_ABANDONED / (slot + '.json')).exists() for slot in self.slots)
+
+    def place(self, x, y, voyage=None, now=None):
+        """Gives the land of tile (x, y), which has no world, a slot: a new land
+        is generated there, a parked one restored. Returns (slot, None) or
+        (None, why not)."""
+        now = int(time.time() if now is None else now)
+        tile = self.template(x, y)
+        slot = next((s for s in self.slots if self.slot_free(s)), None)
+        if not slot:
+            # A land being archived or parked frees its slot soon; else the stalest empty land is parked.
+            return None, (CLEARING if self.clearing() or self.make_room(now) else NO_SLOT)
+        parked = self.parked(x, y)
+        _write_json(self.expeditions / SLOT_WANTED / (slot + '.json'),
+                    {'region': slot, 'key': '%d,%d' % (x, y), 'template': tile['template'], 'voyage': voyage, 'at': now,
+                     'parked': bool(parked)})
+        self.db.execute('INSERT OR REPLACE INTO chart_landed VALUES (?, ?, ?, ?, ?)', (slot, x, y, now, now))
+        if parked:
+            # It keeps its state; its 7 days and its hour start again as it wakes.
+            self.db.execute('UPDATE chart_tile SET region = ? WHERE x = ? AND y = ?', (slot, x, y))
+            self.db.execute('DELETE FROM chart_parked WHERE x = ? AND y = ?', (x, y))
+            self.restored_now.append((slot, x, y, parked[2]))
+        else:
+            self.db.execute("UPDATE chart_tile SET region = ?, state = 'LANDED' WHERE x = ? AND y = ?", (slot, x, y))
+        self._bump()
+        return slot, None
+
+    def summon(self, x, y, now=None):
+        """Somebody who lives on the parked land of (x, y) came back: it is
+        given a slot again. True when it has one (now or already)."""
+        tile = self.template(x, y) if tile_valid(x, y) else None
+        if not tile or tile['state'] not in ('LANDED', 'SETTLED', 'CLAIMED'):
+            return False
+        if tile['region']:
+            return True
+        return bool(self.parked(x, y)) and self.place(x, y, None, now)[0] is not None
 
     def set_course(self, voyage, owner, x, y, origin=None, now=None, by=None):
         """A ship of owner sets course for land tile (x, y); by is the account
@@ -528,19 +635,15 @@ class WorldChart:
             return self._refuse(voyage, owner, x, y, origin, 'that land has no coast a ship can reach', now)
         slot = tile['region']
         if not slot:
-            reason = self.open_refusal(owner, by, now)
+            new = not self.parked(x, y)
+            reason = self.open_refusal(owner, by, now) if new else None
             if reason:
                 return self._refuse(voyage, owner, x, y, origin, reason, now)
-            slot = next((s for s in self.slots if self.slot_free(s)), None)
+            slot, reason = self.place(x, y, voyage, now)
             if not slot:
-                # A land being archived frees its slot soon; else the stalest empty land gives way.
-                cleared = self.clearing() or self.make_room(now)
-                return self._refuse(voyage, owner, x, y, origin, CLEARING if cleared else NO_SLOT, now)
-            _write_json(self.expeditions / SLOT_WANTED / (slot + '.json'),
-                        {'region': slot, 'key': '%d,%d' % (x, y), 'template': tile['template'], 'voyage': voyage, 'at': now})
-            self.db.execute("UPDATE chart_tile SET region = ?, state = 'LANDED' WHERE x = ? AND y = ?", (slot, x, y))
-            self.db.execute('INSERT OR REPLACE INTO chart_landed VALUES (?, ?, ?, ?, ?)', (slot, x, y, now, now))
-            self.db.execute('INSERT OR REPLACE INTO chart_opened VALUES (?, ?, ?, ?, ?, ?)', (x, y, slot, owner, by, now))
+                return self._refuse(voyage, owner, x, y, origin, reason, now)
+            if new:
+                self.db.execute('INSERT OR REPLACE INTO chart_opened VALUES (?, ?, ?, ?, ?, ?)', (x, y, slot, owner, by, now))
         state = 'READY' if self.slot_ready(slot, x, y) else 'ASSIGNED'
         self.db.execute('INSERT INTO chart_course VALUES (?, ?, ?, ?, ?, ?, ?, NULL, ?)',
                         (voyage, owner, x, y, origin, slot, state, now))
@@ -559,8 +662,23 @@ class WorldChart:
             record = _read_json(self.expeditions / SLOT_FAILED / (slot + '.json')) if self.expeditions else None
             if record is not None:
                 failed[slot] = record
+        if self.expeditions and self.refresh_parks(now):
+            changed = True
         for slot, record in failed.items():
             key = str(record.get('key') or '')
+            if record.get('parked'):
+                # A parked land that could not be restored is parked still: nothing of it is lost.
+                for voyage, x, y in self.db.execute(
+                        "SELECT voyage, x, y FROM chart_course WHERE slot = ? AND state = 'ASSIGNED'", (slot,)).fetchall():
+                    if '%d,%d' % (x, y) == key:
+                        self.db.execute("UPDATE chart_course SET state = 'REFUSED', reason = ? WHERE voyage = ?",
+                                        ('its harbour could not be made ready: %s' % str(record.get('reason') or 'unknown')[:200], voyage))
+                row = self.db.execute('SELECT x, y FROM chart_tile WHERE region = ?', (slot,)).fetchone()
+                if row and '%d,%d' % row == key:
+                    self._park(slot, row[0], row[1], now)
+                (self.expeditions / SLOT_FAILED / (slot + '.json')).unlink(missing_ok=True)
+                changed = True
+                continue
             reason = 'the land could not be made ready: %s' % str(record.get('reason') or 'unknown')[:200]
             for voyage, x, y in self.db.execute(
                     "SELECT voyage, x, y FROM chart_course WHERE slot = ? AND state = 'ASSIGNED'", (slot,)).fetchall():
@@ -670,17 +788,27 @@ class WorldChart:
 
     def expire(self, now=None):
         """Lands nobody settled or claimed and nobody visited for 7 days are
-        abandoned. Returns their regions, with any set_course gave up to make
-        room since the last call."""
+        abandoned, parked ones too. Returns what the coordinator must forget:
+        their regions, or 'land:x,y' for a parked one."""
         now = int(time.time() if now is None else now)
-        gone, self.released = self.released, []
+        gone = []
         # Forget who opened what once the wait is over and the land is decided or gone.
         self.db.execute("DELETE FROM chart_opened WHERE at < ? AND NOT EXISTS (SELECT 1 FROM chart_tile t WHERE "
-                        "t.x = chart_opened.x AND t.y = chart_opened.y AND t.region = chart_opened.slot AND t.state = 'LANDED')",
+                        "t.x = chart_opened.x AND t.y = chart_opened.y AND t.state = 'LANDED')",
                         (now - OPEN_COOLDOWN_SECONDS,))
         for slot, x, y in self.db.execute('SELECT slot, x, y FROM chart_landed WHERE visited < ?',
                                           (now - UNVISITED_SECONDS,)).fetchall():
             tile = self.template(x, y)
             if tile and tile['state'] == 'LANDED' and tile['region'] == slot and self.abandon(slot, 'timeout', now):
                 gone.append(slot)
+        for x, y in self.db.execute('SELECT x, y FROM chart_parked WHERE visited < ?', (now - UNVISITED_SECONDS,)).fetchall():
+            tile = self.template(x, y)
+            if not tile or tile['state'] != 'LANDED':
+                continue
+            if self.expeditions:
+                _write_json(self.expeditions / SLOT_DISCARD / ('%d-%d.json' % (x, y)), {'key': '%d,%d' % (x, y), 'at': now})
+            self.db.execute("UPDATE chart_tile SET state = 'LOST', region = NULL, by = 'timeout' WHERE x = ? AND y = ?", (x, y))
+            self.db.execute('DELETE FROM chart_parked WHERE x = ? AND y = ?', (x, y))
+            self._bump()
+            gone.append(land_home(x, y))
         return gone

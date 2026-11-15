@@ -174,7 +174,14 @@ var/global/datum/transfer_bridge/transfer_bridge = new
 // Retries until the agent answers; until then no effect can be applied.
 /datum/transfer_bridge/proc/reconcile_loop()
 	for(var/attempt in 1 to 1000000)
-		var/list/answer = request("/load", loaded_capture)
+		// An expedition slot holds one land after another: the agent adopts a land
+		// placed there since the last one it reconciled (region.py reconcile_load).
+		// Not kept in the capture, which a save may repeat (valid_transfer_capture).
+		var/list/asked = loaded_capture.Copy()
+		if(shard_group && shard_group.kind == "EXPEDITION")
+			var/list/land = expedition_land()
+			asked["world"] = land ? "[land["key"]]|[land["placed"]]" : "free"
+		var/list/answer = request("/load", asked)
 		if(answer)
 			reconcile_pending = FALSE
 			var/list/result = answer["ok"] ? answer["result"] : null

@@ -105,8 +105,7 @@ courses, frees the tile (its template stays) and deletes the report. The
 coordinator learns the slots and this folder from `--slots` and
 `--expeditions`, which `ensure_coordinator` passes when the group has slots.
 
-An abandoned land (by its crew, after 7 days with nobody there, or after a
-day when a crew needs a slot and none is free) is
+An abandoned land (by its crew, or after 7 days with nobody there) is
 reported in `<root>/expeditions/abandon/<slot>.json`: the pass stops the slot
 (it saves first), archives it and frees it. The coordinator has already moved
 any home there to the mainland. See [voyages](ship-voyage.md#settle-claim-or-abandon).
@@ -114,6 +113,41 @@ any home there to the mainland. See [voyages](ship-voyage.md#settle-claim-or-aba
 An archived save is kept 7 days so an admin can restore it by hand. After
 that the host service deletes it, with the land folder it was built from
 unless a slot holds that land again (`prune_archives`, each `serve` pass).
+
+## Parked lands
+
+A slot is only needed while a land is awake. When a crew needs a slot and none
+is free, the coordinator asks for the land that has stood empty longest to be
+parked (`<root>/expeditions/park/<slot>.json`, [chart](world-chart.md#parked-lands)).
+The host service's pass:
+
+1. Somebody is there after all: the wish is dropped and the land stays.
+2. Otherwise the slot is stopped (it saves first; one asleep on disk is
+   stopped already), and `park` moves `map_saves`, `map_backups` and
+   `map_rollback` to `<root>/expeditions/parked/<x>-<y>/` with `slot.json` (the
+   land folder, map and world summary) and frees the slot.
+
+A wanted land marked `parked` is not generated: `restore` moves the save back
+into whichever slot is free, gives the slot record the land again with a new
+`placed` stamp, and the land compiles and starts as any other. A restore that
+cannot be built parks the land again and reports it `parked` in
+`failed/<slot>.json`; a parked land is never archived for a failed build and
+never pruned. `expedition-status` lists the parked lands.
+
+Only the coordinator gives a parked land up (an undecided one, 7 days after
+anyone was last there): `<root>/expeditions/discard/<x>-<y>.json` moves its
+folder to the archive, to be pruned after 7 days like any archived land.
+
+### One land after another in a slot's transfer agent
+
+A slot's transfer agent keeps a ledger that follows the world's saves, and
+holds the region when a loaded save is older than it (a rollback). A slot's
+next land is another world with its own save history, so the slot world sends
+`world` with its load report: the land's chart tile and its `placed` stamp
+(`config/expedition_land.json`, set when a land is given or restored). The
+agent adopts a world other than the last one it reconciled
+(`RegionStore.reconcile_load`); the same placement loading an older save is
+still held.
 
 ## In game
 

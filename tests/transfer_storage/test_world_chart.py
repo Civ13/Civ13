@@ -329,7 +329,7 @@ class OpenLandRuleTests(unittest.TestCase):
         self.c = chart(slots=['far1', 'far2'], expeditions=self.exp)
         self.lands = [(x, y) for y in range(wc.CHART_HEIGHT) for x in range(wc.CHART_WIDTH)
                       if self.c.terrain(x, y) not in ('OCEAN', 'MAINLAND') and self.c.coast(x, y)][:4]
-        for owner in ('faction:rome', 'faction:gaul', 'crew:val'):
+        for owner in ('faction:rome', 'faction:gaul', 'crew:val', 'crew:kim'):
             for land in self.lands:
                 self.c.reveal(owner, *land)
         self.wait = wc.OPEN_COOLDOWN_SECONDS
@@ -389,38 +389,146 @@ class OpenLandRuleTests(unittest.TestCase):
         self.assertTrue(self.c.settle('far1'))
         self.assertEqual('far1', self.course('v3', 'faction:nobody', self.lands[0], 1002, 'bob')['region'])
 
-    def test_stale_empty_lands_give_way_when_no_slot_is_free(self):
-        day = 86400
+    # -- parking: slots are the lands awake at once, not the lands there are --
+
+    def slot_record(self, slot, **record):
+        os.makedirs(os.path.join(self.exp, 'slots'), exist_ok=True)
+        with open(os.path.join(self.exp, 'slots', slot + '.json'), 'w', encoding='utf-8') as f:
+            json.dump(dict({'region': slot, 'history': []}, **record), f)
+
+    def started(self, slot, land):
+        """The host built the land wanted in slot and started it."""
+        self.archived(slot)
+        self.slot_record(slot, state='LAND', key='%d,%d' % land, phase='started')
+
+    def wish(self, folder, name):
+        return os.path.join(self.exp, folder, name + '.json')
+
+    def host_parks(self, slot):
+        os.remove(self.wish('park', slot))
+        self.slot_record(slot, state='FREE')
+
+    def two_lands(self):
         self.course('v1', 'faction:rome', self.lands[0], 1000, 'val')
         self.course('v2', 'faction:gaul', self.lands[1], 2000, 'ann')
+        self.started('far1', self.lands[0])
+        self.started('far2', self.lands[1])
         self.assertTrue(self.c.settle('far1'))
-        # Both slots hold lands visited within their time: nothing gives way.
-        busy = self.course('v3', 'crew:val', self.lands[2], 2000 + day - 10, 'val')
-        self.assertIn('harbour master', busy['reason'])
-        self.assertEqual([], self.c.expire(now=2000 + day - 10))
-        # A day empty, the undecided land goes; the settled one stays.
-        cleared = self.course('v4', 'crew:val', self.lands[2], 2000 + day, 'val')
-        self.assertEqual(wc.CLEARING, cleared['reason'])
-        self.assertEqual('LOST', self.c.template(*self.lands[1])['state'])
-        self.assertEqual('SETTLED', self.c.template(*self.lands[0])['state'])
-        self.assertEqual(['far2'], self.c.expire(now=2000 + day))
-        self.assertEqual([], self.c.expire(now=2000 + day))
-        # While the host archives it nothing else is given up.
-        self.assertEqual(wc.CLEARING, self.course('v5', 'crew:val', self.lands[2], 2000 + 20 * day, 'val')['reason'])
-        self.assertEqual('SETTLED', self.c.template(*self.lands[0])['state'])
-        self.archived('far2')
-        self.assertEqual('far2', self.course('v6', 'crew:val', self.lands[2], 2000 + 2 * day, 'val')['region'])
-        self.c.visit('far2', now=2000 + 20 * day)
 
-    def test_settled_and_claimed_lands_never_give_way(self):
-        year = 365 * 86400
-        self.course('v1', 'faction:rome', self.lands[0], 1000, 'val')
-        self.course('v2', 'faction:gaul', self.lands[1], 1000, 'ann')
-        self.assertTrue(self.c.settle('far1'))
-        self.assertTrue(self.c.claim('far2', 'civ:gaia:Gaul'))
-        self.assertIn('harbour master', self.course('v3', 'crew:val', self.lands[2], 1000 + year, 'val')['reason'])
-        self.assertEqual([], self.c.expire(now=1000 + year))
-        self.assertEqual(['CLAIMED', 'SETTLED'], sorted(self.c.template(*land)['state'] for land in self.lands[:2]))
+    def test_the_land_empty_longest_is_parked_when_no_slot_is_free(self):
+        hour, late = wc.PARK_IDLE_SECONDS, 2000 + wc.COURSE_UNDER_WAY_SECONDS
+        self.two_lands()
+        # Ships were on their way to both a moment ago: nothing is parked under them.
+        self.assertIn('harbour master', self.course('v3', 'crew:kim', self.lands[2], 2000 + hour, 'kim')['reason'])
+        self.assertTrue(self.c.visit('far1', now=late))
+        self.assertTrue(self.c.visit('far2', now=late + 10))
+        # Both visited within the hour: nothing is parked.
+        self.assertIn('harbour master', self.course('v4', 'crew:kim', self.lands[2], late + hour - 10, 'kim')['reason'])
+        # The settled land has stood empty an hour: it is asked to give its slot up, and loses nothing.
+        cleared = self.course('v5', 'crew:kim', self.lands[2], late + hour, 'kim')
+        self.assertEqual(wc.CLEARING, cleared['reason'])
+        with open(self.wish('park', 'far1'), encoding='utf-8') as f:
+            self.assertEqual('%d,%d' % self.lands[0], json.load(f)['key'])
+        self.assertFalse(os.path.exists(self.wish('park', 'far2')))
+        # While the host parks it nothing else is asked, and the land is still in its slot.
+        self.assertEqual(wc.CLEARING, self.course('v6', 'crew:kim', self.lands[2], late + 3 * hour, 'kim')['reason'])
+        self.assertFalse(os.path.exists(self.wish('park', 'far2')))
+        self.assertEqual('far1', self.c.template(*self.lands[0])['region'])
+        self.host_parks('far1')
+        self.assertTrue(self.c.refresh_courses(now=late + 3 * hour))
+        tile = self.c.template(*self.lands[0])
+        self.assertEqual(('SETTLED', None, True), (tile['state'], tile['region'], tile['parked']))
+        self.assertEqual([('far1', ) + self.lands[0]], self.c.parked_now)
+        self.c.expire(now=late + 400 * 86400)
+        self.assertEqual('SETTLED', self.c.template(*self.lands[0])['state'], 'a parked settled land is never lost')
+        # The freed slot takes the new land.
+        self.assertEqual('far1', self.course('v7', 'crew:kim', self.lands[2], late + 3 * hour, 'kim')['region'])
+        with open(self.wish('wanted', 'far1'), encoding='utf-8') as f:
+            self.assertFalse(json.load(f)['parked'])
+
+    def test_a_parked_land_is_restored_into_any_free_slot_for_a_ship(self):
+        late = 2000 + wc.COURSE_UNDER_WAY_SECONDS + wc.PARK_IDLE_SECONDS
+        self.two_lands()
+        self.course('v3', 'crew:kim', self.lands[2], late, 'kim')
+        self.host_parks('far1')
+        self.c.refresh_courses(now=late)
+        self.c.parked_now = []
+        self.c.keep(*self.lands[0], '{"stage": "FRONTIER"}')
+        # The other land is abandoned and archived: its slot is free.
+        self.assertTrue(self.c.abandon('far2', 'ann', now=late))
+        self.archived('far2')
+        self.slot_record('far2', state='FREE')
+        # Anyone may sail for the settled land; it costs no new-land wait and comes back with its state.
+        self.course('v4', 'faction:gaul', self.lands[3], late + 5, 'ann')  # takes far1
+        self.started('far1', self.lands[3])
+        self.assertTrue(self.c.abandon('far1', 'ann', now=late + 6))
+        self.archived('far1')
+        self.slot_record('far1', state='FREE')
+        back = self.course('v5', 'faction:gaul', self.lands[0], late + 10, 'ann')
+        self.assertEqual(('ASSIGNED', 'far1'), (back['state'], back['region']))
+        tile = self.c.template(*self.lands[0])
+        self.assertEqual(('SETTLED', 'far1'), (tile['state'], tile['region']))
+        self.assertNotIn('parked', tile)
+        with open(self.wish('wanted', 'far1'), encoding='utf-8') as f:
+            wanted = json.load(f)
+        self.assertEqual((True, '%d,%d' % self.lands[0]), (wanted['parked'], wanted['key']))
+        self.assertEqual([('far1',) + self.lands[0] + ('{"stage": "FRONTIER"}',)], self.c.restored_now)
+        # A restore that failed leaves it parked, and her course says so.
+        os.remove(self.wish('wanted', 'far1'))
+        os.makedirs(os.path.join(self.exp, 'failed'), exist_ok=True)
+        with open(self.wish('failed', 'far1'), 'w', encoding='utf-8') as f:
+            json.dump({'region': 'far1', 'key': '%d,%d' % self.lands[0], 'reason': 'compile failed', 'parked': True}, f)
+        self.assertTrue(self.c.refresh_courses(now=late + 20))
+        tile = self.c.template(*self.lands[0])
+        self.assertEqual(('SETTLED', None, True), (tile['state'], tile['region'], tile.get('parked')))
+        self.assertIn('could not be made ready', self.c.course('v5')['reason'])
+
+    def test_a_parking_called_off_or_never_done_is_forgotten(self):
+        late = 2000 + wc.COURSE_UNDER_WAY_SECONDS + wc.PARK_IDLE_SECONDS
+        self.two_lands()
+        self.course('v3', 'crew:kim', self.lands[2], late, 'kim')
+        # Somebody was there after all: the host drops the wish and keeps the land.
+        os.remove(self.wish('park', 'far1'))
+        self.c.refresh_courses(now=late + 30)
+        self.assertEqual([], self.c.parked_now)
+        self.assertEqual('far1', self.c.template(*self.lands[0])['region'])
+        self.assertFalse(self.c.clearing())
+        # A host that never answers: the wish is taken back after an hour.
+        self.c.visit('far1', now=late + 40)
+        self.course('v4', 'crew:kim', self.lands[2], late + 50, 'kim')
+        self.assertTrue(os.path.exists(self.wish('park', 'far2')))
+        self.c.refresh_courses(now=late + 50 + wc.PARK_GIVE_UP_SECONDS + 1)
+        self.assertFalse(os.path.exists(self.wish('park', 'far2')))
+        self.assertEqual('far2', self.c.template(*self.lands[1])['region'])
+
+    def test_a_resident_summons_a_parked_land_and_an_undecided_one_still_runs_out(self):
+        late = 2000 + wc.COURSE_UNDER_WAY_SECONDS + wc.PARK_IDLE_SECONDS
+        self.two_lands()
+        self.c.visit('far1', now=late)
+        # The undecided land is the one empty longest now: parked, it stays its opener's one undecided land.
+        self.course('v3', 'crew:kim', self.lands[2], late, 'kim')
+        self.host_parks('far2')
+        self.c.refresh_courses(now=late)
+        self.assertEqual('LANDED', self.c.template(*self.lands[1])['state'])
+        self.assertIn('undecided', self.course('v4', 'faction:gaul', self.lands[3], late + wc.OPEN_COOLDOWN_SECONDS, 'ann')['reason'])
+        self.assertFalse(self.c.summon(*self.lands[3]), 'only a land that was opened can be summoned')
+        self.assertTrue(self.c.summon(*self.lands[0]), 'a land in its slot needs nothing')
+        self.assertTrue(self.c.summon(*self.lands[1], now=late + 60))
+        self.assertEqual('far2', self.c.template(*self.lands[1])['region'])
+        with open(self.wish('wanted', 'far2'), encoding='utf-8') as f:
+            self.assertTrue(json.load(f)['parked'])
+        # Parked again and left 7 days, nobody having settled it, it is lost and its folder discarded.
+        self.started('far2', self.lands[1])
+        self.c.restored_now = []
+        self.c.visit('far1', now=late + 2 * wc.COURSE_UNDER_WAY_SECONDS + 2 * wc.PARK_IDLE_SECONDS)
+        self.course('v5', 'crew:kim', self.lands[2], late + 2 * wc.COURSE_UNDER_WAY_SECONDS + 2 * wc.PARK_IDLE_SECONDS, 'kim')
+        self.host_parks('far2')
+        self.c.refresh_courses(now=late + 9000)
+        self.assertEqual([], self.c.expire(now=late + 60 + wc.UNVISITED_SECONDS - 10))
+        self.assertEqual([wc.land_home(*self.lands[1])], self.c.expire(now=late + 60 + wc.UNVISITED_SECONDS + 10))
+        self.assertEqual('LOST', self.c.template(*self.lands[1])['state'])
+        with open(self.wish('discard', '%d-%d' % self.lands[1]), encoding='utf-8') as f:
+            self.assertEqual('%d,%d' % self.lands[1], json.load(f)['key'])
 
 class ChartAgentTests(unittest.TestCase):
     def setUp(self):
@@ -511,6 +619,37 @@ class ChartAgentTests(unittest.TestCase):
         self.assertEqual('alpha', self.coordinator.home('val'))
         self.assertFalse(call(self.urls['beta'], TOKENS['beta'], '/chart/request',
                               {'op': 'claim', 'x': x, 'y': y, 'admin': 'val', 'owner': 'faction:rome'}).get('ok'))
+
+    def test_homes_and_the_land_stage_follow_a_parked_land_to_its_next_slot(self):
+        exp = os.path.join(self.tmp.name, 'expeditions')
+        chart_ = self.coordinator.chart
+        chart_.slots, chart_.expeditions = ['beta'], wc.Path(exp)
+        x, y = first_land(chart_)
+        chart_.reveal('crew:val', x, y)
+        chart_.set_course('alpha-1-1', 'crew:val', x, y, 'alpha', now=1000)
+        self.coordinator._set_home('val', 'beta')
+        call(self.urls['beta'], TOKENS['beta'], '/chart/request', {'op': 'settle', 'x': x, 'y': y, 'admin': 'val'})
+        self.coordinator.homes_once()
+        self.assertEqual('FRONTIER', self.coordinator.lands()['beta']['stage'])
+        # The host parked it (the chart asked while another crew wanted the slot).
+        chart_._park('beta', x, y, 5000)
+        self.coordinator.homes_once()
+        home = wc.land_home(x, y)
+        self.assertEqual(home, self.coordinator.home('val'))
+        self.assertNotEqual('FRONTIER', self.coordinator.lands()['beta']['stage'], "the slot's next land starts unexplored")
+        self.coordinator.homes_once()
+        self.assertEqual({'verdict': 'ELSEWHERE', 'home': home},
+                         call(self.urls['alpha'], TOKENS['alpha'], '/account', {'ckey': 'val', 'op': 'claim'})['result'])
+        # Somebody else cannot wake it; its resident can, from any world.
+        call(self.urls['alpha'], TOKENS['alpha'], '/chart/request', {'op': 'summon', 'x': x, 'y': y, 'admin': 'bob'})
+        self.coordinator.homes_once()
+        self.assertIsNone(chart_.template(x, y)['region'])
+        os.remove(os.path.join(exp, 'wanted', 'beta.json'))
+        call(self.urls['alpha'], TOKENS['alpha'], '/chart/request', {'op': 'summon', 'x': x, 'y': y, 'admin': 'val'})
+        self.coordinator.homes_once()
+        self.assertEqual('beta', chart_.template(x, y)['region'])
+        self.assertEqual('beta', self.coordinator.home('val'))
+        self.assertEqual('FRONTIER', self.coordinator.lands()['beta']['stage'])
 
     def test_settling_and_claiming_set_the_land_stage(self):
         exp = os.path.join(self.tmp.name, 'expeditions')
