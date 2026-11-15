@@ -47,8 +47,11 @@ class RegionOoc(unittest.TestCase):
         self.assertIn('"posted" = webhook_enabled()', outbound)
         self.assertIn('return region_ooc_outbound_line(speaker.key, speaker.ckey, msg, style, rank, fakekey)',
                       proc(OOC, '/proc/region_ooc_outbound'))
-        gate = '!envelope["posted"] && shard_group.region == shard_group.mainland'
+        gate = '!envelope["posted"] && shard_group.region == shard_group.discord_region()'
         self.assertIn(gate, receive)
+        # The bot's world is the relay's gate, else the mainland, so the mainland can move
+        # while the bot stays at the front door (Gaia, 2026-11-15).
+        self.assertIn('return gate || mainland', proc(read('code/modules/persistence/shard_group.dm'), '/datum/shard_group/proc/discord_region'))
         post = receive.index('region_ooc_post_to_discord(region_name, name, msg)')
         self.assertLess(receive.index(gate), post)
         # After the sender and ban checks, before the local mute, which only hides it here.

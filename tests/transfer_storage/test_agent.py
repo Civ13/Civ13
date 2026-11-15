@@ -69,6 +69,24 @@ class AgentTests(unittest.TestCase):
             self.assertEqual([], status['active'])
         self.assertEqual([], self.a('/outbox')['result']['envelopes'])
 
+    def test_a_down_agent_does_not_hold_up_the_others(self):
+        # One agent restarting (refused connection) used to abort the whole relay pass
+        # (host, 2026-11-15): the other regions' envelopes still move.
+        import socket
+        with socket.socket() as probe:
+            probe.bind(('127.0.0.1', 0))
+            dead = 'http://127.0.0.1:%d' % probe.getsockname()[1]
+        self.coordinator.close()
+        self.coordinator = Coordinator(os.path.join(self.tmp.name, 'coordinator2.sqlite'), 'g')
+        self.coordinator.enroll('aaadown', dead, 'c' * 40)
+        self.coordinator.enroll('alpha', self.urls['alpha'], TOKEN_A)
+        self.coordinator.enroll('beta', self.urls['beta'], TOKEN_B)
+        escrow = self.a('/escrow', {'peer': 'beta', 'payloads': ['axe']})['result']
+        self.a('/save', {'generation': 'alpha-g1', 'effects': [escrow['effect_id']], 'ledger_seq': 1})
+        for _ in range(3):
+            self.coordinator.relay_once()
+        self.assertEqual([escrow['transfer_id']], self.b('/status')['result']['pending_transfers'])
+
     def test_bad_token_unknown_path_and_large_body(self):
         self.assertEqual('bad token', call(self.urls['alpha'], TOKEN_B, '/status')['error'])
         self.assertEqual('unknown path', self.a('/drop-tables')['error'])
