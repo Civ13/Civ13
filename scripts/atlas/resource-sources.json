@@ -17034,6 +17034,76 @@
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "The lime kiln needs the Stone Masonry research.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Smelt aluminium in a reduction pot",
+      "file": "code/modules/1713/aluminium.dm",
+      "line": 287,
+      "source_commit": "67052447110d5506625c446c0730beefba34d7fc",
+      "inputs": [
+        "/obj/item/stack/ore/alumina",
+        "/obj/item/stack/ore/coal"
+      ],
+      "outputs": [
+        "/material/aluminium"
+      ],
+      "tools": [
+        "/obj/structure/aluminium_works/reduction_pot"
+      ],
+      "steps": [
+        "Build a reduction pot and connect it to cable power.",
+        "Load alumina and coal or charcoal into the pot. Each alumina becomes one aluminium ingot, and one coal or charcoal is burnt for every two ingots."
+      ],
+      "conditions": "The pot only works while it has heavy cable power.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "The reduction pot needs the Aluminium Refining research.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Refine bauxite to alumina in an alumina digester",
+      "file": "code/modules/1713/aluminium.dm",
+      "line": 215,
+      "source_commit": "67052447110d5506625c446c0730beefba34d7fc",
+      "inputs": [
+        "/obj/item/stack/ore/bauxite",
+        "lye"
+      ],
+      "outputs": [
+        "/obj/item/stack/ore/alumina"
+      ],
+      "tools": [
+        "/obj/structure/aluminium_works/digester"
+      ],
+      "steps": [
+        "Build an alumina digester and connect it to cable power.",
+        "Load bauxite and pour in lye or sodium hydroxide: every 2 bauxite and 1 unit of lye or sodium hydroxide turn out 1 alumina."
+      ],
+      "conditions": "The digester only works while it has cable power; it leaves red mud behind.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "The alumina digester needs the Aluminium Refining research.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Mine bauxite",
+      "file": "code/game/turfs/floor_attackby.dm",
+      "line": 1009,
+      "source_commit": "67052447110d5506625c446c0730beefba34d7fc",
+      "inputs": [
+        "/turf/floor/dirt/underground"
+      ],
+      "outputs": [
+        "/obj/item/stack/ore/bauxite"
+      ],
+      "tools": [
+        "/obj/item/weapon/material/pickaxe"
+      ],
+      "steps": [
+        "Mine a mineable underground deposit with a pickaxe. From the Industrial age the random branch can also yield bauxite."
+      ],
+      "conditions": "Finite terrain; random branch, twice as likely under jungle and savanna.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "Map ordinal age at least 4.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     }
   ],
   "mechanism_overview": [
