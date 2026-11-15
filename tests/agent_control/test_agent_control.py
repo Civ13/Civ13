@@ -2706,7 +2706,7 @@ class MovementParityTests(unittest.TestCase):
         't_movement_speed_multiplier *= 0.85',
         't_movement_speed_multiplier *= 1.15',
         't_movement_speed_multiplier *= 0.9',
-        'move_delay = 0.5',
+        'move_delay = HH.riding_mob.ride_delay() + HH.riding_mob.hitch_drag()',
         'standing_on_snow = 1.75',
         'standing_on_snow = rand(2,3)',
     )

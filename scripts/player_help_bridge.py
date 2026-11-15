@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '182ee081be7c64a99b1c29f09ce983e17ac5a30a'
+WIKI_REVIEWED_REVISION = '9c27310e5a305c23e2f7819cab53da14f62a8b84'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('d40907b97df21d9df98414a54e9da1b15c357855f0341c905f269dfb97bb8618', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('f9b3777b9e995d824a4ee5d8336c8ad28f012eef55fc9c8acefa750743d4f185', 'character skills traits languages'),
@@ -96,7 +96,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Survival.md': ('a449eed1a1668a02a460076c3a08e61b512202b1cdfa95e13b18226238967bba', 'survival winter cold warm freezing hypothermia shelter debris footwear boots snowshoes shoes ice mud rain wet umbrella raincoat cape storm storms lightning thunder blizzard sandstorm heat wave weather fire fires wildfire firefighting beater flapper smother burning bucket blanket extinguish smoke signal signals hook firebreak pump engine nozzle hose jet reel extinguisher'),
     'guides/Guide_to_Tanks.md': ('9250b410333e0da30224b09ed2126ce2ed676225aa2dda2be3b13c8f7ff3442a', 'tank driving crew ammunition'),
     'guides/Guide_to_Trains.md': ('084ca499676d0ccfa7d9e64d9e52da43d7f0b5c40d95bbef0e3908ab2a35f641', 'train trains railway track locomotive station switcher rails wagon'),
-    'guides/Guide_to_Trenches.md': ('04bed9fb3d409455d466928f071ddfc509ba49a9d7b450815595f0bc27c9670b', 'trench trenches fortification sandbag dig shovel'),
+    'guides/Guide_to_Trenches.md': ('fafbfe65b80b51a62ce2c155dfc920dd675d79f72d212cdc3b9cb2909d5adebf', 'trench trenches fortification sandbag dig shovel'),
     'guides/Guide_to_Weapons.md': ('f4912630ee265fb33c96d03d1a0831d1ce0e3d8a4760ebd5538a07842bd9ce7b', 'weapons gun reload ammunition'),
     'New_Player_Guide.md': ('c0d80da1236f7b15de5787584628898cc5dacddd6db97fadbe42dd5b685faee0', 'new player beginner start first round basics'),
     'Hotkeys.md': ('05090c224e1f78aac61ba054366f3138634ce2c47cdaf4b9c98be908818ae55e', 'hotkeys hotkey keys keyboard controls key press'),
