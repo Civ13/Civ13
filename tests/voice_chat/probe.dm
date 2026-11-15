@@ -134,18 +134,25 @@ var/voice_runtime_error = FALSE
 	voice_check(voice_roster_endpoint("http://127.0.0.1:55555/webhook/tdm/") == "http://127.0.0.1:55555/webhook/tdm/voice_roster", "loopback works")
 	voice_check(!voice_roster_endpoint("http://bot.example/webhook/tdm"), "plain http to another host never carries the key")
 	voice_check(!length(V.roster()), "no voice players, empty roster")
+	voice_check(voice_token_url_valid("http://valzargaming.com:8080/voice/token") == "http://valzargaming.com:8080/voice/token", "a bot token address is passed on")
+	voice_check(!voice_token_url_valid("javascript:alert(1)") && !voice_token_url_valid("http://user@host/x") && !voice_token_url_valid("http://host/x?y") && !voice_token_url_valid(null), "anything else is not")
 
 /proc/voice_limiter_checks()
 	var/datum/voice_chat/V = new
 	var/key = "abcdefghijklmnopqrstuvwxyzABCDEF"
 	voice_check(voice_poll_id(key) == sha1("civ13-voice-state:[key]") && length(voice_poll_id(key)) == 40, "the poll id is a sha1 of the key")
 	var/list/input = list("civ13_voice_state" = voice_poll_id(key))
-	var/first = V.handle_topic(input, "1.2.3.4:5000")
-	var/list/answer = json_decode(first)
+	var/list/answer = json_decode(V.handle_topic(input, "1.2.3.4:5000"))
 	voice_check(answer["v"] == 1 && answer["gen"] == 0 && answer["ready"] == -1, "an unknown key gets an empty answer")
-	voice_check(V.handle_topic(input, "1.2.3.4:5001") == "", "a second call inside the interval gets nothing")
-	voice_check(V.handle_topic(input, "5.6.7.8:5000") != "", "another address is not slowed down")
+	voice_check(V.handle_topic(input, "1.2.3.4:5001") != "" && !length(V.poll_next), "unknown keys are never tracked")
+	V.poll_ids[voice_poll_id(key)] = key
+	voice_check(V.handle_topic(input, "1.2.3.4:5000") != "", "a known key is answered")
+	voice_check(V.handle_topic(input, "1.2.3.4:5001") == "", "a second poll for that key inside the interval gets nothing")
+	var/other = "ZYXWVUTSRQPONMLKJIHGFEDCBA012345"
+	V.poll_ids[voice_poll_id(other)] = other
+	voice_check(V.handle_topic(list("civ13_voice_state" = voice_poll_id(other)), "1.2.3.4:5002") != "", "another player behind the same address is not slowed down")
 	voice_check(V.handle_topic(list("civ13_voice_state" = "short"), "9.9.9.9") == "", "a malformed poll id gets nothing")
 	voice_check(V.handle_topic(list("civ13_voice_state" = key), "9.9.9.8") == "", "the raw key is not accepted on the wire")
-	V.address_next["1.2.3.4"] = world.time - 1
-	voice_check(V.handle_topic(input, "1.2.3.4:5002") != "", "after the interval it answers again")
+	V.poll_next[key] = world.time - 1
+	voice_check(V.handle_topic(input, "1.2.3.4:5003") != "", "after the interval it answers again")
+	voice_check(held_keybinding_catalog()["voice_talk"][2] == "voice-talk" && held_keybinding_catalog()["voice_team"][2] == "voice-team", "talk and team radio are rebindable held keys")

@@ -289,6 +289,9 @@ BUG_REPORT_GITHUB_LABELS bug
 #WEBHOOK_CAN_FIRE
 #WEBHOOK_ADDRESS http://127.0.0.1:55555/webhook/nomads
 #WEBHOOK_KEY
+## Launcher voice chat: the bot's public /voice/token address, given to voice
+## launchers so they can fetch their sealed Discord token (http or https).
+#VOICE_TOKEN_URL http://valzargaming.com:8080/voice/token
 
 LANGUAGE english
 # Dynamic z allocation: optional examples (defaults shown; all lines commented).

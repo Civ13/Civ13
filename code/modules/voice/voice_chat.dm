@@ -15,15 +15,17 @@
 //   civ13_voice_state topic and sets each participant's volume.
 // - In the team call, everyone on the same faction in this region hears the
 //   speaker's team-radio key.
+// - Talk and team radio are ordinary held keybindings (OOC > Keybindings,
+//   default F5 and F6). The launcher reads "talk" and "team_talk" from this
+//   answer, so the voice app never watches the keyboard.
 // Volume is presentation, not confidentiality: a modified client can still
 // play the whole region call. Players can always mute anyone themselves.
 
 #define VOICE_KEY_MIN_LENGTH 32
 #define VOICE_KEY_MAX_LENGTH 64
 #define VOICE_RANGE 10
-#define VOICE_STATE_CACHE (5) // deciseconds a computed answer is reused
-#define VOICE_ADDRESS_INTERVAL (2) // deciseconds between topic calls per address
-#define VOICE_ADDRESS_LIMIT 4096
+#define VOICE_STATE_CACHE (5) // deciseconds the in-sight list is reused
+#define VOICE_POLL_INTERVAL (1) // deciseconds between answered polls per voice key
 #define VOICE_ROSTER_INTERVAL (5 SECONDS)
 #define VOICE_ROSTER_KEEPALIVE (60 SECONDS)
 
@@ -74,8 +76,8 @@ var/global/datum/voice_chat/voice_chat = new
 
 /datum/voice_chat
 	var/list/clients_by_key = list() // voice key -> client
-	var/list/answers = list() // voice key -> list("at" = world.time, "body" = text)
-	var/list/address_next = list() // address -> world.time of the next allowed call
+	var/list/answers = list() // voice key -> list("at" = world.time, "gen", "hear")
+	var/list/poll_next = list() // voice key -> world.time of the next answered poll
 	var/list/generations = list() // voice key -> list("gen", "mob", "alive")
 	var/list/ids = list() // ckey -> Discord user ID, from the bot's roster answer
 	var/list/poll_ids = list() // voice_poll_id(key) -> voice key
@@ -101,6 +103,7 @@ var/global/datum/voice_chat/voice_chat = new
 		poll_ids -= voice_poll_id(C.voice_key)
 	answers -= C.voice_key
 	generations -= C.voice_key
+	poll_next -= C.voice_key
 	C.voice_key = null
 
 // A client that may use voice: it joined with a voice key and has a stable
@@ -166,42 +169,79 @@ var/global/datum/voice_chat/voice_chat = new
 		var/volume = voice_volume_at(get_dist(listener, H))
 		if(volume > .[id]) .[id] = volume
 
-// The answer for one voice key, as JSON text. Unknown keys get an empty answer
-// that looks like a player with nobody in sight.
+// The bot's public token address, or null when it is not a plain http(s) URL.
+/proc/voice_token_url()
+	return voice_token_url_valid(config ? config.voice_token_url : null)
+
+/proc/voice_token_url_valid(url)
+	if(!istext(url) || length(url) > 512) return null
+	var/static/regex/web = regex(@"^https?:/{2}[^\s/?#@]+(/[^\s?#]*)?$", "i")
+	return web.Find(url) ? url : null
+
+// The answer for one voice key, as JSON text. Unknown keys get an answer
+// that says the launcher is not attached.
 /datum/voice_chat/proc/state(key)
 	var/client/C = clients_by_key[key]
 	var/id = voice_id(C)
 	if(!id)
-		return json_encode(list("v" = 1, "gen" = 0, "ready" = eligible(C) ? 0 : -1))
+		var/list/waiting = list("v" = 1, "gen" = 0, "ready" = eligible(C) ? 0 : -1)
+		if(eligible(C) && voice_token_url()) waiting["token_url"] = voice_token_url()
+		return json_encode(waiting)
+	// Who is in sight is the costly part; reuse it briefly. Key state never waits.
 	var/list/cached = answers[key]
-	if(cached && world.time >= cached["at"] && world.time < cached["at"] + VOICE_STATE_CACHE)
-		return cached["body"]
-	var/list/answer = list("v" = 1, "gen" = generation(C), "me" = id, "hear" = audible(C.mob))
+	if(!cached || world.time < cached["at"] || world.time >= cached["at"] + VOICE_STATE_CACHE)
+		cached = list("at" = world.time, "gen" = generation(C), "hear" = audible(C.mob))
+		answers[key] = cached
+	var/speak = voice_can_speak(C.mob)
+	var/list/answer = list("v" = 1, "gen" = cached["gen"], "me" = id, "hear" = cached["hear"], "speak" = speak ? 1 : 0)
+	answer["talk"] = speak && C.action_held("voice_talk") ? 1 : 0
+	var/token_url = voice_token_url()
+	if(token_url) answer["token_url"] = token_url
 	var/team = voice_team(C.mob)
-	if(team && voice_can_hear(C.mob)) answer["team"] = team
-	var/body = json_encode(answer)
-	answers[key] = list("at" = world.time, "body" = body)
-	return body
+	if(team && voice_can_hear(C.mob))
+		answer["team"] = team
+		answer["team_talk"] = speak && C.action_held("voice_team") ? 1 : 0
+	return json_encode(answer)
 
 // Topic entry point, called before the generic once-per-two-minutes topic
-// cooldown: a launcher asks about twice a second. Calls faster than that from
-// one address get nothing back, and never a ban.
+// cooldown: a launcher asks about ten times a second, so push-to-talk follows
+// the key closely. Faster polls for one voice key get nothing back, and never
+// a ban. Players behind one address each have their own key, so a shared
+// connection is not throttled.
 /datum/voice_chat/proc/handle_topic(list/input, addr)
 	var/poll_id = input["civ13_voice_state"]
 	var/static/regex/hex40 = regex(@"^[0-9a-f]{40}$")
 	if(!istext(poll_id) || !hex40.Find(poll_id))
 		return ""
-	var/host = "?"
-	if(istext(addr))
-		var/list/parts = splittext(addr, ":")
-		host = parts[1]
-	var/next = address_next[host]
-	if(isnum(next) && world.time < next && world.time >= next - VOICE_ADDRESS_INTERVAL)
+	var/key = poll_ids[poll_id]
+	if(!key)
+		return "{\"v\":1,\"gen\":0,\"ready\":-1}"
+	var/next = poll_next[key]
+	if(isnum(next) && world.time < next && world.time >= next - VOICE_POLL_INTERVAL)
 		return ""
-	if(address_next.len >= VOICE_ADDRESS_LIMIT)
-		address_next.Cut()
-	address_next[host] = world.time + VOICE_ADDRESS_INTERVAL
-	return state(poll_ids[poll_id])
+	poll_next[key] = world.time + VOICE_POLL_INTERVAL
+	return state(key)
+
+// The held voice keys. Commands come from held_keybinding_catalog().
+/client/verb/voice_talk_down()
+	set name = "voice-talk-down"
+	set hidden = TRUE
+	hold_action("voice_talk", TRUE)
+
+/client/verb/voice_talk_up()
+	set name = "voice-talk-up"
+	set hidden = TRUE
+	hold_action("voice_talk", FALSE)
+
+/client/verb/voice_team_down()
+	set name = "voice-team-down"
+	set hidden = TRUE
+	hold_action("voice_team", TRUE)
+
+/client/verb/voice_team_up()
+	set name = "voice-team-up"
+	set hidden = TRUE
+	hold_action("voice_team", FALSE)
 
 // One entry per eligible voice player in this world: ckey, the launcher's
 // voice key (so the bot can hand that launcher its token) and team ("" for none).
@@ -231,6 +271,7 @@ var/global/datum/voice_chat/voice_chat = new
 			poll_ids -= voice_poll_id(key)
 			answers -= key
 			generations -= key
+			poll_next -= key
 	if(roster_request)
 		if(!roster_request.is_complete()) return
 		var/datum/http_response/response = roster_request.into_response()
@@ -256,7 +297,6 @@ var/global/datum/voice_chat/voice_chat = new
 #undef VOICE_KEY_MIN_LENGTH
 #undef VOICE_KEY_MAX_LENGTH
 #undef VOICE_STATE_CACHE
-#undef VOICE_ADDRESS_INTERVAL
-#undef VOICE_ADDRESS_LIMIT
+#undef VOICE_POLL_INTERVAL
 #undef VOICE_ROSTER_INTERVAL
 #undef VOICE_ROSTER_KEEPALIVE

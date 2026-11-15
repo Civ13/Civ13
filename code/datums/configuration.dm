@@ -167,6 +167,7 @@ var/list/gamemode_cache = list()
 	var/bot_service_control = FALSE
 	var/webhook_can_fire = TRUE
 	var/webhook_address = null
+	var/voice_token_url = null // public CivilizationBot /voice/token URL launchers fetch voice tokens from
 	var/webhook_key = null
 	// Startup observation is separately opt-in and uses the existing bridge.
 	var/webhook_game_ready = FALSE
@@ -541,6 +542,8 @@ var/list/gamemode_cache = list()
 					config.webhook_address = value
 				if ("webhook_key")
 					config.webhook_key = value
+				if ("voice_token_url")
+					config.voice_token_url = value
 
 				if ("bug_report_github_repo")
 					config.bug_report_github_repo = value
