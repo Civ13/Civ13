@@ -552,6 +552,7 @@ def mood_knowledge(root):
             '/mob/living/human/proc/print_mood()', '/mob/living/human/proc/handle_mood()',
             '/mob/living/human/proc/handle_hygiene()', 'mood_modifier = mood_stat_modifier(mood)',
             '/mob/living/human/proc/mood_drift()', 'set_mood(max(rest, mood - MOOD_FADE))',
+            'set_mood(max(rest, mood - MOOD_BURN))', '/mob/living/human/proc/collect_mood_rest_parts(list/parts)',
             'set_mood(min(rest, mood + MOOD_RECOVER))',
             '/mob/living/human/proc/set_mood(amount, cause = null)', 'if (sleeping > 0 && amount < mood)',
             '/mob/living/human/proc/adjust_mood(amount, cause = null)', 'return set_mood(mood + amount, cause)',
@@ -578,7 +579,9 @@ def mood_knowledge(root):
                       'A human character can view a mood category by clicking the mood HUD. '
                       'The same click lists the recent causes that lifted or lowered their mood, '
                       'and chat messages note when a cause starts or stops affecting mood. '
-                      'Mood naturally moves toward the neutral range over time while awake. '
+                      'Mood naturally settles toward a resting level over time while awake: neutral by default, '
+                      'moved up or down by lasting conditions that the same click lists. '
+                      'A lift a little above the resting level fades slowly; a large high fades fast. '
                       'Mood cannot decrease while actually asleep; positive mood changes still apply. '
                       'Resting or lying awake does not pause mood loss. Hygiene can affect mood, '
                       'and mood can modify some character statistics. Many factors can affect mood. '

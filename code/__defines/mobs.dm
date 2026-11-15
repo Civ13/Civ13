@@ -74,8 +74,13 @@
 #define MOOD_TIER_GOOD 4     // 60 up to 80
 #define MOOD_TIER_EXCELLENT 5 // 80 and above
 #define MOOD_REST 50      // where mood settles with nothing acting on it
-#define MOOD_FADE 0.07    // lost per life tick above the resting level
-#define MOOD_RECOVER 0.03 // regained per life tick below it
+#define MOOD_REST_MIN 30  // lasting conditions move the resting level within these
+#define MOOD_REST_MAX 75
+#define MOOD_REST_CHECK 100 // deciseconds between looks at the lasting conditions
+#define MOOD_BOOST_BAND 10 // a lift this far above the resting level fades slowly
+#define MOOD_FADE 0.015   // lost per life tick inside that band
+#define MOOD_BURN 0.07    // lost per life tick above it: highs do not last
+#define MOOD_RECOVER 0.03 // regained per life tick below the resting level
 // Free movement (client/Move fine_step values). Plain direction keys slide at
 // the ordinary walking/running pace and stop where they are released.
 // Alt+direction nudges 2 pixels, then slides if held past the glide delay.

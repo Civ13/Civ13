@@ -278,28 +278,6 @@
 			var/workload = survival_current_workload()
 			nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER * food_m * activity_m * survival_work_food_m(workload) * survival_climate_food_m())
 			water -= ((0.27) * HUNGER_THIRST_MULTIPLIER * water_m * activity_m * survival_work_water_m(workload) * survival_climate_water_m())
-		if (find_trait("Extroverted"))
-			if (prob(20))
-				var/ct = 0
-				for(var/mob/living/human/HM in range(3,src))
-					if (HM != src && HM.stat != DEAD)
-						ct++
-						break
-				if (ct)
-					adjust_mood(0.12, "having company")
-				else
-					adjust_mood(-(0.4), "being alone")
-		else if (find_trait("Introverted"))
-			if (prob(20))
-				var/ct = 0
-				for(var/mob/living/human/HM in range(3,src))
-					if (HM != src && HM.stat != DEAD)
-						ct++
-						break
-				if (!ct)
-					adjust_mood(0.12, "time alone")
-				else
-					adjust_mood(-(0.4), "people around you")
 		handle_playstyle_traits()
 	#undef HUNGER_THIRST_MULTIPLIER
 	handle_diet()

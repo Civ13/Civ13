@@ -11,9 +11,10 @@ The life tick's upper cap and droid target also cannot lower a sleeper's mood.
 On waking, ordinary awake rules resume, including their existing cap/target;
 skipped sleep losses are never accumulated or replayed.
 
-`original_writes.json` freezes the 79 original expression statements and their
+`original_writes.json` freezes the 75 original expression statements and their
 replacement calls, including duplicates (the six life-tick drift writes moved
-into `mood_drift()`, which the maintenance tests project instead). Tests compare every original/new
+into `mood_drift()`, which the maintenance tests project instead, and the four
+social-trait pushes became resting-level parts). Tests compare every original/new
 expression while awake, and check sleep losses/gains with the real complete
 helper bodies. Whole-tree source auditing rejects gameplay writes bypassing
 the setter. The full mood maintenance prefix, wake transition, recipient state

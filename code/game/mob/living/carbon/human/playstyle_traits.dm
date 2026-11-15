@@ -30,6 +30,9 @@ var/global/list/playstyle_combat_stats = list("rifle", "pistol", "bows", "machin
 #define WANDERER_SETTLE_RANGE 20
 #define WANDERER_SETTLE_TIME 27000
 #define RALLY_REACH 7
+#define MOOD_REST_LIKED_COMPANY 5 // resting mood gained in the company a character likes
+#define MOOD_REST_WRONG_COMPANY 8 // and lost in the company they dislike
+#define MOOD_REST_TRAIT_STRAIN 6  // lost to crowds, loneliness or restlessness
 #define RALLY_MOOD 1
 #define RALLY_LISTENER_COOLDOWN 1200
 
@@ -255,8 +258,10 @@ var/global/list/playstyle_combat_stats = list("rifle", "pistol", "bows", "machin
 		wander_anchor = T
 		wander_anchor_time = world.time
 		return
-	if (world.time - wander_anchor_time >= WANDERER_SETTLE_TIME && prob(20))
-		adjust_mood(-0.2, "staying in one place")
+
+// Whether a Wanderer has stayed around one spot too long.
+/mob/living/human/proc/wanderer_settled()
+	return wander_anchor && world.time - wander_anchor_time >= WANDERER_SETTLE_TIME
 
 // ------------------------------------------------------------
 // Rallying Voice
@@ -289,21 +294,43 @@ var/global/list/playstyle_combat_stats = list("rifle", "pistol", "bows", "machin
 /mob/living/human/proc/handle_playstyle_traits()
 	if (find_trait("Wanderer"))
 		handle_wanderer()
-	if (!prob(20))
-		return
-	if (find_trait("Recluse Scholar"))
-		var/crowd = 0
-		for (var/mob/living/human/H in range(3, src))
-			if (H != src && H.stat != DEAD)
-				crowd++
-				if (crowd >= RECLUSE_CROWD)
-					adjust_mood(-0.3, "crowds")
-					break
-	else if (find_trait("Rallying Voice"))
-		for (var/mob/living/human/H in range(3, src))
-			if (H != src && H.stat != DEAD)
+
+// Other living humans within 3 tiles, counted up to a limit.
+/mob/living/human/proc/mood_company(limit = 1)
+	. = 0
+	for (var/mob/living/human/H in range(3, src))
+		if (H != src && H.stat != DEAD)
+			.++
+			if (. >= limit)
 				return
-		adjust_mood(-0.3, "being alone")
+
+// Whether this map runs the survival needs the social traits belong to.
+/mob/living/human/proc/mood_needs_mode()
+	return has_hunger_and_thirst && map && (map.civilizations || map.nomads || map.has_hunger)
+
+// Company and restlessness move where mood settles; they are lasting
+// conditions, not a push every tick.
+/mob/living/human/collect_mood_rest_parts(list/parts)
+	..()
+	if (!mood_needs_mode() || inducedSSD)
+		return
+	if (find_trait("Extroverted"))
+		if (mood_company())
+			parts["having company"] = MOOD_REST_LIKED_COMPANY
+		else
+			parts["being alone"] = -MOOD_REST_WRONG_COMPANY
+	else if (find_trait("Introverted"))
+		if (mood_company())
+			parts["people around you"] = -MOOD_REST_WRONG_COMPANY
+		else
+			parts["time alone"] = MOOD_REST_LIKED_COMPANY
+	if (find_trait("Wanderer") && wanderer_settled())
+		parts["staying in one place"] = -MOOD_REST_TRAIT_STRAIN
+	if (find_trait("Recluse Scholar"))
+		if (mood_company(RECLUSE_CROWD) >= RECLUSE_CROWD)
+			parts["crowds"] = -MOOD_REST_TRAIT_STRAIN
+	else if (find_trait("Rallying Voice") && !("being alone" in parts) && !mood_company())
+		parts["being alone"] = -MOOD_REST_TRAIT_STRAIN
 
 #undef PLAYSTYLE_FAST_SKILL
 #undef PLAYSTYLE_SLOW_SKILL
@@ -311,6 +338,9 @@ var/global/list/playstyle_combat_stats = list("rifle", "pistol", "bows", "machin
 #undef RECLUSE_ALONE_RATE
 #undef RECLUSE_COMPANY_RATE
 #undef RECLUSE_CROWD
+#undef MOOD_REST_LIKED_COMPANY
+#undef MOOD_REST_WRONG_COMPANY
+#undef MOOD_REST_TRAIT_STRAIN
 #undef INTIMIDATE_REACH
 #undef INTIMIDATE_COOLDOWN
 #undef INTIMIDATE_TARGET_COOLDOWN

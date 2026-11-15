@@ -44,7 +44,7 @@ def actor(mood=80, sleeping=0, resting=False, lying=False, stat=0, droid=False, 
     return mob
 
 
-REST, FADE, RECOVER = 50, 0.07, 0.03
+REST, BAND, FADE, BURN, RECOVER = 50, 10, 0.015, 0.07, 0.03
 
 
 def maintenance(mob, rest=REST):
@@ -52,9 +52,10 @@ def maintenance(mob, rest=REST):
     life = uncomment(source(LIFE))
     assert life.count('\tmood_drift()\n') == 1, 'life tick drifts mood once'
     defines = source('code/__defines/mobs.dm')
-    for name, value in (('MOOD_REST', REST), ('MOOD_FADE', FADE), ('MOOD_RECOVER', RECOVER)):
+    for name, value in (('MOOD_REST', REST), ('MOOD_BOOST_BAND', BAND), ('MOOD_FADE', FADE),
+                        ('MOOD_BURN', BURN), ('MOOD_RECOVER', RECOVER)):
         assert re.search(r'^#define %s %s\b' % (name, re.escape(str(value))), defines, re.M), name
-    env = dict(MOOD_FADE=FADE, MOOD_RECOVER=RECOVER, max=max, min=min)
+    env = dict(MOOD_BOOST_BAND=BAND, MOOD_FADE=FADE, MOOD_BURN=BURN, MOOD_RECOVER=RECOVER, max=max, min=min)
     mob.mood_resting_level = lambda: rest
     proc = A.project(source(CORE), '/mob/living/human/proc/mood_drift', 'src', env, method=True)
     proc(mob)
@@ -118,7 +119,8 @@ class MoodSleep(unittest.TestCase):
                             expected = max(current, 100) if droid else (max(0, current)+RECOVER if current < REST else current)
                         else:
                             expected = min(120, max(0, current))
-                            expected += -FADE if expected > REST else RECOVER if expected < REST else 0
+                            expected += (-BURN if expected > REST + BAND else -FADE if expected > REST
+                                         else RECOVER if expected < REST else 0)
                             if droid:
                                 expected = 100
                         self.assertAlmostEqual(mob.mood, expected)
@@ -127,7 +129,7 @@ class MoodSleep(unittest.TestCase):
         # It used to stall at 40, where the Bad effects began.
         for start in (49.99, 50.02, 20, 110):
             mob = actor(start)
-            for _ in range(2000):
+            for _ in range(3000):
                 maintenance(mob)
             self.assertEqual(mob.mood, REST)
         mob = actor(60)
@@ -146,6 +148,22 @@ class MoodSleep(unittest.TestCase):
         self.assertAlmostEqual(mob.mood, 84.93)
         mob.adjust_mood(-3)
         self.assertAlmostEqual(mob.mood, 81.93)
+
+    def test_lifts_fade_slowly_inside_the_band_and_fast_above_it(self):
+        def seconds(start, rest=REST):
+            mob, ticks = actor(start), 0
+            while mob.mood > rest:
+                maintenance(mob, rest)
+                ticks += 1
+            return ticks
+        # A +10 wash used to be gone in 143 seconds.
+        self.assertEqual(seconds(60), 667)
+        # A +15 bath: 5 burn off in about 70 s, the rest lasts about 11 minutes.
+        self.assertEqual(seconds(65), 736)
+        # A drug high far above the band is still short.
+        self.assertEqual(seconds(110) - seconds(60), 712)
+        # The band sits on the resting level, wherever living conditions put it.
+        self.assertEqual(seconds(74, rest=64), 667)
 
     def test_all_migrated_expressions_preserve_awake_results_and_sleep_gains(self):
         defaults = dict(removed=2, satisfaction=10, biteamount=3, this_exp=5,

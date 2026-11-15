@@ -22,8 +22,8 @@ var/global/list/trait_list = list(
 //	"Skilled Fighter" = list(3,list("Skilled Archer"),"You are better at fighting with your fists and melee weapons. (Start with better Strength, and sword skills)"),
 	"Blind" = list(-6,list(),"You can not see, you may require aid."),
 //	"Partial Blindness" = list(-2,list(),"You can barely see, you may require aid or sometype of instrument"),
-	"Introverted" = list(1,list("Extroverted","Rallying Voice"),"In hunger-enabled modes, your mood improves without other living humans within 3 tiles, and falls near them."),
-	"Extroverted" = list(-1,list("Introverted","Recluse Scholar"),"In hunger-enabled modes, your mood improves near other living humans within 3 tiles, and falls when alone."),
+	"Introverted" = list(1,list("Extroverted","Rallying Voice"),"In hunger-enabled modes, your mood settles higher with no other living humans within 3 tiles, and lower near them."),
+	"Extroverted" = list(-1,list("Introverted","Recluse Scholar"),"In hunger-enabled modes, your mood settles higher near other living humans within 3 tiles, and lower when alone."),
 //	"Down Syndrome" = list(-5,list(),"You are very backward in your mental and physical development, you are no scolar. (Can't get Philo past 1.4, and has errors in speech and speech comes out slow)"),
 //	"Sickle Celled Anemia" = list(-1,list(),"Your blood cells are not normal, and you have a higher chance of having Heart failure. (Random Heart attacks and pains in the chest and other parts in the body)"),
 	"Hemophilia" = list(-2,list(),"Your blood does not clot normally. (Affected blood-loss paths remove 25% more blood)"),
@@ -71,14 +71,14 @@ var/global/list/trait_list = list(
 	"Strong Back" = list(1,list("Bad Back","Quartermaster"),"Pulling carts, crates and bodies slows you 20% less."),
 	"Bad Back" = list(-1,list("Strong Back"),"Pulling carts, crates and bodies slows you 25% more."),
 	"Squeamish" = list(-1,list("Hardened Fighter"),"Seeing someone maimed hurts your mood twice as much."),
-	"Recluse Scholar" = list(0,list("Menacing","Hardened Fighter","Quartermaster","Green Thumb","Tinkerer","Wanderer","Rallying Voice","Extroverted"),"Playstyle. Studying and research are 25% faster with nobody else within 5 tiles, but 25% slower with people around, and your mood falls in crowds of 3 or more."),
+	"Recluse Scholar" = list(0,list("Menacing","Hardened Fighter","Quartermaster","Green Thumb","Tinkerer","Wanderer","Rallying Voice","Extroverted"),"Playstyle. Studying and research are 25% faster with nobody else within 5 tiles, but 25% slower with people around, and your mood settles lower in crowds of 3 or more."),
 	"Menacing" = list(0,list("Recluse Scholar","Hardened Fighter","Quartermaster","Green Thumb","Tinkerer","Wanderer","Rallying Voice"),"Playstyle. You can Intimidate someone who can see you, souring their mood a little, and wild grazing animals bolt from your glare. Others see you look dangerous, and you tutor students more slowly."),
 	"Hardened Fighter" = list(0,list("Recluse Scholar","Menacing","Quartermaster","Green Thumb","Tinkerer","Wanderer","Rallying Voice","Thick Skinned","Squeamish"),"Playstyle. Sword and melee skill trains 50% faster and wounds hurt you 15% less. Crafting and scholarship train 25% slower."),
 	"Quartermaster" = list(0,list("Recluse Scholar","Menacing","Hardened Fighter","Green Thumb","Tinkerer","Wanderer","Rallying Voice","Strong Back"),"Playstyle. Pulling carts, crates and bodies slows you 40% less, and you can count the items in a closed crate. Combat skills train 25% slower."),
 	"Green Thumb" = list(0,list("Recluse Scholar","Menacing","Hardened Fighter","Quartermaster","Tinkerer","Wanderer","Rallying Voice"),"Playstyle. Farming trains 50% faster and harvests yield about 10% more. Hunting and combat skills train 25% slower."),
 	"Tinkerer" = list(0,list("Recluse Scholar","Menacing","Hardened Fighter","Quartermaster","Green Thumb","Wanderer","Rallying Voice"),"Playstyle. Crafting x1.1 and Engineering scholarship trains 50% faster. Strength x0.9."),
-	"Wanderer" = list(0,list("Recluse Scholar","Menacing","Hardened Fighter","Quartermaster","Green Thumb","Tinkerer","Rallying Voice"),"Playstyle. You recover stamina 50% faster while on the move and use 10% less food where hunger applies. Your mood slowly falls if you stay within 20 tiles of one spot for 45 minutes."),
-	"Rallying Voice" = list(0,list("Recluse Scholar","Menacing","Hardened Fighter","Quartermaster","Green Thumb","Tinkerer","Wanderer","Introverted"),"Playstyle. When you shout, friendly people who hear you get a small mood lift, at most once every 2 minutes each. Your own mood falls when nobody is within 3 tiles."),
+	"Wanderer" = list(0,list("Recluse Scholar","Menacing","Hardened Fighter","Quartermaster","Green Thumb","Tinkerer","Rallying Voice"),"Playstyle. You recover stamina 50% faster while on the move and use 10% less food where hunger applies. Your mood settles lower once you have stayed within 20 tiles of one spot for 45 minutes."),
+	"Rallying Voice" = list(0,list("Recluse Scholar","Menacing","Hardened Fighter","Quartermaster","Green Thumb","Tinkerer","Wanderer","Introverted"),"Playstyle. When you shout, friendly people who hear you get a small mood lift, at most once every 2 minutes each. Your own mood settles lower when nobody is within 3 tiles."),
 
 )
 
