@@ -82,6 +82,12 @@ blocked participants, duplicate actions, stale callbacks and SDK disconnect.
 Do not store recordings. Redact tokens, lobby secrets and personal audio/logs.
 Private real-audio acceptance is a distinct step, not satisfied by a fake backend.
 
+Status (2026-11-15): source implemented as a standalone prototype,
+[`civ13-voice-proto.exe`](../tools/opendream-client/native/companion/voice/README.md),
+outside the companion and launcher. Its portable rules are offline tested in CI
+(`voice-tests`). Real two-PC audio is not yet runtime verified; it needs Public
+Client and the desktop redirect on the application, and two testers.
+
 ### 3. Authoritative game context
 
 Use a small versioned bridge binding the authenticated player to the actual

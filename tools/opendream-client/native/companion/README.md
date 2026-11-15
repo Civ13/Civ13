@@ -10,8 +10,11 @@ pipe loop and managed startup/channel ownership. The
 [Windows parent provider](../SOCIAL-SDK-WINDOWS-PROVIDER.md) adds fixed-off OS
 source. The child endpoint adapter and executable entry point now exist (see
 [Child endpoint](#child-endpoint)); production activation stays off.
-There are no game/server changes, authentication, tokens, provisional accounts,
-invites, voice, microphone calls, new OAuth scopes or application-setting changes.
+The companion itself has no game/server changes, authentication, tokens,
+provisional accounts, invites, voice, microphone calls, new OAuth scopes or
+application-setting changes. The separate Phase 2
+[push-to-talk prototype](voice/README.md) is a standalone tool and is not
+linked into the companion.
 
 ## Native boundary
 
