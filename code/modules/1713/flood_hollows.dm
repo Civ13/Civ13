@@ -94,6 +94,8 @@
 // One minute of rain and soaking for every hollow.
 /datum/river_flood/proc/step_hollows()
 	if (!hollow_count)
+		// Pumping stations still burn fuel (sewers.dm).
+		drain_hollows()
 		return
 	var/dry = river_flood_season_factor() < 1
 	var/raining = weather_anywhere()
@@ -115,7 +117,7 @@
 			volume = 0
 		hollow_volume[i] = volume
 		hollow_level[i] = hollow_level_for(i, volume)
-	// Drains in hollows (sewers.dm).
+	// Drains in hollows and pumping stations (sewers.dm).
 	drain_hollows()
 
 #undef HOLLOW_RAIN_YIELD
