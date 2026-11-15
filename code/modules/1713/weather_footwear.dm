@@ -21,6 +21,7 @@
 	var/ice_grip = 0
 	var/slope_grip = 1
 	var/offsnow_slowdown = 0
+	var/land_slowdown = 0 // extra delay out of the water (swim fins)
 	var/open_toed = FALSE
 	var/waterproof_feet = FALSE
 
@@ -46,6 +47,8 @@
 		. += "Mud clings to them."
 	if (wade_mult < 1)
 		. += "They make wading easier."
+	if (land_slowdown > 0)
+		. += "They are clumsy out of the water."
 	if (ice_grip >= 1)
 		. += "Their studded soles grip ice."
 	else if (ice_grip >= 0.5 || (item_flags & NOSLIP))
@@ -73,11 +76,13 @@
 			return S.wade_mult
 	return 1
 
-/proc/footwear_offsnow_slowdown(mob/living/human/H)
+/proc/footwear_offsnow_slowdown(mob/living/human/H, turf/F = null)
 	if (!istype(H) || !istype(H.shoes, /obj/item/clothing/shoes))
 		return 0
 	var/obj/item/clothing/shoes/S = H.shoes
-	return S.offsnow_slowdown
+	. = S.offsnow_slowdown
+	if (S.land_slowdown && F && !istype(F, /turf/floor/beach/water))
+		. += S.land_slowdown
 
 /proc/footwear_ice_grip(mob/living/human/H)
 	if (!istype(H) || !istype(H.shoes, /obj/item/clothing/shoes))

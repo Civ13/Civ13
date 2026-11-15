@@ -1,12 +1,14 @@
 """Hand-placed 32px diving gear: diving dress, copper diving helmet, hard dive
-suit and helmet, twin air bottles. Every pixel is placed by this script from a
+suit and helmet, twin air bottles, and the scuba kit (dive mask, swim fins,
+single-cylinder scuba set). Every pixel is placed by this script from a
 fixed palette (Pillow only); no external or generated artwork. The steel, glass
 and orange accent shades are the submarine hull palette, so the hard suit reads
 as part of the same kit.
 
 Run with Pillow to reproduce icons/obj/clothing/diving.dmi (item icons) and
 icons/mob/diving.dmi (worn, four directions). `--preview <png>` also writes a
-review sheet of the gear worn on the base body. Released under Civ13 AGPL-3.0.
+review sheet of the gear worn on the base body (`--scale N` sets its zoom,
+default 6). Released under Civ13 AGPL-3.0.
 """
 import sys
 from pathlib import Path
@@ -463,6 +465,242 @@ def bottles_item():
     return f
 
 
+# ---------------------------------------------------------------- scuba kit
+
+def glass_pane(f, rows, band=True):
+    """An oval faceplate: steel retaining band round the edge, lit glass inside."""
+    mask = {(x, y) for y, (x0, x1) in rows.items() for x in range(x0, x1 + 1)}
+    x_min, y_min = min(x for x, _ in mask), min(y for _, y in mask)
+    for (x, y) in mask:
+        edge = any(n not in mask for n in ((x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)))
+        d = (x - x_min) + (y - y_min) * 1.5
+        if edge and band:
+            f.put(x, y, L[0] if d < 5 else L[1] if d < 13 else L[2])
+        else:
+            f.put(x, y, G[1] if d < 6 else G[2] if d < 12 else G[3] if d < 18 else (26, 76, 100))
+
+
+def mask_front(back=False):
+    f = Frame()
+    if back:
+        # split rubber strap round the back of the head
+        f.h(5, 11, 19, R[2]); f.h(6, 11, 19, R[3])
+        f.pts(R[0], (12, 5), (13, 5)); f.pts(R[1], (14, 5), (12, 6))
+        f.pts(R[4], (11, 5), (11, 6), (19, 5), (19, 6))
+        f.pts(L[1], (15, 5)); f.pts(L[2], (15, 6))      # strap buckle
+        return f
+    # black rubber skirt with the nose pocket
+    for y, (x0, x1) in {4: (12, 18), 5: (11, 19), 6: (11, 19), 7: (12, 18)}.items():
+        f.h(y, x0, x1, R[4])
+    f.h(4, 13, 17, R[2]); f.pts(R[0], (13, 4), (14, 4)); f.pts(R[1], (15, 4))
+    f.pts(R[2], (14, 7), (16, 7)); f.pts(R[1], (15, 7)); f.pts(R[3], (15, 8))
+    # oval faceplate
+    f.h(5, 12, 18, G[2]); f.h(6, 12, 18, G[3])
+    f.pts(G[0], (13, 5)); f.pts(G[1], (12, 5), (14, 5), (12, 6), (13, 6)); f.pts(G[2], (14, 6), (15, 6))
+    f.pts((26, 76, 100), (18, 6))
+    return f
+
+
+def mask_side():
+    f = Frame()
+    # strap round the head
+    f.h(5, 12, 17, R[2]); f.h(6, 13, 17, R[4])
+    f.pts(R[0], (13, 5), (14, 5)); f.pts(R[4], (12, 5)); f.pts(L[1], (16, 5))
+    # skirt standing off the face, faceplate edge-on
+    for y, (x0, x1) in {4: (18, 21), 5: (18, 22), 6: (18, 22), 7: (18, 21)}.items():
+        f.h(y, x0, x1, R[4])
+    f.pts(R[1], (19, 5), (19, 4)); f.pts(R[2], (20, 4), (19, 6), (20, 7)); f.pts(R[3], (19, 7))
+    f.pts(G[1], (20, 5), (21, 5)); f.pts(G[2], (20, 6)); f.pts(G[3], (21, 6))
+    f.pts(L[1], (22, 5)); f.pts(L[2], (22, 6))
+    return f
+
+
+def mask_item():
+    f = Frame()
+    # strap looped behind the mask
+    for x in range(9, 23):
+        f.put(x, 6, R[1] if x < 14 else R[2]); f.put(x, 7, R[4])
+    for (x, y) in ((8, 7), (7, 8), (6, 9), (5, 10), (5, 11), (5, 12)):
+        f.put(x, y, R[1]); f.put(x + 1, y, R[4]); f.put(30 - x, y, R[2]); f.put(29 - x, y, R[4])
+    f.pts(L[1], (15, 6), (16, 6)); f.pts(L[3], (15, 7), (16, 7))
+    # rubber skirt and nose pocket
+    f.part({11: (9, 22), 12: (7, 24), 13: (6, 25), 14: (5, 26), 15: (5, 26), 16: (5, 26), 17: (5, 26), 18: (5, 26),
+            19: (6, 25), 20: (7, 24), 21: (9, 22), 22: (12, 19), 23: (12, 19), 24: (13, 18), 25: (14, 17)}, R)
+    f.pts(R[0], (13, 22), (14, 22), (14, 23)); f.pts(R[1], (15, 22), (15, 23), (13, 23)); f.pts(R[3], (17, 23), (18, 22))
+    glass_pane(f, {13: (10, 21), 14: (8, 23), 15: (7, 24), 16: (7, 24), 17: (7, 24), 18: (8, 23), 19: (10, 21)})
+    f.pts(G[0], (10, 15), (11, 15), (12, 14), (10, 16)); f.pts(G[1], (19, 18), (20, 17))
+    return f
+
+
+def fins_front(back=False):
+    f = Frame()
+    for flip in (False, True):
+        def px(x, y, c):
+            f.put(30 - x if flip else x, y, c)
+        if back:
+            # heel straps, the blades showing past the feet either side
+            for x in range(10, 15):
+                px(x, 28, R[4]); px(x, 29, R[2])
+            px(10, 29, R[4]); px(14, 29, R[4]); px(11, 29, R[1])
+            for x in range(8, 15):
+                px(x, 30, R[3]); px(x, 31, R[4])
+            px(8, 30, R[4]); px(14, 30, R[4]); px(9, 30, R[2]); px(10, 30, R[2])
+            px(7, 31, ACC2); px(8, 31, YEL); px(9, 31, R[2])
+            continue
+        # foot pocket
+        for x in range(10, 15):
+            px(x, 28, R[4])
+        for x in range(9, 15):
+            px(x, 29, R[2])
+        px(9, 29, R[4]); px(14, 29, R[4]); px(10, 29, R[0]); px(11, 29, R[1])
+        # blade fanning out towards the viewer, ribbed, accent edge
+        for x in range(8, 15):
+            px(x, 30, R[1])
+        px(7, 30, R[4]); px(14, 30, R[4]); px(8, 30, YEL); px(10, 30, R[3]); px(12, 30, R[3])
+        for x in range(7, 15):
+            px(x, 31, YEL)
+        px(6, 31, R[4]); px(14, 31, R[4]); px(7, 31, YEL); px(12, 31, ACC2); px(13, 31, ACC2)
+    return f
+
+
+def fins_side():
+    f = Frame()
+    # foot pocket with the heel strap
+    f.h(28, 13, 18, R[4])
+    f.h(29, 12, 19, R[2]); f.pts(R[4], (12, 29), (19, 29)); f.pts(R[0], (14, 29)); f.pts(R[1], (15, 29), (13, 29))
+    f.h(30, 12, 19, R[2]); f.pts(R[4], (12, 30)); f.pts(R[1], (13, 30), (14, 30)); f.pts(R[3], (17, 30), (18, 30))
+    f.h(31, 12, 19, R[4])
+    # blade running out past the toes
+    f.h(29, 20, 22, R[4])
+    f.h(30, 20, 25, R[1]); f.pts(R[3], (21, 30), (23, 30)); f.pts(R[4], (26, 30))
+    f.h(31, 20, 27, YEL); f.pts(ACC2, (20, 31), (21, 31)); f.pts(R[4], (28, 31))
+    f.pts(YEL, (25, 30))
+    return f
+
+
+def fins_item():
+    f = Frame()
+    for x0, y0 in ((4, 3), (17, 5)):
+        rows = {0: (3, 6), 1: (2, 7), 2: (2, 7), 3: (2, 7), 4: (2, 7), 5: (2, 7), 6: (2, 7), 7: (2, 7), 8: (2, 7)}
+        rows.update({9: (2, 7), 10: (1, 8), 11: (1, 8), 12: (1, 8), 13: (1, 8), 14: (0, 9), 15: (0, 9), 16: (0, 9),
+                     17: (0, 9), 18: (0, 9), 19: (0, 9), 20: (0, 9), 21: (0, 9), 22: (1, 8)})
+        f.part({y + y0: (a + x0, b + x0) for y, (a, b) in rows.items()}, R)
+        # foot opening
+        for y, (a, b) in {1: (4, 5), 2: (3, 6), 3: (3, 6), 4: (4, 5)}.items():
+            f.h(y + y0, a + x0, b + x0, R[4])
+        f.pts(R[3], (x0 + 4, y0 + 3), (x0 + 5, y0 + 3))
+        # blade ribs
+        for y in range(10, 20):
+            f.put(x0 + 3, y + y0, R[3]); f.put(x0 + 6, y + y0, R[3])
+        # accent side rails and trailing edge
+        for y in range(10, 21):
+            xa = 1 if y < 14 else 0
+            f.put(x0 + xa, y + y0, YEL); f.put(x0 + 9 - xa, y + y0, ACC2)
+        f.h(y0 + 21, x0, x0 + 9, YEL); f.h(y0 + 22, x0 + 1, x0 + 8, ACC2)
+        f.pts(ACC2, (x0 + 8, y0 + 21), (x0 + 9, y0 + 21))
+    return f
+
+
+def scuba_back():
+    f = Frame()
+    # webbing: waist band and the shoulder straps running up to the valve
+    f.h(18, 10, 20, R[2]); f.pts(R[4], (10, 18), (20, 18)); f.pts(R[1], (11, 18), (12, 18))
+    f.pts(R[2], (12, 12), (11, 11), (18, 12), (19, 11)); f.pts(R[3], (12, 13), (18, 13))
+    # one steel cylinder down the spine
+    rows = {11: (14, 16)}
+    rows.update({y: (13, 17) for y in range(12, 22)})
+    rows[22] = (14, 16)
+    f.part(rows, L)
+    f.h(13, 14, 16, YEL); f.put(16, 13, ACC2)                 # contents band
+    f.h(16, 13, 17, R[4]); f.h(16, 14, 16, R[2]); f.put(14, 16, R[1])   # cam band
+    f.h(20, 14, 16, R[2]); f.h(21, 14, 16, R[3]); f.put(14, 20, R[1])   # rubber boot
+    f.pts(R[4], (13, 20), (17, 20), (13, 21), (17, 21))
+    # pillar valve with the regulator first stage, hose away over the right shoulder
+    f.h(9, 14, 16, L[4]); f.h(10, 13, 17, L[4])
+    f.pts(L[0], (14, 10)); f.pts(L[1], (15, 10), (15, 9)); f.pts(L[2], (16, 10))
+    f.pts(R[1], (12, 10)); f.pts(R[4], (11, 10))            # handwheel
+    f.pts(R[0], (18, 9), (20, 10)); f.pts(R[1], (19, 9), (21, 11)); f.pts(R[4], (18, 10), (19, 10), (20, 11))
+    return f
+
+
+def scuba_front():
+    f = Frame()
+    # webbing harness: shoulder straps, chest strap, waist band
+    f.v(12, 11, 18, R[3]); f.v(18, 11, 18, R[3])
+    f.pts(R[1], (12, 11), (12, 12), (18, 11)); f.pts(R[2], (12, 13), (18, 12))
+    f.h(14, 13, 17, R[3]); f.pts(L[1], (15, 14)); f.pts(L[3], (16, 14))
+    f.h(19, 10, 20, R[2]); f.pts(R[4], (10, 19), (20, 19)); f.pts(R[1], (11, 19))
+    f.pts(L[0], (15, 19)); f.pts(L[2], (16, 19))
+    # second stage in the mouth
+    f.pts(L[1], (14, 8)); f.pts(L[0], (15, 8)); f.pts(L[2], (16, 8))
+    f.h(9, 14, 16, R[4]); f.pts(R[2], (15, 9))
+    # hose looping in over the right shoulder
+    f.pts(R[0], (13, 9), (11, 9), (9, 11)); f.pts(R[1], (12, 9), (10, 10)); f.pts(R[3], (9, 12))
+    f.pts(R[4], (12, 10), (11, 10), (10, 11))
+    return f
+
+
+def scuba_side():
+    f = Frame()
+    rows = {11: (7, 9)}
+    rows.update({y: (6, 10) for y in range(12, 22)})
+    rows[22] = (7, 9)
+    f.part(rows, L)
+    f.h(13, 7, 9, YEL); f.put(9, 13, ACC2)
+    f.h(16, 6, 10, R[4]); f.pts(R[1], (7, 16)); f.pts(R[2], (8, 16), (9, 16))
+    f.h(20, 7, 9, R[2]); f.h(21, 7, 9, R[3]); f.put(7, 20, R[1])
+    f.pts(R[4], (6, 20), (10, 20), (6, 21), (10, 21))
+    # valve and first stage
+    f.h(9, 7, 10, L[4]); f.h(10, 6, 11, L[4])
+    f.pts(L[0], (7, 10), (8, 9)); f.pts(L[1], (8, 10), (9, 9)); f.pts(L[2], (9, 10), (10, 10))
+    f.pts(R[1], (5, 10)); f.pts(R[4], (5, 9), (5, 11))
+    # harness
+    f.h(12, 11, 12, R[3]); f.pts(R[2], (12, 13), (18, 13), (19, 13), (20, 13))
+    f.h(18, 11, 12, R[3]); f.h(18, 18, 20, R[2]); f.pts(L[1], (20, 18))
+    # hose over the shoulder to the second stage
+    f.pts(R[1], (11, 9), (12, 10), (14, 11), (16, 11), (17, 10), (19, 9))
+    f.pts(R[0], (13, 10), (15, 11), (18, 10))
+    f.pts(R[4], (12, 11), (13, 11), (17, 11), (18, 11))
+    f.pts(R[4], (20, 8), (21, 8), (20, 10), (21, 10), (22, 9)); f.pts(L[0], (20, 9)); f.pts(L[2], (21, 9))
+    return f
+
+
+def scuba_item():
+    f = Frame()
+    # harness webbing hanging off the cam bands
+    for (x, y) in ((23, 12), (24, 13), (25, 14), (25, 15), (25, 16), (25, 17), (25, 18), (25, 19), (24, 20), (23, 21)):
+        f.put(x, y, R[2]); f.put(x + 1, y, R[4])
+    f.pts(L[1], (25, 16)); f.pts(L[2], (25, 17))
+    # single steel cylinder
+    rows = {7: (16, 19), 8: (15, 20), 9: (14, 21)}
+    rows.update({y: (13, 22) for y in range(10, 29)})
+    rows[29] = (14, 21)
+    f.part(rows, L)
+    f.h(11, 14, 21, YEL); f.h(12, 14, 21, YEL); f.pts(ACC2, (19, 11), (20, 11), (21, 11), (19, 12), (20, 12), (21, 12))
+    for y in (15, 22):                                        # cam bands
+        f.h(y, 13, 22, R[4]); f.h(y, 14, 21, R[2]); f.pts(R[0], (14, y), (15, y)); f.pts(R[1], (16, y))
+        f.pts(L[1], (18, y)); f.pts(L[3], (19, y))
+    for y in (26, 27, 28):                                    # rubber boot
+        f.h(y, 14, 21, R[2]); f.pts(R[0], (14, y)); f.pts(R[1], (15, y), (16, y)); f.pts(R[3], (20, y), (21, y))
+    f.h(25, 13, 22, R[4]); f.pts(R[4], (13, 26), (22, 26), (13, 27), (22, 27), (13, 28), (22, 28))
+    # pillar valve, handwheel and first stage
+    f.part({3: (16, 19), 4: (15, 20), 5: (15, 20), 6: (16, 19)}, L, 'flat')
+    f.pts(L[0], (16, 4), (17, 4)); f.pts(L[2], (19, 4), (19, 5)); f.pts(L[1], (17, 5), (18, 5))
+    f.pts(R[4], (21, 3), (22, 3), (23, 4), (23, 5), (21, 6), (22, 6)); f.pts(R[1], (21, 4), (22, 4), (21, 5)); f.pts(R[2], (22, 5))
+    # hose looping down to the second stage and mouthpiece
+    hose = ((14, 4), (13, 3), (12, 3), (11, 3), (10, 4), (9, 5), (8, 6), (8, 7), (7, 8), (7, 9), (7, 10), (7, 11),
+            (7, 12), (7, 13), (7, 14), (7, 15))
+    for i, (x, y) in enumerate(hose):
+        f.put(x + 1, y, R[4]); f.put(x, y + 1, R[4])
+    for i, (x, y) in enumerate(hose):
+        f.put(x, y, R[0] if i % 3 == 0 else R[1])
+    f.part({16: (5, 9), 17: (4, 10), 18: (4, 10), 19: (4, 10), 20: (5, 9)}, L, 'flat')
+    f.pts(L[0], (5, 17), (6, 17), (5, 18)); f.pts(L[1], (7, 17), (6, 18), (7, 18)); f.pts(L[2], (8, 17), (8, 18), (9, 18)); f.h(19, 5, 9, L[3])
+    f.pts(L[2], (6, 19), (7, 19))
+    f.pts(R[4], (10, 21), (11, 21), (11, 17), (12, 18), (12, 19), (12, 20), (11, 20)); f.pts(R[1], (11, 18)); f.pts(R[2], (11, 19))
+    return f
+
+
 def folded(suit):
     """Item icon for a suit: the front view with an open collar."""
     f = suit.shift(0, -4)
@@ -475,6 +713,9 @@ WORN = {
     'hard_dive_suit': [hard_front(), hard_front(True), hard_side(), hard_side().mirror()],
     'hard_dive_helmet': [hard_helmet_front(), hard_helmet_front(True), hard_helmet_side(), hard_helmet_side().mirror()],
     'diving_bottles': [bottles_front(), bottles_back(), bottles_side(), bottles_side().mirror()],
+    'dive_mask': [mask_front(), mask_front(True), mask_side(), mask_side().mirror()],
+    'swim_fins': [fins_front(), fins_front(True), fins_side(), fins_side().mirror()],
+    'scuba_set': [scuba_front(), scuba_back(), scuba_side(), scuba_side().mirror()],
 }
 ITEMS = {
     'diving_dress': folded(WORN['diving_dress'][0]),
@@ -482,6 +723,9 @@ ITEMS = {
     'hard_dive_suit': folded(WORN['hard_dive_suit'][0]),
     'hard_dive_helmet': WORN['hard_dive_helmet'][0].shift(0, 9),
     'diving_bottles': bottles_item(),
+    'dive_mask': mask_item(),
+    'swim_fins': fins_item(),
+    'scuba_set': scuba_item(),
 }
 
 
@@ -527,9 +771,12 @@ def base_body(direction):
 
 def write_preview(path, scale=6):
     """Review sheet: each outfit worn on the base body in four directions, then the item icons."""
-    outfits = (('diving_dress', 'diving_bottles', 'diving_helmet'), ('hard_dive_suit', 'diving_bottles', 'hard_dive_helmet'))
+    outfits = (('diving_dress', 'diving_bottles', 'diving_helmet'), ('hard_dive_suit', 'diving_bottles', 'hard_dive_helmet'),
+               ('swim_fins', 'scuba_set', 'dive_mask'))
     cell = 32 * scale
-    sheet = Image.new('RGBA', (cell * 5, cell * (len(outfits) + 1)), (30, 62, 84, 255))
+    cols = 5
+    item_rows = (len(ITEMS) + cols - 1) // cols
+    sheet = Image.new('RGBA', (cell * cols, cell * (len(outfits) + item_rows)), (30, 62, 84, 255))
     for row, outfit in enumerate(outfits):
         for direction in range(4):
             figure = base_body(direction)
@@ -537,15 +784,18 @@ def write_preview(path, scale=6):
                 figure.alpha_composite(WORN[state][direction].image())
             sheet.alpha_composite(figure.resize((cell, cell), Image.NEAREST), (direction * cell, row * cell))
     for i, name in enumerate(ITEMS):
-        sheet.alpha_composite(ITEMS[name].image().resize((cell, cell), Image.NEAREST), (i * cell, len(outfits) * cell))
+        sheet.alpha_composite(ITEMS[name].image().resize((cell, cell), Image.NEAREST),
+                              ((i % cols) * cell, (len(outfits) + i // cols) * cell))
     sheet.convert('RGB').save(path)
 
 
 def main():
+    args = sys.argv[1:]
     write_dmi(ROOT / 'icons/obj/clothing/diving.dmi', ITEMS, 1)
     write_dmi(ROOT / 'icons/mob/diving.dmi', WORN, 4)
-    if '--preview' in sys.argv[1:-1]:
-        write_preview(sys.argv[sys.argv.index('--preview') + 1])
+    scale = int(args[args.index('--scale') + 1]) if '--scale' in args[:-1] else 6
+    if '--preview' in args[:-1]:
+        write_preview(args[args.index('--preview') + 1], scale)
 
 
 if __name__ == '__main__':

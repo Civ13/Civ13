@@ -755,7 +755,7 @@
 				mob.next_mud_message = world.time+100
 			// Snowshoes are clumsy anywhere but on snow.
 			if (!(F.has_snow_cover() && snow))
-				standing_on_snow += footwear_offsnow_slowdown(H)
+				standing_on_snow += footwear_offsnow_slowdown(H, F)
 			footwear_ice_slip_check(H, F, distance_fraction)
 		if (mob.velocity_lastdir != -1)
 			if (direct != mob.velocity_lastdir)

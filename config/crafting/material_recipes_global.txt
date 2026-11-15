@@ -2069,6 +2069,9 @@ RECIPE: /material/brass/,diving helmet,/obj/item/clothing/head/pressure_helmet/d
 RECIPE: /material/steel/,diving air bottle,/obj/item/pressure_tank/diving,5,120,0,1,none,126,0,0,8,null
 RECIPE: /material/steel/,hard dive suit,/obj/item/clothing/suit/pressure_suit/diving/hard,20,250,0,1,none,150,0,0,8,null
 RECIPE: /material/steel/,hard dive helmet,/obj/item/clothing/head/pressure_helmet/diving/hard,10,200,0,1,none,150,0,0,8,null
+RECIPE: /material/glass/,dive mask,/obj/item/clothing/mask/dive_mask,2,120,0,1,clothing,150,0,0,8,null
+RECIPE: /material/plastic/,swim fins,/obj/item/clothing/shoes/swim_fins,3,120,0,1,clothing,150,0,0,8,null
+RECIPE: /material/steel/,scuba set,/obj/item/pressure_tank/scuba,6,150,0,1,none,150,0,0,8,null
 RECIPE: /material/steel/,mountaineering boots,/obj/item/clothing/shoes/weather/climbing_boots,4,100,0,1,none,0,0,0,8,null
 RECIPE: /material/steel/,deep hull plating,/obj/item/sub_hull_plating,30,300,0,1,vehicle parts,150,0,0,8,null
 RECIPE: /material/steel/,vehicle garage,/obj/structure/vehicle_garage,20,200,1,1,production,126,0,0,8,null

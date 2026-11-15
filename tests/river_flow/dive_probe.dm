@@ -20,6 +20,14 @@
 	return
 /mob/living/human/dive_probe/update_icons()
 	return
+/mob/living/human/dive_probe/update_hair(update_icons = 1)
+	return
+/mob/living/human/dive_probe/update_inv_head(update_icons = 1)
+	return
+/mob/living/human/dive_probe/handle_hud_list()
+	return
+/mob/living/human/dive_probe/update_inv_wear_mask(update_icons = 1)
+	return
 /mob/living/human/dive_probe/New()
 	species = new /datum/species/human
 	return
@@ -127,3 +135,61 @@ var/dive_runtime_error = FALSE
 	H.handle_drowning()
 	dive_check(!H.free_diving && !H.drowning, "a diver back on the surface swims again")
 	dive_check(swim_water_kind(shelf) == "dive", "the seabed counts as its own kind of water for the first-swim lesson")
+
+	// Scuba (scuba.dm): mask and set breathe for the diver, open water at any skill.
+	H.stats["swimming"] = list(100, 100)
+	var/obj/item/clothing/mask/dive_mask/mask = new
+	var/obj/item/pressure_tank/scuba/scuba_set = new
+	H.wear_mask = mask
+	dive_check(!H.scuba_ready(), "a mask alone breathes nothing")
+	H.back = scuba_set
+	dive_check(H.scuba_ready() && H.free_dive_zone_limit() == SEA_ZONE_OPEN, "mask and scuba set reach open water at skill 100")
+	dive_check(abs(H.scuba_air_rate() - 3) < 0.01 && round(scuba_set.air_seconds / H.scuba_air_rate(), 1) == 600, "a full set lasts ten minutes at skill 100 ([scuba_set.air_seconds] [H.scuba_air_rate()])")
+	H.stats["swimming"] = list(200, 200)
+	dive_check(round(scuba_set.air_seconds / H.scuba_air_rate(), 1) == 849, "a skill-200 swimmer makes it last about fourteen minutes ([scuba_set.air_seconds / H.scuba_air_rate()])")
+	H.stats["swimming"] = list(100, 100)
+	H.free_diving = TRUE
+	H.loc = open
+	H.swim_breath = -1
+	for (var/i = 1, i <= 60, i++)
+		H.handle_drowning()
+	dive_check(H.free_diving && H.loc == open && H.swim_breath < 0 && !H.getOxyLoss(), "a scuba diver stays down a minute without holding their breath")
+	dive_check(H.nitrogen_load == 90 && scuba_set.air_seconds == 1800 - 180, "a minute in open water: 90 nitrogen and three minutes of air")
+	// Surfacing straight up from there gives the bends.
+	H.loc = locate(20, 10, 1)
+	dive_check(H.free_dive_surface(TRUE) && H.bends == 30 && !H.nitrogen_load, "surfacing with 90 nitrogen gives bends of 30")
+	H.adjustOxyLoss(-200)
+	var/stamina = H.stats["stamina"][1]
+	H.handle_drowning()
+	dive_check(H.bends == 29.5 && H.stats["stamina"][1] < stamina, "the bends sap strength and pass slowly ([H.bends])")
+	H.bends = 0
+	// (The fixture body has no organs, so the bends' harm reads as death here.)
+	H.stat = CONSCIOUS
+	H.health = H.maxHealth
+	// A stop on the shelf clears the load.
+	H.free_diving = TRUE
+	H.loc = shelf
+	H.nitrogen_load = 90
+	for (var/i = 1, i <= 30, i++)
+		H.handle_drowning()
+	dive_check(H.nitrogen_load == 60, "thirty seconds on the shelf release 30 nitrogen ([H.nitrogen_load] [H.free_diving] [H.loc])")
+	H.loc = shelf
+	dive_check(H.free_dive_surface(TRUE) && !H.bends, "surfacing at the safe load gives no bends")
+	// An empty set falls back on the held breath.
+	scuba_set.air_seconds = 0
+	H.free_diving = TRUE
+	H.loc = shelf
+	H.swim_breath = -1
+	dive_check(!H.scuba_ready(), "an empty set breathes nothing")
+	H.handle_drowning()
+	dive_check(H.free_diving && H.swim_breath == 9, "with the set empty the diver holds their breath ([H.free_diving] [H.swim_breath])")
+	H.free_diving = FALSE
+	H.loc = shelf_top
+	// Fins: faster swimming, clumsy on land.
+	var/obj/item/clothing/shoes/swim_fins/fins = new
+	H.shoes = fins
+	dive_check(H.water_step_delay(locate(8, 10, 2)) == 12, "fins cut the unskilled swim step from 20 to 12 ds")
+	dive_check(footwear_offsnow_slowdown(H, locate(2, 10, 2)) == 1.5 && footwear_offsnow_slowdown(H, locate(8, 10, 2)) == 0, "fins cost 1.5 ds a step on land and nothing in the water")
+	H.stats["swimming"] = list(250, 250)
+	dive_check(H.water_step_delay(locate(8, 10, 2)) == 8, "fins never beat the 8 ds floor")
+	H.stats["swimming"] = list(100, 100)
