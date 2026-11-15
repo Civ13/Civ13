@@ -129,7 +129,14 @@ class MoodSleep(unittest.TestCase):
         # It used to stall at 40, where the Bad effects began.
         for start in (49.99, 50.02, 20, 110):
             mob = actor(start)
+            # Run until it settles (about 1400 ticks from 110), then check it
+            # stays put, rather than a fixed 3000 ticks that overran CI's
+            # suite deadline.
             for _ in range(3000):
+                maintenance(mob)
+                if mob.mood == REST:
+                    break
+            for _ in range(200):
                 maintenance(mob)
             self.assertEqual(mob.mood, REST)
         mob = actor(60)
