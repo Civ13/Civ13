@@ -33,6 +33,10 @@ var/global/list/land_suggestions_told = list() // region id -> the suggestion ad
 	if(!answer || !answer["ok"] || !islist(answer["result"]))
 		return FALSE
 	var/list/result = answer["result"]
+	// The host can move the start region while worlds run (launcher Start region).
+	var/start = result["start_region"]
+	if(istext(start) && shard_id_valid(start) && (start == shard_group.region || (start in shard_group.peers)))
+		shard_group.start_region = start
 	var/list/lands = result["lands"]
 	if(!islist(lands))
 		return FALSE
@@ -185,7 +189,7 @@ var/global/list/land_suggestions_told = list() // region id -> the suggestion ad
 /proc/land_stage_admin_html()
 	var/list/lines = list("<table class='regions'><tr><th>Land</th><th>Stage</th><th>What it allows</th><th>Homes</th><th>Players (7-day avg / peak)</th><th>Living</th><th>Set by</th></tr>")
 	var/list/choices = land_stage_choices()
-	lines += "<tr><td>[html_encode(shard_group.mainland == shard_group.region ? shard_group.name : (shard_group.peers[shard_group.mainland] ? shard_group.peers[shard_group.mainland]["name"] : shard_group.mainland))]</td><td>mainland</td><td>every new character starts here</td>[land_readiness_cells(shard_group.mainland)]<td></td></tr>"
+	lines += "<tr><td>[html_encode(shard_group.mainland == shard_group.region ? shard_group.name : (shard_group.peers[shard_group.mainland] ? shard_group.peers[shard_group.mainland]["name"] : shard_group.mainland))]</td><td>mainland</td><td>[shard_group.start_region == shard_group.mainland ? "every new character starts here" : "the group's era follows it"]</td>[land_readiness_cells(shard_group.mainland)]<td></td></tr>"
 	for(var/label in choices)
 		var/id = choices[label]
 		var/stage = land_stage(id)
@@ -196,6 +200,8 @@ var/global/list/land_suggestions_told = list() // region id -> the suggestion ad
 		if(ready && ready["suggest"])
 			lines += "<tr><td></td><td colspan='6' class='note'>Suggested: [land_suggestion_text(ready["suggest"])].</td></tr>"
 	lines += "</table>"
+	if(shard_group.start_region != shard_group.mainland)
+		lines += "<p class='note'>New characters, and fallen ones without a bed keeping their home, start in [html_encode(shard_group.region_name(shard_group.start_region))] (the host's start region).</p>"
 	if(length(land_stage_pending))
 		lines += "<p class='note'>Waiting for the world directory: [length(land_stage_pending)] change(s).</p>"
 	if(!land_stages_checked)

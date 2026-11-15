@@ -83,7 +83,20 @@ the rest by itself:
    the slot already runs.
 3. Once the build is installed the pass starts the slot and records phase
    `started`. The coordinator then marks the ship's course `READY`; an idle land
-   falls asleep as any region does and wakes when the ship arrives.
+   goes to sleep and wakes when the ship arrives.
+
+### An empty land sleeps on disk
+
+Other regions sleep frozen in memory, to wake in a moment. A land across the
+sea is visited seldom, so its host config gets `freeze_cold: true`
+(`region_config`): after the idle wait (`freeze_idle_minutes`, 15) with nobody
+there and a save newer than the last player, the world is frozen and at once
+shut down to its save (`Host.evict`, state `cold`). It costs no memory until a
+ship or a returning player wakes it, which starts it from that save (about a
+minute for a tiny land; a ship waits off the coast meanwhile). A land nobody
+ever played on has no save to start from and stays frozen. Set `freeze_cold`
+in the group config to choose for every region alike (`false` keeps lands
+frozen in memory).
 
 A land that cannot be opened (the build failed or took over three hours, or the
 slot already holds another land) is archived and reported in
@@ -92,7 +105,8 @@ courses, frees the tile (its template stays) and deletes the report. The
 coordinator learns the slots and this folder from `--slots` and
 `--expeditions`, which `ensure_coordinator` passes when the group has slots.
 
-An abandoned land (by its crew, or after 7 days with nobody there) is
+An abandoned land (by its crew, after 7 days with nobody there, or after a
+day when a crew needs a slot and none is free) is
 reported in `<root>/expeditions/abandon/<slot>.json`: the pass stops the slot
 (it saves first), archives it and frees it. The coordinator has already moved
 any home there to the mainland. See [voyages](ship-voyage.md#settle-claim-or-abandon).

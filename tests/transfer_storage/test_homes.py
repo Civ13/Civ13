@@ -222,6 +222,49 @@ class HomeTests(unittest.TestCase):
         self.coordinator.homes_once()
         self.assertEqual({'val': 'alpha'}, self.coordinator.homes())
 
+    def test_a_start_region_apart_from_the_mainland_takes_new_and_fallen_characters(self):
+        # The host's start_region (Gaia) while the mainland (North America) keeps the era.
+        self.coordinator.close()
+        self.coordinator = Coordinator(os.path.join(self.tmp.name, 'start.sqlite'), 'g', 'alpha', bootstrap_new_group=True,
+                                       start_region='gamma')
+        for name in self.stores:
+            self.coordinator.enroll(name, self.urls[name], TOKENS[name])
+        self.coordinator.homes_once()  # agents learn the mainland and the start region
+        self.assertEqual('gamma', self.stores['alpha'].start_region())
+        self.assertEqual('alpha', self.stores['alpha'].lands()['mainland'])
+        self.assertEqual('gamma', self.stores['beta'].lands()['start_region'])
+        # A new player at the mainland (the gate) is sent to the start region.
+        self.assertEqual('ELSEWHERE', self.ask('alpha', 'new'))
+        self.assertEqual('gamma', self.stores['alpha'].account('new', 'claim')['home'])
+        self.ask('alpha', 'new')
+        self.coordinator.homes_once()
+        self.assertEqual({}, self.coordinator.homes(), 'the mainland cannot claim a new player')
+        self.assertEqual('PENDING', self.ask('gamma', 'new'))
+        self.coordinator.homes_once()
+        self.assertEqual('HOME', self.ask('gamma', 'new'))
+        # An existing mainland home stays put, and so does a death there with a bed
+        # (DM sends no release then); a death without one goes to the start region.
+        self.coordinator._set_home('old', 'alpha')
+        self.coordinator.homes_once()
+        self.assertEqual('HOME', self.ask('alpha', 'old'), 'an existing character keeps its home')
+        self.ask('alpha', 'old', 'release')
+        self.coordinator.homes_once()
+        self.assertEqual('gamma', self.coordinator.home('old'))
+        self.assertEqual('ELSEWHERE', self.ask('alpha', 'old'))
+        # Back on the mainland: a coordinator without a start region uses it.
+        self.coordinator.close()
+        self.coordinator = Coordinator(os.path.join(self.tmp.name, 'start.sqlite'), 'g', 'alpha')
+        for name in self.stores:
+            self.coordinator.enroll(name, self.urls[name], TOKENS[name])
+        self.coordinator.homes_once()
+        self.assertEqual('alpha', self.stores['beta'].start_region())
+
+    def test_an_older_coordinator_without_a_start_region_means_the_mainland(self):
+        store = self.stores['beta']
+        store.apply_homes('e1', 0, [], [], reset=True, mainland='alpha')
+        self.assertEqual('alpha', store.start_region())
+        self.assertEqual('alpha', store.account('val', 'claim')['home'])
+
     def test_a_raid_death_sends_the_home_back_where_the_raider_came_from(self):
         # region_raid.dm: a raid world notes a death as a depart to the origin.
         self.coordinator.close()

@@ -63,11 +63,11 @@
 	return null
 
 // Where a player goes when they leave the tutorial: the gate behind a relay
-// (it forwards them to their home land), otherwise the mainland.
+// (it forwards them to their home land), otherwise the start region.
 /proc/tutorial_region_return_id()
 	if(!tutorial_region_here())
 		return null
-	var/id = shard_group.relay_on() ? shard_group.gate : shard_group.mainland
+	var/id = shard_group.relay_on() ? shard_group.gate : shard_group.start_region
 	return id && id != shard_group.region && shard_group.peers[id] ? id : null
 
 /proc/tutorial_region_return_name()

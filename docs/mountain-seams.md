@@ -14,7 +14,8 @@ Plan and decisions: project file `mining-loop/plan.md` (approved 2026-11-15).
 ## Where
 
 A map opts in with `mountain_seams = TRUE` (`americas_north`,
-`americas_south` and `asia`, the one-level lands with mountains and no cave). Seam ground is open `/turf/floor/dirt` (not standing rock)
+`americas_south` and `asia`, the one-level lands whose mountains stand on the
+surface; Asia can also dig a cave level under it). Seam ground is open `/turf/floor/dirt` (not standing rock)
 on z 1 inside `/area/caribbean/void/caves`, with no road or floor cover and no
 dense anchored structure. On both maps that area holds exactly the mountain
 rock, and mining swaps the turf but keeps the area, so seam ground is the

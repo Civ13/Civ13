@@ -100,6 +100,10 @@ var/datum/world_z_budget/world_z_budget = new
 /datum/world_z_budget/proc/underground_admitted(target_z)
 	return FALSE
 
+// The compiled levels plus any other full ground plane (the dug cave).
+/datum/world_z_budget/proc/ground_planes()
+	return base_z
+
 // A map that opted into an open-air building level (building_levels.dm) may
 // add that one level, or restore it, within the measured profile there.
 /datum/world_z_budget/proc/building_admitted(target_z)
@@ -144,7 +148,10 @@ var/datum/world_z_budget/world_z_budget = new
 	var/in_progress = owner && owner == active ? world.maxz - owner.start_z : 0
 	var/charged_instance = instance_used + (purpose == "instance" ? in_progress : 0)
 	var/charged_safehouse = safehouse_used + (purpose == "safehouse" ? in_progress : 0)
-	var/grid_error = new_z_grid_error(world.maxx, world.maxy, world.maxz, base_z, target_z, purpose, cell_limit, roof_limit, instance_reserve, safehouse_reserve, charged_instance, charged_safehouse)
+	// A dug cave is a ground plane, not a roof-added level: count it with the
+	// compiled levels so it does not use up one of the map's roof levels.
+	var/ground_z = ground_planes()
+	var/grid_error = new_z_grid_error(world.maxx, world.maxy, world.maxz, ground_z, target_z, purpose, cell_limit, roof_limit, instance_reserve, safehouse_reserve, charged_instance, charged_safehouse)
 	if (grid_error || target_z == world.maxz)
 		return grid_error
 	return memory_admission_error(target_z, purpose)

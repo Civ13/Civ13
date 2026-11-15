@@ -237,6 +237,9 @@ var/global/list/region_travel_carry_types = list(
 	for(var/key in extra)
 		if(key in list("lander", "landing", "surveyed", "rough", "return", "orbit", "cargo", "sortie", "seats", "voyage", "ship", "edge", "mount", "led", "cart", "bike", "wagon"))
 			P[key] = extra[key]
+		// A plane flying on to another continent (aircraft_crossing.dm).
+		else if(key in list("flight", "pilot", "plane"))
+			P[key] = extra[key]
 	return json_encode(P)
 
 // Returns the decoded payload, or null when any field is out of bounds.
@@ -249,7 +252,7 @@ var/global/list/region_travel_carry_types = list(
 		return null
 	if(!islist(P) || !(P["v"] in list(1, 2, 3)) || P["kind"] != "character") return null
 	// Only a crossing ship's record makes a payload longer than a character's.
-	if(length(payload) > REGION_TRAVEL_PAYLOAD_MAX && !islist(P["ship"])) return null
+	if(length(payload) > REGION_TRAVEL_PAYLOAD_MAX && !islist(P["ship"]) && !islist(P["plane"])) return null
 	if(P["v"] >= 2)
 		if(!region_travel_knowledge_valid(P["known_recipe_nodes"]) || !(P["recipe_knowledge_initialized"] in list(FALSE, TRUE))) return null
 	else if(("known_recipe_nodes" in P) || ("recipe_knowledge_initialized" in P))
@@ -294,6 +297,7 @@ var/global/list/region_travel_carry_types = list(
 	if(!isnull(P["faction_leader"]) && P["faction_leader"] != 1) return null
 	if(!space_flight_payload_ok(P)) return null
 	if(!sea_crossing_payload_ok(P)) return null
+	if(!air_crossing_payload_ok(P)) return null
 	if(!region_edge_payload_ok(P)) return null
 	return P
 
@@ -384,10 +388,11 @@ var/global/list/region_travel_carry_types = list(
 		// Otherwise a traveller comes out at the trail here that leads back home.
 		// A ship's crew arrive aboard her (naval/ship_crossing.dm).
 		// A walker over a shared map edge comes out on the facing edge (region_edge.dm).
-		var/turf/at = space_flight_arrival_turf(P, incoming) || sea_crossing_arrival_turf(P, incoming) || party_train_arrival_turf(P) || region_edge_arrival_turf(P, incoming) || (incoming ? region_travel_return_trail_turf(P) : null) || T
+		var/turf/at = space_flight_arrival_turf(P, incoming) || sea_crossing_arrival_turf(P, incoming) || air_crossing_arrival_turf(P, incoming) || party_train_arrival_turf(P) || region_edge_arrival_turf(P, incoming) || (incoming ? region_travel_return_trail_turf(P) : null) || T
 		var/mob/living/human/H = region_travel_build(P, at)
 		space_flight_arrived(H, P, incoming)
 		sea_crossing_arrived(H, P, incoming)
+		air_crossing_arrived(H, P, incoming)
 		region_edge_arrived(H, P, incoming)
 		// A recorded trip (or a refused one coming back) makes this land the home.
 		// A journal replay after a reload already told the coordinator once;
@@ -750,7 +755,7 @@ var/global/list/region_stopped_alerted = list()
 	if(istext(items)) return items
 	var/client/C = H.client
 	var/payload = H.region_travel_payload(items, travel_party(H), region_raid_peer(destination), travel_extra(H))
-	if(length(payload) > (findtext(payload, "\"ship\":") ? REGION_TRAVEL_SHIP_PAYLOAD_MAX : REGION_TRAVEL_PAYLOAD_MAX)) return "You carry too much to travel."
+	if(length(payload) > ((findtext(payload, "\"ship\":") || findtext(payload, "\"plane\":")) ? REGION_TRAVEL_SHIP_PAYLOAD_MAX : REGION_TRAVEL_PAYLOAD_MAX)) return "You carry too much to travel."
 	// The destination decodes with the same rules; never escrow what it would drop.
 	if(!region_travel_decode(payload)) return "Something about you cannot make the journey. Ask an admin."
 	// Hold the body and its items while the agent records the escrow, so

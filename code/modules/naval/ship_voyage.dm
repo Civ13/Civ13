@@ -17,11 +17,26 @@
 #define VOYAGE_MIN_CREW 2
 #define VOYAGE_SCOUT_RANGE 4 // chart tiles out; she comes back the same way
 #define VOYAGE_WAIT_MAX 18000 // deciseconds she waits off an unready coast before turning back
+// Deciseconds a ship lies at anchor after a landfall before her next voyage or
+// crossing. As long as an empty world takes to go to sleep (the host's
+// freeze_idle_minutes, 15), so the land a crew left is asleep before they can
+// wake a third: a crew hopping between lands keeps two worlds awake, not all.
+#define VOYAGE_LANDFALL_REST 9000
 
 /obj/structure/hull_tiller
 	// The voyage she is on: id, kind ("course" or "scout"), x, y, owner,
 	// label, ends (world.time), and for a course the region once known.
 	var/tmp/list/voyage = null
+	// world.time she made landfall here from another world (ship_crossing.dm); not saved.
+	var/tmp/landfall_at = null
+
+// Why she cannot put to sea for another world yet, or null: her crew rest
+// after a landfall. Scouting wakes no world and needs no rest.
+/obj/structure/hull_tiller/proc/landfall_rest_refusal()
+	if (isnull(landfall_at) || world.time >= landfall_at + VOYAGE_LANDFALL_REST)
+		return null
+	var/minutes = max(1, round((landfall_at + VOYAGE_LANDFALL_REST - world.time) / 600, 1))
+	return "Her crew have only just made landfall. She can put to sea for another land in about [minutes] minute\s."
 
 // ---------------------------------------------------------------- the chart a crew sees
 
@@ -179,7 +194,7 @@
 		return
 	if (choice in known)
 		var/list/lane = known[choice]
-		reason = voyage_refusal(H, 1)
+		reason = landfall_rest_refusal() || voyage_refusal(H, 1)
 		if (reason)
 			to_chat(H, SPAN_WARNING(reason))
 			return
@@ -204,6 +219,10 @@
 		return
 	var/list/land = lands[choice]
 	if (!islist(land))
+		return
+	reason = landfall_rest_refusal()
+	if (reason)
+		to_chat(H, SPAN_WARNING(reason))
 		return
 	if (WWinput(H, "Set out for [choice]? Everyone aboard sails with her; whoever stays ashore is left behind.", craft.name, "No", list("Yes", "No")) != "Yes" || get_dist(H, src) > 1 || !craft)
 		return
@@ -230,7 +249,7 @@
 	craft.set_anchor(TRUE)
 	voyage = list("id" = id, "kind" = kind, "x" = x, "y" = y, "owner" = owner, "label" = label, "by" = H.ckey, "tile" = tile, "tiles" = tiles_time,
 		"ends" = world.time + tiles_time * tile, "minute" = world.time + tile, "said" = null,
-		"rations" = crew * tiles_time, "stores" = length(voyage_rations()), "events" = list())
+		"rations" = crew * tiles_time, "stores" = length(voyage_rations()), "events" = list(), "asked" = world.time + 300)
 	log_game("Voyage: [key_name(H)] set the [craft.name] on a [kind] voyage to [kind == "lane" ? "the region [x]" : "chart tile [x],[y]"] for [owner || H.ckey] (voyage [id], [crew] crew, [voyage["stores"]]/[voyage["rations"]] rations).")
 	var/minutes = round(tiles_time * tile / 600, 1)
 	craft.crew_message(SPAN_NOTICE("[H] at the tiller: the [craft.name] sets out for [label]. About [max(1, minutes)] minute\s at sea. Stay aboard: whoever leaves her is left behind."))
@@ -267,6 +286,10 @@
 	if (voyage != mine || QDELETED(src) || !craft)
 		return
 	if (world.time < mine["ends"])
+		// A course refused (no harbour free, a land opened too lately) turns her back
+		// within a minute or two, before she has sailed the whole way for nothing.
+		if (mine["kind"] == "course" && voyage_refused_under_way(mine))
+			return
 		if (world.time >= mine["minute"])
 			mine["minute"] = world.time + mine["tile"]
 			if (!voyage_event(mine))
@@ -281,6 +304,20 @@
 		return
 	if (voyage == mine && !QDELETED(src))
 		addtimer(CALLBACK(src, PROC_REF(voyage_tick), mine), VOYAGE_TICK)
+
+// TRUE when her course was refused while she is still at sea: she turned back.
+/obj/structure/hull_tiller/proc/voyage_refused_under_way(list/mine)
+	if (world.time < mine["asked"])
+		return FALSE
+	mine["asked"] = world.time + 600
+	world_chart_refresh()
+	var/list/courses = world_chart["courses"]
+	var/list/course = islist(courses) ? courses[mine["id"]] : null
+	if (!islist(course) || course["state"] != "REFUSED")
+		return FALSE
+	log_game("Voyage: the [craft.name]'s course was refused under way: [course["reason"]] (voyage [mine["id"]]).")
+	end_voyage(SPAN_WARNING("Word reaches the [craft.name] and she turns back: [course["reason"]]."))
+	return TRUE
 
 // A scouting voyage is home: what she saw goes on her owner's chart.
 /obj/structure/hull_tiller/proc/voyage_scouted(list/mine)
@@ -356,3 +393,4 @@
 #undef VOYAGE_MIN_CREW
 #undef VOYAGE_SCOUT_RANGE
 #undef VOYAGE_WAIT_MAX
+#undef VOYAGE_LANDFALL_REST
