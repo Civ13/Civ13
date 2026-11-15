@@ -113,11 +113,13 @@ claims a travelling one; anywhere else the player is told where their
 character lives, with a join link.
 
 - With `--mainland REGION` (the shard group always passes it), a new account
-  starts only on the mainland. Elsewhere it is told to start there.
+  starts only in the start region: `--start-region REGION`, the mainland when
+  not given. Elsewhere it is told to start there. Each `/homes` pass sends the
+  agents `start_region`, and `/lands` reports it to DM.
 - A trip moves the home: the gate records `depart` (the source refuses a new
   character at once), and the arrival records `arrive`. A refused trip
   rebuilt at the source records `arrive` there, so the home comes back.
-- A death records `release`, which sends the home back to the mainland unless
+- A death records `release`, which sends the home back to the start region unless
   the account still has a living character in that region, or an assigned bed
   there (Sleep in a bed assigns it). With a bed, nothing is recorded: the home
   stays and the next character starts at that bed.

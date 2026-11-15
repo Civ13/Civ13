@@ -381,14 +381,16 @@ var/building_compiled_maxz = 0
 
 // TRUE when the map lets its building levels grow above z.
 /proc/building_stack_room(z)
-	return map && map.building_levels && z >= building_base_maxz() && z < building_base_maxz() + map.building_levels
+	return map && map.building_levels && z >= building_base_maxz() && z != dug_underground_z() && building_levels_built() < map.building_levels
 
 // A roof adds the next level when it is on the top ground level, as before, or
 // on the highest building level of a map that permits more of them.
 /proc/building_grows_from(z)
 	if (building_upper_z(z))
 		return FALSE
-	return z == multiz_top_z() || (z == world.maxz && z > building_base_maxz() && building_stack_room(z))
+	// Nothing lies above z (the cave is never "above"), so z is the top ground
+	// level or the highest building level.
+	return z == multiz_top_z() || (z > building_base_maxz() && z != dug_underground_z() && building_stack_room(z))
 
 /proc/building_floor_error(turf/T)
 	if (!T)

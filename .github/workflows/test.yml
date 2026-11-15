@@ -1651,6 +1651,10 @@ jobs:
           python3 tests/building_levels/run.py --lighting-roof --allocation-interleave --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/building-levels/roof-interleave"
           python3 tests/building_levels/run.py --standing --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/building-levels/standing-positive"
           python3 tests/building_levels/run.py --standing --negative-control standing-import --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/building-levels/standing-control"
+          python3 tests/building_levels/run.py --cave --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/building-levels/cave-positive"
+          python3 tests/building_levels/run.py --cave-first --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/building-levels/cave-first-positive"
+          python3 tests/building_levels/run.py --cave --negative-control cave-step-over --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/building-levels/cave-step-over"
+          python3 tests/building_levels/run.py --cave --negative-control cave-roof-count --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/building-levels/cave-roof-count"
       - name: Upload linked building evidence
         if: always() && needs.changes.result == 'success' && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/building_levels') || inputs.persistence_integration_regressions == true)
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02

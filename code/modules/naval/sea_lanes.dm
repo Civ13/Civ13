@@ -16,22 +16,23 @@
 // world's group and up or able to wake. Region ids are the host's (earth.json).
 // ============================================================
 
-// id = list(x, y, coasts): x grows east, y grows north. coasts: the map edges
-// with open deep water along them, best first.
+// id = list(x, y, coasts, flight): x grows east, y grows north. coasts: the map
+// edges with open deep water along them, best first. flight: TRUE when the map
+// has a standing open-air level that aircraft fly on (aircraft_crossing.dm).
 var/global/list/continent_layout = list(
-	"northamerica" = list(0, 6, list("E", "W", "N", "S")),
-	"southamerica" = list(2, 0, list("E", "W", "S", "N")),
-	"gaia" = list(6, 7, list("W", "E")),
-	"europe" = list(11, 9, list("S", "W")),
-	"desert" = list(12, 4, list()),
-	"jungle" = list(13, 1, list()),
-	"asia" = list(18, 8, list("E", "S", "W")))
+	"northamerica" = list(0, 6, list("E", "W", "N", "S"), TRUE),
+	"southamerica" = list(2, 0, list("E", "W", "S", "N"), TRUE),
+	"gaia" = list(6, 7, list("W", "E"), TRUE),
+	"europe" = list(11, 9, list("S", "W"), TRUE),
+	"desert" = list(12, 4, list(), TRUE),
+	"jungle" = list(13, 1, list(), TRUE),
+	"asia" = list(18, 8, list("E", "S", "W"), TRUE))
 
 /proc/continent_place(id)
 	if (!istext(id))
 		return null
 	var/list/place = continent_layout[id]
-	return islist(place) && place.len == 3 ? place : null
+	return islist(place) && place.len == 4 ? place : null
 
 /proc/continent_coastal(id)
 	var/list/place = continent_place(id)

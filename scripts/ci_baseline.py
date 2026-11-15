@@ -2305,6 +2305,12 @@ SUITES = {
             'code/modules/client/preferencesSQLite/preferences.dm')},
     'surgery_drinking': {'files': ('tests/surgery_drinking/test_source.py',),
         'paths': ('tests/surgery_drinking/', 'code/modules/surgery/surgery.dm')},
+    # Peoples of the Nomads lands: origin table against languages, names, colours.
+    'origins': {'files': ('tests/origins/test_origins.py',),
+        'paths': ('tests/origins/', 'code/game/mob/living/carbon/human/origins.dm'),
+        'shared_paths': ('code/game/mob/living/carbon/human/nomads_spawn.dm',
+            'code/game/mob/language/earth.dm', 'code/_helpers/global_lists.dm',
+            'code/game/mob/living/carbon/human/species/species.dm')},
 }
 CI_PATHS = ('scripts/select-ci.py', 'scripts/ci_baseline.py', 'scripts/ci_skill_prose.py',
             '.github/workflows/ci-selection.yml', '.github/workflows/test.yml')

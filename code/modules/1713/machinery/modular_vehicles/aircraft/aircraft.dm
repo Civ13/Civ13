@@ -465,6 +465,12 @@ var/global/list/airborne_aircraft = list()
 	if (QDELETED(src) || !airborne())
 		flight_watching = FALSE
 		return
+	// Packed for a flight to another land, or waiting for her pilot to come
+	// aboard after one (aircraft_crossing.dm): she holds steady.
+	if (air_crossing_hold > world.time || air_crossing_asking)
+		stall_seconds = 0
+		addtimer(CALLBACK(src, PROC_REF(flight_watch_tick)), 1 SECOND)
+		return
 	burn_flight_fuel()
 	note_field_work(driver, "flight")
 	if (!moving || edge_blocked || currentspeed < stall_gear || !check_engine())
@@ -513,7 +519,7 @@ var/global/list/airborne_aircraft = list()
 		// The black ring wall of a bounded flight level is an edge too, at both heights.
 		if (!T || istype(T, /turf/wall/indestructable/black))
 			if (!edge_blocked)
-				pilot_message(SPAN_WARNING("You are at the edge of the world. Turn back or you will stall."))
+				pilot_message(SPAN_WARNING(length(air_crossing_destinations()) ? "You are at the edge of the land. Use Fly to another land on the control column, or turn back before you stall." : "You are at the edge of the world. Turn back or you will stall."))
 			edge_blocked = TRUE
 			return FALSE
 		if (flight_state == AIRCRAFT_CRUISE)

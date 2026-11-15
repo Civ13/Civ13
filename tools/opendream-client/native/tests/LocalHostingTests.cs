@@ -239,6 +239,20 @@ static class LocalHostingTests {
         Require(HostSettings.SetUpdateWhenEmpty(host.Control!.Group!, true) && HostSettings.UpdateWhenEmpty(host.Control!.Group!)
             && HostSettings.FollowsRemote(host.Control!.Group!) && !HostSettings.SetUpdateWhenEmpty(host.Control!.Group!, true), "update when empty follows origin/master once");
         Require(HostSettings.ShutdownWarningSeconds(host.Control!.Group!) == 300 && HostSettings.Locations(host.Control!.Group!).Count == 2, "update when empty kept other settings");
+        // Start region: the mainland unless start_region names another; never a kind nobody can start in.
+        File.WriteAllText(groupConfig, "{\"mainland\": \"northamerica\", \"shutdown_warning_seconds\": 60, \"regions\": [{\"id\": \"northamerica\", \"name\": \"North America\", \"kind\": \"SURFACE\"}, "
+            + "{\"id\": \"gaia\", \"name\": \"Gaia\", \"kind\": \"SURFACE\"}, {\"id\": \"orbit\", \"name\": \"Orbit\", \"kind\": \"ORBIT\"}, {\"id\": \"tutorial\", \"kind\": \"TUTORIAL\"}]}");
+        var startRegion = HostSettings.StartRegion(host.Control!.Group!);
+        Require(startRegion.Mainland == "northamerica" && startRegion.Current == "northamerica"
+            && startRegion.Choices.Select(choice => choice.Id + "=" + choice.Name).SequenceEqual(new[] { "northamerica=North America", "gaia=Gaia" }), "start region choices");
+        HostSettings.SetStartRegion(host.Control!.Group!, "gaia");
+        Require(HostSettings.StartRegion(host.Control!.Group!).Current == "gaia" && HostSettings.ShutdownWarningSeconds(host.Control!.Group!) == 60, "start region saved, other settings kept");
+        Reject(() => HostSettings.SetStartRegion(host.Control!.Group!, "orbit"), "an orbit start region");
+        Reject(() => HostSettings.SetStartRegion(host.Control!.Group!, "atlantis"), "an unknown start region");
+        HostSettings.SetStartRegion(host.Control!.Group!, "northamerica");
+        Require(!File.ReadAllText(groupConfig).Contains("start_region") && HostSettings.StartRegion(host.Control!.Group!).Current == "northamerica", "start region back on the mainland");
+        File.WriteAllText(groupConfig, JsonSerializer.Serialize(new { overlay = sharedOverlay, shutdown_warning_seconds = 300, update_when_empty = true, fetch = "origin", regions = new object[] {
+            new { id = "gaia", name = "Gaia", overlay = gaiaOverlay }, new { id = "mars", name = "Mars" }, new { id = "moon", overlay = "relative" } } }));
         var places = HostSettings.Locations(host.Control!.Group!);
         Require(places.Select(place => (place.Label, place.Folder, place.Region)).SequenceEqual(new[] {
             ("Every region (shared)", Path.GetFullPath(sharedOverlay), (string?)null), ("Gaia only", Path.GetFullPath(gaiaOverlay), "gaia") }),

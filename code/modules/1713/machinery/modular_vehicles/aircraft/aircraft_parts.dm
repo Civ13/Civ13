@@ -134,6 +134,15 @@
 	if (A)
 		A.descend(usr)
 
+// Near the edge of the land the pilot can fly on to another continent (aircraft_crossing.dm).
+/obj/item/vehicleparts/wheel/modular/aircraft/verb/fly_to_land_verb()
+	set name = "Fly to another land"
+	set category = null
+	set src in usr
+	var/obj/structure/vehicleparts/axis/aircraft/A = flown_aircraft(usr)
+	if (A)
+		A.air_crossing_menu(usr)
+
 /obj/item/vehicleparts/wheel/modular/aircraft/examine(mob/user, distance)
 	. = ..()
 	var/obj/structure/vehicleparts/axis/aircraft/A = control && control.axis

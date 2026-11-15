@@ -251,9 +251,12 @@ class GaiaSpawn(unittest.TestCase):
                              '/mob/living/human/proc/nomads_spawn')
         self.assertLess(body.index('if(persistence_restored)'),body.index('var/area/mob_area'))
         self.assertIn('birth_area ? birth_area : get_area(src)',body)
-        gaia=body[body.index('map.ID == MAP_NOMADS_CONTINENTAL'):body.index('else if (map.ID == MAP_NOMADS_EUROPE)')]
-        for language in ('Old Norse','Latin','Egyptian','Japanese'):
-            self.assertIn('add_language("'+language+'",TRUE)',gaia)
+        # Gaia's peoples come from the origin table, keyed by the birth climate.
+        self.assertIn('choose_origin(mob_area ? mob_area.climate : null)',body)
+        origins=(ROOT/'code/game/mob/living/carbon/human/origins.dm').read_text()
+        gaia=origins[origins.index('var/list/gaia = list('):origins.index('var/list/europe')]
+        for people in ('northmen','latins','hellenes','egyptians','swahili','yamato'):
+            self.assertIn('= "'+people+'"',gaia)
 
     def test_authored_map_surface_biomes_are_covered(self):
         import sys
