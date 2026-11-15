@@ -660,8 +660,10 @@ var/global/ecology_world_unwatched = FALSE
 	if (ecology_observer_cells.len)
 		var/columns = ecology_observer_columns
 		var/rows = ecology_observer_rows
-		var/cx = round((T.x - 1) / ECOLOGY_AWAKE_RANGE)
-		var/cy = round((T.y - 1) / ECOLOGY_AWAKE_RANGE)
+		var/target_x = T.x
+		var/target_y = T.y
+		var/cx = round((target_x - 1) / ECOLOGY_AWAKE_RANGE)
+		var/cy = round((target_y - 1) / ECOLOGY_AWAKE_RANGE)
 		for (var/z = max(1, T.z - 1), z <= min(ecology_observer_cells.len, T.z + 1), z++)
 			var/list/z_cells = ecology_observer_cells[z]
 			if (!z_cells)
@@ -672,7 +674,7 @@ var/global/ecology_world_unwatched = FALSE
 					if (!cell)
 						continue
 					for (var/turf/O in cell)
-						if (max(abs(O.x - T.x), abs(O.y - T.y)) <= ECOLOGY_AWAKE_RANGE)
+						if (max(abs(O.x - target_x), abs(O.y - target_y)) <= ECOLOGY_AWAKE_RANGE)
 							return TRUE
 	return FALSE
 
