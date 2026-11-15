@@ -155,33 +155,72 @@ var/global/list/swallowed_germs = list("cholera", "typhus", "plague", "worm_eggs
 		return FALSE
 	return istype(buckled, /obj/structure/bed) || istype(buckled, /obj/structure/medicalbed) || istype(buckled, /obj/structure/optable)
 
+// Percent chances per second, before infection_chance_scale(). Flu passes
+// only between people standing next to each other (or by a sneeze, below);
+// plague keeps its 2-tile reach. Neither passes through walls.
+#define FLU_ADJACENT_CHANCE 0.25
+#define PLAGUE_NEARBY_CHANCE 1
+#define FILTH_FLU_CHANCE 0.2
+
 /mob/living/human/proc/acquire_nearby_disease()
 	if (inducedSSD || droid || disease)
 		return
+	var/list/seen = null
 	for (var/mob/living/human/H in range(2, src))
-		if (H == src || !H.disease || (H.disease_type in disease_immunity) || resists_disease(H.disease_type) || !(H.disease_type in contagious_diseases))
+		if (H == src || !H.disease || !(H.disease_type in contagious_diseases))
 			continue
-		var/chance = (H.stat == DEAD ? 3 : 1) * disease_node_scale()
-		if (find_trait("Weak Immune System"))
-			chance *= 2
+		var/chance
+		if (H.disease_type == "flu")
+			if (get_dist(src, H) > 1 || !Adjacent(H))
+				continue
+			if (istype(H.wear_mask, /obj/item/clothing/mask/sterile))
+				continue
+			chance = FLU_ADJACENT_CHANCE
+		else
+			if (!seen)
+				seen = dview(2, get_turf(src))
+			if (!(H in seen))
+				continue
+			chance = PLAGUE_NEARBY_CHANCE * (H.stat == DEAD ? 3 : 1)
+		chance *= infection_chance_scale(H.disease_type)
 		if (istype(wear_mask, /obj/item/clothing/mask/sterile))
 			chance *= 0.5
-		if (H.disease_type == "flu" && istype(H.wear_mask, /obj/item/clothing/mask/sterile))
-			continue
-		if (prob(chance))
-			disease = TRUE
-			disease_type = H.disease_type
-			disease_progression = 0
-			disease_treatment = 0
-			disease_course = 0
+		if (chance > 0 && prob(chance))
+			catch_disease(H.disease_type)
 			return
-	if (map && map.civilizations && hygiene < HYGIENE_LEVEL_DIRTY && !("flu" in disease_immunity) && !resists_disease("flu"))
-		if (prob((find_trait("Weak Immune System") ? 0.4 : 0.2) * disease_node_scale()))
-			disease = TRUE
-			disease_type = "flu"
-			disease_progression = 0
-			disease_treatment = 0
+	if (map && map.civilizations && hygiene < HYGIENE_LEVEL_DIRTY)
+		var/chance = FILTH_FLU_CHANCE * infection_chance_scale("flu")
+		if (chance > 0 && prob(chance))
+			catch_disease("flu")
 
+// A sneeze from someone with flu reaches 2 tiles, but not past walls. One
+// roll per person in reach, at most once every 10 seconds per sneezer, so
+// spamming the emote spreads it no faster. A sterile mask on the sneezer
+// stops it; on a listener it halves the chance.
+#define FLU_SNEEZE_CHANCE 10
+#define FLU_SNEEZE_COOLDOWN 100
+/mob/living/human/var/tmp/last_flu_sneeze = -FLU_SNEEZE_COOLDOWN
+
+/mob/living/human/proc/sneeze_flu()
+	if (!disease || disease_type != "flu" || stat == DEAD || istype(wear_mask, /obj/item/clothing/mask/sterile))
+		return
+	if (world.time < last_flu_sneeze + FLU_SNEEZE_COOLDOWN)
+		return
+	last_flu_sneeze = world.time
+	for (var/mob/living/human/H in dview(2, get_turf(src)))
+		if (H == src)
+			continue
+		var/chance = FLU_SNEEZE_CHANCE * H.infection_chance_scale("flu")
+		if (istype(H.wear_mask, /obj/item/clothing/mask/sterile))
+			chance *= 0.5
+		if (chance > 0 && prob(chance))
+			H.catch_disease("flu")
+
+#undef FLU_ADJACENT_CHANCE
+#undef PLAGUE_NEARBY_CHANCE
+#undef FILTH_FLU_CHANCE
+#undef FLU_SNEEZE_CHANCE
+#undef FLU_SNEEZE_COOLDOWN
 #undef DIRTY_WATER_WORMS
 #undef SEVERE_DISEASE_PAIN
 #undef SEVERE_DISEASE_PAIN_CRITICAL
