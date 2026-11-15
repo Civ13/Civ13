@@ -130,6 +130,24 @@ var/global/datum/look_client_probe/look_client_probe = new
 			return T
 	return null
 
+// A grown, climbable tree with at least six other trees within four tiles.
+/datum/look_client_probe/proc/find_forest_tree()
+	var/work = 0
+	for(var/obj/structure/wild/W in world)
+		if(++work % 2000 == 0)
+			sleep(world.tick_lag)
+		if(W.z != centre.z || !tree_climbable(W) || !tree_grown_enough(W) || W.tree_climber)
+			continue
+		if(W.x < 40 || W.y < 40 || W.x > world.maxx - 40 || W.y > world.maxy - 40)
+			continue
+		var/neighbours = 0
+		for(var/obj/structure/wild/N in range(4, W))
+			if(N != W && root_tree_family(N))
+				neighbours++
+		if(neighbours >= 6)
+			return W
+	return null
+
 /datum/look_client_probe/proc/take_body()
 	if(headless)
 		H = new /mob/living/human/look_client_actor(centre)
@@ -260,6 +278,30 @@ var/global/datum/look_client_probe/look_client_probe = new
 		unlook()
 		shot("7_final")
 		record("7_final")
+		// The same from a tree inside a natural forest, where players climb.
+		var/obj/structure/wild/forest_tree = find_forest_tree()
+		metrics["forest_tree"] = forest_tree ? "[forest_tree.type] [forest_tree.x],[forest_tree.y],[forest_tree.z]" : null
+		if(forest_tree)
+			H.climb_down_tree()
+			sleep(10)
+			require(H.finish_climb_tree(forest_tree), "Could not climb the forest tree")
+			H.dir = NORTH
+			shot("8_forest_tree_top")
+			record("8_forest_tree_top")
+			look(NORTH)
+			shot("9_forest_tree_look_north")
+			record("9_forest_tree_look_north")
+			look(EAST)
+			shot("10_forest_tree_look_east")
+			record("10_forest_tree_look_east", EAST)
+			if(C)
+				C.los_enabled = FALSE
+				C.reconcile_geometric_los()
+				shot("11_forest_look_east_no_presenter")
+				record("11_forest_look_east_no_presenter", EAST)
+				C.los_enabled = TRUE
+				C.reconcile_geometric_los()
+			unlook()
 		pass("stages_recorded", list("count" = stages.len))
 	catch(var/exception/e)
 		failure = "[e.name]"

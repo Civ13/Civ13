@@ -183,7 +183,8 @@ def main():
             raise RuntimeError('Probe compilation failed; see compile.log')
         source.with_suffix('.dmb').replace(output / 'probe.dmb')
         source.with_suffix('.rsc').replace(output / 'probe.rsc')
-        for path in subprocess.check_output(['git', '-C', str(repo), 'ls-files', '--', 'config'], text=True).splitlines():
+        # Hill heights are read at run time from maps/heights.
+        for path in subprocess.check_output(['git', '-C', str(repo), 'ls-files', '--', 'config', 'maps/heights'], text=True).splitlines():
             target = output / path
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_bytes((repo / path).read_bytes())
