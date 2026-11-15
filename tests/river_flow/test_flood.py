@@ -282,5 +282,39 @@ class CellarTest(unittest.TestCase):
         self.assertIn('if (centre.z != F.z_level && centre.z != F.cellar_z())', effects)
 
 
+class DugWellsTest(unittest.TestCase):
+    """Player-dug wells; behaviour is in wells_probe.dm."""
+
+    def test_wiring(self):
+        wells = (ROOT / 'code/modules/1713/dug_wells.dm').read_text(encoding='utf-8')
+        self.assertIn('/proc/well_water_table(turf/T)', wells)
+        self.assertIn('terrain_height_at(T) - river_stage_at(T)', wells)
+        self.assertIn('if (flood_depth_at(T) > 0)', wells)
+        self.assertIsNone(re.search(r'(?<![_\w])spawn\(', wells))
+        self.assertNotIn('in world', wells)
+        self.assertNotIn('/process()', wells)
+        tools = (ROOT / 'code/modules/1713/tools.dm').read_text(encoding='utf-8')
+        self.assertIn('"Cesspit", "Well", "Cancel")', tools)
+        self.assertIn('shovel_dig_well(user, TB)', tools)
+        stack = (ROOT / 'code/game/objects/items/stacks/stack.dm').read_text(encoding='utf-8')
+        self.assertIn('if (!well_build_site(get_turf(H)))', stack)
+        self.assertIn('&& !well_relining(recipe.result_type, user.loc))', stack)
+        self.assertIn('if (!P.dug_depth)', stack)
+        dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
+        self.assertLess(dme.index('1713\\flood_defences.dm"'), dme.index('1713\\dug_wells.dm"'))
+
+    def test_recipes_and_art(self):
+        recipes = (ROOT / 'config/crafting/material_recipes_global.txt').read_text(encoding='utf-8')
+        research = (ROOT / 'code/modules/research_tree/research_node.dm').read_text(encoding='utf-8')
+        self.assertRegex(recipes, r'RECIPE: /material/wood/,timber well lining,/obj/structure/sink/well/timber,')
+        self.assertIn('"/obj/structure/sink/well/timber" = "primitive_construction",', research)
+        from PIL import Image
+        meta = Image.open(ROOT / 'icons/obj/wells.dmi').info['Description']
+        states = {line.split('"')[1] for line in meta.splitlines() if line.startswith('state = ')}
+        # the waterhole is a puddle, which shows "puddle-splash" while in use
+        for state in ('waterhole', 'waterhole_dry', 'puddle-splash', 'timber_well', 'timber_well_dry'):
+            self.assertIn(state, states)
+
+
 if __name__ == '__main__':
     unittest.main()
