@@ -13,8 +13,10 @@ var/process/obj/active
 		world.log << "FAIL [message]"
 /proc/isDeleted(obj/O)
 	return !O
+#define SECOND *10
 /process
 	var/priority = PROCESS_PRIORITY_MEDIUM
+	var/schedule_interval = 20
 	var/list/current_list
 	var/current
 	var/run_time_tick_usage = 0

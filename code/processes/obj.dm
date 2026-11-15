@@ -11,7 +11,7 @@
 		var/obj/O = current
 		if (!isDeleted(O))
 			try
-				if (O.process_interval(configured_interval_seconds()) == PROCESS_KILL)
+				if (O.process_interval(schedule_interval / (1 SECOND)) == PROCESS_KILL)
 					processing_objects -= O
 			catch(var/exception/e)
 				catchException(e, O)
