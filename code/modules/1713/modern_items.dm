@@ -961,18 +961,20 @@
 
 	New()
 		..()
+		update_power_look()
+
+	// Off shows the unlit sprite; on shows the green ready light.
+	proc/update_power_look()
 		if (on)
+			icon_state = "metal_detector1"
 			set_light(2, 0.5, "#62cc53")
 		else
+			icon_state = "metal_detector"
 			set_light(0)
 
 	proc/toggle()
-		if (on)
-			on = FALSE
-			icon_state = "metal_detector"
-		else
-			on = TRUE
-			icon_state = "metal_detector1"
+		on = !on
+		update_power_look()
 
 	proc/checkmob(mob/living/human/H)
 		if (!on)
@@ -1016,8 +1018,7 @@
 		playsound(loc, 'sound/machines/metal_detector.ogg', 100, 0)
 		set_light(2, 0.5,"#ce3535")
 		spawn(30)
-			icon_state = "metal_detector1"
-			set_light(2, 0.5, "#62cc53")
+			update_power_look() // stays dark if it was switched off meanwhile
 
 	attack_hand(mob/M)
 		if (!ishuman(M))
@@ -1025,13 +1026,13 @@
 		if(!on)
 			on = TRUE
 			M.visible_message("[M] turns the metal detector on.", "You turn the metal detector on.")
-			set_light(2, 0.5, "#62cc53")
+			update_power_look()
 		else
 			M.visible_message("<span class='warning'>[M] is trying to turn the metal detector off!</span>", "You start turning the metal detector off...")
 			if(do_after(M, 50, src))
 				M.visible_message("<span class='warning'>[M] turns the metal detector off.</span>", "You turn the metal detector off.")
 				on = FALSE
-				set_light(0)
+				update_power_look()
 
 /obj/structure/drill
 	name = "industrial drill"
