@@ -213,8 +213,8 @@
 		for (var/atom/movable/M in T)
 			if (M.loc != T || QDELETED(M) || M == tiller)
 				continue
-			// Flick animations (/atom/movable/overlay) can be left lying on a tile; they are not cargo.
-			if (istype(M, /atom/movable/lighting_overlay) || istype(M, /atom/movable/lighting_fullbright) || istype(M, /atom/movable/overlay) || istype(M, /obj/effect) || M.craft_left_behind())
+			// Flick animations and speech bubbles (both named "overlay") can be left lying on a tile; they are not cargo.
+			if (istype(M, /atom/movable/lighting_overlay) || istype(M, /atom/movable/lighting_fullbright) || istype(M, /atom/movable/overlay) || istype(M, /obj/chat_text) || istype(M, /obj/effect) || M.craft_left_behind())
 				continue
 			// Ghosts and admin observers float over the deck; they are not aboard.
 			if (istype(M, /mob/observer))

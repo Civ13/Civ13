@@ -32,12 +32,25 @@
 		target.seen_chat_text -= src
 		target.images -= src.message
 		target = null
+	message = null
+	loc = null
 	return ..()
+
+// A bubble only ever shows as its client image; it never lies on the map.
+/obj/chat_text/Move()
+	return FALSE
+
+/obj/chat_text/forceMove(atom/destination, var/special_event, list/throw_hop_token = null)
+	loc = null
+	return FALSE
 
 /image/var/target = null
 /image/var/owner = null
 
 /obj/chat_text/New(var/mob/origin_loc, var/desired_text, var/mob/target_mob)
+	// Out of the speaker at once: a bubble left inside a mob is dropped onto the
+	// floor with its other contents and then lies there for good.
+	loc = null
 	..()
 	loc = null
 	if(isliving(origin_loc) && target_mob && target_mob.client)
@@ -78,10 +91,10 @@
 		spawn(50)
 			animate(message,alpha=0,time=10)
 			sleep(10)
-			if(src)
-				Destroy()
+			if(src && !QDELETED(src))
+				qdel(src)
 	else
-		Destroy()
+		qdel(src)
 
 	return FALSE
 
@@ -96,6 +109,10 @@
 		overlay_text = "<span style=\"color:[color];\">[overlay_text]</span>"
 
 	var/obj/chat_text/CT = new/obj/chat_text(speaker, overlay_text, src)
+	// A speaker who is not a living mob (a ghost) gets no bubble: it is gone
+	// already and must not be kept in the client's lists for good.
+	if (QDELETED(CT))
+		return
 	client.seen_chat_text += CT
 	if (speaker.client)
 		speaker.client.stored_chat_text += CT

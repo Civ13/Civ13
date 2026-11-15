@@ -142,6 +142,14 @@ class SeaEdgeTests(unittest.TestCase):
         crossing = (ROOT / 'code/modules/naval/ship_crossing.dm').read_text(encoding='utf-8')
         pack = crossing.split('/proc/sea_crossing_pack(')[1].split('\n/proc/')[0]
         self.assertIn('istype(M, /atom/movable/overlay)', pack)
+        self.assertIn('istype(M, /obj/chat_text)', pack)
+        bubble = (ROOT / 'code/game/mob/living/chat_overlay.dm').read_text(encoding='utf-8')
+        new = bubble.split('/obj/chat_text/New(')[1].split('\n/')[0]
+        self.assertLess(new.index('loc = null'), new.index('..()'))
+        self.assertNotIn('Destroy()', new)
+        self.assertIn('/obj/chat_text/forceMove(', bubble)
+        living = (ROOT / 'code/game/mob/living/living.dm').read_text(encoding='utf-8')
+        self.assertNotIn('CT.forceMove(', living)
         # Ghosts and admin observers are not cargo either.
         self.assertLess(pack.index('istype(M, /mob/observer)'), pack.index('if (ismob(M))'))
 
