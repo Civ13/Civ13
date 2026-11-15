@@ -176,6 +176,32 @@ per minute of draining. A clogged drain cuts the network until it is dug
 clear with a shovel. Brick sewers are 3 stone bricks (Imperial Architecture).
 Nothing new is saved but `clogged`.
 
+## Sewers (S3)
+
+Also in `sewers.dm`. A pumping station stands on an outfall tile. It always
+carries a non-return valve, so like a flap gate it shuts the outfall against
+the river even when stopped. Running, it lifts water and waste out over a
+river in flood: over a flood the outfall takes only the pump's rate from its
+inlets, and with the river low the pump's rate adds to the outfall's own.
+Flushed waste goes out over the flood too and fouls the water as usual. The
+steam pumping engine (12 iron, Steam Power) lifts 6 tile-levels a minute and
+burns one minute of fuel per river tick while it is on (coal 30 minutes,
+charcoal 20, a log, plank or bamboo 10, up to 240), and stops when the fire
+burns out. The electric sewage pump (8 steel, Utilities) lifts 10 and draws
+20 power from a cable laid under it or an outlet. Pumps tick at the end of
+`drain_hollows()`, after the water they move, even on a map with no hollows.
+
+A settling tank (6 stone bricks, Germ Theory) on an outfall tile catches each
+load of waste that goes out of it as sludge, so the outfall does not foul
+wells, until it holds 60; a shovel digs it out into compost (one per 10).
+Rainwater does not fill it. Open ditches upstream still foul.
+
+A septic tank (6 concrete, Public Health) is a sealed cesspit: it holds 120,
+fouls nothing, and digests one load per 30 minutes of real time, counted from
+`world.realtime` whenever it is used or examined, so nothing ticks and the
+server being down counts too. Saved: pump `on` and `fuel`, `sludge`, septic
+`waste` and `digested_at`.
+
 ## Saving
 
 The water held, the snowpack and the high-water mark of every reach are the
@@ -200,4 +226,5 @@ tiles around you, blue where the water is now).
     python3 tests/sewers/test_sewers.py
     python3 tests/ecology_spawning/run_linux.py . tests/sewers/probe.dm
     python3 tests/ecology_spawning/run_linux.py . tests/sewers/s2_probe.dm
+    python3 tests/ecology_spawning/run_linux.py . tests/sewers/s3_probe.dm
     python3 tests/durable_map_migration/run.py --byond-bin <dir>

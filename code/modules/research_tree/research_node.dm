@@ -1593,7 +1593,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/clothing/suit/storage/coat/fur/grey" = "furriery",
 		"/obj/item/clothing/suit/storage/coat/fur/orc" = "furriery",
 		"/obj/item/clothing/suit/storage/coat/fur/pink" = "furriery",
-		// --- germ_theory (5) ---
+		// --- germ_theory (6) ---
+		"/obj/structure/sewer_settling_tank" = "germ_theory",
 		"/obj/item/weapon/reagent_containers/food/drinks/plastic/carton" = "germ_theory",
 		"/obj/structure/canner" = "germ_theory",
 		"/obj/structure/converter/acid_bath" = "germ_theory",
@@ -2087,7 +2088,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/money_printer" = "printing_currency",
 		"/obj/structure/noticeboard" = "printing_currency",
 		"/obj/structure/printingpress" = "printing_currency",
-		// --- public_health (3) ---
+		// --- public_health (4) ---
+		"/obj/structure/sewer_piece/cesspit/septic" = "public_health",
 		"/obj/item/weapon/paper_bin/empty" = "public_health",
 		"/obj/item/weapon/storage/bag/trash" = "public_health",
 		"/obj/structure/closet/crate/dumpster" = "public_health",
@@ -2250,7 +2252,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/catapult_ball" = "siege_engines",
 		"/obj/item/weapon/siegeladder" = "siege_engines",
 		"/obj/structure/catapult" = "siege_engines",
-		// --- steam_power (4) ---
+		// --- steam_power (5) ---
+		"/obj/structure/sewer_pump/steam" = "steam_power",
 		"/obj/structure/workshop_machine/steam_site/steam_shovel" = "steam_power",
 		"/obj/structure/workshop_machine/shear_legs/crane/steam" = "steam_power",
 		"/obj/structure/workshop_machine/trip_hammer/steam" = "steam_power",
@@ -2511,7 +2514,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/clothing/mask/gas/british" = "trench_warfare",
 		"/obj/item/clothing/mask/gas/german" = "trench_warfare",
 		"/obj/item/clothing/suit/b3" = "trench_warfare",
-		// --- utilities (8) ---
+		// --- utilities (9) ---
+		"/obj/structure/sewer_pump/electric" = "utilities",
 		"/obj/item/lightbulb" = "utilities",
 		"/obj/item/lightbulb/tube" = "utilities",
 		"/obj/item/weapon/telephone" = "utilities",
