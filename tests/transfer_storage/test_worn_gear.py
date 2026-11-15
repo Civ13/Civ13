@@ -82,17 +82,19 @@ class WornGearTests(unittest.TestCase):
         worn = proc(GEAR, '/proc/region_travel_worn_kind')
         self.assertLess(worn.index('region_travel_bag_kind(I)'), worn.index('region_travel_generic_kind(I)'))
         # A plain item with a name or colour of its own is not rebuilt by type alone.
-        self.assertIn('region_travel_generic_has_state(I)', proc(GEAR, '/proc/region_travel_held_kind'))
+        self.assertIn('return region_travel_generic_or_type(I)', proc(GEAR, '/proc/region_travel_held_kind'))
+        self.assertIn('return region_travel_generic_encode(R) || "type"', proc(GENERIC, '/proc/region_travel_generic_or_type'))
         self.assertIn('region_travel_generic_kind(I)', proc(GEAR, '/proc/region_travel_bag_blockers'))
 
     def test_whole_items_are_bounded_and_checked(self):
         record = proc(GENERIC, '/proc/region_travel_generic_record_valid')
-        for line in ('if(!(key in list("t", "v", "m", "r", "c"))) return FALSE',
+        for line in ('if(!(key in list("t", "v", "n", "m", "r", "c", "l", "p"))) return FALSE',
                      'if(!region_travel_generic_type_ok(path)) return FALSE',
                      'if(!region_travel_generic_field_ok(key) || !region_travel_generic_value_ok(fields[key])) return FALSE',
                      '!get_material_by_name(mats[key])',
-                     '!chemical_reagents_list[pair[1]]',
-                     'if(!region_travel_generic_record_valid(child, depth + 1)) return FALSE'):
+                     '!chemical_reagents_list[P[1]]',
+                     'if(!region_travel_generic_index_ok(at, children))',
+                     'if(!region_travel_generic_record_valid(child, depth + 1, count)) return FALSE'):
             self.assertIn(line, record)
         for field in ('"loc"', '"contents"', '"type"', '"vars"', '"key"', '"ckey"', '"screen_loc"'):
             self.assertIn(field, GENERIC.split('var/global/list/region_travel_generic_skip')[1].split(')')[0])
@@ -101,10 +103,13 @@ class WornGearTests(unittest.TestCase):
         capture = proc(GENERIC, '/proc/region_travel_generic_capture')
         self.assertIn('if(ismob(A)) return null', capture)
         self.assertIn('I.persistence_runtime_var(key)', capture)
+        # Temporary fields (process bookkeeping such as abandonment_index) never travel.
+        self.assertIn('!issaved(I.vars[key])', proc(GENERIC, '/proc/region_travel_generic_fields_of'))
+        self.assertIn('!issaved(I.vars[key])', proc(GENERIC, '/proc/region_travel_generic_set'))
 
     def test_parts_an_item_makes_itself_are_not_doubled(self):
         build = proc(GENERIC, '/proc/region_travel_generic_build')
-        self.assertIn('region_travel_generic_build(child, I, match)', build)
+        self.assertIn('region_travel_generic_build(child, I, match, I)', build)
         self.assertLess(build.index('fresh -= match'), build.index('qdel(A)'))
 
     def test_a_blocked_bag_names_what_to_take_out(self):

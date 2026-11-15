@@ -186,7 +186,10 @@ var/global/datum/region_carry_probe/region_carry_probe = new
 		for (var/obj/item/I in arrived.contents + D2.contents)
 			got += I
 		var/obj/item/clothing/suit/prehistoricfurcoat/newcoat = locate() in got
-		require(newcoat && newcoat.name == "Ada's pelt coat" && newcoat.icon_state == coat.icon_state, "coat came back as [newcoat ? "[newcoat.name]/[newcoat.icon_state]" : "nothing"]")
+		require(newcoat && newcoat.name == "Ada's pelt coat" && newcoat.icon_state == coat.icon_state, "coat came back as [newcoat ? "[newcoat.name]/[newcoat.icon_state]" : "nothing"], sent [coat.icon_state]: [kinds["suit"]]")
+		// The coat picks its colour as it is made, so its colour always travels.
+		var/list/coat_defaults = region_travel_generic_defaults[coat.type]
+		require(coat_defaults && coat_defaults["icon_state"] == "\[random]", "coat colour not seen as random: [coat_defaults ? coat_defaults["icon_state"] : "no samples"]")
 		// Dressed from the skin out: the leaves under the coat, the waterskin on them.
 		require(istype(arrived.w_uniform, /obj/item/clothing/under/leaves_skirt/au_naturel) && arrived.wear_suit, "arrived undressed: uniform [arrived.w_uniform], suit [arrived.wear_suit]")
 		require(locate(/obj/item/weapon/paddle) in got, "paddle missing")
@@ -202,6 +205,26 @@ var/global/datum/region_carry_probe/region_carry_probe = new
 		var/obj/item/weapon/storage/backpack/pack_basket/newinner = locate() in newbasket.contents
 		var/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/waterskin/newskin2 = newinner ? locate() in newinner.contents : null
 		require(newskin2 && abs(newskin2.reagents.get_reagent_amount("water") - 10) < 0.1, "basket in the basket lost its waterskin")
+		// A loaded gun travels loaded: links to what it holds are rebuilt.
+		var/obj/item/weapon/gun/projectile/pistol/glock17/loadedgun = new(T)
+		if (!loadedgun.ammo_magazine)
+			loadedgun.ammo_magazine = new /obj/item/ammo_magazine/glock17(loadedgun)
+		var/rounds_in = region_travel_ammo_count(loadedgun.ammo_magazine)
+		var/obj/item/weapon/gun/projectile/pistol/glock17/gunback = region_travel_make_worn(region_travel_worn_kind(loadedgun), 1, D2)
+		require(istype(gunback) && gunback.ammo_magazine && (gunback.ammo_magazine in gunback.contents) && region_travel_ammo_count(gunback.ammo_magazine) == rounds_in, "loaded gun came back without its magazine")
+		var/count_mags = 0
+		for (var/obj/item/ammo_magazine/M in gunback.contents)
+			count_mags++
+		require(count_mags == 1, "gun came back with [count_mags] magazines")
+		// Large numbers keep every digit; temporary bookkeeping stays behind.
+		var/obj/item/weapon/paddle/marked = new(T)
+		marked.value = 123456789
+		marked.abandonment_index = 77
+		var/obj/item/weapon/paddle/markedback = region_travel_make_worn(region_travel_worn_kind(marked), 1, D2)
+		require(markedback.value == 123456789 && !markedback.abandonment_index, "paddle came back worth [markedback.value], index [markedback.abandonment_index]")
+		// A field of the wrong class is skipped, not a failed arrival.
+		var/obj/item/weapon/paddle/odd = region_travel_make_generic("item:[json_encode(list("t" = "/obj/item/weapon/paddle", "v" = list("gender" = "x", "force" = "heavy", "name" = "odd paddle")))]", D2)
+		require(istype(odd) && odd.name == "odd paddle" && isnum(odd.force), "odd record broke the build")
 		// Nothing holding a creature, and no grab, ever travels.
 		var/mob/living/simple_animal/mouse/stowaway = new(skin2)
 		require(isnull(region_travel_generic_kind(inner)), "a bag holding a creature would travel")

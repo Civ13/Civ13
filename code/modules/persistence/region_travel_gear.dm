@@ -27,8 +27,8 @@
 /proc/region_travel_held_kind(obj/item/I)
 	var/kind = region_travel_item_kind(I)
 	// Rebuilding by type alone would lose a name, colour or material.
-	if(kind == "type" && region_travel_generic_has_state(I))
-		return region_travel_generic_kind(I)
+	if(kind == "type")
+		return region_travel_generic_or_type(I)
 	if(kind) return kind
 	return region_travel_loose_kind(I)
 
