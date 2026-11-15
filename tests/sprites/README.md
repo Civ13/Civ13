@@ -38,6 +38,8 @@ See [the audit and provenance](../../docs/sprite-audit.md). `run.py` compiles pr
 
 `create_carriages.py` owns the two carriage states (`simple_carriage`, `simple_carriage2`) of `icons/obj/vehicles/vehicles96x96.dmi`, leaving every other state in that sheet untouched, and `icons/obj/vehicles/carriage_fittings.dmi` (the harness drawn ahead of the carriage for each rank of the team and the lap rug or seat back over a seated rider). `--check` verifies the committed sheets, `--preview <png>` writes a review sheet with a team and riders laid out as `carriage.dm` does.
 
+`create_horses.py` owns the horses in `icons/mob/animal_64.dmi` - `horse` (bay), `horse2` (black), `horse3` (dun) and `horse4` (white), each with its `_dead` and `_riding` state - and the foals `foal`, `foal2`, `foal3` and `foal4` with their `_dead` states, appended to the same sheet; it leaves every other state untouched and in place. The `_riding` state is the overlay drawn over the rider: the head, chest and forelegs facing south, the croup, tail and hind legs facing north, nothing in the side views. Horses and foals stand with their hooves on the bottom row and their body centred on x = 29, so the rider offset in `horse.dm` still lands on the adult's back. It also owns `icons/obj/horseshoes.dmi` (`horseshoe`, `horseshoe_worn`). `--check` verifies the committed sheets, `--preview <png>` writes a 4x before and after sheet (`--before <dmi>` names the older sheet to compare against).
+
 No live server, player data, game instances or external-effect tests are involved. Constructors and overlay/worn/held rendering are outside this defaults inventory. Add meaningful dedicated checks for those behaviors when introducing dynamic graphics.
 
 ## Current Linux toolchain and historical fixtures
