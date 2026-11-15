@@ -63,5 +63,14 @@ class VehicleOffsetSources(unittest.TestCase):
         self.assertIn('key == "offset_mover"', RIDE)
         self.assertNotIn('spawn(', RIDE)
 
+    def test_carried_riders_make_no_footsteps(self):
+        turf = (ROOT / 'code/game/turfs/turf.dm').read_text(encoding='utf-8')
+        self.assertIn('!H.carried_by_vehicle()', turf)
+        carried = proc(RIDE, '/mob/living/human/proc/carried_by_vehicle(')
+        for needle in ('buckled', 'V.ontop', 'F.axis.moving', 'F.axis.transporting'):
+            self.assertIn(needle, carried)
+        for label in ('driver_makes_no_footsteps', 'walker_keeps_footsteps', 'moving_car_passenger_carried'):
+            self.assertIn(label, PROBE)
+
 if __name__ == '__main__':
     unittest.main()

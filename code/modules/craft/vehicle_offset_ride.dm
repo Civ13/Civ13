@@ -17,6 +17,7 @@
 	var/offset_drive = FALSE                        // TRUE for the vehicles that roll by pixels.
 	var/tmp/datum/vehicle_offset/single/offset_mover = null
 	var/tmp/offset_coast = 0                        // Pixels per tick still rolling after the throttle is off.
+	var/tmp/offset_last_tick = 0                    // world.time of the last pixel tick.
 
 /obj/structure/vehicle/motorcycle
 	offset_drive = TRUE
@@ -25,7 +26,7 @@
 	offset_drive = TRUE
 
 /obj/structure/vehicle/persistence_runtime_var(key)
-	return key == "offset_mover" || key == "offset_coast" || ..()
+	return key == "offset_mover" || key == "offset_coast" || key == "offset_last_tick" || ..()
 
 /obj/structure/vehicle/Destroy()
 	if (offset_mover)
@@ -71,14 +72,20 @@
 /obj/structure/vehicle/proc/vehicle_offset_tick()
 	var/datum/vehicle_offset/single/O = vehicle_offset_mover()
 	vehicle_offset_sync()
+	// Timers can fire a little later than one tick: cover the time that really
+	// passed, so the pace matches the tile loop. A first tick after a rest is one tick.
+	var/ticks = (world.time - offset_last_tick) / world.tick_lag
+	if (ticks < 1 || ticks > 4)
+		ticks = 1
+	offset_last_tick = world.time
 	var/speed = 0
 	if (moving && axis.currentspeed > 0)
-		speed = vehicle_offset_speed(vehicle_m_delay + 1)
-		offset_coast = speed
+		offset_coast = vehicle_offset_speed(vehicle_m_delay + 1)
+		speed = offset_coast * ticks
 	else if (offset_coast > 0)
 		// Stops within about half a tile at top speed: v*v / 2a = 16 px.
-		offset_coast = max(0, offset_coast - max(0.25, offset_coast * offset_coast / 32))
-		speed = offset_coast
+		offset_coast = max(0, offset_coast - max(0.25, offset_coast * offset_coast / 32) * ticks)
+		speed = offset_coast * ticks
 	if (!speed || !driver)
 		O.speed_x = 0
 		O.speed_y = 0
@@ -107,3 +114,20 @@
 	// Still in gear, or still rolling after the gear came out.
 	if (!QDELETED(src) && (moving || offset_coast > 0))
 		movementloop()
+
+// TRUE while a vehicle carries this person: seated or driving, aboard a
+// one-object vehicle, or standing on a moving frame vehicle.
+// Carried steps make no footstep sounds; the engine has its own.
+/mob/living/human/proc/carried_by_vehicle()
+	if (buckled || driver || driver_vehicle)
+		return TRUE
+	var/turf/T = loc
+	if (!istype(T))
+		return FALSE
+	for (var/obj/structure/vehicle/V in T)
+		if (src in V.ontop)
+			return TRUE
+	for (var/obj/structure/vehicleparts/frame/F in T)
+		if (F.axis && F.axis.moving && (src in F.axis.transporting))
+			return TRUE
+	return FALSE
