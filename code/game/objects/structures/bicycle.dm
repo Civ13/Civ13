@@ -283,6 +283,8 @@
 		return FALSE
 	H.stats["stamina"][1] = max(0, H.stats["stamina"][1] - cost)
 	H.forceMove(target)
+	// Riding onto a map edge the land carries on beyond (region_edge.dm).
+	H.region_edge_ride()
 	for (var/atom/movable/member in lease.members)
 		member.carriage_glide_step = null
 	update_icon()
