@@ -459,6 +459,68 @@
 	qdel(other)
 	dressmaking_ci_clear(site)
 
+// Minor alterations: a few re-dyed or swapped parts, never a new garment.
+/proc/dressmaking_ci_alterations(mob/living/human/handle_ci/dress_ci/H, turf/site, datum/save_epoch)
+	dressmaking_ci_clear(site)
+	var/obj/item/clothing/under/tailored/G = new(H)
+	G.design_body = "made_tunic"
+	G.design_colors = "#ffffff"
+	G.design_pieces = tailoring_pieces_text(tailoring_pieces("made_tunic", null))
+	G.design_fabric = "cloth"
+	G.design_name = "Sunday best"
+	G.design_maker = "Ada"
+	G.tailoring_refresh()
+	var/plain = G.design_pieces
+	var/striped = tailoring_set_piece("made_tunic", plain, "Pattern", "Stripes")
+	var/sleeved = tailoring_set_piece("made_tunic", plain, "Sleeves", "Long")
+	var/busy = tailoring_set_piece("made_tunic", striped, "Neckline", "V neck")
+	dressmaking_ci_expect(striped != plain && sleeved != plain && busy != striped, "the alteration fixture's pieces exist")
+	dressmaking_ci_expect(tailoring_alteration_changes("made_tunic", "#ffffff", plain, "#3e5a86", plain) == 1 && tailoring_alteration_changes("made_tunic", "#ffffff", plain, "#3e5a86", busy) == 3 && !tailoring_alteration_changes("made_tunic", "#ffffff", plain, "#FFFFFF", plain), "each re-dyed or swapped part counts once")
+	dressmaking_ci_expect(!tailoring_alteration_problem(H, G, "#3e5a86", striped) && findtext(tailoring_alteration_problem(H, G, "#3e5a86", busy), "more than a minor alteration") && findtext(tailoring_alteration_problem(H, G, "#ffffff", sleeved), "more fabric") && findtext(tailoring_alteration_problem(H, G, "#ffffff", plain), "Nothing") && tailoring_alteration_problem(H, G, "red", plain) && tailoring_alteration_problem(H, H, "#3e5a86", plain), "only small, fabric-free changes are alterations")
+	var/obj/item/tailoring_project/dress_ci/P = new(H)
+	P.fabric = 2
+	H.l_hand = P
+	H.r_hand = G
+	var/covered = G.body_parts_covered
+	var/old_type = G.type
+	P.wait_mode = "cancel"
+	dressmaking_ci_expect(!P.sew_alteration(H, site, save_epoch, G, "#3e5a86", striped) && G.design_colors == "#ffffff" && P.fabric == 2, "an interrupted alteration costs nothing")
+	P.wait_mode = "complete"
+	dressmaking_ci_expect(!P.sew_alteration(H, site, save_epoch, G, "#3e5a86", busy) && !P.sew_alteration(H, site, save_epoch, G, "#ffffff", sleeved) && G.design_pieces == plain && P.fabric == 2, "a redesign is refused")
+	P.fabric_kind = "leather"
+	dressmaking_ci_expect(!P.alteration_material_fits(G) && !P.sew_alteration(H, site, save_epoch, G, "#3e5a86", striped) && P.fabric == 2, "the project must be the garment's material")
+	P.fabric_kind = "cloth"
+	H.r_hand = null
+	G.forceMove(site)
+	dressmaking_ci_expect(!P.sew_alteration(H, site, save_epoch, G, "#3e5a86", striped) && P.fabric == 2, "the garment must be in the tailor's other hand")
+	G.forceMove(H)
+	H.r_hand = G
+	dressmaking_ci_expect(P.sew_alteration(H, site, save_epoch, G, "#3e5a86", striped) && P.fabric == 1 && G.design_pieces == striped && copytext(G.design_colors, 1, 8) == "#3e5a86", "an alteration takes one sheet")
+	dressmaking_ci_expect(G.type == old_type && G.design_body == "made_tunic" && G.name == "Sunday best" && G.design_maker == "Ada" && G.design_fabric == "cloth" && G.body_parts_covered == covered && length(G.tailoring_overlays) == length(tailoring_layers("made_tunic", G.design_colors, FALSE, striped, "cloth")), "an altered garment keeps its body, name, designer and cover")
+	dressmaking_ci_expect(!P.sew_alteration(H, site, save_epoch, G, G.design_colors, striped) && P.fabric == 1, "no change costs nothing")
+	H.l_hand = null
+	H.r_hand = null
+	qdel(P)
+	qdel(G)
+	// Leather boots take a leather project; the boots stay boots.
+	var/obj/item/clothing/shoes/leatherboots/tailored/B = new(H)
+	B.design_body = "made_boots"
+	B.design_colors = "#ffffff"
+	B.design_pieces = tailoring_pieces_text(tailoring_pieces("made_boots", null))
+	B.design_fabric = "leather"
+	B.tailoring_refresh()
+	var/obj/item/tailoring_project/dress_ci/L = new(H)
+	L.fabric_kind = "leather"
+	L.fabric = 1
+	H.l_hand = L
+	H.r_hand = B
+	var/laced = tailoring_set_piece("made_boots", B.design_pieces, "Fastening", "Laced")
+	dressmaking_ci_expect(L.sew_alteration(H, site, save_epoch, B, "#6e4c30", laced) && B.design_pieces == laced && B.type == /obj/item/clothing/shoes/leatherboots/tailored && L.gcDestroyed && H.l_hand != L, "boots are altered from leather and the last sheet uses up the project")
+	H.l_hand = null
+	H.r_hand = null
+	qdel(B)
+	dressmaking_ci_clear(site)
+
 /proc/dressmaking_ci_write_book(path, list/designs)
 	var/savefile/S = new(path)
 	S["designs"] << designs
@@ -814,6 +876,7 @@
 	dressmaking_ci_headwear(H, site, save_epoch)
 	dressmaking_ci_accessories(H, site, save_epoch)
 	dressmaking_ci_bag_styles(H, site, save_epoch)
+	dressmaking_ci_alterations(H, site, save_epoch)
 	qdel(H)
 	dressmaking_ci_clear(site)
 	map_storage.clear_bookkeeping()
