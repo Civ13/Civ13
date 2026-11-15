@@ -85,7 +85,7 @@ def _routes(store, radio):
                                                  body.get('reset') in (True, 1), body.get('mainland'), body.get('train_locks'), body.get('train_decisions'),
                                                  body.get('lands'), body.get('land_done'), body.get('chart'),
                                                  body.get('chart_done'), body.get('colony_grants'),
-                                                 body.get('nations'), body.get('nation_results')),
+                                                 body.get('nations'), body.get('nation_results'), body.get('start_region')),
         # Land stages (docs/land-stages.md): DM reads /lands, admins queue /land/set.
         '/lands': lambda body: store.lands(),
         '/land/sample': lambda body: store.land_sample(body.get('players'), body.get('living'), body.get('colonies')),

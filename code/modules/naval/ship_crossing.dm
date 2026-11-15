@@ -488,6 +488,10 @@
 	if (!places.len)
 		to_chat(H, SPAN_WARNING("No land across the sea is known from here."))
 		return
+	reason = landfall_rest_refusal()
+	if (reason)
+		to_chat(H, SPAN_WARNING(reason))
+		return
 	var/choice = WWinput(H, "Leave these waters with everyone and everything aboard? Your crew go with her and carry on there.", craft.name, "Stay", places + list("Stay"))
 	if (!choice || choice == "Stay" || !places[choice] || get_dist(H, src) > 1)
 		return
@@ -638,6 +642,8 @@ var/global/list/sea_crossing_tillers = list()
 			pivot = sea_crossing_anchorage(offsets, incoming ? sea_crossing_sides(P["from"]) : cardinal)
 		if (pivot)
 			tiller = sea_crossing_build(R, pivot, P["voyage"])
+		if (tiller && incoming)
+			tiller.landfall_at = world.time // her crew rest before the next voyage (ship_voyage.dm)
 		if (tiller)
 			log_game("Sea crossing: the [R["name"]] [incoming ? "made landfall" : "came back"] at [pivot.x],[pivot.y],[pivot.z] (voyage [P["voyage"]]).")
 		else

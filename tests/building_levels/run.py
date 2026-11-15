@@ -21,6 +21,13 @@ STANDING = 'code/modules/multiz/standing_building_level.dm'
 STANDING_CONTROLS = {
     'standing-import': ('\tif (persistence_startup_recovery_status)\n\t\treturn FALSE\n', '', 'FAIL: startup import pending: wait'),
 }
+# Mutations of the dug cave source, run with --cave or --cave-first.
+CAVE = 'code/modules/multiz/dug_underground.dm'
+CAVE_CONTROLS = {
+    'cave-step-over': ('\t\treturn z - 1 == dug ? z - 2 : z - 1\n', '\t\treturn z - 1 == dug ? 1 : z - 1\n',
+                       'FAIL: the second storey stands on the first, over the cave'),
+    'cave-roof-count': ('\treturn base_z + (dug_underground_z() ? 1 : 0)\n', '\treturn base_z\n', 'FAIL: storey 4 is within the roof limit'),
+}
 CONTROLS = {
     'lighting-gravity': ('\t// Lighting renderers belong to their turf; they are not falling cargo.\n\tif (istype(A, /atom/movable/lighting_overlay) || istype(A, /atom/movable/lighting_fullbright))\n\t\treturn\n', '', 'FAIL: lighting renderer stays on upper level'),
     'removal': ('\t\tqdel(C)', '\t\treturn', 'FAIL: roof removal removes floor'),
@@ -62,11 +69,21 @@ def standing_source_for(control):
     return source
 
 
+def cave_source_for(control):
+    source = (ROOT / CAVE).read_text(encoding='utf-8')
+    if control:
+        old, new, _ = CAVE_CONTROLS[control]
+        if source.count(old) != 1:
+            raise RuntimeError('Cave mutation target missing or ambiguous')
+        source = source.replace(old, new, 1)
+    return source
+
+
 def main():
     parser = argparse.ArgumentParser(__doc__)
     parser.add_argument('--byond-bin', type=Path)
     parser.add_argument('--output', type=Path)
-    parser.add_argument('--negative-control', choices=[*CONTROLS, *STANDING_CONTROLS])
+    parser.add_argument('--negative-control', choices=[*CONTROLS, *STANDING_CONTROLS, *CAVE_CONTROLS])
     parser.add_argument('--source-check', action='store_true')
     parser.add_argument('--lighting-gravity', action='store_true',
                         help='Actual lighting startup and renderer/item/mob sky entry; no client rendering')
@@ -76,12 +93,25 @@ def main():
                         help='Standing building level: added only after the startup import settles')
     parser.add_argument('--allocation-interleave', action='store_true',
                         help='Diagnostic six-tick pause after native expansion; not unadapted timing')
+    parser.add_argument('--cave', action='store_true',
+                        help='Dig-down cave beside building levels, standing level first')
+    parser.add_argument('--cave-first', action='store_true',
+                        help='Dig-down cave beside building levels, cave dug first')
     args = parser.parse_args()
+    cave = args.cave or args.cave_first
+    if cave and (args.cave and args.cave_first or args.standing or args.lighting_gravity or args.lighting_roof
+                 or args.allocation_interleave or args.negative_control not in (None, *CAVE_CONTROLS)):
+        parser.error('--cave and --cave-first run on their own, with cave controls only')
+    if args.negative_control in CAVE_CONTROLS and not cave:
+        parser.error('Cave controls run only with --cave or --cave-first')
+    if args.negative_control == 'cave-step-over' and args.cave_first:
+        # With the cave directly over the surface the old rule gives the same answer.
+        parser.error('cave-step-over needs the cave between two open-air levels: use --cave')
     if args.lighting_gravity and args.lighting_roof:
         parser.error('Choose one focused lighting probe')
     if args.standing and (args.lighting_gravity or args.lighting_roof or args.allocation_interleave):
         parser.error('--standing runs on its own')
-    if (args.negative_control in STANDING_CONTROLS) != bool(args.standing and args.negative_control):
+    if not cave and (args.negative_control in STANDING_CONTROLS) != bool(args.standing and args.negative_control):
         parser.error('Standing controls run only with --standing')
     if args.allocation_interleave and not args.lighting_roof:
         parser.error('--allocation-interleave requires --lighting-roof')
@@ -91,13 +121,16 @@ def main():
         parser.error('Use only lighting-gravity control with this probe')
     if args.lighting_roof and args.negative_control and not args.allocation_interleave:
         parser.error('Roof negative control requires explicit diagnostic --allocation-interleave')
-    probe = ('tests/building_levels/standing_probe.dm' if args.standing else
+    probe = ('tests/building_levels/cave_probe.dm' if cave else
+             'tests/building_levels/standing_probe.dm' if args.standing else
              'tests/building_levels/lighting_gravity_probe.dm' if args.lighting_gravity else
              'tests/building_levels/lighting_roof_probe.dm' if args.lighting_roof else
              'tests/building_levels/probe.dm')
     if args.source_check:
         for control in (None, *CONTROLS):
             source_for(control)
+        for control in CAVE_CONTROLS:
+            cave_source_for(control)
         for control in STANDING_CONTROLS:
             standing_source_for(control)
             if args.lighting_roof:
@@ -115,9 +148,9 @@ def main():
     flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
     prefix = '.building_probe_' + uuid.uuid4().hex
     generated = [ROOT / (prefix + suffix) for suffix in
-                 ('.dme', '_world.dm', '_globals.dm', '_building.dm', '.dmb', '.rsc', '_standing.dm')]
+                 ('.dme', '_world.dm', '_globals.dm', '_building.dm', '.dmb', '.rsc', '_standing.dm', '_cave.dm')]
     commit = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip()
-    paths = [CORE, STANDING, 'civ13.dme', 'tests/new_z_budget/fixture_admission.dm', 'code/modules/multiz/world_z_budget.dm', 'code/game/objects/roof_stuff.dm',
+    paths = [CORE, STANDING, CAVE, 'civ13.dme', 'tests/new_z_budget/fixture_admission.dm', 'code/modules/multiz/world_z_budget.dm', 'code/game/objects/roof_stuff.dm',
              'code/game/objects/covers.dm', 'code/game/objects/covers_types/cover_walltypes.dm',
              'code/game/objects/items/stacks/stack.dm', 'code/game/turfs/floor_attackby.dm',
              'code/game/turfs/flooring/flooring_premade.dm',
@@ -148,7 +181,9 @@ def main():
             raise RuntimeError('Controller isolation marker changed')
         generated[2].write_text(globals_source.replace(marker, marker + '\treturn\n', 1), encoding='utf-8')
         standing_control = args.negative_control if args.negative_control in STANDING_CONTROLS else None
-        generated[3].write_text(source_for(None if standing_control else args.negative_control, args.allocation_interleave), encoding='utf-8')
+        cave_control = args.negative_control if args.negative_control in CAVE_CONTROLS else None
+        generated[3].write_text(source_for(None if standing_control or cave_control else args.negative_control, args.allocation_interleave), encoding='utf-8')
+        generated[7].write_text(cave_source_for(cave_control), encoding='utf-8')
         generated[6].write_text(standing_source_for(standing_control), encoding='utf-8')
         source = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
         source = source.replace('code\\world.dm', generated[1].name)
@@ -162,8 +197,13 @@ def main():
         if source.count(standing_include) != 1:
             raise RuntimeError('Standing level include changed')
         source = source.replace(standing_include, '#include "' + generated[6].name + '"')
+        cave_include = '#include "code\\modules\\multiz\\dug_underground.dm"'
+        if source.count(cave_include) != 1:
+            raise RuntimeError('Dug cave include changed')
+        source = source.replace(cave_include, '#include "' + generated[7].name + '"')
         source = re.sub(r'^#include ".*\.dmm".*$', '', source, flags=re.M)
-        generated[0].write_text(source + '\n#include "tests/new_z_budget/fixture_admission.dm"\n#include "' + probe + '"\n', encoding='utf-8')
+        order = '#define CAVE_PROBE_CAVE_FIRST\n' if args.cave_first else ''
+        generated[0].write_text(source + '\n#include "tests/new_z_budget/fixture_admission.dm"\n' + order + '#include "' + probe + '"\n', encoding='utf-8')
         build = subprocess.run([str(compiler), '-max_errors', '0', str(generated[0])],
                                cwd=ROOT, capture_output=True, text=True, timeout=180, creationflags=flags)
         output = build.stdout + build.stderr
@@ -190,8 +230,8 @@ def main():
                         diagnostics += path.read_text(encoding='utf-8', errors='replace')
             (args.output / 'daemon.log').write_text(result.stdout + result.stderr, encoding='utf-8')
             actual = (work / 'result.txt').read_text(encoding='utf-8').strip() if (work / 'result.txt').exists() else ''
-            controls = {**CONTROLS, **STANDING_CONTROLS}
-            expected = controls[args.negative_control][2] if args.negative_control else ('PASS: standing building level' if args.standing else 'PASS: lighting gravity' if args.lighting_gravity else 'PASS: first roof lighting' if args.lighting_roof else 'PASS: linked building levels')
+            controls = {**CONTROLS, **STANDING_CONTROLS, **CAVE_CONTROLS}
+            expected = controls[args.negative_control][2] if args.negative_control else ('PASS: cave with building levels' if cave else 'PASS: standing building level' if args.standing else 'PASS: lighting gravity' if args.lighting_gravity else 'PASS: first roof lighting' if args.lighting_roof else 'PASS: linked building levels')
             if args.lighting_roof and args.negative_control:
                 expected = 'FAIL: distant unroofed tile keeps one lighting overlay'
             if result.returncode or actual != expected or any(marker in diagnostics.lower() for marker in ('runtime error:', 'bug:', '## error:')):

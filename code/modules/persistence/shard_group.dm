@@ -48,8 +48,12 @@ var/global/datum/shard_group/shard_group = new
 	var/name = null
 	var/kind = null
 	var/address = null
-	// The region new characters start in. Every other region follows its epoch.
+	// The group's main region: every other region follows its epoch.
 	var/mainland = null
+	// Where new characters start, and fallen ones whose bed does not keep their
+	// home (the host's start_region, the mainland unless it names another). The
+	// world directory's answer (land_stages_refresh) keeps it current.
+	var/start_region = null
 	// id -> list(name, kind, address, state, players, map, checked)
 	var/list/peers = list()
 	var/list/order = list()
@@ -143,6 +147,11 @@ var/global/datum/shard_group/shard_group = new
 		if(!(settings["mainland"] in found))
 			return refuse("mainland must be one of the region ids")
 		mainland = settings["mainland"]
+	start_region = mainland
+	if(!isnull(settings["start_region"]))
+		if(!(settings["start_region"] in found))
+			return refuse("start_region must be one of the region ids")
+		start_region = settings["start_region"]
 	group = settings["group"]
 	region = self["id"]
 	name = self["name"]
@@ -160,6 +169,13 @@ var/global/datum/shard_group/shard_group = new
 	enabled = TRUE
 	last_error = null
 	return TRUE
+
+// A region's display name: this one, a peer's, or the id when unknown.
+/datum/shard_group/proc/region_name(id)
+	if(id == region)
+		return name
+	var/list/peer = peers[id]
+	return peer ? peer["name"] : id
 
 // What a peer, the host tool or a player sees of this region.
 /datum/shard_group/proc/describe()
@@ -509,7 +525,7 @@ var/global/datum/shard_group/shard_group = new
 	if(!order.len)
 		lines += "<p>This is the only region in the group.</p>"
 	else
-		lines += "<p>Your character lives in one region. New characters start on the mainland and reach the others by travelling a trail.</p>"
+		lines += "<p>Your character lives in one region. New characters start in [html_encode(region_name(start_region))] and reach the others by travelling.</p>"
 	var/checked = last_poll ? "Checked [round((world.time - last_poll) / 10)] seconds ago." : "Not checked yet."
 	lines += "<p><a href='byond://?region_refresh=1'>Refresh</a> [checked]</p>"
 	return jointext(lines, "")

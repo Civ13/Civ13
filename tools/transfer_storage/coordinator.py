@@ -6,8 +6,11 @@ and decision. Losing its file holds in-flight trains for reviewed recovery;
 re-enrolling the directory does not recreate train commit authority.
 
 The home ledger says which region each account may play in. With a mainland
-region, a new account and a player whose character died start there, and
-reach the other regions only by travel; without one, the first claim wins. Regions queue
+region, a new account and a player whose character died (with no bed keeping
+their home) start in the start region, the mainland unless the host names
+another (start_region), and reach the other regions only by travel; without
+a mainland, the first claim wins. The mainland stays the group's era source
+and land-stage reference either way. Regions queue
 account requests in their agents; each pass decides them in a fixed order and
 sends every agent the ledger rows it has not seen. The database is durable authority: after loss, restore it rather than
 resetting homes. Explicit bootstrap is only for a genuinely new group.
@@ -147,9 +150,12 @@ def read_lands(path, mainland, now=None):
 
 
 class Coordinator(TrainCustody):
-    def __init__(self, path, group, mainland=None, bootstrap_new_group=False, slots=(), expeditions=None):
+    def __init__(self, path, group, mainland=None, bootstrap_new_group=False, slots=(), expeditions=None, start_region=None):
         self.group = group
         self.mainland = mainland
+        # Where new characters (and fallen ones with no bed keeping their home)
+        # start: the mainland unless the host chose another region.
+        self.start_region = start_region or mainland
         self.db = sqlite3.connect(path, isolation_level=None)
         self.db.execute('PRAGMA journal_mode=WAL')
         self.db.execute('PRAGMA synchronous=FULL')
@@ -318,7 +324,7 @@ class Coordinator(TrainCustody):
         if op in ('reveal', 'scout') and owner_valid(owner):
             return bool(self.chart.reveal(owner, x, y))
         if op == 'course' and owner_valid(owner):
-            return self.chart.set_course(request.get('voyage'), owner, x, y, origin) is not None
+            return self.chart.set_course(request.get('voyage'), owner, x, y, origin, by=admin) is not None
         # A land's own world, for its crew: x and y name the land it holds, as a check.
         found = self.chart.land_in(origin)
         if op not in ('settle', 'claim', 'unclaim', 'abandon') or not found or found[:2] != (x, y):
@@ -338,10 +344,10 @@ class Coordinator(TrainCustody):
         return False
 
     def land_lost(self, region):
-        """An abandoned land: whoever was homed there starts on the mainland again,
-        and the slot's next land starts unexplored."""
+        """An abandoned land: whoever was homed there starts in the start region
+        again, and the slot's next land starts unexplored."""
         for (ckey,) in self.db.execute('SELECT ckey FROM home WHERE region = ?', (region,)).fetchall():
-            self._set_home(ckey, self.mainland)
+            self._set_home(ckey, self.start_region)
         self.db.execute('DELETE FROM land WHERE region = ?', (region,))
 
     def decide(self, source, request):
@@ -359,10 +365,10 @@ class Coordinator(TrainCustody):
         elif op == 'depart' and home in (None, source) and region != source:
             self._set_home(ckey, region)
         elif op == 'release' and home == source:
-            # A death sends the player back to the mainland, not anywhere.
-            if home != self.mainland:
-                self._set_home(ckey, self.mainland)
-        elif op == 'claim' and home is None and region == source and self.mainland in (None, source):
+            # A death sends the player back to the start region, not anywhere.
+            if home != self.start_region:
+                self._set_home(ckey, self.start_region)
+        elif op == 'claim' and home is None and region == source and self.start_region in (None, source):
             self._set_home(ckey, source)
         elif op == 'colony' and home in (None, source) and region != source and self.colony_start_allowed(
                 source, region, request.get('faction')):
@@ -568,7 +574,7 @@ class Coordinator(TrainCustody):
             rows = [{'ckey': c, 'region': r} for c, r in self.db.execute(
                 'SELECT ckey, region FROM home WHERE rev > ? ORDER BY rev', (since,))]
             body = {'epoch': epoch, 'rev': rev, 'rows': rows, 'reset': since == 0,
-                    'mainland': self.mainland, 'train_locks': self.train_locks(),
+                    'mainland': self.mainland, 'start_region': self.start_region, 'train_locks': self.train_locks(),
                     'train_decisions': lease_decisions.get(name, []),
                     'lands': lands, 'land_done': land_done.get(name, []),
                     'chart_done': chart_done.get(name, []),
@@ -705,7 +711,9 @@ def main(argv=None):
     parser.add_argument('--group', required=True)
     parser.add_argument('--region', action='append', default=[], metavar='NAME=URL=TOKEN_FILE',
                         help='enroll a loopback agent; repeatable')
-    parser.add_argument('--mainland', help='region where new and dead characters start')
+    parser.add_argument('--mainland', help="the group's main region: era source and land-stage reference")
+    parser.add_argument('--start-region', help='region where new characters start, and fallen ones with no bed '
+                        'keeping their home (default: the mainland)')
     parser.add_argument('--interval', type=float, default=5.0, help='seconds between relay passes')
     parser.add_argument('--radio-interval', type=float, default=1.0, help='seconds between radio passes')
     parser.add_argument('--bootstrap-new-group', action='store_true',
@@ -732,7 +740,7 @@ def main(argv=None):
         with open(parts[2], encoding='utf-8') as f:
             enrollments.append((parts[0], parts[1], f.read().strip()))
     coordinator = Coordinator(args.db, args.group, args.mainland, args.bootstrap_new_group,
-                              [s for s in args.slots.split(',') if s], args.expeditions)
+                              [s for s in args.slots.split(',') if s], args.expeditions, args.start_region)
     if args.chart is not None or args.chart_reveal or args.chart_reroll or args.chart_pin:
         try:
             chart_cli(parser, coordinator.chart, args)

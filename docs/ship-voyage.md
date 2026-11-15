@@ -38,6 +38,28 @@ She drops anchor and lies off the coast under way: the tiller only tells how
 long is left and offers **Turn back**. Whoever is aboard at landfall sails
 with her; anyone who steps off is left behind.
 
+## No admin decides: the limits instead
+
+Any crew may sail for any land its chart shows, at any time. What keeps lands
+from piling up and worlds from staying awake is in the rules themselves:
+
+| Rule | Value | Where |
+| --- | --- | --- |
+| Undecided lands a chart owner (or the account at the tiller) may have open | 1 | `WorldChart.open_refusal` |
+| Wait between opening new lands, for the owner and the account | 3 hours (`OPEN_COOLDOWN_SECONDS`) | `world_chart.py` |
+| An undecided land with nobody on it is abandoned | after 7 days, or after 1 day when every slot is taken and a crew asks for a new land (`PRESSURE_SECONDS`) | `WorldChart.expire`, `make_room` |
+| A ship lies at anchor after a landfall before another voyage or crossing | 15 minutes (`VOYAGE_LANDFALL_REST`); scouting is free | `ship_voyage.dm` |
+| An empty, saved land's world | shut down to disk after the idle wait (`freeze_cold`), not kept frozen in memory | [slots](expedition-slots.md#an-empty-land-sleeps-on-disk) |
+
+Lands already open (her own undecided land, any settled or claimed land) can
+always be sailed for; only opening a new one waits. A land the host could
+not build costs its crew no wait.
+
+The landfall rest equals the host's idle wait before an empty world goes to
+sleep (`freeze_idle_minutes`, 15). The world a crew left empties, saves at
+once and is asleep by the time the same crew can leave the next one, so a crew
+hopping from land to land keeps two worlds awake at most.
+
 ## Sea routes between the continents
 
 Code: `code/modules/naval/sea_lanes.dm`. The continents of the region group need
@@ -46,7 +68,8 @@ no world chart: each has a place on one shared layout, `continent_layout`
 water along them, best first). The voyage between two coastal continents takes
 the larger of the two distances in tiles. Today: North America (0,6), South
 America (2,0), Gaia (6,7), Europe (11,9), Desert (12,4), Jungle (13,1), Asia
-(18,8). Desert and Jungle have no sea coast, so ships cannot reach them. The ids
+(18,8). The Desert's sea is off its north edge and the Jungle's off its west edge
+(docs/map-coasts.md). The ids
 are the host's region ids in earth.json.
 
 **Set out on a voyage** lists every other coastal continent whose world is in
@@ -88,8 +111,11 @@ When her time is up she looks at the course on the chart:
   as **Leave these waters** does, on the same voyage id.
 - Not answered, still `ASSIGNED`, or the world not answering: "The coast is not
   yet in sight." She waits, for up to 30 minutes past her time, then turns back.
-- `REFUSED` (no free slot, the land could not be made, the chart does not show
-  it): she turns back at once with the reason.
+- `REFUSED` (no free slot, a new land opened too lately or another still
+  undecided, the land could not be made, the chart does not show it): she turns
+  back with the reason. She asks after her course about once a minute under
+  way, so a refusal reaches her within a minute or two of setting out, with no
+  rations eaten.
 
 A voyage is not saved: a world restarted mid-voyage finds her lying off the
 coast where she set out.
@@ -106,7 +132,7 @@ A land opened for a ship is undecided until its crew choose
 | **Claim** | a faction leader plants the colony charter (`colony_charter.dm`); one claim per faction, one faction per land | tile `CLAIMED`, stage `COLONY`; the world directory keeps `chart_claim` |
 | **Abandon** | the captain, asked as she leaves (Leave these waters or a voyage onward) | tile `LOST` for good; homes there go to the mainland; the host saves, stops and archives the slot (`<root>/expeditions/abandon/<slot>.json`) and frees it |
 | **Give up the claim** | the colony's leader, at its charter | charter down, tile `SETTLED`, stage `FRONTIER`; the faction may claim another land |
-| nobody chooses | the land waits | abandoned after 7 days with no players there (the coordinator's land samples) |
+| nobody chooses | the land waits, and its crew can open no other new land | abandoned after 7 days with no players there (the coordinator's land samples), or after 1 day when another crew needs the slot |
 
 A settled land can still be claimed. The colony's leader can give the claim
 up at its charter (op `unclaim`): the charter comes down, the tile goes back to

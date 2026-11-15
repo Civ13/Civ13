@@ -310,7 +310,10 @@ class ObserverBuckets(unittest.TestCase):
         self.assertIn('if (ecology_observer_near(T))\n\t\treturn FALSE', resting)
         self.assertNotIn('ecology_observer_turfs', resting)
         near = body(ECOLOGY, '/proc/ecology_observer_near(')
-        self.assertIn('max(abs(O.x - T.x), abs(O.y - T.y)) <= ECOLOGY_AWAKE_RANGE', near)
+        self.assertIn('var/target_x = T.x\n\t\tvar/target_y = T.y', near)
+        self.assertIn('round((target_x - 1) / ECOLOGY_AWAKE_RANGE)', near)
+        self.assertIn('round((target_y - 1) / ECOLOGY_AWAKE_RANGE)', near)
+        self.assertIn('max(abs(O.x - target_x), abs(O.y - target_y)) <= ECOLOGY_AWAKE_RANGE', near)
         self.assertIn('for (var/z = max(1, T.z - 1), z <= min(ecology_observer_cells.len, T.z + 1), z++)', near)
         self.assertIn('var/rows = ecology_observer_rows', near)
         self.assertIn('ecology_observer_rows = rows', refresh_src := body(ECOLOGY, '/proc/ecology_refresh_observers('))
@@ -330,6 +333,24 @@ class ObserverBuckets(unittest.TestCase):
                 x, y, z = rng.randint(1, max_x), rng.randint(1, max_y), rng.randint(1, max_z)
                 old = any(abs(oz - z) <= 1 and max(abs(ox - x), abs(oy - y)) <= 32 for ox, oy, oz in observers)
                 self.assertEqual(old, cell_near(observers, x, y, z, max_x, max_y, max_z))
+
+    def test_observer_range_boundaries_and_negative_control(self):
+        x, y, z = 50, 50, 3
+        cases = [
+            ([(82, 50, 3)], True),   # exactly 32 tiles
+            ([(83, 50, 3)], False),  # one tile beyond range
+            ([(18, 18, 2)], True),   # diagonal and one level below
+            ([(50, 50, 4)], True),   # one level above
+            ([(50, 50, 5)], False),  # two levels above
+            ([], False),
+        ]
+        for observers, expected in cases:
+            with self.subTest(observers=observers):
+                self.assertEqual(expected, cell_near(observers, x, y, z, 100, 100, 5))
+        # A strict range comparison wrongly excludes the first boundary case.
+        ox, oy, oz = cases[0][0][0]
+        self.assertFalse(abs(oz - z) <= 1 and max(abs(ox - x), abs(oy - y)) < 32)
+        self.assertTrue(cell_near(cases[0][0], x, y, z, 100, 100, 5))
 
     def test_animals_skip_the_surface_lookup_without_radiation(self):
         rad = body(ANIMAL, '/mob/living/simple_animal/handle_mutations_and_radiation(')

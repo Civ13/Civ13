@@ -11,10 +11,24 @@ may add, and restore, exactly one cave level below its single compiled level
 while the whole world stays within Gaia's measured live profile (500 x 350 x 2 =
 350,000 cells, `NEW_Z_MEASURED_CELLS`). A map that opts into open-air
 building levels (`building_levels = N`, see `code/modules/multiz/building_admission.dm`;
-Gaia, Asia, Jungle and Desert set 4) may add, and restore, up to N roof-added levels, at most four, while
+Gaia, Europe, Asia, Jungle and Desert set 4) may add, and restore, up to N roof-added levels, at most four, while
 the world stays within 1,050,000 cells (`NEW_Z_BUILDING_MEASURED_CELLS`, Gaia's
 500 x 350 x 6). A level is added only when a roof is built on the highest
 existing one, so the world grows only as high as something stands.
+A map may opt into both (Europe and Asia): the cave is then one more added
+level beside the building levels, wherever it falls among them, because BYOND
+only appends levels. The admission keeps Gaia's measured shape: the surface and
+the cave, the two full planes, must fit 350,000 cells, and every plane together
+must fit 1,050,000. The cave counts as a ground plane, so it does not use up
+one of the map's roof levels. `multiz_level_above` and `multiz_level_below`
+step over the cave, so storeys stack on the surface whatever their level
+numbers. `tests/building_levels/run.py --cave` and `--cave-first` run both
+orders in a fixture world. Measured 2026-11-15 on Linux 516.1688 with the
+full Europe map and no players (limit 3,072 MB): the standing level, then the
+cave (65 s to generate, +106 MB), then three more empty storeys (+7 MB); the
+six-level world saved in 70 s with a peak of 945 MB, and a restart restored
+all six levels with the cave at level 3 and a peak of 1,059 MB, with no runtime
+error. Built-up storeys and players were not measured.
 A one-level map with `building_level_standing` (the Americas regions) may also
 add, and restore, its one standing open-air level while the two planes stay
 within 2,100,000 cells (`NEW_Z_STANDING_MEASURED_CELLS`); nothing above that

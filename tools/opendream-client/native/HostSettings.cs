@@ -67,6 +67,47 @@ public static class HostSettings {
         return followed;
     }
 
+    // Start region: where new characters start, and fallen ones whose bed does not keep their home (the group
+    // config's start_region; shard_group.py restarts the group coordinator on it at its next helper check, and
+    // running worlds pick it up within a minute). The mainland stays the era source and bot link either way.
+    public sealed record StartChoice(string Id, string Name);
+    // Kinds nobody can start in, as shard_group.py START_REGION_REFUSED_KINDS.
+    private static readonly string[] NoStartKinds = ["RAID", "ORBIT", "BATTLE", "EVENT", "EXPEDITION", "TUTORIAL"];
+
+    // The mainland, the current start region (the mainland unless start_region names another) and every region
+    // a new character may start in, in the group's order.
+    public static (string Mainland, string Current, IReadOnlyList<StartChoice> Choices) StartRegion(HostGroup group) {
+        if (JsonNode.Parse(File.ReadAllText(group.Config)) is not JsonObject root || root["regions"] is not JsonArray regions)
+            throw new InvalidDataException("The group config lists no regions.");
+        var choices = new List<StartChoice>();
+        string? first = null;
+        foreach (var node in regions) {
+            if (node is not JsonObject region || Text(region["id"]) is not { } id || !RegionId.IsMatch(id)) continue;
+            first ??= id;
+            if (NoStartKinds.Contains(Text(region["kind"]) ?? "")) continue;
+            choices.Add(new StartChoice(id, Text(region["name"]) is { Length: > 0 } name ? name : id));
+        }
+        if (first == null) throw new InvalidDataException("The group config lists no regions.");
+        var mainland = Text(root["mainland"]) ?? first;
+        var current = Text(root["start_region"]) ?? mainland;
+        return (mainland, current, choices);
+    }
+
+    // Rewrites the group config with the new start region, keeping every other setting. Choosing the mainland
+    // removes the key, so the start follows the mainland again if it ever moves.
+    public static void SetStartRegion(HostGroup group, string id) {
+        var (mainland, _, choices) = StartRegion(group);
+        if (!choices.Any(choice => choice.Id == id)) throw new InvalidDataException(id + " is not a region new characters can start in.");
+        if (JsonNode.Parse(File.ReadAllText(group.Config)) is not JsonObject root) throw new InvalidDataException(group.Config + " is not a JSON object.");
+        if (id == mainland) root.Remove("start_region");
+        else root["start_region"] = id;
+        var temporary = group.Config + ".tmp";
+        File.WriteAllText(temporary, root.ToJsonString(new JsonSerializerOptions { WriteIndented = true }) + "\n");
+        File.Move(temporary, group.Config, true);
+    }
+
+    private static string? Text(JsonNode? node) => node is JsonValue value && value.TryGetValue<string>(out var text) ? text : null;
+
     public static readonly string[] Offered = [LocalConfig, "config/host.txt"];
     // Earlier versions an overlay keeps (shard_group.py KEPT_COPY); they are never offered or copied.
     private static readonly Regex Kept = new(@"\.(previous|migrated)$|\.bak(-|$)");

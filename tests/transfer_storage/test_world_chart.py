@@ -282,7 +282,8 @@ class LandChoiceTests(unittest.TestCase):
         other = next((x, y) for y in range(wc.CHART_HEIGHT) for x in range(wc.CHART_WIDTH)
                      if (x, y) != (self.x, self.y) and self.c.terrain(x, y) not in ('OCEAN', 'MAINLAND') and self.c.coast(x, y))
         self.c.reveal('faction:rome', *other)
-        self.assertEqual('far2', self.c.set_course('v2', 'faction:rome', other[0], other[1], now=1001)['region'])
+        self.assertEqual('far2', self.c.set_course('v2', 'faction:rome', other[0], other[1],
+                                                 now=1000 + wc.OPEN_COOLDOWN_SECONDS)['region'])
         self.assertFalse(self.c.claim('far2', 'civ:gaia:Rome Empire'))
         self.assertEqual('LANDED', self.c.template(*other)['state'])
 
@@ -317,6 +318,109 @@ class LandChoiceTests(unittest.TestCase):
         self.assertEqual(['far1'], self.c.expire(now=5000 + wc.UNVISITED_SECONDS + 10))
         self.assertEqual('LOST', self.state())
 
+
+class OpenLandRuleTests(unittest.TestCase):
+    """Crews open lands with no admin deciding: one undecided land an owner, a
+    wait between new lands, and stale empty lands give way when slots run out."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.exp = os.path.join(self.tmp.name, 'expeditions')
+        self.c = chart(slots=['far1', 'far2'], expeditions=self.exp)
+        self.lands = [(x, y) for y in range(wc.CHART_HEIGHT) for x in range(wc.CHART_WIDTH)
+                      if self.c.terrain(x, y) not in ('OCEAN', 'MAINLAND') and self.c.coast(x, y)][:4]
+        for owner in ('faction:rome', 'faction:gaul', 'crew:val'):
+            for land in self.lands:
+                self.c.reveal(owner, *land)
+        self.wait = wc.OPEN_COOLDOWN_SECONDS
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def course(self, voyage, owner, land, now, by=None):
+        return self.c.set_course(voyage, owner, land[0], land[1], now=now, by=by)
+
+    def archived(self, slot):
+        """The host archived the given-up land in slot."""
+        for folder in ('abandon', 'wanted'):
+            path = os.path.join(self.exp, folder, slot + '.json')
+            if os.path.exists(path):
+                os.remove(path)
+
+    def test_one_undecided_land_an_owner(self):
+        self.assertEqual('far1', self.course('v1', 'faction:rome', self.lands[0], 1000, 'val')['region'])
+        refused = self.course('v2', 'faction:rome', self.lands[1], 1000 + self.wait, 'kim')
+        self.assertEqual('REFUSED', refused['state'])
+        self.assertIn('undecided', refused['reason'])
+        self.assertIn('%d,%d' % self.lands[0], refused['reason'])
+        # The account that opened it is held to it under another owner too.
+        self.assertIn('undecided', self.course('v3', 'crew:val', self.lands[1], 1000 + self.wait, 'val')['reason'])
+        # Her own undecided land can always be sailed for, and so can another crew's new land.
+        self.assertEqual('far1', self.course('v4', 'faction:rome', self.lands[0], 1001, 'val')['region'])
+        self.assertEqual('far2', self.course('v5', 'faction:gaul', self.lands[1], 1002, 'ann')['region'])
+        # Settled, the first land no longer holds its crew back.
+        self.assertTrue(self.c.settle('far1'))
+        self.assertNotIn('undecided', self.course('v6', 'faction:rome', self.lands[2], 1000 + self.wait, 'val')['reason'])
+
+    def test_a_wait_between_new_lands(self):
+        self.course('v1', 'faction:rome', self.lands[0], 1000, 'val')
+        self.assertTrue(self.c.abandon('far1', 'val', now=1500))
+        self.archived('far1')
+        refused = self.course('v2', 'faction:rome', self.lands[1], 1000 + self.wait - 600, 'kim')
+        self.assertIn('about 10 minutes', refused['reason'])
+        self.assertIn('not long ago', self.course('v3', 'crew:val', self.lands[1], 1000 + self.wait - 600, 'val')['reason'])
+        self.assertEqual('ASSIGNED', self.course('v4', 'faction:rome', self.lands[1], 1000 + self.wait, 'kim')['state'])
+        # expire() forgets the record only once the wait is over.
+        self.c.expire(now=1000 + self.wait + 5)
+        self.assertIn('undecided', self.course('v5', 'faction:rome', self.lands[2], 1000 + 3 * self.wait, 'kim')['reason'])
+
+    def test_a_land_that_could_not_be_made_costs_no_wait(self):
+        self.course('v1', 'faction:rome', self.lands[0], 1000, 'val')
+        os.makedirs(os.path.join(self.exp, 'failed'), exist_ok=True)
+        with open(os.path.join(self.exp, 'failed', 'far1.json'), 'w', encoding='utf-8') as f:
+            json.dump({'region': 'far1', 'key': '%d,%d' % self.lands[0], 'reason': 'compile failed'}, f)
+        os.remove(os.path.join(self.exp, 'wanted', 'far1.json'))
+        self.assertTrue(self.c.refresh_courses(now=1010))
+        self.assertEqual('ASSIGNED', self.course('v2', 'faction:rome', self.lands[1], 1020, 'val')['state'])
+
+    def test_a_settled_land_is_on_every_chart(self):
+        self.course('v1', 'faction:rome', self.lands[0], 1000, 'val')
+        self.assertIn('does not show', self.course('v2', 'faction:nobody', self.lands[0], 1001, 'bob')['reason'])
+        self.assertTrue(self.c.settle('far1'))
+        self.assertEqual('far1', self.course('v3', 'faction:nobody', self.lands[0], 1002, 'bob')['region'])
+
+    def test_stale_empty_lands_give_way_when_no_slot_is_free(self):
+        day = 86400
+        self.course('v1', 'faction:rome', self.lands[0], 1000, 'val')
+        self.course('v2', 'faction:gaul', self.lands[1], 2000, 'ann')
+        self.assertTrue(self.c.settle('far1'))
+        # Both slots hold lands visited within their time: nothing gives way.
+        busy = self.course('v3', 'crew:val', self.lands[2], 2000 + day - 10, 'val')
+        self.assertIn('harbour master', busy['reason'])
+        self.assertEqual([], self.c.expire(now=2000 + day - 10))
+        # A day empty, the undecided land goes; the settled one stays.
+        cleared = self.course('v4', 'crew:val', self.lands[2], 2000 + day, 'val')
+        self.assertEqual(wc.CLEARING, cleared['reason'])
+        self.assertEqual('LOST', self.c.template(*self.lands[1])['state'])
+        self.assertEqual('SETTLED', self.c.template(*self.lands[0])['state'])
+        self.assertEqual(['far2'], self.c.expire(now=2000 + day))
+        self.assertEqual([], self.c.expire(now=2000 + day))
+        # While the host archives it nothing else is given up.
+        self.assertEqual(wc.CLEARING, self.course('v5', 'crew:val', self.lands[2], 2000 + 20 * day, 'val')['reason'])
+        self.assertEqual('SETTLED', self.c.template(*self.lands[0])['state'])
+        self.archived('far2')
+        self.assertEqual('far2', self.course('v6', 'crew:val', self.lands[2], 2000 + 2 * day, 'val')['region'])
+        self.c.visit('far2', now=2000 + 20 * day)
+
+    def test_settled_and_claimed_lands_never_give_way(self):
+        year = 365 * 86400
+        self.course('v1', 'faction:rome', self.lands[0], 1000, 'val')
+        self.course('v2', 'faction:gaul', self.lands[1], 1000, 'ann')
+        self.assertTrue(self.c.settle('far1'))
+        self.assertTrue(self.c.claim('far2', 'civ:gaia:Gaul'))
+        self.assertIn('harbour master', self.course('v3', 'crew:val', self.lands[2], 1000 + year, 'val')['reason'])
+        self.assertEqual([], self.c.expire(now=1000 + year))
+        self.assertEqual(['CLAIMED', 'SETTLED'], sorted(self.c.template(*land)['state'] for land in self.lands[:2]))
 
 class ChartAgentTests(unittest.TestCase):
     def setUp(self):

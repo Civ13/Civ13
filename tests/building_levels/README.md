@@ -103,3 +103,19 @@ is never followed by growth, so an older save with fewer levels still loads.
 <verified-python> tests/building_levels/run.py --standing --byond-bin <bin> --output <empty-directory>
 <verified-python> tests/building_levels/run.py --standing --negative-control standing-import --byond-bin <bin> --output <different-empty-directory>
 ```
+
+## Dug cave beside building levels
+
+A dig-down map that also sets `building_levels` (Europe, Asia) has its cave and
+its open-air levels in whatever order they were added. `--cave` adds the
+standing level and then digs the cave, so the cave lies between the first and
+second storey; `--cave-first` digs first, as in a world saved before the map
+gained building levels. Both check the up/down links, the roof count, the
+save kind of each level and the production admission rules.
+
+```
+<verified-python> tests/building_levels/run.py --cave --byond-bin <bin> --output <empty-directory>
+<verified-python> tests/building_levels/run.py --cave-first --byond-bin <bin> --output <different-empty-directory>
+<verified-python> tests/building_levels/run.py --cave --negative-control cave-step-over --byond-bin <bin> --output <different-empty-directory>
+<verified-python> tests/building_levels/run.py --cave --negative-control cave-roof-count --byond-bin <bin> --output <different-empty-directory>
+```

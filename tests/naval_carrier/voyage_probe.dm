@@ -146,13 +146,34 @@ var/naval_runtime_error = FALSE
 	naval_check(tiller.voyage_landfall(mine) && isnull(tiller.voyage), "a refused course turns her back at once")
 	naval_check(tiller.craft && !QDELETED(tiller), "she is still here, off the coast where she set out")
 
+	// ---- A course refused while she is still at sea turns her back early ----
+	tiller.voyage = mine = list("id" = "gaia-5-6", "kind" = "course", "x" = 1, "y" = 2, "owner" = "faction:romeempire", "label" = "a desert", "by" = "probe", "ends" = world.time + 6000, "said" = null, "asked" = world.time + 300)
+	world_chart["courses"] = list("gaia-5-6" = list("state" = "REFUSED", "reason" = "your crew opened a new land not long ago"))
+	naval_check(!tiller.voyage_refused_under_way(mine) && tiller.voyage == mine, "she asks after her course only now and then")
+	mine["asked"] = world.time
+	world_chart["courses"] = list("gaia-5-6" = list("state" = "ASSIGNED", "region" = "far1"))
+	naval_check(!tiller.voyage_refused_under_way(mine) && tiller.voyage == mine && mine["asked"] > world.time, "a course being opened keeps her sailing")
+	mine["asked"] = world.time
+	world_chart["courses"] = list("gaia-5-6" = list("state" = "REFUSED", "reason" = "your crew opened a new land not long ago"))
+	naval_check(tiller.voyage_refused_under_way(mine) && isnull(tiller.voyage), "a course refused under way turns her back before landfall")
+
+	// ---- Her crew rest after a landfall (as long as an empty world takes to sleep) ----
+	naval_check(isnull(tiller.landfall_rest_refusal()), "a ship that made no landfall may sail")
+	tiller.landfall_at = world.time
+	naval_check(findtext(tiller.landfall_rest_refusal(), "about 15 minutes"), "after a landfall she lies 15 minutes ([tiller.landfall_rest_refusal()])")
+	tiller.landfall_at = world.time - 8400
+	naval_check(findtext(tiller.landfall_rest_refusal(), "about 1 minute."), "and is told how long is left")
+	tiller.landfall_at = world.time - 9000
+	naval_check(isnull(tiller.landfall_rest_refusal()), "then she may put to sea again")
+	tiller.landfall_at = null
+
 	// ---- Sea routes between the continents (sea_lanes.dm) ----
 	naval_check(continent_distance("northamerica", "gaia") == 6 && continent_bearing("northamerica", "gaia") == "east", "Gaia lies 6 tiles east of North America")
 	naval_check(continent_bearing("gaia", "southamerica") == "southwest" && continent_distance("gaia", "asia") == 12, "and Asia 12 tiles east of Gaia ([continent_bearing("gaia", "southamerica")])")
-	naval_check(isnull(continent_distance("gaia", "far1")) && !continent_coastal("jungle") && continent_coastal("europe"), "unknown lands have no route; the Jungle has no coast")
+	naval_check(isnull(continent_distance("gaia", "far1")) && !continent_coastal("railyard") && continent_coastal("jungle") && continent_coastal("desert"), "unknown lands have no route; the Jungle and the Desert have coasts")
 	shard_group.peers["northamerica"] = list("name" = "North America", "kind" = "SURFACE", "state" = "STOPPED")
-	shard_group.peers["jungle"] = list("name" = "Jungle", "kind" = "SURFACE", "state" = "UP")
-	naval_check(!length(sea_lane_destinations()), "a stopped land and a land with no coast are not offered")
+	shard_group.peers["railyard"] = list("name" = "Rail Yard", "kind" = "RAILYARD", "state" = "UP")
+	naval_check(!length(sea_lane_destinations()), "a stopped land and a world off the layout are not offered")
 	shard_group.peers["northamerica"]["state"] = "UP"
 	var/list/known = sea_lane_destinations()
 	naval_check(known.len == 1 && findtext(known[1], "North America, across the sea to the west: 6 tiles, about 6 minutes"), "a continent across the sea is offered ([known.len ? known[1] : "none"])")
@@ -184,7 +205,7 @@ var/naval_runtime_error = FALSE
 	mine["ends"] = world.time - 18010
 	naval_check(tiller.voyage_lane_landfall(mine) && isnull(tiller.voyage), "she turns back after waiting too long")
 	naval_check(tiller.craft && !QDELETED(tiller), "and is still here where she set out")
-	shard_group.peers -= list("northamerica", "jungle")
+	shard_group.peers -= list("northamerica", "railyard")
 
 	// ---- A land across the sea: onward voyages and settling ----
 	shard_group.kind = "EXPEDITION"

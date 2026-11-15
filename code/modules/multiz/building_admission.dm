@@ -19,10 +19,15 @@
 /obj/map_metadata/var/building_levels = 0
 
 /datum/world_z_budget/building_admitted(target_z)
-	if (!map || !map.building_levels || target_z > building_base_maxz() + min(map.building_levels, NEW_Z_ROOF_CEILING))
+	if (!map || !map.building_levels)
 		return FALSE
-	// A dig-down map's cave is already the level above the surface plane.
-	if (dug_underground_supported())
+	// A dig-down map's cave (dug_underground.dm) is one more added level beside
+	// the building levels, wherever it lies among them. Its two full planes must
+	// fit the measured profile whether or not the cave is dug yet.
+	var/cave = dug_underground_supported() ? 1 : 0
+	if (target_z > building_base_maxz() + min(map.building_levels, NEW_Z_ROOF_CEILING) + cave)
+		return FALSE
+	if (cave && !dug_underground_fits())
 		return FALSE
 	var/pending = (instance_reserve - instance_used) + (safehouse_reserve - safehouse_used)
 	if (map.building_level_standing && building_base_maxz() == 1 && target_z == 2 && !pending && world.maxx * world.maxy * 2 <= NEW_Z_STANDING_MEASURED_CELLS)

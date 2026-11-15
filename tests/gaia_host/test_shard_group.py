@@ -231,6 +231,14 @@ class ShardGroupTests(unittest.TestCase):
         self.refuse_config('mainland cannot be a RAID', mainland='deep', region_kind='RAID')
         group = self.write_group()
         self.assertEqual('gaia', group['mainland'], 'the first region is the mainland by default')
+        self.assertEqual('gaia', group['start_region'], 'new characters start on the mainland by default')
+        self.refuse_config('start_region must be', start_region='atlantis')
+        for kind in ('RAID', 'ORBIT', 'EVENT', 'TUTORIAL'):
+            self.refuse_config('start region cannot be a %s' % kind, start_region='deep', region_kind=kind)
+        self.group['start_region'] = 'deep'
+        self.assertEqual(('gaia', 'deep'), (self.write_group()['mainland'], self.write_group()['start_region']),
+                         'the start region is apart from the mainland')
+        del self.group['start_region']
         self.assertEqual(('HEAD', False), (group['revision'], group['public']))
 
     def test_every_region_gets_the_host_operator_agent(self):
@@ -260,6 +268,7 @@ class ShardGroupTests(unittest.TestCase):
         deep = self.base / 'regions' / 'deep'
         settings = json.loads((deep / 'config' / 'shard_region.json').read_text())
         self.assertEqual(('europe', 'deep', 'gaia'), (settings['group'], settings['region'], settings['mainland']))
+        self.assertEqual('gaia', settings['start_region'])
         self.assertEqual(['203.0.113.5:1720', '203.0.113.5:1721'], [r['address'] for r in settings['regions']])
         self.assertTrue((deep / 'map_saves').is_dir())
         token = (deep / 'config' / 'lifecycle-token.txt').read_text().strip()
@@ -603,6 +612,16 @@ class ShardGroupTests(unittest.TestCase):
         self.assertTrue(shard_group.ensure_coordinator(group, start))
         self.assertIn('deep=http://127.0.0.1:47202=%s' % (config / 'transfer-token.txt'), started[0])
         self.assertEqual('gaia', started[0][started[0].index('--mainland') + 1])
+        self.assertEqual('gaia', started[0][started[0].index('--start-region') + 1])
+        # A new start region (launcher Start region) restarts a running coordinator at the next check.
+        ended = []
+        with mock.patch.object(shard_group, 'coordinator_pid', lambda g: 4242):
+            self.assertFalse(shard_group.ensure_coordinator(group, start, refresh=True, terminate=ended.append))
+            moved = dict(group, start_region='deep')
+            self.assertTrue(shard_group.ensure_coordinator(moved, start, refresh=True, terminate=ended.append))
+        self.assertEqual([4242], ended)
+        self.assertEqual('deep', started[1][started[1].index('--start-region') + 1])
+        started.pop()
         self.assertEqual('4242', (self.base / 'regions' / 'coordinator.pid').read_text().strip())
         # Only a group without a coordinator database asserts a clean bootstrap.
         self.assertIn('--bootstrap-new-group', started[0])
@@ -1008,6 +1027,11 @@ class ShardGroupTests(unittest.TestCase):
         self.assertEqual((5, 90, False), (config['freeze_idle_minutes'], config['cold_start_estimate_seconds'],
                                           config['start_requires_byond_pager']))
         self.assertNotIn('wake_min_free_mb', config, 'unset keys keep the host defaults')
+        # Only a land across the sea sleeps on disk by default; the group can say otherwise.
+        self.assertNotIn('freeze_cold', config)
+        slot = dict(group['regions'][1], kind='EXPEDITION')
+        self.assertTrue(shard_group.region_config(group, slot)['freeze_cold'])
+        self.assertFalse(shard_group.region_config(dict(group, freeze_cold=False), slot)['freeze_cold'])
         self.group['public'] = True
         group = self.write_group()
         self.assertTrue(shard_group.region_config(group, group['regions'][1])['start_requires_byond_pager'],

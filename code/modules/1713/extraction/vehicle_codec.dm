@@ -20,6 +20,8 @@
 	// Vehicle storage parks on roads and runways: non-dense covers and stains
 	// under the footprint are ground, not cargo. Extraction keeps the strict bay.
 	var/ignore_ground = FALSE
+	// A plane flying in from another land (aircraft_crossing.dm) is built in open sky.
+	var/allow_sky = FALSE
 	var/list/objects
 	var/list/index
 	proc/fail(message)
@@ -270,7 +272,7 @@
 		for (var/list/N in nodes)
 			if (N["parent"]) continue
 			var/turf/T = locate(destination.x + N["dx"], destination.y + N["dy"], destination.z)
-			if (!istype(T, /turf/floor) || T.density) return null
+			if (!(istype(T, /turf/floor) || (allow_sky && istype(T, /turf/sky/building))) || T.density) return null
 			if (!(T in targets))
 				for (var/atom/movable/O in T)
 					if (!istype(O, /atom/movable/lighting_overlay) && !(ignore_ground && vehicle_storage_ground(O))) return null
