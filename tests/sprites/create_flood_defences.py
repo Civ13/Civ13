@@ -38,6 +38,14 @@ States, all 32x32 and 1 dir, 1 frame unless noted:
   river_gauge            A tall narrow gauge post driven into the ground,
                          painted in light and dark bands with tick marks, the
                          paint weathered and the foot stained by the river.
+  cistern0 .. cistern3   A Classical plastered rainwater cistern seen from
+                         above like the plinth: a square stone tank with a
+                         pale lime-plaster rim, a stone gutter coming in over
+                         the north wall and a worn stone dipping lip on the
+                         south rim. 0 is empty, the stained plaster floor
+                         showing; 1 has a shallow puddle; 2 is about half
+                         full, the inside wall still showing above the water;
+                         3 is full to the brim, with a ripple under the spout.
 
 Every state keeps at least 1px clear on the left, right and bottom of the
 tile, which `--check` enforces together with the frame counts and delays, and
@@ -45,9 +53,10 @@ that no animation repeats a frame.
 
 Run with Pillow to rewrite icons/obj/flood_defences.dmi (safe to rerun).
 `--out <dmi>` writes the sheet somewhere else, `--preview <png>` writes a
-labelled review sheet with every state and frame on grass and dirt and two
-small scenes, `--check` only verifies that the committed sheet is what this
-script draws. Released under Civ13 AGPL-3.0.
+labelled review sheet with every state and frame on grass and dirt and three
+small scenes (`--preview-only <prefix>` keeps just the states whose names
+start with the prefix and the scene made for them), `--check` only verifies
+that the committed sheet is what this script draws. Released under Civ13 AGPL-3.0.
 """
 import math
 import sys
@@ -57,9 +66,9 @@ from PIL import Image, ImageDraw
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from create_water_animation import SIZE, write_dmi  # noqa: E402
 from create_sewers import (  # noqa: E402
-    BANK_LIT, BANK_SHADE, DARK, FLOW, IRON, MORTAR, NAIL, RIM, RIVER, ROCK, SHADOW, SLAB, SLAB_SHADE, CHIP,
-    WALL_SHADE, WET, WOOD, check_sheet, fill_box, ground_shadow, ground_tiles, image, loop, noise, option,
-    pixels, rod)
+    BANK_LIT, BANK_SHADE, CLEAR, CLEAR_GLINT, CLEAR_SHADE, DAMP, DARK, FLOW, IRON, MORTAR, NAIL, RIM, RIVER, ROCK,
+    SHADOW, SLAB, SLAB_SHADE, CHIP, WALL_SHADE, WET, WOOD, brick_drain, check_sheet, fill_box, ground_shadow,
+    ground_tiles, image, loop, noise, option, pixels, rod, septic, settling, stone_drain)
 
 ROOT = Path(__file__).resolve().parents[2]
 SHEET = ROOT / 'icons/obj/flood_defences.dmi'
@@ -74,6 +83,8 @@ WHITE = [(236, 230, 208), (206, 198, 174)]       # gauge paint, lit and worn
 BLACK = [(62, 58, 56), (40, 38, 38)]
 RED = [(190, 62, 48), (140, 40, 34)]
 STAIN = [(96, 104, 66), (74, 78, 52)]            # river slime on the gauge foot
+# lime plaster: fresh and lit, plain, worn, in shade, in deep shade
+PLASTER = [(242, 236, 218), (226, 218, 198), (206, 197, 176), (168, 160, 142), (126, 119, 105)]
 
 # the shaduf: the pole turns on the fork of the post
 PIVOT = (15, 10)
@@ -587,9 +598,199 @@ def river_gauge():
     return image(px)
 
 
+# ------------------------------------------------------------------ cistern
+
+CISTERN = (2, 4, 29, 26)                 # the top of the walls, x0 y0 x1 y1
+CISTERN_RIM = 4                          # a stone kerb, two of plaster and the lip
+CISTERN_FILLS = 4
+# rows of the plastered north wall that show inside, above the floor or the water
+CISTERN_WALL = (5, 5, 3, 1)
+GUTTER = (13, 18)                        # columns of the stone gutter from the north
+DIP = (19, 24)                           # columns of the dipping lip on the south rim
+PUDDLE = (16.0, 18.4, 6.4, 2.9)          # centre and radii of the puddle at level 1
+# stains on the dry floor: centre, radii and tone
+FLOOR_STAINS = ((8.0, 21.5, 1.6, 1.2, STAIN[0]), (9.5, 15.0, 2.2, 1.1, DAMP[0]), (23.5, 21.0, 1.8, 1.4, DAMP[0]),
+                (24.0, 21.6, 1.0, 0.8, STAIN[0]))
+# the still water in the tank is the settling tank's; nothing else on the piece uses these
+CISTERN_WATER = set(CLEAR) | {CLEAR_SHADE, CLEAR_GLINT}
+
+
+def cistern_inside():
+    x0, y0, x1, y1 = CISTERN
+    return x0 + CISTERN_RIM, y0 + CISTERN_RIM, x1 - CISTERN_RIM, y1 - CISTERN_RIM
+
+
+def cistern(fill):
+    px = {}
+    x0, y0, x1, y1 = CISTERN
+    ix0, iy0, ix1, iy1 = cistern_inside()
+    # the top of the walls: a dressed stone kerb, the plaster carried over it
+    for y in range(y0, y1 + 1):
+        for x in range(x0, x1 + 1):
+            if ix0 <= x <= ix1 and iy0 <= y <= iy1:
+                continue
+            reach = {'n': y - y0, 's': y1 - y, 'w': x - x0, 'e': x1 - x}
+            side = min('nwse', key=lambda k: reach[k])
+            ring = reach[side]
+            along = x if side in 'ns' else y
+            if ring == 0:
+                c = SLAB[0] if side in 'nw' else SLAB[2] if side == 's' else SLAB_SHADE
+                if (along + 2) % 7 == 0 and x not in (x0, x1) and y not in (y0, y1):
+                    c = MORTAR
+            elif ring == CISTERN_RIM - 1:
+                # the lip: it drops into shade on the north and west and
+                # catches the light on the south and east
+                c = PLASTER[3] if side in 'nw' else PLASTER[0]
+            else:
+                c = PLASTER[0] if noise(x // 3, y // 2, 561) < 0.3 else PLASTER[1]
+                if ring == 1 and side in 'nw':
+                    c = PLASTER[0]
+                if noise(x // 2, y // 2, 563) < 0.07:
+                    c = PLASTER[2]                          # a worn patch
+            px[(x, y)] = c
+    for at in ((6, 6), (7, 6), (26, 12), (26, 13), (27, 14), (10, 24), (11, 24), (4, 19), (4, 20)):
+        px[at] = PLASTER[3]                                 # hairline cracks
+
+    # the inside: the north wall as far down as it shows, then floor or water
+    wall = CISTERN_WALL[fill]
+    top = iy0 + wall                                        # first row of the floor or the water
+    for y in range(iy0, top):
+        for x in range(ix0, ix1 + 1):
+            c = PLASTER[4] if y == iy0 or x == ix0 else PLASTER[3]
+            # the tide mark the water left along the wall
+            if y == iy0 + 2 and x > ix0 and noise(x // 4, 0, 567) < 0.7:
+                c = DAMP[0]
+            px[(x, y)] = c
+    cx, cy, rx, ry = PUDDLE
+    for y in range(top, iy1 + 1):
+        for x in range(ix0, ix1 + 1):
+            grain = noise(x, y, 569)
+            if fill >= 2:
+                if fill == 2:
+                    # deep in the shade of the walls
+                    c = CLEAR[1] if grain < 0.6 else CLEAR[0]
+                    if y <= top + 1 or x <= ix0 + 1:
+                        c = CLEAR_SHADE
+                    elif y == top + 2 and grain < 0.5:
+                        c = CLEAR_SHADE
+                else:
+                    # up in the light
+                    c = CLEAR[0] if grain < 0.55 else CLEAR[2] if grain < 0.8 else CLEAR[1]
+                    if x == ix0:
+                        c = CLEAR_SHADE
+                    elif y == top or x == ix0 + 1:
+                        c = CLEAR[1]
+                    elif y == iy1 or x == ix1:
+                        c = CLEAR[2]
+                px[(x, y)] = c
+                continue
+            # the plaster floor, a little duller than the rim, and its stains
+            c = PLASTER[2] if noise(x // 4, y // 3, 571) < 0.75 else PLASTER[1]
+            if x == ix0:
+                c = PLASTER[3]                              # shade at the foot of the west wall
+            for sx, sy, srx, sry, tone in FLOOR_STAINS:
+                if math.hypot((x - sx) / srx, (y - sy) / sry) < 1.0:
+                    c = tone
+            out = math.hypot((x - cx) / rx, (y - cy) / ry) + 0.25 * (noise(x // 2, y, 577) - 0.5)
+            if fill == 0 and out < 1.05:
+                # the pale scale and the ring where the last of it dried
+                c = PLASTER[1] if out < 0.8 else DAMP[0] if y > cy - 1 else PLASTER[3]
+            elif fill == 1 and out < 1.0:
+                c = CLEAR[2] if out > 0.72 or grain < 0.3 else CLEAR[0]
+            elif fill == 1 and out < 1.3:
+                c = DAMP[1] if out < 1.15 else DAMP[0]      # wet plaster round the puddle
+            px[(x, y)] = c
+    if fill == 0:
+        for at in ((20, 14), (21, 14), (22, 15), (22, 16)):
+            px[at] = PLASTER[3]                             # a crack in the floor
+    elif fill == 1:
+        for at in ((14, 18), (15, 18), (18, 19)):
+            px[at] = CLEAR_GLINT
+    elif fill == 2:
+        for at in ((11, 16), (12, 16), (20, 18), (21, 18), (15, 20)):
+            px[at] = CLEAR[2]
+        px[(16, 14)] = CLEAR_GLINT
+    else:
+        # ripples spreading from under the spout, and the sky on the water
+        for at in ((13, 11), (14, 12), (15, 12), (16, 12), (17, 12), (18, 11),
+                   (11, 13), (12, 14), (13, 15), (18, 15), (19, 14), (20, 13)):
+            px[at] = CLEAR_GLINT if at[1] < 13 else CLEAR[2]
+        for at in ((9, 18), (10, 18), (11, 18), (20, 19), (21, 19), (14, 21), (15, 21)):
+            px[at] = CLEAR_GLINT
+
+    # the south face: one course of dressed blocks in shade, as on the plinth
+    for y in range(y1 + 1, SIZE - MARGIN - 1):
+        row = y - y1 - 1
+        for x in range(x0, x1 + 1):
+            block, col = divmod(x - x0 + 2, 7)
+            if col == 6 and x != x1 and row:
+                c = MORTAR
+            elif row == 0:
+                c = SLAB_SHADE
+            elif y == SIZE - MARGIN - 2:
+                c = STONE_FOOT
+            else:
+                c = SLAB[3] if noise(block, 5, 579) < 0.65 else SLAB_SHADE
+            if x == x0 and row:
+                c = SLAB[2]
+            if x == x1:
+                c = STONE_FOOT
+            px[(x, y)] = c
+    ground_shadow(px, x0 + 1, x1, SIZE - MARGIN - 1)
+
+    # the dipping lip: a stone set in the south rim, worn hollow where the
+    # buckets go over it and standing a little proud of the wall
+    dx0, dx1 = DIP
+    for y in range(iy1 + 1, y1 + 2):
+        for x in range(dx0, dx1 + 1):
+            c = SLAB[1] if noise(x // 2, y, 581) < 0.7 else SLAB[2]
+            if y == iy1 + 1:
+                c = SLAB[0]
+            if x == dx0:
+                c = SLAB[0] if y <= y1 else SLAB[1]
+            if x == dx1:
+                c = SLAB_SHADE
+            if y == y1 + 1:
+                c = SLAB[2] if x < dx1 else SLAB_SHADE
+            px[(x, y)] = c
+    for x in range(dx0 + 2, dx1 - 1):
+        for y in range(iy1 + 1, y1 + 1):
+            # the hollow, wet when there is water
+            px[(x, y)] = (STONE_FOOT if fill else SLAB_SHADE) if x == dx0 + 2 or y == iy1 + 1 else CHIP
+    px[(dx0 + 1, y1 + 2)] = px[(dx1 - 1, y1 + 2)] = SLAB_SHADE     # its shadow on the face
+    for x in range(dx0 + 2, dx1 - 1):
+        px[(x, y1 + 2)] = SLAB_SHADE
+
+    # the gutter from the roofs: two lines of kerb stones and a wet channel,
+    # carried over the north wall to a spout
+    gx0, gx1 = GUTTER
+    for y in range(0, iy0 + 1):
+        for x in range(gx0, gx1 + 1):
+            if x in (gx0 + 2, gx1 - 2):
+                c = WET if x == gx0 + 2 else STONE_FOOT
+                if y == iy0:
+                    c = WET
+            else:
+                c = {gx0: SLAB[0], gx0 + 1: SLAB[1], gx1 - 1: SLAB[2], gx1: SLAB_SHADE}[x]
+                if y % 4 == 2 and y < y0:
+                    c = MORTAR
+                if y == iy0:
+                    c = SLAB[2] if x < gx1 else SLAB_SHADE
+            if y == iy0 and x in (gx0, gx1):
+                continue                                    # the spout is narrower than the gutter
+            px[(x, y)] = c
+    # the green streak the spout has left down the wall
+    for y in range(iy0 + 1, top):
+        px[(gx0 + 2, y)] = STAIN[0]
+        px[(gx0 + 3, y)] = STAIN[1] if y % 2 else STAIN[0]
+    return image(px)
+
+
 # -------------------------------------------------------------------- sheet
 
-STILLS = ('stilts', 'plinth', 'sluice_gate', 'sluice_gate_open', 'shaduf', 'archimedes_screw', 'river_gauge')
+CISTERNS = tuple('cistern%d' % fill for fill in range(CISTERN_FILLS))
+STILLS = ('stilts', 'plinth', 'sluice_gate', 'sluice_gate_open', 'shaduf', 'archimedes_screw',
+          'river_gauge') + CISTERNS
 LOOPS = (('shaduf', 'shaduf_use'), ('archimedes_screw', 'archimedes_screw_use'))
 
 
@@ -605,7 +806,8 @@ def build():
             ('shaduf_use', dict(use), [shaduf(frame) for frame in range(USE_FRAMES)]),
             ('archimedes_screw', dict(one), [archimedes_screw()]),
             ('archimedes_screw_use', dict(use), [archimedes_screw(frame) for frame in range(USE_FRAMES)]),
-            ('river_gauge', dict(one), [river_gauge()])]
+            ('river_gauge', dict(one), [river_gauge()])] + [
+               (name, dict(one), [cistern(fill)]) for fill, name in enumerate(CISTERNS)]
 
 
 def check_drawing(states):
@@ -667,6 +869,28 @@ def check_drawing(states):
             px = by[name][0].load()
             if any(px[x, y][3] != 255 for y in range(y0, y1 + 1) for x in range(x0, x1 + 1)):
                 problems.append('%s has a hole in its floor' % name)
+    # the cistern: a sound tank, and more water showing at every level
+    x0, y0, x1, y1 = CISTERN
+    ix0, iy0, ix1, iy1 = cistern_inside()
+    wet = []
+    for name in CISTERNS:
+        if name not in by:
+            continue
+        px = by[name][0].load()
+        if any(px[x, y][3] != 255 for y in range(y0, y1 + 1) for x in range(x0, x1 + 1)):
+            problems.append('%s has a hole in it' % name)
+        water = [(x, y) for y in range(SIZE) for x in range(SIZE) if px[x, y][:3] in CISTERN_WATER and px[x, y][3]]
+        if any(not (ix0 <= x <= ix1 and iy0 <= y <= iy1) for x, y in water):
+            problems.append('%s has water outside the tank' % name)
+        wet.append(len(water))
+    if len(wet) == CISTERN_FILLS:
+        if wet[0] or any(a >= b for a, b in zip(wet, wet[1:])):
+            problems.append('cistern water does not grow with the level: %r' % wet)
+        if wet[-1] < (ix1 - ix0 + 1) * (iy1 - iy0 + 1) * 4 // 5:
+            problems.append('cistern3 is not full to the brim')
+    shots = [pixels(by[name][0]) for name in CISTERNS if name in by]
+    if any(shots[i] == shots[j] for i in range(len(shots)) for j in range(i)):
+        problems.append('two cistern levels look the same')
     return problems
 
 
@@ -691,19 +915,84 @@ def levee_tile(gap=False):
     return image(px)
 
 
-def write_preview(path, states, scale=4):
-    by = {name: images for name, _, images in states}
+SCENE = (6, 4)                           # tiles in a review scene
+
+
+def flood_scene(by, n):
+    """A river behind a levee with the sluice in it, stilts, a plinth and a
+    gauge on the dry side, and a pond worked by both machines; n = 1 has the
+    sluice open and the machines working."""
     grass, dirt = ground_tiles()
     water = Image.new('RGBA', (SIZE, SIZE), RIVER + (255,))
+    scene_w, scene_h = SCENE
+    label, gate, sweep, screw = (
+        ('shut sluice in a levee; stilts, plinth, gauge; shaduf and screw at a pond',
+         'sluice_gate', by['shaduf'][0], by['archimedes_screw'][0]),
+        ('sluice open, shaduf dipping, screw turning',
+         'sluice_gate_open', by['shaduf_use'][1], by['archimedes_screw_use'][1]))[n]
+    scene = Image.new('RGBA', (scene_w * SIZE, scene_h * SIZE))
+    for ty in range(scene_h):
+        for tx in range(scene_w):
+            scene.paste(water if ty == 0 or (ty == 3 and tx in (2, 3)) else grass, (tx * SIZE, ty * SIZE))
+    for tx in range(scene_w):
+        at = (tx * SIZE, SIZE)
+        if tx == 2:
+            scene.paste(water if n else dirt, at)
+            scene.alpha_composite(levee_tile(True), at)
+            scene.alpha_composite(by[gate][0], at)
+        else:
+            scene.alpha_composite(levee_tile(), at)
+    for tx, ty, name in ((0, 2, 'stilts'), (1, 2, 'stilts'), (3, 2, 'plinth'), (4, 2, 'plinth'),
+                         (5, 2, 'river_gauge'), (0, 3, 'river_gauge')):
+        scene.alpha_composite(by[name][0], (tx * SIZE, ty * SIZE))
+    scene.alpha_composite(by['river_gauge'][0], (4 * SIZE + 6, 2 * SIZE - 8))
+    # the shaduf stands on the bank with its bucket over the pond, and
+    # the screw has its foot in the water from the other bank
+    scene.alpha_composite(sweep, (1 * SIZE + 4, 3 * SIZE))
+    scene.alpha_composite(screw, (4 * SIZE - 6, 3 * SIZE))
+    return label, scene
+
+
+def cistern_scene(by):
+    """A yard with the four cisterns in a row, each fed by a stone drain,
+    beside a plinth, the sewer sheet's settling and septic tanks and a brick
+    sewer, to see the cistern with its neighbours."""
+    grass, dirt = ground_tiles()
+    scene_w, scene_h = SCENE
+    scene = Image.new('RGBA', (scene_w * SIZE, scene_h * SIZE))
+    for ty in range(scene_h):
+        for tx in range(scene_w):
+            scene.paste(dirt if ty in (1, 2) else grass, (tx * SIZE, ty * SIZE))
+    for fill, name in enumerate(CISTERNS):
+        scene.alpha_composite(stone_drain(3), (fill * SIZE, 0))
+        scene.alpha_composite(by[name][0], (fill * SIZE, SIZE))
+    for tx, ty, im in ((4, 1, by['plinth'][0]), (5, 1, by['plinth'][0]), (0, 2, settling(0)), (1, 2, settling(2)),
+                       (2, 2, septic(0)), (3, 2, by['cistern3'][0]), (4, 2, by['stilts'][0]),
+                       (5, 2, by['river_gauge'][0])):
+        scene.alpha_composite(im, (tx * SIZE, ty * SIZE))
+    for tx in range(scene_w):
+        scene.alpha_composite(brick_drain(12), (tx * SIZE, 3 * SIZE))
+    return 'cisterns 0-3 under stone drains; plinth; settling, septic, cistern3, stilts, gauge; brick sewer', scene
+
+
+def write_preview(path, states, scale=4, only=None):
+    by = {name: images for name, _, images in states}
+    grass, dirt = ground_tiles()
     label_h, pad = 12, 6
     cell = SIZE * scale
     shots = []                                   # (label, image) in sheet order
     for name, _, images in states:
+        if only and not name.startswith(only):
+            continue
         for n, im in enumerate(images):
             shots.append((name if len(images) == 1 else '%s %d' % (name.replace('archimedes_', ''), n), im))
     cols = len(shots)
-    scene_w, scene_h = 6, 4
-    wide = pad + max(cols * (cell + pad), 2 * (scene_w * cell + pad))
+    scene_w, scene_h = SCENE
+    # the scenes: (first state it shows, what draws it)
+    scenes = [(name, draw_scene) for name, draw_scene in (
+        ('sluice_gate', lambda: flood_scene(by, 0)), ('sluice_gate_open', lambda: flood_scene(by, 1)),
+        ('cistern0', lambda: cistern_scene(by))) if not only or name.startswith(only)]
+    wide = pad + max(cols * (cell + pad), len(scenes) * (scene_w * cell + pad))
     high = pad + 2 * (cell + label_h + pad) + (SIZE + label_h + pad) + (scene_h * cell + label_h + pad)
     sheet = Image.new('RGB', (wide, high), DARK)
     draw = ImageDraw.Draw(sheet)
@@ -727,34 +1016,9 @@ def write_preview(path, states, scale=4):
         sheet.paste(tile([grass, im]).convert('RGB'), (pad + n * (SIZE + 2), ay + label_h))
         sheet.paste(tile([dirt, im]).convert('RGB'), (pad + (cols + 1 + n) * (SIZE + 2), ay + label_h))
 
-    # two scenes: a river behind a levee with the sluice in it, stilts, a
-    # plinth and a gauge on the dry side, and a pond worked by both machines
     top = ay + label_h + SIZE + pad
-    scenes = (('shut sluice in a levee; stilts, plinth, gauge; shaduf and screw at a pond',
-               'sluice_gate', by['shaduf'][0], by['archimedes_screw'][0]),
-              ('sluice open, shaduf dipping, screw turning',
-               'sluice_gate_open', by['shaduf_use'][1], by['archimedes_screw_use'][1]))
-    for n, (label, gate, sweep, screw) in enumerate(scenes):
-        scene = Image.new('RGBA', (scene_w * SIZE, scene_h * SIZE))
-        for ty in range(scene_h):
-            for tx in range(scene_w):
-                scene.paste(water if ty == 0 or (ty == 3 and tx in (2, 3)) else grass, (tx * SIZE, ty * SIZE))
-        for tx in range(scene_w):
-            at = (tx * SIZE, SIZE)
-            if tx == 2:
-                scene.paste(water if n else dirt, at)
-                scene.alpha_composite(levee_tile(True), at)
-                scene.alpha_composite(by[gate][0], at)
-            else:
-                scene.alpha_composite(levee_tile(), at)
-        for tx, ty, name in ((0, 2, 'stilts'), (1, 2, 'stilts'), (3, 2, 'plinth'), (4, 2, 'plinth'),
-                             (5, 2, 'river_gauge'), (0, 3, 'river_gauge')):
-            scene.alpha_composite(by[name][0], (tx * SIZE, ty * SIZE))
-        scene.alpha_composite(by['river_gauge'][0], (4 * SIZE + 6, 2 * SIZE - 8))
-        # the shaduf stands on the bank with its bucket over the pond, and
-        # the screw has its foot in the water from the other bank
-        scene.alpha_composite(sweep, (1 * SIZE + 4, 3 * SIZE))
-        scene.alpha_composite(screw, (4 * SIZE - 6, 3 * SIZE))
+    for n, (_, draw_scene) in enumerate(scenes):
+        label, scene = draw_scene()
         x = pad + n * (scene_w * cell + pad)
         big = scene.convert('RGB').resize((scene.width * scale, scene.height * scale), Image.NEAREST)
         sheet.paste(big, (x, top + label_h))
@@ -776,7 +1040,7 @@ def main():
         return 1
     write_dmi(option('--out') or SHEET, states)
     if option('--preview'):
-        write_preview(option('--preview'), states)
+        write_preview(option('--preview'), states, only=option('--preview-only'))
     return 0
 
 
