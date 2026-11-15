@@ -40,6 +40,7 @@ FILE_LIMIT = 128
 GENERATED_SUFFIXES = ('.dme', '_world.dm', '_globals.dm', '_flax.dm', '.dmb', '.rsc',
                       '_living.dm', '_human.dm')
 REQUIRED_INPUT_MANIFEST = 'tests/flax_processing/required-inputs.json'
+LIVE_RECIPE_INPUT = 'config/crafting/material_recipes_global.txt'
 RESERVED_DIAGNOSTICS = ('metadata.json', 'tested.patch', 'evidence-manifest.json',
     'staging-compile.json', 'staging-daemon.json', 'compiler-runtime.json', 'daemon-runtime.json',
     'compile-phase.json', 'compile.stdout.log', 'compile.stderr.log', 'compile.log',
@@ -79,21 +80,33 @@ def required_input_plan():
             or len(declarations) != plan['global_name_declarations']
             or len(paths) != plan['required_name_files']):
         raise RuntimeError('Required-input source provenance changed; review the manifest')
-    expected = paths | {'config/crafting/material_recipes_global.txt'}
+    expected = paths | {LIVE_RECIPE_INPUT}
     records = plan['inputs']
     if len(records) != len(expected) or {row['path'] for row in records} != expected:
         raise RuntimeError('Required-input manifest must enumerate exactly the eager reads and recipe')
     bound_records = []
     for row in records:
         path = Path(row['path'])
-        if path.is_absolute() or '..' in path.parts or not 0 < row['bytes'] <= INPUT_LIMIT or not re.fullmatch('[0-9a-f]{64}', row['sha256']):
+        # The recipe file changes with every crafting PR. It is bound live (its
+        # actual bytes are hashed here and re-checked at staging and launch)
+        # instead of being pinned, so recipe edits never break this runner.
+        live = row['path'] == LIVE_RECIPE_INPUT
+        if live:
+            if set(row) != {'path', 'live'} or row['live'] is not True:
+                raise RuntimeError('Invalid required-input manifest record')
+        elif (set(row) != {'path', 'bytes', 'sha256'} or path.is_absolute() or '..' in path.parts
+                or not 0 < row['bytes'] <= INPUT_LIMIT or not re.fullmatch('[0-9a-f]{64}', row['sha256'])):
             raise RuntimeError('Invalid required-input manifest record')
         source = ROOT / path
-        if source.is_symlink() or source.stat().st_size > INPUT_LIMIT:
+        if source.is_symlink() or not source.is_file() or source.stat().st_size > INPUT_LIMIT:
             raise RuntimeError('Required source input exceeds its bound or is linked')
         data = source.read_bytes()
         fingerprint = data.replace(b'\r\n', b'\n')
-        if len(fingerprint) != row['bytes'] or hashlib.sha256(fingerprint).hexdigest() != row['sha256']:
+        if live:
+            if not data:
+                raise RuntimeError('Required source input is empty: ' + row['path'])
+            row = dict(row, sha256=hashlib.sha256(fingerprint).hexdigest())
+        elif len(fingerprint) != row['bytes'] or hashlib.sha256(fingerprint).hexdigest() != row['sha256']:
             raise RuntimeError('Required source input fingerprint changed: ' + row['path'])
         # Git's text checkout may use CRLF. Bind and copy the actual source bytes;
         # normalization is only for the checked-in cross-platform fingerprint.

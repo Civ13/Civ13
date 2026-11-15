@@ -113,4 +113,23 @@ class RequiredInputInventory(unittest.TestCase):
                     with self.assertRaises(RuntimeError): runner.required_input_plan()
 
 
+    def test_recipe_file_is_bound_live_not_pinned(self):
+        manifest = json.loads((runner.ROOT/runner.REQUIRED_INPUT_MANIFEST).read_text())
+        recipe = [row for row in manifest['inputs'] if row['path'] == runner.LIVE_RECIPE_INPUT]
+        self.assertEqual(recipe, [{'path': runner.LIVE_RECIPE_INPUT, 'live': True}])
+        real_read = Path.read_bytes
+        def edited(path):
+            data = real_read(path)
+            return data + b'\n// recipe edit' if path.as_posix().endswith(runner.LIVE_RECIPE_INPUT) else data
+        with patch.object(Path, 'read_bytes', edited):
+            bound = {row['path']: row for row in runner.required_input_plan()}
+        self.assertTrue(bound[runner.LIVE_RECIPE_INPUT]['bytes'] > 0)
+        for defect in ({'path': runner.LIVE_RECIPE_INPUT, 'live': False},
+                       {'path': runner.LIVE_RECIPE_INPUT, 'live': True, 'bytes': 1}):
+            with self.subTest(defect=defect):
+                changed = json.loads(json.dumps(manifest))
+                changed['inputs'] = [defect if row['path'] == runner.LIVE_RECIPE_INPUT else row for row in changed['inputs']]
+                with patch.object(runner, 'bounded_text', return_value=json.dumps(changed)):
+                    with self.assertRaises(RuntimeError): runner.required_input_plan()
+
 if __name__ == '__main__': unittest.main()
