@@ -406,12 +406,12 @@
 		if ("flee")
 			return actor.npc_subtile_flee_enabled && isnum(distance_limit) && distance_limit >= 0 && isnum(interval) && interval >= world.tick_lag && interval <= 100 && world.time < expires_at && get_dist(actor, target) <= distance_limit
 		if ("pet")
-			if (!actor.npc_subtile_pet_enabled || !istype(actor, /mob/living/simple_animal/pet) || !(mode in list("towards", "away")) || !isnum(distance_limit) || distance_limit < 0 || !isnum(interval) || interval < world.tick_lag || interval > 100)
+			if (!actor.npc_subtile_pet_enabled || !istype(actor, /mob/living/simple_animal/pet) || (mode != "towards" && mode != "away") || !isnum(distance_limit) || distance_limit < 0 || !isnum(interval) || interval < world.tick_lag || interval > 100)
 				return FALSE
 			var/mob/living/simple_animal/pet/pet = actor
 			return (mode == "towards" && pet.movement_target == target) || (mode == "away" && pet.flee_target == target && get_dist(actor, target) <= distance_limit)
 		if ("wild")
-			return actor.npc_subtile_species_enabled && (mode == "towards" || mode == "away" || mode == "path") && isnum(interval) && interval >= world.tick_lag && interval <= 100 && (!(mode in list("away", "path")) || (isnum(distance_limit) && distance_limit >= 0))
+			return actor.npc_subtile_species_enabled && (mode == "towards" || mode == "away" || mode == "path") && isnum(interval) && interval >= world.tick_lag && interval <= 100 && ((mode != "away" && mode != "path") || (isnum(distance_limit) && distance_limit >= 0))
 	return FALSE
 
 // Retire only an obsolete species owner once no paid physical step is active.

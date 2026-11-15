@@ -92,6 +92,35 @@ class PendingContracts(unittest.TestCase):
         self.context['world'].time = 60
         self.assertFalse(evaluate(flee, self.context))
 
+    def test_pending_pet_and_wild_modes_and_distance_boundaries(self):
+        valid = section(self.source, '/datum/npc_subtile_pending_intent/proc/valid()\n',
+                        '/datum/npc_subtile_recovery\n')
+        pet_body = section(valid, '\t\tif ("pet")', '\t\tif ("wild")')
+        pet_guard = next(line.strip()[3:] for line in pet_body.splitlines()
+                         if line.strip().startswith('if ('))
+        pet_guard = pet_guard.replace('istype(actor, /mob/living/simple_animal/pet)', 'is_pet(actor)')
+        pet_result = next(line.strip()[len('return '):] for line in pet_body.splitlines()
+                          if line.strip().startswith('return ') and line.strip() != 'return FALSE')
+        wild = self.mode_guard('wild', None)
+        self.actor.npc_subtile_pet_enabled = True
+        self.actor.npc_subtile_species_enabled = True
+        self.context.update(is_pet=lambda actor: True, list=lambda *items: items,
+                            pet=SimpleNamespace(movement_target=self.target, flee_target=self.target))
+        for mode in ('towards', 'away', 'path', 'random', 'direction', '', None, 42):
+            for distance in (None, 'bad', -1, 0, 3, 7):
+                with self.subTest(mode=mode, distance=distance):
+                    self.context.update(mode=mode, distance_limit=distance)
+                    valid_distance = isinstance(distance, (int, float)) and distance >= 0
+                    expected_pet = (mode == 'towards' and valid_distance) or (mode == 'away' and valid_distance and distance >= 3)
+                    actual_pet = not evaluate(pet_guard, self.context) and evaluate(pet_result, self.context)
+                    expected_wild = mode == 'towards' or (mode in ('away', 'path') and valid_distance)
+                    self.assertEqual(actual_pet, expected_pet)
+                    self.assertEqual(evaluate(wild, self.context), expected_wild)
+        # A wrong replacement that drops path mode must be caught by the oracle.
+        self.context.update(mode='path', distance_limit=3)
+        self.assertTrue(evaluate(wild, self.context))
+        self.assertFalse(evaluate(wild.replace('mode == "path"', 'mode == "random"', 1), self.context))
+
     def test_deferred_side_is_rejected_if_either_turf_changes(self):
         pursuit = self.mode_guard('pursuit', 'follow')
         origin, destination = object(), object()
