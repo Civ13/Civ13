@@ -55,5 +55,11 @@ parked in a corner with line of sight switched off):
 - The memory rows count live `los_context`, `los_presenter`,
   `root_tree_presenter` and `los_snapshot` datums.
 
+GitHub-hosted Windows runners cannot run it: the pinned BYOND build installs,
+the game compiles and Dream Daemon boots there, but Dream Seeker 516.1688
+crashes inside `byondcore.dll` (access violation) as soon as it is told to
+connect, with or without `##guest` or the pager (runs 43675051528 and
+43676280734, 2026-11-15).
+
 The wrappers add a little time of their own, so treat the numbers as slightly
 high. Client frame rate is not measured here; `tests/animal_fps_probe` does that.
