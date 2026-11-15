@@ -245,4 +245,30 @@ class Views(unittest.TestCase):
  def test_projection_rejects_unreviewed_effect_boundaries(self):
   with self.assertRaises(AssertionError):environment(SOURCE.replace('return paper_document_route_access(', 'sleep(1)\n\treturn paper_document_route_access('))
 
+class ContainerRows(unittest.TestCase):
+ def test_shared_rows_keep_existing_actions_and_markup(self):
+  body=vm.body(SOURCE,'/proc/paper_document_container_row').strip()
+  self.assertTrue(body.startswith('return "') and body.endswith('"'))
+  template=body[len('return "'):-1]
+  # Project the formatter's DM interpolation with inert references and a name.
+  values={r'\ref[container]':'CONTAINER',r'\ref[item]':'ITEM',
+          '[open_action]':None,'[item.name]':'Record & notes'}
+  for action in ('read','look','browse'):
+   values['[open_action]']=action
+   rendered=template
+   for token,value in values.items():rendered=rendered.replace(token,value)
+   self.assertEqual(rendered,
+    "<A href='?src=CONTAINER;remove=ITEM'>Remove</A> "
+    "<A href='?src=CONTAINER;rename=ITEM'>Rename</A> - "
+    f"<A href='?src=CONTAINER;{action}=ITEM'>Record & notes</A><BR>")
+
+  clipboard=vm.body((ROOT/'code/game/objects/items/clipboard.dm').read_text(),'/obj/item/weapon/clipboard/attack_self')
+  folder=vm.body((ROOT/'code/game/objects/items/paper/folder.dm').read_text(),'/obj/item/weapon/folder/attack_self')
+  calls=lambda text:re.findall(r'paper_document_container_row\(src, (\w+), "(\w+)"\)',text)
+  self.assertEqual(calls(clipboard),[('P','read'),('Ph','look')])
+  self.assertEqual(calls(folder),[('P','read'),('Ph','look'),('Pb','browse')])
+  self.assertIn('if (P==toppaper)\n\t\t\tcontinue',clipboard)
+  self.assertIn(';write=\\ref[P]',clipboard)
+  self.assertIn('[P.name]</A><BR><HR>',clipboard)
+
 if __name__=='__main__':unittest.main()
