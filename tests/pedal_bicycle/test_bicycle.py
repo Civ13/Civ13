@@ -405,7 +405,7 @@ class BicycleWiring(unittest.TestCase):
 
     def test_recipe_and_research_and_include(self):
         self.assertIn('code\\game\\objects\\structures\\bicycle.dm', (ROOT / 'civ13.dme').read_text())
-        self.assertIn('RECIPE: /material/steel/,pedal bicycle,/obj/structure/vehicle/bicycle,12,200,1,1,vehicle parts,95,0,0,8,null',
+        self.assertIn('RECIPE: /material/steel/,pedal bicycle,/obj/structure/vehicle/bicycle,8,200,1,1,vehicle parts,95,0,0,8,null',
                       (ROOT / 'config/crafting/material_recipes_global.txt').read_text())
         self.assertIn('"/obj/structure/vehicle/bicycle" = "factories"',
                       (ROOT / 'code/modules/research_tree/research_node.dm').read_text())

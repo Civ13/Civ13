@@ -181,5 +181,35 @@
     "inputs": {
       "/obj/item/stack/material/iron": 4
     }
+  },
+  "/obj/item/machine_part/wheel": {
+    "tools": [
+      "hatchet",
+      "chisel"
+    ],
+    "inputs": {}
+  },
+  "/obj/item/machine_part/wheel/shod": {
+    "tools": [
+      "hammer"
+    ],
+    "inputs": {
+      "/obj/item/machine_part/wheel": 1
+    }
+  },
+  "/obj/structure/vehicle/bicycle": {
+    "tools": [
+      "wrench"
+    ],
+    "inputs": {
+      "/obj/item/machine_part/wheel": 2,
+      "/obj/item/machine_part/belt": 1
+    }
+  },
+  "/obj/structure/vehicle/bicycle/running": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/machine_part/wheel": 2
+    }
   }
 }

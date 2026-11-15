@@ -144,6 +144,44 @@
 /obj/item/machine_part/belt/part_name(material/M)
 	return "[M.display_name] [is_chain() ? "drive chain" : "drive belt"]"
 
+/obj/item/machine_part/wheel
+	name = "wheel"
+	desc = "A spoked wheel for a cart, a bicycle or anything else that rolls."
+	icon_state = "wheel"
+	w_class = ITEM_SIZE_NORMAL
+	part_role = ROLE_WHEEL
+	part_noun = "wheel"
+
+/obj/item/machine_part/wheel/part_icon_state(material/M)
+	return part_material_is_wood() ? "wheel_wood" : "wheel"
+
+// A wooden wheel with an iron tyre shrunk on: it lasts twice as long. It is
+// drawn in its own colours, so it is not tinted.
+/obj/item/machine_part/wheel/shod
+	name = "iron-shod wheel"
+	desc = "A wooden wheel with an iron tyre shrunk on to the rim."
+	icon_state = "wheel_shod"
+	part_material = "wood"
+	castable = FALSE
+
+/obj/item/machine_part/wheel/shod/part_icon_state(material/M)
+	return "wheel_shod"
+
+/obj/item/machine_part/wheel/shod/part_name(material/M)
+	return "iron-shod [..()]"
+
+/obj/item/machine_part/wheel/shod/apply_part_material()
+	..()
+	color = null
+
+/obj/item/machine_part/wheel/shod/rating()
+	var/list/rated = ..()
+	if (!rated)
+		return null
+	rated = rated.Copy()
+	rated[2] *= 2
+	return rated
+
 // Why this part type cannot be made of this material by this route, or null.
 /proc/machine_part_refusal(part_type, material_name, cast = FALSE)
 	if (!ispath(part_type, /obj/item/machine_part))

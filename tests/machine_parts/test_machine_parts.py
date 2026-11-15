@@ -46,6 +46,7 @@ PARTS = {
     '/obj/item/machine_part/bearing': 'bearing',
     '/obj/item/machine_part/spring': 'spring',
     '/obj/item/machine_part/belt': 'belt',
+    '/obj/item/machine_part/wheel': 'wheel',
 }
 NOT_CAST = {'/obj/item/machine_part/spring', '/obj/item/machine_part/belt'}
 # The metals a mould can hold (anvil_mold_costs) and the sheets an anvil forges.
@@ -76,6 +77,10 @@ FROZEN = {
     ('belt', 'leather'): (1.0, 1.0),
     ('belt', 'iron'): (1.25, 2.0),
     ('belt', 'steel'): (1.25, 2.0),
+    ('wheel', 'wood'): (0.42, 0.2),
+    ('wheel', 'bronze'): (0.74, 0.85),
+    ('wheel', 'iron'): (0.84, 0.7),
+    ('wheel', 'steel'): (1.0, 1.0),
 }
 # Soft or brittle metals a mould can hold but no part may be cast from.
 REFUSED = [('gear', 'lead'), ('gear', 'gold'), ('gear', 'silver'), ('gear', 'tin'),
@@ -140,7 +145,7 @@ class MachineParts(unittest.TestCase):
         rows = hand_rows()
         made = {(PARTS[cols[2]], cols[12]) for cols in rows}
         self.assertEqual(made, {('gear', 'wood'), ('gear', 'bone'), ('shaft', 'wood'), ('bearing', 'wood'),
-                                ('belt', 'rope'), ('belt', 'leather'), ('belt', 'cloth')})
+                                ('belt', 'rope'), ('belt', 'leather'), ('belt', 'cloth'), ('wheel', 'wood')})
         for cols in rows:
             # the row pays in the material the part is made of
             self.assertEqual(cols[0], '/material/%s/' % cols[12], cols[1])
@@ -150,6 +155,7 @@ class MachineParts(unittest.TestCase):
         self.assertEqual(NEEDS['/obj/item/machine_part/gear']['tools'], ['chisel'])
         self.assertEqual(NEEDS['/obj/item/machine_part/shaft']['tools'], ['hatchet'])
         self.assertEqual(NEEDS['/obj/item/machine_part/belt']['tools'], ['knife'])
+        self.assertEqual(NEEDS['/obj/item/machine_part/wheel']['tools'], ['hatchet', 'chisel'])
         self.assertNotIn('/obj/item/machine_part/spring', NEEDS)
 
     def test_anvil_rows(self):
@@ -190,7 +196,7 @@ class MachineParts(unittest.TestCase):
             for path, role in PARTS.items():
                 if path not in NOT_CAST and self.rating(role, metal):
                     cast.add((role, metal))
-        self.assertEqual(cast, {(role, metal) for role in ('gear', 'shaft', 'bearing')
+        self.assertEqual(cast, {(role, metal) for role in ('gear', 'shaft', 'bearing', 'wheel')
                                 for metal in ('bronze', 'brass', 'copper', 'iron', 'steel')})
         for path in NOT_CAST:
             block = re.search(r'^' + re.escape(path) + r'\n((?:\t[^\n]*\n)+)', SOURCE, re.M)[1]

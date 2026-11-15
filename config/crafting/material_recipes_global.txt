@@ -2068,7 +2068,8 @@ RECIPE: /material/steel/,loaders's seat,/obj/structure/bed/chair/loader,6,40,0,1
 RECIPE: /material/steel/,gunner's seat,/obj/structure/bed/chair/gunner,6,40,0,1,vehicle parts,126,125,0,8,null
 RECIPE: /material/steel/,commander's seat,/obj/structure/bed/chair/commander,10,40,0,1,vehicle parts,126,125,0,8,null
 
-RECIPE: /material/steel/,pedal bicycle,/obj/structure/vehicle/bicycle,12,200,1,1,vehicle parts,95,0,0,8,null
+RECIPE: /material/steel/,pedal bicycle,/obj/structure/vehicle/bicycle,8,200,1,1,vehicle parts,95,0,0,8,null
+RECIPE: /material/aluminium/,aluminium pedal bicycle,/obj/structure/vehicle/bicycle,8,200,1,1,vehicle parts,95,0,0,8,aluminium
 RECIPE: /material/steel/,motorcycle frame,/obj/item/vehicleparts/frame/bike,12,200,0,1,vehicle parts,126,0,0,8,null
 RECIPE: /material/steel/,steel vehicle frame,/obj/structure/vehicleparts/frame,2,40,0,1,vehicle parts,126,0,0,8,null
 RECIPE: /material/steel/,cargo hold,/obj/structure/cargo_hold,8,120,1,1,vehicle parts,115,0,0,8,null
@@ -2424,6 +2425,8 @@ RECIPE: /material/wood/,weir stakes,/obj/item/weapon/trap_kit/weir,6,120,0,1,too
 
 RECIPE: /material/wood/,quarterstaff,/obj/item/weapon/material/quarterstaff,2,50,0,1,weapons,0,0,0,8,wood
 RECIPE: /material/wood/,wooden gear set,/obj/item/machine_part/gear,4,150,0,1,machine parts,0,0,0,8,wood
+RECIPE: /material/wood/,wooden wheel,/obj/item/machine_part/wheel,3,120,0,1,machine parts,0,0,0,8,wood
+RECIPE: /material/wood/,running bike,/obj/structure/vehicle/bicycle/running,6,200,1,1,vehicle parts,22,0,0,8,null
 RECIPE: /material/wood/,wooden shaft,/obj/item/machine_part/shaft,2,80,0,1,machine parts,0,0,0,8,wood
 RECIPE: /material/wood/,greased wooden bearing block,/obj/item/machine_part/bearing,2,100,0,1,machine parts,0,0,0,8,wood
 RECIPE: /material/wood/,wood club,/obj/item/weapon/melee/classic_baton/club,3,50,0,1,weapons,0,0,0,0,wood
@@ -2769,6 +2772,7 @@ RECIPE: /material/iron/,canner,/obj/structure/canner,7,120,1,1,production,95,0,0
 
 //*********************| IRON TOOLS |**************************
 
+RECIPE: /material/iron/,iron-shod wheel,/obj/item/machine_part/wheel/shod,2,100,0,1,machine parts,0,0,0,8,wood
 RECIPE: /material/iron/,iron plough,/obj/item/weapon/plough/iron,4,120,0,1,tools,0,0,0,8,null
 RECIPE: /material/iron/,shears,/obj/item/weapon/shears,2,40,0,1,tools,0,0,0,8,null
 RECIPE: /material/iron/,fire hook,/obj/item/weapon/fire_hook,3,90,0,1,tools,0,0,0,8,null

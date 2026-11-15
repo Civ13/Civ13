@@ -36,6 +36,7 @@ LOOSE_INPUTS = {
     '/obj/item/machine_part/bearing': 'code/modules/materials/machine_parts.dm',
     '/obj/item/machine_part/belt': 'code/modules/materials/machine_parts.dm',
     '/obj/item/machine_part/spring': 'code/modules/materials/machine_parts.dm',
+    '/obj/item/machine_part/wheel': 'code/modules/materials/machine_parts.dm',
 }
 
 
@@ -100,7 +101,9 @@ class CraftNeeds(unittest.TestCase):
                 continue
             paying = materials.get(cols[0].rstrip('/'))
             for stack_type in need['inputs']:
-                self.assertNotEqual(default_type(stack_type), paying, cols[1])
+                # A loose item (a wheel, a chain) is never the stack that pays.
+                if default_type(stack_type) is not None:
+                    self.assertNotEqual(default_type(stack_type), paying, cols[1])
 
     def test_rope_products_keep_their_cost(self):
         self.assertEqual(NEEDS['/obj/structure/vehicle/raft']['inputs'], {'/obj/item/stack/material/rope': 2})
