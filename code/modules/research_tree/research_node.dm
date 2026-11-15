@@ -954,9 +954,17 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/vehicleparts/frame" = "automobiles",
 		"/obj/structure/vehicleparts/frame/wood" = "automobiles",
 		"/obj/structure/vehicleparts/movement" = "automobiles",
-		// --- irrigation (2) ---
+		// --- irrigation (10) ---
 		"/obj/structure/sluice_gate" = "irrigation",
 		"/obj/structure/water_lift/archimedes_screw" = "irrigation",
+		"/obj/structure/aqueduct/channel" = "irrigation",
+		"/obj/structure/aqueduct/flume" = "irrigation",
+		"/obj/structure/aqueduct/arch" = "irrigation",
+		"/obj/structure/aqueduct/qanat" = "irrigation",
+		"/obj/structure/aqueduct_intake" = "irrigation",
+		"/obj/structure/aqueduct_intake/noria" = "irrigation",
+		"/obj/structure/sink/aqueduct_fountain" = "irrigation",
+		"/obj/structure/aqueduct/pipe" = "irrigation",
 		// --- basic_agriculture (12) ---
 		"/obj/structure/water_lift/shaduf" = "basic_agriculture",
 		"/obj/structure/river_gauge" = "basic_agriculture",
@@ -1702,7 +1710,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/reagent_containers/glass/mortar" = "herbalism",
 		"/obj/item/weapon/reagent_containers/pill/opium" = "herbalism",
 		"/obj/structure/drying_rack" = "herbalism",
-		// --- hygiene (11) ---
+		// --- hygiene (12) ---
+		"/obj/structure/aqueduct_bath" = "hygiene",
 		"/obj/item/weapon/material/kitchen/utensil/knife/razorblade" = "hygiene",
 		"/obj/structure/shower/bathtub/bronze" = "hygiene",
 		"/obj/structure/shower/bathtub/copper" = "hygiene",
@@ -2254,7 +2263,9 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/religious/totem_pole" = "ritual_worship",
 		"/obj/structure/religious/woodcross1" = "ritual_worship",
 		"/obj/structure/religious/woodcross2" = "ritual_worship",
-		// --- sanitation (11) ---
+		// --- sanitation (13) ---
+		"/obj/structure/aqueduct/pipe/lead" = "sanitation",
+		"/obj/structure/sink/aqueduct_fountain/tap" = "sanitation",
 		"/obj/structure/mirror" = "sanitation",
 		"/obj/structure/shower" = "sanitation",
 		"/obj/structure/shower/bathtub/big/bronze" = "sanitation",
