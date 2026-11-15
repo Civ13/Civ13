@@ -73,7 +73,7 @@ class RiverFlowTest(unittest.TestCase):
 
 
 ROOT = Path(__file__).resolve().parents[2]
-SIDECARS = {'nomads_gaia': 2, 'nomads_europe': 1, 'nomads_jungle': 2, 'nomads_asia': 1}
+SIDECARS = {'nomads_gaia': 2, 'nomads_europe': 1, 'nomads_jungle': 2, 'nomads_desert': 2, 'nomads_asia': 1}
 
 
 class CommittedSidecarTest(unittest.TestCase):
@@ -97,6 +97,24 @@ class CommittedSidecarTest(unittest.TestCase):
                         # A sea current never sets ashore or out of the sea.
                         dx, dy = STEP[rows[y][x]]
                         self.assertIn('saltwater', turfs[y + dy][x + dx], (x, y))
+
+    def test_every_land_has_a_sea_edge_a_ship_can_reach(self):
+        # A ship arrives on free deep water near a map edge (ship_crossing.dm).
+        # Jungle and Desert were land-locked until scripts/map_coast.py cut a
+        # coast: the whole west edge of Jungle and north edge of Desert.
+        from terrain_heights import read_dmm
+        deep = '/turf/floor/beach/water/deep/saltwater'
+        for name, z, side in (('nomads_jungle', 2, 'W'), ('nomads_desert', 2, 'N')):
+            with self.subTest(name):
+                _, _, levels = read_dmm(ROOT / f'maps/nomads/{name}.dmm')
+                turfs = levels[z]
+                lines = [row[:12] for row in turfs] if side == 'W' else [[row[x] for row in turfs[:12]] for x in range(len(turfs[0]))]
+                self.assertTrue(all(turf.startswith(deep) for line in lines for turf in line))
+                # The sea gives way to shallows and then a beach, never a cliff.
+                for line in ([row for row in turfs] if side == 'W' else [[row[x] for row in turfs] for x in range(len(turfs[0]))]):
+                    shore = next(i for i, turf in enumerate(line) if not turf.startswith(deep))
+                    self.assertLessEqual(shore, 60)
+                    self.assertIn('shallowsaltwater', line[shore])
 
 
 STEP = {code: (dx, dy) for dx, dy, code in NEIGHBOURS}
