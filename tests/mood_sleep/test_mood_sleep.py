@@ -314,15 +314,15 @@ class LivingConditions(unittest.TestCase):
     def test_positive_conditions_stay_under_the_resting_cap(self):
         living = source(self.LIVING)
         value = lambda name: float(re.search(r'^#define %s (\S+)' % name, living, re.M).group(1))
-        basics = sum(value(name) for name in ('LIVING_BED', 'LIVING_SHEET', 'LIVING_DIET', 'LIVING_CLEAN', 'LIVING_WARM_DRY'))
-        self.assertEqual(basics, 18)
+        basics = sum(value(name) for name in ('LIVING_BED', 'LIVING_PADDING', 'LIVING_SHEET', 'LIVING_DIET', 'LIVING_CLEAN', 'LIVING_WARM_DRY'))
+        self.assertEqual(basics, 20)
         home = value('LIVING_SHELTER') + value('LIVING_ANIMAL') + value('LIVING_ART') * value('LIVING_ART_PIECES')
         self.assertEqual(home, 12)
         cap = float(re.search(r'^#define MOOD_REST_MAX (\S+)', source('code/__defines/mobs.dm'), re.M).group(1))
         # The basics alone reach Good; no single lift is needed to reach the cap.
         self.assertGreaterEqual(50 + basics, 60)
         self.assertGreater(50 + basics + home, cap)
-        for name in ('LIVING_BED', 'LIVING_SHEET', 'LIVING_DIET', 'LIVING_CLEAN', 'LIVING_WARM_DRY', 'LIVING_SHELTER', 'LIVING_ANIMAL'):
+        for name in ('LIVING_BED', 'LIVING_PADDING', 'LIVING_SHEET', 'LIVING_DIET', 'LIVING_CLEAN', 'LIVING_WARM_DRY', 'LIVING_SHELTER', 'LIVING_ANIMAL'):
             self.assertGreaterEqual(50 + basics + home - value(name), cap, name)
         # Conditions alone reach Good (60 up to 80), never Excellent.
         self.assertLess(cap, 80)

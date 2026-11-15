@@ -76,6 +76,7 @@ sickness, which could only ever pin mood to the floor.
 | Condition | Change | Where |
 | --- | --- | --- |
 | Last slept on a bedroll / in a proper bed | +2 / +4 | hunger-enabled maps |
+| ... a proper bed padded with cloth or leather | +2 more | hunger-enabled maps |
 | ... with a bedsheet on the same tile | +2 more | hunger-enabled maps |
 | Varied diet: 3 of the 4 food groups adequate | +5 | hunger-enabled maps |
 | Warm and dry: temperature icon normal, clothes not wet | +3 | hunger-enabled maps |
@@ -93,8 +94,8 @@ A bit dirty (75 up to 200) is neither a lift nor a penalty. The bed is noted
 while the character sleeps (`sleep_comfort`, saved with the body) and counts
 from waking until they next sleep; chairs and seats count for nothing.
 
-The basics (bed, sheet, diet, clean, warm and dry) add up to 18 and rest a
-character at 68: Good. Shelter, an animal and art add 12 more, which is over
+The basics (bed, padding, sheet, diet, clean, warm and dry) add up to 20 and
+rest a character at 70: Good. Shelter, an animal and art add 12 more, which is over
 the cap of 75, so no single lift is required to reach it and conditions alone
 never reach Excellent.
 
