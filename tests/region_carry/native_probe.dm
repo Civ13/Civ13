@@ -249,6 +249,60 @@ var/global/datum/region_carry_probe/region_carry_probe = new
 		forged = list("t" = "/obj/item/weapon/paddle", "r" = list(list("not_a_reagent", 5)))
 		require(!region_travel_generic_record("item:[json_encode(forged)]"), "unknown reagent accepted")
 		pass("whole_items", list("kinds" = kinds, "bytes" = length(json_encode(VP))))
+
+		mark("ship_cargo")
+		// A ship's deck carries animals, the dead and structures (ship_crossing_cargo.dm).
+		var/turf/D3 = locate(40, 40, 1)
+		var/mob/living/simple_animal/goat/nanny = new(T)
+		nanny.name = "Nanny"
+		nanny.real_name = "Nanny"
+		nanny.health = max(1, nanny.maxHealth - 7)
+		var/list/goat_entry = sea_crossing_cargo_entry(nanny)
+		require(islist(goat_entry) && goat_entry[1] == "g" && sea_crossing_cargo_valid(goat_entry), "goat would not ride a deck: [goat_entry]")
+		var/mob/living/simple_animal/goat/nanny_back = sea_crossing_cargo_build(goat_entry, D3)
+		require(istype(nanny_back) && nanny_back.name == "Nanny" && nanny_back.health == nanny.health && nanny_back.stat != DEAD, "goat came back as [nanny_back ? "[nanny_back.name] [nanny_back.health]/[nanny_back.stat]" : "nothing"], sent [nanny.health]")
+		var/mob/living/simple_animal/chicken/hen = new(T)
+		hen.death()
+		var/list/hen_entry = sea_crossing_cargo_entry(hen)
+		require(islist(hen_entry), "dead hen would not ride a deck: [hen_entry]")
+		var/mob/living/simple_animal/chicken/hen_back = sea_crossing_cargo_build(hen_entry, D3)
+		require(istype(hen_back) && hen_back.stat == DEAD, "dead hen came back alive or not at all")
+		var/obj/structure/reagent_dispensers/largebarrel/cask = new(T)
+		cask.reagents.clear_reagents()
+		cask.reagents.add_reagent("water", 240)
+		var/list/cask_entry = sea_crossing_cargo_entry(cask)
+		require(islist(cask_entry), "barrel would not ride a deck: [cask_entry]")
+		var/obj/structure/reagent_dispensers/largebarrel/cask_back = sea_crossing_cargo_build(cask_entry, D3)
+		require(istype(cask_back) && abs(cask_back.reagents.get_reagent_amount("water") - 240) < 0.1 && cask_back.reagents.total_volume < 240.1, "barrel came back holding [istype(cask_back) ? cask_back.reagents.total_volume : "nothing"]")
+		var/obj/structure/props/barrel/prop = new(T)
+		require(islist(sea_crossing_cargo_entry(prop)), "prop barrel would not ride a deck")
+		var/mob/living/human/sailor = new(T)
+		sailor.persistence_restored = TRUE
+		sailor.fully_replace_character_name(sailor.real_name, "Drowned Sailor")
+		var/obj/item/clothing/under/leaves_skirt/au_naturel/shroud = new(T)
+		sailor.equip_to_slot_or_del(shroud, slot_w_uniform)
+		sailor.death()
+		var/list/body_entry = sea_crossing_body_entry(sailor)
+		require(islist(body_entry) && body_entry[1] == "b" && sea_crossing_body_valid(body_entry), "body would not ride a deck: [body_entry]")
+		var/mob/living/human/sailor_back = sea_crossing_body_build(body_entry, D3)
+		require(istype(sailor_back) && sailor_back.stat == DEAD && sailor_back.real_name == "Drowned Sailor" && istype(sailor_back.w_uniform, /obj/item/clothing/under/leaves_skirt/au_naturel), "body came back as [sailor_back ? "[sailor_back.real_name] stat [sailor_back.stat] uniform [sailor_back.w_uniform]" : "nothing"]")
+		// A whole deck record with all of them passes its own check.
+		var/list/deck = list("v" = 1, "name" = "Probe", "dir" = NORTH, "from" = list(1100, 500, 1), "papers" = "", "helm" = "/obj/structure/hull_tiller",
+			"tiles" = list(list(0, 0, list(list("c", "/obj/covers/repairedfloor", NORTH, 50), goat_entry, cask_entry)), list(0, 1, list(list("c", "/obj/covers/repairedfloor", NORTH, 50), body_entry, hen_entry))))
+		require(sea_crossing_record_ok(deck), "deck record with cargo refused")
+		// Refused: an animal somebody plays, a forged helm or vehicle as cargo,
+		// a structure as a worn item, a body with a bad gender.
+		nanny.ckey = "carryprobegoat"
+		require(istext(sea_crossing_cargo_entry(nanny)), "a played animal would ride as cargo")
+		nanny.ckey = null
+		require(!sea_crossing_cargo_valid(list("g", "item:[json_encode(list("t" = "/obj/structure/hull_tiller"))]")), "helm accepted as cargo")
+		require(!sea_crossing_cargo_valid(list("g", "item:[json_encode(list("t" = "/obj/structure/vehicle"))]")), "vehicle accepted as cargo")
+		require(!region_travel_generic_record(cask_entry[2]), "barrel accepted as a worn item")
+		require(!sea_crossing_cargo_valid(list("g", "item:[json_encode(list("t" = "/obj/item/weapon/paddle", "c" = list(list("t" = "/obj/structure/props/barrel"))))]")), "structure accepted inside an item")
+		var/list/bad_body = list("b", body_entry[2].Copy())
+		bad_body[2]["gender"] = "x"
+		require(!sea_crossing_body_valid(bad_body), "forged body accepted")
+		pass("ship_cargo", list("goat_bytes" = length(goat_entry[2]), "cask_bytes" = length(cask_entry[2]), "body_bytes" = length(json_encode(body_entry))))
 		mark("recipe_knowledge")
 		// The rebuild above hands ownership to the rebuilt body; give the
 		// sender its own owner again so the knowledge payload can decode.

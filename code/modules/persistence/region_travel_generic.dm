@@ -21,6 +21,12 @@
 // travel. Anything holding a creature never travels. The record is checked
 // field by field on the way in, and a field that does not fit is skipped
 // rather than stopping the arrival.
+//
+// A ship's deck (naval/ship_crossing.dm) also carries cargo that is not an
+// item: a structure (a barrel, a table, a door) or an animal. Such a record is
+// only ever the whole of one deck entry, never inside anything, and only the
+// callers that ask for cargo ("root") accept one. It travels the way a world
+// save keeps it: its saved fields, contents and reagents, rebuilt as a load does.
 
 #define REGION_TRAVEL_GENERIC_MAX 131072
 #define REGION_TRAVEL_GENERIC_DEPTH 6
@@ -54,9 +60,19 @@ var/global/list/region_travel_generic_defaults = list()
 /proc/region_travel_ignorable(atom/movable/M)
 	return istype(M, /atom/movable/overlay) || istype(M, /obj/chat_text) || istype(M, /obj/effect) || istype(M, /atom/movable/lighting_overlay) || istype(M, /atom/movable/lighting_fullbright) || istype(M, /mob/observer)
 
-/proc/region_travel_generic_type_ok(path)
+/proc/region_travel_generic_type_ok(path, root = FALSE)
+	if(root && region_travel_generic_cargo_type_ok(path)) return TRUE
 	if(!ispath(path, /obj/item)) return FALSE
 	for(var/denied in list(/obj/item/weapon/grab, /obj/item/organ))
+		if(ispath(path, denied)) return FALSE
+	return TRUE
+
+// Deck cargo that is not an item. Masts, benches, chests and the helm have
+// narrower deck entries; vehicles, engines and trails are never cargo.
+/proc/region_travel_generic_cargo_type_ok(path)
+	if(ispath(path, /mob/living/simple_animal)) return TRUE
+	if(!ispath(path, /obj/structure)) return FALSE
+	for(var/denied in list(/obj/structure/vehicleparts, /obj/structure/vehicle, /obj/structure/hull_tiller, /obj/structure/region_gate))
 		if(ispath(path, denied)) return FALSE
 	return TRUE
 
@@ -111,7 +127,7 @@ var/global/list/region_travel_generic_defaults = list()
 	return json_encode(value)
 
 // The saved, non-runtime fields of I's type worth looking at.
-/proc/region_travel_generic_fields_of(obj/item/I)
+/proc/region_travel_generic_fields_of(atom/movable/I)
 	var/list/keys = region_travel_generic_keys[I.type]
 	if(!keys)
 		keys = list()
@@ -123,14 +139,14 @@ var/global/list/region_travel_generic_defaults = list()
 	return keys
 
 // What field key holds on new items of I's type, as a wire value, or RANDOM.
-/proc/region_travel_generic_default(obj/item/I, key)
+/proc/region_travel_generic_default(atom/movable/I, key)
 	var/list/defaults = region_travel_generic_defaults[I.type]
 	if(!defaults)
 		defaults = list()
 		region_travel_generic_defaults[I.type] = defaults
 		var/list/samples = list()
 		for(var/i in 1 to REGION_TRAVEL_GENERIC_SAMPLES)
-			var/obj/item/fresh = null
+			var/atom/movable/fresh = null
 			try
 				fresh = new I.type(null)
 			catch
@@ -141,7 +157,7 @@ var/global/list/region_travel_generic_defaults = list()
 			var/first = null
 			var/agreed = TRUE
 			var/index = 0
-			for(var/obj/item/fresh in samples)
+			for(var/atom/movable/fresh in samples)
 				var/wire = region_travel_generic_wire(fresh.vars[name])
 				if(++index == 1)
 					first = wire
@@ -150,15 +166,16 @@ var/global/list/region_travel_generic_defaults = list()
 			if(!samples.len)
 				first = region_travel_generic_wire(initial(I.vars[name]))
 			defaults[name] = agreed ? first : REGION_TRAVEL_GENERIC_RANDOM
-		for(var/obj/item/fresh in samples)
+		for(var/atom/movable/fresh in samples)
 			qdel(fresh)
 	return defaults[key]
 
 // The record of item I, or null when it (or anything in it) cannot travel.
 // count is a one-item list shared by the whole tree, bounding its size.
-/proc/region_travel_generic_capture(obj/item/I, depth = 0, obj/item/parent = null, list/count = null)
+// root: I may be deck cargo (a structure or an animal) rather than an item.
+/proc/region_travel_generic_capture(atom/movable/I, depth = 0, atom/movable/parent = null, list/count = null, root = FALSE)
 	if(!count) count = list(0)
-	if(!istype(I) || QDELETED(I) || depth > REGION_TRAVEL_GENERIC_DEPTH || !region_travel_generic_type_ok(I.type)) return null
+	if(!istype(I) || QDELETED(I) || depth > REGION_TRAVEL_GENERIC_DEPTH || !region_travel_generic_type_ok(I.type, root && !depth)) return null
 	count[1] = count[1] + 1
 	if(count[1] > REGION_TRAVEL_GENERIC_NODES) return null
 	// Saving first lets an item write down what it keeps in runtime fields
@@ -262,7 +279,7 @@ var/global/list/region_travel_generic_defaults = list()
 /proc/region_travel_generic_index_ok(value, children)
 	return isnum(value) && value >= 1 && value <= children && value == round(value)
 
-/proc/region_travel_generic_record_valid(list/R, depth = 0, list/count = null)
+/proc/region_travel_generic_record_valid(list/R, depth = 0, list/count = null, root = FALSE)
 	if(!count) count = list(0)
 	if(!islist(R) || depth > REGION_TRAVEL_GENERIC_DEPTH) return FALSE
 	count[1] = count[1] + 1
@@ -270,7 +287,7 @@ var/global/list/region_travel_generic_defaults = list()
 	for(var/key in R)
 		if(!(key in list("t", "v", "n", "y", "m", "r", "c", "l", "p"))) return FALSE
 	var/path = istext(R["t"]) ? text2path(R["t"]) : null
-	if(!region_travel_generic_type_ok(path)) return FALSE
+	if(!region_travel_generic_type_ok(path, root && !depth)) return FALSE
 	if(!isnull(R["v"]))
 		var/list/fields = R["v"]
 		if(!islist(fields) || fields.len > REGION_TRAVEL_GENERIC_FIELDS) return FALSE
@@ -328,32 +345,32 @@ var/global/list/region_travel_generic_defaults = list()
 			if(!region_travel_generic_field_ok(key)) return FALSE
 	return TRUE
 
-// The checked record of an "item:" kind, or null.
-/proc/region_travel_generic_record(kind)
+// The checked record of an "item:" kind, or null. root: deck cargo is allowed.
+/proc/region_travel_generic_record(kind, root = FALSE)
 	if(!istext(kind) || copytext(kind, 1, 6) != "item:" || length(kind) > REGION_TRAVEL_GENERIC_MAX) return null
 	var/list/R
 	try
 		R = json_decode(copytext(kind, 6))
 	catch
 		return null
-	return region_travel_generic_record_valid(R) ? R : null
+	return region_travel_generic_record_valid(R, 0, null, root) ? R : null
 
 // Builds an "item:" kind at where the way a world load restores a saved item:
 // constructed as a restore (no first-spawn work such as starting contents,
 // random looks or initial reagents), fields applied, then after_load() for
 // everything in it, which rebuilds what derives from saved fields (an
 // accessory's verbs, a garment's dye).
-/proc/region_travel_make_generic(kind, atom/where)
-	var/list/R = region_travel_generic_record(kind)
+/proc/region_travel_make_generic(kind, atom/where, root = FALSE)
+	var/list/R = region_travel_generic_record(kind, root)
 	if(!R) return null
-	var/obj/item/I = region_travel_generic_build(R, where)
+	var/atom/movable/I = region_travel_generic_build(R, where)
 	if(!I) return null
 	var/list/tree = list(I)
 	for(var/i = 1, i <= tree.len, i++)
 		var/atom/A = tree[i]
 		for(var/obj/item/inside in A.contents)
 			tree += inside
-	for(var/obj/item/A in tree)
+	for(var/atom/movable/A in tree)
 		try
 			A.after_load()
 		catch(var/exception/e)
@@ -362,12 +379,12 @@ var/global/list/region_travel_generic_defaults = list()
 	return I
 
 // TRUE when field key of I may be set from a record at all.
-/proc/region_travel_generic_link_ok(obj/item/I, key)
+/proc/region_travel_generic_link_ok(atom/movable/I, key)
 	return (key in I.vars) && region_travel_generic_field_ok(key) && issaved(I.vars[key])
 
 // Sets one field from a record; a value of another class than the item's own,
 // or one the engine refuses, is skipped so the arrival goes on.
-/proc/region_travel_generic_set(obj/item/I, key, value)
+/proc/region_travel_generic_set(atom/movable/I, key, value)
 	if(!(key in I.vars) || !region_travel_generic_field_ok(key) || !issaved(I.vars[key])) return
 	var/current = I.vars[key]
 	if(!isnull(value) && !isnull(current))
@@ -382,10 +399,10 @@ var/global/list/region_travel_generic_defaults = list()
 
 // Builds record R at where, or sets up reuse (a part its holder made itself,
 // such as a pocket) to match it. Returns the item.
-/proc/region_travel_generic_build(list/R, atom/where, obj/item/reuse = null, obj/item/parent = null)
+/proc/region_travel_generic_build(list/R, atom/where, atom/movable/reuse = null, atom/movable/parent = null)
 	var/path = text2path(R["t"])
 	var/list/fields = R["v"]
-	var/obj/item/I = reuse
+	var/atom/movable/I = reuse
 	if(!I)
 		if(ispath(path, /obj/item/stack) && fields && isnum(fields["amount"]))
 			var/obj/item/stack/S = path
@@ -449,14 +466,15 @@ var/global/list/region_travel_generic_defaults = list()
 			if("[A.type]" == child["t"])
 				match = A
 				break
-		var/obj/item/C
+		var/atom/movable/C
 		if(match)
 			fresh -= match
 			C = region_travel_generic_build(child, I, match, I)
 		else
 			C = region_travel_generic_build(child, I, null, I)
-			if(C && istype(I, /obj/item/weapon/storage))
-				C.on_enter_storage(I)
+			if(istype(C, /obj/item) && istype(I, /obj/item/weapon/storage))
+				var/obj/item/stored = C
+				stored.on_enter_storage(I)
 		made += C
 	if(fresh.len)
 		// A field the record does not set must not point at what goes.
@@ -505,7 +523,12 @@ var/global/list/region_travel_generic_defaults = list()
 	// A part held inside another (a cartridge's bullet) may not draw itself yet.
 	if(!reuse)
 		try
-			I.update_icon()
+			if(isobj(I))
+				var/obj/O = I
+				O.update_icon()
+			else if(ismob(I))
+				var/mob/M = I
+				M.update_icons()
 		catch
 			. = I
 	return I

@@ -90,9 +90,14 @@ var/naval_runtime_error = FALSE
 	var/obj/item/stack/material/wood/water_planks = new(locate(46, 31, 2), 5)
 
 	// ---- Packing ----
+	// A structure goes whole (ship_crossing_cargo.dm); an animal somebody plays never does.
 	var/obj/structure/probe_rock/rock = new(locate(43, 30, 2))
+	var/mob/living/simple_animal/goat/played = new(locate(42, 30, 2))
+	played.ckey = "probegoatplayer"
 	var/refusal = sea_crossing_pack(tiller)
-	naval_check(istext(refusal) && findtext(refusal, "probe rock"), "a thing that cannot be rebuilt keeps her in port and is named ([refusal])")
+	naval_check(istext(refusal) && findtext(refusal, "is somebody") && !findtext(refusal, "probe rock"), "an animal somebody plays keeps her in port and is named, a rock does not ([refusal])")
+	played.ckey = null
+	qdel(played)
 	qdel(rock)
 	var/list/packed = sea_crossing_pack(tiller)
 	naval_check(islist(packed), "with it ashore she packs ([istext(packed) ? packed : "ok"])")
@@ -127,7 +132,8 @@ var/naval_runtime_error = FALSE
 	naval_check(islist(region_travel_decode(probe_payload(null))), "a crew member without her decodes")
 	naval_check(!region_travel_decode(probe_payload(bad)), "a payload with a bad ship is refused")
 	var/long_text = probe_payload(null)
-	long_text = copytext(long_text, 1, length(long_text)) + ",\"pad\":\"[jointext(new /list(30000), "x")]\"}"
+	// Past a character's cap (128 KiB) but within a ship carrier's (384 KiB).
+	long_text = copytext(long_text, 1, length(long_text)) + ",\"pad\":\"[jointext(new /list(140000), "x")]\"}"
 	naval_check(!region_travel_decode(long_text), "a long payload without a ship is refused")
 
 	// ---- Off the water ----

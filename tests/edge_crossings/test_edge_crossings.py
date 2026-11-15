@@ -171,7 +171,7 @@ class SeaEdgeTests(unittest.TestCase):
         self.assertNotIn('v > 1000', ok)
         self.assertIn('v > 4096', ok)
         cross = crossing.split('/obj/structure/hull_tiller/proc/cross(')[1].split('\n/')[0]
-        self.assertLess(cross.index('if (!sea_crossing_record_ok(record))'), cross.index('sea_crossing_strip(src)'))
+        self.assertLess(cross.index('if (!sea_crossing_record_ok(record))'), cross.index('sea_crossing_strip(src, TRUE)'))
         self.assertIn('stays behind from the', cross)
 
     def test_spare_oar_points_to_the_helm(self):

@@ -20,7 +20,7 @@ import uuid
 ROOT = Path(__file__).resolve().parents[2]
 BEGIN, END = "// BEGIN_SELECTED_MAP", "// END_SELECTED_MAP"
 RUNTIME = re.compile(r"runtime error: (.*)\nproc name: (.*)\n\s*source file: ([^,\n]+),(\d+)")
-REQUIRED_CHECKS = ("carry_kinds", "refusals", "payload_roundtrip", "rebuild", "whole_items", "recipe_knowledge")
+REQUIRED_CHECKS = ("carry_kinds", "refusals", "payload_roundtrip", "rebuild", "whole_items", "ship_cargo", "recipe_knowledge")
 
 
 def generate(prefix):
@@ -92,7 +92,7 @@ def main():
         result = json.loads((output / "result.json").read_text())
         passed = [row["check"] for row in result.get("checks", []) if row.get("passed")]
         missing = [name for name in REQUIRED_CHECKS if name not in passed]
-        mode_errors = {key: count for key, count in errors.items() if "region_travel" in key}
+        mode_errors = {key: count for key, count in errors.items() if "region_travel" in key or "ship_crossing" in key}
         summary = {"passed": bool(result.get("passed")) and not missing and not mode_errors,
                    "failure": result.get("failure"), "failed_phase": result.get("failed_phase"),
                    "missing_checks": missing, "mode_runtime_errors": mode_errors,

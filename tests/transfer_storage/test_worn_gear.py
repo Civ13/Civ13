@@ -89,7 +89,8 @@ class WornGearTests(unittest.TestCase):
     def test_whole_items_are_bounded_and_checked(self):
         record = proc(GENERIC, '/proc/region_travel_generic_record_valid')
         for line in ('if(!(key in list("t", "v", "n", "y", "m", "r", "c", "l", "p"))) return FALSE',
-                     'if(!region_travel_generic_type_ok(path)) return FALSE',
+                     # Deck cargo (a structure or animal) only ever at the root of a record.
+                     'if(!region_travel_generic_type_ok(path, root && !depth)) return FALSE',
                      'if(!region_travel_generic_field_ok(key) || !region_travel_generic_value_ok(fields[key])) return FALSE',
                      '!get_material_by_name(mats[key])',
                      '!chemical_reagents_list[P[1]]',
@@ -99,6 +100,8 @@ class WornGearTests(unittest.TestCase):
         for field in ('"loc"', '"contents"', '"type"', '"vars"', '"key"', '"ckey"', '"screen_loc"'):
             self.assertIn(field, GENERIC.split('var/global/list/region_travel_generic_skip')[1].split(')')[0])
         self.assertIn('/obj/item/weapon/grab, /obj/item/organ', proc(GENERIC, '/proc/region_travel_generic_type_ok'))
+        self.assertIn('if(root && region_travel_generic_cargo_type_ok(path)) return TRUE', proc(GENERIC, '/proc/region_travel_generic_type_ok'))
+        self.assertIn('/obj/structure/vehicleparts, /obj/structure/vehicle, /obj/structure/hull_tiller, /obj/structure/region_gate', proc(GENERIC, '/proc/region_travel_generic_cargo_type_ok'))
         # A creature inside never travels, and links to other things stay behind.
         capture = proc(GENERIC, '/proc/region_travel_generic_capture')
         self.assertIn('if(ismob(A)) return null', capture)
