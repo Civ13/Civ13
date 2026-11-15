@@ -1231,6 +1231,11 @@ SUITES = {
     'barter': {'files': ('tests/barter/test_source.py',),
         'paths': ('tests/barter/',), 'shared_paths': (
             'code/modules/1713/barter.dm', 'icons/obj/barter.dmi')},
+    # Aqueducts: source contracts (the native probe is tests/aqueducts/probe.dm).
+    'aqueducts': {'files': ('tests/aqueducts/test_source.py',),
+        'paths': ('tests/aqueducts/',), 'shared_paths': (
+            'code/modules/1713/aqueducts.dm', 'icons/obj/aqueducts.dmi', 'tests/sprites/create_aqueducts.py',
+            'code/modules/1713/mechanical_power.dm')},
     # Sewers phase S1: source contracts (the native probe is tests/sewers/probe.dm).
     'sewers': {'files': ('tests/sewers/test_sewers.py',),
         'paths': ('tests/sewers/',), 'shared_paths': (
