@@ -231,7 +231,7 @@ var/global/list/region_travel_carry_types = list(
 			P["faction_leader"] = 1
 	// A crewed flight (space/lander.dm) says which lander and where it lands.
 	for(var/key in extra)
-		if(key in list("lander", "landing", "surveyed", "rough", "return", "orbit", "cargo", "sortie", "seats", "voyage", "ship"))
+		if(key in list("lander", "landing", "surveyed", "rough", "return", "orbit", "cargo", "sortie", "seats", "voyage", "ship", "edge"))
 			P[key] = extra[key]
 	return json_encode(P)
 
@@ -290,6 +290,7 @@ var/global/list/region_travel_carry_types = list(
 	if(!isnull(P["faction_leader"]) && P["faction_leader"] != 1) return null
 	if(!space_flight_payload_ok(P)) return null
 	if(!sea_crossing_payload_ok(P)) return null
+	if(!region_edge_payload_ok(P)) return null
 	return P
 
 // Strict travel admission never silently drops IDs that a destination cannot
@@ -348,7 +349,7 @@ var/global/list/region_travel_carry_types = list(
 	for(var/obj/structure/region_gate/gate in region_gates)
 		if(gate.type == /obj/structure/region_gate && !QDELETED(gate) && isturf(gate.loc)) return gate.loc
 	for(var/obj/structure/region_gate/gate in region_gates)
-		if(gate.accepts_arrivals() && gate.accepts_strangers() && !QDELETED(gate) && isturf(gate.loc)) return gate.loc
+		if(gate.accepts_arrivals() && !QDELETED(gate) && isturf(gate.loc)) return gate.loc
 	var/list/starts = latejoin_turfs ? latejoin_turfs["JoinLateCiv"] : null
 	if(length(starts)) return pick(starts)
 	return null
@@ -378,10 +379,12 @@ var/global/list/region_travel_carry_types = list(
 		// A crewed flight arrives in its landed lander (space/lander.dm).
 		// Otherwise a traveller comes out at the trail here that leads back home.
 		// A ship's crew arrive aboard her (naval/ship_crossing.dm).
-		var/turf/at = space_flight_arrival_turf(P, incoming) || sea_crossing_arrival_turf(P, incoming) || party_train_arrival_turf(P) || (incoming ? region_travel_return_trail_turf(P) : null) || T
+		// A walker over a shared map edge comes out on the facing edge (region_edge.dm).
+		var/turf/at = space_flight_arrival_turf(P, incoming) || sea_crossing_arrival_turf(P, incoming) || party_train_arrival_turf(P) || region_edge_arrival_turf(P, incoming) || (incoming ? region_travel_return_trail_turf(P) : null) || T
 		var/mob/living/human/H = region_travel_build(P, at)
 		space_flight_arrived(H, P, incoming)
 		sea_crossing_arrived(H, P, incoming)
+		region_edge_arrived(H, P, incoming)
 		// A recorded trip (or a refused one coming back) makes this land the home.
 		// A journal replay after a reload already told the coordinator once;
 		// saying it again could pull the home back from a later trip.
@@ -619,11 +622,6 @@ var/global/list/region_travel_carry_types = list(
 	return ..()
 
 /obj/structure/region_gate/proc/accepts_arrivals()
-	return TRUE
-
-// FALSE for a trail that only joins this land to its own destination (a trail
-// drawn on the map): travellers from any other land arrive elsewhere.
-/obj/structure/region_gate/proc/accepts_strangers()
 	return TRUE
 
 // TRUE for the hidden gate a crossing ship's crew leave by (naval/ship_crossing.dm).

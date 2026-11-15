@@ -46,6 +46,40 @@ States, all 32x32 and 1 dir, 1 frame unless noted:
                          showing; 1 has a shallow puddle; 2 is about half
                          full, the inside wall still showing above the water;
                          3 is full to the brim, with a ripple under the spout.
+  lever_pump             An 18th-century cast-iron hand lever pump seen from
+                         the side: a fluted iron barrel with three collars on
+                         a stone block, a long handle on a bracket at the
+                         head, a spout on the west side and a wooden bucket
+                         under it. At rest the handle hangs down.
+  lever_pump_use         4 frames, 3 ds each: the handle rocks up and down
+                         and water gushes from the spout into the bucket on
+                         the down-strokes.
+  mine_pump              A Newcomen-style atmospheric beam engine pumping a
+                         mine, seen from the side: a brick engine house with
+                         a tall chimney, the cylinder over its copper boiler
+                         showing in an arch, a wooden beam rocking on the bob
+                         wall, and a pump rod going down a timbered shaft on
+                         the east side with an outlet pipe beside it. Stopped,
+                         the pump end of the beam hangs down.
+  mine_pump_on           4 frames, 3 ds each: the beam rocks, the fire
+                         flickers, smoke puffs from the chimney and water
+                         trickles from the outlet pipe.
+  windmill_pump          A Dutch polder drainage mill reduced to one tile: a
+                         thatched smock on a brick base with a boarded cap,
+                         four lattice sails standing in a cross, and a scoop
+                         wheel in a stone channel at its foot.
+  windmill_pump_on       4 frames, 2 ds each: the sails turn 22.5 degrees a
+                         frame, so the four frames close the loop, the scoop
+                         wheel turns and water spills from the channel.
+  sump_pump              A modern electric sump pump seen from slightly
+                         above: a round blue-grey motor standing in a square
+                         concrete pit of water, a white discharge riser with
+                         a black check valve, a float switch on an arm, a
+                         mains cord to a plug on the ground and a green and
+                         yellow standby battery beside the pit.
+  sump_pump_on           3 frames, 3 ds each: the green indicator lamp
+                         blinks, the float bobs and the water in the pit
+                         shimmers.
 
 Every state keeps at least 1px clear on the left, right and bottom of the
 tile, which `--check` enforces together with the frame counts and delays, and
@@ -53,9 +87,10 @@ that no animation repeats a frame.
 
 Run with Pillow to rewrite icons/obj/flood_defences.dmi (safe to rerun).
 `--out <dmi>` writes the sheet somewhere else, `--preview <png>` writes a
-labelled review sheet with every state and frame on grass and dirt and three
-small scenes (`--preview-only <prefix>` keeps just the states whose names
-start with the prefix and the scene made for them), `--check` only verifies
+labelled review sheet with every state and frame on grass and dirt and five
+small scenes (`--preview-only <prefix>[,<prefix>...]` keeps just the states
+whose names start with one of the prefixes and the scenes made for them),
+`--check` only verifies
 that the committed sheet is what this script draws. Released under Civ13 AGPL-3.0.
 """
 import math
@@ -66,9 +101,10 @@ from PIL import Image, ImageDraw
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from create_water_animation import SIZE, write_dmi  # noqa: E402
 from create_sewers import (  # noqa: E402
-    BANK_LIT, BANK_SHADE, CLEAR, CLEAR_GLINT, CLEAR_SHADE, DAMP, DARK, FLOW, IRON, MORTAR, NAIL, RIM, RIVER, ROCK,
-    SHADOW, SLAB, SLAB_SHADE, CHIP, WALL_SHADE, WET, WOOD, brick_drain, check_sheet, fill_box, ground_shadow,
-    ground_tiles, image, loop, noise, option, pixels, rod, septic, settling, stone_drain)
+    BANK_LIT, BANK_SHADE, BRASS, BRICK, BRICK_MORTAR, CABLE, CLEAR, CLEAR_GLINT, CLEAR_SHADE, CONCRETE, DAMP, DARK,
+    EMBER, FLOW, IRON, MORTAR, NAIL, PAINT, RIM, RIVER, ROCK, SHADOW, SLAB, SLAB_SHADE, SLOT, CHIP, VALVE, WALL_SHADE,
+    WET, WOOD, brick_drain, check_sheet, fill_box, ground_shadow, ground_tiles, image, loop, noise, option, pixels,
+    pump_electric, pump_steam, rod, septic, settling, stone_drain)
 
 ROOT = Path(__file__).resolve().parents[2]
 SHEET = ROOT / 'icons/obj/flood_defences.dmi'
@@ -786,19 +822,541 @@ def cistern(fill):
     return image(px)
 
 
+# ------------------------------------------------------------------- pumps
+
+def brickwork(px, x0, y0, x1, y1, seed):
+    """A brick wall seen from the side: two rows to a course and a bed joint,
+    the perpends staggered, lit on the left and dark down the right edge."""
+    for y in range(y0, y1 + 1):
+        course, row = divmod(y1 - y, 3)
+        for x in range(x0, x1 + 1):
+            along = x - x0 + (3 if course % 2 else 0)
+            if row == 2 or along % 6 == 5:
+                c = BRICK_MORTAR
+            else:
+                tone = 1 if row == 1 else 2
+                if noise(along // 6, course, seed) < 0.35:
+                    tone += 1
+                if x == x0:
+                    tone = 0
+                c = BRICK[tone]
+            if x == x1 and x1 > x0:
+                c = BRICK[4]
+            px[(x, y)] = c
+
+
+def falling_water(px, cols, y0, y1, frame, seed):
+    for y in range(y0, y1 + 1):
+        for x in cols:
+            n = noise(x, y - 2 * frame, seed)
+            px[(x, y)] = (FLOW[0] if n < 0.35 else FLOW[1] if n < 0.8 else FLOW[2]) + (235,)
+
+
+# the lever pump: the handle turns on a bracket at the head of the barrel
+LEVER_PIVOT = (17, 8)
+LEVER_LONG, LEVER_SHORT = 10.5, 3.0
+LEVER_REST = -40                         # degrees the grip is raised: hanging down
+# (handle angle, what the spout is doing) for each working frame
+LEVER_USE = ((28, 'drip'), (2, 'gush'), (-28, 'flood'), (10, 'trickle'))
+LEVER_BARREL = (11, 16)                  # columns of the barrel
+LEVER_BUCKET = (3, 9)
+
+
+def lever_pump(frame=None):
+    """The hand lever pump; `frame` is None standing, else 0..3 worked."""
+    px = {}
+    angle, doing = (LEVER_REST, 'rest') if frame is None else LEVER_USE[frame]
+    a = math.radians(angle)
+    cx, cy = LEVER_PIVOT
+    lx, ly = int(round(cx + LEVER_LONG * math.cos(a))), int(round(cy - LEVER_LONG * math.sin(a)))
+    sx, sy = int(round(cx - LEVER_SHORT * math.cos(a))), int(round(cy + LEVER_SHORT * math.sin(a)))
+    bx0, bx1 = LEVER_BARREL
+
+    # the stone it is bolted to, over the well
+    ground_shadow(px, 4, 21, 30)
+    for y in range(26, 30):
+        for x in range(8, 21):
+            c = (SLAB[0], SLAB[1], SLAB[3], STONE_FOOT)[y - 26]
+            if y == 27 and noise(x // 3, 0, 611) < 0.3:
+                c = SLAB[2]
+            if x == 20 and y > 26:
+                c = STONE_FOOT
+            if x == 14 and y in (27, 28):
+                c = MORTAR
+            px[(x, y)] = c
+    # the fluted barrel, with three collars cast on it
+    flutes = (1, 0, 2, 0, 2, 3)
+    for y in range(11, 26):
+        for x, tone in zip(range(bx0, bx1 + 1), flutes):
+            px[(x, y)] = IRON[tone]
+    for y in (11, 18, 25):
+        for x in range(bx0 - 1, bx1 + 2):
+            px[(x, y)] = IRON[0] if x < bx1 - 1 else IRON[1] if x <= bx1 else IRON[3]
+        if y < 25:
+            for x in range(bx0, bx1 + 1):
+                px[(x, y + 1)] = IRON[3] if x > bx0 + 1 else IRON[2]
+    for x in range(bx0 + 1, bx1):                       # the domed head
+        px[(x, 10)] = IRON[0] if x < bx1 - 1 else IRON[2]
+    px[(bx0, 10)] = IRON[1]
+    px[(bx1, 10)] = IRON[3]
+    # the bracket the handle turns in
+    for y in range(cy, 11):
+        px[(cx, y)] = IRON[1]
+        px[(cx + 1, y)] = IRON[3]
+    # the spout, turned down over the bucket
+    for x in range(7, bx0):
+        px[(x, 14)], px[(x, 15)], px[(x, 16)] = IRON[0], IRON[1], IRON[3]
+    px[(6, 15)], px[(6, 16)], px[(6, 17)], px[(7, 17)] = IRON[0], IRON[1], IRON[1], IRON[3]
+    px[(6, 14)] = IRON[1]
+
+    # the bucket under it: staves and two iron hoops
+    kx0, kx1 = LEVER_BUCKET
+    working = frame is not None
+    for y in range(22, 30):
+        for x in range(kx0, kx1 + 1):
+            if y >= 28 and x in (kx0, kx1):
+                continue                                 # it narrows to its foot
+            col = x - kx0
+            tone = 0 if col == 0 else 3 if col == kx1 - kx0 else 2 if col % 2 == 0 else 1
+            c = WOOD[tone]
+            if y in (24, 27):
+                c = IRON[1] if col < kx1 - kx0 else IRON[3]
+            if y == 22:
+                c = WOOD[0] if col in (0, kx1 - kx0) else (FLOW[1 + (x + (frame or 0)) % 2] if working else WALL_SHADE[1])
+            px[(x, y)] = c
+    px[(kx0 + 1, 22)] = FLOW[0] if working else WALL_SHADE[0]
+
+    # the water
+    if doing == 'drip':
+        px[(6, 19)] = FLOW[1] + (220,)
+    elif doing == 'trickle':
+        for y in (18, 19, 21):
+            px[(6, y)] = FLOW[1] + (225,)
+    elif doing in ('gush', 'flood'):
+        falling_water(px, (6, 7) if doing == 'gush' else (5, 6, 7), 18, 21, frame, 613)
+        px[(5 if doing == 'gush' else 4, 21)] = FOAM + (210,)
+        px[(8, 21)] = FOAM + (210,)
+        if doing == 'flood':
+            for at in ((2, 22), (10, 21), (3, 20), (8, 19)):
+                px[at] = FOAM + (200,)
+            px[(kx0, 23)] = px[(kx0, 25)] = FLOW[1] + (220,)      # slopping over
+
+    # the pump rod, from the short end of the handle down into the head
+    for y in range(min(sy, 9), 10):
+        px[(14, y)] = SLAB[0] if y % 2 else SLAB[1]
+    # the handle: a long iron lever with a round grip
+    rod(px, sx, sy + 1, lx, ly + 1, IRON[3])
+    rod(px, sx, sy, lx, ly, IRON[1])
+    px[(lx, ly)] = IRON[0]
+    px[(lx, ly + 1)] = IRON[2]
+    px[(lx + 1, ly)] = IRON[1]
+    px[(lx + 1, ly + 1)] = IRON[3]
+    px[(cx, cy)] = BRASS[0]                              # the pivot pin
+    px[(sx, sy)] = BRASS[1]
+    return image(px)
+
+
+# the mine pump: a beam rocking on the bob wall of the engine house
+MINE_PIVOT = (15, 7)
+MINE_OUT, MINE_IN = 10.0, 8.0            # the pump arm and the engine arm of the beam
+MINE_REST = -15                          # degrees the pump end is raised: down, out of steam
+MINE_USE = (15, 0, -15, 0)
+SMOKE = [(176, 174, 168), (132, 130, 126)]
+COPPER = [(214, 142, 92), (176, 104, 64), (124, 68, 44)]
+
+
+def mine_pump(frame=None):
+    """The atmospheric beam engine; `frame` is None stopped, else 0..3 running."""
+    px = {}
+    running = frame is not None
+    a = math.radians(MINE_USE[frame] if running else MINE_REST)
+    cx, cy = MINE_PIVOT
+    ox, oy = int(round(cx + MINE_OUT * math.cos(a))), int(round(cy - MINE_OUT * math.sin(a)))
+    ex, ey = int(round(cx - MINE_IN * math.cos(a))), int(round(cy + MINE_IN * math.sin(a)))
+
+    # smoke from the chimney, two puffs half a loop apart, drifting east
+    if running:
+        for k in range(2):
+            age = (frame + 2 * k) % 4
+            sx, sy = 3.6 + 2.1 * age, 1.6 - 0.35 * age
+            radius = 1.3 + 0.4 * age
+            for y in range(SIZE):
+                for x in range(MARGIN, SIZE):
+                    r = math.hypot(x - sx, (y - sy) * 1.15) + 0.9 * (noise(x, y, 621 + age) - 0.5)
+                    if r <= radius:
+                        alpha = (235, 200, 150, 105)[age]
+                        px[(x, y)] = SMOKE[x - sx + y - sy > 0.6] + (alpha if r < radius - 0.9 else alpha * 2 // 3,)
+
+    ground_shadow(px, 3, 19, 30)
+    # the chimney
+    brickwork(px, 2, 4, 5, 16, 623)
+    for x, c in zip(range(1, 7), (SLAB[0], SLAB[0], SLAB[1], SLAB[1], SLAB[2], SLAB_SHADE)):
+        px[(x, 3)] = c
+    for x in (2, 3, 4, 5):
+        px[(x, 2)] = BLACK[1] if x > 2 else BLACK[0]
+    # the engine house, and the taller bob wall the beam rocks on
+    brickwork(px, 2, 17, 12, 29, 625)
+    brickwork(px, 12, 10, 17, 29, 627)
+    for x in range(1, 12):                               # the slate lean-to roof
+        px[(x, 15)] = IRON[0] if x % 3 else IRON[1]
+        px[(x, 16)] = IRON[2] if x % 3 else IRON[3]
+    for x, c in zip(range(11, 19), (SLAB[0], SLAB[0], SLAB[0], SLAB[1], SLAB[1], SLAB[1], SLAB[2], SLAB_SHADE)):
+        px[(x, 9)] = c                                   # the stone the bearing sits on
+    # the arched opening: the cylinder over its copper boiler and the fire
+    for y in range(18, 29):
+        for x in range(4, 10):
+            if y == 18 and x in (4, 9):
+                continue
+            px[(x, y)] = SLOT
+    for x in range(5, 9):
+        px[(x, 17)] = BRICK[0] if x % 2 else BRICK[1]
+    px[(4, 18)], px[(9, 18)] = BRICK[0], BRICK[2]
+    for y in range(18, 22):
+        for x, c in zip((5, 6, 7, 8), (IRON[1], IRON[0], IRON[1], IRON[3])):
+            px[(x, y)] = c
+    for x, c in zip((5, 6, 7, 8), (BRASS[1], BRASS[0], BRASS[1], BRASS[2])):
+        px[(x, 19)] = c
+    for y, cols in ((22, (5, 6, 7, 8)), (23, (4, 5, 6, 7, 8, 9)), (24, (4, 5, 6, 7, 8, 9))):
+        for x in cols:
+            px[(x, y)] = COPPER[0] if x <= 5 and y < 24 else COPPER[2] if x >= 8 or y == 24 and x > 6 else COPPER[1]
+    px[(6, 22)] = COPPER[0]
+    fill_box(px, 5, 26, 8, 28, IRON[3])
+    px[(5, 25)] = px[(6, 25)] = px[(7, 25)] = px[(8, 25)] = IRON[2]
+    if running:
+        fire = ((EMBER[1], EMBER[0]), (EMBER[0], EMBER[1]), (EMBER[1], EMBER[2]), (EMBER[0], EMBER[0]))[frame]
+        px[(6, 27)], px[(7, 27)] = fire
+        px[(6, 28)], px[(7, 28)] = fire[1], EMBER[2]
+        px[(6, 26)] = EMBER[2] if frame % 2 else EMBER[1]
+    else:
+        px[(6, 27)] = px[(7, 27)] = SLOT
+    # a window in the bob wall
+    px[(14, 16)] = px[(15, 16)] = px[(14, 17)] = px[(15, 17)] = SLOT
+    px[(14, 15)] = px[(15, 15)] = BRICK[0]
+
+    # the shaft: a timber collar round the dark mouth
+    for x in range(22, 31):
+        px[(x, 24)] = WOOD[2]
+        for y in (25, 26):
+            px[(x, y)] = SLOT if 22 < x < 30 else WOOD[1] if x == 22 else WOOD[3]
+        px[(x, 27)], px[(x, 28)], px[(x, 29)] = WOOD[0], wood_tone(1, x // 3, 0, 629, 0.3), WOOD[3]
+    px[(22, 27)] = px[(30, 27)] = NAIL
+    ground_shadow(px, 23, 30, 30)
+    # the outlet pipe from the rising main
+    for x in range(19, 22):
+        px[(x, 26)], px[(x, 27)] = IRON[0], IRON[2]
+    px[(18, 26)], px[(18, 27)] = IRON[1], SLOT
+    if running:
+        strong = frame in (0, 3)                         # the bucket lifts as the pump end rises
+        for y in (28, 29):
+            px[(18, y)] = FLOW[(y + frame) % 2] + (235,)
+        if strong:
+            px[(19, 28)] = FLOW[1] + (220,)
+            px[(19, 29)] = FLOW[2] + (220,)
+        for x in ((17, 19, 20), (18, 20), (19, 20, 21), (17, 18, 20, 21))[frame]:
+            px[(x, 30)] = (FOAM if (x + frame) % 2 else FLOW[1]) + (200,)
+
+    # the chain from the engine end down through the roof to the piston
+    for y in range(ey + 1, 15):
+        px[(ex - 1, y)] = IRON[0] if y % 2 else IRON[2]
+    # the pump rod from the other end down the shaft
+    for y in range(oy + 1, 27):
+        px[(ox + 1, y)] = WOOD[1] if y % 4 else IRON[1]
+    # the beam: a heavy baulk, deeper over the pivot, with an arch head at each end
+    rod(px, ex, ey + 1, ox, oy + 1, WOOD[3])
+    rod(px, ex, ey, ox, oy, WOOD[1])
+    rod(px, ex, ey - 1, ox, oy - 1, WOOD[0])
+    for x in range(cx - 3, cx + 4):
+        dy = int(round(-(x - cx) * math.tan(a)))
+        px[(x, cy + dy - 2)] = WOOD[0]
+        px[(x, cy + dy + 2)] = WOOD[3]
+    for hx, hy, out in ((ox, oy, 1), (ex, ey, -1)):
+        for dy in range(-2, 3):
+            px[(hx + out, hy + dy)] = WOOD[2] if out > 0 else WOOD[0]
+        px[(hx + out, hy - 2)] = IRON[1]
+        px[(hx + out, hy + 2)] = IRON[3]
+    px[(cx, cy)] = BRASS[0]
+    px[(cx, cy + 1)] = BRASS[2]
+    px[(cx - 1, cy + 1)] = px[(cx + 1, cy + 1)] = IRON[2]
+    return image(px)
+
+
+# the windmill pump: sails on the cap, a scoop wheel at the foot
+MILL_HUB = (16, 9)
+MILL_SAIL = 9.0                          # from the hub to the tip of a sail
+MILL_REST = 45.0                         # the sails stand in a cross when the mill is idle
+MILL_STEP = 22.5                         # a quarter of a quarter turn, so four frames loop
+MILL_WHEEL = (26, 25)
+MILL_WHEEL_R = 3.5
+THATCH = [(176, 148, 88), (146, 120, 70), (116, 94, 56), (88, 70, 44)]
+SAILCLOTH = [(238, 232, 212), (200, 192, 170)]
+
+
+def windmill_pump(frame=None):
+    """The polder mill; `frame` is None idle, else 0..3 turning."""
+    px = {}
+    turning = frame is not None
+    ground_shadow(px, 11, 22, 30)
+    # the brick base
+    brickwork(px, 10, 24, 21, 29, 641)
+    # the thatched smock, tapering up to the cap
+    for y in range(11, 24):
+        hw = 3.0 + 3.0 * (y - 11) / 12.0
+        x0, x1 = int(round(16 - hw)), int(round(15 + hw))
+        for x in range(x0, x1 + 1):
+            t = (x - x0) / float(max(x1 - x0, 1))
+            tone = 0 if t < 0.2 else 1 if t < 0.55 else 2 if t < 0.85 else 3
+            if tone in (1, 2) and noise(x, y // 3, 643) < 0.25:
+                tone += 1 if tone == 1 else -1
+            px[(x, y)] = THATCH[tone]
+    for x in range(10, 22):
+        px[(x, 23)] = WOOD[3] if x > 18 else WOOD[2]     # the sill beam on the brick
+    # the door and a window
+    for y in range(18, 23):
+        for x, c in zip((15, 16, 17), (PAINT[1], PAINT[2], PAINT[3])):
+            px[(x, y)] = c
+    px[(15, 17)] = px[(16, 17)] = px[(17, 17)] = WOOD[0]
+    px[(17, 20)] = BRASS[0]
+    px[(15, 14)] = px[(16, 14)] = SLOT
+    px[(15, 13)] = px[(16, 13)] = WOOD[0]
+    # the boarded cap
+    for y, (x0, x1) in zip((6, 7, 8, 9, 10), ((14, 17), (13, 18), (12, 19), (12, 19), (12, 19))):
+        for x in range(x0, x1 + 1):
+            t = (x - x0) / float(x1 - x0)
+            px[(x, y)] = WOOD[0] if t < 0.3 or y == 6 and t < 0.7 else WOOD[1] if t < 0.7 else WOOD[2]
+        px[(x1, y)] = WOOD[3]
+    for x in range(12, 20):
+        px[(x, 10)] = WOOD[3] if x > 13 else WOOD[2]
+
+    # the scoop wheel in its stone channel
+    wx, wy = MILL_WHEEL
+    spin = math.radians(MILL_STEP * (frame if turning else 0) + 12)
+    px[(22, wy)] = IRON[1]                               # the shaft out of the base
+    for y in range(SIZE):
+        for x in range(SIZE):
+            dx, dy = x - wx, y - wy
+            r = math.hypot(dx, dy)
+            if r > MILL_WHEEL_R + 0.3:
+                continue
+            if r > MILL_WHEEL_R - 0.9:
+                c = WOOD[0] if dx + dy < -2 else WOOD[3] if dx + dy > 2 else WOOD[1]
+            elif r < 0.8:
+                c = IRON[1]
+            else:
+                off = min(abs(dx * math.sin(spin + q) - dy * math.cos(spin + q)) for q in (0.0, math.pi / 2))
+                if off > 0.5:
+                    c = WALL_SHADE[1]
+                else:
+                    c = WOOD[2]
+            px[(x, y)] = c
+    for y in (28, 29):
+        px[(22, y)] = SLAB[1] if y == 28 else SLAB_SHADE
+        px[(30, y)] = SLAB[2] if y == 28 else STONE_FOOT
+        for x in range(23, 30):
+            if turning:
+                n = noise(x + frame * 2, y, 645)
+                c = FOAM if n < 0.3 and y == 28 else FLOW[1] if n < 0.7 else FLOW[2]
+            else:
+                c = CLEAR_SHADE if y == 29 or noise(x, y, 647) < 0.4 else CLEAR[1]
+            px[(x, y)] = c
+    if turning:
+        for at in (((30, 26), (29, 27), (23, 27)), ((30, 27), (28, 27), (30, 25)),
+                   ((29, 26), (30, 27), (24, 27)), ((30, 26), (30, 24), (29, 27)))[frame]:
+            px[at] = FOAM + (215,)
+        px[(30, 28)] = FLOW[0]                           # spilling over the sill
+        px[(30, 29)] = FLOW[1 + frame % 2]
+        for x in ((27, 29), (26, 28, 30), (28, 29), (27, 30))[frame]:
+            px[(x, 30)] = FLOW[1] + (200,)
+
+    # the four lattice sails
+    hx, hy = MILL_HUB
+    base = math.radians(MILL_STEP * frame if turning else MILL_REST)
+    for k in range(4):
+        th = base + k * math.pi / 2
+        ux, uy, vx, vy = math.cos(th), -math.sin(th), math.sin(th), math.cos(th)
+
+        def at(u, v):
+            return int(round(hx + ux * u + vx * v)), int(round(hy + uy * u + vy * v))
+
+        # the sail bars and the hem lath, then the stock they hang on
+        for u in (3.0, 5.0, 7.0, MILL_SAIL):
+            rod(px, *(at(u, 1.0) + at(u, 2.5) + (SAILCLOTH[1],)))
+        rod(px, *(at(3.0, 2.5) + at(MILL_SAIL, 2.5) + (SAILCLOTH[0],)))
+        rod(px, *(at(1.0, 0.0) + at(MILL_SAIL, 0.0) + (WOOD[3],)))
+    px[(hx, hy)] = IRON[0]
+    return image(px)
+
+
+# the sump pump: a pit, the motor standing in it, the riser, and a battery
+SUMP_FRAMES, SUMP_DELAY = 3, 3
+SUMP_PIT = (2, 14, 19, 26)               # the top of the pit walls, x0 y0 x1 y1
+SUMP_WATER = (4, 18, 17, 24)             # the water showing inside it
+SUMP_LED = (9, 8)
+BLUE = [(158, 180, 204), (118, 142, 172), (84, 106, 136), (54, 70, 96)]
+YELLOW = [(244, 214, 76), (204, 166, 44), (146, 112, 30)]
+LED_ON = [(206, 255, 184), (88, 232, 96)]
+LED_OFF = [(52, 104, 60), (34, 68, 42)]
+FLOAT = [(250, 150, 60), (206, 96, 34)]
+
+
+def sump_pump(frame=None):
+    """The electric sump pump; `frame` is None stopped, else 0..2 running."""
+    px = {}
+    running = frame is not None
+    x0, y0, x1, y1 = SUMP_PIT
+    wx0, wy0, wx1, wy1 = SUMP_WATER
+    ground_shadow(px, x0 + 1, x1 + 1, 30)
+    # the concrete pit: the top of its walls, then the south face
+    for y in range(y0, y1 + 1):
+        for x in range(x0, x1 + 1):
+            if x in (x0, x1) or y in (y0, y1):
+                c = CONCRETE[0] if x == x0 or y == y0 else CONCRETE[2]
+            else:
+                c = CONCRETE[1] if noise(x // 2, y // 2, 661) < 0.75 else CONCRETE[2]
+            px[(x, y)] = c
+    for y in range(y1 + 1, 30):
+        for x in range(x0, x1 + 1):
+            c = CONCRETE[2] if y == y1 + 1 else CONCRETE[3]
+            if y == 28 and noise(x // 3, 0, 663) < 0.5:
+                c = CONCRETE[2]
+            if x == x1:
+                c = CONCRETE[3]
+            px[(x, y)] = c
+    # the inside: the north wall in shade, then the water
+    for y in range(y0 + 2, wy1 + 1):
+        for x in range(wx0, wx1 + 1):
+            if y < wy0:
+                c = CONCRETE[3] if y > y0 + 2 else IRON[2]
+                if x == wx0:
+                    c = IRON[2]
+            else:
+                n = noise(x, y, 665)
+                c = CLEAR_SHADE if x == wx0 or y == wy0 or n < 0.45 else CLEAR[1]
+            px[(x, y)] = c
+    glints = (((6, 22), (12, 23), (16, 20)) if not running else
+              (((5, 21), (6, 21), (11, 23), (16, 19), (15, 23), (9, 22)),
+               ((5, 23), (10, 23), (11, 23), (16, 21), (6, 20), (13, 22)),
+               ((4, 22), (8, 23), (15, 20), (16, 20), (12, 24), (6, 19)))[frame])
+    for at in glints:
+        px[at] = CLEAR_GLINT if running else CLEAR[2]
+    if running:
+        for x in range(6, 16):                           # the ring the motor makes on the water
+            if (x + frame) % 3:
+                px[(x, 22 if 7 < x < 14 else 21)] = CLEAR[2]
+
+    # the leads from the battery, behind the riser
+    rod(px, 23, 18, 19, 13, VALVE[1])
+    rod(px, 19, 13, 14, 12, VALVE[1])
+    rod(px, 28, 18, 24, 12, CABLE)
+    rod(px, 24, 12, 14, 10, CABLE)
+
+    # the battery: green case, yellow caps and a yellow band, two posts
+    ground_shadow(px, 23, 30, 30)
+    for y in range(19, 30):
+        for x in range(22, 31):
+            if y < 22:
+                c = PAINT[0] if y > 19 or x < 30 else PAINT[1]
+                if y == 20 and x in (24, 26, 28):
+                    c = YELLOW[0]
+                if y == 21 and x in (24, 26, 28):
+                    c = YELLOW[2]
+            else:
+                c = PAINT[1] if x > 22 else PAINT[0]
+                if y in (24, 25):
+                    c = YELLOW[0] if y == 24 else YELLOW[1]
+                if y == 22:
+                    c = PAINT[2]
+                if y == 29 or x == 30:
+                    c = PAINT[3] if y not in (24, 25) else YELLOW[2]
+            px[(x, y)] = c
+    px[(27, 27)] = px[(28, 27)] = px[(26, 27)] = PAINT[3]         # the maker's mark
+    for x, cap in ((23, VALVE[0]), (28, BLACK[0])):
+        px[(x, 17)], px[(x + 1, 17)] = IRON[0], IRON[1]
+        px[(x, 18)], px[(x + 1, 18)] = cap, cap
+
+    # the motor: a round housing standing in the water
+    tones = (1, 0, 0, 1, 1, 2, 2, 3)
+    for y in range(9, 22):
+        for x, tone in zip(range(7, 15), tones):
+            if y == 21 and x in (7, 14):
+                continue
+            c = BLUE[tone]
+            if y in (13, 14):
+                c = IRON[min(tone, 3)] if y == 13 else IRON[min(tone + 1, 3)]   # the clamp band
+            if y >= 19:
+                c = IRON[3] if (x + y) % 2 else IRON[2]                         # the strainer
+            px[(x, y)] = c
+    for y, (ex0, ex1) in zip((6, 7, 8, 9), ((9, 12), (7, 14), (7, 14), (8, 13))):
+        for x in range(ex0, ex1 + 1):
+            px[(x, y)] = BLUE[0] if y < 9 else BLUE[1]
+    px[(7, 7)] = px[(14, 7)] = BLUE[1]
+    px[(14, 8)] = BLUE[2]
+    for x in (10, 11, 12):                               # the carrying handle
+        px[(x, 5)] = IRON[2]
+    px[(9, 6)] = px[(13, 6)] = IRON[2]
+    fill_box(px, 9, 16, 12, 17, YELLOW[0])               # the rating plate
+    px[(12, 17)] = px[(11, 17)] = YELLOW[1]
+    lx, ly = SUMP_LED
+    lit = running and frame != 2
+    px[(lx, ly)] = LED_ON[0] if lit else LED_OFF[0]
+    px[(lx + 1, ly)] = LED_ON[1] if lit else LED_OFF[1]
+    if running and frame == 0:
+        for dx, dy in ((0, -1), (1, -1), (-1, 0), (2, 0), (0, 1), (1, 1)):
+            px[(lx + dx, ly + dy)] = LED_ON[1]
+        px[(lx, ly)] = px[(lx + 1, ly)] = LED_ON[0]
+
+    # the float switch: an arm out to a float riding on the water
+    rod(px, 7, 16, 5, 19, CABLE)
+    fy = 20 if not running else (20, 19, 20)[frame]
+    px[(4, fy)], px[(5, fy)] = FLOAT[0], FLOAT[1]
+    px[(4, fy + 1)], px[(5, fy + 1)] = FLOAT[1], VALVE[2]
+
+    # the discharge riser: out of the pump, up, and away east, with a check valve
+    px[(15, 18)], px[(15, 19)] = WHITE[0], PLASTER[3]
+    for y in range(1, 20):
+        px[(16, y)], px[(17, y)] = WHITE[0], PLASTER[3]
+    for x in range(16, 22):
+        px[(x, 1)], px[(x, 2)] = WHITE[0], PLASTER[3]
+    px[(21, 1)], px[(21, 2)] = PLASTER[2], PLASTER[4]
+    for y in range(7, 12):
+        for x, c in zip((15, 16, 17, 18), (BLACK[0], BLACK[0], BLACK[1], BLACK[1])):
+            px[(x, y)] = c
+    for y in (7, 11):
+        for x, c in zip((15, 16, 17, 18), (IRON[0], SLAB[0], IRON[0], IRON[2])):
+            px[(x, y)] = c
+    px[(16, 9)] = WHITE[0]                               # the arrow moulded on the valve
+    px[(16, 8)] = px[(16, 10)] = IRON[1]
+
+    # the mains cord, over the rim to a plug lying on the ground
+    rod(px, 8, 8, 5, 6, CABLE)
+    rod(px, 5, 6, 3, 8, CABLE)
+    rod(px, 3, 8, 3, 10, CABLE)
+    fill_box(px, 2, 10, 4, 11, IRON[2])
+    px[(2, 10)] = px[(3, 10)] = IRON[1]
+    px[(2, 12)] = px[(4, 12)] = BRASS[0]
+    return image(px)
+
+
 # -------------------------------------------------------------------- sheet
 
 CISTERNS = tuple('cistern%d' % fill for fill in range(CISTERN_FILLS))
+# the pumps: (state, drawing, working state, frames, delay in ds)
+PUMPS = (('lever_pump', lever_pump, 'lever_pump_use', USE_FRAMES, USE_DELAY),
+         ('mine_pump', mine_pump, 'mine_pump_on', 4, 3),
+         ('windmill_pump', windmill_pump, 'windmill_pump_on', 4, 2),
+         ('sump_pump', sump_pump, 'sump_pump_on', SUMP_FRAMES, SUMP_DELAY))
 STILLS = ('stilts', 'plinth', 'sluice_gate', 'sluice_gate_open', 'shaduf', 'archimedes_screw',
-          'river_gauge') + CISTERNS
-LOOPS = (('shaduf', 'shaduf_use'), ('archimedes_screw', 'archimedes_screw_use'))
+          'river_gauge') + CISTERNS + tuple(pump[0] for pump in PUMPS)
+# every working loop: (standing state, working state, frames, delay in ds)
+LOOPS = (('shaduf', 'shaduf_use', USE_FRAMES, USE_DELAY),
+         ('archimedes_screw', 'archimedes_screw_use', USE_FRAMES, USE_DELAY)) + tuple(
+             (still, name, frames, delay) for still, _, name, frames, delay in PUMPS)
 
 
 def build():
     """The whole sheet as [(state, keys, images)]."""
     one = {'dirs': '1', 'frames': '1'}
     use = loop(USE_FRAMES, USE_DELAY)
-    return [('stilts', dict(one), [stilts()]),
+    states = [('stilts', dict(one), [stilts()]),
             ('plinth', dict(one), [plinth()]),
             ('sluice_gate', dict(one), [sluice_gate()]),
             ('sluice_gate_open', dict(one), [sluice_gate(True)]),
@@ -808,6 +1366,11 @@ def build():
             ('archimedes_screw_use', dict(use), [archimedes_screw(frame) for frame in range(USE_FRAMES)]),
             ('river_gauge', dict(one), [river_gauge()])] + [
                (name, dict(one), [cistern(fill)]) for fill, name in enumerate(CISTERNS)]
+    # the pumps, appended so the earlier states keep their place in the sheet
+    for still, draw, name, frames, delay in PUMPS:
+        states.append((still, dict(one), [draw()]))
+        states.append((name, loop(frames, delay), [draw(frame) for frame in range(frames)]))
+    return states
 
 
 def check_drawing(states):
@@ -815,7 +1378,7 @@ def check_drawing(states):
     by = {name: images for name, _, images in states}
     keys_of = {name: keys for name, keys, _ in states}
     problems = []
-    want = list(STILLS) + [name for _, name in LOOPS]
+    want = list(STILLS) + [name for _, name, _, _ in LOOPS]
     if sorted(by) != sorted(want) or len(states) != len(want):
         problems.append('state list is %s' % ', '.join(name for name, _, _ in states))
     for name, keys, images in states:
@@ -838,11 +1401,11 @@ def check_drawing(states):
     for name in STILLS:
         if name in by and keys_of[name] != {'dirs': '1', 'frames': '1'}:
             problems.append('%s is not a single frame' % name)
-    for still, name in LOOPS:
+    for still, name, frames, delay in LOOPS:
         if name not in by or still not in by:
             continue
-        if keys_of[name] != loop(USE_FRAMES, USE_DELAY) or len(by[name]) != USE_FRAMES:
-            problems.append('%s is not %d frames of %d ds' % (name, USE_FRAMES, USE_DELAY))
+        if keys_of[name] != loop(frames, delay) or len(by[name]) != frames:
+            problems.append('%s is not %d frames of %d ds' % (name, frames, delay))
         shots = [pixels(im) for im in by[name]]
         if any(shots[i] == shots[j] for i in range(len(shots)) for j in range(i)):
             problems.append('%s repeats a frame' % name)
@@ -852,6 +1415,19 @@ def check_drawing(states):
         moved = sum(1 for spot in zip(pixels(by[still][0]), *shots) if len(set(spot)) > 1)
         if moved > SIZE * SIZE * 2 // 5:
             problems.append('%s moves more than its working parts' % name)
+    # the pumps raise water, or show a lamp, only when they are working
+    wet = set(FLOW)
+    for still, _, name, _, _ in PUMPS:
+        if name not in by or still not in by:
+            continue
+        signs = set(LED_ON) if still == 'sump_pump' else wet
+        if signs & {p[:3] for p in pixels(by[still][0]) if p[3]}:
+            problems.append('%s looks as if it is working' % still)
+        if still == 'sump_pump':
+            if sum(1 for im in by[name] if signs & {p[:3] for p in pixels(im) if p[3]}) not in (1, 2):
+                problems.append('%s lamp does not blink' % name)
+        elif any(not signs & {p[:3] for p in pixels(im) if p[3]} for im in by[name]):
+            problems.append('%s has a frame with no water' % name)
     if 'sluice_gate' in by and 'sluice_gate_open' in by:
         shut, opened = by['sluice_gate'][0].load(), by['sluice_gate_open'][0].load()
         gap = [(x, y) for y in range(OPEN_TOP + OPEN_BOARDS * BOARD, RACE_TOP - 1)
@@ -975,8 +1551,36 @@ def cistern_scene(by):
     return 'cisterns 0-3 under stone drains; plinth; settling, septic, cistern3, stilts, gauge; brick sewer', scene
 
 
+def pump_scene(by, n):
+    """The four pumps in a row by a river with the sewer sheet's two pumps
+    beside them, and the older machines below; n = 1 has them all working."""
+    grass, dirt = ground_tiles()
+    water = Image.new('RGBA', (SIZE, SIZE), RIVER + (255,))
+    scene_w, scene_h = SCENE
+    scene = Image.new('RGBA', (scene_w * SIZE, scene_h * SIZE))
+    for ty in range(scene_h):
+        for tx in range(scene_w):
+            scene.paste(water if ty == 0 else dirt if ty == 2 else grass, (tx * SIZE, ty * SIZE))
+    for ty in (1, 2):
+        for tx, (still, _, name, _, _) in enumerate(PUMPS):
+            scene.alpha_composite(by[name][1] if n else by[still][0], (tx * SIZE, ty * SIZE))
+        scene.alpha_composite(pump_steam(1 if n else None), (4 * SIZE, ty * SIZE))
+        scene.alpha_composite(pump_electric(1 if n else None), (5 * SIZE, ty * SIZE))
+    for tx, im in enumerate((by['shaduf_use'][1] if n else by['shaduf'][0],
+                             by['archimedes_screw_use'][1] if n else by['archimedes_screw'][0],
+                             by['cistern2'][0], by['sluice_gate_open' if n else 'sluice_gate'][0],
+                             by['river_gauge'][0], by['plinth'][0])):
+        scene.alpha_composite(im, (tx * SIZE, 3 * SIZE))
+    return ('lever, mine, windmill, sump, sewer steam and electric pumps %s; older pieces'
+            % ('working' if n else 'standing')), scene
+
+
+PREVIEW_WRAP = 12                        # tiles to a row of the review sheet
+
+
 def write_preview(path, states, scale=4, only=None):
     by = {name: images for name, _, images in states}
+    only = tuple(only.split(',')) if only else None
     grass, dirt = ground_tiles()
     label_h, pad = 12, 6
     cell = SIZE * scale
@@ -986,14 +1590,20 @@ def write_preview(path, states, scale=4, only=None):
             continue
         for n, im in enumerate(images):
             shots.append((name if len(images) == 1 else '%s %d' % (name.replace('archimedes_', ''), n), im))
-    cols = len(shots)
+    cols = min(len(shots), PREVIEW_WRAP)
+    bands = (len(shots) + PREVIEW_WRAP - 1) // PREVIEW_WRAP          # the shots wrap onto more rows
     scene_w, scene_h = SCENE
     # the scenes: (first state it shows, what draws it)
     scenes = [(name, draw_scene) for name, draw_scene in (
         ('sluice_gate', lambda: flood_scene(by, 0)), ('sluice_gate_open', lambda: flood_scene(by, 1)),
-        ('cistern0', lambda: cistern_scene(by))) if not only or name.startswith(only)]
-    wide = pad + max(cols * (cell + pad), len(scenes) * (scene_w * cell + pad))
-    high = pad + 2 * (cell + label_h + pad) + (SIZE + label_h + pad) + (scene_h * cell + label_h + pad)
+        ('cistern0', lambda: cistern_scene(by)), ('lever_pump', lambda: pump_scene(by, 0)),
+        ('mine_pump', lambda: pump_scene(by, 1))) if not only or name.startswith(only)]
+    scene_cols = max(1, (cols * (cell + pad)) // (scene_w * cell + pad))
+    scene_rows = (len(scenes) + scene_cols - 1) // scene_cols
+    game_rows = (2 * len(shots) + 1) * (SIZE + 2) // (cols * (cell + pad)) + 1
+    wide = pad + max(cols * (cell + pad), min(len(scenes), scene_cols) * (scene_w * cell + pad))
+    high = (pad + 2 * bands * (cell + label_h + pad) + label_h + game_rows * (SIZE + 2) + pad
+            + scene_rows * (scene_h * cell + label_h + pad))
     sheet = Image.new('RGB', (wide, high), DARK)
     draw = ImageDraw.Draw(sheet)
 
@@ -1003,26 +1613,35 @@ def write_preview(path, states, scale=4, only=None):
             im.alpha_composite(layer)
         return im
 
-    for col, (label, im) in enumerate(shots):
+    for shot, (label, im) in enumerate(shots):
+        band, col = divmod(shot, PREVIEW_WRAP)
         for row, ground in enumerate((grass, dirt)):
-            x, y = pad + col * (cell + pad), pad + row * (cell + label_h + pad)
+            x, y = pad + col * (cell + pad), pad + (2 * band + row) * (cell + label_h + pad)
             big = tile([ground, im]).convert('RGB').resize((cell, cell), Image.NEAREST)
             sheet.paste(big, (x, y + label_h))
             draw.text((x, y), label if row == 0 else 'dirt', fill=(220, 220, 220))
     # the same at game size
-    ay = pad + 2 * (cell + label_h + pad)
+    ay = pad + 2 * bands * (cell + label_h + pad)
     draw.text((pad, ay), 'at game size', fill=(220, 220, 220))
-    for n, (_, im) in enumerate(shots):
-        sheet.paste(tile([grass, im]).convert('RGB'), (pad + n * (SIZE + 2), ay + label_h))
-        sheet.paste(tile([dirt, im]).convert('RGB'), (pad + (cols + 1 + n) * (SIZE + 2), ay + label_h))
+    per_row = cols * (cell + pad) // (SIZE + 2)
+    small = [tile([grass, im]) for _, im in shots] + [None] + [tile([dirt, im]) for _, im in shots]
+    for n, im in enumerate(small):
+        if im is not None:
+            sheet.paste(im.convert('RGB'), (pad + n % per_row * (SIZE + 2), ay + label_h + n // per_row * (SIZE + 2)))
 
-    top = ay + label_h + SIZE + pad
+    top = ay + label_h + game_rows * (SIZE + 2) + pad
     for n, (_, draw_scene) in enumerate(scenes):
         label, scene = draw_scene()
-        x = pad + n * (scene_w * cell + pad)
+        x = pad + n % scene_cols * (scene_w * cell + pad)
+        if n >= scene_cols:
+            top_n = top + n // scene_cols * (scene_h * cell + label_h + pad)
+        else:
+            top_n = top
+        top, keep = top_n, top
         big = scene.convert('RGB').resize((scene.width * scale, scene.height * scale), Image.NEAREST)
         sheet.paste(big, (x, top + label_h))
         draw.text((x, top), label, fill=(220, 220, 220))
+        top = keep
     sheet.save(path)
 
 

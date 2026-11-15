@@ -254,7 +254,11 @@ class DefencesTest(unittest.TestCase):
                 ('shaduf', '/obj/structure/water_lift/shaduf', 'basic_agriculture'),
                 ('Archimedes screw', '/obj/structure/water_lift/archimedes_screw', 'irrigation'),
                 ('river gauge', '/obj/structure/river_gauge', 'basic_agriculture'),
-                ('cistern', '/obj/structure/reagent_dispensers/cistern', 'paved_infrastructure')):
+                ('cistern', '/obj/structure/reagent_dispensers/cistern', 'paved_infrastructure'),
+                ('lever pump', '/obj/structure/cellar_pump/lever', 'workshops'),
+                ('steam mine pump', '/obj/structure/cellar_pump/steam', 'steam_power'),
+                ('sump pump', '/obj/structure/cellar_pump/sump', 'utilities'),
+                ('windmill pump', '/obj/structure/water_lift/windmill', 'watermills')):
             self.assertRegex(recipes, rf'RECIPE: /material/\w+/,{name},{path},')
             self.assertIn(f'"{path}" = "{node}",', research)
         from PIL import Image
@@ -262,7 +266,9 @@ class DefencesTest(unittest.TestCase):
         states = {line.split('"')[1] for line in meta.splitlines() if line.startswith('state = ')}
         for state in ('stilts', 'plinth', 'sluice_gate', 'sluice_gate_open', 'shaduf', 'shaduf_use',
                       'archimedes_screw', 'archimedes_screw_use', 'river_gauge',
-                      'cistern0', 'cistern1', 'cistern2', 'cistern3'):
+                      'cistern0', 'cistern1', 'cistern2', 'cistern3',
+                      'lever_pump', 'lever_pump_use', 'mine_pump', 'mine_pump_on',
+                      'windmill_pump', 'windmill_pump_on', 'sump_pump', 'sump_pump_on'):
             self.assertIn(state, states)
 
 
@@ -280,6 +286,12 @@ class CellarTest(unittest.TestCase):
         self.assertIn('if (try_bail(attacked, user))', glass)
         effects = (ROOT / 'code/modules/1713/flood_effects.dm').read_text(encoding='utf-8')
         self.assertIn('if (centre.z != F.z_level && centre.z != F.cellar_z())', effects)
+        sewers = (ROOT / 'code/modules/1713/sewers.dm').read_text(encoding='utf-8')
+        self.assertIn('for (var/obj/structure/cellar_pump/C in cellar_pumps)', sewers)
+        self.assertIn('W.windmill_minute()', sewers)
+        pumps = (ROOT / 'code/modules/1713/flood_pumps.dm').read_text(encoding='utf-8')
+        self.assertIsNone(re.search(r'(?<![_\w])spawn\(', pumps))
+        self.assertNotIn('in world', pumps)
 
 
 class DugWellsTest(unittest.TestCase):
@@ -320,6 +332,11 @@ class DugWellsTest(unittest.TestCase):
         wells = (ROOT / 'code/modules/1713/dug_wells.dm').read_text(encoding='utf-8')
         self.assertIn('/datum/craft_guard/well_fitting/refusal(', wells)
         self.assertIn('if (locate(/obj/structure/sink/well) in get_turf(H))', wells)
+        # every well can be taken apart: fitting, lining, then the hole
+        self.assertIn('if (is_tool(O, TOOL_HAMMER))\n\t\twell_break(user)', wells)
+        self.assertIn('if (dug_lined())', wells)
+        self.assertIn('/obj/structure/sink/well/ex_act(severity)', wells)
+        self.assertEqual(wells.count('log_game("[key_name(user)]'), 2)
         from PIL import Image
         meta = Image.open(ROOT / 'icons/obj/wells.dmi').info['Description']
         states = {line.split('"')[1] for line in meta.splitlines() if line.startswith('state = ')}

@@ -35,6 +35,17 @@ class BuildingStoreyTests(unittest.TestCase):
         self.assertIn('<= NEW_Z_BUILDING_MEASURED_CELLS', admitted)
         self.assertIn('dug_underground_supported()', admitted)
 
+    def test_a_large_one_level_map_keeps_only_its_standing_level(self):
+        admission = read('code/modules/multiz/building_admission.dm')
+        self.assertIn('#define NEW_Z_STANDING_MEASURED_CELLS 2100000\n', admission)
+        admitted = body(admission, '/datum/world_z_budget/building_admitted(target_z)')
+        self.assertIn('if (map.building_level_standing && building_base_maxz() == 1 && target_z == 2 && !pending && world.maxx * world.maxy * 2 <= NEW_Z_STANDING_MEASURED_CELLS)', admitted)
+        # The map cap is checked first, so the clause never admits a level a map did not ask for.
+        self.assertLess(admitted.index('min(map.building_levels, NEW_Z_ROOF_CEILING)'), admitted.index('NEW_Z_STANDING_MEASURED_CELLS'))
+        americas = read('code/game/objects/map_metadata/nomads/nomads_americas.dm')
+        self.assertEqual(americas.count('\tbuilding_levels = 1\n'), 2)
+        self.assertEqual(americas.count('\tbuilding_level_standing = TRUE\n'), 2)
+
     def test_a_roof_grows_only_from_the_highest_level(self):
         levels = read('code/game/objects/building_levels.dm')
         grows = body(levels, '/proc/building_grows_from(z)')

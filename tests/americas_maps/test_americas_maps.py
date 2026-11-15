@@ -15,8 +15,8 @@ MAPS = {
     'north': {
         'path': 'maps/nomads/nomads_americas_north.dmm',
         'metadata': '/obj/map_metadata/nomads/americas_north',
-        'trail': '/obj/structure/region_gate/trail_marker/authored/americas_south',
-        'trail_edge': 'south',
+        'edge': 'south',
+        'neighbour': 'southamerica',
         'heights': 'maps/heights/nomads_americas_north.txt',
         'flow': 'maps/heights/nomads_americas_north.flow.txt',
         'flood': 'maps/heights/nomads_americas_north.flood.txt',
@@ -24,8 +24,8 @@ MAPS = {
     'south': {
         'path': 'maps/nomads/nomads_americas_south.dmm',
         'metadata': '/obj/map_metadata/nomads/americas_south',
-        'trail': '/obj/structure/region_gate/trail_marker/authored/americas_north',
-        'trail_edge': 'north',
+        'edge': 'north',
+        'neighbour': 'northamerica',
         'heights': 'maps/heights/nomads_americas_south.txt',
         'flow': 'maps/heights/nomads_americas_south.flow.txt',
         'flood': 'maps/heights/nomads_americas_south.flood.txt',
@@ -165,25 +165,38 @@ class AmericasMapsTest(unittest.TestCase):
                     key = level.key(row, col)
                     self.assertTrue(level.walkable(key) and level.turf[key] not in WATER_WALKABLE, (row, col))
 
-    def test_isthmus_trail_is_at_its_edge_on_the_mainland(self):
+    def edge_ground(self, level):
+        """Columns of dry ground on the border row the land carries on beyond."""
+        row = level.height - 1 if level.spec['edge'] == 'south' else 0
+        return row, [col for col in range(level.width)
+                     if level.walkable(level.key(row, col)) and level.turf[level.key(row, col)] not in WATER_WALKABLE]
+
+    def test_isthmus_runs_off_its_edge_on_the_mainland(self):
+        widths = {}
         for name, level in self.levels.items():
             with self.subTest(name):
-                posts = level.cells_with(level.spec['trail'])
-                self.assertGreaterEqual(len(posts), 3)
-                for row, col in posts:
-                    edge = level.height - 1 - row if level.spec['trail_edge'] == 'south' else row
-                    self.assertLess(edge, 10)  # REGION_TRAIL_EDGE_TILES
-                # No trail of the other kind, and none to anywhere else.
+                # Nothing stands on the map for the crossing (region_edge.dm).
                 gates = [p for parts in level.tiles.values() for p in parts if 'region_gate' in p]
-                self.assertEqual(set(gates), {level.spec['trail']})
-                mainland = level.component(posts[0])
-                for post in posts:
-                    self.assertIn(post, mainland)
+                self.assertEqual(gates, [])
+                row, cols = self.edge_ground(level)
+                self.assertGreaterEqual(len(cols), 8)
+                # One unbroken neck of land, so a place along it means the same on both maps.
+                self.assertEqual(cols, list(range(cols[0], cols[-1] + 1)))
+                widths[name] = len(cols)
+                # Arrivals are put down a few tiles in: that ground is dry too.
+                inward = -1 if level.spec['edge'] == 'south' else 1
+                for depth in (3, 4, 5):
+                    dry = [col for col in cols if level.walkable(level.key(row + inward * depth, col))
+                           and level.turf[level.key(row + inward * depth, col)] not in WATER_WALKABLE]
+                    self.assertGreaterEqual(len(dry), len(cols) - 4, depth)
+                mainland = level.component((row, cols[len(cols) // 2]))
                 starts = level.cells_with(START)
                 on_mainland = [s for s in starts if s in mainland]
                 self.assertGreaterEqual(len(on_mainland), 12)
                 ground = sum(1 for r in range(level.height) for c in range(level.width) if level.walkable(level.key(r, c)))
                 self.assertGreater(len(mainland) / ground, 0.7)
+        # The neck is as wide on both sides, so walkers keep their place across it.
+        self.assertEqual(widths['north'], widths['south'])
 
     def test_land_reaches_other_edges_for_player_built_trails(self):
         # Trail markers are built within ten tiles of a border.
@@ -245,7 +258,6 @@ class AmericasMapsTest(unittest.TestCase):
         defines = (ROOT / 'code/__defines/maps.dm').read_text(encoding='utf-8')
         metadata = (ROOT / 'code/game/objects/map_metadata/nomads/nomads_americas.dm').read_text(encoding='utf-8')
         durable = (ROOT / 'code/modules/persistence/durable_nomads.dm').read_text(encoding='utf-8')
-        trails = (ROOT / 'code/modules/persistence/region_trails.dm').read_text(encoding='utf-8')
         jobs = (ROOT / 'code/modules/1713/jobs/nomads.dm').read_text(encoding='utf-8')
         for name, spec in MAPS.items():
             with self.subTest(name):
@@ -254,26 +266,42 @@ class AmericasMapsTest(unittest.TestCase):
                 self.assertIn(f"{spec['metadata']}\n\tID = {map_id}", metadata)
                 self.assertIn(f'terrain_height_file = "{spec["heights"]}"', metadata)
                 self.assertIn(spec['metadata'] + ',', durable)
-                self.assertIn(spec['trail'] + '\n', trails)
                 self.assertIn(map_id + ',', jobs)
 
-    def test_isthmus_trails_point_at_each_other(self):
-        trails = (ROOT / 'code/modules/persistence/region_trails.dm').read_text(encoding='utf-8')
-        south = trails.split('/obj/structure/region_gate/trail_marker/authored/americas_south\n')[1].split('\n\n')[0]
-        north = trails.split('/obj/structure/region_gate/trail_marker/authored/americas_north\n')[1].split('\n\n')[0]
-        self.assertIn('destination = "southamerica"', south)
-        self.assertIn('destination = "northamerica"', north)
+    def test_edges_lead_to_each_other(self):
+        metadata = (ROOT / 'code/game/objects/map_metadata/nomads/nomads_americas.dm').read_text(encoding='utf-8')
+        for name, spec in MAPS.items():
+            with self.subTest(name):
+                block = metadata.split(spec['metadata'] + '\n')[1].split('\n\n')[0]
+                self.assertIn(f'edge_crossings = list("{spec["edge"]}" = "{spec["neighbour"]}")', block)
         group = (ROOT / 'scripts/shard-group/americas.example.json').read_text(encoding='utf-8')
         self.assertIn('"id": "northamerica"', group)
         self.assertIn('"id": "southamerica"', group)
         self.assertIn(MAPS['north']['path'], group)
         self.assertIn(MAPS['south']['path'], group)
-        # A map trail is open from the start but never catches other lands' travellers.
-        authored = trails.split('/obj/structure/region_gate/trail_marker/authored\n')[1]
-        self.assertIn('approved = TRUE', authored)
-        self.assertIn('/obj/structure/region_gate/trail_marker/authored/accepts_strangers()\n\treturn FALSE', trails)
+
+    def test_edge_crossing_is_wired_into_travel(self):
+        edge = (ROOT / 'code/modules/persistence/region_edge.dm').read_text(encoding='utf-8')
         travel = (ROOT / 'code/modules/persistence/region_travel.dm').read_text(encoding='utf-8')
-        self.assertIn('gate.accepts_arrivals() && gate.accepts_strangers()', travel)
+        trails = (ROOT / 'code/modules/persistence/region_trails.dm').read_text(encoding='utf-8')
+        human = (ROOT / 'code/game/mob/living/carbon/human/human.dm').read_text(encoding='utf-8')
+        # The crossing travels in the payload, is validated on arrival and places the walker.
+        self.assertIn('"voyage", "ship", "edge"))', travel)
+        self.assertIn('if(!region_edge_payload_ok(P)) return null', travel)
+        self.assertIn('region_edge_arrival_turf(P, incoming) ||', travel)
+        self.assertIn('\t\t\tregion_edge_check()\n', human)
+        # The hidden gate is never saved, never an arrival point, and asks through travel().
+        gate = edge.split('/obj/structure/region_gate/land_edge\n')[1].split('\n\n')[0]
+        self.assertIn('should_save = FALSE', gate)
+        self.assertIn('invisibility = 101', gate)
+        self.assertIn('/obj/structure/region_gate/land_edge/accepts_arrivals()\n\treturn FALSE', edge)
+        self.assertIn('\tgate.travel(src)\n', edge)
+        # The ask lock never rides a save (civ13 saves tmp vars too).
+        self.assertIn('return key == "region_edge_asking" || key == "region_edge_asked_at" || ..()', edge)
+        # Riders and draggers are told why, in plain words.
+        self.assertIn('if (H.buckled || H.riding || H.riding_mob || H.driver || H.driver_vehicle) return "You cannot ride or drive across yet. Get down and walk on."', edge)
+        # No trail posts drawn on maps any more.
+        self.assertNotIn('trail_marker/authored', trails)
 
 
 if __name__ == '__main__':

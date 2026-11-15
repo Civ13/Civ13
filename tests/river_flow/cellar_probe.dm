@@ -110,3 +110,59 @@ var/sewer_runtime_error = FALSE
 	R = locate(4, 2, 1)
 	sewer_check(!flood_depth_at(R), "solid rock holds no water")
 	sewer_check(!flood_depth_at(locate(10, 3, 1)), "nothing seeps under the river itself")
+
+	pump_checks(F)
+
+/proc/pump_checks(datum/river_flood/F)
+	F.cellar_dry = list()
+	F.stage[1] = 1
+	var/turf/C = locate(5, 3, 1)
+	sewer_check(flood_depth_at(C) > 0, "the cellar is seeping again")
+
+	// A lever pump keeps its reach dry for a while after each stroke.
+	var/obj/structure/cellar_pump/lever/L = new /obj/structure/cellar_pump/lever(locate(6, 4, 1))
+	sewer_check((L in cellar_pumps) && !L.cellar_pumping() && flood_depth_at(C) > 0, "an idle lever pump does nothing")
+	L.stroke()
+	sewer_check(L.cellar_pumping() && !flood_depth_at(C) && !flood_depth_at(locate(9, 4, 1)) && flood_depth_at(locate(1, 1, 1)) > 0, "a stroke keeps the floor within three tiles dry")
+	for (var/i in 1 to 20)
+		L.stroke()
+	sewer_check(L.pumped_until <= world.time + 3000, "strokes bank at most five minutes")
+	L.pumped_until = world.time - 1
+	sewer_check(flood_depth_at(C) > 0, "the water comes back when the pumping stops")
+	qdel(L)
+
+	// A steam mine pump runs on fuel and keeps a wide working dry.
+	var/obj/structure/cellar_pump/steam/S = new /obj/structure/cellar_pump/steam(locate(2, 1, 1))
+	S.fuel = 2
+	S.on = TRUE
+	S.cellar_minute()
+	sewer_check(S.running && S.fuel == 1 && !flood_depth_at(locate(8, 5, 1)) && S.icon_state == "mine_pump_on", "a fired mine pump keeps everything within seven tiles dry and burns fuel")
+	S.cellar_minute()
+	sewer_check(!S.on && !S.running && flood_depth_at(locate(8, 5, 1)) > 0 && S.icon_state == "mine_pump", "out of fuel it stops")
+	qdel(S)
+
+	// A sump pump runs on its float switch, from the mains or its battery.
+	var/obj/structure/cellar_pump/sump/P = new /obj/structure/cellar_pump/sump(locate(5, 4, 1))
+	sewer_check(P.water_coming_in(), "the float switch feels water coming in")
+	P.cellar_minute()
+	sewer_check(P.running && P.battery == 59 && !flood_depth_at(C), "with no power it runs on its battery")
+	sewer_check(P.water_coming_in(), "and still feels the water it is pumping")
+	P.battery = 0
+	P.cellar_minute()
+	sewer_check(!P.running && flood_depth_at(C) > 0, "a flat battery and no power: the cellar floods")
+	P.battery = 10
+	F.stage[1] = 0
+	P.cellar_minute()
+	sewer_check(!P.water_coming_in() && !P.running && P.battery == 10, "with no water coming in it waits and spends nothing")
+	F.stage[1] = 1
+	P.on = FALSE
+	P.cellar_minute()
+	sewer_check(!P.running, "switched off it does nothing")
+	qdel(P)
+
+	// The minute step runs pumps on the cellar level.
+	var/obj/structure/cellar_pump/steam/S2 = new /obj/structure/cellar_pump/steam(locate(2, 1, 1))
+	S2.fuel = 5
+	S2.on = TRUE
+	F.drain_hollows()
+	sewer_check(S2.fuel == 4 && S2.running, "the river tick steps cellar pumps")

@@ -45,8 +45,8 @@ var/global/list/cellar_pumps = list()
 		return TRUE
 	return locate(/obj/structure/multiz) in S
 
-// Depth of water on cellar tile T, below surface tile S.
-/datum/river_flood/proc/seep_depth_at(turf/T)
+// Depth of water on cellar tile T. ignore_pumps: as if nothing kept it dry.
+/datum/river_flood/proc/seep_depth_at(turf/T, ignore_pumps = FALSE)
 	if (T.density || T.x < 1 || T.x > maxx || T.y < 1 || T.y > maxy)
 		return 0
 	var/r = reach_at(T.x, T.y)
@@ -65,7 +65,7 @@ var/global/list/cellar_pumps = list()
 		. = min(SEEP_MAX, gap * 0.25)
 	if (stage[r] > bank && flood_way_down(S))
 		. = max(., min(POUR_MAX, flood_depth_at(S)))
-	if (. > 0 && cellar_kept_dry(T))
+	if (. > 0 && !ignore_pumps && cellar_kept_dry(T))
 		return 0
 
 // Bailed lately, or near a working cellar pump.

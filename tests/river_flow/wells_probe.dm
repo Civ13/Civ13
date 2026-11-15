@@ -210,8 +210,31 @@ var/sewer_runtime_error = FALSE
 	sewer_check(!WL.draw_into(SW, BK), "an empty well gives nothing")
 	var/obj/structure/well_fitting/pump/PU = new /obj/structure/well_fitting/pump(low)
 	sewer_check(QDELETED(WL) && SW.well_fitting() == PU && PU.draw_time < initial(WL.draw_time), "a pump takes the windlass's place and draws faster")
-	qdel(SW)
-	sewer_check(QDELETED(PU), "the fitting goes with its well")
+	// Taking a well apart: fitting, then lining, then the hole.
+	PU.unfit()
+	var/obj/item/stack/material/iron/scrap = locate() in low
+	sewer_check(QDELETED(PU) && !SW.well_fitting() && scrap && scrap.amount == 3, "a pump taken down gives back half its iron")
+	qdel(scrap)
+	SW.dug_depth = 6
+	SW.volume = 400
+	SW.dug_settled_at = world.time
+	sewer_check(SW.dug_lined() && findtext("[SW.well_salvage()[1]]", "stone"), "a stone well is lined and gives stone back")
+	var/obj/structure/sink/puddle/waterhole/BH = SW.well_break_lining()
+	var/obj/item/stack/material/stone/rubble = locate() in low
+	sewer_check(QDELETED(SW) && istype(BH) && BH.loc == low && rubble && rubble.amount == 3, "breaking the lining leaves a waterhole and three stone")
+	sewer_check(BH.dug_depth == 2 && !BH.dug_lined() && BH.volume <= 400, "the bare shaft caves in to two spits ([BH.dug_depth]) and keeps no more water than it had ([BH.volume])")
+	BH.dug_fill_in()
+	sewer_check(QDELETED(BH) && !well_dug_at(low), "a shovel fills the bare hole in and nothing is left")
+	qdel(rubble)
+	var/obj/structure/sink/well/OW2 = new /obj/structure/sink/well(low)
+	var/obj/structure/sink/left = OW2.well_break_lining(FALSE)
+	sewer_check(QDELETED(OW2) && left && left.type == /obj/structure/sink/puddle && !(locate(/obj/item/stack/material/stone) in low), "an old spring well leaves its puddle, and a blast leaves no stone")
+	qdel(left)
+	var/obj/structure/sink/well/timber/TW2 = new /obj/structure/sink/well/timber(low)
+	TW2.dug_depth = 3
+	var/obj/structure/well_fitting/windlass/WL2 = new /obj/structure/well_fitting/windlass(low)
+	TW2.ex_act(1)
+	sewer_check(QDELETED(TW2) && QDELETED(WL2) && !well_dug_at(low), "a blast on the well fills it in, fitting and all")
 
 	// Places a well cannot go.
 	var/turf/ditch = locate(8, 5, 1)
