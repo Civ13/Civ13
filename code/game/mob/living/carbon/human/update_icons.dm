@@ -1434,6 +1434,7 @@ var/global/list/human_face_icon_cache = list()
 		//apply color
 		var/image/standing = image(icon = t_icon, icon_state = t_state, layer = layer+0.02)
 		standing.color = r_hand.color
+		r_hand.add_held_underlay(standing, t_icon, t_state, layer)
 
 		overlays_standing[R_HAND_LAYER] = standing
 
@@ -1482,6 +1483,7 @@ var/global/list/human_face_icon_cache = list()
 		//apply color
 		var/image/standing = image(icon = t_icon, icon_state = t_state, layer = layer+0.02)
 		standing.color = l_hand.color
+		l_hand.add_held_underlay(standing, t_icon, t_state, layer)
 
 		overlays_standing[L_HAND_LAYER] = standing
 
