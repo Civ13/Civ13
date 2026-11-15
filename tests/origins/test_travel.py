@@ -70,5 +70,21 @@ class TravelCarriesLanguages(unittest.TestCase):
         self.assertIn('!(islist(listed) && (held.name in listed))', notes)
 
 
+class TravelKeepsFactionVerbs(unittest.TestCase):
+    def test_the_arrival_gets_the_role_verbs(self):
+        # A travelled body never ran a job's equip(), so without this it had
+        # no Create Faction / Abandon Faction verbs until its next reload.
+        build = proc(TRAVEL, '/proc/region_travel_build')
+        self.assertIn('H.restore_role_verbs()', build)
+        self.assertLess(build.index('colony_arrival(H, P)'), build.index('H.restore_role_verbs()'))
+        self.assertLess(build.index('H.restore_role_verbs()'), build.index('return H'))
+        factions = '\n' + (ROOT / 'code/game/mob/groups/factions.dm').read_text(encoding='utf-8-sig').replace('\r\n', '\n')
+        restore = proc(factions, '/mob/living/human/proc/restore_role_verbs')
+        self.assertIn('make_nomad()', restore)
+        nomad = proc(factions, '/mob/living/human/proc/make_nomad')
+        for verb in ('create_faction', 'abandon_faction'):
+            self.assertIn('verbs += /mob/living/human/proc/' + verb, nomad)
+
+
 if __name__ == '__main__':
     unittest.main()

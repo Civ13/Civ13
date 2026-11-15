@@ -492,6 +492,10 @@ var/global/list/region_travel_carry_types = list(
 		H.party_train_party = P["party"]
 		party_train_restore_faction(H, P["party"])
 	colony_arrival(H, P)
+	// The arrival is a bare body that never ran a job's equip(), so it would
+	// lack the Faction verbs (Create/Abandon Faction, Create Religion, ...)
+	// until its next save and load. Grant them now, as after_load() does.
+	H.restore_role_verbs()
 	region_raid_note_origin(H, P)
 	H.region_arrival_pending = TRUE
 	H.update_hair(FALSE)
