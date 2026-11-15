@@ -366,7 +366,7 @@ var/datum/quickBan_handler/quickBan_handler = null
 /* check if we're an admin trying to quickBan another admin */
 /client/proc/trying_to_quickBan_admin(_ckey, cID, ip)
 	// check to see if we're trying to ban an admin by ckey
-	var/F = "SQL/admins.txt"
+	var/F = admins_file()
 	if (fexists(F))
 		var/list/admincheck = splittext(file2text(F),"|||\n")
 		if (islist(admincheck) && !isemptylist(admincheck))

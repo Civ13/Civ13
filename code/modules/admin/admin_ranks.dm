@@ -55,14 +55,52 @@ var/list/admin_ranks = list()								//list of all ranks with associated rights
 	#endif
 
 var/loaded_admins = FALSE
+// The admins file text the current admin list was built from; a login rebuilds the
+// list when the file has changed since (the Discord bot rewrites it on role changes).
+var/loaded_admins_text = null
+var/admins_file_path = null
 
 /hook/startup/proc/loadAdmins()
 	load_admins()
 	return TRUE
 
+// Every region of a shard group reads the mainland's admins file, which the Discord
+// bot keeps in step with staff roles. Region worktrees are siblings under the group
+// root (scripts/shard-group/shard_group.py region_dir), so the mainland's file is
+// ../<mainland>/SQL/admins.txt. A lone server, and the mainland itself, use their own.
+/proc/admins_file()
+	if (admins_file_path)
+		return admins_file_path
+	admins_file_path = "SQL/admins.txt"
+	if (fexists("config/shard_region.json"))
+		var/list/settings = null
+		try
+			settings = json_decode(file2text("config/shard_region.json"))
+		catch
+			settings = null
+		if (islist(settings))
+			var/mainland = settings["mainland"]
+			var/region = settings["region"]
+			var/shared = "../[mainland]/SQL/admins.txt"
+			if (shard_id_valid(mainland) && shard_id_valid(region) && mainland != region && fexists(shared))
+				admins_file_path = shared
+	return admins_file_path
+
+/proc/admins_file_text()
+	var/F = admins_file()
+	if (!fexists(F))
+		return ""
+	var/text = file2text(F)
+	if (!istext(text))
+		return ""
+	// The loader splits on "|||\n"; a file saved with Windows line endings must too.
+	return replacetext(text, ascii2text(13), "")
+
 /proc/load_admins(var/force = FALSE)
 	if (loaded_admins && !force)
-		return
+		if (admins_file_text() == loaded_admins_text)
+			return
+		log_admin("Admins file [admins_file()] changed; rebuilding the admin list.")
 	//clear the datums references
 	admin_datums.Cut()
 	for (var/client/C in admins)
@@ -73,19 +111,18 @@ var/loaded_admins = FALSE
 
 	load_admin_ranks()
 
-	var/F = "SQL/admins.txt"
-	if (!F)
-		loaded_admins = TRUE
-		return
+	var/F = admins_file()
+	var/admin_text = admins_file_text()
 
-	var/list/admincheck = splittext(file2text(F),"|||\n")
+	var/list/admincheck = splittext(admin_text,"|||\n")
 	if (islist(admincheck) && !isemptylist(admincheck))
 		for(var/i in admincheck)
 			var/list/admincheck_two = splittext(i, ";")
 			if (admincheck_two.len >= 3 && admincheck_two[2] != "NONE")
 				var/ckey = lowertext(admincheck_two[1])
 				var/rank = admincheck_two[2]
-				if (rank == "Removed") goto deadminned	//This person was de-adminned. They are only in the admin list for archive purposes.
+				if (rank == "Removed")	//This person was de-adminned. They are only in the admin list for archive purposes.
+					continue
 				var/rights = admincheck_two[3]
 				if (istext(rights))
 					rights = text2num(rights)
@@ -96,23 +133,21 @@ var/loaded_admins = FALSE
 					/* moved association code to client/New(), so it works for clients
 					   created at the same time as the world */
 
-	//clean the list. Start from the end and skip repeated entries.
-	var/list/admincheck2 = list()
-	var/list/ckeyschecked = list()
-	for(var/i=admincheck.len, i>=1, i--)
-		var/list/admincheck_two = splittext(admincheck[i], ";")
-		if (admincheck_two.len==3 && !(admincheck_two[1] in ckeyschecked))
-			ckeyschecked += list(admincheck_two[1])
-			admincheck2 += list(admincheck_two)
-	fdel(F)
-	for(var/list/nc in admincheck2)
-		text2file("[nc[1]];[nc[2]];[nc[3]]|||",F)
-
-
-	deadminned:
-	if (!admin_datums)
-		loaded_admins = TRUE
-		return
+	// Only the file's owner tidies it: a region reading the mainland's shared file
+	// must not rewrite it under the mainland (or the other regions) reading it.
+	if (F == "SQL/admins.txt" && fexists(F))
+		//clean the list. Start from the end and skip repeated entries.
+		var/list/admincheck2 = list()
+		var/list/ckeyschecked = list()
+		for(var/i=admincheck.len, i>=1, i--)
+			var/list/admincheck_two = splittext(admincheck[i], ";")
+			if (admincheck_two.len==3 && !(admincheck_two[1] in ckeyschecked))
+				ckeyschecked += list(admincheck_two[1])
+				admincheck2 += list(admincheck_two)
+		fdel(F)
+		for(var/list/nc in admincheck2)
+			text2file("[nc[1]];[nc[2]];[nc[3]]|||",F)
+	loaded_admins_text = admins_file_text()
 
 	#ifdef TESTING
 	var/msg = "Admins Built:\n"
