@@ -279,7 +279,7 @@ var/global/list/divine_invocation_names = list(
 		for (var/mob/living/human/M in V.participants)
 			if (M != src)
 				M.divine_vigil_member = V
-	to_chat(src, SPAN_NOTICE("You hold still and pray to [divine_patron]."))
+	to_chat(src, SPAN_NOTICE("You hold still and pray to [divine_label_for(divine_patron)]."))
 	visible_message("<span class='notice'>[src] bows their head.</span>", null, 3)
 	log_game("[key_name(src)] beseeched [divine_patron]: [spell] on [key_name(target)].")
 	divine_alert_operators(R)

@@ -7,7 +7,10 @@
 	set desc = "As a god, write your one original book and entrust it to a player."
 	if (!check_rights(R_ADMIN))
 		return
-	var/deity = sanitize(input(usr, "Which god is writing? Each god has one original book at a time.", "God's Book") as text|null)
+	var/list/entry = divine_identity_of(ckey)
+	if (!entry)
+		entry = divine_edit_identity()
+	var/deity = entry ? entry["name"] : null
 	if (!deity)
 		return
 	var/problem = divine_book_problem(deity)
