@@ -58,7 +58,7 @@ class RegionAdminSendSeams(unittest.TestCase):
         one = body(SEND, '/proc/region_admin_send_one(mob/living/human/H, id, list/landing)')
         self.assertIn('. = gate.depart(H)', one)
         # The record is kept on disk before the body leaves.
-        self.assertLess(one.index('region_admin_send_snapshot(H, id, landing)'), one.index('gate.depart(H)'))
+        self.assertLess(one.index('region_admin_send_snapshot(H, id, landing, print)'), one.index('gate.depart(H)'))
         self.assertIn('qdel(gate)', one)
         gate = SEND.split('/obj/structure/region_gate/admin_send\n', 1)[1].split('\n\n', 1)[0]
         self.assertIn('should_save = FALSE', gate)
@@ -68,6 +68,16 @@ class RegionAdminSendSeams(unittest.TestCase):
         self.assertIn('sleep(ADMIN_SEND_GAP)', run)
         # Event regions keep their own transfer, which stashes the home character.
         self.assertIn('peer["kind"] == "EVENT"', body(SEND, '/proc/region_admin_send_destination_refusal(id, wake = TRUE)'))
+
+    def test_every_send_is_checked_one_to_one(self):
+        one = body(SEND, '/proc/region_admin_send_one(mob/living/human/H, id, list/landing)')
+        self.assertIn('gate.landing["check"] = md5(json_encode(print))', one)
+        arrived = body(SEND, '/proc/region_admin_send_arrived(mob/living/human/H, list/P, incoming, turf/at)')
+        self.assertIn('md5(json_encode(region_admin_send_fingerprint(H))) == S["check"]', arrived)
+        print_ = body(SEND, '/proc/region_admin_send_fingerprint(mob/living/human/H)')
+        for field in ('"skills"', '"research"', '"scholarship"', '"reading"', '"tongues"', '"faction"', '"items"'):
+            self.assertIn(field, print_)
+        self.assertIn('region_admin_send_probe_roundtrip()', read('tests/region_admin_send/probe.dm'))
 
     def test_ship_override_only_skips_the_map_edge(self):
         refusal = body(SHIP, '/obj/structure/hull_tiller/proc/crossing_refusal(mob/living/human/H)')

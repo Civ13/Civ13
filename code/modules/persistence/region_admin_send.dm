@@ -118,7 +118,8 @@ var/global/region_admin_send_running = FALSE
 	if(!islist(S) || !(S["landing"] in list(ADMIN_SEND_SHORE, ADMIN_SEND_COORDS, ADMIN_SEND_ARRIVAL))) return FALSE
 	if(!istext(S["by"]) || !length(S["by"]) || length(S["by"]) > 32) return FALSE
 	for(var/key in S)
-		if(!(key in list("landing", "by", "at"))) return FALSE
+		if(!(key in list("landing", "by", "at", "check"))) return FALSE
+	if(!isnull(S["check"]) && (!istext(S["check"]) || length(S["check"]) != 32)) return FALSE
 	if(S["landing"] != ADMIN_SEND_COORDS) return isnull(S["at"])
 	var/list/at = S["at"]
 	if(!islist(at) || at.len != 3) return FALSE
@@ -256,22 +257,93 @@ var/global/region_admin_send_running = FALSE
 		H.buckled.unbuckle_mob()
 	if(H.client)
 		H.record_persistence_owner()
-	region_admin_send_snapshot(H, id, landing)
+	var/list/print = region_admin_send_fingerprint(H)
+	region_admin_send_snapshot(H, id, landing, print)
 	var/obj/structure/region_gate/admin_send/gate = new(get_turf(H))
 	gate.destination = id
-	gate.landing = landing
+	gate.landing = landing.Copy()
+	// The destination checks the arrival against this (region_admin_send_arrived).
+	gate.landing["check"] = md5(json_encode(print))
 	. = gate.depart(H)
 	qdel(gate)
+
+// ---------------------------------------------------------------- 1:1
+
+// Everything a trip must keep, as plain lists: identity, skills, research,
+// reading, people and languages, hunger, thirst and wounds, and every item
+// worn or held with everything inside it, at any depth (type, name, amount,
+// reagents, colour). Two characters with the same fingerprint left and arrived
+// alike. Contents are sorted, so the order things lie in a bag never counts.
+/proc/region_admin_send_fingerprint(mob/living/human/H)
+	var/list/items = list()
+	for(var/slot_name in region_travel_slots)
+		var/obj/item/I = H.get_equipped_item(region_travel_slots[slot_name])
+		if(I) items[slot_name] = region_admin_send_item_print(I, 0)
+	var/list/skills = list()
+	for(var/stat in H.stats)
+		var/list/pair = H.stats[stat]
+		if(islist(pair) && pair.len == 2) skills[stat] = list(round(pair[1], 0.01), round(pair[2], 0.01))
+	return list("name" = H.real_name, "gender" = H.gender, "age" = H.age, "skills" = region_admin_send_sorted(skills),
+		"research" = sortList(clean_recipe_node_ids(H.known_recipe_nodes)), "scholarship" = region_admin_send_sorted(clean_scholarship(H.scholarship)),
+		"reading" = region_admin_send_sorted(clean_study_progress(H.study_progress)), "tongues" = region_admin_send_sorted(H.region_travel_tongues()),
+		"nutrition" = clamp(round(H.nutrition), 0, 1000), "water" = clamp(round(H.water), 0, 1000),
+		"wounds" = clamp(round(H.getBruteLoss()), 0, 200) + clamp(round(H.getBurnLoss()), 0, 200),
+		"faction" = colony_faction_id(H), "items" = items)
+
+// An associative list as sorted "key=value" text, nested lists included, so
+// the order a world happened to fill it in never counts.
+/proc/region_admin_send_sorted(list/L)
+	if(!islist(L)) return L
+	var/list/out = list()
+	for(var/key in L)
+		var/value = istext(key) && !isnull(L[key]) ? L[key] : null
+		out += "[key]=[islist(value) ? json_encode(region_admin_send_sorted(value)) : value]"
+	return sortList(out)
+
+/proc/region_admin_send_item_print(obj/item/I, depth)
+	var/list/R = list("type" = "[I.type]", "name" = I.name)
+	if(istype(I, /obj/item/stack))
+		var/obj/item/stack/S = I
+		R["amount"] = S.amount
+	if(I.color) R["color"] = "[I.color]"
+	if(I.reagents && I.reagents.reagent_list.len)
+		var/list/held = list()
+		for(var/datum/reagent/A in I.reagents.reagent_list)
+			held += "[A.id]=[round(A.volume, 0.01)]"
+		R["reagents"] = sortList(held)
+	if(depth < 8)
+		var/list/inside = list()
+		for(var/obj/item/C in I)
+			if(istype(C, /obj/item/organ)) continue
+			inside += json_encode(region_admin_send_item_print(C, depth + 1))
+		if(inside.len) R["contents"] = sortList(inside)
+	return R
+
+// The differences between two fingerprints, as text (empty when alike).
+/proc/region_admin_send_fingerprint_diff(list/A, list/B)
+	. = list()
+	for(var/key in A | B)
+		if(key == "items")
+			for(var/slot_name in A["items"] | B["items"])
+				if(json_encode(A["items"][slot_name]) != json_encode(B["items"][slot_name]))
+					. += "[slot_name]: [region_admin_send_item_summary(A["items"][slot_name])] became [region_admin_send_item_summary(B["items"][slot_name])]"
+		else if(json_encode(A[key]) != json_encode(B[key]))
+			. += "[key] changed"
+
+/proc/region_admin_send_item_summary(list/R)
+	if(!islist(R)) return "nothing"
+	var/list/inside = R["contents"]
+	return "[R["name"]][inside ? " holding [inside.len]" : ""]"
 
 // Keeps what the character takes, as the travel record (items, skills,
 // research, reading, languages, faction, wounds), in
 // data/transfer-snapshots/<region>-<ckey>-<time>.json before it leaves, so an
 // admin can check or restore anything by hand if a trip ever goes wrong.
-/proc/region_admin_send_snapshot(mob/living/human/H, id, list/landing)
+/proc/region_admin_send_snapshot(mob/living/human/H, id, list/landing, list/print)
 	var/list/items = H.region_travel_items()
 	if(!islist(items)) return null
 	var/list/record = list("from" = shard_group.region, "to" = id, "landing" = landing, "realtime" = world.realtime,
-		"turf" = list(H.x, H.y, H.z), "payload" = H.region_travel_payload(items, null, FALSE, list("admin_send" = landing)))
+		"turf" = list(H.x, H.y, H.z), "fingerprint" = print, "payload" = H.region_travel_payload(items, null, FALSE, list("admin_send" = landing)))
 	var/path = "data/transfer-snapshots/[shard_group.region || "world"]-[H.persistence_owner_ckey]-[num2text(world.realtime, 20)].json"
 	text2file(json_encode(record), path)
 	return path
@@ -402,7 +474,10 @@ var/global/region_admin_send_running = FALSE
 	var/placed = ""
 	if(S["landing"] != ADMIN_SEND_ARRIVAL && !P["voyage"])
 		placed = P["admin_placed"] ? " ([region_admin_send_landing_name(S["landing"])])" : " (the normal arrival point: [region_admin_send_landing_name(S["landing"])] was not found)"
-	region_admin_send_tell("[P["owner"]]'s character [H.real_name] arrived in [here] from [region_ooc_region_name(P["from"])] at [at.x],[at.y],[at.z][placed], sent by [S["by"]]. Waiting for them to join.")
+	var/exact = ""
+	if(istext(S["check"]))
+		exact = md5(json_encode(region_admin_send_fingerprint(H))) == S["check"] ? " Everything arrived exactly as it left." : " WARNING: the character differs from what left; compare with the snapshot in [P["from"]]'s data/transfer-snapshots."
+	region_admin_send_tell("[P["owner"]]'s character [H.real_name] arrived in [here] from [region_ooc_region_name(P["from"])] at [at.x],[at.y],[at.z][placed], sent by [S["by"]].[exact] Waiting for them to join.")
 
 // The player took the character an admin sent here.
 /proc/region_admin_send_claimed(mob/living/human/H)

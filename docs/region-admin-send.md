@@ -36,6 +36,15 @@ skills, research, reading, languages, faction, wounds, hunger and thirst) to
 `data/transfer-snapshots/<region>-<ckey>-<time>.json` on the source region, so anything can be
 checked or restored by hand if a trip ever goes wrong.
 
+Every send is checked 1:1. The source takes a fingerprint of the character (name, skills,
+research, scholarship, reading, people and languages, faction, hunger, thirst, wounds, and every
+item worn or held with everything inside it at any depth: type, name, amount, reagents, colour)
+and sends its digest with the landing. The destination fingerprints the rebuilt character and
+reports either "Everything arrived exactly as it left" or a warning pointing at the snapshot.
+`tests/region_admin_send/probe.dm` sends a character with bags inside bags, a satchel,
+waterskins with water, primitive clothing, stacks, skills and two languages through the record
+and fails on any difference between the before and after fingerprints.
+
 Every send, refusal at send time, arrival (with the tile and whether the chosen landing was
 used) and the player taking their character at the destination is written to the admin log,
 shown to admins here, and sent to every region's admins through group admin chat (and so to the

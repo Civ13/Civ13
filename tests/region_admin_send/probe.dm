@@ -162,6 +162,68 @@ var/region_admin_send_probe_checks = 0
 	region_admin_send_claimed(H)
 	region_admin_send_probe_assert(isnull(H.region_admin_sent) && findtext(region_admin_send_recent[region_admin_send_recent.len]["text"], "joined"), "join_logged")
 
+	region_admin_send_probe_roundtrip()
+
+// 1:1: a full before-and-after diff of a character sent through the travel
+// record. Bags inside bags, a satchel, waterskins with water, primitive
+// clothing, stacks, a master book, skills, research, people and languages.
+/proc/region_admin_send_probe_roundtrip()
+	var/turf/T = locate(20, 5, 1)
+	var/mob/living/human/region_admin_send_probe/V = region_admin_send_probe_actor(20, 5, "voyager")
+	var/obj/item/clothing/suit/prehistoricfurcoat/coat = new(T)
+	coat.name = "Sigmundr's pelt coat"
+	var/obj/item/clothing/under/leaves_skirt/au_naturel/leaves = new(T)
+	var/obj/item/weapon/storage/backpack/pack_basket/basket = new(T)
+	var/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/waterskin/skin = new(T)
+	skin.reagents.add_reagent("water", 25)
+	var/obj/item/weapon/storage/backpack/satchel/satchel = new(T)
+	var/obj/item/stack/material/bone/bones = new(T, 7)
+	var/obj/item/stack/ore/iron/ore = new(T, 4)
+	var/obj/item/weapon/storage/backpack/pack_basket/inner = new(T)
+	var/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/waterskin/skin2 = new(T)
+	skin2.reagents.add_reagent("water", 10)
+	inner.handle_item_insertion(skin2, TRUE)
+	for (var/obj/item/I in list(bones, ore, inner))
+		basket.handle_item_insertion(I, TRUE)
+	var/obj/item/stack/material/bone/more_bones = new(T, 3)
+	satchel.handle_item_insertion(more_bones, TRUE)
+	var/obj/item/weapon/paddle/paddle = new(T)
+	V.equip_to_slot_or_del(leaves, slot_w_uniform)
+	V.equip_to_slot_or_del(coat, slot_wear_suit)
+	V.equip_to_slot_or_del(basket, slot_back)
+	V.equip_to_slot_or_del(skin, slot_wear_id)
+	V.put_in_l_hand(paddle)
+	V.put_in_r_hand(satchel)
+	region_admin_send_probe_assert(V.back == basket && V.r_hand == satchel && V.w_uniform == leaves, "voyager_dressed")
+	var/list/first = V.stats["crafting"]
+	if (islist(first))
+		V.stats["crafting"] = list(first[1] + 7, first[2] + 3)
+	V.region_travel_restore_tongues(list("known" = list("Latin" = 100, "Old Norse" = 41.5), "default" = "Latin", "origin" = "latins", "land" = "Gaia"))
+	V.nutrition = 321
+	V.water = 222
+	V.adjustBruteLoss(12)
+	var/list/before = region_admin_send_fingerprint(V)
+	region_admin_send_probe_assert(length(before["items"]) == 6 && length(before["tongues"]) >= 3, "fingerprint_sees_everything")
+	var/list/carried = V.region_travel_items()
+	region_admin_send_probe_assert(islist(carried), "voyager_refused: [carried]")
+	var/list/landing = list("landing" = "shore", "by" = "val", "check" = md5(json_encode(before)))
+	var/list/P = region_travel_decode(V.region_travel_payload(carried, null, FALSE, list("admin_send" = landing)))
+	region_admin_send_probe_assert(islist(P), "payload_decodes")
+	var/mob/living/human/arrived = region_travel_build(P, locate(25, 15, 1))
+	var/list/after = region_admin_send_fingerprint(arrived)
+	var/list/diff = region_admin_send_fingerprint_diff(before, after)
+	region_admin_send_probe_assert(!diff.len, "one_to_one: [jointext(diff, "; ")] | before [json_encode(before)] | after [json_encode(after)]")
+	region_admin_send_probe_assert(md5(json_encode(after)) == landing["check"], "arrival_check_matches")
+	// The check catches a lost item, a changed amount and a dropped language.
+	var/obj/item/stack/material/bone/b2 = locate() in arrived.back
+	b2.amount = 6
+	region_admin_send_probe_assert(length(region_admin_send_fingerprint_diff(before, region_admin_send_fingerprint(arrived))) == 1, "changed_amount_caught")
+	b2.amount = 7
+	qdel(arrived.l_hand)
+	region_admin_send_probe_assert(length(region_admin_send_fingerprint_diff(before, region_admin_send_fingerprint(arrived))) == 1, "lost_item_caught")
+	arrived.region_travel_restore_tongues(list("known" = list("Latin" = 100), "default" = "Latin", "origin" = "latins", "land" = "Gaia"))
+	region_admin_send_probe_assert(length(region_admin_send_fingerprint_diff(before, region_admin_send_fingerprint(arrived))) == 2, "lost_language_caught")
+
 /world/New()
 	OpenPort("none")
 	var/error = null
