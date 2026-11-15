@@ -165,6 +165,9 @@ cooldown, combat and crafting rules apply.
 - **Host characters without a ckey.** `character_spawn` creates a mob (default
   `/mob/living/human`) owned by that agent, up to `max_characters` (default 4).
   Humans still get their usual map identity; a `name` is applied after it.
+  `origin` (an id or name of one of the land's peoples, see `docs/origins.md`)
+  picks that identity; without it the character belongs to the people of its
+  birthplace. The state lists `origin` and `languages` with scores.
   With `job` (a late-join title on the current map, such as `Nomad`), the
   character joins like a late joiner instead: that job's clothes, kit, name
   and spawn point through the normal `EquipRank` path; `stay: true` keeps the

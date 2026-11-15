@@ -56,6 +56,8 @@
 		"civ13:comanche:v1" = /datum/language/comanche, \
 		"civ13:mayan:v1" = /datum/language/mayan, \
 		"civ13:aztec:v1" = /datum/language/aztec, \
+		"civ13:quechua:v1" = /datum/language/quechua, \
+		"civ13:tupi:v1" = /datum/language/tupi, \
 		"civ13:hawaiian:v1" = /datum/language/hawaiian, \
 		"civ13:filipino:v1" = /datum/language/filipino, \
 		"civ13:welsh:v1" = /datum/language/welsh, \

@@ -33,6 +33,8 @@
 #define NAVAJO_SYLLABLES list("a", "e", "i", "o", "u", "ha", "ba", "cha", "da", "ga", "ja", "ka", "la", "ma", "na", "pa", "sa", "ta", "tsa", "za", "wa", "ya", "aa", "ee", "ii", "oo", "uu", "baa", "daa", "gaa", "jaa", "kaa", "naa", "paa", "saa", "taa", "tsaa", "zaa", "waa", "yaa", "hai", "bai", "dai", "gai", "jai", "kai", "lai", "mai", "nai", "pai", "sai", "tai", "tsai", "zai", "wai", "yai")
 #define CHINOOK_SYLLABLES list("a", "i", "u", "e", "o", "ka", "kha", "ga", "gha", "ma", "na", "nga", "pa", "pha", "ba", "cha", "chang", "wa", "ya", "za", "ha", "la", "sa", "ta", "tha", "da", "cha", "chang", "wang", "yang", "zha", "sa", "mang", "nang")
 #define COMANCHE_SYLLABLES list("a", "e", "i", "o", "u", "wa", "we", "wi", "wo", "wu", "ma", "me", "mi", "mo", "mu", "na", "ne", "ni", "no", "nu", "pa", "pe", "pi", "po", "pu", "ta", "te", "ti", "to", "tu", "ha", "he", "hi", "ho", "hu", "sa", "se", "si", "so", "su", "ya", "ye", "yi", "yo", "yu")
+#define QUECHUA_SYLLABLES list("a", "i", "u", "ka", "ki", "ku", "qa", "qi", "qu", "cha", "chi", "chu", "lla", "lli", "llu", "ma", "mi", "mu", "na", "ni", "nu", "pa", "pi", "pu", "ra", "ri", "ru", "sa", "si", "su", "ta", "ti", "tu", "wa", "wi", "ya", "yu", "nka", "nki", "nta", "mpa", "spa", "rqa", "sqa", "kuna", "manta", "wan", "pas", "taq", "chay", "kay", "hina", "runa", "simi", "wasi", "inti", "killa", "apu", "yaku", "sumaq", "q'a", "k'a", "t'a", "ch'a", "nchik", "yku")
+#define TUPI_SYLLABLES list("a", "e", "i", "o", "u", "y", "pa", "pe", "pi", "po", "pu", "ta", "te", "ti", "to", "tu", "ka", "ke", "ko", "ku", "ma", "me", "mi", "mo", "mu", "na", "ne", "no", "nu", "ra", "re", "ri", "ro", "ru", "sa", "se", "so", "su", "ja", "je", "ju", "gua", "gue", "ba", "be", "bo", "mba", "mbo", "nda", "nde", "nga", "ngu", "nha", "nhe", "xe", "xa", "ara", "ita", "oka", "una", "yba", "tinga", "pora", "ete", "asu", "mirim", "tupa", "aba", "sy", "usu")
 #define MAYAN_SYLLABLES list("a", "e", "i", "o", "u", "ka", "ke", "ki", "ko", "ku", "ma", "me", "mi", "mo", "mu", "na", "ne", "ni", "no", "nu", "pa", "pe", "pi", "po", "pu", "ta", "te", "ti", "to", "tu", "cha", "che", "chi", "cho", "chu", "ja", "je", "ji", "jo", "ju", "sa", "se", "si", "so", "su", "wa", "we", "wi", "wo", "wu", "ya", "ye", "yi", "yo", "yu")
 #define AZTEC_SYLLABLES list("a", "e", "i", "o", "u", "ka", "ke", "ki", "ko", "ku", "ca", "ce", "ci", "co", "cu", "ma", "me", "mi", "mo", "mu", "na", "ne", "ni", "no", "nu", "pa", "pe", "pi", "po", "pu", "ta", "te", "ti", "to", "tu", "cha", "che", "chi", "cho", "chu", "ya", "ye", "yi", "yo", "yu", "tl", "tla", "tle", "tli", "tlo", "tlu", "xa", "xe", "xi", "xo", "xu")
 #define HAWAIIAN_SYLLABLES list("a", "e", "i", "o", "u", "ka", "ke", "ki", "ko", "ku", "la", "le", "li", "lo", "lu", "ma", "me", "mi", "mo", "mu", "na", "ne", "ni", "no", "nu", "pa", "pe", "pi", "po", "pu", "wa", "we", "wi", "wo", "wu", "ha", "he", "hi", "ho", "hu")
@@ -607,6 +609,24 @@
     flags = RESTRICTED | COMMON_VERBS
     syllables = AZTEC_SYLLABLES
     mutual_intelligibility = list(/datum/language/mayan = 6, /datum/language/cherokee = 2)
+
+/datum/language/quechua
+    name = "Quechua"
+    desc = "Runa Simi, the speech of the Andes."
+    key = "qu"
+    colour = "Quechua"
+    flags = RESTRICTED | COMMON_VERBS
+    syllables = QUECHUA_SYLLABLES
+    mutual_intelligibility = list(/datum/language/tupi = 2)
+
+/datum/language/tupi
+    name = "Tupi"
+    desc = "Nheengatu, the good speech of the forest and the coast."
+    key = "tp"
+    colour = "Tupi"
+    flags = RESTRICTED | COMMON_VERBS
+    syllables = TUPI_SYLLABLES
+    mutual_intelligibility = list(/datum/language/carib = 4, /datum/language/quechua = 2)
 
 /datum/language/hawaiian
     name = "Hawaiian"
