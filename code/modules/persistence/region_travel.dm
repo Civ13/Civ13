@@ -231,7 +231,7 @@ var/global/list/region_travel_carry_types = list(
 			P["faction_leader"] = 1
 	// A crewed flight (space/lander.dm) says which lander and where it lands.
 	for(var/key in extra)
-		if(key in list("lander", "landing", "surveyed", "rough", "return", "orbit", "cargo", "sortie", "seats", "voyage", "ship", "edge"))
+		if(key in list("lander", "landing", "surveyed", "rough", "return", "orbit", "cargo", "sortie", "seats", "voyage", "ship", "edge", "mount"))
 			P[key] = extra[key]
 	return json_encode(P)
 
@@ -428,6 +428,7 @@ var/global/list/region_travel_carry_types = list(
 					H.drop_from_inventory(I, T)
 			space_flight_replayed(H, P)
 			sea_crossing_replayed(H, P)
+			region_edge_replayed(H, P)
 			qdel(H)
 
 /proc/region_travel_build(list/P, turf/T)
