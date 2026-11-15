@@ -239,6 +239,35 @@
 		loaded.after_load()
 	dressmaking_ci_expect(loaded && loaded.design_body == "peaked_cap" && loaded.design_colors == "#232f58|#b01c30|#e0b030" && loaded.overlays.len == expected && loaded.name == "peaked cap", "headwear round trip rebuilds its layers once")
 	qdel(cap); qdel(loaded)
+	// Mix-and-match hats: four crowns sharing bands, brims, flaps and decorations.
+	var/list/crowns = list("made_round_hat", "made_pointed_hat", "made_soft_hat", "made_tall_hat")
+	for (var/crown in crowns)
+		var/list/crown_body = tailoring_body(crown)
+		var/full = "Stripes|Fur trim|Wide brim|Ear flaps|Plume"
+		dressmaking_ci_expect(crown_body && crown_body["slot"] == "head" && length(tailoring_piece_labels(crown_body)) == 6 && tailoring_design_valid(crown, "#232f58|#ffffff|#6e4c30|#232f58|#232f58|#b01c30", full), "[crown] takes five coloured pieces")
+		dressmaking_ci_expect(length(tailoring_layers(crown, null, TRUE, full)) == 6 && length(tailoring_layers(crown, null, FALSE, null)) == 1 && tailoring_design_cost(crown, full) == crown_body["cost"] + 2, "[crown] draws each chosen piece and charges for brim and flaps")
+	dressmaking_ci_expect(!tailoring_design_valid("made_round_hat", "#ffffff", "Stripes|Band|Top hat brim") && tailoring_pieces_text(tailoring_pieces("made_round_hat", null)) == "Plain|None|None|None|None", "unknown hat pieces are refused and a new hat starts plain")
+	var/obj/item/clothing/head/tailored/hat = new(site)
+	hat.design_body = "made_soft_hat"
+	hat.design_colors = "#232f58|#ffffff|#e0b030|#232f58|#ffffff|#b01c30"
+	hat.design_pieces = "Plain|Band|Cocked brim|None|Feather"
+	hat.design_fabric = "woolcloth"
+	hat.design_name = "Sunday hat"
+	hat.tailoring_refresh()
+	dressmaking_ci_expect(hat.name == "Sunday hat" && hat.icon == 'icons/obj/clothing/tailoring.dmi' && hat.icon_override == 'icons/mob/tailoring.dmi' && hat.item_state == "tl_hat_soft" && hat.overlays.len == 4 && length(hat.worn_design_layers()) == 4 && (hat.body_parts_covered & HEAD) && !(hat.flags_inv & BLOCKHAIR), "a soft hat with band, cocked brim and feather draws four layers on the tailoring art")
+	var/savefile/hat_file = new("dressmaking-made-hat.sav")
+	hat_file["/format_version"] << 2
+	map_storage.clear_bookkeeping()
+	map_storage.saving_z = 1
+	var/hat_ref = map_storage.BuildVarDirectory(hat_file, hat, 1)
+	map_storage.clear_bookkeeping()
+	var/obj/item/clothing/head/tailored/loaded_hat = map_storage.Load_Entry(hat_file, hat_ref, starting_loc = site)
+	if (loaded_hat)
+		loaded_hat.after_load()
+	dressmaking_ci_expect(loaded_hat && loaded_hat.design_pieces == "Plain|Band|Cocked brim|None|Feather" && loaded_hat.overlays.len == 4 && loaded_hat.name == "Sunday hat" && loaded_hat.icon_override == 'icons/mob/tailoring.dmi', "a pieced hat round trip keeps its pieces")
+	tailoring_named_items -= hat
+	tailoring_named_items -= loaded_hat
+	qdel(hat); qdel(loaded_hat)
 	dressmaking_ci_clear(site)
 
 // Writes in its own proc so the savefile closes before it is read back.

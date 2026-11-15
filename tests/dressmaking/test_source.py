@@ -94,7 +94,7 @@ class TailoringTests(unittest.TestCase):
     def test_every_piece_state_has_template_art(self):
         body = adapter.extract(SOURCE, '/proc/tailoring_bodies')
         states = set(re.findall(r'"(tl_\w+)"', body))
-        self.assertGreaterEqual(len(states), 39)
+        self.assertGreaterEqual(len(states), 63)
         worn, item = dmi_states(ART['tailoring'][0]), dmi_states(ART['tailoring'][1])
         for state in sorted(states):
             with self.subTest(state=state):
@@ -105,6 +105,24 @@ class TailoringTests(unittest.TestCase):
             with self.subTest(piece=state):
                 self.assertIn(state, states)
                 self.assertTrue(0 <= int(cost) <= 2)
+
+    def test_mix_and_match_hats(self):
+        rows = catalogue()
+        hats = {k: v for k, v in rows.items() if v['slot'] == 'head' and v['art'] == 'tailoring'}
+        self.assertEqual(sorted(hats), ['made_pointed_hat', 'made_round_hat', 'made_soft_hat', 'made_tall_hat'])
+        body = adapter.extract(SOURCE, '/proc/tailoring_bodies')
+        for body_id, row in hats.items():
+            line = re.search(r'C\["%s"\] = list\((.*)\)\n' % body_id, body)[1]
+            with self.subTest(body=body_id):
+                # Body plus five options: exactly the colour cap.
+                labels = re.findall(r'"(Pattern|Band|Brim|Flaps|Decoration)" = ', line)
+                self.assertEqual(labels, ['Pattern', 'Band', 'Brim', 'Flaps', 'Decoration'])
+                self.assertIn('"%s_stripes"' % row['base'], line)
+                self.assertIn('"%s_panels"' % row['base'], line)
+        self.assertIn('#define TAILORING_MAX_COLOURS 6', SOURCE)
+        sprites = (ROOT / 'tests/sprites/create_tailoring_pieces.py').read_text()
+        for state in set(re.findall(r'"(tl_hat_\w+)"', body)):
+            self.assertIn("'%s'" % state, sprites)
 
     def test_fabric_and_dyes(self):
         fabrics = re.search(r'var/global/list/tailoring_fabrics = list\((.*?)\)\n\n', SOURCE, re.S)[1]
