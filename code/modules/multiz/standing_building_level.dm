@@ -15,11 +15,12 @@
 var/global/building_standing_watch = FALSE
 
 /proc/building_standing_wanted()
-	return map && map.building_level_standing && map.building_levels && !dug_underground_supported()
+	return map && map.building_level_standing && map.building_levels
 
-// TRUE once the level exists; FALSE while waiting or after a refusal.
+// TRUE once the level exists; FALSE while waiting or after a refusal. A dug
+// cave or an open practice level above the surface is not the standing level.
 /proc/building_standing_present()
-	return world.maxz > building_base_maxz()
+	return building_levels_built() > 0
 
 /proc/building_standing_ready()
 	if (!ticker || persistence_save_in_progress || building_allocating_z)

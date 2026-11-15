@@ -10,9 +10,11 @@
 	// first stands from the start of the round so aircraft can fly.
 	building_levels = 4
 	building_level_standing = TRUE
-	// One surface level with no cave: mined-out mountain floor keeps giving
-	// stone and regrowing ore seams (mountain_seams.dm).
+	// Mined-out mountain floor keeps giving stone and regrowing ore seams
+	// (mountain_seams.dm), and a tunnel dug down opens a cave level
+	// (dug_underground.dm).
 	mountain_seams = TRUE
+	dig_down_underground = TRUE
 
 /obj/map_metadata/nomads/asia/season_transition_complete(var/epoch)
 	..(epoch)

@@ -27,13 +27,39 @@
 /proc/dug_underground_supported()
 	return map && map.dig_down_underground && building_base_maxz() == DUG_SURFACE_Z
 
-// The cave is the only level a dig-down map may add; restoring a saved world
-// recreates it through the same admission before the save fills it in.
+// The surface and its cave are the two full planes of a dig-down map; they
+// must fit the measured Gaia profile (two full planes of 175,000 cells).
+/proc/dug_underground_fits()
+	return world.maxx * world.maxy * (DUG_SURFACE_Z + 1) <= NEW_Z_MEASURED_CELLS
+
+// The cave is the one full level a dig-down map may add; restoring a saved
+// world recreates it through the same admission before the save fills it in.
+// On a map without building levels it is the only added level at all. A map
+// that also opts into building levels (building_admission.dm) may have open-air
+// levels already standing, so its cave is simply the next level, charged
+// against the building profile along with them.
 /datum/world_z_budget/underground_admitted(target_z)
-	if (!dug_underground_supported() || target_z != building_base_maxz() + 1)
+	if (!dug_underground_supported())
 		return FALSE
 	var/pending = (instance_reserve - instance_used) + (safehouse_reserve - safehouse_used)
-	return world.maxx * world.maxy * (target_z + pending) <= NEW_Z_MEASURED_CELLS
+	if (!map.building_levels)
+		return target_z == building_base_maxz() + 1 && world.maxx * world.maxy * (target_z + pending) <= NEW_Z_MEASURED_CELLS
+	if (target_z != world.maxz + 1 || target_z > building_base_maxz() + 1 + min(map.building_levels, NEW_Z_ROOF_CEILING) || !dug_underground_fits())
+		return FALSE
+	return world.maxx * world.maxy * (target_z + pending) <= NEW_Z_BUILDING_MEASURED_CELLS
+
+/datum/world_z_budget/ground_planes()
+	return base_z + (dug_underground_z() ? 1 : 0)
+
+// How many open-air building levels stand above the compiled map: every added
+// level but the dug cave and an open practice level.
+/proc/building_levels_built()
+	var/built = world.maxz - building_base_maxz()
+	if (dug_underground_z())
+		built--
+	if (practice_room_z && practice_room_z > building_base_maxz())
+		built--
+	return max(built, 0)
 
 // The physical z of the dug cave level, or 0. Scans the few added levels.
 /proc/dug_underground_z()
@@ -57,7 +83,8 @@
 			return 0
 		if (z == DUG_SURFACE_Z)
 			return dug
-		return z - 1 == dug ? DUG_SURFACE_Z : z - 1
+		// The cave may lie between two open-air levels: step over it.
+		return z - 1 == dug ? z - 2 : z - 1
 	return z > 1 ? z - 1 : 0
 
 /proc/multiz_level_above(z)
@@ -80,7 +107,7 @@
 	var/top = practice_room_z && practice_room_z == world.maxz ? world.maxz - 1 : world.maxz
 	var/dug = dug_underground_z()
 	if (dug && dug == top)
-		return top - 1
+		top--
 	if (map && map.building_levels && top > building_base_maxz())
 		return building_base_maxz()
 	return top

@@ -47,26 +47,46 @@ class BuildingStoreyTests(unittest.TestCase):
         self.assertEqual(americas.count('\tbuilding_level_standing = TRUE\n'), 2)
 
     def test_the_smaller_lands_fit_four_levels_in_the_measured_cells(self):
-        # name: (width, height, compiled levels). Every plane up to the fourth
-        # building level must fit the measured cell count, or roofs would be
-        # refused part of the way up.
-        for name, (width, height, base) in {'asia': (490, 255, 1), 'jungle': (300, 300, 2), 'desert': (225, 225, 2)}.items():
+        # name: (width, height, compiled levels, dig-down cave). Every plane up
+        # to the fourth building level, and the cave where there is one, must
+        # fit the measured cell count, or roofs would be refused part of the way
+        # up. A dig-down land's two full planes must fit Gaia's.
+        lands = {'asia': (490, 255, 1, 1), 'europe': (375, 447, 1, 1), 'jungle': (300, 300, 2, 0), 'desert': (225, 225, 2, 0)}
+        for name, (width, height, base, cave) in lands.items():
             with self.subTest(name):
                 meta = read('code/game/objects/map_metadata/nomads/nomads_%s.dm' % name)
                 self.assertEqual(meta.count('\tbuilding_levels = 4\n'), 1)
                 self.assertEqual(meta.count('\tbuilding_level_standing = TRUE\n'), 1)
-                self.assertNotIn('dig_down_underground = TRUE', meta)
+                self.assertEqual(meta.count('\tdig_down_underground = TRUE\n'), cave)
                 heights = read('maps/heights/nomads_%s.txt' % name).split('\n')
                 self.assertEqual(heights[1], 'size %d %d' % (width, height))
                 self.assertEqual(heights[2], 'z %d' % base)
-                self.assertLessEqual(width * height * (base + 4), 1050000)
+                self.assertLessEqual(width * height * (base + cave + 4), 1050000)
+                if cave:
+                    self.assertLessEqual(width * height * 2, 350000)
+
+    def test_a_dug_cave_and_building_levels_coexist(self):
+        admission = read('code/modules/multiz/building_admission.dm')
+        admitted = body(admission, '/datum/world_z_budget/building_admitted(target_z)')
+        self.assertIn('var/cave = dug_underground_supported() ? 1 : 0', admitted)
+        self.assertIn('target_z > building_base_maxz() + min(map.building_levels, NEW_Z_ROOF_CEILING) + cave', admitted)
+        self.assertIn('if (cave && !dug_underground_fits())', admitted)
+        dug = read('code/modules/multiz/dug_underground.dm')
+        self.assertIn('return world.maxx * world.maxy * (DUG_SURFACE_Z + 1) <= NEW_Z_MEASURED_CELLS', dug)
+        under = body(dug, '/datum/world_z_budget/underground_admitted(target_z)')
+        # A map without building levels keeps the old rule exactly.
+        self.assertIn('return target_z == building_base_maxz() + 1 && world.maxx * world.maxy * (target_z + pending) <= NEW_Z_MEASURED_CELLS', under)
+        self.assertIn('return z - 1 == dug ? z - 2 : z - 1', dug)
+        standing = read('code/modules/multiz/standing_building_level.dm')
+        self.assertIn('return map && map.building_level_standing && map.building_levels\n', standing)
+        self.assertIn('return building_levels_built() > 0', standing)
 
     def test_a_roof_grows_only_from_the_highest_level(self):
         levels = read('code/game/objects/building_levels.dm')
         grows = body(levels, '/proc/building_grows_from(z)')
         self.assertIn('if (building_upper_z(z))\n\t\treturn FALSE', grows)
         self.assertIn('z == multiz_top_z()', grows)
-        self.assertIn('z == world.maxz && z > building_base_maxz() && building_stack_room(z)', grows)
+        self.assertIn('z > building_base_maxz() && z != dug_underground_z() && building_stack_room(z)', grows)
         construct = body(levels, '/proc/building_construct_roof(')
         self.assertIn('if (building_grows_from(T.z))\n\t\tbuilding_allocate_level(world.maxz + 1)', construct)
         # Support and occupancy are rechecked after the allocation.
