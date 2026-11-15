@@ -51,6 +51,8 @@ REVIEWED = {
     'landfall_at': 'var/tmp landfall rest stamp of a built hull tiller (ship_voyage.dm), never saved',
     'air_crossing_hold': 'var/tmp hold of a plane arriving from another land (aircraft_crossing.dm), never saved',
     'bite_fracture_guard': 'var/tmp guard for the instant of one animal bite on humans, never saved',
+    'hold_started': 'var/tmp brace stamp of a hand holding a car door (vehicle_door_hold.dm), never saved',
+    'strain_time': 'var/tmp strain clock of a hand holding a car door (vehicle_door_hold.dm), never saved',
 }
 
 # An optional [key] catches stamps kept in a keyed list, such as next_emote["normal"].

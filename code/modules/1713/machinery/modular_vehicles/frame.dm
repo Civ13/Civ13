@@ -279,10 +279,7 @@
 		if (!istype(K) || K.loc != H || !K.matches(axis) || !axis.key_access(H) || !Adjacent(H))
 			to_chat(H, "This vehicle requires its matching key.")
 			return
-		for (var/list/wall in list(w_front, w_back, w_left, w_right))
-			if (wall.len >= 7 && wall[6]) wall[7] = !wall[7]
-		update_icon()
-		H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+		key_turn_doors(H)
 		return
 	if (mwheel && mwheel.broken && istype(I, /obj/item/weapon/weldingtool))
 		var/cantdo = FALSE
@@ -307,103 +304,7 @@
 		var/obj/item/weapon/key/K = I
 		if (doorcode)
 			if (K.code == doorcode)
-				if (w_front[6])
-					if (w_front[7])
-						visible_message("[H] locks the door.")
-						playsound(src.loc, 'sound/effects/door_lock_unlock.ogg', 100)
-						w_front[7] = FALSE
-						if (removesroof)
-							for(var/obj/structure/vehicleparts/frame/VP in range(1,loc))
-								if (VP.axis == axis && VP.removesroof && VP.w_front[6])
-									VP.w_front[7] = FALSE
-									VP.noroof = FALSE
-									VP.update_icon()
-							noroof = FALSE
-					else
-						visible_message("[H] unlocks the door.")
-						playsound(src.loc, 'sound/effects/door_lock_unlock.ogg', 100)
-						w_front[7] = TRUE
-						if (removesroof)
-							for(var/obj/structure/vehicleparts/frame/VP in range(1,loc))
-								if (VP.axis == axis && VP.removesroof && VP.w_front[6])
-									VP.w_front[7] = TRUE
-									VP.noroof = TRUE
-									VP.update_icon()
-							noroof = TRUE
-					H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-				if (w_back[6])
-					if (w_back[7])
-						visible_message("[H] locks the door.")
-						playsound(src.loc, 'sound/effects/door_lock_unlock.ogg', 100)
-						w_back[7] = FALSE
-						if (removesroof)
-							for(var/obj/structure/vehicleparts/frame/VP in range(1,loc))
-								if (VP.axis == axis && VP.removesroof && VP.w_back[6])
-									VP.w_back[7] = FALSE
-									VP.noroof = FALSE
-									VP.update_icon()
-							noroof = FALSE
-					else
-						visible_message("[H] unlocks the door.")
-						playsound(src.loc, 'sound/effects/door_lock_unlock.ogg', 100)
-						w_back[7] = TRUE
-						if (removesroof)
-							for(var/obj/structure/vehicleparts/frame/VP in range(1,loc))
-								if (VP.axis == axis && VP.removesroof && VP.w_back[6])
-									VP.w_back[7] = TRUE
-									VP.noroof = TRUE
-									VP.update_icon()
-							noroof = TRUE
-					H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-				if (w_left[6])
-					if (w_left[7])
-						visible_message("[H] locks the door.")
-						playsound(src.loc, 'sound/effects/door_lock_unlock.ogg', 100)
-						w_left[7] = FALSE
-						if (removesroof)
-							for(var/obj/structure/vehicleparts/frame/VP in range(1,loc))
-								if (VP.axis == axis && VP.removesroof && VP.w_left[6])
-									VP.w_left[7] = FALSE
-									VP.noroof = FALSE
-									VP.update_icon()
-							noroof = FALSE
-					else
-						visible_message("[H] unlocks the door.")
-						playsound(src.loc, 'sound/effects/door_lock_unlock.ogg', 100)
-						w_left[7] = TRUE
-						if (removesroof)
-							for(var/obj/structure/vehicleparts/frame/VP in range(1,loc))
-								if (VP.axis == axis && VP.removesroof && VP.w_left[6])
-									VP.w_left[7] = TRUE
-									VP.noroof = TRUE
-									VP.update_icon()
-							noroof = TRUE
-					H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-				if (w_right[6])
-					if (w_right[7])
-						visible_message("[H] locks the door.")
-						playsound(src.loc, 'sound/effects/door_lock_unlock.ogg', 100)
-						w_right[7] = FALSE
-						if (removesroof)
-							for(var/obj/structure/vehicleparts/frame/VP in range(1,loc))
-								if (VP.axis == axis && VP.removesroof && VP.w_right[6])
-									VP.w_right[7] = FALSE
-									VP.noroof = FALSE
-									VP.update_icon()
-							noroof = FALSE
-					else
-						visible_message("[H] unlocks the door.")
-						playsound(src.loc, 'sound/effects/door_lock_unlock.ogg', 100)
-						w_right[7] = TRUE
-						if (removesroof)
-							for(var/obj/structure/vehicleparts/frame/VP in range(1,loc))
-								if (VP.axis == axis && VP.removesroof && VP.w_right[6])
-									VP.w_right[7] = TRUE
-									VP.noroof = TRUE
-									VP.update_icon()
-							noroof = TRUE
-					H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-				update_icon()
+				key_turn_doors(H)
 			else
 				to_chat(H, "This key does not match this lock!")
 				return
