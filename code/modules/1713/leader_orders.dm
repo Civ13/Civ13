@@ -139,22 +139,28 @@
 		count++
 	return count
 
+// One strength and one expiry per order: a new order takes over only when the
+// current one has run out, is weaker, or is equally strong but ends sooner.
+// A weaker order never extends a stronger one past its own expiry.
+/proc/leader_order_replaces(now, old_strength, old_until, strength, until)
+	return now >= old_until || strength > old_strength || (strength == old_strength && until > old_until)
+
 /mob/living/human/proc/receive_leader_order(order, strength, duration, mob/living/human/leader)
 	var/until = world.time + duration
 	switch (order)
 		if (LEADER_ORDER_MOVE)
-			if (world.time >= order_move_until || strength >= order_move_strength)
+			if (leader_order_replaces(world.time, order_move_strength, order_move_until, strength, until))
 				order_move_strength = strength
-			order_move_until = max(order_move_until, until)
+				order_move_until = until
 			last_run_delay = -1 // recalculate the cached run speed now
 		if (LEADER_ORDER_HOLD)
-			if (world.time >= order_hold_until || strength >= order_hold_strength)
+			if (leader_order_replaces(world.time, order_hold_strength, order_hold_until, strength, until))
 				order_hold_strength = strength
-			order_hold_until = max(order_hold_until, until)
+				order_hold_until = until
 		if (LEADER_ORDER_FOCUS)
-			if (world.time >= order_focus_until || strength >= order_focus_strength)
+			if (leader_order_replaces(world.time, order_focus_strength, order_focus_until, strength, until))
 				order_focus_strength = strength
-			order_focus_until = max(order_focus_until, until)
+				order_focus_until = until
 	if (leader == src)
 		to_chat(src, SPAN_NOTICE("You order your allies to [order]. For [round(duration / 10)] seconds, [leader_order_effect_text(order)]."))
 	else
