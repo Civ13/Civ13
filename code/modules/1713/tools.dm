@@ -464,7 +464,7 @@
 	var/turf/floor/TB = get_turf(user)
 	if (istype(TB, /turf/floor/beach/water))
 		return
-	var/display = list("Tunnel", "Grave", "Irrigation Channel", "Pit Latrine", "Drain Ditch", "Cesspit", "Cancel")
+	var/display = list("Tunnel", "Grave", "Irrigation Channel", "Pit Latrine", "Drain Ditch", "Cesspit", "Well", "Cancel")
 	var/input =  WWinput(user, "What do you want to dig?", "Digging", "Cancel", display)
 	if (input == "Cancel")
 		return
@@ -560,6 +560,9 @@
 				return
 			else
 				return
+	else if (input == "Well")
+		shovel_dig_well(user, TB)
+		return
 	else if (input == "Drain Ditch" || input == "Cesspit")
 		shovel_dig_sewer(user, TB, input == "Cesspit")
 		return

@@ -867,11 +867,8 @@
 		customvar2 = recipe.title
 
 	if (findtext(recipe.title, "well") && !findtext(recipe.title, "oil well"))
-		var/puddly = FALSE
-		for (var/obj/structure/sink/puddle/P in get_turf(H))
-			puddly = TRUE
-		if (puddly == FALSE)
-			to_chat(H, "<span class = 'danger'>You need to build this over a puddle.</span>")
+		if (!well_build_site(get_turf(H)))
+			to_chat(H, "<span class = 'danger'>You need to build this over a puddle, or over a waterhole dug with a shovel.</span>")
 			secondary_refund(H)
 			return
 	else if (findtext(recipe.title, "cannon") || findtext(recipe.title, "catapult") || findtext(recipe.title, "spadroon") || findtext(recipe.title, "arming sword") || findtext(recipe.title, "small sword"))
@@ -1620,7 +1617,7 @@
 		secondary_refund(H)
 		return
 
-	if (recipe.one_per_turf && (locate(recipe.result_type) in user.loc))
+	if (recipe.one_per_turf && (locate(recipe.result_type) in user.loc) && !well_relining(recipe.result_type, user.loc))
 		to_chat(user, "<span class='warning'>There is another [recipe.title] here!</span>")
 		secondary_refund(H)
 		return
@@ -1771,9 +1768,11 @@
 		produced = 4
 	else if (recipe.result_type == /obj/item/stack/arrowhead/vial)
 		produced = 4
-	if (recipe.result_type == /obj/structure/sink/well || recipe.result_type == /obj/structure/sink/well/sandstone || recipe.result_type == /obj/structure/sink/well/marble)
+	// A well takes the place of the puddle it is built over; a dug hole is taken over by the lining (dug_wells.dm).
+	if (ispath(recipe.result_type, /obj/structure/sink/well))
 		for (var/obj/structure/sink/puddle/P in get_turf(H))
-			qdel(P)
+			if (!P.dug_depth)
+				qdel(P)
 	var/inpt = 50
 	if (recipe.result_type == /obj/structure/cannon/modern/tank)
 		inpt = player_input(user, "Choose the gun's caliber: (50mm-150mm, cost 40 steel per 75mm)", null, null, "num", null, FALSE)
