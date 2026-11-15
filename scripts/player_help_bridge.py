@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = 'cbbdca543e485c3c80eceb762aa06a292eb504a1'
+WIKI_REVIEWED_REVISION = '230a4990c92742d539d7797902043ca795a47fb8'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('dbdd9f64009c697282c90bf6d7e157100834ad2ea23f5b76ec03938e816c1083', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('0da0fcb7a71382365bf818e6e27b5e0c58056785f328a4da1bba4ed44e26a673', 'character skills traits languages'),
@@ -113,8 +113,8 @@ WIKI_REVIEWED_GUIDES = {
     'gamemodes/Battle_Royale.md': ('18d1e4cf951f943bd7a0f5030c1825bd82a77427349b086842a309e492c4d841', 'battle royale battleroyale'),
     'gamemodes/Gladiators.md': ('36ac7d70edff2c99d78351585450428ad5cd02542b0cc3dfc5c178bca7d1ffb6', 'gladiator gladiators arena imperator custodes medicus'),
     'gamemodes/Prison_Roleplay.md': ('8da37041c99c23ab18012006e8afd8475acdd1485f8cb3eb48d23152f9cfb613', 'prison prisoner guard gulag nkvd'),
-    'guides/Guide_to_Boats.md': ('b93ebe66ee3ff4e331a88f0baec1dd2df471e6179dd53159ef6a6f93df52e1a1', 'boat boats ship sailing sail raft canoe rowing oars anchor swim swimming drown drowning current currents lifejacket naval torpedo torpedoes degaussing minesweeping'),
-    'guides/Guide_to_Aircraft.md': ('41bfd54a42fc164dbc96e1364c7dabd4d09ccd6e010207bfb838b2e04bf000b8', 'aircraft airplane plane planes flying fly flight runway hangar pilot takeoff landing'),
+    'guides/Guide_to_Boats.md': ('90c07dd0902ab4b65854e9b5f8724e10d3ea098effa3ff4b7bf48e9f9cb9a0b1', 'boat boats ship sailing sail raft canoe rowing oars anchor swim swimming drown drowning current currents lifejacket naval torpedo torpedoes degaussing minesweeping'),
+    'guides/Guide_to_Aircraft.md': ('062500cdad251ba9e32fa0c4ca1882b4e00f55b9bce8ec7cc8ea47724a0f9c2a', 'aircraft airplane plane planes flying fly flight runway hangar pilot takeoff landing'),
     'guides/Guide_to_Aircraft_Carriers.md': ('3402b1e488a635eb74b172c9d0c2d62038fe192efcd7d12e9b3f5d297c655ce4', 'carrier carriers aircraft carrier flight deck shipyard office arresting wires elevator bunkers'),
     'guides/Guide_to_Races.md': ('46ef1bf361c519e71acbd679119429e838348827e25dbcac27282f67bee51097', 'race races species human humans'),
     'guides/Guide_to_Slang.md': ('52f9f6370922d7dede523e51247ae6ea0723d24118cecd26e594c051278dfc3f', 'slang terms jargon abbreviation meaning mean word words'),
@@ -124,8 +124,8 @@ WIKI_REVIEWED_GUIDES = {
     'Crafting_Skill_Level_Requirements.md': ('eae4e1c91ce28009f16ec79d0e942f76895d80262e618320eaf44d3a7c5808a9', 'crafting skill level levels requirement requirements unlock'),
     'Food_Decay_Times.md': ('d2d63372eddc79fd7c3c9bffb390587fff7a5cb21c53d829ab5ec29ab9f11126', 'food decay rot spoil spoils spoiled expire expires lasts preserve storage'),
     'Miscellaneous_Crafting.md': ('eac7513db31aeb05d3dec97040b4287d79ea61eba3076a5f9c7e889c36c4bb8b', 'miscellaneous crafting misc items dress dresses dressmaking tailoring tailor tailored sew sewing pattern patterns design clothes shirt gown cloak sleeves collar dye dyes wool linen fabric book hat hats headwear beret veil candle candles'),
-    'maps/The_Americas.md': ('6268c8fa444bbb8bfbbfc2e326dc0dae23d2de63012b33fc070382c5c8a88828', 'americas america north south isthmus mainland persistent persistence map world hills tamping grading rammer'),
-    'maps/Gaia.md': ('0e19a20e98e7e6330bc1cfc89fd067cb6752bdf50864d27d56ddd6bbad67f4a6', 'gaia map world underground'),
+    'maps/The_Americas.md': ('7da473dcae7b98efa4d7d618f8d13f919d1a278b398ce0ff7e5d8a105adadfba', 'americas america north south isthmus mainland persistent persistence map world hills tamping grading rammer'),
+    'maps/Gaia.md': ('31ac9df3080f401b012b2fd335e89e633e438fe0124fad2ced6d4ff6fd72858c', 'gaia map world underground'),
     'maps/Nomads_Maps.md': ('7e71889c4c8cab319a7ab34f4106c04699d7ee7fc62d4489058d1fe098f6c9d2', 'nomads maps map terrain biome biomes'),
     'gamemodes/Voyage.md': ('9922f438d0253c6b4d812bc852422a54c37f428b4c3221b2a732397ef245ddfe', 'voyage expedition ship mode'),
     'gamemodes/Events.md': ('de6e6133e735e5da8a03a290f45e599b82cee216d9b150d25c583e3c34606336', 'events event special rounds'),
