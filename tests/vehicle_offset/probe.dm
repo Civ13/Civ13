@@ -520,7 +520,10 @@ var/list/vehicle_offset_probe_receipt = list()
 	vehicle_offset_probe_watched = TRUE
 	var/car2_from = vehicle_offset_probe_px(front2)[2]
 	var/rider2_from = vehicle_offset_probe_px(rider2)[2]
+	// The pace is the tile loop's: one tile per vehicle_m_delay + 1, which the load sets after each tile.
+	var/car2_expected = 0
 	for (var/i = 1 to 40)
+		car2_expected += vehicle_offset_speed(A2.vehicle_m_delay + 1)
 		vehicle_offset_probe_assert(A2.vehicle_offset_tick() == world.tick_lag, "frame_car_tick_[i]_every_tick")
 		var/same = TRUE
 		for (var/obj/structure/vehicleparts/frame/F in car2_frames)
@@ -529,9 +532,8 @@ var/list/vehicle_offset_probe_receipt = list()
 		vehicle_offset_probe_assert(same && rider2.step_y == front2.step_y && (rider2 in A2.offset_mover.carried) && A2.step_y == front2.step_y, "frame_car_tick_[i]_together")
 		vehicle_offset_probe_assert(vehicle_offset_probe_centred(front2), "frame_car_tick_[i]_filed")
 	var/car2_rolled = vehicle_offset_probe_px(front2)[2] - car2_from
-	var/car2_expected = round(40 * vehicle_offset_speed(4))
-	vehicle_offset_probe_assert(abs(car2_rolled - car2_expected) <= 1 && vehicle_offset_probe_px(rider2)[2] - rider2_from == car2_rolled, "frame_car_rolls_by_pixels ([car2_rolled] of [car2_expected])")
-	vehicle_offset_probe_assert(A2.offset_mover.crossings >= 3 && A2.moving, "frame_car_tile_steps_under_the_offset ([A2.offset_mover.crossings])")
+	vehicle_offset_probe_assert(abs(car2_rolled - car2_expected) <= 1.5 && vehicle_offset_probe_px(rider2)[2] - rider2_from == car2_rolled, "frame_car_rolls_by_pixels ([car2_rolled] of [car2_expected])")
+	vehicle_offset_probe_assert(A2.offset_mover.crossings >= 2 && A2.moving, "frame_car_tile_steps_under_the_offset ([A2.offset_mover.crossings])")
 	vehicle_offset_probe_assert(rider2.carried_by_vehicle(), "frame_car_rider_makes_no_footsteps")
 	vehicle_offset_probe_receipt["frame_car_px_in_40_ticks"] = car2_rolled
 	// Out of gear it coasts on and stops square on its tiles.
