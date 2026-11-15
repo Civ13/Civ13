@@ -111,6 +111,51 @@ class RegionAsay(unittest.TestCase):
             self.assertNotIn(call, code)
 
 
+ANNOUNCE = read('code/modules/persistence/region_announce.dm')
+ADMIN = read('code/modules/admin/admin.dm')
+
+
+class RegionAnnounce(unittest.TestCase):
+    """Announce (All Regions): the Announce styling for every region's players."""
+
+    def test_included_and_given_wherever_announce_is(self):
+        self.assertIn('#include "code\\modules\\persistence\\region_announce.dm"', read('civ13.dme'))
+        verbs = read('code/modules/admin/admin_verbs.dm')
+        self.assertEqual(verbs.count('/datum/admins/proc/announce,'),
+                         verbs.count('/datum/admins/proc/announce_all_regions,'))
+        fire = proc(read('code/modules/1713/radio_relay.dm'), '/process/civ_radio_relay/fire')
+        self.assertLess(fire.index('region_announce_tick()'), fire.index('if (!on_air.len)'))
+
+    def test_both_verbs_share_the_announce_style(self):
+        show = proc(ANNOUNCE, '/proc/admin_announce_show')
+        self.assertIn('to_chat(world,', show)
+        self.assertIn('Announces:</b></big>', show)
+        self.assertIn('admin_announce_show(', proc(ADMIN, '/datum/admins/proc/announce'))
+        verb = proc(ADMIN, '/datum/admins/proc/announce_all_regions')
+        self.assertIn('set name = "Announce (All Regions)"', verb)
+        # Always plain text, sanitized before it is shown or sent.
+        checks = max(verb.index('check_rights(0)'), verb.index('region_ooc_linked()'), verb.index('message = sanitize(message'))
+        for step in ('admin_announce_show(shown_name, message)', 'log_admin("Announce (All Regions):',
+                     'region_announce_outbound(shown_name, usr.ckey, message)'):
+            self.assertLess(checks, verb.index(step), step)
+
+    def test_own_ring_and_receive_refuses_markup(self):
+        exchange = proc(ANNOUNCE, '/proc/region_announce_exchange')
+        self.assertIn('"/announce/send"', exchange)
+        self.assertIn('"/announce/inbox"', exchange)
+        for other in ('/ooc/', '/asay/', 'region_ooc_outbound', 'region_asay_outbound'):
+            self.assertNotIn(other, ANNOUNCE)
+        # A silent agent keeps the announcement queued until it is too old.
+        self.assertLess(exchange.index('REGION_ANNOUNCE_MAX_AGE'), exchange.index('"/announce/send"'))
+        self.assertLess(exchange.index('"/announce/send"'), exchange.index('region_announce_outbound_queue.Cut(1, 2)\n\tif'))
+        tick = proc(ANNOUNCE, '/proc/region_announce_tick')
+        self.assertLess(tick.index('if (region_announce_busy)'), tick.index('region_announce_exchange()'))
+        receive = proc(ANNOUNCE, '/proc/region_announce_receive')
+        for check in ('source == shard_group.region', 'findtext(msg, "<")', 'html_encode(name)'):
+            self.assertIn(check, receive)
+        self.assertLess(receive.index('findtext(msg, "<")'), receive.index('admin_announce_show('))
+
+
 if __name__ == '__main__':
     unittest.main()
 

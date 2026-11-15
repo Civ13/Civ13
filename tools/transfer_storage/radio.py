@@ -20,6 +20,11 @@ Admin chat (ASAY) rides its own ring (``asay_send``, ``asay_inbox``), never
 the OOC ring, so an agent or world that does not know it drops the line
 instead of showing it to players as OOC.
 
+Admin announcements (Announce (All Regions)) ride their own ring too
+(``announce_send``, ``announce_inbox``), so every region's players see one
+admin announcement; a world that is down or asleep simply misses it, like a
+chat line.
+
 Orbital strikes ride a third ring (``strike_send``, ``strike_inbox``): a
 station's battery names the region it fires on, and only that region's agent
 queues the strike. The target world checks the aim (a spotter's mark or the
@@ -89,6 +94,8 @@ class RadioRelay:
         self._strike_in = deque(maxlen=RING)
         self._asay_out = deque(maxlen=RING)
         self._asay_in = deque(maxlen=RING)
+        self._announce_out = deque(maxlen=RING)
+        self._announce_in = deque(maxlen=RING)
         self.local = {}            # key -> {'condition': n, 'at': clock}
         self.peers = {}            # region -> {key -> {'condition': n, 'at': clock}}
         self.dropped = 0
@@ -186,6 +193,28 @@ class RadioRelay:
             raise RadioError('asay must be a list')
         return self._deliver_lines(envelopes, self._asay_fields, self._asay_in)
 
+    def announce_send(self, envelope):
+        """Record one admin announcement made here, for every other region. Returns its id."""
+        if type(envelope) is not dict:
+            raise RadioError('envelope must be an object')
+        clean = self._announce_fields(envelope)
+        clean.update(id=uuid.uuid4().hex, group=self.group, source=self.region, at=self.clock())
+        self._announce_out.append(clean)
+        return clean['id']
+
+    def announce_inbox(self):
+        """Admin announcements from peers, oldest first, each handed out once."""
+        self._expire()
+        due = list(self._announce_in)
+        self._announce_in.clear()
+        return [self._public(e) for e in due]
+
+    def deliver_announce(self, envelopes):
+        """Accept admin announcements from other regions. Returns how many were queued."""
+        if not isinstance(envelopes, list):
+            raise RadioError('announce must be a list')
+        return self._deliver_lines(envelopes, self._announce_fields, self._announce_in)
+
     def strike_send(self, envelope):
         """Record one orbital strike fired from here at another region. Returns its id."""
         if type(envelope) is not dict:
@@ -262,7 +291,8 @@ class RadioRelay:
                 'queued_out': len(self._outbox), 'queued_in': len(self._inbox),
                 'ooc_out': len(self._ooc_out), 'ooc_in': len(self._ooc_in),
                 'strikes_out': len(self._strike_out), 'strikes_in': len(self._strike_in),
-                'asay_out': len(self._asay_out), 'asay_in': len(self._asay_in), 'dropped': self.dropped}
+                'asay_out': len(self._asay_out), 'asay_in': len(self._asay_in),
+                'announce_out': len(self._announce_out), 'announce_in': len(self._announce_in), 'dropped': self.dropped}
 
     # -- what the coordinator moves -----------------------------------------
 
@@ -277,13 +307,16 @@ class RadioRelay:
         self._strike_out.clear()
         asay = list(self._asay_out)
         self._asay_out.clear()
+        announce = list(self._announce_out)
+        self._announce_out.clear()
         now = self.clock()
         heartbeats = {key: {'condition': info['condition'], 'age': int(now - info['at'])}
                       for key, info in self.local.items() if now - info['at'] <= HEARTBEAT_TTL}
         return {'envelopes': [dict(e, age=round(now - e['at'], 2)) for e in due], 'heartbeats': heartbeats,
                 'ooc': [dict(e, age=round(now - e['at'], 2)) for e in ooc],
                 'strikes': [dict(e, age=round(now - e['at'], 2)) for e in strikes],
-                'asay': [dict(e, age=round(now - e['at'], 2)) for e in asay]}
+                'asay': [dict(e, age=round(now - e['at'], 2)) for e in asay],
+                'announce': [dict(e, age=round(now - e['at'], 2)) for e in announce]}
 
     def deliver_ooc(self, envelopes):
         """Accept OOC lines from other regions. Returns how many were queued."""
@@ -383,7 +416,7 @@ class RadioRelay:
     def _expire(self):
         now = self.clock()
         for ring in (self._outbox, self._inbox, self._ooc_out, self._ooc_in, self._strike_out, self._strike_in,
-                     self._asay_out, self._asay_in):
+                     self._asay_out, self._asay_in, self._announce_out, self._announce_in):
             while ring and now - ring[0]['at'] > TTL:
                 ring.popleft()
                 self.dropped += 1
@@ -404,6 +437,14 @@ class RadioRelay:
         if clean['discord']:
             clean['posted'] = True
         return clean
+
+    @staticmethod
+    def _announce_fields(envelope):
+        return {
+            'name': _text(envelope.get('name'), MAX_NAME, 'name'),
+            'ckey': _text(envelope.get('ckey'), MAX_NAME, 'ckey'),
+            'message': _text(envelope.get('message'), MAX_OOC, 'message'),
+        }
 
     @staticmethod
     def _strike_fields(envelope):

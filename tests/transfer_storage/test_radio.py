@@ -49,6 +49,12 @@ def asay(**overrides):
     return base
 
 
+def announce(**overrides):
+    base = {'name': 'Val', 'ckey': 'val', 'message': 'Server restart in ten minutes.\nFind a bed.'}
+    base.update(overrides)
+    return base
+
+
 class RingTests(unittest.TestCase):
     def setUp(self):
         self.clock = Clock()
@@ -228,6 +234,37 @@ class OocRingTests(unittest.TestCase):
         self.clock.now += TTL + 1
         self.assertEqual([], self.alpha.outbox()['asay'])
 
+    def test_announcements_have_their_own_ring(self):
+        # Announce (All Regions): never admin chat, never OOC (region_announce.dm).
+        ident = self.alpha.announce_send(announce())
+        out = self.alpha.outbox()
+        self.assertEqual(([], [], []), (out['envelopes'], out['ooc'], out['asay']))
+        self.assertEqual([ident], [e['id'] for e in out['announce']])
+        self.assertEqual(('alpha', 'val'), (out['announce'][0]['source'], out['announce'][0]['ckey']))
+        for bad in (announce(message=''), announce(message='m' * (MAX_OOC + 1)), announce(name=''),
+                    announce(ckey=None), 'not an object'):
+            with self.assertRaises(RadioError):
+                self.alpha.announce_send(bad)
+        self.assertEqual(1, self.beta.deliver_announce(out['announce']))
+        self.assertEqual(0, self.beta.deliver_announce(out['announce']))  # duplicate id
+        self.assertEqual(0, self.alpha.deliver_announce(out['announce']))  # own announcement
+        self.assertEqual(0, self.beta.deliver_announce([dict(out['announce'][0], id='other', group='h')]))
+        self.assertEqual(0, self.beta.deliver_announce([dict(out['announce'][0], id='late', age=TTL + 1)]))
+        self.assertEqual(([], []), (self.beta.ooc_inbox(), self.beta.asay_inbox()))
+        got = self.beta.announce_inbox()
+        self.assertEqual(['Server restart in ten minutes.\nFind a bed.'], [e['message'] for e in got])
+        self.assertNotIn('at', got[0])
+        self.assertEqual([], self.beta.announce_inbox())
+        with self.assertRaises(RadioError):
+            self.beta.deliver_announce('nope')
+        for i in range(RING + 5):
+            self.alpha.announce_send(announce(message='line %d' % i))
+        self.assertEqual(RING, len(self.alpha.outbox()['announce']))
+        self.alpha.announce_send(announce())
+        self.clock.now += TTL + 1
+        self.assertEqual([], self.alpha.outbox()['announce'])
+        self.assertIn('announce_out', self.alpha.status())
+
     def test_strikes_validate_and_leave_in_their_own_list(self):
         ident = self.alpha.strike_send(strike())
         out = self.alpha.outbox()
@@ -342,6 +379,22 @@ class AgentRadioTests(unittest.TestCase):
             self.assertEqual([], self.post(region, '/ooc/inbox')['result']['envelopes'])
             self.assertEqual([], self.post(region, '/radio/inbox')['result']['envelopes'])
         self.assertFalse(self.post('alpha', '/asay/send', {'envelope': asay(message='')})['ok'])
+
+    def test_announcement_reaches_every_live_region_and_skips_a_down_one(self):
+        # gamma's agent is down (its world asleep or stopped): the pass still serves beta.
+        self.servers['gamma'].shutdown()
+        self.servers['gamma'].server_close()
+        sent = self.post('alpha', '/announce/send', {'envelope': announce()})
+        self.assertTrue(sent['ok'], sent)
+        self.assertEqual(1, self.coordinator.relay_radio_once())
+        self.assertEqual(0, self.coordinator.relay_radio_once())
+        self.assertEqual([], self.post('alpha', '/announce/inbox')['result']['envelopes'])
+        got = self.post('beta', '/announce/inbox')['result']['envelopes']
+        self.assertEqual([('alpha', 'Val', 'Server restart in ten minutes.\nFind a bed.')],
+                         [(e['source'], e['name'], e['message']) for e in got])
+        for path in ('/asay/inbox', '/ooc/inbox', '/radio/inbox'):
+            self.assertEqual([], self.post('beta', path)['result']['envelopes'], path)
+        self.assertFalse(self.post('alpha', '/announce/send', {'envelope': announce(message='')})['ok'])
 
     def test_strike_reaches_only_the_region_it_names(self):
         sent = self.post('alpha', '/strike/send', {'envelope': strike(target='gamma', mode='imagery')})
