@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '64221e121f9b3ddf32fba3734680a7d524c45d00'
+WIKI_REVIEWED_REVISION = 'b4cc2e6423545af4df4c0fc9e377a179ef7f5a5f'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('d40907b97df21d9df98414a54e9da1b15c357855f0341c905f269dfb97bb8618', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('f9b3777b9e995d824a4ee5d8336c8ad28f012eef55fc9c8acefa750743d4f185', 'character skills traits languages'),
@@ -113,13 +113,13 @@ WIKI_REVIEWED_GUIDES = {
     'gamemodes/Battle_Royale.md': ('18d1e4cf951f943bd7a0f5030c1825bd82a77427349b086842a309e492c4d841', 'battle royale battleroyale'),
     'gamemodes/Gladiators.md': ('36ac7d70edff2c99d78351585450428ad5cd02542b0cc3dfc5c178bca7d1ffb6', 'gladiator gladiators arena imperator custodes medicus'),
     'gamemodes/Prison_Roleplay.md': ('8da37041c99c23ab18012006e8afd8475acdd1485f8cb3eb48d23152f9cfb613', 'prison prisoner guard gulag nkvd'),
-    'guides/Guide_to_Boats.md': ('d2cc3c8db53a01b4528f16845f106c7c85cf2a78764acd2d0f46da2666ab792d', 'boat boats ship sailing sail raft canoe rowing oars anchor swim swimming drown drowning current currents lifejacket naval torpedo torpedoes degaussing minesweeping'),
+    'guides/Guide_to_Boats.md': ('e34772fb0dcf81da61904bb279cb7525d924e8e22199082ec399c9d2a6e9a19e', 'boat boats ship sailing sail raft canoe rowing oars anchor swim swimming drown drowning current currents lifejacket naval torpedo torpedoes degaussing minesweeping'),
     'guides/Guide_to_Aircraft.md': ('7eeeab1bc3ed05075f56975fd7e36dbb895f177ae048d30c8008debc243e88b8', 'aircraft airplane plane planes flying fly flight runway hangar pilot takeoff landing'),
     'guides/Guide_to_Aircraft_Carriers.md': ('d0009e9680476ab3b7c220e0f4dda18191b0c23d94271ab32219ed8fedf1bf53', 'carrier carriers aircraft carrier flight deck shipyard office arresting wires elevator bunkers'),
     'guides/Guide_to_Races.md': ('46ef1bf361c519e71acbd679119429e838348827e25dbcac27282f67bee51097', 'race races species human humans'),
     'guides/Guide_to_Slang.md': ('52f9f6370922d7dede523e51247ae6ea0723d24118cecd26e594c051278dfc3f', 'slang terms jargon abbreviation meaning mean word words'),
     'guides/Guide_to_Books_and_Scholars.md': ('657b422b287f491885195d42da795670d229e20901b597bfe53ace09ae6cf980', 'books scholars scholarship study chapter research bench apprentice tutor library writing slate abacus'),
-    'guides/Guide_to_Your_First_Day.md': ('87c86b7b862619792da1e9d962691bcf7a7f45305c45dd7d421ce8dd1a409485', 'first day new character start starting survive survival research book study chapter food water shelter bag bags carry carrying basket travois'),
+    'guides/Guide_to_Your_First_Day.md': ('bdfe3afdf9523bac087d1819f71ec33639dbe2e975604f457216f4908816e23d', 'first day new character start starting survive survival research book study chapter food water shelter bag bags carry carrying basket travois'),
     'guides/Guide_to_Paperwork.md': ('a1a5f705ece3027336005a5fe08e5554eabe1bb6da16cc4294db54b39ad63b69', 'paper paperwork writing write pen book sign signature stamp'),
     'Crafting_Skill_Level_Requirements.md': ('eae4e1c91ce28009f16ec79d0e942f76895d80262e618320eaf44d3a7c5808a9', 'crafting skill level levels requirement requirements unlock'),
     'Food_Decay_Times.md': ('d2d63372eddc79fd7c3c9bffb390587fff7a5cb21c53d829ab5ec29ab9f11126', 'food decay rot spoil spoils spoiled expire expires lasts preserve storage'),
