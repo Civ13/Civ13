@@ -12,14 +12,25 @@ States, all 32x32, 1 frame:
                                  murky water with scum in the bottom.
   stone_drain0 .. stone_drain15  1 dir. A covered stone drain: flat dressed
                                  cover slabs with mortar gaps and some wear.
+  brick_drain0 .. brick_drain15  1 dir. An Imperial-era brick sewer: the back
+                                 of a red-brown brick vault in stretcher bond
+                                 with dark mortar and a lighter crown course.
   cesspit0 .. cesspit3           1 dir. A dug pit with a rough plank rim:
                                  empty, a little sludge, half full, and full
                                  to the brim with flies over it.
   outfall                        4 dirs (SOUTH, NORTH, EAST, WEST). The end
                                  of a drain at a river: a few stones and a
                                  dark wet spill fan.
+  flap_gate                      4 dirs (SOUTH, NORTH, EAST, WEST). A hinged
+                                 wooden flap with two iron straps hanging
+                                 over the end of a drain, laid over an
+                                 outfall tile.
+  clog                           1 dir. An overlay for any drain piece: a
+                                 lump of dark silt, sticks and a scrap of rag
+                                 plugging the centre of the channel.
 
-Junction convention. The number after ditch / stone_drain is a bitmask of the
+Junction convention. The number after ditch / stone_drain / brick_drain is a
+bitmask of the
 cardinal neighbours the piece connects to, in BYOND dir values:
 
   NORTH = 1   SOUTH = 2   EAST = 4   WEST = 8
@@ -27,15 +38,22 @@ cardinal neighbours the piece connects to, in BYOND dir values:
 So 3 runs north-south, 12 runs east-west, 5 is the corner joining north and
 east, 7 is the tee with no west arm and 15 is the cross. A connected arm runs
 to the tile edge with the same cross-section on every piece (the ditch is 12px
-wide on columns/rows 10-21, the slabs 14px wide on 9-22, both centred on the
-same line as the irrigation channel in icons/turf/trench.dmi), so any run of
-tiles reads as one channel. 0 is the piece with no neighbours: ditch0 is a
-short isolated trench, stone_drain0 is a single square slab with a slotted
-stone grate, used as a street inlet.
+wide on columns/rows 10-21, the slabs and the brick vault 14px wide on 9-22,
+all centred on the same line as the irrigation channel in
+icons/turf/trench.dmi), so any run of tiles reads as one channel and a brick
+arm meets a stone arm edge to edge. 0 is the piece with no neighbours: ditch0
+is a short isolated trench, stone_drain0 is a single square slab with a
+slotted stone grate, used as a street inlet, and brick_drain0 is a round
+cast-iron manhole cover set in a square of brick.
 
-Outfall direction convention. The outfall is laid over the last drain tile,
-and its dir points from the drain toward the water. Only the water-side half
-of the tile is drawn:
+The brick courses run along the drain, five to the width, with the bond
+repeating every 8px so it carries on unbroken from tile to tile. Where arms
+meet at a corner, tee or cross the courses are mitred on the diagonals, as
+the groins of the vault are.
+
+Outfall direction convention. The outfall and the flap gate are laid over
+the last drain tile, and their dir points from the drain toward the water.
+Only the water-side half of the tile is drawn:
 
   dir     the water is ...     drawn half
   SOUTH   south of the tile    bottom rows
@@ -46,7 +64,8 @@ of the tile is drawn:
 Run with Pillow to rewrite icons/obj/sewers.dmi (safe to rerun). `--out <dmi>`
 writes the sheet somewhere else, `--preview <png>` writes a labelled review
 sheet with every state on grass and dirt and a 4x4 layout with loops, tees
-and a cross for both drains, `--check` only verifies that the committed sheet
+and a cross for each drain, a layout where brick joins stone and a flap gate
+closes the outfall, and clogs on a ditch and a drain, `--check` only verifies that the committed sheet
 is what this script draws. Released under Civ13 AGPL-3.0.
 """
 import math
@@ -88,6 +107,14 @@ SLOT = (36, 32, 30)
 SLOT_LIP = (206, 202, 188)
 STONE_COLOURS = set(SLAB + [SLAB_SHADE, CHIP, MORTAR, SLOT, SLOT_LIP])
 
+# ---- brick drain ----------------------------------------------------------
+B_LO, B_HI = S_LO, S_HI                  # the 14px vault, on the slab line
+BOND = 8                                 # a 7px stretcher and its joint
+BRICK = [(184, 104, 76), (164, 86, 62), (144, 72, 52), (122, 58, 44), (100, 48, 38)]
+BRICK_MORTAR = (72, 46, 38)
+IRON = [(112, 114, 118), (82, 84, 88), (58, 60, 64), (38, 39, 43)]
+BRICK_COLOURS = set(BRICK + [BRICK_MORTAR] + IRON)
+
 # ---- cesspit --------------------------------------------------------------
 P_LO, P_HI = 4, 27                       # the 24px pit with its rim
 PLANK = 3
@@ -105,6 +132,23 @@ FLY_WING = (176, 180, 176)
 ROCK = [(176, 172, 162), (140, 137, 129), (106, 103, 98), (76, 73, 70)]
 WET = (40, 36, 30)
 FROTH = (186, 180, 150)
+
+# ---- flap gate and clog ---------------------------------------------------
+SHADOW = (20, 18, 16)
+SILT = [(86, 76, 58), (66, 57, 43), (48, 42, 33), (34, 30, 26)]
+STICK = [(132, 100, 62), (92, 66, 40)]
+RAG = [(170, 162, 140), (124, 116, 100)]
+CLOG_AT = (11, 12)                       # top left of the 10x8 lump
+CLOG = ('...12k....',
+        '.k1211k22.',
+        '1Kk0122rr2',
+        '12Kk12rrR3',
+        '2122k23R33',
+        '2212Kk2233',
+        '.3222Kk23.',
+        '..3333K3..')
+CLOG_KEY = {'0': SILT[0], '1': SILT[1], '2': SILT[2], '3': SILT[3], 'k': STICK[0], 'K': STICK[1],
+            'r': RAG[0], 'R': RAG[1]}
 
 # preview backgrounds, used when the game sheets cannot be read
 GRASS = (86, 128, 62)
@@ -272,6 +316,95 @@ def stone_drain(mask):
     return image(px)
 
 
+# -------------------------------------------------------------- brick drain
+
+def brick_way(mask, x, y):
+    """True where the courses run north-south, False where they run
+    east-west, None off the vault. In the centre the arms are mitred on the
+    diagonals; a quarter with no arm of its own carries the run beside it."""
+    lo, hi = B_LO, B_HI
+    if lo <= x <= hi and lo <= y <= hi:
+        if not mask & (EAST | WEST):
+            return bool(mask)           # the manhole square is laid east-west
+        if not mask & (NORTH | SOUTH):
+            return False
+        dx, dy = x - 15.5, y - 15.5
+        if abs(dy) >= abs(dx):
+            return bool(mask & (NORTH if dy < 0 else SOUTH))
+        return not mask & (WEST if dx < 0 else EAST)
+    if lo <= x <= hi:
+        return True if mask & (NORTH if y < lo else SOUTH) else None
+    if lo <= y <= hi:
+        return False if mask & (WEST if x < lo else EAST) else None
+    return None
+
+
+def brick_at(upright, x, y):
+    """The colour of the vault at a pixel for courses running north-south
+    (upright) or east-west. Five 2px courses with a mortar line between; the
+    middle one is the crown and the two on the far side from the light are
+    darker."""
+    across, along = (x - B_LO, y) if upright else (y - B_LO, x)
+    course, row = divmod(across, 3)
+    shift = BOND // 2 if course % 2 else 0
+    if row == 2 or (along - shift) % BOND == BOND - 1:
+        return BRICK_MORTAR
+    brick = ((along - shift) // BOND) % (SIZE // BOND)
+    tone = (2, 1, 0, 2, 3)[course]
+    fired = noise(brick, course, 131 + upright)
+    if fired < 0.3:
+        tone += 1
+    elif fired > 0.85 and course != 2:
+        tone -= 1
+    if noise(x, y, 137) < 0.04:
+        tone += 1
+    return BRICK[max(0, min(tone, len(BRICK) - 1))]
+
+
+def brick_drain(mask):
+    px = {}
+    lo, hi = B_LO, B_HI
+    for y in range(SIZE):
+        for x in range(SIZE):
+            upright = brick_way(mask, x, y)
+            if upright is not None:
+                px[(x, y)] = brick_at(upright, x, y)
+    if mask in (NORTH, SOUTH, EAST, WEST):
+        # a dead end is closed with a course of bricks laid across it
+        for i in range(lo, hi + 1):
+            for depth_in in range(3):
+                edge = hi - depth_in if mask in (NORTH, WEST) else lo + depth_in
+                at = (i, edge) if mask in (NORTH, SOUTH) else (edge, i)
+                if depth_in == 2 or i - lo in (4, 9):
+                    c = BRICK_MORTAR
+                else:
+                    c = BRICK[3 if mask in (NORTH, WEST) else 1]
+                    if noise((i - lo) // 5, mask, 139) < 0.4:
+                        c = BRICK[2]
+                px[at] = c
+    if mask == 0:
+        # the manhole: a round cast-iron cover with a raised rim, a ring
+        # groove and a chequered boss, in a mortar bed
+        for y in range(lo, hi + 1):
+            for x in range(lo, hi + 1):
+                dx, dy = x - 15.5, y - 15.5
+                r = math.hypot(dx, dy)
+                if r > 6.6:
+                    continue
+                if r > 5.7:
+                    c = BRICK_MORTAR
+                elif r > 4.6:
+                    c = IRON[0] if dx + dy < -2 else IRON[3] if dx + dy > 2 else IRON[1]
+                elif 2.5 < r <= 3.4:
+                    c = IRON[3] if dx + dy < 0 else IRON[2]
+                elif r <= 2.5:
+                    c = IRON[1] if (x + y) % 2 else IRON[3]
+                else:
+                    c = IRON[2] if noise(x, y, 141) < 0.3 else IRON[1]
+                px[(x, y)] = c
+    return image(px)
+
+
 # ------------------------------------------------------------------ cesspit
 
 FLIES = ((9, 10), (20, 8), (15, 17), (23, 20), (11, 22), (28, 13), (17, 2))
@@ -430,6 +563,60 @@ def outfall(name):
     return image(px)
 
 
+# ---------------------------------------------------------------- flap gate
+
+FLAP_A = (8, 23)                         # across the drain, a little wider
+FLAP_T = (6, 14)                         # hanging out over the water
+STRAPS = (11, 19)                        # each strap is 2px wide
+
+
+def flap_gate(name):
+    px = {}
+    for a in range(FLAP_A[0] + 1, FLAP_A[1] + 1):
+        px[toward(name, a, FLAP_T[1] + 1)] = SHADOW + (110,)
+    # the boards run down the flap, four of them
+    wood = {}
+    for t in range(FLAP_T[0], FLAP_T[1] + 1):
+        for a in range(FLAP_A[0], FLAP_A[1] + 1):
+            plank, row = divmod(a - FLAP_A[0], 4)
+            if row == 3 and a != FLAP_A[1]:
+                c = WOOD[3]
+            else:
+                c = WOOD[1] if noise(plank, t // 3, 151) < 0.7 else WOOD[2]
+            wood[toward(name, a, t)] = c
+    # edges shaded in screen space so the light stays upper left
+    for (x, y), c in wood.items():
+        if (x + 1, y) not in wood or (x, y + 1) not in wood:
+            c = WOOD[3]
+        elif (x - 1, y) not in wood or (x, y - 1) not in wood:
+            c = WOOD[0]
+        px[(x, y)] = c
+    # the hinge bar across the top of the drain mouth
+    for a in range(FLAP_A[0] - 1, FLAP_A[1] + 2):
+        ends = a in (FLAP_A[0] - 1, FLAP_A[1] + 1)
+        px[toward(name, a, FLAP_T[0] - 2)] = IRON[3] if ends else IRON[1]
+        px[toward(name, a, FLAP_T[0] - 1)] = IRON[3] if ends else IRON[2]
+    # two iron straps from the bar down the flap, bolted through
+    for a0 in STRAPS:
+        for t in range(FLAP_T[0] - 2, FLAP_T[1] - 1):
+            px[toward(name, a0, t)] = IRON[2]
+            px[toward(name, a0 + 1, t)] = IRON[3]
+        for t in (FLAP_T[0] - 2, FLAP_T[0] + 2, FLAP_T[1] - 3):
+            px[toward(name, a0, t)] = IRON[0]
+    return image(px)
+
+
+# --------------------------------------------------------------------- clog
+
+def clog():
+    px = {}
+    for row, line in enumerate(CLOG):
+        for col, key in enumerate(line):
+            if key != '.':
+                px[(CLOG_AT[0] + col, CLOG_AT[1] + row)] = CLOG_KEY[key]
+    return image(px)
+
+
 # -------------------------------------------------------------------- sheet
 
 def build():
@@ -439,6 +626,9 @@ def build():
     states += [('stone_drain%d' % mask, dict(one), [stone_drain(mask)]) for mask in MASKS]
     states += [('cesspit%d' % fill, dict(one), [cesspit(fill)]) for fill in range(4)]
     states.append(('outfall', {'dirs': str(len(DIRS)), 'frames': '1'}, [outfall(name) for name in DIRS]))
+    states += [('brick_drain%d' % mask, dict(one), [brick_drain(mask)]) for mask in MASKS]
+    states.append(('flap_gate', {'dirs': str(len(DIRS)), 'frames': '1'}, [flap_gate(name) for name in DIRS]))
+    states.append(('clog', dict(one), [clog()]))
     return states
 
 
@@ -459,7 +649,8 @@ def check_drawing(states):
     """Rules the drawing itself must keep, whatever the palettes become."""
     by = {name: images for name, _, images in states}
     problems = []
-    for kind, colours in (('ditch', DITCH_COLOURS), ('stone_drain', STONE_COLOURS)):
+    for kind, colours in (('ditch', DITCH_COLOURS), ('stone_drain', STONE_COLOURS),
+                          ('brick_drain', BRICK_COLOURS)):
         allowed = {c + (255,) for c in colours} | {(0, 0, 0, 0)}
         sides = {mask: borders(by['%s%d' % (kind, mask)][0]) for mask in MASKS}
         outline = None
@@ -489,12 +680,21 @@ def check_drawing(states):
         box = by['cesspit%d' % fill][0].getbbox()
         if box is None or box[0] < 1 or box[1] < 1 or box[2] > SIZE - 1 or box[3] > SIZE - 1:
             problems.append('cesspit%d touches the tile edge' % fill)
-    for i, name in enumerate(DIRS):
-        px = by['outfall'][i].load()
-        dry = [(x, y) for y in range(SIZE) for x in range(SIZE)
-               if px[x, y][3] and {'SOUTH': y < 16, 'NORTH': y > 15, 'EAST': x < 16, 'WEST': x > 15}[name]]
-        if dry:
-            problems.append('outfall %s draws on the drain half of the tile' % name)
+    for state in ('outfall', 'flap_gate'):
+        for i, name in enumerate(DIRS):
+            px = by[state][i].load()
+            dry = [(x, y) for y in range(SIZE) for x in range(SIZE)
+                   if px[x, y][3] and {'SOUTH': y < 16, 'NORTH': y > 15, 'EAST': x < 16, 'WEST': x > 15}[name]]
+            if dry:
+                problems.append('%s %s draws on the drain half of the tile' % (state, name))
+    # a brick arm and a stone arm open at the same place, so they butt cleanly
+    for side in (NORTH, SOUTH, EAST, WEST):
+        if ([bool(p[3]) for p in borders(by['brick_drain%d' % side][0])[side]]
+                != [bool(p[3]) for p in borders(by['stone_drain%d' % side][0])[side]]):
+            problems.append('brick_drain and stone_drain open differently on side %d' % side)
+    want = (CLOG_AT[0], CLOG_AT[1], CLOG_AT[0] + len(CLOG[0]), CLOG_AT[1] + len(CLOG))
+    if by['clog'][0].getbbox() != want or want != (11, 12, 21, 20):
+        problems.append('clog is not the centred 10x8 lump')
     return problems
 
 
@@ -553,8 +753,8 @@ def write_preview(path, states, scale=3):
     label_h, pad = 12, 6
     cell = SIZE * scale
     wide = pad + 4 * (5 * cell + pad)
-    rows = 5
-    high = pad + rows * (cell + label_h + pad) + 4 * cell + label_h + pad
+    rows = 8
+    high = pad + rows * (cell + label_h + pad) + 2 * (4 * cell + label_h + pad)
     sheet = Image.new('RGB', (wide, high), DARK)
     draw = ImageDraw.Draw(sheet)
 
@@ -587,12 +787,44 @@ def write_preview(path, states, scale=3):
              'outfall %s' % name)
         show(tile([dirt, by['outfall'][i]]), 12 + i, 4, 'alone %s' % name)
 
+    clog_im = by['clog'][0]
+    for mask in MASKS:
+        show(tile([grass, by['brick_drain%d' % mask][0]]), mask, 5, 'brick_drain%d' % mask)
+        show(tile([dirt, by['brick_drain%d' % mask][0]]), mask, 6, 'brick_d%d dirt' % mask)
+    for i, name in enumerate(DIRS):
+        back = {'SOUTH': NORTH, 'NORTH': SOUTH, 'EAST': WEST, 'WEST': EAST}[name]
+        kind = 'brick_drain' if i % 2 == 0 else 'stone_drain'
+        show(tile([grass, by['%s%d' % (kind, arm[name] | back)][0], by['outfall'][i], by['flap_gate'][i]]),
+             i, 7, 'flap_gate %s' % name)
+        show(tile([dirt, by['flap_gate'][i]]), 4 + i, 7, 'alone %s' % name)
+    for n, (label, under) in enumerate((('clog ditch3', 'ditch3'), ('clog ditch12', 'ditch12'),
+                                        ('clog stone3', 'stone_drain3'), ('clog stone15', 'stone_drain15'),
+                                        ('clog brick12', 'brick_drain12'), ('clog brick7', 'brick_drain7'))):
+        show(tile([grass, by[under][0], clog_im]), 8 + n, 7, label)
+    show(tile([grass, clog_im]), 14, 7, 'clog alone')
+    show(tile([dirt, clog_im]), 15, 7, 'clog dirt')
+
     # the layouts, tiles butted together with no gap
     masks = layout_masks()
     top = pad + rows * (cell + label_h + pad)
-    scenes = (('ditch on grass', 'ditch', grass), ('ditch on dirt', 'ditch', dirt),
-              ('stone_drain on grass', 'stone_drain', grass), ('stone_drain on dirt', 'stone_drain', dirt))
-    for n, (label, kind, ground) in enumerate(scenes):
+
+    def one(tx, ty, kind):
+        return kind
+
+    def joined(tx, ty, kind):
+        # brick on the two west columns, stone slabs from there to the river
+        return 'brick_drain' if tx < 2 else 'stone_drain'
+
+    # (label, piece, ground, which piece on which tile, flap gate, clogged tiles)
+    scenes = (('ditch on grass', 'ditch', grass, one, False, ()),
+              ('ditch on dirt', 'ditch', dirt, one, False, ()),
+              ('stone_drain on grass', 'stone_drain', grass, one, False, ()),
+              ('stone_drain on dirt', 'stone_drain', dirt, one, False, ()),
+              ('brick_drain on grass', 'brick_drain', grass, one, False, ()),
+              ('brick_drain on dirt', 'brick_drain', dirt, one, False, ()),
+              ('brick into stone, flap gate, clog', '', grass, joined, True, ((2, 2),)),
+              ('ditch, flap gate, clogs', 'ditch', grass, one, True, ((1, 2), (0, 0))))
+    for n, (label, kind, ground, pick, gated, clogged) in enumerate(scenes):
         scene = Image.new('RGBA', (5 * SIZE, 4 * SIZE))
         for ty in range(4):
             for tx in range(5):
@@ -604,13 +836,18 @@ def write_preview(path, states, scale=3):
                     continue
                 if (tx, ty) == (3, 1):
                     mask |= EAST
-                scene.alpha_composite(by['%s%d' % (kind, mask)][0], at)
+                scene.alpha_composite(by['%s%d' % (pick(tx, ty, kind), mask)][0], at)
                 if (tx, ty) == (3, 1):
                     scene.alpha_composite(by['outfall'][DIRS.index('EAST')], at)
-        x = pad + n * (5 * cell + pad)
+                    if gated:
+                        scene.alpha_composite(by['flap_gate'][DIRS.index('EAST')], at)
+                if (tx, ty) in clogged:
+                    scene.alpha_composite(clog_im, at)
+        x = pad + (n % 4) * (5 * cell + pad)
+        y = top + (n // 4) * (4 * cell + label_h + pad)
         big = scene.convert('RGB').resize((scene.width * scale, scene.height * scale), Image.NEAREST)
-        sheet.paste(big, (x, top + label_h))
-        draw.text((x, top), label, fill=(220, 220, 220))
+        sheet.paste(big, (x, y + label_h))
+        draw.text((x, y), label, fill=(220, 220, 220))
     sheet.save(path)
 
 

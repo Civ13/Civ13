@@ -1692,9 +1692,10 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/toilet/outhouse" = "hygiene",
 		"/obj/structure/toilet/outhouse/female" = "hygiene",
 		"/obj/structure/toilet/outhouse/male" = "hygiene",
-		// --- imperial_architecture (47) ---
+		// --- imperial_architecture (48) ---
 		"/obj/structure/workshop_machine/shear_legs/crane" = "imperial_architecture",
 		"/obj/structure/workshop_machine/pile_driver" = "imperial_architecture",
+		"/obj/structure/sewer_piece/drain/brick" = "imperial_architecture",
 		"/obj/item/weapon/bridge_span/timber" = "imperial_architecture",
 		"/obj/covers/decorative_marbletile" = "imperial_architecture",
 		"/obj/covers/decorative_marbletile/black" = "imperial_architecture",
@@ -2224,7 +2225,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/religious/totem_pole" = "ritual_worship",
 		"/obj/structure/religious/woodcross1" = "ritual_worship",
 		"/obj/structure/religious/woodcross2" = "ritual_worship",
-		// --- sanitation (10) ---
+		// --- sanitation (11) ---
 		"/obj/structure/mirror" = "sanitation",
 		"/obj/structure/shower" = "sanitation",
 		"/obj/structure/shower/bathtub/big/bronze" = "sanitation",
@@ -2235,6 +2236,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/sink/kitchen" = "sanitation",
 		"/obj/structure/toilet" = "sanitation",
 		"/obj/structure/sewer_piece/drain/stone" = "sanitation",
+		"/obj/structure/sewer_flap_gate" = "sanitation",
 		// --- siege_engines (3) ---
 		"/obj/item/catapult_ball" = "siege_engines",
 		"/obj/item/weapon/siegeladder" = "siege_engines",

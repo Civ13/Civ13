@@ -68,6 +68,9 @@ var/sewer_runtime_error = FALSE
 	var/list/drains = list()
 	for (var/x in 3 to 9)
 		drains += new /obj/structure/sewer_piece/drain/stone(locate(x, 3, 1))
+	// Clogs are random; this probe checks them in s2_probe.dm.
+	for (var/obj/structure/sewer_piece/drain/D in drains)
+		D.clog_chance = 0
 	var/obj/structure/sewer_piece/drain/first = drains[1]
 	var/obj/structure/sewer_piece/drain/middle = drains[3]
 	sewer_check(first.icon_state == "stone_drain4" && middle.icon_state == "stone_drain12", "a straight run joins east and west, and its open end only east ([first.icon_state], [middle.icon_state])")
@@ -112,6 +115,7 @@ var/sewer_runtime_error = FALSE
 	// An open ditch carrying waste fouls a well beside it.
 	qdel(drains[2])
 	var/obj/structure/sewer_piece/drain/ditch/D = new /obj/structure/sewer_piece/drain/ditch(locate(4, 3, 1))
+	D.clog_chance = 0
 	sewer_check(D.icon_state == "ditch12", "a ditch joins the stone drains ([D.icon_state])")
 	sewer_check(!D.recently_fouled(), "a new ditch has carried nothing")
 	sewer_check(T.flush_waste(sewer_poo(T.loc)), "waste runs through a mixed ditch and drain")
