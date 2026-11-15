@@ -64,8 +64,8 @@ jobs:
         run: |
           python tests/los_cost_probe/report.py ${{ matrix.map }}
           Get-CimInstance Win32_Processor | Select-Object Name, NumberOfLogicalProcessors | Format-List
-          Get-ChildItem "$env:RUNNER_TEMP/los" -Recurse -Include daemon.log,compile.log | ForEach-Object { "==== $($_.FullName)"; Get-Content $_.FullName -Tail 40 }
-          Get-ChildItem "$env:RUNNER_TEMP/los" -Recurse -Include probe-marks.json | ForEach-Object { "==== $($_.FullName)"; Get-Content $_.FullName }
+          Get-ChildItem "$env:RUNNER_TEMP" -Recurse -Include daemon.log,compile.log | ForEach-Object { "==== $($_.FullName)"; Get-Content $_.FullName -Tail 40 }
+          Get-ChildItem "$env:RUNNER_TEMP" -Recurse -Include probe-marks.json | ForEach-Object { "==== $($_.FullName)"; Get-Content $_.FullName }
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()
         with:

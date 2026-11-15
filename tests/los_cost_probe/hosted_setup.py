@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
 """Unpack the pinned BYOND build on a GitHub-hosted Windows runner.
 
-Downloads the installer named in tools/byond/version.json (size and SHA-256
-checked by scripts/byond_toolchain.py), unpacks it with 7-Zip without running
-it, and adds the two x86 Direct3D 9 helper libraries Dream Seeker needs from
+Downloads the 516.1688 Windows archive pinned by size and SHA-256 in
+tests/dreamseeker_smoke/vendor.json, unpacks it, and adds the two x86 Direct3D 9 helper libraries Dream Seeker needs from
 Microsoft's Microsoft.DXSDK.D3DX NuGet package. Prints the bin folder.
 """
 import hashlib
+import json
 import pathlib
-import subprocess
 import sys
 import urllib.request
 import zipfile
@@ -21,9 +20,18 @@ D3DX_SHA256 = None  # printed on the first run; the package is fetched over HTTP
 def main():
     work = pathlib.Path(sys.argv[1]).resolve()
     work.mkdir(parents=True, exist_ok=True)
-    installer = work / "byond.exe"
-    subprocess.run([sys.executable, "-B", str(ROOT / "scripts" / "byond_toolchain.py"), "download", "--platform", "windows", "--output", str(installer)], check=True, stdout=subprocess.DEVNULL)
-    subprocess.run([r"C:\Program Files\7-Zip\7z.exe", "x", str(installer), f"-o{work / 'byond'}", "-y"], check=True, stdout=subprocess.DEVNULL)
+    # byond.com refuses hosted runners (HTTP 403), so use the mirror archive
+    # whose exact bytes tests/dreamseeker_smoke/vendor.json already pins.
+    vendor = json.loads((ROOT / "tests" / "dreamseeker_smoke" / "vendor.json").read_text())
+    request = urllib.request.Request(vendor["url"], headers={"User-Agent": "los-cost-probe"})
+    with urllib.request.urlopen(request, timeout=120) as response:
+        data = response.read()
+    if len(data) != vendor["bytes"] or hashlib.sha256(data).hexdigest() != vendor["sha256"]:
+        raise SystemExit("the BYOND archive does not match the pinned size and SHA-256")
+    archive_path = work / "byond.zip"
+    archive_path.write_bytes(data)
+    with zipfile.ZipFile(archive_path) as archive:
+        archive.extractall(work / "byond")
     daemons = [path for path in (work / "byond").rglob("dd.exe")]
     if len(daemons) != 1:
         raise SystemExit("expected exactly one dd.exe in the unpacked installer")
