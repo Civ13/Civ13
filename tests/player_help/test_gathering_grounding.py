@@ -96,7 +96,7 @@ class GatheringGroundingTests(unittest.TestCase):
         self.assertIn('5 x finished planks', prompt)
         self.assertIn('cooperage', prompt)
         self.assertIn('current gameplay code (rain barrel rain collector', prompt)
-        self.assertIn('findtext(a.icon_state, "rain")', prompt)
+        self.assertIn('findtext(falling, "rain")', prompt)
         self.assertIn('do not claim research is unlocked from era alone', prompt)
 
     def test_unknown_terms_and_private_fields_are_not_projected(self):

@@ -37,7 +37,7 @@
 		layer = TURF_LAYER + 0.01
 		icon_state = "mine_armed"
 		user.drop_item()
-		if (map.ID == MAP_CAMPAIGN || map.ID == CAMPAIGN_MAP_LIST_MAPID_OR)
+		if (map.campaign)
 			var/obj/map_metadata/campaign/CM = map
 			if (istype(src, (/obj/item/mine/at)))
 				CM.at_mines_placed++
@@ -50,7 +50,7 @@
 	if (anchored)
 		if (ishuman(user))
 			var/mob/living/human/H = user
-			if (istype(W, /obj/item/weapon/wirecutters))
+			if (is_tool(W, TOOL_WIRECUTTER))
 				user.visible_message("<span class = 'notice'>\The [user] starts to disarm \the [src] with \the [W].</span>")
 				if (!do_after(user,60))
 					user.visible_message("<span class = 'notice'>\The [user] decides not to disarm \the [src].</span>")
@@ -60,10 +60,16 @@
 					anchored = FALSE
 					icon_state = "mine"
 					layer = initial(layer)
+					if (map.campaign)
+						var/obj/map_metadata/campaign/CM = map
+						if (istype(src, (/obj/item/mine/at)))
+							CM.at_mines_placed--
+						else
+							CM.ap_mines_placed--
 					return
 				else
 					Bumped(user)
-			else if (istype(W, /obj/item/weapon/material/kitchen/utensil/knife) || istype(W, /obj/item/weapon/attachment/bayonet))
+			else if (is_tool(W, TOOL_KNIFE) || istype(W, /obj/item/weapon/attachment/bayonet))
 				user.visible_message("<span class = 'notice'>\The [user] starts to dig around \the [src] with the [W].</span>")
 				if (!do_after(user,120))
 					user.visible_message("<span class = 'notice'>\The [user] decides not to dig up \the [src].</span>")
@@ -73,7 +79,7 @@
 					anchored = FALSE
 					icon_state = "mine"
 					layer = initial(layer)
-					if (map.ID == MAP_CAMPAIGN || map.ID == CAMPAIGN_MAP_LIST_MAPID_OR)
+					if (map.campaign)
 						var/obj/map_metadata/campaign/CM = map
 						if (istype(src, (/obj/item/mine/at)))
 							CM.at_mines_placed--
@@ -100,7 +106,7 @@
 				anchored = FALSE
 				icon_state = "mine"
 				layer = initial(layer)
-				if (map.ID == MAP_CAMPAIGN || map.ID == CAMPAIGN_MAP_LIST_MAPID_OR)
+				if (map.campaign)
 					var/obj/map_metadata/campaign/CM = map
 					if (istype(src, (/obj/item/mine/at)))
 						CM.at_mines_placed--
@@ -215,6 +221,8 @@
 
 /obj/item/mine/at/Crossed(AM as mob|obj)
 	if (isobserver(AM)) return
+	if (!anchored) return //If armed
+	if (triggered) return
 	if (istype(AM, /obj/item/projectile)) return
 	if (istype(AM, /obj/structure/vehicleparts/frame))
 		trigger(AM)
@@ -271,7 +279,7 @@
 	if (anchored)
 		if (ishuman(user))
 			var/mob/living/human/H = user
-			if (istype(W, /obj/item/weapon/wirecutters))
+			if (is_tool(W, TOOL_WIRECUTTER))
 				user.visible_message("<span class = 'notice'>\The [user] starts to disarm \the [src] with \the [W].</span>")
 				if (!do_after(user,60))
 					user.visible_message("<span class = 'notice'>\The [user] decides not to disarm \the [src].</span>")
@@ -284,7 +292,7 @@
 					return
 				else
 					Bumped(user)
-			else if (istype(W, /obj/item/weapon/material/kitchen/utensil/knife) || istype(W, /obj/item/weapon/attachment/bayonet))
+			else if (is_tool(W, TOOL_KNIFE) || istype(W, /obj/item/weapon/attachment/bayonet))
 				user.visible_message("<span class = 'notice'>\The [user] starts to disarm \the [src] with \the [W].</span>")
 				if (!do_after(user,80))
 					user.visible_message("<span class = 'notice'>\The [user] decides not to disarm \the [src].</span>")

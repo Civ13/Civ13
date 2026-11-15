@@ -127,6 +127,9 @@ character lives, with a join link.
   ledger rows it has not seen (`/homes`). An agent that misses a pass catches
   up on the next; a request decided but not acknowledged is never decided
   again.
+- The coordinator also keeps each land's settlement stage (`land` table) and
+  sends the full list with every `/homes` pass; admins queue changes through
+  their agent's `/land/set`. See [land stages](../../docs/land-stages.md).
 - Keep `coordinator.sqlite` and its durable peer roster backed up: losing it
   does **not** authorize a new home ledger. Restore the original database.
   An empty replacement stays unreconciled even if every currently enrolled
@@ -138,8 +141,14 @@ character lives, with a join link.
 - Established databases migrate their existing persisted directory. Adding or
   changing enrollment extends the durable roster and waits for reconciliation
   with every member; it never silently forgets an offline region. A directory
-  inconsistent with its roster is quarantined. Restore authority rather than
-  deleting records to clear the hold.
+  that lost a roster member is quarantined; an enrolled region the roster lacks
+  only extends the roster. A database that has decided homes lifts its hold
+  (unreconciled or quarantined) by itself once the agents that answer prove it:
+  each holds this database's epoch with no newer revision, or is a new region
+  with no ledger or train history, and at least one holds the epoch. Stopped
+  regions run no agent and need not answer; their homes stay in the ledger.
+  Otherwise restore authority rather than deleting records to clear the hold.
+- A relay failure (one agent's outbox down) no longer skips the home pass.
 - A trip, departure or death note keeps retrying (backing off to every five
   minutes) until the agent has it.
 - A world's agent unreachable means no character can start there (the player
@@ -160,6 +169,16 @@ Regions. Approving confirms or changes the destination, and the marker then
 works like an admin gate. The approval is saved with the marker
 (`code/modules/persistence/region_trails.dm`). There is no ferry yet; a
 player-made ferry can reuse the same approval later.
+
+Admins can also use a waiting marker: their own character can walk it to the
+land it asks for (the trail stays closed to everyone else), or they can
+approve or reject it from the same prompt. An admin ghost clicking any trail or
+gate can follow it, which sends their client to that land's server with
+nothing carried. **Admin > Place Trail** places an open trail where the admin
+stands, ghost or not and without the edge rule, then offers to go to the other
+land to place the trail leading back. Every trip records the land it left
+from (`from`), and an arriving traveller comes out at a trail leading back
+there when one exists, before the usual admin gate or approved trail.
 
 A **launch pad** (`code/modules/space/lander.dm`) is a trail marker that can
 only lead to a region with a survey map in `config/space/survey/`, approved

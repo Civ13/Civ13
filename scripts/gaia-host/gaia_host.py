@@ -979,19 +979,27 @@ class Host:
         server (a stuck save-and-stop) sees the port close, fails and frees the lock.
         """
         state = self.frozen()
+        if state and not self.platform.listening(self.config['port']):
+            # A frozen world still holds its port. With the port closed the recorded pid
+            # belongs to some other process now (Windows reuses pids): never end that one.
+            state = None
         pid = state['pid'] if state else self.platform.server_pid(self.config['port'])
         if not pid:
-            # Asleep on its save with no process (shut down to disk, or its frozen process
-            # died): there is nothing to end, but a forced stop still means "stay down", so
-            # forget the cold record. Otherwise it reads as asleep and a join would start it.
-            if not self.cold():
-                raise Refused('the server is not running')
+            # Nothing runs: asleep on its save with no process, or already stopped. A forced
+            # stop still means "stay down" and a plain Stopped row (2026-11-13: stopped regions
+            # kept showing an old "Handover failed" and Asia showed Asleep after Force stop),
+            # so forget the sleep records and replace a finished action's result.
+            self.note_kill_during_action(reason)  # a start still booting must not come up
+            was_cold = bool(self.cold())
+            self.freeze_file.unlink(missing_ok=True)
             self.cold_file.unlink(missing_ok=True)
             if not keep_running:
                 self.running_file.unlink(missing_ok=True)
             if not self.lock.exists():
                 self.record(action='kill', operation=None, phase='killed', error=None, reason=reason)
-            return {'killed': True, 'pid': None, 'reason': reason, 'released_locks': [], 'was_asleep_on_save': True}
+            result = {'killed': True, 'pid': None, 'reason': reason, 'released_locks': []}
+            result['was_asleep_on_save' if was_cold else 'already_stopped'] = True
+            return result
         self.note_kill_during_action(reason)
         self.platform.kill_tree(pid)
         released = self.release_save_locks(pid)
@@ -1013,6 +1021,15 @@ class Host:
             self.write_json(self.killed_file, {'operation': operation, 'reason': reason,
                                                'at': int(self.platform.now())})
         return operation or None
+
+    def end_after_forced_stop(self):
+        pid = self.platform.server_pid(self.config['port'])
+        if pid:
+            self.platform.kill_tree(pid)
+            self.release_save_locks(pid)
+        self.freeze_file.unlink(missing_ok=True)
+        self.cold_file.unlink(missing_ok=True)
+        self.running_file.unlink(missing_ok=True)
 
     def killed_during(self, operation):
         """The reason of a forced stop that came during this operation, or None."""
@@ -1535,7 +1552,14 @@ class Host:
                      'restart': [self.do_stop, self.do_refresh, self.do_start], 'handover': [self.do_handover]}.get(action) \
                 or self.extra_steps(action)
             for step in steps:
+                if self.killed_during(operation):
+                    raise RuntimeError('stopped before %s' % step.__name__)
                 step(operation)
+            if self.killed_during(operation):
+                # A forced stop came while this action ran (such as a watchdog start still
+                # booting, 2026-11-13): end what it started, so the stop sticks.
+                self.end_after_forced_stop()
+                raise RuntimeError('the world it started was stopped again')
             self.record(phase='done', error=None)
         except Exception as error:  # the state file is the only place a detached worker can report
             reason = self.killed_during(operation)

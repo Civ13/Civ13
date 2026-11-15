@@ -670,7 +670,7 @@ var/global/list/los_active_contexts
 		return null
 	// Presentation follows the eye in half-tile steps; reads use the exact offset.
 	var/offset_key = tile_anchored ? ",q[los_eye_bucket(body)]" : ",[body.step_x],[body.step_y]"
-	return "[revision]|\ref[body]|[body.x],[body.y],[body.z][offset_key]|[owner.view]|[owner.pixel_x],[owner.pixel_y]|[world.time <= owner.los_camera_union_until ? owner.los_camera_radius_x : 0],[world.time <= owner.los_camera_union_until ? owner.los_camera_radius_y : 0]|[owner.perspective]|[body.sight & ~body.los_height_sight]|[body.see_invisible]|[body.see_in_dark]|[body.dir]|[body.resting],[body.lying],[body.prone],[los_up_tree(body)]|[config ? config.disable_fov : 1]|\ref[body.pulling]"
+	return "[revision]|\ref[body]|[body.x],[body.y],[body.z][offset_key]|[owner.view]|[owner.pixel_x],[owner.pixel_y]|[world.time <= owner.los_camera_union_until ? owner.los_camera_radius_x : 0],[world.time <= owner.los_camera_union_until ? owner.los_camera_radius_y : 0]|[owner.perspective]|[body.sight & ~body.los_height_sight]|[body.see_invisible]|[body.see_in_dark]|[body.dir]|[body.resting],[body.lying],[body.prone],[los_up_tree(body)],[los_on_vehicle_deck(body)]|[config ? config.disable_fov : 1]|\ref[body.pulling]"
 
 /datum/los_context/proc/presentation_key()
 	return policy_key(TRUE)
@@ -859,10 +859,6 @@ var/global/list/los_active_contexts
 	var/tree_presentation = S.presentation && operation == "visual_tree" && target.opacity
 	var/outside_view = abs(tx) > S.radius_x + 0.5 || abs(ty) > S.radius_y + 0.5
 	if (outside_view && !tree_presentation)
-		return LOS_DENY
-	// Foliage cover (los_terrain.dm): people in a tree are hidden beyond a
-	// short range, and someone in a tree sees no people beyond it.
-	if (ismob(target) && los_foliage_hides(body, target))
 		return LOS_DENY
 	// Preserve the existing directional human concealment policy, when active.
 	if (istype(target, /mob/living/human) && config && !config.disable_fov && body.HUDtech && !body.resting && !body.lying && !body.prone && get_dist(body, target) > 1 && body.pulling != target)

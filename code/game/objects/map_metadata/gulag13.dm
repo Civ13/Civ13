@@ -354,3 +354,21 @@
 					return
 	else
 		return
+/obj/map_metadata/gulag13/faction_hud_icon(mob/living/human/H, faction_flag)
+	if (faction_flag != CIVILIAN)
+		return ..()
+	switch (H.nationality)
+		if ("Polish")
+			return "pol_basic"
+		if ("German")
+			return "ger3_basic"
+		if ("Ukrainian")
+			return "ukr_basic"
+	return ""
+
+/obj/map_metadata/gulag13/add_faction_hud_overlays(mob/living/human/H, image/holder)
+	if (H.faction_text != CIVILIAN)
+		return
+	var/static/list/marks = list("Janitor" = "role_janitor", "Kitchen Duty" = "role_kitchen", "Miner" = "role_miner", "Nurse Helper" = "role", "Builder" = "role_builder", "Logger" = "role_logger")
+	if (H.original_job_title in marks)
+		holder.overlays += icon(holder.icon, marks[H.original_job_title])

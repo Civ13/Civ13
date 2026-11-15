@@ -89,6 +89,13 @@
 			return FIREMAN_CARRY_GRAB_DELAY
 	return DEFAULT_GRAB_MOVE_DELAY
 
+// The same delay without spending stamina (Check Movement reads it).
+/mob/proc/grab_move_cost()
+	for (var/obj/item/weapon/grab/G in grab_list)
+		if (G.carrying)
+			return FIREMAN_CARRY_GRAB_DELAY
+	return DEFAULT_GRAB_MOVE_DELAY
+
 #undef FIREMAN_CARRY_TIME
 #undef FIREMAN_CARRY_GRAB_DELAY
 #undef FIREMAN_CARRY_RUN_STAMINA

@@ -33,30 +33,22 @@
 	min_positions = 1
 	max_positions = 1
 
+/datum/job/civilian/governor/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/civilian/governor/job_loadout = list(
+	/obj/item/clothing/shoes/leatherboots = slot_shoes,
+	/obj/item/clothing/under/civ4 = slot_w_uniform,
+	/obj/item/clothing/suit/storage/jacket/piratejacket5 = slot_wear_suit,
+	/obj/item/clothing/head/powdered_wig = slot_head,
+	/obj/item/weapon/key/civ/gov = slot_r_store,
+	/obj/item/weapon/key/civ/hall = slot_l_store,
+	/obj/item/weapon/material/sword/spadroon = slot_belt)
 /datum/job/civilian/governor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/civ4(H), slot_w_uniform)
-//jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/piratejacket5(H), slot_wear_suit)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/powdered_wig(H), slot_head)
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/gov(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/hall(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon(H), slot_belt)
+	equip_loadout(H)
 //	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
 	H.add_note("Role", "You are a <b>[title]</b>, the leader of this colony. Organize your men and build a village!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_HIGH)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 
 
 	return TRUE
@@ -78,6 +70,13 @@
 	min_positions = 1
 	max_positions = 1
 
+/datum/job/civilian/architect/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_VERY_HIGH, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_MEDIUM_LOW)
+/datum/job/civilian/architect/job_loadout = list(
+	/obj/item/clothing/head/powdered_wig = slot_head,
+	/obj/item/weapon/key/civ/hall = slot_l_hand,
+	/obj/item/weapon/storage/belt/leather = slot_belt,
+	/obj/item/weapon/attachment/scope/adjustable/binoculars = slot_r_store,
+	/obj/item/stack/money/real = slot_l_store)
 /datum/job/civilian/architect/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
@@ -92,22 +91,10 @@
 		equip_random_colonial_uniform(H, TRUE)
 
 	//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/powdered_wig(H), slot_head)
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/hall(H), slot_l_hand)
-	H.equip_to_slot_or_del(new/obj/item/weapon/storage/belt/leather(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_r_store)
-	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
+	equip_loadout(H)
 
 	H.add_note("Role", "You are an <b>Architect</b>. Your job is to organize and lead the <b>Carpenters</b>, and develop the colony with your city planning skills!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_VERY_HIGH)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 
 
 	return TRUE
@@ -144,6 +131,7 @@
 	min_positions = 1
 	max_positions = 1
 
+/datum/job/civilian/banker/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
 /datum/job/civilian/banker/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
@@ -156,19 +144,13 @@
 	H.add_note("Command", " You answer directly to the Colonial Administration. Bank Tellers are your subordinates. The bank is property of Central Administration and YOU are the trusted manager.")
 	H.add_note("You & the Governor", "The government isn't your Boss, nor are you his, however when it comes to colonial funds, you have equal authority and therefore a say. You must make sure the Governor does not waste our funds!")
 	H.add_note("Job Summary", "• Make sure the Governor doesn't waste our money. • Complain to CA if they do. • Manage the bank. • Follow the guidelines, tax people, pay their wages. • Manage your subordinates.")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_HIGH)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	H.make_businessman()
 
 	return TRUE
 
 
+/datum/job/civilian/bank_teller/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_HIGH, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_NORMAL)
 /datum/job/civilian/bank_teller/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
@@ -190,14 +172,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/hall(H), slot_r_store)
 
 	H.add_note("Role", "You are a <b>[title]</b>, a teller who decided to move in to the new colony to get rich. Keep your bank secure and jew the people out of their money!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_MEDIUM_HIGH)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_NORMAL)
+	apply_job_stats(H)
 	H.make_businessman()
 
 	return TRUE
@@ -219,23 +194,20 @@
 	min_positions = 1
 	max_positions = 5
 
+/datum/job/civilian/officer/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_NORMAL)
+/datum/job/civilian/officer/job_loadout = list(
+	/obj/item/clothing/shoes/blackboots = slot_shoes,
+	/obj/item/clothing/under/civ2 = slot_w_uniform,
+	/obj/item/clothing/suit/storage/jacket/british_soldier = slot_wear_suit,
+	/obj/item/clothing/head/bicorne_british_soldier = slot_head,
+	/obj/item/weapon/melee/classic_baton = slot_belt,
+	/obj/item/stack/money/real = slot_l_store,
+	/obj/item/weapon/key/civ/hall = slot_r_store)
 /datum/job/civilian/officer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/civ2(H), slot_w_uniform)
-//jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/british_soldier(H), slot_wear_suit)
-
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/bicorne_british_soldier(H), slot_head)
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/melee/classic_baton(H), slot_belt)
-
-	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/hall(H), slot_r_store)
+	equip_loadout(H)
 	var/obj/item/clothing/accessory/storage/webbing/filled_a = new /obj/item/clothing/accessory/storage/webbing(null)
 	filled_a.attackby(new/obj/item/ammo_casing/musketball, H)
 	filled_a.attackby(new/obj/item/ammo_casing/musketball, H)
@@ -244,14 +216,7 @@
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	uniform.attackby(filled_a, H)
 	H.add_note("Role", "You are a <b>[title]</b>, a veteran of past wars. Your job is to organize the <b>Veterans</b> and keep the colonists safe, reporting to the <b>Governor</b>.")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_MEDIUM_HIGH)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_HIGH)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_NORMAL)
+	apply_job_stats(H)
 
 
 	return TRUE
@@ -271,23 +236,20 @@
 	min_positions = 1
 	max_positions = 30
 
+/datum/job/civilian/veteran/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_NORMAL)
+/datum/job/civilian/veteran/job_loadout = list(
+	/obj/item/clothing/shoes/blackboots = slot_shoes,
+	/obj/item/clothing/under/civ2 = slot_w_uniform,
+	/obj/item/clothing/suit/storage/jacket/british_soldier = slot_wear_suit,
+	/obj/item/clothing/head/bicorne_british_soldier = slot_head,
+	/obj/item/weapon/melee/classic_baton = slot_belt,
+	/obj/item/stack/money/real = slot_l_store,
+	/obj/item/weapon/key/civ/hall = slot_r_store)
 /datum/job/civilian/veteran/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/civ2(H), slot_w_uniform)
-//jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/british_soldier(H), slot_wear_suit)
-
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/bicorne_british_soldier(H), slot_head)
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/melee/classic_baton(H), slot_belt)
-
-	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/hall(H), slot_r_store)
+	equip_loadout(H)
 	var/obj/item/clothing/accessory/storage/webbing/filled_a = new /obj/item/clothing/accessory/storage/webbing(null)
 	filled_a.attackby(new/obj/item/ammo_casing/musketball, H)
 	filled_a.attackby(new/obj/item/ammo_casing/musketball, H)
@@ -297,14 +259,7 @@
 	uniform.attackby(filled_a, H)
 
 	H.add_note("Role", "You are a <b>[title]</b>, a veteran of past wars. Your job is to organize the colony defense and hunting parties, according to the orders of the <b>Town Guard Officer</b>.")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_MEDIUM_HIGH)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_HIGH)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_NORMAL)
+	apply_job_stats(H)
 
 
 	return TRUE
@@ -325,6 +280,12 @@
 	min_positions = 1
 	max_positions = 20
 
+/datum/job/civilian/medic/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_VERY_HIGH)
+/datum/job/civilian/medic/job_loadout = list(
+	/obj/item/clothing/head/powdered_wig = slot_head,
+	/obj/item/weapon/storage/firstaid/surgery = slot_l_hand,
+	/obj/item/weapon/doctor_handbook = slot_l_store,
+	/obj/item/stack/money/real = slot_r_store)
 /datum/job/civilian/medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
@@ -339,20 +300,10 @@
 		equip_random_colonial_uniform(H, TRUE)
 
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/powdered_wig(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/surgery(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/doctor_handbook(H), slot_l_store)
-	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_r_store)
+	equip_loadout(H)
 
 	H.add_note("Role", "You are a <b>[title]</b>, in charge of keeping the newly founded colony healthy.")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_VERY_HIGH)
+	apply_job_stats(H)
 
 
 	return TRUE
@@ -371,6 +322,10 @@
 	min_positions = 1
 	max_positions = 3
 
+/datum/job/civilian/merchant/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_HIGH, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_NORMAL)
+/datum/job/civilian/merchant/job_loadout = list(
+	/obj/item/clothing/head/powdered_wig = slot_head,
+	/obj/item/stack/money/real = slot_l_store)
 /datum/job/civilian/merchant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
@@ -385,19 +340,11 @@
 		equip_random_colonial_uniform(H, TRUE)
 
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/powdered_wig(H), slot_head)
-	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
+	equip_loadout(H)
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
 
 	H.add_note("Role", "You are a <b>[title]</b>, a trader who decided to move in to the new colony to get rich. Establish your trading post and deal with both the Natives and the Colonists!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_MEDIUM_HIGH)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_NORMAL)
+	apply_job_stats(H)
 	H.make_businessman()
 
 	return TRUE
@@ -415,6 +362,7 @@
 	min_positions = 1
 	max_positions = 20
 
+/datum/job/civilian/priest/job_stats = list("strength" = STAT_MEDIUM_LOW, "crafting" = STAT_NORMAL, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_HIGH)
 /datum/job/civilian/priest/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -432,14 +380,7 @@
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
 
 	H.add_note("Role", "You are a <b>[title]</b>, in charge of the colony's religious affairs, assisting the doctor, and if possible, of converting the natives...")
-	H.setStat("strength", STAT_MEDIUM_LOW)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_HIGH)
+	apply_job_stats(H)
 
 	return TRUE
 
@@ -457,6 +398,11 @@
 	min_positions = 3
 	max_positions = 40
 
+/datum/job/civilian/prospector/job_stats = list("strength" = STAT_HIGH, "crafting" = STAT_MEDIUM_HIGH, "rifle" = STAT_NORMAL, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_MEDIUM_LOW)
+/datum/job/civilian/prospector/job_loadout = list(
+	/obj/item/weapon/material/pickaxe = slot_belt,
+	/obj/item/weapon/material/shovel = slot_back,
+	/obj/item/stack/money/real = slot_l_store)
 /datum/job/civilian/prospector/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
@@ -471,18 +417,9 @@
 		equip_random_colonial_uniform(H, TRUE)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(H), slot_head)
 
-	H.equip_to_slot_or_del(new/obj/item/weapon/material/pickaxe(H), slot_belt)
-	H.equip_to_slot_or_del(new/obj/item/weapon/material/shovel(H), slot_back)
-	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
+	equip_loadout(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a former miner who decided to move into the New World to find riches. Explore the area, mine, and sell to the <b>Merchant</b> what you find!")
-	H.setStat("strength", STAT_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_HIGH)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 
 	return TRUE
 
@@ -500,6 +437,12 @@
 	min_positions = 3
 	max_positions = 50
 
+/datum/job/civilian/farmer/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_HIGH, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_NORMAL, "farming" = STAT_VERY_HIGH)
+/datum/job/civilian/farmer/job_loadout = list(
+	/obj/item/weapon/storage/belt/leather/farmer = slot_belt,
+	/obj/item/weapon/plough = slot_l_hand,
+	/obj/item/weapon/material/kitchen/utensil/knife = slot_r_store,
+	/obj/item/stack/money/real = slot_l_store)
 /datum/job/civilian/farmer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
@@ -514,21 +457,10 @@
 		equip_random_colonial_uniform(H, TRUE)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(H), slot_head)
 
-	H.equip_to_slot_or_del(new/obj/item/weapon/storage/belt/leather/farmer(H), slot_belt)
-	H.equip_to_slot_or_del(new/obj/item/weapon/plough(H), slot_l_hand)
-	H.equip_to_slot_or_del(new/obj/item/weapon/material/kitchen/utensil/knife(H), slot_r_store)
-	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
+	equip_loadout(H)
 
 	H.add_note("Role", "You are a <b>[title]</b>, specialized in plant growth, animal husbandry, and cooking. Keep the colony fed!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_HIGH)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_NORMAL)
-	H.setStat("farming", STAT_VERY_HIGH)
+	apply_job_stats(H)
 
 	return TRUE
 /datum/job/civilian/carpenter
@@ -545,6 +477,11 @@
 	min_positions = 3
 	max_positions = 50
 
+/datum/job/civilian/carpenter/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_VERY_HIGH, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_MEDIUM_LOW)
+/datum/job/civilian/carpenter/job_loadout = list(
+	/obj/item/weapon/material/hatchet = slot_belt,
+	/obj/item/weapon/wrench = slot_r_store,
+	/obj/item/stack/money/real = slot_l_store)
 /datum/job/civilian/carpenter/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
@@ -574,19 +511,10 @@
 
 	//head
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(H), slot_head)
-	H.equip_to_slot_or_del(new/obj/item/weapon/material/hatchet(H), slot_belt)
-	H.equip_to_slot_or_del(new/obj/item/weapon/wrench(H), slot_r_store)
-	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
+	equip_loadout(H)
 
 	H.add_note("Role", "You are a <b>Carpenter</b>. Organize the supplies and help the colonists build the Village!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_VERY_HIGH)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 
 
 	return TRUE
@@ -606,6 +534,7 @@
 	min_positions = 2
 	max_positions = 3
 
+/datum/job/civilian/blacksmith/job_stats = list("strength" = STAT_VERY_HIGH, "crafting" = 250, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_HIGH, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_VERY_LOW, "medical" = STAT_VERY_LOW)
 /datum/job/civilian/blacksmith/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
@@ -641,14 +570,7 @@
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
 
 	H.add_note("Role", "You are a <b>[title]</b>. Your job is to craft weapons and guns. However, you probably should follow the <b>Governor's</b> orders!")
-	H.setStat("strength", STAT_VERY_HIGH)
-	H.setStat("crafting", 250)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_HIGH)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
-	H.setStat("bows", STAT_VERY_LOW)
-	H.setStat("medical", STAT_VERY_LOW)
+	apply_job_stats(H)
 	return TRUE
 
 /datum/job/civilian/inkeeper
@@ -665,6 +587,11 @@
 	min_positions = 1
 	max_positions = 2
 
+/datum/job/civilian/inkeeper/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_NORMAL)
+/datum/job/civilian/inkeeper/job_loadout = list(
+	/obj/item/stack/money/real = slot_l_store,
+	/obj/item/weapon/key/civ/inn = slot_r_store,
+	/obj/item/weapon/material/kitchen/utensil/knife/butcher = slot_belt)
 /datum/job/civilian/inkeeper/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
@@ -694,19 +621,10 @@
 	//head
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(H), slot_head)
 
-	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
-	H.equip_to_slot_or_del(new/obj/item/weapon/key/civ/inn(H), slot_r_store)
-	H.equip_to_slot_or_del(new/obj/item/weapon/material/kitchen/utensil/knife/butcher(H), slot_belt)
+	equip_loadout(H)
 
 	H.add_note("Role", "You are a <b>Inkeeper</b>. Your job is to build an Inn or Tavern to supply the Colonists with wine and food!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_NORMAL)
+	apply_job_stats(H)
 
 
 	return TRUE
@@ -725,6 +643,11 @@
 	min_positions = 1
 	max_positions = 1
 
+/datum/job/civilian/barkeep/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_NORMAL)
+/datum/job/civilian/barkeep/job_loadout = list(
+	/obj/item/stack/money/real = slot_l_store,
+	/obj/item/weapon/key/civ/inn = slot_r_store,
+	/obj/item/weapon/material/kitchen/utensil/knife/butcher = slot_belt)
 /datum/job/civilian/barkeep/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
@@ -754,19 +677,10 @@
 	//head
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(H), slot_head)
 
-	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
-	H.equip_to_slot_or_del(new/obj/item/weapon/key/civ/inn(H), slot_r_store)
-	H.equip_to_slot_or_del(new/obj/item/weapon/material/kitchen/utensil/knife/butcher(H), slot_belt)
+	equip_loadout(H)
 
 	H.add_note("Role", "You are a <b>Inkeeper</b>. Your job is to man an Inn or Tavern to supply the Colonists with wine and food!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_NORMAL)
+	apply_job_stats(H)
 
 
 	return TRUE
@@ -787,6 +701,7 @@
 	min_positions = 10
 	max_positions = 150
 
+/datum/job/civilian/worker/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_MEDIUM_LOW)
 /datum/job/civilian/worker/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
@@ -819,14 +734,7 @@
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
 
 	H.add_note("Role", "You are a simple <b>Colonist</b>. Build your village!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 
 
 	return TRUE
@@ -846,6 +754,7 @@
 	min_positions = 1
 	max_positions = 3
 
+/datum/job/civilian/beggar/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_MEDIUM_LOW)
 /datum/job/civilian/beggar/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
@@ -854,14 +763,7 @@
 
 
 	H.add_note("Role", "You are a penyless colonist. Try to survive!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 
 
 	return TRUE
@@ -886,12 +788,14 @@
 	min_positions = 1
 	max_positions = 1
 
+/datum/job/civilian/mayor/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/civilian/mayor/job_loadout = list(
+	/obj/item/clothing/shoes/riding2 = slot_shoes,
+	/obj/item/clothing/under/civ4 = slot_w_uniform)
 /datum/job/civilian/mayor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/riding2(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/civ4(H), slot_w_uniform)
+	equip_loadout(H)
 	var/obj/item/clothing/accessory/holster/hip/filled_a = new /obj/item/clothing/accessory/holster/hip(null)
 	filled_a.attackby(new/obj/item/weapon/gun/projectile/revolver/peacemaker, H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
@@ -907,14 +811,7 @@
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real/twenty(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/keychain(H), slot_wear_id)
 	H.add_note("Role", "You are a <b>[title]</b>, the leader of this town. Organize your men and build a town!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_HIGH)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 
 
 	return TRUE
@@ -935,6 +832,14 @@
 	min_positions = 1
 	max_positions = 1
 
+/datum/job/civilian/architect_pioneer/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_VERY_HIGH, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_MEDIUM_LOW)
+/datum/job/civilian/architect_pioneer/job_loadout = list(
+	/obj/item/clothing/head/bowler_hat = slot_head,
+	/obj/item/weapon/key/civ/hall = slot_l_hand,
+	/obj/item/weapon/storage/belt/leather = slot_belt,
+	/obj/item/weapon/attachment/scope/adjustable/binoculars = slot_r_store,
+	/obj/item/stack/money/real/twenty = slot_l_store,
+	/obj/item/clothing/accessory/storage/coinpouch/wallet = slot_wear_id)
 /datum/job/civilian/architect_pioneer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
@@ -957,23 +862,10 @@
 		equip_random_colonial_uniform(H, TRUE)
 
 	//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/bowler_hat(H), slot_head)
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/hall(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/leather(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/stack/money/real/twenty(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch/wallet(H), slot_wear_id)
+	equip_loadout(H)
 
 	H.add_note("Role", "You are the <b>Head Architect</b>. Your job is to organize and lead the <b>Carpenters</b>, and develop the town with your city planning skills!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_VERY_HIGH)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 
 
 	return TRUE
@@ -995,32 +887,23 @@
 	min_positions = 1
 	max_positions = 1
 
+/datum/job/civilian/banker_pioneer/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/civilian/banker_pioneer/job_loadout = list(
+	/obj/item/clothing/shoes/riding2 = slot_shoes,
+	/obj/item/clothing/under/civ4 = slot_w_uniform,
+	/obj/item/clothing/suit/storage/jacket/olivevest = slot_wear_suit,
+	/obj/item/clothing/head/bowler_hat = slot_head,
+	/obj/item/stack/money/real/fifty = slot_r_store,
+	/obj/item/weapon/key/civ/hall = slot_l_hand,
+	/obj/item/stack/money/dollar/ten = slot_l_store,
+	/obj/item/clothing/accessory/storage/coinpouch/wallet = slot_wear_id)
 /datum/job/civilian/banker_pioneer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/riding2(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/civ4(H), slot_w_uniform)
-//jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/olivevest(H), slot_wear_suit)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/bowler_hat(H), slot_head)
-
-	H.equip_to_slot_or_del(new/obj/item/stack/money/real/fifty(H), slot_r_store)
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/hall(H), slot_l_hand)
-	H.equip_to_slot_or_del(new/obj/item/stack/money/dollar/ten(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch/wallet(H), slot_wear_id)
+	equip_loadout(H)
 
 	H.add_note("Role", "You are a <b>[title]</b>, the leader of this colony's funds. Organize your men and tax the poor!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_HIGH)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	H.make_businessman()
 
 	return TRUE
@@ -1039,6 +922,12 @@
 	min_positions = 1
 	max_positions = 2
 
+/datum/job/civilian/bank_teller_pioneer/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_HIGH, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_NORMAL)
+/datum/job/civilian/bank_teller_pioneer/job_loadout = list(
+	/obj/item/stack/money/real/twenty = slot_l_store,
+	/obj/item/stack/money/dollar/five = slot_l_store,
+	/obj/item/weapon/key/civ/hall = slot_r_store,
+	/obj/item/clothing/accessory/storage/coinpouch/wallet = slot_wear_id)
 /datum/job/civilian/bank_teller_pioneer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
@@ -1061,20 +950,10 @@
 		equip_random_colonial_uniform(H, TRUE)
 
 //head
-	H.equip_to_slot_or_del(new/obj/item/stack/money/real/twenty(H), slot_l_store)
-	H.equip_to_slot_or_del(new/obj/item/stack/money/dollar/five(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/hall(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch/wallet(H), slot_wear_id)
+	equip_loadout(H)
 
 	H.add_note("Role", "You are a <b>[title]</b>, a teller who decided to move in to the new colony to get rich. Keep your bank secure and jew the people out of their money!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_MEDIUM_HIGH)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_NORMAL)
+	apply_job_stats(H)
 	H.make_businessman()
 
 	return TRUE
@@ -1096,30 +975,21 @@
 	min_positions = 1
 	max_positions = 1
 
+/datum/job/civilian/judge_pioneer/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/civilian/judge_pioneer/job_loadout = list(
+	/obj/item/clothing/shoes/riding2 = slot_shoes,
+	/obj/item/clothing/under/civ4 = slot_w_uniform,
+	/obj/item/clothing/suit/storage/jacket/olivevest = slot_wear_suit,
+	/obj/item/clothing/head/powdered_wig = slot_head,
+	/obj/item/stack/money/real/fifteen = slot_r_store,
+	/obj/item/weapon/key/civ/hall = slot_l_store)
 /datum/job/civilian/judge_pioneer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/riding2(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/civ4(H), slot_w_uniform)
-//jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/olivevest(H), slot_wear_suit)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/powdered_wig(H), slot_head)
-
-	H.equip_to_slot_or_del(new/obj/item/stack/money/real/fifteen(H), slot_r_store)
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/hall(H), slot_l_store)
+	equip_loadout(H)
 //	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
 	H.add_note("Role", "You are a <b>[title]</b>, the judge of the local town. Help sentence justice upon those evil doers!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_HIGH)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 
 
 	return TRUE
@@ -1140,33 +1010,25 @@
 	min_positions = 1
 	max_positions = 5
 
+/datum/job/civilian/officer_pioneer/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_NORMAL)
+/datum/job/civilian/officer_pioneer/job_loadout = list(
+	/obj/item/clothing/shoes/riding1 = slot_shoes,
+	/obj/item/clothing/under/union_uniform = slot_w_uniform,
+	/obj/item/clothing/head/unionhatlight = slot_head,
+	/obj/item/weapon/melee/classic_baton = slot_belt,
+	/obj/item/stack/money/real/ten = slot_l_store,
+	/obj/item/weapon/key/civ/hall = slot_r_store)
 /datum/job/civilian/officer_pioneer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/riding1(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/union_uniform(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/unionhatlight(H), slot_head)
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/melee/classic_baton(H), slot_belt)
-
-	H.equip_to_slot_or_del(new/obj/item/stack/money/real/ten(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/hall(H), slot_r_store)
+	equip_loadout(H)
 	var/obj/item/clothing/accessory/holster/hip/filled_a = new /obj/item/clothing/accessory/holster/hip(null)
 	filled_a.attackby(new/obj/item/weapon/gun/projectile/revolver/peacemaker, H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	uniform.attackby(filled_a, H)
 	H.add_note("Role", "You are a <b>[title]</b>, a veteran of past wars. Your job is to organize the <b>Veterans</b> and keep the colonists safe, reporting to the <b>Mayor</b>.")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_MEDIUM_HIGH)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_HIGH)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_NORMAL)
+	apply_job_stats(H)
 
 
 	return TRUE
@@ -1185,35 +1047,26 @@
 	min_positions = 1
 	max_positions = 30
 
+/datum/job/civilian/veteran_pioneer/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_NORMAL)
+/datum/job/civilian/veteran_pioneer/job_loadout = list(
+	/obj/item/clothing/shoes/riding1 = slot_shoes,
+	/obj/item/clothing/under/union_uniform = slot_w_uniform,
+	/obj/item/clothing/head/unioncap = slot_head,
+	/obj/item/weapon/melee/classic_baton = slot_belt,
+	/obj/item/stack/money/real/five = slot_l_store,
+	/obj/item/weapon/key/civ/hall = slot_r_store)
 /datum/job/civilian/veteran_pioneer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/riding1(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/union_uniform(H), slot_w_uniform)
-
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/unioncap(H), slot_head)
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/melee/classic_baton(H), slot_belt)
-
-	H.equip_to_slot_or_del(new/obj/item/stack/money/real/five(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/hall(H), slot_r_store)
+	equip_loadout(H)
 	var/obj/item/clothing/accessory/holster/hip/filled_a = new /obj/item/clothing/accessory/holster/hip(null)
 	filled_a.attackby(new/obj/item/weapon/gun/projectile/revolver/peacemaker, H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	uniform.attackby(filled_a, H)
 
 	H.add_note("Role", "You are a <b>[title]</b>, a veteran of past wars. Your job is to organize the colony defense and hunting parties, according to the orders of the <b>Town Guard Officer</b>.")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_MEDIUM_HIGH)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_HIGH)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_NORMAL)
+	apply_job_stats(H)
 
 
 	return TRUE
@@ -1234,6 +1087,13 @@
 	min_positions = 1
 	max_positions = 20
 
+/datum/job/civilian/medic_pioneer/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_VERY_HIGH)
+/datum/job/civilian/medic_pioneer/job_loadout = list(
+	/obj/item/clothing/head/bowler_hat = slot_head,
+	/obj/item/weapon/storage/firstaid/surgery = slot_l_hand,
+	/obj/item/weapon/doctor_handbook = slot_l_store,
+	/obj/item/stack/money/real/fifteen = slot_r_store,
+	/obj/item/clothing/accessory/storage/coinpouch/wallet = slot_wear_id)
 /datum/job/civilian/medic_pioneer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
@@ -1256,21 +1116,10 @@
 		equip_random_colonial_uniform(H, TRUE)
 
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/bowler_hat(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/surgery(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/doctor_handbook(H), slot_l_store)
-	H.equip_to_slot_or_del(new/obj/item/stack/money/real/fifteen(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch/wallet(H), slot_wear_id)
+	equip_loadout(H)
 
 	H.add_note("Role", "You are a <b>[title]</b>, in charge of keeping the newly founded colony healthy.")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_VERY_HIGH)
+	apply_job_stats(H)
 
 
 	return TRUE
@@ -1288,6 +1137,11 @@
 	min_positions = 1
 	max_positions = 3
 
+/datum/job/civilian/merchant_pioneer/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_HIGH, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_NORMAL)
+/datum/job/civilian/merchant_pioneer/job_loadout = list(
+	/obj/item/clothing/head/top_hat = slot_head,
+	/obj/item/stack/money/real/twenty = slot_l_store,
+	/obj/item/clothing/accessory/storage/coinpouch/wallet = slot_wear_id)
 /datum/job/civilian/merchant_pioneer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
@@ -1310,18 +1164,9 @@
 		equip_random_colonial_uniform(H, TRUE)
 
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/top_hat(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/stack/money/real/twenty(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch/wallet(H), slot_wear_id)
+	equip_loadout(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a trader who decided to move in to the new colony to get rich. Establish your trading post and deal with both the Natives and the Colonists!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_MEDIUM_HIGH)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_NORMAL)
+	apply_job_stats(H)
 	H.make_businessman()
 
 	return TRUE
@@ -1338,6 +1183,7 @@
 	min_positions = 1
 	max_positions = 20
 
+/datum/job/civilian/priest_pioneer/job_stats = list("strength" = STAT_MEDIUM_LOW, "crafting" = STAT_NORMAL, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_HIGH)
 /datum/job/civilian/priest_pioneer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -1354,14 +1200,7 @@
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real/five(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch(H), slot_wear_id)
 	H.add_note("Role", "You are a <b>[title]</b>, in charge of the colony's religious affairs, assisting the doctor, and if possible, of converting the natives...")
-	H.setStat("strength", STAT_MEDIUM_LOW)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_HIGH)
+	apply_job_stats(H)
 
 	return TRUE
 
@@ -1384,6 +1223,7 @@
 /datum/job/civilian/prospector_pioneer/give_random_name(var/mob/living/human/H)
 	H.name = H.species.get_random_chinese_name(H.gender)
 	H.real_name = H.name
+/datum/job/civilian/prospector_pioneer/job_stats = list("strength" = STAT_HIGH, "crafting" = STAT_MEDIUM_HIGH, "rifle" = STAT_NORMAL, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_MEDIUM_LOW)
 /datum/job/civilian/prospector_pioneer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
@@ -1412,14 +1252,7 @@
 	H.equip_to_slot_or_del(new/obj/item/weapon/material/shovel(H), slot_back)
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real/five(H), slot_l_store)
 	H.add_note("Role", "You are a <b>[title]</b>, a former miner who decided to move into the New World to find riches. Explore the area, mine, and sell to the <b>Merchant</b> what you find!")
-	H.setStat("strength", STAT_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_HIGH)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	H.make_businessman()
 
 	return TRUE
@@ -1437,6 +1270,12 @@
 	min_positions = 3
 	max_positions = 50
 
+/datum/job/civilian/farmer_pioneer/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_HIGH, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_NORMAL, "farming" = STAT_VERY_HIGH)
+/datum/job/civilian/farmer_pioneer/job_loadout = list(
+	/obj/item/weapon/storage/belt/leather/farmer = slot_belt,
+	/obj/item/weapon/plough = slot_l_hand,
+	/obj/item/weapon/material/kitchen/utensil/knife = slot_r_store,
+	/obj/item/stack/money/real/five = slot_l_store)
 /datum/job/civilian/farmer_pioneer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
@@ -1457,21 +1296,10 @@
 		equip_random_colonial_uniform(H, TRUE)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(H), slot_head)
 
-	H.equip_to_slot_or_del(new/obj/item/weapon/storage/belt/leather/farmer(H), slot_belt)
-	H.equip_to_slot_or_del(new/obj/item/weapon/plough(H), slot_l_hand)
-	H.equip_to_slot_or_del(new/obj/item/weapon/material/kitchen/utensil/knife(H), slot_r_store)
-	H.equip_to_slot_or_del(new/obj/item/stack/money/real/five(H), slot_l_store)
+	equip_loadout(H)
 
 	H.add_note("Role", "You are a <b>[title]</b>, specialized in plant growth, animal husbandry, and cooking. Keep the colony fed!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_HIGH)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_NORMAL)
-	H.setStat("farming", STAT_VERY_HIGH)
+	apply_job_stats(H)
 	H.make_businessman()
 
 	return TRUE
@@ -1488,6 +1316,11 @@
 	min_positions = 3
 	max_positions = 50
 
+/datum/job/civilian/carpenter_pioneer/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_VERY_HIGH, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_MEDIUM_LOW)
+/datum/job/civilian/carpenter_pioneer/job_loadout = list(
+	/obj/item/weapon/material/hatchet = slot_belt,
+	/obj/item/weapon/wrench = slot_r_store,
+	/obj/item/stack/money/real/five = slot_l_store)
 /datum/job/civilian/carpenter_pioneer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
@@ -1524,19 +1357,10 @@
 
 	//head
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(H), slot_head)
-	H.equip_to_slot_or_del(new/obj/item/weapon/material/hatchet(H), slot_belt)
-	H.equip_to_slot_or_del(new/obj/item/weapon/wrench(H), slot_r_store)
-	H.equip_to_slot_or_del(new/obj/item/stack/money/real/five(H), slot_l_store)
+	equip_loadout(H)
 
 	H.add_note("Role", "You are a <b>Carpenter</b>. Organize the supplies and help the colonists build the Village!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_VERY_HIGH)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 
 
 	return TRUE
@@ -1555,6 +1379,10 @@
 	min_positions = 2
 	max_positions = 3
 
+/datum/job/civilian/blacksmith_pioneer/job_stats = list("strength" = STAT_VERY_HIGH, "crafting" = 250, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_HIGH, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_VERY_LOW, "medical" = STAT_VERY_LOW)
+/datum/job/civilian/blacksmith_pioneer/job_loadout = list(
+	/obj/item/stack/money/real/ten = slot_l_store,
+	/obj/item/weapon/material/shovel/spade/wood = slot_r_store)
 /datum/job/civilian/blacksmith_pioneer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
@@ -1596,17 +1424,9 @@
 
 	H.equip_to_slot_or_del(new 	/obj/item/weapon/hammer(H), slot_belt)
 	H.equip_to_slot_or_del(new 	/obj/item/stack/material/iron/twentyfive(H), slot_l_hand)
-	H.equip_to_slot_or_del(new/obj/item/stack/money/real/ten(H), slot_l_store)
-	H.equip_to_slot_or_del(new/obj/item/weapon/material/shovel/spade/wood(H), slot_r_store)
+	equip_loadout(H)
 	H.add_note("Role", "You are a <b>[title]</b>. Your job is to craft things from metal. You can make tools, weapons, guns, and more. However you probably should follow the <b>Mayor's</b> orders!")
-	H.setStat("strength", STAT_VERY_HIGH)
-	H.setStat("crafting", 250)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_HIGH)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
-	H.setStat("bows", STAT_VERY_LOW)
-	H.setStat("medical", STAT_VERY_LOW)
+	apply_job_stats(H)
 	return TRUE
 
 /datum/job/civilian/inkeeper_pioneer
@@ -1622,6 +1442,12 @@
 	min_positions = 1
 	max_positions = 2
 
+/datum/job/civilian/inkeeper_pioneer/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_NORMAL)
+/datum/job/civilian/inkeeper_pioneer/job_loadout = list(
+	/obj/item/stack/money/real/ten = slot_l_store,
+	/obj/item/weapon/key/civ/inn = slot_r_store,
+	/obj/item/weapon/material/kitchen/utensil/knife/butcher = slot_belt,
+	/obj/item/clothing/accessory/storage/coinpouch/wallet = slot_wear_id)
 /datum/job/civilian/inkeeper_pioneer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
@@ -1641,20 +1467,10 @@
 	//head
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(H), slot_head)
 
-	H.equip_to_slot_or_del(new/obj/item/stack/money/real/ten(H), slot_l_store)
-	H.equip_to_slot_or_del(new/obj/item/weapon/key/civ/inn(H), slot_r_store)
-	H.equip_to_slot_or_del(new/obj/item/weapon/material/kitchen/utensil/knife/butcher(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch/wallet(H), slot_wear_id)
+	equip_loadout(H)
 
 	H.add_note("Role", "You are a <b>Inkeeper</b>. Your job is to build an Inn or Tavern to supply the Colonists with wine and food!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_NORMAL)
+	apply_job_stats(H)
 
 
 	return TRUE
@@ -1672,6 +1488,12 @@
 	min_positions = 1
 	max_positions = 1
 
+/datum/job/civilian/barkeep_pioneer/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_NORMAL)
+/datum/job/civilian/barkeep_pioneer/job_loadout = list(
+	/obj/item/stack/money/real/twenty = slot_l_store,
+	/obj/item/weapon/key/civ/inn = slot_r_store,
+	/obj/item/weapon/material/kitchen/utensil/knife/butcher = slot_belt,
+	/obj/item/clothing/accessory/storage/coinpouch/wallet = slot_wear_id)
 /datum/job/civilian/barkeep_pioneer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
@@ -1691,20 +1513,10 @@
 	//head
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(H), slot_head)
 
-	H.equip_to_slot_or_del(new/obj/item/stack/money/real/twenty(H), slot_l_store)
-	H.equip_to_slot_or_del(new/obj/item/weapon/key/civ/inn(H), slot_r_store)
-	H.equip_to_slot_or_del(new/obj/item/weapon/material/kitchen/utensil/knife/butcher(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch/wallet(H), slot_wear_id)
+	equip_loadout(H)
 
 	H.add_note("Role", "You are a <b>Inkeeper</b>. Your job is to man an Inn or Tavern to supply the Colonists with wine and food!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_NORMAL)
+	apply_job_stats(H)
 	return TRUE
 
 /datum/job/civilian/worker_pioneer
@@ -1720,6 +1532,7 @@
 	min_positions = 10
 	max_positions = 150
 
+/datum/job/civilian/worker_pioneer/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_MEDIUM_LOW)
 /datum/job/civilian/worker_pioneer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
@@ -1759,14 +1572,7 @@
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real/five(H), slot_l_store)
 
 	H.add_note("Role", "You are a simple <b>Pioneer</b>build your town!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	return TRUE
 ////////////////////////////////////////////////////////////////
 /////////////////////ART OF THE DEAL GAMEMODE///////////////////
@@ -1782,6 +1588,7 @@
 	min_positions = 0
 	max_positions = 0
 
+/datum/job/civilian/businessman/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_NORMAL)
 /datum/job/civilian/businessman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
@@ -1820,14 +1627,7 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/bowler_hat(H), slot_head)
 
 	H.add_note("Role", "You are a member of the corporation. Make sure the deal goes through!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_NORMAL)
+	apply_job_stats(H)
 	spawn(50)
 		if (H.client)
 			H.client.screen += new/obj/screen/areashow_aod("Area Location","8,14", H, null, "")
@@ -2090,6 +1890,9 @@
 	additional_languages = list("Gaelic" = 100)
 	is_vip = TRUE
 
+/datum/job/civilian/businessman/mckellen/job_loadout = list(
+	/obj/item/stack/money/dollar/ten = slot_l_store,
+	/obj/item/weapon/key/civ/mckellen = slot_r_store)
 /datum/job/civilian/businessman/mckellen/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.add_note("Role", "You are a part of McKellen's Entreprises. Your goal is to work the restaurant and produce illegal substances secretly, while also attempting to extort other businesses for their revenue and criminal power.")
@@ -2147,8 +1950,7 @@
 				H.equip_to_slot_or_del(new /obj/item/clothing/head/caubeen(H), slot_head)
 
 //other
-	H.equip_to_slot_or_del(new /obj/item/stack/money/dollar/ten(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/mckellen(H), slot_r_store)
+	equip_loadout(H)
 
 	H.name = H.species.get_random_irish_name(H.gender)
 	H.real_name = H.name
@@ -2165,13 +1967,15 @@
 	spawn(50)
 		H.client.screen += new/obj/screen/areashow_aod("Area Location","8,14", H, null, "")
 
+/datum/job/civilian/businessman/mckellen/manager/job_loadout = list(
+	/obj/item/clothing/under/expensive = slot_w_uniform,
+	/obj/item/clothing/shoes/laceup = slot_shoes,
+	/obj/item/clothing/suit/storage/jacket/charcoal_suit = slot_wear_suit)
 /datum/job/civilian/businessman/mckellen/manager/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.add_note("Role", "You are a part of McKellen's Entreprises. Your goal is to manage the restaurant and produce illegal substances secretly, while also attempting to extort other businesses for their revenue and criminal power.")
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/expensive(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/charcoal_suit(H), slot_wear_suit)
+	equip_loadout(H)
 	var/obj/item/weapon/storage/belt/keychain/KC = new/obj/item/weapon/storage/belt/keychain(H)
 	var/obj/item/weapon/key/civ/mckellen/ira1 = new/obj/item/weapon/key/civ/mckellen(null)
 	var/obj/item/weapon/key/civ/mckellen/manager/ira2 = new/obj/item/weapon/key/civ/mckellen/manager(null)
@@ -2217,13 +2021,16 @@
 	min_positions = 1
 	max_positions = 50
 
+/datum/job/civilian/policeofficer/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_HIGH, "bows" = STAT_LOW, "medical" = STAT_NORMAL)
+/datum/job/civilian/policeofficer/job_loadout = list(
+	/obj/item/clothing/under/traffic_police = slot_w_uniform,
+	/obj/item/weapon/radio/walkietalkie/factionpolice = slot_wear_id)
 /datum/job/civilian/policeofficer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = "Police Department"
 	give_random_name(H)
 
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/traffic_police(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/factionpolice(H), slot_wear_id)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform1 = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/hiph = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform1.attackby(hiph, H)
@@ -2290,14 +2097,7 @@
 	else
 		H.add_note("Role", "You are a member of the police force. Your objective is to arrest (or deal justice to) as many criminals as possible!")
 
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_HIGH)
-	H.setStat("bows", STAT_LOW)
-	H.setStat("medical", STAT_NORMAL)
+	apply_job_stats(H)
 
 /datum/job/civilian/swat
 	title = "SWAT Officer"
@@ -2314,13 +2114,16 @@
 	max_positions = 5
 	whitelisted = TRUE
 
+/datum/job/civilian/swat/job_stats = list("strength" = STAT_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_HIGH, "machinegun" = STAT_HIGH, "dexterity" = STAT_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_VERY_HIGH, "bows" = STAT_LOW, "medical" = STAT_HIGH)
+/datum/job/civilian/swat/job_loadout = list(
+	/obj/item/clothing/under/swat_new = slot_w_uniform,
+	/obj/item/clothing/mask/gas/swat_new = slot_r_store,
+	/obj/item/weapon/radio/walkietalkie/factionpolice = slot_wear_id)
 /datum/job/civilian/swat/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = "Police Department"
 	give_random_name(H)
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/swat_new(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/swat_new(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/factionpolice(H), slot_wear_id)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform1 = H.w_uniform
 	var/obj/item/clothing/accessory/holster/tactical/hiph = new /obj/item/clothing/accessory/holster/tactical(null)
 	uniform1.attackby(hiph, H)
@@ -2347,15 +2150,7 @@
 	else
 		H.add_note("Role", "You are a member of a SWAT team and you've been called to get the situation under control. Your objective is to arrest (or deal justice to) as many criminals as possible!")
 
-	H.setStat("strength", STAT_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_HIGH)
-	H.setStat("machinegun", STAT_HIGH)
-	H.setStat("dexterity", STAT_HIGH)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_VERY_HIGH)
-	H.setStat("bows", STAT_LOW)
-	H.setStat("medical", STAT_HIGH)
+	apply_job_stats(H)
 
 /datum/job/civilian/dea_agent
 	title = "DEA Agent"
@@ -2372,6 +2167,7 @@
 	min_positions = 1
 	max_positions = 4
 
+/datum/job/civilian/dea_agent/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_VERY_HIGH, "bows" = STAT_LOW, "medical" = STAT_NORMAL)
 /datum/job/civilian/dea_agent/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = "Police Department"
@@ -2408,14 +2204,7 @@
 
 	H.add_note("Role", "You are a federal agent of the Drug Enforcement Administration. Your objective is to arrest (or deal justice to) as many criminals as possible!")
 
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_MEDIUM_HIGH)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_VERY_HIGH)
-	H.setStat("bows", STAT_LOW)
-	H.setStat("medical", STAT_NORMAL)
+	apply_job_stats(H)
 
 /datum/job/civilian/sheriffdep
 	title = "County Deputy"
@@ -2430,6 +2219,11 @@
 	min_positions = 5
 	max_positions = 50
 
+/datum/job/civilian/sheriffdep/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_NORMAL)
+/datum/job/civilian/sheriffdep/job_loadout = list(
+	/obj/item/weapon/key/civ/police = slot_l_store,
+	/obj/item/weapon/map = slot_r_store,
+	/obj/item/weapon/radio/walkietalkie/factionpolice = slot_wear_id)
 /datum/job/civilian/sheriffdep/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = "Sheriff Office"
@@ -2439,9 +2233,7 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/countysheriff/deputy(H), slot_w_uniform)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/countysheriff/deputy/short(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/police(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/map(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/factionpolice(H), slot_wear_id)
+	equip_loadout(H)
 	if (prob(30))
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/police/black(H), slot_wear_suit)
 	var/obj/item/clothing/under/uniform1 = H.w_uniform
@@ -2480,14 +2272,7 @@
 		<b>10-8:</b> Request immediate assistance / Officer injured - All non-busy units should answer with a <b>10-0</b> and proceed to location (shows current location)<br><br> \
 		<b>10-9:</b> Officer down, all units should answer with a <b>10-0</b> and proceed to location (shows current location) - This is automatically sent if an officer gets killed, no need for manual input, use <b>10-8</b> instead.")
 
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_NORMAL)
+	apply_job_stats(H)
 	spawn(50)
 		H.client.screen += new/obj/screen/areashow_aod("Area Location","8,14", H, null, "")
 
@@ -2504,6 +2289,11 @@
 	min_positions = 1
 	max_positions = 2
 
+/datum/job/civilian/sheriffdep/detective/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_NORMAL)
+/datum/job/civilian/sheriffdep/detective/job_loadout = list(
+	/obj/item/weapon/key/civ/police = slot_l_store,
+	/obj/item/weapon/map = slot_r_store,
+	/obj/item/weapon/radio/walkietalkie/factionpolice = slot_wear_id)
 /datum/job/civilian/sheriffdep/detective/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = "Sheriff Office"
@@ -2517,9 +2307,7 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/detective2(H), slot_w_uniform)
 		if(3)
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/detective3(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/police(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/map(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/factionpolice(H), slot_wear_id)
+	equip_loadout(H)
 	if (prob(80))
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/forensics(H), slot_wear_suit)
 	else
@@ -2573,14 +2361,7 @@
 		<b>10-8:</b> Request immediate assistance / Officer injured - All non-busy units should answer with a <b>10-0</b> and proceed to location (shows current location)<br><br> \
 		<b>10-9:</b> Officer down, all units should answer with a <b>10-0</b> and proceed to location (shows current location) - This is automatically sent if an officer gets killed, no need for manual input, use <b>10-8</b> instead.")
 
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_NORMAL)
+	apply_job_stats(H)
 	spawn(50)
 		H.client.screen += new/obj/screen/areashow_aod("Area Location","8,14", H, null, "")
 
@@ -2599,13 +2380,16 @@
 	min_positions = 1
 	max_positions = 1
 
+/datum/job/civilian/sheriffdep/supervisor/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_VERY_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_NORMAL)
+/datum/job/civilian/sheriffdep/supervisor/job_loadout = list(
+	/obj/item/clothing/under/countysheriff = slot_w_uniform,
+	/obj/item/weapon/map = slot_r_store,
+	/obj/item/weapon/radio/walkietalkie/factionpolice = slot_wear_id)
 /datum/job/civilian/sheriffdep/supervisor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = "Sheriff Office"
 	give_random_name(H)
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/countysheriff(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/weapon/map(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/factionpolice(H), slot_wear_id)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform1 = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/hiph = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform1.attackby(hiph, H)
@@ -2638,14 +2422,7 @@
 		<b>10-8:</b> Request immediate assistance / Officer injured - All non-busy units should answer with a <b>10-0</b> and proceed to location (shows current location)<br><br> \
 		<b>10-9:</b> Officer down, all units should answer with a <b>10-0</b> and proceed to location (shows current location) - This is automatically sent if an officer gets killed, no need for manual input, use <b>10-8</b> instead.")
 
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_VERY_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_NORMAL)
+	apply_job_stats(H)
 	spawn(50)
 		H.client.screen += new/obj/screen/areashow_aod("Area Location","8,14", H, null, "")
 
@@ -2663,12 +2440,14 @@
 	min_positions = 1
 	max_positions = 1
 
+/datum/job/civilian/judge_aotd/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/civilian/judge_aotd/job_loadout = list(
+	/obj/item/clothing/shoes/laceup = slot_shoes,
+	/obj/item/clothing/under/expensive = slot_w_uniform)
 /datum/job/civilian/judge_aotd/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/expensive(H), slot_w_uniform)
+	equip_loadout(H)
 //jacket
 	var/obj/item/clothing/suit/storage/jacket/custom/blazer/blazer = new /obj/item/clothing/suit/storage/jacket/custom/blazer(null)
 	blazer.color = "#141414"
@@ -2693,14 +2472,7 @@
 	H.add_note("Role", "You are a <b>[title]</b>, the judge of the local county. Help sentence justice upon the evil doers!")
 	give_random_name(H)
 	H.civilization = "Government"
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	return TRUE
 
 /datum/job/civilian/paramedic
@@ -2715,17 +2487,20 @@
 	max_positions = 3
 	allowed_maps = list(MAP_BANK_ROBBERY, MAP_THE_ART_OF_THE_DEAL)
 
+/datum/job/civilian/paramedic/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_VERY_HIGH)
+/datum/job/civilian/paramedic/job_loadout = list(
+	/obj/item/clothing/under/paramedic = slot_w_uniform,
+	/obj/item/clothing/suit/storage/jacket/highvis/paramedic = slot_wear_suit,
+	/obj/item/clothing/mask/sterile = slot_wear_mask,
+	/obj/item/weapon/radio/walkietalkie/factionpolice = slot_wear_id,
+	/obj/item/clothing/gloves/color/white = slot_gloves,
+	/obj/item/clothing/shoes/blackboots = slot_shoes,
+	/obj/item/weapon/storage/firstaid/adv = slot_back,
+	/obj/item/weapon/storage/firstaid/combat = slot_belt)
 /datum/job/civilian/paramedic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = "Paramedics"
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/paramedic(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/highvis/paramedic(H), slot_wear_suit)
-	H.equip_to_slot_or_del(new /obj/item/clothing/mask/sterile(H), slot_wear_mask)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/factionpolice(H), slot_wear_id)
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/color/white(H), slot_gloves)
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat(H), slot_belt)
+	equip_loadout(H)
 	var/obj/item/clothing/accessory/stethoscope/stet = new /obj/item/clothing/accessory/stethoscope(null)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	uniform.attackby(stet, H)
@@ -2733,14 +2508,7 @@
 		H.add_note("Role", "You are a paramedic, and you were called to a bank where a shooting is taking place!")
 	else
 		H.add_note("Role", "You are a paramedic. Listen to emergency calls and bring injured to the hospital using the ambulance!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_VERY_HIGH)
+	apply_job_stats(H)
 	give_random_name(H)
 	if (map.ID == MAP_THE_ART_OF_THE_DEAL)
 		H.equip_to_slot_or_del(new /obj/item/stack/money/dollar/ten(H), slot_l_hand)
@@ -2762,30 +2530,26 @@
 	max_positions = 2
 	allowed_maps = list(MAP_THE_ART_OF_THE_DEAL)
 
+/datum/job/civilian/hospital_doctor/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MAX)
+/datum/job/civilian/hospital_doctor/job_loadout = list(
+	/obj/item/clothing/under/scrubs/navy = slot_w_uniform,
+	/obj/item/clothing/suit/storage/jacket/doctor = slot_wear_suit,
+	/obj/item/clothing/head/surgical_cap/navy = slot_head,
+	/obj/item/weapon/key/civ/paramedics = slot_l_store,
+	/obj/item/clothing/mask/sterile = slot_wear_mask,
+	/obj/item/weapon/radio/walkietalkie/factionpolice = slot_wear_id,
+	/obj/item/clothing/gloves/color/white = slot_gloves,
+	/obj/item/clothing/shoes/color/white = slot_shoes,
+	/obj/item/stack/money/dollar/twenty = slot_l_hand)
 /datum/job/civilian/hospital_doctor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = "Paramedics"
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/scrubs/navy(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/doctor(H), slot_wear_suit)
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/surgical_cap/navy(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/paramedics(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/clothing/mask/sterile(H), slot_wear_mask)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/factionpolice(H), slot_wear_id)
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/color/white(H), slot_gloves)
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/color/white(H), slot_shoes)
-	H.equip_to_slot_or_del(new /obj/item/stack/money/dollar/twenty(H), slot_l_hand)
+	equip_loadout(H)
 	var/obj/item/clothing/accessory/stethoscope/stet = new /obj/item/clothing/accessory/stethoscope(null)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	uniform.attackby(stet, H)
 	H.add_note("Role", "You are a Physician. Take care of your patients inside the hospital!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MAX)
+	apply_job_stats(H)
 	give_random_name(H)
 
 /datum/job/civilian/hospital_nurse
@@ -2801,27 +2565,23 @@
 	max_positions = 2
 	allowed_maps = list(MAP_THE_ART_OF_THE_DEAL)
 
+/datum/job/civilian/hospital_nurse/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_HIGH)
+/datum/job/civilian/hospital_nurse/job_loadout = list(
+	/obj/item/clothing/under/scrubs/blue = slot_w_uniform,
+	/obj/item/weapon/key/civ/paramedics = slot_l_store,
+	/obj/item/clothing/mask/sterile = slot_wear_mask,
+	/obj/item/clothing/gloves/color/white = slot_gloves,
+	/obj/item/clothing/shoes/color/white = slot_shoes,
+	/obj/item/stack/money/dollar/twenty = slot_l_hand)
 /datum/job/civilian/hospital_nurse/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = "Paramedics"
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/scrubs/blue(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/paramedics(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/clothing/mask/sterile(H), slot_wear_mask)
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/color/white(H), slot_gloves)
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/color/white(H), slot_shoes)
-	H.equip_to_slot_or_del(new /obj/item/stack/money/dollar/twenty(H), slot_l_hand)
+	equip_loadout(H)
 	var/obj/item/clothing/accessory/stethoscope/stet = new /obj/item/clothing/accessory/stethoscope(null)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	uniform.attackby(stet, H)
 	H.add_note("Role", "You are a Nurse. Take care of your patients inside the hospital and follow directives from the physicians!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_HIGH)
+	apply_job_stats(H)
 	give_random_name(H)
 
 /datum/job/civilian/mechanic
@@ -2837,25 +2597,21 @@
 	max_positions = 4
 	allowed_maps = list(MAP_THE_ART_OF_THE_DEAL)
 
+/datum/job/civilian/mechanic/job_stats = list("strength" = STAT_HIGH, "crafting" = STAT_VERY_HIGH, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_VERY_HIGH)
+/datum/job/civilian/mechanic/job_loadout = list(
+	/obj/item/clothing/under/mechanic_outfit = slot_w_uniform,
+	/obj/item/clothing/suit/storage/jacket/coveralls = slot_wear_suit,
+	/obj/item/weapon/map = slot_r_store,
+	/obj/item/weapon/key/civ/mechanic = slot_l_store,
+	/obj/item/clothing/accessory/storage/coinpouch/wallet = slot_wear_id,
+	/obj/item/clothing/gloves/thick/leather/black = slot_gloves,
+	/obj/item/clothing/shoes/blackboots = slot_shoes,
+	/obj/item/stack/money/dollar/ten = slot_l_hand)
 /datum/job/civilian/mechanic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/mechanic_outfit(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/coveralls(H), slot_wear_suit)
-	H.equip_to_slot_or_del(new /obj/item/weapon/map(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/mechanic(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch/wallet(H), slot_wear_id)
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/leather/black(H), slot_gloves)
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
-	H.equip_to_slot_or_del(new /obj/item/stack/money/dollar/ten(H), slot_l_hand)
+	equip_loadout(H)
 	H.add_note("Role", "You are a Mechanic. You can be payed to repair vehicles that have broken down in the middle of the road. If you're feeling sneaky, maybe help dispose of bodies for some extra cash on the side.")
-	H.setStat("strength", STAT_HIGH)
-	H.setStat("crafting", STAT_VERY_HIGH)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_VERY_HIGH)
+	apply_job_stats(H)
 
 /datum/job/civilian/hobo
 	title = "Homeless Man"
@@ -2868,6 +2624,7 @@
 	max_positions = 3
 	allowed_maps = list(MAP_THE_ART_OF_THE_DEAL)
 
+/datum/job/civilian/hobo/job_stats = list("strength" = STAT_VERY_LOW, "crafting" = STAT_VERY_LOW, "rifle" = STAT_LOW, "dexterity" = STAT_LOW, "swords" = STAT_LOW, "pistol" = STAT_LOW, "bows" = STAT_LOW, "medical" = STAT_LOW)
 /datum/job/civilian/hobo/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	var/randoutfit = rand(1,3)
@@ -2914,14 +2671,7 @@
 			if (4)
 				H.addictions["alcohol"] += rand(10,100)
 	H.add_note("Role", "You are a Bum. You should find a way to earn some cash to fulfill your potential addicition. Maybe try helping out one of the gangs in the area.")
-	H.setStat("strength", STAT_VERY_LOW)
-	H.setStat("crafting", STAT_VERY_LOW)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_LOW)
-	H.setStat("swords", STAT_LOW)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_LOW)
-	H.setStat("medical", STAT_LOW)
+	apply_job_stats(H)
 
 /datum/job/civilian/businessman/legitimate
 	title = "Legitimate Business"
@@ -2932,11 +2682,14 @@
 	whitelisted = TRUE
 	can_be_female = TRUE
 
+/datum/job/civilian/businessman/legitimate/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_NORMAL)
+/datum/job/civilian/businessman/legitimate/job_loadout = list(
+	/obj/item/clothing/under/modern2 = slot_w_uniform,
+	/obj/item/stack/money/dollar/onehundy = slot_l_store,
+	/obj/item/weapon/telephone/mobile = slot_r_store)
 /datum/job/civilian/businessman/legitimate/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/modern2(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/stack/money/dollar/onehundy(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/telephone/mobile(H), slot_r_store)
+	equip_loadout(H)
 	H.add_note("Role", "You are a legitimate business person. Find a business to invest in or start your own.")
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
@@ -2974,14 +2727,7 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/bowler_hat(H), slot_head)
 
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_NORMAL)
+	apply_job_stats(H)
 	spawn(50)
 		H.client.screen += new/obj/screen/areashow_aod("Area Location","8,14", H, null, "")
 
@@ -3010,22 +2756,21 @@
 	min_positions = 1
 	max_positions = 1
 
+/datum/job/civilian/unitednations/lieutenant/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_VERY_HIGH, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_NORMAL, "machinegun" = STAT_MEDIUM_LOW)
+/datum/job/civilian/unitednations/lieutenant/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots = slot_shoes,
+	/obj/item/clothing/under/un_irish = slot_w_uniform,
+	/obj/item/weapon/storage/belt/smallpouches/olive/us_sgt = slot_belt,
+	/obj/item/clothing/head/un_beret = slot_head,
+	/obj/item/weapon/gun/projectile/submachinegun/fal = slot_shoulder,
+	/obj/item/weapon/gun/projectile/pistol/m1911 = slot_l_hand,
+	/obj/item/weapon/storage/backpack/duffel/unbasic = slot_back,
+	/obj/item/weapon/handcuffs = slot_r_store,
+	/obj/item/weapon/grenade/flashbang = slot_l_store)
 /datum/job/civilian/unitednations/lieutenant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/un_irish(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/olive/us_sgt(H), slot_belt)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/un_beret(H), slot_head)
-//back
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/fal(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/duffel/unbasic(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/handcuffs(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/grenade/flashbang(H), slot_l_store)
+	equip_loadout(H)
 	if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/clothing/glasses/sunglasses/large(H), slot_eyes)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
@@ -3039,15 +2784,7 @@
 	give_random_name(H)
 	H.nationality = "United Nations"
 	H.add_note("Role", "You are a <b>[title]</b>. You are in charge of all United Nations Personelle. Distribute your aid accordingly!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_VERY_HIGH)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_NORMAL)
-	H.setStat("machinegun", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	return TRUE
 
 /datum/job/civilian/unitednations/sergeant
@@ -3066,22 +2803,21 @@
 	min_positions = 2
 	max_positions = 10
 
+/datum/job/civilian/unitednations/sergeant/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_NORMAL, "machinegun" = STAT_MEDIUM_HIGH)
+/datum/job/civilian/unitednations/sergeant/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots = slot_shoes,
+	/obj/item/clothing/under/un_irish = slot_w_uniform,
+	/obj/item/weapon/gun/projectile/submachinegun/greasegun = slot_shoulder,
+	/obj/item/weapon/storage/belt/smallpouches/olive/us_lt = slot_belt,
+	/obj/item/clothing/head/helmet/modern/ushelmet/un = slot_head,
+	/obj/item/weapon/storage/backpack/duffel/unsgt = slot_back,
+	/obj/item/weapon/gun/projectile/pistol/m1911 = slot_l_hand,
+	/obj/item/weapon/handcuffs = slot_r_store,
+	/obj/item/weapon/grenade/flashbang = slot_l_store)
 /datum/job/civilian/unitednations/sergeant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/un_irish(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/greasegun(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/olive/us_lt(H), slot_belt)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet/un(H), slot_head)
-//back
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/duffel/unsgt(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/handcuffs(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/grenade/flashbang(H), slot_l_store)
+	equip_loadout(H)
 	if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/clothing/glasses/sunglasses/large(H), slot_eyes)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
@@ -3095,15 +2831,7 @@
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
 	H.nationality = "United Nations"
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_NORMAL)
-	H.setStat("machinegun", STAT_MEDIUM_HIGH)
+	apply_job_stats(H)
 	return TRUE
 
 /datum/job/civilian/unitednations/soldier
@@ -3120,20 +2848,18 @@
 
 	min_positions = 2
 	max_positions = 102
+/datum/job/civilian/unitednations/soldier/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_NORMAL)
+/datum/job/civilian/unitednations/soldier/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots = slot_shoes,
+	/obj/item/clothing/under/un_irish = slot_w_uniform,
+	/obj/item/weapon/storage/belt/smallpouches/un_fal = slot_belt,
+	/obj/item/clothing/head/helmet/modern/ushelmet/un = slot_head,
+	/obj/item/weapon/storage/backpack/duffel/unbasic = slot_back,
+	/obj/item/weapon/gun/projectile/submachinegun/fal = slot_shoulder)
 /datum/job/civilian/unitednations/soldier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/un_irish(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/un_fal(H), slot_belt)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet/un(H), slot_head)
-//back
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/duffel/unbasic(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/fal(H), slot_shoulder)
+	equip_loadout(H)
 	if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_l_hand)
 	else
@@ -3153,14 +2879,7 @@
 	H.nationality = "United Nations"
 	H.add_note("Role", "You are a <b>[title]</b>. Follow orders and keep everyone safe!")
 
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_HIGH)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_NORMAL)
+	apply_job_stats(H)
 
 /datum/job/civilian/unitednations/radop
 	title = "United Nations Radio Operator"
@@ -3178,14 +2897,15 @@
 	min_positions = 1
 	max_positions = 5
 
+/datum/job/civilian/unitednations/radop/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_NORMAL)
+/datum/job/civilian/unitednations/radop/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots = slot_shoes,
+	/obj/item/clothing/under/un_irish = slot_w_uniform,
+	/obj/item/weapon/storage/belt/smallpouches/un_fal = slot_belt)
 /datum/job/civilian/unitednations/radop/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/un_irish(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/un_fal(H), slot_belt)
+	equip_loadout(H)
 //head
 	if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet/un(H), slot_head)
@@ -3213,14 +2933,7 @@
 	H.nationality = "United Nations"
 	H.add_note("Role", "You are a <b>[title]</b>. Follow orders, ensure communication between your squad and your superiors and call in airstrikes!")
 
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_HIGH)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_NORMAL)
+	apply_job_stats(H)
 
 /datum/job/civilian/unitednations/unsniper
 	title = "United Nations Marksman"
@@ -3236,21 +2949,21 @@
 	min_positions = 2
 	max_positions = 12
 
+/datum/job/civilian/unitednations/unsniper/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_VERY_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_MEDIUM_LOW)
+/datum/job/civilian/unitednations/unsniper/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots = slot_shoes,
+	/obj/item/clothing/under/un_irish = slot_w_uniform,
+	/obj/item/weapon/storage/belt/smallpouches/olive/m14 = slot_belt,
+	/obj/item/clothing/head/un_beret = slot_head,
+	/obj/item/weapon/storage/backpack/duffel/unsniper = slot_back,
+	/obj/item/weapon/gun/projectile/submachinegun/m14/sniper = slot_shoulder,
+	/obj/item/weapon/gun/projectile/pistol/m1911 = slot_l_hand,
+	/obj/item/weapon/handcuffs = slot_r_store,
+	/obj/item/weapon/grenade/flashbang = slot_l_store)
 /datum/job/civilian/unitednations/unsniper/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/un_irish(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/olive/m14(H), slot_belt)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/un_beret(H), slot_head)
-//back
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/duffel/unsniper(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m14/sniper(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/handcuffs(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/grenade/flashbang(H), slot_l_store)
+	equip_loadout(H)
 	if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/clothing/glasses/sunglasses/large(H), slot_eyes)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
@@ -3263,15 +2976,7 @@
 	give_random_name(H)
 	H.nationality = "United Nations"
 	H.add_note("Role", "You are a <b>[title]</b>, the best shot in the unit. Follow orders, keep your eye to the scope and watch for attack!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_VERY_HIGH)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("machinegun", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 
 /datum/job/civilian/unitednations/unmg
 	title = "United Nations Machine Gunner"
@@ -3287,21 +2992,21 @@
 	min_positions = 2
 	max_positions = 6
 
+/datum/job/civilian/unitednations/unmg/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_VERY_HIGH)
+/datum/job/civilian/unitednations/unmg/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots = slot_shoes,
+	/obj/item/clothing/under/un_irish = slot_w_uniform,
+	/obj/item/weapon/storage/belt/largepouches/olive/madsen = slot_belt,
+	/obj/item/clothing/head/helmet/modern/ushelmet/un = slot_head,
+	/obj/item/weapon/storage/backpack/duffel/unmg = slot_back,
+	/obj/item/weapon/gun/projectile/automatic/madsen = slot_shoulder,
+	/obj/item/weapon/gun/projectile/pistol/m1911 = slot_l_hand,
+	/obj/item/weapon/handcuffs = slot_r_store,
+	/obj/item/stack/medical/bruise_pack/gauze = slot_l_store)
 /datum/job/civilian/unitednations/unmg/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/un_irish(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/largepouches/olive/madsen(H), slot_belt)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet/un(H), slot_head)
-//back
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/duffel/unmg(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/madsen(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/handcuffs(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/gauze(H), slot_l_store)
+	equip_loadout(H)
 	if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/clothing/glasses/sunglasses/large(H), slot_eyes)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
@@ -3315,15 +3020,7 @@
 	H.nationality = "United Nations"
 	H.add_note("Role", "You are a <b>[title]</b>, carrying a light machine gun. Keep your squad covered!")
 
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("machinegun", STAT_VERY_HIGH)
+	apply_job_stats(H)
 
 /datum/job/civilian/unitednations/doctor
 	title = "United Nations Doctor"
@@ -3339,6 +3036,14 @@
 	whitelisted = FALSE
 	allowed_maps = list(MAP_TADOJSVILLE)
 
+/datum/job/civilian/unitednations/doctor/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_VERY_HIGH)
+/datum/job/civilian/unitednations/doctor/job_loadout = list(
+	/obj/item/clothing/under/un_irish = slot_w_uniform,
+	/obj/item/clothing/suit/storage/jacket/doctor = slot_wear_suit,
+	/obj/item/clothing/head/helmet/modern/ushelmet/un/medic = slot_head,
+	/obj/item/weapon/storage/firstaid/adv = slot_back,
+	/obj/item/weapon/storage/firstaid/combat/modern = slot_belt,
+	/obj/item/clothing/accessory/stethoscope = slot_r_store)
 /datum/job/civilian/unitednations/doctor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -3347,28 +3052,14 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup/brown(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/un_irish(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/doctor(H), slot_wear_suit)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet/un/medic(H), slot_head)
-//back
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat/modern(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/stethoscope(H), slot_r_store)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armband/un/white = new /obj/item/clothing/accessory/armband/un(null)
 	uniform.attackby(white, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>. Keep both the UN troops and any civilians in good health!<br><b>You are a noncombative role, you must try to avoid putting yourself in danger</b>.")
 	H.nationality = "United Nations"
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_HIGH)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_VERY_HIGH)
+	apply_job_stats(H)
 
 /datum/job/civilian/unitednations/engineer
 	title = "United Nations Engineer"
@@ -3386,23 +3077,23 @@
 	min_positions = 2
 	max_positions =4
 
+/datum/job/civilian/unitednations/engineer/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_HIGH, "rifle" = STAT_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_LOW)
+/datum/job/civilian/unitednations/engineer/job_loadout = list(
+	/obj/item/clothing/shoes/workboots = slot_shoes,
+	/obj/item/clothing/under/mechanic_outfit = slot_w_uniform,
+	/obj/item/clothing/suit/storage/hazard = slot_wear_suit,
+	/obj/item/clothing/gloves/thick = slot_gloves,
+	/obj/item/clothing/head/helmet/modern/ushelmet/un = slot_head,
+	/obj/item/weapon/storage/belt/utility/sapper = slot_belt,
+	/obj/item/weapon/storage/backpack/duffel/ungineer = slot_back,
+	/obj/item/weapon/handcuffs = slot_r_store,
+	/obj/item/weapon/grenade/flashbang = slot_l_store,
+	/obj/item/clothing/glasses/sunglasses/large = slot_eyes,
+	/obj/item/weapon/gun/projectile/revolver/webley4 = slot_l_hand)
 /datum/job/civilian/unitednations/engineer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/workboots(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/mechanic_outfit(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/hazard(H), slot_wear_suit)
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick(H), slot_gloves)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet/un(H), slot_head)
-//back
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/utility/sapper(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/duffel/ungineer(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/handcuffs(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/grenade/flashbang(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/clothing/glasses/sunglasses/large(H), slot_eyes)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/webley4(H), slot_l_hand)
+	equip_loadout(H)
 
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armband/un/blue = new /obj/item/clothing/accessory/armband/un(null)
@@ -3412,14 +3103,7 @@
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>. <b>You are a noncombative role, you must try to avoid putting yourself in danger</b>.<br>Keep the hospital defenses intact and develop surrounding areas if it's safe to do so.")
 	H.nationality = "United Nations"
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_HIGH)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_LOW)
+	apply_job_stats(H)
 
 /////////////////////////////////////spanish civil war republicans/////////////////////////////////////////
 /datum/job/civilian/spanish
@@ -3446,20 +3130,20 @@
 	min_positions = 1
 	max_positions = 1
 
+/datum/job/civilian/spanish/cap/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/civilian/spanish/cap/job_loadout = list(
+	/obj/item/clothing/shoes/heavyboots/wrappedboots = slot_shoes,
+	/obj/item/clothing/under/spain/republican = slot_w_uniform,
+	/obj/item/clothing/head/ww2/sov_officercap = slot_head,
+	/obj/item/weapon/storage/belt/smallpouches/rusoff = slot_belt,
+	/obj/item/weapon/gun/projectile/revolver/nagant_revolver = slot_l_hand,
+	/obj/item/ammo_magazine/c762x38mmR = slot_l_store,
+	/obj/item/weapon/radio/faction2 = slot_back,
+	/obj/item/weapon/compass = slot_r_store)
 /datum/job/civilian/spanish/cap/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/spain/republican(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/sov_officercap(H), slot_head)
-//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/rusoff(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/nagant_revolver(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c762x38mmR(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction2(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/compass(H), slot_r_store)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
@@ -3468,14 +3152,7 @@
 	give_random_name(H)
 	to_chat(world, "<big><b>[H.real_name] is the Captain of the Republican Forces!</b></big>")
 	H.add_note("Role", "You are a <b>[title]</b>, the highest ranking officer present. Your job is to command the company.")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_HIGH)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 
 
 	return TRUE
@@ -3494,20 +3171,20 @@
 	min_positions = 2
 	max_positions = 8
 
+/datum/job/civilian/spanish/sz/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_HIGH, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/civilian/spanish/sz/job_loadout = list(
+	/obj/item/clothing/shoes/heavyboots/wrappedboots = slot_shoes,
+	/obj/item/clothing/under/spain/republican = slot_w_uniform,
+	/obj/item/clothing/head/ww2/soviet_fieldcap = slot_head,
+	/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars = slot_wear_id,
+	/obj/item/weapon/whistle = slot_r_store,
+	/obj/item/weapon/compass = slot_l_store,
+	/obj/item/weapon/gun/projectile/submachinegun/ppd = slot_shoulder,
+	/obj/item/weapon/radio/faction2 = slot_back)
 /datum/job/civilian/spanish/sz/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/spain/republican(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/soviet_fieldcap(H), slot_head)
-//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_wear_id)
-	H.equip_to_slot_or_del(new /obj/item/weapon/whistle(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/compass(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ppd(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction2(H), slot_back)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/webbing/ww1/leather/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather(null)
 	uniform.attackby(webbing, H)
@@ -3518,14 +3195,7 @@
 	uniform.attackby(white, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a sergeant leading a squad. Organize your squad according to the <b>Capitans's</b> orders!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_HIGH)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 
 	return TRUE
 
@@ -3542,6 +3212,7 @@
 	min_positions = 1
 	max_positions = 4
 
+/datum/job/civilian/spanish/doc/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_NORMAL, "medical" = STAT_VERY_HIGH)
 /datum/job/civilian/spanish/doc/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -3563,14 +3234,7 @@
 	uniform.attackby(holsterh, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, the most qualified medic present, and you are in charge of keeping the soldiers healthy.")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_VERY_HIGH)
+	apply_job_stats(H)
 	return TRUE
 
 /datum/job/civilian/spanish/rifle
@@ -3586,12 +3250,14 @@
 	min_positions = 20
 	max_positions = 60
 
+/datum/job/civilian/spanish/rifle/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/civilian/spanish/rifle/job_loadout = list(
+	/obj/item/clothing/shoes/heavyboots/wrappedboots = slot_shoes,
+	/obj/item/clothing/under/spain/republican = slot_w_uniform)
 /datum/job/civilian/spanish/rifle/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/spain/republican(H), slot_w_uniform)
+	equip_loadout(H)
 //head
 	if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/soviet(H), slot_head)
@@ -3628,14 +3294,7 @@
 	uniform.attackby(white, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a simple soldier of the Republican army. Follow your <b>Sergeant's</b> orders!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 
 	return TRUE
 
@@ -3654,12 +3313,14 @@
 	min_positions = 10
 	max_positions = 110
 
+/datum/job/civilian/spanish/intvol/job_stats = list("strength" = STAT_MEDIUM_LOW, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_NORMAL)
+/datum/job/civilian/spanish/intvol/job_loadout = list(
+	/obj/item/clothing/shoes/heavyboots/wrappedboots = slot_shoes,
+	/obj/item/clothing/under/spain/brigadist = slot_w_uniform)
 /datum/job/civilian/spanish/intvol/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/spain/brigadist(H), slot_w_uniform)
+	equip_loadout(H)
 //hats
 	if (prob(35))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/flatcap1(H), slot_head)
@@ -3687,14 +3348,6 @@
 	uniform.attackby(white, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a simple person who volunteered to fight for the republican spain,listen to your Sergant!")
-	H.setStat("strength", STAT_MEDIUM_LOW)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("machinegun", STAT_NORMAL)
+	apply_job_stats(H)
 
 	return TRUE

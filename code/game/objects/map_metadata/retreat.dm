@@ -125,3 +125,4 @@ var/no_loop_ret = FALSE
 		else
 			return !faction2_can_cross_blocks()
 	return FALSE
+/obj/map_metadata/retreat/faction_hud_icons = list(CHINESE = "sov_basic")

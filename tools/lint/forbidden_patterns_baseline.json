@@ -90,6 +90,7 @@
       "code/game/objects/effects/spawner.dm": 7,
       "code/game/objects/effects/step_triggers.dm": 1,
       "code/game/objects/farming.dm": 1,
+      "code/game/objects/items.dm": 1,
       "code/game/objects/items/bodybag.dm": 1,
       "code/game/objects/items/clothing/under/accessories/armband.dm": 1,
       "code/game/objects/items/devices/drone.dm": 5,
@@ -109,6 +110,7 @@
       "code/game/objects/items/weapons/grenades/smokebomb.dm": 9,
       "code/game/objects/items/weapons/material/material_weapons.dm": 1,
       "code/game/objects/items/weapons/material/misc.dm": 2,
+      "code/game/objects/items/weapons/mines.dm": 4,
       "code/game/objects/items/weapons/nomadstuff.dm": 2,
       "code/game/objects/items/weapons/policetape.dm": 1,
       "code/game/objects/items/weapons/storage/storage.dm": 1,
@@ -212,7 +214,6 @@
       "code/game/objects/structures/mail.dm": 1,
       "code/game/objects/structures/railing.dm": 1,
       "code/game/objects/structures/religious.dm": 7,
-      "code/game/objects/structures/rocks.dm": 1,
       "code/game/objects/structures/sea.dm": 1,
       "code/game/objects/structures/signs.dm": 2,
       "code/game/objects/structures/stool_bed_chair_nest/bed.dm": 3,
@@ -293,7 +294,7 @@
       "code/modules/1713/telegraph.dm": 2,
       "code/modules/1713/telephone.dm": 13,
       "code/modules/1713/tools.dm": 1,
-      "code/modules/1713/trains.dm": 5,
+      "code/modules/1713/trains.dm": 4,
       "code/modules/1713/transporter/lever.dm": 11,
       "code/modules/1713/trench.dm": 1,
       "code/modules/1713/voting.dm": 4,
@@ -312,6 +313,7 @@
       "code/modules/admin/verbs/adminpm.dm": 1,
       "code/modules/admin/verbs/debug.dm": 1,
       "code/modules/agent_control/agent_actions.dm": 1,
+      "code/modules/agent_control/agent_autospawn.dm": 1,
       "code/modules/agent_control/agent_characters.dm": 5,
       "code/modules/agent_control/agent_vehicles.dm": 2,
       "code/modules/client/asset_cache.dm": 1,
@@ -428,6 +430,7 @@
       "code/modules/1713/roundstart_etc.dm": 1,
       "code/modules/1713/telephone.dm": 5,
       "code/modules/1713/tools.dm": 1,
+      "code/modules/admin/admin.dm": 5,
       "code/modules/admin/admin_verbs.dm": 1,
       "code/modules/admin/topic.dm": 1,
       "code/modules/admin/verbs/1713.dm": 1,
@@ -461,7 +464,8 @@
       "code/setup.dm": 1
     },
     "wwinput_untyped_result": {
-      "code/_helpers/WWinput.dm": 1
+      "code/_helpers/WWinput.dm": 1,
+      "code/modules/admin/admin.dm": 3
     },
     "merge_marker": {}
   }

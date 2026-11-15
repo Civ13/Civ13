@@ -25,7 +25,7 @@
 			if (ecology_animal_frozen(M))
 				var/mob/living/simple_animal/frozen = M
 				frozen.ecology_hold_still()
-			else if (!ecology_animal_resting(M) && !(persistence_frozen_levels.len && persistence_life_frozen(M)))
+			else if (!ecology_animal_resting(M) && !(persistence_frozen_levels.len && persistence_life_frozen(M)) && !(ishuman(M) && event_stash_holds(M)))
 				M.Life()
 			if (!(M == null))
 				if (world.time - M.last_movement > 7)

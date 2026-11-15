@@ -98,10 +98,9 @@ var/global/list/valid_coordinates = list()
 			message = replacetext(message, "\n", "<br>") // required since we're putting it in a <p> tag
 		for (var/mob/living/human/M)
 			if (!map.civilizations)
-				if (faction_text == M.faction_text)
+				if (faction_text == M.faction_text && world.time > announcement_cooldown)
 					messaget = "[name] announces:"
 					M.show_message("<big><span class=notice><b>[messaget]</b></big><p style='text-indent: 50px'>[message]</p></span>", 2)
-				log_admin("Governor Announcement: [key_name(usr)] - [messaget] : [message]")
 			else
 				if (civilization == M.civilization && civilization != "none" && world.time > announcement_cooldown)
 					messaget = "[name] announces:"
@@ -211,12 +210,12 @@ var/global/list/valid_coordinates = list()
 				var/inputx = player_input(src, "Choose the X coordinate:", null, null, "num", null, FALSE)
 				if (inputx > world.maxx)
 					inputx = world.maxx
-				if (inputx < 0)
+				if (inputx < 1)
 					inputx = 1
 				var/inputy = player_input(src, "Choose the Y coordinate:", null, null, "num", null, FALSE)
 				if (inputy > world.maxy)
 					inputy = world.maxy
-				if (inputy < 0)
+				if (inputy < 1)
 					inputy = 1
 				if (global.valid_coordinates.Find("[inputx],[inputy]"))
 					valid_coords_check = TRUE
@@ -252,12 +251,12 @@ var/global/list/valid_coordinates = list()
 				var/inputx = player_input(src, "Choose the X coordinate:", null, null, "num", null, FALSE)
 				if (inputx > world.maxx)
 					inputx = world.maxx
-				if (inputx < 0)
+				if (inputx < 1)
 					inputx = 1
 				var/inputy = player_input(src, "Choose the Y coordinate:", null, null, "num", null, FALSE)
 				if (inputy > world.maxy)
 					inputy = world.maxy
-				if (inputy < 0)
+				if (inputy < 1)
 					inputy = 1
 				if (global.valid_coordinates.Find("[inputx],[inputy]"))
 					valid_coords_check = TRUE

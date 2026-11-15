@@ -34,6 +34,10 @@ def restore_crafting_projection(path, source):
             ('\n\tvar/original_step_x = user.step_x\n\tvar/original_step_y = user.step_y', ''),
             ('\t\t\t// A stationary action also stops on physical movement within its tile.\n\t\t\t// Explicit can_move actions retain their existing contract.\n', ''),
             ('user.loc != original_loc || user.step_x != original_step_x || user.step_y != original_step_y', 'user.loc != original_loc'),
+            # Hunger by workload (tests/idle_metabolism): timed actions report their target.
+            ('/mob/proc/survival_action_started(atom/target, datum/pickaxe_mining_action/mining_context)', '/mob/proc/survival_action_started()'),
+            ('\tuser.survival_action_started(target)\n', '\tuser.survival_action_started()\n'),
+            ('\tuser.survival_action_started(target, mining_context)\n', '\tuser.survival_action_started()\n'),
         )
     elif path == MECHANICS:
         # 2026 age: recipe max-era 8 is open-ended, so the canopy gate no
@@ -65,11 +69,14 @@ def restore_crafting_projection(path, source):
             source = replace_reviewed_once(source, current, previous)
         # Mining balance is a separately checked production change. Invert only
         # this exact body so the original crafting reference remains frozen.
-        # Includes the independent flint nodule roll (tests/flint_mining).
+        # Includes the independent flint nodule roll (tests/flint_mining), the
+        # gem pocket roll (tests/gemstones), the obsidian roll (tests/obsidian),
+        # a land across the sea's lode roll (tests/naval_carrier/voyage_probe.dm) and
+        # the bauxite roll (tests/aluminium).
         mining_start = source.index('/turf/proc/mining_proc(')
         mining_end = source.index('/turf/floor/dirt/underground/attack_hand(', mining_start)
         mining = source[mining_start:mining_end]
-        if hashlib.sha256(mining.encode()).hexdigest() != '8787a4d5a5ebb0d5e0d47809cdc188faecec21784c644881283668c713be32fb':
+        if hashlib.sha256(mining.encode()).hexdigest() != '4b2d78a45d5925dcca73682f1f6bab7c6f3b9e029662983d3814f9687401d821':
             raise AssertionError('unreviewed mining yield projection drift')
         previous = read('tests/human_subtile/fixtures/mining_before_multi_drop.dm.txt').rstrip('\n') + '\n' * 2
         source = source[:mining_start] + previous + source[mining_end:]
@@ -122,6 +129,9 @@ def restore_crafting_projection(path, source):
              '\t\t\tvar/dmod = 1\n\t\t\tif (H.find_trait("Weak Immune System"))\n\t\t\t\tdmod = 2\n\t\t\tif (H.find_trait("Strong Immune System"))\n\t\t\t\tdmod = 0.2\n\t\t\tif (prob(sickness*15*dmod) && !H.orc && !H.crab)\n\t\t\t\tif (H.disease == 0)\n\t\t\t\t\tH.disease_progression = 0\n\t\t\t\t\tH.disease_type ="cholera"\n\t\t\t\t\tH.disease = 1\n'),
             # Explosion remains: no tunnel down from a turf above the ground.
             ('\t\t\tif (turf_is_above_ground(get_turf(user)))\n\t\t\t\tto_chat(user, SPAN_NOTICE("You can\'t dig a tunnel here, there is no earth below."))\n\t\t\t\treturn\n', ''),
+            # Audit fixes: an empty sandbag stops after its warning; ant shoveling returns the parent's result.
+            ('SPAN_NOTICE("You need to fill the sandbag with sand first!"))\n\t\t\treturn\n', 'SPAN_NOTICE("You need to fill the sandbag with sand first!"))\n'),
+            ('\t\t\tif (H.shoveling)\n\t\t\t\treturn ..()\n', '\t\t\tif (H.shoveling)\n\t\t\t\t..()\n'),
         )
     else:
         edits = ()
@@ -468,8 +478,8 @@ class CraftingMovementContracts(unittest.TestCase):
             ('buildtime = round(buildtime)', 'buildtime = 1'),
             ('buildtime /= H.getStatCoeff("strength")', 'buildtime *= H.getStatCoeff("strength")'),
             ('if (!do_after(user, buildtime) || !crafting_recipe_allowed(H, "[recipe.result_type]"))', 'if (do_after(user, buildtime))'),
-            ('H.put_in_hands(O)', 'H.drop_from_inventory(O)'),
-            ('handReturnMap.Remove(H.key)', 'handReturnMap.Remove(user)'),
+            ('"[recipe.result_type]"))\n\t\t\tsecondary_refund(H)\n', '"[recipe.result_type]"))\n'),
+            ('build \\the [recipe.title]!</span>")\n\t\tsecondary_refund(H)\n', 'build \\the [recipe.title]!</span>")\n'),
             ('if (required > 0)', 'if (required > 1)'),
             ('new type(get_turf(H), required)', 'new type(get_turf(H), 1)'),
             ('user.set_using_object(src)', 'user.set_using_object(null)'),

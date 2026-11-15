@@ -77,6 +77,9 @@ var/movementMachine/movementMachine = null
 
 
 /movementMachine/proc/held_movement_ready(var/mob/M)
+	// A click-to-move route steers the held axes (click_route.dm).
+	if (M && M.click_route)
+		M.click_route.steer()
 	return M && M.client && (M.movement_eastwest || M.movement_northsouth) && M.client.canmove && !M.client.moving && world.time >= M.client.move_delay && (!M.movement_fine || world.time >= M.client.fine_offset_glide_at)
 
 /movementMachine/proc/begin_held_movement(var/mob/M)

@@ -158,7 +158,7 @@ class Contracts(unittest.TestCase):
         self.assertLess(stock.index('if (joinery && !joinery.valid())'),stock.index('if (use(required, (joinery || carving) ? null : H))'))
         self.assertLess(stock.index('if (use(required, (joinery || carving) ? null : H))'),stock.index('joinery.consume_component()'))
         self.assertIn('component.use(spec["component_cost"])',TEXT)
-        self.assertIn('blade.health -= 0.25',TEXT)
+        self.assertIn('blade.apply_wear(0.25, WEAR_WORK)',TEXT)
 
     def test_guard_rejects_changed_inputs_tools_research_and_saves(self):
         f=Fixture();self.assertTrue(f.valid())
@@ -228,7 +228,7 @@ class Contracts(unittest.TestCase):
             if change=='research':f.researched=False
             if change=='save':f.env['persistence_save_in_progress']=True
             env=dict(joinery=NS(valid=f.valid,consume_component=lambda:debits.append('pegs')),carving=None,cloth_payment=None,
-                     H=NS(adaptStat=lambda *args:xp.append(args)),recipe=NS(time=4,req_amount=4),
+                     H=NS(adaptStat=lambda *args:xp.append(args)),recipe=NS(time=4,req_amount=4,result_type='/obj/structure/table'),
                      required=4,payer=None,user=None,to_chat=lambda *args:None,SPAN_WARNING=lambda x:x,
                      use=lambda *args:debits.append('logs') is None and change!='debit failed')
             exec(compile(text,'<production joinery commit>','exec'),env);env['commit']()

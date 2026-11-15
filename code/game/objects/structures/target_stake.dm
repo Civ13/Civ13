@@ -7,7 +7,7 @@
 	var/target_type = "dummy"
 	density = TRUE
 	w_class = ITEM_SIZE_HUGE
-	var/health = 100
+	health = 100
 	not_movable = FALSE
 	not_disassemblable = FALSE
 	var/ranged = TRUE

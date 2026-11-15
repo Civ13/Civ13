@@ -97,6 +97,9 @@ var/world_is_open = TRUE
 	// A standby world stays off the hub until a handover opens the region's port.
 	if (persistence_restart.standby)
 		world.visibility = FALSE
+		// Before the first yield: the old world's save removes the record once the
+		// host sees this standby answer (standby_prepare.dm).
+		map_storage.read_standby_prepare_hint()
 
 	if (config && config.server_name != null && config.server_suffix && world.port > 0)
 		// dumb and hardcoded but I don't care~
@@ -471,7 +474,7 @@ var/world_topic_spam_protect_time = world.timeofday
 		s += "[jointext(community_links, " | ")]<br>"
 
 	if (config.hub_banner_url)
-		s += "<img src=\"https://i.imgur.com/napac0L.png\"><br>"
+		s += "<img src=\"[config.hub_banner_url]\"><br>"
 	if (map)
 		s += "<b>Map:</b> [hub_status_text(map.title)] ([hub_status_text(roundduration2text())])<br>"
 	var/list/player_status = player_status_observation()
@@ -479,11 +482,11 @@ var/world_topic_spam_protect_time = world.timeofday
 	s += "<b>Joining:</b> [hub_status_text(player_join_status(player_status))]<br>"
 
 	// we can't execute code in config settings, so this is a workaround.
-	config.hub_body = replacetext(config.hub_body, "ROUNDTIME", capitalize(lowertext(roundduration2text())))
+	var/hub_body = replacetext(config.hub_body, "ROUNDTIME", capitalize(lowertext(roundduration2text())))
 	if (map)
 		s += "<b>Gamemode:</b> [hub_status_text(map.gamemode)]"
-	if (config.hub_body)
-		s += config.hub_body
+	if (hub_body)
+		s += hub_body
 
 	status = s
 
@@ -561,6 +564,8 @@ var/global/persistence_reboot_due = FALSE
 /proc/start_persistence_loop()
 	if (! config.skip_persistence_saving)
 		spawn(300)
+			// A save that stopped advancing is reported, then released (save_watchdog.dm).
+			persistence_save_watchdog()
 			if (map && map.persistence && ticker && ticker.current_state >= GAME_STATE_PLAYING && !persistence_restart.startup_hold && !persistence_restart.busy)
 				// First save is one full interval after the round starts, not at round start.
 				if (!nextsave)

@@ -517,9 +517,46 @@ public static class LocalHosting {
             // TDM Barracks and battle regions: what the battle is doing.
             if (Str(view, "error") == null && Str(view, "battle_phase") is { Length: > 0 } phase)
                 parts.Add("battle " + BattlePhase(phase));
+            // Characters kept in this land while their players are at an event region.
+            if (Str(view, "error") == null && EventAway(view) is > 0 and var away)
+                parts.Add(AwayText(away));
         }
+        if (Str(entry, "kind") == "EVENT") parts.Insert(0, "event region");
+        if (LandText(entry) is { } land) parts.Add(land);
         return parts.Count == 0 ? text : text + ", " + string.Join(", ", parts);
     }
+
+    // shard_group.py status "land" (docs/land-stages.md): the land's settlement stage, how many accounts
+    // live there and any change the coordinator suggests. Null for the mainland and when there is none.
+    public static string? LandText(JsonElement entry) {
+        if (!entry.TryGetProperty("land", out var land) || land.ValueKind != JsonValueKind.Object) return null;
+        var stage = Str(land, "stage") switch {
+            "CLOSED" => "unexplored land",
+            "FRONTIER" => "frontier land",
+            "COLONY" => "colonised land",
+            "OPEN" => "settled land",
+            _ => null,
+        };
+        if (stage == null) return null;
+        if (land.TryGetProperty("paused", out var paused) && paused.ValueKind == JsonValueKind.True) stage += " (new starts paused)";
+        if (land.TryGetProperty("readiness", out var ready) && ready.ValueKind == JsonValueKind.Object) {
+            if (ready.TryGetProperty("homes", out var homes) && homes.ValueKind == JsonValueKind.Number && homes.TryGetInt32(out var count) && count > 0)
+                stage += count == 1 ? ", 1 home" : ", " + count + " homes";
+            var suggest = Str(ready, "suggest") switch {
+                "OPEN" => "ready to settle",
+                "PAUSE" => "consider pausing new starts",
+                "RESUME" => "ready to resume new starts",
+                _ => null,
+            };
+            if (suggest != null) stage += ", " + suggest;
+        }
+        return stage;
+    }
+
+    // shard_group.py region_view event_away (code/modules/persistence/region_event.dm), or null.
+    public static int? EventAway(JsonElement view) =>
+        view.TryGetProperty("event_away", out var value) && value.ValueKind == JsonValueKind.Number && value.TryGetInt32(out var count) && count >= 0 ? count : null;
+    public static string AwayText(int away) => away == 1 ? "1 player away at an event" : away + " players away at an event";
 
     // shard_group.py region_view battle_phase (code/modules/tdm_barracks): plain words for the Host tab.
     public static string BattlePhase(string phase) => phase switch {

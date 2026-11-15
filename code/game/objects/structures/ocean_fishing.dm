@@ -8,35 +8,31 @@
 #define OCEAN_FISH_REGEN (10 MINUTES)
 #define OCEAN_BAIT_USES 3
 
-// "chunk x,chunk y,z" -> list(fish left, time the next fish started coming back)
+// "chunk x,chunk y,z" -> /datum/resource_stock of fish (code/_helpers/resource_stock.dm)
 var/global/list/ocean_fish_stock = list()
 
 /proc/ocean_fish_key(turf/T)
 	return "[round(T.x / OCEAN_FISH_CHUNK)],[round(T.y / OCEAN_FISH_CHUNK)],[T.z]"
 
+/proc/ocean_fish_stock_at(turf/T)
+	var/key = ocean_fish_key(T)
+	var/datum/resource_stock/stock = ocean_fish_stock[key]
+	if (!stock)
+		stock = new /datum/resource_stock(OCEAN_FISH_MAX, OCEAN_FISH_REGEN)
+		ocean_fish_stock[key] = stock
+	return stock
+
 /proc/ocean_fish_available(turf/T)
 	if (!T)
 		return 0
-	var/key = ocean_fish_key(T)
-	var/list/entry = ocean_fish_stock[key]
-	if (!entry)
-		entry = list(OCEAN_FISH_MAX, world.time)
-		ocean_fish_stock[key] = entry
-	if (entry[1] < OCEAN_FISH_MAX)
-		var/regained = round((world.time - entry[2]) / OCEAN_FISH_REGEN)
-		if (regained > 0)
-			entry[1] = min(OCEAN_FISH_MAX, entry[1] + regained)
-			entry[2] += regained * OCEAN_FISH_REGEN
-	if (entry[1] >= OCEAN_FISH_MAX)
-		entry[2] = world.time // a full stretch does not bank regrowth
-	return entry[1]
+	var/datum/resource_stock/stock = ocean_fish_stock_at(T)
+	return stock.available()
 
 /proc/ocean_fish_take(turf/T)
-	if (ocean_fish_available(T) <= 0)
+	if (!T)
 		return FALSE
-	var/list/entry = ocean_fish_stock[ocean_fish_key(T)]
-	entry[1]--
-	return TRUE
+	var/datum/resource_stock/stock = ocean_fish_stock_at(T)
+	return stock.take()
 
 // Bait
 /obj/item/weapon/fishing/var/bait_uses = 0

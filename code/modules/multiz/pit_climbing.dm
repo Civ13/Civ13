@@ -178,7 +178,11 @@
 /mob/living/human/verb/climb_up_ledge()
 	set name = "Climb Up"
 	set category = "IC"
-	set desc = "Face a wall or the rim of a dug hole and climb to the floor above. Keep a hand free."
+	set desc = "Face a wall or the rim of a dug hole and climb to the floor above. Keep a hand free. On stairs, climbs the stairs."
+	var/obj/covers/stairs = stairs_in(get_turf(src))
+	if (stairs)
+		climb_stairs(stairs)
+		return
 	var/list/directions = ledge_climb_directions(dir)
 	for (var/direction in directions)
 		if (ledge_climb_destination(src, direction))

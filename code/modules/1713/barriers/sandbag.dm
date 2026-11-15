@@ -131,7 +131,7 @@ var/set_dir = null // Set the variable outside of any scopes
 				qdel(src)
 			user.visible_message(SPAN_WARNING("[user] puts the sandbag onto \the [src]."), SPAN_WARNING("You put the sandbag onto \the [src]."))
 			qdel(O)
-	else if (istype(O, /obj/item/weapon/material/shovel))
+	else if (is_tool(O, TOOL_SHOVEL))
 		user.visible_message(SPAN_WARNING("[user] starts dismantling the [src] using the [O.name]."), SPAN_WARNING("You start dismantling the [src] using the [O.name]."))
 		var/decon_time = 200
 		if (ishuman(user))

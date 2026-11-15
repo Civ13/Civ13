@@ -13,10 +13,12 @@
 	return terrain_heights_cache.error ? null : terrain_heights_cache
 var/global/obj/map_metadata/map
 var/global/invalidated = 0
-/obj/probe_tree
-	opacity = TRUE
+// Trees are see-through (opacity FALSE) and hide nobody.
+/obj/structure/wild
+/obj/structure/wild/probe_tree
+/obj/structure/wild/probe_palm
 /proc/root_tree_family(atom/A)
-	return istype(A, /obj/probe_tree)
+	return istype(A, /obj/structure/wild)
 /proc/los_invalidate(atom/A, possible = FALSE)
 	invalidated++
 /mob
@@ -127,10 +129,10 @@ var/global/probe_cpu = 0
 	los_terrain_heights_changed(locate(M.x, M.y, 2))
 	var/cleared = !los_terrain_cache.len && invalidated == 1
 	var/list/still_eye = los_still_eye_cases()
-	// Foliage cover: NPC sight to or from a mob in a tree's tile stops past
-	// two tiles, on flat ground (no height file) as well.
+	// No foliage cover: NPC sight to or from a mob in a tree's tile is clear
+	// at every range, on flat ground (no height file).
 	var/list/foliage = list()
-	var/obj/probe_tree/tree = new(locate(40, 40, 2))
+	var/obj/structure/wild/probe_tree/tree = new(locate(40, 40, 2))
 	M.lying = FALSE
 	T.lying = FALSE
 	map.terrain_height_file = null
@@ -144,7 +146,24 @@ var/global/probe_cpu = 0
 		M.loc = locate(40, 40, 2)
 		T.loc = locate(40 + d, 40, 2)
 		foliage += los_terrain_ray_blocked(M, T) ? 1 : 0
-	text2file(json_encode(list("foliage" = foliage, "still_eye" = still_eye, "fields" = out, "builds" = builds, "build_ds" = build_ds, "cached_ds" = cached_ds, "cleared" = cleared, "see_over" = los_see_over_cases(), "rays" = rays, "agree" = agree, "ray_ds" = ray_ds)), "result.json")
+	// A row of trees between people 10 tiles apart hides nobody either.
+	var/list/forest = list()
+	var/list/trees = list()
+	M.loc = locate(40, 40, 2)
+	T.loc = locate(50, 40, 2)
+	for (var/x in list(42, 44, 46))
+		trees += new /obj/structure/wild/probe_tree(locate(x, 40, 2))
+	forest += los_terrain_ray_blocked(M, T) ? 1 : 0
+	var/obj/structure/wild/probe_tree/fourth = new(locate(48, 40, 2))
+	forest += los_terrain_ray_blocked(M, T) ? 1 : 0
+	forest += los_terrain_ray_blocked(T, M) ? 1 : 0
+	fourth.loc = null
+	var/obj/structure/wild/probe_palm/palm = new(locate(48, 40, 2))
+	forest += los_terrain_ray_blocked(M, T) ? 1 : 0
+	palm.loc = null
+	for (var/obj/structure/wild/W in trees)
+		W.loc = null
+	text2file(json_encode(list("foliage" = foliage, "forest" = forest, "still_eye" = still_eye, "fields" = out, "builds" = builds, "build_ds" = build_ds, "cached_ds" = cached_ds, "cleared" = cleared, "see_over" = los_see_over_cases(), "rays" = rays, "agree" = agree, "ray_ds" = ray_ds)), "result.json")
 	world.log << "LOS_TERRAIN DONE"
 	shutdown()
 

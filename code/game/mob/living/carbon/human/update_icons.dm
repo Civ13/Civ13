@@ -624,9 +624,10 @@ var/global/list/human_face_icon_cache = list()
 		//need to append _s to the icon state for legacy compatibility
 		var/image/standing = image(icon = under_icon, icon_state = under_state, layer = layer + 0.01)
 		standing.color = w_uniform.color
-		if (istype(w_uniform, /obj/item/clothing/under/tailored_dress))
-			var/obj/item/clothing/under/tailored_dress/dress = w_uniform
-			standing.overlays += dress.worn_design_layers()
+		// Tailored clothing (dressmaking.dm) draws its coloured design layers.
+		var/obj/item/clothing/tailored_under = w_uniform
+		if (tailored_under.design_body)
+			standing.overlays += tailored_under.worn_design_layers()
 		else if (istype(w_uniform, /obj/item/clothing/under/customuniform))
 			var/obj/item/clothing/under/customuniform/CU = w_uniform
 			if (!CU.uncolored)
@@ -840,7 +841,8 @@ var/global/list/human_face_icon_cache = list()
 		if (w_uniform && w_uniform:displays_id)
 			var/image/standing
 			if (wear_id.icon_override)
-				standing = image("icon" = wear_id.icon_override, "icon_state" = "[wear_id.item_state]")
+				// Hip items without a held state (pouches) use their own icon state.
+				standing = image("icon" = wear_id.icon_override, "icon_state" = "[wear_id.item_state ? wear_id.item_state : wear_id.icon_state]")
 
 			else
 				standing = image("icon" = 'icons/mob/mob.dmi', "icon_state" = "id")
@@ -1009,7 +1011,11 @@ var/global/list/human_face_icon_cache = list()
 			standing.overlays += addin
 		else
 			standing = image(icon = t_icon, icon_state = t_state, layer = layer+0.01)
-		if (istype(head, /obj/item/clothing/head/custom_off_cap))
+		var/obj/item/clothing/tailored_head = head
+		if (istype(tailored_head) && tailored_head.design_body)
+			// Tailored headwear (dressmaking.dm) draws its coloured design layers.
+			standing.overlays += tailored_head.worn_design_layers()
+		else if (istype(head, /obj/item/clothing/head/custom_off_cap))
 			var/obj/item/clothing/head/custom_off_cap/CU = head
 			band = image("icon" = 'icons/mob/head.dmi', "icon_state" = "customcap_l2", layer = layer+0.01)
 			band.color = CU.bandcolor
@@ -1120,6 +1126,11 @@ var/global/list/human_face_icon_cache = list()
 					var/i_state = i.item_state
 					if (!i_state) i_state = i.icon_state
 					standing.overlays	+= image(icon = body_build.belt_icon, icon_state = i_state)
+		else if (istype(belt, /obj/item/clothing))
+			// Pouches hung from a clothing belt (belt_pouches.dm) draw on it.
+			var/obj/item/clothing/cbelt = belt
+			for (var/obj/item/clothing/accessory/A in cbelt.accessories)
+				standing.overlays	+= A.get_mob_overlay()
 
 		standing.color = belt.color
 
@@ -1152,7 +1163,10 @@ var/global/list/human_face_icon_cache = list()
 		standing = image(icon = t_icon, icon_state = wear_suit.icon_state, layer = layer + 0.01)
 		standing.color = wear_suit.color
 
-		if (istype(wear_suit, /obj/item/clothing/suit/storage/jacket/customcolonialcoat))
+		var/obj/item/clothing/tailored_suit = wear_suit
+		if (istype(tailored_suit) && tailored_suit.design_body)
+			standing.overlays += tailored_suit.worn_design_layers()
+		else if (istype(wear_suit, /obj/item/clothing/suit/storage/jacket/customcolonialcoat))
 			var/obj/item/clothing/suit/storage/jacket/customcolonialcoat/CU = wear_suit
 			base = image("icon" = 'icons/mob/suit.dmi', "icon_state" = "customcolonialcoat_top")
 			base.color = CU.topcolor
@@ -1526,6 +1540,15 @@ var/global/list/human_face_icon_cache = list()
 				return null
 		else if (drowning)
 			mask_state = "seashallow_over3"  // Deep water - fully submerged
+		else if (!istype(D, /turf/floor/beach/water) && !istype(D, /turf/floor/trench/flooded))
+			// River floodwater over land (flood_effects.dm).
+			switch (flood_band_at(D))
+				if (FLOOD_BAND_KNEE)
+					mask_state = "seashallow_over1"
+				if (FLOOD_BAND_WAIST)
+					mask_state = "seashallow_over2"
+				if (FLOOD_BAND_DEEP)
+					mask_state = "seashallow_over3"
 		return mask_state
 	return null
 
@@ -1609,7 +1632,6 @@ var/global/list/human_face_icon_cache = list()
 			continue
 		if (O.wounds.len == 0)
 			continue
-		DD.overlays.Cut()
 		for (var/datum/wound/W in O.wounds)
 			if (W.bandaged && W.created+4800 >= world.time)
 				DD.overlays += image(icon='icons/mob/human_races/masks/bandages_human.dmi', icon_state="[O.limb_name]b")

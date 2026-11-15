@@ -4,7 +4,7 @@
 
 /obj/item/weapon/hole_ladder
 	name = "wooden ladder"
-	desc = "A short wooden ladder. Use it on a dug hole to fit it, so people can climb in and out instead of falling."
+	desc = "A short wooden ladder. Use it on a dug hole to fit it, on open air beside an upper floor, or on the ground under open air, so people can climb between levels instead of falling."
 	icon = 'icons/obj/stairs.dmi'
 	icon_state = "siege_ladder"
 	force = WEAPON_FORCE_WEAK

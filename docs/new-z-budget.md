@@ -11,6 +11,10 @@ Gaia sets 4) may add, and restore, up to N roof-added levels, at most four, whil
 the world stays within 1,050,000 cells (`NEW_Z_BUILDING_MEASURED_CELLS`, Gaia's
 500 x 350 x 6). A level is added only when a roof is built on the highest
 existing one, so the world grows only as high as something stands.
+A one-level map with `building_level_standing` (the Americas regions) may also
+add, and restore, its one standing open-air level while the two planes stay
+within 2,100,000 cells (`NEW_Z_STANDING_MEASURED_CELLS`); nothing above that
+level is admitted there.
 Those levels are saved sparsely: a file keeps only the cells that differ from
 open air in the level's area (see the persistence guide), so an extra plane
 adds kilobytes to a save instead of a full level file. Every other purpose
@@ -26,20 +30,22 @@ native grid: `world.maxx * world.maxy * target_z`, including compiled levels,
 existing additions and configured unused reservations. A small room on another
 z still allocates a full world plane. BYOND does not provide a sparse grid here.
 
-The provisional default and inclusive hard ceiling is **1,400,000 total cells**, with at most **four
+The provisional default and inclusive hard ceiling is **2,100,000 total cells**
+(1,400,000 until 2026-11-15; raised so a one-level map of up to 1,050,000 cells
+can keep its one standing open-air level, see below), with at most **four
 roof-added planes** above the actual compiled maximum (and only as many as the
 map's `building_levels`). Existing limits of 32
 absolute levels and 8 added levels remain. A host may lower these settings in
 `config.txt`; this patch provides no higher override:
 
 ```text
-NEW_Z_CELL_BUDGET 1400000
+NEW_Z_CELL_BUDGET 2100000
 NEW_Z_ROOF_LEVELS 4
 NEW_Z_INSTANCE_RESERVE 0
 NEW_Z_SAFEHOUSE_RESERVE 0
 ```
 
-The first two accept decimal integers in 0..1400000 and 0..4 respectively. Zero
+The first two accept decimal integers in 0..2100000 and 0..4 respectively. Zero
 disables the corresponding arithmetic permission; no value enables the missing
 production memory admission. The reservation counts accept
 integers in 0..8 and reserve whole planes for future explicit consumers. Unknown
@@ -65,11 +71,11 @@ construction preserves the item. An available upper plane receives the linked
 walkable floor without consuming growth capacity.
 
 The inclusive tile ceiling is checked for the complete candidate target, with
-unused reservations also charged. With no reservations, a 700,000-cell plane
-may grow from one to two levels (1,400,000 cells) by arithmetic, but one more
+unused reservations also charged. With no reservations, a 1,050,000-cell plane
+may grow from one to two levels (2,100,000 cells) by arithmetic, but one more
 cell above that total is refused. Sequential requests recheck the full total,
 not merely the new plane. Division bounds each plane before multiplication;
-the intermediate product stays at or below 1,400,000, exactly representable by
+the intermediate product stays at or below 2,100,000, exactly representable by
 the native numeric type. Passing arithmetic still requires memory admission.
 
 When admitted by an independently validated profile (or an explicitly isolated
@@ -159,7 +165,7 @@ does not dispatch CI or establish acceptance.
 
 ## Operational policy and exact CI selection
 
-This is a deliberate fail-closed policy, not a claim that 1,400,000 cells are safe.
+This is a deliberate fail-closed policy, not a claim that 2,100,000 cells are safe.
 In particular, a save containing additional levels beyond the compiled world's
 current maximum is refused even if those levels existed before this patch and
 fit every arithmetic limit. Such a save enters the non-destructive hold described

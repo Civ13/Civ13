@@ -62,6 +62,7 @@
 					NB.author = NC.author
 					NB.unique = NC.unique
 					NB.title = NC.title
+					drawing_set_list(NB, drawings_copy(NC.drawings))
 					qdel(B)
 				else if (istype(src, /obj/item/weapon/book/holybook))
 					var/obj/item/weapon/book/holybook/NC = src
@@ -149,6 +150,7 @@
 	else
 		display_snapshot = dat
 	var/legacy_snapshot = "<HTML><HEAD><TITLE>[title]</TITLE></HEAD><BODY>[display_snapshot]</BODY></HTML>"
+	show_drawings(user)
 	// Fixed presentation hook keeps isolated base-book fixtures independent.
 	if (hascall(src, "present_book_reader") && call(src, "present_book_reader")(user, legacy_snapshot, "[display_snapshot]", "[title]", "[name]"))
 		return

@@ -19,7 +19,7 @@ ROOTS = ('/obj/item', '/obj/structure', '/obj/machinery', '/obj/covers', '/mob/l
 INTERNAL = re.compile(r'/(admin\w*|debug\w*|test\w*|fluff|landmark\w*|spawner\w*|abstract|effect\w*|hud|dummy|holder'
                       r'|internal|placeholder|secret\w*|easter\w*|fake\w*|invisible|unsimulated|template|base|generic'
                       r'|proc|verb|\w*spawn\w*|liminal\w*|\w*portal\w*|\w*teleport\w*|hidden\w*'
-                      r'|cursed\w*|\w*ritual\w*)(/|$)', re.I)
+                      r'|cursed\w*|\w*ritual\w*|divine\w*)(/|$)', re.I)
 # Examine text that itself talks about hidden or staff-only things keeps the type out of the reference.
 GUARDED = re.compile(r'\b(secret|hidden|admins?\b|debug|cheat|do not use|should not exist|shouldn.t be here|unused|placeholder|test(ing)?\b)', re.I)
 

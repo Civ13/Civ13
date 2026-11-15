@@ -202,3 +202,9 @@
 		else
 			to_chat(H, "This item cannot be stashed for points.")
 			return
+/obj/map_metadata/bagne13/add_faction_hud_overlays(mob/living/human/H, image/holder)
+	if (H.faction_text != CIVILIAN)
+		return
+	var/static/list/marks = list("Cuistot" = "role_kitchen", "Infirmier" = "role", "Bucheron" = "role_logger")
+	if (H.original_job_title in marks)
+		holder.overlays += icon(holder.icon, marks[H.original_job_title])

@@ -645,7 +645,7 @@
 	splitting_in_progress = TRUE
 	user.visible_message(SPAN_NOTICE("[user] starts cutting [src] into planks."))
 	playsound(loc, 'sound/effects/woodfile.ogg', 100, TRUE)
-	var/completed = do_after(user, (hatchet ? 80 : 60)/user.getStatCoeff("strength"), src)
+	var/completed = do_after(user, (hatchet ? 80 : 60)/user.getStatCoeff("strength")/tool_speed(tool), src)
 	if (QDELETED(src))
 		return FALSE
 	splitting_in_progress = FALSE
@@ -699,14 +699,14 @@
 	return ..()
 
 /obj/item/stack/material/woodplank/update_icon()
-	if (amount >= 50)
-		icon_state = "[base_icon]-50"
-	else if (amount >= 100)
-		icon_state = "[base_icon]-100"
+	if (amount >= 200)
+		icon_state = "[base_icon]-200"
 	else if (amount >= 150)
 		icon_state = "[base_icon]-150"
-	else if (amount >= 200)
-		icon_state = "[base_icon]-200"
+	else if (amount >= 100)
+		icon_state = "[base_icon]-100"
+	else if (amount >= 50)
+		icon_state = "[base_icon]-50"
 	else
 		icon_state = "[base_icon]"
 

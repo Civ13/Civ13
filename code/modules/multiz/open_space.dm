@@ -223,6 +223,9 @@ var/list/sky_drop_map = list()
 		if(G.opened == FALSE)
 			return
 	if (floorbelowz)
+		// Open air over stairs is a stairwell: walk down instead of falling.
+		if (!push_dir && stairs_soft_descent(A, floorbelowz))
+			return
 		if (istype(A, /mob))
 			if(push_dir)
 				A.forceMove(get_step(src,push_dir))

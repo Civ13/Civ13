@@ -131,6 +131,29 @@ class RegionWakeTests(unittest.TestCase):
         body = proc(TRAVEL, GATE + '/proc/closed_reason')
         self.assertIn('!shard_group.peer_wakeable(destination)', body)
 
+    def test_a_trail_to_a_stopped_region_says_it_is_stopped(self):
+        # 2026-11-13: an approved trail to a stopped Europe said "Nobody seems
+        # to be coming back", which read as a broken trail. A stopped land is
+        # never started by a trail, so the traveller hears it is closed.
+        body = proc(TRAVEL, GATE + '/proc/closed_reason')
+        stopped = body.index('peer["state"] == "STOPPED"')
+        self.assertLess(stopped, body.index('Nobody seems to be coming back'))
+        self.assertIn('is closed for now: its land is not running', body)
+        wake = proc(GROUP, '/datum/shard_group/proc/wake_peer')
+        self.assertLess(wake.index('peer["state"] == "STOPPED"'), wake.index('if(!peer_wakeable(id))'))
+        self.assertNotIn('"STOPPED"', proc(GROUP, '/datum/shard_group/proc/peer_wakeable'))
+
+    def test_admins_hear_when_a_stopped_land_turns_travellers_back(self):
+        travel = proc(TRAVEL, GATE + '/proc/travel')
+        refused = travel.index('to_chat(H, SPAN_WARNING(reason))')
+        self.assertLess(refused, travel.index('alert_stopped_destination(H)'))
+        alert = proc(TRAVEL, GATE + '/proc/alert_stopped_destination')
+        self.assertIn('peer["state"] != "STOPPED"', alert)
+        self.assertLess(alert.index('world.time < region_stopped_alerted[destination]'), alert.index('message_admins('))
+        trails = read('code/modules/persistence/region_trails.dm')
+        approve = proc(trails, '/obj/structure/region_gate/trail_marker/proc/admin_approve')
+        self.assertIn('peer["state"] == "STOPPED"', approve)
+
     def test_travel_wakes_the_destination_then_checks_again(self):
         body = proc(TRAVEL, GATE + '/proc/travel')
         wake = body.index('shard_group.wake_peer(destination, H)')

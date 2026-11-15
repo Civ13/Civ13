@@ -51,5 +51,5 @@
 	var/line = "__**\[[time_stamp()]] ([place]) ASAY:**__ **[name]** [text]"
 	var/admindiary = file("admin.log")
 	admindiary << line
-	webhook_send_asay(name, line)
+	webhook_send_asay(name, line, "asay", TRUE) // only staff (or an admin agent) can asay
 	return TRUE

@@ -151,6 +151,14 @@ class InputTrace(unittest.TestCase):
                                 '\t\t\treturn\n')
         self.assertEqual(prior.count(approved_tree_middle), 1, 'approved tree middle-click block')
         prior = prior.replace(approved_tree_middle, '')
+        # Click-to-move (click_route.dm): Ctrl+click away from an adjacent
+        # thing walks a route instead of the no-op CtrlClick.
+        approved_click_route = ('\t// Ctrl+click on something next to you pulls it; anywhere else walks\n'
+                                '\t// there along the quickest route (click_route.dm).\n'
+                                '\tif (!(ismovable(A) && A.Adjacent(src)) && click_route_to(A))\n'
+                                '\t\treturn\n')
+        self.assertEqual(prior.count(approved_click_route), 1, 'approved click route block')
+        prior = prior.replace(approved_click_route, '')
         self.assertEqual(hashlib.sha256(prior.rstrip('\n').encode()).hexdigest(),
                          'b90920f8c3ba661629fcb505c6f0476b585fb8ce1dc885f312e9f2a3dfcb8a90',
                          'entire prior click source')

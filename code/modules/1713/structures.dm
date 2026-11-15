@@ -215,7 +215,7 @@
 			user.show_message("\The [src] has been completely cut through.")
 
 /obj/structure/grille/chainlinkfence/attackby(obj/item/W, mob/living/human/user)
-	if(istype(W, /obj/item/weapon/wirecutters))
+	if(is_tool(W, TOOL_WIRECUTTER))
 		if(!cuttable)
 			to_chat(user, "<span class='notice'>This section of the fence can't be cut.</span>")
 			return
@@ -596,7 +596,7 @@
 	return TRUE
 
 /obj/structure/props/piping/small/plastic/attackby(obj/item/O, mob/user, icon_x, icon_y)
-	if(istype(O, /obj/item/weapon/hammer))
+	if(is_tool(O, TOOL_HAMMER))
 		to_chat(user, SPAN_NOTICE("You begin dismantling the plastic pipe."))
 		if(do_after(user, 25, src) && dismantle_plastic_pipe())
 			to_chat(user, SPAN_NOTICE("You dismantle the plastic pipe."))
@@ -1325,7 +1325,80 @@
 			new/obj/structure/flag/pole(src.loc)
 			qdel(src)
 
+// Symbol choice -> its icon state in icons/obj/flags.dmi.
+/proc/pole_flag_symbols()
+	return list("Moon" = "cust_f_moon", "Cross" = "cust_f_cross", "Star" = "cust_f_star", "Sun" = "cust_f_sun", "Plus" = "cust_f_plus", "Saltire" = "cust_f_saltire", "None" = "cust_f_blank")
+
+/proc/pole_flag_symbol_valid(symbol)
+	var/list/symbols = pole_flag_symbols()
+	for (var/label in symbols)
+		if (symbols[label] == symbol)
+			return TRUE
+	return FALSE
+
+/obj/structure/flag/pole/custom/proc/apply_design(new_flagcolor, new_symbol, new_symbolcolor)
+	flagcolor = new_flagcolor
+	symbol = new_symbol
+	symbolcolor = new_symbolcolor
+	uncolored = FALSE
+	var/image/flag = image("icon" = 'icons/obj/flags.dmi', "icon_state" = "cust_flag_cloth")
+	flag.color = flagcolor
+	var/image/border = image("icon" = 'icons/obj/flags.dmi', "icon_state" = "cust_flag_outline")
+	var/image/csymbol = image("icon" = 'icons/obj/flags.dmi', "icon_state" = symbol)
+	csymbol.color = symbolcolor
+	overlays = list(flag, border, csymbol)
+
+// C13POLE/1/<cloth colour>/<symbol>/<symbol colour>, or null.
+/obj/structure/flag/pole/custom/proc/design_code()
+	var/cloth = design_code_colour_out(flagcolor)
+	var/mark = design_code_colour_out(symbolcolor)
+	if (uncolored || !cloth || !mark || !pole_flag_symbol_valid(symbol))
+		return null
+	return "C13POLE/1/[cloth]/[copytext(symbol, 8)]/[mark]"
+
+// A pole flag code -> list(cloth, symbol state, symbol colour), or null.
+/proc/pole_flag_parse(code)
+	var/list/F = design_code_fields(code, "POLE")
+	if (!F || F.len != 3)
+		return null
+	var/cloth = design_code_colour_in(F[1])
+	var/symbol = "cust_f_[lowertext(F[2])]"
+	var/mark = design_code_colour_in(F[3])
+	if (!cloth || !mark || !pole_flag_symbol_valid(symbol))
+		return null
+	return list(cloth, symbol, mark)
+
+/obj/structure/flag/pole/custom/after_load()
+	..()
+	if (!uncolored && flagcolor && pole_flag_symbol_valid(symbol) && symbolcolor)
+		apply_design(flagcolor, symbol, symbolcolor)
+
+/obj/structure/flag/pole/custom/verb/show_design_code()
+	set name = "Show Design Code"
+	set category = "Object"
+	set src in view(1)
+	var/code = design_code()
+	if (!code)
+		to_chat(usr, SPAN_WARNING("The flag has no finished design yet."))
+		return
+	design_code_show(usr, "Flag design code", code, "Use it on a blank flag on a pole: Use a design code.")
+
 /obj/structure/flag/pole/custom/attack_hand(var/mob/living/human/H)
+	if (uncolored && !flagcolor && !symbol && !symbolcolor)
+		var/how = WWinput(H, "Paint the flag by hand, or from a design code someone saved?", "Flag Making", "Paint it", list("Paint it", "Use a design code", "Cancel"))
+		if (how == "Use a design code")
+			var/code = design_code_ask(H, "Flag Making", "Paste the flag's design code (it starts with C13POLE/).")
+			if (!code || QDELETED(src) || !uncolored || get_dist(H, src) > 1)
+				return
+			var/list/design = pole_flag_parse(code)
+			if (!design)
+				to_chat(H, SPAN_WARNING(design_code_refusal(code, "POLE")))
+				return
+			apply_design(design[1], design[2], design[3])
+			design_code_log(H, "pole flag", "[src]", code)
+			return
+		if (how != "Paint it")
+			return
 	if (uncolored)
 		var/input = WWinput(H, "Flag Color - Choose a color:", "Flag Color" , "#FFFFFF", "color")
 		if (input == null || input == "")
@@ -1337,22 +1410,11 @@
 		var/display = list("Moon", "Cross", "Star", "Sun", "Plus", "Saltire", "None", "Cancel")
 		var/input =  WWinput(H, "What symbol would you like?", "Flag Making", "Cancel", display)
 		playsound(src.loc,'sound/items/ratchet.ogg',40) //rip_pack.ogg
+		var/list/symbols = pole_flag_symbols()
 		if (input == "Cancel")
 			return
-		else if(input == "Moon")
-			symbol = "cust_f_moon"
-		else if(input == "Cross")
-			symbol = "cust_f_cross"
-		else if(input == "Star")
-			symbol = "cust_f_star"
-		else if(input == "Sun")
-			symbol = "cust_f_sun"
-		else if(input == "Plus")
-			symbol = "cust_f_plus"
-		else if(input == "Saltire")
-			symbol = "cust_f_saltire"
-		else if(input == "None")
-			symbol = "cust_f_blank"
+		else if (input in symbols)
+			symbol = symbols[input]
 		else
 			to_chat(H, "<span class='notice'>That does not exist!</span>")
 	if (!symbolcolor)
@@ -1363,15 +1425,7 @@
 
 			symbolcolor= input
 	if (flagcolor && symbol && symbolcolor)
-		uncolored = FALSE
-		var/image/flag = image("icon" = 'icons/obj/flags.dmi', "icon_state" = "cust_flag_cloth")
-		flag.color = flagcolor
-		var/image/border = image("icon" = 'icons/obj/flags.dmi', "icon_state" = "cust_flag_outline")
-		var/image/csymbol = image("icon" = 'icons/obj/flags.dmi', "icon_state" = symbol)
-		csymbol.color = symbolcolor
-		overlays += flag
-		overlays += border
-		overlays += csymbol
+		apply_design(flagcolor, symbol, symbolcolor)
 		return
 	else
 		..()

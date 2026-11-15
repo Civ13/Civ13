@@ -43,9 +43,8 @@ class TreeClimbingSources(unittest.TestCase):
         self.assertLess(DME.index('structures\\tree_climbing.dm'), DME.index('structures\\wild.dm'))
 
     def test_climber_sight(self):
-        hides = proc(TERRAIN, '/proc/los_foliage_hides(')
-        self.assertIn('los_in_foliage(viewer) && !los_up_tree(viewer)', hides)
-        self.assertIn('|| los_in_foliage(target)', hides)
+        # Trees hide nobody: no foliage cover for climbers or anyone else.
+        self.assertNotIn('los_foliage_hides', TERRAIN)
         self.assertIn('return LOS_EYE_CLIMBED', proc(TERRAIN, '/proc/los_eye_level('))
         self.assertIn('los_canopy_field_for(', proc(TERRAIN, '/proc/los_terrain_for('))
         self.assertIn('los_up_tree(body)', proc(CONTEXT, '/datum/los_context/proc/policy_key('))

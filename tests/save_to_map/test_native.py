@@ -160,6 +160,21 @@ class ProjectionTest(unittest.TestCase):
         with self.assertRaisesRegex(CoreError, "incomplete_grid"):
             self.project(entries, {(1, 1): {"ref": 1, "zone": "b"}})
 
+    def test_plain_cells_take_their_template(self):
+        entries = {}
+        template = {"type": "/turf/floor/grass", "zone": "b", "fields": ["dir", "name"], "num": {"dir": 4}}
+        header = {"format": 5, "sparse_turf": "/turf/sky/building", "sparse_zone": "a",
+                  "plain_templates": [template], "plain_runs": [1, 1, 0, 1]}
+        grid, report, _ = self.project(entries, {}, header=header)
+        self.assertEqual(grid[1, 1, 1], "({metadata},/turf/floor/grass{dir = 4},/area/caribbean/roofed)")
+        self.assertTrue(grid[2, 1, 1].endswith("/turf/sky/building,/area/caribbean/nomads)"))
+        self.assertEqual((report.counts["plain_cells"], report.counts["sparse_baseline_cells"]), (1, 1))
+        for runs in ([1, 1], [2, 2], [1, 3], [1, 0, 1, 2], "x"):
+            with self.assertRaisesRegex(CoreError, "invalid_plain_cells"):
+                self.project(entries, {}, header=dict(header, plain_runs=runs))
+        with self.assertRaisesRegex(CoreError, "unsupported_terrain"):
+            self.project(entries, {}, header=dict(header, plain_templates=[dict(template, type="/turf/unknown")]))
+
     def test_spawn_names_are_validated(self):
         spawns = {"latejoin": {"JoinLateCiv": [{"x": 2, "y": 1, "z": 1}], 'x"]': [{"x": 1, "y": 1, "z": 1}]},
                   "start": [{"x": 1, "y": 1, "z": 1}]}

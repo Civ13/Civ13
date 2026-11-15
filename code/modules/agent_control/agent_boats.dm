@@ -106,7 +106,7 @@
 		kind = AGENT_ROUTE_DRY
 	else if (istype(T, /turf/floor/beach/water/deep))
 		kind = T.iscovered() ? AGENT_ROUTE_DRY : AGENT_ROUTE_DEEP
-	else if (istype(T, /turf/floor/beach/water) || istype(T, /turf/floor/trench/flooded))
+	else if (is_open_water(T))
 		kind = AGENT_ROUTE_SHALLOW
 	for (var/atom/movable/AM in T)
 		if (!AM.density || ismob(AM) || istype(AM, /obj/structure/vehicle))

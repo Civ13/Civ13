@@ -1,0 +1,15 @@
+{
+  "catalog": "config/crafting/material_recipes_global.txt",
+  "variants": [
+    {"result": "/obj/item/weapon/hammer", "noun": "hammer", "template": {"material": "wood", "title": "hammer"}, "cost": 3, "materials": ["copper", "bronze", "steel"]},
+    {"result": "/obj/item/weapon/chisel", "noun": "chisel", "template": {"material": "stone", "title": "chisel"}, "cost": 4, "materials": ["bone"]},
+    {"result": "/obj/item/weapon/chisel/metal", "noun": "chisel", "template": {"material": "iron", "title": "chisel"}, "materials": ["copper", "bronze", "steel"]},
+    {"result": "/obj/item/weapon/wrench", "noun": "wrench", "template": {"material": "iron", "title": "wrench"}, "materials": ["bronze", "steel"]},
+    {"result": "/obj/item/weapon/screwdriver", "noun": "screwdriver", "template": {"material": "iron", "title": "screwdriver"}, "materials": ["bronze", "steel"]},
+    {"result": "/obj/item/weapon/saw", "noun": "saw", "template": {"material": "iron", "title": "saw"}, "materials": ["copper", "bronze", "steel"]},
+    {"result": "/obj/item/weapon/shears", "noun": "shears", "template": {"material": "iron", "title": "shears"}, "materials": ["copper", "steel"]},
+    {"result": "/obj/item/weapon/wirecutters", "noun": "wirecutters", "template": {"material": "steel", "title": "wirecutters"}, "materials": ["iron", "bronze"]},
+    {"result": "/obj/item/weapon/crowbar", "noun": "crowbar", "template": {"material": "iron", "title": "crowbar"}, "materials": ["bronze", "steel"]},
+    {"result": "/obj/item/weapon/plough/hoe", "noun": "hoe", "template": {"material": "wood", "title": "hoe"}, "materials": ["copper", "bronze", "iron", "steel"]}
+  ]
+}

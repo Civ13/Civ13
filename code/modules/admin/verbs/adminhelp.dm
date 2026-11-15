@@ -40,7 +40,7 @@
 	if (config.discordurl)
 		to_chat(src, "<i>If no admins are online, please ping @Admin <a href = '[config.discordurl]'>in the discord</a>.</i>")
 	log_admin("HELP: [key_name(src)]: [msg]")
-	discord_ahelp_log(key_name(src),msg)
+	discord_ahelp_log(key_name(src),msg,holder ? TRUE : FALSE)
 	msg = "<span class = 'notice'><b><font color=red>Request for Help: </span>[get_options_bar(mob, 2, TRUE, TRUE)]:</b> [msg]</span>"
 	var/mentormsg = "<span class = 'notice'><b><font color=red>Request for Help:</b> [msg]</span>"
 

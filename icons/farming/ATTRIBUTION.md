@@ -22,19 +22,35 @@ and **LEEROY-2** for later `seeds.dmi` edits. This identifies commit contributor
 not a claim that Git history proves who originally drew each pixel.
 
 Modifications for Civ13: selected turnip, plump-helmet and cave-wheat states extracted,
-repacked and renamed. Upstream growth stages 2 and 4 are repeated to fit Civ13's
-six preharvest stages; stage 5 is the harvest appearance. Pixel colors, dimensions
-and transparency are unchanged. No generated art is used.
+repacked and renamed. The seed and harvested-item states, and the turnip and plump-helmet
+`grow4`, `grow5`, `harvest` and `dead` states, are unedited upstream pixels (upstream
+stages 3, 4, 5 and dead). Upstream had fewer stages and its first ones were only a few
+pixels, so turnip and plump-helmet `grow1`, `grow2`, `grow3` and `grow6` were redrawn for
+Civ13 in the upstream palette, and every cave-wheat growth state (`grow1` to `grow6`,
+`harvest`, `dead`) was redrawn as stalks with ears. The redrawn states are hand-placed
+pixels from `tests/sprites/create_orchard.py`; as adaptations they stay under CC BY-SA
+3.0 with the rest of each file. No generated art is used.
 
 `pocket_stronghold_turnip.json` pins the shared three original files by SHA-256
-and Git blob hash. `tests/winter_crops/assets.py` verifies those hashes before
-repacking and checks exact RGBA equality for every adapted state. Its previews
+and Git blob hash, and lists the redrawn states. `tests/winter_crops/assets.py` verifies
+those hashes before repacking and checks exact RGBA equality for every unedited state. Its previews
 are enlarged actual sprite pixels, **not gameplay screenshots**.
 
 Review previews: [turnip](../../docs/media/winter-crops-turnip.png) and
 [plump helmet](../../docs/media/winter-crops-plump-helmet.png). These documentation
 images reproduce the attributed sprites at nearest-neighbor 4x, with explanatory
-labels; they are not connected-game screenshots and contain no new game artwork.
+labels; they are not connected-game screenshots.
+
+## Fruit trees (`fruits.dmi`)
+
+The `lemon`, `lime`, `orange`, `apple`, `sapodilla`, `sapote`, `olives`, `cherry`,
+`apricot`, `banana`, `coconut` and `cocoa` states in `fruits.dmi` (`-grow1` to
+`-grow6`, `-harvest` and `-dead`) are original Civ13 art under the project's
+AGPL-3.0 licence. Each tree has its own silhouette, bark, leaf colours and fruit.
+They are script-placed pixels from fixed palettes and shapes, reproduced by
+`tests/sprites/create_orchard.py`; the leaf texture is a fixed hash of the pixel
+position, so reruns are identical. No external or AI-generated art. The other
+states in the file (vines, grapes, peppers and the unused extras) are untouched.
 
 ## Humanity wild medicinal plants
 

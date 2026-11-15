@@ -284,3 +284,5 @@
 		else
 			return !faction1_can_cross_blocks()
 	return FALSE
+
+/obj/map_metadata/yeltsin/faction_hud_icons = list(RUSSIAN = "ru_basic", CIVILIAN = "sov_basic")

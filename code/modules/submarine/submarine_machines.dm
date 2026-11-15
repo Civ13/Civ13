@@ -5,7 +5,7 @@
 	icon_state = "computer"
 	density = TRUE
 	anchored = TRUE
-	var/health = 100
+	health = 100
 	var/broken = FALSE
 	var/active = TRUE
 	var/datum/submarine/my_sub

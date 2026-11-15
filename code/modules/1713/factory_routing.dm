@@ -141,7 +141,7 @@ var/global/list/factory_powered_drives = list()
 	to_chat(user, SPAN_NOTICE("Its side output points [dir2text(side_dir())]."))
 
 /obj/structure/factory_belt/routing/attackby(obj/item/W, mob/user)
-	if (istype(W, /obj/item/weapon/screwdriver))
+	if (is_tool(W, TOOL_SCREWDRIVER))
 		side_left = !side_left
 		update_icon()
 		to_chat(user, SPAN_NOTICE("You set \the [src]'s side output to [dir2text(side_dir())]."))

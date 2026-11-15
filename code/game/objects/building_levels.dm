@@ -77,6 +77,9 @@ var/building_compiled_maxz = 0
 		return
 	var/below_z = multiz_level_below(z)
 	var/turf/below = below_z ? locate(x, y, below_z) : null
+	// Open air over stairs is a stairwell: walk down instead of falling.
+	if (below && stairs_soft_descent(A, below))
+		return
 	if (below)
 		A.forceMove(below)
 		if (isliving(A))

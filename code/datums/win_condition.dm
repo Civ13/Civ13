@@ -43,10 +43,10 @@
 /datum/win_condition/proc/set_hash(var/list/areas, var/list/attackers, var/list/defenders, threshold = 1.0)
 	hash = ""
 	for (var/area_path in areas) // this is not necessarily a path but path2text() works anyway
-		hash = "[.][path2text(area_path)]|"
+		hash = "[hash][path2text(area_path)]|"
 	for (var/attacker in attackers)
-		hash = "[.][attacker]|"
+		hash = "[hash][attacker]|"
 	for (var/defender in defenders)
-		hash = "[.][defenders]|"
-	hash = "[.][threshold]"
+		hash = "[hash][defender]|"
+	hash = "[hash][threshold]"
 	return hash

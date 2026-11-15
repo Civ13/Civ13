@@ -88,7 +88,7 @@
 		if(!src.cub) //Cubs can't get pregnant
 			var/nearbyObjects = range(1,src) //3x3 area around animal
 			for(var/mob/living/simple_animal/hostile/wolf/M in nearbyObjects)
-				if (M.stat == CONSCIOUS && !M.female) //Failsafe, no misscheck for self-reproduction
+				if (M.stat == CONSCIOUS && !M.female && !animal_spot_crowded(src, 0)) //Failsafe, no misscheck for self-reproduction
 					pregnant = TRUE
 					birthCountdown = 900 // life ticks once per 2 seconds, 300 == 10 minutes
 	else if (src.female && src.pregnant)

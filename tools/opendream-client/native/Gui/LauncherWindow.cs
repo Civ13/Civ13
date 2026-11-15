@@ -793,6 +793,10 @@ internal sealed partial class LauncherWindow : Form {
                 text += Environment.NewLine + group.Message;
                 // A failed read keeps the last answer, so a busy region is not unlocked by a hiccup.
                 if (group.Ok) busyRegions = HostBoard.BusyRegions(groupStatusOutput);
+                // The group config can change while the launcher is open (a new mainland), so the
+                // board re-reads it with each status instead of keeping the one read at start.
+                try { mainlandRegion = LocalHosting.GroupRegions(control.Group).FirstOrDefault(region => region.Mainland)?.Id ?? mainlandRegion; }
+                catch (Exception e) when (e is IOException or UnauthorizedAccessException or JsonException or InvalidDataException) { }
                 if (!group.Ok) hostStatusProblem = group.Message;
                 else if (hostStatusProblem != null) hostStatusProblem = "This server: " + hostStatusProblem;
             }

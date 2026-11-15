@@ -126,6 +126,7 @@ var/carriage_owners_about = FALSE
 	C.hitch(h2)
 	carriage_check(C.team.len == 2 && h1.buckled == C && h2.buckled == C && h1.loc == C.loc && C.team_pull() == 4 && C.lane_depth() == 2, "two horses in harness pull 4 and stand in a two-tile lane")
 	carriage_check(h1.pixel_y < 0 && h2.pixel_y < 0 && h1.pixel_x != h2.pixel_x && h1.dir == SOUTH, "they are drawn side by side ahead of it ([h1.pixel_x],[h1.pixel_y] / [h2.pixel_x],[h2.pixel_y])")
+	carriage_check(C.overlays.len == 3 && C.pixel_x == -16, "one rank of harness is drawn ahead of it and a lap rug over each of the two seated people ([C.overlays.len])")
 	carriage_check(findtext(C.status_text(), "Top pace: canter"), "it reads its best pace ([C.status_text()])")
 
 	// ---- Urging and stepping ----
@@ -289,6 +290,83 @@ var/carriage_owners_about = FALSE
 	carriage_check(cart.dir == EAST, "a cart that did not move keeps its handles")
 	cart.pulledby = null
 
+// Hitched carts (code/game/objects/structures/cart_hitch.dm): a cart trails a
+// horse into the tile it leaves and rolls behind a carriage's rear, its load
+// slows the leader, and it comes loose when it cannot follow. A seated
+// passenger takes the reins from a driver who cannot drive.
+/proc/carriage_hitch_checks()
+	var/mob/living/simple_animal/horse/mare = new(locate(10, 10, 1))
+	var/obj/structure/closet/crate/cart/wooden/cart = new(locate(11, 10, 1))
+	carriage_check(isnull(cart.hitch_refusal(mare)) && cart.hitch_to(mare), "a cart beside a horse hitches to it")
+	carriage_check(mare.hitched_cart == cart && cart.hitched_to == mare && cart.loc == locate(11, 10, 1) && cart.dir == WEST, "it stays put with its handles toward the horse")
+	mare.forceMove(locate(9, 10, 1))
+	carriage_check(cart.loc == locate(10, 10, 1) && cart.dir == WEST, "the horse steps west and the cart rolls into the tile it left")
+	mare.forceMove(locate(9, 11, 1))
+	carriage_check(cart.loc == locate(10, 10, 1) && cart.dir == WEST, "a step that keeps it beside the horse leaves it there, handles to the side it is on")
+	mare.forceMove(locate(9, 12, 1))
+	carriage_check(cart.loc == locate(9, 11, 1) && cart.dir == NORTH, "a step away pulls it after the horse")
+	carriage_check(!cart.Move(locate(10, 11, 1), EAST) && cart.loc == locate(9, 11, 1), "nobody can push or pull a hitched cart away")
+	var/empty_drag = mare.hitch_drag()
+	carriage_check(empty_drag > 0 && empty_drag == cart.drag_delay(mare) / 2, "the cart slows the horse by its drag over the horse's pull ([empty_drag])")
+	for (var/i in 1 to 4)
+		var/obj/item/stack/material/wood/W = new(cart)
+		W.amount = 50
+	carriage_check(mare.hitch_drag() > empty_drag, "a loaded cart slows the horse more")
+	var/obj/structure/closet/crate/cart/wooden/other = new(locate(8, 12, 1))
+	carriage_check(findtext(other.hitch_refusal(mare), "already pulls a cart"), "a horse pulls one cart at a time")
+	var/obj/structure/vehicle/carriage/far = new(locate(40, 10, 1))
+	carriage_check(findtext(far.hitch_refusal(mare), "cart hitched behind it"), "a horse with a cart cannot also go in harness")
+	mare.forceMove(locate(9, 20, 1))
+	carriage_check(isnull(cart.hitched_to) && isnull(mare.hitched_cart) && cart.loc == locate(9, 11, 1), "a cart left far behind comes loose")
+	mare.forceMove(locate(9, 12, 1))
+	carriage_check(cart.hitch_to(mare), "it can be hitched again")
+	cart.unhitch()
+	carriage_check(isnull(cart.hitched_to) && cart.Move(get_step(cart, EAST), EAST), "unhitched, it can be pulled again")
+	carriage_check(cart.hitch_to(mare), "and hitched once more")
+	mare.stat = DEAD
+	mare.forceMove(locate(9, 14, 1))
+	carriage_check(isnull(cart.hitched_to), "a dead horse lets the cart go")
+
+	// ---- Behind a carriage ----
+	carriage_ground()
+	var/obj/structure/vehicle/carriage/C = new(locate(30, 30, 1))
+	var/mob/living/human/carriage_probe/dee = carriage_person(29, 31, "Dee")
+	var/mob/living/human/carriage_probe/eli = carriage_person(29, 30, "Eli")
+	C.take_reins(dee)
+	C.take_seat(eli, C.free_seat())
+	var/mob/living/simple_animal/horse/h1 = new(locate(30, 29, 1))
+	var/mob/living/simple_animal/horse/h2 = new(locate(31, 29, 1))
+	C.hitch(h1)
+	C.hitch(h2)
+	var/obj/structure/closet/crate/cart/wooden/wagon = new(locate(32, 34, 1))
+	carriage_check(findtext(wagon.hitch_refusal(C), "round behind"), "a cart off to the side of the rear is told to come round")
+	wagon.forceMove(locate(31, 34, 1))
+	var/before = C.load_weight()
+	carriage_check(isnull(wagon.hitch_refusal(C)) && wagon.hitch_to(C), "a cart just behind the carriage hitches to it")
+	carriage_check(wagon.loc == locate(30, 33, 1) && wagon.pixel_x == 16 && wagon.dir == SOUTH && C.hitched_cart == wagon, "it rolls centred behind the rear wheels, handles toward the carriage")
+	carriage_check(C.load_weight() == before + 30 + wagon.cart_load(), "the team draws the cart's weight too")
+	C.gear = 1
+	carriage_check(carriage_step(C) && C.loc == locate(30, 29, 1) && wagon.loc == locate(30, 32, 1), "a step south takes the cart one tile south behind it")
+	carriage_check(C.try_turn(EAST) && C.facing == EAST && wagon.loc == locate(29, 29, 1) && wagon.pixel_y == 16 && wagon.pixel_x == 0 && wagon.dir == EAST, "turning east swings the cart round behind the new rear")
+	carriage_check(carriage_step(C) && C.loc == locate(31, 29, 1) && wagon.loc == locate(30, 29, 1), "and it follows the next step east")
+	var/turf/behind_north = locate(31, 28, 1)
+	behind_north.ChangeTurf(/turf/wall, FALSE, FALSE)
+	carriage_check(!C.try_turn(NORTH) && C.facing == EAST && wagon.hitched_to == C, "a turn is refused when the cart would have nowhere to go")
+
+	// ---- Taking the reins ----
+	dee.stat = UNCONSCIOUS
+	carriage_check(!C.driver_ready(), "a driver knocked out cannot drive")
+	C.attack_hand(eli)
+	carriage_check(C.driver == eli && eli.driver_vehicle == C && eli.get_active_hand() == C.dwheel && (dee in C.seats) && !dee.driver && dee.buckled == C, "a seated passenger takes the reins and the driver moves to that seat")
+	dee.stat = CONSCIOUS
+	carriage_check(!C.take_reins_from_driver(dee) && C.driver == eli, "a passenger cannot take the reins from a driver who is driving")
+	C.driver_died(eli)
+	carriage_check(isnull(C.driver) && C.dwheel.loc == C && !eli.buckled, "a driver who dies is let off and leaves the reins")
+	carriage_check(C.retake_controls(dee) && C.driver == dee && dee.get_active_hand() == C.dwheel && !(dee in C.seats), "a seated passenger takes the reins when nobody drives")
+
+	qdel(C)
+	carriage_check(isnull(wagon.hitched_to) && wagon.pixel_x == 0 && wagon.pixel_y == 0, "a destroyed carriage lets its cart go")
+
 /world/New()
 	OpenPort("none")
 	try
@@ -306,6 +384,7 @@ var/carriage_owners_about = FALSE
 			makeDatumRefLists()
 		carriage_checks()
 		carriage_cart_checks()
+		carriage_hitch_checks()
 	catch(var/exception/e)
 		carriage_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "checks" = carriage_checks, "failures" = carriage_failures, "runtime_error" = carriage_runtime_error)), "result.json")

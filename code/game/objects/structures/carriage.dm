@@ -126,7 +126,7 @@ var/global/list/carriage_gear_delays = list(7, 4, 2.2)
 	wheeled = TRUE
 	bound_width = 64
 	bound_height = 96
-	pixel_x = -18
+	pixel_x = -16
 	mobcapacity = CARRIAGE_SEATS + 1
 	storagecapacity = CARRIAGE_SEATS
 	leave_time = 20
@@ -182,6 +182,8 @@ var/global/list/carriage_gear_delays = list(7, 4, 2.2)
 		safety_timer = null
 	for (var/atom/movable/A in everything_aboard())
 		let_off(A)
+	if (hitched_cart)
+		hitched_cart.unhitch()
 	if (craft)
 		var/datum/craft/vehicle/carriage/C = craft
 		craft = null
@@ -193,7 +195,7 @@ var/global/list/carriage_gear_delays = list(7, 4, 2.2)
 	return ..()
 
 /obj/structure/vehicle/carriage/persistence_runtime_var(key)
-	return key == "craft" || key == "step_timer" || key == "safety_timer" || key == "next_step" || key == "stepping" || key == "last_refusal_message" || key == "moving" || key == "movement_processes" || key == "gear" || ..()
+	return key == "craft" || key == "step_timer" || key == "safety_timer" || key == "next_step" || key == "stepping" || key == "last_refusal_message" || key == "moving" || key == "movement_processes" || key == "gear" || key == "hitched_cart" || ..()
 
 // ---- Shape and layout ----
 
@@ -222,21 +224,14 @@ var/global/list/carriage_gear_delays = list(7, 4, 2.2)
 	var/list/size = carriage_footprint_size(facing)
 	bound_width = size[1] * world.icon_size
 	bound_height = size[2] * world.icon_size
-	// Centre the sprite's wheels over the footprint (measured from the icon).
-	var/narrow = (icon_state == "simple_carriage2")
-	switch (facing)
-		if (SOUTH)
-			pixel_x = -18
-			pixel_y = 0
-		if (NORTH)
-			pixel_x = -15
-			pixel_y = 0
-		if (EAST)
-			pixel_x = 0
-			pixel_y = narrow ? -10 : -18
-		if (WEST)
-			pixel_x = 0
-			pixel_y = narrow ? -10 : -15
+	// Both carriage sprites are drawn centred on the footprint in a 96 px icon
+	// (tests/sprites/create_carriages.py).
+	if (facing == NORTH || facing == SOUTH)
+		pixel_x = -16
+		pixel_y = 0
+	else
+		pixel_x = 0
+		pixel_y = -16
 
 // Where a seat, the driver or a team animal is drawn: list(along, across).
 /obj/structure/vehicle/carriage/proc/seat_point(seat)
@@ -278,6 +273,43 @@ var/global/list/carriage_gear_delays = list(7, 4, 2.2)
 			place_at(A, seat_point(i))
 	for (var/i = 1 to team.len)
 		place_at(team[i], team_point(i))
+	update_fittings()
+
+// The lower left corner of a w x h picture laid over the carriage from `along`
+// (measured from the rear), as an overlay offset from the carriage's own icon.
+/obj/structure/vehicle/carriage/proc/fitting_offset(along, across, w, h)
+	var/list/p
+	switch (facing)
+		if (SOUTH) p = list(64 - across - w, 96 - along - h)
+		if (EAST) p = list(along, 64 - across - w)
+		if (WEST) p = list(96 - along - h, across)
+		else p = list(across, along)
+	return list(p[1] - pixel_x, p[2] - pixel_y)
+
+// Harness ahead of the carriage for each rank of the team, and a lap rug (a
+// seat back from behind) over each seated person so they read as sitting.
+/obj/structure/vehicle/carriage/proc/update_fittings()
+	overlays.Cut()
+	var/rank_length = team_rank_length()
+	var/harness_state = rank_length > 30 ? "harness_horse" : "harness_ox"
+	for (var/rank = 0 to round((team.len + 1) / 2) - 1)
+		var/image/H = image('icons/obj/vehicles/carriage_fittings.dmi', harness_state, dir = facing)
+		var/list/at = fitting_offset(96 + 2 + rank * rank_length, 0, 64, 64)
+		H.pixel_x = at[1]
+		H.pixel_y = at[2]
+		overlays += H
+	var/list/sitters = list()
+	if (driver)
+		sitters[driver] = 0
+	for (var/i = 1 to CARRIAGE_SEATS)
+		if (isliving(seats[i]))
+			sitters[seats[i]] = i
+	for (var/mob/living/M in sitters)
+		var/list/p = carriage_local_point(facing, seat_point(sitters[M])[1], seat_point(sitters[M])[2])
+		var/image/R = image('icons/obj/vehicles/carriage_fittings.dmi', "lap", dir = facing, layer = MOB_LAYER + 0.1)
+		R.pixel_x = round(p[1] - 16) - pixel_x
+		R.pixel_y = round(p[2] - 16) - pixel_y
+		overlays += R
 
 /obj/structure/vehicle/carriage/update_icon()
 	dir = facing
@@ -310,9 +342,15 @@ var/global/list/carriage_gear_delays = list(7, 4, 2.2)
 		if (why)
 			refuse("There is no room to turn: [why].")
 			return FALSE
+	// A hitched cart swings round behind the new rear.
+	if (hitched_cart && !cart_hitch_cell_clear(hitch_turf(want), hitched_cart, src))
+		refuse("There is no room to turn: the cart behind has nowhere to go.")
+		return FALSE
 	var/old = facing
 	facing = want
 	apply_shape()
+	if (hitched_cart)
+		hitched_cart.follow_leader(null, TRUE)
 	if (craft)
 		craft.on_turn(craft_turn_angle(old, want))
 	return TRUE
@@ -355,6 +393,7 @@ var/global/list/carriage_gear_delays = list(7, 4, 2.2)
 			. += CARRIAGE_PERSON_WEIGHT + bicycle_carried_weight(A)
 		else if (A)
 			. += CARRIAGE_CARGO_WEIGHT + carriage_cargo_weight(A)
+	. += hitched_cart_weight()
 
 // What a crate or barrel holds. Most items carry no weight of their own, so
 // those count by their size, and a stack by how many it holds.
@@ -466,6 +505,8 @@ var/global/list/carriage_gear_delays = list(7, 4, 2.2)
 		A.forceMove(to_turf)
 	if (team_pull() <= 0)
 		stopmovementloop()
+	if (!QDELETED(src))
+		update_fittings()
 
 // A clear turf next to the carriage, or its own corner when there is none.
 /obj/structure/vehicle/carriage/proc/beside_turf(atom/movable/A)
@@ -545,6 +586,35 @@ var/global/list/carriage_gear_delays = list(7, 4, 2.2)
 	ontop |= user
 	lay_out()
 
+// A seated passenger takes the reins from a driver who cannot drive (asleep,
+// knocked out, gone from the game or tied up), who is moved to that seat.
+/obj/structure/vehicle/carriage/proc/take_reins_from_driver(mob/living/human/user)
+	var/index = seats.Find(user)
+	if (!index || !istype(user) || !driver || driver == user || driver_ready())
+		return FALSE
+	if (user.stat != CONSCIOUS || user.incapacitated(INCAPACITATION_DISABLED|INCAPACITATION_RESTRAINED))
+		return FALSE
+	if (user.get_active_hand())
+		to_chat(user, SPAN_WARNING("You need a free hand to take the reins."))
+		return TRUE
+	var/mob/living/human/old = driver
+	stopmovementloop()
+	if (dwheel && dwheel.loc == old)
+		old.remove_from_mob(dwheel)
+		dwheel.forceMove(src)
+	old.driver = FALSE
+	old.driver_vehicle = null
+	driver = null
+	buckled_mob = null
+	take_driver_seat(user)
+	if (!user.put_in_active_hand(dwheel))
+		dwheel.forceMove(src)
+	seats[index] = old
+	old.update_icons()
+	lay_out()
+	user.visible_message(SPAN_NOTICE("[user] takes the reins of \the [src] from [old]."), SPAN_NOTICE("You take the reins from [old]. [driving_hint()]"))
+	return TRUE
+
 /obj/structure/vehicle/carriage/driver_died(mob/living/human/H)
 	if (H != driver)
 		return FALSE
@@ -604,6 +674,11 @@ var/global/list/carriage_gear_delays = list(7, 4, 2.2)
 		hitch(SA)
 		user.visible_message(SPAN_NOTICE("[user] puts [SA] in harness to \the [src]."), SPAN_NOTICE("You put [SA] in harness. The team pulls [team_pull()]."))
 		return
+	// A cart standing right behind the carriage is hitched there, not loaded.
+	if (istype(M, /obj/structure/closet/crate/cart) && M.loc == hitch_turf(facing))
+		var/obj/structure/closet/crate/cart/cart = M
+		cart.player_hitch(user, src)
+		return
 	if (isliving(M) || (istype(M, /obj/structure) && can_load(M)))
 		if (!free_seat())
 			to_chat(user, SPAN_WARNING("\The [src] is full."))
@@ -635,6 +710,8 @@ var/global/list/carriage_gear_delays = list(7, 4, 2.2)
 		return "It is already in harness."
 	if (A.buckled || A.rider || A.ride)
 		return "It is tied up or ridden."
+	if (A.hitched_cart)
+		return "It has a cart hitched behind it. Unhitch the cart first."
 	if (team.len >= CARRIAGE_MAX_TEAM)
 		return "\The [src] has a full team."
 	if (team.len && istype(A, /mob/living/simple_animal/horse) != istype(team[1], /mob/living/simple_animal/horse))
@@ -660,7 +737,7 @@ var/global/list/carriage_gear_delays = list(7, 4, 2.2)
 /obj/structure/vehicle/carriage/attack_hand(mob/living/human/user)
 	if (!istype(user))
 		return
-	if (retake_controls(user))
+	if (retake_controls(user) || take_reins_from_driver(user))
 		return
 	if (is_aboard(user))
 		user.visible_message(SPAN_NOTICE("[user] starts getting off \the [src]..."), SPAN_NOTICE("You start getting off \the [src]..."))
@@ -825,7 +902,7 @@ var/global/list/carriage_gear_delays = list(7, 4, 2.2)
 		if (!bridged)
 			return "the water is too deep"
 	for (var/obj/O in T)
-		if (O == src || is_aboard(O) || !O.density)
+		if (O == src || O == hitched_cart || is_aboard(O) || !O.density)
 			continue
 		if (istype(O, /obj/structure) || istype(O, /obj/covers))
 			return "\the [O] is in the way"

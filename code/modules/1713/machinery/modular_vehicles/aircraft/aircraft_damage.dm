@@ -103,7 +103,7 @@
 // landing gear a crash broke.
 /obj/structure/vehicleparts/frame/car/aircraft/attackby(obj/item/W, mob/living/human/user)
 	var/obj/structure/vehicleparts/axis/aircraft/A = axis
-	if (istype(W, /obj/item/weapon/weldingtool) && istype(A) && (A.airframe_damage > 0 || A.landing_gear_broken()))
+	if (is_tool(W, TOOL_WELDER) && istype(A) && (A.airframe_damage > 0 || A.landing_gear_broken()))
 		if (A.airborne())
 			to_chat(user, SPAN_WARNING("You can't mend the airframe in flight."))
 			return

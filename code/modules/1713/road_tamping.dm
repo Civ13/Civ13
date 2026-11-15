@@ -125,7 +125,7 @@
 	return TRUE
 
 /turf/floor/tamped_earth/attackby(obj/item/C, mob/user)
-	if (!istype(C, /obj/item/weapon/material/shovel))
+	if (!is_tool(C, TOOL_SHOVEL))
 		return ..()
 	if (weather_snow > 0 && user.a_intent != I_HARM)
 		return ..() // Shovels clear snow first, as on other ground.
@@ -159,6 +159,7 @@
 		return FALSE
 	terrain_grade = clamp(round(terrain_grade), -TERRAIN_GRADE_LIMIT, TERRAIN_GRADE_LIMIT)
 	H.set_level(x, y, z, H.base_at(x, y, z) + terrain_grade)
+	flood_ground_changed(src) // Floodwater follows the new ground (flood_ground.dm).
 	if (terrain_shading_applied)
 		for (var/turf/near in block(locate(max(1, x - 3), max(1, y - 3), z), locate(min(world.maxx, x + 3), min(world.maxy, y + 3), z)))
 			near.terrain_shade_refresh()
@@ -186,7 +187,7 @@
 	for (var/turf/floor/beach/water/W in range(1, T))
 		return "The ground this close to water is too wet to grade."
 	var/level = terrain_height_at(T) + direction
-	if (level < 0 || level > 15)
+	if (level < 0 || level > TERRAIN_MAX_LEVEL)
 		return direction > 0 ? "The ground is as high as it can go here." : "The ground is as low as it can go here."
 	if (abs(T.terrain_grade + direction) > TERRAIN_GRADE_LIMIT)
 		return direction > 0 ? "You can't build this spot up any higher by hand." : "You can't dig this spot down any lower by hand."
@@ -254,13 +255,13 @@
 	return T
 
 /turf/floor/tamped_earth/attackby(obj/item/C, mob/user)
-	if (istype(C, /obj/item/weapon/material/shovel) && user.a_intent == I_DISARM && !(weather_snow > 0))
+	if (is_tool(C, TOOL_SHOVEL) && user.a_intent == I_DISARM && !(weather_snow > 0))
 		terrain_grade_work(src, user, -1, C)
 		return TRUE
 	return ..()
 
 /turf/floor/dirt/attackby(obj/item/C, mob/user)
-	if (istype(C, /obj/item/weapon/material/shovel) && user.a_intent == I_DISARM && !(weather_snow > 0))
+	if (is_tool(C, TOOL_SHOVEL) && user.a_intent == I_DISARM && !(weather_snow > 0))
 		terrain_grade_work(src, user, -1, C)
 		return TRUE
 	return ..()

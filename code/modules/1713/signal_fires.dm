@@ -30,15 +30,13 @@
 	var/area/AR = get_area(T)
 	return AR && AR.location == AREA_OUTSIDE
 
-// "to the north-west, far off" as seen from viewer_turf.
+// "to the north-west, far off" as seen from viewer_turf: one of eight compass
+// points by the true bearing, plus a vague distance. get_dir would call a fire
+// 200 tiles north and 1 east "northeast".
 /proc/signal_fire_bearing(turf/viewer_turf, turf/fire_turf)
 	var/dist = get_dist(viewer_turf, fire_turf)
 	if (dist <= 1)
 		return "right beside you"
-	var/dir_text = replacetext(dir2text(get_dir(viewer_turf, fire_turf)), "northwest", "north-west")
-	dir_text = replacetext(dir_text, "northeast", "north-east")
-	dir_text = replacetext(dir_text, "southwest", "south-west")
-	dir_text = replacetext(dir_text, "southeast", "south-east")
 	var/how_far = "very far off"
 	if (dist <= SIGNAL_FIRE_NEAR)
 		how_far = "close by"
@@ -46,6 +44,16 @@
 		how_far = "some way off"
 	else if (dist <= SIGNAL_FIRE_FAR)
 		how_far = "far off"
+	var/dx = fire_turf.x - viewer_turf.x
+	var/dy = fire_turf.y - viewer_turf.y
+	var/ns = dy > 0 ? "north" : "south"
+	var/ew = dx > 0 ? "east" : "west"
+	// tan(67.5) is about 2.414: steeper than that is straight N/S, flatter is E/W.
+	var/dir_text = "[ns]-[ew]"
+	if (abs(dy) * 1000 > abs(dx) * 2414)
+		dir_text = ns
+	else if (abs(dx) * 1000 > abs(dy) * 2414)
+		dir_text = ew
 	return "to the [dir_text], [how_far]"
 
 /proc/signal_fire_can_see(mob/living/human/H)

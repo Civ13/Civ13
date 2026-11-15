@@ -55,8 +55,8 @@
 /////////////////////////////////SEASONS//////////////////////////
 /obj/map_metadata/colonia/seasons(looping = TRUE, force = FALSE, advance_decay = null)
 	advance_decay = season_decay_requested(force, advance_decay)
-	if (season == "FALL")
-		season = "WINTER"
+	if (season == SEASON_FALL)
+		season = SEASON_WINTER
 		record_abandonment_season_change(advance_decay)
 		to_chat(world, "<big>The <b>Winter</b> has started. In the hot climates, the wet season has started.</big>")
 		change_weather_somehow()
@@ -93,8 +93,8 @@
 		for (var/turf/floor/dirt/burned/BDD2 in get_area_turfs(/area/caribbean/nomads/forest/savanna))
 			if (prob(75))
 				BDD2.ChangeTurf(/turf/floor/dirt/jungledirt)
-	else if (season == "SPRING")
-		season = "SUMMER"
+	else if (season == SEASON_SPRING)
+		season = SEASON_SUMMER
 		record_abandonment_season_change(advance_decay)
 		to_chat(world, "<big>The <b>Summer</b> has started. In the hot climates, the dry season has started.</big>")
 		change_weather_somehow()
@@ -114,8 +114,8 @@
 		for (var/turf/floor/beach/water/flooded/DF)
 			if (DF.z > 1)
 				DF.ChangeTurf(/turf/floor/dirt/flooded)
-	else if (season == "WINTER")
-		season = "SPRING"
+	else if (season == SEASON_WINTER)
+		season = SEASON_SPRING
 		record_abandonment_season_change(advance_decay)
 		to_chat(world, "<big>The weather is getting warmer. It is now <b>Spring</b>. In the hot climates, the wet season continues.</big>")
 		spawn(900)
@@ -157,8 +157,8 @@
 				var/area/A = get_area(get_turf(SW3))
 				if (A.climate != "tundra" && A.climate != "taiga")
 					qdel(SW3)
-	else if (season == "SUMMER")
-		season = "FALL"
+	else if (season == SEASON_SUMMER)
+		season = SEASON_FALL
 		record_abandonment_season_change(advance_decay)
 		to_chat(world, "<big>The leaves start to fall and the weather gets colder. It is now <b>Fall</b>. In the hot climates, the dry season continues.</big>")
 		spawn(900)

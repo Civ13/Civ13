@@ -73,6 +73,7 @@ AGENT_CONTROL_OFFLINE_TESTS = frozenset({
     'tests/agent_control/test_visibility.py',
     'tests/agent_control/test_action_contract.py',
     'tests/agent_control/test_navigation_replay.py',
+    'tests/agent_control/test_needs_routines.py',
 })
 # Explicitly opt-in source-bound fixture; do not admit its native runner to CI.
 AGENT_CONTROL_MANUAL_NATIVE = frozenset({
@@ -99,6 +100,9 @@ LOCAL_CI_OFFLINE_TESTS = frozenset({'tests/local_ci/test_local_ci.py'})
 FARMERS_ALMANAC_OFFLINE_TESTS = frozenset({'tests/farmers_almanac/test_farmers_almanac.py'})
 CROSSROADS_MALL_OFFLINE_TESTS = frozenset({'tests/crossroads_mall/test_crossroads_mall.py',
                                            'tests/crossroads_mall/build.py'})
+AMERICAS_MAPS_OFFLINE_TESTS = frozenset({'tests/americas_maps/test_americas_maps.py',
+                                         'tests/americas_maps/build.py',
+                                         'tests/americas_maps/continents.py'})
 MAP_VARIATIONS_OFFLINE_TESTS = frozenset({'tests/map_variations/test_map_variations.py',
                                           'tests/map_variations/build_inserts.py',
                                           'tests/map_variations/native_probe.py',
@@ -115,11 +119,15 @@ SAFEHOUSE_MAP_OFFLINE_TESTS = frozenset({'tests/safehouse_map/test_layout.py', '
 GAIA_HOST_OFFLINE_TESTS = frozenset({'tests/gaia_host/test_gaia_host.py', 'tests/gaia_host/test_shard_group.py',
                                      'tests/gaia_host/test_fresh_world.py',
                                      'tests/gaia_host/test_doorman.py', 'tests/gaia_host/test_wait_group.py',
-                                     'tests/gaia_host/test_relay.py', 'tests/gaia_host/test_mobile_host.py'})
+                                     'tests/gaia_host/test_relay.py', 'tests/gaia_host/test_mobile_host.py',
+                                     'tests/gaia_host/test_expedition_slots.py'})
 MEDICAL_CARE_OFFLINE_TESTS = frozenset({'tests/medical_care/test_source.py'})
 # Offline source contract plus the opt-in native fixture (run by hand, not CI).
 FIREMAN_CARRY_OFFLINE_TESTS = frozenset({'tests/fireman_carry/test_source.py', 'tests/fireman_carry/probe.dm',
                                          'tests/fireman_carry/run_native.py'})
+
+# Offline source contract plus the opt-in native probe (run by hand, not CI).
+DIVINE_APPROVAL_OFFLINE_TESTS = frozenset({'tests/divine_approval/test_contract.py', 'tests/divine_approval/test_divine_book.py', 'tests/divine_approval/test_mundane_gear.py', 'tests/divine_approval/probe.dm'})
 
 # Exact stdlib-only mood projections, registered in the bounded offline baseline.
 MOOD_SLEEP_OFFLINE_TESTS = frozenset({'tests/mood_sleep/test_mood_sleep.py'})
@@ -449,6 +457,10 @@ def introduced_tests(base, head, event):
             continue
         if path in CROSSROADS_MALL_OFFLINE_TESTS:
             continue
+        if path in AMERICAS_MAPS_OFFLINE_TESTS:
+            continue
+        if path.startswith('tests/americas_maps/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
+            raise RuntimeError('Unregistered americas-maps executable test requires explicit CI review')
         if path in SAFEHOUSE_MAP_OFFLINE_TESTS:
             continue
         if path.startswith('tests/safehouse_map/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
@@ -483,6 +495,10 @@ def introduced_tests(base, head, event):
             continue
         if path.startswith('tests/research_staff/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
             raise RuntimeError('Unregistered research-staff executable test requires explicit CI review')
+        if path in DIVINE_APPROVAL_OFFLINE_TESTS:
+            continue
+        if path.startswith('tests/divine_approval/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
+            raise RuntimeError('Unregistered divine-approval executable test requires explicit CI review')
         if path in FIREMAN_CARRY_OFFLINE_TESTS:
             continue
         if path.startswith('tests/fireman_carry/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:

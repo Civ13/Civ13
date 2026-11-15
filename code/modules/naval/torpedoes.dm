@@ -154,7 +154,7 @@
 	detonate(null)
 
 /proc/torpedo_water(turf/T)
-	return istype(T, /turf/floor/beach/water) && !istype(T, /turf/floor/beach/water/ice)
+	return is_liquid_water(T)
 
 // The craft over this turf, modular boats included.
 /proc/torpedo_craft_at(turf/T)
@@ -249,7 +249,7 @@
 	fire(H)
 
 /obj/structure/torpedo_tube/attackby(obj/item/W, mob/user)
-	if (istype(W, /obj/item/weapon/wrench))
+	if (is_tool(W, TOOL_WRENCH))
 		anchored = !anchored
 		playsound(loc, 'sound/items/Ratchet.ogg', 50, TRUE)
 		user.visible_message(SPAN_NOTICE("[user] [anchored ? "bolts \the [src] to" : "unbolts \the [src] from"] the deck."))

@@ -373,6 +373,21 @@
       ]
     },
     {
+      "path": "code/modules/1713/dressmaking.dm",
+      "declarations": [
+        {
+          "owner": "/obj/item/dressmaking_project",
+          "declaration": "parent_type = /obj/item/tailoring_project",
+          "sha256_body": "2292c4714f718a386a4ef22a6809a6ba466878c8cc8d429c649af7ad57c1f83a"
+        },
+        {
+          "owner": "/obj/item/clothing/under/tailored_dress",
+          "declaration": "parent_type = /obj/item/clothing/under/tailored",
+          "sha256_body": "9e65f5cf78b61fbfe225f07d16c071814bfc8517bc0f84d9cb12169e12baa3d2"
+        }
+      ]
+    },
+    {
       "path": "code/modules/1713/extraction/container_keys.dm",
       "declarations": [
         {
@@ -423,7 +438,7 @@
         {
           "owner": "",
           "declaration": "/turf/floor/beach/water/deep/saltwater/underwater/sea_layer/CanPass(atom/movable/mover)",
-          "sha256_body": "03609d022085c95731eb7a724c9bea365dd275edb72e632b6a219c98bc3fa4a0"
+          "sha256_body": "f770d52aa7b7f0acde4903bd16830813d9f2bc8fe4fecaf3fba73d11432e35e5"
         }
       ]
     },
@@ -449,6 +464,16 @@
           "owner": "",
           "declaration": "/obj/structure/props/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)//So bullets will fly over and stuff.",
           "sha256_body": "804806d80ed0dd1af11189905ac31c382b97b039c130dab38e9a4ded8194a187"
+        }
+      ]
+    },
+    {
+      "path": "code/modules/1713/train_locomotives.dm",
+      "declarations": [
+        {
+          "owner": "",
+          "declaration": "/obj/structure/train_part/edge/cab_front/CheckExit(atom/movable/O as mob|obj, target as turf, exit_direction = null)",
+          "sha256_body": "2e2664da35f9fa154f6b3e86934736b8304dd15fb2ae72a7cb8599537942572e"
         }
       ]
     },
@@ -619,6 +644,16 @@
           "owner": "/datum/paper_document_reader",
           "declaration": "parent_type = /datum/paper_document_service",
           "sha256_body": "df5eb9846da2491444bc4fec9daafc009ae3d800dbf0064430d50bee4e63d802"
+        }
+      ]
+    },
+    {
+      "path": "code/modules/persistence/region_event.dm",
+      "declarations": [
+        {
+          "owner": "",
+          "declaration": "/obj/structure/event_stash/CanPass(atom/movable/mover, turf/target, height = 0, air_group = 0)",
+          "sha256_body": "92932097ac98ff1f7fd160e19757a18281e2e6c91317e7c0386e90f529e574ee"
         }
       ]
     },

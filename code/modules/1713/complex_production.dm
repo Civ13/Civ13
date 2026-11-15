@@ -92,14 +92,14 @@
 /obj/item/weapon/pigleg/attackby(var/obj/item/W as obj, var/mob/living/human/user as mob)
 	if (slices<=0)
 		qdel(src)
-	if (istype(W, /obj/item/weapon/material/kitchen/utensil/knife) && slices>0 && ready)
+	if (is_tool(W, TOOL_KNIFE) && slices>0 && ready)
 		to_chat(user, SPAN_NOTICE("You carefully cut a thin ham slice from the ham."))
 		slices--
 		new/obj/item/weapon/reagent_containers/food/snacks/curedham(user.loc)
 		if (slices<=0)
 			qdel(src)
 		return
-	else if (istype(W, /obj/item/weapon/hammer) && bloody)
+	else if (is_tool(W, TOOL_HAMMER) && bloody)
 		to_chat(user, SPAN_NOTICE("You start beating the ham with the hammer..."))
 		if (do_after(user, 100, src))
 			to_chat(user, SPAN_NOTICE("You finish beating the ham with the hammer, removing the blood."))
@@ -420,7 +420,7 @@
 			qdel(src)
 
 /obj/item/weapon/chicken_carcass/attackby(obj/item/weapon/W as obj, mob/living/human/user as mob)
-	if (istype(W, /obj/item/weapon/material/kitchen/utensil/knife) && !rotten)
+	if (is_tool(W, TOOL_KNIFE) && !rotten)
 		to_chat(user, "You start separating the chicken parts...")
 		if (do_after(user, 75, src))
 			to_chat(user, "You finish cutting the chicken.")
@@ -455,7 +455,7 @@
 	rotten_icon_state = "rotten_chicken_breast"
 
 	attackby(obj/item/weapon/W as obj, mob/living/human/user as mob)
-		if (istype(W, /obj/item/weapon/hammer) && !findtext(icon_state, "flat") && !rotten)
+		if (is_tool(W, TOOL_HAMMER) && !findtext(icon_state, "flat") && !rotten)
 			to_chat(user, "You start flattening the chicken breast...")
 			if (do_after(user, 50, src))
 				to_chat(user, "You finish flattening the chicken breast.")
@@ -464,8 +464,10 @@
 			return
 		else if (istype(W, /obj/item/weapon/reagent_containers/food/condiment/flour) && !rotten && !findtext(icon_state, "crumbed") && findtext(icon_state, "flat"))
 			var/obj/item/weapon/reagent_containers/food/condiment/flour/F = W
-			if (F.reagents.has_reagent("flour", 5))
-				F.reagents.remove_reagent("flour", 5)
+			if (!F.reagents.has_reagent("flour", 5))
+				to_chat(user, "<span class='warning'>You need at least 5 units of flour.</span>")
+				return
+			F.reagents.remove_reagent("flour", 5)
 			to_chat(user, "You roll \the [src] in the flour.")
 			satisfaction = -4
 			icon_state = "[icon_state]_crumbed"
@@ -487,8 +489,10 @@
 
 		if (istype(W, /obj/item/weapon/reagent_containers/food/condiment/flour) && !rotten && !findtext(icon_state, "crumbed"))
 			var/obj/item/weapon/reagent_containers/food/condiment/flour/F = W
-			if (F.reagents.has_reagent("flour", 5))
-				F.reagents.remove_reagent("flour", 5)
+			if (!F.reagents.has_reagent("flour", 5))
+				to_chat(user, "<span class='warning'>You need at least 5 units of flour.</span>")
+				return
+			F.reagents.remove_reagent("flour", 5)
 			to_chat(user, "You roll \the [src] in the flour.")
 			icon_state = "[icon_state]_crumbed"
 			name = "crumbed [name]"
@@ -510,8 +514,10 @@
 	attackby(obj/item/weapon/W as obj, mob/living/human/user as mob)
 		if (istype(W, /obj/item/weapon/reagent_containers/food/condiment/flour) && !rotten && !findtext(icon_state, "crumbed"))
 			var/obj/item/weapon/reagent_containers/food/condiment/flour/F = W
-			if (F.reagents.has_reagent("flour", 5))
-				F.reagents.remove_reagent("flour", 5)
+			if (!F.reagents.has_reagent("flour", 5))
+				to_chat(user, "<span class='warning'>You need at least 5 units of flour.</span>")
+				return
+			F.reagents.remove_reagent("flour", 5)
 			to_chat(user, "You roll \the [src] in the flour.")
 			satisfaction = -3
 			icon_state = "[icon_state]_crumbed"
@@ -577,7 +583,7 @@
 	flammable = TRUE
 
 /obj/item/weapon/reagent_containers/food/snacks/cow/stomach/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (!rotten && istype(W,/obj/item/weapon/material/kitchen/utensil/knife))
+	if (!rotten && is_tool(W, TOOL_KNIFE))
 		new /obj/item/weapon/reagent_containers/food/snacks/tripe(src)
 		new /obj/item/weapon/reagent_containers/food/snacks/tripe(src)
 		to_chat(user, "You cut the lining out of the stomach.")
@@ -588,7 +594,7 @@
 	else
 		..()
 /obj/item/weapon/reagent_containers/food/snacks/pig/stomach/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (!rotten && istype(W,/obj/item/weapon/material/kitchen/utensil/knife))
+	if (!rotten && is_tool(W, TOOL_KNIFE))
 		new /obj/item/weapon/reagent_containers/food/snacks/tripe(src)
 		to_chat(user, "You cut the lining out of the stomach.")
 		if(map.ordinal_age >= 1)
@@ -692,7 +698,7 @@
 /obj/item/weapon/reagent_containers/food/snacks/sausage/salted/salami/attackby(var/obj/item/W as obj, var/mob/living/human/user as mob)
 	if (istype(src, /obj/item/weapon/reagent_containers/food/snacks/sausage/salted/salami/slice))
 		return ..() // A slice is already the smallest portion.
-	if (istype(W, /obj/item/weapon/material/kitchen/utensil/knife))
+	if (is_tool(W, TOOL_KNIFE))
 		to_chat(user, "You slice the salami up.")
 		new/obj/item/weapon/reagent_containers/food/snacks/sausage/salted/salami/slice(user.loc)
 		new/obj/item/weapon/reagent_containers/food/snacks/sausage/salted/salami/slice(user.loc)

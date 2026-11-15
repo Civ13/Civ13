@@ -75,7 +75,6 @@ var/global/list/alphabet_uppercase = list("A","B","C","D","E","F","G","H","I","J
 #define all_genders_define_list list(MALE,FEMALE,PLURAL,NEUTER)
 
 var/global/list/turfs = list()						//list of all turfs
-var/global/list/turf_registry_members = list() // Native replacement-aware membership.
 var/global/list/new_turfs = list()						//list of all non-default turfs
 var/global/list/grass_turf_list = list() // list of all /turf/floor/grass
 var/global/list/water_turf_list = list() // list of all /turf/floor/grass
@@ -164,6 +163,7 @@ var/global/list/string_slot_flags = list(
 var/list/hair_colors = list(
 	"Black" = "#090806",
 	"Light Brown" = "#6A4E42",
+	"Brown" = "#4F3B2E",
 	"Dark Brown" = "#3B3024",
 	"Red" = "#B55239",
 	"Orange" = "#91553D",
@@ -179,6 +179,7 @@ var/list/eye_colors = list(
 	"Dark Brown" = "#2B1D0E",
 	"Brown" = "#542A0E",
 	"Green" = "#4B7248",
+	"Red" = "#8B1A1A",
 	"Blue" = "#5EA4E7",
 )
 

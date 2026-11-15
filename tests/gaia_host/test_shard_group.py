@@ -163,6 +163,27 @@ class FakeMachine:
                 self.up.discard(port)
 
 
+class GroupLandsTests(unittest.TestCase):
+    """The host tool reads land stages from the coordinator database, read-only."""
+
+    def test_group_lands_reads_the_coordinator_database(self):
+        sys.path.insert(0, str(ROOT))
+        from tools.transfer_storage.coordinator import Coordinator
+        with tempfile.TemporaryDirectory() as root:
+            group = {'root': root, 'mainland': 'gaia'}
+            self.assertEqual({}, shard_group.group_lands(group))
+            c = Coordinator(os.path.join(root, 'coordinator.sqlite'), 'g', 'gaia')
+            try:
+                for name in ('gaia', 'europe'):
+                    c.enroll(name, 'http://127.0.0.1:1', 'x' * 40)
+                self.assertTrue(c.set_land('europe', 'FRONTIER', False, 'val'))
+            finally:
+                c.close()
+            lands = shard_group.group_lands(group)
+            self.assertEqual(('MAINLAND', 'FRONTIER'), (lands['gaia']['stage'], lands['europe']['stage']))
+            self.assertEqual(0, lands['europe']['readiness']['homes'])
+
+
 class ShardGroupTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
@@ -268,6 +289,41 @@ class ShardGroupTests(unittest.TestCase):
         self.assertEqual(('deep', 'git', 'DreamMaker'), (build['region'], build['git'], build['compiler']))
         self.assertEqual(str((self.base / 'regions').resolve()), build['root'])
         self.assertFalse((self.base / 'regions' / 'gaia' / 'config' / 'shard_build.json').exists())
+
+    def test_event_region_validation_and_setup(self):
+        # An event world (region_event.dm): never the mainland or the gate, never saves,
+        # and every region of its group shares one event token.
+        self.refuse_config('mainland cannot be an EVENT', mainland='deep', region_kind='EVENT')
+        self.refuse_config('gate must be', relay_port=1730, gate='deep', region_kind='EVENT')
+        self.group['regions'][1]['kind'] = 'EVENT'
+        group = self.write_group()
+        shard_group.setup(group, self.machine)
+        tokens = set()
+        for region in ('gaia', 'deep'):
+            tokens.add((self.base / 'regions' / region / 'config' / 'event-token.txt').read_text().strip())
+        self.assertEqual({(self.base / 'regions' / 'event-token.txt').read_text().strip()}, tokens)
+        self.assertRegex(tokens.pop(), '^[0-9a-f]{48}$')
+        event = json.loads((self.base / 'regions' / 'deep' / 'config' / 'shard_region.json').read_text())
+        self.assertEqual(0, event['save_minutes'])
+        home = json.loads((self.base / 'regions' / 'gaia' / 'config' / 'shard_region.json').read_text())
+        self.assertEqual(group['save_minutes'], home['save_minutes'])
+        self.assertIn('config/event-token.txt', shard_group.GENERATED)
+
+    def test_ordinary_groups_get_no_event_token(self):
+        shard_group.setup(self.write_group(), self.machine)
+        self.assertFalse((self.base / 'regions' / 'gaia' / 'config' / 'event-token.txt').exists())
+
+    def test_status_shows_characters_away_at_an_event(self):
+        group = self.write_group()
+        shard_group.setup(group, self.machine)
+        self.machine.up.add(1721)
+        answers = {1721: {'group': group['group'], 'region': 'deep', 'players': 0, 'map': 'Caves', 'event_away': 4}}
+        status = shard_group.group_status(group, 'deep', view=answers.get, platform=self.machine)
+        self.assertEqual(4, status['regions']['deep']['region_view']['event_away'])
+        for bad in (-1, '4', 2.5, True):
+            answers[1721]['event_away'] = bad
+            status = shard_group.group_status(group, 'deep', view=answers.get, platform=self.machine)
+            self.assertNotIn('event_away', status['regions']['deep']['region_view'], bad)
 
     def test_a_battle_rebuild_keeps_the_voted_map(self):
         # A start after master moved (or a watchdog restart) rebuilds the battle region;
@@ -565,6 +621,31 @@ class ShardGroupTests(unittest.TestCase):
         self.assertEqual((0, 180), (settings['save_minutes'], settings['reset_minutes']), 'a resetting raid world never saves')
         gaia = json.loads((self.base / 'regions' / 'gaia' / 'config' / 'shard_region.json').read_text())
         self.assertEqual((15, 0), (gaia['save_minutes'], gaia['reset_minutes']))
+
+    def test_tutorial_region(self):
+        self.refuse_config('mainland cannot be a TUTORIAL', mainland='deep', region_kind='TUTORIAL')
+        self.refuse_config('gate must be', relay_port=1730, gate='deep', region_kind='TUTORIAL')
+        self.group['regions'][0]['kind'] = 'TUTORIAL'
+        self.refuse_config('at most one TUTORIAL', region_kind='TUTORIAL', mainland='deep')
+        self.group['regions'][0]['kind'] = 'SURFACE'
+        self.group['regions'][1]['kind'] = 'TUTORIAL'
+        group = self.write_group()
+        shard_group.setup(group, self.machine)
+        settings = json.loads((self.base / 'regions' / 'deep' / 'config' / 'shard_region.json').read_text())
+        self.assertEqual(0, settings['save_minutes'], 'a tutorial region never saves')
+        gaia = json.loads((self.base / 'regions' / 'gaia' / 'config' / 'shard_region.json').read_text())
+        self.assertEqual(15, gaia['save_minutes'])
+
+    def test_tutorial_config_never_saves(self):
+        path = self.base / 'config.txt'
+        path.write_text('A 1\nALLOWED_GAMEMODES PERSISTENCE\n#SKIP_PERSISTENCE_SAVING\n')
+        shard_group.tutorial_config(path)
+        self.assertEqual(['A 1', 'SKIP_PERSISTENCE_SAVING', 'ALLOWED_GAMEMODES ALL'], path.read_text().splitlines())
+        path.write_text('ALLOWED_GAMEMODES PERSISTENCE\n')
+        shard_group.region_mode_config({'persistent': True}, {'kind': 'TUTORIAL'}, path)
+        self.assertEqual(['ALLOWED_GAMEMODES ALL', 'SKIP_PERSISTENCE_SAVING'], path.read_text().splitlines())
+        shard_group.region_mode_config({'persistent': True}, {'kind': 'SURFACE'}, path)
+        self.assertIn('ALLOWED_GAMEMODES PERSISTENCE', path.read_text())
 
     def test_persistent_config_without_saving(self):
         path = self.base / 'config.txt'
@@ -2114,6 +2195,51 @@ class HandoverTests(unittest.TestCase):
         self.assertEqual(names, ['handover_save', 'handover_cancel'])
         self.assertIn((['kill_tree', 200], None), self.machine.calls)
         self.assertIn(self.LIVE, self.machine.up)
+
+    def test_the_backup_copies_while_the_standby_loads(self):
+        # Val, 2026-11-13: copying the save before the load added about 23 s to the pause.
+        import threading
+        group, host = self.staged()
+        query, real_copy = self.machine.query, shard_group.gaia_host.copy_save
+        load_sent, seen = threading.Event(), []
+
+        def loading(port, token, action='status', operation=None, session=None, extra=None):
+            if action == 'standby_load':
+                load_sent.set()
+            return query(port, token, action, operation, session, extra)
+
+        def copy_save(source, target):
+            seen.append(load_sent.wait(5))  # the load is under way while the copy runs
+            return real_copy(source, target)
+        self.machine.query = loading
+        shard_group.gaia_host.copy_save = copy_save
+        try:
+            accepted = host.request('handover')
+            host.work('handover', accepted['operation'])
+        finally:
+            shard_group.gaia_host.copy_save = real_copy
+        self.assertEqual(seen, [True])
+        self.assertEqual(host.read_state()['phase'], 'done', host.read_state())
+        self.assertTrue((Path(host.config['state_dir']) / 'backups' / accepted['operation'] / '1.sav').exists())
+
+    def test_a_failed_backup_stops_the_handover_before_the_switch(self):
+        group, host = self.staged()
+        real_copy = shard_group.gaia_host.copy_save
+
+        def broken(source, target):
+            raise OSError('disk full')
+        shard_group.gaia_host.copy_save = broken
+        try:
+            host.work('handover', host.request('handover')['operation'])
+        finally:
+            shard_group.gaia_host.copy_save = real_copy
+        state = host.read_state()
+        self.assertEqual(state['phase'], 'failed', state)
+        self.assertIn('could not be backed up: disk full', state['error'])
+        names = [action for _, action, _ in self.actions if action != 'status']
+        self.assertEqual(names, ['handover_save', 'standby_load', 'handover_cancel'])
+        self.assertIn(self.LIVE, self.machine.up, 'the old world keeps running')
+        self.assertNotIn(self.STANDBY, self.machine.up)
 
     def force_stop_on(self, host, trigger):
         """Script a person's Force stop that lands when the handover sends trigger; a world

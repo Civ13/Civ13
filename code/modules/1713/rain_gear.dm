@@ -391,7 +391,7 @@
 	overlays += roof
 
 /obj/structure/lean_to/attackby(obj/item/W, mob/user)
-	if (istype(W, /obj/item/weapon/material/hatchet) || istype(W, /obj/item/weapon/material/machete))
+	if (is_tool(W, TOOL_HATCHET) || istype(W, /obj/item/weapon/material/machete))
 		to_chat(user, SPAN_NOTICE("You start pulling down \the [src]..."))
 		if (do_after(user, 40, src))
 			to_chat(user, SPAN_NOTICE("You pull down \the [src]."))
@@ -506,7 +506,9 @@
 
 /mob/living/human/proc/in_soaking_water()
 	var/turf/T = get_turf(src)
-	return istype(T, /turf/floor/beach/water) && !istype(T, /turf/floor/beach/water/ice) && !T.iscovered() && !seabed_diving_rating()
+	if (seabed_diving_rating())
+		return FALSE
+	return (is_liquid_water(T) && !T.iscovered()) || flood_soaks(T)
 
 /mob/living/human/verb/wring_out_clothes()
 	set name = "Wring Out Clothes"

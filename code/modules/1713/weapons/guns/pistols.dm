@@ -510,12 +510,6 @@
 	var/obj/item/weapon/attachment/silencer/pistol/SP = new/obj/item/weapon/attachment/silencer/pistol(src)
 	SP.attached(null,src,TRUE)
 
-/obj/item/weapon/gun/projectile/pistol/tt30/silenced/New()
-	..()
-
-	var/obj/item/weapon/attachment/silencer/pistol/SP = new/obj/item/weapon/attachment/silencer/pistol(src)
-	SP.attached(null,src,TRUE)
-
 /obj/item/weapon/gun/projectile/pistol/makarov
 	name = "Makarov PM"
 	desc = "The standard issue pistol of the Soviet Union and Russian Federation after the 1950's. Chambered in 9x18mm Makarov."
@@ -666,7 +660,7 @@
 	w_class = ITEM_SIZE_SMALL
 	caliber = "a44magnum"
 	fire_sound = 'sound/weapons/guns/fire/deagle.ogg'
-	magazine_type = /obj/item/ammo_magazine/deagle
+	magazine_type = /obj/item/ammo_magazine/deaglemagnum
 	good_mags = list(/obj/item/ammo_magazine/deaglemagnum)
 	weight = 0.794
 	ammo_type = /obj/item/ammo_casing/a44magnum

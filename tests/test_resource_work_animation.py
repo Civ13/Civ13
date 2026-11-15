@@ -194,7 +194,7 @@ class ResourceWorkAnimationTests(unittest.TestCase):
         self.assertIn('catch (var/exception/mining_error)\n\t\trelease()', perform)
         wood = proc((ROOT/'code/game/objects/structures/wild.dm').read_text(), '/obj/structure/wild/attackby(')
         self.assertIn('completed = do_after(user, 30*HT.chopping_speed, user.loc)', wood)
-        self.assertIn('HT.health -= 0.25', wood)
+        self.assertIn('HT.apply_wear(0.25, WEAR_WORK)', wood)
         self.assertIn('H.adaptStat("strength", 1)', wood)
         self.assertEqual(wood.count('work_animation.stop()'), 2)
         self.assertIn('if (!timed_chop)\n\t\tuser.do_attack_animation(src)', wood)

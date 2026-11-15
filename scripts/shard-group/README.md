@@ -43,7 +43,8 @@ See [group.example.json](group.example.json). Required keys: `group`,
 `repository`, `root` (outside the repository), `compiler`, `daemon`, `git`,
 `public_host` (the address players use to join) and 1 to 16 `regions`, each
 with a unique `id`, `name`, `kind` (`SURFACE`, `OCEANIC`, `UNDERGROUND`, `RAILYARD`, `RAID`,
-`ORBIT`, `BARRACKS`, `BATTLE` or `OTHER`; a `RAID` or `BATTLE` region cannot be the mainland), `port` and `map`. Optional: `revision` (default `HEAD`), `public`
+`ORBIT`, `BARRACKS`, `BATTLE`, `EVENT`, `TUTORIAL` or `OTHER`; a `RAID`, `BATTLE`, `EVENT` or `TUTORIAL` region cannot be the mainland;
+a `TUTORIAL` region only runs the practice rooms and never saves, see [docs/practice-rooms.md](../../docs/practice-rooms.md#tutorial-region)), `port` and `map`. Optional: `revision` (default `HEAD`), `public`
 (default false, so the worlds are not listed on the hub),
 `save_timeout_seconds`, `start_timeout_seconds`, `backups_kept`, `min_free_disk_mb`
 (default 2048; `stage` and `handover` refuse while the regions' drive has less free, 0 turns it off)
@@ -82,6 +83,40 @@ Barracks every 10 seconds, and a frozen Barracks would hold those reports.
 - A `start` or `update` of the battle region builds the last voted map again
   (`rotation.json` state `ready` or `building`), or its configured `map` when
   there is none, so a rebuild after master moves keeps the voted map.
+
+## Event regions
+
+A region of kind `EVENT` is a world for admin-run events. An admin uses
+**Event Transfer** (Admin tab) to send everyone, or chosen players, from their
+land to it; their characters stay in their own land, saved and out of play,
+until they come back, where they stood or beside their bed. See
+[docs/event-regions.md](../../docs/event-regions.md).
+
+- An `EVENT` region never saves (`setup` writes `save_minutes` 0 for it), keeps
+  no homes, and cannot be the mainland or the relay gate. Trails never lead
+  there, and the Regions panel offers no Join link for it.
+- `setup` writes the group's shared `config/event-token.txt` into every region
+  of a group that has an `EVENT` region. Re-run `setup` after adding one, and
+  restart the other regions so they learn the new peer and token.
+- `status` shows `event_away` in a region's `region_view`: how many characters
+  wait there while their players are at an event. The launcher shows it on the
+  region's row, and marks the event region.
+
+## Expedition slots
+
+A region of kind `EXPEDITION` is a slot for one land across the sea at a time,
+built from a world-chart template ([docs/expedition-slots.md](../../docs/expedition-slots.md)).
+
+```sh
+python shard_group.py --config group.json expedition-land --region far1 --template tile.json --key 24,16
+python shard_group.py --config group.json update-offline --region far1   # compiles the land
+python shard_group.py --config group.json expedition-archive --region far1
+python shard_group.py --config group.json expedition-status
+```
+
+- A slot cannot be the mainland or the relay gate; trails never lead there and
+  the Regions panel offers no Join link for it.
+- Lands and archived saves are kept under `<root>/expeditions/`; nothing is deleted.
 
 ## The live group (Gaia)
 
@@ -357,15 +392,20 @@ without stopping it for the load:
    it that no region, transfer agent, relay or doorman of the group uses) with
    `-params standby=1`.
    It boots the map and lighting (about 3 minutes for Gaia) and then waits; it
-   is hidden from the hub, refuses joins and never saves.
+   is hidden from the hub, refuses joins and never saves. While it waits it
+   does load work ahead (`code/modules/persistence/standby_prepare.dm`): it
+   deletes the boot map's mobs and objects and turns each turf into the type the
+   last completed save recorded (`map_saves/validated.json`, read at boot), so the
+   load only changes turfs that changed since then. `standby_load` stops it first.
 2. The running world saves, freezing each level only while it is captured
    (players there can look and chat but not move or act; crossing between levels
    is blocked for the whole save). Play on a level after its capture is
    end-of-round activity that does not carry over, and players are warned. It then
    publishes
-   its restart intent (lifecycle action `handover_save`). `map_saves` is backed
-   up as a stop would.
-3. The standby loads that save (`standby_load`). Its preflight and load are the
+   its restart intent (lifecycle action `handover_save`).
+3. The standby loads that save (`standby_load`) while `map_saves` is backed up
+   beside it, as a stop would (both only read the save; the switch waits for the
+   copy, and a failed copy rolls back). Its preflight and load are the
    validation of both the save and the new build; while it loads, the old world
    is still up.
 4. The old world is released (`handover_release`): it reboots out (DreamDaemon

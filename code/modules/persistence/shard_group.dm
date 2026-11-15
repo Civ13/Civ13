@@ -104,7 +104,7 @@ var/global/datum/shard_group/shard_group = new
 			return refuse("every region needs a unique id")
 		if(!istext(entry["name"]) || !length(entry["name"]) || length(entry["name"]) > 64)
 			return refuse("region [entry["id"]] needs a name of 1 to 64 characters")
-		if(!(entry["kind"] in list("SURFACE", "OCEANIC", "UNDERGROUND", "RAILYARD", "RAID", "ORBIT", "OTHER", "BARRACKS", "BATTLE")))
+		if(!(entry["kind"] in list("SURFACE", "OCEANIC", "UNDERGROUND", "RAILYARD", "RAID", "ORBIT", "OTHER", "BARRACKS", "BATTLE", "EVENT", "TUTORIAL", "EXPEDITION")))
 			return refuse("region [entry["id"]] has an unknown kind")
 		if(!shard_address_valid(entry["address"]) || (entry["address"] in seen_addresses))
 			return refuse("region [entry["id"]] needs a unique host:port address")
@@ -179,6 +179,10 @@ var/global/datum/shard_group/shard_group = new
 		.["battle_phase"] = tdm_battle.phase()
 	if(kind == "BARRACKS" && tdm_barracks_active())
 		.["battle_phase"] = tdm_barracks.status_fresh() ? tdm_barracks.status["phase"] : null
+	// The host tool and launcher show how many characters wait here while their
+	// players are at an event (region_event.dm).
+	if(kind != "EVENT")
+		.["event_away"] = length(event_stashes())
 
 // Reads one peer's answer to the shard_region topic. A world that answers for
 // another group or region id is never shown as that region.
@@ -259,7 +263,7 @@ var/global/datum/shard_group/shard_group = new
 		return FALSE
 	T.admin_started = TRUE
 	// The Barracks is an always-on lobby: no pregame countdown.
-	if(shard_group.kind == "BARRACKS")
+	if(shard_group.kind in list("BARRACKS", "TUTORIAL"))
 		T.skip_pregame_countdown = TRUE
 	log_game("Region group: [shard_group.region] starts its round on its own.")
 	return TRUE
@@ -402,6 +406,8 @@ var/global/datum/shard_group/shard_group = new
 		return "That land is not known here."
 	if(peer["state"] == "UP")
 		return null
+	if(peer["state"] == "STOPPED")
+		return "[peer["name"]] is closed for now: its land is not running, so the trail cannot take anyone there. It opens again once the land is back."
 	if(!peer_wakeable(id))
 		return "Nobody seems to be coming back from [peer["name"]] right now."
 	var/list/reply = ask_doorman("wake=1&port=[shard_address_port(peer["address"])]")
@@ -430,6 +436,10 @@ var/global/datum/shard_group/shard_group = new
 	spawn(0)
 		while(enabled)
 			poll_once()
+			// Land stages ride the same loop (land_stage.dm).
+			land_stages_refresh_due()
+			land_sample_post()
+			nations_refresh_due() // nation.dm
 			sleep(SHARD_POLL_INTERVAL)
 		polling = FALSE
 
@@ -484,15 +494,17 @@ var/global/datum/shard_group/shard_group = new
 
 /datum/shard_group/proc/panel_html()
 	var/list/lines = list("<p>Region group <b>[html_encode(group)]</b>. You are in <b>[html_encode(name)]</b>.</p>")
-	lines += "<table class='regions'><tr><th>Region</th><th>Kind</th><th>State</th><th>Players</th><th></th></tr>"
-	lines += "<tr class='here'><td>[html_encode(name)]</td><td>[shard_kind_text(kind, region)]</td><td>up, you are here</td><td>[length(clients)]</td><td></td></tr>"
+	lines += "<table class='regions'><tr><th>Region</th><th>Kind</th><th>Settled</th><th>State</th><th>Players</th><th></th></tr>"
+	lines += "<tr class='here'><td>[html_encode(name)]</td><td>[shard_kind_text(kind, region)]</td><td>[land_stage_column(region, kind)]</td><td>up, you are here</td><td>[length(clients)]</td><td></td></tr>"
 	for(var/id in order)
 		var/list/peer = peers[id]
 		var/state = peer["state"]
 		var/players = isnum(peer["players"]) ? "[peer["players"]]" : "-"
 		// Joining a frozen world wakes it at once; a cold one takes minutes, so it is woken from a trail.
-		var/join = (state == "UP" || state == "ASLEEP") ? "<a href='[player_href(id)]'>Join</a>" : ""
-		lines += "<tr class='[lowertext(state)]'><td>[html_encode(peer["name"])]</td><td>[shard_kind_text(peer["kind"], id)]</td><td>[shard_state_text(state)]</td><td>[players]</td><td>[join]</td></tr>"
+		// Event regions are reached only when an admin sends players there (region_event.dm).
+		// Lands across the sea only by ship (expedition_land.dm).
+		var/join = (state == "UP" || state == "ASLEEP") && peer["kind"] != "EVENT" && peer["kind"] != "EXPEDITION" ? "<a href='[player_href(id)]'>Join</a>" : ""
+		lines += "<tr class='[lowertext(state)]'><td>[html_encode(peer["name"])]</td><td>[shard_kind_text(peer["kind"], id)]</td><td>[land_stage_column(id, peer["kind"])]</td><td>[shard_state_text(state)]</td><td>[players]</td><td>[join]</td></tr>"
 	lines += "</table>"
 	if(!order.len)
 		lines += "<p>This is the only region in the group.</p>"
@@ -520,6 +532,9 @@ var/global/datum/shard_group/shard_group = new
 		if("ORBIT") return "orbit"
 		if("BARRACKS") return "barracks"
 		if("BATTLE") return "battle"
+		if("EVENT") return "event"
+		if("TUTORIAL") return "practice rooms"
+		if("EXPEDITION") return "land across the sea"
 	// Mars and the Moon are OTHER regions with a surveyed surface (space/survey.dm).
 	if(kind == "OTHER" && survey_region_ok(id) && get_space_survey_map(id))
 		return "off-world"

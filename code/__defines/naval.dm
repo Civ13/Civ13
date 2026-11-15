@@ -50,3 +50,26 @@
 #define SEA_SITE_LINGER 6000
 // How near the water a trail marker must stand on the home island.
 #define OPEN_SEA_LANDING_TILES 3
+
+// Points of sail (naval/points_of_sail.dm): the angle between the bow and
+// where the wind blows from, and how many times longer a step under sail
+// takes there than on a beam reach. A square-rigged hull cannot point
+// straight into the wind, so heading upwind she beats: tacks across it at
+// close-hauled pace and makes good about a third of a beam reach.
+#define SAIL_POINT_BEATING 0
+#define SAIL_POINT_CLOSE 45
+#define SAIL_POINT_BEAM 90
+#define SAIL_POINT_BROAD 135
+#define SAIL_POINT_RUNNING 180
+#define SAIL_DELAY_BEATING 3.5
+#define SAIL_DELAY_CLOSE 2.5
+#define SAIL_DELAY_REACH 1
+#define SAIL_DELAY_RUNNING 1.3
+
+// Rowing benches (naval/rowing_bench.dm): one manned bench pushes this many
+// tiles of built hull, and a rower spends this much stamina per telegraph
+// step every half minute she is rowed (a rested rower holds about 100 and
+// gets back about 30 in that time). Below the last figure nobody can row.
+#define CRAFT_OAR_THRUST 4
+#define OAR_STAMINA_PER_STEP 20
+#define OAR_MIN_STAMINA 10

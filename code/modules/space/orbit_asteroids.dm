@@ -88,7 +88,7 @@ var/global/list/orbit_asteroid_ores = list(
 		tethered = TRUE
 		user.visible_message(SPAN_NOTICE("[user] clips a tether to \the [src] and pays it out to the station."), SPAN_NOTICE("You tether \the [src]. It will stay beside the station."))
 		return
-	if (istype(W, /obj/item/weapon/material/pickaxe))
+	if (is_tool(W, TOOL_PICKAXE))
 		user.visible_message(SPAN_NOTICE("[user] starts chipping at \the [src]."))
 		if (!do_after(user, ORBIT_ASTEROID_MINE_DELAY, src) || QDELETED(src))
 			return

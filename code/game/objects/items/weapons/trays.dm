@@ -178,8 +178,7 @@
 
 /obj/item/weapon/tray/dropped(mob/user)
 
-	var/mob/living/M
-	for (M in loc) //to handle hand switching
+	if (ismob(loc)) //to handle hand switching
 		return
 
 	var/foundtable = FALSE

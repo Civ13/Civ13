@@ -222,11 +222,11 @@ var/recipe_ci_files = 0
 	S.produce_recipe(R, 1, H)
 	if (S.amount != 10 || (locate(/obj/item/stack/recipe_ci_output) in T))
 		recipe_ci_fail("research gate", "locked output consumed stock or produced an item")
-	// No output is free: era 0 admits rope and research structures through Basic
-	// Tools, while stone bricks wait for Brickmaking (era 2).
+	// Only the campfire is free: era 0 admits rope and research structures
+	// through Basic Tools, while stone bricks wait for Brickmaking (era 2).
 	if (!crafting_recipe_allowed(H, "/obj/item/stack/material/rope") || !crafting_recipe_allowed(H, "/obj/structure/research_bench") || !crafting_recipe_allowed(H, "/obj/structure/researchdesk"))
 		recipe_ci_fail("research gate", "era-0 research output was locked")
-	if (basic_crafting_recipes.len || crafting_recipe_allowed(H, "/obj/item/stack/material/stonebrick") || get_recipe_node_req("/obj/item/stack/material/rope") != "basic_tools" || crafting_recipe_allowed(H, "/obj/structure/researchdesk/unreviewed") || crafting_node_allowed(H, "unknown_node"))
+	if (basic_crafting_recipes.len != 1 || basic_crafting_recipes[1] != "/obj/structure/oven/fireplace" || !crafting_recipe_allowed(H, "/obj/structure/oven/fireplace") || crafting_recipe_allowed(H, "/obj/item/stack/material/stonebrick") || get_recipe_node_req("/obj/item/stack/material/rope") != "basic_tools" || crafting_recipe_allowed(H, "/obj/structure/researchdesk/unreviewed") || crafting_node_allowed(H, "unknown_node"))
 		recipe_ci_fail("research gate", "free output, unknown subtype or unknown node was implicitly admitted")
 	var/list/gate_entry = map.ensure_node_entry(H.civilization, "iron_tools")
 	gate_entry[RNODE_ENTRY_STATUS] = RNODE_DONE

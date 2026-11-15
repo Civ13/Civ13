@@ -214,7 +214,7 @@ def heard_lines(sounds, limit=6):
     merged = {}
     for sound in sounds:
         line = sound_line(sound)
-        merged[line] = merged.get(line, 0) + 1
+        merged[line] = merged.pop(line, 0) + 1
     lines = [line + (f" (x{count})" if count > 1 else "") for line, count in merged.items()]
     return lines[-limit:]
 

@@ -130,7 +130,7 @@
 		for (var/name in files)
 			if (copytext(name, length(name), 0) != "/") return null
 			var/owner = copytext(name, 1, length(name))
-			if (owner in list("_settlement", "_insurance", "_bot", "_mail")) continue
+			if (owner in list("_settlement", "_insurance", "_bot", "_mail", "_home_replica")) continue
 			if (!metadata.accounts.store.valid_owner(owner) || owners[owner]) return null
 			owners[owner] = TRUE
 		return owners

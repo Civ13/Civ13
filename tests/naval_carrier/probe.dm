@@ -180,6 +180,15 @@ var/naval_runtime_error = FALSE
 	naval_check(!C.sail_tick() && C.ox == was_x && C.speed == VESSEL_SPEED_FULL, "she does not hop while she waits to turn")
 	naval_check(C.finish_turn() && C.dir == NORTH && !C.turning_to && !C.path_markers.len, "then she comes about and the marks are gone")
 	naval_check(C.turn_to(EAST) && C.dir == EAST, "and back to the east")
+	// A turn that falls due during a world save waits for it: relocate()
+	// itself refuses while a save runs, so no order rewrites the decks then.
+	naval_check(C.order_turn(NORTH) && C.turning_to == NORTH, "a turn is ordered just before a save")
+	persistence_save_in_progress = TRUE
+	naval_check(!C.finish_turn() && C.dir == EAST && C.turning_to == NORTH, "the turn waits while the world saves")
+	naval_check(!C.relocate(C.ox + 1, C.oy, EAST) && C.last_refusal == "holding for a world save" && C.dir == EAST, "relocate() refuses any move while a save runs")
+	persistence_save_in_progress = FALSE
+	naval_check(C.finish_turn() && C.dir == NORTH && !C.turning_to, "and she comes about once the save is done")
+	naval_check(C.turn_to(EAST) && C.dir == EAST && C.last_hop_ms >= 0, "back east; the hop cost is measured in milliseconds ([C.last_hop_ms] ms)")
 	C.set_speed(VESSEL_SPEED_STOP)
 
 	// Coming about: north, around the centre of the ship.

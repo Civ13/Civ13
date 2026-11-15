@@ -36,6 +36,19 @@ var/global/list/probe_failures = list()
 	var/list/custom_civs = list()
 	var/list/faction_research_director = list()
 
+// Rosters and member limits are probed in tests/faction_recruitment; here no
+// faction is ever full and the roster calls do nothing.
+/proc/faction_roster_account(mob/living/human/H)
+	return null
+/obj/map_metadata/proc/faction_full_for(faction, account)
+	return FALSE
+/obj/map_metadata/proc/faction_member_limit(faction)
+	return 20
+/obj/map_metadata/proc/faction_roster_add(faction, account)
+	return TRUE
+/obj/map_metadata/proc/faction_roster_remove(faction, account)
+	return
+
 /proc/check(condition, label)
 	if (!condition)
 		probe_failures += label

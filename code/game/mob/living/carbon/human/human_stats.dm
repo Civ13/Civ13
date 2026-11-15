@@ -121,13 +121,15 @@
 
 	stats[statname] = list(statval, statval)
 
-/mob/living/human/proc/adaptStat(statname, multiplier = 1)
+// variety_key names the exact thing done (a recipe, a surgery step, a crop):
+// on book-research worlds new things teach more than repeats (learning_by_doing.dm).
+/mob/living/human/proc/adaptStat(statname, multiplier = 1, variety_key = null)
 	statname = lowertext(statname)
 	ensure_late_stats()
 	if (!stats.Find(statname))
 		return
 	if (multiplier > 0)
-		multiplier *= trait_skill_gain_mult(statname)
+		multiplier *= trait_skill_gain_mult(statname) * skill_variety_mult(statname, variety_key) * skill_master_mult(statname)
 
 	var/increase_multiple = 0.001 // 1 / 1000, to prevent crazy ugly decimals
 
@@ -163,7 +165,7 @@
 		stats[statname][1] *= (1 + round(multiplier/150, increase_multiple))
 		stats[statname][2] *= (1 + round(multiplier/150, increase_multiple))
 
-	else if (list("throwing", "hunting").Find(statname))
+	else if (list("throwing", "hunting", "swimming").Find(statname))
 		stats[statname][1] *= (1 + round(multiplier/200, increase_multiple))
 		stats[statname][2] *= (1 + round(multiplier/200, increase_multiple))
 
@@ -175,4 +177,7 @@
 	var/cap = (statname == "magic") ? 100.00 : 250.00
 	stats[statname][1] = min(stats[statname][1], cap)
 	stats[statname][2] = min(stats[statname][2], cap)
+	// Reaching a milestone in a skill teaches its scholarship (learning_by_doing.dm).
+	if (multiplier > 0)
+		note_skill_mastery(statname)
 		

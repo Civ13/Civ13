@@ -24,7 +24,11 @@ def check_manifest(doc,manifest):
     if manifest.get('generation_result',{}).get('ir_sha256')!=canonical_hash(doc):raise ValueError('IR_BINDING_MISMATCH')
 
 
-def write_bundle(folder,doc,manifest,catalog_root=None,preview=True,catalog_version=None,fresh=False):
+def write_bundle(folder,doc,manifest,catalog_root=None,preview=True,catalog_version=None,fresh=False,light=False):
+    """light=True runs every check but keeps only the seed manifest and the preview:
+    the typed IR and the sidecar (a second copy of it) are several hundred megabytes
+    for a large map and can be regenerated from the manifest's configuration. A light
+    folder has no complete.json, so `verify` refuses it instead of half-accepting it."""
     check_manifest(doc,manifest)
     manifest=deepcopy(manifest)
     if 'catalog_binding' not in manifest:
@@ -34,6 +38,12 @@ def write_bundle(folder,doc,manifest,catalog_root=None,preview=True,catalog_vers
         manifest['catalog_binding']=dict(catalog_version=version,source_commit=CATALOGS[version][0])
     dmm,sidecar=emit(doc,manifest,catalog_root,catalog_version)
     proof=verify_roundtrip(dmm,sidecar)
+    if light:
+        (folder/'seed.manifest.json').write_text(json_text(manifest),encoding='utf-8',newline='\n')
+        if preview:render(doc,folder/'preview.png')
+        return {'schema':'civ13-offline-map-bundle/1','status':'LIGHT_OFFLINE_ONLY','native_ready':False,
+                'reference_match':'NOT_EVALUATED','ir_sha256':canonical_hash(doc),'dmm_sha256':sidecar['dmm_sha256'],
+                'cells_checked':proof['cells_checked']}
     files={'map.ir.json':json_text(doc,True),'seed.manifest.json':json_text(manifest),
            'map.dmm':dmm,'map.dmm.sidecar.json':json_text(sidecar,True),'roundtrip.json':json_text(proof)}
     for name,data in files.items():(folder/name).write_text(data,encoding='utf-8',newline='\n')

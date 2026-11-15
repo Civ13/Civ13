@@ -119,7 +119,7 @@
 	copying = TRUE
 	icon_state = "printingpress1"
 	visible_message("Printing \the [original]...")
-	var/done = do_after(H, PRESS_PRINT_TIME, src)
+	var/done = do_after(H, machine_work_time(src, PRESS_PRINT_TIME), src)
 	if (!src || gcDestroyed)
 		return FALSE
 	copying = FALSE

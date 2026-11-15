@@ -56,8 +56,14 @@ class AdminSay(unittest.TestCase):
     def test_discord_post_uses_the_bot_admin_channel(self):
         log = proc(SAY, '/proc/discord_asay_log')
         self.assertIn('file("admin.log")', log)
-        self.assertIn('webhook_send_asay(name, line)', log)
+        # Staff-written: the bot must never ping @Admin for an admin's own asay.
+        self.assertIn('webhook_send_asay(name, line, "asay", TRUE)', log)
         self.assertIn('ASAY:**__', log)
+
+    def test_staff_lines_tell_the_bot_who_wrote_them(self):
+        hooks = proc(read('code/modules/webhooks/webhooks.dm'), '/proc/webhook_send_asay')
+        for field in ('"kind" = kind', '"from_staff" =', '"staff_online" = webhook_staff_online()'):
+            self.assertIn(field, hooks)
 
     def test_discord_admin_messages_are_escaped_and_handed_on(self):
         loop = proc(read('code/world.dm'), '/proc/start_messaging_loop')

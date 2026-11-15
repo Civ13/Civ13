@@ -71,7 +71,7 @@ class NavigationReplayTests(unittest.TestCase):
                                 "nearby": nearby, "queue": {"pending": [], "running": False, "results": rows}}}
 
                 client = Client()
-                ok, detail, _ = autopilot.approach(client, "character", "target", 0)
+                ok, detail, _ = autopilot.step_to(client, "character", "target", 0)
                 self.assertFalse(ok)
                 self.assertEqual(detail, "lost sight of the target")
                 self.assertEqual(client.moves, int(initially_visible))

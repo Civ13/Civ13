@@ -4,7 +4,7 @@
 /world
 	hub = ""
 	hub_password = ""
-	maxx = 60
+	maxx = 85
 	maxy = 26
 	maxz = 1
 	turf = /turf/floor/dirt
@@ -241,6 +241,7 @@ var/global/platform_probe_runtime_error = FALSE
 	for (var/obj/structure/trains/platform/P in gun_segs)
 		P.last_moved = -1000
 	platform_check("railgun/braces", B && !B.set_braced(TRUE) && gun_front.braced && G && !G.fire_problem())
+	platform_check("railgun/outriggers_down", gun_front.overlays.len == 3)
 	var/obj/structure/trains/locomotive/coal/L = new(platform_turf(20, 11))
 	L.dir = NORTH
 	L.fuel = 100
@@ -248,6 +249,7 @@ var/global/platform_probe_runtime_error = FALSE
 	L.connected = gun_front
 	platform_check("railgun/braced_blocks_train", platform_step(L, 1) == 0 && L.loc == platform_turf(20, 11))
 	B.set_braced(FALSE)
+	platform_check("railgun/outriggers_up", gun_front.overlays.len == 1)
 	platform_check("railgun/unbraced_moves", platform_step(L, 1) == 1 && gun_front.loc == platform_turf(20, 11) && (G.loc == platform_turf(20, 10)))
 
 	// Explosions wreck a car, which stops the train until welded.
@@ -278,7 +280,7 @@ var/global/platform_probe_runtime_error = FALSE
 	for (var/turf/T in platform_car_tiles(platform_segments(arm)))
 		for (var/obj/item/weapon/gun/projectile/automatic/stationary/S in T)
 			guns++
-	platform_check("armor/machine_guns", guns == 4)
+	platform_check("armor/no_free_guns", guns == 0)
 	qdel(bullet)
 
 	// The armored locomotive survives a direct hit.
@@ -349,6 +351,216 @@ var/global/platform_probe_runtime_error = FALSE
 	platform_check("warehouse/blocked_bay", W.retrieve_problem(blocked, W.retrieve_place(blocked)))
 	qdel(obstacle)
 
+// Driving (trains.dm): throttle, reverser, braking distance, load, double
+// heading, the tender and speed-scaled collisions.
+/mob/living/simple_animal/train_probe_dummy
+	health = 400
+	maxHealth = 400
+
+/proc/drive_train(x, y, wagons, wagon_type = /obj/structure/trains/transport/flatbed)
+	for (var/ty in 2 to 25)
+		platform_track(x, ty, NORTH)
+	var/obj/structure/trains/locomotive/coal/L = new(platform_turf(x, y))
+	L.dir = NORTH
+	L.fuel = 100
+	L.on = TRUE
+	var/obj/structure/trains/ahead = L
+	for (var/i in 1 to wagons)
+		var/obj/structure/trains/W = new wagon_type(platform_turf(x, y - i))
+		W.dir = NORTH
+		ahead.connected = W
+		ahead = W
+	return L
+
+/proc/drive_wait(obj/structure/trains/locomotive/L, limit = 150)
+	while (L.driving && limit > 0)
+		sleep(1)
+		limit--
+	return !L.driving
+
+/proc/platform_driving_run()
+	// Reverser: the train backs up with the wagon still behind the engine.
+	var/obj/structure/trains/locomotive/coal/L = drive_train(48, 12, 2)
+	var/obj/structure/trains/W1 = L.connected
+	var/obj/structure/trains/W2 = W1.connected
+	L.reverser = -1
+	L.throttle = 1
+	L.automovement = TRUE
+	platform_check("drive/reverse_step", L.process_rail_reverse() && L.y == 11 && W1.y == 10 && W2.y == 9)
+	platform_check("drive/reverse_keeps_facing", L.dir == NORTH && W1.dir == NORTH && W2.dir == NORTH && L.connected == W1)
+	L.reverser = 1
+
+	// Throttle: the drive loop gathers speed up to the notch's cruise speed.
+	L.refresh_consist()
+	var/light_cruise = L.cruise_speed()
+	platform_check("load/light_full_speed", L.pull_ratio() >= 1 && abs(light_cruise - 10 / L.max_train_speed / 3) < 0.01)
+	L.throttle = 3
+	var/start_y = L.y
+	L.locomotive()
+	sleep(12)
+	platform_check("drive/throttle_moves", L.driving && L.y > start_y && W1.y == L.y - 1 && W2.y == L.y - 2)
+	platform_check("drive/speed_capped", L.rail_speed > 0 && L.rail_speed <= 10 / L.max_train_speed)
+	L.throttle = 0
+	L.braking = TRUE
+	platform_check("drive/brake_stops", drive_wait(L) && L.rail_speed == 0 && !L.automovement)
+
+	// Load: fourteen loaded wagons are more than one engine's rated pull.
+	var/obj/structure/trains/locomotive/coal/H = drive_train(56, 17, 14, /obj/structure/trains/storage/closed)
+	H.throttle = 3
+	H.refresh_consist()
+	var/heavy_cruise = H.cruise_speed()
+	platform_check("load/heavy_slower", H.pull_ratio() < 1 && heavy_cruise < 10 / H.max_train_speed && heavy_cruise > 0)
+
+	// Braking distance grows with the train: both start at the same speed.
+	for (var/obj/structure/trains/locomotive/E in list(L, H))
+		E.throttle = 0
+		E.braking = TRUE
+		E.rail_speed = 2.5
+	var/light_from = L.y
+	var/heavy_from = H.y
+	L.drive()
+	H.drive()
+	drive_wait(L)
+	drive_wait(H)
+	platform_check("brake/heavy_longer", (H.y - heavy_from) > (L.y - light_from) && L.y - light_from >= 1)
+
+	// Double heading: a second running engine in the train adds its pull.
+	var/obj/structure/trains/storage/closed/rear = H
+	while (rear.connected)
+		rear = rear.connected
+	var/obj/structure/trains/locomotive/coal/helper = new(get_step(rear, SOUTH))
+	helper.dir = NORTH
+	helper.fuel = 100
+	helper.on = TRUE
+	rear.connected = helper
+	H.throttle = 3
+	H.refresh_consist()
+	platform_check("double_heading/power", H.consist_engines == 2 && H.cruise_speed() > heavy_cruise)
+	helper.throttle = 3
+	helper.locomotive()
+	platform_check("double_heading/helper_follows", helper.lead_car() == rear && !helper.driving)
+
+	// Tender: the fireman tops up a low firebox from a hitched tender.
+	var/obj/structure/trains/locomotive/coal/T = drive_train(52, 12, 0)
+	var/obj/structure/trains/storage/tender/tender = new(platform_turf(52, 11))
+	tender.dir = NORTH
+	T.connected = tender
+	var/obj/item/stack/ore/coal/coal = new(tender.storage)
+	coal.amount = 5
+	T.fuel = 20
+	T.refresh_consist()
+	platform_check("tender/feeds_firebox", T.fuel == 95 && QDELETED(coal))
+
+	// Collisions scale with speed: a crawl shoves a person aside unhurt,
+	// a fast train throws them clear and keeps going.
+	var/mob/living/simple_animal/train_probe_dummy/D = new(platform_turf(52, 13))
+	T.rail_speed = 0.5
+	platform_check("collision/crawl_shoves", T.rail_hit(D.loc, NORTH) && D.x != 52 && D.health >= 390)
+	D.persistence_set_loc(platform_turf(52, 13))
+	T.rail_speed = 6
+	var/hp = D.health
+	platform_check("collision/speed_hurts", !T.rail_hit(D.loc, NORTH) && D.x != 52 && hp - D.health >= 100)
+
+// Heavy locomotives (train_locomotives.dm): a 3x4 engine built from a kit,
+// driven by its front section with three body sections hitched behind.
+/proc/heavy_parts_placed(obj/structure/trains/locomotive/E)
+	if (!E.body_parts || E.body_parts.len < 2)
+		return FALSE
+	var/list/tiles = train_platform_tiles(E.loc, E.dir)
+	for (var/obj/structure/train_part/part in E.body_parts)
+		if (part.loc != tiles[part.side + 2] || part.dir != part.facing(E.dir))
+			return FALSE
+	return TRUE
+
+/proc/platform_heavy_run()
+	for (var/y in 2 to 25)
+		platform_track(62, y, NORTH)
+	// The diesel's line turns east; the armored engine stands on a spur.
+	for (var/y in 2 to 18)
+		platform_track(66, y, NORTH)
+	for (var/x in 67 to 80)
+		platform_track(x, 18, EAST)
+	for (var/y in 2 to 10)
+		platform_track(72, y, NORTH)
+	// Steam: boiler in front, cab third, bunker last.
+	var/obj/structure/trains/locomotive/coal/heavy/E = platform_car("loco_steam", 62, 12, NORTH)
+	var/list/body = istype(E) ? platform_segments(E.connected) : list()
+	platform_check("heavy/engine_leads", istype(E) && E.loc == platform_turf(62, 12) && body.len == 3 && E.density && E.wide_body())
+	var/obj/structure/trains/platform/boiler = body[1]
+	var/obj/structure/trains/platform/cab = body[2]
+	var/obj/structure/trains/platform/bunker = body[3]
+	platform_check("heavy/body_sections", boiler.seg_index == 2 && bunker.seg_index == 4 && bunker.loc == platform_turf(62, 9) && boiler.car_id == E.car_id && boiler.car_engine() == E)
+	platform_check("heavy/body_art", E.icon_state == "loco_steam_1c" && cab.icon_state == "loco_steam_3c" && heavy_parts_placed(E) && platform_parts_placed(body))
+	platform_check("heavy/solid_and_cab", boiler.density && bunker.density && !cab.density && E.control_spot() == cab)
+	platform_check("heavy/cab_roof_only", cab.roofed() && cab.roof_images && cab.roof_images.len == 3 && !boiler.roofed())
+	platform_check("heavy/one_piece", findtext(boiler.dismantle_problem(), "one piece") && rail_warehouse_too_long(E) && rail_warehouse_too_long(bunker))
+	var/mob/living/human/platform_rider/driver = new(platform_turf(61, 10))
+	bunker.attackby(new /obj/item/stack/ore/coal(platform_turf(61, 10)), driver)
+	platform_check("heavy/fuel_from_any_section", E.fuel == 15)
+	E.fuel = 100
+	E.on = TRUE
+	E.refresh_consist()
+	platform_check("heavy/weight_and_pull", abs(E.consist_weight - 6.1) < 0.01 && E.pull_ratio() >= 1 && E.haul == 30)
+	platform_check("heavy/steps", platform_step(E, 3) == 3 && E.loc == platform_turf(62, 15) && bunker.loc == platform_turf(62, 12))
+	platform_check("heavy/body_follows", heavy_parts_placed(E) && platform_parts_placed(body) && driver.loc == platform_turf(61, 13))
+	// Someone beside the rails is hit by the body, not passed through.
+	var/mob/living/simple_animal/train_probe_dummy/D = new(platform_turf(61, 16))
+	E.rail_speed = 6
+	var/hp = D.health
+	platform_check("heavy/side_hit", platform_step(E, 1) == 1 && D.x == 60 && hp - D.health >= 100)
+	E.rail_speed = 0
+	E.reverser = -1
+	E.automovement = TRUE
+	platform_check("heavy/reverses", E.process_rail_reverse() && E.loc == platform_turf(62, 15) && bunker.loc == platform_turf(62, 12) && E.dir == NORTH && heavy_parts_placed(E) && driver.loc == platform_turf(61, 13))
+	E.reverser = 1
+	E.ex_act(1.0)
+	platform_check("heavy/damage_wears", !QDELETED(E) && E.health == 2050 && !E.broken_down)
+	E.heavy_damage(5000)
+	platform_check("heavy/wrecked_engine_dies", E.broken_down && !E.on && E.engine_disabled())
+
+	// Diesel: a walk-in cab at the front, a hood with walkways behind.
+	var/obj/structure/trains/locomotive/heavy_diesel/DL = platform_car("loco_diesel", 66, 12, NORTH)
+	var/list/hood = istype(DL) ? platform_segments(DL.connected) : list()
+	var/fronts = 0
+	for (var/obj/structure/train_part/edge/cab_front/G in DL.body_parts)
+		if (G.density && G.dir == NORTH)
+			fronts++
+	platform_check("diesel/walk_in_cab", istype(DL) && !DL.density && hood.len == 3 && fronts == 3 && DL.control_spot() == DL && DL.roof_images && DL.roof_images.len == 3)
+	var/obj/structure/trains/platform/hood_seg = hood[2]
+	var/obj/structure/train_part/deck/walkway = null
+	for (var/obj/structure/train_part/deck/W in hood_seg.deck_parts)
+		walkway = W
+	platform_check("diesel/hood_walkways", hood_seg.density && walkway && !walkway.density)
+	var/obj/item/weapon/reagent_containers/glass/barrel/can = new(platform_turf(65, 12))
+	can.reagents.add_reagent("diesel", 50)
+	var/mob/living/human/platform_rider/engineer = new(platform_turf(66, 12))
+	platform_check("diesel/takes_only_fuel", DL.takes_fuel(can) && !DL.takes_fuel(new /obj/item/stack/ore/coal(platform_turf(65, 12))))
+	DL.attackby(can, engineer)
+	platform_check("diesel/fuelled", DL.fuel == 50 && !can.reagents.has_reagent("diesel"))
+	var/obj/structure/closet/crate/cab_crate = new(platform_turf(65, 12))
+	var/obj/structure/closet/crate/walk_crate = new(platform_turf(67, 10))
+	DL.on = TRUE
+	platform_check("diesel/steps", platform_step(DL, 2) == 2 && DL.loc == platform_turf(66, 14) && heavy_parts_placed(DL) && platform_parts_placed(hood))
+	platform_check("diesel/cab_load_rides", engineer.loc == platform_turf(66, 14) && cab_crate.loc == platform_turf(65, 14) && walk_crate.loc == platform_turf(67, 12))
+
+	var/curve_steps = platform_step(DL, 30)
+	var/obj/structure/trains/platform/hood_end = hood[3]
+	platform_check("diesel/rounds_curve", curve_steps == 18 && DL.loc == platform_turf(80, 18) && DL.dir == EAST && hood_end.loc == platform_turf(77, 18) && hood_end.dir == EAST && heavy_parts_placed(DL) && platform_parts_placed(hood))
+	// The crate on the inside of the curve slips one section back, and stays on a walkway.
+	platform_check("diesel/load_rounds_curve", engineer.loc == platform_turf(80, 18) && cab_crate.loc == platform_turf(80, 19) && walk_crate.loc == platform_turf(77, 17))
+
+	// Armored: plate over everything, bulletproof cab doors.
+	var/obj/structure/trains/locomotive/coal/armored/heavy/AL = platform_car("loco_armored", 72, 8, NORTH)
+	var/list/plated = istype(AL) ? platform_segments(AL.connected) : list()
+	var/doors = 0
+	var/obj/structure/trains/platform/armored_cab = plated.len == 3 ? plated[2] : null
+	if (armored_cab)
+		for (var/obj/structure/train_part/edge/G in armored_cab.deck_parts)
+			if (G.is_armor() && G.is_door())
+				doors++
+	AL.ex_act(1.0)
+	platform_check("armored_heavy/plated", istype(AL) && AL.overlays.len == 0 && doors == 2 && AL.health == 5700 && !AL.disabled && AL.haul == 40)
+
 /world/New()
 	OpenPort("none")
 	GLOB.all_observable_events = list()
@@ -361,6 +573,8 @@ var/global/platform_probe_runtime_error = FALSE
 		platform_probe_run()
 		platform_warfare_run()
 		platform_warehouse_run()
+		platform_driving_run()
+		platform_heavy_run()
 	catch (var/exception/E)
 		platform_probe_runtime_error = TRUE
 		world.log << "Fixture aborted: [E] at [E.file]:[E.line]"

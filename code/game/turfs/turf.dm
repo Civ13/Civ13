@@ -88,7 +88,7 @@ var/list/interior_areas = list(/area/caribbean/houses,
 /turf/Destroy()
 	snowfall_ground_unregister()
 	turfs -= src
-	turf_registry_members -= src
+	turf_registry_remove(src)
 	for (var/obj/o in contents)
 		if (o.special_id == "seasons")
 			if (overlays.Find(o))
@@ -285,8 +285,7 @@ var/const/enterloopsanity = 100
 		turf_registration_done = TRUE
 		turfs += src
 #else
-	if (!turf_registry_members[src])
-		turf_registry_members[src] = TRUE
+	if (turf_registry_add(src))
 		turfs += src
 #endif
 
@@ -315,6 +314,8 @@ var/const/enterloopsanity = 100
 
 		if (istype(M, /mob/living/human))
 			var/mob/living/human/H = M
+			// Walking onto stairs the way they climb goes up (edge_climbing.dm).
+			stairs_step_on(H, src, OL)
 			if (!istype(src, /turf/floor/beach/water) && !istype(src, /turf/floor/trench/flooded) && !H.on_fire)
 				if (H.overlays_standing[25])
 					H.overlays_standing[25] = null

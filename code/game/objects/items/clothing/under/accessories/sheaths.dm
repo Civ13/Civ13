@@ -39,8 +39,9 @@
 	var/obj/item/clothing/accessory/storage/sheath/H = null
 	if (istype(src, /obj/item/clothing/accessory/storage/sheath))
 		H = src
-	else if (istype(src, /obj/item/clothing/under))
-		var/obj/item/clothing/under/S = src
+	else if (istype(src, /obj/item/clothing))
+		// The sheath may hang from an outfit or from a belt.
+		var/obj/item/clothing/S = src
 		if (S.accessories.len)
 			H = locate() in S.accessories
 

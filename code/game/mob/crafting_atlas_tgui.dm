@@ -40,7 +40,7 @@ var/global/datum/crafting_atlas_presenter/tgui/crafting_atlas_tgui_presenter = n
 	var/scope = ""
 
 /datum/nanoui/tgui/crafting_atlas/allowed_actions()
-	return list("atlas_navigate")
+	return list("atlas_navigate", "atlas_craft")
 
 /datum/nanoui/tgui/crafting_atlas/get_html()
 	if (legacy_renderer)
@@ -111,7 +111,7 @@ var/global/datum/crafting_atlas_presenter/tgui/crafting_atlas_tgui_presenter = n
 		ui.scope = params["scope"] == "all" ? "all" : ""
 	if (route == "resource")
 		var/resource_id = copytext("[params["resource"]]", 1, 257)
-		if (reference.resource_exists(resource_id))
+		if (reference.resource_exists(resource_id) || crafting_atlas_admin_type(viewer, resource_id))
 			// Preserve direct-resource routing: reset all prior recipe filters.
 			// A recipe picked on the resource page stays on that page.
 			reference.show(viewer, resource_id, 1, resource_id, recipe_id = copytext("[params["recipe"]]", 1, 32))
@@ -125,6 +125,15 @@ var/global/datum/crafting_atlas_presenter/tgui/crafting_atlas_tgui_presenter = n
 	// show() owns the original per-client throttle and updates only this reader.
 	// Do not broadcast one reader's query to every viewer of the global catalog.
 	return FALSE
+
+// The same current-window checks as navigation, then the Crafting window takes over.
+/datum/crafting_atlas_presenter/tgui/craft(mob/viewer, product, state)
+	var/datum/nanoui/tgui/crafting_atlas/ui = GLOB.nanomanager.get_open_ui(viewer, crafting_atlas_reference, "crafting_atlas")
+	if (!istype(ui) || ui.user != viewer || !state || ui.state != state || ui.legacy_renderer || !ui.frontend_ready || !ui.frontend_acknowledged)
+		return FALSE
+	if (!istext(product) || !crafting_atlas_reference.resource_exists(product))
+		return FALSE
+	return crafting_window_from_atlas(viewer, product)
 
 // Each reader keeps the preview filenames already sent to them, so browsing
 // does not rebuild and resend the same sprites on every navigation.
@@ -563,8 +572,14 @@ var/global/datum/crafting_atlas_presenter/tgui/crafting_atlas_tgui_presenter = n
 		data["next"] = matched > first + 11
 		return data
 	if (resource_id)
+		// Admin-only entries are never in the public catalog; only admins get their page.
+		var/admin_type = reference.resource_exists(resource_id) ? null : crafting_atlas_admin_type(viewer, resource_id)
+		if (admin_type)
+			return admin_resource_model(viewer, data, admin_type)
 		return resource_model(reference, viewer, data, resource_id, recipe_id, catalog, scope, known)
 	var/list/words = search_words(reference, query)
+	if (crafting_atlas_admin_reader(viewer))
+		data["admin_entries"] = admin_entries(reference, viewer, words)
 	var/list/resource_matches = search_resources(reference, words)
 	var/list/resource_rows = list()
 	for (var/id in resource_matches)

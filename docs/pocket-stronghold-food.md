@@ -24,6 +24,10 @@ Roasting uses a new optional `roasted_icon`/`roasted_icon_state`/
 Preview: [pocket-stronghold-food.png](media/pocket-stronghold-food.png)
 (actual pixels at 4x, not a gameplay screenshot).
 
+`crab_meat_roasted` and `food_ruined` were later redrawn for Civ13 because the
+upstream drawings read as shapeless lumps in play; the state names and their use
+are the same. See the licence notice for details.
+
 ## Kept Civ13 art (working states already exist)
 
 `meat`, `meat_roasted`, `meat_slice`, `meat_slice_roasted` (Civ13 meat, steak,

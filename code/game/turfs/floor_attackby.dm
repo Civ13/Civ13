@@ -373,6 +373,7 @@
 		var/obj/item/weapon/barrier/sandbag/bag = C
 		if (bag.sand_amount <= 0)
 			to_chat(user, SPAN_NOTICE("You need to fill the sandbag with sand first!"))
+			return
 
 		var/sandbag_time = 50
 
@@ -889,13 +890,17 @@
 	legacy_remaining -= gold_chance
 	var/diamond_chance = legacy_remaining * 0.01
 	legacy_remaining -= diamond_chance
+	var/bauxite_chance = mining_bauxite_chance(area_above) // Aluminium ore, from the Industrial age (aluminium.dm).
 	var/no_ore_chance = 100
-	for (var/chance in list(12, 8, iron_chance, zinc_chance, 2 * fuel_chance, fuel_chance, fuel_chance, fuel_chance, uranium_chance, silver_chance, gold_chance, diamond_chance))
+	for (var/chance in list(12, 8, iron_chance, zinc_chance, 2 * fuel_chance, fuel_chance, fuel_chance, fuel_chance, uranium_chance, silver_chance, gold_chance, diamond_chance, bauxite_chance))
 		no_ore_chance *= 1 - chance / 100
 	var/found_ore = FALSE
 	if (H)
 		H.adaptStat("strength", 1) // One completed action, even with several ores.
 	mining_flint_nodules(H, area_above) // Independent of the ore rolls; see flint_mining.dm.
+	mining_gem_pocket(H) // Independent of the ore rolls; see gemstones.dm.
+	mining_obsidian(H) // Independent of the ore rolls; see obsidian.dm.
+	mining_expedition_lode(H) // A land across the sea: its own ores and rare find; see land_resources.dm.
 	if (prob(12))
 		var/obj/item/stack/ore/copper/mineral = new/obj/item/stack/ore/copper(src)
 		mineral.amount = rand(12,24)
@@ -1001,6 +1006,14 @@
 			var/material/M = get_material_by_name("diamond")
 			to_chat(H, SPAN_GREEN_BOLD("You found some raw <font color=[M.icon_colour]><b>diamonds</b></font>!"))
 		found_ore = TRUE
+	if (prob(bauxite_chance) && bauxite_chance)
+		var/obj/item/stack/ore/bauxite/mineral = new/obj/item/stack/ore/bauxite(src)
+		mineral.amount = rand(24,36)
+		if (istype(get_area(src), /area/caribbean/void/caves/special))
+			mineral.amount *= 2
+		if (H)
+			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=#b5603a><b>bauxite</b></font> (aluminium ore)!"))
+		found_ore = TRUE
 	if (found_ore)
 		change_the_turf()
 		return
@@ -1039,17 +1052,6 @@
 		if (H)
 			var/material/M = get_material_by_name("marble")
 			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[M.icon_colour]><b>marble</font> rocks</b>!"))
-		change_the_turf()
-		return
-	else if(geology_allowed && (prob(20) && (area_above && area_above.climate == "jungle") && map.ordinal_age >=1 && map.ordinal_age <= 3))
-		var/obj/item/stack/ore/obsidian/mineral = new/obj/item/stack/ore/obsidian(src)
-		var/obj/item/stack/material/stone/bonusstone = new/obj/item/stack/material/stone(src)
-		bonusstone.amount = rand(8,12)
-		mineral.amount = rand(16,24)
-		if (istype(get_area(src), /area/caribbean/void/caves/special))
-			mineral.amount *= 2
-		if (H)
-			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=#060606><b>obsidian</font> rocks</b>!"))
 		change_the_turf()
 		return
 	else if(geology_allowed && (prob(20) && (map.ID == MAP_NOMADS_PANGEA || map.ID == MAP_NOMADS_CONTINENTAL || map.ID == MAP_NOMADS_NEW_WORLD && map.ID == MAP_NOMADS_MEDITERRANEAN) && area_above && area_above.climate == "temperate" || area_above && area_above.climate == "semiarid" && map.ordinal_age >=1))
@@ -1109,7 +1111,7 @@
 		var/mob/living/human/H = user
 		if (H.ant && H.a_intent == I_GRAB)
 			if (H.shoveling)
-				..()
+				return ..()
 			if (T.has_snow_cover() && istype(H))
 				if (T.snow_units(generated_source) <= 0)
 					to_chat(user, SPAN_NOTICE("All the loose snow has been shoveled out of this spot already."))

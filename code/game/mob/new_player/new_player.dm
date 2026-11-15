@@ -136,9 +136,9 @@ var/global/redirect_all_players = null
 	if (!ticker || ticker.current_state <= GAME_STATE_PREGAME)
 		output += "<p><a href='byond://?src=\ref[src];ready=0'>The game has not started yet.</a></p>"
 	else
-		if (map.ID == MAP_TRIBES || map.ID == MAP_THREE_TRIBES || map.ID == MAP_FOUR_KINGDOMS)
+		if (map.tribes)
 			output += "<p><a href='byond://?src=\ref[src];tribes=1'>Join a Tribe!</a></p>"
-		else if (map.ID ==  MAP_CAMPAIGN || map.ID == CAMPAIGN_MAP_LIST_MAPID_OR)
+		else if (map.campaign)
 			output += "<p><a href='byond://?src=\ref[src];join_campaign=1'>Join Game!</a></p>"
 		else if (map.civilizations && !map.nomads)
 			output += "<p><a href='byond://?src=\ref[src];civilizations=1'>Join a Civilization!</a></p>"
@@ -149,7 +149,7 @@ var/global/redirect_all_players = null
 
 	var/height = 310
 	output += "<p><a href='byond://?src=\ref[src];changelog=1'>What's New</A></p>"
-	if (ticker && !practice_rooms.entry_error())
+	if (practice_room_available())
 		output += "<p><a href='byond://?src=\ref[src];practice=1'>Practice Room</A></p>"
 		height += 30
 	if (client && client.holder)
@@ -228,7 +228,7 @@ var/global/redirect_all_players = null
 			ready = FALSE
 
 	if (href_list["practice"])
-		practice_rooms.enter(src)
+		practice_room_open(src)
 		return TRUE
 
 	if (href_list["refresh"])
@@ -236,7 +236,7 @@ var/global/redirect_all_players = null
 		new_player_panel_proc()
 
 	if (href_list["observe"])
-		if ((map.ID == MAP_CAMPAIGN || map.ID == MAP_NATIONSRP_COLDWAR_CMP || map.ID == CAMPAIGN_MAP_LIST_MAPID_OR) && !client.holder)
+		if ((map.campaign || map.ID == MAP_NATIONSRP_COLDWAR_CMP) && !client.holder)
 			WWalert(src,"You cannot observe during this round.","Error")
 			return TRUE
 
@@ -327,9 +327,9 @@ var/global/redirect_all_players = null
 /mob/new_player/proc/lobby_join_mode()
 	if (!ticker || !map || ticker.current_state <= GAME_STATE_PREGAME)
 		return null
-	if (map.ID == MAP_TRIBES || map.ID == MAP_THREE_TRIBES || map.ID == MAP_FOUR_KINGDOMS)
+	if (map.tribes)
 		return "tribes"
-	if (map.ID == MAP_CAMPAIGN || map.ID == CAMPAIGN_MAP_LIST_MAPID_OR)
+	if (map.campaign)
 		return "join_campaign"
 	if (map.civilizations && !map.nomads)
 		return "civilizations"
@@ -385,6 +385,8 @@ var/global/redirect_all_players = null
 /mob/new_player/proc/handle_lobby_join(list/href_list, native_choices = FALSE)
 	if (lobby_join_active || src != usr || !client || client.mob != src || spawning)
 		lobby_join_trace("handler_denied", "owner_or_busy")
+		return FALSE
+	if(tutorial_region_refuse_join(src))
 		return FALSE
 	if(!map_storage.allow_new_character(src))
 		// Reclaim may have transferred/deleted this lobby. Record only a lobby
@@ -547,7 +549,7 @@ var/global/redirect_all_players = null
 			WWalert(src, "Because you died in combat, you must wait [wait] more minutes to respawn.", "Error")
 			return FALSE
 
-		if (map && (map.ID == MAP_TRIBES || map.ID == MAP_THREE_TRIBES || map.ID == MAP_FOUR_KINGDOMS))
+		if (map && map.tribes)
 			close_spawn_windows()
 			AttemptLateSpawn(pick(map.availablefactions))
 		else
@@ -708,7 +710,7 @@ var/global/redirect_all_players = null
 		if (factjob)
 			if (map.ID == MAP_CAMPAIGN)
 				LateChoicesCampaign(factjob)
-			if (map.ID == CAMPAIGN_MAP_LIST_MAPID_OR)
+			if (istype(map, /obj/map_metadata/campaign_new))
 				LateChoicesCampaignNew(factjob)
 		else if (disable_campaign_whitelist != FALSE)
 			factjob = global.player_faction_list[client.ckey]
@@ -719,7 +721,7 @@ var/global/redirect_all_players = null
 			if (factjob)
 				if (map.ID == MAP_CAMPAIGN)
 					LateChoicesCampaign(factjob)
-				if (map.ID == CAMPAIGN_MAP_LIST_MAPID_OR)
+				if (istype(map, /obj/map_metadata/campaign_new))
 					LateChoicesCampaignNew(factjob)
 		else
 			if (config.discordurl)
@@ -947,7 +949,7 @@ var/global/redirect_all_players = null
 				AttemptLateSpawn(href_list["SelectedJob"])
 				return
 
-			if (map.ID == CAMPAIGN_MAP_LIST_MAPID_OR)
+			if (istype(map, /obj/map_metadata/campaign_new))
 				if (!findtext(href_list["SelectedJob"], "Private") && !findtext(href_list["SelectedJob"], "Machinegunner") && !findtext(href_list["SelectedJob"], "Des. Marksman"))
 					if ((lobby_join_confirmation("This is a specialist role. You should have decided with your faction on which roles you should pick. If you haven't done so, its probably better if you join as a Private instead. Are you sure you want to join in as a [href_list["SelectedJob"]]?", href_list["SelectedJob"])) != "Yes")
 						return
@@ -1204,6 +1206,9 @@ var/global/redirect_all_players = null
 	// A character that travelled here is waiting: take it instead of a new one.
 	if(region_home_enabled() && region_travel_claim(src)) return FALSE
 	if(!map_storage.allow_new_character(src)) return FALSE
+	// A faction member may start with their faction (faction_start.dm), here
+	// or at one of its colonies in another land.
+	if(map && map.allows_custom_factions() && !faction_start_prompt()) return FALSE
 	if (!client || !client.prefs)
 		return FALSE
 	if (get_trait_selection_error(client.prefs.traits))
@@ -1230,7 +1235,7 @@ var/global/redirect_all_players = null
 		lobby_join_trace("spawn_denied", "round_not_playing")
 		if (!nomsg)
 			WWalert(usr,"The round is either not ready, or has already finished.","Error")
-			if (map.ID == MAP_TRIBES || map.ID == MAP_THREE_TRIBES || map.civilizations || map.ID == MAP_FOUR_KINGDOMS)
+			if (map.tribes || map.civilizations)
 				abandon_mob()
 				spawn(10)
 					WWalert(usr,"The round is either not ready, or has already finished.", "Error")
@@ -1239,7 +1244,7 @@ var/global/redirect_all_players = null
 		lobby_join_trace("spawn_denied", "entry_locked")
 		if (!nomsg)
 			WWalert(usr,"There is an administrative lock on entering the game!", "Error")
-			if (map.ID == MAP_TRIBES || map.ID == MAP_THREE_TRIBES || map.civilizations || map.ID == MAP_FOUR_KINGDOMS)
+			if (map.tribes || map.civilizations)
 				abandon_mob()
 				spawn(10)
 					WWalert(usr,"There is an administrative lock on entering the game!", "Error")
@@ -1248,7 +1253,7 @@ var/global/redirect_all_players = null
 		lobby_join_trace("spawn_denied", "role_unavailable")
 		if (!nomsg)
 			WWalert(usr,"You're banned from this role!", "Error")
-			if (map.ID == MAP_TRIBES || map.ID == MAP_THREE_TRIBES || map.civilizations || map.ID == MAP_FOUR_KINGDOMS)
+			if (map.tribes || map.civilizations)
 				abandon_mob()
 				spawn(10)
 					WWalert(usr,"You're banned from this role!", "Error")
@@ -1295,7 +1300,7 @@ var/global/redirect_all_players = null
 	if (!IsJobAvailable(rank))
 		if (!nomsg)
 			WWalert(src, "'[rank]' has already been taken by someone else.", "Error")
-			if (map.ID == MAP_TRIBES || map.ID == MAP_THREE_TRIBES || map.civilizations || map.ID == MAP_FOUR_KINGDOMS)
+			if (map.tribes || map.civilizations)
 				abandon_mob()
 				spawn(10)
 					WWalert(src, "'[rank]' has already been taken by someone else.", "Error")
@@ -1306,7 +1311,7 @@ var/global/redirect_all_players = null
 	if (factionBanned(job.base_type_flag(1)))
 		if (!nomsg)
 			WWalert(usr,"You're banned from this faction!","Error")
-			if (map.ID == MAP_TRIBES || map.ID == MAP_THREE_TRIBES || map.civilizations || map.ID == MAP_FOUR_KINGDOMS)
+			if (map.tribes || map.civilizations)
 				abandon_mob()
 				spawn(10)
 					WWalert(usr,"You're banned from this faction!","Error")
@@ -1316,7 +1321,7 @@ var/global/redirect_all_players = null
 		if (!job.blacklisted)
 			if (!nomsg)
 				WWalert(usr,"You're under a Penal ban, you can only play as that role!","Error")
-			if (map.ID == MAP_TRIBES || map.ID == MAP_THREE_TRIBES || map.civilizations || map.ID == MAP_FOUR_KINGDOMS)
+			if (map.tribes || map.civilizations)
 				abandon_mob()
 				spawn(10)
 					WWalert(usr,"You're under a Penal ban, you can only play as that role!","Error")
@@ -1326,7 +1331,7 @@ var/global/redirect_all_players = null
 		if (job.blacklisted)
 			if (!nomsg)
 				WWalert(usr,"This job is reserved as a punishment for those who break server rules.","Error")
-			if (map.ID == MAP_TRIBES || map.ID == MAP_THREE_TRIBES || map.civilizations || map.ID == MAP_FOUR_KINGDOMS)
+			if (map.tribes || map.civilizations)
 				abandon_mob()
 				spawn(10)
 					WWalert(usr,"This job is reserved as a punishment for those who break server rules.","Error")
@@ -1351,16 +1356,6 @@ var/global/redirect_all_players = null
 	if (client && client.prefs.gender == FEMALE && !job.can_be_female)
 		WWalert(usr,"You must be male to play as this role.","Error")
 		return FALSE
-	else if (client && client.prefs.gender == FEMALE && job.can_be_female)
-		spawning = TRUE
-		close_spawn_windows()
-		job_master.AssignRole(src, rank, TRUE)
-		var/mob/living/character = create_character(job2mobtype(rank))	//creates the human and transfers vars and mind
-		if (!character)
-			return FALSE
-
-		character = job_master.EquipRank(character, rank, TRUE)
-		return
 	if (!job.can_be_minor && client.prefs.age < 18)
 		WWalert(usr,"You must be at least 18 to play this role.","Error")
 		return FALSE
@@ -1370,7 +1365,7 @@ var/global/redirect_all_players = null
 		return FALSE
 
 	if (map.ordinal_age == 2 && !map.civilizations && !istype(job, /datum/job/civilian) && map.ID != MAP_BOHEMIA)
-		if (client.prefs.gender == FEMALE)
+		if (client.prefs.gender == FEMALE && !job.can_be_female)
 			WWalert(usr,"You must be male to play as this faction.","Error")
 			return FALSE
 	if (job.is_yakuza)
@@ -1416,7 +1411,7 @@ var/global/redirect_all_players = null
 	character = job_master.EquipRank(character, rank, TRUE)					//equips the human
 
 	//squads
-	if (ishuman(character) && map.ID != MAP_CAMPAIGN && map.ID != CAMPAIGN_MAP_LIST_AND_NOT_MAPID && map.ID != MAP_ROTSTADT)
+	if (ishuman(character) && !map.campaign && map.ID != MAP_ROTSTADT)
 		var/mob/living/human/H = character
 		if (H.original_job_title == "FBI officer" || H.original_job_title == "KGB officer")
 			H.verbs += /mob/living/human/proc/find_hvt
@@ -1630,8 +1625,8 @@ var/global/redirect_all_players = null
 
 	var/atom/initial_location = loc
 	if (map && map.uses_random_new_player_spawn(original_job))
-		var/obj/map_metadata/nomads/gaia/gaia = map
-		initial_location = gaia.new_player_destination(src)
+		var/obj/map_metadata/nomads/start_land = map
+		initial_location = start_land.new_player_destination(src)
 		if (!initial_location)
 			// AssignRole reserved a slot before create_character. Release it while
 			// keeping the lobby, client and mind intact for another Join attempt.
@@ -1722,6 +1717,7 @@ var/global/redirect_all_players = null
 	new_character.force_update_limbs()
 	new_character.update_eyes()
 	new_character.regenerate_icons()
+	faction_start_apply(new_character)
 	new_character.key = key		//Manually transfer the key to log them in
 
 	return new_character

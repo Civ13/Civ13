@@ -20,7 +20,7 @@
 	value = 0
 
 /obj/item/stack/material/bone/attackby(obj/item/W, mob/user)
-	if(istype(W, /obj/item/weapon/material/kitchen/utensil/knife) || istype(W, /obj/item/weapon/material/thrown/throwing_knife) || istype(W, /obj/item/weapon/material/thrown/throwing_knife1))
+	if(is_tool(W, TOOL_KNIFE) || istype(W, /obj/item/weapon/material/thrown/throwing_knife) || istype(W, /obj/item/weapon/material/thrown/throwing_knife1))
 		var/turf/site = get_turf(src)
 		if(!user || user.stat || gcDestroyed || gc_destroyed || !site || !use(1))
 			return
@@ -113,7 +113,7 @@
 	value = 0
 
 /obj/item/stack/dry_gelatin/attackby(obj/item/W, mob/user)
-	if(istype(W, /obj/item/weapon/material/kitchen/utensil/knife) || istype(W, /obj/item/weapon/material/thrown/throwing_knife) || istype(W, /obj/item/weapon/material/thrown/throwing_knife1))
+	if(is_tool(W, TOOL_KNIFE) || istype(W, /obj/item/weapon/material/thrown/throwing_knife) || istype(W, /obj/item/weapon/material/thrown/throwing_knife1))
 		var/turf/site = get_turf(src)
 		if(!user || user.stat || gcDestroyed || gc_destroyed || !site || !use(1))
 			return

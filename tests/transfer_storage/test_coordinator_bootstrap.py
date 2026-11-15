@@ -7,7 +7,7 @@ from unittest.mock import patch
 from tools.transfer_storage.coordinator import Coordinator
 
 
-class BootstrapTests(unittest.TestCase):
+class CoordinatorFixture(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.path = str(Path(self.tmp.name) / 'c.db')
@@ -37,6 +37,8 @@ class BootstrapTests(unittest.TestCase):
         self.c.close()
         self.c = Coordinator(self.path, 'earth', bootstrap_new_group=bootstrap)
 
+
+class BootstrapTests(CoordinatorFixture):
     def test_partial_replacement_cannot_claim_offline_peers_account(self):
         url = self.enroll('gamma', 3)
         self.answers[url]['requests'] = [{'id': 1, 'ckey': 'alice', 'op': 'claim', 'region': 'gamma'}]
@@ -111,4 +113,110 @@ class BootstrapTests(unittest.TestCase):
         url = self.enroll('beta', 2)
         self.answers[url]['epoch'] = 'prior-authority'
         self.c.homes_once()
+        self.assertEqual('quarantined', self.c.recovery_status()['state'])
+
+
+class QuarantineRecoveryTests(CoordinatorFixture):
+    """A live group was held for a day: setup enrolled the Tutorial region while
+    the coordinator was mid-pass, the pass compared its old directory with the
+    new roster and quarantined, and no join that needed a decision could finish."""
+
+    def ready_group(self):
+        a = self.enroll('alpha', 1); b = self.enroll('beta', 2)
+        self.reopen(True); self.c.homes_once()
+        self.assertEqual('ready', self.c.recovery_status()['state'])
+        epoch = self.c._ledger('epoch')
+        for url in (a, b):
+            self.answers[url]['epoch'] = epoch
+        return a, b, epoch
+
+    def test_enrolment_during_a_pass_does_not_quarantine(self):
+        a, b, epoch = self.ready_group()
+        late = {}
+        real_answers = self.answers
+        test = self
+        class Racing(dict):
+            def __contains__(self, url):
+                if url == b and not late:
+                    # setup enrols gamma while this pass talks to the agents
+                    late['url'] = 'http://127.0.0.1:3'
+                    test.c.enroll('gamma', late['url'], 'test-token')
+                return dict.__contains__(self, url)
+        self.answers = Racing(real_answers)
+        self.c.homes_once()
+        self.assertNotEqual('quarantined', self.c.recovery_status()['state'])
+        self.assertEqual(['alpha', 'beta', 'gamma'], self.c.recovery_status()['roster'])
+        self.answers[late['url']] = {'store': 'gamma', 'epoch': '', 'requests': [], 'rev': 0}
+        self.c.homes_once()
+        self.assertEqual('ready', self.c.recovery_status()['state'])
+
+    def test_quarantine_lifts_when_every_agent_holds_this_epoch(self):
+        a, b, epoch = self.decided_group()
+        g = self.enroll('gamma', 3)  # new region: no ledger yet
+        self.c.db.execute("UPDATE ledger SET value='quarantined' WHERE key='recovery'")
+        self.answers[a]['requests'] = [{'id': 5, 'ckey': 'breadguy', 'op': 'claim', 'region': 'alpha'}]
+        self.assertEqual(1, self.c.homes_once())
+        self.assertEqual('ready', self.c.recovery_status()['state'])
+        self.assertEqual('alpha', self.c.home('breadguy'))
+
+    def decided_group(self):
+        a, b, epoch = self.ready_group()
+        self.answers[a]['requests'] = [{'id': 1, 'ckey': 'alice', 'op': 'claim', 'region': 'alpha'}]
+        self.c.homes_once()
+        self.answers[a]['requests'] = []
+        rev = int(self.c._ledger('rev'))
+        self.assertEqual(1, rev)
+        for url in (a, b):
+            self.answers[url]['rev'] = rev
+        return a, b, epoch
+
+    def test_hold_lifts_with_stopped_regions_offline(self):
+        # Stopped regions run no agent; the live group had 8 of 10 stopped.
+        a, b, epoch = self.decided_group()
+        g = self.enroll('gamma', 3)
+        del self.answers[b]; del self.answers[g]
+        self.c.db.execute("UPDATE ledger SET value='quarantined' WHERE key='recovery'")
+        self.answers[a]['requests'] = [{'id': 2, 'ckey': 'breadguy', 'op': 'claim', 'region': 'alpha'}]
+        self.assertEqual(1, self.c.homes_once())
+        self.assertEqual('ready', self.c.recovery_status()['state'])
+        self.assertEqual('alpha', self.c.home('breadguy'))
+        self.assertEqual('alpha', self.c.home('alice'))
+
+    def test_unreconciled_new_member_lifts_with_it_offline(self):
+        a, b, epoch = self.decided_group()
+        self.enroll('gamma', 3)
+        del self.answers['http://127.0.0.1:3']
+        self.assertEqual('unreconciled', self.c.recovery_status()['state'])
+        self.c.homes_once()
+        self.assertEqual('ready', self.c.recovery_status()['state'])
+
+    def test_quarantine_holds_while_no_answering_agent_proves_the_epoch(self):
+        a, b, epoch = self.decided_group()
+        self.c.db.execute("UPDATE ledger SET value='quarantined' WHERE key='recovery'")
+        del self.answers[a]; del self.answers[b]
+        self.assertEqual(0, self.c.homes_once())
+        self.assertEqual('quarantined', self.c.recovery_status()['state'])
+
+    def test_undecided_database_still_needs_every_member(self):
+        a, b, epoch = self.ready_group()  # rev 0: nothing proves authority
+        self.c.db.execute("UPDATE ledger SET value='quarantined' WHERE key='recovery'")
+        del self.answers[b]
+        self.assertEqual(0, self.c.homes_once())
+        self.assertEqual('quarantined', self.c.recovery_status()['state'])
+
+    def test_quarantine_holds_for_a_foreign_epoch_or_newer_ledger(self):
+        a, b, epoch = self.decided_group()
+        self.c.db.execute("UPDATE ledger SET value='quarantined' WHERE key='recovery'")
+        self.answers[b]['epoch'] = 'other-authority'
+        self.assertEqual(0, self.c.homes_once())
+        self.assertEqual('quarantined', self.c.recovery_status()['state'])
+        self.answers[b]['epoch'] = epoch
+        self.answers[b]['rev'] = 99
+        self.assertEqual(0, self.c.homes_once())
+        self.assertEqual('quarantined', self.c.recovery_status()['state'])
+
+    def test_quarantine_holds_when_a_member_left_the_directory(self):
+        a, b, epoch = self.ready_group()
+        self.c.db.execute("DELETE FROM region WHERE region='beta'")
+        self.assertEqual(0, self.c.homes_once())
         self.assertEqual('quarantined', self.c.recovery_status()['state'])

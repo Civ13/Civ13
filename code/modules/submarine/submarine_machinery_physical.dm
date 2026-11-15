@@ -9,7 +9,7 @@ var/global/list/sub_physical_machines = list()
 	icon_state = "transponder"
 	density = TRUE
 	anchored = TRUE
-	var/health = 100
+	health = 100
 	var/max_health = 100
 	var/panel_open = FALSE
 	var/datum/submarine/my_sub
@@ -52,21 +52,21 @@ var/global/list/sub_physical_machines = list()
 
 /obj/structure/machinery/sub_physical/attackby(obj/item/W, mob/user)
 	// Screwdriver: Open/Close Panels
-	if(istype(W, /obj/item/weapon/screwdriver))
+	if(is_tool(W, TOOL_SCREWDRIVER))
 		panel_open = !panel_open
 		user.visible_message("<span class='notice'>[user] [panel_open ? "opens" : "closes"] the maintenance panel on [src].</span>")
 		playsound(src.loc, 'sound/items/Screwdriver.ogg', 50, 1)
 		return
 
 	// Wrench: Secure/Unsecure (Logic for specific components)
-	if(istype(W, /obj/item/weapon/wrench))
+	if(is_tool(W, TOOL_WRENCH))
 		anchored = !anchored
 		user.visible_message("<span class='notice'>[user] [anchored ? "secures" : "unsecures"] [src].</span>")
 		playsound(src.loc, 'sound/items/ratchet.ogg', 50, 1)
 		return
 
 	// Welder: Repair structural damage
-	if(istype(W, /obj/item/weapon/weldingtool))
+	if(is_tool(W, TOOL_WELDER))
 		if(health < max_health)
 			user.visible_message("<span class='notice'>[user] begins repairing [src] with [W].</span>")
 			if(do_after(user, 40, src))
@@ -77,7 +77,7 @@ var/global/list/sub_physical_machines = list()
 		return
 
 	// Multitool: Diagnostic check
-	if(istype(W, /obj/item/weapon/wirecutters) || istype(W, /obj/item/weapon/screwdriver))
+	if(is_tool(W, TOOL_WIRECUTTER) || is_tool(W, TOOL_SCREWDRIVER))
 		to_chat(user, "<span class='notice'><b>Diagnostic Output for [src]:</b></span>")
 		to_chat(user, "<span class='notice'>Integrity: [health]/[max_health] ([get_efficiency()*100]%)</span>")
 		return
@@ -91,7 +91,7 @@ var/global/list/sub_physical_machines = list()
 	icon = 'icons/obj/machines/submarine.dmi'
 	density = TRUE
 	anchored = TRUE
-	var/health = 100
+	health = 100
 	var/max_health = 100
 	var/datum/submarine/my_sub
 
@@ -101,13 +101,13 @@ var/global/list/sub_physical_machines = list()
 		my_sub = global.all_submarines[1]
 
 /obj/structure/sub_physical/attackby(obj/item/W, mob/user)
-	if(istype(W, /obj/item/weapon/weldingtool))
+	if(is_tool(W, TOOL_WELDER))
 		if(health < max_health)
 			user.visible_message("<span class='notice'>[user] repairs [src].</span>")
 			if(do_after(user, 30, src))
 				health = min(max_health, health + 25)
 		return
-	if(istype(W, /obj/item/weapon/screwdriver) || istype(W, /obj/item/weapon/wirecutters))
+	if(is_tool(W, TOOL_SCREWDRIVER) || is_tool(W, TOOL_WIRECUTTER))
 		to_chat(user, "<span class='notice'>Integrity: [health]%</span>")
 		return
 	..()
@@ -445,13 +445,13 @@ var/global/list/sub_physical_machines = list()
 		to_chat(user, "<span class='notice'>You close the ventilation duct. Air flow stops.</span>")
 
 /obj/structure/machinery/sub_physical/vent_duct/attackby(obj/item/W, mob/user)
-	if(istype(W, /obj/item/weapon/weldingtool))
+	if(is_tool(W, TOOL_WELDER))
 		if(health < max_health)
 			user.visible_message("<span class='notice'>[user] repairs [src].</span>")
 			if(do_after(user, 25, src))
 				health = min(max_health, health + 20)
 		return
-	if(istype(W, /obj/item/weapon/screwdriver) || istype(W, /obj/item/weapon/wirecutters))
+	if(is_tool(W, TOOL_SCREWDRIVER) || is_tool(W, TOOL_WIRECUTTER))
 		to_chat(user, "<span class='notice'>Network: [vent_id] | Status: [active ? "OPEN" : "CLOSED"]</span>")
 		return
 	..()
@@ -654,7 +654,7 @@ var/global/list/sub_physical_machines = list()
 		return
 
 	// Service/Unload
-	if(istype(I, /obj/item/weapon/crowbar) || istype(I, /obj/item/weapon/wrench))
+	if(is_tool(I, TOOL_CROWBAR) || is_tool(I, TOOL_WRENCH))
 		if(my_sub.tubes_loaded[tube_id])
 			user.visible_message("<span class='notice'>[user] begins manually extracting the torpedo from tube [tube_id].</span>")
 			if(do_after(user, 80, src))

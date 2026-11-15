@@ -18,14 +18,15 @@
 	max_positions = 1
 
 
+/datum/job/british/medieval_lord/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/british/medieval_lord/job_loadout = list(
+	/obj/item/clothing/shoes/medieval = slot_shoes,
+	/obj/item/clothing/under/medieval = slot_w_uniform,
+	/obj/item/clothing/suit/armor/medieval/iron_chestplate/red = slot_wear_suit)
 /datum/job/british/medieval_lord/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval(H), slot_w_uniform)
-//jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/medieval/iron_chestplate/red(H), slot_wear_suit)
+	equip_loadout(H)
 //head
 	if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/noblehat1(H), slot_head)
@@ -43,14 +44,7 @@
 	uniform.attackby(h, H)
 	to_chat(world, "<big><b>[H.real_name] is the British Lord!</b></big>")
 	H.add_note("Role", "You are a <b>[title]</b>, the absolute Lord of this army. Organize your men!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_HIGH)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	give_random_name(H)
 
 	return TRUE
@@ -71,35 +65,28 @@
 	min_positions = 1
 	max_positions = 5
 
+/datum/job/british/medieval_knight/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_MEDIUM_LOW)
+/datum/job/british/medieval_knight/job_loadout = list(
+	/obj/item/clothing/shoes/medieval/knight = slot_shoes,
+	/obj/item/clothing/under/medieval/red = slot_w_uniform,
+	/obj/item/clothing/suit/armor/medieval/red = slot_wear_suit,
+	/obj/item/clothing/head/helmet/medieval = slot_head,
+	/obj/item/weapon/attachment/scope/adjustable/binoculars = slot_l_store,
+	/obj/item/weapon/material/kitchen/utensil/knife/military = slot_r_store,
+	/obj/item/weapon/material/sword/armingsword/iron = slot_belt,
+	/obj/item/weapon/material/sword/longsword = slot_back,
+	/obj/item/weapon/shield/iron/semioval = slot_l_hand)
 /datum/job/british/medieval_knight/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/knight(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/red(H), slot_w_uniform)
-//jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/medieval/red(H), slot_wear_suit)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/military(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/armingsword/iron(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/longsword(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/shield/iron/semioval(H), slot_l_hand)
+	equip_loadout(H)
 
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/sheath/longsword/h = new /obj/item/clothing/accessory/storage/sheath/longsword(null)
 	uniform.attackby(h, H)
 
 	H.add_note("Role", "You are a <b>[title]</b>, a landed citizen of the Realm. You are a heavy soldier, so protect the Lord!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_HIGH)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	give_random_name(H)
 
 
@@ -119,6 +106,7 @@
 	min_positions = 5
 	max_positions = 25
 
+/datum/job/british/medieval_swordsman/job_stats = list("strength" = STAT_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_MEDIUM_LOW)
 /datum/job/british/medieval_swordsman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -148,14 +136,7 @@
 	uniform.attackby(h, H)
 
 	H.add_note("Role", "You are a <b>[title]</b>, a trained swordsman. You have good armor, compared to the lower-ranking conscripted militias and levies.")
-	H.setStat("strength", STAT_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_HIGH)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	give_random_name(H)
 
 
@@ -175,6 +156,7 @@
 	min_positions = 12
 	max_positions = 80
 
+/datum/job/british/medieval_spearman/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_LOW, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_MEDIUM_LOW)
 /datum/job/british/medieval_spearman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -211,14 +193,7 @@
 	uniform.attackby(h, H)
 
 	H.add_note("Role", "You are a <b>[title]</b>, a levied peasant spearman. You have basic armor and a shield. You are in charge of fighting in the frontlines!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	give_random_name(H)
 
 
@@ -238,6 +213,7 @@
 	min_positions = 6
 	max_positions = 40
 
+/datum/job/british/medieval_archer/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_HIGH, "rifle" = STAT_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_LOW, "bows" = STAT_MEDIUM_HIGH, "medical" = STAT_MEDIUM_LOW)
 /datum/job/british/medieval_archer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -265,14 +241,7 @@
 	uniform.attackby(h, H)
 
 	H.add_note("Role", "You are a <b>[title]</b>, a levied peasant archer. You have basic armor and a bow and arrow. You are in charge of harassing the enemy troops from a safe distance!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_MEDIUM_HIGH)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_MEDIUM_HIGH)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	give_random_name(H)
 
 	return TRUE
@@ -291,6 +260,7 @@
 	min_positions = 18
 	max_positions = 100
 
+/datum/job/british/medieval_militia/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_HIGH, "rifle" = STAT_LOW, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_LOW, "pistol" = STAT_LOW, "bows" = STAT_LOW, "medical" = STAT_NORMAL)
 /datum/job/british/medieval_militia/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -335,14 +305,7 @@
 	uniform.attackby(h, H)
 
 	H.add_note("Role", "You are a <b>[title]</b>, a levied peasant militia with no combat experience. You are barely armed, so be sure to loot!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_MEDIUM_HIGH)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_LOW)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_LOW)
-	H.setStat("medical", STAT_NORMAL)
+	apply_job_stats(H)
 	give_random_name(H)
 
 	return TRUE
@@ -366,17 +329,17 @@
 	min_positions = 1
 	max_positions = 1
 
+/datum/job/french/medieval_lord/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/french/medieval_lord/job_loadout = list(
+	/obj/item/clothing/shoes/medieval = slot_shoes,
+	/obj/item/clothing/under/medieval = slot_w_uniform,
+	/obj/item/clothing/suit/armor/medieval/iron_chestplate/blue = slot_wear_suit,
+	/obj/item/clothing/gloves/thick/swat/officer = slot_gloves)
 /datum/job/french/medieval_lord/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval(H), slot_w_uniform)
-//jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/medieval/iron_chestplate/blue(H), slot_wear_suit)
-
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/swat/officer(H), slot_gloves)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/sheath/longer/h = new /obj/item/clothing/accessory/storage/sheath/longer(null)
 	uniform.attackby(h, H)
@@ -394,14 +357,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/shield/steel(H), slot_l_hand)
 	to_chat(world, "<big><b>[H.real_name] is the French Lord!</b></big>")
 	H.add_note("Role", "You are a <b>[title]</b>, the absolute Lord of this army. Organize your men!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_HIGH)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	give_random_name(H)
 
 	return TRUE
@@ -422,16 +378,17 @@
 	min_positions = 1
 	max_positions = 5
 
+/datum/job/french/medieval_knight/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_MEDIUM_LOW)
+/datum/job/french/medieval_knight/job_loadout = list(
+	/obj/item/clothing/shoes/medieval/knight = slot_shoes,
+	/obj/item/clothing/under/medieval/blue = slot_w_uniform,
+	/obj/item/clothing/suit/armor/medieval = slot_wear_suit,
+	/obj/item/clothing/gloves/gauntlets = slot_gloves)
 /datum/job/french/medieval_knight/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/knight(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/blue(H), slot_w_uniform)
-//jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/medieval(H), slot_wear_suit)
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/gauntlets(H), slot_gloves)
+	equip_loadout(H)
 
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/sheath/longsword/h = new /obj/item/clothing/accessory/storage/sheath/longsword(null)
@@ -446,14 +403,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/military(H), slot_r_store)
 
 	H.add_note("Role", "You are a <b>[title]</b>, a landed citizen of the Realm. You are a heavy soldier, so protect the Lord!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_HIGH)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	give_random_name(H)
 
 	return TRUE
@@ -472,12 +422,14 @@
 	min_positions = 5
 	max_positions = 25
 
+/datum/job/french/medieval_swordsman/job_stats = list("strength" = STAT_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_MEDIUM_LOW)
+/datum/job/french/medieval_swordsman/job_loadout = list(
+	/obj/item/clothing/shoes/medieval/knight = slot_shoes,
+	/obj/item/clothing/gloves/thick/leather = slot_gloves)
 /datum/job/french/medieval_swordsman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/knight(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/leather(H), slot_gloves)
+	equip_loadout(H)
 	if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/blue(H), slot_w_uniform)
 	else
@@ -499,14 +451,7 @@
 	var/obj/item/clothing/accessory/storage/sheath/knife/h = new /obj/item/clothing/accessory/storage/sheath/knife(null)
 	uniform.attackby(h, H)
 	H.add_note("Role", "You are a <b>[title]</b>, a trained swordsman. You have good armor, compared to the lower-ranking conscripted militias and levies.")
-	H.setStat("strength", STAT_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_HIGH)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	give_random_name(H)
 
 	return TRUE
@@ -525,11 +470,14 @@
 	min_positions = 12
 	max_positions = 80
 
+/datum/job/french/medieval_spearman/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_LOW, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_MEDIUM_LOW)
+/datum/job/french/medieval_spearman/job_loadout = list(
+	/obj/item/clothing/shoes/medieval = slot_shoes,
+	/obj/item/clothing/gloves/thick/leather = slot_gloves)
 /datum/job/french/medieval_spearman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/leather(H), slot_gloves)
+	equip_loadout(H)
 //clothes
 	if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/blue(H), slot_w_uniform)
@@ -561,14 +509,7 @@
 	var/obj/item/clothing/accessory/storage/sheath/knife/h = new /obj/item/clothing/accessory/storage/sheath/knife(null)
 	uniform.attackby(h, H)
 	H.add_note("Role", "You are a <b>[title]</b>, a levied peasant spearman. You have basic armor and a shield. You are in charge of fighting in the frontlines!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	give_random_name(H)
 
 	return TRUE
@@ -587,6 +528,7 @@
 	min_positions = 6
 	max_positions = 40
 
+/datum/job/french/medieval_archer/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_HIGH, "rifle" = STAT_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_LOW, "bows" = STAT_MEDIUM_HIGH, "medical" = STAT_MEDIUM_LOW)
 /datum/job/french/medieval_archer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -614,14 +556,7 @@
 	var/obj/item/clothing/accessory/storage/sheath/knife/h = new /obj/item/clothing/accessory/storage/sheath/knife(null)
 	uniform.attackby(h, H)
 	H.add_note("Role", "You are a <b>[title]</b>, a levied peasant archer. You have basic armor and a crossbow and bolts. You are in charge of harassing the enemy troops from a safe distance!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_MEDIUM_HIGH)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_MEDIUM_HIGH)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	give_random_name(H)
 
 	return TRUE
@@ -640,6 +575,7 @@
 	min_positions = 18
 	max_positions = 100
 
+/datum/job/french/medieval_militia/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_HIGH, "rifle" = STAT_LOW, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_LOW, "pistol" = STAT_LOW, "bows" = STAT_LOW, "medical" = STAT_NORMAL)
 /datum/job/french/medieval_militia/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -683,14 +619,7 @@
 	var/obj/item/clothing/accessory/storage/sheath/knife/h = new /obj/item/clothing/accessory/storage/sheath/knife(null)
 	uniform.attackby(h, H)
 	H.add_note("Role", "You are a <b>[title]</b>, a levied peasant militia with no combat experience. You are barely armed, so be sure to loot!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_MEDIUM_HIGH)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_LOW)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_LOW)
-	H.setStat("medical", STAT_NORMAL)
+	apply_job_stats(H)
 	give_random_name(H)
 
 	return TRUE
@@ -718,15 +647,16 @@
 	max_positions = 1
 
 
+/datum/job/french/crusader_lord/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "throwing" = STAT_MEDIUM_HIGH)
+/datum/job/french/crusader_lord/job_loadout = list(
+	/obj/item/clothing/shoes/medieval/knight = slot_shoes,
+	/obj/item/clothing/under/medieval = slot_w_uniform,
+	/obj/item/clothing/gloves/thick/swat/officer = slot_gloves,
+	/obj/item/clothing/suit/armor/medieval/templar = slot_wear_suit)
 /datum/job/french/crusader_lord/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/knight(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/swat/officer(H), slot_gloves)
-//jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/medieval/templar(H), slot_wear_suit)
+	equip_loadout(H)
 //head
 	if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/crusaderking(H), slot_head)
@@ -745,15 +675,7 @@
 
 	to_chat(world, "<big><b>[H.real_name] is the French Lord!</b></big>")
 	H.add_note("Role", "You are a <b>[title]</b>, the Leader of the Templar Knights in the Holy Land. Defend Christianity!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_HIGH)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("throwing", STAT_MEDIUM_HIGH)
+	apply_job_stats(H)
 	give_random_name(H)
 
 
@@ -778,16 +700,16 @@
 	max_positions = 10
 
 
+/datum/job/french/crusader_templar/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_MEDIUM_LOW)
+/datum/job/french/crusader_templar/job_loadout = list(
+	/obj/item/clothing/shoes/medieval/knight = slot_shoes,
+	/obj/item/clothing/under/medieval = slot_w_uniform,
+	/obj/item/clothing/suit/armor/medieval/templar = slot_wear_suit,
+	/obj/item/clothing/head/helmet/medieval/templar = slot_head)
 /datum/job/french/crusader_templar/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/knight(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval(H), slot_w_uniform)
-//jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/medieval/templar(H), slot_wear_suit)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/templar(H), slot_head)
+	equip_loadout(H)
 	if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/weapon/shield/iron/semioval/templar(H), slot_l_hand)
 	else
@@ -803,14 +725,7 @@
 	uniform.attackby(h, H)
 
 	H.add_note("Role", "You are a <b>[title]</b>, a Knight who joined the Templars. Lead your brethren to victory!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_HIGH)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	give_random_name(H)
 
 
@@ -831,23 +746,21 @@
 	min_positions = 8
 	max_positions = 50
 
+/datum/job/french/crusader_heavy/job_stats = list("strength" = STAT_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_MEDIUM_LOW)
+/datum/job/french/crusader_heavy/job_loadout = list(
+	/obj/item/clothing/shoes/medieval/knight = slot_shoes,
+	/obj/item/clothing/under/medieval/crusader = slot_w_uniform,
+	/obj/item/clothing/gloves/thick/leather = slot_gloves,
+	/obj/item/clothing/suit/armor/medieval/chainmail = slot_wear_suit,
+	/obj/item/clothing/head/helmet/medieval/coif_helmet = slot_head,
+	/obj/item/weapon/material/sword/longsword/iron = slot_back,
+	/obj/item/weapon/material/hatchet/battleaxe = slot_belt,
+	/obj/item/weapon/material/kitchen/utensil/knife/blackknife = slot_r_store,
+	/obj/item/weapon/horn = slot_l_store)
 /datum/job/french/crusader_heavy/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/knight(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/crusader(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/leather(H), slot_gloves)
-//jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/medieval/chainmail(H), slot_wear_suit)
-
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/coif_helmet(H), slot_head)
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/longsword/iron(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/battleaxe(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/blackknife(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/horn(H), slot_l_store)
+	equip_loadout(H)
 	if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/weapon/shield/iron/semioval/templar(H), slot_l_hand)
 	else
@@ -858,14 +771,7 @@
 	uniform.attackby(h, H)
 
 	H.add_note("Role", "You are a <b>[title]</b>, a trained swordsman and heavy infantry of the order. Fight the infidels!")
-	H.setStat("strength", STAT_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_HIGH)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	give_random_name(H)
 
 
@@ -885,17 +791,17 @@
 	min_positions = 12
 	max_positions = 80
 
+/datum/job/french/crusader_light/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_LOW, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_MEDIUM_LOW)
+/datum/job/french/crusader_light/job_loadout = list(
+	/obj/item/clothing/shoes/medieval = slot_shoes,
+	/obj/item/clothing/under/medieval/crusader = slot_w_uniform,
+	/obj/item/clothing/gloves/thick/leather = slot_gloves,
+	/obj/item/clothing/suit/armor/medieval/chainmail = slot_wear_suit)
 /datum/job/french/crusader_light/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/crusader(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/leather(H), slot_gloves)
-
-//jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/medieval/chainmail(H), slot_wear_suit)
+	equip_loadout(H)
 
 //head
 	if (prob(50))
@@ -921,14 +827,7 @@
 
 
 	H.add_note("Role", "You are a <b>[title]</b>, newly arrived member of the Templar Order. Assist your fellow members in defending the faith!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	give_random_name(H)
 
 
@@ -950,36 +849,30 @@
 	max_positions = 5
 
 
+/datum/job/french/crusader_priest/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_HIGH, "rifle" = STAT_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_LOW, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_MEDIUM_HIGH)
+/datum/job/french/crusader_priest/job_loadout = list(
+	/obj/item/clothing/shoes/medieval = slot_shoes,
+	/obj/item/clothing/gloves/thick/swat/officer = slot_gloves,
+	/obj/item/clothing/under/chaplain = slot_w_uniform,
+	/obj/item/clothing/head/chaplain_hood = slot_head,
+	/obj/item/clothing/suit/storage/jacket/chaplain = slot_wear_suit,
+	/obj/item/stack/medical/bruise_pack/bint = slot_l_hand,
+	/obj/item/weapon/doctor_handbook = slot_l_store,
+	/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/waterskin/cognac = slot_wear_id,
+	/obj/item/weapon/storage/firstaid/surgery_bronze = slot_belt,
+	/obj/item/weapon/material/kitchen/utensil/knife/fish = slot_r_store,
+	/obj/item/weapon/shield/red_buckler = slot_belt)
 /datum/job/french/crusader_priest/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/swat/officer(H), slot_gloves)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/chaplain(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/chaplain_hood(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/chaplain(H), slot_wear_suit)
-
-	H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/bint(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/doctor_handbook(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/waterskin/cognac(H), slot_wear_id)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/surgery_bronze(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/fish(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/shield/red_buckler(H), slot_belt)
+	equip_loadout(H)
 
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/sheath/knife/h = new /obj/item/clothing/accessory/storage/sheath/knife(null)
 	uniform.attackby(h, H)
 
 	H.add_note("Role", "You are a <b>[title]</b>, an anointed member of the Templar Order. Take care of the injured soldiers and keep the morale up!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_MEDIUM_HIGH)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_MEDIUM_HIGH)
+	apply_job_stats(H)
 	give_random_name(H)
 
 	return TRUE
@@ -1015,24 +908,22 @@
 	min_positions = 1
 	max_positions = 1
 
+/datum/job/arab/medieval_lord/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_HIGH, "swords" = STAT_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "throwing" = STAT_MEDIUM_HIGH)
+/datum/job/arab/medieval_lord/job_loadout = list(
+	/obj/item/clothing/shoes/medieval/emirate = slot_shoes,
+	/obj/item/clothing/under/medieval/emirate = slot_w_uniform,
+	/obj/item/clothing/gloves/thick/swat/officer = slot_gloves,
+	/obj/item/clothing/suit/armor/medieval/emirate = slot_wear_suit,
+	/obj/item/clothing/head/helmet/medieval/emirate = slot_head,
+	/obj/item/weapon/attachment/scope/adjustable/binoculars = slot_l_store,
+	/obj/item/weapon/material/kitchen/utensil/knife/fancy/silver = slot_r_store,
+	/obj/item/weapon/material/sword/saif = slot_belt,
+	/obj/item/weapon/material/sword/scimitar = slot_back,
+	/obj/item/weapon/shield/steel = slot_l_hand)
 /datum/job/arab/medieval_lord/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/emirate(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/emirate(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/swat/officer(H), slot_gloves)
-//jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/medieval/emirate(H), slot_wear_suit)
-//head
-
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/emirate(H), slot_head)
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/fancy/silver(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/saif(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/scimitar(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/shield/steel(H), slot_l_hand)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/sheath/thrown/h = new /obj/item/clothing/accessory/storage/sheath/thrown(null)
 	uniform.attackby(h, H)
@@ -1048,15 +939,7 @@
 
 	to_chat(world, "<big><b>[H.real_name] is the Emir!</b></big>")
 	H.add_note("Role", "You are a <b>[title]</b>, the military leader of this group of soldiers. Defeat the crusaders!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_HIGH)
-	H.setStat("swords", STAT_HIGH)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("throwing", STAT_MEDIUM_HIGH)
+	apply_job_stats(H)
 	give_random_name(H)
 
 	return TRUE
@@ -1078,15 +961,16 @@
 	min_positions = 2
 	max_positions = 10
 
+/datum/job/arab/medieval_knight/job_stats = list("strength" = STAT_VERY_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_HIGH, "swords" = STAT_VERY_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_MEDIUM_LOW)
+/datum/job/arab/medieval_knight/job_loadout = list(
+	/obj/item/clothing/shoes/medieval/knight = slot_shoes,
+	/obj/item/clothing/gloves/gauntlets = slot_gloves,
+	/obj/item/clothing/under/medieval/arabic_tunic = slot_w_uniform,
+	/obj/item/clothing/suit/armor/medieval/hauberk = slot_wear_suit)
 /datum/job/arab/medieval_knight/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/knight(H), slot_shoes)
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/gauntlets(H), slot_gloves)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/arabic_tunic(H), slot_w_uniform)
-//jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/medieval/hauberk(H), slot_wear_suit)
+	equip_loadout(H)
 
 //head
 	if (prob(65))
@@ -1105,14 +989,7 @@
 	uniform.attackby(h, H)
 
 	H.add_note("Role", "You are a <b>[title]</b>, a member of the slave-soldier caste of the Caliphate. Assist the <b>Emir</b> organize the troops!")
-	H.setStat("strength", STAT_VERY_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_HIGH)
-	H.setStat("swords", STAT_VERY_HIGH)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	give_random_name(H)
 
 	return TRUE
@@ -1132,6 +1009,7 @@
 	min_positions = 12
 	max_positions = 80
 
+/datum/job/arab/medieval_swordsman/job_stats = list("strength" = STAT_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_VERY_HIGH, "swords" = STAT_VERY_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_MEDIUM_LOW, "throwing" = STAT_MEDIUM_HIGH)
 /datum/job/arab/medieval_swordsman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -1169,15 +1047,7 @@
 	uniform.attackby(thrown4, H)
 
 	H.add_note("Role", "You are a <b>[title]</b>, an arabic swordsman. Use hit-and-run tactics to defeat the infidels!")
-	H.setStat("strength", STAT_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_VERY_HIGH)
-	H.setStat("swords", STAT_VERY_HIGH)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("throwing", STAT_MEDIUM_HIGH)
+	apply_job_stats(H)
 	give_random_name(H)
 
 	return TRUE
@@ -1197,11 +1067,14 @@
 	min_positions = 12
 	max_positions = 80
 
+/datum/job/arab/medieval_spearman/job_stats = list("strength" = STAT_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_LOW, "dexterity" = STAT_VERY_HIGH, "swords" = STAT_HIGH, "pistol" = STAT_LOW, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_MEDIUM_LOW)
+/datum/job/arab/medieval_spearman/job_loadout = list(
+	/obj/item/clothing/shoes/medieval/arab = slot_shoes,
+	/obj/item/clothing/gloves/thick/leather = slot_gloves)
 /datum/job/arab/medieval_spearman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/arab(H), slot_shoes)
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/leather(H), slot_gloves)
+	equip_loadout(H)
 //clothes
 	var/randcloth = pick(1,2,3)
 	if (randcloth == 1)
@@ -1232,14 +1105,7 @@
 	uniform.attackby(h, H)
 
 	H.add_note("Role", "You are a <b>[title]</b>, an arabic pikeman. Use hit-and-run tactics to defeat the infidels!")
-	H.setStat("strength", STAT_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_VERY_HIGH)
-	H.setStat("swords", STAT_HIGH)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	give_random_name(H)
 
 	return TRUE
@@ -1259,6 +1125,7 @@
 	min_positions = 6
 	max_positions = 40
 
+/datum/job/arab/medieval_archer/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_HIGH, "rifle" = STAT_LOW, "dexterity" = STAT_VERY_HIGH, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_LOW, "bows" = STAT_VERY_HIGH, "medical" = STAT_MEDIUM_LOW)
 /datum/job/arab/medieval_archer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -1289,14 +1156,7 @@
 	var/obj/item/clothing/accessory/storage/sheath/h = new /obj/item/clothing/accessory/storage/sheath(null)
 	uniform.attackby(h, H)
 	H.add_note("Role", "You are a <b>[title]</b>, an arabic archer. Use hit-and-run tactics to defeat the infidels!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_MEDIUM_HIGH)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_VERY_HIGH)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_VERY_HIGH)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	give_random_name(H)
 
 	return TRUE
@@ -1318,18 +1178,18 @@
 	min_positions = 1
 	max_positions = 5
 
+/datum/job/arab/imam/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_HIGH, "rifle" = STAT_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_LOW, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_MEDIUM_HIGH)
+/datum/job/arab/imam/job_loadout = list(
+	/obj/item/clothing/shoes/medieval/arab = slot_shoes,
+	/obj/item/clothing/under/medieval/arabic_tunic = slot_w_uniform,
+	/obj/item/clothing/head/turban/imam = slot_head,
+	/obj/item/weapon/shield/arab_buckler = slot_back,
+	/obj/item/stack/medical/bruise_pack/bint = slot_l_hand,
+	/obj/item/weapon/reagent_containers/pill/opium = slot_l_ear)
 /datum/job/arab/imam/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/arab(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/arabic_tunic(H), slot_w_uniform)
-
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/turban/imam(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/weapon/shield/arab_buckler(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/bint(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/pill/opium(H), slot_l_ear)
+	equip_loadout(H)
 	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/pill/opium(H), slot_r_ear)
 	H.equip_to_slot_or_del(new /obj/item/weapon/doctor_handbook(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/waterskin/tea(H), slot_wear_id)
@@ -1341,14 +1201,7 @@
 	uniform.attackby(h, H)
 
 	H.add_note("Role", "You are an <b>[title]</b>, an Islamic religious leader.  Take care of the injured soldiers and keep the morale up!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_MEDIUM_HIGH)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_MEDIUM_HIGH)
+	apply_job_stats(H)
 	give_random_name(H)
 
 	return TRUE
@@ -1372,15 +1225,16 @@
 	min_positions = 1
 	max_positions = 1
 
+/datum/job/german/lord/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/german/lord/job_loadout = list(
+	/obj/item/clothing/shoes/medieval = slot_shoes,
+	/obj/item/clothing/under/medieval = slot_w_uniform,
+	/obj/item/clothing/gloves/thick/swat/officer = slot_gloves,
+	/obj/item/clothing/suit/armor/medieval/chainmail = slot_wear_suit)
 /datum/job/german/lord/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/swat/officer(H), slot_gloves)
-//jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/medieval/chainmail(H), slot_wear_suit)
+	equip_loadout(H)
 //head
 	if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/noblehat1(H), slot_head)
@@ -1392,14 +1246,7 @@
 	H.equip_to_slot_or_del(new/obj/item/weapon/key/civ/hall(H), slot_l_store)
 	to_chat(world, "<big><b>[H.real_name] is the Bohemian Lord!</b></big>")
 	H.add_note("Role", "You are a <b>[title]</b>, the absolute Lord of this state. Organize your subjects!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_HIGH)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	give_random_name(H)
 
 	return TRUE
@@ -1420,12 +1267,14 @@
 	min_positions = 1
 	max_positions = 1
 
+/datum/job/german/retainer/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/german/retainer/job_loadout = list(
+	/obj/item/clothing/shoes/medieval = slot_shoes,
+	/obj/item/clothing/under/medieval = slot_w_uniform)
 /datum/job/german/retainer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval(H), slot_w_uniform)
+	equip_loadout(H)
 //jacket
 //head
 	if (prob(50))
@@ -1439,14 +1288,7 @@
 
 	to_chat(world, "<big><b>[H.real_name] is the Bohemian Retainer!</b></big>")
 	H.add_note("Role", "You are a <b>[title]</b>, the retainer to the Lord of this state. Recruit staff to serve the lord in the castle and keep them well mannered! Keep the lord safe!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_HIGH)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	give_random_name(H)
 
 	return TRUE
@@ -1466,31 +1308,23 @@
 	min_positions = 1
 	max_positions = 3
 
+/datum/job/german/medieval_knight/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_MEDIUM_LOW)
+/datum/job/german/medieval_knight/job_loadout = list(
+	/obj/item/clothing/shoes/medieval/knight = slot_shoes,
+	/obj/item/clothing/under/medieval/blue = slot_w_uniform,
+	/obj/item/clothing/suit/armor/medieval/red = slot_wear_suit,
+	/obj/item/clothing/head/helmet/medieval = slot_head,
+	/obj/item/weapon/material/sword/longsword = slot_belt,
+	/obj/item/weapon/shield/iron/semioval = slot_back,
+	/obj/item/weapon/key/civ/hall = slot_r_store,
+	/obj/item/stack/money/escudo/ten = slot_l_store)
 /datum/job/german/medieval_knight/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/knight(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/blue(H), slot_w_uniform)
-//jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/medieval/red(H), slot_wear_suit)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval(H), slot_head)
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/longsword(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/shield/iron/semioval(H), slot_back)
-	H.equip_to_slot_or_del(new/obj/item/weapon/key/civ/hall(H), slot_r_store)
-	H.equip_to_slot_or_del(new/obj/item/stack/money/escudo/ten(H), slot_l_store)
+	equip_loadout(H)
 
 	H.add_note("Role", "You are a <b>[title]</b>, a landed citizen of the Realm. You are a heavy soldier, so protect the Lord!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_HIGH)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	give_random_name(H)
 
 	return TRUE
@@ -1507,6 +1341,7 @@
 	min_positions = 5
 	max_positions = 15
 
+/datum/job/german/medieval_swordsman/job_stats = list("strength" = STAT_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_MEDIUM_LOW)
 /datum/job/german/medieval_swordsman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -1532,14 +1367,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/armingsword(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/shield/iron/semioval(H), slot_back)
 	H.add_note("Role", "You are a <b>[title]</b>, a trained swordsman. You have good armor, compared to the lower-ranking conscripted militias and levies. Protect the Lord and his city!")
-	H.setStat("strength", STAT_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_HIGH)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	give_random_name(H)
 
 	return TRUE
@@ -1558,6 +1386,7 @@
 	min_positions = 1
 	max_positions = 20
 
+/datum/job/german/priest/job_stats = list("strength" = STAT_MEDIUM_LOW, "crafting" = STAT_NORMAL, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_HIGH)
 /datum/job/german/priest/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -1574,14 +1403,7 @@
 	H.equip_to_slot_or_del(new/obj/item/stack/money/dollar/twenty(H), slot_l_store)
 
 	H.add_note("Role", "You are a <b>[title]</b>, in charge of the colony's religious affairs, assisting the doctor, and if possible, of converting the natives...")
-	H.setStat("strength", STAT_MEDIUM_LOW)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_HIGH)
+	apply_job_stats(H)
 
 	return TRUE
 
@@ -1598,6 +1420,11 @@
 	min_positions = 2
 	max_positions = 10
 
+/datum/job/german/prospector/job_stats = list("strength" = STAT_HIGH, "crafting" = STAT_MEDIUM_HIGH, "rifle" = STAT_NORMAL, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_MEDIUM_LOW)
+/datum/job/german/prospector/job_loadout = list(
+	/obj/item/weapon/material/pickaxe = slot_belt,
+	/obj/item/weapon/material/shovel = slot_back,
+	/obj/item/stack/money/real/fifty = slot_l_store)
 /datum/job/german/prospector/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
@@ -1628,18 +1455,9 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(H), slot_head)
 
-	H.equip_to_slot_or_del(new/obj/item/weapon/material/pickaxe(H), slot_belt)
-	H.equip_to_slot_or_del(new/obj/item/weapon/material/shovel(H), slot_back)
-	H.equip_to_slot_or_del(new/obj/item/stack/money/real/fifty(H), slot_l_store)
+	equip_loadout(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a miner who is tasked with collecting metals for the local lord and smithy. Explore the area, mine, and sell to the <b>Merchant or Blacksmith</b> what you find!")
-	H.setStat("strength", STAT_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_HIGH)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 
 	return TRUE
 
@@ -1656,6 +1474,12 @@
 	min_positions = 3
 	max_positions = 10
 
+/datum/job/german/farmer/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_HIGH, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_NORMAL, "farming" = STAT_VERY_HIGH)
+/datum/job/german/farmer/job_loadout = list(
+	/obj/item/weapon/storage/belt/leather/farmer = slot_belt,
+	/obj/item/weapon/plough = slot_l_hand,
+	/obj/item/weapon/material/kitchen/utensil/knife = slot_r_store,
+	/obj/item/stack/money/real/fifty = slot_l_store)
 /datum/job/german/farmer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
@@ -1686,21 +1510,10 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(H), slot_head)
 
-	H.equip_to_slot_or_del(new/obj/item/weapon/storage/belt/leather/farmer(H), slot_belt)
-	H.equip_to_slot_or_del(new/obj/item/weapon/plough(H), slot_l_hand)
-	H.equip_to_slot_or_del(new/obj/item/weapon/material/kitchen/utensil/knife(H), slot_r_store)
-	H.equip_to_slot_or_del(new/obj/item/stack/money/real/fifty(H), slot_l_store)
+	equip_loadout(H)
 
 	H.add_note("Role", "You are a <b>[title]</b>, specialized in plant growth, animal husbandry, and cooking. Keep the colony fed!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_HIGH)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_NORMAL)
-	H.setStat("farming", STAT_VERY_HIGH)
+	apply_job_stats(H)
 
 	return TRUE
 
@@ -1718,6 +1531,7 @@
 	min_positions = 1
 	max_positions = 2
 
+/datum/job/german/blacksmith/job_stats = list("strength" = STAT_VERY_HIGH, "crafting" = STAT_VERY_VERY_HIGH, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_HIGH, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_VERY_LOW, "medical" = STAT_VERY_LOW)
 /datum/job/german/blacksmith/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
@@ -1753,14 +1567,7 @@
 	H.equip_to_slot_or_del(new/obj/item/stack/money/dollar/twenty(H), slot_l_store)
 
 	H.add_note("Role", "You are a <b>[title]</b>. Your job is to craft weapons and guns. However, you probably should follow the <b>Governor's</b> orders!")
-	H.setStat("strength", STAT_VERY_HIGH)
-	H.setStat("crafting", STAT_VERY_VERY_HIGH)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_HIGH)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
-	H.setStat("bows", STAT_VERY_LOW)
-	H.setStat("medical", STAT_VERY_LOW)
+	apply_job_stats(H)
 
 	return TRUE
 
@@ -1778,6 +1585,11 @@
 	min_positions = 1
 	max_positions = 2
 
+/datum/job/german/inkeeper/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_NORMAL)
+/datum/job/german/inkeeper/job_loadout = list(
+	/obj/item/stack/money/real/fifty = slot_l_store,
+	/obj/item/weapon/key/civ/inn = slot_r_store,
+	/obj/item/weapon/material/kitchen/utensil/knife/butcher = slot_belt)
 /datum/job/german/inkeeper/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
@@ -1808,19 +1620,10 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(H), slot_head)
 
-	H.equip_to_slot_or_del(new/obj/item/stack/money/real/fifty(H), slot_l_store)
-	H.equip_to_slot_or_del(new/obj/item/weapon/key/civ/inn(H), slot_r_store)
-	H.equip_to_slot_or_del(new/obj/item/weapon/material/kitchen/utensil/knife/butcher(H), slot_belt)
+	equip_loadout(H)
 
 	H.add_note("Role", "You are a <b>Inkeeper</b>. Your job is to run an Inn and house tired customers!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_NORMAL)
+	apply_job_stats(H)
 	return TRUE
 
 /datum/job/german/barkeep
@@ -1837,6 +1640,11 @@
 	min_positions = 1
 	max_positions = 1
 
+/datum/job/german/barkeep/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_NORMAL)
+/datum/job/german/barkeep/job_loadout = list(
+	/obj/item/stack/money/real/fifty = slot_l_store,
+	/obj/item/weapon/key/civ/inn = slot_r_store,
+	/obj/item/weapon/material/kitchen/utensil/knife/butcher = slot_belt)
 /datum/job/german/barkeep/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
@@ -1866,19 +1674,10 @@
 		else if (randcloth == 3)
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(H), slot_head)
-	H.equip_to_slot_or_del(new/obj/item/stack/money/real/fifty(H), slot_l_store)
-	H.equip_to_slot_or_del(new/obj/item/weapon/key/civ/inn(H), slot_r_store)
-	H.equip_to_slot_or_del(new/obj/item/weapon/material/kitchen/utensil/knife/butcher(H), slot_belt)
+	equip_loadout(H)
 
 	H.add_note("Role", "You are a <b>Barkeeper</b>. Your job is to man the Tavern to supply the people with wine and food!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_NORMAL)
+	apply_job_stats(H)
 
 
 	return TRUE
@@ -1897,6 +1696,7 @@
 	min_positions = 10
 	max_positions = 50
 
+/datum/job/german/worker/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_MEDIUM_LOW)
 /datum/job/german/worker/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
@@ -1929,14 +1729,7 @@
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real/fifty(H), slot_l_store)
 
 	H.add_note("Role", "You are a simple <b>Peasant</b>. Live your life!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 
 
 	return TRUE
@@ -1956,6 +1749,7 @@
 	min_positions = 1
 	max_positions = 3
 
+/datum/job/german/merchant/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_HIGH, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_NORMAL)
 /datum/job/german/merchant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
@@ -1989,14 +1783,7 @@
 	H.equip_to_slot_or_del(new/obj/item/stack/money/dollar/twenty(H), slot_r_store)
 
 	H.add_note("Role", "You are a <b>[title]</b>, a trader who decided to move in to the new colony to get rich. Establish your trading post and deal with both the Natives and the Colonists!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_MEDIUM_HIGH)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_NORMAL)
+	apply_job_stats(H)
 	H.make_businessman()
 
 	return TRUE
@@ -2014,6 +1801,11 @@
 	min_positions = 1
 	max_positions = 20
 
+/datum/job/german/medic/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_VERY_HIGH)
+/datum/job/german/medic/job_loadout = list(
+	/obj/item/weapon/storage/firstaid/surgery = slot_l_hand,
+	/obj/item/weapon/doctor_handbook = slot_l_store,
+	/obj/item/stack/money/dollar/twenty = slot_r_store)
 /datum/job/german/medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
@@ -2044,19 +1836,10 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
 
 //head
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/surgery(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/doctor_handbook(H), slot_l_store)
-	H.equip_to_slot_or_del(new/obj/item/stack/money/dollar/twenty(H), slot_r_store)
+	equip_loadout(H)
 
 	H.add_note("Role", "You are a <b>[title]</b>, in charge of keeping the people and peasants healthy.")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_VERY_HIGH)
+	apply_job_stats(H)
 
 
 	return TRUE

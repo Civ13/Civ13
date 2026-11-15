@@ -15,7 +15,7 @@
 
 /obj/structure/turret/built
 	name = "tank turret"
-	desc = "An empty turret ring and shell. Stand it on a frame of a vehicle with a tank cannon and the crew's seats on the same tile; they are fitted into it when the vehicle is assembled."
+	desc = "An empty turret ring and shell. Stand it on a frame of a vehicle with a tank cannon or an emplaced machine gun (or both) and the crew's seats on the same tile; they are fitted into it when the vehicle is assembled."
 	turret_icon = "tank_turret"
 	turret_color = "#585A5C"
 
@@ -43,7 +43,7 @@
 /obj/structure/turret/built/proc/lacking()
 	. = list()
 	if (!weapons.len)
-		. += "a tank cannon"
+		. += "a tank cannon or a machine gun"
 	if (!gunner_seat)
 		. += "a gunner's seat"
 
@@ -72,6 +72,16 @@
 		C.forceMove(src)
 		weapons += C
 		.++
+	// One emplaced machine gun, as the turret's own (coaxial) gun.
+	if (!turret_machine_gun())
+		for (var/obj/item/weapon/gun/projectile/automatic/stationary/G in T)
+			if (!turret_can_take_gun(G))
+				continue
+			G.forceMove(src)
+			G.anchored = TRUE
+			weapons += G
+			.++
+			break
 	if (!gunner_seat)
 		for (var/obj/structure/bed/chair/gunner/G in T)
 			if (G.turret || G.buckled_mob)
@@ -102,6 +112,15 @@
 	if (.)
 		update_icon()
 
+// The emplaced machine gun already fitted, if any.
+/obj/structure/turret/built/proc/turret_machine_gun()
+	return locate(/obj/item/weapon/gun/projectile/automatic/stationary) in weapons
+
+// A loose emplaced gun nobody is manning; not the guided-missile launchers or
+// blasters, which the turret's controls cannot aim.
+/proc/turret_can_take_gun(obj/item/weapon/gun/projectile/automatic/stationary/G)
+	return istype(G) && !G.used_by_mob && !istype(G, /obj/item/weapon/gun/projectile/automatic/stationary/atgm) && !istype(G, /obj/item/weapon/gun/projectile/automatic/stationary/laser)
+
 // Sets the gun and the seats down beside the turret again, loose.
 /obj/structure/turret/built/proc/release()
 	var/turf/T = get_turf(src)
@@ -109,6 +128,8 @@
 	for (var/obj/O in weapons)
 		if (T)
 			O.forceMove(T)
+		if (istype(O, /obj/item/weapon/gun/projectile/automatic/stationary))
+			O.anchored = FALSE
 	weapons = list()
 	selected_weapon = 1
 	if (gunner_seat)

@@ -24,7 +24,8 @@ STEEP = 'code/modules/ecology/wild_herbs.dm'
 GROWN_STEEP = 'code/modules/1713/herb_garden.dm'
 MORTAR = 'code/modules/1713/herbalism.dm'
 KNAP = 'code/modules/1713/flint_mining.dm'
-KNAP_EXTRA = 'code/modules/1713/stone_age_arms.dm'
+REGISTRY = 'code/modules/1713/processing_recipes.dm'
+OBSIDIAN = 'code/modules/1713/obsidian.dm'
 FARMING = 'code/game/objects/farming.dm'
 SHELL = 'code/modules/1713/herb_garden.dm'
 FISH = 'code/modules/reagents/reagent_containers/food/snacks/meat.dm'
@@ -80,6 +81,24 @@ def defined_in(built, typepath):
 
 def own_name(types, typepath):
     return prose(types.get(typepath, {}).get('name'))
+
+
+ROW = re.compile(r'new /datum/processing_recipe\("([^"]+)", (?:"([^"]+)"|null), (/[\w/]+), (?:"(\w+)"|(/[\w/]+)|null)'
+                 r'(?:, (\d+))?(?:, (\d+))?(?:, (\d+))?(?:, (TRUE|FALSE))?\)')
+
+
+def registry_rows(source, station):
+    """Rows of one station from processing_recipes.dm, in menu order."""
+    rows = []
+    for st, choice, inp, reagent, path, amount, delay, fail, gated in ROW.findall(source):
+        if st == station:
+            rows.append(dict(choice=choice or None, input=inp, output=path or reagent or None,
+                             reagent=bool(reagent), amount=int(amount or 1), delay=int(delay or 0),
+                             fail=int(fail or 0), gated=gated == 'TRUE',
+                             line=f'new /datum/processing_recipe("{st}", ' + (f'"{choice}"' if choice else 'null') + f', {inp}, '))
+    if not rows:
+        raise ValueError(f'{REGISTRY} changed (no "{station}" rows found): review scripts/atlas/interactions.py')
+    return rows
 
 
 def add_interactions(files, add, records, covered):
@@ -152,40 +171,59 @@ def add_interactions(files, add, records, covered):
               (f'Hold it and use it on an open container holding at least {need} units of water, in your hand or next to you.',),
               f'Makes {amount} units, replacing the same amount of water. One herb is used up.')
 
-    # Mortar and pestle: its result table lists each ingredient and what it grinds into.
+    # Mortar and pestle: its rows in processing_recipes.dm list each ingredient and what it grinds into.
     mortar = files[MORTAR]
-    require(mortar, MORTAR, '/proc/mortar_grind_result(obj/item/I)', 'reagents.add_reagent(id, result[id])')
-    table = mortar[mortar.index('/proc/mortar_grind_result'):].split('\n/', 1)[0]
-    pairs = re.findall(r'istype\(I, (/[\w/]+)\)\)\s*\n\s*return list\(([^)]*)\)', table)
-    if not pairs:
-        raise ValueError(f'{MORTAR} changed (no grind results found): review scripts/atlas/interactions.py')
-    for ingredient, result in pairs:
-        outputs = [('reagent:' + rid, int(n)) for rid, n in re.findall(r'"(\w+)" = (\d+)', result)]
+    registry = files[REGISTRY]
+    require(mortar, MORTAR, '/proc/mortar_grind_result(obj/item/I)', 'processing_recipe_for_input("mortar", I)',
+            'reagents.add_reagent(id, result[id])')
+    for row in registry_rows(registry, 'mortar'):
+        ingredient = row['input']
         route(f'Grind {own_name(types, ingredient) or ingredient.rsplit("/", 1)[1]} in a mortar and pestle',
-              'Mortar grinding', [(ingredient, 1)], outputs, MORTAR, line_of(mortar, 'return ' + 'list(' + result + ')'),
+              'Mortar grinding', [(ingredient, 1)], [('reagent:' + row['output'], row['amount'])], REGISTRY,
+              line_of(registry, row['line'] + '"' + row['output'] + '"'),
               ('Hold the ingredient and use it on a mortar and pestle. Pour the result out like any other container.',),
               'The mortar holds 30 units; empty it when full. One ingredient is used up per grind.',
               ('/obj/item/weapon/reagent_containers/glass/mortar',))
 
-    # Knapping: flint plus a hammerstone; each menu choice names its product.
+    # Knapping: flint plus a hammerstone; each registry row names a menu choice and its product.
     knap = files[KNAP]
-    extra = files[KNAP_EXTRA]
     require(knap, KNAP, '/obj/item/weapon/flint/proc/knap(mob/living/human/H, obj/item/hammer)', 'is_hammerstone(M)',
-            'result = stone_age_knap_result(choice, T, H)', 'var/delay = 40', 'var/fail_chance = 10')
-    body = knap[knap.index('/obj/item/weapon/flint/proc/knap('):].split('\n/', 1)[0]
-    extra_body = extra[extra.index('/proc/stone_age_knap_result'):].split('\n/', 1)[0]
-    delays = dict(re.findall(r'if \("([^"]+)"\)\s*\n\s*delay = (\d+)', body))
-    products = [(choice, path, int(count or 1)) for choice, path, count in
-                re.findall(r'if \("([^"]+)"\)\s*\n\s*result = new (/[\w/]+)\(T(?:, (\d+))?\)', body)]
-    products += [(choice, path, 1) for choice, path in re.findall(r'if \("([^"]+)"\)\s*\n\s*path = (/[\w/]+)', extra_body)]
-    for choice, product, count in products:
-        delay = int(delays.get(choice, 40))
-        route(f'Knap a {choice.lower()} from flint', 'Knapping', [('/obj/item/weapon/flint', 1)], [(product, count)],
-              KNAP, line_of(knap, f'if ("{choice}")'),
+            'processing_recipe_choices("flint knapping", H)', 'var/obj/item/result = processing_recipe_make(R, T, H)')
+    for row in registry_rows(registry, 'flint knapping'):
+        if not row['output']:
+            continue
+        choice = row['choice']
+        route(f'Knap a {choice.lower()} from flint', 'Knapping', [('/obj/item/weapon/flint', 1)], [(row['output'], row['amount'])],
+              REGISTRY, line_of(registry, row['line']),
               ('Hold a hammerstone and use it on a flint in your other hand or next to you, then choose '
-               f'"{choice}" ({delay // 10} seconds before dexterity).',),
+               f'"{choice}" ({row["delay"] // 10} seconds before dexterity).',),
               'The flint can shatter into a shard; crafting skill lowers the chance.', ('Hammerstone',),
               era='Basic Toolmaking research rules apply where the recipe is gated.')
+
+    # Obsidian: knapping a nodule, pressure blades off a core, nodules from rough obsidian.
+    obs = files[OBSIDIAN]
+    require(obs, OBSIDIAN, '/obj/item/weapon/obsidian_nodule/proc/knap(mob/living/human/H, obj/item/hammer)',
+            'obsidian_is_hammerstone(W)', 'processing_recipe_choices("obsidian knapping", H)',
+            '/obj/item/weapon/obsidian_core/attackby(obj/item/W, mob/user)', 'is_pressure_flaker(W)',
+            'new /obj/item/stack/obsidian_blades(T, count)', '/obj/item/stack/ore/obsidian/attackby(obj/item/W, mob/user)')
+    for row in registry_rows(registry, 'obsidian knapping'):
+        choice = row['choice']
+        route(f'Knap {choice.lower()} from obsidian', 'Knapping', [('/obj/item/weapon/obsidian_nodule', 1)],
+              [(row['output'], row['amount'])], REGISTRY, line_of(registry, row['line']),
+              ('Hold a hammerstone and use it on an obsidian nodule in your other hand or next to you, then choose '
+               f'"{choice}" ({row["delay"] // 10} seconds before dexterity).',),
+              'The glass can shatter into a shard; crafting skill lowers the chance.', ('Hammerstone',),
+              era='Basic Toolmaking or Stone Arms research rules apply where the result is gated.')
+    route('Press prismatic blades off an obsidian core', 'Knapping', [('/obj/item/weapon/obsidian_core', 1)],
+          [('/obj/item/stack/obsidian_blades', numbers.get('OBSIDIAN_BLADES_PER_CORE', 6))], OBSIDIAN,
+          line_of(obs, '/obj/item/weapon/obsidian_core/attackby'),
+          ('Hold an antler pick or a piece of bone and use it on the blade core (8 seconds before dexterity).',),
+          'The core can snap and give only 2 blades; crafting skill lowers the chance.',
+          ('/obj/item/weapon/material/pickaxe/antler',))
+    route('Knock a nodule off rough obsidian', 'Knapping', [('/obj/item/stack/ore/obsidian', 1)],
+          [('/obj/item/weapon/obsidian_nodule', 1)], OBSIDIAN, line_of(obs, '/obj/item/stack/ore/obsidian/attackby'),
+          ('Hold a hammerstone and use it on rough obsidian (3 seconds).',), 'One rough obsidian per nodule.',
+          ('Hammerstone',))
 
     # Wild herb patches: pick by hand on help intent.
     for typepath in sorted(types):
@@ -209,7 +247,7 @@ def add_interactions(files, add, records, covered):
 
     # Filleting: a raw fish cut with a knife, bayonet or hatchet.
     fish = files[FISH]
-    fillets = re.findall(r'^(/obj/[\w/]+)/attackby\([^\n]*\n\tif \(!roasted[^\n]*knife[^\n]*\n'
+    fillets = re.findall(r'^(/obj/[\w/]+)/attackby\([^\n]*\n\tif \(!roasted[^\n]*(?:knife|TOOL_KNIFE)[^\n]*\n'
                          r'\t\tfor \(var/i=1, i<=(\d+), i\+\+\)\n\t\t\tnew (/[\w/]+)\(src\)', fish, re.M)
     if not fillets:
         raise ValueError(f'{FISH} changed (no fish filleting found): review scripts/atlas/interactions.py')

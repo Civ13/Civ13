@@ -15,7 +15,9 @@
  * Wrench
  */
 /obj/item/weapon/wrench
+	tool_flags = TOOL_WRENCH
 	name = "wrench"
+	tool_material = "iron"
 	desc = "A wrench with many common uses, usually held."
 	icon = 'icons/obj/items.dmi'
 	icon_state = "wrench"
@@ -126,7 +128,9 @@
  * Screwdriver
  */
 /obj/item/weapon/screwdriver
+	tool_flags = TOOL_SCREWDRIVER
 	name = "screwdriver"
+	tool_material = "iron"
 	desc = "Your archetypal flathead screwdriver, with a nice and heavy polymer handle."
 	icon = 'icons/obj/items.dmi'
 	icon_state = "screwdriver"
@@ -145,7 +149,9 @@
  * Hammers
  */
 /obj/item/weapon/hammer
+	tool_flags = TOOL_HAMMER
 	name = "hammer"
+	tool_material = "iron"
 	desc = "Hit stuff apart with this."
 	icon = 'icons/obj/items.dmi'
 	icon_state = "hammer"
@@ -163,6 +169,7 @@
 
 /obj/item/weapon/hammer/tribalhammer
 	name = "simple wooden mallet"
+	tool_material = "wood"
 	desc = "Hit stuff apart with this."
 	icon = 'icons/misc/tribal.dmi'
 	icon_state = "tribalhammer"
@@ -180,6 +187,7 @@
 
 /obj/item/weapon/hammer/modern
 	name = "clawhammer"
+	tool_material = "steel"
 	desc = "For hitting things or pulling them apart."
 	icon = 'icons/obj/items.dmi'
 	icon_state = "hammer_modern"
@@ -218,7 +226,9 @@
  */
 
 /obj/item/weapon/wirecutters
+	tool_flags = TOOL_WIRECUTTER
 	name = "wirecutters"
+	tool_material = "steel"
 	desc = "This cuts wires."
 	icon = 'icons/obj/items.dmi'
 	icon_state = "cutters-y"
@@ -247,7 +257,9 @@
  */
 
 /obj/item/weapon/crowbar
+	tool_flags = TOOL_CROWBAR
 	name = "crowbar"
+	tool_material = "iron"
 	desc = "Used to remove floors and to pry open doors."
 	icon = 'icons/obj/items.dmi'
 	icon_state = "crowbar"
@@ -266,6 +278,7 @@
 
 /obj/item/weapon/saw
 	name = "saw"
+	tool_material = "iron"
 	desc = "Used for sawing logs into usable planks."
 	icon = 'icons/obj/items.dmi'
 	icon_state = "saw"
@@ -452,6 +465,7 @@
  */
 /obj/item/weapon/shears
 	name = "shears"
+	tool_material = "iron"
 	desc = "A tool used to collect wool from sheep."
 	icon = 'icons/obj/items.dmi'
 	icon_state = "shears"
@@ -466,6 +480,7 @@
 
 //////////////////////////////////////////////////////WELDER///////////////////////////////////////////////////////////
 /obj/item/weapon/weldingtool
+	tool_flags = TOOL_WELDER
 	name = "welding tool"
 	desc = "used to weld metals together"
 	icon = 'icons/obj/items.dmi'

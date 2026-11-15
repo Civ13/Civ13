@@ -57,18 +57,17 @@
 		icon_state = activesprite
 		playsound(src,noise,40,1)
 		if (do_after(user, delay, src))
-			M.maxhealth -= damageamount
-			M.health = min(M.health + repairamount, M.maxhealth)
+			var/broke = M.repair_wear(repairamount, damageamount)
 			icon_state = idlesprite
 			visible_message("<span class='notice'>[user] finishes [actiontext]ing the [M.name].</span>")
-			if(M.maxhealth <= 0 || M.health <= 0)
+			if(broke)
 				qdel(M)
 				playsound(src, "shatter", 70, TRUE)
 				visible_message("<span class='alert'>The [M.name] breaks from strain!</span>")
 		else
 			visible_message("<span class='notice'>[user] stops [actiontext]ing the [M.name].</span>")
 			icon_state = idlesprite
-	else if (istype(M, /obj/item/weapon/hammer) || istype(M, /obj/item/weapon/wrench))
+	else if (is_tool(M, TOOL_HAMMER) || is_tool(M, TOOL_WRENCH))
 		..()
 		return
 	else
@@ -124,7 +123,7 @@
 	w_class = ITEM_SIZE_SMALL
 
 /obj/item/weapon/gun/projectile/proc/file_serial(obj/item/M, mob/user)
-	if (istype(M, /obj/item/weapon/material/kitchen/utensil/knife) && (!(istype(src, /obj/item/weapon/gun/projectile/bow))))
+	if (is_tool(M, TOOL_KNIFE) && (!(istype(src, /obj/item/weapon/gun/projectile/bow))))
 		switch(player_alert(user, "Are you sure you want to scratch the serial number? This cannot be reversed and will make the gun illegal!", "Serial number filing", list("Yes", "No")))
 			if ("No")
 				return

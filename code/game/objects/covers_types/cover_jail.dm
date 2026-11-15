@@ -21,10 +21,10 @@
 		sharpen_utensil(W, user)
 	if (istype(W,/obj/item/weapon/material/kitchen/utensil/chopsticks))
 		sharpen_utensil(W, user, /obj/item/weapon/material/kitchen/utensil/knife/shank/wood)
-	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/weldingtool) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/metalfile)) //No weapons can harm me! If not weapon and not a wrench.
+	if (istype(W,/obj/item/weapon) && !is_tool(W, TOOL_WELDER) && !is_tool(W, TOOL_WRENCH) && !istype(W,/obj/item/weapon/metalfile)) //No weapons can harm me! If not weapon and not a wrench.
 		to_chat(user, "You pound the bars uselessly!")//sucker
 
-	else if (istype(W,/obj/item/weapon/weldingtool))//if it is a welding tool
+	else if (is_tool(W, TOOL_WELDER))//if it is a welding tool
 		if (material != "Steel")
 			to_chat(user, "This is the wrong tool.")
 		else
@@ -35,7 +35,7 @@
 					new buildstack(get_turf(src))
 				qdel(src)
 				return
-	else if (istype(W,/obj/item/weapon/wrench))//if it is a wrench
+	else if (is_tool(W, TOOL_WRENCH))//if it is a wrench
 		if (material != "Wood")
 			to_chat(user, "This is the wrong tool.")
 		else

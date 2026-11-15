@@ -8,7 +8,7 @@
 	hub = ""
 	hub_password = ""
 	maxx = 40
-	maxy = 30
+	maxy = 40
 	maxz = 1
 	turf = /turf
 	area = /area
@@ -78,8 +78,12 @@ var/project_runtime_error = FALSE
 
 // Fits every remaining piece through the player paths: stacks hit the press,
 // wheels and tracks are dragged onto the press.
+/proc/model_hull(model)
+	var/list/spec = works_vehicle_specs[model]
+	return spec ? spec["hull"] : null
+
 /proc/project_finish(obj/structure/car_workshop/W, mob/living/human/H)
-	var/list/paths = list("steel" = /obj/item/stack/material/steel, "glass" = /obj/item/stack/material/glass, "cloth" = /obj/item/stack/material/cloth, "cable" = /obj/item/stack/cable_coil)
+	var/list/paths = list("steel" = /obj/item/stack/material/steel, "glass" = /obj/item/stack/material/glass, "cloth" = /obj/item/stack/material/cloth, "cable" = /obj/item/stack/cable_coil, "wood" = /obj/item/stack/material/wood, "aluminium" = /obj/item/stack/material/aluminium)
 	var/guard = 0
 	while (!W.project_finished() && guard++ < 100)
 		var/list/needed = W.project_needed()
@@ -211,7 +215,8 @@ var/project_runtime_error = FALSE
 	for (var/model in works_vehicle_specs)
 		spots[model] = list(5 + 7 * (spot_index % 5), 12 + 8 * round(spot_index / 5))
 		spot_index++
-	project_check(spots.len == 10, "ten works models ([spots.len])")
+	var/steel_light_factor = 0
+	project_check(spots.len == 11, "eleven works models ([spots.len])")
 	for (var/model in spots)
 		var/list/spot = spots[model]
 		var/obj/structure/car_workshop/project_probe/V = new(locate(spot[1], spot[2], 1))
@@ -238,14 +243,22 @@ var/project_runtime_error = FALSE
 		project_check(istype(made) && made.keyed_vehicle_id && made.name == lowertext(model), "[model]: rolls out keyed and named")
 		if (!istype(made))
 			continue
+		var/hulls_ok = TRUE
+		for (var/obj/structure/vehicleparts/frame/HF in made.components)
+			hulls_ok = hulls_ok && HF.hull_material == model_hull(model)
+		project_check(hulls_ok, "[model]: its frames are [model_hull(model) || "steel"]")
+		if (model == "Light tank")
+			steel_light_factor = made.get_load_factor(TRUE)
+		if (model == "Tracked carrier")
+			project_check(made.get_load_factor(TRUE) < 1, "the aluminium tracked carrier is light for its engine ([made.load_factor])")
 		project_check(made.components.len == size * size && made.wheels.len == 4, "[model]: fills its [size]x[size] square on four wheels or tracks ([made.components.len], [made.wheels.len])")
 		project_check(made.engine && made.engine.fueltank && !made.engine.fueltank.reagents.total_volume && made.wheel, "[model]: engine, empty tank and steering linked")
 		var/extras = 0
 		var/shells = 0
 		var/turrets = 0
 		var/frames = 0
-		for (var/dx = 1, dx <= 4, dx++)
-			for (var/dy = 1, dy <= 4, dy++)
+		for (var/dx = 1, dx <= size, dx++)
+			for (var/dy = 1, dy <= size, dy++)
 				var/turf/T = locate(V.x + dx, V.y + dy, 1)
 				for (var/atom/movable/O in T)
 					if (istype(O, /obj/item/weapon/gun) || istype(O, /obj/item/ammo_magazine) || istype(O, /obj/structure/supply_crate) || istype(O, /obj/structure/bed/chair/mgunner))
@@ -310,13 +323,38 @@ var/project_runtime_error = FALSE
 		project_check(!V.project && V.stock["steel"] == 0 && !V.stock["tracks"], "[model]: the project is spent")
 	H.loc = locate(6, 5, 1)
 
+	// ---- An aluminium light tank ----
+	var/obj/structure/car_workshop/project_probe/AL = new(locate(5, 36, 1))
+	H.loc = locate(6, 36, 1)
+	project_check(AL.hull_choices("Light tank", H) ~= list("steel", "aluminium") && AL.hull_choices("Tracked carrier", H) ~= list("aluminium") && AL.hull_choices("ASNO Piccolino", H) ~= list("steel"), "works vehicles may be steel or aluminium; the carrier is aluminium only; cars are steel")
+	AL.start_project("Light tank", "aluminium")
+	var/datum/piece_plan/ALP = AL.get_project_plan()
+	var/list/al_cost = ALP.total_cost()
+	project_check(al_cost["aluminium"] == 96 && al_cost["steel"] == 70 && AL.costs("Light tank")["aluminium"] == 96, "an aluminium light tank pays 96 aluminium for its hull and keeps 70 steel for engine and gun ([json_encode(al_cost)])")
+	project_finish(AL, H)
+	var/obj/structure/vehicleparts/axis/al_tank = AL.roll_out_project(H)
+	project_check(istype(al_tank), "the aluminium light tank rolls out")
+	if (istype(al_tank))
+		var/obj/structure/vehicleparts/frame/ALF = locate() in al_tank.components
+		project_check(ALF.hull_material == "aluminium" && ALF.airframe_weight() < 10, "its frames are aluminium")
+		project_check(steel_light_factor && al_tank.get_load_factor(TRUE) < steel_light_factor, "and it is lighter than the steel one ([al_tank.load_factor] against [steel_light_factor])")
+	project_check(!AL.project && !AL.project_hull, "the press forgets the hull with the project")
+	project_check(works_vehicle_specs["Light tank"]["gun"] < works_vehicle_specs["Medium tank"]["gun"] && works_vehicle_specs["Medium tank"]["gun"] < works_vehicle_specs["Heavy tank"]["gun"] && works_vehicle_specs["Heavy tank"]["gun"] < works_vehicle_specs["Main battle tank"]["gun"], "a bigger tank's gun costs more")
+
 	// ---- A plane ----
 	var/obj/structure/car_workshop/hangar/project_probe/A = new(locate(15, 5, 1))
 	H.loc = locate(16, 5, 1)
 	A.stock = list("steel" = 0, "glass" = 0, "cloth" = 0, "cable" = 0, "wheels" = 0)
 	P = A.project_plan("Light plane")
 	var/list/first = P.stages[1]
-	project_check(first["name"] == "Airframe" && P.total_cost()["steel"] == 50 && P.total_cost()["wheels"] == 4, "the hangar's plane plan is an airframe of 50 steel on 4 wheels")
+	var/list/engine_stage
+	for (var/list/stage in P.stages)
+		if (stage["part"] == "engine")
+			engine_stage = stage
+	project_check(first["name"] == "Airframe" && first["cost"]["wood"] == 10 && P.total_cost()["wood"] == 40 && P.total_cost()["steel"] == 10 && engine_stage && engine_stage["cost"]["steel"] == 10 && P.total_cost()["wheels"] == 4, "the hangar's plane plan is a wooden airframe (40 wood) with a steel engine (10) on 4 wheels")
+	var/datum/piece_plan/C = A.project_plan("Cabin plane")
+	var/list/cabin_first = C.stages[1]
+	project_check(cabin_first["cost"]["aluminium"] == 12 && C.total_cost()["aluminium"] == 48 && C.total_cost()["steel"] == 16, "the cabin plane's airframe is aluminium (48) with a steel engine (16)")
 	A.project_action(H, "Light plane")
 	project_check(project_parts(A) == 12, "the jig fills the plane's 12 cells")
 	project_finish(A, H)

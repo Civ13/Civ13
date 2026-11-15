@@ -64,7 +64,8 @@ def procedure(signature,env,hammer=False):
         elif line.startswith('return '):line='return '+expr(line[7:],FIELDS)
         else:line=expr(line,FIELDS)
         output.append('    '*depth+line)
-    namespace=dict(env);exec(compile('\n'.join(output)+'\n','<production bedroll>','exec'),namespace)
+    # Furniture has no part slots: handing back fitted machine parts does nothing here.
+    namespace=dict(env);namespace.setdefault('machine_drop_fitted_parts',lambda obj:None);exec(compile('\n'.join(output)+'\n','<production bedroll>','exec'),namespace)
     return namespace['action']
 
 
@@ -188,14 +189,14 @@ class HammockContracts(unittest.TestCase):
         source=(ROOT/'code/game/objects/items/stacks/stack.dm').read_text()
         production=block(source,'/obj/item/stack/proc/produce_recipe(')
         start=production.index('\t\tif (recipe.result_type == /obj/structure/bed/hammock')
-        end=production.index('\t\tif (!exercise_can_build',start)
+        end=production.index('\t\t// The builder may have moved, turned',start)
         self.assertLess(production.index('if (!do_after(user, buildtime) || !crafting_recipe_allowed(H, "[recipe.result_type]"))'),start)
         self.assertLess(start,production.index('H.adaptStat("crafting"'))
         self.assertLess(start,production.index('\tif (use(required,'))
         body='\n'.join(line[1:] for line in production[start:end].splitlines())
         guard,_=compile_body('/proc/completion_occupancy()\n'+body+'\n\treturn TRUE\n',
                              '/proc/completion_occupancy()', 'recipe,user',
-                             dict(locate=lambda path:path,to_chat=lambda *args:None))
+                             dict(locate=lambda path:path,to_chat=lambda *args:None,secondary_refund=lambda *args:None,H=None))
         path='/obj/structure/bed/hammock'
         for one_per,late_output,paid in ((True,path,False),(True,None,True),
                                         (True,'/obj/structure/bed/wood',True),(False,path,True)):
@@ -214,11 +215,11 @@ class HammockContracts(unittest.TestCase):
         broad_body=body.replace('recipe.result_type == /obj/structure/bed/hammock && ','')
         broad_guard,_=compile_body('/proc/old_completion()\n'+broad_body+'\n\treturn TRUE\n',
                                   '/proc/old_completion()', 'recipe,user',
-                                  dict(locate=lambda path:path,to_chat=lambda *args:None))
+                                  dict(locate=lambda path:path,to_chat=lambda *args:None,secondary_refund=lambda *args:None,H=None))
         self.assertFalse(broad_guard(powered,NS(loc=[sawmill])))
         prepayment=production[production.index('else if (recipe.result_type == '+sawmill+')'):]
         prepayment=prepayment[:prepayment.index('\n\telse if (')]
-        self.assertIn('NR.amount -= 1',prepayment)
+        self.assertIn("secondary_take(NR, 1, H)",prepayment)
         self.assertIn('qdelHandReturn(',prepayment)
         self.assertLess(production.index(prepayment),production.index('if (!do_after(user, buildtime) || !crafting_recipe_allowed(H, "[recipe.result_type]"))'))
         rows=(ROOT/'config/crafting/material_recipes_global.txt').read_text().splitlines()

@@ -254,3 +254,14 @@ the two Dagger map studies. `tests/train_raid/build.py` composes the Hauler
 station with a shuttle docked in each berth; regenerate after any change to
 either study's generator. The `train_raid` offline suite checks the map, and
 `tests/train_raid/native_probe.py` runs the round flow headless.
+
+## Americas regions
+
+[The Americas regions](../../americas-regions.md) are the two large generated
+Nomads continents (`northamerica`, `southamerica`). Players walk between them
+over the shared map edge at the isthmus (`edge_crossings`,
+`code/modules/persistence/region_edge.dm`); nothing stands on the map for it.
+`tests/americas_maps/build.py` writes both maps from `continents.py` together
+with their height, current and flood files. The
+`americas_maps` offline suite checks the maps, and a map may not grow past the
+measured cell count without a new memory benchmark.

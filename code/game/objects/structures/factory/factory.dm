@@ -36,15 +36,11 @@
 	if (!istype(H))
 		return
 	if (H.a_intent == I_HELP)
-		if (istype(I, /obj/item/weapon/wrench) || (istype(I, /obj/item/weapon/hammer)))
-			if (istype(I, /obj/item/weapon/wrench))
-				visible_message("<span class='warning'>[H] starts to [anchored ? "unsecure" : "secure"] \the [src] [anchored ? "from" : "to"] the ground.</span>")
-				playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
-				if (do_after(H,50,src))
-					visible_message("<span class='warning'>[H] [anchored ? "unsecures" : "secures"] \the [src] [anchored ? "from" : "to"] the ground.</span>")
-					anchored = !anchored
+		if (is_tool(I, TOOL_WRENCH) || (is_tool(I, TOOL_HAMMER)))
+			if (is_tool(I, TOOL_WRENCH))
+				if (timed_toggle_anchor(H))
 					return
-			else if (istype(I, /obj/item/weapon/hammer))
+			else if (is_tool(I, TOOL_HAMMER))
 				visible_message("<span class='warning'>[H] starts to deconstruct \the [src].</span>")
 				playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
 				if (do_after(H,50,src))
@@ -52,50 +48,14 @@
 					qdel(src)
 					return
 		if (istype(I, /obj/item/stack/))
-			if (istype(I, /obj/item/stack/material/wood))	//FUEL NORMAL (without * multiplication or + addition, only input)
-				record_wood_fuel(I, I.amount)
-				fuel += I.amount
+			var/stack_fuel = solid_fuel_value(I, furnace_fuel_rates)
+			if (stack_fuel)
+				record_wood_fuel(I, stack_fuel)
+				fuel += stack_fuel
 				to_chat(H, "You place \the [I] in \the [src], refueling it.")
 				qdel(I)
 				return
-			else if (istype(I, /obj/item/stack/material/bamboo))
-				record_wood_fuel(I, I.amount)
-				fuel += I.amount
-				to_chat(H, "You place \the [I] in \the [src], refueling it.")
-				qdel(I)
-				return
-			else if (istype(I, /obj/item/weapon/branch))	// FUEL +0.5 (adds a flat numerical addition ontop of the input reagent's baseline fuel, recommended for non stack objects)
-				record_wood_fuel(I, I.amount+0.5)
-				fuel += I.amount+0.5
-				to_chat(H, "You place \the [I] in \the [src], refueling it.")
-				qdel(I)
-				return
-			else if (istype(I, /obj/item/stack/material/leaf))
-				record_wood_fuel(I, I.amount+0.5)
-				fuel += I.amount+0.5
-				to_chat(H, "You place \the [I] in \the [src], refueling it.")
-				qdel(I)
-				return
-			else if (istype(I, /obj/item/stack/dung))	// FUEL +1
-				record_wood_fuel(I, I.amount+1)
-				fuel += I.amount+1
-				to_chat(H, "You place \the [I] in \the [src], refueling it.")
-				qdel(I)
-				return
-			else if (istype(I, /obj/item/stack/ore/charcoal))	//FUEL *2.5 (multiplies it by 2 and a half)
-				record_wood_fuel(I, I.amount*2.5)
-				fuel += I.amount*2.5
-				to_chat(H, "You place \the [I] in \the [src], refueling it.")
-				qdel(I)
-				return
-			else if (istype(I, /obj/item/stack/ore/coal))	//FUEL *3
-				record_wood_fuel(I, I.amount*3)
-				fuel += I.amount*3
-				to_chat(H, "You place \the [I] in \the [src], refueling it.")
-				qdel(I)
-				return
-
-			else if (istype(I, /obj/item/stack/ore/iron) || istype(I, /obj/item/stack/material/iron))
+			if (istype(I, /obj/item/stack/ore/iron) || istype(I, /obj/item/stack/material/iron))
 				iron += I.amount
 				to_chat(H, "You place \the [I] in \the [src], smelting it.")
 				qdel(I)
@@ -113,12 +73,6 @@
 			else if (istype(I, /obj/item/stack/ore/zinc) || istype(I, /obj/item/stack/material/zinc))
 				zinc += I.amount
 				to_chat(H, "You place \the [I] in \the [src], smelting it.")
-				qdel(I)
-				return
-			else if (istype(I, /obj/item/stack/material/woodplank))
-				record_wood_fuel(I, I.amount)
-				fuel += I.amount
-				to_chat(H, "You place \the [I] in \the [src], refueling it.")
 				qdel(I)
 				return
 			else
@@ -279,15 +233,11 @@
 	if (!istype(H))
 		return
 	if (H.a_intent == I_HELP)
-		if (istype(I, /obj/item/weapon/wrench) || (istype(I, /obj/item/weapon/hammer)))
-			if (istype(I, /obj/item/weapon/wrench))
-				visible_message("<span class='warning'>[H] starts to [anchored ? "unsecure" : "secure"] \the [src] [anchored ? "from" : "to"] the ground.</span>")
-				playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
-				if (do_after(H,50,src))
-					visible_message("<span class='warning'>[H] [anchored ? "unsecures" : "secures"] \the [src] [anchored ? "from" : "to"] the ground.</span>")
-					anchored = !anchored
+		if (is_tool(I, TOOL_WRENCH) || (is_tool(I, TOOL_HAMMER)))
+			if (is_tool(I, TOOL_WRENCH))
+				if (timed_toggle_anchor(H))
 					return
-			else if (istype(I, /obj/item/weapon/hammer))
+			else if (is_tool(I, TOOL_HAMMER))
 				visible_message("<span class='warning'>[H] starts to deconstruct \the [src].</span>")
 				playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
 				if (do_after(H,50,src))
@@ -295,55 +245,14 @@
 					qdel(src)
 					return
 		if (istype(I, /obj/item/stack/))
-			if (istype(I, /obj/item/stack/material/wood))
-				record_wood_fuel(I, I.amount)
-				fuel += I.amount
+			var/stack_fuel = solid_fuel_value(I, furnace_fuel_rates)
+			if (stack_fuel)
+				record_wood_fuel(I, stack_fuel)
+				fuel += stack_fuel
 				to_chat(H, "You place \the [I] in \the [src], refueling it.")
 				qdel(I)
 				return
-			else if (istype(I, /obj/item/stack/material/bamboo))
-				record_wood_fuel(I, I.amount)
-				fuel += I.amount
-				to_chat(H, "You place \the [I] in \the [src], refueling it.")
-				qdel(I)
-				return
-			else if (istype(I, /obj/item/weapon/branch))
-				record_wood_fuel(I, I.amount+0.5)
-				fuel += I.amount+0.5
-				to_chat(H, "You place \the [I] in \the [src], refueling it.")
-				qdel(I)
-				return
-			else if (istype(I, /obj/item/stack/material/leaf))
-				record_wood_fuel(I, I.amount+0.5)
-				fuel += I.amount+0.5
-				to_chat(H, "You place \the [I] in \the [src], refueling it.")
-				qdel(I)
-				return
-			else if (istype(I, /obj/item/stack/dung))
-				record_wood_fuel(I, I.amount+1)
-				fuel += I.amount+1
-				to_chat(H, "You place \the [I] in \the [src], refueling it.")
-				qdel(I)
-				return
-			else if (istype(I, /obj/item/stack/ore/charcoal))
-				record_wood_fuel(I, I.amount*2.5)
-				fuel += I.amount*2.5
-				to_chat(H, "You place \the [I] in \the [src], refueling it.")
-				qdel(I)
-				return
-			else if (istype(I, /obj/item/stack/ore/coal))
-				record_wood_fuel(I, I.amount*3)
-				fuel += I.amount*3
-				to_chat(H, "You place \the [I] in \the [src], refueling it.")
-				qdel(I)
-				return				  //INPUT 1
-
-			else if (istype(I, /obj/item/stack/money/goldcoin))
-				gold += I.amount/5
-				to_chat(H, "You place \the [I] in \the [src], smelting it.")
-				qdel(I)
-				return
-			else if (istype(I, /obj/item/stack/material/gold))
+			if (istype(I, /obj/item/stack/material/gold))
 				gold += I.amount
 				to_chat(H, "You place \the [I] in \the [src], smelting it.")
 				qdel(I)
@@ -368,12 +277,6 @@
 			else if (istype(I, /obj/item/stack/material/silver))
 				silver += I.amount
 				to_chat(H, "You place \the [I] in \the [src], smelting it.")
-				qdel(I)
-				return
-			else if (istype(I, /obj/item/stack/material/woodplank))
-				record_wood_fuel(I, I.amount)
-				fuel += I.amount
-				to_chat(H, "You place \the [I] in \the [src], refueling it.")
 				qdel(I)
 				return
 

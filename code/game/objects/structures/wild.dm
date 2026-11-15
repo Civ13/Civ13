@@ -16,8 +16,8 @@ var/list/seed_list_jungle
 	anchored = TRUE
 	var/sways = FALSE
 	var/amount = 0 //how much wood to drop. 0 = none
-	var/health = 100
-	var/maxhealth = 100
+	health = 100
+	maxhealth = 100
 	layer = 3.2
 	flammable = TRUE
 	not_movable = TRUE
@@ -37,6 +37,9 @@ var/list/seed_list_jungle
 // pathing and tile-stepping NPCs still treat the tile as the tree's.
 // trunk_center_x is the trunk's x in the sprite; 0 keeps whole-tile collision.
 /obj/structure/wild/var/trunk_center_x = 0
+// Trees never block sight or hide anyone (opacity stays FALSE).
+// holds_climber is the tree_climbing.dm rule, kept apart from sight.
+/obj/structure/wild/var/holds_climber = FALSE
 /obj/structure/wild/var/trunk_base_y = 2
 /obj/structure/wild/var/trunk_width = 14
 /obj/structure/wild/var/trunk_height = 12
@@ -170,7 +173,7 @@ var/list/seed_list_jungle
 	var/area/caribbean/A = get_area(get_turf(src))
 	if (!A)
 		return
-	if (map.ID != MAP_NOMADS_PANGEA && map.ID != MAP_NOMADS_CONTINENTAL && map.ID != MAP_NOMADS_NEW_WORLD && map.ID != MAP_NOMADS_MEDITERRANEAN && map.ID != MAP_NOMADS_GAIA && map.ID != MAP_NOMADS_EUROPE)
+	if (map.ID != MAP_NOMADS_PANGEA && map.ID != MAP_NOMADS_CONTINENTAL && map.ID != MAP_NOMADS_NEW_WORLD && map.ID != MAP_NOMADS_MEDITERRANEAN && map.ID != MAP_NOMADS_GAIA && map.ID != MAP_NOMADS_EUROPE && map.ID != MAP_NOMADS_AMERICAS_NORTH && map.ID != MAP_NOMADS_AMERICAS_SOUTH)
 		return pick_seed_by_biome()
 	else
 		return pick_seed_by_biome(A.climate)
@@ -217,7 +220,7 @@ var/list/seed_list_jungle
 /obj/structure/wild/attackby(obj/item/W as obj, mob/user as mob)
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 	var/timed_chop = FALSE
-	if (istype(W,/obj/item/weapon/material/hatchet) || istype(W,/obj/item/weapon/material/boarding_axe) || istype(W,/obj/item/weapon/material/machete) || istype(W,/obj/item/weapon/material/machete1) || istype(W,/obj/item/weapon/material/twohanded/fireaxe) || istype(W,/obj/item/weapon/material/sword/kukri) || istype(W,/obj/item/weapon/material/sword/bolo) || istype(W,/obj/item/weapon/material/thrown/tomahawk) || istype(W,/obj/item/weapon/material/thrown/throwing_axe) || istype(W, /obj/item/weapon/material/shovel/trench/foldable/etool))
+	if (is_tool(W, TOOL_HATCHET) || istype(W,/obj/item/weapon/material/boarding_axe) || istype(W,/obj/item/weapon/material/machete) || istype(W,/obj/item/weapon/material/machete1) || istype(W,/obj/item/weapon/material/twohanded/fireaxe) || istype(W,/obj/item/weapon/material/sword/kukri) || istype(W,/obj/item/weapon/material/sword/bolo) || istype(W,/obj/item/weapon/material/thrown/tomahawk) || istype(W,/obj/item/weapon/material/thrown/throwing_axe) || istype(W, /obj/item/weapon/material/shovel/trench/foldable/etool))
 		var/obj/item/weapon/material/HT = W
 		timed_chop = TRUE
 		user.visible_message(SPAN_DANGER("[user] begins to chop down \the [src]!"), SPAN_DANGER("You begin to chop down \the [src]!"))
@@ -235,9 +238,7 @@ var/list/seed_list_jungle
 		if (completed)
 			health = 0
 			try_destroy()
-			HT.health -= 0.25
-			if (HT.health <=0)
-				HT.shatter()
+			HT.apply_wear(0.25, WEAR_WORK)
 			if (istype(user, /mob/living/human))
 				var/mob/living/human/H = user
 				H.adaptStat("strength", 1)
@@ -257,13 +258,9 @@ var/list/seed_list_jungle
 	try_destroy()
 	..()
 
-/obj/structure/wild/proc/try_destroy()
-	if (health <= 0)
-		if (stored_unit)
-			release_stored()
-		visible_message("<span class='danger'>\The [src] is broken into pieces!</span>")
-		qdel(src)
-		return
+/obj/structure/wild/on_break()
+	if (stored_unit)
+		release_stored()
 
 /obj/structure/wild/bullet_act(var/obj/item/projectile/proj)
 	if (proj.damage > 200 && prob(33)) // makes shrapnel unable to take down trees
@@ -280,7 +277,8 @@ var/list/seed_list_jungle
 	icon_state = "tree"
 	deadicon = "icons/obj/flora/wild.dmi"
 	deadicon_state = "deadtree"
-	opacity = TRUE
+	opacity = FALSE
+	holds_climber = TRUE
 	density = TRUE
 	sways = TRUE
 	amount = 5
@@ -298,7 +296,7 @@ var/list/seed_list_jungle
 	fit_trunk_bounds()
 
 /obj/structure/wild/tree/attackby(obj/item/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/material/kitchen/utensil/knife))
+	if (is_tool(W, TOOL_KNIFE))
 		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 		health -= 10
 		user.visible_message(SPAN_DANGER("[user] tries to chop down \the [src]!"), SPAN_DANGER("You try to chop down \the [src]!"))
@@ -314,7 +312,7 @@ var/list/seed_list_jungle
 // is taken before the chop starts, so held movement keys cannot queue more chops.
 // Keep this list in step with the gate in /obj/structure/wild/attackby.
 /proc/tree_chopping_tool(obj/item/W)
-	return istype(W,/obj/item/weapon/material/hatchet) || istype(W,/obj/item/weapon/material/boarding_axe) || istype(W,/obj/item/weapon/material/machete) || istype(W,/obj/item/weapon/material/machete1) || istype(W,/obj/item/weapon/material/twohanded/fireaxe) || istype(W,/obj/item/weapon/material/sword/kukri) || istype(W,/obj/item/weapon/material/sword/bolo) || istype(W,/obj/item/weapon/material/thrown/tomahawk) || istype(W,/obj/item/weapon/material/thrown/throwing_axe) || istype(W, /obj/item/weapon/material/shovel/trench/foldable/etool)
+	return is_tool(W, TOOL_HATCHET) || istype(W,/obj/item/weapon/material/boarding_axe) || istype(W,/obj/item/weapon/material/machete) || istype(W,/obj/item/weapon/material/machete1) || istype(W,/obj/item/weapon/material/twohanded/fireaxe) || istype(W,/obj/item/weapon/material/sword/kukri) || istype(W,/obj/item/weapon/material/sword/bolo) || istype(W,/obj/item/weapon/material/thrown/tomahawk) || istype(W,/obj/item/weapon/material/thrown/throwing_axe) || istype(W, /obj/item/weapon/material/shovel/trench/foldable/etool)
 
 /proc/bump_choppable_tree(atom/A)
 	return (istype(A, /obj/structure/wild/tree) || istype(A, /obj/structure/wild/jungle)) && A.density
@@ -462,6 +460,7 @@ var/list/seed_list_jungle
 	deadicon = 'icons/obj/flora/destroyedtrees.dmi'
 	deadicon_state = "1"
 	opacity = FALSE
+	holds_climber = FALSE
 	sways = FALSE
 	amount = 2
 	branches = 0
@@ -514,7 +513,7 @@ var/list/seed_list_jungle
 		icon_state = deadicon_state
 		return
 	else
-		if (season == "WINTER")
+		if (season == SEASON_WINTER)
 			current_icon = 'icons/obj/flora/bigtrees_winter.dmi'
 		else if (season in list("SUMMER","Wet Season"))
 			current_icon = 'icons/obj/flora/bigtrees.dmi'
@@ -597,7 +596,7 @@ var/list/seed_list_jungle
 		icon = deadicon
 		return
 	else
-		if (season == "WINTER")
+		if (season == SEASON_WINTER)
 			current_icon = 'icons/obj/flora/pinetrees_snow.dmi'
 		else if (season in list("SUMMER","Wet Season"))
 			current_icon = 'icons/obj/flora/pinetrees.dmi'
@@ -632,6 +631,8 @@ var/list/seed_list_jungle
 	icon_state = "palm1"
 	deadicon = 'icons/obj/flora/palm.dmi'
 	deadicon_state = "dead_palm1"
+	opacity = FALSE
+	holds_climber = TRUE
 	sways = FALSE
 	amount = 4
 	var/cooldown_sap = FALSE
@@ -643,7 +644,7 @@ var/list/seed_list_jungle
 	max_branches = 0
 
 /obj/structure/wild/palm/attackby(obj/item/W as obj, mob/user as mob)
-	if(istype(W,/obj/item/weapon/material/kitchen/utensil/knife) && user.a_intent == I_HELP)
+	if(is_tool(W, TOOL_KNIFE) && user.a_intent == I_HELP)
 		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 		if (!istype(user.l_hand, /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot) && !istype(user.r_hand, /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot))
 			to_chat(user, SPAN_WARNING("You need to have a pot in one of your hands in order to extract palm sap."))
@@ -780,7 +781,7 @@ var/list/seed_list_jungle
 
 /obj/structure/wild/smallbush/attackby(obj/item/W as obj, mob/user as mob)
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-	if(istype(W,/obj/item/weapon/material/kitchen/utensil/knife) && user.a_intent == I_HELP)
+	if(is_tool(W, TOOL_KNIFE) && user.a_intent == I_HELP)
 		user.do_attack_animation(src)
 		if (seedtimer == 1)
 			to_chat(user, SPAN_NOTICE("You harvest some seeds."))
@@ -871,7 +872,7 @@ var/list/seed_list_jungle
 	return ..()
 
 /obj/structure/wild/tree_stump/attackby(obj/item/W, mob/user)
-	if (istype(W, /obj/item/weapon/material/shovel))
+	if (is_tool(W, TOOL_SHOVEL))
 		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 		user.visible_message(SPAN_NOTICE("[user] starts digging out \the [src]."), SPAN_NOTICE("You start digging out \the [src]."))
 		if (do_after(user, 50, src))
@@ -1057,7 +1058,7 @@ var/list/seed_list_jungle
 /obj/structure/wild/junglebush/attackby(obj/item/W as obj, mob/user as mob)
 	var/mob/living/human/H = user
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-	if(istype(W,/obj/item/weapon/material/kitchen/utensil/knife))
+	if(is_tool(W, TOOL_KNIFE))
 		user.do_attack_animation(src)
 		if (healthamount == 1)
 			if (prob(25) && radiation < 15)
@@ -1102,7 +1103,8 @@ var/list/seed_list_jungle
 	icon_state = "tree1"
 	deadicon = 'icons/obj/flora/deadtrees.dmi'
 	deadicon_state = "tree_1"
-	opacity = TRUE
+	opacity = FALSE
+	holds_climber = TRUE
 	density = TRUE
 	sways = FALSE
 	trunk_center_x = 32
@@ -1275,7 +1277,7 @@ var/list/seed_list_jungle
 		qdel(src)
 
 /obj/structure/wild/jungle/attackby(obj/item/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/material/kitchen/utensil/knife))
+	if (is_tool(W, TOOL_KNIFE))
 		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 		health -= 10
 		user.visible_message(SPAN_DANGER("[user] tries to chop down \the [src]!"), SPAN_DANGER("You try to chop down \the [src]!"))
@@ -1346,7 +1348,7 @@ var/list/seed_list_jungle
 
 /obj/structure/wild/junglebush/cinchona/attackby(obj/item/W as obj, mob/user as mob)
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-	if(istype(W,/obj/item/weapon/material/kitchen/utensil/knife))
+	if(is_tool(W, TOOL_KNIFE))
 		user.do_attack_animation(src)
 		if (healthamount == 1)
 			to_chat(user, SPAN_NOTICE("You harvest some of the cinchona."))

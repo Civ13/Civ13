@@ -99,12 +99,19 @@
 /obj/structure/civ_generator/waterwheel/rated_output()
 	if (!isturf(loc) || !river_current_direction(loc))
 		return 0
-	return 12
+	// Faster water in flood, a slow wheel at low water (flood_effects.dm).
+	return round(12 * river_current_power_factor(loc), 0.1)
 
 /obj/structure/civ_generator/waterwheel/examine(mob/user)
 	..()
 	if (isturf(loc) && !river_current_direction(loc))
 		to_chat(user, "The water here is still, so the wheel cannot turn.")
+	else if (isturf(loc))
+		var/stage = river_stage_at(loc)
+		if (stage >= 1)
+			to_chat(user, "The river is high and the wheel spins fast.")
+		else if (stage <= -0.75)
+			to_chat(user, "The river is low and the wheel turns slowly.")
 
 /obj/structure/civ_generator/waterwheel/New()
 	..()
@@ -150,3 +157,12 @@
 		if (A.density)
 			return "There is no room for a waterwheel there."
 	return null
+
+// Stack recipe guard: the builder may turn or move during the wait, so it is checked again.
+/datum/craft_guard/waterwheel
+	order = 60
+	after_wait = TRUE
+
+/datum/craft_guard/waterwheel/refusal(mob/living/human/H, datum/stack_recipe/R, phase)
+	var/message = waterwheel_build_refusal(H, R.result_type)
+	return message ? SPAN_WARNING(message) : null

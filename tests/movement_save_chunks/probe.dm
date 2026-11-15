@@ -39,11 +39,20 @@ var/frontier_delete_attempted = FALSE
 	before_save()
 		if(armed && world.params["scenario"] == "yield") sleep(1)
 		// A slow capture that stays inside one tick: spend more than the 40%
-		// tick share without sleeping, like the Gaia buffalo (2026-11-09).
+		// tick share and over 1 ds of wall clock without sleeping, like the
+		// Gaia buffalo (2026-11-09) and the drift jelly (2026-11-13).
 		var/datum/moving_save_capture/overrun_chunk = map_storage.moving_save_chunk
 		if(armed && world.params["scenario"] == "overrun" && overrun_chunk && overrun_chunk.root == src)
 			var/spin = ""
-			while(world.tick_usage - overrun_chunk.start_usage <= 45) spin = md5("[spin]")
+			while(world.tick_usage - overrun_chunk.start_usage <= 45 || (world.timeofday - overrun_chunk.start_clock + 864000) % 864000 <= 2) spin = md5("[spin]")
+		// A save hook that changes the root itself mid-capture (Gaia,
+		// 2026-11-14): the refusal names why and demotes the root.
+		if(armed && world.params["scenario"] == "root-change" && overrun_chunk && overrun_chunk.root == src)
+			friends = list(src)
+		// A root that still steps while its level is held still (Val,
+		// 2026-11-14): the save refuses once and the animal is deleted.
+		if(armed && world.params["scenario"] == "root-move" && overrun_chunk && overrun_chunk.root == src)
+			loc = locate(x + 1, y, z)
 		if(armed && world.params["scenario"] == "depth")
 			var/list/deep = list()
 			for(var/i = 1, i <= 70, i++) deep = list(deep)
@@ -255,7 +264,7 @@ var/peak_capture_tick_usage = 0
 		if(world.params["scenario"] == "frontier-delete")
 			world.log << "FRONTIER_DELETE: attempted=[frontier_delete_attempted] refused=[refused]"
 			if(!frontier_delete_attempted) throw EXCEPTION("FRONTIER_DELETE: deletion was not exercised")
-		var/expect_refusal = !!(world.params["scenario"] in list("delete", "frontier-delete", "inventory", "cross-z", "legacy-cross-z", "sweep-container", "sweep-cross-z", "yield", "depth", "headroom-delete", "headroom-container", "headroom-cross-z", "headroom-parent-replaced", "headroom-parent-closed"))
+		var/expect_refusal = !!(world.params["scenario"] in list("delete", "frontier-delete", "inventory", "cross-z", "legacy-cross-z", "sweep-container", "sweep-cross-z", "yield", "depth", "root-change", "root-move", "headroom-delete", "headroom-container", "headroom-cross-z", "headroom-parent-replaced", "headroom-parent-closed"))
 		if(refused != expect_refusal) throw EXCEPTION("unexpected acceptance/refusal")
 		if(fixture_is_headroom())
 			if(headroom_waits != 1) throw EXCEPTION("HEADROOM: expected exactly one injected wait")
@@ -265,6 +274,12 @@ var/peak_capture_tick_usage = 0
 			if(world.params["scenario"] == "headroom-parent-replaced" && !findtext(refusal_text, "Save export frame is no longer valid") && !findtext(refusal_text, "Save export turf was replaced")) throw EXCEPTION("HEADROOM: replaced caller was not revalidated")
 			if(world.params["scenario"] in list("headroom-delete", "headroom-container", "headroom-cross-z"))
 				if(!findtext(refusal_text, "Admitted moving save root changed containment, level or identity")) throw EXCEPTION("HEADROOM: changed root was not revalidated")
+		if(world.params["scenario"] == "root-change")
+			if(!findtext(refusal_text, "Moving save root changed during capture: root=/mob/living/simple_animal/chunk_fixture reason=field friends set")) throw EXCEPTION("ROOT_CHANGE: refusal did not name the root and reason: [refusal_text]")
+			if(!map_storage.moving_save_demoted["\ref[subject]"]) throw EXCEPTION("ROOT_CHANGE: changed root was not moved to the turf path")
+		if(world.params["scenario"] == "root-move")
+			if(!findtext(refusal_text, "Moving save root changed during capture: root=/mob/living/simple_animal/chunk_fixture reason=moved")) throw EXCEPTION("ROOT_MOVE: refusal did not name the move: [refusal_text]")
+			if(subject && !subject.gcDestroyed) throw EXCEPTION("ROOT_MOVE: the animal that moved while held still was not deleted")
 		if(file2text("map_backups/save_complete.txt") != old_marker) throw EXCEPTION("prior completed generation changed")
 		if(refused)
 			if(fexists("map_saves/save_complete.txt") || persistence_save_in_progress || map_storage.moving_save_chunk || map_storage.moving_save_roots.len)

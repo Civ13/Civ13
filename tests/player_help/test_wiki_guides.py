@@ -138,21 +138,21 @@ class WikiGuideTests(unittest.TestCase):
                 self.assertIn(expected, self.prompt(corpus, status, question))
 
     def test_current_revision_changed_topics_reach_injected_transport(self):
-        self.assertEqual(bridge.WIKI_REVIEWED_REVISION, 'a2cd19f542f33e8d4147d2e653c09656446d1a3e')
+        self.assertEqual(bridge.WIKI_REVIEWED_REVISION, 'b4cc2e6423545af4df4c0fc9e377a179ef7f5a5f')
         cases = {
-            'Chemistry': ('912cc761d8a949e20141314984ce23e5e1e9934f1917f74373882edaaf9dcedd',
+            'Chemistry': ('cd18de133c5e560a495c22e26c5a33088d59ff81bbaf77e53ea267d646975230',
                           'chemistry reaction bench',
                           'The installed mixture stays inert, avoiding competing automatic reactions.',
                           'How do I use a laboratory reaction bench?'),
-            'Medical': ('e44b23def01e0120bc1c465e18bcc3d41452b1f5bdea26f00324d7aadac19c34',
+            'Medical': ('b498c1d49dd99afd1465489d71bb16bca59f108cc1ca71ba74bbe611465c3e77',
                         'medical severe illness treatment penicillin',
                         'Continuous appropriate treatment pauses deterioration and cures the illness after three minutes.',
                         'How do I treat severe illness?'),
-            'Construction': ('dee6cc6eb5ba1af13b9b588c59feae607935dcc938e1c945e9a87fae4c920982',
+            'Construction': ('3e395fc3d9ea335b4f38eeed767ecea27b27fb774de2121bed3f85df75f85c9b',
                              'construction trench digging save',
                              'Partial trench digging and filling progress survives world saves, alongside trench layout and contents.',
                              'Does trench digging progress survive world saves?'),
-            'Trains': ('f962a648103ad3d248058e89c60bb7c46e409d710a134b85c3b5a2e2bb2abdc8',
+            'Trains': ('084ca499676d0ccfa7d9e64d9e52da43d7f0b5c40d95bbef0e3908ab2a35f641',
                        'train trains railway track locomotive station switcher rails wagon',
                        'A split switcher moves the vehicle one tile sideways without changing its heading.',
                        'How does a train switcher work?'),

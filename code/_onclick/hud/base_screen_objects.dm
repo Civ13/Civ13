@@ -804,6 +804,18 @@
 		var/mob/living/L = parentmob
 		L.resist()
 //-----------------------resist END------------------------------
+// The craft key as a button: opens the Crafting window for the materials in
+// both hands and on the tiles around the player. Nothing is picked up or spent.
+/obj/screen/craft
+	name = "craft"
+	desc = "Craft with the materials in your hands and next to you."
+	icon_state = "craft"
+	screen_loc = "13,2"
+
+/obj/screen/craft/Click()
+	var/mob/living/human/H = parentmob
+	if (istype(H))
+		H.open_crafting_within_reach()
 /obj/screen/fixeye
 	name = "fixeye"
 	icon_state = "fixeye"

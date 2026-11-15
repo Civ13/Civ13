@@ -15,18 +15,19 @@
 	min_positions = 1
 	max_positions = 1
 
+/datum/job/russian/nkvd_gulag_commander/job_stats = list("strength" = STAT_MAX, "crafting" = STAT_NORMAL, "rifle" = STAT_MAX, "dexterity" = STAT_MAX, "swords" = STAT_HIGH, "pistol" = STAT_MAX, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/russian/nkvd_gulag_commander/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots/soviet = slot_shoes,
+	/obj/item/clothing/under/ww2/soviet_nkvd = slot_w_uniform,
+	/obj/item/clothing/suit/storage/coat/ww2/soviet_officer = slot_wear_suit,
+	/obj/item/clothing/head/ww2/nkvd_cap = slot_head,
+	/obj/item/weapon/radio/faction1 = slot_back,
+	/obj/item/weapon/gun/projectile/pistol/tt30 = slot_l_hand,
+	/obj/item/weapon/melee/nightbaton/sandman = slot_belt)
 /datum/job/russian/nkvd_gulag_commander/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/soviet(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/soviet_nkvd(H), slot_w_uniform)
-
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/soviet_officer(H), slot_wear_suit)
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/nkvd_cap(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction1(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/tt30(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/melee/nightbaton/sandman(H), slot_belt)
+	equip_loadout(H)
 	var/obj/item/weapon/storage/belt/keychain/KC = new/obj/item/weapon/storage/belt/keychain(H)
 	var/obj/item/weapon/key/soviet/guard/G1 = new/obj/item/weapon/key/soviet/guard(null)
 	var/obj/item/weapon/key/soviet/guard/G2 = new/obj/item/weapon/key/soviet/guard/max(null)
@@ -40,14 +41,7 @@
 	uniform.attackby(holsterh, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, the commander of <b></b>. Organize your squad leaders and make sure all the prisoners are kept in their place!")
-	H.setStat("strength", STAT_MAX)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_MAX)
-	H.setStat("dexterity", STAT_MAX)
-	H.setStat("swords", STAT_HIGH)
-	H.setStat("pistol", STAT_MAX)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	H.verbs += /mob/living/human/proc/Sound_Alarm
 	H.verbs += /mob/living/human/proc/Stop_Alarm
 	return TRUE
@@ -66,18 +60,18 @@
 	min_positions = 2
 	max_positions = 10
 
+/datum/job/russian/nkvd_gulag_officer/job_stats = list("strength" = STAT_VERY_VERY_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_VERY_VERY_HIGH, "dexterity" = STAT_VERY_VERY_HIGH, "swords" = STAT_HIGH, "pistol" = STAT_VERY_VERY_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/russian/nkvd_gulag_officer/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots/soviet = slot_shoes,
+	/obj/item/clothing/under/ww2/soviet_nkvd = slot_w_uniform,
+	/obj/item/clothing/head/sov_ushanka_new = slot_head,
+	/obj/item/clothing/suit/storage/coat/ww2/sovcoat = slot_wear_suit,
+	/obj/item/weapon/radio/faction1 = slot_back,
+	/obj/item/weapon/storage/belt/gulagguard/filled = slot_belt)
 /datum/job/russian/nkvd_gulag_officer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/soviet(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/soviet_nkvd(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/sov_ushanka_new(H), slot_head)
-
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/sovcoat(H), slot_wear_suit)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction1(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/gulagguard/filled(H), slot_belt)
+	equip_loadout(H)
 	var/obj/item/weapon/storage/belt/keychain/KC = new/obj/item/weapon/storage/belt/keychain(H)
 	var/obj/item/weapon/key/soviet/guard/G1 = new/obj/item/weapon/key/soviet/guard(null)
 	var/obj/item/weapon/key/soviet/guard/G2 = new/obj/item/weapon/key/soviet/guard/max(null)
@@ -89,14 +83,7 @@
 	uniform.attackby(holsterh, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, an officer of the NKVD GULAG guards. Organize your men and keep the prisoners in place!")
-	H.setStat("strength", STAT_VERY_VERY_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_VERY_VERY_HIGH)
-	H.setStat("dexterity", STAT_VERY_VERY_HIGH)
-	H.setStat("swords", STAT_HIGH)
-	H.setStat("pistol", STAT_VERY_VERY_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	H.verbs += /mob/living/human/proc/Sound_Alarm
 	H.verbs += /mob/living/human/proc/Stop_Alarm
 
@@ -117,32 +104,25 @@
 	min_positions = 1
 	max_positions = 4
 
+/datum/job/russian/nkvd_gulag_medic/job_stats = list("strength" = STAT_VERY_VERY_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_VERY_VERY_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_VERY_VERY_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_VERY_VERY_HIGH)
+/datum/job/russian/nkvd_gulag_medic/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots/soviet = slot_shoes,
+	/obj/item/clothing/under/ww2/soviet_nkvd = slot_w_uniform,
+	/obj/item/clothing/head/sov_ushanka_new = slot_head,
+	/obj/item/clothing/suit/storage/coat/ww2/sovcoat = slot_wear_suit,
+	/obj/item/weapon/storage/firstaid/advsmall = slot_belt,
+	/obj/item/weapon/doctor_handbook = slot_l_store,
+	/obj/item/weapon/key/soviet/guard = slot_r_store)
 /datum/job/russian/nkvd_gulag_medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/soviet(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/soviet_nkvd(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/sov_ushanka_new(H), slot_head)
-
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/sovcoat(H), slot_wear_suit)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/advsmall(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/doctor_handbook(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet/guard(H), slot_r_store)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armband/redcross/armband = new /obj/item/clothing/accessory/armband/redcross(null)
 	uniform.attackby(armband, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a medic of the GULAG staff. Keep both the prisoners and the guards healthy and alive.")
-	H.setStat("strength", STAT_VERY_VERY_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_MEDIUM_HIGH)
-	H.setStat("dexterity", STAT_VERY_VERY_HIGH)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_VERY_VERY_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_VERY_VERY_HIGH)
+	apply_job_stats(H)
 	return TRUE
 
 /datum/job/russian/nkvd_gulag_guard
@@ -158,29 +138,22 @@
 	min_positions = 10
 	max_positions = 50
 
+/datum/job/russian/nkvd_gulag_guard/job_stats = list("strength" = STAT_VERY_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_VERY_HIGH, "dexterity" = STAT_VERY_HIGH, "swords" = STAT_HIGH, "pistol" = STAT_VERY_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/russian/nkvd_gulag_guard/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots/soviet = slot_shoes,
+	/obj/item/clothing/under/ww2/soviet_nkvd = slot_w_uniform,
+	/obj/item/clothing/head/sov_ushanka_new/down = slot_head,
+	/obj/item/clothing/suit/storage/coat/ww2/sovcoat = slot_wear_suit,
+	/obj/item/weapon/storage/belt/gulagguard/filled = slot_belt,
+	/obj/item/weapon/key/soviet/guard = slot_l_store)
 /datum/job/russian/nkvd_gulag_guard/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/soviet(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/soviet_nkvd(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/sov_ushanka_new/down(H), slot_head)
-
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/sovcoat(H), slot_wear_suit)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/gulagguard/filled(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet/guard(H), slot_l_store)
+	equip_loadout(H)
 
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a guard of the GULAG. Keep the prisoners in place!")
-	H.setStat("strength", STAT_VERY_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_VERY_HIGH)
-	H.setStat("dexterity", STAT_VERY_HIGH)
-	H.setStat("swords", STAT_HIGH)
-	H.setStat("pistol", STAT_VERY_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	return TRUE
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -200,13 +173,15 @@
 	var/original_facial = "Shaved"
 	var/original_hair = "Short Hair"
 	allowed_maps = list()
+/datum/job/civilian/prisoner/job_stats = list("strength" = STAT_MEDIUM_LOW, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_MEDIUM_LOW, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/civilian/prisoner/job_loadout = list(
+	/obj/item/clothing/shoes/heavyboots/wrappedboots = slot_shoes,
+	/obj/item/clothing/under/ww2/gulag_prisoner = slot_w_uniform)
 /datum/job/civilian/prisoner/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.give_nationality()
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/gulag_prisoner(H), slot_w_uniform)
+	equip_loadout(H)
 //head
 	if (prob(30))
 		if (prob(50))
@@ -227,14 +202,7 @@
 			H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/shank(H), slot_r_store)
 		else
 			H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/shank/glass(H), slot_r_store)
-	H.setStat("strength", STAT_MEDIUM_LOW)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_MEDIUM_LOW)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	H.give_languages()
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////ABASHIRI PRISONERS///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -251,14 +219,16 @@
 	var/original_eyes = "Black"
 	var/original_facial = "Shaved"
 	var/original_hair = "Short Hair"
+/datum/job/civilian/abashiri/prisoner/job_stats = list("strength" = STAT_MEDIUM_LOW, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_MEDIUM_LOW, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/civilian/abashiri/prisoner/job_loadout = list(
+	/obj/item/clothing/shoes/geta = slot_shoes,
+	/obj/item/clothing/under/abashiri_prisoner = slot_w_uniform,
+	/obj/item/weapon/prisoner_passport = slot_wear_id)
 /datum/job/civilian/abashiri/prisoner/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.give_nationality()
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/geta(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/abashiri_prisoner(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/weapon/prisoner_passport(H), slot_wear_id)
+	equip_loadout(H)
 	var/obj/item/stack/money/yen/RUB = new /obj/item/stack/money/yen(H)
 	RUB.amount = 50
 	H.equip_to_slot_or_del(RUB, slot_r_store)
@@ -273,14 +243,7 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/abashiri_prisoner(H), slot_head)
 	if (H.nationality == "Ainu")
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ainu_bandana(H), slot_head)
-	H.setStat("strength", STAT_MEDIUM_LOW)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_MEDIUM_LOW)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	return TRUE
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /mob/living/human/proc/give_nationality(var/mob/living/human)
@@ -743,18 +706,18 @@
 	min_positions = 1
 	max_positions = 1
 
+/datum/job/japanese/abashiri/guard/warden/job_loadout = list(
+	/obj/item/clothing/shoes/japboots = slot_shoes,
+	/obj/item/clothing/under/abashiri = slot_w_uniform,
+	/obj/item/clothing/suit/storage/coat/japcoat/abashiri = slot_wear_suit,
+	/obj/item/clothing/head/abashiri_guard/head_guard/warden = slot_head,
+	/obj/item/weapon/gun/projectile/revolver/t26_revolver = slot_l_hand,
+	/obj/item/ammo_magazine/c9mm_jap_revolver = slot_l_store,
+	/obj/item/weapon/storage/belt/jap/abashiri_guard = slot_belt)
 /datum/job/japanese/abashiri/guard/warden/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/japboots(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/abashiri(H), slot_w_uniform)
-
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/japcoat/abashiri(H), slot_wear_suit)
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/abashiri_guard/head_guard/warden(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/t26_revolver(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c9mm_jap_revolver(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/jap/abashiri_guard(H), slot_belt)
+	equip_loadout(H)
 	var/obj/item/weapon/storage/belt/keychain/KC = new/obj/item/weapon/storage/belt/keychain(H)
 	var/obj/item/weapon/key/abashiri/G1 = new/obj/item/weapon/key/abashiri(null)
 	var/obj/item/weapon/key/abashiri/head/G2 = new/obj/item/weapon/key/abashiri/head(null)
@@ -793,18 +756,18 @@
 	min_positions = 1
 	max_positions = 1
 
+/datum/job/japanese/abashiri/guard/head/job_loadout = list(
+	/obj/item/clothing/shoes/japboots = slot_shoes,
+	/obj/item/clothing/under/abashiri = slot_w_uniform,
+	/obj/item/clothing/suit/storage/coat/japcoat/abashiri = slot_wear_suit,
+	/obj/item/clothing/head/abashiri_guard/head_guard = slot_head,
+	/obj/item/weapon/gun/projectile/revolver/t26_revolver = slot_l_hand,
+	/obj/item/ammo_magazine/c9mm_jap_revolver = slot_l_store,
+	/obj/item/weapon/storage/belt/jap/abashiri_guard = slot_belt)
 /datum/job/japanese/abashiri/guard/head/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/japboots(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/abashiri(H), slot_w_uniform)
-
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/japcoat/abashiri(H), slot_wear_suit)
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/abashiri_guard/head_guard(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/t26_revolver(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c9mm_jap_revolver(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/jap/abashiri_guard(H), slot_belt)
+	equip_loadout(H)
 	var/obj/item/weapon/storage/belt/keychain/KC = new/obj/item/weapon/storage/belt/keychain(H)
 	var/obj/item/weapon/key/abashiri/G1 = new/obj/item/weapon/key/abashiri(null)
 	var/obj/item/weapon/key/abashiri/head/G2 = new/obj/item/weapon/key/abashiri/head(null)
@@ -843,17 +806,18 @@
 	min_positions = 1
 	max_positions = 2
 
+/datum/job/japanese/abashiri/guard/medic/job_stats = list("strength" = STAT_MAX, "crafting" = STAT_NORMAL, "rifle" = STAT_VERY_HIGH, "dexterity" = STAT_MAX, "swords" = STAT_HIGH, "pistol" = STAT_VERY_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_VERY_HIGH)
+/datum/job/japanese/abashiri/guard/medic/job_loadout = list(
+	/obj/item/clothing/shoes/japboots = slot_shoes,
+	/obj/item/clothing/under/abashiri = slot_w_uniform,
+	/obj/item/clothing/suit/storage/coat/japcoat/abashiri = slot_wear_suit,
+	/obj/item/clothing/head/abashiri_guard = slot_head,
+	/obj/item/weapon/storage/belt/jap/abashiri_guard = slot_belt,
+	/obj/item/weapon/doctor_handbook = slot_l_store)
 /datum/job/japanese/abashiri/guard/medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/japboots(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/abashiri(H), slot_w_uniform)
-
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/japcoat/abashiri(H), slot_wear_suit)
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/abashiri_guard(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/jap/abashiri_guard(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/doctor_handbook(H), slot_l_store)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armband/redcross/armband = new /obj/item/clothing/accessory/armband/redcross(null)
 	uniform.attackby(armband, H)
@@ -865,14 +829,7 @@
 	uniform.attackby(holsterh, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, the Prison Doctor of <b>Abashiri Prison</b>. Make sure all the guards and prisoners live!")
-	H.setStat("strength", STAT_MAX)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_VERY_HIGH)
-	H.setStat("dexterity", STAT_MAX)
-	H.setStat("swords", STAT_HIGH)
-	H.setStat("pistol", STAT_VERY_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_VERY_HIGH)
+	apply_job_stats(H)
 	return TRUE
 
 /datum/job/japanese/abashiri/guard
@@ -888,16 +845,17 @@
 	min_positions = 8
 	max_positions = 10
 
+/datum/job/japanese/abashiri/guard/job_stats = list("strength" = STAT_MAX, "crafting" = STAT_NORMAL, "rifle" = STAT_VERY_HIGH, "dexterity" = STAT_MAX, "swords" = STAT_NORMAL, "pistol" = STAT_VERY_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_NORMAL)
+/datum/job/japanese/abashiri/guard/job_loadout = list(
+	/obj/item/clothing/shoes/japboots = slot_shoes,
+	/obj/item/clothing/under/abashiri = slot_w_uniform,
+	/obj/item/clothing/suit/storage/coat/japcoat/abashiri = slot_wear_suit,
+	/obj/item/clothing/head/abashiri_guard = slot_head,
+	/obj/item/weapon/storage/belt/jap/abashiri_guard = slot_belt)
 /datum/job/japanese/abashiri/guard/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/japboots(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/abashiri(H), slot_w_uniform)
-
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/japcoat/abashiri(H), slot_wear_suit)
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/abashiri_guard(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/jap/abashiri_guard(H), slot_belt)
+	equip_loadout(H)
 	var/obj/item/weapon/storage/belt/keychain/KC = new/obj/item/weapon/storage/belt/keychain(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/weapon/key/abashiri/G1 = new/obj/item/weapon/key/abashiri(null)
@@ -907,12 +865,5 @@
 	uniform.attackby(holsterh, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, the main enforcer of <b>Abashiri Prison</b>. Make sure all the Prisoners do their work detail while supervised!")
-	H.setStat("strength", STAT_MAX)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_VERY_HIGH)
-	H.setStat("dexterity", STAT_MAX)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_VERY_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_NORMAL)
+	apply_job_stats(H)
 	return TRUE

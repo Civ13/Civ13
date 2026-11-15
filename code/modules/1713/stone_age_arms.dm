@@ -486,25 +486,6 @@
 
 // ---------------------------------------------------------------- knapping
 // New knapped flint tools offered by /obj/item/weapon/flint/proc/knap.
-/proc/stone_age_knap_options(mob/living/human/H)
-	. = list()
-	if (crafting_recipe_allowed(H, "/obj/item/weapon/material/hatchet/tribal/hand_axe"))
-		. += "Hand axe"
-	if (crafting_recipe_allowed(H, "/obj/item/weapon/material/hide_scraper"))
-		. += "Hide scraper"
-
-/proc/stone_age_knap_result(choice, turf/T, mob/living/human/H)
-	var/path
-	switch (choice)
-		if ("Hand axe")
-			path = /obj/item/weapon/material/hatchet/tribal/hand_axe
-		if ("Hide scraper")
-			path = /obj/item/weapon/material/hide_scraper
-	if (!path || !crafting_recipe_allowed(H, "[path]"))
-		return null
-	note_craft_practice(H, "[path]")
-	return new path(T)
-
 #undef BOLA_BREAKOUT_TIME
 #undef BOLA_TRIP_CHANCE
 #undef HIDE_SCRAPER_BONUS

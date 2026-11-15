@@ -506,6 +506,17 @@ var/map_storage/map_storage = new("SS13")
 /proc/log_startup_progress(var/message)
 	to_chat(world, "<span class='danger'>[message]</span>")
 
+// The load's phases, timed like the save's (persistence_save_phase_log): where a start or a handover's standby spends
+// the time before and between the levels (2026-11-13, sizing the Gaia handover).
+/proc/persistence_load_phase_log(phase, started)
+	var/now = world.timeofday
+	var/elapsed = now - started
+	if(elapsed < 0) elapsed += 864000 // midnight wrap
+	var/text = "World load: [phase] took [round(elapsed / 10, 0.1)] s."
+	world.log << text
+	persistence_game_log(text)
+	return now
+
 //Key thing that stops lag. Cornerstone of performance in ss13, Just sitting here, in unsorted.dm.
 /proc/stoplag()
 	. = 1
@@ -595,6 +606,8 @@ map_storage
 		// validation reads these instead of walking the files back.
 		list/saving_candidate_structure
 		var/saving_z = 0
+		// Wild animals this level's save left out (visited_areas.dm), by \ref.
+		var/list/saving_skipped_wildlife = list()
 		var/last_error = null
 		// The last_error a failed save export set. A save failure leaves the
 		// world as it was, so it must not hold character recovery the way a
@@ -624,6 +637,7 @@ map_storage
 	if(key == "human_save_roots") return TRUE
 #endif
 	if(key == "consecutive_save_failures") return TRUE
+	if(key == "saving_skipped_wildlife") return TRUE
 	if(key in list("saving_level_links", "saving_level_link_ids", "validated_level_links", "loading_level_links", "loading_level_link_targets", "loading_level_link_fields")) return TRUE
 	if(key in list("validated_roof_areas", "validated_roof_entries", "validated_roof_types", "validated_roof_instances", "validated_roof_absent", "restoring_roof_areas", "validated_roof_walk_levels", "validated_reachable_entries", "validated_entries_trusted")) return TRUE
 	if(key in list("validated_zone_state", "validated_zones", "validated_zone_grid", "restored_zones", "zone_export_state", "zone_export_zones", "zone_export_pins", "zone_export_anchors", "zone_id_reservations", "zone_high_water", "zone_namespace", "zone_next_counter", "zone_export_generation", "zone_export_maxz", "zone_candidate_validation")) return TRUE
@@ -764,17 +778,24 @@ map_storage
 	// This is called when loading a map after all the verification and
 	// password stuff is completed so that the map can have a fresh template
 	// to work with.
+/map_storage/var/tmp/list/standby_kept_objects
 /map_storage/proc/ClearMap()
+	// What a standby's turf preparation made with its turfs (standby_prepare.dm):
+	// the load's own turf pass would have made the same things after this clear.
+	var/list/kept = standby_kept_objects
+	standby_kept_objects = null
 	sleep(1)
 	world.log << "Clearing mobs..."
 	for (var/mob/mob in world)
 		// Lighting's runtime view singleton must outlive map contents.
-		if (!istype(mob, /mob/new_player) && mob != dview_mob)
+		if (!istype(mob, /mob/new_player) && mob != dview_mob && !(kept && kept[mob]))
 			qdel(mob)
 	sleep(1)
 	world.log << "Clearing objects..."
 	for (var/obj/object in world)
 		if(istype(object, /obj/map_metadata) || istype(object, /atom/movable/lighting_overlay) || istype(object, /atom/movable/lighting_fullbright))
+			continue
+		if(kept && kept[object])
 			continue
 		qdel(object)
 	return
@@ -827,6 +848,8 @@ var/global/datum/persistence_admission_identity
 	if(kind == "save" && persistence_restart.startup_hold) return null
 	if(persistence_save_in_progress && !(restart_owner && persistence_restart.startup_hold)) return null
 	if((persistence_restart.startup_hold || persistence_restart.busy || persistence_restart.exists()) && !restart_owner) return null
+	// A tutorial region never saves (tutorial_region.dm).
+	if(kind == "save" && tutorial_region_here()) return null
 	// Practice rooms are never saved: close them and remove their level first.
 	if(kind == "save" && !practice_rooms_close_for_save()) return null
 	var/datum/persistence_world_operation/operation = new
@@ -887,6 +910,15 @@ var/global/datum/persistence_admission_identity
 	var/diagnostic_phase = "admitted"
 	var/diagnostic_save_id
 	var/diagnostic_generation
+	// Stall watchdog (save_watchdog.dm). world.time of the last save work and
+	// of the last finished phase; abort_reason makes the next work check throw;
+	// abandoned marks an operation the watchdog released, so its proc, if it
+	// ever wakes, stops without touching a later save's state.
+	var/progress_at = 0
+	var/phase_at = 0
+	var/last_phase = "admitted"
+	var/abort_reason
+	var/abandoned = FALSE
 	var/datum/save_debug_recovery/debug_recovery
 	var/datum/persistence_restore_policy/restore_policy
 	var/datum/persistence_restore_attempt/restore_attempt
@@ -1020,6 +1052,8 @@ var/global/datum/persistence_admission_identity
 
 /datum/persistence_world_operation/New()
 	..()
+	progress_at = world.time
+	phase_at = world.time
 	admission_identity = new /datum
 
 // Direct calls acquire their own operation. A wrapper explicitly passes its
@@ -1183,6 +1217,12 @@ var/global/world_save_notice_started = null
 	var/area/A = locate(world.area)
 	return A ? "\ref[A]" : "prospective:[world.area]"
 
+// Attempts one savemap() call makes when each failed one failed on an animal
+// (fail_save_on_animal in saving.dm).
+#define PERSISTENCE_ANIMAL_SAVE_ATTEMPTS 4
+// Retries already made by the savemap() call in progress.
+/map_storage/var/tmp/save_animal_retries = 0
+
 // shutdown: the server stops right after this save (players were warned), so
 // the export yields only to queued work instead of sleeping whole ticks.
 /datum/controller/gameticker/proc/savemap(datum/persistence_restart_transaction/transaction, datum/save_debug_recovery/debug_policy, shutdown = FALSE)
@@ -1194,8 +1234,11 @@ var/global/world_save_notice_started = null
 		world.log << "World save refused: this standby world has not loaded the save yet."
 		return FALSE
 	map_storage.wait_for_durable_world_settle()
+	map_storage.save_animal_failure = null
 	var/datum/persistence_world_operation/operation = begin_persistence_operation(map_storage, "save", transaction)
-	if(!operation) return FALSE
+	if(!operation)
+		map_storage.save_animal_retries = 0
+		return FALSE
 	operation.shutdown_save = shutdown || !!transaction
 	if(debug_policy)
 		if(transaction || !debug_policy.bind(operation))
@@ -1214,6 +1257,13 @@ var/global/world_save_notice_started = null
 			map_storage.last_error = null
 		map_storage.last_export_error = null
 	catch(var/exception/e)
+		// Released by the stall watchdog: its cleanup and report already ran,
+		// and a later save may own the bookkeeping now.
+		if(operation.abandoned)
+			world.log << "Abandoned world save stopped: [e] on [e.file]:[e.line]"
+			map_storage.save_animal_failure = null // Never retried over the watchdog.
+			map_storage.save_animal_retries = 0
+			return 0
 		var/cleanup_ok = TRUE
 		if(debug_policy)
 			cleanup_ok = map_storage.debug_cleanup_owned(operation)
@@ -1231,7 +1281,20 @@ var/global/world_save_notice_started = null
 				message_admins("Save capture diagnostic: operation=[failure["operation_id"]] generation=[failure["generation"]] stage=[failure["stage"]] saved_z=[failure["saved_z"]] state=[failure["child_state"]]. Inspect map_storage.last_save_reference_failure for structural details.")
 		catch
 			world.log << "Save capture diagnostic delivery unavailable."
+		// An animal is never why a save fails (Val, 2026-11-14): the failed
+		// attempt deleted it or took it off the moving path, so save again at
+		// once. Bounded: each failed attempt costs its scratch memory.
+		var/animal = map_storage.save_animal_failure
+		map_storage.save_animal_failure = null
+		if(animal && !debug_policy && map_storage.save_animal_retries < PERSISTENCE_ANIMAL_SAVE_ATTEMPTS - 1)
+			map_storage.save_animal_retries++
+			var/retry_line = "World save: the attempt failed on an animal, [animal]; saving again (retry [map_storage.save_animal_retries])."
+			world.log << retry_line
+			persistence_game_log(retry_line)
+			return savemap(transaction, debug_policy, shutdown)
+		map_storage.save_animal_retries = 0
 		return 0
+	map_storage.save_animal_retries = 0
 	var/released_success = operation.finish(TRUE)
 	if(debug_policy && (!released_success || !debug_policy.finish_success(operation)))
 		debug_policy.stop_reason = "commit_outcome_unknown_owner_lost"
@@ -1308,6 +1371,7 @@ var/global/world_save_notice_started = null
 	var/phase = "preflight"
 	operation.diagnostic_phase = "preflight"
 	storage.restore_cleanup_error = null
+	var/load_phase_started = world.timeofday
 	try
 		if(policy)
 			attempt = policy.begin_attempt(storage)
@@ -1319,8 +1383,10 @@ var/global/world_save_notice_started = null
 			throw EXCEPTION("Restore attempt binding changed before preflight")
 		if(!storage.prepare_saved_dimensions(expected_intent, operation) || (!operation || storage.exact_validation_operation != operation) && !storage.validate_world_save())
 			throw EXCEPTION(storage.last_error ? storage.last_error : "World-save preflight rejected")
-		if(expected_intent && (!transaction || !transaction.matches(expected_intent, transaction.current_identity())))
+		// Validated just above: compare the files' identity without a second walk.
+		if(expected_intent && (!transaction || !transaction.matches(expected_intent, transaction.current_identity(FALSE))))
 			throw EXCEPTION("Restart intent does not match the completed generation")
+		load_phase_started = persistence_load_phase_log("preflight", load_phase_started)
 		var/watch = start_watch()
 		log_startup_progress("Starting map load...")
 		var/list/saved_round = storage.read_round_state()
@@ -1342,9 +1408,11 @@ var/global/world_save_notice_started = null
 		storage.suspend_durable_world()
 		invalidate_persistence_area_snapshots()
 		storage.ClearMap()
+		load_phase_started = persistence_load_phase_log("clearing the map", load_phase_started)
 		phase = "world"
 		if(!storage.run_world_operation("load", operation))
 			throw EXCEPTION(storage.last_error ? storage.last_error : "World-save restoration rejected")
+		load_phase_started = persistence_load_phase_log("levels", load_phase_started)
 		phase = "metadata"
 		operation.diagnostic_phase = "metadata"
 		if(storage.load_map_metadata() != TRUE)
@@ -1355,6 +1423,7 @@ var/global/world_save_notice_started = null
 		map.apply_persistence_age_floor()
 		storage.restore_round_state(src, saved_round)
 		storage.restore_zone_spawns()
+		load_phase_started = persistence_load_phase_log("metadata, durable world and round state", load_phase_started)
 		if(attempt_owned)
 			phase = "release"
 			release_attempted = TRUE
@@ -1436,6 +1505,34 @@ var/global/world_save_notice_started = null
 /map_storage/proc/transfer_loaded(list/round_state)
 	return
 
+// Where players have been (visited_areas.dm); isolated fixtures keep these
+// inert stubs and their saves carry no "visited" record.
+/map_storage/proc/visited_capture()
+	return null
+
+/map_storage/proc/visited_loaded(list/round_state)
+	return
+
+// TRUE for a wild animal the save leaves out because no player has been near
+// its chunk (visited_areas.dm); fixtures keep every animal.
+/map_storage/proc/save_skips_wildlife(atom/movable/A)
+	return FALSE
+
+#define VISITED_CHUNK 16
+// Shape only: "levels" holds one "0"/"1" text per saved level, one character
+// per VISITED_CHUNK x VISITED_CHUNK chunk, row by row.
+/proc/valid_visited_record(list/record, maxx, maxy, maxz)
+	if(!islist(record) || record.len != 4 || record["version"] != 1 || record["chunk"] != VISITED_CHUNK) return FALSE
+	if(!isnum(record["since"]) || record["since"] <= 0) return FALSE
+	var/list/levels = record["levels"]
+	if(!islist(levels) || levels.len != maxz) return FALSE
+	var/cells = -round(-maxx / VISITED_CHUNK) * -round(-maxy / VISITED_CHUNK)
+	for(var/z = 1, z <= maxz, z++)
+		var/row = levels["[z]"]
+		if(!istext(row) || length(row) != cells) return FALSE
+		if(length(replacetext(replacetext(row, "0", ""), "1", ""))) return FALSE
+	return TRUE
+
 // Dug cave levels (multiz/dug_underground.dm) rebuild their lighting after a
 // load; isolated fixtures keep this inert stub.
 /map_storage/proc/restore_dug_levels()
@@ -1469,11 +1566,13 @@ var/global/world_save_notice_started = null
 	var/has_debug_recovery = islist(state) && ("debug_recovery" in state)
 	var/has_transfer = islist(state) && ("transfer" in state)
 	var/has_saved_at = islist(state) && ("saved_at" in state)
-	if(!islist(state) || state.len != (version == 2 ? 12 : 11) + has_elevation + has_level_links + has_debug_recovery + has_transfer + has_saved_at || state["version"] != version || state["generation"] != marker || state["metadata"] != md5(file2text("map_saves/map.txt")) || state["map"] != map.ID || state["maxx"] != world.maxx || state["maxy"] != world.maxy || state["maxz"] != save_validation_maxz())
+	var/has_visited = islist(state) && ("visited" in state)
+	if(!islist(state) || state.len != (version == 2 ? 12 : 11) + has_elevation + has_level_links + has_debug_recovery + has_transfer + has_saved_at + has_visited || state["version"] != version || state["generation"] != marker || state["metadata"] != md5(file2text("map_saves/map.txt")) || state["map"] != map.ID || state["maxx"] != world.maxx || state["maxy"] != world.maxy || state["maxz"] != save_validation_maxz())
 		throw EXCEPTION("Round state does not match completed generation")
 	if(has_debug_recovery && !valid_debug_recovery_audit(state["debug_recovery"], marker)) throw EXCEPTION("Invalid debug recovery audit")
 	if(has_transfer && !valid_transfer_capture(state["transfer"])) throw EXCEPTION("Invalid transfer capture")
 	if(has_saved_at && !valid_persistence_save_stamp(state["saved_at"])) throw EXCEPTION("Invalid save time")
+	if(has_visited && !valid_visited_record(state["visited"], world.maxx, world.maxy, save_validation_maxz())) throw EXCEPTION("Invalid visited areas record")
 	if(has_elevation)
 		elevation_profile_from_snapshot(state["elevation"], world.maxx, world.maxy, save_validation_maxz())
 	if(has_level_links) validate_level_link_rows(state["level_links"])
@@ -1931,6 +2030,10 @@ var/global/world_save_notice_started = null
 		return FALSE
 	return TRUE
 
+// Plain cells (sparse_plain_level below) mark their header with this turf.
+#define SPARSE_PLAIN_MARKER "plain"
+#define SPARSE_PLAIN_TEMPLATE_LIMIT 255
+
 // The sparse header of a level index, or null for a full level. Presence is
 // checked through the directory: reading an absent savefile key creates it.
 /map_storage/proc/sparse_level_header(savefile/F)
@@ -1941,7 +2044,12 @@ var/global/world_save_notice_started = null
 	F.cd = "/"
 	for(var/key in list("kind", "turf", "cells"))
 		if(!(key in keys)) throw EXCEPTION("Incomplete sparse level header")
-	var/list/header = list("kind" = F["/sparse/kind"], "turf" = F["/sparse/turf"], "cells" = F["/sparse/cells"], "zone" = ("zone" in keys) ? F["/sparse/zone"] : null)
+	// A level with plain cells (sparse_plain_level) names its baseline in
+	// "baseline" and writes "plain" as its turf, which builds that predate
+	// plain cells reject as an invalid header instead of misreading the level.
+	var/plain = ("plain" in keys)
+	if(plain && (F["/sparse/turf"] != SPARSE_PLAIN_MARKER || !("baseline" in keys))) throw EXCEPTION("Invalid sparse level header")
+	var/list/header = list("kind" = F["/sparse/kind"], "turf" = plain ? F["/sparse/baseline"] : F["/sparse/turf"], "cells" = F["/sparse/cells"], "zone" = ("zone" in keys) ? F["/sparse/zone"] : null, "plain" = plain)
 	if(!istext(header["kind"]) || !ispath(header["turf"], /turf) || !isnum(header["cells"]) || header["cells"] < 0 || header["cells"] != round(header["cells"]) || (!isnull(header["zone"]) && !istext(header["zone"]))) throw EXCEPTION("Invalid sparse level header")
 	return header
 
@@ -1981,6 +2089,50 @@ var/global/world_save_notice_started = null
 	F.cd = "/"
 	if(header && header["cells"] != count) throw EXCEPTION("Sparse level cell count differs from its header on z=[z]")
 	return cells
+
+// Plain cells: an empty turf of a sparse ground level whose saved fields are
+// all scalars is written as one of the level's templates (type, zone and
+// fields) in a run-length grid instead of as a full entry. On Gaia on
+// 2026-11-13 these were 169,272 of the 169,513 turf entries of level 1 and
+// 96,703 of 112,366 on level 2, in 9 and 36 distinct templates.
+
+// The level's plain cells, or null when it has none: "templates" lists each
+// template as list("type", "zone", "fields"), and "cells" holds one template
+// number (0 for none) per cell, row by row. Shape is checked here; each caller
+// checks a plain cell is not also a saved cell.
+/map_storage/proc/sparse_plain_level(savefile/F, z, list/header)
+	if(!header || !header["plain"]) return null
+	if(header["kind"] != "ground") throw EXCEPTION("Plain cells on a sparse level that is not ground on z=[z]")
+	F.cd = "/sparse/plain"
+	var/list/keys = F.dir.Copy()
+	F.cd = "/"
+	if(!("count" in keys) || !("runs" in keys)) throw EXCEPTION("Incomplete plain cells on z=[z]")
+	var/count = F["/sparse/plain/count"]
+	if(!isnum(count) || count < 1 || count > SPARSE_PLAIN_TEMPLATE_LIMIT || count != round(count)) throw EXCEPTION("Invalid plain template count on z=[z]")
+	var/list/templates = list()
+	for(var/i = 1, i <= count, i++)
+		var/type = F["/sparse/plain/[i]/type"]
+		var/zone = F["/sparse/plain/[i]/zone"]
+		var/list/fields = F["/sparse/plain/[i]/fields"]
+		// A template has a zone exactly when the level names its baseline zone.
+		if(!ispath(type, /turf) || !islist(fields) || (istext(header["zone"]) ? !istext(zone) || !length(zone) : !isnull(zone))) throw EXCEPTION("Invalid plain template [i] on z=[z]")
+		for(var/key in fields)
+			if(!istext(key) || !length(key) || !persistence_default_scalar(fields[key])) throw EXCEPTION("Invalid plain template [i] field on z=[z]")
+			if(key in list("type", "content", "loc", "locs", "pixloc", "contents", "vars", "parent_type", "x", "y", "z", "vis_locs", "client", "key", "ckey")) throw EXCEPTION("Structural plain template [i] field on z=[z]")
+		templates += list(list("type" = type, "zone" = zone, "fields" = fields))
+	var/list/runs = F["/sparse/plain/runs"]
+	var/total = world.maxx * world.maxy
+	if(!islist(runs) || !runs.len || runs.len % 2) throw EXCEPTION("Invalid plain cell runs on z=[z]")
+	var/list/cells = new /list(total)
+	var/cell = 0
+	for(var/i = 1, i <= runs.len, i += 2)
+		var/template = runs[i]
+		var/length = runs[i + 1]
+		if(!isnum(template) || template < 0 || template > count || template != round(template) || !isnum(length) || length < 1 || length != round(length) || cell + length > total) throw EXCEPTION("Invalid plain cell run on z=[z]")
+		for(var/n = 1, n <= length, n++)
+			cells[++cell] = template
+	if(cell != total) throw EXCEPTION("Plain cell runs do not cover z=[z]")
+	return list("templates" = templates, "cells" = cells)
 
 // Every turf reference a level's grid holds, for reachability walks. Full
 // levels list every cell; sparse levels list their saved cells only, since

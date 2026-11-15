@@ -39,7 +39,7 @@
 			<big><b>[ship] wheel</b></big><br><br>
 			</center>
 			<font size='3'>
-			<i>Current wind: [map.windspeed], from [map.winddirection]</i><br><br>
+			<i>Current wind: [map.windspeed], from [map.winddirection][ship.masts.len ? ". Under sail she is [point_of_sail_name(ship.reverse ? OPPOSITE_DIR(ship.dir) : ship.dir)]" : ""]</i><br><br>
 			Heading: <b>[dir2text(ship.dir)] [reversed ? "(reversed)" : ""]</b>  <a href='?src=\ref[src];set_heading_left=1'>Turn Left</a> <a href='?src=\ref[src];set_reversed=1'>Reverse</a> <a href='?src=\ref[src];set_heading_right=1'>Turn Right</a><br><br>
 			Anchor: <a href='?src=\ref[src];set_anchor=1'>[ship.anchor ? "anchored" : "anchor lifted"]</a><br><br>
 			Engine: <b><a href='?src=\ref[src];set_engine=1'>[ship.engine.on ? "On" : "Off"]</a></b> - Speed <b>[speed2text()]</b><br><br>
@@ -73,7 +73,7 @@
 			<big><b>[ship] wheel</b></big><br><br>
 			</center>
 			<font size='3'>
-			<i>Current wind: [map.windspeed], from [map.winddirection]</i><br><br>
+			<i>Current wind: [map.windspeed], from [map.winddirection][ship.masts.len ? ". Under sail she is [point_of_sail_name(ship.reverse ? OPPOSITE_DIR(ship.dir) : ship.dir)]" : ""]</i><br><br>
 			Heading: <b>[dir2text(ship.dir)] [reversed ? "(reversed)" : ""]</b>  <a href='?src=\ref[src];set_heading_left=1'>Turn Left</a> <a href='?src=\ref[src];set_reversed=1'>Reverse</a> <a href='?src=\ref[src];set_heading_right=1'>Turn Right</a><br><br>
 			Anchor: <a href='?src=\ref[src];set_anchor=1'>[ship.anchor ? "anchored" : "anchor lifted"]</a><br><br>
 			Sails: <a href='?src=\ref[src];set_sails=1'>[sails_on ? "hoisted" : "retracted"]</a><br><br>
@@ -105,7 +105,7 @@
 			<big><b>[ship] wheel</b></big><br><br>
 			</center>
 			<font size='3'>
-			<i>Current wind: [map.windspeed], from [map.winddirection]</i><br><br>
+			<i>Current wind: [map.windspeed], from [map.winddirection][ship.masts.len ? ". Under sail she is [point_of_sail_name(ship.reverse ? OPPOSITE_DIR(ship.dir) : ship.dir)]" : ""]</i><br><br>
 			Heading: <b>[dir2text(ship.dir)] [reversed ? "(reversed)" : ""]</b>  <a href='?src=\ref[src];set_heading_left=1'>Turn Left</a> <a href='?src=\ref[src];set_reversed=1'>Reverse</a> <a href='?src=\ref[src];set_heading_right=1'>Turn Right</a><br><br>
 			Anchor: <a href='?src=\ref[src];set_anchor=1'>[ship.anchor ? "anchored" : "anchor lifted"]</a><br><br>
 			Sails: <a href='?src=\ref[src];set_sails=1'>[sails_on ? "hoisted" : "retracted"]</a><br><br>
@@ -139,7 +139,7 @@
 			<big><b>[ship] wheel</b></big><br><br>
 			</center>
 			<font size='3'>
-			<i>Current wind: [map.windspeed], from [map.winddirection]</i><br><br>
+			<i>Current wind: [map.windspeed], from [map.winddirection][ship.masts.len ? ". Under sail she is [point_of_sail_name(ship.reverse ? OPPOSITE_DIR(ship.dir) : ship.dir)]" : ""]</i><br><br>
 			Heading: <b>[dir2text(ship.dir)] [reversed ? "(reversed)" : ""]</b>  <a href='?src=\ref[src];set_heading_left=1'>Turn Left</a> <a href='?src=\ref[src];set_reversed=1'>Reverse</a> <a href='?src=\ref[src];set_heading_right=1'>Turn Right</a><br><br>
 			Anchor: <a href='?src=\ref[src];set_anchor=1'>[ship.anchor ? "anchored" : "anchor lifted"]</a><br><br>
 			</font>

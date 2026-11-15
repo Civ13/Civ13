@@ -350,6 +350,8 @@ var/global/FREQM = rand(101,120)
 		O.hear_radio(msg, verbage, speaker.default_language, speaker, R, R)
 	// other lands, through a keyed relay station (radio_relay.dm)
 	civ_relay_outbound(R:freq, speaker, msg, verbage)
+	// strong sets make nearby rusty metal hum along (rusty_bolt.dm)
+	rusty_bolt_from_radio(R, msg, speaker)
 
 //broadcasts an announcement on the Police/Emergency frequency
 /proc/global_broadcast(var/tfreq, var/msg)
@@ -504,7 +506,7 @@ var/global/FREQM = rand(101,120)
 	freq = FREQ2
 	desc = "Used to communicate with distant places. Set to [freq]kHz."
 /obj/structure/radio/attackby(obj/item/W as obj, mob/user as mob)
-	if (!anchored && !istype(W, /obj/item/weapon/wrench))
+	if (!anchored && !is_tool(W, TOOL_WRENCH))
 		to_chat(user, "<span class='notice'>Fix the radio in place with a wrench first.</span>")
 		return
 	if (istype(W, /obj/item/stack/cable_coil))
@@ -796,7 +798,7 @@ var/global/FREQM = rand(101,120)
 
 
 /proc/reploc(message,mob/living/human/speaker)
-	if (map.ID == MAP_CAMPAIGN || CAMPAIGN_MAP_LIST_MAPID_OR)
+	if (map.campaign)
 		return "Reporting in, current location is [speaker.get_coded_loc(speaker)] ([speaker.x],[speaker.y])."
 	else
 		return message

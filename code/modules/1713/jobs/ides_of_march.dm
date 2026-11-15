@@ -51,11 +51,13 @@
 	H.name = "Gaius Julius Caesar"
 	H.real_name = H.name
 
+/datum/job/roman/ides/caesar/job_loadout = list(
+	/obj/item/clothing/head/laurelcrown/gold = slot_head,
+	/obj/item/weapon/material/kitchen/utensil/knife/dagger/iron/pugio = slot_r_store)
 /datum/job/roman/ides/caesar/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	ides_dress(H, /obj/item/clothing/under/custom/toga/purple)
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/laurelcrown/gold(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/dagger/iron/pugio(H), slot_r_store)
+	equip_loadout(H)
 	H.add_note("Role", "You are <b>Gaius Julius Caesar</b>, Dictator of Rome. There are whispers of a plot among the senators. Stay alive until the day is out, and trust your lictors and friends.")
 	give_random_name(H)
 	ides_add_caesar(H)
@@ -70,11 +72,13 @@
 	min_positions = 4
 	max_positions = 24
 
+/datum/job/roman/ides/lictor/job_loadout = list(
+	/obj/item/weapon/material/quarterstaff = slot_r_hand,
+	/obj/item/weapon/material/kitchen/utensil/knife/dagger/iron/pugio = slot_r_store)
 /datum/job/roman/ides/lictor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	ides_dress(H)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/quarterstaff(H), slot_r_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/dagger/iron/pugio(H), slot_r_store)
+	equip_loadout(H)
 	H.add_note("Role", "You are a <b>Lictor</b>, one of Caesar's attendants. Your rods clear his way. Keep the knives away from him.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	give_random_name(H)

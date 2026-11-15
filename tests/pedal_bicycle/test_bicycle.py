@@ -32,7 +32,7 @@ def compile_proc(path, args, env, members=(), source=SOURCE):
 def math_procs(source=SOURCE):
     env = {'max': max, 'Clamp': lambda n, low, high: max(low, min(n, high))}
     ratio = compile_proc('/proc/bicycle_load_ratio', 'carried_weight, strength', env, source=source)
-    delay = compile_proc('/proc/bicycle_step_delay', 'load_ratio, fastest=1.5, slowest=6', env, source=source)
+    delay = compile_proc('/proc/bicycle_step_delay', 'load_ratio, fastest=1.8, slowest=6', env, source=source)
     cost = compile_proc('/proc/bicycle_step_cost', 'load_ratio', env, source=source)
     return ratio, delay, cost
 
@@ -79,7 +79,7 @@ def move_fixture(source=SOURCE, blocked=False):
     b.ground_ahead = lambda start, target: dict(enumerate(b.ground, 1))
     b.slope = 0
     b.slope_delay = lambda start, target, step: b.slope
-    b.pedal_fastest = 1.5
+    b.pedal_fastest = 1.8
     b.pedal_slowest = 6
     h.dir = 4
     h.stamina = 10
@@ -90,7 +90,7 @@ def move_fixture(source=SOURCE, blocked=False):
     h.forceMove = lambda target: setattr(h, 'loc', target)
     b.moving = True
     b.pedal_next_move = 0
-    b.vehicle_m_delay = 1.5
+    b.vehicle_m_delay = 1.8
     b.allowed = True
     b.do_vehicle_check = lambda: b.allowed
     b.updated = False
@@ -122,7 +122,7 @@ def move_fixture(source=SOURCE, blocked=False):
 class BicycleMath(unittest.TestCase):
     def test_load_intervals_and_costs(self):
         ratio, delay, cost = math_procs()
-        for weight, expected_delay, expected_cost in ((0, 1.5, .5), (29.5, 2.25, .75), (59, 3, 1), (177, 6, 2)):
+        for weight, expected_delay, expected_cost in ((0, 1.8, .5), (29.5, 2.7, .75), (59, 3.6, 1), (177, 6, 2)):
             self.assertAlmostEqual(delay(ratio(weight, 1)), expected_delay)
             self.assertAlmostEqual(cost(ratio(weight, 1)), expected_cost)
 
@@ -133,13 +133,13 @@ class BicycleMath(unittest.TestCase):
             values = delay(ratio(weight, 1)), cost(ratio(weight, 1))
             self.assertGreaterEqual(values[0], previous[0])
             self.assertGreaterEqual(values[1], previous[1])
-            self.assertTrue(1.5 <= values[0] <= 6)
+            self.assertTrue(1.8 <= values[0] <= 6)
             self.assertTrue(.5 <= values[1] <= 2)
             previous = values
 
     def test_zero_negative_huge_and_strength(self):
         ratio, delay, cost = math_procs()
-        self.assertEqual(delay(ratio(-10, 1)), 1.5)
+        self.assertEqual(delay(ratio(-10, 1)), 1.8)
         self.assertEqual(cost(ratio(10**20, -3)), 2)
         self.assertEqual(delay(ratio(10**20, -3)), 6)
         self.assertLess(delay(ratio(59, 2)), delay(ratio(59, 1)))
@@ -196,8 +196,8 @@ class BicycleMove(unittest.TestCase):
         self.assertTrue(move(4))
         self.assertEqual(h.loc, b.loc)
         self.assertEqual(h.stats['stamina'][1], 9)
-        self.assertEqual(b.vehicle_m_delay, 3)
-        self.assertEqual(b.pedal_next_move, 103)
+        self.assertAlmostEqual(b.vehicle_m_delay, 3.6)
+        self.assertAlmostEqual(b.pedal_next_move, 103.6)
         self.assertEqual(len(moves), 1)
         self.assertFalse(lease.released)
         self.assertIsNone(h.carriage_glide_step)
@@ -233,11 +233,11 @@ class BicycleMove(unittest.TestCase):
         b, h, lease, moves, env, move = move_fixture()
         b.pedal_next_move = 99.6
         self.assertTrue(move(4))
-        self.assertAlmostEqual(b.pedal_next_move, 101.1)
+        self.assertAlmostEqual(b.pedal_next_move, 101.4)
         b, h, lease, moves, env, move = move_fixture()
         b.pedal_next_move = 50
         self.assertTrue(move(4))
-        self.assertAlmostEqual(b.pedal_next_move, 101.5)
+        self.assertAlmostEqual(b.pedal_next_move, 101.8)
         start = extract(SOURCE, BASE + '/startmovementloop')
         self.assertIn('pedal_next_move = max(pedal_next_move, world.time)', start)
 
@@ -275,7 +275,7 @@ class BicycleGround(unittest.TestCase):
         b, h, lease, moves, env, move = move_fixture()
         b.ground = [True, True, 0]
         self.assertTrue(move(4))
-        self.assertAlmostEqual(b.vehicle_m_delay, 1.5 * 1.25 + 1)
+        self.assertAlmostEqual(b.vehicle_m_delay, 1.8 * 1.25 + 1)
         self.assertAlmostEqual(h.stats['stamina'][1], 10 - .625)
 
     def test_climbing_costs_more_and_adds_slope_delay(self):
@@ -283,7 +283,7 @@ class BicycleGround(unittest.TestCase):
         b.ground = [True, False, 2]
         b.slope = 2
         self.assertTrue(move(4))
-        self.assertAlmostEqual(b.vehicle_m_delay, 1.875 + 2)
+        self.assertAlmostEqual(b.vehicle_m_delay, 2.25 + 2)
         self.assertAlmostEqual(h.stats['stamina'][1], 10 - (.625 + 1))
 
     def test_coasting_downhill_is_free_even_when_exhausted(self):
@@ -293,7 +293,7 @@ class BicycleGround(unittest.TestCase):
         h.stats['stamina'][1] = 0
         self.assertTrue(move(4))
         self.assertEqual(h.stats['stamina'][1], 0)
-        self.assertAlmostEqual(b.vehicle_m_delay, 1.875 - .46875)
+        self.assertAlmostEqual(b.vehicle_m_delay, 2.25 - .46875)
 
     def test_interval_is_bounded(self):
         b, h, lease, moves, env, move = move_fixture()
@@ -405,7 +405,7 @@ class BicycleWiring(unittest.TestCase):
 
     def test_recipe_and_research_and_include(self):
         self.assertIn('code\\game\\objects\\structures\\bicycle.dm', (ROOT / 'civ13.dme').read_text())
-        self.assertIn('RECIPE: /material/steel/,pedal bicycle,/obj/structure/vehicle/bicycle,12,200,1,1,vehicle parts,95,0,0,8,null',
+        self.assertIn('RECIPE: /material/steel/,pedal bicycle,/obj/structure/vehicle/bicycle,8,200,1,1,vehicle parts,95,0,0,8,null',
                       (ROOT / 'config/crafting/material_recipes_global.txt').read_text())
         self.assertIn('"/obj/structure/vehicle/bicycle" = "factories"',
                       (ROOT / 'code/modules/research_tree/research_node.dm').read_text())

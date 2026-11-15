@@ -122,7 +122,7 @@
 		var/dry = 0
 		for (var/obj/structure/vehicleparts/frame/F in frames)
 			var/turf/T = get_turf(F)
-			if (!istype(T, /turf/floor/beach/water) && !istype(T, /turf/floor/trench/flooded))
+			if (!is_open_water(T))
 				dry++
 		if (dry)
 			refusal = "every ship frame must lie on water: [dry] [dry == 1 ? "does" : "do"] not"
@@ -238,7 +238,10 @@
 		var/turf/T = get_turf(B)
 		var/list/need = B.lacking()
 		if (locate(/obj/structure/cannon/modern/tank) in T)
-			need -= "a tank cannon"
+			need -= "a tank cannon or a machine gun"
+		for (var/obj/item/weapon/gun/projectile/automatic/stationary/G in T)
+			if (turret_can_take_gun(G))
+				need -= "a tank cannon or a machine gun"
 		for (var/obj/structure/bed/chair/gunner/G in T)
 			if (!G.turret)
 				need -= "a gunner's seat"
