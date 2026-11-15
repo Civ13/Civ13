@@ -80,7 +80,7 @@
 	var/points = min(room, max(1, round(lesser.research_ticks(node_id) * COMPARE_NOTES_SHARE)))
 	fuller.mark_compared(node_id)
 	lesser.mark_compared(node_id)
-	var/finished = fuller.add_research_work(node_id, points)
+	var/finished = fuller.add_research_work(node_id, points, FALSE, H)
 	// Each pairing of scholars on a subject teaches both, once (learning_by_doing.dm).
 	H.gain_active_scholarship(node_id, points, "compared:[node_id]:[partner.scholar_identity()]")
 	partner.gain_active_scholarship(node_id, points, "compared:[node_id]:[H.scholar_identity()]")

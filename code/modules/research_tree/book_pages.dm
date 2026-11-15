@@ -209,7 +209,7 @@ var/global/list/book_research_writing_supplies = list(
 	if (sheet.loc == H)
 		H.remove_from_mob(sheet)
 	qdel(sheet)
-	add_research_chapter(node_id)
+	add_research_chapter(node_id, FALSE, H)
 	H.gain_scholarship(node_id, BOOK_WRITE_SKILL_GAIN)
 	return TRUE
 
@@ -301,6 +301,10 @@ var/global/list/book_research_writing_supplies = list(
 		research_chapters = jointext(chapters, ";")
 		var/obj/item/weapon/paper/research_page/R = new(site)
 		R.node_id = which
+		// The torn chapter keeps the language it was written in.
+		var/datum/language/written_in = chapter_language(which)
+		R.chapter_language = written_in ? written_in.name : ""
+		set_chapter_language(which, null)
 		R.refresh_page()
 		return R
 	var/list/pages = page_list()
@@ -326,7 +330,7 @@ var/global/list/book_research_writing_supplies = list(
 /obj/item/weapon/book/proc/bind_loose_page(obj/item/weapon/paper/P)
 	var/obj/item/weapon/paper/research_page/R = istype(P, /obj/item/weapon/paper/research_page) ? P : null
 	if (R)
-		return valid_recipe_node_id(R.node_id) && add_research_chapter(R.node_id)
+		return valid_recipe_node_id(R.node_id) && add_research_chapter(R.node_id, FALSE, null, istext(R.chapter_language) ? R.chapter_language : "")
 	return add_written_page(P.info)
 
 /obj/item/weapon/book/proc/reinsert_page(mob/living/human/H, obj/item/weapon/paper/P)

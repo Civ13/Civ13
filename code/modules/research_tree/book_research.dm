@@ -50,7 +50,7 @@
 // A capstone chapter that comes into being by any route (research, writing it
 // from memory, copying, printing) can move the era: research announces a
 // discovery, any other route brings a lost era back (era_loss.dm).
-/obj/item/weapon/book/proc/add_research_chapter(node_id, discovered = FALSE)
+/obj/item/weapon/book/proc/add_research_chapter(node_id, discovered = FALSE, mob/living/human/writer = null, language = null)
 	if (!valid_recipe_node_id(node_id))
 		return FALSE
 	var/list/chapters = research_chapter_list()
@@ -58,6 +58,8 @@
 		return FALSE
 	chapters += node_id
 	research_chapters = jointext(chapters, ";")
+	// The chapter is in its writer's language (book_language.dm).
+	record_chapter_language(node_id, writer, language)
 	clear_research_progress(node_id)
 	map?.book_research_node_finished(get_research_node(node_id), !discovered)
 	return TRUE
@@ -101,7 +103,7 @@
 // Adds ticks (and optionally marks the prototype installed). Finishes the
 // chapter when both the study and, for prototype nodes, the prototype are in.
 // Returns TRUE when the chapter was finished by this call.
-/obj/item/weapon/book/proc/add_research_work(node_id, amount, prototype = FALSE)
+/obj/item/weapon/book/proc/add_research_work(node_id, amount, prototype = FALSE, mob/living/human/writer = null)
 	var/datum/research_node/N = get_research_node(node_id)
 	if (!N || has_research_chapter(node_id))
 		return FALSE
@@ -118,7 +120,7 @@
 		return FALSE
 	if (N.mode == RESEARCH_MODE_PROTOTYPE && !entry[2])
 		return FALSE
-	add_research_chapter(node_id, TRUE)
+	add_research_chapter(node_id, TRUE, writer)
 	return TRUE
 
 // The world era still moves on a capstone, the first time anyone finishes one.
@@ -223,7 +225,7 @@
 	if (!researcher || !has_research_instrument(assigned_node, researcher))
 		return
 	researcher.gain_scholarship(assigned_node, SCHOLAR_RESEARCH_GAIN * analysis_scale * apprentice_research_gain(researcher, assigned_node))
-	if (B.add_research_work(assigned_node, round(base_tick_rate * analysis_scale * best_rate * late_bench_rate(N) * team_rate(assigned_node, researcher) * rush_rate(N) * library_rate(assigned_node) * use_research_supply(assigned_node, analysis_scale), 0.1)))
+	if (B.add_research_work(assigned_node, round(base_tick_rate * analysis_scale * best_rate * late_bench_rate(N) * team_rate(assigned_node, researcher) * rush_rate(N) * library_rate(assigned_node) * use_research_supply(assigned_node, analysis_scale), 0.1), FALSE, researcher))
 		for (var/mob/living/human/H in viewers(world.view, src))
 			to_chat(H, SPAN_NOTICE("The chapter on <b>[N.name]</b> in [B] is finished. It can now be studied."))
 	else
@@ -343,7 +345,7 @@
 			to_chat(user, SPAN_WARNING("A working prototype has already been recorded for <b>[N.name]</b>."))
 			return
 		qdel(W)
-		if (B.add_research_work(assigned_node, 0, TRUE))
+		if (B.add_research_work(assigned_node, 0, TRUE, user))
 			to_chat(user, SPAN_NOTICE("Your prototype works. The chapter on <b>[N.name]</b> is finished."))
 		else
 			to_chat(user, SPAN_NOTICE("You record the working prototype for <b>[N.name]</b>. The chapter is finished once the study is done."))
@@ -360,7 +362,7 @@
 		studied_samples += W.type
 		// The first kinds of thing taken apart teach the most.
 		var/boost = max(1, round(N.cost_ticks * (studied_samples.len <= BOOK_SAMPLE_FIRST_KINDS ? BOOK_SAMPLE_FIRST_FRACTION : RESEARCH_SAMPLE_BOOST_FRACTION)))
-		var/done = B.add_research_work(assigned_node, boost)
+		var/done = B.add_research_work(assigned_node, boost, FALSE, user)
 		user.gain_active_scholarship(assigned_node, boost, "sample:[assigned_node]:[W.type]")
 		to_chat(user, SPAN_NOTICE("You dismantle and study \the [W], advancing <b>[N.name]</b> by [boost] points[done ? " and finishing the chapter" : ""]."))
 		qdel(W)
@@ -468,6 +470,17 @@
 	var/obj/item/weapon/book/cipher_book = source
 	if (istype(cipher_book) && cipher_book.cipher_refuses(H))
 		return FALSE
+	// A chapter in a language the reader cannot follow (book_language.dm).
+	var/datum/language/written_in = null
+	if (istype(cipher_book))
+		written_in = cipher_book.chapter_language(node_id)
+	else if (istype(source, /obj/item/weapon/paper/research_page))
+		var/obj/item/weapon/paper/research_page/loose = source
+		written_in = all_languages[loose.chapter_language]
+	var/language_problem = language_reading_problem(H, written_in, LANGUAGE_BROKEN)
+	if (language_problem)
+		to_chat(H, SPAN_WARNING(language_problem))
+		return FALSE
 	if (H.knows_recipe_node(node_id))
 		to_chat(H, SPAN_NOTICE("You already know <b>[N.name]</b>."))
 		return FALSE
@@ -476,7 +489,7 @@
 		return FALSE
 	if (H.too_dark_to_read())
 		return FALSE
-	var/time = H.scholar_study_time(N.era_tier)
+	var/time = round(H.scholar_study_time(N.era_tier) * language_study_factor(H, written_in))
 	// A tutor who knows the chapter, standing beside the student, speeds it up.
 	var/mob/living/human/tutor = H.find_tutor(node_id)
 	if (tutor)
@@ -641,6 +654,10 @@
 		return FALSE
 	if (source.cipher_refuses(H) || dest.cipher_refuses(H))
 		return FALSE
+	// Copying out needs a real command of the chapter's language; the copy
+	// comes out in the copier's own writing language (book_language.dm).
+	if (source.chapter_refuses(H, node_id, LANGUAGE_CONVERSATIONAL))
+		return FALSE
 	var/obj/item/weapon/pen/pen = H.held_writing_pen()
 	if (!pen)
 		to_chat(H, SPAN_WARNING("Hold a pencil or pen to copy with."))
@@ -682,7 +699,7 @@
 	if (sheet.loc == H)
 		H.remove_from_mob(sheet)
 	qdel(sheet)
-	return dest.add_research_chapter(node_id)
+	return dest.add_research_chapter(node_id, FALSE, H)
 
 // Study any chapter from the books on the bench without picking them up.
 /obj/structure/research_bench/proc/book_study_shelf(mob/living/human/H)

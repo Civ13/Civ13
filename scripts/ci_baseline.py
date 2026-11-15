@@ -2324,6 +2324,14 @@ SUITES = {
         'shared_paths': ('code/game/mob/living/carbon/human/nomads_spawn.dm',
             'code/game/mob/language/earth.dm', 'code/_helpers/global_lists.dm',
             'code/game/mob/living/carbon/human/species/species.dm')},
+    # Research chapters carry a language: recording, reading, translation.
+    'book_language': {'files': ('tests/book_language/test_book_language.py',),
+        'paths': ('tests/book_language/', 'code/modules/research_tree/book_language.dm'),
+        'shared_paths': ('code/modules/research_tree/book_research.dm',
+            'code/modules/research_tree/book_pages.dm', 'code/modules/research_tree/book_printing.dm',
+            'code/modules/research_tree/book_interface.dm', 'code/modules/research_tree/book_launch.dm',
+            'code/modules/research_tree/compare_notes.dm',
+            'code/modules/research_tree/subject_prototypes.dm')},
     # Language proficiency: pacing numbers and learn/speak/hear boundaries.
     'language_proficiency': {'files': ('tests/language_proficiency/test_proficiency.py',),
         'paths': ('tests/language_proficiency/', 'code/game/mob/language/proficiency.dm',

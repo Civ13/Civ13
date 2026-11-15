@@ -154,6 +154,7 @@
 	for (var/node_id in chapters)
 		printed.add_research_chapter(node_id)
 	printed.copy_cipher_from(original)
+	printed.copy_chapter_languages_from(original)
 	printing_sheets -= chapters.len
 	base -= original
 	copy -= stock
