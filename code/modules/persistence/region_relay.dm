@@ -41,6 +41,20 @@
 			return FALSE
 	return TRUE
 
+// TRUE for an IPv4 address on a private network (10/8, 172.16/12, 192.168/16),
+// carrier-grade NAT (100.64/10) or loopback: one a router hides behind its own.
+/proc/region_relay_ip_private(value)
+	if(!istext(value))
+		return FALSE
+	var/list/parts = splittext(value, ".")
+	if(length(parts) != 4)
+		return FALSE
+	var/a = text2num(parts[1])
+	var/b = text2num(parts[2])
+	if(!isnum(a) || !isnum(b))
+		return FALSE
+	return a == 10 || a == 127 || (a == 172 && b >= 16 && b <= 31) || (a == 192 && b == 168) || (a == 100 && b >= 64 && b <= 127)
+
 /datum/shard_group/proc/configure_relay(list/settings)
 	relay = null
 	relay_control = null
@@ -115,6 +129,11 @@
 	if(!C)
 		return FALSE
 	var/port = shard_address_port(peer["address"])
+	// A player on the host's own network reached this world from a LAN address,
+	// but their link to the relay goes out through the router and comes back
+	// from its public address (Val, Join to Gaia, 2026-11-15): route that one.
+	if(region_relay_ip_private(public) && region_relay_ip_valid(world.internet_address) && !region_relay_ip_private(world.internet_address))
+		public = world.internet_address
 	var/route = "route=1&ip=[url_encode(public)]&ckey=[url_encode(C.ckey)]&port=[port]"
 	var/list/reply = ask_relay(route)
 	if(reply && !reply["ok"] && C)

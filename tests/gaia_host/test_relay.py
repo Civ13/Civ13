@@ -68,6 +68,26 @@ class RoutesTest(unittest.TestCase):
         self.assertEqual(self.routes.take('203.0.113.5'), 1714)
         self.assertEqual(self.routes.lookup('alice'), {'ip': '203.0.113.5', 'port': 1714})
 
+    def test_a_lan_player_arriving_from_the_public_address_gets_their_route(self):
+        # The world saw the host's LAN address; the relay sees the router's public one.
+        self.assertTrue(self.routes.set('192.168.0.20', 'val', 1716))
+        self.assertEqual(self.routes.take('72.218.249.221'), 1716)
+        self.assertEqual(self.routes.lookup('val'), {'ip': '72.218.249.221', 'port': 1716})
+        self.assertEqual(self.routes.take('72.218.249.221'), 1716, 'the reconnect sticks to the public address')
+        # Never a guess: two LAN routes waiting, a used one, or an expired one.
+        self.routes.set('192.168.0.21', 'ann', 1714)
+        self.routes.set('10.0.0.5', 'bob', 1716)
+        self.assertIsNone(self.routes.take('8.8.8.8'))
+        self.routes.take('10.0.0.5')
+        self.assertEqual(self.routes.take('8.8.8.8'), 1714)
+        self.routes.set('192.168.0.22', 'cy', 1714)
+        self.clock.now += relay.ROUTE_UNUSED_SECONDS + 1
+        self.assertIsNone(self.routes.take('8.8.4.4'))
+        # A public route is never moved.
+        self.routes.set('2.2.2.2', 'dee', 1714)
+        self.routes.set('1.1.1.1', 'eve', 1714)
+        self.assertIsNone(self.routes.take('9.9.9.9'))
+
     def test_ipv4_mapped_ipv6_is_the_same_address(self):
         self.routes.set('203.0.113.5', 'alice', 1716)
         self.assertEqual(self.routes.take('::ffff:203.0.113.5'), 1716)

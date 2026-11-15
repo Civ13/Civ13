@@ -157,12 +157,32 @@ class Routes:
         with self.lock:
             route = self.by_ip.get(ip)
             if route is None:
+                route = self._hairpin(ip, now)
+            if route is None:
                 return None
             if self._expired(route, now):
                 self._drop(ip)
                 return None
             route['used_at'] = now
             return route['port']
+
+    def _hairpin(self, ip, now):
+        """A player on the host's own network: the world saw their LAN (or loopback)
+        address, but through the router's public address their connection to the relay
+        arrives from that public address (Val on the host, Join to Gaia, 2026-11-15).
+        When exactly one fresh, unused route names a private address, it moves to ip.
+        Called with the lock held; the route or None."""
+        if ip is None or not ipaddress.ip_address(ip).is_global:
+            return None
+        waiting = [old for old, route in self.by_ip.items()
+                   if route['used_at'] is None and not self._expired(route, now) and not ipaddress.ip_address(old).is_global]
+        if len(waiting) != 1:
+            return None
+        route = self.by_ip.pop(waiting[0])
+        self.by_ip[ip] = route
+        if self.by_ckey.get(route['ckey']) == waiting[0]:
+            self.by_ckey[route['ckey']] = ip
+        return route
 
     def lookup(self, ckey):
         now = self.clock()
