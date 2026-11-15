@@ -39,8 +39,10 @@ class CentreTileSources(unittest.TestCase):
 
     def test_shape_accepts_centre_offsets(self):
         body = proc(SUBTILE, '/mob/living/human/proc/human_subtile_shape()')
-        self.assertIn('step_x >= -16', body)
-        self.assertIn('step_y >= -16', body)
+        # -16 on land; a person on a moving deck adds the deck's own offset.
+        self.assertIn('var/low = vehicle_offset_riders[src] ? -32 : -16', body)
+        self.assertIn('step_x >= low', body)
+        self.assertIn('step_y >= low', body)
 
     def test_every_native_human_move_refiles(self):
         body = proc(MOVE, '/atom/movable/Move(newloc, direct)')

@@ -3,7 +3,8 @@
 Vehicles are moving to pixel positions the way free-moving players do. The
 plan is in five phases. The shared core is `code/modules/craft/vehicle_offset.dm`
 (Phase 0); motorcycles, boats, bicycles and rafts drive with it
-(`vehicle_offset_ride.dm`, Phase 1).
+(`vehicle_offset_ride.dm`, Phase 1), and so do player-built hulls under way
+(`vehicle_offset_hull.dm`).
 
 ## How it works
 
@@ -56,6 +57,46 @@ plan is in five phases. The shared core is `code/modules/craft/vehicle_offset.dm
   paddle in hand, as before. With nobody near, a key press is one tile step.
 - Riders carried by any vehicle make no footstep sounds
   (`carried_by_vehicle()`); the engine loop is the vehicle's sound.
+
+## Walking on a moving deck
+
+- `settle()` runs at the start of every pulse. Each carried entry is
+  `list(own x, own y, drawn x, drawn y)`; the last two are where `draw()` last
+  put the thing, in absolute pixels. Anything that has moved since (a person
+  walking, a crate shoved) keeps where it went, and its own offset is taken
+  again from where it stands. Seated riders and cargo cost one comparison.
+- A walker stays filed under the body tile beneath its centre as the body is
+  drawn (`file_on_deck()`, a direct `loc` write like `human_subtile_anchor()`),
+  so someone at the bow is never filed onto the open tile ahead while the body
+  overlaps it. Someone whose centre leaves every body tile has stepped off:
+  `drop()` keeps them where they are drawn and `vehicle_offset_refile()` files
+  them by their own centre again.
+- `vehicle_offset_riders` maps everything carried to its offset. A carried
+  person's step offset can reach -32 (deck offset -16 plus their own -16), so
+  `human_subtile_shape()` accepts down to -32 for riders, and
+  `vehicle_offset_drawn()` gives a free-moving person the offset to own
+  (`human_subtile_offset_owned`) so they can walk by pixels. Someone with free
+  movement off walks whole tiles, back onto their tile, and is carried on from
+  there.
+- A turf's contents include anything that overlaps it by pixels. Code that
+  asks what stands on a tile while a vehicle may be offset checks `loc`.
+
+## Built hulls under way
+
+`vehicle_offset_hull.dm` sails player-built hulls (`craft_body/built`) by
+pixels. `start_sailing()` runs `craft.offset_tick()` every
+`offset_period()` (her tile interval / 32, a pixel a pulse: 4.7 ds at slow
+ahead). Each tick `settle()`s walkers, `sync()`s the carried set with
+`body.aboard()` (her planks are the footprint) and pulses along her heading.
+Starting to overlap the water ahead (`can_cover()`) asks `can_move_to()` and
+marks the path; half a tile on, `commit()` runs her `move_to()` with no glide
+and her drives pay for the tile (`sail_paid()`). A refusal is the usual all
+stop (`sail_refused()`). With nobody within 12 tiles plus her length, or during
+a save, she squares on her tiles and hops a whole tile per interval as before.
+A turn holds her where she is while it is marked, then squares her before she
+comes about; all stop and anchoring square her too. `plan()` only counts a
+floor filed on a tile as in the way, since her own overlapping planks are
+listed there too.
 
 ## Cost (native probe, BYOND 516.1688, cloud container)
 

@@ -49,6 +49,10 @@
 	H.driver_vehicle = V
 	V.ontop |= H
 
+/obj/structure/vehicle_offset_probe_deck
+	name = "probe deck"
+	density = FALSE
+
 /obj/structure/vehicle_offset_probe_wall
 	name = "probe wall"
 	density = TRUE
@@ -392,6 +396,55 @@ var/list/vehicle_offset_probe_receipt = list()
 	vehicle_offset_probe_assert(C.loc == locate(27, 20, 1) && C.step_x == -16, "carriage_crossed")
 	CA.snap()
 	vehicle_offset_probe_receipt["crate_ms_per_pulse"] = vehicle_offset_probe_time(CA, 20000)
+
+	// Walking on a moving deck (settle()): a three-tile deck carries a person,
+	// who keeps where they walk, stays filed on the deck and steps off its end.
+	var/datum/vehicle_offset/W = new(null)
+	for (var/dx = 0 to 2)
+		W.carry(new /obj/structure/vehicle_offset_probe_deck(locate(30 + dx, 10, 1)), TRUE)
+	var/mob/living/human/vehicle_offset_probe_rider/deckhand = new(locate(31, 10, 1))
+	deckhand.human_subtile_enabled = TRUE
+	W.carry(deckhand)
+	vehicle_offset_probe_assert(vehicle_offset_riders[deckhand] == W, "deckhand_registered")
+	W.speed_x = 4
+	W.pulse()
+	W.pulse()
+	vehicle_offset_probe_assert(deckhand.step_x == 8 && deckhand.human_subtile_offset_owned, "deckhand_carried_owns_offset")
+	// They walk 5 px east by themselves: the next pulse keeps that walk.
+	var/list/walk_from = vehicle_offset_probe_px(deckhand)
+	deckhand.step_x += 5
+	W.pulse()
+	vehicle_offset_probe_assert(vehicle_offset_probe_px(deckhand)[1] - walk_from[1] == 9 && (deckhand in W.carried), "walk_kept_on_moving_deck")
+	var/list/own = W.carried[deckhand]
+	vehicle_offset_probe_assert(own[1] == 5 && deckhand.loc == locate(31, 10, 1), "walk_is_own_offset")
+	// Seated cargo that did not move is not touched by settle().
+	vehicle_offset_probe_assert(W.carried.len == 4, "deck_carried")
+	// At the bow, past the deck's own front edge as drawn but over its last
+	// tile: filed on that deck tile, never on the open tile ahead.
+	W.speed_x = 0
+	W.ox = 12
+	W.draw()
+	deckhand.loc = locate(32, 10, 1)
+	deckhand.step_x = 12 + 10
+	W.pulse()
+	vehicle_offset_probe_assert(deckhand.loc == locate(32, 10, 1) && (deckhand in W.carried), "bow_filed_on_deck")
+	vehicle_offset_probe_assert(deckhand.step_x == 22 && deckhand.human_subtile_shape(), "bow_offset_kept_and_walkable")
+	// A rider at the deck's largest negative offset still has a walkable shape.
+	W.ox = -16
+	W.carried[deckhand] = list(-16, 0, 0, 0)
+	W.draw()
+	vehicle_offset_probe_assert(deckhand.step_x == -32 && deckhand.human_subtile_shape(), "deck_rider_negative_shape")
+	W.ox = 12
+	W.carried[deckhand] = list(10, 0, 0, 0)
+	W.draw()
+	// Walking off the bow: their centre leaves every deck tile, so they step off.
+	deckhand.step_x += 20
+	W.pulse()
+	vehicle_offset_probe_assert(!(deckhand in W.carried) && !vehicle_offset_riders[deckhand], "walked_off_dropped")
+	vehicle_offset_probe_assert(deckhand.loc == locate(33, 10, 1) && deckhand.step_x == 10 && deckhand.step_x >= -16 && deckhand.step_x < 16, "walked_off_refiled_by_centre ([deckhand.x],[deckhand.step_x])")
+	vehicle_offset_probe_assert(!deckhand.human_subtile_shape() || deckhand.step_x >= -16, "off_deck_shape_as_land")
+	qdel(W)
+	vehicle_offset_probe_assert(!vehicle_offset_riders.len || !(locate(/obj/structure/vehicle_offset_probe_deck) in vehicle_offset_riders), "riders_cleared_on_destroy")
 
 	// A hull-sized load: 1000 things on one offset, for the ship and train budget.
 	var/datum/vehicle_offset/H = new(null)
