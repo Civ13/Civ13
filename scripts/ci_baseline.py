@@ -1187,6 +1187,13 @@ SUITES = {
         'paths': ('tests/obsidian/',), 'shared_paths': (
             'code/modules/1713/obsidian.dm', 'code/game/turfs/floor_attackby.dm',
             'icons/obj/obsidian.dmi', 'code/modules/research_tree/research_node.dm')},
+    # Mountain seams on the Americas maps: map facts and source contracts;
+    # native.py's fixture is manual (needs --byond-bin).
+    'mountain_seams': {'files': ('tests/mountain_seams/test_source.py',),
+        'paths': ('tests/mountain_seams/',), 'shared_paths': (
+            'code/modules/1713/mountain_seams.dm', 'code/_helpers/resource_stock.dm',
+            'code/game/objects/map_metadata/nomads/nomads_americas.dm',
+            'maps/nomads/nomads_americas_north.dmm', 'maps/nomads/nomads_americas_south.dmm')},
     # Snares, deadfalls, fish weirs and pit traps: source contracts only.
     'stone_age_traps': {'files': ('tests/stone_age_traps/test_source.py',),
         'paths': ('tests/stone_age_traps/',), 'shared_paths': (
