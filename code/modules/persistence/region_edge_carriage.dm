@@ -86,6 +86,8 @@
 			return "\The [A] cannot cross on \the [C]. Only shut crates can; unload it first."
 		var/list/held = list()
 		for (var/atom/movable/M in crate)
+			if (region_travel_ignorable(M))
+				continue
 			var/list/entry = istype(M, /obj/item) ? region_travel_worn_entry(M) : null
 			if (!entry)
 				return "\The [crate] on \the [C] cannot cross with [M.name] in it. Take that out first."

@@ -11,7 +11,13 @@ headless and checks `result.json`:
 - a payload with an unloaded gun and a partly emptied magazine decodes, and
   overfull magazines or storage items are refused;
 - the rebuilt character holds the same items, with the gun still unloaded and
-  the magazine holding exactly the rounds that travelled.
+  the magazine holding exactly the rounds that travelled;
+- anything else travels whole (`item:` kind, `region_travel_generic.dm`): a
+  named pelt coat keeps its name and colour, a leaf covering is worn again
+  under it, a waterskin keeps its water, a paddle and a master book with its
+  chapters come along, and a pack basket arrives holding bones, ore and a
+  second basket with its own waterskin. A bag holding a creature, a grab and
+  forged records (setting `loc`, a structure, an unknown reagent) are refused.
 
 ```sh
 source ~/byond-516.1688/byond/bin/byondsetup

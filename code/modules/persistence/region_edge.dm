@@ -420,6 +420,8 @@ var/global/list/region_edge_spans = list()
 	var/list/held = list()
 	var/list/blockers = list()
 	for (var/atom/movable/M in C)
+		if (region_travel_ignorable(M))
+			continue
 		var/list/entry = istype(M, /obj/item) ? region_travel_worn_entry(M) : null
 		if (entry)
 			held += list(entry)

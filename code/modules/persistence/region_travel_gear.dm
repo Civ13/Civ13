@@ -14,13 +14,27 @@
 
 #define REGION_TRAVEL_BAG_ITEMS_MAX 60
 
-// How a worn or held item travels, or null when it cannot.
+// How a worn or held item travels, or null when it cannot. Anything no
+// narrower kind fits travels whole as "item:" (region_travel_generic.dm).
 /proc/region_travel_worn_kind(obj/item/I)
+	var/kind = region_travel_held_kind(I)
+	if(kind) return kind
+	kind = region_travel_bag_kind(I)
+	if(kind) return kind
+	return region_travel_generic_kind(I)
+
+// How an item inside a bag travels: a narrow kind, else whole as "item:".
+/proc/region_travel_held_kind(obj/item/I)
 	var/kind = region_travel_item_kind(I)
+	// Rebuilding by type alone would lose a name, colour or material.
+	if(kind == "type" && region_travel_generic_has_state(I))
+		return region_travel_generic_kind(I)
 	if(kind) return kind
-	kind = region_travel_loose_kind(I)
-	if(kind) return kind
-	return region_travel_bag_kind(I)
+	return region_travel_loose_kind(I)
+
+// TRUE for a kind built by region_travel_make_loose: gear, a round or a whole item.
+/proc/region_travel_loose_prefix(kind)
+	return istext(kind) && (copytext(kind, 1, 6) == "gear:" || copytext(kind, 1, 7) == "round:" || copytext(kind, 1, 6) == "item:")
 
 // Gear or a single round: the kinds that may also sit in a bag.
 /proc/region_travel_loose_kind(obj/item/I)
@@ -28,12 +42,14 @@
 
 /proc/region_travel_loose_valid(kind, amount)
 	if(amount != 1) return FALSE
+	if(copytext(kind, 1, 6) == "item:") return !!region_travel_generic_record(kind)
 	if(copytext(kind, 1, 6) == "gear:") return !!region_travel_gear_record(kind)
 	if(copytext(kind, 1, 7) == "round:") return !!region_travel_round_path(kind)
 	return FALSE
 
 /proc/region_travel_make_loose(kind, atom/where)
 	if(copytext(kind, 1, 6) == "gear:") return region_travel_make_gear(kind, where)
+	if(copytext(kind, 1, 6) == "item:") return region_travel_make_generic(kind, where)
 	var/path = region_travel_round_path(kind)
 	return path ? new path(where) : null
 
@@ -126,7 +142,7 @@
 	. = list()
 	for(var/atom/movable/A in B.contents)
 		var/obj/item/I = A
-		if(!istype(I) || !(region_travel_item_kind(I) || region_travel_loose_kind(I)))
+		if(!istype(I) || !(region_travel_item_kind(I) || region_travel_loose_kind(I) || region_travel_generic_kind(I)))
 			. += A.name
 
 /proc/region_travel_bag_kind(obj/item/weapon/storage/B)
@@ -134,12 +150,12 @@
 	if(length(region_travel_bag_blockers(B))) return null
 	var/list/held = list()
 	for(var/obj/item/I in B.contents)
-		var/kind = region_travel_item_kind(I)
+		var/kind = region_travel_held_kind(I) || region_travel_generic_kind(I)
 		var/amount = 1
 		if(kind == "type")
 			kind = "[I.type]"
-		else if(!kind)
-			kind = region_travel_loose_kind(I)
+		else if(copytext(kind, 1, 6) == "gear:" || copytext(kind, 1, 7) == "round:" || copytext(kind, 1, 6) == "item:")
+			amount = 1
 		else if(copytext(kind, 1, 6) == "ammo:")
 			amount = region_travel_ammo_count(I)
 		else if(istype(I, /obj/item/stack))
@@ -164,7 +180,7 @@
 	if(!islist(held) || held.len > REGION_TRAVEL_BAG_ITEMS_MAX) return null
 	for(var/list/entry in held)
 		if(!islist(entry) || entry.len != 2 || !istext(entry[1]) || !isnum(entry[2])) return null
-		if(copytext(entry[1], 1, 6) == "gear:" || copytext(entry[1], 1, 7) == "round:")
+		if(region_travel_loose_prefix(entry[1]))
 			if(!region_travel_loose_valid(entry[1], entry[2])) return null
 		else if(!region_travel_item_path(entry[1], entry[2]))
 			return null
@@ -184,7 +200,7 @@
 	for(var/atom/movable/A in B.contents)
 		qdel(A)
 	for(var/list/entry in R["c"])
-		var/obj/item/I = (copytext(entry[1], 1, 6) == "gear:" || copytext(entry[1], 1, 7) == "round:") ? region_travel_make_loose(entry[1], B) : region_travel_make_item(entry[1], entry[2], B)
+		var/obj/item/I = region_travel_loose_prefix(entry[1]) ? region_travel_make_loose(entry[1], B) : region_travel_make_item(entry[1], entry[2], B)
 		if(I) I.on_enter_storage(B)
 	B.update_icon()
 	return B
@@ -204,13 +220,13 @@
 // TRUE when a worn entry (kind, amount) may be rebuilt.
 /proc/region_travel_worn_valid(kind, amount)
 	if(!istext(kind) || !isnum(amount)) return FALSE
-	if(copytext(kind, 1, 6) == "gear:" || copytext(kind, 1, 7) == "round:") return region_travel_loose_valid(kind, amount)
+	if(region_travel_loose_prefix(kind)) return region_travel_loose_valid(kind, amount)
 	if(copytext(kind, 1, 5) == "bag:") return amount == 1 && !!region_travel_bag_record(kind)
 	return !!region_travel_item_path(kind, amount)
 
 // Makes one worn entry at T as it left, or null when it is not allowed.
 /proc/region_travel_make_worn(kind, amount, turf/T)
-	if(copytext(kind, 1, 6) == "gear:" || copytext(kind, 1, 7) == "round:") return region_travel_make_loose(kind, T)
+	if(region_travel_loose_prefix(kind)) return region_travel_make_loose(kind, T)
 	if(copytext(kind, 1, 5) == "bag:") return region_travel_make_bag(kind, T)
 	return region_travel_make_item(kind, amount, T)
 
@@ -225,6 +241,9 @@
 		return R && istype(I, /obj/item/weapon/storage) && "[I.type]" == R["t"]
 	if(copytext(kind, 1, 7) == "round:")
 		return istype(I, /obj/item/ammo_casing) && "[I.type]" == copytext(kind, 7)
+	if(copytext(kind, 1, 6) == "item:")
+		var/list/R = region_travel_generic_record(kind)
+		return R && "[I.type]" == R["t"]
 	var/own = region_travel_item_kind(I)
 	return own == "type" ? "[I.type]" == kind : own == kind
 
