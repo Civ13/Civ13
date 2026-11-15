@@ -299,6 +299,22 @@ var/global/datum/region_carry_probe/region_carry_probe = new
 		require(!sea_crossing_cargo_valid(list("g", "item:[json_encode(list("t" = "/obj/structure/vehicle"))]")), "vehicle accepted as cargo")
 		require(!region_travel_generic_record(cask_entry[2]), "barrel accepted as a worn item")
 		require(!sea_crossing_cargo_valid(list("g", "item:[json_encode(list("t" = "/obj/item/weapon/paddle", "c" = list(list("t" = "/obj/structure/props/barrel"))))]")), "structure accepted inside an item")
+		// Admin and map structures never come from a record, nor a barrel past any real size.
+		for (var/forged_cargo in list("/obj/structure/engine", "/obj/structure/animalspawner", "/obj/structure/money_printer", "/obj/structure/docking_port"))
+			require(!sea_crossing_cargo_valid(list("g", "item:[json_encode(list("t" = forged_cargo))]")), "[forged_cargo] accepted as cargo")
+		require(!sea_crossing_cargo_valid(list("g", "item:[json_encode(list("t" = "/obj/structure/reagent_dispensers/largebarrel", "r" = list(list("water", 9000), list("water", 9000))))]")), "a barrel of 18000 units accepted")
+		// A failed crossing puts back the animals and dead that waited, so a
+		// rebuild of her record makes none of them again.
+		require(sea_crossing_entry_mob(goat_entry) && sea_crossing_entry_mob(hen_entry) && sea_crossing_entry_mob(body_entry) && !sea_crossing_entry_mob(cask_entry), "deck creature entries not told apart")
+		var/turf/D4 = locate(46, 44, 1)
+		sea_crossing_wreck(deck, D4, TRUE)
+		require(!(locate(/mob) in D4) && (locate(/obj/structure/reagent_dispensers/largebarrel) in D4), "a wreck without creatures still made one, or lost the barrel")
+		// A structure that puts its contents down as it is deleted leaves no copy.
+		var/obj/structure/display_case/case = new(D4)
+		var/obj/item/weapon/paddle/shown = new(case)
+		sea_crossing_empty(case, D4)
+		qdel(case)
+		require(QDELETED(shown) && !(locate(/obj/item/weapon/paddle) in D4), "a display case left its contents behind")
 		var/list/bad_body = list("b", body_entry[2].Copy())
 		bad_body[2]["gender"] = "x"
 		require(!sea_crossing_body_valid(bad_body), "forged body accepted")

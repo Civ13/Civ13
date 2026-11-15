@@ -149,9 +149,13 @@ var/naval_runtime_error = FALSE
 	// ---- Her load is measured before she sails (ship_crossing.dm) ----
 	var/load = tiller.craft ? sea_crossing_load(tiller) : null
 	naval_check(isnum(load) && load >= 0 && load <= 100, "her load is measured as a share of what a crossing carries ([load])")
-	var/obj/structure/bed/cot = new(locate(65, 32, 2))
+	// Beds, barrels and animals cross now (ship_crossing_cargo.dm); an animal
+	// somebody plays never does.
+	var/mob/living/simple_animal/chicken/cot = new(locate(65, 32, 2))
+	cot.ckey = "voyageprobehen"
 	load = sea_crossing_load(tiller)
 	naval_check(istext(load) && findtext(load, "Put these ashore first"), "what would stop her at landfall stops her at the tiller ([load])")
+	cot.ckey = null
 	qdel(cot)
 
 	// ---- Landfall waits on the world directory ----
