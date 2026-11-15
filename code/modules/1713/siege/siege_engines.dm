@@ -533,8 +533,7 @@
 	var/turf/T = locate(tx, ty, tz)
 	if (siege_undermine_target(T))
 		T.visible_message(SPAN_WARNING("The roof of the tunnel creaks under the weight of the wall above. Prop it with a mine support or get out!"))
-		spawn(UNDERMINE_DELAY)
-			siege_undermine(T)
+		addtimer(CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(siege_undermine), T), UNDERMINE_DELAY)
 
 // The wall standing over T, if T is an open, unpropped tunnel tile.
 /proc/siege_undermine_target(turf/T)
@@ -567,8 +566,7 @@
 	var/turf/T = get_turf(src)
 	. = ..()
 	if (T)
-		spawn(1)
-			siege_undermine(T)
+		addtimer(CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(siege_undermine), T), 1)
 
 #undef UNDERMINE_DELAY
 

@@ -453,6 +453,16 @@
       ]
     },
     {
+      "path": "code/modules/1713/siege/siege_engines.dm",
+      "declarations": [
+        {
+          "owner": "",
+          "declaration": "/obj/structure/castle_gate/portcullis/CanPass(atom/movable/mover, turf/target, height = 0, air_group = 0)",
+          "sha256_body": "a0b5d7ea94b38c7ad503c474a0a29ba53e41ae9c28f888f0da0c5f11742f7a5d"
+        }
+      ]
+    },
+    {
       "path": "code/modules/1713/structures.dm",
       "declarations": [
         {
