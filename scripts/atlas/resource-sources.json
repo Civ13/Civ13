@@ -17082,6 +17082,28 @@
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "The alumina digester needs the Aluminium Refining research.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Mine bauxite",
+      "file": "code/game/turfs/floor_attackby.dm",
+      "line": 1009,
+      "source_commit": "67052447110d5506625c446c0730beefba34d7fc",
+      "inputs": [
+        "/turf/floor/dirt/underground"
+      ],
+      "outputs": [
+        "/obj/item/stack/ore/bauxite"
+      ],
+      "tools": [
+        "/obj/item/weapon/material/pickaxe"
+      ],
+      "steps": [
+        "Mine a mineable underground deposit with a pickaxe. From the Industrial age the random branch can also yield bauxite."
+      ],
+      "conditions": "Finite terrain; random branch, twice as likely under jungle and savanna.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "Map ordinal age at least 4.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     }
   ],
   "mechanism_overview": [
