@@ -297,6 +297,24 @@ class LandChoiceTests(unittest.TestCase):
         self.assertFalse(self.c.abandon('far1'), 'the land stays')
         self.assertTrue(self.c.claim('far1', 'civ:gaia:Carthage'))
 
+    def test_a_player_claims_one_land_and_their_faction_another(self):
+        self.assertFalse(self.c.claim('far1', 'crew:Bad Key'))
+        self.assertTrue(self.c.claim('far1', 'crew:val', 'val'))
+        self.assertEqual('CLAIMED', self.state())
+        self.assertFalse(self.c.claim('far1', 'civ:gaia:Rome Empire'), 'one claimant a land')
+        self.assertEqual([], self.c.expire(now=1000 + wc.UNVISITED_SECONDS + 10))
+        other = next((x, y) for y in range(wc.CHART_HEIGHT) for x in range(wc.CHART_WIDTH)
+                     if (x, y) != (self.x, self.y) and self.c.terrain(x, y) not in ('OCEAN', 'MAINLAND') and self.c.coast(x, y))
+        self.c.reveal('faction:rome', *other)
+        self.assertEqual('far2', self.c.set_course('v2', 'faction:rome', other[0], other[1],
+                                                 now=1000 + wc.OPEN_COOLDOWN_SECONDS)['region'])
+        self.assertFalse(self.c.claim('far2', 'crew:val'), 'one land each')
+        self.assertTrue(self.c.claim('far2', 'civ:gaia:Rome Empire', 'val'), "the faction's claim is separate")
+        self.assertEqual({'crew:val': '%d,%d' % (self.x, self.y), 'civ:gaia:Rome Empire': '%d,%d' % other},
+                         self.c.snapshot()['claims'])
+        self.assertTrue(self.c.unclaim('far1', 'crew:val', 'val'))
+        self.assertEqual('SETTLED', self.state())
+
     def test_abandoning_loses_the_land_and_frees_its_slot_once_archived(self):
         self.assertTrue(self.c.abandon('far1', 'val', now=2000))
         tile = self.c.template(self.x, self.y)
@@ -673,6 +691,30 @@ class ChartAgentTests(unittest.TestCase):
         self.assertEqual('FRONTIER', self.coordinator.lands()['beta']['stage'])
         self.assertEqual({}, self.chart('alpha')['chart']['claims'])
         self.assertEqual('SETTLED', chart_.template(x, y)['state'])
+
+    def test_a_player_claims_only_for_themself(self):
+        exp = os.path.join(self.tmp.name, 'expeditions')
+        chart_ = self.coordinator.chart
+        chart_.slots, chart_.expeditions = ['beta'], wc.Path(exp)
+        x, y = first_land(chart_)
+        chart_.reveal('crew:val', x, y)
+        chart_.set_course('alpha-1-1', 'crew:val', x, y, 'alpha')
+        # The agent takes crew:<ckey> only from that same account.
+        self.assertFalse(call(self.urls['beta'], TOKENS['beta'], '/chart/request',
+                              {'op': 'claim', 'x': x, 'y': y, 'admin': 'val', 'owner': 'crew:kim'}).get('ok'))
+        call(self.urls['beta'], TOKENS['beta'], '/chart/request',
+             {'op': 'claim', 'x': x, 'y': y, 'admin': 'val', 'owner': 'crew:val'})
+        self.coordinator.homes_once()
+        self.assertEqual('CLAIMED', chart_.template(x, y)['state'])
+        self.assertEqual('FRONTIER', self.coordinator.lands()['beta']['stage'], "a player's own land is no colony")
+        self.assertEqual({'crew:val': '%d,%d' % (x, y)}, self.chart('alpha')['chart']['claims'])
+        # The coordinator refuses a claim for another account even if one reaches it.
+        self.assertFalse(self.coordinator.chart_request({'op': 'unclaim', 'x': x, 'y': y, 'admin': 'kim', 'owner': 'crew:val'}, 'beta'))
+        call(self.urls['beta'], TOKENS['beta'], '/chart/request',
+             {'op': 'unclaim', 'x': x, 'y': y, 'admin': 'val', 'owner': 'crew:val'})
+        self.coordinator.homes_once()
+        self.assertEqual('SETTLED', chart_.template(x, y)['state'])
+        self.assertEqual({}, self.chart('alpha')['chart']['claims'])
 
     def test_an_unchanged_chart_is_not_sent_again(self):
         self.assertEqual(self.coordinator.chart.key(), self.stores['alpha'].account_requests()['chart_rev'])

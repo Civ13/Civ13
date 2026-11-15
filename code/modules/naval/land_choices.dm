@@ -10,6 +10,8 @@
 //   One claim per faction, one faction per land. The land becomes a colony.
 //   The colony's leader may give the claim up at the charter: it comes down
 //   and the land drops back to the frontier, settled.
+// - Claim for oneself (any player, at the tiller): a mooring post and their
+//   own bed near it. One land each, besides any land their faction claims.
 // - Abandon (the captain, as the ship leaves): the land is lost for good and
 //   its world is archived. Whoever was homed there starts on the mainland.
 // A land nobody settles or claims is abandoned after 7 days with nobody on it
@@ -99,6 +101,83 @@
 		to_chat(H, SPAN_WARNING("No word can be sent to the world directory right now. Try again in a minute."))
 		return
 	to_chat(world, "<big><b>[html_encode(H.real_name)] settles this land.</b> It stays on every chart, for any ship to reach.</big>")
+
+// ---------------------------------------------------------------- a land of one's own
+// Every player may claim one land across the sea for themself, at the tiller:
+// it takes a mooring post that takes ships and their own bed near it. The land
+// is kept like a settled one and beds there keep homes. A faction's claim
+// (its colony charter) is separate: a player may hold a land of their own and
+// their faction another. One claimant a land.
+
+// The chart's name for H's own claim.
+/proc/expedition_personal_claimant(mob/living/human/H)
+	if (!istype(H) || !H.ckey || IsGuestKey(H.key))
+		return null
+	return "crew:[H.ckey]"
+
+// The same for a bare account (guests have none worth keeping).
+/proc/expedition_account_claimant(account)
+	return (istext(account) && length(account)) ? "crew:[account]" : null
+
+// "Claim this land", "Give up your claim" or null: what the claimant me (crew:ckey) may do here at a tiller.
+/proc/expedition_personal_claim_option(me)
+	var/key = expedition_land_key()
+	if (!key || !me)
+		return null
+	var/list/claims = islist(world_chart["claims"]) ? world_chart["claims"] : list()
+	if (claims[me] == key)
+		return "Give up your claim"
+	var/list/tile = expedition_land_tile()
+	if (islist(tile) && tile["state"] == "CLAIMED")
+		return null
+	return "Claim this land"
+
+// Why the claimant me (crew:ckey) cannot claim this land for themself now, or null.
+/proc/expedition_personal_claim_refusal(me)
+	var/key = expedition_land_key()
+	if (!key || !me)
+		return "Only a land across the sea can be claimed."
+	var/list/tile = expedition_land_tile()
+	if (!islist(tile))
+		return "The world directory does not know this land yet. Try again in a minute."
+	if (tile["state"] == "CLAIMED")
+		return "This land is already claimed."
+	var/list/claims = islist(world_chart["claims"]) ? world_chart["claims"] : list()
+	if (claims[me])
+		return "You already claim the land at [claims[me]]. Each person claims one; give that claim up at a tiller there first."
+	for (var/obj/structure/berth/quay/Q in sea_harbours)
+		if (QDELETED(Q) || !Q.takes_ships || !isturf(Q.loc))
+			continue
+		for (var/obj/structure/bed/B in range(LAND_SETTLE_RANGE, Q))
+			if ("crew:[B.persistence_bed_owner_ckey]" == me && B.anchored && isturf(B.loc))
+				return null
+	return "Claiming a land takes a mooring post on its coast and your own bed, slept in, within [LAND_SETTLE_RANGE] tiles of it."
+
+/obj/structure/hull_tiller/proc/personal_claim_menu(mob/living/human/H)
+	world_chart_refresh()
+	var/me = expedition_personal_claimant(H)
+	if (expedition_personal_claim_option(me) == "Give up your claim")
+		if (WWinput(H, "Give up your claim on this land? It stays on every chart, settled, for anyone to claim, and you may claim another.", craft.name, "Keep the claim", list("Give up the claim", "Keep the claim")) != "Give up the claim" || get_dist(H, src) > 1)
+			return
+		if (!expedition_land_ask("unclaim", H.ckey, me))
+			to_chat(H, SPAN_WARNING("No word can be sent to the world directory right now. Try again in a minute."))
+			return
+		to_chat(world, "<big><b>[html_encode(H.real_name)]</b> gives up their claim on this land.</big>")
+		return
+	var/reason = expedition_personal_claim_refusal(me)
+	if (reason)
+		to_chat(H, SPAN_WARNING(reason))
+		return
+	if (WWinput(H, "Claim this land as your own? It is kept for good and stays on every chart, and beds here keep their sleepers' homes. Each person claims one land.", craft.name, "No", list("Yes", "No")) != "Yes" || get_dist(H, src) > 1)
+		return
+	reason = expedition_personal_claim_refusal(me)
+	if (reason)
+		to_chat(H, SPAN_WARNING(reason))
+		return
+	if (!expedition_land_ask("claim", H.ckey, me))
+		to_chat(H, SPAN_WARNING("No word can be sent to the world directory right now. Try again in a minute."))
+		return
+	to_chat(world, "<big><b>[html_encode(H.real_name)] claims this land as their own.</b> It stays on every chart.</big>")
 
 // The parent faction whose claim on this land user may give up at this
 // charter: the colony's leader, while the colony's parent holds the claim. Or null.

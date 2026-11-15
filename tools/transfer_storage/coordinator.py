@@ -335,8 +335,13 @@ class Coordinator(TrainCustody):
         if op == 'settle' and self.chart.settle(origin, admin):
             self.set_land(origin, 'FRONTIER', False)
             return True
+        # A player claims only for themself; a faction's claim comes from its charter.
+        personal = isinstance(owner, str) and owner.startswith('crew:')
+        if personal and owner != 'crew:' + admin:
+            return False
         if op == 'claim' and self.chart.claim(origin, owner, admin):
-            self.set_land(origin, 'COLONY', False)
+            # A faction's claim makes a colony; a player's own land is frontier, like a settled one.
+            self.set_land(origin, 'FRONTIER' if personal else 'COLONY', False)
             return True
         if op == 'unclaim' and self.chart.unclaim(origin, owner, admin):
             self.set_land(origin, 'FRONTIER', False)

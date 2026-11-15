@@ -1036,7 +1036,9 @@ class RegionStore(TrainLeaseQueue):
             raise TransferError('bad admin key')
         if op in ('claim', 'unclaim'):
             # The claim's owner is the colony's parent faction (colony_charter.dm).
-            if not (isinstance(owner, str) and re.match(r'^civ:[a-z0-9_\-]{1,40}:[^\x00-\x1f]{1,60}$', owner)):
+            # ...or the asking player themself, crew:<ckey> (land_choices.dm).
+            if not (isinstance(owner, str) and (re.match(r'^civ:[a-z0-9_\-]{1,40}:[^\x00-\x1f]{1,60}$', owner)
+                                                or owner == 'crew:' + admin)):
                 raise TransferError('bad claiming faction')
         elif op in ('settle', 'abandon', 'summon'):
             owner = None

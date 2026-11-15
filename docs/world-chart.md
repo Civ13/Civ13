@@ -135,7 +135,9 @@ A land's own world asks for its crew (`/chart/request` ops `settle`, `claim`
 and `unclaim` with the colony's parent faction as owner, `abandon`; x and y must name the
 land it holds). Settle: tile `SETTLED`, land stage `FRONTIER`. Claim: tile
 `CLAIMED`, stage `COLONY`, one claim per faction (`chart_claim`, sent to the
-worlds as `claims`); giving it up puts the tile back to `SETTLED`, stage
+worlds as `claims`). A player may also claim one land for themself (owner
+`crew:<ckey>`, taken only from that account; the stage is `FRONTIER`), besides
+any land their faction claims; a land has one claimant. Giving a claim up puts the tile back to `SETTLED`, stage
 `FRONTIER`. Abandon, or 7 days with no players on a land still
 `LANDED` (`chart_landed`, refreshed by land samples): tile `LOST` for good, the
 homes there go to the mainland and the host archives the slot. See
