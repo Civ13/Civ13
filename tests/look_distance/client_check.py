@@ -148,6 +148,7 @@ def main():
     parser.add_argument('--byond-bin', type=Path, required=True)
     parser.add_argument('--output', type=Path)
     parser.add_argument('--port', type=int, default=0)
+    parser.add_argument('--map', default='nomads_gaia.dmm', help='map file under maps/nomads to compile in place of Gaia')
     parser.add_argument('--deadline', type=int, default=5400, help='seconds for the whole run')
     args = parser.parse_args()
     if sys.platform != 'win32':
@@ -169,7 +170,12 @@ def main():
     daemon = client = None
     captured = {}
     try:
-        source.write_text((repo / 'civ13.dme').read_text(encoding='utf-8-sig') + PROBE_INCLUDE, encoding='utf-8')
+        dme = (repo / 'civ13.dme').read_text(encoding='utf-8-sig')
+        if args.map != 'nomads_gaia.dmm':
+            if '#include "maps\\nomads\\nomads_gaia.dmm"' not in dme or not (repo / 'maps' / 'nomads' / args.map).exists():
+                raise RuntimeError('Cannot swap the map include for ' + args.map)
+            dme = dme.replace('#include "maps\\nomads\\nomads_gaia.dmm"', '#include "maps\\nomads\\' + args.map + '"')
+        source.write_text(dme + PROBE_INCLUDE, encoding='utf-8')
         build = subprocess.run([str(args.byond_bin / 'dm.exe'), '-max_errors', '0', source.name], cwd=repo, capture_output=True, text=True, timeout=1200)
         log = build.stdout + build.stderr
         (output / 'compile.log').write_text(log, encoding='utf-8')

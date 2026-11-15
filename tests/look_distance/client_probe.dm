@@ -106,10 +106,19 @@ var/global/datum/look_client_probe/look_client_probe = new
 // Open outdoor ground with at least the view's width of open tiles around it,
 // far enough from the map edge for a panned camera.
 /datum/look_client_probe/proc/find_centre()
+	// Prefer the level with hill heights, where terrain sight applies.
+	var/z_pick = 0
+	var/datum/terrain_heights/heights = map && map.terrain_height_file ? map.terrain_heights() : null
+	if(heights)
+		for(var/zt in 1 to world.maxz)
+			if(heights.rows_by_z["[zt]"])
+				z_pick = zt
+				break
+	metrics["height_z"] = z_pick
 	for(var/attempt in 1 to 6000)
 		if(attempt % 50 == 0)
 			sleep(world.tick_lag)
-		var/turf/T = locate(rand(40, world.maxx - 40), rand(40, world.maxy - 40), rand(1, world.maxz))
+		var/turf/T = locate(rand(40, world.maxx - 40), rand(40, world.maxy - 40), z_pick || rand(1, world.maxz))
 		if(!open_tile(T))
 			continue
 		var/good = TRUE
@@ -176,6 +185,8 @@ var/global/datum/look_client_probe/look_client_probe = new
 		if(C.los_context)
 			var/list/radii = C.los_context.viewport_radii()
 			row["los_radii"] = radii
+			var/list/terrain = los_terrain_for(H, radii ? max(radii[1], radii[2]) + 2 : 9)
+			row["terrain_field"] = !!terrain
 	stages += list(row)
 	return row
 
