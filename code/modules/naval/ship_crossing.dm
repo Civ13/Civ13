@@ -463,6 +463,9 @@
 	if (!craft)
 		return "She is not commissioned."
 	var/datum/craft_body/built/B = craft.body
+	// Only her own deck packs for the crossing; an upper deck would be lost.
+	if (istype(B) && B.upper_tile_count())
+		return "She cannot cross the sea with an upper deck yet. Take down the roofs over her deck first."
 	if (!istype(B) || !B.at_map_edge())
 		return "She must lie off the edge of the chart, within [SEA_CROSSING_EDGE] tiles of open sea's end, to leave these waters."
 	if (craft.speed || craft.turning_to)
