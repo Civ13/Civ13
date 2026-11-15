@@ -117,6 +117,25 @@ else:
         return cpu, sizes.get("RssAnon", 0), sizes.get("VmRSS", 0)
 
 
+def pin(process, mask):
+    """Keep Dream Daemon on its own core so busy clients do not slow its clock."""
+    if WINDOWS and os.cpu_count() >= 4:
+        ctypes.windll.kernel32.SetProcessAffinityMask(wintypes.HANDLE(int(process._handle)), ctypes.c_size_t(mask))
+
+
+def screenshot(path):
+    """Best-effort picture of the desktop, to show the clients really drew the game."""
+    script = ("Add-Type -AssemblyName System.Windows.Forms,System.Drawing;"
+              "$b=[System.Windows.Forms.SystemInformation]::VirtualScreen;"
+              "$i=New-Object System.Drawing.Bitmap $b.Width,$b.Height;"
+              "[System.Drawing.Graphics]::FromImage($i).CopyFromScreen($b.Left,$b.Top,0,0,$i.Size);"
+              f"$i.Save('{path}')")
+    try:
+        subprocess.run(["powershell", "-NoProfile", "-Command", script], timeout=30, capture_output=True)
+    except (OSError, subprocess.SubprocessError):
+        pass
+
+
 def tool(byond_bin, windows_name, linux_name):
     name = windows_name if WINDOWS else linux_name
     return str(pathlib.Path(byond_bin) / name) if byond_bin else name
@@ -197,6 +216,7 @@ def main():
     parser.add_argument("--out", required=True, help="new scratch folder for this run, outside the repository")
     parser.add_argument("--result", help="where to write the result JSON (default: <out>/result.json)")
     parser.add_argument("--byond-bin", default=r"C:\Program Files (x86)\BYOND\bin" if WINDOWS else "")
+    parser.add_argument("--daemon", default="dreamdaemon.exe", help="Windows daemon executable (dd.exe is the console one)")
     parser.add_argument("--client-wait", type=int, default=600, help="seconds the probe waits for clients")
     parser.add_argument("--timeout", type=int, default=3600)
     parser.add_argument("--no-clients", action="store_true", help="do not start Dream Seeker (connect by hand to the relay port)")
@@ -210,8 +230,11 @@ def main():
     relay = Relay(args.port + 1, args.port)
     params = f"los_clients={args.clients}&los_seconds={args.seconds}&los_wait={args.client_wait}"
     owned = []
-    daemon = subprocess.Popen([tool(args.byond_bin, "dreamdaemon.exe", "DreamDaemon"), "probe.dmb", str(args.port), "-trusted", "-invisible", "-params", params, "-log", "daemon.log"], cwd=out)
+    daemon = subprocess.Popen([tool(args.byond_bin, args.daemon, "DreamDaemon"), "probe.dmb", str(args.port), "-trusted", "-invisible", "-params", params, "-log", "daemon.log"], cwd=out)
     owned.append(daemon)
+    pin(daemon, 1)
+    others = (1 << os.cpu_count()) - 2
+    shots = set()
     seekers = []
     samples = []
     started = time.time()
@@ -224,8 +247,12 @@ def main():
                 if phase == "waiting for clients" and not seekers and not args.no_clients and WINDOWS:
                     for _ in range(args.clients):
                         seekers.append(subprocess.Popen([tool(args.byond_bin, "dreamseeker.exe", ""), f"byond://127.0.0.1:{args.port + 1}##guest"]))
+                        pin(seekers[-1], others)
                         time.sleep(4)
                     owned.extend(seekers)
+                if WINDOWS and phase not in shots and phase.startswith(("field/walk-all/", "field/stand/1")):
+                    shots.add(phase)
+                    screenshot(out / f"desktop-{phase.replace('/', '-')}.png")
                 stats = process_stats(daemon)
                 if not stats:
                     break

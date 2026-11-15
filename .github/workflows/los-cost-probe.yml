@@ -1,0 +1,80 @@
+name: Line-of-sight cost probe
+# Manual measurement for issue #3582 (tests/los_cost_probe). Never part of
+# ordinary CI: it starts a scratch loopback world and guest Dream Seeker
+# clients on a disposable hosted Windows runner.
+on:
+  workflow_dispatch:
+    inputs:
+      clients:
+        description: Guest clients to connect
+        type: string
+        default: '8'
+      seconds:
+        description: Seconds per measured phase
+        type: string
+        default: '12'
+  push:
+    branches:
+      - claude/project-thread-mcfnx4
+    paths:
+      - tests/los_cost_probe/**
+      - .github/workflows/los-cost-probe.yml
+permissions:
+  contents: read
+jobs:
+  probe:
+    if: github.repository == 'Civ13/Civ13'
+    runs-on: windows-2022
+    timeout-minutes: 75
+    strategy:
+      fail-fast: false
+      matrix:
+        map: [small]
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      CLIENTS: ${{ inputs.clients || '2' }}
+      SECONDS: ${{ inputs.seconds || '4' }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Unpack the pinned BYOND build
+        shell: pwsh
+        run: |
+          $bin = python tests/los_cost_probe/hosted_setup.py "$env:RUNNER_TEMP/byond"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          "BYOND_BIN=$bin" >> $env:GITHUB_ENV
+      - name: Line of sight on
+        shell: pwsh
+        run: |
+          python tests/los_cost_probe/run.py --map ${{ matrix.map }} --los on --clients $env:CLIENTS --seconds $env:SECONDS --byond-bin "$env:BYOND_BIN" --daemon dd.exe --client-wait 240 --out "$env:RUNNER_TEMP/los/${{ matrix.map }}-on" --result tests/los_cost_probe/results/${{ matrix.map }}-on.json
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Line of sight off
+        shell: pwsh
+        run: |
+          python tests/los_cost_probe/run.py --map ${{ matrix.map }} --los off --clients $env:CLIENTS --seconds $env:SECONDS --byond-bin "$env:BYOND_BIN" --daemon dd.exe --client-wait 240 --out "$env:RUNNER_TEMP/los/${{ matrix.map }}-off" --result tests/los_cost_probe/results/${{ matrix.map }}-off.json
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Tables
+        if: always()
+        shell: pwsh
+        run: |
+          python tests/los_cost_probe/report.py ${{ matrix.map }}
+          Get-CimInstance Win32_Processor | Select-Object Name, NumberOfLogicalProcessors | Format-List
+          Get-ChildItem "$env:RUNNER_TEMP/los" -Recurse -Include daemon.log,compile.log | ForEach-Object { "==== $($_.FullName)"; Get-Content $_.FullName -Tail 40 }
+          Get-ChildItem "$env:RUNNER_TEMP/los" -Recurse -Include probe-marks.json | ForEach-Object { "==== $($_.FullName)"; Get-Content $_.FullName }
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: los-cost-${{ matrix.map }}-${{ github.sha }}-${{ github.run_attempt }}
+          retention-days: 14
+          if-no-files-found: warn
+          path: |
+            tests/los_cost_probe/results/
+            ${{ runner.temp }}/los/**/*.json
+            ${{ runner.temp }}/los/**/*.csv
+            ${{ runner.temp }}/los/**/*.log
+            ${{ runner.temp }}/los/**/*.png
