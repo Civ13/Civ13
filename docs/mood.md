@@ -85,13 +85,31 @@ sickness, which could only ever pin mood to the floor.
 | Fleas | -5 | maps with hygiene |
 | Sick / seriously ill (plague, typhus, malaria, cholera once it worsens) | -8 / -12 | everywhere |
 | Lasting pain (traumatic shock 50 or more) | -5 | everywhere |
+| Sheltered: a roofed area, or a lit fire within drying range at night | +3 | hunger-enabled maps |
+| A tame animal within 3 tiles (tamed dog or wolf, tame horse or livestock) | +3 | hunger-enabled maps |
+| Art in sight within 4 tiles: paintings, rock art, statues and monuments | +2 each, up to +6 | hunger-enabled maps |
 
 A bit dirty (75 up to 200) is neither a lift nor a penalty. The bed is noted
 while the character sleeps (`sleep_comfort`, saved with the body) and counts
 from waking until they next sleep; chairs and seats count for nothing.
 
-The lifts add up to 18, so living conditions alone rest a character at 68:
-Good, never Excellent. `MOOD_REST_MAX` leaves room for later sources.
+The basics (bed, sheet, diet, clean, warm and dry) add up to 18 and rest a
+character at 68: Good. Shelter, an animal and art add 12 more, which is over
+the cap of 75, so no single lift is required to reach it and conditions alone
+never reach Excellent.
+
+## Small pleasures
+
+`mood_leisure(cause, amount, gap)` lifts mood directly, at most once per gap for
+each cause. Like every lift it sits in the slow band or burns off above it.
+
+| Pleasure | Lift | Gap |
+| --- | --- | --- |
+| Reading a book with at least 200 characters in it | +5 | 20 minutes |
+| A bite of food you like with a table within 1 tile | +3 | 10 minutes |
+
+Board games, music, washing, baths, feasts and teas lift mood through their own
+code and cooldowns.
 
 ## Tests
 

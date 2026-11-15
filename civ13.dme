@@ -1620,6 +1620,7 @@
 #include "code\modules\reagents\reagent_containers\food\drinks\jar.dm"
 #include "code\modules\reagents\reagent_containers\food\snacks\donuts.dm"
 #include "code\modules\reagents\reagent_containers\food\snacks\meat.dm"
+#include "code\modules\reagents\reagent_containers\food\snacks\mood_leisure.dm"
 #include "code\modules\reagents\reagent_containers\glass\bottle.dm"
 #include "code\modules\research_tree\_research_tree_defines.dm"
 #include "code\modules\research_tree\research_bench.dm"
