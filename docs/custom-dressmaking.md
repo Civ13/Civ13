@@ -22,6 +22,19 @@ including sashes, aprons, capes, ties and bows supported by those accessory item
 The cut and colors are fixed after cutting; there is no free recoloring of a
 finished dress. Projects and finished designs use normal persistence.
 
+## Gloves, footwear and belts
+
+A tailoring project made from a leather sheet (Clothing, one sheet) designs
+gloves, long gloves, shoes, boots, tall boots, a belt or a wide belt; gloves can
+also be made from woolcloth, and a waist sash from cloth or woolcloth. Each has
+its own Pieces: cuffs, backs and fingertips for gloves; soles, toes, fastenings
+and cuffs for footwear; patterns, buckles and ends for belts. Leather shows its
+own tan through every dye. The design is looks only: the finished item is a
+subtype of the plain item of its kind (thick gloves, leather boots, the leather
+belt with its attachment points), so warmth, protection, grip and what hangs
+from a belt are unchanged. A design can only be loaded onto a project whose
+material can make it.
+
 ## Scope
 
 This is a sprite-based adaptation of designing panels, previewing, cutting and

@@ -6,7 +6,7 @@ Every pixel is placed by this script from the row tables, point lists and the
 fixed grey ramp below (Pillow only); there is no external, traced or generated
 artwork. Released under Civ13 AGPL-3.0. Run from the repository root:
 
-    python3 tests/sprites/create_tailoring_pieces.py [--check] [--preview sheet.png] [--sheet states.png] [--hats hats.png]
+    python3 tests/sprites/create_tailoring_pieces.py [--check] [--preview sheet.png] [--sheet states.png] [--hats hats.png] [--accessories accessories.png]
 
 It owns two files and every state in them:
 
@@ -64,6 +64,8 @@ def sym(*parts):
 
 
 def cells(shape):
+    if isinstance(shape, set):
+        return shape
     return {(x, y) for y, spans in shape.items() for a, b in spans for x in range(a, b + 1)}
 
 
@@ -759,6 +761,231 @@ def lowered(frame, by=11):
     return f
 
 
+# ---------------------------------------------------------------- gloves, boots and belts
+# Worn pieces sit on the hands, feet and waist of the base body, on the same
+# pixels as the game's plain leather gloves, boots and belt. Each state also has
+# its own loose drawing: a pair of gloves laid flat, a pair of boots standing
+# side on, a belt laid out. Pieces share the hand, the foot and the strap, so
+# one cuff, sole or buckle fits every body it is offered for.
+def bar(shape, top=HI, low=MID):
+    """A narrow band: light along its upper edge, a shade darker at its right end."""
+    mask = shape if isinstance(shape, set) else cells(shape)
+    f = Frame()
+    for (x, y) in mask:
+        v = top if (x, y - 1) not in mask else low
+        f.put(x, y, g(min(v, DIM) if (x + 1, y) not in mask and (x - 1, y) in mask else v))
+    return f
+
+
+def cut(frames, test):
+    """A piece cut from another piece's own shaded cloth, one frame per direction."""
+    out = []
+    for fr in frames:
+        f = Frame()
+        f.px = {p: c for p, c in fr.px.items() if test(*p)}
+        out.append(f)
+    return out
+
+
+def spots(v, *points):
+    return dots(Frame(), v, *points)
+
+
+HAND_S = cells(sym((18, 20, (7, 10)), (21, 21, (8, 9))))
+HAND_E = cells(rows((18, 20, (12, 15), (20, 20)), (21, 21, (13, 14))))
+ARM_S = cells(sym((15, 15, (7, 10)), (16, 17, (7, 9))))        # a long glove reaches the elbow
+ARM_E = cells(rows((15, 17, (11, 14))))
+SHOE_S = cells(sym((29, 29, (10, 14)), (30, 31, (9, 14))))
+SHOE_E = cells(rows((29, 29, (13, 18)), (30, 31, (13, 19))))
+ANKLE_S, ANKLE_E = cells(sym((27, 28, (11, 14)))), cells(rows((27, 28, (13, 17))))
+SHAFT_S, SHAFT_E = cells(sym((23, 26, (11, 14)))), cells(rows((23, 26, (13, 17))))
+WAIST_S, WAIST_E = cells(rows((18, 19, (11, 19)))), cells(rows((18, 19, (12, 12), (16, 19))))
+WIDE_S, WIDE_E = cells(rows((17, 19, (11, 19)))), cells(rows((17, 19, (12, 12), (16, 19))))
+
+
+def waist_sash():
+    """A cloth sash wound twice round the waist, knotted on the wearer's left with the ends hanging."""
+    def band(shape):
+        f = cloth(shape)
+        for x, y in sorted(shape):
+            if y == 18 and x % 3 == 1 and (x + 1, 19) in shape:    # the wraps cross on a slant
+                f.put(x, 18, g(FOLD))
+        return f
+
+    def ends(f, x):
+        dots(f, SHINE, (x, 18)); dots(f, CREASE, (x - 1, 19))
+        col(f, x - 1, 20, 23, LIT); col(f, x, 20, 22, DIM); dots(f, BOTTOM, (x - 1, 24), (x, 23)); dots(f, FOLD, (x - 1, 22))
+        return f
+
+    s, n, e, w = band(WAIST_S), band(WAIST_S), band(WAIST_E), band(WAIST_E).mirror()
+    ends(s, 18)
+    col(n, 12, 20, 22, DIM); dots(n, BOTTOM, (12, 23))
+    ends(w, 14)
+    return [s, n, e, w]
+
+
+def worn_accessories():
+    worn = {}
+    worn['tl_gloves'] = plain(HAND_S, HAND_S, HAND_E)
+    worn['tl_gloves_long'] = plain(HAND_S | ARM_S, HAND_S | ARM_S, HAND_E | ARM_E)
+    cuff_s, cuff_e = sym((17, 17, (7, 10))), rows((17, 17, (11, 15)))
+    worn['tl_glove_cuff'] = four(bar(cuff_s), bar(cuff_s), bar(cuff_e))
+    flare_s, flare_e = sym((15, 15, (7, 10)), (16, 17, (6, 10))), rows((15, 15, (11, 14)), (16, 17, (11, 15)))
+    worn['tl_glove_gauntlet'] = plain(flare_s, flare_s, flare_e)
+    worn['tl_glove_cuff_fur'] = four(fur(sym((16, 17, (6, 10)))), fur(sym((16, 17, (6, 10)))), fur(rows((16, 17, (11, 15)))))
+    band_s, band_e = sym((15, 15, (7, 10))), rows((15, 15, (11, 14)))
+    worn['tl_glove_long_band'] = four(bar(band_s), bar(band_s), bar(band_e))
+    worn['tl_glove_long_fur'] = four(fur(sym((14, 15, (6, 10)))), fur(sym((14, 15, (6, 10)))), fur(rows((14, 15, (10, 15)))))
+    knuckles = pair(pair(Frame(), SHINE, (8, 19)), MID, (9, 19))
+    worn['tl_glove_knuckles'] = four(knuckles, knuckles, dots(spots(SHINE, (13, 19), (20, 19)), MID, (14, 19)))
+    stripe = pair(Frame(), HI, (9, 18), (9, 19), (9, 20))
+    worn['tl_glove_stripe'] = four(stripe, stripe, spots(HI, (14, 18), (14, 19), (14, 20)))
+    worn['tl_glove_tips'] = cut(worn['tl_gloves'], lambda x, y: y >= 20)
+
+    worn['tl_shoes'] = plain(SHOE_S, SHOE_S, SHOE_E)
+    worn['tl_boots'] = plain(SHOE_S | ANKLE_S, SHOE_S | ANKLE_S, SHOE_E | ANKLE_E)
+    worn['tl_boots_tall'] = plain(SHOE_S | ANKLE_S | SHAFT_S, SHOE_S | ANKLE_S | SHAFT_S, SHOE_E | ANKLE_E | SHAFT_E)
+    sole_s, sole_e = sym((31, 31, (9, 14))), rows((31, 31, (13, 19)))
+    worn['tl_boot_sole'] = four(bar(sole_s, MID), bar(sole_s, MID), bar(sole_e, MID))
+    worn['tl_boot_toecap'] = four(bar(sym((30, 30, (9, 14)))), Frame(), bar(rows((29, 29, (18, 18)), (30, 30, (17, 19)))))
+    strap_s, strap_e = sym((29, 29, (10, 14))), rows((29, 29, (13, 18)))
+    worn['tl_boot_strap'] = four(bar(strap_s), bar(strap_s), bar(strap_e))
+    buckle = pair(pair(Frame(), SHINE, (10, 29)), MID, (11, 29))
+    worn['tl_boot_buckle'] = four(buckle, buckle, dots(spots(SHINE, (15, 29)), MID, (16, 29)))
+    laces = {'tl_shoes': ((12, 29),), 'tl_boots': ((12, 27), (13, 28), (12, 29)),
+             'tl_boots_tall': ((12, 23), (13, 24), (12, 25), (13, 26), (12, 27), (13, 28), (12, 29))}
+    for body, points in laces.items():
+        side = [(17 if x == 12 else 16, y) for x, y in points]
+        worn[body + '_laces'] = four(pair(Frame(), SHINE, *points), Frame(), spots(SHINE, *side))
+    for body, top in (('tl_boots', 27), ('tl_boots_tall', 23)):
+        low = top + (1 if body == 'tl_boots_tall' else 0)
+        cs, ce = sym((top, low, (11, 14))), rows((top, low, (13, 17)))
+        worn[body + '_cuff'] = four(bar(cs), bar(cs), bar(ce))
+        fs, fe = sym((top - 1, top, (10, 14))), rows((top - 1, top, (12, 18)))
+        worn[body + '_fur'] = four(fur(fs), fur(fs), fur(fe))
+
+    worn['tl_waist_belt'] = plain(WAIST_S, WAIST_S, WAIST_E)
+    worn['tl_waist_wide'] = plain(WIDE_S, WIDE_S, WIDE_E)
+    worn['tl_waist_sash'] = waist_sash()
+    square = dots(dots(dots(spots(SHINE, (14, 18), (14, 19)), HI, (15, 18)), MID, (16, 18), (16, 19)), DEEP, (15, 19))
+    worn['tl_waist_buckle_square'] = four(square, Frame(), dots(spots(SHINE, (20, 18)), MID, (20, 19)))
+    ring = dots(dots(dots(spots(SHINE, (15, 17), (14, 18)), HI, (14, 19), (16, 18)), MID, (16, 19), (15, 20)), DEEP, (15, 18), (15, 19))
+    worn['tl_waist_buckle_round'] = four(ring, Frame(), dots(spots(SHINE, (20, 17), (20, 18)), MID, (20, 19), (20, 20)))
+    plate = cloth(rows((17, 17, (14, 16)), (18, 19, (13, 17)), (20, 20, (14, 16))))
+    dots(plate, SHINE, (14, 18), (15, 18)); dots(plate, DEEP, (15, 19))
+    worn['tl_waist_buckle_plate'] = four(plate, Frame(), cloth(rows((17, 20, (20, 20)), (18, 19, (19, 20)))))
+    worn['tl_waist_studs'] = four(pair(Frame(), SHINE, (12, 18)), pair(Frame(), SHINE, (12, 18), (14, 18)), spots(SHINE, (17, 18)))
+    worn['tl_waist_stripe'] = cut(worn['tl_waist_belt'], lambda x, y: y == 18)
+    end = dots(col(Frame(), 17, 20, 22, MID), BOTTOM, (17, 23))
+    worn['tl_waist_end'] = four(end, Frame(), dots(col(Frame(), 19, 20, 22, MID), BOTTOM, (19, 23)))
+    sash = worn['tl_waist_sash']
+    worn['tl_waist_sash_stripes'] = cut(sash, lambda x, y: y <= 19 and x % 2 == 1 or y > 19 and y % 2 == 1)
+    worn['tl_waist_sash_fringe'] = [spots(HI, (17, 24), (18, 23), (17, 25)), spots(HI, (12, 23), (12, 24)), Frame(),
+                                    spots(HI, (13, 24), (14, 23), (13, 25))]
+    return worn
+
+
+# Loose gloves: two gloves side by side, fingers up, thumbs inward. Local
+# columns 0-9 and rows from the fingertips down; GLOVE_TOP is the tile row of
+# the fingertips for both lengths, so the hand pieces fit either.
+GLOVE_TOP = 8
+GLOVE_HAND = rows((0, 0, (3, 6)), (1, 3, (2, 7)), (4, 4, (1, 7)), (5, 6, (0, 7)), (7, 7, (1, 7)), (8, 11, (2, 7)))
+GLOVE_ARM = rows((12, 16, (2, 7)))
+
+
+def glove_pair(shape):
+    local = shape if isinstance(shape, set) else cells(shape)
+    return {(12 - x, GLOVE_TOP + y) for x, y in local} | {(18 + x, GLOVE_TOP + y) for x, y in local}
+
+
+# Loose boots: a pair standing side on, toes to the right. Local columns 0-9,
+# rows counted up from the sole on tile row BOOT_SOLE.
+BOOT_SOLE = 24
+BOOT_FOOT = ((4, (1, 5)), (3, (0, 6)), (2, (0, 8)), (1, (0, 9)), (0, (0, 9)))
+
+
+def boot_pair(spans):
+    """spans: (rows above the sole, (first column, last column)) for one boot."""
+    return {(ox + x, BOOT_SOLE - up) for ox in (4, 17) for up, (a, b) in spans for x in range(a, b + 1)}
+
+
+def boot_shaft(height):
+    return tuple((up, (1, 5)) for up in range(5, 5 + height))
+
+
+def item_accessories():
+    items = {}
+    items['tl_gloves'] = cloth(glove_pair(GLOVE_HAND))
+    items['tl_gloves_long'] = cloth(glove_pair(cells(GLOVE_HAND) | cells(GLOVE_ARM)))
+    for name in ('tl_gloves', 'tl_gloves_long'):                # the seams between the fingers
+        for x, y in glove_pair({(4, 1), (4, 2), (4, 3), (6, 1), (6, 2)}):
+            items[name].put(x, y, g(FOLD))
+    items['tl_glove_cuff'] = bar(glove_pair(rows((10, 11, (2, 7)))))
+    items['tl_glove_gauntlet'] = cloth(glove_pair(rows((11, 13, (1, 8)), (14, 15, (0, 9)))))
+    items['tl_glove_cuff_fur'] = fur(glove_pair(rows((10, 12, (1, 8)))))
+    items['tl_glove_long_band'] = bar(glove_pair(rows((15, 16, (2, 7)))))
+    items['tl_glove_long_fur'] = fur(glove_pair(rows((15, 17, (1, 8)))))
+    f = Frame()
+    for x, y in glove_pair({(3, 4), (5, 4)}):
+        f.put(x, y, g(SHINE))
+    for x, y in glove_pair({(4, 4), (6, 4)}):
+        f.put(x, y, g(MID))
+    items['tl_glove_knuckles'] = f
+    items['tl_glove_stripe'] = bar(glove_pair(rows((4, 9, (4, 5)))))
+    items['tl_glove_tips'] = cut([items['tl_gloves']], lambda x, y: y <= GLOVE_TOP + 2)[0]
+
+    items['tl_shoes'] = cloth(boot_pair(BOOT_FOOT))
+    items['tl_boots'] = cloth(boot_pair(BOOT_FOOT + boot_shaft(5)))
+    items['tl_boots_tall'] = cloth(boot_pair(BOOT_FOOT + boot_shaft(11)))
+    items['tl_boot_sole'] = bar(boot_pair(((0, (0, 9)),)), MID)
+    items['tl_boot_toecap'] = bar(boot_pair(((2, (7, 8)), (1, (7, 9)))))
+    items['tl_boot_strap'] = bar(boot_pair(((3, (0, 6)),)))
+    f = Frame()
+    for ox in (4, 17):
+        dots(f, SHINE, (ox + 2, BOOT_SOLE - 3), (ox + 2, BOOT_SOLE - 2)); dots(f, MID, (ox + 3, BOOT_SOLE - 3), (ox + 3, BOOT_SOLE - 2))
+    items['tl_boot_buckle'] = f
+    for body, height in (('tl_shoes', 0), ('tl_boots', 5), ('tl_boots_tall', 11)):
+        f = Frame()
+        for ox in (4, 17):
+            dots(f, SHINE, (ox + 6, BOOT_SOLE - 3), (ox + 7, BOOT_SOLE - 2))
+            for up in range(4, 5 + height):
+                f.put(ox + (5 if up % 2 else 4), BOOT_SOLE - up, g(SHINE))
+        items[body + '_laces'] = f
+        if height:
+            top = 4 + height
+            items[body + '_cuff'] = bar(boot_pair(((top, (1, 5)), (top - 1, (1, 5)))))
+            items[body + '_fur'] = fur(boot_pair(((top + 1, (0, 6)), (top, (0, 6)), (top - 1, (0, 6)))))
+
+    strap = rows((14, 16, (6, 26)), (15, 15, (27, 28)))
+    items['tl_waist_belt'] = cloth(strap)
+    items['tl_waist_wide'] = cloth(rows((13, 17, (6, 26)), (14, 16, (27, 28))))
+    f = cloth(rows((12, 18, (3, 7))))
+    for x, y in cells(rows((14, 16, (4, 5)))):
+        del f.px[(x, y)]
+    dots(f, SHINE, (3, 12), (4, 12), (3, 13)); dots(f, HI, (5, 15), (6, 15))        # the frame, then the tongue
+    items['tl_waist_buckle_square'] = f
+    f = cloth(rows((12, 12, (4, 6)), (13, 17, (3, 7)), (18, 18, (4, 6))))
+    for x, y in cells(rows((14, 16, (5, 5)))):
+        del f.px[(x, y)]
+    dots(f, SHINE, (4, 12), (4, 13), (3, 14)); dots(f, HI, (5, 15), (6, 15))
+    items['tl_waist_buckle_round'] = f
+    f = cloth(rows((11, 11, (3, 7)), (12, 18, (2, 8)), (19, 19, (3, 7))))
+    dots(f, SHINE, (3, 12), (4, 12), (3, 13), (5, 14)); dots(f, DEEP, (5, 16), (6, 15), (4, 15)); dots(f, CREASE, (5, 15))
+    items['tl_waist_buckle_plate'] = f
+    items['tl_waist_studs'] = spots(SHINE, *[(x, 15) for x in range(10, 26, 3)])
+    items['tl_waist_stripe'] = bar(rows((15, 15, (8, 26))))
+    items['tl_waist_end'] = bar(rows((14, 16, (23, 26)), (15, 15, (27, 28))))
+    sash = cloth(rows((12, 18, (4, 25))))
+    for x in (9, 15, 21):
+        col(sash, x, 13, 17, FOLD)
+    for y in (12, 14, 16, 18):
+        dots(sash, DIM, (26, y), (27, y))
+    items['tl_waist_sash'] = sash
+    items['tl_waist_sash_stripes'] = cut([sash], lambda x, y: x <= 25 and x % 3 == 0)[0]
+    items['tl_waist_sash_fringe'] = spots(HI, *[(x, y) for y in (12, 14, 16, 18) for x in (26, 27, 28)])
+    return items
+
+
 # ---------------------------------------------------------------- state table
 def build():
     worn = {}
@@ -808,7 +1035,9 @@ def build():
     # A loose hat is its front view, moved down to the middle of the tile.
     items = {name: lowered(frames[0]) if name.startswith('tl_hat_') else frames[1 if name in spread else 0]
              for name, frames in worn.items()}
-    return worn, items
+    worn.update(worn_accessories())
+    items.update(item_accessories())
+    return {name: worn[name] for name in STATES}, {name: items[name] for name in STATES}
 
 
 STATES = (
@@ -824,9 +1053,21 @@ STATES = (
     'tl_hat_soft_stripes', 'tl_hat_soft_panels', 'tl_hat_band', 'tl_hat_band_fur', 'tl_hat_brim_narrow',
     'tl_hat_brim_wide', 'tl_hat_peak', 'tl_hat_brim_cocked', 'tl_hat_flaps', 'tl_hat_neck_cloth', 'tl_hat_feather',
     'tl_hat_plume', 'tl_hat_badge', 'tl_hat_ribbons',
+    'tl_gloves', 'tl_gloves_long', 'tl_glove_cuff', 'tl_glove_gauntlet', 'tl_glove_cuff_fur', 'tl_glove_long_band',
+    'tl_glove_long_fur', 'tl_glove_knuckles', 'tl_glove_stripe', 'tl_glove_tips',
+    'tl_shoes', 'tl_boots', 'tl_boots_tall', 'tl_boot_sole', 'tl_boot_toecap', 'tl_boot_strap', 'tl_boot_buckle',
+    'tl_shoes_laces', 'tl_boots_laces', 'tl_boots_tall_laces', 'tl_boots_cuff', 'tl_boots_fur', 'tl_boots_tall_cuff',
+    'tl_boots_tall_fur',
+    'tl_waist_belt', 'tl_waist_wide', 'tl_waist_sash', 'tl_waist_buckle_square', 'tl_waist_buckle_round',
+    'tl_waist_buckle_plate', 'tl_waist_studs', 'tl_waist_stripe', 'tl_waist_end', 'tl_waist_sash_stripes',
+    'tl_waist_sash_fringe',
 )
 # Empty from the north.
-BACKLESS = ('tl_buttons_single', 'tl_buttons_double', 'tl_toggles', 'tl_cloak_clasp', 'tl_hat_peak', 'tl_hat_badge')
+BACKLESS = ('tl_buttons_single', 'tl_buttons_double', 'tl_toggles', 'tl_cloak_clasp', 'tl_hat_peak', 'tl_hat_badge',
+            'tl_boot_toecap', 'tl_shoes_laces', 'tl_boots_laces', 'tl_boots_tall_laces', 'tl_waist_buckle_square',
+            'tl_waist_buckle_round', 'tl_waist_buckle_plate', 'tl_waist_end')
+# The sash is knotted on the wearer's left, so its fringe is hidden from the east.
+SIDELESS = ('tl_waist_sash_fringe',)
 
 
 def verify(worn, items):
@@ -834,7 +1075,7 @@ def verify(worn, items):
     assert tuple(worn) == STATES and tuple(items) == STATES, 'state list drifted'
     for name in STATES:
         for d, f in enumerate(worn[name] + [items[name]]):
-            assert f.px or (d == 1 and name in BACKLESS), '%s dir %d is empty' % (name, d)
+            assert f.px or (d == 1 and name in BACKLESS) or (d == 2 and name in SIDELESS), '%s dir %d is empty' % (name, d)
             for p, (r, gr, b) in f.px.items():
                 assert r == gr == b and 96 <= r <= 250, '%s dir %d %s is not a tintable grey' % (name, d, p)
     for body in ('tl_shirt', 'tl_tunic', 'tl_gown'):
@@ -1173,6 +1414,90 @@ def write_hat_preview(path, worn, items, scale=6):
     sheet.convert('RGB').save(path)
 
 
+LEATHER, DARK, RUSSET, STEEL = (176, 132, 84), (84, 60, 44), (150, 84, 52), (196, 200, 206)
+ACCESSORIES = {
+    'tl_gloves': [
+        ('plain', [('tl_gloves', LEATHER)]),
+        ('turned cuff, back stripe', [('tl_gloves', DARK), ('tl_glove_cuff', CREAM), ('tl_glove_stripe', CREAM)]),
+        ('gauntlet cuff, knuckle pads', [('tl_gloves', RUSSET), ('tl_glove_gauntlet', RUSSET), ('tl_glove_knuckles', GOLD)]),
+        ('fur cuff, fingertips', [('tl_gloves', NAVY), ('tl_glove_cuff_fur', CREAM), ('tl_glove_tips', BLACK)]),
+    ],
+    'tl_gloves_long': [
+        ('plain', [('tl_gloves_long', CREAM)]),
+        ('top band, back stripe', [('tl_gloves_long', PLUM), ('tl_glove_long_band', GOLD), ('tl_glove_stripe', GOLD)]),
+        ('fur top, knuckle pads', [('tl_gloves_long', DARK), ('tl_glove_long_fur', TAN), ('tl_glove_knuckles', STEEL)]),
+        ('fingertips', [('tl_gloves_long', RED), ('tl_glove_tips', BLACK)]),
+    ],
+    'tl_shoes': [
+        ('plain', [('tl_shoes', LEATHER)]),
+        ('sole, laces', [('tl_shoes', DARK), ('tl_boot_sole', TAN), ('tl_shoes_laces', CREAM)]),
+        ('toe cap, buckle', [('tl_shoes', BLACK), ('tl_boot_toecap', RUSSET), ('tl_boot_buckle', GOLD)]),
+        ('strap, sole', [('tl_shoes', RED), ('tl_boot_strap', GOLD), ('tl_boot_sole', DARK)]),
+    ],
+    'tl_boots': [
+        ('plain', [('tl_boots', LEATHER)]),
+        ('turned cuff, laces, sole', [('tl_boots', DARK), ('tl_boot_sole', BLACK), ('tl_boots_laces', CREAM),
+                                      ('tl_boots_cuff', TAN)]),
+        ('fur cuff, strap', [('tl_boots', RUSSET), ('tl_boot_strap', DARK), ('tl_boots_fur', CREAM)]),
+        ('toe cap, buckle', [('tl_boots', BLACK), ('tl_boot_toecap', STEEL), ('tl_boot_buckle', GOLD)]),
+    ],
+    'tl_boots_tall': [
+        ('plain', [('tl_boots_tall', BLACK)]),
+        ('turned cuff, buckle', [('tl_boots_tall', DARK), ('tl_boot_buckle', GOLD), ('tl_boots_tall_cuff', TAN)]),
+        ('laces, sole, toe cap', [('tl_boots_tall', RUSSET), ('tl_boot_sole', BLACK), ('tl_boot_toecap', DARK),
+                                  ('tl_boots_tall_laces', CREAM)]),
+        ('fur cuff', [('tl_boots_tall', LEATHER), ('tl_boots_tall_fur', CREAM)]),
+    ],
+    'tl_waist_belt': [
+        ('square buckle', [('tl_waist_belt', LEATHER), ('tl_waist_buckle_square', GOLD)]),
+        ('round buckle, studs', [('tl_waist_belt', BLACK), ('tl_waist_buckle_round', STEEL), ('tl_waist_studs', STEEL)]),
+        ('plate buckle, stripe', [('tl_waist_belt', RED), ('tl_waist_stripe', GOLD), ('tl_waist_buckle_plate', GOLD)]),
+        ('square buckle, hanging end', [('tl_waist_belt', DARK), ('tl_waist_buckle_square', STEEL), ('tl_waist_end', DARK)]),
+    ],
+    'tl_waist_wide': [
+        ('square buckle', [('tl_waist_wide', DARK), ('tl_waist_buckle_square', GOLD)]),
+        ('plate buckle, studs', [('tl_waist_wide', BLACK), ('tl_waist_studs', GOLD), ('tl_waist_buckle_plate', GOLD)]),
+        ('round buckle, stripe', [('tl_waist_wide', NAVY), ('tl_waist_stripe', CREAM), ('tl_waist_buckle_round', STEEL)]),
+        ('round buckle, hanging end', [('tl_waist_wide', RUSSET), ('tl_waist_buckle_round', GOLD), ('tl_waist_end', RUSSET)]),
+    ],
+    'tl_waist_sash': [
+        ('plain', [('tl_waist_sash', RED)]),
+        ('stripes', [('tl_waist_sash', CREAM), ('tl_waist_sash_stripes', SKY)]),
+        ('fringe', [('tl_waist_sash', PLUM), ('tl_waist_sash_fringe', GOLD)]),
+        ('stripes, fringe', [('tl_waist_sash', GREEN), ('tl_waist_sash_stripes', GOLD), ('tl_waist_sash_fringe', CREAM)]),
+    ],
+}
+
+
+def write_accessory_preview(path, worn, items, scale=5):
+    """Tinted gloves, boots and belts on the dressed base body (S, N, E, W), then the loose item."""
+    cell, gap, label = 32 * scale, 8, 30
+    dressed = []
+    for d in range(4):
+        body = base_body(d)
+        for name, colour in LINEN[:-1]:
+            body.alpha_composite(tinted(worn[name][d], colour))
+        dressed.append(body)
+    block = 5 * cell + gap
+    sheet = Image.new('RGBA', (120 + 4 * (block + gap), 30 + len(ACCESSORIES) * (label + cell + gap) + 8), BG)
+    draw = ImageDraw.Draw(sheet)
+    draw.text((8, 8), 'Tailored gloves, boots and belts - tinted combinations worn (S, N, E, W) and as the loose item, %dx' % scale,
+              fill=INK)
+    y = 30
+    for body, combos in ACCESSORIES.items():
+        draw.text((8, y + label + cell // 2), body, fill=INK)
+        for c, (text, parts) in enumerate(combos):
+            x = 120 + c * (block + gap)
+            draw.text((x + 2, y + 10), text, fill=INK)
+            draw.rectangle((x, y + label, x + 5 * cell - 1, y + label + cell - 1), fill=PANEL)
+            for d in range(4):
+                sheet.alpha_composite(big(stack(parts, lambda n: worn[n][d], dressed[d]), scale), (x + d * cell, y + label))
+            sheet.alpha_composite(big(stack(parts, lambda n: items[n]), scale), (x + 4 * cell, y + label))
+        y += label + cell + gap
+    Path(path).parent.mkdir(parents=True, exist_ok=True)
+    sheet.convert('RGB').save(path)
+
+
 def write_state_sheet(path, worn, items, scale=3):
     """Every state on its own: S, N, E, W worn frames, then the loose item."""
     cell, name_w, per_col = 32 * scale, 150, 13
@@ -1209,7 +1534,8 @@ def main(argv):
     write_dmi(MOB, worn, 4)
     write_dmi(OBJ, items, 1)
     print('wrote', MOB.relative_to(ROOT), 'and', OBJ.relative_to(ROOT))
-    for flag, draw in (('--preview', write_preview), ('--sheet', write_state_sheet), ('--hats', write_hat_preview)):
+    for flag, draw in (('--preview', write_preview), ('--sheet', write_state_sheet), ('--hats', write_hat_preview),
+                       ('--accessories', write_accessory_preview)):
         if flag in argv:
             draw(argv[argv.index(flag) + 1], worn, items)
             print('wrote', argv[argv.index(flag) + 1])

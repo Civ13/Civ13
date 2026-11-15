@@ -2719,6 +2719,10 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/tailoring_project" = "weaving",
 		"/obj/item/clothing/under/tailored" = "weaving",
 		"/obj/item/clothing/head/tailored" = "weaving",
+		"/obj/item/clothing/gloves/thick/leather/tailored" = "weaving",
+		"/obj/item/clothing/pouch_belt/tailored" = "weaving",
+		"/obj/item/clothing/shoes/tailored" = "classical_dress",
+		"/obj/item/clothing/shoes/leatherboots/tailored" = "fine_garments",
 		// --- workshops (26) ---
 		"/obj/structure/cellar_pump/lever" = "workshops",
 		"/obj/structure/lapping_wheel" = "workshops",
