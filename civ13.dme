@@ -238,6 +238,7 @@
 #include "code\game\mob\language\earth.dm"
 #include "code\game\mob\language\language.dm"
 #include "code\game\mob\language\proficiency.dm"
+#include "code\game\mob\language\teaching.dm"
 #include "code\game\mob\living\chat_overlay.dm"
 #include "code\game\mob\living\damage_procs.dm"
 #include "code\game\mob\living\death.dm"

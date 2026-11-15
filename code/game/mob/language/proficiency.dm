@@ -53,9 +53,29 @@
 /proc/language_learnable(datum/language/L)
 	return istype(L) && !(L.flags & (INNATE | NONVERBAL | SIGNLANG | HIVEMIND | NONGLOBAL))
 
-// Raise a language by up to `amount` score, never past `ceiling`. Ordinary
-// learning is slower once Conversational and stops at the daily cap. Returns
-// the score actually gained.
+// How much more of a language can be gained today. Each way of learning has
+// its own allowance: TRUE for hearing and speaking, "lesson", "study".
+/mob/living/human/proc/language_day_left(datum/language/L, daily_cap = TRUE)
+	L = canonical_language(L)
+	if (!L)
+		return 0
+	var/today = round(world.realtime / 864000)
+	if (language_gain_day != today || !islist(language_gain_today))
+		language_gain_day = today
+		language_gain_today = list()
+	var/limit = LANGUAGE_DAILY_CAP
+	var/bucket = L.name
+	if (daily_cap == "lesson")
+		limit = LANGUAGE_LESSON_DAILY_CAP
+		bucket = "lesson:[L.name]"
+	else if (daily_cap == "study")
+		limit = LANGUAGE_STUDY_DAILY_CAP
+		bucket = "study:[L.name]"
+	return max(0, limit - language_gain_today[bucket])
+
+// Raise a language by up to `amount` score, never past `ceiling`. daily_cap
+// names the allowance it draws on (FALSE for none); hearing and speaking are
+// also slower once Conversational. Returns the score actually gained.
 /mob/living/human/proc/gain_language(datum/language/L, amount, ceiling = 100, daily_cap = TRUE)
 	L = canonical_language(L)
 	if (!language_learnable(L) || amount <= 0)
@@ -65,16 +85,13 @@
 	if (score >= ceiling)
 		return 0
 	if (daily_cap)
-		if (score >= LANGUAGE_CONVERSATIONAL)
+		if (daily_cap == TRUE && score >= LANGUAGE_CONVERSATIONAL)
 			amount *= 0.5
-		var/today = round(world.realtime / 864000)
-		if (language_gain_day != today || !islist(language_gain_today))
-			language_gain_day = today
-			language_gain_today = list()
-		amount = min(amount, LANGUAGE_DAILY_CAP - language_gain_today[L.name])
+		amount = min(amount, language_day_left(L, daily_cap), ceiling - score)
 		if (amount <= 0)
 			return 0
-		language_gain_today[L.name] += amount
+		var/bucket = istext(daily_cap) ? "[daily_cap]:[L.name]" : L.name
+		language_gain_today[bucket] += amount
 	amount = min(amount, ceiling - score)
 	var/new_score = score + amount
 	partial_languages[L.name] = new_score * L.difficulty / 100
@@ -155,3 +172,20 @@
 	if (!own || own == L)
 		return ""
 	return ", [own.name] accent"
+
+// Related languages help each other equally: take the stronger of the two
+// listed values for every pair, so the table cannot disagree with itself.
+/proc/symmetrize_language_kinship()
+	var/list/by_type = list()
+	for (var/lname in all_languages)
+		var/datum/language/L = all_languages[lname]
+		by_type[L.type] = L
+	for (var/lname in all_languages)
+		var/datum/language/L = all_languages[lname]
+		for (var/other_type in L.mutual_intelligibility)
+			var/datum/language/other = by_type[other_type]
+			if (!other || other == L)
+				continue
+			var/shared = max(L.mutual_intelligibility[other_type], other.mutual_intelligibility[L.type])
+			L.mutual_intelligibility[other_type] = shared
+			other.mutual_intelligibility[L.type] = shared

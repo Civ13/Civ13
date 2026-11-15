@@ -49,8 +49,12 @@ class Rules(unittest.TestCase):
     def test_gain_respects_ceiling_cap_and_unlocks_speech_at_broken(self):
         gain = proc(PROF, '/mob/living/human/proc/gain_language(')
         self.assertLess(gain.index('if (score >= ceiling)'), gain.index('partial_languages[L.name] ='))
-        self.assertIn('LANGUAGE_DAILY_CAP - language_gain_today[L.name]', gain)
-        self.assertIn('round(world.realtime / 864000)', gain)
+        self.assertIn('amount = min(amount, language_day_left(L, daily_cap), ceiling - score)', gain)
+        self.assertIn('if (daily_cap == TRUE && score >= LANGUAGE_CONVERSATIONAL)', gain)
+        left = proc(PROF, '/mob/living/human/proc/language_day_left(')
+        self.assertIn('round(world.realtime / 864000)', left)
+        for bucket in ('"lesson:[L.name]"', '"study:[L.name]"'):
+            self.assertIn(bucket, left)
         self.assertIn('amount = min(amount, ceiling - score)', gain)
         self.assertIn('if (new_score >= LANGUAGE_BROKEN && !knows_language(L))', gain)
         self.assertIn('add_language(L.name, FALSE, FALSE)', gain)
@@ -87,11 +91,12 @@ class Rules(unittest.TestCase):
 
     def test_books_and_writing_stop_at_broken(self):
         book = read('code/modules/1713/language_book.dm')
-        self.assertIn('H.gain_language(langtolearn, 100, LANGUAGE_BROKEN, FALSE)', book)
+        self.assertIn('H.gain_language(langtolearn, LANGUAGE_STUDY_GAIN, LANGUAGE_BROKEN, "study")', book)
+        self.assertLess(book.index('H.language_day_left(langtolearn, "study")'), book.index('do_reading(user, 800, src)'))
         self.assertNotIn('H.add_language(', book)
         self.assertIn('user.language_score(held) >= LANGUAGE_CONVERSATIONAL', book)
         study = read('code/modules/paperwork/study.dm')
-        self.assertIn('H.gain_language(L, points * 100 / L.difficulty, LANGUAGE_BROKEN, FALSE)', study)
+        self.assertIn('H.gain_language(L, points * 100 / L.difficulty, LANGUAGE_BROKEN, "study")', study)
         self.assertNotIn('add_language(', study)
 
     def test_reader_shows_levels_and_languages_in_progress(self):
@@ -102,6 +107,45 @@ class Rules(unittest.TestCase):
         learning = proc(language, '/mob/living/human/languages_being_learned()')
         self.assertIn('knows_language(L)', learning)
         self.assertIn('html_encode(L.name)', learning)
+
+
+class Teaching(unittest.TestCase):
+    TEACH = read('code/game/mob/language/teaching.dm')
+
+    def test_lessons_are_the_fast_route_but_still_take_days(self):
+        self.assertGreater(D['LANGUAGE_LESSON_GAIN'], 10 * D['LANGUAGE_PRACTICE_GAIN'] - 1e-9)
+        best_day = D['LANGUAGE_DAILY_CAP'] + D['LANGUAGE_LESSON_DAILY_CAP']
+        self.assertTrue(2 <= D['LANGUAGE_CONVERSATIONAL'] / best_day <= 5)
+        # A primer needs several sittings and more than one day to reach Broken.
+        self.assertGreaterEqual(D['LANGUAGE_BROKEN'] / D['LANGUAGE_STUDY_GAIN'], 3)
+        self.assertGreater(D['LANGUAGE_BROKEN'], D['LANGUAGE_STUDY_DAILY_CAP'])
+
+    def test_only_a_fluent_better_speaker_teaches_a_willing_neighbour(self):
+        teachable = proc(self.TEACH, '/mob/living/human/proc/teachable_languages(')
+        self.assertIn('language_score(L) < LANGUAGE_FLUENT', teachable)
+        self.assertIn('learner.language_score(L) >= language_score(L)', teachable)
+        lesson = proc(self.TEACH, '/mob/living/human/proc/give_language_lesson(')
+        self.assertLess(lesson.index('learner.language_day_left(L, "lesson")'), lesson.index('WWinput(learner'))
+        self.assertLess(lesson.index('if (answer != "Accept")'), lesson.index('do_after(src, LANGUAGE_LESSON_TIME, learner)'))
+        self.assertLess(lesson.index('do_after(src, LANGUAGE_LESSON_TIME, learner)'),
+                        lesson.index('learner.gain_language(L, LANGUAGE_LESSON_GAIN, 100, "lesson")'))
+        self.assertIn('get_turf(learner) != learner_spot', lesson)
+        possible = proc(self.TEACH, '/mob/living/human/proc/lesson_still_possible(')
+        self.assertIn('get_dist(src, learner) > 1', possible)
+
+    def test_paper_needs_a_real_command_of_the_language(self):
+        written = read('code/modules/paperwork/written_languages.dm')
+        self.assertIn('actor.can_speak(known) && actor.language_score(known) >= LANGUAGE_CONVERSATIONAL', written)
+
+    def test_related_languages_agree_both_ways(self):
+        self.assertIn('symmetrize_language_kinship()', read('code/_helpers/global_lists.dm'))
+        kin = proc(PROF, '/proc/symmetrize_language_kinship()')
+        self.assertIn('max(L.mutual_intelligibility[other_type], other.mutual_intelligibility[L.type])', kin)
+        earth = read('code/game/mob/language/earth.dm')
+        for line in earth.splitlines():
+            if 'mutual_intelligibility = list(' in line:
+                keys = re.findall(r'/datum/language/(\w+)', line)
+                self.assertEqual(len(keys), len(set(keys)), line.strip())
 
 
 if __name__ == '__main__':
