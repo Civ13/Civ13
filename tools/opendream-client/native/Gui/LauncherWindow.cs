@@ -283,6 +283,7 @@ internal sealed partial class LauncherWindow : Form {
                 ("Host settings…", () => { ShowHostSettings(); return Task.CompletedTask; }, null),
                 ("Players' warning…", () => { ShowShutdownWarning(); return Task.CompletedTask; }, null),
                 ("Update when empty…", () => { ShowUpdateWhenEmpty(); return Task.CompletedTask; }, null),
+                ("Start region…", () => { ShowStartRegion(); return Task.CompletedTask; }, null),
                 ("Hub names…", () => { ShowHubNames(); return Task.CompletedTask; }, null),
                 ("-", null, null),
                 ("Update and restart without saving…", () => GroupAction("update-unsaved", "Update and restart without saving"), HostGate.All),
@@ -1189,6 +1190,48 @@ internal sealed partial class LauncherWindow : Form {
                 : "Update when empty on: regions move onto new commits once empty and saved." + (followed ? " The group now follows origin/master." : ""));
         } catch (Exception e) when (e is IOException or UnauthorizedAccessException or System.Text.Json.JsonException or InvalidDataException) {
             HostLine("Could not save Update when empty: " + e.Message);
+        }
+    }
+
+    // Start region (group config start_region): where brand-new characters start, and fallen ones whose bed does not
+    // keep their home. Existing homes stay where they are. The mainland keeps the era, the bot link and moon returns.
+    private void ShowStartRegion() {
+        if (host?.Control?.Group is not { } group) return;
+        (string Mainland, string Current, IReadOnlyList<HostSettings.StartChoice> Choices) start;
+        try { start = HostSettings.StartRegion(group); }
+        catch (Exception e) when (e is IOException or UnauthorizedAccessException or System.Text.Json.JsonException or InvalidDataException) {
+            HostLine("Could not read " + group.Config + ": " + e.Message);
+            return;
+        }
+        using var dialog = new Form { Text = "Start region", FormBorderStyle = FormBorderStyle.FixedDialog, MinimizeBox = false, MaximizeBox = false,
+            StartPosition = FormStartPosition.CenterParent, AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink, Padding = new Padding(12) };
+        var layout = new FlowLayoutPanel { FlowDirection = FlowDirection.TopDown, AutoSize = true, WrapContents = false };
+        layout.Controls.Add(new Label { AutoSize = true, MaximumSize = new Size(460, 0), Margin = new Padding(0, 0, 0, 8),
+            Text = "Brand-new players start here, and so does anyone whose character died without a bed that keeps their home. " +
+                "Players who already live in a land keep it. The mainland still sets the era and stays the bot's region. " +
+                "Applies within a minute or two; the worlds keep running." });
+        var picker = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList, Width = 260 };
+        foreach (var choice in start.Choices)
+            picker.Items.Add(choice.Name + (choice.Id == start.Mainland ? " (mainland)" : ""));
+        picker.SelectedIndex = Math.Max(0, start.Choices.ToList().FindIndex(choice => choice.Id == start.Current));
+        layout.Controls.Add(picker);
+        var buttons = new FlowLayoutPanel { AutoSize = true, Margin = new Padding(0, 10, 0, 0) };
+        var save = new Button { Text = "Save", AutoSize = true, DialogResult = DialogResult.OK };
+        var cancel = new Button { Text = "Cancel", AutoSize = true, DialogResult = DialogResult.Cancel };
+        buttons.Controls.Add(save);
+        buttons.Controls.Add(cancel);
+        layout.Controls.Add(buttons);
+        dialog.Controls.Add(layout);
+        dialog.AcceptButton = save;
+        dialog.CancelButton = cancel;
+        if (dialog.ShowDialog(this) != DialogResult.OK || picker.SelectedIndex < 0 || picker.SelectedIndex >= start.Choices.Count) return;
+        var picked = start.Choices[picker.SelectedIndex];
+        if (picked.Id == start.Current) return;
+        try {
+            HostSettings.SetStartRegion(group, picked.Id);
+            HostLine("Start region set to " + picked.Name + ": new players start there from the host service's next check.");
+        } catch (Exception e) when (e is IOException or UnauthorizedAccessException or System.Text.Json.JsonException or InvalidDataException) {
+            HostLine("Could not save the start region: " + e.Message);
         }
     }
 

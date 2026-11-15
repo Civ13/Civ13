@@ -62,10 +62,20 @@ with the OOC verb **Regions**, with join links for regions that are up.
 With travel on, each player belongs to one region at a time (the home world
 ledger in [tools/transfer_storage](../../tools/transfer_storage/README.md#home-worlds-one-land-per-player)).
 New players, and players whose character died without an assigned bed in the
-land they died in, start in the `mainland` region
-(optional key, default the first region) and reach the others only by
-travelling. Joining any other region shows where the character lives instead
-of starting a new one.
+land they died in, start in the `start_region` region (optional key, default
+the `mainland`, which itself defaults to the first region) and reach the others
+only by travelling. Joining any other region shows where the character lives
+instead of starting a new one. Accounts that already call a land home keep it.
+
+The start region and the mainland are separate settings. The mainland stays
+the group's era source, the land-stage reference, the moon/space return and
+the region the bot and front door use; `start_region` only says where new
+characters begin. It cannot be a `RAID`, `ORBIT`, `BATTLE`, `EVENT`,
+`EXPEDITION` or `TUTORIAL` region. Change it with the launcher's **All regions
+> More > Start region…** or by editing the group config: the host service
+restarts the coordinator on the new value at its next helper check, and
+running worlds pick it up from their agent within about a minute (no world
+restart). `status` reports both `mainland` and `start_region`.
 
 ## TDM: Barracks and battle worlds
 

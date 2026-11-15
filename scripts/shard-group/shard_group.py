@@ -67,6 +67,9 @@ GROUP_ACTIONS = ('setup', 'status', 'start', 'stop', 'restart', 'update', 'freez
                  'kill', 'force-restart', 'stage', 'enrol', 'help-status', 'help-start', 'help-stop', 'unlock', 'force-unlock',
                  'config-apply', 'config-migrate', 'handover', 'epoch', 'fresh-world', 'group-fresh-world', 'update-offline',
                  'update-unsaved', 'expedition-land', 'expedition-archive', 'expedition-status', 'expedition-open')
+# Kinds nobody can start in: worlds that reset, transit/orbit, battles, events,
+# expedition slots and practice rooms (the mainland's own rules).
+START_REGION_REFUSED_KINDS = ('RAID', 'ORBIT', 'BATTLE', 'EVENT', 'EXPEDITION', 'TUTORIAL')
 HELP_STOP_SECONDS = 60  # help-stop waits this long for bridges to finish their answers before ending them
 HELP_STARTING_SECONDS = 300  # a bridge we started may load its corpus this long before it takes the lock
 # code/modules/persistence/functions.dm epoch_names, in order: a map's ordinal_age indexes it from 0.
@@ -197,6 +200,17 @@ def load_group(path):
         raise ValueError('a group has at most one TUTORIAL region')
     if any(r['id'] == mainland for r in tutorials):
         raise ValueError('the mainland cannot be a TUTORIAL region')
+    # Where new characters start (and fallen ones whose bed does not keep their
+    # home): the mainland unless the host names another region. The mainland
+    # stays the era source, bot link and land-stage reference either way.
+    start_region = group.setdefault('start_region', mainland)
+    if start_region is None:
+        start_region = group['start_region'] = mainland
+    if start_region not in ids:
+        raise ValueError('start_region must be one of the region ids')
+    start_kind = next(r['kind'] for r in regions if r['id'] == start_region)
+    if start_kind in START_REGION_REFUSED_KINDS:
+        raise ValueError('the start region cannot be a %s region' % start_kind)
     for key, low, high, default in (('save_minutes', 0, 1440, 15), ('travel_save_seconds', 10, 3600, 60)):
         value = group.setdefault(key, default)
         if type(value) is not int or not low <= value <= high:
@@ -1829,6 +1843,7 @@ def setup(group, platform=None, region_id=None):
         config = path / 'config'
         config.mkdir(exist_ok=True)
         settings = {'group': group['group'], 'region': region['id'], 'regions': directory(group), 'mainland': group['mainland'],
+                    'start_region': group['start_region'],
                     'save_minutes': group['save_minutes'] if group['persistent'] and not region['reset_minutes'] and region['kind'] not in ('EVENT', 'TUTORIAL') else 0,
                     'travel_save_seconds': group['travel_save_seconds'], 'reset_minutes': region['reset_minutes'],
                     # The host service's doorman on this machine; regions ask it which peers
@@ -2172,12 +2187,14 @@ def ensure_coordinator(group, start=detach, refresh=False, terminate=None):
     pid = coordinator_pid(group)
     if pid:
         record = read_record(root / 'coordinator.json')
-        if not refresh or (record.get('code') == code and record.get('slots', []) == slots):
+        # A new start region (the launcher's Start region) restarts it too.
+        if not refresh or (record.get('code') == code and record.get('slots', []) == slots
+                           and record.get('start_region', group['mainland']) == group['start_region']):
             return False
         (terminate or Platform().terminate)(pid)
     database = root / 'coordinator.sqlite'
     argv = [group['python'], str(TRANSFER_TOOLS / 'coordinator.py'), '--db', str(database), '--group', group['group'],
-            '--mainland', group['mainland']]
+            '--mainland', group['mainland'], '--start-region', group['start_region']]
     if not database.exists() or coordinator_never_established(database):
         # A new group, or one a group Fresh world just cleared. The coordinator
         # still quarantines if any agent reports an earlier epoch or train custody.
@@ -2189,7 +2206,7 @@ def ensure_coordinator(group, start=detach, refresh=False, terminate=None):
         argv += ['--slots', ','.join(slots), '--expeditions', str(expedition_slots.slots_dir(group))]
     pid = start(argv, root, root / 'coordinator.log')
     (root / 'coordinator.pid').write_text('%d\n' % pid, encoding='utf-8')
-    write_record(root / 'coordinator.json', pid=pid, code=code, slots=slots)
+    write_record(root / 'coordinator.json', pid=pid, code=code, slots=slots, start_region=group['start_region'])
     return True
 
 
@@ -2692,7 +2709,7 @@ def group_status(group, only=None, view=region_view, platform=None):
         if group['transfers']:
             entry['transfer_agent'] = (platform or RegionPlatform(region_config(group, region))).listening(region['transfer_port'])
         report[region['id']] = entry
-    result = {'group': group['group'], 'regions': report}
+    result = {'group': group['group'], 'regions': report, 'mainland': group['mainland'], 'start_region': group['start_region']}
     if group['transfers']:
         result['coordinator'] = coordinator_pid(group) is not None
         # Land stages and readiness (docs/land-stages.md), read-only from the

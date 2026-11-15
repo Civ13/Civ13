@@ -1,8 +1,9 @@
 // Home worlds for a region group (tools/transfer_storage/README.md, "Home
 // worlds"). The group coordinator keeps one home region per account; a player
-// may start or take back a character only in their home. Everyone starts on
-// the mainland region, travel moves the home with the character, and a death
-// sends it back to the mainland unless the player has an assigned bed in the
+// may start or take back a character only in their home. Everyone starts in
+// the start region (the mainland unless the host names another), travel moves
+// the home with the character, and a death sends it back to the start region
+// unless the player has an assigned bed in the
 // land they died in: then the home stays and the next character starts at that
 // bed. Off unless this world is in a region group
 // with travel (shard_region.json plus transfer_agent.json).
@@ -56,9 +57,9 @@
 		to_chat(lobby, SPAN_WARNING("Your character belongs to another land in this world group. Join that server to play."))
 		return
 	var/link = peer["address"] ? " <a href='[shard_group.player_href(home)]'>Go there</a>" : ""
-	// Only the mainland is where new and fallen characters start; any other home
-	// is a land the character travelled to (or chose to start in).
-	if(home == shard_group.mainland)
+	// Only the start region is where new and fallen characters start; any other
+	// home is a land the character travelled to (or chose to start in).
+	if(home == shard_group.start_region)
 		to_chat(lobby, SPAN_WARNING("Your character belongs to [html_encode(peer["name"])]. New and fallen characters start there, and reach other lands only by travelling.[link]"))
 	else
 		to_chat(lobby, SPAN_WARNING("Your character is in [html_encode(peer["name"])] now. Join that land to play them.[link]"))
@@ -133,13 +134,13 @@
 	to_chat(H, SPAN_NOTICE("You start out beside your bed."))
 	return TRUE
 
-// A death sends the home back to the mainland, unless the account still has a
+// A death sends the home back to the start region, unless the account still has a
 // living character here or a bed here (the coordinator ignores a release from
 // elsewhere).
 /proc/region_home_death(mob/living/human/H)
 	var/account = H && H.persistence_owner_ckey
 	if(!account || !region_home_enabled()) return
-	// A raider who dies in a raid world goes home, not to the mainland.
+	// A raider who dies in a raid world goes home, not to the start region.
 	var/origin = region_raid_death_origin(H)
 	if(!origin)
 		// On a land across the sea nobody has settled yet, a bed does not keep the home (land_choices.dm).
