@@ -2102,8 +2102,10 @@ SUITES = {
     # Full import graph: stdlib source adapter, catalog-only Atlas builder/projector,
     # and inert Help imports. No native sprite export or engine launch.
     # Shared material/Atlas inputs retain their conservative all-suite fallback.
+    # Both files run a full Crafting Atlas build (~14 s each), so the shared
+    # 30 s deadline failed master by timing alone (CI run 43766230339).
     'woodworking': {'files': ('tests/primitive_woodworking/test_source.py',
-                              'tests/test_atlas_navigation.py'), 'paths': (
+                              'tests/test_atlas_navigation.py'), 'timeout': 120, 'paths': (
         'tests/primitive_woodworking/', 'code/modules/1713/primitive_woodworking.dm',
         'scripts/atlas/woodworking.py', 'scripts/atlas/woodworking-contract.json',
         'code/modules/persistence/functions.dm', 'civ13.dme')},
