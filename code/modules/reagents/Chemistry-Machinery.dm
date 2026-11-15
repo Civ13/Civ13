@@ -448,6 +448,9 @@
 			to_chat(user, SPAN_WARNING("These chemicals are too complex for you to understand"))
 			return
 		var/obj/item/weapon/reagent_containers/B = W
+		if (!B.is_open_container())
+			to_chat(user, SPAN_WARNING("Take the lid off \the [B] first."))
+			return
 		if (B.reagents)
 			if (B.reagents.total_volume > 0)
 				var/tamt = B.reagents.trans_to_holder(src.reagents, 10, TRUE, FALSE)
@@ -514,7 +517,7 @@
 
 // Resolve supported outputs and their capacity before consuming any input.
 /obj/structure/centrifuge/proc/separate_batch()
-	if(!collector || collector.loc != src || !collector.reagents)
+	if(!collector || collector.loc != src || !collector.is_open_container() || !collector.reagents)
 		return FALSE
 	var/largest = reagents.get_master_reagent_id()
 	var/list/products

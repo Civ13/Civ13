@@ -391,6 +391,9 @@
 	chemistry_assert(!C.separate_batch() && C.reagents.total_volume == 10, "Unknown centrifuge input consumed")
 	C.reagents.clear_reagents()
 	C.reagents.add_reagent("blood", 10)
+	C.collector.flags &= ~OPENCONTAINER
+	chemistry_assert(!C.separate_batch() && C.reagents.total_volume == 10 && C.collector.reagents.total_volume == 0, "Sealed collector consumed input or received blood")
+	C.collector.flags |= OPENCONTAINER
 	chemistry_assert(C.separate_batch(), "Blood separation failed")
 	chemistry_assert(C.collector.reagents.get_reagent_amount("blood_plasma") == 6 && C.collector.reagents.get_reagent_amount("red_blood_cells") == 3 && C.collector.reagents.get_reagent_amount("white_blood_cells") == 1, "Blood separation did not recover all fractions")
 	C.collector.reagents.clear_reagents()
