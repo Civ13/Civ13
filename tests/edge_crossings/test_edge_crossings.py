@@ -141,8 +141,11 @@ class SeaEdgeTests(unittest.TestCase):
     def test_leftover_animation_is_not_cargo(self):
         crossing = (ROOT / 'code/modules/naval/ship_crossing.dm').read_text(encoding='utf-8')
         pack = crossing.split('/proc/sea_crossing_pack(')[1].split('\n/proc/')[0]
-        self.assertIn('istype(M, /atom/movable/overlay)', pack)
-        self.assertIn('istype(M, /obj/chat_text)', pack)
+        self.assertIn('region_travel_ignorable(M)', pack)
+        generic = (ROOT / 'code/modules/persistence/region_travel_generic.dm').read_text(encoding='utf-8')
+        ignorable = generic.split('/proc/region_travel_ignorable(')[1].split('\n/proc/')[0]
+        for kind in ('/atom/movable/overlay', '/obj/chat_text', '/obj/effect', '/mob/observer'):
+            self.assertIn('istype(M, %s)' % kind, ignorable)
         bubble = (ROOT / 'code/game/mob/living/chat_overlay.dm').read_text(encoding='utf-8')
         new = bubble.split('/obj/chat_text/New(')[1].split('\n/')[0]
         self.assertLess(new.index('loc = null'), new.index('..()'))
@@ -151,7 +154,7 @@ class SeaEdgeTests(unittest.TestCase):
         living = (ROOT / 'code/game/mob/living/living.dm').read_text(encoding='utf-8')
         self.assertNotIn('CT.forceMove(', living)
         # Ghosts and admin observers are not cargo either.
-        self.assertLess(pack.index('istype(M, /mob/observer)'), pack.index('if (ismob(M))'))
+        self.assertLess(pack.index('region_travel_ignorable(M)'), pack.index('if (ismob(M))'))
 
     def test_refused_things_are_marked_on_deck(self):
         crossing = (ROOT / 'code/modules/naval/ship_crossing.dm').read_text(encoding='utf-8')

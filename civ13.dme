@@ -1509,6 +1509,7 @@
 #include "code\modules\persistence\region_ooc.dm"
 #include "code\modules\persistence\region_travel.dm"
 #include "code\modules\persistence\region_travel_gear.dm"
+#include "code\modules\persistence\region_travel_generic.dm"
 #include "code\modules\persistence\region_travel_tongues.dm"
 #include "code\modules\persistence\region_edge.dm"
 #include "code\modules\persistence\region_edge_carriage.dm"

@@ -19,7 +19,7 @@
 
 #define SEA_CROSSING_EDGE 4
 // The record is bounded twice: by tiles (BUILT_HULL_MAX_TILES) and by text.
-#define SEA_CROSSING_RECORD_MAX 40000
+#define SEA_CROSSING_RECORD_MAX 196608
 #define SEA_CROSSING_ITEMS_MAX 400
 #define SEA_CROSSING_CHEST_ITEMS_MAX 30
 #define SEA_CROSSING_ANCHOR_DEPTH 60
@@ -163,19 +163,10 @@
 
 // ---------------------------------------------------------------- the record
 
-// What a closet, mast or floor on her deck records, or a text reason why it cannot cross.
+// What an item on her deck or in a chest records, list(kind, amount), or null
+// when it cannot cross. Anything a traveller could carry can (region_travel_gear.dm).
 /proc/sea_crossing_item_entry(obj/item/I)
-	var/kind = region_travel_item_kind(I)
-	if (!kind)
-		return null
-	if (kind == "type")
-		return list("[I.type]", 1)
-	if (copytext(kind, 1, 6) == "ammo:")
-		return list(kind, region_travel_ammo_count(I))
-	if (copytext(kind, 1, 7) == "stack:")
-		var/obj/item/stack/S = I
-		return list(kind, S.amount)
-	return list(kind, 1)
+	return region_travel_worn_entry(I)
 
 /proc/sea_crossing_closet_ok(path)
 	return ispath(path, /obj/structure/closet) && !ispath(path, /obj/structure/closet/body_bag)
@@ -214,10 +205,8 @@
 			if (M.loc != T || QDELETED(M) || M == tiller)
 				continue
 			// Flick animations and speech bubbles (both named "overlay") can be left lying on a tile; they are not cargo.
-			if (istype(M, /atom/movable/lighting_overlay) || istype(M, /atom/movable/lighting_fullbright) || istype(M, /atom/movable/overlay) || istype(M, /obj/chat_text) || istype(M, /obj/effect) || M.craft_left_behind())
-				continue
 			// Ghosts and admin observers float over the deck; they are not aboard.
-			if (istype(M, /mob/observer))
+			if (region_travel_ignorable(M) || M.craft_left_behind())
 				continue
 			if (ishuman(M))
 				var/mob/living/human/H = M
@@ -250,6 +239,8 @@
 				var/obj/structure/closet/K = M
 				var/list/held = list()
 				for (var/atom/movable/inside in K)
+					if (region_travel_ignorable(inside))
+						continue
 					var/list/entry = istype(inside, /obj/item) ? sea_crossing_item_entry(inside) : null
 					if (!entry)
 						refused |= "[inside.name] in \the [K.name]"
@@ -364,11 +355,11 @@ var/global/list/sea_crossing_marked = list()
 					if (E.len != 4 || !sea_crossing_closet_ok(text2path(E[2])) || !(E[3] in alldirs + list(0)) || !islist(E[4]) || length(E[4]) > SEA_CROSSING_CHEST_ITEMS_MAX)
 						return FALSE
 					for (var/list/I in E[4])
-						if (!islist(I) || I.len != 2 || !istext(I[1]) || !isnum(I[2]) || !region_travel_item_path(I[1], I[2]))
+						if (!islist(I) || I.len != 2 || !istext(I[1]) || !isnum(I[2]) || !region_travel_worn_valid(I[1], I[2]))
 							return FALSE
 						items++
 				if ("i")
-					if (E.len != 3 || !istext(E[2]) || !isnum(E[3]) || !region_travel_item_path(E[2], E[3]))
+					if (E.len != 3 || !istext(E[2]) || !isnum(E[3]) || !region_travel_worn_valid(E[2], E[3]))
 						return FALSE
 					items++
 				else
@@ -425,12 +416,12 @@ var/global/list/sea_crossing_marked = list()
 					for (var/atom/movable/inside in K)
 						qdel(inside)
 					for (var/list/I in E[4])
-						var/obj/item/made_item = region_travel_make_item(I[1], I[2], T)
+						var/obj/item/made_item = region_travel_make_worn(I[1], I[2], T)
 						if (made_item)
 							made_item.forceMove(K)
 					made += K
 				if ("i")
-					var/obj/item/loose = region_travel_make_item(E[2], E[3], T)
+					var/obj/item/loose = region_travel_make_worn(E[2], E[3], T)
 					if (loose)
 						made += loose
 	var/helm = istext(R["helm"]) ? text2path(R["helm"]) : null
@@ -465,9 +456,9 @@ var/global/list/sea_crossing_marked = list()
 		for (var/list/E in tile[3])
 			if (E[1] == "k")
 				for (var/list/I in E[4])
-					region_travel_make_item(I[1], I[2], T)
+					region_travel_make_worn(I[1], I[2], T)
 			else if (E[1] == "i")
-				region_travel_make_item(E[2], E[3], T)
+				region_travel_make_worn(E[2], E[3], T)
 
 // Takes the packed ship off the water: every floor, mast, chest and thing on her deck.
 // The tiller itself and any gate stay; the caller deals with them.

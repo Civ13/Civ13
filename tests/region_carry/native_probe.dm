@@ -140,6 +140,115 @@ var/global/datum/region_carry_probe/region_carry_probe = new
 		require(locate(/obj/item/weapon/reagent_containers/food/snacks/cracker) in found, "cracker missing")
 		require(locate(/obj/item/clothing/head/helmet/kevlarhelmet) in found, "helmet missing")
 		pass("rebuild")
+
+		mark("whole_items")
+		// What the HMS gnome 2's crew could not take (2026-11-15) travels whole.
+		var/mob/living/human/V = new(T)
+		V.persistence_owner_ckey = "carryprobevoyager"
+		var/obj/item/clothing/suit/prehistoricfurcoat/coat = new(T)
+		coat.name = "Ada's pelt coat"
+		var/obj/item/clothing/under/leaves_skirt/au_naturel/leaves = new(T)
+		var/obj/item/weapon/storage/backpack/pack_basket/basket = new(T)
+		var/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/waterskin/skin = new(T)
+		skin.reagents.add_reagent("water", 25)
+		var/obj/item/weapon/paddle/paddle = new(T)
+		var/obj/item/weapon/book/master = create_stone_age_master_book(T)
+		var/chapters = master.research_chapters
+		var/obj/item/stack/material/bone/bones = new(T, 7)
+		var/obj/item/stack/ore/iron/ore = new(T, 4)
+		var/obj/item/weapon/storage/backpack/pack_basket/inner = new(T)
+		var/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/waterskin/skin2 = new(T)
+		skin2.reagents.add_reagent("water", 10)
+		inner.handle_item_insertion(skin2, TRUE)
+		for (var/obj/item/I in list(bones, ore, inner))
+			basket.handle_item_insertion(I, TRUE)
+		require(basket.contents.len == 3, "basket holds [basket.contents.len]")
+		V.equip_to_slot_or_del(leaves, slot_w_uniform)
+		V.equip_to_slot_or_del(coat, slot_wear_suit)
+		V.equip_to_slot_or_del(basket, slot_back)
+		V.equip_to_slot_or_del(skin, slot_wear_id)
+		V.put_in_l_hand(paddle)
+		V.put_in_r_hand(master)
+		require(V.w_uniform == leaves && V.wear_id == skin, "probe could not dress the voyager")
+		var/list/carried = V.region_travel_items()
+		require(islist(carried), "voyager refused: [carried]")
+		var/list/kinds = list()
+		for (var/slot_name in carried)
+			kinds[slot_name] = copytext(region_travel_worn_kind(carried[slot_name]), 1, 300)
+		require(copytext(kinds["l_hand"], 1, 6) == "item:" && (copytext(kinds["back"], 1, 5) == "bag:" || copytext(kinds["back"], 1, 6) == "item:"), "kinds [json_encode(kinds)]")
+		// An untouched crowbar still travels by type alone.
+		require(region_travel_worn_kind(new /obj/item/weapon/crowbar(T)) == "type", "plain crowbar is no longer a plain type")
+		var/list/VP = region_travel_decode(V.region_travel_payload(carried))
+		require(VP, "voyager payload did not decode")
+		var/turf/D2 = locate(30, 30, 1)
+		var/mob/living/human/arrived = region_travel_build(VP, D2)
+		var/list/got = list()
+		for (var/obj/item/I in arrived.contents + D2.contents)
+			got += I
+		var/obj/item/clothing/suit/prehistoricfurcoat/newcoat = locate() in got
+		require(newcoat && newcoat.name == "Ada's pelt coat" && newcoat.icon_state == coat.icon_state, "coat came back as [newcoat ? "[newcoat.name]/[newcoat.icon_state]" : "nothing"], sent [coat.icon_state]: [kinds["suit"]]")
+		// The coat picks its colour as it is made, so its colour always travels.
+		var/list/coat_defaults = region_travel_generic_defaults[coat.type]
+		require(coat_defaults && coat_defaults["icon_state"] == "\[random]", "coat colour not seen as random: [coat_defaults ? coat_defaults["icon_state"] : "no samples"]")
+		// Dressed from the skin out: the leaves under the coat, the waterskin on them.
+		require(istype(arrived.w_uniform, /obj/item/clothing/under/leaves_skirt/au_naturel) && arrived.wear_suit, "arrived undressed: uniform [arrived.w_uniform], suit [arrived.wear_suit]")
+		require(locate(/obj/item/weapon/paddle) in got, "paddle missing")
+		var/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/waterskin/newskin = arrived.wear_id
+		require(istype(newskin) && abs(newskin.reagents.get_reagent_amount("water") - 25) < 0.1, "waterskin holds [istype(newskin) ? newskin.reagents.get_reagent_amount("water") : "nothing"]")
+		var/obj/item/weapon/book/newmaster = arrived.r_hand
+		require(istype(newmaster) && newmaster.research_chapters == chapters && newmaster.name == "Stone Age master book", "master book lost its chapters")
+		var/obj/item/weapon/storage/backpack/pack_basket/newbasket = arrived.back
+		require(istype(newbasket) && newbasket.contents.len == 3, "basket came back holding [istype(newbasket) ? newbasket.contents.len : "nothing"]")
+		var/obj/item/stack/material/bone/newbones = locate() in newbasket.contents
+		var/obj/item/stack/ore/iron/newore = locate() in newbasket.contents
+		require(newbones && newbones.amount == 7 && newore && newore.amount == 4, "stacks in the basket changed")
+		var/obj/item/weapon/storage/backpack/pack_basket/newinner = locate() in newbasket.contents
+		var/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/waterskin/newskin2 = newinner ? locate() in newinner.contents : null
+		require(newskin2 && abs(newskin2.reagents.get_reagent_amount("water") - 10) < 0.1, "basket in the basket lost its waterskin")
+		// A loaded gun travels loaded: links to what it holds are rebuilt.
+		var/obj/item/weapon/gun/projectile/pistol/glock17/loadedgun = new(T)
+		if (!loadedgun.ammo_magazine)
+			loadedgun.ammo_magazine = new /obj/item/ammo_magazine/glock17(loadedgun)
+		var/rounds_in = region_travel_ammo_count(loadedgun.ammo_magazine)
+		var/obj/item/weapon/gun/projectile/pistol/glock17/gunback = region_travel_make_worn(region_travel_worn_kind(loadedgun), 1, D2)
+		require(istype(gunback) && gunback.ammo_magazine && (gunback.ammo_magazine in gunback.contents) && region_travel_ammo_count(gunback.ammo_magazine) == rounds_in, "loaded gun came back without its magazine or rounds")
+		var/count_mags = 0
+		for (var/obj/item/ammo_magazine/M in gunback.contents)
+			count_mags++
+		require(count_mags == 1, "gun came back with [count_mags] magazines")
+		// An attached accessory comes back attached, and can be taken off again.
+		var/obj/item/clothing/under/leaves_skirt/long/skirt = new(T)
+		var/obj/item/clothing/accessory/armband/band = new(skirt)
+		skirt.accessories += band
+		band.has_suit = skirt
+		var/obj/item/clothing/under/leaves_skirt/long/skirtback = region_travel_make_worn(region_travel_worn_kind(skirt), 1, D2)
+		require(istype(skirtback) && skirtback.accessories.len == 1, "skirt came back with [istype(skirtback) ? skirtback.accessories.len : "no"] accessories")
+		var/obj/item/clothing/accessory/armband/bandback = skirtback.accessories[1]
+		require(istype(bandback) && bandback.loc == skirtback && bandback.has_suit == skirtback && (/obj/item/clothing/proc/removetie_verb in skirtback.verbs), "armband came back unattached")
+		// Large numbers keep every digit; temporary bookkeeping stays behind.
+		var/obj/item/weapon/paddle/marked = new(T)
+		marked.value = 123456789
+		marked.abandonment_index = 77
+		var/obj/item/weapon/paddle/markedback = region_travel_make_worn(region_travel_worn_kind(marked), 1, D2)
+		require(markedback.value == 123456789 && !markedback.abandonment_index, "paddle came back worth [markedback.value], index [markedback.abandonment_index]")
+		// A field of the wrong class is skipped, not a failed arrival.
+		var/obj/item/weapon/paddle/odd = region_travel_make_generic("item:[json_encode(list("t" = "/obj/item/weapon/paddle", "v" = list("gender" = "x", "force" = "heavy", "name" = "odd paddle")))]", D2)
+		require(istype(odd) && odd.name == "odd paddle" && isnum(odd.force), "odd record broke the build")
+		// Nothing holding a creature, and no grab, ever travels.
+		var/mob/living/simple_animal/mouse/stowaway = new(skin2)
+		require(isnull(region_travel_generic_kind(inner)), "a bag holding a creature would travel")
+		qdel(stowaway)
+		// Ship decks and chests take the same items.
+		require(sea_crossing_item_entry(paddle) && region_travel_worn_valid(sea_crossing_item_entry(paddle)[1], 1), "paddle would not ride a deck")
+		var/list/forged = list("t" = "/obj/item/weapon/paddle", "v" = list("loc" = 1))
+		require(!region_travel_generic_record("item:[json_encode(forged)]"), "record setting loc accepted")
+		forged = list("t" = "/obj/item/weapon/grab")
+		require(!region_travel_generic_record("item:[json_encode(forged)]"), "grab record accepted")
+		forged = list("t" = "/obj/structure/closet")
+		require(!region_travel_generic_record("item:[json_encode(forged)]"), "structure record accepted")
+		forged = list("t" = "/obj/item/weapon/paddle", "r" = list(list("not_a_reagent", 5)))
+		require(!region_travel_generic_record("item:[json_encode(forged)]"), "unknown reagent accepted")
+		pass("whole_items", list("kinds" = kinds, "bytes" = length(json_encode(VP))))
 		mark("recipe_knowledge")
 		// The rebuild above hands ownership to the rebuilt body; give the
 		// sender its own owner again so the knowledge payload can decode.

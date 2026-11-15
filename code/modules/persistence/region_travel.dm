@@ -16,9 +16,9 @@
 // comes back the same way at the source. Trips are journaled by the agent, so
 // they complete in seconds; a world that reloads an older save replays them.
 
-#define REGION_TRAVEL_PAYLOAD_MAX 24576
+#define REGION_TRAVEL_PAYLOAD_MAX 131072
 // A crossing ship's record rides with one crew member (naval/ship_crossing.dm).
-#define REGION_TRAVEL_SHIP_PAYLOAD_MAX 49152
+#define REGION_TRAVEL_SHIP_PAYLOAD_MAX 393216
 #define REGION_TRAVEL_ITEMS_MAX 40
 
 var/global/list/region_gates = list()
@@ -179,7 +179,7 @@ var/global/list/region_travel_carry_types = list(
 		var/kind = region_travel_worn_kind(I)
 		if(kind == "type")
 			carried += list(list(slot_name, "[I.type]", 1))
-		else if(copytext(kind, 1, 6) == "node:" || copytext(kind, 1, 12) == "compendium:" || copytext(kind, 1, 6) == "gear:" || copytext(kind, 1, 7) == "round:" || copytext(kind, 1, 5) == "bag:")
+		else if(copytext(kind, 1, 6) == "node:" || copytext(kind, 1, 12) == "compendium:" || copytext(kind, 1, 6) == "gear:" || copytext(kind, 1, 7) == "round:" || copytext(kind, 1, 5) == "bag:" || copytext(kind, 1, 6) == "item:")
 			carried += list(list(slot_name, kind, 1))
 		else if(copytext(kind, 1, 6) == "ammo:")
 			carried += list(list(slot_name, kind, region_travel_ammo_count(I)))
@@ -476,10 +476,23 @@ var/global/list/region_travel_carry_types = list(
 		burn = round(burn * scale)
 	if(brute || burn)
 		H.take_overall_damage(brute, burn, "travel")
+	// Dressed from the skin out: a uniform goes on before a suit over it, and
+	// what still does not fit (an ID or belt needs the uniform) is tried again
+	// once everything else is on.
+	var/list/dressing = list()
 	for(var/list/entry in P["items"])
+		if(entry[1] == "uniform")
+			dressing.Insert(1, list(entry))
+		else
+			dressing += list(entry)
+	var/list/later = list()
+	for(var/list/entry in dressing)
 		var/obj/item/I = region_travel_make_worn(entry[2], entry[3], T)
 		if(!I) continue
 		if(!H.equip_to_slot_if_possible(I, region_travel_slots[entry[1]], FALSE, TRUE))
+			later[I] = region_travel_slots[entry[1]]
+	for(var/obj/item/I in later)
+		if(!H.equip_to_slot_if_possible(I, later[I], FALSE, TRUE))
 			I.forceMove(T)
 	// One durable body per account: an older clientless body here gives up its
 	// claim, as record_persistence_owner() does, or every save would refuse.

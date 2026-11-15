@@ -24,6 +24,7 @@ def proc(source, name):
 
 TRAVEL = read('code/modules/persistence/region_travel.dm')
 GEAR = read('code/modules/persistence/region_travel_gear.dm')
+GENERIC = read('code/modules/persistence/region_travel_generic.dm')
 
 
 class WornGearTests(unittest.TestCase):
@@ -39,9 +40,14 @@ class WornGearTests(unittest.TestCase):
             body = proc(TRAVEL, name)
             for kind in ('gear:', 'bag:', 'round:', 'region_travel_worn', 'region_travel_loose'):
                 self.assertNotIn(kind, body, name)
-        for path in ('code/modules/persistence/party_freight.dm', 'code/modules/space/lander.dm',
-                     'code/modules/naval/ship_crossing.dm'):
+        for path in ('code/modules/persistence/party_freight.dm', 'code/modules/space/lander.dm'):
             self.assertNotIn('region_travel_worn', read(path), path)
+
+    def test_ship_decks_and_chests_carry_what_a_traveller_can(self):
+        ship = read('code/modules/naval/ship_crossing.dm')
+        self.assertIn('return region_travel_worn_entry(I)', proc(ship, '/proc/sea_crossing_item_entry'))
+        self.assertNotIn('region_travel_item_path', ship)
+        self.assertNotIn('region_travel_make_item', ship)
 
     def test_arrivals_are_checked_and_built_through_the_worn_codec(self):
         self.assertIn('if(!region_travel_worn_valid(entry[2], entry[3])) return null', proc(TRAVEL, '/proc/region_travel_decode'))
@@ -69,6 +75,50 @@ class WornGearTests(unittest.TestCase):
         body = proc(GEAR, '/proc/region_travel_round_kind')
         self.assertIn('C.BB.type != C.projectile_type', body)
         self.assertIn('C.name != initial(C.name)', body)
+
+    def test_anything_else_travels_whole(self):
+        dme = read('civ13.dme')
+        self.assertLess(dme.index('region_travel_gear.dm"'), dme.index('region_travel_generic.dm"'))
+        worn = proc(GEAR, '/proc/region_travel_worn_kind')
+        self.assertLess(worn.index('region_travel_bag_kind(I)'), worn.index('region_travel_generic_kind(I)'))
+        # A plain item with a name or colour of its own is not rebuilt by type alone.
+        self.assertIn('return region_travel_generic_or_type(I)', proc(GEAR, '/proc/region_travel_held_kind'))
+        self.assertIn('return region_travel_generic_encode(R) || "type"', proc(GENERIC, '/proc/region_travel_generic_or_type'))
+        self.assertIn('region_travel_generic_kind(I)', proc(GEAR, '/proc/region_travel_bag_blockers'))
+
+    def test_whole_items_are_bounded_and_checked(self):
+        record = proc(GENERIC, '/proc/region_travel_generic_record_valid')
+        for line in ('if(!(key in list("t", "v", "n", "y", "m", "r", "c", "l", "p"))) return FALSE',
+                     'if(!region_travel_generic_type_ok(path)) return FALSE',
+                     'if(!region_travel_generic_field_ok(key) || !region_travel_generic_value_ok(fields[key])) return FALSE',
+                     '!get_material_by_name(mats[key])',
+                     '!chemical_reagents_list[P[1]]',
+                     'if(!region_travel_generic_index_ok(at, children))',
+                     'if(!region_travel_generic_record_valid(child, depth + 1, count)) return FALSE'):
+            self.assertIn(line, record)
+        for field in ('"loc"', '"contents"', '"type"', '"vars"', '"key"', '"ckey"', '"screen_loc"'):
+            self.assertIn(field, GENERIC.split('var/global/list/region_travel_generic_skip')[1].split(')')[0])
+        self.assertIn('/obj/item/weapon/grab, /obj/item/organ', proc(GENERIC, '/proc/region_travel_generic_type_ok'))
+        # A creature inside never travels, and links to other things stay behind.
+        capture = proc(GENERIC, '/proc/region_travel_generic_capture')
+        self.assertIn('if(ismob(A)) return null', capture)
+        self.assertIn('I.persistence_runtime_var(key)', capture)
+        # Temporary fields (process bookkeeping such as abandonment_index) never travel.
+        self.assertIn('!issaved(I.vars[key])', proc(GENERIC, '/proc/region_travel_generic_fields_of'))
+        self.assertIn('!issaved(I.vars[key])', proc(GENERIC, '/proc/region_travel_generic_set'))
+
+    def test_items_rebuild_as_a_world_load_restores_them(self):
+        build = proc(GENERIC, '/proc/region_travel_generic_build')
+        self.assertIn('persistence_saved_atom_construction++', build)
+        self.assertLess(build.index('region_travel_generic_set(I, key, fields[key])'), build.index('I.persistence_import_fields(saved)'))
+        make = proc(GENERIC, '/proc/region_travel_make_generic')
+        self.assertLess(make.index('A.after_load()'), make.index('A.persistence_restore_finished()'))
+        self.assertIn('I.before_save()', proc(GENERIC, '/proc/region_travel_generic_capture'))
+
+    def test_parts_an_item_makes_itself_are_not_doubled(self):
+        build = proc(GENERIC, '/proc/region_travel_generic_build')
+        self.assertIn('region_travel_generic_build(child, I, match, I)', build)
+        self.assertLess(build.index('fresh -= match'), build.index('qdel(A)'))
 
     def test_a_blocked_bag_names_what_to_take_out(self):
         self.assertIn('take out [english_list(inside)]', proc(TRAVEL, '/mob/living/human/proc/region_travel_items'))
