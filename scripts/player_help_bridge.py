@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '1dea06bc7ca1e9de0b8de3584778dc8c7af93322'
+WIKI_REVIEWED_REVISION = '08d061e6252e4d4ec6c86ac7456f881853b643c2'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('c62d23a3f26db62be16140ff9a13ea5cb11c16a4f899213cae19a27297477826', 'character skills traits languages'),
@@ -95,7 +95,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Research.md': ('698e0d0b98fcff745bfedbd816a8f4c7dcbc50ecb3c7be466f0cd3b8a2b847e2', 'research unlock study technology research bench'),
     'guides/Guide_to_Resource_Extraction.md': ('7a5761156ca1e80fa50cd6558b0b7bedacdde2649e16a3be05bd43fb9caa5f0c', 'resource extraction gathering oil petroleum well fracturing'),
     'guides/Guide_to_Survival.md': ('a449eed1a1668a02a460076c3a08e61b512202b1cdfa95e13b18226238967bba', 'survival winter cold warm freezing hypothermia shelter debris footwear boots snowshoes shoes ice mud rain wet umbrella raincoat cape storm storms lightning thunder blizzard sandstorm heat wave weather fire fires wildfire firefighting beater flapper smother burning bucket blanket extinguish smoke signal signals hook firebreak pump engine nozzle hose jet reel extinguisher'),
-    'guides/Guide_to_Tanks.md': ('bfbd3aeed172e1b3056b5ecb9cc4a24813298e300a5545af8ab93ceb22822ab9', 'tank driving crew ammunition'),
+    'guides/Guide_to_Tanks.md': ('827ceab593bb62c44600ee67d53b1c5d59fde25e71f093475f55afc361b4fc8d', 'tank driving crew ammunition'),
     'guides/Guide_to_Trains.md': ('084ca499676d0ccfa7d9e64d9e52da43d7f0b5c40d95bbef0e3908ab2a35f641', 'train trains railway track locomotive station switcher rails wagon'),
     'guides/Guide_to_Trenches.md': ('c0c8506c1eb0ee5118d6f0f14d816f72e80e5c66664b547b7b3e894fe6a59881', 'trench trenches fortification sandbag dig shovel'),
     'guides/Guide_to_Weapons.md': ('b7bd93f55e479d0dcfb8f899d0164373a697e5eff5819f163ec8d9d06e07bc8e', 'weapons gun reload ammunition'),
@@ -114,7 +114,7 @@ WIKI_REVIEWED_GUIDES = {
     'gamemodes/Battle_Royale.md': ('18d1e4cf951f943bd7a0f5030c1825bd82a77427349b086842a309e492c4d841', 'battle royale battleroyale'),
     'gamemodes/Gladiators.md': ('36ac7d70edff2c99d78351585450428ad5cd02542b0cc3dfc5c178bca7d1ffb6', 'gladiator gladiators arena imperator custodes medicus'),
     'gamemodes/Prison_Roleplay.md': ('8da37041c99c23ab18012006e8afd8475acdd1485f8cb3eb48d23152f9cfb613', 'prison prisoner guard gulag nkvd'),
-    'guides/Guide_to_Boats.md': ('bdd3537886b2d39fddfe9e07474cc46e2b5e924f73382b4b56c7d7baaa79fb83', 'boat boats ship sailing sail raft canoe rowing oars anchor swim swimming drown drowning current currents lifejacket naval torpedo torpedoes degaussing minesweeping'),
+    'guides/Guide_to_Boats.md': ('9bb41f1dd4552133305ee4949715ecee37dbc24307250d8dd45f5d936d0b5dae', 'boat boats ship sailing sail raft canoe rowing oars anchor swim swimming drown drowning current currents lifejacket naval torpedo torpedoes degaussing minesweeping'),
     'guides/Guide_to_Aircraft.md': ('062500cdad251ba9e32fa0c4ca1882b4e00f55b9bce8ec7cc8ea47724a0f9c2a', 'aircraft airplane plane planes flying fly flight runway hangar pilot takeoff landing'),
     'guides/Guide_to_Aircraft_Carriers.md': ('3402b1e488a635eb74b172c9d0c2d62038fe192efcd7d12e9b3f5d297c655ce4', 'carrier carriers aircraft carrier flight deck shipyard office arresting wires elevator bunkers'),
     'guides/Guide_to_Races.md': ('46ef1bf361c519e71acbd679119429e838348827e25dbcac27282f67bee51097', 'race races species human humans'),
