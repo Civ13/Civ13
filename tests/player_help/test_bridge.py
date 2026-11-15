@@ -487,7 +487,8 @@ class BridgeTests(unittest.TestCase):
         self.assertEqual(instance.answer(request)['status'], 'ok')
         prompt = calls[0]['messages'][0]['content']
         self.assertIn('REVIEWED CURRENT GAMEPLAY CODE - GENERAL MOOD MECHANICS', prompt)
-        self.assertIn('Mood naturally moves toward the neutral range', prompt)
+        self.assertIn('Mood naturally settles toward a resting level', prompt)
+        self.assertIn('a large high fades fast', prompt)
         self.assertIn('Mood cannot decrease while actually asleep', prompt)
         self.assertIn('positive mood changes still apply', prompt)
         self.assertIn('Resting or lying awake does not pause mood loss', prompt)
