@@ -52,9 +52,13 @@ SUITES = {
     'poison_frog_bolts': {'files': ('tests/poison_frog_bolts/test_bolts.py',), 'paths': (
         'tests/poison_frog_bolts/',), 'shared_paths': (
         'code/modules/reagents/reagent_containers/food/snacks/meat.dm',)},
-    'intestine_casings': {'files': ('tests/organ_utilities/test_casings.py',),
-        'paths': ('tests/organ_utilities/',),
-        'shared_paths': ('code/modules/1713/animal_harvest.dm', 'scripts/atlas/catalog_metadata.py')},
+    # Issue 5126: casings, specimens, organ spoiling, transplant guard, catgut.
+    'intestine_casings': {'files': ('tests/organ_utilities/test_casings.py',
+        'tests/organ_utilities/test_organ_uses.py'),
+        'paths': ('tests/organ_utilities/', 'code/modules/organs/organ_uses.dm'),
+        'shared_paths': ('code/modules/1713/animal_harvest.dm', 'scripts/atlas/catalog_metadata.py',
+            'code/modules/organs/organ.dm', 'code/modules/surgery/organs_internal.dm',
+            'code/modules/research_tree/naturalist_finds.dm')},
     'vehicle_level_shift': {'files': ('tests/vehicle_level_shift/test_shift.py',),
         'paths': ('tests/vehicle_level_shift/',
                   'code/modules/1713/machinery/modular_vehicles/axis.dm',

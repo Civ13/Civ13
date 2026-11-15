@@ -12,6 +12,7 @@
 		2 = list("/obj/item/weapon/surgery/hemostat/bronze",85),
 		3 = list("/obj/item/stack/cable_coil",75),
 		4 = list("/obj/item/stack/material/rope",50),
+		5 = list("/obj/item/stack/catgut",80),
 	)
 	can_infect = TRUE
 	blood_level = TRUE

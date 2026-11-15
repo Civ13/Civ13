@@ -69,6 +69,7 @@
 		2 = list("/obj/item/weapon/surgery/hemostat/bronze",85),
 		3 = list("/obj/item/stack/material/rope",50),
 		4 = list("/obj/item/flashlight/torch",30),
+		5 = list("/obj/item/stack/catgut",70),
 	)
 
 	min_duration = 40
