@@ -155,6 +155,13 @@
 	else if (href_list["clear"])
 		faction_symbol_push_undo(undo_stack, draft_grid)
 		draft_grid = faction_symbol_new_grid()
+	else if (href_list["export_code"])
+		faction_symbol_show_code(owner, draft_grid)
+	else if (href_list["import_code"])
+		var/list/imported = faction_symbol_ask_code(owner, "Faction Creation", "a new faction's symbol")
+		if (imported)
+			faction_symbol_push_undo(undo_stack, draft_grid)
+			draft_grid = imported
 	else if (href_list["undo"])
 		var/list/restored = faction_symbol_pop_undo(undo_stack)
 		if (restored)

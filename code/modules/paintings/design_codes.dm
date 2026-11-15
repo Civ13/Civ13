@@ -8,6 +8,8 @@
 //   C13FLAG/1/<background>/<8 layers>     flags from the flag maker
 //   C13POLE/1/<cloth>/<symbol>/<colour>   flags on a pole
 //   C13CLOTH/1/<body>/<colours>/<pieces>/<name>  tailoring designs
+//   C13SYMBOL/1/<palette>/<packed>        faction symbols (32x32, pixels packed
+//                                         as for pictures, up to 16 colours)
 //
 // A code only describes a design. Importing never skips the normal rules:
 // pictures still need the pigments, a canvas and room under the region cap,
@@ -15,6 +17,7 @@
 
 #define DESIGN_CODE_SHORT_MAX 300 // flags and clothes; pictures go through the editor
 #define DESIGN_CODE_ART_MAX 20000 // longest picture code the editor accepts
+#define DESIGN_CODE_SYMBOL_MAX 1400 // a 32x32 faction symbol at its busiest
 #define DESIGN_CODE_COOLDOWN 20 // deciseconds between pasted codes per account
 #define DESIGN_CODE_LOG_MAX 100
 
@@ -54,6 +57,8 @@ var/global/list/design_code_last_import = list() // ckey -> world.time
 			return "a flag on a pole"
 		if ("CLOTH")
 			return "a clothing design"
+		if ("SYMBOL")
+			return "a faction symbol"
 	return null
 
 // Why a pasted code was refused, for the player.
@@ -74,13 +79,13 @@ var/global/list/design_code_last_import = list() // ckey -> world.time
 
 // Asks the player to paste a code. Returns the text, or null when cancelled
 // or pasted again too soon.
-/proc/design_code_ask(mob/user, title, prompt)
+/proc/design_code_ask(mob/user, title, prompt, max_length = DESIGN_CODE_SHORT_MAX)
 	if (!user || !user.client)
 		return null
 	var/typed = WWinput(user, prompt, title, "", "text")
 	if (!istext(typed) || !length(trim(typed)))
 		return null
-	if (length(typed) > DESIGN_CODE_SHORT_MAX)
+	if (length(typed) > max_length)
 		to_chat(user, SPAN_WARNING("That design code is too long."))
 		return null
 	if (!design_code_cooldown_ok(user))
@@ -165,6 +170,111 @@ var/global/list/design_code_last_import = list() // ckey -> world.time
 	if (!code)
 		return ""
 	return "<details style='margin-top:6px;font-family:Verdana,sans-serif;font-size:11px'><summary>Design code</summary><textarea readonly onclick='this.select()' style='width:95%;height:70px;font-family:monospace;font-size:10px'>[html_encode(code)]</textarea><div>Copy it to paint this picture again: open a canvas and use Import.</div></details>"
+
+/////////////////////////////// Faction symbols ///////////////////////////////
+
+#define DESIGN_CODE_DIGITS "0123456789abcdef"
+
+// A symbol grid pixel as "#rrggbb" (stamped shapes can carry an alpha byte).
+/proc/faction_symbol_code_pixel(value)
+	var/hex = istext(value) ? painting_hex(copytext(value, 1, 8)) : null
+	return hex ? hex : "#ffffff"
+
+// The colours a symbol code keeps: the 16 most used, most used first.
+/proc/faction_symbol_code_palette(list/grid)
+	var/list/freq = list()
+	for (var/i = 1, i <= grid.len, i++)
+		var/hex = faction_symbol_code_pixel(grid[i])
+		freq[hex] = (freq[hex] ? freq[hex] : 0) + 1
+	var/list/palette = list()
+	while (freq.len && palette.len < PAINT_MAX_COLOURS)
+		var/best = null
+		for (var/hex in freq)
+			if (!best || freq[hex] > freq[best])
+				best = hex
+		palette += best
+		freq -= best
+	return palette
+
+// How many different colours a symbol uses (more than 16 export approximated).
+/proc/faction_symbol_colour_count(list/grid)
+	var/list/seen = list()
+	for (var/i = 1, i <= grid.len, i++)
+		seen[faction_symbol_code_pixel(grid[i])] = TRUE
+	return seen.len
+
+// C13SYMBOL/1/<palette>/<packed> for a symbol grid, or null. A colour past the
+// 16 kept ones becomes the nearest kept colour.
+/proc/faction_symbol_design_code(list/grid)
+	if (!islist(grid) || grid.len != FACTION_SYMBOL_SIZE * FACTION_SYMBOL_SIZE)
+		return null
+	var/list/palette = faction_symbol_code_palette(grid)
+	var/list/nearest = list()
+	var/list/plain = list()
+	for (var/i = 1, i <= grid.len, i++)
+		var/hex = faction_symbol_code_pixel(grid[i])
+		var/index = palette.Find(hex)
+		if (!index)
+			index = nearest[hex]
+		if (!index)
+			var/list/c = painting_rgb(hex)
+			var/best_distance = -1
+			for (var/k = 1, k <= palette.len, k++)
+				var/list/p = painting_rgb(palette[k])
+				var/distance = (c[1] - p[1]) ** 2 + (c[2] - p[2]) ** 2 + (c[3] - p[3]) ** 2
+				if (best_distance < 0 || distance < best_distance)
+					best_distance = distance
+					index = k
+			nearest[hex] = index
+		plain += copytext(DESIGN_CODE_DIGITS, index, index + 1)
+	var/list/out = list()
+	for (var/hex in palette)
+		out += copytext(hex, 2)
+	return "C13SYMBOL/1/[jointext(out, ",")]/[painting_pack(jointext(plain, ""))]"
+
+// A symbol code -> a new grid ("#RRGGBB" per pixel, row by row from the top), or null.
+/proc/faction_symbol_parse_design_code(code)
+	var/list/F = design_code_fields(code, "SYMBOL", DESIGN_CODE_SYMBOL_MAX)
+	if (!F || F.len != 2)
+		return null
+	var/list/hexes = splittext(F[1], ",")
+	if (!hexes.len || hexes.len > PAINT_MAX_COLOURS)
+		return null
+	for (var/i = 1, i <= hexes.len, i++)
+		hexes[i] = design_code_colour_in(hexes[i])
+		if (!hexes[i])
+			return null
+	var/plain = painting_unpack(lowertext(F[2]), FACTION_SYMBOL_SIZE * FACTION_SYMBOL_SIZE)
+	if (!plain || painting_max_index(plain) >= hexes.len)
+		return null
+	var/list/grid = new/list(FACTION_SYMBOL_SIZE * FACTION_SYMBOL_SIZE)
+	for (var/i = 1, i <= grid.len, i++)
+		grid[i] = uppertext(hexes[findtext(DESIGN_CODE_DIGITS, copytext(plain, i, i + 1))])
+	return grid
+
+// The editors' Copy design code button: shows the code of the grid on the canvas.
+/proc/faction_symbol_show_code(mob/user, list/grid)
+	var/code = faction_symbol_design_code(grid)
+	if (!code)
+		return
+	if (faction_symbol_colour_count(grid) > PAINT_MAX_COLOURS)
+		to_chat(user, SPAN_NOTICE("This symbol uses more than [PAINT_MAX_COLOURS] colours, so the code keeps the [PAINT_MAX_COLOURS] most used and swaps the rest for the closest of those."))
+	design_code_show(user, "Faction symbol design code", code, "Paste it in a faction symbol editor: Paste a design code, then Save.")
+
+// The editors' Paste design code button: a new grid from a pasted code, or null
+// (the player was already told why).
+/proc/faction_symbol_ask_code(mob/user, title, what)
+	var/code = design_code_ask(user, title, "Paste the faction symbol's design code (it starts with C13SYMBOL/).", DESIGN_CODE_SYMBOL_MAX)
+	if (!code)
+		return null
+	var/list/grid = faction_symbol_parse_design_code(code)
+	if (!grid)
+		to_chat(user, SPAN_WARNING(design_code_refusal(code, "SYMBOL")))
+		return null
+	design_code_log(user, "faction symbol", what, code)
+	return grid
+
+#undef DESIGN_CODE_DIGITS
 
 /proc/painting_import_log_html()
 	if (!design_code_import_log.len)
