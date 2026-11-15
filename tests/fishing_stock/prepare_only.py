@@ -7,12 +7,13 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parent
-# 8609e887 changes only the piranha witness mood write elsewhere in this file.
-# The complete fishing procedure remains byte-identical to the original fixture.
+# 8609e887 changed only the piranha witness mood write elsewhere in this file,
+# and the piranha swarm later moved out to piranha.dm. The complete fishing
+# procedure remains byte-identical to the original fixture.
 SOURCE_HEAD = "8609e887366cb27d4e434a3e48402c9fc2c4d197"
 SOURCE_PATH = "code/game/mob/living/simple_animal/friendly/static.dm"
-SOURCE_BLOB = "da78e23c3fac6c06bf374deb066c0e09dfc783e3"
-SOURCE_SHA256 = "a7cc9d9019568e17e9fafefe841ac5690fa2b479bd05b2adae1ec52816731124"
+SOURCE_BLOB = "acb37c970dd0187b23a8a014ca5e9fd275e10fca"
+SOURCE_SHA256 = "3ef5cbd63f0e0babd0ac16442d3a2fe7c212c534a0330f2eeb2ad3bd2b5f4bac"
 FISH_PROCEDURE_SHA256 = "04ab33a59358725c0f6b5e2541670a0683f874e9aa63470cefa9205b2f4ffc51"
 SIGNATURE = "/obj/structure/fish/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)"
 NEXT_SIGNATURE = "/obj/structure/fish/proc/get_fish()"

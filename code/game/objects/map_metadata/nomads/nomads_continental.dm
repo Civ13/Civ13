@@ -14,9 +14,7 @@
 				new/obj/structure/fish(areaspawn)
 	if(!durable_schedule("nomads_piranha_boot", 2500))
 		spawn(2500)
-			for (var/i = 1, i <= 30, i++)
-				var/turf/areaspawn = safepick(get_area_turfs(/area/caribbean/nomads/forest/Jungle/river))
-				new/obj/structure/piranha(areaspawn)
+			seed_piranhas(get_area_turfs(/area/caribbean/nomads/forest/Jungle/river), 15)
 	season_schedule_loop()
 
 /obj/map_metadata/nomads/continental/faction2_can_cross_blocks()
