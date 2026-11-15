@@ -1,8 +1,8 @@
 // ============================================================
 // Satellites (orbital stations, stage E)
 // ------------------------------------------------------------
-// A party builds a satellite, loads it into a satellite launcher beside an
-// approved launch pad and launches it. Nothing travels to another world: the
+// A party builds a satellite, loads it into a satellite launcher beside a
+// launch pad set for orbit and launches it. Nothing travels to another world: the
 // satellite is recorded in the nearest ground station, which talks to it
 // from then on.
 //
@@ -82,7 +82,7 @@ var/global/list/satellite_kinds = list(
 
 /obj/item/satellite/examine(mob/user)
 	..()
-	to_chat(user, SPAN_NOTICE("Load it into a satellite launcher beside an approved launch pad. [kind == "survey" ? "Point the pad at the Moon or Mars, with a mission console near the launcher." : "Point the pad at orbit, with a ground station near the launcher."]"))
+	to_chat(user, SPAN_NOTICE("Load it into a satellite launcher beside a launch pad that is set for its destination. [kind == "survey" ? "Point the pad at the Moon or Mars, with a mission console near the launcher." : "Point the pad at orbit, with a ground station near the launcher."]"))
 
 /obj/item/satellite/weather
 	name = "weather satellite"
@@ -118,7 +118,7 @@ var/global/list/satellite_kinds = list(
 
 /obj/structure/crewed_lander/satellite_launcher
 	name = "satellite launcher"
-	desc = "A slim uncrewed rocket with a payload fairing for one satellite. Load a satellite, fill it with rocket propellant or methalox beside an approved launch pad and launch it."
+	desc = "A slim uncrewed rocket with a payload fairing for one satellite. Load a satellite, fill it with rocket propellant or methalox beside a launch pad that is set for its destination and launch it."
 	seats = 0
 	cargo_max = 1
 	propellant_needed = SATELLITE_LAUNCH_PROPELLANT
@@ -169,7 +169,7 @@ var/global/list/satellite_kinds = list(
 	if (!pad)
 		return "\The [src] must stand beside a launch pad."
 	if (!pad.approved || !pad.destination)
-		return "The launch pad is not approved yet."
+		return "The launch pad has no destination yet. Use it to choose one."
 	if (propellant < propellant_needed)
 		return "\The [src] needs [propellant_needed] units of rocket propellant or methalox ([propellant] loaded)."
 	if (S.kind == "survey")

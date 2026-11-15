@@ -83,7 +83,7 @@ var/global/list/orbit_station_requirements = list(
 /obj/structure/region_gate/launch_complex/accepts_arrivals()
 	return FALSE
 
-// The approved launch pad to orbit within reach, or null.
+// The launch pad set for orbit to orbit within reach, or null.
 /obj/structure/region_gate/launch_complex/proc/launch_pad()
 	if (!isturf(loc))
 		return null
@@ -113,7 +113,7 @@ var/global/list/orbit_station_requirements = list(
 		return party ? "[party_train_party_name(party)] is building a station here: [progress_text()]." : "No station is being built here yet."
 	var/obj/structure/region_gate/trail_marker/launch_pad/P = launch_pad()
 	if (!P)
-		return "The station is ready, but it needs a launch pad approved for orbit within [ORBIT_PROJECT_PAD_RANGE] tiles of the office."
+		return "The station is ready, but it needs a launch pad set for orbit within [ORBIT_PROJECT_PAD_RANGE] tiles of the office."
 	destination = P.destination
 	if (!boarded && space_flight_orbit_full(destination))
 		return "Every plane in [destination_name()] is taken. Wait until one is freed."
@@ -159,7 +159,7 @@ var/global/list/orbit_station_requirements = list(
 	if (!map || map.ordinal_age < ORBIT_MIN_AGE)
 		return "Stations can be launched from 1969."
 	if (!launch_pad())
-		return "A station needs a launch pad approved for orbit within [ORBIT_PROJECT_PAD_RANGE] tiles of the office."
+		return "A station needs a launch pad set for orbit within [ORBIT_PROJECT_PAD_RANGE] tiles of the office."
 	if (!new_party)
 		return "You have no party to build for."
 	var/obj/structure/region_gate/launch_complex/other = orbit_project_office_of(new_party, src)
