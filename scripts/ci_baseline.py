@@ -856,7 +856,10 @@ SUITES = {
                   'scripts/shard-group/americas.example.json'), 'shared_paths': (
             'code/modules/persistence/region_trails.dm',
             'code/modules/persistence/durable_nomads.dm',
-            'code/__defines/maps.dm', 'civ13.dme')},
+            'code/__defines/maps.dm', 'civ13.dme'),
+        # Rebuilding both maps' currents and flood reaches from 1M-cell maps takes
+        # about 50 s locally and longer on hosted runners.
+        'timeout': 180},
     # Generated inactive Extraction party safehouse template: DMM parse, airlock
     # topology, room routes, account markers and descriptor; no BYOND runtime.
     'safehouse_map': {'files': ('tests/safehouse_map/test_layout.py',),
