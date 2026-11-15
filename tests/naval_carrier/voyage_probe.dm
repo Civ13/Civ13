@@ -236,6 +236,22 @@ var/naval_runtime_error = FALSE
 	naval_check(isnull(expedition_settle_refusal()), "with a third sleeper near the post she may settle")
 	world_chart["tiles"]["1,2"]["state"] = "SETTLED"
 	naval_check(!expedition_land_unsettled() && findtext(expedition_settle_refusal(), "already settled"), "a settled land is decided")
+	// A land of one's own: any player, with a mooring post and their own bed near it.
+	var/claimer = expedition_account_claimant("dee")
+	naval_check(claimer == "crew:dee" && isnull(expedition_personal_claimant(null)), "a player claims as crew:ckey")
+	naval_check(expedition_personal_claim_option(claimer) == "Claim this land", "the tiller offers her a land of her own")
+	naval_check(findtext(expedition_personal_claim_refusal(claimer), "your own bed"), "which takes her own bed near the post")
+	third.persistence_bed_owner_ckey = "dee"
+	naval_check(isnull(expedition_personal_claim_refusal(claimer)), "with her bed near the post she may claim")
+	world_chart["claims"] = list("crew:dee" = "6,3")
+	naval_check(findtext(expedition_personal_claim_refusal(claimer), "already claim the land at 6,3"), "each person claims one land")
+	world_chart["claims"] = list("crew:dee" = "1,2")
+	world_chart["tiles"]["1,2"]["state"] = "CLAIMED"
+	naval_check(expedition_personal_claim_option(claimer) == "Give up your claim", "her own land offers giving the claim up")
+	world_chart["claims"] = list("crew:bob" = "1,2")
+	naval_check(isnull(expedition_personal_claim_option(claimer)), "a land someone else claims offers her nothing")
+	world_chart["claims"] = list()
+	world_chart["tiles"]["1,2"]["state"] = "SETTLED"
 	shard_group.kind = "SURFACE"
 	naval_check(!expedition_land_unsettled() && isnull(expedition_land_key()), "the mainland is never an undecided land")
 	qdel(post)

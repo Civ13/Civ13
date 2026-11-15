@@ -134,6 +134,7 @@ A land opened for a ship is undecided until its crew choose
 | --- | --- | --- |
 | **Settle this land** (tiller) | any crew member: a mooring post that takes ships and 3 beds slept in by different people within 40 tiles of it | tile `SETTLED`, land stage `FRONTIER`: kept for good, on everyone's chart |
 | **Claim** | a faction leader plants the colony charter (`colony_charter.dm`); one claim per faction, one faction per land | tile `CLAIMED`, stage `COLONY`; the world directory keeps `chart_claim` |
+| **Claim this land** (tiller) | any player, for themself: a mooring post that takes ships and their own bed within 40 tiles of it; one land each, besides any land their faction claims; one claimant a land | tile `CLAIMED`, stage `FRONTIER`; claimant `crew:<ckey>` in `chart_claim`. **Give up your claim** at a tiller there puts it back to `SETTLED` |
 | **Abandon** | the captain, asked as she leaves (Leave these waters or a voyage onward) | tile `LOST` for good; homes there go to the mainland; the host saves, stops and archives the slot (`<root>/expeditions/abandon/<slot>.json`) and frees it |
 | **Give up the claim** | the colony's leader, at its charter | charter down, tile `SETTLED`, stage `FRONTIER`; the faction may claim another land |
 | nobody chooses | the land waits, and its crew can open no other new land | abandoned after 7 days with no players there (the coordinator's land samples) |

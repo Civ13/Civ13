@@ -181,7 +181,7 @@ var/global/list/colony_charters = list() // every colony charter, bound or not
 		if (claims[origin] && claims[origin] != expedition_land_key())
 			return "[name] already claims another land across the sea. A faction claims only one."
 		if (islist(tile) && tile["state"] == "CLAIMED" && claims[origin] != expedition_land_key())
-			return "Another faction has already claimed this land."
+			return "This land is already claimed."
 	var/existing = map.colony_named_for(origin)
 	if (existing && map.colony_charter_of(existing))
 		return "[existing] already has a colony in this land. Members who arrive join it."

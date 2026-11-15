@@ -147,6 +147,10 @@
 	// A land across the sea nobody has settled yet (land_choices.dm).
 	if (expedition_land_unsettled())
 		options.Insert(2, "Settle this land")
+	// Every player may claim one land across the sea as their own (land_choices.dm).
+	var/own_claim = expedition_personal_claim_option(expedition_personal_claimant(H))
+	if (own_claim)
+		options.Insert(2, own_claim)
 	var/best = craft.max_speed()
 	if (best >= VESSEL_SPEED_FULL)
 		options += "Full ahead"
@@ -184,6 +188,9 @@
 		return
 	if (choice == "Settle this land")
 		settle_menu(H)
+		return
+	if (choice == "Claim this land" || choice == "Give up your claim")
+		personal_claim_menu(H)
 		return
 	if (choice == "Make for a berth")
 		if (craft.grapple)

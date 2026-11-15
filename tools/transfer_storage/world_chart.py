@@ -97,7 +97,10 @@ SLOT_FAILED = 'failed'
 SLOT_ABANDONED = 'abandon'
 # A land nobody settled or claimed is abandoned after this long with nobody on it.
 UNVISITED_SECONDS = 7 * 24 * 3600
-_CLAIMANT = re.compile(r'^civ:[a-z0-9_\-]{1,40}:[^\x00-\x1f]{1,60}$')
+# Who may claim a land: a faction (its colony's parent, civ:<land>:<name>) or one
+# player for themself (crew:<ckey>). Each claims one land, so a player may hold
+# a land of their own and their faction another.
+_CLAIMANT = re.compile(r'^(civ:[a-z0-9_\-]{1,40}:[^\x00-\x1f]{1,60}|crew:[a-z0-9_\-]{1,40})$')
 NO_SLOT = 'every harbour master is busy: no new land can be opened for a crew right now. Try a land that is already open, or wait.'
 # Crews open lands by themselves (no admin decides), so the chart keeps them in
 # bounds (docs/world-chart.md#opening-new-lands). An owner, or the account at
@@ -732,8 +735,9 @@ class WorldChart:
         return True
 
     def claim(self, region, faction, by=None, now=None):
-        """faction planted its colony charter on the land in region. One claim
-        per faction and one faction per land. True when it changed."""
+        """faction planted its colony charter on the land in region, or a
+        player (crew:<ckey>) claimed it for themself. One claim per claimant
+        and one claimant per land. True when it changed."""
         found = self.land_in(region)
         if not found or not claimant_valid(faction) or found[2]['state'] not in ('LANDED', 'SETTLED'):
             return False
