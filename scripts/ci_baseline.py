@@ -1906,6 +1906,11 @@ SUITES = {
     'earthworks': {'files': ('tests/earthworks/test_contract.py',), 'paths': (
         'tests/earthworks/', 'code/modules/1713/earthworks.dm', 'config/craft_needs.json',
         'icons/obj/earthworks.dmi', 'tests/sprites/create_earthworks.py')},
+    # Source contracts only; this suite does not run DM.
+    'wire_bench': {'files': ('tests/wire_bench/test_contract.py',), 'paths': (
+        'tests/wire_bench/', 'code/modules/1713/wire_bench.dm', 'code/modules/materials/wire_materials.dm',
+        'code/modules/1713/machinery/cables_types.dm', 'config/craft_needs.json',
+        'icons/obj/wire_bench.dmi', 'tests/sprites/create_wire_bench.py')},
     'lifting_machines': {'files': ('tests/lifting_machines/test_contract.py',), 'paths': (
         'tests/lifting_machines/', 'code/modules/1713/lifting_machines.dm',
         'icons/obj/lifting_machines.dmi', 'tests/sprites/create_lifting.py')},
