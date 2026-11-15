@@ -55,7 +55,7 @@ class VehicleOffsetSources(unittest.TestCase):
 
     def test_ride_falls_back_to_tile_loop(self):
         loop = proc(RIDE, '/obj/structure/vehicle/movementloop(')
-        self.assertIn('if (!vehicle_offset_drives())', loop)
+        self.assertIn('if (!axis || !vehicle_offset_drives())', loop)
         self.assertIn('return ..()', loop)
         drives = proc(RIDE, '/obj/structure/vehicle/proc/vehicle_offset_drives(')
         self.assertIn('persistence_save_in_progress', drives)
@@ -70,6 +70,20 @@ class VehicleOffsetSources(unittest.TestCase):
         for needle in ('buckled', 'V.ontop', 'F.axis.moving', 'F.axis.transporting'):
             self.assertIn(needle, carried)
         for label in ('driver_makes_no_footsteps', 'walker_keeps_footsteps', 'moving_car_passenger_carried'):
+            self.assertIn(label, PROBE)
+
+    def test_bicycles_and_rafts_roll_by_pixels(self):
+        self.assertIn('/obj/structure/vehicle/bicycle\n\toffset_drive = TRUE', RIDE)
+        # Pedal airships fly; aircraft are a later phase.
+        self.assertIn('/obj/structure/vehicle/bicycle/airship\n\toffset_drive = FALSE', RIDE)
+        bike = proc(RIDE, '/obj/structure/vehicle/bicycle/movementloop(')
+        self.assertIn('return ..()', bike)
+        self.assertIn('pedal_next_move = world.time', bike)
+        raft = proc(RIDE, '/obj/structure/vehicle/raft/processmove(')
+        self.assertIn('if (!vehicle_offset_drives())', raft)
+        self.assertIn('return ..()', raft)
+        self.assertIn('key == "offset_paddling"', RIDE)
+        for label in ('bike_pedals_by_pixels', 'bike_pays_stamina_per_tile', 'raft_paddles_its_speed', 'raft_drifts_to_a_stop', 'raft_stops_at_the_shore', 'unwatched_raft_paddles_by_tiles'):
             self.assertIn(label, PROBE)
 
 if __name__ == '__main__':
