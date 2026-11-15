@@ -22,7 +22,16 @@ var/global/agent_autospawn_started = FALSE
 	return TRUE
 
 // A round a persistent world restores resumes without the round start hooks
-// (restore_round_state), so the restore starts this loop too; it runs once per world.
+// (restore_round_state), so the world also watches for a round that is simply
+// playing. Either way the loop below starts once per world.
+/hook/startup/proc/agent_autospawn_watch()
+	spawn(0)
+		while (!ticker || ticker.current_state < GAME_STATE_PLAYING)
+			sleep(50)
+		if (ticker.current_state == GAME_STATE_PLAYING)
+			agent_autospawn_begin()
+	return TRUE
+
 /proc/agent_autospawn_begin()
 	if (agent_autospawn_started)
 		return
