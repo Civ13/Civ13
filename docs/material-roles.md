@@ -319,6 +319,31 @@ hook is `fluid_receive()`. Non-steel tanks use the tintable grey sprite from
 `tests/sprites/create_fluid_tanks.py`. Reaction vessels and engine boilers do
 not take a material yet.
 
+## Soft tools
+
+`code/modules/materials/tool_wear.dm` is the one rule that stands in for
+per-recipe "needs an iron tool" checks. The thing being worked says what it is
+made of and which tools cut it:
+
+```
+A.work_material_name(I)   // material tool I would cut here, or null
+tool_is_soft(I, name)     // the tool is less firm than that
+tool_meets_work(I, A, user) // asked once in resolve_attackby(), before attackby()
+```
+
+A tool softer than its work still works: the user waits 4 seconds first and the
+tool takes heavy wear. Nothing happens on harm intent. Today rock walls, cave
+floors and stone, marble and sandstone walls answer to chisels, and cables,
+barbed wire and chain-link fence answer to wirecutters (a cable by its metal).
+A new target needs only a `work_material_name()` override.
+
+Wear is item health through `apply_wear()`. A plain tool has no health until
+`tool_job_wear()` first charges it, so tools that never meet the rule store
+nothing. A tool in its usual material wears only on harder work; a tool in a
+material with a shorter lifetime rating in its role also wears a little each
+job. At 0 it breaks. Pickaxes, shovels and hatchets are left out: their speed
+table already carries what a bone or stone head costs.
+
 ## Sparks
 
 A tool whose material has `sparks` set (iron, steel, flint) can set off a
