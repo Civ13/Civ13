@@ -36,9 +36,9 @@
 				return
 			H.visible_message("<span class='notice'>[user] begins to read the [src].</span>", "<span class='notice'>You begin reading translations for [langtolearn.name] in the [src]. This will take around 80 seconds, and you need to stand or sit still.</span>")
 			if(do_reading(user, 800, src))
-				H.visible_message("<span class='notice'>[user] finishes reading the [src].</span>", "<span class='notice'>You finish reading translations in the [src]. You can now understand and speak [langtolearn.name]!</span>")
-				H.add_language(langtolearn.name, FALSE)
-				H.add_note("Known Languages", "[langtolearn.name]")
+				// A book gets a reader as far as broken speech; the rest takes people.
+				H.visible_message("<span class='notice'>[user] finishes reading the [src].</span>", "<span class='notice'>You finish reading translations in the [src]. It has taught you what a book can of [langtolearn.name]; the rest you must learn from people who speak it.</span>")
+				H.gain_language(langtolearn, 100, LANGUAGE_BROKEN, FALSE)
 	else
 		to_chat(user, "<span class = 'warning'>You can't read a language book with nothing in it!</span>")
 
@@ -52,7 +52,15 @@
 			return
 		if(user.too_dark_to_read())
 			return
-		var/list/langcopy = user.languages.Copy() + "Cancel"
+		// Only a language held well enough to converse in can be set down.
+		var/list/langcopy = list()
+		for (var/datum/language/held in user.languages)
+			if (user.language_score(held) >= LANGUAGE_CONVERSATIONAL)
+				langcopy += held
+		if (langcopy.len < 2)
+			to_chat(user, "<span class = 'warning'>You need to be at least conversational in two languages to write a language book!</span>")
+			return
+		langcopy += "Cancel"
 		var/datum/language/language1 = WWinput(user, "What will your 1st language to translate be?", "Writing Translations", "Cancel", langcopy)
 		if (!istype(language1))
 			return

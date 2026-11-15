@@ -32,7 +32,8 @@
 			message = stars(message)
 
 	if (!(language && (language.flags & INNATE))) // skip understanding checks for INNATE languages
-		if (!say_understands(speaker,language))
+		// A speaker hears their own words as they came out, gaps and all.
+		if (speaker != src && !say_understands(speaker,language))
 			if (istype(speaker,/mob/living/simple_animal))
 				var/mob/living/simple_animal/S = speaker
 				if (S && S.speak.len)
@@ -98,24 +99,21 @@
 				to_chat(src, "<span class='name'>[alt_name]</span> talks but you cannot hear.")
 	else
 		if (language)
-			on_hear_say("<span class='name'>[alt_name] <span class = 'small_message'>([language.name])</span> </span> [track][language.format_message(message, verb)]",speaker, alt_message)
+			var/accent = ""
+			if (ishuman(speaker))
+				var/mob/living/human/accented = speaker
+				accent = accented.language_accent(language)
+			on_hear_say("<span class='name'>[alt_name] <span class = 'small_message'>([language.name][accent])</span> </span> [track][language.format_message(message, verb)]",speaker, alt_message)
 		else
 			on_hear_say("<span class='name'>[alt_name]</span> [track][verb], \"[message]\"",speaker, alt_message)
 		if (speech_sound && (get_dist(speaker, src) <= 7 && z == speaker.z))
 			var/turf/source = speaker? get_turf(speaker) : get_turf(src)
 			playsound_local(source, speech_sound, sound_vol, TRUE)
 
-	if (language && ishuman(src))
+	// Hearing a language slowly teaches it (proficiency.dm).
+	if (language && ishuman(src) && speaker)
 		var/mob/living/human/H = src
-		// Compare by language type: a restored speaker's language is a saved copy,
-		// not the shared datum in the listener's languages list.
-		if (!H.knows_language(language) && world.time >= src.next_language_learn)
-			src.next_language_learn = world.time + 10 // Cooldown is 10 ticks seconds = 1 seconds
-			var/lname = capitalize(language.name)
-			H.partial_languages[lname] += 1
-			if (H.partial_languages[lname] >= language.difficulty && H.add_language("[lname]", FALSE))
-				H.add_note("Known Languages", "[language.name]")
-				to_chat(H, "<span class = 'notice'>You've learned how to speak <b>[language.name]</b> from hearing it so much.</span>")
+		H.language_exposure(language, speaker)
 
 
 /mob/proc/on_hear_say(var/message, var/mob/speaker = null, var/message2 = "")

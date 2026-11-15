@@ -102,9 +102,11 @@
 		return TRUE
 
 	//Language check.
+	// Known, but only understood whole once fluent (proficiency.dm); below that
+	// the hearer gets the share of words their score lets through.
 	for (var/datum/language/L in languages)
 		if (speaking.name == L.name)
-			return TRUE
+			return language_score(L) >= LANGUAGE_FLUENT
 
 	return FALSE
 

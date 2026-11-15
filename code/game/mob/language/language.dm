@@ -648,7 +648,9 @@
 	return speech_verb
 
 // Language handling.
-/mob/proc/add_language(var/language, var/allow_name_changing = FALSE)
+// fluent = FALSE is for a language being learned (proficiency.dm): it joins the
+// list at the score already earned instead of being known outright.
+/mob/proc/add_language(var/language, var/allow_name_changing = FALSE, var/fluent = TRUE)
 	if (language == uppertext(language))
 		language = capitalize(lowertext(language))
 
@@ -892,11 +894,16 @@
 	// Someone who knows Russian understands N% of Ukrainian
 	if (ishuman(src))
 		var/mob/living/human/H = src
+		var/own_share = 1
+		if (fluent)
+			H.partial_languages[new_language.name] = new_language.difficulty
+		else
+			own_share = H.language_score(new_language) / 100
 		var/list/m_int = new_language.mutual_intelligibility
 		for (var/lname in all_languages)
 			var/datum/language/L = all_languages[lname]
 			if (L.type in m_int)
-				H.partial_languages[lname] = max((H.partial_languages[lname]), m_int[L.type]*L.difficulty/100)
+				H.partial_languages[lname] = max((H.partial_languages[lname]), m_int[L.type]*L.difficulty/100*own_share)
 	languages.Add(new_language)
 	return TRUE
 
@@ -988,8 +995,35 @@
 		if (L.flags & NONGLOBAL)
 			continue
 		// The same escaped values are safe in classic templates and React text.
-		entries += list(list("name" = html_encode(L.name), "prefix" = html_encode("[get_language_prefix()][L.key]"), "description" = html_encode(L.desc), "is_default" = (L == current_default)))
+		entries += list(list("name" = html_encode(L.name), "prefix" = html_encode("[get_language_prefix()][L.key]"), "description" = "[language_standing(L)][html_encode(L.desc)]", "is_default" = (L == current_default)))
+	entries += languages_being_learned()
 	return list("languages" = entries, "current_default" = current_default ? html_encode(current_default.name) : "")
+
+// "Broken, 31%. " ahead of a language's description; nothing for other mobs.
+/mob/proc/language_standing(datum/language/L)
+	return ""
+
+/mob/living/human/language_standing(datum/language/L)
+	var/score = language_score(L)
+	if (score >= 100)
+		return canonical_language(L) == mother_tongue() ? "Mother tongue. " : "Fluent. "
+	return "[language_level_name(score)], [round(score)]%. "
+
+// Languages heard or studied but not yet speakable, as extra reader rows.
+/mob/proc/languages_being_learned()
+	return list()
+
+/mob/living/human/languages_being_learned()
+	var/list/rows = list()
+	for (var/lname in partial_languages)
+		var/datum/language/L = all_languages[lname]
+		if (!language_learnable(L) || knows_language(L))
+			continue
+		var/score = language_score(L)
+		if (score < 1)
+			continue
+		rows += list(list("name" = html_encode(L.name), "prefix" = "not yet speakable", "description" = "[language_level_name(score)], [round(score)]%. Keep listening to people who speak it.", "is_default" = FALSE))
+	return rows
 
 /mob/proc/show_known_languages()
 	if (!client)
