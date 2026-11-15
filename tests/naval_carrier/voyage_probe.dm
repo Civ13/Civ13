@@ -146,21 +146,24 @@ var/naval_runtime_error = FALSE
 	naval_check(tiller.voyage_landfall(mine) && isnull(tiller.voyage), "a refused course turns her back at once")
 	naval_check(tiller.craft && !QDELETED(tiller), "she is still here, off the coast where she set out")
 
-	// ---- A sea lane to a known land (sea_lanes.dm) ----
-	var/list/old_lanes = map.sea_lanes
-	map.sea_lanes = list("northamerica" = list("tiles" = 6, "coast" = "W", "bearing" = "west"))
+	// ---- Sea routes between the continents (sea_lanes.dm) ----
+	naval_check(continent_distance("northamerica", "gaia") == 6 && continent_bearing("northamerica", "gaia") == "east", "Gaia lies 6 tiles east of North America")
+	naval_check(continent_bearing("gaia", "southamerica") == "southwest" && continent_distance("gaia", "asia") == 12, "and Asia 12 tiles east of Gaia ([continent_bearing("gaia", "southamerica")])")
+	naval_check(isnull(continent_distance("gaia", "far1")) && !continent_coastal("jungle") && continent_coastal("europe"), "unknown lands have no route; the Jungle has no coast")
 	shard_group.peers["northamerica"] = list("name" = "North America", "kind" = "SURFACE", "state" = "STOPPED")
-	naval_check(!length(sea_lane_destinations()), "a stopped land is not offered as a lane")
+	shard_group.peers["jungle"] = list("name" = "Jungle", "kind" = "SURFACE", "state" = "UP")
+	naval_check(!length(sea_lane_destinations()), "a stopped land and a land with no coast are not offered")
 	shard_group.peers["northamerica"]["state"] = "UP"
 	var/list/known = sea_lane_destinations()
-	naval_check(known.len == 1 && findtext(known[1], "North America, across the sea to the west: 6 tiles, about 6 minutes"), "a known land across the sea is offered ([known.len ? known[1] : "none"])")
+	naval_check(known.len == 1 && findtext(known[1], "North America, across the sea to the west: 6 tiles, about 6 minutes"), "a continent across the sea is offered ([known.len ? known[1] : "none"])")
 	var/list/lane_pick = known.len ? known[known[1]] : null
 	naval_check(islist(lane_pick) && lane_pick[1] == "northamerica" && lane_pick[2] == 6, "with its region and sailing time")
-	naval_check(sea_lane_coast("northamerica") == WEST && isnull(sea_lane_coast("far1")) && isnull(sea_lane_coast(null)), "ships from the lane's land come in on its coast, others anywhere")
-	var/list/sides = sea_crossing_sides("northamerica")
-	naval_check(sides.len == 4 && sides[1] == WEST, "the lane's coast is tried first ([list2params(sides)])")
+	var/list/sides = sea_lane_sides("northamerica")
+	naval_check(sides.len == 2 && sides[1] == WEST && sides[2] == EAST, "a ship from the Americas makes landfall off Gaia's west coast, else its east ([list2params(sides)])")
+	sides = sea_crossing_sides("northamerica")
+	naval_check(sides.len == 4 && sides[1] == WEST && sides[2] == EAST, "then any side ([list2params(sides)])")
 	sides = sea_crossing_sides()
-	naval_check(sides.len == 4 && sides[1] == NORTH, "without a lane every side is tried in turn")
+	naval_check(sides.len == 4 && sides[1] == NORTH, "without a known origin every side is tried in turn")
 	tiller.voyage = null
 	naval_check(tiller.set_out(H, "lane", "northamerica", 0, null, 6, "North America"), "she sets out along the lane with no chart owner")
 	mine = tiller.voyage
@@ -181,8 +184,7 @@ var/naval_runtime_error = FALSE
 	mine["ends"] = world.time - 18010
 	naval_check(tiller.voyage_lane_landfall(mine) && isnull(tiller.voyage), "she turns back after waiting too long")
 	naval_check(tiller.craft && !QDELETED(tiller), "and is still here where she set out")
-	shard_group.peers -= "northamerica"
-	map.sea_lanes = old_lanes
+	shard_group.peers -= list("northamerica", "jungle")
 
 	// ---- A land across the sea: onward voyages and settling ----
 	shard_group.kind = "EXPEDITION"
