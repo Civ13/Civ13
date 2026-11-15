@@ -68,7 +68,15 @@ try {
     [IO.File]::WriteAllText((Join-Path $temporary 'source-state.txt'), "commit=$commit`ndirty=$dirty`ndigging_baseline=$DiggingBaseline")
     $runtime = Start-Process -FilePath (Join-Path $ByondBin $daemonName) -ArgumentList @('probe.dmb', '0', '-invisible', '-close', '-trusted', '-params', "tested_commit=$commit", '-log', 'runtime.log') -WorkingDirectory $temporary -PassThru @options
     # 60 s: the mining-yields matrix (13 ore rolls, every era) runs close to 30 s on hosted runners.
-    if (!$runtime.WaitForExit(60000)) { Stop-Process -Id $runtime.Id; $runtime.WaitForExit(); throw 'Task-owned probe timed out' }
+    $timedOut = !$runtime.WaitForExit(60000)
+    if ($timedOut) { Stop-Process -Id $runtime.Id; $runtime.WaitForExit() }
+    # A probe that stops without its result shows why: the tail of its runtime log.
+    if ($timedOut -or !(Test-Path -LiteralPath (Join-Path $temporary 'result.json'))) {
+        $logPath = Join-Path $temporary 'runtime.log'
+        if (Test-Path -LiteralPath $logPath) { $lines = @(Get-Content -LiteralPath $logPath); Write-Output "Runtime log: $($lines.Count) lines, $(@($lines | Where-Object { $_ -like 'PASS:*' }).Count) passes, $(@($lines | Where-Object { $_ -like 'FAIL:*' }).Count) failures"; $lines | Select-Object -Last 160 | Write-Output }
+        Write-Output "Probe exit code: $($runtime.ExitCode)"
+        if ($timedOut) { throw 'Task-owned probe timed out' } else { throw 'Task-owned probe stopped without a result' }
+    }
     $result = Get-Content -LiteralPath (Join-Path $temporary 'result.json') -Raw | ConvertFrom-Json
     $runtimeLog = Get-Content -LiteralPath (Join-Path $temporary 'runtime.log') -Raw
     Write-Output $runtimeLog
