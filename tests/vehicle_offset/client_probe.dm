@@ -147,6 +147,8 @@ var/global/datum/vehicle_client_probe/vehicle_client_probe = new
 	V.ontop += H
 	V.update_overlay()
 	V.update_icon()
+	// Getting on seats the driver where the vehicle draws them (a boat's tiller end).
+	V.updatepassdir()
 	require(V.driver == H, "The body is not driving")
 
 /datum/vehicle_client_probe/proc/dismount(obj/structure/vehicle/V)
