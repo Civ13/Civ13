@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '801b451d8484f248fd74f32ad980472a6808dd04'
+WIKI_REVIEWED_REVISION = 'b84665f79a49329565b77ee6d40cb857c6b1dd51'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('dbdd9f64009c697282c90bf6d7e157100834ad2ea23f5b76ec03938e816c1083', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('0da0fcb7a71382365bf818e6e27b5e0c58056785f328a4da1bba4ed44e26a673', 'character skills traits languages'),
@@ -126,7 +126,7 @@ WIKI_REVIEWED_GUIDES = {
     'Miscellaneous_Crafting.md': ('eac7513db31aeb05d3dec97040b4287d79ea61eba3076a5f9c7e889c36c4bb8b', 'miscellaneous crafting misc items dress dresses dressmaking tailoring tailor tailored sew sewing pattern patterns design clothes shirt gown cloak sleeves collar dye dyes wool linen fabric book hat hats headwear beret veil candle candles'),
     'maps/The_Americas.md': ('7da473dcae7b98efa4d7d618f8d13f919d1a278b398ce0ff7e5d8a105adadfba', 'americas america north south isthmus mainland persistent persistence map world hills tamping grading rammer'),
     'maps/Gaia.md': ('31ac9df3080f401b012b2fd335e89e633e438fe0124fad2ced6d4ff6fd72858c', 'gaia map world underground'),
-    'maps/Nomads_Maps.md': ('7e71889c4c8cab319a7ab34f4106c04699d7ee7fc62d4489058d1fe098f6c9d2', 'nomads maps map terrain biome biomes'),
+    'maps/Nomads_Maps.md': ('1c32d0bb8e9013f8564d3523597fea5e50169ea121d5af15443898df4bcb4c8e', 'nomads maps map terrain biome biomes'),
     'gamemodes/Voyage.md': ('9922f438d0253c6b4d812bc852422a54c37f428b4c3221b2a732397ef245ddfe', 'voyage expedition ship mode'),
     'gamemodes/Events.md': ('de6e6133e735e5da8a03a290f45e599b82cee216d9b150d25c583e3c34606336', 'events event special rounds'),
     'guides_overview.md': ('569716c71dfafb774b23d2725b669b6070bc4a3e0096dcb9aa3c9a96b00d112f', 'guides overview list of guides index'),
