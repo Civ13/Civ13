@@ -282,5 +282,35 @@ class MoodScale(unittest.TestCase):
             self.assertNotRegex(text, r'switch\s*\(\s*(?:\w+\.)?mood\s*\)', path.name)
 
 
+class LivingConditions(unittest.TestCase):
+    LIVING = 'code/game/mob/living/carbon/human/mood_living.dm'
+
+    def test_lasting_conditions_move_the_resting_level_not_mood(self):
+        living = uncomment(source(self.LIVING))
+        self.assertNotRegex(living, r'\b(?:adjust_mood|set_mood)\(')
+        for part in ('"being clean"', '"being filthy"', '"fleas"', '"being sick"', '"being seriously ill"',
+                     '"being in pain"', 'sleep_comfort_name()', '"a varied diet"', '"being warm and dry"',
+                     '"going hungry"', '"going thirsty"'):
+            self.assertEqual(living.count('parts[' + part + '] = '), 1, part)
+        self.assertIn('#include "code\\game\\mob\\living\\carbon\\human\\mood_living.dm"', source('civ13.dme'))
+
+    def test_dirt_fleas_and_sickness_no_longer_drain_mood_every_tick(self):
+        for path in (CORE, 'code/game/mob/living/carbon/human/human_disease.dm',
+                     'code/game/mob/living/carbon/human/severe_disease.dm'):
+            text = uncomment(source(path))
+            for cause in ('"being dirty"', '"fleas"', '"being sick"'):
+                self.assertNotIn(cause, text, path)
+
+    def test_positive_conditions_stay_under_the_resting_cap(self):
+        living = source(self.LIVING)
+        value = lambda name: float(re.search(r'^#define %s (\S+)' % name, living, re.M).group(1))
+        best = sum(value(name) for name in ('LIVING_BED', 'LIVING_SHEET', 'LIVING_DIET', 'LIVING_CLEAN', 'LIVING_WARM_DRY'))
+        self.assertEqual(best, 18)
+        cap = float(re.search(r'^#define MOOD_REST_MAX (\S+)', source('code/__defines/mobs.dm'), re.M).group(1))
+        self.assertLessEqual(50 + best, cap)
+        # Conditions alone reach Good (60 up to 80), never Excellent.
+        self.assertLess(cap, 80)
+
+
 if __name__ == '__main__':
     unittest.main()

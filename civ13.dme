@@ -294,6 +294,7 @@
 #include "code\game\mob\living\carbon\human\resuscitation.dm"
 #include "code\game\mob\living\carbon\human\say.dm"
 #include "code\game\mob\living\carbon\human\playstyle_traits.dm"
+#include "code\game\mob\living\carbon\human\mood_living.dm"
 #include "code\game\mob\living\carbon\human\self_help.dm"
 #include "code\game\mob\living\carbon\human\screaming.dm"
 #include "code\game\mob\living\carbon\human\shit_piss.dm"

@@ -196,11 +196,9 @@
 //			img_nasties.overlays += null
 		if(HYGIENE_LEVEL_DIRTY to HYGIENE_LEVEL_NORMAL)
 //			overlays_standing[27] = null
-			adjust_mood(-(0.01), "being dirty")
 		if(0 to HYGIENE_LEVEL_DIRTY)
 			var/image/smell = image('icons/effects/effects.dmi', "smell")
 			img_nasties.overlays += smell
-			adjust_mood(-(0.02), "being dirty")
 	if (hygiene <= HYGIENE_LEVEL_DIRTY)
 		if (prob(12))
 			for(var/mob/living/human/HM in range(3,src))
@@ -217,7 +215,6 @@
 	if (fleas_found)
 		var/image/fleas = image('icons/effects/effects.dmi', "lice_overlay")
 		img_nasties.overlays += fleas
-		adjust_mood(-(0.02), "fleas")
 		if (!has_fleas)
 			to_chat(src, SPAN_WARNING("You feel something biting you. Your filthy clothes are crawling with fleas! Wash them, or you may catch typhus."))
 		else if (prob(1))

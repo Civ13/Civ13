@@ -26,7 +26,6 @@
 		if (disease_type == "none")
 			disease = FALSE
 		else if (disease_type == "flu")
-			adjust_mood(-(0.1), "being sick")
 			var/flu_step = 2
 			if (!disease_treatment)
 				flu_step = resting_in_bed() ? 1 : 0.5 // bed rest halves the illness
@@ -76,7 +75,6 @@
 					disease_immunity += "flu"
 
 		else if (disease_type == "zombie")
-			adjust_mood(-(0.15), "being sick")
 			if (!disease_treatment)
 				disease_progression += 0.5
 			else

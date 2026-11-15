@@ -59,7 +59,7 @@ announced in chat at most once every five minutes.
 Conditions change where mood settles, never mood itself, so they cannot be
 farmed and they stop mattering the moment they end.
 
-| Condition (hunger-enabled maps) | Change |
+| Trait condition (hunger-enabled maps) | Change |
 | --- | --- |
 | Extroverted with company within 3 tiles / alone | +5 / -8 |
 | Introverted alone / with company | +5 / -8 |
@@ -67,8 +67,35 @@ farmed and they stop mattering the moment they end.
 | Recluse Scholar with 3 or more people within 3 tiles | -6 |
 | Rallying Voice with nobody within 3 tiles | -6 |
 
+## Living conditions
+
+`code/game/mob/living/carbon/human/mood_living.dm` adds the conditions every
+character has. They replace the old per-tick drains for dirt, fleas and
+sickness, which could only ever pin mood to the floor.
+
+| Condition | Change | Where |
+| --- | --- | --- |
+| Last slept on a bedroll / in a proper bed | +2 / +4 | hunger-enabled maps |
+| ... with a bedsheet on the same tile | +2 more | hunger-enabled maps |
+| Varied diet: 3 of the 4 food groups adequate | +5 | hunger-enabled maps |
+| Warm and dry: temperature icon normal, clothes not wet | +3 | hunger-enabled maps |
+| Food or water at a quarter or less | -8 each | hunger-enabled maps |
+| Clean (hygiene 200 or more) | +4 | maps with hygiene |
+| Filthy (hygiene below 75) | -8 | maps with hygiene |
+| Fleas | -5 | maps with hygiene |
+| Sick / seriously ill (plague, typhus, malaria, cholera once it worsens) | -8 / -12 | everywhere |
+| Lasting pain (traumatic shock 50 or more) | -5 | everywhere |
+
+A bit dirty (75 up to 200) is neither a lift nor a penalty. The bed is noted
+while the character sleeps (`sleep_comfort`, saved with the body) and counts
+from waking until they next sleep; chairs and seats count for nothing.
+
+The lifts add up to 18, so living conditions alone rest a character at 68:
+Good, never Excellent. `MOOD_REST_MAX` leaves room for later sources.
+
 ## Tests
 
 `python3 -B -m unittest discover -s tests/mood_sleep -p 'test_*.py'` projects
 the real helpers offline. `tests/movement_check/probe.dm` checks in a real
-world that mood 40 adds no movement delay.
+world that mood 40 adds no movement delay, and `tests/mood_living/probe.dm`
+checks each living condition, the sleep record and both limits.

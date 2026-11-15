@@ -53,6 +53,15 @@ var/ps_runtime_error = FALSE
 	H.traits_dirty = TRUE
 	return H
 
+// Survival needs on, with no living condition of its own to move the resting level.
+/proc/ps_needs(mob/living/human/H)
+	H.has_hunger_and_thirst = TRUE
+	H.nutrition = H.max_nutrition
+	H.water = H.max_water
+	H.diet_reserves = list()
+	for (var/group in diet_groups)
+		H.diet_reserves[group] = 0
+
 /proc/ps_gain(mob/living/human/H, stat)
 	H.stats[stat] = list(100, 100)
 	H.adaptStat(stat, 10)
@@ -209,12 +218,12 @@ var/ps_runtime_error = FALSE
 	// Company and restlessness move where mood settles, not mood itself.
 	map.nomads = TRUE
 	var/mob/living/human/E = ps_human(1, 20, "Extroverted")
-	E.has_hunger_and_thirst = TRUE
+	ps_needs(E)
 	E.mood = 50
 	E.refresh_mood_rest()
 	ps_check(E.mood_rest == 42 && E.mood_rest_parts["being alone"] == -8 && E.mood == 50, "an extrovert alone settles lower ([E.mood_rest])")
 	var/mob/living/human/I = ps_human(3, 20, "Introverted")
-	I.has_hunger_and_thirst = TRUE
+	ps_needs(I)
 	E.refresh_mood_rest()
 	I.refresh_mood_rest()
 	ps_check(E.mood_rest == 55 && E.mood_rest_parts["having company"] == 5 && !("being alone" in E.mood_rest_parts), "an extrovert in company settles higher ([E.mood_rest])")
@@ -225,12 +234,12 @@ var/ps_runtime_error = FALSE
 	E.loc = null
 	I.loc = null
 	var/mob/living/human/RV = ps_human(1, 20, "Rallying Voice")
-	RV.has_hunger_and_thirst = TRUE
+	ps_needs(RV)
 	RV.refresh_mood_rest()
 	ps_check(RV.mood_rest == 44 && RV.mood_rest_parts["being alone"] == -6, "a rallying voice alone settles lower ([RV.mood_rest])")
 	RV.loc = null
 	var/mob/living/human/S = ps_human(1, 20, "Recluse Scholar")
-	S.has_hunger_and_thirst = TRUE
+	ps_needs(S)
 	var/mob/living/human/c1 = ps_human(2, 20)
 	var/mob/living/human/c2 = ps_human(3, 20)
 	S.refresh_mood_rest()
@@ -241,7 +250,7 @@ var/ps_runtime_error = FALSE
 	for (var/mob/living/human/gone in list(S, c1, c2, c3))
 		gone.loc = null
 	var/mob/living/human/W3 = ps_human(1, 20, "Wanderer")
-	W3.has_hunger_and_thirst = TRUE
+	ps_needs(W3)
 	W3.handle_wanderer()
 	W3.refresh_mood_rest()
 	ps_check(W3.mood_rest == 50, "a wanderer who just arrived is content")
