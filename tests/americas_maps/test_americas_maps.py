@@ -129,6 +129,26 @@ class AmericasMapsTest(unittest.TestCase):
     def setUpClass(cls):
         cls.levels = {name: Level(name) for name in MAPS}
 
+    def test_every_land_climate_has_seed_bushes_and_farm_ground_by_fresh_water(self):
+        # A nomad starts on a random tile (new_player_start_z), so every climate
+        # needs ground that seeds forage bushes and ground a digging stick can
+        # work within a crop's reach of fresh water (#3048). Dry grass and
+        # desert sand cannot be ploughed; their river banks carry plain soil.
+        import importlib.util
+        spec = importlib.util.spec_from_file_location('outdoor_bootstrap', ROOT / 'scripts/check-outdoor-bootstrap.py')
+        inventory = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(inventory)
+        climates, salt = inventory.load_inheritance()
+        for name in MAPS:
+            report = inventory.audit('americas_' + name, climates, salt)
+            self.assertEqual(set(report['farm_ground_by_climate']), set(inventory.LAND_CLIMATES), name)
+            for climate, ground in report['farm_ground_by_climate'].items():
+                with self.subTest(map=name, climate=climate):
+                    self.assertGreaterEqual(report['bush_seeding_ground_by_climate'].get(climate, 0), 500)
+                    self.assertGreaterEqual(ground['ploughable_near_water'] + ground['clearable_near_water'], 100)
+                    if climate in ('savanna', 'desert', 'semiarid', 'temperate', 'jungle'):
+                        self.assertGreaterEqual(ground['ploughable_near_water'], 100)
+
     def test_each_map_is_one_whole_level_with_even_rows(self):
         for name, level in self.levels.items():
             with self.subTest(name):
