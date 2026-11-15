@@ -469,9 +469,30 @@ var/naval_runtime_error = FALSE
 	naval_check(HO && skiff.x == 45 && skiff.step_x == 1 && bow_plank.step_x == 1 && deckhand.step_x == 1 && pail.step_x == 1, "the first pulse moves her deck, tiller, cargo and crew one pixel east together")
 	naval_check(P.path_markers.len == 2, "starting to cover the water ahead marks it ([P.path_markers.len])")
 	naval_check((deckhand in HO.carried) && (bow_plank in HO.footprint) && vehicle_offset_riders[deckhand] == HO, "everyone aboard is carried; her planks are her body")
-	for (var/i = 2 to 15)
+	// A step under way checks nobody else moved the walker; the deck carrying
+	// them is not somebody else, so the step goes on from where she put them.
+	var/datum/human_subtile_transaction/walk = new
+	walk.actor = deckhand
+	walk.expected = deckhand.human_subtile_snapshot()
+	deckhand.human_subtile_transaction = walk
+	P.offset_tick()
+	naval_check(deckhand.step_x == 2 && human_subtile_same(walk.expected, deckhand.human_subtile_snapshot()), "a step in progress goes on from where her deck carried the walker")
+	deckhand.human_subtile_transaction = null
+	walk.actor = null
+	for (var/i = 3 to 15)
 		P.offset_tick()
 	naval_check(skiff.x == 45 && skiff.step_x == 15 && bow_plank.x == 47 && bow_plank.step_x == 15 && hull_planks(locate(48, 26, 2)) == 0, "fifteen pulses in she is half a tile on and still on her own tiles")
+	// Newcomers are judged by her deck as it is drawn, half a tile on.
+	var/mob/living/human/naval_probe/boarder = new(locate(46, 25, 2))
+	boarder.step_x = -16
+	var/mob/living/human/naval_probe/swimmer = new(locate(45, 26, 2))
+	swimmer.step_x = -16
+	HO.sync()
+	var/list/boarded = HO.carried[boarder]
+	naval_check(boarded && boarder.x == 45 && boarder.step_x == 16 && boarded[1] == 1, "someone boarding is filed on the plank under their centre and carried from there ([boarder.x],[boarder.step_x], own [boarded ? boarded[1] : "none"])")
+	naval_check(!(swimmer in HO.carried) && swimmer.x == 45 && swimmer.step_x == -16, "someone whose centre is over the water astern is not taken aboard")
+	qdel(boarder)
+	qdel(swimmer)
 	// The deckhand walks three pixels aft as she sails.
 	deckhand.step_x -= 3
 	P.offset_tick()
@@ -490,6 +511,14 @@ var/naval_runtime_error = FALSE
 	for (var/i = 2 to 32)
 		P.offset_tick()
 	naval_check(skiff.x == square_x + 1 && !skiff.step_x, "and hops a whole tile at her pace ([skiff.x])")
+	// Unwatched, a hop that trims her pace sets the pulse again.
+	P.speed = VESSEL_SPEED_HALF
+	P.start_sailing()
+	for (var/i = 1 to 32)
+		if (P.speed != VESSEL_SPEED_HALF)
+			break
+		P.offset_tick()
+	naval_check(P.speed == VESSEL_SPEED_SLOW && P.sailing_at == VESSEL_SPEED_SLOW && P.hop_timer, "unwatched, a hop that loses her way restarts her pulse at the new pace ([P.sailing_at])")
 	// A save squares her too.
 	hull_probe_watched = TRUE
 	P.offset_tick()
@@ -518,8 +547,12 @@ var/naval_runtime_error = FALSE
 	naval_check(P.finish_turn() && !skiff.step_x && !bow_plank.step_x && P.body.heading() == NORTH, "and comes about square on her tiles")
 	P.offset_tick()
 	naval_check(skiff.step_y == 1 && !skiff.step_x, "then creeps north")
+	// A step taken on deck just before all stop is kept when she squares.
+	var/deck_y = (deckhand.y * 32 + deckhand.step_y) - (skiff.y * 32 + skiff.step_y)
+	deckhand.step_y += 2
 	P.set_speed(VESSEL_SPEED_STOP)
 	naval_check(!skiff.step_y && !P.hop_timer, "all stop squares her")
+	naval_check((deckhand.y * 32 + deckhand.step_y) - (skiff.y * 32 + skiff.step_y) == deck_y + 2, "and the deckhand keeps the step just taken")
 	qdel(deckhand)
 	qdel(pail)
 	qdel(skiff)

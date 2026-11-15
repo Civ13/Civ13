@@ -138,8 +138,10 @@ var/global/list/vehicle_offset_riders = list()
 		if (ismob(A))
 			A.vehicle_offset_drawn()
 
-// Square on the tile again, everything with it.
+// Square on the tile again, everything with it. A walk made on the deck since
+// the last pulse is taken in first, so squaring does not undo it.
 /datum/vehicle_offset/proc/snap()
+	settle()
 	speed_x = 0
 	speed_y = 0
 	rest_x = 0
@@ -360,6 +362,7 @@ var/global/list/vehicle_offset_riders = list()
 		var/mob/living/human/H = A
 		H.human_subtile_anchor()
 		H.human_subtile_offset_owned = !!(H.step_x || H.step_y)
+		H.vehicle_offset_rebase_walk()
 		return
 	var/px = A.x * VEHICLE_OFFSET_TILE + A.step_x
 	var/py = A.y * VEHICLE_OFFSET_TILE + A.step_y
@@ -382,5 +385,13 @@ var/global/list/vehicle_offset_riders = list()
 /mob/living/human/vehicle_offset_drawn()
 	if (human_subtile_enabled || human_subtile_default_pending)
 		human_subtile_offset_owned = !!(step_x || step_y)
+	vehicle_offset_rebase_walk()
+
+// A step under way checks that nobody else moved the walker since its last
+// pulse. The deck carrying them is not somebody else: the step goes on from
+// where the deck put them.
+/mob/living/human/proc/vehicle_offset_rebase_walk()
+	if (human_subtile_transaction && !human_subtile_transaction.cancelled)
+		human_subtile_transaction.expected = human_subtile_snapshot()
 
 #undef VEHICLE_OFFSET_CHUNK

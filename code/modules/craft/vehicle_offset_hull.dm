@@ -38,9 +38,12 @@
 	var/turf/here = B ? B.origin() : null
 	if (here)
 		var/range = VEHICLE_OFFSET_WATCH_RANGE + max(B.length_tiles(), B.beam_tiles())
+		// Her upper deck counts as near her too.
+		var/datum/craft_body/built/BB = B
+		var/upper = istype(BB) ? BB.upper_z() : 0
 		for (var/client/C in clients)
 			var/turf/there = get_turf(C.mob)
-			if (there && there.z == here.z && get_dist(here, there) <= range)
+			if (there && (there.z == here.z || (upper && there.z == upper)) && get_dist(here, there) <= range)
 				watch_cached = TRUE
 				break
 	return watch_cached
@@ -57,18 +60,33 @@
 /datum/vehicle_offset/hull/commit(dir)
 	return craft ? craft.offset_commit(dir) : FALSE
 
-// Carries everything aboard her and drops what has left her.
+// Carries everything aboard her and drops what has left her. Her planks come
+// first, so a newcomer is judged by the deck as it is drawn: someone whose
+// centre is over her deck is filed on it and carried from where they stand;
+// someone whose centre is over the water beside her (just stepped off, or not
+// yet aboard) is left alone.
 /datum/vehicle_offset/hull/proc/sync()
 	var/datum/craft_body/B = craft ? craft.body : null
 	if (!B)
 		return
 	var/list/aboard = list()
+	var/list/newcomers = list()
 	for (var/atom/movable/M in B.aboard())
 		if (istype(M, /obj/effect/vessel_path))
 			continue
 		aboard[M] = TRUE
-		if (!(M in carried))
-			carry(M, istype(M, /obj/covers))
+		if (M in carried)
+			continue
+		if (istype(M, /obj/covers))
+			carry(M, TRUE)
+		else
+			newcomers += M
+	var/list/deck = newcomers.len ? deck_tiles() : null
+	for (var/atom/movable/M in newcomers)
+		if (ismob(M) && (M.step_x || M.step_y || ox || oy) && !file_on_deck(M, deck))
+			aboard -= M
+			continue
+		carry(M)
 	for (var/atom/movable/A in carried)
 		if (!aboard[A])
 			drop(A, TRUE)
@@ -147,7 +165,11 @@
 		offset_tile_wait += offset_period()
 		if (offset_tile_wait >= sail_interval())
 			offset_tile_wait = 0
+			// A mast lost on the way slows her: the pulse is set again.
+			var/before = speed
 			sail_hop()
+			if (speed != before && speed > 0 && !anchored && !turning_to)
+				start_sailing()
 		return
 	offset_tile_wait = 0
 	// A mast lost since the last pulse slows her at once.
