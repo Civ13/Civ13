@@ -127,7 +127,7 @@ var/naval_runtime_error = FALSE
 	naval_check(islist(region_travel_decode(probe_payload(null))), "a crew member without her decodes")
 	naval_check(!region_travel_decode(probe_payload(bad)), "a payload with a bad ship is refused")
 	var/long_text = probe_payload(null)
-	long_text = copytext(long_text, 1, length(long_text)) + ",\"pad\":\"[jointext(new /list(9000), "x")]\"}"
+	long_text = copytext(long_text, 1, length(long_text)) + ",\"pad\":\"[jointext(new /list(30000), "x")]\"}"
 	naval_check(!region_travel_decode(long_text), "a long payload without a ship is refused")
 
 	// ---- Off the water ----

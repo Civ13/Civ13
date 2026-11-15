@@ -38,6 +38,26 @@ She drops anchor and lies off the coast under way: the tiller only tells how
 long is left and offers **Turn back**. Whoever is aboard at landfall sails
 with her; anyone who steps off is left behind.
 
+## Sea lanes to known lands
+
+Code: `code/modules/naval/sea_lanes.dm`. Some lands of a region group lie
+across the sea from each other and need no world chart: a map lists them in
+`sea_lanes` (region id = `tiles` of sailing, the `coast` of this map a ship
+from that land comes in on, and a `bearing` the crew are told). Today the
+Americas and Gaia: North America and Gaia 6 tiles apart, South America and
+Gaia 8. Gaia's region id must be `gaia` in the host's group file.
+
+**Set out on a voyage** lists each lane whose world is in the group and up
+or able to wake ("Gaia, across the sea to the east: 6 tiles, about 6
+minutes"), above any chart lands. A lane needs no chart owner or pin and only
+one crew member aboard; otherwise the rules above hold: a mast or running
+engine, the crossing rules and load, rations, storms (no sightings, since a
+lane crosses no chart). When her time is up she crosses to that world on the
+voyage id, like **Leave these waters**, or waits off the coast while it
+wakes (up to 30 minutes, then turns back). She makes landfall off the coast
+the lane names when there is room, else off any side. The crew make their
+home in the land they sail to, as with any trip between regions.
+
 ## Rations and happenings
 
 Code: `code/modules/naval/voyage_provisions.dm`.

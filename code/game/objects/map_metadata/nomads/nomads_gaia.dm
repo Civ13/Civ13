@@ -15,6 +15,11 @@
 	terrain_height_file = "maps/heights/nomads_gaia.txt"
 	// New nomads start at random on the surface (nomads_start.dm); level 1 is underground.
 	new_player_start_z = 2
+	// The Americas lie across the sea to the west (sea_lanes.dm); ships from
+	// there come in on the west coast, the only open sea besides the east.
+	sea_lanes = list(
+		"northamerica" = list("tiles" = 6, "coast" = "W", "bearing" = "west"),
+		"southamerica" = list("tiles" = 8, "coast" = "W", "bearing" = "southwest"))
 
 /obj/map_metadata/nomads/gaia/weather_policy_choices(list/possibilities)
 	var/list/choices = ..()
