@@ -103,6 +103,61 @@ CIV13_GROUP=D:/Civ13Regions/earth.json CIV13_REGION=southamerica \
   python tools/agent-control/civ13_agent.py call call_verb '{"verb": "reload_admins"}'
 ```
 
+### Moving a player between regions
+
+`tools/agent-control/region_move.py` moves one player's character to another
+region of the group for an admin, keeping what they have. It works through
+both regions' operator agents:
+
+```
+py -3 tools/agent-control/region_move.py --group D:/Civ13Regions/earth.json \
+    --from northamerica --to gaia --ckey somebody --at 87,290,2 --apply
+```
+
+Without `--apply` it only takes the snapshot and lists what the source would
+hold back. With it, it runs these steps:
+
+1. **Snapshot.** Before anything moves, it writes a JSON snapshot to
+   `data/transfer-snapshots/` (runtime data, never committed). The snapshot
+   holds every item with what is inside it, knowledge, skills, languages,
+   faction, food and water.
+2. **Hold back.** Anything the source refuses to send (`region_travel_items`)
+   goes into a crate at the player's feet. Nothing is deleted.
+3. **Depart.** A hidden temporary gate at their feet runs the normal departure
+   and is then deleted. A failed departure leaves the player where they stood.
+4. **Arrive.** It waits for them on the destination; the player logs in there.
+   With `--at x,y,z` they are placed on that tile.
+5. **Rebuild.** The held items are remade in a crate beside them, with
+   materials, names, stack amounts, reagents, contents, attached accessories
+   and a boot's knife. The rebuilt crate is read back and compared with the
+   snapshot. The source crate is deleted only when nothing is missing or extra.
+6. **Restore.** This only adds: missing languages, recipe knowledge, role
+   verbs, and food and water as they were. A faction is reported, never
+   forced; the destination rejoins a traveller only where the faction or its
+   colony lives.
+
+Notes:
+
+- **Pockets and ID.** Taking off a refused uniform drops its pockets and ID;
+  those are picked up into the crate too.
+- **A long departure.** One still running after five minutes is left alone
+  (the gate stays) rather than cut short.
+- **Resuming.** A run that stops after the departure, for example because the
+  player has not logged in yet, writes `<snapshot>.state.json`. Run the same
+  command with `--resume <that file>` to continue.
+- **What is rebuilt.** Items are rebuilt by type, name, material, stack amount,
+  reagents and contents. Wear, quality, written text and tool parts are not
+  carried, and a mismatch keeps the source crate for an admin.
+- **Reported, not written.** Skills and partial language scores are keyed
+  lists, which the agent cannot write. A knowledge list longer than the
+  agent's list cap (64) is never written back.
+- **One at a time.** Move one player at a time, never in a retry loop. A busy
+  trail ("The trail is busy") clears in about fifteen seconds.
+
+This tool is for regions on a build older than #5557. Once both regions run
+master, the in-game **Admin > Send Player to Region** verb (#5566) sends
+everything natively and checks the arrival one to one.
+
 ## Protocol
 
 Send a Topic request to the world port:
