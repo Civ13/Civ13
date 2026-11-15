@@ -207,6 +207,29 @@ class TailoringTests(unittest.TestCase):
         accessory = (ROOT / 'code/game/objects/items/clothing/under/accessories/accessory.dm').read_text()
         self.assertEqual(accessory.count('bag_style_layers(src, TRUE)'), 2)
 
+    def test_minor_alterations_never_redesign_a_garment(self):
+        alter = (ROOT / 'code/modules/1713/tailoring_alterations.dm').read_text()
+        self.assertIn('#define TAILORING_ALTER_MAX 2', alter)
+        problem = adapter.extract(alter, '/proc/tailoring_alteration_problem')
+        for rule in ('changes > TAILORING_ALTER_MAX', 'if (info && info[2])', 'tailoring_variant_allowed(H, body, state)',
+                     'tailoring_alteration_covers(G.design_body, new_pieces) != tailoring_alteration_covers(G.design_body, G.design_pieces)',
+                     'tailoring_dye_node(after[i])'):
+            self.assertIn(rule, problem)
+        sew = adapter.extract(alter, '/obj/item/tailoring_project/proc/sew_alteration')
+        self.assertEqual(sew.count('tailoring_alteration_problem(user, G, new_colors, new_pieces)'), 2)
+        self.assertEqual(sew.count('alteration_ready(user, site, save_epoch, G)'), 2)
+        self.assertIn('alteration_material_fits(G)', sew)
+        self.assertLess(sew.index('wait_for_tailoring(user, TAILORING_ALTER_TIME)'), sew.index('spend_alteration_sheet(user, site)'))
+        self.assertLess(sew.index('spend_alteration_sheet(user, site)'), sew.index('G.design_colors = '))
+        # Only colours and pieces are ever written: never the body, name, maker or fabric.
+        for field in ('design_body', 'design_name', 'design_maker', 'design_author', 'design_fabric'):
+            self.assertNotRegex(alter, r'G\.%s = ' % field)
+        for forbidden in ('new /obj', 'armor', 'body_parts_covered', '.Blend(', 'qdel(G'):
+            self.assertNotIn(forbidden, alter)
+        attack = adapter.extract(SOURCE, '/obj/item/tailoring_project/attackby')
+        self.assertLess(attack.index('alter_garment(user, garment)'), attack.index('tailoring_fabric_kind_of(W)'))
+        self.assertIn('if (tailoring_body(garment.design_body))', attack)
+
     def test_fabric_and_dyes(self):
         fabrics = re.search(r'var/global/list/tailoring_fabrics = list\((.*?)\)\n\n', SOURCE, re.S)[1]
         self.assertIn('"cloth" = list("stack" = /obj/item/stack/material/cloth', fabrics)

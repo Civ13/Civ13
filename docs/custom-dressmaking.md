@@ -19,8 +19,8 @@ personal-knowledge gate, where enabled. Existing dress recipes are unchanged.
 
 Finished dresses accept the same ordinary accessories as other uniforms,
 including sashes, aprons, capes, ties and bows supported by those accessory items.
-The cut and colors are fixed after cutting; there is no free recoloring of a
-finished dress. Projects and finished designs use normal persistence.
+The cut and colors are fixed after cutting; a finished garment changes only by a
+paid minor alteration (below). Projects and finished designs use normal persistence.
 
 ## Gloves, footwear and belts
 
@@ -48,6 +48,17 @@ bag stays the same item, the style is one saved text var (`bag_style`) and the
 dyes are coloured overlays over the unchanged sprite, loose and worn. Only the
 exact types listed in `bag_style_kinds` are restyled; their subtypes are other
 bags with their own art.
+
+## Minor alterations
+
+Finished tailored clothing, hats, gloves, footwear and belts can be altered
+(`code/modules/1713/tailoring_alterations.dm`). The tailor holds the garment in
+one hand and an uncut tailoring project of the garment's own material in the
+other and uses the garment on the project. One job re-dyes or swaps at most two
+parts for one sheet and 40 ticks, with a preview. It is never a redesign: the
+garment keeps its body, name and designer; a swapped-in piece may not need
+extra fabric; what the garment covers may not change; a new dye or piece must be
+one the tailor knows. Clothing that was not tailored cannot be altered.
 
 ## Scope
 
