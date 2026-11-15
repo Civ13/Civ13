@@ -26,44 +26,36 @@ Fresh water within two tiles refills the crop. Empty channels and saltwater do
 not irrigate; flooded fresh channels and trenches do. Mushrooms retain their
 water exemption. Natural water sources do not have a consumable volume here.
 
-This milestone fixes Europe's catalog selection and finite crop rain storage.
-Map-level reachability, research-gated irrigation construction, seasonal survival
-and channel propagation still need acceptance before treating outdoor bootstrap
-as complete. Modern trays and perennials remain later milestones with explicit
-state ownership, finite inputs, power loss and save/load contracts.
+Map-level reachability is audited per map and climate in
+[the placed map inventory](outdoor-map-inventory.md). Research-gated irrigation
+construction and channel propagation are separate work. Modern trays and
+perennials remain later milestones with explicit state ownership, finite inputs,
+power loss and save/load contracts.
 
-## Natural bootstrap route still requiring acceptance
+## Natural bootstrap route
 
-The production global recipe/research checks establish these gates at a Stone
-Age faction baseline. They do not supply the missing player walkthrough.
+On a persistent book research world a new character knows no chapters, so the
+old wooden-plough route through a faction study bench no longer applies. The
+route below is the one the full-game walkthrough takes on the North America
+map, from empty hands, with player actions only
+([tests/natural_bootstrap](../tests/natural_bootstrap/README.md)).
 
-| Step | Production route | Acceptance still needed |
-| --- | --- | --- |
-| Harvest tool | Two raw wood units offer the wooden knife recipe without Basic Agriculture. | Obtain the wood and craft/equip the knife through normal play. |
-| Plank tool | Two stone units offer the Stone Age hatchet recipe through baseline Basic Tools. | Obtain the stone and craft/equip the hatchet. |
-| Planks | Wood attackby accepts a hatchet; two raw wood units yield one plank per completed split. A saw has a different conversion. | Obtain the wood and perform the timed splitting actions. |
-| Study bench | Eight planks offer the starter research bench. | Craft/place and claim it as a faction with authorised researchers connected. |
-| Basic Agriculture | A tier-zero bench can select the node with no prerequisites. Production accounting completes it at 95 study ticks, not 94. | Earn the ticks through the normal researcher/bench scheduler, including permission and faction checks. |
-| Plough | Completion offers a four-plank wooden plough. Raw logs do not match this global recipe. | Craft/equip it and prepare reachable suitable soil. |
-| Seeds and crop | Help-intent knife forage or the map's direct seed stacks supply the existing seed route. | Reach a compatible source and plot from spawn, then plant, grow and harvest without admin-created inputs. |
-| Later irrigation | Basic Agriculture is its prerequisite and a tier-one bench is required. Modern era does not grant this specialist node. | Earn research and bench upgrades, then construct and test water-source and connected irrigation behavior. |
+| Step | Production route |
+| --- | --- |
+| Reach water | Walk to fresh water with ploughable ground within two tiles. Plain grass and dirt plough; jungle grass, jungle dirt, dust, sand and seasonally flooded dirt do not. |
+| First book | Found a faction (Faction > Create Faction). The founder receives the Stone Age master book and a writing slate. |
+| Basic Toolmaking | Use the book in hand and study the chapter. It takes about a minute and needs daylight or another light. |
+| Flint knife | Search a rock on Grab intent for flint (twice, one per hand), then strike one flint with the other and choose Flint knife. A failed strike shatters the flint; search again. |
+| Wood | Cut a tree down with the knife (about ten cuts) and pick up the logs. |
+| Digging stick | Craft it from two wood with Basic Toolmaking known. |
+| Plough | Use the digging stick on grass (it becomes dirt) and again on the dirt (it becomes a ploughed plot). |
+| Seed | Use the knife on a wild small bush on Help intent. Each bush gives one seed for the area's biome, then rests ten minutes. |
+| Plant and grow | Use the seed on the ploughed plot. Within two tiles of fresh water the crop needs no watering. A stage takes a minute; most crops are ready at the seventh. |
+| Harvest and replant | Use the knife on the ready crop. It leaves produce and at least two seeds; the plot stays ploughed, so a seed goes straight back in. |
 
-The hatchet route requires 24 raw wood units to make the 12 planks for one bench
-and one plough, in addition to the two-unit knife recipe. This is recipe arithmetic,
-not measured gathering cost, timing or a promise that resources are accessible.
-The source paths are `code/modules/materials/material_sheets.dm` for splitting,
-`config/crafting/material_recipes_global.txt` for recipes, and
-`code/modules/research_tree/research_node.dm`, `research_faction.dm` and
-`research_bench.dm` for the research gates. The compiled check and local omission
-control are documented in [the crafting checks](../tests/crafting/README.md).
-
-A factionless Bronze Age player receives the Main-tree Basic Agriculture baseline.
-An established Stone Age faction does not receive it merely because another
-faction advances the world. The route above describes the default global catalog;
-map-specific overrides, other modes and loaded faction state must be checked in
-an actual walkthrough. The six-map placed-resource inventory does not establish
-walking access or this material/research chain. Keep #3048 and #3049 open.
-
-Full-game save evidence from #3073 also contains an independent native startup
-Bad ref diagnostic tracked in #3075. These isolated recipe checks bypass normal
-startup and do not resolve or establish the impact of that diagnostic.
+The walkthrough saves the world while the crop is growing, restarts the server,
+and checks that the character, its learned chapter and tools, each crop's stage
+and its soil come back before it harvests and replants. Season restrictions
+still apply outside jungle, desert and savanna: a crop planted out of season
+waits. The walkthrough does not cover irrigation building, winter survival, or
+what a client draws.
