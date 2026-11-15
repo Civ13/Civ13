@@ -9,6 +9,6 @@
   "config_directory": "D:/GitHub/civ13-nomads-test-lifecycle/server-config",
   "git": "C:/Program Files/Git/cmd/git.exe",
   "python": "C:/path/to/verified/python.exe",
-  "compiler": "C:/path/to/BYOND/516.1681/bin/dm.exe",
-  "daemon": "C:/path/to/BYOND/516.1681/bin/dd.exe"
+  "compiler": "C:/path/to/BYOND/516.1688/bin/dm.exe",
+  "daemon": "C:/path/to/BYOND/516.1688/bin/dd.exe"
 }

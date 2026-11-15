@@ -9,7 +9,10 @@ destination="${destination%/byond/bin}"
 if [ ! -x "$destination/byond/bin/DreamMaker" ]; then
     temporary=$(mktemp -d)
     trap 'rm -rf -- "$temporary"' EXIT
-    timeout -k 5 65 python3 "$script_dir/byond_toolchain.py" download --platform linux --output "$temporary/byond.zip"
+    # Official by default. BYOND_ARCHIVE_SOURCE may name another reviewed source
+    # (community-mirror or repository-release) when the official host refuses the
+    # download; every source is held to the same pinned size and SHA-256.
+    timeout -k 5 65 python3 "$script_dir/byond_toolchain.py" download --platform linux --source "${BYOND_ARCHIVE_SOURCE:-official}" --output "$temporary/byond.zip"
     unzip -q "$temporary/byond.zip" -d "$temporary"
     test -x "$temporary/byond/bin/DreamMaker"
     mkdir -p "$destination"

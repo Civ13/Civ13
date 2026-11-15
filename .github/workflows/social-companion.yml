@@ -39,13 +39,13 @@ jobs:
           exit $LASTEXITCODE
   contracts:
     runs-on: windows-latest
-    timeout-minutes: 4
+    timeout-minutes: 7
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
-      - name: Compile and run original native peer with fake backend
+      - name: Compile native peer, host and child endpoint; run fake-backend and real-pipe child tests
         shell: pwsh
         run: ./tools/opendream-client/native/companion/Build-Offline.ps1
       - name: Retain bounded offline logs without executables or vendor SDK

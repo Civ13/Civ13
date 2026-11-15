@@ -99,7 +99,7 @@ class Config:
     max_bundle_bytes: int = 65536
     max_total_bytes: int = 1048576
     expected_revision: str | None = None
-    expected_byond: str = '516.1681'
+    expected_byond: str = '516.1688'
 
     def __post_init__(self):
         for name in ('game_root', 'output_dir'):

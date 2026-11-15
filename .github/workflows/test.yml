@@ -385,10 +385,7 @@ jobs:
           python3 scripts/check-outdoor-bootstrap.py
 
   extraction-instances:
-    # Historical native fixture contract; not 516.1688 runtime acceptance.
-    env:
-      BYOND_MAJOR: "516"
-      BYOND_MINOR: "1681"
+    # Runs on the canonical pin from the workflow-level version literals; no older engine.
     needs: [changes, local-attestation]
     if: needs.local-attestation.outputs.skip != 'true' && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/extraction') || (github.event_name == 'workflow_dispatch' && inputs.extraction_instance_regressions))
     runs-on: ubuntu-22.04
@@ -408,7 +405,8 @@ jobs:
           sudo timeout 120 apt-get update
           sudo timeout 120 apt-get install -y --no-install-recommends libstdc++6:i386 libgcc-s1:i386 libc6-i386 libcurl4:i386 lib32z1 libncurses6:i386 unzip make
           mkdir BYOND
-          curl --fail --location --connect-timeout 10 --max-time 60 --retry 0 --output BYOND/pinned.zip "https://civ13.com/downloads/${BYOND_MAJOR}.${BYOND_MINOR}_byond_linux.zip"
+          # Checked download: exact reviewed size and SHA-256, refused otherwise.
+          timeout -k 5 65 python3 scripts/byond_toolchain.py download --platform linux --output BYOND/pinned.zip --source repository-release > BYOND/byond-download.json
           unzip -q BYOND/pinned.zip -d BYOND
           (cd BYOND/byond && make here)
       - name: Verify standalone extraction instances and named mutation assertions
