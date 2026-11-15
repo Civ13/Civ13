@@ -47,6 +47,9 @@ function Invoke-Bounded([string]$executable, [string]$arguments, [string]$name, 
     $options = @{FilePath=$executable; WorkingDirectory=$build; WindowStyle='Hidden'; PassThru=$true; RedirectStandardOutput=$stdout; RedirectStandardError=$stderr}
     if ($arguments) { $options.ArgumentList=$arguments }
     $process = Start-Process @options
+    # Windows PowerShell 5.1 reports an empty ExitCode unless the handle is
+    # opened while the process runs; pwsh 7 does not need this.
+    $null = $process.Handle
     if (!$process.WaitForExit($seconds * 1000)) { $process.Kill(); [void]$process.WaitForExit(5000); throw "Owned offline $name process exceeded $seconds seconds." }
     $process.WaitForExit()
     Get-Content -LiteralPath $stdout
