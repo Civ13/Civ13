@@ -1182,6 +1182,7 @@
 #include "code\modules\1713\siege\naval_broadside.dm"
 #include "code\modules\1713\siege\piece.dm"
 #include "code\modules\1713\siege\shell.dm"
+#include "code\modules\1713\siege\siege_engines.dm"
 #include "code\modules\1713\siege\turret.dm"
 #include "code\modules\1713\solid_fuel.dm"
 #include "code\modules\1713\transporter\lever.dm"

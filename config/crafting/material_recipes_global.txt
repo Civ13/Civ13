@@ -2660,6 +2660,15 @@ RECIPE: /material/wood/soft/,APPROVED stamp,/obj/item/weapon/stamp/approved,1,30
 RECIPE: /material/wood/soft/,catapult,/obj/structure/catapult,50,450,1,1,siege weapons,24,33,0,4,null
 
 RECIPE: /material/wood/,siege ladder,/obj/item/weapon/siegeladder,8,100,0,1,siege weapons,24,33,0,8,null
+RECIPE: /material/wood/,battering ram,/obj/structure/siege_engine/ram,30,300,1,1,siege weapons,24,33,0,4,null
+RECIPE: /material/wood/,ballista,/obj/structure/siege_engine/ballista,25,300,1,1,siege weapons,24,33,0,4,null
+RECIPE: /material/wood/,ballista bolt,/obj/item/ballista_bolt,2,40,0,1,siege weapons,24,33,0,8,null
+RECIPE: /material/wood/,siege tower,/obj/structure/siege_engine/tower,60,500,1,1,siege weapons,24,33,0,4,null
+RECIPE: /material/wood/,trebuchet,/obj/structure/catapult/trebuchet,80,600,1,1,siege weapons,24,33,0,4,null
+RECIPE: /material/wood/,portcullis,/obj/structure/castle_gate/portcullis,12,200,1,1,siege weapons,24,33,0,4,null
+RECIPE: /material/wood/,drawbridge,/obj/structure/castle_gate/drawbridge,15,200,1,1,siege weapons,24,33,0,4,null
+RECIPE: /material/wood/,gate winch,/obj/structure/castle_winch,8,120,1,1,siege weapons,24,33,0,4,null
+RECIPE: /material/stone/,murder hole,/obj/structure/murder_hole,3,100,1,1,siege weapons,24,33,0,4,null
 
 //*********************| WOOD HEALTHCARE |**************************
 

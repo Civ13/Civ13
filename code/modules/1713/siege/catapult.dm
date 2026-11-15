@@ -17,6 +17,14 @@
 	flammable = TRUE
 	not_movable = FALSE
 	not_disassemblable = TRUE
+	// Range the crew can set, in tiles, and the blast where the stone lands.
+	var/min_range = 5
+	var/max_range = 80
+	var/list/blast = list(1, 2, 2)
+	// Icon states are [state_prefix]0, [state_prefix]1 and [state_prefix]_fire.
+	var/state_prefix = "catapult"
+	// Deciseconds to wind it up and loose it.
+	var/loose_time = 20
 
 /obj/structure/catapult/New()
 	..()
@@ -53,7 +61,7 @@
 		M.remove_from_mob(W)
 		W.loc = src
 		loaded = W
-		icon_state = "catapult1"
+		icon_state = "[state_prefix]1"
 		update_icon()
 		if (M == user)
 			do_html(M)
@@ -115,8 +123,8 @@
 			loaded = M
 
 	if (href_list["set_angle"])
-		angle = player_input(user, "Set the target distance to what? (From 5 to 80 meters)", null, null, "num", null, FALSE)
-		angle = Clamp(angle, 5, 80)
+		angle = player_input(user, "Set the target distance to what? (From [min_range] to [max_range] meters)", null, null, "num", null, FALSE)
+		angle = Clamp(angle, min_range, max_range)
 
 	if (href_list["fire"])
 
@@ -130,7 +138,7 @@
 			return
 
 
-		if (do_after(user, 20, src))
+		if (do_after(user, loose_time, src))
 
 			// firing code
 
@@ -170,10 +178,10 @@
 			high = TRUE
 			qdel(loaded)
 			loaded = null
-			icon_state = "catapult_fire"
+			icon_state = "[state_prefix]_fire"
 			update_icon()
 			spawn(10)
-				icon_state = "catapult0"
+				icon_state = "[state_prefix]0"
 				update_icon()
 			var/list/old_valid_targets = list()
 
@@ -242,7 +250,7 @@
 								target.visible_message("<span class = 'danger'>The ceiling collapses!</span>")
 							message_admins("Catapult projectile hit at [target.x], [target.y], [target.z].")
 							log_admin("Catapult projectile hit at [target.x], [target.y], [target.z].")
-							explosion(target, 1, 2, 2, 0)
+							explosion(target, blast[1], blast[2], blast[3], 0)
 						break
 
 					sleep(0.5)
