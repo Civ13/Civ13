@@ -252,12 +252,12 @@
 	grip_tightenable = TRUE
 	jostle_drop_chance = 60
 	should_save = FALSE
-	var/obj/structure/vehicleparts/frame/door_frame = null
-	var/mob/living/human/holder = null
-	var/hold_started = 0
-	var/strain = 0
-	var/strain_time = 0
-	var/released = FALSE
+	var/tmp/obj/structure/vehicleparts/frame/door_frame = null
+	var/tmp/mob/living/human/holder = null
+	var/tmp/hold_started = 0
+	var/tmp/strain = 0
+	var/tmp/strain_time = 0
+	var/tmp/released = FALSE
 
 /obj/item/car_door_hold/proc/attach(mob/living/human/user, obj/structure/vehicleparts/frame/F)
 	if (!user || !F || !user.put_in_active_hand(src))
