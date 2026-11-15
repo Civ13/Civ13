@@ -319,6 +319,23 @@ hook is `fluid_receive()`. Non-steel tanks use the tintable grey sprite from
 `tests/sprites/create_fluid_tanks.py`. Reaction vessels and engine boilers do
 not take a material yet.
 
+## Sickle and hoe
+
+`code/modules/materials/farm_tools.dm` adds two farm tools that ask their
+material what they are worth.
+
+The sickle (`/obj/item/weapon/material/kitchen/utensil/knife/sickle`) is a
+knife, so it harvests, and it reaps ripe neighbours of the same crop the way
+the flint sickle does. `sickle_reach(name)` is 2 plus one for each 50 of
+firmness: copper 2, bronze and iron 3, steel 4. It costs 2 metal, 1 wood and a
+hammer.
+
+The hoe (`/obj/item/weapon/plough/hoe`) is a plough, so it breaks ground
+wherever a plough does. It is a plain tool in the work-head role: wood is the
+usual material at `usespeed` 1, and a copper, bronze, iron or steel hoe is
+`tool_speed()` times that (1.45 to 1.5, a plough is 1.5). Its metal rows are
+generated from `config/recipe_variants.json`.
+
 ## Rolling stock
 
 The wheel is a machine part (`/obj/item/machine_part/wheel`, `ROLE_WHEEL`):
