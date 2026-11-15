@@ -63,6 +63,8 @@ class AnvilStackRecipe(unittest.TestCase):
                    menu_label=label, WWinput=menu, splittext=lambda value, sep: {1: value.split(sep)[0]},
                    crafting_recipe_allowed=lambda human, recipe: self.allowed,
                    do_after=wait, qdel=discard,
+                   # No trip hammer or machine beside this anvil: the job takes its base time.
+                   forge_time=lambda base, category=None: base,
                    to_chat=lambda user, message: self.messages.append(message),
                    update_icon=lambda: None,
                    note_craft_practice=lambda user, path: None,
