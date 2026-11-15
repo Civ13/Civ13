@@ -22,6 +22,7 @@ Do not hand-edit the generated maps; change this file or continents.py and
 regenerate, then regenerate the height and river files (docs/americas-regions.md).
 """
 import argparse
+import heapq
 import math
 import sys
 from collections import deque
@@ -347,12 +348,7 @@ def build(name, width=None, height=None):
                     pc.draw.ellipse([(x - r) * SS, (y - r) * SS, (x + r) * SS, (y + r) * SS], fill=255)
     river = (p.field() > 0.42) & land
     channel = (pc.field() > 0.5) & river
-    fresh = lake | river
-    lake_deep = lake & (distance(~lake, 4) >= 3)
-
-    dry = land & ~fresh
-    d_sea = distance(sea, 24)
-    d_water = distance(~dry, 24)
+    drawn_river = river.copy()
 
     # ---- biomes --------------------------------------------------------
     yy, xx = np.mgrid[0:h, 0:w].astype(np.float32)
@@ -394,6 +390,57 @@ def build(name, width=None, height=None):
     for pts, width_tiles in spec['passes']:
         p.stroke(meander(rng, fr.pts(pts), amplitude=2.2, wavelength=14.0), width_tiles)
     gap = (p.field() + 0.10 * value_noise(rng, w, h, 4)) > 0.35
+
+    # ---- relief and drainage -------------------------------------------
+    # Height above the sea in metres: a ramp up from the coast, rolling
+    # hills, the mountain chains, and valleys along the drawn rivers.
+    inland = np.clip((blur(land.astype(np.float32), 30 * scale) - 0.5) * 2.0, 0.0, 1.0)
+    elev = 15.0 + 200.0 * inland ** 0.9
+    elev += 170.0 * np.clip(fbm(rng, w, h, 26 * scale, 3), 0.0, None) + 50.0 * fbm(rng, w, h, 9 * scale, 2)
+    # Foothills spread wide of each range; the range itself climbs to its crest.
+    elev += 260.0 * np.clip(blur(np.clip(ridge, 0.0, 1.0), 10 * scale) - 0.15, 0.0, 1.0)
+    high = 950.0 * np.clip(ridge - 0.45, 0.0, 1.2) ** 1.2
+    high[gap] *= 0.25
+    elev += high
+    elev -= 90.0 * blur(drawn_river.astype(np.float32), 7 * scale) + 60.0 * blur(lake.astype(np.float32), 6 * scale)
+    elev = np.maximum(elev, 4.0)
+    # Rain: the share of its water each tile sends downhill.
+    rain = np.zeros((h, w), dtype=np.float32)
+    for index, kind in enumerate(BIOMES):
+        rain[biome == index] = RAIN[kind]
+    # Streams wander: the drainage reads the relief through a fine grain, so a
+    # course bends round small rises instead of running straight down a slope.
+    grain = 26.0 * value_noise(rng, w, h, 5) + 18.0 * value_noise(rng, w, h, 11) + 12.0 * rng.random((h, w), dtype=np.float32)
+    parent, order, filled = drainage(elev + grain, land, lake | drawn_river, sea)
+    filled -= grain
+    acc = accumulate(parent, order, rain)
+    # The tiles that gather the most land become rivers that join the drawn
+    # ones: tributaries, and streams on the islands and the far coasts.
+    open_land = land & ~lake & ~drawn_river
+    share = spec.get('tributary_share', 0.011)
+    level = np.quantile(acc[open_land], 1.0 - share) if open_land.any() else 0.0
+    tributary = open_land & (acc >= level)
+    # Drop stray scraps that touch no other water, then widen the big ones.
+    labels, sizes = components(tributary | lake | drawn_river)
+    keep = np.array([s >= 12 for s in sizes])
+    tributary &= keep[labels]
+    wide = tributary & (acc >= level * 9.0)
+    tributary |= grow(wide, 1) & open_land
+    river |= tributary
+    # Hollows the drainage had to fill deep become ponds and small lakes.
+    depth = filled - elev
+    pond = open_land & ~river & (depth > 26.0) & (ridge < 0.5)
+    labels, sizes = components(pond)
+    keep = np.array([10 <= s <= 2500 * scale * scale for s in sizes])
+    pond &= keep[labels]
+    lake |= pond
+    river &= ~lake
+
+    fresh = lake | river
+    lake_deep = lake & (distance(~lake, 4) >= 3)
+    dry = land & ~fresh
+    d_sea = distance(sea, 24)
+    d_water = distance(~dry, 24)
     rock = (ridge > 0.56) & dry & ~gap & (d_water >= 2) & ~grow(river, 2)
     # High valleys: open ground inside the widest massifs, reached by a pass.
     inner = distance(~rock, 8)
@@ -410,6 +457,7 @@ def build(name, width=None, height=None):
         rock |= (d < r) & (d >= r * 0.75) & dry & (d_water >= 2)
         # One way into the crater, from the south.
         rock &= ~((np.abs(xx - cx) < 1.6) & (yy > cy) & (yy < cy + r + 2))
+        elev += np.clip(r * 1.6 - d, 0.0, None) * 28.0
     rock &= ~(volcano_lava | volcano_ash)
     core &= rock
 
@@ -549,7 +597,87 @@ def build(name, width=None, height=None):
         'trails': [(t['id'], len(pl)) for t, pl in trails],
         'objects': len(objects),
     }
-    return turf, area, objects, stats
+    stats['tributaries'] = int(tributary.sum())
+    stats['ponds'] = int(pond.sum())
+    return turf, area, objects, stats, np.rint(elev).astype(np.int32)
+
+
+RAIN = {'tundra': 0.5, 'taiga': 0.8, 'forest': 1.0, 'semiarid': 0.35, 'desert': 0.08, 'jungle': 1.5,
+        'savanna': 0.6, 'swamp': 1.2}
+
+
+def drainage(elev, land, water, sea):
+    """Priority flood from the sea inwards (as the relief generator of
+    tools/procedural_maps does): the lowest reachable tile is always taken
+    next, so every tile has a way down that climbs as little as possible.
+    Drawn rivers and lakes are taken as soon as they are reached, so the land
+    around them drains into them. Returns each tile's downhill neighbour
+    (-1 at the sea), the order tiles were taken in, and the filled height."""
+    h, w = elev.shape
+    n = h * w
+    e = elev.ravel().tolist()
+    is_land = land.ravel().tolist()
+    is_water = water.ravel().tolist()
+    parent = [-2] * n
+    filled = list(e)
+    order = []
+    heap = []
+    seq = 0
+    coast = land & grow(sea, 1)
+    for i in np.flatnonzero(coast.ravel()).tolist():
+        parent[i] = -1
+        heap.append((0.0 if is_water[i] else e[i], seq, i))
+        seq += 1
+    heapq.heapify(heap)
+    push, pop = heapq.heappush, heapq.heappop
+    while heap:
+        key, _, i = pop(heap)
+        order.append(i)
+        filled[i] = key if key > e[i] else e[i]
+        x = i % w
+        for q in (i - w, i + w, i - 1 if x else -1, i + 1 if x < w - 1 else -1):
+            if 0 <= q < n and is_land[q] and parent[q] == -2:
+                parent[q] = i
+                k = key if is_water[q] else (e[q] if e[q] > key else key + 0.01)
+                seq += 1
+                push(heap, (k, seq, q))
+    return parent, order, np.array(filled, dtype=np.float32).reshape(h, w)
+
+
+def accumulate(parent, order, rain):
+    """Water gathered by each tile from everything that drains through it."""
+    acc = rain.ravel().astype(np.float64).tolist()
+    for i in reversed(order):
+        q = parent[i]
+        if q >= 0:
+            acc[q] += acc[i]
+    return np.array(acc, dtype=np.float32).reshape(rain.shape)
+
+
+def write_sidecars(name, turf, elev):
+    """Hill levels, river currents and flood reaches for one map, by the rules
+    generated lands use (tools/procedural_maps/terrain_files.py): water is
+    level 0, the ground climbs out of it and follows the relief."""
+    sys.path.insert(0, str(ROOT))
+    from tools.procedural_maps import terrain_files
+    terrain_heights, river_flow, river_flood = terrain_files._scripts()
+    h, w = turf.shape
+    rows = [[str(t) for t in row] for row in turf.tolist()]
+    wet = [['water' in t for t in row] for row in rows]
+    metres = elev.tolist()
+    cells = [[{'elevation_m': metres[y][x], 'terrain': 'WATER' if wet[y][x] else 'LAND'} for x in range(w)]
+             for y in range(h - 1, -1, -1)]
+    doc = {'width': w, 'height': h, 'active_layer': 0, 'layers': [{'cells': cells}]}
+    levels = [[v / 2 for v in row] for row in reversed(terrain_files.land_levels(doc))]
+    base = ROOT / 'maps' / 'heights' / ('nomads_americas_%s' % name)
+    terrain_heights.write_heights(str(base) + '.txt', w, h, {1: levels})
+    flow = river_flow.build(rows, heights=levels)
+    Path(str(base) + '.flow.txt').write_text('%s\nsize %d %d\nz 1\n%s\n' % (river_flow.HEADER, w, h, '\n'.join(flow)),
+                                             encoding='ascii', newline='\n')
+    built = river_flood.build(rows, levels)
+    river_flood.write_flood(str(base) + '.flood.txt', w, h, 1, *built)
+    return {'highest_level': max(max(row) for row in levels), 'flowing': sum(c != '.' for row in flow for c in row),
+            'reaches': len(built[0]), 'hollows': len(built[3]) if len(built) > 3 else 0}
 
 
 def open_pockets(walk, rock, dry):
@@ -717,11 +845,13 @@ def main(argv=None):
     args = parser.parse_args(argv)
     for name in ([args.only] if args.only else sorted(continents.MAPS)):
         size = [int(v) for v in args.size.split('x')] if args.size else (None, None)
-        turf, area, objects, stats = build(name, *size)
+        turf, area, objects, stats, elev = build(name, *size)
         out = Path(args.out) if args.out and args.only else ROOT / continents.MAPS[name]['path']
         write_dmm(out, turf, area, objects)
         if args.preview and args.only:
             preview(args.preview, turf, objects)
+        if not (args.out or args.size):
+            stats['sidecars'] = write_sidecars(name, turf, elev)
         print(name, out, stats)
 
 

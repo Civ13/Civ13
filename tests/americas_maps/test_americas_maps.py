@@ -19,6 +19,7 @@ MAPS = {
         'trail_edge': 'south',
         'heights': 'maps/heights/nomads_americas_north.txt',
         'flow': 'maps/heights/nomads_americas_north.flow.txt',
+        'flood': 'maps/heights/nomads_americas_north.flood.txt',
     },
     'south': {
         'path': 'maps/nomads/nomads_americas_south.dmm',
@@ -27,6 +28,7 @@ MAPS = {
         'trail_edge': 'north',
         'heights': 'maps/heights/nomads_americas_south.txt',
         'flow': 'maps/heights/nomads_americas_south.flow.txt',
+        'flood': 'maps/heights/nomads_americas_south.flood.txt',
     },
 }
 # The size the memory benchmark covers (docs/americas-regions.md): a map may
@@ -204,21 +206,38 @@ class AmericasMapsTest(unittest.TestCase):
                             found.add('east')
                 self.assertLessEqual(wanted[name], found)
 
-    def test_height_and_flow_files_match_the_maps(self):
+    def test_height_flow_and_flood_files_match_the_maps(self):
+        import sys
+        import tempfile
+        sys.path.insert(0, str(ROOT / 'scripts'))
+        import river_flood
+        import river_flow
+        import terrain_heights
         for name, level in self.levels.items():
             with self.subTest(name):
-                lines = (ROOT / level.spec['heights']).read_text(encoding='ascii').split('\n')
-                self.assertEqual(lines[0], 'civ13-terrain-heights 1')
-                self.assertEqual(lines[1], f'size {level.width} {level.height}')
-                self.assertEqual(lines[2], 'z 1')
-                rows = lines[3:3 + level.height]
-                self.assertEqual({len(r) for r in rows}, {level.width})
-                # Water is level 0 and mountains stand above the plains.
-                self.assertGreaterEqual(max(max(r) for r in rows), 'a')
-                flow = (ROOT / level.spec['flow']).read_text(encoding='ascii').split('\n')
-                self.assertEqual(flow[:3], ['civ13-river-flow 1', f'size {level.width} {level.height}', 'z 1'])
-                self.assertEqual({len(r) for r in flow[3:3 + level.height]}, {level.width})
-                self.assertGreater(sum(len(r) - r.count('.') for r in flow[3:3 + level.height]), 2000)
+                heights_path = ROOT / level.spec['heights']
+                width, height, by_z = terrain_heights.read_heights(heights_path)
+                self.assertEqual(heights_path.read_text(encoding='ascii').split('\n', 1)[0], terrain_heights.HEADER)
+                self.assertEqual((width, height, sorted(by_z)), (level.width, level.height, [1]))
+                levels = by_z[1]
+                rows = [[level.turf[level.key(row, col)] for col in range(level.width)] for row in range(level.height)]
+                # Water is level 0, dry ground never is, and the mountains reach the top.
+                for row in range(level.height):
+                    for col in range(level.width):
+                        self.assertEqual(levels[row][col] == 0, 'water' in rows[row][col], (row, col))
+                self.assertGreaterEqual(max(max(r) for r in levels), 12)
+                # Currents and flood reaches are the ones the builders make from this map.
+                flow = river_flow.build(rows, heights=levels)
+                text = '%s\nsize %d %d\nz 1\n%s\n' % (river_flow.HEADER, level.width, level.height, '\n'.join(flow))
+                self.assertEqual((ROOT / level.spec['flow']).read_text(encoding='ascii'), text)
+                self.assertGreater(sum(len(r) - r.count('.') for r in flow), 2000)
+                built = river_flood.build(rows, levels)
+                with tempfile.TemporaryDirectory() as folder:
+                    out = Path(folder) / 'flood.txt'
+                    river_flood.write_flood(out, level.width, level.height, 1, *built)
+                    self.assertEqual(out.read_bytes(), (ROOT / level.spec['flood']).read_bytes())
+                self.assertGreater(len(built[0]), 100)
+                self.assertGreater(len(built[3]), 20)
 
     def test_regions_are_registered_in_source(self):
         dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
