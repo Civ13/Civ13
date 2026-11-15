@@ -64,6 +64,9 @@ var/vehicle_offset_probe_watched = FALSE
 
 /datum/vehicle_offset/watched()
 	return vehicle_offset_probe_watched
+
+/datum/vehicle_offset/axis/watched()
+	return vehicle_offset_probe_watched
 var/list/vehicle_offset_probe_receipt = list()
 
 /proc/vehicle_offset_probe_assert(ok, label)
@@ -491,6 +494,96 @@ var/list/vehicle_offset_probe_receipt = list()
 	vehicle_offset_probe_assert(!deckhand.human_subtile_shape() || deckhand.step_x >= -16, "off_deck_shape_as_land")
 	qdel(W)
 	vehicle_offset_probe_assert(!vehicle_offset_riders.len || !(locate(/obj/structure/vehicle_offset_probe_deck) in vehicle_offset_riders), "riders_cleared_on_destroy")
+
+	// Phase 2 (vehicle_offset_frame.dm): a frame car in gear rolls by pixels,
+	// everything aboard on one offset, coasts square out of gear, squares
+	// before a turn and stops flush and square before a wall.
+	vehicle_offset_probe_watched = TRUE
+	var/obj/structure/vehicleparts/axis/A2 = vehicle_offset_probe_car(36, 4)
+	var/mob/living/human/vehicle_offset_probe_rider/rider2 = new(locate(36, 5, 1))
+	A2.engine.on = TRUE
+	vehicle_offset_probe_assert(A2.check_engine(), "frame_car_engine_runs ([A2.get_weight()] of [A2.maxpower])")
+	var/list/car2_frames = list()
+	for (var/obj/structure/vehicleparts/frame/F in A2.components)
+		car2_frames += F
+	var/obj/structure/vehicleparts/frame/front2 = car2_frames[1]
+	for (var/obj/structure/vehicleparts/frame/F in car2_frames)
+		if (F.y > front2.y)
+			front2 = F
+	A2.currentspeed = 1
+	A2.vehicle_m_delay = 3
+	A2.moving = TRUE
+	vehicle_offset_probe_assert(A2.vehicle_offset_drives() && A2.vehicle_offset_heading() == NORTH, "frame_car_rolls_the_way_it_faces")
+	vehicle_offset_probe_watched = FALSE
+	A2.offset_mover.watch_checked = -1000
+	vehicle_offset_probe_assert(!A2.vehicle_offset_drives(), "frame_car_unwatched_tile_steps")
+	vehicle_offset_probe_watched = TRUE
+	var/car2_from = vehicle_offset_probe_px(front2)[2]
+	var/rider2_from = vehicle_offset_probe_px(rider2)[2]
+	for (var/i = 1 to 40)
+		vehicle_offset_probe_assert(A2.vehicle_offset_tick() == world.tick_lag, "frame_car_tick_[i]_every_tick")
+		var/same = TRUE
+		for (var/obj/structure/vehicleparts/frame/F in car2_frames)
+			if (F.step_y != front2.step_y || F.step_x)
+				same = FALSE
+		vehicle_offset_probe_assert(same && rider2.step_y == front2.step_y && (rider2 in A2.offset_mover.carried) && A2.step_y == front2.step_y, "frame_car_tick_[i]_together")
+		vehicle_offset_probe_assert(vehicle_offset_probe_centred(front2), "frame_car_tick_[i]_filed")
+	var/car2_rolled = vehicle_offset_probe_px(front2)[2] - car2_from
+	var/car2_expected = round(40 * vehicle_offset_speed(4))
+	vehicle_offset_probe_assert(abs(car2_rolled - car2_expected) <= 1 && vehicle_offset_probe_px(rider2)[2] - rider2_from == car2_rolled, "frame_car_rolls_by_pixels ([car2_rolled] of [car2_expected])")
+	vehicle_offset_probe_assert(A2.offset_mover.crossings >= 3 && A2.moving, "frame_car_tile_steps_under_the_offset ([A2.offset_mover.crossings])")
+	vehicle_offset_probe_assert(rider2.carried_by_vehicle(), "frame_car_rider_makes_no_footsteps")
+	vehicle_offset_probe_receipt["frame_car_px_in_40_ticks"] = car2_rolled
+	// Out of gear it coasts on and stops square on its tiles.
+	A2.moving = FALSE
+	A2.currentspeed = 0
+	var/coast_from = vehicle_offset_probe_px(front2)[2]
+	var/coast_ticks = 0
+	vehicle_offset_probe_assert(A2.offset_coast > 0, "frame_car_coasts")
+	for (var/i = 1 to 300)
+		coast_ticks++
+		if (!A2.vehicle_offset_tick())
+			break
+		vehicle_offset_probe_assert(rider2.carried_by_vehicle(), "frame_car_coast_[i]_no_footsteps")
+	var/coasted = vehicle_offset_probe_px(front2)[2] - coast_from
+	vehicle_offset_probe_assert(!A2.offset_coast && !front2.step_y && !rider2.step_y && !A2.offset_mover.carried.len && coasted > 0 && coasted <= 32, "frame_car_coasts_square ([coasted] px in [coast_ticks] ticks)")
+	vehicle_offset_probe_assert(rider2.loc == locate(36, front2.y - 1, 1) && !rider2.carried_by_vehicle(), "frame_car_parked_rider_walks")
+	vehicle_offset_probe_receipt["frame_car_coast_px"] = coasted
+	// A turn squares it first.
+	A2.currentspeed = 1
+	A2.moving = TRUE
+	for (var/i = 1 to 3)
+		A2.vehicle_offset_tick()
+	vehicle_offset_probe_assert(front2.step_y > 0, "frame_car_mid_tile")
+	A2.check_corners()
+	A2.check_matrix()
+	A2.do_matrix(A2.dir, TURN_RIGHT(A2.dir), "right")
+	var/squared = TRUE
+	for (var/obj/structure/vehicleparts/frame/F in car2_frames)
+		if (F.step_x || F.step_y)
+			squared = FALSE
+	vehicle_offset_probe_assert(squared && !rider2.step_x && !rider2.step_y && A2.offset_coast > 0, "frame_car_turn_squares_first ([A2.dir])")
+	if (A2.dir != NORTH)
+		A2.check_corners()
+		A2.check_matrix()
+		A2.do_matrix(A2.dir, TURN_LEFT(A2.dir), "left")
+	vehicle_offset_probe_assert(A2.dir == NORTH, "frame_car_turns_back_north")
+	// A wall ahead stops it flush and square, and out of gear.
+	front2 = car2_frames[1]
+	for (var/obj/structure/vehicleparts/frame/F in car2_frames)
+		if (F.y > front2.y)
+			front2 = F
+	var/car2_wall = front2.y + 3
+	for (var/obj/structure/vehicleparts/frame/F in car2_frames)
+		if (F.y == front2.y)
+			new /obj/structure/vehicle_offset_probe_wall(locate(F.x, car2_wall, 1))
+	A2.currentspeed = 1
+	A2.moving = TRUE
+	for (var/i = 1 to 300)
+		if (!A2.vehicle_offset_tick())
+			break
+	vehicle_offset_probe_assert(!A2.moving && !A2.currentspeed && !A2.offset_coast && !front2.step_y && front2.y == car2_wall - 1, "frame_car_stops_flush_before_a_wall ([front2.y],[front2.step_y],[car2_wall])")
+	vehicle_offset_probe_assert(!A2.offset_mover.carried.len && !rider2.step_y, "frame_car_crash_lets_go")
 
 	// A hull-sized load: 1000 things on one offset, for the ship and train budget.
 	var/datum/vehicle_offset/H = new(null)
