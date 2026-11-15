@@ -114,10 +114,14 @@ faction in the region hears you.
   player in a roster it POSTs to the bot (`/webhook/<server>/voice_roster`,
   webhook key in a header, https or loopback only). The bot answers with
   `{"ids": {ckey: Discord user ID}}`.
-- The launcher shows the bot its voice key over HTTPS to get its access token,
-  so a token never crosses the game's unencrypted connection. The bot sets the
-  members of the region and team lobbies from the roster.
-- Twice a second the launcher asks the game `civ13_voice_state=<key>` for
+- After the join, the raw key never crosses the network again. The launcher
+  asks the bot for its access token with `sha256("civ13-voice-token:" + key)`,
+  and the bot seals the answer with AES-256-GCM under
+  `HKDF-SHA256(key, info "civ13-voice-seal")`. The bot's web API is plain
+  HTTP, so an eavesdropper sees only sealed bytes. The bot sets the members of
+  the region and team lobbies from the roster.
+- Twice a second the launcher asks the game
+  `civ13_voice_state=sha1("civ13-voice-state:" + key)` for
   `{v, gen, me, hear: {id: volume}, team}`. That call has its own per-address
   limiter ahead of the generic topic cooldown. Region-call participants not in
   `hear` are muted, `gen` changes on a new body or death, and an answer older

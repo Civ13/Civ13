@@ -39,6 +39,12 @@
 	if(!urlsafe.Find(key)) return null
 	return key
 
+// What the launcher sends when it polls: sha1 of a label and its key, so the
+// key itself never crosses the network after the join (the bot seals the
+// launcher's Discord token with a key derived from it).
+/proc/voice_poll_id(key)
+	return sha1("civ13-voice-state:[key]")
+
 // 0-100: how loud a speaker this many tiles away sounds.
 /proc/voice_volume_at(distance)
 	if(!isnum(distance) || distance < 0 || distance > VOICE_RANGE) return 0
@@ -72,6 +78,7 @@ var/global/datum/voice_chat/voice_chat = new
 	var/list/address_next = list() // address -> world.time of the next allowed call
 	var/list/generations = list() // voice key -> list("gen", "mob", "alive")
 	var/list/ids = list() // ckey -> Discord user ID, from the bot's roster answer
+	var/list/poll_ids = list() // voice_poll_id(key) -> voice key
 	var/last_roster = null // json of the last roster POSTed
 	var/last_roster_at = -100000
 	var/datum/http_request/roster_request = null
@@ -83,6 +90,7 @@ var/global/datum/voice_chat/voice_chat = new
 		return // a duplicate key keeps its first owner; the second launcher gets nothing
 	C.voice_key = key
 	clients_by_key[key] = C
+	poll_ids[voice_poll_id(key)] = key
 	if(!roster_timer)
 		roster_timer = addtimer(CALLBACK(src, PROC_REF(roster_tick)), VOICE_ROSTER_INTERVAL, TIMER_LOOP | TIMER_STOPPABLE)
 
@@ -90,6 +98,7 @@ var/global/datum/voice_chat/voice_chat = new
 	if(!C || !C.voice_key) return
 	if(clients_by_key[C.voice_key] == C)
 		clients_by_key -= C.voice_key
+		poll_ids -= voice_poll_id(C.voice_key)
 	answers -= C.voice_key
 	generations -= C.voice_key
 	C.voice_key = null
@@ -178,8 +187,9 @@ var/global/datum/voice_chat/voice_chat = new
 // cooldown: a launcher asks about twice a second. Calls faster than that from
 // one address get nothing back, and never a ban.
 /datum/voice_chat/proc/handle_topic(list/input, addr)
-	var/key = input["civ13_voice_state"]
-	if(!istext(key) || length(key) < VOICE_KEY_MIN_LENGTH || length(key) > VOICE_KEY_MAX_LENGTH)
+	var/poll_id = input["civ13_voice_state"]
+	var/static/regex/hex40 = regex(@"^[0-9a-f]{40}$")
+	if(!istext(poll_id) || !hex40.Find(poll_id))
 		return ""
 	var/host = "?"
 	if(istext(addr))
@@ -191,7 +201,7 @@ var/global/datum/voice_chat/voice_chat = new
 	if(address_next.len >= VOICE_ADDRESS_LIMIT)
 		address_next.Cut()
 	address_next[host] = world.time + VOICE_ADDRESS_INTERVAL
-	return state(key)
+	return state(poll_ids[poll_id])
 
 // One entry per eligible voice player in this world: ckey, the launcher's
 // voice key (so the bot can hand that launcher its token) and team ("" for none).
@@ -218,6 +228,7 @@ var/global/datum/voice_chat/voice_chat = new
 		var/client/C = clients_by_key[key]
 		if(!C || C.voice_key != key)
 			clients_by_key -= key
+			poll_ids -= voice_poll_id(key)
 			answers -= key
 			generations -= key
 	if(roster_request)

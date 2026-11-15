@@ -138,12 +138,14 @@ var/voice_runtime_error = FALSE
 /proc/voice_limiter_checks()
 	var/datum/voice_chat/V = new
 	var/key = "abcdefghijklmnopqrstuvwxyzABCDEF"
-	var/list/input = list("civ13_voice_state" = key)
+	voice_check(voice_poll_id(key) == sha1("civ13-voice-state:[key]") && length(voice_poll_id(key)) == 40, "the poll id is a sha1 of the key")
+	var/list/input = list("civ13_voice_state" = voice_poll_id(key))
 	var/first = V.handle_topic(input, "1.2.3.4:5000")
 	var/list/answer = json_decode(first)
 	voice_check(answer["v"] == 1 && answer["gen"] == 0 && answer["ready"] == -1, "an unknown key gets an empty answer")
 	voice_check(V.handle_topic(input, "1.2.3.4:5001") == "", "a second call inside the interval gets nothing")
 	voice_check(V.handle_topic(input, "5.6.7.8:5000") != "", "another address is not slowed down")
-	voice_check(V.handle_topic(list("civ13_voice_state" = "short"), "9.9.9.9") == "", "a short key gets nothing")
+	voice_check(V.handle_topic(list("civ13_voice_state" = "short"), "9.9.9.9") == "", "a malformed poll id gets nothing")
+	voice_check(V.handle_topic(list("civ13_voice_state" = key), "9.9.9.8") == "", "the raw key is not accepted on the wire")
 	V.address_next["1.2.3.4"] = world.time - 1
 	voice_check(V.handle_topic(input, "1.2.3.4:5002") != "", "after the interval it answers again")
