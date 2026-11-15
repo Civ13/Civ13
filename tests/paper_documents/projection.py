@@ -69,7 +69,7 @@ def expression(value):
  return value
 
 ALLOWED={'len','paper_document_field_open','paper_document_envelope_open','paper_document_bundle_page','paper_document_held_folder','range','round','length','isnull','isnum','ispath','istext','islist','lowertext','copytext','text2ascii','is_actor','is_pen','is_living','istype','isturf','isghost','json_encode','dm_text','section_id','copy_keys','copy_value','copy_append','copy_assoc','new_budget','new_record_budget','max','min','md5','stars','paper_document_copy','paper_document_legacy_snapshot','paper_document_keys','paper_document_ink','paper_document_section_valid','paper_document_record_valid','paper_document_prepare_edit','paper_document_commit_edit','paper_document_mint_id','paper_authoring_notify','paper_written_language_types','paper_written_language','paper_knows_written_language'}
-METHODS={'get','append','can_speak','get_active_hand','restrained','Adjacent','get_signature','has_access','can_mutate'}
+METHODS={'get','append','can_speak','language_score','get_active_hand','restrained','Adjacent','get_signature','has_access','can_mutate'}
 def project(source,signature,args,env,method=False):
  lines=['def projected('+args+'):']
  for raw in body(source,signature).splitlines():
@@ -137,6 +137,8 @@ class Actor(Ref):
  def __init__(self,kind='human'):
   self.kind=kind;self.client=Ref();self.client.mob=self;self.stat=0;self.bound=False;self.languages=[];self.universal_speak=False;self.muted=False;self.default_language=None;self.active=None
  def can_speak(self,L):return self.universal_speak or L in self.languages
+ # Proficiency: a language in the fake's list is held fully; scores are tested in tests/language_proficiency.
+ def language_score(self,L):return 100 if self.can_speak(L) else 0
  def restrained(self):return self.bound
  def get_active_hand(self):return self.active
 class Pen(Ref):
@@ -174,7 +176,7 @@ def environment(bytes_mode=False):
   return False
  def mint(paper):counter[0]+=1;return hashlib.md5(('fixture-'+str(counter[0])).encode()).hexdigest()
  env=dict(__builtins__={},len=len,range=range,round=math.floor,isinstance=isinstance,dict=dict,length=length,isnull=lambda v:v is None,isnum=lambda v:isinstance(v,(int,float)),ispath=lambda v:isinstance(v,TypePath),istext=lambda v:isinstance(v,str) and not isinstance(v,TypePath),islist=lambda v:isinstance(v,(dict,list)),lowertext=lambda v:v.lower(),copytext=lambda v,a=1,b=None:v[a-1:None if b is None else b-1],text2ascii=lambda v,i=1:ord(v[i-1]),dm_text=lambda v:'' if v is None else str(v),MAX_PAPER_MESSAGE_LEN=MAXIMUM,
-  is_actor=lambda v:isinstance(v,Actor),is_pen=lambda v:isinstance(v,Pen),is_living=lambda v:isinstance(v,Actor) and v.kind!='ghost',istype=istype,isturf=lambda v:getattr(v,'kind',None)=='turf',isghost=lambda v:getattr(v,'kind',None)=='ghost',json_encode=lambda v:json.dumps(v,separators=(',',':'),ensure_ascii=False),section_id=lambda v:'section-'+str(v['next_section']),copy_keys=lambda v:list(v) if isinstance(v,dict) else v,copy_value=lambda v,k:v[k] if isinstance(v,dict) else None,copy_append=copy_append,copy_assoc=copy_assoc,new_budget=Budget,stars=lambda v:'*'*len(v or ''),paper_document_mint_id=mint,paper_written_language_types=lambda:dict(IDS),all_languages={v.name:v for v in langs.values()},INNATE=64,SIGNLANG=8,NONVERBAL=4,HIVEMIND=16)
+  is_actor=lambda v:isinstance(v,Actor),is_pen=lambda v:isinstance(v,Pen),is_living=lambda v:isinstance(v,Actor) and v.kind!='ghost',istype=istype,isturf=lambda v:getattr(v,'kind',None)=='turf',isghost=lambda v:getattr(v,'kind',None)=='ghost',json_encode=lambda v:json.dumps(v,separators=(',',':'),ensure_ascii=False),section_id=lambda v:'section-'+str(v['next_section']),copy_keys=lambda v:list(v) if isinstance(v,dict) else v,copy_value=lambda v,k:v[k] if isinstance(v,dict) else None,copy_append=copy_append,copy_assoc=copy_assoc,new_budget=Budget,stars=lambda v:'*'*len(v or ''),paper_document_mint_id=mint,paper_written_language_types=lambda:dict(IDS),all_languages={v.name:v for v in langs.values()},INNATE=64,SIGNLANG=8,NONVERBAL=4,HIVEMIND=16,LANGUAGE_CONVERSATIONAL=60)
  env['new_record_budget']=RecordBudget
  # Container seams for the base access check (production bodies are projected
  # separately in test_containers.py).

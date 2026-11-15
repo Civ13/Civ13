@@ -2327,10 +2327,12 @@ SUITES = {
     # Language proficiency: pacing numbers and learn/speak/hear boundaries.
     'language_proficiency': {'files': ('tests/language_proficiency/test_proficiency.py',),
         'paths': ('tests/language_proficiency/', 'code/game/mob/language/proficiency.dm',
-                  'code/__defines/species_languages.dm'),
+                  'code/game/mob/language/teaching.dm', 'code/__defines/species_languages.dm'),
         'shared_paths': ('code/game/mob/language/language.dm', 'code/game/mob/hear_say.dm',
             'code/game/mob/say.dm', 'code/game/mob/living/say.dm',
             'code/modules/1713/language_book.dm', 'code/modules/paperwork/study.dm',
+            'code/modules/paperwork/written_languages.dm', 'code/_helpers/global_lists.dm',
+            'code/game/mob/language/earth.dm',
             'code/modules/persistence/world_time_stamps.dm')},
 }
 CI_PATHS = ('scripts/select-ci.py', 'scripts/ci_baseline.py', 'scripts/ci_skill_prose.py',

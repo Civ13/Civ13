@@ -269,6 +269,7 @@ var/list/reverse_dir = list( // reverse_dir[dir] = reverse of dir
 	for (var/T in paths)
 		var/datum/language/L = new T
 		all_languages[L.name] = L
+	symmetrize_language_kinship()
 
 	for (var/language_name in all_languages)
 		var/datum/language/L = all_languages[language_name]
