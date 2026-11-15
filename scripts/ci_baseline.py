@@ -1257,6 +1257,11 @@ SUITES = {
         'paths': ('tests/timekeeping/',), 'shared_paths': (
             'code/modules/1713/timekeeping.dm', 'icons/obj/timekeeping.dmi', 'icons/obj/lighthouse.dmi',
             'tests/sprites/create_timekeeping.py')},
+    # Canals and pound locks: source contracts (native probe tests/canals/probe.dm).
+    'canals': {'files': ('tests/canals/test_source.py',),
+        'paths': ('tests/canals/',), 'shared_paths': (
+            'code/modules/1713/canals.dm', 'code/modules/1713/trench.dm', 'icons/obj/canal_lock.dmi',
+            'tests/sprites/create_canal_lock.py')},
     # Sewers phase S1: source contracts (the native probe is tests/sewers/probe.dm).
     'sewers': {'files': ('tests/sewers/test_sewers.py',),
         'paths': ('tests/sewers/',), 'shared_paths': (

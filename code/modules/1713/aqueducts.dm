@@ -411,6 +411,12 @@ var/global/aqueduct_last_flow = -600
 
 // Feed what stands next to a wet piece. Returns TRUE if A took water.
 /proc/aqueduct_feed(atom/A, obj/structure/aqueduct/P)
+	// A dry canal cut beside the channel floods, if it lies no higher than the water.
+	if (istype(A, /turf/floor/trench))
+		if (!istype(A, /turf/floor/trench/flooded) && P.wet_level >= terrain_height_at(A))
+			var/turf/floor/trench/TR = A
+			TR.ChangeTurf(/turf/floor/trench/flooded)
+		return TRUE
 	if (istype(A, /obj/structure/sink/aqueduct_fountain))
 		var/obj/structure/sink/aqueduct_fountain/F = A
 		F.fed_minute(P.foul)
