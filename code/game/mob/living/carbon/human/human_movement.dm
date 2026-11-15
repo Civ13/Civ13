@@ -45,13 +45,7 @@
 			tally += 1.75
 		if (150 to 192)
 			tally += 1.50
-	switch (mood)
-		if (-INFINITY to 20)
-			tally += 0.90
-		if (20 to 40)
-			tally += 0.8
-		if (40 to 60)
-			tally += 0.2
+	tally += mood_movement_delay(mood)
 	if (wear_suit)
 		var/obj/item/clothing/WS = wear_suit
 		tally += WS.slowdown

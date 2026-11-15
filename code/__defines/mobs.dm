@@ -66,6 +66,16 @@
 #define HYGIENE_LEVEL_NORMAL 200
 #define HYGIENE_LEVEL_DIRTY 75
 #define HYGIENE_FACTOR 0.025
+// Mood tiers. Every reader (stats, movement, HUD icon, messages, examine, Help)
+// goes through mood_tier(), and each boundary belongs to the higher tier.
+#define MOOD_TIER_HORRIBLE 1 // below 20
+#define MOOD_TIER_BAD 2      // 20 up to 40
+#define MOOD_TIER_NEUTRAL 3  // 40 up to 60: no bonus and no penalty
+#define MOOD_TIER_GOOD 4     // 60 up to 80
+#define MOOD_TIER_EXCELLENT 5 // 80 and above
+#define MOOD_REST 50      // where mood settles with nothing acting on it
+#define MOOD_FADE 0.07    // lost per life tick above the resting level
+#define MOOD_RECOVER 0.03 // regained per life tick below it
 // Free movement (client/Move fine_step values). Plain direction keys slide at
 // the ordinary walking/running pace and stop where they are released.
 // Alt+direction nudges 2 pixels, then slides if held past the glide delay.

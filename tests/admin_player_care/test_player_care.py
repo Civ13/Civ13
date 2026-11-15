@@ -141,7 +141,9 @@ class PlayerCareSourceContracts(unittest.TestCase):
         self.assertIn('var/mood = 100', defines)
         handler = proc('code/game/mob/living/carbon/human/human_needs.dm',
                        '/mob/living/human/proc/handle_mood()')
-        self.assertIn('if(90 to 10000)\n\t\t\tmood_modifier = 1.15', handler)
+        self.assertIn('mood_modifier = mood_stat_modifier(mood)', handler)
+        scale = proc('code/game/mob/living/carbon/human/human_needs.dm', '/proc/mood_stat_modifier(value)')
+        self.assertIn('if (value < 90)\n\t\treturn 1.10\n\treturn 1.15', scale)
         self.assertNotRegex(handler, r'\bmood\s*[-+*/]?=')
 
     def test_ci_runs_player_contracts_separately_from_legacy_native_items(self):
