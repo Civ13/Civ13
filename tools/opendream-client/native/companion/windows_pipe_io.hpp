@@ -2,7 +2,7 @@
 #ifndef _WIN32
 #error "windows_pipe_io is the Windows child endpoint adapter."
 #endif
-#include "host.hpp"
+#include "endpoint.hpp"
 #include <memory>
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN

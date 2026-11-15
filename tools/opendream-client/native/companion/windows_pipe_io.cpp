@@ -19,10 +19,12 @@ bool overlapped_client_pipe(HANDLE handle, bool write_only) noexcept {
   // GetNamedPipeInfo needs FILE_READ_ATTRIBUTES, which a write-only client
   // end may not carry; access denied leaves only the end/type check unproven.
   DWORD flags = 0;
-  if (GetNamedPipeInfo(handle, &flags, nullptr, nullptr, nullptr)) {
-    if ((flags & PIPE_SERVER_END) || (flags & PIPE_TYPE_MESSAGE))
-      return false;
-  } else if (!write_only || GetLastError() != ERROR_ACCESS_DENIED)
+  const bool queried =
+      GetNamedPipeInfo(handle, &flags, nullptr, nullptr, nullptr) != FALSE;
+  const bool denied = !queried && GetLastError() == ERROR_ACCESS_DENIED;
+  if (!pipe_info_acceptable(queried, (flags & PIPE_SERVER_END) != 0,
+                            (flags & PIPE_TYPE_MESSAGE) != 0, denied,
+                            write_only))
     return false;
   // A synchronous handle would turn an "overlapped" read into a blocking wait
   // that stops the lease clock, so it is refused rather than tolerated.

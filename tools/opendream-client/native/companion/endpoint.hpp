@@ -42,6 +42,18 @@ inline constexpr int64_t idle_milliseconds = 10;
 Exit run_endpoint(const Profile &profile, Backend &backend, PrivatePipeIo &io,
                   EndpointClock &clock, const std::atomic<bool> &cancelled);
 
+// Pipe-end policy for the Windows adapter, kept portable so it is tested
+// deterministically. `queried` is whether GetNamedPipeInfo succeeded; when it
+// did, `server_end`/`message_mode` come from its flags. Only a write-only
+// handle may be accepted when the query was access-denied.
+constexpr bool pipe_info_acceptable(bool queried, bool server_end,
+                                    bool message_mode, bool access_denied,
+                                    bool write_only) noexcept {
+  if (queried)
+    return !server_end && !message_mode;
+  return write_only && access_denied;
+}
+
 // Answers start with false: production activation stays off until a reviewed
 // SDK-linked build replaces it. Hello is refused and the child exits.
 class UnavailableBackend final : public Backend {

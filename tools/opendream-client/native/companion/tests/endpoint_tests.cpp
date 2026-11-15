@@ -291,6 +291,19 @@ void production_backend_is_off() {
                      std::atomic<bool>{false}) == Exit::closed);
   check(second.outgoing.empty() && refusing.starts == 1);
 }
+void pipe_policy() {
+  // queried, server_end, message_mode, access_denied, write_only
+  check(pipe_info_acceptable(true, false, false, false, false));
+  check(pipe_info_acceptable(true, false, false, false, true));
+  check(!pipe_info_acceptable(true, true, false, false, false));
+  check(!pipe_info_acceptable(true, true, false, false, true));
+  check(!pipe_info_acceptable(true, false, true, false, true));
+  check(pipe_info_acceptable(false, false, false, true, true)); // stdout
+  check(!pipe_info_acceptable(false, false, false, true, false)); // stdin
+  check(!pipe_info_acceptable(false, false, false, false, true));
+  check(!pipe_info_acceptable(false, false, false, false, false));
+  static_assert(!pipe_info_acceptable(false, false, false, true, false));
+}
 void steady_clock() {
   SteadyClock clock;
   const auto first = clock.now();
@@ -305,6 +318,7 @@ int main() {
     lease_expiry();
     endings();
     production_backend_is_off();
+    pipe_policy();
     steady_clock();
   } catch (const std::exception &error) {
     std::cerr << error.what() << '\n';
