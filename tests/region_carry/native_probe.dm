@@ -211,11 +211,20 @@ var/global/datum/region_carry_probe/region_carry_probe = new
 			loadedgun.ammo_magazine = new /obj/item/ammo_magazine/glock17(loadedgun)
 		var/rounds_in = region_travel_ammo_count(loadedgun.ammo_magazine)
 		var/obj/item/weapon/gun/projectile/pistol/glock17/gunback = region_travel_make_worn(region_travel_worn_kind(loadedgun), 1, D2)
-		require(istype(gunback) && gunback.ammo_magazine && (gunback.ammo_magazine in gunback.contents) && region_travel_ammo_count(gunback.ammo_magazine) == rounds_in, "loaded gun came back without its magazine")
+		require(istype(gunback) && gunback.ammo_magazine && (gunback.ammo_magazine in gunback.contents) && region_travel_ammo_count(gunback.ammo_magazine) == rounds_in, "loaded gun came back without its magazine or rounds")
 		var/count_mags = 0
 		for (var/obj/item/ammo_magazine/M in gunback.contents)
 			count_mags++
 		require(count_mags == 1, "gun came back with [count_mags] magazines")
+		// An attached accessory comes back attached, and can be taken off again.
+		var/obj/item/clothing/under/leaves_skirt/long/skirt = new(T)
+		var/obj/item/clothing/accessory/armband/band = new(skirt)
+		skirt.accessories += band
+		band.has_suit = skirt
+		var/obj/item/clothing/under/leaves_skirt/long/skirtback = region_travel_make_worn(region_travel_worn_kind(skirt), 1, D2)
+		require(istype(skirtback) && skirtback.accessories.len == 1, "skirt came back with [istype(skirtback) ? skirtback.accessories.len : "no"] accessories")
+		var/obj/item/clothing/accessory/armband/bandback = skirtback.accessories[1]
+		require(istype(bandback) && bandback.loc == skirtback && bandback.has_suit == skirtback && (/obj/item/clothing/proc/removetie_verb in skirtback.verbs), "armband came back unattached")
 		// Large numbers keep every digit; temporary bookkeeping stays behind.
 		var/obj/item/weapon/paddle/marked = new(T)
 		marked.value = 123456789

@@ -88,7 +88,7 @@ class WornGearTests(unittest.TestCase):
 
     def test_whole_items_are_bounded_and_checked(self):
         record = proc(GENERIC, '/proc/region_travel_generic_record_valid')
-        for line in ('if(!(key in list("t", "v", "n", "m", "r", "c", "l", "p"))) return FALSE',
+        for line in ('if(!(key in list("t", "v", "n", "y", "m", "r", "c", "l", "p"))) return FALSE',
                      'if(!region_travel_generic_type_ok(path)) return FALSE',
                      'if(!region_travel_generic_field_ok(key) || !region_travel_generic_value_ok(fields[key])) return FALSE',
                      '!get_material_by_name(mats[key])',
@@ -106,6 +106,14 @@ class WornGearTests(unittest.TestCase):
         # Temporary fields (process bookkeeping such as abandonment_index) never travel.
         self.assertIn('!issaved(I.vars[key])', proc(GENERIC, '/proc/region_travel_generic_fields_of'))
         self.assertIn('!issaved(I.vars[key])', proc(GENERIC, '/proc/region_travel_generic_set'))
+
+    def test_items_rebuild_as_a_world_load_restores_them(self):
+        build = proc(GENERIC, '/proc/region_travel_generic_build')
+        self.assertIn('persistence_saved_atom_construction++', build)
+        self.assertLess(build.index('region_travel_generic_set(I, key, fields[key])'), build.index('I.persistence_import_fields(saved)'))
+        make = proc(GENERIC, '/proc/region_travel_make_generic')
+        self.assertLess(make.index('A.after_load()'), make.index('A.persistence_restore_finished()'))
+        self.assertIn('I.before_save()', proc(GENERIC, '/proc/region_travel_generic_capture'))
 
     def test_parts_an_item_makes_itself_are_not_doubled(self):
         build = proc(GENERIC, '/proc/region_travel_generic_build')

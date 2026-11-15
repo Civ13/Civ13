@@ -8,6 +8,7 @@
 //      numbers, text, and lists of them (names, colours, icon states, amounts,
 //      chapters). A field a new item sets at random always travels.
 //   n  numbers JSON would round (six significant digits), as full text
+//   y  fields that hold a type, as its path text
 //   m  fields that hold a material, by material name
 //   r  its reagents, as list(id, volume) pairs
 //   c  what it holds, each as its own record, a few levels deep
@@ -21,10 +22,10 @@
 // field by field on the way in, and a field that does not fit is skipped
 // rather than stopping the arrival.
 
-#define REGION_TRAVEL_GENERIC_MAX 65536
+#define REGION_TRAVEL_GENERIC_MAX 131072
 #define REGION_TRAVEL_GENERIC_DEPTH 6
-#define REGION_TRAVEL_GENERIC_NODES 240
-#define REGION_TRAVEL_GENERIC_CHILDREN 60
+#define REGION_TRAVEL_GENERIC_NODES 1500
+#define REGION_TRAVEL_GENERIC_CHILDREN 300
 #define REGION_TRAVEL_GENERIC_FIELDS 96
 #define REGION_TRAVEL_GENERIC_TEXT 8192
 #define REGION_TRAVEL_GENERIC_LIST 128
@@ -65,13 +66,17 @@ var/global/list/region_travel_generic_defaults = list()
 // TRUE for a number that comes back from JSON unchanged.
 /proc/region_travel_generic_exact_num(value)
 	if(!isnum(value) || value != value || abs(value) >= 1e15) return FALSE
+	// Whole numbers of six digits or fewer always come back exactly.
+	if(value == round(value) && abs(value) < 100000) return TRUE
 	var/list/back = json_decode(json_encode(list(value)))
 	return back[1] == value
 
 // TRUE for a value that crosses as JSON and comes back the same.
 /proc/region_travel_generic_value_ok(value, depth = 0)
 	if(isnull(value)) return TRUE
-	if(isnum(value)) return region_travel_generic_exact_num(value)
+	// A number inside a list may come back rounded to six digits; a field
+	// that is itself an inexact number travels as text instead (see "n").
+	if(isnum(value)) return depth ? (value == value && abs(value) < 1e15) : region_travel_generic_exact_num(value)
 	if(istext(value)) return length(value) <= REGION_TRAVEL_GENERIC_TEXT
 	if(!islist(value) || depth >= 2) return FALSE
 	var/list/L = value
@@ -81,7 +86,7 @@ var/global/list/region_travel_generic_defaults = list()
 			if(length(k) > 200) return FALSE
 			if(!isnull(L[k]) && !region_travel_generic_value_ok(L[k], depth + 1)) return FALSE
 		else if(isnum(k))
-			if(!region_travel_generic_exact_num(k)) return FALSE
+			if(k != k || abs(k) >= 1e15) return FALSE
 		else
 			return FALSE
 	// A list that is partly keyed, or keyed by numbers, would not come back the same.
@@ -98,6 +103,8 @@ var/global/list/region_travel_generic_defaults = list()
 	if(istype(value, /material))
 		var/material/M = value
 		return "material:[M.name]"
+	if(ispath(value))
+		return "path:[value]"
 	if(isnum(value) && !region_travel_generic_exact_num(value))
 		return (value == value && abs(value) < 1e15) ? "num:[num2text(value, 20)]" : null
 	if(!region_travel_generic_value_ok(value)) return null
@@ -154,6 +161,12 @@ var/global/list/region_travel_generic_defaults = list()
 	if(!istype(I) || QDELETED(I) || depth > REGION_TRAVEL_GENERIC_DEPTH || !region_travel_generic_type_ok(I.type)) return null
 	count[1] = count[1] + 1
 	if(count[1] > REGION_TRAVEL_GENERIC_NODES) return null
+	// Saving first lets an item write down what it keeps in runtime fields
+	// (a cartridge its bullet's type), exactly as a world save does.
+	try
+		I.before_save()
+	catch
+		return null
 	var/list/R = list("t" = "[I.type]")
 	// What it holds first, so fields that point at those things can name them.
 	var/list/children = list()
@@ -169,6 +182,7 @@ var/global/list/region_travel_generic_defaults = list()
 	if(children.len) R["c"] = children
 	var/list/fields = list()
 	var/list/nums = list()
+	var/list/paths = list()
 	var/list/mats = list()
 	var/list/links = list()
 	var/list/back = list()
@@ -206,11 +220,14 @@ var/global/list/region_travel_generic_defaults = list()
 			mats[key] = M.name
 		else if(copytext(wire, 1, 5) == "num:")
 			nums[key] = copytext(wire, 5)
+		else if(copytext(wire, 1, 6) == "path:")
+			paths[key] = copytext(wire, 6)
 		else
 			fields[key] = value
-	if(fields.len + nums.len > REGION_TRAVEL_GENERIC_FIELDS) return null
+	if(fields.len + nums.len + paths.len > REGION_TRAVEL_GENERIC_FIELDS) return null
 	if(fields.len) R["v"] = fields
 	if(nums.len) R["n"] = nums
+	if(paths.len) R["y"] = paths
 	if(mats.len) R["m"] = mats
 	if(links.len) R["l"] = links
 	if(back.len) R["p"] = back
@@ -251,7 +268,7 @@ var/global/list/region_travel_generic_defaults = list()
 	count[1] = count[1] + 1
 	if(count[1] > REGION_TRAVEL_GENERIC_NODES) return FALSE
 	for(var/key in R)
-		if(!(key in list("t", "v", "n", "m", "r", "c", "l", "p"))) return FALSE
+		if(!(key in list("t", "v", "n", "y", "m", "r", "c", "l", "p"))) return FALSE
 	var/path = istext(R["t"]) ? text2path(R["t"]) : null
 	if(!region_travel_generic_type_ok(path)) return FALSE
 	if(!isnull(R["v"]))
@@ -266,6 +283,11 @@ var/global/list/region_travel_generic_defaults = list()
 			if(!region_travel_generic_field_ok(key) || !istext(nums[key]) || length(nums[key]) > 40) return FALSE
 			var/number = text2num(nums[key])
 			if(!isnum(number) || number != number) return FALSE
+	if(!isnull(R["y"]))
+		var/list/paths = R["y"]
+		if(!islist(paths) || paths.len > REGION_TRAVEL_GENERIC_FIELDS) return FALSE
+		for(var/key in paths)
+			if(!region_travel_generic_field_ok(key) || !istext(paths[key]) || length(paths[key]) > 200 || !ispath(text2path(paths[key]))) return FALSE
 	if(!isnull(R["m"]))
 		var/list/mats = R["m"]
 		if(!islist(mats) || mats.len > 8) return FALSE
@@ -316,9 +338,32 @@ var/global/list/region_travel_generic_defaults = list()
 		return null
 	return region_travel_generic_record_valid(R) ? R : null
 
+// Builds an "item:" kind at where the way a world load restores a saved item:
+// constructed as a restore (no first-spawn work such as starting contents,
+// random looks or initial reagents), fields applied, then after_load() for
+// everything in it, which rebuilds what derives from saved fields (an
+// accessory's verbs, a garment's dye).
 /proc/region_travel_make_generic(kind, atom/where)
 	var/list/R = region_travel_generic_record(kind)
-	return R ? region_travel_generic_build(R, where) : null
+	if(!R) return null
+	var/obj/item/I = region_travel_generic_build(R, where)
+	if(!I) return null
+	var/list/tree = list(I)
+	for(var/i = 1, i <= tree.len, i++)
+		var/atom/A = tree[i]
+		for(var/obj/item/inside in A.contents)
+			tree += inside
+	for(var/obj/item/A in tree)
+		try
+			A.after_load()
+		catch
+			log_game("Region travel: [A.type] did not finish rebuilding.")
+		A.persistence_restore_finished()
+	return I
+
+// TRUE when field key of I may be set from a record at all.
+/proc/region_travel_generic_link_ok(obj/item/I, key)
+	return (key in I.vars) && region_travel_generic_field_ok(key) && issaved(I.vars[key])
 
 // Sets one field from a record; a value of another class than the item's own,
 // or one the engine refuses, is skipped so the arrival goes on.
@@ -345,18 +390,32 @@ var/global/list/region_travel_generic_defaults = list()
 		if(ispath(path, /obj/item/stack) && fields && isnum(fields["amount"]))
 			var/obj/item/stack/S = path
 			fields["amount"] = clamp(round(fields["amount"]), 1, max(1, initial(S.max_amount)))
-			I = new path(where, fields["amount"])
+			persistence_saved_atom_construction++
+			try
+				I = new path(where, fields["amount"])
+			catch
+				I = null
+			persistence_saved_atom_construction--
 		else
-			I = new path(where)
-	if(QDELETED(I)) return null
+			persistence_saved_atom_construction++
+			try
+				I = new path(where)
+			catch
+				I = null
+			persistence_saved_atom_construction--
+	if(!I || QDELETED(I)) return null
 	for(var/key in fields)
 		region_travel_generic_set(I, key, fields[key])
 	var/list/nums = R["n"]
 	for(var/key in nums)
 		region_travel_generic_set(I, key, text2num(nums[key]))
+	var/list/paths = R["y"]
+	for(var/key in paths)
+		if(region_travel_generic_link_ok(I, key) && (isnull(I.vars[key]) || ispath(I.vars[key])))
+			I.vars[key] = text2path(paths[key])
 	var/list/mats = R["m"]
 	for(var/key in mats)
-		if((key in I.vars) && (isnull(I.vars[key]) || istext(I.vars[key]) || istype(I.vars[key], /material)))
+		if(region_travel_generic_link_ok(I, key) && (isnull(I.vars[key]) || istext(I.vars[key]) || istype(I.vars[key], /material)))
 			I.vars[key] = get_material_by_name(mats[key])
 	var/list/held = R["r"]
 	if(islist(held))
@@ -373,7 +432,7 @@ var/global/list/region_travel_generic_defaults = list()
 				if(pair[2] > 0)
 					I.reagents.add_reagent(pair[1], pair[2], safety = TRUE)
 	for(var/key in R["p"])
-		if(parent && (key in I.vars) && !islist(I.vars[key]))
+		if(parent && region_travel_generic_link_ok(I, key) && (isnull(I.vars[key]) || isdatum(I.vars[key])))
 			try
 				I.vars[key] = parent
 			catch
@@ -416,8 +475,10 @@ var/global/list/region_travel_generic_defaults = list()
 			qdel(A)
 	var/list/links = R["l"]
 	for(var/key in links)
-		if(!(key in I.vars)) continue
+		if(!region_travel_generic_link_ok(I, key)) continue
 		var/at = links[key]
+		// A list link only into a list field, a single one only into a link field.
+		if(islist(at) ? !(isnull(I.vars[key]) || islist(I.vars[key])) : !(isnull(I.vars[key]) || isdatum(I.vars[key]))) continue
 		var/value
 		if(islist(at))
 			var/list/things = list()
@@ -430,6 +491,17 @@ var/global/list/region_travel_generic_defaults = list()
 			I.vars[key] = value
 		catch
 			continue
+	// As a world load does once an entry's fields are in: the item rebuilds
+	// what it keeps from them (a cartridge's bullet from its type).
+	var/list/saved = list()
+	for(var/part in list("v", "n", "y", "m", "l"))
+		var/list/names = R[part]
+		for(var/key in names)
+			saved += key
+	try
+		I.persistence_import_fields(saved)
+	catch
+		log_game("Region travel: [I.type] did not take its fields.")
 	// A part held inside another (a cartridge's bullet) may not draw itself yet.
 	if(!reuse)
 		try
