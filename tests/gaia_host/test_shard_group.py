@@ -1027,6 +1027,11 @@ class ShardGroupTests(unittest.TestCase):
         self.assertEqual((5, 90, False), (config['freeze_idle_minutes'], config['cold_start_estimate_seconds'],
                                           config['start_requires_byond_pager']))
         self.assertNotIn('wake_min_free_mb', config, 'unset keys keep the host defaults')
+        # Only a land across the sea sleeps on disk by default; the group can say otherwise.
+        self.assertNotIn('freeze_cold', config)
+        slot = dict(group['regions'][1], kind='EXPEDITION')
+        self.assertTrue(shard_group.region_config(group, slot)['freeze_cold'])
+        self.assertFalse(shard_group.region_config(dict(group, freeze_cold=False), slot)['freeze_cold'])
         self.group['public'] = True
         group = self.write_group()
         self.assertTrue(shard_group.region_config(group, group['regions'][1])['start_requires_byond_pager'],

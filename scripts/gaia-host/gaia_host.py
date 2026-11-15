@@ -90,6 +90,10 @@ FREEZE_DEFAULTS = {'freeze_idle_minutes': 15, 'freeze_trim_memory': False, 'wake
                    # map_saves holds a save newer than the last player; after a reboot the
                    # doorman starts the world from that save on the next wake request.
                    'freeze_requires_save': True, 'cold_start_estimate_seconds': 300,
+                   # Sleep on disk: an idle, saved world is shut down instead of kept frozen in
+                   # memory, and starts from its save on the next wake. For worlds seldom
+                   # visited (expedition lands, shard_group.py), which then cost no memory.
+                   'freeze_cold': False,
                    'cold_start_min_free_mb': 2560,
                    # serve: while less physical memory than this is free, stop the longest-frozen
                    # world (it has saved, so it starts from that save on its next wake). 0 = never.
@@ -1199,6 +1203,9 @@ class Host:
             return None, 30
         try:
             self.log(self.freeze())
+            # Only a world with a save can start again from it; one never played stays frozen.
+            if self.config['freeze_cold'] and self.config['freeze_requires_save'] and self.last_save() is not None:
+                self.log(self.evict('idle: this world sleeps on disk'))
         except Refused as refusal:
             self.log({'freeze_refused': str(refusal)})
         return None, 1

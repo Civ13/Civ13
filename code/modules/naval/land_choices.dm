@@ -12,8 +12,9 @@
 //   and the land drops back to the frontier, settled.
 // - Abandon (the captain, as the ship leaves): the land is lost for good and
 //   its world is archived. Whoever was homed there starts on the mainland.
-// A land nobody settles or claims is abandoned after 7 days with nobody on it
-// (the world directory, world_chart.py). Until a land is settled, a death
+// A land nobody settles or claims is abandoned after 7 days with nobody on it,
+// or after a day when another crew needs its slot (the world directory,
+// world_chart.py), and its crew can open no other new land while it stands. Until a land is settled, a death
 // there always sends the character home to the mainland: a bed does not count.
 // ============================================================
 
@@ -131,7 +132,7 @@
 /obj/structure/hull_tiller/proc/abandon_choice(mob/living/human/H)
 	if (!expedition_land_unsettled() || !expedition_land_key())
 		return FALSE
-	return WWinput(H, "Abandon this land for good as she leaves? Nobody can ever sail here again, and everything left here is lost. Leave it standing and it waits 7 days for a ship.", craft.name, "Leave it standing", list("Abandon it", "Leave it standing")) == "Abandon it"
+	return WWinput(H, "Abandon this land for good as she leaves? Nobody can ever sail here again, and everything left here is lost. Leave it standing and it waits 7 days for a ship (a day, if another crew needs its harbour), and your crew can open no other new land while it stands undecided.", craft.name, "Leave it standing", list("Abandon it", "Leave it standing")) == "Abandon it"
 
 #undef LAND_SETTLE_BEDS
 #undef LAND_SETTLE_RANGE
