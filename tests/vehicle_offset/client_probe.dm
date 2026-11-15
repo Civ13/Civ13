@@ -212,6 +212,7 @@ var/global/datum/vehicle_client_probe/vehicle_client_probe = new
 	var/obj/structure/vehicle/motorcycle/m125/full/M = new(locate(road.x - 8, road.y - 6, z))
 	sleep(10)
 	M.engine.on = TRUE
+	M.running_sound()
 	take_body(locate(road.x - 9, road.y - 6, z))
 	sleep(30)
 	mount(M)
@@ -257,6 +258,7 @@ var/global/datum/vehicle_client_probe/vehicle_client_probe = new
 	var/obj/structure/vehicle/boat/rhib/premade/B = new(locate(sea.x - 8, sea.y - 6, sea.z))
 	sleep(20)
 	B.engine.on = TRUE
+	B.running_sound()
 	H.forceMove(B.loc)
 	sleep(20)
 	mount(B)

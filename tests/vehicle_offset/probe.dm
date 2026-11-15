@@ -208,6 +208,10 @@ var/list/vehicle_offset_probe_receipt = list()
 	for (var/atom/movable/M in (A.transporting | A.components))
 		CO.carry(M, istype(M, /obj/structure/vehicleparts/frame))
 	vehicle_offset_probe_assert((passenger in CO.carried) && CO.footprint.len == 6, "car_carries_everything")
+	vehicle_offset_probe_assert(!passenger.carried_by_vehicle(), "parked_car_passenger_walks")
+	A.moving = TRUE
+	vehicle_offset_probe_assert(passenger.carried_by_vehicle(), "moving_car_passenger_carried")
+	A.moving = FALSE
 	vehicle_offset_probe_assert(CO.tiles_ahead(NORTH).len == 2 && CO.tiles_ahead(EAST).len == 3, "car_leading_edge")
 	var/list/car_start = list()
 	for (var/atom/movable/M in CO.carried)
@@ -244,6 +248,10 @@ var/list/vehicle_offset_probe_receipt = list()
 	moto.axis.currentspeed = 1
 	moto.vehicle_m_delay = 3
 	moto.moving = TRUE
+	vehicle_offset_probe_assert(biker.carried_by_vehicle(), "driver_makes_no_footsteps")
+	var/mob/living/human/walker = new(locate(6, 31, 1))
+	vehicle_offset_probe_assert(!walker.carried_by_vehicle(), "walker_keeps_footsteps")
+	qdel(walker)
 	vehicle_offset_probe_assert(!moto.vehicle_offset_drives(), "nobody_near_tile_steps")
 	vehicle_offset_probe_watched = TRUE
 	vehicle_offset_probe_assert(moto.vehicle_offset_drives(), "player_near_rolls_by_pixels")

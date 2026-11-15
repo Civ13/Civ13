@@ -114,3 +114,20 @@
 	// Still in gear, or still rolling after the gear came out.
 	if (!QDELETED(src) && (moving || offset_coast > 0))
 		movementloop()
+
+// TRUE while a vehicle carries this person: seated or driving, aboard a
+// one-object vehicle, or standing on a moving frame vehicle.
+// Carried steps make no footstep sounds; the engine has its own.
+/mob/living/human/proc/carried_by_vehicle()
+	if (buckled || driver || driver_vehicle)
+		return TRUE
+	var/turf/T = loc
+	if (!istype(T))
+		return FALSE
+	for (var/obj/structure/vehicle/V in T)
+		if (src in V.ontop)
+			return TRUE
+	for (var/obj/structure/vehicleparts/frame/F in T)
+		if (F.axis && F.axis.moving && (src in F.axis.transporting))
+			return TRUE
+	return FALSE

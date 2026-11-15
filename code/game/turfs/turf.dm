@@ -404,7 +404,8 @@ var/const/enterloopsanity = 100
 				var/fsvol = 60
 				if (istype(H.shoes, /obj/item/clothing/shoes))
 					fsvol = 100 //shoes make more noise than bare feet
-				if (movementMachine.ticks >= H.next_footstep_sound_at_movement_tick)
+				// Riders and passengers are carried, not walking (vehicle_offset_ride.dm).
+				if (movementMachine.ticks >= H.next_footstep_sound_at_movement_tick && !H.carried_by_vehicle())
 					playsound(src, footstepsound, fsvol, TRUE)
 					switch (H.m_intent)
 						if ("run")
