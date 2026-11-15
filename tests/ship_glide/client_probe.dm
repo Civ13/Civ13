@@ -240,9 +240,16 @@ var/global/datum/ship_client_probe/ship_client_probe = new
 	if (!headless)
 		C.eye = locate(tiller.x + 3, tiller.y + 2, tiller.z)
 		C.perspective = EYE_PERSPECTIVE
+	// Two plain markers on open water beside her, moved north by loc at her
+	// pace: if they glide and her planks do not, the cause is in her step.
+	var/obj/ship_glide_marker/slide = new(locate(tiller.x + 6, tiller.y, tiller.z), tiller, SLIDE_STEPS)
+	var/obj/ship_glide_marker/forward = new(locate(tiller.x + 8, tiller.y, tiller.z), tiller, FORWARD_STEPS)
 	start_clip("4-fixed-camera", 32)
 	sleep(310)
 	finish_clip("4-fixed-camera")
+	states["markers"] = list("slide_y" = slide.y, "forward_y" = forward.y, "glide" = slide.glide_size)
+	qdel(slide)
+	qdel(forward)
 	states["tiller_glide"] = tiller.glide_size
 	if (!headless)
 		C.eye = tiller
@@ -302,3 +309,21 @@ var/global/datum/ship_client_probe/ship_client_probe = new
 	world.log << (failure ? "FAIL: ship client probe: [failure]" : "PASS: ship client probe")
 	sleep(20)
 	del(world)
+
+// A plain thing on open water stepping north a tile every 150 ds by loc, at a
+// slow-ahead ship's glide (check_cameras).
+/obj/ship_glide_marker
+	anchored = TRUE
+	density = FALSE
+
+/obj/ship_glide_marker/New(loc, atom/look, movement)
+	..()
+	appearance = look.appearance
+	animate_movement = movement
+	glide_size = craft_glide_size(150)
+	spawn(10)
+		while (!QDELETED(src))
+			var/turf/T = locate(x, y + 1, z)
+			if (T)
+				loc = T
+			sleep(150)
