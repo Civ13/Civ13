@@ -18,6 +18,17 @@ $commands += "cl $flags /Fe:`"$build/peer-tests.exe`" `"$root/peer.cpp`" `"$root
 $commands += 'if errorlevel 1 exit /b 1'
 $commands += "cl $flags /Fe:`"$build/host-tests.exe`" `"$root/peer.cpp`" `"$root/host.cpp`" `"$root/tests/host_tests.cpp`""
 $commands += 'if errorlevel 1 exit /b 1'
+$commands += "cl $flags /Fe:`"$build/endpoint-tests.exe`" `"$root/peer.cpp`" `"$root/host.cpp`" `"$root/endpoint.cpp`" `"$root/tests/endpoint_tests.cpp`""
+$commands += 'if errorlevel 1 exit /b 1'
+# The real child endpoint: production build answers Hello with an unavailable
+# backend (activation off); the loopback build exists only for child-tests.
+$endpoint = "`"$root/peer.cpp`" `"$root/host.cpp`" `"$root/endpoint.cpp`" `"$root/windows_pipe_io.cpp`" `"$root/main.cpp`""
+$commands += "cl $flags /Fe:`"$build/civ13-social-companion.exe`" $endpoint"
+$commands += 'if errorlevel 1 exit /b 1'
+$commands += "cl $flags /DCIV13_COMPANION_LOOPBACK_BACKEND /Fe:`"$build/loopback-companion.exe`" $endpoint"
+$commands += 'if errorlevel 1 exit /b 1'
+$commands += "cl $flags /Fe:`"$build/child-tests.exe`" `"$root/peer.cpp`" `"$root/tests/child_tests.cpp`""
+$commands += 'if errorlevel 1 exit /b 1'
 if ($SdkInclude) {
     $SdkInclude = (Resolve-Path -LiteralPath $SdkInclude).Path
     if (!(Test-Path -LiteralPath (Join-Path $SdkInclude 'cdiscord.h'))) { throw 'Explicit official cdiscord.h directory required.' }
@@ -30,19 +41,21 @@ if ($SdkInclude) {
 $commands += 'exit /b 0'
 $batch = Join-Path $build 'compile.cmd'
 Set-Content -LiteralPath $batch -Value $commands -Encoding ascii
-function Invoke-Bounded([string]$executable, [string]$arguments, [string]$name) {
+function Invoke-Bounded([string]$executable, [string]$arguments, [string]$name, [int]$seconds = 45) {
     $stdout = Join-Path $build "$name.log"
     $stderr = Join-Path $build "$name.stderr.log"
     $options = @{FilePath=$executable; WorkingDirectory=$build; WindowStyle='Hidden'; PassThru=$true; RedirectStandardOutput=$stdout; RedirectStandardError=$stderr}
     if ($arguments) { $options.ArgumentList=$arguments }
     $process = Start-Process @options
-    if (!$process.WaitForExit(45000)) { $process.Kill(); [void]$process.WaitForExit(5000); throw "Owned offline $name process exceeded 45 seconds." }
+    if (!$process.WaitForExit($seconds * 1000)) { $process.Kill(); [void]$process.WaitForExit(5000); throw "Owned offline $name process exceeded $seconds seconds." }
     $process.WaitForExit()
     Get-Content -LiteralPath $stdout
     Get-Content -LiteralPath $stderr
     if ($process.ExitCode -ne 0) { throw "Offline $name failed with exit $($process.ExitCode)." }
 }
-Invoke-Bounded $env:ComSpec ('/d /s /c ""' + $batch + '""') 'compile'
+Invoke-Bounded $env:ComSpec ('/d /s /c ""' + $batch + '""') 'compile' 150
 Invoke-Bounded (Join-Path $build 'peer-tests.exe') '' 'peer-tests'
 Invoke-Bounded (Join-Path $build 'host-tests.exe') '' 'host-tests'
+Invoke-Bounded (Join-Path $build 'endpoint-tests.exe') '' 'endpoint-tests'
+Invoke-Bounded (Join-Path $build 'child-tests.exe') ('"' + (Join-Path $build 'loopback-companion.exe') + '" "' + (Join-Path $build 'civ13-social-companion.exe') + '"') 'child-tests'
 if ($SdkInclude) { Invoke-Bounded (Join-Path $build 'sdk-tests.exe') '' 'sdk-tests' }
