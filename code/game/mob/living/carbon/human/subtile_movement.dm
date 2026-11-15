@@ -253,7 +253,8 @@
 /proc/human_subtile_same(list/a, list/b)
 	if (!islist(a) || !islist(b) || a.len != 5 || b.len != 5)
 		return FALSE
-	for (var/key in list("x", "y", "z", "sx", "sy"))
+	var/static/list/position_keys = list("x", "y", "z", "sx", "sy")
+	for (var/key in position_keys)
 		if (!(key in a) || !(key in b) || !isnum(a[key]) || !isnum(b[key]) || a[key] != round(a[key]) || b[key] != round(b[key]) || a[key] != b[key])
 			return FALSE
 	return TRUE
