@@ -205,3 +205,68 @@ var/ps_runtime_error = FALSE
 	QL.mood = 50
 	QL.adjust_mood(-10, "something else")
 	ps_check(QL.mood == 40, "other mood losses are unchanged")
+
+	// Company and restlessness move where mood settles, not mood itself.
+	map.nomads = TRUE
+	var/mob/living/human/E = ps_human(1, 20, "Extroverted")
+	E.has_hunger_and_thirst = TRUE
+	E.mood = 50
+	E.refresh_mood_rest()
+	ps_check(E.mood_rest == 42 && E.mood_rest_parts["being alone"] == -8 && E.mood == 50, "an extrovert alone settles lower ([E.mood_rest])")
+	var/mob/living/human/I = ps_human(3, 20, "Introverted")
+	I.has_hunger_and_thirst = TRUE
+	E.refresh_mood_rest()
+	I.refresh_mood_rest()
+	ps_check(E.mood_rest == 55 && E.mood_rest_parts["having company"] == 5 && !("being alone" in E.mood_rest_parts), "an extrovert in company settles higher ([E.mood_rest])")
+	ps_check(I.mood_rest == 42 && I.mood_rest_parts["people around you"] == -8, "an introvert in company settles lower ([I.mood_rest])")
+	E.stat = DEAD
+	I.refresh_mood_rest()
+	ps_check(I.mood_rest == 55 && I.mood_rest_parts["time alone"] == 5, "the dead are no company ([I.mood_rest])")
+	E.loc = null
+	I.loc = null
+	var/mob/living/human/RV = ps_human(1, 20, "Rallying Voice")
+	RV.has_hunger_and_thirst = TRUE
+	RV.refresh_mood_rest()
+	ps_check(RV.mood_rest == 44 && RV.mood_rest_parts["being alone"] == -6, "a rallying voice alone settles lower ([RV.mood_rest])")
+	RV.loc = null
+	var/mob/living/human/S = ps_human(1, 20, "Recluse Scholar")
+	S.has_hunger_and_thirst = TRUE
+	var/mob/living/human/c1 = ps_human(2, 20)
+	var/mob/living/human/c2 = ps_human(3, 20)
+	S.refresh_mood_rest()
+	ps_check(S.mood_rest == 50 && !S.mood_rest_parts.len, "two people are not a crowd")
+	var/mob/living/human/c3 = ps_human(4, 20)
+	S.refresh_mood_rest()
+	ps_check(S.mood_rest == 44 && S.mood_rest_parts["crowds"] == -6, "three people crowd a recluse ([S.mood_rest])")
+	for (var/mob/living/human/gone in list(S, c1, c2, c3))
+		gone.loc = null
+	var/mob/living/human/W3 = ps_human(1, 20, "Wanderer")
+	W3.has_hunger_and_thirst = TRUE
+	W3.handle_wanderer()
+	W3.refresh_mood_rest()
+	ps_check(W3.mood_rest == 50, "a wanderer who just arrived is content")
+	W3.wander_anchor_time = world.time - 27000
+	W3.refresh_mood_rest()
+	ps_check(W3.mood_rest == 44 && W3.mood_rest_parts["staying in one place"] == -6, "a settled wanderer grows restless ([W3.mood_rest])")
+	map.nomads = FALSE
+	W3.refresh_mood_rest()
+	ps_check(W3.mood_rest == 50, "maps without survival needs leave the resting level alone")
+	// The drift itself: slow inside the band, fast above it, exact at rest.
+	var/mob/living/human/D = ps_human(1, 20)
+	D.next_mood_rest_check = world.time + 10000
+	D.mood = 70
+	D.mood_drift()
+	ps_check(abs(D.mood - 69.93) < 0.001, "a high above the band burns off fast ([D.mood])")
+	D.mood = 60
+	D.mood_drift()
+	ps_check(abs(D.mood - 59.985) < 0.001, "a lift inside the band fades slowly ([D.mood])")
+	D.mood = 50.01
+	D.mood_drift()
+	ps_check(D.mood == 50, "mood stops exactly at rest from above")
+	D.mood = 49.99
+	D.mood_drift()
+	ps_check(D.mood == 50, "mood stops exactly at rest from below")
+	D.mood_rest = 64
+	D.mood = 60
+	D.mood_drift()
+	ps_check(abs(D.mood - 60.03) < 0.001, "mood climbs to a raised resting level ([D.mood])")

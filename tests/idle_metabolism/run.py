@@ -35,7 +35,7 @@ def production(control):
     if len(fields) != 3:
         raise ValueError('Runtime field extraction changed')
     start = life.index('\t\tvar/water_m = 1')
-    end = life.index('\t\tif (find_trait("Extroverted"))', start)
+    end = life.index('\t\thandle_playstyle_traits()', start)
     consumption = '/mob/living/human/proc/probe_consume()\n' + textwrap.indent(textwrap.dedent(life[start:end]), '\t')
     constant = re.search(r'^\s*#define HUNGER_THIRST_MULTIPLIER [^\n]+', life, re.M)[0].strip()
     action_procs = '\n\n'.join(procedure(actions, name) for name in (

@@ -40,7 +40,7 @@ def helpers(body_temperature=310.15):
 def projected(workload, climate_food, climate_water):
     source = LIFE.read_text(encoding='utf-8')
     start = source.index('\t\tif (inducedSSD) //if sleeping in SSD mode')
-    end = source.index('\n\t\tif (find_trait("Extroverted"))', start)
+    end = source.index('\n\t\thandle_playstyle_traits()', start)
     wrapped = '/check()\n' + textwrap.indent(textwrap.dedent(source[start:end]), '\t') + '\n\treturn (nutrition, water)\n'
     food, water, _, _ = helpers()
     env = {'CONSCIOUS': 0, 'UNCONSCIOUS': 1, 'HUNGER_THIRST_MULTIPLIER': 0.32,

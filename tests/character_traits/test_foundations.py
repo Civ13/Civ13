@@ -125,33 +125,38 @@ class TraitFoundations(unittest.TestCase):
         self.assertIn('return TRUE', source)
 
     def test_social_counts_other_living_humans_only(self):
-        source = read(LIFE)
-        social = source[source.index('if (find_trait("Extroverted"))'):source.index('if (!inducedSSD)', source.index('if (find_trait("Extroverted"))'))]
-        self.assertEqual(social.count('if (HM != src && HM.stat != DEAD)'), 2)
-        self.assertEqual(social.count('range(3,src)'), 2)
-        self.assertEqual(social.count('adjust_mood(0.12, '), 2)
-        self.assertEqual(social.count('adjust_mood(-(0.4), '), 2)
+        # Company is a lasting condition on the resting mood, counted by one helper.
+        source = read('code/game/mob/living/carbon/human/playstyle_traits.dm')
+        self.assertNotIn('find_trait("Extroverted")', read(LIFE))
+        company = source[source.index('/mob/living/human/proc/mood_company('):source.index('/mob/living/human/proc/mood_needs_mode()')]
+        self.assertEqual(company.count('if (H != src && H.stat != DEAD)'), 1)
+        self.assertEqual(company.count('range(3, src)'), 1)
+        social = source[source.index('/mob/living/human/collect_mood_rest_parts(list/parts)'):source.index('#undef PLAYSTYLE_FAST_SKILL')]
+        self.assertEqual(social.count('= MOOD_REST_LIKED_COMPANY'), 2)
+        self.assertEqual(social.count('= -MOOD_REST_WRONG_COMPANY'), 2)
+        self.assertNotIn('adjust_mood(', social)
         # Counterexample to the historical bug: own living body is present.
         for nearby, expected in [([('self', False)], 0), ([('self', False), ('other', False)], 1),
                                  ([('self', False), ('other', True)], 0)]:
             count = sum(who != 'self' and not dead for who, dead in nearby)
             self.assertEqual(count, expected)
-        self.assertNotEqual(social.replace('HM != src && ', '').count('if (HM != src && HM.stat != DEAD)'), 2)
+        self.assertNotEqual(company.replace('H != src && ', '').count('if (H != src && H.stat != DEAD)'), 1)
 
     def test_social_proximity_stops_after_first_match(self):
-        source = read(LIFE)
-        social = source[source.index('if (find_trait("Extroverted"))'):source.index('if (!inducedSSD)', source.index('if (find_trait("Extroverted"))'))]
-        loop = ('for(var/mob/living/human/HM in range(3,src))\n'
-                '\t\t\t\t\tif (HM != src && HM.stat != DEAD)\n'
-                '\t\t\t\t\t\tct++\n'
-                '\t\t\t\t\t\tbreak\n\t\t\t\t')
+        source = read('code/game/mob/living/carbon/human/playstyle_traits.dm')
+        social = source[source.index('/mob/living/human/proc/mood_company('):source.index('/mob/living/human/proc/mood_needs_mode()')]
+        loop = ('for (var/mob/living/human/H in range(3, src))\n'
+                '\t\tif (H != src && H.stat != DEAD)\n'
+                '\t\t\t.++\n'
+                '\t\t\tif (. >= limit)\n'
+                '\t\t\t\treturn\n')
         def valid_loops(text):
-            bodies = re.findall(r'for\(var/mob/living/human/HM in range\(3,src\)\).*?(?=if \(!?ct\))', text, re.S)
-            return len(bodies) == 2 and all(body == loop for body in bodies)
+            bodies = re.findall(r'for \(var/mob/living/human/H in range\(3, src\)\).*?(?=\n// )', text, re.S)
+            return len(bodies) == 1 and all(body == loop for body in bodies)
 
         self.assertTrue(valid_loops(social))
-        self.assertFalse(valid_loops(social.replace('\t\t\t\t\t\tbreak', '')))
-        self.assertFalse(valid_loops(social.replace('range(3,src))\n', 'range(3,src))\n\t\t\t\t\tbreak\n')))
+        self.assertFalse(valid_loops(social.replace('\t\t\t\treturn\n', '')))
+        self.assertFalse(valid_loops(social.replace('range(3, src))\n', 'range(3, src))\n\t\treturn\n')))
 
         # Compare modeled iteration counts and decisions; this does not execute DM.
         for nearby, visited in (([], 0), ([('self', False)], 1),

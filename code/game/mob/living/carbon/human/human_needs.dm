@@ -28,6 +28,7 @@
 		to_chat(H, "<span class='info'>*---------*</span>")
 		to_chat(H, "<span class='info'>[msg]</span>")
 		H.print_mood_causes()
+		H.print_mood_rest()
 		to_chat(H, "<span class='info'>[msg_hygiene]</span>")
 		H.print_excrement()
 		to_chat(H, "<span class='info'>*---------*</span>")
@@ -93,18 +94,80 @@
 		return 0.8
 	return 0
 
-// Mood settles at the resting level from either side and never overshoots it.
-// Sleep discards the fade (set_mood), the recovery still applies.
-/mob/living/human/proc/mood_resting_level()
-	return MOOD_REST
+// The resting level is where mood settles: MOOD_REST moved by lasting
+// conditions (company for a sociable character, and so on). Each condition is
+// a named part, so the mood panel can say what is holding mood up or down.
+/mob/living/human
+	var/tmp/list/mood_rest_parts // condition -> change to the resting level
+	var/tmp/mood_rest = MOOD_REST
+	var/tmp/next_mood_rest_check = 0
+	var/tmp/list/mood_rest_told // condition -> world.time it was last announced
 
+/mob/living/human/proc/mood_resting_level()
+	if (world.time >= next_mood_rest_check)
+		next_mood_rest_check = world.time + MOOD_REST_CHECK
+		refresh_mood_rest()
+	return mood_rest
+
+// Lasting conditions add themselves here: parts[condition] = change.
+/mob/living/human/proc/collect_mood_rest_parts(list/parts)
+	return
+
+/mob/living/human/proc/refresh_mood_rest()
+	var/list/parts = list()
+	if (stat != DEAD)
+		collect_mood_rest_parts(parts)
+	var/total = 0
+	for (var/condition in parts)
+		total += parts[condition]
+	var/list/before = mood_rest_parts
+	mood_rest_parts = parts
+	mood_rest = clamp(MOOD_REST + total, MOOD_REST_MIN, MOOD_REST_MAX)
+	for (var/condition in parts)
+		if (!islist(before) || !(condition in before))
+			tell_mood_rest(condition, parts[condition])
+
+// A new condition is announced once, and not again for five minutes, so walking
+// in and out of company does not fill the chat.
+/mob/living/human/proc/tell_mood_rest(condition, change)
+	if (!client || !change)
+		return
+	if (!islist(mood_rest_told))
+		mood_rest_told = list()
+	if (isnum(mood_rest_told[condition]) && world.time < mood_rest_told[condition] + 3000)
+		return
+	mood_rest_told[condition] = world.time
+	if (change > 0)
+		to_chat(src, "<span class='info'>Your mood will settle higher: [condition].</span>")
+	else
+		to_chat(src, "<span class='warning'>Your mood will settle lower: [condition].</span>")
+
+/mob/living/human/proc/print_mood_rest()
+	if (!islist(mood_rest_parts) || !mood_rest_parts.len)
+		return
+	to_chat(src, "<span class='info'>Left alone, your mood settles at [mood_tier_name(mood_rest)]. What moves that:</span>")
+	for (var/condition in mood_rest_parts)
+		var/change = mood_rest_parts[condition]
+		var/strength = abs(change) >= 6 ? "a lot" : (abs(change) >= 3 ? "somewhat" : "a little")
+		if (change > 0)
+			to_chat(src, "<span class='good'>&nbsp;+ [capitalize(condition)]: raises it [strength].</span>")
+		else
+			to_chat(src, "<span class='bad'>&nbsp;- [capitalize(condition)]: lowers it [strength].</span>")
+
+// Mood settles at the resting level from either side and never overshoots it.
+// A lift within MOOD_BOOST_BAND of the resting level fades slowly; anything
+// above that burns off fast, so repeated pleasures and drug highs cannot be
+// stacked into a lasting peak. Sleep discards the fade (set_mood), the
+// recovery still applies.
 /mob/living/human/proc/mood_drift()
 	if (mood > 120)
 		set_mood(120)
 	else if (mood < 0)
 		set_mood(0)
 	var/rest = mood_resting_level()
-	if (mood > rest)
+	if (mood > rest + MOOD_BOOST_BAND)
+		set_mood(max(rest, mood - MOOD_BURN))
+	else if (mood > rest)
 		set_mood(max(rest, mood - MOOD_FADE))
 	else if (mood < rest)
 		set_mood(min(rest, mood + MOOD_RECOVER))
@@ -213,7 +276,7 @@
 
 // Causes describe this process's recent events, not the saved body.
 /mob/living/human/persistence_runtime_var(key)
-	return key == "mood_causes" || key == "mood_cause_times" || key == "mood_causes_noticed" || ..()
+	return key == "mood_causes" || key == "mood_cause_times" || key == "mood_causes_noticed" || key == "mood_rest_parts" || key == "mood_rest" || key == "next_mood_rest_check" || key == "mood_rest_told" || ..()
 
 #define MOOD_CAUSE_FADE 0.99
 #define MOOD_CAUSE_NOTICE 1
