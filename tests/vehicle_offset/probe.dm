@@ -537,18 +537,18 @@ var/list/vehicle_offset_probe_receipt = list()
 	// Out of gear it coasts on and stops square on its tiles.
 	A2.moving = FALSE
 	A2.currentspeed = 0
-	var/coast_from = vehicle_offset_probe_px(front2)[2]
-	var/coast_ticks = 0
+	var/car2_coast_from = vehicle_offset_probe_px(front2)[2]
+	var/car2_coast_ticks = 0
 	vehicle_offset_probe_assert(A2.offset_coast > 0, "frame_car_coasts")
 	for (var/i = 1 to 300)
-		coast_ticks++
+		car2_coast_ticks++
 		if (!A2.vehicle_offset_tick())
 			break
 		vehicle_offset_probe_assert(rider2.carried_by_vehicle(), "frame_car_coast_[i]_no_footsteps")
-	var/coasted = vehicle_offset_probe_px(front2)[2] - coast_from
-	vehicle_offset_probe_assert(!A2.offset_coast && !front2.step_y && !rider2.step_y && !A2.offset_mover.carried.len && coasted > 0 && coasted <= 32, "frame_car_coasts_square ([coasted] px in [coast_ticks] ticks)")
+	var/car2_coasted = vehicle_offset_probe_px(front2)[2] - car2_coast_from
+	vehicle_offset_probe_assert(!A2.offset_coast && !front2.step_y && !rider2.step_y && !A2.offset_mover.carried.len && car2_coasted > 0 && car2_coasted <= 32, "frame_car_coasts_square ([car2_coasted] px in [car2_coast_ticks] ticks)")
 	vehicle_offset_probe_assert(rider2.loc == locate(36, front2.y - 1, 1) && !rider2.carried_by_vehicle(), "frame_car_parked_rider_walks")
-	vehicle_offset_probe_receipt["frame_car_coast_px"] = coasted
+	vehicle_offset_probe_receipt["frame_car_coast_px"] = car2_coasted
 	// A turn squares it first.
 	A2.currentspeed = 1
 	A2.moving = TRUE
