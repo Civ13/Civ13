@@ -259,6 +259,119 @@ class ExpeditionSlotTests(unittest.TestCase):
         self.assertFalse((self.slot / 'map_saves').exists())
         self.assertIsNone(slots.read_wish(self.group, slots.ABANDONED, 'far1'))
 
+    # -- parking: an idle land gives its slot up and comes back, save and all --
+
+    def saved(self, text='x'):
+        (self.slot / 'map_saves').mkdir(exist_ok=True)
+        (self.slot / 'map_saves' / 'level.sav').write_text(text)
+
+    def test_a_land_is_parked_and_restored_with_its_save(self):
+        self.give('3,4')
+        self.saved('rome was here')
+        world = json.loads(json.dumps(slots.read_slot(self.group, 'far1')['world']))
+        self.assertTrue(world['placed'].startswith('far1@'))
+        self.machine.up.add(1721)
+        with self.assertRaisesRegex(shard_group.Refused, 'running'):
+            slots.park(self.group, self.host, 'far1')
+        self.machine.up.discard(1721)
+        answer = slots.park(self.group, self.host, 'far1', now=5000)
+        folder = self.base / 'regions' / 'expeditions' / 'parked' / '3-4'
+        self.assertEqual((['map_saves'], str(folder)), (answer['moved'], answer['folder']))
+        self.assertEqual('rome was here', (folder / 'map_saves' / 'level.sav').read_text())
+        self.assertEqual('FREE', slots.read_slot(self.group, 'far1')['state'])
+        self.assertEqual({'3,4': {'parked_at': slots.stamp(5000), 'from': 'far1'}}, slots.parked(self.group))
+        with self.assertRaisesRegex(shard_group.Refused, 'holds no land'):
+            slots.park(self.group, self.host, 'far1')
+        # A parked land is never pruned, however old.
+        self.assertEqual([], slots.prune_archives(self.group, now=5000 + 400 * 86400))
+        self.assertTrue(folder.is_dir())
+        # Another land uses the slot meanwhile and is archived.
+        self.give('5,6')
+        slots.archive(self.group, self.host, 'far1')
+        with self.assertRaisesRegex(shard_group.Refused, 'no parked land 9,9'):
+            slots.restore(self.group, self.host, 'far1', '9,9')
+        answer = slots.restore(self.group, self.host, 'far1', '3,4', now=9000)
+        self.assertEqual(['map_saves'], answer['restored'])
+        self.assertEqual('rome was here', (self.slot / 'map_saves' / 'level.sav').read_text())
+        record = slots.read_slot(self.group, 'far1')
+        self.assertEqual(('LAND', '3,4', True), (record['state'], record['key'], record['restored']))
+        self.assertEqual('far1@' + slots.stamp(9000), record['world']['placed'], 'a new placement for the transfer agent')
+        self.assertEqual({k: v for k, v in world.items() if k != 'placed'},
+                         {k: v for k, v in record['world'].items() if k != 'placed'})
+        self.assertFalse(folder.exists())
+        self.assertEqual('maps\\regions\\far1.dmm', shard_group.place_map(self.group, self.region, self.slot))
+
+    def test_a_slot_asleep_on_disk_counts_as_stopped_and_its_running_mark_goes_with_the_land(self):
+        self.give('3,4')
+        self.saved()
+        self.host.write_json(self.host.running_file, {'since': 1})
+        with self.assertRaisesRegex(shard_group.Refused, 'not explicitly stopped'):
+            slots.park(self.group, self.host, 'far1')
+        self.host.write_json(self.host.cold_file, {'frozen_at': 1, 'pid': 7, 'detected_at': 2, 'evicted': 'idle'})
+        slots.park(self.group, self.host, 'far1')
+        self.assertFalse(self.host.running_file.exists(), 'the watchdog must not start a slot with no land')
+        self.assertFalse(self.host.cold_file.exists())
+
+    def test_the_host_parks_an_idle_land_when_asked_and_calls_it_off_when_somebody_is_there(self):
+        self.give('3,4')
+        self.saved()
+        record = slots.read_slot(self.group, 'far1')
+        record['phase'] = 'started'
+        slots.write_slot(self.group, record)
+        slots.write_wish(self.group, slots.PARK, 'far1', {'region': 'far1', 'key': '3,4'})
+        self.machine.up.add(1721)
+        with mock.patch.object(self.host, 'world', return_value={'clients': 2}):
+            self.assertEqual({'far1': {'park_called_off': '3,4'}}, self.serve()[0])
+        self.assertIsNone(slots.read_wish(self.group, slots.PARK, 'far1'))
+        self.assertEqual('LAND', slots.read_slot(self.group, 'far1')['state'])
+        slots.write_wish(self.group, slots.PARK, 'far1', {'region': 'far1', 'key': '3,4'})
+        with mock.patch.object(self.host, 'world', return_value={'clients': 0}), \
+                mock.patch.object(self.host, 'request', return_value={'accepted': True}) as request:
+            self.serve()
+        request.assert_called_once_with('stop')
+        self.machine.up.discard(1721)
+        self.assertEqual({'far1': {'parked': '3,4'}}, self.serve()[0])
+        self.assertEqual(['3,4'], list(slots.parked(self.group)))
+        # A wish for a land the slot no longer holds is dropped.
+        slots.write_wish(self.group, slots.PARK, 'far1', {'region': 'far1', 'key': '3,4'})
+        self.assertEqual({'far1': {'park_dropped': '3,4'}}, self.serve()[0])
+
+    def test_a_wanted_parked_land_is_restored_not_generated_and_never_archived(self):
+        self.give('3,4')
+        self.saved('kept')
+        slots.park(self.group, self.host, 'far1')
+        slots.write_wish(self.group, slots.WANTED, 'far1', {'region': 'far1', 'key': '3,4', 'template': TEMPLATE, 'parked': True})
+        build = mock.Mock(side_effect=AssertionError('a parked land is not generated again'))
+        # Its build cannot start: the land goes back to the parked folder and the coordinator hears it is parked still.
+        answer = slots.open_land(self.group, self.host, 'far1', mock.Mock(return_value={'skipped': {'far1': 'busy'}}), build=build)
+        self.assertIn('busy', answer['failed'])
+        self.assertTrue(slots.read_wish(self.group, slots.FAILED, 'far1')['parked'])
+        self.assertEqual(['3,4'], list(slots.parked(self.group)))
+        self.assertEqual('FREE', slots.read_slot(self.group, 'far1')['state'])
+        slots.wish_file(self.group, slots.FAILED, 'far1').unlink()
+        # Next time it builds, but the compile fails: parked again, save and all.
+        slots.write_wish(self.group, slots.WANTED, 'far1', {'region': 'far1', 'key': '3,4', 'template': TEMPLATE, 'parked': True})
+        self.assertEqual('building', slots.open_land(self.group, self.host, 'far1', mock.Mock(return_value={'skipped': {}}), build=build)['phase'])
+        self.host.write_json(self.host.stage_file, {'phase': 'failed', 'error': 'compile failed: boom'})
+        self.assertIn('compile failed', self.serve()[0]['far1']['failed'])
+        self.assertTrue(slots.read_wish(self.group, slots.FAILED, 'far1')['parked'])
+        folder = self.base / 'regions' / 'expeditions' / 'parked' / '3-4'
+        self.assertEqual('kept', (folder / 'map_saves' / 'level.sav').read_text())
+        self.assertFalse((self.base / 'regions' / 'expeditions' / 'archive').exists())
+
+    def test_a_discarded_parked_land_goes_to_the_archive(self):
+        self.give('3,4')
+        self.saved()
+        slots.park(self.group, self.host, 'far1')
+        slots.write_wish(self.group, slots.DISCARD, '3-4', {'key': '3,4'})
+        done = self.serve(now=7000)[0]
+        self.assertEqual('3,4', done['discarded'][0]['key'])
+        self.assertEqual({}, slots.parked(self.group))
+        archived = Path(done['discarded'][0]['archive'])
+        self.assertTrue((archived / 'map_saves' / 'level.sav').is_file())
+        self.assertFalse((self.base / 'regions' / 'expeditions' / 'discard' / '3-4.json').exists())
+        self.assertEqual([archived.name], slots.prune_archives(self.group, now=7000 + 8 * 86400))
+
     def test_the_coordinator_is_told_the_slots(self):
         started = []
         (Path(self.group['root']) / 'coordinator.pid').unlink(missing_ok=True)

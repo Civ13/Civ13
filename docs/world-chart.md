@@ -84,14 +84,39 @@ refused while:
   standing undecided (`LANDED`): "your crew still has the land at X,Y undecided";
 - either opened a new land less than 3 hours ago (`OPEN_COOLDOWN_SECONDS`);
   the reason gives the minutes left;
-- no slot is free. Then the undecided land that has stood empty longest, and
-  at least a day (`PRESSURE_SECONDS`), is given up as if abandoned
-  (`make_room`) and the course is refused with "a harbour is being cleared";
-  the crew set out again once the host has archived it. Settled and claimed
-  lands never give way. With nothing to give up: "every harbour master is busy".
+- no slot is free. Then the land that has stood empty longest is parked (below)
+  and the course is refused with "a harbour is being cleared"; the crew set
+  out again once the host has freed the slot. With nothing to park: "every
+  harbour master is busy".
 
 `chart_opened` keeps who opened each land and when. A land the host could not
 build is forgotten there, so it costs no wait.
+
+### Parked lands
+
+Slots are the lands awake at once, not the lands there are. `make_room` asks
+the host to park (`<expeditions>/park/<slot>.json`) the land nobody has been on
+longest: at least an hour (`PARK_IDLE_SECONDS`), started, and with no course
+set for it in the last two hours. The host saves and stops it and moves its
+save aside ([slots](expedition-slots.md#parked-lands)); `refresh_parks` then
+takes the tile off its slot (`region` empty, `parked` true in the snapshot,
+`chart_parked`). A parking the host called off (somebody was there) or never
+did within an hour is forgotten.
+
+A parked land keeps its state, its claim and its 7 days. Nothing of it is
+lost: only an undecided one still runs out, 7 days after anyone was last
+there (`<expeditions>/discard/<x>-<y>.json` tells the host).
+
+It gets a slot again (`place`: the wanted file says `parked`, so the host
+restores it, not generates it) when:
+
+- a ship sets course for it. That is never a new land, so no wait applies;
+- somebody whose character is there comes back (`/chart/request` op `summon`).
+  While a land is parked the homes there are `land:X,Y`, which is no region:
+  any world such an account joins asks for the land and tells the player to
+  press Join again in a few minutes (`region_home.dm`). `Coordinator.chart_moves`
+  moves the homes and the land stage to the parked land and back to
+  whichever slot it is restored into.
 
 | Course state | Meaning |
 | --- | --- |
@@ -121,7 +146,8 @@ homes there go to the mainland and the host archives the slot. See
 - Coordinator database: `chart_tile` (templates and states), `chart_seen`
   (each owner's tiles), `chart_pin`, `chart_meta` (seed and revision),
   `chart_course` (ships' courses), `chart_landed` (lands opened and last
-  visited), `chart_opened` (who opened each land), `chart_claim` (faction claims).
+  visited), `chart_opened` (who opened each land), `chart_parked` and `chart_parking`
+  (parked lands, parkings asked of the host), `chart_claim` (faction claims).
 - Each home pass sends the whole chart to any agent whose copy is older
   (`/homes`, key `chart`); a world reads it from its agent (`/chart`).
 - Requests from a world (`/chart/request`: admin ops `reroll` and `reveal`,

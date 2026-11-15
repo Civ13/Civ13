@@ -51,8 +51,41 @@
 		sleep(delay)
 		delay = min(delay * 2, 3000)
 
+// Accounts that lately asked for their parked land: ckey = world.time.
+var/global/list/region_home_summoned = list()
+
+// "x,y" when home names a parked land across the sea ("land:x,y": its world
+// was laid up while nobody was there, expedition-slots.md), else null.
+/proc/region_home_parked_land(home)
+	if(!istext(home) || findtext(home, "land:") != 1) return null
+	var/list/xy = splittext(copytext(home, 6), ",")
+	if(length(xy) != 2 || !isnum(text2num(xy[1])) || !isnum(text2num(xy[2]))) return null
+	return "[text2num(xy[1])],[text2num(xy[2])]"
+
+// Asks the world directory to make the account's parked land ready again, at
+// most once a minute. TRUE when the request was taken (now or just before).
+/proc/region_home_summon(account, home)
+	var/key = region_home_parked_land(home)
+	if(!key || !istext(account)) return FALSE
+	if(region_home_summoned[account] && world.time < region_home_summoned[account] + 600) return TRUE
+	var/list/xy = splittext(key, ",")
+	var/list/answer = transfer_bridge.request("/chart/request", list("op" = "summon", "x" = text2num(xy[1]), "y" = text2num(xy[2]), "admin" = account))
+	if(!answer || !answer["ok"]) return FALSE
+	region_home_summoned[account] = world.time
+	log_game("Region home: [account] asked for the parked land at [key] to be made ready.")
+	return TRUE
+
 /proc/region_home_tell(mob/new_player/lobby, home)
 	var/list/peer = home ? shard_group.peers[home] : null
+	if(region_home_parked_land(home))
+		if(lobby.client && region_home_summon(lobby.client.ckey, home))
+			to_chat(lobby, SPAN_NOTICE("Your character is on a land across the sea whose harbour was laid up while nobody was there. It is being made ready now, which takes a few minutes. Press Join again then and you are shown the way."))
+		else
+			to_chat(lobby, SPAN_WARNING("Your character is on a land across the sea that is laid up, and no word can be sent to make it ready right now. Try Join again in a minute."))
+		return
+	if(peer && peer["kind"] == "EXPEDITION" && peer["state"] != "UP" && !shard_group.peer_wakeable(home))
+		to_chat(lobby, SPAN_NOTICE("Your character is on a land across the sea that is being made ready. Press Join again in a few minutes."))
+		return
 	if(!peer)
 		to_chat(lobby, SPAN_WARNING("Your character belongs to another land in this world group. Join that server to play."))
 		return

@@ -2870,7 +2870,7 @@ def main(argv=None):
             expedition_slots.expedition_region(group, args.region)
             result = expedition_slots.open_land(group, host, args.region, update_offline)
         elif args.action == 'expedition-status':
-            result = {'slots': expedition_slots.status(group)}
+            result = {'slots': expedition_slots.status(group), 'parked': expedition_slots.parked(group)}
         elif args.action == 'config-apply':
             done, refused = apply_config(group, args.region)
             if refused and not done:

@@ -213,6 +213,8 @@ class RegionStore(TrainLeaseQueue):
             ckey TEXT PRIMARY KEY, region TEXT NOT NULL)''')
         db.execute('''CREATE TABLE IF NOT EXISTS account_request(
             id INTEGER PRIMARY KEY AUTOINCREMENT, ckey TEXT NOT NULL, op TEXT NOT NULL, region TEXT NOT NULL)''')
+        # The world this store last reconciled (reconcile_load): an expedition slot holds one land after another.
+        db.execute("INSERT OR IGNORE INTO meta VALUES ('world', '')")
         db.execute("INSERT OR IGNORE INTO meta VALUES ('homes_epoch', '')")
         # Names this store's request ids, so a replaced store's ids are never
         # mistaken for ones the coordinator already decided.
@@ -465,7 +467,7 @@ class RegionStore(TrainLeaseQueue):
             self._set_meta('confirmed_generation', generation)
             return current + 1
 
-    def reconcile_load(self, generation, effect_ids, ledger_seq, fresh=False):
+    def reconcile_load(self, generation, effect_ids, ledger_seq, fresh=False, world=None):
         """At world load: confirm what the loaded save lists, void the rest.
 
         Returns the ledger sequence DM must cache. Puts the region on hold when
@@ -475,11 +477,21 @@ class RegionStore(TrainLeaseQueue):
         With fresh, the world never saves and starts from a new map every time
         (a resetting raid world): it lists nothing and adopts the store's ledger
         instead of being held for a rollback. Journaled arrivals still replay.
+
+        world names the world that loaded (an expedition slot's land and when it
+        was placed there, expedition_slots.py). A slot holds one land after
+        another, each with its own save history, so a world other than the last
+        one reconciled is adopted at the store's ledger: its save is neither
+        ahead of nor behind a store that only knew the land before it. The same
+        world loading an older save is still held.
         """
         with self._tx():
             current = self.ledger_seq()
             if self._meta('hold_reason'):
                 raise RegionHeld(self._meta('hold_reason'))
+            if isinstance(world, str) and world and world != self._meta('world'):
+                self._set_meta('world', world)
+                ledger_seq = current
             if fresh:
                 effect_ids, ledger_seq = [], current
             if generation == self._meta('confirmed_generation'):
@@ -1013,8 +1025,10 @@ class RegionStore(TrainLeaseQueue):
         tile) or 'course' (she set course for a land; voyage names her
         voyage), or a land's own crew deciding on it: 'settle', 'claim' (owner
         is the colony's parent faction), 'unclaim' (that faction gives its claim
-        up) or 'abandon'. admin is the account asking."""
-        if op not in ('reroll', 'reveal', 'scout', 'course', 'settle', 'claim', 'unclaim', 'abandon'):
+        up) or 'abandon', or 'summon': the account's character is on a parked
+        land (its home is 'land:x,y') and asks for it to be restored. admin is
+        the account asking."""
+        if op not in ('reroll', 'reveal', 'scout', 'course', 'settle', 'claim', 'unclaim', 'abandon', 'summon'):
             raise TransferError('unknown chart request')
         if type(x) is not int or type(y) is not int or not 0 <= x < 1000 or not 0 <= y < 1000:
             raise TransferError('bad chart tile')
@@ -1024,7 +1038,7 @@ class RegionStore(TrainLeaseQueue):
             # The claim's owner is the colony's parent faction (colony_charter.dm).
             if not (isinstance(owner, str) and re.match(r'^civ:[a-z0-9_\-]{1,40}:[^\x00-\x1f]{1,60}$', owner)):
                 raise TransferError('bad claiming faction')
-        elif op in ('settle', 'abandon'):
+        elif op in ('settle', 'abandon', 'summon'):
             owner = None
         elif op != 'reroll' and not (isinstance(owner, str) and re.match(r'^(admin|faction:[a-z0-9_\-]{1,40}|crew:[a-z0-9_\-]{1,40})$', owner)):
             raise TransferError('bad chart owner')
@@ -1032,7 +1046,7 @@ class RegionStore(TrainLeaseQueue):
             raise TransferError('bad voyage')
         with self._tx():
             cursor = self.db.execute('INSERT INTO chart_request(op, x, y, owner, admin, voyage) VALUES (?, ?, ?, ?, ?, ?)',
-                                     (op, x, y, owner if op not in ('reroll', 'settle', 'abandon') else None, admin,
+                                     (op, x, y, owner if op not in ('reroll', 'settle', 'abandon', 'summon') else None, admin,
                                       voyage if op == 'course' else None))
         return {'id': cursor.lastrowid}
 

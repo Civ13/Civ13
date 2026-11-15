@@ -47,12 +47,15 @@ from piling up and worlds from staying awake is in the rules themselves:
 | --- | --- | --- |
 | Undecided lands a chart owner (or the account at the tiller) may have open | 1 | `WorldChart.open_refusal` |
 | Wait between opening new lands, for the owner and the account | 3 hours (`OPEN_COOLDOWN_SECONDS`) | `world_chart.py` |
-| An undecided land with nobody on it is abandoned | after 7 days, or after 1 day when every slot is taken and a crew asks for a new land (`PRESSURE_SECONDS`) | `WorldChart.expire`, `make_room` |
+| An undecided land with nobody on it is abandoned | after 7 days, parked or not | `WorldChart.expire` |
+| With every slot taken, the land empty longest gives its slot up | after 1 hour with nobody there and no ship on her way (`PARK_IDLE_SECONDS`): it is parked, save and all, and loses nothing | `WorldChart.make_room`, [slots](expedition-slots.md#parked-lands) |
 | A ship lies at anchor after a landfall before another voyage or crossing | 15 minutes (`VOYAGE_LANDFALL_REST`); scouting is free | `ship_voyage.dm` |
 | An empty, saved land's world | shut down to disk after the idle wait (`freeze_cold`), not kept frozen in memory | [slots](expedition-slots.md#an-empty-land-sleeps-on-disk) |
 
 Lands already open (her own undecided land, any settled or claimed land) can
-always be sailed for; only opening a new one waits. A land the host could
+always be sailed for, parked or not; only opening a new one waits. Slots are
+the lands awake at once, not the lands there are: a settled or claimed land is
+never lost for want of a slot. A land the host could
 not build costs its crew no wait.
 
 The landfall rest equals the host's idle wait before an empty world goes to
@@ -110,8 +113,9 @@ When her time is up she looks at the course on the chart:
   as **Leave these waters** does, on the same voyage id.
 - Not answered, still `ASSIGNED`, or the world not answering: "The coast is not
   yet in sight." She waits, for up to 30 minutes past her time, then turns back.
-- `REFUSED` (no free slot, a new land opened too lately or another still
-  undecided, the land could not be made, the chart does not show it): she turns
+- `REFUSED` (no free slot yet while a land is parked to make room, a new land
+  opened too lately or another still undecided, the land could not be made,
+  the chart does not show it): she turns
   back with the reason. She asks after her course about once a minute under
   way, so a refusal reaches her within a minute or two of setting out, with no
   rations eaten.
@@ -131,7 +135,7 @@ A land opened for a ship is undecided until its crew choose
 | **Claim** | a faction leader plants the colony charter (`colony_charter.dm`); one claim per faction, one faction per land | tile `CLAIMED`, stage `COLONY`; the world directory keeps `chart_claim` |
 | **Abandon** | the captain, asked as she leaves (Leave these waters or a voyage onward) | tile `LOST` for good; homes there go to the mainland; the host saves, stops and archives the slot (`<root>/expeditions/abandon/<slot>.json`) and frees it |
 | **Give up the claim** | the colony's leader, at its charter | charter down, tile `SETTLED`, stage `FRONTIER`; the faction may claim another land |
-| nobody chooses | the land waits, and its crew can open no other new land | abandoned after 7 days with no players there (the coordinator's land samples), or after 1 day when another crew needs the slot |
+| nobody chooses | the land waits, and its crew can open no other new land | abandoned after 7 days with no players there (the coordinator's land samples) |
 
 A settled land can still be claimed. The colony's leader can give the claim
 up at its charter (op `unclaim`): the charter comes down, the tile goes back to

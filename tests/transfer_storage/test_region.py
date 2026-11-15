@@ -165,6 +165,27 @@ class Basics(unittest.TestCase):
         fence = [f for f in self.a.store.status()['fences'] if f['direction'] == OUT][0]
         self.assertEqual(1, fence['settled_seq'])  # the fence is never rewound
 
+    def test_a_slot_adopts_the_next_land_and_still_holds_a_rollback_of_the_same_one(self):
+        store = self.a.store
+        base = store.ledger_seq()
+        # Land A boots unsaved in the slot, then saves twice.
+        seq = store.reconcile_load('unsaved', [], 0, world='3,4|far1@t1')
+        seq = store.report_save('a-g1', [], seq)
+        seq = store.report_save('a-g2', [], seq)
+        self.assertEqual(base + 3, seq)
+        # Land B is placed there: a new world with no save is adopted, not held.
+        seq = store.reconcile_load('unsaved', [], 0, world='5,6|far1@t2')
+        self.assertEqual(base + 4, seq)
+        self.assertEqual('', store.status()['hold_reason'])
+        seq = store.report_save('b-g1', [], seq)
+        # Land A comes back from another slot, its save far behind this store.
+        seq = store.reconcile_load('a-g9', [], 2, world='3,4|far1@t3')
+        self.assertEqual(base + 6, seq)
+        self.assertEqual('', store.status()['hold_reason'])
+        # The same placement loading an older save is still a rollback.
+        self.assertIsNone(store.reconcile_load('a-g7', [], 1, world='3,4|far1@t3'))
+        self.assertTrue(store.status()['hold_reason'].startswith('rollback'))
+
     def test_replayed_and_foreign_envelopes_change_nothing(self):
         self.a.start_transfer('beta', {'a0'})
         self.a.save()

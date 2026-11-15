@@ -26,7 +26,8 @@ READ_TIMEOUT = 10  # seconds a connection may take to send its request
 
 
 def _load(store, body):
-    seq = store.reconcile_load(body['generation'], body['effects'], body['ledger_seq'], body.get('fresh') in (True, 1))
+    seq = store.reconcile_load(body['generation'], body['effects'], body['ledger_seq'], body.get('fresh') in (True, 1),
+                               body.get('world'))
     if seq is None:
         # reconcile_load just put the region on hold; say so like other refusals.
         raise RegionHeld(store.status().get('hold_reason') or 'rollback')

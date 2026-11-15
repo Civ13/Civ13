@@ -111,7 +111,7 @@
 		if (!voyage_seen(owner, x, y) && !(found["state"] in list("SETTLED", "CLAIMED")))
 			continue
 		var/tiles_away = voyage_distance(origin, x, y)
-		.["[capitalize(world_chart_tile_label(template))] at [x],[y]: [tiles_away] tile\s, about [tiles_away] minute\s[found["region"] ? " (a land already opened)" : ""]"] = list(x, y, tiles_away)
+		.["[capitalize(world_chart_tile_label(template))] at [x],[y]: [tiles_away] tile\s, about [tiles_away] minute\s[found["region"] ? " (a land already opened)" : (found["parked"] ? " (laid up: its harbour is made ready as she sails)" : "")]"] = list(x, y, tiles_away)
 
 // The chart tile a scouting voyage turns round at, toward dir.
 /proc/voyage_scout_target(list/origin, dir)
