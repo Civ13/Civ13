@@ -76,7 +76,8 @@ var/global/list/car_workshop_prototypes = list()
 	var/list/spec = works_spec(model)
 	if (spec)
 		var/list/works_cost = spec["cost"]
-		return works_cost.Copy()
+		// A project in another hull pays for it (vehicle_hulls.dm).
+		return works_hull_cost(works_cost.Copy(), spec["gun"], project == model ? project_hull : null)
 	return list("steel" = size == 3 ? 40 : 60, "glass" = size == 3 ? 6 : 8, "cloth" = size == 3 ? 4 : 6, "cable" = 10, "wheels" = 4)
 
 /obj/structure/car_workshop/proc/requirement_text(mob/living/human/H)
@@ -323,6 +324,7 @@ var/global/list/car_workshop_prototypes = list()
 	var/list/works = works_spec(model)
 	if (works)
 		works_fit(A, works + list("name" = model))
+		A.set_hull(vehicle_project_hull(costs(model)))
 	var/list/required = costs(model)
 	for (var/key in required)
 		stock[key] -= required[key]

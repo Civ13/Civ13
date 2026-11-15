@@ -165,5 +165,13 @@
       "/obj/item/stack/material/iron": 4,
       "/obj/item/machine_part/shaft": 1
     }
+  },
+  "/obj/structure/workshop_machine/rolling_mill": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/machine_part/gear": 2,
+      "/obj/item/machine_part/shaft": 2,
+      "/obj/item/machine_part/bearing": 2
+    }
   }
 }

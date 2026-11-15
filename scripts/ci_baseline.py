@@ -883,8 +883,10 @@ SUITES = {
                          'code/modules/1713/tools.dm', 'code/game/objects/items/weapons/tools.dm',
                          'code/game/objects/items/weapons/material/material_weapons.dm',
                          'code/game/objects/items/weapons/material/misc.dm')},
-    'tool_materials': {'files': ('tests/tool_materials/test_tool_materials.py',),
+    'tool_materials': {'files': ('tests/tool_materials/test_tool_materials.py',
+                                 'tests/tool_materials/test_tool_wear.py'),
         'paths': ('tests/tool_materials/', 'code/modules/materials/tool_materials.dm',
+                  'code/modules/materials/tool_wear.dm',
                   'config/recipe_variants.json', 'scripts/recipe_variants.py'),
         'shared_paths': ('code/modules/materials/part_roles.dm', 'code/modules/materials/material_properties.dm',
                          'code/modules/1713/tools.dm', 'code/game/objects/items/weapons/tools.dm',
@@ -1913,6 +1915,10 @@ SUITES = {
         'tests/wire_bench/', 'code/modules/1713/wire_bench.dm', 'code/modules/materials/wire_materials.dm',
         'code/modules/1713/machinery/cables_types.dm', 'config/craft_needs.json',
         'icons/obj/wire_bench.dmi', 'tests/sprites/create_wire_bench.py')},
+    # Source contracts only; this suite does not run DM.
+    'rolling_mill': {'files': ('tests/rolling_mill/test_contract.py',), 'paths': (
+        'tests/rolling_mill/', 'code/modules/1713/rolling_mill.dm', 'config/craft_needs.json',
+        'icons/obj/rolling_mill.dmi', 'tests/sprites/create_rolling_mill.py')},
     'lifting_machines': {'files': ('tests/lifting_machines/test_contract.py',), 'paths': (
         'tests/lifting_machines/', 'code/modules/1713/lifting_machines.dm',
         'icons/obj/lifting_machines.dmi', 'tests/sprites/create_lifting.py')},
