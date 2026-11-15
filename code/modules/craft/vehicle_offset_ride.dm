@@ -133,7 +133,7 @@
 		if (src in V.ontop)
 			return TRUE
 	for (var/obj/structure/vehicleparts/frame/F in T)
-		if (F.axis && F.axis.moving && (src in F.axis.transporting))
+		if (F.axis && (F.axis.moving || F.axis.offset_coast > 0) && (src in F.axis.transporting))
 			return TRUE
 	return FALSE
 

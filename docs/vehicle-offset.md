@@ -3,8 +3,9 @@
 Vehicles are moving to pixel positions the way free-moving players do. The
 plan is in five phases. The shared core is `code/modules/craft/vehicle_offset.dm`
 (Phase 0); motorcycles, boats, bicycles and rafts drive with it
-(`vehicle_offset_ride.dm`, Phase 1), and so do carriages and player-built
-hulls under way (`vehicle_offset_hull.dm`).
+(`vehicle_offset_ride.dm`, Phase 1), and so do carriages, player-built
+hulls under way (`vehicle_offset_hull.dm`) and frame vehicles
+(`vehicle_offset_frame.dm`, Phase 2).
 
 ## How it works
 
@@ -66,6 +67,30 @@ hulls under way (`vehicle_offset_hull.dm`).
   (living.dm); one hitched to a carriage rides its offset.
 - Riders carried by any vehicle make no footstep sounds
   (`carried_by_vehicle()`); the engine loop is the vehicle's sound.
+
+## Cars, trucks, buses and tanks (Phase 2)
+
+- `/obj/structure/vehicleparts/axis/movementloop()` is overridden in
+  `vehicle_offset_frame.dm`; `axis.dm` keeps the tile loop and is called
+  through `..()` whenever pixels are off. Aircraft, frame ships and boats
+  (`offset_drive = FALSE`), towing rigs (`tow_out`, `tow_in`) and vehicles
+  with a cargo trailer hitched stay on whole tiles.
+- While a player is within 12 tiles plus its `maxdist`, and no save is
+  running, each tick moves `vehicle_offset_speed(vehicle_m_delay + 1)`
+  pixels the way it faces (or backs). The frames are the body; the wheels,
+  seats, engine, cargo and crew from `add_transporting(FALSE)` ride on them
+  (`vehicle_offset_sync()`), with walkers judged by the deck as drawn, as on
+  built hulls.
+- Starting to overlap the tiles ahead runs `do_vehicle_check()` once (crashes,
+  mines, running people over, deep water, grace walls); a refusal is the tile
+  loop's stop, roof riders thrown off at speed. Half a tile on, `do_move()`
+  makes the tile step with `offset_committing` set: it moves only what the
+  offset carries and skips its glide. The load then sets the pace for the next
+  tile, as before.
+- Out of gear it coasts on, slowing, to the next square and stops there with
+  nobody carried. With the engine cut while coasting it stops square at the
+  next tile edge. A turn (`do_matrix()`) squares it first and swings round on
+  whole tiles.
 
 ## Walking on a moving deck
 
