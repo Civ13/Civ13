@@ -2,7 +2,8 @@
 
 Code: `code/modules/1713/trains.dm` (cars, rails, locomotives),
 `code/modules/1713/train_platforms.dm` (walkable cars and clearance) and
-`code/modules/1713/train_warfare.dm` (armored locomotive).
+`code/modules/1713/train_warfare.dm` (armored locomotive) and
+`code/modules/1713/train_locomotives.dm` (heavy 3x4 locomotives).
 Tests: `tests/train_platforms` (the `drive/`, `load/`, `brake/`,
 `double_heading/`, `tender/` and `collision/` checks) and `tests/train_collision`.
 
@@ -36,6 +37,39 @@ is `tmp`, so a saved train comes back standing with the throttle closed.
 Acceleration rises with spare pull. Coasting, engine braking and the brake
 each take a fixed amount of speed per tile, divided by the train's weight over
 six, so a long heavy train needs several times the distance to stop.
+
+## Heavy locomotives
+
+Code: `code/modules/1713/train_locomotives.dm`. Tests: the `heavy/`, `diesel/`
+and `armored_heavy/` checks of `tests/train_platforms`.
+
+A heavy locomotive is three tiles wide and four long, assembled from a kit on
+straight track like a platform car. Its front section is the engine, a
+`/obj/structure/trains/locomotive` subtype, so the controls, load, braking,
+reversing and double heading above are the same code. The three sections
+behind it are platform segments of the car kinds `loco_steam`, `loco_diesel`
+and `loco_armored`, hitched to the engine and sharing its `car_id`; they follow
+curves, are checked for clearance and can be wrecked and welded like any car.
+The body art is `loco_<kind>_<1-4><l|c|r>` in `train_platforms.dmi`.
+
+| Kit | Step delay | Haul | Weight | Fuel | Cab |
+| --- | --- | --- | --- | --- | --- |
+| Heavy steam locomotive | 2 | 30 | 6 | coal, wood, branches (250) | third section |
+| Heavy diesel locomotive | 1.2 | 32 | 5 | diesel or biodiesel, 1 per unit (300) | front section |
+| Heavy armored locomotive | 2.4 | 40 | 10 | coal, wood, branches (300) | third section, armor doors |
+
+The step delays are the locomotive rows of [vehicle-speeds.md](vehicle-speeds.md);
+a heavy engine is no faster than its one-tile counterpart, it pulls about twice
+the train. The controls open from the cab section (`control_spot()`), or from a
+tile beside it. Fuel goes in through any section. Boilers, bunkers and the
+diesel's hood are solid; the diesel has a walkway either side of the hood, and
+whatever stands in its front cab rides along (`cab_cargo()`). The front of the
+body hits people standing beside the rails (`sweep_sides()`).
+
+Explosions wear the steam and diesel engines down to `broken_down`, and the
+armored one to `disabled`, instead of deleting them; a welding tool repairs
+them. Heavy locomotives cannot be packed back into a kit, put away in a rail
+warehouse, or sent over an inter-region railway.
 
 ## Several engines and the tender
 

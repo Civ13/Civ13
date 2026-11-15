@@ -319,6 +319,29 @@ hook is `fluid_receive()`. Non-steel tanks use the tintable grey sprite from
 `tests/sprites/create_fluid_tanks.py`. Reaction vessels and engine boilers do
 not take a material yet.
 
+## Cannon barrels
+
+`code/modules/materials/barrel_materials.dm` gives the smoothbore cannon a
+barrel material. A cannon stores `barrel_material` (steel by default) and
+`barrel_wear` (0 to 100); the cannon body in `siege/piece.dm` is untouched.
+
+```
+barrel_life(name)        // shots: (toughness * firmness / 1000)^2 * 5
+barrel_fails_early(name) // toughness <= firmness: it cracks without bulging
+```
+
+| Barrel | Shots | How it ends |
+| --- | --- | --- |
+| Steel | no limit | never, as before |
+| Iron | 204 | from half its life on, each shot has a 2% chance to burst it, with no warning |
+| Bronze | 101 | bulges at three quarters, splits when spent, bursts on the shot after |
+| Iron-hooped wood | 5 | the same warnings as bronze |
+
+Bronze and iron cannons are the cannon recipe on another stack (field 13 names
+the material). The hooped cannon is `/obj/structure/cannon/hooped` because its
+iron hoops are a second input and those are keyed by result type. Artillery
+and tank guns keep steel barrels.
+
 ## Soft tools
 
 `code/modules/materials/tool_wear.dm` is the one rule that stands in for

@@ -95,6 +95,17 @@
 				ordered += S
 	return ordered
 
+// Heavy locomotives (train_locomotives.dm) are an engine and three body
+// sections; the warehouse does not take them apart.
+/proc/rail_warehouse_too_long(obj/structure/trains/S)
+	if (istype(S, /obj/structure/trains/locomotive))
+		var/obj/structure/trains/locomotive/E = S
+		return !!E.body_kind
+	if (istype(S, /obj/structure/trains/platform))
+		var/obj/structure/trains/platform/P = S
+		return !!P.car_engine()
+	return FALSE
+
 /proc/rail_warehouse_unit_name(list/unit)
 	var/obj/structure/trains/front = unit[1]
 	return "[front.name]"
@@ -128,6 +139,9 @@
 	if (stored_units().len >= capacity)
 		return "The warehouse is full: it holds [capacity] cars."
 	var/list/bay = bay()
+	for (var/obj/structure/trains/S in unit)
+		if (rail_warehouse_too_long(S))
+			return "A heavy locomotive is too long to put away."
 	if (istype(unit[1], /obj/structure/trains/platform) && unit.len != TRAIN_CAR_LENGTH)
 		return "\The [unit[1]] is not whole."
 	for (var/turf/T in bay)
