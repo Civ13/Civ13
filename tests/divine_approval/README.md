@@ -1,15 +1,15 @@
 # Per-use divine approval foundation
 
-Scope: a disabled, server-only, runtime-only authorization state machine.
+Scope: a server-only, runtime-only authorization state machine.
 Publication is authorized in public source; in-game discovery remains restricted
 to eligible players. This foundation does not implement that presentation layer.
 Stop after opening a draft PR and reporting exact-head checks; no merge or deploy.
 
 The approval foundation adds no UI, prayer routing, magic effect or feature activation.
 The journal slice below is separate from that approval foundation.
-The file is not included in civ13.dme yet. This is a reviewable foundation, not
-an implemented player feature. The native probe includes production source
-explicitly. No production object creates a covenant or request.
+The approval and ritual datums are included in civ13.dme for full-game compiler
+coverage. No production object creates a covenant or request, so this is a
+reviewable foundation, not an implemented player feature.
 
 Each requested use requires its own explicit deity-operator approval. Granting
 knowledge alone is not sufficient. Request fields and the effect/cost scope ID
@@ -55,7 +55,7 @@ launching the existing unrestricted native runner.
   the cipher without magic eligibility or progress. No client-hidden plaintext.
 - Influence from active followers, including unaware faction subordinates,
   contribution caps, persistence and exactly-once transfer.
-- Full game inclusion/build/preflight, real-client visibility and audit tests.
+- Native channel tests, real-client visibility and audit tests.
 
 ## Ordinary-book sealed ledger slice (2026-11-14)
 
@@ -156,3 +156,66 @@ it that way: no magic-module type on persistent-world maps (`maps/nomads`,
 Boy, and code outside the module only creates magic gear behind a Wizard Boy
 check or in the listed round-map files. Run
 `python3 -m unittest tests.divine_approval.test_mundane_gear -v`.
+
+## Group channel contract (2026-11-14)
+
+`ritual.dm` extends one approved request rather than issuing a second token. It
+copies an explicitly enrolled roster (proposed prototype: leader plus two to
+seven other conscious, connected players), locks their session/body/origin and
+an ordinary held focus, and requires same-z visibility within at most three tiles.
+These counts, radius and a default 30-second channel are balance proposals, not
+user-mandated final values. No special magical item identity is introduced.
+NPC crowds, disconnected bodies and duplicate sessions are rejected. Enrollment
+is an adapter obligation: proximity alone never consents a player to a rite.
+Unaware followers can join a mundane-facing ceremony without learning its purpose.
+
+`start_channel()` needs explicit prior approval with enough lifetime remaining;
+it never refreshes the original expiry. `consume()` checks elapsed channel time,
+current context and the parent's exact-target/scope, approver and single-use
+checks. It does not charge slots/resources, heal, harm, or dispatch any effect.
+There is no per-frame loop or timer. A future bounded scheduler must call
+`current()` and send `invalidate_channel()` on movement, hand change, logout,
+body switch, role/covenant changes, incapacitation, transfer and save boundaries.
+Snapshot polling alone cannot detect leave-and-return between observations.
+Pending/channelling/approved state must never be restored after restart.
+The adapter owns cleanup of terminal requests and retains audit evidence first.
+
+`ritual_probe.dm` supplies optional actual-DM assertions with stubbed connection
+boundaries; include after `probe.dm` in an authorized isolated fixture and invoke
+`divine_ritual_probe()`. Its manual clock-boundary assertion is not a duration or
+scheduler measurement. No native fixture is launched by offline tests or CI
+admission in this change. Full-game compile covers the production types only.
+
+### Playable integration and initial spell plan
+
+The ledger is not authority to cast; initiation, patron-granted learning and
+per-use permission remain independent. Build the shared adapter before effects:
+
+1. Resolve a durable character/covenant and a learned invocation server-side.
+2. Select target and, for a rite, explicitly enrolled participants and held
+   ordinary focus. Freeze effect version, intensity, duration and cost in the
+   server-generated scope specification shown to the patron.
+3. Patron approves that one request. A different roster, target or cost needs a
+   new request. Never expose hidden details to unauthorized reader projections.
+4. Start the channel, hook all cancellation boundaries, and check legality/costs.
+5. Revalidate, consume permission, charge resources and dispatch synchronously
+   without a yield. Failure after consumption cannot silently refund permission.
+   Add idempotent effect/audit receipts before connecting persistence or recovery.
+
+Proposed first invocations (none implemented by this PR):
+
+| Invocation | Effect and delivery | Limit |
+| --- | --- | --- |
+| Mercy | Touch-channel modest pain/exhaustion relief | Not injury repair, organ regrowth or resurrection |
+| Affliction | Short visible-target weakness/pain | Bounded duration/magnitude, ordinary symptom messages |
+| Omen | Patron-authored private clue | No automated omniscient tracking or secret fact lookup |
+| Vigil of Recovery | Group channel around one patient | Bounded support through existing recovery rules, not universal cure |
+
+One spell slot plus fatigue and qualified rest recovery are initial cost
+proposals. Recovery belongs to character state, not book replacement/copying.
+Keep ordinary Wizard Boy spells separate: their public names, projectiles,
+`revive()`/`gib()` and unrestricted dispatch violate this system's constraints.
+Disease rites require later immunity, treatment, contagion, offline protection
+and persistence tests. Weather rites need capped footprint/lifetime and actual
+moving-storm validation. Book-burning rites additionally need provenance and
+anti-copy farming; destroyed physical books cannot be implicitly refunded.

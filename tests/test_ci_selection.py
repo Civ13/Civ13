@@ -318,7 +318,7 @@ class SelectionTests(unittest.TestCase):
                 selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
 
     def test_divine_approval_offline_admission_is_exact(self):
-        for path in ('tests/divine_approval/test_contract.py', 'tests/divine_approval/test_divine_book.py', 'tests/divine_approval/test_journal.py', 'tests/divine_approval/probe.dm', 'tests/divine_approval/journal_probe.dm'):
+        for path in ('tests/divine_approval/test_contract.py', 'tests/divine_approval/test_divine_book.py', 'tests/divine_approval/test_journal.py', 'tests/divine_approval/probe.dm', 'tests/divine_approval/journal_probe.dm', 'tests/divine_approval/test_ritual.py', 'tests/divine_approval/ritual_probe.dm'):
             with patch.object(selection.subprocess, 'check_output', return_value=(path + '\0').encode()):
                 self.assertEqual(selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request'), [])
         other = 'tests/divine_approval/new_native_probe.dm'

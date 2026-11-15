@@ -11,7 +11,7 @@ def body(path):
 
 class Contract(unittest.TestCase):
     def test_disabled_and_no_entrypoints(self):
-        self.assertNotIn('divine/approval.dm', (ROOT/'civ13.dme').read_text())
+        self.assertIn('divine/approval.dm', (ROOT/'civ13.dme').read_text().replace('\\', '/'))
         self.assertNotIn('/Topic(', TEXT)
         self.assertNotIn('/verb/', TEXT)
         self.assertNotIn('var/global', TEXT)
