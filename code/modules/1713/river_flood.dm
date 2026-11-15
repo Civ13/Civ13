@@ -389,7 +389,12 @@ var/global/next_river_flood_tick = 0
 	if (!T || !map)
 		return 0
 	var/datum/river_flood/F = map.river_flood()
-	if (!F || T.z != F.z_level || T.x < 1 || T.x > F.maxx || T.y < 1 || T.y > F.maxy)
+	if (!F)
+		return 0
+	if (T.z != F.z_level)
+		// Seepage and floodwater pouring into the level below (flood_cellars.dm).
+		return T.z == F.cellar_z() ? F.seep_depth_at(T) : 0
+	if (T.x < 1 || T.x > F.maxx || T.y < 1 || T.y > F.maxy)
 		return 0
 	. = F.hollow_count ? F.hollow_depth_at(T) : 0
 	var/r = F.reach_at(T.x, T.y)

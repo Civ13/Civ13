@@ -232,6 +232,28 @@ server being down counts too. Saved: pump `on` and `fuel`, `sludge`, septic
 
 Saved: the gate's `open` and the cistern's water.
 
+## Cellars and seepage
+
+`flood_cellars.dm`. The level under the flood level (`multiz_level_below()`,
+so Gaia's level 1 or a dug cave) is the cellar level, cached as
+`cellar_z()`. `flood_depth_at()` on a cellar tile asks `seep_depth_at()`:
+
+- Seepage: when the reach's stage comes within 2 levels of the bank (the
+  effective threshold of the surface tile above), groundwater stands
+  0.25 x the gap deep, at most 0.45 (knee). Nothing under water tiles or in
+  solid rock.
+- Pouring: when the river is over the bank above and that tile is a way down
+  (open air, a ladder, stairs or a tunnel mouth: `/obj/structure/multiz`),
+  the tile below takes the surface depth, at most 1.
+- Bailing: an open container used on a wet cellar tile (not on harm intent)
+  takes up water and keeps that tile and the 8 around it dry for 10 minutes
+  (`cellar_dry`, unsaved).
+- Pumps: any structure in `cellar_pumps` keeps tiles within its
+  `cellar_reach` dry while its `cellar_pumping()` is TRUE.
+
+Cellar water is drawn like floodwater when a player is on the cellar level.
+Nothing ticks.
+
 ## Saving
 
 The water held, the snowpack and the high-water mark of every reach are the
@@ -258,4 +280,5 @@ tiles around you, blue where the water is now).
     python3 tests/ecology_spawning/run_linux.py . tests/sewers/s2_probe.dm
     python3 tests/ecology_spawning/run_linux.py . tests/sewers/s3_probe.dm
     python3 tests/ecology_spawning/run_linux.py . tests/river_flow/defences_probe.dm
+    python3 tests/ecology_spawning/run_linux.py . tests/river_flow/cellar_probe.dm
     python3 tests/durable_map_migration/run.py --byond-bin <dir>
