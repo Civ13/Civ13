@@ -207,6 +207,18 @@ static class LocalHostingTests {
         Require(dry.Ok && dry.Ready == 1 && !dry.Started && RegionPlayers.Describe(dry).Contains("Refused: bob (Bob): They are dead.") && RegionPlayers.Describe(dry).Contains("Nothing has moved yet"), "dry run parse");
         Require(RegionPlayers.ParseSend(0, "{\"ok\": true, \"send\": \"started\", \"rows\": []}").Started, "started parse");
         Require(RegionPlayers.Describe(RegionPlayers.ParseSend(0, "{\"ok\": true, \"send\": \"refused:another transfer is running\", \"rows\": []}")).Contains("Not sent: another transfer is running."), "refused send");
+        // Magic whitelist dialog (MagicWhitelist, shard_group.py magic-whitelist): one shared list for the group.
+        Require(MagicWhitelist.Step(host.Control!).ArgumentList.SequenceEqual(
+            new[] { "-I", "-B", shard, "--config", groupConfig, "magic-whitelist" }), "magic whitelist list argv");
+        Require(MagicWhitelist.Step(host.Control!, MagicWhitelist.SplitKeys("Ann, bob_2\nAnn"), null).ArgumentList.SequenceEqual(
+            new[] { "-I", "-B", shard, "--config", groupConfig, "magic-whitelist", "--add", "Ann,bob_2" }), "magic whitelist add argv");
+        Require(MagicWhitelist.Step(host.Control!, null, ["cid"]).ArgumentList.SequenceEqual(
+            new[] { "-I", "-B", shard, "--config", groupConfig, "magic-whitelist", "--remove", "cid" }), "magic whitelist remove argv");
+        foreach (var keys in new string[][] { [], ["-x"], ["a,b"], ["a&b"], [new string('k', 33)], Enumerable.Range(0, 21).Select(i => "k" + i).ToArray() })
+            try { MagicWhitelist.Step(host.Control!, keys, null); throw new Exception("unsafe magic whitelist keys accepted: " + string.Join(",", keys)); } catch (ArgumentException) { assertions++; }
+        var magic = MagicWhitelist.Parse(0, "noise\n{\"ok\": true, \"file\": \"D:/x/gaia/SQL/magic_whitelist.txt\", \"keys\": [\"ann\", \"<b>\", \"cid\"], \"added\": [\"cid\"], \"removed\": []}");
+        Require(magic.Ok && magic.Keys.SequenceEqual(["ann", "cid"]) && magic.Added.SequenceEqual(["cid"]) && magic.Removed.Count == 0 && magic.File!.EndsWith("magic_whitelist.txt"), "magic whitelist parse");
+        Require(!MagicWhitelist.Parse(1, "{\"ok\": false, \"refused\": \"give up to 20 player keys\"}").Ok && !MagicWhitelist.Parse(1, "").Ok, "magic whitelist refusal");
         var groupStep = LocalHosting.GroupStep(host.Control!, "stop");
         Require(groupStep.FileName == python && groupStep.CreateNoWindow && !groupStep.UseShellExecute && groupStep.RedirectStandardInput &&
             groupStep.ArgumentList.SequenceEqual(new[] { "-I", "-B", shard, "--config", groupConfig, "stop" }), "group argv changed: " + string.Join(" ", groupStep.ArgumentList));

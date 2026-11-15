@@ -45,7 +45,7 @@
 			log_admin("[key_name(usr)] stopped speaking as the god [claim].")
 		if ("Initiate a follower")
 			var/mob/living/human/H = divine_pick_human("Initiate whom as a follower of [claim_label]?")
-			if (!H || divine_claim_of(src) != claim)
+			if (!H || divine_claim_of(src) != claim || !magic_whitelist_admit(H))
 				return
 			if (H.divine_patron && divine_book_key(H.divine_patron) != claim)
 				if (alert(usr, "[H.real_name] already follows [H.divine_patron]. Make them follow [claim_label] instead? They forget everything taught before.", "Divine Patron", "Yes", "No") != "Yes")
@@ -66,7 +66,7 @@
 		if ("Teach an invocation", "Take back an invocation")
 			var/teaching = action == "Teach an invocation"
 			var/mob/living/human/H = divine_pick_human("[teaching ? "Teach" : "Take back from"] which follower?", claim)
-			if (!H)
+			if (!H || (teaching && !magic_whitelist_admit(H)))
 				return
 			var/list/options = list()
 			for (var/spell in divine_invocation_names)
@@ -109,7 +109,7 @@
 					var/list/known = list()
 					for (var/spell in H.divine_known)
 						known += divine_invocation_names[spell]
-					lines += "[H.real_name] ([H.ckey ? H.ckey : "no player"])[H.stat == DEAD ? ", dead" : ""]: [known.len ? english_list(known) : "nothing taught"][H.divine_slot_spent ? ", spent until rested" : ""]"
+					lines += "[H.real_name] ([H.ckey ? H.ckey : "no player"])[H.stat == DEAD ? ", dead" : ""][H.magic_allowed() ? "" : ", SUSPENDED (not on the magic whitelist)"]: [known.len ? english_list(known) : "nothing taught"][H.divine_slot_spent ? ", spent until rested" : ""]"
 			to_chat(usr, "<b>Followers of [claim_label] in this world:</b><br>[lines.len ? jointext(lines, "<br>") : "none"]")
 		if ("Pending prayers")
 			var/found = FALSE
@@ -132,7 +132,7 @@
 			continue
 		if (!follower_of && !H.client)
 			continue
-		choices["[H.real_name] ([H.ckey ? H.ckey : "no player"])"] = H
+		choices["[H.real_name] ([H.ckey ? H.ckey : "no player"])[H.magic_allowed() ? "" : " - not on the magic whitelist"]"] = H
 	if (!choices.len)
 		to_chat(usr, SPAN_WARNING(follower_of ? "No living followers are in this world." : "No one is playing a character here."))
 		return null

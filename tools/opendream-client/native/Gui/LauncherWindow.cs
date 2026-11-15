@@ -285,6 +285,13 @@ internal sealed partial class LauncherWindow : Form {
                 ("Update when empty…", () => { ShowUpdateWhenEmpty(); return Task.CompletedTask; }, null),
                 ("Start region…", () => { ShowStartRegion(); return Task.CompletedTask; }, null),
                 ("Hub names…", () => { ShowHubNames(); return Task.CompletedTask; }, null),
+                ("Magic whitelist…", () => {
+                    // One shared file for the whole group (MagicWhitelist, shard_group.py magic-whitelist): no host gate.
+                    if (host?.Control is not { Group: not null } control) return Task.CompletedTask;
+                    using var dialog = new MagicWhitelistDialog(control, HostLine);
+                    dialog.ShowDialog(this);
+                    return Task.CompletedTask;
+                }, null),
                 ("-", null, null),
                 ("Update and restart without saving…", () => GroupAction("update-unsaved", "Update and restart without saving"), HostGate.All),
                 ("Force stop", () => GroupAction("kill", "Force stop"), HostGate.All),

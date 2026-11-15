@@ -6,7 +6,8 @@
 	// Only a character a god has initiated (covenant.dm), played by its own
 	// client. Possession, mathematics, a password and an admin client are not
 	// initiation.
-	return istext(divine_patron) && length(divine_patron) && client && client.mob == src
+	// and only while the player is on the magic whitelist (magic_whitelist.dm).
+	return istext(divine_patron) && length(divine_patron) && client && client.mob == src && magic_allowed()
 
 /obj/item/weapon/book
 	var/list/divine_advancement_entries = null
