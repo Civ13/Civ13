@@ -17,6 +17,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE = ROOT / 'code/modules/1713/mountain_seams.dm'
 METADATA = ROOT / 'code/game/objects/map_metadata/nomads/nomads_americas.dm'
+ASIA_METADATA = ROOT / 'code/game/objects/map_metadata/nomads/nomads_asia.dm'
+ASIA_MAP = ROOT / 'maps/nomads/nomads_asia.dmm'
 DME = ROOT / 'civ13.dme'
 MAPS = {
     'NOMADS_AMERICAS_NORTH': ROOT / 'maps/nomads/nomads_americas_north.dmm',
@@ -97,6 +99,31 @@ class MapFacts(unittest.TestCase):
                     self.assertGreater(ores[name], 100, (map_id, dict(ores)))
 
 
+    def test_asia_caves_area_is_mountain_or_open_cave_floor(self):
+        # Asia is hand-drawn: its caves area is mountain rock plus a little
+        # open cave floor, which is seam ground from the first day. Nothing
+        # else (water, grass, built floors) lies in it.
+        rock = seams = floor = 0
+        ores = collections.Counter()
+        for x, y, turf, area in read_map(ASIA_MAP):
+            if not (area == CAVES or area.startswith(CAVES + '/')):
+                self.assertFalse(turf.startswith(ROCK[0]), '%s at %d,%d in %s' % (turf, x, y, area))
+                continue
+            if turf.startswith(ROCK[0]):
+                rock += 1
+            else:
+                self.assertEqual(turf, '/turf/floor/dirt', '%s at %d,%d' % (turf, x, y))
+                floor += 1
+            if hash16('%d,%d,NOMADS_ASIA' % (x, y)) % define('MOUNTAIN_SEAM_SHARE') == 0:
+                seams += 1
+                ores[district_ore(x, y, 'NOMADS_ASIA')] += 1
+        self.assertGreater(rock, 14000)
+        self.assertLess(floor, 200)
+        self.assertAlmostEqual(seams / (rock + floor), 1 / define('MOUNTAIN_SEAM_SHARE'), delta=0.01)
+        for name in ('copper', 'tin', 'iron', 'coal'):
+            self.assertGreater(ores[name], 50, dict(ores))
+
+
 class SourceContract(unittest.TestCase):
     def test_weights_and_gates(self):
         rows = ore_weights()
@@ -118,12 +145,13 @@ class SourceContract(unittest.TestCase):
         self.assertEqual(define('MOUNTAIN_SEAM_LOADS'), 6)
         self.assertIn('new /datum/resource_stock(MOUNTAIN_SEAM_LOADS, MOUNTAIN_SEAM_REGROW)', source())
 
-    def test_opt_in_on_both_americas_maps_only(self):
+    def test_opt_in_on_the_one_level_mountain_maps_only(self):
         meta = METADATA.read_text(encoding='utf-8')
         self.assertEqual(meta.count('mountain_seams = TRUE'), 2)
+        self.assertEqual(ASIA_METADATA.read_text(encoding='utf-8').count('\tmountain_seams = TRUE\n'), 1)
         self.assertIn('/obj/map_metadata/var/mountain_seams = FALSE', source())
         others = [p for p in (ROOT / 'code').rglob('*.dm')
-                  if p not in (SOURCE, METADATA) and 'mountain_seams = TRUE' in p.read_text(encoding='utf-8', errors='replace')]
+                  if p not in (SOURCE, METADATA, ASIA_METADATA) and 'mountain_seams = TRUE' in p.read_text(encoding='utf-8', errors='replace')]
         self.assertEqual(others, [])
 
     def test_ground_rule(self):
