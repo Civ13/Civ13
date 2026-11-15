@@ -441,6 +441,13 @@ class SkillMastery(unittest.TestCase):
         adapt = proc(stats, "/mob/living/human/proc/adaptStat")
         self.assertIn("note_skill_mastery(statname)", adapt)
         self.assertLess(adapt.index("min(stats[statname][2], cap)"), adapt.index("note_skill_mastery(statname)"))
+    def test_one_gain_stops_at_next_milestone(self):
+        stats = read("code/game/mob/living/carbon/human/human_stats.dm")
+        adapt = proc(stats, "/mob/living/human/proc/adaptStat")
+        self.assertIn("skill_mastery_ceiling(statname, before_value)", adapt)
+        self.assertLess(adapt.index("skill_mastery_ceiling(statname, before_value)"), adapt.index("note_skill_mastery(statname)"))
+        ceiling = proc(self.src, "/mob/living/human/proc/skill_mastery_ceiling")
+        self.assertIn("learning_by_doing_enabled()", ceiling)
     def test_paid_once_per_discipline(self):
         note = proc(self.src, "/mob/living/human/proc/note_skill_mastery")
         for guard in ("learning_by_doing_enabled()", "skill_mastery_key(discipline, M[1])", "if (key in skill_mastery)", "SCHOLAR_MAX_LEVEL"):

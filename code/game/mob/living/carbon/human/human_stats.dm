@@ -132,6 +132,8 @@
 		multiplier *= trait_skill_gain_mult(statname) * skill_variety_mult(statname, variety_key) * skill_master_mult(statname)
 
 	var/increase_multiple = 0.001 // 1 / 1000, to prevent crazy ugly decimals
+	var/before_value = stats[statname][1]
+	var/before_max = stats[statname][2]
 
 	if (list("dexterity").Find(statname))
 		stats[statname][1] *= (1 + round(multiplier/100, increase_multiple))
@@ -177,6 +179,12 @@
 	var/cap = (statname == "magic") ? 100.00 : 250.00
 	stats[statname][1] = min(stats[statname][1], cap)
 	stats[statname][2] = min(stats[statname][2], cap)
+	// One gain stops at the next skill milestone, so each is reached and paid in turn.
+	if (multiplier > 0)
+		var/ceiling = skill_mastery_ceiling(statname, before_value)
+		if (ceiling)
+			stats[statname][1] = min(stats[statname][1], max(ceiling, before_value))
+			stats[statname][2] = min(stats[statname][2], max(ceiling, before_max))
 	// Reaching a milestone in a skill teaches its scholarship (learning_by_doing.dm).
 	if (multiplier > 0)
 		note_skill_mastery(statname)
