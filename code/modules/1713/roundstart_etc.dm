@@ -55,7 +55,7 @@ var/GRACE_PERIOD_LENGTH = 7
 			jungleturfs += F
 		else if (istype(F, /turf/floor/beach/water/shallowsaltwater) || istype(F, /turf/floor/beach/water/deep/saltwater))
 			seaturfs += F
-		else if (istype(F, /turf/floor/beach/water/jungle))
+		else if (istype(F, /turf/floor/beach/water/jungle) || istype(F, /turf/floor/beach/water/deep/jungle))
 			jungleriverturfs += F
 			riverturfs += F
 		else if (istype(F, /turf/floor/beach/water) && !istype(F, /turf/floor/beach/water/ice) && !istype(F, /turf/floor/beach/water/swamp) && !istype(F, /turf/floor/beach/water/flooded))
@@ -70,9 +70,7 @@ var/GRACE_PERIOD_LENGTH = 7
 			var/turf/areaspawn = safepick(seaturfs)
 			new/obj/structure/fish(areaspawn)
 	spawn(400)
-		for (var/i = 1, i <= jungleriverturfs.len/15, i++)
-			var/turf/areaspawn = safepick(jungleriverturfs)
-			new/obj/structure/piranha(areaspawn)
+		seed_piranhas(jungleriverturfs, round(jungleriverturfs.len / PIRANHA_RIVER_TILES))
 	spawn(500)
 		for (var/i = 1, i <= jungleturfs.len/1200, i++)
 			var/turf/areaspawn = safepick(jungleturfs)

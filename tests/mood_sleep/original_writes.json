@@ -16,7 +16,7 @@
   {"path": "code/game/mob/living/carbon/human/shit_piss.dm", "before": "mood -= 25", "after": "adjust_mood(-(25), \"soiling yourself\")"},
   {"path": "code/game/mob/living/carbon/human/shit_piss.dm", "before": "mood -= 15", "after": "adjust_mood(-(15), \"soiling yourself\")"},
   {"path": "code/game/mob/living/death.dm", "before": "NB.mood -= 10", "after": "NB.adjust_mood(-(10), \"seeing a death\")"},
-  {"path": "code/game/mob/living/simple_animal/friendly/static.dm", "before": "NB.mood -= 10", "after": "NB.adjust_mood(-(10))"},
+  {"path": "code/game/mob/living/simple_animal/friendly/piranha.dm", "before": "NB.mood -= 10", "after": "NB.adjust_mood(-(10))"},
   {"path": "code/game/mob/living/simple_animal/hostile/tactical_ai.dm", "before": "NB.mood -= 10", "after": "NB.adjust_mood(-(10), \"seeing someone maimed\")"},
   {"path": "code/game/objects/items/soap.dm", "before": "src.mood += 10", "after": "src.adjust_mood(10, \"a good wash\")"},
   {"path": "code/game/objects/items/weapons/material/ooga_booga_weapons.dm", "before": "user.mood += 10", "after": "user.adjust_mood(10, \"eating ants\")"},

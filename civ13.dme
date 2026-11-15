@@ -338,6 +338,7 @@
 #include "code\game\mob\living\simple_animal\friendly\mouse.dm"
 #include "code\game\mob\living\simple_animal\friendly\pachy.dm"
 #include "code\game\mob\living\simple_animal\friendly\penguin.dm"
+#include "code\game\mob\living\simple_animal\friendly\piranha.dm"
 #include "code\game\mob\living\simple_animal\friendly\rabbit.dm"
 #include "code\game\mob\living\simple_animal\friendly\static.dm"
 #include "code\game\mob\living\simple_animal\hostile\afghanistan.dm"
