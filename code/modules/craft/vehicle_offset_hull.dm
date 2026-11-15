@@ -83,10 +83,15 @@
 			newcomers += M
 	var/list/deck = newcomers.len ? deck_tiles() : null
 	for (var/atom/movable/M in newcomers)
+		// Someone boarding mid-step goes on with it from the plank they are filed on.
+		var/mob/living/human/H = M
+		var/in_step = istype(H) && H.human_subtile_transaction && !H.human_subtile_transaction.cancelled && human_subtile_same(H.human_subtile_transaction.expected, H.human_subtile_snapshot())
 		if (ismob(M) && (M.step_x || M.step_y || ox || oy) && !file_on_deck(M, deck))
 			aboard -= M
 			continue
 		carry(M)
+		if (in_step)
+			vehicle_offset_rebase_walks(list(H))
 	for (var/atom/movable/A in carried)
 		if (!aboard[A])
 			drop(A, TRUE)

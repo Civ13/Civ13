@@ -494,7 +494,14 @@ var/naval_runtime_error = FALSE
 	boarder.step_x = -16
 	var/mob/living/human/naval_probe/swimmer = new(locate(45, 26, 2))
 	swimmer.step_x = -16
+	var/datum/human_subtile_transaction/boarding = new
+	boarding.actor = boarder
+	boarding.expected = boarder.human_subtile_snapshot()
+	boarder.human_subtile_transaction = boarding
 	HO.sync()
+	naval_check(human_subtile_same(boarding.expected, boarder.human_subtile_snapshot()), "someone boarding mid-step goes on with the step from the plank they are filed on")
+	boarder.human_subtile_transaction = null
+	boarding.actor = null
 	var/list/boarded = HO.carried[boarder]
 	naval_check(boarded && boarder.x == 45 && boarder.step_x == 16 && boarded[1] == 1, "someone boarding is filed on the plank under their centre and carried from there ([boarder.x],[boarder.step_x], own [boarded ? boarded[1] : "none"])")
 	naval_check(!(swimmer in HO.carried) && swimmer.x == 45 && swimmer.step_x == -16, "someone whose centre is over the water astern is not taken aboard")
