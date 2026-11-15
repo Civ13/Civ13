@@ -92,7 +92,7 @@ class RegionAdminSendSeams(unittest.TestCase):
         self.assertIn('region_admin_send_host(input)', handle)
         # The loopback token check comes before any action.
         self.assertLess(handle.index('input["token"] != token'), handle.index('region_admin_send_host(input)'))
-        self.assertIn("'players', 'send-players')", HOST)
+        self.assertIn("'players', 'send-players'", HOST)
         self.assertIn("'dry_run': '1' if dry_run else '0'", HOST)
         self.assertIn('<Compile Include="RegionPlayers.cs" />', PROJECT)
         self.assertIn('new PlayersDialog(control, chosen.Id, chosen.Name, HostLine)', LAUNCHER)

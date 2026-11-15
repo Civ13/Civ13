@@ -1039,6 +1039,31 @@ class ShardGroupTests(unittest.TestCase):
         with self.assertRaisesRegex(shard_group.Refused, 'older build'):
             shard_group.send_players(group, 'gaia', 'ann', 'deep', platform=self.machine)
 
+    def test_magic_whitelist_is_one_shared_file(self):
+        # code/modules/divine/magic_whitelist.dm: every region reads the mainland's (or gate's) SQL file.
+        group = self.write_group()
+        path = shard_group.magic_whitelist_path(group)
+        self.assertEqual(shard_group.region_dir(group, group['mainland']) / 'SQL' / 'magic_whitelist.txt', path)
+        self.assertEqual([], shard_group.magic_whitelist(group)['keys'])
+        result = shard_group.magic_whitelist(group, add='Ann,bob_2, Cid')
+        self.assertEqual(['ann', 'bob2', 'cid'], result['keys'])
+        self.assertEqual(['ann', 'bob2', 'cid'], result['added'])
+        text = path.read_text(encoding='utf-8')
+        self.assertTrue(text.startswith(shard_group.MAGIC_WHITELIST_HEADER))
+        self.assertEqual(['ann', 'bob2', 'cid'], shard_group.magic_whitelist_keys(text))
+        # Hand edits with comments and Windows line endings still read.
+        path.write_text('# staff\r\nAnn # first\r\nzed\r\nann\r\n', encoding='utf-8')
+        result = shard_group.magic_whitelist(group, add='zed', remove='ANN,nobody')
+        self.assertEqual(['zed'], result['keys'])
+        self.assertEqual(([], ['ann']), (result['added'], result['removed']))
+        for bad in ('a&b', '', 'x' * 40, ','.join(['k%d' % i for i in range(21)])):
+            with self.assertRaises(shard_group.Refused):
+                shard_group.magic_whitelist(group, add=bad)
+        self.assertEqual(['zed'], shard_group.magic_whitelist(group)['keys'])
+        # Behind the relay the gate's file is the shared one.
+        group['relay_port'], group['gate'] = 1790, 'deep'
+        self.assertEqual(shard_group.region_dir(group, 'deep') / 'SQL' / 'magic_whitelist.txt', shard_group.magic_whitelist_path(group))
+
     def test_status_shows_each_running_region_epoch(self):
         group = self.write_group()
         shard_group.setup(group, self.machine)

@@ -1265,6 +1265,7 @@
 #include "code\modules\admin\verbs\debug_verbs.dm"
 #include "code\modules\admin\verbs\divine_book.dm"
 #include "code\modules\admin\verbs\divine_patron.dm"
+#include "code\modules\admin\verbs\magic_whitelist.dm"
 #include "code\modules\admin\verbs\faction_symbol.dm"
 #include "code\modules\admin\verbs\gameticker.dm"
 #include "code\modules\admin\verbs\getlogs.dm"
@@ -1926,5 +1927,6 @@
 #include "code\modules\1713\backrooms\gateway_core.dm"
 // Sealed journal presentation; does not activate spell casting.
 #include "code\modules\divine\journal.dm"
+#include "code\modules\divine\magic_whitelist.dm"
 // Must stay last: global_init needs every other global initialized first.
 #include "code\global_init_last.dm"

@@ -61,6 +61,10 @@
 	statname = lowertext(statname)
 	if (!stats.Find(statname))
 		return
+	// Persistent worlds: no magic skill off the magic whitelist (magic_whitelist.dm).
+	if (statname == "magic" && !magic_allowed())
+		stats[statname] = list(0, 0)
+		return
 
 	// randomness
 	statval += rand(-5,5)
@@ -127,6 +131,9 @@
 	statname = lowertext(statname)
 	ensure_late_stats()
 	if (!stats.Find(statname))
+		return
+	// Persistent worlds: no magic skill gains off the magic whitelist (magic_whitelist.dm).
+	if (statname == "magic" && multiplier > 0 && !magic_allowed())
 		return
 	if (multiplier > 0)
 		multiplier *= trait_skill_gain_mult(statname) * skill_variety_mult(statname, variety_key) * skill_master_mult(statname)
