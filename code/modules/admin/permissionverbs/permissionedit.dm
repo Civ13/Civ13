@@ -65,7 +65,7 @@
 	if (!istext(adm_ckey) || !istext(new_rank))
 		return
 
-	var/F = "SQL/admins.txt"
+	var/F = admins_file()
 	var/list/admincheck = splittext(file2text(F),"|||\n")
 	if (isemptylist(admincheck))
 		return
@@ -140,7 +140,7 @@
 		return
 
 	var/list/rowdata = list()
-	var/F = "SQL/admins.txt"
+	var/F = admins_file()
 	var/list/admincheck = splittext(file2text(F),"|||\n")
 	if (islist(admincheck) && !isemptylist(admincheck))
 		for(var/i in admincheck)
