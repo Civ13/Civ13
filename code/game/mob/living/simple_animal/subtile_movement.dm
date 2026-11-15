@@ -845,12 +845,13 @@
 /datum/npc_subtile_follow/proc/perform_loop()
 	while (valid())
 		var/interval = actor.npc_subtile_native_interval(6)
-		if (get_dist(actor, target) <= 1 && actor.npc_subtile_offset_owned && (actor.step_x || actor.step_y))
+		var/distance = get_dist(actor, target)
+		if (distance <= 1 && actor.npc_subtile_offset_owned && (actor.step_x || actor.step_y))
 			actor.npc_subtile_settle_axis(src, interval)
 			break
 		var/started = world.time
 		var/deadline = started + interval
-		if (get_dist(actor, target) > 1)
+		if (distance > 1)
 			var/turf/next = get_step_to(actor, target, 1)
 			if (next && valid())
 				actor.ai_step_wait(next, interval, src)
