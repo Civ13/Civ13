@@ -909,6 +909,20 @@ SUITES = {
         # Rebuilding both maps' currents and flood reaches from 1M-cell maps takes
         # about 50 s locally and longer on hosted runners.
         'timeout': 180},
+    # Walking between lands over shared map edges: links answered on the facing
+    # edge with dry ground on both stretches, parsed from the DMMs; no BYOND runtime.
+    'edge_crossings': {'files': ('tests/edge_crossings/test_edge_crossings.py',), 'timeout': 120,
+        'paths': ('tests/edge_crossings/', 'code/modules/persistence/region_edge.dm',
+                  'code/modules/persistence/region_edge_carriage.dm',
+                  'code/game/objects/map_metadata/nomads/nomads_europe.dm',
+                  'code/game/objects/map_metadata/nomads/nomads_asia.dm',
+                  'code/game/objects/map_metadata/nomads/nomads_desert.dm',
+                  'code/game/objects/map_metadata/nomads/nomads_jungle.dm',
+                  'code/game/objects/map_metadata/nomads/nomads_americas.dm'), 'shared_paths': (
+            'code/modules/naval/ship_crossing.dm', 'code/modules/naval/built_hull.dm', 'code/modules/craft/under_way.dm',
+            'maps/nomads/nomads_europe.dmm', 'maps/nomads/nomads_asia.dmm',
+            'maps/nomads/nomads_desert.dmm', 'maps/nomads/nomads_jungle.dmm',
+            'maps/nomads/nomads_americas_north.dmm', 'maps/nomads/nomads_americas_south.dmm')},
     # Draft lands of the rest of the Earth (maps/earth_drafts): DMM parse, sizes,
     # file digests and that no build or region list names them; no BYOND runtime.
     'earth_maps': {'files': ('tests/earth_maps/test_earth_maps.py',), 'timeout': 120,

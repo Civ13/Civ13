@@ -201,6 +201,8 @@
 		return "She is not commissioned."
 	var/list/crew = list()
 	var/list/refused = list()
+	// What is refused, marked on deck for a moment so the crew can find it.
+	var/list/blocking = list()
 	var/list/tiles = list()
 	var/items = 0
 	for (var/list/O in B.offsets)
@@ -211,17 +213,23 @@
 		for (var/atom/movable/M in T)
 			if (M.loc != T || QDELETED(M) || M == tiller)
 				continue
-			if (istype(M, /atom/movable/lighting_overlay) || istype(M, /atom/movable/lighting_fullbright) || istype(M, /obj/effect) || M.craft_left_behind())
+			// Flick animations (/atom/movable/overlay) can be left lying on a tile; they are not cargo.
+			if (istype(M, /atom/movable/lighting_overlay) || istype(M, /atom/movable/lighting_fullbright) || istype(M, /atom/movable/overlay) || istype(M, /obj/effect) || M.craft_left_behind())
+				continue
+			// Ghosts and admin observers float over the deck; they are not aboard.
+			if (istype(M, /mob/observer))
 				continue
 			if (ishuman(M))
 				var/mob/living/human/H = M
 				if (H.stat == DEAD)
 					refused |= H.real_name ? "the body of [H.real_name]" : "a body"
+					blocking |= H
 				else
 					crew += H
 				continue
 			if (ismob(M))
 				refused |= M.name
+				blocking |= M
 				continue
 			if (sea_crossing_cover_ok(M.type))
 				var/obj/covers/F = M
@@ -231,6 +239,7 @@
 				var/obj/structure/vehicleparts/movement/sail/S = M
 				if (S.axis)
 					refused |= S.name
+					blocking |= S
 					continue
 				entries += list(list("s", "[S.type]", S.dir, S.sails ? 1 : 0, S.broken ? 1 : 0))
 				continue
@@ -244,10 +253,12 @@
 					var/list/entry = istype(inside, /obj/item) ? sea_crossing_item_entry(inside) : null
 					if (!entry)
 						refused |= "[inside.name] in \the [K.name]"
+						blocking |= K
 						continue
 					held += list(entry)
 				if (held.len > SEA_CROSSING_CHEST_ITEMS_MAX)
 					refused |= "half of what is in \the [K.name]"
+					blocking |= K
 				items += held.len
 				entries += list(list("k", "[K.type]", K.dir, held))
 				continue
@@ -255,14 +266,17 @@
 				var/list/entry = sea_crossing_item_entry(M)
 				if (!entry)
 					refused |= M.name
+					blocking |= M
 					continue
 				items++
 				entries += list(list("i", entry[1], entry[2]))
 				continue
 			refused |= M.name
+			blocking |= M
 		tiles += list(list(O[1], O[2], entries))
 	if (refused.len)
-		return "Put these ashore first, they cannot make the crossing: [english_list(refused.len > 8 ? refused.Copy(1, 9) + list("and more") : refused)]."
+		sea_crossing_mark(blocking)
+		return "Put these ashore first, they cannot make the crossing (arrows on deck mark them): [english_list(refused.len > 8 ? refused.Copy(1, 9) + list("and more") : refused)]."
 	if (items > SEA_CROSSING_ITEMS_MAX)
 		return "She carries too much loose cargo to cross. Stow it in chests or put some ashore."
 	var/list/record = list("v" = 1, "name" = B.hull_name, "dir" = B.dir, "from" = list(B.px, B.py, B.z),
@@ -270,6 +284,22 @@
 	if (length(json_encode(record)) > SEA_CROSSING_RECORD_MAX)
 		return "She is too big and too laden to cross. Put some of her cargo ashore."
 	return list("record" = record, "crew" = crew)
+
+// Points an arrow over each thing that stops a crossing, for a few seconds,
+// as a player points (Point To). At most once every few seconds per tile.
+var/global/list/sea_crossing_marked = list()
+/proc/sea_crossing_mark(list/blocking)
+	for (var/atom/movable/M in blocking)
+		var/turf/T = get_turf(M)
+		if (!T || world.time < sea_crossing_marked[T])
+			continue
+		sea_crossing_marked[T] = world.time + 100
+		var/obj/effect/decal/point/P = new(T)
+		P.name = "[M.name] (cannot make the crossing)"
+		QDEL_IN(P, 100)
+	// Forget old marks so the list stays small.
+	if (sea_crossing_marked.len > 200)
+		sea_crossing_marked.Cut()
 
 // Measures what crossing would carry now, without moving anything: the
 // refusal text, or the share of the record budget she fills, 0 to 100. A

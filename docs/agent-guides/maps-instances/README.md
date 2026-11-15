@@ -261,6 +261,8 @@ either study's generator. The `train_raid` offline suite checks the map, and
 Nomads continents (`northamerica`, `southamerica`). Players walk between them
 over the shared map edge at the isthmus (`edge_crossings`,
 `code/modules/persistence/region_edge.dm`); nothing stands on the map for it.
+Europe-Asia, Desert-Asia and Desert-Jungle use the same edge crossings, with
+several stretches per edge and a surface level per map ([edge-crossings.md](../../edge-crossings.md)).
 `tests/americas_maps/build.py` writes both maps from `continents.py` together
 with their height, current and flood files. The
 `americas_maps` offline suite checks the maps, and a map may not grow past the

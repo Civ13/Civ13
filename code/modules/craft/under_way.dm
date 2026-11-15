@@ -196,6 +196,9 @@
 	if (hop)
 		last_refusal = body.last_refusal
 	crew_message(SPAN_WARNING("<b>All stop!</b> [capitalize(last_refusal)]."))
+	// The edge of these waters is where voyages to other lands begin (ship_voyage.dm).
+	if (last_refusal == "the edge of the world" && istype(body, /datum/craft_body/built) && shard_group && shard_group.enabled)
+		crew_message(SPAN_NOTICE("To sail on to another land, use the tiller or steering oar and choose <b>Set out on a voyage</b>."))
 	speed = VESSEL_SPEED_STOP
 	stop_sailing()
 	show_drives()

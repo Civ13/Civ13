@@ -10,6 +10,10 @@
 	// first stands from the start of the round so aircraft can fly.
 	building_levels = 4
 	building_level_standing = TRUE
+	// Walk on over the north edge into the Desert (region_edge.dm), on the
+	// surface level.
+	edge_crossings = list("north" = "desert")
+	edge_crossing_z = 2
 
 	var/real_season = "wet"
 
