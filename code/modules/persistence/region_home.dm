@@ -56,7 +56,12 @@
 		to_chat(lobby, SPAN_WARNING("Your character belongs to another land in this world group. Join that server to play."))
 		return
 	var/link = peer["address"] ? " <a href='[shard_group.player_href(home)]'>Go there</a>" : ""
-	to_chat(lobby, SPAN_WARNING("Your character belongs to [html_encode(peer["name"])]. New and fallen characters start there, and reach other lands only by travelling.[link]"))
+	// Only the mainland is where new and fallen characters start; any other home
+	// is a land the character travelled to (or chose to start in).
+	if(home == shard_group.mainland)
+		to_chat(lobby, SPAN_WARNING("Your character belongs to [html_encode(peer["name"])]. New and fallen characters start there, and reach other lands only by travelling.[link]"))
+	else
+		to_chat(lobby, SPAN_WARNING("Your character is in [html_encode(peer["name"])] now. Join that land to play them.[link]"))
 
 // TRUE when this lobby's account may play here. With wait, a first-time
 // question waits up to REGION_HOME_WAIT for the coordinator; without it (the

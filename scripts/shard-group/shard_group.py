@@ -1883,6 +1883,29 @@ def relay_add_ports(group, send=None):
     return taken
 
 
+def sync_relay_ports(group, send=None):
+    """Tell the running relay every game port of the group once per relay process and port
+    list. A region added or renumbered while the relay ran (by setup, or by editing the
+    group file) was otherwise unroutable until the relay restarted: players sent there got
+    "the way is closed" (South America, 2026-11-15). Returns the ports sent, or None when
+    nothing needed sending or no relay answered (the next pass tries again)."""
+    pid = relay_pid(group)
+    if not group.get('relay_port') or not pid:
+        return None
+    ports = sorted(region['port'] for region in group['regions'])
+    state = Path(group['root']) / 'relay-ports.json'
+    try:
+        if json.loads(state.read_text(encoding='utf-8')) == {'pid': pid, 'ports': ports}:
+            return None
+    except (OSError, ValueError):
+        pass
+    taken = relay_add_ports(group, send)
+    if taken is None or sorted(taken) != ports:
+        return None
+    write_json_atomic(state, {'pid': pid, 'ports': ports})
+    return taken
+
+
 def write_json_atomic(path, value):
     """Write value as JSON through a temporary file, so a reader never sees half a file."""
     temporary = path.with_name(path.name + '.tmp')
@@ -2563,6 +2586,8 @@ def supervise(group, start=detach):
     try:
         if ensure_relay(group, start):
             started['relay'] = True
+        elif sync_relay_ports(group):
+            started['relay_ports'] = True
     except OSError as error:
         started['relay_error'] = str(error)[:300]
     helped, help_errors = ensure_help(group, start)

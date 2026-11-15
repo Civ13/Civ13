@@ -92,6 +92,11 @@ class ControlTest(unittest.TestCase):
         self.assertEqual({'ok': True}, self.relay.handle('add_port=1&port=1740&token=' + TOKEN))
         self.assertEqual({'ok': True}, self.relay.handle(route))
         self.assertEqual({'ports': [1714, 1716, 1740]}, self.logged[0])
+        # The host service repeats every port on each pass: a known port is fine and quiet.
+        logged = len(self.logged)
+        self.assertEqual({'ok': True}, self.relay.handle('add_port=1&port=1740&token=' + TOKEN))
+        self.assertEqual({'ok': True}, self.relay.handle('add_port=1&port=1714&token=' + TOKEN))
+        self.assertEqual(logged, len(self.logged))
 
     def test_wrong_token_or_shape_is_dropped(self):
         self.assertIsNone(self.relay.handle('route=1&ip=203.0.113.5&ckey=alice&port=1716&token=' + 'cd' * 16))
