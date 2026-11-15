@@ -45,7 +45,8 @@ struct Handle {
 int sequence = 0;
 // One direction of the private pair: overlapped server end kept by the test,
 // inheritable overlapped client end handed to the child.
-void pipe_pair(bool child_reads, Handle &server, Handle &client) {
+void pipe_pair(bool child_reads, Handle &server, Handle &client,
+               bool read_attributes = true) {
   const auto name = L"\\\\.\\pipe\\civ13-child-test-" +
                     std::to_wstring(GetCurrentProcessId()) + L"-" +
                     std::to_wstring(++sequence);
@@ -60,7 +61,9 @@ void pipe_pair(bool child_reads, Handle &server, Handle &client) {
   SECURITY_ATTRIBUTES inherit{sizeof(inherit), nullptr, TRUE};
   client.value = CreateFileW(name.c_str(),
                              child_reads ? GENERIC_READ
-                                         : GENERIC_WRITE | FILE_READ_ATTRIBUTES,
+                             : read_attributes
+                                 ? GENERIC_WRITE | FILE_READ_ATTRIBUTES
+                                 : GENERIC_WRITE,
                              0,
                              &inherit, OPEN_EXISTING, FILE_FLAG_OVERLAPPED,
                              nullptr);
@@ -72,10 +75,11 @@ struct Child {
 };
 // Launches with exactly three inherited handles, like the parent provider.
 bool launch(const std::wstring &exe, const std::wstring &arguments,
-            Child &child, bool pipe_stdin = true) {
+            Child &child, bool pipe_stdin = true,
+            bool read_attributes = true) {
   Handle child_in, child_out;
   pipe_pair(true, child.to_child, child_in);
-  pipe_pair(false, child.from_child, child_out);
+  pipe_pair(false, child.from_child, child_out, read_attributes);
   SECURITY_ATTRIBUTES inherit{sizeof(inherit), nullptr, TRUE};
   Handle null(CreateFileW(L"NUL", GENERIC_READ | GENERIC_WRITE,
                           FILE_SHARE_READ | FILE_SHARE_WRITE, &inherit,
@@ -199,9 +203,9 @@ const Profile profile{"Civ13.com", "42", 1714};
 const std::wstring arguments = L"--social-peer-v1 Civ13.com 1714 42";
 std::vector<uint8_t> hello() { return encode({Op::hello, 1, profile_bytes(profile)}); }
 std::vector<uint8_t> ready() { return encode({Op::ready, 1, profile_bytes(profile)}); }
-void session(const std::wstring &loopback) {
+void session(const std::wstring &loopback, bool read_attributes) {
   Child child;
-  check(launch(loopback, arguments, child));
+  check(launch(loopback, arguments, child, true, read_attributes));
   check(write_all(child.to_child.value, hello()));
   check(read_exact(child.from_child.value, ready().size()) == ready());
   check(write_all(child.to_child.value,
@@ -275,7 +279,8 @@ int wmain(int argc, wchar_t **argv) {
     return 2;
   }
   try {
-    session(argv[1]);
+    session(argv[1], true);
+    session(argv[1], false); // Write-only stdout without FILE_READ_ATTRIBUTES.
     parent_eof(argv[1]);
     malformed(argv[1]);
     refused_start(argv[2]);

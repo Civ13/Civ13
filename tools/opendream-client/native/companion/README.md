@@ -67,8 +67,9 @@ the private pipe pair on stdin/stdout and NUL on stderr.
 - `WindowsPipeIo` (windows_pipe_io.cpp) adopts stdin/stdout only when both are
   distinct pipes opened for overlapped I/O (a synchronous handle could block the
   lease clock, so it is refused with exit code 3). The client-end and byte-mode
-  checks use `GetNamedPipeInfo`, which needs `FILE_READ_ATTRIBUTES`; if a
-  write-only end lacks that right, those two checks are skipped for that handle
+  checks use `GetNamedPipeInfo`, which needs `FILE_READ_ATTRIBUTES`; if the
+  write-only stdout end lacks that right, those two checks are skipped for that
+  handle only (stdin must always pass them)
   and the parent provider's own pipe ownership verification remains the guard. It detaches
   them from the standard slots, keeps one pending read and one pending write
   with private 276-byte buffers, maps broken pipe/EOF to `eof`, and on close

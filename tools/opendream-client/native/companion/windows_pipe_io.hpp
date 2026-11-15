@@ -19,7 +19,9 @@ namespace civ13::social {
 // name, never listens and never touches any other handle.
 class WindowsPipeIo final : public PrivatePipeIo {
 public:
-  // Null unless stdin/stdout are distinct overlapped client pipe ends.
+  // Null unless stdin/stdout are distinct overlapped pipes; stdin must prove
+  // it is a client-end byte pipe, stdout too unless it is write-only without
+  // FILE_READ_ATTRIBUTES (see overlapped_client_pipe).
   static std::unique_ptr<WindowsPipeIo> from_standard_handles();
   // Takes ownership of both handles; both must already be validated.
   WindowsPipeIo(HANDLE input, HANDLE output);
@@ -41,6 +43,8 @@ private:
   DWORD write_size_ = 0;
   bool reading_ = false, writing_ = false, closed_ = false;
 };
-// True when the handle is a client-end byte pipe opened for overlapped I/O.
-bool overlapped_client_pipe(HANDLE handle) noexcept;
+// True when the handle is a pipe opened for overlapped I/O and, where
+// GetNamedPipeInfo is permitted, a client-end byte pipe. Only a write_only
+// handle may skip the end/type check when that query is access-denied.
+bool overlapped_client_pipe(HANDLE handle, bool write_only) noexcept;
 } // namespace civ13::social

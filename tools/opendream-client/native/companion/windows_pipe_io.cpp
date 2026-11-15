@@ -12,7 +12,7 @@ bool end_of_stream(DWORD error) noexcept {
          error == ERROR_PIPE_NOT_CONNECTED || error == ERROR_NO_DATA;
 }
 } // namespace
-bool overlapped_client_pipe(HANDLE handle) noexcept {
+bool overlapped_client_pipe(HANDLE handle, bool write_only) noexcept {
   if (!handle || handle == INVALID_HANDLE_VALUE ||
       GetFileType(handle) != FILE_TYPE_PIPE)
     return false;
@@ -22,7 +22,7 @@ bool overlapped_client_pipe(HANDLE handle) noexcept {
   if (GetNamedPipeInfo(handle, &flags, nullptr, nullptr, nullptr)) {
     if ((flags & PIPE_SERVER_END) || (flags & PIPE_TYPE_MESSAGE))
       return false;
-  } else if (GetLastError() != ERROR_ACCESS_DENIED)
+  } else if (!write_only || GetLastError() != ERROR_ACCESS_DENIED)
     return false;
   // A synchronous handle would turn an "overlapped" read into a blocking wait
   // that stops the lease clock, so it is refused rather than tolerated.
@@ -42,8 +42,8 @@ bool overlapped_client_pipe(HANDLE handle) noexcept {
 std::unique_ptr<WindowsPipeIo> WindowsPipeIo::from_standard_handles() {
   const HANDLE input = GetStdHandle(STD_INPUT_HANDLE);
   const HANDLE output = GetStdHandle(STD_OUTPUT_HANDLE);
-  if (input == output || !overlapped_client_pipe(input) ||
-      !overlapped_client_pipe(output))
+  if (input == output || !overlapped_client_pipe(input, false) ||
+      !overlapped_client_pipe(output, true))
     return nullptr;
   // Detach from the standard slots so nothing else (CRT, SDK logging) can
   // write protocol bytes or close the channel behind the host.
