@@ -478,7 +478,8 @@ var/global/aqueduct_last_flow = -600
 	update_icon()
 
 /obj/structure/sink/aqueduct_fountain/update_icon()
-	icon_state = volume > 0 && world.time - last_fed < 1200 ? full_state : dry_state
+	var/flowing = world.time - last_fed < 1200
+	icon_state = volume > 0 && flowing ? full_state : dry_state
 	color = dirty && volume > 0 ? AQUEDUCT_FOUL_COLOR : null
 
 /obj/structure/sink/aqueduct_fountain/has_nearby_fecal_waste()
