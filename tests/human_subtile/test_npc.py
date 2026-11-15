@@ -23,6 +23,48 @@ def section(text, start, end):
 
 
 class NpcContracts(unittest.TestCase):
+    def test_snapshot_comparison_validation_and_missing_key_control(self):
+        body = read('code/game/mob/living/carbon/human/subtile_movement.dm').split('/proc/human_subtile_same(list/a, list/b)\n', 1)[1].split('\n/proc/', 1)[0]
+        literals = re.findall(r'(?:var/static/list/position_keys = |for \(var/key in )list\(([^)]*)\)', body)
+        self.assertEqual(len(literals), 1)
+        keys = re.findall(r'"([^"]+)"', literals[0])
+        self.assertEqual(keys, ['x', 'y', 'z', 'sx', 'sy'])
+        guards = [line.strip()[4:-1] for line in body.splitlines() if line.strip().startswith('if (')]
+        self.assertEqual(len(guards), 2)
+
+        class Snapshot(dict):
+            @property
+            def len(self):
+                return len(self)
+
+        def rejected(expression, a, b, key=None):
+            expression = expression.replace('&&', ' and ').replace('||', ' or ')
+            expression = re.sub(r'!(?!=)', ' not ', expression).strip()
+            return bool(eval(expression, {'__builtins__': {}}, {
+                'a': a, 'b': b, 'key': key,
+                'islist': lambda value: isinstance(value, Snapshot),
+                'isnum': lambda value: isinstance(value, (int, float)),
+                'round': round,
+            }))
+
+        def same(a, b, check_keys=keys):
+            if rejected(guards[0], a, b):
+                return False
+            return not any(rejected(guards[1], a, b, key) for key in check_keys)
+
+        good = Snapshot(x=10, y=20, z=1, sx=0, sy=-2)
+        self.assertTrue(same(good, Snapshot(reversed(list(good.items())))))
+        for bad in (None, {}, Snapshot(x=10), Snapshot(x=10, y=20, z=1, sx=0, other=-2),
+                    Snapshot(x=10, y=20, z=1, sx=0, sy='bad'),
+                    Snapshot(x=10, y=20, z=1, sx=0, sy=1.25),
+                    Snapshot(x=10, y=20, z=1, sx=0, sy=2)):
+            with self.subTest(bad=bad):
+                self.assertFalse(same(good, bad))
+                self.assertFalse(same(bad, good))
+        # Omitting the last comparison would wrongly accept this differing value.
+        different = Snapshot(x=10, y=20, z=1, sx=0, sy=2)
+        self.assertTrue(same(good, different, keys[:-1]))
+
     def test_disk_archive_preparer_preserves_exact_git_and_historical_helpers(self):
         spec = importlib.util.spec_from_file_location('npc_stage_runner', ROOT / 'tests/human_subtile/run-npc.py')
         runner = importlib.util.module_from_spec(spec)
