@@ -384,7 +384,9 @@ var/global/area/zone_fixture_intruder
 					var/area/A = get_area(locate(row["x"], row["y"], row["z"]))
 					durable_world_check(A.persistence_zone_id == row["id"], "Weather zone identity changed")
 					durable_world_check(A.weather == row["weather"] && A.weather_intensity == row["intensity"], "Saved local weather or intensity was not restored")
-					durable_world_check(A.icon_state == row["icon_state"], "Saved local icon state was not reconciled")
+					// A roofed zone wears the weather mask whatever state it was saved with.
+					durable_world_check(A.icon_state == (A.location == AREA_INSIDE ? "roof" : row["icon_state"]), "Saved local icon state was not reconciled")
+					durable_world_check((A.plane == WEATHER_ROOF_PLANE) == (A.location == AREA_INSIDE), "Roofed zone weather mask differs from its location")
 					durable_world_check(A.dynamic_lighting == row["dynamic"] && A.location == row["location"] && A.luminosity == !A.dynamic_lighting, "Saved lighting policy differs")
 					for(var/turf/T in A)
 						durable_world_check(A.dynamic_lighting ? !!T.lighting_overlay : !T.lighting_overlay, "Imported turf lighting overlay differs from its zone policy")

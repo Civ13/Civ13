@@ -10,10 +10,16 @@
 	src.total_population = src.males + src.females + src.cubs //Initializes the local population
 	empty = FALSE
 	src.set_cavetype()
-	if(!bearcave_ticking) //Checks if the bearcave tick haven't been started yet
-		bearcave_ticking = TRUE	//Sets the global var to true, stopping any multiple tickings
-		Tick()
+	Tick()
 	..()
+
+/obj/structure/animalspawner/bearcave/Destroy()
+	ticking = FALSE
+	return ..()
+
+/obj/structure/animalspawner/bearcave/persistence_runtime_var(key)
+	// Constructors own their timer; saved flags must not stop or duplicate it.
+	return key == "ticking" || ..()
 
 /obj/structure/animalspawner/bearcave/proc/set_cavetype()
 	var/area/A = get_area(src)
@@ -44,10 +50,14 @@
 				procreate_cooldown = FALSE
 
 /obj/structure/animalspawner/bearcave/proc/Tick()
-	spawn while(1)
-		for(var/obj/structure/animalspawner/bearcave/B in world)
-			B.total_population = B.males + B.females + B.cubs
-			B.Ticker()
+	if(ticking || gcDestroyed || gc_destroyed)
+		return
+	ticking = TRUE
+	// Each cave owns one chain and services only itself. The old single chain
+	// scanned every object in the world every five seconds to find the caves.
+	spawn while(src && ticking && !gcDestroyed && !gc_destroyed)
+		total_population = males + females + cubs
+		Ticker()
 		sleep(50)
 
 /obj/structure/animalspawner/bearcave/proc/Ticker()
@@ -178,7 +188,4 @@
 	src.females = 5
 	src.total_population = src.males + src.females + src.cubs //Initializes the local population
 	empty = FALSE
-	if(!bearcave_ticking) //Checks if the bearcave tick haven't been started yet
-		bearcave_ticking = TRUE	//Sets the global var to true, stopping any multiple tickings
-		Tick()
 	..()

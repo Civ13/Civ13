@@ -126,14 +126,10 @@
 #define slot_w_uniform   14
 #define slot_l_store	 15
 #define slot_r_store	 16
-#define slot_s_store	 17
 #define slot_in_backpack 18
 #define slot_legcuffed   19
 #define slot_r_ear	   20
-#define slot_legs		21
 #define slot_shoulder	22
-#define slot_l_arm	   23
-#define slot_r_arm	   24
 #define slot_accessory   25
 
 #define	R_HAND	0

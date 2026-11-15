@@ -44,7 +44,7 @@ Example for later use:
 	var/build_path = pickweight(spawn_choices())
 	if (build_path)
 		for (var/i = 1, i <= number_to_spawn, i++)
-		new build_path(src.loc)
+			new build_path(src.loc)
 
 // Returns an associative list in format path:weight
 /obj/random/proc/spawn_choices()
@@ -349,7 +349,7 @@ Example for later use:
 	name = "Snowy Tree"
 	icon_state = "tree"
 	spawn_nothing_percentage = 15
-/obj/random/plants/snow/spawn_choices()
+/obj/random/plants/tree_snow/spawn_choices()
 	return list(
 				/obj/structure/wild/tree/live_tree/snow = 1,
 				/obj/structure/wild/rock = 1,
@@ -361,7 +361,7 @@ Example for later use:
 	name = "Snowy Tree"
 	icon_state = "tree"
 	spawn_nothing_percentage = 15
-/obj/random/plants/snow/spawn_choices()
+/obj/random/plants/tree_snow_lowchance/spawn_choices()
 	return list(
 				/obj/structure/wild/tree/live_tree/snow = 1,
 				/obj/structure/wild/rock = 1,

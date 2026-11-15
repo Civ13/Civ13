@@ -104,16 +104,8 @@ var/global/list/charts = list()
 	for (var/datum/chart_token/T in tokens)
 		if (T.advance(seconds))
 			.++
-	for (var/datum/chart_hazard/H in hazards.Copy())
-		for (var/datum/chart_token/T in tokens)
-			if (T.craft && H.covers(T.x, T.y))
-				H.affect_craft(T.craft)
-		if (H.lifetime > 0)
-			H.lifetime -= seconds
-			if (H.lifetime <= 0)
-				hazards -= H
-				H.chart = null
-				qdel(H)
+	// Drift, the crafts inside, countdowns and passing hazards (chart_hazards.dm).
+	hazard_step(seconds)
 
 // Starts the chart stepping; it stops by itself when nothing moves.
 /datum/chart/proc/wake()

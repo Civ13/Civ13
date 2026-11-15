@@ -18,52 +18,74 @@
       "git_blob": "75637b3f98cf4d8e12d37fa1b3ec6054b0b69a2a"
     }
   },
-  "changes": "Extracted turnip, plump_helmet and cave_wheat states, repacked and renamed. Growth stages 2 and 4 reused to fit six Civ13 preharvest stages. No pixel editing.",
+  "changes": "Extracted turnip, plump_helmet and cave_wheat states, repacked and renamed. Seeds, harvested items, and the turnip and plump helmet grow4, grow5, harvest and dead states are unedited upstream pixels. Turnip and plump helmet grow1, grow2, grow3 and grow6, and every cave wheat growth state, were redrawn for Civ13 by tests/sprites/create_orchard.py.",
   "derived_assets": {
     "pocket_stronghold_turnip.dmi": {
-      "sha256": "9fc2e83a693a5451036aad1722a8255dae961d89032fff31863bff7d1eefaea2",
+      "sha256": "6730f5cd2443b4d6cffa0a861c2e65ab92520c42cc8a624edeb01f3c3db9b9e5",
       "rgba_states": {
         "turnip": "37832b65ac773490d4ae872623a512cbcfb4e7c1f500babf4a7828cc0c0f3c42",
         "turnip-seeds": "c8c6370e41ae8acf6d2c961e9e0bbbd4b228ab90cd157776f6ae235ed242e025",
         "turnip-harvest": "8e7cae658fddfcf4bb237c35c379ddeb0c2510b71ae4b92ba64fd967162508f6",
         "turnip-dead": "106083efeeeaef388158d84df6d320470e32f22348833cc8e28bb117c2a50a8e",
-        "turnip-grow1": "9472800e67bd7312ff32e404a5b9f8d84772e55582419fad0990ba1597629607",
-        "turnip-grow2": "f0849057bc6a84fa1b3f93dcd2e0b757a0e4b5530e07a9f3070f5ea76a4eac4e",
-        "turnip-grow3": "f0849057bc6a84fa1b3f93dcd2e0b757a0e4b5530e07a9f3070f5ea76a4eac4e",
+        "turnip-grow1": "82c7526a59e879f98e99f882aa24b02d2839cd2a1988e8c52d0ebd329409c938",
+        "turnip-grow2": "77c294009100eeb0d9ee89fa41c451a4400aaf82d9db2158e65a0c187b0dd114",
+        "turnip-grow3": "270ece069a6147ea0f7398c0876f3dabc9b841734e80f5000c9a875ae88e94f4",
         "turnip-grow4": "1de7a0bf2a7df671d9581bec4c6b45c01dc9c6afd3b05120e4344b81425bbc97",
         "turnip-grow5": "9f06e0008ca063a9616a5f5c5dedbd3700a2f2971c3ffaa21123b8f9c3f65cd7",
-        "turnip-grow6": "9f06e0008ca063a9616a5f5c5dedbd3700a2f2971c3ffaa21123b8f9c3f65cd7"
-      }
+        "turnip-grow6": "298ddf489829b065f5a0c68bf7170d0c2369f719905bedf24272a86f15d97769"
+      },
+      "redrawn_for_civ13": [
+        "turnip-grow1",
+        "turnip-grow2",
+        "turnip-grow3",
+        "turnip-grow6"
+      ]
     },
     "pocket_stronghold_plump_helmet.dmi": {
-      "sha256": "b134b57f2f8eb640e904844b19d8161edee93a94185a62bd5f770f06980e426b",
+      "sha256": "b1ba0690fb27ad633755517d60f86d951cc47f6bd3b65adc38af3eb9860dc1c1",
       "rgba_states": {
         "plump_helmet": "29e133d691c4a8271affee59850a0ff82d035bfa3c39336c709ab13437606ac1",
         "plump_helmet-seeds": "18f19315b0a6c6cf6a0866b0618af5c182a509de21765ce132ac198e3f2efcbf",
         "plump_helmet-harvest": "3b1436c06a0c03adf8f437a33040454e7d00f7d35a6ea4d35bbd5a210a5f0297",
         "plump_helmet-dead": "0c37007a48e82e09323eb636a9abb68fac9ce1bb6a3036ffa1350c9d7c771517",
-        "plump_helmet-grow1": "bc1c40196c9f5b0b0219baf5ee64b429aa29449a2c6063e65cc449c6eb87f424",
-        "plump_helmet-grow2": "2ff88db83b87bbcd66d5ae5bf7fe4561382e2701e9e7590821c73f2d32d9a82b",
-        "plump_helmet-grow3": "2ff88db83b87bbcd66d5ae5bf7fe4561382e2701e9e7590821c73f2d32d9a82b",
+        "plump_helmet-grow1": "389d51b793f7a53f38636c3469d6a2386ed946b65000fca67cba93712a8df3c0",
+        "plump_helmet-grow2": "fb924f7cf78d175d89dedbccf74b44e87fac36852fd5b5c3d1d12d261398a2f7",
+        "plump_helmet-grow3": "1e66c62a5a77425f23ddb8ff2afe524b803ecc20e08b13db61de17330db4bf10",
         "plump_helmet-grow4": "fecb5118267fae7e82af61cfe5a9fdbf99a415661d1fe77cc0f6ed20c6d0855e",
         "plump_helmet-grow5": "0a0ef885b856a1e14487dd1929c12b98aeccd6d66d8211ca3013cfbe9a7a397f",
-        "plump_helmet-grow6": "0a0ef885b856a1e14487dd1929c12b98aeccd6d66d8211ca3013cfbe9a7a397f"
-      }
+        "plump_helmet-grow6": "a0eaf688aad670d150838f9574c93a8ed336741c64df6cb8146965ef3693d213"
+      },
+      "redrawn_for_civ13": [
+        "plump_helmet-grow1",
+        "plump_helmet-grow2",
+        "plump_helmet-grow3",
+        "plump_helmet-grow6"
+      ]
     },
     "pocket_stronghold_cave_wheat.dmi": {
-      "sha256": "81e171e19badb33c2097d7a2f7c292d73dcb637bdb9e0c43ec8c821f6135ac6b",
+      "sha256": "c4bc906888f6a86bd77fff31a1ba37ae6296c32c77df55536e9d0365fa8502ef",
       "rgba_states": {
         "cave_wheat-seeds": "c7c0eae2fd0deb4fbe4cc8e2cfeb5d8a290c515d1ac10ad162d34e241b99eaae",
-        "cave_wheat-grow1": "daa9583470e5ed8503c9d39ecbe438048a79643d47fc81a50f7578ac8cfb4c26",
-        "cave_wheat-grow2": "ed633045588b5cc32461e19612f8380261e763c82e88f5ecb600c103e3db2613",
-        "cave_wheat-grow3": "ed633045588b5cc32461e19612f8380261e763c82e88f5ecb600c103e3db2613",
-        "cave_wheat-grow4": "ebe1cde5b846d96b2510cabd4ff9de7d2e38f14f5026b1bd49255c83d74c1f89",
-        "cave_wheat-grow5": "debc4972bc52833c07db43948bc369f11c4c8cc356b5147f8ee34ccb5ca16264",
-        "cave_wheat-grow6": "debc4972bc52833c07db43948bc369f11c4c8cc356b5147f8ee34ccb5ca16264",
-        "cave_wheat-harvest": "3beeacf46549e3e1bd2ac15477fbcaddbcb7475abf3b973c988daaca7bf166d7",
-        "cave_wheat-dead": "81ee347b9b6a842e39cbd576ae98577141244c19a180af80e1dc5b0d26f0b29a",
+        "cave_wheat-grow1": "9a8e8c02e6efed7ca183bb0d8aeffb3dc9140e3557a90fddba8e1c0482425011",
+        "cave_wheat-grow2": "1db2e52f0c26815463f59bb16eba868b8efa4daadeb0370ec5f5c836737c5f55",
+        "cave_wheat-grow3": "8c5069ab1928c8afdd512a112407631267a1067e8b866896c55bfba39940ace1",
+        "cave_wheat-grow4": "fe17d77f45da2962deff159ebcc0a656a98ce21478a713d5c381edac2c76f344",
+        "cave_wheat-grow5": "51e5cbb4438ba59a2ab552f7e6949b2568965e752906ce4f95b728129bac046e",
+        "cave_wheat-grow6": "57af7a1c0601f47e0911b4d9d3b55612bb6a26b9358dd4e6f4be008c0f2decda",
+        "cave_wheat-harvest": "0128bfa2cebdfd13a7c428cde7855c346457e8e2fb9193c525597aba994b2b7e",
+        "cave_wheat-dead": "e7676801021100d7122072d062ee015dfe0e5e88c1331e1ef2fe12b4201c44b4",
         "cave_wheat": "1f34daebdbc2134d1aaee375a6e658e526fc5cf13091d014221a38a51d3a230f"
-      }
+      },
+      "redrawn_for_civ13": [
+        "cave_wheat-grow1",
+        "cave_wheat-grow2",
+        "cave_wheat-grow3",
+        "cave_wheat-grow4",
+        "cave_wheat-grow5",
+        "cave_wheat-grow6",
+        "cave_wheat-harvest",
+        "cave_wheat-dead"
+      ]
     }
   }
 }

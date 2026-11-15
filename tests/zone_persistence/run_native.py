@@ -49,7 +49,7 @@ CASES = (
     ('ambiguous-base-read', 'roof-write', 14, None),
     # Item 3: local weather/intensity/icon state and lighting policy.
     ('weather-write', None, 3, None),
-    ('weather-read', 'weather-write', 290, None),
+    ('weather-read', 'weather-write', 296, None),
     # Item 2: constructor admission, surprise constructor and retirement failure.
     ('surprise-write', None, 4, None),
     ('surprise-read', 'surprise-write', 18, None),

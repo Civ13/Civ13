@@ -43,7 +43,8 @@ See [group.example.json](group.example.json). Required keys: `group`,
 `repository`, `root` (outside the repository), `compiler`, `daemon`, `git`,
 `public_host` (the address players use to join) and 1 to 16 `regions`, each
 with a unique `id`, `name`, `kind` (`SURFACE`, `OCEANIC`, `UNDERGROUND`, `RAILYARD`, `RAID`,
-`ORBIT`, `BARRACKS`, `BATTLE` or `OTHER`; a `RAID` or `BATTLE` region cannot be the mainland), `port` and `map`. Optional: `revision` (default `HEAD`), `public`
+`ORBIT`, `BARRACKS`, `BATTLE`, `EVENT`, `TUTORIAL` or `OTHER`; a `RAID`, `BATTLE`, `EVENT` or `TUTORIAL` region cannot be the mainland;
+a `TUTORIAL` region only runs the practice rooms and never saves, see [docs/practice-rooms.md](../../docs/practice-rooms.md#tutorial-region)), `port` and `map`. Optional: `revision` (default `HEAD`), `public`
 (default false, so the worlds are not listed on the hub),
 `save_timeout_seconds`, `start_timeout_seconds`, `backups_kept`, `min_free_disk_mb`
 (default 2048; `stage` and `handover` refuse while the regions' drive has less free, 0 turns it off)
@@ -82,6 +83,40 @@ Barracks every 10 seconds, and a frozen Barracks would hold those reports.
 - A `start` or `update` of the battle region builds the last voted map again
   (`rotation.json` state `ready` or `building`), or its configured `map` when
   there is none, so a rebuild after master moves keeps the voted map.
+
+## Event regions
+
+A region of kind `EVENT` is a world for admin-run events. An admin uses
+**Event Transfer** (Admin tab) to send everyone, or chosen players, from their
+land to it; their characters stay in their own land, saved and out of play,
+until they come back, where they stood or beside their bed. See
+[docs/event-regions.md](../../docs/event-regions.md).
+
+- An `EVENT` region never saves (`setup` writes `save_minutes` 0 for it), keeps
+  no homes, and cannot be the mainland or the relay gate. Trails never lead
+  there, and the Regions panel offers no Join link for it.
+- `setup` writes the group's shared `config/event-token.txt` into every region
+  of a group that has an `EVENT` region. Re-run `setup` after adding one, and
+  restart the other regions so they learn the new peer and token.
+- `status` shows `event_away` in a region's `region_view`: how many characters
+  wait there while their players are at an event. The launcher shows it on the
+  region's row, and marks the event region.
+
+## Expedition slots
+
+A region of kind `EXPEDITION` is a slot for one land across the sea at a time,
+built from a world-chart template ([docs/expedition-slots.md](../../docs/expedition-slots.md)).
+
+```sh
+python shard_group.py --config group.json expedition-land --region far1 --template tile.json --key 24,16
+python shard_group.py --config group.json update-offline --region far1   # compiles the land
+python shard_group.py --config group.json expedition-archive --region far1
+python shard_group.py --config group.json expedition-status
+```
+
+- A slot cannot be the mainland or the relay gate; trails never lead there and
+  the Regions panel offers no Join link for it.
+- Lands and archived saves are kept under `<root>/expeditions/`; nothing is deleted.
 
 ## The live group (Gaia)
 
@@ -301,6 +336,50 @@ other revision compiles as before. `auto_stage_minutes` (group key, 0 = off)
 runs `stage` on that interval; with `revision: origin/master` and `fetch:
 origin`, merged changes then reach each region the next time it is empty.
 
+**Update when empty** (`update_when_empty`, group key, default `true`): the host
+service does not wait for `auto_stage_minutes` or the idle minutes before sleep.
+As soon as an awake region that saves is empty and has saved since its last
+player, it fetches (at most every `update_check_minutes`, default 5) and, when
+the group revision has moved past the region's build, stages it; the region does
+not fall asleep while that build runs, and is handed over to it (`handover`)
+as soon as it is ready, if it is still empty and saved. An unattended update is
+never a plain restart: the handover backs up the save, the new build loads it
+beside the running world, and only a successful load takes the port. A save the
+new code cannot read (an unknown durable timer, say) fails that load and the old
+world plays on; that build is not tried again unattended, and a refused handover
+(low memory) waits for the next check rather than restarting. A player joining meanwhile holds the
+restart until the region is empty again, a failed build leaves the world
+running (and is not retried until the revision changes or a Build update runs),
+and a world that does not save (TDM) is never touched. Asleep and cold regions
+are staged the same way; an asleep region keeps its old build (the host service
+does not install into it) until it is next awake, empty and saved, when it hands
+over like any other, and a cold region takes the build at its next start. It
+never wipes a world. The key is read at each
+check, so the launcher's **Update when empty** toggle applies without a setup;
+turning it on also sets `fetch: origin` and `revision: origin/master` for a
+group that does not fetch, since otherwise new commits only appear once the
+source checkout is pulled.
+
+### Updating the regions that are not running
+
+`update-offline [--region ID]` brings every region that is not running up to the
+latest group revision, so it is ready when it next starts, and never touches a
+running region (it is not stopped, woken, staged or restarted). Each stopped or
+cold region is staged as above (taking its turn at the compile slot, at low
+priority) with an `install-after-stage` marker in `data/shard-host`; when its
+stage is ready the stage worker runs `update`, which copies the build in. A
+region that started while it built is left on its old build (`stage.json`
+`install` says so) and gets the new one at its next empty restart. An asleep
+region is staged the same way while it keeps sleeping (a join still thaws it at
+once); when the build is ready it is stopped (it saved before it froze), its port
+is let go and `update` copies the build in, so it starts on it at its next wake.
+This does not need the host service. A region with an action running or an interrupted fresh-world
+archive is skipped. It answers `{"accepted": {id: {"state": "stopped" | "cold" |
+"asleep", ...}}, "skipped": {id: reason}}`. `update` of an asleep region does the same
+instead of waking it: with a ready staged build it installs at once, otherwise it
+answers `{"action": "stage", "state": "asleep"}` and installs once built. `update-offline.bat` pulls the source
+checkout first, and the launcher's **Update offline regions** button runs it.
+
 ## Handover: updating a running region without downtime
 
 `handover [--region ID]` moves a running region onto its ready staged build
@@ -313,15 +392,20 @@ without stopping it for the load:
    it that no region, transfer agent, relay or doorman of the group uses) with
    `-params standby=1`.
    It boots the map and lighting (about 3 minutes for Gaia) and then waits; it
-   is hidden from the hub, refuses joins and never saves.
+   is hidden from the hub, refuses joins and never saves. While it waits it
+   does load work ahead (`code/modules/persistence/standby_prepare.dm`): it
+   deletes the boot map's mobs and objects and turns each turf into the type the
+   last completed save recorded (`map_saves/validated.json`, read at boot), so the
+   load only changes turfs that changed since then. `standby_load` stops it first.
 2. The running world saves, freezing each level only while it is captured
    (players there can look and chat but not move or act; crossing between levels
    is blocked for the whole save). Play on a level after its capture is
    end-of-round activity that does not carry over, and players are warned. It then
    publishes
-   its restart intent (lifecycle action `handover_save`). `map_saves` is backed
-   up as a stop would.
-3. The standby loads that save (`standby_load`). Its preflight and load are the
+   its restart intent (lifecycle action `handover_save`).
+3. The standby loads that save (`standby_load`) while `map_saves` is backed up
+   beside it, as a stop would (both only read the save; the switch waits for the
+   copy, and a failed copy rolls back). Its preflight and load are the
    validation of both the save and the new build; while it loads, the old world
    is still up.
 4. The old world is released (`handover_release`): it reboots out (DreamDaemon

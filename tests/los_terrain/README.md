@@ -22,3 +22,7 @@ python3 tests/los_terrain/run.py
 ```
 
 It prints `LOS_TERRAIN PASS` and exits 0 on success.
+
+It also checks natively that trees hide nobody from NPC sight
+(`los_terrain_ray_blocked`): a mob standing in a tree's tile, or behind a row
+of trees, is seen on flat ground.

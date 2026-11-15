@@ -23,6 +23,7 @@
 	L["settings"] = list("Character and settings", "Character setup and game preferences.")
 	L["hotkeys"] = list("Hotkeys", "List the default keys.")
 	L["tutorial"] = list("Tutorial", "Show, start or reset the new-player tutorial.")
+	L["changelog"] = list("What's new", "Recent changes in this version of the game.")
 	L["help"] = list("Ask for help", "Ask a gameplay question.")
 	L["mentorhelp"] = list("Mentorhelp", "Ask a mentor.")
 	L["adminhelp"] = list("Adminhelp", "Contact an admin.")
@@ -50,7 +51,7 @@
 	return "<html><head><title>Menu</title></head><body style='font-family:Verdana;font-size:12px;background:#1b1b1b;color:#ddd;margin:8px'>[note][jointext(rows, "")]</body></html>"
 
 /datum/escape_menu/proc/show()
-	show_browse(owner, html(), "window=escape_menu;size=300x560;can_resize=0")
+	show_browse(owner, html(), "window=escape_menu;size=300x610;can_resize=0")
 
 /datum/escape_menu/proc/hide()
 	show_browse(owner, null, "window=escape_menu")
@@ -75,6 +76,8 @@
 			owner.hotkeys_help()
 		if ("tutorial")
 			owner.tutorial_menu()
+		if ("changelog")
+			owner.show_player_changelog()
 		if ("help")
 			owner.ask_player_help()
 		if ("mentorhelp")

@@ -16,7 +16,7 @@ def projection(source, path, args, env):
     for kind in ('melee', 'material/hatchet', 'material/tes13/mace'):
         source = source.replace('/obj/item/weapon/' + kind + ')', repr(kind) + ')')
     source = re.sub(r'(?<![.\w])health\s*-=', 'src.health -=', source)
-    for name in ('plating_wear', 'get_block_chance', 'apply_block_wear', 'check_health'):
+    for name in ('get_block_chance', 'block_wear', 'apply_wear'):
         source = re.sub(r'(?<![.\w/])' + name + r'\(', 'src.' + name + '(', source)
     # Restore the selected declaration after receiver qualification.
     source = source.replace('/proc/src.', '/proc/').replace('/tes13/src.', '/tes13/')
@@ -39,10 +39,14 @@ class Shield:
         self.events.append(('chance',))
         return 50
 
-    def apply_block_wear(self, source):
-        self.wear(self, source)
+    def block_wear(self, source):
+        return self.wear(self, source)
 
-    def check_health(self):
+    # Mirrors /obj/item/proc/apply_wear() in code/_helpers/item_wear.dm.
+    def apply_wear(self, amount, cause):
+        if cause == 'blow':
+            amount = self.plating_wear(amount)
+        self.health -= amount
         self.events.append(('health', self.health))
 
 
@@ -67,9 +71,9 @@ class ShieldBlockTest(unittest.TestCase):
         env = {'istype': lambda source, kind: kind in source,
                'reverse_direction': lambda direction: 2,
                'check_shield_arc': lambda *args: self.arc,
-               'prob': lambda chance: self.roll}
-        self.base = projection(SOURCE, '/obj/item/weapon/shield/proc/apply_block_wear', 'src, damage_source', env)
-        self.tes = projection(SOURCE, '/obj/item/weapon/shield/tes13/apply_block_wear', 'src, damage_source', env)
+               'prob': lambda chance: self.roll, 'WEAR_BLOW': 'blow'}
+        self.base = projection(SOURCE, '/obj/item/weapon/shield/proc/block_wear', 'src, damage_source', env)
+        self.tes = projection(SOURCE, '/obj/item/weapon/shield/tes13/block_wear', 'src, damage_source', env)
         self.block = projection(SOURCE, '/obj/item/weapon/shield/handle_shield',
                                 'src, user, damage, damage_source, attacker, def_zone, attack_text', env)
 
@@ -77,7 +81,7 @@ class ShieldBlockTest(unittest.TestCase):
         cases = [(self.base, {'melee'}, [10]), (self.base, {'material/hatchet'}, [10]),
                  (self.base, set(), [1]), (self.tes, {'melee'}, [2]),
                  (self.tes, {'material/hatchet'}, [2]), (self.tes, set(), [1]),
-                 (self.tes, {'material/tes13/mace'}, [1, 10])]
+                 (self.tes, {'material/tes13/mace'}, [11])]
         for wear, source, amounts in cases:
             for factor in (1, 0.5):
                 with self.subTest(source=source, wear=wear, factor=factor):

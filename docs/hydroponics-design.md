@@ -27,7 +27,7 @@ keep the original contract; this first section records how it was resolved.
   the same snowstorm and sandstorm that kill field crops. Ready crops otherwise
   never expire.
 - **Research and construction.** New Agriculture-tree node `hydroponics`
-  (era 6, bench tier 5, 305 ticks, prerequisites Advanced Agriculture and
+  (era 6, bench tier 5, 305 ticks, prerequisites Irrigation and
   Electricity). Like the rest of that tree it must be researched; the era never
   grants it. A tray frame costs 4 steel sheets; fitting 2 glass sheets and then
   1 cable coil finishes the tray. Dismantling refunds 2 steel and 1 glass and

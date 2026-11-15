@@ -167,3 +167,4 @@
 /obj/structure/simple_door/key_door/eft/pumpalt
 	name = "Pumping Station back door"
 	code = "1114"
+/obj/map_metadata/eft_factory/faction_hud_icons = list(RUSSIAN = "none", AMERICAN = "none", CIVILIAN = "none")

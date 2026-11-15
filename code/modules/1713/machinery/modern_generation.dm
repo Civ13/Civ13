@@ -111,7 +111,7 @@ var/global/list/civ_generators = list()
 
 /obj/structure/civ_generator/examine(mob/user)
 	..()
-	to_chat(user, "Generator: [enabled ? "enabled" : "off"]. Available output: [available_output()] PU. Maximum: [rated_output()] PU.")
+	to_chat(user, "Generator: [enabled ? "enabled" : "off"]. Available output: [power_text(available_output())]. Maximum: [power_text(rated_output())].")
 
 /obj/structure/civ_generator/attack_hand(mob/user)
 	if (!registered || !connected() || !map || map.ordinal_age < min_age)
@@ -126,7 +126,7 @@ var/global/list/civ_generators = list()
 	to_chat(user, "Generator [enabled ? "enabled" : "off"].")
 
 /obj/structure/civ_generator/attackby(obj/item/W, mob/user)
-	if (istype(W, /obj/item/weapon/wrench))
+	if (is_tool(W, TOOL_WRENCH))
 		if (powersource)
 			to_chat(user, "Cut the cable first.")
 			return
@@ -197,9 +197,17 @@ var/global/list/civ_generators = list()
 		if ("Afternoon") fraction = 0.8
 		if ("Evening") fraction = 0.15
 	// Night, Dark Night and unknown labels deliberately produce no output.
-	switch (A.weather)
+	switch (weather_at(src))
 		if (WEATHER_WET) fraction *= 0.5
 		if (WEATHER_SMOG) fraction *= 0.35
 		if (WEATHER_EXTREME) fraction *= 0.1
 	fraction *= barren_solar_factor(A) // dust storms on the barren surface
 	return round(peak_output * fraction)
+
+// Stack recipe guard: generators need their era, research and crafting skill 105.
+/datum/craft_guard/skill_gate/civ_generation
+	order = 10
+	message = "This generator requires Modern research and crafting skill 105."
+
+/datum/craft_guard/skill_gate/civ_generation/allowed(mob/living/human/H, result_type)
+	return civ_generation_can_build(H, result_type)

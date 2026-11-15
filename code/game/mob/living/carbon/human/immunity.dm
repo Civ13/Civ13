@@ -8,7 +8,8 @@
 #define IMMUNITY_FULL 100
 // While resistance stays at or above this, a new infection never takes hold.
 #define IMMUNITY_PROTECTS 50
-// Untreated, resistance reaches 100 after about 33 minutes of active play.
+// Untreated, resistance reaches 100 after about 33 minutes of active play,
+// half that while resting in bed.
 // A continuous medicine course is much faster (normally three minutes).
 #define IMMUNITY_GAIN_UNTREATED 0.05
 // While medicine supports the body, resistance reaches 100 in about 11
@@ -72,6 +73,8 @@
 			return TRUE
 
 	var/gain = disease_treatment > 0 ? IMMUNITY_GAIN_TREATED : IMMUNITY_GAIN_UNTREATED
+	if (resting_in_bed())
+		gain *= 2 // Bed rest lets the body fight twice as hard.
 	var/updated = min(IMMUNITY_FULL, round(resistance + gain, 0.001))
 	disease_resistance[fighting] = updated
 	if (resistance < IMMUNITY_PROTECTS && updated >= IMMUNITY_PROTECTS)

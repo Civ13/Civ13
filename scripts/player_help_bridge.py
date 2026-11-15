@@ -70,36 +70,36 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = 'd36776cdfaca4dbd569b0586676f3ee8375c0673'
+WIKI_REVIEWED_REVISION = 'b4cc2e6423545af4df4c0fc9e377a179ef7f5a5f'
 WIKI_REVIEWED_GUIDES = {
-    'guides/Guide_to_Animals.md': ('d57a35b5247a621ff482100a3152f7cacdcac91078e28e1928f6aeafcf9dcecb', 'animals dog dogs taming tame mount riding horse carriage'),
-    'guides/Guide_to_Character.md': ('393abbe89696cf0fcf4c4792b1032e1835a8098da3ea8d2be76bf213c1ac55b5', 'character skills traits languages'),
-    'guides/Guide_to_Chemistry.md': ('e774a84e516a835946a240e3e53db236f8ecf4a6c563d8b5b0f630b91ac58892', 'chemistry chemicals reactions reagents'),
-    'guides/Guide_to_Combat.md': ('7b6102b505dee6ce050b53adb36811d59b4128ec7a16c4ed31e99828ed137a5a', 'combat fight fighting intent aim shoot melee grenade cover'),
+    'guides/Guide_to_Animals.md': ('d40907b97df21d9df98414a54e9da1b15c357855f0341c905f269dfb97bb8618', 'animals dog dogs taming tame mount riding horse carriage'),
+    'guides/Guide_to_Character.md': ('f9b3777b9e995d824a4ee5d8336c8ad28f012eef55fc9c8acefa750743d4f185', 'character skills traits languages'),
+    'guides/Guide_to_Chemistry.md': ('cd18de133c5e560a495c22e26c5a33088d59ff81bbaf77e53ea267d646975230', 'chemistry chemicals reactions reagents'),
+    'guides/Guide_to_Combat.md': ('362d965bfa821e521862d1ad276ff478527f5332e8b57334ce9937dcc05a09d7', 'combat fight fighting intent aim shoot melee grenade cover'),
     'guides/Guide_to_Communications.md': ('11259c01cf9a78d7782b066b3f8c2211a3714fe4053d275a2c518607ca1d752c', 'communications radio transmit'),
-    'guides/Guide_to_Construction.md': ('a2ce2d33477c504d09c7e7fa96b3972c0a8b58a63664672976d5599810479bb9', 'construction build building walls roof floor'),
-    'guides/Guide_to_Cooking.md': ('fdb0468074e691d8255017e340cf9530d5c91841b58d9ee4ded3424ad0c6237e', 'cooking cook food meal ingredients'),
+    'guides/Guide_to_Construction.md': ('3e395fc3d9ea335b4f38eeed767ecea27b27fb774de2121bed3f85df75f85c9b', 'construction build building walls roof floor'),
+    'guides/Guide_to_Cooking.md': ('4b8dc44d8a632be7989e46165c74bb6bf6ad7328ec3de1d8df64620bb7c3b2da', 'cooking cook food meal ingredients'),
     'guides/Guide_to_Exercise.md': ('cd6d6e48f3ae664458e935bb88954a0c6d2232f00b6058e92fb520f5c7c76a09', 'exercise training strength weights running fatigue'),
-    'guides/Guide_to_Factory_Automation.md': ('61ae1ded41d56d44a1f7d0781f3dbc4cb3fa8695010d8023bc8e0e6a21eb71b2', 'factory automation belt belts conveyor arm arms fabricator fabricators pipe pipes pump tank bottler monitor crusher stamp mill'),
-    'guides/Guide_to_Farming.md': ('74daf913d98ef822848da201d9692f842b91fd8f2cbbf16ecbc0848b26f27883', 'farming farm plant crops soil water'),
-    'guides/Guide_to_Fishing.md': ('2d24c079057a15a888feafd052d45f1f4a95658de20e4251536dae43654d2e89', 'fishing fish rod bait'),
+    'guides/Guide_to_Factory_Automation.md': ('e49b07d8eea1fe3c785b450c486e4b412e9ab4e4d0df30c8e9dc1dc34f666be0', 'factory automation belt belts conveyor arm arms fabricator fabricators pipe pipes pump tank bottler monitor crusher stamp mill'),
+    'guides/Guide_to_Farming.md': ('6c6f8dcc1ce8c18e77823d4be411df8f4c63663f9e36c678d29557c10fcb23ec', 'farming farm plant crops soil water'),
+    'guides/Guide_to_Fishing.md': ('bf3f53b9baf4a420b44a7621c33a825544255b0581bceff0410708a4016dd001', 'fishing fish rod bait'),
     'guides/Guide_to_Hygiene.md': ('657c1c7ae6e2b7b425255ba7c9449206ff715e8ce422fa28a15700acce240752', 'hygiene clean washing soap detergent laundry'),
-    'guides/Guide_to_Leadership.md': ('038a5f5d2ac9aa50cdf7bbe3953756ce438dd2f3b602b29c23709f369189fe17', 'leadership squad leader officer commander artillery coordinates'),
-    'guides/Guide_to_Medical.md': ('25f4ba47bfd4913949660ee0c8ca1925a21090077a9d6558c6e277570866f287', 'medical heal injury wound surgery'),
+    'guides/Guide_to_Leadership.md': ('d8fa16a65959d1c7f632c782de1129a9c6dfade1614a9e55ebcdd92851e972df', 'leadership squad leader officer commander artillery coordinates'),
+    'guides/Guide_to_Medical.md': ('b498c1d49dd99afd1465489d71bb16bca59f108cc1ca71ba74bbe611465c3e77', 'medical heal injury wound surgery'),
     'guides/Guide_to_Pollution.md': ('f084e6ca8e6592361aba0dbc37f37d58b3f09bd20686bd067fdecdd71543f7ef', 'pollution polluted soot smog smoke charcoal clean ground growth'),
-    'guides/Guide_to_Power.md': ('4a28f61e9133aec8e6a92849139ade14bd676fd39c9b00cf3fbee09efde0313e', 'power battery batteries electricity generator'),
+    'guides/Guide_to_Power.md': ('2b3d67884680e31cc876d2432a076cbfe857d013c2c9fa47b133487535453129', 'power battery batteries electricity generator'),
     'guides/Guide_to_Radiation.md': ('6b6295a3bb2bf0eb54d559e32a49eb18d512a50bec9366757df81b049e0e8d00', 'radiation radioactive exposure'),
-    'guides/Guide_to_Ranching.md': ('2930c0b9e4d553e66bb3b3f78a74f742b9c7d19786fb1ac25326d95a952341c1', 'ranching livestock animal breeding'),
+    'guides/Guide_to_Ranching.md': ('4bfd68a7f6d60958e14da34916050fcedf06d7e1b9596a5dab8174b34a11c172', 'ranching livestock animal breeding'),
     'guides/Guide_to_Religion.md': ('8f2cba3283be55c895860478ffd6969b9ee7ad70ec90ecde479cd0ef622e9943', 'religion worship clergy shrine'),
-    'guides/Guide_to_Research.md': ('bfc45cbce8e90ee22f91dbf80d44aed5e5e8666eecca75f3111ffc499dbba027', 'research unlock study technology research bench'),
+    'guides/Guide_to_Research.md': ('698e0d0b98fcff745bfedbd816a8f4c7dcbc50ecb3c7be466f0cd3b8a2b847e2', 'research unlock study technology research bench'),
     'guides/Guide_to_Resource_Extraction.md': ('4b02b4e5c0953e58a28374ba57d702403ea98f702e81a45cbeeaf555293d4120', 'resource extraction gathering oil petroleum well fracturing'),
-    'guides/Guide_to_Survival.md': ('b224684387f36c60a5893b662075cf53968c2bb63ba1f4559956cb19c58a252f', 'survival winter cold warm freezing hypothermia shelter debris'),
-    'guides/Guide_to_Tanks.md': ('18cd5db8721df78e044e0ebbf9d14e7bcfca23424841eb0fb6e608bceef1a7a7', 'tank driving crew ammunition'),
-    'guides/Guide_to_Trains.md': ('f962a648103ad3d248058e89c60bb7c46e409d710a134b85c3b5a2e2bb2abdc8', 'train trains railway track locomotive station switcher rails wagon'),
+    'guides/Guide_to_Survival.md': ('a449eed1a1668a02a460076c3a08e61b512202b1cdfa95e13b18226238967bba', 'survival winter cold warm freezing hypothermia shelter debris footwear boots snowshoes shoes ice mud rain wet umbrella raincoat cape storm storms lightning thunder blizzard sandstorm heat wave weather fire fires wildfire firefighting beater flapper smother burning bucket blanket extinguish smoke signal signals hook firebreak pump engine nozzle hose jet reel extinguisher'),
+    'guides/Guide_to_Tanks.md': ('9250b410333e0da30224b09ed2126ce2ed676225aa2dda2be3b13c8f7ff3442a', 'tank driving crew ammunition'),
+    'guides/Guide_to_Trains.md': ('084ca499676d0ccfa7d9e64d9e52da43d7f0b5c40d95bbef0e3908ab2a35f641', 'train trains railway track locomotive station switcher rails wagon'),
     'guides/Guide_to_Trenches.md': ('04bed9fb3d409455d466928f071ddfc509ba49a9d7b450815595f0bc27c9670b', 'trench trenches fortification sandbag dig shovel'),
-    'guides/Guide_to_Weapons.md': ('b7baeb9d7f40c2c3fd30678c2469521aa47804c4c988b881966d578f78e2670b', 'weapons gun reload ammunition'),
-    'New_Player_Guide.md': ('3df3be9ca6ed544b5a97d7531e93f7fdde15c1d824a5635b8ba35a8688f15c8b', 'new player beginner start first round basics'),
-    'Hotkeys.md': ('512e26c2ec469aec84c698fab9219787d5f08a61520b45e64a4bb1009c328832', 'hotkeys hotkey keys keyboard controls key press'),
+    'guides/Guide_to_Weapons.md': ('f4912630ee265fb33c96d03d1a0831d1ce0e3d8a4760ebd5538a07842bd9ce7b', 'weapons gun reload ammunition'),
+    'New_Player_Guide.md': ('70691e17262f75ee998bcddac0aea6ad6bf9fa994e10fecbdf06535e9a7b3397', 'new player beginner start first round basics'),
+    'Hotkeys.md': ('05090c224e1f78aac61ba054366f3138634ce2c47cdaf4b9c98be908818ae55e', 'hotkeys hotkey keys keyboard controls key press'),
     'role_guides.md': ('4117070c23ff3cfd2581b612cd08ae70ee170637381972cffebdf9c0161d78d5', 'role roles job jobs responsibilities'),
     'Governor.md': ('131ef4f1f37d1bd38c1cd0c71bf6805cd677f308bef000c39ddb3cf0e7cd584d', 'governor role laws treasury colony'),
     'Merchant.md': ('d02b7a67d0c47e32fbe37fec1425600a80e32e9daf08756f64c57d8e6b3cd4b4', 'merchant role supplies export trade colony'),
@@ -107,28 +107,28 @@ WIKI_REVIEWED_GUIDES = {
     'Blacksmith.md': ('73e814dbe4cda23643b735dc3d694e8c5b081bb082d6688a1e5d9cc81ee8816e', 'blacksmith role anvil forge colony'),
     'gamemodes/Game_Modes.md': ('aa29af667563cabab26238b30efc94f6e5ec44de1e1ef198bc3c96995e7da01b', 'game mode modes gamemode'),
     'gamemodes/Team_Combat.md': ('37102cd630a71889feff9884e1cc2cf8521fed380ad9404ad7ff6fa037748975', 'team combat tdm deathmatch siege king hill area control objectives grace'),
-    'gamemodes/Civilizations_and_Nomads.md': ('d35d82f634297b9f0e3ddd8d72cb13b9b9cf5ad970bab84ea04900b44613b9f3', 'civilizations nomads gaia faction'),
+    'gamemodes/Civilizations_and_Nomads.md': ('94bf98cad1595ac85d431dfd1adafa29bec6a1dd42de0099694579abfd9dc321', 'civilizations nomads gaia faction'),
     'gamemodes/Colony_Building.md': ('498a18c35178fc60be2ab365642ff9d2540dcc2033018472df5ec9d8e1cbbace', 'colony building colonist colonists'),
     'gamemodes/Survival_Scenarios.md': ('d0102e9cd9e34835ee673175271b91be2b1d69a69473569f2c0e4422d92c67d4', 'survival scenario scenarios stranded wasteland zombie'),
     'gamemodes/Battle_Royale.md': ('18d1e4cf951f943bd7a0f5030c1825bd82a77427349b086842a309e492c4d841', 'battle royale battleroyale'),
     'gamemodes/Gladiators.md': ('36ac7d70edff2c99d78351585450428ad5cd02542b0cc3dfc5c178bca7d1ffb6', 'gladiator gladiators arena imperator custodes medicus'),
     'gamemodes/Prison_Roleplay.md': ('8da37041c99c23ab18012006e8afd8475acdd1485f8cb3eb48d23152f9cfb613', 'prison prisoner guard gulag nkvd'),
-    'guides/Guide_to_Boats.md': ('f4c73e215b310722ea45cb8cad2a69e10b25824ac654902d0d6a242397979eb4', 'boat boats ship sailing sail raft canoe rowing oars anchor'),
-    'guides/Guide_to_Aircraft.md': ('41c565657cac586480bc2a5ec33394ac03aadf268c89a2571e69094d79b6f056', 'aircraft airplane plane planes flying fly flight runway hangar pilot takeoff landing'),
+    'guides/Guide_to_Boats.md': ('e34772fb0dcf81da61904bb279cb7525d924e8e22199082ec399c9d2a6e9a19e', 'boat boats ship sailing sail raft canoe rowing oars anchor swim swimming drown drowning current currents lifejacket naval torpedo torpedoes degaussing minesweeping'),
+    'guides/Guide_to_Aircraft.md': ('7eeeab1bc3ed05075f56975fd7e36dbb895f177ae048d30c8008debc243e88b8', 'aircraft airplane plane planes flying fly flight runway hangar pilot takeoff landing'),
     'guides/Guide_to_Aircraft_Carriers.md': ('d0009e9680476ab3b7c220e0f4dda18191b0c23d94271ab32219ed8fedf1bf53', 'carrier carriers aircraft carrier flight deck shipyard office arresting wires elevator bunkers'),
     'guides/Guide_to_Races.md': ('46ef1bf361c519e71acbd679119429e838348827e25dbcac27282f67bee51097', 'race races species human humans'),
     'guides/Guide_to_Slang.md': ('52f9f6370922d7dede523e51247ae6ea0723d24118cecd26e594c051278dfc3f', 'slang terms jargon abbreviation meaning mean word words'),
-    'guides/Guide_to_Books_and_Scholars.md': ('75d16c85bc0f0eeb6b99089f8ac0f3e5cb858d07581cad68430275a8dc37ea1b', 'books scholars scholarship study chapter research bench apprentice tutor library writing slate abacus'),
-    'guides/Guide_to_Your_First_Day.md': ('9f99062c2efc41ff0005bea9d59eadaa470fd928b21370bbdb21dd970ca57fd6', 'first day new character start starting survive survival research book study chapter food water shelter'),
+    'guides/Guide_to_Books_and_Scholars.md': ('657b422b287f491885195d42da795670d229e20901b597bfe53ace09ae6cf980', 'books scholars scholarship study chapter research bench apprentice tutor library writing slate abacus'),
+    'guides/Guide_to_Your_First_Day.md': ('bdfe3afdf9523bac087d1819f71ec33639dbe2e975604f457216f4908816e23d', 'first day new character start starting survive survival research book study chapter food water shelter bag bags carry carrying basket travois'),
     'guides/Guide_to_Paperwork.md': ('a1a5f705ece3027336005a5fe08e5554eabe1bb6da16cc4294db54b39ad63b69', 'paper paperwork writing write pen book sign signature stamp'),
     'Crafting_Skill_Level_Requirements.md': ('eae4e1c91ce28009f16ec79d0e942f76895d80262e618320eaf44d3a7c5808a9', 'crafting skill level levels requirement requirements unlock'),
     'Food_Decay_Times.md': ('d2d63372eddc79fd7c3c9bffb390587fff7a5cb21c53d829ab5ec29ab9f11126', 'food decay rot spoil spoils spoiled expire expires lasts preserve storage'),
-    'Miscellaneous_Crafting.md': ('7d841e6db23560fc80845b05b5fea04277cabadc316440930211280c1e67901c', 'miscellaneous crafting misc items dress dresses dressmaking tailored sew sewing candle candles'),
-    'maps/Gaia.md': ('daaa1f3890ec3ae36f0b5f4d02d52bb05b1547682a6817c96c3b596c102d375f', 'gaia persistent persistence map world'),
+    'Miscellaneous_Crafting.md': ('a741a21d2e141b0b1bd19e1e01f73155ed1e4faf276152d044d38a39101272f0', 'miscellaneous crafting misc items dress dresses dressmaking tailoring tailor tailored sew sewing pattern patterns design clothes shirt gown cloak sleeves collar dye dyes wool linen fabric book hat hats headwear beret veil candle candles'),
+    'maps/Gaia.md': ('28a851bbbe27f13c32eeaaac1dac9400541f84ab16a37e97f1af77b720947aee', 'gaia persistent persistence map world'),
     'maps/Nomads_Maps.md': ('fdcb67459889783669de97dcd8d686c2be3e332d7a243f86a5d67528e560480e', 'nomads maps map terrain biome biomes'),
     'gamemodes/Voyage.md': ('9922f438d0253c6b4d812bc852422a54c37f428b4c3221b2a732397ef245ddfe', 'voyage expedition ship mode'),
     'gamemodes/Events.md': ('de6e6133e735e5da8a03a290f45e599b82cee216d9b150d25c583e3c34606336', 'events event special rounds'),
-    'guides_overview.md': ('c99674a7060bf4e416a7a675759000093d9a7dce923724af7d1061d5071d56d5', 'guides overview list of guides index'),
+    'guides_overview.md': ('ef385b62cc26cae6d20796d640921499ccbfe007fecaebd0cddcb9c8bbf09298', 'guides overview list of guides index'),
 }
 WIKI_LEGACY_GUIDES = ('guides/Guide_to_Crafting.md', 'guides/Guide_to_Metallurgy.md', 'Starter_Guide.md')
 
@@ -387,8 +387,8 @@ def bronze_knowledge(root):
         between(refining, '/obj/structure/furnace/attack_hand', '/obj/structure/furnace/process()'),
         between(refining, '\t\tif (istype(I, /obj/item/weapon/clay/mold))', None),
         pour_summary(between(molds, '/obj/item/weapon/clay/mold/attackby', '\telse if (istype(I, /obj/item/stack/ore)')),
-        between(molds, '\telse if (istype(I, /obj/item/stack/ore)', '\t\t\tif (istype(O, /obj/item/stack/ore/gold))'),
-        between(molds, '\t\t\telse if (istype(O, /obj/item/stack/ore/copper))', '\t\t\telse if (istype(O, /obj/item/stack/ore/lead))'),
+        'Fired clay blacksmith pots and jugs take metal ore or metal bars (bronze, brass, zinc, copper, tin and the rest) to melt in a kiln:',
+        between(molds, '// One metal at a time, except copper', '\n/obj/item/weapon/clay/mold/axehead\n'),
         between(molds, '\n/obj/item/weapon/clay/mold/claypot/fired\n', '\n/obj/item/weapon/clay/mold/key/fired\n'),
         between(molds, '\n/obj/item/weapon/clay/mold/fired\n', '\n/obj/item/weapon/clay/mold/axehead/fired\n'),
         'OVEN firing of unfired clay items:',
@@ -601,6 +601,43 @@ def reviewed_sources(root, paths, label):
     return identities
 
 
+# Public collection mechanic, absent from recipe/catalog-only retrieval.
+URINE_QUESTION = re.compile(r'\b(?:urine|urinate|urinating|urination|pee|peeing|piss|pissing)\b', re.I)
+
+
+def urine_knowledge(root):
+    """Reviewed collection instructions only, never a player's private bladder state."""
+    identities = reviewed_sources(root, {
+        'code/game/mob/living/carbon/human/shit_piss.dm': (
+            '/mob/living/human/proc/handle_piss()', 'if (bladder < 30 && stat != DEAD)',
+            'var/obj/item/weapon/reagent_containers/RC = locate() in src.loc',
+            'if((S) && gender != FEMALE)', 'else if(T && T.open)', 'else if (in_outhouse)',
+            'else if(RC && (istype(RC, /obj/item/weapon/reagent_containers/food/drinks) || istype(RC, /obj/item/weapon/reagent_containers/glass)) && RC.is_open_container())',
+            'var/amount = rand(5,10)\n\t\tRC.reagents.add_reagent("urine", amount)',
+            'reagents.trans_to(RC, amount)', 'else if(w_uniform)'),
+        'code/game/mob/living/carbon/human/emotes/emote.dm': (
+            'if ("pee")\n\t\t\t\thandle_piss()',),
+        'code/modules/reagents/reagent_containers/glass.dm': (
+            '/obj/item/weapon/reagent_containers/glass/bucket\n',
+            '/obj/item/weapon/reagent_containers/glass/New()\n\t..()\n\tbase_name = name\n\tflags |= OPENCONTAINER'),
+    }, 'urine collection')
+    return [{'topic': 'collect urine pee piss urinate urinating peeing pissing bucket container bladder',
+             'source': 'code', 'urine_collection': True, 'source_hashes': identities,
+             'sha256': hashlib.sha256(json.dumps(identities, sort_keys=True).encode()).hexdigest(),
+             'text': ('CURRENT GAMEPLAY GUIDANCE (urine collection): '
+                      'Urine collection exists. Put an open bucket with free capacity on the same tile '
+                      'as your character, then use the pee emote. Holding the bucket is not enough. '
+                      'Open glass/beaker and drink containers can also work. The action attempts to add '
+                      '5-10 units of urine, limited by free capacity, and can also transfer other body '
+                      'reagents, so the result is not guaranteed pure urine. If the living character has '
+                      'too little in their bladder, it says you do not have to piss; this context does '
+                      'not reveal your current bladder level. Sinks (for non-female characters), open '
+                      'toilets and being inside an outhouse take priority. Leave only the intended '
+                      'container on the tile: the code selects the first reagent container, not the '
+                      'first suitable open one. Clothing does not block successful container collection; '
+                      'without a valid destination you may soil your clothes or the floor.')}]
+
+
 # Field care questions where this compact record must lead generic damage hits.
 MEDICAL_QUESTION = re.compile(
     r'\b(?:tourniquets?|arter(?:y|ies|ial)|bleed(?:s|ing)?|blood|splints?(?:ed)?|fractures?d?|broken|'
@@ -676,6 +713,7 @@ def region_travel_knowledge(root):
             'It leads to [destination_name()]. Use it to travel there with what you wear and carry.',
             'The trail is overgrown. It leads nowhere for now.',
             'Nobody seems to be coming back from [destination_name()] right now.',
+            'is closed for now: its land is not running, so the trail cannot take anyone there.',
             'Only players with a BYOND account can travel.', 'You are too hurt to make the journey.',
             "You can't set off right now.", 'You carry too much to travel.',
             'Join it to continue; if your character cannot be taken in there, you will find them back here.'),
@@ -683,7 +721,8 @@ def region_travel_knowledge(root):
     text = ('REVIEWED CURRENT GAMEPLAY CODE - TRAVEL BETWEEN LANDS (region trails): '
             'Some persistent worlds are split into several lands, each its own server, joined by trails. '
             'Examine a trail to see which land it leads to, or that it is overgrown (no land connected right now) '
-            'or that nobody is coming back from there (that land is down). Use the trail with an empty hand and '
+            'or that nobody is coming back from there (that land is down), or that the land is closed for now (its server is stopped; '
+            'the trail opens again once an admin starts it, and admins are told someone tried). Use the trail with an empty hand and '
             'confirm to set off. You leave with what you wear and carry; the game then sends you to the other land, '
             'where you join to continue as the same character. You cannot travel without a BYOND account, while hurt '
             '(health must be full), restrained, buckled, pulling something, or while carrying too much; the trail '
@@ -708,7 +747,7 @@ TOXIN_SOURCE_SECTIONS = (
      '6617bf5ecc8f8d3a5530534b2b3042724af964338892879bfcab05c174215291'),
     ('code/modules/reagents/Chemistry-Reagents.dm',
      '/datum/reagent/proc/remove_self(', '/datum/reagent/proc/initialize_data(',
-     'dbdd6e3ade876c92ff74dc569875cecf09e52569707ad311b9ccd1bfe40b8796'),
+     '68936e39b69e39ed1c83ff57e8830f818ab3affd22d5911f723542958ba5a93b'),
     ('code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Toxins.dm',
      '/datum/reagent/toxin\n', '/datum/reagent/toxin/plasticide',
      '0921962fae15315afdb99ba93e1b3409d6e691c3ff95a16abeb4cc69e62046df'),
@@ -725,7 +764,8 @@ TOXIN_SOURCE_SECTIONS = (
 BRONZE_QUESTION = re.compile(r'\bbronze\b', re.I)
 TOXIN_QUESTION = re.compile(r'\b(?:poison(?:ing|ed|s)?|toxin(?:s)?|toxic(?:ity)?|toxloss)\b', re.I)
 # Reviewed records that must reach the model complete: (entry flag, question, player label).
-PRIORITY_RECORDS = (('toxin_mechanics', TOXIN_QUESTION, 'toxin damage'),
+PRIORITY_RECORDS = (('urine_collection', URINE_QUESTION, 'urine collection'),
+                    ('toxin_mechanics', TOXIN_QUESTION, 'toxin damage'),
                     ('bronze_mechanics', BRONZE_QUESTION, 'bronze production and research'))
 
 
@@ -828,8 +868,8 @@ def gameplay_knowledge(root, wiki_root=None, wiki_status=None):
             expected = ('var/collects_rain = TRUE', '/obj/item/weapon/reagent_containers/glass/barrel/jerrycan\n\tcollects_rain = FALSE',
                         '!is_open_container()', 'collection_seconds >= 60',
                         'reagents.add_reagent("water", min(rate, reagents.maximum_volume - reagents.total_volume))',
-                        'findtext(A.icon_state, "rain") || findtext(A.icon_state, "monsoon")',
-                        'A.weather == WEATHER_NONE', 'return 10', 'return 2', '(locate(/obj/roof) in T)')
+                        'findtext(falling, "rain") || falling == "monsoon"',
+                        'weather_at(T) == WEATHER_NONE', 'return 10', 'return 2', '(locate(/obj/roof) in T)')
             if any(marker not in excerpt for marker in expected):
                 raise ValueError('Reviewed rain barrel behavior changed')
             excerpt += ('\nReviewed guidance: There is no separate dew or rain collector; an ordinary '
@@ -848,6 +888,7 @@ def gameplay_knowledge(root, wiki_root=None, wiki_status=None):
     result.extend(mood_knowledge(root))
     result.extend(toxin_knowledge(root))
     result.extend(medical_knowledge(root))
+    result.extend(urine_knowledge(root))
     result.extend(region_travel_knowledge(root))
     status = {'configured': bool(wiki_root), 'legacy_freshness': 'not verified',
               'reviewed_guides': len(WIKI_REVIEWED_GUIDES), 'verified_guides': 0,
@@ -1555,7 +1596,7 @@ class Bridge:
                     continue
                 if response.exists():
                     existing = bounded_json(response, 24000)
-                    if existing.get('id') == marker:
+                    if isinstance(existing, dict) and existing.get('id') == marker:
                         continue
                     response.unlink()
                 request = bounded_json(self.root / f'{slot}.request.json', 16384)

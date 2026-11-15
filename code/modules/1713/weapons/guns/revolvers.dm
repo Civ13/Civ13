@@ -231,7 +231,7 @@
 	blackpowder = TRUE
 	cocked = FALSE
 
-/obj/item/weapon/gun/projectile/revolver/peacemaker/ivory
+/obj/item/weapon/gun/projectile/revolver/peacemaker/storekeeper/ivory
 	name = "Colt Storekeeper Ivory"
 	desc = "Officially a variant of M1873 Colt Single Action Army Revolver with an Ivory grip."
 	icon_state = "coltsaa_bankerspecial"

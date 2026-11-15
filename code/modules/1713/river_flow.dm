@@ -47,7 +47,8 @@
 	return river_flow_cache
 
 /proc/river_current_direction(turf/T)
-	if (!istype(T, /turf/floor/beach/water) || !map)
+	// Ice holds what lies on it; the water under it is not this turf's affair.
+	if (!is_liquid_water(T) || !map)
 		return 0
 	var/datum/river_flow/F = map.river_flow()
 	if (!F || F.z_level != T.z || T.x < 1 || T.x > world.maxx || T.y < 1 || T.y > world.maxy)
@@ -85,22 +86,33 @@ var/global/list/river_moved = list()
 		return !L.buckled && !L.captured && !L.pulling && !L.pulledby
 	return FALSE
 
+// An empty raft goes where the water takes it. One with anybody or anything aboard is
+// being handled, and the wide boats keep their place.
+/proc/river_adrift(atom/movable/A)
+	if (!istype(A, /obj/structure/vehicle/raft) || QDELETED(A) || A.anchored)
+		return FALSE
+	var/obj/structure/vehicle/raft/R = A
+	return !R.driver && !R.ontop.len && !R.ontop_o.len && !R.moving
+
 /turf/floor/beach/water/Entered(atom/movable/A)
 	. = ..()
-	if (river_carryable(A) && river_current_direction(src))
+	if ((river_carryable(A) || river_adrift(A)) && river_current_direction(src))
 		river_active_water |= src
 
 /turf/floor/beach/water/examine(mob/user)
 	..()
 	var/direction = river_current_direction(src)
 	if (direction)
-		to_chat(user, "The current flows [dir2text(direction)].")
+		if (salty)
+			to_chat(user, "A sea current sets [dir2text(direction)] here. It will carry off anything left adrift.")
+		else
+			to_chat(user, "The current flows [dir2text(direction)].")
 
 /turf/floor/beach/water/proc/river_wake_if_occupied()
 	if (!river_current_direction(src))
 		return
 	for (var/atom/movable/A in src)
-		if (river_carryable(A))
+		if (river_carryable(A) || river_adrift(A))
 			river_active_water |= src
 			return
 
@@ -111,15 +123,52 @@ var/global/list/river_moved = list()
 		river_active_water -= src
 		return
 	// Recheck occupied covered water: a bridge or boat may be removed later.
-	var/sheltered = iscovered()
 	var/occupied = FALSE
+	// An empty raft drifts with whatever lies on it left behind in the water.
+	for (var/obj/structure/vehicle/raft/R in contents)
+		if (river_adrift(R) && !(R in river_moved))
+			river_moved |= R
+			occupied = TRUE
+			step(R, direction)
+	var/sheltered = iscovered()
+	// A river in flood carries things two tiles a pulse; at low water, sometimes none.
+	var/steps = river_current_steps(src)
 	for (var/atom/movable/A in contents.Copy())
 		if (!river_carryable(A))
 			continue
 		occupied = TRUE
 		if (!sheltered && !(A in river_moved))
 			river_moved |= A
-			step(A, direction)
+			var/d = direction
+			for (var/i in 1 to steps)
+				var/turf/before = A.loc
+				step(A, d)
+				if (A.loc == before || !istype(A.loc, /turf/floor/beach/water))
+					break
+				d = river_current_direction(A.loc)
+				if (!d)
+					break
 	if (!occupied)
 		river_active_water -= src
 
+
+// ---- flow lines ---------------------------------------------
+// Flowing water shows which way it runs: pale streaks that slide with the
+// current (tools/weather/make_flow.py). They are shared images in the turf's
+// overlays, in the slot hill shading uses on land (terrain_height.dm), so the
+// same hooks put them back after a floor icon rebuild or a turf change, they
+// are never clickable and never saved. Ice and still water have none.
+var/global/list/water_flow_images = list()
+
+/proc/water_flow_image(turf/T)
+	var/direction = river_current_direction(T)
+	if (!direction)
+		return null
+	var/key = "flow_[dir2text(direction)][(T.x * 3 + T.y * 5) % 2 ? "2" : ""]"
+	var/image/I = water_flow_images[key]
+	if (!I)
+		I = image('icons/turf/water_flow.dmi', icon_state = key, layer = 2.035)
+		I.plane = FLOOR_PLANE
+		I.mouse_opacity = 0
+		water_flow_images[key] = I
+	return I

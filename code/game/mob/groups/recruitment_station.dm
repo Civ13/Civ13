@@ -21,7 +21,12 @@
 
 /obj/structure/recruitment_station/New()
 	..()
+	recruitment_stations |= src
 	update_icon()
+
+/obj/structure/recruitment_station/Destroy()
+	recruitment_stations -= src
+	return ..()
 
 /obj/structure/recruitment_station/update_icon()
 	overlays.Cut()

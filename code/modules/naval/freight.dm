@@ -108,7 +108,7 @@ var/global/list/freight_crates = list()    // contract id = sealed crate
 	unseal(box)
 	if (seal_broken)
 		give_back("the crate reached [dest_name] with its seal broken")
-		last_refusal = "the seal is broken, so the harbour pays nothing"
+		last_refusal = "the seal is broken, so nothing is paid"
 		return FALSE
 	log_game("[key_name(H)] delivered freight [contract_id] from [origin_name] to [dest_name] ([reward_text()]).")
 	pay(H)
@@ -182,6 +182,15 @@ var/global/list/freight_crates = list()    // contract id = sealed crate
 
 /obj/structure/berth/quay
 	var/tmp/freight_refusal = ""
+	// What this board calls itself and the place it stands in. A freight
+	// depot on land (freight_depot.dm) is a board of the same kind.
+	var/post_word = "mooring post"
+	var/place_word = "harbour"
+
+// The registered craft of this character that lies near enough to carry
+// freight from here, or null.
+/obj/structure/berth/quay/proc/freight_crew_craft(mob/living/human/H)
+	return craft_contract_crew_craft(H, get_turf(src), QUAY_DOCK_RANGE)
 
 /obj/structure/berth/quay/proc/contracts(with_state = null)
 	. = list()
@@ -217,13 +226,13 @@ var/global/list/freight_crates = list()    // contract id = sealed crate
 	freight_refusal = ""
 	var/party = party_train_party_of(H)
 	if (!may_post(party))
-		freight_refusal = "this harbour does not take contracts from your party"
+		freight_refusal = "this [place_word] does not take contracts from your party"
 	else if (contracts().len >= FREIGHT_BOARD_MAX)
 		freight_refusal = "the board is full"
 	else if (!istype(box) || QDELETED(box) || box.opened || length(box.freight_id) || get_dist(box, src) > FREIGHT_REACH)
 		freight_refusal = "a closed crate must stand within [FREIGHT_REACH] tiles of the post"
 	else if (!istype(dest) || QDELETED(dest) || dest == src || !(dest in sea_harbours))
-		freight_refusal = "it must be bound for another harbour"
+		freight_refusal = "it must be bound for another harbour or depot"
 	else if (reward && (!istype(reward) || reward.loc != H))
 		freight_refusal = "the reward must be in your hand"
 	if (freight_refusal)
@@ -258,7 +267,7 @@ var/global/list/freight_crates = list()    // contract id = sealed crate
 // were paid for; freight_refusal says why the last one was not.
 /obj/structure/berth/quay/proc/hand_in(mob/living/human/H)
 	. = 0
-	freight_refusal = "no sealed crate bound for this harbour stands within [FREIGHT_REACH] tiles of the post"
+	freight_refusal = "no sealed crate bound for this [place_word] stands within [FREIGHT_REACH] tiles of the post"
 	for (var/obj/structure/closet/crate/C in range(FREIGHT_REACH, src))
 		if (!length(C.freight_id) || !isturf(C.loc))
 			continue
@@ -327,16 +336,16 @@ var/global/list/freight_crates = list()    // contract id = sealed crate
 			for (var/obj/structure/berth/quay/Q in sea_harbours)
 				if (Q == src || QDELETED(Q))
 					continue
-				ports["[capitalize(Q.berth_name())][Q.z == z ? ", [get_dist(src, Q)] tiles [submarine_bearing(get_turf(src), get_turf(Q))]" : ", on another sea"]"] = Q
+				ports["[capitalize(Q.berth_name())][Q.z == z ? ", [get_dist(src, Q)] tiles [submarine_bearing(get_turf(src), get_turf(Q))]" : ", on another level"]"] = Q
 			if (!ports.len)
-				to_chat(H, SPAN_WARNING("There is no other harbour to send it to."))
+				to_chat(H, SPAN_WARNING("There is no other harbour or depot to send it to."))
 				return
-			var/port = WWinput(H, "Send [box] to which harbour?", "Freight", "Cancel", ports + list("Cancel"))
+			var/port = WWinput(H, "Send [box] where?", "Freight", "Cancel", ports + list("Cancel"))
 			var/obj/structure/berth/quay/dest = ports[port]
 			if (!dest || QDELETED(src) || get_dist(H, src) > 1)
 				return
 			var/obj/item/reward = H.get_active_hand()
-			var/terms = reward ? "The reward is [reward] in your hand: the harbour holds it and pays whoever hands the sealed crate in at [dest.berth_name()]." : "Your hand is empty, so there is no reward. Hold the reward in your active hand to offer one."
+			var/terms = reward ? "The reward is [reward] in your hand: the [place_word] holds it and whoever hands the sealed crate in at [dest.berth_name()] is paid there." : "Your hand is empty, so there is no reward. Hold the reward in your active hand to offer one."
 			if (WWinput(H, "[terms] The post takes the crate in until a crew takes the contract. Offer it?", "Freight", "No", list("Yes", "No")) != "Yes" || QDELETED(src) || get_dist(H, src) > 1)
 				return
 			if (reward && H.get_active_hand() != reward)
@@ -345,14 +354,14 @@ var/global/list/freight_crates = list()    // contract id = sealed crate
 			if (!F)
 				to_chat(H, SPAN_WARNING("The contract is not posted: [freight_refusal]."))
 				return
-			visible_message(SPAN_NOTICE("[H] posts a freight contract for [F.dest_name] at the mooring post."))
+			visible_message(SPAN_NOTICE("[H] posts a freight contract for [F.dest_name] at the [post_word]."))
 		if ("Take a contract")
 			var/list/found = contract_choices(CONTRACT_OPEN)
-			var/pick = WWinput(H, "Take which contract? The sealed crate is set down beside you. Hand it in unopened at its harbour to be paid.", "Freight", "Cancel", found + list("Cancel"))
+			var/pick = WWinput(H, "Take which contract? The sealed crate is set down beside you. Hand it in unopened where it is bound to be paid.", "Freight", "Cancel", found + list("Cancel"))
 			var/obj/craft_contract/freight/F = found[pick]
 			if (!istype(F) || QDELETED(F) || QDELETED(src) || get_dist(H, src) > 1)
 				return
-			if (!F.take(H, craft_contract_crew_craft(H, get_turf(src), QUAY_DOCK_RANGE)))
+			if (!F.take(H, freight_crew_craft(H)))
 				to_chat(H, SPAN_WARNING("You cannot take it: [F.last_refusal]."))
 				return
 			log_game("[key_name(H)] took freight [F.contract_id] at [x],[y],[z] for the [F.taker_craft].")
@@ -360,7 +369,7 @@ var/global/list/freight_crates = list()    // contract id = sealed crate
 		if ("Hand in freight")
 			var/paid = hand_in(H)
 			if (paid)
-				visible_message(SPAN_NOTICE("[H] hands in [paid] crate\s of freight and is paid by the harbour."))
+				visible_message(SPAN_NOTICE("[H] hands in [paid] crate\s of freight and is paid by the [place_word]."))
 			else
 				to_chat(H, SPAN_WARNING("Nothing is paid: [freight_refusal]."))
 		if ("Withdraw a contract")
@@ -380,4 +389,4 @@ var/global/list/freight_crates = list()    // contract id = sealed crate
 			var/pick = WWinput(H, "Collect which reward?", "Freight", "Cancel", found + list("Cancel"))
 			var/obj/craft_contract/freight/F = found[pick]
 			if (istype(F) && !QDELETED(F) && !QDELETED(src) && get_dist(H, src) <= 1 && F.collect(H))
-				to_chat(H, SPAN_NOTICE("The harbour hands the reward back."))
+				to_chat(H, SPAN_NOTICE("The [place_word] hands the reward back."))

@@ -23,7 +23,7 @@
 		return
 	var/area/A = get_area(T)
 	if (A)
-		switch (A.weather)
+		switch (weather_at(T))
 			if (WEATHER_WET)
 				. += SEA_MURK_WET
 			if (WEATHER_SMOG)
@@ -48,7 +48,7 @@
 				return H.name
 	var/area/A = get_area(T)
 	if (A)
-		switch (A.weather)
+		switch (weather_at(T))
 			if (WEATHER_WET)
 				return "rain or snow"
 			if (WEATHER_SMOG)

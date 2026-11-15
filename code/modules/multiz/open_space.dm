@@ -223,6 +223,9 @@ var/list/sky_drop_map = list()
 		if(G.opened == FALSE)
 			return
 	if (floorbelowz)
+		// Open air over stairs is a stairwell: walk down instead of falling.
+		if (!push_dir && stairs_soft_descent(A, floorbelowz))
+			return
 		if (istype(A, /mob))
 			if(push_dir)
 				A.forceMove(get_step(src,push_dir))
@@ -277,6 +280,10 @@ var/list/sky_drop_map = list()
 	if (WWinput(user, "This will start building a floor cover [your_dir] of you.", "Floor Cover Construction", "Continue", list("Continue", "Stop")) == "Continue")
 		visible_message("<span class='danger'>[user] starts constructing the floor cover.</span>", "<span class='danger'>You start constructing the floor cover.</span>")
 		if (do_after(user, covers_time, user.loc))
+			var/floor_refusal = tile_build_refusal(get_step(user, user.dir), /obj/covers/repairedfloor)
+			if (floor_refusal)
+				to_chat(user, SPAN_WARNING(floor_refusal))
+				return
 			qdel(src)
 			new/obj/covers/repairedfloor(get_step(user, user.dir), user)
 			visible_message("<span class='danger'>[user] finishes placing the floor cover.</span>")

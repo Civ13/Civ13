@@ -59,12 +59,8 @@
 	if (meal_portions)
 		serve_meal(I, H)
 		return TRUE
-	if (istype(I, /obj/item/weapon/wrench))
-		visible_message("<span class='warning'>[H] starts to [anchored ? "unsecure" : "secure"] the pot [anchored ? "from" : "to"] the ground.</span>")
-		playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
-		if (do_after(H,50,src))
-			visible_message("<span class='warning'>[H] [anchored ? "unsecures" : "secures"] the pot [anchored ? "from" : "to"] the ground.</span>")
-			anchored = !anchored
+	if (is_tool(I, TOOL_WRENCH))
+		timed_toggle_anchor(H, 50, "the pot")
 		return
 	else if ((istype(I, /obj/item/weapon/reagent_containers/food/drinks) || istype(I, /obj/item/weapon/reagent_containers/glass)) && state == STATE_EMPTY)
 		if (!I.reagents)
@@ -205,7 +201,7 @@
 							F.reagents.multiply_reagent("nutriment", 4)
 							F.reagents.multiply_reagent("protein", 2)
 							F.reagents.del_reagent("food_poisoning")
-							F.reagents.del_reagent("cholera")
+							F.reagents.kill_germs()
 						F.boiled = TRUE
 						F.raw = FALSE
 				else
@@ -232,7 +228,7 @@
 							var/obj/item/weapon/reagent_containers/food/F = I
 							if (F.reagents)
 								F.reagents.del_reagent("food_poisoning")
-								F.reagents.del_reagent("cholera")
+								F.reagents.kill_germs()
 								stew_nutriment += round(F.reagents.get_reagent_amount("nutriment")/bowls)
 								stew_protein += round(F.reagents.get_reagent_amount("protein")/bowls)
 								stew_nutriment_desc |= F.name

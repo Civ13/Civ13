@@ -29,10 +29,9 @@
 
 /mob/living/simple_animal/mosquito/Life()
 	..()
-	if (weather == WEATHER_EXTREME || weather == WEATHER_WET)
+	if (weather_anywhere() && weather_look_at(src) != "")
 		spawn(1000)//Wait a bit
-			var/area/A = get_area(loc)
-			if (findtext(A.icon_state,"rain") || findtext(A.icon_state,"snow") || findtext(A.icon_state,"monsoon")|| findtext(A.icon_state,"sandstorm"))//If still weather
+			if (loc && weather_look_at(src) != "")//If still weather
 				qdel(src)
 	if (stat != DEAD)
 		if (prob(70))

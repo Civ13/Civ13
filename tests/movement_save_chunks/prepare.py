@@ -9,7 +9,8 @@ ROOT = Path(__file__).resolve().parents[2]
 FILES = ['code/predefines.dm', 'tests/world_save/stubs.dm', 'tests/movement_save_chunks/debug_lossy_adapter.dm',
          'code/modules/multiz/world_z_budget.dm', 'code/modules/persistence/functions.dm',
          'code/modules/persistence/player_reclaim.dm', 'code/modules/persistence/saving.dm',
-         'code/modules/persistence/loading.dm', 'tests/movement_save_chunks/list_identity.dm',
+         'code/modules/persistence/loading.dm', 'tests/world_save/stream_stubs.dm',
+         'code/modules/persistence/stream/save_stream.dm', 'tests/movement_save_chunks/list_identity.dm',
          'tests/movement_save_chunks/codec_roundtrip.dm',
          'tests/movement_save_chunks/matrix_identity.dm',
          'tests/movement_save_chunks/preflight_identity.dm',
@@ -42,7 +43,7 @@ def prepare(output):
     (output / 'probe.dme').write_text(header + ''.join(f'#include "{name}"\n' for name in includes))
     hashes['probe.dme'] = hashlib.sha256((output / 'probe.dme').read_bytes()).hexdigest()
     (output / 'receipt.json').write_text(json.dumps({'execution': 'not_run', 'sources': hashes,
-        'scenarios': ['walking', 'reference', 'frontier', 'frontier-delete', 'delete', 'inventory', 'cross-z', 'legacy-step', 'legacy-cross-z', 'legacy-backstep', 'walker-backstep', 'sweep-reference', 'sweep-companion', 'sweep-container', 'sweep-cross-z', 'uncaptured-delete', 'yield', 'depth', 'overrun', 'late-reference']}, indent=2))
+        'scenarios': ['walking', 'reference', 'frontier', 'frontier-delete', 'delete', 'inventory', 'cross-z', 'legacy-step', 'legacy-cross-z', 'legacy-backstep', 'walker-backstep', 'sweep-reference', 'sweep-companion', 'sweep-container', 'sweep-cross-z', 'uncaptured-delete', 'yield', 'depth', 'overrun', 'late-reference', 'root-change']}, indent=2))
     return hashes
 
 if __name__ == '__main__':

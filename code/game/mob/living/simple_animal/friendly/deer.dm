@@ -70,6 +70,8 @@
 			meat_amount = 1
 			mob_size = MOB_SMALL
 			spawn(3000)
+				if (stat == DEAD) // a corpse keeps its sprite
+					return
 				if (female)
 					babydeer = FALSE
 					icon_state = "deer_f"
@@ -100,7 +102,7 @@
 		else if (istype(src, /mob/living/simple_animal/deer/reindeer))
 			male_path = /mob/living/simple_animal/deer/reindeer/male
 			female_path = /mob/living/simple_animal/deer/reindeer/female
-		if (!pregnant && deer_count.len < 150)
+		if (!pregnant && deer_count.len < 96)
 			var/nearbyObjects = range(1,src) //3x3 area around the deer
 			for(var/mob/living/simple_animal/deer/M in nearbyObjects)
 				if (istype(M, male_path) && M.stat == CONSCIOUS)
@@ -115,7 +117,7 @@
 					if ((istype(M, female_path) || istype(M, male_path)) && M.stat == CONSCIOUS)
 						deerCount++
 
-				if (deerCount > 5) // max 5 deers in a 15x15 area around deer
+				if (deerCount > 5 || animal_spot_crowded(src, 0)) // max 5 deers in a 15x15 area around deer
 					overpopulationCountdown = 300
 					pregnant = FALSE
 		else if (pregnant)
@@ -229,6 +231,8 @@
 			meat_amount = 1
 			mob_size = MOB_SMALL
 			spawn(3000)
+				if (stat == DEAD) // a corpse keeps its sprite
+					return
 				if (female)
 					babydeer = FALSE
 					icon_state = "dikdik_female"
@@ -250,7 +254,7 @@
 			overpopulationCountdown--
 			return
 
-		if (!pregnant && deer_count.len < 150)
+		if (!pregnant && deer_count.len < 96)
 			var/nearbyObjects = range(1,src) //3x3 area around the deer
 			for(var/mob/living/simple_animal/deer/dikdik/male/M in nearbyObjects)
 				if (M.stat == CONSCIOUS)
@@ -269,7 +273,7 @@
 					if (M.stat == CONSCIOUS)
 						deerCount++
 
-				if (deerCount > 5) // max 5 deers in a 15x15 area around deer
+				if (deerCount > 5 || animal_spot_crowded(src, 0)) // max 5 deers in a 15x15 area around deer
 					overpopulationCountdown = 300
 					pregnant = FALSE
 		else if (pregnant)

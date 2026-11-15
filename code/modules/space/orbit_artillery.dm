@@ -36,7 +36,7 @@
 #define ORBIT_ARTILLERY_WARN_RANGE 15
 
 // Peer kinds a battery may not fire on.
-var/global/list/orbit_artillery_closed_kinds = list("ORBIT", "RAILYARD", "BARRACKS", "BATTLE", "RAID")
+var/global/list/orbit_artillery_closed_kinds = list("ORBIT", "RAILYARD", "BARRACKS", "BATTLE", "RAID", "EVENT", "TUTORIAL")
 // Painted spots on this world: list(party, turf, world.time painted). Runtime only.
 var/global/list/orbit_artillery_marks = list()
 var/global/orbit_artillery_next_poll = 0
@@ -342,7 +342,9 @@ var/global/orbit_artillery_busy = FALSE
 	processing_objects -= src
 	if (C)
 		for (var/i in 1 to shells)
-			var/turf/T = locate(Clamp(C.x + rand(-scatter, scatter), 1, world.maxx), Clamp(C.y + rand(-scatter, scatter), 1, world.maxy), C.z)
+			var/tx = C.x + rand(-scatter, scatter)
+			var/ty = C.y + rand(-scatter, scatter)
+			var/turf/T = locate(Clamp(tx, 1, world.maxx), Clamp(ty, 1, world.maxy), C.z)
 			if (T)
 				blast(T)
 	qdel(src)

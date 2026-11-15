@@ -27,18 +27,17 @@
 	min_positions = 1
 	max_positions = 30
 
+/datum/job/german/reichswehr_soldat/job_stats = list("strength" = STAT_HIGH, "crafting" = STAT_MEDIUM_HIGH, "rifle" = STAT_HIGH, "dexterity" = STAT_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_HIGH, "machinegun" = STAT_HIGH)
+/datum/job/german/reichswehr_soldat/job_loadout = list(
+	/obj/item/clothing/shoes/blackboots = slot_shoes,
+	/obj/item/clothing/under/ww1/german = slot_w_uniform,
+	/obj/item/clothing/head/helmet/ww/stahlhelm = slot_head,
+	/obj/item/weapon/gun/projectile/boltaction/gewehr98 = slot_shoulder,
+	/obj/item/clothing/mask/gas/german = slot_belt)
 /datum/job/german/reichswehr_soldat/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww1/german(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww/stahlhelm(H), slot_head)
-//back
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/gewehr98(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/german(H), slot_belt)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/webbing/ww1/german/fullwebbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german(null)
 	uniform.attackby(fullwebbing, H)
@@ -46,46 +45,30 @@
 	for (var/i=1, i<= 8, i++)
 		fullwebbing.attackby(new /obj/item/ammo_magazine/gewehr98, H)
 	H.add_note("Role", "You are a <b>[title]</b>, a seasoned veteran of the Great War, now fighting in the Reichsheer. Follow your <b>Squad Leader's</b> orders!")
-	H.setStat("strength", STAT_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_HIGH)
-	H.setStat("rifle", STAT_HIGH)
-	H.setStat("dexterity", STAT_HIGH)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_HIGH)
-	H.setStat("machinegun", STAT_HIGH)
+	apply_job_stats(H)
 
 	return TRUE
 
+/datum/job/german/reichswehr_sergeant/job_stats = list("strength" = STAT_VERY_HIGH, "crafting" = STAT_VERY_HIGH, "rifle" = STAT_VERY_HIGH, "dexterity" = STAT_VERY_HIGH, "swords" = STAT_VERY_HIGH, "pistol" = STAT_VERY_HIGH, "bows" = STAT_VERY_HIGH, "medical" = STAT_VERY_HIGH, "machinegun" = STAT_VERY_HIGH)
+/datum/job/german/reichswehr_sergeant/job_loadout = list(
+	/obj/item/clothing/shoes/blackboots = slot_shoes,
+	/obj/item/clothing/under/ww1/german = slot_w_uniform,
+	/obj/item/clothing/head/helmet/ww/stahlhelm = slot_head,
+	/obj/item/clothing/mask/gas/german = slot_belt,
+	/obj/item/weapon/gun/projectile/pistol/mauser = slot_l_hand,
+	/obj/item/ammo_magazine/mauser = slot_l_store,
+	/obj/item/weapon/gun/projectile/boltaction/gewehr98 = slot_shoulder,
+	/obj/item/weapon/whistle = slot_r_store)
 /datum/job/german/reichswehr_sergeant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww1/german(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww/stahlhelm(H), slot_head)
-//weapons
-	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/german(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/mauser(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/mauser(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/gewehr98(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/weapon/whistle(H), slot_r_store)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a seasoned veteran of the Great War, now fighting in the Reichsheer as a squad leader.")
-	H.setStat("strength", STAT_VERY_HIGH)
-	H.setStat("crafting", STAT_VERY_HIGH)
-	H.setStat("rifle", STAT_VERY_HIGH)
-	H.setStat("dexterity", STAT_VERY_HIGH)
-	H.setStat("swords", STAT_VERY_HIGH)
-	H.setStat("pistol", STAT_VERY_HIGH)
-	H.setStat("bows", STAT_VERY_HIGH)
-	H.setStat("medical", STAT_VERY_HIGH)
-	H.setStat("machinegun", STAT_VERY_HIGH)
+	apply_job_stats(H)
 
 	return TRUE
 
@@ -117,6 +100,7 @@
 	min_positions = 1
 	max_positions = 160
 
+/datum/job/german/freikorps_soldat/job_stats = list("strength" = STAT_LOW, "crafting" = STAT_LOW, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_LOW, "swords" = STAT_LOW, "pistol" = STAT_LOW, "bows" = STAT_LOW, "medical" = STAT_LOW, "machinegun" = STAT_LOW)
 /datum/job/german/freikorps_soldat/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	var/obj/item/clothing/accessory/storage/webbing/ww1/german/fullwebbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german(null)
@@ -157,18 +141,11 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/grenade/modern/stg1915(H), slot_belt)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a right-wing Freikorps paramilitary fighting begrudgingly alongside the Reichswehr. Follow your <b>Squad Leader's</b> orders!")
-	H.setStat("strength", STAT_LOW)
-	H.setStat("crafting", STAT_LOW)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_LOW)
-	H.setStat("swords", STAT_LOW)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_LOW)
-	H.setStat("medical", STAT_LOW)
-	H.setStat("machinegun", STAT_LOW)
+	apply_job_stats(H)
 
 	return TRUE
 
+/datum/job/german/freikorps_sergeant/job_stats = list("strength" = STAT_LOW, "crafting" = STAT_LOW, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_LOW, "swords" = STAT_LOW, "pistol" = STAT_LOW, "bows" = STAT_LOW, "medical" = STAT_LOW, "machinegun" = STAT_LOW)
 /datum/job/german/freikorps_sergeant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	var/obj/item/clothing/accessory/storage/webbing/ww1/german/fullwebbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german(null)
@@ -207,15 +184,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/grenade/modern/stg1915(H), slot_belt)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a right-wing Freikorps paramilitary fighting begrudgingly alongside the Reichswehr as a squad leader.")
-	H.setStat("strength", STAT_LOW)
-	H.setStat("crafting", STAT_LOW)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_LOW)
-	H.setStat("swords", STAT_LOW)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_LOW)
-	H.setStat("medical", STAT_LOW)
-	H.setStat("machinegun", STAT_LOW)
+	apply_job_stats(H)
 
 	return TRUE
 
@@ -233,19 +202,19 @@
 	min_positions = 1
 	max_positions = 100
 
+/datum/job/german/weimarpolice/job_stats = list("strength" = STAT_LOW, "crafting" = STAT_LOW, "rifle" = STAT_NORMAL, "dexterity" = STAT_LOW, "swords" = STAT_LOW, "pistol" = STAT_NORMAL, "bows" = STAT_LOW, "medical" = STAT_NORMAL, "machinegun" = STAT_LOW)
+/datum/job/german/weimarpolice/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots = slot_shoes,
+	/obj/item/clothing/under/ww1/german = slot_w_uniform,
+	/obj/item/clothing/suit/storage/coat/germcoat = slot_wear_suit,
+	/obj/item/clothing/head/ww/germcap = slot_head,
+	/obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98a = slot_shoulder,
+	/obj/item/weapon/storage/belt/police/old = slot_belt)
 /datum/job/german/weimarpolice/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	var/obj/item/clothing/accessory/storage/webbing/ww1/german/fullwebbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german(null)
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww1/german(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/germcoat(H), slot_wear_suit)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww/germcap(H), slot_head)
-//back
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98a(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/police/old(H), slot_belt)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	uniform.attackby(fullwebbing, H)
 	for (var/i=1, i<= 8, i++)
@@ -254,15 +223,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/grenade/chemical/xylyl_bromide, (H), slot_l_hand)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a riot police officer fighting begrudgingly alongside the Reichswehr. Follow your <b>Squad Leader's</b> orders!")
-	H.setStat("strength", STAT_LOW)
-	H.setStat("crafting", STAT_LOW)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_LOW)
-	H.setStat("swords", STAT_LOW)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_LOW)
-	H.setStat("medical", STAT_NORMAL)
-	H.setStat("machinegun", STAT_LOW)
+	apply_job_stats(H)
 
 	return TRUE
 
@@ -297,6 +258,7 @@
 	min_positions = 1
 	max_positions = 1000
 
+/datum/job/civilian/ruhrsoldat/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_VERY_HIGH, "rifle" = STAT_LOW, "dexterity" = STAT_LOW, "swords" = STAT_LOW, "pistol" = STAT_LOW, "bows" = STAT_LOW, "medical" = STAT_LOW, "machinegun" = STAT_LOW)
 /datum/job/civilian/ruhrsoldat/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -344,20 +306,13 @@
 	uniform.attackby(armband, H)
 
 	H.add_note("Role", "You are a member of the Ruhr Red Army, attempting to overthrow the Weimar Republic to establish a communist state. Fight the Bourgeoisie and the reactionaries!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_VERY_HIGH)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_LOW)
-	H.setStat("swords", STAT_LOW)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_LOW)
-	H.setStat("medical", STAT_LOW)
-	H.setStat("machinegun", STAT_LOW)
+	apply_job_stats(H)
 	H.name = H.species.get_random_german_name(H.gender)
 	H.real_name = H.name
 
 	return TRUE
 
+/datum/job/civilian/ruhrunteroffizier/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_VERY_HIGH, "rifle" = STAT_LOW, "dexterity" = STAT_LOW, "swords" = STAT_LOW, "pistol" = STAT_LOW, "bows" = STAT_LOW, "medical" = STAT_LOW, "machinegun" = STAT_LOW)
 /datum/job/civilian/ruhrunteroffizier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -388,15 +343,7 @@
 	uniform.attackby(armband, H)
 
 	H.add_note("Role", "You are a member of the Ruhr Red Army, attempting to overthrow the Weimar Republic to establish a communist state. Lead your squad to defeat the Bourgeoisie and the reactionaries!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_VERY_HIGH)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_LOW)
-	H.setStat("swords", STAT_LOW)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_LOW)
-	H.setStat("medical", STAT_LOW)
-	H.setStat("machinegun", STAT_LOW)
+	apply_job_stats(H)
 	H.name = H.species.get_random_german_name(H.gender)
 	H.real_name = H.name
 

@@ -69,21 +69,10 @@
 	if(!autoresearch || default_research >= LEGACY_RESEARCH_MAX) return
 	autoresearch_step()
 
-/obj/map_metadata/proc/durable_weather_events()
-	if(season == "WINTER" && triggered_blizzard && !blizzard && !durable_pending("blizzard_start"))
-		to_chat(world, "<big>A huge blizzard is approaching!</big>")
-		triggered_blizzard = FALSE
-		durable_schedule("blizzard_start", 600)
-	if((season == "SUMMER" || triggered_heatwave) && !heat_wave && !durable_pending("heat_start"))
-		if((prob(1) || triggered_heatwave) && (prob(50) || triggered_heatwave))
-			to_chat(world, "<big>The weather starts to get hotter than normal...</big>")
-			triggered_heatwave = FALSE
-			durable_schedule("heat_start", 600)
-	if(season == "Dry Season" && triggered_sandstorm && !sandstorm && !durable_pending("sandstorm_start"))
-		to_chat(world, "<big>You start seeing dark clouds in the horizon...</big>")
-		triggered_sandstorm = FALSE
-		durable_schedule("sandstorm_start", 600)
-
+// Compatibility only: finish finite weather callbacks stored before moving weather.
+// Do not restore the old random event scheduler. Preserve the saved remainder
+// and legacy end cleanup (including heat-dried wells/puddles) rather than
+// rejecting the entire save or silently stranding its effects.
 /obj/map_metadata/proc/durable_blizzard_start()
 	blizzard = TRUE
 	change_weather(WEATHER_EXTREME)

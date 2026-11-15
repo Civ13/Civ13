@@ -14,7 +14,7 @@ MATERIAL = ROOT / 'code/modules/materials/material_sheets.dm'
 def guard_contract(source, oven):
     valid = source.split('/proc/stone_kiln_upgrade_valid(', 1)[1].split('\n/obj/', 1)[0]
     upgrade = source.split('/proc/upgrade_to_stone_kiln(', 1)[1].split('\n/obj/', 1)[0]
-    for guard in ('persistence_admission_identity != save_identity', 'persistence_active_operation', 'research_node_known(H, "basic_furniture")', 'S.type != /obj/item/stack/material/stone', 'H.get_active_hand() != S', 'S.amount < 10', 'stone_boil_epoch != epoch', 'stone_boil_busy', 'contents.len', 'P.on_stove'):
+    for guard in ('persistence_admission_identity != save_identity', 'persistence_active_operation', 'research_node_known(H, "pottery_storage")', 'S.type != /obj/item/stack/material/stone', 'H.get_active_hand() != S', 'S.amount < 10', 'stone_boil_epoch != epoch', 'stone_boil_busy', 'contents.len', 'P.on_stove'):
         assert guard in valid, guard
     for required in ('stone_upgrade_busy = TRUE', 'do_after(H, 150, src)', 'stone_kiln_upgrade_valid(S, H, site, epoch, save_identity)', 'S.can_use(10)', 'stone_before = S.amount', 'S.use(10)', 'S.amount != stone_before - 10', 'K.fuel = fuel', 'fuel = 0', 'K.wood_residue = account', 'wood_residue = null', 'qdel(src)'):
         assert required in upgrade, required
@@ -92,19 +92,23 @@ class KilnSourceTests(unittest.TestCase):
 
     def test_shared_heat_source_energy_and_fuel_contract(self):
         body = self.heat.split('/proc/heat_source_solid_fuel_energy(', 1)[1].split('\n/obj/', 1)[0]
-        for path, value in (('/obj/item/stack/ore/coal', 'return 240 * I.amount'), ('/obj/item/stack/ore/charcoal', 'return 80 * I.amount'), ('/obj/item/stack/material/leaf', 'return 30 * I.amount')):
-            self.assertIn(path, body)
-            self.assertIn(value, body)
-        for path in ('/obj/item/stack/material/wood', '/obj/item/stack/material/woodplank', '/obj/item/weapon/branch', '/obj/item/stack/material/bamboo', '/obj/item/stack/dung'):
-            self.assertIn(path, body)
-        self.assertIn('return 60 * I.amount', body)
+        # Solid fuel values live in the shared table (code/modules/1713/solid_fuel.dm).
+        self.assertIn('solid_fuel_value(I, heat_source_fuel_rates)', body)
+        fuel = (ROOT / 'code/modules/1713/solid_fuel.dm').read_text()
+        table = fuel[fuel.index('heat_source_fuel_rates = list('):]
+        table = table[:table.index(')\n')]
+        for kind, value in (('coal', 240), ('charcoal', 80), ('leaf', 30), ('wood', 60), ('plank', 60),
+                            ('branch', 60), ('bamboo', 60), ('dung', 60)):
+            self.assertIn(f'"{kind}" = {value}', table)
         self.assertIn('if (I.flammable)', body)
         self.assertIn('return 25 * S.amount', body)
         self.assertIn('return 25\n', body)
         self.assertIn('return 30 * amount', self.heat)
         for fuel in ('petroleum', 'gasoline', 'diesel', 'pethanol', 'biodiesel', 'olive_oil', 'fat_oil'):
             self.assertIn('"' + fuel + '"', self.heat.split('/proc/heat_source_liquid_fuels()', 1)[1].split('\n/proc/', 1)[0])
-        self.assertGreaterEqual(self.heat.count('heat_source_solid_fuel_energy(W)'), 8)
+        # One shared-table branch for every solid fuel kind, plus the flammable catch-all.
+        self.assertIn('else if (solid_fuel_kind(W) && heat_source_solid_fuel_energy(W))', self.heat)
+        self.assertGreaterEqual(self.heat.count('heat_source_solid_fuel_energy(W)'), 3)
         self.assertIn('heat_source_solid_fuel_energy(I)', self.source)
         self.assertIn('heat_source_liquid_fuel_energy(available) / 60', self.source)
         self.assertIn('record_wood_fuel(I, credit)', self.source)
@@ -132,7 +136,7 @@ class KilnSourceTests(unittest.TestCase):
 
     def test_primitive_upgrade_does_not_unlock_kiln_metallurgy(self):
         admission = self.source.split('/proc/stone_kiln_upgrade_valid(', 1)[1].split('\n/obj/', 1)[0]
-        self.assertIn('research_node_known(H, "basic_furniture")', admission)
+        self.assertIn('research_node_known(H, "pottery_storage")', admission)
         self.assertNotIn('"bronze_working"', admission)
         metallurgy_contract(self.source)
         gate = 'research_node_known(H, "bronze_working")'

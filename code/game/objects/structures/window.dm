@@ -8,10 +8,9 @@
 	layer = 3.2//Just above doors
 	anchored = 1.0
 	flags = ON_BORDER
-	var/maxhealth = 14.0
+	maxhealth = 14.0
 	var/maximal_heat = T0C + 100 		// Maximal heat before this window begins taking damage from fire
 	var/damage_per_fire_tick = 2.0 		// Amount of damage per fire tick. Regular windows are not fireproof so they might as well break quickly.
-	var/health
 	var/ini_dir = null
 	var/state = 2
 	var/reinf = FALSE
@@ -272,7 +271,7 @@
 
 	if (W.flags & NOBLUDGEON) return
 
-	if (istype(W, /obj/item/weapon/wrench))
+	if (is_tool(W, TOOL_WRENCH))
 		if (reinf && state >= 1)
 			state = 3 - state
 			update_nearby_icons()
@@ -286,11 +285,11 @@
 			set_anchored(!anchored)
 			playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
 			to_chat(user, (anchored ? "<span class='notice'>You have fastened the window to the floor.</span>" : "<span class='notice'>You have unfastened the window.</span>"))
-	else if (istype(W, /obj/item/weapon/crowbar) && reinf && state <= 1)
+	else if (is_tool(W, TOOL_CROWBAR) && reinf && state <= 1)
 		state = TRUE - state
 		playsound(loc, 'sound/items/Crowbar.ogg', 75, TRUE)
 		to_chat(user, (state ? "<span class='notice'>You have pried the window into the frame.</span>" : "<span class='notice'>You have pried the window out of the frame.</span>"))
-	else if (istype(W, /obj/item/weapon/hammer) && !anchored && (!state || !reinf))
+	else if (is_tool(W, TOOL_HAMMER) && !anchored && (!state || !reinf))
 		if (!glasstype)
 			to_chat(user, "<span class='notice'>You're not sure how to dismantle \the [src] properly.</span>")
 		else
@@ -445,7 +444,7 @@
 	icon_state = "windownew_frame"
 	layer = MOB_LAYER + 0.01
 	anchored = TRUE
-	var/health = 20
+	health = 20
 	flammable = TRUE
 	not_movable = FALSE
 	not_disassemblable = FALSE
@@ -457,24 +456,7 @@
 	var/adjusts = TRUE
 	mergewith = list(/obj/structure/window/classic/abashiri,/obj/structure/window_frame/abashiri,/turf/wall/abashiri,/obj/covers/wood_wall/abashiri)
 /obj/structure/window_frame/abashiri/check_relatives(var/update_self = FALSE, var/update_others = FALSE)
-	if (!adjusts)
-		return
-	var/junction
-	if (update_self)
-		junction = FALSE
-	for (var/checkdir in cardinal)
-		var/turf/T = get_step(src, checkdir)
-		for(var/atom/CV in T)
-			if (!can_join_with(CV))
-				continue
-			if (update_self)
-				if (can_join_with(CV))
-					junction |= get_dir(src,CV)
-			if (update_others)
-				CV.check_relatives(1,0)
-	if (!isnull(junction))
-		icon_state = "[base_icon_state][junction]"
-	return
+	join_neighbours(src, src:adjusts, src:base_icon_state, update_self, update_others)
 /obj/structure/window_frame/abashiri/can_join_with(var/atom/W)
 	if (istype(W,src))
 		return TRUE
@@ -499,24 +481,7 @@
 	var/adjusts = TRUE
 	mergewith = list(/obj/structure/window/classic/medieval,/obj/structure/window_frame/medieval,/obj/covers/wood_wall/medieval)
 /obj/structure/window_frame/medieval/check_relatives(var/update_self = FALSE, var/update_others = FALSE)
-	if (!adjusts)
-		return
-	var/junction
-	if (update_self)
-		junction = FALSE
-	for (var/checkdir in cardinal)
-		var/turf/T = get_step(src, checkdir)
-		for(var/atom/CV in T)
-			if (!can_join_with(CV))
-				continue
-			if (update_self)
-				if (can_join_with(CV))
-					junction |= get_dir(src,CV)
-			if (update_others)
-				CV.check_relatives(1,0)
-	if (!isnull(junction))
-		icon_state = "[base_icon_state][junction]"
-	return
+	join_neighbours(src, src:adjusts, src:base_icon_state, update_self, update_others)
 /obj/structure/window_frame/medieval/can_join_with(var/atom/W)
 	if (istype(W,src))
 		return TRUE
@@ -1031,24 +996,7 @@
 	var/adjusts = TRUE
 	mergewith = list(/obj/structure/window/classic/abashiri,/obj/structure/window_frame/abashiri,/turf/wall/abashiri,/obj/covers/wood_wall/abashiri)
 /obj/structure/window/classic/abashiri/check_relatives(var/update_self = FALSE, var/update_others = FALSE)
-	if (!adjusts)
-		return
-	var/junction
-	if (update_self)
-		junction = FALSE
-	for (var/checkdir in cardinal)
-		var/turf/T = get_step(src, checkdir)
-		for(var/atom/CV in T)
-			if (!can_join_with(CV))
-				continue
-			if (update_self)
-				if (can_join_with(CV))
-					junction |= get_dir(src,CV)
-			if (update_others)
-				CV.check_relatives(1,0)
-	if (!isnull(junction))
-		icon_state = "[base_icon_state][junction]"
-	return
+	join_neighbours(src, src:adjusts, src:base_icon_state, update_self, update_others)
 
 /obj/structure/window/classic/abashiri/can_join_with(var/atom/W)
 	if (istype(W,src))
@@ -1130,24 +1078,7 @@
 	var/adjusts = TRUE
 	mergewith = list(/obj/structure/window/classic/medieval,/obj/structure/window_frame/medieval,/obj/covers/wood_wall/medieval)
 /obj/structure/window/classic/medieval/check_relatives(var/update_self = FALSE, var/update_others = FALSE)
-	if (!adjusts)
-		return
-	var/junction
-	if (update_self)
-		junction = FALSE
-	for (var/checkdir in cardinal)
-		var/turf/T = get_step(src, checkdir)
-		for(var/atom/CV in T)
-			if (!can_join_with(CV))
-				continue
-			if (update_self)
-				if (can_join_with(CV))
-					junction |= get_dir(src,CV)
-			if (update_others)
-				CV.check_relatives(1,0)
-	if (!isnull(junction))
-		icon_state = "[base_icon_state][junction]"
-	return
+	join_neighbours(src, src:adjusts, src:base_icon_state, update_self, update_others)
 
 /obj/structure/window/classic/medieval/can_join_with(var/atom/W)
 	if (istype(W,src))

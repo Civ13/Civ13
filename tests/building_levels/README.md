@@ -23,14 +23,21 @@ A roof builder adds a linked floor on the level above. Floor covers placed over
 open air add the matching roof below. Ground-level floor finishes retain their
 existing behavior. Existing mapped roofs and tent canopies are not converted.
 Grounded wood supports permit two storeys, stone/clay four, concrete six, and
-metal eight; all supporting levels must have sufficient strength. Wall reach is
+metal eight; all supporting levels must have sufficient strength. Soft ground
+carries two storeys: taller buildings need their ground-floor supports on rock,
+mapped masonry or a stone, brick, concrete or metal floor. New roofs from the
+second storey up also need a support within one tile or two supports on
+different sides, and each upper support needs a support of the same strength
+within a tile of it on the floor below. Standing roofs keep the plain support
+rule, so these design rules never bring down an existing building. Nothing is
+saved for any of this: storeys and strength are worked out from what stands. Wall reach is
 one tile, stone pillar/wall turf two, timber roof pillars three, and doors support
 their own tile. Removing a support schedules the normal roof collapse check;
 removing either slab face removes its partner and exposes the floor opening.
 
 New levels are open air, with no broken-floor render registry. Expansion is
-bounded by the shared total-cell budget, default 1,400,000 cells and one roof-added
-plane, with lower-only host settings. Existing structural ceilings remain;
+bounded by the shared total-cell budget, default 1,400,000 cells and four roof-added
+planes (a map opts in with `building_levels`), with lower-only host settings. Existing structural ceilings remain;
 see `docs/new-z-budget.md`. Native BYOND allocates the default turf synchronously;
 replacement is budgeted across ticks. These bounds do not establish low latency
 or sufficient heap/save/player headroom. The support-tier fixture uses seven

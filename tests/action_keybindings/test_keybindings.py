@@ -23,7 +23,7 @@ def strings(text):
 
 def catalog(source):
     rows = re.findall(r'^\t\t"(\w+)" = list\("([^"]+)", "([^"]+)", list\(([^)]*)\), list\(([^)]*)\)\)', source, re.M)
-    if len(rows) != 18:
+    if len(rows) != 19:
         raise AssertionError('Catalog grammar or action count changed; review skin capacity')
     return {key: (label, command, strings(normal), strings(hotkey)) for key, label, command, normal, hotkey in rows}
 
@@ -85,7 +85,7 @@ class Keybindings(unittest.TestCase):
         entries = catalog(read(SOURCE))
         for mode, rows in skin(read('interface/skin.dmf')).items():
             managed = {row['id']: row for row in rows if row['id'].startswith('action_')}
-            self.assertEqual(len(managed), 36)
+            self.assertEqual(len(managed), 38)
             for action, (_, command, normal, hotkey) in entries.items():
                 defaults = normal if mode == 'macro' else hotkey
                 for index in range(2):
@@ -152,7 +152,7 @@ class Keybindings(unittest.TestCase):
         entries = catalog(source)
         body = source.split('/proc/action_keybinding_yielding()')[1].split('/proc/')[0]
         yielding = strings(body)
-        self.assertEqual(yielding, ['storage', 'storage_back', 'storage_belt', 'storage_clothing', 'resist'])
+        self.assertEqual(yielding, ['storage', 'storage_back', 'storage_belt', 'storage_clothing', 'resist', 'craft'])
         for action in yielding:
             self.assertIn(action, entries)
         self.assertEqual(entries['storage_belt'][1], 'open-belt-storage')
@@ -166,6 +166,20 @@ class Keybindings(unittest.TestCase):
         for _, command, _, _ in (entries[action] for action in yielding if action.startswith('storage')):
             self.assertIn(f'set name = "{command}"', verbs)
         self.assertIn('worn_storage.dm', read('civ13.dme'))
+
+    def test_craft_key_opens_the_window_without_touching_materials(self):
+        entries = catalog(read(SOURCE))
+        self.assertEqual(entries['craft'][1:], ('craft-within-reach', ['CTRL+SHIFT+C'], ['SHIFT+C', 'CTRL+SHIFT+C']))
+        window = read('code/game/objects/items/stacks/crafting_window.dm')
+        self.assertIn('set name = "craft-within-reach"', window)
+        opener = window.split('/mob/living/human/proc/open_crafting_within_reach()')[1].split('\n/')[0]
+        self.assertLess(opener.index('!client || stat || restrained()'), opener.index('crafting_stacks_within_reach()'))
+        for action in ('put_in_hands', 'drop', 'produce_recipe', '.use('):
+            self.assertNotIn(action, opener)
+        reach = window.split('/mob/living/human/proc/crafting_stacks_within_reach()')[1].split('\n/')[0]
+        self.assertIn('range(1, here)', reach)
+        self.assertIn('loose.crafting_stack_accessible(src)', reach)
+        self.assertIn('found.len >= CRAFTING_WINDOW_REACH_LIMIT', reach)
 
     def test_resist_hotkey_calls_the_resist_verb(self):
         entries = catalog(read(SOURCE))

@@ -7,8 +7,8 @@
 /world
 	hub = ""
 	hub_password = ""
-	maxx = 30
-	maxy = 30
+	maxx = 40
+	maxy = 40
 	maxz = 1
 	turf = /turf
 	area = /area
@@ -19,8 +19,9 @@
 	return FALSE
 /obj/map_metadata/vehicle_project_probe/New()
 	return
+var/project_deny_node = null
 /obj/map_metadata/vehicle_project_probe/is_node_done(faction, node_id)
-	return TRUE
+	return node_id != project_deny_node
 /mob/living/human/vehicle_project_probe/New()
 	return
 var/project_failures = 0
@@ -76,17 +77,24 @@ var/project_runtime_error = FALSE
 	return S
 
 // Fits every remaining piece through the player paths: stacks hit the press,
-// wheels are dragged onto the vehicle in the bay.
+// wheels and tracks are dragged onto the press.
+/proc/model_hull(model)
+	var/list/spec = works_vehicle_specs[model]
+	return spec ? spec["hull"] : null
+
 /proc/project_finish(obj/structure/car_workshop/W, mob/living/human/H)
-	var/list/paths = list("steel" = /obj/item/stack/material/steel, "glass" = /obj/item/stack/material/glass, "cloth" = /obj/item/stack/material/cloth, "cable" = /obj/item/stack/cable_coil)
+	var/list/paths = list("steel" = /obj/item/stack/material/steel, "glass" = /obj/item/stack/material/glass, "cloth" = /obj/item/stack/material/cloth, "cable" = /obj/item/stack/cable_coil, "wood" = /obj/item/stack/material/wood, "aluminium" = /obj/item/stack/material/aluminium)
 	var/guard = 0
 	while (!W.project_finished() && guard++ < 100)
 		var/list/needed = W.project_needed()
 		for (var/key in needed)
-			if (key == "wheels")
+			if (key == "tracks")
+				var/obj/structure/vehicleparts/movement/tracks/M = new(get_turf(H))
+				W.MouseDrop_T(M, H)
+			else if (key == "wheels")
 				var/obj/structure/vehicleparts/movement/M = new(get_turf(H))
-				var/obj/structure/vehicle_project_part/F = W.project_frames[1]
-				F.MouseDrop_T(M, H)
+				// The press is always in reach; a narrow body's cells may not be.
+				W.MouseDrop_T(M, H)
 			else
 				var/obj/item/stack/S = project_stack(paths[key], 100, get_turf(H))
 				W.attackby(S, H)
@@ -167,13 +175,186 @@ var/project_runtime_error = FALSE
 	if (istype(car))
 		project_check(car.engine && car.engine.fueltank && !car.engine.fueltank.reagents.total_volume, "the car leaves with an empty tank")
 
+	// ---- Works vehicles: a truck, carriers and tanks ----
+	project_check(W.one_go("ASNO Piccolino") && !W.one_go("Medium tank") && !W.one_go("No such model"), "works vehicles are not one-go models")
+	var/obj/structure/car_workshop/hangar/project_probe/no_works = new(null)
+	project_check(!no_works.works_spec("Medium tank") && !("Medium tank" in no_works.models()), "the hangar builds no works vehicles")
+	qdel(no_works)
+	W.stock = W.costs("Medium tank")
+	project_check(!W.assemble_for(H, "Medium tank") && W.stock["steel"] == 300, "a tank cannot be assembled in one go")
+	W.stock = list("steel" = 0, "glass" = 0, "cloth" = 0, "cable" = 0, "wheels" = 0)
+	var/datum/piece_plan/TP = W.project_plan("Medium tank")
+	var/list/tank_total = TP.total_cost()
+	var/list/tank_cost = W.costs("Medium tank")
+	same = tank_total.len == tank_cost.len
+	for (var/key in tank_cost)
+		same = same && tank_total[key] == tank_cost[key]
+	var/list/stage_names = list()
+	for (var/list/stage in TP.stages)
+		stage_names += stage["name"]
+	project_check(same && ("Tracks" in stage_names) && ("Turret" in stage_names) && !("Wheels" in stage_names) && !("Windows" in stage_names), "a tank plan costs its listed price, on tracks, with a turret stage ([json_encode(stage_names)])")
+	var/list/truck_names = list()
+	for (var/list/stage in W.project_plan("Cargo truck").stages)
+		truck_names += stage["name"]
+	project_check(("Wheels" in truck_names) && ("Windows" in truck_names) && !("Turret" in truck_names), "a truck plan has wheels and windows and no turret")
+	project_deny_node = "mechanized_war"
+	var/obj/structure/car_workshop/project_probe/R = new(locate(5, 20, 1))
+	project_check(findtext(R.project_refusal("Medium tank", H), "research is required"), "a tank needs Mechanized Warfare ([R.project_refusal("Medium tank", H)])")
+	project_check(!R.project_refusal("Cargo truck", H), "a truck needs only the press's research")
+	project_deny_node = null
+	project_check(!R.project_refusal("Medium tank", H), "with the research the tank can start")
+	qdel(R)
+	project_deny_node = "modern_armor"
+	R = new(locate(5, 20, 1))
+	project_check(findtext(R.project_refusal("Main battle tank", H), "research is required") && !R.project_refusal("Heavy tank", H), "the main battle tank needs Modern Armor; the heavy tank does not")
+	project_deny_node = null
+	qdel(R)
+	// Every works model is built in turn, each at its own press.
+	var/list/spots = list()
+	var/spot_index = 0
+	for (var/model in works_vehicle_specs)
+		spots[model] = list(5 + 7 * (spot_index % 5), 12 + 8 * round(spot_index / 5))
+		spot_index++
+	var/steel_light_factor = 0
+	project_check(spots.len == 11, "eleven works models ([spots.len])")
+	for (var/model in spots)
+		var/list/spot = spots[model]
+		var/obj/structure/car_workshop/project_probe/V = new(locate(spot[1], spot[2], 1))
+		V.stock = list("steel" = 0, "glass" = 0, "cloth" = 0, "cable" = 0, "wheels" = 0)
+		H.loc = locate(spot[1] + 1, spot[2], 1)
+		V.project_action(H, model)
+		var/list/cells = V.project_layout(model)
+		project_check(V.project == model && project_parts(V) == cells.len, "[model]: the jig fills its [cells.len] cells")
+		var/datum/piece_plan/VP = V.get_project_plan()
+		if (VP.total_cost()["tracks"])
+			var/obj/structure/vehicleparts/movement/wrong = new(get_turf(H))
+			V.project_done = 2
+			V.update_project_frames()
+			var/obj/structure/vehicle_project_part/jig = V.project_frames[1]
+			jig.MouseDrop_T(wrong, H)
+			project_check(!QDELETED(wrong) && V.project_done == 2, "[model]: a rubber wheel is not a track")
+			qdel(wrong)
+			V.project_done = 0
+			V.update_project_frames()
+		project_finish(V, H)
+		project_check(V.project_finished(), "[model]: every piece fitted ([V.project_done] of [VP.total_pieces()])")
+		var/obj/structure/vehicleparts/axis/made = V.roll_out_project(H)
+		var/size = V.model_size(model)
+		project_check(istype(made) && made.keyed_vehicle_id && made.name == lowertext(model), "[model]: rolls out keyed and named")
+		if (!istype(made))
+			continue
+		var/hulls_ok = TRUE
+		for (var/obj/structure/vehicleparts/frame/HF in made.components)
+			hulls_ok = hulls_ok && HF.hull_material == model_hull(model)
+		project_check(hulls_ok, "[model]: its frames are [model_hull(model) || "steel"]")
+		if (model == "Light tank")
+			steel_light_factor = made.get_load_factor(TRUE)
+		if (model == "Tracked carrier")
+			project_check(made.get_load_factor(TRUE) < 1, "the aluminium tracked carrier is light for its engine ([made.load_factor])")
+		project_check(made.components.len == size * size && made.wheels.len == 4, "[model]: fills its [size]x[size] square on four wheels or tracks ([made.components.len], [made.wheels.len])")
+		project_check(made.engine && made.engine.fueltank && !made.engine.fueltank.reagents.total_volume && made.wheel, "[model]: engine, empty tank and steering linked")
+		var/extras = 0
+		var/shells = 0
+		var/turrets = 0
+		var/frames = 0
+		for (var/dx = 1, dx <= size, dx++)
+			for (var/dy = 1, dy <= size, dy++)
+				var/turf/T = locate(V.x + dx, V.y + dy, 1)
+				for (var/atom/movable/O in T)
+					if (istype(O, /obj/item/weapon/gun) || istype(O, /obj/item/ammo_magazine) || istype(O, /obj/structure/supply_crate) || istype(O, /obj/structure/bed/chair/mgunner))
+						extras++
+					if (istype(O, /obj/structure/shellrack))
+						var/obj/structure/shellrack/rack = O
+						shells += rack.storage.contents.len
+					if (istype(O, /obj/structure/turret))
+						turrets++
+					if (istype(O, /obj/structure/vehicleparts/frame))
+						frames++
+		project_check(!extras && !shells, "[model]: no free guns, ammunition, shells or supplies ([extras], [shells])")
+		project_check(frames == cells.len, "[model]: every layout cell has its frame ([frames] of [cells.len])")
+		var/list/model_spec = works_vehicle_specs[model]
+		var/gunned = model_spec["gun"] > 0
+		project_check(turrets == (gunned ? 1 : 0), "[model]: [gunned ? "has its turret" : "has no turret"]")
+		project_check(made.hand_built && !made.take_apart_refusal(null), "[model]: counts as hand built, so it can be refitted and taken apart ([made.take_apart_refusal(null)])")
+		for (var/obj/structure/turret/built/fitted in made.built_turrets())
+			var/obj/structure/cannon/modern/tank/gun = locate() in fitted.weapons
+			project_check(fitted.weapons.len == 1 && gun && gun.type == /obj/structure/cannon/modern/tank && fitted.gunner_seat && fitted.loader_seat && !length(fitted.lacking()), "[model]: its turret is the craftable one, fitted with the craftable cannon and a gunner's and loader's seat ([fitted.fitting_text()])")
+			project_check("[fitted.turret_icon]0" in icon_states('icons/obj/vehicles/vehicles256x256.dmi'), "[model]: its turret picture exists ([fitted.turret_icon])")
+		var/list/locations = list()
+		for (var/atom/movable/part in made.components)
+			locations[part] = part.loc
+		var/turned = TRUE
+		for (var/i = 1, i <= 4, i++)
+			turned = made.do_matrix(made.dir, turn(made.dir, 90), "left") && turned
+		var/back_home = TRUE
+		for (var/atom/movable/part in locations)
+			back_home = back_home && part.loc == locations[part]
+		project_check(turned && back_home, "[model]: turns a full circle in place")
+		var/swung = 0
+		for (var/atom/movable/part in made.glide_was)
+			if (part.glide_size == craft_glide_size(glide_turn_time()))
+				swung++
+		project_check(swung > 0, "[model]: a turn is drawn swinging round ([swung] parts glide a tile)")
+		made.glide_rest_now()
+		project_check(!length(made.glide_was), "[model]: after the turn everything has its own glide back")
+		// Each step is drawn as a glide lasting the step (craft/glide.dm).
+		var/obj/structure/vehicleparts/frame/rolling = locate() in made.components
+		var/obj/item/stack/material/steel/loose = new(rolling.loc)
+		loose.step_x = 4
+		var/own_glide = rolling.glide_size
+		var/loose_glide = loose.glide_size
+		var/turf/rolled_from = rolling.loc
+		made.vehicle_m_delay = 9
+		var/stepped = made.do_move()
+		project_check(stepped && rolling.loc == get_step(rolled_from, made.dir) && rolling.glide_size == craft_glide_size(10), "[model]: a step glides its frames for the whole step ([rolling.glide_size])")
+		project_check(loose.loc == rolling.loc && loose.glide_size == loose_glide && !(loose in made.glide_was), "[model]: cargo off its tile centre is slid, not engine-glided")
+		made.glide_rest_now()
+		project_check(rolling.glide_size == own_glide && !length(made.glide_was), "[model]: at rest everything gets its own glide back")
+		qdel(loose)
+		// A works vehicle is hand built: its owners can take it apart and
+		// assemble the same parts again (craft/vehicle_assembly.dm).
+		made.take_apart()
+		project_check(!made.components.len && !made.wheels.len, "[model]: comes apart into loose frames and parts")
+		var/rebuilt = made.assemble(SOUTH)
+		var/refitted = TRUE
+		for (var/obj/structure/turret/built/again in made.built_turrets())
+			refitted = refitted && !length(again.lacking())
+		project_check(isnull(rebuilt) && made.components.len == size * size && made.wheels.len == 4 && made.engine && made.engine.fueltank && made.wheel && refitted && length(made.built_turrets()) == (gunned ? 1 : 0), "[model]: the same parts assemble again ([rebuilt], [made.components.len] parts, [made.wheels.len] wheels)")
+		project_check(!V.project && V.stock["steel"] == 0 && !V.stock["tracks"], "[model]: the project is spent")
+	H.loc = locate(6, 5, 1)
+
+	// ---- An aluminium light tank ----
+	var/obj/structure/car_workshop/project_probe/AL = new(locate(5, 36, 1))
+	H.loc = locate(6, 36, 1)
+	project_check(AL.hull_choices("Light tank", H) ~= list("steel", "aluminium") && AL.hull_choices("Tracked carrier", H) ~= list("aluminium") && AL.hull_choices("ASNO Piccolino", H) ~= list("steel"), "works vehicles may be steel or aluminium; the carrier is aluminium only; cars are steel")
+	AL.start_project("Light tank", "aluminium")
+	var/datum/piece_plan/ALP = AL.get_project_plan()
+	var/list/al_cost = ALP.total_cost()
+	project_check(al_cost["aluminium"] == 96 && al_cost["steel"] == 70 && AL.costs("Light tank")["aluminium"] == 96, "an aluminium light tank pays 96 aluminium for its hull and keeps 70 steel for engine and gun ([json_encode(al_cost)])")
+	project_finish(AL, H)
+	var/obj/structure/vehicleparts/axis/al_tank = AL.roll_out_project(H)
+	project_check(istype(al_tank), "the aluminium light tank rolls out")
+	if (istype(al_tank))
+		var/obj/structure/vehicleparts/frame/ALF = locate() in al_tank.components
+		project_check(ALF.hull_material == "aluminium" && ALF.airframe_weight() < 10, "its frames are aluminium")
+		project_check(steel_light_factor && al_tank.get_load_factor(TRUE) < steel_light_factor, "and it is lighter than the steel one ([al_tank.load_factor] against [steel_light_factor])")
+	project_check(!AL.project && !AL.project_hull, "the press forgets the hull with the project")
+	project_check(works_vehicle_specs["Light tank"]["gun"] < works_vehicle_specs["Medium tank"]["gun"] && works_vehicle_specs["Medium tank"]["gun"] < works_vehicle_specs["Heavy tank"]["gun"] && works_vehicle_specs["Heavy tank"]["gun"] < works_vehicle_specs["Main battle tank"]["gun"], "a bigger tank's gun costs more")
+
 	// ---- A plane ----
 	var/obj/structure/car_workshop/hangar/project_probe/A = new(locate(15, 5, 1))
 	H.loc = locate(16, 5, 1)
 	A.stock = list("steel" = 0, "glass" = 0, "cloth" = 0, "cable" = 0, "wheels" = 0)
 	P = A.project_plan("Light plane")
 	var/list/first = P.stages[1]
-	project_check(first["name"] == "Airframe" && P.total_cost()["steel"] == 50 && P.total_cost()["wheels"] == 4, "the hangar's plane plan is an airframe of 50 steel on 4 wheels")
+	var/list/engine_stage
+	for (var/list/stage in P.stages)
+		if (stage["part"] == "engine")
+			engine_stage = stage
+	project_check(first["name"] == "Airframe" && first["cost"]["wood"] == 10 && P.total_cost()["wood"] == 40 && P.total_cost()["steel"] == 10 && engine_stage && engine_stage["cost"]["steel"] == 10 && P.total_cost()["wheels"] == 4, "the hangar's plane plan is a wooden airframe (40 wood) with a steel engine (10) on 4 wheels")
+	var/datum/piece_plan/C = A.project_plan("Cabin plane")
+	var/list/cabin_first = C.stages[1]
+	project_check(cabin_first["cost"]["aluminium"] == 12 && C.total_cost()["aluminium"] == 48 && C.total_cost()["steel"] == 16, "the cabin plane's airframe is aluminium (48) with a steel engine (16)")
 	A.project_action(H, "Light plane")
 	project_check(project_parts(A) == 12, "the jig fills the plane's 12 cells")
 	project_finish(A, H)

@@ -71,14 +71,14 @@
 	return FALSE
 
 /obj/structure/toilet/attackby(obj/item/I as obj, mob/living/user as mob)
-	if (istype(I, /obj/item/weapon/hammer) && !istype(src, /obj/structure/toilet/pit_latrine))
+	if (is_tool(I, TOOL_HAMMER) && !istype(src, /obj/structure/toilet/pit_latrine))
 		user.visible_message("<span class='warning'>[user] starts to deconstruct \the [src].</span>", "<span class='warning'>You start to deconstruct \the [src].</span>", "<span class='warning'>You hear the sound of some ratchetting nearby.</span>")
 		playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
 		if (do_after(user,50,src))
 			user.visible_message("<span class='warning'>[user] deconstructs \the [src].</span>", "<span class='warning'>You deconstruct \the [src].</span>", "<span class='warning'>You hear the sound of some ratchetting nearby.</span>")
 			qdel(src)
 			return
-	if (istype(I, /obj/item/weapon/material/kitchen/utensil/knife))
+	if (is_tool(I, TOOL_KNIFE))
 		if (istype(src, /obj/structure/toilet/outhouse))
 			if (open == FALSE)
 				return
@@ -507,7 +507,7 @@
 /obj/structure/shower/attackby(obj/item/I as obj, mob/user as mob)
 //	if (I.type == /obj/item/analyzer)
 	//	to_chat(user, "<span class='notice'>The water temperature seems to be [watertemp].</span>")
-	if (istype(I, /obj/item/weapon/wrench))
+	if (is_tool(I, TOOL_WRENCH))
 		var/newtemp = WWinput(user, "What setting would you like to set the temperature valve to?", "Water Temperature Valve", WWinput_first_choice(temperature_settings), WWinput_list_or_null(temperature_settings))
 		user.visible_message("<span class='notice'>[user] begins to adjust the temperature valve with \the [I].</span>", "<span class='notice'>You begin to adjust the temperature valve with \the [I].</span>", "<span class='notice'>You hear the sound of a valve being adjusted nearby.</span>")
 		playsound(loc, 'sound/items/Ratchet.ogg', 50, TRUE)
@@ -516,7 +516,7 @@
 			user.visible_message("<span class='notice'>\The [user] adjusts \the [src] with \the [I].</span>", "<span class='notice'>You adjust the shower with \the [I].</span>")
 			add_fingerprint(user)
 
-	if (istype(I, /obj/item/weapon/hammer))
+	if (is_tool(I, TOOL_HAMMER))
 		user.visible_message("<span class='warning'>[user] starts to deconstruct \the [src].</span>", "<span class='warning'>You start to deconstruct \the [src].</span>", "<span class='warning'>You hear the sound of some ratchetting nearby.</span>")
 		playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
 		if (do_after(user,50,src))
@@ -755,7 +755,7 @@
 
 /obj/structure/sink/attack_hand(mob/user as mob)
 
-	if (src.dry || src.volume <= 0)
+	if (heat_dried() || src.volume <= 0)
 		to_chat(user, SPAN_WARNING("The [src] is dry!"))
 		return
 	if (!Adjacent(user))
@@ -778,16 +778,7 @@
 					H.rad_act(5)
 				else
 					if (istype(src, /obj/structure/sink/puddle))
-						var/dmod = 1
-						if (H.find_trait("Weak Immune System"))
-							dmod = 2
-						if (H.find_trait("Strong Immune System"))
-							dmod = 0.2
-						if (prob(15*dmod) && !H.orc && !H.crab)
-							if (H.disease == 0)
-								H.disease_progression = 0
-								H.disease_type ="cholera"
-								H.disease = 1
+						H.catch_dirty_water_illness(15)
 				if (H.water < 0)
 					H.water += rand(40,50)
 				H.water += 75
@@ -823,7 +814,7 @@
 	if (busy && busy != user)
 		to_chat(user, "<span class='warning'>Someone's already washing here.</span>")
 		return
-	if (dry || volume <= 0)
+	if (heat_dried() || volume <= 0)
 		to_chat(user, "<span class='warning'>\The [src] is dry!</span>")
 		return
 	var/obj/item/weapon/reagent_containers/RG = O
@@ -853,6 +844,9 @@
 				if (istype(src, /obj/structure/sink/well) || istype(src, /obj/structure/sink/puddle))
 					if (has_nearby_fecal_waste())
 						dirty = TRUE
+					if (istype(src, /obj/structure/sink/well))
+						var/obj/structure/sink/well/W = src
+						W.flood_foul()
 					if (dirty || (istype(src, /obj/structure/sink/puddle) && prob(15)))
 						RG.reagents.add_reagent("cholera", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.05)
 						RG.note_food_toxin(dirty ? "unboiled water from a dirty [name] (fecal waste nearby) at ([x],[y],[z])" : "unboiled puddle water (15% fill roll) at ([x],[y],[z])")
@@ -907,20 +901,24 @@
 		"<span class='notice'>[user] washes \a [I] using \the [src].</span>", \
 		"<span class='notice'>You wash \a [I] using \the [src].</span>")
 
-// Loose animal or human waste near the source; compost is safe, and waste on a
-// plumbed toilet's tile is carried away rather than seeping into the ground.
+// Loose animal or human waste near the source; compost is safe. Where there are
+// no sewers, waste on a plumbed toilet's tile is carried away rather than
+// seeping into the ground; where there are, waste a toilet backs up counts, and
+// so does sewage close by (sewers.dm).
 /obj/structure/sink/proc/has_nearby_fecal_waste()
+	var/sewers = sewers_apply()
 	for (var/obj/item/weapon/reagent_containers/food/snacks/poo/PP in range(4,src))
 		if (istype(PP, /obj/item/weapon/reagent_containers/food/snacks/poo/fertilizer))
 			continue
 		var/plumbed = FALSE
-		for (var/obj/structure/toilet/T in PP.loc)
-			if (T.is_plumbed())
-				plumbed = TRUE
-				break
+		if (!sewers)
+			for (var/obj/structure/toilet/T in PP.loc)
+				if (T.is_plumbed())
+					plumbed = TRUE
+					break
 		if (!plumbed)
 			return TRUE
-	return FALSE
+	return sewers && sewer_fouls_near(src)
 
 /obj/structure/sink/AltClick(var/mob/living/user)
 	var/H = user.get_active_hand()
@@ -960,6 +958,9 @@
 
 /obj/structure/sink/well/examine(mob/user, distance = -1)
 	. = ..()
+	if (. && flood_depth_at(get_turf(src)) > 0 && get_dist(src, user) <= 1)
+		flood_foul()
+		to_chat(user, SPAN_WARNING("Floodwater has run into the well and fouled it. Scrub it with soap once the water goes down."))
 	if (. && has_observable_fecal_odor(user))
 		to_chat(user, SPAN_WARNING("A foul smell rises from the well."))
 
@@ -978,43 +979,43 @@
 	volume = 750
 
 /obj/structure/sink/well/attackby(obj/item/O as obj, mob/user as mob)
-	if (istype(O, /obj/item/weapon/hammer) || istype(O, /obj/item/weapon/wrench))
+	if (is_tool(O, TOOL_HAMMER) || is_tool(O, TOOL_WRENCH))
 		return
 	else
 		..()
 /obj/structure/sink/puddle/attack_hand(mob/M as mob)
-	if (!dry)
+	if (!heat_dried())
 		icon_state = "puddle-splash"
 	..()
-	if (!dry)
+	if (!heat_dried())
 		icon_state = "puddle"
 
 /obj/structure/sink/puddle/attackby(obj/item/O as obj, mob/user as mob)
-	if (!dry)
+	if (!heat_dried())
 		icon_state = "puddle-splash"
 	..()
-	if (!dry)
+	if (!heat_dried())
 		icon_state = "puddle"
 
 /obj/structure/sink/update_icon()
 	..()
 	if (istype(src, /obj/structure/sink/puddle))
-		if (dry || volume <= 0)
+		if (heat_dried() || volume <= 0)
 			icon_state = "puddle_dry"
 		else
 			icon_state = "puddle"
 	else if  (istype(src, /obj/structure/sink/well/sandstone))
-		if (dry || volume <= 0)
+		if (heat_dried() || volume <= 0)
 			icon_state = "sandstone_well_dry"
 		else
 			icon_state = "sandstone_well1"
 	else if  (istype(src, /obj/structure/sink/well/marble))
-		if (dry || volume <= 0)
+		if (heat_dried() || volume <= 0)
 			icon_state = "marble_well_dry"
 		else
 			icon_state = "marble_well1"
 	else if  (istype(src, /obj/structure/sink/well))
-		if (dry || volume <= 0)
+		if (heat_dried() || volume <= 0)
 			icon_state = "well_dry"
 		else
 			icon_state = "well1"
@@ -1117,3 +1118,11 @@
 
 /obj/structure/fountain/no_bottom
 	icon_state = "fountain_tb"
+
+// Dry by its own flag, or a well or puddle under a heat wave (weather_systems.dm).
+/obj/structure/sink/proc/heat_dried()
+	if (dry)
+		return TRUE
+	if (istype(src, /obj/structure/sink/well) || istype(src, /obj/structure/sink/puddle))
+		return weather_heat_at(src)
+	return FALSE

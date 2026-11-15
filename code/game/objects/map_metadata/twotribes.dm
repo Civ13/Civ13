@@ -81,7 +81,7 @@
 		return ""
 
 /obj/map_metadata/twotribes/reverse_cross_message(faction)
-	if (faction == ENGLISH)
+	if (faction == BRITISH)
 		return "<span class = 'userdanger'>The Red Tribe may no longer cross the invisible wall!</span>"
 	else if (faction == FRENCH)
 		return "<span class = 'userdanger'>The Blue Tribe may no longer cross the invisible wall!</span>"
@@ -104,4 +104,6 @@
 	return TRUE
 
 /obj/map_metadata/twotribes/check_caribbean_block(var/mob/living/human/H, var/turf/T)
-	return check_two_sided_grace_wall(H, T)
+	return check_faction_grace_wall(H, T, faction1, faction2)
+
+/obj/map_metadata/twotribes/faction_hud_icons = list(BRITISH = "civ1", FRENCH = "civ3")

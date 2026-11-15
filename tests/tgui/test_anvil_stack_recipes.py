@@ -57,14 +57,21 @@ class AnvilStackRecipe(unittest.TestCase):
         env = dict(list=lambda item: Menu([item]), anvil_recipes=self.rows,
                    map=type('Map', (), {'ordinal_age': 2})(),
                    recipe_age_allowed=lambda age: age >= 2,
+                   # The shared row filter (blacksmithing_recipes.dm); no machine parts in these rows.
+                   anvil_recipe_offered=lambda row, category, cost, material=None, cast=False: bool(
+                       row and row[2] == category and 2 >= row[3] and row[4] >= 2 and cost > 0),
                    menu_label=label, WWinput=menu, splittext=lambda value, sep: {1: value.split(sep)[0]},
                    crafting_recipe_allowed=lambda human, recipe: self.allowed,
                    do_after=wait, qdel=discard,
+                   # No trip hammer or machine beside this anvil: the job takes its base time.
+                   forge_time=lambda base, category=None: base,
                    to_chat=lambda user, message: self.messages.append(message),
                    update_icon=lambda: None,
+                   note_craft_practice=lambda user, path: None,
+                   trial_craft_ruined=lambda user, path: False,
                    spawn_output=lambda *args: self.outputs.append(args))
         self.action = adapter.project(source, '/obj/structure/anvil/proc/forge_stack_recipe',
-                                      'P, user, H, choice, material_index, material_name, src, loc', env)
+                                      'P, user, H, choice, material_index, material_name, src, loc, picked=None', env)
 
     def run_action(self, amount=9, index=6, material='iron', category='helmets'):
         stack = Stack(amount)
@@ -131,8 +138,8 @@ class AnvilStackRecipe(unittest.TestCase):
     def test_material_entrypoints_preserve_dispatch_fields(self):
         source = source_path.read_text(encoding='utf-8')
         calls = re.findall(r'return forge_stack_recipe\(P, user, H, choice, (\d+), "(\w+)"\)', source)
-        self.assertEqual(calls, [('6', 'iron'), ('6', 'iron'), ('5', 'steel'), ('5', 'steel'), ('8', 'kevlar'), ('7', 'bronze')])
-        self.assertEqual(source.count('return forge_blackpowder_part(P, H)'), 4)
+        self.assertEqual(calls, [('6', 'iron'), ('5', 'steel'), ('8', 'kevlar'), ('7', 'bronze')])
+        self.assertEqual(source.count('return forge_blackpowder_part(P, H)'), 2)
 
 if __name__ == '__main__':
     unittest.main()

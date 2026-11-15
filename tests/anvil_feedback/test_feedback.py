@@ -31,7 +31,7 @@ JOBS = ('Blacksmith', 'Pioneer Blacksmith', 'Town Blacksmith', 'Ferreiro', 'Ferr
 def source_prefix():
     source = ANVIL.read_text(encoding='utf-8-sig')
     start = source.index('\tvar/crafting_coefficient = H.getStatCoeff("crafting")')
-    end = source.index('\tif ((map.ID == MAP_TRIBES', start)
+    end = source.index('\tif (map.tribes && (H.gorillaman', start)
     return '/proc/anvil_admission(user)\n\tvar/mob/living/human/H = user\n' + source[start:end] + '\treturn TRUE\n'
 
 
@@ -62,7 +62,7 @@ class Admission:
         def number(value, digits):
             self.formats.append((value, digits))
             return format(value, '.' + str(digits) + 'g')
-        env = dict(MAPS, map=SimpleNamespace(civilizations=civilizations, ID=map_id),
+        env = dict(MAPS, map=SimpleNamespace(civilizations=civilizations, ID=map_id, tribes=map_id in ('tribes', 'three', 'four')),
                    to_chat=lambda actor,message:self.messages.append((actor,message)), num2text=number)
         text = source_prefix() if source is None else source
         text = re.sub(r'"(?:[^"\\]|\\.)*"', literals, text)
@@ -135,7 +135,7 @@ class AnvilFeedback(unittest.TestCase):
         self.assertEqual(bystander.calls,[])
     def test_wrench_order_and_following_species_guards_remain(self):
         source=ANVIL.read_text(encoding='utf-8-sig')
-        self.assertLess(source.index('anchored = !anchored'),source.index('var/crafting_coefficient'))
+        self.assertLess(source.index('toggle_anchor(user)'),source.index('var/crafting_coefficient'))
         self.assertIn('if (crafting_coefficient < 1.2)',source)
         self.assertIn('(H.gorillaman || H.ant || H.wolfman || H.lizard || H.crab)',source)
         self.assertEqual(source_prefix().count('getStatCoeff("crafting")'),1)

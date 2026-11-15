@@ -44,6 +44,7 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 	if (world.time <= lastmovementloop)
 		return FALSE
 	lastmovementloop = world.time+15
+	apply_speed_class()
 	if (isemptylist(corners))
 		check_corners()
 	if (isemptylist(matrix))
@@ -62,8 +63,9 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 
 /obj/structure/vehicleparts/axis/proc/movementloop()
 	if (moving && !movement_processes)
-		get_weight()
+		// check_engine() weighs the vehicle for this step.
 		movement_processes++
+		var/speed_before = currentspeed
 		if (do_vehicle_check() && currentspeed > 0)
 			for (var/obj/structure/vehicleparts/movement/W in wheels)
 				if (W.broken)
@@ -74,7 +76,15 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 				else
 					W.update_icon()
 			do_move()
+			// Boarding or unloading on the way changes the pace (vehicle_load.dm).
+			if (uses_load_factor() && currentspeed > 0)
+				var/loaded_delay = get_speed()
+				if (loaded_delay > 0)
+					vehicle_m_delay = loaded_delay
 		else
+			// A crash or a stall at speed throws riders off the roof.
+			if (speed_before >= 2)
+				deck_jolt(speed_before >= 3 ? 100 : 50, reverse ? OPPOSITE_DIR(dir) : dir, "The sudden stop throws you off!")
 			currentspeed = 0
 			moving = FALSE
 			movement_processes--
@@ -90,6 +100,7 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 /obj/structure/vehicleparts/axis/proc/stopmovementloop()
 	moving = FALSE
 	currentspeed = 0
+	glide_rest()
 	for (var/obj/structure/vehicleparts/movement/W in wheels)
 		W.update_icon()
 	return
@@ -268,7 +279,8 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 	if (engine && !engine.fueltank)
 		engine.on = FALSE
 		return FALSE
-	else if (get_weight() > engine.maxpower*2 || get_weight() > maxpower)
+	var/weight = get_weight()
+	if (weight > engine.maxpower*2 || weight > maxpower)
 		visible_message(SPAN_WARNING("\The [engine] struggles and stalls!"))
 		return FALSE
 	else
@@ -362,7 +374,9 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 		release_transform_tiles(move_turfs)
 		throw e
 	release_transform_tiles(move_turfs)
+	glide_step(origins)
 	refresh_passenger_vision()
+	deck_clearance(OPPOSITE_DIR(m_dir))
 	if (rover_trailers.len)
 		rover_trailers_follow(src)
 	return TRUE
@@ -409,6 +423,7 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 	return TRUE
 
 /obj/structure/vehicleparts/axis/Destroy()
+	glide_give_back(glide_was, null)
 	release_transform_tiles(transform_tiles)
 	return ..()
 
@@ -441,8 +456,10 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 /obj/structure/vehicleparts/axis/proc/add_transporting(var/trigger_mines=TRUE)
 	transporting = list()
 	prune_turning_placeholders()
+	var/turf/here = get_turf(src)
+	var/list/aboard = list()
 	for (var/obj/structure/vehicleparts/frame/F in components)
-		if (!F || F.axis != src || !(F in range(7,loc)))
+		if (!F || F.axis != src || !here || F.z != here.z || get_dist(F, here) > 7)
 			components -= F
 			continue
 		var/turf/T = get_turf(F)
@@ -470,7 +487,7 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 				if (BAT.anchored)
 					qdel(BAT)
 					visible_message(SPAN_WARNING("\The [src] crushes \the [BAT]!"),SPAN_WARNING("You crush \the [BAT]!"))
-			if ((istype(M, /mob/living) || istype(M, /obj/structure) || istype(M, /obj/item)) && !(M in transporting))
+			if ((istype(M, /mob/living) || istype(M, /obj/structure) || istype(M, /obj/item)) && !aboard[M])
 				if (!istype(M, /obj/structure/sign/traffic/zebracrossing) && !istype(M, /obj/structure/sign/traffic/side) && !istype(M, /obj/structure/sign/traffic/central) && !istype(M, /obj/structure/rails) && !istype(M, /obj/structure/cable) && !istype(M, /obj/structure/redmailbox) && !istype(M, /obj/structure/gate) && !istype(M, /obj/structure/lamp/lamppost_small/) && !istype(M, /obj/structure/lamp/lamp_big/alwayson) && !istype(M, /obj/structure/lamp/lamp_small/alwayson) && !istype(M, /obj/structure/billboard) && !istype(M, /obj/structure/multiz) && !istype(M, /obj/structure/vessel_lever))
 					if (istype(M, /obj/structure/vehicleparts/frame))
 						var/obj/structure/vehicleparts/frame/other = M
@@ -480,6 +497,7 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 						var/obj/structure/vehicleparts/movement/other = M
 						if (other.axis && other.axis != src)
 							continue
+					aboard[M] = TRUE
 					transporting += M
 	return transporting.len
 
@@ -748,7 +766,7 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 			turn_turfs |= source_turf
 			if (T.density)
 				return FALSE
-			if (ship && ((!istype(T, /turf/floor/beach/water) || istype(T, /turf/floor/beach/water/ice)) && !istype(T, /turf/floor/trench/flooded)))
+			if (ship && !is_open_water(T))
 				return FALSE
 			var/list/todestroy = list()
 			for (var/obj/O in T)
@@ -795,6 +813,11 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 			for(var/obj/OM in todestroy)
 				if (!istype(OM, /obj/structure/sign/traffic/zebracrossing) && !istype(OM, /obj/structure/sign/traffic/side) && !istype(OM, /obj/structure/sign/traffic/central) && !istype(OM, /obj/structure/rails) && !istype(OM, /obj/covers) && !istype(OM, /obj/structure/gate) && !istype(OM, /obj/structure/lamp/lamppost_small/) && !istype(OM, /obj/structure/lamp/lamp_big/alwayson) && !istype(OM, /obj/structure/lamp/lamp_small/alwayson) && !istype(OM, /obj/structure/redmailbox) && !istype(OM, /obj/structure/billboard) && !istype(OM, /obj/structure/multiz) && !istype(OM, /obj/structure/vessel_lever))
 					turn_destroy |= OM
+	var/list/was_at = list()
+	for (var/cell in matrix_current_locs)
+		var/list/entry = matrix_current_locs[cell]
+		for (var/atom/movable/M in entry[2])
+			was_at[M] = entry[1]
 	transforming_vehicle = TRUE
 	transform_tiles = turn_turfs
 	for (var/turf/T in turn_turfs)
@@ -862,7 +885,12 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 		release_transform_tiles(turn_turfs)
 		throw e
 	release_transform_tiles(turn_turfs)
+	glide_turn(was_at)
 	refresh_passenger_vision()
+	// A hard turn at speed can fling riders off the outside of the turn.
+	if (currentspeed >= 3)
+		deck_jolt((currentspeed - 2) * 35, turn(olddir, tdir == "left" ? -90 : 90), "The turn flings you off!")
+	deck_clearance(0)
 	return TRUE
 
 /obj/effect/pseudovehicle
@@ -887,77 +915,4 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 				qdel(src)
 
 
-/obj/structure/vehicleparts/axis/attack_hand(var/mob/living/human/H)
-	if (!ishuman(H))
-		return
-	for(var/obj/structure/vehicleparts/frame/F1 in get_turf(get_step(src, WEST)))
-		to_chat(H, SPAN_NOTICE("The axis needs to be placed at the <b>TOP LEFT</b> corner!"))
-		return
-	for(var/obj/structure/vehicleparts/frame/F2 in get_turf(get_step(src, NORTH)))
-		to_chat(H, SPAN_NOTICE("The axis needs to be placed at the <b>TOP LEFT</b> corner!"))
-		return
-	for(var/obj/structure/vehicleparts/frame/ship/SH in range(4,src))
-		var/turf/TT = get_turf(SH)
-		if (!istype(TT, /turf/floor/beach/water) && !istype(TT, /turf/floor/trench/flooded))
-			to_chat(H, SPAN_WARNING("All ship parts must be on a water tile."))
-			return
-	var/inp = WWinput(H, "Are you sure that you want to assemble a vehicle here? This has to be the <b>top-left</b> corner of the vehicle.", "Vehicle Assembly", "No", list("No", "Yes"))
-	if (inp == "No")
-		return
-	for(var/obj/structure/vehicleparts/frame/F in loc)
-		if (F.axis && F.axis != src)
-			return
-		var/customname = player_input(H, "What do you want to name this vehicle?", null, null, "text", null, FALSE)
-		if (!customname || customname == "")
-			name = "[H]'s vehicle"
-		else
-			name = customname
-		var/list/vehiclecolors = list(
-			list("light gray","#A9A9A9"),
-			list("medium gray","#585A5C"),
-			list("dark gray","#3B3F41"),
-			list("green","#3d5931"),
-			list("pale green","#636351"),
-			list("Feldgrau (WW1)","#5D5D3D"),
-			list("Feldgrau (WW2)","#4D5D53"),
-			list("light khaki","#F0E68C"),
-			list("dark khaki","#BDB76B"),
-			list("olive drab","#555346"),
-
-			list("redmenian red","#774D4C"),
-			list("blugoslavian blue","#8383C2"),)
-
-		var/colors // Colors you can make your vehicle
-		if (map.ID == MAP_NOMADS_PERSISTENCE_BETA || map.ID == MAP_NATIONSRP_COLDWAR_CMP)
-			if (H.faction_text == REDFACTION)
-				colors = list("redmenian red")
-			else if (H.faction_text == BLUEFACTION)
-				colors = list("blugoslavian blue")
-		else
-			colors = list("light gray", "medium gray", "dark gray", "green", "pale green", "Feldgrau (WW1)", "Feldgrau (WW2)", "light khaki", "dark khaki", "olive drab")
-
-		var/choosecolor1 = WWinput(H, "Choose this vehicle's color:", "Vehicle Color", "medium gray", colors)
-		for (var/i in vehiclecolors)
-			if (i[1] == choosecolor1)
-				color = i[2]
-
-		var/turrets // Turret types you can have for your vehicle
-		if (map.ordinal_age == 6)
-			turrets = list("tank", "round", "pziv", "tiger", "jap", "kv", "t34", "t3485", "is3")
-		else if (map.ordinal_age == 7)
-			turrets = list("tank", "round", "is3", "t3485", "t55", "t62a", "t72", "t72m1", "t72b3", "pt76", "m48a1", "m48a3", "m60a3")
-		else if (map.ordinal_age >= 8)
-			turrets = list("tank", "round", "t62m", "t62mv", "t64bv", "t64bm", "t72m1", "t72b3", "t90a", "challenger2", "2a6")
-
-		if (map.ordinal_age >= 6)
-			var/chooseturret = WWinput(H, "Choose this vehicle's turret type:", "Vehicle Turret", "tank", turrets)
-			if (chooseturret)
-				chooseturret += "_turret"
-		dir = 1
-		new/obj/effect/autoassembler(locate(x+2,y-2,z))
-		check_corners()
-		check_matrix()
-		to_chat(H, SPAN_NOTICE("Vehicle assembled."))
-		for (var/obj/O in components)
-			O.update_icon()
-		return
+// Hand assembly, its survey and taking a vehicle apart: craft/vehicle_assembly.dm.

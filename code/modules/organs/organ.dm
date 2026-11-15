@@ -159,7 +159,16 @@ var/list/organ_cache = list()
 // herbal remedy are weaker. A dose of 5 halts infection; 30 stops necrosis.
 var/list/antibiotic_strengths = list("penicillin" = 1, "prontosil" = 0.75, "herbal_remedy" = 0.5, "silver" = 0.25)
 
+// Every organ and limb asks for the dose while it is processed, about fourteen
+// times per Life tick, and each answer scans both reagent holders four times.
+// handle_organs() works it out once, after this tick's metabolism, and shares it
+// for the rest of that instant; any later caller still gets a fresh reading.
+/mob/living/human/var/tmp/antibiotic_dose_shared = 0
+/mob/living/human/var/tmp/antibiotic_dose_shared_at = -1
+
 /mob/living/human/proc/get_antibiotic_dose()
+	if (antibiotic_dose_shared_at == world.time)
+		return antibiotic_dose_shared
 	. = 0
 	for (var/id in antibiotic_strengths)
 		var/units = reagents ? reagents.get_reagent_amount(id) : 0

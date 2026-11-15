@@ -100,23 +100,22 @@
 	set category = null
 	set name = "Turn On"
 	set src in range(1)
-	if(src.active)
-		name = "Turn Off"
 	if(!powersource && powerneeded)
 		to_chat(H, "<span class = 'notice'>You need to plug in the [src].</span>")
 		return
 	if (active)
 		active = FALSE
 		powered = FALSE
-		powersource.update_power(-powerneeded,1,src)
+		if (powersource)
+			powersource.update_power(-powerneeded,1,src)
 		to_chat(H, "You power off the [src].")
 		update_icon()
 		return
-	else if (!active && !powersource.powered)
+	else if (!active && powerneeded && !powersource.powered)
 		to_chat(H, "<span class = 'notice'>There is not enough power to start the [src].</span>")
 		update_icon()
 		return
-	else if (!active && draw_cable_power())
+	else if (!active && (!powerneeded || draw_cable_power()))
 		active = TRUE
 		powered = TRUE
 		power_on()

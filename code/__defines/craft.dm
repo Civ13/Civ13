@@ -46,3 +46,29 @@
 #define CONTRACT_OPEN "open"
 #define CONTRACT_TAKEN "taken"
 #define CONTRACT_RETURNED "returned"
+
+// Boat davits (craft/deck_berth.dm): the cradle's sides in tiles, how far
+// from the davit a boat may lie to be hoisted, how many tiles of water
+// beyond the ship's side the falls reach, and how long a lift takes.
+#define DECK_BERTH_MIN 2
+#define DECK_BERTH_MAX 5
+#define DECK_BERTH_REACH 8
+#define DECK_BERTH_SWING 4
+#define DECK_HOIST_TIME 100
+
+// Chart hazards and sectors (craft/chart_hazards.dm): seconds of chart time
+// between rolls for a passing hazard, how many passing hazards a chart holds
+// at once, how long a craft thrown by a wormhole is left alone, and the
+// least health, as a share, a strike leaves a hull plank.
+#define CHART_HAZARD_ROLL 120
+#define CHART_HAZARD_CAP 5
+#define CHART_WORMHOLE_REST 60
+#define CHART_STRIKE_FLOOR 0.25
+#define CHART_SECTOR_HARBOUR "harbour"
+#define CHART_SECTOR_WILD "wild"
+#define CHART_SECTOR_HELD "held"
+
+// Build guard phases, see code/game/objects/items/stacks/craft_guards.dm.
+#define CRAFT_GUARD_START 1
+#define CRAFT_GUARD_FINISH 2
+#define CRAFT_GUARD_MENU 3

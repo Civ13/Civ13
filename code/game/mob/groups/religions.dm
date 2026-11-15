@@ -15,7 +15,7 @@
 		U = src
 	else
 		return
-	if (map.nomads == TRUE || map.ID == MAP_TRIBES || map.ID == MAP_THREE_TRIBES || map.ID == MAP_FOUR_KINGDOMS || map.ID == MAP_NATIONSRP || map.ID == MAP_NATIONSRP_TRIPLE || map.ID == MAP_NATIONSRPMED || map.ID == MAP_NATIONSRP_WW2 || map.ID == MAP_NATIONSRP_COLDWAR || map.ID == MAP_NATIONSRP_COLDWAR_CMP)
+	if (map.nomads == TRUE || map.tribes || map.nationsrp)
 		if (U.religion != "none")
 			to_chat(usr, SPAN_WARNING("You are already member of a religion. Abandon it first."))
 			return
@@ -81,6 +81,7 @@
 			if ("Shamans")
 				if (H.gender == "male")
 					H.religious_title = "Elder Shaman"
+				else
 					H.religious_title = "Elder Shamaness"
 			if ("Priests")
 				if (H.gender == "male")
@@ -107,7 +108,7 @@
 		U = src
 	else
 		return
-	if (map.nomads == TRUE || map.ID == MAP_NATIONSRP || map.ID == MAP_NATIONSRP_TRIPLE || map.ID == MAP_NATIONSRPMED || map.ID == MAP_NATIONSRP_WW2 || map.ID == MAP_NATIONSRP_COLDWAR || map.ID == MAP_NATIONSRP_COLDWAR_CMP)
+	if (map.nomads == TRUE || map.nationsrp)
 		if (U.religion == "none")
 			to_chat(usr, SPAN_WARNING("You are not part of any religion."))
 			return
@@ -138,7 +139,7 @@
 		U = src
 	else
 		return
-	if (map.nomads == TRUE || map.ID == MAP_NATIONSRP || map.ID == MAP_NATIONSRP_TRIPLE || map.ID == MAP_NATIONSRPMED || map.ID == MAP_NATIONSRP_WW2 || map.ID == MAP_NATIONSRP_COLDWAR || map.ID == MAP_NATIONSRP_COLDWAR_CMP)
+	if (map.nomads == TRUE || map.nationsrp)
 		if (U.religion == "none")
 			to_chat(usr, SPAN_WARNING("You are not part of any religion."))
 			return
@@ -356,7 +357,7 @@ obj/structure/altar
 	var/color1 = "#000000"
 	var/color2 = "#FFFFFF"
 	flammable = TRUE
-	var/health = 70
+	health = 70
 	var/session = FALSE
 /obj/structure/altar/New()
 	..()
@@ -413,11 +414,6 @@ obj/structure/altar
 	try_destroy()
 	..()
 
-/obj/structure/altar/proc/try_destroy()
-	if (health <= 0)
-		visible_message(SPAN_WARNING("[src] is broken into pieces!"))
-		qdel(src)
-		return
 
 
 obj/structure/altar/attack_hand(mob/living/human/H as mob)
@@ -460,14 +456,14 @@ obj/structure/altar/attack_hand(mob/living/human/H as mob)
 					var/answer = WWinput(choice2, "[H] asks you to convert to his religion, [H.religion]. Will you accept?", null, "Yes", list("Yes","No"))
 					if (answer == "Yes")
 						to_chat(usr, ("[choice2] accepts your offer. They are worshipping [H.religion]."))
-						to_chat(src, ("You accept [H]'s offer. You are now worshipping [H.religion]."))
+						to_chat(choice2, ("You accept [H]'s offer. You are now worshipping [H.religion]."))
 						choice2.religion = H.religion
 						choice2.religious_leader = FALSE
 						choice2.religion_type = H.religion_type
 						choice2.religion_style = H.religion_style
 						return
 					else if (answer == "No")
-						to_chat(usr, ("[closemobs] has rejected your offer."))
+						to_chat(usr, ("[choice2] has rejected your offer."))
 						return
 					else
 						return
@@ -550,15 +546,17 @@ obj/structure/altar/iron
 		if (religion != "none")
 			name = "[religion]'s banner"
 			desc = "This is a [religion] religion banner."
-			var/image/overc = image("icon" = icon, "icon_state" = "wall_banner_1")
-			overc.color = map.custom_religions[religion][6]
-			overlays += overc
-			var/image/overc1 = image("icon" = icon, "icon_state" = "wall_banner_2")
-			overc1.color = map.custom_religions[religion][5]
-			overlays += overc1
-			var/image/overs = image("icon" = icon, "icon_state" = "banner_[map.custom_religions[religion][4]]")
-			overs.color = map.custom_religions[religion][5]
-			overlays += overs
+			var/list/look = religion_look_data(religion)
+			if (look)
+				var/image/overc = image("icon" = icon, "icon_state" = "wall_banner_1")
+				overc.color = look[6]
+				overlays += overc
+				var/image/overc1 = image("icon" = icon, "icon_state" = "wall_banner_2")
+				overc1.color = look[5]
+				overlays += overc1
+				var/image/overs = image("icon" = icon, "icon_state" = "banner_[look[4]]")
+				overs.color = look[5]
+				overlays += overs
 		update_icon()
 		invisibility = 0
 

@@ -14414,6 +14414,29 @@
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
+      "name": "Mine obsidian near a volcano",
+      "file": "code/modules/1713/obsidian.dm",
+      "line": 82,
+      "source_commit": "51ca99b8a5c23f74501d06dce7a3e3541e6b23cd",
+      "inputs": [
+        "/turf/floor/dirt/underground"
+      ],
+      "outputs": [
+        "/obj/item/stack/ore/obsidian"
+      ],
+      "tools": [
+        "/obj/item/weapon/material/pickaxe"
+      ],
+      "steps": [
+        "Mine rock near a volcano, on the volcano's level or the level below it.",
+        "Now and then a mining action also turns up four to eight pieces of rough obsidian, on top of the usual ore roll."
+      ],
+      "conditions": "Independent roll on each completed mining action; only near volcanic turf. Special caves double the amount.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
       "name": "Mine later-era finite minerals",
       "file": "code/game/turfs/floor_attackby.dm",
       "line": 767,
@@ -16962,6 +16985,124 @@
       "conditions": "The tunnel needs diggable ground with earth below; the usual tunnel rules and times apply.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Mix concrete in a cement mixer",
+      "file": "code/modules/1713/building_site.dm",
+      "line": 39,
+      "source_commit": "b048d2349267d29f005441d5099d464fbf8ef72e",
+      "inputs": [
+        "/obj/item/stack/ore/quicklime",
+        "/obj/item/stack/ore/glass",
+        "/obj/item/stack/material/stone"
+      ],
+      "outputs": [
+        "/material/concrete"
+      ],
+      "tools": [
+        "/obj/structure/workshop_machine/cement_mixer"
+      ],
+      "steps": [
+        "Build a cement mixer and fasten it down.",
+        "Load quicklime, sand and stone blocks into the mixer, then crank it with an empty hand: every 1 quicklime, 2 sand and 2 stone turn out 4 concrete blocks."
+      ],
+      "conditions": "The mixer must be fastened; a prime mover turning next to it shortens the mix.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "The cement mixer needs the Reinforced Concrete research.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Burn stone to quicklime in a lime kiln",
+      "file": "code/modules/1713/clay_lime_fire.dm",
+      "line": 327,
+      "source_commit": "b048d2349267d29f005441d5099d464fbf8ef72e",
+      "inputs": [
+        "/obj/item/stack/material/stone"
+      ],
+      "outputs": [
+        "/obj/item/stack/ore/quicklime"
+      ],
+      "tools": [
+        "/obj/structure/furnace/lime_kiln"
+      ],
+      "steps": [
+        "Build a lime kiln, then load stone or marble and fuel into it.",
+        "Light the kiln by hand. When the burn ends, each stone or marble loaded has become one quicklime."
+      ],
+      "conditions": "The kiln burns only stone or marble and cannot be loaded while it is burning.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "The lime kiln needs the Stone Masonry research.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Smelt aluminium in a reduction pot",
+      "file": "code/modules/1713/aluminium.dm",
+      "line": 287,
+      "source_commit": "67052447110d5506625c446c0730beefba34d7fc",
+      "inputs": [
+        "/obj/item/stack/ore/alumina",
+        "/obj/item/stack/ore/coal"
+      ],
+      "outputs": [
+        "/material/aluminium"
+      ],
+      "tools": [
+        "/obj/structure/aluminium_works/reduction_pot"
+      ],
+      "steps": [
+        "Build a reduction pot and connect it to cable power.",
+        "Load alumina and coal or charcoal into the pot. Each alumina becomes one aluminium ingot, and one coal or charcoal is burnt for every two ingots."
+      ],
+      "conditions": "The pot only works while it has heavy cable power.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "The reduction pot needs the Aluminium Refining research.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Refine bauxite to alumina in an alumina digester",
+      "file": "code/modules/1713/aluminium.dm",
+      "line": 215,
+      "source_commit": "67052447110d5506625c446c0730beefba34d7fc",
+      "inputs": [
+        "/obj/item/stack/ore/bauxite",
+        "lye"
+      ],
+      "outputs": [
+        "/obj/item/stack/ore/alumina"
+      ],
+      "tools": [
+        "/obj/structure/aluminium_works/digester"
+      ],
+      "steps": [
+        "Build an alumina digester and connect it to cable power.",
+        "Load bauxite and pour in lye or sodium hydroxide: every 2 bauxite and 1 unit of lye or sodium hydroxide turn out 1 alumina."
+      ],
+      "conditions": "The digester only works while it has cable power; it leaves red mud behind.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "The alumina digester needs the Aluminium Refining research.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Mine bauxite",
+      "file": "code/game/turfs/floor_attackby.dm",
+      "line": 1009,
+      "source_commit": "67052447110d5506625c446c0730beefba34d7fc",
+      "inputs": [
+        "/turf/floor/dirt/underground"
+      ],
+      "outputs": [
+        "/obj/item/stack/ore/bauxite"
+      ],
+      "tools": [
+        "/obj/item/weapon/material/pickaxe"
+      ],
+      "steps": [
+        "Mine a mineable underground deposit with a pickaxe. From the Industrial age the random branch can also yield bauxite."
+      ],
+      "conditions": "Finite terrain; random branch, twice as likely under jungle and savanna.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "Map ordinal age at least 4.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     }
   ],

@@ -8,8 +8,8 @@
 	var/active = FALSE
 	density = TRUE
 	flammable = FALSE
-	var/health = 100
-	var/maxhealth = 100
+	health = 100
+	maxhealth = 100
 	not_movable = TRUE
 	not_disassemblable = TRUE
 	var/mob/living/human/stored_unit = null
@@ -115,13 +115,9 @@
 	try_destroy()
 	..()
 
-/obj/structure/TV/proc/try_destroy()
-	if (health <= 0)
-		if (stored_unit)
-			release_stored()
-		visible_message("<span class='danger'>[src] is broken into pieces!</span>")
-		qdel(src)
-		return
+/obj/structure/TV/on_break()
+	if (stored_unit)
+		release_stored()
 
 /obj/structure/TV/attack_hand(mob/user as mob)
 	if (stored_unit)
@@ -142,9 +138,7 @@
 
 /obj/structure/TV/television/attackby(obj/O as obj, mob/living/human/user as mob)
 	if (istype(O,/obj/item/weapon/wrench))
-		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-		to_chat(user, (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>"))
-		anchored = !anchored
+		toggle_anchor(user)
 	else if (istype(O,/obj/item/weapon/hammer/modern))
 		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
 		to_chat(user, "<span class='notice'>You begin dismantling \the [src].</span>")
@@ -170,9 +164,7 @@
 
 /obj/structure/TV/grandfather/attackby(obj/O as obj, mob/living/human/user as mob)
 	if (istype(O,/obj/item/weapon/wrench))
-		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-		to_chat(user, (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>"))
-		anchored = !anchored
+		toggle_anchor(user)
 	else if (istype(O,/obj/item/weapon/hammer/modern))
 		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
 		to_chat(user, "<span class='notice'>You begin dismantling \the [src].</span>")

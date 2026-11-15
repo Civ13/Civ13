@@ -12,3 +12,26 @@ It expects `"failures": 0`. No client connects, so the menus, the timed
 forcing of the controls and the right-click verb are not exercised; the
 probe calls `papers_action()`, `papers_allow()` and `papers_steer()`
 directly.
+
+## Vehicle assembly (`assembly_probe.dm`)
+
+A native probe for `code/modules/craft/vehicle_assembly.dm`: the survey's
+refusals (no frame under the axis, a single row, an L, too long), a 2 by 3
+bed assembled facing north with its parts fitted in one step, a second bed
+laid against it staying its own vehicle, driving and turning left and right,
+the same for beds facing east, south and west, an engine fitted after
+assembly, and taking a vehicle apart and assembling it again. It then
+builds a boat of ship frames: refused on dry land, a car axis not taking ship
+frames, a hull with a wheel and a mast assembled facing east, moved, turned,
+taken apart and assembled again. Last it builds a tank with a built turret
+(`code/modules/craft/vehicle_turret.dm`): what an empty turret needs, the
+cannon and seats on its tile taken in at assembly, a seat fitted later, one
+emplaced machine gun fitted beside the cannon (a second one riding along loose
+on the frames), the turret riding along, the styles by age, and everything set down again when
+the tank is taken apart, and a turret armed with only a machine gun.
+
+    python3 tests/ecology_spawning/run_linux.py . tests/vehicle_papers/assembly_probe.dm 300
+
+It expects `"failures": 0`. No client connects, so the axis menu is not
+exercised; the probe calls `assemble()`, `fit_parts()`, `take_apart()`,
+`do_move()` and `do_matrix()` directly.

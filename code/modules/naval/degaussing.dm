@@ -70,6 +70,9 @@ var/global/list/degaussing_coils = list()
 	var/obj/structure/degaussing_coil/D = running_coil()
 	if (D && body && !body.power_coil(tiles))
 		D.trip(src)
+	// Minesweeping gear streamed from her (naval/minesweeping.dm).
+	if (mine_sweeps.len)
+		sweep_moved(tiles)
 
 // TRUE when the body could power a running coil over these tiles (and paid).
 /datum/craft_body/proc/power_coil(tiles)
@@ -170,7 +173,7 @@ var/global/list/degaussing_coils = list()
 	to_chat(H, SPAN_NOTICE(C.magnetic_text()))
 
 /obj/structure/degaussing_coil/attackby(obj/item/W, mob/user)
-	if (istype(W, /obj/item/weapon/wrench))
+	if (is_tool(W, TOOL_WRENCH))
 		if (on)
 			to_chat(user, SPAN_WARNING("Switch it off first."))
 			return

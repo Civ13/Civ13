@@ -146,39 +146,10 @@
 				win_condition_spam_check = TRUE
 				no_loop_o = TRUE
 				return FALSE
-			else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33, TRUE))
-				if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33))
-					if (last_win_condition != win_condition.hash)
-						current_win_condition = "The Police Department is now securing the Vault Room! They will win in {time} minutes."
-						next_win = world.time + short_win_time(CIVILIAN)
-						announce_current_win_condition()
-						current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
-						current_loser = roundend_condition_def2army(roundend_condition_sides[2][1])
-			else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01, TRUE))
-				if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01))
-					if (last_win_condition != win_condition.hash)
-						current_win_condition = "The Police Department is now securing the Vault Room! They will win in {time} minutes."
-						next_win = world.time + short_win_time(CIVILIAN)
-						announce_current_win_condition()
-						current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
-						current_loser = roundend_condition_def2army(roundend_condition_sides[2][1])
-			else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33, TRUE))
-				if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33))
-					if (last_win_condition != win_condition.hash)
-						current_win_condition = "The Police Department is now securing the Vault Room! They will win in {time} minutes."
-						next_win = world.time + short_win_time(CIVILIAN)
-						announce_current_win_condition()
-						current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
-						current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
-			else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01, TRUE))
-				if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01))
-					if (last_win_condition != win_condition.hash)
-						current_win_condition = "The Police Department is now securing the Vault Room! They will win in {time} minutes."
-						next_win = world.time + short_win_time(CIVILIAN)
-						announce_current_win_condition()
-						current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
-						current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
-			else
+			else if (!capture_step(1, 2, 1.33, FALSE, CIVILIAN, 1) && \
+				!capture_step(1, 2, 1.01, FALSE, CIVILIAN, 1) && \
+				!capture_step(2, 1, 1.33, FALSE, CIVILIAN, 1) && \
+				!capture_step(2, 1, 1.01, FALSE, CIVILIAN, 1))
 				if (current_win_condition != no_winner && current_winner && current_loser)
 					to_chat(world, "<font size = 3>The Robbers managed to regain control of the Vault Room!</font>")
 					current_winner = null
@@ -188,6 +159,11 @@
 				win_condition.hash = 0
 			last_win_condition = win_condition.hash
 			return TRUE
+
+/obj/map_metadata/bank_robbery/capture_message(id)
+	switch (id)
+		if (1)
+			return "The Police Department is now securing the Vault Room! They will win in {time} minutes."
 
 /obj/map_metadata/bank_robbery/check_caribbean_block(var/mob/living/human/H, var/turf/T)
 	if (!istype(H) || !istype(T))
@@ -292,9 +268,10 @@ var/message_spam_check_6 = FALSE
 	spawn(10)
 		round_status()
 
+/obj/map_metadata/bank_robbery/var/next_level_police = 0
+/obj/map_metadata/bank_robbery/var/next_level_robbers = 0
+
 /obj/map_metadata/bank_robbery/proc/supplies() //To be rebalanced
-	var/next_level_police = 0
-	var/next_level_robbers = 0
 	if (civilians_killed["Police"] >= kill_treshold && next_level_robbers == 0)
 		for (var/obj/structure/altar/stone/D in world)
 			if (D.name == "robber drop")
@@ -311,7 +288,6 @@ var/message_spam_check_6 = FALSE
 					new /obj/item/clothing/accessory/armor/coldwar/plates/b5(T)
 					new /obj/item/clothing/accessory/armor/coldwar/plates/b5(T)
 		next_level_robbers = 1
-		return
 	if (civilians_evacuated >= civilians_alive/2 && civilians_alive != 0 && next_level_police == 0)
 		to_chat(world, "<big><span class = 'notice'>Half of the hostages have been evacuated, additional equipment is issued to the Police.</span></big>")
 		for (var/obj/structure/altar/stone/D in world)
@@ -325,7 +301,6 @@ var/message_spam_check_6 = FALSE
 				new /obj/item/weapon/shield/balistic(T)
 				new /obj/item/weapon/shield/balistic(T)
 		next_level_police = 1
-		return
 	if (civilians_evacuated >= civilians_alive && civilians_alive != 0 && next_level_police == 1)
 		to_chat(world, "<big><span class = 'notice'>All of the hostages have been evacuated, additional equipment is issued to the Police as more SWAT units are on the way.</span></big>")
 		for (var/obj/structure/altar/stone/D in world)
@@ -334,7 +309,6 @@ var/message_spam_check_6 = FALSE
 				for (var/i=1; i <= 4; i++)
 					new /obj/item/weapon/grenade/chemical/cs_gas/m7a2(T)
 		next_level_police = 2
-		return
 	spawn(10)
 		supplies()
 
@@ -404,3 +378,9 @@ var/message_spam_check_6 = FALSE
 	spawn(1200)
 		to_chat(world, "<big>Stolen money: <b>[storedvalue]/10'000 Dollars</b></big>")
 		timer()
+/obj/map_metadata/bank_robbery/faction_hud_icons = list(RUSSIAN = "robbers")
+
+/obj/map_metadata/bank_robbery/faction_hud_icon(mob/living/human/H, faction_flag)
+	if (faction_flag == CIVILIAN && H.original_job.is_law)
+		return "police"
+	return ..()

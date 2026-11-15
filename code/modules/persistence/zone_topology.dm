@@ -364,6 +364,15 @@ var/global/datum/persistence_area_startup/persistence_area_startup_token
 		var/list/sparse_cells = sparse ? sparse_level_cells(F, z, sparse) : null
 		var/baseline_zone = sparse ? sparse["zone"] : null
 		if(sparse && sparse["cells"] < world.maxx * world.maxy && (!istext(baseline_zone) || !validated_zones[baseline_zone])) throw EXCEPTION("Sparse level names no saved baseline zone")
+		// A plain cell belongs to its template's zone (functions.dm).
+		var/list/plain = sparse_plain_level(F, z, sparse)
+		var/list/plain_cells = plain ? plain["cells"] : null
+		var/list/plain_zones = list()
+		if(plain)
+			for(var/list/template in plain["templates"])
+				var/template_zone = template["zone"]
+				if(!istext(template_zone) || !validated_zones[template_zone]) throw EXCEPTION("Plain template names no saved zone")
+				plain_zones += template_zone
 		var/captured = 0
 		if("zone_capture" in header_keys)
 			F.cd = "/zone_capture"
@@ -383,9 +392,11 @@ var/global/datum/persistence_area_startup/persistence_area_startup_token
 			var/next_column = 1
 			for(var/x = 1, x <= world.maxx, x++)
 				if(sparse)
+					var/plain_template = plain_cells ? plain_cells[(y - 1) * world.maxx + x] : 0
 					if(!columns || next_column > columns.len || columns[next_column] != x)
-						validated_zone_grid += baseline_zone
+						validated_zone_grid += plain_template ? plain_zones[plain_template] : baseline_zone
 						continue
+					if(plain_template) throw EXCEPTION("Plain cell is also saved at [x],[y],[z]")
 					next_column++
 				var/ref = F["/map/[z]/[y]/[x]"]
 				if(isnull(ref)) throw EXCEPTION("Missing captured turf coordinate")
@@ -511,6 +522,11 @@ var/global/datum/persistence_area_startup/persistence_area_startup_token
 		A.luminosity = !A.dynamic_lighting
 	// Cells run in zone_index order, so the grid is read by a running index.
 	var/cell = 0
+	// A sleeping open-air cell of an added building level (building_lighting.dm)
+	// stays unlit until something is built near it; lighting all of them here
+	// cost every restart 175,000 overlays per level. Read by name: fixtures
+	// compile this file without the building lighting module.
+	var/cell_asleep = text2path("/proc/building_cell_asleep")
 	for(var/z = 1, z <= world.maxz, z++)
 		for(var/y = 1, y <= world.maxy, y++)
 			for(var/x = 1, x <= world.maxx, x++)
@@ -519,6 +535,9 @@ var/global/datum/persistence_area_startup/persistence_area_startup_token
 				A.contents += T
 				// Import repairs derived lighting without dispatching occupant events.
 				T.window_coeff_dirty = TRUE
+				if(cell_asleep && A.dynamic_lighting && call(cell_asleep)(T))
+					TICK_CHECK
+					continue
 				if(A.dynamic_lighting && !(T.z in map.zlevels_without_lighting)) T.lighting_build_overlay()
 				else T.lighting_clear_overlay()
 				TICK_CHECK
@@ -602,5 +621,6 @@ var/global/datum/persistence_area_startup/persistence_area_startup_token
 		var/list/fields = zone["fields"]
 		if(!A || A.persistence_zone_id != id || A.weather != fields["weather"] || A.weather_intensity != fields["weather_intensity"]) throw EXCEPTION("Restored local weather changed")
 		A.icon_state = fields["icon_state"]
+		A.weather_roof_mask() // a save from before the mask has "" for a roofed zone
 		TICK_CHECK
 		context.require_owner()

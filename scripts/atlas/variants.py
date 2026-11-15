@@ -1,6 +1,8 @@
 """Conservative presentation grouping for identical material catalog rows."""
 import json
 
+GLOBAL_KIND = 'Material / global'
+
 
 def consolidate_variants(records):
     """Share semantic fields while retaining each catalog row's identity/source.
@@ -36,6 +38,13 @@ def consolidate_variants(records):
     for recipe in result:
         if len(recipe.get('variants', [])) == 1:
             del recipe['variants']
+        elif recipe.get('variants'):
+            # Lead with the global catalog when it has the row: map-specific
+            # copies (battle_ships sorts first) otherwise label shared recipes
+            # such as roman road as if they belonged to that map.
+            ordered = sorted(recipe['variants'], key=lambda v: v['kind'] != GLOBAL_KIND)
+            recipe['variants'] = ordered
+            recipe.update(ordered[0])
     return result
 
 

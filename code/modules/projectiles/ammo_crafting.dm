@@ -11,11 +11,11 @@
 				gunpowder = gunpowder_max*amount
 				return
 		else if (istype(user.r_hand, /obj/item/weapon/reagent_containers))
-			if (!user.r_hand.reagents.has_reagent("gunpowder",gunpowder_max))
+			if (!user.r_hand.reagents.has_reagent("gunpowder",gunpowder_max*amount))
 				to_chat(user, "<span class = 'notice'>You need enough gunpowder in the container to fill the casing(s).</span>")
 				return
-			else if (user.r_hand.reagents.has_reagent("gunpowder",gunpowder_max))
-				user.r_hand.reagents.remove_reagent("gunpowder",gunpowder_max)
+			else if (user.r_hand.reagents.has_reagent("gunpowder",gunpowder_max*amount))
+				user.r_hand.reagents.remove_reagent("gunpowder",gunpowder_max*amount)
 				to_chat(user, "You fill the casings with gunpowder.")
 				gunpowder = gunpowder_max*amount
 				return
@@ -158,11 +158,11 @@
 				gunpowder = gunpowder_max*amount
 				return
 		else if (istype(user.r_hand, /obj/item/weapon/reagent_containers))
-			if (!user.r_hand.reagents.has_reagent("gunpowder",gunpowder_max))
+			if (!user.r_hand.reagents.has_reagent("gunpowder",gunpowder_max*amount))
 				to_chat(user, "<span class = 'notice'>You need enough gunpowder in the container to fill the casing(s).</span>")
 				return
-			else if (user.r_hand.reagents.has_reagent("gunpowder",gunpowder_max))
-				user.r_hand.reagents.remove_reagent("gunpowder",gunpowder_max)
+			else if (user.r_hand.reagents.has_reagent("gunpowder",gunpowder_max*amount))
+				user.r_hand.reagents.remove_reagent("gunpowder",gunpowder_max*amount)
 				to_chat(user, "You fill the casings with gunpowder.")
 				gunpowder = gunpowder_max*amount
 				return
@@ -251,11 +251,11 @@
 				gunpowder = gunpowder_max*amount
 				return
 		else if (istype(user.r_hand, /obj/item/weapon/reagent_containers))
-			if (!user.r_hand.reagents.has_reagent("gunpowder",gunpowder_max))
+			if (!user.r_hand.reagents.has_reagent("gunpowder",gunpowder_max*amount))
 				to_chat(user, "<span class = 'notice'>You need enough gunpowder in the container to fill the casing(s).</span>")
 				return
-			else if (user.r_hand.reagents.has_reagent("gunpowder",gunpowder_max))
-				user.r_hand.reagents.remove_reagent("gunpowder",gunpowder_max)
+			else if (user.r_hand.reagents.has_reagent("gunpowder",gunpowder_max*amount))
+				user.r_hand.reagents.remove_reagent("gunpowder",gunpowder_max*amount)
 				to_chat(user, "You fill the casings with gunpowder.")
 				gunpowder = gunpowder_max*amount
 				return
@@ -307,44 +307,6 @@
 	singular_name = "bullet"
 	value = 1
 	weight = 0.08
-/obj/item/stack/ammopart/casing/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/reagent_containers) && gunpowder < gunpowder_max*amount)
-		if (istype(user.l_hand, /obj/item/weapon/reagent_containers))
-			if (!user.l_hand.reagents.has_reagent("gunpowder",gunpowder_max*amount))
-				to_chat(user, "<span class = 'notice'>You need enough gunpowder in the container to fill the casing(s).</span>")
-				return
-			else if (user.l_hand.reagents.has_reagent("gunpowder",gunpowder_max*amount))
-				user.l_hand.reagents.remove_reagent("gunpowder",gunpowder_max*amount)
-				to_chat(user, "You fill the casings with gunpowder.")
-				gunpowder = gunpowder_max*amount
-				return
-		else if (istype(user.r_hand, /obj/item/weapon/reagent_containers))
-			if (!user.r_hand.reagents.has_reagent("gunpowder",gunpowder_max))
-				to_chat(user, "<span class = 'notice'>You need enough gunpowder in the container to fill the casing(s).</span>")
-				return
-			else if (user.r_hand.reagents.has_reagent("gunpowder",gunpowder_max))
-				user.r_hand.reagents.remove_reagent("gunpowder",gunpowder_max)
-				to_chat(user, "You fill the casings with gunpowder.")
-				gunpowder = gunpowder_max*amount
-				return
-	if (istype(W, /obj/item/stack/ammopart/bullet))
-		if (!(gunpowder >= gunpowder_max*amount))
-			to_chat(user, "<span class = 'notice'>You need to fill the casing(s) with gunpowder before putting the bullet on the casing.</span>")
-			return
-		else if (W.amount < amount)
-			to_chat(user, "<span class = 'notice'>Not enough bullets. Reduce the casings stack or add more bullets.</span>")
-			return
-		else if (W.amount >= amount)
-			bulletn = amount
-			W.amount -= amount
-			if (W.amount <= 0)
-				qdel(W)
-	if (gunpowder >= gunpowder_max*amount && bulletn >= amount)
-		attack_self(user)
-		return
-
-	else
-		return
 /obj/item/stack/ammopart/casing/artillery/attack_self(mob/user)
 	if (gunpowder >= gunpowder_max && bulletn >= amount)
 		for(var/i=1;i<=amount;i++)
@@ -355,261 +317,6 @@
 	else
 		to_chat(user, "<span class = 'notice'>The casing is not complete yet.</span>")
 		return
-
-/obj/item/stack/ammopart/casing/pistol/attack_self(mob/user)
-	switch (map.ID)
-		if (MAP_OCCUPATION)
-			if (gunpowder >= gunpowder_max && bulletn >= amount)
-				var/list/listing = list("Cancel")
-				if (map.ordinal_age == 4)
-					listing += list(".45 Colt", ".44-40 Winchester", ".41 Short")
-				else if (map.ordinal_age == 5)
-					listing += list("9x19 Parabellum", "9x18 Makarov", ".45 Colt")
-				else if (map.ordinal_age == 6)
-					listing += list("9x19 Parabellum", "9x18 Makarov", "7.62x25mm", "7.62x38mmR")
-				else if (map.ordinal_age >= 7)
-					listing += list("9x19 Parabellum", "9x18 Makarov", "7.62x25mm", "7.62x38mmR")
-				var/input = WWinput(user, "What caliber do you want to make?", "Bullet Making", "Cancel", listing)
-				switch (input)
-					if ("Cancel")
-						return
-					if (".41 Short")
-						resultpath = /obj/item/ammo_casing/a41
-					if (".45 Colt")
-						resultpath = /obj/item/ammo_casing/a45
-					if (".44-40 Winchester")
-						resultpath = /obj/item/ammo_casing/a44
-					if ("9x19 Parabellum")
-						resultpath = /obj/item/ammo_casing/a9x19
-					if ("9x18 Makarov")
-						resultpath = /obj/item/ammo_casing/a9x18
-					if ("7.62x25mm")
-						resultpath = /obj/item/ammo_casing/a762x25
-					if ("7.62x38mmR")
-						resultpath = /obj/item/ammo_casing/a762x38
-
-				if (resultpath != null)
-					for(var/i=1;i<=amount;i++)
-						new resultpath(get_turf(src))
-					qdel(src)
-					return
-				else
-					return
-			else
-				to_chat(user, "<span class = 'notice'>The casing is not complete yet.</span>")
-				return
-		if (MAP_NOMADS_KARAFUTO)
-			if (gunpowder >= gunpowder_max && bulletn >= amount)
-				var/list/listing = list("Cancel")
-				if (map.ordinal_age == 4)
-					listing += list(".45 Colt", ".44-40 Winchester", ".41 Short")
-				else if (map.ordinal_age == 5)
-					listing += list("9x19 Parabellum", "9x18 Makarov", ".45 Colt")
-				else if (map.ordinal_age == 6)
-					listing += list("9x19 Parabellum", "9x18 Makarov", "8x22mmB nambu", "9x22mm nambu", "7.62x38mmR", ".45 Colt")
-				else if (map.ordinal_age >= 7)
-					listing += list("9x19 Parabellum", "9x18 Makarov", ".45 Colt", "8x22mmB nambu", "9x22mm nambu", "7.62x38mmR")
-				var/input = WWinput(user, "What caliber do you want to make?", "Bullet Making", "Cancel", listing)
-				switch (input)
-					if ("Cancel")
-						return
-					if (".41 Short")
-						resultpath = /obj/item/ammo_casing/a41
-					if (".45 Colt")
-						resultpath = /obj/item/ammo_casing/a45
-					if (".44-40 Winchester")
-						resultpath = /obj/item/ammo_casing/a44
-					if ("9x19 Parabellum")
-						resultpath = /obj/item/ammo_casing/a9x19
-					if ("9x18 Makarov")
-						resultpath = /obj/item/ammo_casing/a9x18
-					if ("8x22mmB nambu")
-						resultpath = /obj/item/ammo_casing/c8mmnambu
-					if ("9x22mm nambu")
-						resultpath = /obj/item/ammo_casing/c9mm_jap_revolver
-					if ("7.62x38mmR")
-						resultpath = /obj/item/ammo_casing/a762x38
-
-				if (resultpath != null)
-					for(var/i=1;i<=amount;i++)
-						new resultpath(get_turf(src))
-					qdel(src)
-					return
-				else
-					return
-			else
-				to_chat(user, "<span class = 'notice'>The casing is not complete yet.</span>")
-				return
-		else
-			if (gunpowder >= gunpowder_max && bulletn >= amount)
-				var/list/listing = list("Cancel")
-				if (map.ordinal_age == 4)
-					listing += list(".45 Colt", ".44-40 Winchester", ".41 Short")
-				else if (map.ordinal_age == 5)
-					listing += list("9x19 Parabellum", "9x18 Makarov", ".45 Colt")
-				else if (map.ordinal_age == 6)
-					listing += list("9x19 Parabellum", "9x18 Makarov", ".45 Colt")
-				else if (map.ordinal_age >= 7)
-					listing += list("9x19 Parabellum", "9x18 Makarov", ".45 Colt")
-				var/input = WWinput(user, "What caliber do you want to make?", "Bullet Making", "Cancel", listing)
-				switch (input)
-					if ("Cancel")
-						return
-					if (".41 Short")
-						resultpath = /obj/item/ammo_casing/a41
-					if (".45 Colt")
-						resultpath = /obj/item/ammo_casing/a45
-					if (".44-40 Winchester")
-						resultpath = /obj/item/ammo_casing/a44
-					if ("9x19 Parabellum")
-						resultpath = /obj/item/ammo_casing/a9x19
-					if ("9x18 Makarov")
-						resultpath = /obj/item/ammo_casing/a9x18
-
-				if (resultpath != null)
-					for(var/i=1;i<=amount;i++)
-						new resultpath(get_turf(src))
-					qdel(src)
-					return
-				else
-					return
-			else
-				to_chat(user, "<span class = 'notice'>The casing is not complete yet.</span>")
-				return
-
-/obj/item/stack/ammopart/casing/rifle/attack_self(mob/user)
-	if (map.ID == MAP_OCCUPATION)
-		if (gunpowder >= gunpowder_max && bulletn >= amount)
-			var/list/listing = list("Cancel")
-			if (map.ordinal_age >= 6)
-				listing += list("7.92x57mm Mauser", "7.62x54mmR", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)", "12 Gauge (Rubbershot)")
-
-			var/input = WWinput(user, "What caliber do you want to make?", "Bullet Making", "Cancel", listing)
-			switch (input)
-				if ("Cancel")
-					return
-				if ("12 Gauge (Buckshot)")
-					resultpath = /obj/item/ammo_casing/shotgun/buckshot
-				if ("12 Gauge (Slugshot)")
-					resultpath = /obj/item/ammo_casing/shotgun/slug
-				if ("12 Gauge (Beanbag)")
-					resultpath = /obj/item/ammo_casing/shotgun/beanbag
-				if ("12 Gauge (Rubbershot)")
-					resultpath = /obj/item/ammo_casing/shotgun/rubber
-				if ("7.92x57mm Mauser")
-					resultpath = /obj/item/ammo_casing/a792x57
-				if ("7.62x54mmR")
-					resultpath = /obj/item/ammo_casing/a762x54
-
-			if (resultpath != null && gunpowder >= gunpowder_max && bulletn >= amount)
-				for(var/i=1;i<=amount;i++)
-					var/obj/item/ammo_casing/NC = new resultpath(get_turf(src))
-					NC.btype = inputbtype
-					NC.checktype()
-				qdel(src)
-				return
-			else
-				return
-		else
-			to_chat(user, "<span class = 'notice'>The casing is not complete yet.</span>")
-			return
-	else if (map.ID == MAP_NOMADS_KARAFUTO)
-		if (gunpowder >= gunpowder_max && bulletn >= amount)
-			var/list/listing = list("Cancel")
-			if (map.ordinal_age == 4)
-				listing += list("8x53mm murata", "7.62x54mmR", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)")
-			if (map.ordinal_age == 5)
-				listing += list("8x53mm murata", "7.62x54mmR","6.5x50mm arisaka", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)", "12 Gauge (Rubbershot)")
-			if (map.ordinal_age >= 6)
-				listing += list("7.7x58mm arisaka","7.62x54mmR","6.5x50mm arisaka", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)", "12 Gauge (Rubbershot)")
-
-			var/input = WWinput(user, "What caliber do you want to make?", "Bullet Making", "Cancel", listing)
-			switch (input)
-				if ("Cancel")
-					return
-				if ("12 Gauge (Buckshot)")
-					resultpath = /obj/item/ammo_casing/shotgun/buckshot
-				if ("12 Gauge (Slugshot)")
-					resultpath = /obj/item/ammo_casing/shotgun/slug
-				if ("12 Gauge (Beanbag)")
-					resultpath = /obj/item/ammo_casing/shotgun/beanbag
-				if ("12 Gauge (Rubbershot)")
-					resultpath = /obj/item/ammo_casing/shotgun/rubber
-				if ("8x53mm murata")
-					resultpath = /obj/item/ammo_casing/a8x53
-				if ("7.62x54mmR")
-					resultpath = /obj/item/ammo_casing/a762x54
-				if ("6.5x50mm arisaka")
-					resultpath = /obj/item/ammo_casing/a65x50
-				if ("7.7x58mm arisaka")
-					resultpath = /obj/item/ammo_casing/a77x58
-				
-			if (resultpath != null && gunpowder >= gunpowder_max && bulletn >= amount)
-				for(var/i=1;i<=amount;i++)
-					var/obj/item/ammo_casing/NC = new resultpath(get_turf(src))
-					NC.btype = inputbtype
-					NC.checktype()
-				qdel(src)
-				return
-			else
-				return
-		else
-			to_chat(user, "<span class = 'notice'>The casing is not complete yet.</span>")
-			return
-	else
-		if (gunpowder >= gunpowder_max && bulletn >= amount)
-			var/list/listing = list("Cancel")
-			if (map.ordinal_age == 4)
-				listing += list(".44-70 Government", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)",".577/450 Martini-Henry","7.65x53 Mauser")
-			else if (map.ordinal_age == 5)
-				listing += list("7.92x57mm Mauser","6.5x50mm small rifle","7.62x39mm intermediate rifle","5.56x45mm intermediate rifle", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)", "12 Gauge (Rubbershot)")
-			else if (map.ordinal_age >= 6)
-				listing += list("7.92x57mm Mauser","6.5x50mm small rifle","7.62x39mm intermediate rifle","5.56x45mm intermediate rifle", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)", "12 Gauge (Rubbershot)")
-
-			var/input = WWinput(user, "What caliber do you want to make?", "Bullet Making", "Cancel", listing)
-			switch (input)
-				if ("Cancel")
-					return
-				if (".44-70 Government")
-					resultpath = /obj/item/ammo_casing/a4570
-				if (".577/450 Martini-Henry")
-					resultpath = /obj/item/ammo_casing/a577
-				if ("12 Gauge (Buckshot)")
-					resultpath = /obj/item/ammo_casing/shotgun/buckshot
-				if ("12 Gauge (Slugshot)")
-					resultpath = /obj/item/ammo_casing/shotgun/slug
-				if ("12 Gauge (Beanbag)")
-					resultpath = /obj/item/ammo_casing/shotgun/beanbag
-				if ("12 Gauge (Rubbershot)")
-					resultpath = /obj/item/ammo_casing/shotgun/rubber
-				if ("7.65x53 Mauser")
-					resultpath = /obj/item/ammo_casing/a765x53
-					inputbtype = WWinput(user, "Normal, Hollow Point or Armor Piercing?", "Bullet Making", "Normal", list("normal","AP","HP"))
-				if ("7.92x57mm Mauser")
-					resultpath = /obj/item/ammo_casing/a792x57
-					inputbtype = WWinput(user, "Normal, Hollow Point or Armor Piercing?", "Bullet Making", "Normal", list("normal","AP","HP"))
-				if ("6.5x50mm small rifle")
-					resultpath = /obj/item/ammo_casing/a65x50
-					inputbtype = WWinput(user, "Normal, Hollow Point or Armor Piercing?", "Bullet Making", "Normal", list("normal","AP","HP"))
-				if ("7.62x39mm intermediate rifle")
-					resultpath = /obj/item/ammo_casing/a762x39
-					inputbtype = WWinput(user, "Normal, Hollow Point or Armor Piercing?", "Bullet Making", "Normal", list("normal","AP","HP"))
-				if ("5.56x45mm intermediate rifle")
-					resultpath = /obj/item/ammo_casing/a556x45
-					inputbtype = WWinput(user, "Normal, Hollow Point or Armor Piercing?", "Bullet Making", "Normal", list("normal","AP","HP"))
-
-			if (resultpath != null && gunpowder >= gunpowder_max && bulletn >= amount)
-				for(var/i=1;i<=amount;i++)
-					var/obj/item/ammo_casing/NC = new resultpath(get_turf(src))
-					NC.btype = inputbtype
-					NC.checktype()
-				qdel(src)
-				return
-			else
-				return
-		else
-			to_chat(user, "<span class = 'notice'>The casing is not complete yet.</span>")
-			return
 
 /obj/item/stack/ammopart/attack_self(mob/user)
 	if (istype(src, /obj/item/stack/ammopart/bullet) || istype(src, /obj/item/stack/ammopart/casing/pistol) || istype(src, /obj/item/stack/ammopart/casing/rifle))
@@ -659,11 +366,11 @@
 				gunpowder = gunpowder_max*amount
 				return
 		else if (istype(user.r_hand, /obj/item/weapon/reagent_containers))
-			if (!user.r_hand.reagents.has_reagent("gunpowder",gunpowder_max))
+			if (!user.r_hand.reagents.has_reagent("gunpowder",gunpowder_max*amount))
 				to_chat(user, "<span class = 'notice'>You need enough gunpowder in the container to fill the casing(s).</span>")
 				return
-			else if (user.r_hand.reagents.has_reagent("gunpowder",gunpowder_max))
-				user.r_hand.reagents.remove_reagent("gunpowder",gunpowder_max)
+			else if (user.r_hand.reagents.has_reagent("gunpowder",gunpowder_max*amount))
+				user.r_hand.reagents.remove_reagent("gunpowder",gunpowder_max*amount)
 				to_chat(user, "You fill the casings with gunpowder.")
 				gunpowder = gunpowder_max*amount
 				return

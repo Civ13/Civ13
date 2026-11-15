@@ -81,6 +81,19 @@ var/list/stone_casting_ci_sprites = list()
 	K.process()
 	if (!stone_casting_ci_expect(G.capacity == 6 && G.current_material == "gold", "actual kiln processing produces separate gold charge"))
 		return
+	// #5143: bronze bars were refused by jugs ("You cannot use this material on a kiln.").
+	var/obj/item/weapon/clay/mold/clayjug/fired/J = new(T)
+	var/obj/item/stack/material/bronze/bars = new(T)
+	bars.amount = 2
+	J.attackby(bars, H)
+	stone_casting_ci_expect(QDELETED(bars) && J.contents_materials["bronze"] == 2, "bronze bars load into a clay jug")
+	var/obj/item/stack/ore/tin/tin_ore = new(T, 3, FALSE)
+	J.attackby(tin_ore, H)
+	stone_casting_ci_expect(tin_ore.amount == 3 && J.contents_materials.len == 1, "a jug of bronze refuses tin ore")
+	K.attackby(J, H)
+	K.process()
+	if (!stone_casting_ci_expect(J.capacity == 2 && J.current_material == "bronze", "actual kiln processing remelts bronze bars"))
+		return
 	var/obj/item/weapon/clay/mold/pickaxe/fired/sandstone/M = new(T)
 	M.attackby(V, H)
 	stone_casting_ci_expect(M.capacity == 1 && M.current_material == "copper" && V.capacity == 19 && V.current_material == "copper", "production pour moves one copper with matching debit")

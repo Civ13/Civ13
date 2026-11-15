@@ -44,7 +44,8 @@
 		if (stepping && sea_layer_cell(from) && !from.iscovered())
 			return FALSE
 		return ..()
-	if (!M.can_walk_seabed())
+	// Free divers also keep to the depth their swimming reaches (free_diving.dm).
+	if (!M.can_walk_seabed() || !M.seabed_zone_allowed(src))
 		return FALSE
 	// Never straight out of a boat either: the lock-out hatch floods first.
 	if (stepping && from.iscovered())
@@ -69,7 +70,7 @@ var/global/sea_layer_ready_at = 0 // world.time the world was first seen ready
 
 // Open ocean at the surface: deep saltwater that is not itself under water.
 /proc/sea_layer_open_surface(turf/T)
-	return istype(T, /turf/floor/beach/water/deep/saltwater) && !istype(T, /turf/floor/beach/water/deep/saltwater/underwater)
+	return is_open_sea(T)
 
 /proc/sea_layer_cell(turf/T)
 	return istype(T, /turf/floor/beach/water/deep/saltwater/underwater/sea_layer)

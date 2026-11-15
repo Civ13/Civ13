@@ -3,7 +3,7 @@ import unittest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'scripts'))
-from river_flow import build
+from river_flow import NEIGHBOURS, SEA_BELT, SEA_SHORE, build
 
 L = '/turf/floor/grass'
 F = '/turf/floor/beach/water'
@@ -92,7 +92,82 @@ class CommittedSidecarTest(unittest.TestCase):
                 self.assertGreater(len(flowing), 500)
                 for x, y in flowing:
                     turf = turfs[y][x]
-                    self.assertTrue('/water' in turf and 'saltwater' not in turf and '/swamp' not in turf, (x, y, turf))
+                    self.assertTrue('/water' in turf and '/ice' not in turf and '/swamp' not in turf, (x, y, turf))
+                    if 'saltwater' in turf:
+                        # A sea current never sets ashore or out of the sea.
+                        dx, dy = STEP[rows[y][x]]
+                        self.assertIn('saltwater', turfs[y + dy][x + dx], (x, y))
+
+
+STEP = {code: (dx, dy) for dx, dy, code in NEIGHBOURS}
+
+
+class SeaCurrentTest(unittest.TestCase):
+    def island(self, size=60, radius=6):
+        rows = [[S] * size for _ in range(size)]
+        mid = size // 2
+        for y in range(size):
+            for x in range(size):
+                if max(abs(x - mid), abs(y - mid)) <= radius:
+                    rows[y][x] = L
+        return rows, mid
+
+    def test_a_belt_off_the_coast_flows_and_the_rest_is_still(self):
+        rows, mid = self.island()
+        result = build(rows)
+        for y, row in enumerate(result):
+            for x, code in enumerate(row):
+                off = max(abs(x - mid), abs(y - mid)) - 6
+                if off <= 0:
+                    self.assertEqual(code, '.', 'land')
+                elif off < SEA_SHORE:
+                    self.assertEqual(code, '.', f'the shallows by the beach are still {x},{y}')
+                elif off > SEA_BELT:
+                    self.assertEqual(code, '.', f'the open sea is still {x},{y}')
+        self.assertGreater(sum(c != '.' for row in result for c in row), 400)
+
+    def test_the_current_goes_round_the_island_one_way(self):
+        rows, mid = self.island()
+        result = build(rows)
+        # Land on the left hand, all the way round.
+        self.assertEqual(result[mid - 6 - 8][mid], 'w', 'north shore')
+        self.assertEqual(result[mid][mid + 6 + 8], 'n', 'east shore')
+        self.assertEqual(result[mid + 6 + 8][mid], 'e', 'south shore')
+        self.assertEqual(result[mid][mid - 6 - 8], 's', 'west shore')
+
+    def test_a_thing_adrift_is_carried_along_and_never_ashore(self):
+        rows, mid = self.island()
+        result = build(rows)
+        x, y = mid, mid - 6 - 8
+        seen = set()
+        for _ in range(400):
+            code = result[y][x]
+            if code == '.':
+                break
+            seen.add((x, y))
+            dx, dy = STEP[code]
+            x, y = x + dx, y + dy
+            self.assertEqual(rows[y][x], S)
+        self.assertGreater(len(seen), 40, 'it travels a good way round')
+
+    def test_sea_ice_is_a_shore_not_a_current(self):
+        rows, mid = self.island()
+        ice = '/turf/floor/beach/water/ice/salty'
+        for y in range(0, 12):
+            rows[y] = [ice] * len(rows[y])
+        result = build(rows)
+        self.assertTrue(all(c == '.' for y in range(0, 12 + SEA_SHORE - 1) for c in result[y]))
+
+    def test_a_small_bay_is_still_and_rivers_are_untouched(self):
+        rows = land(40, 30)
+        for y in range(8, 22):
+            rows[y][10:24] = [S] * 14         # a bay 14 by 14: no room for a belt
+        rows[15][24:38] = [F] * 14            # a river into it
+        result = build(rows)
+        self.assertEqual(result[15][25:38], 'w' * 13)
+        self.assertTrue(all(c == '.' for y in range(8, 22) for c in result[y][10:24]))
+        self.assertEqual(build(rows, sea=False), result)
+
 
 
 if __name__ == '__main__':

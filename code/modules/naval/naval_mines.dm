@@ -58,7 +58,7 @@ var/global/list/naval_mines = list()
 /proc/naval_mine_lay_problem(turf/T)
 	if (!T)
 		return "There is nothing there."
-	if (!istype(T, /turf/floor/beach/water) || istype(T, /turf/floor/beach/water/ice))
+	if (!is_liquid_water(T))
 		return "A mine can only be laid on open water."
 	if (vessel_at(T) || craft_at(T))
 		return "There is a hull there."
@@ -190,7 +190,7 @@ var/global/list/naval_mines = list()
 	return ..()
 
 /obj/structure/naval_mine/attackby(obj/item/W, mob/user)
-	if (!ishuman(user) || !istype(W, /obj/item/weapon/wrench))
+	if (!ishuman(user) || !is_tool(W, TOOL_WRENCH))
 		user.visible_message(SPAN_DANGER("[user] hits \the [src]!"))
 		detonate(null)
 		return
@@ -280,7 +280,7 @@ var/global/list/naval_mines = list()
 	var/signature = -1
 	. = 0
 	for (var/obj/structure/naval_mine/M in naval_mines.Copy())
-		if (QDELETED(M) || M.fired || M.z != swept[5])
+		if (QDELETED(M) || M.fired || M.z != swept[5] || M.ignores(src))
 			continue
 		var/dx = max(swept[1] - M.x, 0, M.x - swept[3])
 		var/dy = max(swept[2] - M.y, 0, M.y - swept[4])

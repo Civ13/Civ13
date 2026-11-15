@@ -9,6 +9,11 @@
 				return FALSE
 
 /obj/item/clothing/attackby(var/obj/item/I, var/mob/user)
+	// Capes and grease rubbing are in rain_gear.dm.
+	if (try_fasten_cape(I, user))
+		return
+	if (try_waterproof(I, user))
+		return
 	if (istype(I, /obj/item/clothing/accessory))
 
 		if (!valid_accessory_slots || !valid_accessory_slots.len)
@@ -24,14 +29,18 @@
 			if (istype(loc, /mob/living/human))
 				var/mob/living/human/H = loc
 				H.update_inv_w_uniform()
+				H.refresh_attachment_strip(src)
 			return
 		else
 			to_chat(user, SPAN_DANGER("You cannot attach more accessories of this type to [src]."))
 		return
 
 	if (accessories.len)
+		// Offer the item to each attachment in turn, until one takes it.
 		for (var/obj/item/clothing/accessory/A in accessories)
 			A.attackby(I, user)
+			if (QDELETED(I) || I.loc != user)
+				break
 		return
 
 	if (istype(I, /obj/item/stack/material/rags))
@@ -83,6 +92,11 @@
 /obj/item/clothing/attack_hand(var/mob/user)
 	//only forward to the attached accessory if the clothing is equipped (not in a storage)
 	if (accessories.len && loc == user)
+		// Several attachments: show them as tiles, so each opens by itself.
+		if (accessories.len > 1 && ishuman(user) && user.client)
+			var/mob/living/human/H = user
+			H.toggle_attachment_strip(src)
+			return
 		for (var/obj/item/clothing/accessory/A in accessories)
 			A.attack_hand(user)
 		return
@@ -114,6 +128,7 @@
 
 /obj/item/clothing/examine(var/mob/user)
 	..(user)
+	examine_rain_gear(user)
 	if (accessories.len)
 		for (var/obj/item/clothing/accessory/A in accessories)
 			to_chat(user, "\A [A] is attached to it.")
@@ -125,6 +140,9 @@
 	A.on_removed(user)
 	accessories -= A
 	update_clothing_icon()
+	if (ishuman(loc))
+		var/mob/living/human/H = loc
+		H.refresh_attachment_strip(src)
 
 /obj/item/clothing/proc/removetie_verb()
 	set name = "Remove Accessory"

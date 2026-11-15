@@ -33,7 +33,8 @@
 	bloodstr.clear_reagents()
 	ingested.clear_reagents()
 	touching.clear_reagents()
-	nutrition = 400
+	nutrition = max_nutrition
+	water = max_water
 
 	restore_blood()
 	shock_stage = 0

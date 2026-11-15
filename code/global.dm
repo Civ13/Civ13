@@ -3,7 +3,6 @@
 //#warn This compiler is out of date. You may experience issues with projectile animations.
 //#endif
 
-var/bearcave_ticking = FALSE
 
 				//For single Mayor/Governor maps
 var/global_export_tax = 0	//Global Export Tax
@@ -30,7 +29,7 @@ var/join_motd = null
 var/datum/nanomanager/nanomanager		= new() // NanoManager, the manager for Nano UIs.
 
 
-var/season = "SPRING"
+var/season = "SPRING" // SEASON_SPRING; this file is compiled before the defines
 var/game_hour = 0
 
 var/list/chicken_count = list()

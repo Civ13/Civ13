@@ -1,6 +1,7 @@
 /*****************************Shovel********************************/
 /obj/item/weapon/plough
 	name = "plough"
+	tool_material = "wood"
 	desc = "A simple wood plough. Use it on dirt to plough farming areas."
 	icon = 'icons/obj/items.dmi'
 	icon_state = "plough"
@@ -25,6 +26,7 @@
 
 /obj/item/weapon/plough/iron
 	name = "iron plough"
+	tool_material = "iron"
 	desc = "A sturdy iron plough. Use it on dirt to plough the land."
 	icon = 'icons/obj/items.dmi'
 	icon_state = "iplough"
@@ -118,6 +120,7 @@
 	value = 55
 
 /obj/item/weapon/material/shovel
+	tool_flags = TOOL_SHOVEL
 	name = "shovel"
 	desc = "A long tool for digging and moving dirt."
 	icon = 'icons/obj/items.dmi'
@@ -282,6 +285,7 @@
 	usespeed = 0.9
 
 /obj/item/weapon/material/pickaxe
+	tool_flags = TOOL_PICKAXE
 	name = "pickaxe"
 	desc = "Miner's favorite."
 	icon = 'icons/obj/items.dmi'
@@ -403,7 +407,9 @@
 	flags = FALSE
 
 /obj/item/weapon/chisel
+	tool_flags = TOOL_CHISEL
 	name = "stone chisel"
+	tool_material = "stone"
 	desc = "A stone chisel, for carving stone walls."
 	icon = 'icons/obj/items.dmi'
 	icon_state = "chisel"
@@ -440,6 +446,7 @@
 
 /obj/item/weapon/chisel/metal
 	name = "iron chisel"
+	tool_material = "iron"
 	desc = "A iron chisel, for carving stone walls."
 	icon = 'icons/obj/items.dmi'
 	icon_state = "chisel_metal"
@@ -457,7 +464,7 @@
 	var/turf/floor/TB = get_turf(user)
 	if (istype(TB, /turf/floor/beach/water))
 		return
-	var/display = list("Tunnel", "Grave", "Irrigation Channel", "Pit Latrine","Cancel")
+	var/display = list("Tunnel", "Grave", "Irrigation Channel", "Pit Latrine", "Drain Ditch", "Cesspit", "Well", "Cancel")
 	var/input =  WWinput(user, "What do you want to dig?", "Digging", "Cancel", display)
 	if (input == "Cancel")
 		return
@@ -553,6 +560,12 @@
 				return
 			else
 				return
+	else if (input == "Well")
+		shovel_dig_well(user, TB)
+		return
+	else if (input == "Drain Ditch" || input == "Cesspit")
+		shovel_dig_sewer(user, TB, input == "Cesspit")
+		return
 	else if  (input == "Pit Latrine")
 		if (istype(TB, /turf/wall) || istype(TB, /turf/floor/wood) || istype(TB, /turf/floor/wood_broken) || istype(TB, /turf/floor/ship) || istype(TB, /turf/floor/carpet) || istype(TB, /turf/floor/broken_floor) || istype(TB, /turf/floor/plating/cobblestone) || istype(TB, /turf/floor/plating/concrete) || istype(TB, /turf/floor/plating/stone_old))
 			return
@@ -630,7 +643,7 @@
 		icon_state = "grapplehook"
 
 /obj/structure/grapplehook/attackby(obj/item/I, mob/living/human/H)
-	if (deployed && istype(I, /obj/item/weapon/wrench))
+	if (deployed && is_tool(I, TOOL_WRENCH))
 		return
 	..()
 

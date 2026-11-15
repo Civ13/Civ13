@@ -846,7 +846,7 @@
 	// not just people present when the weather first changed.
 	if (wand_wood == WAND_WOOD_MDF && !wand_wet)
 		var/area/F_area = get_area(H || user) // Use H if available, otherwise user
-		if (F_area && F_area.location == AREA_OUTSIDE && is_wet_weather_icon(F_area.icon_state))
+		if (F_area && F_area.location == AREA_OUTSIDE && is_wet_weather_icon(weather_look_at(H || user)))
 			get_wet()
 
 	// Skill gate

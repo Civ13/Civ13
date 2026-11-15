@@ -92,9 +92,10 @@ class InjuryContextTests(unittest.TestCase):
                 alternate = '\n\t\t\telse' if kind == 'reported_shrapnel_hit' else '\n\t\telse'
                 self.assertLess(block.index('"' + kind + '"'), block.index(alternate, block.index(message)))
         environment = (ROOT / 'code/game/mob/living/carbon/human/species/species.dm').read_text(encoding='utf-8')
-        self.assertEqual(environment.count('record_observed_injury('), 2)
+        self.assertEqual(environment.count('record_observed_injury('), 3)
         for message, kind in (('The hot ground burns your feet!', 'reported_hot_ground'),
-                              ('Your feet are freezing!', 'reported_freezing_feet')):
+                              ('Your feet are freezing!', 'reported_freezing_feet'),
+                              ('Your wet feet are freezing!', 'reported_freezing_feet')):
             index = environment.index(message)
             prior_lines = environment[:index].splitlines()
             self.assertIn('if (prob(', prior_lines[-2])

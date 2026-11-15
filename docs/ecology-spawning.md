@@ -23,14 +23,15 @@ anywhere on the map, instead of at fixed map spawn points. Source:
   of matching habitat, a maximum and a herd size. Its target is
   `habitat * density * ecology_density_scale / 1000`, at least 1 when the map
   has 128 tiles of its habitat, and at most its maximum. The total is scaled
-  down to `ecology_wildlife_cap` (700). Gaia comes to about 600: 70 deer, 50
-  sheep, 30 reindeer and so on.
+  down to `ecology_wildlife_cap` (450), which Gaia reaches.
 - Every 60 seconds one census of `living_mob_list` counts wild animals per
   species. Tamed, ridden, led and player-controlled animals do not count. Up
   to 30 animals spawn per cycle, round-robin across species, as herds with
   alternating sexes within 3 tiles of a site. A site must be in a cell with no
   recent player activity (heatmap pressure at most 0.05, unknown never counts)
-  and more than 15 tiles from every player's body and eye.
+  and more than 15 tiles from every player's body and eye. Shy spawning: a
+  site is skipped when its 15x15 square would hold more than 8 living animals
+  of any species once the largest herd arrives (`animal_spot_crowded`).
 - Map mob spawners for a species the index gives a target stay quiet while
   ecology runs, but keep their timers, so an admin toggle-off revives them.
   Spawners for creatures outside the table (skeletons, zombies, dinosaurs,

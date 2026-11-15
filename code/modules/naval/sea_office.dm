@@ -171,6 +171,8 @@
 // Fills the free places on the board. Returns how many contracts were added.
 /obj/structure/sea_office/proc/fill(force = FALSE)
 	. = 0
+	if (!npc_jobs_enabled)
+		return
 	if (!force && world.time < next_fill)
 		return
 	var/datum/chart/open_sea/chart = open_sea_chart()

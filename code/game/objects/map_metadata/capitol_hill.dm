@@ -132,7 +132,7 @@ var/no_loop_capitol = FALSE
 					if (win_condition_spam_check)
 						return FALSE
 					ticker.finished = TRUE
-					message = "The <b>Soviets</b> have reached [sov_points] points and won!"
+					message = "The <b>Militia</b> have reached [sov_points] points and won!"
 					to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 					show_global_battle_report(null)
 					win_condition_spam_check = TRUE
@@ -141,7 +141,7 @@ var/no_loop_capitol = FALSE
 					if (win_condition_spam_check)
 						return FALSE
 					ticker.finished = TRUE
-					message = "The <b>Germans</b> have reached [ger_points] points and won!"
+					message = "The <b>National Guard</b> have reached [ger_points] points and won!"
 					to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 					show_global_battle_report(null)
 					win_condition_spam_check = TRUE
@@ -166,43 +166,10 @@ var/no_loop_capitol = FALSE
 				win_condition_spam_check = TRUE
 				no_loop_capitol = TRUE
 				return FALSE
-			// German major
-			else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33, TRUE))
-				if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33))
-					if (last_win_condition != win_condition.hash)
-						current_win_condition = "The Militias control the Capitol! They will win in {time} minutes."
-						next_win = world.time + short_win_time(CIVILIAN)
-						announce_current_win_condition()
-						current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
-						current_loser = roundend_condition_def2army(roundend_condition_sides[2][1])
-			// German minor
-			else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01, TRUE))
-				if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01))
-					if (last_win_condition != win_condition.hash)
-						current_win_condition = "The Militias control the Capitol! They will win in {time} minutes."
-						next_win = world.time + short_win_time(CIVILIAN)
-						announce_current_win_condition()
-						current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
-						current_loser = roundend_condition_def2army(roundend_condition_sides[2][1])
-			// Soviet major
-			else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33, TRUE))
-				if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33))
-					if (last_win_condition != win_condition.hash)
-						current_win_condition = "The Militias control the Capitol! They will win in {time} minutes."
-						next_win = world.time + short_win_time(AMERICAN)
-						announce_current_win_condition()
-						current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
-						current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
-			// Soviet minor
-			else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01, TRUE))
-				if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01))
-					if (last_win_condition != win_condition.hash)
-						current_win_condition = "The Militias control the Capitol! They will win in {time} minutes."
-						next_win = world.time + short_win_time(AMERICAN)
-						announce_current_win_condition()
-						current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
-						current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
-			else
+			else if (!capture_step(1, 2, 1.33, FALSE, CIVILIAN, 1) && \
+				!capture_step(1, 2, 1.01, FALSE, CIVILIAN, 1) && \
+				!capture_step(2, 1, 1.33, FALSE, AMERICAN, 1) && \
+				!capture_step(2, 1, 1.01, FALSE, AMERICAN, 1))
 				if (current_win_condition != no_winner && current_winner && current_loser)
 					to_chat(world, "<font size = 3>The National Guard has recaptured the Capitol!</font>")
 					current_winner = null
@@ -213,6 +180,10 @@ var/no_loop_capitol = FALSE
 			last_win_condition = win_condition.hash
 			return TRUE
 
+/obj/map_metadata/capitol_hill/capture_message(id)
+	switch (id)
+		if (1)
+			return "The Militias control the Capitol! They will win in {time} minutes."
 
 /obj/map_metadata/capitol_hill/proc/points_check()
 	if (processes.ticker.playtime_elapsed > 4800)
@@ -268,8 +239,8 @@ var/no_loop_capitol = FALSE
 			else
 				to_chat(world, "<big><font color='[cust_color]'>[a2_control]</font> captured the <b>Senate</b>!</big>")
 	to_chat(world, "<big><b>Current Points:</b></big>")
-	to_chat(world, "<big>National Guard: [scores["National Guard"]]</big>")
-	to_chat(world, "<big>Militia: [scores["Militia"]]</big>")
+	to_chat(world, "<big>National Guard: [ger_points]</big>")
+	to_chat(world, "<big>Militia: [sov_points]</big>")
 //	to_chat(world, "<big>Militia: [ger_points]</big>")
 //	to_chat(world, "<big>Soviet Army: [sov_points]</big>")
 	spawn(300)
@@ -391,3 +362,5 @@ var/no_loop_capitol = FALSE
 				win_condition.hash = 0
 				last_win_condition = win_condition.hash
 				return FALSE
+
+/obj/map_metadata/capitol_hill/faction_hud_icons = list(CIVILIAN = "civ1")

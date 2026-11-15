@@ -22,7 +22,7 @@
 //	var/lava = FALSE
 	var/overrided_icon_state
 
-	var/season = "SPRING"
+	var/season = SEASON_SPRING
 	var/uses_winter_overlay = FALSE
 
 	var/muddy = FALSE

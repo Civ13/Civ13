@@ -105,7 +105,9 @@ class Map:
 
 def process(source, include_durable=False):
     full = body(source, "/process/weather/fire()")
-    prefix = full.split("\tif ((season ==", 1)[0] if include_durable else full.split("\tif(map && map.uses_durable_metadata())", 1)[0]
+    # Blizzards, sandstorms and heat waves left the process for weather systems
+    # (weather_events); the random roll above it is what this projects.
+    prefix = full.split("\tweather_events()", 1)[0]
     instructions = {
         "if(persistence_save_in_progress) return": "if state.saving: return",
         "if (map && !map.weather_policy_valid())": "if state.map and not state.map.weather_policy_valid():",
@@ -113,6 +115,8 @@ def process(source, include_durable=False):
         "if(map && map.uses_durable_metadata())": "if state.map and state.map.uses_durable_metadata():",
         "map.durable_weather_events()": "state.map.durable_weather_events()",
         "return": "return",
+        "weather_systems_step()": "pass",
+        "var/prob_of_weather_change = ((25*schedule_interval)/change_interval) * weather_system_capacity()": "prob_of_weather_change = 25 * self.schedule_interval / change_interval * state.capacity",
         'var/mod_interval = map ? map.weather_timing_value("mod_interval", mod_weather_interval) : mod_weather_interval': 'mod_interval = state.map.weather_timing_value("mod_interval", self.mod_weather_interval) if state.map else self.mod_weather_interval',
         'var/change_interval = map ? map.weather_timing_value("change_interval", change_weather_interval) : change_weather_interval': 'change_interval = state.map.weather_timing_value("change_interval", self.change_weather_interval) if state.map else self.change_weather_interval',
         'var/mod_delay = map ? map.weather_timing_value("minimum_mod_delay", minimum_mod_weather_delay) : minimum_mod_weather_delay': 'mod_delay = state.map.weather_timing_value("minimum_mod_delay", self.minimum_mod_weather_delay) if state.map else self.minimum_mod_weather_delay',
@@ -145,7 +149,7 @@ def process(source, include_durable=False):
 
 
 def state(weather=1, rolls=(False, True), future=False):
-    s = NS(weather=weather, now=10000, saving=False, modifications=0, changes=0, probabilities=[])
+    s = NS(weather=weather, now=10000, saving=False, modifications=0, changes=0, probabilities=[], capacity=1)
     pending = iter(rolls)
     def prob(value):
         s.probabilities.append(value)
@@ -283,7 +287,7 @@ class WeatherPolicyTests(unittest.TestCase):
         source = (ROOT / "code/modules/1713/weather.dm").read_text()
         selector = body(source, "/proc/change_weather_somehow()")
         self.assertIn("possibilities = map.weather_policy_choices(possibilities)", selector)
-        self.assertIn("if (possibilities && possibilities.len)\n\t\tchange_weather(pick(possibilities))", selector)
+        self.assertIn("if (possibilities && possibilities.len)\n\t\tweather_roll(pick(possibilities))", selector)
         modifier = body(source, "/proc/modify_weather_somehow()")
         self.assertTrue(modifier.strip().startswith("if (map && !map.weather_policy_valid())\n\t\treturn"))
         metadata = (ROOT / "code/game/objects/map_metadata/_map_metadata.dm").read_text()

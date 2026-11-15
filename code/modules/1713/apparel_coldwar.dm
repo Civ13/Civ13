@@ -165,7 +165,7 @@
 		if(closed)
 			item_state = "policejacket_black_open"
 			icon_state = "policejacket_black_open"
-			item_state_slots["w_uniform"] = "policejacket_open"
+			item_state_slots["w_uniform"] = "policejacket_black_open"
 			to_chat(usr, "You <b>open up</b> your jacket.")
 			closed = FALSE
 			update_clothing_icon()
@@ -628,6 +628,7 @@
 	if (icon_state == "chinese_ushanka")
 		icon_state = "chinese_ushanka_up"
 		item_state = "chinese_ushanka_up"
+		flags_inv = 0
 		to_chat(user, "You raise the ear flaps on the ushanka.")
 	else if (icon_state == "chinese_ushanka_up")
 		icon_state = "chinese_ushanka"
@@ -1026,7 +1027,7 @@
 	ripable = FALSE
 	flags = CONDUCT
 	slots = 2
-	slowdown = 0.1
+	slowdown = 0.25
 	weight = 5.9
 
 /obj/item/clothing/accessory/armor/coldwar/flakjacket // Google searches only reveal M-1965 Field Jacket's being normal american jackets, replace eventually please.

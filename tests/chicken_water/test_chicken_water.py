@@ -194,8 +194,13 @@ class ChickenWaterTests(unittest.TestCase):
     def test_humans_projectiles_and_smoke_are_unchanged(self):
         h = Harness()
         ocean = Turf(h, DEEP)
-        human = SimpleNamespace(kind='/mob/living/human', wear_suit=None, seabed_diving_rating=lambda: 0)
+        # A person who may not swim (a battle map, or nobody playing them).
+        human = SimpleNamespace(kind='/mob/living/human', wear_suit=None, seabed_diving_rating=lambda: 0,
+                                can_swim_deep=lambda: False)
         self.assertFalse(h.can_pass(ocean, human))
+        swimmer = SimpleNamespace(kind='/mob/living/human', wear_suit=None, seabed_diving_rating=lambda: 0,
+                                  can_swim_deep=lambda: True)
+        self.assertTrue(h.can_pass(ocean, swimmer))
         human.wear_suit = SimpleNamespace(kind='/obj/item/clothing/suit/lifejacket')
         self.assertTrue(h.can_pass(ocean, human))
         diver = SimpleNamespace(kind='/mob/living/human', wear_suit=None, seabed_diving_rating=lambda: 1)

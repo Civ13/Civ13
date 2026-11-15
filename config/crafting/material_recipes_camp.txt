@@ -87,7 +87,7 @@ RECIPE: /material/bone/,bone pickaxe,/obj/item/weapon/material/pickaxe/bone,6,50
 RECIPE: /material/bone/,bone shovel,/obj/item/weapon/material/shovel/bone,6,50,0,1,none,0,0,0,8,bone
 RECIPE: /material/bone/,blowing horn,/obj/item/weapon/horn,8,110,0,1,none,0,0,0,4,null
 RECIPE: /material/bone/,dice,/obj/item/weapon/dice,2,90,0,1,none,15,0,0,8,null
-RECIPE: /material/bone/,skull mask,/obj/item/clothing/mask/skullmask,11,100,0,1,none,0,0,0,2,null
+RECIPE: /material/bone/,skull mask,/obj/item/clothing/mask/skullmask,11,100,0,1,none,0,0,0,8,null
 
 RECIPE: /material/stone/,stone pillar,/obj/structure/mine_support/stone,2,130,1,1,none,0,0,0,8,null
 RECIPE: /material/stone/,stone pickaxe,/obj/item/weapon/material/pickaxe/stone,6,50,0,1,tools,0,0,0,8,null

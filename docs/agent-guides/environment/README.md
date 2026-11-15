@@ -11,6 +11,15 @@ activation still apply to those actions. Missing native, graphical or
 save/load evidence belongs in the report and never blocks a source fix.
 Do not turn an evidence limitation into a new approval requirement.
 
+<!-- 2026-11-12: moving weather systems -->
+Random weather is moving systems (docs/weather-systems.md), not one global value.
+Ask weather_at / weather_look_at / weather_intensity_at / weather_heat_at for a
+tile; never read area.weather or area.icon_state for gameplay. change_weather()
+only pins zone weather for map scripts and tests. Rolls send storms through
+weather_roll(); blizzard, sandstorm and heat wave timers and their durable
+callbacks are retired. Systems are unsaved; drawing is client images plus a roof
+mask plane. Probe: tests/weather_systems/probe.dm (no client, so no drawing).
+
 <!-- 2026-11-08: wild plants and stump regrowth -->
 Nomads maps grow sparse ripe wild crops and regrow chopped trees from stumps
 (docs/flora-regrowth.md, code/modules/ecology/flora_regrowth.dm). Wild plants

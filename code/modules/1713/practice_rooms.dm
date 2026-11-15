@@ -1,6 +1,10 @@
 // Practice rooms: from the lobby, a player takes a throwaway body into a
-// private 12 x 12 room and follows short scripted steps (walk, pick up, swap
-// hands, wear, doors, intents, bandaging, eating), then returns to the lobby.
+// private 17 x 12 room and follows short scripted steps, then returns to the
+// lobby. The west part teaches the controls (walk, pick up, swap hands, wear,
+// doors), the middle part fighting and bandaging, and the east camp what a new
+// character needs to survive the first day: lighting a campfire, cooking raw
+// meat, boiling water before drinking it, washing clothes (fleas spread
+// typhus), washing with soap, and resting in a bed when ill.
 // Nothing done there touches the player's real character or the world.
 //
 // Design reference: CM-SS13's tutorial rooms (code/datums/tutorial/,
@@ -9,14 +13,22 @@
 //
 // The rooms live on one extra level appended above the world while anyone
 // practises. That level is never saved or built on: a save closes every room
-// and removes the level first (begin_persistence_operation), an idle level is
-// removed after PRACTICE_IDLE_DROP, and while it exists world_z_budget refuses
-// every other new level, so it is always world.maxz and can be removed whole.
+// and removes the level first (begin_persistence_operation), the level is
+// removed as soon as the last player leaves, and while it exists world_z_budget
+// refuses every other new level, so it is always world.maxz and can be removed
+// whole. Every room is rebuilt from scratch when it is opened, so nothing a
+// player left behind reaches the next one.
 
-#define PRACTICE_ROOM_SIZE 12
-#define PRACTICE_ROOM_PITCH 14
+#define PRACTICE_ROOM_WIDTH 17
+#define PRACTICE_ROOM_HEIGHT 12
+#define PRACTICE_ROOM_PITCH_X 19
+#define PRACTICE_ROOM_PITCH_Y 14
 #define PRACTICE_MAX_ROOMS 8
-#define PRACTICE_IDLE_DROP (5 MINUTES)
+// A tutorial region (tutorial_region.dm) only runs rooms, so it holds more
+// (its 116 x 60 map fits 24 of the wider camp rooms).
+#define PRACTICE_MAX_ROOMS_TUTORIAL 32
+// Retry while a save holds the level (a save removes it itself).
+#define PRACTICE_IDLE_DROP (30 SECONDS)
 // A practice level is Gaia-sized at most. A 500 x 350 open-air plane measured
 // 0.3 s and 20 MiB to add (building_admission.dm); this one only exists while
 // someone practises and is removed before any save, so it never reaches a load.
@@ -39,9 +51,9 @@ var/global/datum/practice_rooms/practice_rooms = new
 	var/last_error
 
 /datum/practice_rooms/proc/capacity()
-	var/cols = round((world.maxx - 1) / PRACTICE_ROOM_PITCH)
-	var/rows = round((world.maxy - 1) / PRACTICE_ROOM_PITCH)
-	return max(0, min(PRACTICE_MAX_ROOMS, cols * rows))
+	var/cols = round((world.maxx - 1) / PRACTICE_ROOM_PITCH_X)
+	var/rows = round((world.maxy - 1) / PRACTICE_ROOM_PITCH_Y)
+	return max(0, min(tutorial_region_here() ? PRACTICE_MAX_ROOMS_TUTORIAL : PRACTICE_MAX_ROOMS, cols * rows))
 
 // Why a lobby player cannot enter now, or null.
 /datum/practice_rooms/proc/entry_error()
@@ -64,14 +76,14 @@ var/global/datum/practice_rooms/practice_rooms = new
 	return 0
 
 /datum/practice_rooms/proc/slot_origin(slot)
-	var/cols = round((world.maxx - 1) / PRACTICE_ROOM_PITCH)
+	var/cols = round((world.maxx - 1) / PRACTICE_ROOM_PITCH_X)
 	var/col = (slot - 1) % cols
 	var/row = round((slot - 1) / cols)
-	return list(2 + col * PRACTICE_ROOM_PITCH, 2 + row * PRACTICE_ROOM_PITCH)
+	return list(2 + col * PRACTICE_ROOM_PITCH_X, 2 + row * PRACTICE_ROOM_PITCH_Y)
 
 /datum/practice_rooms/proc/slot_turfs(slot)
 	var/list/O = slot_origin(slot)
-	return block(locate(O[1], O[2], practice_room_z), locate(O[1] + PRACTICE_ROOM_SIZE - 1, O[2] + PRACTICE_ROOM_SIZE - 1, practice_room_z))
+	return block(locate(O[1], O[2], practice_room_z), locate(O[1] + PRACTICE_ROOM_WIDTH - 1, O[2] + PRACTICE_ROOM_HEIGHT - 1, practice_room_z))
 
 // Adds the level through the shared budget. No sleeps between admission and
 // publication, like the other level owners.
@@ -111,11 +123,12 @@ var/global/datum/practice_rooms/practice_rooms = new
 	if (practice_room_z != world.maxz)
 		log_game("Practice level z [practice_room_z] is not the top level ([world.maxz]); kept.")
 		return FALSE
+	evacuate_level()
 	for (var/slot = 1 to capacity())
 		wipe_room(slot)
 		for (var/turf/T in slot_turfs(slot))
 			turfs -= T
-			turf_registry_members -= T
+			turf_registry_remove(T)
 			new_turfs -= T
 	var/z = practice_room_z
 	practice_room_z = 0
@@ -124,6 +137,15 @@ var/global/datum/practice_rooms/practice_rooms = new
 	world.maxz = z - 1
 	log_game("Practice level z [z] removed.")
 	return TRUE
+
+// Anyone still on the level (an admin ghost watching a room) is moved to the
+// first level, so removing the level never deletes a connected player's mob.
+/datum/practice_rooms/proc/evacuate_level()
+	var/turf/safe = locate(round(world.maxx / 2), round(world.maxy / 2), 1)
+	for (var/client/C in clients)
+		var/mob/M = C.mob
+		if (M && M.z == practice_room_z && safe)
+			M.forceMove(safe)
 
 /datum/practice_rooms/proc/schedule_idle_drop()
 	if (idle_timer)
@@ -145,16 +167,18 @@ var/global/datum/practice_rooms/practice_rooms = new
 				continue
 			qdel(AM)
 
-// Builds one room: wall ring, wooden floor, a partition with a door, and the
-// props each step needs. Returns the session's prop list.
+// Builds one room: wall ring, wooden floor, two partitions with a door each
+// (controls | fighting and bandaging | camp), and the props each step needs.
+// Returns the session's prop list.
 /datum/practice_rooms/proc/build_room(slot)
 	var/list/O = slot_origin(slot)
 	var/x1 = O[1]
 	var/y1 = O[2]
-	var/x2 = x1 + PRACTICE_ROOM_SIZE - 1
-	var/y2 = y1 + PRACTICE_ROOM_SIZE - 1
+	var/x2 = x1 + PRACTICE_ROOM_WIDTH - 1
+	var/y2 = y1 + PRACTICE_ROOM_HEIGHT - 1
 	var/z = practice_room_z
 	var/split = x1 + 6
+	var/camp = x1 + 11
 	var/area/A = locate(/area/caribbean/admin/practice) in area_list
 	if (!A)
 		A = new /area/caribbean/admin/practice
@@ -163,10 +187,10 @@ var/global/datum/practice_rooms/practice_rooms = new
 	var/old_bulk = wall_bulk_placement
 	wall_bulk_placement = TRUE
 	for (var/turf/T in slot_turfs(slot))
-		if (T.x == x1 || T.x == x2 || T.y == y1 || T.y == y2 || (T.x == split && T.y != y1 + 5))
-			if (!istype(T, /turf/wall/indestructable))
-				new /turf/wall/indestructable(T)
-		else if (!istype(T, /turf/floor/wood))
+		// Always a fresh turf: blood, footprints and other marks on the old one go.
+		if (T.x == x1 || T.x == x2 || T.y == y1 || T.y == y2 || ((T.x == split || T.x == camp) && T.y != y1 + 5))
+			new /turf/wall/indestructable(T)
+		else
 			new /turf/floor/wood(T)
 	wall_bulk_placement = old_bulk
 	var/list/props = list()
@@ -177,9 +201,20 @@ var/global/datum/practice_rooms/practice_rooms = new
 	props["door"] = new /obj/structure/simple_door/key_door/anyone/wood(locate(split, y1 + 5, z))
 	props["dummy"] = new /obj/structure/practice_dummy/indestructible/practice_room(locate(x1 + 9, y1 + 9, z))
 	props["gauze"] = new /obj/item/stack/medical/bruise_pack(locate(x1 + 8, y1 + 3, z))
-	props["bread"] = new /obj/item/weapon/reagent_containers/food/snacks/breadslice(locate(x1 + 10, y1 + 3, z))
-	props["exit"] = new /obj/effect/practice_marker/exit(locate(x1 + 10, y1 + 6, z))
+	// The camp: first-day survival.
+	props["camp_door"] = new /obj/structure/simple_door/key_door/anyone/wood(locate(camp, y1 + 5, z))
+	props["fire"] = new /obj/structure/oven/fireplace/practice(locate(x1 + 14, y1 + 8, z))
+	var/obj/item/stack/material/wood/firewood = new(locate(x1 + 12, y1 + 8, z))
+	firewood.amount = 10
+	props["firewood"] = firewood
+	props["meat"] = new /obj/item/weapon/reagent_containers/food/snacks/meat(locate(x1 + 12, y1 + 9, z))
+	props["pot"] = new /obj/item/weapon/reagent_containers/glass/small_pot(locate(x1 + 12, y1 + 3, z))
+	props["puddle"] = new /obj/structure/sink/puddle/practice(locate(x1 + 14, y1 + 3, z))
+	props["soap"] = new /obj/item/weapon/soap(locate(x1 + 15, y1 + 2, z))
+	props["bed"] = new /obj/structure/bed/wood(locate(x1 + 13, y1 + 1, z))
+	props["exit"] = new /obj/effect/practice_marker/exit(locate(x1 + 15, y1 + 6, z))
 	props["split"] = split
+	props["camp"] = camp
 	return props
 
 // Lobby entry. Returns TRUE when the player is now in a room.
@@ -213,8 +248,11 @@ var/global/datum/practice_rooms/practice_rooms = new
 			sessions -= key
 			break
 	wipe_room(S.slot)
+	// The last player out resets everything: the whole level goes now, and the
+	// next player gets a freshly built one. A save in progress removes it itself.
 	if (!sessions.len && practice_room_z)
-		schedule_idle_drop()
+		if (persistence_save_in_progress || !drop_level())
+			schedule_idle_drop()
 
 // Before every save: send everyone back to the lobby and remove the level.
 /datum/practice_rooms/proc/close_all(reason)
@@ -237,7 +275,14 @@ var/global/datum/practice_rooms/practice_rooms = new
 	if (!C)
 		return
 	var/mob/new_player/lobby = new
+	// In a tutorial region the player goes back to the group, not into a new room.
+	var/home = tutorial_region_here()
+	if (home)
+		lobby.tutorial_returning = TRUE
 	lobby.key = C.key
+	if (home && C)
+		to_chat(C, SPAN_NOTICE("Taking you back to [tutorial_region_return_name()]."))
+		tutorial_region_send_home(C)
 
 // ---- Steps ----
 
@@ -250,6 +295,9 @@ var/global/datum/practice_rooms/practice_rooms = new
 	var/start_hand
 	var/timer
 	var/ending = FALSE
+	var/obj/item/clothing/shirt // the worn uniform the wash steps use
+	var/pot_heated = FALSE // the pot sat on the lit campfire
+	var/pot_water = 0 // water in the pot when the drink step began
 	var/list/steps = list(
 		"walk" = "Walk onto the glowing marker. Use W, A, S, D or the arrow keys.",
 		"pick_up" = "Pick up the knife: click it while your active hand is empty.",
@@ -258,8 +306,18 @@ var/global/datum/practice_rooms/practice_rooms = new
 		"door" = "Click the door in the middle wall to open it, then walk through to the east half of the room.",
 		"harm" = "Choose the red Harm intent (press 4, or click the intent box on your HUD), then hit the practice dummy.",
 		"bandage" = "You have a cut on your left arm. Pick up the gauze, select your left arm on the body doll (bottom right of the HUD), then click yourself with the gauze.",
-		"eat" = "Pick up the bread slice and click yourself with it to take a bite.",
-		"exit" = "Well done! Walk onto the exit marker, or use the Leave Practice Room verb, to return to the lobby.")
+		"camp" = "Switch back to the green Help intent (press 1): on Harm you would splash drinks and hit people. Then open the second door and walk into the camp. The rest of the room teaches you how to get through your first day.",
+		"fire" = "Every camp needs a fire. Put the firewood into the campfire (click the campfire with the wood in hand), then click the campfire with an empty hand to light it. Don't step into a lit fire!",
+		"cook" = "Raw meat can give you food poisoning or worms, so always cook it. Put the raw meat into the lit campfire and wait until it is roasted and drops beside the fire.",
+		"eat" = "Your hunger is shown on the HUD. Pick up the roasted meat and click yourself with it to eat.",
+		"fill" = "Water from puddles, rivers and wells can carry cholera. Fill the pot: click the puddle with the pot in hand.",
+		"boil" = "Boiling kills the germs. Put the pot on the lit campfire and wait until it finishes boiling.",
+		"drink" = "Your thirst is shown on the HUD too. Pick up the pot of boiled water and click yourself with it to drink. Never drink straight from a puddle or river.",
+		"clothes" = "After a day outdoors you are filthy, and your shirt is crawling with fleas, which spread typhus. Take off your shirt (click it on your HUD with an empty hand), then click the puddle with it to wash it.",
+		"wash" = "Now wash yourself: while undressed, stand in the puddle, pick up the soap and click yourself with it. Being dirty sours your mood and makes your clothes dirty faster.",
+		"dress" = "Put your clean shirt back on (click your uniform slot on the HUD, or use it in hand).",
+		"rest" = "If you fall ill, rest in a bed: you recover faster, and you should keep away from people who are coughing. Drag yourself onto the bed (click-drag your character onto it) to lie down.",
+		"exit" = "Well done! You know how to survive your first day. Get up (click the bed), then walk onto the exit marker, or use the Leave Practice Room verb, to return to the lobby.")
 
 /datum/practice_session/New(datum/practice_rooms/rooms, room_slot, list/room_props)
 	..()
@@ -323,6 +381,16 @@ var/global/datum/practice_rooms/practice_rooms = new
 				body.updatehealth()
 		if ("eat")
 			body.nutrition = min(body.nutrition, 100)
+		if ("drink")
+			body.water = min(body.water, 100)
+			var/obj/item/weapon/reagent_containers/glass/small_pot/pot = props["pot"]
+			pot_water = pot && !QDELETED(pot) ? pot.reagents.total_volume : 0
+		if ("clothes")
+			shirt = body.w_uniform
+			if (shirt)
+				shirt.dirtyness = 95
+				shirt.fleas = TRUE
+			body.hygiene = HYGIENE_LEVEL_DIRTY - 1
 	body << sound('sound/effects/pop.ogg', volume = 40)
 	show_step()
 
@@ -351,9 +419,39 @@ var/global/datum/practice_rooms/practice_rooms = new
 					if (!W.internal && !W.bandaged)
 						return FALSE
 			return TRUE
+		if ("camp")
+			return body.a_intent == I_HELP && body.x > props["camp"]
+		if ("fire")
+			var/obj/structure/oven/fireplace/practice/fire = props["fire"]
+			return fire && fire.on
+		if ("cook")
+			var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = props["meat"]
+			return !meat || QDELETED(meat) || (meat.roasted && meat.loc != props["fire"])
 		if ("eat")
-			var/obj/item/weapon/reagent_containers/food/snacks/bread = props["bread"]
-			return !bread || QDELETED(bread) || bread.bitecount > 0
+			var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = props["meat"]
+			return !meat || QDELETED(meat) || meat.bitecount > 0
+		if ("fill")
+			var/obj/item/weapon/reagent_containers/glass/small_pot/pot = props["pot"]
+			return !pot || QDELETED(pot) || pot.reagents.has_reagent("water")
+		if ("boil")
+			var/obj/item/weapon/reagent_containers/glass/small_pot/pot = props["pot"]
+			if (!pot || QDELETED(pot))
+				return TRUE
+			if (pot.on_stove)
+				pot_heated = TRUE
+				return FALSE
+			return pot_heated && !pot.reagents.has_reagent("cholera")
+		if ("drink")
+			var/obj/item/weapon/reagent_containers/glass/small_pot/pot = props["pot"]
+			return !pot || QDELETED(pot) || pot.reagents.total_volume < pot_water || !pot_water
+		if ("clothes")
+			return !shirt || QDELETED(shirt) || (!shirt.fleas && shirt.dirtyness < 90)
+		if ("wash")
+			return body.hygiene >= HYGIENE_LEVEL_NORMAL
+		if ("dress")
+			return !!body.w_uniform
+		if ("rest")
+			return body.resting_in_bed()
 		if ("exit")
 			var/obj/exit = props["exit"]
 			return exit && body.loc == exit.loc
@@ -368,11 +466,14 @@ var/global/datum/practice_rooms/practice_rooms = new
 	if (!body.client)
 		end(null)
 		return
+	// Fleas on the practice shirt must not give the trainee a real illness.
+	if (body.disease)
+		body.clear_disease()
 	var/id = step_id()
 	if (!id || !step_done(id))
 		return
 	if (id == "exit")
-		end("Practice complete. Welcome back to the lobby - press Join when you are ready.")
+		end(tutorial_region_here() ? "Practice complete." : "Practice complete. Welcome back to the lobby - press Join when you are ready.")
 		return
 	to_chat(body, "<span class='good'>Done!</span>")
 	advance()
@@ -457,6 +558,35 @@ var/global/datum/practice_rooms/practice_rooms = new
 	if (H.practice && !H.practice.ending)
 		H.practice.leave()
 
+// The camp's campfire cooks quickly and never burns away. Anything put on it
+// while it burns starts a fresh cooking cycle, so nobody waits a minute for
+// the next one.
+/obj/structure/oven/fireplace/practice
+	fuel = 0
+	consume_itself = FALSE
+	cooking_time = 50
+	should_save = FALSE
+
+/obj/structure/oven/fireplace/practice/attackby(obj/item/I, mob/living/human/H)
+	. = ..()
+	if (on && fuel > 0 && !QDELETED(src))
+		stone_boil_epoch++
+		var/epoch = ++fire_epoch
+		keep_fire_on(epoch)
+		keep_sound_on(epoch)
+
+// A puddle that neither refills forever nor breeds mosquitoes, so a wiped
+// room leaves no loop behind.
+/obj/structure/sink/puddle/practice
+	should_save = FALSE
+	volume = 500
+
+/obj/structure/sink/puddle/practice/refill()
+	return
+
+/obj/structure/sink/puddle/practice/mosquito_proc()
+	return
+
 /obj/structure/practice_dummy/indestructible/practice_room
 	should_save = FALSE
 	not_movable = TRUE
@@ -472,7 +602,10 @@ var/global/datum/practice_rooms/practice_rooms = new
 		harm_hit_by = user
 	return ..()
 
-#undef PRACTICE_ROOM_SIZE
-#undef PRACTICE_ROOM_PITCH
+#undef PRACTICE_ROOM_WIDTH
+#undef PRACTICE_ROOM_HEIGHT
+#undef PRACTICE_ROOM_PITCH_X
+#undef PRACTICE_ROOM_PITCH_Y
 #undef PRACTICE_MAX_ROOMS
+#undef PRACTICE_MAX_ROOMS_TUTORIAL
 #undef PRACTICE_IDLE_DROP

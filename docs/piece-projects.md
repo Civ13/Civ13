@@ -36,8 +36,48 @@ one-go assembly does:
 | Windows / Canopy | 1 | all the glass |
 | Seats | 1 | all the cloth |
 
+The automobile workshop also builds works vehicles
+(`code/modules/craft/vehicle_works.dm`, `works_vehicle_specs`): a cargo
+truck, a double-decker bus, scout, field and armoured cars, a tankette, a tracked carrier and
+light, medium, heavy and main battle tanks.
+They are projects only (`one_go(model)` is FALSE, so the one-go menu and
+`assemble_for()` leave them out). Each spec names an existing body layout,
+its square, its cost, the steel that is turret and gun, and the research it
+needs beyond the press's own (none for the truck, scout car and field car,
+Modern Armor for the main battle tank, Mechanized Warfare for the rest,
+checked when the project starts). Tracked models have a Tracks stage in
+place of Wheels (4 pieces, 1 craftable tank track each) and no windows;
+tanks end with a Turret stage of 70 steel. A tank's turret is the craftable
+`/obj/structure/turret/built` with the craftable tank cannon and a gunner's
+and a loader's seat, fitted by `works_fit()`, and every works vehicle is
+`hand_built`, so its owners can restyle the turret, refit it or take it apart
+from the axis menu (craft-core.md "Vehicle assembly"). `workshop_layout_part()` leaves
+out a map layout's free extras for every press model: tanks are empty, shell
+racks are empty, and loose guns, ammunition, supply crates, hull gunner
+seats and radios are not made.
+
+The bus is the one "oversize" spec: it needs a 5x5 bay when its project
+starts, but `largest_model_size()` leaves it out, so a press can still be set
+up where only the usual 4x4 bay fits. Its upper deck is the raised roof deck
+of `vehicle_decks.dm`, reached by the `/obj/structure/vehicle_stairs` inside
+it (`carparts/bus.dm`).
+
+| Model | Square | Steel | Glass | Cloth | Cable | Running gear |
+| --- | --- | --- | --- | --- | --- | --- |
+| Scout car | 3 | 50 | 4 | 4 | 10 | 4 wheels |
+| Field car | 3 | 90 | 6 | 4 | 10 | 4 wheels |
+| Cargo truck | 4 | 80 | 8 | 6 | 10 | 4 wheels |
+| Double-decker bus | 5 | 110 | 14 | 10 | 12 | 4 wheels |
+| Armoured car | 3 | 120 | 0 | 4 | 10 | 4 wheels |
+| Tankette | 3 | 140 | 0 | 4 | 10 | 4 tracks |
+| Tracked carrier | 4 | 180 | 0 | 6 | 12 | 4 tracks |
+| Light tank | 4 | 220 | 0 | 4 | 12 | 4 tracks |
+| Medium tank | 4 | 300 | 0 | 6 | 14 | 4 tracks |
+| Heavy tank | 4 | 380 | 0 | 6 | 14 | 4 tracks |
+| Main battle tank | 4 | 460 | 0 | 6 | 16 | 4 tracks |
+
 Stacks are paid by hitting the press or any part of the vehicle in the bay;
-wheels are dragged onto either. A piece takes 3 seconds of work and needs no
+wheels and tank tracks are dragged onto either. A piece takes 3 seconds of work and needs no
 power. Anyone may work on it; the project needs the press's research.
 
 The bay shows `/obj/structure/vehicle_project_part` objects, one per cell of
@@ -48,6 +88,12 @@ engine and tank, seats and plates as they are fitted. Each stage covers the
 vehicle from the back row to the front. The cells and parts come from the
 same layout the press assembles (`project_layout()`: the premade car's
 `tocreate` or the light plane's layout).
+
+A model whose cost names `wood` or `aluminium` (the hangar's planes) pays its
+frame and skin stages in that material, a quarter of it per piece, and its
+engine in steel (`vehicle_project_hull()`); every other model pays all three in
+steel. The trainer and light plane have wooden airframes; the cabin, cargo and
+twin-engine planes have aluminium ones (docs/aluminium.md).
 
 When the last piece is fitted the press offers "Roll out". Roll-out clears
 the jig, draws 20 power like an ordinary assembly, credits the plan's

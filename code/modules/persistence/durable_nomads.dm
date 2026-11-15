@@ -1,9 +1,10 @@
 // Exact, audited profiles. New descendants do not inherit recovery admission.
 // Exact types: a subtype saves only when listed here, so the barren region
 // (Mars), the Moon (code/modules/space/moon_world.dm) and orbit
-// (code/modules/space/orbit_world.dm) are named explicitly.
+// (code/modules/space/orbit_world.dm) and the lands across the sea that ships
+// sail to (code/modules/persistence/expedition_land.dm) are named explicitly.
 /proc/durable_nomads_profiles()
-	return list(/obj/map_metadata/nomads, /obj/map_metadata/nomads/africa, /obj/map_metadata/nomads/asia, /obj/map_metadata/nomads/continental, /obj/map_metadata/nomads/desert, /obj/map_metadata/nomads/divide, /obj/map_metadata/nomads/europe, /obj/map_metadata/nomads/extended, /obj/map_metadata/nomads/frozen_wasteland, /obj/map_metadata/nomads/gaia, /obj/map_metadata/nomads/ice_age, /obj/map_metadata/nomads/island, /obj/map_metadata/nomads/jungle, /obj/map_metadata/nomads/karafuto, /obj/map_metadata/nomads/mediterranean, /obj/map_metadata/nomads/mountain, /obj/map_metadata/nomads/new_world, /obj/map_metadata/nomads/north_america, /obj/map_metadata/nomads/oceania, /obj/map_metadata/nomads/pangea, /obj/map_metadata/nomads/persistence_beta, /obj/map_metadata/nomads/stranded, /obj/map_metadata/nomads/uk, /obj/map_metadata/nomads/wasteland, /obj/map_metadata/nomads/wasteland/two, /obj/map_metadata/nomads/wasteland/three, /obj/map_metadata/nomads/barren, /obj/map_metadata/nomads/barren/moon, /obj/map_metadata/nomads/orbit)
+	return list(/obj/map_metadata/nomads, /obj/map_metadata/nomads/africa, /obj/map_metadata/nomads/americas_north, /obj/map_metadata/nomads/americas_south, /obj/map_metadata/nomads/asia, /obj/map_metadata/nomads/continental, /obj/map_metadata/nomads/desert, /obj/map_metadata/nomads/divide, /obj/map_metadata/nomads/europe, /obj/map_metadata/nomads/extended, /obj/map_metadata/nomads/frozen_wasteland, /obj/map_metadata/nomads/gaia, /obj/map_metadata/nomads/ice_age, /obj/map_metadata/nomads/island, /obj/map_metadata/nomads/jungle, /obj/map_metadata/nomads/karafuto, /obj/map_metadata/nomads/mediterranean, /obj/map_metadata/nomads/mountain, /obj/map_metadata/nomads/new_world, /obj/map_metadata/nomads/north_america, /obj/map_metadata/nomads/oceania, /obj/map_metadata/nomads/pangea, /obj/map_metadata/nomads/persistence_beta, /obj/map_metadata/nomads/stranded, /obj/map_metadata/nomads/uk, /obj/map_metadata/nomads/wasteland, /obj/map_metadata/nomads/wasteland/two, /obj/map_metadata/nomads/wasteland/three, /obj/map_metadata/nomads/barren, /obj/map_metadata/nomads/barren/moon, /obj/map_metadata/nomads/orbit, /obj/map_metadata/nomads/expedition)
 
 /obj/map_metadata
 	var/nomads_nuke_threshold = 0
@@ -127,7 +128,7 @@
 	return callbacks
 
 /obj/map_metadata/proc/durable_nomads_initial_climate()
-	if(map == src && season == "SPRING") season = "Wet Season"
+	if(map == src && season == SEASON_SPRING) season = SEASON_WET
 
 /obj/map_metadata/proc/durable_nomads_eruption_check()
 	if(vars["eruptions_enabled"]) call(src, "do_eruption")()
@@ -291,15 +292,15 @@
 	var/delay
 	if(type == /obj/map_metadata/nomads/mountain)
 		if(vars["real_season"] == "dry")
-			season = "Wet Season"
+			season = SEASON_WET
 			vars["real_season"] = "wet"
 		else
-			season = "Dry Season"
+			season = SEASON_DRY
 			vars["real_season"] = "dry"
 		record_abandonment_season_change(advance_decay)
 		to_chat(world, "<big>The <b>[season]</b> has started.</big>")
 		change_weather_somehow()
-		if(season == "Wet Season")
+		if(season == SEASON_WET)
 			durable_nomads_replace(/turf/floor/beach/drywater, /turf/floor/beach/water/swamp, epoch)
 		else
 			durable_nomads_replace(/turf/floor/beach/water/swamp, /turf/floor/beach/drywater, epoch)
@@ -346,7 +347,7 @@
 	season_queue += list(phase, season_epoch, FALSE, FALSE)
 	season_run_queue()
 /obj/map_metadata/proc/durable_nomads_ice_weather_phase(epoch)
-	if(season_worker_valid(epoch)) change_weather(vars["real_season"] == "WINTER" ? WEATHER_WET : WEATHER_NONE)
+	if(season_worker_valid(epoch)) weather_roll(vars["real_season"] == "WINTER" ? WEATHER_WET : WEATHER_NONE)
 /obj/map_metadata/proc/durable_nomads_ice_water_phase(epoch)
 	if(!season_worker_valid(epoch)) return
 	if(vars["real_season"] == "WINTER")

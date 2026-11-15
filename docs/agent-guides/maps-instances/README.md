@@ -89,7 +89,7 @@ run those validators; maplint is the shared floor, not a replacement.
 <!-- 2026-10-18: centralized level admission -->
 Dynamic z growth must reserve its complete target through world_z_budget before
 the first native resize. The uncalibrated hard ceiling is 1,400,000 total grid cells,
-with one roof-added plane and lower-only host settings. Production additionally
+with at most four roof-added planes (a map opts in with `building_levels`) and lower-only host settings. Production additionally
 refuses new growth as UNMEASURED until a calibrated memory/headroom profile is
 reviewed; configuration cannot bypass this. Isolated tests select a tests-only
 subclass, never a production opt-out. This is not an OOM guarantee. Overcap saved expansion holds before mutation and blocks
@@ -254,3 +254,14 @@ the two Dagger map studies. `tests/train_raid/build.py` composes the Hauler
 station with a shuttle docked in each berth; regenerate after any change to
 either study's generator. The `train_raid` offline suite checks the map, and
 `tests/train_raid/native_probe.py` runs the round flow headless.
+
+## Americas regions
+
+[The Americas regions](../../americas-regions.md) are the two large generated
+Nomads continents (`northamerica`, `southamerica`). Players walk between them
+over the shared map edge at the isthmus (`edge_crossings`,
+`code/modules/persistence/region_edge.dm`); nothing stands on the map for it.
+`tests/americas_maps/build.py` writes both maps from `continents.py` together
+with their height, current and flood files. The
+`americas_maps` offline suite checks the maps, and a map may not grow past the
+measured cell count without a new memory benchmark.

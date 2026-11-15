@@ -9,6 +9,7 @@ p.add_argument('--byond-bin', type=pathlib.Path, required=True)
 a = p.parse_args()
 root = pathlib.Path(__file__).resolve().parents[2]
 source = (root / 'code/game/turfs/turf.dm').read_text()
+registry = (root / 'code/game/turfs/turf_registry.dm').read_text()
 body = source.split('/turf/New()\n', 1)[1].split('\n/turf/proc/initialize()', 1)[0]
 with tempfile.TemporaryDirectory(prefix='civ13-turf-registration-') as folder:
     work = pathlib.Path(folder)
@@ -18,14 +19,13 @@ with tempfile.TemporaryDirectory(prefix='civ13-turf-registration-') as folder:
 #define GAME_STATE_PLAYING 3
 var/global/list/turfs = list()
 var/global/list/new_turfs = list()
-var/global/list/turf_registry_members = list()
 var/global/datum/ticker
 /datum/var/current_state = 0
 /turf/proc/levelupdate()
 /turf/proc/calculate_window_coeff()
 /turf/var/tmp/turf_registration_done = FALSE
 /turf/New()
-''' + body + '''
+''' + body + registry + '''
 /turf/alternate
 /world/OpenPort(port)
     if (port == "none") return ..(port)
@@ -43,7 +43,10 @@ var/global/datum/ticker
     new /turf/alternate(T)
     if (turfs.len != expected) CRASH("replacement count")
     T = locate(1,1,1)
-    if (!(T in turfs) || !turf_registry_members[T]) CRASH("replacement membership")
+    if (!(T in turfs) || !turf_registry_has(T) || turf_registry_add(T)) CRASH("replacement membership")
+    if (turf_registry_has(null) || !turf_registry_has(locate(world.maxx, world.maxy, 1))) CRASH("edge membership")
+    turf_registry_remove(T)
+    if (turf_registry_has(T) || !turf_registry_has(locate(2,1,1)) || !turf_registry_add(T) || !turf_registry_has(T)) CRASH("removal")
     text2file("PASS", "result.txt")
     shutdown()
 ''')

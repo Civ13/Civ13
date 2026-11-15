@@ -20,14 +20,20 @@
 	return FALSE
 
 /map_storage/proc/save_work_check()
+	var/datum/persistence_world_operation/operation = persistence_active_operation
+	// Progress for the stall watchdog (save_watchdog.dm).
+	if(operation) operation.progress_at = world.time
 	if(moving_save_chunk)
 		moving_save_chunk.check()
 		return
+	// The watchdog gave up on a save that stopped advancing: fail it here so
+	// the ordinary failure path cleans up and a later save can run.
+	if(operation && operation.abort_reason)
+		throw EXCEPTION("World save stopped by the stall watchdog: [operation.abort_reason]")
 	saving_work++
 	// Shutdown save: the server stops right after it and players were warned,
 	// so yield only to queued work instead of giving up whole ticks (about
 	// 20-40% faster on Gaia's busiest level).
-	var/datum/persistence_world_operation/operation = persistence_active_operation
 	// An unattended save (no client connected when its level started) has
 	// nobody to keep responsive either, so it yields the same way.
 	var/shutdown = operation && (operation.shutdown_save || saving_unattended)
@@ -132,7 +138,9 @@
 	log_startup_progress("	Saved metadata.")
 	save_phase_started = persistence_save_phase_log("metadata and backup", save_phase_started)
 	for(var/A = 1, A <= world.maxz, A++)
+		if(operation.abandoned) throw EXCEPTION("World save was abandoned by the stall watchdog")
 		saving_z = A
+		saving_skipped_wildlife = list()
 		saving_unattended = persistence_save_unattended()
 		// Freeze this level's players only while it is captured (restart_transaction.dm).
 		persistence_freeze_level(A)
@@ -177,16 +185,32 @@
 			saving_segments = low_memory ? new /datum/level_segment_writer(src, savefile, "map_saves/[A].sav", A, generation, segment_budget()) : null
 		var/list/turf_grid = handover_turfs ? list() : null
 		if(turf_grid) handover_turfs["[A]"] = turf_grid
+		// A sleeping open-air cell of a building level (building_lighting.dm) was
+		// never constructed or woken, so it is the baseline without the field
+		// comparison that cost an empty Gaia level several seconds per save.
+		var/cell_asleep = sparse_kind == "building" ? text2path("/proc/building_cell_asleep") : null
+		// Plain cells (functions.dm): empty ground turfs whose saved fields are
+		// scalars go into a run-length grid of templates instead of full entries.
+		// Without zone export (fixtures) templates carry no zone.
+		var/datum/plain_cell_writer/plain = sparse_kind == "ground" && sparse_area && (!sparse_zone || sparse_anchors) && !debug_policy ? new /datum/plain_cell_writer(src, sparse_anchors) : null
+#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
+		plain = null // Spatial candidate checks read every saved turf's density.
+#endif
 		// Visit each coordinate once, without rescanning other levels.
 		for(var/y = 1, y <= world.maxy, y++)
 			for(var/x = 1, x <= world.maxx, x++)
 				var/turf/T = locate(x, y, A)
-				if(sparse_turf && sparse_baseline_cell(T, sparse_turf, sparse_area))
+				if(sparse_turf && ((cell_asleep && T.type == sparse_turf && T.loc == sparse_area && !T.contents.len && call(cell_asleep)(T)) || sparse_baseline_cell(T, sparse_turf, sparse_area)))
 					if(turf_grid) turf_grid += sparse_turf
+					if(plain) plain.add(0)
 					// A zone with no saved turf (an untouched sky level) still
 					// needs an anchor cell, or its area row is never written.
 					if(sparse_anchors && !sparse_anchors[sparse_zone]) sparse_anchors[sparse_zone] = list("x" = T.x, "y" = T.y, "z" = T.z)
 					continue // Regenerated on load; yields once per row below.
+				if(plain && plain.add_turf(T))
+					if(turf_grid) turf_grid += T.type
+					continue
+				if(plain) plain.add(0)
 				var/ref = BuildVarDirectory(savefile, T, 1)
 				if(!ref)
 					throw EXCEPTION("Turf [x],[y],[A] could not be saved")
@@ -197,11 +221,18 @@
 				if(turf_grid) turf_grid += saved_turf_type
 				if(saving_segments) saving_segments.rotate_if_full()
 			if(sparse_turf) save_work_check()
+			// A save the watchdog released may wake here; stop before another row.
+			if(operation.abandoned) throw EXCEPTION("World save was abandoned by the stall watchdog")
 		if(sparse_turf)
 			savefile["/sparse/cells"] << sparse_cells
-			log_startup_progress("	Sparse z-level [A]: [sparse_cells] of [world.maxx * world.maxy] cells differ from [sparse_turf].")
+			if(plain && plain.write(savefile, sparse_turf))
+				log_startup_progress("	Sparse z-level [A]: [sparse_cells] of [world.maxx * world.maxy] cells saved in full, [plain.plain_cells] as [plain.templates.len] plain templates, the rest [sparse_turf].")
+			else
+				log_startup_progress("	Sparse z-level [A]: [sparse_cells] of [world.maxx * world.maxy] cells differ from [sparse_turf].")
 		drain_moving_save_roster(savefile)
 		sweep_uncaptured_animals(savefile)
+		if(saving_skipped_wildlife.len)
+			log_startup_progress("	Z-level [A]: left out [saving_skipped_wildlife.len] wild animals where no player has been.")
 #ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
 		drain_human_save_roster(savefile, operation)
 #endif
@@ -251,10 +282,14 @@
 #ifdef CIV13_HUMAN_SUBTILE_CAPTURE_SOURCE
 	operation.validate_human_spatial_candidates()
 #endif
+	// Never publish a candidate whose operation the stall watchdog released.
+	if(!operation.current(src, "save")) throw EXCEPTION("World save lost its operation before the completion marker")
 	operation.diagnostic_phase = "write_marker"
 	// Transfer effects applied in memory, so the committed save can confirm them.
 	var/list/transfer_capture = transfer_capture(generation)
 	if(transfer_capture) round_state["transfer"] = transfer_capture
+	var/list/visited = visited_capture()
+	if(visited) round_state["visited"] = visited
 	round_state["saved_at"] = persistence_save_stamp()
 	if(fexists("map_saves/round.json") && !fdel("map_saves/round.json"))
 		throw EXCEPTION("Could not replace round state")
@@ -307,6 +342,11 @@
 // across ticks, so world.timeofday, not world.cpu, measures what admins wait.
 // Returns the start of the next phase.
 /proc/persistence_save_phase_log(phase, started)
+	var/datum/persistence_world_operation/operation = persistence_active_operation
+	if(operation)
+		operation.progress_at = world.time
+		operation.phase_at = world.time
+		operation.last_phase = phase
 	var/now = world.timeofday
 	var/elapsed = now - started
 	if(elapsed < 0) elapsed += 864000 // midnight wrap
@@ -328,6 +368,8 @@
 	if(!A.should_save)
 		return 0
 	if(istype(A, /obj/map_metadata))
+		return 0
+	if(ismob(A) && save_skips_wildlife(A))
 		return 0
 	for(var/ignored in ignore_types)
 		if(istype(A, ignored))
@@ -454,6 +496,7 @@
 					catch
 						// Diagnostics must not replace the original refusal.
 						last_save_reference_failure = null
+					if(content) fail_save_on_animal(content, "turf contents")
 					throw EXCEPTION("Child moved or disappeared during capture")
 				add_export_content(frame, child_ref)
 				save_work_check()
@@ -724,7 +767,7 @@
 	return T && T.z != saving_z
 
 /map_storage/proc/level_link_target_saved(atom/movable/target)
-	if(!target.should_save || istype(target, /obj/map_metadata))
+	if(!target.should_save || istype(target, /obj/map_metadata) || (ismob(target) && save_skips_wildlife(target)))
 		return FALSE
 	for(var/ignored in ignore_types)
 		if(istype(target, ignored))
@@ -990,6 +1033,8 @@
 	var/list/paths = list()
 	// Highest tick share this capture used past its 40% share, or 0.
 	var/overrun_usage = 0
+	// Wall-clock deciseconds a slow capture took past one, or 0.
+	var/overrun_elapsed_ds = 0
 	proc/check()
 		var/tick_delta = world.time - start_tick
 		var/current_usage = world.tick_usage
@@ -1007,8 +1052,13 @@
 		// takes) hit 40% while Gaia ran at 78-89% (round cIh-c7qU, 2026-11-09).
 		// An overrun is noted instead; capture_moving_save_root keeps that
 		// root on the turf path from the next save on.
+		// elapsed_ds is the same wall-clock cost in coarser units: world.time
+		// cannot move without a sleep, so only tick_delta proves a yield. A
+		// 162-unit drift jelly took 2 ds on a host already at 133% tick usage
+		// (2026-11-13) and the throw failed the whole save; note it instead.
 		if(usage_delta > 40) overrun_usage = max(overrun_usage, usage_delta)
-		if(++work > 8192 || tick_delta || elapsed_ds > 1)
+		if(elapsed_ds > 1) overrun_elapsed_ds = max(overrun_elapsed_ds, elapsed_ds)
+		if(++work > 8192 || tick_delta)
 			throw EXCEPTION("Moving save chunk exceeded its capture budget or yielded: root=[root ? root.type : "null"] work=[work] tick_delta=[tick_delta] usage_delta=[usage_delta] total_usage=[current_usage] elapsed_ds=[elapsed_ds] admission_usage=[admission_usage] start_usage=[start_usage]")
 	proc/reserve_bytes(count)
 		reserved_bytes += count
@@ -1199,18 +1249,23 @@
 		if(world.tick_usage >= 80)
 			no_headroom = TRUE
 	if(!A || record["atom"] != A || "\ref[A]" != record["identity"] || !moving_save_root_supported(A) || A.z != record["z"] || A.z != saving_z)
+		if(A && record["atom"] == A) fail_save_on_animal(A, "changed while the save waited for headroom")
 		throw EXCEPTION("Admitted moving save root changed containment, level or identity")
 	// Admission ran when the save began; a level can take minutes to reach
 	// this animal. If it has since picked up a reference to another movable
 	// (a target, a herd mate, a held item), the chunk cannot capture it.
 	// Repeat the side-effect-free closure walk and hand the animal back to
 	// the ordinary path instead (Gaia, 2026-11-09). Nothing is allocated yet.
-	if(no_headroom || !moving_save_root_closed(A))
+	// A wild animal the save leaves out (no player near its chunk, #5127) is
+	// declined too: BuildVarDirectory below would write no entry for it, and
+	// the refusal failed every Gaia save from 2026-11-13 23:05 until the
+	// retries ran Dream Daemon out of memory. The ordinary path skips it.
+	if(no_headroom || save_skips_wildlife(A) || !moving_save_root_closed(A))
 		moving_save_roots -= record["identity"]
 		return 0
 	var/turf/origin = A.loc
 	var/admission_usage = world.tick_usage
-	var/savefile/staged = new
+	var/savefile/staged = new_scratch_savefile()
 	staged["/format_version"] << 3
 	var/datum/moving_save_capture/chunk = new
 	chunk.root = A
@@ -1220,10 +1275,11 @@
 	chunk.start_clock = world.timeofday
 	moving_save_chunk = chunk
 	var/ref
+	var/root_type = A.type
 	try
 		ref = BuildVarDirectory(staged, A, 1)
 		chunk.check()
-		if(!ref || !A || A.loc != origin || !moving_save_root_supported(A)) throw EXCEPTION("Moving save root changed during capture")
+		if(!ref || !A || A.loc != origin || !moving_save_root_supported(A)) throw EXCEPTION("Moving save root changed during capture: root=[root_type] [moving_save_root_change(A, ref, origin)]")
 	catch(var/exception/error)
 		moving_save_chunk = null
 		// IDs, durable bindings and list aliases may already be reserved. Abort
@@ -1233,14 +1289,23 @@
 		if(findtext("[error]", "capture budget")) moving_save_demoted[record["identity"]] = TRUE
 		// A save hook can still add an outside reference after the recheck.
 		if(findtext("[error]", "uncaptured external movable")) moving_save_demoted[record["identity"]] = TRUE
+		// A save hook changed the root itself (Gaia, 2026-11-14, a sea animal
+		// during a handover save): the same root must not refuse the next save.
+		if(findtext("[error]", "root changed during capture")) moving_save_demoted[record["identity"]] = TRUE
+		// An animal must never fail a save (Val, 2026-11-14). One that moved or
+		// changed although its level is held still is deleted; either way
+		// savemap() saves again at once without it on the moving path.
+		var/changed = !A || A.gcDestroyed || A.loc != origin || findtext("[error]", "root changed during capture")
+		if(A) fail_save_on_animal(A, "moving-save capture", changed)
+		else save_animal_failure = "[root_type] (deleted during moving-save capture)"
 		throw error
 	moving_save_chunk = null
-	if(chunk.overrun_usage)
+	if(chunk.overrun_usage || chunk.overrun_elapsed_ds)
 		// The snapshot is consistent (same tick, within its logical bounds), so
 		// keep it; only its cost was high. Defer this animal to the turf path
 		// in later saves so a slow root does not keep costing a tick.
 		moving_save_demoted[record["identity"]] = TRUE
-		world.log << "Moving save chunk overran its tick share and was kept: root=[A.type] work=[chunk.work] usage_delta=[chunk.overrun_usage] admission_usage=[chunk.admission_usage] start_usage=[chunk.start_usage]"
+		world.log << "Moving save chunk overran its tick share and was kept: root=[A.type] work=[chunk.work] usage_delta=[chunk.overrun_usage] elapsed_ds=[chunk.overrun_elapsed_ds] admission_usage=[chunk.admission_usage] start_usage=[chunk.start_usage]"
 	record["origin"] = origin
 	record["ref"] = ref
 	if(saving_segments && destination == saving_segments.index) destination = saving_segments.current
@@ -1254,6 +1319,52 @@
 		destination[path] << value
 		save_work_check()
 	return ref
+
+// What changed on a root during its capture, for the refusal message: the
+// first failed condition of capture_moving_save_root's final check.
+/map_storage/proc/moving_save_root_change(mob/living/simple_animal/A, ref, turf/origin)
+	if(!ref) return "reason=no entry written"
+	if(!A) return "reason=deleted"
+	if(A.loc != origin)
+		var/atom/now = A.loc
+		return "reason=moved from=[origin ? "[origin.x],[origin.y],[origin.z]" : "null"] to=[now ? "[now.type] [now.x],[now.y],[now.z]" : "null"]"
+	if(!A.should_save) return "reason=should_save cleared"
+	if(A.client) return "reason=client attached"
+	if(A.contents.len) return "reason=contents gained ([A.contents.len], first [A.contents[1]:type])"
+	for(var/ignored in ignore_types)
+		if(istype(A, ignored)) return "reason=ignored type"
+	#ifdef CIV13_SUBTILE_PULL_PAIRS
+	if(subtile_pull_ownership.owners[A]) return "reason=pull pair"
+	#endif
+	for(var/key in list("corpse_decay_record", "pulling", "pulledby", "buckled", "npc_subtile_pulse", "ride", "rider", "control_object", "handcuffed", "legcuffed", "following_mob", "origin", "grab_list", "grabbed_by", "pinned", "friends"))
+		if(!(key in A.vars)) continue
+		var/value = A.vars[key]
+		if(islist(value) ? length(value) : value) return "reason=field [key] set"
+	return "reason=unknown"
+
+// An animal must never be why a save fails (Val, 2026-11-14). When its capture
+// fails, the animal is deleted (remove = FALSE leaves it to the caller's
+// demotion off the moving path) and save_animal_failure tells savemap() to save again at once, so the
+// attempt never reaches the host as a failure. Only uncontrolled simple
+// animals: a player's mob is never deleted and its failure stays a failure.
+/map_storage/var/tmp/save_animal_failure
+
+/map_storage/proc/fail_save_on_animal(mob/living/simple_animal/A, where, remove = TRUE)
+	if(!istype(A) || A.client || A.ckey) return FALSE
+	save_animal_failure = "[A.type] ([where])"
+	if(remove) delete_unheld_save_animal(A, where)
+	return TRUE
+
+// Deletes an animal that moved or changed while its level was held still
+// (ecology_animal_frozen), after its capture failed.
+/map_storage/proc/delete_unheld_save_animal(mob/living/simple_animal/A, where)
+	if(!istype(A) || A.gcDestroyed || A.client || A.ckey) return FALSE
+	var/turf/T = get_turf(A)
+	var/line = "World save: deleted [A.type] at [T ? "[T.x],[T.y],[T.z]" : "nowhere"]: it moved while its level was being saved ([where])."
+	world.log << line
+	persistence_game_log(line)
+	qdel(A)
+	return TRUE
 
 /map_storage/proc/moving_save_root_edge(atom/movable/A, atom/parent)
 	var/identity = "\ref[A]"
@@ -1316,6 +1427,7 @@
 			// Capture yields. Apply the traversal's post-child rule: only a
 			// step to another tile of this level keeps the captured origin.
 			if(!A || A.gcDestroyed || !isturf(A.loc) || A.z != saving_z || saving_reference_pins[ref] != A)
+				if(A) fail_save_on_animal(A, "uncaptured animal sweep")
 				throw EXCEPTION("Swept mob moved or disappeared during capture")
 			if(saving_reference_pins[parent_ref] != origin)
 				throw EXCEPTION("Uncaptured mob origin turf was replaced")
@@ -1343,6 +1455,14 @@
 		// left to persist; omitting it matches the live world.
 		if(!ref && (!A || A.gcDestroyed)) continue
 		if(!A || "\ref[A]" != identity || !moving_save_root_supported(A) || A.z != saving_z)
+			// Not captured yet: nothing is reserved for it, so it leaves the
+			// roster and the straggler sweep saves it like any other animal
+			// instead of failing the save (Val, 2026-11-14).
+			if(!ref)
+				moving_save_roots -= identity
+				continue
+			if(A && record["atom"] == A) fail_save_on_animal(A, "moving-save roster")
+			else if(!A || A.gcDestroyed) save_animal_failure = "a moving-save root deleted during the save (moving-save roster)"
 			throw EXCEPTION("Moving save roster member disappeared or changed ownership")
 		if(!ref)
 			ref = capture_moving_save_root(F, record)
@@ -1351,6 +1471,8 @@
 			if(!ref) continue
 		// Replay yields too: match the ordinary traversal post-capture refusal.
 		if(!A || record["atom"] != A || "\ref[A]" != identity || !moving_save_root_supported(A) || A.z != saving_z)
+			if(A && record["atom"] == A) fail_save_on_animal(A, "moving-save replay")
+			else if(!A || A.gcDestroyed) save_animal_failure = "a moving-save root deleted during the save (moving-save replay)"
 			throw EXCEPTION("Moving save roster member changed during chunk replay")
 		var/turf/origin = record["origin"]
 		var/parent_ref = origin ? saving_references[origin] : null
@@ -1376,6 +1498,9 @@
 		save_work_check()
 		// The work check can yield after attaching the saved edge. Keep the
 		// existing strict roster invariant through that final checkpoint too.
+		// Flag (and delete) a root that changed, ahead of the strict guard below.
+		if(!A || A.gcDestroyed) save_animal_failure = "a moving-save root deleted during the save (moving-save drain checkpoint)"
+		else if(record["atom"] == A && (!moving_save_root_supported(A) || A.z != saving_z)) fail_save_on_animal(A, "moving-save drain checkpoint")
 		if(!A || record["atom"] != A || "\ref[A]" != identity || !moving_save_root_supported(A) || A.z != saving_z)
 			throw EXCEPTION("Moving save roster member changed after drain checkpoint")
 
@@ -1889,3 +2014,95 @@
 			human_record["slots_checked"] = TRUE
 	files = list()
 #endif
+
+// The fields a full entry of T would hold, when T can be a plain cell instead
+// (sparse_plain_level, functions.dm): nothing inside it is saved and every
+// field the entry would write is a scalar. Mirrors BuildVarDirectory's field
+// rule, as sparse_turf_at_baseline does for the baseline.
+/map_storage/proc/plain_cell_fields(turf/T)
+	if(!T.should_save || T.persistence_export_frame || !istype(T.loc, /area)) return null
+	for(var/atom/movable/M in T)
+		if(M.loc != T || !M.should_save || (ismob(M) && save_skips_wildlife(M))) continue
+		var/ignored = FALSE
+		for(var/type in ignore_types)
+			if(istype(M, type))
+				ignored = TRUE
+				break
+		if(!ignored) return null
+	var/list/fields = list()
+	var/list/default_fields = T.persistence_field_allowlist()
+	var/list/type_vars = persistence_type_vars(T)
+	for(var/v in T.get_saved_vars())
+		if(persistence_runtime_field(T, v)) continue
+		switch(v)
+			if("loc", "locs", "pixloc", "contents", "vars", "type", "parent_type", "x", "y", "z", "vis_locs", "client", "key", "ckey")
+				continue
+		if(!type_vars[v]) continue
+		var/raw = T.vars[v]
+		if(!persistence_default_scalar(raw)) return null
+		if(default_fields && (v in default_fields) && raw == initial(T.vars[v])) continue
+		// Type paths stay in full entries: save_to_map reads template fields
+		// as one list, where a path it was not compiled with cannot be read.
+		if(ispath(raw)) return null
+		fields[v] = raw
+	return fields
+
+// Collects one level's plain cells as the save walks it, row by row.
+/datum/plain_cell_writer
+	var/map_storage/storage
+	var/list/anchors
+	var/list/templates = list()
+	var/list/template_numbers = list()
+	var/list/runs = list()
+	var/run_template = -1
+	var/run_length = 0
+	var/plain_cells = 0
+
+/datum/plain_cell_writer/New(map_storage/S, list/zone_anchors)
+	storage = S
+	anchors = zone_anchors
+
+/datum/plain_cell_writer/proc/add(template)
+	if(template == run_template)
+		run_length++
+		return
+	if(run_length) runs += list(run_template, run_length)
+	run_template = template
+	run_length = 1
+
+/datum/plain_cell_writer/proc/add_turf(turf/T)
+	var/list/fields = storage.plain_cell_fields(T)
+	if(!fields) return FALSE
+	var/area/zone_area = T.loc
+	var/list/parts = list("[T.type]", "\ref[zone_area]")
+	for(var/key in fields)
+		var/value = fields[key]
+		parts += "[key]=[isnull(value) ? "x" : isnum(value) ? "n[num2text(value, 12)]" : ispath(value) ? "p[value]" : "t[value]"]"
+	var/key = jointext(parts, "|")
+	var/number = template_numbers[key]
+	if(!number)
+		if(templates.len >= SPARSE_PLAIN_TEMPLATE_LIMIT) return FALSE
+		templates += list(list("type" = T.type, "zone" = anchors ? storage.capture_zone_descriptor(zone_area) : null, "fields" = fields))
+		number = templates.len
+		template_numbers[key] = number
+	var/list/template = templates[number]
+	// A zone whose every cell is plain still needs an anchor for its area row.
+	if(anchors && !anchors[template["zone"]]) anchors[template["zone"]] = list("x" = T.x, "y" = T.y, "z" = T.z)
+	add(number)
+	plain_cells++
+	return TRUE
+
+/datum/plain_cell_writer/proc/write(savefile/F, baseline)
+	if(!plain_cells) return FALSE
+	if(run_length) runs += list(run_template, run_length)
+	run_length = 0
+	F["/sparse/turf"] << SPARSE_PLAIN_MARKER
+	F["/sparse/baseline"] << baseline
+	F["/sparse/plain/count"] << templates.len
+	for(var/i = 1, i <= templates.len, i++)
+		var/list/template = templates[i]
+		F["/sparse/plain/[i]/type"] << template["type"]
+		F["/sparse/plain/[i]/zone"] << template["zone"]
+		F["/sparse/plain/[i]/fields"] << template["fields"]
+	F["/sparse/plain/runs"] << runs
+	return TRUE

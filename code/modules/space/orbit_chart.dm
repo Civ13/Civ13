@@ -7,13 +7,16 @@
 // at a spot the registry keeps as plain numbers, so stations lie apart and
 // stay where they are across restarts.
 //
-// Spacecraft fly between them (spacecraft.dm). Until an orbit region runs,
+// Spacecraft fly between them (spacecraft.dm), and to the derelicts and
+// asteroid fields scattered round them (orbit_sites.dm). Until an orbit region runs,
 // the probes are what exercises this.
 // ============================================================
 
 #define ORBIT_CHART_SIZE 100
 #define ORBIT_CHART_SENSOR_RANGE 15
 #define ORBIT_CHART_EDGE 5
+#define ORBIT_CHART_FIELDS 4
+#define ORBIT_CHART_HARBOUR_REACH 6
 
 var/global/datum/chart/orbit/orbit_chart_made = null
 
@@ -45,6 +48,7 @@ var/global/datum/chart/orbit/orbit_chart_made = null
 	if (!orbit_chart_made || QDELETED(orbit_chart_made))
 		orbit_chart_made = new /datum/chart/orbit
 	orbit_chart_made.sync_stations()
+	orbit_chart_made.ready_sites()
 	return orbit_chart_made
 
 // Where the nth station to be charted lies: a spiral out from the beacon, so
@@ -106,11 +110,17 @@ var/global/datum/chart/orbit/orbit_chart_made = null
 	return C ? C.stations[owner] : null
 
 // The token of whatever holds a plane: the arrival beacon, a station, or
-// null for the lanes and for a plane nobody holds.
+// a loaded site (orbit_sites.dm), or null for the lanes and for a plane
+// nobody holds.
 /datum/chart/orbit/proc/place_of_owner(owner)
 	if (owner == "arrival")
 		return arrival
-	return (istext(owner) && length(owner)) ? stations[owner] : null
+	if (!istext(owner) || !length(owner))
+		return null
+	if (findtext(owner, "site:") == 1)
+		var/datum/chart_site/orbit/S = orbit_site(copytext(owner, 6))
+		return S ? S.token : null
+	return stations[owner]
 
 // The helm of a spacecraft (spacecraft.dm).
 /obj/structure/chart_helm/orbit
@@ -119,3 +129,24 @@ var/global/datum/chart/orbit/orbit_chart_made = null
 
 /obj/structure/chart_helm/orbit/chart()
 	return orbit_chart()
+
+// ---------------------------------------------------------------- hazards
+
+// Asteroid fields lie where they always lay; solar storms and wormhole pairs
+// come and go (craft/chart_hazards.dm). The space round the arrival beacon
+// is a harbour sector: no hazard lies or drifts there.
+/datum/chart/orbit/standing_hazards()
+	. = list()
+	for (var/n = 1, n <= ORBIT_CHART_FIELDS, n++)
+		var/list/spot = standing_spot(n, 200)
+		. += list(list(/datum/chart_hazard/field, spot[1], spot[2], 3))
+
+/datum/chart/orbit/passing_table()
+	return list(/datum/chart_hazard/storm/solar = 3, /datum/chart_hazard/wormhole = 1)
+
+/datum/chart/orbit/lay_standing()
+	if (!standing_laid && hazards_on && !chart_hazards_off)
+		var/mx = round(width / 2)
+		var/my = round(height / 2)
+		add_sector(new /datum/chart_sector/harbour("the beacon's space", mx - ORBIT_CHART_HARBOUR_REACH, my - ORBIT_CHART_HARBOUR_REACH, mx + ORBIT_CHART_HARBOUR_REACH, my + ORBIT_CHART_HARBOUR_REACH))
+	return ..()

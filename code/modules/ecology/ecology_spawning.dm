@@ -37,7 +37,7 @@ var/global/ecology_admin_disabled = FALSE
 
 /obj/map_metadata
 	var/ecology_wildlife = FALSE // Spawn wildlife by habitat instead of fixed map spawners.
-	var/ecology_wildlife_cap = 700 // Wild animals across all ecology species.
+	var/ecology_wildlife_cap = 450 // Wild animals across all ecology species.
 	var/ecology_density_scale = 2 // Multiplies every species' density; raise for a busier map.
 
 /obj/map_metadata/nomads
@@ -213,6 +213,7 @@ var/global/list/ecology_species_table = null
 /datum/ecology_spawner/New()
 	..()
 	species = ecology_default_species()
+	expedition_land_tune_species(species) // a land across the sea: its own game is plentiful (land_resources.dm)
 
 // Cached per spawner: the species table can be replaced (tests, admin edits).
 /datum/ecology_spawner/proc/species_for_type(path)
@@ -365,7 +366,8 @@ var/global/list/ecology_species_table = null
 	habitat_hits = list()
 	var/cells_x = round((world.maxx - 1) / ECOLOGY_CELL_SIZE) + 1
 	var/cells_y = round((world.maxy - 1) / ECOLOGY_CELL_SIZE) + 1
-	for (var/z = 1, z <= world.maxz, z++)
+	// Ground levels only: added building levels hold no habitat.
+	for (var/z = 1, z <= multiz_top_z(), z++)
 		if (z == practice_room_z)
 			continue
 		for (var/cx = 1, cx <= cells_x, cx++)
@@ -394,7 +396,7 @@ var/global/list/ecology_species_table = null
 	size_targets()
 
 /datum/ecology_spawner/proc/size_targets()
-	var/cap = map ? map.ecology_wildlife_cap : 700
+	var/cap = map ? map.ecology_wildlife_cap : 450
 	var/scale_density = map ? map.ecology_density_scale : 2
 	var/tile_per_hit = (ECOLOGY_CELL_SIZE * ECOLOGY_CELL_SIZE) / ECOLOGY_INDEX_SAMPLES
 	var/total = 0
@@ -445,7 +447,7 @@ var/global/list/ecology_species_table = null
 			var/x = min(world.maxx, (cell[2] - 1) * ECOLOGY_CELL_SIZE + rand(1, ECOLOGY_CELL_SIZE))
 			var/y = min(world.maxy, (cell[3] - 1) * ECOLOGY_CELL_SIZE + rand(1, ECOLOGY_CELL_SIZE))
 			return locate(x, y, cell[1])
-	return locate(rand(1, world.maxx), rand(1, world.maxy), rand(1, world.maxz))
+	return locate(rand(1, world.maxx), rand(1, world.maxy), rand(1, multiz_top_z()))
 
 // Returns the turf used, or null. Picks random habitat candidates; never scans the world.
 /datum/ecology_spawner/proc/find_site(datum/ecology_species/S)
@@ -459,6 +461,9 @@ var/global/list/ecology_species_table = null
 		if (isnull(pressure) || pressure > ECOLOGY_QUIET_PRESSURE)
 			continue
 		if (ecology_visible_to_players(T))
+			continue
+		// Shy spawning: a herd never lands where animals already crowd.
+		if (animal_spot_crowded(T, S.herd_max))
 			continue
 		return T
 	return null
@@ -481,7 +486,9 @@ var/global/list/ecology_species_table = null
 			continue
 		used += T
 		var/path = S.spawn_types[((i + offset - 1) % S.spawn_types.len) + 1]
-		new path(T)
+		var/mob/living/simple_animal/A = new path(T)
+		if (istype(A))
+			A.make_wild()
 		placed++
 	return placed
 
@@ -546,6 +553,11 @@ var/global/list/ecology_species_table = null
 #define ECOLOGY_AWAKE_RANGE 32
 #define ECOLOGY_REST_EVERY 4
 var/global/list/ecology_observer_turfs = list()
+// The same turfs bucketed into ECOLOGY_AWAKE_RANGE squares, one list per z, so
+// each animal checks the observers in the nine squares around it instead of all.
+var/global/list/ecology_observer_cells = list()
+var/global/ecology_observer_columns = 1
+var/global/ecology_observer_rows = 1
 var/global/ecology_rest_phase = 0
 // TRUE while nobody is connected (no client, not even in the lobby) and no
 // agent character plays: living animals hold still, do not get hungry and do
@@ -570,14 +582,61 @@ var/global/ecology_world_unwatched = FALSE
 		if (T)
 			turfs |= T
 	ecology_observer_turfs = turfs
+	var/list/cells = list()
+	if (turfs.len)
+		cells.len = world.maxz
+		var/columns = ecology_cell_columns()
+		var/rows = ecology_cell_rows()
+		ecology_observer_columns = columns
+		ecology_observer_rows = rows
+		for (var/turf/T in turfs)
+			var/list/z_cells = cells[T.z]
+			if (!z_cells)
+				z_cells = new /list(columns * rows)
+				cells[T.z] = z_cells
+			var/index = ecology_cell_index(T.x, T.y, rows)
+			var/list/cell = z_cells[index]
+			if (!cell)
+				cell = list()
+				z_cells[index] = cell
+			cell += T
+	ecology_observer_cells = cells
 	ecology_world_unwatched = !length(clients) && !length(agent_characters)
+
+/proc/ecology_cell_columns()
+	return round((world.maxx - 1) / ECOLOGY_AWAKE_RANGE) + 1
+
+/proc/ecology_cell_rows()
+	return round((world.maxy - 1) / ECOLOGY_AWAKE_RANGE) + 1
+
+/proc/ecology_cell_index(x, y, rows)
+	return round((x - 1) / ECOLOGY_AWAKE_RANGE) * rows + round((y - 1) / ECOLOGY_AWAKE_RANGE) + 1
 
 // Val (2026-11-09): with no players connected, animals should not move,
 // starve or attack. Their whole Life() waits, including NPC humans, so a
 // raider cannot attack an empty settlement either. Dead animals keep running,
 // so carcasses still rot away.
+// Val (2026-11-14): they also hold still while their level is being saved,
+// like players, so a save never captures an animal mid-step.
 /proc/ecology_animal_frozen(mob/living/simple_animal/A)
-	return ecology_world_unwatched && istype(A) && !A.client && A.stat != DEAD
+	if (!istype(A) || A.client || A.stat == DEAD)
+		return FALSE
+	return ecology_world_unwatched || persistence_animal_save_frozen(A)
+
+// TRUE while A's level is being captured (persistence_freeze_level).
+/proc/persistence_animal_save_frozen(mob/living/simple_animal/A)
+	if (!persistence_frozen_levels.len)
+		return FALSE
+	var/turf/T = get_turf(A)
+	return (T && persistence_frozen_levels["[T.z]"]) ? TRUE : FALSE
+
+// Called by persistence_freeze_level when a level's capture begins: every
+// animal on it stops at once, instead of waiting for the mob process (which
+// the save's own yields can delay) to hold it on its next pass.
+/proc/persistence_hold_level_animals(z)
+	for (var/mob/living/simple_animal/A in mob_list)
+		if (A.z == z && ecology_animal_frozen(A))
+			A.ecology_hold_still()
 
 // Skipping Life() alone leaves walkers that are already running: native
 // walk()/walk_to() commands, and the subtile follow, flee, pet, pursuit and
@@ -596,6 +655,27 @@ var/global/ecology_world_unwatched = FALSE
 	else
 		walk(src, 0)
 
+// TRUE when an observer stands within ECOLOGY_AWAKE_RANGE of T, one level up or down included.
+/proc/ecology_observer_near(turf/T)
+	if (ecology_observer_cells.len)
+		var/columns = ecology_observer_columns
+		var/rows = ecology_observer_rows
+		var/cx = round((T.x - 1) / ECOLOGY_AWAKE_RANGE)
+		var/cy = round((T.y - 1) / ECOLOGY_AWAKE_RANGE)
+		for (var/z = max(1, T.z - 1), z <= min(ecology_observer_cells.len, T.z + 1), z++)
+			var/list/z_cells = ecology_observer_cells[z]
+			if (!z_cells)
+				continue
+			for (var/x = max(0, cx - 1), x <= min(columns - 1, cx + 1), x++)
+				for (var/y = max(0, cy - 1), y <= min(rows - 1, cy + 1), y++)
+					var/list/cell = z_cells[x * rows + y + 1]
+					if (!cell)
+						continue
+					for (var/turf/O in cell)
+						if (max(abs(O.x - T.x), abs(O.y - T.y)) <= ECOLOGY_AWAKE_RANGE)
+							return TRUE
+	return FALSE
+
 /proc/ecology_animal_resting(mob/living/simple_animal/A)
 	if (!istype(A) || A.client || A.stat == DEAD || istype(A, /mob/living/simple_animal/hostile/human))
 		return FALSE
@@ -604,9 +684,8 @@ var/global/ecology_world_unwatched = FALSE
 	var/turf/T = A.loc
 	if (!isturf(T))
 		return FALSE
-	for (var/turf/O in ecology_observer_turfs)
-		if (abs(O.z - T.z) <= 1 && max(abs(O.x - T.x), abs(O.y - T.y)) <= ECOLOGY_AWAKE_RANGE)
-			return FALSE
+	if (ecology_observer_near(T))
+		return FALSE
 	// Staggered by position so resting animals do not all wake together.
 	return ((ecology_rest_phase + T.x + T.y) % ECOLOGY_REST_EVERY) != 0
 

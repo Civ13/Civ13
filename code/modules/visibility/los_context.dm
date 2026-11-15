@@ -670,7 +670,7 @@ var/global/list/los_active_contexts
 		return null
 	// Presentation follows the eye in half-tile steps; reads use the exact offset.
 	var/offset_key = tile_anchored ? ",q[los_eye_bucket(body)]" : ",[body.step_x],[body.step_y]"
-	return "[revision]|\ref[body]|[body.x],[body.y],[body.z][offset_key]|[owner.view]|[owner.pixel_x],[owner.pixel_y]|[world.time <= owner.los_camera_union_until ? owner.los_camera_radius_x : 0],[world.time <= owner.los_camera_union_until ? owner.los_camera_radius_y : 0]|[owner.perspective]|[body.sight & ~body.los_height_sight]|[body.see_invisible]|[body.see_in_dark]|[body.dir]|[body.resting],[body.lying],[body.prone]|[config ? config.disable_fov : 1]|\ref[body.pulling]"
+	return "[revision]|\ref[body]|[body.x],[body.y],[body.z][offset_key]|[owner.view]|[owner.pixel_x],[owner.pixel_y]|[world.time <= owner.los_camera_union_until ? owner.los_camera_radius_x : 0],[world.time <= owner.los_camera_union_until ? owner.los_camera_radius_y : 0]|[owner.perspective]|[body.sight & ~body.los_height_sight]|[body.see_invisible]|[body.see_in_dark]|[body.dir]|[body.resting],[body.lying],[body.prone],[los_up_tree(body)],[los_on_vehicle_deck(body)]|[config ? config.disable_fov : 1]|\ref[body.pulling]"
 
 /datum/los_context/proc/presentation_key()
 	return policy_key(TRUE)
@@ -802,6 +802,10 @@ var/global/list/los_active_contexts
 						var/atom/movable/AM = A
 						if (presentation && root_tree_family(AM))
 							S.capture_tree_bounds(AM)
+						// The tree whose tile the viewer stands in never hides
+						// the world from it (los_own_tree).
+						if (los_own_tree(body, AM))
+							continue
 						if (AM.step_x || AM.step_y)
 							var/datum/los_cell/moving_blocker = new
 							moving_blocker.tile_x = cx - S.eye_x
@@ -922,7 +926,7 @@ var/global/list/los_active_contexts
 		return FALSE
 	// Standing inside a closed curtain (opaque, non-dense) blinds the viewer
 	// to every other tile. Adjacent() ignores it, so keep that sight policy.
-	if (los_turf_blocks_sight(body.loc, body))
+	if (los_turf_blocks_own_sight(body))
 		return FALSE
 	// Reach only settles the closed-corner question. Contents sharing a tile
 	// with an opaque blocker (closed door, curtain, bookcase, wall) keep the
@@ -940,6 +944,24 @@ var/global/list/los_active_contexts
 		if (los_turf_blocks_sight(locate(T.x, body.y, T.z)) && los_turf_blocks_sight(locate(body.x, T.y, T.z)))
 			return FALSE
 	return target.Adjacent(body)
+
+// A tree on the viewer's own tile: since trees block only at their trunk
+// (wild.dm fit_trunk_bounds) a human can stand beside it. BYOND's own view
+// treats the eye's tile as clear, but the geometric rule above would blind
+// the viewer like a closed curtain. Curtains, doors and walls keep blinding.
+/proc/los_own_tree(mob/body, atom/movable/A)
+	return body && A && A.loc == body.loc && isturf(body.loc) && root_tree_family(A)
+
+/proc/los_turf_blocks_own_sight(mob/body)
+	if (!body || !isturf(body.loc))
+		return TRUE
+	var/turf/T = body.loc
+	if (T.opacity)
+		return TRUE
+	for (var/atom/movable/A in T)
+		if (A.opacity && A != body && !los_own_tree(body, A))
+			return TRUE
+	return FALSE
 
 /proc/los_turf_blocks_sight(turf/T, atom/ignore = null)
 	if (!T || T.opacity)

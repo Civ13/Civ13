@@ -1,7 +1,7 @@
 // Uncalibrated allocation throttle, not a byte limit or an OOM guarantee.
 // Each new z allocates the full native world plane, including unused sky.
-#define NEW_Z_CELL_CEILING 1400000
-#define NEW_Z_ROOF_CEILING 1
+#define NEW_Z_CELL_CEILING 2100000
+#define NEW_Z_ROOF_CEILING 4
 // Gaia's live world (500 x 350 x 2 cells) is the measured production profile
 // (memory probes and save loads, 2026-11-05). See underground_admitted.
 #define NEW_Z_MEASURED_CELLS 350000
@@ -37,7 +37,7 @@ var/datum/world_z_budget/world_z_budget = new
 	var/charged_levels = target_z + pending_instance + pending_safehouse
 	if (charged_levels > BUILDING_MAX_Z || charged_levels > base_z + BUILDING_EXTRA_LEVELS)
 		return "Requested and reserved whole levels exceed the structural level ceiling."
-	// Bound the plane before multiplying (at most 1400000, exactly representable).
+	// Bound the plane before multiplying (at most 2100000, exactly representable).
 	// Compare levels using one division rather than two rounded divisions.
 	var/exceeds_budget = !cell_limit || width > cell_limit / height
 	if (!exceeds_budget)

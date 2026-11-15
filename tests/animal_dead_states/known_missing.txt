@@ -1,0 +1,14 @@
+# Dead-sprite gaps the sweep still reports, each reviewed. One per line:
+# MISSING <type> <variant> <icon_dead> <icon file>
+# Abstract base types: every spawned subtype sets its own sprites.
+MISSING /mob/living/simple_animal/complex_animal adult _dead icons/mob/animal.dmi
+MISSING /mob/living/simple_animal/hostile/human adult pirate_friendly_dead icons/mob/npcs.dmi
+MISSING /mob/living/simple_animal/hostile/human/extraction adult pirate_friendly_dead icons/mob/npcs.dmi
+MISSING /mob/living/simple_animal/hostile/human/voyage adult pirate_friendly_dead icons/mob/npcs.dmi
+# Deleted a second after death, so its dead sprite is never shown.
+MISSING /mob/living/simple_animal/golden_gnat adult dead icons/mob/monsters_wizards.dmi
+# Unused type with no sprite at all in its icon file.
+MISSING /mob/living/simple_animal/ianthasaurus adult ianthasaurus_dead icons/mob/critter.dmi
+# Art gaps: the dead sprite still has to be drawn.
+MISSING /mob/living/simple_animal/complex_animal/dog/bullterrier adult bullterrier_dead icons/mob/animal.dmi
+MISSING /mob/living/simple_animal/hostile/wizard/shrieking_shrub adult shrieking_shrub_dead icons/obj/flora/largejungleflora.dmi

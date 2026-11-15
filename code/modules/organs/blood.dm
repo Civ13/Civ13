@@ -185,6 +185,12 @@ var/const/BLOOD_VOLUME_SURVIVE = 20
 		temp_chem += R.id
 		temp_chem[R.id] = R.volume
 	B.data["trace_chem"] = list2params(temp_chem)
+	// A sick person's blood carries their illness: one germ unit per ten of blood.
+	if (ishuman(src) && container.reagents)
+		var/mob/living/human/sick = src
+		var/germ = sick.carried_germ()
+		if (germ)
+			container.reagents.add_reagent(germ, amount * 0.1)
 	return B
 
 //For humans, blood does not appear from blue, it comes from vessels.
@@ -241,6 +247,10 @@ var/const/BLOOD_VOLUME_SURVIVE = 20
 
 proc/blood_incompatible(donor,receiver,donor_species,receiver_species)
 	if (!donor || !receiver) return FALSE
+
+	// A body's own organs: the same blood type and the same species datum always match.
+	if (donor == receiver && donor_species == receiver_species)
+		return FALSE
 
 	if (donor_species && receiver_species)
 		// Compare by name: a body restored from a save holds a copy of its

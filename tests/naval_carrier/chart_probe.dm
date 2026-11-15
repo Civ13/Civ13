@@ -218,7 +218,16 @@ var/naval_runtime_error = FALSE
 	naval_check(!C.order_dock(post) && findtext(C.last_refusal, "already coming about"), "a second order waits for the first")
 
 	// ---- Alongside ----
+	var/tiller_px = tiller.pixel_x
+	var/tiller_py = tiller.pixel_y
+	var/tiller_glide = tiller.glide_size
+	naval_check(glide_dock_time(1) == 10 && glide_dock_time(9) == 27 && glide_dock_time(50) == 40, "a slide into a berth is drawn for one to four seconds by its length")
 	naval_check(C.finish_dock(), "she slides in")
+	// The slide is drawn by animation (craft/glide.dm): it leaves offsets at
+	// rest, borrows no glide for a move of several tiles and is over by itself.
+	naval_check(B.slide_time == 0 && tiller.pixel_x == tiller_px && tiller.pixel_y == tiller_py && tiller.glide_size == tiller_glide, "the slide in leaves her tiller square on its tile with its own glide")
+	B.glide_rest_now()
+	naval_check(!length(B.glide_was), "and nothing aboard keeps a borrowed glide")
 	var/turf/O = B.origin()
 	naval_check(O.x == 21 && O.y == 18 && B.heading() == NORTH && B.contains(get_turf(tiller)) && B.contains(get_turf(ann)), "she lies at 21,18 with her bow to the north, tiller and sailor aboard ([O.x],[O.y])")
 	naval_check(C.berth == post && post.occupant == C && !post.reserved && !C.ticket && !C.docking && !C.turning_to && !C.path_markers.len, "she is moored and the ticket is spent")

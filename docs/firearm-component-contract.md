@@ -142,12 +142,12 @@ spawns with 6.5x50mm rounds; it used to inherit 7.62x54mmR loose rounds from
 the base bolt-action rifle. Both families' recipes match the Mauser ones (bare
 `mosin/receiver` and `arisaka38/receiver`, Cartridge Firearms, tier 1).
 
-Every modular gun gets the "Rifle Parts" verb from `/obj/item/weapon/gun/New()`
+Every modular gun gets the "Gun Parts" verb from `/obj/item/weapon/gun/New()`
 when it has a family, so fixed designs never show it.
 
 ### Parts panel and salvage (phase 6)
 
-The "Rifle Parts" verb opens a panel (`firearm_panel_html`) listing whether the
+The "Gun Parts" verb opens a panel (`firearm_panel_html`) listing whether the
 gun fires or why not, its cartridge, handling and accepted magazines or clips,
 each slot's part and condition with where it can be worked (by hand or at a
 firearm bench) and a Remove link, and every loose part the user carries. A

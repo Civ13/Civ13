@@ -59,7 +59,7 @@
 	health = 42
 	adjusted = FALSE
 
-/obj/item/clothing/suit/armor/creed/toggle_hood()
+/obj/item/clothing/suit/armor/creed/three/toggle_hood()
 	set category = null
 	set src in usr
 	if (type != /obj/item/clothing/suit/armor/creed/three)

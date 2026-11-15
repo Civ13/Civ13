@@ -9,7 +9,7 @@ namespace Civ13.Launcher;
 // by Windows (CIM Win32_Process.Create), outside this process and any job object its caller holds.
 public static class BotCommand {
     public const string Option = "--bot";
-    public static readonly string[] Actions = ["status", "check-update", "start", "stop", "restart", "update"];
+    public static readonly string[] Actions = ["status", "check-update", "start", "stop", "restart", "update", "repair"];
     public static readonly TimeSpan StopWait = TimeSpan.FromSeconds(90);
     public static readonly TimeSpan StartWait = TimeSpan.FromSeconds(30);
     private static readonly TimeSpan Poll = TimeSpan.FromSeconds(2);
@@ -51,6 +51,14 @@ public static class BotCommand {
                 if (exit != 0) { output.WriteLine("Update refused: " + LocalBot.FailureText(exit, text)); return 1; }
                 output.WriteLine("Civilizationbot updated.");
                 return 0;
+            }
+            case "repair": {
+                // Repair and update: git puts the checkout back on a clean, current main, keeping local work aside.
+                var status = Status(bot, hooks);
+                if (status.Ok && status.Running) { output.WriteLine("Stop Civilizationbot before repairing its source."); return 1; }
+                var result = BotRepair.Run(bot, hooks.Run, DateTime.UtcNow);
+                output.WriteLine(result.Summary);
+                return result.Ok ? 0 : 1;
             }
             case "stop": return await Stop(bot, output, hooks) ? 0 : 1;
             case "start": return await Start(bot, output, hooks) ? 0 : 1;

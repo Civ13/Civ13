@@ -78,7 +78,15 @@
 
 /obj/item/weapon/material/kitchen/utensil/knife/flint
 	desc = "A knapped flint blade with a wrapped grip. Sharp, but it chips with use."
+	icon = 'icons/obj/stone_age_arms.dmi'
+	icon_state = "flint_knife"
+	item_state = "knife"
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/items/lefthand_weapons.dmi',
+		slot_r_hand_str = 'icons/mob/items/righthand_weapons.dmi',
+		)
 	default_material = "flint"
+	applies_material_colour = FALSE // drawn in the flint's own colours
 
 /obj/item/weapon/material/spear/flint
 	desc = "A wooden shaft tipped with a knapped flint point."
@@ -107,25 +115,19 @@
 /obj/item/weapon/flint/proc/knap(mob/living/human/H, obj/item/hammer)
 	if (!H.may_do_after || !knap_reachable(H, hammer))
 		return
-	var/list/options = list()
-	if (!sharpened)
-		options += "Sharp flake"
-	options += list("Three arrowheads", "Flint knife", "Spearhead", "Cancel")
+	// The choices, times and products live in processing_recipes.dm.
+	var/list/options = processing_recipe_choices("flint knapping", H)
+	if (sharpened)
+		options -= "Sharp flake"
+	options += "Cancel"
 	var/choice = WWinput(H, "What do you want to knap from \the [src]?", "Knapping", "Cancel", options)
 	if (!choice || choice == "Cancel" || (choice == "Sharp flake" && sharpened) || !knap_reachable(H, hammer))
 		return
-	var/delay = 40
-	var/fail_chance = 10
-	switch (choice)
-		if ("Three arrowheads")
-			delay = 60
-			fail_chance = 25
-		if ("Flint knife")
-			delay = 80
-			fail_chance = 35
-		if ("Spearhead")
-			delay = 80
-			fail_chance = 30
+	var/datum/processing_recipe/R = processing_recipe_choice("flint knapping", choice)
+	if (!R)
+		return
+	var/delay = R.delay
+	var/fail_chance = R.fail_chance
 	H.visible_message(SPAN_NOTICE("[H] starts knapping \the [src] with \the [hammer]."), SPAN_NOTICE("You start knapping \the [src] with \the [hammer]."))
 	playsound(get_turf(src), 'sound/effects/chop.ogg', 60, TRUE)
 	if (!do_after(H, delay / max(0.5, H.getStatCoeff("dexterity")), src) || !knap_reachable(H, hammer))
@@ -142,18 +144,14 @@
 			if (in_hand)
 				H.put_in_hands(S)
 		return
-	var/obj/item/result = null
-	switch (choice)
-		if ("Sharp flake")
-			sharpen()
-			to_chat(H, SPAN_NOTICE("You strike off a sharp flake."))
-			return
-		if ("Three arrowheads")
-			result = new /obj/item/stack/arrowhead/flint(T, 3)
-		if ("Flint knife")
-			result = new /obj/item/weapon/material/kitchen/utensil/knife/flint(T)
-		if ("Spearhead")
-			result = new /obj/item/weapon/flint_spearhead(T)
+	if (!R.output)
+		sharpen()
+		to_chat(H, SPAN_NOTICE("You strike off a sharp flake."))
+		return
+	var/obj/item/result = processing_recipe_make(R, T, H)
+	if (!result)
+		to_chat(H, SPAN_WARNING("You can't knap that from this flint."))
+		return
 	qdel(src)
 	if (result && in_hand)
 		H.put_in_hands(result)

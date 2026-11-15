@@ -71,6 +71,7 @@
 /obj/structure/vehicleparts/axis/ship/stopmovementloop()
 	moving = FALSE
 	currentspeed = 0
+	glide_rest()
 	for (var/obj/structure/vehicleparts/movement/sail/S in masts)
 		S.update_icon()
 	return
@@ -201,7 +202,7 @@
 				if ((!(I in transporting) || istype(I, /obj/item/ammo_casing)) && !istype(I, /obj/item/weapon/grenade))
 					qdel(I)
 
-			if ((!istype(T, /turf/floor/beach/water) || istype(T, /turf/floor/beach/water/ice)) && !istype(T, /turf/floor/trench/flooded))
+			if (!is_open_water(T))
 				moving = FALSE
 				stopmovementloop()
 				return FALSE
@@ -261,8 +262,9 @@
 /obj/structure/vehicleparts/axis/ship/add_transporting(var/trigger_mines=TRUE)
 	transporting = list()
 	prune_turning_placeholders()
+	var/turf/here = get_turf(src)
 	for (var/obj/structure/vehicleparts/frame/F in components)
-		if (!F || F.axis != src || !(F in range(7,loc)))
+		if (!F || F.axis != src || !here || F.z != here.z || get_dist(F, here) > 7)
 			components -= F
 			continue
 		var/turf/T = get_turf(F)
@@ -303,58 +305,14 @@
 //in this case, 1,1 is the FL, 1,3 is the FR, 4,1 is the BL, 4,3 is the BR.
 //so if we turn LEFT: we will be facing EAST, and it will change to:
 
-/obj/structure/vehicleparts/axis/ship/attack_hand(var/mob/living/human/H)
-	if (!ishuman(H))
-		return
-	for(var/obj/structure/vehicleparts/frame/F1 in get_turf(get_step(src, WEST)))
-		to_chat(H, "<span class='notice'>The axis needs to be placed at the <b>TOP LEFT</b> corner!</span>")
-		return
-	for(var/obj/structure/vehicleparts/frame/F2 in get_turf(get_step(src, NORTH)))
-		to_chat(H, "<span class='notice'>The axis needs to be placed at the <b>TOP LEFT</b> corner!</span>")
-		return
-	var/inp = WWinput(H, "Are you sure you wan't to assemble a ship here? This has to be the top left corner.", "Vehicle Assembly", "No", list("No", "Yes"))
-	if (inp == "No")
-		return
-	var/found_base=FALSE
-	for(var/obj/structure/vehicleparts/frame/F in loc)
-		if (F.axis && F.axis != src)
-			return
-		found_base=TRUE
-		var/customname = player_input(H, "What do you want to name this ship?", null, null, "text", null, FALSE)
-		if (!customname || customname == "")
-			name = "[H]'s ship"
-		else
-			name = customname
-		dir = 1
-		new/obj/effect/autoassembler(locate(x+2,y-2,z))
-		to_chat(H, "<span class='warning'>Vehicle assembled.</span>")
-		for (var/obj/O in components)
-			O.update_icon()
-		return
-	if (!found_base)
-
-		for(var/obj/structure/vehicleparts/frame/F in locate(x+1,y-1,z))
-			if (F.axis && F.axis != src)
-				return
-			var/customname = player_input(H, "What do you want to name this ship?", null, null, "text", null, FALSE)
-			if (!customname || customname == "")
-				name = "[H]'s ship"
-			else
-				name = customname
-			dir = 1
-			forceMove(F.loc)
-			new/obj/effect/autoassembler(locate(x+2,y-2,z))
-			to_chat(H, "<span class='warning'>Vehicle assembled.</span>")
-			for (var/obj/O in components)
-				O.update_icon()
-			return
+// Assembly, its survey and taking a boat apart: craft/vehicle_assembly.dm.
 
 /obj/structure/vehicleparts/axis/ship/proc/check_sails()
-	var/timer = 15
+	var/timer = sail_step_delay(1)
 	if (!masts.len || !moving)
 		return
 	if(reverse)
-		if (!istype(get_turf(get_step(src,OPPOSITE_DIR(dir))), /turf/floor/beach/water) && !istype(get_turf(get_step(src,OPPOSITE_DIR(dir))), /turf/floor/trench/flooded))
+		if (!is_open_water(get_turf(get_step(src,OPPOSITE_DIR(dir)))))
 			visible_message("<span class='notice'>\The [src] crashes into \the [get_turf(get_step(src,dir))]!</span>")
 			moving = FALSE
 			stopmovementloop()
@@ -365,51 +323,17 @@
 			moving = FALSE
 			stopmovementloop()
 			return
+	// A running engine drives her and sets her own gear (ships/wheels.dm).
+	if (engine && engine.on)
+		return
 	var/found = FALSE
 	for(var/obj/structure/vehicleparts/movement/sail/SL in masts)
 		found = TRUE
 		break
 	if (found)
-		switch(map.windspeedvar)
-			if (0)
-				timer = 40
-			if (1)
-				timer = 15
-			if (2)
-				timer = 11
-			if (3)
-				timer = 7
-			if (4)
-				timer = 4
-		switch(map.winddirection)
-			if ("North")
-				if (dir == SOUTH)
-					timer /= 1
-				if  (dir == WEST || dir == EAST)
-					timer /= 0.4
-				if (dir == NORTH)
-					timer /= 0.1
-			if ("South")
-				if (dir == NORTH)
-					timer /= 1
-				if  (dir == WEST || dir == EAST)
-					timer /= 0.4
-				if (dir == SOUTH)
-					timer /= 0.1
-			if ("East")
-				if (dir == WEST)
-					timer /= 1
-				if  (dir == NORTH || dir == SOUTH)
-					timer /= 0.4
-				if (dir == EAST)
-					timer /= 0.1
-			if ("West")
-				if (dir == EAST)
-					timer /= 1
-				if  (dir == NORTH || dir == SOUTH)
-					timer /= 0.4
-				if (dir == WEST)
-					timer /= 0.1
-	currentspeed = timer
-	vehicle_m_delay = currentspeed
+		// How the wind stands to her bow sets the pace (naval/points_of_sail.dm).
+		timer = sail_step_time(src, reverse ? OPPOSITE_DIR(dir) : dir)
+	// currentspeed is her gear, never a delay: under sail she has the one.
+	currentspeed = 1
+	vehicle_m_delay = timer
 	speedlist[1] = timer

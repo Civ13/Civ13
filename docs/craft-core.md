@@ -65,19 +65,58 @@ A body made of objects sets `glides` (`glide.dm`; the built body does). Such
 a craft covers the same water in the same time one tile at a step:
 `craft.sail_tiles()` is 1 and `craft.sail_interval()` is the hop interval
 divided by the tiles a hop would cover (15, 7.5 and 5 seconds a tile at slow,
-half and full ahead). Her drives still pay once per hop's worth of tiles. For
+half and full ahead). Her drives still pay once per hop's worth of tiles. A craft's `pace` (1 everywhere
+else) divides that interval: the Broadside TDM map sails its ships at pace 4. For
 each step `under_way.dm` sets `body.glide_time`, and the body calls
 `craft_glide()` on everything it carried: a thing square on its tile gets the
 `glide_size` that makes the engine glide it for the whole step (given back when
 it leaves her or she stops), and a thing the engine will not glide (a step
 offset or unusual bounds, such as a free-moving human) is drawn one tile back
 and slid forward by `animate()`, with the view of its player. Appearance only:
-the server still moves her a whole tile at once. Turns, docking slides and
-turf-built vessels are not glided. Not checked in a game client.
+the server still moves her a whole tile at once. Not checked in a game client.
+
+Modular vehicles and frame boats glide the same way: `axis.do_move()` calls
+`glide_step()` with what it moved, which shows every frame, wheel, thing and
+person carried through the shared `glide_show()` for `vehicle_m_delay + 1`
+ticks, and `glide_rest()` gives the glides back when the vehicle stops.
+
+Turns swing round instead of snapping. After a built hull's `move_to()` with
+a turn, and after `axis.do_matrix()`, each thing carried goes through
+`glide_swing()` for `glide_turn_time()` (5 ticks): a thing that moved one tile
+glides there, and a thing that moved further, which the engine will not glide,
+is slid there by `glide_slide()` with a sine ease. Sprites take their new
+facing at once; only the travel is drawn. A spacecraft's thruster step
+(`thrust_one()`) sets `glide_time` on her turf body, whose `shift()` glides
+what she carries and slides her tiles with `glide_slide()`; her jumps between
+levels and slots are not glided.
+
+A built hull's slide into a berth is drawn too: `finish_dock()` sets
+`body.slide_time` to `glide_dock_time(tiles)` (three ticks a tile, one to four
+seconds) for its one `move_to()`, and everything aboard travels to its new
+place over that time. Template vessels (`datum/vessel`) still jump.
 
 `/obj/structure/hull_tiller` (`naval/built_hull.dm`) is the helm of a built
 hull: it commissions, refits and strikes the hull, steers her, keeps the
 papers and saves the hull as offsets from its own tile.
+
+### Upper decks
+
+A roof built over a built hull's deck has its walkable upper face on the
+building level above (`building_levels.dm`). That upper deck sails with her:
+`upper_cells()` finds it again at every move by position, as the floor above
+each hull tile whose roof stands on that tile, or the top of a ladder whose foot
+does. Nothing about it is saved and no field links one deck to the other, so a
+loaded world finds the upper deck the same way. `plan()` refuses a move when the
+open air ahead of the upper deck holds a floor, a ladder or anything solid, and
+when her hull and upper deck together pass `BUILT_HULL_MAX_DECK_TILES` (300).
+`move_to()` carries the lower deck first, then the upper floors and ladder tops,
+then whoever stands up there, so nobody reaches open air without a floor. A
+roof makes the tile under it indoors, so the areas of her tiles sail with her
+and the sea's areas close in behind. Measured in
+`tests/naval_carrier/upper_deck_probe.dm`, a step at the cap with ten sailors
+and ten buckets aboard takes about 16 ms (a bare 200-tile hull about 10 ms).
+A hull with an upper deck cannot cross the sea or set out on a voyage yet, since
+only her own deck packs for the crossing.
 
 ## Drives aboard
 
@@ -87,7 +126,21 @@ collects them (on commission, when a speed is rung and before each hop), and
 `craft.max_speed()` weighs their push against the tiles of hull: half ahead
 needs `CRAFT_THRUST_HALF` per tile, full ahead `CRAFT_THRUST_FULL` per tile
 from drives whose `top_step` reaches full ahead. A rigged ship mast is a sail
-drive of `CRAFT_SAIL_THRUST` that tops out at half ahead.
+drive of `CRAFT_SAIL_THRUST` that tops out at half ahead. Its push is divided
+by `sail_delay_factor()` (`naval/points_of_sail.dm`) for how the wind stands
+to her bow: full on a beam or broad reach, 1.3 times less running before the
+wind, 2.5 times less close-hauled and 3.5 times less beating upwind. Frame
+ships (`ships/axis.dm`) and sailing boats (`transports.dm`) take their step
+delay from the same file (`sail_step_time()`), and a frame ship under sail
+keeps `currentspeed` at gear 1 instead of writing a delay into it.
+
+A manned rowing bench (`naval/rowing_bench.dm`) is an oar drive of
+`CRAFT_OAR_THRUST` that can make full ahead. Its fuel is the rower's stamina:
+`OAR_STAMINA_PER_STEP` per telegraph step at each burn, and a rower under
+`OAR_MIN_STAMINA` pushes nothing. Oars are not `sustained`, so
+`craft.sustained_full_ahead()` (which paces a world chart voyage) counts only
+engines. The steering oar is a cheaper `hull_tiller` subtype; benches and the
+helm type cross between worlds in the ship record (`"o"` entries and `"helm"`).
 
 A running engine loose on a deck (`/obj/structure/engine`, not on a vehicle
 frame) is an engine drive: it pushes its current `maxpower` and can make full
@@ -152,6 +205,41 @@ token for every party that owns a plane, at a spot the plane registry keeps in
 (below). A console subtype adds its own orders with `extra_orders()` and
 `extra_order()`, and `ordered()` is called before any order is carried out.
 
+## Chart hazards and sectors
+
+`craft/chart_hazards.dm` builds on the `/datum/chart_hazard` base. Every
+step of a steered chart calls `chart.hazard_step()`: each hazard drifts by
+its `vx`/`vy` (turning back from the chart's edge and from a sector that
+keeps hazards out), `entered()` tells a crew once when their craft comes
+inside, `affect_token(token, seconds)` acts on every craft token inside that
+is `exposed()` (a token whose craft lies at a place is not), lifetimes count
+down, and every `CHART_HAZARD_ROLL` seconds of chart time one hazard from
+`passing_table()` is brought on by `spawn_passing()` while fewer than
+`hazard_cap` are passing. `standing_hazards()` are laid once at fixed spots
+(`standing_spot()`), so nothing is saved and a restart moves nothing. A chart
+only steps while something on it moves, so weather costs nothing on an empty
+sea. `hazard_lines(token, unit)` is what a helm reads.
+
+Kinds: `field` (asteroid field, `field/reef`) strikes a craft going faster
+than `safe_share` of her top speed, halving her speed and calling
+`craft.hazard_struck()`, which batters the body through
+`body.hazard_damage()` (a built hull takes it on one plank, never below
+`CHART_STRIKE_FLOOR` of its health; other bodies take none yet); `storm`
+sets her along `blow` and carries `interference`, `storm/solar` only blinds;
+`wormhole` throws her to its `twin`, leaves her alone for
+`CHART_WORMHOLE_REST` seconds and closes with its twin.
+
+`/datum/chart_sector` is a box of a chart with rules: `hazards` (FALSE keeps
+them out, as `sector/harbour` does), `boarding` (FALSE makes
+`craft.order_grapple()` refuse through `sector_boarding_refusal()`) and
+`owner` for `sector/held`. The open sea has reefs, squalls and a harbour
+sector over the home waters; the orbit chart has asteroid fields, solar
+storms, wormhole pairs and a harbour sector round the arrival beacon. Both
+leave boarding allowed. A test that must not meet weather sets
+`chart_hazards_off`; one chart is quietened with `hazards_on = FALSE`.
+
+    python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/hazards_probe.dm 300
+
 ## Turf bodies and spacecraft
 
 `craft/turf_body.dm`: `/datum/craft_body/turfs` is a hull made of turfs, kept
@@ -187,7 +275,35 @@ her from flying, and the console says why. The helm holds the propellant
   unit of propellant a tile, only while she lies off a place.
 
 The orbital helm has a recipe (electronics, with the other spaceflight
-fittings). No orbit region runs yet, so the probe is what exercises this.
+fittings). No orbit region runs yet, so the probes are what exercises this.
+
+## Encounter sites in orbit
+
+`space/orbit_sites.dm`: `/datum/chart_site/orbit` is a place on the orbit
+chart that is built on a pool plane when a spacecraft reaches it. A fresh
+chart seeds `ORBIT_SITE_DERELICTS` (5) derelicts and `ORBIT_SITE_FIELDS` (3)
+asteroid fields, at least 10 squares from the beacon and 7 from each other
+and from stations.
+
+- `load()` claims a plane as `site:<id>` through the pool, so the site cap
+  (4) and the admin pause apply, and calls `build(z)`. A ship that reaches a
+  site that cannot load holds off in the lanes.
+- A derelict is one to three dead habitat modules rolled from the site's
+  seed: no air, the cold of space, one hole in the hull, salvage crates
+  (steel, glass, electronics, copper, sometimes a hull patch kit or a module
+  kit) and sometimes a life support machine. Patched and aired it is an
+  ordinary module, and a helm makes a ship of it.
+- A field is 6 to 11 small asteroids (`orbit_asteroids.dm`) that keep their
+  place, with fresh rock each time it loads.
+- A loaded site is looked at every `ORBIT_SITE_LOOK` (5 minutes). Two looks
+  in a row with no ship there and nothing `clear_refusal()` protects (a
+  character, a bunk kept as home) empty the plane and give it back. A
+  derelict that was visited is then removed and another is seeded elsewhere;
+  a field stays on the chart.
+- `contacts_of()` on the orbit chart always lists the beacon and stations.
+  A site is listed inside sensor range and from then on (`charted`).
+- The registry saves the sites as one text (`site_state`): place, seed,
+  charted, visited and the plane each loaded site holds.
 
 ## Sea chart and harbours
 
@@ -277,6 +393,15 @@ wrecks they reach are built when they arrive. No live region runs it yet;
   in it. A crew takes a contract with a registered ship lying in the home
   waters and can give it up.
 
+## Ships between worlds
+
+A built hull at the map edge can cross to another world of the group (a land
+across the sea, or home to the mainland): she is packed as a record that rides
+with her crew's travel payloads and built again off the far edge. See
+[ship-crossing.md](ship-crossing.md). Off a mainland she can also set out on
+a voyage across the world chart, to a land opened for her while she sails or
+to scout: [ship-voyage.md](ship-voyage.md).
+
 ## Contracts and freight
 
 `craft/contract.dm`: a contract is a record object (`/obj/craft_contract`)
@@ -301,6 +426,31 @@ an open offer and `write_off()` a taken one whose crate no longer exists. A
 destroyed post spills what it held. The post and the sea chart say how many
 contracts are on offer.
 
+`naval/freight_depot.dm` puts the same board on land:
+`/obj/structure/berth/quay/depot` (recipe "freight depot", Wagons & Ships).
+It is a quay with `takes_ships = FALSE`, so sea charts and docking leave it
+out, while freight can be posted from a mooring post to a depot and back. A
+board names itself by `post_word` and `place_word`, and finds the taker's
+craft with `freight_crew_craft(H)`: the depot looks through `vehicle_crafts`
+and `crafts` for one whose papers list the taker within `FREIGHT_DEPOT_REACH`.
+
+`naval/depot_jobs.dm` is the depot's own work, `/obj/craft_contract/land`,
+kept apart from freight (`jobs()` against `contracts()`). `fill_jobs()` keeps
+up to three offers when the board is read, at most once every
+`DEPOT_JOB_REFILL`; `find_spot()` picks open ground 60 to 220 tiles off
+(`depot_job_ground`). A survey hands out a stake (`/obj/item/depot_guide/stake`)
+that is driven in at the spot and reported back; lost cargo sets a crate down
+at the spot when it is taken and pays when the crate is brought within two
+tiles of the depot. Pay is made on the spot by `offer_job()` from the
+distance. A party holds two of a depot's jobs at most. A new kind of land job
+is a subtype with its own `job_text()` and a line in `fill_jobs()`.
+
+Jobs a board makes up and pays for itself are switched off:
+`npc_jobs_enabled` (`craft/contract.dm`) is FALSE, so `fill_jobs()` and the
+harbour office's `fill()` offer nothing and the depot's menu has no "Depot
+work". Only contracts one player posts for another are on offer. Probes set
+the switch to exercise the jobs.
+
 ## Hails and running dark
 
 `naval/craft_signals.dm`: `craft.hail(other, text, from)` calls across to a
@@ -322,6 +472,32 @@ turns; the result equals `axis.do_matrix()`. `craft_overhang(turfs)` finds a
 vehicle with frames both on and off the craft, and both move planners
 (`built.plan()`, `vessel.plan_move()`) refuse while one stands half aboard.
 
+## Boats carried on ships
+
+`craft/deck_berth.dm`: `/obj/structure/berth/deck` is the boat davit (recipe
+"boat davit", wagons and ships research), a berth that stands on a ship's
+deck. Its `cradle()` is `berth_length` tiles ahead of it by `berth_beam` to
+the right of that way, so it turns with the deck. `hoist_plan(axis)` and
+`launch_plan(axis, way)` write nothing and answer with offsets or the reason
+in plain words; `hoist()` and `launch()` move the whole boat with
+`axis.shift_vehicle_level()`, crew and cargo included. A boat is hoisted from
+within `DECK_BERTH_REACH` tiles on her waterline level (`sea_z()`) and
+lowered to the first clear water within `DECK_BERTH_SWING` tiles of her side.
+A boat in a cradle refuses to sail (`axis.in_cradle()`).
+
+Whatever vehicle stands wholly in a cradle is berthed aboard: `refresh()`
+sets the davit's `occupant`, the vehicle craft's `berth` and, through
+`craft.take_aboard()` / `set_down()`, the `carrier` and `carried` links
+(rings refused). Nothing of that is saved; it is found again from what
+stands there. After each hop `craft.on_hop()` calls `tell_carried()`, which
+calls `on_carried()` on every carried craft in nesting order: the hook for
+anything a carried craft must do when its carrier moved it. The sea chart
+lists carried boats as "In her davits" and leaves them out of the boats in
+sight. A new kind of deck berth (an aircraft tie-down, a pod port) is a
+subtype that changes `cradle()` or what `vehicle_in()` accepts.
+
+    python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/deck_berth_probe.dm 300
+
 ## Tow lines
 
 `craft/vehicle_tow.dm`: a `/datum/vehicle_tow` joins a tug axis and a towed
@@ -332,7 +508,9 @@ towed vehicle works through the queue with its own `do_move()` and
 `do_matrix()`, so it turns where the tug turned. It parts when more than
 `TOW_SLACK` moves are owed. The file hooks `do_move`, `do_matrix`,
 `get_weight`, `Destroy` and the frame's `attackby` by redefining them and
-calling on, so the vehicle files are untouched. Test: `tests/vehicle_tow`.
+calling on, so the vehicle files are untouched. Aircraft tow and are towed
+only on the ground: `tow_plan()` refuses an airborne one, and a plane on a line
+does not take off (`try_takeoff()`). Test: `tests/vehicle_tow`.
 
 ## Weather and murk at sea
 
@@ -399,6 +577,62 @@ Owners can name the vehicle, and "Our vehicles" lists every registered
 vehicle of the reader's party with its distance and bearing
 (`party_vehicles(party)`, `craft.where_text(from)`).
 
+
+## Vehicle assembly
+
+`code/modules/craft/vehicle_assembly.dm` is how a land vehicle is built by
+hand. `/datum/vehicle_survey` starts from the frame an axis stands on and
+takes every loose land frame joined to it (frames of another vehicle and ship
+frames are not taken). It sets `refusal` in plain words when the frames are
+not a filled rectangle between 2 by 2 and 5 by 5, and otherwise lists the
+engine, fuel tank, driver's seat and corner wheels or tracks it found;
+`missing()` is what the vehicle still needs before it drives and `report()`
+is the text the builder reads.
+
+`axis.assemble(facing)` binds the surveyed frames in any of the four
+facings, moves the axis to the front left corner, lays the turning square
+(`assembly_square()`: from the front left corner to the vehicle's right and
+back) and calls `fit_parts()`, which also fits parts stood on the frames
+later. `take_apart()` unbinds a `hand_built` vehicle so it can be changed and
+assembled again; `take_apart_refusal(H)` keeps that to its owners while it
+is registered. Clicking the axis opens the menu.
+
+A boat of ship frames is assembled by the same code from its rudder axis
+(`axis.ship`): the survey takes ship frames only, refuses any that do not lie
+on water, and looks for a ship's wheel (`helm`), masts and an engine of any
+kind in place of a seat and corner wheels.
+
+Planes and submarines are assembled by the same code from their own controls,
+which only take their own sections (`vehicle_assembly_kind_matches()`).
+`axis.assembly_refusal(S)` adds a kind's shape rules and `assembly_max_size()`
+its longest side. Airframe controls (`aircraft/aircraft_assembly.dm`) take a
+3-wide airframe 3 to 5 long and reshape each section into the nose, wing,
+cockpit, fuselage or tail its place calls for, or a 5-wide, 4-long airframe into the twin-engine plane (`aircraft/aircraft_twin.dm`), whose wing engines run with the pilot's. Submarine controls
+(`ships/submarine_assembly.dm`) take a hull 3 wide and 5 (Scout) or 7
+(Explorer) long on surface water, reshape each section from
+`submarine_layouts` (hull art tile, walls, lock-out hatches), and want a
+ballast and periscope station (`survey.station`); the crafted station, battery
+bank and air bank are bolted down by `fit_parts()` and come loose again with
+`take_apart()`.
+
+`code/modules/craft/vehicle_turret.dm` adds `/obj/structure/turret/built`
+(recipe "tank turret", Mechanized War): the works tanks' traversing turret
+(`siege/turret.dm`), empty until fitted. `fit_parts()` calls its `fit()`,
+which takes the tank cannon and the gunner's, loader's and commander's seats
+standing on the turret's tile into it; `release()` sets them down again when
+the vehicle is taken apart. `lacking()` is what it needs before it can fire
+and the survey's `turret_lines()` reports it. `built_turret_styles()` lists
+the existing turret pictures a builder may pick in the current age ("Turret
+style" in the axis menu).
+
+    python3 tests/ecology_spawning/run_linux.py . tests/vehicle_papers/assembly_probe.dm 300
+
+The automobile workshop builds a truck, an armoured car, a tracked carrier
+and two tanks piece by piece from `works_vehicle_specs`
+(`code/modules/craft/vehicle_works.dm`); see
+[piece-projects.md](piece-projects.md). A new works model is one more spec
+naming an existing layout.
+
 ## Carriages
 
 `code/game/objects/structures/carriage.dm` is the horse carriage, and
@@ -428,12 +662,38 @@ The carriage saves the register in `register_state`.
   step newly covers must be clear: people and large animals stop it (and are
   run into), small animals are run over, deep water needs a bridge.
 
+## Vehicle load
+
+`code/modules/1713/machinery/modular_vehicles/vehicle_load.dm` makes what a
+land vehicle carries set its pace. `get_speed()` multiplies the gear's listed
+delay by `get_load_factor()`: the vehicle as loaded against the same body with
+steel walls and a normal load (one seated person per seat plus 10 per frame).
+A rider buckled into a seat counts half their weight and one standing on the
+deck or roof counts in full (`vehicle_rider_weight()`). Wall
+sides weigh 0.5 per point of armour (`frame.wall_weight()`), so a lighter hull
+material only has to override that proc. Loose items other than the fuel
+tank, crates and the contents of crates are cargo; everything else on the
+frames is fitted.
+
+- A normally loaded vehicle reads exactly 1.0 and drives as before; the factor
+  runs from 0.7 to 1.5. At 0.8 or less `top_gear()` allows one gear above the
+  list, a tick quicker than the last (`gear_delay()`).
+- Turning time is `loaded_turntimer()`, the same factor held to 0.7 to 1.3.
+- The factor is cached and rechecked at most every 2 seconds, and the movement
+  loop refreshes the delay after each step, so boarding or unloading on the
+  move changes the pace.
+- Boats, ships and aircraft opt out (`uses_load_factor()`); the engine stall
+  limit in `check_engine()` is unchanged.
+
 ## Tests
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/craft_probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/orbit_world/spacecraft_probe.dm 300
+    python3 tests/ecology_spawning/run_linux.py . tests/orbit_world/sites_probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/papers_probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/vehicle_papers/probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/draft_carriage/probe.dm 300
+    python3 tests/ecology_spawning/run_linux.py . tests/vehicle_load/probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/freight_probe.dm 300
+    python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/depot_jobs_probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/built_hull_probe.dm 300

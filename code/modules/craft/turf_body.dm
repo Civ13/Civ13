@@ -156,6 +156,10 @@
 	var/turf/old_origin = origin()
 	moving = TRUE
 	var/list/carry = null
+	// A step of one tile on her own level is shown as a glide (glide.dm).
+	var/gliding = (glide_time > 0 && level == z && abs(P[1] - px) + abs(P[2] - py) == 1) ? glide_time : 0
+	var/step_x = P[1] - px
+	var/step_y = P[2] - py
 	try
 		// What every tile is and what stands on it, before anything changes.
 		var/list/kinds = list()
@@ -190,8 +194,15 @@
 			for (var/atom/movable/M in cargo[i])
 				if (!QDELETED(M) && M.loc == S)
 					M.forceMove(D)
+					if (gliding && M.loc == D)
+						craft_glide(M, step_x, step_y, gliding)
 		craft_rigid_settle(carry)
 		carry = null
+		glide_keep(gliding ? everything : null)
+		// Her tiles are drawn where they were and slid into place with her.
+		if (gliding)
+			for (var/turf/D in dest)
+				glide_slide(D, step_x, step_y, gliding)
 		// Open space closes where she was.
 		if (open_turf)
 			for (var/turf/S in old)

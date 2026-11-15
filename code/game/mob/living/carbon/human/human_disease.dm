@@ -9,6 +9,9 @@
 	if (is_severe_disease())
 		handle_severe_disease()
 		return
+	if (disease && disease_type == "worms")
+		handle_worms()
+		return
 	if (!disease)
 		disease_course = 0
 		acquire_nearby_disease()
@@ -24,12 +27,12 @@
 			disease = FALSE
 		else if (disease_type == "flu")
 			adjust_mood(-(0.1), "being sick")
+			var/flu_step = 2
 			if (!disease_treatment)
-				disease_progression += 0.5
-			else
-				disease_progression += 2
+				flu_step = resting_in_bed() ? 1 : 0.5 // bed rest halves the illness
+			disease_progression += flu_step
 			// first 2 minutes
-			if (disease_progression == 25)
+			if (disease_progression >= 25 && disease_progression - flu_step < 25)
 				to_chat(src, "You feel a little feverish.")
 				disease_treatment = 0
 				apply_effect(10, DROWSY, FALSE)

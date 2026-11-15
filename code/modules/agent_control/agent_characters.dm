@@ -331,6 +331,12 @@
 	if (istype(held_stack) && held_stack.recipes)
 		out["craftable"] = agent_stack_recipes(held_stack, TRUE)
 	out["can_move"] = M.canmove && !M.restrained() && !M.buckled && M.stat == CONSCIOUS
+	// walk_to: the route being walked, and how the last one ended.
+	if (M.click_route)
+		var/datum/click_route/R = M.click_route
+		out["route"] = list("goal" = list(R.goal.x, R.goal.y, R.goal.z), "steps_left" = R.left())
+	if (M.click_route_last)
+		out["route_last"] = M.click_route_last
 	var/list/driving = agent_driving_row(M) // the driver's seat HUD: gear, direction, engine, height
 	if (driving)
 		out["driving"] = driving
@@ -353,6 +359,15 @@
 		for (var/obj/item/I in H.get_equipped_items())
 			worn += I.name
 		out["worn"] = worn
+		// The rest of a player's needs bars, for need-driven routines (tools/agent-control/needs.py).
+		out["max_nutrition"] = H.max_nutrition
+		out["max_water"] = H.max_water
+		out["hygiene"] = H.hygiene
+		out["bowels"] = H.bowels
+		out["stamina"] = H.stats["stamina"][1]
+		out["max_stamina"] = H.stats["stamina"][2]
+		out["resting"] = H.resting ? TRUE : FALSE
+		out["nude"] = H.is_nude() ? TRUE : FALSE
 		var/list/carried = list()
 		for (var/obj/item/weapon/storage/S in H.get_equipped_items())
 			for (var/obj/item/I in S.contents)
@@ -474,6 +489,18 @@
 				var/obj/structure/oven/O = AM
 				row["lit"] = O.on ? TRUE : FALSE
 				row["fuel"] = round(O.fuel, 0.1)
+			if (istype(AM, /obj/structure/stone_age_trap) && !istype(AM, /obj/structure/stone_age_trap/pit))
+				// What examining the trap tells a player (stone_age_traps.dm): caught, set or sprung, or a weir's fish.
+				// An empty hand on a set trap takes it up, so the agent must know which it is before using one.
+				var/obj/structure/stone_age_trap/TR = AM
+				TR.settle()
+				if (istype(TR, /obj/structure/stone_age_trap/weir))
+					var/obj/structure/stone_age_trap/weir/WR = TR
+					row["fish"] = WR.fish
+				else
+					row["trap"] = TR.catch_type ? "caught" : (TR.armed ? "set" : "sprung")
+				if (TR.setter_name && TR.setter_name == M.real_name)
+					row["mine"] = TRUE
 			if (istype(AM, /obj/structure/sink))
 				// Puddles and dirty wells carry cholera; a clean well does not.
 				var/obj/structure/sink/SK = AM
@@ -515,12 +542,17 @@
 			var/deep = agent_deep_water(T)
 			if (steering)
 				// Driving: open water is the way on, and land stops the boat.
-				blocked = blocked || !(istype(T, /turf/floor/beach/water) || istype(T, /turf/floor/trench/flooded))
+				blocked = blocked || !is_open_water(T)
 			else if (deep && !lifejacket)
 				blocked = TRUE // deep water stops a walker; it needs a boat
 			var/list/side = list("turf" = T.name, "type" = "[T.type]", "blocked" = blocked ? TRUE : FALSE)
 			if (deep)
 				side["deep_water"] = TRUE
+			// River floodwater (river_flood.dm): how deep it stands there, so she can tell higher ground.
+			var/side_flood = flood_band_at(T)
+			if (side_flood != FLOOD_BAND_NONE)
+				side["flood"] = flood_band_name(side_flood)
+				side["flood_band"] = side_flood
 			surroundings[dir2text(d)] = side
 	// The nearest tile of each kind of terrain, so water and the like can be clicked.
 	var/list/terrain = list()
@@ -564,6 +596,11 @@
 		var/area/HA = get_area(U)
 		if (HA && HA.location == AREA_INSIDE)
 			here_row["cave_supported"] = U.mine_supported() ? TRUE : FALSE
+	if (here_row)
+		var/here_flood = flood_band_at(here)
+		if (here_flood != FLOOD_BAND_NONE)
+			here_row["flood"] = flood_band_name(here_flood)
+			here_row["flood_band"] = here_flood
 	C.queue_guard = md5("[world.realtime]-[world.time]-[rand(1, 1000000000)]-[agent_ref(C)]-[C.seen_rev]")
 	C.queue_guard_at = world.time
 	C.queue_guard_agent = A.name
@@ -609,13 +646,13 @@
 
 // Actions a character can take, directly or from its queue.
 /proc/agent_character_actions()
-	return list("move", "face", "say", "emote", "click", "use", "craft", "equip", "take", "examine", "drop", "swap_hand", "intent", "resist", "board", "disembark", "drag", "verb", "throw", "ooc", "bug_report", "topic", "close_window", "stance", "drive", "screen")
+	return list("move", "face", "say", "emote", "click", "use", "craft", "equip", "take", "examine", "drop", "swap_hand", "intent", "resist", "board", "disembark", "drag", "verb", "throw", "ooc", "bug_report", "topic", "close_window", "stance", "drive", "screen", "walk_to")
 
 // Ticks until the character may take this action: the agent pacing plus the
 // mob's own click cooldown (next_move/next_click) and a speech spacing.
 /datum/agent_character/proc/wait_for(action)
 	var/ready = world.time
-	if (action in list("move", "click", "use", "craft", "equip", "take", "drop", "board", "disembark", "drag", "verb", "throw", "topic", "drive", "screen"))
+	if (action in list("move", "walk_to", "click", "use", "craft", "equip", "take", "drop", "board", "disembark", "drag", "verb", "throw", "topic", "drive", "screen"))
 		ready = max(ready, next_action)
 		// Timed work (do_after) in progress: acting now would cancel it.
 		if (!body.may_do_after)
@@ -666,6 +703,9 @@
 			// The player's movement rules, timing and costs (agent_movement.dm).
 			// hold: ticks an arrow key stays down for held turret and drone controls.
 			return agent_walk_step(A, C, d, from_queue, clamp(round(text2num("[req["hold"]]") || 5), 1, 50))
+		if ("walk_to")
+			// Click-to-move routing: one step of the planned route per call (agent_movement.dm).
+			return agent_walk_to_step(A, C, req, from_queue)
 		if ("face")
 			var/d = agent_dir(req["dir"])
 			M.set_dir(d)
@@ -975,6 +1015,11 @@
 		agent_fail("bad_args", "do must be wait or one of [jointext(agent_character_actions(), ", ")]")
 	if (action in list("move", "face"))
 		agent_dir(step["dir"])
+	if (action == "walk_to")
+		if (isnull(step["target"]) && (!isnum(text2num("[step["x"]]")) || !isnum(text2num("[step["y"]]"))))
+			agent_fail("bad_args", "walk_to needs target or x and y")
+		if (!isnull(step["target"]))
+			agent_resolve_target(step["target"])
 	if (action in list("say", "emote", "ooc"))
 		agent_text_arg(step, "text", 256)
 	if (action == "bug_report")
@@ -1033,7 +1078,7 @@
 			else
 				agent_fail("bad_args", "until takes message, holding or amount")
 		out["until"] = kept_until
-	for (var/key in list("dir", "text", "target", "onto", "modifier", "intent", "recipe", "amount", "item", "choose", "zone", "name", "expect_name", "window", "link", "label", "move", "defense", "tactic", "secondary", "face_lock", "aim", "slot"))
+	for (var/key in list("x", "y", "dir", "text", "target", "onto", "modifier", "intent", "recipe", "amount", "item", "choose", "zone", "name", "expect_name", "window", "link", "label", "move", "defense", "tactic", "secondary", "face_lock", "aim", "slot"))
 		if (!isnull(step[key]))
 			out[key] = step[key]
 	return out
@@ -1123,7 +1168,18 @@
 			step["count"] = count
 			var/repeat = step["repeat"] || 1
 			var/stopped = C.until_met(step)
-			if (result["moved"] == FALSE)
+			if (action == "walk_to")
+				// A route runs one step per call until it arrives or stops.
+				if (!result["route_done"])
+					C.queue.Insert(1, list(step))
+				else
+					C.record(step, result["arrived"] ? TRUE : FALSE, result["route_result"])
+					if (!result["arrived"] && step["stop_on_failure"])
+						for (var/list/rest in C.queue)
+							C.record(rest, FALSE, "skipped: the route stopped")
+						C.queue.Cut()
+						break
+			else if (result["moved"] == FALSE)
 				C.record(step, TRUE, repeat > 1 ? "blocked after [count]" : "blocked")
 				if (step["stop_on_failure"])
 					for (var/list/rest in C.queue)

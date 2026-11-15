@@ -155,6 +155,10 @@ var/civmax_research = list(LEGACY_RESEARCH_MAX,LEGACY_RESEARCH_MAX,LEGACY_RESEAR
 	//civ stuff
 	var/civilizations = FALSE
 	var/nomads = FALSE
+	// Map traits, set in each map's own file instead of listing map IDs in shared code.
+	var/tribes = FALSE // tribal faction maps (Tribes, Three Tribes, Four Kingdoms)
+	var/nationsrp = FALSE // the NationsRP family
+	var/campaign = FALSE // the campaign maps (old campaign and every campaign_new stage)
 	var/has_hunger = FALSE
 	var/list/custom_faction_nr = list()
 	var/list/list/custom_civs = list()
@@ -379,7 +383,7 @@ var/civmax_research = list(LEGACY_RESEARCH_MAX,LEGACY_RESEARCH_MAX,LEGACY_RESEAR
 /obj/map_metadata/proc/wind()
 	var/oldwind = winddirection
 	var/oldspeed = windspeedvar
-	winddirection = pick("North", "South", "East", "West")
+	winddirection = weather_veer(winddirection)
 	windspeedvar += pick(-1,0,1)
 	if (windspeedvar > 4)
 		windspeedvar = 4
@@ -652,20 +656,23 @@ var/civmax_research = list(LEGACY_RESEARCH_MAX,LEGACY_RESEARCH_MAX,LEGACY_RESEAR
 	return TRUE
 
 // Opt-in helper for maps with fixed faction-specific side walls.
-/obj/map_metadata/proc/check_two_sided_grace_wall(var/mob/living/human/H, var/turf/T)
+// Shared faction grace wall. Inside wall_area, a tile of one_area holds back
+// one_faction and a tile of two_area holds back two_faction for the whole round;
+// any other wall_area tile blocks everyone until the grace timer of grace_side
+// (1 or 2) ends. Pass null for two_area on maps with a single faction wall.
+/obj/map_metadata/proc/check_faction_grace_wall(var/mob/living/human/H, var/turf/T, one_faction, two_faction, grace_side = 1, wall_area = /area/caribbean/no_mans_land/invisible_wall, one_area = /area/caribbean/no_mans_land/invisible_wall/one, two_area = /area/caribbean/no_mans_land/invisible_wall/two)
 	if (!istype(H) || !istype(T))
 		return FALSE
 	var/area/A = get_area(T)
-	if (istype(A, /area/caribbean/no_mans_land/invisible_wall))
-		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))
-			if (H.faction_text == faction1)
-				return TRUE
-		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))
-			if (H.faction_text == faction2)
-				return TRUE
-		else
-			return !faction1_can_cross_blocks()
-	return FALSE
+	if (!istype(A, wall_area))
+		return FALSE
+	if (istype(A, one_area))
+		return H.faction_text == one_faction
+	if (two_area && istype(A, two_area))
+		return H.faction_text == two_faction
+	if (grace_side == 2)
+		return !faction2_can_cross_blocks()
+	return !faction1_can_cross_blocks()
 
 /obj/map_metadata/proc/check_caribbean_block(var/mob/living/human/H, var/turf/T)
 	if (!istype(H) || !istype(T))
@@ -789,6 +796,25 @@ var/civmax_research = list(LEGACY_RESEARCH_MAX,LEGACY_RESEARCH_MAX,LEGACY_RESEAR
 			var/objective = capture_objective_name ? capture_objective_name : "[roundend_condition_def2name(defender_flag)] base"
 			current_win_condition = "The [roundend_condition_def2army(roundend_condition_sides[attacker][1])] [capture_verb] captured the [objective]! They will win in {time} minute{s}."
 			next_win = world.time + (long_timer ? long_win_time(defender_flag) : short_win_time(defender_flag))
+			announce_current_win_condition()
+			current_winner = roundend_condition_def2army(roundend_condition_sides[attacker][1])
+			current_loser = roundend_condition_def2army(roundend_condition_sides[defender][1])
+	return TRUE
+
+// Message for capture_step's message_id; maps with their own capture chain
+// override it. Built only when a capture is announced.
+/obj/map_metadata/proc/capture_message(id)
+	return null
+
+// capture_branch with a map-specific message and timer argument, for maps
+// whose copied capture chains differ only in wording and timers.
+/obj/map_metadata/proc/capture_step(attacker, defender, threshold, long_timer, timer_arg, message_id)
+	if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[defender]]), roundend_condition_sides[attacker], roundend_condition_sides[defender], threshold, TRUE))
+		return FALSE
+	if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[attacker]]), roundend_condition_sides[defender], roundend_condition_sides[attacker], threshold))
+		if (last_win_condition != win_condition.hash)
+			current_win_condition = capture_message(message_id)
+			next_win = world.time + (long_timer ? long_win_time(timer_arg) : short_win_time(timer_arg))
 			announce_current_win_condition()
 			current_winner = roundend_condition_def2army(roundend_condition_sides[attacker][1])
 			current_loser = roundend_condition_def2army(roundend_condition_sides[defender][1])
@@ -1124,12 +1150,18 @@ var/civmax_research = list(LEGACY_RESEARCH_MAX,LEGACY_RESEARCH_MAX,LEGACY_RESEAR
 	var/work = 0
 	// Native category scans avoid unrelated atoms without caching membership.
 	if (ispath(atom_type, /turf))
-		for (var/turf/T in world)
-			work++
-			if (!(work % 64) && !season_work_pause(epoch, work, TRUE))
-				return null
-			if (istype(T, atom_type) && !T.gcDestroyed)
-				candidates += T
+		// Level by level: an added building level that is still all open air
+		// (building_lighting.dm) holds no ground turf and is not walked.
+		var/only_sky = ispath(atom_type, /turf/sky) ? null : text2path("/proc/building_level_only_sky")
+		for (var/z = 1 to world.maxz)
+			if (only_sky && call(only_sky)(z))
+				continue
+			for (var/turf/T in block(locate(1, 1, z), locate(world.maxx, world.maxy, z)))
+				work++
+				if (!(work % 64) && !season_work_pause(epoch, work, TRUE))
+					return null
+				if (istype(T, atom_type) && !T.gcDestroyed)
+					candidates += T
 	else if (ispath(atom_type, /obj))
 		for (var/obj/O in world)
 			work++
@@ -1618,12 +1650,12 @@ var/civmax_research = list(LEGACY_RESEARCH_MAX,LEGACY_RESEARCH_MAX,LEGACY_RESEAR
 /obj/map_metadata/proc/season_phase_7(var/epoch)
 	if (!season_worker_valid(epoch))
 		return
-	change_weather(WEATHER_WET)
+	weather_roll(WEATHER_WET)
 
 /obj/map_metadata/proc/season_phase_8(var/epoch)
 	if (!season_worker_valid(epoch))
 		return
-	change_weather(WEATHER_WET)
+	weather_roll(WEATHER_WET)
 	season_schedule_phase(1200, "season_phase_9", epoch)
 
 /obj/map_metadata/proc/season_phase_9(var/epoch)

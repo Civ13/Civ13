@@ -172,6 +172,7 @@
 				"<span class='notice'>Somebody dismantled something.</span>")
 			H.give_exp(list("crafting","strength","dexterity","stamina"), list(85,5,5,5), I)
 			I = 1
+			machine_drop_fitted_parts(src)
 			for (var/P in components)
 				new P(src.loc, quantities[I])
 				I++
@@ -249,6 +250,7 @@
 	icon_state = "loom1"
 	work_time_amount = round(1000/(W.amount*3+47)) //The efficiency increases with the amount of material. For 1 material we get 20 deciseconds, for 50 material - 254 deciseconds.
 	work_time_amount = work_time_amount*(0.67/H.getStatCoeff("crafting") + 0.33/H.getStatCoeff("dexterity"))
+	work_time_amount = machine_work_time(src, work_time_amount)
 	if (do_after(H, work_time_amount, src.loc))
 		finish_work()
 	else
@@ -330,10 +332,10 @@
 	if (istype(W, /obj/item/stack/material/wool))
 		produce(W, H, /obj/item/stack/material/woolcloth)
 		return
-	if (istype(W,/obj/item/weapon/wrench))
+	if (is_tool(W, TOOL_WRENCH))
 		wrench_action(H)
 		return
-	if (istype(W,/obj/item/weapon/hammer))
+	if (is_tool(W, TOOL_HAMMER))
 		hammer_action(H, W, 150, list("/obj/item/stack/material/wood"), list(6))
 		return
 	..(W, H)
@@ -481,7 +483,7 @@
 			if (batch_id != my_batch)
 				return // the batch finished during the wait and finish_work() already paid this worker
 			if (finished_work && crafting_recipe_allowed(H, "[type]"))
-				complete_percent += 6*H.getStatCoeff("strength") + 6*H.getStatCoeff("stamina") + 3*H.getStatCoeff("dexterity")
+				complete_percent += (6*H.getStatCoeff("strength") + 6*H.getStatCoeff("stamina") + 3*H.getStatCoeff("dexterity")) * machine_performance(src)
 				total_work += 10
 				workers_work[H] = total_work
 				H.stats["stamina"] -= STAMINA_LOSS_BASE_PER_DECISECOND_SDS_OF_WORK*10
@@ -529,10 +531,10 @@
 	if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/rice))
 		produce(W, H, /obj/item/weapon/reagent_containers/food/snacks/rice)
 		return
-	if (istype(W,/obj/item/weapon/wrench))
+	if (is_tool(W, TOOL_WRENCH))
 		wrench_action(H)
 		return
-	if (istype(W,/obj/item/weapon/hammer))
+	if (is_tool(W, TOOL_HAMMER))
 		hammer_action(H, W, 90, list("/obj/item/stack/material/wood"), list(3))
 		return
 	..(W, H)
@@ -746,11 +748,11 @@
 	I.name = splicetext(I.name, findtext(I.name,"TIMER_")+6, findtext(I.name,"TIMER_")+14, num2text(new_timer, 8, 10))
 
 /obj/structure/dehydrator/attackby(var/obj/item/W, var/mob/living/human/H as mob, icon_x, icon_y)
-	if (istype(W, /obj/item/weapon/wrench))
+	if (is_tool(W, TOOL_WRENCH))
 		if (H)
 			wrench_action(H)
 			return TRUE
-	if (istype(W, /obj/item/weapon/hammer))
+	if (is_tool(W, TOOL_HAMMER))
 		if (H)
 			hammer_action(H, W, 110, list("/obj/item/stack/material/wood"), list(4))
 			return TRUE
@@ -1203,7 +1205,7 @@
 		qdel(O)
 		yeast_growth()
 		return
-	else if (istype(O,/obj/item/weapon/hammer) || istype(O,/obj/item/weapon/hammer/modern))
+	else if (is_tool(O, TOOL_HAMMER) || istype(O,/obj/item/weapon/hammer/modern))
 		playsound(loc, 'sound/weapons/smash.ogg', 75, 1)
 		to_chat(user, "<span class='notice'>You begin smashing apart \the [src].</span>")
 		if (do_after(user, 25, src))
@@ -1680,7 +1682,7 @@
 		else
 			to_chat(user, "<span class='warning'>There is already a connected [work_barrel].</span>")
 		return
-	if (istype(W,/obj/item/weapon/hammer))
+	if (is_tool(W, TOOL_HAMMER))
 		hammer_action(user, W, 270, list("/obj/item/stack/material/wood"), list(30))
 		return
 	..(W, user)
@@ -1814,17 +1816,16 @@
 			W.forceMove(locate(0,0,0))
 			return
 
-	if (istype(W,/obj/item/weapon/wrench))
-		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-		to_chat(user, (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>"))
-		anchored = !anchored
-	else if (istype(W,/obj/item/weapon/hammer) || istype(W,/obj/item/weapon/hammer/modern))
+	if (is_tool(W, TOOL_WRENCH))
+		toggle_anchor(user)
+	else if (is_tool(W, TOOL_HAMMER) || istype(W,/obj/item/weapon/hammer/modern))
 		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
 		to_chat(user, "<span class='notice'>You begin dismantling \the [src].</span>")
 		if (do_after(user,60,src))
 			to_chat(user, "<span class='notice'>You dismantle \the [src].</span>")
 			for (var/i=1, i<=5, i++)
 				new /obj/item/stack/material/wood(loc) //5 out of 12 to craft
+			machine_drop_fitted_parts(src)
 			qdel(src)
 
 	else
@@ -1874,7 +1875,7 @@
 			copying = TRUE
 			visible_message("Copying \the [base[1]]...")
 			icon_state = "printingpress1"
-			if (do_after(H, spawntimer, src))
+			if (do_after(H, machine_work_time(src, spawntimer), src))
 				if (!isemptylist(base) && !isemptylist(copy))
 					visible_message("The printing press finishes copying.")
 					icon_state = "printingpress0"
@@ -1967,12 +1968,10 @@
 			else
 				icon_state = "canner"
 		return
-	if (istype(W, /obj/item/weapon/wrench))
-		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-		to_chat(H, (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>"))
-		anchored = !anchored
+	if (is_tool(W, TOOL_WRENCH))
+		toggle_anchor(H)
 		return
-	if (istype(W, /obj/item/weapon/hammer))
+	if (is_tool(W, TOOL_HAMMER))
 		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
 		to_chat(H, "<span class='notice'>You begin dismantling \the [src].</span>")
 		if (do_after(H, 50, src))
@@ -2058,7 +2057,7 @@
 		else
 			to_chat(H, "<span class='notice'>\the [src] is full!</span>")
 		return
-	if (istype(W, /obj/item/weapon/material/kitchen/utensil/knife) || istype(W, /obj/item/weapon/attachment/bayonet))
+	if (is_tool(W, TOOL_KNIFE) || istype(W, /obj/item/weapon/attachment/bayonet))
 		if (!open)
 			open = TRUE
 			update_icon()
@@ -2195,7 +2194,8 @@
 	flammable = TRUE
 	not_movable = FALSE
 	not_disassemblable = FALSE
-	var/tmp/current = 0
+	// Saved directly so a save of a running world leaves the stock in place (#5292).
+	var/current = 0
 	var/tmp/composting = FALSE
 
 /obj/structure/compost/examine(mob/user)
@@ -2235,7 +2235,7 @@
 	qdel(W)
 
 /obj/structure/compost/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)
-	if (nitrary_mode && !istype(W, /obj/item/weapon/wrench) && !istype(W, /obj/item/weapon/hammer))
+	if (nitrary_mode && !is_tool(W, TOOL_WRENCH) && !is_tool(W, TOOL_HAMMER))
 		nitrary_feed(W, H)
 		return TRUE
 	if (current>=10)
@@ -2250,10 +2250,10 @@
 		H.drop_item(src.loc)
 		auto_load(H)
 		return TRUE
-	if (istype(W,/obj/item/weapon/wrench))
+	if (is_tool(W, TOOL_WRENCH))
 		wrench_action(H)
 		return TRUE
-	if (istype(W,/obj/item/weapon/hammer))
+	if (is_tool(W, TOOL_HAMMER))
 		hammer_action(H, W, 150, list("/obj/item/stack/material/wood"), list(7))
 		return TRUE
 	to_chat(H, "<span class='warning'>\the [W] is not suitable for compost.</span>")
@@ -2327,14 +2327,6 @@
 		composting = TRUE
 		spawn(rand(25,100))
 			compost()
-
-/obj/structure/compost/before_save()
-	. = ..()
-	if (nitrary_mode)
-		return
-	var/obj/item/O = new/obj/item/stack/ore(src.loc, current/10)
-	O.alpha = 0
-	current = 0
 
 /obj/structure/compost/after_load()
 	. = ..()
@@ -2566,6 +2558,7 @@
 		"<span class='notice'>You start to produce \the [current_work.name].</span>",
 		"<span class='notice'>You hear someone begin to cut on \the [src.name].</span>")
 	work_time_amount = work_time_amount*(0.67/H.getStatCoeff("crafting") + 0.33/H.getStatCoeff("dexterity"))
+	work_time_amount = machine_work_time(src, work_time_amount)
 	if (do_after(H, work_time_amount, src.loc))
 		if (!crafting_recipe_allowed(H, "[type]"))
 			qdel(current_work)
@@ -2661,10 +2654,10 @@
 	if (istype(W, /obj/item/stack/material/wood))
 		produce(W, H, /obj/item/stack/material/woodplank)
 		return
-	if (istype(W,/obj/item/weapon/wrench))
+	if (is_tool(W, TOOL_WRENCH))
 		wrench_action(H)
 		return
-	if (istype(W,/obj/item/weapon/hammer))
+	if (is_tool(W, TOOL_HAMMER))
 		hammer_action(H, W, 150, list("/obj/item/stack/material/wood"), list(6))
 		return
 	if (istype(W, /obj/item/stack/cable_coil))

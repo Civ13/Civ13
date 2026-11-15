@@ -2,7 +2,7 @@
 	set category = "Debug"
 	set name = "Randomly Change the Weather"
 	change_weather_somehow()
-	to_chat(src, "<span class = 'good'>Successfully changed the weather!</span>")
+	to_chat(src, "<span class = 'good'>Rolled the weather. A wet or extreme roll sends a storm in from upwind; see the Weather Map.</span>")
 	message_admins("[key_name(src)] randomly changed the weather.", key_name(src))
 	log_admin("[key_name(src)] randomly changed the weather.")
 

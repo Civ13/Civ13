@@ -88,7 +88,7 @@
 	var/obj/item/drone_controller/connected_controller = null
 	var/movement_delay = 5
 	
-	var/health = 100
+	health = 100
 	var/broken = FALSE
 	var/can_move = TRUE
 	var/can_fly = FALSE
@@ -118,7 +118,7 @@
 		else
 			to_chat(user, SPAN_WARNING("\The [src] is already connected to a controller."))
 		return
-	if((istype(I, /obj/item/weapon/weldingtool) || istype(I, /obj/item/taperoll)) && broken)
+	if((is_tool(I, TOOL_WELDER) || istype(I, /obj/item/taperoll)) && broken)
 		visible_message("[user] starts repairing \the [src]...")
 		if (do_after(user, 100, src))
 			visible_message("[user] repairs \the [src].")
@@ -163,7 +163,7 @@
 					icon_state = initial(icon_state)
 					layer = initial(layer)
 
-/obj/structure/drone/proc/try_destroy()
+/obj/structure/drone/try_destroy()
 	if (health <= 0)
 		health = 0
 		visible_message(SPAN_DANGER("<big>\The [src] took too much damage and explodes!</big>"))

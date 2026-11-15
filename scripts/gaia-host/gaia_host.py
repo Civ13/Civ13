@@ -18,7 +18,9 @@ save takes minutes. Only one action runs at a time. Actions never take paths,
 commands or arguments from the caller; everything comes from the config file.
 
 The world must have config/lifecycle-token.txt (32 hex characters, git-ignored)
-for save-and-stop; start writes config/lifecycle-revision.txt from git HEAD.
+for save-and-stop; start writes config/lifecycle-revision.txt from git HEAD and
+config/server-build.json (commit, compile and update times) for the in-game
+Server Revision verb.
 start and restart first pull and recompile unless the last build (build.json in
 the state folder) is already of the fetched revision, so a server never runs a
 stale build; a failed fetch or compile leaves it stopped with the error.
@@ -59,6 +61,7 @@ import time
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'nomads-lifecycle'))
 from supervisor import byond_text_md5, query  # noqa: E402
+import player_changelog  # noqa: E402
 
 # Console programs (git, dm.exe, schtasks, tasklist) run by the windowless host
 # service would each flash a console window on Windows.
@@ -69,7 +72,7 @@ NO_WINDOW = 0x08000000 if os.name == 'nt' else 0  # CREATE_NO_WINDOW
 DETACH_FLAGS = NO_WINDOW | 0x00000200 if os.name == 'nt' else 0  # | CREATE_NEW_PROCESS_GROUP
 
 ACTIONS = ('status', 'start', 'stop', 'restart', 'update', 'freeze', 'thaw', 'watch', 'serve', 'check-update',
-           'kill', 'force-restart', 'stage', 'unlock', 'force-unlock', 'handover')
+           'kill', 'force-restart', 'stage', 'unlock', 'force-unlock', 'handover', 'update-unsaved', 'update-handover')
 # quick or long-running; no detached worker (stage starts its own, beside the action lock)
 DIRECT = ('freeze', 'thaw', 'watch', 'serve', 'check-update', 'kill', 'force-restart', 'stage', 'unlock', 'force-unlock')
 BELOW_NORMAL_PRIORITY = 0x00004000  # Windows: staged compiles yield to the running worlds
@@ -116,6 +119,7 @@ FREEZE_DEFAULTS = {'freeze_idle_minutes': 15, 'freeze_trim_memory': False, 'wake
                    'load_timeout_seconds': 1800}
 MARKER = re.compile(r'^round-v([12]):[0-9a-f]{32}$')
 HEX32 = re.compile(r'^[0-9a-f]{32}$')
+BYOND_EPOCH = 946684800  # 2000-01-01 UTC in unix seconds, world.realtime's zero
 HEX40 = re.compile(r'^[0-9a-f]{40}$')
 
 
@@ -284,6 +288,9 @@ class Platform:
 
     def query(self, port, token, action='status', operation=None, session=None, extra=None):
         return query(port, token, action, operation, session, extra=extra)
+
+    def http_get_json(self, url):
+        return player_changelog.http_get_json(url, os.environ.get('CIV13_GITHUB_TOKEN') or None)
 
     def start_task(self, name):
         return self.run(['schtasks', '/Run', '/TN', name], timeout=60)
@@ -621,6 +628,10 @@ class Host:
         # a stop or a forced stop removes it. The watchdog only restarts such a world.
         self.running_file = self.state_dir / 'running.json'
         self.watchdog_file = self.state_dir / 'watchdog.json'
+        # killed.json: a forced stop that came while an action held the lock. That action
+        # must not bring the world back (2026-11-13: regions force-stopped mid-handover
+        # reported a refused connection instead of the stop), so it checks this file.
+        self.killed_file = self.state_dir / 'killed.json'
         # Written by the world when an admin uses Save and Shut Down in game: the exit that
         # follows is a stop, not a crash (restart_transaction.dm write_stop_marker).
         self.stop_marker = self.repo / 'data' / 'stopped_in_game.json'
@@ -630,6 +641,7 @@ class Host:
         self.last_busy = False       # whether that answer said it was saving
         self.next_stage = 0.0
         self.next_install_check = 0.0
+        self.next_update_check = 0.0
 
     # -- state -------------------------------------------------------------
     def record(self, **values):
@@ -712,6 +724,7 @@ class Host:
         operation = secrets.token_hex(16)
         with os.fdopen(descriptor, 'w') as handle:
             handle.write(operation)
+        self.killed_file.unlink(missing_ok=True)  # left by a worker that never finished
         try:
             self.precheck(action)
         except BaseException:
@@ -750,6 +763,10 @@ class Host:
         elif action == 'update':
             if listening:
                 raise Refused('stop the server before updating')
+        elif action == 'update-unsaved':
+            self.precheck_update_unsaved(listening)
+        elif action == 'update-handover':
+            self.precheck('restart')
         elif action == 'handover':
             raise Refused('a handover needs a region host (scripts/shard-group)')
 
@@ -962,9 +979,28 @@ class Host:
         server (a stuck save-and-stop) sees the port close, fails and frees the lock.
         """
         state = self.frozen()
+        if state and not self.platform.listening(self.config['port']):
+            # A frozen world still holds its port. With the port closed the recorded pid
+            # belongs to some other process now (Windows reuses pids): never end that one.
+            state = None
         pid = state['pid'] if state else self.platform.server_pid(self.config['port'])
         if not pid:
-            raise Refused('the server is not running')
+            # Nothing runs: asleep on its save with no process, or already stopped. A forced
+            # stop still means "stay down" and a plain Stopped row (2026-11-13: stopped regions
+            # kept showing an old "Handover failed" and Asia showed Asleep after Force stop),
+            # so forget the sleep records and replace a finished action's result.
+            self.note_kill_during_action(reason)  # a start still booting must not come up
+            was_cold = bool(self.cold())
+            self.freeze_file.unlink(missing_ok=True)
+            self.cold_file.unlink(missing_ok=True)
+            if not keep_running:
+                self.running_file.unlink(missing_ok=True)
+            if not self.lock.exists():
+                self.record(action='kill', operation=None, phase='killed', error=None, reason=reason)
+            result = {'killed': True, 'pid': None, 'reason': reason, 'released_locks': []}
+            result['was_asleep_on_save' if was_cold else 'already_stopped'] = True
+            return result
+        self.note_kill_during_action(reason)
         self.platform.kill_tree(pid)
         released = self.release_save_locks(pid)
         self.freeze_file.unlink(missing_ok=True)
@@ -974,6 +1010,31 @@ class Host:
         if not self.lock.exists():
             self.record(action='kill', operation=None, phase='killed', error=None, reason=reason)
         return {'killed': True, 'pid': pid, 'reason': reason, 'released_locks': released}
+
+    def note_kill_during_action(self, reason):
+        """Tell the action holding the lock, if any, that a forced stop ended its world."""
+        try:
+            operation = self.lock.read_text().strip()
+        except OSError:
+            return None
+        if operation:
+            self.write_json(self.killed_file, {'operation': operation, 'reason': reason,
+                                               'at': int(self.platform.now())})
+        return operation or None
+
+    def end_after_forced_stop(self):
+        pid = self.platform.server_pid(self.config['port'])
+        if pid:
+            self.platform.kill_tree(pid)
+            self.release_save_locks(pid)
+        self.freeze_file.unlink(missing_ok=True)
+        self.cold_file.unlink(missing_ok=True)
+        self.running_file.unlink(missing_ok=True)
+
+    def killed_during(self, operation):
+        """The reason of a forced stop that came during this operation, or None."""
+        killed = self.read_json(self.killed_file) or {}
+        return killed.get('reason') or 'forced stop' if killed.get('operation') == operation else None
 
     def release_save_locks(self, pid, wait_seconds=30):
         """Remove the BYOND lock files a killed server left in map_saves.
@@ -1087,20 +1148,26 @@ class Host:
         self.maybe_stage()
         if self.frozen():
             self.forget_answers()  # a thawed world gets a fresh hang allowance
-            if self.install_check_due() and self.install_staged_while_down():
+            # With update_when_empty the build waits for the next empty, saved spell awake, when a
+            # handover loads the save on it before the old world lets go (RegionHost.update_while_empty).
+            if not self.update_when_empty() and self.install_check_due() and self.install_staged_while_down():
                 return None, 30
+            self.keep_sleeper_current()
             ignore = set(self.config['wake_ignore'])
             if any(address not in ignore for address in self.platform.connections(self.config['port'])):
                 self.log(self.thaw('player connection'))
             return None, self.config['wake_poll_seconds']
+        self.serve_world()
         if self.lock.exists():
             self.forget_answers()
             self.down_since = None
             return None, 30
         if not self.platform.listening(self.config['port']):
             self.forget_answers()
-            if self.cold() and self.install_check_due() and self.install_staged_while_down():
-                return None, 30
+            if self.cold():
+                if self.install_check_due() and self.install_staged_while_down():
+                    return None, 30
+                self.keep_sleeper_current()
             return None, self.check_crash()
         self.down_since = None
         world = self.world()
@@ -1112,13 +1179,18 @@ class Host:
         if not world or world.get('busy') or not world.get('ready') or world.get('clients'):
             return None, 30
         now = self.platform.now()
+        if self.update_when_empty() and world_saves(world) and self.saved_since_last_client():
+            # Empty and saved: an update waiting goes in now, not after the idle wait.
+            wait = self.update_while_empty()
+            if wait is not None:
+                return (now if idle_since is None else idle_since), wait
         if idle_since is None:
             return now, 30
         if now - idle_since < self.config['freeze_idle_minutes'] * 60:
             return idle_since, 30
         if self.config['freeze_requires_save'] and not self.saved_since_last_client():
             return idle_since, 60  # the world saves itself once it is empty; freeze after that
-        if self.update_pending():
+        if self.update_pending() and not self.update_when_empty():
             # Empty and saved: the moment to swap in a staged build without kicking anyone.
             try:
                 self.log(dict(self.request('restart'), reason='installing the staged build while the world is empty'))
@@ -1245,6 +1317,162 @@ class Host:
         self.log(dict(accepted, watchdog=kind, detail=detail))
         return 30
 
+    # -- update and restart without saving ---------------------------------------
+    # Val (2026-11-13): the launcher, and admins in game, can update a world and start it
+    # again without asking it to save first, for a world whose save would take too long or
+    # that should not save its current state. Nothing is wiped: the world is ended like a
+    # forced stop, the last completed save is backed up beside the save-and-stop backups,
+    # and the new build starts from that save. Region hosts build the update beside the
+    # running world first, so a build that fails never takes the world down.
+    def extra_steps(self, action):
+        """Worker steps for actions beyond the basic ones (a KeyError for an unknown one)."""
+        steps = {'update-unsaved': [self.do_kill_unsaved, self.do_refresh, self.stop_if_killed, self.do_start],
+                 # A single server builds as it restarts: save and stop, pull, compile, start.
+                 'update-handover': [self.do_stop, self.do_refresh, self.do_start]}
+        return steps[action]
+
+    def stop_if_killed(self, operation):
+        """A person force-stopped the world while this action ran: leave it down."""
+        reason = self.killed_during(operation)
+        if reason:
+            raise RuntimeError('%s: the server stays stopped' % reason)
+
+    def precheck_update_unsaved(self, listening):
+        if self.frozen() or self.cold():
+            raise Refused('the server is asleep on its save, so nothing is unsaved; use Update, which installs '
+                          'the new build while it sleeps')
+        if not listening and not self.platform.server_pid(self.config['port']):
+            # Never start a world someone stopped: this action only restarts a running one.
+            raise Refused('the server is not running; use Update, then Start it when wanted')
+
+    def backup_last_save(self, operation):
+        """Copy the last completed save to <state_dir>/backups/<operation> (kept like the save-and-stop
+        backups). Returns (generation, backup path); (None, None) for an empty, fresh world."""
+        saves = self.repo / 'map_saves'
+        self.recover_interrupted_save()
+        generation = check_save(saves)
+        if generation is None:
+            return None, None
+        backups = self.state_dir / 'backups'
+        copy_save(saves, backups / operation)
+        kept = sorted((p for p in backups.iterdir() if p.is_dir()), key=lambda p: p.stat().st_mtime)
+        for old in kept[:-self.config['backups_kept']]:
+            shutil.rmtree(old)
+        return generation, backups / operation
+
+    def do_kill_unsaved(self, operation, close_seconds=120):
+        """End the running world without a save, then back up the last completed save."""
+        port = self.config['port']
+        self.stop_if_killed(operation)  # a person force-stopped it while the update built
+        self.record(phase='stopping without saving')
+        if self.platform.listening(port) or self.platform.server_pid(port):
+            # keep_running: if the update below fails, the watchdog brings the world back from its save.
+            self.kill('update without saving', keep_running=True)
+            self.killed_file.unlink(missing_ok=True)  # this action's own stop, not a person's
+        deadline = self.platform.now() + close_seconds
+        while self.platform.listening(port):
+            if self.platform.now() > deadline:
+                raise RuntimeError('the ended server kept its port open')
+            self.platform.sleep(2)
+        self.record(phase='backing up the last completed save')
+        generation, backup = self.backup_last_save(operation)
+        self.record(phase='stopped without saving', generation=generation, backup=str(backup) if backup else None)
+
+    # -- requests from the running world (admins in game) ---------------------------
+    # The world cannot run host actions itself, so an admin's request is a file the world
+    # writes into its own data folder; the host service picks it up on its next pass (every
+    # ~30 s while the world is awake), runs it for this world only and writes its answer
+    # beside it. The host also keeps data/host_status.json current, so admins see in game
+    # what the launcher shows. Only the actions listed here are ever taken from the world.
+    WORLD_REQUESTS = ('status', 'stage', 'update-handover', 'update-unsaved', 'update-when-empty-on',
+                      'update-when-empty-off')
+    WORLD_REQUEST_MAX_AGE = 600  # seconds; an older request file is answered as expired, never run
+    HOST_STATUS_SECONDS = 60
+
+    def world_file(self, name):
+        return self.repo / 'data' / name
+
+    def write_world_json(self, name, value):
+        path = self.world_file(name)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        temporary = path.with_suffix('.tmp')
+        temporary.write_text(json.dumps(value, sort_keys=True), encoding='utf-8')
+        os.replace(temporary, path)
+
+    def set_update_when_empty(self, enabled):
+        raise Refused('update when empty needs a region group (scripts/shard-group)')
+
+    def world_request_answer(self, action):
+        """Run one request from the world; a short answer for the admin."""
+        if action == 'status':
+            return 'host status refreshed'
+        if action == 'stage':
+            self.request_stage()
+            return 'building the latest update beside the running world'
+        if action in ('update-when-empty-on', 'update-when-empty-off'):
+            self.set_update_when_empty(action.endswith('-on'))
+            return 'update when empty is now %s' % ('on' if action.endswith('-on') else 'off')
+        answer = self.request(action)
+        return 'accepted (operation %s)' % str(answer.get('operation', ''))[:8]
+
+    def take_world_request(self):
+        """Answer data/host_request.json if the world wrote one. True when one was taken."""
+        path = self.world_file('host_request.json')
+        try:
+            age = time.time() - path.stat().st_mtime
+        except OSError:
+            return False
+        request = self.read_json(path)
+        if request is None and age < 5:
+            return False  # the world may still be writing it; read it on the next pass
+        request = request or {}
+        path.unlink(missing_ok=True)
+        ident = str(request.get('id', ''))
+        action = request.get('action')
+        by = str(request.get('by', ''))[:32]
+        answer = {'id': ident if re.match(r'^[0-9a-z]{1,32}$', ident) else '', 'action': str(action)[:32],
+                  'answered': int(time.time())}
+        try:
+            if action not in self.WORLD_REQUESTS:
+                raise Refused('the host does not take that action from the world')
+            if age > self.WORLD_REQUEST_MAX_AGE:
+                raise Refused('the request is too old; ask again')
+            answer.update(ok=True, result=self.world_request_answer(action))
+        except Refused as refusal:
+            answer.update(ok=False, result=str(refusal)[:300])
+        self.log({'world_request': answer['action'], 'by': by, 'ok': answer['ok'], 'result': answer['result']})
+        self.write_world_json('host_reply.json', answer)
+        self.write_host_status(force=True)
+        return True
+
+    def host_status(self):
+        """What admins in game see of the host (the launcher's board row for this world)."""
+        state = self.read_state() or {}
+        now = int(time.time())
+        # at_minute: whole minutes since 2000-01-01 UTC, which DM compares with world.realtime exactly.
+        report = {'at': now, 'at_minute': (now - BYOND_EPOCH) // 60, 'busy': self.lock.exists(), 'update_pending': bool(self.update_pending()),
+                  'update_when_empty': bool(self.update_when_empty()), 'built': self.built_revision(),
+                  'region': self.config.get('region'), 'actions': list(self.WORLD_REQUESTS),
+                  'operation': {key: state.get(key) for key in ('action', 'phase', 'error', 'updated')} if state else None}
+        return report
+
+    def write_host_status(self, force=False):
+        now = self.platform.now()
+        if not force and now < getattr(self, 'next_host_status', 0):
+            return
+        self.next_host_status = now + self.HOST_STATUS_SECONDS
+        try:
+            self.write_world_json('host_status.json', self.host_status())
+        except OSError as error:
+            self.log({'host_status_failed': str(error)[:200]})
+
+    def serve_world(self):
+        """Each watch pass of an awake world: its request, then its status file."""
+        if not self.platform.listening(self.config['port']):
+            return
+        if not self.take_world_request():
+            self.write_host_status()
+
     # -- staged builds (region groups only; see shard_group.RegionHost) ----------
     def request_stage(self):
         raise Refused('staged builds need a region host (scripts/shard-group)')
@@ -1252,6 +1480,17 @@ class Host:
     def update_pending(self):
         """True when a staged build newer than the running one is ready to install."""
         return False
+
+    def update_when_empty(self):
+        """Whether an empty world that has saved moves onto the latest revision at once
+        (region hosts only: they build the update beside the running world)."""
+        return False
+
+    def update_while_empty(self):
+        return None
+
+    def keep_sleeper_current(self):
+        pass
 
     def maybe_stage(self):
         minutes = self.config['auto_stage_minutes']
@@ -1310,13 +1549,29 @@ class Host:
             # start and restart pull and recompile first unless the last build is
             # already of the fetched revision.
             steps = {'start': [self.do_refresh, self.do_start], 'stop': [self.do_stop], 'update': [self.do_update],
-                     'restart': [self.do_stop, self.do_refresh, self.do_start], 'handover': [self.do_handover]}[action]
+                     'restart': [self.do_stop, self.do_refresh, self.do_start], 'handover': [self.do_handover]}.get(action) \
+                or self.extra_steps(action)
             for step in steps:
+                if self.killed_during(operation):
+                    raise RuntimeError('stopped before %s' % step.__name__)
                 step(operation)
+            if self.killed_during(operation):
+                # A forced stop came while this action ran (such as a watchdog start still
+                # booting, 2026-11-13): end what it started, so the stop sticks.
+                self.end_after_forced_stop()
+                raise RuntimeError('the world it started was stopped again')
             self.record(phase='done', error=None)
         except Exception as error:  # the state file is the only place a detached worker can report
-            self.record(phase='failed', error=str(error)[:500])
+            reason = self.killed_during(operation)
+            if reason:
+                # A forced stop ended the world under this action: report the stop, which
+                # is what a person did, not the refused connection that followed it.
+                self.record(phase='killed', reason=reason,
+                            error='%s during %s: %s' % (reason, action, str(error)[:300]))
+            else:
+                self.record(phase='failed', error=str(error)[:500])
         finally:
+            self.killed_file.unlink(missing_ok=True)
             self.lock.unlink(missing_ok=True)
 
     def do_start(self, operation):
@@ -1328,6 +1583,7 @@ class Host:
         if not HEX40.match(revision):
             raise RuntimeError('could not read the git revision')
         (self.repo / 'config' / 'lifecycle-revision.txt').write_text(revision + '\n', encoding='utf-8')
+        self.write_server_build(revision)
         if self.platform.listening(self.config['port']):
             raise RuntimeError('something is already listening on the port')
         self.record(phase='starting', generation=generation, revision=revision)
@@ -1341,6 +1597,7 @@ class Host:
             self.platform.sleep(2)
         self.mark_running()
         self.clear_watchdog_holds()
+        self.write_player_changelog(revision)
         self.record(phase='started')
 
     def start_task(self):
@@ -1495,6 +1752,57 @@ class Host:
             self.write_json(self.build_file(), record)
         else:
             self.build_file().unlink(missing_ok=True)
+
+    def write_server_build(self, revision, dmb=None):
+        """Write config/server-build.json for the in-game Server Revision verb: the commit
+        (time and subject), when its .dmb was compiled and when this revision went live.
+        A restart onto the same revision keeps the first deployed time. Best effort: a
+        failure never stops a start or a handover."""
+        path = self.repo / 'config' / 'server-build.json'
+        try:
+            record = {'schema': 1, 'revision': revision}
+            code, out = self.platform.run([self.config['git'], 'show', '-s', '--format=%ct%n%s', revision],
+                                          cwd=self.repo, timeout=60)
+            lines = out.splitlines() if code == 0 else []
+            if len(lines) >= 2 and lines[0].strip().isdigit():
+                record['committed'] = int(lines[0].strip())
+                record['subject'] = lines[1].strip()[:200]
+            try:
+                record['compiled'] = int((dmb or self.dmb()).stat().st_mtime)
+            except OSError:
+                pass
+            try:
+                previous = json.loads(path.read_text(encoding='utf-8'))
+            except (OSError, ValueError):
+                previous = None
+            kept = previous.get('deployed') if isinstance(previous, dict) and previous.get('revision') == revision else None
+            record['deployed'] = kept if isinstance(kept, int) else int(self.platform.now())
+            # The world reads whole minutes since 2000-01-01 UTC (BYOND's epoch): unix seconds
+            # do not fit a BYOND number exactly, these do.
+            for key in ('committed', 'compiled', 'deployed'):
+                if key in record:
+                    record[key + '_utc'] = time.strftime('%Y-%m-%d %H:%M', time.gmtime(record[key]))
+                    record[key + '_minute'] = (record[key] - BYOND_EPOCH) // 60
+            temporary = path.with_suffix('.tmp')
+            temporary.write_text(json.dumps(record), encoding='utf-8')
+            os.replace(temporary, path)
+        except (OSError, ValueError, RuntimeError, subprocess.SubprocessError):
+            pass
+
+    def write_player_changelog(self, revision):
+        """Refresh config/player-changelog.json (the lobby's What's New) from the merged PRs'
+        Changelog: lines in this revision. Runs after the world is up so GitHub never delays a
+        start; the world re-reads the file. Best effort: a failure keeps the previous list."""
+        fetch = getattr(self.platform, 'http_get_json', None)
+        if fetch is None or not HEX40.match(revision or ''):
+            return
+        try:
+            code, out = self.platform.run([self.config['git'], 'rev-list', '--max-count=%d' % player_changelog.HISTORY_DEPTH,
+                                           revision], cwd=self.repo, timeout=60)
+            player_changelog.write(self.repo, revision, player_changelog.history_from_output(code, out), fetch,
+                                   now=self.platform.now())
+        except Exception:  # never fails a start or a handover
+            pass
 
     def built_revision(self):
         """The revision the current .dmb was compiled from, or None when unknown."""

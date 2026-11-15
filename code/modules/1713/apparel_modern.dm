@@ -327,7 +327,7 @@
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
 	armor = list(melee = 30, arrow = 30, gun = 78, energy = 16, bomb = 30, bio = 15, rad = FALSE)
 	value = 90
-	slowdown = 0.10
+	slowdown = 0.2
 	w_class = ITEM_SIZE_NORMAL
 	weight = 3.0
 
@@ -376,7 +376,7 @@
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	armor = list(melee = 60, arrow = 95, gun = 50, energy = 22, bomb = 55, bio = 20, rad = FALSE)
 	value = 150
-	slowdown = 0.1
+	slowdown = 0.2
 	w_class = ITEM_SIZE_LARGE
 	weight = 3.2
 
@@ -470,7 +470,7 @@
 	item_state = "rb23"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 	armor = list(melee = 70, arrow = 95, gun = 72, energy = 30, bomb = 70, bio = 20, rad = FALSE)
-	slowdown = 0.1
+	slowdown = 0.25
 	weight = 4.8
 
 /obj/item/clothing/accessory/armor/coldwar/plates/b5/n34

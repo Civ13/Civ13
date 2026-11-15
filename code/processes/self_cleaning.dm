@@ -14,8 +14,7 @@
 
 	for (current in current_list)
 		if (!isDeleted(current))
-			var/area/A = get_area(current)
-			if (A && A.weather == WEATHER_WET)
+			if (weather_at(current) == WEATHER_WET)
 				qdel(current)
 				++deleted
 				if (deleted >= 100)

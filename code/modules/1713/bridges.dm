@@ -46,7 +46,7 @@
 	return
 
 /obj/covers/bridge/attackby(obj/item/W, mob/user)
-	if (istype(W, /obj/item/weapon/hammer))
+	if (is_tool(W, TOOL_HAMMER))
 		take_apart(user)
 		return TRUE
 	return ..()

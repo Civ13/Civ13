@@ -133,6 +133,8 @@
 			return list("study", "write", "rip", "read")
 		if ("recruitment_station.tmpl")
 			return list("designate", "unbind", "apply", "withdraw", "confirm", "approve", "reject", "revoke", "set_mode", "set_open", "set_language", "set_skill", "set_nonmatch", "refresh")
+		if ("crafting_window.tmpl")
+			return list("make", "makeable_only", "images", "atlas", "pin", "source", "detail")
 		if ("faction_symbol.tmpl")
 			return list("set_tool", "pick_color", "paint", "stroke", "stamp", "clear", "undo", "save")
 		if ("faction_creation.tmpl")
@@ -187,6 +189,8 @@
 			keys += list("x", "y")
 		if ("stroke")
 			keys += list("cells", "stroke_continue")
+		if ("make")
+			keys += list("quantity", "options")
 	for (var/key in params)
 		if (!istext(key) || !(key in keys) || (!istext(params[key]) && !isnum(params[key])))
 			return

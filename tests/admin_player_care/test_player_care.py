@@ -116,6 +116,22 @@ class PlayerCareSourceContracts(unittest.TestCase):
             with self.assertRaises(AssertionError):
                 assert_hygiene_overlay_allocation(self, mutation)
 
+    def test_fleas_warn_once_itch_and_report_when_gone(self):
+        hygiene = proc('code/game/mob/living/carbon/human/human_needs.dm',
+                       '/mob/living/human/proc/handle_hygiene()')
+        infested = hygiene.index('\tif (fleas_found)\n')
+        warning = hygiene.index('\t\tif (!has_fleas)\n\t\t\tto_chat(src, SPAN_WARNING(')
+        itch = hygiene.index('\t\telse if (prob(1))\n\t\t\tto_chat(src, SPAN_WARNING(pick(')
+        gone = hygiene.index('\telse if (has_fleas)\n\t\tto_chat(src, SPAN_NOTICE(')
+        remember = hygiene.index('\thas_fleas = fleas_found\n')
+        self.assertLess(infested, warning)
+        self.assertLess(warning, itch)
+        self.assertLess(itch, gone)
+        self.assertLess(gone, remember)
+        self.assertIn('typhus', hygiene[warning:itch])
+        source = (ROOT / 'code/game/mob/living/carbon/human/human_needs.dm').read_text()
+        self.assertIn('/mob/living/human/var/tmp/has_fleas = FALSE', source)
+
     def test_mood_restores_baseline_preserves_boost_and_refreshes_modifier(self):
         body = command(COMMANDS[1])
         self.assertIn('H.set_mood(max(H.mood, initial(H.mood)))\n\tH.handle_mood()', body)

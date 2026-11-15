@@ -203,12 +203,14 @@ var/global/list/civ_relay_outbound_queue = list()
 	if (++civ_relay_wear_seconds < CIV_RELAY_WEAR_SECONDS)
 		return
 	civ_relay_wear_seconds = 0
-	var/amount = CIV_RELAY_WEAR_FAIR
-	if (weather == WEATHER_WET)
-		amount = CIV_RELAY_WEAR_WET
-	else if (weather == WEATHER_EXTREME)
-		amount = CIV_RELAY_WEAR_EXTREME
 	for (var/obj/structure/telecom/relay/R in civ_telecom_devices)
+		// The weather over each mast, not one sky for the whole map.
+		var/amount = CIV_RELAY_WEAR_FAIR
+		switch (weather_at(R))
+			if (WEATHER_WET)
+				amount = CIV_RELAY_WEAR_WET
+			if (WEATHER_EXTREME)
+				amount = CIV_RELAY_WEAR_EXTREME
 		R.wear(amount)
 
 /proc/civ_relay_on_air_list()
@@ -351,6 +353,8 @@ var/global/list/civ_relay_outbound_queue = list()
 			H.hear_station_line("[speaker.real_name] (via [speaker.relay], [speaker.region]): [heard]")
 	for (var/mob/observer/O in mob_list)
 		O.hear_relayed_radio(message, verbage, speaker, null)
+	if (origin)
+		rusty_bolt_reradiate(origin, message, speaker.language)
 
 /mob/proc/hear_relayed_radio(message, verbage, datum/remote_speaker/speaker, obj/destination)
 	if (!client || !message || !speaker)

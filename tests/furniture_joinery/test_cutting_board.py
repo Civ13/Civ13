@@ -1,5 +1,6 @@
 """Production-body projections with inert inventory, waits and reagent holders."""
 import json
+import math
 from pathlib import Path
 import re
 import sys
@@ -38,6 +39,10 @@ def project(signature, args, env, fields=()):
     return compile_body(source, signature, args, env, fields)[0]
 
 
+# Frozen bite sizes of the board foods (meat sets 3 in New(); the rest are type defaults).
+BITESIZE = {'meat': 3, 'mince': 2, 'meatball': 3, 'patty': 3}
+
+
 class Holder(dict):
     @property
     def total_volume(self): return sum(self.values())
@@ -67,6 +72,13 @@ class Food(NS):
         multiplier = 4 if path_is(self.type, FOOD + 'driedmeat') else 2
         self.salted_meat = True; self.decay *= multiplier; self.decaytimer *= multiplier
     def rot(self): self.rotten = True
+    def recalculate_bitesize(self):
+        # Mirrors snacks/recalculate_bitesize(): fills only unset values.
+        if not self.biteamount:
+            self.biteamount = math.ceil(self.reagents.total_volume / self.bitesize) if self.bitesize else 1
+        self.biteamount = self.biteamount or 1
+        if not self.bitesize:
+            self.bitesize = math.ceil(self.reagents.total_volume * 10 / self.biteamount) / 10
 
 
 class Fixture:
@@ -87,7 +99,7 @@ class Fixture:
         def delete(item):
             item.deleted = True; item.loc = None
             self.actor.hands[:] = [obj for obj in self.actor.hands if obj is not item]
-        self.env = dict(record=lambda *pairs: dict(zip(pairs[::2], pairs[1::2])), native_range=range,
+        self.env = dict(ceil=math.ceil, max=max, min=min, record=lambda *pairs: dict(zip(pairs[::2], pairs[1::2])), native_range=range,
             MINIMUM_CHEMICAL_VOLUME=MINIMUM,
             istype=lambda obj, path=FOOD.rstrip('/'): path_is(getattr(obj, 'type', None), path),
             QDELETED=lambda obj: obj is None or getattr(obj, 'deleted', False),
@@ -103,7 +115,10 @@ class Fixture:
         self.split_safe = project('/proc/cutting_board_reagents_can_split(', 'food', self.env)
         self.env['cutting_board_reagents_can_split'] = self.split_safe
         self.safe = project('/proc/cutting_board_food_is_safe(', 'food', self.env)
-        self.transfer = project('/proc/cutting_board_transfer_food(', 'food,output,remaining', self.env)
+        self.env['cutting_board_bites_left'] = project('/proc/cutting_board_bites_left(', 'food', self.env)
+        self.effects = project('/proc/cutting_board_food_effects(', 'food', self.env)
+        self.env['cutting_board_food_effects'] = self.effects
+        self.transfer = project('/proc/cutting_board_transfer_food(', 'food,output,remaining,effects=None,count=1', self.env)
         self.env.update(cutting_board_food_is_safe=self.safe, cutting_board_transfer_food=self.transfer)
         fields = ('loc', 'input', 'icon_state', 'normalize_input', 'actor_ready', 'wait_for_preparation')
         normalize = project(BOARD + '/proc/normalize_input(', 'self', self.env, fields)
@@ -120,7 +135,7 @@ class Fixture:
                     rotten=False, decay=150000 if name.startswith('driedmeat') else 12000,
                     decaytimer=0, rots=not name.startswith('driedmeat'), salted_meat=False,
                     raw=True, roasted=False, boiled=False, disgusting=False, satisfaction=-3,
-                    non_vegetarian=True, radiation=0,
+                    non_vegetarian=True, radiation=0, bitesize=BITESIZE.get(name), biteamount=None,
                     reagents=Holder(protein=5))
     def construct(self, path, site):
         output = self.food(path.removeprefix(FOOD), site)
@@ -136,6 +151,28 @@ class Fixture:
     def cut(self):
         knife = self.item(KNIFE); self.attack(self.board, knife, self.actor)
         return knife
+
+
+def eaten(foods, effect):
+    """Total mood or radiation from eating every food fully, applied per bite as On_Consume does."""
+    total = 0
+    for food in foods:
+        food.recalculate_bitesize()
+        bites = max(1, math.ceil(food.reagents.total_volume / food.bitesize))
+        per_bite = math.ceil(food.satisfaction / max(1, food.biteamount)) if effect == 'satisfaction' else food.radiation
+        total += per_bite * bites
+    return total
+
+
+def old_transfer(food, output, remaining):
+    """Pre-#4949 transfer, frozen as a negative control: hazards were copied to every output."""
+    output.reagents.clear_reagents()
+    food.reagents.trans_to_holder(output.reagents, food.reagents.total_volume / remaining)
+    output.radiation = food.radiation
+    output.satisfaction = min(output.satisfaction, food.satisfaction)
+
+
+OLD_TRANSFER = old_transfer
 
 
 class CuttingBoard(unittest.TestCase):
@@ -179,6 +216,7 @@ class CuttingBoard(unittest.TestCase):
         food.decaytimer = 2400; food.mark_salted_meat(); food.reagents['cyanide'] = 3
         food.disgusting = True; food.satisfaction = -20; food.raw = False; food.roasted = True
         food.radiation = 137
+        mood_before, radiation_before = eaten([food], 'satisfaction'), eaten([food], 'radiation')
         f.attack(f.board, food, f.actor)
         f.after = lambda: setattr(food, 'decaytimer', food.decaytimer + 600) or True
         fraction = (food.decaytimer + 600) / food.decay
@@ -188,8 +226,47 @@ class CuttingBoard(unittest.TestCase):
         for output in f.food_outputs:
             self.assertTrue(output.salted_meat); self.assertAlmostEqual(output.decaytimer / output.decay, fraction)
             self.assertTrue(output.disgusting); self.assertTrue(output.roasted)
-            self.assertFalse(output.raw); self.assertEqual(output.satisfaction, -20)
-            self.assertEqual(output.radiation, 137); self.assertTrue(output.non_vegetarian)
+            self.assertFalse(output.raw); self.assertTrue(output.non_vegetarian)
+        # #4949: mood and radiation are split across the outputs, not copied to each one.
+        # Per-bite mood rounds toward zero, so splitting may soften it slightly but never adds to it.
+        mood_after = eaten(f.food_outputs, 'satisfaction')
+        self.assertTrue(mood_before <= mood_after <= mood_before * .8, (mood_before, mood_after))
+        self.assertAlmostEqual(eaten(f.food_outputs, 'radiation'), radiation_before)
+
+    def test_cutting_does_not_multiply_mood_or_radiation(self):
+        for name in ('meat', 'rawfish', 'rawcutlet', 'mince', 'meatball'):
+            with self.subTest(food=name):
+                f = Fixture(); food = f.item(FOOD + name)
+                food.satisfaction = -4; food.radiation = 2
+                before = (eaten([food], 'satisfaction'), eaten([food], 'radiation'))
+                f.attack(f.board, food, f.actor); f.cut()
+                self.assertGreaterEqual(eaten(f.food_outputs, 'satisfaction'), before[0])
+                self.assertAlmostEqual(eaten(f.food_outputs, 'radiation'), before[1])
+        # The issue's example: a 5-protein slab (bite size 3, -4 mood) gives two minces.
+        f = Fixture(); slab = f.item(FOOD + 'meat'); slab.satisfaction = -4
+        f.attack(f.board, slab, f.actor); f.cut()
+        self.assertEqual([eaten([o], 'satisfaction') for o in f.food_outputs], [-2, -2])
+
+    def test_partly_eaten_food_splits_only_what_is_left(self):
+        f = Fixture(); food = f.item(FOOD + 'meat')
+        food.reagents = Holder(protein=2); food.biteamount = 2; food.satisfaction = -4; food.radiation = 5
+        f.attack(f.board, food, f.actor); f.cut()
+        self.assertEqual(eaten(f.food_outputs, 'satisfaction'), -2)
+        self.assertAlmostEqual(eaten(f.food_outputs, 'radiation'), 5)
+
+    def test_pleasant_food_cannot_make_nicer_outputs(self):
+        f = Fixture(); food = f.item(FOOD + 'fishfillet'); food.satisfaction = 6
+        f.attack(f.board, food, f.actor); f.cut()
+        self.assertEqual([o.satisfaction for o in f.food_outputs], [-3])
+
+    def test_negative_control_old_transfer_multiplies(self):
+        old = OLD_TRANSFER
+        f = Fixture(); food = f.item(FOOD + 'meat'); food.satisfaction = -4; food.radiation = 2
+        outputs = [f.food('mince'), f.food('mince')]
+        for output, remaining in zip(outputs, (2, 1)):
+            old(food, output, remaining)
+        self.assertEqual(eaten(outputs, 'satisfaction'), -8)
+        self.assertAlmostEqual(eaten(outputs, 'radiation'), 8)
 
     def test_dried_output_cannot_be_minced_repeatedly_or_reset_age(self):
         f = Fixture(); food = f.item(FOOD + 'driedmeat')

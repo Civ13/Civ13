@@ -198,10 +198,10 @@
 
 /obj/item/weapon/watch/pocket/examine(mob/user)
 	..()
-	to_chat(user, "<big>It is now [clock_time()].</big>")
+	to_chat(user, "<big>[watch_reading(src)]</big>")
 
 /obj/item/weapon/watch/pocket/attack_self(var/mob/living/L)
-	to_chat(L, "<big>It is now [clock_time()].</big>")
+	to_chat(L, "<big>[watch_reading(src)]</big>")
 	return
 
 /* Industrial Uniforms*/
@@ -482,6 +482,7 @@ obj/item/clothing/under/confederate_uniform/New()
 	value = 65
 	var/colorn = 1
 	var/specific = FALSE
+	var/base_state = "kozhanka"
 	flags_inv = BLOCKHEADHAIR
 	specific = TRUE
 /obj/item/clothing/suit/storage/coat/kozhanka/New()
@@ -496,8 +497,8 @@ obj/item/clothing/under/confederate_uniform/New()
 	set src in usr
 	set name = "Toggle Hood"
 	if (hood)
-		icon_state = "kozhanka"
-		item_state = "kozhanka"
+		icon_state = base_state
+		item_state = base_state
 		body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 		cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
 		item_state_slots["slot_wear_suit"] = "kozhanka[colorn]"
@@ -525,6 +526,7 @@ obj/item/clothing/under/confederate_uniform/New()
 	desc = "A thick white fur coat, great for the winter."
 	icon_state = "kozhanka_w"
 	item_state = "kozhanka_w"
+	base_state = "kozhanka_w"
 	specific = TRUE
 	colorn = 2
 

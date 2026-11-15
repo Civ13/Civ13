@@ -165,6 +165,8 @@ class ProductionBoundaryTests(unittest.TestCase):
             # Audited for ocean phase 4: nonyielding key lists of AI state.
             '/mob/living/simple_animal/sea/persistence_runtime_var',
             '/mob/living/simple_animal/sea/reef_eel/persistence_runtime_var',
+            # Audited for the Stone Age bison herds: a nonyielding key comparison.
+            '/mob/living/simple_animal/bison/persistence_runtime_var',
         }, 'New animal projection hooks require a nonyielding/ownership audit')
 
     def test_packet_materializes_only_hashed_sources(self):
@@ -239,7 +241,44 @@ class ProductionBoundaryTests(unittest.TestCase):
         self.assertIn('(last_error && last_error != last_export_error)', reclaim)
 
     def test_capture_budget_diagnostics_keep_original_limits(self):
-        self.assertIn('work > 8192 || tick_delta || elapsed_ds > 1', SAVING)
+        self.assertIn('if(++work > 8192 || tick_delta)', SAVING)
+
+    def test_skipped_wildlife_root_is_declined_before_capture(self):
+        # Gaia 2026-11-13: a wild animal left out of the save (#5127) stayed a
+        # roster root; the drain captured it, BuildVarDirectory wrote no entry
+        # ("reason=no entry written") and every save failed until the retries
+        # ran Dream Daemon out of memory.
+        root = SAVING.split('/map_storage/proc/capture_moving_save_root(', 1)[1].split('\n/map_storage/proc/', 1)[0]
+        guard = 'if(no_headroom || save_skips_wildlife(A) || !moving_save_root_closed(A))'
+        self.assertIn(guard, root)
+        self.assertLess(root.index(guard), root.index('new_scratch_savefile()'))
+        self.assertIn('if(ismob(A) && save_skips_wildlife(A))', SAVING)
+
+    def test_root_change_names_reason_and_demotes_root(self):
+        # Gaia 2026-11-14: "Moving save root changed during capture" named
+        # neither the animal nor the cause, and nothing kept the same root from
+        # refusing the retry.
+        root = SAVING.split('/map_storage/proc/capture_moving_save_root(', 1)[1].split('\n/map_storage/proc/', 1)[0]
+        self.assertIn('throw EXCEPTION("Moving save root changed during capture: root=[root_type] [moving_save_root_change(A, ref, origin)]")', root)
+        self.assertIn('if(findtext("[error]", "root changed during capture")) moving_save_demoted[record["identity"]] = TRUE', root)
+        change = SAVING.split('/map_storage/proc/moving_save_root_change(', 1)[1].split('\n/map_storage/proc/', 1)[0]
+        supported = SAVING.split('/map_storage/proc/moving_save_root_supported(', 1)[1].split('\n/map_storage/proc/', 1)[0]
+        for key in re.findall(r'"([a-z_]+)"', ' '.join(re.findall(r'for\(var/key in list\(([^\n]+)\)\)', supported))):
+            self.assertIn('"%s"' % key, change)
+        self.assertIn('root-change', (ROOT / 'tests/movement_save_chunks/correctness.py').read_text(encoding='utf-8'))
+
+    def test_wall_clock_overrun_keeps_capture_and_demotes_root(self):
+        # 2026-11-13: a drift jelly (work 162, tick_delta 0) took elapsed_ds 2
+        # on a lagging host and the throw failed the whole save. Wall clock is
+        # cost, not a yield: note it like the tick share and demote the root.
+        capture = SAVING.split('/datum/moving_save_capture\n', 1)[1].split('proc/reserve_bytes', 1)[0]
+        throw_line = [line for line in capture.splitlines() if line.strip().startswith('if(++work > 8192')][0]
+        self.assertNotIn('elapsed_ds', throw_line)
+        self.assertIn('if(elapsed_ds > 1) overrun_elapsed_ds = max(overrun_elapsed_ds, elapsed_ds)', capture)
+        root = SAVING.split('/map_storage/proc/capture_moving_save_root(', 1)[1].split('\n/map_storage/proc/', 1)[0]
+        self.assertIn('if(chunk.overrun_usage || chunk.overrun_elapsed_ds)', root)
+        probe = (ROOT / 'tests/movement_save_chunks/probe.dm').read_text(encoding='utf-8')
+        self.assertIn('(world.timeofday - overrun_chunk.start_clock + 864000) % 864000 <= 2', probe)
 
     def test_capture_without_headroom_declines_instead_of_failing_the_save(self):
         # Gaia 2026-11-09: at time dilation 128% the one-tick wait never found
@@ -249,7 +288,7 @@ class ProductionBoundaryTests(unittest.TestCase):
         wait = root.index('sleep(world.tick_lag)')
         flag = root.index('\t\tif(world.tick_usage >= 80)\n\t\t\tno_headroom = TRUE')
         identity = root.index('changed containment, level or identity')
-        decline = root.index('if(no_headroom || !moving_save_root_closed(A))')
+        decline = root.index('if(no_headroom || save_skips_wildlife(A) || !moving_save_root_closed(A))')
         self.assertLess(wait, flag)
         self.assertLess(root.index('require_export_frame(parent_frame)'), flag)
         self.assertLess(flag, identity)
@@ -260,7 +299,7 @@ class ProductionBoundaryTests(unittest.TestCase):
         # Gaia 2026-11-09: an animal admitted at save start later referenced
         # another movable, and its chunk threw "uncaptured external movable".
         root = SAVING.split('/map_storage/proc/capture_moving_save_root(', 1)[1].split('\n/map_storage/proc/', 1)[0]
-        recheck = root.index('if(no_headroom || !moving_save_root_closed(A))')
+        recheck = root.index('if(no_headroom || save_skips_wildlife(A) || !moving_save_root_closed(A))')
         self.assertLess(root.index('changed containment, level or identity'), recheck)
         self.assertLess(recheck, root.index('var/savefile/staged = new'))
         self.assertLess(recheck, root.index('moving_save_chunk = chunk'))
@@ -287,9 +326,9 @@ class ProductionBoundaryTests(unittest.TestCase):
         throw_line = [line for line in capture.splitlines() if line.strip().startswith('if(++work > 8192')][0]
         self.assertNotIn('usage_delta', throw_line)
         root = SAVING.split('/map_storage/proc/capture_moving_save_root(', 1)[1].split('\n/map_storage/proc/', 1)[0]
-        detach = root.index('\tmoving_save_chunk = null\n\tif(chunk.overrun_usage)')
+        detach = root.index('\tmoving_save_chunk = null\n\tif(chunk.overrun_usage || chunk.overrun_elapsed_ds)')
         self.assertLess(detach, root.index('moving_save_demoted[record["identity"]] = TRUE', detach))
-        self.assertLess(root.index('if(chunk.overrun_usage)'), root.index('record["ref"] = ref'))
+        self.assertLess(root.index('if(chunk.overrun_usage || chunk.overrun_elapsed_ds)'), root.index('record["ref"] = ref'))
 
     def test_busy_tick_admission_does_not_fail_capture(self):
         # Gaia 2026-11-09: an elk admitted at 76% usage cost 13.7% and hit the

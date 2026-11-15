@@ -3,6 +3,7 @@ import hashlib
 import importlib.util
 import json
 from pathlib import Path
+import re
 import tempfile
 import unittest
 
@@ -155,6 +156,55 @@ class SourceTests(unittest.TestCase):
                     mutated = output / packet["adapted_sources"]["code/processes/seasonal_construction.dm"]
                     self.assertIn(PREPARE.CONTROLS[control][1], mutated.read_text())
         self.assertEqual(SOURCE.read_bytes(), original)
+
+    def test_pacing_is_included_derived_and_matches_the_trace_port(self):
+        dme = (ROOT / "civ13.dme").read_text()
+        self.assertEqual(dme.count('code\\processes\\seasonal_construction_pacing.dm'), 1)
+        self.assertLess(dme.index('code\\processes\\seasonal_construction.dm'),
+                        dme.index('code\\processes\\seasonal_construction_pacing.dm'))
+        pacing = (ROOT / "code/processes/seasonal_construction_pacing.dm").read_text()
+        # Nothing new is saved: every new variable is tmp and excluded from saves.
+        self.assertEqual(len(re.findall(r"^/[\w/]+\n\tvar/", pacing, re.M)), 1)  # One type-level var block.
+        declared = re.findall(r"^\tvar/(tmp/)?(\w+)", body(pacing, "/obj"), re.M)
+        self.assertEqual(sorted(name for _, name in declared),
+                         ["seasonal_construction_paced_at", "seasonal_construction_ruin_told"])
+        runtime = body(pacing, "/obj/persistence_runtime_var(key)")
+        for tmp, name in declared:
+            self.assertTrue(tmp, name)
+            self.assertIn('"' + name + '"', runtime)
+        self.assertIn("return ..()", runtime)
+        # The lines test_decay.py ports by hand.
+        paced = body(pacing, "/obj/proc/seasonal_construction_paced(damage)")
+        for line in ("if (seasons < reserve - floor - 0.001)",
+                     "if (seasonal_construction_paced_at == construction_season_changes)",
+                     "seasonal_construction_due += max(0, seasons - (reserve - floor))",
+                     "return seasonal_construction_health() - floor * design / span"):
+            self.assertEqual(paced.count(line), 1, line)
+        floor = body(pacing, "/obj/proc/seasonal_construction_band_floor(reserve)")
+        self.assertIn("return -CONSTRUCTION_RUIN_SEASONS", floor)
+        self.assertEqual(body(pacing, "/obj/covers/seasonal_construction_rate()").count("rate -= 0.25"), 2)
+        ruin = body(pacing, "/obj/covers/proc/seasonal_construction_ruin()")
+        self.assertIn("R.collapse_check(TRUE)", ruin)
+        self.assertNotIn("qdel", pacing)
+        self.assertNotIn("spawn(", pacing)
+        self.assertNotIn(" in world", pacing)
+        roof = (ROOT / "code/game/objects/roof_stuff.dm").read_text()
+        self.assertIn("C.wall == TRUE && !C.seasonal_construction_ruined()", body(roof, "/obj/roof/proc/is_supported()"))
+        self.assertIn("spawn(slow ? 10 : 50)", body(roof, "/obj/roof/proc/collapse_check(slow = FALSE)"))
+        self.assertIn("addtimer(CALLBACK(src, PROC_REF(sag_end)), ROOF_SAG_TIME)", body(roof, "/obj/roof/proc/sag()"))
+        levels = (ROOT / "code/game/objects/building_levels.dm").read_text()
+        self.assertIn('key == "sagging"', body(levels, "/obj/roof/persistence_runtime_var(key)"))
+
+    def test_native_weathering_controls_still_have_their_anchors(self):
+        spec = importlib.util.spec_from_file_location(
+            "weathering_run", ROOT / "tests/construction_weathering_load/run.py")
+        run = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(run)
+        probe = (ROOT / "tests/construction_weathering_load/probe.dm").read_text()
+        for name, (target, old, new, expected) in run.CONTROLS.items():
+            with self.subTest(control=name):
+                self.assertEqual((ROOT / target).read_text().count(old), 1)
+                self.assertIn(expected[len("FAIL: "):], probe)
 
     def test_historical_native_probe_remains_immutable(self):
         historical = ROOT / "tests/seasonal_construction/probe.dm"

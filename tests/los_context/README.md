@@ -136,3 +136,7 @@ republication, two-viewer ownership, failed/offset-only moves and conservative
 denial/capture failure. Source projection is not native dispatch, pixels or
 performance. See [the bounded measurement plan](../../docs/tree-refresh-measurement.md)
 for the executed procedures, adapter boundaries and future acceptance criteria.
+
+A tree on the viewer's own tile (humans may stand beside its trunk) is not
+that viewer's blocker (`los_own_tree`); curtains, doors and walls there still
+blind. Trees in play are not opaque and hide nobody; there is no foliage cover.

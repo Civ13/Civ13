@@ -43,6 +43,9 @@ Since #3906 deploy.bat hands running regions over to the staged build instead of
 deploy dialog (DeployQuestion) says so. The Host tab has **Build update** (`shard_group.py stage`, no
 kick) and the group status line shows each region's `stage` phase and a `standby` world via
 LocalHosting.DescribeStage; keep its wording in step with shard_group.py stage phases.
+**Update offline regions** (All regions row, `update-offline`, launcher 1.5.17) stages and installs
+every stopped region, stages asleep ones for the host service, and never touches a running region;
+ParseGroup reads its `accepted`/`skipped` answer and DescribeStage shows a stage `install` refusal.
 
 <!-- 2026-11-06: Save, update and restart -->
 With control.group set, the Updates tab's server row uses `shard_group.py check-update` and its button

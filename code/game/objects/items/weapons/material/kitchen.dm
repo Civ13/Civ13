@@ -88,6 +88,7 @@
 #define BASH 3
 
 /obj/item/weapon/material/kitchen/utensil/knife
+	tool_flags = TOOL_KNIFE
 	name = "knife"
 	desc = "A knife for eating with. Can cut through any food."
 	icon_state = "knife"
@@ -273,11 +274,9 @@
 		item_state = null
 
 /obj/item/weapon/material/kitchen/utensil/knife/switchblade/update_force()
-	..()
 	if(active)
 		edge = TRUE
 		sharp = TRUE
-		throwforce = 5
 		hitsound = 'sound/weapons/bladeslice.ogg'
 		w_class = ITEM_SIZE_NORMAL
 		force_divisor = 0.7
@@ -289,6 +288,9 @@
 		w_class = initial(w_class)
 		force_divisor = initial(force_divisor)
 		attack_verb = initial(attack_verb)
+	..()
+	if(active)
+		throwforce = 5
 
 /obj/item/weapon/material/kitchen/utensil/knife/switchblade/secondary_attack_self(mob/living/human/user)
 	if(!active)

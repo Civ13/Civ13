@@ -18,6 +18,16 @@
 /obj/item/weapon/storage/internal/attack_hand()
 	return		//make sure this is never picked up
 
+// The item that owns an internal storage may refuse things by its own rules,
+// beyond the type and size limits (see belt_pouches.dm).
+/obj/item/proc/internal_storage_accepts(obj/item/W, stop_messages = FALSE)
+	return TRUE
+
+/obj/item/weapon/storage/internal/can_be_inserted(obj/item/W as obj, stop_messages = FALSE)
+	if (master_item && istype(W) && !master_item.internal_storage_accepts(W, stop_messages))
+		return FALSE
+	return ..()
+
 /obj/item/weapon/storage/internal/mob_can_equip()
 	return FALSE	//make sure this is never picked up
 

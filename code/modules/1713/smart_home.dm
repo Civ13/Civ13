@@ -163,7 +163,7 @@ var/global/list/smart_hubs = list()
 /obj/structure/smart_hub/proc/reaches(obj/structure/D)
 	if (!D || QDELETED(D) || D.z != z || !D.anchored || !isturf(D.loc))
 		return FALSE
-	if (!powersource || !D.powersource || !(D in D.powersource.connections) || get_dist(D, D.powersource) > 1)
+	if (!powersource || !D.powersource || !(D in D.powersource.connections) || !D.cable_reach(D.powersource))
 		return FALSE
 	return powersource.component_id && D.powersource.component_id == powersource.component_id
 

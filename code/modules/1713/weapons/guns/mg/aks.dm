@@ -5,7 +5,8 @@
 	item_state = "ak101"
 	base_icon = "ak101"
 	weight = 3.6
-	var/folded = FALSE
+	folding_stock = TRUE
+	stock_recoil_mult = 1
 	caliber = "a556x45"
 	icon = 'icons/obj/guns/assault_rifles.dmi'
 	fire_sound = 'sound/weapons/guns/fire/AKM.ogg'
@@ -23,36 +24,11 @@
 	scope_mounts = list ("dovetail", "picatinny")
 	under_mounts = list ("picatinny", "gp25_mount")
 
-/obj/item/weapon/gun/projectile/submachinegun/ak101/update_icon()
-	..()
-	if (folded)
-		icon_state = "[base_icon]_folded"
-	else
-		icon_state = "[base_icon]"
-
 /obj/item/weapon/gun/projectile/submachinegun/ak101/verb/fold()
 	set name = "Toggle Stock"
 	set category = null
 	set src in usr
-	if (folded)
-		folded = FALSE
-		to_chat(usr, "You extend the stock on \the [src].")
-		equiptimer = 15
-		set_stock()
-		update_icon()
-	else
-		folded = TRUE
-		to_chat(usr, "You collapse the stock on \the [src].")
-		equiptimer = 7
-		set_stock()
-		update_icon()
-
-/obj/item/weapon/gun/projectile/submachinegun/ak101/proc/set_stock()
-	if (folded)
-		slot_flags = SLOT_SHOULDER|SLOT_BELT
-	else
-		slot_flags = SLOT_SHOULDER
-
+	toggle_folding_stock(usr)
 
 /obj/item/weapon/gun/projectile/submachinegun/ak101/ak102
 	name = "AK-102"

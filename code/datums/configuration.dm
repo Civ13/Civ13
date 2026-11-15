@@ -145,6 +145,8 @@ var/list/gamemode_cache = list()
 	var/daynight_client_tint = FALSE
 	var/seasons_on = TRUE
 	var/season_duration_minutes = 60 // Shared season loop only; explicit map calendars retain their timing.
+	var/faction_member_limit = 50 // Most accounts any faction's roster may hold (faction_roster.dm, faction_hall.dm).
+	var/faction_roster_idle_days = 14 // Days without playing a member before an account leaves the roster.
 	var/recruitment_expiry_days = 7 // Faction recruitment applications and approved offers (faction_recruitment.dm).
 	var/recruitment_queue_limit = 50 // Pending applications per faction.
 	var/recruitment_cooldown_minutes = 5 // Between one player's applications.
@@ -156,7 +158,7 @@ var/list/gamemode_cache = list()
 	var/persistence_stream_saves = TRUE // write levels through the savestream helper when its files are present.
 	var/persistence_candidate_readback = FALSE // walk every stream level back from disk during a save's candidate check instead of checking the pinned objects.
 	// Mirrors the accepted allocator settings; the controller enforces hard bounds.
-	var/new_z_cell_budget = 1400000
+	var/new_z_cell_budget = 2100000
 	var/new_z_roof_levels = 1
 	var/new_z_instance_reserve = 0
 	var/new_z_safehouse_reserve = 0
@@ -209,6 +211,12 @@ var/list/gamemode_cache = list()
 					var/minutes = text2num(value)
 					if (isnum(minutes) && minutes >= 1 && minutes <= 1440 && "[minutes]" == trim(value))
 						season_duration_minutes = minutes
+
+				if ("faction_member_limit", "faction_roster_idle_days")
+					var/number = text2num(value)
+					var/list/bounds = list("faction_member_limit" = list(2, 500), "faction_roster_idle_days" = list(1, 90))
+					if (isnum(number) && number == round(number) && number >= bounds[name][1] && number <= bounds[name][2] && "[number]" == trim(value))
+						vars[name] = number
 
 				if ("recruitment_expiry_days", "recruitment_queue_limit", "recruitment_cooldown_minutes")
 					var/number = text2num(value)

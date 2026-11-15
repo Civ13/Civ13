@@ -161,6 +161,11 @@
 		/obj/item/stack/farming/seeds/cotton = list("temperate", "desert", "sea", "semiarid"),
 		/obj/item/stack/farming/seeds/parsley = list("temperate", "semiarid", "sea"),
 		/obj/item/stack/farming/seeds/celery = list("temperate", "semiarid", "sea", "jungle"),
+		/obj/item/stack/farming/seeds/chamomile = list("temperate", "semiarid", "sea", "taiga"),
+		/obj/item/stack/farming/seeds/dandelion = list("temperate", "taiga", "tundra", "sea", "semiarid"),
+		/obj/item/stack/farming/seeds/mint = list("temperate", "sea", "semiarid", "jungle"),
+		/obj/item/stack/farming/seeds/sunflower = list("temperate", "semiarid", "savanna", "desert"),
+		/obj/item/stack/farming/seeds/rose = list("temperate", "semiarid", "sea"),
 	)
 
 // Mushrooms grow where the mushroom crop does, outside the cold and dry seasons.
@@ -182,14 +187,14 @@
 			if (soil && climate != "desert")
 				.[/obj/item/stack/material/wood_piece] = 1
 		if (FORAGE_SEEDS)
-			if (soil && season != "WINTER")
+			if (soil && season != SEASON_WINTER)
 				var/list/table = foraging_seed_table()
 				for (var/path in table)
 					var/list/climates = table[path]
 					if (climate in climates)
 						.[path] = 1
 		if (FORAGE_FOOD)
-			if (soil && season != "WINTER" && season != "Dry Season" && (climate in foraging_mushroom_climates()))
+			if (soil && season != SEASON_WINTER && season != SEASON_DRY && (climate in foraging_mushroom_climates()))
 				.[/obj/item/weapon/reagent_containers/food/snacks/grown/mushroom] = 1
 
 // Categories this tile can give, each with its weight for an open search.
@@ -337,7 +342,7 @@
 		to_chat(src, SPAN_NOTICE("This patch has already been picked clean."))
 		return FALSE
 	if (!foraging_offers(T, focus))
-		to_chat(src, SPAN_NOTICE("You will not find [focus] on this ground [season == "WINTER" ? "in winter" : "here"]."))
+		to_chat(src, SPAN_NOTICE("You will not find [focus] on this ground [season == SEASON_WINTER ? "in winter" : "here"]."))
 		return FALSE
 	if (!T.sifting_identity)
 		T.sifting_identity = new /datum

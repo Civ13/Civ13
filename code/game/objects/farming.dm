@@ -40,7 +40,7 @@
 		return "Plump helmets need a plot in a suitable area."
 	if (A.location == 0)
 		return null
-	if (!(map.ID in list(MAP_NOMADS_CONTINENTAL, MAP_NOMADS_PANGEA, MAP_NOMADS_NEW_WORLD, MAP_NOMADS_MEDITERRANEAN, MAP_NOMADS_EUROPE, MAP_NOMADS_GAIA)))
+	if (!(map.ID in list(MAP_NOMADS_CONTINENTAL, MAP_NOMADS_PANGEA, MAP_NOMADS_NEW_WORLD, MAP_NOMADS_MEDITERRANEAN, MAP_NOMADS_EUROPE, MAP_NOMADS_GAIA, MAP_NOMADS_AMERICAS_NORTH, MAP_NOMADS_AMERICAS_SOUTH)))
 		return null
 	// Keep these lists aligned with the inherited mushroom crop, not forage seeds.
 	if (!(A.climate in list("temperate", "sea", "tundra", "taiga", "jungle", "savanna")))
@@ -1191,7 +1191,7 @@
 						for (var/k in seasons)
 							if (season == k)
 								count++
-				if (count > 0 || ! list(MAP_NOMADS_CONTINENTAL, MAP_NOMADS_PANGEA, MAP_NOMADS_NEW_WORLD, MAP_NOMADS_MEDITERRANEAN, MAP_NOMADS_EUROPE, MAP_NOMADS_GAIA).Find(map.ID))
+				if (count > 0 || ! list(MAP_NOMADS_CONTINENTAL, MAP_NOMADS_PANGEA, MAP_NOMADS_NEW_WORLD, MAP_NOMADS_MEDITERRANEAN, MAP_NOMADS_EUROPE, MAP_NOMADS_GAIA, MAP_NOMADS_AMERICAS_NORTH, MAP_NOMADS_AMERICAS_SOUTH).Find(map.ID))
 					allow_stage = TRUE
 			advance_stage_if_allowed(allow_stage)
 			growth()
@@ -1230,7 +1230,7 @@
 			note_field_work(user, "harvests", 1)
 			if (ishuman(user))
 				var/mob/living/human/H = user
-				H.adaptStat("farming", 1)
+				H.adaptStat("farming", 1, type)
 			qdel(src)
 		else // destroy
 			to_chat(user, SPAN_WARNING("You uproot the dead [name]."))
@@ -1258,19 +1258,24 @@
 	if (istype(src, /obj/structure/farming/plant/mushroom) || istype(src, /obj/structure/farming/plant/mushroompsy))
 		return
 
+	// River floodwater (flood_effects.dm): waters, drowns, or leaves silt.
+	if (flood_plant_step())
+		return
+
 	// Check for rain or monsoon and increase water level
 	var/area/A = get_area(loc)
 	if (!A)
 		return
-	if (findtext(A.icon_state, "rain") || findtext(A.icon_state, "monsoon"))
+	var/falling = weather_look_at(src)
+	if (findtext(falling, "rain") || falling == "monsoon")
 		water = min(water + 15, max_water)
 		return
 
 	// Check for snow storm or sandstorm and set plant to dead
-	if (findtext(A.icon_state, "snow_storm") && !winter_hardy)
+	if (falling == "snow_storm" && !winter_hardy)
 		set_dead("frozen")
 		return
-	if (findtext(A.icon_state, "sandstorm"))
+	if (falling == "sandstorm")
 		set_dead("destroyed")
 		return
 
@@ -1289,7 +1294,7 @@
 		water -= 15
 	else
 		water -= 25
-	if (map.heat_wave)
+	if (weather_heat_at(src))
 		water -= 10
 
 	// Set plant to dead if water level is too low

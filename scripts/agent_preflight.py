@@ -125,6 +125,13 @@ def generated(args):
     return status or result.returncode
 
 
+TGUI_CHECKS = (
+    ('tgui', ('-m', 'unittest', 'discover', '-s', 'tests/tgui', '-p', 'test_*.py')),
+    ('tgui_flavor_negative_controls', ('tests/tgui/flavor_negative_controls.py',)),
+    ('tgui_notes_negative_controls', ('tests/tgui/notes_negative_controls.py',)),
+)
+
+
 def suites(args):
     module = baseline_module()
     names = list(module.SUITES)
@@ -149,6 +156,19 @@ def suites(args):
                 failed.append(name)
                 if args.verbose:
                     print(result.stderr[-4000:])
+    # The tgui window tests have their own workflow (.github/workflows/tgui.yml)
+    # and are not a ci_baseline suite; they take a few seconds, so run them here.
+    for name, command in TGUI_CHECKS:
+        names.append(name)
+        result = subprocess.run([sys.executable, '-B', *command], cwd=ROOT, env=environment,
+                                capture_output=True, text=True)
+        ran = re.search(r'Ran (\d+) tests?', result.stderr)
+        print(f"{name}: {'failed' if result.returncode else 'passed'}" + (f' ({ran.group(1)} tests)' if ran else ''),
+              flush=True)
+        if result.returncode:
+            failed.append(name)
+            if args.verbose:
+                print((result.stderr or result.stdout)[-4000:])
     print(f'\n{len(names) - len(failed)}/{len(names)} suites passed.')
     if failed:
         print('Failed:', ', '.join(failed))

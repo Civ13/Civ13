@@ -45,6 +45,7 @@ var/global/list/agent_characters = list()
 	var/list/allowed_addresses = list("127.0.0.1")
 	var/allow_handover = FALSE
 	var/max_characters = 4
+	var/list/autospawns = list() // agent name -> list("name", "goal"): a character spawned for it every round
 	var/list/last_watch = list() // agent name -> world.time it last listed its characters
 	var/list/failures = list()
 	var/list/locked_until = list()
@@ -68,6 +69,7 @@ var/global/list/agent_characters = list()
 	allowed_addresses = list("127.0.0.1")
 	allow_handover = FALSE
 	max_characters = 4
+	autospawns = list()
 	var/line_number = 0
 	for (var/raw in splittext(text, "\n"))
 		line_number++
@@ -106,6 +108,13 @@ var/global/list/agent_characters = list()
 			if ("max_characters")
 				if (words.len >= 2)
 					max_characters = clamp(round(text2num(words[2])), 0, 32)
+			// autospawn <agent> <name> [goal...]: that agent gets a character every round (agent_autospawn.dm).
+			if ("autospawn")
+				if (words.len < 3 || !agent_control_valid_name(words[2]))
+					world.log << "agent-control: ignored invalid autospawn line [line_number]"
+					continue
+				var/goal = words.len >= 4 ? jointext(words.Copy(4), " ") : agent_autospawn_default_goal()
+				autospawns[words[2]] = list("name" = copytext(words[3], 1, 33), "goal" = copytext(goal, 1, 257))
 			else
 				world.log << "agent-control: ignored unknown line [line_number]"
 	for (var/client/C in clients)

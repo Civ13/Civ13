@@ -57,13 +57,13 @@ class Actor:
         self.client=Client(self);self.may_do_after=True;self.hand=object()
         self.started=0;self.finished=0;self.disease=False;self.hygiene=100
         self.wear_suit=Clothing();self.w_uniform=None;self.shoes=None
-        self.answer='Yes'
+        self.answer='Yes';self.inducedSSD=False
     def __bool__(self): return not self.deleted
     def incapacitated(self, flags=DEFAULT): return CURRENT(self,flags)
     def restrained(self): return self.restrained_state
     def buckled(self): return self.buckle_level
     def get_active_hand(self): return self.hand
-    def survival_action_started(self): self.started+=1
+    def survival_action_started(self, target=None, mining_context=None): self.started+=1
     def survival_action_finished(self): self.finished+=1
 
 

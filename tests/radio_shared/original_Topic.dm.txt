@@ -1,0 +1,53 @@
+/obj/structure/radio/Topic(href, href_list, hsrc)
+
+	var/mob/user = usr
+
+	if (!user || user.lying)
+		return
+
+	user.face_atom(src)
+
+	if (!locate(user) in range(1,src))
+		to_chat(user, "<span class = 'danger'>Get close to the [src] to use it.</span>")
+		return FALSE
+
+	if (!user.can_use_hands())
+		to_chat(user, "<span class = 'danger'>You have no hands to use this with.</span>")
+		return FALSE
+
+	if (href_list["set_frequency"])
+		if (multifreq)
+			var/input = WWinput(user, "Choose the frequency to broadcast to:", "Radio", freq, multifreqlist_selectable)
+			if (!input || input == freq)
+				return
+			freq = input
+			to_chat(user, "Frequency set to <b>[freq]</b>.")
+			do_html(user)
+			return
+
+		else
+			var/input = player_input(user, "Choose the frequency to sintonize, in kHz: (150-300, no decimals)", null, null, "num", null, FALSE)
+			if (!input)
+				return
+			freq = sanitize_integer(input, min=150, max=300, default=150)
+			to_chat(user, "Frequency set to [freq]kHz.")
+			desc = "Used to communicate with distant places. Set to [freq]kHz."
+			do_html(user)
+			return
+
+	if (href_list["receiver"])
+		if (receiver)
+			receiver_on = !receiver_on
+			do_html(user)
+			return
+
+	if (href_list["transmitter"])
+		if (transmitter)
+			transmitter_on = !transmitter_on
+			do_html(user)
+			return
+
+
+	do_html(user)
+
+

@@ -10,9 +10,19 @@
 	var/list/query = list("ckey" = ckey, "message" = message)
 	webhook_send("alogmessage", query)
 
-/proc/webhook_send_asay(ckey, message)
-	var/list/query = list("ckey" = ckey, "message" = message)
+// Staff channel line for CivilizationBot. kind is asay, ahelp, mhelp or adminpm;
+// from_staff is TRUE when an admin wrote it. staff_online counts online
+// admins and moderators, so the bot only pings @Admin when nobody can answer
+// and never for staff's own lines.
+/proc/webhook_send_asay(ckey, message, kind = "asay", from_staff = FALSE)
+	var/list/query = list("ckey" = ckey, "message" = message, "kind" = kind, "from_staff" = from_staff ? TRUE : FALSE, "staff_online" = webhook_staff_online())
 	webhook_send("asaymessage", query)
+
+/proc/webhook_staff_online()
+	. = 0
+	for (var/client/C in admins)
+		if (C.holder && (C.holder.rights & (R_ADMIN|R_MOD)))
+			.++
 
 /proc/webhook_send_ooc(ckey, message)
 	var/list/query = list("ckey" = ckey, "message" = message)

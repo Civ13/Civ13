@@ -1,0 +1,183 @@
+{
+ "_comment": "Reviewed hazards for atlas reference pages (#4460). Each entry applies to the type and its subtypes unless a subtype has its own entry. Every evidence string must still appear in its source file; tests/atlas_habitats checks this, so a changed mechanic fails until the entry is reviewed again.",
+ "hazards": [
+  {
+   "type": "/turf/floor/lava",
+   "hazard": "Burns the legs of anyone who steps in; fresh lava can burn a foot or leg off.",
+   "evidence": [
+    [
+     "code/modules/1713/natural_disasters.dm",
+     "/turf/floor/lava/Entered(atom/movable/O)"
+    ],
+    [
+     "code/modules/1713/natural_disasters.dm",
+     "affecting.droplimb(FALSE, DROPLIMB_BURN)"
+    ]
+   ]
+  },
+  {
+   "type": "/turf/floor/beach/water/deep",
+   "hazard": "Too deep to stand in. Swimming tires you out in under a minute, faster in a storm, and then you go under. A lifejacket or a sealed diving suit keeps you afloat. Things dropped here sink.",
+   "evidence": [
+    [
+     "code/modules/1713/swimming.dm",
+     "#define SWIM_EFFORT 2"
+    ],
+    [
+     "code/modules/1713/swimming.dm",
+     "A lifejacket\n// or a sealed diving suit floats its wearer"
+    ],
+    [
+     "code/game/turfs/floor_types.dm",
+     "/turf/floor/beach/water/proc/check_sinking(atom/movable/A)"
+    ]
+   ]
+  },
+  {
+   "type": "/turf/floor/beach/water/deep/saltwater/underwater/sea_layer",
+   "hazard": "There is no air down here: you need a sealed diving suit with an air bottle. Each suit is only rated for some depths, and deeper water crushes it.",
+   "evidence": [
+    [
+     "code/modules/1713/machinery/modular_vehicles/ships/seabed.dm",
+     "The sea crushes \\the [S] in and water floods your helmet!"
+    ],
+    [
+     "code/modules/1713/machinery/modular_vehicles/ships/seabed.dm",
+     "/mob/living/human/proc/seabed_diving_rating()"
+    ]
+   ]
+  },
+  {
+   "type": "/turf/floor/broken_floor",
+   "hazard": "Nothing to stand on: anyone who steps in falls to the level below and is hurt by the landing, unless something covers the hole.",
+   "evidence": [
+    [
+     "code/modules/multiz/open_space.dm",
+     "/turf/floor/broken_floor/Entered(atom/movable/A)"
+    ],
+    [
+     "code/modules/multiz/open_space.dm",
+     "falls from the level above and slams into the floor!"
+    ]
+   ]
+  },
+  {
+   "type": "/obj/structure/barbwire",
+   "hazard": "Cuts the feet and legs of anyone who walks through it.",
+   "evidence": [
+    [
+     "code/modules/1713/barbwire.dm",
+     "/obj/structure/barbwire/Crossed(AM as mob|obj)"
+    ],
+    [
+     "code/modules/1713/barbwire.dm",
+     "H.get_organ(pick(\"l_foot\", \"r_foot\", \"l_leg\", \"r_leg\"))"
+    ]
+   ]
+  },
+  {
+   "type": "/obj/structure/oven/fireplace",
+   "hazard": "While lit, it burns the legs of anyone who walks through it.",
+   "evidence": [
+    [
+     "code/game/objects/structures/kitchen/oven.dm",
+     "/obj/structure/oven/fireplace/Crossed(mob/living/human/M as mob)"
+    ],
+    [
+     "code/game/objects/structures/kitchen/oven.dm",
+     "M.apply_damage(rand(2,4), BURN, \"l_leg\")"
+    ]
+   ]
+  },
+  {
+   "type": "/obj/item/weapon/beartrap",
+   "hazard": "Once set, its steel jaws bite whoever steps on it and hold them in place.",
+   "evidence": [
+    [
+     "code/game/objects/items/weapons/traps.dm",
+     "/obj/item/weapon/beartrap/Crossed(AM as mob|obj)"
+    ],
+    [
+     "code/game/objects/items/weapons/traps.dm",
+     "trapping you in place!"
+    ]
+   ]
+  },
+  {
+   "type": "/obj/item/weapon/punji_sticks",
+   "hazard": "Once set, it badly wounds the legs of whoever falls in and holds them there.",
+   "evidence": [
+    [
+     "code/game/objects/items/weapons/traps.dm",
+     "You fall into the punji sticks trap, and are stuck!"
+    ]
+   ]
+  },
+  {
+   "type": "/mob/living/simple_animal/hostile/poison/snake",
+   "hazard": "Its bite is venomous and poisons the leg it strikes.",
+   "evidence": [
+    [
+     "code/game/mob/living/simple_animal/hostile/snake.dm",
+     "H.apply_damage(5, TOX, affecting"
+    ]
+   ]
+  },
+  {
+   "type": "/mob/living/simple_animal/hostile/poison/snake/constrictor",
+   "hazard": "Wraps around whoever it attacks and holds them still until it is killed or lets go.",
+   "evidence": [
+    [
+     "code/game/mob/living/simple_animal/hostile/snake.dm",
+     "constricts around [target_mob]!"
+    ],
+    [
+     "code/game/mob/living/simple_animal/hostile/snake.dm",
+     "L.client.canmove = FALSE"
+    ]
+   ]
+  },
+  {
+   "type": "/mob/living/simple_animal/mosquito",
+   "hazard": "Swarms toward people and bites; a bite can pass on malaria. Rain drives them off.",
+   "evidence": [
+    [
+     "code/game/mob/living/simple_animal/hostile/mosquitoes.dm",
+     "try_infect(TG, 20, \"malaria\")"
+    ],
+    [
+     "code/game/mob/living/simple_animal/hostile/mosquitoes.dm",
+     "if (weather_anywhere() && weather_look_at(src) != \"\")"
+    ]
+   ]
+  },
+  {
+   "type": "/mob/living/simple_animal/sea/drift_jelly",
+   "hazard": "Its threads burn any diver who touches it or swims beside it. A hard diving suit is too thick for them.",
+   "evidence": [
+    [
+     "code/modules/1713/machinery/modular_vehicles/ships/sea_life.dm",
+     "/mob/living/simple_animal/sea/drift_jelly/proc/sting(mob/living/M)"
+    ],
+    [
+     "code/modules/1713/machinery/modular_vehicles/ships/sea_life.dm",
+     "istype(H.wear_suit, /obj/item/clothing/suit/pressure_suit/diving/hard)"
+    ]
+   ]
+  },
+  {
+   "type": "/mob/living/simple_animal/sea/reef_eel",
+   "hazard": "Waits in a rock crevice and bites divers who swim close.",
+   "evidence": [
+    [
+     "code/modules/1713/machinery/modular_vehicles/ships/sea_life.dm",
+     "waits in a crevice and snaps at whatever swims too close"
+    ],
+    [
+     "code/modules/1713/machinery/modular_vehicles/ships/sea_life.dm",
+     "sea_bite(L, rand(melee_damage_lower, melee_damage_upper))"
+    ]
+   ]
+  }
+ ]
+}

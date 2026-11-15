@@ -64,56 +64,17 @@
 			to_chat(H, "You add the wood chips to \the [src], refueling it.")
 		return TRUE
 
-	if (istype(I, /obj/item/stack/material/wood))	//FUEL NORMAL (without * multiplication or + addition, only input)
-		record_wood_fuel(I, I.amount)
-		fuel += I.amount
-		to_chat(H, "You place \the [I] in \the [src], refueling it.")
-		qdel(I)
-		return
-	else if (istype(I, /obj/item/stack/material/bamboo))
-		record_wood_fuel(I, I.amount)
-		fuel += I.amount
-		to_chat(H, "You place \the [I] in \the [src], refueling it.")
-		qdel(I)
-		return
-	else if (istype(I, /obj/item/weapon/branch))	// FUEL +0.5 (adds a flat numerical addition ontop of the input reagent's baseline fuel, recommended for non stack objects)
-		record_wood_fuel(I, I.amount+0.5)
-		fuel += I.amount+0.5
-		to_chat(H, "You place \the [I] in \the [src], refueling it.")
-		qdel(I)
-		return
-	else if (istype(I, /obj/item/stack/material/leaf))
-		record_wood_fuel(I, I.amount+0.5)
-		fuel += I.amount+0.5
-		to_chat(H, "You place \the [I] in \the [src], refueling it.")
-		qdel(I)
-		return
-	else if (istype(I, /obj/item/stack/dung))	// FUEL +1
-		record_wood_fuel(I, I.amount+1)
-		fuel += I.amount+1
-		to_chat(H, "You place \the [I] in \the [src], refueling it.")
-		qdel(I)
-		return
-	else if (istype(I, /obj/item/stack/ore/charcoal))	//FUEL *2.5 (multiplies it by 2 and a half)
-		record_wood_fuel(I, I.amount*2.5)
-		fuel += I.amount*2.5
-		to_chat(H, "You place \the [I] in \the [src], refueling it.")
-		qdel(I)
-		return
-	else if (istype(I, /obj/item/stack/ore/coal))	//FUEL *3
-		record_wood_fuel(I, I.amount*3)
-		fuel += I.amount*3
+	var/hearth_fuel = solid_fuel_value(I, hearth_fuel_rates)
+	if (hearth_fuel)
+		record_wood_fuel(I, hearth_fuel)
+		fuel += hearth_fuel
 		to_chat(H, "You place \the [I] in \the [src], refueling it.")
 		qdel(I)
 		return
 
 	if (istype(I, /obj/item/weapon/wrench) || (istype(I, /obj/item/weapon/hammer)))
 		if (istype(I, /obj/item/weapon/wrench))
-			visible_message("<span class='warning'>[H] starts to [anchored ? "unsecure" : "secure"] \the [src] [anchored ? "from" : "to"] the ground.</span>")
-			playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
-			if (do_after(H,50,src))
-				visible_message("<span class='warning'>[H] [anchored ? "unsecures" : "secures"] \the [src] [anchored ? "from" : "to"] the ground.</span>")
-				anchored = !anchored
+			if (timed_toggle_anchor(H))
 				return
 		else if (istype(I, /obj/item/weapon/hammer))
 			visible_message("<span class='warning'>[H] starts to deconstruct \the [src].</span>")
@@ -171,7 +132,7 @@
 				if (istype(I, /obj/item/weapon/reagent_containers/glass/small_pot) && I.on_stove == TRUE)
 					I.on_stove = FALSE
 					I.reagents.del_reagent("food_poisoning")
-					I.reagents.del_reagent("cholera")
+					I.reagents.kill_germs()
 					I.reagents.boil_nitrary()
 					visible_message("<span class = 'notice'>\The [I] finishes boiling.</span>")
 					if (I.reagents.get_reagent_amount("sodiumchloride")>0 && I.reagents.get_reagent_amount("water")>0)
@@ -253,7 +214,7 @@
 				organ.reagents.multiply_reagent("nutriment", 5)
 				organ.reagents.multiply_reagent("protein", 3)
 				organ.reagents.del_reagent("toxin")
-				organ.reagents.del_reagent("cholera")
+				organ.reagents.kill_germs()
 				organ.reagents.del_reagent("food_poisoning")
 				organ.roasted = TRUE
 				contents -= I
@@ -275,7 +236,7 @@
 			I.reagents.multiply_reagent("nutriment", 5)
 			I.reagents.multiply_reagent("protein", 3)
 			I.reagents.del_reagent("food_poisoning")
-			I.reagents.del_reagent("cholera")
+			I.reagents.kill_germs()
 			if (istype(I, /obj/item/weapon/reagent_containers/food))
 				var/obj/item/weapon/reagent_containers/food/F = I
 				F.roasted = TRUE
@@ -324,6 +285,13 @@
 /obj/structure/oven/fireplace/proc/keep_fire_on(epoch)
 	if (QDELETED(src) || epoch != fire_epoch)
 		return // A newer lighting owns the fire loop.
+	if (on && looping && fuel > 0 && flood_douses(src))
+		visible_message(SPAN_WARNING("Floodwater puts out \the [src]."))
+		on = FALSE
+		fire_epoch++
+		set_light(0)
+		update_icon()
+		return
 	if (on && looping && fuel > 0)
 		set_light(5)
 		update_icon()
@@ -337,7 +305,9 @@
 
 /obj/structure/oven/fireplace/attack_hand(var/mob/living/human/H)
 	stone_boil_epoch++ // Even an extinguish and relight invalidates a pending boil.
-	if (!on && fuel > 0)
+	if (!on && fuel > 0 && flood_douses(src))
+		to_chat(H, SPAN_WARNING("\The [src] is under floodwater. It won't light until the water goes down."))
+	else if (!on && fuel > 0)
 		H.visible_message(SPAN_NOTICE("[H] lights \the [name]."), SPAN_NOTICE("You light \the [name]."))
 		on = TRUE
 		var/epoch = ++fire_epoch
@@ -351,35 +321,14 @@
 		update_icon()
 	H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 
-/obj/structure/oven/fireplace/proc/smoke_signals()
-	for (var/mob/living/human/HH in range(25,src))
-		if (!HH.blinded && !HH.paralysis && HH.sleeping <= 0 && HH.stat == 0)
-			var/currdir = "somewhere"
-			if (z == HH.z)
-				if (y < HH.y)
-					currdir = "south"
-				if (y > HH.y)
-					currdir = "north"
-				if (y == HH.y)
-					currdir = ""
-				if (x <= HH.x)
-					currdir = "[currdir]west"
-				if (x > HH.x)
-					currdir = "[currdir]east"
-				if (x == HH.x)
-					currdir = ""
-			if (currdir != "somewhere" && currdir != "")
-				to_chat(HH, "<b>You see some smoke signals [currdir] of you...</b>")
-
 /obj/structure/oven/fireplace/attackby(var/obj/item/I, var/mob/living/human/H)
 	if (type == /obj/structure/oven/fireplace && istype(I, /obj/item/stack/material/stone) && istype(H) && H.a_intent == I_HELP)
 		upgrade_to_stone_kiln(I, H)
 		return TRUE
 	if (stone_upgrade_busy)
 		return TRUE
-	if (on && (istype(I, /obj/item/stack/material/leather) || istype(I, /obj/item/stack/material/cloth)))
-		to_chat(H, "You produce some smoke signals.")
-		smoke_signals()
+	if (on && signal_fire_material(I) && istype(H))
+		send_smoke_signal(I, H)
 	else
 		..()
 

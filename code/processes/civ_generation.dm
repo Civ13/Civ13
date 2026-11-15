@@ -10,3 +10,6 @@
 /process/civ_generation/fire()
 	for (var/obj/structure/civ_generator/G in civ_generators.Copy())
 		G.settle_generation()
+	// Meters copy the totals that settling just published (power_meter.dm).
+	for (var/obj/structure/power_meter/M in power_meters)
+		M.sample()

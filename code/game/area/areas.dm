@@ -48,6 +48,7 @@
 	icon = 'icons/effects/weather.dmi'
 	icon_state = ""
 	layer = 10
+	weather_roof_mask()
 
 	..()
 
@@ -58,9 +59,9 @@
 	return ..()
 
 /area/proc/get_turfs()
-	. = contents.Copy()
-	. -= typesof(/obj)
-	. -= typesof(/mob)
+	. = list()
+	for (var/turf/T in contents)
+		. += T
 	return .
 
 /area/Entered(A)
@@ -167,7 +168,7 @@
 	if (istype(mob,/mob/living/human/))
 		var/mob/living/human/H = mob
 
-		if (istype(H.shoes, /obj/item/clothing/head/astronaut) && istype(H.shoes, /obj/item/clothing/suit/astronaut))
+		if (istype(H.head, /obj/item/clothing/head/astronaut) && istype(H.wear_suit, /obj/item/clothing/suit/astronaut))
 			return
 		else
 			H.AdjustStunned(10)

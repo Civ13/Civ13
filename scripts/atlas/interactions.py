@@ -1,0 +1,350 @@
+"""Hand-interaction routes read from the game source, so new content shows up without curation.
+
+Catalog recipes only cover the crafting menus. Many things are made by using one
+item on another: drying on a dehydrator, steeping herbs in water, grinding in a
+mortar, knapping flint, picking wild herbs and harvesting crops. Each extractor
+here reads one shared mechanism from its declared variables or its result table,
+so a new crop, dried food, tea or mortar ingredient appears in the atlas at the
+next regeneration with no edit to `resource-sources.json`.
+
+Every extractor first checks that the mechanism code it describes still says what
+the route text claims. If that code changes, generation stops with a message
+naming the file to review, instead of publishing a stale description.
+
+Routes already covered by a curated mechanism in `resource-sources.json` are
+skipped, so curated text (with its extra review notes) always wins.
+"""
+import re
+
+from .entity_inventory import include_graph
+from .facts import declared, inherited, prose
+
+DRYER = 'code/modules/1713/production.dm'
+STEEP = 'code/modules/ecology/wild_herbs.dm'
+GROWN_STEEP = 'code/modules/1713/herb_garden.dm'
+MORTAR = 'code/modules/1713/herbalism.dm'
+KNAP = 'code/modules/1713/flint_mining.dm'
+REGISTRY = 'code/modules/1713/processing_recipes.dm'
+OBSIDIAN = 'code/modules/1713/obsidian.dm'
+FARMING = 'code/game/objects/farming.dm'
+SHELL = 'code/modules/1713/herb_garden.dm'
+FISH = 'code/modules/reagents/reagent_containers/food/snacks/meat.dm'
+HANDLOAD = 'code/modules/projectiles/handloading.dm'
+CASINGS = 'code/modules/projectiles/_ammo_casing.dm'
+NODES = 'code/modules/research_tree/research_node.dm'
+VARS = {'name', 'dried_type', 'dry_size', 'steep_reagent', 'steep_amount', 'sprig_type', 'plant', 'stack',
+        'condiment', 'stack_amount', 'biomes', 'seasons'}
+MAP_NOTE = 'Availability depends on the selected map; placements and construction reachability were not executed.'
+NO_ERA = 'No additional era restriction established by this procedure.'
+AUDIT = 'current source (regenerated on every build)'
+STATUS = 'Generated from current source by scripts/atlas/interactions.py; gameplay/map reachability unverified'
+DRINK = '/datum/reagent/'
+
+
+def require(source, path, *needles):
+    missing = [needle for needle in needles if needle not in source]
+    if missing:
+        raise ValueError(f'{path} changed ({missing[0]!r} not found): review scripts/atlas/interactions.py')
+
+
+def line_of(source, needle):
+    return source[:source.index(needle)].count('\n') + 1 if needle in source else 1
+
+
+def defines(files):
+    found = {}
+    for text in files.values():
+        for name, value in re.findall(r'^#define[ \t]+(\w+)[ \t]+(-?\d+)\b', text, re.M):
+            found.setdefault(name, int(value))
+    return found
+
+
+def path_value(value):
+    match = re.fullmatch(r'(/[\w/]+)', (value or '').strip())
+    return match[1] if match else None
+
+
+def string_value(value):
+    match = re.fullmatch(r'"(\w+)"', (value or '').strip())
+    return match[1] if match else None
+
+
+def defined_in(built, typepath):
+    """(file, line) of the block that declares a type, or (None, 1)."""
+    pattern = re.compile('^' + re.escape(typepath) + r'[ \t]*\r?$', re.M)
+    for path in sorted(built):
+        match = pattern.search(built[path])
+        if match:
+            return path, built[path][:match.start()].count('\n') + 1
+    return None, 1
+
+
+def own_name(types, typepath):
+    return prose(types.get(typepath, {}).get('name'))
+
+
+ROW = re.compile(r'new /datum/processing_recipe\("([^"]+)", (?:"([^"]+)"|null), (/[\w/]+), (?:"(\w+)"|(/[\w/]+)|null)'
+                 r'(?:, (\d+))?(?:, (\d+))?(?:, (\d+))?(?:, (TRUE|FALSE))?\)')
+
+
+def registry_rows(source, station):
+    """Rows of one station from processing_recipes.dm, in menu order."""
+    rows = []
+    for st, choice, inp, reagent, path, amount, delay, fail, gated in ROW.findall(source):
+        if st == station:
+            rows.append(dict(choice=choice or None, input=inp, output=path or reagent or None,
+                             reagent=bool(reagent), amount=int(amount or 1), delay=int(delay or 0),
+                             fail=int(fail or 0), gated=gated == 'TRUE',
+                             line=f'new /datum/processing_recipe("{st}", ' + (f'"{choice}"' if choice else 'null') + f', {inp}, '))
+    if not rows:
+        raise ValueError(f'{REGISTRY} changed (no "{station}" rows found): review scripts/atlas/interactions.py')
+    return rows
+
+
+def add_interactions(files, add, records, covered):
+    """Add generated routes as recipes; return acquisition entries for the outputs.
+
+    `covered` holds output ids that already have a curated acquisition route.
+    """
+    reachable = include_graph(files)
+    built = {path: text for path, text in files.items() if path in reachable and path.startswith('code/')}
+    types = declared(built, VARS)
+    numbers = defines(built)
+    routes = []
+    seen = set()
+
+    def route(name, kind, inputs, outputs, path, line, steps, conditions, tools=(), station=None, era=NO_ERA):
+        key = (kind, tuple(inputs), tuple(outputs))
+        if key in seen:
+            return
+        seen.add(key)
+        add(name, kind, inputs, outputs, path, line, conditions)
+        record = records[-1]
+        made = [x['id'] for x in record['outputs']]
+        if made and all(x in covered for x in made):
+            records.pop()
+            return
+        record['interaction'] = True
+        if station:
+            record['station'] = station
+        routes.append(dict(name=name, file=path, line=line, inputs=[x['id'] for x in record['inputs']], outputs=made,
+                           steps=list(steps), tools=list(tools), conditions=conditions, era=era,
+                           map_notes=MAP_NOTE, status=STATUS, audit_commit=AUDIT))
+
+    # Dehydrator: any item whose dried_type is a type path dries into it.
+    dryer = files[DRYER]
+    require(dryer, DRYER, 'if (!W.dried_type)', 'if (W.dry_size>15)', 'P = new I.dried_type(null)',
+            '/var/const/TIME_TO_DRY = 1200', 'if (D.rotten)')
+    for typepath in sorted(types):
+        dried = path_value(inherited(types, typepath, 'dried_type'))
+        size = inherited(types, typepath, 'dry_size')
+        if not dried or dried not in types or not own_name(types, typepath) or not own_name(types, dried):
+            continue
+        if not size or not size.isdigit() or not 0 < int(size) <= 15:
+            continue
+        route(f'Dry {own_name(types, typepath)} on a dehydrator', 'Drying', [(typepath, 1)], [(dried, 1)],
+              DRYER, line_of(dryer, '/obj/structure/dehydrator/attackby'),
+              ('Put the item on a dehydrator and leave it for about two minutes.',),
+              'Dehydrator required. Rotten food cannot be dried.', ('/obj/structure/dehydrator',),
+              '/obj/structure/dehydrator')
+
+    # Steeping: hold an herb with steep_reagent and use it on an open container of water.
+    steep = files[STEEP]
+    require(steep, STEEP, 'proc/herb_steep_into(source_name, obj/vessel, mob/user, reagent, amount, message)',
+            'var/needed = max(HERB_STEEP_WATER, amount)', 'vessel.reagents.remove_reagent("water", amount)',
+            'vessel.reagents.add_reagent(reagent, amount)')
+    water = numbers.get('HERB_STEEP_WATER', 10)
+    reagent_names = {string_value(values.get('id')) for path, values in declared(built).items()
+                     if path.startswith(DRINK)} - {None}
+    for typepath in sorted(types):
+        reagent = string_value(inherited(types, typepath, 'steep_reagent'))
+        if not reagent or reagent not in reagent_names or not own_name(types, typepath):
+            continue
+        raw = inherited(types, typepath, 'steep_amount') or ''
+        amount = int(raw) if raw.isdigit() else numbers.get(raw)
+        if not amount:
+            continue
+        need = max(water, amount)
+        route(f'Steep {own_name(types, typepath)} into {reagent.replace("_", " ")}', 'Steeping',
+              [(typepath, 1), ('reagent:water', amount)], [('reagent:' + reagent, amount)],
+              STEEP, line_of(steep, '/proc/herb_steep_into'),
+              (f'Hold it and use it on an open container holding at least {need} units of water, in your hand or next to you.',),
+              f'Makes {amount} units, replacing the same amount of water. One herb is used up.')
+
+    # Mortar and pestle: its rows in processing_recipes.dm list each ingredient and what it grinds into.
+    mortar = files[MORTAR]
+    registry = files[REGISTRY]
+    require(mortar, MORTAR, '/proc/mortar_grind_result(obj/item/I)', 'processing_recipe_for_input("mortar", I)',
+            'reagents.add_reagent(id, result[id])')
+    for row in registry_rows(registry, 'mortar'):
+        ingredient = row['input']
+        route(f'Grind {own_name(types, ingredient) or ingredient.rsplit("/", 1)[1]} in a mortar and pestle',
+              'Mortar grinding', [(ingredient, 1)], [('reagent:' + row['output'], row['amount'])], REGISTRY,
+              line_of(registry, row['line'] + '"' + row['output'] + '"'),
+              ('Hold the ingredient and use it on a mortar and pestle. Pour the result out like any other container.',),
+              'The mortar holds 30 units; empty it when full. One ingredient is used up per grind.',
+              ('/obj/item/weapon/reagent_containers/glass/mortar',))
+
+    # Knapping: flint plus a hammerstone; each registry row names a menu choice and its product.
+    knap = files[KNAP]
+    require(knap, KNAP, '/obj/item/weapon/flint/proc/knap(mob/living/human/H, obj/item/hammer)', 'is_hammerstone(M)',
+            'processing_recipe_choices("flint knapping", H)', 'var/obj/item/result = processing_recipe_make(R, T, H)')
+    for row in registry_rows(registry, 'flint knapping'):
+        if not row['output']:
+            continue
+        choice = row['choice']
+        route(f'Knap a {choice.lower()} from flint', 'Knapping', [('/obj/item/weapon/flint', 1)], [(row['output'], row['amount'])],
+              REGISTRY, line_of(registry, row['line']),
+              ('Hold a hammerstone and use it on a flint in your other hand or next to you, then choose '
+               f'"{choice}" ({row["delay"] // 10} seconds before dexterity).',),
+              'The flint can shatter into a shard; crafting skill lowers the chance.', ('Hammerstone',),
+              era='Basic Toolmaking research rules apply where the recipe is gated.')
+
+    # Obsidian: knapping a nodule, pressure blades off a core, nodules from rough obsidian.
+    obs = files[OBSIDIAN]
+    require(obs, OBSIDIAN, '/obj/item/weapon/obsidian_nodule/proc/knap(mob/living/human/H, obj/item/hammer)',
+            'obsidian_is_hammerstone(W)', 'processing_recipe_choices("obsidian knapping", H)',
+            '/obj/item/weapon/obsidian_core/attackby(obj/item/W, mob/user)', 'is_pressure_flaker(W)',
+            'new /obj/item/stack/obsidian_blades(T, count)', '/obj/item/stack/ore/obsidian/attackby(obj/item/W, mob/user)')
+    for row in registry_rows(registry, 'obsidian knapping'):
+        choice = row['choice']
+        route(f'Knap {choice.lower()} from obsidian', 'Knapping', [('/obj/item/weapon/obsidian_nodule', 1)],
+              [(row['output'], row['amount'])], REGISTRY, line_of(registry, row['line']),
+              ('Hold a hammerstone and use it on an obsidian nodule in your other hand or next to you, then choose '
+               f'"{choice}" ({row["delay"] // 10} seconds before dexterity).',),
+              'The glass can shatter into a shard; crafting skill lowers the chance.', ('Hammerstone',),
+              era='Basic Toolmaking or Stone Arms research rules apply where the result is gated.')
+    route('Press prismatic blades off an obsidian core', 'Knapping', [('/obj/item/weapon/obsidian_core', 1)],
+          [('/obj/item/stack/obsidian_blades', numbers.get('OBSIDIAN_BLADES_PER_CORE', 6))], OBSIDIAN,
+          line_of(obs, '/obj/item/weapon/obsidian_core/attackby'),
+          ('Hold an antler pick or a piece of bone and use it on the blade core (8 seconds before dexterity).',),
+          'The core can snap and give only 2 blades; crafting skill lowers the chance.',
+          ('/obj/item/weapon/material/pickaxe/antler',))
+    route('Knock a nodule off rough obsidian', 'Knapping', [('/obj/item/stack/ore/obsidian', 1)],
+          [('/obj/item/weapon/obsidian_nodule', 1)], OBSIDIAN, line_of(obs, '/obj/item/stack/ore/obsidian/attackby'),
+          ('Hold a hammerstone and use it on rough obsidian (3 seconds).',), 'One rough obsidian per nodule.',
+          ('Hammerstone',))
+
+    # Wild herb patches: pick by hand on help intent.
+    for typepath in sorted(types):
+        sprig = path_value(types[typepath].get('sprig_type'))
+        if not sprig or not own_name(types, typepath) or not own_name(types, sprig):
+            continue
+        source, line = defined_in(built, typepath)
+        route(f'Pick {own_name(types, sprig)}', 'Foraging', [(typepath, 'not used up')], [(sprig, 1)],
+              source, line,
+              ('Click a wild patch on help intent to pick one sprig.',),
+              'Each patch regrows a sprig every 20 minutes and has none in winter.')
+
+    # Shelling: a sunflower head used in hand gives three handfuls of seeds.
+    shell = files[SHELL]
+    require(shell, SHELL, '/obj/item/weapon/reagent_containers/food/snacks/grown/sunflower/attack_self(mob/user)',
+            'for (var/i = 1, i <= 3, i++)')
+    route('Shell a sunflower head', 'Food preparation',
+          [('/obj/item/weapon/reagent_containers/food/snacks/grown/sunflower', 1)],
+          [('/obj/item/weapon/reagent_containers/food/snacks/grown/sunflower_seeds', 3)],
+          SHELL, line_of(shell, 'grown/sunflower/attack_self'), ('Use the sunflower head in hand.',), 'No tool needed.')
+
+    # Filleting: a raw fish cut with a knife, bayonet or hatchet.
+    fish = files[FISH]
+    fillets = re.findall(r'^(/obj/[\w/]+)/attackby\([^\n]*\n\tif \(!roasted[^\n]*(?:knife|TOOL_KNIFE)[^\n]*\n'
+                         r'\t\tfor \(var/i=1, i<=(\d+), i\+\+\)\n\t\t\tnew (/[\w/]+)\(src\)', fish, re.M)
+    if not fillets:
+        raise ValueError(f'{FISH} changed (no fish filleting found): review scripts/atlas/interactions.py')
+    for whole, count, fillet in fillets:
+        if whole in types and fillet in types:
+            route(f'Fillet {own_name(types, whole)}', 'Food preparation', [(whole, 1)], [(fillet, int(count))],
+                  FISH, line_of(fish, whole + '/attackby'),
+                  ('Use a knife, bayonet or hatchet on a raw fish that is not rotten.',), 'The whole fish is used up.',
+                  ('/obj/item/weapon/material/kitchen/utensil/knife',))
+
+    # Handloading: the cartridge table in handloading.dm names each round, its casing size
+    # and the research that teaches it; spent brass of a listed caliber comes back as a casing.
+    hand = files[HANDLOAD]
+    require(hand, HANDLOAD, '/proc/handload_cartridges()', 'research_node_known(user, R.node)',
+            'var/room = min(amount, round((gunpowder + 0.001) / gunpowder_max)) - bulletn',
+            '/obj/item/ammo_casing/proc/spent_brass_class()', 'handload_brass_classes()[caliber]')
+    rows = re.findall(r'new /datum/handload_cartridge\("([^"]+)", (/obj/item/ammo_casing[\w/]*), HANDLOAD_(PISTOL|RIFLE), "(\w+)"', hand)
+    if not rows:
+        raise ValueError(f'{HANDLOAD} changed (no cartridge rows found): review scripts/atlas/interactions.py')
+    casing_source = files[CASINGS]
+    node_names = {nid: (name, int(era)) for nid, name, era in re.findall(
+        r'new /datum/research_node\("(\w+)", "([^"]+)", "[^"]+", \d+, \d+, \w+, (?:list\([^)]*\)|null), (\d+)', files[NODES])}
+    ages = ['Stone Age', 'Classical Age', 'Medieval Age', 'Imperial Age', 'Industrial Age', 'WW1', 'WW2', 'Cold War',
+            'Modern Age', 'Digital Age']
+    for label, cartridge, size, node in rows:
+        casing = '/obj/item/stack/ammopart/casing/' + size.lower()
+        block = casing_source.split('\n' + casing + '\n', 1)[1].split('\n/', 1)[0] if ('\n' + casing + '\n') in casing_source else ''
+        powder = re.search(r'gunpowder_max = ([\d.]+)', block)
+        powder = float(powder[1]) if powder else 2.0
+        powder = int(powder) if powder == int(powder) else powder
+        known = node_names.get(node)
+        era = (f'Needs the {known[0]} research ({ages[known[1]] if 0 <= known[1] < len(ages) else known[1]}).'
+               if known else f'Needs the {node} research.')
+        route(f'Handload {label}', 'Handloading',
+              [(casing, 1), ('/obj/item/stack/ammopart/bullet', 1), ('reagent:gunpowder', powder)], [(cartridge, 1)],
+              HANDLOAD, line_of(hand, f'"{label}"'),
+              ('Use a container of gunpowder on a stack of empty casings; it pours only what the casings need.',
+               'Use iron bullets on the casings; each bullet needs a casing that already holds its powder.',
+               f'Use the casings in hand and choose "{label}". Most rifle and pistol rounds can be normal, hollow point or armor-piercing.'),
+              'One casing, its powder charge and one bullet make one round. A stack loads every complete set at once.',
+              ('/obj/item/stack/ammopart/bullet',), era=era)
+        records[-1]['handload_node'] = node if records and records[-1]['name'] == f'Handload {label}' else None
+        # Smokeless powder (smokeless_powder.dm) charges a casing like two units of gunpowder.
+        smokeless = powder / 2
+        smokeless = int(smokeless) if smokeless == int(smokeless) else smokeless
+        smokeless_era = (era if node != 'rifling' else
+                         'Needs the Rifling research to load it and Cartridge Firearms to measure smokeless powder.')
+        route(f'Handload {label} with smokeless powder', 'Handloading',
+              [(casing, 1), ('/obj/item/stack/ammopart/bullet', 1), ('reagent:smokeless_powder', smokeless)], [(cartridge, 1)],
+              HANDLOAD, line_of(hand, 'handload_pour_smokeless(RC, user, needed)'),
+              ('Use a container of smokeless powder on a stack of empty casings; each unit counts as two of gunpowder.',
+               'Use iron bullets on the casings; each bullet needs a casing that already holds its powder.',
+               f'Use the casings in hand and choose "{label}".'),
+              'Measuring smokeless charges needs the Cartridge Firearms research. Gunpowder in the same container tops up a short pour.',
+              ('/obj/item/stack/ammopart/bullet',), era=smokeless_era)
+        if records and records[-1]['name'] == f'Handload {label} with smokeless powder':
+            records[-1]['handload_node'] = node
+            records[-1]['handload_smokeless'] = True
+        route(f'Recover brass from a spent {label} round', 'Brass recovery', [(cartridge, 'spent')], [(casing, 1)],
+              HANDLOAD, line_of(hand, '/obj/item/ammo_casing/attack_self'),
+              ('Use a fired casing in hand, or click spent casings (or the tile they lie on) with a stack of empty casings of the same size.',),
+              'Only loose, fired casings count; heavy machine-gun brass and rounds in boxes or guns are left alone.')
+
+    # Crops: each plant type yields the product its plant/stack/condiment names, plus seeds.
+    farming = files[FARMING]
+    require(farming, FARMING, 'fruitpath = text2path("/obj/item/stack/[stack]")',
+            'fruitpath = "/obj/item/weapon/reagent_containers/food/condiment/[condiment]"',
+            'fruitpath = "/obj/item/weapon/reagent_containers/food/snacks/grown/[plant]"',
+            'var/seedpath = "/obj/item/stack/farming/seeds/[plant]"')
+    for typepath in sorted(types):
+        if not typepath.startswith('/obj/structure/farming/plant/') or not own_name(types, typepath):
+            continue
+        plant = string_value(inherited(types, typepath, 'plant'))
+        stack = string_value(inherited(types, typepath, 'stack'))
+        condiment = string_value(inherited(types, typepath, 'condiment'))
+        if not plant or plant == 'name':
+            continue
+        if stack and stack != 'product_name':
+            produce = ['/obj/item/stack/' + stack]
+        elif condiment and condiment != 'product_name':
+            produce = ['/obj/item/weapon/reagent_containers/food/condiment/' + condiment]
+        else:
+            produce = ['/obj/item/weapon/reagent_containers/food/snacks/grown/' + plant]
+        source, line = defined_in(built, typepath)
+        override = re.search('^' + re.escape(typepath) + r'/spawn_produce\([^)]*\)\r?\n((?:\t.*\n|\r?\n)*)', built[source], re.M)
+        if override:
+            extra_made = re.findall(r'new (/[\w/]+)\(', override[1])
+            produce = (produce if '..()' in override[1] else []) + extra_made
+        seeds = '/obj/item/stack/farming/seeds/' + plant
+        if seeds not in types or any(p not in types for p in produce):
+            continue
+        biomes = ', '.join(re.findall(r'"(\w[\w ]*)"', inherited(types, typepath, 'biomes') or ''))
+        route(f'Grow and harvest {own_name(types, typepath)}', 'Farming', [(seeds, 1)],
+              [(p, 'harvest') for p in dict.fromkeys(produce)] + [(seeds, 2)], source, line,
+              ('Plant a seed in ploughed soil, water it and wait until it is ready.',
+               'Harvest it with a knife, hatchet, bayonet or scythe for its produce and two seeds.'),
+              'Fed soil can give up to three times the produce; farming skill adds more.'
+              + (f' Grows in: {biomes}.' if biomes else ''),
+              ('/obj/item/weapon/plough', '/obj/item/weapon/material/kitchen/utensil/knife'))
+    return routes

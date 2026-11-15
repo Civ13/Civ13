@@ -228,7 +228,10 @@ class StoneBoilingSource(unittest.TestCase):
         nodes = (ROOT / "code/modules/research_tree/research_node.dm").read_text(encoding="utf-8")
         for line in ("/material/wood/,wood mug,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wood,1,", "/material/wood/,campfire,/obj/structure/oven/fireplace,4,", "/material/wood/soft/,wood handle,/obj/item/weapon/material/handle,1,"):
             self.assertIn(line, recipes)
-        for row in ('"/obj/structure/oven/fireplace" = "basic_furniture"', '"/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wood" = "pottery_storage"', '"/obj/item/weapon/material/handle" = "basic_tools"'):
+        gates = (ROOT / "code/modules/research_tree/recipe_gates.dm").read_text(encoding="utf-8")
+        self.assertIn('basic_crafting_recipes = list("/obj/structure/oven/fireplace")', gates)
+        self.assertNotIn('"/obj/structure/oven/fireplace" = ', nodes)
+        for row in ('"/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wood" = "pottery_storage"', '"/obj/item/weapon/material/handle" = "basic_tools"'):
             self.assertIn(row, nodes)
         sifting = (ROOT / "code/modules/1713/resource_sifting.dm").read_text(encoding="utf-8")
         self.assertIn('tool ? 1200 : 1800', sifting)

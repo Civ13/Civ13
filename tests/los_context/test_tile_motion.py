@@ -14,6 +14,7 @@ P=load('motion_geometry','tests/los_context/test_offline.py')
 A=load('motion_adapter','tests/save_movement/source_adapter.py')
 LIFE=(ROOT/'code/modules/visibility/los_lifecycle.dm').read_text()
 CORE=(ROOT/'code/modules/visibility/los_context.dm').read_text()
+TERRAIN=(ROOT/'code/modules/visibility/los_terrain.dm').read_text()
 
 class Tile:
     def __init__(self,x,y=1,z=1):self.x,self.y,self.z=x,y,z
@@ -66,6 +67,50 @@ class TileMotion(unittest.TestCase):
             env['los_invalidate']=A.project(source,'/proc/los_invalidate',
                 'changed, possible_opacity=False, viewer_refresh=False',env)
         return N(actor=actor,owner=owner,context=context,clients=clients,before=before,after=after,events=events,invalidate=env['los_invalidate'])
+
+    def test_off_level_viewport_skip_preserves_invalidation_trace(self):
+        guard = '\t\tif(changed != V.body && T.z != V.body.z)\n\t\t\tcontinue\n'
+        new_check = 'if(T && changed != V.body && (!radii ||'
+        old_check = 'if(T && changed != V.body && (T.z != V.body.z || !radii ||'
+        self.assertEqual(LIFE.count(guard), 1)
+        self.assertEqual(LIFE.count(new_check), 1)
+        original = LIFE.replace(guard, '', 1).replace(new_check, old_check, 1)
+
+        def trace(source, missing, own_other_level):
+            s = self.scene(source, real_invalidation=True)
+            if own_other_level:
+                # The changed body must still be refreshed even if its turf and z disagree.
+                s.actor.z = 2
+            contexts = [c.los_context for c in s.clients]
+            calls, events = [], []
+            for i, client in enumerate(s.clients):
+                client.los_note_mover = lambda actor, i=i: events.append(('mover', i))
+                client.root_tree_presenter = N(invalidate=lambda *args, i=i: events.append(('root', i)))
+                client.los_presenter = N(invalidate=lambda *args, i=i: events.append(('los', i)))
+            for i, context in enumerate(contexts):
+                def radii(i=i):
+                    calls.append(i)
+                    return None if missing and i == 1 else P.DMList([7, 7])
+                context.viewport_radii = radii
+            affected = s.invalidate(s.actor)
+            return ([i for i, context in enumerate(contexts)
+                     if any(context is item for item in affected)],
+                    [c.los_dirty for c in s.clients], events, calls)
+
+        for missing in (False, True):
+            for own_other_level in (False, True):
+                before = trace(original, missing, own_other_level)
+                after = trace(LIFE, missing, own_other_level)
+                self.assertEqual(after[:3], before[:3])
+                self.assertEqual(before[3], [0, 1, 2, 3])
+                self.assertEqual(after[3], [0, 1, 2])
+                self.assertIn(0, after[0])
+                self.assertEqual(1 in after[0], not missing)
+                self.assertNotIn(3, after[0])
+
+        # A guard that omits the self exception would suppress the body's refresh.
+        broken = LIFE.replace(guard, guard.replace('changed != V.body && ', ''), 1)
+        self.assertNotIn(0, trace(broken, False, True)[0])
 
     def test_offset_pulses_and_failed_moves_do_not_force_capture(self):
         s=self.scene()
@@ -307,7 +352,9 @@ class TileMotion(unittest.TestCase):
         offset_key=branch[1] if anchored else branch[2]
         template=re.search(r'\treturn "([^\n]*)"',policy)[1]
         names=dict(body=body,owner=owner,revision=1,offset_key=offset_key,world=N(time=time),
-                   los_eye_bucket=lambda b:f'{(b.step_x+8)//16*16},{(b.step_y+8)//16*16}')
+                   los_eye_bucket=lambda b:f'{(b.step_x+8)//16*16},{(b.step_y+8)//16*16}',
+                   los_up_tree=lambda b:int(getattr(b,'up_tree',False)),
+                   los_on_vehicle_deck=lambda b:int(getattr(b,'on_deck',False)))
         def expression(code):
             if code=='config ? config.disable_fov : 1':return 1
             if ' ? ' in code:
@@ -425,6 +472,11 @@ class DistanceCamera(unittest.TestCase):
             LOS_DENY=0,LOS_WORLD=1,LOS_SURFACE=2,LOS_SELF=4,
             world=N(maxx=200,maxy=200,time=0),inclusive_range=lambda lo,hi:range(int(lo),int(hi)+1),
             getviewsize=lambda v:Cells([v*2+1,v*2+1]))
+        # No tree stands on the camera's tile unless a test places one.
+        env['los_own_tree']=lambda body,A:False
+        if '/proc/los_own_tree(' in source:
+            env['root_tree_family']=lambda a:a.type.startswith('/obj/structure/wild/tree')
+            P.project(source,'/proc/los_own_tree(',env)
         def method(name,args,fields):
             text=P.fragment(source,'/datum/los_context/proc/'+name+'(')
             head,code=text.split('\n',1)
@@ -585,7 +637,12 @@ class DistanceCamera(unittest.TestCase):
         movable_adjacent=A.project(M_adj,'/atom/movable/Adjacent','src, neighbor',env)
         env['locate']=lambda x,y,z:turf(x,y)
         env['los_turf_blocks_sight']=A.project(source,'/proc/los_turf_blocks_sight','T, ignore=None',env) if '/proc/los_turf_blocks_sight(' in source else None
+        env['root_tree_family']=lambda a:a.type.startswith('/obj/structure/wild/tree')
+        if '/proc/los_own_tree(' in source:
+            env['los_own_tree']=A.project(source,'/proc/los_own_tree','body, A',env)
+            env['los_turf_blocks_own_sight']=A.project(source,'/proc/los_turf_blocks_own_sight','body',env)
         reach=A.project(source,'/proc/los_reach_admits','body, target',env)
+        if 'los_own_tree' in env:m.env['los_own_tree']=env['los_own_tree']
         calls=[]
         def spy(body,target):calls.append((target.x,target.y));return reach(body,target)
         m.env['los_reach_admits']=spy
@@ -716,6 +773,20 @@ class DistanceCamera(unittest.TestCase):
         w=self.reach_world();w.wall(101,100);w.m.body.opacity=True;w.m.body.contents=[]
         w.turf(100,100).contents.append(w.m.body)
         self.assertTrue(w.reach(w.m.body,w.Obj('/obj/item',w.turf(101,101))))
+
+    def test_viewer_beside_a_trunk_on_its_tree_tile_still_sees_and_reaches(self):
+        # Trees block only at the trunk, so a human may share the tree's tile.
+        # Unlike a curtain, that tree never blinds the viewer standing in it.
+        for x,y in [(101,100),(101,101),(103,100)]:
+            w=self.reach_world()
+            w.Obj('/obj/structure/wild/tree',w.turf(100,100),opaque=True,dense=True)
+            item=w.Obj('/obj/item',w.turf(x,y))
+            if max(abs(x-100),abs(y-100))<2:self.assertTrue(w.reach(w.m.body,item))
+            self.assertEqual(w.both(item),[1,1])
+        # The neighbouring tree's own tile still hides what is behind it.
+        w=self.reach_world()
+        w.Obj('/obj/structure/wild/tree',w.turf(101,100),opaque=True,dense=True)
+        self.assertEqual(w.both(w.Obj('/obj/item',w.turf(102,100))),[0,0])
 
     def test_camera_pan_key_rounding_bounds_and_offset_cadence(self):
         motion=TileMotion();body=N(x=3,y=1,z=1,step_x=0,step_y=0,sight=0,see_invisible=0,

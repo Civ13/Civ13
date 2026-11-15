@@ -232,6 +232,7 @@ var/knowledge_failures = 0
 	bench.analysis_tick()
 	knowledge_check(!journal.research_ticks("iron_tools"), "no progress without someone who knows the groundwork")
 	knowledge_check(scholar.can_learn_recipe_node("basic_tools") && scholar.learn_recipe_node("basic_tools"), "a root node can be learned without faction research")
+	knowledge_check(!scholar.can_learn_recipe_node("iron_smithing") && scholar.learn_recipe_node("bronze_working") && scholar.learn_recipe_node("iron_smithing"), "groundwork is learned in order: Iron Tools also needs Iron Smithing")
 	bench.analysis_tick()
 	knowledge_check(!journal.research_ticks("iron_tools") && node_discipline("iron_tools") == "engineering" && node_scholar_requirement("iron_tools") == 24, "no progress without the discipline's skill")
 	var/list/open_disciplines = list()
@@ -340,6 +341,14 @@ var/knowledge_failures = 0
 	desk.anchored = TRUE
 	knowledge_check(novice.at_writing_desk() && novice.scholar_study_time(2) < plain_study && scholar_write_time(2, pencil, novice) < plain_write, "studying and writing beside a writing desk are faster")
 	knowledge_check(!crafting_recipe_allowed(novice, "/obj/structure/writing_desk") && scholar.learn_recipe_node("basic_furniture") && crafting_recipe_allowed(scholar, "/obj/structure/writing_desk"), "the writing desk is Basic Furniture")
+	// A new character's first fire needs no research (Val, 2026-11-13).
+	knowledge_check(!novice.knows_recipe_node("basic_furniture") && crafting_recipe_allowed(novice, "/obj/structure/oven/fireplace") && !get_recipe_node_req("/obj/structure/oven/fireplace"), "a novice can make a campfire")
+	// Beside someone who knows it, a prepared novice may make it as guided work
+	// (trade_learning.dm); alone, the subject is still needed.
+	var/turf/scholar_spot = scholar.loc
+	scholar.loc = null
+	knowledge_check(!crafting_recipe_allowed(novice, "/obj/structure/brazier"), "a brazier still needs Basic Furniture")
+	scholar.loc = scholar_spot
 	var/obj/structure/research_bench/knowledge_fixture/bench = new(locate(2,2,1))
 	var/obj/structure/bookcase/near = new(locate(3,2,1))
 	var/obj/structure/bookcase/far = new(locate(8,8,1))
@@ -483,6 +492,12 @@ var/knowledge_failures = 0
 	knowledge_check(H.scholar_practice_problem("medicine") && !H.scholar_practice_commit("medicine") && H.scholar_level("medicine") == SCHOLAR_PRACTICE_CAP, "practice stops at its cap")
 	H.stats["stamina"][1] = SCHOLAR_PRACTICE_STAMINA - 1
 	knowledge_check(H.scholar_practice_problem("agriculture") && !H.scholar_practice_commit("agriculture"), "a tired character can't practise")
+	// A save taken mid-session must not lock the restored character out of
+	// practice for good (Gaia, 2026-11-13: "You are already practising").
+	H.scholar_practising = TRUE
+	knowledge_check(!("scholar_practising" in H.get_saved_vars()), "a practice session's lock is never saved")
+	knowledge_check(H.persistence_runtime_var("scholar_practising") && H.persistence_runtime_var("tree_climb_busy") && H.persistence_runtime_var("cpr_revival_busy"), "a saved body's action locks are skipped on load")
+	H.scholar_practising = FALSE
 	for (var/obj/item/I in tools)
 		qdel(I)
 	qdel(H)
@@ -616,7 +631,7 @@ var/knowledge_failures = 0
 	scholar.stats["stamina"][1] = 100
 	knowledge_check(diary.commit_written_chapter(scholar, "basic_tools", sheet) && diary.has_research_chapter("basic_tools") && QDELETED(sheet) && scholar.stats["stamina"][1] == 100 - BOOK_WRITE_STAMINA(0), "writing a known node uses a sheet and stamina")
 	var/obj/item/weapon/paper/spare = new(locate(6,6,1))
-	knowledge_check(!diary.commit_written_chapter(novice, "basic_tools", spare) && !diary.commit_written_chapter(scholar, "iron_smithing", spare), "only known, unwritten nodes can be written")
+	knowledge_check(!diary.commit_written_chapter(novice, "basic_tools", spare) && !diary.commit_written_chapter(scholar, "steelmaking", spare), "only known, unwritten nodes can be written")
 	scholar.stats["stamina"][1] = 1
 	var/obj/item/weapon/book/tired = new(locate(6,6,1))
 	knowledge_check(!tired.commit_written_chapter(scholar, "basic_tools", spare) && !QDELETED(spare), "too tired to write")
@@ -694,7 +709,7 @@ var/knowledge_failures = 0
 	knowledge_check(stone_ok, "the Stone Age set holds only era-0 nodes")
 	var/mob/living/human/knowledge_fixture/founder = new(locate(5,5,1))
 	var/obj/item/weapon/book/master = founder.receive_founding_books()
-	knowledge_check(master && master.loc == founder && master.research_chapter_list().len == stone.len && (locate(/obj/item/weapon/pen/pencil) in founder.contents), "a founder gets the Stone Age master book and a pencil")
+	knowledge_check(master && master.loc == founder && master.research_chapter_list().len == stone.len && (locate(/obj/item/weapon/writing_slate) in founder.contents) && !(locate(/obj/item/weapon/pen/pencil) in founder.contents), "a founder gets the Stone Age master book and a writing slate, not a pencil")
 	knowledge_check(!founder.knows_recipe_node("basic_tools") && founder.can_learn_recipe_node("basic_tools"), "the master book's chapters still have to be studied")
 	map.age = old_age
 	map.ordinal_age = old_ordinal

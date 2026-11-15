@@ -111,6 +111,18 @@
 
 	var/attack_verb = "bites"
 
+	// Melee pacing and predator temperament (tactical_ai.dm).
+	var/melee_attack_delay = 0 // ds between bites; 0 uses move_to_delay seconds, clamped to 2-4 s
+	var/tmp/next_melee_attack = 0
+	var/bite_fracture_chance = 20 // % chance a bite heavy enough to break a bone actually does
+	var/predator_encroach_range = 3 // natural predators only go for a person this close...
+	var/predator_starving_hunger = 150 // ...or when their hunger is below this
+	var/predator_chase_range = 6 // an unprovoked, fed predator gives up a person who gets this far away
+	var/tmp/mob/living/provoked_by // last mob that hurt this animal; it is always fought
+	var/food_distraction_time = 200 // ds a starving predator spends going after thrown meat instead of a person
+	var/tmp/obj/item/weapon/reagent_containers/food/snacks/distracted_by // thrown meat it left a person for
+	var/tmp/distracted_until = 0
+
 // Invalidate deferred work at the mutation, even if the link later returns to
 // its old value between worker checks. Save restoration has no pending worker.
 /mob/living/simple_animal/proc/npc_set_following(atom/new_following)
@@ -297,6 +309,8 @@
 
 	adjustBruteLoss(proj.damage)
 	proj.on_hit(src, FALSE)
+	if (isliving(proj.firer))
+		animal_provoked(proj.firer)
 	return FALSE
 
 /mob/living/var/tmp/next_animal_retaliation = 0
@@ -410,6 +424,7 @@
 
 	if (M.a_intent == I_HARM || M.a_intent == I_DISARM || M.a_intent == I_GRAB)
 		try_defensive_retaliation(M)
+		animal_provoked(M)
 	return
 
 // Cotton plants and cotton seeds are only food for ruminants; every other animal leaves them alone.
@@ -632,6 +647,8 @@
 			npc_set_combat_target(user)
 		stance = HOSTILE_STANCE_ATTACK
 		stance_step = 6
+		if (health < health_before_attack)
+			animal_provoked(user)
 	else
 		if (behaviour == "scared" || (behaviour == "wander" && mob_size < user.mob_size))
 			do_behaviour("scared")
@@ -819,7 +836,8 @@
 		return
 
 /mob/living/simple_animal/handle_mutations_and_radiation()
-	if (z == multiz_top_z())
+	// rad_act() ignores a dose of zero, so skip finding the surface level.
+	if (global_radiation > 0 && z == multiz_top_z())
 		rad_act((global_radiation/1000))
 	if (radiation < 0)
 		radiation = 0

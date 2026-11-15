@@ -38,6 +38,22 @@ class EntityInventoryTests(unittest.TestCase):
         self.assertEqual(report['excluded_absolute_declarations']['proc_verb_var_path'], 1)
         self.assertEqual(masked_source(source).count('\n'), source.count('\n'))
 
+    def test_masking_keeps_offsets_and_token_rules(self):
+        # Expected values are the original character-by-character scanner's output.
+        cases = (
+            ('a = "x // y" // c\nb', 'a = "x // y"     \nb'),
+            ('a /* b /* c */ d */ e /* open', 'a                   e        '),
+            ('x = {"one\n\\"} two"} y', 'x = ?    \n          y'),
+            ('x = {"open\\', 'x = ?      '),
+            ('s = "a\\"b" /*c*/ "open // d', 's = "a\\"b"       "open // d'),
+            ('p = "a\\\n// kept" // gone\r\nq', 'p = "a\\\n// kept"        \r\nq'),
+            ('{"}"} // x', '?         '),
+        )
+        for source, expected in cases:
+            with self.subTest(source):
+                self.assertEqual(masked_source(source), expected)
+                self.assertEqual(len(expected), len(source))
+
     def test_nested_block_comments_cannot_leak_fake_declarations(self):
         source = '/* outer /* inner */\n/obj/item/fake\n*/\n/obj/item/real\n'
         _, rows = self.rows(source)

@@ -61,8 +61,8 @@
 	make_blood()
 	if (map)
 		if (map.civilizations == TRUE && map.ID != MAP_PEPELSIBIRSK)
-			nutrition = rand(max_nutrition * 0.45, max_nutrition * 0.55) // 180 to 220
-			water = round(rand(max_water * 0.45, max_water * 0.55)) // 157 to 192
+			nutrition = rand(max_nutrition * 0.45, max_nutrition * 0.55) // 270 to 330
+			water = round(rand(max_water * 0.45, max_water * 0.55)) // 225 to 275
 		if (map.ID == MAP_GULAG13 || map.ID == MAP_BAGNE13)
 			spawn(10)
 				if (istype(original_job, /datum/job/civilian/prisoner))
@@ -427,8 +427,9 @@ var/list/coefflist = list()
 /mob/living/human/Topic(href, href_list)
 
 	if (href_list["refresh"])
-		if ((using_object)&&(in_range(src, usr)))
-			show_inv(using_object)
+		if ((ismob(using_object))&&(in_range(src, usr)))
+			var/mob/M = using_object
+			M.show_inv(src)
 
 	if (href_list["mach_close"])
 		var/t1 = text("window=[]", href_list["mach_close"])
@@ -848,7 +849,7 @@ var/list/coefflist = list()
 
 	if (!target_zone)
 		if (!user)
-			target_zone = pick("chest","chest","chest","left leg","right leg","left arm", "right arm", "head")
+			target_zone = pick("chest","chest","chest","l_leg","r_leg","l_arm","r_arm", "head")
 		else
 			target_zone = user.targeted_organ
 
@@ -1192,12 +1193,12 @@ var/list/coefflist = list()
 		if (currmask.blocks_scope)
 			to_chat(user, "You can't see any farther whilst wearing \the [currmask]!")
 			return FALSE
-	else if (global_hud.darkMask[1] in user.client.screen)
+	if (global_hud.darkMask[1] in user.client.screen)
 		to_chat(user, "Your visor gets in the way of seeing farther.")
 		return FALSE
 	else
 		var/obj/item/organ/eyes/E = H.internal_organs_by_name["eyes"]
-		if (E.is_bruised() || E.is_broken() || H.eye_blind > 0)
+		if (!E || E.is_bruised() || E.is_broken() || H.eye_blind > 0)
 			if (!silent) to_chat(user, SPAN_DANGER("Your eyes are injured! You can't see any farther!"))
 			return FALSE
 	return TRUE
@@ -1225,6 +1226,12 @@ var/list/coefflist = list()
 			for(var/obj/item/weapon/attachment/scope/A in G.attachments)//Looks through the attachments of the gun in hand
 				AL += A.zoom_amt
 			look_amount = max(AL)//look_amount is set to the maximum zoom_amt of gun's attachments, maybe could be written different instead of a for loop
+	// Up a tree the eye looks out over the canopy (tree_climbing.dm).
+	if (climbed_tree)
+		look_amount = max(look_amount, 8)
+	// On top of a vehicle the eye looks out over walls (vehicle_decks.dm).
+	if (vehicle_deck)
+		look_amount = max(look_amount, 6)
 
 	if(!user || !user.client)
 		return
@@ -1370,6 +1377,9 @@ var/list/coefflist = list()
 	. = ..()
 	if (loc != old_location)
 		reset_corpse_decay_age()
+		// Walking onto a map edge the land carries on beyond (region_edge.dm).
+		if (map && map.edge_crossings)
+			region_edge_check()
 	if (human_subtile_pulse)
 		return .
 	if (subtile_pull_ownership.owners[src])
@@ -1401,10 +1411,11 @@ var/list/coefflist = list()
 			if(src.looking && m_intent=="run")
 				shake_camera(src, 2, rand(1,3))
 
-	for (var/obj/item/weapon/gun/projectile/automatic/stationary/HMG in range(2, src))
-		if (HMG.used_by_mob == src && loc != get_turf(HMG))
-			HMG.stopped_using(src)
-			HMG.used_by_mob = null
+	// started_using() records the manned gun in using_object, so no scan is needed.
+	var/obj/item/weapon/gun/projectile/automatic/stationary/HMG = using_object
+	if (istype(HMG) && HMG.used_by_mob == src && loc != get_turf(HMG))
+		HMG.stopped_using(src)
+		HMG.used_by_mob = null
 // reset all zooms - called from Life(), Weaken(), ghosting and more
 
 /mob/living/human/proc/handle_look_stuff(var/forced = FALSE)
@@ -1417,8 +1428,8 @@ var/list/coefflist = list()
 					H.look_into_distance(src, FALSE)
 					return
 
-	for (var/obj/item/weapon/gun/projectile/automatic/stationary/HMG in range(2, src))
-		if (HMG.used_by_mob == src && (loc != get_turf(HMG) || forced))
-			HMG.stopped_using(src)
-			HMG.used_by_mob = null
-			return
+	var/obj/item/weapon/gun/projectile/automatic/stationary/HMG = using_object
+	if (istype(HMG) && HMG.used_by_mob == src && (loc != get_turf(HMG) || forced))
+		HMG.stopped_using(src)
+		HMG.used_by_mob = null
+		return

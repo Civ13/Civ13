@@ -13,6 +13,7 @@ and north-west.
 """
 import argparse
 import heapq
+import math
 from collections import deque
 from pathlib import Path
 from terrain_heights import read_dmm, read_heights
@@ -26,6 +27,12 @@ HEADER = 'civ13-river-flow 1'
 LAKE_DEPTH = 5
 # Shorter runs of channel are lake margins or ponds, not rivers.
 MIN_RIVER = 12
+# Sea currents run in a belt this many steps off the land: the shallows by
+# the beach and the open sea beyond the belt stay still.
+SEA_SHORE = 4
+SEA_BELT = 16
+# Seas smaller than this many tiles of belt are bays and inlets: still.
+MIN_SEA = 150
 
 
 def classify(turf):
@@ -95,7 +102,86 @@ def bank_heights(kinds, heights):
     return level
 
 
-def build(rows, lake_depth=LAKE_DEPTH, heights=None):
+def sea_currents(kinds, width, height, frozen=()):
+    """{(x, y): code} for open salt water: a current that follows the coast.
+
+    The belt of sea between SEA_SHORE and SEA_BELT steps off the land flows
+    along the lines of equal distance from it, land on the left: round a
+    basin the water turns clockwise, round an island the other way, as a
+    boundary current does. Because it follows those lines it never runs
+    ashore, and a thing adrift is carried along the coast, not onto it.
+    """
+    def open_sea(p):
+        return kinds.get(p) == 'salt' and p not in frozen
+
+    # Steps to the nearest tile that is not open salt water (land, ice, fresh
+    # water). The map edge is more sea, not a shore.
+    distance, queue = {}, deque()
+    for (x, y), kind in kinds.items():
+        if kind != 'salt' or (x, y) in frozen:
+            continue
+        for dx, dy, _ in NEIGHBOURS:
+            n = (x + dx, y + dy)
+            if 0 <= n[0] < width and 0 <= n[1] < height and not open_sea(n):
+                distance[(x, y)] = 1
+                queue.append((x, y))
+                break
+    while queue:
+        p = queue.popleft()
+        for dx, dy, _ in NEIGHBOURS:
+            n = (p[0] + dx, p[1] + dy)
+            if open_sea(n) and n not in distance:
+                distance[n] = distance[p] + 1
+                queue.append(n)
+    if not distance:
+        return {}
+    # Two passes of a 3 x 3 mean round off the corners the step count leaves.
+    smooth = {p: float(d) for p, d in distance.items()}
+    for _ in range(2):
+        nxt = {}
+        for (x, y), d in smooth.items():
+            total = d
+            for dx, dy, _ in NEIGHBOURS:
+                total += smooth.get((x + dx, y + dy), d)
+            nxt[(x, y)] = total / 9
+        smooth = nxt
+    found = {}
+    for (x, y), d in distance.items():
+        if d < SEA_SHORE or d > SEA_BELT:
+            continue
+        here = smooth[(x, y)]
+        gx = (smooth.get((x + 1, y), here) - smooth.get((x - 1, y), here)) / 2
+        gy = (smooth.get((x, y + 1), here) - smooth.get((x, y - 1), here)) / 2
+        if gx * gx + gy * gy < 0.04:
+            continue  # a ridge or a flat: no clear line to follow
+        # A quarter turn from "away from land", rows running south.
+        vx, vy = gy, -gx
+        angle = math.degrees(math.atan2(-vy, vx)) % 360  # 0 east, 90 north
+        code = ('e', 'a', 'n', 'd', 'w', 'c', 's', 'b')[int((angle + 22.5) // 45) % 8]
+        found[(x, y)] = code
+    # Drop a tile whose step leaves the sea, then seas too small to matter.
+    step = {d: (dx, dy) for dx, dy, d in NEIGHBOURS}
+    found = {p: c for p, c in found.items() if open_sea((p[0] + step[c][0], p[1] + step[c][1]))}
+    seen = set()
+    for start in sorted(found):
+        if start in seen:
+            continue
+        piece, queue = {start}, deque([start])
+        while queue:
+            p = queue.popleft()
+            for dx, dy, _ in NEIGHBOURS:
+                n = (p[0] + dx, p[1] + dy)
+                if n in found and n not in piece:
+                    piece.add(n)
+                    queue.append(n)
+        seen |= piece
+        if len(piece) < MIN_SEA:
+            for p in piece:
+                del found[p]
+    return found
+
+
+def build(rows, lake_depth=LAKE_DEPTH, heights=None, sea=True):
     height, width = len(rows), len(rows[0])
     kinds = {}
     for y, row in enumerate(rows):
@@ -188,6 +274,10 @@ def build(rows, lake_depth=LAKE_DEPTH, heights=None):
         elif steps[p] == 0 and p in edge_outlets:
             # An outlet on the map edge runs off the map.
             result[y][x] = 'w' if x == 0 else 'e' if x == width - 1 else 'n' if y == 0 else 's'
+    if sea:
+        frozen = {(x, y) for y, row in enumerate(rows) for x, turf in enumerate(row) if '/ice' in turf}
+        for (x, y), code in sea_currents(kinds, width, height, frozen).items():
+            result[y][x] = code
     return [''.join(row) for row in result]
 
 

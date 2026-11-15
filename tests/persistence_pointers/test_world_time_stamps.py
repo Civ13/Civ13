@@ -41,6 +41,14 @@ REVIEWED = {
     'npc_subtile_watch_checked': 'var/tmp cache of the near-player check, never saved',
     'lob_launch_time': 'var/tmp on projectiles in flight, which are never saved',
     'human_subtile_smooth_start': 'var/tmp draw-smoothing stamp on humans, never saved',
+    'antibiotic_dose_shared_at': 'var/tmp stamp of the per-tick antibiotic dose cache on humans, never saved',
+    'life_heat_scan_until': 'var/tmp expiry of the nearby-heat scan cache on humans, never saved',
+    'next_melee_attack': 'var/tmp bite cooldown on animals, never saved',
+    'next_hoof_dust': 'var/tmp dust-puff throttle on ridden horses, never saved',
+    'next_call': 'var/tmp cooldown of the boatswain\'s call, never saved',
+    'held_since': 'var/tmp capture clock on a Broadside TDM tiller, never saved',
+    'voyage': 'var/tmp voyage of a built hull tiller (ship_voyage.dm), never saved',
+    'bite_fracture_guard': 'var/tmp guard for the instant of one animal bite on humans, never saved',
 }
 
 # An optional [key] catches stamps kept in a keyed list, such as next_emote["normal"].

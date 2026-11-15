@@ -223,3 +223,22 @@ chart burning propellant, a station that does not welcome her party leaves
 her holding off, a welcoming docking port lets her in clear of the station's
 hull and frees her slot, the ship and token are made again from the helm, the
 arrival beacon takes anyone, and six modules are refused as a station.
+
+## Encounter sites
+
+```
+python3 tests/ecology_spawning/run_linux.py . tests/orbit_world/sites_probe.dm 300
+```
+
+`sites_probe.dm` runs on a 64 x 64 x 8 vacuum world and checks encounter
+sites (`code/modules/space/orbit_sites.dm`): a fresh chart has five derelicts
+and three asteroid fields clear of the beacon and holding no plane, the
+beacon answers from anywhere while a site is found only within sensor range
+and then stays charted, a site is built on a plane of its own when a ship
+reaches it, a derelict is one to three dead modules, breached and airless,
+with salvage in crates, the ship lies clear of it, a site stays while a ship
+or a person is there and is taken away at the second look with nobody there,
+a picked-over derelict leaves the chart and another turns up, a field has
+asteroids with ore that keep their place and stays on the chart, the site
+cap and the pause refuse a load and leave the ship holding off in the lanes,
+and the sites are saved as one text and read back with what is built where.

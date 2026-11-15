@@ -24,53 +24,19 @@
 
 /obj/structure/brazier/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (user.a_intent == I_HELP)
-		if (istype(W, /obj/item/weapon/wrench) || (istype(W, /obj/item/weapon/hammer)))
-			if (istype(W, /obj/item/weapon/wrench))
-				visible_message("<span class='warning'>[user] starts to [anchored ? "unsecure" : "secure"] \the [src] [anchored ? "from" : "to"] the ground.</span>")
-				playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
-				if (do_after(user,50,src))
-					visible_message("<span class='warning'>[user] [anchored ? "unsecures" : "secures"] \the [src] [anchored ? "from" : "to"] the ground.</span>")
-					anchored = !anchored
+		if (is_tool(W, TOOL_WRENCH) || (is_tool(W, TOOL_HAMMER)))
+			if (is_tool(W, TOOL_WRENCH))
+				if (timed_toggle_anchor(user))
 					return
-			else if (istype(W, /obj/item/weapon/hammer) || istype(W, /obj/item/weapon/hammer/modern))
+			else if (is_tool(W, TOOL_HAMMER) || istype(W, /obj/item/weapon/hammer/modern))
 				visible_message("<span class='warning'>[user] starts to deconstruct \the [src].</span>")
 				playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
 				if (do_after(user,50,src))
 					visible_message("<span class='warning'>[user] deconstructs \the [src].</span>")
 					qdel(src)
 					return
-		else if (istype(W, /obj/item/stack/ore/coal))
-			fuel += (220)*W.amount
-			user.visible_message(SPAN_NOTICE("[user] places \the [W] in \the [src], refueling it."), SPAN_NOTICE("You place \the [W] in the [src], refueling it."))
-			qdel(W)
-			return
-		else if (istype(W, /obj/item/stack/ore/charcoal))
-			fuel += (180)*W.amount
-			user.visible_message(SPAN_NOTICE("[user] places \the [W] in \the [src], refueling it."), SPAN_NOTICE("You place \the [W] in the [src], refueling it."))
-			qdel(W)
-			return
-		else if (istype(W, /obj/item/stack/material/wood || /obj/item/stack/material/woodplank))
-			fuel += (80)*W.amount
-			user.visible_message(SPAN_NOTICE("[user] places \the [W] in \the [src], refueling it."), SPAN_NOTICE("You place \the [W] in the [src], refueling it."))
-			qdel(W)
-			return
-		else if (istype(W, /obj/item/stack/material/bamboo))
-			fuel += (80)*W.amount
-			user.visible_message(SPAN_NOTICE("[user] places \the [W] in \the [src], refueling it."), SPAN_NOTICE("You place \the [W] in the [src], refueling it."))
-			qdel(W)
-			return
-		else if(istype(W, /obj/item/stack/dung))
-			fuel += (90)*W.amount
-			user.visible_message(SPAN_NOTICE("[user] places \the [W] in \the [src], refueling it."), SPAN_NOTICE("You place \the [W] in the [src], refueling it."))
-			qdel(W)
-			return
-		else if (istype(W, /obj/item/weapon/branch))
-			fuel += (60)*W.amount
-			user.visible_message(SPAN_NOTICE("[user] places \the [W] in \the [src], refueling it."), SPAN_NOTICE("You place \the [W] in the [src], refueling it."))
-			qdel(W)
-			return
-		else if (istype(W, /obj/item/stack/material/leaf))
-			fuel += (60)*W.amount
+		else if (solid_fuel_kind(W) && solid_fuel_value(W, brazier_fuel_rates))
+			fuel += solid_fuel_value(W, brazier_fuel_rates)
 			user.visible_message(SPAN_NOTICE("[user] places \the [W] in \the [src], refueling it."), SPAN_NOTICE("You place \the [W] in the [src], refueling it."))
 			qdel(W)
 			return

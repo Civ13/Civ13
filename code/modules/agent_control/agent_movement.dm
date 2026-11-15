@@ -37,24 +37,8 @@
 /proc/agent_ground_delay(mob/living/human/H, turf/floor/F)
 	if (!istype(F) || !ishuman(H) || !isnull(H.riding_mob))
 		return 0
-	. = 0
 	var/covered = locate(/obj/covers) in F
-	for (var/obj/effect/flooding/FLD in F)
-		switch (FLD.flood_level)
-			if (1)
-				. = 2
-			if (2)
-				. = 4
-			if (3)
-				. = 6
-	if (istype(F, /turf/floor/sub_deck))
-		var/turf/floor/sub_deck/SD = F
-		if (SD.water_depth >= 150)
-			. = 6
-		else if (SD.water_depth >= 100)
-			. = 4
-		else if (SD.water_depth >= 50)
-			. = 2
+	. = standing_water_delay(F)
 	if (F.has_snow_cover() && !covered && !H.lizard)
 		. = pick(1.25, 1.75)
 	else if (F.muddy && !H.lizard)
@@ -133,11 +117,12 @@
 		if (!M.pulling.Adjacent(M))
 			M.stop_pulling()
 		else if (ismob(M.pulling))
-			delay += 1.25
+			delay += 1.25 * M.pull_drag_mult()
 		else if (istype(M.pulling, /obj/item/weapon/gun/projectile/automatic/stationary))
-			delay += 1
+			delay += 1 * M.pull_drag_mult()
 		else if (istype(M.pulling, /obj/structure))
-			delay += 0.75
+			var/obj/structure/pulled_structure = M.pulling
+			delay += pulled_structure.drag_delay(M) * M.pull_drag_mult()
 	M.Move(n, d)
 	var/moved = get_turf(M) != old
 	if (moved && H)
@@ -152,7 +137,7 @@
 	if (M.find_trait("Gigantism"))
 		speed *= 0.9
 	if (H && H.riding && H.riding_mob)
-		delay = 0.5
+		delay = 0.5 + H.riding_mob.hitch_drag()
 	else
 		delay /= max(0.1, speed)
 		if (d in cornerdirs)
@@ -188,3 +173,48 @@
 			H.water -= 0.0015
 	terrain_climb_effects(H, old, n, 1)
 	terrain_trip_check(H, old, n, 1)
+
+// walk_to (docs/agent-control.md#walk-to): the route a player gets with
+// Ctrl+click (click_route.dm), walked one whole-tile step per call with the
+// player's movement rules (agent_walk_step). The queue calls it again until
+// the route arrives or stops; the receipt says which.
+/datum/agent_control/proc/agent_walk_to_step(datum/agent_identity/A, datum/agent_character/C, list/req, from_queue)
+	agent_queue_only("walk_to", from_queue)
+	var/mob/living/M = C.body
+	var/datum/click_route/R = req["_route"]
+	if (!R)
+		var/turf/goal
+		if (!isnull(req["target"]))
+			goal = get_turf(agent_resolve_target(req["target"]))
+		else
+			goal = locate(round(text2num("[req["x"]]")), round(text2num("[req["y"]]")), M.z)
+		if (!goal)
+			agent_fail("bad_args", "walk_to: no such place")
+		var/list/route = click_route_plan(M, get_turf(M), goal)
+		if (!islist(route))
+			M.click_route_last = "stopped: [route]"
+			return list("moved" = FALSE, "route_done" = TRUE, "arrived" = FALSE, "route_result" = M.click_route_last, "self" = character_state(C))
+		M.click_route_cancel()
+		if (!route.len)
+			M.click_route_last = "arrived"
+			return list("moved" = FALSE, "route_done" = TRUE, "arrived" = TRUE, "route_result" = "arrived", "self" = character_state(C))
+		R = new /datum/click_route(M, goal, route, TRUE)
+		M.click_route = R
+		req["_route"] = R
+	var/d = R.agent_next_dir()
+	if (!d)
+		return list("moved" = FALSE, "route_done" = TRUE, "arrived" = R.arrived, "route_result" = R.result || "stopped", "self" = character_state(C))
+	var/list/result
+	try
+		result = agent_walk_step(A, C, d, from_queue)
+	catch (var/exception/E)
+		R.finish(E.name == "agent_control_error" ? copytext(E.desc, findtext(E.desc, ":") + 1) : "error")
+		throw E
+	if (result["moved"] == FALSE && !R.replan("the way is blocked"))
+		result["route_done"] = TRUE
+		result["arrived"] = FALSE
+		result["route_result"] = R.result
+		return result
+	result["route_done"] = FALSE
+	result["steps_left"] = R.left()
+	return result

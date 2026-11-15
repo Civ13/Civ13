@@ -61,6 +61,8 @@ What is the naming convention for planes or layers?
 // Root composition replays the captured mask here, avoiding a source feedback loop.
 #define ROOT_FLOOR_LIGHT_PLANE 5
 #define ROOT_TREE_PLANE 6
+// Roofed areas draw the mask that keeps weather off them here; never shown itself.
+#define WEATHER_ROOF_PLANE 7
 #define ROOT_SCENE_PLANE 8
 #define ROOT_ROOF_PLANE 9
 #define ROOT_WEATHER_PLANE 10

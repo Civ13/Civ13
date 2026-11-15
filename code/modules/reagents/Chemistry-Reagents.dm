@@ -64,7 +64,7 @@
 	var/removed = metabolism
 	if (ingest_met && (location == CHEM_INGEST))
 		removed = ingest_met
-	if (touch_met && (location == CHEM_TOUCH))
+	else if (touch_met && (location == CHEM_TOUCH))
 		removed = touch_met
 	removed = min(removed, volume)
 	max_dose = max(volume, max_dose)

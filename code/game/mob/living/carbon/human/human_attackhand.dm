@@ -11,6 +11,8 @@
 /mob/living/human/attack_hand(mob/living/human/M as mob)
 	if (map && istype(map, /obj/map_metadata/football))
 		return
+	if (tree_melee_refused(M, src))
+		return
 	var/mob/living/human/H = M
 	if (istype(H))
 		var/obj/item/organ/external/temp = H.organs_by_name["r_hand"]
@@ -119,7 +121,7 @@
 				var/f2 = FALSE
 				for (var/obj/structure/vehicleparts/frame/FR1 in get_turf(src))
 					f1 = TRUE
-				for (var/obj/structure/vehicleparts/frame/FR2 in get_turf(tgt))
+				for (var/obj/structure/vehicleparts/frame/FR2 in get_turf(M))
 					f2 = TRUE
 				if (f1 != f2)
 					return FALSE
@@ -239,12 +241,6 @@
 					attack_message = "[H] went for [src]'s [affecting.name] but was blocked!"
 					miss_type = 2
 					adaptStat("dexterity", 1)
-				var/hitcheck = rand(0, 9)
-				if (istype(affecting, /obj/item/organ/external/head) && prob(hitcheck * (hit_zone == "mouth" ? 5 : TRUE))) //MUCH higher chance to knock out teeth if you aim for mouth
-					var/obj/item/organ/external/head/U = affecting
-					if (U.knock_out_teeth(get_dir(H, src), round(rand(28, 38) * ((hitcheck*2)/100))))
-						M.visible_message("<span class='danger'>Some of [src]'s teeth sail off in an arc!</span>", \
-											"<span class='userdanger'>Some of your teeth sail off in an arc!</span>")
 
 				// See what attack they use
 				var/datum/unarmed_attack/attack = H.get_unarmed_attack(src, hit_zone)
@@ -265,6 +261,15 @@
 				if (miss_type)
 					return FALSE
 
+				// Only a landed, full-force strike can knock out teeth (#5324).
+				if (!attack.deal_halloss)
+					var/hitcheck = rand(0, 9)
+					if (istype(affecting, /obj/item/organ/external/head) && prob(hitcheck * (hit_zone == "mouth" ? 5 : TRUE))) //MUCH higher chance to knock out teeth if you aim for mouth
+						var/obj/item/organ/external/head/U = affecting
+						if (U.knock_out_teeth(get_dir(H, src), round(rand(28, 38) * ((hitcheck*2)/100))))
+							M.visible_message("<span class='danger'>Some of [src]'s teeth sail off in an arc!</span>", \
+												"<span class='userdanger'>Some of your teeth sail off in an arc!</span>")
+
 				var/real_damage = rand_damage
 				real_damage += attack.get_unarmed_damage(H)
 				real_damage *= damage_multiplier
@@ -283,6 +288,7 @@
 
 				// Finally, apply damage to target
 				apply_damage(real_damage, (attack.deal_halloss ? HALLOSS : BRUTE), affecting, armor, sharp=attack.sharp, edge=attack.edge, toxic=H.lizard)
+				hand_struck(hit_zone, real_damage)
 
 			if (I_DISARM)
 				if (M == src)
@@ -310,7 +316,7 @@
 					tgtm = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")
 				var/obj/item/organ/external/affecting = get_organ(ran_zone(tgtm))
 
-				var/list/holding = list(get_active_hand() = 40, get_inactive_hand = 20)
+				var/list/holding = list(get_active_hand() = 40, get_inactive_hand() = 20)
 
 				//See if they have any guns that might go off
 				for (var/obj/item/weapon/gun/W in holding)
@@ -343,7 +349,15 @@
 					//Actually disarm them
 					for (var/obj/item/I in holding)
 						if (I)
-							drop_from_inventory(I)
+							if (I.grip_tightened)
+								I.set_grip(src, FALSE, silent = TRUE)
+								M.visible_message(SPAN_WARNING("[M] breaks [src]'s grip on \the [I]!"), SPAN_WARNING("You break [src]'s grip on \the [I]!"))
+								playsound(loc, 'sound/weapons/thudswoosh.ogg', 50, TRUE, -1)
+								return
+							if (I.jostle_drop_chance)
+								I.knocked_from_hand(src)
+							else
+								drop_from_inventory(I)
 							M.visible_message("<span class='danger'>[M] has disarmed [src]!</span>", "<span class='danger'>You have disarmed [src]!</span>")
 							playsound(loc, 'sound/weapons/thudswoosh.ogg', 50, TRUE, -1)
 							return

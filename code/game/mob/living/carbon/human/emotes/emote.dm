@@ -532,12 +532,13 @@ var/list/vocal_emotes = list(
 				if (miming)
 					message = "grumbles!"
 					m_type = 1
-				if (!muzzled)
-					message = "grumbles!"
-					m_type = 2
 				else
-					message = "makes a noise."
-					m_type = 2
+					if (!muzzled)
+						message = "grumbles!"
+						m_type = 2
+					else
+						message = "makes a noise."
+						m_type = 2
 
 			if ("groan")
 				if (miming)

@@ -182,6 +182,13 @@ spawner populations) should skip that work while the flag is set.
 `tests/load_construction/run.py` builds every saveable type this way and
 compares failures with its `known_failures.txt`.
 
+<!-- 2026-11-13: weathering pacing, ruins and sagging roofs -->
+Weathering is paced in code/processes/seasonal_construction_pacing.dm: roofed and
+founded walls weather slower, a backlog passes one warning band per season step,
+a worn-out wall stands as a ruin that carries nothing for a year before qdel, and
+roofs over worn-out supports sag for a minute (collapse_check(TRUE)) before falling.
+All of it is derived from health; nothing new is saved. See docs/seasonal-construction.md.
+
 <!-- 2026-10-24: persistence construction weathering -->
 Seasonal construction is an exact-design opt-in in code/processes/seasonal_construction.dm,
 gated by map.persistence, with 16/32/64-season fibre/earth/timber defaults. Paired

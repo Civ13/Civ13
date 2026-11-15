@@ -82,6 +82,8 @@ def translate(source):
             "if fire_result != EARLY:",
         "current = null": "ctx.current = None",
         "current_list = null": "ctx.pending = None",
+        "resume_pending = FALSE": "ctx.resume_pending = False",
+        "resume_pending = TRUE": "ctx.resume_pending = True",
         "return fire_result": "return fire_result",
         ". = ..(fire_result)": "result = ctx.shared_finish(ctx, fire_result)",
         "if (isnull(current_list))": "if ctx.pending is None:",

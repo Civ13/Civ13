@@ -166,6 +166,10 @@
 	if (!other || QDELETED(other) || other == src || !other.centre())
 		last_refusal = "there is no ship to grapple"
 		return FALSE
+	var/closed = sector_boarding_refusal() || other.sector_boarding_refusal()
+	if (closed)
+		last_refusal = closed
+		return FALSE
 	if (other.grapple)
 		last_refusal = "another ship already has lines on her"
 		return FALSE

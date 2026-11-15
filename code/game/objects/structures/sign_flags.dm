@@ -853,6 +853,30 @@
 	name = "flag"
 	desc = "A flag."
 	icon_state = "f_white"
+	var/design_code = null // C13FLAG code of its design (design_codes.dm)
+
+/obj/structure/sign/flag/custom/proc/apply_design(list/layers)
+	if (!flagmaker_layers_valid(layers))
+		return FALSE
+	icon_state = layers[1]
+	overlays = flagmaker_overlays(layers)
+	design_code = flagmaker_code(layers)
+	return TRUE
+
+// Saved flags draw their design again from the code.
+/obj/structure/sign/flag/custom/after_load()
+	..()
+	if (design_code)
+		apply_design(flagmaker_parse(design_code))
+
+/obj/structure/sign/flag/custom/verb/show_design_code()
+	set name = "Show Design Code"
+	set category = "Object"
+	set src in view(1)
+	if (!design_code)
+		to_chat(usr, SPAN_WARNING("This flag was made before design codes and has none."))
+		return
+	design_code_show(usr, "Flag design code", design_code, "Use it on a custom flag maker: Use a design code.")
 
 /obj/structure/sign/logo/red
 	name = "Rednikov Industries Logo"
@@ -873,193 +897,122 @@
 
 /obj/item/flagmaker
 	name = "custom flag maker"
-	desc = "A white cotton sheet and some colored ink."
+	desc = "A white cotton sheet and some colored ink. Use it in hand to design a flag, or to make one from a design code."
 	icon = 'icons/obj/decals.dmi'
 	icon_state = "flagmaker"
-	var/new_icon_state = "White"
 
-/obj/item/flagmaker/proc/apply_color_overlay(choice, prefix)
-	var/suffix = null
-	if (choice == "No")
-		icon_state = new_icon_state
-		return
-	else if (choice == "White")
-		suffix = "white"
-	else if (choice == "Black")
-		suffix = "black"
-	else if (choice == "Yellow")
-		suffix = "yellow"
-	else if (choice == "Blue")
-		suffix = "blue"
-	else if (choice == "Red")
-		suffix = "red"
-	else if (choice == "Green")
-		suffix = "green"
-	else
-		return
-	var/image/flag_color = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "[prefix]_[suffix]")
-	overlays += flag_color
+// Each step of the flag maker: its question, then choice -> icon state in
+// icons/obj/decals.dmi (null adds nothing). Step 1 is the cloth itself, the
+// rest are overlays drawn in this order. A design is the list of chosen
+// states, one per step, and its code lists them (- for nothing).
+var/global/list/flagmaker_step_list = null
+
+/proc/flagmaker_colour_step(question, prefix)
+	return list(question, list("White" = "[prefix]_white", "Black" = "[prefix]_black", "Yellow" = "[prefix]_yellow", "Blue" = "[prefix]_blue", "Red" = "[prefix]_red", "Green" = "[prefix]_green", "No" = null))
+
+/proc/flagmaker_steps()
+	if (flagmaker_step_list)
+		return flagmaker_step_list
+	flagmaker_step_list = list(
+		list("What background color do you want for the flag?", list("White" = "f_white", "Black" = "f_black", "Yellow" = "f_yellow", "Blue" = "f_blue", "Red" = "f_red", "Green" = "f_green")),
+		flagmaker_colour_step("Add a left-half color?", "fl"),
+		flagmaker_colour_step("Add a right-half color?", "fr"),
+		flagmaker_colour_step("Add a left-third color?", "f1"),
+		flagmaker_colour_step("Add a center-third color?", "f2"),
+		flagmaker_colour_step("Add a right-third color?", "f3"),
+		list("Add a cross?", list("White Cross" = "e_bigcross2", "Black Cross" = "e_bigcross0", "Blue Cross" = "e_bigcross3", "Red Cross" = "e_bigcross1", "Green Cross" = "e_bigcross4", "No" = null)),
+		list("Add a saltire?", list("White Saltire" = "e_saltire2", "Black Saltire" = "e_saltire0", "Blue Saltire" = "e_saltire3", "Red Saltire" = "e_saltire1", "Green Saltire" = "e_saltire4", "No" = null)),
+		list("Add a symbol?", list("White Star" = "e_star0", "Golden Star" = "e_star1", "Black Star" = "e_star2", "White Moon" = "e_moon0", "Golden Moon" = "e_moon1", "Black Moon" = "e_moon2", "White Cross" = "e_cross0", "Golden Cross" = "e_cross1", "Black Cross" = "e_cross2", "Red Circle" = "e_circle0", "Thin Red Sun" = "e_sun0", "Thick Red Sun" = "e_sun1", "White Skull" = "e_skull0", "White Peace Sign" = "e_peace1", "Black Peace Sign" = "e_peace0", "No" = null)))
+	return flagmaker_step_list
+
+/proc/flagmaker_layers_valid(list/layers)
+	var/list/steps = flagmaker_steps()
+	if (!islist(layers) || layers.len != steps.len)
+		return FALSE
+	for (var/i = 1, i <= steps.len, i++)
+		var/list/entry = steps[i]
+		var/list/choices = entry[2]
+		var/state = layers[i]
+		if (isnull(state))
+			if (i == 1)
+				return FALSE
+			continue
+		var/found = FALSE
+		for (var/label in choices)
+			if (choices[label] == state)
+				found = TRUE
+				break
+		if (!found)
+			return FALSE
+	return TRUE
+
+/proc/flagmaker_overlays(list/layers)
+	var/list/out = list()
+	for (var/i = 2, i <= layers.len, i++)
+		if (layers[i])
+			out += image("icon" = 'icons/obj/decals.dmi', "icon_state" = layers[i])
+	return out
+
+/proc/flagmaker_code(list/layers)
+	if (!flagmaker_layers_valid(layers))
+		return null
+	var/list/out = list()
+	for (var/state in layers)
+		out += state ? state : "-"
+	return "C13FLAG/1/[jointext(out, "/")]"
+
+// A flag code -> its layers, or null.
+/proc/flagmaker_parse(code)
+	var/list/F = design_code_fields(code, "FLAG")
+	if (!F || F.len != length(flagmaker_steps()))
+		return null
+	var/list/layers = list()
+	for (var/field in F)
+		layers += field == "-" ? null : lowertext(field)
+	return flagmaker_layers_valid(layers) ? layers : null
+
+// Asks each step in turn. Returns the layers, or null when cancelled.
+/obj/item/flagmaker/proc/design_by_hand(mob/user)
+	var/list/steps = flagmaker_steps()
+	var/list/layers = list()
+	for (var/i = 1, i <= steps.len, i++)
+		var/list/entry = steps[i]
+		var/list/choices = entry[2]
+		var/list/display = list()
+		for (var/label in choices)
+			display += label
+		if (i == 1)
+			display += "Cancel"
+		var/choice = WWinput(user, entry[1], "Flag Maker", i == 1 ? "Cancel" : "No", display)
+		if (QDELETED(src) || loc != user)
+			return null
+		if (i == 1 && !(choice in choices))
+			return null
+		layers += (choice in choices) ? choices[choice] : null
+	return layers
 
 /obj/item/flagmaker/attack_self(mob/user)
-	var/stop = FALSE
-
-	var/list/display1 = list("White", "Black", "Yellow", "Blue", "Red", "Green", "Cancel")
-	var/choice1 = WWinput(user, "What background color do you want for the flag?", "Flag Maker", "Cancel", display1)
-	switch (choice1)
-		if ("Cancel")
-			new_icon_state = "none"
-			icon_state = "none"
-			stop = TRUE
+	var/how = WWinput(user, "Design the flag by hand, or make it from a design code someone saved?", "Flag Maker", "Design it", list("Design it", "Use a design code", "Cancel"))
+	var/list/layers = null
+	var/code = null
+	if (how == "Design it")
+		layers = design_by_hand(user)
+	else if (how == "Use a design code")
+		code = design_code_ask(user, "Flag Maker", "Paste the flag's design code (it starts with C13FLAG/).")
+		if (!code)
 			return
-		if ("White")
-			new_icon_state = "f_white"
-			icon_state = "f_white"
-		if ("Black")
-			new_icon_state = "f_black"
-			icon_state = "f_black"
-		if ("Yellow")
-			new_icon_state = "f_yellow"
-			icon_state = "f_yellow"
-		if ("Blue")
-			new_icon_state = "f_blue"
-			icon_state = "f_blue"
-		if ("Red")
-			new_icon_state = "f_red"
-			icon_state = "f_red"
-		if ("Green")
-			new_icon_state = "f_green"
-			icon_state = "f_green"
-
-	var/list/display2 = list("White", "Black", "Yellow", "Blue", "Red", "Green", "No")
-	var/choice2 = WWinput(user, "Add a left-half color?", "Flag Maker", "No", display2)
-	apply_color_overlay(choice2, "fl")
-
-	var/list/display3 = list("White", "Black", "Yellow", "Blue", "Red", "Green", "No")
-	var/choice3 = WWinput(user, "Add a right-half color?", "Flag Maker", "No", display3)
-	apply_color_overlay(choice3, "fr")
-
-	var/list/display4 = list("White", "Black", "Yellow", "Blue", "Red", "Green", "No")
-	var/choice4 = WWinput(user, "Add a left-third color?", "Flag Maker", "No", display4)
-	apply_color_overlay(choice4, "f1")
-
-	var/list/display5 = list("White", "Black", "Yellow", "Blue", "Red", "Green", "No")
-	var/choice5 = WWinput(user, "Add a center-third color?", "Flag Maker", "No", display5)
-	apply_color_overlay(choice5, "f2")
-
-	var/list/display6 = list("White", "Black", "Yellow", "Blue", "Red", "Green", "No")
-	var/choice6 = WWinput(user, "Add a right-third color?", "Flag Maker", "No", display6)
-	apply_color_overlay(choice6, "f3")
-
-	var/list/display7 = list("White Cross", "Black Cross", "Blue Cross", "Red Cross", "Green Cross", "No")
-	var/choice7 = WWinput(user, "Add a cross?", "Flag Maker", "No", display7)
-	switch (choice7)
-		if ("No")
-			icon_state = new_icon_state
-		if ("White Cross")
-			var/image/cross = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_bigcross2")
-			overlays += cross
-		if ("Black Cross")
-			var/image/cross = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_bigcross0")
-			overlays += cross
-		if ("Blue Cross")
-			var/image/cross = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_bigcross3")
-			overlays += cross
-		if ("Red Cross")
-			var/image/cross = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_bigcross1")
-			overlays += cross
-		if ("Green Cross")
-			var/image/cross = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_bigcross4")
-			overlays += cross
-
-	var/list/display8 = list("White Saltire", "Black Saltire", "Blue Saltire", "Red Saltire", "Green Saltire", "No")
-	var/choice8 = WWinput(user, "Add a saltire?", "Flag Maker", "No", display8)
-	switch (choice8)
-		if ("No")
-			icon_state = new_icon_state
-		if ("White Saltire")
-			var/image/saltire = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_saltire2")
-			overlays += saltire
-		if ("Black Saltire")
-			var/image/saltire = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_saltire0")
-			overlays += saltire
-		if ("Blue Saltire")
-			var/image/saltire = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_saltire3")
-			overlays += saltire
-		if ("Red Saltire")
-			var/image/saltire = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_saltire1")
-			overlays += saltire
-		if ("Green Saltire")
-			var/image/saltire = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_saltire4")
-			overlays += saltire
-
-	var/list/display9 = list("White Star", "Golden Star", "Black Star", "White Moon", "Golden Moon", "Black Moon", "White Cross", "Golden Cross", "Black Cross", "Red Circle", "Thin Red Sun", "Thick Red Sun", "White Skull", "White Peace Sign", "Black Peace Sign", "No")
-	var/choice9 = WWinput(user, "Add a symbol?", "Flag Maker", "No", display9)
-	switch (choice9)
-		if ("No")
-			icon_state = new_icon_state
-		if ("White Star")
-			var/image/flag_symbol = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_star0")
-			overlays += flag_symbol
-		if ("Golden Star")
-			var/image/flag_symbol = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_star1")
-			overlays += flag_symbol
-		if ("Black Star")
-			var/image/flag_symbol = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_star2")
-			overlays += flag_symbol
-
-		if ("White Moon")
-			var/image/flag_symbol = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_moon0")
-			overlays += flag_symbol
-		if ("Golden Moon")
-			var/image/flag_symbol = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_moon1")
-			overlays += flag_symbol
-		if ("Black Moon")
-			var/image/flag_symbol = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_moon2")
-			overlays += flag_symbol
-
-		if ("White Cross")
-			var/image/flag_symbol = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_cross0")
-			overlays += flag_symbol
-		if ("Golden Cross")
-			var/image/flag_symbol = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_cross1")
-			overlays += flag_symbol
-		if ("Black Cross")
-			var/image/flag_symbol = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_cross2")
-			overlays += flag_symbol
-
-		if ("Red Circle")
-			var/image/flag_symbol = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_circle0")
-			overlays += flag_symbol
-		if ("Thin Red Sun")
-			var/image/flag_symbol = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_sun0")
-			overlays += flag_symbol
-		if ("Thick Red Sun")
-			var/image/flag_symbol = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_sun1")
-			overlays += flag_symbol
-
-		if ("Black Peace Sign")
-			var/image/flag_symbol = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_peace0")
-			overlays += flag_symbol
-		if ("White Peace Sign")
-			var/image/flag_symbol = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_peace1")
-			overlays += flag_symbol
-
-		if ("White Skull")
-			var/image/flag_symbol = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_skull0")
-			overlays += flag_symbol
-
-	var/flag_name = player_input(usr, "Name the flag:", null, null, "text", null, TRUE)
-	if (flag_name == "" || flag_name == null)
-		name = "flag"
-	else
-		name = sanitize(flag_name, 50)
-
+		layers = flagmaker_parse(code)
+		if (!layers)
+			to_chat(user, SPAN_WARNING(design_code_refusal(code, "FLAG")))
+			return
+	if (!layers || QDELETED(src) || loc != user)
+		return
+	var/flag_name = player_input(user, "Name the flag:", null, null, "text", null, TRUE)
+	if (QDELETED(src) || loc != user)
+		return
 	var/obj/structure/sign/flag/custom/CF = new/obj/structure/sign/flag/custom(user.loc)
-	CF.overlays = overlays
-	CF.icon_state = new_icon_state
-	CF.name = name
-	if (stop)
-		qdel(CF)
-	else
-		qdel(src)
-	return
+	CF.apply_design(layers)
+	CF.name = (flag_name == "" || flag_name == null) ? "flag" : sanitize(flag_name, 50)
+	if (code)
+		design_code_log(user, "flag", "[CF.name]", code)
+	qdel(src)

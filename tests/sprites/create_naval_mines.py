@@ -1,5 +1,6 @@
 """Hand-placed 32px naval mines: the horned contact mine and the magnetic
-ground mine, each as a carried item and as a laid mine seen through the water.
+ground mine, each as a carried item and as a laid mine seen through the water,
+plus the contact mine cut adrift by a sweep and bobbing on the surface.
 Every pixel is placed by this script from a fixed palette (Pillow only); no
 external or generated artwork. The steel shades are the submarine hull palette
 (scripts/draw_submarine_hull.py), lit from the upper left like the rest of the
@@ -7,7 +8,7 @@ kit.
 
 Run with Pillow to reproduce icons/obj/naval_mines.dmi. `--preview <png>`
 also writes a review sheet (8x, with a 1x and 2x strip underneath) that puts
-the laid mines on a deep-water tile. Released under Civ13 AGPL-3.0.
+the laid and surfaced mines on a deep-water tile. Released under Civ13 AGPL-3.0.
 """
 import math
 import sys
@@ -83,7 +84,9 @@ def disc(cx, cy, r):
 
 # ------------------------------------------------------------ contact mine
 
-def contact_item():
+def contact_shell():
+    """The horned sphere on its own, outlined: shared by the carried mine
+    and the one cut adrift."""
     f = Frame()
     cx, cy, r = 16.0, 13.0, 6.6
     # the shell: banded shading by distance from the light spot
@@ -111,6 +114,11 @@ def contact_item():
     for hx, hy in ((13, 13), (19, 10)):
         f.pts(L[0], (hx, hy)); f.pts(L[1], (hx + 1, hy), (hx, hy + 1)); f.pts(L[2], (hx + 1, hy + 1))
         f.pts(OUT, (hx + 2, hy + 1), (hx + 1, hy + 2), (hx + 2, hy + 2))
+    return f
+
+
+def contact_item():
+    f = contact_shell()
     # mooring cable down to the sinker
     f.pts(L[2], (15, 21), (16, 22)); f.pts(OUT, (16, 21), (15, 22))
     # sinker: a riveted iron block seen from above and in front
@@ -166,6 +174,47 @@ def contact_laid():
                     (26, 11, 110), (27, 12, 130), (27, 13, 110),
                     (11, 26, 110), (12, 27, 130), (13, 27, 110),
                     (25, 22, 90), (24, 23, 90), (22, 25, 90), (23, 24, 90)):
+        f.put(x, y, FOAM, a)
+    return f
+
+
+def contact_surfaced():
+    """Cable cut by a sweep: the whole shell afloat in plain sight, sitting
+    low, foam round the waterline and its dark underside below."""
+    shell = contact_shell()
+    f = Frame()
+    drop = 2
+
+    def waterline(x):
+        # the near edge of the ring where the sphere meets the water
+        return 18.2 + 2.1 * math.sqrt(max(0.0, 1 - ((x + 0.5 - 16.0) / 7.4) ** 2))
+
+    # shadow and reflection on the water, cast down and to the right
+    for x, y in disc(17.0, 20.6, 7.6):
+        d = math.hypot(x + 0.5 - 17.0, (y + 0.5 - 20.6) * 1.35)
+        if y + 0.5 > waterline(x) - 1 and d <= 7.6:
+            f.put(x, y, DEEP, 120 if d < 4.6 else 84 if d < 6.3 else 48)
+    # the shell above the water, the drowned underside dim beneath it
+    for (x, y), c in shell.px.items():
+        y += drop
+        if y + 0.5 <= waterline(x):
+            f.put(x, y, c[:3])
+        elif c[:3] != OUT:
+            f.put(x, y, MURK, 170)
+        else:
+            f.put(x, y, DEEP, 150)
+    # foam where the water laps the shell, brightest up-light
+    for x in range(8, 24):
+        y = int(waterline(x) + 0.5)
+        f.put(x, y, FOAM, 230 if x < 15 else 190 if x % 2 else 150)
+    f.pts(FOAM, (7, 18), (24, 18), a=170)
+    f.pts(FOAM, (9, 20), (12, 21), (13, 21), (19, 21), a=110)
+    # ripples spreading away from the bobbing shell
+    for x, y, a in ((4, 19, 150), (5, 20, 170), (6, 21, 130),
+                    (27, 19, 110), (26, 20, 130), (25, 21, 100),
+                    (10, 25, 120), (11, 26, 140), (12, 26, 140), (13, 26, 100),
+                    (19, 26, 90), (20, 26, 110), (21, 25, 90),
+                    (3, 14, 90), (3, 15, 110), (28, 14, 80), (28, 15, 90)):
         f.put(x, y, FOAM, a)
     return f
 
@@ -258,6 +307,7 @@ STATES = {
     'contact_laid': contact_laid(),
     'magnetic': magnetic_item(),
     'magnetic_laid': magnetic_laid(),
+    'contact_surfaced': contact_surfaced(),
 }
 
 
@@ -275,7 +325,7 @@ def write_dmi(path, states):
 
 
 def preview_tile(name, fr):
-    if name.endswith('_laid'):
+    if name.endswith(('_laid', '_surfaced')):
         tile = Image.new('RGBA', (32, 32), WATER + (255,))
         for y in range(32):          # a few wave streaks, as on the water turf
             for x in range(32):

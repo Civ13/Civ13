@@ -1125,20 +1125,6 @@
 	health = 55
 	slowdown = 0.25
 
-/obj/item/clothing/head/helmet/medieval/crusader/attackby(obj/item/W as obj, mob/user as mob)
-	if (!istype(W)) return
-	if (istype(W, /obj/item/stack/material/gold ))
-		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
-		to_chat(user, "<span class='notice'>You embellish the gold ingots upon the crusader helm</span>")
-		if(W.amount <= 5)
-			qdel(src)
-			qdel(W)
-			new/obj/item/clothing/head/helmet/medieval/nomads/templar(user.loc)
-		else
-			qdel(src)
-			W.amount = W.amount - 5
-			new/obj/item/clothing/head/helmet/medieval/nomads/templar(user.loc)
-
 //the craftable iteration.
 
 /obj/item/clothing/head/helmet/medieval/nomads/templar
@@ -1162,6 +1148,9 @@
 		return
 	if (!istype(W)) return
 	if (istype(W, /obj/item/stack/material/gold ))
+		if (W.amount < 10)
+			to_chat(user, "<span class='warning'>You need 10 ingots.</span>")
+			return
 		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
 		to_chat(user, "<span class='notice'>You embellish a gold crown upon the templar crusader helm</span>")
 		if(W.amount <= 10)
@@ -1188,18 +1177,20 @@
 	/* Baltic Crusaders*/
 
 /obj/item/clothing/head/helmet/medieval/crusader/attackby(obj/item/W as obj, mob/user as mob)
-	if (!istype(W)) return
-	if (istype(W, /obj/item/stack/material/bone ))
-		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
-		to_chat(user, "<span class='notice'>You affix the bone horns upon the crusader helm.</span>")
-		if(W.amount <= 3)
-			qdel(src)
-			qdel(W)
-			new/obj/item/clothing/head/helmet/medieval/baltic(user.loc)
-		else
-			qdel(src)
-			W.amount = W.amount - 3
-			new/obj/item/clothing/head/helmet/medieval/baltic(user.loc)
+	if (istype(W, /obj/item/stack/material/gold))
+		crusader_upgrade(W, user, 5, "gold ingots", "You embellish the gold ingots upon the crusader helm.", /obj/item/clothing/head/helmet/medieval/nomads/templar)
+		return
+	if (istype(W, /obj/item/stack/material/bone))
+		crusader_upgrade(W, user, 3, "bones", "You affix the bone horns upon the crusader helm.", /obj/item/clothing/head/helmet/medieval/baltic)
+
+/obj/item/clothing/head/helmet/medieval/crusader/proc/crusader_upgrade(obj/item/stack/material/S, mob/user, amount, material_name, message, result_type)
+	if (!S.use(amount))
+		to_chat(user, "<span class='warning'>You need [amount] [material_name].</span>")
+		return
+	playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
+	to_chat(user, "<span class='notice'>[message]</span>")
+	new result_type(user.loc)
+	qdel(src)
 
 /obj/item/clothing/head/helmet/medieval/baltic
 	name = "baltic crusader helmet"
@@ -1225,6 +1216,9 @@
 		return
 	if (!istype(W)) return
 	if (istype(W, /obj/item/stack/material/silver ))
+		if (W.amount < 5)
+			to_chat(user, "<span class='warning'>You need 5 ingots.</span>")
+			return
 		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
 		to_chat(user, "<span class='notice'>You begin to decorate the baltic crusader helm in grandmaster patterns.</span>")
 		if(W.amount <= 5)
@@ -1250,6 +1244,9 @@
 /obj/item/clothing/head/helmet/medieval/grandmaster/attackby(obj/item/W as obj, mob/user as mob)
 	if (!istype(W)) return
 	if (istype(W, /obj/item/stack/material/silver))
+		if (W.amount < 10)
+			to_chat(user, "<span class='warning'>You need 10 ingots.</span>")
+			return
 		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
 		to_chat(user, "<span class='notice'>You embellish a silver crown upon the grandmaster helm!</span>")
 		if(W.amount <= 10)
@@ -1371,7 +1368,10 @@
 
 /obj/item/clothing/head/helmet/medieval/viking/attackby(obj/item/W as obj, mob/user as mob)
 	if (!istype(W)) return
-	if (istype(W, /obj/item/stack/material/gold))
+	if (istype(W, /obj/item/stack/material/gold) && type == /obj/item/clothing/head/helmet/medieval/viking)
+		if (W.amount < 5)
+			to_chat(user, "<span class='warning'>You need 5 ingots.</span>")
+			return
 		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
 		to_chat(user, "<span class='notice'>You decorate the soon to be royal helmet carefully with gold.</span>")
 		if(W.amount <= 5)
@@ -1406,6 +1406,9 @@
 /obj/item/clothing/head/helmet/medieval/viking/valkyrie/attackby(obj/item/W as obj, mob/user as mob)
 	if (!istype(W)) return
 	if (istype(W, /obj/item/stack/material/gold))
+		if (W.amount < 5)
+			to_chat(user, "<span class='warning'>You need 5 ingots.</span>")
+			return
 		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
 		to_chat(user, "<span class='notice'>You decorate the soon to be royal helmet carefully with gold.</span>")
 		if(W.amount <= 5)
@@ -1500,6 +1503,9 @@
 /obj/item/clothing/head/helmet/medieval/mamluk/helmet/attackby(obj/item/W as obj, mob/user as mob)
 	if (!istype(W)) return
 	if (istype(W, /obj/item/stack/material/gold))
+		if (W.amount < 5)
+			to_chat(user, "<span class='warning'>You need 5 ingots.</span>")
+			return
 		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
 		to_chat(user, "<span class='notice'>You decorate the lordly helmet carefully with gold.</span>")
 		if(W.amount <= 5)
@@ -1508,7 +1514,7 @@
 			new/obj/item/clothing/head/helmet/medieval/mamluk/helmet/king(user.loc)
 		else
 			qdel(src)
-			W.amount = W.amount - 1
+			W.amount = W.amount - 5
 			new/obj/item/clothing/head/helmet/medieval/mamluk/helmet/king(user.loc)
 
 /obj/item/clothing/head/helmet/medieval/mamluk/helmet/king

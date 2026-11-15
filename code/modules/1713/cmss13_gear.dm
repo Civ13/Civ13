@@ -176,7 +176,7 @@
 	var/locked = FALSE
 	var/custom_code = 0
 	var/broken = FALSE
-	var/health = 40
+	health = 40
 
 /obj/structure/display_case/New()
 	..()

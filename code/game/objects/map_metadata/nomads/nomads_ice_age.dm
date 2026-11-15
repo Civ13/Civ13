@@ -19,7 +19,7 @@
 	if(uses_durable_metadata()) return durable_nomads_seasons(looping, force, advance_decay)
 	advance_decay = season_decay_requested(force, advance_decay)
 	if (real_season == "SUMMER")
-		season = "WINTER"
+		season = SEASON_WINTER
 		record_abandonment_season_change(advance_decay)
 		to_chat(world, "<big>It's getting very cold. <b>Winter</b> has started.</big>")
 		change_weather_somehow()
@@ -29,13 +29,13 @@
 			new/obj/structure/wild/smallbush/winter(SB.loc)
 			qdel(SB)
 		spawn(100)
-			change_weather(WEATHER_WET)
+			weather_roll(WEATHER_WET)
 		spawn(800)
 		for (var/turf/floor/beach/water/shallowsaltwater/W)
 			W.ChangeTurf(/turf/floor/beach/water/ice/salty)
 		real_season = "WINTER"
 	else
-		season = "SUMMER"
+		season = SEASON_SUMMER
 		record_abandonment_season_change(advance_decay)
 		to_chat(world, "<big>The weather gets warmer. <b>Summer</b> has started.</big>")
 		change_weather_somehow()

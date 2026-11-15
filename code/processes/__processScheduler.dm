@@ -156,8 +156,9 @@ var/global/processScheduler/processScheduler
 		if (ticker && !p.fires_at_gamestates.Find(ticker.current_state))
 			continue
 
-		// If the process should be running by now, go ahead and queue it
-		if (current_time >= (last_queued[p] + p.schedule_interval))
+		// If the process should be running by now, go ahead and queue it.
+		// An unfinished budgeted run continues on the next pass.
+		if (p.resume_pending || current_time >= (last_queued[p] + p.schedule_interval))
 			setQueuedProcessState(p)
 
 
@@ -325,7 +326,10 @@ var/global/processScheduler/processScheduler
 /processScheduler/proc/recordStart(var/process/process, var/time = null)
 	if (isnull(time))
 		time = TimeOfGame
-		last_queued[process] = world.time
+		// A continued run keeps the time its pass began, so the next full pass
+		// is still due one schedule_interval after that.
+		if (!process.resume_pending)
+			last_queued[process] = world.time
 		last_start[process] = time
 	else
 		last_queued[process] = (time == 0 ? 0 : world.time)

@@ -6,6 +6,11 @@ seasonal choice lists. This is independent of season duration, season order,
 game-year progression and decay counters. Weather is **not** made deterministic
 or assigned the 60-minute season duration.
 
+A wet or extreme result of the random pick now sends one storm system across
+the map instead of changing every zone at once; see
+[weather-systems.md](weather-systems.md). The timing and transition fields below
+still shape the rolls.
+
 ## Timing
 
 `map.weather_timing` is an associative ordinary list with any of these numeric

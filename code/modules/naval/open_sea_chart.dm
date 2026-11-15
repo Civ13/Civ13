@@ -28,6 +28,8 @@
 #define OPEN_SEA_ISLANDS 9
 #define OPEN_SEA_WRECKS 6
 #define OPEN_SEA_SWEEP 3000
+#define OPEN_SEA_REEFS 5
+#define OPEN_SEA_HARBOUR_REACH 6
 
 var/global/datum/chart/open_sea/open_sea_chart_made = null
 var/global/list/open_sea_island_names = list("Gull Island", "Cormorant Rock", "Turtle Cay", "Saltgrass Island", "Whalebone Island", "Petrel Island", "Driftwood Cay", "Heron Island", "Lantern Rock", "Samphire Island", "Osprey Island", "Kelp Cay")
@@ -501,6 +503,7 @@ var/global/list/open_sea_wreck_names = list("Marigold", "Sea Otter", "Good Hope"
 			lines += "[capitalize(O.contact_name())], a sail at sea: [round(far, 0.1)] miles [chart_bearing_name(chart_bearing(T.x, T.y, O.x, O.y))]."
 	if (lines.len <= 1 + (thrust() <= 0 ? 1 : 0))
 		lines += "No land in sight."
+	lines += T.chart.hazard_lines(T, "miles")
 	return jointext(lines, "<br>")
 
 // The places a course can be laid for: text = token.
@@ -594,3 +597,32 @@ var/global/list/open_sea_wreck_names = list("Marigold", "Sea Otter", "Good Hope"
 				return
 			T.set_burn(points[point], 1)
 			crew_message(SPAN_NOTICE("[H] at the tiller: steer [lowertext(point)]. She is [T.motion_text()]."))
+
+// ---------------------------------------------------------------- hazards
+
+// Reefs lie where they always lay; squalls come and go (craft/chart_hazards.dm).
+// The home waters are a harbour sector: no hazard lies or drifts there.
+/datum/chart/open_sea/standing_hazards()
+	. = list()
+	for (var/n = 1, n <= OPEN_SEA_REEFS, n++)
+		var/list/spot = standing_spot(n, 40)
+		. += list(list(/datum/chart_hazard/field/reef, spot[1], spot[2], 2))
+
+/datum/chart/open_sea/passing_table()
+	return list(/datum/chart_hazard/storm = 1)
+
+/datum/chart/open_sea/lay_standing()
+	if (!standing_laid && hazards_on && !chart_hazards_off)
+		var/mx = round(width / 2)
+		var/my = round(height / 2)
+		add_sector(new /datum/chart_sector/harbour("the home waters", mx - OPEN_SEA_HARBOUR_REACH, my - OPEN_SEA_HARBOUR_REACH, mx + OPEN_SEA_HARBOUR_REACH, my + OPEN_SEA_HARBOUR_REACH))
+	return ..()
+
+// A ship lying in the home waters or off a site is out of the weather.
+/datum/chart_token/passage/exposed()
+	return craft && !craft.open_sea_place()
+
+/datum/craft/chart_tokens()
+	. = ..()
+	if (sea_token && sea_token.chart)
+		. |= sea_token

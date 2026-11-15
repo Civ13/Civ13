@@ -14,14 +14,16 @@
 	max_positions = 50
 	additional_languages = list("English" = 100)
 
+/datum/job/russian/robber/job_stats = list("strength" = STAT_VERY_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_HIGH, "machinegun" = STAT_VERY_VERY_HIGH, "dexterity" = STAT_VERY_HIGH, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_HIGH, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_HIGH)
+/datum/job/russian/robber/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots = slot_shoes,
+	/obj/item/clothing/under/expensive/red = slot_w_uniform)
 /datum/job/russian/robber/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = "Rednikov"
 	give_random_name(H)
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/expensive/red(H), slot_w_uniform)
+	equip_loadout(H)
 //head
 	var/randcloth = rand(1,5)
 	switch(randcloth)
@@ -87,15 +89,7 @@
 
 	H.add_note("Role", "You are a <b>[title]</b>. One day your boss Grigoriev told you to go rob a local bank, so you did!")
 	H.add_note("Objective", "Steal 10.000 from the bank's vault!")
-	H.setStat("strength", STAT_VERY_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_HIGH)
-	H.setStat("machinegun", STAT_VERY_VERY_HIGH)
-	H.setStat("dexterity", STAT_VERY_HIGH)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_HIGH)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_HIGH)
+	apply_job_stats(H)
 
 ////////////////////////////////////////////DRUG BUST///////////////////////////////////////////////////////
 
@@ -116,6 +110,11 @@
 	max_positions = 1
 	additional_languages = list("English" = 100)
 
+/datum/job/russian/rednikov/tatarin/job_stats = list("strength" = STAT_VERY_VERY_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_VERY_VERY_HIGH, "machinegun" = STAT_VERY_VERY_HIGH, "dexterity" = STAT_VERY_VERY_HIGH, "swords" = STAT_MEDIUM_HIGH, "pistol" = STAT_VERY_VERY_HIGH, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_MEDIUM_HIGH)
+/datum/job/russian/rednikov/tatarin/job_loadout = list(
+	/obj/item/clothing/shoes/black = slot_shoes,
+	/obj/item/clothing/under/trackpants = slot_w_uniform,
+	/obj/item/clothing/suit/storage/jacket/tracksuit = slot_wear_suit)
 /datum/job/russian/rednikov/tatarin/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = "Rednikov"
@@ -124,10 +123,7 @@
 	H.h_style = "Bald"
 	H.f_style = "Shaved"
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/black(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/trackpants(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/tracksuit(H), slot_wear_suit)
+	equip_loadout(H)
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarrierblack/plate_armor = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarrierblack(null)
@@ -141,15 +137,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 
 	H.add_note("Role", "Your full name is Vyacheslav Grigoriev, but you're commonly known as \"Tatarin\", a ruthless Thief in law. You're considered Nikolay's executioner as your spontaneous and frenzy character gets stuff done, let it be the dirty or the clean way, as long as the price is right. About 2 minutes ago you received a call from an insider that a warrant is out for you. You can already hear the police sirens approaching the industrial complex you're supervising. There's no way out, it's time to break the glass.")
-	H.setStat("strength", STAT_VERY_VERY_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_VERY_VERY_HIGH)
-	H.setStat("machinegun", STAT_VERY_VERY_HIGH)
-	H.setStat("dexterity", STAT_VERY_VERY_HIGH)
-	H.setStat("swords", STAT_MEDIUM_HIGH)
-	H.setStat("pistol", STAT_VERY_VERY_HIGH)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_MEDIUM_HIGH)
+	apply_job_stats(H)
 	if (map && map.ID == MAP_DRUG_BUST)
 		var/obj/map_metadata/drug_bust/CP = map
 		CP.HVT_list |= H
@@ -168,6 +156,7 @@
 	max_positions = 50
 	additional_languages = list("English" = 100)
 
+/datum/job/russian/rednikov/guard/job_stats = list("strength" = STAT_VERY_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_HIGH, "machinegun" = STAT_VERY_VERY_HIGH, "dexterity" = STAT_VERY_HIGH, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_HIGH, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_HIGH)
 /datum/job/russian/rednikov/guard/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = "Rednikov"
@@ -236,12 +225,4 @@
 
 	H.add_note("Role", "You are a <b>[title]</b> guarding a Storage Depot in the middle of the woods. You've never had any trouble while here but all of the security has been thightend for some reason and you haven't been told why...")
 	H.add_note("Command", "You follow direct orders from Vyacheslav \"Tatarin\" Grigoriev, your boss.")
-	H.setStat("strength", STAT_VERY_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_HIGH)
-	H.setStat("machinegun", STAT_VERY_VERY_HIGH)
-	H.setStat("dexterity", STAT_VERY_HIGH)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_HIGH)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_HIGH)
+	apply_job_stats(H)

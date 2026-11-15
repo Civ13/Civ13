@@ -817,6 +817,8 @@ datum/admins/proc/print_chemical_reactions()
 	id = "nitrocellulose"
 	result = "nitrocellulose"
 	required_reagents = list("cotton" = 1, "potassium" = 1)
+	// In sulphuric acid the pair nitrates calmly into guncotton instead.
+	inhibitors = list("sacid" = 1)
 	result_amount = 2
 	log_is_important = TRUE
 

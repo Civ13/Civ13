@@ -4,7 +4,9 @@
 compiler-resolved name, caliber, load method, capacity, magazine and ammo
 types, a category and a scope (`modern` or `separate`). It is the migration
 checklist for issue #4443: phase 5 sets each modern type's `migration` from
-`pending` once its family is converted.
+`pending` to `modular` once its family is converted, or to `fixed` when the
+type sets `firearm_fixed_reason` (a modern design kept whole on purpose, such
+as the sawn-off Obrez); the reason is stored as `fixed_reason`.
 
 - `python3 tests/firearm_coverage/run.py --byond-bin <BYOND bin> --write`
   compiles the game with the pinned compiler, dumps `initial()` values for

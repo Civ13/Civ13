@@ -254,6 +254,35 @@ class ConsoleStyleWiring(unittest.TestCase):
         self.assertIn('if (now == shown)', body)
 
 
+class CraftButton(unittest.TestCase):
+    """The craft key as a HUD button, in every style."""
+
+    def test_every_sheet_has_the_drawn_state(self):
+        for sheet in ('1713Style.dmi', 'ConsoleStyle.dmi', 'litewebStyle.dmi', 'FoFStyle.dmi'):
+            frame = state_frame(SCREEN / sheet, 'craft')
+            # A whole button plate with a picture on it, not a blank tile.
+            self.assertTrue(all(pixel[3] > 0 for pixel in frame[16][2:30]), sheet)
+            self.assertGreater(len({pixel for row in frame[6:26] for pixel in row[6:26]}), 3, sheet)
+
+    def test_every_style_places_it_on_a_free_spot(self):
+        source = read('code/datums/hud.dm')
+        blocks = re.split(r'^(?=/datum/hud/human)', source, flags=re.M)[1:]
+        self.assertEqual(len(blocks), 5)
+        for block in blocks:
+            name = re.search(r'name = "(\w+)"', block)[1]
+            spot = re.search(r'"craft" = \s*list\("type" = /obj/screen/craft,\s*"loc" = "([^"]+)"\)', block)
+            self.assertIsNotNone(spot, name)
+            # No other tile or slot of the style starts on the same spot.
+            self.assertEqual(len(re.findall(r'"loc" = "' + re.escape(spot[1]) + '"', block)), 1, name)
+
+    def test_button_opens_the_window_and_spends_nothing(self):
+        source = read('code/_onclick/hud/base_screen_objects.dm')
+        body = source[source.index('/obj/screen/craft/Click()'):]
+        body = body[:body.index('\n/obj/screen/', 1)]
+        self.assertIn('H.open_crafting_within_reach()', body)
+        self.assertIn('"craft"', read('code/game/mob/living/carbon/human/species/species_hud.dm'))
+
+
 class ConsoleStyleLayout(unittest.TestCase):
     def setUp(self):
         self.tiles = {k: v for k, v in default_tiles().items() if k not in GUN}

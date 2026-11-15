@@ -38,6 +38,25 @@ jobs:
       - name: Verify packaged registered-instance command with a synthetic catalog
         shell: pwsh
         run: ./tools/opendream-client/native/tests/registered-instances-packaged.ps1 -Executable ./tools/opendream-client/native/publish/Civ13.exe -FixtureParent $env:RUNNER_TEMP
+      - name: Draw the hosting tabs from a pretend host for review
+        shell: pwsh
+        run: |
+          $python = (Get-Command python).Source
+          $fixture = Join-Path $env:RUNNER_TEMP 'launcher-fixture'
+          $render = Join-Path $env:RUNNER_TEMP 'launcher-render'
+          & $python tools/opendream-client/native/tests/render/host_fixture.py make $fixture
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & ./tools/opendream-client/native/publish/Civ13.exe --render-tabs (Join-Path $fixture 'launcher') $render
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          foreach ($tab in 'hostserver', 'civilizationbot', 'playerhelp', 'updates') {
+            $png = Join-Path $render "$tab.png"
+            if (!(Test-Path -LiteralPath $png -PathType Leaf) -or (Get-Item -LiteralPath $png).Length -lt 2000) { throw "No render of the $tab tab." }
+          }
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: Civ13-launcher-tabs-${{ github.event.pull_request.head.sha || github.sha }}
+          path: ${{ runner.temp }}/launcher-render/*.png
+          if-no-files-found: error
       - name: Isolated updater contracts and actual executable replacement
         shell: pwsh
         run: |

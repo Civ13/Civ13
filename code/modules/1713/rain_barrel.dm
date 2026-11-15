@@ -47,11 +47,12 @@
 	if (!A || A.location != AREA_OUTSIDE || A.is_void_area || T.radiation > 0 || (locate(/obj/roof) in T))
 		return 0
 	var/temp = get_temp(src)
-	if (temp <= 0 || (map && (map.heat_wave || map.sandstorm || map.blizzard)))
+	var/falling = weather_look_at(T)
+	if (temp <= 0 || weather_heat_at(T) || falling == "snow_storm" || falling == "sandstorm")
 		return 0
-	if (findtext(A.icon_state, "rain") || findtext(A.icon_state, "monsoon"))
+	if (findtext(falling, "rain") || falling == "monsoon")
 		return 10
-	if (A.weather == WEATHER_NONE && (time_of_day in list("Night", "Dark Night", "Early Morning")) && temp <= 30)
+	if (weather_at(T) == WEATHER_NONE && (time_of_day in list("Night", "Dark Night", "Early Morning")) && temp <= 30)
 		return 2
 	return 0
 

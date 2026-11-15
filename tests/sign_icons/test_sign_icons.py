@@ -48,58 +48,41 @@ class SignIcons(unittest.TestCase):
         self.assertIn('S.icon_state = sign_state', replacement)
 
 
-class FlagColorOverlays(unittest.TestCase):
-    def setUp(self):
-        image_call = 'image("icon" = \'icons/obj/decals.dmi\', "icon_state" = "[prefix]_[suffix]")'
-        self.assertEqual(FLAGS.count(image_call), 1)
-        # Model only DM's image constructor and interpolation at the engine boundary.
-        projected = FLAGS.replace(image_call, 'image(prefix, suffix)')
-        old_fields = source_adapter.FIELDS
-        try:
-            source_adapter.FIELDS += ('overlays', 'new_icon_state')
-            self.apply = source_adapter.project(
-                projected, '/obj/item/flagmaker/proc/apply_color_overlay',
-                'src, choice, prefix', {'image': lambda prefix, suffix: prefix + '_' + suffix}, method=True)
-        finally:
-            source_adapter.FIELDS = old_fields
+class FlagMakerSteps(unittest.TestCase):
+    """The flag maker is a table of steps (choice -> decals.dmi state) shared by
+    hand design and design codes; the native check is tests/design_codes/probe.dm."""
 
-    def test_each_color_uses_the_original_sprite_for_each_position(self):
-        class Overlays(list):
-            def __iadd__(self, image):
-                self.append(image)
-                return self
+    def steps(self):
+        return source_adapter.extract(FLAGS, '/proc/flagmaker_steps')
 
+    def test_each_color_step_keeps_its_position_and_sprites(self):
         available = states('icons/obj/decals.dmi')
-        for prefix in ('fl', 'fr', 'f1', 'f2', 'f3'):
-            for choice, suffix in (('White', 'white'), ('Black', 'black'), ('Yellow', 'yellow'),
-                                   ('Blue', 'blue'), ('Red', 'red'), ('Green', 'green')):
-                with self.subTest(prefix=prefix, choice=choice):
-                    flag = SimpleNamespace(icon_state='before', new_icon_state='base', overlays=Overlays())
-                    self.apply(flag, choice, prefix)
-                    expected = prefix + '_' + suffix
-                    self.assertIn(expected, available)
-                    self.assertEqual(flag.overlays, [expected])
-                    self.assertEqual(flag.icon_state, 'before')
-
-    def test_no_resets_the_icon_but_unknown_choices_do_nothing(self):
-        for choice, expected in (('No', 'base'), (None, 'before'), ('Unknown', 'before')):
-            with self.subTest(choice=choice):
-                flag = SimpleNamespace(icon_state='before', new_icon_state='base', overlays=[])
-                self.apply(flag, choice, 'fl')
-                self.assertEqual(flag.icon_state, expected)
-                self.assertEqual(flag.overlays, [])
-
-    def test_each_prompt_keeps_its_position_and_color_choices(self):
-        body = source_adapter.extract(FLAGS, '/obj/item/flagmaker/attack_self')
-        options = 'list("White", "Black", "Yellow", "Blue", "Red", "Green", "No")'
-        for number, label, prefix in ((2, 'left-half', 'fl'), (3, 'right-half', 'fr'),
-                                      (4, 'left-third', 'f1'), (5, 'center-third', 'f2'),
-                                      (6, 'right-third', 'f3')):
+        helper = source_adapter.extract(FLAGS, '/proc/flagmaker_colour_step')
+        for choice, suffix in (('White', 'white'), ('Black', 'black'), ('Yellow', 'yellow'),
+                               ('Blue', 'blue'), ('Red', 'red'), ('Green', 'green')):
+            self.assertIn(f'"{choice}" = "[prefix]_{suffix}"', helper)
+        self.assertIn('"No" = null', helper)
+        body = self.steps()
+        for label, prefix in (('left-half', 'fl'), ('right-half', 'fr'), ('left-third', 'f1'),
+                              ('center-third', 'f2'), ('right-third', 'f3')):
             with self.subTest(position=label):
-                self.assertIn(f'var/list/display{number} = {options}\n'
-                              f'\tvar/choice{number} = WWinput(user, "Add a {label} color?", '
-                              f'"Flag Maker", "No", display{number})\n'
-                              f'\tapply_color_overlay(choice{number}, "{prefix}")', body)
+                self.assertIn(f'flagmaker_colour_step("Add a {label} color?", "{prefix}")', body)
+                for suffix in ('white', 'black', 'yellow', 'blue', 'red', 'green'):
+                    self.assertIn(f'{prefix}_{suffix}', available)
+
+    def test_cross_saltire_and_symbol_keep_their_sprites_in_order(self):
+        available = states('icons/obj/decals.dmi')
+        body = self.steps()
+        for shape, prefix in (('Cross', 'e_bigcross'), ('Saltire', 'e_saltire')):
+            for color, suffix in (('White', '2'), ('Black', '0'), ('Blue', '3'), ('Red', '1'), ('Green', '4')):
+                with self.subTest(shape=shape, color=color):
+                    self.assertIn(f'"{color} {shape}" = "{prefix}{suffix}"', body)
+                    self.assertIn(prefix + suffix, available)
+        self.assertLess(body.index('"Add a cross?"'), body.index('"Add a saltire?"'))
+        self.assertLess(body.index('"Add a saltire?"'), body.index('"Add a symbol?"'))
+        self.assertIn('"White Cross" = "e_cross0"', body)
+        for state in __import__('re').findall(r'= "(e_[a-z]+\d)"', body):
+            self.assertIn(state, available)
 
 
 if __name__ == '__main__':

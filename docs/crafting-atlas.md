@@ -149,7 +149,36 @@ commit. They are curated source interpretations rather than live map inventory
 or guaranteed yields. Recipe additions regenerate automatically; changes to
 procedural gathering behavior still require annotation review.
 
+### Hand interactions generated from source
+
+`scripts/atlas/interactions.py` turns shared item-on-item mechanisms into routes
+at every regeneration, with no curation step: dehydrator drying (`dried_type`),
+steeping herbs in water (`steep_reagent`/`steep_amount`), the mortar and pestle
+result table, flint knapping menu choices, wild herb patches (`sprig_type`),
+fish filleting, sunflower shelling and crop harvests for any plant type without
+a curated harvest route. A new crop, dried food, tea or grindable ingredient
+therefore appears in the atlas as soon as it merges. Each extractor checks that
+the mechanism code still says what its route text claims; if that code changes,
+generation stops and names the file to review. Curated routes in
+`resource-sources.json` win over generated ones for the same product.
+
+To see what merged content the atlas still cannot explain, run:
+
+```
+python scripts/atlas/coverage.py --since origin/master
+```
+
+It lists item, structure and animal types added after that revision whose page
+has no recipe or route, and reagents with no page at all. Add a shared extractor
+to `interactions.py` when a mechanism covers several items, or a curated
+mechanism to `resource-sources.json` for a one-off procedure.
+
 ## Updating recipes
+
+The published website and the committed in-game catalog both regenerate from
+source: CI rejects a stale `UI/crafting-atlas.json`, and the Pages workflow
+republishes https://civ13.github.io/Civ13/crafting/ after every merge to master.
+Nothing needs to be run by hand after a merge.
 
 Production build scripts regenerate `UI/crafting-atlas.json` before compilation.
 For a direct local DreamMaker build, first run:
