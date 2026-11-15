@@ -168,6 +168,7 @@ var/rg_runtime_error = FALSE
 	rg_check(H.drying_rate(5) == 0.002 && H.drying_rate(20) == 0.01, "air dries slowly in the cold")
 	var/obj/structure/brazier/B = new(locate(4, 2, 1))
 	B.on = TRUE
+	H.life_heat_scan_until = 0 // Life rescans nearby heat every 3 seconds; the air check above cached "no fire"
 	rg_check(H.drying_rate(5) == 0.03, "a lit fire two tiles away dries fast")
 	B.on = FALSE
 
