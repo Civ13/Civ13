@@ -89,17 +89,18 @@ def capture(pid, path):
     user32.SetForegroundWindow(ctypes.c_void_p(hwnd))
     time.sleep(1.5)
     hwnd, rect = client_window(pid)
-    left, top = max(rect[0], 0), max(rect[1], 0)
-    width, height = rect[2] - left, rect[3] - top
+    width, height = rect[2] - rect[0], rect[3] - rect[1]
     if width < 200 or height < 200:
         raise RuntimeError(f'Client window is too small to capture: {rect}')
+    # The window draws itself into the bitmap, so other windows covering it (or a
+    # refused SetForegroundWindow) cannot end up in the picture.
     screen = user32.GetDC(None)
     memory = gdi32.CreateCompatibleDC(ctypes.c_void_p(screen))
     bitmap = gdi32.CreateCompatibleBitmap(ctypes.c_void_p(screen), width, height)
     previous = gdi32.SelectObject(ctypes.c_void_p(memory), ctypes.c_void_p(bitmap))
     try:
-        if not gdi32.BitBlt(ctypes.c_void_p(memory), 0, 0, width, height, ctypes.c_void_p(screen), left, top, 0x00CC0020):
-            raise RuntimeError('BitBlt failed')
+        if not user32.PrintWindow(ctypes.c_void_p(hwnd), ctypes.c_void_p(memory), 2):  # PW_RENDERFULLCONTENT
+            raise RuntimeError('PrintWindow failed')
         header = struct.pack('<IiiHHIIiiII', 40, width, -height, 1, 32, 0, 0, 0, 0, 0, 0)
         info = ctypes.create_string_buffer(header, 40)
         pixels = ctypes.create_string_buffer(width * height * 4)
