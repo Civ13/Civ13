@@ -92,8 +92,11 @@ Nothing stands there: no trail post and no gate. Each map names its neighbour
   as a record of its kind, name and health, and stands beside its rider on the
   far side (the rider gets back on). If the rider is turned back, the animal
   comes back with them.
-- A driver or anyone dragging something is told to go on foot.
-  **Wheeled vehicles, carts and led animals do not cross yet.**
+- One animal led by hand (pulled) crosses the same way, as long as it is not
+  wild, carries nothing and nobody rides it. It arrives as a new animal of its kind with its
+  name and health; anything else about it (milk, wool, age) starts fresh.
+- A driver or anyone dragging anything else is told to go on foot.
+  **Wheeled vehicles and carts do not cross yet.**
 
 Both regions must run in the same group under the ids above. A neighbour that
 is asleep is woken by the first walker; one that is stopped on the host is
