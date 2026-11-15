@@ -129,6 +129,9 @@ var/weather_runtime_error = FALSE
 		var/mob/living/human/weather_probe/heated = weather_case("heated", 600)
 		weather_assert(heated.probe_damage == 0, "Heating must prevent cold harm")
 #ifndef WEATHER_BASELINE
+		// A body remembers its tile's heat scan for 3 seconds of world time, which
+		// this loop never advances; let it see the brazier lit after its own case.
+		wet.life_heat_scan_until = 0
 		wet.bodytemperature = 250
 		for(var/step in 1 to 1200)
 			wet.handle_environment()

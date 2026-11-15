@@ -117,6 +117,8 @@
 		var/material/wood/soft/planks = new
 		var/faction = "flax_fixture"
 		map.faction_baseline_era[faction] = 0
+		// produce_recipe checks the crafter's own faction research too.
+		U.civilization = faction
 		planks.generate_recipes_civs(list(0,0,0), "global", faction)
 		flax_assert(!flax_comb_recipe(planks.recipes), "unresearched comb hidden")
 		flax_assert(get_recipe_node_req("/obj/structure/flax_comb") == "resource_processing", "comb research mapping")

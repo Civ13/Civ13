@@ -35,7 +35,8 @@ restore_preflight_reference_keys = _preflight_module.restore_preflight_reference
 FILES = ('code/predefines.dm', 'tests/world_save/stubs.dm', 'tests/movement_save_chunks/debug_lossy_adapter.dm',
          'code/modules/multiz/world_z_budget.dm', 'code/modules/persistence/functions.dm',
          'code/modules/persistence/player_reclaim.dm', 'code/modules/persistence/saving.dm',
-         'code/modules/persistence/loading.dm', 'tests/movement_save_chunks/benchmark.dm')
+         'code/modules/persistence/loading.dm', 'tests/world_save/stream_stubs.dm',
+         'code/modules/persistence/stream/save_stream.dm', 'tests/movement_save_chunks/benchmark.dm')
 VERSION = '516.1688'
 DIAGNOSTIC = re.compile(r'runtime error:|bad ?ref|bad loc|BUG:|##\s*ERROR\s*:|RUNTIME:|assertion failed|infinite loop|segmentation|fatal error|unhandled exception|FAIL:', re.I)
 

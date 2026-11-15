@@ -101,6 +101,18 @@ var/list/probe_clients = list()
         return ..()
 /proc/get_area(mob/M)
     return M.loc
+// Production helpers the service calls (weather_systems.dm, agent_windows.dm,
+// player_tutorial.dm, agent_prompts.dm). Weather here is the fixture area's.
+// The verb runs on /mob/probe_client, the fixture stand-in for /client.
+/proc/weather_at(atom/A)
+    var/area/Ar = get_area(A)
+    return Ar ? Ar.weather : WEATHER_NONE
+/proc/show_browse(target, html, options)
+    target << browse(html, options)
+/mob/probe_client/proc/tutorial_event(id)
+    return
+/proc/player_input(target, message, title, default, kind = "text", list/choices = null, can_cancel = FALSE)
+    return input(target, message, title, default) as null|text
 /mob/living/human
     var/mob/probe_client/probe_client
     var/obj/item/l_hand

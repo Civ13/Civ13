@@ -120,9 +120,18 @@
 		B.loc = U
 		rain_assert(B.collection_rate() == 0, "carried barrel collects nothing")
 		B.loc = site
-		map.heat_wave = TRUE
+		// Heat waves are moving weather systems now (weather_systems.dm): one
+		// at full strength sits over the barrel.
+		var/datum/weather_system/heat = new
+		heat.kind = WEATHER_SYSTEM_HEAT
+		heat.origin_x = site.x
+		heat.origin_y = site.y
+		heat.origin_time = world.time
+		heat.born = world.time - 600
+		heat.lifetime = 100000
+		weather_systems += heat
 		rain_assert(B.collection_rate() == 0, "heatwave rejected")
-		map.heat_wave = FALSE
+		weather_systems -= heat
 		season = "WINTER"
 		rain_assert(B.collection_rate() == 0, "frozen collection rejected")
 		season = "SPRING"

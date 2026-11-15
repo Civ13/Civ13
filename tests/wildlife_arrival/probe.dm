@@ -8,6 +8,9 @@ var/global/datum/wildlife_arrival_probe/wildlife_arrival_probe = new
 /mob/living/simple_animal/mosquito/arrival_probe
 	Life()
 		return
+	// The mob process stops walkers while no player is connected; the probe walks anyway.
+	ecology_hold_still()
+		return
 
 /mob/living/simple_animal/cow/arrival_target
 	Life()
@@ -59,6 +62,9 @@ var/global/datum/wildlife_arrival_probe/wildlife_arrival_probe = new
 		M.set_npc_subtile(TRUE)
 	var/list/entries = list()
 	var/turf/last = get_turf(M)
+	// With no player connected animals hold still (ecology_animal_frozen); this
+	// fixture has none, so it counts as watched while it walks.
+	ecology_world_unwatched = FALSE
 	var/t0 = world.time
 	M.npc_subtile_species_walk("towards", C, lag)
 	var/arrived = -1
@@ -88,6 +94,10 @@ var/global/datum/wildlife_arrival_probe/wildlife_arrival_probe = new
 		while(!ticker || !processes)
 			sleep(10)
 		sleep(50)
+		// The mob process marks a world with no player unwatched every pass, and an
+		// unwatched animal refuses its next step; the probe animals need no Life().
+		if(processes.mob)
+			processes.mob.disabled = TRUE
 		for(var/lag in list(1, 2, 3, 3.5, 4, 5))
 			for(var/sub in list(FALSE, TRUE))
 				results += list(trial(sub, 8, lag))

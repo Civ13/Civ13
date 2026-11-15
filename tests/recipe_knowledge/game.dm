@@ -58,7 +58,7 @@ var/knowledge_failures = 0
 		for (var/id in research_nodes)
 			var/datum/research_node/N = research_nodes[id]
 			if (N.tree == "Main" && N.era_tier <= 6) node_id = id
-			if (N.tree == "Main" && N.era_tier > 6) future_id = id
+			if (N.tree == "Main" && N.era_tier > 6 && !N.book_only) future_id = id // book-only nodes sleep until book research
 		knowledge_check(node_id && future_id, "real node registry supplies era boundaries")
 		var/mob/living/human/knowledge_fixture/H = new(locate(2,2,1))
 		knowledge_check(H.recipe_knowledge_initialized && !H.known_recipe_nodes.len, "new enabled body starts empty")
@@ -153,7 +153,7 @@ var/knowledge_failures = 0
 	catch (var/exception/e)
 		knowledge_failures++
 		world.log << "FAIL: exception [e] [e.file]:[e.line]"
-	var/list/params = params2list(world.params)
+	var/list/params = islist(world.params) ? world.params : params2list(world.params)
 	text2file(json_encode(list("failures" = knowledge_failures, "commit" = params["tested_commit"], "byond_build" = world.byond_build)), "result.json")
 	shutdown()
 

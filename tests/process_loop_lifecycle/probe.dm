@@ -40,6 +40,8 @@ var/datum/process_group/processes = new
 	return value
 /process
 	var/processScheduler/main
+	// Set by production process() for a budgeted run left to resume.
+	var/resume_pending = FALSE
 	var/disabled = FALSE
 	var/paused = FALSE
 	var/killed = FALSE

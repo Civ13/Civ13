@@ -162,6 +162,6 @@ var/node_failures = 0
 	catch (var/exception/e)
 		node_failures++
 		world.log << "FAIL: exception [e] [e.file]:[e.line]"
-	var/list/params = params2list(world.params)
+	var/list/params = islist(world.params) ? world.params : params2list(world.params)
 	text2file(json_encode(list("failures" = node_failures, "commit" = params["tested_commit"], "byond_build" = world.byond_build)), "result.json")
 	shutdown()

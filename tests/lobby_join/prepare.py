@@ -36,7 +36,7 @@ def stage(output):
     # Explicit boundary adapters: deterministic actor/client and prompt transport.
     adapted = re.sub(r"\bclient\b", "test_client", adapted)
     adapted = re.sub(r"\busr\b", "test_actor", adapted)
-    native_input = 'input(src, message) in list("Yes", "No")'
+    native_input = 'player_input(src, message, null, null, "anything", list("Yes", "No"), FALSE)'
     assert adapted.count(native_input) == 1
     adapted = adapted.replace(native_input, 'WWinput(src, message, "Confirmation")')
     # Inert generated mutants establish that the stale-round and stale-role

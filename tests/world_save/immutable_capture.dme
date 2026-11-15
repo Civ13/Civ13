@@ -13,5 +13,7 @@
 #include "../../code/modules/persistence/player_reclaim.dm"
 #include "../../code/modules/persistence/saving.dm"
 #include "../../code/modules/persistence/loading.dm"
+#include "stream_stubs.dm"
+#include "../../code/modules/persistence/stream/save_stream.dm"
 #include "../../code/modules/persistence/immutable_capture.dm"
 #include "immutable_capture.dm"

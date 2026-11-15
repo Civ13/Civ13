@@ -31,6 +31,8 @@ var/global/list/nomad_reputation // ckey = list("score", "at", "trades", "tribut
 		return
 	for (var/ckey in data)
 		var/list/row = data[ckey]
+		if (islist(row) && istext(row["at"]))
+			row["at"] = text2num(row["at"])
 		if (istext(ckey) && islist(row) && isnum(row["score"]) && isnum(row["at"]))
 			nomad_reputation[ckey] = row
 
@@ -42,8 +44,16 @@ var/global/list/nomad_reputation // ckey = list("score", "at", "trades", "tribut
 		if (nomad_rep_score(ckey) != 0)
 			keep[ckey] = nomad_reputation[ckey]
 	nomad_reputation = keep
+	// json_encode keeps six digits of a number, which moves a world.realtime
+	// stamp by up to several minutes; the stamp is written out in full instead.
+	var/list/out = list()
+	for (var/ckey in keep)
+		var/list/row = keep[ckey]
+		row = row.Copy()
+		row["at"] = num2text(row["at"], 12)
+		out[ckey] = row
 	fdel(NOMAD_REP_FILE)
-	text2file(json_encode(keep), NOMAD_REP_FILE)
+	text2file(json_encode(out), NOMAD_REP_FILE)
 
 // The score after fading toward zero since it last changed.
 /proc/nomad_rep_score(ckey)
