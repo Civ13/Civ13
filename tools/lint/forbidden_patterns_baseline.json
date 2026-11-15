@@ -451,7 +451,6 @@
       "code/modules/multiz/structures.dm": 1,
       "code/modules/paperwork/copy.dm": 1,
       "code/modules/persistence/bed_return.dm": 4,
-      "code/modules/persistence/durable_nomads.dm": 1,
       "code/modules/persistence/durable_world.dm": 1,
       "code/modules/persistence/functions.dm": 2,
       "code/modules/persistence/immutable_capture.dm": 1,

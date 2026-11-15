@@ -1142,6 +1142,7 @@ var/global/persistence_boot_build_identity = persistence_build_identity()
 				for(var/cell_index = 1, cell_index <= turf_grid.len, cell_index++)
 					var/plain_template = plain_cells ? plain_cells[cell_index] : 0
 					turf_grid[cell_index] = plain_template ? plain_types[plain_template] : baseline_turf
+					TICK_CHECK
 			validated_turf_grids["[z]"] = turf_grid
 			if(!sparse)
 				F.cd = "/map"

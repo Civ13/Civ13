@@ -539,6 +539,9 @@ var/global/area/zone_fixture_intruder
 				I.zone_alias = created
 				I.zone_keys = list(created)
 				I.zone_keys[created] = "same identity"
+				// An occupied cell is saved as a full entry with its own membership
+				// record; an empty one would be a plain cell, named only by a template.
+				new /obj/item/zone_fixture(locate(3,3,2))
 			durable_world_check(map_storage.Save_World(), "Zone writer failed")
 			if(mode == "legacy-write")
 				var/list/state = json_decode(file2text("map_saves/round.json"))

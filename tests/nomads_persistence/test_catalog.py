@@ -136,6 +136,24 @@ class NomadsCatalogTests(unittest.TestCase):
             with self.subTest(input=bad[-70:]), self.assertRaises(RuntimeError):
                 core.select_nomads_map(bad, 'NOMADS')
 
+    def test_lava_check_reads_the_register_not_the_world(self):
+        # A save asks once a second while the world settles. Searching the
+        # world took 0.28 s a time on the 1,041,440-cell North America map.
+        nomads = (ROOT/'code/modules/persistence/durable_nomads.dm').read_text()
+        body = nomads.split('/obj/map_metadata/proc/durable_nomads_lava_active()', 1)[1].split('\n/obj/map_metadata/proc/', 1)[0]
+        self.assertNotIn('in world', body)
+        self.assertIn('for(var/turf/T in lava_turfs)', body)
+        # A turf keeps its reference when it changes type: stale entries are dropped, not trusted.
+        self.assertLess(body.index('if(!istype(L))'), body.index('if(L.dries || L.spreads) return TRUE'))
+        self.assertIn('lava_turfs -= T', body)
+        lava = (ROOT/'code/modules/1713/natural_disasters.dm').read_text()
+        self.assertEqual(lava.count('var/global/list/lava_turfs = list()'), 1)
+        constructor = lava.split('/turf/floor/lava\n', 1)[1].split('/turf/floor/lava/persistence_runtime_var', 1)[0]
+        # Registered before the parent constructor and for every lava turf, whatever its flags.
+        self.assertLess(constructor.index('lava_turfs[src] = TRUE'), constructor.index('..(loc, floortype)'))
+        self.assertLess(constructor.index('lava_turfs[src] = TRUE'), constructor.index('if (dries)'))
+
+
 
 if __name__ == '__main__':
     unittest.main()

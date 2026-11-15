@@ -231,7 +231,15 @@
 /obj/map_metadata/proc/durable_nomads_lava_active()
 	// Legacy or map-authored transient lava has no event owner. Do not save a
 	// partially dried stage or load over its unowned constructor callbacks.
-	for(var/turf/floor/lava/L in world)
+	// Asked once a second while a save waits for the world to settle: read the
+	// lava register (natural_disasters.dm), never the whole world. That search
+	// took 0.28 s a time on the 1,041,440-cell North America map (#3590).
+	for(var/turf/T in lava_turfs)
+		var/turf/floor/lava/L = T
+		// A turf keeps its reference when it changes type.
+		if(!istype(L))
+			lava_turfs -= T
+			continue
 		if(L.dries || L.spreads) return TRUE
 	return FALSE
 

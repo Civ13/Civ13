@@ -338,15 +338,30 @@ class AmericasMapsTest(unittest.TestCase):
         self.assertIn('if (H.buckled || H.driver || H.driver_vehicle) return "You cannot drive across yet. Get down and walk on."', edge)
         # A rider takes the mount: recorded before the ask, removed only once the rider left,
         # validated on arrival, and never carried without an edge crossing.
-        self.assertIn('"voyage", "ship", "edge", "mount", "led"))', travel)
+        self.assertIn('"voyage", "ship", "edge", "mount", "led", "cart", "bike"))', travel)
         self.assertIn('if ((H.riding || H.riding_mob) && !region_edge_mount_record(H)) return', edge)
         self.assertIn('if (took_mount && QDELETED(src) && !QDELETED(steed))', edge)
         self.assertIn('return ispath(path, /mob/living/simple_animal) && initial(A.can_ride)', edge)
         ok = edge.split('/proc/region_edge_payload_ok(list/P)\n')[1].split('\n\n')[0]
-        self.assertIn('return isnull(P["mount"]) && isnull(P["led"])', ok)
+        self.assertIn('return isnull(P["mount"]) && isnull(P["led"]) && isnull(P["cart"]) && isnull(P["bike"])', ok)
+        self.assertIn('region_edge_bike_valid(P["bike"])', ok)
+        # A bicycle's rider gets off at the edge and it is wheeled over; riding one
+        # onto the edge asks like a walk does. The pedal airship never crosses.
+        self.assertIn('!ispath(path, /obj/structure/vehicle/bicycle/airship)', edge)
+        self.assertLess(edge.index('ridden.unbuckle_mob()'), edge.index('gate.travel(src)'))
+        bicycle = (ROOT / 'code/game/objects/structures/bicycle.dm').read_text(encoding='utf-8').replace('\r\n', '\n')
+        self.assertLess(bicycle.index('H.forceMove(target)\n'), bicycle.index('H.region_edge_ride()'))
+        self.assertIn('region_edge_cart_valid(P["cart"])', ok)
         self.assertIn('region_edge_mount_valid(P["led"], TRUE)', ok)
         # An animal led by hand goes the same way; anything else dragged stays.
-        self.assertIn('if (H.pulling && !region_edge_led_record(H)) return', edge)
+        self.assertIn('if (H.pulling && !region_edge_led_record(H))', edge)
+        # A pulled hand cart or travois is recorded as its puller leaves and held in
+        # the gate from then on, so its load cannot change; it comes back if they stay.
+        extra = edge[edge.index('/obj/structure/region_gate/land_edge/travel_extra'):edge.index('/obj/structure/region_gate/land_edge/attack_hand')]
+        self.assertLess(extra.index('region_edge_cart_record(H)'), extra.index('cart.forceMove(src)'))
+        self.assertIn('/obj/structure/region_gate/land_edge/Destroy()\n\trelease_cart()', edge)
+        self.assertIn('return ispath(path, /obj/structure/closet/crate/cart) || ispath(path, /obj/structure/closet/crate/travois)', edge)
+        self.assertIn('!region_travel_worn_valid(E[1], E[2])', edge)
         self.assertIn('if (took_led && QDELETED(src) && !QDELETED(beast))', edge)
         self.assertIn('region_edge_mount_valid(P["mount"])', ok)
         self.assertIn('\t\t\tregion_edge_replayed(H, P)\n', travel)

@@ -27,6 +27,8 @@ $commands += "cl $flags /Fe:`"$build/civ13-social-companion.exe`" $endpoint"
 $commands += 'if errorlevel 1 exit /b 1'
 $commands += "cl $flags /DCIV13_COMPANION_LOOPBACK_BACKEND /Fe:`"$build/loopback-companion.exe`" $endpoint"
 $commands += 'if errorlevel 1 exit /b 1'
+$commands += "cl $flags /Fe:`"$build/voice-tests.exe`" `"$root/tests/voice_tests.cpp`""
+$commands += 'if errorlevel 1 exit /b 1'
 $commands += "cl $flags /Fe:`"$build/child-tests.exe`" `"$root/peer.cpp`" `"$root/tests/child_tests.cpp`""
 $commands += 'if errorlevel 1 exit /b 1'
 if ($SdkInclude) {
@@ -47,6 +49,9 @@ function Invoke-Bounded([string]$executable, [string]$arguments, [string]$name, 
     $options = @{FilePath=$executable; WorkingDirectory=$build; WindowStyle='Hidden'; PassThru=$true; RedirectStandardOutput=$stdout; RedirectStandardError=$stderr}
     if ($arguments) { $options.ArgumentList=$arguments }
     $process = Start-Process @options
+    # Windows PowerShell 5.1 reports an empty ExitCode unless the handle is
+    # opened while the process runs; pwsh 7 does not need this.
+    $null = $process.Handle
     if (!$process.WaitForExit($seconds * 1000)) { $process.Kill(); [void]$process.WaitForExit(5000); throw "Owned offline $name process exceeded $seconds seconds." }
     $process.WaitForExit()
     Get-Content -LiteralPath $stdout
@@ -57,5 +62,6 @@ Invoke-Bounded $env:ComSpec ('/d /s /c ""' + $batch + '""') 'compile' 150
 Invoke-Bounded (Join-Path $build 'peer-tests.exe') '' 'peer-tests'
 Invoke-Bounded (Join-Path $build 'host-tests.exe') '' 'host-tests'
 Invoke-Bounded (Join-Path $build 'endpoint-tests.exe') '' 'endpoint-tests'
+Invoke-Bounded (Join-Path $build 'voice-tests.exe') '' 'voice-tests'
 Invoke-Bounded (Join-Path $build 'child-tests.exe') ('"' + (Join-Path $build 'loopback-companion.exe') + '" "' + (Join-Path $build 'civ13-social-companion.exe') + '"') 'child-tests'
 if ($SdkInclude) { Invoke-Bounded (Join-Path $build 'sdk-tests.exe') '' 'sdk-tests' }
