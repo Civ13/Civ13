@@ -228,6 +228,7 @@
 					to_chat(src, SPAN_WARNING("You wake up somewhere strange. Ask an administrator to move you back."))
 			sleeping = 0
 			inducedSSD = FALSE
+			divine_rested()
 
 //to keep the character sleeping
 // One refresh loop per body: a restored body restarts it on reconnect, and a
