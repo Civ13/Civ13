@@ -10,7 +10,7 @@
 /mob/living/human/proc/ensure_late_stats()
 	if (!islist(stats))
 		return
-	for (var/statname in list("hunting"))
+	for (var/statname in list("hunting", "swimming"))
 		var/list/pair = stats[statname]
 		if (!islist(pair) || pair.len != 2)
 			stats[statname] = list(HARVEST_SKILL_BASE, HARVEST_SKILL_BASE)

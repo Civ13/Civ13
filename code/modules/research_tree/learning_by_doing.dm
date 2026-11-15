@@ -36,7 +36,7 @@
 #define SKILL_MASTER_GAIN 2
 
 // Body skills a master can pass on by example.
-var/global/list/skill_master_stats = list("crafting", "medical", "farming", "hunting", "throwing", "swords", "bows", "rifle", "pistol", "machinegun", "philosophy")
+var/global/list/skill_master_stats = list("crafting", "medical", "farming", "hunting", "throwing", "swords", "bows", "rifle", "pistol", "machinegun", "philosophy", "swimming")
 
 /mob/living/human
 	var/list/scholar_lessons = null // lesson keys this character has already learned from
@@ -157,7 +157,8 @@ var/global/list/skill_mastery_disciplines = list(
 	"rifle" = "military",
 	"pistol" = "military",
 	"machinegun" = "military",
-	"throwing" = "military")
+	"throwing" = "military",
+	"swimming" = "natural_science")
 
 // Milestones: skill value reached, scholarship levels given, what it makes you.
 // The last is the most a skill can reach.

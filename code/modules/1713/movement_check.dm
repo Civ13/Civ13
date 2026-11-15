@@ -136,8 +136,12 @@
 		ground = 2.5 * footwear_terrain_mult(src, "wade")
 	movement_check_add(., ground_label, ground)
 	if (!crab && F.move_delay)
-		var/wade = istype(F, /turf/floor/beach/water) ? footwear_terrain_mult(src, "wade") : 1
-		movement_check_add(., "wading through [F.name]", F.move_delay * wade)
+		if (swim_skill_applies(F))
+			movement_check_add(., "swimming through [F.name] (swimming skill [round(swimming_skill())])", water_step_delay(F))
+		else if (istype(F, /turf/floor/beach/water))
+			movement_check_add(., "wading through [F.name]", water_step_delay(F))
+		else
+			movement_check_add(., "wading through [F.name]", F.move_delay)
 	if (!(F.has_snow_cover() && !covered))
 		movement_check_add(., "snow footwear off the snow", footwear_offsnow_slowdown(src))
 
