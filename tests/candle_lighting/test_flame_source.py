@@ -3,8 +3,12 @@
 No compiler, game or network. The native behaviour is in probe.dm.
 """
 from pathlib import Path
+import importlib.util
 import re
+import struct
+from types import SimpleNamespace
 import unittest
+import zlib
 
 ROOT = Path(__file__).resolve().parents[2]
 LIGHTERS = 'code/game/objects/items/weapons/cigs_lighters.dm'
@@ -56,6 +60,41 @@ class FlameSourceTests(unittest.TestCase):
         self.assertIn('isflamesource(A)', placed)
         self.assertIn('A != src', placed)
         self.assertLess(placed.index('light_from'), placed.index('return ..()'))
+
+    def test_candle_appearance_stages_and_variant_states(self):
+        text = source(CANDLE)
+        spec = importlib.util.spec_from_file_location('candle_adapter', ROOT / 'tests/save_movement/source_adapter.py')
+        adapter = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(adapter)
+        adapter.FIELDS += ('wax',)
+        stage = adapter.project(text, '/obj/item/weapon/flame/candle/proc/candle_wax_stage',
+                                'src', {}, method=True)
+        for wax, expected in ((1050, 1), (801, 1), (800, 2), (500.5, 2),
+                              (501, 2), (500, 3), (0, 3)):
+            with self.subTest(wax=wax):
+                self.assertEqual(stage(SimpleNamespace(wax=wax)), expected)
+
+        ordinary = block(text, '/obj/item/weapon/flame/candle/update_icon(')
+        lard = block(text, '/obj/item/weapon/flame/candle/lard/update_icon(')
+        for body, suffix in ((ordinary, ''), (lard, '_lard')):
+            self.assertIn('var/i = candle_wax_stage()', body)
+            self.assertIn(f'icon_state = "candle[i][lit ? "_lit" : ""]{suffix}"', body)
+
+        data = (ROOT / 'icons/obj/candle.dmi').read_bytes()
+        offset, metadata = 8, ''
+        while offset < len(data):
+            size = struct.unpack('>I', data[offset:offset + 4])[0]
+            kind, chunk = data[offset + 4:offset + 8], data[offset + 8:offset + 8 + size]
+            offset += 12 + size
+            if kind == b'zTXt':
+                metadata += zlib.decompress(chunk.split(b'\0', 1)[1][1:]).decode('latin1')
+            elif kind == b'tEXt':
+                metadata += chunk.decode('latin1')
+        states = set(re.findall(r'^state = "(.*)"', metadata, re.MULTILINE))
+        for index in (1, 2, 3):
+            for lit in ('', '_lit'):
+                for suffix in ('', '_lard'):
+                    self.assertIn(f'candle{index}{lit}{suffix}', states)
 
 
 if __name__ == '__main__':
