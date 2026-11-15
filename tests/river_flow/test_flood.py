@@ -266,5 +266,21 @@ class DefencesTest(unittest.TestCase):
             self.assertIn(state, states)
 
 
+
+class CellarTest(unittest.TestCase):
+    """Seepage and bailing; behaviour is in cellar_probe.dm."""
+
+    def test_wiring(self):
+        cellars = (ROOT / 'code/modules/1713/flood_cellars.dm').read_text(encoding='utf-8')
+        self.assertIn("return T.z == F.cellar_z() ? F.seep_depth_at(T) : 0", MODULE)
+        self.assertIn('cellar_z_cache = z_level ? multiz_level_below(z_level) : 0', cellars)
+        self.assertIsNone(re.search(r'(?<![_\w])spawn\(', cellars))
+        self.assertNotIn('in world', cellars)
+        glass = (ROOT / 'code/modules/reagents/reagent_containers/glass.dm').read_text(encoding='utf-8')
+        self.assertIn('if (try_bail(attacked, user))', glass)
+        effects = (ROOT / 'code/modules/1713/flood_effects.dm').read_text(encoding='utf-8')
+        self.assertIn('if (centre.z != F.z_level && centre.z != F.cellar_z())', effects)
+
+
 if __name__ == '__main__':
     unittest.main()

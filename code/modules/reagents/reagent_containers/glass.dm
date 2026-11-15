@@ -72,6 +72,9 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 	update_icon()
 
 /obj/item/weapon/reagent_containers/glass/attack_turf(turf/attacked, mob/user, icon_x, icon_y)
+	// Bailing out a flooded cellar (flood_cellars.dm).
+	if (try_bail(attacked, user))
+		return TRUE
 	if (!(istype(src,/obj/item/weapon/reagent_containers/glass/fire_extinguisher)))
 		if (is_open_container())
 			if (reagents.total_volume)

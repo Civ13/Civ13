@@ -253,7 +253,7 @@ var/global/flood_draw_revision = 0
 	flood_drawn_z = centre.z
 	flood_clear_images()
 	var/datum/river_flood/F = map.river_flood()
-	if (centre.z != F.z_level)
+	if (centre.z != F.z_level && centre.z != F.cellar_z())
 		return
 	// Bands over the view and a one-tile ring, so edges at the rim are right.
 	var/x0 = max(1, centre.x - FLOOD_VIEW_RADIUS - 1)
