@@ -139,6 +139,21 @@ parts.
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/built_hull_probe.dm 300
 
+## Upper decks on built hulls (`upper_deck_probe.dm`)
+
+A roofed-over built hull (`code/modules/craft/built_body.dm`): fifteen roofs
+over fifteen planks, each with its floor on the level above, and a ladder
+between the decks; the tiller reads out both decks; a stray floor over the
+water is not hers. A step east carries a sailor and a pail on the upper deck,
+leaves no floor behind or doubled, keeps every roof paired with its floor and
+the ladder joined, and carries the indoor areas under her roofs. A floor or
+something solid in the air ahead stops her with the reason; coming about swings
+the upper deck whole; crossing the sea is refused. A 200-tile hull roofed over
+is past the 300-tile deck cap and refused; with half its roofs taken down
+(which takes their floors) it steps four times, and the step time is logged.
+
+    python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/upper_deck_probe.dm 300
+
 ## Sea chart and harbours (`chart_probe.dm`)
 
 The mirror sea chart and mooring posts (`code/modules/naval/craft_chart.dm`):
