@@ -747,7 +747,7 @@
 									S.overlays += S.blood_overlay
 			if (!H.crab)
 				if (istype(F, /turf/floor/beach/water))
-					move_delay += F.move_delay * footwear_terrain_mult(H, "wade")
+					move_delay += H.water_step_delay(F)
 				else
 					move_delay += F.move_delay
 			if (istype(F, /turf/floor/trench/flooded))
