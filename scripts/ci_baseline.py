@@ -1958,6 +1958,9 @@ SUITES = {
     'clay_lime_fire': {'files': ('tests/clay_lime_fire/test_contract.py',), 'paths': (
         'tests/clay_lime_fire/', 'code/modules/1713/clay_lime_fire.dm',
         'icons/obj/workshop_machines.dmi', 'tests/sprites/create_clay_lime_fire.py')},
+    'charcoal_clamp': {'files': ('tests/charcoal_clamp/test_contract.py',), 'paths': (
+        'tests/charcoal_clamp/', 'code/modules/1713/charcoal_clamp.dm',
+        'icons/obj/charcoal_clamp.dmi', 'tests/sprites/create_charcoal_clamp.py')},
     # Keep shared production and Atlas sources unmapped so their existing
     # conservative all-suite fallback remains intact.
     'sawmill': {'files': ('tests/sawmill/test_contract.py',
