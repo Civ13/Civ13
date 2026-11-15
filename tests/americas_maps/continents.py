@@ -211,10 +211,8 @@ NORTH = {
         (72.5, 47.5), (105, 52.2), (118, 59), (101.6, 22.4), (89, 19.6), (86.4, 14.6), (79.2, 21.9), (81.6, 28),
         (96, 62.5),
     ],
-    'trails': [
-        {'id': 'isthmus', 'edge': 's', 'at': (169.0 - 77.62) / 119.0, 'posts': 4,
-         'object': '/obj/structure/region_gate/trail_marker/authored/americas_south'},
-    ],
+    # No trail posts: players walk over the shared map edge (region_edge.dm).
+    'trails': [],
 }
 
 SOUTH = {
@@ -371,10 +369,8 @@ SOUTH = {
         (76.6, -12.2), (60, -22), (57, -30), (60.5, -35.6), (71.4, -34.6), (67, -43), (69.8, -51.4), (54, -20),
         (63, 6.8),
     ],
-    'trails': [
-        {'id': 'isthmus', 'edge': 'n', 'at': (83.0 - 80.38) / 48.4, 'posts': 4,
-         'object': '/obj/structure/region_gate/trail_marker/authored/americas_north'},
-    ],
+    # No trail posts: players walk over the shared map edge (region_edge.dm).
+    'trails': [],
 }
 
 MAPS = {'north': NORTH, 'south': SOUTH}
