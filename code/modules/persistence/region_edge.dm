@@ -147,7 +147,7 @@ var/global/list/region_edge_spans = list()
 	var/reason = closed_reason()
 	if (reason) return reason
 	if (H.client ? IsGuestKey(H.client.key) : !agent_travel_account(H)) return "Only players with a BYOND account can travel."
-	if (H.buckled) return "You cannot ride or drive across yet. Get down and walk on."
+	if (H.buckled || H.riding || H.riding_mob || H.driver || H.driver_vehicle) return "You cannot ride or drive across yet. Get down and walk on."
 	if (H.pulling) return "You cannot drag anything across. Let go and walk on."
 	if (H.stat != CONSCIOUS || H.restrained()) return "You can't set off right now."
 	if (get_turf(H) != loc && H.loc != src) return "You turned back from the edge of the land."

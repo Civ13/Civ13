@@ -299,7 +299,7 @@ class AmericasMapsTest(unittest.TestCase):
         # The ask lock never rides a save (civ13 saves tmp vars too).
         self.assertIn('return key == "region_edge_asking" || key == "region_edge_asked_at" || ..()', edge)
         # Riders and draggers are told why, in plain words.
-        self.assertIn('if (H.buckled) return "You cannot ride or drive across yet. Get down and walk on."', edge)
+        self.assertIn('if (H.buckled || H.riding || H.riding_mob || H.driver || H.driver_vehicle) return "You cannot ride or drive across yet. Get down and walk on."', edge)
         # No trail posts drawn on maps any more.
         self.assertNotIn('trail_marker/authored', trails)
 
