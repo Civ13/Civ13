@@ -33,6 +33,30 @@ Sprites are in `icons/obj/aluminium.dmi`, drawn by
   aluminium airframes (48, 44 and 64 ingots) with steel engines; the trainer
   and light plane are wood, cloth and wire (docs/piece-projects.md).
 
+## Hulls
+
+`code/modules/1713/machinery/modular_vehicles/vehicle_hulls.dm` gives a
+vehicle's frames a hull material when the press assembles it
+(`set_hull()`). Against steel:
+
+| Hull | Weight | Wall armour | Wall health | Used by |
+| --- | --- | --- | --- | --- |
+| aluminium | 0.55 | 0.6 | 0.85 | any works vehicle on request; the tracked carrier always; cabin, cargo and twin-engine planes |
+| wood | 0.6 | 0.3 | 0.6 | trainer and light plane |
+
+The walls' armour and health are scaled once at assembly. The frame keeps its
+`hull_material`, so `wall_weight()` and `airframe_weight()` can weigh it
+against the same body in steel. A lighter works vehicle drives faster
+(docs/craft-core.md "Vehicle load"), and a lighter plane rolls and climbs
+sooner.
+
+When a player who knows Aluminium Refining starts a works vehicle project,
+the press asks for a steel or aluminium hull. Aluminium pays four fifths of
+the frame and body steel as ingots, in multiples of 4. The engine and gun
+stay steel (`works_hull_cost()`). The tracked carrier uses the M113 layout and
+is aluminium only: 112 aluminium and 40 steel. Tank guns cost more on bigger
+tanks: 40, 70, 100 and 130 steel from the light tank to the main battle tank.
+
 ## Tests
 
     python3 tests/ecology_spawning/run_linux.py . tests/aluminium/probe.dm 300
