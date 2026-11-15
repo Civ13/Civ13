@@ -735,6 +735,11 @@ SUITES = {
         'paths': ('tests/human_vision_organ/',), 'shared_paths': (
             'code/game/mob/living/carbon/human/human_life.dm',
             'tests/save_movement/source_adapter.py')},
+    # Worn glasses add their flash protection and tint (issue 5474).
+    'glasses_flash_protection': {'files': ('tests/glasses_flash_protection/test_glasses_protection.py',),
+        'paths': ('tests/glasses_flash_protection/',), 'shared_paths': (
+            'code/game/mob/living/carbon/human/human_helpers.dm',
+            'code/game/objects/items/clothing/glasses/glasses.dm')},
     'human_ssd_hunger': {'files': ('tests/human_ssd_hunger/test_ssd_hunger.py',
         'tests/human_ssd_hunger/test_conscious_hunger.py'),
         'paths': ('tests/human_ssd_hunger/',), 'shared_paths': (

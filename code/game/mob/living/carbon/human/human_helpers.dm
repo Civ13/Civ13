@@ -59,6 +59,7 @@
 		add_clothing_protection(head)
 	if (istype(eyes, /obj/item/clothing/glasses))
 		var/obj/item/clothing/glasses/GL = eyes
+		add_clothing_protection(GL) // toggled-off optics zero their own protection and tint
 		process_glasses(GL)
 	if (istype(wear_mask, /obj/item/clothing/mask))
 		add_clothing_protection(wear_mask)
