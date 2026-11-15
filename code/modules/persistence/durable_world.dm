@@ -117,6 +117,7 @@
 			var/cells = world.maxx * world.maxy * save_validation_maxz()
 			for(var/i = 1, i <= cells, i++)
 				var/id = "[validated_zone_grid[i]]"
+				TICK_CHECK
 				if(checked[id]) continue
 				checked[id] = TRUE
 				if(!seen["zone:[id]"]) throw EXCEPTION("Missing prospective durable area")

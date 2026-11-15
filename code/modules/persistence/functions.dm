@@ -2131,6 +2131,8 @@ var/global/world_save_notice_started = null
 		if(!isnum(template) || template < 0 || template > count || template != round(template) || !isnum(length) || length < 1 || length != round(length) || cell + length > total) throw EXCEPTION("Invalid plain cell run on z=[z]")
 		for(var/n = 1, n <= length, n++)
 			cells[++cell] = template
+		// A million-cell level is far past the engine's loop check without a yield.
+		TICK_CHECK
 	if(cell != total) throw EXCEPTION("Plain cell runs do not cover z=[z]")
 	return list("templates" = templates, "cells" = cells)
 

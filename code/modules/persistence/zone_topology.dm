@@ -395,6 +395,7 @@ var/global/datum/persistence_area_startup/persistence_area_startup_token
 					var/plain_template = plain_cells ? plain_cells[(y - 1) * world.maxx + x] : 0
 					if(!columns || next_column > columns.len || columns[next_column] != x)
 						validated_zone_grid += plain_template ? plain_zones[plain_template] : baseline_zone
+						TICK_CHECK
 						continue
 					if(plain_template) throw EXCEPTION("Plain cell is also saved at [x],[y],[z]")
 					next_column++
