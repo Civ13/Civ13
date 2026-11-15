@@ -548,7 +548,7 @@ class AutospawnSourceTests(unittest.TestCase):
         self.assertIn('if ("autospawn")', control)
         source = (ROOT / "code/modules/agent_control/agent_autospawn.dm").read_text(encoding="utf-8")
         self.assertIn("/hook/roundstart/proc/agent_autospawn_start()", source)
-        self.assertIn("persistence_owner_ckey = agent_account_for(agent_name)", source)
+        self.assertIn("H.take_persistence_ownership(agent_account_for(agent_name))", source)
         self.assertIn("C.awaiting_driver = TRUE", source)
         self.assertIn("adopt_travellers(A)", source)  # a restored body is adopted, not doubled
         dme = (ROOT / "civ13.dme").read_text(encoding="utf-8")
