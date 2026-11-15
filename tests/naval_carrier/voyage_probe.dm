@@ -105,9 +105,19 @@ var/naval_runtime_error = FALSE
 	if (sea)
 		for (var/image/I in sea.images)
 			var/turf/T = I.loc
-			if (!I.override || !is_liquid_water(T) || T.iscovered() || tiller.craft.body.contains(T) || get_dist(T, tiller) > 25)
+			if (!I.override || !is_liquid_water(T) || get_dist(T, tiller) > 30)
 				sea_ok = FALSE
-	naval_check(sea_ok, "only open water round her is drawn, never her own deck")
+	var/under_ok = TRUE
+	for (var/turf/T in tiller.craft.body.cells())
+		var/found = FALSE
+		for (var/image/I in sea.images)
+			if (I.loc == T)
+				found = TRUE
+				break
+		if (!found)
+			under_ok = FALSE
+	naval_check(sea_ok, "only water round her is drawn going by")
+	naval_check(under_ok, "including the water under her planks, so none is missing behind her stern")
 	naval_check(sea && !length(sea.watchers), "nobody without a client is shown it")
 	tiller.end_voyage(null)
 	naval_check(isnull(tiller.voyage), "a voyage ends at the tiller")

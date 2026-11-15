@@ -70,7 +70,9 @@ else) divides that interval: the Broadside TDM map sails its ships at pace 4. Fo
 each step `under_way.dm` sets `body.glide_time`, and the body calls
 `craft_glide()` on everything it carried: a thing square on its tile gets the
 `glide_size` that makes the engine glide it for the whole step (given back when
-it leaves her or she stops), and a thing the engine will not glide (a step
+it leaves her or she stops, and at once when anything but her own step moves
+it, so a shove, pull, throw or current never draws a move at her pace;
+`craft_glide_was` on the thing names the record holding it and is never saved), and a thing the engine will not glide (a step
 offset or unusual bounds, such as a free-moving human) is drawn one tile back
 and slid forward by `animate()`, with the view of its player. Appearance only:
 the server still moves her a whole tile at once. Not checked in a game client.

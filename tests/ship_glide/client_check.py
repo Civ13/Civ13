@@ -144,7 +144,7 @@ def record(ffmpeg, hwnd, seconds, path):
     """Starts recording the client window; returns the ffmpeg process."""
     title = window_title(hwnd)
     return subprocess.Popen([str(ffmpeg), '-y', '-loglevel', 'error', '-f', 'gdigrab', '-framerate', '50', '-draw_mouse', '0',
-                             '-i', 'title=' + title, '-t', str(seconds), '-c:v', 'libx264', '-crf', '16', '-preset', 'ultrafast',
+                             '-i', 'title=' + title, '-t', str(seconds), '-vf', 'crop=trunc(iw/2)*2:trunc(ih/2)*2', '-c:v', 'libx264', '-crf', '16', '-preset', 'ultrafast',
                              '-pix_fmt', 'yuv420p', str(path)], stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
 
 

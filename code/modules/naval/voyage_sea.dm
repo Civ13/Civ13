@@ -13,7 +13,7 @@
 // click on the water still finds the real tile.
 // ============================================================
 
-#define VOYAGE_SEA_RANGE 20     // Tiles of water drawn past her on every side.
+#define VOYAGE_SEA_RANGE 24     // Tiles of water drawn past her on every side.
 #define VOYAGE_SEA_TILE_TIME 12 // Deciseconds the water takes to go one tile by.
 
 /obj/structure/hull_tiller
@@ -49,11 +49,26 @@
 	var/y2 = min(world.maxy, B.py + box[4] + VOYAGE_SEA_RANGE)
 	var/shift_x = (heading == EAST ? -1 : (heading == WEST ? 1 : 0)) * world.icon_size
 	var/shift_y = (heading == NORTH ? -1 : (heading == SOUTH ? 1 : 0)) * world.icon_size
+	// The tiles under her (and any other floor) are drawn as the open water
+	// round her: their own water is hidden under the planks, but the water
+	// sliding sternwards out from under her stern must come from somewhere.
+	var/turf/sample = null
+	var/list/open = list()
+	var/list/under = list()
 	for (var/turf/T in block(locate(x1, y1, B.z), locate(x2, y2, B.z)))
-		if (!is_liquid_water(T) || T.iscovered() || B.contains(T))
+		if (!is_liquid_water(T))
 			continue
+		if (T.iscovered() || B.contains(T))
+			under[T] = TRUE
+		else
+			open += T
+			if (!sample)
+				sample = T
+	if (!sample)
+		return
+	for (var/turf/T in open + under)
 		var/image/I = image(loc = T)
-		I.appearance = T.appearance
+		I.appearance = under[T] ? sample.appearance : T.appearance
 		I.loc = T
 		I.override = TRUE
 		I.mouse_opacity = 0
