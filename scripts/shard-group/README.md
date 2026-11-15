@@ -322,6 +322,10 @@ take turns (`<root>/.staging/compile.lock`), so a deploy never compiles every
 region at once. Progress is in `data/shard-host/stage.json` (`phase` is
 `ready`, `current` or `failed` with `error`) and `status` shows it under
 `stage`, with `pending` true while a ready build is newer than the running one.
+A plain `update` of a stopped region takes the same compile slot at the same
+priority, and runs DreamMaker once more when it stops without reporting any
+result (killed or crashed while loading), so updating every region at once
+no longer runs a dozen compilers side by side.
 
 The host service (`gaia_host.py serve`) installs a ready build by itself:
 
