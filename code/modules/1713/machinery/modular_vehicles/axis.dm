@@ -329,6 +329,11 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 	transform_tiles = move_turfs
 	for (var/turf/T in move_turfs)
 		T.vehicle_transforming = src
+	// Its own step keeps the glide it holds on what it carries (craft/glide.dm).
+	if (!glide_was)
+		glide_was = list()
+	var/list/was_holder = craft_glide_holder
+	craft_glide_holder = glide_was
 	try
 		for (var/obj/item/weapon/grenade/G in exterior_grenades)
 			G.mark_vehicle_exterior(src, exterior_grenades[G])
@@ -371,8 +376,10 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 			F.update_icon()
 
 	catch(var/exception/e)
+		craft_glide_holder = was_holder
 		release_transform_tiles(move_turfs)
 		throw e
+	craft_glide_holder = was_holder
 	release_transform_tiles(move_turfs)
 	glide_step(origins)
 	refresh_passenger_vision()

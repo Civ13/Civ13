@@ -350,9 +350,7 @@
 				if (QDELETED(M))
 					continue
 				if (S != D && M.loc == S)
-					M.forceMove(D)
-					if (gliding && M.loc == D)
-						craft_glide(M, D.x - S.x, D.y - S.y, gliding)
+					craft_step_move(M, D, D.x - S.x, D.y - S.y, gliding)
 				if (istype(M, /obj/covers))
 					var/obj/covers/C = M
 					C.origin_water_level = water[D]
@@ -372,9 +370,7 @@
 						continue
 					if ((pass == 1) != (istype(M, /obj/covers) || istype(M, /obj/structure/multiz)))
 						continue
-					M.forceMove(D)
-					if (gliding && M.loc == D)
-						craft_glide(M, D.x - S.x, D.y - S.y, gliding)
+					craft_step_move(M, D, D.x - S.x, D.y - S.y, gliding)
 		if (old_area)
 			var/list/changed = list()
 			for (var/i = 1, i <= dest.len, i++)

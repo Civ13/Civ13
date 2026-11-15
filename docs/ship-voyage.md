@@ -35,7 +35,11 @@ mainland's.
 A voyage takes about a minute a chart tile under sail (the larger of the two
 distances), or 40 seconds when her engines drive her at full ahead.
 She drops anchor and lies off the coast under way: the tiller only tells how
-long is left and offers **Turn back**. Whoever is aboard at landfall sails
+long is left and offers **Turn back**. Her crew still see her sail: every
+tile of open water within 24 tiles of her is drawn for them streaming past
+from bow to stern, a tile every 1.2 seconds, until the voyage ends
+(`code/modules/naval/voyage_sea.dm`, appearance only: override images of the
+water, refreshed for whoever is aboard at every voyage tick). Whoever is aboard at landfall sails
 with her; anyone who steps off is left behind.
 
 ## No admin decides: the limits instead

@@ -253,6 +253,7 @@
 	log_game("Voyage: [key_name(H)] set the [craft.name] on a [kind] voyage to [kind == "lane" ? "the region [x]" : "chart tile [x],[y]"] for [owner || H.ckey] (voyage [id], [crew] crew, [voyage["stores"]]/[voyage["rations"]] rations).")
 	var/minutes = round(tiles_time * tile / 600, 1)
 	craft.crew_message(SPAN_NOTICE("[H] at the tiller: the [craft.name] sets out for [label]. About [max(1, minutes)] minute\s at sea. Stay aboard: whoever leaves her is left behind."))
+	voyage_sea_show() // Her crew see the sea go by (voyage_sea.dm).
 	addtimer(CALLBACK(src, PROC_REF(voyage_tick), voyage), VOYAGE_TICK)
 	return TRUE
 
@@ -276,6 +277,7 @@
 
 /obj/structure/hull_tiller/proc/end_voyage(text)
 	voyage = null
+	voyage_sea_stop()
 	if (craft && text)
 		craft.crew_message(text)
 
@@ -284,7 +286,10 @@
 /obj/structure/hull_tiller/proc/voyage_tick(list/mine)
 	set waitfor = FALSE
 	if (voyage != mine || QDELETED(src) || !craft)
+		if (!voyage && !QDELETED(src))
+			voyage_sea_stop()
 		return
+	voyage_sea_show() // Whoever is aboard now sees the sea go by.
 	if (world.time < mine["ends"])
 		// A course refused (no harbour free, a land opened too lately) turns her back
 		// within a minute or two, before she has sailed the whole way for nothing.

@@ -36,18 +36,25 @@
 // applied)), kept so that each thing gets its own glide back afterwards.
 /proc/glide_show(list/was, atom/movable/M, dx, dy, time)
 	if (craft_glides_natively(M))
-		var/size = craft_glide_size(time)
-		var/list/held = was[M]
-		if (!held)
-			was[M] = list(M.glide_size, size)
-		else
-			// Something else set its glide since; that is the value to give back.
-			if (M.glide_size != held[2])
-				held[1] = M.glide_size
-			held[2] = size
-		M.glide_size = size
+		glide_hold(was, M, craft_glide_size(time))
 		return
 	glide_slide(M, dx, dy, time)
+
+// Holds M's glide at size in was, keeping what to give back.
+/proc/glide_hold(list/was, atom/movable/M, size)
+	// Another craft or vehicle held it last: that one gives its glide back first.
+	if (M.craft_glide_was && M.craft_glide_was != was)
+		craft_glide_release(M, M.craft_glide_was)
+	var/list/held = was[M]
+	if (!held)
+		was[M] = list(M.glide_size, size)
+	else
+		// Something else set its glide since; that is the value to give back.
+		if (M.glide_size != held[2])
+			held[1] = M.glide_size
+		held[2] = size
+	M.glide_size = size
+	M.craft_glide_was = was
 
 // Draws A (a thing or a tile) where it was, (dx, dy) tiles back, and slides it
 // to where it now is over time, with the view of a player who is that mob.
@@ -100,10 +107,58 @@
 	for (var/atom/movable/M in was.Copy())
 		if (still[M])
 			continue
-		var/list/held = was[M]
-		was -= M
-		if (M && !QDELETED(M) && M.glide_size == held[2])
-			M.glide_size = held[1]
+		craft_glide_release(M, was)
+
+// Gives M back the glide was holds for it, if it holds one.
+/proc/craft_glide_release(atom/movable/M, list/was)
+	if (!M)
+		return
+	if (M.craft_glide_was == was)
+		M.craft_glide_was = null
+	if (!was)
+		return
+	var/list/held = was[M]
+	if (!held)
+		return
+	was -= M
+	if (!QDELETED(M) && M.glide_size == held[2])
+		M.glide_size = held[1]
+
+// A held glide belongs to the craft's own steps only. Anything else that moves
+// a thing she carries (a pull, a push, a throw, a current, a hand picking it
+// up) would otherwise draw that move at her pace: a log stack shoved across
+// her deck crept a tile over half a minute. Every move gives the glide back
+// first, except the move her own step makes (craft_step_move), which keeps it,
+// so clients only ever see her pace for her steps.
+/atom/movable
+	var/tmp/list/craft_glide_was = null // The record of the craft holding this thing's glide.
+
+/atom/movable/proc/craft_glide_drop()
+	if (craft_glide_was && craft_glide_was != craft_glide_holder)
+		craft_glide_release(src, craft_glide_was)
+
+// The record of the craft whose own step is moving things right now: those
+// moves keep the glide it holds.
+var/global/list/craft_glide_holder = null
+
+// Moves M, carried by her step, to D and shows the move as her glide. The
+// engine draws a move at the glide_size the thing has when it moves, so a
+// thing that glides natively takes her pace before it moves, not after.
+/datum/craft_body/proc/craft_step_move(atom/movable/M, turf/D, dx, dy, time)
+	if (!glide_was)
+		glide_was = list()
+	if (time > 0 && craft_glides_natively(M))
+		glide_hold(glide_was, M, craft_glide_size(time))
+	var/list/was_holder = craft_glide_holder
+	craft_glide_holder = glide_was
+	try
+		M.forceMove(D)
+	catch (var/exception/e)
+		craft_glide_holder = was_holder
+		throw e
+	craft_glide_holder = was_holder
+	if (time > 0 && M.loc == D)
+		craft_glide(M, dx, dy, time)
 
 /datum/craft_body/proc/craft_glide(atom/movable/M, dx, dy, time)
 	if (!glide_was)

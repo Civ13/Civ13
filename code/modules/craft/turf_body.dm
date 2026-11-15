@@ -193,9 +193,7 @@
 				continue
 			for (var/atom/movable/M in cargo[i])
 				if (!QDELETED(M) && M.loc == S)
-					M.forceMove(D)
-					if (gliding && M.loc == D)
-						craft_glide(M, step_x, step_y, gliding)
+					craft_step_move(M, D, step_x, step_y, gliding)
 		craft_rigid_settle(carry)
 		carry = null
 		glide_keep(gliding ? everything : null)
