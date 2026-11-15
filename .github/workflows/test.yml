@@ -107,7 +107,8 @@ jobs:
     needs: [changes, local-attestation]
     if: needs.changes.outputs.skip_duplicate != 'true' && (needs.changes.outputs.gating == '1' || needs.changes.outputs.game == 'true' || github.event_name == 'workflow_dispatch') && needs.local-attestation.outputs.skip != 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 6
+    # The full offline fallback takes about 5.5 minutes on its own (2026-11-15).
+    timeout-minutes: 10
     # Reused by a re-run of failed jobs, a job keeps its original attempt and
     # artifact names; consumers download by these outputs, not their own attempt.
     outputs:
