@@ -68,7 +68,8 @@ no world chart: each has a place on one shared layout, `continent_layout`
 water along them, best first). The voyage between two coastal continents takes
 the larger of the two distances in tiles. Today: North America (0,6), South
 America (2,0), Gaia (6,7), Europe (11,9), Desert (12,4), Jungle (13,1), Asia
-(18,8). Desert and Jungle have no sea coast, so ships cannot reach them. The ids
+(18,8). The Desert's sea is off its north edge and the Jungle's off its west edge
+(docs/map-coasts.md). The ids
 are the host's region ids in earth.json.
 
 **Set out on a voyage** lists every other coastal continent whose world is in

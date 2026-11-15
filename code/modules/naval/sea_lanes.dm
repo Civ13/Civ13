@@ -24,8 +24,8 @@ var/global/list/continent_layout = list(
 	"southamerica" = list(2, 0, list("E", "W", "S", "N"), TRUE),
 	"gaia" = list(6, 7, list("W", "E"), TRUE),
 	"europe" = list(11, 9, list("S", "W"), TRUE),
-	"desert" = list(12, 4, list(), TRUE),
-	"jungle" = list(13, 1, list(), TRUE),
+	"desert" = list(12, 4, list("N"), TRUE),
+	"jungle" = list(13, 1, list("W"), TRUE),
 	"asia" = list(18, 8, list("E", "S", "W"), TRUE))
 
 /proc/continent_place(id)

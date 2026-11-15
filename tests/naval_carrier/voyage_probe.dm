@@ -170,10 +170,10 @@ var/naval_runtime_error = FALSE
 	// ---- Sea routes between the continents (sea_lanes.dm) ----
 	naval_check(continent_distance("northamerica", "gaia") == 6 && continent_bearing("northamerica", "gaia") == "east", "Gaia lies 6 tiles east of North America")
 	naval_check(continent_bearing("gaia", "southamerica") == "southwest" && continent_distance("gaia", "asia") == 12, "and Asia 12 tiles east of Gaia ([continent_bearing("gaia", "southamerica")])")
-	naval_check(isnull(continent_distance("gaia", "far1")) && !continent_coastal("jungle") && continent_coastal("europe"), "unknown lands have no route; the Jungle has no coast")
+	naval_check(isnull(continent_distance("gaia", "far1")) && !continent_coastal("railyard") && continent_coastal("jungle") && continent_coastal("desert"), "unknown lands have no route; the Jungle and the Desert have coasts")
 	shard_group.peers["northamerica"] = list("name" = "North America", "kind" = "SURFACE", "state" = "STOPPED")
-	shard_group.peers["jungle"] = list("name" = "Jungle", "kind" = "SURFACE", "state" = "UP")
-	naval_check(!length(sea_lane_destinations()), "a stopped land and a land with no coast are not offered")
+	shard_group.peers["railyard"] = list("name" = "Rail Yard", "kind" = "RAILYARD", "state" = "UP")
+	naval_check(!length(sea_lane_destinations()), "a stopped land and a world off the layout are not offered")
 	shard_group.peers["northamerica"]["state"] = "UP"
 	var/list/known = sea_lane_destinations()
 	naval_check(known.len == 1 && findtext(known[1], "North America, across the sea to the west: 6 tiles, about 6 minutes"), "a continent across the sea is offered ([known.len ? known[1] : "none"])")
@@ -205,7 +205,7 @@ var/naval_runtime_error = FALSE
 	mine["ends"] = world.time - 18010
 	naval_check(tiller.voyage_lane_landfall(mine) && isnull(tiller.voyage), "she turns back after waiting too long")
 	naval_check(tiller.craft && !QDELETED(tiller), "and is still here where she set out")
-	shard_group.peers -= list("northamerica", "jungle")
+	shard_group.peers -= list("northamerica", "railyard")
 
 	// ---- A land across the sea: onward voyages and settling ----
 	shard_group.kind = "EXPEDITION"
