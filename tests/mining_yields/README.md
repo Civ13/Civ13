@@ -16,9 +16,15 @@ quantity endpoints, ages 0-8, Pangea and Antarctica, ordinary and special caves,
 all geology branches, rejected geology, one shared rubble batch, one strength
 award, and a second completion against depleted terrain. It checks exact output
 types and totals, including uranium's one-unit exception and two special-cave
-fossils. A separate oracle checks all eleven marginal ore probabilities and the
+fossils. A separate oracle checks all thirteen marginal ore probabilities and the
 unconditional geology budget for every age and both maps. Forced successful
 rolls for zero-chance ores still must fail their eligibility guards.
+
+The ore table holds copper, tin, iron, calamine (zinc), coal, saltpeter,
+sulphur, lead, uranium, silver, gold, diamond and bauxite, in that roll order.
+Jungle walls give plain stone; obsidian now comes only from rock near lava.
+Flint nodules, gem pockets, volcanic obsidian and expedition lodes are separate
+native rolls with their own tests, so the fixture stubs them out.
 
 A seeded million-draw check calls the native built-in `prob(0.33516)` outside the
 adapted body, with a six-standard-deviation bound. This checks fractional native

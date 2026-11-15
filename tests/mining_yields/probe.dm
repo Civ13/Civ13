@@ -30,6 +30,16 @@ var/list/yield_chances
 var/list/yield_observed
 var/yield_chance_index = 0
 var/yield_high = FALSE
+// Flint, gem pockets, volcanic obsidian and expedition lodes are independent
+// native rolls with their own probes; silence them so only the ore table runs.
+/turf/mining_flint_nodules(mob/living/human/H, area/area_above)
+	return 0
+/turf/mining_gem_pocket(mob/living/human/H)
+	return null
+/turf/mining_obsidian(mob/living/human/H)
+	return 0
+/turf/mining_expedition_lode(mob/living/human/H)
+	return null
 /proc/yield_prob(chance)
 	yield_observed += chance
 	yield_chance_index++
@@ -45,7 +55,7 @@ var/yield_high = FALSE
 	yield_runtime_error = TRUE
 	world.log << "runtime error [e] [e.file]:[e.line]"
 /proc/yield_mask(index = 0, geology = FALSE, first = FALSE, second = FALSE, third = FALSE)
-	var/list/mask = list(FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,geology,first,second,third)
+	var/list/mask = list(FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,geology,first,second,third)
 	if (index)
 		mask[index] = TRUE
 	return mask
@@ -100,13 +110,14 @@ var/yield_high = FALSE
 		legacy_common_miss *= 0.75
 	var/u = era >= 8 ? legacy_common_miss * 5 : 0
 	var/rare_miss = legacy_common_miss - u / 100
-	var/list/rates = list(12,8,era >= 1 ? 32 : 0,fuel ? 6 : 0,fuel ? 3 : 0,fuel ? 3 : 0,fuel ? 3 : 0,u,rare_miss * 5,rare_miss * 0.95 * 2,rare_miss * 0.95 * 0.98)
+	// Calamine (zinc) and bauxite are independent additions and leave the legacy budget alone.
+	var/list/rates = list(12,8,era >= 1 ? 32 : 0,era >= 1 ? 6 : 0,fuel ? 6 : 0,fuel ? 3 : 0,fuel ? 3 : 0,fuel ? 3 : 0,u,rare_miss * 5,rare_miss * 0.95 * 2,rare_miss * 0.95 * 0.98,era >= 4 ? 6 : 0)
 	var/no_ore = 1
-	for (var/index in 1 to 11)
+	for (var/index in 1 to 13)
 		yield_check(abs(yield_observed[index] - rates[index]) < 0.00001, "era[era] [map_id] roll[index] rate [rates[index]]")
 		no_ore *= 1 - rates[index] / 100
 	var/legacy_geology = rare_miss * 0.95 * 0.98 * 0.99
-	yield_check(abs(no_ore * yield_observed[12] / 100 - legacy_geology) < 0.00001, "era[era] [map_id] unchanged unconditional geology budget")
+	yield_check(abs(no_ore * yield_observed[14] / 100 - legacy_geology) < 0.00001, "era[era] [map_id] unchanged unconditional geology budget")
 /world/New()
 	OpenPort("none")
 	try
@@ -124,7 +135,7 @@ var/yield_high = FALSE
 				native_hits++
 		world.log << "NATIVE_PROB: 0.33516 percent, 1000000 draws, [native_hits] hits"
 		yield_check(abs(native_hits - 3351.6) < 350, "native fractional probability within six standard deviations")
-		var/list/types = list(/obj/item/stack/ore/copper,/obj/item/stack/ore/tin,/obj/item/stack/ore/iron,/obj/item/stack/ore/coal,/obj/item/stack/ore/saltpeter,/obj/item/stack/ore/sulphur,/obj/item/stack/ore/lead,/obj/item/stack/ore/uranium,/obj/item/stack/ore/silver,/obj/item/stack/ore/gold,/obj/item/stack/ore/diamond)
+		var/list/types = list(/obj/item/stack/ore/copper,/obj/item/stack/ore/tin,/obj/item/stack/ore/iron,/obj/item/stack/ore/zinc,/obj/item/stack/ore/coal,/obj/item/stack/ore/saltpeter,/obj/item/stack/ore/sulphur,/obj/item/stack/ore/lead,/obj/item/stack/ore/uranium,/obj/item/stack/ore/silver,/obj/item/stack/ore/gold,/obj/item/stack/ore/diamond,/obj/item/stack/ore/bauxite)
 		for (var/era in 0 to 8)
 			var/mob/living/human/yield_probe/catalog_actor = new(locate(1,1,1))
 			map.ordinal_age = era
@@ -136,17 +147,17 @@ var/yield_high = FALSE
 				for (var/special in list(FALSE,TRUE))
 					var/multiplier = special ? 2 : 1
 					for (var/map_id in list(MAP_NOMADS_PANGEA,MAP_ANTARCTICA))
-						var/list/all = list(TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE)
+						var/list/all = list(TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE)
 						var/list/mixed = list(/obj/item/stack/material/stone = high ? 12 : 8)
-						for (var/index in 1 to 11)
-							var/eligible = !(index == 3 && era < 1) && !(index >= 4 && index <= 7 && (era < 2 || map_id == MAP_ANTARCTICA)) && !(index == 8 && era < 8)
-							var/amount = index <= 3 ? (high ? 24 : 12) : index == 4 ? (high ? 32 : 24) : index <= 7 ? 8 : index == 8 ? 1 : 4
-							amount *= index == 8 ? 1 : multiplier
+						for (var/index in 1 to 13)
+							var/eligible = !(index >= 3 && index <= 4 && era < 1) && !(index >= 5 && index <= 8 && (era < 2 || map_id == MAP_ANTARCTICA)) && !(index == 9 && era < 8) && !(index == 13 && era < 4)
+							var/amount = index <= 4 ? (high ? 24 : 12) : index == 5 ? (high ? 32 : 24) : index <= 8 ? 8 : index == 9 ? 1 : index <= 12 ? 4 : (high ? 36 : 24)
+							amount *= index == 9 ? 1 : multiplier
 							var/list/solo = list()
 							if (eligible)
 								solo[types[index]] = amount
 								mixed[types[index]] = amount
-								if (index <= 7)
+								if (index <= 8)
 									solo[/obj/item/stack/material/stone] = high ? 12 : 8
 							else
 								solo[/obj/item/stack/material/stone] = (high ? 24 : 16) * multiplier
@@ -167,11 +178,8 @@ var/yield_high = FALSE
 					if (era >= 1)
 						geology[/obj/item/stack/material/stone] = high ? 12 : 8
 					yield_case(era,"general marble gate",yield_mask(0,TRUE,TRUE),geology,map_id = "yield-fixture",special = special)
-					geology = list()
-					geology[era >= 1 && era <= 3 ? /obj/item/stack/ore/obsidian : /obj/item/stack/material/stone] = (high ? 24 : 16) * multiplier
-					if (era >= 1 && era <= 3)
-						geology[/obj/item/stack/material/stone] = high ? 12 : 8
-					yield_case(era,"jungle obsidian gate",yield_mask(0,TRUE,FALSE,TRUE),geology,climate = "jungle",special = special)
+					// Jungle walls no longer give obsidian; it comes from rock near lava (obsidian.dm).
+					yield_case(era,"jungle plain stone",yield_mask(0,TRUE,FALSE,TRUE),list(/obj/item/stack/material/stone = (high ? 24 : 16) * multiplier),climate = "jungle",special = special)
 					geology = list()
 					geology[era >= 1 ? /obj/item/stack/material/marble : /obj/item/stack/material/stone] = (high ? 24 : 16) * multiplier
 					yield_case(era,"semiarid marble gate",yield_mask(0,TRUE),geology,climate = "semiarid",special = special)

@@ -127,3 +127,13 @@ slightly lower for "no listed ore" and slightly higher for multi-ore walls.
 Age 0 is unchanged. Stone crushing gains calamine at 1.5% from age 1 (2.25%
 powered); trace sifting and the powered soil sifter offer it too. Calamine
 melts with copper ore in a fired clay pot or jug to make brass, mirroring bronze.
+
+## Addendum 2026-11-15: bauxite and obsidian
+
+Bauxite (`/obj/item/stack/ore/bauxite`) is a thirteenth independent roll after
+diamonds: 6% per wall from age 4, 12% under jungle or savanna, batch 24-36,
+doubled in special caves, with no added rubble. Like calamine it joins the
+no-ore product, and the geology admission divides by that product, so the
+unconditional fossil/sandstone/marble budget is unchanged. The old jungle
+obsidian geology branch is gone; obsidian is an independent roll near lava
+(see docs/obsidian.md). The native fixture in tests/mining_yields checks both.
