@@ -1,5 +1,5 @@
 {
-  "_comment": "Example entries for the two Americas regions (docs/americas-regions.md). Add both objects to the \"regions\" list of the earth group; pick ports that are free on the host. The ids are fixed: the isthmus trail drawn on each map leads to the region with the other id.",
+  "_comment": "Example entries for the two Americas regions (docs/americas-regions.md). Add both objects to the \"regions\" list of the earth group; pick ports that are free on the host. The ids are fixed: the isthmus edge of each map leads to the region with the other id.",
   "regions": [
     {"id": "northamerica", "name": "North America", "kind": "SURFACE", "port": 1745, "map": "maps/nomads/nomads_americas_north.dmm"},
     {"id": "southamerica", "name": "South America", "kind": "SURFACE", "port": 1746, "map": "maps/nomads/nomads_americas_south.dmm"}

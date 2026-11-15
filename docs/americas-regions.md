@@ -1,7 +1,7 @@
 # The Americas regions
 
 Two large Nomads regions, drawn after the Americas: a northern continent and a
-southern continent, each its own world, joined by a trail at the isthmus. They
+southern continent, each its own world, joined at the isthmus: players walk over the shared map edge. They
 are meant as the main starting lands. This page covers the design, how to
 regenerate the maps, what was measured and how to add the regions to a host.
 Nothing here starts or changes a live server.
@@ -61,23 +61,32 @@ The same field gives three files beside each map in `maps/heights/`:
 The test suite rebuilds the current and flood files from the committed map and
 heights and fails when they differ, so the three never drift apart.
 
-## The isthmus trail
+## Walking between the two lands
 
 The north map's land runs off its south edge at the isthmus and the south map's
-land runs off its north edge at the same place. Four trail posts stand across
-each end (`/obj/structure/region_gate/trail_marker/authored/americas_south` on
-the north map, `.../americas_north` on the south map). They are ordinary trail
-markers that are approved by the map itself, so the trail works as soon as both
-regions run under the ids above. A traveller who walks into a post arrives at
-the posts on the other map.
+land runs off its north edge at the same place, a neck 14 tiles wide on both.
+Nothing stands there: no trail post and no gate. Each map names its neighbour
+(`edge_crossings` on the map metadata), and
+`code/modules/persistence/region_edge.dm` does the rest:
 
-These posts are not a general arrival point: travellers from any other region
-still arrive at a trail or gate that leads back to where they came from, or
-at the region's ordinary arrival spots (`accepts_strangers()` in
-`code/modules/persistence/region_travel.dm`).
+- A player who walks onto the border row of the neck (or wades just beside it)
+  is asked once whether to travel on. Saying no leaves them alone for 30
+  seconds.
+- On "Travel" they leave as an ordinary region traveller, with what they wear
+  and carry and the same rules about what can travel
+  (`code/modules/persistence/region_travel.dm`). Wounds go with them; unlike a
+  trail, the walk does not ask for full health.
+- They come out on the facing edge of the other land, as far along the neck as
+  they were, three tiles in and facing inland.
+- A rider, a driver or anyone dragging something is told to go on foot.
+  **Vehicles, mounts and carts do not cross yet.**
 
-As with every trail, a region that is stopped on the host is closed; a region
-that is asleep or cold is woken by a traveller.
+Both regions must run in the same group under the ids above. A neighbour that
+is asleep is woken by the first walker; one that is stopped on the host is
+closed and the admins are told someone is waiting.
+
+Travellers from any other region arrive at a trail that leads back to where
+they came from, or at the region's ordinary arrival spots.
 
 ## New players
 
@@ -117,6 +126,11 @@ is `PERSISTENCE_MEMORY_LIMIT_MB` (3072).
 | North 1132 x 920 | 1,041,440 | 1037 MB | 1128 MB | 1432 MB | 75 s | 92 s |
 | South 848 x 1224 | 1,037,952 | 1087 MB | 1257 MB | 1652 MB | 104 s | 92 s |
 | North 1132 x 920, reworked relief and floods (2026-11-15) | 1,041,440 | 1037 MB | 1095 MB | 1401 MB | 72 s | 92 s |
+| The same with the standing open-air level (2 x 1,041,440 cells) | 2,082,880 | 1043 MB | 1098 MB | 1526 MB | 85 s | 92 s |
+
+The standing open-air level costs about 5 MB while empty, 13 s more per save
+and about 125 MB and 50 s more on a reload. The south map was not measured
+again with it; its earlier reload peak of 1604 MB puts it near 1.75 GB.
 
 Memory grows a little under 1 KB per map cell plus what stands on it (the
 south's jungle seeds about 67,000 wild plants against the north's 29,000).
@@ -135,13 +149,12 @@ it.
 
 ## Limits
 
-- **No upper floors, dug caves or flight yet.** A new level allocates the whole plane,
-  and the admission limits (`NEW_Z_BUILDING_MEASURED_CELLS`, `NEW_Z_MEASURED_CELLS`,
-  see [new-z-budget.md](new-z-budget.md)) are sized for Gaia. Neither map sets
-  `building_levels` or `dig_down_underground`, so roofs give shelter but no
-  second storey, and there is no standing open-air level for aircraft.
-  Raising those limits for a plane this large needs its own
-  measurement.
+- **One open-air level, no more.** Both maps keep one standing open-air level
+  above the surface (`building_levels = 1`, `building_level_standing`), so
+  aircraft fly and a roof carries one upper floor. The admission for it is its
+  own measured bound (`NEW_Z_STANDING_MEASURED_CELLS`, see
+  [new-z-budget.md](new-z-budget.md)); a second level above it, and a dug cave
+  level (`dig_down_underground`), are still refused on a plane this large.
 - The time-of-day lighting pass takes about three times as long as Gaia's.
 - The wildlife caps (`ecology_wildlife_cap` 1000 north, 1200 south) and wild
   plant caps (550 and 650) scale with the land, short of in proportion.
@@ -153,8 +166,8 @@ These are host steps; merging the code starts nothing.
 1. Update the server checkout to a build that contains these maps and compile.
 2. Add the two entries from `scripts/shard-group/americas.example.json` to the
    `regions` list of the group config, with ports that are free on the host.
-   Keep the ids `northamerica` and `southamerica`: the isthmus trail on each
-   map leads to the other id.
+   Keep the ids `northamerica` and `southamerica`: each map's isthmus edge
+   leads to the other id.
 3. Run `setup --region northamerica` and `setup --region southamerica`, then
    `start` for each, as for any other region
    ([scripts/shard-group](../scripts/shard-group/README.md)). The first boot of
@@ -162,6 +175,8 @@ These are host steps; merging the code starts nothing.
 4. To make the north the land new characters start in, set the group's
    mainland to `northamerica` (see [land-stages.md](land-stages.md)). The south
    then opens through the land stages.
-5. Check: both regions show as running, a new character starts on open ground
-   in the north, and walking into the isthmus posts at the south edge of the
-   north map arrives at the posts at the north edge of the south map.
+5. Start the regions one at a time and wait for each to reach its lobby.
+6. Check: both regions show as running, a new character starts on open ground
+   in the north, and walking onto the south edge of the north map at the
+   isthmus (about x 863 to 876, y 1) asks to travel and arrives three tiles
+   inside the north edge of the south map (about x 42 to 55).

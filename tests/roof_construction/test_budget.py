@@ -13,7 +13,7 @@ def arithmetic(source=None):
     source = source or MODULE.read_text(encoding='utf-8')
     ceiling = int(re.search(r'#define NEW_Z_CELL_CEILING (\d+)', source)[1])
     # These are the two production divisions, with native precision emulated.
-    # Multiplication only occurs after the plane bound; <=1.4m is exact in f32.
+    # Multiplication only occurs after the plane bound; <=2.1m is exact in f32.
     source = source.replace('cell_limit / (width * height)', 'divide(cell_limit, (width * height))')
     source = source.replace('cell_limit / height', 'divide(cell_limit, height)')
     source = source.replace('(purpose == "instance" ? added : 0)',
@@ -59,7 +59,7 @@ class BudgetTests(unittest.TestCase):
         self.assertIsNotNone(error(10, 10, 1, 1, 3, 'roof'))
         self.assertIsNotNone(error(10, 10, 1, 1, 10))
         self.assertIsNotNone(error(10, 10, 1, 1, 33))
-        self.assertIsNotNone(error(10, 10, 1, 1, 2, cell_limit=1400001))
+        self.assertIsNotNone(error(10, 10, 1, 1, 2, cell_limit=2100001))
         self.assertIsNotNone(error(10, 10, 1, 1, 2, 'instance'))
         self.assertIsNone(error(700001, 1, 2, 1, 2))  # existing world retained
 
@@ -70,7 +70,7 @@ class BudgetTests(unittest.TestCase):
         self.assertIn('return memory_admission_error(target_z, purpose)', source)
         self.assertIn('last_error = error(R.target_z, R.purpose, R)', source)
         self.assertIn('var/cell_limit = NEW_Z_CELL_CEILING', source)
-        self.assertIn('var/new_z_cell_budget = 1400000',
+        self.assertIn('var/new_z_cell_budget = 2100000',
                       (ROOT / 'code/datums/configuration.dm').read_text(encoding='utf-8'))
         # There is exactly one production native resize; every caller reaches
         # its reservation/claim boundary rather than writing world.maxz itself.

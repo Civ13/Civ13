@@ -258,8 +258,10 @@ either study's generator. The `train_raid` offline suite checks the map, and
 ## Americas regions
 
 [The Americas regions](../../americas-regions.md) are the two large generated
-Nomads continents (`northamerica`, `southamerica`) joined by the authored
-isthmus trail. `tests/americas_maps/build.py` writes both maps from
-`continents.py`; regenerate the height and flow files after it. The
+Nomads continents (`northamerica`, `southamerica`). Players walk between them
+over the shared map edge at the isthmus (`edge_crossings`,
+`code/modules/persistence/region_edge.dm`); nothing stands on the map for it.
+`tests/americas_maps/build.py` writes both maps from `continents.py` together
+with their height, current and flood files. The
 `americas_maps` offline suite checks the maps, and a map may not grow past the
 measured cell count without a new memory benchmark.
