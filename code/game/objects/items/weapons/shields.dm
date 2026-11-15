@@ -242,7 +242,7 @@
 	return 1
 
 /obj/item/weapon/shield/proc/get_block_chance(mob/user, var/damage, atom/damage_source = null, mob/attacker = null)
-	return base_block_chance
+	return base_block_chance + shield_wall_bonus(user)
 
 /obj/item/weapon/shield/check_health(consumed)
 	if (health<=0)

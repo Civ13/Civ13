@@ -346,6 +346,7 @@
 			H.riding_mob.dir = H.dir
 			if (ride_from != H.loc && isturf(ride_from))
 				hoof_dust(H.riding_mob, ride_from)
+				H.ride_charge_step(ride_from)
 	los_refresh_moved_viewer(src, FALSE, los_move_contexts)
 	return
 
