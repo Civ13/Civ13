@@ -104,7 +104,18 @@ Nothing stands there: no trail post and no gate. Each map names its neighbour
 - A pedal bicycle or running bike is wheeled over: its rider gets off at the
   edge when asked, and it arrives beside them with its frame material and
   condition. The pedal airship does not cross.
-  **Carriages and motor vehicles do not cross yet.**
+- A carriage is driven over (`code/modules/persistence/region_edge_carriage.dm`):
+  when its team reaches the border on the neck of land, the driver is asked.
+  On a yes the driver gets down and the carriage crosses with them as a record
+  of its kind and condition, the horses or oxen in harness (kind, name,
+  health) and the shut crates on its seats with what they hold (up to 60
+  things each, by the same rules as what the traveller carries). It is built a
+  few tiles in on clear ground, facing inland, team harnessed and crates
+  loaded; the driver climbs back up. Passengers get down and walk across
+  themselves. Anything aboard that cannot be rebuilt exactly (an open crate,
+  other cargo, a wild or laden animal, a hitched cart) is named and keeps the
+  carriage on this side. Its crew register does not travel.
+  **Motor vehicles do not cross yet.**
 
 Both regions must run in the same group under the ids above. A neighbour that
 is asleep is woken by the first walker; one that is stopped on the host is

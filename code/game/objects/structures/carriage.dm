@@ -978,7 +978,9 @@ var/global/list/carriage_gear_delays = list(7, 4, 2.2)
 	var/list/now = cells_at(start, facing)
 	var/list/after = cells_at(target, facing)
 	if (!target || !now || !after)
-		refuse("\The [src] cannot go further that way.")
+		// Where the land carries on, the driver is asked instead (region_edge_carriage.dm).
+		if (!region_edge_reached(m_dir))
+			refuse("\The [src] cannot go further that way.")
 		return FALSE
 	for (var/turf/T in after - now)
 		var/why = cell_refusal(T, TRUE)

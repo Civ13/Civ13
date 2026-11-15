@@ -338,13 +338,29 @@ class AmericasMapsTest(unittest.TestCase):
         self.assertIn('if (H.buckled || H.driver || H.driver_vehicle) return "You cannot drive across yet. Get down and walk on."', edge)
         # A rider takes the mount: recorded before the ask, removed only once the rider left,
         # validated on arrival, and never carried without an edge crossing.
-        self.assertIn('"voyage", "ship", "edge", "mount", "led", "cart", "bike"))', travel)
+        self.assertIn('"voyage", "ship", "edge", "mount", "led", "cart", "bike", "wagon"))', travel)
         self.assertIn('if ((H.riding || H.riding_mob) && !region_edge_mount_record(H)) return', edge)
         self.assertIn('if (took_mount && QDELETED(src) && !QDELETED(steed))', edge)
         self.assertIn('return ispath(path, /mob/living/simple_animal) && initial(A.can_ride)', edge)
         ok = edge.split('/proc/region_edge_payload_ok(list/P)\n')[1].split('\n\n')[0]
-        self.assertIn('return isnull(P["mount"]) && isnull(P["led"]) && isnull(P["cart"]) && isnull(P["bike"])', ok)
+        self.assertIn('return isnull(P["mount"]) && isnull(P["led"]) && isnull(P["cart"]) && isnull(P["bike"]) && isnull(P["wagon"])', ok)
         self.assertIn('region_edge_bike_valid(P["bike"])', ok)
+        # A carriage is packed whole as its driver leaves (team in harness, shut
+        # crates), comes back if they could not leave, and only a driver at the
+        # border is asked; passengers and anything that cannot be rebuilt keep it here.
+        self.assertIn('region_edge_wagon_valid(P["wagon"])', ok)
+        wagon = (ROOT / 'code/modules/persistence/region_edge_carriage.dm').read_text(encoding='utf-8').replace('\r\n', '\n')
+        self.assertIn('#include "code\\modules\\persistence\\region_edge_carriage.dm"', (ROOT / 'civ13.dme').read_text(encoding='utf-8'))
+        self.assertIn('var/list/driven = pack_wagon(H)', edge)
+        self.assertIn('\trelease_wagon()\n', edge)
+        self.assertIn('region_edge_wagon_arrived(H, P, side)', edge)
+        self.assertIn('return "Passengers have to get down and walk across themselves."', wagon)
+        self.assertIn('if (!istype(crate) || crate.opened)', wagon)
+        self.assertIn('A.wild || A.rider || !region_edge_wagon_draft_ok(A.type)', wagon)
+        self.assertIn('if (!islist(E) || E.len != 2 || !region_travel_worn_valid(E[1], E[2]))', wagon)
+        self.assertLess(wagon.index('C.let_off(src, T)'), wagon.index('gate.travel(src)'))
+        carriage = (ROOT / 'code/game/objects/structures/carriage.dm').read_text(encoding='utf-8').replace('\r\n', '\n')
+        self.assertIn('\t\tif (!region_edge_reached(m_dir))\n\t\t\trefuse("\\The [src] cannot go further that way.")', carriage)
         # A bicycle's rider gets off at the edge and it is wheeled over; riding one
         # onto the edge asks like a walk does. The pedal airship never crosses.
         self.assertIn('!ispath(path, /obj/structure/vehicle/bicycle/airship)', edge)

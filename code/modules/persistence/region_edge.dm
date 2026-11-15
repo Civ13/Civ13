@@ -166,6 +166,10 @@ var/global/list/region_edge_spans = list()
 		bike.forceMove(src)
 		bike_held = TRUE
 		.["bike"] = ridden
+	// A carriage is packed whole as its driver leaves (region_edge_carriage.dm).
+	var/list/driven = pack_wagon(H)
+	if (driven)
+		.["wagon"] = driven
 
 // A walker who stayed, or could not leave, gets the cart back where it stood.
 /obj/structure/region_gate/land_edge/proc/release_cart()
@@ -176,6 +180,7 @@ var/global/list/region_edge_spans = list()
 		bike.forceMove(bike_from || get_turf(src))
 	bike_held = FALSE
 	bike = null
+	release_wagon()
 
 /obj/structure/region_gate/land_edge/Destroy()
 	release_cart()
@@ -424,10 +429,12 @@ var/global/list/region_edge_spans = list()
 /proc/region_edge_payload_ok(list/P)
 	var/list/E = P["edge"]
 	if (isnull(E))
-		return isnull(P["mount"]) && isnull(P["led"]) && isnull(P["cart"]) && isnull(P["bike"])
+		return isnull(P["mount"]) && isnull(P["led"]) && isnull(P["cart"]) && isnull(P["bike"]) && isnull(P["wagon"])
 	if (!isnull(P["cart"]) && !region_edge_cart_valid(P["cart"]))
 		return FALSE
 	if (!isnull(P["bike"]) && !region_edge_bike_valid(P["bike"]))
+		return FALSE
+	if (!isnull(P["wagon"]) && !region_edge_wagon_valid(P["wagon"]))
 		return FALSE
 	if (!isnull(P["mount"]) && !region_edge_mount_valid(P["mount"]))
 		return FALSE
@@ -496,6 +503,8 @@ var/global/list/region_edge_spans = list()
 		var/obj/structure/vehicle/bicycle/B = region_edge_bike_build(P["bike"], get_turf(H))
 		if (B)
 			to_chat(H, SPAN_NOTICE("You wheeled \the [B] across."))
+	// And the carriage they drove, with its team and crates.
+	region_edge_wagon_arrived(H, P, side)
 
 // A departure replayed after a reload: the save still holds the mount that left.
 /proc/region_edge_replayed(mob/living/human/H, list/P)
@@ -514,6 +523,7 @@ var/global/list/region_edge_spans = list()
 				break
 	for (var/mob/living/simple_animal/A in gone)
 		qdel(A)
+	region_edge_wagon_replayed(H, P)
 	if (region_edge_bike_valid(P["bike"]))
 		var/bike_path = text2path(P["bike"][1])
 		for (var/obj/structure/vehicle/bicycle/B in range(2, H))
