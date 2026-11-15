@@ -255,6 +255,7 @@ var/list/mutate_on_tick = null
 /obj/covers
 /mob
 	var/stat = FALSE // Production mob_defines.dm default; states from predefines.dm.
+	var/real_name = null // Named in player_reclaim.dm's ownership log lines.
 	var/datum/hud/hud_used
 	var/list/HUDneed = list()
 	var/list/HUDinventory = list()
@@ -269,6 +270,9 @@ var/list/mutate_on_tick = null
 	var/obj/screen/zone_sel
 /obj/screen
 /datum/hud
+// player_reclaim.dm logs a dead body giving up its claim; fixtures keep no game log.
+/proc/log_game(text)
+	return
 /mob/new_player
 	var/spawning = FALSE
 /mob/new_player/proc/close_spawn_windows()
