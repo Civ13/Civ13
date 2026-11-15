@@ -157,7 +157,7 @@ var/global/list/seabed_zone_counts = list(0, 0, 0, 0)
 	return FALSE
 
 /mob/living/human/can_walk_seabed()
-	return seabed_diving_rating() > 0
+	return seabed_diving_rating() > 0 || free_diving
 
 // The depth zone a sealed diving suit stands up to, or 0 when not sealed in one.
 /mob/living/human/proc/seabed_diving_rating()

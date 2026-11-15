@@ -44,7 +44,8 @@
 		if (stepping && sea_layer_cell(from) && !from.iscovered())
 			return FALSE
 		return ..()
-	if (!M.can_walk_seabed())
+	// Free divers also keep to the depth their swimming reaches (free_diving.dm).
+	if (!M.can_walk_seabed() || !M.seabed_zone_allowed(src))
 		return FALSE
 	// Never straight out of a boat either: the lock-out hatch floods first.
 	if (stepping && from.iscovered())

@@ -481,10 +481,18 @@
 				overlays_standing[25] = null
 		life_water_refresh()
 		return
+	// A free diver on the seabed, on a held breath (free_diving.dm).
+	if (free_diving)
+		if (sea_layer_cell(T) && !T.iscovered() && !seabed_diving_rating())
+			free_dive_tick(T)
+			life_water_refresh()
+			return
+		free_diving = FALSE
 	// Floating: a lifejacket, or a sealed diving suit with its weights dropped.
 	if ((istype(wear_suit, /obj/item/clothing/suit/lifejacket) || seabed_diving_rating()) && istype(T, /turf/floor/beach/water/deep) && !T.iscovered())
 		drowning = FALSE
 		water_overlay = TRUE
+		swim_rest()
 		life_water_refresh()
 		return
 	if (!istype(T, /turf/floor/beach/water/deep) || T.iscovered())
@@ -497,6 +505,10 @@
 				life_water_refresh()
 				return
 			drowning = TRUE
+			// Spent: a held breath first (swimming.dm).
+			if (swim_hold_breath())
+				life_water_refresh()
+				return
 			to_chat(src, SPAN_WARNING("<font size='2'>You are drowning in the floodwater!</font>"))
 			life_water_refresh()
 			adjustOxyLoss(10)
@@ -525,11 +537,13 @@
 		if (D.iscovered())
 			drowning = FALSE
 			water_overlay = FALSE
+			swim_rest()
 			life_water_refresh()
 			return
 		else if (buckled && istype(buckled, /obj/structure/vehicle/boat))
 			drowning = FALSE
 			water_overlay = FALSE
+			swim_rest()
 			life_water_refresh()
 			return
 		else
@@ -537,6 +551,7 @@
 				if(src in BT.ontop)
 					drowning = FALSE
 					water_overlay = FALSE
+					swim_rest()
 					life_water_refresh()
 					return
 			// Swimming (swimming.dm): afloat until the swimmer tires.
@@ -546,6 +561,9 @@
 				life_water_refresh()
 				return
 			drowning = TRUE
+			if (swim_hold_breath())
+				life_water_refresh()
+				return
 			to_chat(src, SPAN_WARNING("<font size='2'>You are drowning!</font>"))
 			life_water_refresh()
 			adjustOxyLoss(10)

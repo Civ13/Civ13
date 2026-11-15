@@ -54,13 +54,57 @@ under a storm's gale, and at 100 the swimmer goes under and takes the drowning
 damage deep water has always dealt: about 50 seconds afloat in a calm, 25 in
 a storm. Warnings come at 50 and 80. Out of deep water, or on a deck or raft,
 it falls 4 a tick. A lifejacket or a sealed diving suit
-floats its wearer at no cost. Anyone unconscious drowns at once, as before.
+floats its wearer at no cost. A spent swimmer goes under holding their
+breath (`swim_hold_breath`) and can still reach the shallows, a boat or a
+lifejacket; only when the breath runs out does the drowning damage start.
+Anyone unconscious drowns at once, as before.
+
+Swimming is a body skill (`stats["swimming"]`, 100 to 250, added through
+`ensure_late_stats`). `swimming_skill()` reads it without mood, clamped, so
+thresholds never flicker. Skill divides the tiredness a tick (50 s afloat at
+100, 100 s at 200, 125 s at 250) and the 20 ds deep-water step, never below
+8 ds after footwear (`water_step_delay`, shared by `/client/Move` and Check
+Movement); rest recovers at skill / 100 times the base rate; the held breath
+is 10 + (skill - 100) / 3 seconds (10 to 60) and refills 3 a second afloat or
+at rest. A heavy suit adds half its slowdown to the effort. Floodwater keeps
+its own lighter step cost.
+
+It trains by distance, not time (`swim_train`): one lesson
+(`adaptStat("swimming", 0.6)`, 1.5x in rain, snow or a storm) for every 10
+tiles crossed that are not among the last 24, and only while the character is
+being played (`client.inactivity` under 2 minutes, or an agent), so floating
+or paddling over a small pond teaches nothing. About an hour of real swimming
+takes 100 to 250. The first swim in each kind of water (river, sea,
+floodwater, storm sea) teaches a lump once per half hour, through the
+variety record. A better swimmer within reach doubles the gain
+(`skill_master_stats`), and the 150/200/250 milestones pay Natural Science.
 Battle maps use deep water as their edge and keep it closed, and people with
 nobody playing them keep out of deep water as they always did.
 
     python3 tests/ecology_spawning/run_linux.py . tests/river_flow/sea_probe.dm
 
 Rip currents that pull a swimmer out from the beach are not built yet.
+
+## Free diving
+
+A swimmer in the open sea over the sea layer may **Dive** (IC verb) to the
+seabed straight below on one held breath, the same pool the swimming skill
+sets (10 s at 100, 60 s at 250; code/modules/1713/machinery/modular_vehicles/ships/free_diving.dm).
+The dive takes 2 s and two seconds of breath; it needs a rested swimmer
+(tiredness under 80, breath at least half full). `free_diving` makes
+`can_walk_seabed()` true, and the sea layer's `CanPass` asks
+`seabed_zone_allowed()`: the shelf for anyone, open water from skill 200, the
+deep and the abyss only for sealed suits. On the seabed the diver swims at
+the surface swimming speed (20 ds a step divided by skill, floor 8), not the
+3 ds a suit walks, and `outside_exposure_step` leaves the breathing to
+`free_dive_tick`. **Surface** takes 3 s from the shelf and 6 s from open
+water, spending breath on the way. When the breath runs out the diver is
+forced up with 20 oxygen damage, or drowns in place at 10 a second under a
+hull; anyone unconscious down there drowns. Each dive trains swimming like
+surface water (the seabed is its own kind for the first-swim lesson), open
+water 1.5x. Suited divers may use Dive too, and Surface drops their weights.
+
+    python3 tests/ecology_spawning/run_linux.py . tests/river_flow/dive_probe.dm
 
 ## Flow lines
 

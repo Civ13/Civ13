@@ -31,6 +31,8 @@ NOMADS_MAPS = {
     'NOMADS_EXTENDED': 'nomads_extended.dmm',
     'NOMADS_FROZEN_WASTELAND': 'nomads_frozen_wasteland.dmm',
     'NOMADS_GAIA': 'nomads_gaia.dmm',
+    'NOMADS_AMERICAS_NORTH': 'nomads_americas_north.dmm',
+    'NOMADS_AMERICAS_SOUTH': 'nomads_americas_south.dmm',
     'NOMADS_ICE_AGE': 'nomads_ice_age.dmm',
     'NOMADS_ISLAND': 'nomads_island.dmm',
     'NOMADS_JUNGLE': 'nomads_jungle.dmm',
