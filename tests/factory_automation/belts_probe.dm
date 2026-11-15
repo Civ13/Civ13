@@ -327,7 +327,7 @@ var/belt_runtime_error = FALSE
 	belt_check(get_recipe_node_req("/obj/item/factory_belt_assembly") == "factories" && get_recipe_node_req("/obj/structure/closet/crate/factory_bin") == "factories", "belts and parts bins unlock with Factories")
 	belt_check(get_recipe_node_req("/obj/structure/factory_arm") == "factories" && get_recipe_node_req("/obj/structure/factory_arm/sorting") == "automation", "the feeder arm unlocks with Factories and the sorting arm with Automation")
 	var/datum/research_node/factories = research_nodes["factories"]
-	belt_check(factories && factories.era_tier == 4 && ("steam_power" in factories.prereqs) && get_recipe_node_req("/obj/structure/engine/external/steam") == "steam_power" && get_recipe_node_req("/obj/item/stack/cable_coil/white") == "paved_infrastructure", "the steam-era floor can be powered: Factories follows Steam Power and plain cable comes earlier")
+	belt_check(factories && factories.era_tier == 4 && ("steam_power" in factories.prereqs) && get_recipe_node_req("/obj/structure/engine/external/steam") == "steam_power" && get_recipe_node_req("/obj/item/stack/cable_coil/white") == "electricity", "Factories follows Steam Power, and plain cable for the drives unlocks with Electricity")
 	var/steel_arm = FALSE
 	for (var/line in splittext(file2text("config/crafting/material_recipes_global.txt"), "\n"))
 		if (findtext(line, "RECIPE: ") == 1 && findtext(line, "/obj/structure/factory_arm,"))
