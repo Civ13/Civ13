@@ -680,6 +680,22 @@ def write_sidecars(name, turf, elev):
             'reaches': len(built[0]), 'hollows': len(built[3]) if len(built) > 3 else 0}
 
 
+def write_manifest():
+    """Digests of every map and its height, current and flood files, for the
+    test suite: it checks them instead of rebuilding the files on every run."""
+    import hashlib
+    import json
+    manifest = {}
+    for name in sorted(continents.MAPS):
+        base = ROOT / 'maps' / 'heights' / ('nomads_americas_%s' % name)
+        files = {'path': ROOT / 'maps' / 'nomads' / ('nomads_americas_%s.dmm' % name), 'heights': Path(str(base) + '.txt'),
+                 'flow': Path(str(base) + '.flow.txt'), 'flood': Path(str(base) + '.flood.txt')}
+        manifest[name] = {kind: hashlib.sha256(path.read_bytes().replace(b'\r\n', b'\n')).hexdigest()
+                          for kind, path in files.items()}
+    (Path(__file__).resolve().parent / 'sidecars.json').write_text(json.dumps(manifest, indent=1, sort_keys=True) + '\n',
+                                                                 encoding='utf-8', newline='\n')
+
+
 def open_pockets(walk, rock, dry):
     """Carve a two-tile pass from each enclosed walkable pocket to open ground."""
     labels, sizes = components(walk)
@@ -853,6 +869,8 @@ def main(argv=None):
         if not (args.out or args.size):
             stats['sidecars'] = write_sidecars(name, turf, elev)
         print(name, out, stats)
+    if not (args.out or args.size):
+        write_manifest()
 
 
 if __name__ == '__main__':
