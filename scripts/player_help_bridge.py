@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '7d0776cce231f467e7a0d410b1ae0335cc0c279e'
+WIKI_REVIEWED_REVISION = 'e49f466903b2194c6abcd1170a25f448820b8b6f'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('dbdd9f64009c697282c90bf6d7e157100834ad2ea23f5b76ec03938e816c1083', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('0da0fcb7a71382365bf818e6e27b5e0c58056785f328a4da1bba4ed44e26a673', 'character skills traits languages'),
@@ -94,7 +94,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Research.md': ('698e0d0b98fcff745bfedbd816a8f4c7dcbc50ecb3c7be466f0cd3b8a2b847e2', 'research unlock study technology research bench'),
     'guides/Guide_to_Resource_Extraction.md': ('7a5761156ca1e80fa50cd6558b0b7bedacdde2649e16a3be05bd43fb9caa5f0c', 'resource extraction gathering oil petroleum well fracturing'),
     'guides/Guide_to_Survival.md': ('a449eed1a1668a02a460076c3a08e61b512202b1cdfa95e13b18226238967bba', 'survival winter cold warm freezing hypothermia shelter debris footwear boots snowshoes shoes ice mud rain wet umbrella raincoat cape storm storms lightning thunder blizzard sandstorm heat wave weather fire fires wildfire firefighting beater flapper smother burning bucket blanket extinguish smoke signal signals hook firebreak pump engine nozzle hose jet reel extinguisher'),
-    'guides/Guide_to_Tanks.md': ('9250b410333e0da30224b09ed2126ce2ed676225aa2dda2be3b13c8f7ff3442a', 'tank driving crew ammunition'),
+    'guides/Guide_to_Tanks.md': ('bfbd3aeed172e1b3056b5ecb9cc4a24813298e300a5545af8ab93ceb22822ab9', 'tank driving crew ammunition'),
     'guides/Guide_to_Trains.md': ('084ca499676d0ccfa7d9e64d9e52da43d7f0b5c40d95bbef0e3908ab2a35f641', 'train trains railway track locomotive station switcher rails wagon'),
     'guides/Guide_to_Trenches.md': ('c0c8506c1eb0ee5118d6f0f14d816f72e80e5c66664b547b7b3e894fe6a59881', 'trench trenches fortification sandbag dig shovel'),
     'guides/Guide_to_Weapons.md': ('b7bd93f55e479d0dcfb8f899d0164373a697e5eff5819f163ec8d9d06e07bc8e', 'weapons gun reload ammunition'),
