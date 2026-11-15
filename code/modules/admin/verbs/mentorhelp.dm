@@ -47,12 +47,12 @@
 		if ((R_MENTOR & X.holder.rights) && !((R_ADMIN|R_MOD) & X.holder.rights))
 			if (X.is_preference_enabled(/datum/client_preference/holder/play_adminhelp_ping))
 				X << 'sound/items/bikehorn.ogg'
-			X << mentormsg
+			to_chat(X, CHAT_TYPED(CHAT_ADMIN, mentormsg))
 
 		else if ((R_ADMIN|R_MOD) & X.holder.rights)
 			if (X.is_preference_enabled(/datum/client_preference/holder/play_adminhelp_ping))
 				X << 'sound/items/bikehorn.ogg'
-			X << adminmsg
+			to_chat(X, CHAT_TYPED(CHAT_ADMIN, adminmsg))
 
 	return
 

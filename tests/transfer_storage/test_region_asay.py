@@ -113,3 +113,31 @@ class RegionAsay(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class StaffHelpRequests(unittest.TestCase):
+    """Mentorhelps and adminhelps reach staff through the browser chat and
+    land on the Admin tab. A raw `client << text` skips the browser chat
+    entirely: staff heard the ping sound but saw no message."""
+
+    MHELP = read('code/modules/admin/verbs/mentorhelp.dm')
+    AHELP = read('code/modules/admin/verbs/adminhelp.dm')
+
+    def staff_loop(self, source):
+        start = source.index('for (var/client/X in admins)')
+        return source[start:]
+
+    def test_no_raw_text_output_to_staff(self):
+        for source in (self.MHELP, self.AHELP):
+            loop = self.staff_loop(source)
+            for line in loop.splitlines():
+                if 'X <<' in line:
+                    self.assertIn("'sound/", line, line)
+
+    def test_staff_copies_are_admin_typed(self):
+        mhelp = self.staff_loop(self.MHELP)
+        self.assertIn('to_chat(X, CHAT_TYPED(CHAT_ADMIN, mentormsg))', mhelp)
+        self.assertIn('to_chat(X, CHAT_TYPED(CHAT_ADMIN, adminmsg))', mhelp)
+        ahelp = self.staff_loop(self.AHELP)
+        self.assertIn('to_chat(X, CHAT_TYPED(CHAT_ADMIN, msg))', ahelp)
+        self.assertIn('to_chat(X, CHAT_TYPED(CHAT_ADMIN, mentormsg))', ahelp)
