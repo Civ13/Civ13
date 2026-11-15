@@ -78,6 +78,11 @@
 		deltimer(hop_timer)
 		hop_timer = 0
 	sailing_at = speed
+	// A hull the players built creeps by pixels (vehicle_offset_hull.dm),
+	// and marks the water ahead as she starts to cover it.
+	if (offset_sails())
+		hop_timer = addtimer(CALLBACK(src, PROC_REF(offset_tick)), offset_period(), TIMER_LOOP | TIMER_STOPPABLE)
+		return
 	hop_timer = addtimer(CALLBACK(src, PROC_REF(sail_tick)), sail_interval(), TIMER_LOOP | TIMER_STOPPABLE)
 	schedule_path_warning()
 
@@ -88,6 +93,7 @@
 		if (body)
 			body.glide_rest(sail_interval())
 	sailing_at = 0
+	offset_square()
 	if (warn_timer)
 		deltimer(warn_timer)
 		warn_timer = 0
@@ -174,12 +180,7 @@
 		return FALSE
 	if (persistence_save_in_progress)
 		return FALSE
-	// A mast lost since the last hop slows her at once.
-	fit_drives()
-	if (speed > max_speed())
-		speed = max_speed()
-		crew_message(SPAN_WARNING("She loses way: [drives_text()]"))
-	show_drives()
+	sail_trim()
 	var/list/hop = next_hop()
 	clear_path()
 	if (hop)
@@ -187,14 +188,30 @@
 		var/moved = body.move_to(hop[1], hop[2], body.heading())
 		body.glide_time = 0
 		if (moved)
-			// Her drives pay once for the water a hop would have covered.
-			tiles_since_burn += sail_tiles()
-			if (tiles_since_burn >= speed * VESSEL_TILES_PER_STEP)
-				tiles_since_burn = 0
-				burn_drives()
+			sail_paid(sail_tiles())
 			return TRUE
 	if (hop)
 		last_refusal = body.last_refusal
+	sail_refused()
+	return FALSE
+
+// A mast lost since the last move slows her at once.
+/datum/craft/proc/sail_trim()
+	fit_drives()
+	if (speed > max_speed())
+		speed = max_speed()
+		crew_message(SPAN_WARNING("She loses way: [drives_text()]"))
+	show_drives()
+
+// Her drives pay once for the water a hop would have covered.
+/datum/craft/proc/sail_paid(tiles)
+	tiles_since_burn += tiles
+	if (tiles_since_burn >= speed * VESSEL_TILES_PER_STEP)
+		tiles_since_burn = 0
+		burn_drives()
+
+// She cannot go on: all stop, and why.
+/datum/craft/proc/sail_refused()
 	crew_message(SPAN_WARNING("<b>All stop!</b> [capitalize(last_refusal)]."))
 	// The edge of these waters is where voyages to other lands begin (ship_voyage.dm).
 	if (last_refusal == "the edge of the world" && istype(body, /datum/craft_body/built) && shard_group && shard_group.enabled)
@@ -202,7 +219,6 @@
 	speed = VESSEL_SPEED_STOP
 	stop_sailing()
 	show_drives()
-	return FALSE
 
 // A turn ordered at the helm: the swing is marked and she comes about
 // VESSEL_PATH_WARNING later. FALSE with last_refusal set when she cannot.
@@ -254,6 +270,8 @@
 		clear_path()
 		return FALSE
 	clear_path()
+	// A turn swings her round from square on her tiles.
+	offset_square()
 	. = body.turn_to(heading)
 	if (!.)
 		last_refusal = body.last_refusal

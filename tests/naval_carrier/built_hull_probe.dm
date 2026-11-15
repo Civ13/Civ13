@@ -24,6 +24,10 @@ var/naval_research_done = FALSE
 	return naval_research_done
 /mob/living/human/naval_probe/New()
 	return
+var/hull_probe_watched = FALSE
+// Nobody has a client here; the probe says when a player is near.
+/datum/vehicle_offset/hull/watched()
+	return hull_probe_watched
 var/naval_failures = 0
 var/naval_runtime_error = FALSE
 /proc/naval_check(condition, label)
@@ -72,7 +76,8 @@ var/naval_runtime_error = FALSE
 /proc/hull_planks(turf/T)
 	. = 0
 	for (var/obj/covers/C in T)
-		.++
+		if (C.loc == T)
+			.++
 
 // The steps a half minute covers at her speed: a gliding hull makes one tile
 // a step. TRUE when every step moved her.
@@ -443,6 +448,139 @@ var/naval_runtime_error = FALSE
 	for (var/obj/wired in list(c1, c2, c3, ashore, dynamo, lamp, quay_lamp))
 		qdel(wired)
 	C.fit_drives()
+
+	// ---- Sailing by pixels (craft/vehicle_offset_hull.dm) ----
+	// A second hull, three by two, bow east, out in the bay.
+	for (var/x = 45, x <= 47, x++)
+		hull_lay(x, 25)
+		hull_lay(x, 26)
+	var/obj/structure/hull_tiller/skiff = new(locate(45, 25, 2))
+	naval_check(isnull(skiff.commission("Skiff", EAST)) && skiff.craft, "a second hull is commissioned for pixel sailing")
+	var/datum/craft/P = skiff.craft
+	var/obj/covers/bow_plank = locate(/obj/covers) in locate(47, 26, 2)
+	var/mob/living/human/naval_probe/deckhand = new(locate(46, 26, 2))
+	var/obj/item/weapon/reagent_containers/glass/bucket/pail = new(locate(46, 25, 2))
+	hull_probe_watched = TRUE
+	P.set_anchor(FALSE)
+	P.set_speed(VESSEL_SPEED_SLOW)
+	naval_check(P.offset_sails() && P.hop_timer && P.offset_period() == 150 / 32, "under way she pulses a pixel at a time ([P.offset_period()] ds)")
+	P.offset_tick()
+	var/datum/vehicle_offset/hull/HO = P.offset_mover
+	naval_check(HO && skiff.x == 45 && skiff.step_x == 1 && bow_plank.step_x == 1 && deckhand.step_x == 1 && pail.step_x == 1, "the first pulse moves her deck, tiller, cargo and crew one pixel east together")
+	naval_check(P.path_markers.len == 2, "starting to cover the water ahead marks it ([P.path_markers.len])")
+	naval_check((deckhand in HO.carried) && (bow_plank in HO.footprint) && vehicle_offset_riders[deckhand] == HO, "everyone aboard is carried; her planks are her body")
+	// A step under way checks nobody else moved the walker; the deck carrying
+	// them is not somebody else, so the step goes on from where she put them.
+	var/datum/human_subtile_transaction/walk = new
+	walk.actor = deckhand
+	walk.expected = deckhand.human_subtile_snapshot()
+	deckhand.human_subtile_transaction = walk
+	P.offset_tick()
+	naval_check(deckhand.step_x == 2 && human_subtile_same(walk.expected, deckhand.human_subtile_snapshot()), "a step in progress goes on from where her deck carried the walker")
+	// Moved by someone else since the walk's last pulse: the deck does not hide it.
+	var/list/stale = walk.expected.Copy()
+	stale["sx"] = stale["sx"] - 5
+	walk.expected = stale
+	P.offset_tick()
+	naval_check(!human_subtile_same(walk.expected, deckhand.human_subtile_snapshot()) && walk.expected["sx"] == stale["sx"], "a walker moved by someone else is not carried on by the deck")
+	walk.expected = deckhand.human_subtile_snapshot()
+	for (var/i = 4 to 15)
+		P.offset_tick()
+	naval_check(human_subtile_same(walk.expected, deckhand.human_subtile_snapshot()), "the step keeps up with her deck pulse after pulse")
+	deckhand.human_subtile_transaction = null
+	naval_check(skiff.x == 45 && skiff.step_x == 15 && bow_plank.x == 47 && bow_plank.step_x == 15 && hull_planks(locate(48, 26, 2)) == 0, "fifteen pulses in she is half a tile on and still on her own tiles")
+	// Newcomers are judged by her deck as it is drawn, half a tile on.
+	var/mob/living/human/naval_probe/boarder = new(locate(46, 25, 2))
+	boarder.step_x = -16
+	var/mob/living/human/naval_probe/swimmer = new(locate(45, 26, 2))
+	swimmer.step_x = -16
+	var/datum/human_subtile_transaction/boarding = new
+	boarding.actor = boarder
+	boarding.expected = boarder.human_subtile_snapshot()
+	boarder.human_subtile_transaction = boarding
+	HO.sync()
+	naval_check(human_subtile_same(boarding.expected, boarder.human_subtile_snapshot()), "someone boarding mid-step goes on with the step from the plank they are filed on")
+	boarder.human_subtile_transaction = null
+	boarding.actor = null
+	var/list/boarded = HO.carried[boarder]
+	naval_check(boarded && boarder.x == 45 && boarder.step_x == 16 && boarded[1] == 1, "someone boarding is filed on the plank under their centre and carried from there ([boarder.x],[boarder.step_x], own [boarded ? boarded[1] : "none"])")
+	naval_check(!(swimmer in HO.carried) && swimmer.x == 45 && swimmer.step_x == -16, "someone whose centre is over the water astern is not taken aboard")
+	qdel(boarder)
+	qdel(swimmer)
+	// The deckhand walks three pixels aft as she sails.
+	deckhand.step_x -= 3
+	// That was the walk's own pulse, so its snapshot is where the deckhand stands.
+	walk.expected = deckhand.human_subtile_snapshot()
+	deckhand.human_subtile_transaction = walk
+	P.offset_tick()
+	naval_check(human_subtile_same(walk.expected, deckhand.human_subtile_snapshot()), "the step survives her whole-tile move as the offset wraps")
+	deckhand.human_subtile_transaction = null
+	walk.actor = null
+	naval_check(skiff.x == 46 && skiff.step_x == -16 && bow_plank.x == 48 && bow_plank.step_x == -16 && !P.path_markers.len, "past half a tile her own move carries her a tile on and the offset wraps ([skiff.x],[skiff.step_x])")
+	naval_check(deckhand.x == 47 && deckhand.step_x == -19 && pail.x == 47 && pail.step_x == -16, "the deckhand keeps the three pixels walked; the pail rides ([deckhand.x],[deckhand.step_x])")
+	naval_check(hull_planks(locate(45, 25, 2)) == 0 && hull_planks(locate(48, 25, 2)) == 1 && P.tiles_since_burn == 1, "her planks moved a tile and her drives paid for it")
+	// Someone pulled off her deck is no longer carried.
+	pail.forceMove(locate(52, 40, 2))
+	P.offset_tick()
+	naval_check(!(pail in HO.carried) && !vehicle_offset_riders[pail] && pail.step_x >= -16 && pail.step_x < 16, "a thing taken off her is dropped and filed by its own centre ([pail.step_x])")
+	// Nobody near: she squares on her tiles and hops whole tiles.
+	hull_probe_watched = FALSE
+	var/square_x = skiff.x
+	P.offset_tick()
+	naval_check(!skiff.step_x && !bow_plank.step_x && !HO.carried.len && skiff.x == square_x, "with nobody near she squares on her tiles")
+	for (var/i = 2 to 32)
+		P.offset_tick()
+	naval_check(skiff.x == square_x + 1 && !skiff.step_x, "and hops a whole tile at her pace ([skiff.x])")
+	// Unwatched, a hop that trims her pace sets the pulse again.
+	P.speed = VESSEL_SPEED_HALF
+	P.start_sailing()
+	for (var/i = 1 to 32)
+		if (P.speed != VESSEL_SPEED_HALF)
+			break
+		P.offset_tick()
+	naval_check(P.speed == VESSEL_SPEED_SLOW && P.sailing_at == VESSEL_SPEED_SLOW && P.hop_timer, "unwatched, a hop that loses her way restarts her pulse at the new pace ([P.sailing_at])")
+	// A save squares her too.
+	hull_probe_watched = TRUE
+	P.offset_tick()
+	naval_check(skiff.step_x == 1, "watched again, she creeps on by pixels")
+	persistence_save_in_progress = TRUE
+	P.offset_tick()
+	naval_check(!skiff.step_x && !HO.carried.len && !P.offset_sails(), "a save squares her and stops the pixels")
+	persistence_save_in_progress = FALSE
+	// A rock ahead stops her flush with her tile, all stop with the reason.
+	var/obj/structure/probe_rock/reef = new(locate(bow_plank.x + 2, 25, 2))
+	P.set_speed(VESSEL_SPEED_SLOW)
+	var/pulses = 0
+	while (P.speed > 0 && pulses < 100)
+		P.offset_tick()
+		pulses++
+	naval_check(P.speed == VESSEL_SPEED_STOP && !skiff.step_x && bow_plank.x == reef.x - 1 && findtext(P.last_refusal, "probe rock in the way"), "hard against a rock she stops square with the reason ([P.last_refusal], [pulses] pulses)")
+	qdel(reef)
+	// Coming about: she holds while the turn is marked, then squares and turns.
+	P.set_speed(VESSEL_SPEED_SLOW)
+	P.offset_tick()
+	P.offset_tick()
+	naval_check(skiff.step_x == 2, "under way again")
+	naval_check(P.order_turn(NORTH), "a turn is ordered under way ([P.last_refusal])")
+	P.offset_tick()
+	naval_check(skiff.step_x == 2, "she holds her offset while the turn is marked")
+	naval_check(P.finish_turn() && !skiff.step_x && !bow_plank.step_x && P.body.heading() == NORTH, "and comes about square on her tiles")
+	P.offset_tick()
+	naval_check(skiff.step_y == 1 && !skiff.step_x, "then creeps north")
+	// A step taken on deck just before all stop is kept when she squares.
+	var/deck_y = (deckhand.y * 32 + deckhand.step_y) - (skiff.y * 32 + skiff.step_y)
+	deckhand.step_y += 2
+	P.set_speed(VESSEL_SPEED_STOP)
+	naval_check(!skiff.step_y && !P.hop_timer, "all stop squares her")
+	naval_check((deckhand.y * 32 + deckhand.step_y) - (skiff.y * 32 + skiff.step_y) == deck_y + 2, "and the deckhand keeps the step just taken")
+	qdel(deckhand)
+	qdel(pail)
+	qdel(skiff)
+	for (var/x = 40, x <= 55, x++)
+		for (var/y = 20, y <= 32, y++)
+			for (var/obj/covers/plank in locate(x, y, 2))
+				qdel(plank)
+	naval_check(crafts.len == 1, "the second hull is gone ([crafts.len])")
 
 	// ---- Striking her ----
 	tiller.decommission()

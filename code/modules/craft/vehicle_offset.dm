@@ -27,6 +27,8 @@
 
 // Every live vehicle offset, so that a save can drop them all at once.
 var/global/list/vehicle_offsets = list()
+// Everything a vehicle offset carries, to the offset carrying it.
+var/global/list/vehicle_offset_riders = list()
 
 // Pixels per tick that cover one tile in this many deciseconds.
 /proc/vehicle_offset_speed(ds_per_tile)
@@ -81,6 +83,9 @@ var/global/list/vehicle_offsets = list()
 /datum/vehicle_offset/Destroy()
 	vehicle_offsets -= src
 	snap()
+	for (var/atom/movable/A in carried)
+		if (vehicle_offset_riders[A] == src)
+			vehicle_offset_riders -= A
 	carried = list()
 	footprint = list()
 	owner = null
@@ -90,15 +95,17 @@ var/global/list/vehicle_offsets = list()
 /datum/vehicle_offset/proc/carry(atom/movable/A, body = FALSE)
 	if (!A)
 		return
-	carried[A] = list(A.step_x - ox, A.step_y - oy)
-	if (body)
-		footprint |= A
+	carry_at(A, A.step_x - ox, A.step_y - oy, body)
 
 // Carries A at a fixed place on the vehicle: a seated rider sits at (0, 0).
+// Each entry is list(own x, own y, drawn x, drawn y): the last two are where
+// draw() last put A, in absolute pixels, so that settle() can tell when A
+// moved by itself (a person walking on the deck).
 /datum/vehicle_offset/proc/carry_at(atom/movable/A, own_x = 0, own_y = 0, body = FALSE)
 	if (!A)
 		return
-	carried[A] = list(own_x, own_y)
+	carried[A] = list(own_x, own_y, A.x * VEHICLE_OFFSET_TILE + A.step_x, A.y * VEHICLE_OFFSET_TILE + A.step_y)
+	vehicle_offset_riders[A] = src
 	if (body)
 		footprint |= A
 
@@ -110,6 +117,8 @@ var/global/list/vehicle_offsets = list()
 	var/list/own = carried[A]
 	carried -= A
 	footprint -= A
+	if (vehicle_offset_riders[A] == src)
+		vehicle_offset_riders -= A
 	if (!QDELETED(A) && !keep_place)
 		A.step_x = own[1]
 		A.step_y = own[2]
@@ -124,18 +133,25 @@ var/global/list/vehicle_offsets = list()
 		var/list/own = carried[A]
 		A.step_x = ox + own[1]
 		A.step_y = oy + own[2]
+		own[3] = A.x * VEHICLE_OFFSET_TILE + A.step_x
+		own[4] = A.y * VEHICLE_OFFSET_TILE + A.step_y
+		if (ismob(A))
+			A.vehicle_offset_drawn()
 
-// Square on the tile again, everything with it.
+// Square on the tile again, everything with it. A walk made on the deck since
+// the last pulse is taken in first, so squaring does not undo it.
 /datum/vehicle_offset/proc/snap()
+	var/list/walkers = walks_in_step()
+	settle()
 	speed_x = 0
 	speed_y = 0
 	rest_x = 0
 	rest_y = 0
-	if (!ox && !oy)
-		return
-	ox = 0
-	oy = 0
-	draw()
+	if (ox || oy)
+		ox = 0
+		oy = 0
+		draw()
+	vehicle_offset_rebase_walks(walkers)
 
 // TRUE when a player is close enough to see the pixels; cached for two seconds.
 /datum/vehicle_offset/proc/watched()
@@ -227,9 +243,69 @@ var/global/list/vehicle_offsets = list()
 		if (d)
 			d -= part
 
+// Walking on a moving deck. Anything carried that moved by itself since the
+// last draw (a person walking, a crate shoved) keeps where it went: its own
+// offset is taken again from where it stands. It stays filed under the body
+// tile beneath its centre as the body is drawn, so a person at the bow is never
+// filed onto the water ahead while the body overlaps it. Someone whose centre
+// has left every body tile has stepped off: they are dropped where they stand
+// and filed by their own centre again. Runs at the start of every pulse;
+// seated riders and cargo that did not move cost one comparison each.
+/datum/vehicle_offset/proc/settle()
+	var/list/deck = null
+	for (var/atom/movable/A in carried)
+		if (QDELETED(A) || (A in footprint))
+			continue
+		var/list/own = carried[A]
+		if (!isturf(A.loc))
+			drop(A, TRUE)
+			continue
+		if (A.x * VEHICLE_OFFSET_TILE + A.step_x == own[3] && A.y * VEHICLE_OFFSET_TILE + A.step_y == own[4])
+			continue
+		if (!deck)
+			deck = deck_tiles()
+		if (!file_on_deck(A, deck))
+			drop(A, TRUE)
+			vehicle_offset_refile(A)
+			continue
+		own[1] = A.step_x - ox
+		own[2] = A.step_y - oy
+		own[3] = A.x * VEHICLE_OFFSET_TILE + A.step_x
+		own[4] = A.y * VEHICLE_OFFSET_TILE + A.step_y
+
+// The tiles the body is filed on (its drawn offset aside).
+/datum/vehicle_offset/proc/deck_tiles()
+	. = list()
+	for (var/atom/movable/F in footprint)
+		for (var/turf/T in vehicle_offset_tiles(F))
+			.[T] = TRUE
+
+// Files A under the body tile beneath its centre as the body is drawn, keeping
+// where A is drawn. FALSE when no body tile is under its centre.
+/datum/vehicle_offset/proc/file_on_deck(atom/movable/A, list/deck)
+	if (!isturf(A.loc) || A.bound_x || A.bound_y || A.bound_width != VEHICLE_OFFSET_TILE || A.bound_height != VEHICLE_OFFSET_TILE)
+		return FALSE
+	var/px = A.x * VEHICLE_OFFSET_TILE + A.step_x
+	var/py = A.y * VEHICLE_OFFSET_TILE + A.step_y
+	// round() with one argument is floor.
+	var/cx = round((px - ox + VEHICLE_OFFSET_HALF) / VEHICLE_OFFSET_TILE)
+	var/cy = round((py - oy + VEHICLE_OFFSET_HALF) / VEHICLE_OFFSET_TILE)
+	var/turf/T = locate(cx, cy, A.z)
+	if (!T || !deck[T])
+		return FALSE
+	if (A.loc != T)
+		// A direct loc write, as human_subtile_anchor(): no turf events, and
+		// the pixel position, collision and covered turfs stay as they were.
+		A.loc = T
+		A.step_x = px - cx * VEHICLE_OFFSET_TILE
+		A.step_y = py - cy * VEHICLE_OFFSET_TILE
+	return TRUE
+
 // One pulse at the current speed: x first, then y. Returns TRUE if anything moved.
 /datum/vehicle_offset/proc/pulse()
 	pulses++
+	var/list/walkers = walks_in_step()
+	settle()
 	if (speed_x || speed_y)
 		blocked_dir = 0
 	// round() with one argument is floor; the fraction waits for the next pulse.
@@ -248,6 +324,7 @@ var/global/list/vehicle_offsets = list()
 		speed_y = 0
 		rest_y = 0
 	draw()
+	vehicle_offset_rebase_walks(walkers)
 	return moved_x || moved_y
 
 // A frame vehicle (cars, trucks, tanks): the tile step is the axis's own
@@ -278,5 +355,53 @@ var/global/list/vehicle_offsets = list()
 	var/turf/was = V.loc
 	V.do_move(dir)
 	return V.loc != was
+
+// Files A under the tile beneath its own centre again (offsets -16 to 15),
+// keeping where it is drawn. For things a vehicle offset stops carrying.
+/proc/vehicle_offset_refile(atom/movable/A)
+	if (!A || !isturf(A.loc) || A.bound_x || A.bound_y || A.bound_width != VEHICLE_OFFSET_TILE || A.bound_height != VEHICLE_OFFSET_TILE)
+		return
+	if (ishuman(A))
+		var/mob/living/human/H = A
+		H.human_subtile_anchor()
+		H.human_subtile_offset_owned = !!(H.step_x || H.step_y)
+		return
+	var/px = A.x * VEHICLE_OFFSET_TILE + A.step_x
+	var/py = A.y * VEHICLE_OFFSET_TILE + A.step_y
+	var/cx = round((px + VEHICLE_OFFSET_HALF) / VEHICLE_OFFSET_TILE)
+	var/cy = round((py + VEHICLE_OFFSET_HALF) / VEHICLE_OFFSET_TILE)
+	var/turf/T = locate(cx, cy, A.z)
+	if (!T)
+		return
+	if (A.loc != T)
+		A.loc = T
+	A.step_x = px - cx * VEHICLE_OFFSET_TILE
+	A.step_y = py - cy * VEHICLE_OFFSET_TILE
+
+// Called on every carried mob after each draw.
+/atom/movable/proc/vehicle_offset_drawn()
+	return
+
+// A person carried at an offset owns it for free movement, so they can walk
+// on the deck by pixels; with free movement off they walk whole tiles.
+/mob/living/human/vehicle_offset_drawn()
+	if (human_subtile_enabled || human_subtile_default_pending)
+		human_subtile_offset_owned = !!(step_x || step_y)
+
+// A step under way checks that nobody else moved the walker since its last
+// pulse. The deck carrying them is not somebody else: the step goes on from
+// where the deck put them. Only a walk whose snapshot still matched before the
+// deck moved is carried on, so a shove from anyone else still stops it.
+/datum/vehicle_offset/proc/walks_in_step()
+	for (var/mob/living/human/H in carried)
+		var/datum/human_subtile_transaction/T = H.human_subtile_transaction
+		if (T && !T.cancelled && human_subtile_same(T.expected, H.human_subtile_snapshot()))
+			LAZYADD(., H)
+
+/proc/vehicle_offset_rebase_walks(list/walkers)
+	for (var/mob/living/human/H in walkers)
+		var/datum/human_subtile_transaction/T = H.human_subtile_transaction
+		if (T && !T.cancelled)
+			T.expected = H.human_subtile_snapshot()
 
 #undef VEHICLE_OFFSET_CHUNK

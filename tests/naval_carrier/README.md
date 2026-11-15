@@ -137,6 +137,12 @@ give half ahead, engines that give full ahead and burn from their tank at
 every hop, and wiring that stays joined aboard while a cable to the shore
 parts.
 
+It also sails a second hull by pixels (`code/modules/craft/vehicle_offset_hull.dm`):
+a pixel a pulse with deck, tiller, cargo and crew together, the path marked as
+she starts to cover it, her own move half a tile on, a deckhand's walk kept,
+things taken off her dropped, whole-tile hops with nobody near, squared for a
+save, a turn and all stop, and stopped flush by a rock.
+
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/built_hull_probe.dm 300
 
 ## Pushing a hull off by hand (`hull_push_probe.dm`)

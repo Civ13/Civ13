@@ -278,8 +278,11 @@
 // body's pixel position, collision and covered turfs (locs) exactly as they
 // were; turf events still follow what the body overlaps. The next native move
 // files it by its corner again, so this runs after every one.
+// A person on a moving deck is filed under the deck tile beneath them, and
+// the deck's own offset (vehicle_offset.dm) can add up to -16 more.
 /mob/living/human/proc/human_subtile_shape()
-	return isturf(loc) && world.icon_size == 32 && bound_x == 0 && bound_y == 0 && bound_width == 32 && bound_height == 32 && isnum(step_x) && isnum(step_y) && step_x >= -16 && step_x < 32 && step_y >= -16 && step_y < 32 && step_x == round(step_x) && step_y == round(step_y)
+	var/low = vehicle_offset_riders[src] ? -32 : -16
+	return isturf(loc) && world.icon_size == 32 && bound_x == 0 && bound_y == 0 && bound_width == 32 && bound_height == 32 && isnum(step_x) && isnum(step_y) && step_x >= low && step_x < 32 && step_y >= low && step_y < 32 && step_x == round(step_x) && step_y == round(step_y)
 
 // File the body under the tile beneath its centre. Returns TRUE if it moved.
 /mob/living/human/proc/human_subtile_anchor()

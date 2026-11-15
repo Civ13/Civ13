@@ -77,6 +77,11 @@ offset or unusual bounds, such as a free-moving human) is drawn one tile back
 and slid forward by `animate()`, with the view of its player. Appearance only:
 the server still moves her a whole tile at once. Not checked in a game client.
 
+A built hull with a player near does not use that glide: she sails by pixel
+offsets instead (`vehicle_offset_hull.dm`, see [docs/vehicle-offset.md](vehicle-offset.md#built-hulls-under-way)),
+creeping a pixel at a time at the same pace, and her crew walk her deck as she
+goes. The glide above is what she does when nobody is near to see.
+
 Modular vehicles and frame boats glide the same way: `axis.do_move()` calls
 `glide_step()` with what it moved, which shows every frame, wheel, thing and
 person carried through the shared `glide_show()` for `vehicle_m_delay + 1`

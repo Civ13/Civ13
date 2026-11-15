@@ -114,10 +114,12 @@
 		return "the edge of the world"
 	if (!building_open_turf(D))
 		return "[D.name] above the deck at [D.x],[D.y]"
-	if (locate(/obj/covers) in D)
-		return "a floor in the way of her upper deck at [D.x],[D.y]"
-	if (locate(/obj/structure/multiz) in D)
-		return "a ladder in the way of her upper deck at [D.x],[D.y]"
+	for (var/obj/covers/C in D)
+		if (C.loc == D)
+			return "a floor in the way of her upper deck at [D.x],[D.y]"
+	for (var/obj/structure/multiz/L in D)
+		if (L.loc == D)
+			return "a ladder in the way of her upper deck at [D.x],[D.y]"
 	for (var/atom/movable/M in D)
 		if (M.loc == D && M.density && !istype(M, /atom/movable/lighting_overlay))
 			return "[M.name] in the way of her upper deck at [D.x],[D.y]"
@@ -169,8 +171,11 @@
 /datum/craft_body/built/proc/tile_refusal(turf/D)
 	if (!istype(D, /turf/floor/beach/water))
 		return "[D.name] ahead at [D.x],[D.y]"
-	if (locate(/obj/covers) in D)
-		return "a built floor in the way at [D.x],[D.y]"
+	// A turf lists what overlaps it by pixels too (a hull sailing by pixels,
+	// vehicle_offset_hull.dm), so only a floor filed on D is in the way.
+	for (var/obj/covers/C in D)
+		if (C.loc == D)
+			return "a built floor in the way at [D.x],[D.y]"
 	if (vessel_at(D))
 		return "another ship in the way at [D.x],[D.y]"
 	for (var/atom/movable/M in D)
