@@ -131,14 +131,32 @@ hold back. With it, it runs these steps:
    materials, names, stack amounts, reagents, contents, attached accessories
    and a boot's knife. The rebuilt crate is read back and compared with the
    snapshot. The source crate is deleted only when nothing is missing or extra.
-6. **Restore.** This only adds: missing languages, recipe knowledge, faction
-   membership (when the faction would take them), role verbs, and food and
-   water as they were.
+6. **Restore.** This only adds: missing languages, recipe knowledge, role
+   verbs, and food and water as they were. A faction is reported, never
+   forced; the destination rejoins a traveller only where the faction or its
+   colony lives.
 
-Skills and partial language scores are keyed lists, which the agent cannot
-write. They are compared and reported, not restored. Move one player at a
-time, never in a retry loop. A busy trail ("The trail is busy") clears in
-about fifteen seconds.
+Notes:
+
+- **Pockets and ID.** Taking off a refused uniform drops its pockets and ID;
+  those are picked up into the crate too.
+- **A long departure.** One still running after five minutes is left alone
+  (the gate stays) rather than cut short.
+- **Resuming.** A run that stops after the departure, for example because the
+  player has not logged in yet, writes `<snapshot>.state.json`. Run the same
+  command with `--resume <that file>` to continue.
+- **What is rebuilt.** Items are rebuilt by type, name, material, stack amount,
+  reagents and contents. Wear, quality, written text and tool parts are not
+  carried, and a mismatch keeps the source crate for an admin.
+- **Reported, not written.** Skills and partial language scores are keyed
+  lists, which the agent cannot write. A knowledge list longer than the
+  agent's list cap (64) is never written back.
+- **One at a time.** Move one player at a time, never in a retry loop. A busy
+  trail ("The trail is busy") clears in about fifteen seconds.
+
+This tool is for regions on a build older than #5557. Once both regions run
+master, the in-game **Admin > Send Player to Region** verb (#5566) sends
+everything natively and checks the arrival one to one.
 
 ## Protocol
 

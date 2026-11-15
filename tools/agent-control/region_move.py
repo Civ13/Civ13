@@ -16,11 +16,18 @@ For an admin on the host, through each region's operator agent (docs/agent-contr
   6. rebuild   - remakes the held items in a crate beside them from the snapshot, with
                  materials, names, amounts, reagents, contents, attached accessories and
                  a boot's knife, then reads it back and compares;
-  7. restore   - only adds: missing languages, recipe knowledge, faction membership and
-                 role verbs, and food and water as they were;
+  7. restore   - only adds: missing languages, recipe knowledge, role verbs, and food
+                 and water as they were. A faction is reported, never forced: the
+                 destination rejoins a traveller to it only where it or its colony lives;
   8. clean up  - deletes the source holding crate once the rebuilt one matched.
 
-Without --apply it only takes the snapshot and lists what would be held back.
+Without --apply it only takes the snapshot and lists what would be held back. A run
+that stops after the departure (the player has not logged in yet) writes a state file
+next to the snapshot; --resume <state file> picks up from the arrival.
+
+The rebuild remakes items by type, name, material, stack amount, reagents and
+contents. Wear, quality, written text and tool parts are not carried; on a build
+that sends everything natively (#5557 and later) nothing is held back at all.
 
   py -3 tools/agent-control/region_move.py --group D:/Civ13Regions/earth.json \\
       --from northamerica --to gaia --ckey somebody --at 87,290,2 --apply
@@ -47,6 +54,8 @@ MOB_VARS = ("real_name", "gender", "age", "stats", "known_recipe_nodes", "recipe
             "riding", "riding_mob", "pulling", "buckled", "persistence_owner_ckey", "original_job_title")
 MATERIALS = {"bronze", "flint", "stone", "iron", "copper", "steel", "bone", "wood", "wooden", "obsidian",
              "tin", "gold", "silver", "lead", "brass"}
+# Quality words a name may carry before its material ("fine iron hatchet").
+QUALITY = {"crude", "poor", "fine", "good", "excellent", "masterwork", "superior", "legendary"}
 GATE = "/obj/structure/region_gate/sea_crossing"
 CRATE = "/obj/structure/closet/crate"
 
@@ -80,7 +89,8 @@ def item_rows(entries, depth=0, out=None):
     """(depth, type, name, amount) for an item tree, for comparison."""
     out = [] if out is None else out
     for e in entries:
-        out.append((depth, e["type"], e.get("name"), e.get("amount")))
+        held = tuple(sorted((r[0], round(float(r[1] or 0), 1)) for r in e.get("reagents") or [] if r and r[0]))
+        out.append((depth, e["type"], e.get("name"), e.get("amount"), held))
         item_rows(e.get("contents") or [], depth + 1, out)
     return out
 
@@ -97,12 +107,23 @@ def compare(want, got):
     return missing, extra
 
 
+def parse_at(text):
+    parts = text.split(",")
+    if len(parts) != 3 or not all(p.strip().isdigit() for p in parts):
+        raise SystemExit(f"--at must be x,y,z, not {text!r}")
+    return [int(p) for p in parts]
+
+
 def material_of(type_path, name):
-    """The material word an item's name starts with, for material items."""
+    """The material word an item's name starts with (after a quality word), for material items."""
     if not type_path.startswith("/obj/item/weapon/material") or not name:
         return None
-    word = name.split()[0].lower()
-    return word if word in MATERIALS else None
+    for word in name.lower().split()[:3]:
+        if word in MATERIALS:
+            return word
+        if word not in QUALITY:
+            return None
+    return None
 
 
 # ---------------------------------------------------------------- one region
@@ -178,7 +199,10 @@ def snapshot(src, ckey):
     snap["items"] = [snapshot_item(src, m) for m in mob.get("contents", []) if not m["type"].startswith("/obj/item/organ")]
     slot_vars = src.vars(ref, SLOTS)
     snap["slots"] = {s: v["ref"] for s, v in slot_vars.items() if isinstance(v, dict) and v.get("ref")}
-    snap["vars"] = {k: flat(v) for k, v in src.vars(ref, MOB_VARS).items()}
+    raw = src.vars(ref, MOB_VARS)
+    snap["vars"] = {k: flat(v) for k, v in raw.items()}
+    # Lists past the agent's cap come back cut short; never write one back.
+    snap["truncated"] = [k for k, v in raw.items() if isinstance(v, dict) and v.get("truncated")]
     langs = src.vars(ref, ["languages", "default_language"])
     names = []
     for d in (langs.get("languages") or {}).get("list", []):
@@ -206,6 +230,15 @@ def hold(src, ckey, names):
             src.call(mob["ref"], "drop_from_inventory", [{"ref": m["ref"]}])
             src.call(m["ref"], "forceMove", [{"ref": crate}])
             moved.append(m["ref"])
+    # Taking off a uniform drops its pockets and ID to the ground; those go in the crate too.
+    still = {k["ref"] for k in (src.inspect(f"ckey:{ckey}") or {}).get("contents", [])}
+    for m in mob.get("contents", []):
+        if m["ref"] in moved or m["ref"] in still or m["type"].startswith("/obj/item/organ"):
+            continue
+        found = src.inspect(m["ref"]) or {}
+        if str((found.get("loc") or {}).get("type", "")).startswith("/turf"):
+            src.call(m["ref"], "forceMove", [{"ref": crate}])
+            moved.append(m["ref"])
     return crate, moved, pending
 
 
@@ -214,7 +247,10 @@ def send(src, ckey, destination):
     ref, at = mob["ref"], [mob["x"], mob["y"], mob["z"]]
     gate = src.spawn(GATE, ref)
     src.setv(gate, "destination", destination)
-    result = src.call(gate, "depart", [{"ref": ref}], wait=90)
+    result = src.call(gate, "depart", [{"ref": ref}], wait=300)
+    if isinstance(result, dict) and result.get("pending"):
+        # Still recording the trip: pulling them out now could lose what they carry.
+        return f"still departing after 5 minutes (job {result['pending']}); gate {gate} left in place for an admin"
     if result != "departed":
         # Never leave anyone inside the gate.
         src.call(ref, "forceMove", [{"turf": at}])
@@ -283,8 +319,9 @@ def build_item(dst, e, parent, parent_type, made_here, at):
 def read_tree(dst, ref):
     out = []
     for k in (dst.inspect(ref) or {}).get("contents", []):
-        v = dst.vars(k["ref"], ["name", "amount"])
-        out.append({"type": k["type"], "name": v.get("name"), "amount": v.get("amount"), "contents": read_tree(dst, k["ref"])})
+        e = snapshot_item(dst, k, 5)
+        e["contents"] = read_tree(dst, k["ref"])
+        out.append(e)
     return out
 
 
@@ -309,7 +346,9 @@ def restore(dst, ckey, snap):
     known = flat(have.get("known_recipe_nodes")) or []
     wanted = snap["vars"].get("known_recipe_nodes") or []
     union = list(known) + [n for n in wanted if n not in known]
-    if len(union) > len(known):
+    if (have.get("known_recipe_nodes") or {}).get("truncated") or "known_recipe_nodes" in snap.get("truncated", []):
+        done.append("knowledge not written (more than the agent lists; use Restore Research Knowledge)")
+    elif len(union) > len(known):
         dst.setv(target, "known_recipe_nodes", {"list": union})
         done.append(f"knowledge +{len(union) - len(known)}")
     spoken = []
@@ -322,13 +361,11 @@ def restore(dst, ckey, snap):
             done.append(f"language {name}")
     civ = snap["vars"].get("civilization")
     if civ and civ != "none" and have.get("civilization") != civ:
-        block = dst.call(target, "faction_enrollment_block", [civ, 1])
-        if block:
-            done.append(f"faction {civ} refused: {block}")
-        elif dst.call(target, "enroll_in_faction", [civ, 1]) == 1:
-            done.append(f"faction {civ}")
-    dst.call(target, "restore_role_verbs")
-    done.append("role verbs")
+        # Reported, not forced: rejoining is the destination's call (colony_arrival).
+        done.append(f"faction not restored: was {civ}, now {have.get('civilization')}; an admin can add them")
+    verbs = dst.call(target, "restore_role_verbs")
+    failed = isinstance(verbs, dict) and verbs.get("error")
+    done.append(f"role verbs failed: {verbs['error']}" if failed else "role verbs")
     for key in ("nutrition", "water"):
         if isinstance(snap["vars"].get(key), (int, float)):
             dst.setv(target, key, snap["vars"][key])
@@ -356,7 +393,12 @@ def main(argv=None):
     p.add_argument("--snapshots", default="data/transfer-snapshots", help="where snapshots are written")
     p.add_argument("--arrival-wait", type=int, default=240, help="seconds to wait for them on the destination")
     p.add_argument("--apply", action="store_true", help="move them; without it only snapshot and report")
+    p.add_argument("--resume", help="state file written by a run that stopped after the departure")
     args = p.parse_args(argv)
+    at = parse_at(args.at) if args.at else None
+    if args.resume:
+        with open(args.resume, encoding="utf-8") as f:
+            return after_departure(args, json.load(f), at)
 
     src = Region(args.group, args.source)
     snap = snapshot(src, args.ckey)
@@ -377,7 +419,6 @@ def main(argv=None):
         print("dry run: nothing moved (add --apply)")
         return 0
 
-    by_ref = {e["ref"]: e for e in snap["items"]}
     crate, moved, missing_names = hold(src, args.ckey, names) if names else (None, [], [])
     if missing_names:
         print(f"  could not find to hold: {missing_names}; stopping before anything leaves")
@@ -388,28 +429,56 @@ def main(argv=None):
         return 1
     result = send(src, args.ckey, args.destination)
     print(f"  departure: {result}")
+    if isinstance(result, str) and result.startswith("still departing"):
+        print(f"  check {args.destination} for them before doing anything else; held items are in crate {crate}")
+        return 1
     if result != "departed":
         print(f"  not sent; held items are in crate {crate} at their feet on {args.source}")
         return 1
 
-    dst = Region(args.group, args.destination)
-    mob = wait_arrival(dst, args.ckey, args.arrival_wait)
-    if not mob:
-        print(f"  {args.ckey} has not arrived on {args.destination} yet; run again with the snapshot once they log in")
-        return 2
-    print(f"  arrived at {mob['x']},{mob['y']},{mob['z']}")
-    if args.at:
-        x, y, z = (int(n) for n in args.at.split(","))
-        dst.call(f"ckey:{args.ckey}", "forceMove", [{"turf": [x, y, z]}])
-        print(f"  placed at {x},{y},{z}")
-    if moved:
-        new_crate, missing, extra, problems = rebuild(dst, args.ckey, [by_ref[r] for r in moved])
-        print(f"  rebuilt crate {new_crate}: missing {missing or 'none'}, extra {extra or 'none'}, problems {problems or 'none'}")
-        if not missing and not extra:
-            print(f"  source crate {crate} deleted: {src.delete(crate)}")
-        else:
-            print(f"  source crate {crate} kept on {args.source} for an admin to compare")
-    done, lower, lost = restore(dst, args.ckey, snap)
+    state = {"snapshot": path, "crate": crate, "moved": moved, "ckey": args.ckey,
+             "source": args.source, "destination": args.destination, "group": args.group}
+    state_path = path[:-5] + ".state.json"
+    with open(state_path, "w", encoding="utf-8") as f:
+        json.dump(state, f, indent=1)
+    return after_departure(args, state, at, snap, state_path)
+
+
+def after_departure(args, state, at, snap=None, state_path=None):
+    """Arrival, placing, rebuilding and restoring. Safe to run again with --resume."""
+    if snap is None:
+        with open(state["snapshot"], encoding="utf-8") as f:
+            snap = json.load(f)
+    group, ckey = state["group"], state["ckey"]
+    src = Region(group, state["source"])
+    dst = Region(group, state["destination"])
+    by_ref = {e["ref"]: e for e in snap["items"]}
+    resume = f"--resume {state_path or args.resume}"
+    try:
+        mob = wait_arrival(dst, ckey, args.arrival_wait)
+        if not mob:
+            print(f"  {ckey} has not arrived on {state['destination']} yet (they must log in); run again with {resume}")
+            return 2
+        print(f"  arrived at {mob['x']},{mob['y']},{mob['z']}")
+        if at:
+            moved_ok = dst.call(f"ckey:{ckey}", "forceMove", [{"turf": at}])
+            print(f"  placed at {at[0]},{at[1]},{at[2]}: {'yes' if moved_ok == 1 else moved_ok}")
+        if state.get("moved") and not state.get("rebuilt"):
+            new_crate, missing, extra, problems = rebuild(dst, ckey, [by_ref[r] for r in state["moved"]])
+            print(f"  rebuilt crate {new_crate}: missing {missing or 'none'}, extra {extra or 'none'}, problems {problems or 'none'}")
+            state["rebuilt"] = new_crate
+            if not missing and not extra:
+                print(f"  source crate {state['crate']} deleted: {src.delete(state['crate'])}")
+            else:
+                print(f"  source crate {state['crate']} kept on {state['source']}: items exist in both crates until an admin compares and deletes one")
+        done, lower, lost = restore(dst, ckey, snap)
+    except Exception as exc:  # noqa: BLE001 - report and leave the way to resume
+        print(f"  stopped after the departure: {exc!r}; the held items are safe in crate {state.get('crate')} on {state['source']}; run again with {resume}")
+        return 3
+    finally:
+        if state_path or args.resume:
+            with open(state_path or args.resume, "w", encoding="utf-8") as f:
+                json.dump(state, f, indent=1)
     print(f"  restored: {', '.join(done)}")
     print(f"  skills now lower than before: {lower or 'none'}")
     print(f"  partial languages lower than before: {lost or 'none'}")

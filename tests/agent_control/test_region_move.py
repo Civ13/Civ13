@@ -44,7 +44,41 @@ class RegionMoveTests(unittest.TestCase):
         self.assertEqual(len(missing), 1)
         self.assertEqual(extra, [])
 
+    def test_reagents_count_in_the_comparison(self):
+        full = [{"type": "/w", "name": "waterskin", "amount": None, "reagents": [["water", 40]], "contents": []}]
+        empty = [{"type": "/w", "name": "waterskin", "amount": None, "contents": []}]
+        missing, extra = region_move.compare(region_move.item_rows(full), region_move.item_rows(empty))
+        self.assertTrue(missing and extra)
+
+    def test_at_is_checked_before_anything_moves(self):
+        self.assertEqual(region_move.parse_at("87,290,2"), [87, 290, 2])
+        for bad in ("87,290", "x,1,2", "1,2,3,4"):
+            with self.assertRaises(SystemExit):
+                region_move.parse_at(bad)
+
+    def test_a_running_departure_is_never_interrupted(self):
+        class Pending(FakeClient):
+            def request(self, action, args=None):
+                if action == "call_proc" and args["proc"] == "depart":
+                    self.requests.append((action, args))
+                    return {"ok": 1, "result": {"done": 0, "job": "7"}}
+                if action == "job":
+                    self.requests.append((action, args))
+                    return {"ok": 1, "result": {"done": 0, "job": "7"}}
+                return super().request(action, args)
+        fake = Pending(None)
+        region = region_move.Region(None, "a", client=fake)
+        original = region.call
+        region.call = lambda target, proc, args=None, wait=0: original(target, proc, args, 0 if wait else 0) if proc != "depart" else {"pending": "7"}
+        result = region_move.send(region, "someone", "b")
+        self.assertTrue(result.startswith("still departing"))
+        actions = [(k, (a or {}).get("proc")) for k, a in fake.requests]
+        self.assertNotIn(("call_proc", "forceMove"), actions)
+        self.assertNotIn("delete_atom", [k for k, _ in actions])
+
     def test_material_from_name(self):
+        self.assertEqual(region_move.material_of("/obj/item/weapon/material/hatchet", "fine iron hatchet"), "iron")
+        self.assertEqual(region_move.material_of("/obj/item/weapon/material/kitchen/utensil/knife", "wooden knife"), "wooden")
         self.assertEqual(region_move.material_of("/obj/item/weapon/material/spear", "bronze spear"), "bronze")
         self.assertIsNone(region_move.material_of("/obj/item/weapon/paddle", "bronze paddle"))
         self.assertIsNone(region_move.material_of("/obj/item/weapon/material/spear", "spear"))
