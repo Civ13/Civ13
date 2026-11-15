@@ -55,4 +55,22 @@ Nothing lowers a score.
 - Check Known Languages shows the level and percentage of every language,
   and lists languages still below Broken as "not yet speakable".
 
-Tests: `tests/language_proficiency/test_proficiency.py`.
+## Books
+
+On book-research worlds each research chapter records the language it was
+written in (`code/modules/research_tree/book_language.dm`): the writing
+language of whoever researched, wrote or hand-copied it. A character writes
+in their default language when they are Conversational in it, otherwise in
+their mother tongue.
+
+- Below Broken in a chapter's language it cannot be studied. From Broken to
+  Fluent it takes longer, twice as long at Broken.
+- Hand-copying a chapter at a bench needs Conversational in its language and
+  writes the copy in the copier's writing language. That is translation: set
+  the default language to the one wanted, then copy.
+- A printed book and a torn-out chapter keep their language.
+- Chapters with no recorded language, such as starting books, are plain to
+  everyone. The book window lists the languages of its chapters.
+
+Tests: `tests/language_proficiency/test_proficiency.py`,
+`tests/book_language/test_book_language.py`.

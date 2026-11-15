@@ -276,7 +276,7 @@ var/global/list/capstone_demonstrations = list(
 		P.update_icon()
 		return TRUE
 	var/obj/item/weapon/book/B = carrier
-	B.add_research_work(node_id, 0, TRUE)
+	B.add_research_work(node_id, 0, TRUE, H)
 	H.gain_active_scholarship(node_id, demonstration_lesson_points(N), "demonstration:[node_id]")
 	return TRUE
 
@@ -374,7 +374,7 @@ var/global/list/capstone_demonstrations = list(
 		return TRUE
 	qdel(P)
 	user.gain_active_scholarship(N.id, demonstration_lesson_points(N), "demonstration:[N.id]")
-	if (B.add_research_work(N.id, 0, TRUE))
+	if (B.add_research_work(N.id, 0, TRUE, user))
 		to_chat(user, SPAN_NOTICE("You copy the demonstration notes into [B]. The chapter on <b>[N.name]</b> is finished."))
 	else
 		to_chat(user, SPAN_NOTICE("You copy the demonstration notes into [B]. The chapter on <b>[N.name]</b> is finished once the study is done."))

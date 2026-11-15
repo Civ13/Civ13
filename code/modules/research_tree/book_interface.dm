@@ -474,8 +474,16 @@
 	data["author"] = author ? "[author]" : null
 	data["has_text"] = dat ? 1 : 0
 	data["held"] = loc == H ? 1 : 0
+	// Reading notes shown at the top of the book: its cipher and the
+	// languages its chapters are written in (book_language.dm).
+	var/list/reading_notes = list()
 	if (is_enciphered())
-		data["cipher_note"] = can_read_cipher(H) ? "Written in cipher (strength [cipher_strength]). You can read it." : "Written in cipher (strength [cipher_strength]). You cannot study, copy or tear out its chapters until you enter its key word or break the cipher: write in it with a pen and choose Cipher."
+		reading_notes += can_read_cipher(H) ? "Written in cipher (strength [cipher_strength]). You can read it." : "Written in cipher (strength [cipher_strength]). You cannot study, copy or tear out its chapters until you enter its key word or break the cipher: write in it with a pen and choose Cipher."
+	var/language_note = chapter_language_note(H)
+	if (language_note)
+		reading_notes += language_note
+	if (reading_notes.len)
+		data["cipher_note"] = jointext(reading_notes, " ")
 	var/desk = H.scholar_desk_rate()
 	var/obj/item/weapon/pen/pen = H.held_writing_pen()
 	var/pen_rate = pen ? scholar_pen_rate(pen) : 1
