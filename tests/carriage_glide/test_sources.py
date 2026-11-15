@@ -136,6 +136,12 @@ class Sources(unittest.TestCase):
         own='\t\t// A rider\'s body can reach into the tile ahead; never hit our own.\n\t\tif (L == driver || (L in ontop))\n\t\t\tcontinue\n'
         self.assertEqual(s.count(own),1)
         s=s.replace(own,'')
+        # Canal steps stop rafts and boats (canals.dm).
+        canal_raft='\tif (canal_step_blocked(get_turf(src), DT))\n\t\tto_chat(driver, SPAN_WARNING("The canal steps here. Work a pound lock to pass."))\n\t\treturn FALSE\n'
+        canal_boat='\tif (canal_step_blocked(get_turf(src), T))\n\t\tto_chat(driver, SPAN_WARNING("The canal steps here. Work a pound lock to pass."))\n\t\tmoving = FALSE\n\t\tstopmovementloop()\n\t\treturn FALSE\n'
+        for canal in (canal_raft,canal_boat):
+            self.assertEqual(s.count(canal),1)
+            s=s.replace(canal,'')
         stale='\trelease_stale_ride_glides()\n'
         self.assertEqual(s.count(stale),1)
         s=s.replace(stale,'')

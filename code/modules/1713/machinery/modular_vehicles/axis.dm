@@ -149,7 +149,7 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 				return FALSE
 			if (reverse)
 				T = get_turf(get_step(FR.loc,OPPOSITE_DIR(dir)))
-			if (!T)
+			if (!T || canal_step_blocked(get_turf(FR), T))
 				moving = FALSE
 				stopmovementloop()
 				return FALSE

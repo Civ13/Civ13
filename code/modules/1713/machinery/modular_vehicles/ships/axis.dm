@@ -318,7 +318,7 @@
 			stopmovementloop()
 			return
 	else
-		if (!istype(get_turf(get_step(src,dir)), /turf/floor/beach/water) && !istype(get_turf(get_step(src,dir)), /turf/floor/trench/flooded))
+		if ((!istype(get_turf(get_step(src,dir)), /turf/floor/beach/water) && !istype(get_turf(get_step(src,dir)), /turf/floor/trench/flooded)) || canal_step_blocked(get_turf(src), get_turf(get_step(src,dir))))
 			visible_message("<span class='notice'>\The [src] crashes into \the [get_turf(get_step(src,dir))]!</span>")
 			moving = FALSE
 			stopmovementloop()

@@ -298,6 +298,9 @@
 	var/turf/DT = get_turf(get_step(src,driver.dir))
 	if (!DT)
 		return FALSE
+	if (canal_step_blocked(get_turf(src), DT))
+		to_chat(driver, SPAN_WARNING("The canal steps here. Work a pound lock to pass."))
+		return FALSE
 	if (driver && istype(DT, /turf/floor/beach/water) || istype(DT, /turf/floor/trench/flooded))
 		if (istype(DT, /turf/floor/beach/water/deep/saltwater) && istype(DT.loc, /area/caribbean/sea))
 			to_chat(driver, "<span class='danger'>You can't go further into the sea with a raft!</span>")
@@ -734,6 +737,11 @@
 		return FALSE
 		
 	var/turf/T = get_turf(get_step(src,driver.dir))
+	if (canal_step_blocked(get_turf(src), T))
+		to_chat(driver, SPAN_WARNING("The canal steps here. Work a pound lock to pass."))
+		moving = FALSE
+		stopmovementloop()
+		return FALSE
 	var/area/A = get_area(T)
 	if (map && A && map.caribbean_blocking_area_types.Find(A.type))
 		if (!map.faction1_can_cross_blocks() && !map.faction2_can_cross_blocks())

@@ -27,7 +27,7 @@ var/list/global/floor_cache = list()
 			update_icon()
 			if (istype(src, /turf/floor/trench/flooded))
 				for (var/turf/floor/trench/TF in range(1, src))
-					if (!TF.flooded || !istype(TF,/turf/floor/trench/flooded))
+					if ((!TF.flooded || !istype(TF,/turf/floor/trench/flooded)) && canal_can_flood(src, TF))
 						if (salty)
 							TF.ChangeTurf(/turf/floor/trench/flooded/salty)
 						else
@@ -40,7 +40,7 @@ var/list/global/floor_cache = list()
 							IF.irrigate("fresh")
 			else
 				for (var/turf/floor/TF in range(1, src))
-					if (map && (istype(TF, /turf/floor/beach/water) || istype(TF, /turf/floor/trench/flooded)) && (map.civilizations || map.nomads || map.ID == MAP_COLONY || map.ID == MAP_FOUR_COLONIES || map.ID == MAP_PIONEERS || map.ID == MAP_BOHEMIA))
+					if (map && (istype(TF, /turf/floor/beach/water) || istype(TF, /turf/floor/trench/flooded)) && canal_can_flood(TF, src) && (map.civilizations || map.nomads || map.ID == MAP_COLONY || map.ID == MAP_FOUR_COLONIES || map.ID == MAP_PIONEERS || map.ID == MAP_BOHEMIA))
 						flooded = TRUE
 						if (istype(TF, /turf/floor/trench/flooded))
 							var/turf/floor/trench/flooded/WT = TF
