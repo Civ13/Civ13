@@ -1453,6 +1453,11 @@ RECIPE: /material/iron/,lighthouse beacon,/obj/structure/lighthouse_beacon,4,150
 RECIPE: /material/bronze/,reflector lighthouse lamp,/obj/structure/lighthouse_beacon/reflector,6,200,1,1,construction,0,0,0,8,null
 RECIPE: /material/glass/,lantern room glazing,/obj/structure/lighthouse_lantern,4,120,1,1,construction,0,0,0,8,null
 RECIPE: /material/stone/,pound lock,/obj/structure/canal_lock,12,300,1,1,construction,0,0,0,8,null
+RECIPE: /material/clay/,clay tablet,/obj/item/weapon/paper/clay_tablet,1,40,0,1,construction,0,0,0,8,null
+RECIPE: /material/wood/,reed stylus,/obj/item/weapon/pen/stylus,1,30,0,1,construction,0,0,0,8,null
+RECIPE: /material/wood/,senet board,/obj/item/game_board/senet,3,100,0,1,construction,0,0,0,8,null
+RECIPE: /material/wood/,chess set,/obj/item/game_board/chess,4,150,0,1,construction,0,0,0,8,null
+RECIPE: /material/wood/,ice house,/obj/structure/closet/ice_house,10,250,1,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,flap gate,/obj/structure/sewer_flap_gate,3,80,1,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,stilt platform,/obj/structure/flood_platform/stilts,4,100,1,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,sluice gate,/obj/structure/sluice_gate,6,120,1,1,construction,0,0,0,8,null

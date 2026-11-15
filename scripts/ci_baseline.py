@@ -1262,6 +1262,10 @@ SUITES = {
         'paths': ('tests/canals/',), 'shared_paths': (
             'code/modules/1713/canals.dm', 'code/modules/1713/trench.dm', 'icons/obj/canal_lock.dmi',
             'tests/sprites/create_canal_lock.py')},
+    # Clay tablets, board games and the ice house: source contracts (native probe tests/small_ancient/probe.dm).
+    'small_ancient': {'files': ('tests/small_ancient/test_source.py',),
+        'paths': ('tests/small_ancient/',), 'shared_paths': (
+            'code/modules/1713/small_ancient.dm', 'icons/obj/small_ancient.dmi', 'tests/sprites/create_small_ancient.py')},
     # Sewers phase S1: source contracts (the native probe is tests/sewers/probe.dm).
     'sewers': {'files': ('tests/sewers/test_sewers.py',),
         'paths': ('tests/sewers/',), 'shared_paths': (

@@ -85,6 +85,9 @@
 				decaytimer += 75 //much slower
 			else
 				decaytimer += 200 //unpowered fridge still better, than storage container
+		else if (istype(loc, /obj/structure/closet/ice_house))
+			var/obj/structure/closet/ice_house/IH = loc
+			decaytimer += IH.is_cold() ? 50 : 300 // packed with snow it keeps food like a freezer
 		else if (istype(loc, /obj/structure/closet/crate/freezer))
 			decaytimer += 50 //to be readjusted according to gameplay, since freezers don't require power
 		else if (isturf(loc) || istype(loc, /obj/structure/cutting_board)) // Exposed board food ages like loose food.
