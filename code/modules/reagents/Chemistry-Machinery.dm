@@ -404,6 +404,11 @@
 				active = FALSE
 			return FALSE
 
+// An idle centrifuge holds no grid capacity; only a running cycle does.
+/obj/structure/centrifuge/proc/release_power()
+	if (powersource)
+		powersource.update_power(-powerneeded, 1, src)
+
 /obj/structure/centrifuge/update_icon()
 	..()
 	if (powered)
@@ -420,16 +425,22 @@
 	else if (istype(H) && H.getStatCoeff("medical") < GET_MIN_STAT_COEFF(STAT_MEDIUM_HIGH))
 		to_chat(H, SPAN_WARNING("These chemicals are too complex for you to understand."))
 		return
-	else if (!check_power())
-		to_chat(H, SPAN_WARNING("\The [src] doesn't have any power!"))
-		return
+	else if (active)
+		return ..()
+	// Rejected starts are checked before power so they reserve no capacity.
 	else if (reagents.total_volume <= 0)
 		to_chat(H, SPAN_NOTICE("\The [src] is empty."))
 		return
-	else if (!collector && !active)
+	else if (!collector)
 		to_chat(H, SPAN_NOTICE("You cannot turn \the [src] active without a collector."))
 		return
-	else if (collector && !active)
+	else if (!collector.is_open_container())
+		to_chat(H, SPAN_NOTICE("Take the lid off \the [collector] first."))
+		return
+	else if (!check_power())
+		to_chat(H, SPAN_WARNING("\The [src] doesn't have any power!"))
+		return
+	else
 		to_chat(H, SPAN_NOTICE("You turn \the [src] active."))
 		active = TRUE
 		update_icon()
@@ -448,6 +459,9 @@
 			to_chat(user, SPAN_WARNING("These chemicals are too complex for you to understand"))
 			return
 		var/obj/item/weapon/reagent_containers/B = W
+		if (istype(B, /obj/item/weapon/reagent_containers/glass) && !B.is_open_container())
+			to_chat(user, SPAN_NOTICE("Take the lid off \the [B] first."))
+			return
 		if (B.reagents)
 			if (B.reagents.total_volume > 0)
 				var/tamt = B.reagents.trans_to_holder(src.reagents, 10, TRUE, FALSE)
@@ -508,13 +522,14 @@
 				return
 			var/separated = separate_batch()
 			active = FALSE
+			release_power()
 			update_icon()
 			visible_message(separated ? "\The [src] completes its cycle." : "\The [src] stops without consuming inputs; check its collector and supported mixture.")
 			playsound(loc, 'sound/machines/ping.ogg', 100, TRUE)
 
 // Resolve supported outputs and their capacity before consuming any input.
 /obj/structure/centrifuge/proc/separate_batch()
-	if(!collector || collector.loc != src || !collector.reagents)
+	if(!collector || collector.loc != src || !collector.reagents || !collector.is_open_container())
 		return FALSE
 	var/largest = reagents.get_master_reagent_id()
 	var/list/products
