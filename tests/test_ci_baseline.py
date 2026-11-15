@@ -198,6 +198,15 @@ class BaselinePolicyTests(unittest.TestCase):
             self.assertIn(name, self.selected([path]))
         self.assertNotIn(name, self.selected(['README.md']))
 
+    def test_earth_maps_suite_is_bounded_and_not_silently_omitted(self):
+        name = 'earth_maps'
+        suite = ci.SUITES[name]
+        self.assertEqual(suite['files'], ('tests/earth_maps/test_earth_maps.py',))
+        for path in suite['files'] + suite['paths'] + suite['shared_paths']:
+            self.assertIn(name, self.selected([path]))
+        self.assertIn(name, self.selected(['maps/earth_drafts/earth_asia.dmm']))
+        self.assertNotIn(name, self.selected(['README.md']))
+
     def test_zombie_city_suite_is_bounded_and_not_silently_omitted(self):
         name = 'zombie_city'
         suite = ci.SUITES[name]

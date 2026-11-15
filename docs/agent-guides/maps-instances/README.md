@@ -265,3 +265,12 @@ over the shared map edge at the isthmus (`edge_crossings`,
 with their height, current and flood files. The
 `americas_maps` offline suite checks the maps, and a map may not grow past the
 measured cell count without a new memory benchmark.
+
+## Earth draft lands
+
+[The Earth drafts](../../earth-drafts.md) are six generated lands for the rest
+of the world (`maps/earth_drafts/`: Europe, Africa, Asia, Oceania, Antarctica,
+Greenland). They are not regions: no metadata, no region id, no height files,
+in no `.dme` or group. `tests/earth_maps/generate.py` feeds their designs to
+the Americas builder; the `earth_maps` offline suite checks the maps and fails
+if any build or region list names one.
