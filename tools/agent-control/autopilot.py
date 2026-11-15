@@ -378,7 +378,7 @@ def summarize(observation, note="", ignored=(), muted=()):
         elif remote.get("control") == "drone":
             lines.append(f"Drone controller: {remote.get('name', 'no drone')}, {'active' if remote.get('active') else 'inactive (use it to activate)'}.")
     if self_state.get("verbs"):
-        lines.append("Your verbs: " + ", ".join(map(str, self_state["verbs"][:60])))
+        lines.append("Your verbs: " + ", ".join(map(str, self_state["verbs"][:150])))
     if self_state.get("item_verbs"):
         lines.append("Item verbs: " + "; ".join(map(str, self_state["item_verbs"][:20])))
     if self_state.get("craftable"):
