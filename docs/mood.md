@@ -86,6 +86,7 @@ sickness, which could only ever pin mood to the floor.
 | Fleas | -5 | maps with hygiene |
 | Sick / seriously ill (plague, typhus, malaria, cholera once it worsens) | -8 / -12 | everywhere |
 | Lasting pain (traumatic shock 50 or more) | -5 | everywhere |
+| Dressed for the weather for 10 minutes (see below) | +3 | hunger-enabled maps |
 | Sheltered: a roofed area, or a lit fire within drying range at night | +3 | hunger-enabled maps |
 | A tame animal within 3 tiles (tamed dog or wolf, tame horse or livestock) | +3 | hunger-enabled maps |
 | Art in sight within 4 tiles: paintings, rock art, statues and monuments | +2 each, up to +6 | hunger-enabled maps |
@@ -94,8 +95,17 @@ A bit dirty (75 up to 200) is neither a lift nor a penalty. The bed is noted
 while the character sleeps (`sleep_comfort`, saved with the body) and counts
 from waking until they next sleep; chairs and seats count for nothing.
 
+Dressed for the weather (`mood_dressed_for_weather()`) reads the air of the
+season and climate from `get_temp()` and always needs clothes on the body.
+Below 10 C the worn layers must keep in at least 0.55 of body heat
+(`get_cold_protection()`, so soaked layers count for less): plain clothes with
+a coat in a temperate winter, a coat and a warm hat on the tundra. From 27 C it
+takes light clothes and shoes, and above 18 C a coat never counts. The clothes
+must be worn for `LIVING_DRESSED_TIME` (10 minutes) without a break; the timer
+is not saved.
+
 The basics (bed, padding, sheet, diet, clean, warm and dry) add up to 20 and
-rest a character at 70: Good. Shelter, an animal and art add 12 more, which is over
+rest a character at 70: Good. Clothes for the weather, shelter, an animal and art add 15 more, which is over
 the cap of 75, so no single lift is required to reach it and conditions alone
 never reach Excellent.
 

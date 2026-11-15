@@ -24,6 +24,12 @@
 #define LIVING_ART 2          // each work of art in sight, up to LIVING_ART_PIECES
 #define LIVING_ART_PIECES 3
 #define LIVING_ART_REACH 4
+#define LIVING_DRESSED 3      // clothes that suit the season and climate
+#define LIVING_DRESSED_TIME 6000 // worn this long (10 minutes) before they count
+#define LIVING_DRESSED_COLD 10   // degrees C: below this it takes warm layers
+#define LIVING_DRESSED_HOT 27    // degrees C: from here it takes light clothes
+#define LIVING_DRESSED_COAT 18   // degrees C: above this a coat is too much
+#define LIVING_DRESSED_WARMTH 0.55 // share of body heat the layers must keep in
 #define LIVING_HUNGER_SHARE 0.25 // of a full stomach or full water
 
 // How well the character last slept: 0 to LIVING_BED + LIVING_PADDING + LIVING_SHEET. Saved
@@ -69,6 +75,31 @@
 	return bodytemperature > base - (base - species.cold_level_1) / 4 && bodytemperature < base + (species.heat_level_1 - base) / 4
 
 // A roof keeps the weather off; at night a lit fire does nearly as well.
+// Clothes that suit the air of this season and climate: warm layers in the
+// cold, light clothes in the heat, and no coat once it is mild.
+/mob/living/human/proc/mood_dressed_for_weather()
+	if (!w_uniform)
+		return FALSE
+	var/air = get_temp(src)
+	if (air < LIVING_DRESSED_COLD)
+		return get_cold_protection(air + 273.15) >= LIVING_DRESSED_WARMTH
+	if (air > LIVING_DRESSED_COAT && istype(wear_suit, /obj/item/clothing/suit/storage/coat))
+		return FALSE
+	if (air >= LIVING_DRESSED_HOT)
+		return shoes ? TRUE : FALSE
+	return TRUE
+
+// When the character began dressing for the weather; 0 while they are not.
+/mob/living/human/var/tmp/mood_dressed_since = 0
+
+/mob/living/human/proc/mood_dressed_long_enough()
+	if (!mood_dressed_for_weather())
+		mood_dressed_since = 0
+		return FALSE
+	if (!mood_dressed_since)
+		mood_dressed_since = world.time
+	return world.time - mood_dressed_since >= LIVING_DRESSED_TIME
+
 /mob/living/human/proc/mood_shelter_name()
 	var/turf/T = get_turf(src)
 	if (!T)
@@ -113,7 +144,7 @@
 /mob/living/human/var/tmp/list/mood_leisure_next // cause -> world.time it may lift again
 
 /mob/living/human/persistence_runtime_var(key)
-	return key == "mood_leisure_next" || ..()
+	return key == "mood_leisure_next" || key == "mood_dressed_since" || ..()
 
 /mob/living/human/proc/mood_leisure(cause, amount, gap)
 	if (stat != CONSCIOUS)
@@ -161,6 +192,8 @@
 		parts["a varied diet"] = LIVING_DIET
 	if (mood_warm_and_dry())
 		parts["being warm and dry"] = LIVING_WARM_DRY
+	if (mood_dressed_long_enough())
+		parts["being dressed for the weather"] = LIVING_DRESSED
 	var/shelter = mood_shelter_name()
 	if (shelter)
 		parts[shelter] = LIVING_SHELTER
@@ -195,4 +228,10 @@
 #undef LIVING_ART
 #undef LIVING_ART_PIECES
 #undef LIVING_ART_REACH
+#undef LIVING_DRESSED
+#undef LIVING_DRESSED_TIME
+#undef LIVING_DRESSED_COLD
+#undef LIVING_DRESSED_HOT
+#undef LIVING_DRESSED_COAT
+#undef LIVING_DRESSED_WARMTH
 #undef LIVING_HUNGER_SHARE

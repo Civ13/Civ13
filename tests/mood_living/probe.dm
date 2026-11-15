@@ -27,6 +27,14 @@
 	return
 /obj/item/weapon/bedsheet/ml_sheet/New()
 	return
+/obj/item/clothing/under/ml_clothes/New()
+	return
+/obj/item/clothing/suit/storage/coat/ml_coat/New()
+	return
+/obj/item/clothing/head/ml_hat/New()
+	return
+/obj/item/clothing/shoes/ml_shoes/New()
+	return
 /obj/structure/brazier/ml_fire/New()
 	return
 /mob/living/simple_animal/cattle/ml_cow/New()
@@ -179,6 +187,56 @@ var/ml_runtime_error = FALSE
 	ml_check(ml_rest(H) == 56 && H.mood_rest_parts["a fine bed to sleep in"] == 6, "a fine bed counts after waking ([H.mood_rest])")
 	H.loc = locate(10, 10, 1)
 	ml_check(ml_rest(H) == 56, "and keeps counting away from the bed")
+
+	// Dressed for the weather: clothes that suit the season and climate, worn for a while.
+	var/area/weather_area = get_area(H)
+	var/old_climate = weather_area.climate
+	var/old_season = season
+	var/obj/item/clothing/under/ml_clothes/clothes = new
+	var/obj/item/clothing/suit/storage/coat/ml_coat/coat = new
+	coat.cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+	coat.min_cold_protection_temperature = COAT_MIN_COLD_PROTECTION_TEMPERATURE
+	var/obj/item/clothing/head/ml_hat/hat = new
+	hat.cold_protection = HEAD
+	hat.min_cold_protection_temperature = HELMET_MIN_COLD_PROTECTION_TEMPERATURE
+	var/obj/item/clothing/shoes/ml_shoes/boots = new
+	H.cold_wetness = 0
+	weather_area.climate = "sea"
+	season = "FALL"
+	ml_check(get_temp(H) >= 10 && get_temp(H) <= 18 && !H.mood_dressed_for_weather(), "nobody is dressed for the weather with no clothes on")
+	H.w_uniform = clothes
+	ml_check(H.mood_dressed_for_weather() && ml_rest(H) == 56, "mild weather suits plain clothes, but not at once ([H.mood_rest])")
+	H.mood_dressed_since = world.time - 5990
+	ml_check(ml_rest(H) == 56, "nor just short of ten minutes")
+	H.mood_dressed_since = world.time - 6000
+	ml_check(ml_rest(H) == 59 && H.mood_rest_parts["being dressed for the weather"] == 3, "after ten minutes they lift the resting level ([H.mood_rest])")
+	H.w_uniform = null
+	ml_check(ml_rest(H) == 56 && !H.mood_dressed_since, "undressing ends it and restarts the wait")
+	H.w_uniform = clothes
+	season = "WINTER"
+	weather_area.climate = "temperate"
+	ml_check(get_temp(H) < -20 && !H.mood_dressed_for_weather(), "plain clothes are not enough in a temperate winter ([get_temp(H)] [H.get_cold_protection(get_temp(H) + 273.15)])")
+	H.wear_suit = coat
+	ml_check(H.mood_dressed_for_weather(), "a coat over them is")
+	H.cold_wetness = 1
+	ml_check(!H.mood_dressed_for_weather(), "soaked layers do not count as warm")
+	H.cold_wetness = 0
+	weather_area.climate = "tundra"
+	ml_check(!H.mood_dressed_for_weather(), "the tundra takes more than a coat")
+	H.head = hat
+	ml_check(H.mood_dressed_for_weather(), "a coat and a warm hat suit the tundra")
+	weather_area.climate = "desert"
+	ml_check(get_temp(H) >= 27 && !H.mood_dressed_for_weather(), "a coat does not suit the desert")
+	H.wear_suit = null
+	ml_check(!H.mood_dressed_for_weather(), "hot ground wants something on your feet")
+	H.shoes = boots
+	ml_check(H.mood_dressed_for_weather(), "light clothes and shoes suit the heat")
+	H.w_uniform = null
+	H.head = null
+	H.shoes = null
+	weather_area.climate = old_climate
+	season = old_season
+	ml_check(ml_rest(H) == 56, "and it all ends with the clothes off")
 
 	// Shelter: a roof, or a lit fire at night.
 	var/area/here = get_area(H)
