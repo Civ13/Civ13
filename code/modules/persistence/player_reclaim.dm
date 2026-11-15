@@ -81,14 +81,37 @@ var/global/list/persistence_player_claims = list()
 			H.persistence_owner_ckey = IsGuestKey(H.client.key) ? null : H.client.ckey
 		else if(H.persistence_owner_ckey && active[H.persistence_owner_ckey])
 			H.persistence_owner_ckey = null
+	// Only a living body can be taken back. A body that died keeps its owner's
+	// name until something else claims the account; an agent's autospawn could
+	// leave a corpse behind that way. It gives the claim up to the living body
+	// rather than fail every save.
+	var/list/living = list()
+	for(var/mob/living/human/H in world)
+		if(QDELETED(H) || H.gcDestroyed || H.stat == DEAD || isnull(H.persistence_owner_ckey)) continue
+		living[H.persistence_owner_ckey] = H
 	var/list/owners = list()
 	for(var/mob/living/human/H in world)
 		if(QDELETED(H) || H.gcDestroyed) continue
 		var/account = H.persistence_owner_ckey
 		if(isnull(account)) continue
+		if(H.stat == DEAD && !H.client && living[account])
+			var/mob/living/human/alive = living[account]
+			H.persistence_owner_ckey = null
+			log_game("World save: [account]'s dead body [H.real_name] gave up its claim to the living [alive.real_name].")
+			continue
 		if(!persistence_owner_valid(account) || owners[account])
+			var/mob/living/human/first = owners[account]
+			log_game("World save: ownership of [account] is invalid or held twice: [H.real_name] at [H.x],[H.y],[H.z][first ? " and [first.real_name] at [first.x],[first.y],[first.z]" : ""].")
 			throw EXCEPTION("Invalid or duplicate durable player ownership")
 		owners[account] = H
+
+// Makes this body the account's one durable body: any other body, alive or
+// dead, gives the claim up. For bodies without a client to log in (agents).
+/mob/living/human/proc/take_persistence_ownership(account)
+	for(var/mob/living/human/H in world)
+		if(H != src && H.persistence_owner_ckey == account)
+			H.persistence_owner_ckey = null
+	persistence_owner_ckey = account
 
 /map_storage/proc/reset_player_restoration()
 	persistence_player_restore_ready = FALSE

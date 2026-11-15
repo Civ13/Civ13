@@ -89,7 +89,8 @@ var/global/agent_autospawn_started = FALSE
 		return null
 	if (ishuman(M))
 		var/mob/living/human/H = M
-		H.persistence_owner_ckey = agent_account_for(agent_name)
+		// The body of an earlier life that died must not keep claiming the account, or every save refuses (player_reclaim.dm).
+		H.take_persistence_ownership(agent_account_for(agent_name))
 	C.awaiting_driver = TRUE
 	C.requested_goal = entry["goal"]
 	message_admins("[M] was spawned for agent [agent_name] (autospawn).")

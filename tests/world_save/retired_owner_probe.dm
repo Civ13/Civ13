@@ -69,7 +69,30 @@
 		owner_check(rejected, "unretired null-loc duplicate accepted")
 		qdel(null_body)
 		storage.prepare_player_ownership()
-		text2file("PASS: retired owners ignored; live duplicate, malformed and null-loc owners rejected", "result.txt")
+		// An earlier body that died yields to the living one instead of failing the save.
+		var/mob/living/human/corpse = new /mob/living/human/owner_fixture(locate(3,1,1))
+		corpse.persistence_owner_ckey = "fixtureowner"
+		corpse.stat = DEAD
+		storage.prepare_player_ownership()
+		owner_check(isnull(corpse.persistence_owner_ckey), "dead duplicate kept its claim")
+		owner_check(current.persistence_owner_ckey == "fixtureowner", "living owner lost its claim to a corpse")
+		// Two dead claimants with no living body stay ambiguous.
+		current.stat = DEAD
+		corpse.persistence_owner_ckey = "fixtureowner"
+		rejected = FALSE
+		try
+			storage.prepare_player_ownership()
+		catch(var/exception/dead_error)
+			rejected = dead_error.name == "Invalid or duplicate durable player ownership"
+		owner_check(rejected, "two dead claimants accepted")
+		corpse.persistence_owner_ckey = null
+		current.stat = CONSCIOUS
+		// An agent's new body takes the account from every earlier one.
+		var/mob/living/human/respawn = new /mob/living/human/owner_fixture(locate(3,2,1))
+		respawn.take_persistence_ownership("fixtureowner")
+		owner_check(isnull(current.persistence_owner_ckey) && respawn.persistence_owner_ckey == "fixtureowner", "take_persistence_ownership left two claims")
+		storage.prepare_player_ownership()
+		text2file("PASS: retired owners ignored; dead duplicates yield to the living; live duplicate, malformed and null-loc owners rejected", "result.txt")
 	catch(var/exception/error)
 		text2file("FAIL: [error]", "result.txt")
 	del(world)
