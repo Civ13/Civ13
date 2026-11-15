@@ -101,6 +101,18 @@ place over that time. Template vessels (`datum/vessel`) still jump.
 hull: it commissions, refits and strikes the hull, steers her, keeps the
 papers and saves the hull as offsets from its own tile.
 
+### Pushing her off by hand
+
+A built hull only sails along her heading and swings round her pivot, so one
+run up against a shore can be stuck. `naval/hull_push.dm` lets people standing
+beside her, ashore or in shallow water (never on her deck or in deep water),
+click a plank with an empty hand to heave for three seconds. Heaves the same
+way within five seconds add up by strength; an average person moves about
+`HULL_PUSH_TILES_PER_PERSON` (20) tiles of hull. Enough strength moves her one
+tile away from them with `move_to()`, keeping her heading, drawn as a one-second
+glide. She cannot be pushed under way, while turning, on a voyage or during a
+save, and `plan()` still refuses land and anything solid.
+
 ### Upper decks
 
 A roof built over a built hull's deck has its walkable upper face on the
@@ -699,3 +711,4 @@ frames is fitted.
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/freight_probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/depot_jobs_probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/built_hull_probe.dm 300
+    python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/hull_push_probe.dm 300

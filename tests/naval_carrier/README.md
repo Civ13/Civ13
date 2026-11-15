@@ -139,6 +139,16 @@ parts.
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/built_hull_probe.dm 300
 
+## Pushing a hull off by hand (`hull_push_probe.dm`)
+
+A built hull run up against a shore (`code/modules/naval/hull_push.dm`): one
+person beside a small hull pushes it a tile away from them; a bigger hull needs
+the strength of several people heaving together within a few seconds; nobody can
+push from her own deck, from deep water, while she is under way or on a voyage,
+or into land; she keeps her heading and her cargo and crew go with her.
+
+    python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/hull_push_probe.dm 300
+
 ## Upper decks on built hulls (`upper_deck_probe.dm`)
 
 A roofed-over built hull (`code/modules/craft/built_body.dm`): fifteen roofs

@@ -1547,6 +1547,7 @@
 #include "code\modules\naval\freight.dm"
 #include "code\modules\naval\freight_depot.dm"
 #include "code\modules\naval\hull_drives.dm"
+#include "code\modules\naval\hull_push.dm"
 #include "code\modules\naval\land_choices.dm"
 #include "code\modules\naval\land_resources.dm"
 #include "code\modules\naval\magnetic_signature.dm"
