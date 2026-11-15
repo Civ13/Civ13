@@ -1,14 +1,15 @@
 # Native companion core and SDK adapter
 
 This slice implements a C++20 peer for the existing version-one managed wire
-contract and a concrete Discord Social SDK C-ABI backend. It is a library/core,
-not a runnable production companion host. No process/pipe creation, vendor DLL
+contract and a concrete Discord Social SDK C-ABI backend. It is a library/core
+plus an inactive child endpoint, not a production companion. No vendor DLL
 loader, application discovery, GUI or launcher startup composition is supplied.
 The launcher remains optional and normal BYOND/DreamSeeker joining is unchanged.
 The [private hosting contracts](../SOCIAL-SDK-HOSTING.md) add an injected native
 pipe loop and managed startup/channel ownership. The
 [Windows parent provider](../SOCIAL-SDK-WINDOWS-PROVIDER.md) adds fixed-off OS
-source; the child endpoint adapter and executable entry point remain absent.
+source. The child endpoint adapter and executable entry point now exist (see
+[Child endpoint](#child-endpoint)); production activation stays off.
 There are no game/server changes, authentication, tokens, provisional accounts,
 invites, voice, microphone calls, new OAuth scopes or application-setting changes.
 
@@ -54,10 +55,40 @@ their owner. Declare the backend before its Peer so it outlives Peer teardown.
 Clear is best effort; neither its void SDK call nor Result success proves remote
 Discord UI state. The host's pump must remain independent of console/game input.
 
+## Child endpoint
+
+`main.cpp` is the executable the parent provider launches:
+`civ13-social-companion.exe --social-peer-v1 provider port application`, with
+the private pipe pair on stdin/stdout and NUL on stderr.
+
+- `parse_arguments` (endpoint.cpp) accepts exactly that layout. The port must be
+  the literal `1714` or `1715`, each value at most 32 bytes, and the result must
+  pass `valid_profile`. Anything else exits with code 2 before touching a handle.
+- `WindowsPipeIo` (windows_pipe_io.cpp) adopts stdin/stdout only when both are
+  distinct client-end byte pipes opened for overlapped I/O (a synchronous handle
+  could block the lease clock, so it is refused with exit code 3). It detaches
+  them from the standard slots, keeps one pending read and one pending write
+  with private 276-byte buffers, maps broken pipe/EOF to `eof`, and on close
+  cancels only its own operations and waits for them before freeing buffers.
+- `run_endpoint` owns one `Host` on the main thread and steps it every 10ms
+  until the peer closes: Stop, parent EOF, lease expiry (3s before Hello, 5s
+  after the last Pulse), malformed input, clock reversal, I/O failure or a
+  console cancel event. A throwing clock exits with code 4. Every close path
+  closes the pipes exactly once and stops the backend.
+- The process sets `SetDefaultDllDirectories(System32 | application dir)` and
+  disables error dialogs before anything else.
+
+Activation stays off: the default build links `UnavailableBackend`, which
+refuses `start`, so Hello closes the session and the child exits without Ready.
+`CIV13_COMPANION_LOOPBACK_BACKEND` builds a vendor-free test child that accepts
+and reports `accepted`; it is used only by `tests/child_tests.cpp`. A reviewed
+SDK-linked build that swaps in `DiscordBackend` is a separate gate.
+
 ## Bounded offline build
 
 Use already installed x64 MSVC tools and PowerShell. Nothing is installed or
-downloaded; each owned compiler/test process has a 45-second limit.
+downloaded; the owned compile step has a 150-second limit and each test process
+a 45-second limit.
 
 ```powershell
 ./Build-Offline.ps1
@@ -65,7 +96,14 @@ downloaded; each owned compiler/test process has a 45-second limit.
 ```
 
 The first command compiles/runs the original parser/lifecycle tests with a fake
-Backend and requires no vendor files. The optional second command also compiles
+Backend and requires no vendor files. It also builds the production and loopback
+child executables, runs the portable endpoint tests (arguments, full session,
+lease expiry, EOF, I/O failure, cancellation, fragmented input, clock reversal
+and faults with an injected clock), and runs `child-tests.exe`, which creates
+real current-user overlapped pipe pairs, launches the child with exactly three
+inherited handles and checks the exchange, parent EOF, lease expiry, malformed
+and mismatched Hello, refused production start, invalid arguments and a
+non-pipe stdin against the real Windows kernel. The optional second command also compiles
 the real `discord_backend.cpp` against external `cdiscord.h` and links **original
 fake C functions** from sdk_tests.cpp. It never links an SDK import library or
 loads the vendor DLL. It exercises the actual adapter's activity/result/userdata
