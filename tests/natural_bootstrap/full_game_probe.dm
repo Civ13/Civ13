@@ -162,6 +162,11 @@ var/global/datum/natural_bootstrap_probe/natural_bootstrap_probe = new
 	require(H && !QDELETED(H) && H.stat == CONSCIOUS, "The character is [H ? "not conscious (stat [H.stat])" : "gone"]")
 	var/action = req["do"]
 	var/guard = 0
+	// Knocked down (a bare foot on a flint shard, say): get back up before acting, as a player waits.
+	var/down = 0
+	while(H.weakened || H.stunned || H.paralysis || H.lying)
+		require(++down <= 120, "The character never got back on its feet")
+		sleep(10)
 	while(TRUE)
 		var/wait = C.wait_for(action)
 		if(!wait)
@@ -235,7 +240,7 @@ var/global/datum/natural_bootstrap_probe/natural_bootstrap_probe = new
 	if(!T || T.density || click_route_hazard_turf(T))
 		return FALSE
 	for(var/obj/O in T)
-		if(O.density)
+		if(O.density || istype(O, /obj/item/weapon/material/shard))
 			return FALSE
 	return TRUE
 
