@@ -70,15 +70,15 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = 'bd6e528377b6bb83010a8f1705e76db2942f13b7'
+WIKI_REVIEWED_REVISION = '849ab8203525a6abc8d09baca383f78b4fdd1207'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('dbdd9f64009c697282c90bf6d7e157100834ad2ea23f5b76ec03938e816c1083', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('f9b3777b9e995d824a4ee5d8336c8ad28f012eef55fc9c8acefa750743d4f185', 'character skills traits languages'),
     'guides/Guide_to_Chemistry.md': ('cd18de133c5e560a495c22e26c5a33088d59ff81bbaf77e53ea267d646975230', 'chemistry chemicals reactions reagents'),
     'guides/Guide_to_Combat.md': ('006296f6e7501eeb36f4b486ee3a2b2a85567ecef74d0616dd2a04c2e42f53b2', 'combat fight fighting intent aim shoot melee grenade cover'),
-    'guides/Guide_to_Communications.md': ('11259c01cf9a78d7782b066b3f8c2211a3714fe4053d275a2c518607ca1d752c', 'communications radio transmit'),
+    'guides/Guide_to_Communications.md': ('2bbf705f1e66f3ee37d2d70f46ffa9420587a9b7ae0d718f3e09d4ab9b7881e6', 'communications radio transmit'),
     'guides/Guide_to_Construction.md': ('3e395fc3d9ea335b4f38eeed767ecea27b27fb774de2121bed3f85df75f85c9b', 'construction build building walls roof floor'),
-    'guides/Guide_to_Cooking.md': ('4b8dc44d8a632be7989e46165c74bb6bf6ad7328ec3de1d8df64620bb7c3b2da', 'cooking cook food meal ingredients'),
+    'guides/Guide_to_Cooking.md': ('3fa0033c4d7f5b6d85cc0db329d09bb9fdbab9e44e1e741e1dd8c7ebd4882934', 'cooking cook food meal ingredients'),
     'guides/Guide_to_Exercise.md': ('cd6d6e48f3ae664458e935bb88954a0c6d2232f00b6058e92fb520f5c7c76a09', 'exercise training strength weights running fatigue'),
     'guides/Guide_to_Factory_Automation.md': ('e49b07d8eea1fe3c785b450c486e4b412e9ab4e4d0df30c8e9dc1dc34f666be0', 'factory automation belt belts conveyor arm arms fabricator fabricators pipe pipes pump tank bottler monitor crusher stamp mill'),
     'guides/Guide_to_Farming.md': ('1c981fb813064f877b66ec131d97b6902a4fdeb8b63ba5dc82f5a652785c6045', 'farming farm plant crops soil water'),
@@ -96,7 +96,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Survival.md': ('a449eed1a1668a02a460076c3a08e61b512202b1cdfa95e13b18226238967bba', 'survival winter cold warm freezing hypothermia shelter debris footwear boots snowshoes shoes ice mud rain wet umbrella raincoat cape storm storms lightning thunder blizzard sandstorm heat wave weather fire fires wildfire firefighting beater flapper smother burning bucket blanket extinguish smoke signal signals hook firebreak pump engine nozzle hose jet reel extinguisher'),
     'guides/Guide_to_Tanks.md': ('9250b410333e0da30224b09ed2126ce2ed676225aa2dda2be3b13c8f7ff3442a', 'tank driving crew ammunition'),
     'guides/Guide_to_Trains.md': ('084ca499676d0ccfa7d9e64d9e52da43d7f0b5c40d95bbef0e3908ab2a35f641', 'train trains railway track locomotive station switcher rails wagon'),
-    'guides/Guide_to_Trenches.md': ('fafbfe65b80b51a62ce2c155dfc920dd675d79f72d212cdc3b9cb2909d5adebf', 'trench trenches fortification sandbag dig shovel'),
+    'guides/Guide_to_Trenches.md': ('c0c8506c1eb0ee5118d6f0f14d816f72e80e5c66664b547b7b3e894fe6a59881', 'trench trenches fortification sandbag dig shovel'),
     'guides/Guide_to_Weapons.md': ('f4912630ee265fb33c96d03d1a0831d1ce0e3d8a4760ebd5538a07842bd9ce7b', 'weapons gun reload ammunition'),
     'New_Player_Guide.md': ('c0d80da1236f7b15de5787584628898cc5dacddd6db97fadbe42dd5b685faee0', 'new player beginner start first round basics'),
     'Hotkeys.md': ('05090c224e1f78aac61ba054366f3138634ce2c47cdaf4b9c98be908818ae55e', 'hotkeys hotkey keys keyboard controls key press'),
@@ -113,14 +113,14 @@ WIKI_REVIEWED_GUIDES = {
     'gamemodes/Battle_Royale.md': ('18d1e4cf951f943bd7a0f5030c1825bd82a77427349b086842a309e492c4d841', 'battle royale battleroyale'),
     'gamemodes/Gladiators.md': ('36ac7d70edff2c99d78351585450428ad5cd02542b0cc3dfc5c178bca7d1ffb6', 'gladiator gladiators arena imperator custodes medicus'),
     'gamemodes/Prison_Roleplay.md': ('8da37041c99c23ab18012006e8afd8475acdd1485f8cb3eb48d23152f9cfb613', 'prison prisoner guard gulag nkvd'),
-    'guides/Guide_to_Boats.md': ('795807b68ec95d75a3a3e90a590f65a1dcfc82816f377803563374098e84cf39', 'boat boats ship sailing sail raft canoe rowing oars anchor swim swimming drown drowning current currents lifejacket naval torpedo torpedoes degaussing minesweeping'),
+    'guides/Guide_to_Boats.md': ('ae0a1d195dd6cbbb1a629b3095a75b44cf8787cc1c61750472d2ae4da3a791ef', 'boat boats ship sailing sail raft canoe rowing oars anchor swim swimming drown drowning current currents lifejacket naval torpedo torpedoes degaussing minesweeping'),
     'guides/Guide_to_Aircraft.md': ('41bfd54a42fc164dbc96e1364c7dabd4d09ccd6e010207bfb838b2e04bf000b8', 'aircraft airplane plane planes flying fly flight runway hangar pilot takeoff landing'),
     'guides/Guide_to_Aircraft_Carriers.md': ('3402b1e488a635eb74b172c9d0c2d62038fe192efcd7d12e9b3f5d297c655ce4', 'carrier carriers aircraft carrier flight deck shipyard office arresting wires elevator bunkers'),
     'guides/Guide_to_Races.md': ('46ef1bf361c519e71acbd679119429e838348827e25dbcac27282f67bee51097', 'race races species human humans'),
     'guides/Guide_to_Slang.md': ('52f9f6370922d7dede523e51247ae6ea0723d24118cecd26e594c051278dfc3f', 'slang terms jargon abbreviation meaning mean word words'),
     'guides/Guide_to_Books_and_Scholars.md': ('a401a54200444acab7c776a27d44975b2f40bc693780a86c4511722e353496c9', 'books scholars scholarship study chapter research bench apprentice tutor library writing slate abacus'),
     'guides/Guide_to_Your_First_Day.md': ('35aa1bd71622730c4f8238d97ab4ac999502266a4caf5c1113062d16a3ff0ebd', 'first day new character start starting survive survival research book study chapter food water shelter bag bags carry carrying basket travois'),
-    'guides/Guide_to_Paperwork.md': ('a1a5f705ece3027336005a5fe08e5554eabe1bb6da16cc4294db54b39ad63b69', 'paper paperwork writing write pen book sign signature stamp'),
+    'guides/Guide_to_Paperwork.md': ('4c73cacfcb51d228b3015af280120dedf7b7a3591d291512acbee906c537d9fb', 'paper paperwork writing write pen book sign signature stamp'),
     'Crafting_Skill_Level_Requirements.md': ('eae4e1c91ce28009f16ec79d0e942f76895d80262e618320eaf44d3a7c5808a9', 'crafting skill level levels requirement requirements unlock'),
     'Food_Decay_Times.md': ('d2d63372eddc79fd7c3c9bffb390587fff7a5cb21c53d829ab5ec29ab9f11126', 'food decay rot spoil spoils spoiled expire expires lasts preserve storage'),
     'Miscellaneous_Crafting.md': ('a741a21d2e141b0b1bd19e1e01f73155ed1e4faf276152d044d38a39101272f0', 'miscellaneous crafting misc items dress dresses dressmaking tailoring tailor tailored sew sewing pattern patterns design clothes shirt gown cloak sleeves collar dye dyes wool linen fabric book hat hats headwear beret veil candle candles'),
