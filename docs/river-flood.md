@@ -254,6 +254,27 @@ so Gaia's level 1 or a dug cave) is the cellar level, cached as
 Cellar water is drawn like floodwater when a player is on the cellar level.
 Nothing ticks.
 
+## Pumps
+
+`flood_pumps.dm`. Cellar pumps are `cellar_pumps` entries on the cellar level;
+`running` is cached once a minute at the end of `drain_hollows()` (and when
+switched) so depth lookups stay cheap.
+
+- **Lever pump** (6 iron, Workshops), reach 3: each 3-second stroke keeps its
+  reach dry 30 seconds more, banking at most 5 minutes. Unsaved.
+- **Steam mine pump** (12 iron, Steam Power), reach 7: started by hand, burns
+  a minute of fuel per river tick (same fuel table as the sewer steam pump).
+- **Sump pump** (4 steel, Utilities), reach 3, 15 power from a cable or an
+  outlet. Its float switch runs it only while `seep_depth_at(T, TRUE)` (the
+  depth as if nothing pumped) is above 0. On mains it charges its battery
+  5 minutes a minute up to 60; without power it runs a minute of battery a
+  minute.
+- **Windmill pump** (12 wood, Watermills): a water lift on a hollow's edge
+  that each river tick lifts 0.4 x `weather_wind_at()` (0 to 4) tile-levels
+  unless its brake is set.
+
+Saved: steam `on`/`fuel`, sump `on`/`battery`, windmill `braked`.
+
 ## Saving
 
 The water held, the snowpack and the high-water mark of every reach are the

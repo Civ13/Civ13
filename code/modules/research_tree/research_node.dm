@@ -2259,7 +2259,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/catapult_ball" = "siege_engines",
 		"/obj/item/weapon/siegeladder" = "siege_engines",
 		"/obj/structure/catapult" = "siege_engines",
-		// --- steam_power (5) ---
+		// --- steam_power (6) ---
+		"/obj/structure/cellar_pump/steam" = "steam_power",
 		"/obj/structure/sewer_pump/steam" = "steam_power",
 		"/obj/structure/workshop_machine/steam_site/steam_shovel" = "steam_power",
 		"/obj/structure/workshop_machine/shear_legs/crane/steam" = "steam_power",
@@ -2522,7 +2523,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/clothing/mask/gas/british" = "trench_warfare",
 		"/obj/item/clothing/mask/gas/german" = "trench_warfare",
 		"/obj/item/clothing/suit/b3" = "trench_warfare",
-		// --- utilities (9) ---
+		// --- utilities (10) ---
+		"/obj/structure/cellar_pump/sump" = "utilities",
 		"/obj/structure/sewer_pump/electric" = "utilities",
 		"/obj/item/lightbulb" = "utilities",
 		"/obj/item/lightbulb/tube" = "utilities",
@@ -2566,7 +2568,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/window/barrier/ship/blue/bport3/south" = "wagons_ships",
 		"/obj/structure/window/barrier/ship/wood/port0/north" = "wagons_ships",
 		"/obj/structure/window/barrier/ship/wood/port2/north" = "wagons_ships",
-		// --- watermills (5) ---
+		// --- watermills (6) ---
+		"/obj/structure/water_lift/windmill" = "watermills",
 		"/obj/structure/workshop_machine/trip_hammer" = "watermills",
 		"/obj/structure/workshop_machine/mover/mill_wheel" = "watermills",
 		"/obj/structure/workshop_machine/mover/windmill" = "watermills",
@@ -2669,7 +2672,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/tailoring_project" = "weaving",
 		"/obj/item/clothing/under/tailored" = "weaving",
 		"/obj/item/clothing/head/tailored" = "weaving",
-		// --- workshops (25) ---
+		// --- workshops (26) ---
+		"/obj/structure/cellar_pump/lever" = "workshops",
 		"/obj/structure/lapping_wheel" = "workshops",
 		"/obj/item/flashlight/lantern/bronze" = "workshops",
 		"/obj/item/flashlight/lantern/copper" = "workshops",

@@ -124,6 +124,7 @@ var/sewer_runtime_error = FALSE
 	var/obj/structure/river_gauge/DRY = new /obj/structure/river_gauge(locate(2, 2, 1))
 	sewer_check(isnull(DRY.reading()), "a gauge far from any river reads nothing")
 
+	windmill_checks()
 	// A cistern fills from the sky over it and the roofs around it.
 	cistern_checks()
 
@@ -161,3 +162,23 @@ var/sewer_runtime_error = FALSE
 	new /obj/roof/cistern_tester(site)
 	C.roofs_counted = -100000
 	sewer_check(C.collection_rate() == 9, "under a roof it takes in only from the gutters ([C.collection_rate()])")
+
+/proc/windmill_checks()
+	var/datum/river_flood/F = map.river_flood()
+	F.restore_hollows(list(1, 6))
+	map.windspeedvar = 2
+	var/obj/structure/water_lift/windmill/W = new /obj/structure/water_lift/windmill(locate(4, 4, 1))
+	sewer_check((W in windmill_pumps) && W.lift_hollow() == 1, "a windmill pump stands on the hollow's edge")
+	F.drain_hollows()
+	sewer_check(abs(F.hollow_volume[1] - 5.2) < 0.001 && W.turning && W.icon_state == "windmill_pump_on", "a moderate wind lifts 0.8 a minute ([F.hollow_volume[1]])")
+	map.windspeedvar = 0
+	F.drain_hollows()
+	sewer_check(abs(F.hollow_volume[1] - 5.2) < 0.001 && !W.turning && W.icon_state == "windmill_pump", "in a calm the sails stop")
+	map.windspeedvar = 4
+	W.braked = TRUE
+	F.drain_hollows()
+	sewer_check(abs(F.hollow_volume[1] - 5.2) < 0.001, "a braked mill lifts nothing")
+	W.braked = FALSE
+	F.drain_hollows()
+	sewer_check(abs(F.hollow_volume[1] - 3.6) < 0.001, "a gale lifts 1.6 a minute ([F.hollow_volume[1]])")
+	qdel(W)

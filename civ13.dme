@@ -1019,6 +1019,7 @@
 #include "code\modules\1713\sewers.dm"
 #include "code\modules\1713\flood_defences.dm"
 #include "code\modules\1713\flood_cellars.dm"
+#include "code\modules\1713\flood_pumps.dm"
 #include "code\modules\1713\barriers\snow_walls.dm"
 #include "code\modules\1713\complex_animal\__complex_animal.dm"
 #include "code\modules\1713\complex_animal\_backend.dm"
