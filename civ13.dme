@@ -1349,6 +1349,7 @@
 #include "code\modules\craft\vehicle_aboard.dm"
 #include "code\modules\craft\vehicle_assembly.dm"
 #include "code\modules\craft\vehicle_offset.dm"
+#include "code\modules\craft\vehicle_offset_ride.dm"
 #include "code\modules\craft\vehicle_papers.dm"
 #include "code\modules\craft\vehicle_tow.dm"
 #include "code\modules\craft\vehicle_turret.dm"

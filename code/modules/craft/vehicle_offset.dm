@@ -39,15 +39,18 @@ var/global/list/vehicle_offsets = list()
 	for (var/datum/vehicle_offset/O in vehicle_offsets)
 		O.snap()
 
-// The tiles an atom covers when square on its own tile (its bounds, not its step).
-/proc/vehicle_offset_tiles(atom/movable/A)
+// The tiles an atom covers: its bounds, plus its step offset when with_step is set.
+/proc/vehicle_offset_tiles(atom/movable/A, with_step = FALSE)
 	. = list()
 	if (!A || !isturf(A.loc))
 		return
-	var/x0 = A.x + round(A.bound_x / VEHICLE_OFFSET_TILE)
-	var/y0 = A.y + round(A.bound_y / VEHICLE_OFFSET_TILE)
-	var/x1 = A.x + round((A.bound_x + A.bound_width - 1) / VEHICLE_OFFSET_TILE)
-	var/y1 = A.y + round((A.bound_y + A.bound_height - 1) / VEHICLE_OFFSET_TILE)
+	var/sx = with_step ? A.step_x : 0
+	var/sy = with_step ? A.step_y : 0
+	// round() with one argument is floor, so negative offsets reach the tile behind.
+	var/x0 = A.x + round((A.bound_x + sx) / VEHICLE_OFFSET_TILE)
+	var/y0 = A.y + round((A.bound_y + sy) / VEHICLE_OFFSET_TILE)
+	var/x1 = A.x + round((A.bound_x + sx + A.bound_width - 1) / VEHICLE_OFFSET_TILE)
+	var/y1 = A.y + round((A.bound_y + sy + A.bound_height - 1) / VEHICLE_OFFSET_TILE)
 	for (var/tx = x0 to x1)
 		for (var/ty = y0 to y1)
 			var/turf/T = locate(tx, ty, A.z)
@@ -91,13 +94,23 @@ var/global/list/vehicle_offsets = list()
 	if (body)
 		footprint |= A
 
-/datum/vehicle_offset/proc/drop(atom/movable/A)
+// Carries A at a fixed place on the vehicle: a seated rider sits at (0, 0).
+/datum/vehicle_offset/proc/carry_at(atom/movable/A, own_x = 0, own_y = 0, body = FALSE)
+	if (!A)
+		return
+	carried[A] = list(own_x, own_y)
+	if (body)
+		footprint |= A
+
+// Stops carrying A. With keep_place it stays where it is drawn (a rider getting
+// off steps off where the vehicle is); otherwise it gets its own offset back.
+/datum/vehicle_offset/proc/drop(atom/movable/A, keep_place = FALSE)
 	if (!(A in carried))
 		return
 	var/list/own = carried[A]
 	carried -= A
 	footprint -= A
-	if (!QDELETED(A))
+	if (!QDELETED(A) && !keep_place)
 		A.step_x = own[1]
 		A.step_y = own[2]
 
@@ -143,7 +156,7 @@ var/global/list/vehicle_offsets = list()
 /datum/vehicle_offset/proc/tiles_ahead(dir)
 	var/list/body = list()
 	for (var/atom/movable/A in footprint)
-		body |= vehicle_offset_tiles(A)
+		body |= vehicle_offset_tiles(A, TRUE)
 	. = list()
 	for (var/turf/T in body)
 		var/turf/next = get_step(T, dir)
@@ -154,6 +167,8 @@ var/global/list/vehicle_offsets = list()
 
 // TRUE when the body may start to overlap the tiles ahead in dir.
 // Vehicles with their own rules (crashes, water, rails) override this.
+// People and animals are the vehicle's own business (run over, shoved, a
+// crash), so only walls and dense objects stop it here.
 /datum/vehicle_offset/proc/can_cover(dir)
 	var/list/ahead = tiles_ahead(dir)
 	if (!ahead)
@@ -162,7 +177,7 @@ var/global/list/vehicle_offsets = list()
 		if (T.density)
 			return FALSE
 		for (var/atom/movable/O in T)
-			if (O.density && !(O in carried))
+			if (O.density && !ismob(O) && !(O in carried))
 				return FALSE
 	return TRUE
 
@@ -245,7 +260,17 @@ var/global/list/vehicle_offsets = list()
 		return FALSE
 	return A.do_move() ? TRUE : FALSE
 
-// A one-object vehicle (bicycle, motorcycle, raft, boat): its own do_move.
+// A one-object vehicle (motorcycle, boat): its own rules for the tile ahead
+// (water, crashes, grace walls) when it heads that way, then walls beside.
+/datum/vehicle_offset/single/can_cover(dir)
+	var/obj/structure/vehicle/V = owner
+	if (!istype(V) || QDELETED(V))
+		return FALSE
+	if (V.driver && V.driver.dir == dir && !V.do_vehicle_check())
+		return FALSE
+	return ..()
+
+// Its own do_move.
 /datum/vehicle_offset/single/commit(dir)
 	var/obj/structure/vehicle/V = owner
 	if (!istype(V) || QDELETED(V) || !isturf(V.loc))
