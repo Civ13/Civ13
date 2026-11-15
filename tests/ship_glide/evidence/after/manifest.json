@@ -1,0 +1,15 @@
+{
+  "tested_commit": "171159984b2dcdf2c142ca682ac21886a15b7c09",
+  "working_tree_status": " M tests/ship_glide/client_check.py\n",
+  "port": 59425,
+  "adapters": [
+    "probe appended to a temporary civ13.dme",
+    "webhooks/ToRban off",
+    "round started via admin_started",
+    "weather worker paused, Midday lighting",
+    "a 5x7 hull of ship planks built on open sea with the production commission()",
+    "log stack shoved with Move() as a push would",
+    "voyage set on the tiller directly (no world chart)",
+    "client window 1280x800 recorded by ffmpeg gdigrab at 50 fps"
+  ]
+}
