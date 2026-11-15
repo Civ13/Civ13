@@ -1,0 +1,50 @@
+{
+ "africa": {
+  "path": "maps/earth_drafts/earth_africa.dmm",
+  "sha256": "f136950b9e493c57ba0a63546c5fe0761ab781eab9ba202a7925a7ae44ca7495",
+  "size": [
+   976,
+   1070
+  ]
+ },
+ "antarctica": {
+  "path": "maps/earth_drafts/earth_antarctica.dmm",
+  "sha256": "f348a51befe7d1c09acab0c48931b607b53197d13448a29506620da0da2abe0a",
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "asia": {
+  "path": "maps/earth_drafts/earth_asia.dmm",
+  "sha256": "5e14ecd2579b38796622e0f02eb766d6de55cc7f5021d876d88bb74c70f1e782",
+  "size": [
+   1226,
+   854
+  ]
+ },
+ "europe": {
+  "path": "maps/earth_drafts/earth_europe.dmm",
+  "sha256": "1dad22deb2801a2ccba650ceed21c5d51f0dc14eeaaee7c77ef56d447f06503a",
+  "size": [
+   1160,
+   903
+  ]
+ },
+ "greenland": {
+  "path": "maps/earth_drafts/earth_greenland.dmm",
+  "sha256": "ea956db2ac8edc16cfe80b39b7bf7d726a95a398e248e9c23af6a922d6736ac3",
+  "size": [
+   760,
+   816
+  ]
+ },
+ "oceania": {
+  "path": "maps/earth_drafts/earth_oceania.dmm",
+  "sha256": "cd6ab0f8e11ea3c5a339e34932de18b5eb312fb5cab6ae815c6d0dd66adcb475",
+  "size": [
+   1212,
+   864
+  ]
+ }
+}

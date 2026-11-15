@@ -228,6 +228,15 @@ class SelectionTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, 'Unregistered crossroads-mall'):
                 selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
 
+    def test_earth_maps_offline_admission_is_exact(self):
+        for path in sorted(selection.EARTH_MAPS_OFFLINE_TESTS):
+            with patch.object(selection.subprocess, 'check_output', return_value=(path + '\0').encode()):
+                self.assertEqual(selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request'), [])
+        other = 'tests/earth_maps/new_native_probe.dm'
+        with patch.object(selection.subprocess, 'check_output', return_value=(other + '\0').encode()):
+            with self.assertRaisesRegex(RuntimeError, 'Unregistered earth-maps'):
+                selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
+
     def test_americas_maps_offline_admission_is_exact(self):
         for path in ('tests/americas_maps/test_americas_maps.py', 'tests/americas_maps/build.py',
                      'tests/americas_maps/continents.py'):
