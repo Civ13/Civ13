@@ -165,5 +165,13 @@
       "/obj/item/stack/material/iron": 4,
       "/obj/item/machine_part/shaft": 1
     }
+  },
+  "/obj/structure/cannon/hooped": {
+    "tools": [
+      "hammer"
+    ],
+    "inputs": {
+      "/obj/item/stack/material/iron": 4
+    }
   }
 }
