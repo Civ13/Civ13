@@ -12,13 +12,15 @@
 // one traveller is asked and sent. A rider takes the mount along: the animal
 // goes as a small record with its rider and stands beside them on the far
 // side, and so does one animal led by hand. Drivers and anyone dragging
-// anything else are told to go on foot; wheeled vehicles and carts do not
-// cross yet.
+// anything else are told to go on foot. A hand cart or travois pulled by
+// hand crosses with its load; driven vehicles do not cross yet.
 // ============================================================
 
 // How far in from the border an arriving walker is put down, so the first
 // step is theirs and the edge does not ask them straight back.
 #define REGION_EDGE_ARRIVAL_INSET 3
+// The most things a pulled cart may hold on a crossing.
+#define REGION_EDGE_CART_ITEMS_MAX 60
 // How long a player who said no is left alone.
 #define REGION_EDGE_ASK_COOLDOWN 300
 // Wading out past the last dry tile of the edge still counts as the crossing.
@@ -127,6 +129,10 @@ var/global/list/region_edge_spans = list()
 	var/list/mount = null
 	// The animal this walker leads (region_edge_led_record), if any.
 	var/list/led = null
+	// The hand cart or travois this walker pulls, held inside the gate from the
+	// moment its load is recorded (travel_extra) until they left or stayed.
+	var/obj/structure/closet/crate/cart = null
+	var/turf/cart_from = null
 
 /obj/structure/region_gate/land_edge/accepts_arrivals()
 	return FALSE
@@ -139,6 +145,25 @@ var/global/list/region_edge_spans = list()
 		.["mount"] = mount
 	if (led)
 		.["led"] = led
+	// The cart is recorded as the traveller leaves, not when they were asked,
+	// and taken out of reach at once so its load cannot change after that.
+	var/list/load = region_edge_cart_record(H)
+	if (islist(load))
+		cart = H.pulling
+		cart_from = get_turf(cart)
+		H.stop_pulling()
+		cart.forceMove(src)
+		.["cart"] = load
+
+// A walker who stayed, or could not leave, gets the cart back where it stood.
+/obj/structure/region_gate/land_edge/proc/release_cart()
+	if (cart && !QDELETED(cart) && cart.loc == src)
+		cart.forceMove(cart_from || get_turf(src))
+	cart = null
+
+/obj/structure/region_gate/land_edge/Destroy()
+	release_cart()
+	return ..()
 
 /obj/structure/region_gate/land_edge/attack_hand(mob/living/human/user)
 	return
@@ -162,7 +187,10 @@ var/global/list/region_edge_spans = list()
 	if (H.client ? IsGuestKey(H.client.key) : !agent_travel_account(H)) return "Only players with a BYOND account can travel."
 	if (H.buckled || H.driver || H.driver_vehicle) return "You cannot drive across yet. Get down and walk on."
 	if ((H.riding || H.riding_mob) && !region_edge_mount_record(H)) return "Your mount cannot make the crossing. Get down and walk on."
-	if (H.pulling && !region_edge_led_record(H)) return "You cannot drag that across. Let go and walk on."
+	if (H.pulling && !region_edge_led_record(H))
+		var/load = region_edge_cart_record(H)
+		if (istext(load)) return load
+		if (!load) return "You cannot drag that across. Let go and walk on."
 	if (H.stat != CONSCIOUS || H.restrained()) return "You can't set off right now."
 	if (get_turf(H) != loc && H.loc != src) return "You turned back from the edge of the land."
 	return null
@@ -207,6 +235,13 @@ var/global/list/region_edge_spans = list()
 	if (took_led && QDELETED(src) && !QDELETED(beast))
 		log_game("Region travel: the led animal [beast.name] ([beast.type]) crossed the edge with its keeper.")
 		qdel(beast)
+	// The cart went with them: it and its load are gone from here.
+	if (QDELETED(src) && gate.cart && !QDELETED(gate.cart))
+		log_game("Region travel: the cart [gate.cart.name] ([gate.cart.type]) crossed the edge with its puller.")
+		for (var/atom/movable/M in gate.cart)
+			qdel(M)
+		qdel(gate.cart)
+		gate.cart = null
 	if (!QDELETED(gate))
 		qdel(gate)
 	if (!QDELETED(src))
@@ -263,12 +298,71 @@ var/global/list/region_edge_spans = list()
 	A.health = M[3]
 	return A
 
+// ---------------------------------------------------------------- carts
+
+// A hand cart or a travois pulled by hand crosses with what is shut inside it,
+// by the same kinds a traveller's own things use (region_travel_gear.dm).
+/proc/region_edge_cart_ok(path)
+	return ispath(path, /obj/structure/closet/crate/cart) || ispath(path, /obj/structure/closet/crate/travois)
+
+// list(type, list(list(kind, amount), ...)) for the cart H pulls, a sentence
+// when its load cannot cross, or null when H pulls no cart.
+/proc/region_edge_cart_record(mob/living/human/H)
+	var/obj/structure/closet/crate/C = H.pulling
+	if (!istype(C) || QDELETED(C) || !region_edge_cart_ok(C.type) || C.pulledby != H || !isturf(C.loc) || get_dist(C, H) > 2)
+		return null
+	var/list/held = list()
+	var/list/blockers = list()
+	for (var/atom/movable/M in C)
+		var/list/entry = istype(M, /obj/item) ? region_travel_worn_entry(M) : null
+		if (entry)
+			held += list(entry)
+		else
+			blockers += M.name
+	if (blockers.len)
+		return "\The [C] cannot cross with [english_list(blockers)] in it. Unload that first."
+	if (held.len > REGION_EDGE_CART_ITEMS_MAX)
+		return "\The [C] holds too much to cross. Unload some of it first."
+	var/list/record = list("[C.type]", held)
+	return region_edge_cart_valid(record) ? record : "\The [C] cannot make the crossing. Let go and walk on."
+
+/proc/region_edge_cart_valid(list/R)
+	if (!islist(R) || R.len != 2 || !istext(R[1]) || !region_edge_cart_ok(text2path(R[1])))
+		return FALSE
+	var/list/held = R[2]
+	if (!islist(held) || held.len > REGION_EDGE_CART_ITEMS_MAX)
+		return FALSE
+	for (var/entry in held)
+		var/list/E = entry
+		if (!islist(E) || E.len != 2 || !region_travel_worn_valid(E[1], E[2]))
+			return FALSE
+	return TRUE
+
+// Builds the recorded cart at T, shut, holding exactly what travelled.
+/proc/region_edge_cart_build(list/R, turf/T)
+	if (!region_edge_cart_valid(R) || !istype(T))
+		return null
+	var/path = text2path(R[1])
+	var/obj/structure/closet/crate/C = new path(T)
+	// A shut crate takes in what lies on its tile; that is not part of the load.
+	for (var/atom/movable/M in C)
+		M.forceMove(T)
+	for (var/list/E in R[2])
+		var/obj/item/I = region_travel_make_worn(E[1], E[2], T)
+		if (I)
+			I.forceMove(C)
+	C.update_capacity(length(C.contents))
+	C.update_icon()
+	return C
+
 // ---------------------------------------------------------------- arriving
 
 /proc/region_edge_payload_ok(list/P)
 	var/list/E = P["edge"]
 	if (isnull(E))
-		return isnull(P["mount"]) && isnull(P["led"])
+		return isnull(P["mount"]) && isnull(P["led"]) && isnull(P["cart"])
+	if (!isnull(P["cart"]) && !region_edge_cart_valid(P["cart"]))
+		return FALSE
 	if (!isnull(P["mount"]) && !region_edge_mount_valid(P["mount"]))
 		return FALSE
 	if (!isnull(P["led"]) && !region_edge_mount_valid(P["led"], TRUE))
@@ -325,6 +419,12 @@ var/global/list/region_edge_spans = list()
 		if (L)
 			L.dir = H.dir
 			to_chat(H, SPAN_NOTICE("\The [L] followed you across."))
+	// And the cart they pulled, with its load.
+	if (islist(P["cart"]))
+		var/turf/behind = get_step(H, turn(H.dir, 180))
+		var/obj/structure/closet/crate/C = region_edge_cart_build(P["cart"], (behind && region_edge_ground(behind, TRUE)) ? behind : get_turf(H))
+		if (C)
+			to_chat(H, SPAN_NOTICE("You hauled \the [C] across."))
 
 // A departure replayed after a reload: the save still holds the mount that left.
 /proc/region_edge_replayed(mob/living/human/H, list/P)
@@ -343,7 +443,18 @@ var/global/list/region_edge_spans = list()
 				break
 	for (var/mob/living/simple_animal/A in gone)
 		qdel(A)
+	// The cart that left stands near them in the older save, load and all.
+	if (region_edge_cart_valid(P["cart"]))
+		var/path = text2path(P["cart"][1])
+		for (var/obj/structure/closet/crate/C in range(2, H))
+			if (C.type == path)
+				log_game("Region travel: replayed the crossing of the cart [C.name]; it leaves again.")
+				for (var/atom/movable/M in C)
+					qdel(M)
+				qdel(C)
+				break
 
+#undef REGION_EDGE_CART_ITEMS_MAX
 #undef REGION_EDGE_ARRIVAL_INSET
 #undef REGION_EDGE_ASK_COOLDOWN
 #undef REGION_EDGE_SHORE

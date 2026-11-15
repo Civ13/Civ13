@@ -189,6 +189,18 @@
 	B.update_icon()
 	return B
 
+// list(kind, amount) for one item as a worn entry writes it, or null when it
+// cannot travel. For loads that travel beside the traveller (a pulled cart).
+/proc/region_travel_worn_entry(obj/item/I)
+	var/kind = region_travel_worn_kind(I)
+	if(!kind) return null
+	if(kind == "type") return list("[I.type]", 1)
+	if(copytext(kind, 1, 6) == "ammo:") return list(kind, region_travel_ammo_count(I))
+	if(copytext(kind, 1, 7) == "stack:")
+		var/obj/item/stack/S = I
+		return list(kind, S.amount)
+	return list(kind, 1)
+
 // TRUE when a worn entry (kind, amount) may be rebuilt.
 /proc/region_travel_worn_valid(kind, amount)
 	if(!istext(kind) || !isnum(amount)) return FALSE
