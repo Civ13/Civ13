@@ -1236,6 +1236,12 @@ SUITES = {
         'paths': ('tests/aqueducts/',), 'shared_paths': (
             'code/modules/1713/aqueducts.dm', 'icons/obj/aqueducts.dmi', 'tests/sprites/create_aqueducts.py',
             'code/modules/1713/mechanical_power.dm')},
+    # Siege engines and castle defences: source contracts (the native probe is tests/siege_engines/probe.dm).
+    'siege_engines': {'files': ('tests/siege_engines/test_source.py',),
+        'paths': ('tests/siege_engines/',), 'shared_paths': (
+            'code/modules/1713/siege/siege_engines.dm', 'code/modules/1713/siege/catapult.dm',
+            'icons/obj/siege_engines.dmi', 'icons/obj/trebuchet.dmi', 'icons/obj/siege_tower.dmi',
+            'tests/sprites/create_siege_engines.py')},
     # Sewers phase S1: source contracts (the native probe is tests/sewers/probe.dm).
     'sewers': {'files': ('tests/sewers/test_sewers.py',),
         'paths': ('tests/sewers/',), 'shared_paths': (
