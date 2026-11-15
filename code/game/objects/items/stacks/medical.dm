@@ -393,7 +393,13 @@
 		to_chat(user, SPAN_WARNING("Uncover their mouth first!"))
 		return
 	user.visible_message("[user] starts to attach \the [src] to [M].", "You start to attach \the [src] to [M].")
-	if (do_after(user, 80, src)) // TO-DO: Make it dependent on medical skill
+	// Watch the patient, not the device, and recheck reach and the mouth afterwards (#5480).
+	if (do_after(user, 80, M)) // TO-DO: Make it dependent on medical skill
+		if (QDELETED(M) || loc != user || (M != user && !user.Adjacent(M)))
+			return
+		if (M.wear_mask)
+			to_chat(user, SPAN_WARNING("Uncover their mouth first!"))
+			return
 		M.adjustOxyLoss(-7)
 		user.visible_message(SPAN_NOTICE("[user] manually ventilates [M]."), SPAN_NOTICE("You manually ventilate [M]."))
 		return
