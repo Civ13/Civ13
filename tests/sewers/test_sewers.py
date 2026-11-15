@@ -22,6 +22,11 @@ class SewersSource(unittest.TestCase):
         for fill in range(4):
             self.assertIn(f'cesspit{fill}', states)
         self.assertIn('outfall', states)
+        for j in range(16):
+            self.assertIn(f'brick_drain{j}', states)
+        self.assertIn('flap_gate', states)
+        self.assertIn('clog', states)
+        self.assertIn('image(icon, "clog")', SEWERS)
         self.assertIn('icon_state = "[junction_prefix][junction]"', SEWERS)
         self.assertIn('image(icon, "outfall", dir = d)', SEWERS)
 
@@ -40,6 +45,18 @@ class SewersSource(unittest.TestCase):
         self.assertIn('RECIPE: /material/stone/,stone drain,/obj/structure/sewer_piece/drain/stone,', recipes)
         research = (ROOT / 'code/modules/research_tree/research_node.dm').read_text(encoding='utf-8')
         self.assertIn('"/obj/structure/sewer_piece/drain/stone" = "sanitation",', research)
+        self.assertIn('RECIPE: /material/wood/,flap gate,/obj/structure/sewer_flap_gate,', recipes)
+        self.assertIn('"/obj/structure/sewer_flap_gate" = "sanitation",', research)
+        self.assertIn('RECIPE: /material/stonebrick/,brick sewer,/obj/structure/sewer_piece/drain/brick,', recipes)
+        self.assertIn('"/obj/structure/sewer_piece/drain/brick" = "imperial_architecture",', research)
+
+    def test_hollows_drain_once_a_minute(self):
+        hollows = (ROOT / 'code/modules/1713/flood_hollows.dm').read_text(encoding='utf-8')
+        self.assertIn('\t// Drains in hollows (sewers.dm).\n\tdrain_hollows()', hollows)
+        tick = SEWERS.split('/datum/river_flood/proc/drain_hollows()', 1)[1].split('\n/', 1)[0]
+        self.assertIn('for (var/obj/structure/sewer_piece/drain/D in sewer_drains)', tick)
+        self.assertNotIn('range(', tick)
+        self.assertIn('return key == "hollow_id" || key == "outfall_cache"', SEWERS)
 
     def test_cheap_and_save_safe(self):
         # The network is walked only on a flush, never on a timer or over the world.

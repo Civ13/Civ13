@@ -883,8 +883,10 @@ SUITES = {
                          'code/modules/1713/tools.dm', 'code/game/objects/items/weapons/tools.dm',
                          'code/game/objects/items/weapons/material/material_weapons.dm',
                          'code/game/objects/items/weapons/material/misc.dm')},
-    'tool_materials': {'files': ('tests/tool_materials/test_tool_materials.py',),
+    'tool_materials': {'files': ('tests/tool_materials/test_tool_materials.py',
+                                 'tests/tool_materials/test_tool_wear.py'),
         'paths': ('tests/tool_materials/', 'code/modules/materials/tool_materials.dm',
+                  'code/modules/materials/tool_wear.dm',
                   'config/recipe_variants.json', 'scripts/recipe_variants.py'),
         'shared_paths': ('code/modules/materials/part_roles.dm', 'code/modules/materials/material_properties.dm',
                          'code/modules/1713/tools.dm', 'code/game/objects/items/weapons/tools.dm',
@@ -898,10 +900,12 @@ SUITES = {
                          'scripts/build-crafting-atlas.py')},
     'machine_parts': {'files': ('tests/machine_parts/test_machine_parts.py', 'tests/machine_parts/test_lathes.py',
                                 'tests/machine_parts/test_machine_slots.py', 'tests/machine_parts/test_pipe_materials.py',
-                                'tests/machine_parts/test_wire_materials.py', 'tests/machine_parts/test_vessel_materials.py'),
+                                'tests/machine_parts/test_wire_materials.py', 'tests/machine_parts/test_vessel_materials.py',
+                                'tests/machine_parts/test_barrel_materials.py'),
         'paths': ('tests/machine_parts/', 'code/modules/materials/machine_parts.dm',
                   'code/modules/materials/pipe_materials.dm', 'code/modules/materials/wire_materials.dm',
                   'code/modules/materials/vessel_materials.dm', 'tests/sprites/create_fluid_tanks.py',
+                  'code/modules/materials/barrel_materials.dm',
                   'icons/obj/fluid_tanks.dmi',
                   'code/modules/materials/lathes.dm', 'tests/sprites/create_lathes.py', 'icons/obj/lathes.dmi',
                   'code/modules/materials/machine_slots.dm',
@@ -1189,7 +1193,7 @@ SUITES = {
     # Sewers phase S1: source contracts (the native probe is tests/sewers/probe.dm).
     'sewers': {'files': ('tests/sewers/test_sewers.py',),
         'paths': ('tests/sewers/',), 'shared_paths': (
-            'code/modules/1713/sewers.dm', 'icons/obj/sewers.dmi', 'tests/sprites/create_sewers.py',
+            'code/modules/1713/sewers.dm', 'code/modules/1713/flood_hollows.dm', 'icons/obj/sewers.dmi', 'tests/sprites/create_sewers.py',
             'code/game/objects/structures/watercloset.dm', 'code/game/mob/living/carbon/human/shit_piss.dm')},
     # Bone flute, frame drum, flint sickle and bison herds: source contracts only.
     'stone_age_extras': {'files': ('tests/stone_age_extras/test_source.py',),
@@ -1913,6 +1917,10 @@ SUITES = {
         'tests/wire_bench/', 'code/modules/1713/wire_bench.dm', 'code/modules/materials/wire_materials.dm',
         'code/modules/1713/machinery/cables_types.dm', 'config/craft_needs.json',
         'icons/obj/wire_bench.dmi', 'tests/sprites/create_wire_bench.py')},
+    # Source contracts only; this suite does not run DM.
+    'rolling_mill': {'files': ('tests/rolling_mill/test_contract.py',), 'paths': (
+        'tests/rolling_mill/', 'code/modules/1713/rolling_mill.dm', 'config/craft_needs.json',
+        'icons/obj/rolling_mill.dmi', 'tests/sprites/create_rolling_mill.py')},
     'lifting_machines': {'files': ('tests/lifting_machines/test_contract.py',), 'paths': (
         'tests/lifting_machines/', 'code/modules/1713/lifting_machines.dm',
         'icons/obj/lifting_machines.dmi', 'tests/sprites/create_lifting.py')},

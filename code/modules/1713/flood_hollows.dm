@@ -115,6 +115,8 @@
 			volume = 0
 		hollow_volume[i] = volume
 		hollow_level[i] = hollow_level_for(i, volume)
+	// Drains in hollows (sewers.dm).
+	drain_hollows()
 
 #undef HOLLOW_RAIN_YIELD
 #undef HOLLOW_CATCHMENT_CAP

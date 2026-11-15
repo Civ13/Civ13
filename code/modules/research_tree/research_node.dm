@@ -1078,6 +1078,7 @@ var/global/list/node_grid_col_cache = null
 		// --- cannon (2) ---
 		"/obj/item/cannon_ball" = "cannon",
 		"/obj/structure/cannon" = "cannon",
+		"/obj/structure/cannon/hooped" = "cannon",
 		// --- cartridge_ammo (5) ---
 		"/obj/item/clothing/accessory/storage/lanyard/pistol" = "cartridge_ammo",
 		"/obj/item/ammo_magazine/emptybelt" = "cartridge_ammo",
@@ -1694,9 +1695,10 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/toilet/outhouse" = "hygiene",
 		"/obj/structure/toilet/outhouse/female" = "hygiene",
 		"/obj/structure/toilet/outhouse/male" = "hygiene",
-		// --- imperial_architecture (47) ---
+		// --- imperial_architecture (48) ---
 		"/obj/structure/workshop_machine/shear_legs/crane" = "imperial_architecture",
 		"/obj/structure/workshop_machine/pile_driver" = "imperial_architecture",
+		"/obj/structure/sewer_piece/drain/brick" = "imperial_architecture",
 		"/obj/item/weapon/bridge_span/timber" = "imperial_architecture",
 		"/obj/covers/decorative_marbletile" = "imperial_architecture",
 		"/obj/covers/decorative_marbletile/black" = "imperial_architecture",
@@ -2084,7 +2086,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/paper_bin/empty" = "public_health",
 		"/obj/item/weapon/storage/bag/trash" = "public_health",
 		"/obj/structure/closet/crate/dumpster" = "public_health",
-		// --- rail_steam (11) ---
+		// --- rail_steam (12) ---
+		"/obj/structure/workshop_machine/rolling_mill" = "rail_steam",
 		"/obj/structure/workshop_machine/steam_site/road_roller" = "rail_steam",
 		"/obj/structure/rail_warehouse" = "rail_steam",
 		"/obj/structure/train_car_kit" = "rail_steam",
@@ -2226,7 +2229,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/religious/totem_pole" = "ritual_worship",
 		"/obj/structure/religious/woodcross1" = "ritual_worship",
 		"/obj/structure/religious/woodcross2" = "ritual_worship",
-		// --- sanitation (10) ---
+		// --- sanitation (11) ---
 		"/obj/structure/mirror" = "sanitation",
 		"/obj/structure/shower" = "sanitation",
 		"/obj/structure/shower/bathtub/big/bronze" = "sanitation",
@@ -2237,6 +2240,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/sink/kitchen" = "sanitation",
 		"/obj/structure/toilet" = "sanitation",
 		"/obj/structure/sewer_piece/drain/stone" = "sanitation",
+		"/obj/structure/sewer_flap_gate" = "sanitation",
 		// --- siege_engines (3) ---
 		"/obj/item/catapult_ball" = "siege_engines",
 		"/obj/item/weapon/siegeladder" = "siege_engines",

@@ -319,6 +319,54 @@ hook is `fluid_receive()`. Non-steel tanks use the tintable grey sprite from
 `tests/sprites/create_fluid_tanks.py`. Reaction vessels and engine boilers do
 not take a material yet.
 
+## Cannon barrels
+
+`code/modules/materials/barrel_materials.dm` gives the smoothbore cannon a
+barrel material. A cannon stores `barrel_material` (steel by default) and
+`barrel_wear` (0 to 100); the cannon body in `siege/piece.dm` is untouched.
+
+```
+barrel_life(name)        // shots: (toughness * firmness / 1000)^2 * 5
+barrel_fails_early(name) // toughness <= firmness: it cracks without bulging
+```
+
+| Barrel | Shots | How it ends |
+| --- | --- | --- |
+| Steel | no limit | never, as before |
+| Iron | 204 | from half its life on, each shot has a 2% chance to burst it, with no warning |
+| Bronze | 101 | bulges at three quarters, splits when spent, bursts on the shot after |
+| Iron-hooped wood | 5 | the same warnings as bronze |
+
+Bronze and iron cannons are the cannon recipe on another stack (field 13 names
+the material). The hooped cannon is `/obj/structure/cannon/hooped` because its
+iron hoops are a second input and those are keyed by result type. Artillery
+and tank guns keep steel barrels.
+
+## Soft tools
+
+`code/modules/materials/tool_wear.dm` is the one rule that stands in for
+per-recipe "needs an iron tool" checks. The thing being worked says what it is
+made of and which tools cut it:
+
+```
+A.work_material_name(I)   // material tool I would cut here, or null
+tool_is_soft(I, name)     // the tool is less firm than that
+tool_meets_work(I, A, user) // asked once in resolve_attackby(), before attackby()
+```
+
+A tool softer than its work still works: the user waits 4 seconds first and the
+tool takes heavy wear. Nothing happens on harm intent. Today rock walls, cave
+floors and stone, marble and sandstone walls answer to chisels, and cables,
+barbed wire and chain-link fence answer to wirecutters (a cable by its metal).
+A new target needs only a `work_material_name()` override.
+
+Wear is item health through `apply_wear()`. A plain tool has no health until
+`tool_job_wear()` first charges it, so tools that never meet the rule store
+nothing. A tool in its usual material wears only on harder work; a tool in a
+material with a shorter lifetime rating in its role also wears a little each
+job. At 0 it breaks. Pickaxes, shovels and hatchets are left out: their speed
+table already carries what a bone or stone head costs.
+
 ## Sparks
 
 A tool whose material has `sparks` set (iron, steel, flint) can set off a

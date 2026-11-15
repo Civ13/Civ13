@@ -99,6 +99,25 @@ place over that time. Template vessels (`datum/vessel`) still jump.
 hull: it commissions, refits and strikes the hull, steers her, keeps the
 papers and saves the hull as offsets from its own tile.
 
+### Upper decks
+
+A roof built over a built hull's deck has its walkable upper face on the
+building level above (`building_levels.dm`). That upper deck sails with her:
+`upper_cells()` finds it again at every move by position, as the floor above
+each hull tile whose roof stands on that tile, or the top of a ladder whose foot
+does. Nothing about it is saved and no field links one deck to the other, so a
+loaded world finds the upper deck the same way. `plan()` refuses a move when the
+open air ahead of the upper deck holds a floor, a ladder or anything solid, and
+when her hull and upper deck together pass `BUILT_HULL_MAX_DECK_TILES` (300).
+`move_to()` carries the lower deck first, then the upper floors and ladder tops,
+then whoever stands up there, so nobody reaches open air without a floor. A
+roof makes the tile under it indoors, so the areas of her tiles sail with her
+and the sea's areas close in behind. Measured in
+`tests/naval_carrier/upper_deck_probe.dm`, a step at the cap with ten sailors
+and ten buckets aboard takes about 16 ms (a bare 200-tile hull about 10 ms).
+A hull with an upper deck cannot cross the sea or set out on a voyage yet, since
+only her own deck packs for the crossing.
+
 ## Drives aboard
 
 `naval/hull_drives.dm`: anything standing on a craft can be a drive by

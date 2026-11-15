@@ -116,7 +116,8 @@
 		return "The tiller is not commissioned. It must stand on a floor built over water, with the hull free of the shore."
 	var/datum/craft_body/built/B = craft.body
 	var/list/speeds = list("all stop", "slow ahead", "half ahead", "full ahead")
-	return "[capitalize(craft.name)]: [B.tile_count()] tiles of hull, [speeds[craft.speed + 1]], bow to the [dir2text(B.dir)], anchor [craft.anchored ? "down" : "up"][craft.running_dark ? ", running dark" : ""][craft.grapple ? ", held by grappling lines" : ""]. [craft.drives_text()] [craft.magnetic_text()]"
+	var/upper = B.upper_tile_count()
+	return "[capitalize(craft.name)]: [B.tile_count()] tiles of hull[upper ? " and [upper] of upper deck" : ""], [speeds[craft.speed + 1]], bow to the [dir2text(B.dir)], anchor [craft.anchored ? "down" : "up"][craft.running_dark ? ", running dark" : ""][craft.grapple ? ", held by grappling lines" : ""]. [craft.drives_text()] [craft.magnetic_text()]"
 
 /obj/structure/hull_tiller/examine(mob/user)
 	..()
