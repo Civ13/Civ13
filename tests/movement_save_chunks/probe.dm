@@ -276,7 +276,9 @@ var/peak_capture_tick_usage = 0
 				if(!findtext(refusal_text, "Admitted moving save root changed containment, level or identity")) throw EXCEPTION("HEADROOM: changed root was not revalidated")
 		if(world.params["scenario"] == "root-change")
 			if(!findtext(refusal_text, "Moving save root changed during capture: root=/mob/living/simple_animal/chunk_fixture reason=field friends set")) throw EXCEPTION("ROOT_CHANGE: refusal did not name the root and reason: [refusal_text]")
-			if(!map_storage.moving_save_demoted["\ref[subject]"]) throw EXCEPTION("ROOT_CHANGE: changed root was not moved to the turf path")
+			// A root that changed while its level was held still is deleted
+			// (saving.dm fail_save_on_animal), like one that moved.
+			if(subject && !subject.gcDestroyed) throw EXCEPTION("ROOT_CHANGE: the animal that changed while held still was not deleted")
 		if(world.params["scenario"] == "root-move")
 			if(!findtext(refusal_text, "Moving save root changed during capture: root=/mob/living/simple_animal/chunk_fixture reason=moved")) throw EXCEPTION("ROOT_MOVE: refusal did not name the move: [refusal_text]")
 			if(subject && !subject.gcDestroyed) throw EXCEPTION("ROOT_MOVE: the animal that moved while held still was not deleted")
