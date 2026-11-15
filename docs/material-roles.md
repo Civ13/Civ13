@@ -319,6 +319,26 @@ hook is `fluid_receive()`. Non-steel tanks use the tintable grey sprite from
 `tests/sprites/create_fluid_tanks.py`. Reaction vessels and engine boilers do
 not take a material yet.
 
+## Rolling stock
+
+The wheel is a machine part (`/obj/item/machine_part/wheel`, `ROLE_WHEEL`):
+carved from wood with a hatchet and chisel, forged at an anvil or cast in a
+parts mould. `/obj/item/machine_part/wheel/shod` is a wooden wheel with an
+iron tyre: one wheel, 2 iron and a hammer; it lasts twice as long and is drawn
+in its own colours.
+
+`code/modules/materials/rolling_stock.dm` gives the pedal bicycle a
+`frame_material`. The bicycle is 8 of the frame metal plus two wheels and a
+drive chain or belt (`config/craft_needs.json`), fitted with a wrench.
+`bicycle_frame_factor(name)` scales the unladen step delay by the frame's
+density: a quarter of the delay is the frame, so aluminium is 0.85 of steel.
+`/obj/structure/vehicle/bicycle/running` is the wooden running bike: 6 wood
+and two wheels, no chain, 2.6 ds a tile, researched with Carts.
+
+Vehicle wheels (`/obj/structure/vehicleparts/movement`) are not changed here:
+they carry no weight of their own and the game has no rubber to make a tyre
+from.
+
 ## Cannon barrels
 
 `code/modules/materials/barrel_materials.dm` gives the smoothbore cannon a

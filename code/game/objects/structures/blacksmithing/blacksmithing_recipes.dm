@@ -390,6 +390,7 @@ var/global/list/anvil_recipes = list(
 	"Bushing" = list("Bushing","parts",0,8,2,2,2,0,/obj/item/machine_part/bearing),
 	"Spring" = list("Spring","parts",0,8,2,2,2,0,/obj/item/machine_part/spring),
 	"Drive Chain" = list("Drive Chain","parts",0,8,3,3,3,0,/obj/item/machine_part/belt),
+	"Wheel" = list("Wheel","parts",0,8,4,4,4,0,/obj/item/machine_part/wheel),
 	/*gulag*/
 	"Guard Key" = list("Guard Key","keys",6,6,3,3,3,0,/obj/item/weapon/key/soviet/guard),
 )
