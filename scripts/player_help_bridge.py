@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '29dcc5d057f21b19ca42ea9206778bb26395c08c'
+WIKI_REVIEWED_REVISION = '7d0776cce231f467e7a0d410b1ae0335cc0c279e'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('dbdd9f64009c697282c90bf6d7e157100834ad2ea23f5b76ec03938e816c1083', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('0da0fcb7a71382365bf818e6e27b5e0c58056785f328a4da1bba4ed44e26a673', 'character skills traits languages'),
@@ -113,7 +113,7 @@ WIKI_REVIEWED_GUIDES = {
     'gamemodes/Battle_Royale.md': ('18d1e4cf951f943bd7a0f5030c1825bd82a77427349b086842a309e492c4d841', 'battle royale battleroyale'),
     'gamemodes/Gladiators.md': ('36ac7d70edff2c99d78351585450428ad5cd02542b0cc3dfc5c178bca7d1ffb6', 'gladiator gladiators arena imperator custodes medicus'),
     'gamemodes/Prison_Roleplay.md': ('8da37041c99c23ab18012006e8afd8475acdd1485f8cb3eb48d23152f9cfb613', 'prison prisoner guard gulag nkvd'),
-    'guides/Guide_to_Boats.md': ('9d1fb0d0ed2397a1347201c2135bd9d3c85e91a74c1e9242ee8b7ebf70cc53ed', 'boat boats ship sailing sail raft canoe rowing oars anchor swim swimming drown drowning current currents lifejacket naval torpedo torpedoes degaussing minesweeping'),
+    'guides/Guide_to_Boats.md': ('87cbef98a7943abdaa0c21ef5f175cea324e126e3f3402f785f1ad5a51b4e10d', 'boat boats ship sailing sail raft canoe rowing oars anchor swim swimming drown drowning current currents lifejacket naval torpedo torpedoes degaussing minesweeping'),
     'guides/Guide_to_Aircraft.md': ('062500cdad251ba9e32fa0c4ca1882b4e00f55b9bce8ec7cc8ea47724a0f9c2a', 'aircraft airplane plane planes flying fly flight runway hangar pilot takeoff landing'),
     'guides/Guide_to_Aircraft_Carriers.md': ('3402b1e488a635eb74b172c9d0c2d62038fe192efcd7d12e9b3f5d297c655ce4', 'carrier carriers aircraft carrier flight deck shipyard office arresting wires elevator bunkers'),
     'guides/Guide_to_Races.md': ('46ef1bf361c519e71acbd679119429e838348827e25dbcac27282f67bee51097', 'race races species human humans'),
@@ -123,7 +123,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Paperwork.md': ('4c73cacfcb51d228b3015af280120dedf7b7a3591d291512acbee906c537d9fb', 'paper paperwork writing write pen book sign signature stamp'),
     'Crafting_Skill_Level_Requirements.md': ('eae4e1c91ce28009f16ec79d0e942f76895d80262e618320eaf44d3a7c5808a9', 'crafting skill level levels requirement requirements unlock'),
     'Food_Decay_Times.md': ('d2d63372eddc79fd7c3c9bffb390587fff7a5cb21c53d829ab5ec29ab9f11126', 'food decay rot spoil spoils spoiled expire expires lasts preserve storage'),
-    'Miscellaneous_Crafting.md': ('eac7513db31aeb05d3dec97040b4287d79ea61eba3076a5f9c7e889c36c4bb8b', 'miscellaneous crafting misc items dress dresses dressmaking tailoring tailor tailored sew sewing pattern patterns design clothes shirt gown cloak sleeves collar dye dyes wool linen fabric book hat hats headwear beret veil candle candles'),
+    'Miscellaneous_Crafting.md': ('e98245312122e2745888b8c9d3676536a91a104244eaf93dc6fd9821d6a98b24', 'miscellaneous crafting misc items dress dresses dressmaking tailoring tailor tailored sew sewing pattern patterns design clothes shirt gown cloak sleeves collar dye dyes wool linen fabric book hat hats headwear beret veil gloves boots shoes belt sash backpack satchel quiver bandolier restyle alteration alter candle candles'),
     'maps/The_Americas.md': ('7da473dcae7b98efa4d7d618f8d13f919d1a278b398ce0ff7e5d8a105adadfba', 'americas america north south isthmus mainland persistent persistence map world hills tamping grading rammer'),
     'maps/Gaia.md': ('31ac9df3080f401b012b2fd335e89e633e438fe0124fad2ced6d4ff6fd72858c', 'gaia map world underground'),
     'maps/Nomads_Maps.md': ('1c32d0bb8e9013f8564d3523597fea5e50169ea121d5af15443898df4bcb4c8e', 'nomads maps map terrain biome biomes'),
