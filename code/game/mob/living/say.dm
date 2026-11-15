@@ -95,7 +95,8 @@ var/list/radio_prefixes = list(";", ":b", ":l", ":r", ":t", ":f",
 	// A language only half known comes out with gaps (proficiency.dm).
 	if (speaking && ishuman(src))
 		var/mob/living/human/learner = src
-		if (learner.language_score(speaking) < LANGUAGE_FLUENT)
+		// Only a learned language: one spoken without being in the list is left alone.
+		if (learner.knows_language(speaking) && learner.language_score(speaking) < LANGUAGE_FLUENT)
 			if (alt_message)
 				var/spoken = learner.garble_own_speech(alt_message, speaking)
 				message = findtext(message, alt_message) ? replacetext(message, alt_message, spoken) : spoken

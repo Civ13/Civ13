@@ -78,6 +78,7 @@ class Rules(unittest.TestCase):
         say = read('code/game/mob/living/say.dm')
         say = say[say.index('/mob/living/say('):]
         self.assertLess(say.index('garble_own_speech'), say.index('handle_speech_problems'))
+        self.assertIn('learner.knows_language(speaking) && learner.language_score(speaking) < LANGUAGE_FLUENT', say)
         garble = proc(PROF, '/mob/living/human/proc/garble_own_speech(')
         self.assertIn('if (score >= LANGUAGE_FLUENT)\n\t\treturn message', garble)
         self.assertIn('prob(score)', garble)
