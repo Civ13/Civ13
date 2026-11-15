@@ -185,6 +185,28 @@ static class LocalHostingTests {
         foreach (var (selected, confirmation) in new (string?, string?)[] { (null, null), ("gaia", "earth"), (null, "-x"), (null, "EARTH") })
             try { LocalHosting.GroupStep(host.Control!, "group-fresh-world", selected, null, null, confirmation); throw new Exception("unsafe group fresh world accepted"); } catch (ArgumentException) { assertions++; }
         try { LocalHosting.GroupStep(host.Control!, "stop", null, null, null, "earth"); throw new Exception("group confirmation on ordinary stop accepted"); } catch (ArgumentException) { assertions++; }
+        // Players dialog: Send Player to Region (RegionPlayers, shard_group.py players / send-players).
+        Require(RegionPlayers.PlayersStep(host.Control!, "gaia").ArgumentList.SequenceEqual(
+            new[] { "-I", "-B", shard, "--config", groupConfig, "players", "--region", "gaia" }), "players argv");
+        Require(RegionPlayers.SendStep(host.Control!, "northamerica", ["Ann", "bob_2"], "gaia", "shore", null, false, false).ArgumentList.SequenceEqual(
+            new[] { "-I", "-B", shard, "--config", groupConfig, "send-players", "--region", "northamerica", "--players", "Ann,bob_2", "--to", "gaia", "--landing", "shore" }), "dry-run send argv");
+        Require(RegionPlayers.SendStep(host.Control!, "northamerica", ["ann"], "gaia", "coords", "10,20,1", false, true).ArgumentList.SequenceEqual(
+            new[] { "-I", "-B", shard, "--config", groupConfig, "send-players", "--region", "northamerica", "--players", "ann", "--to", "gaia", "--landing", "coords", "--at", "10,20,1", "--send" }), "coords send argv");
+        Require(RegionPlayers.SendStep(host.Control!, "gaia", ["ann"], "moon", "arrival", null, true, false).ArgumentList.Contains("--ship"), "ship send argv");
+        foreach (var (keys, to, landing, at) in new (string[], string, string, string?)[] { ([], "gaia", "shore", null), (["a,b"], "gaia", "shore", null), (["-x"], "gaia", "shore", null),
+                (["ann"], "northamerica", "shore", null), (["ann"], "--to", "shore", null), (["ann"], "gaia", "sky", null), (["ann"], "gaia", "coords", null),
+                (["ann"], "gaia", "shore", "1,2,3"), (["ann"], "gaia", "coords", "1,2"), (["ann"], "gaia", "coords", "1,2,3;x") })
+            try { RegionPlayers.SendStep(host.Control!, "northamerica", keys, to, landing, at, false, false); throw new Exception("unsafe send accepted: " + string.Join(",", keys) + " " + to + " " + landing + " " + at); } catch (ArgumentException) { assertions++; }
+        var roster = RegionPlayers.ParseRoster(0, "noise\n{\"ok\": true, \"players\": [{\"ckey\": \"ann\", \"name\": \"Ann\\u0007 Smith\", \"playing\": true, \"at\": [5, 6, 1], \"aboard\": \"Gnome 2\"}, {\"ckey\": \"<b>\"}], " +
+            "\"destinations\": {\"Gaia (up)\": \"gaia\", \"Bad\": \"--x\"}, \"recent\": [{\"time\": 1, \"text\": \"host sent ann\"}], \"running\": false}");
+        Require(roster.Ok && roster.Players.Count == 1 && roster.Players[0] is { Ckey: "ann", Name: "Ann Smith", Playing: true, Aboard: "Gnome 2", At: "5,6,1" }
+            && roster.Destinations.Count == 1 && roster.Destinations[0].Id == "gaia" && roster.Recent.SequenceEqual(["host sent ann"]), "roster parse");
+        Require(!RegionPlayers.ParseRoster(1, "{\"ok\": false, \"refused\": \"gaia is asleep\"}").Ok, "roster refusal");
+        var dry = RegionPlayers.ParseSend(0, "{\"ok\": true, \"send\": \"dry_run\", \"rows\": [{\"ckey\": \"ann\", \"name\": \"Ann\", \"ok\": true, \"warnings\": [\"they leave the horse behind\"]}, " +
+            "{\"ckey\": \"bob\", \"name\": \"Bob\", \"ok\": false, \"reason\": \"They are dead.\"}]}");
+        Require(dry.Ok && dry.Ready == 1 && !dry.Started && RegionPlayers.Describe(dry).Contains("Refused: bob (Bob): They are dead.") && RegionPlayers.Describe(dry).Contains("Nothing has moved yet"), "dry run parse");
+        Require(RegionPlayers.ParseSend(0, "{\"ok\": true, \"send\": \"started\", \"rows\": []}").Started, "started parse");
+        Require(RegionPlayers.Describe(RegionPlayers.ParseSend(0, "{\"ok\": true, \"send\": \"refused:another transfer is running\", \"rows\": []}")).Contains("Not sent: another transfer is running."), "refused send");
         var groupStep = LocalHosting.GroupStep(host.Control!, "stop");
         Require(groupStep.FileName == python && groupStep.CreateNoWindow && !groupStep.UseShellExecute && groupStep.RedirectStandardInput &&
             groupStep.ArgumentList.SequenceEqual(new[] { "-I", "-B", shard, "--config", groupConfig, "stop" }), "group argv changed: " + string.Join(" ", groupStep.ArgumentList));

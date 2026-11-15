@@ -543,6 +543,10 @@ var/global/list/sea_crossing_marked = list()
 /obj/structure/hull_tiller
 	// The voyage a ship built from a crossing came on, so her crew find her.
 	var/crossing_voyage = null
+	// An admin is sending her (region_admin_send.dm): she may leave from
+	// anywhere on the water, and who sent her rides with the crew.
+	var/tmp/admin_crossing = FALSE
+	var/tmp/admin_crossing_by = null
 
 // Why she cannot leave the map now, or null.
 /obj/structure/hull_tiller/proc/crossing_refusal(mob/living/human/H)
@@ -552,7 +556,9 @@ var/global/list/sea_crossing_marked = list()
 	// Only her own deck packs for the crossing; an upper deck would be lost.
 	if (istype(B) && B.upper_tile_count())
 		return "She cannot cross the sea with an upper deck yet. Take down the roofs over her deck first."
-	if (!istype(B) || !B.at_map_edge())
+	if (!istype(B))
+		return "She is not commissioned."
+	if (!admin_crossing && !B.at_map_edge())
 		return "She must lie off the edge of the chart, within [SEA_CROSSING_EDGE] tiles of open sea's end, to leave these waters."
 	if (craft.speed || craft.turning_to)
 		return "Ring all stop first."
@@ -657,6 +663,8 @@ var/global/list/sea_crossing_marked = list()
 		if (QDELETED(H) || H.loc != gate)
 			continue
 		gate.pending = list("voyage" = voyage)
+		if (admin_crossing_by)
+			gate.pending["admin_send"] = list("landing" = "arrival", "by" = admin_crossing_by)
 		if (!carried)
 			gate.pending["ship"] = record
 		var/result = gate.depart(H)

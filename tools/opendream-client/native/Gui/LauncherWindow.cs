@@ -419,6 +419,14 @@ internal sealed partial class LauncherWindow : Form {
         var menu = new List<(string, Func<Task>?, HostGate?)>();
         foreach (var (text, action) in new[] { ("Update", "update"), ("Build update", "stage"), ("Apply host settings", "config-apply"), ("Set up", "setup") })
             menu.Add((text, () => GroupAction(action, text, Chosen()), HostGate.Region));
+        // Send Player to Region from the launcher (RegionPlayers, PlayersDialog): the world answers, so no host gate.
+        menu.Add(("Players…", () => {
+            if (host?.Control is not { Group: not null } control) return Task.CompletedTask;
+            var chosen = regions[Math.Max(0, picker.SelectedIndex)];
+            using var dialog = new PlayersDialog(control, chosen.Id, chosen.Name, HostLine);
+            dialog.ShowDialog(this);
+            return Task.CompletedTask;
+        }, null));
         menu.Add(("Open its world log", () => {
             string? path;
             try { path = LocalHosting.RegionLog(group, Chosen()); }

@@ -241,6 +241,9 @@ var/global/list/region_travel_carry_types = list(
 	for(var/key in extra)
 		if(key in list("lander", "landing", "surveyed", "rough", "return", "orbit", "cargo", "sortie", "seats", "voyage", "ship", "edge", "mount", "led", "cart", "bike", "wagon"))
 			P[key] = extra[key]
+		// Where an admin chose to land them (region_admin_send.dm).
+		else if(key == "admin_send")
+			P[key] = extra[key]
 		// A plane flying on to another continent (aircraft_crossing.dm).
 		else if(key in list("flight", "pilot", "plane"))
 			P[key] = extra[key]
@@ -304,6 +307,7 @@ var/global/list/region_travel_carry_types = list(
 	if(!sea_crossing_payload_ok(P)) return null
 	if(!air_crossing_payload_ok(P)) return null
 	if(!region_edge_payload_ok(P)) return null
+	if(!region_admin_send_payload_ok(P)) return null
 	return P
 
 // Strict travel admission never silently drops IDs that a destination cannot
@@ -393,12 +397,14 @@ var/global/list/region_travel_carry_types = list(
 		// Otherwise a traveller comes out at the trail here that leads back home.
 		// A ship's crew arrive aboard her (naval/ship_crossing.dm).
 		// A walker over a shared map edge comes out on the facing edge (region_edge.dm).
-		var/turf/at = space_flight_arrival_turf(P, incoming) || sea_crossing_arrival_turf(P, incoming) || air_crossing_arrival_turf(P, incoming) || party_train_arrival_turf(P) || region_edge_arrival_turf(P, incoming) || (incoming ? region_travel_return_trail_turf(P) : null) || T
+		// Someone an admin sent lands where the admin chose (region_admin_send.dm).
+		var/turf/at = space_flight_arrival_turf(P, incoming) || sea_crossing_arrival_turf(P, incoming) || air_crossing_arrival_turf(P, incoming) || region_admin_send_arrival_turf(P, incoming) || party_train_arrival_turf(P) || region_edge_arrival_turf(P, incoming) || (incoming ? region_travel_return_trail_turf(P) : null) || T
 		var/mob/living/human/H = region_travel_build(P, at)
 		space_flight_arrived(H, P, incoming)
 		sea_crossing_arrived(H, P, incoming)
 		air_crossing_arrived(H, P, incoming)
 		region_edge_arrived(H, P, incoming)
+		region_admin_send_arrived(H, P, incoming, get_turf(H) || at)
 		// A recorded trip (or a refused one coming back) makes this land the home.
 		// A journal replay after a reload already told the coordinator once;
 		// saying it again could pull the home back from a later trip.
@@ -596,6 +602,7 @@ var/global/list/region_travel_carry_types = list(
 		return FALSE
 	H.record_persistence_owner()
 	H.region_travel_tongue_notes()
+	region_admin_send_claimed(H)
 	to_chat(H, SPAN_NOTICE("You arrive in [shard_group.enabled ? shard_group.name : "a new land"]."))
 	qdel(lobby)
 	return TRUE
