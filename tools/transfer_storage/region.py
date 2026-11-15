@@ -219,6 +219,7 @@ class RegionStore(TrainLeaseQueue):
         db.execute("INSERT OR IGNORE INTO meta VALUES ('store_id', ?)", (secrets.token_hex(8),))
         db.execute("INSERT OR IGNORE INTO meta VALUES ('homes_rev', '0')")
         db.execute("INSERT OR IGNORE INTO meta VALUES ('mainland', '')")
+        db.execute("INSERT OR IGNORE INTO meta VALUES ('start_region', '')")
         # Land stages: this region's copy of the coordinator's stage list, and
         # admin changes waiting for the coordinator's next pass.
         db.execute("INSERT OR IGNORE INTO meta VALUES ('lands', '{}')")
@@ -759,7 +760,7 @@ class RegionStore(TrainLeaseQueue):
         claim: may this account play here? HOME, ELSEWHERE (with its home) or
         PENDING while the coordinator decides. arrive: a character arrived here
         through a recorded trip. depart: it left for region. release: its only
-        character here died (its home goes back to the mainland). Requests wait
+        character here died (its home goes back to the start region). Requests wait
         for the coordinator's next pass. A claim with body (a living character of
         the account is here) asks for custody when the account has no home, so a
         lost coordinator ledger cannot strand a character off the mainland.
@@ -799,12 +800,12 @@ class RegionStore(TrainLeaseQueue):
                     return {'verdict': 'HOME', 'home': home, 'colony_grant': grant[0] if grant else None}
                 if not queued and home is not None:
                     return {'verdict': 'ELSEWHERE', 'home': home}
-                mainland = self._meta('mainland')
+                start = self.start_region()
                 if body is True and home is None:
                     op = 'custody'
-                elif not queued and home is None and mainland and mainland != self.region:
-                    # New characters start on the mainland and travel from there.
-                    return {'verdict': 'ELSEWHERE', 'home': mainland}
+                elif not queued and home is None and start and start != self.region:
+                    # New characters start in the start region and travel from there.
+                    return {'verdict': 'ELSEWHERE', 'home': start}
                 if op in queued or 'claim' in queued:
                     return {'verdict': 'PENDING', 'home': home}
             if op == 'colony_used':
@@ -812,6 +813,11 @@ class RegionStore(TrainLeaseQueue):
             self.db.execute('INSERT INTO account_request(ckey, op, region, homes_epoch, home_rev, faction) VALUES (?, ?, ?, ?, ?, ?)',
                             (ckey, op, target, self._meta('homes_epoch'), int(self._meta('homes_rev')), faction or ''))
         return {'verdict': 'PENDING', 'home': home}
+
+    def start_region(self):
+        """Where new characters start, as the coordinator last said: its start
+        region, or the mainland from a coordinator that sends none."""
+        return self._meta('start_region') or self._meta('mainland') or None
 
     def home_of(self, ckey):
         row = self.db.execute('SELECT region FROM home WHERE ckey = ?', (ckey,)).fetchone()
@@ -835,7 +841,7 @@ class RegionStore(TrainLeaseQueue):
 
     def apply_homes(self, epoch, rev, rows, done, reset=False, mainland=None, train_locks=None, train_decisions=None,
                     lands=None, land_done=None, chart=None, chart_done=None, colony_grants=None,
-                    nations=None, nation_results=None):
+                    nations=None, nation_results=None, start_region=None):
         """The coordinator's answer: ledger rows newer than our copy (region
         None removes a home) and the request ids it has decided."""
         if not isinstance(epoch, str) or not epoch or not isinstance(rev, int) or rev < 0:
@@ -868,6 +874,7 @@ class RegionStore(TrainLeaseQueue):
             self._set_meta('homes_epoch', epoch)
             self._set_meta('homes_rev', rev)
             self._set_meta('mainland', mainland if isinstance(mainland, str) else '')
+            self._set_meta('start_region', start_region if isinstance(start_region, str) else '')
             # An older coordinator sends no land list: keep the copy we have.
             if lands is not None:
                 if type(lands) is not dict or not all(land_id_valid(k) and land_stage_valid(v) for k, v in lands.items()):
@@ -955,7 +962,7 @@ class RegionStore(TrainLeaseQueue):
     def lands(self):
         """Every land's stage as last sent by the coordinator, and the admin
         changes still waiting for it."""
-        return {'mainland': self._meta('mainland') or None, 'lands': json.loads(self._meta('lands')),
+        return {'mainland': self._meta('mainland') or None, 'start_region': self.start_region(), 'lands': json.loads(self._meta('lands')),
                 'pending': [dict(zip(('region', 'stage', 'paused', 'admin'), (r, st, bool(p), a)))
                             for r, st, p, a in self.db.execute(
                                 'SELECT region, stage, paused, admin FROM land_request ORDER BY id')]}

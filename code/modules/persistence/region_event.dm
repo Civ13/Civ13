@@ -348,7 +348,7 @@ var/global/list/event_stash_registry = list()
 			var/list/result = answer["result"]
 			home = result["home"]
 			if(istext(home) && (home in shard_group.peers) && !region_event_peer(home)) return home
-	return (shard_group.mainland in shard_group.peers) ? shard_group.mainland : null
+	return (shard_group.start_region in shard_group.peers) ? shard_group.start_region : null
 
 /proc/region_event_send_home(mob/requester, list/picked, mode)
 	set waitfor = FALSE
