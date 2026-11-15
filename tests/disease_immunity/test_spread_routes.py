@@ -47,5 +47,32 @@ class SpreadRoutes(unittest.TestCase):
             self.assertEqual(body.strip().splitlines()[-1].strip(), "return")
 
 
+    def test_flu_passes_only_next_to_someone_or_by_sneeze(self):
+        nearby = self.severe.split("/mob/living/human/proc/acquire_nearby_disease()", 1)[1].split("/mob/living/human/proc/", 1)[0]
+        # A whole boat crew caught flu in minutes: it reached 2 tiles through
+        # walls at 1% a second per sick person, with no trait or resistance.
+        self.assertIn("get_dist(src, H) > 1 || !Adjacent(H)", nearby)
+        self.assertIn("#define FLU_ADJACENT_CHANCE 0.25", self.severe)
+        self.assertIn("dview(2, get_turf(src))", nearby)  # plague: no walls either
+        self.assertIn("infection_chance_scale(H.disease_type)", nearby)
+        self.assertIn('infection_chance_scale("flu")', nearby)
+        sneeze = self.severe.split("/mob/living/human/proc/sneeze_flu()", 1)[1]
+        self.assertIn("dview(2, get_turf(src))", sneeze)
+        self.assertIn("FLU_SNEEZE_COOLDOWN", sneeze)
+        self.assertIn('H.infection_chance_scale("flu")', sneeze)
+        emote = read(HUMAN + "emotes/emote.dm")
+        self.assertIn("sneeze_flu()", emote.split('if ("sneeze")', 1)[1].split('if ("burp")', 1)[0])
+
+    def test_every_natural_route_scales_by_traits_and_resistance(self):
+        immunity = read(HUMAN + "immunity.dm")
+        scale = immunity.split("/mob/living/human/proc/infection_chance_scale(kind)", 1)[1].split("\n\n", 1)[0]
+        for part in ('"Weak Immune System"', '"Strong Immune System"', "resists_disease(kind)",
+                     "disease_immunity", "disease_node_scale()", "1 - disease_resistance_to(kind) / IMMUNITY_PROTECTS"):
+            self.assertIn(part, scale)
+        hygiene = read(HUMAN + "human_needs.dm").split("/mob/living/human/proc/handle_hygiene()", 1)[1].split("/mob/living/human/proc/", 1)[0]
+        self.assertIn('infection_chance_scale("typhus")', hygiene)
+        self.assertIn('catch_disease("typhus")', hygiene)
+        self.assertNotIn('disease_type = "typhus"', hygiene)
+
 if __name__ == "__main__":
     unittest.main()
