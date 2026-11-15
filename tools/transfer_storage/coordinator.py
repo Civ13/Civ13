@@ -677,11 +677,17 @@ class Coordinator(TrainCustody):
         return delivered
 
     def relay_once(self):
-        """Deliver every outbox envelope once. Returns the number delivered."""
+        """Deliver every outbox envelope once. Returns the number delivered.
+        An agent that is down (restarting, say) only holds up its own envelopes
+        and those sent to it: they wait in the durable outboxes for the next pass."""
         regions = self.regions()
         delivered = 0
         for name, (url, token) in regions.items():
-            answer = call(url, token, '/outbox')
+            try:
+                answer = call(url, token, '/outbox')
+            except (OSError, ValueError) as e:
+                print('relay pass failed for %s: %s' % (name, e), file=sys.stderr)
+                continue
             for envelope in (answer.get('result') or {}).get('envelopes', []):
                 target = regions.get(envelope.get('recipient'))
                 if target is None or envelope.get('group') != self.group:
@@ -695,12 +701,19 @@ class Coordinator(TrainCustody):
                 forwarded = dict(envelope)
                 if is_train:
                     forwarded['train_custody_epoch'] = self._ledger('epoch')
-                result = call(target[0], target[1], '/receive', {'envelope': forwarded})
+                try:
+                    result = call(target[0], target[1], '/receive', {'envelope': forwarded})
+                except (OSError, ValueError) as e:
+                    print('relay pass failed for %s: %s' % (envelope.get('recipient'), e), file=sys.stderr)
+                    continue
                 if result.get('ok'):
                     delivered += 1
                     reply = result['result'].get('reply')
                     if reply:
-                        call(url, token, '/receive', {'envelope': reply})
+                        try:
+                            call(url, token, '/receive', {'envelope': reply})
+                        except (OSError, ValueError):
+                            pass  # the sender's agent went down meanwhile; this pass carries on
         return delivered
 
 
