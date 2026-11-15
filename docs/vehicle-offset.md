@@ -3,7 +3,7 @@
 Vehicles are moving to pixel positions the way free-moving players do. The
 plan is in five phases. The shared core is `code/modules/craft/vehicle_offset.dm`
 (Phase 0); motorcycles, boats, bicycles and rafts drive with it
-(`vehicle_offset_ride.dm`, Phase 1).
+(`vehicle_offset_ride.dm`, Phase 1), and so do carriages.
 
 ## How it works
 
@@ -41,7 +41,7 @@ plan is in five phases. The shared core is `code/modules/craft/vehicle_offset.dm
   tick squares every pixel-driving vehicle; the offsets are runtime vars
   either way. `vehicle_offset_snap_all()` squares them all at once.
 
-## Bicycles and rafts (Phase 1b)
+## Bicycles, rafts and carriages (Phase 1b)
 
 - Bicycles and running bikes keep their own pedal loop. While someone is near
   it ticks every server tick at `vehicle_offset_speed(vehicle_m_delay)`; the
@@ -54,6 +54,15 @@ plan is in five phases. The shared core is `code/modules/craft/vehicle_offset.dm
   (`offset_paddling`); let go and it drifts to a stop within about half a
   tile. Before, each key press moved one tile. A dugout is quicker with a
   paddle in hand, as before. With nobody near, a key press is one tile step.
+- Carriages roll by pixels the way they face, with the driver, the seats, the
+  team in harness and a hand cart hitched behind all on one offset
+  (`vehicle_offset_aboard()`). The carriage's `do_move()` still runs once per
+  tile (load, team, ground, hills, running into people). Before the rig starts
+  to overlap the tiles ahead, the carriage's and its team lane's cells must be
+  open ground with no structures (`/datum/vehicle_offset/single/carriage`). A
+  turn squares it on its tile first. Reining in stops it where it is.
+- Hand carts pulled by hand already follow a free-moving puller by pixels
+  (living.dm); one hitched to a carriage rides its offset.
 - Riders carried by any vehicle make no footstep sounds
   (`carried_by_vehicle()`); the engine loop is the vehicle's sound.
 
