@@ -5,7 +5,7 @@ only); no external or generated artwork. The pieces are laid on ground tiles
 and are transparent outside the drawn work, so the turf shows through. Light
 comes from the upper left, as on the other script-drawn sheets.
 
-States, all 32x32, 1 frame:
+States, all 32x32, 1 frame unless noted:
 
   ditch0 .. ditch15              1 dir. An open earth drain ditch: raw earth
                                  banks, a strip of wet mud and a thin line of
@@ -28,6 +28,34 @@ States, all 32x32, 1 frame:
   clog                           1 dir. An overlay for any drain piece: a
                                  lump of dark silt, sticks and a scrap of rag
                                  plugging the centre of the channel.
+  pump_steam, pump_steam_on      1 dir. A small Victorian steam pumping
+                                 engine seen from the side, standing on the
+                                 end of a drain: a riveted iron boiler with a
+                                 short chimney on a brick plinth, a flywheel
+                                 and a suction pipe going down into the
+                                 drain. _on is 4 frames, 2 ds each: the
+                                 wheel and its rod turn, the fire flickers
+                                 and steam drifts from the chimney.
+  pump_electric,                 1 dir. A compact electric pump: a green
+  pump_electric_on               painted motor and an iron pump casing on a
+                                 concrete plinth, a riser with a red valve
+                                 wheel, a cable box with a lamp and a spout.
+                                 _on is 3 frames, 3 ds each: the lamp blinks,
+                                 the cooling fins shimmer and water runs from
+                                 the spout.
+  septic0 .. septic3             1 dir. A sealed concrete septic tank seen
+                                 from above, flush with the ground: a square
+                                 lid with two round iron inspection covers on
+                                 a diagonal, a vent and a brass level gauge. The gauge
+                                 fills with the tank; at 2 the joints round
+                                 the covers are damp and at 3 they weep. No
+                                 open sewage shows at any level.
+  settling0 .. settling3         1 dir. An open brick settling tank seen from
+                                 above: a rectangular basin with an inlet on
+                                 the west, a stone weir and an outlet chamber
+                                 on the east. Clear water, then a growing
+                                 layer of brown sludge on the bottom, then
+                                 full and murky.
 
 Junction convention. The number after ditch / stone_drain / brick_drain is a
 bitmask of the
@@ -65,8 +93,9 @@ Run with Pillow to rewrite icons/obj/sewers.dmi (safe to rerun). `--out <dmi>`
 writes the sheet somewhere else, `--preview <png>` writes a labelled review
 sheet with every state on grass and dirt and a 4x4 layout with loops, tees
 and a cross for each drain, a layout where brick joins stone and a flap gate
-closes the outfall, and clogs on a ditch and a drain, `--check` only verifies that the committed sheet
-is what this script draws. Released under Civ13 AGPL-3.0.
+closes the outfall, and clogs on a ditch and a drain, then the pumps (every
+frame), the septic and settling tanks and two layouts with them in place,
+`--check` only verifies that the committed sheet is what this script draws. Released under Civ13 AGPL-3.0.
 """
 import math
 import sys
@@ -149,6 +178,41 @@ CLOG = ('...12k....',
         '..3333K3..')
 CLOG_KEY = {'0': SILT[0], '1': SILT[1], '2': SILT[2], '3': SILT[3], 'k': STICK[0], 'K': STICK[1],
             'r': RAG[0], 'R': RAG[1]}
+
+# ---- pump stations --------------------------------------------------------
+STEAM_FRAMES, STEAM_DELAY = 4, 2         # frames, ds per frame
+ELECTRIC_FRAMES, ELECTRIC_DELAY = 3, 3
+BRASS = [(226, 188, 96), (184, 142, 62), (128, 94, 40)]
+EMBER = [(255, 204, 96), (236, 120, 44), (132, 48, 28)]
+STEAM = [(238, 238, 232), (204, 206, 204)]
+PAINT = [(112, 148, 100), (80, 116, 74), (56, 86, 56), (36, 58, 40)]
+CONCRETE = [(188, 188, 180), (168, 168, 161), (150, 150, 144), (114, 114, 109)]
+VALVE = [(226, 92, 70), (188, 52, 42), (120, 30, 28)]
+LAMP_LIT = [(255, 232, 150), (255, 176, 56)]
+LAMP_DARK = [(132, 84, 34), (92, 56, 26)]
+CABLE = (28, 27, 30)
+FLOW = [(206, 226, 226), (142, 180, 190), (96, 140, 156)]
+WHEEL_AT, WHEEL_R = (23, 16), 6          # the flywheel hub and its radius
+
+# ---- septic tank ----------------------------------------------------------
+LID_LO, LID_HI = 4, 27                   # the 24px lid, the size of the cesspit
+COVERS = ((11, 11), (20, 20))            # the two inspection covers, on a diagonal
+COVER_R = 4.4
+DAMP = [(132, 128, 112), (104, 99, 80), (84, 78, 60)]
+GAUGE_ROW, GAUGE_LO, GAUGE_STEP = 7, 19, 2
+GAUGE_FULL = (204, 70, 44)
+
+# ---- settling tank --------------------------------------------------------
+T_X = (2, 29)                            # outer brick walls, 3px thick
+T_Y = (6, 25)
+T_WALL = 3
+WEIR = (21, 22)                          # the two columns of the stone weir
+NOTCH = (14, 17)                         # rows where the water goes over it
+PORT = (15, 16)                          # rows of the inlet and the outlet
+CLEAR = [(94, 140, 152), (80, 126, 140), (110, 156, 166)]
+CLEAR_SHADE = (58, 98, 114)
+CLEAR_GLINT = (182, 212, 214)
+SETTLED = [(116, 110, 84), (100, 88, 60), (78, 66, 44)]     # sludge under water
 
 # preview backgrounds, used when the game sheets cannot be read
 GRASS = (86, 128, 62)
@@ -617,6 +681,464 @@ def clog():
     return image(px)
 
 
+# ------------------------------------------------------------ pump stations
+
+def fill_box(px, x0, y0, x1, y1, colour):
+    for y in range(y0, y1 + 1):
+        for x in range(x0, x1 + 1):
+            px[(x, y)] = colour
+
+
+def rod(px, x0, y0, x1, y1, colour):
+    """A 1px straight line between two pixels."""
+    steps = max(abs(x1 - x0), abs(y1 - y0), 1)
+    for i in range(steps + 1):
+        px[(int(round(x0 + (x1 - x0) * i / steps)), int(round(y0 + (y1 - y0) * i / steps)))] = colour
+
+
+def ground_shadow(px, x0, x1, y):
+    for x in range(x0, x1 + 1):
+        px[(x, y)] = SHADOW + (70 if x in (x0, x1) else 110,)
+
+
+def suction_pipe(px, top):
+    """The pipe both pumps drop into the drain under the middle of the tile:
+    a flange on the machine, the pipe down the face of the plinth and a
+    flanged dark mouth at the ground."""
+    for y in range(top + 1, 29):
+        for x, c in zip(range(13, 17), (IRON[0], IRON[1], IRON[2], IRON[3])):
+            px[(x, y)] = c
+    for y, tones in ((top, (IRON[1], IRON[0], IRON[0], IRON[1], IRON[2], IRON[3])),
+                     (29, (IRON[2], IRON[0], IRON[1], IRON[1], IRON[2], IRON[3]))):
+        for x, c in zip(range(12, 18), tones):
+            px[(x, y)] = c
+    for x in range(13, 17):
+        px[(x, 30)] = SLOT
+    px[(12, 30)] = px[(17, 30)] = SHADOW + (110,)
+
+
+def pump_steam(frame=None):
+    """The steam pumping engine; `frame` is None stopped, else 0..3 running."""
+    px = {}
+    running = frame is not None
+    turn = frame if running else 0
+
+    # steam from the chimney, two puffs half a loop apart, thinning as they
+    # rise and drift east. Drawn first so the engine stands in front of it
+    if running:
+        for k in range(2):
+            age = (frame + 2 * k) % STEAM_FRAMES
+            cx, cy = 5.5 + 2.3 * age, 4.2 - 1.1 * age
+            radius = 1.5 + 0.55 * age
+            for y in range(SIZE):
+                for x in range(SIZE):
+                    r = math.hypot(x - cx, (y - cy) * 1.15) + 0.9 * (noise(x, y, 301 + age) - 0.5)
+                    if r > radius:
+                        continue
+                    alpha = (235, 200, 150, 100)[age]
+                    if r > radius - 0.9:
+                        alpha = alpha * 2 // 3
+                    px[(x, y)] = STEAM[x - cx + y - cy > 0.8] + (alpha,)
+
+    # the brick plinth: two courses with a lit top edge
+    x0, x1, top = 2, 29, 24
+    for x in range(x0, x1 + 1):
+        for row in range(5):
+            course = 0 if row < 2 else 1
+            along = x - x0 + (3 if course else 0)
+            if row == 2 or along % 6 == 5:
+                c = BRICK_MORTAR
+            else:
+                tone = (0, 1, 0, 2, 3)[row]
+                if noise(along // 6, course, 311) < 0.35:
+                    tone += 1
+                c = BRICK[tone]
+            if x == x1 and c != BRICK_MORTAR:
+                c = BRICK[4]
+            px[(x, top + row)] = c
+    ground_shadow(px, x0 + 1, x1 + 1, top + 5)
+
+    # the chimney, with a flared cap and a strengthening band
+    for y in range(5, 13):
+        for x, c in zip((4, 5, 6), (IRON[1], IRON[2], IRON[3])):
+            px[(x, y)] = c
+    for x, c in zip(range(3, 8), (IRON[1], IRON[0], IRON[1], IRON[2], IRON[3])):
+        px[(x, 5)] = c
+    for x, c in zip((4, 5, 6), (IRON[0], IRON[0], IRON[2])):
+        px[(x, 9)] = c
+
+    # the boiler: a riveted iron barrel on its side, lit along the top
+    tones = (1, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3)
+    for row, tone in enumerate(tones):
+        y = 13 + row
+        for x in range(3, 18):
+            if x in (3, 17) and row in (0, len(tones) - 1):
+                continue
+            c = IRON[tone]
+            if x in (7, 13):                         # a lap seam and its rivets
+                c = IRON[min(tone + 1, 3)]
+                if row % 2 == 1:
+                    c = IRON[0] if tone < 2 else IRON[1]
+            elif x == 17:
+                c = IRON[min(tone + 1, 3)]
+            elif tone == 1 and noise(x, y, 313) < 0.12:
+                c = IRON[2]
+            px[(x, y)] = c
+    # the fire door, glowing when the engine is in steam
+    fill_box(px, 9, 17, 11, 21, IRON[3])
+    if running:
+        fire = ((EMBER[1], EMBER[0], EMBER[1]), (EMBER[0], EMBER[1], EMBER[2]),
+                (EMBER[1], EMBER[1], EMBER[0]), (EMBER[2], EMBER[0], EMBER[1]))[frame]
+        for y, c in zip((18, 19, 20), fire):
+            px[(10, y)] = c
+    else:
+        px[(10, 18)] = px[(10, 19)] = px[(10, 20)] = SLOT
+    # the pressure gauge
+    px[(15, 15)] = BRASS[0]
+    px[(15, 16)] = BRASS[1]
+
+    # the cylinder on top of the barrel, brass bound
+    for y, row in zip((10, 11, 12), ((IRON[0], IRON[0], IRON[1]), (IRON[1], IRON[1], IRON[2]),
+                                      (IRON[2], IRON[2], IRON[3]))):
+        for x, c in zip((9, 10, 11), row):
+            px[(x, y)] = c
+        px[(8, y)] = BRASS[0] if y == 10 else BRASS[1] if y == 11 else BRASS[2]
+        px[(12, y)] = BRASS[1] if y < 12 else BRASS[2]
+
+    # the bearing frame the flywheel turns in
+    hx, hy = WHEEL_AT
+    rod(px, hx - 3, 23, hx, hy, IRON[3])
+    rod(px, hx + 3, 23, hx, hy, IRON[3])
+    fill_box(px, hx - 3, 23, hx + 3, 23, IRON[2])
+
+    # the flywheel: an iron rim on four spokes, an eighth of a quarter turn
+    # a frame so the four frames close the loop
+    spin = math.radians(22.5 * turn + 10)
+    for y in range(hy - WHEEL_R, hy + WHEEL_R + 1):
+        for x in range(hx - WHEEL_R, hx + WHEEL_R + 1):
+            dx, dy = x - hx, y - hy
+            r = math.hypot(dx, dy)
+            if r > WHEEL_R + 0.45:
+                continue
+            if r > WHEEL_R - 1.25:
+                c = IRON[0] if dx + dy < -4 else IRON[3] if dx + dy > 4 else IRON[1]
+                if dx + dy < -4 and r > WHEEL_R - 0.3:
+                    c = IRON[1]
+            elif r <= 1.5:
+                c = IRON[1] if dx + dy <= 0 else IRON[3]
+            else:
+                off = min(abs(dx * math.sin(spin + quarter) - dy * math.cos(spin + quarter))
+                          for quarter in (0.0, math.pi / 2))
+                if off > 0.55:
+                    continue
+                c = IRON[2]
+            px[(x, y)] = c
+    px[(hx, hy)] = BRASS[1]
+    # the connecting rod from the cylinder to the crank pin, a quarter turn a frame
+    crank = math.radians(90 * turn - 60)
+    pin = (int(round(hx + 3 * math.cos(crank))), int(round(hy + 3 * math.sin(crank))))
+    rod(px, 13, 11, pin[0], pin[1], SLAB[0])
+    px[(13, 11)] = SLAB[1]
+    px[pin] = BRASS[0]
+
+    suction_pipe(px, 23)
+    return image(px)
+
+
+def pump_electric(frame=None):
+    """The electric pump; `frame` is None stopped, else 0..2 running."""
+    px = {}
+    running = frame is not None
+
+    # the concrete plinth
+    x0, x1, top = 3, 26, 24
+    for x in range(x0, x1 + 1):
+        for row in range(5):
+            c = (CONCRETE[0], CONCRETE[1], CONCRETE[1], CONCRETE[2], CONCRETE[3])[row]
+            if row in (1, 2) and noise(x // 2, row, 331) < 0.3:
+                c = CONCRETE[2]
+            if x == x1 and row:
+                c = CONCRETE[3]
+            px[(x, top + row)] = c
+    ground_shadow(px, x0 + 1, x1 + 1, top + 5)
+
+    # the supply cable, down the back of the motor to the ground
+    rod(px, 5, 10, 3, 12, CABLE)
+    rod(px, 3, 12, 3, 23, CABLE)
+
+    # the motor: a painted barrel with cooling fins between plain end bells
+    tones = (1, 0, 0, 0, 1, 1, 1, 2, 2, 3)
+    for row, tone in enumerate(tones):
+        y = 13 + row
+        for x in range(4, 17):
+            if x in (4, 16) and row in (0, len(tones) - 1):
+                continue
+            c = PAINT[tone]
+            if 7 <= x <= 13:
+                # the fins; running, the light on them shivers
+                dark = (x + (frame if running and row < 4 else 0)) % 2 == 0
+                if dark and 0 < row < len(tones) - 1:
+                    c = PAINT[min(tone + 1, 3)]
+            elif x in (6, 14):
+                c = PAINT[min(tone + 1, 3)]
+            elif x == 16:
+                c = PAINT[min(tone + 1, 3)]
+            px[(x, y)] = c
+    px[(5, 17)] = px[(15, 17)] = IRON[0]             # end bell bolts
+    px[(5, 20)] = px[(15, 20)] = IRON[2]
+    for x in (5, 6, 7, 13, 14, 15):                  # the feet
+        px[(x, 23)] = IRON[3]
+    fill_box(px, 9, 17, 11, 18, BRASS[1])            # the maker's plate
+    px[(9, 17)] = px[(10, 17)] = BRASS[0]
+    px[(11, 18)] = BRASS[2]
+
+    # the cable box on top, with the running lamp
+    fill_box(px, 6, 8, 11, 12, IRON[1])
+    fill_box(px, 6, 8, 11, 8, IRON[0])
+    fill_box(px, 11, 9, 11, 12, IRON[3])
+    fill_box(px, 6, 12, 10, 12, IRON[2])
+    px[(10, 10)] = px[(10, 11)] = CABLE              # the switch
+    lamp = (7, 10)
+    lit = running and frame != 2
+    px[lamp] = LAMP_LIT[0] if lit else LAMP_DARK[0]
+    px[(lamp[0] + 1, lamp[1])] = LAMP_LIT[1] if lit else LAMP_DARK[1]
+    if running and frame == 0:
+        for dx, dy in ((0, -1), (1, -1), (-1, 0), (2, 0), (0, 1), (1, 1)):
+            px[(lamp[0] + dx, lamp[1] + dy)] = LAMP_LIT[1]
+        px[lamp] = px[(lamp[0] + 1, lamp[1])] = LAMP_LIT[0]
+
+    # the shaft, and the round iron pump casing it drives
+    px[(17, 17)], px[(17, 18)] = SLAB[0], SLAB_SHADE
+    cx, cy, cr = 22, 18, 4.5
+    for y in range(13, 24):
+        for x in range(17, 28):
+            dx, dy = x - cx, y - cy
+            r = math.hypot(dx, dy)
+            if r > cr:
+                continue
+            if r > cr - 1.1:
+                c = IRON[0] if dx + dy < -3 else IRON[3] if dx + dy > 3 else IRON[1]
+            elif r <= 1.2:
+                c = IRON[0] if dx + dy < 0 else IRON[1]
+            elif r < 2.6:
+                c = IRON[3] if dx + dy < 0 else IRON[2]
+            else:
+                c = IRON[1] if dx + dy < 1 else IRON[2]
+            px[(x, y)] = c
+    px[(cx, cy)] = BRASS[1]
+    if running:                                      # the shaft end turning
+        px[((cx - 1, cy), (cx, cy - 1), (cx + 1, cy))[frame]] = SLAB[0]
+
+    # the riser, the valve and its red hand wheel
+    for y in range(9, 14):
+        for x, c in zip((21, 22, 23), (IRON[0], IRON[1], IRON[3])):
+            px[(x, y)] = c
+    for x, c in zip(range(20, 25), (IRON[1], IRON[0], IRON[1], IRON[2], IRON[3])):
+        px[(x, 10)] = c
+        px[(x, 13)] = c
+    px[(22, 8)] = px[(22, 7)] = IRON[2]
+    for x in range(19, 26):
+        px[(x, 6)] = VALVE[2] if x in (19, 25) else VALVE[1]
+    for x in range(20, 25):
+        px[(x, 5)] = VALVE[0]
+    px[(22, 6)] = VALVE[0]
+
+    # the delivery pipe: out of the riser, over and down to a spout
+    for x in range(24, 30):
+        px[(x, 11)] = IRON[0]
+        px[(x, 12)] = IRON[2]
+    for y in range(11, 22):
+        for x, c in zip((27, 28, 29), (IRON[0], IRON[1], IRON[3])):
+            px[(x, y)] = c
+    px[(27, 11)] = IRON[1]
+    px[(29, 11)] = IRON[2]
+    for x, c in zip(range(26, 31), (IRON[1], IRON[0], IRON[1], IRON[2], IRON[3])):
+        px[(x, 21)] = c
+    for x in (27, 28, 29):
+        px[(x, 22)] = SLOT
+    if running:
+        # water falling from the spout, and where it lands
+        for y in range(22, 29):
+            for x in (27, 28, 29):
+                n = noise(x, y - 2 * frame, 341)
+                c = FLOW[0] if n < 0.3 else FLOW[1] if n < 0.75 else FLOW[2]
+                px[(x, y)] = c + (235 if y < 28 else 200,)
+        splash = (((26, 29), (30, 28), (28, 29)), ((27, 29), (29, 29), (30, 29)), ((26, 28), (28, 29), (29, 29)))[frame]
+        for at in splash:
+            px[at] = FLOW[0] + (190,)
+    else:
+        px[(28, 23)] = FLOW[1] + (150,)              # a drip left hanging
+
+    suction_pipe(px, 23)
+    return image(px)
+
+
+# -------------------------------------------------------------- septic tank
+
+def septic(fill):
+    px = {}
+    lo, hi = LID_LO, LID_HI
+    # the cast concrete lid, flush with the ground
+    for y in range(lo, hi + 1):
+        for x in range(lo, hi + 1):
+            patch = noise(x // 3, y // 3, 401)
+            c = CONCRETE[1] if patch < 0.6 else CONCRETE[2]
+            if noise(x, y, 403) < 0.1:
+                c = CONCRETE[2] if c == CONCRETE[1] else CONCRETE[1]
+            if noise(x, y, 405) < 0.03:
+                c = CONCRETE[3]
+            if y == hi or x == hi:
+                c = CONCRETE[3]
+            elif y == lo or x == lo:
+                c = CONCRETE[0]
+            px[(x, y)] = c
+    # the two iron inspection covers, bedded in a joint
+    for cx, cy in COVERS:
+        for y in range(cy - 7, cy + 8):
+            for x in range(cx - 7, cx + 8):
+                if not (lo < x < hi and lo < y < hi):
+                    continue
+                dx, dy = x - cx, y - cy
+                r = math.hypot(dx, dy)
+                wet = noise(x, y, 407 + cx)
+                if r > COVER_R + 1.0:
+                    # damp, then weeping, in the concrete round the joint
+                    if fill == 2 and r < COVER_R + 1.9 and wet < 0.4:
+                        px[(x, y)] = DAMP[0]
+                    elif fill == 3 and r < COVER_R + 2.1 and wet < 0.8:
+                        px[(x, y)] = DAMP[1] if r < COVER_R + 1.6 or wet < 0.3 else DAMP[0]
+                    continue
+                if r > COVER_R:
+                    c = CONCRETE[3] if fill < 2 else DAMP[1] if fill == 2 else DAMP[2]
+                elif r > COVER_R - 1.0:
+                    c = IRON[0] if dx + dy < -2 else IRON[3] if dx + dy > 2 else IRON[1]
+                elif abs(dx) <= 1 and dy == 0:
+                    c = IRON[3]                      # the lifting slot
+                else:
+                    c = IRON[1] if (x + y) % 2 else IRON[2]
+                px[(x, y)] = c
+    if fill == 3:
+        # runs of seepage from the joints and the seam toward the low side
+        for x, y0, length in ((8, 18, 3), (11, 18, 4), (14, 18, 2), (17, 26, 1), (22, 26, 1)):
+            for y in range(y0, y0 + length):
+                px[(x, y)] = DAMP[1] if y < y0 + length - 1 else DAMP[0]
+        for at in ((17, 28), (18, 28), (21, 28), (22, 28), (23, 28), (28, 21), (28, 22), (28, 24)):
+            px[at] = WET + (120,)
+    # the vent stub
+    for (x, y), c in zip(((6, 22), (7, 22), (8, 22), (6, 23), (7, 23), (8, 23), (6, 24), (7, 24), (8, 24)),
+                         (IRON[1], IRON[0], IRON[1], IRON[0], SLOT, IRON[2], IRON[1], IRON[2], IRON[3])):
+        px[(x, y)] = c
+    # the level gauge: a brass-framed slot that fills from the west
+    g0, g1 = GAUGE_LO, GAUGE_LO + 3 * GAUGE_STEP - 1
+    fill_box(px, g0 - 1, GAUGE_ROW - 1, g1 + 1, GAUGE_ROW + 1, BRASS[1])
+    fill_box(px, g0 - 1, GAUGE_ROW - 1, g1 + 1, GAUGE_ROW - 1, BRASS[0])
+    fill_box(px, g0 - 1, GAUGE_ROW + 1, g1 + 1, GAUGE_ROW + 1, BRASS[2])
+    for i in range(3 * GAUGE_STEP):
+        c = SLOT
+        if i < fill * GAUGE_STEP:
+            c = GAUGE_FULL if fill == 3 else EMBER[0] if fill == 2 else STEAM[0]
+        px[(g0 + i, GAUGE_ROW)] = c
+    return image(px)
+
+
+# ------------------------------------------------------------ settling tank
+
+def settling(fill):
+    px = {}
+    (x0, x1), (y0, y1) = T_X, T_Y
+    in_x0, in_x1, in_y0, in_y1 = x0 + T_WALL, x1 - T_WALL, y0 + T_WALL, y1 - T_WALL
+    for y in range(y0, y1 + 1):
+        for x in range(x0, x1 + 1):
+            if in_x0 <= x <= in_x1 and in_y0 <= y <= in_y1:
+                continue
+            # the brick walls from above: which wall, and how far in from
+            # its outer face. The corners are mitred
+            reach = {'n': y - y0, 's': y1 - y, 'w': x - x0, 'e': x1 - x}
+            side = min('nwse', key=lambda k: reach[k])
+            ring = reach[side]
+            along = x if side in 'ns' else y
+            brick, joint = divmod(along + (2 if ring == 2 else 0), 5)
+            if joint == 4 and ring < 2:
+                c = BRICK_MORTAR
+            else:
+                # lit outer edge on the north and west, shaded on the south
+                # and east; the inner face drops into shadow under the light
+                tone = {'n': (0, 1, 4), 'w': (0, 1, 4), 's': (2, 3, 1), 'e': (2, 3, 1)}[side][ring]
+                if ring < 2 and noise(brick, 'nwse'.index(side), 501) < 0.3:
+                    tone += 1
+                c = BRICK[min(tone, 4)]
+            px[(x, y)] = c
+
+    main_x1 = WEIR[0] - 1
+    murky = fill == 3
+    for y in range(in_y0, in_y1 + 1):
+        for x in range(in_x0, in_x1 + 1):
+            grain = noise(x, y, 503)
+            shaded = y == in_y0 or x == in_x0 or x == WEIR[1] + 1
+            if x in WEIR:
+                # the stone weir, with the water going over its notch
+                if NOTCH[0] <= y <= NOTCH[1]:
+                    c = (CLEAR[2] if not murky else WATER[2]) if x == WEIR[0] else FROTH
+                else:
+                    c = SLAB[0] if x == WEIR[0] else SLAB[2]
+                    if y in (in_y0, NOTCH[1] + 1):
+                        c = SLAB_SHADE if x == WEIR[1] else SLAB[1]
+                px[(x, y)] = c
+                continue
+            if x > WEIR[1]:
+                # the outlet chamber: settled water, on its way out
+                c = CLEAR[grain < 0.4] if not murky else WATER[grain < 0.4]
+                if shaded:
+                    c = CLEAR_SHADE if not murky else MUD[1]
+                if NOTCH[0] <= y <= NOTCH[1] and x == WEIR[1] + 1:
+                    c = FROTH if (y + fill) % 2 else CLEAR_GLINT
+                px[(x, y)] = c
+                continue
+            # the main basin
+            c = CLEAR[0] if grain < 0.55 else CLEAR[1] if grain < 0.85 else CLEAR[2]
+            if shaded:
+                c = CLEAR_SHADE
+            elif noise(x, y, 505) < 0.04:
+                c = CLEAR_GLINT
+            # how far out from the middle of the basin floor, 0 to about 1.4
+            out = math.hypot((x - (in_x0 + main_x1) / 2.0) / 8.0, (y - (in_y0 + in_y1) / 2.0) / 7.0)
+            out += 0.35 * (noise(x // 2, y // 2, 507) - 0.5)
+            if fill == 1 and out < 0.62:
+                c = SETTLED[0] if out > 0.4 or grain < 0.6 else SETTLED[1]
+                if out > 0.5 and grain < 0.35:
+                    c = CLEAR[1]
+            elif fill == 2 and out < 1.02:
+                c = SETTLED[1] if out < 0.7 else SETTLED[0]
+                if out < 0.45 and grain < 0.4:
+                    c = SETTLED[2]
+                if out > 0.9 and grain < 0.35:
+                    c = CLEAR[1]
+                if shaded:
+                    c = SETTLED[2]
+            elif murky:
+                c = SLUDGE[1] if grain < 0.55 else SLUDGE[2]
+                if shaded:
+                    c = SLUDGE[3]
+                elif noise(x // 3, y, 509) < 0.16:
+                    c = SHEEN if noise(x, y, 511) < 0.5 else SLUDGE[0]
+            px[(x, y)] = c
+    if murky:
+        for at in ((9, 12), (10, 12), (16, 19), (13, 16)):
+            px[at] = SHEEN
+        for x, y in ((18, 13), (8, 18)):                 # bubbles
+            px[(x, y)] = SLUDGE[3]
+            px[(x, y - 1)] = SHEEN
+        for y in range(NOTCH[0] - 1, NOTCH[1] + 2):      # scum held back at the weir
+            px[(main_x1, y)] = SCUM[y % 2]
+    # the inlet and the outlet, cut through the end walls
+    for y in PORT:
+        for x in range(x0, in_x0):
+            px[(x, y)] = (WATER[0] if fill else CLEAR[1]) if y == PORT[1] else MUD[1]
+        for x in range(in_x1 + 1, x1 + 1):
+            px[(x, y)] = (CLEAR[1] if not murky else WATER[0]) if y == PORT[1] else MUD[1]
+    return image(px)
+
+
 # -------------------------------------------------------------------- sheet
 
 def build():
@@ -629,7 +1151,20 @@ def build():
     states += [('brick_drain%d' % mask, dict(one), [brick_drain(mask)]) for mask in MASKS]
     states.append(('flap_gate', {'dirs': str(len(DIRS)), 'frames': '1'}, [flap_gate(name) for name in DIRS]))
     states.append(('clog', dict(one), [clog()]))
+    # phase S3, appended so the earlier states keep their place in the sheet
+    states.append(('pump_steam', dict(one), [pump_steam()]))
+    states.append(('pump_steam_on', loop(STEAM_FRAMES, STEAM_DELAY),
+                   [pump_steam(frame) for frame in range(STEAM_FRAMES)]))
+    states.append(('pump_electric', dict(one), [pump_electric()]))
+    states.append(('pump_electric_on', loop(ELECTRIC_FRAMES, ELECTRIC_DELAY),
+                   [pump_electric(frame) for frame in range(ELECTRIC_FRAMES)]))
+    states += [('septic%d' % fill, dict(one), [septic(fill)]) for fill in range(4)]
+    states += [('settling%d' % fill, dict(one), [settling(fill)]) for fill in range(4)]
     return states
+
+
+def loop(frames, delay):
+    return {'dirs': '1', 'frames': str(frames), 'delay': ','.join([str(delay)] * frames)}
 
 
 def pixels(im):
@@ -695,6 +1230,49 @@ def check_drawing(states):
     want = (CLOG_AT[0], CLOG_AT[1], CLOG_AT[0] + len(CLOG[0]), CLOG_AT[1] + len(CLOG))
     if by['clog'][0].getbbox() != want or want != (11, 12, 21, 20):
         problems.append('clog is not the centred 10x8 lump')
+
+    # phase S3: pumps, septic tank, settling tank
+    keys_of = {name: keys for name, keys, _ in states}
+    stands = (['pump_steam', 'pump_steam_on', 'pump_electric', 'pump_electric_on']
+              + ['septic%d' % fill for fill in range(4)] + ['settling%d' % fill for fill in range(4)])
+    for name in stands:
+        for im in by[name]:
+            box = im.getbbox()
+            if box is None or box[0] < 1 or box[1] < 0 or box[2] > SIZE - 1 or box[3] > SIZE - 1:
+                problems.append('%s does not sit inside the tile' % name)
+                break
+    for still, frames, delay in (('pump_steam', STEAM_FRAMES, STEAM_DELAY),
+                                 ('pump_electric', ELECTRIC_FRAMES, ELECTRIC_DELAY)):
+        name = still + '_on'
+        if keys_of[name] != loop(frames, delay) or len(by[name]) != frames:
+            problems.append('%s is not %d frames of %d ds' % (name, frames, delay))
+        shots = [pixels(im) for im in by[name]]
+        if any(shots[i] == shots[i - 1] for i in range(len(shots))):
+            problems.append('%s repeats a frame' % name)
+        if pixels(by[still][0]) in shots:
+            problems.append('%s looks the same stopped and running' % still)
+        # the machine stands still: only the moving parts may differ
+        moved = sum(1 for spot in zip(pixels(by[still][0]), *shots) if len(set(spot)) > 1)
+        if moved > SIZE * SIZE // 4:
+            problems.append('%s moves more than its working parts' % name)
+    sewage = {c + (255,) for c in SLUDGE + [SHEEN, FLY]}
+    for fill in range(4):
+        im = by['septic%d' % fill][0]
+        px = im.load()
+        if sewage & set(pixels(im)):
+            problems.append('septic%d shows open sewage' % fill)
+        if any(px[x, y][3] != 255 for y in range(LID_LO, LID_HI + 1) for x in range(LID_LO, LID_HI + 1)):
+            problems.append('septic%d has a hole in its lid' % fill)
+        lit = sum(1 for i in range(3 * GAUGE_STEP) if px[GAUGE_LO + i, GAUGE_ROW][:3] != SLOT)
+        if lit != fill * GAUGE_STEP:
+            problems.append('septic%d gauge reads %d' % (fill, lit))
+    murk = {c + (255,) for c in SETTLED + SLUDGE + [SHEEN]}
+    sludge = [sum(1 for p in pixels(by['settling%d' % fill][0]) if p in murk) for fill in range(4)]
+    if sludge[0] or sorted(set(sludge)) != sludge:
+        problems.append('settling tank sludge does not grow with the level: %r' % sludge)
+    walls = [[p[3] for p in pixels(by['settling%d' % fill][0])] for fill in range(4)]
+    if any(wall != walls[0] for wall in walls):
+        problems.append('settling tank changes shape with the level')
     return problems
 
 
@@ -753,8 +1331,8 @@ def write_preview(path, states, scale=3):
     label_h, pad = 12, 6
     cell = SIZE * scale
     wide = pad + 4 * (5 * cell + pad)
-    rows = 8
-    high = pad + rows * (cell + label_h + pad) + 2 * (4 * cell + label_h + pad)
+    rows = 10
+    high = pad + rows * (cell + label_h + pad) + 3 * (4 * cell + label_h + pad)
     sheet = Image.new('RGB', (wide, high), DARK)
     draw = ImageDraw.Draw(sheet)
 
@@ -804,6 +1382,30 @@ def write_preview(path, states, scale=3):
     show(tile([grass, clog_im]), 14, 7, 'clog alone')
     show(tile([dirt, clog_im]), 15, 7, 'clog dirt')
 
+    # phase S3: each pump stopped on grass and dirt, then every running frame
+    # over the end of a drain; the two tanks at each level on grass and dirt
+    col = 0
+    for still, under in (('pump_steam', 'brick_drain1'), ('pump_electric', 'stone_drain1')):
+        show(tile([grass, by[still][0]]), col, 8, still)
+        show(tile([dirt, by[still][0]]), col + 1, 8, 'dirt')
+        show(tile([grass, by[under][0], by[still][0]]), col + 2, 8, 'on a drain')
+        col += 3
+        for n, frame in enumerate(by[still + '_on']):
+            show(tile([grass, by[under][0], frame]), col, 8, '_on %d' % n)
+            col += 1
+    for fill in range(4):
+        show(tile([grass, by['septic%d' % fill][0]]), fill, 9, 'septic%d' % fill)
+        show(tile([dirt, by['septic%d' % fill][0]]), fill + 4, 9, 'septic%d dirt' % fill)
+        show(tile([grass, by['settling%d' % fill][0]]), fill + 8, 9, 'settling%d' % fill)
+        show(tile([dirt, by['settling%d' % fill][0]]), fill + 12, 9, 'settling%d dirt' % fill)
+    # the same pieces at game size, on grass
+    actual = [by['pump_steam'][0], by['pump_steam_on'][1], by['pump_electric'][0], by['pump_electric_on'][0]]
+    actual += [by['septic%d' % fill][0] for fill in range(4)] + [by['settling%d' % fill][0] for fill in range(4)]
+    ax, ay = pad + 13 * (cell + pad), pad + 8 * (cell + label_h + pad)
+    draw.text((ax, ay), 'at game size', fill=(220, 220, 220))
+    for n, im in enumerate(actual):
+        sheet.paste(tile([grass, im]).convert('RGB'), (ax + (n % 6) * (SIZE + 2), ay + label_h + (n // 6) * (SIZE + 2)))
+
     # the layouts, tiles butted together with no gap
     masks = layout_masks()
     top = pad + rows * (cell + label_h + pad)
@@ -815,16 +1417,23 @@ def write_preview(path, states, scale=3):
         # brick on the two west columns, stone slabs from there to the river
         return 'brick_drain' if tx < 2 else 'stone_drain'
 
-    # (label, piece, ground, which piece on which tile, flap gate, clogged tiles)
-    scenes = (('ditch on grass', 'ditch', grass, one, False, ()),
-              ('ditch on dirt', 'ditch', dirt, one, False, ()),
-              ('stone_drain on grass', 'stone_drain', grass, one, False, ()),
-              ('stone_drain on dirt', 'stone_drain', dirt, one, False, ()),
-              ('brick_drain on grass', 'brick_drain', grass, one, False, ()),
-              ('brick_drain on dirt', 'brick_drain', dirt, one, False, ()),
-              ('brick into stone, flap gate, clog', '', grass, joined, True, ((2, 2),)),
-              ('ditch, flap gate, clogs', 'ditch', grass, one, True, ((1, 2), (0, 0))))
-    for n, (label, kind, ground, pick, gated, clogged) in enumerate(scenes):
+    # (label, piece, ground, which piece on which tile, flap gate, clogged
+    # tiles, other pieces laid on tiles)
+    scenes = (('ditch on grass', 'ditch', grass, one, False, (), {}),
+              ('ditch on dirt', 'ditch', dirt, one, False, (), {}),
+              ('stone_drain on grass', 'stone_drain', grass, one, False, (), {}),
+              ('stone_drain on dirt', 'stone_drain', dirt, one, False, (), {}),
+              ('brick_drain on grass', 'brick_drain', grass, one, False, (), {}),
+              ('brick_drain on dirt', 'brick_drain', dirt, one, False, (), {}),
+              ('brick into stone, flap gate, clog', '', grass, joined, True, ((2, 2),), {}),
+              ('ditch, flap gate, clogs', 'ditch', grass, one, True, ((1, 2), (0, 0)), {}),
+              ('steam pump, settling tank, septic', 'brick_drain', grass, one, False, (),
+               {(3, 1): by['pump_steam_on'][1], (3, 2): by['settling1'][0], (0, 3): by['septic1'][0],
+                (3, 3): by['settling3'][0]}),
+              ('electric pump, septic, settling tank', 'stone_drain', dirt, one, False, (),
+               {(3, 1): by['pump_electric_on'][0], (3, 2): by['settling2'][0], (0, 3): by['septic3'][0],
+                (0, 2): by['septic0'][0]}))
+    for n, (label, kind, ground, pick, gated, clogged, extras) in enumerate(scenes):
         scene = Image.new('RGBA', (5 * SIZE, 4 * SIZE))
         for ty in range(4):
             for tx in range(5):
@@ -833,6 +1442,8 @@ def write_preview(path, states, scale=3):
                 scene.paste(water if tx == 4 else ground, at)
                 mask = masks.get((tx, ty))
                 if mask is None:
+                    if (tx, ty) in extras:
+                        scene.alpha_composite(extras[(tx, ty)], at)
                     continue
                 if (tx, ty) == (3, 1):
                     mask |= EAST
@@ -843,6 +1454,8 @@ def write_preview(path, states, scale=3):
                         scene.alpha_composite(by['flap_gate'][DIRS.index('EAST')], at)
                 if (tx, ty) in clogged:
                     scene.alpha_composite(clog_im, at)
+                if (tx, ty) in extras:
+                    scene.alpha_composite(extras[(tx, ty)], at)
         x = pad + (n % 4) * (5 * cell + pad)
         y = top + (n // 4) * (4 * cell + label_h + pad)
         big = scene.convert('RGB').resize((scene.width * scale, scene.height * scale), Image.NEAREST)

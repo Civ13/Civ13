@@ -15,6 +15,13 @@
 // over an outfall pushes back up the drains into hollows and toilets unless a
 // flap gate hangs on the outfall. Drains silt up now and then and must be dug
 // clear. Brick sewers (Imperial) carry the most and clog the least.
+//
+// Phase S3: a pumping station on an outfall (steam, burning fuel, or electric,
+// on a cable) lifts water and waste out over a river in flood, so a town in a
+// hollow can stay dry behind its gate, and adds to what the outfall takes in
+// a storm. A settling tank on an outfall keeps its waste from fouling the
+// water downstream until it fills with sludge. A septic tank is a sealed
+// cesspit that fouls nothing and slowly digests what it holds.
 
 #define SEWER_WALK_LIMIT 600
 // How long waste carried along an open ditch or out of an outfall fouls the
@@ -27,12 +34,18 @@
 #define CESSPIT_COMPOST_PER 10
 // Deciseconds a sewer that ran full keeps refusing waste.
 #define SEWER_FULL_TIME 1200
+#define SEPTIC_CAPACITY 120
+// Real deciseconds a septic tank takes to digest one load, server up or down.
+#define SEPTIC_DIGEST_TIME 18000
+#define SETTLING_CAPACITY 60
 
 var/global/sewer_revision = 0
 // Every drain piece, for the once-a-minute hollow drainage.
 var/global/list/sewer_drains = list()
 // Set by the last sewer_carry_waste() that met a river pushing back.
 var/global/sewer_last_backflow = FALSE
+// Every pumping station, ticked once a minute with the hollows.
+var/global/list/sewer_pumps = list()
 
 /proc/sewers_apply()
 	return map && map.persistence
@@ -184,6 +197,20 @@ var/global/sewer_last_backflow = FALSE
 /obj/structure/sewer_piece/drain/proc/flap_gate()
 	return locate(/obj/structure/sewer_flap_gate) in get_turf(src)
 
+// A flap gate, or a pumping station's non-return valve, shuts this outfall
+// against a river.
+/obj/structure/sewer_piece/drain/proc/gated()
+	return flap_gate() || (locate(/obj/structure/sewer_pump) in get_turf(src))
+
+// The pumping station working on this outfall now, or null.
+/obj/structure/sewer_piece/drain/proc/pump()
+	var/obj/structure/sewer_pump/P = locate() in get_turf(src)
+	return P && P.working() ? P : null
+
+// The settling tank on this outfall, or null.
+/obj/structure/sewer_piece/drain/proc/settling_tank()
+	return locate(/obj/structure/sewer_settling_tank) in get_turf(src)
+
 // The level floodwater stands at over this outfall, or null when it is dry.
 /obj/structure/sewer_piece/drain/proc/outfall_flood_level()
 	var/turf/T = get_turf(src)
@@ -192,7 +219,7 @@ var/global/sewer_last_backflow = FALSE
 
 // A river in flood over an ungated outfall pushes back up the sewer.
 /obj/structure/sewer_piece/drain/proc/backflowing()
-	return !isnull(outfall_flood_level()) && !flap_gate()
+	return !isnull(outfall_flood_level()) && !gated()
 
 // An outfall that takes waste now: not backflowing, not run full in a storm.
 /obj/structure/sewer_piece/drain/proc/outfall_open()
@@ -223,6 +250,8 @@ var/global/sewer_last_backflow = FALSE
 		to_chat(user, SPAN_NOTICE("It spills into the water here."))
 		if (backflowing())
 			to_chat(user, SPAN_WARNING("The river has risen over it and is pushing back up the drain. A flap gate would stop that."))
+		else if (!isnull(outfall_flood_level()) && !pump())
+			to_chat(user, SPAN_NOTICE("The river stands over it and holds the drain shut. A pumping station would lift the water out over it."))
 		else if (world.time < full_until)
 			to_chat(user, SPAN_WARNING("It is running full."))
 	if (recently_fouled() && foul_range())
@@ -235,12 +264,14 @@ var/global/sewer_last_backflow = FALSE
 	desc = "A deep pit lined with planks that collects waste from the drains and privies around it. Dig it out with a shovel when it fills; the night soil makes compost."
 	icon_state = "cesspit0"
 	var/waste = 0
+	var/capacity = CESSPIT_CAPACITY
+	var/fill_prefix = "cesspit"
 
 /obj/structure/sewer_piece/cesspit/sewer_update_icon()
-	icon_state = "cesspit[waste <= 0 ? 0 : (waste >= CESSPIT_CAPACITY ? 3 : (waste * 2 >= CESSPIT_CAPACITY ? 2 : 1))]"
+	icon_state = "[fill_prefix][waste <= 0 ? 0 : (waste >= capacity ? 3 : (waste * 2 >= capacity ? 2 : 1))]"
 
 /obj/structure/sewer_piece/cesspit/proc/is_full()
-	return waste >= CESSPIT_CAPACITY
+	return waste >= capacity
 
 /obj/structure/sewer_piece/cesspit/proc/take_waste()
 	if (is_full())
@@ -264,7 +295,7 @@ var/global/sewer_last_backflow = FALSE
 	else if (is_full())
 		to_chat(user, SPAN_WARNING("It is full to the brim. Dig it out with a shovel before anything else drains here."))
 	else
-		to_chat(user, SPAN_NOTICE("It is [round(waste * 100 / CESSPIT_CAPACITY)]% full."))
+		to_chat(user, SPAN_NOTICE("It is [round(waste * 100 / capacity)]% full."))
 
 /obj/structure/sewer_piece/cesspit/attackby(obj/item/I, mob/living/user)
 	if (!is_tool(I, TOOL_SHOVEL))
@@ -362,8 +393,12 @@ var/global/sewer_last_backflow = FALSE
 	if (!target)
 		return null
 	if (C.outfall)
-		if (isnull(C.outfall.outfall_flood_level()))
-			C.outfall.last_waste = world.time
+		// Waste a pump lifts over a flood, or that runs out over dry ground,
+		// fouls the water below unless a settling tank catches it first.
+		if (isnull(C.outfall.outfall_flood_level()) || C.outfall.pump())
+			var/obj/structure/sewer_settling_tank/S = C.outfall.settling_tank()
+			if (!S || !S.take_sludge())
+				C.outfall.last_waste = world.time
 	else
 		C.pit.take_waste()
 	var/list/drains = list()
@@ -403,6 +438,13 @@ var/global/sewer_last_backflow = FALSE
 // it to their outfall, or a river in flood pushes up an ungated outfall into
 // the hollow. Only drains on hollow tiles do anything.
 /datum/river_flood/proc/drain_hollows()
+	drain_hollow_water()
+	// Pumps burn the minute they just ran.
+	for (var/obj/structure/sewer_pump/P in sewer_pumps)
+		if (P.z == z_level)
+			P.pump_minute()
+
+/datum/river_flood/proc/drain_hollow_water()
 	if (!sewer_drains.len || !hollow_count)
 		return
 	var/list/taken = list()
@@ -420,15 +462,18 @@ var/global/sewer_last_backflow = FALSE
 		if (!O)
 			continue
 		var/river = O.outfall_flood_level()
-		if (!isnull(river))
+		var/obj/structure/sewer_pump/P = O.pump()
+		if (!isnull(river) && !P)
 			// The gate shuts against the river: nothing goes either way.
-			if (!O.flap_gate() && hollow_level[h] < river)
+			if (!O.gated() && hollow_level[h] < river)
 				hollow_volume[h] = min(hollow_capacity(h), hollow_volume[h] + D.inlet_rate)
 				changed |= h
 			continue
 		if (hollow_volume[h] <= 0 || hollow_depth_at(T) <= 0)
 			continue
-		var/room = O.inlet_rate * 2 - (taken[O] || 0)
+		// Water runs out by itself over dry ground; over a flood only the pump
+		// lifts it.
+		var/room = (isnull(river) ? O.inlet_rate * 2 : 0) + (P ? P.pump_rate : 0) - (taken[O] || 0)
 		var/want = min(D.inlet_rate, hollow_volume[h])
 		if (want > room)
 			// A storm runs the sewer full; toilets on it back up for a while.
@@ -480,6 +525,252 @@ var/global/sewer_last_backflow = FALSE
 		to_chat(user, SPAN_WARNING("It hangs on nothing. Put it on the end of a drain where it spills into the water."))
 	else if (!isnull(D.outfall_flood_level()))
 		to_chat(user, SPAN_NOTICE("The river presses it shut."))
+
+// ---- septic tanks ----------------------------------------------------------
+
+/obj/structure/sewer_piece/cesspit/septic
+	name = "septic tank"
+	desc = "A sealed concrete tank that takes the drains and privies around it. Nothing seeps out to foul the wells, and what it holds slowly digests away; pump it out with a shovel if it ever fills."
+	icon_state = "septic0"
+	fill_prefix = "septic"
+	capacity = SEPTIC_CAPACITY
+	not_disassemblable = FALSE
+	// world.realtime digestion has been counted up to.
+	var/digested_at = 0
+
+/obj/structure/sewer_piece/cesspit/septic/New()
+	..()
+	if (!digested_at)
+		digested_at = world.realtime
+
+// Counts what digested since it was last looked at: nothing ticks.
+/obj/structure/sewer_piece/cesspit/septic/proc/digest()
+	if (waste <= 0)
+		digested_at = world.realtime
+		return
+	var/loads = round((world.realtime - digested_at) / SEPTIC_DIGEST_TIME)
+	if (loads <= 0)
+		return
+	waste = max(0, waste - loads)
+	digested_at += loads * SEPTIC_DIGEST_TIME
+	sewer_update_icon()
+
+/obj/structure/sewer_piece/cesspit/septic/is_full()
+	digest()
+	return ..()
+
+/obj/structure/sewer_piece/cesspit/septic/examine(mob/user, distance = -1)
+	digest()
+	return ..()
+
+/obj/structure/sewer_piece/cesspit/septic/foul_range()
+	return 0
+
+// ---- settling tanks --------------------------------------------------------
+
+/obj/structure/sewer_settling_tank
+	name = "settling tank"
+	desc = "A brick basin set on the end of a drain. Waste settles out of the water as sludge before it runs over the weir, so the outfall no longer fouls the water downstream. Dig the sludge out with a shovel when it fills."
+	icon = 'icons/obj/sewers.dmi'
+	icon_state = "settling0"
+	anchored = TRUE
+	density = FALSE
+	layer = 2.035
+	not_movable = TRUE
+	not_disassemblable = FALSE
+	var/sludge = 0
+
+/obj/structure/sewer_settling_tank/proc/sewer_update_icon()
+	icon_state = "settling[sludge <= 0 ? 0 : (sludge >= SETTLING_CAPACITY ? 3 : (sludge * 2 >= SETTLING_CAPACITY ? 2 : 1))]"
+
+// Catches one load of waste: FALSE when it is full and the waste runs through.
+/obj/structure/sewer_settling_tank/proc/take_sludge()
+	if (sludge >= SETTLING_CAPACITY)
+		return FALSE
+	sludge++
+	sewer_update_icon()
+	return TRUE
+
+/obj/structure/sewer_settling_tank/examine(mob/user, distance = -1)
+	. = ..()
+	if (!. || get_dist(src, user) > 2)
+		return
+	var/obj/structure/sewer_piece/drain/D = locate() in get_turf(src)
+	if (!D || !D.outfall_dir())
+		to_chat(user, SPAN_WARNING("It catches nothing here. Set it on the end of a drain where it spills into the water."))
+	if (sludge >= SETTLING_CAPACITY)
+		to_chat(user, SPAN_WARNING("It is full of sludge, and the waste runs straight over the weir. Dig it out with a shovel."))
+	else
+		to_chat(user, SPAN_NOTICE("It is [round(sludge * 100 / SETTLING_CAPACITY)]% full of sludge."))
+
+/obj/structure/sewer_settling_tank/attackby(obj/item/I, mob/living/user)
+	if (!is_tool(I, TOOL_SHOVEL))
+		return ..()
+	if (sludge <= 0)
+		to_chat(user, SPAN_NOTICE("\The [src] holds no sludge."))
+		return
+	user.visible_message(SPAN_NOTICE("[user] starts digging the sludge out of \the [src]."), SPAN_NOTICE("You start digging the sludge out of \the [src]."))
+	playsound(src, 'sound/effects/shovelling.ogg', 100, TRUE)
+	if (!do_after(user, 100, src) || sludge <= 0)
+		return
+	var/compost = round(sludge / CESSPIT_COMPOST_PER)
+	for (var/i in 1 to compost)
+		new /obj/item/weapon/reagent_containers/food/snacks/poo/fertilizer(get_turf(user))
+	sludge = 0
+	sewer_update_icon()
+	user.visible_message(SPAN_NOTICE("[user] empties \the [src]."), SPAN_NOTICE("You empty \the [src][compost ? " and pile up the sludge as compost" : ""]."))
+
+// ---- pumping stations ------------------------------------------------------
+
+// Fuel a steam pump burns, in minutes of pumping per unit.
+var/global/list/sewer_pump_fuel_rates = list(
+	"coal" = 30, "charcoal" = 20, "wood" = 10, "plank" = 10, "bamboo" = 10)
+
+/obj/structure/sewer_pump
+	name = "pumping station"
+	icon = 'icons/obj/sewers.dmi'
+	anchored = TRUE
+	density = TRUE
+	layer = 2.04
+	not_movable = TRUE
+	not_disassemblable = FALSE
+	var/on = FALSE
+	// Tile-levels of water a minute it lifts out of the sewer, over a flood or
+	// on top of what the outfall takes by itself.
+	var/pump_rate = 6
+	var/state_prefix = "pump_steam"
+
+/obj/structure/sewer_pump/New()
+	..()
+	sewer_pumps |= src
+	update_icon()
+
+/obj/structure/sewer_pump/Destroy()
+	sewer_pumps -= src
+	return ..()
+
+// The outfall drain this station stands on, or null.
+/obj/structure/sewer_pump/proc/pump_drain()
+	var/obj/structure/sewer_piece/drain/D = locate() in get_turf(src)
+	return D && D.outfall_dir() ? D : null
+
+// Whatever drives it: fuel or power. Electric pumps draw it here.
+/obj/structure/sewer_pump/proc/driven()
+	return FALSE
+
+// Called when it is switched off.
+/obj/structure/sewer_pump/proc/stopped()
+	return
+
+// Lifting water now.
+/obj/structure/sewer_pump/proc/working()
+	return on && pump_drain() && driven()
+
+/obj/structure/sewer_pump/update_icon()
+	icon_state = "[state_prefix][on && driven() ? "_on" : ""]"
+
+// Once a minute with the hollows.
+/obj/structure/sewer_pump/proc/pump_minute()
+	update_icon()
+
+/obj/structure/sewer_pump/proc/why_not_running()
+	if (!pump_drain())
+		return "It stands on no outfall. Build it on the end of a drain where it spills into the water."
+	return null
+
+/obj/structure/sewer_pump/attack_hand(mob/living/user)
+	if (!istype(user))
+		return ..()
+	if (on)
+		on = FALSE
+		stopped()
+		update_icon()
+		user.visible_message(SPAN_NOTICE("[user] stops \the [src]."), SPAN_NOTICE("You stop \the [src]."))
+		return
+	var/problem = why_not_running()
+	if (problem)
+		to_chat(user, SPAN_WARNING(problem))
+		return
+	on = TRUE
+	update_icon()
+	user.visible_message(SPAN_NOTICE("[user] starts \the [src]."), SPAN_NOTICE("You start \the [src]. It lifts the drain's water out over the river, even in a flood."))
+
+/obj/structure/sewer_pump/examine(mob/user, distance = -1)
+	. = ..()
+	if (!. || get_dist(src, user) > 2)
+		return
+	var/problem = why_not_running()
+	if (problem)
+		to_chat(user, SPAN_WARNING(problem))
+	else
+		to_chat(user, SPAN_NOTICE("It is [working() ? "running" : "stopped"]. Its valve shuts the drain against a rising river either way."))
+
+/obj/structure/sewer_pump/steam
+	name = "steam pumping engine"
+	desc = "A coal-fired beam engine that lifts a drain's water and waste out over a river, flood or not. Its valve shuts the drain against the river while it stands idle. Feed it coal, charcoal or wood."
+	icon_state = "pump_steam"
+	state_prefix = "pump_steam"
+	pump_rate = 6
+	var/fuel = 0
+	var/max_fuel = 240
+
+/obj/structure/sewer_pump/steam/driven()
+	return fuel > 0
+
+/obj/structure/sewer_pump/steam/why_not_running()
+	. = ..()
+	if (!. && fuel <= 0)
+		return "Its firebox is empty. Feed it coal, charcoal or wood."
+
+/obj/structure/sewer_pump/steam/pump_minute()
+	if (on)
+		fuel = max(0, fuel - 1)
+		if (fuel <= 0)
+			on = FALSE
+			visible_message(SPAN_WARNING("\The [src]'s fire burns out and it wheezes to a stop."))
+	..()
+
+/obj/structure/sewer_pump/steam/attackby(obj/item/I, mob/living/user)
+	var/per = solid_fuel_unit_value(I, sewer_pump_fuel_rates)
+	if (!per || !istype(I, /obj/item/stack))
+		return ..()
+	var/obj/item/stack/S = I
+	var/take = min(S.amount, round((max_fuel - fuel) / per))
+	if (take <= 0)
+		to_chat(user, SPAN_WARNING("\The [src]'s firebox is full."))
+		return
+	S.use(take)
+	fuel += take * per
+	update_icon()
+	to_chat(user, SPAN_NOTICE("You stoke \the [src]. It has fuel for [fuel] minute\s of pumping."))
+
+/obj/structure/sewer_pump/steam/examine(mob/user, distance = -1)
+	. = ..()
+	if (. && get_dist(src, user) <= 2)
+		to_chat(user, SPAN_NOTICE("It has fuel for [fuel] minute\s of pumping."))
+
+/obj/structure/sewer_pump/electric
+	name = "electric sewage pump"
+	desc = "A motor-driven pump that lifts a drain's water and waste out over a river, flood or not, and lifts more than a steam engine. Its valve shuts the drain against the river while it stands idle. Lay a powered cable under it or run it from an outlet."
+	icon_state = "pump_electric"
+	state_prefix = "pump_electric"
+	pump_rate = 10
+	powerneeded = 20
+
+/obj/structure/sewer_pump/electric/driven()
+	return draw_cable_power()
+
+// Gives back its share of the grid while it stands idle.
+/obj/structure/sewer_pump/electric/stopped()
+	var/need = powerneeded
+	powerneeded = 0
+	draw_cable_power()
+	powerneeded = need
+
+/obj/structure/sewer_pump/electric/why_not_running()
+	. = ..()
+	if (!. && !draw_cable_power())
+		return "It has no power. Lay a powered cable under it or run it from an outlet, with [powerneeded] power to spare."
 
 // TRUE when sewage close to A fouls its water.
 /proc/sewer_fouls_near(atom/A)
@@ -554,3 +845,6 @@ var/global/sewer_last_backflow = FALSE
 #undef CESSPIT_CAPACITY
 #undef CESSPIT_COMPOST_PER
 #undef SEWER_FULL_TIME
+#undef SEPTIC_CAPACITY
+#undef SEPTIC_DIGEST_TIME
+#undef SETTLING_CAPACITY
