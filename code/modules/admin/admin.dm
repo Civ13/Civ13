@@ -326,10 +326,33 @@ proc/admin_notice(var/message, var/rights)
 	if (message)
 		if (!check_rights(R_SERVER,0))
 			message = sanitize(message, 500, extra = FALSE)
-		message = replacetext(message, "\n", "<br>") // required since we're putting it in a <p> tag
 		if (usr && usr.client)
-			to_chat(world, "<big><span class=notice><b>[usr.client.holder.fakekey ? "Administrator" : usr.key] Announces:</b></big><p style='text-indent: 50px'>[message]</p></span>")
+			admin_announce_show(usr.client.holder.fakekey ? "Administrator" : usr.key, message)
 			log_admin("Announce: [key_name(usr)] : [message]")
+
+// Announce for every region of a sharded group: shown here like Announce and
+// sent to the other regions' players through the transfer agents
+// (region_announce.dm). Regions that are down or asleep miss it.
+/datum/admins/proc/announce_all_regions()
+	set category = "Special"
+	set name = "Announce (All Regions)"
+	set desc = "Announce to the players of every region in this world's group"
+	if (!check_rights(0))	return
+	if (!region_ooc_linked())
+		to_chat(usr, "<span class='warning'>This world is not linked to other regions, so only its own players would see this. Use Announce instead.</span>")
+		return
+	var/message = input("Message for the players of every region:", "Admin Announce (All Regions)", null, null) as message|null
+	// Always plain text: the other regions refuse raw markup.
+	message = sanitize(message, 1000, extra = FALSE)
+	if (!message || !usr || !usr.client || !usr.client.holder)
+		return
+	var/shown_name = usr.client.holder.fakekey ? "Administrator" : usr.key
+	admin_announce_show(shown_name, message)
+	log_admin("Announce (All Regions): [key_name(usr)] : [message]")
+	if (region_announce_outbound(shown_name, usr.ckey, message))
+		to_chat(usr, "<span class='notice'>Sent to the other regions. Regions that are down, asleep or still loading do not get it.</span>")
+	else
+		to_chat(usr, "<span class='warning'>The announcement could not be queued for the other regions; only this world saw it.</span>")
 
 /datum/admins/proc/ic_announce()
 	set category = "Special"

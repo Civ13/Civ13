@@ -249,6 +249,7 @@ var/list/admin_verbs_hideable = list(
 	/datum/admins/proc/toggleenter,
 	/datum/admins/proc/toggleguests,
 	/datum/admins/proc/announce,
+	/datum/admins/proc/announce_all_regions,
 	/datum/admins/proc/ic_announce,
 	/client/proc/colorooc,
 	/client/proc/admin_ghost,
@@ -318,6 +319,7 @@ var/list/admin_verbs_mod = list(
 	/client/proc/admin_clothing_designs,	//list and rename player clothing designs
 	/client/proc/dsay,
 	/datum/admins/proc/announce,		//priority announce something to all clients,
+	/datum/admins/proc/announce_all_regions,	//the same, to the players of every region in the group (region_announce.dm),
 	/datum/admins/proc/show_player_panel,
 	/client/proc/cmd_admin_subtle_message, // send an message to somebody as a 'voice in their head',
 	/datum/admins/proc/paralyze_mob,

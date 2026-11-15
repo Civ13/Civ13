@@ -243,6 +243,12 @@ of showing it to players. Receiving worlds show it only to their admins; a
 line from a region without a webhook is posted to the Discord admin channel
 by the mainland.
 
+Admin announcements (Announce (All Regions),
+`code/modules/persistence/region_announce.dm`) have their own ring as well:
+`/announce/send`, `/announce/inbox` and the `announce` list of the radio pass.
+Receiving worlds show the announcement to all their players. Like radio, a
+region that is down or asleep misses it; nothing is queued for it.
+
 Orbital strikes (`code/modules/space/orbit_artillery.dm`) ride a third ring.
 A station's battery posts one to `/strike/send` naming the region it fires
 on; the coordinator's radio pass carries it in the `strikes` list and hands it

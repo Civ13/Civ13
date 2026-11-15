@@ -449,6 +449,8 @@ var/global/list/civ_relay_outbound_queue = list()
 	region_ooc_tick()
 	// Group-wide admin chat rides it too, in its own ring (region_asay.dm).
 	region_asay_tick()
+	// Admin announcements to every region's players (region_announce.dm).
+	region_announce_tick()
 	// Orbital strikes aimed at this world (orbit_artillery.dm).
 	orbit_artillery_tick()
 	var/list/on_air = civ_relay_on_air_list()
