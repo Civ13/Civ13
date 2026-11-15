@@ -178,6 +178,18 @@ var/global/list/skill_mastery_milestones = list(
 /proc/skill_mastery_key(discipline, value)
 	return "mastery:[discipline]:[value]"
 
+// The most one gain may carry statname from value: the next milestone above
+// it, so a big jump (a first try at a large recipe beside a master, a eureka,
+// an old study book) stops at each milestone and pays it as it is reached
+// instead of skipping to the cap and paying them all at once.
+/mob/living/human/proc/skill_mastery_ceiling(statname, value)
+	if (!isnum(value) || !skill_mastery_disciplines[statname] || !learning_by_doing_enabled())
+		return null
+	for (var/list/M in skill_mastery_milestones)
+		if (value < M[1] - 0.01)
+			return M[1]
+	return null
+
 // Pays every milestone statname has reached and its discipline has not yet
 // been paid for. Returns the scholarship levels gained.
 /mob/living/human/proc/note_skill_mastery(statname)

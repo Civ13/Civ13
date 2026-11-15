@@ -934,6 +934,18 @@ var/late_wait_result = TRUE
 	hand.stats["medical"] = list(149.4, 149.4)
 	hand.adaptStat("medical", 1)
 	late_check(hand.stats["medical"][1] >= 150 && hand.scholar_level("medicine") == 4, "the milestone is paid as the skill grows")
+	// Krunes 2026-11-15: one big crafting gain jumped past every milestone and paid them all at the cap.
+	hand.stats["crafting"] = list(140, 140)
+	hand.adaptStat("crafting", 500)
+	late_check(hand.stats["crafting"][1] == 150 && hand.stats["crafting"][2] == 150 && hand.scholar_level("engineering") == 4, "a big crafting gain stops at skilled and pays only that milestone")
+	hand.adaptStat("crafting", 500)
+	late_check(hand.stats["crafting"][1] == 200 && hand.scholar_level("engineering") == 12, "the next big gain stops at expert and pays it")
+	hand.adaptStat("crafting", 500)
+	late_check(hand.stats["crafting"][1] == 250 && hand.scholar_level("engineering") == 24, "and the next reaches master")
+	hand.adaptStat("crafting", -50)
+	late_check(hand.stats["crafting"][1] < 250 && hand.stats["crafting"][1] > 200, "losing skill is not held back by milestones")
+	hand.scholarship["engineering"] = 0
+	hand.skill_mastery -= list(skill_mastery_key("engineering", 150), skill_mastery_key("engineering", 200), skill_mastery_key("engineering", 250))
 	hand.stats["crafting"] = list(250, 250)
 	hand.stats["farming"] = list(200, 200)
 	hand.stats["philosophy"] = list(150, 150)
@@ -948,6 +960,9 @@ var/late_wait_result = TRUE
 	var/mob/living/human/late_fixture/other = new(locate(1,1,1))
 	other.stats["swords"] = list(250, 250)
 	late_check(!other.note_skill_mastery("swords"), "nothing is paid where book research is off")
+	other.stats["swords"] = list(140, 140)
+	other.adaptStat("swords", 500)
+	late_check(other.stats["swords"][1] > 200, "gains are not held at milestones where book research is off")
 	map.book_research = TRUE
 /proc/late_test_compare_notes()
 	var/obj/structure/research_bench/late_fixture/bench = new(locate(7,3,1))
