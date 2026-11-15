@@ -108,12 +108,15 @@ class Routes:
             del self.by_ckey[route['ckey']]
 
     def add_port(self, port):
-        """Accept routes to port as well; a region added to the group while the relay runs."""
+        """Accept routes to port as well; a region added to the group while the relay runs.
+        Returns False for a port out of range, else 'added' or 'known' (both truthy)."""
         if type(port) is not int or not 1024 <= port <= 65535:
             return False
         with self.lock:
+            if port in self.ports:
+                return 'known'
             self.ports = self.ports | {port}
-        return True
+        return 'added'
 
     def prune(self):
         now = self.clock()
@@ -220,10 +223,11 @@ class Relay:
             return dict(found, ok=True) if found else {'ok': False}
         if values.get('add_port') == '1' and set(values) == {'add_port', 'port', 'token'}:
             port = int(values['port']) if values['port'].isdigit() and len(values['port']) <= 5 else 0
-            ok = self.routes.add_port(port)
-            if ok:
+            added = self.routes.add_port(port)
+            # The host service repeats every port it knows; log only a real change.
+            if added == 'added':
                 self.log({'ports': sorted(self.routes.ports)})
-            return {'ok': ok}
+            return {'ok': bool(added)}
         if values.get('relay_status') == '1' and set(values) == {'relay_status', 'token'}:
             self.routes.prune()
             with self.lock:
