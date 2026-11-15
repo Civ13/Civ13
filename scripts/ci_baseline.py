@@ -87,6 +87,8 @@ SUITES = {
     'cleanables_scheduler': {'files': ('tests/cleanables_scheduler/test_resume.py',),
         'paths': ('tests/cleanables_scheduler/', 'code/processes/cleanables.dm'),
         'shared_paths': ('code/processes/_process.dm', 'code/processes/___defines.dm', 'code/_macros.dm')},
+    'time_tracking': {'files': ('tests/time_tracking/test_time_tracking.py',),
+        'paths': ('tests/time_tracking/', 'code/processes/time_track.dm')},
     'life_tick_pacing': {'files': ('tests/life_tick_pacing/test_pacing.py',),
         'paths': ('tests/life_tick_pacing/',), 'shared_paths': (
             'code/processes/_process.dm', 'code/processes/__processScheduler.dm',
@@ -848,9 +850,15 @@ SUITES = {
             'code/game/objects/effects/spawners/loot.dm',
             'code/game/objects/map_metadata/eft_factory.dm', 'civ13.dme')},
     # Generated Americas region maps (north and south continent): DMM parse,
-    # land share, starts, isthmus trail posts and source registration; no BYOND runtime.
-    'americas_maps': {'files': ('tests/americas_maps/test_americas_maps.py',),
-        'paths': ('tests/americas_maps/', 'maps/nomads/nomads_americas_north.dmm',
+    # land share, starts, the isthmus edge, file digests and source registration; no BYOND runtime.
+    'americas_maps': {'files': ('tests/americas_maps/test_americas_maps.py',), 'timeout': 120,
+        'paths': ('tests/americas_maps/', 'maps/heights/nomads_americas_north.txt',
+                  'maps/heights/nomads_americas_north.flow.txt',
+                  'maps/heights/nomads_americas_north.flood.txt',
+                  'maps/heights/nomads_americas_south.txt',
+                  'maps/heights/nomads_americas_south.flow.txt',
+                  'maps/heights/nomads_americas_south.flood.txt',
+                  'maps/nomads/nomads_americas_north.dmm',
                   'maps/nomads/nomads_americas_south.dmm',
                   'code/game/objects/map_metadata/nomads/nomads_americas.dm',
                   'scripts/shard-group/americas.example.json'), 'shared_paths': (
@@ -2015,9 +2023,8 @@ SUITES = {
         'code/modules/persistence/save_validator.dm', 'code/modules/persistence/stream/',
         'code/modules/persistence/train_body_graph.dm', 'code/modules/persistence/derived_assets.dm')},
     # Offline source contracts for the disabled per-use divine approval foundation.
-    'divine_approval': {'files': ('tests/divine_approval/test_contract.py', 'tests/divine_approval/test_divine_book.py', 'tests/divine_approval/test_mundane_gear.py'), 'paths': (
-        'tests/divine_approval/', 'code/modules/divine/', 'code/modules/admin/verbs/divine_book.dm',
-        'code/modules/magic/'), 'shared_paths': ('civ13.dme',)},
+    'divine_approval': {'files': ('tests/divine_approval/test_contract.py', 'tests/divine_approval/test_divine_book.py', 'tests/divine_approval/test_journal.py', 'tests/divine_approval/test_mundane_gear.py', 'tests/divine_approval/test_ritual.py'), 'paths': (
+        'tests/divine_approval/', 'code/modules/divine/', 'code/modules/admin/verbs/divine_book.dm', 'code/modules/magic/'), 'shared_paths': ('civ13.dme', 'code/modules/1713/book.dm')},
     # Offline source contracts for the fireman carry (grab on a downed human).
     'fireman_carry': {'files': ('tests/fireman_carry/test_source.py',), 'paths': (
         'tests/fireman_carry/', 'code/game/mob/grab_carry.dm'),

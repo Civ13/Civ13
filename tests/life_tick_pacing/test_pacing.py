@@ -336,5 +336,62 @@ class ObserverBuckets(unittest.TestCase):
         self.assertIn('if (global_radiation > 0 && z == multiz_top_z())', rad)
 
 
+FRESH = '(world.tick_usage-initial_tick_usage)'
+
+
+def trace(source, costs, initial=0, ceiling=80, repeats=1):
+    body = source.split('/processScheduler/proc/runQueuedProcesses()\n', 1)[1].split('/processScheduler/proc/relayProcess', 1)[0]
+    # Bind the modeled break to the condition actually following dispatch.
+    condition = re.search(r'if \((.+) >= max_tick_usage\)\n\s+break main', body)
+    if condition is None or condition[1] not in (FRESH, 'used_tick_usage'):
+        raise AssertionError('unrecognized production budget condition')
+    current = initial
+    budget = min(max(10, ceiling - initial), 90)
+    pending = list(range(len(costs)))
+    visits = []
+    remaining = dict.fromkeys(pending, repeats)
+    while pending and current - initial < budget:
+        for item in pending.copy():
+            before = current - initial
+            visits.append(item)
+            current += costs[item]
+            remaining[item] -= 1
+            if not remaining[item]:
+                pending.remove(item)
+            measured = current - initial if condition[1] == FRESH else before
+            if measured >= budget:
+                return visits, pending
+    return visits, pending
+
+
+class DispatchBudget(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.source = SCHEDULER
+
+    def test_exhausting_dispatch_leaves_next_process_queued(self):
+        self.assertEqual(trace(self.source, [80, 20, 10]), ([0], [1, 2]))
+
+    def test_crossing_budget_does_not_start_another_process(self):
+        self.assertEqual(trace(self.source, [81, 20]), ([0], [1]))
+
+    def test_initial_usage_and_minimum_progress_are_preserved(self):
+        self.assertEqual(trace(self.source, [30, 10], initial=50), ([0], [1]))
+        self.assertEqual(trace(self.source, [10, 10], initial=90), ([0], [1]))
+
+    def test_under_budget_preserves_order(self):
+        self.assertEqual(trace(self.source, [10, 20, 30]), ([0, 1, 2], []))
+
+    def test_budgeted_resumption_keeps_unfinished_work(self):
+        self.assertEqual(trace(self.source, [40, 40], repeats=2), ([0, 1], [0, 1]))
+
+    def test_stale_sample_negative_control_dispatches_extra_work(self):
+        broken = self.source.replace('if (' + FRESH + ' >= max_tick_usage)',
+                                     'if (used_tick_usage >= max_tick_usage)')
+        self.assertNotEqual(broken, self.source)
+        self.assertEqual(trace(broken, [80, 20, 10]), ([0, 1], [2]))
+
+
+
 if __name__ == '__main__':
     unittest.main()

@@ -7,10 +7,21 @@ Pillow) is not run here. Run from the repository root:
 """
 import re
 import unittest
+import hashlib
+import json
+import os
 from collections import deque
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
+# Digests of each map and its height, current and flood files, written by
+# build.py when it writes them (line endings normalised, so any checkout matches).
+SIDECARS = json.loads((Path(__file__).resolve().parent / 'sidecars.json').read_text(encoding='utf-8'))
+
+
+def file_digest(path):
+    return hashlib.sha256(path.read_bytes().replace(b'\r\n', b'\n')).hexdigest()
+
 MAPS = {
     'north': {
         'path': 'maps/nomads/nomads_americas_north.dmm',
@@ -239,7 +250,13 @@ class AmericasMapsTest(unittest.TestCase):
                     for col in range(level.width):
                         self.assertEqual(levels[row][col] == 0, 'water' in rows[row][col], (row, col))
                 self.assertGreaterEqual(max(max(r) for r in levels), 12)
-                # Currents and flood reaches are the ones the builders make from this map.
+                # The map and its three files are the set the generator wrote together.
+                for kind in ('path', 'heights', 'flow', 'flood'):
+                    self.assertEqual(file_digest(ROOT / level.spec[kind]), SIDECARS[name][kind], level.spec[kind])
+                # Rebuilding the currents and flood reaches from the map takes over a
+                # minute, so it runs on request: AMERICAS_MAPS_REBUILD=1.
+                if not os.environ.get('AMERICAS_MAPS_REBUILD'):
+                    continue
                 flow = river_flow.build(rows, heights=levels)
                 text = '%s\nsize %d %d\nz 1\n%s\n' % (river_flow.HEADER, level.width, level.height, '\n'.join(flow))
                 self.assertEqual((ROOT / level.spec['flow']).read_text(encoding='ascii'), text)

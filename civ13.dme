@@ -1344,6 +1344,8 @@
 #include "code\modules\collectibles\structures.dm"
 #include "code\modules\diet\diet.dm"
 #include "code\modules\divine\divine_book.dm"
+#include "code\modules\divine\approval.dm"
+#include "code\modules\divine\ritual.dm"
 #include "code\modules\dmm_suite\_preprocessor_and_utilities.dm"
 #include "code\modules\dmm_suite\reader.dm"
 #include "code\modules\error_handler\_defines.dm"
@@ -1883,5 +1885,7 @@
 #include "code\modules\1713\smart_home.dm"
 #include "code\modules\1713\modern_terminal.dm"
 #include "code\modules\1713\backrooms\gateway_core.dm"
+// Sealed journal presentation; does not activate spell casting.
+#include "code\modules\divine\journal.dm"
 // Must stay last: global_init needs every other global initialized first.
 #include "code\global_init_last.dm"
