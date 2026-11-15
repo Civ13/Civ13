@@ -309,6 +309,7 @@ RECIPE: /material/leather/,leather belt satchel,/obj/item/weapon/storage/belt/le
 RECIPE: /material/leather/,leather belt pouch,/obj/item/clothing/accessory/storage/belt_pouch,1,40,0,1,storage,0,0,0,8,null
 RECIPE: /material/leather/,leather cord necklace,/obj/item/clothing/accessory/necklace,1,30,0,1,storage,0,0,0,8,null
 RECIPE: /material/leather/,leather belt,/obj/item/clothing/pouch_belt,1,40,0,1,storage,0,0,0,8,null
+RECIPE: /material/leather/,tailoring project,/obj/item/tailoring_project,1,25,0,1,clothing,0,0,18,8,null
 RECIPE: /material/leather/,shoulder belt,/obj/item/clothing/accessory/storage/baldric,2,50,0,1,storage,0,0,0,8,null
 RECIPE: /material/leather/,tool loop,/obj/item/clothing/accessory/storage/tool_loop,1,30,0,1,storage,0,0,0,8,null
 RECIPE: /material/leather/,leather harness,/obj/item/clothing/accessory/storage/harness,3,80,0,1,storage,0,0,0,8,null

@@ -872,6 +872,10 @@ var/global/list/human_face_icon_cache = list()
 		else
 			standing = image(icon = body_build.gloves_icon, icon_state = t_state, layer = layer + 0.01)
 
+		// Tailored gloves (dressmaking.dm) draw their coloured design layers.
+		var/obj/item/clothing/tailored_gloves = gloves
+		if (istype(tailored_gloves) && tailored_gloves.design_body)
+			standing.overlays += tailored_gloves.worn_design_layers()
 		if (gloves.blood_DNA)
 			var/image/bloodsies	= image("icon" = species.blood_mask, "icon_state" = "bloodyhands")
 			bloodsies.color = gloves.blood_color
@@ -954,6 +958,10 @@ var/global/list/human_face_icon_cache = list()
 		else
 			standing = image(icon = body_build.shoes_icon, icon_state = shoes.icon_state, layer = layer + 0.01)
 
+		// Tailored footwear (dressmaking.dm) draws its coloured design layers.
+		var/obj/item/clothing/tailored_shoes = shoes
+		if (istype(tailored_shoes) && tailored_shoes.design_body)
+			standing.overlays += tailored_shoes.worn_design_layers()
 		if (shoes.blood_DNA)
 			var/image/bloodsies = image("icon" = species.blood_mask, "icon_state" = "shoeblood")
 			bloodsies.color = shoes.blood_color
@@ -1132,6 +1140,9 @@ var/global/list/human_face_icon_cache = list()
 		else if (istype(belt, /obj/item/clothing))
 			// Pouches hung from a clothing belt (belt_pouches.dm) draw on it.
 			var/obj/item/clothing/cbelt = belt
+			// A tailored belt (dressmaking.dm) draws its coloured design layers first.
+			if (cbelt.design_body)
+				standing.overlays += cbelt.worn_design_layers()
 			for (var/obj/item/clothing/accessory/A in cbelt.accessories)
 				standing.overlays	+= A.get_mob_overlay()
 

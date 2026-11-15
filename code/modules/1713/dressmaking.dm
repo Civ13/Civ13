@@ -1,6 +1,7 @@
-// Tailoring: players design their own clothes. A paid tailoring project holds
-// fabric; its owner picks a garment body, colours the body and each of its
-// pattern pieces, cuts the fabric (which locks the design) and sews one garment.
+// Tailoring: players design their own clothes, hats, gloves, footwear and
+// belts. A paid tailoring project holds fabric or leather; its owner picks a
+// garment body, colours the body and each of its pattern pieces, cuts the
+// material (which locks the design) and sews one garment.
 //
 // A design is plain data: a body id, a "|"-separated list of colours (the
 // body first, then each panel and each piece option in catalogue order) and,
@@ -18,7 +19,9 @@
 var/global/list/tailoring_catalogue = null
 
 // Body id -> list(name, slot, base, item_base?, panels (label -> state, in
-// draw order), fixed (uncoloured states drawn last), node, cost, covers?).
+// draw order), fixed (uncoloured states drawn last), node, cost, covers?,
+// fabrics? (the materials it can be made of; woven cloth when unset),
+// garment? (the item it is sewn into; the slot's tailored garment when unset)).
 // Every state is existing greyscale art in the slot's worn and item icons.
 /proc/tailoring_bodies()
 	if (tailoring_catalogue)
@@ -97,6 +100,24 @@ var/global/list/tailoring_catalogue = null
 	C["made_pointed_hat"] = list("name" = "pointed hat", "slot" = "head", "art" = "tailoring", "base" = "tl_hat_pointed", "panels" = list(), "options" = list("Pattern" = list("Plain" = null, "Stripes" = "tl_hat_pointed_stripes", "Panels" = "tl_hat_pointed_panels"), "Band" = hat_bands.Copy(), "Brim" = hat_brims.Copy(), "Flaps" = hat_flaps.Copy(), "Decoration" = hat_decorations.Copy()), "node" = "weaving", "cost" = 1)
 	C["made_soft_hat"] = list("name" = "soft hat", "slot" = "head", "art" = "tailoring", "base" = "tl_hat_soft", "panels" = list(), "options" = list("Pattern" = list("Plain" = null, "Stripes" = "tl_hat_soft_stripes", "Panels" = "tl_hat_soft_panels"), "Band" = hat_bands.Copy(), "Brim" = hat_brims.Copy(), "Flaps" = hat_flaps.Copy(), "Decoration" = hat_decorations.Copy()), "node" = "tailoring", "cost" = 1)
 	C["made_tall_hat"] = list("name" = "tall hat", "slot" = "head", "art" = "tailoring", "base" = "tl_hat_tall", "panels" = list(), "options" = list("Pattern" = list("Plain" = null, "Stripes" = "tl_hat_tall_stripes", "Panels" = "tl_hat_tall_panels"), "Band" = hat_bands.Copy(), "Brim" = hat_brims.Copy(), "Flaps" = hat_flaps.Copy(), "Decoration" = hat_decorations.Copy()), "node" = "fine_garments", "cost" = 2)
+	// Gloves, footwear and belts. They are looks only: each is sewn into an
+	// item that protects and carries exactly like the plain one of its kind.
+	var/list/glove_fabrics = list("leather", "woolcloth")
+	var/list/glove_backs = list("Plain" = null, "Padded" = "tl_glove_knuckles", "Striped" = "tl_glove_stripe")
+	var/list/glove_tips = list("Plain" = null, "Capped" = "tl_glove_tips")
+	C["made_gloves"] = list("name" = "gloves", "slot" = "gloves", "art" = "tailoring", "base" = "tl_gloves", "panels" = list(), "options" = list("Cuff" = list("None" = null, "Turned" = "tl_glove_cuff", "Gauntlet" = "tl_glove_gauntlet", "Fur" = "tl_glove_cuff_fur"), "Back" = glove_backs.Copy(), "Fingertips" = glove_tips.Copy()), "node" = "weaving", "cost" = 2, "fabrics" = glove_fabrics.Copy())
+	C["made_long_gloves"] = list("name" = "long gloves", "slot" = "gloves", "art" = "tailoring", "base" = "tl_gloves_long", "panels" = list(), "options" = list("Top" = list("Plain" = null, "Banded" = "tl_glove_long_band", "Fur" = "tl_glove_long_fur"), "Back" = glove_backs.Copy(), "Fingertips" = glove_tips.Copy()), "node" = "tailoring", "cost" = 3, "fabrics" = glove_fabrics.Copy())
+	var/list/soles = list("Plain" = null, "Thick" = "tl_boot_sole")
+	var/list/toes = list("Plain" = null, "Capped" = "tl_boot_toecap")
+	C["made_shoes"] = list("name" = "shoes", "slot" = "shoes", "art" = "tailoring", "base" = "tl_shoes", "panels" = list(), "options" = list("Sole" = soles.Copy(), "Toe" = toes.Copy(), "Fastening" = list("None" = null, "Laced" = "tl_shoes_laces", "Buckled" = "tl_boot_buckle", "Strapped" = "tl_boot_strap")), "node" = "classical_dress", "cost" = 2, "fabrics" = list("leather"))
+	C["made_boots"] = list("name" = "boots", "slot" = "shoes", "art" = "tailoring", "base" = "tl_boots", "panels" = list(), "options" = list("Sole" = soles.Copy(), "Toe" = toes.Copy(), "Fastening" = list("None" = null, "Laced" = "tl_boots_laces", "Buckled" = "tl_boot_buckle", "Strapped" = "tl_boot_strap"), "Cuff" = list("None" = null, "Turned" = "tl_boots_cuff", "Fur" = "tl_boots_fur")), "node" = "fine_garments", "cost" = 3, "fabrics" = list("leather"), "garment" = /obj/item/clothing/shoes/leatherboots/tailored)
+	C["made_tall_boots"] = list("name" = "tall boots", "slot" = "shoes", "art" = "tailoring", "base" = "tl_boots_tall", "panels" = list(), "options" = list("Sole" = soles.Copy(), "Toe" = toes.Copy(), "Fastening" = list("None" = null, "Laced" = "tl_boots_tall_laces", "Buckled" = "tl_boot_buckle", "Strapped" = "tl_boot_strap"), "Cuff" = list("None" = null, "Turned" = "tl_boots_tall_cuff", "Fur" = "tl_boots_tall_fur")), "node" = "fine_garments", "cost" = 4, "fabrics" = list("leather"), "garment" = /obj/item/clothing/shoes/leatherboots/tailored)
+	var/list/belt_patterns = list("Plain" = null, "Studded" = "tl_waist_studs", "Striped" = "tl_waist_stripe")
+	var/list/buckles = list("Square" = "tl_waist_buckle_square", "Round" = "tl_waist_buckle_round", "Plate" = "tl_waist_buckle_plate")
+	var/list/belt_ends = list("Tucked" = null, "Hanging" = "tl_waist_end")
+	C["made_belt"] = list("name" = "belt", "slot" = "belt", "art" = "tailoring", "base" = "tl_waist_belt", "panels" = list(), "options" = list("Pattern" = belt_patterns.Copy(), "Buckle" = buckles.Copy(), "End" = belt_ends.Copy()), "node" = "weaving", "cost" = 1, "fabrics" = list("leather"))
+	C["made_wide_belt"] = list("name" = "wide belt", "slot" = "belt", "art" = "tailoring", "base" = "tl_waist_wide", "panels" = list(), "options" = list("Pattern" = belt_patterns.Copy(), "Buckle" = buckles.Copy(), "End" = belt_ends.Copy()), "node" = "tailoring", "cost" = 2, "fabrics" = list("leather"))
+	C["made_sash"] = list("name" = "waist sash", "slot" = "belt", "art" = "tailoring", "base" = "tl_waist_sash", "panels" = list(), "options" = list("Pattern" = list("Plain" = null, "Striped" = "tl_waist_sash_stripes"), "Ends" = list("Plain" = null, "Fringed" = "tl_waist_sash_fringe")), "node" = "classical_dress", "cost" = 1)
 	tailoring_catalogue = C
 	return C
 
@@ -132,14 +153,61 @@ var/global/list/tailoring_piece_info = list(
 	"tl_hat_feather" = list("tailoring", 0, 0),
 	"tl_hat_plume" = list("fine_garments", 0, 0),
 	"tl_hat_badge" = list("classical_dress", 0, 0),
-	"tl_hat_ribbons" = list("tailoring", 0, 0))
+	"tl_hat_ribbons" = list("tailoring", 0, 0),
+	"tl_glove_gauntlet" = list("fine_garments", 1, 0),
+	"tl_glove_knuckles" = list("tailoring", 0, 0),
+	"tl_glove_tips" = list("tailoring", 0, 0),
+	"tl_boot_toecap" = list("fine_garments", 0, 0),
+	"tl_boot_buckle" = list("classical_dress", 0, 0),
+	"tl_shoes_laces" = list("tailoring", 0, 0),
+	"tl_boots_laces" = list("tailoring", 0, 0),
+	"tl_boots_tall_laces" = list("tailoring", 0, 0),
+	"tl_waist_buckle_round" = list("classical_dress", 0, 0),
+	"tl_waist_buckle_plate" = list("fine_garments", 1, 0),
+	"tl_waist_studs" = list("tailoring", 0, 0),
+	"tl_waist_end" = list("tailoring", 0, 0),
+	"tl_waist_sash_fringe" = list("tailoring", 0, 0))
 
-// Woven fabric a project is made of: the stack it takes, its name, the
+// The material a project is made of: the stack it takes, its name, the
 // coldest temperature it keeps out per layer, its padding against cuts and
-// arrows, and a tone multiplied into every dye (wool takes colour darker).
+// arrows, and a tone multiplied into every dye (wool takes colour darker, and
+// leather shows its own tan through every dye). Leather is for gloves,
+// footwear and belts only, whose warmth and protection come from the item.
 var/global/list/tailoring_fabrics = list(
 	"cloth" = list("stack" = /obj/item/stack/material/cloth, "name" = "linen", "under_cold" = 240, "suit_cold" = 225, "padding" = 0, "tone" = "#ffffff"),
-	"woolcloth" = list("stack" = /obj/item/stack/material/woolcloth, "name" = "wool", "under_cold" = 225, "suit_cold" = COAT_MIN_COLD_PROTECTION_TEMPERATURE, "padding" = 5, "tone" = "#e6dccb"))
+	"woolcloth" = list("stack" = /obj/item/stack/material/woolcloth, "name" = "wool", "under_cold" = 225, "suit_cold" = COAT_MIN_COLD_PROTECTION_TEMPERATURE, "padding" = 5, "tone" = "#e6dccb"),
+	"leather" = list("stack" = /obj/item/stack/material/leather, "name" = "leather", "under_cold" = 240, "suit_cold" = 225, "padding" = 0, "tone" = "#cfa97c"))
+
+#define TAILORING_WOVEN list("cloth", "woolcloth")
+
+// Whether a body can be made of this material.
+/proc/tailoring_body_fits(body_id, fabric_kind)
+	var/list/body = tailoring_body(body_id)
+	if (!body)
+		return FALSE
+	var/list/fabrics = body["fabrics"] ? body["fabrics"] : TAILORING_WOVEN
+	if (!istext(fabric_kind) || !tailoring_fabrics[fabric_kind])
+		fabric_kind = "cloth"
+	return (fabric_kind in fabrics)
+
+// "leather or wool": the materials a body can be made of.
+/proc/tailoring_body_fabric_names(body_id)
+	var/list/body = tailoring_body(body_id)
+	var/list/names = list()
+	if (body)
+		var/list/fabrics = body["fabrics"] ? body["fabrics"] : TAILORING_WOVEN
+		for (var/kind in fabrics)
+			var/list/F = tailoring_fabrics[kind]
+			names += F["name"]
+	return jointext(names, " or ")
+
+// The first body in the catalogue this material can make.
+/proc/tailoring_default_body(fabric_kind)
+	var/list/C = tailoring_bodies()
+	for (var/body_id in C)
+		if (tailoring_body_fits(body_id, fabric_kind))
+			return body_id
+	return null
 
 /proc/tailoring_fabric(kind)
 	return (istext(kind) && tailoring_fabrics[kind]) ? tailoring_fabrics[kind] : tailoring_fabrics["cloth"]
@@ -332,15 +400,21 @@ var/global/list/tailoring_dye_tiers = list(
 			return "overclothes"
 		if ("head")
 			return "headwear"
+		if ("gloves")
+			return "gloves"
+		if ("shoes")
+			return "footwear"
+		if ("belt")
+			return "belt"
 	return "clothing"
 
-// Bodies this person knows how to cut, as display name -> id.
-/proc/tailoring_known_bodies(mob/living/human/H)
+// Bodies this person knows how to cut from this material, as display name -> id.
+/proc/tailoring_known_bodies(mob/living/human/H, fabric_kind = "cloth")
 	var/list/known = list()
 	var/list/C = tailoring_bodies()
 	for (var/body_id in C)
 		var/list/body = C[body_id]
-		if (crafting_node_allowed(H, body["node"]))
+		if (crafting_node_allowed(H, body["node"]) && tailoring_body_fits(body_id, fabric_kind))
 			known["[body["name"]] ([tailoring_slot_name(body)], [body["cost"]] fabric)"] = body_id
 	return known
 
@@ -467,8 +541,9 @@ var/global/list/tailoring_dye_tiers = list(
 		body_parts_covered = covers
 		cold_protection = covers
 		heat_protection = covers
-	// Fabric sets warmth and padding only for garments sewn as tailoring.
-	if (design_fabric)
+	// Fabric sets warmth and padding only for clothes and hats sewn as
+	// tailoring; gloves, footwear and belts keep what their item gives.
+	if (design_fabric && (body["slot"] in list("under", "suit", "head")))
 		var/list/fabric = tailoring_fabric(design_fabric)
 		min_cold_protection_temperature = body["slot"] == "suit" ? fabric["suit_cold"] : fabric["under_cold"]
 		armor = armor ? armor.Copy() : list()
@@ -597,12 +672,140 @@ var/global/list/tailoring_dye_tiers = list(
 	tailoring_named_items -= src
 	return ..()
 
+// Gloves, footwear and belts: the design is looks only. Each is a subtype of
+// the plain item of its kind, so it protects, grips and carries the same.
+/obj/item/clothing/gloves/thick/leather/tailored
+	name = "tailored gloves"
+	desc = "Gloves sewn to their owner's own design. They protect the hands like any thick gloves."
+	design_body = "made_gloves"
+	design_colors = "#ffffff"
+
+/obj/item/clothing/gloves/thick/leather/tailored/on_runtime_spawn()
+	..()
+	tailoring_refresh()
+
+/obj/item/clothing/gloves/thick/leather/tailored/after_load()
+	..()
+	tailoring_rebuild_after_load()
+	tailoring_register(src)
+
+/obj/item/clothing/gloves/thick/leather/tailored/attackby(obj/item/W, mob/user)
+	if (recipe_blank_paper(W))
+		tailoring_trace_pattern(user, W, src, design_body, design_colors, design_name, design_maker, design_author, design_pieces)
+		return
+	return ..()
+
+/obj/item/clothing/gloves/thick/leather/tailored/examine(mob/user)
+	..()
+	tailoring_examine_credit(user, design_body, design_maker)
+
+/obj/item/clothing/gloves/thick/leather/tailored/Destroy()
+	tailoring_named_items -= src
+	return ..()
+
+/obj/item/clothing/shoes/tailored
+	name = "tailored shoes"
+	desc = "Leather shoes sewn to their owner's own design."
+	design_body = "made_shoes"
+	design_colors = "#ffffff"
+	cold_protection = FEET
+	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
+
+/obj/item/clothing/shoes/tailored/on_runtime_spawn()
+	..()
+	tailoring_refresh()
+
+/obj/item/clothing/shoes/tailored/after_load()
+	..()
+	tailoring_rebuild_after_load()
+	tailoring_register(src)
+
+/obj/item/clothing/shoes/tailored/attackby(obj/item/W, mob/user)
+	if (recipe_blank_paper(W))
+		tailoring_trace_pattern(user, W, src, design_body, design_colors, design_name, design_maker, design_author, design_pieces)
+		return
+	return ..()
+
+/obj/item/clothing/shoes/tailored/examine(mob/user)
+	..()
+	tailoring_examine_credit(user, design_body, design_maker)
+
+/obj/item/clothing/shoes/tailored/Destroy()
+	tailoring_named_items -= src
+	return ..()
+
+/obj/item/clothing/shoes/leatherboots/tailored
+	name = "tailored boots"
+	desc = "Leather boots sewn to their owner's own design. They protect and grip like any leather boots."
+	design_body = "made_boots"
+	design_colors = "#ffffff"
+
+/obj/item/clothing/shoes/leatherboots/tailored/on_runtime_spawn()
+	..()
+	tailoring_refresh()
+
+/obj/item/clothing/shoes/leatherboots/tailored/after_load()
+	..()
+	tailoring_rebuild_after_load()
+	tailoring_register(src)
+
+/obj/item/clothing/shoes/leatherboots/tailored/attackby(obj/item/W, mob/user)
+	if (recipe_blank_paper(W))
+		tailoring_trace_pattern(user, W, src, design_body, design_colors, design_name, design_maker, design_author, design_pieces)
+		return
+	return ..()
+
+/obj/item/clothing/shoes/leatherboots/tailored/examine(mob/user)
+	..()
+	tailoring_examine_credit(user, design_body, design_maker)
+
+/obj/item/clothing/shoes/leatherboots/tailored/Destroy()
+	tailoring_named_items -= src
+	return ..()
+
+/obj/item/clothing/pouch_belt/tailored
+	name = "tailored belt"
+	desc = "A belt made to its owner's own design. Hang a pouch or two, a sheath or holster and a tool loop from it, as from any belt."
+	design_body = "made_belt"
+	design_colors = "#ffffff"
+
+/obj/item/clothing/pouch_belt/tailored/on_runtime_spawn()
+	..()
+	tailoring_refresh()
+
+/obj/item/clothing/pouch_belt/tailored/after_load()
+	..()
+	tailoring_rebuild_after_load()
+	tailoring_register(src)
+
+/obj/item/clothing/pouch_belt/tailored/attackby(obj/item/W, mob/user)
+	if (recipe_blank_paper(W))
+		tailoring_trace_pattern(user, W, src, design_body, design_colors, design_name, design_maker, design_author, design_pieces)
+		return
+	return ..()
+
+/obj/item/clothing/pouch_belt/tailored/examine(mob/user)
+	..()
+	tailoring_examine_credit(user, design_body, design_maker)
+
+/obj/item/clothing/pouch_belt/tailored/Destroy()
+	tailoring_named_items -= src
+	return ..()
+
 /proc/tailoring_garment_type(list/body)
+	if (body["garment"])
+		return body["garment"]
 	switch (body["slot"])
 		if ("suit")
 			return /obj/item/clothing/suit/storage/jacket/tailored
 		if ("head")
 			return /obj/item/clothing/head/tailored
+		if ("gloves")
+			return /obj/item/clothing/gloves/thick/leather/tailored
+		if ("shoes")
+			return /obj/item/clothing/shoes/tailored
+		if ("belt")
+			return /obj/item/clothing/pouch_belt/tailored
 	return /obj/item/clothing/under/tailored
 
 // Live preview: four HUD tiles, one per facing, drawn from the same overlays
@@ -647,7 +850,7 @@ var/global/list/tailoring_dye_tiers = list(
 
 /obj/item/tailoring_project
 	name = "tailoring project"
-	desc = "Fabric set aside for one garment. Use it in hand to choose what to make and colour each piece, then cut and sew it. Add cloth or woolcloth sheets to it for larger garments. Cutting locks the design."
+	desc = "Fabric or leather set aside for one garment. Use it in hand to choose what to make and colour each piece, then cut and sew it. Add more sheets of the same material to it for larger garments. Cloth and woolcloth make clothes and hats; leather makes gloves, footwear and belts. Cutting locks the design."
 	icon = 'icons/obj/materials.dmi'
 	icon_state = "sheet-cloth"
 	w_class = ITEM_SIZE_NORMAL
@@ -658,7 +861,7 @@ var/global/list/tailoring_dye_tiers = list(
 	var/design_name = null
 	var/design_maker = null
 	var/design_author = null
-	// Which woven fabric the project is made of; every added sheet must match.
+	// Which material the project is made of; every added sheet must match.
 	var/fabric_kind = "cloth"
 	// Sheets of fabric held, including the one the project was made from.
 	var/fabric = 1
@@ -677,6 +880,18 @@ var/global/list/tailoring_dye_tiers = list(
 
 /obj/item/tailoring_project/proc/body_cost()
 	return tailoring_design_cost(design_body, design_pieces)
+
+// A project starts on a garment its material can make: a leather one on gloves.
+/obj/item/tailoring_project/proc/fit_fabric()
+	if (stage != 0 || tailoring_body_fits(design_body, fabric_kind))
+		return
+	var/fitting = tailoring_default_body(fabric_kind)
+	if (!fitting)
+		return
+	design_body = fitting
+	design_colors = "#ffffff"
+	var/list/body = tailoring_body(design_body)
+	design_pieces = length(body["options"]) ? tailoring_pieces_text(tailoring_pieces(design_body, null)) : null
 
 /obj/item/tailoring_project/after_load()
 	..()
@@ -718,6 +933,7 @@ var/global/list/tailoring_dye_tiers = list(
 	var/datum/save_epoch = persistence_admission_identity
 	if (tailoring_busy || stage >= 2)
 		return
+	fit_fabric()
 	// Say which knowledge is missing: a project can be handed to someone untrained.
 	if (!crafting_node_allowed_or_warn(user, "weaving") || !actor_ready(user, site, save_epoch))
 		return
@@ -733,12 +949,13 @@ var/global/list/tailoring_dye_tiers = list(
 		if (user.client)
 			user.client.show_tailoring_preview(design_body, design_colors, design_pieces, fabric_kind)
 		var/garment = body ? body["name"] : "garment"
+		var/list/material = tailoring_fabric(fabric_kind)
 		var/list/options = stage == 0 ? list("Choose garment", "Colours", "Name", "Cut fabric", "Close") : list("Sew", "Close")
 		if (stage == 0 && body && length(body["options"]))
 			options.Insert(2, "Pieces")
 		if (stage == 0 && user.ckey)
 			options.Insert(options.len, "Pattern book")
-		var/status = stage == 0 ? "Designing a [garment]: it needs [body_cost()] fabric and the project holds [fabric]." : "The [garment] is cut and ready to sew."
+		var/status = stage == 0 ? "Designing in [material["name"]]: [garment]. The design needs [body_cost()] sheet\s and the project holds [fabric]." : "The pieces of the [garment] are cut and ready to sew."
 		var/choice = WWinput(user, status, "Tailoring", "Close", options)
 		if (!actor_ready(user, site, save_epoch) || !choice || choice == "Close")
 			return
@@ -746,11 +963,12 @@ var/global/list/tailoring_dye_tiers = list(
 			if ("Choose garment")
 				if (stage != 0)
 					return
-				var/list/known = tailoring_known_bodies(user)
+				var/list/known = tailoring_known_bodies(user, fabric_kind)
 				if (!known.len)
+					to_chat(user, SPAN_WARNING("You don't know anything to make from [material["name"]] yet."))
 					return
-				var/selected = WWinput(user, "Choose the garment to make. The list grows as you learn more tailoring.", "Garment", null, known)
-				if (actor_ready(user, site, save_epoch) && stage == 0 && (selected in known) && tailoring_body_allowed(user, known[selected]))
+				var/selected = WWinput(user, "Choose what to make from [material["name"]]. Cloth and woolcloth make clothes and hats; leather makes gloves, footwear and belts. The list grows as you learn more tailoring.", "Garment", null, known)
+				if (actor_ready(user, site, save_epoch) && stage == 0 && (selected in known) && tailoring_body_allowed(user, known[selected]) && tailoring_body_fits(known[selected], fabric_kind))
 					design_body = known[selected]
 					design_colors = jointext(tailoring_colors(design_body, design_colors), "|")
 					var/list/new_body = tailoring_body(design_body)
@@ -784,7 +1002,7 @@ var/global/list/tailoring_dye_tiers = list(
 				pattern_book_menu(user, site, save_epoch)
 			if ("Cut fabric")
 				if (fabric < body_cost())
-					to_chat(user, SPAN_WARNING("A [garment] needs [body_cost()] fabric. Add cloth or woolcloth sheets to the project first."))
+					to_chat(user, SPAN_WARNING("This design needs [body_cost()] sheet\s. Add [material["name"]] sheets to the project first."))
 					continue
 				var/confirm = WWinput(user, "Cut this design? You can no longer change the garment or colours afterward.", "Cut fabric", "Keep designing", list("Keep designing", "Cut fabric"))
 				if (confirm == "Cut fabric")
@@ -833,7 +1051,7 @@ var/global/list/tailoring_dye_tiers = list(
 	claim_design(user)
 
 /obj/item/tailoring_project/proc/cut_fabric(mob/living/human/user, turf/site, datum/save_epoch)
-	if (!actor_ready(user, site, save_epoch) || stage != 0 || !tailoring_design_valid(design_body, design_colors, design_pieces) || !tailoring_design_allowed(user, design_body, design_pieces, design_colors) || fabric < body_cost())
+	if (!actor_ready(user, site, save_epoch) || stage != 0 || !tailoring_design_valid(design_body, design_colors, design_pieces) || !tailoring_design_allowed(user, design_body, design_pieces, design_colors) || !tailoring_body_fits(design_body, fabric_kind) || fabric < body_cost())
 		return FALSE
 	to_chat(user, SPAN_NOTICE("You start cutting the pattern pieces."))
 	if (!wait_for_tailoring(user, 30) || !actor_ready(user, site, save_epoch) || stage != 0 || fabric < body_cost())
@@ -881,6 +1099,7 @@ var/global/list/tailoring_dye_tiers = list(
 
 /obj/item/tailoring_project/examine(mob/user)
 	..()
+	fit_fabric()
 	var/list/body = tailoring_body(design_body)
 	if (!body)
 		return
@@ -1052,6 +1271,10 @@ var/global/list/tailoring_name_block_list = null
 	if (!crafting_node_allowed_or_warn(user, "weaving") || !tailoring_design_valid(body_id, colors_text, pieces_text))
 		return FALSE
 	var/list/body = tailoring_body(body_id)
+	if (!tailoring_body_fits(body_id, fabric_kind))
+		var/list/material = tailoring_fabric(fabric_kind)
+		to_chat(user, SPAN_WARNING("This project is [material["name"]], and a design for [body["name"]] is made of [tailoring_body_fabric_names(body_id)]. Start a project from that instead."))
+		return FALSE
 	if (!tailoring_design_allowed(user, body_id, pieces_text, colors_text))
 		var/datum/research_node/N = get_research_node(tailoring_missing_node(user, body_id, pieces_text, colors_text))
 		to_chat(user, SPAN_WARNING("You don't know how to make this [body["name"]] yet[N ? ". It needs <b>[N.name]</b>" : ""]."))
@@ -1496,5 +1719,6 @@ var/global/datum/tailoring_admin_panel/tailoring_admin = new
 #undef TAILORING_BLOCK_FILE
 
 #undef TAILORING_ANY_DYE_NODE
+#undef TAILORING_WOVEN
 #undef TAILORING_MAX_FABRIC
 #undef TAILORING_MAX_COLOURS

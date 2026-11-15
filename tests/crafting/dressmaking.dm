@@ -270,6 +270,117 @@
 	qdel(hat); qdel(loaded_hat)
 	dressmaking_ci_clear(site)
 
+// Gloves, footwear and belts: leather projects, looks only, function unchanged.
+/proc/dressmaking_ci_accessories(mob/living/human/handle_ci/dress_ci/H, turf/site, datum/save_epoch)
+	dressmaking_ci_clear(site)
+	dressmaking_ci_expect(tailoring_garment_type(tailoring_body("made_gloves")) == /obj/item/clothing/gloves/thick/leather/tailored && tailoring_garment_type(tailoring_body("made_shoes")) == /obj/item/clothing/shoes/tailored && tailoring_garment_type(tailoring_body("made_tall_boots")) == /obj/item/clothing/shoes/leatherboots/tailored && tailoring_garment_type(tailoring_body("made_sash")) == /obj/item/clothing/pouch_belt/tailored, "accessory bodies sew the matching item")
+	dressmaking_ci_expect(tailoring_slot_name(tailoring_body("made_gloves")) == "gloves" && tailoring_slot_name(tailoring_body("made_boots")) == "footwear" && tailoring_slot_name(tailoring_body("made_belt")) == "belt", "garment menu names the accessory slots")
+	dressmaking_ci_expect(tailoring_body_fits("made_boots", "leather") && !tailoring_body_fits("made_boots", "cloth") && tailoring_body_fits("made_gloves", "woolcloth") && !tailoring_body_fits("made_gloves", "cloth") && tailoring_body_fits("made_sash", "cloth") && !tailoring_body_fits("made_sash", "leather") && !tailoring_body_fits("toga", "leather") && tailoring_body_fits("toga", null), "each body is made of its own materials")
+	dressmaking_ci_expect(tailoring_default_body("leather") == "made_gloves" && tailoring_default_body("cloth") == "loincloth" && tailoring_body_fabric_names("made_gloves") == "leather or wool", "a material starts on a garment it can make")
+	var/list/leather_bodies = tailoring_known_bodies(H, "leather")
+	var/list/cloth_bodies = tailoring_known_bodies(H, "cloth")
+	var/leather_only = TRUE
+	for (var/label in leather_bodies)
+		if (!tailoring_body_fits(leather_bodies[label], "leather"))
+			leather_only = FALSE
+	dressmaking_ci_expect(leather_bodies.len == 7 && leather_only && !("toga (clothing, 3 fabric)" in leather_bodies) && ("toga (clothing, 3 fabric)" in cloth_bodies) && ("waist sash (belt, 1 fabric)" in cloth_bodies), "the garment list follows the project's material")
+	// A leather sheet pays for a leather project, which starts on gloves.
+	var/datum/stack_recipe/R = recipe_ci_food_recipe(/material/leather, /obj/item/tailoring_project, H.civilization)
+	dressmaking_ci_expect(R && R.req_amount == 1, "one-sheet leather recipe")
+	if (R)
+		R.time = 0
+		var/obj/item/stack/material/leather/hide = new(H, 4, FALSE)
+		var/obj/item/weapon/flint/blocker = new(H)
+		H.r_hand = hide
+		H.l_hand = blocker
+		hide.produce_recipe(R, 1, H)
+		// Skip projects an earlier check consumed and left queued for deletion.
+		var/obj/item/tailoring_project/paid = null
+		for (var/obj/item/tailoring_project/made in site)
+			if (!made.gcDestroyed)
+				paid = made
+		dressmaking_ci_expect(paid && paid.fabric_kind == "leather" && hide.amount == 3, "a leather project is made of leather")
+		if (paid)
+			paid.fit_fabric()
+			dressmaking_ci_expect(paid.design_body == "made_gloves" && paid.design_pieces == "None|Plain|Plain", "a leather project starts on plain gloves")
+			paid.attackby(hide, H)
+			dressmaking_ci_expect(paid.fabric == 2 && hide.amount == 2, "leather tops up a leather project")
+			var/obj/item/stack/material/cloth/linen = new(site, 2, FALSE)
+			paid.attackby(linen, H)
+			dressmaking_ci_expect(paid.fabric == 2 && linen.amount == 2, "cloth is refused by a leather project")
+			qdel(linen)
+			dressmaking_ci_expect(!paid.load_design(H, "toga", "#ffffff", null, null, null, null) && paid.design_body == "made_gloves", "a clothing design is refused by a leather project")
+			dressmaking_ci_expect(paid.load_design(H, "made_boots", "#6e4c30|#2a2826|#ffffff|#d6c050|#ffffff", "Thick|Plain|Buckled|Fur", null, null, null) && paid.design_body == "made_boots" && paid.body_cost() == 3, "a boot design loads onto a leather project")
+			qdel(paid)
+		H.remove_from_mob(hide); qdel(hide)
+		H.remove_from_mob(blocker); qdel(blocker)
+	var/obj/item/tailoring_project/dress_ci/linen_project = new(H)
+	H.r_hand = linen_project
+	dressmaking_ci_expect(!linen_project.load_design(H, "made_boots", "#ffffff", null, null, null, null) && linen_project.design_body == "long_tunic", "a boot design is refused by a cloth project")
+	linen_project.design_body = "made_boots"
+	linen_project.fabric = 8
+	dressmaking_ci_expect(!linen_project.cut_fabric(H, site, save_epoch) && linen_project.stage == 0, "boots cannot be cut from cloth")
+	linen_project.fit_fabric()
+	dressmaking_ci_expect(linen_project.design_body == "loincloth", "a design the material cannot make falls back to one it can")
+	H.remove_from_mob(linen_project); qdel(linen_project)
+	// Boots: the design is drawn, the protection and grip are a leather boot's.
+	var/obj/item/clothing/shoes/leatherboots/plain_boots = new(site)
+	var/obj/item/clothing/shoes/leatherboots/tailored/boots = new(site)
+	boots.design_body = "made_tall_boots"
+	boots.design_colors = "#6e4c30|#2a2826|#ffffff|#d6c050|#d8ccb0"
+	boots.design_pieces = "Thick|Plain|Buckled|Fur"
+	boots.design_fabric = "leather"
+	boots.tailoring_refresh()
+	dressmaking_ci_expect(boots.name == "tall boots" && boots.icon == 'icons/obj/clothing/tailoring.dmi' && boots.icon_override == 'icons/mob/tailoring.dmi' && boots.icon_state == "tl_boots_tall" && boots.overlays.len == 4 && length(boots.worn_design_layers()) == 4, "tall boots with sole, buckle and fur cuff draw four layers")
+	dressmaking_ci_expect(boots.armor["melee"] == plain_boots.armor["melee"] && boots.armor["arrow"] == plain_boots.armor["arrow"] && boots.min_cold_protection_temperature == plain_boots.min_cold_protection_temperature && boots.body_parts_covered == plain_boots.body_parts_covered && boots.mud_mult == plain_boots.mud_mult && boots.waterproof_feet == plain_boots.waterproof_feet && (boots.item_flags & NOSLIP) && (boots.slot_flags & SLOT_FEET), "tailored boots protect and grip like plain leather boots")
+	var/list/tan = tailoring_layers("made_tall_boots", "#ffffff", FALSE, null, "leather")
+	var/image/tan_body = tan[1]
+	dressmaking_ci_expect(tan_body.color == "#cfa97c", "undyed leather shows its own tan")
+	var/savefile/F = new("dressmaking-boots.sav")
+	F["/format_version"] << 2
+	map_storage.clear_bookkeeping()
+	map_storage.saving_z = 1
+	var/ref = map_storage.BuildVarDirectory(F, boots, 1)
+	map_storage.clear_bookkeeping()
+	var/obj/item/clothing/shoes/leatherboots/tailored/loaded_boots = map_storage.Load_Entry(F, ref, starting_loc = site)
+	if (loaded_boots)
+		loaded_boots.after_load()
+		loaded_boots.after_load()
+	dressmaking_ci_expect(loaded_boots && loaded_boots.design_body == "made_tall_boots" && loaded_boots.design_pieces == "Thick|Plain|Buckled|Fur" && loaded_boots.design_fabric == "leather" && loaded_boots.overlays.len == 4 && loaded_boots.name == "tall boots", "boots round trip rebuilds their layers once")
+	qdel(plain_boots); qdel(boots); qdel(loaded_boots)
+	// Gloves: wool or leather, the same thick gloves either way.
+	var/obj/item/clothing/gloves/thick/leather/plain_gloves = new(site)
+	var/obj/item/clothing/gloves/thick/leather/tailored/gloves = new(site)
+	gloves.design_body = "made_long_gloves"
+	gloves.design_colors = "#a8342c|#d6c050|#ffffff|#2a2826"
+	gloves.design_pieces = "Banded|Plain|Capped"
+	gloves.design_fabric = "woolcloth"
+	gloves.tailoring_refresh()
+	dressmaking_ci_expect(gloves.name == "long gloves" && gloves.overlays.len == 3 && gloves.icon_state == "tl_gloves_long" && gloves.body_parts_covered == plain_gloves.body_parts_covered && gloves.min_cold_protection_temperature == plain_gloves.min_cold_protection_temperature && gloves.cold_protection == plain_gloves.cold_protection && (gloves.slot_flags & SLOT_GLOVES), "long wool gloves keep a thick glove's protection")
+	qdel(plain_gloves); qdel(gloves)
+	// Belts: the same attachment points as a plain leather belt.
+	var/obj/item/clothing/pouch_belt/tailored/belt = new(site)
+	belt.design_body = "made_wide_belt"
+	belt.design_colors = "#2a2826|#e0b030|#e0b030|#2a2826"
+	belt.design_pieces = "Studded|Plate|Hanging"
+	belt.design_fabric = "leather"
+	belt.tailoring_refresh()
+	var/obj/item/clothing/accessory/storage/belt_pouch/pouch = new(site)
+	var/obj/item/clothing/accessory/medal/medal = new(site)
+	dressmaking_ci_expect(belt.name == "wide belt" && belt.overlays.len == 4 && belt.icon_override == 'icons/mob/tailoring.dmi' && (belt.slot_flags & SLOT_BELT) && belt.can_attach_accessory(pouch) && !belt.can_attach_accessory(medal) && tailoring_design_cost("made_wide_belt", "Studded|Plate|Hanging") == 3, "a tailored belt hangs what a plain belt hangs")
+	var/obj/item/clothing/pouch_belt/tailored/sash = new(site)
+	sash.design_body = "made_sash"
+	sash.design_colors = "#a8342c|#d6c050|#ffffff"
+	sash.design_pieces = "Striped|Fringed"
+	sash.design_fabric = "cloth"
+	sash.tailoring_refresh()
+	dressmaking_ci_expect(sash.name == "waist sash" && sash.overlays.len == 3 && sash.can_attach_accessory(pouch), "a waist sash is a belt of cloth")
+	var/code = tailoring_design_code("made_wide_belt", belt.design_colors, belt.design_pieces, "Parade belt")
+	var/list/parsed = tailoring_parse_design_code(code)
+	dressmaking_ci_expect(code == "C13CLOTH/1/made_wide_belt/2a2826.e0b030.e0b030.2a2826/2.3.2/Parade_belt" && parsed && parsed["body"] == "made_wide_belt" && parsed["pieces"] == "Studded|Plate|Hanging", "a belt design travels as a design code")
+	qdel(pouch); qdel(medal); qdel(belt); qdel(sash)
+	dressmaking_ci_clear(site)
+
 // Writes in its own proc so the savefile closes before it is read back.
 /proc/dressmaking_ci_write_book(path, list/designs)
 	var/savefile/S = new(path)
@@ -518,12 +629,15 @@
 		H.r_hand = P
 		P.design_body = body_id
 		P.design_colors = jointext(colors, "|")
+		var/list/body_fabrics = body["fabrics"]
+		P.fabric_kind = body_fabrics ? body_fabrics[1] : "cloth"
+		var/list/made_of = tailoring_fabric(P.fabric_kind)
 		P.fabric = cost - 1
 		dressmaking_ci_expect(!P.cut_fabric(H, site, save_epoch) && P.stage == 0, "too little fabric cannot cut [body_id]")
 		P.fabric = 8
 		dressmaking_ci_expect(!P.sew_garment(H, site, save_epoch) && P.stage == 0, "uncut fabric cannot sew [body_id]")
 		dressmaking_ci_expect(P.cut_fabric(H, site, save_epoch) && P.stage == 1 && P.fabric == cost, "cut locks design and keeps the cost [body_id]")
-		var/obj/item/stack/material/cloth/spare = locate() in site
+		var/obj/item/stack/material/spare = locate(made_of["stack"]) in site
 		dressmaking_ci_expect(cost == 8 ? !spare : (spare && spare.amount == 8 - cost), "spare sheets set aside [body_id]")
 		if (spare)
 			qdel(spare)
@@ -621,6 +735,7 @@
 	dressmaking_ci_patterns(H, site, save_epoch)
 	dressmaking_ci_book(H, site, save_epoch)
 	dressmaking_ci_headwear(H, site, save_epoch)
+	dressmaking_ci_accessories(H, site, save_epoch)
 	qdel(H)
 	dressmaking_ci_clear(site)
 	map_storage.clear_bookkeeping()
