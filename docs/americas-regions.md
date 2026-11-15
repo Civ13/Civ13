@@ -78,8 +78,12 @@ Nothing stands there: no trail post and no gate. Each map names its neighbour
   trail, the walk does not ask for full health.
 - They come out on the facing edge of the other land, as far along the neck as
   they were, three tiles in and facing inland.
-- A rider, a driver or anyone dragging something is told to go on foot.
-  **Vehicles, mounts and carts do not cross yet.**
+- A rider takes the mount along. A rideable animal that carries nothing goes
+  as a record of its kind, name and health, and stands beside its rider on the
+  far side (the rider gets back on). If the rider is turned back, the animal
+  comes back with them.
+- A driver or anyone dragging something is told to go on foot.
+  **Wheeled vehicles, carts and led animals do not cross yet.**
 
 Both regions must run in the same group under the ids above. A neighbour that
 is asleep is woken by the first walker; one that is stopped on the host is
@@ -127,10 +131,10 @@ is `PERSISTENCE_MEMORY_LIMIT_MB` (3072).
 | South 848 x 1224 | 1,037,952 | 1087 MB | 1257 MB | 1652 MB | 104 s | 92 s |
 | North 1132 x 920, reworked relief and floods (2026-11-15) | 1,041,440 | 1037 MB | 1095 MB | 1401 MB | 72 s | 92 s |
 | The same with the standing open-air level (2 x 1,041,440 cells) | 2,082,880 | 1043 MB | 1098 MB | 1526 MB | 85 s | 92 s |
+| South 848 x 1224, reworked, with the standing open-air level | 2,075,904 | 1128 MB | 1235 MB | 1729 MB | 108 s | 92 s |
 
 The standing open-air level costs about 5 MB while empty, 13 s more per save
-and about 125 MB and 50 s more on a reload. The south map was not measured
-again with it; its earlier reload peak of 1604 MB puts it near 1.75 GB.
+and about 125 MB and 50 s more on a reload. The reworked south map, measured with it, reloads at 1729 MB.
 
 Memory grows a little under 1 KB per map cell plus what stands on it (the
 south's jungle seeds about 67,000 wild plants against the north's 29,000).

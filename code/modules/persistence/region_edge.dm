@@ -9,8 +9,10 @@
 // matching edge of the neighbour, as far along it as they were here.
 //
 // Nothing stands on the map for this: the hidden gate below exists only while
-// one traveller is asked and sent. Riders and anyone dragging something are
-// told to go on foot; vehicles do not cross yet.
+// one traveller is asked and sent. A rider takes the mount along: the animal
+// goes as a small record with its rider and stands beside them on the far
+// side. Drivers and anyone dragging something are told to go on foot;
+// wheeled vehicles and carts do not cross yet.
 // ============================================================
 
 // How far in from the border an arriving walker is put down, so the first
@@ -120,12 +122,18 @@ var/global/list/region_edge_spans = list()
 	// Never part of a save: it lasts only while one walker is asked and sent.
 	should_save = FALSE
 	var/list/crossing = null
+	// The mount that goes with this walker (region_edge_mount_record), if any.
+	var/list/mount = null
 
 /obj/structure/region_gate/land_edge/accepts_arrivals()
 	return FALSE
 
 /obj/structure/region_gate/land_edge/travel_extra(mob/living/human/H)
-	return crossing ? list("edge" = crossing) : null
+	if (!crossing)
+		return null
+	. = list("edge" = crossing)
+	if (mount)
+		.["mount"] = mount
 
 /obj/structure/region_gate/land_edge/attack_hand(mob/living/human/user)
 	return
@@ -147,7 +155,8 @@ var/global/list/region_edge_spans = list()
 	var/reason = closed_reason()
 	if (reason) return reason
 	if (H.client ? IsGuestKey(H.client.key) : !agent_travel_account(H)) return "Only players with a BYOND account can travel."
-	if (H.buckled || H.riding || H.riding_mob || H.driver || H.driver_vehicle) return "You cannot ride or drive across yet. Get down and walk on."
+	if (H.buckled || H.driver || H.driver_vehicle) return "You cannot drive across yet. Get down and walk on."
+	if ((H.riding || H.riding_mob) && !region_edge_mount_record(H)) return "Your mount cannot make the crossing. Get down and walk on."
 	if (H.pulling) return "You cannot drag anything across. Let go and walk on."
 	if (H.stat != CONSCIOUS || H.restrained()) return "You can't set off right now."
 	if (get_turf(H) != loc && H.loc != src) return "You turned back from the edge of the land."
@@ -177,20 +186,64 @@ var/global/list/region_edge_spans = list()
 	var/obj/structure/region_gate/land_edge/gate = new(T)
 	gate.destination = map.edge_crossings[side]
 	gate.crossing = list(side, region_edge_fraction(side, T))
+	// The mount is recorded now and leaves only if its rider did.
+	var/mob/living/simple_animal/steed = riding_mob
+	gate.mount = region_edge_mount_record(src)
+	var/took_mount = gate.mount && istype(steed)
 	gate.travel(src)
 	// travel() returns once they left, said no or were refused.
+	if (took_mount && QDELETED(src) && !QDELETED(steed))
+		log_game("Region travel: the mount [steed.name] ([steed.type]) crossed the edge with its rider.")
+		qdel(steed)
 	if (!QDELETED(gate))
 		qdel(gate)
 	if (!QDELETED(src))
 		region_edge_asking = FALSE
 		region_edge_asked_at = world.time
 
+// ---------------------------------------------------------------- mounts
+
+// A mount crosses by type, name and health: an animal that can be ridden and
+// keeps no other state. Anything else stays and its rider walks.
+/proc/region_edge_mount_ok(path)
+	var/mob/living/simple_animal/A = path
+	return ispath(path, /mob/living/simple_animal) && initial(A.can_ride)
+
+// list(type, name, health) for the animal H rides, or null when it cannot cross.
+/proc/region_edge_mount_record(mob/living/human/H)
+	var/mob/living/simple_animal/A = H.riding_mob
+	if (!istype(A) || QDELETED(A) || A.rider != H || A.stat == DEAD || !region_edge_mount_ok(A.type) || A.pulledby)
+		return null
+	// Saddlebags and the like would be lost; an animal carrying anything walks with nobody.
+	for (var/atom/movable/M in A)
+		return null
+	var/label = (istext(A.name) && length(A.name) <= 40 && !findtext(A.name, "<") && !findtext(A.name, "\"")) ? A.name : initial(A.name)
+	return list("[A.type]", label, clamp(round(A.health), 1, A.maxHealth))
+
+/proc/region_edge_mount_valid(list/M)
+	if (!islist(M) || M.len != 3 || !istext(M[1]) || !istext(M[2]) || !length(M[2]) || length(M[2]) > 40 || findtext(M[2], "<") || !isnum(M[3]))
+		return FALSE
+	var/mob/living/simple_animal/path = text2path(M[1])
+	return region_edge_mount_ok(path) && M[3] >= 1 && M[3] <= initial(path.maxHealth) && M[3] == round(M[3])
+
+// Builds the recorded mount beside its rider. The rider gets back on themselves.
+/proc/region_edge_mount_build(list/M, turf/T)
+	if (!region_edge_mount_valid(M) || !istype(T))
+		return null
+	var/path = text2path(M[1])
+	var/mob/living/simple_animal/A = new path(T)
+	A.name = M[2]
+	A.health = M[3]
+	return A
+
 // ---------------------------------------------------------------- arriving
 
 /proc/region_edge_payload_ok(list/P)
 	var/list/E = P["edge"]
 	if (isnull(E))
-		return TRUE
+		return isnull(P["mount"])
+	if (!isnull(P["mount"]) && !region_edge_mount_valid(P["mount"]))
+		return FALSE
 	return islist(E) && E.len == 2 && !!region_edge_dir(E[1]) && isnum(E[2]) && E[2] >= 0 && E[2] <= 1
 
 // Where a walker who crossed an edge comes out: the matching place on the
@@ -231,6 +284,23 @@ var/global/list/region_edge_spans = list()
 	// Faces inland, so the next step leads on and not straight back.
 	var/side = incoming ? region_edge_opposite(P["edge"][1]) : P["edge"][1]
 	H.dir = turn(region_edge_dir(side), 180)
+	// The mount they rode stands beside them, here or back where they were turned away.
+	if (islist(P["mount"]))
+		var/mob/living/simple_animal/A = region_edge_mount_build(P["mount"], get_turf(H))
+		if (A)
+			A.dir = H.dir
+			to_chat(H, SPAN_NOTICE("\The [A] came across with you."))
+
+// A departure replayed after a reload: the save still holds the mount that left.
+/proc/region_edge_replayed(mob/living/human/H, list/P)
+	if (!istype(H) || !islist(P) || !region_edge_mount_valid(P["mount"]))
+		return
+	var/path = text2path(P["mount"][1])
+	for (var/mob/living/simple_animal/A in range(2, H))
+		if (A.type == path && A.name == P["mount"][2] && !A.rider)
+			log_game("Region travel: replayed the crossing of the mount [A.name]; it leaves again.")
+			qdel(A)
+			return
 
 #undef REGION_EDGE_ARRIVAL_INSET
 #undef REGION_EDGE_ASK_COOLDOWN

@@ -286,7 +286,6 @@ class AmericasMapsTest(unittest.TestCase):
         trails = (ROOT / 'code/modules/persistence/region_trails.dm').read_text(encoding='utf-8')
         human = (ROOT / 'code/game/mob/living/carbon/human/human.dm').read_text(encoding='utf-8')
         # The crossing travels in the payload, is validated on arrival and places the walker.
-        self.assertIn('"voyage", "ship", "edge"))', travel)
         self.assertIn('if(!region_edge_payload_ok(P)) return null', travel)
         self.assertIn('region_edge_arrival_turf(P, incoming) ||', travel)
         self.assertIn('\t\t\tregion_edge_check()\n', human)
@@ -298,8 +297,19 @@ class AmericasMapsTest(unittest.TestCase):
         self.assertIn('\tgate.travel(src)\n', edge)
         # The ask lock never rides a save (civ13 saves tmp vars too).
         self.assertIn('return key == "region_edge_asking" || key == "region_edge_asked_at" || ..()', edge)
-        # Riders and draggers are told why, in plain words.
-        self.assertIn('if (H.buckled || H.riding || H.riding_mob || H.driver || H.driver_vehicle) return "You cannot ride or drive across yet. Get down and walk on."', edge)
+        # Drivers and draggers are told why, in plain words.
+        self.assertIn('if (H.buckled || H.driver || H.driver_vehicle) return "You cannot drive across yet. Get down and walk on."', edge)
+        self.assertIn('if (H.pulling) return "You cannot drag anything across. Let go and walk on."', edge)
+        # A rider takes the mount: recorded before the ask, removed only once the rider left,
+        # validated on arrival, and never carried without an edge crossing.
+        self.assertIn('"voyage", "ship", "edge", "mount"))', travel)
+        self.assertIn('if ((H.riding || H.riding_mob) && !region_edge_mount_record(H)) return', edge)
+        self.assertIn('if (took_mount && QDELETED(src) && !QDELETED(steed))', edge)
+        self.assertIn('return ispath(path, /mob/living/simple_animal) && initial(A.can_ride)', edge)
+        ok = edge.split('/proc/region_edge_payload_ok(list/P)\n')[1].split('\n\n')[0]
+        self.assertIn('return isnull(P["mount"])', ok)
+        self.assertIn('region_edge_mount_valid(P["mount"])', ok)
+        self.assertIn('\t\t\tregion_edge_replayed(H, P)\n', travel)
         # No trail posts drawn on maps any more.
         self.assertNotIn('trail_marker/authored', trails)
 
