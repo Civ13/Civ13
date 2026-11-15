@@ -1300,7 +1300,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/supplier" = "early_economy",
 		"/obj/structure/vending/sales/market_stall" = "early_economy",
 		"/obj/structure/voting" = "early_economy",
-		// --- electricity (22) ---
+		// --- electricity (23) ---
+		"/obj/structure/workshop_machine/wire_bench" = "electricity",
 		"/obj/item/gem_tester/refractometer" = "electricity",
 		"/obj/item/connector" = "electricity",
 		"/obj/item/connector/bus_tie" = "electricity",

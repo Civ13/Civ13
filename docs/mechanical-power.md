@@ -66,3 +66,13 @@ charcoal 3, wood, planks or bamboo 1 a unit, up to 60. The drill press list is
 `drill_press_categories`; the press matches `hydraulic_press_words` against
 the anvil recipe category. A milling machine is not built: the engine lathe
 already cuts every precise part.
+
+## Wire drawing bench
+
+`code/modules/1713/wire_bench.dm`: 8 wood plus 4 iron and a shaft,
+Electricity. Copper, iron, aluminium, silver or gold used on the fastened
+bench is drawn into the standard coil for that metal (`wire_bench_coils`,
+coil types owned by `materials/wire_materials.dm`): one unit makes a 25 m
+coil in 2.5 seconds, where the hand recipe makes 10 m in 3.5. The wait goes
+through `driven_time()`, so a prime mover next to the bench speeds it. Each
+unit is taken only after its own wait succeeds.
