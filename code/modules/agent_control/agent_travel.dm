@@ -67,11 +67,18 @@ var/global/list/agent_departures = list()
 			agent_mind.name = H.real_name
 			agent_mind.original = H
 			agent_mind.transfer_to(H)
+		// A traveller's autopilot follows it here; a body the world restored from its save has no
+		// driver yet, so it waits for an autopilot started with --watch (agent_autospawn.dm).
+		var/restored = !H.region_arrival_pending
 		H.region_arrival_pending = FALSE
 		var/datum/agent_character/C = new
 		C.body = H
 		C.owner_agent = A.name
 		agent_characters[H] = C
+		if (restored)
+			C.awaiting_driver = TRUE
+			var/list/entry = autospawns[A.name]
+			C.requested_goal = entry ? entry["goal"] : agent_autospawn_default_goal()
 		var/turf/T = get_turf(H)
 		audit(A, "character_arrived", "[H] ([agent_ref(H)]) at [T ? "[T.x],[T.y],[T.z]" : "nowhere"]")
 

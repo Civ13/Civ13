@@ -489,6 +489,18 @@
 				var/obj/structure/oven/O = AM
 				row["lit"] = O.on ? TRUE : FALSE
 				row["fuel"] = round(O.fuel, 0.1)
+			if (istype(AM, /obj/structure/stone_age_trap) && !istype(AM, /obj/structure/stone_age_trap/pit))
+				// What examining the trap tells a player (stone_age_traps.dm): caught, set or sprung, or a weir's fish.
+				// An empty hand on a set trap takes it up, so the agent must know which it is before using one.
+				var/obj/structure/stone_age_trap/TR = AM
+				TR.settle()
+				if (istype(TR, /obj/structure/stone_age_trap/weir))
+					var/obj/structure/stone_age_trap/weir/WR = TR
+					row["fish"] = WR.fish
+				else
+					row["trap"] = TR.catch_type ? "caught" : (TR.armed ? "set" : "sprung")
+				if (TR.setter_name && TR.setter_name == M.real_name)
+					row["mine"] = TRUE
 			if (istype(AM, /obj/structure/sink))
 				// Puddles and dirty wells carry cholera; a clean well does not.
 				var/obj/structure/sink/SK = AM
@@ -536,6 +548,11 @@
 			var/list/side = list("turf" = T.name, "type" = "[T.type]", "blocked" = blocked ? TRUE : FALSE)
 			if (deep)
 				side["deep_water"] = TRUE
+			// River floodwater (river_flood.dm): how deep it stands there, so she can tell higher ground.
+			var/side_flood = flood_band_at(T)
+			if (side_flood != FLOOD_BAND_NONE)
+				side["flood"] = flood_band_name(side_flood)
+				side["flood_band"] = side_flood
 			surroundings[dir2text(d)] = side
 	// The nearest tile of each kind of terrain, so water and the like can be clicked.
 	var/list/terrain = list()
@@ -579,6 +596,11 @@
 		var/area/HA = get_area(U)
 		if (HA && HA.location == AREA_INSIDE)
 			here_row["cave_supported"] = U.mine_supported() ? TRUE : FALSE
+	if (here_row)
+		var/here_flood = flood_band_at(here)
+		if (here_flood != FLOOD_BAND_NONE)
+			here_row["flood"] = flood_band_name(here_flood)
+			here_row["flood_band"] = here_flood
 	C.queue_guard = md5("[world.realtime]-[world.time]-[rand(1, 1000000000)]-[agent_ref(C)]-[C.seen_rev]")
 	C.queue_guard_at = world.time
 	C.queue_guard_agent = A.name

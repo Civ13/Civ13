@@ -470,5 +470,101 @@ class SourceTests(unittest.TestCase):
         self.assertIn('"priorities"', autopilot.SYSTEM)
 
 
+SNARE_SET = {"ref": "[0xsnare]", "name": "snare", "type": "/obj/structure/stone_age_trap/snare", "trap": "set", "mine": True, "dx": 2, "dy": 0}
+TRAP_GRASS = {"ref": "turf:12,10,1", "name": "grass", "type": "/turf/floor/grass", "dx": 2, "dy": 0}
+CAVE = {"ref": "turf:11,10,1", "name": "underground", "type": "/turf/floor/dirt/underground", "dx": 1, "dy": 0}
+
+
+def trap_step(script, self_row, nearby=(), terrain=()):
+    sit, _ = situation(observe(self_row, nearby=nearby, terrain=terrain))
+    return script(sit)
+
+
+class NorthAmericaTests(unittest.TestCase):
+    def test_fixed_amounts_scale_to_the_larger_pools(self):
+        self.assertEqual(needs.scaled(me(max_water=500), "water", 350), 500)
+        self.assertEqual(needs.scaled(me(max_nutrition=600), "nutrition", 200), 300)
+        self.assertEqual(needs.scaled({}, "water", 250), 250)  # an older server without the max bars
+        # 300 water of a 500 pool is not "very thirsty", 300 of the old 350 pool would be close.
+        self.assertIsNone(autopilot.thirst_plan(observe(me(water=300, max_water=500), terrain=[RIVER])))
+        self.assertIsNotNone(autopilot.thirst_plan(observe(me(water=250, max_water=500), terrain=[RIVER])))
+
+    def test_deep_floodwater_walks_her_to_the_shallow_side(self):
+        obs = observe(me())
+        obs["here"] = {"turf": "grass", "flood": "waist-deep", "flood_band": 3}
+        obs["surroundings"] = {"north": {"flood_band": 3}, "south": {"blocked": True}, "east": {}, "west": {"flood_band": 4}}
+        sit, _ = situation(obs)
+        self.assertLess(sit.levels["safety"], needs.CRITICAL["safety"])
+        choice = quiet().choose(sit)
+        self.assertEqual(choice.name, "leave flood")
+        self.assertEqual(choice.plan, [{"do": "explore", "dir": "east"}])
+        obs["here"] = {"flood_band": 1}  # ankle-deep is no reason to move
+        sit, _ = situation(obs)
+        self.assertEqual(sit.levels["safety"], 100.0)
+        self.assertIsNone(routines.plan_leave_flood(sit))
+
+    def test_traps_craft_set_and_tend(self):
+        stones = holding(items=[{"name": "stone", "amount": 3}])
+        self.assertEqual(trap_step(scripts.traps, stones), [{"do": "craft", "recipe": "deadfall trap", "material": "stone"}])
+        rope = holding(items=[{"name": "rope", "amount": 2}, {"name": "stone pickaxe"}])
+        self.assertEqual(trap_step(scripts.traps, rope), [{"do": "craft", "recipe": "snare", "material": "rope"}])
+        kit = holding("snare")
+        self.assertEqual(trap_step(scripts.traps, kit, terrain=[CAVE, TRAP_GRASS]), [{"do": "set_trap", "target": "turf:12,10,1"}])
+        # A set trap is never touched (an empty hand takes it up); a caught or sprung one of hers is.
+        self.assertEqual(trap_step(scripts.traps, holding(), [SNARE_SET]), scripts.DONE)
+        caught = dict(SNARE_SET, trap="caught")
+        self.assertEqual(trap_step(scripts.traps, holding(), [caught]), [{"do": "check_trap", "target": "[0xsnare]"}])
+        self.assertEqual(trap_step(scripts.traps, holding(), [dict(caught, mine=False)]), scripts.DONE)
+        weir = {"ref": "[0xweir]", "name": "fish weir", "fish": 2, "mine": True, "dx": 1, "dy": 0}
+        self.assertEqual(trap_step(scripts.traps, holding(), [weir]), [{"do": "check_trap", "target": "[0xweir]"}])
+        self.assertEqual(scripts.name_of("snares"), "traps")
+
+    def test_a_caught_trap_comes_before_hunting(self):
+        armed = holding("sharpened stick", "sharpened flint")
+        caught = dict(SNARE_SET, trap="caught")
+        self.assertEqual(next_step(scripts.hunt, armed, [DEER, caught]), [{"do": "check_trap", "target": "[0xsnare]"}])
+
+    def test_trap_skills_expand_to_player_clicks(self):
+        rows = {TRAP_GRASS["ref"]: dict(TRAP_GRASS, dx=1), SNARE_SET["ref"]: dict(SNARE_SET, dx=1)}
+        steps, error = autopilot.expand_skill({"skill": "set_trap", "target": TRAP_GRASS["ref"]}, holding("snare"), rows)
+        self.assertEqual(error, "")
+        self.assertEqual(steps[-1], {"do": "click", "target": TRAP_GRASS["ref"]})
+        steps, error = autopilot.expand_skill({"skill": "check_trap", "target": SNARE_SET["ref"]}, holding(), rows)
+        self.assertTrue(error)  # a set trap is refused: an empty hand would take it up
+        rows[SNARE_SET["ref"]]["trap"] = "sprung"
+        steps, error = autopilot.expand_skill({"skill": "check_trap", "target": SNARE_SET["ref"]}, holding("spear"), rows)
+        self.assertEqual(error, "")
+        self.assertEqual(steps[-1], {"do": "click", "target": SNARE_SET["ref"]})
+
+    def test_north_american_predators(self):
+        for name in ("jaguar", "polar bear", "constrictor", "cobra"):
+            self.assertTrue(autopilot.is_predator({"name": name, "type": "/mob/living/simple_animal/x", "mob": True}), name)
+        self.assertFalse(autopilot.is_predator({"name": "bison", "type": "/mob/living/simple_animal/bison", "mob": True}))
+
+
+class AutospawnSourceTests(unittest.TestCase):
+    def test_autospawn_config_and_round_start_hook(self):
+        control = (ROOT / "code/modules/agent_control/agent_control.dm").read_text(encoding="utf-8")
+        self.assertIn('if ("autospawn")', control)
+        source = (ROOT / "code/modules/agent_control/agent_autospawn.dm").read_text(encoding="utf-8")
+        self.assertIn("/hook/roundstart/proc/agent_autospawn_start()", source)
+        self.assertIn("persistence_owner_ckey = agent_account_for(agent_name)", source)
+        self.assertIn("C.awaiting_driver = TRUE", source)
+        self.assertIn("adopt_travellers(A)", source)  # a restored body is adopted, not doubled
+        dme = (ROOT / "civ13.dme").read_text(encoding="utf-8")
+        self.assertIn("code\\modules\\agent_control\\agent_autospawn.dm", dme)
+
+    def test_restored_bodies_wait_for_a_driver_but_arrivals_do_not(self):
+        travel = (ROOT / "code/modules/agent_control/agent_travel.dm").read_text(encoding="utf-8")
+        self.assertIn("var/restored = !H.region_arrival_pending", travel)
+        self.assertIn("if (restored)\n\t\t\tC.awaiting_driver = TRUE", travel)
+
+    def test_observe_reports_floods_and_traps_but_not_hidden_pits(self):
+        source = (ROOT / "code/modules/agent_control/agent_characters.dm").read_text(encoding="utf-8")
+        self.assertIn('here_row["flood_band"]', source)
+        self.assertIn('side["flood_band"]', source)
+        self.assertIn('!istype(AM, /obj/structure/stone_age_trap/pit)', source)
+
+
 if __name__ == "__main__":
     unittest.main()

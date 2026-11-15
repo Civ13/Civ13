@@ -70,6 +70,8 @@ SKILLS = {
     "rack_hide": ("wet hide", "help", 1),
     "unload_rack": ("empty", "help", 1),
     "cut_logs": ("axe", "help", 1),
+    "set_trap": ("trap kit", "help", 1),
+    "check_trap": ("empty", "help", 1),
 }
 ATTACK_WORDS = ("bites", "attacks", "hits", "claws", "slashes", "punches", "kicks", "stabs", "mauls", "gores", "scratches")
 # Items worth keeping when a skill needs a free hand; anything else is dropped first.
@@ -98,8 +100,8 @@ FOOD_WORDS = ("meat", "steak", "berr", "fruit", "apple", "fish", "bread", "mushr
 FUEL_WORDS = ("plank", "log", "stick", "branch", "leaf", "leaves", "dung", "charcoal", "coal", "wood chips")
 FIRE_WORDS = ("campfire", "fireplace", "oven", "stove", "furnace")
 # Reflexes: predators are handled by the autopilot itself, without waiting 10-15 s for the model.
-STRONG_PREDATORS = ("lion", "sabertooth", "bear", "mammoth", "alligator", "crocodile", "troll", "gorilla", "panther", "tiger", "buffalo", "wendigo", "groundsloth")
-PREDATOR_WORDS = STRONG_PREDATORS + ("wolf", "fox", "snake", "boar", "hyena", "jackal", "spider", "scorpion")
+STRONG_PREDATORS = ("lion", "sabertooth", "bear", "mammoth", "alligator", "crocodile", "troll", "gorilla", "panther", "jaguar", "tiger", "buffalo", "wendigo", "groundsloth", "constrictor", "python")
+PREDATOR_WORDS = STRONG_PREDATORS + ("wolf", "fox", "snake", "cobra", "boar", "hyena", "jackal", "spider", "scorpion")
 WEAPON_WORDS = ("spear", "sharpened stick", "axe", "hatchet", "sword", "knife", "club", "mace", "pike", "dagger", "machete")
 BANDAGE_WORDS = ("bandage", "gauze", "trauma kit")
 HEAL_WORDS = BANDAGE_WORDS + ("healing herb", "herbs", "poultice", "ointment", "burn kit", "sulfa")
@@ -124,8 +126,9 @@ You are the director of your character. Between your decisions her body runs rou
 when NEEDS run low it drinks, eats, cooks, warms up, treats wounds, chews healing herbs, relieves itself and catches its
 breath, and otherwise it carries out your standing ROUTINE. You are asked when something needs judgement (talk, danger,
 a question, a routine that failed or finished, nothing left to do) and every few turns to review. Routines:
-"routine": {"script": "flint"|"spear"|"axe"|"wood"|"campfire"|"hunt"} runs a whole chain until it is made (sharpened
-flint; a spear from a branch; a flint axe from spear, flint and twine; "logs": n wood logs; a campfire; raw meat from a hunt),
+"routine": {"script": "flint"|"spear"|"axe"|"wood"|"campfire"|"hunt"|"traps"} runs a whole chain until it is made (sharpened
+flint; a spear from a branch; a flint axe from spear, flint and twine; "logs": n wood logs; a campfire; raw meat from a hunt;
+traps: crafts snares (2 rope) or deadfalls (2 stone), sets them nearby and tends them),
 making what it needs first. {"skill": "<skill>", "times": 1-40, "word": "<a word in the target's name>"} repeats a skill on
 the nearest fitting target (chop trees, mine rock, cut grass); {"do": "build_next"|"leather_next"|"boil_water"|"explore",
 "times": n} repeats that; "none" stops all work until you give more. Without a routine she follows the survival ladder
@@ -148,6 +151,9 @@ Prefer a skill: {"do": skill, "target": number}. A skill sets the right intent a
  light_fire (a campfire with fuel: light it; cooked food drops next to it when done, pick_up it),
  mine (underground rock or ore next to you: dig it with a pickaxe for stone and ore, which are picked up for you),
  dig_down (target 0: dig a tunnel down where you stand with a shovel, to reach the underground and its ore),
+ set_trap (a grass, dirt, snow or sand tile: set the snare or deadfall trap you carry there),
+ check_trap (one of your traps marked caught or sprung, or your weir with fish: take the catch or reset it; never use it
+  on a trap marked set, which takes it up again),
  treat (target 0: bandage your worst bleeding wound, or put healing herbs on your worst injury;
   or a hurt person's number: walk to them and bandage their bleeding wound or splint their broken limb).
 A fallen branch cannot be picked up: pick_leaves it, then make_stick it where it lies, then pick_up the stick.
@@ -248,6 +254,29 @@ How to play:
   that button; {"do": "screen", "screen": 1, "close": true} closes it. Walking away closes it too.
 - Other lands: a trail to distant lands (region gate) leads to another region. Click it next to you with
   "choose": "Travel" to go there with what you wear and carry; you continue in that land.
+- Work makes you hungry and thirsty: heavy work (chopping, mining, smithing, breaking walls) burns food and water faster
+  than handwork, and reading or sewing slowest of all; hot or freezing weather adds to it. Carry water and food for long work.
+- Floods: rivers rise with rain, snowmelt and spring. "flood" on your tile or a side says how deep the water stands there
+  (ankle-deep, knee-deep, waist-deep, over your head). Waist-deep water slows you badly and over your head you swim and
+  drown. Your body walks out of deep floodwater by itself; camp and farm on high ground, away from riverbanks. Flooded
+  wells turn unclean.
+- Traps (Stone Age): craft a snare from 2 rope or a deadfall trap from 2 stone, then set_trap it on outdoor grass, dirt,
+  snow or sand away from camp where animals pass. Come back later: check_trap one marked caught to take the dead
+  animal, butcher it, and check_trap a sprung one to set it again. Scavengers eat a catch left too long. Weir stakes
+  (6 wood) set in shallow fresh river water catch fish; check_trap the weir when it shows fish.
+- Dugout canoe: craft a dugout log (12 wood), char its top with a lit torch and scoop it out with a stone adze or hatchet,
+  three times, and it becomes a two-person canoe. Paddle (2 wood) in hand makes it faster. Fresh water only, never rough sea.
+- Obsidian (volcanic glass) is found on dry lava near volcanoes: grab intent on a black glass outcrop pries a nodule loose.
+  Hit a nodule with a stone or unsharpened flint (use the hammerstone on it) and choose a sharp flake, arrowheads, a knife,
+  a spearhead or a scraper. It cuts better than flint but wears out sooner.
+- Carts: stand next to a cart beside a horse or ox and use the cart's "Hitch Cart" verb; the cart then follows the animal.
+  "Unhitch Cart" frees it. A loaded cart carries far more than your hands.
+- Crafting: the craft step crafts any recipe from a stack you hold, and the "You can craft" list shows what that stack makes.
+  Players also use a Crafting window (Shift+C) that crafts from materials within reach; use craft with the stack in hand.
+- North America: the far north is frozen tundra (polar bears, white wolves, reindeer: dress in furs, keep a fire); the taiga
+  and temperate forests have elk, deer, wolves and black or brown bears; the plains have bison and horses; the dry
+  south-west is desert with cobras and lizards; the south narrows into jungle with jaguars, alligators, constrictor snakes,
+  turkeys and monkeys. Rivers and great lakes give fresh water. Treat bears, jaguars and alligators as deadly.
 - Containers next to you list what is inside them; click an item inside with an empty hand to take it. "use" uses the held item by itself.
 - Clicking a loose item next to you with an empty hand picks it up; clicking with an item uses it on the target. swap_hand changes the active hand.
 - Work towards a camp: tools, a shelter, a campfire, food. Talk to other players and cooperate.
@@ -315,20 +344,20 @@ def summarize(observation, note="", ignored=(), muted=()):
     injuries = [w for w in self_state.get("wounds") or [] if isinstance(w, dict)]
     if injuries:
         lines.append("Injuries: " + ", ".join(f"{w.get('name')} {w.get('damage')} damage" + (" BLEEDING" if w.get("bleeding") and not w.get("bandaged") else "") + (" (bandaged)" if w.get("bandaged") else "") + (" broken" if w.get("broken") else "") for w in injuries[:8]))
-    needs = []
-    if isinstance(self_state.get("water"), (int, float)) and self_state["water"] < 250:
-        needs.append("thirsty: find water (explore if none is listed) and drink")
-    if isinstance(self_state.get("nutrition"), (int, float)) and self_state["nutrition"] < 250:
-        needs.append("hungry: find or make food and eat it")
+    wants = []
+    if isinstance(self_state.get("water"), (int, float)) and self_state["water"] < needs.scaled(self_state, "water", 250):
+        wants.append("thirsty: find water (explore if none is listed) and drink")
+    if isinstance(self_state.get("nutrition"), (int, float)) and self_state["nutrition"] < needs.scaled(self_state, "nutrition", 250):
+        wants.append("hungry: find or make food and eat it")
     temperature = temperature_need(self_state)
     if temperature:
-        needs.insert(0, temperature)
+        wants.insert(0, temperature)
     sick = illness(self_state)
     if sick:
-        needs.insert(0, f"seriously ill with {sick.get('type')} ({sick.get('stage', 'ill')}): chew healing herbs now and keep the course going")
+        wants.insert(0, f"seriously ill with {sick.get('type')} ({sick.get('stage', 'ill')}): chew healing herbs now and keep the course going")
         lines.append(f"ILLNESS: {sick.get('type')}, {sick.get('stage', 'ill')}" + (", treatment running" if _float(sick.get("remedy"), 0) >= 3 else ", NOT being treated") + ".")
-    if needs:
-        lines.insert(0, "NEEDS: you are " + "; you are ".join(needs) + ".")
+    if wants:
+        lines.insert(0, "NEEDS: you are " + "; you are ".join(wants) + ".")
     stance = self_state.get("stance") or {}
     if stance:
         lines.append("Stance: " + ", ".join(f"{key} {value}" for key, value in stance.items()))
@@ -589,7 +618,7 @@ def current_goal(observation):
     near = [str(row.get("name", "")).lower() for row in observation.get("nearby", [])]
     fire = any(any(word in name for word in FIRE_WORDS) for name in near)
     wood = _has(me, lambda n: "plank" in n or "log" in n)
-    hungry = isinstance(me.get("nutrition"), (int, float)) and me["nutrition"] < 250
+    hungry = isinstance(me.get("nutrition"), (int, float)) and me["nutrition"] < needs.scaled(me, "nutrition", 250)
     wound = worst_wound(me)
     sick = illness(me)
     if sick and _float(sick.get("remedy"), 0) < 3:
@@ -605,7 +634,7 @@ def current_goal(observation):
     if any("roof" in str(row.get("name", "")).lower() and row.get("supported") is False and isinstance(row.get("dx"), int) and isinstance(row.get("dy"), int)
            and max(abs(row["dx"]), abs(row["dy"])) <= 3 for row in observation.get("nearby", [])):
         return "a roof near you has no support and can collapse: build a roof support (2 wood logs) within 3 tiles of it, or a wall within 2", "then carry on"
-    if isinstance(me.get("water"), (int, float)) and me["water"] < 250:
+    if isinstance(me.get("water"), (int, float)) and me["water"] < needs.scaled(me, "water", 250):
         return "drink fresh water", "then keep working on your tools"
     if hungry and _has(me, lambda n: _is_food(n) and any(word in n for word in ("roasted", "cooked", "berr", "fruit", "bread"))):
         return "eat the food you carry", "then keep working"
@@ -1341,7 +1370,31 @@ def _holds(name, need):
         return any(word in name.split() for word in leatherwork.VESSEL_WORDS)
     if need == "fuel":
         return any(word in name for word in FUEL_WORDS) and "sharpened" not in name
+    if need == "trap kit":
+        return is_trap_kit(name)
     return need in name
+
+
+TRAP_KITS = ("snare", "deadfall trap")  # carried trap kits (stone_age_traps.dm); weir stakes go in water, not on ground
+TRAP_GROUND = ("/turf/floor/grass", "/turf/floor/dirt", "/turf/floor/winter", "/turf/floor/beach/sand")
+
+
+def is_trap_kit(name):
+    name = str(name or "").lower()
+    return any(name.startswith(kit) for kit in TRAP_KITS)
+
+
+def is_trap_ground(row):
+    """Open ground a snare or deadfall can be set on (outdoor grass, dirt, snow or sand); caves are not."""
+    kind = str(row.get("type", ""))
+    return (str(row.get("ref", "")).startswith("turf:") and kind.startswith(TRAP_GROUND)
+            and not kind.startswith("/turf/floor/dirt/underground"))
+
+
+def trap_ready(row):
+    """A trap of hers worth an empty hand: something caught, sprung and needing a reset, or a weir with fish.
+    A set trap with nothing in it is left alone: an empty hand on it takes it up."""
+    return bool(row.get("mine")) and (row.get("trap") in ("caught", "sprung") or _int(row.get("fish"), 0) > 0)
 
 
 def _is_food(name):
@@ -1382,14 +1435,14 @@ def thirst_plan(observation, explore_dir="north", ignored=(), threshold=200):
     """When very thirsty, the step that goes for water: drink at listed water, else explore. None when not needed."""
     me = observation.get("self", {})
     level = me.get("water")
-    if not isinstance(level, (int, float)) or level >= threshold:
+    if not isinstance(level, (int, float)) or level >= needs.scaled(me, "water", threshold):
         return None
     # Clean water first. Unclean water (cholera) is boiled in a mug first, and drunk raw only when dying of thirst.
     rows = [row for row in water.sources(observation) if row.get("ref") not in ignored and _is_drinkable(row)]
     clean = [row for row in rows if not water.is_unclean(row)]
     if clean:
         return {"skill": "drink", "target": clean[0].get("ref")}
-    if rows and level < water.EMERGENCY:
+    if rows and level < needs.scaled(me, "water", water.EMERGENCY):
         return {"skill": "drink", "target": rows[0].get("ref")}
     if rows or water.boiled(water._mug(me)):
         return {"do": "boil_water"}
@@ -1492,6 +1545,8 @@ SKILL_TARGETS = {
     "rack_hide": (lambda row: "tanning rack" in str(row.get("name", "")).lower(), "a tanning rack"),
     "unload_rack": (lambda row: "tanning rack" in str(row.get("name", "")).lower(), "a tanning rack"),
     "cut_logs": (lambda row: row.get("item") and "log" in str(row.get("name", "")).lower(), "wood logs on the ground"),
+    "set_trap": (is_trap_ground, "outdoor grass, dirt, snow or sand"),
+    "check_trap": (trap_ready, "one of your traps that has caught something or was sprung, or your weir with fish"),
     "fill_vessel": (lambda row: not row.get("item") and not row.get("mob") and _is_water_name(row.get("name")), "water"),
     "butcher": (lambda row: row.get("mob") and row.get("stat") == 2 and str(row.get("type", "")).startswith("/mob/living/simple_animal"), "a dead animal"),
 }
@@ -1566,7 +1621,7 @@ def expand_skill(step, self_state, rows=None):
             row = None
         else:
             return [], f"{step['skill']} needs a target number from the lists, not yourself (0). If nothing suitable is listed, explore in some direction to find it"
-    if row is not None and step["skill"] == "drink" and water.is_unclean(row) and _float(self_state.get("water"), 0) >= water.EMERGENCY:
+    if row is not None and step["skill"] == "drink" and water.is_unclean(row) and _float(self_state.get("water"), 0) >= needs.scaled(self_state, "water", water.EMERGENCY):
         return [], (f"the {row.get('name')} is unclean and gives cholera: use " + '{"do": "boil_water"}' + " to boil it in a mug first, "
                     "or find a clean well")
     if row is not None and step["skill"] == "mine" and row.get("safe_to_mine") is False:
@@ -2945,7 +3000,8 @@ def routine_kit():
         is_fuel=lambda name: any(word in str(name).lower() for word in FUEL_WORDS),
         thirst_plan=thirst_plan, cold_plan=cold_plan, worst_wound=worst_wound, treat_plan=treat_plan,
         illness_plan=illness_plan, skills=SKILLS, skill_targets=SKILL_TARGETS,
-        is_plain_stick=_is_plain_stick, binding_words=BINDING_WORDS, is_predator=is_predator)
+        is_plain_stick=_is_plain_stick, binding_words=BINDING_WORDS, is_predator=is_predator,
+        is_trap_kit=is_trap_kit, is_trap_ground=is_trap_ground, trap_ready=trap_ready)
 
 
 # A run may last days: bookkeeping lists keep only what the loop reads back (WINDOW_MIN..WINDOW_MAX exchanges, 6 signatures,

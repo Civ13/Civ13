@@ -1274,6 +1274,7 @@
 #include "code\modules\admin\view_variables\view_variables.dm"
 #include "code\modules\agent_control\agent_control.dm"
 #include "code\modules\agent_control\agent_actions.dm"
+#include "code\modules\agent_control\agent_autospawn.dm"
 #include "code\modules\agent_control\agent_characters.dm"
 #include "code\modules\agent_control\agent_movement.dm"
 #include "code\modules\agent_control\agent_prompts.dm"
