@@ -28,6 +28,9 @@ var/global/list/region_trail_next_request = list()
 	// An admin walking the unapproved trail to the land it should lead to; it
 	// stays closed to everyone else meanwhile. Runtime only.
 	var/tmp/mob/living/human/admin_passage = null
+	// TRUE for gates that leave this world (launch pads, space/lander.dm);
+	// a plain trail only joins lands on the same world.
+	var/crosses_worlds = FALSE
 
 /obj/structure/region_gate/trail_marker/proc/peer_choices()
 	return region_trail_peer_choices()
@@ -46,8 +49,22 @@ var/global/list/region_trail_next_request = list()
 		if(peer["kind"] == "TUTORIAL") continue
 		// Lands across the sea are reached only by ship (expedition_land.dm).
 		if(peer["kind"] == "EXPEDITION") continue
+		// A trail never leaves its world: the Moon and Mars are reached only
+		// by rocket, and their trails join only lands on the same world.
+		if(!region_trail_same_world(id)) continue
 		choices["[peer["name"]] ([id])"] = id
 	return choices
+
+// Which world region id lies on: "moon" for the Moon and its colonies
+// (survey_region_lunar), "mars" for Mars (region "barren"), else "earth".
+/proc/region_world_body(id)
+	if(survey_region_lunar(id)) return "moon"
+	if(id == "barren") return "mars"
+	return "earth"
+
+// TRUE when a trail from this land may lead to region id: both on one world.
+/proc/region_trail_same_world(id)
+	return istext(id) && region_world_body(id) == region_world_body(shard_group.region)
 
 /obj/structure/region_gate/trail_marker/closed_reason()
 	if(!approved && !admin_passage)
@@ -63,6 +80,9 @@ var/global/list/region_trail_next_request = list()
 /obj/structure/region_gate/trail_marker/travel_refusal(mob/living/human/H)
 	if(!approved && admin_passage != H)
 		return pending_reason()
+	// A trail marked before this rule must not walk anyone off the world.
+	if(!crosses_worlds && destination && !region_trail_same_world(destination))
+		return "No trail leads off this world. [region_trail_name(destination)] is reached only by rocket."
 	return ..()
 
 /obj/structure/region_gate/trail_marker/ghost_passage_destination()
@@ -194,6 +214,7 @@ var/global/list/region_trail_next_request = list()
 // Opens the trail toward a known peer. Returns TRUE when it did.
 /obj/structure/region_gate/trail_marker/proc/approve(id, by)
 	if(!shard_group.enabled || !istext(id) || !(id in shard_group.peers)) return FALSE
+	if(!crosses_worlds && !region_trail_same_world(id)) return FALSE
 	destination = id
 	requested_destination = id
 	approved = TRUE

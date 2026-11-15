@@ -577,7 +577,7 @@ var/space_runtime_error = FALSE
 
 	var/turf/T = locate(7, 7, 1)
 	var/obj/structure/region_gate/trail_marker/launch_pad/pad = new(T)
-	space_check(!pad.approved && !pad.accepts_arrivals() && findtext(pad.closed_reason(), "admin"), "a new launch pad waits for an admin and never takes arrivals")
+	space_check(!pad.approved && !pad.accepts_arrivals() && findtext(pad.closed_reason(), "choose") && !findtext(pad.closed_reason(), "admin"), "a new launch pad waits for a player to choose where it flies, never an admin, and never takes arrivals")
 	space_check(!length(pad.peer_choices()) && !pad.approve("barren", "admin"), "outside a region group a pad can lead nowhere")
 	space_check(isnull(new /obj/structure/region_gate(T).travel_extra(null)) && isnull(pad.travel_extra(null)), "ordinary trips carry no flight")
 	var/obj/structure/crewed_lander/L = new(locate(7, 6, 1))
@@ -590,7 +590,7 @@ var/space_runtime_error = FALSE
 	fuel.add_reagent("rocket_propellant", 100)
 	space_check(L.add_propellant(fuel) == 50 && L.propellant == 450 && fuel.get_reagent_amount("rocket_propellant") == 50, "the lander holds 450 units: the flight and an ascent home")
 	var/mob/living/human/space_probe_crew/H = new(L.loc)
-	space_check(!length(L.crew()) && findtext(L.launch_refusal(H), "admin"), "an unapproved pad keeps the lander grounded")
+	space_check(!length(L.crew()) && findtext(L.launch_refusal(H), "choose"), "a pad with no destination keeps the lander grounded")
 	qdel(L)
 
 	var/list/flight = list("lander" = "gaia-1-1234", "landing" = list(1, 1), "surveyed" = 1, "rough" = 0)
@@ -1346,6 +1346,17 @@ var/global/obj/structure/region_gate/space_poll_repoint = null
 	R.fuel = 60
 	space_check(isnull(R.launch(1, 1, 0)) && K.map_region == "barren" && K.revealed_count() == mars_seen && K.landing_sites ~= list("1,1") && istext(K.survey_archive["moon"]) && !("barren" in K.survey_archive), "back to Mars, the old record returns")
 	K.abandon()
+	// The console prepares and launches a probe from any rail in reach.
+	R.set_destination("moon")
+	R.loaded = new /obj/item/space_probe(R)
+	R.fuel = 60
+	var/idle_page = K.ui_html()
+	space_check(findtext(idle_page, "Rail 1") && findtext(idle_page, "rail_dest") && findtext(idle_page, "rail_aim") && findtext(idle_page, "rail_launch") && findtext(idle_page, "The Moon"), "an idle console lists the rails in reach with destination, aim and launch")
+	space_check(findtext(K.rail_action(null, "rail_launch", R), "probe is away") && K.mission && K.map_region == "moon" && !R.loaded && R.fuel == 0, "the console launches a probe from a rail in reach")
+	space_check(findtext(K.rail_action(null, "rail_launch", R), "already in flight"), "a console flies one probe at a time")
+	var/obj/structure/launch_rail/far_rail = new(locate(1, 1, 1))
+	space_check(findtext(K.rail_action(null, "rail_launch", far_rail), "out of reach"), "a rail out of reach cannot be flown from the console")
+	qdel(far_rail)
 	qdel(R)
 	qdel(K)
 	space_survey_maps = list()
