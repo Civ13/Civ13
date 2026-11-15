@@ -2,7 +2,8 @@
 // Cargo freighter (orbital stations, stage C, 2013)
 // ------------------------------------------------------------
 // An uncrewed freighter flies a hold of cargo to another world of the group
-// without anyone riding along. It stands beside an approved launch pad like a
+// without anyone riding along. It stands beside a launch pad set for its
+// destination like a
 // crewed lander (lander.dm), burns rocket propellant or methalox
 // (methalox.dm), and takes the same goods as a lander's hold. Whoever
 // launches it sends it for their party:
@@ -27,7 +28,7 @@ var/global/list/orbit_freighters = list()
 
 /obj/structure/crewed_lander/freighter
 	name = "cargo freighter"
-	desc = "An uncrewed rocket with a cargo hold and no seats. Load the hold, fill it with rocket propellant or methalox beside an approved launch pad and launch it: the cargo lands at your party's station in orbit, or by your launch complex office on another world."
+	desc = "An uncrewed rocket with a cargo hold and no seats. Load the hold, fill it with rocket propellant or methalox beside a launch pad that is set for its destination and launch it: the cargo lands at your party's station in orbit, or by your launch complex office on another world."
 	seats = 0
 	cargo_max = LANDER_CARGO_MAX
 	propellant_needed = ORBIT_FREIGHT_PROPELLANT

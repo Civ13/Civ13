@@ -15,7 +15,7 @@ an unlinked edge, ladders pairing across linked decks, the sparse save kind
 profile, and release cutting every link.
 
 It also checks orbital flight (`code/modules/space/orbital_flight.dm`): orbit
-opens in 1969, a launch pad may lead to it and a trail never does, the
+opens in 1969, a launch pad may lead to it and a trail never does, a trail never leaves its world (no trail from Earth to the Moon or Mars, an old one sends nobody, a Moon trail joins only Moon lands), a player sets a pad for the Moon with no admin, the
 two-stage rocket (3 seats, 10 cargo, 600 propellant) flies only to orbit and
 refuses a full orbit while a lander cannot reach it, the Orbital Flight node
 gates the rocket, orbit payloads are well formed, a refused flight builds
