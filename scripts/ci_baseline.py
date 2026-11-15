@@ -756,6 +756,9 @@ SUITES = {
     # Switched-off walkthrough metal detectors keep their off look (issue 5484).
     'metal_detector_power': {'files': ('tests/metal_detector_power/test_power_look.py',),
         'paths': ('tests/metal_detector_power/',), 'shared_paths': ('code/modules/1713/modern_items.dm',)},
+    # Centrifuge lids and grid reservations (issues 5514 and 5516).
+    'centrifuge_seal_power': {'files': ('tests/centrifuge_seal_power/test_centrifuge.py',),
+        'paths': ('tests/centrifuge_seal_power/',), 'shared_paths': ('code/modules/reagents/Chemistry-Machinery.dm',)},
     'human_ssd_hunger': {'files': ('tests/human_ssd_hunger/test_ssd_hunger.py',
         'tests/human_ssd_hunger/test_conscious_hunger.py'),
         'paths': ('tests/human_ssd_hunger/',), 'shared_paths': (
