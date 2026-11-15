@@ -41,6 +41,11 @@
 	anchored = TRUE
 
 var/vehicle_offset_probe_checks = 0
+// Nobody has a client here; the probe says when a player is near.
+var/vehicle_offset_probe_watched = FALSE
+
+/datum/vehicle_offset/watched()
+	return vehicle_offset_probe_watched
 var/list/vehicle_offset_probe_receipt = list()
 
 /proc/vehicle_offset_probe_assert(ok, label)
@@ -226,6 +231,65 @@ var/list/vehicle_offset_probe_receipt = list()
 	CO.snap()
 	vehicle_offset_probe_receipt["car_carried"] = CO.carried.len
 	vehicle_offset_probe_receipt["car_ms_per_pulse"] = vehicle_offset_probe_time(CO, 20000)
+
+	// Pixel driving (vehicle_offset_ride.dm): a motorcycle and its rider roll by pixels.
+	var/obj/structure/vehicle/motorcycle/m125/full/moto = new(locate(5, 30, 1))
+	var/mob/living/human/biker = new(locate(5, 30, 1))
+	moto.engine.on = TRUE
+	moto.driver = biker
+	moto.ontop += biker
+	biker.driver = TRUE
+	biker.driver_vehicle = moto
+	biker.dir = EAST
+	moto.axis.currentspeed = 1
+	moto.vehicle_m_delay = 3
+	moto.moving = TRUE
+	vehicle_offset_probe_assert(!moto.vehicle_offset_drives(), "nobody_near_tile_steps")
+	vehicle_offset_probe_watched = TRUE
+	vehicle_offset_probe_assert(moto.vehicle_offset_drives(), "player_near_rolls_by_pixels")
+	var/list/moto_start = vehicle_offset_probe_px(moto)
+	for (var/i = 1 to 20)
+		vehicle_offset_probe_assert(moto.vehicle_offset_tick() == world.tick_lag, "moto_tick_[i]_every_tick")
+		vehicle_offset_probe_assert(biker.loc == moto.loc && biker.step_x == moto.step_x && biker.step_y == moto.step_y, "moto_tick_[i]_rider_seated")
+	var/rolled = vehicle_offset_probe_px(moto)[1] - moto_start[1]
+	vehicle_offset_probe_assert(abs(rolled - 20 * vehicle_offset_speed(4)) <= 1 && moto.x >= 6, "moto_rolls_its_speed ([rolled])")
+	vehicle_offset_probe_receipt["moto_px_in_20_ticks"] = rolled
+	// Turning keeps the sideways offset: it stands where it is, like a player.
+	var/side = moto.step_x
+	biker.dir = NORTH
+	for (var/i = 1 to 3)
+		moto.vehicle_offset_tick()
+	vehicle_offset_probe_assert(moto.step_x == side && moto.step_y > 0, "turn_keeps_sideways_offset")
+	// Out of gear it rolls on, slowing, and stops within about half a tile.
+	moto.moving = FALSE
+	moto.axis.currentspeed = 0
+	var/coast_from = vehicle_offset_probe_px(moto)[2]
+	var/coast_ticks = 0
+	while (moto.offset_coast > 0 && coast_ticks < 100)
+		moto.vehicle_offset_tick()
+		coast_ticks++
+	var/coasted = vehicle_offset_probe_px(moto)[2] - coast_from
+	vehicle_offset_probe_assert(coasted > 0 && coasted <= 20 && coast_ticks < 100, "coasts_to_a_stop ([coasted])")
+	vehicle_offset_probe_assert(moto.vehicle_offset_tick() == moto.vehicle_m_delay + 1, "stopped_waits_like_the_tile_loop")
+	vehicle_offset_probe_receipt["moto_coast_px"] = coasted
+	// Driving into a wall: the motorcycle's own crash check, then it stops flush.
+	var/wall_y = moto.y + 2
+	new /obj/structure/vehicle_offset_probe_wall(locate(moto.x, wall_y, 1))
+	moto.moving = TRUE
+	moto.axis.currentspeed = 1
+	for (var/i = 1 to 60)
+		moto.vehicle_offset_tick()
+	vehicle_offset_probe_assert(moto.y == wall_y - 1 && moto.step_y == 0 && moto.axis.currentspeed == 0 && !moto.offset_coast, "moto_stops_flush_at_wall ([moto.x],[moto.y],[moto.step_x],[moto.step_y],[moto.axis.currentspeed],[moto.offset_coast],[moto.driver])")
+	// Nobody near: square on the tile again and back to tile steps.
+	vehicle_offset_probe_watched = FALSE
+	vehicle_offset_probe_assert(!moto.vehicle_offset_drives(), "unwatched_back_to_tiles")
+	moto.vehicle_offset_release()
+	vehicle_offset_probe_assert(!moto.step_x && !moto.step_y && moto.offset_mover.carried.len == 1, "release_squares_and_drops_riders")
+	vehicle_offset_probe_watched = TRUE
+	moto.offset_mover.ox = 7
+	moto.offset_mover.draw()
+	vehicle_offset_snap_all()
+	vehicle_offset_probe_assert(!moto.step_x && !moto.offset_mover.speed_x, "save_snaps_ridden_vehicles")
 
 	// A carriage: one object with 64x96 bounds covers six tiles.
 	var/obj/structure/vehicle/carriage/C = new(locate(25, 20, 1))
