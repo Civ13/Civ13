@@ -28,6 +28,7 @@
 #define SWIM_SKILL_MIN 100
 #define SWIM_SKILL_MAX 250
 // Deep water costs 20 ds a step; skill divides it, never below this.
+#define SWIM_DEEP_STEP 20
 #define SWIM_STEP_FLOOR 8
 // Training: one lesson per this many tiles not among the last few crossed.
 #define SWIM_TRAIN_TILES 10
@@ -51,6 +52,7 @@
 	var/tmp/list/swim_recent = null // the last few tiles crossed swimming
 	var/tmp/swim_new_tiles = 0
 	var/tmp/list/swim_kind_lessons = null // kind of water => world.time of its last first-swim lesson
+	var/tmp/free_diving = FALSE // down on the seabed on a held breath (free_diving.dm)
 
 // Breath, the spent state and the training record start fresh after a load:
 // swim_recent holds turfs, and none of it is worth keeping.
@@ -99,9 +101,15 @@
 	if (swim_skill_applies(F))
 		// Never slower than an unskilled swimmer, never faster than the floor.
 		. = min(., max(SWIM_STEP_FLOOR, . * SWIM_SKILL_MIN / swimming_skill()))
+	else if (free_diving && sea_layer_cell(F) && !F.iscovered())
+		// A free diver swims the seabed no faster than the surface.
+		. = SWIM_DEEP_STEP * footwear_terrain_mult(src, "wade")
+		. = min(., max(SWIM_STEP_FLOOR, . * SWIM_SKILL_MIN / swimming_skill()))
 
 // The kind of water a swim is in, for the first-swim lesson.
 /proc/swim_water_kind(turf/T)
+	if (sea_layer_cell(T))
+		return "dive"
 	if (weather_wind_at(T) >= 3)
 		return "storm"
 	if (!istype(T, /turf/floor/beach/water))
@@ -116,8 +124,9 @@
 	return client && client.inactivity < SWIM_TRAIN_IDLE
 
 // Lessons from a life tick afloat at T: new water crossed, and the first
-// swim in a while in each kind of water.
-/mob/living/human/proc/swim_train(turf/T)
+// swim in a while in each kind of water. mult raises the lesson for harder
+// water (an open-water dive).
+/mob/living/human/proc/swim_train(turf/T, mult = 1)
 	if (!T || !swim_training_active())
 		return
 	var/kind = swim_water_kind(T)
@@ -137,7 +146,7 @@
 	if (++swim_new_tiles < SWIM_TRAIN_TILES)
 		return
 	swim_new_tiles = 0
-	adaptStat("swimming", swim_effort_at(T) > SWIM_EFFORT ? SWIM_TRAIN_GAIN * SWIM_ROUGH_TRAIN : SWIM_TRAIN_GAIN)
+	adaptStat("swimming", (swim_effort_at(T) > SWIM_EFFORT ? SWIM_TRAIN_GAIN * SWIM_ROUGH_TRAIN : SWIM_TRAIN_GAIN) * mult)
 
 // One life tick in open deep water without anything to float on. Returns
 // TRUE while the swimmer is still afloat.
@@ -190,6 +199,7 @@
 #undef SWIM_REST
 #undef SWIM_SKILL_MIN
 #undef SWIM_SKILL_MAX
+#undef SWIM_DEEP_STEP
 #undef SWIM_STEP_FLOOR
 #undef SWIM_TRAIN_TILES
 #undef SWIM_RECENT_TILES
