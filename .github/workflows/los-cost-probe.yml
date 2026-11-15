@@ -23,7 +23,7 @@ permissions:
   contents: read
 jobs:
   probe:
-    if: github.repository == 'Civ13/Civ13'
+    if: github.repository == 'Civ13/Civ13' && false
     runs-on: windows-2022
     timeout-minutes: 75
     strategy:
@@ -79,3 +79,54 @@ jobs:
             ${{ runner.temp }}/los/**/*.csv
             ${{ runner.temp }}/los/**/*.log
             ${{ runner.temp }}/los/**/*.png
+  seeker-diagnose:
+    runs-on: windows-2022
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Try Dream Seeker
+        shell: pwsh
+        run: |
+          $bin = python tests/los_cost_probe/hosted_setup.py "$env:RUNNER_TEMP/byond"
+          Get-CimInstance Win32_VideoController | Select-Object Name, DriverVersion, VideoProcessor | Format-List
+          $shots = "$env:RUNNER_TEMP/shots"; New-Item -ItemType Directory $shots | Out-Null
+          function Shot($name) {
+            Add-Type -AssemblyName System.Windows.Forms,System.Drawing
+            $b=[System.Windows.Forms.SystemInformation]::VirtualScreen
+            $i=New-Object System.Drawing.Bitmap $b.Width,$b.Height
+            [System.Drawing.Graphics]::FromImage($i).CopyFromScreen($b.Left,$b.Top,0,0,$i.Size)
+            $i.Save("$shots/$name.png")
+          }
+          function Try-Seeker($name, $argList) {
+            if ($argList) { $p = Start-Process "$bin\dreamseeker.exe" -ArgumentList $argList -WorkingDirectory $bin -PassThru }
+            else { $p = Start-Process "$bin\dreamseeker.exe" -WorkingDirectory $bin -PassThru }
+            Start-Sleep 12
+            Shot $name
+            if ($p.HasExited) { "{0}: exited {1:X}" -f $name, $p.ExitCode } else { "${name}: still running, title '$($p.MainWindowTitle)'"; $p.Kill() }
+          }
+          function Events { Get-WinEvent -FilterHashtable @{LogName='Application'; ProviderName='Application Error','Windows Error Reporting'} -MaxEvents 6 -ErrorAction SilentlyContinue | ForEach-Object { $_.TimeCreated; $_.Message } }
+          Try-Seeker 'plain' $null
+          Try-Seeker 'guest-url' 'byond://127.0.0.1:1##guest'
+          Events
+          $pager = Start-Process "$bin\byond.exe" -WorkingDirectory $bin -PassThru
+          Start-Sleep 15
+          Shot 'pager'
+          if ($pager.HasExited) { "pager exited {0:X}" -f $pager.ExitCode } else { "pager running" }
+          Try-Seeker 'with-pager' $null
+          Events
+          choco install directx -y --no-progress | Select-Object -Last 5
+          Try-Seeker 'after-directx' $null
+          Events
+          Get-ChildItem "$env:USERPROFILE\Documents\BYOND" -Recurse -ErrorAction SilentlyContinue | Select-Object FullName, Length
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: seeker-diagnose-${{ github.sha }}
+          retention-days: 7
+          path: ${{ runner.temp }}/shots/
