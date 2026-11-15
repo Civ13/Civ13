@@ -2007,6 +2007,9 @@ RECIPE: /material/steel/,fire hose reel,/obj/structure/fire_pump/reel,10,150,1,1
 //*********************| STEEL SIEGE WEAPONS |**************************
 
 RECIPE: /material/steel/,cannon,/obj/structure/cannon,35,600,1,1,siege weapons,71,79,0,4,null
+RECIPE: /material/bronze/,bronze cannon,/obj/structure/cannon,35,600,1,1,siege weapons,71,79,0,4,bronze
+RECIPE: /material/iron/,iron cannon,/obj/structure/cannon,35,600,1,1,siege weapons,71,79,0,4,iron
+RECIPE: /material/wood/,iron-hooped wooden cannon,/obj/structure/cannon/hooped,12,400,1,1,siege weapons,71,79,0,4,wood
 RECIPE: /material/steel/,artillery cannon,/obj/structure/cannon/modern,40,600,1,1,siege weapons,95,109,0,8,null
 
 RECIPE: /material/steel/,ladder,/obj/item/weapon/siegeladder/metal,6,125,0,1,siege weapons,24,33,0,8,steel

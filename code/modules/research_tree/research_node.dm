@@ -1078,6 +1078,7 @@ var/global/list/node_grid_col_cache = null
 		// --- cannon (2) ---
 		"/obj/item/cannon_ball" = "cannon",
 		"/obj/structure/cannon" = "cannon",
+		"/obj/structure/cannon/hooped" = "cannon",
 		// --- cartridge_ammo (5) ---
 		"/obj/item/clothing/accessory/storage/lanyard/pistol" = "cartridge_ammo",
 		"/obj/item/ammo_magazine/emptybelt" = "cartridge_ammo",
