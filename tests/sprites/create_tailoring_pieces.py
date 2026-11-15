@@ -6,7 +6,7 @@ Every pixel is placed by this script from the row tables, point lists and the
 fixed grey ramp below (Pillow only); there is no external, traced or generated
 artwork. Released under Civ13 AGPL-3.0. Run from the repository root:
 
-    python3 tests/sprites/create_tailoring_pieces.py [--check] [--preview sheet.png] [--sheet states.png]
+    python3 tests/sprites/create_tailoring_pieces.py [--check] [--preview sheet.png] [--sheet states.png] [--hats hats.png]
 
 It owns two files and every state in them:
 
@@ -588,6 +588,177 @@ def cloak_border():
     return four(*out)
 
 
+# ---------------------------------------------------------------- hats
+# Every crown shares its two lowest rows (4 and 5, just above the eyes on row
+# 6), so one band, brim, pair of flaps or decoration fits every crown.
+HAT_FOOT_S, HAT_FOOT_E = (4, 5, (11, 19)), (4, 5, (12, 19))
+CROWNS = {
+    'tl_hat_round': (rows((2, 2, (13, 17)), (3, 3, (12, 18)), HAT_FOOT_S), None,
+                     rows((2, 2, (14, 17)), (3, 3, (12, 18)), HAT_FOOT_E)),
+    'tl_hat_tall': (rows((0, 3, (12, 18)), HAT_FOOT_S), None, rows((0, 3, (13, 18)), HAT_FOOT_E)),
+    'tl_hat_pointed': (rows((0, 0, (15, 15)), (1, 1, (14, 16)), (2, 2, (13, 17)), (3, 3, (12, 18)), HAT_FOOT_S), None,
+                       rows((0, 0, (11, 12)), (1, 1, (11, 15)), (2, 2, (13, 17)), (3, 3, (12, 18)), HAT_FOOT_E)),
+    # The soft crown flops over the wearer's right ear and down the back.
+    'tl_hat_soft': (rows((2, 2, (11, 18)), (3, 3, (9, 19)), (4, 4, (9, 19)), (5, 5, (11, 19))),
+                    rows((2, 2, (12, 19)), (3, 3, (11, 21)), (4, 4, (11, 21)), (5, 5, (11, 19))),
+                    rows((2, 2, (12, 17)), (3, 3, (10, 18)), (4, 4, (10, 19)), (5, 5, (12, 19)))),
+}
+
+
+def crown(name):
+    south, north, east = CROWNS[name]
+    s, n, e = cloth(south), cloth(north or south), cloth(east)
+    if name == 'tl_hat_round':
+        dots(s, HI, (14, 3), (15, 3)); dots(s, FOLD, (17, 4)); dots(n, FOLD, (15, 3), (15, 4)); dots(e, HI, (14, 3), (15, 3))
+    elif name == 'tl_hat_tall':
+        for f, a in ((s, 13), (n, 13), (e, 14)):
+            col(f, a, 1, 3, HI); col(f, 17, 1, 3, DIM)
+        dots(s, TOP, (13, 0), (14, 0), (15, 0), (16, 0), (17, 0)); dots(e, TOP, (14, 0), (15, 0), (16, 0), (17, 0))
+    elif name == 'tl_hat_pointed':
+        dots(s, HI, (14, 2), (13, 3), (14, 3)); dots(s, FOLD, (16, 2), (17, 3)); dots(n, FOLD, (15, 2), (15, 3), (15, 4))
+        dots(e, FOLD, (14, 2), (13, 1)); dots(e, HI, (14, 3), (15, 3))
+    else:
+        dots(s, FOLD, (11, 4), (12, 4), (13, 3)); dots(s, HI, (14, 3), (15, 3), (16, 3)); dots(s, CREASE, (10, 4))
+        dots(n, FOLD, (19, 4), (18, 4), (17, 3)); dots(n, HI, (13, 3), (14, 3)); dots(n, CREASE, (20, 4))
+        dots(e, FOLD, (12, 4), (13, 4), (12, 3)); dots(e, HI, (15, 3), (16, 3)); dots(e, CREASE, (11, 4))
+    return four(s, n, e)
+
+
+def hat_patterns(name, body):
+    """Second-colour stripes and sewn panels cut from the crown's own shaded cloth."""
+    out = {}
+    for kind, test in (('stripes', lambda x, y, mid: x % 2 == 1), ('panels', lambda x, y, mid: (x - mid) % 4 in (0, 1))):
+        frames = []
+        for d in range(3):
+            xs = [x for x, _ in body[d].px]
+            mid = (min(xs) + max(xs)) // 2
+            f = Frame()
+            f.px = {p: c for p, c in body[d].px.items() if test(p[0], p[1], mid)}
+            frames.append(f)
+        out['%s_%s' % (name, kind)] = four(*frames)
+    return out
+
+
+def strip(y, a, b, f=None, top=HI, low=None):
+    """One row of cloth, lit from the left."""
+    f = f or Frame()
+    for x in range(a, b + 1):
+        f.put(x, y, g(low if low and x > (a + b) / 2 else LEFT if x == a else RIGHT if x == b else top))
+    return f
+
+
+def hat_band():
+    s, n, e = strip(4, 11, 19, low=MID), strip(4, 11, 19, low=MID), strip(4, 12, 19, low=MID)
+    dots(s, CREASE, (18, 4)); dots(n, CREASE, (15, 4))     # the knot, then the seam at the back
+    return four(s, n, e)
+
+
+def hat_band_fur():
+    return four(fur(rows((4, 5, (10, 20)))), fur(rows((4, 5, (10, 20)))), fur(rows((4, 5, (11, 20)))))
+
+
+def brim_narrow():
+    s, n, e = strip(5, 9, 21, top=LIT, low=DIM), strip(5, 9, 21, top=LIT, low=DIM), strip(5, 10, 21, top=LIT, low=DIM)
+    return four(s, n, e)
+
+
+def brim_wide():
+    out = []
+    for a, b in ((7, 23), (7, 23), (8, 23)):
+        f = strip(5, a, b, top=LIT, low=DIM)
+        strip(4, a + 3, b - 3, f, top=HI, low=MID)                  # the brim rises to meet the crown
+        dots(f, BOTTOM, (a, 6), (a + 1, 6), (b - 1, 6), (b, 6))    # and droops at its ends
+        out.append(f)
+    return four(*out)
+
+
+def brim_peak():
+    s = strip(5, 10, 20, top=SHINE, low=LIT)
+    dots(s, BOTTOM, (10, 5), (20, 5))
+    e = strip(5, 18, 23, top=LIT, low=DIM)
+    dots(e, BOTTOM, (23, 6), (22, 6))
+    return four(s, Frame(), e)
+
+
+def brim_cocked():
+    """A brim pinned up at both sides: low over the brow, rising to a corner past each ear."""
+    wings = sym((2, 2, (7, 8)), (3, 3, (7, 10)), (4, 4, (8, 11)), (5, 5, (10, 14))) | rows((5, 5, (15, 15)))
+    s, n = cloth(wings), cloth(wings)
+    pair(s, HI, (8, 3), (9, 4)); dots(s, SHINE, (15, 5))
+    e = strip(5, 10, 23, top=LIT, low=DIM)
+    for y, a, b in ((4, 11, 17), (3, 12, 16)):                      # the turned-up side
+        strip(y, a, b, e, top=HI, low=MID)
+    dots(e, TOP, (13, 2), (14, 2), (15, 2)); dots(e, BOTTOM, (24, 6), (23, 6)); dots(e, LEFT, (10, 4))
+    return four(s, n, e)
+
+
+def ear_flaps():
+    s = Frame()
+    for x, v in ((10, LEFT), (11, HI), (19, MID), (20, RIGHT)):
+        col(s, x, 6, 8, v)
+    dots(s, BOTTOM, (10, 9), (20, 9)); dots(s, FOLD, (11, 8), (19, 8))
+    e = cloth(rows((6, 8, (13, 15)), (9, 9, (14, 14))))
+    dots(e, CREASE, (14, 10))                                       # the tie
+    return four(s, s, e)
+
+
+def neck_cloth():
+    s = Frame()
+    for x, v in ((10, LEFT), (20, RIGHT)):
+        col(s, x, 6, 9, v)
+    dots(s, BOTTOM, (10, 10), (20, 10))
+    n = cloth(rows((6, 7, (11, 19)), (8, 10, (10, 20)), (11, 11, (11, 19))))
+    dots(n, FOLD, (13, 8), (13, 9), (17, 8), (17, 9), (15, 10))
+    e = cloth(rows((6, 7, (11, 13)), (8, 10, (10, 13)), (11, 11, (10, 12))))
+    dots(e, FOLD, (12, 8), (12, 9))
+    return four(s, n, e)
+
+
+def feather():
+    def quill(points):
+        f = Frame()
+        for i, (x, y) in enumerate(points):
+            f.put(x, y, g(SHINE if i == len(points) - 1 else HI if i % 2 else LIT))
+        return f
+    s = quill(((19, 4), (20, 3), (20, 2), (21, 1), (21, 0)))
+    dots(s, FOLD, (21, 2), (22, 1)); dots(s, DIM, (22, 0))
+    e = quill(((15, 4), (14, 3), (13, 2), (12, 1), (11, 0)))
+    dots(e, FOLD, (13, 3), (12, 2), (11, 1)); dots(e, DIM, (10, 0))
+    return four(s, s.mirror(), e)
+
+
+def plume():
+    s = fur(rows((0, 0, (20, 22)), (1, 2, (19, 23)), (3, 3, (19, 22)), (4, 4, (19, 20))))
+    e = fur(rows((0, 0, (10, 13)), (1, 1, (9, 14)), (2, 2, (10, 15)), (3, 3, (12, 16)), (4, 4, (14, 16))))
+    return four(s, s.mirror(), e)
+
+
+def badge():
+    s = Frame()
+    dots(s, SHINE, (15, 3), (15, 4)); dots(s, MID, (14, 4), (16, 4)); dots(s, DIM, (15, 5))
+    e = Frame()
+    dots(e, SHINE, (19, 4)); dots(e, MID, (19, 3), (18, 4))
+    return four(s, Frame(), e)
+
+
+def ribbons():
+    s = Frame()
+    dots(s, HI, (20, 5), (21, 6)); dots(s, MID, (21, 7), (20, 6)); dots(s, BOTTOM, (21, 8))
+    n = Frame()
+    dots(n, SHINE, (14, 4), (15, 4), (16, 4)); dots(n, CREASE, (15, 5))        # the bow, then its two tails
+    col(n, 14, 5, 8, HI); col(n, 16, 5, 8, MID); dots(n, BOTTOM, (14, 9), (16, 8))
+    e = Frame()
+    dots(e, SHINE, (12, 4)); col(e, 11, 5, 8, HI); col(e, 12, 5, 7, MID); dots(e, BOTTOM, (11, 9), (12, 8))
+    return four(s, n, e)
+
+
+def lowered(frame, by=11):
+    """A worn hat frame moved down the tile, so the loose item sits in its middle."""
+    f = Frame()
+    f.px = {(x, y + by): c for (x, y), c in frame.px.items()}
+    return f
+
+
 # ---------------------------------------------------------------- state table
 def build():
     worn = {}
@@ -622,10 +793,21 @@ def build():
     worn['tl_cloak_hood'] = cloak_hood()
     worn['tl_cloak_clasp'] = cloak_clasp()
     worn['tl_cloak_border'] = cloak_border()
+    for name in CROWNS:
+        worn[name] = crown(name)
+    for name in CROWNS:
+        worn.update(hat_patterns(name, worn[name]))
+    for name, draw in (('tl_hat_band', hat_band), ('tl_hat_band_fur', hat_band_fur), ('tl_hat_brim_narrow', brim_narrow),
+                       ('tl_hat_brim_wide', brim_wide), ('tl_hat_peak', brim_peak), ('tl_hat_brim_cocked', brim_cocked),
+                       ('tl_hat_flaps', ear_flaps), ('tl_hat_neck_cloth', neck_cloth), ('tl_hat_feather', feather),
+                       ('tl_hat_plume', plume), ('tl_hat_badge', badge), ('tl_hat_ribbons', ribbons)):
+        worn[name] = draw()
     # Loose items lie flat, front up; the cloak is spread out on its back with
     # the hood and border on it and the clasp at the neck.
     spread = ('tl_cloak', 'tl_cloak_hood', 'tl_cloak_border')
-    items = {name: frames[1 if name in spread else 0] for name, frames in worn.items()}
+    # A loose hat is its front view, moved down to the middle of the tile.
+    items = {name: lowered(frames[0]) if name.startswith('tl_hat_') else frames[1 if name in spread else 0]
+             for name, frames in worn.items()}
     return worn, items
 
 
@@ -637,8 +819,14 @@ STATES = (
     'tl_coat_sleeve_cuffed', 'tl_collar_stand', 'tl_collar_lapels', 'tl_collar_fur', 'tl_buttons_single',
     'tl_buttons_double', 'tl_toggles', 'tl_jacket_trim', 'tl_coat_trim', 'tl_cloak_hood', 'tl_cloak_clasp',
     'tl_cloak_border',
+    'tl_hat_round', 'tl_hat_tall', 'tl_hat_pointed', 'tl_hat_soft', 'tl_hat_round_stripes', 'tl_hat_round_panels',
+    'tl_hat_tall_stripes', 'tl_hat_tall_panels', 'tl_hat_pointed_stripes', 'tl_hat_pointed_panels',
+    'tl_hat_soft_stripes', 'tl_hat_soft_panels', 'tl_hat_band', 'tl_hat_band_fur', 'tl_hat_brim_narrow',
+    'tl_hat_brim_wide', 'tl_hat_peak', 'tl_hat_brim_cocked', 'tl_hat_flaps', 'tl_hat_neck_cloth', 'tl_hat_feather',
+    'tl_hat_plume', 'tl_hat_badge', 'tl_hat_ribbons',
 )
-BACKLESS = ('tl_buttons_single', 'tl_buttons_double', 'tl_toggles', 'tl_cloak_clasp')   # empty from the north
+# Empty from the north.
+BACKLESS = ('tl_buttons_single', 'tl_buttons_double', 'tl_toggles', 'tl_cloak_clasp', 'tl_hat_peak', 'tl_hat_badge')
 
 
 def verify(worn, items):
@@ -662,6 +850,14 @@ def verify(worn, items):
             assert set(worn[trim_name][d].px) <= set(worn[body][d].px), 'trim off its cloth'
         for uniform, coat in (('tl_sleeve_long', 'tl_coat_sleeve_long'), ('tl_sleeve_short', 'tl_coat_sleeve_cuffed')):
             assert set(worn[uniform][d].px) <= set(worn[coat][d].px), 'coat sleeve must cover the uniform sleeve'
+        for name in CROWNS:
+            assert set(worn['tl_hat_band'][d].px) <= set(worn[name][d].px), 'hat band off its crown'
+            assert max(y for _, y in worn[name][d].px) == 5, 'a crown must end just above the eyes'
+            for kind in ('stripes', 'panels'):
+                assert set(worn['%s_%s' % (name, kind)][d].px) < set(worn[name][d].px), 'hat pattern off its crown'
+        for piece in ('tl_hat_brim_narrow', 'tl_hat_brim_wide', 'tl_hat_peak', 'tl_hat_brim_cocked', 'tl_hat_band_fur'):
+            face = {(x, y) for (x, y) in worn[piece][d].px if y >= 6 and 11 <= x <= 19}
+            assert not face or d != 0, 'a brim must not cover the face'
 
 
 # ---------------------------------------------------------------- DMI in and out
@@ -879,11 +1075,109 @@ def write_preview(path, worn, items, scale=4):
     sheet.convert('RGB').save(path)
 
 
+HATS = {
+    'tl_hat_round': [
+        ('plain', [('tl_hat_round', BROWN)]),
+        ('narrow brim, band', [('tl_hat_round', TAN), ('tl_hat_band', BLACK), ('tl_hat_brim_narrow', TAN)]),
+        ('wide brim, band, feather', [('tl_hat_round', GREEN), ('tl_hat_band', GOLD), ('tl_hat_brim_wide', GREEN),
+                                      ('tl_hat_feather', RED)]),
+        ('peak, panels, badge', [('tl_hat_round', NAVY), ('tl_hat_round_panels', CREAM), ('tl_hat_peak', BLACK),
+                                 ('tl_hat_badge', GOLD)]),
+        ('fur trim, ear flaps', [('tl_hat_round', BROWN), ('tl_hat_band_fur', CREAM), ('tl_hat_flaps', BROWN)]),
+    ],
+    'tl_hat_tall': [
+        ('plain', [('tl_hat_tall', BLACK)]),
+        ('narrow brim, band', [('tl_hat_tall', BLACK), ('tl_hat_band', RED), ('tl_hat_brim_narrow', BLACK)]),
+        ('wide brim, band, badge', [('tl_hat_tall', BLACK), ('tl_hat_band', BROWN), ('tl_hat_brim_wide', BLACK),
+                                    ('tl_hat_badge', GOLD)]),
+        ('stripes, peak, plume', [('tl_hat_tall', RED), ('tl_hat_tall_stripes', CREAM), ('tl_hat_band', BLACK),
+                                  ('tl_hat_peak', BLACK), ('tl_hat_plume', CREAM)]),
+        ('fur trim, ribbons', [('tl_hat_tall', PLUM), ('tl_hat_band_fur', TAN), ('tl_hat_ribbons', GOLD)]),
+    ],
+    'tl_hat_pointed': [
+        ('plain', [('tl_hat_pointed', RED)]),
+        ('wide brim, band', [('tl_hat_pointed', OLIVE), ('tl_hat_band', BROWN), ('tl_hat_brim_wide', OLIVE)]),
+        ('stripes, narrow brim', [('tl_hat_pointed', CREAM), ('tl_hat_pointed_stripes', SKY),
+                                  ('tl_hat_brim_narrow', SKY)]),
+        ('fur trim, ear flaps', [('tl_hat_pointed', TEAL), ('tl_hat_band_fur', CREAM), ('tl_hat_flaps', TEAL)]),
+        ('panels, neck cloth, ribbons', [('tl_hat_pointed', GOLD), ('tl_hat_pointed_panels', RED),
+                                         ('tl_hat_neck_cloth', RED), ('tl_hat_ribbons', CREAM)]),
+    ],
+    'tl_hat_soft': [
+        ('plain', [('tl_hat_soft', NAVY)]),
+        ('band, feather', [('tl_hat_soft', PLUM), ('tl_hat_band', GOLD), ('tl_hat_feather', CREAM)]),
+        ('cocked brim, plume', [('tl_hat_soft', BLACK), ('tl_hat_brim_cocked', BLACK), ('tl_hat_plume', RED)]),
+        ('stripes, peak', [('tl_hat_soft', TAN), ('tl_hat_soft_stripes', BROWN), ('tl_hat_peak', BROWN)]),
+        ('panels, neck cloth, badge', [('tl_hat_soft', CREAM), ('tl_hat_soft_panels', GREEN),
+                                       ('tl_hat_neck_cloth', CREAM), ('tl_hat_badge', GOLD)]),
+    ],
+}
+HAT_CROWNS = (('tl_hat_round', NAVY), ('tl_hat_tall', BLACK), ('tl_hat_pointed', RED), ('tl_hat_soft', GREEN))
+
+
+def write_hat_preview(path, worn, items, scale=6):
+    """Tinted hats on the dressed base body (head and shoulders), every piece on every crown, and the loose items."""
+    crop = 18                                    # rows of each tile shown
+    cw, ch, gap, label = 32 * scale, crop * scale, 8, 30
+    bodies = []
+    for d in range(4):
+        body = base_body(d)
+        for name, colour in LINEN:
+            body.alpha_composite(tinted(worn[name][d], colour))
+        bodies.append(body)
+
+    def head(pieces, d):
+        return big(stack(pieces, lambda n: worn[n][d], bodies[d]), scale).crop((0, 0, cw, ch))
+
+    block = 4 * cw + gap
+    pieces = [n for n in STATES if n.startswith('tl_hat_') and n not in CROWNS and not n.endswith(('_stripes', '_panels'))]
+    width = 110 + 5 * (block + gap)
+    row_h = label + ch + gap
+    piece_w = 2 * cw + gap
+    per = (width - 110) // (piece_w + gap)
+    piece_rows = -(-len(pieces) // per)
+    height = 30 + 4 * row_h + 30 + 4 * piece_rows * row_h + 30 + (32 * scale + label + gap) + 16
+    sheet = Image.new('RGBA', (width, height), BG)
+    draw = ImageDraw.Draw(sheet)
+    draw.text((8, 8), 'Tailored hat pieces - tinted combinations on the base body (S, N, E, W), %dx' % scale, fill=INK)
+    y = 30
+    for body, hats in HATS.items():
+        draw.text((8, y + label + 8), body, fill=INK)
+        for c, (text, parts) in enumerate(hats):
+            x = 110 + c * (block + gap)
+            draw.text((x + 2, y + 10), text, fill=INK)
+            draw.rectangle((x, y + label, x + 4 * cw - 1, y + label + ch - 1), fill=PANEL)
+            for d in range(4):
+                sheet.alpha_composite(head(parts, d), (x + d * cw, y + label))
+        y += row_h
+    draw.text((8, y + 8), 'Every piece on every crown, front and side: the piece in gold, the crown in its own colour', fill=INK)
+    y += 30
+    for crown_name, colour in HAT_CROWNS:
+        for i, piece in enumerate(pieces):
+            x, yy = 110 + (i % per) * (piece_w + gap), y + (i // per) * row_h
+            if i % per == 0:
+                draw.text((8, yy + label + 8), crown_name, fill=INK)
+            draw.text((x + 2, yy + 10), piece, fill=INK)
+            draw.rectangle((x, yy + label, x + 2 * cw - 1, yy + label + ch - 1), fill=PANEL)
+            for k, d in enumerate((0, 2)):
+                sheet.alpha_composite(head([(crown_name, colour), (piece, GOLD)], d), (x + k * cw, yy + label))
+        y += piece_rows * row_h
+    draw.text((8, y + 8), 'Loose items - the same combinations built from icons/obj/clothing/tailoring.dmi', fill=INK)
+    y += 30
+    loose = [(b, o) for b in HATS for o in HATS[b]]
+    for i, (body, (text, parts)) in enumerate(loose):
+        x = 8 + i * (32 * scale // 2 + gap)
+        draw.rectangle((x, y + label, x + 32 * scale // 2 - 1, y + label + 32 * scale // 2 - 1), fill=PANEL)
+        sheet.alpha_composite(big(stack(parts, lambda n: items[n]), scale // 2), (x, y + label))
+    Path(path).parent.mkdir(parents=True, exist_ok=True)
+    sheet.convert('RGB').save(path)
+
+
 def write_state_sheet(path, worn, items, scale=3):
     """Every state on its own: S, N, E, W worn frames, then the loose item."""
     cell, name_w, per_col = 32 * scale, 150, 13
     group = name_w + 5 * cell + 24
-    sheet = Image.new('RGBA', (8 + 3 * group, 44 + per_col * (cell + 4)), BG)
+    sheet = Image.new('RGBA', (8 + -(-len(STATES) // per_col) * group, 44 + per_col * (cell + 4)), BG)
     draw = ImageDraw.Draw(sheet)
     draw.text((8, 6), 'Every tailoring state, greyscale as stored, 3x: worn S, N, E, W (icons/mob/tailoring.dmi) '
               'and the loose item (icons/obj/clothing/tailoring.dmi)', fill=INK)
@@ -915,7 +1209,7 @@ def main(argv):
     write_dmi(MOB, worn, 4)
     write_dmi(OBJ, items, 1)
     print('wrote', MOB.relative_to(ROOT), 'and', OBJ.relative_to(ROOT))
-    for flag, draw in (('--preview', write_preview), ('--sheet', write_state_sheet)):
+    for flag, draw in (('--preview', write_preview), ('--sheet', write_state_sheet), ('--hats', write_hat_preview)):
         if flag in argv:
             draw(argv[argv.index(flag) + 1], worn, items)
             print('wrote', argv[argv.index(flag) + 1])

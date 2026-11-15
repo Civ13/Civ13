@@ -13,13 +13,16 @@ Plan and decisions: project file `mining-loop/plan.md` (approved 2026-11-15).
 
 ## Where
 
-A map opts in with `mountain_seams = TRUE` (only `americas_north` and
-`americas_south`). Seam ground is open `/turf/floor/dirt` (not standing rock)
+A map opts in with `mountain_seams = TRUE` (`americas_north`,
+`americas_south` and `asia`, the one-level lands with mountains and no cave). Seam ground is open `/turf/floor/dirt` (not standing rock)
 on z 1 inside `/area/caribbean/void/caves`, with no road or floor cover and no
 dense anchored structure. On both maps that area holds exactly the mountain
 rock, and mining swaps the turf but keeps the area, so seam ground is the
 mined-out mountain footprint. `test_source.py` checks this on the committed
 maps. Shovel-excavated rock counts too.
+
+Asia is hand-drawn rather than generated: its caves area is mountain rock plus
+about 140 tiles of open cave floor, which are seam ground from the first day.
 
 ## What a pickaxe gets
 

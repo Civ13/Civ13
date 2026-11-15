@@ -230,6 +230,26 @@ var/global/orbit_failures = 0
 	var/obj/structure/trail_marker_probe = new /obj/structure/region_gate/trail_marker(locate(3, 2, 1))
 	var/obj/structure/region_gate/trail_marker/TM = trail_marker_probe
 	orbit_check("a trail never leads to orbit", ("Orbit (orbit)" in TM.peer_choices()) ? 1 : 0, 0)
+	orbit_check("a trail on Earth never leads to the Moon", ("Moon (moon)" in TM.peer_choices()) ? 1 : 0, 0)
+	orbit_check("a trail cannot be opened toward the Moon", TM.approve("moon", "admin") ? 1 : 0, 0)
+	TM.destination = "moon"
+	TM.approved = TRUE
+	orbit_check("an old trail toward the Moon sends nobody", findtext(TM.travel_refusal(null), "only by rocket") ? 1 : 0, 1)
+	var/datum/survey_map/pad_moon_map = new
+	pad_moon_map.region = "moon"
+	var/pad_had_map = space_survey_maps["moon"]
+	space_survey_maps["moon"] = pad_moon_map
+	orbit_check("a pad is set for the Moon by a player, with no admin", (pad.approve("moon", "player") && pad.approved && pad.destination == "moon" && !findtext(pad.closed_reason() || "", "choose")) ? 1 : 0, 1)
+	if (pad_had_map)
+		space_survey_maps["moon"] = pad_had_map
+	else
+		space_survey_maps -= "moon"
+	orbit_check("world bodies", "[region_world_body("gaia")],[region_world_body("moon")],[region_world_body("moon2")],[region_world_body("barren")]", "earth,moon,moon,mars")
+	shard_group.region = "moon"
+	orbit_check("a Moon trail joins Moon lands only", (region_trail_same_world("moon2") && !region_trail_same_world("gaia") && !region_trail_same_world("barren")) ? 1 : 0, 1)
+	shard_group.region = "barren"
+	orbit_check("a Mars trail never leads to the Moon", region_trail_same_world("moon") ? 1 : 0, 0)
+	shard_group.region = "gaia"
 	qdel(TM)
 	qdel(pad)
 	var/obj/structure/crewed_lander/orbital_rocket/rocket = new(locate(2, 3, 1))

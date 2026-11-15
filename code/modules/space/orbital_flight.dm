@@ -3,7 +3,7 @@
 // ------------------------------------------------------------
 // A two-stage rocket is a crewed lander (lander.dm) that only flies to an
 // orbit region (shard kind ORBIT, orbit_world.dm): three seats, a ten-item
-// hold and twice the propellant. It launches from an ordinary admin-approved
+// hold and twice the propellant. It launches from an ordinary
 // launch pad. Orbit needs no survey map, and opens from 1969 (Cold War, age 7).
 //
 // The crew arrive in an orbital capsule: the first arrival of a flight claims
@@ -45,7 +45,7 @@
 
 /obj/structure/crewed_lander/orbital_rocket
 	name = "two-stage rocket"
-	desc = "A tall two-stage rocket with a three-seat capsule on top. Fill it with rocket propellant beside an approved launch pad to orbit, strap in on its tile and launch."
+	desc = "A tall two-stage rocket with a three-seat capsule on top. Fill it with rocket propellant beside a launch pad that is set for its destination to orbit, strap in on its tile and launch."
 	propellant_needed = ORBIT_ROCKET_PROPELLANT
 	seats = ORBIT_ROCKET_SEATS
 	cargo_max = ORBIT_ROCKET_CARGO_MAX

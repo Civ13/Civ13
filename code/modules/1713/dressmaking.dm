@@ -87,6 +87,16 @@ var/global/list/tailoring_catalogue = null
 	C["made_jacket"] = list("name" = "jacket", "slot" = "suit", "art" = "tailoring", "base" = "tl_jacket", "panels" = list(), "options" = list("Sleeves" = coat_sleeves.Copy(), "Collar" = collars.Copy(), "Trim" = list("None" = null, "Edge trim" = "tl_jacket_trim"), "Closure" = closures.Copy()), "node" = "tailoring", "cost" = 3, "covers" = UPPER_TORSO)
 	C["made_coat"] = list("name" = "coat", "slot" = "suit", "art" = "tailoring", "base" = "tl_coat", "panels" = list(), "options" = list("Sleeves" = coat_sleeves.Copy(), "Collar" = collars.Copy(), "Trim" = list("None" = null, "Edge trim" = "tl_coat_trim"), "Closure" = closures.Copy()), "node" = "tailoring", "cost" = 5, "covers" = UPPER_TORSO|LOWER_TORSO)
 	C["made_cloak"] = list("name" = "cloak", "slot" = "suit", "art" = "tailoring", "base" = "tl_cloak", "panels" = list(), "options" = list("Hood" = list("None" = null, "Hood" = "tl_cloak_hood"), "Clasp" = list("None" = null, "Clasp" = "tl_cloak_clasp"), "Border" = list("None" = null, "Border" = "tl_cloak_border")), "node" = "weaving", "cost" = 3, "covers" = UPPER_TORSO|LOWER_TORSO|ARMS)
+	// Mix-and-match hats. Every crown ends on the same two rows above the
+	// eyes, so one band, brim, pair of flaps or decoration fits every crown.
+	var/list/hat_bands = list("None" = null, "Band" = "tl_hat_band", "Fur trim" = "tl_hat_band_fur")
+	var/list/hat_brims = list("None" = null, "Narrow brim" = "tl_hat_brim_narrow", "Wide brim" = "tl_hat_brim_wide", "Peak" = "tl_hat_peak", "Cocked brim" = "tl_hat_brim_cocked")
+	var/list/hat_flaps = list("None" = null, "Ear flaps" = "tl_hat_flaps", "Neck cloth" = "tl_hat_neck_cloth")
+	var/list/hat_decorations = list("None" = null, "Feather" = "tl_hat_feather", "Plume" = "tl_hat_plume", "Badge" = "tl_hat_badge", "Ribbons" = "tl_hat_ribbons")
+	C["made_round_hat"] = list("name" = "round hat", "slot" = "head", "art" = "tailoring", "base" = "tl_hat_round", "panels" = list(), "options" = list("Pattern" = list("Plain" = null, "Stripes" = "tl_hat_round_stripes", "Panels" = "tl_hat_round_panels"), "Band" = hat_bands.Copy(), "Brim" = hat_brims.Copy(), "Flaps" = hat_flaps.Copy(), "Decoration" = hat_decorations.Copy()), "node" = "weaving", "cost" = 1)
+	C["made_pointed_hat"] = list("name" = "pointed hat", "slot" = "head", "art" = "tailoring", "base" = "tl_hat_pointed", "panels" = list(), "options" = list("Pattern" = list("Plain" = null, "Stripes" = "tl_hat_pointed_stripes", "Panels" = "tl_hat_pointed_panels"), "Band" = hat_bands.Copy(), "Brim" = hat_brims.Copy(), "Flaps" = hat_flaps.Copy(), "Decoration" = hat_decorations.Copy()), "node" = "weaving", "cost" = 1)
+	C["made_soft_hat"] = list("name" = "soft hat", "slot" = "head", "art" = "tailoring", "base" = "tl_hat_soft", "panels" = list(), "options" = list("Pattern" = list("Plain" = null, "Stripes" = "tl_hat_soft_stripes", "Panels" = "tl_hat_soft_panels"), "Band" = hat_bands.Copy(), "Brim" = hat_brims.Copy(), "Flaps" = hat_flaps.Copy(), "Decoration" = hat_decorations.Copy()), "node" = "tailoring", "cost" = 1)
+	C["made_tall_hat"] = list("name" = "tall hat", "slot" = "head", "art" = "tailoring", "base" = "tl_hat_tall", "panels" = list(), "options" = list("Pattern" = list("Plain" = null, "Stripes" = "tl_hat_tall_stripes", "Panels" = "tl_hat_tall_panels"), "Band" = hat_bands.Copy(), "Brim" = hat_brims.Copy(), "Flaps" = hat_flaps.Copy(), "Decoration" = hat_decorations.Copy()), "node" = "fine_garments", "cost" = 2)
 	tailoring_catalogue = C
 	return C
 
@@ -109,7 +119,20 @@ var/global/list/tailoring_piece_info = list(
 	"tl_coat_sleeve_cuffed" = list("fine_garments", 1, ARMS),
 	"tl_collar_lapels" = list("fine_garments", 0, 0),
 	"tl_buttons_double" = list("fine_garments", 0, 0),
-	"tl_cloak_hood" = list("weaving", 1, HEAD))
+	"tl_cloak_hood" = list("weaving", 1, HEAD),
+	"tl_hat_round_panels" = list("tailoring", 0, 0),
+	"tl_hat_pointed_panels" = list("tailoring", 0, 0),
+	"tl_hat_soft_panels" = list("tailoring", 0, 0),
+	"tl_hat_tall_panels" = list("tailoring", 0, 0),
+	"tl_hat_brim_wide" = list("tailoring", 1, 0),
+	"tl_hat_peak" = list("textile_mills", 0, 0),
+	"tl_hat_brim_cocked" = list("fine_garments", 1, 0),
+	"tl_hat_flaps" = list("weaving", 1, 0),
+	"tl_hat_neck_cloth" = list("classical_dress", 1, 0),
+	"tl_hat_feather" = list("tailoring", 0, 0),
+	"tl_hat_plume" = list("fine_garments", 0, 0),
+	"tl_hat_badge" = list("classical_dress", 0, 0),
+	"tl_hat_ribbons" = list("tailoring", 0, 0))
 
 // Woven fabric a project is made of: the stack it takes, its name, the
 // coldest temperature it keeps out per layer, its padding against cuts and

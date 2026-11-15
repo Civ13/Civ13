@@ -42,12 +42,41 @@ class DaylightSweep(unittest.TestCase):
         self.assertNotIn('turfs[', loops[1].replace('sweep_turfs[', ''))
 
     def test_both_sweeps_keep_their_budget_and_revision_checks(self):
-        self.assertEqual(self.body.count('if (environment_sweep_pause(++work))'), 2)
-        self.assertEqual(self.body.count('if (revision != lighting_revision)'), 2)
+        # Full overlay sweep, turf sweep and the client-tint luminosity sweep.
+        self.assertEqual(self.body.count('if (environment_sweep_pause(++work))'), 3)
+        self.assertEqual(self.body.count('if (revision != lighting_revision)'), 3)
         # Entries that are not turfs (or deleted overlays) are skipped, as the
         # typed for-in did, instead of raising mid-sweep.
         self.assertIn('if (!istype(T))', self.body)
         self.assertIn('if (LO)', self.body)
+
+
+class ClientTintNativeSight(unittest.TestCase):
+    # With DAYNIGHT_CLIENT_TINT the masks leave daylight out of their colour.
+    # Their luminosity must still count it: BYOND sends a dark turf only within
+    # see_in_dark of the eye, which blacked out Look into Distance and the
+    # tree-top view on live (tests/look_distance/client_check.py).
+    def setUp(self):
+        self.overlay = (ROOT / 'code/modules/lighting/lighting_overlay.dm').read_text(encoding='utf-8')
+        self.update = proc_body(self.overlay, '/atom/movable/lighting_overlay/proc/update_overlay(')
+
+    def test_mask_luminosity_counts_daylight_under_client_tint(self):
+        self.assertIn('return time_of_day2luminosity[time_of_day] > 0', self.overlay)
+        self.assertIn('light_lit = anylums > 0', self.update)
+        self.assertIn('var/new_luminosity = light_lit || (client_tint && daylight_reveals_turfs())', self.update)
+        self.assertIn('luminosity = new_luminosity', self.update)
+
+    def test_tint_path_reapplies_luminosity_only_across_a_dayless_phase(self):
+        tint = self.body = proc_body(SOURCE, '/process/time_of_day_change/proc/apply_daylight(')
+        branch = tint[tint.index('if (daylight_on_client() && setup_lighting)'):tint.index('var/list/sweep_overlays')]
+        self.assertIn('if (reveals != tint_daylight_reveals)', branch)
+        self.assertIn('var/list/tint_overlays = lighting_overlay_list.Copy()', branch)
+        self.assertIn('TO.luminosity = TO.light_lit || reveals', branch)
+        self.assertIn('TO.last_luminosity = TO.luminosity', branch)
+        self.assertIn('tint_daylight_reveals = reveals', branch)
+        self.assertIn('return TRUE', branch)
+        # The first full sweep records the state its update_overlay calls used.
+        self.assertIn('tint_daylight_reveals = daylight_reveals_turfs()', tint.split('setup_lighting = TRUE', 1)[1])
 
 
 class SweepPauseProgress(unittest.TestCase):
