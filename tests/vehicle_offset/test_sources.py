@@ -13,6 +13,7 @@ CORE = (ROOT / 'code/modules/craft/vehicle_offset.dm').read_text(encoding='utf-8
 DME = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
 PROBE = (ROOT / 'tests/vehicle_offset/probe.dm').read_text(encoding='utf-8')
 RIDE = (ROOT / 'code/modules/craft/vehicle_offset_ride.dm').read_text(encoding='utf-8')
+FRAME = (ROOT / 'code/modules/craft/vehicle_offset_frame.dm').read_text(encoding='utf-8')
 
 
 def proc(text, name):
@@ -96,6 +97,28 @@ class VehicleOffsetSources(unittest.TestCase):
         self.assertIn('vehicle_offset_release()', proc(RIDE, '/obj/structure/vehicle/carriage/updatepassdir('))
         for label in ('coach_rolls_by_pixels', 'coach_stops_flush_before_a_wall', 'coach_turn_squares_first', 'coach_cart_hitched'):
             self.assertIn(label, PROBE)
+    def test_frame_vehicles_roll_by_pixels(self):
+        self.assertLess(DME.index('vehicle_offset_hull.dm'), DME.index('vehicle_offset_frame.dm'))
+        loop = proc(FRAME, '/obj/structure/vehicleparts/axis/movementloop(')
+        self.assertIn('return ..()', loop)
+        self.assertIn('if (!vehicle_offset_drives())', loop)
+        # Aircraft, frame ships and boats, and the axes of one-object vehicles stay on whole tiles.
+        for kind in ('aircraft', 'ship', 'boat', 'bike', 'carriage'):
+            self.assertIn('/obj/structure/vehicleparts/axis/%s\n\toffset_drive = FALSE' % kind, FRAME)
+        drives = proc(FRAME, '/obj/structure/vehicleparts/axis/proc/vehicle_offset_drives(')
+        for guard in ('persistence_save_in_progress', 'tow_out', 'tow_in', 'vehicle_offset_has_trailer()'):
+            self.assertIn(guard, drives)
+        # Its own crash checks run once per tile, as it starts to overlap the tiles ahead.
+        self.assertIn('A.do_vehicle_check()', proc(FRAME, '/datum/vehicle_offset/axis/can_cover('))
+        self.assertIn('glide_give_back(glide_was, null)', proc(FRAME, '/obj/structure/vehicleparts/axis/glide_step('))
+        self.assertIn('vehicle_offset_release()', proc(FRAME, '/obj/structure/vehicleparts/axis/do_matrix('))
+        self.assertNotIn('spawn(', FRAME)
+        for key in ('offset_mover', 'offset_coast', 'offset_last_tick', 'offset_committing', 'offset_quiet_stop'):
+            self.assertIn('key == "%s"' % key, FRAME)
+        self.assertIn('F.axis.offset_coast > 0', proc(RIDE, '/mob/living/human/proc/carried_by_vehicle('))
+        for label in ('frame_car_rolls_by_pixels', 'frame_car_coasts_square', 'frame_car_turn_squares_first', 'frame_car_stops_flush_before_a_wall', 'frame_car_unwatched_tile_steps'):
+            self.assertIn(label, PROBE)
+
 
 if __name__ == '__main__':
     unittest.main()
