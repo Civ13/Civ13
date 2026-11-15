@@ -88,6 +88,7 @@ def move_fixture(source=SOURCE, blocked=False):
     h.getStat = lambda stat: h.stats[stat][1]
     h.getStatCoeff = lambda stat: 1
     h.forceMove = lambda target: setattr(h, 'loc', target)
+    h.region_edge_ride = lambda: None
     b.moving = True
     b.pedal_next_move = 0
     b.vehicle_m_delay = 1.8

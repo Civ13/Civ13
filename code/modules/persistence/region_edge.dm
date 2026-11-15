@@ -13,7 +13,8 @@
 // goes as a small record with its rider and stands beside them on the far
 // side, and so does one animal led by hand. Drivers and anyone dragging
 // anything else are told to go on foot. A hand cart or travois pulled by
-// hand crosses with its load; driven vehicles do not cross yet.
+// hand crosses with its load, and a bicycle is wheeled over by its rider;
+// other driven vehicles do not cross yet.
 // ============================================================
 
 // How far in from the border an arriving walker is put down, so the first
@@ -133,6 +134,11 @@ var/global/list/region_edge_spans = list()
 	// moment its load is recorded (travel_extra) until they left or stayed.
 	var/obj/structure/closet/crate/cart = null
 	var/turf/cart_from = null
+	// The bicycle this walker rode up on and got off (region_edge_cross). It is
+	// recorded and held the same way as they leave.
+	var/obj/structure/vehicle/bicycle/bike = null
+	var/turf/bike_from = null
+	var/bike_held = FALSE
 
 /obj/structure/region_gate/land_edge/accepts_arrivals()
 	return FALSE
@@ -154,12 +160,22 @@ var/global/list/region_edge_spans = list()
 		H.stop_pulling()
 		cart.forceMove(src)
 		.["cart"] = load
+	var/list/ridden = region_edge_bike_record(bike, H)
+	if (ridden)
+		bike_from = get_turf(bike)
+		bike.forceMove(src)
+		bike_held = TRUE
+		.["bike"] = ridden
 
 // A walker who stayed, or could not leave, gets the cart back where it stood.
 /obj/structure/region_gate/land_edge/proc/release_cart()
 	if (cart && !QDELETED(cart) && cart.loc == src)
 		cart.forceMove(cart_from || get_turf(src))
 	cart = null
+	if (bike_held && bike && !QDELETED(bike) && bike.loc == src)
+		bike.forceMove(bike_from || get_turf(src))
+	bike_held = FALSE
+	bike = null
 
 /obj/structure/region_gate/land_edge/Destroy()
 	release_cart()
@@ -213,6 +229,11 @@ var/global/list/region_edge_spans = list()
 	region_edge_asked_at = world.time
 	region_edge_cross(side, T)
 
+// A rider carried onto the edge by what they ride (a bicycle) is asked too.
+/mob/living/human/proc/region_edge_ride()
+	if (map && map.edge_crossings)
+		region_edge_check()
+
 // Asks and waits on its own; the step that led here is not held up.
 /mob/living/human/proc/region_edge_cross(side, turf/T)
 	set waitfor = FALSE
@@ -227,6 +248,13 @@ var/global/list/region_edge_spans = list()
 	var/mob/living/simple_animal/beast = pulling
 	gate.led = region_edge_led_record(src)
 	var/took_led = gate.led && istype(beast)
+	// A bicycle is wheeled over: its rider gets off here and it goes along.
+	var/obj/structure/vehicle/bicycle/ridden = driver_vehicle
+	if (istype(ridden) && buckled == ridden && region_edge_bike_ok(ridden.type))
+		ridden.unbuckle_mob()
+		if (!buckled && !driver_vehicle)
+			gate.bike = ridden
+			to_chat(src, SPAN_NOTICE("You get off \the [ridden] to wheel it on."))
 	gate.travel(src)
 	// travel() returns once they left, said no or were refused.
 	if (took_mount && QDELETED(src) && !QDELETED(steed))
@@ -242,6 +270,11 @@ var/global/list/region_edge_spans = list()
 			qdel(M)
 		qdel(gate.cart)
 		gate.cart = null
+	if (QDELETED(src) && gate.bike_held && gate.bike && !QDELETED(gate.bike))
+		log_game("Region travel: the bicycle [gate.bike.name] ([gate.bike.type]) crossed the edge with its rider.")
+		qdel(gate.bike)
+		gate.bike = null
+		gate.bike_held = FALSE
 	if (!QDELETED(gate))
 		qdel(gate)
 	if (!QDELETED(src))
@@ -355,13 +388,46 @@ var/global/list/region_edge_spans = list()
 	C.update_icon()
 	return C
 
+// ---------------------------------------------------------------- bicycles
+
+// A pedal bicycle or running bike crosses by type, frame material and health.
+// The pedal airship flies and does not.
+/proc/region_edge_bike_ok(path)
+	return ispath(path, /obj/structure/vehicle/bicycle) && !ispath(path, /obj/structure/vehicle/bicycle/airship)
+
+// list(type, frame material, health) for the bicycle B standing by H with
+// nobody on it, or null.
+/proc/region_edge_bike_record(obj/structure/vehicle/bicycle/B, mob/living/human/H)
+	if (!istype(B) || QDELETED(B) || !region_edge_bike_ok(B.type) || !isturf(B.loc) || get_dist(B, H) > 1 || B.driver || B.buckled_mob || length(B.ontop))
+		return null
+	var/list/record = list("[B.type]", B.frame_material, clamp(round(B.health), 1, initial(B.health)))
+	return region_edge_bike_valid(record) ? record : null
+
+/proc/region_edge_bike_valid(list/R)
+	if (!islist(R) || R.len != 3 || !istext(R[1]) || !istext(R[2]) || !isnum(R[3]))
+		return FALSE
+	var/obj/structure/vehicle/bicycle/path = text2path(R[1])
+	if (!region_edge_bike_ok(path) || !get_material_by_name(R[2]))
+		return FALSE
+	return R[3] >= 1 && R[3] <= initial(path.health) && R[3] == round(R[3])
+
+/proc/region_edge_bike_build(list/R, turf/T)
+	if (!region_edge_bike_valid(R) || !istype(T))
+		return null
+	var/path = text2path(R[1])
+	var/obj/structure/vehicle/bicycle/B = new path(T, R[2])
+	B.health = R[3]
+	return B
+
 // ---------------------------------------------------------------- arriving
 
 /proc/region_edge_payload_ok(list/P)
 	var/list/E = P["edge"]
 	if (isnull(E))
-		return isnull(P["mount"]) && isnull(P["led"]) && isnull(P["cart"])
+		return isnull(P["mount"]) && isnull(P["led"]) && isnull(P["cart"]) && isnull(P["bike"])
 	if (!isnull(P["cart"]) && !region_edge_cart_valid(P["cart"]))
+		return FALSE
+	if (!isnull(P["bike"]) && !region_edge_bike_valid(P["bike"]))
 		return FALSE
 	if (!isnull(P["mount"]) && !region_edge_mount_valid(P["mount"]))
 		return FALSE
@@ -425,6 +491,11 @@ var/global/list/region_edge_spans = list()
 		var/obj/structure/closet/crate/C = region_edge_cart_build(P["cart"], (behind && region_edge_ground(behind, TRUE)) ? behind : get_turf(H))
 		if (C)
 			to_chat(H, SPAN_NOTICE("You hauled \the [C] across."))
+	// And the bicycle they wheeled over.
+	if (islist(P["bike"]))
+		var/obj/structure/vehicle/bicycle/B = region_edge_bike_build(P["bike"], get_turf(H))
+		if (B)
+			to_chat(H, SPAN_NOTICE("You wheeled \the [B] across."))
 
 // A departure replayed after a reload: the save still holds the mount that left.
 /proc/region_edge_replayed(mob/living/human/H, list/P)
@@ -443,6 +514,13 @@ var/global/list/region_edge_spans = list()
 				break
 	for (var/mob/living/simple_animal/A in gone)
 		qdel(A)
+	if (region_edge_bike_valid(P["bike"]))
+		var/bike_path = text2path(P["bike"][1])
+		for (var/obj/structure/vehicle/bicycle/B in range(2, H))
+			if (B.type == bike_path && (!B.driver || B.driver == H))
+				log_game("Region travel: replayed the crossing of the bicycle [B.name]; it leaves again.")
+				qdel(B)
+				break
 	// The cart that left stands near them in the older save, load and all.
 	if (region_edge_cart_valid(P["cart"]))
 		var/path = text2path(P["cart"][1])

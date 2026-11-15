@@ -101,7 +101,10 @@ Nothing stands there: no trail post and no gate. Each map names its neighbour
   refusal names anything in it that cannot cross. A cart hitched to an animal
   or a carriage has to be unhitched and pulled by hand.
 - A driver or anyone dragging anything else is told to go on foot.
-  **Driven vehicles (carriages, cars, bicycles) do not cross yet.**
+- A pedal bicycle or running bike is wheeled over: its rider gets off at the
+  edge when asked, and it arrives beside them with its frame material and
+  condition. The pedal airship does not cross.
+  **Carriages and motor vehicles do not cross yet.**
 
 Both regions must run in the same group under the ids above. A neighbour that
 is asleep is woken by the first walker; one that is stopped on the host is
