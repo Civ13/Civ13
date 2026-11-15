@@ -1189,7 +1189,7 @@ SUITES = {
     # Sewers phase S1: source contracts (the native probe is tests/sewers/probe.dm).
     'sewers': {'files': ('tests/sewers/test_sewers.py',),
         'paths': ('tests/sewers/',), 'shared_paths': (
-            'code/modules/1713/sewers.dm', 'icons/obj/sewers.dmi', 'tests/sprites/create_sewers.py',
+            'code/modules/1713/sewers.dm', 'code/modules/1713/flood_hollows.dm', 'icons/obj/sewers.dmi', 'tests/sprites/create_sewers.py',
             'code/game/objects/structures/watercloset.dm', 'code/game/mob/living/carbon/human/shit_piss.dm')},
     # Bone flute, frame drum, flint sickle and bison herds: source contracts only.
     'stone_age_extras': {'files': ('tests/stone_age_extras/test_source.py',),

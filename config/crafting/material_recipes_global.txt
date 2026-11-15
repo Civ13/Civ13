@@ -1430,6 +1430,7 @@ RECIPE: /material/bone/,bone gear set,/obj/item/machine_part/gear,4,150,0,1,mach
 
 RECIPE: /material/stone/,stone brazier,/obj/structure/brazier/stone,3,100,1,1,none,0,0,0,8,null
 RECIPE: /material/stone/,stone drain,/obj/structure/sewer_piece/drain/stone,2,80,1,1,construction,0,0,0,8,null
+RECIPE: /material/wood/,flap gate,/obj/structure/sewer_flap_gate,3,80,1,1,construction,0,0,0,8,null
 RECIPE: /material/stone/,deadfall trap,/obj/item/weapon/trap_kit/deadfall,2,60,0,1,none,0,0,0,8,null
 RECIPE: /material/stone/,well,/obj/structure/sink/well,7,250,1,1,none,21,0,0,8,null
 RECIPE: /material/stone/,stone crusher,/obj/structure/stone_crusher,10,150,1,1,none,19,0,0,8,null
@@ -1531,6 +1532,7 @@ RECIPE: /material/stone/,stone projectile (x2),/obj/item/stack/ammopart/stonebal
 RECIPE: /material/stone/,stone bricks,/obj/item/stack/material/stonebrick,1,25,0,1,none,35,0,0,8,null
 RECIPE: /material/stonebrick/,stone brick wall,/obj/covers/stone_wall/brick,6,140,1,1,none,35,0,0,8,null
 RECIPE: /material/stonebrick/,stone brick floor,/obj/covers/stonebrickfloor,1,25,1,1,none,35,0,0,8,null
+RECIPE: /material/stonebrick/,brick sewer,/obj/structure/sewer_piece/drain/brick,3,120,1,1,construction,0,0,0,8,null
 RECIPE: /material/stonebrick/,stone brick archway,/obj/covers/stone_wall/brick/archway,6,140,1,1,none,35,0,0,8,null
 
 //*************| STONE WALL, DOORWAYS & FORTIFICATION CONSTRUCTIONS |***************

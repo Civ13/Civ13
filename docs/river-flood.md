@@ -158,6 +158,24 @@ ditch within 2 that carried waste in the last 30 minutes, or a cesspit within 2
 holding any. Covered drains foul nothing. Cesspit fill is saved; the
 recently-carried time is not.
 
+## Sewers (S2)
+
+Also in `sewers.dm`. A drain on a hollow tile is an inlet: each river tick,
+after the hollows fill, it takes up to its rate of hollow water (ditch 1,
+stone drain 2, brick sewer 5 tile-levels a minute) while it stands in water,
+and sends it to the outfall it reaches (cached per drain until any drain,
+clog or gate changes). An outfall takes twice its own rate from all its
+inlets together; past that the sewer runs full for two minutes and toilets on
+it back up. When river floodwater stands over an outfall, an ungated outfall
+backflows: each inlet raises its hollow by its rate while the hollow is lower
+than the river there, and toilets on it surge back. A flap gate (3 wood,
+Sanitation) on the outfall tile shuts against the river: nothing flows either
+way and flushed waste is held. Each load of waste may silt up one random drain
+it passed (ditch 2%, stone 0.5%, brick 0.1%); inlets silt at a fifth of that
+per minute of draining. A clogged drain cuts the network until it is dug
+clear with a shovel. Brick sewers are 3 stone bricks (Imperial Architecture).
+Nothing new is saved but `clogged`.
+
 ## Saving
 
 The water held, the snowpack and the high-water mark of every reach are the
@@ -181,4 +199,5 @@ tiles around you, blue where the water is now).
     python3 tests/ecology_spawning/run_linux.py . tests/river_flow/flood_hollow_probe.dm
     python3 tests/sewers/test_sewers.py
     python3 tests/ecology_spawning/run_linux.py . tests/sewers/probe.dm
+    python3 tests/ecology_spawning/run_linux.py . tests/sewers/s2_probe.dm
     python3 tests/durable_map_migration/run.py --byond-bin <dir>
