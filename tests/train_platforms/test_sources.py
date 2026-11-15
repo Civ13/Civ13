@@ -12,6 +12,7 @@ import run  # noqa: E402
 
 SOURCE = (ROOT / 'code/modules/1713/train_platforms.dm').read_text(encoding='utf-8')
 WARFARE = (ROOT / 'code/modules/1713/train_warfare.dm').read_text(encoding='utf-8')
+LOCOS = (ROOT / 'code/modules/1713/train_locomotives.dm').read_text(encoding='utf-8')
 WAREHOUSE = (ROOT / 'code/modules/1713/rail_warehouse.dm').read_text(encoding='utf-8')
 TRAINS = (ROOT / 'code/modules/1713/trains.dm').read_text(encoding='utf-8')
 RECIPES = (ROOT / 'config/crafting/material_recipes_global.txt').read_text(encoding='utf-8')
@@ -58,6 +59,24 @@ class TrainPlatformSourceTests(unittest.TestCase):
         for kit in KITS:
             self.assertRegex(RECIPES, r'(?m)^RECIPE: /material/(iron|steel)/,[a-z ]+ kit,%s,' % re.escape(kit))
             self.assertRegex(NODES, r'"%s" = "(rail_steam|assembly_line|field_artillery|automatic_weapons)"' % re.escape(kit))
+        for kit, node in (('loco_steam', 'rail_steam'), ('loco_diesel', 'combustion'), ('loco_armored', 'field_artillery')):
+            path = '/obj/structure/train_car_kit/' + kit
+            self.assertRegex(RECIPES, r'(?m)^RECIPE: /material/steel/,heavy [a-z]+ locomotive kit,%s,' % re.escape(path))
+            self.assertIn('"%s" = "%s"' % (path, node), NODES)
+            self.assertRegex(LOCOS, r'/obj/structure/train_car_kit/%s\n\tname = "heavy [a-z]+ locomotive kit"\n\tcar_kind = "%s"' % (kit, kit))
+
+    def test_heavy_locomotives_drive_like_the_one_tile_engines(self):
+        dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
+        self.assertEqual(dme.count('#include "code\\modules\\1713\\train_locomotives.dm"'), 1)
+        # The engine section is a locomotive, so throttle, load and reversing are shared code.
+        for path in ('locomotive/coal/heavy', 'locomotive/heavy_diesel', 'locomotive/coal/armored/heavy'):
+            self.assertIn('/obj/structure/trains/%s\n\tname = "heavy ' % path, LOCOS)
+        self.assertNotIn('proc/drive(', LOCOS)
+        self.assertNotIn('max_train_speed', LOCOS)
+        # Body tiles are rebuilt, never saved, and the clearance check covers the engine's side tiles.
+        self.assertIn('var/tmp/list/body_parts', LOCOS)
+        self.assertRegex(LOCOS, r'/obj/structure/trains/locomotive/after_load\(\)\n\t\.\.\(\)\n\tif \(body_kind\)\n\t\tbuild_body\(\)')
+        self.assertEqual(SOURCE.count('if (car.wide_body())'), 3)
         self.assertRegex(RECIPES, r'(?m)^RECIPE: /material/steel/,armored locomotive,/obj/structure/trains/locomotive/coal/armored,')
 
     def test_kit_names_are_compiled_defaults(self):

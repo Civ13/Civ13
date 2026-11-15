@@ -131,6 +131,7 @@ var/global/train_platform_plan_time = -1
 				list("edges" = rails),
 				list("edges" = rails),
 				list("edges" = rails, "fit" = list(/obj/structure/closet/crate, null, /obj/structure/closet/crate))))
+		train_locomotive_layouts(layouts)
 	return layouts[kind]
 
 // The three tiles of a segment at T facing heading: left, centre, right.
@@ -174,14 +175,12 @@ var/global/train_platform_plan_time = -1
 	layer = 2.6
 	health = 1500
 	var/car_kind = "flatbed"
-	var/car_id = ""
 	var/seg_index = 1
 	var/open_doors = 0 // bit per edge index (1-based) of this segment's layout
 	var/braced = FALSE // railway gun car outriggers down (train_warfare.dm)
 	var/wrecked = FALSE // knocked off the track by explosions until welded back
 	var/tmp/last_moved = -1000
 	var/tmp/list/deck_parts = null
-	var/tmp/list/roof_images = null // left, centre, right (vehicle_decks.dm)
 	train_weight = 0.5 // per segment, so a four-tile car weighs 2
 
 // A deck's weight counts the people and furniture on its three tiles.
@@ -235,7 +234,10 @@ var/global/train_platform_plan_time = -1
 		return
 	name = wrecked ? "wrecked [L["name"]]" : L["name"]
 	desc = L["desc"]
-	icon_state = "deck_center_[L["center"]]"
+	var/body = L["body"]
+	var/solid = body ? segment_layout()["solid"] : 0
+	icon_state = body ? "loco_[body]_[seg_index]c" : "deck_center_[L["center"]]"
+	density = solid >= 1
 	clear_parts()
 	update_car_overlays()
 	// Stored in a rail warehouse (rail_warehouse.dm): no deck until it rolls out.
@@ -245,8 +247,14 @@ var/global/train_platform_plan_time = -1
 	make_roof_images()
 	var/end_row = car_end_row()
 	for (var/side in list(TRAIN_LEFT, TRAIN_RIGHT))
-		var/obj/structure/train_part/deck/D = new(null)
-		D.setup(src, side, "out", "deck_side_[L["side"]]")
+		var/obj/structure/train_part/deck/D
+		if (body)
+			D = new /obj/structure/train_part/deck/body(null)
+			D.setup(src, side, "out", "loco_[body]_[seg_index][side == TRAIN_LEFT ? "l" : "r"]")
+			D.density = solid >= 2
+		else
+			D = new(null)
+			D.setup(src, side, "out", "deck_side_[L["side"]]")
 		if (end_row)
 			D.overlays += "end_[end_row][side == TRAIN_LEFT ? "l" : "r"]"
 		deck_parts += D
@@ -264,6 +272,9 @@ var/global/train_platform_plan_time = -1
 // "f" on the car's front segment, "b" on its last one: where the headstock,
 // buffers and coupling are drawn.
 /obj/structure/trains/platform/proc/car_end_row()
+	var/list/L = layout()
+	if (L && L["body"])
+		return null // a locomotive's buffer beams are part of its body art
 	if (seg_index == 1)
 		return "f"
 	if (seg_index == TRAIN_CAR_LENGTH)
@@ -392,6 +403,9 @@ var/global/train_platform_plan_time = -1
 		to_chat(user, "Its outriggers are down: the car is braced and cannot move.")
 
 /obj/structure/trains/platform/attackby(obj/item/W as obj, mob/user as mob)
+	var/obj/structure/trains/locomotive/E = car_engine()
+	if (E && (E.takes_fuel(W) || (is_tool(W, TOOL_WELDER) && !wrecked && health >= initial(health))))
+		return E.attackby(W, user)
 	if (is_tool(W, TOOL_CROWBAR))
 		dismantle_car(user)
 		return
@@ -408,6 +422,9 @@ var/global/train_platform_plan_time = -1
 	return segs
 
 /obj/structure/trains/platform/proc/dismantle_problem()
+	var/list/L = layout()
+	if (L && L["body"])
+		return "A locomotive is built in one piece and cannot be packed into a kit."
 	var/list/segs = car_segments()
 	var/obj/structure/trains/platform/front = null
 	var/obj/structure/trains/platform/back = null
@@ -612,7 +629,7 @@ var/global/train_platform_plan_time = -1
 /proc/train_consist_tiles(list/cars)
 	var/list/tiles = list()
 	for (var/obj/structure/trains/car in cars)
-		if (istype(car, /obj/structure/trains/platform))
+		if (car.wide_body())
 			for (var/turf/T in train_platform_tiles(car.loc, car.dir))
 				tiles[T] = TRUE
 		else if (isturf(car.loc))
@@ -628,7 +645,7 @@ var/global/train_platform_plan_time = -1
 		cars = train_consist_list(head)
 	var/has_platform = FALSE
 	for (var/obj/structure/trains/car in cars)
-		if (istype(car, /obj/structure/trains/platform))
+		if (car.wide_body())
 			has_platform = TRUE
 			break
 	var/list/ours = train_consist_tiles(cars)
@@ -645,7 +662,7 @@ var/global/train_platform_plan_time = -1
 	var/turf/next_loc = target
 	var/next_dir = heading
 	for (var/obj/structure/trains/car in cars)
-		if (istype(car, /obj/structure/trains/platform))
+		if (car.wide_body())
 			var/list/tiles = train_platform_tiles(next_loc, next_dir)
 			for (var/i in list(1, 3))
 				var/turf/T = tiles[i]
@@ -771,9 +788,19 @@ var/global/train_platform_plan_time = -1
 /obj/structure/train_car_kit/proc/assemble(heading)
 	var/list/turfs = car_turfs(heading)
 	var/id = "[rand(100000, 999999)]-[rand(100000, 999999)]"
-	var/obj/structure/trains/platform/front = null
-	var/obj/structure/trains/platform/ahead = null
+	var/obj/structure/trains/front = null
+	var/obj/structure/trains/ahead = null
+	var/engine_type = train_car_layout(car_kind)["engine"]
 	for (var/i in 1 to TRAIN_CAR_LENGTH)
+		// A locomotive kit: the engine itself is the front section.
+		if (i == 1 && engine_type)
+			var/obj/structure/trains/locomotive/E = new engine_type(turfs[1])
+			E.dir = heading
+			E.car_id = id
+			E.build_body()
+			front = E
+			ahead = E
+			continue
 		var/obj/structure/trains/platform/P = new(turfs[i])
 		P.dir = heading
 		P.car_kind = car_kind

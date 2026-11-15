@@ -468,6 +468,16 @@
       ]
     },
     {
+      "path": "code/modules/1713/train_locomotives.dm",
+      "declarations": [
+        {
+          "owner": "",
+          "declaration": "/obj/structure/train_part/edge/cab_front/CheckExit(atom/movable/O as mob|obj, target as turf, exit_direction = null)",
+          "sha256_body": "2e2664da35f9fa154f6b3e86934736b8304dd15fb2ae72a7cb8599537942572e"
+        }
+      ]
+    },
+    {
       "path": "code/modules/1713/train_platforms.dm",
       "declarations": [
         {

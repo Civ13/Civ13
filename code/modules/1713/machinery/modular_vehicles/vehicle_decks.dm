@@ -400,6 +400,9 @@
 	if (wrecked || !isturf(loc))
 		return FALSE
 	var/list/L = layout()
+	// A locomotive has a roof over its cab only (train_locomotives.dm).
+	if (L && L["body"] && seg_index != L["cab"])
+		return FALSE
 	return L && L["roof"]
 
 // The roof pictures of this segment's three tiles, drawn over the car for
@@ -412,6 +415,8 @@
 	var/list/L = layout()
 	var/list/segs = L["segments"]
 	var/row = seg_index <= 1 ? "f" : (seg_index >= segs.len ? "b" : "m")
+	if (L["body"])
+		row = ""
 	var/list/states = train_roof_states()
 	var/list/made = list()
 	for (var/i in 1 to 3)
@@ -466,12 +471,11 @@ var/global/list/train_roof_segments = list()
 	var/inside = null
 	if (!vehicle_deck && isturf(loc))
 		for (var/obj/O in loc)
-			var/obj/structure/trains/platform/S = train_deck_segment(O)
-			if (S)
-				inside = S.car_id
+			inside = train_roof_car_id(O)
+			if (inside)
 				break
 	var/reach = 12
-	for (var/obj/structure/trains/platform/S in train_roof_segments)
+	for (var/obj/structure/trains/S in train_roof_segments)
 		if (QDELETED(S) || !S.roof_images)
 			train_roof_segments -= S
 			continue

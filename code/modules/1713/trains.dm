@@ -681,6 +681,7 @@ var/global/train_solo_move = FALSE
 	var/fuel = 0
 	var/max_fuel = 100
 	var/haul = 16 // train weight, itself included, pulled at full speed
+	var/fuel_store = "firebox"
 	var/tmp/throttle = 0 // notch, 0 to LOCO_NOTCHES
 	var/tmp/reverser = 1 // 1 forward, -1 backward
 	var/tmp/braking = FALSE
@@ -691,23 +692,31 @@ var/global/train_solo_move = FALSE
 	var/tmp/consist_engines = 0
 
 /obj/structure/trains/locomotive/Destroy()
+	clear_body()
 	on = FALSE
 	rail_speed = 0
 	return ..()
 
 /obj/structure/trains/locomotive/attack_hand(mob/living/user as mob)
-	if (!istype(user, /mob/living) || !(user in range(1, src)))
+	// A heavy locomotive is driven from its cab (train_locomotives.dm).
+	var/atom/spot = control_spot()
+	if (!istype(user, /mob/living) || !spot || !(user in range(1, spot)))
+		if (body_kind && istype(user, /mob/living))
+			to_chat(user, "The controls are in the cab.")
 		return
 	var/list/choices = list(on ? "Stop the engine" : "Start the engine")
 	choices += list("Throttle up", "Throttle down", "Brake")
 	choices += (reverser > 0) ? "Reverser to backward" : "Reverser to forward"
 	var/choice = player_input(user, "[control_summary()]", "[name]", null, "anything", choices, TRUE)
-	if (!choice || QDELETED(src) || !(user in range(1, src)))
+	if (!choice || QDELETED(src) || !(user in range(1, spot)))
 		return
 	switch (choice)
 		if ("Start the engine")
+			if (engine_disabled())
+				to_chat(user, "<span class = 'warning'>The engine is too badly damaged to run. Weld it first.</span>")
+				return
 			if (fuel <= 0 && max_fuel)
-				to_chat(user, "<span class = 'warning'>The firebox is empty.</span>")
+				to_chat(user, "<span class = 'warning'>The [fuel_store] is empty.</span>")
 				return
 			on = TRUE
 			visible_message("[user] starts \the [src].", "You start \the [src].")
@@ -790,7 +799,7 @@ var/global/train_solo_move = FALSE
 		feed_from(tender)
 
 /obj/structure/trains/locomotive/proc/engine_disabled()
-	return FALSE
+	return broken_down
 
 // 0 when the engine pulls its rated load or more; below 1 it is overloaded.
 /obj/structure/trains/locomotive/proc/pull_ratio()
