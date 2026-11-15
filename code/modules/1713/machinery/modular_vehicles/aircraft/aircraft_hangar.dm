@@ -75,6 +75,8 @@
 	var/obj/structure/vehicleparts/axis/aircraft/A = build_aircraft_model(model, origin)
 	if (!A)
 		return null
+	// A wooden or aluminium airframe (vehicle_hulls.dm).
+	A.set_hull(vehicle_project_hull(costs(model)))
 	var/list/engines = A.wing_engines()
 	if (A.engine)
 		engines += A.engine

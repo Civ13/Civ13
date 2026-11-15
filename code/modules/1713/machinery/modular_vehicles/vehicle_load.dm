@@ -54,7 +54,14 @@
 /obj/structure/vehicleparts/frame/proc/wall_weight(list/wall, steel_only = FALSE)
 	if (!islist(wall) || wall.len < 4 || !wall[1] || wall[1] == "none")
 		return 0
-	return max(0, wall[4]) * VEHICLE_WALL_WEIGHT
+	var/weight = max(0, wall[4]) * VEHICLE_WALL_WEIGHT
+	// A hull material weighs its walls from their steel armour (vehicle_hulls.dm).
+	var/list/stats = vehicle_hull_stats(hull_material)
+	if (stats)
+		weight /= stats[2]
+		if (!steel_only)
+			weight *= stats[1]
+	return weight
 
 // TRUE for things standing on a frame that count as cargo rather than
 // fitted parts: loose items (other than the fuel tank) and crates.
