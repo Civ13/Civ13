@@ -111,19 +111,39 @@ jobs:
             if ($p.HasExited) { "{0}: exited {1:X}" -f $name, $p.ExitCode } else { "${name}: still running, title '$($p.MainWindowTitle)'"; $p.Kill() }
           }
           function Events { Get-WinEvent -FilterHashtable @{LogName='Application'; ProviderName='Application Error','Windows Error Reporting'} -MaxEvents 6 -ErrorAction SilentlyContinue | ForEach-Object { $_.TimeCreated; $_.Message } }
-          Try-Seeker 'plain' $null
-          Try-Seeker 'guest-url' 'byond://127.0.0.1:1##guest'
-          Events
+          $world = "$env:RUNNER_TEMP/tiny"; New-Item -ItemType Directory $world | Out-Null
+          Set-Content "$world/tiny.dme" @'
+          world
+          	maxx = 5
+          	maxy = 5
+          turf
+          	icon = null
+          mob/Login()
+          	..()
+          	world.log << "LOGIN [key] [client.byond_version].[client.byond_build]"
+          client/New()
+          	world.log << "CLIENT [key]"
+          	return ..()
+          '@
+          (Get-Content "$world/tiny.dme") -replace '^          ', '' | Set-Content "$world/tiny.dme"
+          & "$bin\dm.exe" "$world/tiny.dme" | Select-Object -Last 2
+          $dd = Start-Process "$bin\dd.exe" -ArgumentList 'tiny.dmb','17590','-trusted','-invisible','-log','dd.log' -WorkingDirectory $world -PassThru
+          Start-Sleep 8
+          Try-Seeker 'url-guest' 'byond://127.0.0.1:17590##guest'
+          Try-Seeker 'url-plain' 'byond://127.0.0.1:17590'
+          Try-Seeker 'bare-address' '127.0.0.1:17590'
           $pager = Start-Process "$bin\byond.exe" -WorkingDirectory $bin -PassThru
           Start-Sleep 15
           Shot 'pager'
-          if ($pager.HasExited) { "pager exited {0:X}" -f $pager.ExitCode } else { "pager running" }
-          Try-Seeker 'with-pager' $null
+          Try-Seeker 'pager-url-guest' 'byond://127.0.0.1:17590##guest'
+          Try-Seeker 'pager-url-plain' 'byond://127.0.0.1:17590'
+          Start-Process "byond://127.0.0.1:17590" -ErrorAction SilentlyContinue
+          Start-Sleep 12
+          Shot 'shell-open'
+          Get-Process dreamseeker -ErrorAction SilentlyContinue | Select-Object Id, MainWindowTitle
           Events
-          choco install directx -y --no-progress | Select-Object -Last 5
-          Try-Seeker 'after-directx' $null
-          Events
-          Get-ChildItem "$env:USERPROFILE\Documents\BYOND" -Recurse -ErrorAction SilentlyContinue | Select-Object FullName, Length
+          Get-Content "$world/dd.log"
+          Get-Process dreamseeker,byond,dd -ErrorAction SilentlyContinue | Stop-Process -Force
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()
         with:
