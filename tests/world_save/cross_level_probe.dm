@@ -32,6 +32,11 @@ var/list/cross_observations = list()
 	cross_runtime_failed = TRUE
 	world.log << "Unexpected runtime error: [E] at [E.file]:[E.line]"
 
+// Production saves stage moving chunks in a scratch savefile (save_stream.dm,
+// not part of this packet); the fixture keeps the non-Windows behaviour.
+/proc/new_scratch_savefile()
+	return new /savefile
+
 /proc/cross_check(condition, message)
 	cross_checks++
 	if(!condition) throw EXCEPTION(message)
@@ -211,6 +216,62 @@ var/list/cross_observations = list()
 	if(!backward)
 		var/live = nested ? holder.payload["wrapper"]["target"] : holder.payload
 		cross_check(live == cross_target, "save changed the live cross-level field")
+	if(!backward && !nested)
+		cross_check_contained_field_round_trip()
+
+// An item inside a container has no native z. A field on level 1 naming an
+// item in a box on level 2 must be dropped by its turf's level, so the item
+// is saved once, inside its box, by level 2, and loads back there.
+/proc/cross_check_contained_field_round_trip()
+	var/obj/cross_box/box = new(locate(2,1,2))
+	box.name = "later level box"
+	var/obj/item/cross_target/contained = new(box)
+	contained.name = "contained target"
+	contained.paid_units = 512
+	var/obj/cross_holder/holder = new(locate(2,1,1))
+	holder.payload = contained
+	cross_check(!contained.z, "contained target unexpectedly has a native z")
+	var/reason = cross_try_save()
+	cross_check(!reason, "contained cross-level field aborted the save: [reason]")
+	cross_check(holder.payload == contained, "save changed the live contained field")
+	var/list/per_level = list(0, 0)
+	for(var/z = 1, z <= world.maxz, z++)
+		var/savefile/F = new("map_saves/[z].sav")
+		F.cd = "/entries"
+		var/list/shards = F.dir.Copy()
+		for(var/shard in shards)
+			F.cd = "/entries/[shard]"
+			var/list/refs = F.dir.Copy()
+			for(var/ref in refs)
+				var/path = map_storage.entry_path(F, ref)
+				if(F["[path]/type"] == /obj/item/cross_target && F["[path]/paid_units"] == 512) per_level[z]++
+	cross_check(per_level[1] == 0 && per_level[2] == 1, "contained target saved by the wrong level: level 1 [per_level[1]], level 2 [per_level[2]]")
+	cross_check(map_storage.validate_world_save(), "contained field generation failed production preflight: [map_storage.last_error]")
+	map_storage.ClearMap()
+	cross_check(map_storage.Load_World(), "contained field generation failed production loading")
+	map_storage.restore_durable_world()
+	var/obj/item/cross_target/restored
+	var/restored_count = 0
+	for(var/obj/item/cross_target/I in world)
+		if(I.paid_units != 512) continue
+		restored = I
+		restored_count++
+	cross_check(restored_count == 1, "contained target restored [restored_count] times")
+	cross_check(istype(restored.loc, /obj/cross_box) && restored.loc.name == "later level box" && get_turf(restored) == locate(2,1,2), "contained target lost its container")
+	var/obj/cross_holder/restored_holder
+	// Holders save only their payload; this one is the holder at (2,1,1).
+	for(var/obj/cross_holder/H in locate(2,1,1))
+		restored_holder = H
+	cross_check(restored_holder && isnull(restored_holder.payload), "contained cross-level field did not load as null")
+	map_storage.release_durable_world()
+
+// Legacy list saves read text through Numeric(): text containing "e+" stays
+// text unless both halves are numbers.
+/proc/cross_check_legacy_numeric()
+	cross_check(map_storage.Numeric("Rose+Thorn") == "Rose+Thorn", "Numeric turned e+ text into a number")
+	cross_check(map_storage.Numeric("1e+e+2") == "1e+e+2", "Numeric changed text with two exponents")
+	cross_check(map_storage.Numeric("1e+06") == 1000000, "Numeric lost a scientific-notation number")
+	cross_check(map_storage.Numeric("42") == 42, "Numeric lost a plain number")
 
 /proc/cross_check_unplaced()
 	cross_capture_target = FALSE
@@ -293,7 +354,9 @@ var/list/cross_observations = list()
 			if("move-direct") cross_check_movement()
 			if("move-nested") cross_check_movement(TRUE)
 			if("same-level") cross_check_movement(TRUE, TRUE)
-			if("field-direct") cross_check_field_reference()
+			if("field-direct")
+				cross_check_legacy_numeric()
+				cross_check_field_reference()
 			if("field-nested") cross_check_field_reference(TRUE)
 			if("field-backward-direct") cross_check_field_reference(FALSE, TRUE)
 			if("field-backward-nested") cross_check_field_reference(TRUE, TRUE)
