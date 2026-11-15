@@ -33,6 +33,10 @@
 
 /datum/chat/proc/on_ready()
 	is_ready = TRUE
+	// The page keeps recent chat under the ckey and puts it back here, so
+	// moving to another region (a new world, a fresh page) keeps the history.
+	// Sent before the queued messages so they land below the restored lines.
+	client << output(client.ckey, "browser_chat:setChatIdentity")
 	for (var/message in message_queue)
 		send_message(message)
 	message_queue.Cut()
