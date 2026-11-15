@@ -948,7 +948,12 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/vehicleparts/frame" = "automobiles",
 		"/obj/structure/vehicleparts/frame/wood" = "automobiles",
 		"/obj/structure/vehicleparts/movement" = "automobiles",
-		// --- basic_agriculture (10) ---
+		// --- irrigation (2) ---
+		"/obj/structure/sluice_gate" = "irrigation",
+		"/obj/structure/water_lift/archimedes_screw" = "irrigation",
+		// --- basic_agriculture (12) ---
+		"/obj/structure/water_lift/shaduf" = "basic_agriculture",
+		"/obj/structure/river_gauge" = "basic_agriculture",
 		"/obj/item/stack/material/wool" = "basic_agriculture",
 		"/obj/item/weapon/berriesgatherer" = "basic_agriculture",
 		"/obj/item/animal_tack/saddle" = "basic_agriculture",
@@ -2010,7 +2015,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/drill/sifter/panner" = "electricity",
 		"/obj/structure/drill/stamp_mill" = "electricity",
 		"/obj/item/weapon/resource_sieve" = "basic_tools",
-		// --- primitive_construction (25) ---
+		// --- primitive_construction (26) ---
+		"/obj/structure/flood_platform/stilts" = "primitive_construction",
 		"/obj/covers/fancywood" = "primitive_construction",
 		"/obj/covers/straw_wall" = "primitive_construction",
 		"/obj/structure/workshop_machine/shear_legs" = "primitive_construction",
@@ -2303,7 +2309,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/material/harpoon/bone" = "stone_arms",
 		"/obj/structure/anvil/stone" = "stone_arms",
 		"/obj/structure/noose" = "stone_arms",
-		// --- stone_masonry (45) ---
+		// --- stone_masonry (46) ---
+		"/obj/structure/flood_platform/plinth" = "stone_masonry",
 		"/obj/structure/workshop_machine/mover/treadwheel" = "stone_masonry",
 		"/obj/covers/cobblestone" = "stone_masonry",
 		"/obj/structure/furnace/lime_kiln" = "stone_masonry",

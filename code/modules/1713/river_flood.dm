@@ -393,13 +393,14 @@ var/global/next_river_flood_tick = 0
 		return 0
 	. = F.hollow_count ? F.hollow_depth_at(T) : 0
 	var/r = F.reach_at(T.x, T.y)
-	if (!r || F.stage[r] <= 0)
-		return
-	var/threshold = F.effective_threshold(T)
-	if (isnull(threshold) || F.stage[r] <= threshold)
-		return
-	// Once the river tops the rim, it stands on the ground behind it.
-	. = max(., F.stage[r] - terrain_height_at(T))
+	if (r && F.stage[r] > 0)
+		var/threshold = F.effective_threshold(T)
+		// Once the river tops the rim, it stands on the ground behind it.
+		if (!isnull(threshold) && F.stage[r] > threshold)
+			. = max(., F.stage[r] - terrain_height_at(T))
+	// A stilt platform or plinth lifts what stands on it (flood_defences.dm).
+	if (. > 0 && T.flood_raise)
+		. = max(0, . - T.flood_raise)
 
 
 // How high the last floods stood on a land tile, in levels (0 for none).
