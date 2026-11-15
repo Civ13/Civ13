@@ -42,23 +42,28 @@ void arguments() {
 }
 void push_to_talk() {
   PushToTalk ptt;
-  check(!ptt.held(true)); // physical key alone (typed elsewhere) is not enough
-  ptt.key(true);
-  check(ptt.held(true));
-  check(!ptt.held(false)); // released while the console missed the key up
-  check(!ptt.held(true));  // pressing again elsewhere does not reopen it
-  ptt.key(true);
-  check(ptt.held(true));
+  check(!ptt.held(0)); // nothing pressed
+  ptt.key(true, 100);
+  check(ptt.held(100));
+  check(ptt.held(100 + PushToTalk::stale_ms)); // still inside the window
+  ptt.key(true, 1000); // a repeat event keeps it open
+  check(ptt.held(1000 + PushToTalk::stale_ms));
+  check(!ptt.held(1001 + PushToTalk::stale_ms)); // missed key-up closes it
+  check(!ptt.held(1002 + PushToTalk::stale_ms));
+  ptt.key(true, 5000);
+  check(ptt.held(5000));
+  check(!ptt.held(4999)); // clock going backwards closes it
+  ptt.key(true, 6000);
   ptt.focus(false);
-  check(!ptt.held(true));
-  ptt.key(true); // a stray event while unfocused does not transmit
-  check(!ptt.held(true));
+  check(!ptt.held(6000));
+  ptt.key(true, 6010); // a stray event while unfocused does not transmit
+  check(!ptt.held(6010));
   ptt.focus(true);
-  check(!ptt.held(true)); // focus back alone does not reopen it
-  ptt.key(true);
-  check(ptt.held(true));
-  ptt.key(false);
-  check(!ptt.held(true));
+  check(!ptt.held(6020)); // focus back alone does not reopen it
+  ptt.key(true, 6030);
+  check(ptt.held(6030));
+  ptt.key(false, 6040);
+  check(!ptt.held(6040));
 }
 void microphone() {
   Mic m{true, true, false, false, false};

@@ -18,8 +18,9 @@ any of it moves into the companion.
 3. Sets the call to push-to-talk mode with a 20ms release delay. The
    microphone opens only while SPACE is held **in this console window**. A key
    press that the console did not deliver never counts, and focus loss or a
-   physical release the console missed closes it again
-   (`voice_control.hpp`, `PushToTalk`).
+   missed key-up (no repeat event for 1.2 seconds) closes it again
+   (`voice_control.hpp`, `PushToTalk`). It never reads global keyboard state,
+   which antivirus flags as keylogging.
 4. M mutes, D deafens, I lists microphones and switches to the next one,
    P lists participants, 1-9 mutes a participant for you only
    (`Call::SetLocalMute`), Q ends the call, leaves the lobby and quits.

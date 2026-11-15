@@ -52,21 +52,26 @@ inline std::optional<Arguments> parse_arguments(int argc,
   return Arguments{value, secret};
 }
 
-// Push-to-talk key tracking. A key press only counts when the console window
-// delivered it (so typing in another program never opens the microphone), and
-// it stops counting when the console loses focus or the physical key is up.
+// Push-to-talk key tracking. Only key events the console window itself
+// delivered count, so typing in another program never opens the microphone.
+// No global keyboard state is read (antivirus treats that as keylogging).
+// Holding a key makes the console repeat the key-down event, so a hold with
+// no event for stale_ms means the key-up was missed (for example, the window
+// lost focus without a focus event) and the microphone closes.
 class PushToTalk {
 public:
-  void key(bool down) noexcept { console_down_ = down && focused_; }
+  static constexpr int64_t stale_ms = 1200;
+  void key(bool down, int64_t now_ms) noexcept {
+    console_down_ = down && focused_;
+    last_ms_ = now_ms;
+  }
   void focus(bool focused) noexcept {
     focused_ = focused;
     if (!focused)
       console_down_ = false;
   }
-  // physical_down: the key's real state right now (GetAsyncKeyState), which
-  // catches a release the console never saw.
-  bool held(bool physical_down) noexcept {
-    if (!physical_down)
+  bool held(int64_t now_ms) noexcept {
+    if (console_down_ && (now_ms < last_ms_ || now_ms - last_ms_ > stale_ms))
       console_down_ = false;
     return focused_ && console_down_;
   }
@@ -74,6 +79,7 @@ public:
 private:
   bool console_down_ = false;
   bool focused_ = true;
+  int64_t last_ms_ = 0;
 };
 
 struct Mic {

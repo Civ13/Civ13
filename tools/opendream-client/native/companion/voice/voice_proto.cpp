@@ -326,7 +326,7 @@ struct App {
       const WORD vk = key.wVirtualKeyCode;
       const bool pressed = key.bKeyDown != FALSE;
       if (vk == ptt_key) {
-        ptt.key(pressed);
+        ptt.key(pressed, now_ms());
         continue;
       }
       if (vk >= down.size())
@@ -433,8 +433,7 @@ int main(int argc, char **argv) {
       app.on(Event::quit);
     if (have_console)
       app.read_console(input);
-    const bool physical = (GetAsyncKeyState(ptt_key) & 0x8000) != 0;
-    app.mic.ptt_held = app.ptt.held(physical);
+    app.mic.ptt_held = app.ptt.held(now_ms());
     app.apply_microphone();
     if (app.phase == Phase::in_call &&
         (app.refresh_wanted ||
