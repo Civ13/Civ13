@@ -436,6 +436,15 @@ var/global/list/faction_symbol_shapes = list("star", "sun", "moon", "cross", "bi
 	else if (href_list["clear"])
 		faction_symbol_push_undo(map.ensure_faction_symbol_undo(faction), map.ensure_faction_symbol_grid(faction))
 		map.clear_faction_symbol(faction)
+	else if (href_list["export_code"])
+		faction_symbol_show_code(owner, map.ensure_faction_symbol_grid(faction))
+	else if (href_list["import_code"])
+		// Fills the canvas only; the banner changes when the Leader saves.
+		var/list/imported = faction_symbol_ask_code(owner, "Faction Symbol", "the [faction] symbol")
+		if (imported && map.is_faction_leader(owner, faction))
+			faction_symbol_push_undo(map.ensure_faction_symbol_undo(faction), map.ensure_faction_symbol_grid(faction))
+			map.faction_symbol_grid[faction] = imported
+			to_chat(owner, SPAN_NOTICE("The design is on the canvas. Save to put it on your banners."))
 	else if (href_list["undo"])
 		var/list/restored = faction_symbol_pop_undo(map.ensure_faction_symbol_undo(faction))
 		if (restored)

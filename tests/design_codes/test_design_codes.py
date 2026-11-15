@@ -23,6 +23,7 @@ class DesignCodesTest(unittest.TestCase):
             'code/game/objects/structures/sign_flags.dm': ('"C13FLAG/1/', 'design_code_fields(code, "FLAG")'),
             'code/modules/1713/structures.dm': ('"C13POLE/1/', 'design_code_fields(code, "POLE")'),
             'code/modules/1713/dressmaking.dm': ('"C13CLOTH/1/', 'design_code_fields(code, "CLOTH")'),
+            'code/modules/paintings/design_codes.dm': ('"C13SYMBOL/1/', 'design_code_fields(code, "SYMBOL", DESIGN_CODE_SYMBOL_MAX)'),
         }
         for path, (writer, reader) in pairs.items():
             with self.subTest(path=path):
@@ -60,6 +61,24 @@ class DesignCodesTest(unittest.TestCase):
         self.assertIn('painting_code_allowed(user, C.author_ckey)', codec)
         drawings = read('code/modules/paintings/drawings.dm')
         self.assertIn('painting_code_allowed(reader, D["ckey"])', drawings)
+
+    def test_both_symbol_editors_copy_and_paste_codes(self):
+        for path in ('code/game/mob/groups/faction_symbol.dm', 'code/game/mob/groups/faction_creation.dm'):
+            with self.subTest(path=path):
+                text = read(path)
+                self.assertIn('href_list["export_code"]', text)
+                self.assertIn('href_list["import_code"]', text)
+                self.assertIn('faction_symbol_ask_code(owner,', text)
+        for path in ('UI/templates/faction_symbol.tmpl', 'UI/templates/faction_creation.tmpl'):
+            with self.subTest(path=path):
+                text = read(path)
+                self.assertIn("'export_code' : 1", text)
+                self.assertIn("'import_code' : 1", text)
+        editor = read('code/game/mob/groups/faction_symbol.dm')
+        # A pasted symbol only fills the canvas, and only for the Leader; Save puts it on banners.
+        self.assertIn('if (imported && map.is_faction_leader(owner, faction))', editor)
+        shared = read('code/modules/paintings/design_codes.dm')
+        self.assertIn('design_code_log(user, "faction symbol", what, code)', shared)
 
     def test_saved_flags_redraw_from_their_design(self):
         self.assertIn('/obj/structure/sign/flag/custom/after_load()', read('code/game/objects/structures/sign_flags.dm'))

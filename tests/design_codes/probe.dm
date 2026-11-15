@@ -43,6 +43,7 @@ var/code_runtime_error = FALSE
 		code_flag_checks()
 		code_pole_checks()
 		code_cloth_checks()
+		code_symbol_checks()
 	catch(var/exception/e)
 		code_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = code_failures, "runtime_error" = code_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")
@@ -146,3 +147,30 @@ var/code_runtime_error = FALSE
 	code_check(isnull(tailoring_parse_design_code("C13CLOTH/1/made_shirt/zz0000/-/-")), "a bad colour is refused")
 	var/list/named = tailoring_parse_design_code("C13CLOTH/1/loincloth/-/-/<b>Bold")
 	code_check(named && !findtext(named["name"], "<"), "a pasted name is cleaned ([named ? named["name"] : "refused"])")
+
+/proc/code_symbol_checks()
+	var/list/grid = faction_symbol_new_grid()
+	faction_symbol_stamp_grid(grid, "star")
+	grid[1] = "#aa2211"
+	var/code = faction_symbol_design_code(grid)
+	code_check(findtext(code, "C13SYMBOL/1/ffffff,") == 1 && length(code) <= DESIGN_CODE_SYMBOL_MAX, "a faction symbol exports as C13SYMBOL ([length(code)] characters)")
+	var/list/back = faction_symbol_parse_design_code(code)
+	var/same = back && back.len == grid.len
+	for (var/i = 1, same && i <= grid.len, i++)
+		if (back[i] != uppertext(faction_symbol_code_pixel(grid[i])))
+			same = FALSE
+	code_check(same, "a faction symbol code reads back pixel for pixel")
+	code_check(faction_symbol_grid_is_blank(faction_symbol_parse_design_code(faction_symbol_design_code(faction_symbol_new_grid()))), "a blank symbol stays blank, so founding still falls back to the shape")
+	// The busiest symbol: every pixel a different colour from the last.
+	var/list/busy = faction_symbol_new_grid()
+	for (var/i = 1, i <= busy.len, i++)
+		busy[i] = rgb((i * 37) % 256, (i * 91) % 256, (i * 13) % 256)
+	var/busy_code = faction_symbol_design_code(busy)
+	var/list/busy_back = faction_symbol_parse_design_code(busy_code)
+	code_check(busy_back && length(busy_code) <= DESIGN_CODE_SYMBOL_MAX && faction_symbol_colour_count(busy) > 16 && faction_symbol_colour_count(busy_back) <= 16, "a symbol with more than 16 colours exports approximated within the length cap ([length(busy_code)] characters)")
+	code_check(isnull(faction_symbol_parse_design_code("C13SYMBOL/1/ffffff/0~1023.")), "a wrong pixel count is refused")
+	code_check(isnull(faction_symbol_parse_design_code("C13SYMBOL/1/ffffff/0~1023.1")), "a pixel past the palette is refused")
+	code_check(isnull(faction_symbol_parse_design_code("C13SYMBOL/1/" + jointext(painting_palette_hex_list(17), ",") + "/0~1024.")), "more than 16 colours are refused")
+	code_check(faction_symbol_parse_design_code(" c13symbol/1/FFFFFF/\n0~1024. ") != null, "spaces, line breaks and upper case pixels are forgiven")
+	code_check(isnull(faction_symbol_parse_design_code("C13ART/1/32x32/ffffff/0~1024.")), "a picture code is not a faction symbol")
+	code_check(findtext(design_code_refusal("C13FLAG/1/x", "SYMBOL"), "not a faction symbol"), "a code of the wrong kind says what the symbol editor wants")
