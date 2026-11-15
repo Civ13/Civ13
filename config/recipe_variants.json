@@ -9,6 +9,7 @@
     {"result": "/obj/item/weapon/saw", "noun": "saw", "template": {"material": "iron", "title": "saw"}, "materials": ["copper", "bronze", "steel"]},
     {"result": "/obj/item/weapon/shears", "noun": "shears", "template": {"material": "iron", "title": "shears"}, "materials": ["copper", "steel"]},
     {"result": "/obj/item/weapon/wirecutters", "noun": "wirecutters", "template": {"material": "steel", "title": "wirecutters"}, "materials": ["iron", "bronze"]},
-    {"result": "/obj/item/weapon/crowbar", "noun": "crowbar", "template": {"material": "iron", "title": "crowbar"}, "materials": ["bronze", "steel"]}
+    {"result": "/obj/item/weapon/crowbar", "noun": "crowbar", "template": {"material": "iron", "title": "crowbar"}, "materials": ["bronze", "steel"]},
+    {"result": "/obj/item/weapon/plough/hoe", "noun": "hoe", "template": {"material": "wood", "title": "hoe"}, "materials": ["copper", "bronze", "iron", "steel"]}
   ]
 }

@@ -33,7 +33,7 @@ generator = load('recipe_variants', 'scripts/recipe_variants.py')
 DATA = json.loads((ROOT / 'config/recipe_variants.json').read_text(encoding='utf-8'))
 SOURCE = (ROOT / 'code/modules/materials/tool_materials.dm').read_text(encoding='utf-8')
 PLAIN = [ROOT / 'code/modules/1713/tools.dm', ROOT / 'code/game/objects/items/weapons/tools.dm',
-         ROOT / 'code/modules/materials/tool_materials.dm']
+         ROOT / 'code/modules/materials/tool_materials.dm', ROOT / 'code/modules/materials/farm_tools.dm']
 SHEETS = (ROOT / 'code/modules/materials/material_sheets.dm').read_text(encoding='utf-8', errors='ignore')
 RESEARCH = (ROOT / 'code/modules/research_tree/research_node.dm').read_text(encoding='utf-8', errors='ignore')
 
@@ -55,6 +55,10 @@ FROZEN_SPEEDS = {
     ('wirecutters', 'bronze'): 0.77,
     ('crowbar', 'bronze'): 0.84,
     ('crowbar', 'steel'): 1.25,
+    ('hoe', 'copper'): 1.45,
+    ('hoe', 'bronze'): 1.5,
+    ('hoe', 'iron'): 1.5,
+    ('hoe', 'steel'): 1.5,
 }
 
 
