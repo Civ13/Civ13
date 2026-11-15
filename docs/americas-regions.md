@@ -106,7 +106,8 @@ The generator needs numpy and Pillow; the test suite needs neither.
 ```sh
 python3 -I -B tests/americas_maps/build.py                    # rewrite both maps and their height, current and flood files
 python3 -I -B tests/americas_maps/build.py --only north --preview north.png
-python3 tests/americas_maps/test_americas_maps.py
+python3 tests/americas_maps/test_americas_maps.py              # checks file digests in tests/americas_maps/sidecars.json (about 6 s)
+AMERICAS_MAPS_REBUILD=1 python3 tests/americas_maps/test_americas_maps.py   # also rebuilds the current and flood files and compares (about 45 s)
 ```
 
 The generator is deterministic. Regenerating a map under a world that already

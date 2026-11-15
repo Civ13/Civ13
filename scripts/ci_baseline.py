@@ -850,9 +850,15 @@ SUITES = {
             'code/game/objects/effects/spawners/loot.dm',
             'code/game/objects/map_metadata/eft_factory.dm', 'civ13.dme')},
     # Generated Americas region maps (north and south continent): DMM parse,
-    # land share, starts, isthmus trail posts and source registration; no BYOND runtime.
-    'americas_maps': {'files': ('tests/americas_maps/test_americas_maps.py',),
-        'paths': ('tests/americas_maps/', 'maps/nomads/nomads_americas_north.dmm',
+    # land share, starts, the isthmus edge, file digests and source registration; no BYOND runtime.
+    'americas_maps': {'files': ('tests/americas_maps/test_americas_maps.py',), 'timeout': 120,
+        'paths': ('tests/americas_maps/', 'maps/heights/nomads_americas_north.txt',
+                  'maps/heights/nomads_americas_north.flow.txt',
+                  'maps/heights/nomads_americas_north.flood.txt',
+                  'maps/heights/nomads_americas_south.txt',
+                  'maps/heights/nomads_americas_south.flow.txt',
+                  'maps/heights/nomads_americas_south.flood.txt',
+                  'maps/nomads/nomads_americas_north.dmm',
                   'maps/nomads/nomads_americas_south.dmm',
                   'code/game/objects/map_metadata/nomads/nomads_americas.dm',
                   'scripts/shard-group/americas.example.json'), 'shared_paths': (
