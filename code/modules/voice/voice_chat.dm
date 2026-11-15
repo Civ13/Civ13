@@ -85,6 +85,7 @@ var/global/datum/voice_chat/voice_chat = new
 	var/last_roster_at = -100000
 	var/datum/http_request/roster_request = null
 	var/roster_timer = null
+	var/empty_since = null // world.time the voice roster became empty
 
 /datum/voice_chat/proc/attach(client/C, key)
 	if(!C || !key) return
@@ -289,10 +290,17 @@ var/global/datum/voice_chat/voice_chat = new
 	roster_request = request
 	last_roster = body
 	last_roster_at = world.time
-	if(!length(clients_by_key) && roster_timer)
-		// The empty roster just went out; wake again when someone attaches.
+	if(length(clients_by_key))
+		empty_since = null
+	else if(isnull(empty_since))
+		empty_since = world.time
+	// Stop only after an empty roster went out a keepalive after the world
+	// emptied: the bot removes players 30 seconds after the first roster
+	// without them, and needs a later roster to do it. Wake on the next attach.
+	if(!length(clients_by_key) && roster_timer && last_roster_at >= empty_since + VOICE_ROSTER_KEEPALIVE)
 		deltimer(roster_timer)
 		roster_timer = null
+		empty_since = null
 
 #undef VOICE_KEY_MIN_LENGTH
 #undef VOICE_KEY_MAX_LENGTH
