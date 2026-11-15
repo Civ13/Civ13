@@ -48,6 +48,15 @@ var/naval_runtime_error = FALSE
 /obj/structure/probe_gun
 	name = "probe gun"
 	anchored = TRUE
+// Writes down the glide it had when it was moved: the engine draws a move at
+// the glide a thing has at that moment.
+/obj/structure/probe_glide_spy
+	var/moved_at_glide = -1
+
+/obj/structure/probe_glide_spy/forceMove(atom/destination)
+	. = ..()
+	moved_at_glide = glide_size
+
 /obj/structure/probe_rock
 	name = "probe rock"
 	anchored = TRUE
@@ -149,10 +158,15 @@ var/naval_runtime_error = FALSE
 	// tile over half a minute. Her pace is for her own steps only.
 	var/obj/item/stack/material/wood/logs = new(locate(33, 11, 2))
 	var/logs_glide = logs.glide_size
+	var/obj/structure/probe_glide_spy/spy = new(locate(30, 12, 2))
 	naval_check(C.sail_tick() && tiller.x == 33 && !C.path_markers.len, "one step carries the tiller one tile east and clears the marks ([tiller.x])")
 	naval_check(corner.glide_size == slow_glide && tiller.glide_size == slow_glide && ann.glide_size == slow_glide && slow_glide > 0 && slow_glide < 1, "planks, tiller and a sailor square on her tile glide for the whole step ([corner.glide_size])")
 	naval_check(free.x == 33 && free.step_x == 5 && free.pixel_x == 3 && free.glide_size == free_glide, "a sailor standing off-centre is carried, keeps her place and offset, and is slid by animation, not by glide")
 	naval_check(logs.x == 34 && logs.glide_size == slow_glide && logs.craft_glide_was == B.glide_was, "a log stack on her deck rides her step at her pace ([logs.glide_size])")
+	// Ship report (2026-11-15): she still jumped a tile at a time in a real
+	// client. Her pace has to be on a thing as it moves, not given after.
+	naval_check(spy.x == 31 && spy.moved_at_glide == slow_glide, "her first step moves a thing at her pace already ([spy.moved_at_glide])")
+	qdel(spy)
 	logs.Move(locate(33, 11, 2), WEST)
 	naval_check(logs.x == 33 && logs.glide_size == logs_glide && !logs.craft_glide_was && !(logs in B.glide_was), "pushed along her deck, it moves at its own pace, not hers ([logs.glide_size] vs [logs_glide])")
 	naval_check(!logs.persistence_runtime_var("glide_size"), "its own glide is saved as usual")

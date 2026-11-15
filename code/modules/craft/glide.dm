@@ -36,19 +36,22 @@
 // applied)), kept so that each thing gets its own glide back afterwards.
 /proc/glide_show(list/was, atom/movable/M, dx, dy, time)
 	if (craft_glides_natively(M))
-		var/size = craft_glide_size(time)
-		var/list/held = was[M]
-		if (!held)
-			was[M] = list(M.glide_size, size)
-		else
-			// Something else set its glide since; that is the value to give back.
-			if (M.glide_size != held[2])
-				held[1] = M.glide_size
-			held[2] = size
-		M.glide_size = size
-		M.craft_glide_was = was
+		glide_hold(was, M, craft_glide_size(time))
 		return
 	glide_slide(M, dx, dy, time)
+
+// Holds M's glide at size in was, keeping what to give back.
+/proc/glide_hold(list/was, atom/movable/M, size)
+	var/list/held = was[M]
+	if (!held)
+		was[M] = list(M.glide_size, size)
+	else
+		// Something else set its glide since; that is the value to give back.
+		if (M.glide_size != held[2])
+			held[1] = M.glide_size
+		held[2] = size
+	M.glide_size = size
+	M.craft_glide_was = was
 
 // Draws A (a thing or a tile) where it was, (dx, dy) tiles back, and slides it
 // to where it now is over time, with the view of a player who is that mob.
@@ -122,14 +125,34 @@
 // a thing she carries (a pull, a push, a throw, a current, a hand picking it
 // up) would otherwise draw that move at her pace: a log stack shoved across
 // her deck crept a tile over half a minute. Every move gives the glide back
-// first; her own step takes it again straight after (built_body.dm, axis
-// glide_step), in the same tick, so clients only ever see her pace for her steps.
+// first, except the move her own step makes (craft_step_move), which keeps it,
+// so clients only ever see her pace for her steps.
 /atom/movable
 	var/tmp/list/craft_glide_was = null // The record of the craft holding this thing's glide.
 
 /atom/movable/proc/craft_glide_drop()
-	if (craft_glide_was)
+	if (craft_glide_was && craft_glide_mover != src)
 		craft_glide_release(src, craft_glide_was)
+
+// The thing her own step is moving right now: its move keeps the glide she holds.
+var/global/atom/movable/craft_glide_mover = null
+
+// Moves M, carried by her step, to D and shows the move as her glide. The
+// engine draws a move at the glide_size the thing has when it moves, so a
+// thing that glides natively takes her pace before it moves, not after:
+// given afterwards, the step was drawn at the thing's own pace (a snap for
+// the planks and the crew) and only the next one would have been glided.
+/datum/craft_body/proc/craft_step_move(atom/movable/M, turf/D, dx, dy, time)
+	if (time > 0 && craft_glides_natively(M))
+		if (!glide_was)
+			glide_was = list()
+		glide_hold(glide_was, M, craft_glide_size(time))
+	var/was_mover = craft_glide_mover
+	craft_glide_mover = M
+	M.forceMove(D)
+	craft_glide_mover = was_mover
+	if (time > 0 && M.loc == D)
+		craft_glide(M, dx, dy, time)
 
 /datum/craft_body/proc/craft_glide(atom/movable/M, dx, dy, time)
 	if (!glide_was)
