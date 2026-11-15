@@ -294,12 +294,22 @@ class LivingConditions(unittest.TestCase):
 
     def test_lasting_conditions_move_the_resting_level_not_mood(self):
         living = uncomment(source(self.LIVING))
-        self.assertNotRegex(living, r'\b(?:adjust_mood|set_mood)\(')
+        conditions = living[living.index('/mob/living/human/collect_mood_rest_parts'):]
+        self.assertNotRegex(conditions, r'\b(?:adjust_mood|set_mood)\(')
+        self.assertEqual(living.count('adjust_mood('), 1)  # only the gated small pleasure
         for part in ('"being clean"', '"being filthy"', '"fleas"', '"being sick"', '"being seriously ill"',
                      '"being in pain"', 'sleep_comfort_name()', '"a varied diet"', '"being warm and dry"',
-                     '"going hungry"', '"going thirsty"'):
+                     '"going hungry"', '"going thirsty"', 'shelter', '"animal company"', '"art around you"'):
             self.assertEqual(living.count('parts[' + part + '] = '), 1, part)
         self.assertIn('#include "code\\game\\mob\\living\\carbon\\human\\mood_living.dm"', source('civ13.dme'))
+
+    def test_small_pleasures_are_gated_lifts(self):
+        leisure = uncomment(source('code/modules/reagents/reagent_containers/food/snacks/mood_leisure.dm'))
+        self.assertEqual(leisure.count('H.mood_leisure('), 2)
+        self.assertNotIn('adjust_mood(', leisure)
+        helper = A.extract(source(self.LIVING), '/mob/living/human/proc/mood_leisure')
+        self.assertLess(helper.index('world.time < mood_leisure_next[cause]'), helper.index('adjust_mood(amount, cause)'))
+        self.assertIn('#include "code\\modules\\reagents\\reagent_containers\\food\\snacks\\mood_leisure.dm"', source('civ13.dme'))
 
     def test_dirt_fleas_and_sickness_no_longer_drain_mood_every_tick(self):
         for path in (CORE, 'code/game/mob/living/carbon/human/human_disease.dm',
@@ -311,10 +321,16 @@ class LivingConditions(unittest.TestCase):
     def test_positive_conditions_stay_under_the_resting_cap(self):
         living = source(self.LIVING)
         value = lambda name: float(re.search(r'^#define %s (\S+)' % name, living, re.M).group(1))
-        best = sum(value(name) for name in ('LIVING_BED', 'LIVING_SHEET', 'LIVING_DIET', 'LIVING_CLEAN', 'LIVING_WARM_DRY'))
-        self.assertEqual(best, 18)
+        basics = sum(value(name) for name in ('LIVING_BED', 'LIVING_SHEET', 'LIVING_DIET', 'LIVING_CLEAN', 'LIVING_WARM_DRY'))
+        self.assertEqual(basics, 18)
+        home = value('LIVING_SHELTER') + value('LIVING_ANIMAL') + value('LIVING_ART') * value('LIVING_ART_PIECES')
+        self.assertEqual(home, 12)
         cap = float(re.search(r'^#define MOOD_REST_MAX (\S+)', source('code/__defines/mobs.dm'), re.M).group(1))
-        self.assertLessEqual(50 + best, cap)
+        # The basics alone reach Good; no single lift is needed to reach the cap.
+        self.assertGreaterEqual(50 + basics, 60)
+        self.assertGreater(50 + basics + home, cap)
+        for name in ('LIVING_BED', 'LIVING_SHEET', 'LIVING_DIET', 'LIVING_CLEAN', 'LIVING_WARM_DRY', 'LIVING_SHELTER', 'LIVING_ANIMAL'):
+            self.assertGreaterEqual(50 + basics + home - value(name), cap, name)
         # Conditions alone reach Good (60 up to 80), never Excellent.
         self.assertLess(cap, 80)
 

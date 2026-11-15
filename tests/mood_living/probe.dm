@@ -27,6 +27,24 @@
 	return
 /obj/item/weapon/bedsheet/ml_sheet/New()
 	return
+/obj/structure/brazier/ml_fire/New()
+	return
+/mob/living/simple_animal/cattle/ml_cow/New()
+	return
+/mob/living/simple_animal/complex_animal/dog/ml_dog/New()
+	return
+/obj/structure/painting_frame/ml_painting/New()
+	return
+/obj/structure/rock_art/ml_rock_art/New()
+	return
+/obj/structure/religious/gravestone/ml_grave/New()
+	return
+/obj/structure/religious/monument/obelisk/ml_obelisk/New()
+	return
+/obj/structure/table/ml_table/New()
+	return
+/obj/item/weapon/reagent_containers/food/snacks/ml_meal/New()
+	return
 
 var/ml_failures = 0
 var/ml_runtime_error = FALSE
@@ -147,6 +165,98 @@ var/ml_runtime_error = FALSE
 	ml_check(ml_rest(H) == 56 && H.mood_rest_parts["a fine bed with sheets to sleep in"] == 6, "a fine bed counts after waking ([H.mood_rest])")
 	H.loc = locate(10, 10, 1)
 	ml_check(ml_rest(H) == 56, "and keeps counting away from the bed")
+
+	// Shelter: a roof, or a lit fire at night.
+	var/area/here = get_area(H)
+	var/outside = here.location
+	here.location = AREA_INSIDE
+	ml_check(ml_rest(H) == 59 && H.mood_rest_parts["a roof over your head"] == 3, "a roof lifts the resting level ([H.mood_rest])")
+	here.location = AREA_OUTSIDE
+	var/obj/structure/brazier/ml_fire/fire = new(locate(11, 10, 1))
+	fire.on = TRUE
+	time_of_day = "Midday"
+	ml_check(ml_rest(H) == 56, "a fire by day is no shelter")
+	time_of_day = "Night"
+	ml_check(ml_rest(H) == 59 && H.mood_rest_parts["a fire to sit by at night"] == 3, "a lit fire at night is")
+	fire.on = FALSE
+	ml_check(ml_rest(H) == 56, "a cold brazier is not")
+	fire.loc = null
+	here.location = outside
+
+	// Animal company: tame and alive, close by.
+	var/mob/living/simple_animal/cattle/ml_cow/cow = new(locate(12, 10, 1))
+	cow.stat = CONSCIOUS
+	ml_check(ml_rest(H) == 59 && H.mood_rest_parts["animal company"] == 3, "a tame cow nearby is company ([H.mood_rest])")
+	cow.wild = TRUE
+	ml_check(ml_rest(H) == 56, "a wild one is not")
+	cow.wild = FALSE
+	cow.stat = DEAD
+	ml_check(ml_rest(H) == 56, "nor is a dead one")
+	cow.stat = CONSCIOUS
+	cow.loc = locate(14, 10, 1)
+	ml_check(ml_rest(H) == 56, "nor one four tiles away")
+	cow.loc = null
+	var/mob/living/simple_animal/complex_animal/dog/ml_dog/dog = new(locate(10, 11, 1))
+	dog.stat = CONSCIOUS
+	dog.tamed = FALSE
+	ml_check(ml_rest(H) == 56, "an untamed dog is no comfort")
+	dog.tamed = TRUE
+	ml_check(ml_rest(H) == 59, "a tamed dog is")
+	dog.loc = null
+
+	// Art in sight: two points a piece, three pieces at most.
+	new /obj/structure/religious/gravestone/ml_grave(locate(10, 12, 1))
+	ml_check(ml_rest(H) == 56, "a gravestone is not art")
+	var/list/works = list(new /obj/structure/painting_frame/ml_painting(locate(11, 11, 1)))
+	ml_check(ml_rest(H) == 58 && H.mood_rest_parts["art around you"] == 2, "one painting lifts it a little")
+	works += new /obj/structure/rock_art/ml_rock_art(locate(9, 10, 1))
+	works += new /obj/structure/religious/monument/obelisk/ml_obelisk(locate(10, 13, 1))
+	ml_check(ml_rest(H) == 62 && H.mood_rest_parts["art around you"] == 6, "three works lift it more ([H.mood_rest])")
+	works += new /obj/structure/painting_frame/ml_painting(locate(12, 12, 1))
+	ml_check(ml_rest(H) == 62, "a fourth adds nothing")
+	H.loc = locate(1, 1, 1)
+	ml_check(ml_rest(H) == 56, "art out of sight does nothing")
+	H.loc = locate(10, 10, 1)
+
+	// With everything, the resting level stops at the cap: good, never excellent.
+	here.location = AREA_INSIDE
+	dog.loc = locate(10, 11, 1)
+	H.hygiene = 250
+	H.bodytemperature = H.species.body_temperature
+	for (var/group in diet_groups)
+		H.diet_reserves[group] = 100
+	ml_check(ml_rest(H) == 75 && mood_tier(H.mood_rest) == MOOD_TIER_GOOD, "the finest home rests at the cap of 75 ([H.mood_rest])")
+	H.hygiene = 150
+	H.bodytemperature = 290
+	for (var/group in diet_groups)
+		H.diet_reserves[group] = 0
+	here.location = outside
+	dog.loc = null
+	for (var/obj/structure/work in works)
+		work.loc = null
+
+	// Small pleasures lift mood once per gap.
+	H.mood = 50
+	ml_check(H.mood_leisure("a good read", 5, 12000) && H.mood == 55, "a good read lifts mood")
+	ml_check(!H.mood_leisure("a good read", 5, 12000) && H.mood == 55, "but not twice in a row")
+	ml_check(H.mood_leisure("a meal at a table", 3, 6000) && H.mood == 58, "another pleasure has its own gap")
+	H.mood_leisure_next = null
+	H.mood = 50
+	var/obj/item/weapon/reagent_containers/food/snacks/ml_meal/meal = new(H)
+	meal.satisfaction = 5
+	meal.On_Consume(H)
+	ml_check(H.mood == 50, "a meal on the move is just a meal ([H.mood])")
+	var/obj/structure/table/ml_table/table = new(locate(11, 10, 1))
+	meal.On_Consume(H)
+	ml_check(H.mood == 53, "a meal at a table is a pleasure ([H.mood])")
+	meal.On_Consume(H)
+	ml_check(H.mood == 53, "once per sitting")
+	H.mood_leisure_next = null
+	meal.satisfaction = -5
+	meal.On_Consume(H)
+	ml_check(H.mood == 53, "food you dislike is no pleasure at any table")
+	table.loc = null
+	H.mood_drift()
 
 	// Everything good at once stays under the cap; everything bad stays above the floor.
 	H.hygiene = 250
