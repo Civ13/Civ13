@@ -78,6 +78,10 @@ var/project_runtime_error = FALSE
 
 // Fits every remaining piece through the player paths: stacks hit the press,
 // wheels and tracks are dragged onto the press.
+/proc/model_hull(model)
+	var/list/spec = works_vehicle_specs[model]
+	return spec ? spec["hull"] : null
+
 /proc/project_finish(obj/structure/car_workshop/W, mob/living/human/H)
 	var/list/paths = list("steel" = /obj/item/stack/material/steel, "glass" = /obj/item/stack/material/glass, "cloth" = /obj/item/stack/material/cloth, "cable" = /obj/item/stack/cable_coil, "wood" = /obj/item/stack/material/wood, "aluminium" = /obj/item/stack/material/aluminium)
 	var/guard = 0
@@ -211,6 +215,7 @@ var/project_runtime_error = FALSE
 	for (var/model in works_vehicle_specs)
 		spots[model] = list(5 + 7 * (spot_index % 5), 12 + 8 * round(spot_index / 5))
 		spot_index++
+	var/steel_light_factor = 0
 	project_check(spots.len == 11, "eleven works models ([spots.len])")
 	for (var/model in spots)
 		var/list/spot = spots[model]
@@ -238,6 +243,14 @@ var/project_runtime_error = FALSE
 		project_check(istype(made) && made.keyed_vehicle_id && made.name == lowertext(model), "[model]: rolls out keyed and named")
 		if (!istype(made))
 			continue
+		var/hulls_ok = TRUE
+		for (var/obj/structure/vehicleparts/frame/HF in made.components)
+			hulls_ok = hulls_ok && HF.hull_material == model_hull(model)
+		project_check(hulls_ok, "[model]: its frames are [model_hull(model) || "steel"]")
+		if (model == "Light tank")
+			steel_light_factor = made.get_load_factor(TRUE)
+		if (model == "Tracked carrier")
+			project_check(made.get_load_factor(TRUE) < 1, "the aluminium tracked carrier is light for its engine ([made.load_factor])")
 		project_check(made.components.len == size * size && made.wheels.len == 4, "[model]: fills its [size]x[size] square on four wheels or tracks ([made.components.len], [made.wheels.len])")
 		project_check(made.engine && made.engine.fueltank && !made.engine.fueltank.reagents.total_volume && made.wheel, "[model]: engine, empty tank and steering linked")
 		var/extras = 0
@@ -309,6 +322,24 @@ var/project_runtime_error = FALSE
 		project_check(isnull(rebuilt) && made.components.len == size * size && made.wheels.len == 4 && made.engine && made.engine.fueltank && made.wheel && refitted && length(made.built_turrets()) == (gunned ? 1 : 0), "[model]: the same parts assemble again ([rebuilt], [made.components.len] parts, [made.wheels.len] wheels)")
 		project_check(!V.project && V.stock["steel"] == 0 && !V.stock["tracks"], "[model]: the project is spent")
 	H.loc = locate(6, 5, 1)
+
+	// ---- An aluminium light tank ----
+	var/obj/structure/car_workshop/project_probe/AL = new(locate(5, 36, 1))
+	H.loc = locate(6, 36, 1)
+	project_check(AL.hull_choices("Light tank", H) ~= list("steel", "aluminium") && AL.hull_choices("Tracked carrier", H) ~= list("aluminium") && AL.hull_choices("ASNO Piccolino", H) ~= list("steel"), "works vehicles may be steel or aluminium; the carrier is aluminium only; cars are steel")
+	AL.start_project("Light tank", "aluminium")
+	var/datum/piece_plan/ALP = AL.get_project_plan()
+	var/list/al_cost = ALP.total_cost()
+	project_check(al_cost["aluminium"] == 96 && al_cost["steel"] == 70 && AL.costs("Light tank")["aluminium"] == 96, "an aluminium light tank pays 96 aluminium for its hull and keeps 70 steel for engine and gun ([json_encode(al_cost)])")
+	project_finish(AL, H)
+	var/obj/structure/vehicleparts/axis/al_tank = AL.roll_out_project(H)
+	project_check(istype(al_tank), "the aluminium light tank rolls out")
+	if (istype(al_tank))
+		var/obj/structure/vehicleparts/frame/ALF = locate() in al_tank.components
+		project_check(ALF.hull_material == "aluminium" && ALF.airframe_weight() < 10, "its frames are aluminium")
+		project_check(steel_light_factor && al_tank.get_load_factor(TRUE) < steel_light_factor, "and it is lighter than the steel one ([al_tank.load_factor] against [steel_light_factor])")
+	project_check(!AL.project && !AL.project_hull, "the press forgets the hull with the project")
+	project_check(works_vehicle_specs["Light tank"]["gun"] < works_vehicle_specs["Medium tank"]["gun"] && works_vehicle_specs["Medium tank"]["gun"] < works_vehicle_specs["Heavy tank"]["gun"] && works_vehicle_specs["Heavy tank"]["gun"] < works_vehicle_specs["Main battle tank"]["gun"], "a bigger tank's gun costs more")
 
 	// ---- A plane ----
 	var/obj/structure/car_workshop/hangar/project_probe/A = new(locate(15, 5, 1))
