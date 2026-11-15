@@ -356,8 +356,8 @@ var/global/list/region_travel_generic_defaults = list()
 	for(var/obj/item/A in tree)
 		try
 			A.after_load()
-		catch
-			log_game("Region travel: [A.type] did not finish rebuilding.")
+		catch(var/exception/e)
+			log_game("Region travel: [A.type] did not finish rebuilding: [e.name] ([e.file]:[e.line]).")
 		A.persistence_restore_finished()
 	return I
 
