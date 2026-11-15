@@ -38,25 +38,28 @@ She drops anchor and lies off the coast under way: the tiller only tells how
 long is left and offers **Turn back**. Whoever is aboard at landfall sails
 with her; anyone who steps off is left behind.
 
-## Sea lanes to known lands
+## Sea routes between the continents
 
-Code: `code/modules/naval/sea_lanes.dm`. Some lands of a region group lie
-across the sea from each other and need no world chart: a map lists them in
-`sea_lanes` (region id = `tiles` of sailing, the `coast` of this map a ship
-from that land comes in on, and a `bearing` the crew are told). Today the
-Americas and Gaia: North America and Gaia 6 tiles apart, South America and
-Gaia 8. Gaia's region id must be `gaia` in the host's group file.
+Code: `code/modules/naval/sea_lanes.dm`. The continents of the region group need
+no world chart: each has a place on one shared layout, `continent_layout`
+(region id = x east, y north, in chart tiles, and the map edges with open deep
+water along them, best first). The voyage between two coastal continents takes
+the larger of the two distances in tiles. Today: North America (0,6), South
+America (2,0), Gaia (6,7), Europe (11,9), Desert (12,4), Jungle (13,1), Asia
+(18,8). Desert and Jungle have no sea coast, so ships cannot reach them. The ids
+are the host's region ids in earth.json.
 
-**Set out on a voyage** lists each lane whose world is in the group and up
-or able to wake ("Gaia, across the sea to the east: 6 tiles, about 6
-minutes"), above any chart lands. A lane needs no chart owner or pin and only
-one crew member aboard; otherwise the rules above hold: a mast or running
-engine, the crossing rules and load, rations, storms (no sightings, since a
-lane crosses no chart). When her time is up she crosses to that world on the
-voyage id, like **Leave these waters**, or waits off the coast while it
-wakes (up to 30 minutes, then turns back). She makes landfall off the coast
-the lane names when there is room, else off any side. The crew make their
-home in the land they sail to, as with any trip between regions.
+**Set out on a voyage** lists every other coastal continent whose world is in
+the group and up or able to wake, for example "Gaia, across the sea to the east: 6 tiles,
+about 6 minutes". These come above any chart lands. A route needs no chart owner or pin and only one
+crew member aboard. The other voyage rules above still apply: a mast or running engine, the
+crossing rules and load, rations and storms. There are no sightings, since a route
+crosses no chart. When her time is up she crosses to that world on the voyage
+id, like **Leave these waters**, or waits off the coast while it wakes (up to 30
+minutes, then turns back). She makes landfall off the arriving continent's
+coasts facing where she came from, then its other coasts, then any side with
+room. The crew make their home in the land they sail to, as with any trip
+between regions.
 
 ## Rations and happenings
 

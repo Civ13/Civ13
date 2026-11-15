@@ -5,6 +5,9 @@
 	var/setup_lighting = FALSE
 	var/updating_lighting = FALSE
 	var/lighting_revision = 0
+	// Whether daylight counted as light in the last tint sweep (or the first
+	// full sweep, which runs update_overlay with the same rule).
+	var/tint_daylight_reveals = TRUE
 
 /process/time_of_day_change/setup()
 	name = "time of day change"
@@ -65,6 +68,21 @@
 		for (var/client/C in clients)
 			if (C.mob)
 				C.mob.update_lighting_plane()
+		// Only the step into or out of a dayless phase changes which turfs
+		// BYOND counts as lit (daylight_reveals_turfs).
+		var/reveals = daylight_reveals_turfs()
+		if (reveals != tint_daylight_reveals)
+			var/list/tint_overlays = lighting_overlay_list.Copy()
+			for (var/tint_index = 1, tint_index <= tint_overlays.len, tint_index++)
+				var/atom/movable/lighting_overlay/TO = tint_overlays[tint_index]
+				if (TO && TO.color_committed)
+					TO.luminosity = TO.light_lit || reveals
+					TO.last_luminosity = TO.luminosity
+				if (environment_sweep_pause(++work))
+					work = 0
+					if (revision != lighting_revision)
+						return FALSE
+			tint_daylight_reveals = reveals
 		return TRUE
 	var/list/sweep_overlays = lighting_overlay_list.Copy()
 	for (var/overlay_index = 1, overlay_index <= sweep_overlays.len, overlay_index++)
@@ -77,6 +95,7 @@
 				return FALSE
 	sweep_overlays = null
 	setup_lighting = TRUE
+	tint_daylight_reveals = daylight_reveals_turfs()
 	// With daylight on the client this first sweep still runs: an overlay no
 	// light has touched yet carries the default matrix and full alpha, and
 	// only update_overlay gives it its cell's window coefficient.

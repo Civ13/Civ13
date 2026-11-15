@@ -1,49 +1,103 @@
 // ============================================================
-// Sea lanes between known lands (docs/ship-voyage.md)
+// The lands of the Earth and the ways between them (docs/ship-voyage.md)
 // ------------------------------------------------------------
-// The Americas and Gaia lie across the sea from each other. A ship off the
-// edge of one can set out on a voyage to the other like a voyage on the world
-// chart (ship_voyage.dm): a mast or a running engine, rations for the days at
-// sea, storms on the way. At landfall she crosses to that world like any ship
-// leaving these waters (ship_crossing.dm) and comes in off the coast that faces
-// home. No world chart or expedition slot is needed: the lands are already
-// open, so a single sailor may make the voyage.
+// Every continent of the region group has a place on one shared layout
+// (continent_layout, in chart tiles) and the coasts of its map that face open
+// sea. From the layout come the routes between continents:
 //
-// A map lists its lanes in sea_lanes: region id = list("tiles" = chart tiles
-// of sailing, "coast" = the side of this map the lane comes in on, "bearing" =
-// where that land lies, for the crew). A lane is offered only while the region
-// is in this world's group and up or wakeable.
+// - By sea: a ship off the edge of one coastal continent can set out on a
+//   voyage to any other (ship_voyage.dm). A tile of the layout is a minute
+//   under sail, as on the world chart. She makes landfall off the coast that
+//   faces where she came from.
+// - By air: an aircraft flying off the edge of any continent can fly on to any
+//   other with a flight level (aircraft_routes.dm).
+//
+// A route is offered only while the other continent's world is in this
+// world's group and up or able to wake. Region ids are the host's (earth.json).
 // ============================================================
 
-/obj/map_metadata/var/list/sea_lanes = null
+// id = list(x, y, coasts): x grows east, y grows north. coasts: the map edges
+// with open deep water along them, best first.
+var/global/list/continent_layout = list(
+	"northamerica" = list(0, 6, list("E", "W", "N", "S")),
+	"southamerica" = list(2, 0, list("E", "W", "S", "N")),
+	"gaia" = list(6, 7, list("W", "E")),
+	"europe" = list(11, 9, list("S", "W")),
+	"desert" = list(12, 4, list()),
+	"jungle" = list(13, 1, list()),
+	"asia" = list(18, 8, list("E", "S", "W")))
 
-// The lane from this world to region id, or null.
-/proc/sea_lane(id)
-	if (!map || !islist(map.sea_lanes) || !istext(id))
+/proc/continent_place(id)
+	if (!istext(id))
 		return null
-	var/list/lane = map.sea_lanes[id]
-	if (!islist(lane) || !isnum(lane["tiles"]) || lane["tiles"] < 1)
-		return null
-	return lane
+	var/list/place = continent_layout[id]
+	return islist(place) && place.len == 3 ? place : null
 
-// "Label" = list(region id, tiles) for every known land a ship can sail for
+/proc/continent_coastal(id)
+	var/list/place = continent_place(id)
+	return place && length(place[3]) > 0
+
+// Tiles of sailing between two continents, or null when either is not laid out.
+/proc/continent_distance(from, dest)
+	var/list/A = continent_place(from)
+	var/list/B = continent_place(dest)
+	if (!A || !B)
+		return null
+	return max(1, max(abs(A[1] - B[1]), abs(A[2] - B[2])))
+
+// The compass word for where continent dest lies from continent from.
+/proc/continent_bearing(from, dest)
+	var/list/A = continent_place(from)
+	var/list/B = continent_place(dest)
+	if (!A || !B)
+		return null
+	var/dx = B[1] - A[1]
+	var/dy = B[2] - A[2]
+	var/ns = dy * 2 > abs(dx) ? "north" : (-dy * 2 > abs(dx) ? "south" : "")
+	var/ew = dx * 2 > abs(dy) ? "east" : (-dx * 2 > abs(dy) ? "west" : "")
+	return "[ns][ew]" || "near"
+
+// Map sides facing continent toward, nearest first: the main axis, then the
+// other axis, then the two away from it.
+/proc/continent_sides_toward(here, toward)
+	var/list/A = continent_place(here)
+	var/list/B = continent_place(toward)
+	if (!A || !B)
+		return list()
+	var/dx = B[1] - A[1]
+	var/dy = B[2] - A[2]
+	var/ew = dx >= 0 ? EAST : WEST
+	var/ns = dy >= 0 ? NORTH : SOUTH
+	return abs(dx) >= abs(dy) ? list(ew, ns, turn(ns, 180), turn(ew, 180)) : list(ns, ew, turn(ew, 180), turn(ns, 180))
+
+// "Label" = list(region id, tiles) for every continent a ship can sail for
 // from here now.
 /proc/sea_lane_destinations()
 	. = list()
-	if (!map || !islist(map.sea_lanes) || !shard_group || !shard_group.enabled)
+	if (!shard_group || !shard_group.enabled || !continent_coastal(shard_group.region))
 		return
-	for (var/id in map.sea_lanes)
-		var/list/lane = sea_lane(id)
+	for (var/id in continent_layout)
+		if (id == shard_group.region || !continent_coastal(id))
+			continue
 		var/list/peer = shard_group.peers[id]
-		if (!lane || !islist(peer) || id == shard_group.region)
+		if (!islist(peer) || peer["state"] == "STOPPED" || !(peer["state"] == "UP" || shard_group.peer_wakeable(id)))
 			continue
-		if (peer["state"] == "STOPPED" || !(peer["state"] == "UP" || shard_group.peer_wakeable(id)))
-			continue
-		var/tiles = round(lane["tiles"])
-		var/bearing = istext(lane["bearing"]) ? " to the [lane["bearing"]]" : ""
-		.["[peer["name"]], across the sea[bearing]: [tiles] tile\s, about [tiles] minute\s"] = list(id, tiles)
+		var/tiles = continent_distance(shard_group.region, id)
+		.["[peer["name"]], across the sea to the [continent_bearing(shard_group.region, id)]: [tiles] tile\s, about [tiles] minute\s"] = list(id, tiles)
 
-// The side of this map a ship coming from region from makes landfall on, or null.
-/proc/sea_lane_coast(from)
-	var/list/lane = sea_lane(from)
-	return lane ? text2dir_side(lane["coast"]) : null
+// The sides of this map a ship from continent from makes landfall off, best
+// first: its coasts facing from, its other coasts. Empty when from is unknown.
+/proc/sea_lane_sides(from)
+	. = list()
+	var/list/here = continent_place(shard_group ? shard_group.region : null)
+	if (!here || !continent_place(from))
+		return
+	var/list/coasts = list()
+	for (var/side in here[3])
+		coasts += text2dir_side(side)
+	for (var/d in continent_sides_toward(shard_group.region, from))
+		if (d in coasts)
+			. += d
+	for (var/d in coasts)
+		if (!(d in .))
+			. += d

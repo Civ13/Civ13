@@ -325,7 +325,9 @@ var/global/list/space_survey_maps = list()
 	fuel += amount
 	return amount
 
-/obj/structure/launch_rail/proc/find_console()
+/obj/structure/launch_rail/proc/find_console(obj/structure/survey_console/prefer = null)
+	if (prefer && !prefer.mission && !QDELETED(prefer) && get_dist(prefer, src) <= SURVEY_RAIL_CONSOLE_RANGE)
+		return prefer
 	for (var/obj/structure/survey_console/C in range(SURVEY_RAIL_CONSOLE_RANGE, src))
 		if (!C.mission)
 			return C
@@ -369,13 +371,15 @@ var/global/list/space_survey_maps = list()
 			continue
 		.[capitalize(survey_world_name(region))] = region
 
-/obj/structure/launch_rail/proc/choose_destination(mob/user)
+// `at` is where the player stands to work the rail: the rail itself, or the
+// mission console that flies it.
+/obj/structure/launch_rail/proc/choose_destination(mob/user, atom/at = null)
 	var/list/choices = destination_choices()
 	if (!choices.len)
 		to_chat(user, SPAN_WARNING("There is no other surveyed world within reach yet."))
 		return
 	var/label = player_input(user, "Which world should the probe fly to?", "Launch rail", null, "anything", choices, TRUE)
-	if (!label || !in_range(src, user) || user.incapacitated())
+	if (!label || !in_range(at || src, user) || user.incapacitated() || QDELETED(src))
 		return
 	if (set_destination(choices[label]))
 		to_chat(user, SPAN_NOTICE("The rail is set for [survey_world_name(destination)]. The probe will land anywhere flat until you aim it."))
@@ -391,7 +395,7 @@ var/global/list/space_survey_maps = list()
 	destination = region
 	return TRUE
 
-/obj/structure/launch_rail/proc/aim(mob/user)
+/obj/structure/launch_rail/proc/aim(mob/user, atom/at = null)
 	var/datum/survey_map/M = get_space_survey_map(destination)
 	if (!M)
 		to_chat(user, SPAN_WARNING("There is no survey map of the destination to aim at."))
@@ -403,7 +407,7 @@ var/global/list/space_survey_maps = list()
 		to_chat(user, SPAN_NOTICE("The probe will land anywhere flat."))
 		return
 	var/y = player_input(user, "Landing cell, south to north (1-[M.height]).", "Aim the probe", null, "num", null, TRUE)
-	if (isnull(y) || !in_range(src, user))
+	if (isnull(y) || !in_range(at || src, user) || QDELETED(src))
 		return
 	x = round(x)
 	y = round(y)
@@ -416,10 +420,12 @@ var/global/list/space_survey_maps = list()
 
 // Returns null on success, or the reason the launch failed. With no cell given
 // the rail's aim is used, scattered by up to `scatter` cells.
-/obj/structure/launch_rail/proc/launch(lx = null, ly = null, scatter = SURVEY_LANDING_SCATTER)
-	if (!loaded || fuel < SURVEY_FUEL_UNITS)
-		return "The rail is not ready."
-	var/obj/structure/survey_console/C = find_console()
+/obj/structure/launch_rail/proc/launch(lx = null, ly = null, scatter = SURVEY_LANDING_SCATTER, obj/structure/survey_console/prefer = null)
+	if (!loaded)
+		return "Load a survey probe onto the rail first."
+	if (fuel < SURVEY_FUEL_UNITS)
+		return "The probe needs [SURVEY_FUEL_UNITS] units of rocket propellant ([fuel] loaded)."
+	var/obj/structure/survey_console/C = find_console(prefer)
 	if (!C)
 		return "No idle mission console in range."
 	var/closed = survey_region_closed_reason(destination)
@@ -814,6 +820,49 @@ var/global/list/space_survey_maps = list()
 		return
 	show_ui(user)
 
+// Launch rails this console can fly a probe from.
+/obj/structure/survey_console/proc/nearby_rails()
+	. = list()
+	if (!isturf(loc))
+		return
+	for (var/obj/structure/launch_rail/R in range(SURVEY_RAIL_CONSOLE_RANGE, src))
+		. += R
+
+// The idle screen: every rail in reach, ready to aim and launch from here.
+/obj/structure/survey_console/proc/rails_html()
+	var/list/rails = nearby_rails()
+	if (!rails.len)
+		return "<p>No probe in flight. Build a launch rail within [SURVEY_RAIL_CONSOLE_RANGE] tiles, load a survey probe and [SURVEY_FUEL_UNITS] units of rocket propellant onto it, then fly the mission from here.</p>"
+	var/list/out = list("<p>No probe in flight. Prepare a mission from a launch rail in reach:</p>")
+	var/n = 0
+	for (var/obj/structure/launch_rail/R in rails)
+		n++
+		var/target = isnum(R.target_x) ? "aimed at [R.target_x],[R.target_y]" : "anywhere flat"
+		var/list/sites = landing_sites_for(R.destination)
+		out += "<p>Rail [n]: [R.loaded ? R.loaded.name : "no probe"], fuel [R.fuel]/[SURVEY_FUEL_UNITS], bound for [survey_world_name(R.destination)] ([target])[sites.len ? ", [sites.len] landing site\s known there" : ""].<br><a href='?src=\ref[src];rail=\ref[R];survey=rail_dest'>Destination</a> <a href='?src=\ref[src];rail=\ref[R];survey=rail_aim'>Aim</a> <a href='?src=\ref[src];rail=\ref[R];survey=rail_launch'>Launch</a></p>"
+	return jointext(out, "")
+
+// A rail action from the console. Returns the message to show.
+/obj/structure/survey_console/proc/rail_action(mob/living/human/H, action, obj/structure/launch_rail/R)
+	if (!istype(R) || QDELETED(R) || !(R in nearby_rails()))
+		return "That launch rail is out of reach."
+	switch (action)
+		if ("rail_dest")
+			R.choose_destination(H, src)
+			return null
+		if ("rail_aim")
+			R.aim(H, src)
+			return null
+		if ("rail_launch")
+			if (mission)
+				return "A probe is already in flight from this console."
+			var/result = R.launch(null, null, SURVEY_LANDING_SCATTER, src)
+			if (result)
+				return result
+			R.visible_message(SPAN_DANGER("\The [R] roars as a probe climbs away on a column of smoke!"))
+			return "The probe is away. It lands on [survey_world_name(map_region)] at [probe_x],[probe_y]."
+	return null
+
 /obj/structure/survey_console/proc/map_html(datum/survey_map/M)
 	var/list/out = list("<pre style='font-size:12px;line-height:12px;background:#111;padding:4px;display:inline-block'>")
 	for (var/y = map_height to 1 step -1)
@@ -842,7 +891,8 @@ var/global/list/space_survey_maps = list()
 		html += "<p><b>[message]</b></p>"
 	var/datum/survey_map/M = null
 	if (!mission)
-		html += "<p>No probe in flight. Launch one from a launch rail within [SURVEY_RAIL_CONSOLE_RANGE] tiles.</p><p>Hand the console a sample to analyse it into research notes.</p>"
+		html += rails_html()
+		html += "<p>Hand the console a sample to analyse it into research notes.</p>"
 	else
 		M = mission_map()
 		if (!M)
@@ -866,7 +916,9 @@ var/global/list/space_survey_maps = list()
 	if (!action)
 		return
 	var/message = null
-	if (!mission)
+	if (href_list["rail"])
+		message = rail_action(H, action, locate(href_list["rail"]))
+	else if (!mission)
 		message = "No probe in flight."
 	else
 		switch (action)

@@ -7,6 +7,10 @@
 	description = "Battle on the Nomads (Desert) map."
 	ambience = list("sound/ambience/desert.ogg")
 	research_active = TRUE
+	// Roofs may add up to four open-air levels (building_admission.dm); the
+	// first stands from the start of the round so aircraft can fly.
+	building_levels = 4
+	building_level_standing = TRUE
 	var/real_season = "wet"
 
 /obj/map_metadata/nomads/desert/New()

@@ -2,8 +2,9 @@
 // Crewed flight (space settlement phase 2)
 // ------------------------------------------------------------
 // A launch pad is a player-built trail marker that only leads to worlds with
-// a survey map (config/space/survey/<region>.json), and like any trail it
-// opens only once an admin approves it. A crewed lander built beside the pad
+// a survey map (config/space/survey/<region>.json), orbit or home. Unlike a
+// trail, the player who uses it picks where it flies and it is ready at once:
+// no admin approval. A crewed lander built beside the pad
 // is filled with rocket propellant; crew strap in on its tile and one of them
 // launches. Each crew member then travels as an ordinary region traveller
 // (region_travel.dm) with what they wear and carry, and the payload also says
@@ -71,10 +72,12 @@
 
 /obj/structure/region_gate/trail_marker/launch_pad
 	name = "launch pad"
-	desc = "A blast-scarred steel apron for a crewed lander. It can only lead to a world a probe has mapped, or home to the mainland from one, and an admin must approve it."
+	desc = "A blast-scarred steel apron for a crewed lander. It can only lead to a world a probe can map, to orbit, or home to the mainland from one. Use it to choose where it flies."
 	icon = 'icons/obj/machines/submarine.dmi'
 	icon_state = "steel_grid"
 	layer = TURF_LAYER + 0.1
+	// A pad flies off this world, so it is not held to same-world trails.
+	crosses_worlds = TRUE
 	// The flight being sent, while its crew depart (see travel_extra()).
 	var/tmp/list/pending_flight = null
 	// The lander's hold, sent with the next crew member to depart.
@@ -105,16 +108,26 @@
 		choices["[peer["name"]] ([id])"] = id
 	return choices
 
+// Players set a pad themselves: no admin approval (Val, 2026-11-15).
+// Opens the pad toward region id. Returns TRUE when it did.
 /obj/structure/region_gate/trail_marker/launch_pad/approve(id, by)
-	if (!space_flight_destination_ok(id))
+	if (!shard_group.enabled || !istext(id) || !(id in shard_group.peers) || !space_flight_destination_ok(id))
 		return FALSE
-	return ..()
+	destination = id
+	requested_destination = id
+	approved = TRUE
+	approved_by = by
+	log_game("Launch pad at [x],[y],[z] set for [id] by [by].")
+	return TRUE
+
+/obj/structure/region_gate/trail_marker/launch_pad/pending_reason()
+	return "Use the pad to choose where it should fly."
 
 /obj/structure/region_gate/trail_marker/launch_pad/closed_reason()
 	if (!approved)
-		if (requested_destination)
-			return "The pad is waiting for an admin to approve flights to [region_trail_name(requested_destination)]."
-		return "Use the pad to choose which mapped world it should fly to; an admin must approve it before anyone can launch."
+		return pending_reason()
+	if (destination && !space_flight_destination_ok(destination))
+		return "The pad cannot fly to [destination_name()] from here. Use it to choose another destination."
 	return ..()
 
 // Crew arrive in their landed lander, never on the pad.
@@ -124,10 +137,25 @@
 /obj/structure/region_gate/trail_marker/launch_pad/attack_hand(mob/living/human/user)
 	if (!istype(user) || !user.client)
 		return
-	if (!approved)
-		request(user)
+	if (approved && destination)
+		var/choice = WWinput(user, "The pad is set for [destination_name()]. Build a crewed lander or rocket beside it, fill it with propellant and strap in to fly.", "Launch pad", "OK", list("OK", "Change destination"))
+		if (choice != "Change destination" || QDELETED(src) || !user.client || !Adjacent(user))
+			return
+	choose_destination(user)
+
+// The player picks where this pad flies; it is ready at once.
+/obj/structure/region_gate/trail_marker/launch_pad/proc/choose_destination(mob/living/human/user)
+	var/list/choices = peer_choices()
+	if (!length(choices))
+		to_chat(user, SPAN_WARNING("No world is within reach of a rocket from here yet."))
 		return
-	to_chat(user, SPAN_NOTICE("Build a crewed lander beside the pad, fill it with propellant and strap in to fly to [destination_name()]."))
+	var/choice = player_input(user, "Where should this pad fly?", "Launch pad", null, "anything", choices, TRUE)
+	if (!choice || QDELETED(src) || !user.client || !Adjacent(user) || user.incapacitated())
+		return
+	if (approve(choices[choice], user.ckey))
+		to_chat(user, SPAN_NOTICE("The pad is set for [destination_name()]. Build a crewed lander or rocket beside it, fill it with propellant and strap in to fly."))
+	else
+		to_chat(user, SPAN_WARNING("The pad cannot fly there from here."))
 
 /obj/structure/region_gate/trail_marker/launch_pad/travel_extra(mob/living/human/H)
 	if (!pending_flight || !length(pending_cargo))
@@ -140,7 +168,7 @@
 
 /obj/structure/crewed_lander
 	name = "crewed lander"
-	desc = "A squat craft with seats for four and a small sealed cabin. Fill it with rocket propellant beside an approved launch pad, strap in on its tile and launch."
+	desc = "A squat craft with seats for four and a small sealed cabin. Fill it with rocket propellant beside a launch pad that is set for its destination, strap in on its tile and launch."
 	icon = 'icons/obj/decals_wider.dmi'
 	icon_state = "rocket"
 	anchored = TRUE

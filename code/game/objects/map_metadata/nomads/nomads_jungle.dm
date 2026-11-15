@@ -6,6 +6,10 @@
 	terrain_height_file = "maps/heights/nomads_jungle.txt"
 	description = "Battle on the Nomads (Jungle) map."
 	research_active = TRUE
+	// Roofs may add up to four open-air levels (building_admission.dm); the
+	// first stands from the start of the round so aircraft can fly.
+	building_levels = 4
+	building_level_standing = TRUE
 
 	var/real_season = "wet"
 

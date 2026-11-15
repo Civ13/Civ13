@@ -11,7 +11,7 @@ may add, and restore, exactly one cave level below its single compiled level
 while the whole world stays within Gaia's measured live profile (500 x 350 x 2 =
 350,000 cells, `NEW_Z_MEASURED_CELLS`). A map that opts into open-air
 building levels (`building_levels = N`, see `code/modules/multiz/building_admission.dm`;
-Gaia sets 4) may add, and restore, up to N roof-added levels, at most four, while
+Gaia, Asia, Jungle and Desert set 4) may add, and restore, up to N roof-added levels, at most four, while
 the world stays within 1,050,000 cells (`NEW_Z_BUILDING_MEASURED_CELLS`, Gaia's
 500 x 350 x 6). A level is added only when a roof is built on the highest
 existing one, so the world grows only as high as something stands.
