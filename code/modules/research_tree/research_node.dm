@@ -2082,7 +2082,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/paper_bin/empty" = "public_health",
 		"/obj/item/weapon/storage/bag/trash" = "public_health",
 		"/obj/structure/closet/crate/dumpster" = "public_health",
-		// --- rail_steam (11) ---
+		// --- rail_steam (12) ---
+		"/obj/structure/workshop_machine/rolling_mill" = "rail_steam",
 		"/obj/structure/workshop_machine/steam_site/road_roller" = "rail_steam",
 		"/obj/structure/rail_warehouse" = "rail_steam",
 		"/obj/structure/train_car_kit" = "rail_steam",

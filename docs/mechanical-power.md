@@ -42,8 +42,23 @@ fastened trip hammer within one tile has a turning prime mover next to it
 hammer plays its striking loop once when a job starts. Costs, recipes and
 research checks at the anvil are unchanged.
 
-A rolling mill was planned beside it and is not built: the game has no plate,
-sheet or rail stock for it to roll.
+## Rolling mill
+
+`code/modules/1713/rolling_mill.dm`: 16 iron plus 2 gear sets, 2 shafts and
+2 bearings, Railways and Steam Locomotion. It works only while fastened next
+to a turning prime mover (`rolling()`), and the wait goes through
+`driven_time()`, so a faster mover rolls faster. Stock used on it is rolled
+into products that already exist (`rolling_mill_products`), for someone who
+may craft that product:
+
+| Stock | Product | By hand |
+| --- | --- | --- |
+| 1 iron | 2 pairs of rails, 5 s | 1 pair, 5 s |
+| 1 steel | 3 pairs of rails, 5 s | - |
+| 10 steel | 1 hull armour plate, 20 s | 15 steel |
+
+It keeps rolling until the stack runs out or the worker steps away; metal is
+taken only after each wait succeeds. Suite `tests/rolling_mill`.
 
 ## Machine shop
 

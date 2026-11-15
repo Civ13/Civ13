@@ -1913,6 +1913,10 @@ SUITES = {
         'tests/wire_bench/', 'code/modules/1713/wire_bench.dm', 'code/modules/materials/wire_materials.dm',
         'code/modules/1713/machinery/cables_types.dm', 'config/craft_needs.json',
         'icons/obj/wire_bench.dmi', 'tests/sprites/create_wire_bench.py')},
+    # Source contracts only; this suite does not run DM.
+    'rolling_mill': {'files': ('tests/rolling_mill/test_contract.py',), 'paths': (
+        'tests/rolling_mill/', 'code/modules/1713/rolling_mill.dm', 'config/craft_needs.json',
+        'icons/obj/rolling_mill.dmi', 'tests/sprites/create_rolling_mill.py')},
     'lifting_machines': {'files': ('tests/lifting_machines/test_contract.py',), 'paths': (
         'tests/lifting_machines/', 'code/modules/1713/lifting_machines.dm',
         'icons/obj/lifting_machines.dmi', 'tests/sprites/create_lifting.py')},
