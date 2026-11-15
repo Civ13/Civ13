@@ -336,15 +336,18 @@ class AmericasMapsTest(unittest.TestCase):
         self.assertIn('return key == "region_edge_asking" || key == "region_edge_asked_at" || ..()', edge)
         # Drivers and draggers are told why, in plain words.
         self.assertIn('if (H.buckled || H.driver || H.driver_vehicle) return "You cannot drive across yet. Get down and walk on."', edge)
-        self.assertIn('if (H.pulling) return "You cannot drag anything across. Let go and walk on."', edge)
         # A rider takes the mount: recorded before the ask, removed only once the rider left,
         # validated on arrival, and never carried without an edge crossing.
-        self.assertIn('"voyage", "ship", "edge", "mount"))', travel)
+        self.assertIn('"voyage", "ship", "edge", "mount", "led"))', travel)
         self.assertIn('if ((H.riding || H.riding_mob) && !region_edge_mount_record(H)) return', edge)
         self.assertIn('if (took_mount && QDELETED(src) && !QDELETED(steed))', edge)
         self.assertIn('return ispath(path, /mob/living/simple_animal) && initial(A.can_ride)', edge)
         ok = edge.split('/proc/region_edge_payload_ok(list/P)\n')[1].split('\n\n')[0]
-        self.assertIn('return isnull(P["mount"])', ok)
+        self.assertIn('return isnull(P["mount"]) && isnull(P["led"])', ok)
+        self.assertIn('region_edge_mount_valid(P["led"], TRUE)', ok)
+        # An animal led by hand goes the same way; anything else dragged stays.
+        self.assertIn('if (H.pulling && !region_edge_led_record(H)) return', edge)
+        self.assertIn('if (took_led && QDELETED(src) && !QDELETED(beast))', edge)
         self.assertIn('region_edge_mount_valid(P["mount"])', ok)
         self.assertIn('\t\t\tregion_edge_replayed(H, P)\n', travel)
         # No trail posts drawn on maps any more.
