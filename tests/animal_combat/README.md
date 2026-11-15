@@ -50,3 +50,9 @@ person it is after until it eats the meat; a predator the thrower hurt, a fed
 predator and plant food are not affected, and hurting a distracted predator ends
 the distraction. Reverting the hunger gate makes it fail with
 "Hungry predator foraged instead of biting".
+
+`piranha.dm` drives the jungle river swarms on a real human: a 2 damage warning
+nip first, a three second bite cooldown, bites that build (6, 8, ... capped at
+14), no limb loss within five bites or beside a bank, a reset after a minute out
+of reach, no bites mid-jump, and limb loss only after sustained exposure in
+open water. Seeding places swarms only in open water.

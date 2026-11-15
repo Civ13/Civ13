@@ -12,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[2]
 CORE = (ROOT / 'code/modules/craft/vehicle_offset.dm').read_text(encoding='utf-8')
 DME = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
 PROBE = (ROOT / 'tests/vehicle_offset/probe.dm').read_text(encoding='utf-8')
+RIDE = (ROOT / 'code/modules/craft/vehicle_offset_ride.dm').read_text(encoding='utf-8')
 
 
 def proc(text, name):
@@ -45,9 +46,22 @@ class VehicleOffsetSources(unittest.TestCase):
 
     def test_probe_is_pinned(self):
         self.assertIn('world.byond_version == 516 && world.byond_build == 1688', PROBE)
-        for label in ('car_moves_as_one', 'wall_stops_flush', 'rider_stays_seated', 'carriage_crossed', 'snap_all_before_save'):
+        for label in ('moto_stops_flush_at_wall', 'coasts_to_a_stop', 'turn_keeps_sideways_offset', 'save_snaps_ridden_vehicles', 'car_moves_as_one', 'wall_stops_flush', 'rider_stays_seated', 'carriage_crossed', 'snap_all_before_save'):
             self.assertIn(label, PROBE)
 
+    def test_ride_included_after_core(self):
+        core = DME.index('craft\\vehicle_offset.dm')
+        self.assertLess(core, DME.index('craft\\vehicle_offset_ride.dm'))
+
+    def test_ride_falls_back_to_tile_loop(self):
+        loop = proc(RIDE, '/obj/structure/vehicle/movementloop(')
+        self.assertIn('if (!vehicle_offset_drives())', loop)
+        self.assertIn('return ..()', loop)
+        drives = proc(RIDE, '/obj/structure/vehicle/proc/vehicle_offset_drives(')
+        self.assertIn('persistence_save_in_progress', drives)
+        self.assertIn('O.watched()', drives)
+        self.assertIn('key == "offset_mover"', RIDE)
+        self.assertNotIn('spawn(', RIDE)
 
 if __name__ == '__main__':
     unittest.main()

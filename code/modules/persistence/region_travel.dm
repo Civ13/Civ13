@@ -213,6 +213,10 @@ var/global/list/region_travel_carry_types = list(
 	if(P["v"] >= 2 && !("known_recipe_nodes" in P))
 		P["known_recipe_nodes"] = list()
 		P["recipe_knowledge_initialized"] = !!recipe_knowledge_initialized
+	// People and languages travel whole (region_travel_tongues.dm).
+	var/list/tongues = region_travel_tongues()
+	if(tongues)
+		P["tongues"] = tongues
 	// Wounds travel as overall damage, so a trip never heals (raid exits let
 	// hurt raiders leave; other gates still ask for full health).
 	var/brute = clamp(round(getBruteLoss()), 0, 200)
@@ -263,6 +267,7 @@ var/global/list/region_travel_carry_types = list(
 		if(!region_travel_scholarship_valid(P["scholarship"])) return null
 	else if("scholarship" in P)
 		return null
+	if(("tongues" in P) && !region_travel_tongues_valid(P["tongues"])) return null
 	var/owner = P["owner"]
 	if(!persistence_owner_valid(owner) || length(owner) > 32) return null
 	if(!istext(P["name"]) || !length(P["name"]) || length(P["name"]) > MAX_NAME_LEN) return null
@@ -450,6 +455,7 @@ var/global/list/region_travel_carry_types = list(
 	H.recipe_knowledge_initialized = P["v"] >= 2 ? P["recipe_knowledge_initialized"] : FALSE
 	H.scholarship = P["v"] == 3 ? clean_scholarship(P["scholarship"]) : list()
 	H.study_progress = clean_study_progress(P["reading"])
+	H.region_travel_restore_tongues(P["tongues"])
 	H.gender = P["gender"]
 	H.age = P["age"]
 	H.fully_replace_character_name(H.real_name, P["name"])
@@ -585,6 +591,7 @@ var/global/list/region_travel_carry_types = list(
 		lobby.spawning = FALSE
 		return FALSE
 	H.record_persistence_owner()
+	H.region_travel_tongue_notes()
 	to_chat(H, SPAN_NOTICE("You arrive in [shard_group.enabled ? shard_group.name : "a new land"]."))
 	qdel(lobby)
 	return TRUE

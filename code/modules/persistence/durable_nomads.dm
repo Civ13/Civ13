@@ -154,9 +154,7 @@
 		if(T) new /obj/structure/fish(T)
 
 /obj/map_metadata/proc/durable_nomads_piranha_boot()
-	for(var/i = 1, i <= 30, i++)
-		var/turf/T = safepick(get_area_turfs(/area/caribbean/nomads/forest/Jungle/river))
-		if(T) new /obj/structure/piranha(T)
+	seed_piranhas(get_area_turfs(/area/caribbean/nomads/forest/Jungle/river), 15)
 
 /obj/map_metadata/proc/durable_nomads_respawn_policy()
 	config.no_respawn_delays = FALSE
