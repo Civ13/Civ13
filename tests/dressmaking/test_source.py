@@ -167,6 +167,46 @@ class TailoringTests(unittest.TestCase):
         for state in set(re.findall(r'"(tl_(?:glove|gloves|boot|boots|shoes|waist)\w*)"', body)):
             self.assertIn("'%s'" % state, sprites)
 
+    def test_bags_and_bandoliers_are_restyled_without_changing_function(self):
+        styling = (ROOT / 'code/modules/1713/bag_styling.dm').read_text()
+        kinds = re.search(r'var/global/list/bag_style_kinds = list\((.*?)\)\)\n', styling, re.S)[1]
+        rows = dict((path, (bag, re.findall(r'"(\w+)"', zones))) for path, bag, zones in
+                    re.findall(r'"(/obj/item/[\w/]+)" = list\("(\w+)", list\(([^)]*)\)', kinds))
+        self.assertEqual(sorted(bag for bag, _ in rows.values()),
+                         ['backpack', 'baldric', 'bandolier', 'duffel', 'quiver', 'rucksack', 'satchel', 'sling_bag'])
+        loose = dmi_states('icons/obj/clothing/bag_styles.dmi')
+        worn = dmi_states('icons/mob/bag_styles.dmi')
+        script = (ROOT / 'tests/sprites/create_bag_styles.py').read_text()
+        for bag, zones in rows.values():
+            self.assertIn(zones, (['Fabric', 'Straps', 'Trim'], ['Straps', 'Trim']))
+            self.assertIn("'%s': (" % bag, script)
+            for zone in zones:
+                with self.subTest(bag=bag, zone=zone):
+                    self.assertEqual(loose['%s_%s' % (bag, zone.lower())], 1)
+                    self.assertEqual(worn['%s_%s' % (bag, zone.lower())], 4)
+        self.assertEqual(len(loose), sum(len(zones) for _, zones in rows.values()))
+        # Exact types only, and the style never touches anything but looks.
+        self.assertIn('bag_style_kinds["[I.type]"]', styling)
+        sew = adapter.extract(styling, '/obj/item/tailoring_project/proc/sew_bag_style')
+        self.assertLess(sew.index('wait_for_tailoring(user, BAG_STYLE_TIME)'), sew.index('spend_alteration_sheet(user, site)'))
+        self.assertLess(sew.index('spend_alteration_sheet(user, site)'), sew.index('bag.bag_style = new_style'))
+        self.assertEqual(sew.count('alteration_ready(user, site, save_epoch, bag)'), 2)
+        self.assertEqual(sew.count('bag_style_allowed(user, colors)'), 2)
+        for word in ('max_storage_space', 'storage_slots', 'can_hold', 'slots =', 'armor', 'new /obj', '.name =', 'w_class'):
+            self.assertNotIn(word, styling)
+        for forbidden in ('icon(', '.Blend(', 'browse_rsc', 'fcopy_rsc'):
+            self.assertNotIn(forbidden, styling)
+        ready = adapter.extract(styling, '/obj/item/tailoring_project/proc/alteration_ready')
+        for guard in ('actor_ready(user, site, save_epoch)', 'stage == 0', 'target.loc == user'):
+            self.assertIn(guard, ready)
+        self.assertIn('key == "bag_style_overlays"', styling)
+        attack = adapter.extract(SOURCE, '/obj/item/tailoring_project/attackby')
+        self.assertLess(attack.index('bag_style_kind(W)'), attack.index('tailoring_fabric_kind_of(W)'))
+        icons = (ROOT / 'code/game/mob/living/carbon/human/update_icons.dm').read_text()
+        self.assertIn('standing.overlays += bag_style_layers(back, TRUE)', adapter.extract(icons, '/mob/living/human/update_inv_back'))
+        accessory = (ROOT / 'code/game/objects/items/clothing/under/accessories/accessory.dm').read_text()
+        self.assertEqual(accessory.count('bag_style_layers(src, TRUE)'), 2)
+
     def test_fabric_and_dyes(self):
         fabrics = re.search(r'var/global/list/tailoring_fabrics = list\((.*?)\)\n\n', SOURCE, re.S)[1]
         self.assertIn('"cloth" = list("stack" = /obj/item/stack/material/cloth', fabrics)
