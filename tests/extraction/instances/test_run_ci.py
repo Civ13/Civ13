@@ -62,7 +62,7 @@ class RunnerContracts(unittest.TestCase):
         source = (runner.ROOT / runner.SOURCE).read_bytes()
         def simulated_process(command, folder, name, *limits):
             if name == 'compile.log':
-                (folder / name).write_text('DM compiler version 516.1681\n- 0 errors, 0 warnings\n')
+                (folder / name).write_text('DM compiler version 516.1688\n- 0 errors, 0 warnings\n')
             else:
                 self.assertIn('-trusted', command)
                 self.assertNotIn('-safe', command)
@@ -101,28 +101,29 @@ class RunnerContracts(unittest.TestCase):
             self.assertTrue(result['cases']['generation']['accepted'])
 
     def test_compiler_summary_cannot_hide_diagnostics(self):
-        clean = 'DM compiler version 516.1681\nprobe.dmb - 0 errors, 0 warnings\n'
+        clean = 'DM compiler version 516.1688\nprobe.dmb - 0 errors, 0 warnings\n'
         runner.compiler_verdict(clean)
         for diagnostic in ('runtime error:', 'Bad ref', 'unhandled', 'Traceback', 'segmentation',
                            'fatal', 'error:', 'warning:', 'BUG:', 'access violation', 'out of memory'):
             with self.subTest(diagnostic=diagnostic), self.assertRaisesRegex(ValueError, 'diagnostic'):
                 runner.compiler_verdict(clean + diagnostic)
-        for log in ('', clean.replace('516.1681', '516.1682'), clean.replace('0 errors', '1 errors')):
+        for log in ('', clean.replace('516.1688', '516.1689'), clean.replace('516.1688', '516.1681'),
+                    clean.replace('0 errors', '1 errors')):
             with self.assertRaisesRegex(ValueError, 'banner/result'):
                 runner.compiler_verdict(log)
 
     def test_compiler_version_banner_is_complete_unique_and_exact(self):
         summary = '\nprobe.dmb - 0 errors, 0 warnings\n'
-        for version in ('516.16810', '516.16811', '516.1682', '1516.1681',
-                        '516.1681.0', '516.1681-beta', '516.1681extra', ''):
+        for version in ('516.16880', '516.16881', '516.1689', '1516.1688', '516.1681',
+                        '516.1688.0', '516.1688-beta', '516.1688extra', ''):
             with self.subTest(version=version), self.assertRaisesRegex(ValueError, 'banner/result'):
                 runner.compiler_verdict('DM compiler version ' + version + summary)
-        for banner in ('prefix DM compiler version 516.1681',
-                       'DM compiler version 516.1681\nDM compiler version 516.16810',
-                       'DM compiler version 516.1681\nDM compiler version 516.1681'):
+        for banner in ('prefix DM compiler version 516.1688',
+                       'DM compiler version 516.1688\nDM compiler version 516.16880',
+                       'DM compiler version 516.1688\nDM compiler version 516.1688'):
             with self.assertRaisesRegex(ValueError, 'banner/result'):
                 runner.compiler_verdict(banner + summary)
-        runner.compiler_verdict('DM compiler version 516.1681\r\n' + summary)
+        runner.compiler_verdict('DM compiler version 516.1688\r\n' + summary)
 
     def test_control_anchors_are_unique_and_source_is_detached(self):
         source = (runner.ROOT / runner.SOURCE).read_text(encoding='utf-8')
@@ -272,21 +273,22 @@ class RunnerContracts(unittest.TestCase):
 
     def test_workflow_has_independent_bounded_job_and_manual_default_off(self):
         workflow = (runner.ROOT / '.github/workflows/test.yml').read_text()
-        guard = ("if: needs.changes.outputs.extensive == 'true' || "
+        guard = ("needs.changes.outputs.extensive == 'true' || "
                  "contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/extraction') || "
                  "(github.event_name == 'workflow_dispatch' && inputs.extraction_instance_regressions)")
         block = workflow.split('  extraction-instances:\n', 1)[1].split('  # Existing game compilation gate.', 1)[0]
         self.assertEqual(block.count(guard), 2)
-        self.assertIn('needs: changes', block)
+        self.assertIn('needs: [changes, local-attestation]', block)
         self.assertIn('timeout-minutes: 12', block)
         self.assertIn('timeout-minutes: 5', block)
         self.assertIn('timeout-minutes: 6', block)
         self.assertIn('default: false', workflow.split('      extraction_instance_regressions:', 1)[1].split('permissions:', 1)[0])
         for required in ('persist-credentials: false', 'github.event.pull_request.head.sha || github.sha',
-                         '--retry 0', '--max-time 60', 'retention-days: 7',
+                         'scripts/byond_toolchain.py download --platform linux --output BYOND/pinned.zip --source repository-release',
+                         'retention-days: 7',
                          'tests/extraction/instances/run_ci.py', '--output "$RUNNER_TEMP/extraction-instances"'):
             self.assertIn(required, block)
-        for forbidden in ('travis_pre_byond', 'civ13.dme', 'apt upgrade', 'continue-on-error', '1714', 'D:/'):
+        for forbidden in ('travis_pre_byond', 'civ13.dme', 'civ13.com/downloads', '1681', 'BYOND_MINOR:', 'apt upgrade', 'continue-on-error', '1714', 'D:/'):
             self.assertNotIn(forbidden, block)
 
 
