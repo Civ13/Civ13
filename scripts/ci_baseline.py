@@ -745,6 +745,9 @@ SUITES = {
         'paths': ('tests/glasses_flash_protection/',), 'shared_paths': (
             'code/game/mob/living/carbon/human/human_helpers.dm',
             'code/game/objects/items/clothing/glasses/glasses.dm')},
+    # Switched-off walkthrough metal detectors keep their off look (issue 5484).
+    'metal_detector_power': {'files': ('tests/metal_detector_power/test_power_look.py',),
+        'paths': ('tests/metal_detector_power/',), 'shared_paths': ('code/modules/1713/modern_items.dm',)},
     'human_ssd_hunger': {'files': ('tests/human_ssd_hunger/test_ssd_hunger.py',
         'tests/human_ssd_hunger/test_conscious_hunger.py'),
         'paths': ('tests/human_ssd_hunger/',), 'shared_paths': (
