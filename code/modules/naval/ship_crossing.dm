@@ -324,7 +324,8 @@ var/global/list/sea_crossing_marked = list()
 	if (!islist(from) || from.len != 3)
 		return FALSE
 	for (var/v in from)
-		if (!isnum(v) || v < 1 || v > 1000 || v != round(v))
+		// Coordinates, not sizes: the Americas maps run past 1000 tiles.
+		if (!isnum(v) || v < 1 || v > 4096 || v != round(v))
 			return FALSE
 	var/list/tiles = R["tiles"]
 	if (!islist(tiles) || !tiles.len || tiles.len > BUILT_HULL_MAX_TILES)
@@ -571,6 +572,10 @@ var/global/list/sea_crossing_marked = list()
 		if (problem)
 			return "She cannot leave: [problem]"
 	var/list/record = packed["record"]
+	// Never strip her for a record the far side (or a rebuild here) would refuse.
+	if (!sea_crossing_record_ok(record))
+		log_game("Sea crossing: the [record["name"]] made a record that does not pass its own check at [x],[y],[z]; she stays.")
+		return "She cannot be made ready for the crossing here. Ask an admin."
 	if (!voyage)
 		voyage = "[shard_group.region || "world"]-[num2text(world.realtime, 20)]-[rand(1000, 9999)]"
 	var/turf/pivot = get_turf(src)
@@ -607,6 +612,7 @@ var/global/list/sea_crossing_marked = list()
 				carried = TRUE
 		else
 			stayed += H
+			log_game("Sea crossing: [key_name(H)] stays behind from the [record["name"]]: [result]")
 			to_chat(H, SPAN_WARNING("You stay behind: [result]"))
 	gate.pending = null
 	if (!carried)
