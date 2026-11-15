@@ -18,6 +18,12 @@ headless and checks `result.json`:
   chapters come along, and a pack basket arrives holding bones, ore and a
   second basket with its own waterskin. A bag holding a creature, a grab and
   forged records (setting `loc`, a structure, an unknown reagent) are refused.
+- a ship's deck carries more than items (`ship_crossing_cargo.dm`): a named,
+  hurt goat comes back as it was, a dead hen stays dead, a large barrel keeps
+  its water, a prop barrel packs, and a dressed body comes back dead, named
+  and dressed. A deck record holding them passes its own check. An animal a
+  player plays, a helm or vehicle as cargo, a barrel as a worn item, a barrel
+  inside an item and a forged body are refused.
 
 ```sh
 source ~/byond-516.1688/byond/bin/byondsetup

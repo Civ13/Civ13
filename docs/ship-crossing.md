@@ -25,11 +25,16 @@ The ship must be at all stop, not grappled, with the world not saving. Then:
 
 1. **Packing.** Everything aboard is recorded: each floor (type, facing,
    health), masts (rigged or not), chests and crates with what is in them, and
-   loose things on deck. Items cross as they do for a traveller: allowlisted
-   stacks and coins by kind and amount, clothing, tools, sealed food and
-   unloaded guns by type, magazines by round count, books by subject. Anything
-   else aboard (an engine, a barrel, a table, an animal, a body) keeps her in
-   port, and the tiller names what to put ashore. At most 400 loose things;
+   loose things on deck. Items cross as they do for a traveller: stacks and
+   coins by kind and amount, anything else whole (`region_travel_generic.dm`).
+   Animals, the dead and other structures (barrels, tables, troughs, doors)
+   cross too (`ship_crossing_cargo.dm`): an animal or structure whole, the way
+   a world save keeps it (fields, contents, reagents), a body as who it was,
+   how it looked, what it wore and its wounds, laid down dead again on
+   arrival. Still refused, and named at the tiller with an arrow on deck: an
+   animal a player or agent controls, a ridden animal, an engine or vehicle,
+   anything strapped into a seat that is not crew, and a body holding a
+   creature. At most 400 loose things and 40 animals, bodies and structures;
    chests hold at most 30.
 2. **The crew** are everyone standing on her: each must be conscious, not
    restrained, with an account, and carry only what a traveller may carry.
