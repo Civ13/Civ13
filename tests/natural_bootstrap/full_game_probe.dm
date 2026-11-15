@@ -450,12 +450,13 @@ var/global/datum/natural_bootstrap_probe/natural_bootstrap_probe = new
 	var/list/planted = list()
 	var/list/used = list()
 	var/list/seed_rows = list()
+	var/list/refused = list()
 	for(var/i = 1 to plots.len)
 		var/turf/plot = plots[i]
-		var/obj/item/stack/farming/seeds/seed = null
+		var/obj/structure/farming/plant/P = null
 		var/tries = 0
-		while(!seed)
-			require(++tries <= 6, "No seed could be foraged for plot [i]")
+		while(!P)
+			require(++tries <= 8, "No foraged seed would grow in plot [i]: [json_encode(refused)]")
 			var/obj/structure/wild/smallbush/bush = null
 			var/best_d = 1e9
 			for(var/obj/structure/wild/smallbush/B in range(70, H))
@@ -472,21 +473,30 @@ var/global/datum/natural_bootstrap_probe/natural_bootstrap_probe = new
 			intent(I_HELP)
 			var/area/BA = get_area(H)
 			click(bush, "forage [bush] at [bush.x],[bush.y]")
-			seed = locate(/obj/item/stack/farming/seeds) in get_turf(H)
-			if(seed)
-				seed_rows += list(list("seed" = "[seed.type]", "bush" = "[bush.x],[bush.y]", "climate" = BA.climate, "amount" = seed.amount))
-		act(list("do" = "swap_hand"), TRUE)
-		pick_up(seed)
-		go_to(stand)
-		hold(seed)
-		intent(I_HELP)
-		click(plot, "plant [seed] at [plot.x],[plot.y]")
-		var/obj/structure/farming/plant/P = locate(/obj/structure/farming/plant) in plot
-		require(P, "Nothing grew from the seed at [plot.x],[plot.y]")
-		planted += P
-		if(!H.get_active_hand())
+			var/obj/item/stack/farming/seeds/seed = locate(/obj/item/stack/farming/seeds) in get_turf(H)
+			if(!seed)
+				continue
+			var/seed_type = "[seed.type]"
+			var/seed_amount = seed.amount
 			act(list("do" = "swap_hand"), TRUE)
-	pass("foraged_seed_planted", list("seeds" = seed_rows, "plants" = planted.len))
+			pick_up(seed)
+			go_to(stand)
+			hold(seed)
+			intent(I_HELP)
+			click(plot, "plant [seed] at [plot.x],[plot.y]")
+			P = locate(/obj/structure/farming/plant) in plot
+			if(P)
+				seed_rows += list(list("seed" = seed_type, "bush" = "[bush.x],[bush.y]", "climate" = BA.climate, "amount" = seed_amount))
+			else
+				// The game turned this seed down here (a cave crop under open sky, say): put it down and forage on.
+				refused += seed_type
+				if(!QDELETED(seed) && seed.loc == H)
+					hold(seed)
+					act(list("do" = "drop", "label" = "[seed]"))
+			if(!H.get_active_hand())
+				act(list("do" = "swap_hand"), TRUE)
+		planted += P
+	pass("foraged_seed_planted", list("seeds" = seed_rows, "plants" = planted.len, "refused" = refused))
 
 	mark("growing")
 	var/until = world.time + 3600
