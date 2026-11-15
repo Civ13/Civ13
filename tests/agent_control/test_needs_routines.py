@@ -554,6 +554,26 @@ class AutospawnSourceTests(unittest.TestCase):
         dme = (ROOT / "civ13.dme").read_text(encoding="utf-8")
         self.assertIn("code\\modules\\agent_control\\agent_autospawn.dm", dme)
 
+    def test_a_restored_round_starts_the_autospawn_loop(self):
+        # A restored round resumes without the round start hooks, so a world
+        # start watcher has to start the loop that re-adopts the agent's saved body.
+        source = (ROOT / "code/modules/agent_control/agent_autospawn.dm").read_text(encoding="utf-8")
+        self.assertIn("/proc/agent_autospawn_begin()", source)
+        self.assertIn("if (agent_autospawn_started)\n\t\treturn", source.replace("\r\n", "\n"))
+        self.assertIn("/hook/startup/proc/agent_autospawn_watch()", source)
+        self.assertIn("ticker.current_state < GAME_STATE_PLAYING", source)
+
+    def test_a_restored_agent_body_is_not_put_to_sleep_before_adoption(self):
+        # Before the loop adopts it, a restored agent body has no client, so the
+        # logged-off check put it to sleep and it dropped what it held.
+        helpers = (ROOT / "code/game/mob/mob_helpers.dm").read_text(encoding="utf-8")
+        self.assertIn("!agent_character_for(src) && !agent_body_awaiting_adoption(src)", helpers)
+        travel = (ROOT / "code/modules/agent_control/agent_travel.dm").read_text(encoding="utf-8").replace("\r\n", "\n")
+        body = travel[travel.index("/proc/agent_body_awaiting_adoption("):travel.index("// Called by the gate before")]
+        self.assertIn('copytext(H.persistence_owner_ckey, 1, 7) != "agent@"', body)
+        self.assertIn("agent_account_for(agent_name) == H.persistence_owner_ckey", body)
+        self.assertIn("agent_control.autospawns", body)  # only agents the host configured
+
     def test_restored_bodies_wait_for_a_driver_but_arrivals_do_not(self):
         travel = (ROOT / "code/modules/agent_control/agent_travel.dm").read_text(encoding="utf-8")
         self.assertIn("var/restored = !H.region_arrival_pending", travel)

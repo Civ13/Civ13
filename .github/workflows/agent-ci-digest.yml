@@ -33,6 +33,7 @@ on:
       - Native runner sweep
       - Native supervisor consumer contracts
       - Native Windows launcher
+      - Natural crop bootstrap walkthrough
       - Nomads durable profile roundtrips
       - Offline authored rooms
       - Offline native social companion
