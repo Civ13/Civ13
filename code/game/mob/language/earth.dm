@@ -429,7 +429,7 @@
 	mutual_intelligibility = list(/datum/language/spanish = 30, /datum/language/french = 10, /datum/language/portuguese = 10)
 
 /datum/language/inuit
-	name = "inuktitut"
+	name = "Inuktitut"
 	desc = "Wendigo!"
 	key = "in"
 	colour = "Inuktitut"
