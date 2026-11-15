@@ -13,9 +13,13 @@ Source: `code/modules/persistence/region_admin_send.dm`.
 
 1. Choose who goes: online players (pick one at a time, Cancel when done), a character by
    account (ckey; an offline character waits at the destination for its player), or the ship a
-   player is aboard (she goes with everyone and everything aboard, from anywhere on the water).
-2. Choose the destination region. Event regions are left out: use Event Transfer, which keeps
-   home characters safe. A sleeping region is woken first; a stopped one is refused.
+   player is aboard (she goes with everyone and everything aboard, from anywhere on the water,
+   logged-out players' bodies included).
+2. Choose the destination region. Event regions are left out (use Event Transfer, which keeps
+   home characters safe), and so are the TDM barracks and battle worlds, the tutorial and a free
+   expedition slot, none of which keeps a character. A ship only goes where a crossing could
+   anchor her: a land across the sea, or from there home to the mainland. A sleeping region is
+   woken first; a stopped one is refused.
 3. Choose the landing (people only; a ship anchors off the coast facing where she came from):
    - **Nearest dry shore**: walking in from the sea on the coasts facing the source land (the
      sea-lane sides), then any coast, the first dry, outdoor, unblocked land tile.
@@ -24,10 +28,18 @@ Source: `code/modules/persistence/region_admin_send.dm`.
      a late-join point).
    A destination that cannot land them as asked uses its normal arrival and says so.
 4. The dry run is printed in chat: each player is Ready (with what stays behind, such as a horse
-   they ride or a cart they pull) or Refused with the reason (dead, inside something, carrying
-   what cannot travel, a record too big, the destination stopped or unreachable).
+   they ride, a cart they pull, or anything the travel record cannot carry) or Refused with the
+   reason (dead, inside something, a record too big, the destination stopped or unreachable).
+   It also says when an offline character's player is online here in another body.
 5. Confirm. Players leave one at a time, three seconds apart, and every check runs again as each
-   one goes. Only one transfer runs per world at a time.
+   one goes. A save here is waited out (up to two minutes) rather than refusing the rest of the
+   group. Only one transfer runs per world at a time; an error part way releases it and says so.
+
+Anything the record cannot carry (for example a creature in a bag) is left on the player's tile
+here, named with its coordinates in admin chat; the bag and everything else in it go. Wounds
+travel limb by limb: each limb's bruising and burns, fractures and lost limbs, and poisoning
+arrive as they left, laid on the same limbs as plain bruises and burns, so the trip never breaks,
+cuts or severs anything more.
 
 ## Audit
 
@@ -37,13 +49,18 @@ skills, research, reading, languages, faction, wounds, hunger and thirst) to
 checked or restored by hand if a trip ever goes wrong.
 
 Every send is checked 1:1. The source takes a fingerprint of the character (name, skills,
-research, scholarship, reading, people and languages, faction, hunger, thirst, wounds, and every
-item worn or held with everything inside it at any depth: type, name, amount, reagents, colour)
-and sends its digest with the landing. The destination fingerprints the rebuilt character and
-reports either "Everything arrived exactly as it left" or a warning pointing at the snapshot.
+research, scholarship, reading, people and languages, faction, hunger, thirst, poisoning, each
+limb's wounds, and every item worn or held with everything inside it at any depth: type, name,
+amount, reagents, colour) and sends its digest with the landing, plus one check per part. The
+destination fingerprints the rebuilt character and reports either "Everything arrived exactly as
+it left" or a warning naming the parts that differ and pointing at the snapshot. Skills are
+compared as the record carries them (six significant digits), a coin pile by its coins and
+amount, and the faction as the origin the arrival keeps (it rejoins the faction only where it
+has a colony). A ship's crew are fingerprinted and snapshotted the same way.
 `tests/region_admin_send/probe.dm` sends a character with bags inside bags, a satchel,
-waterskins with water, primitive clothing, stacks, skills and two languages through the record
-and fails on any difference between the before and after fingerprints.
+waterskins with water, primitive clothing, stacks, a preset coin pile, fractional skills, a cut
+leg, a burnt arm, a broken leg, a lost foot, poisoning and two languages through the record and
+fails on any difference between the before and after fingerprints.
 
 Every send, refusal at send time, arrival (with the tile and whether the chosen landing was
 used) and the player taking their character at the destination is written to the admin log,
