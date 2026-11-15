@@ -18,9 +18,11 @@
 /obj/item/weapon/storage/internal/attack_hand()
 	return		//make sure this is never picked up
 
-// The item that owns an internal storage may refuse things by its own rules,
-// beyond the type and size limits (see belt_pouches.dm).
-/obj/item/proc/internal_storage_accepts(obj/item/W, stop_messages = FALSE)
+// The item or structure that owns an internal storage may refuse things by its
+// own rules, beyond the type and size limits (see belt_pouches.dm). Declared on
+// /obj because structures (torch mounts, shell racks, cargo holds, katana
+// stands, shopping carts, dehydrators) own internal storages too.
+/obj/proc/internal_storage_accepts(obj/item/W, stop_messages = FALSE)
 	return TRUE
 
 /obj/item/weapon/storage/internal/can_be_inserted(obj/item/W as obj, stop_messages = FALSE)

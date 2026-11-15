@@ -1735,16 +1735,31 @@
 
 /obj/structure/torch_stand/after_load()
 	..()
+	ensure_storage()
 	update_icon()
 
 /obj/structure/torch_stand/New()
 	..()
-	storage = new/obj/item/weapon/storage/internal(src)
+	ensure_storage()
+	update_icon()
+
+// A load replaces the constructor's holder with the saved one; bind whichever
+// holder the mount now contains back to the mount and its torch/lantern rules.
+/obj/structure/torch_stand/proc/ensure_storage()
+	if (!storage || QDELETED(storage) || storage.loc != src)
+		storage = null
+		for (var/obj/item/weapon/storage/internal/candidate in contents)
+			if (!QDELETED(candidate))
+				storage = candidate
+				break
+		if (!storage)
+			storage = new/obj/item/weapon/storage/internal(src)
+	storage.master_item = src
 	storage.storage_slots = 1
 	storage.max_w_class = 2
 	storage.max_storage_space = max_storage*3
 	storage.can_hold = list(/obj/item/flashlight/torch, /obj/item/flashlight/lantern)
-	update_icon()
+	return storage
 
 /obj/structure/torch_stand/Destroy()
 	qdel(storage)
