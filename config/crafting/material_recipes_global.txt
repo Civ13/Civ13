@@ -1438,6 +1438,7 @@ RECIPE: /material/wood/,stilt platform,/obj/structure/flood_platform/stilts,4,10
 RECIPE: /material/wood/,sluice gate,/obj/structure/sluice_gate,6,120,1,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,shaduf,/obj/structure/water_lift/shaduf,4,100,1,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,Archimedes screw,/obj/structure/water_lift/archimedes_screw,8,150,1,1,construction,0,0,0,8,null
+RECIPE: /material/wood/,windmill pump,/obj/structure/water_lift/windmill,12,200,1,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,river gauge,/obj/structure/river_gauge,2,60,1,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,timber well lining,/obj/structure/sink/well/timber,4,150,1,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,windlass and pail,/obj/structure/well_fitting/windlass,4,120,1,1,construction,0,0,0,8,null
@@ -2029,6 +2030,7 @@ RECIPE: /material/steel/,ladder,/obj/item/weapon/siegeladder/metal,6,125,0,1,sie
 RECIPE: /material/steel/,blast door,/obj/structure/gate/blast,40,400,1,1,construction,110,125,0,8,null
 RECIPE: /material/steel/,blast door control,/obj/structure/gatecontrol/blastcontrol,15,250,1,1,construction,110,125,0,8,null
 RECIPE: /material/steel/,electric sewage pump,/obj/structure/sewer_pump/electric,8,200,1,1,construction,0,0,0,8,null
+RECIPE: /material/steel/,sump pump,/obj/structure/cellar_pump/sump,4,120,1,1,construction,0,0,0,8,null
 RECIPE: /material/steel/,large reinforced large steel double doors,/obj/structure/simple_door/key_door/anyone/doubledoor/steel,10,250,1,1,construction,62,0,0,8,null
 RECIPE: /material/steel/,jail bars,/obj/covers/jail/steeljail,8,30,1,1,construction,75,0,0,8,null
 RECIPE: /material/steel/,locked jail door,/obj/structure/simple_door/key_door/custom/jail/steeljail,12,30,1,1,construction,75,0,0,8,null
@@ -2842,6 +2844,8 @@ RECIPE: /material/leather/,gun sling,/obj/item/weapon/gun_sling,2,40,0,1,weapons
 RECIPE: /material/iron/,unlocked iron door,/obj/structure/simple_door/key_door/anyone,10,100,1,1,construction,28,0,0,8,null
 RECIPE: /material/iron/,locked iron door,/obj/structure/simple_door/key_door/custom,15,180,1,1,construction,28,0,0,8,null
 RECIPE: /material/iron/,steam pumping engine,/obj/structure/sewer_pump/steam,12,250,1,1,construction,0,0,0,8,null
+RECIPE: /material/iron/,lever pump,/obj/structure/cellar_pump/lever,6,120,1,1,construction,0,0,0,8,null
+RECIPE: /material/iron/,steam mine pump,/obj/structure/cellar_pump/steam,12,250,1,1,construction,0,0,0,8,null
 RECIPE: /material/iron/,cast iron hand pump,/obj/structure/well_fitting/pump,6,180,1,1,construction,0,0,0,8,null
 RECIPE: /material/iron/,faction door,/obj/structure/simple_door/key_door/faction_door,15,180,1,1,construction,28,0,0,8,null
 
