@@ -3076,6 +3076,7 @@ RECIPE: /material/steel/,reactor fuel processor,/obj/structure/reactor_fuel_proc
 
 RECIPE: /material/leather/,leather saddle,/obj/item/animal_tack/saddle,6,80,0,1,none,0,0,0,8,null
 RECIPE: /material/leather/,leather animal harness,/obj/item/animal_tack/harness,4,60,0,1,none,0,0,0,8,null
+RECIPE: /material/iron/,horseshoes,/obj/item/horseshoes,2,60,0,1,none,0,0,0,8,null
 RECIPE: /material/leather/,hide sling bag,/obj/item/weapon/storage/backpack/sling_bag,3,80,0,1,storage,0,0,0,8,null
 RECIPE: /material/leather/,wrist thong,/obj/item/wrist_loop,1,20,0,1,none,0,0,0,8,null
 RECIPE: /material/leather/,sword knot,/obj/item/wrist_loop/sword_knot,1,30,0,1,none,0,0,0,8,null

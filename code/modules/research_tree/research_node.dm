@@ -1777,7 +1777,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/simple_door/key_door/anyone/doubledoor/marble" = "imperial_architecture",
 		"/obj/structure/window_frame/marble" = "imperial_architecture",
 		"/obj/structure/window_frame/marblefull" = "imperial_architecture",
-		// --- iron_smithing (6) ---
+		// --- iron_smithing (7) ---
+		"/obj/item/horseshoes" = "iron_smithing",
 		"/obj/item/weapon/reagent_containers/food/drinks/gunpowder" = "iron_smithing",
 		"/obj/structure/anvil" = "iron_smithing",
 		"/obj/structure/furnace" = "iron_smithing",
