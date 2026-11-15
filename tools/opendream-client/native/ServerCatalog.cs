@@ -39,7 +39,8 @@ public static class ServerCatalog {
     }
 
     public static ProcessStartInfo NativeStart(VerifiedGameServer verified, string bin,
-        ByondRequirement requirement, Func<string, bool> matchesClient, DateTimeOffset? now = null, string? ticket = null) {
+        ByondRequirement requirement, Func<string, bool> matchesClient, DateTimeOffset? now = null, string? ticket = null,
+        string? voiceKey = null) {
         var server = verified.Status;
         server.Target.Validate();
         requirement.Validate();
@@ -56,7 +57,28 @@ public static class ServerCatalog {
         };
         // An optional Discord sign-in ticket: single use, two minutes, never the Discord token.
         if (ticket != null && !DiscordSignIn.ValidTicket(ticket)) throw new IOException("Discord sign-in ticket is malformed.");
-        start.ArgumentList.Add(ticket == null ? $"byond://{address}:{server.Port}" : $"byond://{address}:{server.Port}?civ13_ticket={ticket}");
+        // An optional launcher voice key: random per join, shared only with that world.
+        if (voiceKey != null && !VoiceChat.ValidKey(voiceKey)) throw new IOException("Voice key is malformed.");
+        var query = new List<string>();
+        if (ticket != null) query.Add("civ13_ticket=" + ticket);
+        if (voiceKey != null) query.Add("civ13_voice=" + voiceKey);
+        start.ArgumentList.Add($"byond://{address}:{server.Port}" + (query.Count == 0 ? "" : "?" + string.Join("&", query)));
+        return start;
+    }
+
+    // The voice app for a game just started: same verified address and port,
+    // watching that Dream Seeker. The voice key goes on stdin, never argv.
+    public static ProcessStartInfo VoiceStart(VerifiedGameServer verified, string voiceExe, int gamePid) {
+        var server = verified.Status;
+        server.Target.Validate();
+        var address = verified.Endpoint.Validate(server.Host);
+        var start = new ProcessStartInfo(voiceExe) {
+            UseShellExecute = false, CreateNoWindow = true, RedirectStandardInput = true,
+            WorkingDirectory = Path.GetDirectoryName(voiceExe)!
+        };
+        foreach (var arg in new[] { "--host", address.ToString(), "--port", server.Port.ToString(System.Globalization.CultureInfo.InvariantCulture),
+            "--watch-pid", gamePid.ToString(System.Globalization.CultureInfo.InvariantCulture) })
+            start.ArgumentList.Add(arg);
         return start;
     }
 }

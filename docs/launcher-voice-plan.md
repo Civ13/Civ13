@@ -100,6 +100,51 @@ Define the hearing policy before implementation: distance, walls, floors,
 observers and radio rules. Keep updates bounded and coalesced, outside per-tick
 world scans. Preserve the player's explicit mute/block choices.
 
+Design (Val, 2026-11-15): one Discord voice lobby per region plus one per
+team, TDM on civ13.com first. Hold the talk key and players whose characters
+can see you hear you, louder when closer. Hold the team key and your whole
+faction in the region hears you.
+
+- Identity is the BYOND key. CivilizationBot gives each ckey a Discord
+  provisional account through the bot token endpoint, or uses the account the
+  player linked. Players need no Discord login, and Public Client stays off.
+  Guest keys are excluded.
+- The launcher joins with `byond://host:port?civ13_voice=<key>`, a random
+  per-connection secret. The game lists `{ckey, key, team}` for every voice
+  player in a roster it POSTs to the bot (`/webhook/<server>/voice_roster`,
+  webhook key in a header, https or loopback only). The bot answers with
+  `{"ids": {ckey: Discord user ID}}`.
+- After the join, the raw key never crosses the network again. The launcher
+  asks the bot for its access token with `sha256("civ13-voice-token:" + key)`,
+  and the bot seals the answer with AES-256-GCM under
+  `HKDF-SHA256(key, info "civ13-voice-seal")`. The bot's web API is plain
+  HTTP, so an eavesdropper sees only sealed bytes. The bot sets the members of
+  the region and team lobbies from the roster.
+- Ten times a second the launcher asks the game
+  `civ13_voice_state=sha1("civ13-voice-state:" + key)` for
+  `{v, gen, me, hear: {id: volume}, speak, talk, team, team_talk, token_url}`.
+  That call has its own per-key limiter ahead of the generic topic cooldown,
+  so players sharing one address are not throttled.
+- Talk (`talk`) and team radio (`team_talk`) are held game keybindings, set in
+  OOC > Keybindings with the other action keys (defaults F5 and F6, any of
+  F4-F10 or Numpad0, per typing/hotkey mode). The voice app transmits only
+  while the game says the key is down, so it never reads the keyboard. A hold
+  ends on release, on rebinding, or after two minutes. Region-call participants not in
+  `hear` are muted, `gen` changes on a new body or death, and an answer older
+  than three seconds mutes everyone. Dead, observing and lobby players hear
+  nobody in the region call. Knocked-out players hear but cannot talk.
+- Hearing policy: same level, line of sight (walls block, darkness does not),
+  10 tiles; volume 100 within 2 tiles, then 75, 50 and 30.
+- The launcher turns voice on when `voice\civ13-voice.exe` sits beside it,
+  adds the key to the join link and hands it to that app on stdin
+  (`tools/opendream-client/native/VoiceChat.cs`,
+  `companion/voice/voice_client.cpp`). Without the app, joining is unchanged.
+- Status: game side source implemented and native-probe tested
+  (`tests/voice_chat/`, `tests/action_keybindings/`). Bot side in
+  Civilizationbot `VoiceLobbies.php`, offline tested. Voice app rules and CNG
+  crypto offline tested (`companion/tests/region_voice_tests.cpp`). Not yet
+  runtime verified with real players.
+
 ### 4. Proximity and scale
 
 Per-participant volume and raw audio callbacks can implement spatial presentation.

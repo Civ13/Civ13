@@ -22,6 +22,7 @@ def strings(text):
 
 
 def catalog(source):
+    source = source.split('/proc/action_keybinding_yielding()')[0]
     rows = re.findall(r'^\t\t"(\w+)" = list\("([^"]+)", "([^"]+)", list\(([^)]*)\), list\(([^)]*)\)\)', source, re.M)
     if len(rows) != 19:
         raise AssertionError('Catalog grammar or action count changed; review skin capacity')
@@ -40,6 +41,21 @@ def skin(source):
             modes[mode].append({'id': identifier.strip().strip('"'), 'key': name[1], 'command': command[1],
                                 'disabled': 'is-disabled = true' in params})
     return modes
+
+
+def held_catalog(source):
+    body = source.split('/proc/held_keybinding_catalog()')[1].split('/proc/')[0]
+    rows = re.findall(r'^\t\t"(\w+)" = list\("([^"]+)", "([^"]+)", list\(([^)]*)\), list\(([^)]*)\)\)', body, re.M)
+    return {key: (label, command, strings(normal), strings(hotkey)) for key, label, command, normal, hotkey in rows}
+
+
+def held_candidates(source):
+    body = source.split('/proc/held_keybinding_candidates()')[1].split('/proc/')[0]
+    return set(strings(body))
+
+
+def managed(row):
+    return row['id'].startswith(('action_', 'held_'))
 
 
 def candidates(source, mode):
@@ -75,8 +91,9 @@ class Keybindings(unittest.TestCase):
         current = skin(read('interface/skin.dmf'))
         for mode in frozen:
             self.assertEqual(sorted((row['key'], row['command']) for row in frozen[mode]),
-                             sorted((row['key'], row['command']) for row in current[mode] if not row['disabled']))
-            fixed = {row['key']: row for row in current[mode] if not row['id'].startswith('action_')}
+                             sorted((row['key'], row['command']) for row in current[mode]
+                                    if not row['disabled'] and not row['id'].startswith('held_')))
+            fixed = {row['key']: row for row in current[mode] if not managed(row)}
             for row in frozen[mode]:
                 if row['key'] in fixed:
                     self.assertEqual(fixed[row['key']], row)
@@ -99,8 +116,10 @@ class Keybindings(unittest.TestCase):
         for mode, rows in skin(read('interface/skin.dmf')).items():
             available = candidates(source, mode) - reserved(source, mode)
             for row in rows:
-                if not row['id'].startswith('action_'):
+                if not managed(row):
                     self.assertNotIn(row['key'], available)
+                    self.assertNotIn(row['key'].split('+')[-1], held_candidates(source))
+            self.assertFalse(available & held_candidates(source))
             for key in available:
                 self.assertNotRegex(key, r'[;&=|/{}"\[\]]|UP|REP|Any|Mouse')
                 self.assertNotIn(key.split('+')[-1], ('W', 'A', 'S', 'D', 'Q', 'R', 'X', 'Y', 'Z'))
@@ -108,6 +127,34 @@ class Keybindings(unittest.TestCase):
                 self.assertEqual({key for key in available if '+' not in key}, {'F', 'Space'})
                 self.assertIn('if (mode == "macro" && modifier == "SHIFT+")\n\t\t\t\tcontinue', source)
                 self.assertNotIn('SHIFT+K', available)
+
+    def test_held_keys_have_paired_press_and_release_slots(self):
+        source = read(SOURCE)
+        held = held_catalog(source)
+        self.assertEqual(set(held), {'voice_talk', 'voice_team'})
+        self.assertEqual(held['voice_talk'][1:], ('voice-talk', ['F5'], ['F5']))
+        self.assertEqual(held['voice_team'][1:], ('voice-team', ['F6'], ['F6']))
+        self.assertEqual(held_candidates(source), {'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'Numpad0'})
+        voice = read('code/modules/voice/voice_chat.dm')
+        for mode, rows in skin(read('interface/skin.dmf')).items():
+            slots = {row['id']: row for row in rows if row['id'].startswith('held_')}
+            self.assertEqual(len(slots), 2 * len(held))
+            for action, (_, command, normal, hotkey) in held.items():
+                key = (normal if mode == 'macro' else hotkey)[0]
+                press, release = slots[f'held_{action}_1'], slots[f'held_{action}_1_up']
+                self.assertEqual((press['key'], press['command'], press['disabled']), (key, f'{command}-down', False))
+                self.assertEqual((release['key'], release['command'], release['disabled']), (key + '+UP', f'{command}-up', False))
+                for edge, down in (('down', 'TRUE'), ('up', 'FALSE')):
+                    verb = voice.split(f'set name = "{command}-{edge}"')[1].split('\n/')[0]
+                    self.assertIn('set hidden = TRUE', verb)
+                    self.assertIn(f'hold_action("{action}", {down})', verb)
+        apply = source.split('/client/proc/apply_held_keybindings(')[1].split('/client/proc/')[0]
+        self.assertLess(apply.index('release_held_actions()'), apply.index('winset('))
+        self.assertLess(apply.index('"is-disabled" = "true"'), apply.index('"name" = keys[1]'))
+        self.assertIn('"name" = "[keys[1]]+UP"', apply)
+        self.assertIn('apply_held_keybindings(bindings)', source.split('/client/proc/apply_action_keybindings()')[1])
+        hold = source.split('/client/proc/action_held(action)')[1].split('/client/proc/')[0]
+        self.assertIn('world.time < until && world.time >= until - HELD_ACTION_MAX', hold)
 
     def test_slot_guard_rejects_unknown_and_duplicate_records_and_control(self):
         source = read(SOURCE)
@@ -141,7 +188,7 @@ class Keybindings(unittest.TestCase):
     def test_saved_records_are_bounded_validated_and_applied_atomically(self):
         source = read(SOURCE)
         for guard in ('!islist(records) || records.len > bindings.len', '!istext(record) || length(record) > 100',
-                      'parts.len != 3', 'key != "NONE" && !(key in action_keybinding_candidates(mode))',
+                      'parts.len != 3', 'key != "NONE" && !action_keybinding_allowed(mode, action, key)',
                       'if (key in used)'):
             self.assertIn(guard, source)
         setter = source.split('/datum/preferences/proc/set_action_keybinding(')[1].split('/client/proc/')[0]

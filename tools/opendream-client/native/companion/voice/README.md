@@ -1,4 +1,39 @@
-# Push-to-talk prototype (issue #5122, Phase 2)
+# Launcher voice (issue #5122)
+
+## Region voice (Phase 3): `civ13-voice.exe`
+
+The launcher starts this beside Dream Seeker when it finds
+`voice\civ13-voice.exe` next to `Civ13.exe` (`VoiceChat.cs`). Without it the
+launcher joins exactly as before. Each join gets a fresh random voice key: it
+goes to the game in the join link (`civ13_voice=`) and to this app on stdin,
+never on its command line.
+
+- Every 100 ms it asks the game (world/Topic, `civ13_voice_state=` the sha1
+  poll id) who this character can see and how loud, and whether the talk or
+  team-radio keybinding is held. Those keys are ordinary game keybindings
+  (OOC > Keybindings, F5 and F6 by default). This app reads no keyboard.
+- Once the game names the bot's token address, it posts the sha256 token id,
+  opens the sealed answer with HKDF-SHA256 + AES-256-GCM (`win_crypto.hpp`,
+  Windows CNG) and signs in to Discord with that provisional-account token. No
+  Discord login is needed. Tokens cannot be refreshed, so it asks again
+  halfway through their lifetime.
+- It joins the two lobby calls the bot made for this world (`civ13_kind`
+  region) and team (`civ13_kind` team, `civ13_team`), both in push-to-talk.
+  Region participants not in sight are muted locally; the rest play at the
+  game's volume. Losing the team leaves its call.
+- With no fresh game answer for three seconds both microphones close and the
+  region call goes quiet. It exits when Dream Seeker exits or the game stops
+  knowing its key.
+
+Volume is presentation, not privacy: a modified client could play the whole
+region call. The rules live in `region_voice.hpp` and are checked by
+`tests/region_voice_tests.cpp` (the CNG checks open a seal made by
+Civilizationbot's `VoiceLobbies::seal`).
+
+Build with `Build-VoiceProto.ps1` below, then unzip `build\civ13-voice.zip`
+into a `voice` folder beside `Civ13.exe`.
+
+# Push-to-talk prototype (Phase 2)
 
 `civ13-voice-proto.exe` is a standalone Windows console tool that puts two
 players in one Discord Social SDK voice call with push-to-talk. It is separate
@@ -54,7 +89,7 @@ lobby joins per two hours); production Comms Access is a separate application.
 ```
 
 Output: `build\voice\civ13-voice-proto.exe` with the SDK runtime DLLs beside
-it, and `build\civ13-voice-proto.zip` with the same files for the second
+it, and `build\civ13-voice.zip` with the same files for the second
 tester. The SDK is never committed; `build/` is ignored.
 
 ## Two-PC test

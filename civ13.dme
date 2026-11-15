@@ -1718,6 +1718,7 @@
 #include "code\modules\surgery\prosthesis.dm"
 #include "code\modules\surgery\surgery.dm"
 #include "code\modules\surgery\~defines.dm"
+#include "code\modules\voice\voice_chat.dm"
 #include "code\modules\webhooks\webhooks.dm"
 #include "code\modules\webhooks\game_ready.dm"
 #include "code\modules\xgm\xgm_gas_data.dm"

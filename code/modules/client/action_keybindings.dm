@@ -29,11 +29,40 @@
 /proc/action_keybinding_yielding()
 	return list("storage", "storage_back", "storage_belt", "storage_clothing", "resist", "craft")
 
+// Held actions: one key per mode, with a press macro and a matching KEY+UP
+// release macro (skin IDs held_<action>_1 and held_<action>_1_up). They use
+// their own key family, F4-F10 and Numpad0, which no discrete action or fixed
+// macro uses. Their commands are the catalog command plus -down and -up.
+/proc/held_keybinding_catalog()
+	var/static/list/catalog = list(
+		"voice_talk" = list("Voice: talk to players in sight (hold)", "voice-talk", list("F5"), list("F5")),
+		"voice_team" = list("Voice: team radio (hold)", "voice-team", list("F6"), list("F6")))
+	return catalog
+
+/proc/held_keybinding_candidates()
+	return list("F4", "F5", "F6", "F7", "F8", "F9", "F10", "Numpad0")
+
+/proc/action_keybinding_held(action)
+	return !isnull(held_keybinding_catalog()[action])
+
+// Every rebindable action, discrete first.
+/proc/action_keybinding_actions()
+	return action_keybinding_catalog() + held_keybinding_catalog()
+
+/proc/action_keybinding_entry(action)
+	var/list/entry = action_keybinding_catalog()[action]
+	return entry ? entry : held_keybinding_catalog()[action]
+
+/proc/action_keybinding_allowed(mode, action, key)
+	if (action_keybinding_held(action))
+		return key in held_keybinding_candidates()
+	return key in action_keybinding_candidates(mode)
+
 /proc/action_keybinding_modes()
 	return list("macro", "hotkeymode")
 
 /proc/action_keybinding_defaults(mode, action)
-	var/list/entry = action_keybinding_catalog()[action]
+	var/list/entry = action_keybinding_entry(action)
 	if (!entry || !(mode in action_keybinding_modes()))
 		return list()
 	var/list/keys = entry[mode == "macro" ? 3 : 4]
@@ -72,7 +101,7 @@
 /datum/preferences/proc/action_keybinding_map(list/records)
 	var/list/bindings = list()
 	for (var/mode in action_keybinding_modes())
-		for (var/action in action_keybinding_catalog())
+		for (var/action in action_keybinding_actions())
 			bindings["[mode]/[action]"] = action_keybinding_defaults(mode, action)
 	if (!islist(records) || records.len > bindings.len)
 		return null
@@ -90,7 +119,7 @@
 		if (!(slot in bindings) || (slot in seen))
 			return null
 		seen += slot
-		if (key != "NONE" && !(key in action_keybinding_candidates(mode)))
+		if (key != "NONE" && !action_keybinding_allowed(mode, action, key))
 			return null
 		bindings[slot] = key == "NONE" ? list() : list(key)
 	var/list/claimed = list()
@@ -110,7 +139,7 @@
 			bindings[slot] = kept
 	for (var/mode in action_keybinding_modes())
 		var/list/used = action_keybinding_reserved(mode)
-		for (var/action in action_keybinding_catalog())
+		for (var/action in action_keybinding_actions())
 			for (var/key in bindings["[mode]/[action]"])
 				if (key in used)
 					return null
@@ -122,7 +151,7 @@
 		action_keybindings = list()
 
 /datum/preferences/proc/set_action_keybinding(mode, action, key)
-	if (!(mode in action_keybinding_modes()) || !(action in action_keybinding_catalog()))
+	if (!(mode in action_keybinding_modes()) || !(action in action_keybinding_actions()))
 		return FALSE
 	sanitize_action_keybindings()
 	var/list/updated = action_keybindings.Copy()
@@ -137,6 +166,45 @@
 		return FALSE
 	action_keybindings = updated
 	return TRUE
+
+// Held state, set by each held action's press and release verbs. A hold
+// lapses after HELD_ACTION_MAX even if the release macro never arrives.
+#define HELD_ACTION_MAX 1200 // deciseconds, two minutes
+
+/client/var/tmp/list/held_until = list() // held action -> world.time it lapses
+
+/client/proc/hold_action(action, down)
+	if (!action_keybinding_held(action))
+		return
+	if (down)
+		held_until[action] = world.time + HELD_ACTION_MAX
+	else
+		held_until -= action
+
+/client/proc/action_held(action)
+	var/until = held_until[action]
+	return isnum(until) && world.time < until && world.time >= until - HELD_ACTION_MAX
+
+/client/proc/release_held_actions()
+	held_until = list()
+
+#undef HELD_ACTION_MAX
+
+// Held slots: the press and release macros move together. Any hold in
+// progress is released first, because its old release macro is about to go.
+/client/proc/apply_held_keybindings(list/bindings)
+	release_held_actions()
+	for (var/mode in action_keybinding_modes())
+		for (var/action in held_keybinding_catalog())
+			winset(src, "[mode].held_[action]_1", list("name" = "", "is-disabled" = "true"))
+			winset(src, "[mode].held_[action]_1_up", list("name" = "", "is-disabled" = "true"))
+	for (var/mode in action_keybinding_modes())
+		for (var/action in held_keybinding_catalog())
+			var/list/keys = bindings["[mode]/[action]"]
+			if (!keys.len)
+				continue
+			winset(src, "[mode].held_[action]_1", list("name" = keys[1], "is-disabled" = "false"))
+			winset(src, "[mode].held_[action]_1_up", list("name" = "[keys[1]]+UP", "is-disabled" = "false"))
 
 /client/proc/apply_action_keybindings()
 	if (!prefs)
@@ -154,6 +222,7 @@
 			var/list/keys = bindings["[mode]/[action]"]
 			for (var/i = 1, i <= keys.len, i++)
 				winset(src, "[mode].action_[action]_[i]", list("name" = keys[i], "is-disabled" = "false"))
+	apply_held_keybindings(bindings)
 
 /client/verb/configure_action_keybindings()
 	set name = "Keybindings"
@@ -176,8 +245,8 @@
 		var/mode = mode_choice == "Hotkey mode" ? "hotkeymode" : "macro"
 		var/list/bindings = owner.action_keybinding_map(owner.action_keybindings)
 		var/list/choices = list()
-		for (var/action in action_keybinding_catalog())
-			var/list/entry = action_keybinding_catalog()[action]
+		for (var/action in action_keybinding_actions())
+			var/list/entry = action_keybinding_entry(action)
 			var/list/keys = bindings["[mode]/[action]"]
 			choices["[entry[1]] ([keys.len ? jointext(keys, ", ") : "Unbound"])"] = action
 		var/choice = input(src, "Choose an action. Current keys are shown in parentheses.", "Keybindings: [mode_choice]") as null|anything in choices
@@ -189,9 +258,9 @@
 			continue
 		var/key = null
 		if (operation == "Change key")
-			var/list/available = action_keybinding_candidates(mode)
+			var/list/available = action_keybinding_held(action) ? held_keybinding_candidates() : action_keybinding_candidates(mode)
 			available -= action_keybinding_reserved(mode)
-			for (var/other in action_keybinding_catalog())
+			for (var/other in action_keybinding_actions())
 				if (other != action)
 					available -= bindings["[mode]/[other]"]
 			key = input(src, "Choose a key. Reserved keys and keys assigned to another action are omitted.", "[choice]") as null|anything in available
