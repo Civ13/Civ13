@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '688ed8a74f25cdb840c6a77c164dca7d160e751f'
+WIKI_REVIEWED_REVISION = 'd00f0259b0a6f7493bc809cb4c25897a81b0810f'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('dbdd9f64009c697282c90bf6d7e157100834ad2ea23f5b76ec03938e816c1083', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('0da0fcb7a71382365bf818e6e27b5e0c58056785f328a4da1bba4ed44e26a673', 'character skills traits languages'),
@@ -81,7 +81,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Cooking.md': ('3fa0033c4d7f5b6d85cc0db329d09bb9fdbab9e44e1e741e1dd8c7ebd4882934', 'cooking cook food meal ingredients'),
     'guides/Guide_to_Exercise.md': ('cd6d6e48f3ae664458e935bb88954a0c6d2232f00b6058e92fb520f5c7c76a09', 'exercise training strength weights running fatigue'),
     'guides/Guide_to_Factory_Automation.md': ('e49b07d8eea1fe3c785b450c486e4b412e9ab4e4d0df30c8e9dc1dc34f666be0', 'factory automation belt belts conveyor arm arms fabricator fabricators pipe pipes pump tank bottler monitor crusher stamp mill'),
-    'guides/Guide_to_Farming.md': ('1c981fb813064f877b66ec131d97b6902a4fdeb8b63ba5dc82f5a652785c6045', 'farming farm plant crops soil water'),
+    'guides/Guide_to_Farming.md': ('bce8ff7c44691b3729a3b0082a7dd3afc8c1cd25168b3f0d6c2537c2b9b9c4fd', 'farming farm plant crops soil water'),
     'guides/Guide_to_Fishing.md': ('bf3f53b9baf4a420b44a7621c33a825544255b0581bceff0410708a4016dd001', 'fishing fish rod bait'),
     'guides/Guide_to_Hygiene.md': ('657c1c7ae6e2b7b425255ba7c9449206ff715e8ce422fa28a15700acce240752', 'hygiene clean washing soap detergent laundry'),
     'guides/Guide_to_Leadership.md': ('d8fa16a65959d1c7f632c782de1129a9c6dfade1614a9e55ebcdd92851e972df', 'leadership squad leader officer commander artillery coordinates'),
@@ -92,7 +92,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Ranching.md': ('4bfd68a7f6d60958e14da34916050fcedf06d7e1b9596a5dab8174b34a11c172', 'ranching livestock animal breeding'),
     'guides/Guide_to_Religion.md': ('8f2cba3283be55c895860478ffd6969b9ee7ad70ec90ecde479cd0ef622e9943', 'religion worship clergy shrine'),
     'guides/Guide_to_Research.md': ('698e0d0b98fcff745bfedbd816a8f4c7dcbc50ecb3c7be466f0cd3b8a2b847e2', 'research unlock study technology research bench'),
-    'guides/Guide_to_Resource_Extraction.md': ('34013fa81f20fcbe4878f0ec0b47de6597b6e655e784807485e84998d1b9e3c7', 'resource extraction gathering oil petroleum well fracturing'),
+    'guides/Guide_to_Resource_Extraction.md': ('7a5761156ca1e80fa50cd6558b0b7bedacdde2649e16a3be05bd43fb9caa5f0c', 'resource extraction gathering oil petroleum well fracturing'),
     'guides/Guide_to_Survival.md': ('a449eed1a1668a02a460076c3a08e61b512202b1cdfa95e13b18226238967bba', 'survival winter cold warm freezing hypothermia shelter debris footwear boots snowshoes shoes ice mud rain wet umbrella raincoat cape storm storms lightning thunder blizzard sandstorm heat wave weather fire fires wildfire firefighting beater flapper smother burning bucket blanket extinguish smoke signal signals hook firebreak pump engine nozzle hose jet reel extinguisher'),
     'guides/Guide_to_Tanks.md': ('9250b410333e0da30224b09ed2126ce2ed676225aa2dda2be3b13c8f7ff3442a', 'tank driving crew ammunition'),
     'guides/Guide_to_Trains.md': ('084ca499676d0ccfa7d9e64d9e52da43d7f0b5c40d95bbef0e3908ab2a35f641', 'train trains railway track locomotive station switcher rails wagon'),
@@ -126,7 +126,7 @@ WIKI_REVIEWED_GUIDES = {
     'Miscellaneous_Crafting.md': ('eac7513db31aeb05d3dec97040b4287d79ea61eba3076a5f9c7e889c36c4bb8b', 'miscellaneous crafting misc items dress dresses dressmaking tailoring tailor tailored sew sewing pattern patterns design clothes shirt gown cloak sleeves collar dye dyes wool linen fabric book hat hats headwear beret veil candle candles'),
     'maps/The_Americas.md': ('6268c8fa444bbb8bfbbfc2e326dc0dae23d2de63012b33fc070382c5c8a88828', 'americas america north south isthmus mainland persistent persistence map world hills tamping grading rammer'),
     'maps/Gaia.md': ('0e19a20e98e7e6330bc1cfc89fd067cb6752bdf50864d27d56ddd6bbad67f4a6', 'gaia map world underground'),
-    'maps/Nomads_Maps.md': ('58047561f302ec204cbb3ae304cd0c71f10a6cb2d0bb5095d6479c6106269509', 'nomads maps map terrain biome biomes'),
+    'maps/Nomads_Maps.md': ('0a7e8f389a1022ccbdd3a820a58f3921e447f7ac0ea15f0fad8bfcc3dfd5940d', 'nomads maps map terrain biome biomes'),
     'gamemodes/Voyage.md': ('9922f438d0253c6b4d812bc852422a54c37f428b4c3221b2a732397ef245ddfe', 'voyage expedition ship mode'),
     'gamemodes/Events.md': ('de6e6133e735e5da8a03a290f45e599b82cee216d9b150d25c583e3c34606336', 'events event special rounds'),
     'guides_overview.md': ('569716c71dfafb774b23d2725b669b6070bc4a3e0096dcb9aa3c9a96b00d112f', 'guides overview list of guides index'),
