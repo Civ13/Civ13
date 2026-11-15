@@ -298,6 +298,27 @@ the grid's total loss.
 Stable paths: `/obj/item/stack/cable_coil` (copper) and
 `/obj/item/stack/cable_coil/{iron,aluminium,silver,gold}`.
 
+## Tanks
+
+`code/modules/materials/vessel_materials.dm` makes the holding tank
+(`/obj/structure/fluid_tank`) one type in any metal, like the pipe: it stores
+`tank_material` and nothing else, and a steel tank is exactly the tank it
+always was. `/obj/structure/fluid_tank/plain` is the same tank behind Bronze
+Working, with rows for copper, bronze, lead and iron (10 each).
+
+| Tank | Trade-off |
+| --- | --- |
+| Copper, bronze | Hold anything, acid included. |
+| Lead | Holds acid. Poisons what is piped in: 2% a delivery adds a unit of lead (`/material/var/toxic`). |
+| Iron | Acid eats it: up to 5 units of each acid delivery are lost (`vessel_acid_eats()`: corrosion above 50). |
+| Steel | Unchanged. |
+| Wooden cistern | Unchanged; it burns. |
+
+Both hazards warn on examine. Only piped deliveries are affected, since the
+hook is `fluid_receive()`. Non-steel tanks use the tintable grey sprite from
+`tests/sprites/create_fluid_tanks.py`. Reaction vessels and engine boilers do
+not take a material yet.
+
 ## Sparks
 
 A tool whose material has `sparks` set (iron, steel, flint) can set off a
