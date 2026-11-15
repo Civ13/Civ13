@@ -1091,7 +1091,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/material/thrown/kunai_normal" = "bronze_weapons",
 		"/obj/item/weapon/material/thrown/star" = "bronze_weapons",
 		"/obj/item/weapon/melee/classic_baton/whip" = "bronze_weapons",
-		// --- bronze_working (5) ---
+		// --- bronze_working (6) ---
+		"/obj/structure/bell" = "bronze_working",
 		"/obj/item/weapon/clay/mold" = "bronze_working",
 		"/obj/item/weapon/storage/ore_collector" = "bronze_working",
 		"/obj/structure/furnace/kiln" = "bronze_working",
@@ -1626,7 +1627,9 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/converter/acid_bath" = "germ_theory",
 		"/obj/structure/shower/bathtub/big/steel" = "germ_theory",
 		"/obj/structure/shower/bathtub/steel" = "germ_theory",
-		// --- glassworking (8) ---
+		// --- glassworking (10) ---
+		"/obj/item/hourglass" = "glassworking",
+		"/obj/structure/lighthouse_lantern" = "glassworking",
 		"/obj/item/weapon/reagent_containers/food/drinks/bottle/large" = "glassworking",
 		"/obj/item/weapon/reagent_containers/food/drinks/bottle/small" = "glassworking",
 		"/obj/item/weapon/reagent_containers/food/drinks/bottle/small/custom/beer" = "glassworking",
@@ -1777,7 +1780,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/simple_door/key_door/anyone/doubledoor/marble" = "imperial_architecture",
 		"/obj/structure/window_frame/marble" = "imperial_architecture",
 		"/obj/structure/window_frame/marblefull" = "imperial_architecture",
-		// --- iron_smithing (7) ---
+		// --- iron_smithing (8) ---
+		"/obj/structure/lighthouse_beacon" = "iron_smithing",
 		"/obj/item/horseshoes" = "iron_smithing",
 		"/obj/item/weapon/reagent_containers/food/drinks/gunpowder" = "iron_smithing",
 		"/obj/structure/anvil" = "iron_smithing",
@@ -1914,7 +1918,10 @@ var/global/list/node_grid_col_cache = null
 		// geiger counter deliberately NOT here: it's this node's prototype
 		// item, so it must be craftable earlier (it's under factories, era4).
 		"/obj/structure/sign/radiation" = "nuclear_power",
-		// --- optics_instruments (19) ---
+		// --- optics_instruments (22) ---
+		"/obj/structure/tower_clock" = "optics_instruments",
+		"/obj/structure/clock_face" = "optics_instruments",
+		"/obj/structure/lighthouse_beacon/reflector" = "optics_instruments",
 		"/obj/item/gem_tester" = "optics_instruments",
 		"/obj/item/gem_tester/scale" = "optics_instruments",
 		"/obj/item/clothing/accessory/storage/lanyard/fob_chain" = "optics_instruments",
@@ -1996,7 +2003,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/chemical_dispenser" = "pharmacology",
 		"/obj/structure/chemical_dispenser/full/laboratory" = "pharmacology",
 		"/obj/structure/closet/fridge" = "pharmacology",
-		// --- pottery_storage (34) ---
+		// --- pottery_storage (35) ---
+		"/obj/structure/water_clock" = "pottery_storage",
 		"/obj/item/kitchen/wood_bowl" = "pottery_storage",
 		"/obj/item/stack/material/stone" = "pottery_storage",
 		"/obj/item/weapon/clay/bigclaypot" = "pottery_storage",
@@ -2343,7 +2351,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/material/harpoon/bone" = "stone_arms",
 		"/obj/structure/anvil/stone" = "stone_arms",
 		"/obj/structure/noose" = "stone_arms",
-		// --- stone_masonry (46) ---
+		// --- stone_masonry (47) ---
+		"/obj/structure/sundial" = "stone_masonry",
 		"/obj/structure/flood_platform/plinth" = "stone_masonry",
 		"/obj/structure/workshop_machine/mover/treadwheel" = "stone_masonry",
 		"/obj/covers/cobblestone" = "stone_masonry",

@@ -1822,6 +1822,7 @@
 #include "code\modules\1713\domestication.dm"
 #include "code\modules\1713\horse_breeding.dm"
 #include "code\modules\1713\mounted_combat.dm"
+#include "code\modules\1713\timekeeping.dm"
 #include "code\modules\1713\rock_art.dm"
 #include "code\modules\1713\tribal_deeds.dm"
 #include "code\modules\1713\stone_age_rites.dm"

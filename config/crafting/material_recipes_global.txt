@@ -1443,6 +1443,15 @@ RECIPE: /material/stone/,public bath,/obj/structure/aqueduct_bath,4,150,1,1,cons
 RECIPE: /material/clay/,clay water pipe,/obj/structure/aqueduct/pipe,1,60,1,1,construction,0,0,0,8,null
 RECIPE: /material/lead/,lead water pipe,/obj/structure/aqueduct/pipe/lead,1,60,1,1,construction,0,0,0,8,null
 RECIPE: /material/bronze/,water tap,/obj/structure/sink/aqueduct_fountain/tap,2,80,1,1,construction,0,0,0,8,null
+RECIPE: /material/stone/,sundial,/obj/structure/sundial,3,100,1,1,construction,0,0,0,8,null
+RECIPE: /material/clay/,water clock,/obj/structure/water_clock,4,120,1,1,construction,0,0,0,8,null
+RECIPE: /material/glass/,hourglass,/obj/item/hourglass,1,60,0,1,construction,0,0,0,8,null
+RECIPE: /material/iron/,tower clock,/obj/structure/tower_clock,15,300,1,1,construction,0,0,0,8,null
+RECIPE: /material/wood/,clock face,/obj/structure/clock_face,3,100,0,1,construction,0,0,0,8,null
+RECIPE: /material/bronze/,bell,/obj/structure/bell,8,200,1,1,construction,0,0,0,8,null
+RECIPE: /material/iron/,lighthouse beacon,/obj/structure/lighthouse_beacon,4,150,1,1,construction,0,0,0,8,null
+RECIPE: /material/bronze/,reflector lighthouse lamp,/obj/structure/lighthouse_beacon/reflector,6,200,1,1,construction,0,0,0,8,null
+RECIPE: /material/glass/,lantern room glazing,/obj/structure/lighthouse_lantern,4,120,1,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,flap gate,/obj/structure/sewer_flap_gate,3,80,1,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,stilt platform,/obj/structure/flood_platform/stilts,4,100,1,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,sluice gate,/obj/structure/sluice_gate,6,120,1,1,construction,0,0,0,8,null

@@ -1252,6 +1252,11 @@ SUITES = {
         'paths': ('tests/mounted_combat/',), 'shared_paths': (
             'code/modules/1713/mounted_combat.dm', 'code/game/objects/items/weapons/shields.dm',
             'code/game/mob/living/carbon/human/human_defense.dm')},
+    # Timekeeping and lighthouses: source contracts (native probe tests/timekeeping/probe.dm).
+    'timekeeping': {'files': ('tests/timekeeping/test_source.py',),
+        'paths': ('tests/timekeeping/',), 'shared_paths': (
+            'code/modules/1713/timekeeping.dm', 'icons/obj/timekeeping.dmi', 'icons/obj/lighthouse.dmi',
+            'tests/sprites/create_timekeeping.py')},
     # Sewers phase S1: source contracts (the native probe is tests/sewers/probe.dm).
     'sewers': {'files': ('tests/sewers/test_sewers.py',),
         'paths': ('tests/sewers/',), 'shared_paths': (
