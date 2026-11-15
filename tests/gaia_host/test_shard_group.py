@@ -233,6 +233,26 @@ class ShardGroupTests(unittest.TestCase):
         self.assertEqual('gaia', group['mainland'], 'the first region is the mainland by default')
         self.assertEqual(('HEAD', False), (group['revision'], group['public']))
 
+    def test_every_region_gets_the_host_operator_agent(self):
+        group = self.write_group()
+        shard_group.setup(group, self.machine)
+        token = (self.base / 'regions' / 'operator-token.txt').read_text().strip()
+        self.assertRegex(token, '^[0-9a-f]{48}$')
+        deep = self.base / 'regions' / 'deep' / 'config' / 'agent-control.txt'
+        self.assertEqual('agent operator %s * Host\n' % token, deep.read_text())
+        # Lines from an overlay (or the host) stay; the operator line is replaced, never doubled.
+        deep.write_text('agent ada %s observe,characters\nagent operator stale * Host\n' % ('a' * 40))
+        self.assertTrue(shard_group.write_operator_agent(group, deep.parent.parent))
+        self.assertEqual(['agent ada %s observe,characters' % ('a' * 40), 'agent operator %s * Host' % token],
+                         deep.read_text().splitlines())
+        self.assertFalse(shard_group.write_operator_agent(group, deep.parent.parent), 'an unchanged file is not rewritten')
+        self.group['operator_agent'] = False
+        off = self.write_group()
+        deep.unlink()
+        self.assertFalse(shard_group.write_operator_agent(off, deep.parent.parent))
+        self.assertFalse(deep.exists())
+        self.refuse_config('operator_agent must be', operator_agent='yes')
+
     def test_setup_creates_worktrees_and_region_config_once(self):
         group = self.write_group()
         result = shard_group.setup(group, self.machine)
@@ -1238,7 +1258,7 @@ class ShardGroupTests(unittest.TestCase):
                           '## Host settings (config.local.txt)', 'DAYNIGHT_CLIENT_TINT'],
                          (gaia / 'config' / 'config.txt').read_text().splitlines(), 'the region overrides the group')
         self.assertFalse((gaia / 'config' / 'config.local.txt').exists(), 'only the merged config.txt is written')
-        self.assertEqual([], [p.name for p in (gaia / 'config').iterdir() if p.name not in ('config.txt', 'shard_region.json')
+        self.assertEqual([], [p.name for p in (gaia / 'config').iterdir() if p.name not in ('config.txt', 'shard_region.json', 'agent-control.txt')
                               and not p.name.endswith('token.txt') and not p.name.startswith(('lifecycle', 'transfer', 'relay'))],
                          'kept copies stay in the overlay')
         compiles = sum(1 for argv, _ in self.machine.calls if argv[-1] == 'region.dme')

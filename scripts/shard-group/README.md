@@ -20,6 +20,10 @@ python scripts/shard-group/shard_group.py --config group.json stop|restart [--re
   because any connection to a frozen world wakes it, and a trail asks it to
   wake its destination before sending a traveller), `config/lifecycle-token.txt` and the region's host config. It refuses
   while any region is listening.
+- `setup`, `update` and `config-apply` also give every region the group's host
+  `operator` agent in `config/agent-control.txt` (token in
+  `<root>/operator-token.txt`; [agent control](../../docs/agent-control.md#host-operator-agent)),
+  unless the group sets `"operator_agent": false`.
 - `update` checks every region out at the group's `revision`, writes
   `region.dme` (civ13.dme with only the region's map selected) and compiles it.
   A map path inside the repository is used as is; an absolute path is copied to

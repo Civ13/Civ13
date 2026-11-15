@@ -94,6 +94,21 @@ class ProtocolTests(unittest.TestCase):
         self.assertEqual(sent["token"], "t" * 32)
         self.assertEqual(json.loads(sent["args"]), {"target": "global", "names": ["season"]})
 
+    def test_client_uses_a_shard_regions_operator_agent(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "operator-token.txt").write_text("c" * 48 + "\n")
+            group = root / "group.json"
+            group.write_text(json.dumps({"root": str(root), "regions": [{"id": "south", "port": 1746}]}))
+            client = agent.AgentClient.from_env({"CIV13_GROUP": str(group), "CIV13_REGION": "south"})
+            self.assertEqual(("operator", "c" * 48, "127.0.0.1", 1746), (client.agent, client.token, client.host, client.port))
+            with self.assertRaises(agent.AgentError):
+                agent.AgentClient.from_env({"CIV13_GROUP": str(group), "CIV13_REGION": "north"})
+            (root / "operator-token.txt").unlink()
+            with self.assertRaises(agent.AgentError):
+                agent.AgentClient.from_env({"CIV13_GROUP": str(group), "CIV13_REGION": "south"})
+
     def test_client_requires_credentials_and_known_actions(self):
         with self.assertRaises(agent.AgentError):
             agent.AgentClient.from_env({})

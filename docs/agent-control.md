@@ -83,6 +83,26 @@ see this in game with **Special > Check Research Knowledge** (everyone, plus
 who knows each node, including sleeping offline characters) and right-click
 **Show Research Knowledge** on one character.
 
+## Host operator agent
+
+Every region of a shard group (scripts/shard-group) gets an `operator` agent
+with every scope and Host rights, so the host's own tools and LLM sessions on
+that machine can observe any region and run any admin verb there, such as
+Debug > Reload Lists (`reload_admins`), without a player client. `setup`, `update` and
+`config-apply` keep the line in each region's `config/agent-control.txt` and
+leave every other agent line (Ada, overlays) as it was. The token is shared by
+the group and lives only in `<root>/operator-token.txt`, never in an overlay
+or the repository. Requests are still loopback only. A world re-reads the file
+when it changes, so `config-apply` turns it on without a restart. Set
+`"operator_agent": false` in the group file to leave it out.
+
+On the host, point the client at a region instead of naming an agent:
+
+```
+CIV13_GROUP=D:/Civ13Regions/earth.json CIV13_REGION=southamerica \
+  python tools/agent-control/civ13_agent.py call call_verb '{"verb": "reload_admins"}'
+```
+
 ## Protocol
 
 Send a Topic request to the world port:
