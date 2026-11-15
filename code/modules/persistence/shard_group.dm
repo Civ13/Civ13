@@ -177,6 +177,13 @@ var/global/datum/shard_group/shard_group = new
 	var/list/peer = peers[id]
 	return peer ? peer["name"] : id
 
+// The world CivilizationBot watches: it posts other regions' OOC and admin
+// lines to Discord and its admins file is the group's. That is the front door
+// players join (the relay's gate), else the mainland, so the host can move the
+// mainland while the bot and the gate stay put.
+/datum/shard_group/proc/discord_region()
+	return gate || mainland
+
 // What a peer, the host tool or a player sees of this region.
 /datum/shard_group/proc/describe()
 	. = list("group" = group, "region" = region, "name" = name, "kind" = kind, "players" = length(clients), "map" = map ? map.title : null)

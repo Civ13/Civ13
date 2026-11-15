@@ -1316,6 +1316,19 @@ class ShardGroupTests(unittest.TestCase):
         self.assertEqual({}, done)
         self.assertIn('not a config setting', refused['gaia'])
 
+    def test_config_apply_moves_the_mainland_in_shard_region(self):
+        # The host moved the mainland while the regions run (Gaia, 2026-11-15): config-apply
+        # brings shard_region.json up to the group without a setup, which needs them stopped.
+        path = self.base / 'region'
+        (path / 'config').mkdir(parents=True)
+        target = path / 'config' / 'shard_region.json'
+        self.assertIsNone(shard_group.refresh_shard_region({'mainland': 'gaia', 'start_region': 'gaia'}, path))
+        target.write_text(json.dumps({'region': 'northamerica', 'mainland': 'northamerica', 'start_region': 'gaia', 'gate': 'northamerica'}))
+        self.assertTrue(shard_group.refresh_shard_region({'mainland': 'gaia', 'start_region': 'gaia'}, path))
+        self.assertEqual({'region': 'northamerica', 'mainland': 'gaia', 'start_region': 'gaia', 'gate': 'northamerica'},
+                         json.loads(target.read_text()), 'the gate and everything else stay')
+        self.assertFalse(shard_group.refresh_shard_region({'mainland': 'gaia', 'start_region': 'gaia'}, path))
+
     def test_config_migrate_turns_a_whole_overlay_config_into_overrides(self):
         import subprocess
         repo = self.base / 'repo'
