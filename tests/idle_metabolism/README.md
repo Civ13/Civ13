@@ -1,6 +1,13 @@
 # Idle food and water consumption
 
-Conscious connected players consume 10% of their ordinary food/water rate after
+Awake food and water use follows the workload: resting 0.6, light work 0.8
+(reading, writing, sewing, study), ordinary work, walking and fighting 1.0, and
+heavy labour 1.75 food / 2.0 water (mining, digging, felling, smithing) times
+0.0864 per second. Overlapping timed actions count the heaviest. A chilled body
+burns 1.3x food (1.6x when 15 K below normal); dry heat costs 2.2x water and an
+overheated body another 1.5x. Pools are 600 food and 500 water.
+
+Conscious connected players consume 10% of their awake food/water rate after
 60 seconds without input, movement or a timed action. Movement, clicks, client
 input, combat cooldowns, training and `do_after`/`do_mob` keep normal rates.
 Timed actions count independently, including overlapping unrestricted actions;

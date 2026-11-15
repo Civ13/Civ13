@@ -20,12 +20,14 @@
 
 	min_positions = 2
 	max_positions = 20
+/datum/job/indians/carib_chief/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_HIGH, "rifle" = STAT_LOW, "dexterity" = STAT_VERY_HIGH, "swords" = STAT_HIGH, "pistol" = STAT_LOW, "bows" = STAT_VERY_HIGH, "medical" = STAT_NORMAL)
+/datum/job/indians/carib_chief/job_loadout = list(
+	/obj/item/clothing/head/chief_hat = slot_head,
+	/obj/item/clothing/under/indianchief = slot_w_uniform)
 /datum/job/indians/carib_chief/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/chief_hat(H), slot_head)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/indianchief(H), slot_w_uniform)
+	equip_loadout(H)
 
 	var/obj/item/clothing/accessory/armband/indian2_a = new /obj/item/clothing/accessory/armband/indian2(null)
 	var/obj/item/clothing/under/uniform = H.w_uniform
@@ -38,14 +40,7 @@
 	give_random_name(H)
 	H.f_style = "Shaved"
 	H.add_note("Role", "You are a <b>Elder</b> of a Carib tribe. Organize your <b>Tribesmen</b> and take out the invaders!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_HIGH)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_VERY_HIGH)
-	H.setStat("swords", STAT_HIGH)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_VERY_HIGH)
-	H.setStat("medical", STAT_NORMAL)
+	apply_job_stats(H)
 
 
 	return TRUE
@@ -62,6 +57,7 @@
 
 	min_positions = 2
 	max_positions = 30
+/datum/job/indians/carib_shaman/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_LOW, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_LOW, "bows" = STAT_MEDIUM_HIGH, "medical" = STAT_VERY_HIGH)
 /datum/job/indians/carib_shaman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //clothes
@@ -82,14 +78,7 @@
 	give_random_name(H)
 	H.f_style = "Shaved"
 	H.add_note("Role", "You are a <b>Shaman</b>, the healer and religious leader of your tribe. Keep your fellow tribesmen healthy and motivated!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_MEDIUM_HIGH)
-	H.setStat("medical", STAT_VERY_HIGH)
+	apply_job_stats(H)
 
 
 	return TRUE
@@ -107,6 +96,7 @@
 	min_positions = 20
 	max_positions = 300
 
+/datum/job/indians/carib/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_LOW, "dexterity" = STAT_VERY_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_LOW, "bows" = STAT_VERY_HIGH, "medical" = STAT_MEDIUM_LOW)
 /datum/job/indians/carib/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //clothes
@@ -132,14 +122,7 @@
 	give_random_name(H)
 	H.f_style = "Shaved"
 	H.add_note("Role", "You are a member of a Carib tribe. Organize with your <b>Chief</b> and take out the invaders!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_VERY_HIGH)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_VERY_HIGH)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 
 
 	return TRUE
@@ -158,6 +141,7 @@
 	min_positions = 60
 	max_positions = 300
 
+/datum/job/indians/tribes/red/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_LOW, "dexterity" = STAT_VERY_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_LOW, "bows" = STAT_VERY_HIGH, "medical" = STAT_MEDIUM_LOW)
 /datum/job/indians/tribes/red/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //clothes
@@ -175,14 +159,7 @@
 	H.f_style = "Shaved"
 	H.add_note("Role", "You are a <b>[title]</b>. Stick with your tribe, build your village, and honor the Gods!")
 	H.add_note("Tribe", "You are a member of the <b>Red Goose</b> tribe. You should wear red clothes.")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_VERY_HIGH)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_VERY_HIGH)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 
 
 	return TRUE
@@ -199,6 +176,7 @@ datum/job/indians/tribes/blue
 	min_positions = 60
 	max_positions = 300
 
+/datum/job/indians/tribes/blue/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_LOW, "dexterity" = STAT_VERY_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_LOW, "bows" = STAT_VERY_HIGH, "medical" = STAT_MEDIUM_LOW)
 /datum/job/indians/tribes/blue/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //clothes
@@ -216,14 +194,7 @@ datum/job/indians/tribes/blue
 	H.f_style = "Shaved"
 	H.add_note("Role", "You are a <b>[title]</b>. Stick with your tribe, build your village, and honor the Gods!")
 	H.add_note("Tribe", "You are a member of the <b>Blue Turkey</b> tribe. You should wear blue clothes.")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_VERY_HIGH)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_VERY_HIGH)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 
 
 	return TRUE
@@ -237,6 +208,7 @@ datum/job/indians/tribes/green
 	min_positions = 60
 	max_positions = 300
 
+/datum/job/indians/tribes/green/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_LOW, "dexterity" = STAT_VERY_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_LOW, "bows" = STAT_VERY_HIGH, "medical" = STAT_MEDIUM_LOW)
 /datum/job/indians/tribes/green/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //clothes
@@ -254,14 +226,7 @@ datum/job/indians/tribes/green
 	H.f_style = "Shaved"
 	H.add_note("Role", "You are a <b>[title]</b>. Stick with your tribe, build your village, and honor the Gods!")
 	H.add_note("Tribe", "You are a member of the <b>Green Monkey</b> tribe. You should wear green clothes.")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_VERY_HIGH)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_VERY_HIGH)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 
 
 	return TRUE
@@ -275,6 +240,7 @@ datum/job/indians/tribes/yellow
 	min_positions = 60
 	max_positions = 300
 
+/datum/job/indians/tribes/yellow/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_LOW, "dexterity" = STAT_VERY_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_LOW, "bows" = STAT_VERY_HIGH, "medical" = STAT_MEDIUM_LOW)
 /datum/job/indians/tribes/yellow/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //clothes
@@ -292,14 +258,7 @@ datum/job/indians/tribes/yellow
 	H.f_style = "Shaved"
 	H.add_note("Role", "You are a <b>[title]</b>. Stick with your tribe, build your village, and honor the Gods!")
 	H.add_note("Tribe", "You are a member of the <b>Yellow Mouse</b> tribe. You should wear yellow clothes.")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_VERY_HIGH)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_VERY_HIGH)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 
 
 	return TRUE
@@ -313,6 +272,7 @@ datum/job/indians/tribes/white
 	min_positions = 60
 	max_positions = 300
 
+/datum/job/indians/tribes/white/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_LOW, "dexterity" = STAT_VERY_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_LOW, "bows" = STAT_VERY_HIGH, "medical" = STAT_MEDIUM_LOW)
 /datum/job/indians/tribes/white/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //clothes
@@ -332,14 +292,7 @@ datum/job/indians/tribes/white
 	H.f_style = "Shaved"
 	H.add_note("Role", "You are a <b>[title]</b>. Stick with your tribe, build your village, and honor the Gods!")
 	H.add_note("Tribe", "You are a member of the <b>White Wolf</b> tribe. You should wear white clothes.")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_VERY_HIGH)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_VERY_HIGH)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 
 
 	return TRUE
@@ -353,6 +306,7 @@ datum/job/indians/tribes/black
 	min_positions = 60
 	max_positions = 300
 
+/datum/job/indians/tribes/black/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_LOW, "dexterity" = STAT_VERY_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_LOW, "bows" = STAT_VERY_HIGH, "medical" = STAT_MEDIUM_LOW)
 /datum/job/indians/tribes/black/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //clothes
@@ -370,14 +324,7 @@ datum/job/indians/tribes/black
 	H.f_style = "Shaved"
 	H.add_note("Role", "You are a <b>[title]</b>. Stick with your tribe, build your village, and honor the Gods!")
 	H.add_note("Tribe", "You are a member of the <b>Black Bear</b> tribe. You should wear black clothes.")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_VERY_HIGH)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_VERY_HIGH)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 
 
 	return TRUE
@@ -676,13 +623,15 @@ datum/job/indians/tribes/black
 	max_positions = 12
 	allowed_maps = list(MAP_TADOJSVILLE)
 
+/datum/job/indians/warlords/tadojsville/sergeant/job_loadout = list(
+	/obj/item/clothing/head/beret_black = slot_head,
+	/obj/item/clothing/shoes/jackboots = slot_shoes)
 /datum/job/indians/warlords/tadojsville/sergeant/equip(var/mob/living/human/H)
 	H.nationality = "Katnegwa"
 	H.add_note("Role", "You are a member of <b>Katnegwa Mercenary Force</b>. Lead your fellow mercs and honour your contract!")
 	H.add_note("Extra mechanics", "Collect Peacekeeper heads by targeting the head on HELP intent with machette in hand. Bring them back to the Shaman's Hut and place them on the altar to get weapons and equipment.  <b>Only United Nations Peacekeeper heads will do, all others are worthless.</b>.")
 	//hat or mask
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/beret_black(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+	equip_loadout(H)
 
 	if(prob(35))
 		H.equip_to_slot_or_del(new /obj/item/clothing/mask/shemagh(H), slot_wear_mask)

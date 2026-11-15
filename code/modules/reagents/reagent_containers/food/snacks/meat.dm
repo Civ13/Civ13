@@ -27,6 +27,12 @@
 	cutlet.decaytimer = decaytimer * cutlet.decay / decay
 	if (cutlet.rots && cutlet.decaytimer >= cutlet.decay / 2)
 		cutlet.rot()
+	// Each of the two strips keeps half the slab's germs; only cooking kills them.
+	if (reagents && cutlet.reagents)
+		for (var/germ in germ_reagent_disease)
+			var/amount = reagents.get_reagent_amount(germ)
+			if (amount > 0)
+				cutlet.reagents.add_reagent(germ, amount / 2)
 
 /obj/item/weapon/reagent_containers/food/snacks/proc/salt_meat(obj/item/weapon/reagent_containers/food/condiment/salt_source, mob/user)
 	if (salted_meat)
@@ -65,7 +71,7 @@
 		if(kit.extract_biological(src))
 			to_chat(user, SPAN_NOTICE("You extract collagen proteins from the raw meat."))
 		return
-	if (!roasted && (istype(W,/obj/item/weapon/attachment/bayonet)  || istype(W, /obj/item/weapon/material/hatchet) || istype(W,/obj/item/weapon/material/kitchen/utensil/knife)))
+	if (!roasted && (istype(W,/obj/item/weapon/attachment/bayonet)  || is_tool(W, TOOL_HATCHET) || is_tool(W, TOOL_KNIFE)))
 		if (!can_cut_preserved_meat())
 			to_chat(user, SPAN_WARNING("\The [src] cannot be cut into preservable meat."))
 			return
@@ -107,9 +113,9 @@
 /obj/item/weapon/reagent_containers/food/snacks/meat/poisonfrog/attack_self(mob/user as mob)
 
 	var/obj/item/ammo_casing/CURRENT = null
-	if (user.l_hand == src && istype(user.r_hand, /obj/item/ammo_casing/arrow) && uses >= 1)
+	if (user.l_hand == src && (istype(user.r_hand, /obj/item/ammo_casing/arrow) || istype(user.r_hand, /obj/item/ammo_casing/bolt)) && uses >= 1)
 		CURRENT = user.r_hand
-	else if (user.r_hand == src && istype(user.l_hand, /obj/item/ammo_casing/arrow) && uses >= 1)
+	else if (user.r_hand == src && (istype(user.l_hand, /obj/item/ammo_casing/arrow) || istype(user.l_hand, /obj/item/ammo_casing/bolt)) && uses >= 1)
 		CURRENT = user.l_hand
 	if (CURRENT)
 		if (istype(CURRENT, /obj/item/ammo_casing/arrow))
@@ -181,7 +187,7 @@
 		reagents.remove_reagent("food_poisoning",1)
 	satisfaction = 4
 /obj/item/weapon/reagent_containers/food/snacks/rawfish/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (!roasted && !istype(src,/obj/item/weapon/reagent_containers/food/snacks/rawfish/cod) && !rotten && (istype(W,/obj/item/weapon/attachment/bayonet) || istype(W,/obj/item/weapon/material/kitchen/utensil/knife) || istype(W, /obj/item/weapon/material/hatchet)))
+	if (!roasted && !istype(src,/obj/item/weapon/reagent_containers/food/snacks/rawfish/cod) && !rotten && (istype(W,/obj/item/weapon/attachment/bayonet) || is_tool(W, TOOL_KNIFE) || is_tool(W, TOOL_HATCHET)))
 		for (var/i=1, i<=3, i++)
 			new /obj/item/weapon/reagent_containers/food/snacks/fishfillet(src)
 		to_chat(user, "You cut the fish into thin fillets.")
@@ -190,7 +196,7 @@
 		..()
 
 /obj/item/weapon/reagent_containers/food/snacks/rawfish/salmon/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (!roasted && !rotten && (istype(W,/obj/item/weapon/attachment/bayonet) || istype(W,/obj/item/weapon/material/kitchen/utensil/knife) || istype(W, /obj/item/weapon/material/hatchet)))
+	if (!roasted && !rotten && (istype(W,/obj/item/weapon/attachment/bayonet) || is_tool(W, TOOL_KNIFE) || is_tool(W, TOOL_HATCHET)))
 		for (var/i=1, i<=3, i++)
 			new /obj/item/weapon/reagent_containers/food/snacks/salmonfillet(src)
 		to_chat(user, "You cut the salmon into thin fillets.")
@@ -356,7 +362,7 @@
 	icon = 'icons/obj/food/food.dmi'
 
 	attackby(obj/item/I, mob/user)
-		if (istype(I, /obj/item/weapon/attachment/bayonet) || istype(I, /obj/item/weapon/material/kitchen/utensil/knife) || istype(I, /obj/item/weapon/material/hatchet))
+		if (istype(I, /obj/item/weapon/attachment/bayonet) || is_tool(I, TOOL_KNIFE) || is_tool(I, TOOL_HATCHET))
 			to_chat(user, "You crack open \the [src].")
 			new /obj/item/weapon/reagent_containers/food/snacks/cracked_shellfish(user.loc)
 			qdel(src)

@@ -487,7 +487,10 @@ proc/admin_notice(var/message, var/rights)
 	set name = "Delay"
 
 	if (!check_rights(R_SERVER))	return
-	if (!ticker || ticker.current_state != GAME_STATE_PREGAME)
+	if (!ticker)
+		to_chat(usr, "<span class = 'warning'>The game ticker has not been set up yet.</span>")
+		return
+	if (ticker.current_state != GAME_STATE_PREGAME)
 		ticker.delay_end = !ticker.delay_end
 		log_admin("[key_name(usr)] [ticker.delay_end ? "delayed the round end" : "has made the round end normally"].")
 		message_admins("<span class = 'notice'>[key_name(usr)] [ticker.delay_end ? "delayed the round end" : "has made the round end normally"].</span>", key_name(usr))
@@ -568,7 +571,7 @@ proc/admin_notice(var/message, var/rights)
 	set category = "Nomads"
 	set desc = "Activates or Deactivates research."
 	set name = "Toggle Research"
-	if ((!map.civilizations && !map.nomads) || map.ID == MAP_TRIBES || map.ID == MAP_FOUR_KINGDOMS || map.ID == MAP_THREE_TRIBES)
+	if ((!map.civilizations && !map.nomads) || map.tribes)
 		to_chat(usr, "<font color='red'>Error: This is only available on Civ/Nomads modes.</font>")
 		return
 	if (!(map.research_active))
@@ -622,7 +625,7 @@ proc/admin_notice(var/message, var/rights)
 	set category = "Nomads"
 	set desc = "Changes the research."
 	set name = "Set Custom Research"
-	if (!map.civilizations && !map.nomads && map.ID != MAP_TRIBES && map.ID != MAP_FOUR_KINGDOMS && map.ID != MAP_THREE_TRIBES)
+	if (!map.civilizations && !map.nomads && !map.tribes)
 		to_chat(usr, "<font color='red'>Error: This is only available on Civ/Nomads modes.</font>")
 		return
 	else
@@ -648,7 +651,7 @@ proc/admin_notice(var/message, var/rights)
 	set category = "Nomads"
 	set desc = "Changes the starting age."
 	set name = "Set Custom Age"
-	if (!map.civilizations && !map.nomads && map.ID != MAP_TRIBES && map.ID != MAP_THREE_TRIBES && map.ID != MAP_FOUR_KINGDOMS)
+	if (!map.civilizations && !map.nomads && !map.tribes)
 		to_chat(usr, "<font color='red'>Error: This is only available on Civ/Nomads modes.</font>")
 		return
 	else
@@ -1034,7 +1037,6 @@ proc/admin_notice(var/message, var/rights)
 		if ("Just clear")
 			do_clear = TRUE
 			do_load = FALSE
-			return
 		if ("Cancel")
 			return
 
@@ -1086,7 +1088,6 @@ proc/admin_notice(var/message, var/rights)
 			do_load = TRUE
 		if ("Just clear")
 			do_clear = TRUE
-			return
 		if ("Cancel")
 			return
 
@@ -1176,7 +1177,7 @@ proc/admin_notice(var/message, var/rights)
 		var/details = file2text(checkingfile)
 		var/list/details_lines = splittext(details, "|||\n")
 		if (details_lines.len)
-			for(var/i=1,i<=details_lines.len,i++)
+			for(var/i=details_lines.len,i>=1,i--)
 				if (findtext(details_lines[i], ";"))
 					var/list/details2 = splittext(details_lines[i], ";")
 					if (text2num(details2[7])<=world.realtime)

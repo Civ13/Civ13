@@ -169,43 +169,10 @@ var/spam_check3 = FALSE
 				win_condition_spam_check = TRUE
 				no_loop_o = TRUE
 				return FALSE
-			// German major
-			else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33, TRUE))
-				if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33))
-					if (last_win_condition != win_condition.hash)
-						current_win_condition = "The NVA is capturing the FOB! They will win in {time} minutes."
-						next_win = world.time + short_win_time(VIETNAMESE)
-						announce_current_win_condition()
-						current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
-						current_loser = roundend_condition_def2army(roundend_condition_sides[2][1])
-			// German minor
-			else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01, TRUE))
-				if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01))
-					if (last_win_condition != win_condition.hash)
-						current_win_condition = "The NVA is capturing the FOB! They will win in {time} minutes."
-						next_win = world.time + short_win_time(VIETNAMESE)
-						announce_current_win_condition()
-						current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
-						current_loser = roundend_condition_def2army(roundend_condition_sides[2][1])
-			// Soviet major
-			else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33, TRUE))
-				if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33))
-					if (last_win_condition != win_condition.hash)
-						current_win_condition = "The NVA is capturing the FOB! They will win in {time} minutes."
-						next_win = world.time + short_win_time(VIETNAMESE)
-						announce_current_win_condition()
-						current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
-						current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
-			// Soviet minor
-			else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01, TRUE))
-				if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01))
-					if (last_win_condition != win_condition.hash)
-						current_win_condition = "The NVA is capturing the FOB! They will win in {time} minutes."
-						next_win = world.time + short_win_time(VIETNAMESE)
-						announce_current_win_condition()
-						current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
-						current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
-			else
+			else if (!capture_step(1, 2, 1.33, FALSE, VIETNAMESE, 1) && \
+				!capture_step(1, 2, 1.01, FALSE, VIETNAMESE, 1) && \
+				!capture_step(2, 1, 1.33, FALSE, VIETNAMESE, 1) && \
+				!capture_step(2, 1, 1.01, FALSE, VIETNAMESE, 1))
 				if (current_win_condition != no_winner && current_winner && current_loser)
 					to_chat(world, "<font size = 3>The US Army has recaptured the FOB!</font>")
 					current_winner = null
@@ -215,6 +182,11 @@ var/spam_check3 = FALSE
 				win_condition.hash = 0
 			last_win_condition = win_condition.hash
 			return TRUE
+
+/obj/map_metadata/ong_thahn/capture_message(id)
+	switch (id)
+		if (1)
+			return "The NVA is capturing the FOB! They will win in {time} minutes."
 
 /obj/map_metadata/ong_thahn/check_caribbean_block(var/mob/living/human/H, var/turf/T)
 	if (!istype(H) || !istype(T))

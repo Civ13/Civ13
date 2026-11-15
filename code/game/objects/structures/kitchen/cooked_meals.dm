@@ -87,9 +87,9 @@
 		meal_has_meat = meal_has_meat || F.non_vegetarian
 		F.reagents.trans_to_holder(reagents, F.reagents.total_volume)
 		qdel(F)
-	// Boiling removes these two biological hazards, not arbitrary poisons.
+	// Boiling removes food poisoning and germs, not arbitrary poisons.
 	reagents.del_reagent("food_poisoning")
-	reagents.del_reagent("cholera")
+	reagents.kill_germs()
 	meal_portions = 3
 	state = STATE_STEWING
 	fullness = 0 // Cooking water is spent; no nutrition or hydration is created.

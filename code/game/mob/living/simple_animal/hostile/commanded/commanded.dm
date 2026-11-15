@@ -122,7 +122,7 @@
 	npc_set_combat_target(null) //want me to attack something? Well I better forget my old target.
 	npc_subtile_stop_continuous_walk()
 	stance = HOSTILE_STANCE_IDLE
-	if (text == "attack" || findtext(text,"everyone") || findtext(text,"anybody") || findtext(text, "somebody") || findtext(text, "someone")) //if its just 'attack' then just attack anybody, same for if they say 'everyone', somebody, anybody. Assuming non-pickiness.
+	if (trim(text) == "attack" || findtext(text,"everyone") || findtext(text,"anybody") || findtext(text, "somebody") || findtext(text, "someone")) //if its just 'attack' then just attack anybody, same for if they say 'everyone', somebody, anybody. Assuming non-pickiness.
 		allowed_targets = list("everyone")//everyone? EVERYONE
 		return TRUE
 

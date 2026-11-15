@@ -50,6 +50,7 @@ try {
     if (args.SequenceEqual(new[] { "--hosting-only" })) {
         LocalHostingTests.Run(root);
         LocalBotTests.Run(root);
+        BotRepairTests.Run(root);
         Console.WriteLine("PASS bot command: " + await BotCommandTests.Run(root) + " assertions; --bot parsing, detached start, start/stop/restart sequences.");
         LocalHelpTests.Run(root);
         StartMenuShortcutTests.Run(root);
@@ -75,6 +76,7 @@ try {
     assertions += await TopicPacingTests.Run(root);
     assertions += LocalHostingTests.Run(root);
     assertions += LocalBotTests.Run(root);
+    assertions += BotRepairTests.Run(root);
     assertions += await BotCommandTests.Run(root);
     assertions += LocalHelpTests.Run(root);
     assertions += StartMenuShortcutTests.Run(root);
@@ -318,7 +320,10 @@ try {
     Console.Error.WriteLine("FAIL: " + e);
     return 1;
 } finally {
-    // Task-created exact temporary root only.
+    // Task-created exact temporary root only. Git marks its object files read-only, which
+    // Windows refuses to delete (the bot repair fixture's repositories), so clear that first.
+    foreach (var file in Directory.EnumerateFiles(root, "*", SearchOption.AllDirectories))
+        File.SetAttributes(file, FileAttributes.Normal);
     Directory.Delete(root, true);
 }
 return 0;

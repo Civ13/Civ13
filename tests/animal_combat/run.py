@@ -63,7 +63,7 @@ def main():
             generated[4].write_text(mutated, encoding='utf-8')
             source = source.replace(str(original.relative_to(root)).replace('/', '\\'), generated[4].name)
         source = re.sub(r'^#include ".*\.dmm".*$', '', source, flags=re.M)
-        generated[0].write_text(source + '\n#include "tests/animal_combat/probe.dm"\n#include "tests/animal_combat/retaliation.dm"\n', encoding='utf-8')
+        generated[0].write_text(source + '\n#include "tests/animal_combat/probe.dm"\n#include "tests/animal_combat/retaliation.dm"\n#include "tests/animal_combat/predator.dm"\n', encoding='utf-8')
         commit = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
         print(f'Commit: {commit}', flush=True)
         diff = subprocess.check_output(['git', 'diff', '--binary', 'HEAD'], cwd=root)

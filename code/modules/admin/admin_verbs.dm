@@ -26,12 +26,20 @@ var/list/admin_verbs_admin = list(
 	/client/proc/enable_whitelist,
 	/client/proc/disable_whitelist,
 	/client/proc/disable_campaign_whitelist,
+	/datum/admins/proc/event_transfer,	//send players to an event region and back, characters kept safe
+	/datum/admins/proc/place_region_trail,	//place an open trail to another land where you stand, ghosts too
+	/datum/admins/proc/land_status,
+	/datum/admins/proc/player_art,	//see every finished player painting, who painted it, and remove offensive ones	//see and set each land's settlement stage (frontier, colonised, settled)
+	/datum/admins/proc/world_chart_panel,	//see the world chart for boat expeditions and reroll charted lands
 	/client/proc/player_panel_new,		//shows an interface for all players, with links to various panels,
 	/client/proc/admin_player_map,	//live map of a level with every player on it,
 	/client/proc/admin_weather_map,	//live map of the weather systems, and sending or ending storms,
+	/client/proc/admin_clothing_designs,	//list and rename player clothing designs
 	/client/proc/cmd_admin_check_illnesses,	//read-only list of everyone who is ill,
 	/client/proc/cmd_admin_check_research,	//read-only list of who knows which research,
 	/client/proc/cmd_admin_show_research,	//read-only research knowledge of one character,
+	/client/proc/cmd_admin_restore_research,	//give back research and scholarship lost to a bug, adds only,
+	/client/proc/cmd_admin_create_divine_book,	//write a god's one original book and entrust it to a player,
 	/client/proc/invisimin,				//allows our mob to go invisible/visible,
 	/datum/admins/proc/toggleenter,		//toggles whether people can join the current game,
 	/datum/admins/proc/toggleguests,	//toggles whether guests can join the current game,
@@ -92,6 +100,7 @@ var/list/admin_verbs_trialadmin = list(
 	/client/proc/player_panel_new,
 	/client/proc/admin_player_map,	//live map of a level with every player on it,
 	/client/proc/admin_weather_map,	//live map of the weather systems, and sending or ending storms,
+	/client/proc/admin_clothing_designs,	//list and rename player clothing designs
 	/datum/admins/proc/toggleenter,		//toggles whether people can join the current game,
 	/datum/admins/proc/toggleguests,	//toggles whether guests can join the current game,
 	/client/proc/admin_ghost,			//allows us to ghost/reenter body at will,
@@ -163,6 +172,7 @@ var/list/admin_verbs_server = list(
 	/datum/admins/proc/save_and_shut_down,
 	/datum/admins/proc/cancel_planned_shutdown,
 	/datum/admins/proc/save_update_resume,
+	/datum/admins/proc/host_controls,
 	/datum/admins/proc/resume_pending_recovery
 	)
 var/list/admin_verbs_debug = list(
@@ -171,6 +181,10 @@ var/list/admin_verbs_debug = list(
 	/client/proc/pollution_status,
 	/client/proc/set_local_pollution,
 	/client/proc/toggle_terrain_heights,
+	/client/proc/river_flood_map,
+	/client/proc/river_flood_set_stage,
+	/client/proc/river_flood_spring,
+	/client/proc/toggle_flood_thresholds,
 	/client/proc/profile_dump,
 	/client/proc/gc_outcomes,
 	/client/proc/gc_inspect_owner_field,
@@ -297,6 +311,7 @@ var/list/admin_verbs_mod = list(
 	/client/proc/player_panel_new,
 	/client/proc/admin_player_map,	//live map of a level with every player on it,
 	/client/proc/admin_weather_map,	//live map of the weather systems, and sending or ending storms,
+	/client/proc/admin_clothing_designs,	//list and rename player clothing designs
 	/client/proc/dsay,
 	/datum/admins/proc/announce,		//priority announce something to all clients,
 	/datum/admins/proc/show_player_panel,

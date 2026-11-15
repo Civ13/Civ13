@@ -18,28 +18,20 @@
 	min_positions = 1
 	max_positions = 1
 
+/datum/job/american/submarine_captain/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_MEDIUM_LOW)
+/datum/job/american/submarine_captain/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots = slot_shoes,
+	/obj/item/clothing/under/ww2/us_navy = slot_w_uniform,
+	/obj/item/clothing/head/navyofficercap = slot_head,
+	/obj/item/flashlight/militarylight = slot_belt,
+	/obj/item/weapon/radio/walkietalkie/faction1 = slot_wear_id)
 /datum/job/american/submarine_captain/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/us_navy(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/navyofficercap(H), slot_head)
-//gear
-	H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
+	equip_loadout(H)
 	give_random_name(H)
 	H.add_note("Role", "You are the <b>Commanding Officer</b> of this submarine. You are in charge of the entire vessel and crew. Give orders, manage strategy, and ensure mission success!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("machinegun", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	// Register with submarine crew tracking
 	if(global.all_submarines.len)
 		var/datum/submarine/sub = global.all_submarines[1]
@@ -60,29 +52,21 @@
 	min_positions = 1
 	max_positions = 2
 
+/datum/job/american/submarine_officer/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_MEDIUM_LOW)
+/datum/job/american/submarine_officer/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots = slot_shoes,
+	/obj/item/clothing/under/ww2/us_navy = slot_w_uniform,
+	/obj/item/clothing/suit/storage/coat/frenchcoat/navy = slot_wear_suit,
+	/obj/item/clothing/head/navyofficercap = slot_head,
+	/obj/item/flashlight/militarylight = slot_belt,
+	/obj/item/weapon/radio/walkietalkie/faction1 = slot_wear_id)
 /datum/job/american/submarine_officer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/us_navy(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/frenchcoat/navy(H), slot_wear_suit)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/navyofficercap(H), slot_head)
-//gear
-	H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
+	equip_loadout(H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>Submarine Officer</b>. You serve as the Executive Officer or department head. Support the Captain and manage your assigned station.")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("machinegun", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	// Register with submarine crew tracking
 	if(global.all_submarines.len)
 		var/datum/submarine/sub = global.all_submarines[1]
@@ -101,26 +85,19 @@
 	min_positions = 4
 	max_positions = 10
 
+/datum/job/american/submarine_crew/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_MEDIUM_LOW)
+/datum/job/american/submarine_crew/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots = slot_shoes,
+	/obj/item/clothing/under/ww2/us_navy = slot_w_uniform,
+	/obj/item/flashlight/militarylight = slot_belt,
+	/obj/item/weapon/radio/walkietalkie/faction1 = slot_wear_id)
 /datum/job/american/submarine_crew/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/us_navy(H), slot_w_uniform)
-//gear
-	H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
+	equip_loadout(H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>Submarine Crewman</b>. Operate your assigned station - helm, weapons, engineering, or sonar. Follow your officer's orders and keep the boat running!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("machinegun", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	// Register with submarine crew tracking
 	if(global.all_submarines.len)
 		var/datum/submarine/sub = global.all_submarines[1]

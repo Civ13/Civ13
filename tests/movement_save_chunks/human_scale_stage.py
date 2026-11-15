@@ -60,9 +60,10 @@ def adapt_probe(data):
 
 def instrument_saver(data):
     # Identical in both variants. No yield, guard or deadline is changed.
-    data = replace_once(data, '\tfor(var/A = 1, A <= world.maxz, A++)\n\t\tsaving_z = A',
-                        '\thuman_scale_serialization_start = world.realtime\n'
-                        '\tfor(var/A = 1, A <= world.maxz, A++)\n\t\tsaving_z = A', 'level start')
+    loop = ('\tfor(var/A = 1, A <= world.maxz, A++)\n'
+            '\t\tif(operation.abandoned) throw EXCEPTION("World save was abandoned by the stall watchdog")\n'
+            '\t\tsaving_z = A')
+    data = replace_once(data, loop, '\thuman_scale_serialization_start = world.realtime\n' + loop, 'level start')
     data = replace_once(data, '\t\tsavefile.Flush()\n\t\tsavefile = null',
                         '\t\tsavefile.Flush()\n\t\thuman_scale_serialization_end = world.realtime\n'
                         '\t\tsavefile = null', 'level flush')

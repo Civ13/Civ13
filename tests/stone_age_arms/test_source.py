@@ -33,7 +33,7 @@ KNAPPED = {
     '/obj/item/weapon/material/hide_scraper': 'basic_tools',
 }
 STATES = {'atlatl', 'atlatl_loaded', 'atlatl_dart', 'bola', 'javelin', 'stone_club',
-          'digging_stick', 'hand_axe', 'hide_scraper', 'bone_needle', 'stone_adze'}
+          'digging_stick', 'hand_axe', 'hide_scraper', 'bone_needle', 'stone_adze', 'flint_knife'}
 
 
 def dmi_states(path):
@@ -107,15 +107,28 @@ class StoneAgeArms(unittest.TestCase):
 
     def test_knapping_offers_gated_flint_tools(self):
         flint = strip_comments((ROOT / 'code/modules/1713/flint_mining.dm').read_text(encoding='utf-8'))
-        self.assertIn('options += stone_age_knap_options(H)', flint)
-        self.assertIn('result = stone_age_knap_result(choice, T, H)', flint)
+        self.assertIn('processing_recipe_choices("flint knapping", H)', flint)
+        self.assertIn('var/obj/item/result = processing_recipe_make(R, T, H)', flint)
+        registry = (ROOT / 'code/modules/1713/processing_recipes.dm').read_text(encoding='utf-8')
         for path in KNAPPED:
-            self.assertIn(f'crafting_recipe_allowed(H, "{path}")', self.source)
-        self.assertIn('if (!path || !crafting_recipe_allowed(H, "[path]"))', self.source)
+            self.assertRegex(registry, r'new /datum/processing_recipe\("flint knapping", "[^"]+", /obj/item/weapon/flint, '
+                             + re.escape(path) + r', \d+, \d+, \d+, TRUE\)')
+        self.assertIn('return !R.gated || crafting_recipe_allowed(H, "[R.output]")', registry)
+        make = registry[registry.index('/proc/processing_recipe_make('):]
+        self.assertLess(make.index('processing_recipe_allowed(R, H)'), make.index('note_craft_practice'))
+
+    def test_flint_knife_uses_its_own_untinted_sprite(self):
+        flint = (ROOT / 'code/modules/1713/flint_mining.dm').read_text(encoding='utf-8')
+        body = flint[flint.index('/obj/item/weapon/material/kitchen/utensil/knife/flint\n'):]
+        body = body[:body.index('\n\n')]
+        self.assertIn("icon = 'icons/obj/stone_age_arms.dmi'", body)
+        self.assertIn('icon_state = "flint_knife"', body)
+        self.assertIn('applies_material_colour = FALSE', body)
+        self.assertIn('flint_knife', dmi_states(DMI))
 
     def test_refused_knap_keeps_the_flint(self):
         flint = strip_comments((ROOT / 'code/modules/1713/flint_mining.dm').read_text(encoding='utf-8'))
-        tail = flint[flint.index('result = stone_age_knap_result(choice, T, H)'):]
+        tail = flint[flint.index('var/obj/item/result = processing_recipe_make(R, T, H)'):]
         guard = tail.index('if (!result)')
         self.assertLess(guard, tail.index('qdel(src)'))
         self.assertIn('return', tail[guard:tail.index('qdel(src)')])

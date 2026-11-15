@@ -9,7 +9,7 @@ from .repo_source import read_pinned
 
 
 
-def parse_classic(text):
+def parse_classic(text,levels=(1,2)):
     definitions=dict(re.findall(r'^"([A-Za-z]+)" = \((.*)\)\s*$',text,re.M))
     if not definitions:raise ValueError("no definitions")
     sizes={len(k) for k in definitions}
@@ -26,7 +26,7 @@ def parse_classic(text):
                 p=(x+1,height-j,z)
                 if p in cells:raise ValueError("overlapping block")
                 cells[p]=definitions[key]
-    if len(dims)!=2 or {z for w,h,z in dims}!={1,2}:raise ValueError("expected two classic blocks")
+    if sorted(z for w,h,z in dims)!=list(levels):raise ValueError("expected two classic blocks" if tuple(levels)==(1,2) else "expected classic blocks for levels %s"%(list(levels),))
     if len({(w,h) for w,h,z in dims})!=1:raise ValueError("unequal layer sizes")
     return definitions,cells,dims
 

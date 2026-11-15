@@ -215,6 +215,33 @@ can be passed as `--config`: it is driven as that region (DreamDaemon started
 directly, its agent first). Point the bot's `gaia_host` option and the
 launcher's `control.config` at it once Gaia runs as a region.
 
+## Update and restart without saving (`update-unsaved`)
+
+`gaia_host.py update-unsaved` (and `shard_group.py update-unsaved [--region ID]`,
+the launcher's **Update and restart without saving…**) restarts a running world
+onto the latest build without asking it to save. A region builds the update
+beside the running world first, so a failed build stops nothing. Then the world
+is ended like a forced stop, its last completed save is copied to
+`<state_dir>/backups/<operation>` (kept like the save-and-stop backups) and the
+new build starts from that save. Nothing is wiped. Stopped and asleep worlds are
+refused: this action never starts a world someone stopped, and an asleep world
+saved before it slept, so plain Update covers it.
+
+## Host Controls in game
+
+The admin verb **Host Controls** (Server tab) gives admins the launcher's
+actions for their own world. The world writes `data/host_request.json`
+(`id`, `action`, `by`); the host service takes it on its next pass while the
+world is awake (about every 30 seconds), runs it for that world only and answers
+in `data/host_reply.json`. Only `Host.WORLD_REQUESTS` are taken: `status`,
+`stage`, `update-handover` (build, then hand over; a single server saves,
+updates and restarts), `update-unsaved` and `update-when-empty-on|off` (the
+group config's switch). A request older than ten minutes is answered as expired.
+The service also writes `data/host_status.json` at most once a minute: busy
+action and phase, build, staged update and the update-when-empty switch.
+Save and stop, save and restart and cancelling a countdown stay world-side verbs,
+which the same menu opens. Host Controls needs `serve` (or `watch`) running.
+
 ## Routing relay (`relay.py`)
 
 `relay.py` lets a region group publish one extra port instead of one router

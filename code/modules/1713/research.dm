@@ -163,7 +163,7 @@
 
 /obj/item/weapon/book/research/attackby(obj/O as obj, mob/living/human/user as mob)
 	if (istype(O, /obj/item/weapon/researchkit))
-		if (!map.civilizations || (map.ID == MAP_TRIBES || map.ID == MAP_FOUR_KINGDOMS || map.ID == MAP_THREE_TRIBES))
+		if (!map.civilizations || map.tribes)
 			return
 		if (!completed.len)
 			to_chat(user, "The book is blank.")

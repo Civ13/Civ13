@@ -9,7 +9,7 @@ bullet_act
 
 /mob/living/human/attackby(obj/item/weapon/W as obj, mob/user as mob)
 
-	if (stat != DEAD)
+	if (stat != DEAD && !(map && (map.ID == MAP_THE_ART_OF_THE_DEAL || map.ID == MAP_OCCUPATION)))
 		return ..(W, user)
 
 	if (!istype(W) || !W.sharp)
@@ -31,7 +31,7 @@ bullet_act
 				return
 
 				 // Butchering mobs with a knife on harm intent.
-	if (W.sharp && !istype(W, /obj/item/weapon/reagent_containers) && user.a_intent == I_HARM && !grabbed_by_user && (istype(W,/obj/item/weapon/material/kitchen/utensil/knife)))
+	if (stat == DEAD && W.sharp && !istype(W, /obj/item/weapon/reagent_containers) && user.a_intent == I_HARM && !grabbed_by_user && (is_tool(W, TOOL_KNIFE)))
 		if (stat == DEAD)
 			var/mob/living/human/H = user
 			if (istype(H))
@@ -41,13 +41,17 @@ bullet_act
 					user.visible_message(SPAN_NOTICE("[user] starts to butcher [src]."))
 					if (do_after(user, 1200, src))
 						user.visible_message(SPAN_NOTICE("[user] butchers [src] into a few meat slabs."))
+						// A sick body's raw flesh carries its illness until cooked.
+						var/germ = carried_germ(TRUE)
 						if (!crab)
 							for(var/i=1;i<=4;i++)
 								var/obj/item/weapon/reagent_containers/food/snacks/meat/human/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat/human(get_turf(src))
 								meat.name = "[src.name] meat"
 								meat.radiation = radiation/10
-								var/obj/item/organ/external/head/HD = new/obj/item/organ/external/head(get_turf(src))
-								HD.name = "[src.name]'s head"
+								if (germ && meat.reagents)
+									meat.reagents.add_reagent(germ, 2)
+							var/obj/item/organ/external/head/HD = new/obj/item/organ/external/head(get_turf(src))
+							HD.name = "[src.name]'s head"
 						else
 							for(var/i=1;i<=4;i++)
 								var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
@@ -127,6 +131,7 @@ bullet_act
 						global_broadcast(FREQP,"<big>Attention, a warrant has been issued for [SW2.tgt], working for [SW2.tgtcmp], please detain the suspect as soon as possible.</big>")
 					else
 						global_broadcast(FREQP,"<big>Attention, a warrant has been issued for [SW2.tgt], please detain the suspect as soon as possible.</big>")
+		return ..(W, user)
 
 	else if (map.ID == MAP_OCCUPATION)
 		var/mob/living/human/H = user
@@ -139,6 +144,7 @@ bullet_act
 				else
 					last_harmed = H
 					H.civilization = "Killer"
+		return ..(W, user)
 
 	else
 		return ..(W, user)
@@ -429,6 +435,9 @@ bullet_act
 			SP.loc = organ
 			organ.embed(SP)
 
+	if (def_zone == "l_hand" || def_zone == "r_hand")
+		hand_struck(def_zone, P.damage)
+
 	if (P.gibs)
 		gib()
 	else if (P.crushes)
@@ -554,8 +563,7 @@ bullet_act
 			var/obj/item/clothing/C = gear
 			if (istype(C) && C.body_parts_covered & affecting.body_part)
 				if(istype(C, /obj/item/clothing/head/helmet) || istype(C, /obj/item/clothing/suit/armor))
-					C.health -= dmg
-					C.check_health()
+					C.apply_wear(dmg, WEAR_HIT)
 			if (C.accessories.len)
 				for (var/obj/item/clothing/accessory/AC in C.accessories)
 					if (AC.body_parts_covered & affecting.body_part)
@@ -727,9 +735,11 @@ bullet_act
 
 		//set the dislocate mult less than the effective force mult so that
 		//dislocating limbs on disarm is a bit easier than breaking limbs on harm
-		attack_joint(affecting, I, effective_force, 0.5, blocked) //...but can dislocate joints
+		attack_joint(affecting, I, user, blocked) //...but can dislocate joints
 	else if(!..())
 		return 0
+
+	hand_struck(hit_zone, effective_force)
 
 	if(effective_force > 10 || effective_force >= 5 && prob(33))
 		forcesay(hit_appends)	//forcesay checks stat already
@@ -886,6 +896,8 @@ bullet_act
 		var/hit_area = affecting.name
 		if (!hit_area)
 			return
+		if (zone == "l_hand" || zone == "r_hand")
+			hand_struck(zone, throw_damage)
 
 		if (istype(O, /obj/item/weapon/reagent_containers/food/snacks/poo))
 			var/obj/structure/pillory/pillory = null

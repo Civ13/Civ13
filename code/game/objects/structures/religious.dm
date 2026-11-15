@@ -3,7 +3,7 @@
 	desc = "A gravestone made with polished stone."
 	icon = 'icons/obj/cross.dmi'
 	icon_state = "gravestone"
-	var/health = 100
+	health = 100
 	not_movable = TRUE
 	not_disassemblable = FALSE
 
@@ -281,13 +281,13 @@ obj/structure/religious/monument
 	if (L.original_job_title == "Orc tribesman")
 		name = "monumental ominous statue of morgoth"
 		desc = "A statue of a the dark lord morgoth, sceptre clutched firmly in hand, it cuts a impressive fiugure of authority."
-		return
+	..()
 
 /obj/structure/religious/monument/cultist/sauron/reverse/examine(var/mob/living/L)
 	if (L.original_job_title == "Orc tribesman")
 		name = "monumental ominous statue of morgoth"
 		desc = "A statue of a the dark lord morgoth, sceptre clutched firmly in hand, it cuts a impressive fiugure of authority."
-		return
+	..()
 
 /obj/structure/religious/monument/monk
 	name = "monumental monk statue"
@@ -381,7 +381,7 @@ obj/structure/religious/monument
 /obj/structure/religious/monument/shaman/ape/examine(var/mob/living/L)
 	if (L.original_job_title == "Gorilla tribesman")
 		desc = "A enormous stone statue of a fearsome ape, it is a exemplar specimen of our kind, a real adonis."
-		return
+	..()
 
 /*-Religious Monuments*/
 
@@ -522,7 +522,7 @@ obj/structure/religious/monument
 	not_disassemblable = TRUE
 	not_movable = TRUE
 /obj/structure/religious/grave/attackby(obj/item/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/material/shovel) && open)
+	if (is_tool(W, TOOL_SHOVEL) && open)
 		visible_message("[user] starts filling up \the [src]...","You start filling up \the [src]...")
 		playsound(src,'sound/effects/shovelling.ogg',100,1)
 		if (do_after(user, 100, src))
@@ -561,7 +561,7 @@ obj/structure/religious/monument
 					CF.forceMove(src)
 		else
 			return
-	else if (istype(W, /obj/item/weapon/material/shovel) && !open)
+	else if (is_tool(W, TOOL_SHOVEL) && !open)
 		user.visible_message("[user] starts digging up \the [src]...", "You start digging up \the [src]...")
 		playsound(src,'sound/effects/shovelling.ogg',100,1)
 		if (do_after(user, 100, src))
@@ -649,23 +649,8 @@ obj/structure/religious/monument
 	icon_state = "tribalmask[rand(1,2)]"
 
 /obj/structure/religious/attackby(obj/item/W as obj, mob/user as mob)
-	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-	switch(W.damtype)
-		if ("fire")
-			health -= W.force * 0.3
-		if ("brute")
-			health -= W.force * 0.3
-
-	playsound(get_turf(src), 'sound/weapons/smash.ogg', 100)
-	user.do_attack_animation(src)
-	try_destroy()
+	weapon_structure_damage(W, user, 0.3, 0.3)
 	..()
-
-/obj/structure/religious/proc/try_destroy()
-	if (health <= 0)
-		visible_message("<span class='danger'>\The [src] is broken into pieces!</span>")
-		qdel(src)
-		return
 
 /obj/structure/religious/totem/offerings
 	icon = 'icons/misc/support.dmi'
@@ -751,7 +736,7 @@ obj/structure/religious/monument
 
 		//pleased
 		else if (power >= 150 && power < 250)
-			if (prob(power/250))
+			if (prob(power/2.5))
 				if (weather_at(src) == WEATHER_WET)
 					weather_disperse(src)
 					visible_message("The gods have blessed us with good weather!")

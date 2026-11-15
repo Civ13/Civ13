@@ -1,4 +1,5 @@
 /obj/map_metadata/four_kingdoms
+	tribes = TRUE
 	abandonment_season_cycle = TRUE
 	ID = MAP_FOUR_KINGDOMS
 	title = "Four Kingdoms"

@@ -88,7 +88,7 @@ var/list/interior_areas = list(/area/caribbean/houses,
 /turf/Destroy()
 	snowfall_ground_unregister()
 	turfs -= src
-	turf_registry_members -= src
+	turf_registry_remove(src)
 	for (var/obj/o in contents)
 		if (o.special_id == "seasons")
 			if (overlays.Find(o))
@@ -285,8 +285,7 @@ var/const/enterloopsanity = 100
 		turf_registration_done = TRUE
 		turfs += src
 #else
-	if (!turf_registry_members[src])
-		turf_registry_members[src] = TRUE
+	if (turf_registry_add(src))
 		turfs += src
 #endif
 
@@ -315,6 +314,8 @@ var/const/enterloopsanity = 100
 
 		if (istype(M, /mob/living/human))
 			var/mob/living/human/H = M
+			// Walking onto stairs the way they climb goes up (edge_climbing.dm).
+			stairs_step_on(H, src, OL)
 			if (!istype(src, /turf/floor/beach/water) && !istype(src, /turf/floor/trench/flooded) && !H.on_fire)
 				if (H.overlays_standing[25])
 					H.overlays_standing[25] = null
@@ -546,11 +547,14 @@ var/const/enterloopsanity = 100
 								to_chat(M, SPAN_NOTICE("<big><b>The [aircraft_name] evades the SAM!</b></big>"))
 								if (M.client)
 									M.client << uploaded_sound
+						air_support_jet_pass(src, direction, aircraft_name, drop_delay + AIR_SUPPORT_FIRST_RELEASE)
 						airstrike(direction, payload, drop_delay)
 		else
+			air_support_jet_pass(src, direction, aircraft_name, 3 SECONDS + drop_delay + AIR_SUPPORT_FIRST_RELEASE)
 			spawn(3 SECONDS)
 				airstrike(direction, payload, drop_delay)
 	else
+		air_support_jet_pass(src, direction, aircraft_name, 3 SECONDS + drop_delay + AIR_SUPPORT_FIRST_RELEASE)
 		spawn(3 SECONDS)
 			airstrike(direction, payload, drop_delay)
 	return
@@ -658,6 +662,8 @@ var/const/enterloopsanity = 100
 
 			spawn(i*interval)
 				P.loc = locate((T.x + xoffset + cur_xdirection_offset), (T.y + yoffset + cur_ydirection_offset), T.z)
+				if (istype(P, /obj/structure/payload/missile))
+					air_support_smoke_trail(P.loc, P.pixel_x, P.pixel_y, 15)
 				animate(P, time = 15, pixel_y = 0, easing = easing_type)
 				animate(P, time = 15, pixel_x = 0, easing = easing_type)
 				P.drop()

@@ -9,6 +9,7 @@ BASIC = 'code/modules/client/preferencesSQLite/preference_setup/general/01_basic
 PREFS = 'code/modules/client/preferencesSQLite/preferences.dm'
 SAVE = 'code/modules/client/preferencesSQLite/preferences_saving&loading&del.dm'
 LIFE = 'code/game/mob/living/carbon/human/human_life.dm'
+PLAYSTYLE = 'code/game/mob/living/carbon/human/playstyle_traits.dm'
 
 
 def read(path):
@@ -54,7 +55,7 @@ def validator_contract(source):
 class TraitFoundations(unittest.TestCase):
     def test_table_and_all_exclusions_both_orders(self):
         table = definitions(read(TRAITS))
-        self.assertEqual(len(table), 24)
+        self.assertEqual(len(table), 47)
         self.assertEqual(table['Baldness'][0], 0)
         for name, (_, excluded, _) in table.items():
             for other in excluded:
@@ -178,6 +179,58 @@ class TraitFoundations(unittest.TestCase):
         stats = read('code/game/mob/living/carbon/human/human_stats.dm')
         self.assertIn('craft_mod = 1.5', stats)
         self.assertIn('craft_mod = 1.15', stats)
+
+    def test_playstyle_traits_are_free_exclusive_and_hooked(self):
+        table = definitions(read(TRAITS))
+        playstyle = ['Recluse Scholar', 'Menacing', 'Hardened Fighter', 'Quartermaster',
+                     'Green Thumb', 'Tinkerer', 'Wanderer', 'Rallying Voice']
+        for name in playstyle:
+            self.assertEqual(table[name][0], 0, name)
+            self.assertTrue(table[name][2].startswith('Playstyle.'), name)
+            self.assertIsNone(validate([name], table))
+            for other in playstyle:
+                if other != name:
+                    self.assertEqual(validate([name, other], table, False), 'incompatible')
+        self.assertEqual(validate(['Recluse Scholar', 'Extroverted'], table, False), 'incompatible')
+        self.assertEqual(validate(['Rallying Voice', 'Introverted'], table, False), 'incompatible')
+        self.assertIsNone(validate(['Green Thumb', 'Agile', 'Deaf'], table))
+        hooks = {
+            'code/game/mob/living/carbon/human/human_stats.dm': ('trait_skill_gain_mult(statname)', 'find_trait("Tinkerer")'),
+            LIFE: ('food_m *= trait_food_mult()', 'handle_playstyle_traits()'),
+            PLAYSTYLE: ('/mob/living/human/say(', 'rally_shout()', 'proc/recluse_rate()', 'proc/pull_drag_mult()',
+                        'proc/trait_pain_mult()', 'proc/trait_harvest_bonus(', 'proc/trait_stamina_recovery_mult()', 'wanderer_recover_stamina()',
+                        'verb/intimidate()', 'player_input(src, "Who do you want to intimidate?"'),
+        }
+        for path, needles in hooks.items():
+            source = read(path)
+            for needle in needles:
+                self.assertIn(needle, source, path)
+
+    def test_point_trait_pairs_balance_and_exclude(self):
+        table = definitions(read(TRAITS))
+        pairs = {'Quick Learner': ('Slow Learner', 3), 'Light Eater': ('Glutton', 2),
+                 'Deep Lungs': ('Asthmatic', 2), 'Thick Skinned': ('Low Pain Tolerance', 2),
+                 'Bookworm': ('Dyslexic', 2), 'Steady Hands': ('Butterfingers', 2),
+                 'Strong Back': ('Bad Back', 1)}
+        for perk, (drawback, cost) in pairs.items():
+            self.assertEqual(table[perk][0], cost)
+            self.assertEqual(table[drawback][0], -cost)
+            self.assertEqual(validate([perk, drawback], table, False), 'incompatible')
+            self.assertEqual(validate([perk], table), 'budget')
+            self.assertIsNone(validate([drawback], table))
+        self.assertEqual(table['Squeamish'][0], -1)
+        for a, b in (('Thick Skinned', 'Hardened Fighter'), ('Strong Back', 'Quartermaster'),
+                     ('Squeamish', 'Hardened Fighter')):
+            self.assertEqual(validate([a, b], table, False), 'incompatible')
+        self.assertIsNone(validate(['Quick Learner', 'Glutton', 'Bad Back'], table))
+        stats = read('code/game/mob/living/carbon/human/human_stats.dm')
+        self.assertIn('mood_modifier*med_mod', stats)
+        self.assertIn('wanderer_recover_stamina()', read(LIFE))
+        source = read(PLAYSTYLE)
+        for needle in ('find_trait("Quick Learner")', 'find_trait("Light Eater")', 'find_trait("Asthmatic")',
+                       'find_trait("Low Pain Tolerance")', 'proc/trait_study_time_mult()', 'find_trait("Bad Back")',
+                       'proc/trait_gore_mood_mult()', '/mob/living/human/adjust_mood(amount, cause = null)'):
+            self.assertIn(needle, source)
 
 
 if __name__ == '__main__':

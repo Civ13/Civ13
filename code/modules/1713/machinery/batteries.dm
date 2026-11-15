@@ -114,7 +114,7 @@
 
 /obj/structure/battery/examine(mob/user)
 	..()
-	to_chat(user, "Energy: [stored_energy]/[energy_capacity] PU s. Output limit: [discharge_rate] PU. Mode: [mode].")
+	to_chat(user, "Energy: [energy_text(stored_energy)] of [energy_text(energy_capacity)]. Output limit: [power_text(discharge_rate)]. Mode: [mode].")
 	if (!assembled)
 		to_chat(user, "Fit a fired clay vase first.")
 	else if (!commissioned && rechargeable)
@@ -137,7 +137,7 @@
 	to_chat(user, "Battery mode: [mode].")
 
 /obj/structure/battery/attackby(obj/item/W, mob/user)
-	if (istype(W, /obj/item/weapon/wrench))
+	if (is_tool(W, TOOL_WRENCH))
 		if (powersource)
 			to_chat(user, "Cut the cable first.")
 			return

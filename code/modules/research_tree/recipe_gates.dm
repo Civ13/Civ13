@@ -1,6 +1,8 @@
-// Explicit fully ungated outputs. Empty by design (Val, 2026-11-09): every
-// crafted output needs research. Tests may add a synthetic output here.
-var/global/list/basic_crafting_recipes = list()
+// Explicit fully ungated outputs. Every other crafted output needs research
+// (Val, 2026-11-09), except the campfire: a new character's first fire must
+// not wait on Basic Furniture (Val, 2026-11-13). Tests may add a synthetic
+// output here.
+var/global/list/basic_crafting_recipes = list("/obj/structure/oven/fireplace")
 
 /proc/is_basic_crafting_recipe(result_path_string)
 	return istext(result_path_string) && (result_path_string in basic_crafting_recipes)
@@ -74,7 +76,9 @@ var/global/list/basic_crafting_recipes = list()
 	if (is_research_essential_recipe(result_path_string))
 		return crafting_node_world_allowed(H.civilization, node_id)
 	// A crude experimental machine for a capstone demonstration (demonstrations.dm).
-	return crafting_node_allowed(H, node_id) || demonstration_kit_allowed(H, result_path_string)
+	// Or a prototype of a subject the actor's book is a third into (subject_prototypes.dm).
+	// Or guided work beside someone who knows the subject (trade_learning.dm).
+	return crafting_node_allowed(H, node_id) || demonstration_kit_allowed(H, result_path_string) || subject_prototype_allowed(H, result_path_string) || guided_work_allowed(H, result_path_string)
 
 // The only recipes that skip personal manuals are the ones needed to reach the
 // next research level: the research bench, the legacy research desk and every

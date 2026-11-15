@@ -232,11 +232,11 @@
 	else
 		to_chat(user, SPAN_NOTICE("The [crop] has completed [stage - 1] of 6 growth cycles ([round(cycle_progress / 10)] of 60 seconds into the next)."))
 		if (!powersource)
-			to_chat(user, SPAN_WARNING("Growth is paused: connect a cable carrying [HYDROPONICS_POWER] PU."))
+			to_chat(user, SPAN_WARNING("Growth is paused: connect a cable carrying [power_text(HYDROPONICS_POWER)]."))
 		else if (!can_pay_cycle())
 			to_chat(user, SPAN_WARNING("Growth is paused: each cycle needs [HYDROPONICS_CYCLE_WATER] water and [HYDROPONICS_CYCLE_NUTRIENT] nutrient."))
 		else if (!powered)
-			to_chat(user, SPAN_WARNING("Growth is paused until the cable can supply [HYDROPONICS_POWER] PU."))
+			to_chat(user, SPAN_WARNING("Growth is paused until the cable can supply [power_text(HYDROPONICS_POWER)]."))
 		if ((crop in hydroponics_fragile_crops()) && water_units < HYDROPONICS_CYCLE_WATER)
 			to_chat(user, SPAN_WARNING("The [crop] is wilting and will die if it stays without water."))
 
@@ -247,7 +247,7 @@
 	examine(H)
 
 /obj/structure/hydroponics_tray/proc/is_harvest_tool(obj/item/W)
-	return istype(W, /obj/item/weapon/material/hatchet) || istype(W, /obj/item/weapon/attachment/bayonet) || istype(W, /obj/item/weapon/material/kitchen/utensil/knife) || istype(W, /obj/item/weapon/material/scythe)
+	return is_tool(W, TOOL_HATCHET) || istype(W, /obj/item/weapon/attachment/bayonet) || is_tool(W, TOOL_KNIFE) || istype(W, /obj/item/weapon/material/scythe)
 
 // Harvest authority is retired before any output is created, so a repeated
 // request emits nothing. Accepted yield: two seeds and one to three produce.
@@ -374,11 +374,11 @@
 		connect_cable(H, W)
 		start_processing()
 		return TRUE
-	if (istype(W, /obj/item/weapon/wrench))
+	if (is_tool(W, TOOL_WRENCH))
 		release_power()
 		wrench_action(H)
 		return TRUE
-	if (istype(W, /obj/item/weapon/hammer))
+	if (is_tool(W, TOOL_HAMMER))
 		if (crop)
 			to_chat(H, SPAN_WARNING("Clear the crop before dismantling \the [src]."))
 			return TRUE
@@ -427,10 +427,10 @@
 		to_chat(H, SPAN_NOTICE("You wire the pump and lights, finishing \the [T]."))
 		qdel(src)
 		return TRUE
-	if (istype(W, /obj/item/weapon/wrench))
+	if (is_tool(W, TOOL_WRENCH))
 		wrench_action(H)
 		return TRUE
-	if (istype(W, /obj/item/weapon/hammer))
+	if (is_tool(W, TOOL_HAMMER))
 		hammer_action(H, W, 100, glazed ? list(/obj/item/stack/material/steel, /obj/item/stack/material/glass) : list(/obj/item/stack/material/steel), glazed ? list(2, 1) : list(2))
 		return TRUE
 	return ..()

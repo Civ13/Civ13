@@ -50,8 +50,8 @@ var/naval_runtime_error = FALSE
 		out += "[O.type] [O.x - at.x],[O.y - at.y] d[O.dir]"
 	return jointext(out, " | ")
 
-/proc/tow_car(x, y)
-	new /obj/effects/premadevehicles/asno/piccolino(locate(x, y, 1))
+/proc/tow_car(x, y, kind = /obj/effects/premadevehicles/asno/piccolino)
+	new kind(locate(x, y, 1))
 	sleep(40)
 	for (var/obj/structure/vehicleparts/axis/A in vehicle_axes)
 		var/turf/T = get_turf(A)
@@ -146,9 +146,39 @@ var/naval_runtime_error = FALSE
 	qdel(towed)
 	naval_check(!tug.tow_out && QDELETED(line), "a towed car that is destroyed lets the tug go")
 
+// A truck tows a light plane on the ground (out of a hangar, along a taxiway),
+// but never one in the air, and a towed plane cannot take off.
+/proc/tow_plane_checks()
+	var/obj/structure/vehicleparts/axis/tug = tow_car(40, 20, /obj/effects/premadevehicles/truck/daf)
+	var/obj/structure/vehicleparts/frame/rear = null
+	for (var/obj/structure/vehicleparts/frame/F in tug.components)
+		if (!rear || F.y > rear.y)
+			rear = F
+	var/obj/structure/vehicleparts/axis/aircraft/plane = build_light_plane(locate(40, rear.y + 2, 1))
+	naval_check(istype(plane) && plane.dir == SOUTH && tug.dir == SOUTH, "a light plane stands behind a truck, both facing south")
+	var/datum/vehicle_tow/line = plane.hitch_tow()
+	naval_check(line && tug.tow_out == line && plane.tow_in == line, "the plane is hitched behind the truck ([plane.tow_refusal])")
+	var/turf/plane_at = get_turf(plane)
+	tug.engine.on = TRUE
+	naval_check(tug.check_engine(), "the truck can pull the plane's weight ([tug.get_weight()] of [tug.maxpower])")
+	naval_check(tug.do_move() && tug.do_move(), "the truck rolls two tiles")
+	naval_check(get_turf(plane) == locate(plane_at.x, plane_at.y - 2, 1) && !plane.airborne(), "and the plane rolls after it on its wheels")
+	plane.engine.on = TRUE
+	plane.currentspeed = plane.speeds
+	plane.runway_roll = plane.takeoff_roll
+	naval_check(!plane.try_takeoff() && !plane.airborne() && plane.runway_roll == 0, "a towed plane cannot take off")
+	line.part(null, TRUE)
+	plane.currentspeed = 0
+	plane.engine.on = FALSE
+	tug.engine.on = FALSE
+	plane.flight_state = AIRCRAFT_LOW
+	naval_check(isnull(plane.hitch_tow()) && findtext(plane.tow_refusal, "in the air"), "a plane in the air cannot take a tow line")
+	plane.flight_state = AIRCRAFT_GROUND
+
 /proc/naval_run()
 	try
 		naval_checks()
+		tow_plane_checks()
 	catch(var/exception/e)
 		naval_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = naval_failures, "runtime_error" = naval_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")

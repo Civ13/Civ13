@@ -143,6 +143,8 @@
 	if (stat == DEAD || stat == UNCONSCIOUS)
 		return FALSE
 	a_intent = I_HARM
+	if (food_distraction_tick())
+		return t_behaviour
 
 	if (t_behaviour == "hunt" || (t_behaviour == "defends" && target_mob))
 		if(prob(50))
@@ -314,6 +316,8 @@
 				if (RH in friends) continue
 				if (RH.wolfman && istype(src, /mob/living/simple_animal/hostile/wolf)) continue
 				if (RH.lizard && istype(src, /mob/living/simple_animal/hostile/alligator)) continue
+				// Wild predators leave people alone unless starving or crowded.
+				if (!predator_will_hunt(RH)) continue
 			else
 				if (istype(L, /mob/living/simple_animal/civilian) && istype(src, /mob/living/simple_animal/hostile/human/redmenian_ng)) continue
 				if (L in friends) continue
@@ -595,6 +599,10 @@
 	if (!target_mob || !SA_attackable(target_mob) || !can_reach_tree_climber(target_mob))
 		LoseTarget()
 		return FALSE
+	// A fed predator lets a person who never hurt it back away.
+	if (ishuman(target_mob) && !predator_will_hunt(target_mob) && get_dist(src, target_mob) > predator_chase_range)
+		LoseTarget()
+		return FALSE
 	if (!(target_mob in view(aggro_vision_range, src)))
 		LostTarget()
 		return FALSE
@@ -607,6 +615,11 @@
 		// AI continues to decide attacks on its normal ticks, after an owned step.
 		if (npc_subtile_pursuit_enabled && npc_subtile_pursuit && npc_subtile_transaction)
 			return FALSE
+		// One bite per cooldown, however many callers reach this in a tick.
+		if (uses_paced_bites())
+			if (world.time < next_melee_attack)
+				return TRUE
+			next_melee_attack = world.time + melee_attack_cooldown()
 		AttackingTarget()
 		return TRUE
 	else
@@ -623,11 +636,12 @@
 	if (isliving(target_mob))
 		append_attack_log(text("\[[time_stamp()]\] <font color='red'>attacked [target_mob.name] ([target_mob.ckey])</font>"))
 		target_mob.append_attack_log(text("\[[time_stamp()]\] <font color='orange'>was attacked by [name] ([ckey])</font>"))
-	var/damage = pick(melee_damage_lower, melee_damage_upper)
+	var/damage = rand(melee_damage_lower, melee_damage_upper)
 	if (ishuman(target_mob))
 		var/mob/living/human/H = target_mob
-		var/dam_zone = pick("chest", "l_hand", "r_hand", "l_leg", "r_leg")
-		var/obj/item/organ/external/affecting = H.get_organ(ran_zone(dam_zone))
+		var/obj/item/organ/external/affecting = H.get_organ(animal_bite_zone())
+		if (!affecting || affecting.is_stump())
+			affecting = H.get_organ("chest")
 		// Observe before damage: the same blow may incapacitate the victim.
 		// Never disclose an unseen animal or infer injury from the attack emote.
 		var/client/observing_client = H.client
@@ -639,7 +653,12 @@
 			try_infect(H, 3, "plague")
 
 		if (prob(95) || !can_bite_limbs_off)
+			// Bites tear more than they crush: one heavy enough to break a bone
+			// only sometimes does. The guard expires by itself after this tick.
+			if (!prob(bite_fracture_chance))
+				H.bite_fracture_guard = world.time + 1
 			H.apply_damage(damage, BRUTE, affecting, H.run_armor_check(affecting, "melee"), sharp=1, edge=1)
+			H.bite_fracture_guard = 0
 		else
 			affecting.droplimb(FALSE, DROPLIMB_EDGE)
 			visible_message("\The [src] bites off [H]'s limb!")
@@ -662,9 +681,138 @@
 					SA.npc_set_combat_target(src)
 		return L
 
+// Torso-weighted, so a run of bites wounds rather than wrecks every limb.
+/mob/living/simple_animal/proc/animal_bite_zone()
+	return pickweight(list("chest" = 29, "groin" = 15, "l_arm" = 9, "r_arm" = 9, "l_leg" = 9, "r_leg" = 9, "l_hand" = 4, "r_hand" = 4, "l_foot" = 4, "r_foot" = 4, "head" = 4))
+
+// Animals that fight through the generic AttackTarget path. Human NPCs,
+// wizard-school NPCs and the beetle keep their own attack timing.
+/mob/living/simple_animal/proc/uses_paced_bites()
+	return !istype(src, /mob/living/simple_animal/hostile/human) && !istype(src, /mob/living/simple_animal/wizard) && !istype(src, /mob/living/simple_animal/hostile/wizard) && !istype(src, /mob/living/simple_animal/hostile/phosphor_beetle)
+
+/mob/living/simple_animal/proc/melee_attack_cooldown()
+	if (melee_attack_delay > 0)
+		return melee_attack_delay
+	return max(20, min(40, move_to_delay * 10))
+
+/mob/living/simple_animal/proc/is_natural_predator()
+	return (predatory_carnivore || carnivore) && uses_paced_bites()
+
+// Wild predators only go for a person who is too close, who hurt them, or when starving.
+/mob/living/simple_animal/proc/predator_will_hunt(mob/living/L)
+	if (!ishuman(L) || !is_natural_predator() || L == provoked_by)
+		return TRUE
+	// Busy with thrown meat: people are left alone until it is eaten or gone.
+	if (is_food_distracted())
+		return FALSE
+	if (starves && simplehunger < predator_starving_hunger)
+		return TRUE
+	return get_dist(src, L) <= predator_encroach_range
+
+// A hunting or defending animal that gets hurt turns on its attacker and,
+// when it is in reach and its bite is ready, bites back at once.
+/mob/living/simple_animal/proc/animal_provoked(mob/living/attacker)
+	if (!uses_paced_bites() || client || stat != CONSCIOUS || !istype(attacker) || attacker == src || attacker == rider || attacker.stat == DEAD)
+		return FALSE
+	if (!(behaviour == "hunt" || behaviour == "defends" || behaviour == "hostile") || uses_defensive_retaliation())
+		return FALSE
+	if (istype(attacker, /mob/living/simple_animal))
+		var/mob/living/simple_animal/SA = attacker
+		if (SA.faction == faction)
+			return FALSE
+	provoked_by = attacker
+	end_food_distraction()
+	if (!target_mob || target_mob.stat == DEAD || get_dist(src, target_mob) > 1)
+		npc_set_combat_target(attacker)
+	stance = HOSTILE_STANCE_ATTACK
+	stance_step = max(stance_step, 6)
+	if (target_mob == attacker && get_dist(src, attacker) <= 1 && world.time >= next_melee_attack && canmove && !resting && !buckled && isturf(loc))
+		AttackTarget()
+	return TRUE
+
+// Thrown meat draws a starving predator off a person it is chasing or watching.
+// An animal anyone has hurt is not fooled, and a fed one has no interest.
+/obj/item/weapon/reagent_containers/food/snacks/proc/is_predator_bait()
+	return non_vegetarian || istype(src, /obj/item/weapon/reagent_containers/food/snacks/meat) || istype(src, /obj/item/weapon/reagent_containers/food/snacks/rawfish)
+
+/obj/item/weapon/reagent_containers/food/snacks/throw_impact(atom/hit_atom, speed)
+	var/mob/living/human/H = thrower
+	..()
+	if (isturf(hit_atom) && ishuman(H) && !QDELETED(src) && isturf(loc))
+		lure_starving_predators(H)
+
+/obj/item/weapon/reagent_containers/food/snacks/proc/lure_starving_predators(mob/living/human/thrower)
+	var/turf/T = get_turf(src)
+	if (!T || !isturf(loc) || !is_predator_bait())
+		return 0
+	var/lured = 0
+	for (var/mob/living/simple_animal/SA in range(9, T))
+		if (SA.distract_with_food(src, thrower))
+			lured++
+	return lured
+
+/mob/living/simple_animal/proc/distract_with_food(obj/item/weapon/reagent_containers/food/snacks/food, mob/living/human/thrower)
+	if (client || stat != CONSCIOUS || !is_natural_predator() || provoked_by || !istype(food) || !isturf(food.loc))
+		return FALSE
+	if (!starves || simplehunger >= predator_starving_hunger)
+		return FALSE
+	// Only an animal already after a person: chasing, closing in or watching.
+	if (!ishuman(target_mob) || target_mob.stat == DEAD)
+		return FALSE
+	var/turf/T = food.loc
+	var/sight = aggro_vision_range || 9
+	if (get_dist(src, T) > sight || !(T in view(sight, src)))
+		return FALSE
+	var/mob/living/prey = target_mob
+	LoseTarget()
+	distracted_by = food
+	distracted_until = world.time + food_distraction_time
+	set_dir(get_dir(src, T))
+	visible_message("<span class='notice'>\The [src] turns away from [prey] toward \the [food].</span>")
+	if (get_dist(src, T) > 1)
+		do_movement(food)
+	return TRUE
+
+/mob/living/simple_animal/proc/is_food_distracted()
+	if (!distracted_by)
+		return FALSE
+	if (QDELETED(distracted_by) || !isturf(distracted_by.loc) || world.time > distracted_until || stat != CONSCIOUS)
+		end_food_distraction()
+		return FALSE
+	return TRUE
+
+/mob/living/simple_animal/proc/end_food_distraction()
+	if (!distracted_by)
+		return
+	if (target_obj == distracted_by)
+		target_obj = null
+		found_path = list()
+		move_gen++
+		moving = FALSE
+	distracted_by = null
+	distracted_until = 0
+
+// Each AI tick while distracted: walk to the meat, then eat it. TRUE while busy.
+/mob/living/simple_animal/proc/food_distraction_tick()
+	if (!is_food_distracted())
+		return FALSE
+	var/obj/item/weapon/reagent_containers/food/snacks/F = distracted_by
+	if (get_dist(src, F) <= 1)
+		end_food_distraction()
+		npc_subtile_stop_continuous_walk()
+		set_dir(get_dir(src, F))
+		visible_message("<span class='notice'>\The [src] wolfs down \the [F].</span>")
+		finish_eating(400)
+		qdel(F)
+		return TRUE
+	if (!moving || target_obj != F)
+		do_movement(F)
+	return TRUE
+
 /mob/living/simple_animal/proc/LoseTarget()
 	if (npc_subtile_pursuit_enabled)
 		npc_subtile_stop_pursuit()
+	provoked_by = null
 	stance = HOSTILE_STANCE_IDLE
 	npc_set_combat_target(null)
 	walk(src, FALSE)

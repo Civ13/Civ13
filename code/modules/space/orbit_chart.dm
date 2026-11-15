@@ -15,6 +15,8 @@
 #define ORBIT_CHART_SIZE 100
 #define ORBIT_CHART_SENSOR_RANGE 15
 #define ORBIT_CHART_EDGE 5
+#define ORBIT_CHART_FIELDS 4
+#define ORBIT_CHART_HARBOUR_REACH 6
 
 var/global/datum/chart/orbit/orbit_chart_made = null
 
@@ -127,3 +129,24 @@ var/global/datum/chart/orbit/orbit_chart_made = null
 
 /obj/structure/chart_helm/orbit/chart()
 	return orbit_chart()
+
+// ---------------------------------------------------------------- hazards
+
+// Asteroid fields lie where they always lay; solar storms and wormhole pairs
+// come and go (craft/chart_hazards.dm). The space round the arrival beacon
+// is a harbour sector: no hazard lies or drifts there.
+/datum/chart/orbit/standing_hazards()
+	. = list()
+	for (var/n = 1, n <= ORBIT_CHART_FIELDS, n++)
+		var/list/spot = standing_spot(n, 200)
+		. += list(list(/datum/chart_hazard/field, spot[1], spot[2], 3))
+
+/datum/chart/orbit/passing_table()
+	return list(/datum/chart_hazard/storm/solar = 3, /datum/chart_hazard/wormhole = 1)
+
+/datum/chart/orbit/lay_standing()
+	if (!standing_laid && hazards_on && !chart_hazards_off)
+		var/mx = round(width / 2)
+		var/my = round(height / 2)
+		add_sector(new /datum/chart_sector/harbour("the beacon's space", mx - ORBIT_CHART_HARBOUR_REACH, my - ORBIT_CHART_HARBOUR_REACH, mx + ORBIT_CHART_HARBOUR_REACH, my + ORBIT_CHART_HARBOUR_REACH))
+	return ..()

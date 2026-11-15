@@ -50,7 +50,7 @@
 		"r_ear" =		list("loc" = "0,5",  "name" = "Right Ear",		"state" = "ears1",   "hideflag" = TOGGLE_INVENTORY_FLAG),
 		"head" =		 list("loc" = "-1,6",  "name" = "Hat",			 "state" = "hair",	"hideflag" = TOGGLE_INVENTORY_FLAG),
 		"shoes" =		list("loc" = "-2,3",  "name" = "Shoes",		   "state" = "shoes",	"hideflag" = TOGGLE_INVENTORY_FLAG),
-		"id" =		   list("loc" = "0,6",  "name" = "Pouch",			"state" = "id",	"hideflag" = TOGGLE_INVENTORY_FLAG),
+		"id" =		   list("loc" = "0,6",  "name" = "Hip",			"state" = "id",	"hideflag" = TOGGLE_INVENTORY_FLAG),
 		"eyes" =		 list("loc" = "-1,5",  "name" = "Eyes",			 "state" = "eyes", "hideflag" = TOGGLE_INVENTORY_FLAG),
 		"shoulder" =	 list("loc" = "0,3",  "name" = "Shoulder",		 "state" = "shoulder"),
 		"storage1" =	 list("loc" = "-2,2",  "name" = "Left Pocket",	 "state" = "pocket_l"),

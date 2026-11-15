@@ -40,6 +40,26 @@ class AtlasVariantTests(unittest.TestCase):
         self.assertTrue(all('raw' not in v for v in game['variants']))
         self.assertEqual([v['id'] for v in game['variants']], ['r1', 'r2', 'r3'])
 
+    def test_global_catalog_leads_shared_groups(self):
+        source = [record('r1', 'battle_ships'), record('r2', 'camp'), record('r3', 'global')]
+        group = variants.consolidate_variants(source)[0]
+        self.assertEqual((group['id'], group['kind'], group['file']),
+                         ('r3', 'Material / global', 'config/crafting/material_recipes_global.txt'))
+        self.assertEqual([v['id'] for v in group['variants']], ['r3', 'r1', 'r2'])
+
+    def test_real_roman_road_is_labelled_global(self):
+        catalog = json.loads((ROOT/'UI/crafting-atlas.json').read_text())
+        roads = [r for r in catalog['recipes'] if r['name'] == 'roman road' and
+                 any(v['kind'] == 'Material / global' for v in r.get('variants', []))]
+        self.assertEqual(len(roads), 1)
+        self.assertEqual(roads[0]['kind'], 'Material / global')
+        self.assertEqual(roads[0]['variants'][0]['kind'], 'Material / global')
+        self.assertEqual(roads[0]['research_nodes'], ['paved_infrastructure'])
+        for recipe in catalog['recipes']:
+            kinds = [v['kind'] for v in recipe.get('variants', [])]
+            if 'Material / global' in kinds:
+                self.assertEqual(recipe['kind'], 'Material / global', recipe['name'])
+
     def test_every_semantic_difference_remains_separate(self):
         base = record()
         changes = [dict(name='Other'), dict(inputs=[dict(id='/material/iron', name='iron', quantity='1')]),

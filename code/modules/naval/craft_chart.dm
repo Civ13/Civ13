@@ -148,6 +148,9 @@ var/global/list/sea_harbours = list()    // /obj/structure/berth/quay
 	if (!token || token.chart != S)
 		return "She is not on this chart."
 	var/list/lines = list("<b>Sea chart:</b> the [name] lies in square [S.square_name(token.x, token.y)] ([here.x], [here.y])[berth ? ", moored at [berth.berth_name()]" : ""][running_dark ? ". She runs dark" : ""][grapple ? ". Grappling lines hold her" : ""].")
+	var/list/in_davits = carried_names()
+	if (in_davits.len)
+		lines += "In her davits: [jointext(in_davits, ", ")]."
 	var/list/ships = list()
 	var/list/harbours = list()
 	for (var/datum/chart_token/T in S.tokens)
@@ -206,6 +209,9 @@ var/global/list/sea_harbours = list()    // /obj/structure/berth/quay
 	for (var/obj/structure/vehicleparts/axis/ship/S in ship_axes)
 		var/turf/T = get_turf(S)
 		if (!T || T.z != surface.z || get_dist(T, surface) > reach)
+			continue
+		// A boat hoisted into a davit's cradle is part of the ship that carries it.
+		if (S.in_cradle())
 			continue
 		. += "Ship: [sea_contact_name(S, party)], [get_dist(T, surface)] tiles [submarine_bearing(surface, T)], heading [dir2text(S.dir)][S.moving ? "" : ", stopped"]."
 
@@ -299,7 +305,12 @@ var/global/list/sea_harbours = list()    // /obj/structure/berth/quay
 	var/turf/O = body.origin()
 	// Already lying alongside (after a restart, say): only the lines go out.
 	var/there = O && O.x == plan[1] && O.y == plan[2] && body.heading() == plan[3]
-	if (!there && !body.move_to(plan[1], plan[2], plan[3]))
+	// She is drawn sliding in alongside, not jumping there (craft/glide.dm).
+	if (!there && O)
+		body.slide_time = glide_dock_time(max(abs(plan[1] - O.x), abs(plan[2] - O.y)))
+	var/berthed = there || body.move_to(plan[1], plan[2], plan[3])
+	body.slide_time = 0
+	if (!berthed)
 		last_refusal = body.last_refusal
 		T.release()
 		crew_message(SPAN_WARNING("She cannot make the berth: [last_refusal]."))

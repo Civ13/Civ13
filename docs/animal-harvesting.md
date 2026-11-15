@@ -87,3 +87,18 @@ sprites and are not gameplay captures. Gameplay capture is unnecessary when
 source review, these production tests and required CI adequately establish the
 change under the standing capture rule. No live server restart/deployment or
 full-server memory test is part of this change.
+
+## Intestine casings (organ utility phase 1)
+
+Use a held knife on whole fresh animal intestines with **grab intent** from the
+Bronze Age onward. The intestines must be held or on the same tile; one portion
+is consumed for one existing sausage casing. Other intents retain meat cutting.
+The existing stomach routes, sausage stuffing, offal meals and harvest yields
+are unchanged. This is a simplified game preparation, not medical guidance.
+
+Cooked, bitten, spoiled, irradiated, above-ambient germ-contaminated or chemically modified
+intestines are refused. A casing stack cannot carry food contamination, so the
+conversion must not silently discard it. The preparation has no wait, timer or
+new saved fields; it retires its input before constructing a stack that can merge.
+It creates no transplant organ. Further specimens, preservation and surgery work
+is tracked in #5126 and is not implemented by this slice.

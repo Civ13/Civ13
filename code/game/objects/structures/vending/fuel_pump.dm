@@ -306,6 +306,9 @@ function changePrice() {
 		show_browse(user, null, "window=fuelpump_manage")
 		return
 
+	if (!find_company_member(user, owner))
+		return
+
 	if (href_list["action"] == "change_name_direct")
 		if (unlocked)
 			to_chat(user, "The pump is being used! Finish it first.")
@@ -351,6 +354,9 @@ function changePrice() {
 		return
 
 	if (href_list["action"] == "set_fuel")
+		if (unlocked)
+			to_chat(user, "The pump is being used! Finish it first.")
+			return
 		var/fuel = href_list["fuel"]
 		if (fuel && vol <= 0)
 			fueltype = fuel
@@ -368,6 +374,9 @@ function changePrice() {
 		return
 
 	if (href_list["action"] == "change_price")
+		if (unlocked)
+			to_chat(user, "The pump is being used! Finish it first.")
+			return
 		var/custp = text2num(href_list["price"])
 		update_management_price(user, custp)
 		return

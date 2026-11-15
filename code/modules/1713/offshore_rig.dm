@@ -44,7 +44,7 @@
 
 // Open-sea surface water: deep saltwater, not the seabed layer.
 /proc/offshore_sea_turf(turf/T)
-	return istype(T, /turf/floor/beach/water/deep/saltwater) && !istype(T, /turf/floor/beach/water/deep/saltwater/underwater)
+	return is_open_sea(T)
 
 /proc/offshore_oil_richness(turf/T)
 	if (!offshore_sea_turf(T))
@@ -108,7 +108,7 @@
 		to_chat(user, "No barrel is connected.")
 
 /obj/structure/oilwell/offshore/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/hammer))
+	if (is_tool(W, TOOL_HAMMER))
 		hammer_action(user, W, 400, list("/obj/item/stack/material/steel"), list(34))
 		return
 	..(W, user)
@@ -117,3 +117,12 @@
 #undef OFFSHORE_FIELD_ODDS
 #undef OFFSHORE_FIELD_HASH_MOD
 #undef OFFSHORE_RIG_YIELD_PER_RICHNESS
+
+// Stack recipe guard: the deck is checked again after the wait.
+/datum/craft_guard/offshore_rig
+	order = 70
+	after_wait = TRUE
+
+/datum/craft_guard/offshore_rig/refusal(mob/living/human/H, datum/stack_recipe/R, phase)
+	var/message = offshore_rig_build_refusal(H, R.result_type)
+	return message ? SPAN_WARNING(message) : null

@@ -253,7 +253,7 @@ class Practice(unittest.TestCase):
             self.assertIn("build_practice_experiments()", proc(field, name), name)
     def test_crafting_routes_count_practice(self):
         for path, count in (("code/game/objects/items/stacks/stack.dm", 1),
-                            ("code/game/objects/structures/blacksmithing/blacksmithing.dm", 5),
+                            ("code/game/objects/structures/blacksmithing/blacksmithing.dm", 2),
                             ("code/game/objects/structures/blacksmithing/component_workbench.dm", 1),
                             ("code/game/objects/structures/blacksmithing/dedicated_workbenches.dm", 3)):
             self.assertEqual(read(path).count("note_craft_practice("), count, path)
@@ -283,6 +283,173 @@ class Demonstrations(unittest.TestCase):
             self.assertIn(guard, record)
         self.assertLess(record.index("demonstration_mishap"), record.index("commit_demonstration(src"))
 
+
+class SubjectPrototypes(unittest.TestCase):
+    """Prototypes from a part-written chapter, and field study of existing things."""
+    def setUp(self):
+        self.src = read("code/modules/research_tree/subject_prototypes.dm")
+    def test_included_and_wired(self):
+        self.assertIn('#include "code\\modules\\research_tree\\subject_prototypes.dm"', read("civ13.dme"))
+        self.assertIn("|| subject_prototype_allowed(H, result_path_string)", read("code/modules/research_tree/recipe_gates.dm"))
+        self.assertIn("record_subject_prototype(user, result_path_string)", read("code/modules/research_tree/practice_work.dm"))
+        self.assertIn("take_field_notes(W, user)", read("code/modules/research_tree/book_research.dm"))
+    def test_gates(self):
+        node = proc(self.src, "/proc/subject_prototype_node")
+        for guard in ("map.book_research_enabled()", "H.knows_research_prereqs(node_id)", "H.prototype_book(node_id)"):
+            self.assertIn(guard, node)
+        self.assertIn("SUBJECT_PROTO_MAX", proc(self.src, "/mob/living/human/proc/prototype_book"))
+        study = proc(self.src, "/mob/living/human/proc/study_in_field")
+        for guard in ("held_writing_pen()", "do_reading(src, FIELD_STUDY_TIME, thing)", "commit_field_study(src, carrier, node_id, kind, thing.name)"):
+            self.assertIn(guard, study)
+
+class LearningByDoing(unittest.TestCase):
+    def test_included_after_scholarship(self):
+        dme = read("civ13.dme")
+        self.assertLess(dme.index('research_tree\\scholarship.dm"'), dme.index('research_tree\\learning_by_doing.dm"'))
+    def test_every_active_route_teaches_scholarship(self):
+        for path, call in (("code/modules/research_tree/field_work.dm", 'H.gain_active_scholarship(assigned_node, points, "field:[id]")'),
+                           ("code/modules/research_tree/subject_prototypes.dm", '"prototype:[node_id]:[B.prototypes_made(node_id)]")'),
+                           ("code/modules/research_tree/subject_prototypes.dm", 'user.gain_active_scholarship(N.id, points, "study:[N.id]:[kind]")'),
+                           ("code/modules/research_tree/subject_prototypes.dm", 'H.gain_active_scholarship(node_id, ., "study:[node_id]:[kind]")'),
+                           ("code/modules/research_tree/demonstrations.dm", 'H.gain_active_scholarship(node_id, demonstration_lesson_points(N), "demonstration:[node_id]")'),
+                           ("code/modules/research_tree/demonstrations.dm", 'user.gain_active_scholarship(N.id, demonstration_lesson_points(N), "demonstration:[N.id]")'),
+                           ("code/modules/research_tree/book_research.dm", 'user.gain_active_scholarship(assigned_node, boost, "sample:[assigned_node]:[W.type]")')):
+            with self.subTest(call=call):
+                self.assertIn(call, read(path))
+    def test_skill_gain_knows_what_was_done(self):
+        stats = read("code/game/mob/living/carbon/human/human_stats.dm")
+        self.assertIn("skill_variety_mult(statname, variety_key) * skill_master_mult(statname)", stats)
+        self.assertEqual(read("code/game/objects/items/stacks/stack.dm").count('H.adaptStat("crafting", 1*recipe.req_amount, recipe.result_type)'), 3)
+        self.assertIn('H.adaptStat("medical", 1.5*mod, S.type)', read("code/modules/surgery/surgery.dm"))
+        self.assertIn('H.adaptStat("farming", 1, type)', read("code/game/objects/farming.dm"))
+    def test_only_on_book_research_worlds(self):
+        source = read("code/modules/research_tree/learning_by_doing.dm")
+        for name in ("/mob/living/human/proc/gain_active_scholarship", "/mob/living/human/proc/skill_variety_mult", "/mob/living/human/proc/skill_master_nearby"):
+            self.assertIn("learning_by_doing_enabled()", proc(source, name))
+class TrialAndError(unittest.TestCase):
+    def setUp(self):
+        self.src = read("code/modules/research_tree/subject_prototypes.dm")
+    def test_every_bench_and_menu_asks_before_handing_over_the_result(self):
+        for path, call, count in (("code/game/objects/items/stacks/stack.dm", 'if (trial_craft_ruined(user, "[recipe.result_type]"))', 1),
+                                  ("code/game/objects/structures/blacksmithing/blacksmithing.dm", 'if (!trial_craft_ruined(user, "[rtype]"))', 2),
+                                  ("code/game/objects/structures/blacksmithing/dedicated_workbenches.dm", 'if (trial_craft_ruined(H, "[result_type]"))', 3),
+                                  ("code/game/objects/structures/blacksmithing/component_workbench.dm", 'if (M && trial_craft_ruined(H, "[M.type]"))', 1)):
+            with self.subTest(path=path):
+                self.assertEqual(read(path).count(call), count)
+    def test_materials_are_spent_before_the_attempt_is_judged(self):
+        stack = read("code/game/objects/items/stacks/stack.dm")
+        self.assertLess(stack.index("if (use(required, (joinery || carving) ? null : H))"), stack.index("trial_craft_ruined(user"))
+        self.assertLess(stack.index("trial_craft_ruined(user"), stack.index("O = new recipe.result_type(user.loc, recipe.use_material)"))
+    def test_gates(self):
+        book = proc(self.src, "/mob/living/human/proc/prototype_book")
+        for guard in ("B.trial_subject == node_id", "trial_count(node_id) < TRIAL_CHARACTER_MAX", "SUBJECT_PROTO_SHARE"):
+            self.assertIn(guard, book)
+        chance = proc(self.src, "/mob/living/human/proc/trial_success_chance")
+        self.assertIn("if (share >= SUBJECT_PROTO_SHARE)\n\t\treturn 100", chance)
+        failure = proc(self.src, "/proc/commit_trial_failure")
+        for guard in ("lessons_learned(node_id) < TRIAL_LESSON_MAX", "gain_active_scholarship(", "/obj/item/trash/failed_attempt"):
+            self.assertIn(guard, failure)
+        self.assertIn("player_input(", proc(self.src, "/mob/living/human/proc/attempt_a_subject"))
+class TradeLearning(unittest.TestCase):
+    def setUp(self):
+        self.src = read("code/modules/research_tree/trade_learning.dm")
+    def test_included_and_wired(self):
+        dme = read("civ13.dme")
+        self.assertLess(dme.index('research_tree\\learning_by_doing.dm"'), dme.index('research_tree\\trade_learning.dm"'))
+        self.assertIn("|| guided_work_allowed(H, result_path_string)", read("code/modules/research_tree/recipe_gates.dm"))
+        practice = read("code/modules/research_tree/practice_work.dm")
+        self.assertIn("if (!record_guided_work(user, result_path_string))\n\t\trecord_subject_prototype(user, result_path_string)", practice)
+        self.assertIn("note_craft_watched(user, result_path_string)", practice)
+        ruined = proc(read("code/modules/research_tree/subject_prototypes.dm"), "/proc/trial_craft_ruined")
+        self.assertLess(ruined.index("guided_work_node(H, result_path_string)"), ruined.index("subject_prototype_node(H, result_path_string)"))
+    def test_gates(self):
+        learn = proc(self.src, "/mob/living/human/proc/can_learn_trade")
+        for guard in ("map.book_research_enabled()", "knows_recipe_node(node_id)", "knows_research_prereqs(node_id)", "trade_learning_cap(N)"):
+            self.assertIn(guard, learn)
+        teacher = proc(self.src, "/mob/living/human/proc/trade_teacher")
+        for guard in ("M.stat != CONSCIOUS", "M.research_presence()", "M.knows_recipe_node(node_id)"):
+            self.assertIn(guard, teacher)
+        watched = proc(self.src, "/proc/note_craft_watched")
+        for guard in ("maker.knows_recipe_node(node_id)", "TRADE_WATCH_MAX", "watcher.can_learn_trade(node_id)"):
+            self.assertIn(guard, watched)
+        self.assertIn("learn_recipe_node(node_id)", proc(self.src, "/mob/living/human/proc/add_trade_learning"))
+class CompareNotes(unittest.TestCase):
+    def setUp(self):
+        self.src = read("code/modules/research_tree/compare_notes.dm")
+    def test_included_after_teams(self):
+        dme = read("civ13.dme")
+        self.assertLess(dme.index('research_tree\\team_research.dm"'), dme.index('research_tree\\compare_notes.dm"'))
+    def test_gates(self):
+        problem = proc(self.src, "/obj/structure/research_bench/proc/compare_notes_problem")
+        for guard in ("comparable_subjects()", "cipher_refuses(H)", "research_lit()", "H.can_research_node_at(src, node_id)", "second_scholar(node_id, H)"):
+            self.assertIn(guard, problem)
+        subjects = proc(self.src, "/obj/structure/research_bench/proc/comparable_subjects")
+        for guard in ("book_mode()", "A.has_compared(node_id) || B.has_compared(node_id)", "has_research_chapter(node_id)"):
+            self.assertIn(guard, subjects)
+        commit = proc(self.src, "/obj/structure/research_bench/proc/compare_notes_commit")
+        self.assertIn("fuller.mark_compared(node_id)\n\tlesser.mark_compared(node_id)", commit)
+        self.assertIn("player_input(", proc(self.src, "/obj/structure/research_bench/proc/compare_notes"))
+    def test_first_samples_teach_more(self):
+        research = read("code/modules/research_tree/book_research.dm")
+        self.assertIn("#define BOOK_SAMPLE_FIRST_KINDS 2", research)
+        self.assertIn("#define BOOK_SAMPLE_FIRST_FRACTION 0.2", research)
+        self.assertIn("studied_samples.len <= BOOK_SAMPLE_FIRST_KINDS ? BOOK_SAMPLE_FIRST_FRACTION : RESEARCH_SAMPLE_BOOST_FRACTION", research)
+
+class NaturalistFinds(unittest.TestCase):
+    def setUp(self):
+        self.src = read("code/modules/research_tree/naturalist_finds.dm")
+    def test_included(self):
+        self.assertIn('research_tree\\naturalist_finds.dm"', read("civ13.dme"))
+    def test_limits(self):
+        self.assertIn("#define FIND_POINTS 0.05", self.src)
+        self.assertIn("#define FIND_CHAPTER_CAP 0.3", self.src)
+        room = proc(self.src, "/obj/item/weapon/book/proc/find_room")
+        for guard in ("has_research_chapter(node_id)", "has_find(kind)", "FIND_CHAPTER_CAP", "double ? 2 : 1"):
+            self.assertIn(guard, room)
+    def test_gates(self):
+        subjects = proc(self.src, "/proc/find_subjects")
+        for guard in ("map.book_research_enabled()", "node_discipline(node_id) != discipline", "H.knows_recipe_node(node_id) || !H.knows_research_prereqs(node_id)"):
+            self.assertIn(guard, subjects)
+        verb = proc(self.src, "/mob/living/human/proc/record_a_find")
+        for guard in ("held_writing_pen()", "do_reading(", "player_input("):
+            self.assertIn(guard, verb)
+        self.assertIn('gain_active_scholarship(node_id, ., "find:[kind]")', proc(self.src, "/proc/commit_find"))
+    def test_bench_takes_notes(self):
+        self.assertIn("take_find_notes(W, user)", read("code/modules/research_tree/book_research.dm"))
+
+class SubjectDeeds(unittest.TestCase):
+    def setUp(self):
+        self.src = read("code/modules/research_tree/practice_work.dm")
+    def test_deeds_replace_generated_practice(self):
+        build = proc(self.src, "/proc/build_practice_experiments")
+        self.assertLess(build.index("islist(subject_deeds[N.id])"), build.index("practice_items_needed(N)"))
+        self.assertIn('field_experiments["deed_[N.id]_[D[1]]"]', build)
+    def test_crafting_counts_deeds_first(self):
+        note = proc(self.src, "/proc/note_craft_practice")
+        self.assertLess(note.index("note_deed_work(user, result_path_string)"), note.index("get_recipe_node_req(result_path_string)"))
+        self.assertIn('findtext(result_path_string, "[path]/") != 1', proc(self.src, "/proc/note_deed_work"))
+    def test_ten_subjects(self):
+        import re
+        block = self.src[self.src.index("var/global/list/subject_deeds = list("):self.src.index("var/global/list/deed_paths")]
+        self.assertEqual(len(re.findall(r'^\t"\w+" = list\($', block, re.M)), 10)
+
+class SkillMastery(unittest.TestCase):
+    def setUp(self):
+        self.src = read("code/modules/research_tree/learning_by_doing.dm")
+    def test_hooked_into_skill_gain(self):
+        stats = read("code/game/mob/living/carbon/human/human_stats.dm")
+        adapt = proc(stats, "/mob/living/human/proc/adaptStat")
+        self.assertIn("note_skill_mastery(statname)", adapt)
+        self.assertLess(adapt.index("min(stats[statname][2], cap)"), adapt.index("note_skill_mastery(statname)"))
+    def test_paid_once_per_discipline(self):
+        note = proc(self.src, "/mob/living/human/proc/note_skill_mastery")
+        for guard in ("learning_by_doing_enabled()", "skill_mastery_key(discipline, M[1])", "if (key in skill_mastery)", "SCHOLAR_MAX_LEVEL"):
+            self.assertIn(guard, note)
+        self.assertIn("list(250, 12, \"master\")", self.src)
+    def test_saved_and_cleared_on_death(self):
+        imp = proc(self.src, "/mob/living/human/persistence_import_fields")
+        self.assertIn("skill_mastery = clean_skill_mastery(skill_mastery)", imp)
+        self.assertIn("skill_mastery = list()", imp)
 
 if __name__ == "__main__":
     unittest.main()

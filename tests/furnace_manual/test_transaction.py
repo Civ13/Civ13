@@ -111,6 +111,8 @@ def tool_action(handler, kind, completed, anchored=True, source=SOURCE):
     furnace = projection.Record(anchored=anchored, gcDestroyed=False, loc='floor', I_HELP='help')
     furnace.wait = lambda: events.append('wait') or completed
     furnace.empty = lambda: events.append('empty:' + handler)
+    # Mirror of /obj/proc/timed_toggle_anchor (code/_helpers/tools.dm): wait, then toggle on success.
+    furnace.timed_toggle_anchor = lambda actor: bool(furnace.wait()) and (setattr(furnace, 'anchored', not furnace.anchored) or True)
     furnace.parent = lambda: events.append('parent')
     furnace.handle_structure_tool = lambda item, actor: p.run(
         '/obj/structure/furnace/proc/handle_structure_tool', furnace, I=item, H=actor)

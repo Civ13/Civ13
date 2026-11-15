@@ -102,7 +102,7 @@ var/global/list/scholar_entry_tiers = null
 // Research speed multiplier: 1 at the requirement, up to 2 well above it.
 /mob/living/human/proc/scholar_research_rate(node_id)
 	var/margin = scholar_level(node_discipline(node_id)) - node_scholar_requirement(node_id)
-	return 1 + clamp(margin / 50, 0, 1)
+	return (1 + clamp(margin / 50, 0, 1)) * recluse_rate()
 
 // Adds skill for work on node_id. Work well below the character's level
 // teaches less, so the way up is the next tier, not old chapters.
@@ -111,6 +111,7 @@ var/global/list/scholar_entry_tiers = null
 		return
 	var/discipline = node_discipline(node_id)
 	var/req = node_scholar_requirement(node_id)
+	amount *= trait_scholarship_gain_mult(discipline)
 	if (!islist(scholarship))
 		scholarship = list()
 	var/level = scholar_level(discipline)

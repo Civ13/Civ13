@@ -228,6 +228,16 @@ class SelectionTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, 'Unregistered crossroads-mall'):
                 selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
 
+    def test_americas_maps_offline_admission_is_exact(self):
+        for path in ('tests/americas_maps/test_americas_maps.py', 'tests/americas_maps/build.py',
+                     'tests/americas_maps/continents.py'):
+            with patch.object(selection.subprocess, 'check_output', return_value=(path + '\0').encode()):
+                self.assertEqual(selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request'), [])
+        other = 'tests/americas_maps/new_native_probe.dm'
+        with patch.object(selection.subprocess, 'check_output', return_value=(other + '\0').encode()):
+            with self.assertRaisesRegex(RuntimeError, 'Unregistered americas-maps'):
+                selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
+
     def test_train_raid_offline_admission_is_exact(self):
         for path in ('tests/train_raid/test_train_raid.py', 'tests/train_raid/build.py',
                      'tests/train_raid/native_probe.py', 'tests/train_raid/native_probe.dm'):
@@ -305,6 +315,15 @@ class SelectionTests(unittest.TestCase):
         other = 'tests/map_tools/new_native_probe.dm'
         with patch.object(selection.subprocess, 'check_output', return_value=(other + '\0').encode()):
             with self.assertRaisesRegex(RuntimeError, 'Unregistered map-tools'):
+                selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
+
+    def test_divine_approval_offline_admission_is_exact(self):
+        for path in ('tests/divine_approval/test_contract.py', 'tests/divine_approval/test_divine_book.py', 'tests/divine_approval/probe.dm'):
+            with patch.object(selection.subprocess, 'check_output', return_value=(path + '\0').encode()):
+                self.assertEqual(selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request'), [])
+        other = 'tests/divine_approval/new_native_probe.dm'
+        with patch.object(selection.subprocess, 'check_output', return_value=(other + '\0').encode()):
+            with self.assertRaisesRegex(RuntimeError, 'Unregistered divine-approval'):
                 selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
 
     def test_fireman_carry_offline_admission_is_exact(self):
@@ -404,7 +423,8 @@ class SelectionTests(unittest.TestCase):
                      'tests/agent_control/test_perception_replay.py',
                      'tests/agent_control/test_visibility.py',
                      'tests/agent_control/test_action_contract.py',
-                     'tests/agent_control/test_navigation_replay.py'):
+                     'tests/agent_control/test_navigation_replay.py',
+                     'tests/agent_control/test_needs_routines.py'):
             with self.subTest(path=path), patch.object(selection.subprocess, 'check_output', return_value=(path + '\0').encode()):
                 self.assertEqual(selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request'), [])
         for path in ('tests/agent_control/new_native_probe.dm',

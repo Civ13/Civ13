@@ -49,7 +49,7 @@
 	charcoal_absorb_poisons(M, removed)
 
 // Infections modelled as reagents: charcoal binds poisons, it does not cure these.
-var/global/list/charcoal_unabsorbed_toxins = list("cholera", "typhus", "plague")
+var/global/list/charcoal_unabsorbed_toxins = list("cholera", "typhus", "plague", "worm_eggs", "malaria")
 
 // Binds poison chemicals in the blood and stomach (food poisoning, amatoxin,
 // solanine and the rest of /datum/reagent/toxin), 3 units per unit of charcoal.

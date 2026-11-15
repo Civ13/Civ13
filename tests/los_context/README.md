@@ -139,6 +139,4 @@ for the executed procedures, adapter boundaries and future acceptance criteria.
 
 A tree on the viewer's own tile (humans may stand beside its trunk) is not
 that viewer's blocker (`los_own_tree`); curtains, doors and walls there still
-blind. Foliage cover (`los_foliage_hides`, los_terrain.dm) denies any mob
-more than two tiles away when either the viewer or that mob stands in a
-tree's tile, so the rule is symmetric; ground and objects are unaffected.
+blind. Trees in play are not opaque and hide nobody; there is no foliage cover.

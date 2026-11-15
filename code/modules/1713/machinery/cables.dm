@@ -37,11 +37,11 @@ By design, d1 is the smallest direction and d2 is the highest
 	name = "power cable"
 	desc = "A flexible, superconducting insulated cable for power transfer."
 	icon = 'icons/obj/machines/cables.dmi'
-	icon_state = "0-1"
+	icon_state = "horizontal" // or "vertical", or a corner such as "1-4" (cable_shapes.dm)
 	layer = 1.95
 	anchored = TRUE
-	var/d1 = 0   // cable direction 1 (see above)
-	var/d2 = 1   // cable direction 2 (see above)
+	var/d1 = 0   // cable direction 1 (see above); a corner's first end
+	var/d2 = 1   // cable direction 2 (see above); a corner's second end
 	var/list/connections = list()
 	not_movable = FALSE
 	not_disassemblable = FALSE
@@ -53,26 +53,7 @@ By design, d1 is the smallest direction and d2 is the highest
 	var/list/power_consumers = list() // consumer => reserved demand
 	var/currentflow = 0 //reserved demand in this connected component
 	var/tilepos = "under"
-	var/tiledir = "horizontal"
-
-// Straight neighbors only. Same-tile crossings belong to secured connectors.
-// Do not rebuild supply here: placement must finish junctions first.
-/obj/structure/cable/proc/link_straight_neighbors(mob/user, notify_second = TRUE)
-	var/list/directions
-	if (tiledir == "horizontal")
-		directions = list(EAST, WEST)
-	else if (tiledir == "vertical")
-		directions = list(NORTH, SOUTH)
-	else
-		return
-	for (var/i = 1, i <= directions.len, i++)
-		for (var/obj/structure/cable/neighbor in get_turf(get_step(src, directions[i])))
-			if (neighbor == src || neighbor.tiledir != tiledir)
-				continue
-			neighbor.connections |= src
-			connections |= neighbor
-			if (user && (i == 1 || notify_second))
-				to_chat(user, "You connect the two cables.")
+	var/tiledir = "horizontal" // "horizontal", "vertical" or "corner" (cable_shapes.dm)
 
 /obj/structure/cable/verb/hiding()
 	set category = null
@@ -140,7 +121,7 @@ By design, d1 is the smallest direction and d2 is the highest
 /obj/structure/cable/examine(mob/user)
 	. = ..()
 	rebuild_supply()
-	to_chat(user, "Supply capacity: [powerflow]. Reserved demand: [currentflow]. Connected cables: [component_size].")
+	to_chat(user, "Supply capacity: [power_text(powerflow)]. Reserved demand: [power_text(currentflow)]. Connected cables: [component_size].")
 
 
 ///////////////////////////////////
@@ -148,8 +129,7 @@ By design, d1 is the smallest direction and d2 is the highest
 ///////////////////////////////////
 
 /obj/structure/cable/update_icon()
-//	icon_state = "[d1]-[d2]"
-	icon_state = tiledir
+	icon_state = tiledir == "corner" ? "[d1]-[d2]" : tiledir
 
 // Items usable on a cable :
 //   - knife : cut it duh !
@@ -157,13 +137,14 @@ By design, d1 is the smallest direction and d2 is the highest
 //   - Multitool : get the power currently passing through the cable
 //
 /obj/structure/cable/attackby(obj/item/W, mob/user, params)
-	if(istype(W, /obj/item/weapon/wirecutters))
+	if(is_tool(W, TOOL_WIRECUTTER))
 		var/mob/living/human/H = user
 		if (!istype(H) || H.stat != CONSCIOUS || !H.can_use_hands() || !H.item_is_in_hands(W) || H.z != z || get_dist(H, src) > 1 || !isturf(loc))
 			return
 		user.visible_message("[user] cuts the cable.", "<span class='notice'>You cut the cable.</span>")
 		playsound(loc, usesound, 100, FALSE)
-		var/obj/item/stack/cable_coil/salvage = new(loc)
+		var/coil_type = cable_coil_type(cable_color)
+		var/obj/item/stack/cable_coil/salvage = new coil_type(loc)
 		salvage.amount = 1
 		salvage.cable_color = cable_color
 		salvage.color = color
@@ -209,6 +190,20 @@ By design, d1 is the smallest direction and d2 is the highest
 						connections += CB
 	return connections
 
+// A consumer reaches its cable when it stands on or next to it, or when a
+// power point on that cable serves it from further away (power_points.dm).
+/obj/var/tmp/obj/power_point = null
+
+/obj/proc/power_point_serves(obj/O)
+	return FALSE
+
+/obj/proc/cable_reach(obj/structure/cable/C)
+	if (!C || !isturf(loc) || z != C.z)
+		return FALSE
+	if (get_dist(src, C) <= 1)
+		return TRUE
+	return power_point && power_point.powersource == C && power_point.power_point_serves(src)
+
 // Scalar identities contain no cable references. Refresh from the live graph,
 // rather than retaining cached topology across disconnects or imports.
 var/global/cable_identity_sequence = 0
@@ -230,7 +225,7 @@ var/global/cable_identity_sequence = 0
 	return grid_serial
 
 /obj/structure/cable/persistence_runtime_var(key)
-	if (key in list("grid_serial", "component_id", "component_size", "rebuild_visits", "rebuild_time", "rebuild_engines", "riser_links"))
+	if (key in list("grid_serial", "component_id", "component_size", "rebuild_visits", "rebuild_time", "rebuild_engines", "riser_links", "grid_wire_loss"))
 		return TRUE
 	return ..()
 
@@ -273,7 +268,7 @@ var/global/cable_identity_sequence = 0
 // Capacity is instantaneous engine output, not accumulated energy. Visit each
 // cable and engine once, including when a network contains loops or branches.
 /obj/structure/cable/proc/rebuild_supply(obj/requester, request = 0)
-	if (requester && (request <= 0 || requester.powersource != src || !(requester in connections) || !isturf(requester.loc) || get_dist(src, requester) > 1 || requester.z != z))
+	if (requester && (request <= 0 || requester.powersource != src || !(requester in connections) || !requester.cable_reach(src)))
 		return FALSE
 	var/list/pending = list(src)
 	var/list/cables = list()
@@ -285,16 +280,19 @@ var/global/cable_identity_sequence = 0
 	var/list/generators = list()
 	var/capacity = 0
 	var/demand = 0
+	var/wire_loss = 0 // wire_materials.dm: cable that is not copper wastes supply
 	var/index = 1
 	var/identity = grid_identity()
 	while (index <= pending.len)
 		var/obj/structure/cable/CB = pending[index++]
 		cables[CB] = TRUE
+		if (cable_wire_materials[CB.cable_color])
+			wire_loss += cable_wire_loss(CB.cable_color)
 		identity = min(identity, CB.grid_identity())
 		if (!isturf(CB.loc))
 			continue
 		for (var/obj/consumer in CB.power_consumers.Copy())
-			if (consumer.powersource != CB || !(consumer in CB.connections) || !isturf(consumer.loc) || get_dist(CB, consumer) > 1 || consumer.z != CB.z)
+			if (consumer.powersource != CB || !(consumer in CB.connections) || !consumer.cable_reach(CB))
 				CB.power_consumers -= consumer
 			else
 				demand += CB.power_consumers[consumer]
@@ -331,6 +329,9 @@ var/global/cable_identity_sequence = 0
 				if (!discovered[linked] && isturf(linked.loc) && linked.riser_links && (CB in linked.riser_links))
 					discovered[linked] = TRUE
 					pending += linked
+	if (wire_loss > 0)
+		capacity = cable_delivered(capacity, wire_loss)
+	grid_wire_loss = wire_loss
 	var/accepted = FALSE
 	if (requester)
 		var/reserved = power_consumers[requester]
@@ -371,7 +372,7 @@ var/global/cable_identity_sequence = 0
 	if (powerneeded <= 0)
 		powersource.update_power(0, 1, src)
 		return FALSE
-	if (!isturf(loc) || !(src in powersource.connections) || get_dist(src, powersource) > 1 || z != powersource.z)
+	if (!(src in powersource.connections) || !cable_reach(powersource))
 		powersource.update_power(-powerneeded, 1, src)
 		return FALSE
 	// A reservation that the last traversal, under a second ago, left within

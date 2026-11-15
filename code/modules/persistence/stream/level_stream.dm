@@ -101,7 +101,7 @@
 /datum/level_segment_writer/stream/open_next()
 	close_current()
 	number++
-	current = new /savefile
+	current = new_scratch_savefile()
 	current["/format_version"] << 3
 	// The exporter notes nodes whose value does not survive savefile text while this segment is open.
 	owner.saving_stream_native_paths = list()
@@ -185,7 +185,7 @@
 	if(!isnum(ref) || ref < 1) throw EXCEPTION("Invalid saved entry for a level segment")
 	if(ref > closed) return current
 	if(!late_file)
-		late_file = new /savefile
+		late_file = new_scratch_savefile()
 		late_file["/format_version"] << 3
 	var/key = "[ref]"
 	if(!late_loaded[key])
@@ -277,7 +277,7 @@
 		open_order -= key
 		open_order += key
 		return S
-	S = new /savefile
+	S = new_scratch_savefile()
 	S["/format_version"] << 3
 	S["/generation"] << generation
 	scratch_names["[S.name]"] = TRUE

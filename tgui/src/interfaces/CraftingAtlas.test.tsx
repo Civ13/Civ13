@@ -292,6 +292,24 @@ describe('Crafting Atlas navigation', () => {
   });
 });
 
+describe('Crafting Atlas hand-off to the Crafting window', () => {
+  it('offers Craft this on held-material recipes and names only the product', () => {
+    const props = ui(); render(<CraftingAtlas {...props} />);
+    fireEvent.click(screen.getByText('Craft this'));
+    expect(props.act).toHaveBeenCalledTimes(1);
+    expect(props.act).toHaveBeenLastCalledWith('atlas_craft', { atlas_craft: '/obj/plank' });
+  });
+  it('does not offer it for bench recipes, other maps, retired recipes or a locked window', () => {
+    for (const detail of [{ ...recipe, kind: 'Anvil' }, { ...recipe, elsewhere: true }, { ...recipe, retired: true }, { ...recipe, outputs: [] }]) {
+      render(<CraftingAtlas {...ui({ detail })} />);
+      expect(screen.queryByText('Craft this')).toBeNull();
+      cleanup();
+    }
+    const props = ui({}, false); render(<CraftingAtlas {...props} />);
+    expect((screen.getByText('Craft this') as HTMLButtonElement).disabled).toBe(true);
+  });
+});
+
 describe('Crafting Atlas requirement notes', () => {
   it('shows one row for a recipe that comes in several materials', () => {
     const page = { id: '/obj/item/hatchet', name: 'hatchet', heading: 'How to obtain', routes: [], kind: 'Tool or weapon', made_by_count: 2, used_in_count: 0, used_in: [],
@@ -367,5 +385,25 @@ describe('Crafting Atlas personal manuals', () => {
     view.unmount();
     render(<CraftingAtlas {...ui({ detail: locked })} />);
     expect(screen.getByRole('status').textContent).toBe('Needs the Woodworking manual');
+  });
+});
+describe('Crafting Atlas admin-only section', () => {
+  it('lists nothing for players, because the server sends no admin entries to them', () => {
+    const view = render(<CraftingAtlas {...ui()} />);
+    expect(view.container.querySelector('[data-result-type="admin"]')).toBeNull();
+    expect(screen.queryByText(/Admin only/)).toBeNull();
+  });
+  it('lists the entries an admin receives and opens their staff page', () => {
+    const props = ui({ admin_entries: [{ id: '/obj/hidden_thing', name: 'Plain book', note: 'Staff note', image: '' }] });
+    const view = render(<CraftingAtlas {...props} />);
+    const row = view.container.querySelector('[data-result-type="admin"] button')!;
+    expect(row.textContent).toContain('Plain book');
+    fireEvent.click(row);
+    expect(sent(props)).toEqual({ route: 'resource', resource: '/obj/hidden_thing' });
+    view.unmount();
+    render(<CraftingAtlas {...ui({ detail: null, guidance: { id: '/obj/hidden_thing', name: 'Plain book', admin_only: true, admin_note: 'Why it stays hidden', desc: 'A book.' } })} />);
+    const page = screen.getByRole('article', { name: 'Admin-only entry' });
+    expect(page.textContent).toContain('Why it stays hidden');
+    expect(page.textContent).not.toContain('Search the wiki');
   });
 });

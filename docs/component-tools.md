@@ -20,9 +20,11 @@ Handle integrity relative to ordinary wood adjusts capacity within 0.5-1.5
 of the head's normal capacity. The worse input condition carries over, so using
 a damaged handle does not restore a damaged head. Handle weight relative to
 ordinary wood adjusts shovel/pickaxe work speed within 0.75-1.25 of its normal
-speed. Head hardness relative to iron additionally adjusts pickaxe speed
-within 0.5-1.5; final pickaxe speed stays within 1-3, the existing bone-to-steel
-range. This changes existing work durations, not mineral output quantities.
+speed. The head material sets the base speed from the family table in
+`code/modules/materials/tool_speeds.dm` (bone 1, stone 1.5, iron 2, steel 3 for
+a pickaxe; bone 0.6, iron 1.5, steel 2 for a shovel); final pickaxe speed stays
+within 1-3, the existing bone-to-steel range. This changes existing work
+durations, not mineral output quantities.
 Hatchet chopping delays retain their existing behavior because several tree
 paths ignore the chopping_speed property.
 

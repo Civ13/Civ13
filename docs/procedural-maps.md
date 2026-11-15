@@ -261,7 +261,7 @@ port spans; `preset` recomputes those for the selected dimensions.
 | Group | Supported controls and units |
 | --- | --- |
 | Identity | Schema, preset/profile and ASCII seed of 1..128 characters. Exact config is saved; no hidden wall-clock seed. |
-| Dimensions | Width/height 32..512. Two equal planes: `SURFACE: 2`, `UNDERGROUND: 1`. Limits are provisional offline caps, not measured safe native host ranges. Start with 64 x 80. |
+| Dimensions | Width/height 32..1280. Two equal planes: `SURFACE: 2`, `UNDERGROUND: 1`. This is the offline tool's cap, not what a world can hold: an expedition land is also held to the measured cell budget ([expedition lands](expedition-lands.md)). A 1132 x 920 map generates in about a minute and a half and about 2 GB of Python memory. Start with 64 x 80. |
 | `biome_mix_pct` | Land-only percentages summing to 100. Current SURFACE backend supports contiguous subsets of lush -> temperate -> steppe -> arid -> desert. |
 | `climate` | Moisture 0..100 and temperature -50..50 C ranges. Lush/desert envelopes and permitted transitions remain mandatory. |
 | `water` | Whole-map coverage/sea/swamp/lake-area percentage intervals; river-network/lake counts; interior raster-brush width 1..16. |
@@ -325,6 +325,54 @@ Legacy schema 1 and `--legacy` preserve the earlier north-inlet/south-coast
 surface algorithm and golden hashes. Legacy oceanic schema 1 rejects explicitly.
 The reserve underground plane of a surface map is not a playable cavern; use the
 UNDERGROUND_CAVERN profile below for that.
+
+## Relief lands
+
+The port and oceanic families draw one fixed layout whatever the map's size:
+one lake, one confluence, oval islands. A relief land (configuration schema 4,
+IR schema 4, `tools/procedural_maps/relief_generator.py`) is built from its
+relief instead, and every feature is a share of the land's own area, so the
+same configuration suits a 64 x 64 map and a million-tile one. Expedition
+lands use it ([expedition lands](expedition-lands.md)).
+
+1. **Land and sea.** A noise field is set against the open-sea sides (or
+   against island domes) and cut at the level that gives the asked share of
+   sea. Water the open sea cannot reach becomes a hollow in the land; scraps of
+   land under 20 tiles sink.
+2. **Relief.** A ramp up from the coast, rolling noise and ridged noise. The
+   highest-scoring ridges are mountains, the next are hills.
+3. **Drainage.** The lowest reachable tile is always taken next from the sea
+   inwards, so every tile has a way down that climbs as little as possible.
+   Hollows that fill are lakes (within the lake budget; larger basins stay
+   plains). The tiles that gather the most land are rivers: tributaries join
+   larger rivers, lakes spill by a river, and rivers widen as they grow.
+4. **Climate, starts and plants.** Bands of the lush-to-desert chain follow a
+   smooth moisture field (wetter near fresh water) and never skip a band
+   between neighbours. Starts spread out, each with a clear way to fresh water
+   and to food, wood and stone.
+
+`relief_layout` controls:
+
+| Control | Meaning and bounds |
+| --- | --- |
+| `form` | `MAINLAND` (one land against its sea sides) or `ISLANDS`. |
+| `sea_sides` | Sorted list of the edges that are open sea (`E`, `N`, `S`, `W`). Islands need all four. |
+| `islands` | Interval 1..24; `[1,1]` for a mainland. An island needs 1,600 tiles of map. |
+| `sea_pct` | Share of the map that is sea: 6..60 for a mainland, 40..85 for islands. |
+| `coast_roughness` | 1 smooth, 2 bays and headlands, 3 fjords. |
+| `coast_width_tiles` | Beach depth, 1..4. |
+| `mountain_pct`, `hill_pct` | Shares of the land, 0..25 and 0..30. Mountain scraps under 12 tiles become hills. |
+| `river_permille` | River tiles per thousand land tiles before widening, 0..60. |
+| `river_max_half_width` | 0..2: the largest rivers are 1, 3 or 5 tiles wide. |
+| `lakes_per_100k_land` | Hollows dug for lakes per 100,000 land tiles, 0..40; every land of 1,500 tiles gets one. |
+| `lake_max_pct` | Most of the land that may be lake, 0..15. |
+| `swamp_pct` | Wetland beside fresh water, 0..10 percent of the land. |
+
+Rivers in IR schema 4 rise at a `SPRING` or a lake and end in the sea, a lake
+or a larger river; they need no map-edge port. All arithmetic is on integers,
+so a seed gives the same land on every machine. There is no CLI preset for it
+yet: build a configuration with `relief_preset()` in
+`tools/procedural_maps/configuration.py`, or use `land`.
 
 ## Underground caverns
 

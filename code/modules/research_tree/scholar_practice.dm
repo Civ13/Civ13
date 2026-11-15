@@ -133,6 +133,11 @@
 
 /mob/living/human/var/tmp/scholar_practising = FALSE
 
+// Persistence saves tmp vars too. A save taken during a practice session must
+// not carry the lock, or the restored character can never practise again.
+/mob/living/human/persistence_runtime_var(key)
+	return key == "scholar_practising" || ..()
+
 /obj/item/weapon/writing_slate/attack_self(mob/living/human/user)
 	if (istype(user) && user.practise_scholarship(src))
 		return

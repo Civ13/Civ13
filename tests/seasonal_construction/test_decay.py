@@ -77,6 +77,9 @@ def project(source, signature):
         "if (damage >= seasonal_construction_health() && FALSE)":
             "if damage >= self.seasonal_construction_health() and False:",
         "seasonal_construction_due = 0": "self.seasonal_construction_due = 0",
+        "damage = seasonal_construction_paced(damage)": "damage = self.seasonal_construction_paced(damage)",
+        "if (seasonal_construction_ruin())": "if self.seasonal_construction_ruin():",
+        "seasonal_construction_stage()": "self.stages += 1",
         "else": "else:",
         "seasonal_construction_warn(damage)": "self.warnings += 1",
         "damage_seasonal_construction(damage)": "self.damage_seasonal_construction(damage)",
@@ -158,6 +161,7 @@ class Construction:
         self.incomplete = self.gc_destroyed = self.gcDestroyed = False
         self.seasonal_construction_due = self.seasonal_construction_last = self.seasonal_construction_index = 0
         self.contents, self.messages, self.warnings = [], 0, 0
+        self.stages, self.ruin_messages, self.sagging_roofs, self.paced_at, self.rate = 0, 0, 0, -1, 1
         prefix = "/obj/roof" if self.is_roof else "/obj/covers"
         shared = ["register_seasonal_construction", "unregister_seasonal_construction", "seasonal_construction_lifetime",
                   "accrue_seasonal_construction", "check_seasonal_construction"]
@@ -174,6 +178,32 @@ class Construction:
         self.damage_seasonal_construction = lambda value: damage(self, state, damage=value)
         self.register_seasonal_construction()
 
+    # Ports of seasonal_construction_pacing.dm; test_sources pins the source.
+    def reserve(self):
+        return self.health * self.seasonal_construction_lifetime() / self.rate / self.design_health
+
+    def seasonal_construction_paced(self, damage):
+        lifetime, span = self.seasonal_construction_lifetime(), self.seasonal_construction_lifetime() / self.rate
+        reserve = self.reserve()
+        floor = (CONSTANTS["CONSTRUCTION_WARNING_SEASONS"] if reserve > CONSTANTS["CONSTRUCTION_WARNING_SEASONS"] + 0.001
+                 else 1 if reserve > 1.001 else 0 if reserve > 0.001 else -CONSTANTS["CONSTRUCTION_RUIN_SEASONS"])
+        seasons, room = damage * lifetime / self.design_health, reserve - floor
+        if seasons < room - 0.001:
+            return seasons * self.design_health / span
+        if self.paced_at == self.state.clock:
+            self.seasonal_construction_due += seasons
+            return 0
+        self.paced_at = self.state.clock
+        self.seasonal_construction_due += max(0, seasons - room)
+        return self.health - floor * self.design_health / span
+
+    def seasonal_construction_ruin(self):
+        if self.reserve() <= 0.001 - CONSTANTS["CONSTRUCTION_RUIN_SEASONS"]:
+            return False
+        if not self.ruin_messages:
+            self.ruin_messages, self.sagging_roofs = 1, self.sagging_roofs + 1
+        return True
+
     def qdel(self):
         # Record dispatch with contents intact. Native child deletion/collapse
         # is outside this adapter; do not simulate a preservation guarantee.
@@ -181,6 +211,56 @@ class Construction:
         self.contents_at_qdel = tuple(self.contents)
         self.gc_destroyed = True
         self.unregister_seasonal_construction()
+
+
+R = CONSTANTS["CONSTRUCTION_RUIN_SEASONS"]
+W = CONSTANTS["CONSTRUCTION_WARNING_SEASONS"]
+
+
+def finish(state, item, limit=40):
+    """Season steps, each serviced once, until the building is gone."""
+    for step in range(1, limit + 1):
+        state.transition()
+        state.sweep()
+        if item.gc_destroyed:
+            return step
+    raise AssertionError("building never fell")
+
+
+class PacingTests(unittest.TestCase):
+    def test_backlog_passes_one_warning_band_per_season_step(self):
+        for kind, hp in (("/obj/covers/straw_wall", 75), ("/obj/roof/thatch", 100)):
+            with self.subTest(kind=kind):
+                s = State(); item = Construction(s, kind, hp)
+                for _ in range(3 * F): s.transition()
+                seen = []
+                for _ in range(3):
+                    s.sweep(); s.sweep()  # A second service in the same step changes nothing.
+                    seen.append(item.reserve())
+                    self.assertEqual(item.gc_destroyed, item.is_roof and seen[-1] == 0)
+                    s.transition()
+                self.assertEqual(seen, [W, 1, 0])
+                if not item.is_roof:
+                    self.assertEqual((item.ruin_messages, item.sagging_roofs), (1, 1))
+                    # The ruin is a band too: it stood for the step and goes with the next.
+                    self.assertFalse(item.gc_destroyed)
+                    s.sweep()
+                    self.assertTrue(item.gc_destroyed)
+
+    def test_shelter_and_foundation_slow_the_rate(self):
+        for rate in (1, 0.75, 0.5):
+            with self.subTest(rate=rate):
+                s = State(); item = Construction(s); item.rate = rate
+                for _ in range(4): s.transition(); s.sweep()
+                self.assertEqual(item.health, 75 * (1 - 4 * rate / F))
+
+    def test_repaired_ruin_weathers_normally_again(self):
+        s = State(); item = Construction(s); item.health = 75 / F
+        s.transition(); s.sweep()
+        self.assertEqual((item.health, item.ruin_messages, item.gc_destroyed), (0, 1, False))
+        item.health = 75
+        s.transition(); s.sweep()
+        self.assertEqual((item.health, item.seasonal_construction_due), (75 * (F - 1) / F, 0))
 
 
 class DecayTests(unittest.TestCase):
@@ -201,9 +281,18 @@ class DecayTests(unittest.TestCase):
                     self.assertFalse(item.gc_destroyed)
                 s.transition()
                 s.sweep()
+                if not item.is_roof:
+                    # A worn-out wall stands on as a ruin for a year first.
+                    self.assertEqual((item.health, item.ruin_messages, item.messages), (0, 1, 0))
+                    for _ in range(R):
+                        self.assertFalse(item.gc_destroyed)
+                        self.assertEqual(s.registry, [item])
+                        s.transition()
+                        s.sweep()
+                    self.assertEqual((item.ruin_messages, item.sagging_roofs), (1, 1))
                 self.assertTrue(item.gc_destroyed)
                 self.assertEqual(item.messages, 1)
-                # Every surviving season may warn; the final collapse does not.
+                # Every surviving season may warn; ruin and collapse do not.
                 self.assertEqual(item.warnings, lifetime - 1)
                 self.assertEqual(s.registry, [])
 
@@ -341,14 +430,18 @@ class DecayTests(unittest.TestCase):
                 child = NS(contents=[object()])
                 occupant = NS(is_living=True)
                 item.contents.extend([child, occupant])
-                for _ in range(F - 1): s.transition()
-                s.sweep()
+                for _ in range(F - 1): s.transition(); s.sweep()
                 self.assertFalse(item.gc_destroyed)
                 self.assertEqual(item.health, hp / F)
                 self.assertEqual(item.contents, [child, occupant])
                 s.transition(); s.sweep(); item.check_seasonal_construction()
+                if not item.is_roof:
+                    self.assertFalse(item.gc_destroyed)
+                    self.assertEqual(item.contents, [child, occupant])
+                    for _ in range(R): s.transition(); s.sweep()
                 self.assertTrue(item.gc_destroyed)
-                self.assertEqual((item.health, item.seasonal_construction_due, item.qdel_calls), (0, 0, 1))
+                self.assertEqual((item.health, item.seasonal_construction_due, item.qdel_calls),
+                                 (0 if item.is_roof else -hp * R / F, 0, 1))
                 self.assertEqual(item.contents_at_qdel, (child, occupant))
                 self.assertEqual((item.messages, s.registry), (1, []))
 
@@ -363,7 +456,11 @@ class DecayTests(unittest.TestCase):
             s.saving = False; s.map.persistence = False; item.check_seasonal_construction()
             self.assertEqual((item.health, item.seasonal_construction_due), (hp, F))
             s.map.persistence = True; s.sweep(); s.sweep()
-            self.assertEqual((item.qdel_calls, item.seasonal_construction_due), (1, 0))
+            # The backlog is charged one warning band per season step.
+            self.assertFalse(item.gc_destroyed)
+            self.assertEqual((item.reserve(), item.seasonal_construction_due), (W, W))
+            self.assertEqual(finish(s, item), 2 if item.is_roof else 4)
+            self.assertEqual(item.qdel_calls, 1)
             self.assertEqual(item.contents_at_qdel, (child,))
 
     def test_reloaded_occupied_terminal_debt_is_not_damage_until_service(self):
@@ -374,7 +471,10 @@ class DecayTests(unittest.TestCase):
         self.assertEqual((item.health, item.seasonal_construction_due), (75, F))
         self.assertFalse(item.gc_destroyed)
         s.sweep(); s.sweep()
-        self.assertEqual((item.health, item.seasonal_construction_due, item.qdel_calls), (0, 0, 1))
+        self.assertFalse(item.gc_destroyed)
+        self.assertEqual((item.reserve(), item.seasonal_construction_due), (W, W))
+        self.assertEqual(finish(s, item), 4)
+        self.assertEqual((item.health, item.seasonal_construction_due, item.qdel_calls), (-75 * R / F, 0, 1))
         self.assertEqual(item.contents_at_qdel, (child,))
 
     def test_storage_unanchored_and_incomplete_observations_do_not_accrue(self):
@@ -393,9 +493,10 @@ class DecayTests(unittest.TestCase):
 
     def test_batch_cursor_handles_swap_deletions_and_retains_tail(self):
         s = State()
-        items = [Construction(s) for _ in range(160)]
-        for _ in range(F):
-            s.transition()
+        items = [Construction(s, "/obj/roof/thatch", 100) for _ in range(160)]
+        for item in items:
+            item.health = 100 / F  # One season left: the next one brings each down.
+        s.transition()
         s.sweep()
         self.assertEqual(len(s.visits), 64)
         self.assertEqual(len(s.registry), 96)

@@ -32,21 +32,28 @@
 		var/mob/living/human/MM = M
 		M.visible_message("<span class='notice'>[M] starts trying to get on \the [src]'s back...</span>","<span class='notice'>You start trying to get on \the [src]'s back...</span>")
 		if (do_after(MM, src.animal_mount_delay(), src))
-			M.plane = GAME_PLANE
 			M.visible_message("<span class='notice'>[M] manages to successfully climb into \the [src]'s back.</span>","<span class='notice'>You manage to successfully climb into \the [src]'s back.</span>")
-			npc_subtile_pending_intent = null
-			ride = TRUE
-			rider = MM
-			MM.forceMove(src.loc)
-			MM.riding = TRUE
-			MM.riding_mob = src
-			src.pixel_x = src.ride_pixel_x
-			src.pixel_y = src.ride_pixel_y
-			update_icons()
-			stop_automated_movement = TRUE
+			take_rider(MM)
 			return
 	else
 		..()
+
+// Puts H in the saddle at once (the end of a successful mount).
+/mob/living/simple_animal/proc/take_rider(mob/living/human/H)
+	if (!can_ride || !istype(H) || !isnull(rider))
+		return FALSE
+	H.plane = GAME_PLANE
+	npc_subtile_pending_intent = null
+	ride = TRUE
+	rider = H
+	H.forceMove(src.loc)
+	H.riding = TRUE
+	H.riding_mob = src
+	src.pixel_x = src.ride_pixel_x
+	src.pixel_y = src.ride_pixel_y
+	update_icons()
+	stop_automated_movement = TRUE
+	return TRUE
 
 /mob/living/simple_animal/attack_hand(mob/living/human/M as mob)
 	if (can_ride && ride == TRUE && !isnull(rider))

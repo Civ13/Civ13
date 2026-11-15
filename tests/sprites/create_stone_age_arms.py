@@ -1,7 +1,8 @@
 """Hand-placed 32px Stone Age weapons and tools: spear-thrower and dart, bola,
 fire-hardened javelin, stone club, weighted digging stick, hand axe, hide
-scraper, bone needle and awl, and stone adze. Every pixel is placed by this
-script from a fixed palette (Pillow only); no external or generated artwork.
+scraper, bone needle and awl, stone adze and flint knife. Every pixel is
+placed by this script from a fixed palette (Pillow only); no external or
+generated artwork.
 The outline, flint greys, wood browns and antler tones are the ones already
 used in icons/obj/flint_mining.dmi, lit from the upper left.
 
@@ -395,6 +396,36 @@ def bone_needle():
     return f
 
 
+# -------------------------------------------------------------- flint knife
+
+def flint_knife():
+    f = Frame()
+
+    def blade(s, t):
+        scar = int(t * 6.0 + (0.5 if s > 0 else 0.0)) % 2      # flakes struck in from each edge
+        if s < -0.62:
+            return FL[0] if scar else FL[1]                     # thin lit cutting edge
+        if s < -0.1:
+            return FL[1]
+        if s < 0.12:
+            return FL[0] if 0.12 < t < 0.8 else FL[1]           # the ridge between the two faces
+        if s < 0.62:
+            return FL[2]
+        return FL[3] if scar else FL[2]
+
+    # leaf blade: full behind the middle, drawn out to the point
+    bar(f, (12.5, 19.5), (28.0, 4.0),
+        lambda t: 0.45 + 3.1 * min(1.0, 0.55 + 2.2 * t) * (1.0 - t) ** 0.75, blade)
+    f.pts(FL[0], (28, 3)); f.pts(FL[3], (20, 15), (23, 12)); f.pts(FL[2], (17, 13), (20, 10))
+    # grip: the tang bedded in a hide wrap, bound with sinew
+    bar(f, (5.5, 26.5), (13.5, 18.5), lambda t: 1.75 + 0.35 * t,
+        lambda s, t: (CD[0] if s < -0.3 else CD[1] if s < 0.4 else CD[2]) if int(t * 7.0) % 2 == 0
+        else (CD[1] if s < 0.1 else CD[2]))
+    f.pts(CD[1], (4, 27), (5, 28)); f.pts(CD[0], (4, 26)); f.pts(CD[2], (6, 28), (5, 27))   # knotted tail
+    f.outline()
+    return f
+
+
 # --------------------------------------------------------------- stone adze
 
 def stone_adze():
@@ -429,6 +460,7 @@ STATES = {
     'hide_scraper': hide_scraper(),
     'bone_needle': bone_needle(),
     'stone_adze': stone_adze(),
+    'flint_knife': flint_knife(),
 }
 COLUMNS = 4
 

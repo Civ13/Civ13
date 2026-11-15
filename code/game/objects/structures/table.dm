@@ -30,7 +30,7 @@
 	var/framestackamount = 2
 	var/deconstructable = TRUE
 	var/flipped = FALSE // WIP? - 4.17.2024 - yes heavy WIP.
-	var/health = 100
+	health = 100
 	throwpass = TRUE
 	not_movable = FALSE
 	not_disassemblable = FALSE

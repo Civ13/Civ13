@@ -179,7 +179,7 @@
 "dx" = (/obj/covers/stone_wall/brick,/turf/floor/grass,/area/caribbean/no_mans_land/battleroyale/six/inside)
 "dy" = (/obj/structure/wild/tree/live_tree/pine,/turf/floor/beach/sand,/area/caribbean/no_mans_land/battleroyale/six)
 "dz" = (/obj/structure/wild/tallgrass,/obj/structure/wild/smallbush,/turf/floor/grass,/area/caribbean/no_mans_land/battleroyale/six)
-"dA" = (/obj/map_metadata/hunger_games,/obj/structure/wild/tree/live_tree/pine,/turf/floor/grass,/area/caribbean/no_mans_land/battleroyale/five)
+"dA" = (/obj/map_metadata/battleroyale/hunger_games,/obj/structure/wild/tree/live_tree/pine,/turf/floor/grass,/area/caribbean/no_mans_land/battleroyale/five)
 "dB" = (/obj/structure/wild/tree/live_tree/pine,/turf/floor/beach/water,/area/caribbean/no_mans_land/battleroyale/six)
 "dC" = (/obj/structure/wild/tree/live_tree/pine,/turf/floor/grass,/area/caribbean/no_mans_land/battleroyale/two/border)
 "dD" = (/turf/floor/grass,/area/caribbean/no_mans_land/battleroyale/one/border)

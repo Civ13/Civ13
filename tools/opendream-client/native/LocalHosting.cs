@@ -143,7 +143,8 @@ public static class LocalHosting {
 
     // kill is a forced stop without a save; force-restart kills if running, then starts from the last completed save.
     // unlock removes stale BYOND lock files from a stopped server's save; force-unlock even if it looks running.
-    public static readonly string[] ControlActions = ["status", "start", "stop", "restart", "update", "check-update", "kill", "force-restart", "unlock", "force-unlock"];
+    // update-unsaved: update and restart without saving (the last completed save is backed up and loaded; nothing is wiped).
+    public static readonly string[] ControlActions = ["status", "start", "stop", "restart", "update", "check-update", "kill", "force-restart", "unlock", "force-unlock", "update-unsaved"];
 
     // Only the action name reaches the script; its config file names every path and command.
     public static ProcessStartInfo ControlStep(HostControl control, string action) {
@@ -183,6 +184,7 @@ public static class LocalHosting {
                 "stop" => "Saving the world, then stopping the server...",
                 "restart" => "Saving the world, then restarting the server...",
                 "force-restart" => (Bool(json, "killed") ? "Server force-stopped without saving; s" : "S") + "tarting it from the last completed save...",
+                "update-unsaved" => "Updating without saving: the server is ended without a save, its last completed save is backed up, then it is updated and started from that save...",
                 _ => "Pulling and compiling master...",
             }, true);
         }
@@ -191,7 +193,7 @@ public static class LocalHosting {
     // freeze/thaw: sleep an empty, saved region now, or wake it; setup: create or refresh a region's worktree and
     // config and enrol it for travel (refused while it runs). stage and handover: staged builds (#3936).
     public static readonly string[] GroupActions = ["status", "start", "stop", "restart", "update", "kill", "force-restart", "check-update", "help-status", "help-start", "help-stop", "unlock", "force-unlock", "config-apply", "stage", "handover",
-        "freeze", "thaw", "setup", "epoch", "fresh-world", "group-fresh-world"];
+        "freeze", "thaw", "setup", "epoch", "fresh-world", "group-fresh-world", "update-offline", "update-unsaved"];
 
     // code/modules/persistence/functions.dm epoch_names, as shard_group.py EPOCH_NAMES; index = ordinal_age.
     public static readonly string[] EpochNames = ["5000 B.C.", "313 B.C.", "1013", "1713", "1873", "1903", "1943", "1969", "2013", "2026"];
@@ -399,6 +401,23 @@ public static class LocalHosting {
                 return new ControlAnswer(lines.Count > 0, lines.Count == 0 ? "The group script changed no region's epoch."
                     : "Epoch " + name + ": " + string.Join("; ", lines) + ".", false);
             }
+            if (action == "update-offline") {
+                // {"accepted": {id: {"state": "stopped" | "cold" | "asleep", "already_staging"?}}, "skipped": {id: why}}
+                var lines = new List<string>();
+                if (json.TryGetProperty("accepted", out var chosen) && chosen.ValueKind == JsonValueKind.Object)
+                    foreach (var region in chosen.EnumerateObject().Take(16)) {
+                        var state = region.Value.ValueKind == JsonValueKind.Object && Str(region.Value, "state") is { } known ? Lower(known) : "stopped";
+                        lines.Add(Clean(region.Name) + (state == "asleep" ? " (asleep: installs while it sleeps)" : " (" + state + ": installs once built)"));
+                    }
+                var left = new List<string>();
+                if (json.TryGetProperty("skipped", out var skipped) && skipped.ValueKind == JsonValueKind.Object)
+                    foreach (var region in skipped.EnumerateObject().Take(16))
+                        left.Add(Clean(region.Name) + " (" + (region.Value.ValueKind == JsonValueKind.String ? Short(region.Value.GetString()!) : "skipped") + ")");
+                var text = lines.Count == 0 ? "No region needed updating while stopped or asleep."
+                    : "Building the latest update, one region at a time, for " + string.Join(", ", lines) + ".";
+                if (left.Count > 0) text += " Left alone: " + string.Join(", ", left) + ".";
+                return new ControlAnswer(true, text, lines.Count > 0);
+            }
             if (action == "setup") {
                 // {"revision", "created": [ids], "regions": [ids], "region", "running": [ids], "enrolled": [...]}
                 var created = json.TryGetProperty("created", out var made) && made.ValueKind == JsonValueKind.Array
@@ -422,6 +441,7 @@ public static class LocalHosting {
             }
             var message = action switch {
                 "force-restart" => "Force-restarting (no save) and starting from the last completed save:",
+                "update-unsaved" => "Building the update first; once it is ready each world is ended without saving, its last completed save is backed up, and it starts on the new build from that save:",
                 "fresh-world" => "Archiving the old world and starting the installed build fresh:",
                 "group-fresh-world" => "Archived every region's world and travel state; starting fresh:",
                 "start" => "Starting",
@@ -431,6 +451,13 @@ public static class LocalHosting {
                 "handover" => "Handing over to the new build (the old world saves one level at a time, holding only the level being saved, the new one loads the save, then players reconnect):",
                 _ => "Checking out and compiling",
             } + " " + string.Join(", ", accepted) + "...";
+            if (action == "update" && acceptedJson.ValueKind == JsonValueKind.Object) {
+                // An asleep region is not woken: {"action": "stage" | "update", "state": "asleep"} (RegionHost.update_asleep).
+                var asleep = acceptedJson.EnumerateObject().Where(entry => entry.Value.ValueKind == JsonValueKind.Object && Str(entry.Value, "state") == "asleep")
+                    .Select(entry => Clean(entry.Name)).ToList();
+                if (asleep.Count > 0)
+                    message += " Asleep, so not woken: " + string.Join(", ", asleep) + " (the update builds while it sleeps, then it starts on it at its next wake).";
+            }
             if (refused != null) message += " Refused: " + refused + ".";
             return new ControlAnswer(true, message, true);
         }
@@ -442,7 +469,9 @@ public static class LocalHosting {
         var text = "";
         if (entry.TryGetProperty("stage", out var stage) && stage.ValueKind == JsonValueKind.Object && Str(stage, "phase") is { } phase) {
             text = phase switch {
-                "ready" => Bool(stage, "pending") ? ", update built (ready to hand over)" : "",
+                // update-offline could not copy it in (the region started while it built): it waits for a restart.
+                "ready" => !Bool(stage, "pending") ? "" : Str(stage, "install") is { } install && install.StartsWith("not installed")
+                    ? ", update built (" + Short(install) + ")" : ", update built (ready to hand over)",
                 "current" => "",
                 "failed" => ", update build failed" + (Str(stage, "error") is { Length: > 0 } failed ? ": " + failed : ""),
                 _ => ", building update (" + Words(phase) + ")",
@@ -488,9 +517,46 @@ public static class LocalHosting {
             // TDM Barracks and battle regions: what the battle is doing.
             if (Str(view, "error") == null && Str(view, "battle_phase") is { Length: > 0 } phase)
                 parts.Add("battle " + BattlePhase(phase));
+            // Characters kept in this land while their players are at an event region.
+            if (Str(view, "error") == null && EventAway(view) is > 0 and var away)
+                parts.Add(AwayText(away));
         }
+        if (Str(entry, "kind") == "EVENT") parts.Insert(0, "event region");
+        if (LandText(entry) is { } land) parts.Add(land);
         return parts.Count == 0 ? text : text + ", " + string.Join(", ", parts);
     }
+
+    // shard_group.py status "land" (docs/land-stages.md): the land's settlement stage, how many accounts
+    // live there and any change the coordinator suggests. Null for the mainland and when there is none.
+    public static string? LandText(JsonElement entry) {
+        if (!entry.TryGetProperty("land", out var land) || land.ValueKind != JsonValueKind.Object) return null;
+        var stage = Str(land, "stage") switch {
+            "CLOSED" => "unexplored land",
+            "FRONTIER" => "frontier land",
+            "COLONY" => "colonised land",
+            "OPEN" => "settled land",
+            _ => null,
+        };
+        if (stage == null) return null;
+        if (land.TryGetProperty("paused", out var paused) && paused.ValueKind == JsonValueKind.True) stage += " (new starts paused)";
+        if (land.TryGetProperty("readiness", out var ready) && ready.ValueKind == JsonValueKind.Object) {
+            if (ready.TryGetProperty("homes", out var homes) && homes.ValueKind == JsonValueKind.Number && homes.TryGetInt32(out var count) && count > 0)
+                stage += count == 1 ? ", 1 home" : ", " + count + " homes";
+            var suggest = Str(ready, "suggest") switch {
+                "OPEN" => "ready to settle",
+                "PAUSE" => "consider pausing new starts",
+                "RESUME" => "ready to resume new starts",
+                _ => null,
+            };
+            if (suggest != null) stage += ", " + suggest;
+        }
+        return stage;
+    }
+
+    // shard_group.py region_view event_away (code/modules/persistence/region_event.dm), or null.
+    public static int? EventAway(JsonElement view) =>
+        view.TryGetProperty("event_away", out var value) && value.ValueKind == JsonValueKind.Number && value.TryGetInt32(out var count) && count >= 0 ? count : null;
+    public static string AwayText(int away) => away == 1 ? "1 player away at an event" : away + " players away at an event";
 
     // shard_group.py region_view battle_phase (code/modules/tdm_barracks): plain words for the Host tab.
     public static string BattlePhase(string phase) => phase switch {

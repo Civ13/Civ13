@@ -6,8 +6,8 @@
 	
 	anchored = TRUE
 	density = TRUE
-	var/health = 100
-	var/maxhealth = 100
+	health = 100
+	maxhealth = 100
 	var/can_damage = TRUE
 	var/material/material
 	var/material_name = "wood"
@@ -117,17 +117,16 @@
 		user.do_attack_animation(src)
 		try_destroy()
 	else
-		if (istype(W,/obj/item/weapon) || !istype(W,/obj/item/weapon/wrench) || !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
+		if (istype(W,/obj/item/weapon) || !is_tool(W, TOOL_WRENCH) || !is_tool(W, TOOL_HAMMER)) //No weapons can harm me! If not weapon and not a wrench.
 			to_chat(user, "You uselessly hit the wall!")
 		return
 	..()
 
-/obj/structure/barricade/proc/try_destroy()
-	if (health <= 0)
-		visible_message(SPAN_DANGER("The barricade is smashed apart!"))
-		dismantle()
-		qdel(src)
-		return
+/obj/structure/barricade/break_message()
+	return "The barricade is smashed apart!"
+
+/obj/structure/barricade/on_break()
+	dismantle()
 
 /obj/structure/barricade/proc/dismantle()
 	qdel(src)
@@ -350,7 +349,7 @@
 	crushable = FALSE
 
 /obj/structure/barricade/antitank/attackby(obj/item/W, mob/user)
-	if (istype(W, /obj/item/weapon/weldingtool))
+	if (is_tool(W, TOOL_WELDER))
 		visible_message(SPAN_NOTICE("[user] begins to remove \the [src]."))
 		playsound(loc, 'sound/effects/extinguish.ogg', 50, TRUE)
 		if (do_after(user,30 SECONDS,src))
@@ -797,24 +796,7 @@
 	crushable = FALSE
 
 /obj/structure/barricade/jap/check_relatives(var/update_self = FALSE, var/update_others = FALSE)
-	if (!adjusts)
-		return
-	var/junction
-	if (update_self)
-		junction = FALSE
-	for (var/checkdir in cardinal)
-		var/turf/T = get_step(src, checkdir)
-		for(var/atom/CV in T)
-			if (!can_join_with(CV))
-				continue
-			if (update_self)
-				if (can_join_with(CV))
-					junction |= get_dir(src,CV)
-			if (update_others)
-				CV.check_relatives(1,0)
-	if (!isnull(junction))
-		icon_state = "[base_icon_state][junction]"
-	return
+	join_neighbours(src, src:adjusts, src:base_icon_state, update_self, update_others)
 
 /obj/structure/barricade/jap/can_join_with(var/atom/W)
 	if (istype(W,src))

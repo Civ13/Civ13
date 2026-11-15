@@ -1,23 +1,6 @@
 ///////////////////////////////COVER WALL BORDERS//////////////////////////////
 /obj/covers/check_relatives(var/update_self = FALSE, var/update_others = FALSE)
-	if (!adjusts)
-		return
-	var/junction
-	if (update_self)
-		junction = FALSE
-	for (var/checkdir in cardinal)
-		var/turf/T = get_step(src, checkdir)
-		for(var/atom/CV in T)
-			if (!can_join_with(CV))
-				continue
-			if (update_self)
-				if (can_join_with(CV))
-					junction |= get_dir(src,CV)
-			if (update_others)
-				CV.check_relatives(1,0)
-	if (!isnull(junction))
-		icon_state = "[base_icon_state][junction]"
-	return
+	join_neighbours(src, src:adjusts, src:base_icon_state, update_self, update_others)
 
 /obj/covers/can_join_with(var/atom/W)
 	if (istype(W,src))
@@ -295,23 +278,15 @@
 
 /obj/covers/stone_wall/attackby(obj/item/W as obj, mob/user as mob)
 	var/mob/living/human/H = user
-	if(istype(W, /obj/item/weapon/chisel))
-		if (istype(H.l_hand, /obj/item/weapon/hammer) && istype(H.r_hand, /obj/item/weapon/hammer))
+	if(is_tool(W, TOOL_CHISEL))
+		if (is_tool(H.l_hand, TOOL_HAMMER) && is_tool(H.r_hand, TOOL_HAMMER))
 			to_chat(user, SPAN_WARNING("This surface is too rough to chisel upon."))
 			return
 	else
 		..()
 /obj/covers/stone_wall/attackby(var/obj/item/weapon/material/kitchen/utensil/I, var/mob/living/human/U)
-	if (istype(I,/obj/item/weapon/material/kitchen/utensil/spoon) || istype(I,/obj/item/weapon/material/kitchen/utensil/fork) || istype(I,/obj/item/weapon/material/kitchen/utensil/chopsticks))
-		if (I.shiv < 10)
-			I.shiv++
-			visible_message(SPAN_WARNING("[U] sharpens \the [I] on \the [src]!"))
-			if (I.shiv >= 10)
-				U.drop_from_inventory(I)
-				var/obj/item/weapon/material/kitchen/utensil/knife/shank/SHK = new /obj/item/weapon/material/kitchen/utensil/knife/shank(U,I.material.name)
-				U.put_in_hands(SHK)
-				to_chat(U, "\The [I] turns into a shank.")
-				qdel(I)
+	if (istype(I, /obj/item/weapon/material/kitchen/utensil/spoon) || istype(I, /obj/item/weapon/material/kitchen/utensil/fork) || istype(I, /obj/item/weapon/material/kitchen/utensil/chopsticks))
+		sharpen_utensil(I, U)
 	..()
 
 /obj/covers/stone_wall/plain
@@ -320,9 +295,9 @@
 
 /obj/covers/stone_wall/plain/attackby(obj/item/W as obj, mob/user as mob)
 	var/mob/living/human/H = user
-	if(istype(W, /obj/item/weapon/chisel))
+	if(is_tool(W, TOOL_CHISEL))
 		var design = "smooth"
-		if (!istype(H.l_hand, /obj/item/weapon/hammer) && !istype(H.r_hand, /obj/item/weapon/hammer))
+		if (!is_tool(H.l_hand, TOOL_HAMMER) && !is_tool(H.r_hand, TOOL_HAMMER))
 			to_chat(user, SPAN_WARNING("You need to have a hammer in one of your hands to use a chisel."))
 			return
 		else
@@ -409,8 +384,8 @@
 
 /obj/covers/marble_wall/attackby(obj/item/W as obj, mob/user as mob)
 	var/mob/living/human/H = user
-	if(istype(W, /obj/item/weapon/chisel))
-		if (istype(H.l_hand, /obj/item/weapon/hammer) && istype(H.r_hand, /obj/item/weapon/hammer))
+	if(is_tool(W, TOOL_CHISEL))
+		if (is_tool(H.l_hand, TOOL_HAMMER) && is_tool(H.r_hand, TOOL_HAMMER))
 			to_chat(user, SPAN_WARNING("This surface is too rough to chisel upon."))
 			return
 	else
@@ -421,9 +396,9 @@
 
 /obj/covers/marble_wall/plain/attackby(obj/item/W as obj, mob/user as mob)
 	var/mob/living/human/H = user
-	if(istype(W, /obj/item/weapon/chisel))
+	if(is_tool(W, TOOL_CHISEL))
 		var design = "smooth"
-		if (!istype(H.l_hand, /obj/item/weapon/hammer) && !istype(H.r_hand, /obj/item/weapon/hammer))
+		if (!is_tool(H.l_hand, TOOL_HAMMER) && !is_tool(H.r_hand, TOOL_HAMMER))
 			to_chat(user, "<span class = 'warning'>You need to have a hammer in one of your hands to use a chisel.</span>")
 			return
 		else
@@ -471,16 +446,8 @@
 	..()
 
 /obj/covers/marble_wall/plain/attackby(var/obj/item/weapon/material/kitchen/utensil/I, var/mob/living/human/U)
-	if (istype(I,/obj/item/weapon/material/kitchen/utensil/spoon) || istype(I,/obj/item/weapon/material/kitchen/utensil/fork) || istype(I,/obj/item/weapon/material/kitchen/utensil/chopsticks))
-		if (I.shiv < 10)
-			I.shiv++
-			visible_message("<span class='warning'>[U] sharpens \the [I] on \the [src]!</span>")
-			if (I.shiv >= 10)
-				U.drop_from_inventory(I)
-				var/obj/item/weapon/material/kitchen/utensil/knife/shank/SHK = new /obj/item/weapon/material/kitchen/utensil/knife/shank(U,I.material.name)
-				U.put_in_hands(SHK)
-				to_chat(U, "\The [I] turns into a shank.")
-				qdel(I)
+	if (istype(I, /obj/item/weapon/material/kitchen/utensil/spoon) || istype(I, /obj/item/weapon/material/kitchen/utensil/fork) || istype(I, /obj/item/weapon/material/kitchen/utensil/chopsticks))
+		sharpen_utensil(I, U)
 	..()
 
 /obj/covers/sandstone_wall
@@ -504,16 +471,8 @@
 	buildstack = /obj/item/stack/material/sandstone
 
 /obj/covers/sandstone_wall/attackby(var/obj/item/weapon/material/kitchen/utensil/I, var/mob/living/human/U)
-	if (istype(I,/obj/item/weapon/material/kitchen/utensil/spoon) || istype(I,/obj/item/weapon/material/kitchen/utensil/fork) || istype(I,/obj/item/weapon/material/kitchen/utensil/chopsticks))
-		if (I.shiv < 10)
-			I.shiv++
-			visible_message("<span class='warning'>[U] sharpens \the [I] on \the [src]!</span>")
-			if (I.shiv >= 10)
-				U.drop_from_inventory(I)
-				var/obj/item/weapon/material/kitchen/utensil/knife/shank/SHK = new /obj/item/weapon/material/kitchen/utensil/knife/shank(U,I.material.name)
-				U.put_in_hands(SHK)
-				to_chat(U, "\The [I] turns into a shank.")
-				qdel(I)
+	if (istype(I, /obj/item/weapon/material/kitchen/utensil/spoon) || istype(I, /obj/item/weapon/material/kitchen/utensil/fork) || istype(I, /obj/item/weapon/material/kitchen/utensil/chopsticks))
+		sharpen_utensil(I, U)
 	..()
 
 /obj/covers/sandstone_smooth_wall //just a parent to the real smooth sandstone wall.
@@ -537,16 +496,8 @@
 	buildstack = /obj/item/stack/material/sandstone
 
 /obj/covers/sandstone_smooth_wall/attackby(var/obj/item/weapon/material/kitchen/utensil/I, var/mob/living/human/U)
-	if (istype(I,/obj/item/weapon/material/kitchen/utensil/spoon) || istype(I,/obj/item/weapon/material/kitchen/utensil/fork) || istype(I,/obj/item/weapon/material/kitchen/utensil/chopsticks))
-		if (I.shiv < 10)
-			I.shiv++
-			visible_message("<span class='warning'>[U] sharpens \the [I] on \the [src]!</span>")
-			if (I.shiv >= 10)
-				U.drop_from_inventory(I)
-				var/obj/item/weapon/material/kitchen/utensil/knife/shank/SHK = new /obj/item/weapon/material/kitchen/utensil/knife/shank(U,I.material.name)
-				U.put_in_hands(SHK)
-				to_chat(U, "\The [I] turns into a shank.")
-				qdel(I)
+	if (istype(I, /obj/item/weapon/material/kitchen/utensil/spoon) || istype(I, /obj/item/weapon/material/kitchen/utensil/fork) || istype(I, /obj/item/weapon/material/kitchen/utensil/chopsticks))
+		sharpen_utensil(I, U)
 	..()
 
 /obj/covers/sandstone_smooth_wall/plain
@@ -555,9 +506,9 @@
 
 /obj/covers/sandstone_smooth_wall/plain/attackby(obj/item/W as obj, mob/user as mob)
 	var/mob/living/human/H = user
-	if(istype(W, /obj/item/weapon/chisel))
+	if(is_tool(W, TOOL_CHISEL))
 		var design = "smooth"
-		if (!istype(H.l_hand, /obj/item/weapon/hammer) && !istype(H.r_hand, /obj/item/weapon/hammer))
+		if (!is_tool(H.l_hand, TOOL_HAMMER) && !is_tool(H.r_hand, TOOL_HAMMER))
 			to_chat(user, "<span class = 'warning'>You need to have a hammer in one of your hands to use a chisel.</span>")
 			return
 		else

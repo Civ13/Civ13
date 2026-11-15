@@ -44,6 +44,7 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 	if (world.time <= lastmovementloop)
 		return FALSE
 	lastmovementloop = world.time+15
+	apply_speed_class()
 	if (isemptylist(corners))
 		check_corners()
 	if (isemptylist(matrix))
@@ -62,8 +63,9 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 
 /obj/structure/vehicleparts/axis/proc/movementloop()
 	if (moving && !movement_processes)
-		get_weight()
+		// check_engine() weighs the vehicle for this step.
 		movement_processes++
+		var/speed_before = currentspeed
 		if (do_vehicle_check() && currentspeed > 0)
 			for (var/obj/structure/vehicleparts/movement/W in wheels)
 				if (W.broken)
@@ -74,7 +76,15 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 				else
 					W.update_icon()
 			do_move()
+			// Boarding or unloading on the way changes the pace (vehicle_load.dm).
+			if (uses_load_factor() && currentspeed > 0)
+				var/loaded_delay = get_speed()
+				if (loaded_delay > 0)
+					vehicle_m_delay = loaded_delay
 		else
+			// A crash or a stall at speed throws riders off the roof.
+			if (speed_before >= 2)
+				deck_jolt(speed_before >= 3 ? 100 : 50, reverse ? OPPOSITE_DIR(dir) : dir, "The sudden stop throws you off!")
 			currentspeed = 0
 			moving = FALSE
 			movement_processes--
@@ -269,7 +279,8 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 	if (engine && !engine.fueltank)
 		engine.on = FALSE
 		return FALSE
-	else if (get_weight() > engine.maxpower*2 || get_weight() > maxpower)
+	var/weight = get_weight()
+	if (weight > engine.maxpower*2 || weight > maxpower)
 		visible_message(SPAN_WARNING("\The [engine] struggles and stalls!"))
 		return FALSE
 	else
@@ -365,6 +376,7 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 	release_transform_tiles(move_turfs)
 	glide_step(origins)
 	refresh_passenger_vision()
+	deck_clearance(OPPOSITE_DIR(m_dir))
 	if (rover_trailers.len)
 		rover_trailers_follow(src)
 	return TRUE
@@ -444,8 +456,10 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 /obj/structure/vehicleparts/axis/proc/add_transporting(var/trigger_mines=TRUE)
 	transporting = list()
 	prune_turning_placeholders()
+	var/turf/here = get_turf(src)
+	var/list/aboard = list()
 	for (var/obj/structure/vehicleparts/frame/F in components)
-		if (!F || F.axis != src || !(F in range(7,loc)))
+		if (!F || F.axis != src || !here || F.z != here.z || get_dist(F, here) > 7)
 			components -= F
 			continue
 		var/turf/T = get_turf(F)
@@ -473,7 +487,7 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 				if (BAT.anchored)
 					qdel(BAT)
 					visible_message(SPAN_WARNING("\The [src] crushes \the [BAT]!"),SPAN_WARNING("You crush \the [BAT]!"))
-			if ((istype(M, /mob/living) || istype(M, /obj/structure) || istype(M, /obj/item)) && !(M in transporting))
+			if ((istype(M, /mob/living) || istype(M, /obj/structure) || istype(M, /obj/item)) && !aboard[M])
 				if (!istype(M, /obj/structure/sign/traffic/zebracrossing) && !istype(M, /obj/structure/sign/traffic/side) && !istype(M, /obj/structure/sign/traffic/central) && !istype(M, /obj/structure/rails) && !istype(M, /obj/structure/cable) && !istype(M, /obj/structure/redmailbox) && !istype(M, /obj/structure/gate) && !istype(M, /obj/structure/lamp/lamppost_small/) && !istype(M, /obj/structure/lamp/lamp_big/alwayson) && !istype(M, /obj/structure/lamp/lamp_small/alwayson) && !istype(M, /obj/structure/billboard) && !istype(M, /obj/structure/multiz) && !istype(M, /obj/structure/vessel_lever))
 					if (istype(M, /obj/structure/vehicleparts/frame))
 						var/obj/structure/vehicleparts/frame/other = M
@@ -483,6 +497,7 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 						var/obj/structure/vehicleparts/movement/other = M
 						if (other.axis && other.axis != src)
 							continue
+					aboard[M] = TRUE
 					transporting += M
 	return transporting.len
 
@@ -751,7 +766,7 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 			turn_turfs |= source_turf
 			if (T.density)
 				return FALSE
-			if (ship && ((!istype(T, /turf/floor/beach/water) || istype(T, /turf/floor/beach/water/ice)) && !istype(T, /turf/floor/trench/flooded)))
+			if (ship && !is_open_water(T))
 				return FALSE
 			var/list/todestroy = list()
 			for (var/obj/O in T)
@@ -872,6 +887,10 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 	release_transform_tiles(turn_turfs)
 	glide_turn(was_at)
 	refresh_passenger_vision()
+	// A hard turn at speed can fling riders off the outside of the turn.
+	if (currentspeed >= 3)
+		deck_jolt((currentspeed - 2) * 35, turn(olddir, tdir == "left" ? -90 : 90), "The turn flings you off!")
+	deck_clearance(0)
 	return TRUE
 
 /obj/effect/pseudovehicle

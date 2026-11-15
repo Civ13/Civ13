@@ -343,6 +343,8 @@
 	if (ismob(loc))
 		var/mob/M = loc
 		M.mouth_covered = FALSE
+		if (affecting)
+			affecting.mouth_covered = FALSE
 		M.grab_list = list()
 		M.canmove = TRUE
 	loc = null

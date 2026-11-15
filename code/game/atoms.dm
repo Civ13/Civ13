@@ -41,6 +41,28 @@
 /atom/proc/check_relatives(var/update_self = FALSE, var/update_others = FALSE)
 	return FALSE
 
+// Joins an adjusting object to matching neighbours: with update_self its
+// icon_state becomes base_state plus the joined directions, and with
+// update_others each matching neighbour rejoins too. Shared by covers, the
+// Japanese barricade and the Abashiri and medieval windows.
+/proc/join_neighbours(atom/A, adjusts, base_state, update_self, update_others)
+	if (!adjusts)
+		return
+	var/junction
+	if (update_self)
+		junction = FALSE
+	for (var/checkdir in cardinal)
+		var/turf/T = get_step(A, checkdir)
+		for(var/atom/CV in T)
+			if (!A.can_join_with(CV))
+				continue
+			if (update_self)
+				junction |= get_dir(A,CV)
+			if (update_others)
+				CV.check_relatives(1,0)
+	if (!isnull(junction))
+		A.icon_state = "[base_state][junction]"
+
 /atom/proc/CanPass(atom/movable/mover, turf/target, height=1.5, air_group = FALSE)
 	//Purpose: Determines if the object (or airflow) can pass this atom.
 	//Called by: Movement, airflow.
@@ -498,7 +520,7 @@
 	if(!Adjacent(user) || user.incapacitated(INCAPACITATION_STUNNED|INCAPACITATION_KNOCKOUT) || istype(user.loc, /obj/structure/closet) || !ishuman(src))
 		return
 	if(user.pacifist)
-		to_chat(src, "<font color='yellow'><big><b>I don't want to bite!</b></big></font>")
+		to_chat(user, "<font color='yellow'><big><b>I don't want to bite!</b></big></font>")
 		return
 	var/mob/living/human/target = src
 	if(user.middle_click_intent == "bite")//We're in bite mode, so bite the opponent

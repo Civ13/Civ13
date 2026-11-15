@@ -7,13 +7,15 @@ missing fact means "not declared", never "zero".
 """
 import re
 
+from .habitats import place_rows
+
 HEADER = re.compile(r'^(/[\w/]+)[ \t]*(?://.*)?$')
 VALUE = re.compile(r'^\t(?:var/(?:[a-z_]+/)*)?(\w+)[ \t]*=[ \t]*(.+)$')
 WANTED = {'name', 'desc', 'description', 'taste_description', 'id', 'w_class', 'slot_flags', 'force', 'throwforce',
           'sharp', 'edge', 'armor', 'caliber', 'nutriment_amt', 'storage_slots', 'max_storage_space', 'max_amount',
           'slowdown', 'health', 'maxHealth', 'body_parts_covered', 'hardness', 'weight', 'default_material',
           'force_divisor', 'thrown_force_divisor', 'unwielded_force_divisor', 'melee_damage_lower',
-          'melee_damage_upper', 'behaviour', 'herbivore', 'granivore', 'carnivore', 'predatory_carnivore', 'scavenger'}
+          'melee_damage_upper', 'behaviour', 'herbivore', 'granivore', 'carnivore', 'predatory_carnivore', 'scavenger', 'zone_min', 'zone_max'}
 TEMPERS = {'hostile': 'attacks on sight', 'hunt': 'hunts when hungry', 'defends': 'fights back when attacked',
            'defend': 'fights back when attacked', 'scared': 'runs from people', 'wander': 'peaceful'}
 DIETS = (('herbivore', 'grazes on grass'), ('granivore', 'eats crops'), ('predatory_carnivore', 'hunts animals and people'),
@@ -286,12 +288,13 @@ def resource_facts(files, resource_types, made_from=None):
     for typepath, values in types.items():
         if typepath.startswith('/datum/reagent') and prose(values.get('id')):
             reagents.setdefault(prose(values['id']), typepath)
+    places = place_rows(files, types)
     facts = {}
     for resource, typepath in sorted(resource_types.items()):
         entry = {'kind': kind(resource, typepath)}
         if typepath.startswith('/'):
             text = prose(inherited(types, typepath, 'desc'))
-            rows = stats(types, typepath, (made_from or {}).get(resource))
+            rows = stats(types, typepath, (made_from or {}).get(resource)) + places.get(typepath, [])
         else:
             reagent = reagents.get(typepath, '')
             text = prose(inherited(types, reagent, 'description')) if reagent else ''

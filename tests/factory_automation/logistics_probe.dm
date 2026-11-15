@@ -272,7 +272,7 @@ var/machine_runtime_error = FALSE
 			found_drive_grid = TRUE
 	machine_check(found_drive_grid, "the monitor shows the drive's grid use against its capacity")
 	var/html = M.report_html()
-	machine_check(findtext(html, "Power (PU)") && findtext(html, "PU in use"), "the monitor page shows power use")
+	machine_check(findtext(html, "Power (kW)") && findtext(html, "kW in use"), "the monitor page shows power use")
 	machine_check(findtext(html, "Items/min") && findtext(html, "feeder arm") && findtext(html, "starved"), "the monitor page shows the table")
 	machine_check(recipe_node_requirements["/obj/structure/factory_monitor"] == "automation", "the monitor is gated behind Automation")
 	qdel(F)

@@ -893,7 +893,6 @@ function pickAppearance(a) {
 	var/single_action = FALSE
 	var/cocked = FALSE
 	base_icon = null
-	var/folded = FALSE
 
 	//shotgun
 	var/recentpump = FALSE // to prevent spammage
@@ -1329,7 +1328,7 @@ function pickAppearance(a) {
 				jamcheck += 0.6
 
 		if (prob(jamcheck*reverse_health_percentage))
-			jammed_until = max(world.time + (jamcheck * 4), 40)
+			jammed_until = world.time + max(jamcheck * 4, 40)
 			jamcheck = 0
 
 		last_fire = world.time
@@ -1354,7 +1353,7 @@ function pickAppearance(a) {
 			++jamcheck
 
 		if (prob(jamcheck*reverse_health_percentage))
-			jammed_until = max(world.time + (jamcheck * 5), 50)
+			jammed_until = world.time + max(jamcheck * 5, 50)
 			jamcheck = 0
 		if (blackpowder)
 			spawn (1)
@@ -1373,7 +1372,7 @@ function pickAppearance(a) {
 				jamcheck += 0.3
 
 		if (prob(jamcheck*reverse_health_percentage))
-			jammed_until = max(world.time + (jamcheck * 4), 45)
+			jammed_until = world.time + max(jamcheck * 4, 45)
 			jamcheck = 0
 
 		last_fire = world.time
@@ -1387,7 +1386,7 @@ function pickAppearance(a) {
 				jamcheck += 0.6
 
 		if (prob(jamcheck*reverse_health_percentage))
-			jammed_until = max(world.time + (jamcheck * 5), 50)
+			jammed_until = world.time + max(jamcheck * 5, 50)
 			jamcheck = 0
 
 		last_fire = world.time
@@ -1522,9 +1521,10 @@ function pickAppearance(a) {
 		if (user.get_inactive_hand() == src)
 			unload_ammo(user, allow_dump=0)
 			update_icon()
+			return
 		else
 			return ..()
-	..()
+	return ..()
 
 
 /obj/item/weapon/gun/projectile/custom/proc/pump(mob/M as mob)
@@ -1577,8 +1577,3 @@ function pickAppearance(a) {
 		to_chat(usr, "\The [src] has no stock to toggle.")
 	update_icon()
 
-/obj/item/weapon/gun/projectile/custom/proc/set_stock()
-	if (folded)
-		slot_flags = SLOT_SHOULDER|SLOT_BELT
-	else
-		slot_flags = SLOT_SHOULDER

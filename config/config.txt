@@ -43,6 +43,14 @@ RECRUITMENT_EXPIRY_DAYS 7
 RECRUITMENT_QUEUE_LIMIT 50
 RECRUITMENT_COOLDOWN_MINUTES 5
 
+## Faction members: the most accounts any faction may hold (2-500). Below it a
+## faction's limit is what its hall and colonies support (10 to 50), and a
+## leader may set a lower one. Then days without playing a member before an
+## account leaves the roster (1-90). Members on the roster may start new
+## characters with their faction.
+FACTION_MEMBER_LIMIT 50
+FACTION_ROSTER_IDLE_DAYS 14
+
 ## log OOC channel
 LOG_OOC
 
@@ -284,8 +292,8 @@ BUG_REPORT_GITHUB_LABELS bug
 
 LANGUAGE english
 # Dynamic z allocation: optional examples (defaults shown; all lines commented).
-# decimal integer 0..1400000 total native cells (inclusive)
-# NEW_Z_CELL_BUDGET 1400000
+# decimal integer 0..2100000 total native cells (inclusive)
+# NEW_Z_CELL_BUDGET 2100000
 # decimal integer 0..1 roof-added planes
 # NEW_Z_ROOF_LEVELS 1
 # decimal integer 0..8 reserved whole planes

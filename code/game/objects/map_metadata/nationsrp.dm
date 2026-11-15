@@ -1,4 +1,5 @@
 /obj/map_metadata/nationsrp
+	nationsrp = TRUE
 	abandonment_season_cycle = TRUE
 	ID = MAP_NATIONSRP
 	title = "Nations RP"
@@ -187,19 +188,7 @@
 		return ""
 
 /obj/map_metadata/nationsrp/coldwar_cmp/check_caribbean_block(var/mob/living/human/H, var/turf/T)
-	if (!istype(H) || !istype(T))
-		return FALSE
-	var/area/A = get_area(T)
-	if (istype(A, /area/caribbean/no_mans_land/invisible_wall))
-		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))
-			if (H.faction_text == faction1)
-				return TRUE
-		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))
-			if (H.faction_text == faction2)
-				return TRUE
-		else
-			return !faction1_can_cross_blocks()
-	return FALSE
+	return check_faction_grace_wall(H, T, faction2, faction1)
 
 /obj/map_metadata/nationsrp/triple
 	ID = MAP_NATIONSRP_TRIPLE
@@ -231,3 +220,12 @@
 	civa_research = list(default_research,default_research,default_research,null)
 	civb_research = list(default_research,default_research,default_research,null)
 	civc_research = list(default_research,default_research,default_research,null)
+
+/obj/map_metadata/nationsrp/coldwar/faction_hud_icon(mob/living/human/H, faction_flag)
+	if (faction_flag == CIVILIAN)
+		switch (H.original_job_title)
+			if ("Civilization A Citizen")
+				return "us_basic"
+			if ("Civilization B Citizen")
+				return "sov_basic"
+	return ..()

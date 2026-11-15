@@ -65,6 +65,8 @@ def run(source, kind='living', deleted=False, phase='active', saving=False):
         'world': SimpleNamespace(time=20),
         'persistence_frozen_levels': SimpleNamespace(len=1 if saving else 0),
         'persistence_life_frozen': lambda m: saving and m.kind == 'human',
+        # A character kept out of play during an event (region_event.dm).
+        'event_stash_holds': lambda m: m.phase == 'stashed',
     }
     ADAPTER.project(source, '/process/mob/fire', '', env)()
     return events, None if mob is None else object.__getattribute__(mob, 'velocity')
@@ -110,6 +112,14 @@ class MobGuardTests(unittest.TestCase):
         self.assertIn('zoom_add', held)
         self.assertIn('life', run(SOURCE, 'human')[0])
         self.assertIn('life', run(SOURCE, 'living', saving=True)[0])
+
+    def test_event_stash_holds_player_life(self):
+        # A home character waiting while its player is at an event does not live.
+        self.assertIn('!(ishuman(M) && event_stash_holds(M))', SOURCE)
+        held, _ = run(SOURCE, 'human', phase='stashed')
+        self.assertNotIn('life', held)
+        self.assertIn('zoom_add', held)
+        self.assertIn('life', run(SOURCE, 'living', phase='stashed')[0])
 
 
 if __name__ == '__main__':

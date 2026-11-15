@@ -4,7 +4,7 @@
 		return FALSE
 	if (persistence_save_in_progress || persistence_active_operation || persistence_load_recovery_required || persistence_admission_identity != save_identity)
 		return FALSE
-	if (!map || !research_node_known(H, "basic_furniture") || H.stat != CONSCIOUS || H.incapacitated() || !H.Adjacent(src) || H.get_active_hand() != S || S.loc != H || !H.canUnEquip(S) || S.amount < 10)
+	if (!map || !research_node_known(H, "pottery_storage") || H.stat != CONSCIOUS || H.incapacitated() || !H.Adjacent(src) || H.get_active_hand() != S || S.loc != H || !H.canUnEquip(S) || S.amount < 10)
 		return FALSE
 	if (loc != site || !isturf(site) || on || stone_boil_busy || stone_boil_epoch != epoch || contents.len || parts)
 		return FALSE
@@ -20,7 +20,10 @@
 	var/epoch = stone_boil_epoch
 	var/datum/save_identity = persistence_admission_identity
 	if (!stone_kiln_upgrade_valid(S, H, site, epoch, save_identity))
-		to_chat(H, SPAN_NOTICE("Extinguish and empty the campfire, remove any pot, and hold ten stone. Basic Furniture must be researched."))
+		if (map && !research_node_known(H, "pottery_storage"))
+			to_chat(H, SPAN_WARNING("You don't know how to build a kiln yet. Learn <b>Pottery & Cookware</b> first."))
+		else
+			to_chat(H, SPAN_NOTICE("Extinguish and empty the campfire, remove any pot, and hold ten stone."))
 		return FALSE
 	stone_upgrade_busy = TRUE
 	to_chat(H, SPAN_NOTICE("You begin building a stone kiln around the extinguished campfire."))

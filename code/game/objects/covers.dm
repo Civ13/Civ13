@@ -170,6 +170,10 @@
 	if (WWinput(user, "This will start building a new ship floor [dir2text(user.dir)] of you.", "Ship Floor Repair", "Continue", list("Continue", "Stop")) == "Continue")
 		visible_message("<span class='danger'>[user] starts constructing the new floor.</span>", "<span class='danger'>You start constructing the new floor.</span>")
 		if (do_after(user, covers_time, user.loc) && src)
+			var/floor_refusal = tile_build_refusal(get_step(user, user.dir), /obj/covers/repairedfloor/ship)
+			if (floor_refusal)
+				to_chat(user, SPAN_WARNING(floor_refusal))
+				return
 			qdel(src)
 			new/obj/covers/repairedfloor/ship(get_step(user, user.dir), user)
 			visible_message("<span class='danger'>[user] finishes placing the new floor.</span>")
@@ -201,9 +205,9 @@
 		return ..()
 
 /obj/covers/attackby(obj/item/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/wrench) && not_movable == TRUE)
+	if (is_tool(W, TOOL_WRENCH) && not_movable == TRUE)
 		return
-	if (istype(W, /obj/item/weapon/hammer))
+	if (is_tool(W, TOOL_HAMMER))
 		if (!wall)
 			to_chat(user, "You start removing \the [src]...")
 			if (do_after(user, 50, src))
@@ -321,3 +325,16 @@
 			try_destroy()
 			qdel(SF)
 			return
+
+// Scraping a spoon, fork or chopsticks on a hard wall or bars. Ten scrapes turn
+// it into a shank of shank_type.
+/obj/covers/proc/sharpen_utensil(obj/item/weapon/material/kitchen/utensil/I, mob/living/human/user, shank_type = /obj/item/weapon/material/kitchen/utensil/knife/shank)
+	if (I.shiv >= 10)
+		return
+	I.shiv++
+	visible_message(SPAN_WARNING("[user] sharpens \the [I] on \the [src]!"))
+	if (I.shiv >= 10)
+		user.drop_from_inventory(I)
+		user.put_in_hands(new shank_type(user, I.material.name))
+		to_chat(user, "\The [I] turns into a shank.")
+		qdel(I)

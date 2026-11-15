@@ -9,7 +9,7 @@
   "license": "CC-BY-SA-3.0",
   "license_evidence": "https://github.com/Valgorithms/Pocket-Stronghold-13/blob/2bfb1906a9a68f58c5e5da25383f83dd495bf138/README.md#license",
   "target": "icons/obj/food/pocket_stronghold_food.dmi",
-  "changes": "Three states extracted into their own DMI with upstream names. Pixels, size and transparency unchanged.",
+  "changes": "Three states extracted into their own DMI with upstream names. intestines keeps the upstream pixels, size and transparency. crab_meat_roasted and food_ruined were redrawn for Civ13 by tests/sprites/create_orchard.py and stay under the same licence.",
   "states": [
     {
       "state": "intestines",
@@ -23,14 +23,18 @@
       "source_state": "crab_meat_roasted",
       "introduced_by": "ArtofWASD2, commit b9e5431 (#33)",
       "civ13_use": "roasted crab meat",
-      "rgba_sha256": "4a701e1b53e07f42ece89d4d740096c10018620c12f44eb63a5995e7c15994ab"
+      "rgba_sha256": "dd5de4e83170fcdde51158228b531c1e59b7823d8baca2c886f61009c2751743",
+      "source_rgba_sha256": "4a701e1b53e07f42ece89d4d740096c10018620c12f44eb63a5995e7c15994ab",
+      "redrawn_for_civ13": true
     },
     {
       "state": "food_ruined",
       "source_state": "food_ruined",
       "introduced_by": "LEEROY-2, commit b59b2a0",
       "civ13_use": "rotten roasted crab meat",
-      "rgba_sha256": "7276faed3e6f3c72301f102bd347c6b912f8768f1924c93d101cba936d1658ac"
+      "rgba_sha256": "365675f6cca2683575a776090a87813bb0c59586e7e9c21733d20834c6c0501d",
+      "source_rgba_sha256": "7276faed3e6f3c72301f102bd347c6b912f8768f1924c93d101cba936d1658ac",
+      "redrawn_for_civ13": true
     }
   ]
 }

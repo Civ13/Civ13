@@ -135,10 +135,30 @@ var/extract_entry_count = 0
 	F.cd = "/"
 	var/list/top = F.dir.Copy()
 	if("sparse" in top)
+		// A level with plain cells names its baseline in "baseline" and lists
+		// its plain templates and their run-length grid (saving.dm).
+		var/plain = extract_dir_has(F, "/sparse", "plain")
 		header["sparse_kind"] = F["/sparse/kind"]
-		header["sparse_turf"] = extract_type_text(F, "/sparse/turf")
+		header["sparse_turf"] = extract_type_text(F, plain ? "/sparse/baseline" : "/sparse/turf")
 		header["sparse_zone"] = F["/sparse/zone"]
 		header["sparse_cells"] = F["/sparse/cells"]
+		if(plain)
+			var/count = F["/sparse/plain/count"]
+			if(!isnum(count) || count < 1 || count > 255 || count != round(count)) throw EXCEPTION("invalid_plain_cells")
+			var/list/templates = list()
+			for(var/i = 1, i <= count, i++)
+				var/list/saved_fields = F["/sparse/plain/[i]/fields"]
+				if(!islist(saved_fields)) throw EXCEPTION("invalid_plain_cells")
+				var/list/names = list()
+				var/list/numbers = list()
+				for(var/name in saved_fields)
+					names += name
+					if((name in list("dir", "pixel_x", "pixel_y")) && isnum(saved_fields[name])) numbers[name] = saved_fields[name]
+				templates += list(list("type" = extract_type_text(F, "/sparse/plain/[i]/type"), "zone" = F["/sparse/plain/[i]/zone"], "fields" = names, "num" = numbers))
+			var/list/runs = F["/sparse/plain/runs"]
+			if(!islist(runs)) throw EXCEPTION("invalid_plain_cells")
+			header["plain_templates"] = templates
+			header["plain_runs"] = runs
 	if(version == 5) header["stream_file"] = F["/stream/file"]
 	extract_emit(header)
 	// Stream levels keep their entries in the stream file (export.py reads it).

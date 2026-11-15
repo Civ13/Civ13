@@ -181,7 +181,7 @@ var/late_wait_result = TRUE
 	for(var/id in field_experiments)
 		var/list/E = field_experiments[id]
 		var/datum/research_node/N = get_research_node(E[1])
-		var/practice = findtext(E[2], "craft:") == 1
+		var/practice = findtext(E[2], "craft:") == 1 || findtext(E[2], "deed:") == 1
 		if(!N || (practice && N.era_tier >= 5) || (!practice && !(E[2] in field_activities)) || E[3] < 1 || E[4] <= 0 || !length(E[5]))
 			formed = FALSE
 			world.log << "FAIL: experiment [id] is malformed"
@@ -269,6 +269,7 @@ var/late_wait_result = TRUE
 	var/mob/living/human/late_fixture/watcher = new(locate(2,5,1))
 	watcher.name = "Ilse"
 	watcher.teach("watermills")
+	watcher.teach("iron_smithing")
 	var/list/seen = demonstrations_in_view(watcher)
 	late_check(seen.len == 1 && seen["steam_power"] == engine, "someone who knows the groundwork sees the steam engine demonstration")
 	late_check(find_demonstration_machine(watcher, "steam_power") == engine, "the running engine is found within reach")
@@ -314,14 +315,69 @@ var/late_wait_result = TRUE
 	late_check(!demonstration_carrier_ok(journal, "electricity"), "a book holds one demonstration of a subject")
 	qdel(bench)
 
+// Prototypes and field study (subject_prototypes.dm).
+/proc/late_test_subject_prototypes()
+	var/item_path = null
+	for(var/path in recipe_node_requirements)
+		if(recipe_node_requirements[path] == "iron_tools" && ispath(text2path(path), /obj/item/weapon))
+			item_path = path
+			break
+	late_check(item_path, "Iron Tools has something to make ([item_path])")
+	var/datum/research_node/IN = get_research_node("iron_tools")
+	var/mob/living/human/late_fixture/maker = new(locate(7,2,1))
+	maker.name = "Wulf"
+	maker.teach("basic_tools")
+	maker.teach("iron_smithing")
+	late_check(!subject_prototype_allowed(maker, item_path) && !crafting_recipe_allowed(maker, item_path), "no book, no prototypes")
+	var/obj/item/weapon/book/notebook = new(maker)
+	notebook.add_research_work("iron_tools", round(IN.cost_ticks * 0.2))
+	late_check(!subject_prototype_allowed(maker, item_path), "a fifth of the chapter is too little")
+	notebook.add_research_work("iron_tools", round(IN.cost_ticks * 0.2))
+	late_check(subject_prototype_allowed(maker, item_path) && crafting_recipe_allowed(maker, item_path), "a third of the chapter lets you make its things as prototypes")
+	var/before = notebook.research_ticks("iron_tools")
+	var/points = record_subject_prototype(maker, item_path)
+	late_check(points == round(IN.cost_ticks * 0.08) && notebook.research_ticks("iron_tools") == before + points && notebook.prototypes_made("iron_tools") == 1, "a prototype writes [points] points into the book")
+	for(var/i = 2 to 5)
+		record_subject_prototype(maker, item_path)
+	late_check(notebook.prototypes_made("iron_tools") == 5 && !subject_prototype_allowed(maker, item_path) && !record_subject_prototype(maker, item_path), "five prototypes per book, then no more early making")
+	var/mob/living/human/late_fixture/stranger = new(locate(7,3,1))
+	late_check(!subject_prototype_allowed(stranger, item_path), "without the groundwork you can't make prototypes")
+	// Field study.
+	var/tool_path = text2path(item_path)
+	var/obj/item/weapon/tool = new tool_path(locate(7,1,1))
+	var/list/targets = field_study_targets(maker)
+	late_check(targets[tool] == "iron_tools", "a nearby [tool] can be studied for Iron Tools")
+	late_check(!field_study_targets(stranger)[tool], "not by someone who lacks the groundwork")
+	var/obj/item/weapon/book/fresh = new(maker)
+	var/kind = "[tool.type]"
+	var/got = commit_field_study(maker, fresh, "iron_tools", kind, tool.name)
+	late_check(got == round(IN.cost_ticks * 0.1) && fresh.research_ticks("iron_tools") == got, "studying it writes [got] points into a book")
+	late_check(!field_study_carrier_ok(fresh, "iron_tools", kind) && !commit_field_study(maker, fresh, "iron_tools", kind, tool.name), "each kind of thing once per book")
+	fresh.record_field_study("iron_tools", "/obj/a")
+	fresh.record_field_study("iron_tools", "/obj/b")
+	late_check(!fresh.can_take_field_study("iron_tools", "/obj/c") && fresh.field_study_count("iron_tools") == 3, "three kinds per subject per book")
+	var/obj/item/weapon/paper/sheet = new(maker)
+	late_check(commit_field_study(maker, sheet, "iron_tools", kind, tool.name) && sheet.field_study_node == "iron_tools", "paper takes field notes")
+	late_check(!field_study_carrier_ok(sheet, "iron_tools", "/obj/a"), "one study per sheet")
+	var/obj/structure/research_bench/late_fixture/bench = new(locate(6,2,1))
+	bench.tier = 8
+	var/obj/item/weapon/book/target = new(bench)
+	bench.assigned_node = "iron_tools"
+	maker.r_hand = sheet
+	late_check(bench.take_field_notes(sheet, maker) && target.research_ticks("iron_tools") == got && QDELETED(sheet), "field notes used on the bench go into its book")
+	map.book_research = FALSE
+	late_check(!subject_prototype_allowed(maker, item_path) && !field_study_targets(maker).len, "only on book-research worlds")
+	map.book_research = TRUE
+	qdel(bench)
+
 // Practice and gathering for early nodes (practice_work.dm).
 /proc/late_test_practice_work()
 	build_practice_experiments()
-	var/list/iron = node_field_experiments("iron_tools")
-	late_check(iron.len == 1 && iron[1] == "practice_iron_tools_basic_tools", "Iron Tools is advanced by practising Basic Toolmaking")
-	var/list/E = field_experiments["practice_iron_tools_basic_tools"]
-	var/datum/research_node/IN = get_research_node("iron_tools")
-	late_check(E[2] == "craft:basic_tools" && E[3] == practice_items_needed(IN) && E[4] == 0.5, "the experiment asks for [E[3]] things for half the node")
+	var/list/iron = node_field_experiments("workshops")
+	late_check(iron.len == 1 && iron[1] == "practice_workshops_bronze_working", "Workshops is advanced by practising Bronze Working")
+	var/list/E = field_experiments["practice_workshops_bronze_working"]
+	var/datum/research_node/IN = get_research_node("workshops")
+	late_check(E[2] == "craft:bronze_working" && E[3] == practice_items_needed(IN) && E[4] == 0.5, "the experiment asks for [E[3]] things for half the node")
 	var/list/concrete = node_field_experiments("reinforced_concrete")
 	late_check(concrete.len == 2 && field_experiments[concrete[1]][4] == 0.25, "two prerequisites split the practice share")
 	late_check(!node_field_experiments("power_tools").len, "late nodes keep only their own field work")
@@ -341,16 +397,62 @@ var/late_wait_result = TRUE
 	map.book_research = TRUE
 	late_check(note_field_work(smith, "forage", 3) && smith.field_work_amount("forage") == 3, "foraging is counted")
 	// Credited at a bench once enough has been made.
-	note_field_work(smith, "craft:basic_tools", 50)
+	note_field_work(smith, "craft:bronze_working", 50)
 	var/obj/structure/research_bench/late_fixture/bench = new(locate(4,3,1))
 	bench.tier = 8
 	var/obj/item/weapon/book/notes = new(bench)
-	bench.assigned_node = "iron_tools"
-	var/list/rows = bench.field_work_rows(smith, "iron_tools")
+	bench.assigned_node = "workshops"
+	var/list/rows = bench.field_work_rows(smith, "workshops")
 	late_check(rows.len == 1 && rows[1]["percent"] == 50 && rows[1]["have"] == E[3], "the bench lists the practice and the smith's own count")
 	var/expected = round(IN.cost_ticks * 0.5)
-	late_check(bench.credit_field_work() && notes.research_ticks("iron_tools") == expected && !bench.credit_field_work(), "the practice is written into the book once ([expected] of [IN.cost_ticks] points)")
+	late_check(bench.credit_field_work() && notes.research_ticks("workshops") == expected && !bench.credit_field_work(), "the practice is written into the book once ([expected] of [IN.cost_ticks] points)")
 	qdel(bench)
+// Hand-written deeds for the first ages (practice_work.dm).
+/proc/late_test_subject_deeds()
+	build_practice_experiments()
+	var/sound = TRUE
+	for(var/node_id in subject_deeds)
+		var/datum/research_node/N = get_research_node(node_id)
+		var/total = 0
+		if(!N || N.era_tier > 1 || !N.prereqs.len)
+			sound = FALSE
+			world.log << "bad deed subject [node_id]"
+			continue
+		for(var/list/D in subject_deeds[node_id])
+			total += D[4]
+			for(var/path in D[2])
+				// Every deed must be something the groundwork teaches, or anyone can make.
+				var/req = recipe_node_requirements[path]
+				if(!ispath(text2path(path)) || (req && !(req in N.prereqs)))
+					sound = FALSE
+					world.log << "bad deed path [path] for [node_id] (taught by [req])"
+		if(abs(total - 0.5) > 0.001)
+			sound = FALSE
+			world.log << "deeds of [node_id] add up to [total]"
+		for(var/id in node_field_experiments(node_id))
+			if(findtext(id, "practice_") == 1)
+				sound = FALSE
+	late_check(sound && subject_deeds.len == 10, "every subject of the first two ages has deeds its groundwork teaches, worth half the chapter, and no counter")
+	var/list/coop = node_field_experiments("cooperage")
+	late_check(coop.len == 3 && ("deed_cooperage_handles" in coop), "Cooperage asks for three deeds")
+	var/mob/living/human/late_fixture/cooper = new(locate(4,6,1))
+	cooper.name = "Hild"
+	late_check(note_craft_practice(cooper, "/obj/item/weapon/material/handle") && cooper.field_work_amount("deed:cooperage:handles") == 1, "making a handle counts towards its deed")
+	late_check(note_craft_practice(cooper, "/obj/item/weapon/material/handle/subtype_for_test") && cooper.field_work_amount("deed:cooperage:handles") == 2 && !note_deed_work(cooper, "/obj/item/weapon/material/handlebar"), "a kind of handle counts too, a lookalike name does not")
+	note_craft_practice(cooper, "/obj/item/weapon/material/handle")
+	late_check(cooper.field_work_amount("deed:cooperage:handles") == 2, "counting stops at what the deed asks")
+	note_craft_practice(cooper, "/obj/structure/furnace/kiln")
+	late_check(cooper.field_work_amount("deed:early_cells:kiln") == 1 && cooper.field_work_amount("deed:bronze_weapons:kiln") == 1, "one kiln serves both subjects that ask for it")
+	var/obj/structure/research_bench/late_fixture/bench = new(locate(4,7,1))
+	bench.tier = 8
+	var/obj/item/weapon/book/notes = new(bench)
+	bench.assigned_node = "cooperage"
+	var/datum/research_node/CN = get_research_node("cooperage")
+	var/list/rows = bench.field_work_rows(cooper, "cooperage")
+	late_check(rows.len == 3 && rows[1]["label"] == "Make 2 tool handles" && rows[1]["have"] == 2, "the bench lists the deeds by name")
+	late_check(bench.credit_field_work() && notes.research_ticks("cooperage") == round(CN.cost_ticks * 0.2) && !bench.credit_field_work(), "a finished deed is written into the book once")
+	qdel(bench)
+	cooper.loc = locate(1,1,1)
 // A scholar with the given levels who knows a subject's groundwork.
 /mob/living/human/late_fixture/scholar/research_tool_rate()
 	return 1
@@ -513,6 +615,410 @@ var/late_wait_result = TRUE
 	late_check(!B.cipher_blocks(outsider), "ciphers bind nobody where book research is off")
 	map.book_research = TRUE
 	late_check(B.decipher_commit(friend) && !B.is_enciphered() && !B.cipher_blocks(outsider) && B.cipher_readers == "", "written out plainly, the book is open again")
+/proc/late_test_learning_by_doing()
+	build_practice_experiments()
+	// Scholarship from field work credited at a bench.
+	var/mob/living/human/late_fixture/gunner = new(locate(2,5,1))
+	note_field_work(gunner, "shots", 500)
+	var/obj/structure/research_bench/late_fixture/bench = new(locate(2,6,1))
+	bench.tier = 8
+	var/obj/item/weapon/book/log = new(bench)
+	bench.assigned_node = "cartridge_ammo"
+	var/datum/research_node/CN = get_research_node("cartridge_ammo")
+	var/discipline = node_discipline("cartridge_ammo")
+	late_check(gunner.scholar_level(discipline) == 0, "a veteran starts with no scholarship")
+	late_check(bench.credit_field_work(), "the veteran's field work is written into the book")
+	var/points = round(CN.cost_ticks * 0.35)
+	var/expected = round(points * 0.02 * 1.5, 0.01)
+	var/taught = gunner.scholar_level(discipline)
+	late_check(taught == expected && taught > 0, "field work teaches the scholarship of its points at the bench and half again ([taught] for [points] points)")
+	late_check(gunner.scholar_level("mathematics") > 0 && gunner.scholar_level("mathematics") < taught, "it teaches some Basic Mathematics too")
+	// A fresh book takes the report again, and teaches nothing new.
+	log.loc = locate(1,1,1)
+	var/obj/item/weapon/book/fresh = new(bench)
+	late_check(bench.credit_field_work() && fresh.research_ticks("cartridge_ammo") == points && gunner.scholar_level(discipline) == taught, "the same field work in a fresh book teaches nothing more")
+	late_check(!gunner.gain_active_scholarship("cartridge_ammo", 50, "field:cartridge_ammo_range") && gunner.gain_active_scholarship("cartridge_ammo", 50, "field:other") > 0, "each piece of work teaches once, new work teaches again")
+	late_check(!gunner.gain_active_scholarship("cartridge_ammo", 0, "nothing") && !gunner.gain_active_scholarship("no_such_node", 50, "nowhere") && !gunner.gain_active_scholarship("cartridge_ammo", 50, null), "no points, no subject or no name teach nothing")
+	// Prototypes teach their maker, once per prototype number.
+	var/item_path = null
+	for(var/path in recipe_node_requirements)
+		if(recipe_node_requirements[path] == "iron_tools" && ispath(text2path(path), /obj/item/weapon))
+			item_path = path
+			break
+	var/datum/research_node/IN = get_research_node("iron_tools")
+	var/mob/living/human/late_fixture/maker = new(locate(7,5,1))
+	for(var/req in IN.prereqs)
+		maker.teach(req)
+	var/obj/item/weapon/book/notebook = new(maker)
+	notebook.add_research_work("iron_tools", round(IN.cost_ticks * 0.4))
+	var/proto_points = record_subject_prototype(maker, item_path)
+	var/proto_taught = maker.scholar_level(node_discipline("iron_tools"))
+	late_check(proto_points > 0 && proto_taught == round(proto_points * 0.02 * 1.5, 0.01), "a prototype teaches its maker ([proto_taught])")
+	record_subject_prototype(maker, item_path)
+	late_check(maker.scholar_level(node_discipline("iron_tools")) > proto_taught, "the second prototype teaches again")
+	var/after_two = maker.scholar_level(node_discipline("iron_tools"))
+	var/obj/item/weapon/book/notebook2 = new(locate(1,1,1))
+	notebook.loc = locate(1,1,1)
+	notebook2.loc = maker
+	notebook2.add_research_work("iron_tools", round(IN.cost_ticks * 0.4))
+	late_check(record_subject_prototype(maker, item_path) > 0 && maker.scholar_level(node_discipline("iron_tools")) == after_two, "the first prototype in another book teaches nothing new")
+	// Demonstrations teach as a fifth of the subject.
+	late_check(demonstration_lesson_points(get_research_node("steam_power")) == round(get_research_node("steam_power").cost_ticks * 0.2), "a demonstration teaches as a fifth of its subject")
+	// Off where book research is off; the dead learn nothing.
+	map.book_research = FALSE
+	late_check(!maker.gain_active_scholarship("iron_tools", 50, "off") && maker.skill_variety_mult("crafting", "x") == 1 && isnull(maker.skill_variety), "nothing is taught or counted where book research is off")
+	map.book_research = TRUE
+	maker.stat = DEAD
+	late_check(!maker.gain_active_scholarship("iron_tools", 50, "dead"), "the dead learn nothing")
+	// Variety for body skills.
+	var/mob/living/human/late_fixture/smith = new(locate(7,7,1))
+	late_check(skill_variety_factor(0) == 5 && skill_variety_factor(1) == 1 && skill_variety_factor(4) == 1 && skill_variety_factor(5) == 0.5 && skill_variety_factor(9) == 0.5 && skill_variety_factor(10) == 0.25 && skill_variety_factor(99) == 0.25, "first time five times, then normal, then half, then a quarter")
+	var/start = smith.stats["crafting"][1]
+	smith.adaptStat("crafting", 1, "/obj/item/knife")
+	var/first = smith.stats["crafting"][1] - start
+	smith.adaptStat("crafting", 1, "/obj/item/knife")
+	var/second = smith.stats["crafting"][1] - start - first
+	late_check(first > second * 4.5 && second > 0, "the first of a thing teaches about five times a repeat ([first] against [second])")
+	for(var/i = 3 to 12)
+		smith.adaptStat("crafting", 1, "/obj/item/knife")
+	var/before_rote = smith.stats["crafting"][1]
+	smith.adaptStat("crafting", 1, "/obj/item/knife")
+	var/rote = smith.stats["crafting"][1] - before_rote
+	var/before_new = smith.stats["crafting"][1]
+	smith.adaptStat("crafting", 1, "/obj/item/spoon")
+	late_check(rote < second && smith.stats["crafting"][1] - before_new > rote * 10, "the thirteenth knife teaches little, a first spoon teaches a lot")
+	late_check(smith.skill_variety["crafting:/obj/item/knife"] == 10 && smith.skill_variety["crafting:/obj/item/spoon"] == 1, "counting stops at ten")
+	var/plain_before = smith.stats["farming"][1]
+	smith.adaptStat("farming", 1)
+	late_check(round(smith.stats["farming"][1] - plain_before, 0.001) == round(plain_before * 0.005, 0.001) && smith.skill_variety.len == 2, "actions that name nothing teach as before and are not counted")
+	// Beside a master.
+	var/mob/living/human/late_fixture/novice = new(locate(4,8,1))
+	var/mob/living/human/late_fixture/master = new(locate(5,8,1))
+	late_check(!novice.skill_master_nearby("crafting") && novice.skill_master_mult("crafting") == 1, "an equal is no master")
+	master.stats["crafting"] = list(125, 125)
+	late_check(novice.skill_master_nearby("crafting") == master && novice.skill_master_mult("crafting") == 2 && !master.skill_master_nearby("crafting"), "someone a quarter better doubles the gain, and gains nothing themselves")
+	late_check(novice.skill_master_mult("farming") == 1 && novice.skill_master_mult("strength") == 1, "only in the skill they are better at, and never strength")
+	var/n0 = novice.stats["crafting"][1]
+	novice.adaptStat("crafting", 5)
+	late_check(round(novice.stats["crafting"][1] - n0, 0.01) == 2, "the pupil's gain is doubled ([novice.stats["crafting"][1] - n0])")
+	master.loc = locate(8,8,1)
+	late_check(novice.skill_master_mult("crafting") == 1, "a master out of reach teaches nothing")
+	master.loc = locate(5,8,1)
+	master.stat = UNCONSCIOUS
+	late_check(novice.skill_master_mult("crafting") == 1, "nor does one who is out cold")
+	master.stat = CONSCIOUS
+	map.book_research = FALSE
+	late_check(novice.skill_master_mult("crafting") == 1, "masters teach only where book research is on")
+	map.book_research = TRUE
+	// Saved records are cleaned.
+	var/list/dirty = list("a" = 3, "b" = 99, "c" = "x", 5)
+	var/list/clean = clean_skill_variety(dirty)
+	late_check(clean.len == 2 && clean["a"] == 3 && clean["b"] == 10, "saved variety counts are cleaned")
+	late_check(length(clean_scholar_lessons(list("x", "x", 7, ""))) == 1 && !length(clean_scholar_lessons("junk")), "saved lessons are cleaned")
+/proc/late_test_trial_and_error()
+	var/item_path = null
+	for(var/path in recipe_node_requirements)
+		if(recipe_node_requirements[path] == "iron_tools" && ispath(text2path(path), /obj/item/weapon))
+			item_path = path
+			break
+	var/datum/research_node/IN = get_research_node("iron_tools")
+	var/discipline = node_discipline("iron_tools")
+	var/mob/living/human/late_fixture/maker = new(locate(2,8,1))
+	maker.name = "Hild"
+	for(var/req in IN.prereqs)
+		maker.teach(req)
+	var/obj/item/weapon/book/B = new(maker)
+	late_check(!subject_prototype_allowed(maker, item_path), "an empty book alone allows no attempts")
+	var/list/choices = maker.trial_subject_choices(B)
+	late_check(choices["Iron Tools"] == "iron_tools" && !("Nuclear Power" in choices) && !(get_research_node(IN.prereqs[1]).name in choices), "a book can be set to subjects whose groundwork its carrier knows, and not to known ones")
+	late_check(!maker.set_trial_subject(B, "nuclear_power") && isnull(B.trial_subject), "a subject without its groundwork cannot be attempted")
+	late_check(maker.set_trial_subject(B, "iron_tools") && B.trial_subject == "iron_tools", "the book is opened to Iron Tools")
+	late_check(subject_prototype_allowed(maker, item_path) && crafting_recipe_allowed(maker, item_path), "now its things can be attempted from an empty chapter")
+	// The chance: a low start, worse without the scholarship, better with it.
+	var/req_level = node_scholar_requirement("iron_tools")
+	var/unskilled = maker.trial_success_chance("iron_tools", item_path, B)
+	maker.scholarship = list("[discipline]" = req_level, "mathematics" = req_level)
+	var/skilled = maker.trial_success_chance("iron_tools", item_path, B)
+	maker.scholarship = list("[discipline]" = req_level + 40, "mathematics" = req_level)
+	var/expert = maker.trial_success_chance("iron_tools", item_path, B)
+	late_check(skilled == 15 && unskilled == (req_level >= 10 ? 5 : 15 - req_level) && expert == 30, "an empty chapter gives 15 in 100, less without the scholarship and up to 30 with plenty ([unskilled], [skilled], [expert])")
+	maker.scholarship = list("[discipline]" = req_level, "mathematics" = req_level)
+	// A failure: a lesson in the book, a ruined piece, a better next try.
+	var/level_before = maker.scholar_level(discipline)
+	var/points = commit_trial_failure(maker, "iron_tools", item_path, B)
+	var/obj/item/trash/failed_attempt/ruin = locate() in get_turf(maker)
+	late_check(points == max(1, round(IN.cost_ticks * 0.04)) && B.research_ticks("iron_tools") == points && B.lessons_learned("iron_tools") == 1, "a failure writes a lesson of [points] points into the book")
+	late_check(ruin && findtext(ruin.name, "ruined ") == 1, "it leaves a ruined piece ([ruin ? ruin.name : "none"])")
+	late_check(maker.scholar_level(discipline) > level_before, "the lesson teaches scholarship")
+	var/after_one = maker.trial_success_chance("iron_tools", item_path, B)
+	late_check(after_one >= skilled + 10 + 5 && maker.trial_count("iron_tools>[item_path]") == 1, "the next try at the same thing is likelier to work ([skilled] to [after_one])")
+	late_check(maker.trial_success_chance("iron_tools", "/obj/item/other", B) < after_one, "a different thing has only the chapter's progress to go on")
+	for(var/i = 2 to 5)
+		commit_trial_failure(maker, "iron_tools", item_path, B)
+	var/ticks = B.research_ticks("iron_tools")
+	late_check(B.lessons_learned("iron_tools") == 5 && !commit_trial_failure(maker, "iron_tools", item_path, B) && B.research_ticks("iron_tools") == ticks, "a book takes five lessons per subject, then failures only improve the odds")
+	late_check(maker.trial_success_chance("iron_tools", item_path, B) == 95, "the odds never pass 95 in 100 before a third of the chapter")
+	// A working piece made early.
+	late_check(maker.trial_count("iron_tools") == 0, "no early pieces yet")
+	var/made = record_subject_prototype(maker, item_path)
+	late_check(made == max(1, round(IN.cost_ticks * 0.08)) && maker.trial_count("iron_tools") == 1 && maker.trial_count("iron_tools![item_path]") == 1, "a working piece writes its prototype share and is counted on its maker")
+	late_check(!maker.note_trial_success("iron_tools", item_path) && maker.trial_count("iron_tools") == 2, "only the first of each thing is a breakthrough")
+	// One character's early pieces are limited across books.
+	maker.trial_work["iron_tools"] = 5
+	var/obj/item/weapon/book/fresh = new(maker)
+	B.loc = locate(1,1,1)
+	maker.set_trial_subject(fresh, "iron_tools")
+	late_check(fresh.trial_subject == "iron_tools" && !subject_prototype_allowed(maker, item_path), "five early pieces per character: a fresh book does not start the count again")
+	// From a third of the chapter on it is the old rule: every one works.
+	fresh.add_research_work("iron_tools", round(IN.cost_ticks * 0.4))
+	late_check(subject_prototype_allowed(maker, item_path) && maker.trial_success_chance("iron_tools", item_path, fresh) == 100 && !trial_craft_ruined(maker, item_path), "from a third of the chapter prototypes always work, as before")
+	var/count_before = maker.trial_count("iron_tools")
+	record_subject_prototype(maker, item_path)
+	late_check(maker.trial_count("iron_tools") == count_before, "and they are not counted as early pieces")
+	// Nobody without a reason to fail fails.
+	maker.teach("iron_tools")
+	late_check(!trial_craft_ruined(maker, item_path) && !trial_craft_ruined(null, item_path) && !trial_craft_ruined(maker, "/obj/item/weapon/paper"), "someone who knows the subject, nobody, and ordinary things never fail this way")
+	// Mishaps only from the Industrial Age on.
+	var/mob/living/human/late_fixture/victim = new(locate(4,8,1))
+	late_check(isnull(trial_mishap(victim, IN)) && !victim.fixture_hurt.len, "early subjects fail safely")
+	var/datum/research_node/late_node = null
+	for(var/node_id in research_nodes)
+		var/datum/research_node/N = research_nodes[node_id]
+		if(N.era_tier >= 4 && rush_accident_kind(node_id) == "injury")
+			late_node = N
+			break
+	late_check(late_node && trial_mishap(victim, late_node) == "injury" && victim.fixture_hurt[BRUTE] >= 5, "a later engineering failure can cut the maker's hand")
+	// Saved records are cleaned, and nothing works where book research is off.
+	var/list/clean = clean_trial_work(list("a" = 3, "b" = 99, "c" = "x", 5))
+	late_check(clean.len == 2 && clean["a"] == 3 && clean["b"] == 9, "saved trial records are cleaned")
+	map.book_research = FALSE
+	var/mob/living/human/late_fixture/other = new(locate(6,8,1))
+	for(var/req in IN.prereqs)
+		other.teach(req)
+	var/obj/item/weapon/book/offbook = new(other)
+	offbook.trial_subject = "iron_tools"
+	late_check(!subject_prototype_allowed(other, item_path) && !trial_craft_ruined(other, item_path), "no attempts where book research is off")
+	map.book_research = TRUE
+/proc/late_test_trade_learning()
+	var/item_path = null
+	var/other_path = null
+	for(var/path in recipe_node_requirements)
+		if(recipe_node_requirements[path] == "iron_tools" && ispath(text2path(path), /obj/item/weapon))
+			if(!item_path)
+				item_path = path
+			else if(!other_path)
+				other_path = path
+	var/datum/research_node/IN = get_research_node("iron_tools")
+	late_check(item_path && other_path, "Iron Tools has two things to make")
+	// Kept clear of the other tests' characters.
+	var/mob/living/human/late_fixture/master = new(locate(1,4,1))
+	master.name = "Weland"
+	var/mob/living/human/late_fixture/pupil = new(locate(1,5,1))
+	pupil.name = "Egil"
+	var/mob/living/human/late_fixture/stranger = new(locate(1,6,1))
+	for(var/mob/living/human/other in range(3, master))
+		if(!(other in list(master, pupil, stranger)))
+			other.loc = locate(8,1,1)
+	for(var/req in IN.prereqs)
+		master.teach(req)
+		pupil.teach(req)
+	master.teach("iron_tools")
+	late_check(trade_learning_cap(IN) == 1 && trade_learning_cap(get_research_node("cartridge_ammo")) == 0.5, "early subjects can be learned wholly from a teacher, later ones half")
+	late_check(pupil.can_learn_trade("iron_tools") && !master.can_learn_trade("iron_tools") && !stranger.can_learn_trade("iron_tools"), "only someone with the groundwork and without the subject can learn it")
+	late_check(pupil.trade_teacher("iron_tools") == master && !master.trade_teacher("iron_tools"), "the teacher is someone within reach who knows it")
+	// Watching.
+	late_check(note_craft_watched(master, item_path) == 1 && pupil.study_percent("iron_tools") == 15, "watching a thing being made fills 15% of the subject")
+	late_check(!note_craft_watched(master, item_path) && pupil.study_percent("iron_tools") == 15, "the same thing twice shows nothing new")
+	late_check(note_craft_watched(master, other_path) == 1 && pupil.study_percent("iron_tools") == 30, "a different thing does")
+	late_check(!stranger.study_fraction("iron_tools"), "someone without the groundwork picks up nothing")
+	late_check(!note_craft_watched(pupil, item_path), "watching someone who does not know the subject teaches nothing")
+	pupil.trade_watched["iron_tools"] = 3
+	late_check(!note_craft_watched(master, "/obj/item/weapon/third") && pupil.study_percent("iron_tools") == 30, "three kinds of thing per subject is all watching gives")
+	// Guided work.
+	late_check(guided_work_node(pupil, item_path) == "iron_tools" && crafting_recipe_allowed(pupil, item_path), "beside the teacher, the pupil may make the subject's things")
+	late_check(!guided_work_allowed(stranger, item_path) && !guided_work_allowed(master, item_path), "the unprepared and the teacher get no guided work")
+	late_check(record_guided_work(pupil, item_path) && pupil.study_percent("iron_tools") == 50, "each thing made under guidance fills 20%")
+	late_check(pupil.guided_fail_chance() == 30, "an ordinary pupil spoils 30 in 100")
+	pupil.stats["crafting"] = list(150, 150)
+	late_check(pupil.guided_fail_chance() == 5, "a skilled pupil seldom spoils one")
+	pupil.stats["crafting"] = list(100, 100)
+	late_check(abs(commit_guided_failure(pupil, "iron_tools", item_path) - 0.1) < 0.001 && pupil.study_percent("iron_tools") == 60 && (locate(/obj/item/trash/failed_attempt) in get_turf(pupil)), "a spoiled attempt leaves a ruined piece and still teaches half as much")
+	master.loc = locate(5,1,1)
+	late_check(!guided_work_allowed(pupil, item_path) && !crafting_recipe_allowed(pupil, item_path) && !record_guided_work(pupil, item_path), "with the teacher gone there is no guided work")
+	master.loc = locate(1,4,1)
+	master.stat = UNCONSCIOUS
+	late_check(!guided_work_allowed(pupil, item_path), "an unconscious teacher guides nobody")
+	master.stat = CONSCIOUS
+	// A half-read chapter and a half-served apprenticeship add up, and it ends in knowing.
+	var/master_before = master.scholar_level(node_discipline("iron_tools"))
+	record_guided_work(pupil, item_path)
+	late_check(pupil.study_percent("iron_tools") == 80 && !pupil.knows_recipe_node("iron_tools"), "four fifths is not yet knowing")
+	record_guided_work(pupil, item_path)
+	late_check(pupil.knows_recipe_node("iron_tools") && !pupil.study_fraction("iron_tools"), "the last piece teaches the subject, with no book")
+	late_check(pupil.scholar_level(node_discipline("iron_tools")) >= 2.5 && master.scholar_level(node_discipline("iron_tools")) > master_before, "pupil and teacher both gain scholarship")
+	late_check(!guided_work_allowed(pupil, item_path) && crafting_recipe_allowed(pupil, item_path), "after that it is ordinary work")
+	// Later subjects stop at half.
+	var/datum/research_node/CN = get_research_node("cartridge_ammo")
+	var/mob/living/human/late_fixture/gunsmith = new(locate(1,8,1))
+	var/mob/living/human/late_fixture/learner = new(locate(2,8,1))
+	for(var/req in CN.prereqs)
+		gunsmith.teach(req)
+		learner.teach(req)
+	gunsmith.teach("cartridge_ammo")
+	learner.add_trade_learning("cartridge_ammo", 0.4, gunsmith)
+	late_check(abs(learner.add_trade_learning("cartridge_ammo", 0.4, gunsmith) - 0.1) < 0.001 && learner.study_percent("cartridge_ammo") == 50 && !learner.knows_recipe_node("cartridge_ammo"), "a later subject fills to half and no further")
+	late_check(!learner.can_learn_trade("cartridge_ammo") && !learner.add_trade_learning("cartridge_ammo", 0.4, gunsmith), "the rest has to be read")
+	// Off where book research is off; saved records are cleaned.
+	map.book_research = FALSE
+	late_check(!learner.can_learn_trade("iron_tools") && !note_craft_watched(master, item_path), "nothing passes hand to hand where book research is off")
+	map.book_research = TRUE
+	var/list/clean = clean_trade_watched(list("a" = 1, "b" = 99, "c" = "x", 5))
+	late_check(clean.len == 2 && clean["b"] == 3, "saved watching records are cleaned")
+/proc/late_test_naturalist_finds()
+	var/datum/research_node/N = get_research_node("basic_agriculture")
+	var/mob/living/human/late_fixture/scholar/nat = new(locate(2,7,1))
+	nat.name = "Linne"
+	nat.real_name = "Linne"
+	nat.prepare("basic_agriculture", 0)
+	var/mob/living/simple_animal/rabbit/rabbit = new(locate(2,8,1))
+	var/obj/item/stack/ore/copper/ore = new(locate(3,7,1))
+	var/mob/living/simple_animal/civilian/person = new(locate(1,7,1))
+	late_check(find_discipline(rabbit) == "agriculture" && find_discipline(ore) == "natural_science" && find_discipline(new /obj/structure/wild/flowers(locate(2,6,1))) == "medicine", "animals, ores and wild plants are finds of their own disciplines")
+	late_check(isnull(find_discipline(person)) && isnull(find_discipline(nat)) && isnull(find_discipline(new /obj/structure/wild/tree_stump(locate(3,8,1)))), "people and stumps are no finds")
+	var/list/targets = find_targets(nat)
+	late_check(targets.len >= 3, "the scholar sees three things to record ([targets.len])")
+	var/obj/item/weapon/book/B = new(nat)
+	var/kind = "[rabbit.type]"
+	late_check(node_discipline("basic_agriculture") == "agriculture" && ("basic_agriculture" in find_subjects(nat, "agriculture", B, kind)), "a subject of the discipline whose groundwork is known can take the find")
+	var/level = nat.scholar_level("agriculture")
+	var/points = commit_find(nat, B, kind, "agriculture", "rabbit", "basic_agriculture")
+	late_check(points == max(1, round(N.cost_ticks * 0.05)) && B.research_ticks("basic_agriculture") == points, "a find writes a twentieth of the chapter ([points])")
+	late_check(nat.scholar_level("agriculture") > level, "and teaches the one who made it")
+	late_check(B.has_find(kind) && !commit_find(nat, B, kind, "agriculture", "rabbit", "basic_agriculture") && !B.find_room("weaving", kind), "a book takes each kind of find once")
+	late_check(!commit_find(nat, B, "[ore.type]", "natural_science", "copper ore", "basic_agriculture"), "a find cannot go to a subject of another discipline")
+	// Finds fill at most three tenths of a chapter.
+	var/total = points
+	for(var/i = 1 to 8)
+		total += B.record_find("basic_agriculture", "test_kind_[i]")
+	late_check(total == round(N.cost_ticks * 0.3) && B.find_points("basic_agriculture") == total && !B.find_room("basic_agriculture", "one_more"), "finds stop at three tenths of the chapter ([total] of [N.cost_ticks])")
+	// A sheet of notes goes to a bench working on the discipline.
+	var/obj/item/weapon/paper/P = new(nat)
+	late_check(commit_find(nat, P, kind, "agriculture", "rabbit") == 1 && P.find_kind == kind && P.find_discipline == "agriculture" && !find_paper_ok(P), "a sheet takes one record")
+	late_check(!field_study_carrier_ok(P, "basic_agriculture", "x") && !demonstration_carrier_ok(P, "steam_power"), "and is then no use for other notes")
+	var/obj/structure/research_bench/late_fixture/bench = new(locate(6,7,1))
+	var/obj/item/weapon/book/fresh = new(bench)
+	bench.assigned_node = "basic_agriculture"
+	nat.put_in_hands(P)
+	late_check(bench.take_find_notes(P, nat) && fresh.has_find(kind) && fresh.research_ticks("basic_agriculture") == points, "notes used on the bench are written into its book")
+	// Double on a land reached by expedition.
+	var/obj/item/weapon/book/far = new(nat)
+	expedition_land_info = list("biome" = "temperate", "land_type" = "plain", "size" = "small")
+	late_check(find_double_here() && commit_find(nat, far, kind, "agriculture", "rabbit", "basic_agriculture") == max(1, round(N.cost_ticks * 0.1)), "a find on an expedition land is worth double")
+	expedition_land_info = list()
+	late_check(!find_double_here(), "and the usual amount at home")
+	late_check(!find_sky_visible(null) && find_sky_kind() == "sky:[lowertext(season)]", "the night sky is one find a season")
+// Reaching a milestone in a body skill teaches its scholarship (learning_by_doing.dm).
+/proc/late_test_skill_mastery()
+	var/mob/living/human/late_fixture/hand = new(locate(1,1,1))
+	hand.name = "Wulf"
+	hand.scholarship = list()
+	hand.stats["swords"] = list(149, 149)
+	late_check(!hand.note_skill_mastery("swords") && !hand.scholar_level("military"), "below the first milestone a skill teaches no scholarship")
+	hand.stats["swords"] = list(150, 150)
+	late_check(hand.note_skill_mastery("swords") == 4 && hand.scholar_level("military") == 4, "a skilled swordsman gains 4 levels of Military Science")
+	late_check(!hand.note_skill_mastery("swords") && hand.scholar_level("military") == 4, "a milestone pays once")
+	hand.stats["bows"] = list(160, 160)
+	late_check(!hand.note_skill_mastery("bows") && hand.scholar_level("military") == 4, "a second weapon skill does not pay the same milestone again")
+	hand.stats["bows"] = list(250, 250)
+	late_check(hand.note_skill_mastery("bows") == 20 && hand.scholar_level("military") == 24, "maxing a skill pays every milestone not yet paid, 24 levels in all")
+	hand.stats["medical"] = list(149.4, 149.4)
+	hand.adaptStat("medical", 1)
+	late_check(hand.stats["medical"][1] >= 150 && hand.scholar_level("medicine") == 4, "the milestone is paid as the skill grows")
+	hand.stats["crafting"] = list(250, 250)
+	hand.stats["farming"] = list(200, 200)
+	hand.stats["philosophy"] = list(150, 150)
+	hand.stats["strength"] = list(250, 250)
+	hand.scholarship["engineering"] = 95
+	hand.note_skill_mastery("crafting")
+	hand.note_skill_mastery("farming")
+	hand.note_skill_mastery("philosophy")
+	late_check(hand.scholar_level("engineering") == 100 && hand.scholar_level("agriculture") == 12 && hand.scholar_level("mathematics") == 4 && !hand.note_skill_mastery("strength"), "crafting, farming and philosophy pay their own disciplines up to the cap; strength pays none")
+	late_check(clean_skill_mastery(hand.skill_mastery + list("junk", 5)).len == hand.skill_mastery.len, "the record of paid milestones is cleaned on load")
+	map.book_research = FALSE
+	var/mob/living/human/late_fixture/other = new(locate(1,1,1))
+	other.stats["swords"] = list(250, 250)
+	late_check(!other.note_skill_mastery("swords"), "nothing is paid where book research is off")
+	map.book_research = TRUE
+/proc/late_test_compare_notes()
+	var/obj/structure/research_bench/late_fixture/bench = new(locate(7,3,1))
+	bench.tier = 8
+	for(var/mob/living/human/other in range(2, bench))
+		other.loc = locate(1,1,1)
+	var/datum/research_node/N = get_research_node("selfloading_firearms")
+	var/obj/item/weapon/book/ours = new(bench)
+	ours.name = "our book"
+	var/mob/living/human/late_fixture/scholar/lead = new(locate(7,2,1))
+	lead.name = "Ada"
+	lead.real_name = "Ada"
+	lead.prepare("selfloading_firearms", 100)
+	var/mob/living/human/late_fixture/scholar/visitor = new(locate(1,1,1))
+	visitor.name = "Bede"
+	visitor.real_name = "Bede"
+	visitor.prepare("selfloading_firearms", 100)
+	ours.add_research_work("selfloading_firearms", round(N.cost_ticks * 0.6))
+	late_check(!bench.comparable_subjects().len && !bench.compare_notes(lead), "one book has nothing to compare with")
+	var/obj/item/weapon/book/theirs = new(bench)
+	theirs.name = "their book"
+	late_check(!bench.comparable_subjects().len, "the other book must hold part of the same chapter")
+	theirs.add_research_work("selfloading_firearms", round(N.cost_ticks * 0.3))
+	late_check(bench.comparable_subjects().len == 1 && bench.comparable_subjects()[1] == "selfloading_firearms", "two part-written chapters on one subject can be compared")
+	late_check(findtext(bench.compare_notes_problem(lead, "selfloading_firearms"), "takes two") && !bench.compare_notes_commit(lead, "selfloading_firearms"), "a lone scholar cannot compare notes")
+	visitor.loc = locate(8,3,1)
+	var/before = ours.research_ticks("selfloading_firearms")
+	var/lead_before = lead.scholar_level(node_discipline("selfloading_firearms"))
+	lead.scholarship[node_discipline("selfloading_firearms")] = 90
+	visitor.scholarship[node_discipline("selfloading_firearms")] = 90
+	lead_before = 90
+	late_check(isnull(bench.compare_notes_problem(lead, "selfloading_firearms")), "with a second scholar at the bench it can be done")
+	var/points = bench.compare_notes(lead)
+	var/expected = round(round(N.cost_ticks * 0.3) * 0.5)
+	late_check(points == expected && ours.research_ticks("selfloading_firearms") == before + expected && theirs.research_ticks("selfloading_firearms") == round(N.cost_ticks * 0.3), "the fuller chapter gains half of the other's points ([points]) and the other keeps its own")
+	late_check(lead.scholar_level(node_discipline("selfloading_firearms")) > lead_before && visitor.scholar_level(node_discipline("selfloading_firearms")) > 90, "both scholars learn from it")
+	late_check(ours.has_compared("selfloading_firearms") && theirs.has_compared("selfloading_firearms") && !bench.comparable_subjects().len && !bench.compare_notes_commit(lead, "selfloading_firearms"), "a book is compared on a subject once")
+	// A third book cannot be milked by a book already compared.
+	theirs.loc = locate(1,1,1)
+	var/obj/item/weapon/book/third = new(bench)
+	third.add_research_work("selfloading_firearms", round(N.cost_ticks * 0.3))
+	late_check(!bench.comparable_subjects().len, "nor again with a fresh book")
+	// The lesser book may lie first; the gain never passes the chapter's cost.
+	ours.loc = locate(1,1,1)
+	var/obj/item/weapon/book/nearly = new(bench)
+	nearly.add_research_work("selfloading_firearms", N.cost_ticks - 3)
+	late_check(bench.placed_books()[1] == third && bench.compare_notes_commit(lead, "selfloading_firearms") == 3 && nearly.has_research_chapter("selfloading_firearms"), "the fuller book gains whichever lies first, up to a finished chapter")
+	map.book_research = FALSE
+	late_check(!bench.compare_notes(lead), "no comparing where book research is off")
+	map.book_research = TRUE
+	// Samples: the first two kinds taken apart teach a fifth each, later kinds less.
+	bench.assigned_node = null
+	for(var/obj/item/weapon/book/old in bench)
+		old.loc = locate(1,1,1)
+	var/obj/item/weapon/book/samples = new(bench)
+	var/list/kinds = list()
+	for(var/path in get_node_recipe_paths("selfloading_firearms"))
+		if(ispath(path, /obj/item) && kinds.len < 3)
+			kinds += path
+	bench.assigned_node = "selfloading_firearms"
+	bench.studied_samples = null
+	if(kinds.len >= 3)
+		var/list/gains = list()
+		for(var/path in kinds)
+			var/obj/item/sample = new path(lead)
+			var/had = samples.research_ticks("selfloading_firearms")
+			bench.book_attackby(sample, lead)
+			gains += samples.research_ticks("selfloading_firearms") - had
+		late_check(gains[1] == round(N.cost_ticks * 0.2) && gains[2] == gains[1] && gains[3] == round(N.cost_ticks * 0.12), "the first two kinds of sample write a fifth each, the third the usual share ([gains[1]], [gains[2]], [gains[3]])")
+	else
+		late_check(FALSE, "Self-loading Firearms has three kinds of thing to sample")
 /world/New()
 	OpenPort("none")
 	generate_gameid()
@@ -531,6 +1037,14 @@ var/late_wait_result = TRUE
 		late_test_field_work()
 		late_test_practice_work()
 		late_test_demonstrations()
+		late_test_subject_prototypes()
+		late_test_learning_by_doing()
+		late_test_trial_and_error()
+		late_test_trade_learning()
+		late_test_compare_notes()
+		late_test_naturalist_finds()
+		late_test_subject_deeds()
+		late_test_skill_mastery()
 		late_test_teams()
 		late_test_ciphers()
 		late_test_late_lines()

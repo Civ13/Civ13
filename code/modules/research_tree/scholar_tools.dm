@@ -84,12 +84,10 @@
 	not_disassemblable = FALSE
 
 /obj/structure/writing_desk/attackby(obj/item/W, mob/living/human/user)
-	if (istype(W, /obj/item/weapon/wrench))
-		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-		to_chat(user, SPAN_NOTICE(anchored ? "You unfasten \the [src] from the floor." : "You fasten \the [src] to the floor."))
-		anchored = !anchored
+	if (is_tool(W, TOOL_WRENCH))
+		toggle_anchor(user)
 		return
-	if (istype(W, /obj/item/weapon/hammer))
+	if (is_tool(W, TOOL_HAMMER))
 		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
 		to_chat(user, SPAN_NOTICE("You begin dismantling \the [src]."))
 		if (do_after(user, 25, src) && !QDELETED(src))
@@ -110,7 +108,7 @@
 
 // Studying a chapter of era tier, at a desk or not.
 /mob/living/human/proc/scholar_study_time(tier)
-	return round(BOOK_STUDY_TIME(tier) / scholar_desk_rate())
+	return round(BOOK_STUDY_TIME(tier) * trait_study_time_mult() / (scholar_desk_rate() * recluse_rate()))
 
 // Research speed from a library: distinct chapters on the node's groundwork or
 // in its discipline, in books on bookcases near the bench.
@@ -377,6 +375,10 @@
 		if (T.knows_recipe_node(node_id))
 			return T
 	return null
+
+// Menacing tutors put students on edge, so their help counts for less.
+/mob/living/human/proc/tutor_rate()
+	return find_trait("Menacing") ? 1.25 : SCHOLAR_TUTOR_RATE
 
 /mob/living/human/proc/still_tutoring(mob/living/human/student, node_id)
 	return student && !QDELETED(src) && stat == CONSCIOUS && !incapacitated() && get_dist(src, student) <= 1 && knows_recipe_node(node_id)

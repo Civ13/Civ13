@@ -28,10 +28,16 @@ avoid code duplication. This includes items that may sometimes act as a standard
 /obj/item/proc/resolve_attackby(atom/A, mob/user, icon_x, icon_y) //resolving attack of atom A by src item in active hand of user
 	var/resolved = FALSE
 	add_fingerprint(user)
+	// A tool softer than what it cuts is slow and wears (tool_wear.dm).
+	if (tool_meets_work(src, A, user))
+		return TRUE
 	if (isturf(A))
 		resolved = src.resolve_attack_turf(A, user, icon_x, icon_y)
 		if (resolved)
 			return TRUE
+	// A hard tool struck against powder or fuel can spark (tool_materials.dm).
+	if (A.struck_by_tool(src, user))
+		return TRUE
 	resolved = A.attackby(src, user, icon_x, icon_y)
 	if (resolved)
 		return TRUE
@@ -61,6 +67,8 @@ avoid code duplication. This includes items that may sometimes act as a standard
 /mob/living/attackby(obj/item/I, mob/user, icon_x, icon_y)
 	if (!ismob(user))
 		return FALSE
+	if (tree_melee_refused(user, src))
+		return TRUE
 	if (can_operate(src) && do_surgery(src,user,I)) //Surgery
 		if (I.can_do_surgery(src,user))
 			return TRUE

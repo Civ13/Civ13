@@ -13,6 +13,7 @@
 	min_positions = 1
 	max_positions = 1
 
+/datum/job/french/bagnedirecteur/job_stats = list("strength" = STAT_MAX, "crafting" = STAT_NORMAL, "rifle" = STAT_MAX, "dexterity" = STAT_MAX, "swords" = STAT_HIGH, "pistol" = STAT_MAX, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
 /datum/job/french/bagnedirecteur/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -44,14 +45,7 @@
 	uniform.attackby(holsterh, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, the commander of the <b>Bagne</b>. Organize your squad leaders and make sure all the prisoners are kept in their place!")
-	H.setStat("strength", STAT_MAX)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_MAX)
-	H.setStat("dexterity", STAT_MAX)
-	H.setStat("swords", STAT_HIGH)
-	H.setStat("pistol", STAT_MAX)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	H.verbs += /mob/living/human/proc/Sound_Alarm
 	H.verbs += /mob/living/human/proc/Stop_Alarm
 	return TRUE
@@ -66,31 +60,23 @@
 	is_prison = TRUE
 	allowed_maps = list(MAP_BAGNE13)
 
+/datum/job/french/bagneguard/job_stats = list("strength" = STAT_VERY_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_VERY_HIGH, "dexterity" = STAT_VERY_HIGH, "swords" = STAT_HIGH, "pistol" = STAT_VERY_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/french/bagneguard/job_loadout = list(
+	/obj/item/clothing/shoes/leatherboots = slot_shoes,
+	/obj/item/clothing/under/ww2/british/french = slot_w_uniform,
+	/obj/item/clothing/head/helmet/modern/pith = slot_head,
+	/obj/item/weapon/radio/faction1 = slot_back,
+	/obj/item/weapon/gun/projectile/boltaction/lebel = slot_shoulder,
+	/obj/item/weapon/key/french/guard = slot_l_store,
+	/obj/item/weapon/storage/belt/gulagguard/filled = slot_belt)
 /datum/job/french/bagneguard/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/british/french(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pith(H), slot_head)
-//back
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction1(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/lebel(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/french/guard(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/gulagguard/filled(H), slot_belt)
+	equip_loadout(H)
 
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a guard of the Bagne, the labour camp. Keep the prisoners in place!")
-	H.setStat("strength", STAT_VERY_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_VERY_HIGH)
-	H.setStat("dexterity", STAT_VERY_HIGH)
-	H.setStat("swords", STAT_HIGH)
-	H.setStat("pistol", STAT_VERY_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/webbing/ww1/french/fullwebbing = new /obj/item/clothing/accessory/storage/webbing/ww1/french(null)
 	uniform.attackby(fullwebbing, H)

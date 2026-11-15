@@ -57,13 +57,13 @@
 		return
 
 /obj/structure/beehive/attackby(var/obj/item/I, var/mob/user)
-	if (istype(I, /obj/item/weapon/crowbar))
+	if (is_tool(I, TOOL_CROWBAR))
 		closed = !closed
 		user.visible_message(SPAN_NOTICE("[user] [closed ? "closes" : "opens"] \the [src]."), SPAN_NOTICE("You [closed ? "close" : "open"] \the [src]."))
 		update_icon()
 		return
 
-	else if (istype(I, /obj/item/weapon/wrench))
+	else if (is_tool(I, TOOL_WRENCH))
 		anchored = !anchored
 		playsound(loc, 'sound/items/Ratchet.ogg', 50, TRUE)
 		user.visible_message(SPAN_NOTICE("[user] [anchored ? "wrenches" : "unwrenches"] \the [src]."), SPAN_NOTICE("You [anchored ? "wrench" : "unwrench"] \the [src]."))
@@ -121,7 +121,7 @@
 		update_icon()
 		return
 
-	else if (istype(I, /obj/item/weapon/hammer) || istype(I, /obj/item/weapon/screwdriver))
+	else if (is_tool(I, TOOL_HAMMER) || is_tool(I, TOOL_SCREWDRIVER))
 		if (bee_count)
 			to_chat(user, SPAN_NOTICE("You can't dismantle \the [src] with these bees inside."))
 			return

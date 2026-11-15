@@ -22,7 +22,8 @@ def project(source, kind):
             statement = ('if' if match[1] == 'if' else 'elif') + ' matches(tool, ' + repr(match[2]) + '):'
         elif code.startswith(('playsound(', 'to_chat(')):
             statement = 'pass'
-        elif code == 'anchored = !anchored':
+        elif code in ('anchored = !anchored', 'toggle_anchor(user)'):
+            # toggle_anchor (code/_helpers/tools.dm) is the ratchet, message and toggle.
             statement = 'src.anchored = not src.anchored'
         elif re.fullmatch(r'if \(do_after\(user,\d+,src\)\)', code):
             statement = 'if wait(src, ' + re.search(r'\d+', code)[0] + '):'

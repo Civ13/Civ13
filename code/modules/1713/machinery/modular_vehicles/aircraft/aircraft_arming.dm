@@ -172,7 +172,7 @@
 	if (mounted && istype(I, /obj/item/ammo_magazine))
 		mounted.attackby(I, H)
 		return
-	if (mounted && istype(I, /obj/item/weapon/wrench))
+	if (mounted && is_tool(I, TOOL_WRENCH))
 		mounted.forceMove(get_turf(H))
 		H.put_in_hands(mounted)
 		H.visible_message(SPAN_NOTICE("[H] unbolts \the [mounted] from \the [src]."), SPAN_NOTICE("You unbolt \the [mounted] from the nose."))
@@ -204,7 +204,7 @@
 		I.forceMove(src)
 		H.visible_message(SPAN_NOTICE("[H] hangs \the [I] under \the [src]."), SPAN_NOTICE("You hang \the [I] under the wing. Drop it from the control column in the air."))
 		return
-	if (hung.len && istype(I, /obj/item/weapon/wrench))
+	if (hung.len && is_tool(I, TOOL_WRENCH))
 		var/obj/item/weapon/aircraft_bomb/B = hung[1]
 		B.forceMove(get_turf(H))
 		H.put_in_hands(B)

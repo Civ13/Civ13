@@ -74,6 +74,15 @@ var/terrain_height_probe_checks = 0
 	terrain_height_probe_assert(terrain_height_at(locate(5, 9, 1)) == 0, "no_file_flat")
 	terrain_height_probe_assert(terrain_slope_delay(locate(5, 9, 1), locate(6, 9, 1), 3) == 0, "no_file_no_cost")
 
+	// Version 2: half levels and the taller range; version 1 keeps hex only.
+	var/datum/terrain_heights/V2 = terrain_heights_parse("civ13-terrain-heights 2\nsize 2 2\nz 1\n0A\nv+\n", 2, 2, 1)
+	terrain_height_probe_assert(!V2.error && V2.at(1, 2, 1) == 0 && V2.at(2, 2, 1) == 0.5 && V2.at(1, 1, 1) == 31 && V2.at(2, 1, 1) == 31.5, "version_2_half_levels")
+	V2.set_level(1, 2, 1, 2.6)
+	V2.set_level(2, 2, 1, 40)
+	terrain_height_probe_assert(V2.at(1, 2, 1) == 2.5 && V2.at(2, 2, 1) == TERRAIN_MAX_LEVEL && V2.base_at(1, 2, 1) == 0, "set_level_keeps_half_levels")
+	terrain_height_probe_rejects("civ13-terrain-heights 1\nsize 2 2\nz 1\n0A\n00\n", "half_level_in_version_1")
+	terrain_height_probe_rejects("civ13-terrain-heights 2\nsize 2 2\nz 1\n0~\n00\n", "unknown_character")
+
 	map = new /obj/map_metadata/terrain_height_probe
 	terrain_height_probe_assert(map.terrain_heights(), "fixture_loads")
 	terrain_height_probe_assert(terrain_height_at(locate(1, 12, 1)) == 0, "north_west_corner")
@@ -173,7 +182,18 @@ var/terrain_height_probe_checks = 0
 		var/delay = 2.85 + terrain_free_slope_delay(F, locate(6, 9, 1), EAST, 2.85)
 		total += (max(1, ceil(round(delay / tick, 0.001))) + 1) * tick
 	terrain_height_probe_assert(abs(total / 20 - flat_pace * 1.5) <= tick / 20 + 0.0001, "climb_pace_follows_curve")
+	// A straight slide along a level row ignores the hillside beside it, even
+	// with the body a quarter tile off the row's centre line.
+	F.loc = locate(5, 6, 1)
+	F.step_y = 8
+	terrain_height_probe_assert(terrain_free_grade(F, locate(6, 6, 1), EAST) == 0, "level_row_ignores_side_hill")
+	F.step_y = 0
 	qdel(F)
+
+	// Check Movement describes the hill around a tile.
+	var/list/hill = movement_check_hill_lines(locate(6, 9, 1))
+	terrain_height_probe_assert(hill.len == 2 && findtext(hill[1], "east: up 1 level, about 50% slower") && findtext(hill[2], "west: down 1 level, about 31% faster"), "check_movement_hill_lines")
+	terrain_height_probe_assert(!length(movement_check_hill_lines(locate(3, 3, 1))), "check_movement_flat_no_hill_lines")
 
 	// Malformed files load flat instead of half-loaded.
 	terrain_height_probe_rejects(null, "null")
@@ -311,6 +331,29 @@ var/terrain_height_probe_checks = 0
 	graded.terrain_grade = 0
 	graded.terrain_grade_apply()
 	terrain_height_probe_assert(terrain_height_at(graded) == 6, "grade_undone")
+	// The rammer levels toward the user's own tile: a higher tile is pounded
+	// down a level, stays tamped and drops its dirt at the user's feet.
+	var/turf/high = locate(8, 10, 1)
+	var/turf/feet = locate(7, 10, 1)
+	high.ChangeTurf(/turf/floor/dirt)
+	high = locate(8, 10, 1)
+	terrain_height_probe_assert(stone_rammer_level_direction(high, feet) == -1, "rammer_cuts_higher_tile")
+	terrain_height_probe_assert(stone_rammer_level_direction(feet, high) == 0, "rammer_never_cuts_lower_tile")
+	terrain_height_probe_assert(stone_rammer_level_direction(high, high) == 0 && stone_rammer_level_direction(locate(5, 3, 1), locate(4, 2, 1)) == 0, "rammer_level_ground_only_tamps")
+	var/obj/item/weapon/stone_rammer/rammer = new
+	high = terrain_grade_finish(high, -1, rammer, feet)
+	terrain_height_probe_assert(istype(high, /turf/floor/tamped_earth) && terrain_height_at(high) == 6 && high.terrain_grade == -1, "rammer_cut_lowers_and_packs")
+	terrain_height_probe_assert((locate(/obj/item/weapon/barrier) in feet) && !(locate(/obj/item/weapon/barrier) in high), "rammer_cut_pile_at_feet")
+	terrain_height_probe_assert(stone_rammer_level_direction(high, feet) == 0, "rammer_stops_at_your_level")
+	var/obj/item/weapon/barrier/fill_pile = locate(/obj/item/weapon/barrier) in feet
+	fill_pile.forceMove(high)
+	high = terrain_grade_finish(high, 1, rammer, null, fill_pile)
+	terrain_height_probe_assert(terrain_height_at(high) == 7 && !high.terrain_grade && QDELETED(fill_pile), "rammer_fill_raises")
+	high = terrain_grade_finish(high, -1, null)
+	terrain_height_probe_assert(istype(high, /turf/floor/dirt) && terrain_height_at(high) == 6 && (locate(/obj/item/weapon/barrier) in high), "shovel_cut_pile_on_tile")
+	high.terrain_grade = 0
+	high.terrain_grade_apply()
+	qdel(rammer)
 
 	var/obj/map_metadata/terrain_height_probe/broken = new
 	broken.terrain_height_file = "tests/terrain_height/missing.txt"

@@ -43,19 +43,6 @@
 				H.dir = get_dir(H, src)
 				do_climb(H)
 
-/obj/structure/window/barrier/ex_act(severity)
-	switch(severity)
-		if (1.0)
-			qdel(src)
-			return
-		if (2.0)
-			qdel(src)
-			return
-		else
-			if (prob(50))
-				return ex_act(2.0)
-	return
-
 var/set_dir = null // Set the variable outside of any scopes
 
 /obj/structure/window/barrier/New(location, var/mob/creator, direction)
@@ -144,7 +131,7 @@ var/set_dir = null // Set the variable outside of any scopes
 				qdel(src)
 			user.visible_message(SPAN_WARNING("[user] puts the sandbag onto \the [src]."), SPAN_WARNING("You put the sandbag onto \the [src]."))
 			qdel(O)
-	else if (istype(O, /obj/item/weapon/material/shovel))
+	else if (is_tool(O, TOOL_SHOVEL))
 		user.visible_message(SPAN_WARNING("[user] starts dismantling the [src] using the [O.name]."), SPAN_WARNING("You start dismantling the [src] using the [O.name]."))
 		var/decon_time = 200
 		if (ishuman(user))
@@ -257,8 +244,10 @@ var/set_dir = null // Set the variable outside of any scopes
 				if(O.dir == user.dir)
 					to_chat(user, SPAN_WARNING("There is already \a [O.name] in this direction!"))
 					return
+	if (!wall_foundation_tile_free(user, /obj/covers/dirt_wall/blocks/incomplete))
+		return
 	to_chat(user, SPAN_NOTICE("You start building the dirt blocks wall..."))
-	if (do_after(user, 25, src))
+	if (do_after(user, 25, src) && wall_foundation_tile_free(user, /obj/covers/dirt_wall/blocks/incomplete))
 		to_chat(user, SPAN_NOTICE("You finish the placement of the dirt blocks wall foundation."))
 		new /obj/covers/dirt_wall/blocks/incomplete(user.loc)
 		qdel(src)

@@ -40,7 +40,7 @@
 		return "Plump helmets need a plot in a suitable area."
 	if (A.location == 0)
 		return null
-	if (!(map.ID in list(MAP_NOMADS_CONTINENTAL, MAP_NOMADS_PANGEA, MAP_NOMADS_NEW_WORLD, MAP_NOMADS_MEDITERRANEAN, MAP_NOMADS_EUROPE, MAP_NOMADS_GAIA)))
+	if (!(map.ID in list(MAP_NOMADS_CONTINENTAL, MAP_NOMADS_PANGEA, MAP_NOMADS_NEW_WORLD, MAP_NOMADS_MEDITERRANEAN, MAP_NOMADS_EUROPE, MAP_NOMADS_GAIA, MAP_NOMADS_AMERICAS_NORTH, MAP_NOMADS_AMERICAS_SOUTH)))
 		return null
 	// Keep these lists aligned with the inherited mushroom crop, not forage seeds.
 	if (!(A.climate in list("temperate", "sea", "tundra", "taiga", "jungle", "savanna")))
@@ -1191,7 +1191,7 @@
 						for (var/k in seasons)
 							if (season == k)
 								count++
-				if (count > 0 || ! list(MAP_NOMADS_CONTINENTAL, MAP_NOMADS_PANGEA, MAP_NOMADS_NEW_WORLD, MAP_NOMADS_MEDITERRANEAN, MAP_NOMADS_EUROPE, MAP_NOMADS_GAIA).Find(map.ID))
+				if (count > 0 || ! list(MAP_NOMADS_CONTINENTAL, MAP_NOMADS_PANGEA, MAP_NOMADS_NEW_WORLD, MAP_NOMADS_MEDITERRANEAN, MAP_NOMADS_EUROPE, MAP_NOMADS_GAIA, MAP_NOMADS_AMERICAS_NORTH, MAP_NOMADS_AMERICAS_SOUTH).Find(map.ID))
 					allow_stage = TRUE
 			advance_stage_if_allowed(allow_stage)
 			growth()
@@ -1230,7 +1230,7 @@
 			note_field_work(user, "harvests", 1)
 			if (ishuman(user))
 				var/mob/living/human/H = user
-				H.adaptStat("farming", 1)
+				H.adaptStat("farming", 1, type)
 			qdel(src)
 		else // destroy
 			to_chat(user, SPAN_WARNING("You uproot the dead [name]."))
@@ -1256,6 +1256,10 @@
 /obj/structure/farming/plant/proc/water_proc()
 	// Exit early if the plant is a mushroom
 	if (istype(src, /obj/structure/farming/plant/mushroom) || istype(src, /obj/structure/farming/plant/mushroompsy))
+		return
+
+	// River floodwater (flood_effects.dm): waters, drowns, or leaves silt.
+	if (flood_plant_step())
 		return
 
 	// Check for rain or monsoon and increase water level

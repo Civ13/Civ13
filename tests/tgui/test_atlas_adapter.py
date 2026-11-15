@@ -51,7 +51,7 @@ class AtlasAdapterContract(unittest.TestCase):
  def test_station_labels_preserve_canonical_choices_and_explicit_foundry_gate(self):
   anvil=(ROOT/'code/game/objects/structures/blacksmithing/blacksmithing.dm').read_text()
   labels=[line for line in anvil.splitlines() if 'newlist += "[anvil_recipes[i][1]] - ' in line]
-  self.assertEqual(len(labels),5)
+  self.assertEqual(len(labels),2)
   self.assertTrue(all('crafting_recipe_manual_suffix(H, "[anvil_recipes[i][9]]")' in line for line in labels))
   workbench=(ROOT/'code/game/objects/structures/blacksmithing/component_workbench.dm').read_text()
   for marker in ('choices[label] = recipe_name', 'choices[selected_label]', 'select_recipe(H, choice)'):
@@ -99,7 +99,7 @@ class AtlasAdapterContract(unittest.TestCase):
   for marker in ('!istype(ui)','ui.user != viewer','ui.src_object != reference','ui.state != state','STATUS_INTERACTIVE','ui.legacy_renderer','!ui.frontend_ready','!ui.frontend_acknowledged','length(payload) > 1024','params.len > 6','!istext(params["route"])'):
    self.assertIn(marker,NAV)
    self.assertLess(NAV.index(marker),NAV.index('var/route = params["route"]'))
-  self.assertIn('return list("atlas_navigate")',ADAPTER)
+  self.assertIn('return list("atlas_navigate", "atlas_craft")',ADAPTER)
   shared=(ROOT/'code/modules/nano/tgui.dm').read_text()
   self.assertNotIn('atlas_navigate',shared)
   topic=CORE.split('/datum/crafting_atlas_reference/Topic(href, list/href_list, state)',1)[1]

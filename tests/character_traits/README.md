@@ -98,3 +98,13 @@ or skipped selected suite. `tests/test_ci_baseline.py` runs the actual registere
 child in temporary offline storage, then removes the exact-zero commit guard in
 that copied source and verifies failure propagates through baseline and aggregate.
 This registration adds no native fixture, workflow permission or admission gate.
+
+## Playstyle traits
+
+`playstyle_probe.dm` is a native probe for the eight zero-cost playstyle traits
+(skill-gain rates, recluse pace, drag, pain, food, stamina, intimidation and
+rallying). Run it with the pinned compiler:
+
+```
+python3 tests/ecology_spawning/run_linux.py . tests/character_traits/playstyle_probe.dm
+```

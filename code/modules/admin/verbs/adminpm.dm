@@ -88,7 +88,7 @@
 	to_chat(src, "<span class='pm'><span class='out'>" + create_text_tag("pm_out_alt", "PM", src) + " to <span class='name'>[get_options_bar(C, holder ? TRUE : FALSE, holder ? TRUE : FALSE, TRUE)]</span>: <span class='message'>[msg]</span></span></span>")
 	to_chat(C, "<span class='pm'><span class='in'>" + create_text_tag("pm_in", "", C) + " <b>\[[recieve_pm_type] PM\]</b> <span class='name'>[get_options_bar(src, C.holder ? TRUE : FALSE, C.holder ? TRUE : FALSE, TRUE)]</span>: <span class='message'>[msg]</span></span></span>")
 
-	discord_adminpm_log(key_name(src),msg,key_name(C))
+	discord_adminpm_log(key_name(src),msg,key_name(C),holder ? TRUE : FALSE)
 
 	//play the receiving admin the adminhelp sound (if they have them enabled)
 	//non-admins shouldn't be able to disable this
@@ -127,7 +127,7 @@
 		C.adminhelped = FALSE
 	to_chat(C, "<span class='pm'><span class='in'>" + create_text_tag("pm_in", "", C) + " <b>\[Admin PM\]</b> <a href='?priv_msg_discord=\ref[sender_name]'>[sender_name] (discord)</span></a>: <span class='message'>[msg]</span></span></span>")
 
-	discord_adminpm_log(sender_name,msg,key_name(C))
+	discord_adminpm_log(sender_name,msg,key_name(C),TRUE)
 
 	//play the receiving admin the adminhelp sound (if they have them enabled)
 	//non-admins shouldn't be able to disable this
@@ -167,7 +167,7 @@
 
 	to_chat(src, "<span class='pm'><span class='out'>" + create_text_tag("pm_out_alt", "PM", src) + " to <span class='name'>[target]</span>: <span class='message'>[msg]</span></span></span>")
 
-	discord_adminpm_log(key_name(src),msg,target)
+	discord_adminpm_log(key_name(src),msg,target,holder ? TRUE : FALSE)
 
 	log_admin("TO-DISCORD-PM: [key_name(src)]->[target]: [msg]")
 

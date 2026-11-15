@@ -35,6 +35,7 @@
 	var/healing_stage = 0 //for beds
 	var/tmp/survival_rest_since = null
 	var/tmp/survival_actions = 0
+	var/tmp/survival_workload = 0 // heaviest running timed action: 0 none, 1 light, 2 ordinary, 3 heavy
 
 // Existing input and movement clocks avoid a per-mob timer or world scan.
 /mob/living/human/proc/survival_metabolism_time()
@@ -43,13 +44,64 @@
 /mob/living/human/proc/survival_input_inactivity()
 	return client ? client.inactivity : -1
 
-/mob/living/human/survival_action_started()
+/mob/living/human/survival_action_started(atom/target, datum/pickaxe_mining_action/mining_context)
 	survival_actions++
+	survival_workload = max(survival_workload, mining_context ? 3 : survival_workload_for(target))
 	survival_rest_since = survival_metabolism_time()
 
 /mob/living/human/survival_action_finished()
 	survival_actions = max(0, survival_actions - 1)
+	if (!survival_actions)
+		survival_workload = 0
 	survival_rest_since = survival_metabolism_time()
+
+// Food and water burn with the work being done, as multiples of the ordinary
+// working rate (0.0864 per second). Walking, running and fighting count as
+// ordinary work; standing about awake is resting. Full pools of 600 food and
+// 500 water last about 3 hours resting, 2 hours of ordinary work and 1 hour of
+// heavy labour; sixty seconds without input still drops use by 90%.
+/mob/living/human/proc/survival_current_workload()
+	if (survival_actions)
+		return max(1, survival_workload)
+	var/now = survival_metabolism_time()
+	if ((last_movement <= now && now - last_movement < 20) || next_move > now) // moved in the last 2 seconds or fighting
+		return 2
+	return 0
+
+/mob/living/human/proc/survival_work_food_m(workload)
+	if (workload >= 3)
+		return 1.75 // heavy: mining, digging, felling, sawing, smithing
+	if (workload == 2)
+		return 1 // ordinary handwork, walking, fighting
+	if (workload == 1)
+		return 0.8 // light: reading, writing, sewing, weaving, study
+	return 0.6 // awake and resting
+
+/mob/living/human/proc/survival_work_water_m(workload)
+	if (workload >= 3)
+		return 2 // heavy labour sweats
+	return survival_work_food_m(workload)
+
+// Climate works through body temperature, so clothing matters: a chilled body
+// burns food to keep warm and an overheated one sweats. The very cold burn
+// below cold_level_1 (handle_bodytemperature) still applies on top.
+/mob/living/human/proc/survival_climate_food_m()
+	if (!species)
+		return 1
+	var/chill = species.body_temperature - bodytemperature
+	if (chill >= 15)
+		return 1.6
+	if (chill >= 5)
+		return 1.3
+	return 1
+
+/mob/living/human/proc/survival_climate_water_m()
+	var/m = 1
+	if (map.ID == MAP_NOMADS_DESERT || weather_heat_at(src)) // dry heat and sun
+		m = 2.2
+	if (species && bodytemperature >= species.body_temperature + 3) // overheated, too much clothing or near a fire
+		m *= 1.5
+	return m
 
 /mob/living/human/proc/survival_idle_multiplier()
 	var/now = survival_metabolism_time()
@@ -202,6 +254,7 @@
 			food_m *= 1.4
 		else if (find_trait("Dwarfism"))
 			food_m *= 0.8
+		food_m *= trait_food_mult()
 		if (orc)
 			food_m *= 1.5
 		if (goblin)
@@ -231,13 +284,10 @@
 			nutrition -= ((0.01) * HUNGER_THIRST_MULTIPLIER * food_m)
 			water -= ((0.01) * HUNGER_THIRST_MULTIPLIER * water_m)
 
-		else if (stat == CONSCIOUS) // about 77 minutes of food while active, ten times longer while idle
-			if (map.ID == MAP_NOMADS_DESERT || weather_heat_at(src)) // about 26 minutes of water while active
-				nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER * food_m * activity_m)
-				water -= ((0.7) * HUNGER_THIRST_MULTIPLIER * water_m * activity_m)
-			else
-				nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER * food_m * activity_m)
-				water -= ((0.27) * HUNGER_THIRST_MULTIPLIER * water_m * activity_m)
+		else if (stat == CONSCIOUS) // workload and climate set the rate (survival_work_food_m), idle is a tenth
+			var/workload = survival_current_workload()
+			nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER * food_m * activity_m * survival_work_food_m(workload) * survival_climate_food_m())
+			water -= ((0.27) * HUNGER_THIRST_MULTIPLIER * water_m * activity_m * survival_work_water_m(workload) * survival_climate_water_m())
 		if (find_trait("Extroverted"))
 			if (prob(20))
 				var/ct = 0
@@ -262,6 +312,7 @@
 					adjust_mood(-(0.4), "people around you")
 		if (!inducedSSD)
 			adjust_mood(-(0.02))
+		handle_playstyle_traits()
 	#undef HUNGER_THIRST_MULTIPLIER
 	handle_diet()
 	if (stats && stats.len)
@@ -310,6 +361,7 @@
 
 	// recover stamina
 	diet_recover_stamina()
+	wanderer_recover_stamina()
 
 	// recover juice (mana) - ~0.5 per second at standard 2ds Life() ticks
 	if (juice < max_juice)
@@ -339,6 +391,7 @@
 				bad_external_organs -= E
 
 		handle_drowning()
+		flood_life_tick()
 
 		handle_blood()
 
@@ -370,6 +423,7 @@
 		handle_defib_timer()
 	process_turret_roofs()
 	process_vehicle_roofs()
+	process_train_roofs()
 	process_static_roofs()
 	if (!handle_some_updates())
 		return											//We go ahead and process them 5 times for HUD images and other stuff though.
@@ -1219,264 +1273,17 @@
 			var/image/holder2 = hud_list[BASE_FACTION]
 			holder2.icon = 'icons/mob/hud_1713.dmi'
 			holder2.plane = HUD_PLANE
-			switch (original_job.base_type_flag())
-				if (PIRATES)
-					if (map && !map.battleroyale)
-						holder2.icon_state = "pirate_basic"
-				if (BRITISH)
-					if (map.ordinal_age >= 4)
-						holder2.icon_state = "brit_basic"
-					else if (map.ordinal_age >= 3)
-						holder2.icon_state = "rn_basic"
-					else if (map.ID == MAP_TWOTRIBES)
-						holder2.icon_state = "civ1"
-					else
-						holder2.icon_state = "eng_basic"
-				if (FRENCH)
-					if (map.ordinal_age >= 4)
-						holder2.icon_state = "fr2_basic"
-					else if (map.ID == MAP_TWOTRIBES)
-						holder2.icon_state = "civ3"
-					else
-						holder2.icon_state = "fr_basic"
-				if (SPANISH)
-					if (map.ordinal_age <= 3)
-						holder2.icon_state = "sp_basic"
-					else
-						holder2.icon_state = "spn_basic"
-				if (PORTUGUESE)
-					if (map.ordinal_age <= 4)
-						holder2.icon_state = "pt_basic"
-					else
-						holder2.icon_state = "pt2_basic"
-				if (INDIANS)
-					if (map.ID == MAP_AFRICAN_WARLORDS)
-						if(nationality == "Yellowagwana")
-							holder2.icon_state = "civ4"
-						if(nationality == "Redkantu")
-							holder2.icon_state = "civ1"
-						if(nationality == "Blugisi")
-							holder2.icon_state = "civ3"
-					else if (map.ID == MAP_EAST_LOS_SANTOS)
-						holder2.icon_state = "ballas"
-					else
-						holder2.icon_state = "ind_basic"
-				if (DUTCH)
-					if (map.ordinal_age >= 6)
-						holder2.icon_state = "nl_basic"
-					else
-						holder2.icon_state = "nl_old_basic"
-				if (ITALIAN)
-					holder2.icon_state = "it_basic"
-				if (ARAB)
-					if (map.ordinal_age >= 6)
-						if (map.ID == MAP_ARAB_TOWN)
-							holder2.icon_state = "hez_basic"
-						else if (map.ID == MAP_SYRIA)
-							if (original_job.title == "Wagner Group PMC")
-								holder2.icon_state = "wagner"
-							else
-								holder2.icon_state = "syria_basic"
-						else
-							holder2.icon_state = "isis_basic"
-					else
-						holder2.icon_state = "arab_basic"
-				if (GREEK)
-					holder2.icon_state = "greek_basic"
-				if (ROMAN)
-					if (map.ID == MAP_WHITERUN)
-						holder2.icon_state = "empire"
-					else
-						holder2.icon_state = "roman_basic"
-				if (CHECHEN)
-					holder2.icon_state = "chechen_basic"
-				if (FINNISH)
-					holder2.icon_state = "finnish_basic"
-				if (NORWEGIAN)
-					if (map.ID == MAP_CLASH)
-						holder2.icon_state = "ger0_basic"
-					else
-						holder2.icon_state = "norway_basic"
-				if (SWEDISH)
-					holder2.icon_state = "swedish_basic"
-				if (DANISH)
-					if (map.ID == MAP_CLASH)
-						holder2.icon_state = "barbarian_basic"
-					else
-						holder2.icon_state = "danish_basic"
-				if (JAPANESE)
-					if (original_job.is_yakuza && original_job.is_yama)
-						holder2.icon_state = "yamaguchi"
-					else if (original_job.is_yakuza && original_job.is_ichi)
-						holder2.icon_state = "ichiwa"
-					else if (original_job.is_samurai && original_job.is_eastern)
-						holder2.icon_state = "eastern"
-					else if (original_job.is_samurai && original_job.is_western)
-						holder2.icon_state = "western"
-					else
-						holder2.icon_state = "jp_basic"
-				if (RUSSIAN)
-					if (map.ID == MAP_YELTSIN || map.ID == MAP_GROZNY || map.ID == MAP_FACTORY || map.ID == MAP_OPERATION_FALCON || map.ID == MAP_VADSO_CITY || map.ID == MAP_CONSTANTINOPOLI)
-						holder2.icon_state = "ru_basic"
-					else if (map.ID == MAP_BANK_ROBBERY)
-						holder2.icon_state = "robbers"
-					else if (map.ID == MAP_DRUG_BUST)
-						holder2.icon_state = "rednikov"
-					else if (istype(map, /obj/map_metadata/eft_factory))
-						holder2.icon_state = "none"
-					else
-						if (map.ordinal_age <= 5)
-							holder2.icon_state = "ru_basic"
-						else if (map.ordinal_age >= 6)
-							holder2.icon_state = "sov_basic"
-				if (GERMAN)
-					if (map.ordinal_age <= 1)
-						holder2.icon_state = "ger0_basic"
-					else if (map.ordinal_age <= 5)
-						holder2.icon_state = "ger_basic"
-					else if (map.ordinal_age == 6)
-						holder2.icon_state = "ger2_basic"
-					else
-						holder2.icon_state = "ger3_basic"
-				if (AMERICAN)
-					if (map.ID == MAP_ARAB_TOWN)
-						holder2.icon_state = "idf_basic"
-					else if (map.ID == MAP_TANTIVEIV)
-						holder2.icon_state = "imp_basic"
-					else if (map.ID == MAP_EAST_LOS_SANTOS)
-						holder2.icon_state = "civ2"
-					else if (istype(map, /obj/map_metadata/eft_factory))
-						holder2.icon_state = "none"
-					else if (map.ID == MAP_SYRIA && original_job.title != "Delta Force Operator")
-						holder2.icon_state = "syria_fsa"
-					else
-						holder2.icon_state = "us_basic"
-				if (VIETNAMESE)
-					if (original_job.is_nva)
-						holder2.icon_state = "vn_basic"
-					else
-						holder2.icon_state = "vc_basic"
-				if (FILIPINO)
-					holder2.icon_state = "fp_basic"
-				if (CHINESE)
-					if((map && map.ordinal_age >= 7) || map.ID == MAP_RETREAT)
-						holder2.icon_state = "sov_basic"
-					else
-						holder2.icon_state = "roc_basic"
-				if (POLISH)
-					holder2.icon_state = "pol_basic"
-				if (CIVILIAN)
-					if (map.ID == MAP_CAPITOL_HILL)
-						holder2.icon_state = "civ1"
-					else if (original_job_title == "Nomad")
-						holder2.icon_state = ""
-					else if (original_job.is_upa && map.ID != MAP_OCCUPATION)
-						holder2.icon_state = "upa_basic"
-					else if (map.ID == MAP_WHITERUN)
-						holder2.icon_state = "stormcloak"
-					else if (map.ID == MAP_TANTIVEIV)
-						holder2.icon_state = "rebel_basic"
-					else if ((map.ID == MAP_BANK_ROBBERY || map.ID == MAP_DRUG_BUST)&& original_job.is_law)
-						holder2.icon_state = "police"
-					else if (map.ID == MAP_TADOJSVILLE)
-						holder2.icon_state = "un"
-					else if (map.ID == MAP_TSARITSYN || map.ID == MAP_YELTSIN || map.ID == MAP_LONG_MARCH)
-						holder2.icon_state = "sov_basic"
-					else if (istype(map, /obj/map_metadata/eft_factory))
-						holder2.icon_state = "none"
-					else if (map.ID == MAP_WIZARD_BOY)
-						switch(faction)
-							if("Rubywyrm")
-								holder2.icon_state = "civ1"
-							if("Mintysnek")
-								holder2.icon_state = "civ2"
-							if("Slatepie")
-								holder2.icon_state = "civ3"
-							if("Mustardweasel")
-								holder2.icon_state = "civ4"
-						if(nationality == "T") // teacher/professor
-							holder2.icon_state = "wizard_teacher"
-					else if (map.ID == MAP_GULAG13)
-						if(nationality == "Polish")
-							holder2.icon_state = "pol_basic"
-						else if(nationality == "German")
-							holder2.icon_state = "ger3_basic"
-						else if(nationality == "Ukrainian")
-							holder2.icon_state = "ukr_basic"
-					else if (original_job_title == "Civilization A Citizen")
-						if (map.ID == MAP_NATIONSRP_COLDWAR)
-							holder2.icon_state = "us_basic"
-						else
-							holder2.icon_state = "civ1"
-					else if (original_job_title == "Civilization B Citizen")
-						if (map.ID == MAP_NATIONSRP_COLDWAR)
-							holder2.icon_state = "sov_basic"
-						else
-							holder2.icon_state = "civ2"
-					else if (original_job_title == "Civilization C Citizen")
-						holder2.icon_state = "civ3"
-					else if (original_job_title == "Civilization D Citizen")
-						holder2.icon_state = "civ4"
-					else if (original_job_title == "Civilization E Citizen")
-						holder2.icon_state = "civ5"
-					else if (original_job_title == "Civilization F Citizen")
-						holder2.icon_state = "civ6"
-					else
-						holder2.icon_state = ""
-
-				if (BLUEFACTION)
-					holder2.icon_state = "blugoslavia"
-				if (REDFACTION)
-					holder2.icon_state = "redmenia"
-				if (CAFR)
-					holder2.icon_state = "civ1"
-				if (TSFSR)
-					holder2.icon_state = "sov_basic"
+			var/faction_icon = faction_hud_icon_state(src)
+			if (!isnull(faction_icon))
+				holder2.icon_state = faction_icon
 			holder2.overlays.Cut()
-			if (map && map.ID == MAP_WIZARD_BOY && faction_text == CIVILIAN)
-				switch(nationality)
-					if("R") // loser
-						holder2.overlays += icon(holder2.icon,"wizard_loser")
-					if("0") // idiot
-						holder2.overlays += icon(holder2.icon,"wizard_idiot")
-					if("1") // unga
-						holder2.overlays += icon(holder2.icon,"wizard_unga")
-					if("2") // coal
-						holder2.overlays += icon(holder2.icon,"wizard_coal")
-					if("3") // slate
-						holder2.overlays += icon(holder2.icon,"wizard_gem")
-					if("4") // based
-						holder2.overlays += icon(holder2.icon,"wizard_based")
-					if("5") // chad
-						holder2.overlays += icon(holder2.icon,"wizard_chad")
-			if (faction_text == CIVILIAN && map.ID == MAP_GULAG13)
-				switch(original_job_title)
-					if ("Janitor")
-						holder2.overlays += icon(holder2.icon,"role_janitor")
-					if ("Kitchen Duty")
-						holder2.overlays += icon(holder2.icon,"role_kitchen")
-					if ("Miner")
-						holder2.overlays += icon(holder2.icon,"role_miner")
-					if ("Nurse Helper")
-						holder2.overlays += icon(holder2.icon,"role")
-					if ("Builder")
-						holder2.overlays += icon(holder2.icon,"role_builder")
-					if ("Logger")
-						holder2.overlays += icon(holder2.icon,"role_logger")
-			if (faction_text == CIVILIAN && map.ID == MAP_BAGNE13)
-				switch(original_job_title)
-					
-					if ("Cuistot")
-						holder2.overlays += icon(holder2.icon,"role_kitchen")
-					if ("Infirmier")
-						holder2.overlays += icon(holder2.icon,"role")
-					if ("Bucheron")
-						holder2.overlays += icon(holder2.icon,"role_logger")
+			if (map)
+				map.add_faction_hud_overlays(src, holder2)
 			if (original_job.uses_squads)
 				if (faction_text == CIVILIAN && map.ID == MAP_OCCUPATION)
 					holder2.icon_state = ""
 
-				if(map.ID == MAP_CAMPAIGN || map.ID == MAP_ROTSTADT || map.ID == MAP_BATTLE_SHIPS || map.ID == CAMPAIGN_MAP_LIST_MAPID_OR)
+				if(map.campaign || map.ID == MAP_ROTSTADT || map.ID == MAP_BATTLE_SHIPS)
 					switch (squad)
 						if (4)
 							holder2.overlays += icon(holder2.icon,"squad_recon")
@@ -1529,7 +1336,7 @@
 						holder2.icon_state = ""
 					else
 						holder2.overlays += icon(holder2.icon,"nco")
-			if (map.ID == MAP_CAMPAIGN || map.ID == MAP_OPERATION_FALCON || map.ID == MAP_VADSO_CITY || map.ID == CAMPAIGN_MAP_LIST_MAPID_OR)
+			if (map.campaign || map.ID == MAP_OPERATION_FALCON || map.ID == MAP_VADSO_CITY)
 				if (original_job.is_commander)
 					to_chat(world, "<font color='green' size=4>[ckey] is now the <b>[capitalize(lowertext(faction_text))] Army</b> Commander!</font>")
 			if (original_job.is_medic)

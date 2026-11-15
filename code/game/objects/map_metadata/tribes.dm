@@ -1,5 +1,6 @@
 
 /obj/map_metadata/tribes
+	tribes = TRUE
 	abandonment_season_cycle = TRUE
 	ID = MAP_TRIBES
 	title = "Tribes"

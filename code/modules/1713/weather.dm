@@ -541,7 +541,7 @@
 			loc_temp = (max(22,loc_temp-40))
 		else if (loc_temp < 10)
 			loc_temp = (min(10,loc_temp+40))
-		if (local_weather == WEATHER_EXTREME && season == "WINTER" && (mob_area.climate == "temperate" || mob_area.climate == "taiga" || mob_area.climate == "tundra"))
+		if (local_weather == WEATHER_EXTREME && season == SEASON_WINTER && (mob_area.climate == "temperate" || mob_area.climate == "taiga" || mob_area.climate == "tundra"))
 			loc_temp = -10
 		if (loc_temp < 19 && map && map.ID == MAP_ANTARCTICA)
 			for (var/obj/structure/oven/big/FN in range(5, A))

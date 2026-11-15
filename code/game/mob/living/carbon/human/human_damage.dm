@@ -78,6 +78,16 @@
 /mob/living/human/adjustHalLoss(var/amount)
 	var/heal = (amount < 0)
 	amount = abs(amount)
+	// Unconscious bodies heal pain every Life tick. With no damage and no pain on
+	// any limb, healing changes nothing, so skip copying and walking the limbs.
+	if (heal)
+		var/hurt = FALSE
+		for (var/obj/item/organ/external/E in organs)
+			if (E.brute_dam || E.burn_dam || E.pain || E.damage)
+				hurt = TRUE
+				break
+		if (!hurt)
+			return
 	var/list/pick_organs = organs.Copy()
 	while(amount > 0 && pick_organs.len)
 		var/obj/item/organ/external/E = pick(pick_organs)
@@ -140,7 +150,10 @@
 
 /mob/living/human/Stun(amount)
 	handle_look_stuff(1)
+	var/was_stunned = stunned
 	..()
+	if (stunned > was_stunned)
+		jostle_held_items(FALSE)
 
 /mob/living/human/Weaken(amount)
 	// failing that, addition 50%/77% chance to get less weakened
@@ -149,6 +162,14 @@
 	var/was_weakened = weakened
 	..()
 	get_up_hint(was_weakened)
+	if (weakened > was_weakened)
+		jostle_held_items(TRUE)
+
+/mob/living/human/Paralyse(amount)
+	var/was_paralysed = paralysis
+	..()
+	if (paralysis > was_paralysed)
+		jostle_held_items(TRUE)
 
 // Defined here solely to take species flags into account without having to recast at mob/living level.
 /mob/living/human/getOxyLoss()
@@ -307,8 +328,8 @@ This function restores all organs.
 	//visible_message("Hit debug. [damage] | [damagetype] | [def_zone] | [blocked] | [sharp] | [used_weapon]")
 
 	//Handle other types of damage
-	if (!stat && damagetype != BRUTE && damagetype != BURN)
-		if (damagetype == HALLOSS && !(species && (species.flags & NO_PAIN)))
+	if (damagetype != BRUTE && damagetype != BURN)
+		if (!stat && damagetype == HALLOSS && !(species && (species.flags & NO_PAIN)))
 			if ((damage > 25 && prob(20)) || (damage > 50 && prob(60)))
 				emote("painscream")
 
@@ -378,6 +399,7 @@ This function restores all organs.
 			traumatic_shock -= O.volume/2
 			shock_stage -= O.volume/4
 	traumatic_shock *= leader_order_hold_mult()
+	traumatic_shock *= trait_pain_mult()
 	if (traumatic_shock < 0)
 		traumatic_shock = FALSE
 

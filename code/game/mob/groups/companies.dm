@@ -13,7 +13,7 @@
 		U = src
 	else
 		return
-	if (map.civilizations == TRUE || map.ID == MAP_TRIBES || map.ID == MAP_THREE_TRIBES || map.ID == MAP_FOUR_KINGDOMS || map.ID == MAP_COLONY || map.ID == MAP_NATIONSRP || map.ID == MAP_NATIONSRP_TRIPLE || map.ID == MAP_NATIONSRPMED || map.ID == MAP_NATIONSRP_WW2 || map.ID == MAP_NATIONSRP_COLDWAR || map.ID == MAP_NATIONSRP_COLDWAR_CMP)
+	if (map.civilizations == TRUE || map.tribes || map.ID == MAP_COLONY || map.nationsrp)
 		var/choosename = player_input(U, "Choose a name for the company:", null, null, "text", null, TRUE)
 		create_company_pr(choosename)
 		return
@@ -64,7 +64,7 @@
 		H = src
 	else
 		return
-	if (map.civilizations == TRUE || map.ID == MAP_TRIBES || map.ID == MAP_THREE_TRIBES || map.ID == MAP_FOUR_KINGDOMS || map.ID == MAP_COLONY || map.ID == MAP_NATIONSRP || map.ID == MAP_NATIONSRP_TRIPLE || map.ID == MAP_NATIONSRPMED || map.ID == MAP_NATIONSRP_WW2 || map.ID == MAP_NATIONSRP_COLDWAR || map.ID == MAP_NATIONSRP_COLDWAR_CMP)
+	if (map.civilizations == TRUE || map.tribes || map.ID == MAP_COLONY || map.nationsrp)
 		var/found = FALSE
 		var/list/currlist = list()
 		var/list/currlist_ind = list("Cancel")

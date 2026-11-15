@@ -67,9 +67,9 @@
 		slowdown = 0.55
 	else if (weight > max_weight * 0.75 && weight <= max_weight * 0.85)
 		slowdown = 0.66
-	else if (weight > max_weight * 0.85 && weight <= max_weight * 0.95)
+	else if (weight > max_weight * 0.85 && weight <= max_weight * 0.90)
 		slowdown = 0.77
-	else if (weight > max_weight * 0.85 && weight <= max_weight * 0.95)
+	else if (weight > max_weight * 0.90 && weight <= max_weight * 0.95)
 		slowdown = 0.88
 	else if (weight > max_weight * 0.95 && weight <= INFINITY)
 		slowdown = 0.99
@@ -257,6 +257,7 @@
 		// one pulse and the hold broke.
 		if (npc.npc_subtile_offset_owned && (step_x || step_y) && !npc.pulledby)
 			return FALSE
+	var/atom/ride_from = loc // Where a rider stood before this move (hoof dust).
 	var/datum/human_subtile_pulse/subtile_pulse
 	var/mob/living/human/subtile_actor
 	var/subtile_realign = FALSE
@@ -343,6 +344,8 @@
 			if (!H.human_subtile_mount_follow())
 				H.riding_mob.forceMove(H.loc)
 			H.riding_mob.dir = H.dir
+			if (ride_from != H.loc && isturf(ride_from))
+				hoof_dust(H.riding_mob, ride_from)
 	los_refresh_moved_viewer(src, FALSE, los_move_contexts)
 	return
 
@@ -453,6 +456,15 @@
 	for (var/obj/structure/noose/N in get_turf(mob))
 		if (N.hanging == mob)
 			return
+
+	// On top of a vehicle: walk across its roof or jump off (vehicle_decks.dm).
+	if (mob.vehicle_deck && ishuman(mob))
+		var/mob/living/human/deck_rider = mob
+		if (deck_rider.vehicle_deck_busy)
+			return
+		move_delay = world.time + mob.movement_delay()
+		deck_rider.vehicle_deck_step(direct)
+		return
 
 	// Up a tree: a movement key climbs down (tree_climbing.dm).
 	if (mob.climbed_tree && ishuman(mob))
@@ -620,26 +632,12 @@
 			var/snow = TRUE
 			for (var/obj/covers/CV in get_turf(F))
 				snow = FALSE
-			for(var/obj/effect/flooding/FLD in get_turf(F))
-				switch(FLD.flood_level)
-					if (1)
-						standing_on_snow = 2
-					if (2)
-						standing_on_snow = 4
-					if (3)
-						standing_on_snow = 6
-			if(istype(F, /turf/floor/sub_deck))
-				var/turf/floor/sub_deck/SD = F
-				if(SD.water_depth >= 150)
-					standing_on_snow = 6
-				else if(SD.water_depth >= 100)
-					standing_on_snow = 4
-				else if(SD.water_depth >= 50)
-					standing_on_snow = 2
+			// Puddles, a flooded deck or river floodwater (flood_effects.dm).
+			standing_on_snow = standing_water_delay(F)
 			standing_on_snow *= footwear_terrain_mult(H, "wade")
 			if ((weather_at(F) == WEATHER_WET && findtext(weather_look_at(F),"rain")) || weather_at(F) == WEATHER_EXTREME)
 				if (F.may_become_muddy)
-					if (F_area.climate != "semiarid" || F_area.climate != "jungle" || F_area.climate != "desert" || F_area.climate != "savanna" || season == "WINTER" || season == "SPRING")
+					if (rain_soaks_ground(F_area))
 						F.muddy = TRUE
 					else
 						F.muddy = FALSE
@@ -749,7 +747,7 @@
 									S.overlays += S.blood_overlay
 			if (!H.crab)
 				if (istype(F, /turf/floor/beach/water))
-					move_delay += F.move_delay * footwear_terrain_mult(H, "wade")
+					move_delay += H.water_step_delay(F)
 				else
 					move_delay += F.move_delay
 			if (istype(F, /turf/floor/trench/flooded))
@@ -757,7 +755,7 @@
 				mob.next_mud_message = world.time+100
 			// Snowshoes are clumsy anywhere but on snow.
 			if (!(F.has_snow_cover() && snow))
-				standing_on_snow += footwear_offsnow_slowdown(H)
+				standing_on_snow += footwear_offsnow_slowdown(H, F)
 			footwear_ice_slip_check(H, F, distance_fraction)
 		if (mob.velocity_lastdir != -1)
 			if (direct != mob.velocity_lastdir)
@@ -825,7 +823,7 @@
 				mob.stop_pulling()
 
 			else if (istype(mob.pulling, /mob))
-				move_delay += 1.25
+				move_delay += 1.25 * mob.pull_drag_mult()
 				if (istype(mob.pulling, /mob/living/human))
 					var/mob/living/human/HH = mob.pulling
 					for (var/obj/structure/noose/N in get_turf(HH))
@@ -833,11 +831,11 @@
 							mob.stop_pulling()
 
 			else if (istype(mob.pulling, /obj/item/weapon/gun/projectile/automatic/stationary))
-				move_delay += 1.00
+				move_delay += 1.00 * mob.pull_drag_mult()
 
 			else if (istype(mob.pulling, /obj/structure))
 				var/obj/structure/pulled_structure = mob.pulling
-				move_delay += pulled_structure.drag_delay(mob)
+				move_delay += pulled_structure.drag_delay(mob) * mob.pull_drag_mult()
 
 		if (mob_is_human)
 			if (H.getStat("stamina") == (H.getMaxStat("stamina")/2) && H.m_intent == "run" && world.time >= H.next_stamina_message)
@@ -1044,7 +1042,7 @@
 		if (istype(src, /mob/living/human))
 			var/mob/living/human/HH = src
 			if (HH.riding == TRUE && !isnull(HH.riding_mob))
-				move_delay = 0.5
+				move_delay = 0.5 + HH.riding_mob.hitch_drag()
 			else
 				move_delay /= t_movement_speed_multiplier
 		else
@@ -1181,6 +1179,8 @@
 /client/var/tmp/fine_offset_glide_at = 0
 
 /mob/proc/held_movement_direction()
+	if (click_route)
+		click_route.steer()
 	return (movement_northsouth || 0) | (movement_eastwest || 0)
 
 // The fine_step value the movementMachine passes for this mob's held keys.
@@ -1191,6 +1191,7 @@
 
 // when a client changes mobs or logs out they stop moving
 /mob/Logout()
+	click_route_cancel()
 	movement_eastwest = null
 	movement_northsouth = null
 	movement_fine = FALSE
@@ -1200,6 +1201,7 @@
 	set name = ".startmovingup"
 	set instant = TRUE
 	if (mob)
+		mob.click_route_cancel() // a movement key takes over from a route
 		mob.movement_northsouth = NORTH
 		mob.movement_fine = FALSE
 		try
@@ -1235,6 +1237,7 @@
 	set name = ".startmovingdown"
 	set instant = TRUE
 	if (mob)
+		mob.click_route_cancel() // a movement key takes over from a route
 		mob.movement_northsouth = SOUTH
 		mob.movement_fine = FALSE
 		try
@@ -1268,6 +1271,7 @@
 	set name = ".startmovingright"
 	set instant = TRUE
 	if (mob)
+		mob.click_route_cancel() // a movement key takes over from a route
 		mob.movement_eastwest = EAST
 		mob.movement_fine = FALSE
 		try
@@ -1303,6 +1307,7 @@
 	set name = ".startmovingleft"
 	set instant = TRUE
 	if (mob)
+		mob.click_route_cancel() // a movement key takes over from a route
 		mob.movement_eastwest = WEST
 		mob.movement_fine = FALSE
 		try
@@ -1418,6 +1423,7 @@
 	set instant = TRUE
 	if (!mob || !(direction in list(NORTH, SOUTH, EAST, WEST, NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST)))
 		return FALSE
+	mob.click_route_cancel()
 	// Release ordinary held axes through their lifecycle, including drone/turret
 	// stop hooks, before they become precision axes.
 	if (!mob.movement_fine || !mob.held_movement_direction())

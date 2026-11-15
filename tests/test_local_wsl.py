@@ -38,6 +38,7 @@ class LocalWslTests(unittest.TestCase):
                            if path.is_file() and '__pycache__' not in path.parts)
             for name in (*atlas, 'scripts/build-crafting-atlas.py',
                          'config/crafting/furniture_joinery.json',
+                         'config/craft_needs.json',
                          'code/modules/1713/rope_making.dm',
                          'code/modules/1713/dressmaking.dm',
                          'code/modules/1713/primitive_woodworking.dm',
@@ -55,9 +56,15 @@ class LocalWslTests(unittest.TestCase):
                          'code/modules/1713/herbalism.dm',
                          'code/modules/1713/flint_mining.dm',
                          'code/modules/1713/stone_age_arms.dm',
+                         'code/modules/1713/processing_recipes.dm',
+                         'code/modules/1713/obsidian.dm',
                          'code/modules/1713/herb_garden.dm',
                          'code/game/objects/farming.dm',
-                         'code/modules/reagents/reagent_containers/food/snacks/meat.dm'):
+                         'code/modules/reagents/reagent_containers/food/snacks/meat.dm',
+                         'code/modules/projectiles/handloading.dm',
+                         'code/modules/projectiles/_ammo_casing.dm',
+                         # Admin-only list that the build keeps out of public outputs.
+                         'code/game/mob/crafting_atlas_admin.dm'):
                 path = source / name
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_bytes((root / name).read_bytes())

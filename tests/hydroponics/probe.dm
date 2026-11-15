@@ -260,7 +260,7 @@ var/hydro_runtime_error = FALSE
 /proc/hydro_catalog_checks()
 	hydro_check(get_recipe_node_req("/obj/structure/hydroponics_frame") == "hydroponics" && get_recipe_node_req("/obj/structure/hydroponics_tray") == "hydroponics", "frame and tray unlock at Hydroponics")
 	var/datum/research_node/node = research_nodes["hydroponics"]
-	hydro_check(node && node.era_tier == 6 && ("advanced_agriculture" in node.prereqs) && ("electricity" in node.prereqs), "Hydroponics is era 6 after Advanced Agriculture and Electricity")
+	hydro_check(node && node.era_tier == 6 && ("irrigation" in node.prereqs) && ("electricity" in node.prereqs), "Hydroponics is era 6 after Irrigation and Electricity")
 	for (var/crop in hydroponics_crops())
 		var/plant_path = text2path("/obj/structure/farming/plant/[crop]")
 		var/obj/structure/farming/plant/P = plant_path

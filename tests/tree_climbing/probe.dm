@@ -65,6 +65,11 @@ var/tree_climbing_probe_checks = 0
 
 	var/obj/structure/wild/tree/live_tree/T = new(locate(8, 8, 1))
 	tree_climbing_probe_assert(tree_climbable(T), "live_tree_climbable")
+	var/obj/structure/wild/tree/small = new(locate(12, 12, 1))
+	var/mob/living/human/tree_climbing_probe/kid = tree_climbing_probe_actor(12, 11)
+	tree_climbing_probe_assert(kid.tree_climb_refusal(small) == "\The [small] is too small to climb.", "small_tree_too_small")
+	qdel(kid)
+	qdel(small)
 	var/obj/structure/wild/bush/B = new(locate(3, 3, 1))
 	tree_climbing_probe_assert(!tree_climbable(B), "bush_not_climbable")
 
@@ -75,7 +80,15 @@ var/tree_climbing_probe_checks = 0
 	tree_climbing_probe_assert(isnull(los_terrain_for(H, 7)), "ground_no_canopy_field")
 	tree_climbing_probe_assert(H.finish_climb_tree(T), "climbed")
 	tree_climbing_probe_assert(H.loc == T.loc && H.climbed_tree == T && T.tree_climber == H && los_up_tree(H), "up_the_tree")
-	tree_climbing_probe_assert(H.pixel_y == 10, "drawn_in_branches")
+	// Raised to the treetop behind the leaves: trunk centre, head peeking over
+	// the highest leaf of the sprite, layered under the tree.
+	tree_climbing_probe_assert(H.tree_climb_pixel_x == T.pixel_x + 32 - 16 && H.tree_climb_pixel_y == max(0, T.pixel_y + tree_sprite_top(T.icon, T.icon_state) - 22), "pose_at_treetop")
+	tree_climbing_probe_assert(tree_sprite_top('icons/obj/flora/bigtrees.dmi', "tree_1") == 62 && tree_sprite_top('icons/obj/flora/palm.dmi', "palm1") == 54 && tree_sprite_top('icons/obj/flora/jungletreesmaller.dmi', "tree2") == 78, "canopy_top_from_sprite")
+	tree_climbing_probe_assert(H.pixel_x == H.tree_climb_pixel_x && H.pixel_y == H.tree_climb_pixel_y && H.layer < T.layer, "drawn_behind_canopy")
+	H.pixel_y = 0
+	H.tree_climb_check()
+	tree_climbing_probe_assert(H.pixel_y == H.tree_climb_pixel_y, "pose_restored_each_life")
+	tree_climbing_probe_assert(H.rest_pixel_y() == H.tree_climb_pixel_y, "attack_animation_rests_at_treetop")
 	tree_climbing_probe_assert(los_eye_level(H) == LOS_EYE_CLIMBED, "climber_eye")
 	// Flat ground without heights still gets an open field with the eye up high,
 	// so walls and other tree tops below it can be seen over.
@@ -84,12 +97,12 @@ var/tree_climbing_probe_checks = 0
 	var/datum/los_terrain_field/F = field[1]
 	tree_climbing_probe_assert(F.eye == LOS_EYE_CLIMBED && !F.flat && F.visible(5, 5, 0.25), "canopy_field_open")
 
-	// Foliage: the climber sees people far off; they still cannot see it.
+	// Trees hide nobody: the climber and people far off see each other.
 	var/mob/living/human/tree_climbing_probe/far = tree_climbing_probe_actor(14, 8)
 	var/mob/living/human/tree_climbing_probe/near = tree_climbing_probe_actor(9, 9)
-	tree_climbing_probe_assert(!los_foliage_hides(H, far), "climber_sees_far")
-	tree_climbing_probe_assert(los_foliage_hides(far, H), "climber_hidden_from_far")
-	tree_climbing_probe_assert(!los_foliage_hides(near, H), "climber_seen_near")
+	tree_climbing_probe_assert(!los_terrain_ray_blocked(H, far), "climber_sees_far")
+	tree_climbing_probe_assert(!los_terrain_ray_blocked(far, H), "climber_seen_from_far")
+	tree_climbing_probe_assert(!los_terrain_ray_blocked(near, H), "climber_seen_near")
 
 	// One climber per tree; a full pair of hands cannot climb.
 	tree_climbing_probe_assert(near.tree_climb_refusal(T) == "Someone is already up \the [T].", "one_climber_per_tree")
@@ -109,11 +122,27 @@ var/tree_climbing_probe_checks = 0
 	W.AttackTarget()
 	tree_climbing_probe_assert(isnull(W.target_mob) || W.stance == HOSTILE_STANCE_IDLE, "wolf_loses_climber")
 
+	// Melee: nobody on the ground reaches the climber, the climber reaches
+	// nobody on the ground; climbing animals still fight; guns are not melee.
+	tree_climbing_probe_assert(tree_melee_blocked(near, H) && tree_melee_blocked(H, near), "no_melee_across_canopy")
+	tree_climbing_probe_assert(tree_melee_blocked(W, H) && !tree_melee_blocked(P, H) && !tree_melee_blocked(H, P), "only_climbing_animals_follow")
+	tree_climbing_probe_assert(!tree_melee_blocked(near, far) && !tree_melee_blocked(H, H), "ground_melee_unchanged")
+	var/mob/living/human/tree_climbing_probe/striker = tree_climbing_probe_actor(8, 9)
+	var/obj/item/weapon/material/hatchet/axe = new(striker.loc)
+	striker.put_in_r_hand(axe)
+	striker.a_intent = I_HARM
+	var/before_hit = H.getBruteLoss()
+	tree_climbing_probe_assert(H.attackby(axe, striker) && H.getBruteLoss() == before_hit, "item_melee_refused")
+	H.attack_hand(striker)
+	tree_climbing_probe_assert(H.getBruteLoss() == before_hit, "unarmed_melee_refused")
+	striker.start_pulling(H)
+	tree_climbing_probe_assert(striker.pulling != H, "cannot_pull_climber")
+
 	// Climbing down returns to the exact starting spot.
 	H.climb_down_tree()
 	tree_climbing_probe_assert(!H.climbed_tree && !T.tree_climber && !los_up_tree(H), "down")
-	tree_climbing_probe_assert(H.loc == locate(9, 8, 1) && H.step_x == 4 && H.step_y == 6 && H.pixel_y == 0, "back_at_start")
-	tree_climbing_probe_assert(los_foliage_hides(far, H) == FALSE, "visible_again")
+	tree_climbing_probe_assert(H.loc == locate(9, 8, 1) && H.step_x == 4 && H.step_y == 6 && H.pixel_y == 0 && H.pixel_x == 0, "back_at_start")
+	tree_climbing_probe_assert(!los_terrain_ray_blocked(far, H), "visible_again")
 
 	// The tree going away drops the climber.
 	tree_climbing_probe_assert(H.finish_climb_tree(T), "climbed_again")

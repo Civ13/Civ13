@@ -28,17 +28,7 @@
 		process_radioactivity()
 
 /obj/item/stack/ore/update_icon()
-	var/icon_suffix = ""
-	switch(amount)
-		if (1 to 12)
-			icon_suffix = ""
-		if (13 to 24)
-			icon_suffix = "_2"
-		if (25 to 36)
-			icon_suffix = "_3"
-		if (37 to INFINITY)
-			icon_suffix = "_4"
-	icon_state = "[initial(icon_state)][icon_suffix]"
+	icon_state = "[initial(icon_state)][pile_suffix(amount, list(13, 25, 37))]"
 
 /obj/item/stack/ore/iron
 	name = "iron ore"
@@ -231,9 +221,9 @@
 	icon_state = "ore_obsidian"
 	value = 3
 	attackby(var/obj/W as obj, mob/user as mob)
-		if (istype(W, /obj/item/weapon/chisel))
+		if (is_tool(W, TOOL_CHISEL))
 			var/mob/living/human/H = user
-			if (!istype(H.l_hand, /obj/item/weapon/hammer) && !istype(H.r_hand, /obj/item/weapon/hammer))
+			if (!is_tool(H.l_hand, TOOL_HAMMER) && !is_tool(H.r_hand, TOOL_HAMMER))
 				to_chat(user, "<span class = 'warning'>You need to have a hammer in one of your hands to use a chisel.</span>")
 			else
 				visible_message("<span class='danger'>[user] starts to cut the obsidian!</span>", "<span class='danger'>You start cutting the obsidian.</span>")

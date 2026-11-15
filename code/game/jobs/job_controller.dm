@@ -147,7 +147,7 @@ var/global/datum/controller/occupations/job_master
 
 	var/autobalance_for_players = round(max(_clients, clients.len))
 
-	if (map && map.civilizations && map.ID != MAP_TRIBES && map.ID != MAP_FOUR_KINGDOMS && map.ID != MAP_THREE_TRIBES)
+	if (map && map.civilizations && !map.tribes)
 		if (map.ID == MAP_CIVILIZATIONS || map.ID == MAP_NATIONSRP || map.ID == MAP_NATIONSRPMED || map.ID == MAP_NATIONSRP_WW2 || map.ID == MAP_NATIONSRP_COLDWAR)
 			set_factions2(16)
 		else if (map.ID == MAP_NATIONSRP_TRIPLE)
@@ -208,6 +208,13 @@ var/global/datum/controller/occupations/job_master
 
 	if (!H)
 		return
+	// A member start (faction_start.dm) chose the destination: beside the
+	// faction's station or colony charter.
+	if (isturf(H.faction_start_turf))
+		var/turf/start = H.faction_start_turf
+		H.faction_start_turf = null
+		H.forceMove(start)
+		return TRUE
 	// Gaia chose the destination before constructing the new body. EquipRank
 	// and late join both call relocate; neither may reroll it or use landmarks.
 	if (map && map.uses_random_new_player_spawn(H.original_job))
@@ -215,7 +222,14 @@ var/global/datum/controller/occupations/job_master
 		if (birth_area)
 			birth_area.play_ambience(H)
 		return TRUE
-	
+
+	// Broadside ships sail: a crewman joins his ship wherever she is now.
+	if (broadside_spawn_aboard(H))
+		var/area/ship_area = get_area(H)
+		if (ship_area)
+			ship_area.play_ambience(H)
+		return TRUE
+
 	if (H.original_job && H.original_job.uses_squads && !map.fob_spawns)
 		var/mob/living/human/HSL = null
 		if(H.original_job.is_squad_leader)
@@ -285,7 +299,7 @@ var/global/datum/controller/occupations/job_master
 					spawn_location = "JoinLateCivP"
 				if ("Ukrainian")
 					spawn_location = "JoinLateCivU"
-		if (map.ID == MAP_TRIBES || map.ID == MAP_FOUR_KINGDOMS || map.ID == MAP_THREE_TRIBES)
+		if (map.tribes)
 			if (H.original_job_title in map.availablefactions)
 				switch(H.original_job_title)
 					if ("Human tribesman")
@@ -437,6 +451,7 @@ var/global/datum/controller/occupations/job_master
 		H.wipe_notes()
 
 		job.equip(H)
+		huey_give_note(H)
 
 		#define SAFE_SPAWN_TIME 4
 		// Add loadout items. spawn(SAFE_SPAWN_TIME) so it happens after our pockets are filled with default job item
@@ -632,7 +647,7 @@ var/global/datum/controller/occupations/job_master
 				H.client.remove_gun_icons()
 		if (H)
 			spawn(12)
-				if(map.ID != MAP_CAMPAIGN && map.ID != MAP_BATTLE_SHIPS && map.ID != CAMPAIGN_MAP_LIST_AND_NOT_MAPID)
+				if(!map.campaign && map.ID != MAP_BATTLE_SHIPS)
 					H.memory()
 
 			return H
@@ -729,7 +744,7 @@ var/global/datum/controller/occupations/job_master
 			max_dutch = ceil(relevant_clients * map.faction_distribution_coeffs[DUTCH])
 		
 		if (map.faction_distribution_coeffs.Find(ITALIAN))
-			max_dutch = ceil(relevant_clients * map.faction_distribution_coeffs[ITALIAN])
+			max_italian = ceil(relevant_clients * map.faction_distribution_coeffs[ITALIAN])
 
 		if (map.faction_distribution_coeffs.Find(JAPANESE))
 			max_japanese = ceil(relevant_clients * map.faction_distribution_coeffs[JAPANESE])

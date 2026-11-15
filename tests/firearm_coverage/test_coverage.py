@@ -53,6 +53,7 @@ class CoverageManifestTests(unittest.TestCase):
              'load_method': e['load_method'], 'max_shells': e['max_shells'],
              'magazine_type': e['magazine_type'], 'ammo_type': e['ammo_type'],
              'firearm_family': e.get('family'),
+             'firearm_fixed_reason': e.get('fixed_reason'),
              'is_laser_mg': e['category'] == 'energy' and e['caliber'] not in firearm_coverage.CALIBER_CATEGORY}
             for e in self.types.values()])
         for entry in rebuilt['types']:
@@ -78,6 +79,20 @@ class CoverageManifestTests(unittest.TestCase):
             if entry['migration'] == 'modular':
                 self.assertEqual(entry['scope'], 'modern', path)
                 self.assertTrue(entry['family'], path)
+
+    def test_fixed_types_are_modern_with_a_reason(self):
+        for path, entry in self.types.items():
+            if entry['migration'] == 'fixed':
+                self.assertEqual(entry['scope'], 'modern', path)
+                self.assertFalse(entry['family'], path)
+                self.assertTrue(entry.get('fixed_reason'), path)
+
+    def test_every_modern_type_is_modular_or_fixed(self):
+        # Issue #4443: a new modern gun needs parts (firearm_family) or a
+        # firearm_fixed_reason. Abstract parents (with a review note) are exempt.
+        pending = sorted(p for p, e in self.types.items()
+                         if e['scope'] == 'modern' and e['migration'] == 'pending' and 'review' not in e)
+        self.assertEqual(pending, [], 'give these guns a firearm family or a firearm_fixed_reason')
 
     def test_category_rules(self):
         cases = {

@@ -33,9 +33,16 @@
 	for (var/obj/structure/vehicleparts/frame/F in T)
 		if (istype(F, /obj/structure/vehicleparts/frame/ship) != (A.ship ? TRUE : FALSE))
 			continue
+		// Airframe sections and submarine hull sections only take their own controls.
+		if (!vehicle_assembly_kind_matches(F, A))
+			continue
 		if (!F.axis || F.axis == A)
 			return F
 	return null
+
+// The longest side a vehicle on this axis may have.
+/obj/structure/vehicleparts/axis/proc/assembly_max_size()
+	return VEHICLE_CONSTANTS.MAX_VEHICLE_SIZE
 
 // ---- The survey ----
 
@@ -54,6 +61,7 @@
 	var/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank
 	var/obj/structure/bed/chair/drivers/seat
 	var/obj/structure/vehicleparts/shipwheel/helm
+	var/obj/structure/vehicleparts/sub_station/station  // A submarine's ballast and periscope station.
 	var/list/movers = list()     // Wheels and tracks standing on corner frames.
 	var/loose_movers = 0         // Wheels and tracks standing anywhere else.
 	var/list/masts = list()
@@ -96,7 +104,7 @@
 		max_y = max(max_y, F.y)
 	width = max_x - min_x + 1
 	height = max_y - min_y + 1
-	var/most = VEHICLE_CONSTANTS.MAX_VEHICLE_SIZE
+	var/most = A.assembly_max_size()
 	if (width > most || height > most)
 		refusal = "the frames are [width] by [height] tiles; a vehicle can be [most] long and wide at most"
 		return
@@ -107,11 +115,14 @@
 	if (gaps)
 		refusal = "the frames must fill a rectangle: [gaps] of the [width] by [height] tiles [gaps == 1 ? "has" : "have"] no frame"
 		return
+	refusal = A.assembly_refusal(src)
+	if (refusal)
+		return
 	if (ship)
 		var/dry = 0
 		for (var/obj/structure/vehicleparts/frame/F in frames)
 			var/turf/T = get_turf(F)
-			if (!istype(T, /turf/floor/beach/water) && !istype(T, /turf/floor/trench/flooded))
+			if (!is_open_water(T))
 				dry++
 		if (dry)
 			refusal = "every ship frame must lie on water: [dry] [dry == 1 ? "does" : "do"] not"
@@ -133,6 +144,9 @@
 			if (!tank)
 				tank = K
 		for (var/obj/structure/bed/chair/drivers/D in T)
+			// A plane is flown from a pilot's seat, whose column climbs and descends.
+			if (istype(axis, /obj/structure/vehicleparts/axis/aircraft) != istype(D, /obj/structure/bed/chair/drivers/aircraft))
+				continue
 			if (!seat && (!D.axis || D.axis == axis))
 				seat = D
 		for (var/obj/structure/turret/built/B in T)
@@ -140,6 +154,8 @@
 		for (var/obj/structure/vehicleparts/shipwheel/W in T)
 			if (!helm && (!W.ship || W.ship == axis))
 				helm = W
+		if (!station)
+			station = locate(/obj/structure/vehicleparts/sub_station) in T
 		for (var/obj/structure/vehicleparts/movement/M in T)
 			if (M.axis && M.axis != axis)
 				continue
@@ -173,13 +189,15 @@
 			. += "a mast or an engine"
 		if (istype(engine, /obj/structure/engine/internal) && !tank)
 			. += "a fuel tank for the engine"
+		if (istype(axis, /obj/structure/vehicleparts/axis/ship/submarine) && !station)
+			. += "a ballast and periscope station to dive"
 		return
 	if (!engine)
 		. += "an engine"
 	if (!tank)
 		. += "a fuel tank"
 	if (!seat)
-		. += "a driver's seat"
+		. += istype(axis, /obj/structure/vehicleparts/axis/aircraft) ? "a pilot's seat" : "a driver's seat"
 	if (movers.len < 4)
 		. += "a wheel or track on each corner frame ([movers.len] of 4 fitted)"
 
@@ -196,6 +214,8 @@
 		found += "\the [seat]"
 	if (helm)
 		found += "\the [helm]"
+	if (station && istype(axis, /obj/structure/vehicleparts/axis/ship/submarine))
+		found += "\the [station]"
 	if (masts.len)
 		found += "[masts.len] mast\s"
 	if (movers.len)
@@ -218,7 +238,10 @@
 		var/turf/T = get_turf(B)
 		var/list/need = B.lacking()
 		if (locate(/obj/structure/cannon/modern/tank) in T)
-			need -= "a tank cannon"
+			need -= "a tank cannon or a machine gun"
+		for (var/obj/item/weapon/gun/projectile/automatic/stationary/G in T)
+			if (turret_can_take_gun(G))
+				need -= "a tank cannon or a machine gun"
 		for (var/obj/structure/bed/chair/gunner/G in T)
 			if (!G.turret)
 				need -= "a gunner's seat"

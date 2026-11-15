@@ -455,9 +455,14 @@ var/global/list/npc_appearance_cache = list()
 	
 	if (ranged)
 		var/dist = get_dist(src, target_mob)
-		if (dist <= 1)
+		// Someone up a tree is out of melee reach: shoot them instead.
+		if (dist <= 1 && !tree_melee_blocked(src, target_mob))
 			AttackingTarget()
 			return "melee"
+		else if (dist <= 1)
+			walk(src, 0)
+			OpenFire(target_mob)
+			return "fire"
 		else if (dist <= 12)
 			if(has_los)
 				if(check_friendly_fire(target_mob))
@@ -510,6 +515,9 @@ var/global/list/npc_appearance_cache = list()
 			MoveToTarget()
 			return "move"
 	else
+		if (tree_melee_blocked(src, target_mob))
+			LoseTarget()
+			return "lost"
 		if (get_dist(src, target_mob) <= 1)
 			AttackingTarget()
 			return "melee"
@@ -661,10 +669,11 @@ var/global/list/npc_appearance_cache = list()
 		action_running = FALSE
 		return
 	stop_automated_movement = TRUE
-	if (get_dist(target_obj,src)>1 && target_action != "helping")
+	var/patient_distance = get_dist(target_obj,src)
+	if (patient_distance>1 && target_action != "helping")
 		do_movement(target_obj)
 		return
-	else if (get_dist(target_obj,src)<=1 && target_action != "helping")
+	else if (patient_distance<=1 && target_action != "helping")
 		walk(src,0)
 		do_movement(loc)
 		target_action = "helping"

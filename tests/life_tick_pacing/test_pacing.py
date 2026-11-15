@@ -16,6 +16,15 @@ ORGAN = (ROOT / 'code/modules/organs/organ.dm').read_text(encoding='utf-8')
 HUMAN_ORGANS = (ROOT / 'code/game/mob/living/carbon/human/human_organs.dm').read_text(encoding='utf-8')
 BLOOD = (ROOT / 'code/modules/organs/blood.dm').read_text(encoding='utf-8')
 HUMAN = (ROOT / 'code/game/mob/living/carbon/human/human.dm').read_text(encoding='utf-8')
+ICONS = (ROOT / 'code/game/mob/living/carbon/human/update_icons.dm').read_text(encoding='utf-8')
+HELPERS = (ROOT / 'code/game/mob/living/carbon/human/human_helpers.dm').read_text(encoding='utf-8')
+NEEDS = (ROOT / 'code/game/mob/living/carbon/human/human_needs.dm').read_text(encoding='utf-8')
+DAMAGE = (ROOT / 'code/game/mob/living/carbon/human/human_damage.dm').read_text(encoding='utf-8')
+BEARCAVE = (ROOT / 'code/game/objects/structures/animalspawner/bearcave.dm').read_text(encoding='utf-8')
+GLOBALS = (ROOT / 'code/global.dm').read_text(encoding='utf-8')
+ECOLOGY = (ROOT / 'code/modules/ecology/ecology_spawning.dm').read_text(encoding='utf-8')
+MOB_PROCESS = (ROOT / 'code/processes/mob.dm').read_text(encoding='utf-8')
+ANIMAL = (ROOT / 'code/game/mob/living/simple_animal/simple_animal.dm').read_text(encoding='utf-8')
 
 
 def body(source, signature):
@@ -175,6 +184,156 @@ class StanceDislocation(unittest.TestCase):
         # The shortcut holds only while is_usable() is "not dislocated and not mutated or dead".
         external = (ROOT / 'code/modules/organs/organ_external.dm').read_text(encoding='utf-8')
         self.assertIn('/obj/item/organ/external/is_usable()\n\treturn !is_dislocated() && !(status & (ORGAN_MUTATED|ORGAN_DEAD))', external)
+
+
+class OverlayRedraw(unittest.TestCase):
+    """Life() used to redraw every human once a second, which hid layer changes
+    that were never drawn. Measured 2026-11-13: 1.0 update_icons per human per
+    second before, one per 30 s after, with skipped redraws drawn on the next tick."""
+
+    LAYER_PROCS = re.findall(
+        r'^(/mob/living/human/(?:proc/)?(?:update_\w+|UpdateDamageIcon))\(var/update_icons=1',
+        ICONS, re.M)
+
+    def test_every_layer_proc_queues_a_skipped_redraw(self):
+        self.assertGreaterEqual(len(self.LAYER_PROCS), 24)
+        for signature in self.LAYER_PROCS:
+            with self.subTest(signature):
+                first = body(ICONS, signature + '(').lstrip('\n').split('\n')[:2]
+                self.assertEqual(first, ['\tif (!update_icons)', '\t\tqueue_overlay_redraw()'])
+
+    def test_queued_redraw_is_one_flush_per_tick(self):
+        queue = body(ICONS, '/mob/living/human/proc/queue_overlay_redraw(')
+        self.assertLess(queue.index('overlays_dirty = TRUE'), queue.index('if (overlays_flush_queued)'))
+        self.assertIn('\toverlays_flush_queued = TRUE\n'
+                      '\taddtimer(CALLBACK(src, PROC_REF(flush_overlay_redraw)), 0)', queue)
+        self.assertNotIn('spawn', queue)
+        flush = body(ICONS, '/mob/living/human/proc/flush_overlay_redraw(')
+        self.assertIn('\toverlays_flush_queued = FALSE\n'
+                      '\tif (overlays_dirty && !QDELETED(src))\n\t\tupdate_icons()', flush)
+        redraw = body(ICONS, '/mob/living/human/update_icons(')
+        self.assertIn('overlays_dirty = FALSE', redraw)
+        self.assertLess(redraw.index('overlays_dirty = FALSE'), redraw.index('overlays.Cut()'))
+
+    def test_redraw_masks_replaced_images_in_water(self):
+        redraw = body(ICONS, '/mob/living/human/update_icons(')
+        mask = redraw.index('if (drowning || water_overlay)\n\t\t\tapply_water_mask()')
+        self.assertLess(mask, redraw.index('for (var/image/I in overlays_standing)'))
+        fire = body(ICONS, '/mob/living/human/update_fire(')
+        self.assertLess(fire.index('apply_water_mask()'), fire.index('update_icons()'))
+
+    def test_life_only_redraws_on_a_change_or_the_backstop(self):
+        refresh = body(ICONS, '/mob/living/human/proc/life_water_refresh(')
+        self.assertIn('if (state != life_water_state || overlays_dirty || !(life_tick % LIFE_OVERLAY_BACKSTOP))', refresh)
+        self.assertIn('\telse\n\t\tupdate_posture_transform()', refresh)
+        self.assertIn('\t\tif (riding && riding_mob)\n\t\t\triding_mob.update_icons()', refresh)
+        self.assertIn('on_fire', refresh)
+        self.assertIn('water_mask_state()', refresh)
+        self.assertIn('#define LIFE_OVERLAY_BACKSTOP 30', ICONS)
+
+    def test_drowning_never_redraws_unconditionally(self):
+        drowning = body(HELPERS, '/mob/living/human/proc/handle_drowning(')
+        self.assertNotIn('update_fire(', drowning)
+        # Every exit refreshes, including under cover and on a boat, where the
+        # water mask used to stay on.
+        returns = [m.start() for m in re.finditer(r'^\t+return$', drowning, re.M)]
+        self.assertGreaterEqual(len(returns), 9)
+        for at in returns:
+            before = drowning[:at].rstrip('\n').split('\n')
+            tail = [line.strip() for line in before[-2:]]
+            self.assertIn('life_water_refresh()', tail, before[-3:])
+
+    def test_hygiene_overlay_is_replaced_only_on_a_change(self):
+        # The proc holds commented-out lines at column 0, so slice to the next proc.
+        start = NEEDS.index('/mob/living/human/proc/handle_hygiene(')
+        hygiene = NEEDS[start:NEEDS.index('/mob/living/human/proc/adjust_hygiene(')]
+        self.assertEqual(hygiene.count('overlays_standing[27] = img_nasties'), 1)
+        self.assertIn('if (nasties_state != hygiene_overlay_state || !overlays_standing[27])\n'
+                      '\t\thygiene_overlay_state = nasties_state\n'
+                      '\t\toverlays_standing[27] = img_nasties\n'
+                      '\t\tqueue_overlay_redraw()', hygiene)
+
+
+class LoopAudit(unittest.TestCase):
+    """Second loop audit (2026-11-13): work every tick that changed nothing."""
+
+    def test_pain_healing_skips_unhurt_bodies(self):
+        hal = body(DAMAGE, '/mob/living/human/adjustHalLoss(')
+        guard = hal.index('if (heal)\n\t\tvar/hurt = FALSE')
+        self.assertIn('if (E.brute_dam || E.burn_dam || E.pain || E.damage)', hal)
+        self.assertIn('\t\tif (!hurt)\n\t\t\treturn', hal)
+        self.assertLess(guard, hal.index('organs.Copy()'))
+
+    def test_each_bear_cave_ticks_itself_without_a_world_scan(self):
+        tick = body(BEARCAVE, '/obj/structure/animalspawner/bearcave/proc/Tick(')
+        self.assertNotIn(' in world', tick)
+        self.assertIn('\tif(ticking || gcDestroyed || gc_destroyed)\n\t\treturn\n\tticking = TRUE\n', tick)
+        self.assertIn('\tspawn while(src && ticking && !gcDestroyed && !gc_destroyed)\n', tick)
+        self.assertIn('\t\ttotal_population = males + females + cubs\n\t\tTicker()\n\t\tsleep(50)', tick)
+        self.assertIn('\tticking = FALSE\n\treturn ..()', body(BEARCAVE, '/obj/structure/animalspawner/bearcave/Destroy('))
+        self.assertIn('return key == "ticking" || ..()', body(BEARCAVE, '/obj/structure/animalspawner/bearcave/persistence_runtime_var('))
+        self.assertEqual(body(BEARCAVE, '/obj/structure/animalspawner/bearcave/New(').count('\tTick()\n'), 1)
+        self.assertNotIn('Tick()', body(BEARCAVE, '/obj/structure/animalspawner/bearcave/full/New('))
+        self.assertNotIn('bearcave_ticking', BEARCAVE + GLOBALS)
+
+
+def cell_near(observers, x, y, z, max_x, max_y, max_z, reach=32):
+    """Python model of ecology_refresh_observers' buckets and ecology_observer_near()."""
+    rows = (max_y - 1) // reach + 1
+    columns = (max_x - 1) // reach + 1
+    cells = {}
+    for ox, oy, oz in observers:
+        cells.setdefault(oz, {}).setdefault(((ox - 1) // reach) * rows + (oy - 1) // reach + 1, []).append((ox, oy))
+    cx, cy = (x - 1) // reach, (y - 1) // reach
+    for cz in range(max(1, z - 1), min(max_z, z + 1) + 1):
+        for gx in range(max(0, cx - 1), min(columns - 1, cx + 1) + 1):
+            for gy in range(max(0, cy - 1), min(rows - 1, cy + 1) + 1):
+                for ox, oy in cells.get(cz, {}).get(gx * rows + gy + 1, ()):
+                    if max(abs(ox - x), abs(oy - y)) <= reach:
+                        return True
+    return False
+
+
+class ObserverBuckets(unittest.TestCase):
+    """Animals far from players rest; the range check used to walk every observer
+    for every animal each second, and the observer list was rebuilt on every
+    resumed slice of the mob process (21,000 times in 164 s with 413 mobs)."""
+
+    def test_refresh_runs_once_per_pass(self):
+        fire = body(MOB_PROCESS, '/process/mob/fire(')
+        self.assertNotIn('ecology_refresh_observers()', fire)
+        reset = body(MOB_PROCESS, '/process/mob/reset_current_list(')
+        self.assertLess(reset.index('PROCESS_USE_FASTEST_LIST(living_mob_list)'), reset.index('ecology_refresh_observers()'))
+
+    def test_resting_uses_the_buckets(self):
+        resting = body(ECOLOGY, '/proc/ecology_animal_resting(')
+        self.assertIn('if (ecology_observer_near(T))\n\t\treturn FALSE', resting)
+        self.assertNotIn('ecology_observer_turfs', resting)
+        near = body(ECOLOGY, '/proc/ecology_observer_near(')
+        self.assertIn('max(abs(O.x - T.x), abs(O.y - T.y)) <= ECOLOGY_AWAKE_RANGE', near)
+        self.assertIn('for (var/z = max(1, T.z - 1), z <= min(ecology_observer_cells.len, T.z + 1), z++)', near)
+        self.assertIn('var/rows = ecology_observer_rows', near)
+        self.assertIn('ecology_observer_rows = rows', refresh_src := body(ECOLOGY, '/proc/ecology_refresh_observers('))
+        refresh = body(ECOLOGY, '/proc/ecology_refresh_observers(')
+        self.assertIn('ecology_observer_turfs = turfs', refresh)
+        self.assertIn('var/index = ecology_cell_index(T.x, T.y, rows)', refresh)
+        self.assertIn('return round((x - 1) / ECOLOGY_AWAKE_RANGE) * rows + round((y - 1) / ECOLOGY_AWAKE_RANGE) + 1',
+                      body(ECOLOGY, '/proc/ecology_cell_index('))
+
+    def test_bucket_model_matches_the_old_scan(self):
+        import random
+        rng = random.Random(4)
+        for trial in range(60):
+            max_x, max_y, max_z = rng.choice([(500, 500, 6), (255, 300, 3), (33, 64, 2), (32, 32, 1)])
+            observers = [(rng.randint(1, max_x), rng.randint(1, max_y), rng.randint(1, max_z)) for _ in range(rng.randint(0, 12))]
+            for _ in range(300):
+                x, y, z = rng.randint(1, max_x), rng.randint(1, max_y), rng.randint(1, max_z)
+                old = any(abs(oz - z) <= 1 and max(abs(ox - x), abs(oy - y)) <= 32 for ox, oy, oz in observers)
+                self.assertEqual(old, cell_near(observers, x, y, z, max_x, max_y, max_z))
+
+    def test_animals_skip_the_surface_lookup_without_radiation(self):
+        rad = body(ANIMAL, '/mob/living/simple_animal/handle_mutations_and_radiation(')
+        self.assertIn('if (global_radiation > 0 && z == multiz_top_z())', rad)
 
 
 if __name__ == '__main__':

@@ -388,6 +388,7 @@
 	set src in usr
 	if (usr != src)
 		to_chat(usr, "No.")
+		return
 	var/msg = sanitize(player_input(usr, "Set the flavor text in your 'examine' verb. Can also be used for OOC notes about your character.", "Flavor Text", html_decode(flavor_text), "message", null, TRUE), extra = FALSE)
 
 	if (msg != null)
@@ -570,6 +571,9 @@
 
 	var/mob/M = AM
 	if (ismob(AM))
+
+		if (tree_melee_refused(src, AM))
+			return
 
 		if (!can_pull_mobs || !can_pull_size)
 			to_chat(src, "<span class='warning'>It won't budge!</span>")

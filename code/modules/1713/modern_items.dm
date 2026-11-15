@@ -46,7 +46,7 @@
 			icon_state = base_icon
 			update_icon()
 			return
-	if (istype(W,/obj/item/weapon/wrench) && !not_movable)
+	if (is_tool(W, TOOL_WRENCH) && !not_movable)
 		if (powersource)
 			to_chat(user, "<span class='notice'>Remove the cables first.</span>")
 			return
@@ -55,9 +55,7 @@
 			if (!isemptylist(EN.connections))
 				to_chat(user, "<span class='notice'>Remove the cables first.</span>")
 				return
-		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-		to_chat(user, (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>"))
-		anchored = !anchored
+		toggle_anchor(user)
 		return
 	if (!anchored)
 		to_chat(user, "<span class='notice'>Fix the lamp in place with a wrench first.</span>")
@@ -754,11 +752,17 @@
 /obj/structure/bakelizer/proc/refine()
 	if (!powered || !active)
 		return
-	if (volume <= 0)
-		volume = 0
+	if (volume < 5)
+		if (volume < 0)
+			volume = 0
+		active = FALSE
+		powered = FALSE
+		if (powersource)
+			powersource.update_power(-powerneeded,1,src)
+		update_icon()
 		desc = "A machine used to transform petroleum into plastics. Has [volume] petroleum and [plastic] plastic sheets inside."
 		return
-	else if (volume >= 5)
+	else
 		volume-=5
 		plastic+=1
 		desc = "A machine used to transform petroleum into plastics. Has [volume] petroleum and [plastic] plastic sheets inside."

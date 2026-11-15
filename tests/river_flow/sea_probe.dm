@@ -71,7 +71,9 @@ var/sea_runtime_error = FALSE
 	sea_check(!calm.CanPass(H), "battle maps keep deep water closed")
 	map.nomads = TRUE
 
-	// Tiring, drowning and rest.
+	// Tiring, drowning and rest. (The first-swim lesson would raise the skill
+	// a little; the training checks below cover it.)
+	H.swim_kind_lessons = list("sea" = world.time)
 	H.loc = calm
 	H.handle_drowning()
 	sea_check(!H.drowning && H.water_overlay && H.swim_tiredness == 2 && H.getOxyLoss() == 0, "a fresh swimmer stays afloat")
@@ -79,14 +81,72 @@ var/sea_runtime_error = FALSE
 	while (!H.drowning && ticks < 100)
 		H.handle_drowning()
 		ticks++
-	sea_check(ticks == 50 && H.drowning && H.getOxyLoss() > 0, "a swimmer goes under after 50 life ticks of calm water ([ticks])")
+	sea_check(ticks == 50 && H.drowning && H.swim_under && H.getOxyLoss() == 0, "a swimmer goes under after 50 life ticks of calm water and holds their breath ([ticks])")
+	var/held = 1
+	while (!H.getOxyLoss() && held < 100)
+		H.handle_drowning()
+		held++
+	sea_check(held == 10, "an unskilled swimmer holds their breath for 10 seconds ([held])")
 	H.loc = shore
 	H.handle_drowning()
 	sea_check(!H.drowning && H.swim_tiredness == 96, "rest on land brings strength back")
 	for (var/i = 1, i <= 30, i++)
 		H.handle_drowning()
-	sea_check(H.swim_tiredness == 0, "a rested swimmer is fresh again")
+	sea_check(H.swim_tiredness == 0 && !H.swim_under && H.swim_breath < 0, "a rested swimmer is fresh again, breath and all")
 	H.adjustOxyLoss(-200)
+
+	// The swimming skill: endurance, speed, breath and recovery.
+	sea_check(H.swimming_skill() == 100 && H.swim_breath_max() == 10, "a new swimmer has skill 100 and 10 seconds of breath ([H.swimming_skill()] [json_encode(H.stats["swimming"])] [H.water_step_delay(calm)])")
+	sea_check(H.water_step_delay(calm) == 20 && H.water_step_delay(shore) == 0, "an unskilled swimmer pays 20 ds a deep-water step")
+	H.stats["swimming"] = list(200, 200)
+	sea_check(H.water_step_delay(calm) == 10 && abs(H.swim_breath_max() - 130 / 3) < 0.01, "skill 200 halves the step and holds about 43 seconds of breath")
+	H.stats["swimming"] = list(250, 250)
+	sea_check(H.water_step_delay(calm) == 8 && H.swim_breath_max() == 60, "skill 250 reaches the 8 ds floor and 60 seconds of breath")
+	H.stats["swimming"] = list(400, 400)
+	sea_check(H.swimming_skill() == 250, "the skill reads no higher than 250")
+	H.stats["swimming"] = list(200, 200)
+	H.loc = calm
+	ticks = 0
+	while (!H.swim_under && ticks < 300)
+		H.handle_drowning()
+		ticks++
+	sea_check(ticks == 100, "a skill-200 swimmer stays afloat 100 seconds in calm water ([ticks])")
+	H.loc = shore
+	for (var/i = 1, i <= 13, i++)
+		H.handle_drowning()
+	sea_check(H.swim_tiredness == 0 && H.swim_breath < 0, "a skill-200 swimmer rests twice as fast")
+	H.adjustOxyLoss(-200)
+	var/obj/item/clothing/suit/heavy = new
+	heavy.slowdown = 2
+	H.wear_suit = heavy
+	sea_check(H.swim_effort_for(calm) == 2, "a heavy suit adds to the effort of swimming")
+	H.wear_suit = null
+	qdel(heavy)
+	H.stats["swimming"] = list(100, 100)
+
+	// Training: new water teaches; the same few tiles and the first swim do not repeat.
+	H.swim_kind_lessons = null
+	H.swim_recent = null
+	H.swim_new_tiles = 0
+	var/start = H.stats["swimming"][1]
+	H.swim_train(calm)
+	var/after_first = H.stats["swimming"][1]
+	sea_check(after_first > start, "the first swim in the sea teaches something ([start] -> [after_first])")
+	for (var/i = 1, i <= 30, i++)
+		H.swim_train(i % 2 ? calm : locate(11, 25, 1))
+	sea_check(H.stats["swimming"][1] == after_first, "paddling over the same two tiles teaches nothing")
+	for (var/x = 1, x <= 20, x++)
+		H.swim_train(locate(x, 15, 1))
+	sea_check(H.stats["swimming"][1] > after_first, "twenty tiles of new water teach two lessons ([H.stats["swimming"][1]])")
+	agent_characters -= H
+	var/before_idle = H.stats["swimming"][1]
+	for (var/x = 1, x <= 20, x++)
+		H.swim_train(locate(x, 16, 1))
+	sea_check(H.stats["swimming"][1] == before_idle, "nobody playing the character, nothing learned")
+	agent_characters[H] = new /datum/agent_character
+	sea_check(skill_mastery_disciplines["swimming"] == "natural_science" && ("swimming" in skill_master_stats), "swimming mastery pays Natural Science and a better swimmer can teach")
+	H.stats["swimming"] = list(100, 100)
+	H.swim_tiredness = 0
 
 	// A storm sea is twice the work.
 	sea_check(swim_effort_at(calm) == 2, "calm water costs 2 a tick")

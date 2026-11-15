@@ -134,6 +134,10 @@
 	if (sleeping)
 		to_chat(src, SPAN_RED("You are already sleeping."))
 		return
+	// A sleep flag whose refresh loop has stopped leaves an awake body that Sleep
+	// would refuse forever; the player is evidently awake, so clear it.
+	if (inducedSSD)
+		inducedSSD = FALSE
 	var/found = FALSE
 	for (var/obj/structure/bed/B in get_turf(src))
 		if (B)
@@ -144,6 +148,12 @@
 	if (persistence_bed_return_enabled() && saved_bed_taken_here())
 		to_chat(src, SPAN_RED("This bed is assigned to someone else. Sleep in an unassigned bed or your own."))
 		return
+	if (persistence_bed_return_enabled())
+		var/refusal = saved_bed_sleep_refusal()
+		if (refusal)
+			to_chat(src, SPAN_RED(refusal))
+			log_game("Sleep refused for [key_name(src)] at [x],[y],[z]: [refusal]")
+			return
 	var/sleep_message = "Are you sure you want to sleep for a while? This takes two minutes. Your body stays here and can be harmed, but you get hungry much more slowly."
 	if (persistence_bed_return_enabled())
 		sleep_message = "Sleep here and assign this bed for saved-character returns? You can have only one bed, so any bed assigned to you before is released. This takes two minutes. Your body stays here and can be harmed. Only a completed world save preserves it on disk."
@@ -169,7 +179,11 @@
 							return
 						var/previous_bed = saved_bed_assignment()
 						if (!enter_saved_bed_sleep())
-							to_chat(src, SPAN_WARNING("Choose an available stationary bed and wait for world recovery to finish, then try Sleep again."))
+							var/refusal = saved_bed_sleep_refusal()
+							if (!refusal)
+								refusal = "You could not fall asleep here. Try Sleep again."
+							to_chat(src, SPAN_WARNING(refusal))
+							log_game("Sleep refused for [key_name(src)] at [x],[y],[z]: [refusal]")
 						else if (previous_bed == "elsewhere")
 							to_chat(src, SPAN_NOTICE("This is now your bed. Your previous bed is no longer assigned to you."))
 						else if (!previous_bed)
@@ -216,14 +230,20 @@
 			inducedSSD = FALSE
 
 //to keep the character sleeping
+// One refresh loop per body: a restored body restarts it on reconnect, and a
+// second caller only tops up sleeping instead of starting another loop.
+/mob/living/human/var/tmp/sleep_update_queued = FALSE
+
 /mob/living/human/proc/sleep_update()
 	if (!inducedSSD)
 		return
-	else
-		sleeping = 66
-		spawn(600) // 1 minute
-			sleep_update()
-			return
+	sleeping = 66
+	if (sleep_update_queued)
+		return
+	sleep_update_queued = TRUE
+	spawn(600) // 1 minute
+		sleep_update_queued = FALSE
+		sleep_update()
 
 /mob/living/human/handle_mutations_and_radiation()
 	get_rads_from_equipment()
@@ -449,6 +469,8 @@
 	var/drowning = FALSE
 	var/water_overlay = FALSE
 /mob/living/human/proc/handle_drowning()
+	if (bends)
+		bends_tick() // decompression sickness (scuba.dm)
 	var/turf/T = get_turf(src)
 	// A sealed diver walks the seabed (seabed.dm) and breathes from the bottle.
 	if (sea_layer_cell(T) && !T.iscovered() && seabed_diving_rating())
@@ -459,58 +481,92 @@
 				plane = GAME_PLANE
 			if (!on_fire)
 				overlays_standing[25] = null
-			update_fire(1)
+		life_water_refresh()
 		return
+	// A free diver on the seabed, on a held breath (free_diving.dm).
+	if (free_diving)
+		if (sea_layer_cell(T) && !T.iscovered() && !seabed_diving_rating())
+			free_dive_tick(T)
+			life_water_refresh()
+			return
+		free_diving = FALSE
 	// Floating: a lifejacket, or a sealed diving suit with its weights dropped.
 	if ((istype(wear_suit, /obj/item/clothing/suit/lifejacket) || seabed_diving_rating()) && istype(T, /turf/floor/beach/water/deep) && !T.iscovered())
 		drowning = FALSE
 		water_overlay = TRUE
-		update_fire(1)
+		swim_rest()
+		life_water_refresh()
 		return
 	if (!istype(T, /turf/floor/beach/water/deep) || T.iscovered())
+		// River floodwater over land (flood_effects.dm): over the head, swim.
+		var/flood_band = T.iscovered() ? FLOOD_BAND_NONE : flood_band_at(T)
+		if (flood_band == FLOOD_BAND_DEEP && !istype(buckled, /obj/structure/vehicle/boat) && !istype(wear_suit, /obj/item/clothing/suit/lifejacket) && !seabed_diving_rating())
+			if (swim_step(T))
+				drowning = FALSE
+				water_overlay = TRUE
+				life_water_refresh()
+				return
+			drowning = TRUE
+			// Spent: a held breath first (swimming.dm).
+			if (swim_hold_breath())
+				life_water_refresh()
+				return
+			to_chat(src, SPAN_WARNING("<font size='2'>You are drowning in the floodwater!</font>"))
+			life_water_refresh()
+			adjustOxyLoss(10)
+			return
 		drowning = FALSE
 		swim_rest()
-		if (((istype(T, /turf/floor/beach/water) && !istype(T, /turf/floor/beach/water/ice)) || istype(T, /turf/floor/trench/flooded)) && !T.iscovered())
+		if ((is_open_water(T) && !T.iscovered()) || flood_band >= FLOOD_BAND_KNEE)
 			water_overlay = TRUE
-			update_fire(1)
+			life_water_refresh()
 			return
 		else
 			if (istype(T, /turf/floor/sub_deck) && T:water_depth > 0)
 				drowning = FALSE
 				water_overlay = TRUE
-				update_fire(1)
+				life_water_refresh()
 				return
 			water_overlay = FALSE
 			if (plane == FLOOR_PLANE)
 				plane = GAME_PLANE
 			if (!on_fire)
 				overlays_standing[25] = null
-			update_fire(1)
+			life_water_refresh()
 			return
 	else
 		var/turf/floor/beach/water/deep/D = T
 		if (D.iscovered())
 			drowning = FALSE
 			water_overlay = FALSE
+			swim_rest()
+			life_water_refresh()
 			return
 		else if (buckled && istype(buckled, /obj/structure/vehicle/boat))
 			drowning = FALSE
 			water_overlay = FALSE
+			swim_rest()
+			life_water_refresh()
 			return
 		else
 			for(var/obj/structure/vehicle/boat/BT in range(1,src))
 				if(src in BT.ontop)
 					drowning = FALSE
 					water_overlay = FALSE
+					swim_rest()
+					life_water_refresh()
 					return
 			// Swimming (swimming.dm): afloat until the swimmer tires.
 			if (swim_step(D))
 				drowning = FALSE
 				water_overlay = TRUE
-				update_fire(1)
+				life_water_refresh()
 				return
 			drowning = TRUE
+			if (swim_hold_breath())
+				life_water_refresh()
+				return
 			to_chat(src, SPAN_WARNING("<font size='2'>You are drowning!</font>"))
-			update_fire(1)
+			life_water_refresh()
 			adjustOxyLoss(10)
 			return

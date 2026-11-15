@@ -41,7 +41,9 @@ class StoneBrazierSourceContract(unittest.TestCase):
         self.assertIn("stack.use(1)", self.action)
         self.assertLess(self.action.index("stack.use(1)"), self.action.index("fuel += 5"))
         self.assertLess(self.action.index("qdel(W)"), self.action.index("fuel += 5"))
-        self.assertIn("fuel += (80)*W.amount", self.base)
+        self.assertIn("fuel += solid_fuel_value(W, brazier_fuel_rates)", self.base)
+        fuel = (SOURCE.parents[1] / "solid_fuel.dm").read_text()
+        self.assertIn('"wood" = 80', fuel[fuel.index("brazier_fuel_rates = list("):])
 
     def test_other_items_keep_inherited_generic_fuel_behavior(self):
         self.assertIn("if (W.flammable)", self.base)
@@ -50,8 +52,9 @@ class StoneBrazierSourceContract(unittest.TestCase):
 
     def test_existing_fuel_and_projectiles_precede_catch_all(self):
         guard = self.base.index("if (W.flammable)")
-        for path in ("ore/coal", "ore/charcoal", "material/wood", "material/bamboo",
-                     "stack/dung", "weapon/branch", "material/leaf", "ammo_casing/arrow",
+        # Coal, charcoal, logs, planks, bamboo, dung, branches and leaves are one
+        # shared-table branch (code/modules/1713/solid_fuel.dm).
+        for path in ("solid_fuel_value(W, brazier_fuel_rates)", "ammo_casing/arrow",
                      "ammo_casing/bolt"):
             self.assertLess(self.base.index(path), guard)
 

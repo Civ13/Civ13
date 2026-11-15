@@ -35,6 +35,20 @@ static class LocalHostingTests {
             && LocalHosting.BattlePhase("odd<phase>") == "oddphase", "TDM battle phase words");
         using (var details = JsonDocument.Parse("{\"port\":1715,\"region_view\":{\"players\":4,\"battle_phase\":\"playing\"}}"))
             Require(LocalHosting.RegionDetails(details.RootElement).EndsWith("battle in progress"), "battle phase on the region row: " + LocalHosting.RegionDetails(details.RootElement));
+        using (var away = JsonDocument.Parse("{\"port\":1714,\"region_view\":{\"players\":0,\"event_away\":3}}"))
+            Require(LocalHosting.RegionDetails(away.RootElement).EndsWith("3 players away at an event"), "event away count on the region row: " + LocalHosting.RegionDetails(away.RootElement));
+        using (var eventRegion = JsonDocument.Parse("{\"port\":1760,\"kind\":\"EVENT\",\"region_view\":{\"players\":5}}")) {
+            Require(LocalHosting.RegionDetails(eventRegion.RootElement).Contains("event region"), "event region on the region row: " + LocalHosting.RegionDetails(eventRegion.RootElement));
+            Require(HostBoard.Card("fair", "Fair", false, eventRegion.RootElement, 0).Notes.StartsWith("port 1760, event region"), "event region on the board card");
+        }
+        using (var land = JsonDocument.Parse("{\"port\":1740,\"land\":{\"stage\":\"OPEN\",\"paused\":true,\"readiness\":{\"homes\":12,\"suggest\":\"RESUME\"}}}")) {
+            Require(LocalHosting.RegionDetails(land.RootElement).EndsWith("settled land (new starts paused), 12 homes, ready to resume new starts"), "land stage on the region row: " + LocalHosting.RegionDetails(land.RootElement));
+            Require(HostBoard.Card("europe", "Europe", false, land.RootElement, 0).Notes.Contains("settled land (new starts paused)"), "land stage on the board card");
+        }
+        using (var mainlandLand = JsonDocument.Parse("{\"port\":1714,\"land\":{\"stage\":\"MAINLAND\",\"paused\":false}}"))
+            Require(LocalHosting.RegionDetails(mainlandLand.RootElement) == ", port 1714", "no land stage on the mainland: " + LocalHosting.RegionDetails(mainlandLand.RootElement));
+        using (var awayCard = JsonDocument.Parse("{\"state\":\"awake\",\"region_view\":{\"event_away\":1}}"))
+            Require(HostBoard.Card("gaia", "Gaia", true, awayCard.RootElement, 0).Notes.Contains("1 player away at an event"), "event away count on the board card");
         using (var down = JsonDocument.Parse("{\"port\":1714,\"listening\":false,\"watchdog\":{\"last_refusal\":\"the save still has BYOND lock files\"}}"))
             Require(LocalHosting.RegionDetails(down.RootElement).Contains("watchdog could not restart it"), "refusal on a stopped region");
         using (var up = JsonDocument.Parse("{\"port\":1714,\"listening\":true,\"watchdog\":{\"last_refusal\":\"the save still has BYOND lock files\"}}"))
@@ -219,6 +233,12 @@ static class LocalHostingTests {
         Require(HostSettings.ShutdownWarningSeconds(host.Control!.Group!) == 300 && HostSettings.Locations(host.Control!.Group!).Count == 2,
             "players' warning saved, other settings kept");
         Reject(() => HostSettings.SetShutdownWarningSeconds(host.Control!.Group!, 3601), "a warning over an hour");
+        // Update when empty: on unless the group config says false; turning it on makes the group follow origin/master.
+        Require(HostSettings.UpdateWhenEmpty(host.Control!.Group!) && !HostSettings.FollowsRemote(host.Control!.Group!), "update when empty on by default");
+        Require(!HostSettings.SetUpdateWhenEmpty(host.Control!.Group!, false) && !HostSettings.UpdateWhenEmpty(host.Control!.Group!), "update when empty off");
+        Require(HostSettings.SetUpdateWhenEmpty(host.Control!.Group!, true) && HostSettings.UpdateWhenEmpty(host.Control!.Group!)
+            && HostSettings.FollowsRemote(host.Control!.Group!) && !HostSettings.SetUpdateWhenEmpty(host.Control!.Group!, true), "update when empty follows origin/master once");
+        Require(HostSettings.ShutdownWarningSeconds(host.Control!.Group!) == 300 && HostSettings.Locations(host.Control!.Group!).Count == 2, "update when empty kept other settings");
         var places = HostSettings.Locations(host.Control!.Group!);
         Require(places.Select(place => (place.Label, place.Folder, place.Region)).SequenceEqual(new[] {
             ("Every region (shared)", Path.GetFullPath(sharedOverlay), (string?)null), ("Gaia only", Path.GetFullPath(gaiaOverlay), "gaia") }),
@@ -332,6 +352,17 @@ static class LocalHostingTests {
             && LocalHosting.GroupStep(host.Control!, "handover", "gaia").ArgumentList.SequenceEqual(new[] { "-I", "-B", shard, "--config", groupConfig, "handover", "--region", "gaia" }), "stage and handover argv");
         Require(LocalHosting.ParseGroup("stage", 0, "{\"accepted\": {\"gaia\": {\"accepted\": true}}, \"refused\": {\"moon\": \"a build is already being staged\"}, \"ok\": true}").Message
             == "Building the update beside gaia... Refused: moon: a build is already being staged.", "stage line");
+        // Update offline regions: stopped and asleep regions build the update, running ones are left alone.
+        Require(LocalHosting.GroupStep(host.Control!, "update-offline").ArgumentList.SequenceEqual(new[] { "-I", "-B", shard, "--config", groupConfig, "update-offline" }), "update-offline argv");
+        var offline = LocalHosting.ParseGroup("update-offline", 0, "{\"accepted\": {\"railyard\": {\"accepted\": true, \"state\": \"stopped\"}, "
+            + "\"moon\": {\"accepted\": true, \"state\": \"asleep\"}}, \"skipped\": {\"gaia\": \"running\"}, \"ok\": true}");
+        Require(offline.Ok && offline.Busy && offline.Message == "Building the latest update, one region at a time, for railyard (stopped: installs once built), "
+            + "moon (asleep: installs while it sleeps). Left alone: gaia (running).", "update-offline line: " + offline.Message);
+        var allRunning = LocalHosting.ParseGroup("update-offline", 0, "{\"accepted\": {}, \"skipped\": {\"gaia\": \"running\"}, \"ok\": true}");
+        Require(allRunning.Ok && !allRunning.Busy && allRunning.Message == "No region needed updating while stopped or asleep. Left alone: gaia (running).", "update-offline none: " + allRunning.Message);
+        var notInstalled = LocalHosting.ParseGroup("status", 0, "{\"regions\": {\"moon\": {\"name\": \"Moon\", \"state\": \"awake\", "
+            + "\"stage\": {\"phase\": \"ready\", \"pending\": true, \"install\": \"not installed: the region started while its update was building\"}}}, \"ok\": true}");
+        Require(notInstalled.Message == "Group: Moon: awake, update built (not installed: the region started while its update was building).", "update-offline status: " + notInstalled.Message);
         // The group status also tells staged updates, handovers, the watchdog and travel.
         var detailed = LocalHosting.ParseGroup("status", 0, "{\"group\": \"earth\", \"regions\": {"
             + "\"gaia\": {\"name\": \"Gaia\", \"state\": \"awake\", \"port\": 1714, \"stage\": {\"phase\": \"ready\", \"pending\": true}, \"standby\": {\"port\": 1728, \"listening\": true}, \"transfer_agent\": true}, "
@@ -342,6 +373,57 @@ static class LocalHostingTests {
             + "Rail Yard: stopped, port 1715, building update (compiling), watchdog gave up after repeated restarts (crash); start it by hand, travel agent not running; "
             + "Mars: awake, update build failed: compile failed, watchdog restarted it 1 time recently (last: hang), not answering as this region; Moon: asleep. "
             + "Travel coordinator is not running (a start or restart starts it).", "detailed group status: " + detailed.Message);
+        // The Host tab's board: the same status as three separate answers per region (running, build, problem).
+        var boardStatus = "noise\n{\"group\": \"earth\", \"regions\": {"
+            + "\"gaia\": {\"name\": \"Gaia\", \"state\": \"awake\", \"listening\": true, \"port\": 1714, \"world\": {\"ready\": 1, \"clients\": 5}, \"operation\": {\"action\": \"start\", \"phase\": \"done\", \"error\": null}, \"stage\": {\"phase\": \"ready\", \"pending\": true}, \"transfer_agent\": true, \"region_view\": {\"epoch\": {\"ordinal\": 3}}}, "
+            + "\"railyard\": {\"name\": \"Rail Yard\", \"state\": \"asleep\", \"stage\": {\"phase\": \"current\"}}, "
+            + "\"barren\": {\"name\": \"Mars\", \"state\": \"stopped\", \"busy\": true, \"operation\": {\"action\": \"update\", \"phase\": \"compiling\", \"error\": null}, \"transfer_agent\": false}, "
+            + "\"moon\": {\"name\": \"Moon\", \"state\": \"stopped\", \"operation\": {\"action\": \"update\", \"phase\": \"failed\", \"error\": \"compile failed:\\n  x.dm:1: error\"}, \"watchdog\": {\"gave_up\": 5, \"last_event\": \"crash\"}}, "
+            + "\"orbit\": {\"name\": \"Orbit\", \"state\": \"awake\", \"world\": {\"ready\": 0, \"clients\": 0}, \"stage\": {\"phase\": \"failed\", \"error\": \"compile.lock is held\"}, \"transfer_agent\": false, \"region_view\": {\"error\": \"no answer\"}}, "
+            + "\"island\": {\"name\": \"Island\", \"state\": \"cold\", \"stage\": {\"phase\": \"compiling\"}}, "
+            + "\"sea\": {\"name\": \"Open Sea\", \"state\": \"awake\", \"world\": {\"ready\": 1, \"clients\": 1}, \"busy\": true, \"operation\": {\"action\": \"handover\", \"phase\": \"loading the standby\"}, \"standby\": {\"port\": 1728, \"listening\": true}, "
+            + "\"stage\": {\"phase\": \"ready\", \"pending\": true, \"install\": \"not installed: the region started while its update was building\"}}, "
+            + "\"lost\": {\"state\": \"unknown\", \"error\": \"config unreadable\"}}, \"coordinator\": false, \"ok\": true}";
+        var behindNow = HostBoard.RegionsBehind("{\"component\": \"server\", \"behind\": 3, \"regions\": {\"gaia\": {\"behind\": 3}, \"railyard\": {\"behind\": 0}, \"barren\": {\"behind\": 3}, \"moon\": {\"behind\": -1}, \"orbit\": \"x\"}, \"ok\": true}");
+        Require(behindNow.Count == 3 && behindNow["gaia"] == 3 && behindNow["railyard"] == 0, "regions behind: " + behindNow.Count);
+        Require(HostBoard.RegionsBehind("{\"ok\": false, \"regions\": {\"gaia\": {\"behind\": 3}}}").Count == 0 && HostBoard.RegionsBehind("Traceback").Count == 0, "a refused check counted");
+        // Only the regions that hold an action lock or are being handed over lock their buttons; a region that is
+        // merely loading its world, or whose last action failed, stays usable, and so does every other region.
+        var busyNow = HostBoard.BusyRegions(boardStatus);
+        Require(busyNow.SetEquals(["barren", "sea"]), "busy regions: " + string.Join(",", busyNow));
+        Require(HostBoard.BusyRegions("{\"ok\": false, \"refused\": \"x\"}").Count == 0 && HostBoard.BusyRegions("Traceback").Count == 0, "busy regions from a refusal");
+        var board = HostBoard.Regions(boardStatus, behindNow, "gaia");
+        RegionCard Row(string id) => board.Single(card => card.Id == id);
+        Require(board.Count == 8 && board[0].Id == "gaia" && board[7].Id == "lost", "board rows: " + board.Count);
+        Require(Row("gaia") is { Name: "Gaia", Mainland: true, Run: RegionRun.Running, RunText: "Running", Players: 5, Build: RegionBuild.Built, BuildText: "Update built", Activity: null, Problem: null } gaiaRow
+            && gaiaRow.Notes == "port 1714, epoch 1713, last start done, ready to hand over", "running row: " + Row("gaia").Describe());
+        Require(Row("railyard") is { Mainland: false, Run: RegionRun.Asleep, Players: null, Build: RegionBuild.Current, BuildText: "Up to date", Problem: null, Notes: "" }, "asleep row: " + Row("railyard").Describe());
+        // A stopped region without its travel agent is normal; a compile under way shows as working, not stopped.
+        Require(Row("barren") is { Run: RegionRun.Working, RunText: "Working", Activity: "update: compiling", Build: RegionBuild.Behind, BuildText: "3 behind", Problem: null, Notes: "travel agent not running" },
+            "working row: " + Row("barren").Describe());
+        Require(Row("moon") is { Run: RegionRun.Stopped, Build: RegionBuild.Unknown, BuildText: "Not checked" } moonRow
+            && moonRow.Problem == "Update failed: compile failed: x.dm:1: error. Watchdog gave up after repeated restarts (crash); start it by hand.", "failed row: " + Row("moon").Problem);
+        // A world that is up but not ready is still loading; a running world without its travel agent is a problem.
+        Require(Row("orbit") is { Run: RegionRun.Working, Activity: "loading the world", Players: 0, Build: RegionBuild.Failed, BuildText: "Build failed" } orbitRow
+            && orbitRow.Problem == "Update build failed: compile.lock is held. Travel agent not running. Not answering as this region.", "orbit row: " + Row("orbit").Problem);
+        Require(Row("island") is { Run: RegionRun.Asleep, RunText: "Asleep", Build: RegionBuild.Building, BuildText: "Building" } islandRow
+            && islandRow.Notes == "saved and shut down; a wake or travel starts it, building update: compiling", "cold row: " + Row("island").Notes);
+        Require(Row("sea") is { Run: RegionRun.Working, Activity: "handover: loading the standby", Players: 1, Build: RegionBuild.Built } seaRow
+            && seaRow.Notes == "new build running beside it, not installed: the region started while its update was building", "handover row: " + Row("sea").Notes);
+        Require(Row("lost") is { Name: "lost", Run: RegionRun.Unknown, Problem: "Status unavailable: config unreadable." }, "unknown row: " + Row("lost").Describe());
+        Require(Row("gaia").Describe() == "Gaia: running, 5 players, build update built, port 1714, epoch 1713, last start done, ready to hand over."
+            && Row("moon").Describe().StartsWith("Moon: stopped, build not checked. Update failed:"), "row sentence: " + Row("gaia").Describe());
+        Require(string.Join("; ", HostBoard.Summary(board).Select(count => count.Kind + "=" + count.Text))
+            == "problem=3 problems; working=3 working; behind=5 out of date; running=1 running; asleep=2 asleep; stopped=1 stopped; unknown=1 unknown; players=6 players online",
+            "board summary: " + string.Join("; ", HostBoard.Summary(board).Select(count => count.Text)));
+        Require(HostBoard.Coordinator(boardStatus) == false && HostBoard.Coordinator("{\"regions\": {}, \"ok\": true}") == null, "coordinator flag");
+        // Before any update check has answered, nothing claims to be up to date.
+        Require(HostBoard.Regions(boardStatus, null).All(card => card.Build != RegionBuild.Current && !card.Mainland), "unchecked builds claimed current");
+        Require(HostBoard.Regions("{\"ok\": false, \"refused\": \"x\"}", null).Count == 0 && HostBoard.Regions("Traceback", null).Count == 0, "board from a refusal");
+        // One server without a region group: the same card from gaia_host.py status.
+        var lone = HostBoard.Server("civ13.dmb", "{\"port\": 1714, \"listening\": true, \"state\": \"awake\", \"busy\": false, \"world\": {\"ready\": true, \"clients\": 1, \"error\": \"\"}, \"ok\": true}", 0);
+        Require(lone is { Id: "server", Name: "civ13.dmb", Run: RegionRun.Running, Players: 1, Build: RegionBuild.Current, Problem: null, Notes: "port 1714" }, "single server card: " + lone?.Describe());
+        Require(HostBoard.Server("civ13.dmb", "{\"ok\": false, \"refused\": \"x\"}", null) == null && HostBoard.Server("civ13.dmb", "", null) == null, "server card from a refusal");
         var frozen = LocalHosting.ParseGroup("freeze", 0, "{\"done\": {\"moon\": {\"frozen\": true, \"pid\": 4}}, \"refused\": {\"gaia\": \"1 client(s) are connected\"}, \"ok\": true}");
         Require(frozen is { Ok: true, Busy: false } && frozen.Message == "Asleep now (a join or travel wakes it): moon. Refused: gaia: 1 client(s) are connected.", "freeze: " + frozen.Message);
         Require(LocalHosting.ParseGroup("thaw", 0, "{\"done\": {\"moon\": {\"thawed\": true}}, \"refused\": {}, \"ok\": true}").Message == "Woken: moon.", "thaw");
@@ -356,6 +438,10 @@ static class LocalHostingTests {
         var groupRefused = LocalHosting.ParseGroup("start", 1, "{\"ok\": false, \"refused\": {\"gaia\": \"already running\"}}");
         Require(groupRefused is { Ok: false, Busy: false } && groupRefused.Message == "Refused: gaia: already running", "group refusal line: " + groupRefused.Message);
         Require(LocalHosting.ParseGroup("update", 1, "{\"ok\": false, \"refused\": \"git fetch origin failed\"}").Message == "Refused: git fetch origin failed", "whole-group refusal");
+        // Update on an asleep region builds it while it sleeps instead of being refused.
+        var sleeper = LocalHosting.ParseGroup("update", 0, "{\"ok\": true, \"accepted\": {\"gaia\": {\"accepted\": true, \"action\": \"update\"}, " +
+            "\"moon\": {\"accepted\": true, \"action\": \"stage\", \"state\": \"asleep\"}}, \"refused\": {}}");
+        Require(sleeper.Ok && sleeper.Message.Contains("Asleep, so not woken: moon (") && !sleeper.Message.Contains("woken: gaia"), "asleep update: " + sleeper.Message);
         Require(!LocalHosting.ParseGroup("restart", 0, "{\"ok\": true, \"accepted\": {}, \"refused\": {}}").Ok, "an empty acceptance counted");
         Require(!LocalHosting.ParseGroup("status", 1, "Traceback").Ok, "group garbage accepted");
         // Forced stop and restart: no save, the next start loads the last completed one.
@@ -378,6 +464,12 @@ static class LocalHostingTests {
         Require(LocalHosting.GroupStep(host.Control!, "unlock", "gaia").ArgumentList.SequenceEqual(new[] { "-I", "-B", shard, "--config", groupConfig, "unlock", "--region", "gaia" }), "one-region unlock argv");
         var groupForce = LocalHosting.ParseGroup("force-restart", 0, "{\"accepted\": {\"gaia\": {}, \"railyard\": {}}, \"refused\": {}, \"ok\": true}");
         Require(groupForce is { Ok: true, Busy: true } && groupForce.Message.EndsWith("gaia, railyard..."), "group force-restart: " + groupForce.Message);
+        // Update and restart without saving: built first, then ended without a save from its backed-up last save.
+        Require(LocalHosting.GroupStep(host.Control!, "update-unsaved", "gaia").ArgumentList.SequenceEqual(new[] { "-I", "-B", shard, "--config", groupConfig, "update-unsaved", "--region", "gaia" }), "update-unsaved argv");
+        var noSave = LocalHosting.ParseGroup("update-unsaved", 0, "{\"accepted\": {\"gaia\": {}}, \"refused\": {\"moon\": \"the server is not running\"}, \"ok\": true}");
+        Require(noSave is { Ok: true, Busy: true } && noSave.Message.StartsWith("Building the update first") && noSave.Message.Contains("gaia...") && noSave.Message.Contains("moon"), "group update-unsaved: " + noSave.Message);
+        Require(LocalHosting.ParseControl("update-unsaved", 0, "{\"accepted\": true, \"action\": \"update-unsaved\", \"operation\": \"x\", \"ok\": true}") is { Ok: true, Busy: true } single
+            && single.Message.StartsWith("Updating without saving"), "update-unsaved answer");
 
         Reject(() => { Write(new { schema = 2, game_directory = game, world = "civ13.dmb", port = 1714 }); LocalHosting.Load(launcher); }, "future schema");
         Reject(() => { Write(new { schema = 1, game_directory = "relative", world = "civ13.dmb", port = 1714 }); LocalHosting.Load(launcher); }, "relative game folder");

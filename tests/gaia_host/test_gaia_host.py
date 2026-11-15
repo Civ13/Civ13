@@ -2,6 +2,7 @@
 import hashlib
 import importlib.util
 import json
+import os
 from pathlib import Path
 import sys
 import tempfile
@@ -196,6 +197,66 @@ class GaiaHostTests(unittest.TestCase):
         self.assertIn(['schtasks', 'Civ13 Gaia On-Demand'], self.machine.calls)
         self.assertEqual((self.repo / 'config' / 'lifecycle-revision.txt').read_text().strip(), REVISION)
         self.assertFalse(self.host.lock.exists())
+
+    def test_start_writes_server_build_for_the_revision_verb(self):
+        real = self.machine.run
+        def run(argv, cwd=None, timeout=1800, low_priority=False):
+            if argv[1:4] == ['show', '-s', '--format=%ct%n%s']:
+                self.machine.calls.append(list(argv))
+                return 0, '1794790800\nShow the server revision in-game (#5010)\n'
+            return real(argv, cwd, timeout)
+        self.machine.run = run
+        (self.repo / 'civ13.dmb').write_bytes(b'build')
+        os.utime(self.repo / 'civ13.dmb', (1794794400, 1794794400))
+        self.machine.clock = 1794798000.0
+        self.host.work('start', self.accept('start'))
+        record = json.loads((self.repo / 'config' / 'server-build.json').read_text())
+        self.assertEqual(record['revision'], REVISION)
+        self.assertEqual((record['committed'], record['committed_utc']), (1794790800, '2026-11-16 01:00'))
+        self.assertEqual(record['subject'], 'Show the server revision in-game (#5010)')
+        self.assertEqual(record['deployed'], 1794798000)
+        self.assertEqual((record['deployed_utc'], record['deployed_minute']), ('2026-11-16 03:00', 14135220))
+        self.assertEqual(record['committed_minute'], 14135100)
+        self.assertIn('compiled_utc', record)
+        # A restart onto the same revision keeps the time it first went live.
+        self.machine.up = False
+        self.machine.clock += 3600
+        self.host.work('start', self.accept('start'))
+        self.assertEqual(json.loads((self.repo / 'config' / 'server-build.json').read_text())['deployed'], 1794798000)
+        # A new revision is a new update.
+        self.host.write_server_build('e' * 40)
+        record = json.loads((self.repo / 'config' / 'server-build.json').read_text())
+        self.assertEqual((record['revision'], record['deployed']), ('e' * 40, 1794801600))
+
+    def test_start_refreshes_the_player_changelog_after_the_world_is_up(self):
+        fetched = []
+
+        def fetch(url):
+            fetched.append(self.machine.up)
+            return [{'number': 9, 'merge_commit_sha': REVISION, 'merged_at': '2026-11-13T10:00:00Z',
+                     'body': 'Changelog: Added sails.'}]
+        self.machine.http_get_json = fetch
+        self.host.work('start', self.accept('start'))
+        self.assertEqual(self.host.read_state()['phase'], 'done')
+        self.assertEqual(fetched, [True], 'GitHub is asked only once the world is listening')
+        self.assertTrue(any(call[1:2] == ['rev-list'] for call in self.machine.calls))
+        # rev-list output is empty in this fake, so every merged PR counts
+        record = json.loads((self.repo / 'config' / 'player-changelog.json').read_text())
+        self.assertEqual((record['revision'], record['entries'][0]['text']), (REVISION, 'Added sails.'))
+
+    def test_player_changelog_failure_never_blocks_start(self):
+        def fetch(url):
+            raise OSError('offline')
+        self.machine.http_get_json = fetch
+        self.host.work('start', self.accept('start'))
+        self.assertEqual(self.host.read_state()['phase'], 'done')
+        self.assertFalse((self.repo / 'config' / 'player-changelog.json').exists())
+
+    def test_server_build_failure_never_blocks_start(self):
+        (self.repo / 'config').mkdir(exist_ok=True)
+        (self.repo / 'config' / 'server-build.json').mkdir()  # cannot be replaced
+        self.host.work('start', self.accept('start'))
+        self.assertEqual(self.host.read_state()['phase'], 'done')
 
     def test_start_refusals_leave_no_lock(self):
         self.machine.up = True
@@ -775,9 +836,58 @@ class ForcedStopTests(GaiaHostTests):
         with self.assertRaisesRegex(gaia_host.Refused, 'action is still running: start'):
             self.host.unlock()
 
-    def test_kill_refuses_a_stopped_server(self):
-        with self.assertRaisesRegex(gaia_host.Refused, 'not running'):
-            self.host.kill()
+    def test_a_force_stop_while_a_start_boots_ends_the_world_it_started(self):
+        # 2026-11-13: Orbit came back after Force stop all, from a start already booting.
+        real = self.machine.start_task
+        stops = []
+        def start_task(*args, **kwargs):
+            stops.append(self.host.kill())  # the port is still closed: nothing to end yet
+            return real(*args, **kwargs)
+        self.machine.start_task = start_task
+        self.host.work('start', self.accept('start'))
+        self.assertEqual(len(stops), 1)
+        state = self.host.read_state()
+        self.assertEqual((state['action'], state['phase']), ('start', 'killed'), state)
+        self.assertIn(['kill_tree', 4242], self.machine.calls)
+        self.assertFalse(self.machine.up)
+        self.assertFalse(self.host.running_file.exists(), 'the watchdog leaves it down')
+        self.assertFalse(self.host.lock.exists())
+        self.assertFalse(self.host.killed_file.exists())
+
+    def test_kill_of_a_stopped_server_clears_its_old_result(self):
+        # 2026-11-13: after Force stop, stopped regions still showed an old "Handover failed".
+        self.host.record(action='handover', operation='x', phase='failed', error='[WinError 10061] refused')
+        self.host.write_json(self.host.running_file, {'since': 1})
+        result = self.host.kill()
+        self.assertEqual(result, {'killed': True, 'pid': None, 'reason': 'forced stop', 'released_locks': [],
+                                  'already_stopped': True})
+        state = self.host.read_state()
+        self.assertEqual((state['action'], state['phase'], state['error']), ('kill', 'killed', None))
+        self.assertFalse(self.host.running_file.exists(), 'the watchdog leaves it down')
+        self.assertFalse(any(call[0] == 'kill_tree' for call in self.machine.calls))
+
+    def test_kill_never_ends_a_reused_pid_from_an_old_freeze_record(self):
+        # Asia showed Asleep after Force stop: its freeze record named a pid that is alive
+        # again as some other process while nothing serves the region's port.
+        self.host.write_json(self.host.freeze_file, {'pid': 4242, 'frozen_at': self.machine.now()})
+        self.machine.alive = lambda pid: True
+        result = self.host.kill()
+        self.assertTrue(result['killed'])
+        self.assertFalse(any(call[0] == 'kill_tree' for call in self.machine.calls))
+        self.assertFalse(self.host.freeze_file.exists())
+        self.assertEqual(self.host.status()['state'], 'stopped')
+
+    def test_kill_stops_a_server_asleep_on_its_save(self):
+        # Shut down to disk while asleep: no process is left, yet it still read as asleep after a forced stop.
+        self.host.write_json(self.host.cold_file, {'frozen_at': 1, 'pid': 4242, 'detected_at': 2})
+        self.assertEqual(self.host.status()['state'], 'cold')
+        result = self.host.kill()
+        self.assertEqual(result, {'killed': True, 'pid': None, 'reason': 'forced stop', 'released_locks': [],
+                                  'was_asleep_on_save': True})
+        self.assertFalse(any(call[0] == 'kill_tree' for call in self.machine.calls))
+        self.assertEqual(self.host.status()['state'], 'stopped')
+        self.assertEqual(self.host.read_state()['phase'], 'killed')
+        self.assertTrue(self.host.kill().get('already_stopped'))
 
     def test_kill_leaves_a_stuck_save_worker_its_record(self):
         self.give_token()
@@ -811,6 +921,41 @@ class ForcedStopTests(GaiaHostTests):
         self.host.lock.write_text('stuck', encoding='utf-8')
         with self.assertRaisesRegex(gaia_host.Refused, 'still has an action running'):
             self.host.force_restart(lock_wait_seconds=10)
+
+
+class UpdateWithoutSaveTests(GaiaHostTests):
+    """update-unsaved on a single server: ended without a save, last completed save backed up,
+    pulled, compiled and started from that save. A stopped server is refused, never started."""
+
+    def test_ends_without_saving_backs_up_then_updates_and_starts(self):
+        self.machine.up = True
+        write_save(self.repo / 'map_saves')
+        self.host.work('update-unsaved', self.accept('update-unsaved'))
+        state = self.host.read_state()
+        self.assertEqual('done', state['phase'], state)
+        self.assertFalse(any(call[:2] == ['query', 'save_shutdown'] for call in self.machine.calls))
+        commands = self.machine.calls
+        self.assertLess(commands.index(['kill_tree', 4242]), commands.index(['git', 'merge', '--ff-only', 'origin/master']))
+        self.assertEqual(['schtasks', 'Civ13 Gaia On-Demand'], commands[-1])
+        self.assertEqual(MARKER, (Path(state['backup']) / 'save_complete.txt').read_text())
+        self.assertEqual(MARKER, (self.repo / 'map_saves' / 'save_complete.txt').read_text())
+        self.assertTrue(self.machine.up)
+
+    def test_a_stopped_server_is_refused(self):
+        with self.assertRaisesRegex(gaia_host.Refused, 'not running'):
+            self.host.request('update-unsaved')
+        self.assertFalse(self.host.lock.exists())
+
+    def test_the_world_can_ask_for_it_but_not_for_other_actions(self):
+        self.machine.up = True
+        data = self.repo / 'data'
+        data.mkdir()
+        for action, ok in (('force-restart', False), ('update-unsaved', True)):
+            (data / 'host_request.json').write_text(json.dumps({'id': 'a1', 'action': action}))
+            self.host.serve_world()
+            self.assertEqual(ok, json.loads((data / 'host_reply.json').read_text())['ok'], action)
+        self.assertEqual('update-unsaved', self.machine.detached[-1][-2])
+        self.assertIn('busy', json.loads((data / 'host_status.json').read_text()))
 
 
 class InterruptedSaveTests(GaiaHostTests):
@@ -1159,3 +1304,23 @@ class WatchdogTests(unittest.TestCase):
         with self.assertRaisesRegex(gaia_host.Refused, 'region host'):
             self.host.request_stage()
         self.assertFalse(self.host.update_pending())
+
+
+class HostControlsContractTests(unittest.TestCase):
+    """code/modules/server_build/host_controls.dm only asks for actions the host takes from a world,
+    and reads only status keys the host writes."""
+
+    def test_the_verbs_actions_and_status_keys_match_the_host(self):
+        import re
+        source = (ROOT / 'code/modules/server_build/host_controls.dm').read_text(encoding='utf-8')
+        asked = set(re.findall(r'" = "([a-z-]+)"', source))
+        self.assertTrue(asked)
+        self.assertLessEqual(asked, set(gaia_host.Host.WORLD_REQUESTS))
+        read = set(re.findall(r'status\["([a-z_]+)"\]', source))
+        with tempfile.TemporaryDirectory() as folder:
+            host = gaia_host.Host({'repository': folder, 'port': 1, 'task': 't', 'compiler': 'dm', 'git': 'git',
+                                   'state_dir': folder + '/state', 'branch': 'master', '_path': folder + '/h.json'},
+                                  FakeMachine(), script=Path('gaia_host.py'))
+            written = set(host.host_status())
+        region_only = {'staged', 'stage', 'group'}  # RegionHost.host_status adds these
+        self.assertLessEqual(read - region_only, written)

@@ -166,7 +166,8 @@ class BaselinePolicyTests(unittest.TestCase):
         self.assertEqual(suite['files'], ('tests/gaia_host/test_gaia_host.py', 'tests/gaia_host/test_shard_group.py',
                                           'tests/gaia_host/test_fresh_world.py',
                                           'tests/gaia_host/test_doorman.py', 'tests/gaia_host/test_wait_group.py',
-                                          'tests/gaia_host/test_relay.py', 'tests/gaia_host/test_mobile_host.py'))
+                                          'tests/gaia_host/test_relay.py', 'tests/gaia_host/test_mobile_host.py',
+                                          'tests/gaia_host/test_expedition_slots.py'))
         for path in suite['files'] + suite['paths'] + suite['shared_paths'] + ('scripts/gaia-host/gaia_host.py',
                                                                                'scripts/gaia-host/doorman.py', 'scripts/shard-group/shard_group.py',
                                                                                'scripts/windows/host/wait_group.py', 'scripts/windows/host/deploy.bat'):
@@ -185,6 +186,14 @@ class BaselinePolicyTests(unittest.TestCase):
         name = 'crossroads_mall'
         suite = ci.SUITES[name]
         self.assertEqual(suite['files'], ('tests/crossroads_mall/test_crossroads_mall.py',))
+        for path in suite['files'] + suite['paths'] + suite['shared_paths']:
+            self.assertIn(name, self.selected([path]))
+        self.assertNotIn(name, self.selected(['README.md']))
+
+    def test_americas_maps_suite_is_bounded_and_not_silently_omitted(self):
+        name = 'americas_maps'
+        suite = ci.SUITES[name]
+        self.assertEqual(suite['files'], ('tests/americas_maps/test_americas_maps.py',))
         for path in suite['files'] + suite['paths'] + suite['shared_paths']:
             self.assertIn(name, self.selected([path]))
         self.assertNotIn(name, self.selected(['README.md']))
@@ -252,6 +261,14 @@ class BaselinePolicyTests(unittest.TestCase):
         for path in suite['files'] + suite['paths'] + suite['shared_paths']:
             self.assertIn(name, self.selected([path]))
         self.assertIn(name, self.selected(['maps/1713/bridge.dmm']))
+        self.assertNotIn(name, self.selected(['README.md']))
+
+    def test_divine_approval_suite_is_bounded_and_not_silently_omitted(self):
+        name = 'divine_approval'
+        suite = ci.SUITES[name]
+        self.assertEqual(suite['files'], ('tests/divine_approval/test_contract.py', 'tests/divine_approval/test_divine_book.py', 'tests/divine_approval/test_mundane_gear.py'))
+        for path in suite['files'] + suite['paths'] + suite['shared_paths']:
+            self.assertIn(name, self.selected([path]))
         self.assertNotIn(name, self.selected(['README.md']))
 
     def test_fireman_carry_suite_is_bounded_and_not_silently_omitted(self):
@@ -326,6 +343,7 @@ class BaselinePolicyTests(unittest.TestCase):
             'tests/agent_control/test_visibility.py',
             'tests/agent_control/test_action_contract.py',
             'tests/agent_control/test_navigation_replay.py',
+            'tests/agent_control/test_needs_routines.py',
             'tools/agent-control/benchmarks/test_gateway_benchmark.py'))
         for path in suite['files'] + suite['paths'] + suite['shared_paths']:
             self.assertIn(name, self.selected([path]))
@@ -695,7 +713,7 @@ class BaselinePolicyTests(unittest.TestCase):
             output = Path(directory) / 'mood-history.json'
             self.assertEqual(ci.run_unit('help_mood_history', output), 0)
             result = json.loads(output.read_text())
-        self.assertEqual(result, dict(status='passed', tests=33, failures=0, errors=0, skipped=0))
+        self.assertEqual(result, dict(status='passed', tests=39, failures=0, errors=0, skipped=0))
 
     def test_help_wiki_guides_are_required_offline_for_exact_and_shared_inputs(self):
         suite = ci.SUITES['help_wiki_guides']
@@ -792,6 +810,7 @@ class BaselinePolicyTests(unittest.TestCase):
             'code/modules/client/preferencesSQLite/preferences_saving&loading&del.dm',
             'code/game/mob/living/carbon/human/human_life.dm',
             'code/game/mob/living/carbon/human/human_stats.dm',
+            'code/game/mob/living/carbon/human/playstyle_traits.dm',
         }
         self.assertEqual(set(suite['shared_paths']), expected_sources)
         for path in expected_sources:
@@ -867,7 +886,7 @@ class BaselinePolicyTests(unittest.TestCase):
                     self.assertFalse(baseline['tracked_dirty_after'])
                     self.assertEqual(traits['exit_code'], int(failing))
                     self.assertEqual(traits['counts'], dict(status='failed' if failing else 'passed',
-                        tests=17, failures=int(failing), errors=0, skipped=0))
+                        tests=19, failures=int(failing), errors=0, skipped=0))
                     self.assertEqual(traits['files'], list(ci.SUITES[suite_name]['files']))
                     errors = ci.aggregate(plan, baseline, compiler, jobs, False)
                     if failing:
@@ -1047,6 +1066,7 @@ class BaselinePolicyTests(unittest.TestCase):
                              'code/modules/materials/material_sheets.dm',
                              'code/game/objects/structures/kitchen/oven.dm',
                              'code/modules/1713/wood_ash_compost.dm',
+                             'code/modules/1713/solid_fuel.dm',
                              'code/game/objects/structures.dm',
                              'code/game/objects/items/stacks/civ_recipes.dm',
                              'code/modules/research_tree/research_node.dm',
@@ -1568,6 +1588,12 @@ class BaselinePolicyTests(unittest.TestCase):
             self.assertNotEqual(result.returncode, 0)
             self.assertFalse(output.exists())
             self.assertFalse(receipt.exists())
+
+    def test_policy_suite_has_a_bounded_longer_deadline(self):
+        self.assertEqual(ci.suite_deadline('policy'), 120)
+        self.assertEqual(ci.suite_deadline('access_lists'), ci.TIMEOUT)
+        self.assertEqual(ci.suite_deadline(None), ci.TIMEOUT)
+        self.assertTrue(all(ci.TIMEOUT <= ci.suite_deadline(name) <= ci.MAX_SUITE_TIMEOUT for name in ci.SUITES))
 
     def test_suite_deadline_and_missing_test_counts_fail_execution(self):
         plan, _, _, _ = fixtures()

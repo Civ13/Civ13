@@ -15,5 +15,14 @@ share of its build cost, and a thatch roof repaired with thatch roofing.
 `--negative-control roof-debt` drops `seasonal_construction_due` from roof
 saves and must fail with `unpaid season is carried over (1, 0, 1)`.
 
+The probe also covers pacing: a roofed wall weathers at three quarters of the
+rate and a founded, roofed one at half; a 300-season backlog stops at the
+last-year warning, then the last-season warning, then a ruin, and only then
+crumbles; a worn-out wall stands as a named, cracked ruin that holds nothing
+up; the roofs over it sag for a minute, one settles when it is propped and the
+other falls; and a repaired ruin is a wall again. `--negative-control shelter`,
+`pace`, `ruin` and `sag` each remove one of these and must fail its assertion.
+The run takes about 80 seconds of game time for the sag.
+
 Not covered: a connected client seeing the warnings, full season queue work,
 or Gaia's real save.

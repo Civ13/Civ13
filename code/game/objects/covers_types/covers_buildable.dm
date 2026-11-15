@@ -295,16 +295,8 @@
 	buildstack = /obj/item/weapon/clay/advclaybricks/fired
 
 /obj/covers/brick_wall/attackby(var/obj/item/weapon/material/kitchen/utensil/I, var/mob/living/human/U)
-	if (istype(I,/obj/item/weapon/material/kitchen/utensil/spoon) || istype(I,/obj/item/weapon/material/kitchen/utensil/fork) || istype(I,/obj/item/weapon/material/kitchen/utensil/chopsticks))
-		if (I.shiv < 10)
-			I.shiv++
-			visible_message("<span class='warning'>[U] sharpens \the [I] on \the [src]!</span>")
-			if (I.shiv >= 10)
-				U.drop_from_inventory(I)
-				var/obj/item/weapon/material/kitchen/utensil/knife/shank/SHK = new /obj/item/weapon/material/kitchen/utensil/knife/shank(U,I.material.name)
-				U.put_in_hands(SHK)
-				to_chat(U, "\The [I] turns into a shank.")
-				qdel(I)
+	if (istype(I, /obj/item/weapon/material/kitchen/utensil/spoon) || istype(I, /obj/item/weapon/material/kitchen/utensil/fork) || istype(I, /obj/item/weapon/material/kitchen/utensil/chopsticks))
+		sharpen_utensil(I, U)
 	..()
 
 /obj/covers/tiled_wall
@@ -329,16 +321,8 @@
 	buildstack = /obj/item/weapon/clay/advclaybricks/fired/cement //For now, until proper crafting materials are done
 
 /obj/covers/tiled_wall/attackby(var/obj/item/weapon/material/kitchen/utensil/I, var/mob/living/human/U)
-	if (istype(I,/obj/item/weapon/material/kitchen/utensil/spoon) || istype(I,/obj/item/weapon/material/kitchen/utensil/fork) || istype(I,/obj/item/weapon/material/kitchen/utensil/chopsticks))
-		if (I.shiv < 10)
-			I.shiv++
-			visible_message("<span class='warning'>[U] sharpens \the [I] on \the [src]!</span>")
-			if (I.shiv >= 10)
-				U.drop_from_inventory(I)
-				var/obj/item/weapon/material/kitchen/utensil/knife/shank/SHK = new /obj/item/weapon/material/kitchen/utensil/knife/shank(U,I.material.name)
-				U.put_in_hands(SHK)
-				to_chat(U, "\The [I] turns into a shank.")
-				qdel(I)
+	if (istype(I, /obj/item/weapon/material/kitchen/utensil/spoon) || istype(I, /obj/item/weapon/material/kitchen/utensil/fork) || istype(I, /obj/item/weapon/material/kitchen/utensil/chopsticks))
+		sharpen_utensil(I, U)
 	..()
 
 /obj/covers/cement_wall
@@ -364,16 +348,8 @@
 	buildstack = /obj/item/weapon/clay/advclaybricks/fired/cement
 
 /obj/covers/cement_wall/attackby(var/obj/item/weapon/material/kitchen/utensil/I, var/mob/living/human/U)
-	if (istype(I,/obj/item/weapon/material/kitchen/utensil/spoon) || istype(I,/obj/item/weapon/material/kitchen/utensil/fork) || istype(I,/obj/item/weapon/material/kitchen/utensil/chopsticks))
-		if (I.shiv < 10)
-			I.shiv++
-			visible_message("<span class='warning'>[U] sharpens \the [I] on \the [src]!</span>")
-			if (I.shiv >= 10)
-				U.drop_from_inventory(I)
-				var/obj/item/weapon/material/kitchen/utensil/knife/shank/SHK = new /obj/item/weapon/material/kitchen/utensil/knife/shank(U,I.material.name)
-				U.put_in_hands(SHK)
-				to_chat(U, "\The [I] turns into a shank.")
-				qdel(I)
+	if (istype(I, /obj/item/weapon/material/kitchen/utensil/spoon) || istype(I, /obj/item/weapon/material/kitchen/utensil/fork) || istype(I, /obj/item/weapon/material/kitchen/utensil/chopsticks))
+		sharpen_utensil(I, U)
 	..()
 
 /obj/covers/cement_wall/horizontal

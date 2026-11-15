@@ -1,0 +1,47 @@
+/obj/structure/radio/proc/broadcast(var/msg, var/mob/living/human/speaker, var/verbage = "says")
+
+	// ignore emotes.
+	if (dd_hasprefix(msg, "*"))
+		return
+	if (!transmitter || !transmitter_on)
+		return
+	var/list/tried_mobs = list()
+
+	for (var/mob/living/human/hearer in human_mob_list)
+		if (tried_mobs.Find(hearer))
+			continue
+		tried_mobs += hearer
+		var/list/used_radios = list()
+		if (hearer.stat == CONSCIOUS)
+			var/list/radios = list()
+			for (var/obj/structure/radio/radio in view(7, hearer))
+				if (radio.receiver_on)
+					radios |= radio
+				if (used_radios.Find(radio))
+					continue
+				used_radios += radio
+				if (check_freq(radio) && radio.receiver_on && (radio.check_power() || radio.powerneeded == 0))
+					hearer.hear_radio(msg, verbage, speaker.default_language, speaker, radio, src)
+			for (var/obj/item/weapon/radio/radio in view(2,hearer))
+				if (isturf(radio.loc) && radio.receiver_on)
+					radios |= radio
+				if (used_radios.Find(radio))
+					continue
+				used_radios += radio
+				if (check_freq(radio) && radio.receiver_on)
+					hearer.hear_radio(msg, verbage, speaker.default_language, speaker, radio, src)
+			for (var/obj/item/weapon/radio/radio in hearer.contents)
+				if (radio.receiver_on)
+					radios |= radio
+				if (used_radios.Find(radio))
+					continue
+				used_radios += radio
+				if (check_freq(radio) && radio.receiver_on)
+					hearer.hear_radio(msg, verbage, speaker.default_language, speaker, radio, src)
+	// let observers hear it
+	// let observers hear it
+	for (var/mob/observer/O in mob_list)
+		O.hear_radio(msg, verbage, speaker.default_language, speaker, src, src)
+	// other lands, through a keyed relay station (radio_relay.dm)
+	civ_relay_outbound(freq, speaker, msg, verbage)
+

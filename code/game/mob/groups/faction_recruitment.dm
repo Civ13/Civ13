@@ -120,6 +120,7 @@ var/global/list/recruitment_combat_skills = list("rifle", "pistol", "swords", "b
 	for (var/faction in audit.Copy())
 		if (!istext(faction) || !islist(audit[faction]))
 			audit -= faction
+	faction_roster_normalize()
 	return S
 
 /obj/map_metadata/proc/recruitment_audit(faction, text, account = "")
@@ -534,6 +535,7 @@ var/global/list/recruitment_combat_skills = list("rifle", "pistol", "swords", "b
 	var/list/S = recruitment_state()
 	faction_rename_assoc_key(S["policies"], old_name, new_name)
 	faction_rename_assoc_key(S["audit"], old_name, new_name)
+	faction_roster_rename(old_name, new_name)
 	var/list/apps = S["applications"]
 	for (var/id in apps)
 		var/list/A = apps[id]

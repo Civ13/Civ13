@@ -36,6 +36,8 @@ var/global/orbit_failures = 0
 		orbit_failures++
 
 /world/New()
+	// These checks are about passage, not weather (craft/chart_hazards.dm).
+	chart_hazards_off = TRUE
 	OpenPort("none")
 	sleep(1)
 	try

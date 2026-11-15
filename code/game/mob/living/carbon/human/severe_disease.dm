@@ -62,7 +62,7 @@
 			to_chat(src, SPAN_WARNING("You feel weak from your illness."))
 
 /mob/living/human/proc/receive_disease_treatment(rate)
-	if (is_severe_disease())
+	if (is_severe_disease() || (disease && disease_type == "worms"))
 		disease_treatment = max(disease_treatment, rate)
 	else if (disease && disease_type == "flu")
 		disease_treatment = TRUE
@@ -72,10 +72,16 @@
 // neither spreads from a sick person or a body.
 var/global/list/contagious_diseases = list("flu", "plague")
 
+// Germ reagents and the illness each one carries. Malaria lives only in the
+// blood, so it infects by injection or transfusion and never by swallowing.
+var/global/list/germ_reagent_disease = list("cholera" = "cholera", "typhus" = "typhus", "plague" = "plague", "worm_eggs" = "worms", "malaria" = "malaria")
+
 // Germs swallowed in food or drink get one infection roll per swallow, scaled
 // by the dose actually swallowed: 25% per unit. The germ reagents themselves
 // are inert in the stomach, so this roll is the only ingestion route.
-var/global/list/swallowed_germs = list("cholera", "typhus", "plague")
+var/global/list/swallowed_germs = list("cholera", "typhus", "plague", "worm_eggs")
+// Dirty water (the cholera reagent) also carries worm eggs: a third the chance.
+#define DIRTY_WATER_WORMS 0.33
 
 /mob/living/human/proc/swallow_germs(datum/reagents/swallowed)
 	if (!swallowed || disease || droid || orc || crab || inducedSSD || (status_flags & GODMODE))
@@ -85,18 +91,70 @@ var/global/list/swallowed_germs = list("cholera", "typhus", "plague")
 		dmod = 2
 	if (find_trait("Strong Immune System"))
 		dmod = 0.2
-	for (var/kind in swallowed_germs)
-		var/amount = swallowed.get_reagent_amount(kind)
+	for (var/germ in swallowed_germs)
+		var/amount = swallowed.get_reagent_amount(germ)
+		var/kind = germ_reagent_disease[germ]
 		if (amount <= 0 || (kind in disease_immunity) || resists_disease(kind))
 			continue
 		if (prob(min(amount * 25 * dmod, 100)))
-			disease = TRUE
-			disease_type = kind
-			disease_progression = 0
-			disease_treatment = 0
-			disease_course = 0
+			catch_disease(kind)
 			return kind
+	var/dirty = swallowed.get_reagent_amount("cholera")
+	if (dirty > 0 && !("worms" in disease_immunity) && prob(min(dirty * 25 * dmod * DIRTY_WATER_WORMS, 100)))
+		catch_disease("worms")
+		return "worms"
 	return null
+
+/mob/living/human/proc/catch_disease(kind)
+	disease = TRUE
+	disease_type = kind
+	disease_progression = 0
+	disease_treatment = 0
+	disease_course = 0
+
+// Drinking straight from dirty water: cholera at the given chance, otherwise
+// worms at a third of it. Strong and Weak Immune System scale both.
+/mob/living/human/proc/catch_dirty_water_illness(chance)
+	if (disease || droid || orc || crab)
+		return null
+	if (find_trait("Weak Immune System"))
+		chance *= 2
+	if (find_trait("Strong Immune System"))
+		chance *= 0.2
+	if (prob(chance) && !resists_disease("cholera") && !("cholera" in disease_immunity))
+		catch_disease("cholera")
+		return "cholera"
+	if (prob(chance * DIRTY_WATER_WORMS) && !("worms" in disease_immunity))
+		catch_disease("worms")
+		return "worms"
+	return null
+
+// The germ a sick person's blood (or, with meat, their flesh) carries.
+// Flu and zombie infection do not pass this way.
+/mob/living/human/proc/carried_germ(meat = FALSE)
+	if (!disease)
+		return null
+	switch (disease_type)
+		if ("cholera", "typhus", "plague")
+			return disease_type
+		if ("malaria")
+			return meat ? null : "malaria"
+		if ("worms")
+			return meat ? "worm_eggs" : null
+	return null
+
+// Cooking and boiling kill every germ in food or drink.
+/datum/reagents/proc/kill_germs()
+	for (var/germ in germ_reagent_disease)
+		del_reagent(germ)
+
+// Lying buckled in a real bed (not a chair) speeds recovery.
+/mob/living/human/proc/resting_in_bed()
+	if (!buckled)
+		return FALSE
+	if (istype(buckled, /obj/structure/bed/chair))
+		return FALSE
+	return istype(buckled, /obj/structure/bed) || istype(buckled, /obj/structure/medicalbed) || istype(buckled, /obj/structure/optable)
 
 /mob/living/human/proc/acquire_nearby_disease()
 	if (inducedSSD || droid || disease)
@@ -125,5 +183,6 @@ var/global/list/swallowed_germs = list("cholera", "typhus", "plague")
 			disease_progression = 0
 			disease_treatment = 0
 
+#undef DIRTY_WATER_WORMS
 #undef SEVERE_DISEASE_PAIN
 #undef SEVERE_DISEASE_PAIN_CRITICAL

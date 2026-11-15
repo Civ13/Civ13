@@ -3,7 +3,8 @@
 // ------------------------------------------------------------
 // A fresh Persistence world with book research starts in the Stone Age
 // (a restored save keeps its own era). Each new faction's founder gets
-// the Stone Age master book, holding every era-0 chapter, and a pencil.
+// the Stone Age master book, holding every era-0 chapter, and a writing
+// slate (a pencil can still be cut from a plank by anyone, for writing in books).
 // ============================================================
 
 /obj/map_metadata/proc/start_book_research_world()
@@ -46,8 +47,8 @@
 		return null
 	var/turf/T = get_turf(src)
 	var/obj/item/weapon/book/B = create_stone_age_master_book(T)
-	var/obj/item/weapon/pen/pencil/P = new(T)
+	var/obj/item/weapon/writing_slate/S = new(T)
 	put_in_hands(B)
-	put_in_hands(P)
-	to_chat(src, SPAN_NOTICE("Your faction starts with the <b>Stone Age master book</b> and a pencil. Study its chapters to learn them."))
+	put_in_hands(S)
+	to_chat(src, SPAN_NOTICE("Your faction starts with the <b>Stone Age master book</b> and a writing slate. Study its chapters to learn them."))
 	return B

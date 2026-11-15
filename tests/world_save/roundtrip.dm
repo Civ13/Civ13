@@ -687,16 +687,36 @@ var/global/roundtrip_capture_failure = FALSE
 	kept_cell.ChangeTurf(/turf/test/edge, FALSE, FALSE)
 	var/obj/item/test/kept = new(locate(4,4,1))
 	kept.number = 61
+	// An empty cell with only scalar fields is a plain cell: saved as one of
+	// the level's templates, not as an entry.
+	var/turf/plain_cell = locate(3,5,1)
+	check(!plain_cell.contents.len, "plain cell fixture is not empty")
+	var/plain_cell_type = plain_cell.type
+	plain_cell = plain_cell.ChangeTurf(/turf/test/edge, FALSE, FALSE)
+	plain_cell = locate(3,5,1)
+	plain_cell.name = "plain corner"
+	plain_cell.dir = 4
 	check(map_storage.Save_World(), "ground sparse export failed")
 	var/savefile/level = new("map_saves/1.sav")
-	check(level["/sparse/kind"] == "ground" && level["/sparse/turf"] == /turf/test && level["/sparse/cells"] > 0 && level["/sparse/cells"] < world.maxx * world.maxy, "ground level was not saved around its common tile")
+	check(level["/sparse/kind"] == "ground" && level["/sparse/turf"] == "plain" && level["/sparse/baseline"] == /turf/test && level["/sparse/cells"] > 0 && level["/sparse/cells"] < world.maxx * world.maxy, "ground level was not saved around its common tile")
+	var/list/plain_level = map_storage.sparse_plain_level(level, 1, map_storage.sparse_level_header(level))
+	var/list/plain_cells = plain_level ? plain_level["cells"] : null
+	var/plain_number = plain_cells ? plain_cells[(5 - 1) * world.maxx + 3] : 0
+	var/list/plain_template = plain_number ? plain_level["templates"][plain_number] : null
+	check(plain_template && plain_template["type"] == /turf/test/edge && plain_template["fields"]["name"] == "plain corner" && plain_template["fields"]["dir"] == 4 && isnull(level["/map/1/5/3"]), "plain cell was not saved as a template")
+	check(!plain_cells[(4 - 1) * world.maxx + 4] && !plain_cells[(5 - 1) * world.maxx + 2], "a saved or baseline cell was saved as plain")
 	level = null
 	check(map_storage.validate_world_save(), "ground sparse save rejected")
 	// The walk hands the load every cell's type: saved cells and the baseline.
 	var/list/grid = map_storage.validated_turf_grid(1)
-	check(islist(grid) && grid.len == world.maxx * world.maxy && grid[(5 - 1) * world.maxx + 2] == /turf/test && grid[(4 - 1) * world.maxx + 4] == /turf/test/edge, "ground sparse walk lacks the level's turf types")
+	check(islist(grid) && grid.len == world.maxx * world.maxy && grid[(5 - 1) * world.maxx + 2] == /turf/test && grid[(4 - 1) * world.maxx + 4] == /turf/test/edge && grid[(5 - 1) * world.maxx + 3] == /turf/test/edge, "ground sparse walk lacks the level's turf types")
 	var/turf/stray = locate(2,5,1)
 	stray.ChangeTurf(/turf/test/edge, FALSE, FALSE)
+	// The load puts back the plain cell's type, fields and empty contents.
+	plain_cell = locate(3,5,1)
+	plain_cell.ChangeTurf(/turf/test, FALSE, FALSE)
+	plain_cell = locate(3,5,1)
+	plain_cell.name = "changed"
 	map_storage.ClearMap()
 	check(map_storage.Load_World(), "ground sparse import failed")
 	stray = locate(2,5,1)
@@ -705,5 +725,8 @@ var/global/roundtrip_capture_failure = FALSE
 	check(kept && kept.number == 61, "ground level lost a saved cell's contents")
 	kept_cell = locate(4,4,1)
 	check(kept_cell.type == /turf/test/edge, "ground level reload lost a saved cell's type")
+	plain_cell = locate(3,5,1)
+	check(plain_cell.type == /turf/test/edge && plain_cell.name == "plain corner" && plain_cell.dir == 4 && !plain_cell.contents.len, "ground level reload lost a plain cell")
+	plain_cell.ChangeTurf(plain_cell_type, FALSE, FALSE)
 	kept_cell.ChangeTurf(kept_cell_type, FALSE, FALSE)
 	map_storage.sparse_level_override = previous
