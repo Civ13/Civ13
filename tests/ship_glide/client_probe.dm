@@ -247,7 +247,7 @@ var/global/datum/ship_client_probe/ship_client_probe = new
 	start_clip("4-fixed-camera", 32)
 	sleep(310)
 	finish_clip("4-fixed-camera")
-	states["markers"] = list("slide_y" = slide.y, "forward_y" = forward.y, "glide" = slide.glide_size)
+	states["markers"] = list("slide_y" = slide.y, "forward_y" = forward.y, "glide" = slide.glide_size, "deleted" = QDELETED(slide), "trace" = slide.trace)
 	qdel(slide)
 	qdel(forward)
 	states["tiller_glide"] = tiller.glide_size
@@ -315,6 +315,7 @@ var/global/datum/ship_client_probe/ship_client_probe = new
 /obj/ship_glide_marker
 	anchored = TRUE
 	density = FALSE
+	var/list/trace = list() // "world.time/timeofday: x,y loc" at each step.
 
 /obj/ship_glide_marker/New(loc, atom/look, movement)
 	..()
@@ -326,4 +327,5 @@ var/global/datum/ship_client_probe/ship_client_probe = new
 			var/turf/T = locate(x, y + 1, z)
 			if (T)
 				loc = T
+			trace += "[world.time]/[world.timeofday] cpu [world.cpu]: [x],[y] [loc]"
 			sleep(150)
