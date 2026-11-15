@@ -85,6 +85,27 @@ nobody playing them keep out of deep water as they always did.
 
 Rip currents that pull a swimmer out from the beach are not built yet.
 
+## Free diving
+
+A swimmer in the open sea over the sea layer may **Dive** (IC verb) to the
+seabed straight below on one held breath, the same pool the swimming skill
+sets (10 s at 100, 60 s at 250; code/modules/1713/machinery/modular_vehicles/ships/free_diving.dm).
+The dive takes 2 s and two seconds of breath; it needs a rested swimmer
+(tiredness under 80, breath at least half full). `free_diving` makes
+`can_walk_seabed()` true, and the sea layer's `CanPass` asks
+`seabed_zone_allowed()`: the shelf for anyone, open water from skill 200, the
+deep and the abyss only for sealed suits. On the seabed the diver swims at
+the surface swimming speed (20 ds a step divided by skill, floor 8), not the
+3 ds a suit walks, and `outside_exposure_step` leaves the breathing to
+`free_dive_tick`. **Surface** takes 3 s from the shelf and 6 s from open
+water, spending breath on the way. When the breath runs out the diver is
+forced up with 20 oxygen damage, or drowns in place at 10 a second under a
+hull; anyone unconscious down there drowns. Each dive trains swimming like
+surface water (the seabed is its own kind for the first-swim lesson), open
+water 1.5x. Suited divers may use Dive too, and Surface drops their weights.
+
+    python3 tests/ecology_spawning/run_linux.py . tests/river_flow/dive_probe.dm
+
 ## Flow lines
 
 Flowing water, river or sea, shows which way it runs: a few pale streaks

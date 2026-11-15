@@ -481,6 +481,13 @@
 				overlays_standing[25] = null
 		life_water_refresh()
 		return
+	// A free diver on the seabed, on a held breath (free_diving.dm).
+	if (free_diving)
+		if (sea_layer_cell(T) && !T.iscovered() && !seabed_diving_rating())
+			free_dive_tick(T)
+			life_water_refresh()
+			return
+		free_diving = FALSE
 	// Floating: a lifejacket, or a sealed diving suit with its weights dropped.
 	if ((istype(wear_suit, /obj/item/clothing/suit/lifejacket) || seabed_diving_rating()) && istype(T, /turf/floor/beach/water/deep) && !T.iscovered())
 		drowning = FALSE
