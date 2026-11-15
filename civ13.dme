@@ -697,6 +697,7 @@
 #include "code\game\objects\map_metadata\zhenbao.dm"
 #include "code\game\objects\map_metadata\nomads\nomads.dm"
 #include "code\game\objects\map_metadata\nomads\nomads_africa.dm"
+#include "code\game\objects\map_metadata\nomads\nomads_americas.dm"
 #include "code\game\objects\map_metadata\nomads\nomads_asia.dm"
 #include "code\game\objects\map_metadata\nomads\nomads_continental.dm"
 #include "code\game\objects\map_metadata\nomads\nomads_desert.dm"

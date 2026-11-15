@@ -287,6 +287,33 @@ var/global/list/region_trail_next_request = list()
 #undef REGION_TRAIL_PENDING_MAX
 #undef REGION_TRAIL_EDGE_TILES
 
+// Trails drawn on a map (maps/nomads/nomads_americas_*.dmm). Where one land
+// mass is split over two regions, the road between them is part of the land:
+// it is open from the start and leads to one fixed neighbour, named by its
+// region id in the shard group. Without that neighbour in the group it reads
+// as overgrown, like any trail with nowhere to lead. Admins can still close
+// or redirect it. Travellers from other lands never arrive at it.
+/obj/structure/region_gate/trail_marker/authored
+	name = "isthmus trail"
+	desc = "A worn trail that follows the narrow land out of this country and into the next."
+	approved = TRUE
+	approved_by = "map"
+
+/obj/structure/region_gate/trail_marker/authored/accepts_strangers()
+	return FALSE
+
+/obj/structure/region_gate/trail_marker/authored/americas_south
+	name = "isthmus trail south"
+	desc = "A worn trail along the narrow land. It leads on into the southern continent."
+	destination = "southamerica"
+	requested_destination = "southamerica"
+
+/obj/structure/region_gate/trail_marker/authored/americas_north
+	name = "isthmus trail north"
+	desc = "A worn trail along the narrow land. It leads on into the northern continent."
+	destination = "northamerica"
+	requested_destination = "northamerica"
+
 // Stack recipe guard: trail markers are built at the edge of the land (checked once, before the build).
 /datum/craft_guard/region_trail
 	order = 40
