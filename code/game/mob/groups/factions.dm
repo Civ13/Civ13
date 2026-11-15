@@ -53,6 +53,11 @@
 	if (!map)
 		return
 	if (map.nomads)
+		// A bare body (region travel, edge crossing) never ran a job, so it
+		// keeps the mob default title. Recruiting, research levels and the
+		// faction HUD all key on "Nomad", so name the role it now plays.
+		if (original_job_title == initial(original_job_title))
+			original_job_title = "Nomad"
 		make_nomad()
 	else if (map.civilizations)
 		make_nation()

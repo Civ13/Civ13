@@ -367,7 +367,7 @@ var/list/gamemode_cache = list()
 					config.banappeals = value
 
 				if ("wikiurl")
-					config.wikiurl = value
+					config.wikiurl = wiki_page_url(value)
 
 				if ("websiteurl")
 					config.websiteurl = value
@@ -376,7 +376,7 @@ var/list/gamemode_cache = list()
 					config.donationurl = value
 
 				if ("rulesurl")
-					config.rulesurl = value
+					config.rulesurl = wiki_page_url(value)
 
 				if ("discordurl")
 					config.discordurl = value
@@ -576,5 +576,44 @@ var/list/gamemode_cache = list()
 	#ifdef OPENDREAM
 	log_world("Running in OpenDream mode")
 	#endif
+#define CIV13_WIKI_ROOT "https://civ13.github.io/civ13-wiki/"
+// The old MediaWiki at civ13.com/wiki is gone: civ13.com/wiki redirects to the
+// GitHub Pages wiki but drops the path and query, so deep links landed on a
+// broken page. Rewrite old-style links to the page's real path on the new wiki.
+/proc/wiki_page_url(url)
+	if (!istext(url) || !length(url))
+		return url
+	var/lowered = lowertext(url)
+	if (!findtext(lowered, "civ13.com/wiki"))
+		return url
+	var/title_at = findtext(lowered, "title=")
+	if (!title_at)
+		return CIV13_WIKI_ROOT
+	var/title = copytext(url, title_at + 6)
+	var/cut = findtext(title, "&")
+	if (cut)
+		title = copytext(title, 1, cut)
+	cut = findtext(title, "#")
+	if (cut)
+		title = copytext(title, 1, cut)
+	title = replacetext(url_decode(title), " ", "_")
+	var/static/list/known_pages = list(
+		"rules" = "rules/Rules.html",
+		"server_rules" = "rules/Rules.html",
+		"main_page" = "",
+		"new_player_guide" = "New_Player_Guide.html",
+		"starter_guide" = "Starter_Guide.html",
+		"hotkeys" = "Hotkeys.html",
+		"mission_and_community_standards" = "Mission_and_Community_Standards.html"
+	)
+	var/page = known_pages[lowertext(title)]
+	if (!isnull(page))
+		return "[CIV13_WIKI_ROOT][page]"
+	if (!length(title))
+		return CIV13_WIKI_ROOT
+	// Unknown titles open the wiki's search for that page name.
+	return "[CIV13_WIKI_ROOT]?search=[url_encode(replacetext(title, "_", " "))]"
+#undef CIV13_WIKI_ROOT
+
 /datum/configuration/proc/post_load()
 	return
