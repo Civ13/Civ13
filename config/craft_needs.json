@@ -211,5 +211,13 @@
     "inputs": {
       "/obj/item/machine_part/wheel": 2
     }
+  },
+  "/obj/item/weapon/material/kitchen/utensil/knife/sickle": {
+    "tools": [
+      "hammer"
+    ],
+    "inputs": {
+      "/obj/item/stack/material/wood": 1
+    }
   }
 }
