@@ -332,6 +332,11 @@ class DugWellsTest(unittest.TestCase):
         wells = (ROOT / 'code/modules/1713/dug_wells.dm').read_text(encoding='utf-8')
         self.assertIn('/datum/craft_guard/well_fitting/refusal(', wells)
         self.assertIn('if (locate(/obj/structure/sink/well) in get_turf(H))', wells)
+        # every well can be taken apart: fitting, lining, then the hole
+        self.assertIn('if (is_tool(O, TOOL_HAMMER))\n\t\twell_break(user)', wells)
+        self.assertIn('if (dug_lined())', wells)
+        self.assertIn('/obj/structure/sink/well/ex_act(severity)', wells)
+        self.assertEqual(wells.count('log_game("[key_name(user)]'), 2)
         from PIL import Image
         meta = Image.open(ROOT / 'icons/obj/wells.dmi').info['Description']
         states = {line.split('"')[1] for line in meta.splitlines() if line.startswith('state = ')}

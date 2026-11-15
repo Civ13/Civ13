@@ -37,6 +37,8 @@
 #define WELL_DIG_TIME_PER_SPIT 50
 #define WELL_WINDLASS_TIME 20
 #define WELL_PUMP_TIME 10
+#define WELL_UNFIT_TIME 80
+#define WELL_BREAK_TIME 200
 
 /obj/structure/sink
 	// Spits dug by players; 0 for a spring.
@@ -257,10 +259,14 @@
 	if (choice == "Cancel" || QDELETED(src) || !user.Adjacent(src))
 		return TRUE
 	if (choice == "Fill it in")
-		user.visible_message(SPAN_NOTICE("[user] starts filling in \the [src]."), SPAN_NOTICE("You start filling in \the [src]."))
+		if (dug_lined())
+			to_chat(user, SPAN_WARNING("The lining holds the shaft open. Break it up with a hammer first."))
+			return TRUE
+		user.visible_message(SPAN_WARNING("[user] starts filling in \the [src]."), SPAN_NOTICE("You start filling in \the [src]."))
 		playsound(src, 'sound/effects/shovelling.ogg', 100, TRUE)
-		if (do_after(user, WELL_DIG_TIME, src) && !QDELETED(src))
+		if (do_after(user, dug_dig_time(user, S, dug_depth), src) && !QDELETED(src))
 			to_chat(user, SPAN_NOTICE("You fill \the [src] in."))
+			log_game("[key_name(user)] filled in [src] at [x],[y],[z].")
 			dug_fill_in()
 		return TRUE
 	var/problem = dug_deepen_problem()
@@ -380,6 +386,8 @@
 	. = ..()
 	if (.)
 		dug_examine(user)
+		if (get_dist(src, user) <= 1)
+			to_chat(user, SPAN_NOTICE("A hammer would take [well_fitting() ? "its fitting down" : "its lining apart"]."))
 
 /obj/structure/sink/well/attack_hand(mob/user)
 	if (!dug_reach(user))
@@ -390,8 +398,14 @@
 	dug_drink(H, before)
 
 /obj/structure/sink/well/attackby(obj/item/O, mob/user)
-	if (dug_depth && is_tool(O, TOOL_SHOVEL))
-		dug_dig(user, O)
+	if (is_tool(O, TOOL_HAMMER))
+		well_break(user)
+		return
+	if (is_tool(O, TOOL_SHOVEL))
+		if (dug_depth)
+			dug_dig(user, O)
+		else
+			to_chat(user, SPAN_WARNING("A shovel will not shift the lining. Break it up with a hammer."))
 		return
 	var/obj/structure/well_fitting/F = well_fitting()
 	if (F && F.draw(src, O, user))
@@ -399,6 +413,94 @@
 	if (!dug_reach(user, O))
 		return
 	..()
+
+// ---- taking a well apart -----------------------------------------------------------
+// A fitting comes off first, then the lining is broken up. A dug shaft is left as
+// a bare waterhole a shovel can fill in; a well over a spring leaves its puddle.
+
+/obj/structure/sink/proc/dug_lined()
+	return FALSE
+
+/obj/structure/sink/well/dug_lined()
+	return TRUE
+
+// What is got back, about half of what went in.
+/obj/structure/sink/well/proc/well_salvage()
+	return list(/obj/item/stack/material/stone = 3)
+
+/obj/structure/sink/well/sandstone/well_salvage()
+	return list(/obj/item/stack/material/sandstone = 3)
+
+/obj/structure/sink/well/marble/well_salvage()
+	return list(/obj/item/stack/material/marble = 3)
+
+/obj/structure/sink/well/timber/well_salvage()
+	return list(/obj/item/stack/material/wood = 2)
+
+/proc/well_drop_salvage(turf/T, list/salvage)
+	for (var/path in salvage)
+		new path(T, salvage[path])
+
+// The lining comes out. Unlined sides only stand so deep, so the rest caves in.
+/obj/structure/sink/well/proc/well_break_lining(salvage = TRUE)
+	var/turf/T = get_turf(src)
+	if (!T)
+		qdel(src)
+		return null
+	if (salvage)
+		well_drop_salvage(T, well_salvage())
+	var/obj/structure/sink/puddle/left
+	if (dug_depth)
+		dug_settle()
+		left = new /obj/structure/sink/puddle/waterhole(T)
+		left.dug_depth = min(dug_depth, WELL_DEPTH_UNLINED)
+		left.dry = dry
+		left.dug_settle()
+		left.volume = min(volume, left.volume)
+		left.update_icon()
+	else
+		left = new /obj/structure/sink/puddle(T)
+	qdel(src)
+	return left
+
+/obj/structure/sink/well/proc/well_break(mob/living/user)
+	if (!istype(user))
+		return
+	var/obj/structure/well_fitting/F = well_fitting()
+	if (F)
+		user.visible_message(SPAN_WARNING("[user] starts taking \the [F] off \the [src]."), SPAN_NOTICE("You start taking \the [F] off \the [src]."))
+		playsound(src, 'sound/effects/woodhit.ogg', 100, TRUE)
+		if (!do_after(user, WELL_UNFIT_TIME, src) || QDELETED(src) || QDELETED(F))
+			return
+		to_chat(user, SPAN_NOTICE("You take \the [F] down."))
+		F.unfit()
+		return
+	if (WWinput(user, "Break up the lining of \the [src]?[dug_depth ? "" : " The spring under it will be left as a puddle."]", "Well", "Cancel", list("Break it up", "Cancel")) != "Break it up")
+		return
+	if (QDELETED(src) || !user.Adjacent(src) || well_fitting())
+		return
+	user.visible_message(SPAN_DANGER("[user] starts breaking up the lining of \the [src]!"), SPAN_NOTICE("You start breaking up the lining of \the [src]."), SPAN_NOTICE("You hear hammering nearby."))
+	playsound(src, 'sound/effects/woodhit.ogg', 100, TRUE)
+	if (!do_after(user, WELL_BREAK_TIME, src) || QDELETED(src) || well_fitting())
+		return
+	log_game("[key_name(user)] broke up [src] at [x],[y],[z].")
+	var/obj/structure/sink/left = well_break_lining()
+	to_chat(user, SPAN_NOTICE("You break up the lining. [istype(left, /obj/structure/sink/puddle/waterhole) ? "A bare hole is left: a shovel will fill it in." : "The spring is left as a puddle."]"))
+
+/obj/structure/well_fitting/proc/unfit()
+	well_drop_salvage(get_turf(src), salvage)
+	qdel(src)
+
+// A blast close by fills the shaft; one further off shakes the lining out.
+/obj/structure/sink/well/ex_act(severity)
+	if (severity <= 1)
+		qdel(src)
+	else if (severity <= 2 && prob(50))
+		well_break_lining(FALSE)
+
+/obj/structure/sink/puddle/waterhole/ex_act(severity)
+	if (severity <= 2)
+		qdel(src)
 
 // ---- fittings --------------------------------------------------------------------
 
@@ -425,6 +527,7 @@
 	var/draw_time = WELL_WINDLASS_TIME
 	var/use_state = null
 	var/draw_text = "wind a full pail up"
+	var/list/salvage = list(/obj/item/stack/material/wood = 2, /obj/item/stack/material/rope = 1)
 
 /obj/structure/well_fitting/proc/well()
 	return locate(/obj/structure/sink/well) in loc
@@ -511,6 +614,7 @@
 	use_state = "fit_pump_use"
 	draw_time = WELL_PUMP_TIME
 	draw_text = "work the handle"
+	salvage = list(/obj/item/stack/material/iron = 3)
 
 // Fittings go on a lined well and nowhere else.
 /datum/craft_guard/well_fitting
