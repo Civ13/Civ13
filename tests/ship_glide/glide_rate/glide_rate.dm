@@ -46,7 +46,7 @@ var/global/started = 0
 	new /obj/mover(locate(13, 7, 1), "green", 0.5, TRUE)
 	new /obj/mover(locate(13, 8, 1), "blue", 4, FALSE)
 	started = world.time
-	spawn(500)
+	spawn(200)
 		// Phase two: the camera rides a carried body.
 		loc = locate(13, 10, 1)
 		glide_size = 0.5

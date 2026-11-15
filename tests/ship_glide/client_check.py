@@ -22,8 +22,8 @@ import time
 import uuid
 import zlib
 
-REQUIRED_CHECKS = ('hull_built', 'sails_slow_ahead', 'logs_shoved', 'voyage_at_anchor')
-REQUIRED_CLIPS = ('1-sailing', '2-shove-logs', '3-voyage')
+REQUIRED_CHECKS = ('hull_built', 'sails_slow_ahead', 'logs_shoved', 'voyage_at_anchor', 'cameras')
+REQUIRED_CLIPS = ('1-sailing', '2-shove-logs', '3-voyage', '4-fixed-camera', '5-camera-on-tiller', '6-camera-on-body')
 PROBE_INCLUDE = '\n#include "tests\\ship_glide\\client_probe.dm"\n'
 
 
@@ -135,6 +135,9 @@ def size_window(pid, width=1280, height=800):
         raise RuntimeError('The Dream Seeker window was not found')
     user32.ShowWindow(ctypes.c_void_p(hwnd), 9)  # SW_RESTORE
     user32.MoveWindow(ctypes.c_void_p(hwnd), 40, 40, width, height, True)
+    # A unique title, so gdigrab never records another Dream Seeker window
+    # (a live game open on the same desktop has the same title).
+    user32.SetWindowTextW(ctypes.c_void_p(hwnd), 'Civ13 ship probe ' + str(pid))
     user32.SetForegroundWindow(ctypes.c_void_p(hwnd))
     time.sleep(1.5)
     return hwnd

@@ -228,6 +228,40 @@ var/global/datum/ship_client_probe/ship_client_probe = new
 	tiller.voyage = null
 	pass("voyage_at_anchor", list("sea_goes_by_in_this_build" = shown))
 
+// Diagnosis: who glides? The same sailing seen from a camera fixed on a sea
+// tile, then from a camera on her tiller, then from the body again, with the
+// body's own movement state written down at each step.
+/datum/ship_client_probe/proc/check_cameras()
+	var/datum/craft/K = tiller.craft
+	var/list/states = list()
+	states["body"] = list("step_x" = H.step_x, "step_y" = H.step_y, "bound_x" = H.bound_x, "bound_width" = H.bound_width, "glide_size" = H.glide_size, "animate_movement" = H.animate_movement, "natively" = craft_glides_natively(H))
+	K.set_anchor(FALSE)
+	K.set_speed(VESSEL_SPEED_SLOW)
+	if (!headless)
+		C.eye = locate(tiller.x + 3, tiller.y + 2, tiller.z)
+		C.perspective = EYE_PERSPECTIVE
+	start_clip("4-fixed-camera", 32)
+	sleep(310)
+	finish_clip("4-fixed-camera")
+	states["tiller_glide"] = tiller.glide_size
+	if (!headless)
+		C.eye = tiller
+		C.perspective = EYE_PERSPECTIVE
+	start_clip("5-camera-on-tiller", 32)
+	sleep(310)
+	finish_clip("5-camera-on-tiller")
+	if (!headless)
+		C.eye = H
+		C.perspective = MOB_PERSPECTIVE
+	start_clip("6-camera-on-body", 32)
+	for (var/i = 1 to 6)
+		sleep(50)
+		states["body_[i]"] = list("x" = H.x, "y" = H.y, "step_x" = H.step_x, "step_y" = H.step_y, "pixel_x" = H.pixel_x, "pixel_y" = H.pixel_y, "glide_size" = H.glide_size, "client_pixel_y" = C ? C.pixel_y : null, "client_eye" = C ? "[C.eye]" : null)
+	sleep(10)
+	finish_clip("6-camera-on-body")
+	K.set_speed(VESSEL_SPEED_STOP)
+	pass("cameras", states)
+
 /datum/ship_client_probe/proc/drive()
 	var/failure = null
 	var/failed_phase = null
@@ -256,6 +290,8 @@ var/global/datum/ship_client_probe/ship_client_probe = new
 		check_shove()
 		mark("voyage")
 		check_voyage()
+		mark("cameras")
+		check_cameras()
 	catch(var/exception/e)
 		failure = "[e.name]"
 		failed_phase = phase
