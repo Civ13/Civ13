@@ -16,7 +16,8 @@ for (const marker of ['timeout-minutes: 10', 'timeout-minutes: 5', 'timeout-minu
   'CHAT_NO_RESIZE_OBSERVER=1 node tests/chat/chat-scroll.browser.test.js',
   'CHAT_NEGATIVE_CONTROL=1 node tests/chat/chat-scroll.browser.test.js',
   'node tests/chat/chat-filter.browser.test.js',
-  'node tests/chat/chat-connection.browser.test.js']) {
+  'node tests/chat/chat-connection.browser.test.js',
+  'node tests/chat/chat-history.browser.test.js']) {
   assert.ok(workflow.includes(marker), marker);
 }
 assert.ok(!/DreamDaemon|DreamMaker|workflow_dispatch|schedule:/.test(workflow), 'no native/manual/scheduled execution');
@@ -29,4 +30,6 @@ assert.ok(read('code/__defines/chat.dm').includes("#define CHAT_TYPED(kind, mess
 assert.ok(backend.includes('browser_chat:startChatHeartbeat'), 'server starts the connection watchdog');
 assert.ok(read('code/modules/client/client_procs.dm').includes('browser_chat:chatPong'), 'server answers chat pings');
 assert.ok(chat.includes('window.chatPong = heardFromServer;') && chat.includes("'byond://?chat_ping='"), 'page ping bridge');
+assert.ok(backend.includes('browser_chat:setChatIdentity') && chat.includes('window.setChatIdentity = setChatIdentity;'), 'server names the ckey for chat history');
+assert.ok(chat.includes("const HISTORY_KEY_PREFIX = 'civ13-chat-history-v1:';"), 'chat history key');
 console.log('PASS chat workflow and delivery contracts');

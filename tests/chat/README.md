@@ -41,3 +41,14 @@ before the start, that answered pings never warn, that unanswered pings warn
 once with a "Connection lost" notice shown on every tab, that an answer or any
 game message reports "Connection restored", and that timer ticks further apart
 than the timeout (a throttled hidden window) do not raise a false alarm.
+
+`chat-history.browser.test.js` checks the history kept across a reconnect,
+such as moving to another region. The server calls `setChatIdentity(ckey)`
+from `on_ready()` before the queued messages; the page keeps recent lines in
+hub storage under that ckey and puts them back above the new output with a
+divider. The test loads the page, feeds fictional lines, reloads it and checks
+that lines sent just before leaving survive, types and tab filters carry over,
+restored lines raise no unread badges, game links from the old world are
+disabled while web links stay, storage is capped per type and in total, stored
+markup is sanitized again, other ckeys see nothing, history older than a day
+is ignored and Clear Chat wipes it.

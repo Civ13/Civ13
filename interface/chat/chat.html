@@ -598,6 +598,23 @@
             display: block;
         }
 
+        /* Lines restored from the last connection; their game links point
+           at the old world, so they are plain text. */
+        .message.restored {
+            opacity: 0.85;
+        }
+
+        .stale-link {
+            text-decoration: none;
+            cursor: default;
+        }
+
+        .chat-history-divider {
+            border-bottom: 1px solid #392611;
+            font-style: italic;
+            margin-bottom: 2px;
+        }
+
         .connection-lost {
             color: #ff3737;
             font-weight: bold;
@@ -1043,6 +1060,144 @@
             }
         }
 
+        // Chat history that survives a reconnect. Moving between regions
+        // connects the client to a different world, which loads a fresh copy
+        // of this page; the last lines are kept in the same storage as the
+        // tab settings (BYOND hub storage on 516+, shared by every region)
+        // under the player's ckey and put back above the new output. The
+        // server names the ckey with setChatIdentity() before any message.
+        // Restored lines are sanitized again and their game links are
+        // disabled, because a link points at an object on the old world.
+        const HISTORY_KEY_PREFIX = 'civ13-chat-history-v1:';
+        const HISTORY_MAX_LINES = 400;
+        const HISTORY_MAX_PER_TYPE = 120;
+        const HISTORY_MAX_CHARS = 400000;
+        const HISTORY_MAX_AGE_MS = 24 * 60 * 60 * 1000;
+        const HISTORY_SAVE_DELAY_MS = 750;
+        let historyKey = '';
+        let historySaveTimer = null;
+
+        function historyEntries() {
+            const children = messagesContainer.children;
+            const perType = {};
+            const kept = [];
+            let chars = 0;
+            for (let i = children.length - 1; i >= 0 && kept.length < HISTORY_MAX_LINES; i--) {
+                const child = children[i];
+                if (!child.classList.contains('message') || child.classList.contains('connection-notice')) continue;
+                const type = child.getAttribute('data-chat-type') || 'other';
+                if ((perType[type] || 0) >= HISTORY_MAX_PER_TYPE) continue;
+                const html = child.innerHTML;
+                if (chars + html.length > HISTORY_MAX_CHARS) break;
+                chars += html.length;
+                perType[type] = (perType[type] || 0) + 1;
+                kept.push({ t: type, h: html });
+            }
+            return kept.reverse();
+        }
+
+        function saveHistory() {
+            if (historySaveTimer) {
+                clearTimeout(historySaveTimer);
+                historySaveTimer = null;
+            }
+            if (!historyKey) return;
+            try {
+                const store = chatStorage();
+                if (store) store.setItem(historyKey, JSON.stringify({ savedAt: Date.now(), lines: historyEntries() }));
+            } catch (e) {
+                console.warn('Chat: could not save chat history', e);
+            }
+        }
+
+        function scheduleHistorySave() {
+            if (!historyKey || historySaveTimer) return;
+            historySaveTimer = setTimeout(saveHistory, HISTORY_SAVE_DELAY_MS);
+        }
+
+        function restoredLine(entry) {
+            if (!entry || typeof entry.h !== 'string') return null;
+            const type = KNOWN_TYPES.indexOf(entry.t) !== -1 ? entry.t : 'other';
+            const div = document.createElement('div');
+            div.className = 'message restored';
+            if (typeof DOMPurify === 'undefined') {
+                div.textContent = entry.h.replace(/<[^>]*>/g, '');
+            } else {
+                div.innerHTML = DOMPurify.sanitize(entry.h, {
+                    USE_PROFILES: { html: true },
+                    FORBID_TAGS: ['form', 'input', 'button', 'textarea', 'select'],
+                    ALLOWED_URI_REGEXP: /^(?:(?:https?|mailto):|[^&:/?#]*(?:[/?#]|$))/i
+                });
+            }
+            const links = div.querySelectorAll('a');
+            for (let i = 0; i < links.length; i++) {
+                const href = links[i].getAttribute('href') || '';
+                if (!/^(?:https?|mailto):/i.test(href)) {
+                    links[i].removeAttribute('href');
+                    links[i].classList.add('stale-link');
+                }
+            }
+            div.setAttribute('data-chat-type', type);
+            return div;
+        }
+
+        function restoreHistory() {
+            let saved = null;
+            try {
+                const store = chatStorage();
+                const raw = store && store.getItem(historyKey);
+                if (raw) saved = JSON.parse(raw);
+            } catch (e) {
+                console.warn('Chat: could not load chat history', e);
+            }
+            if (!saved || !Array.isArray(saved.lines) || !saved.lines.length) return;
+            if (!(Number(saved.savedAt) > Date.now() - HISTORY_MAX_AGE_MS)) return;
+            const fragment = document.createDocumentFragment();
+            const lines = saved.lines.slice(-HISTORY_MAX_LINES);
+            let restored = 0;
+            for (let i = 0; i < lines.length; i++) {
+                const div = restoredLine(lines[i]);
+                if (!div) continue;
+                const type = div.getAttribute('data-chat-type');
+                typeCounts[type] = (typeCounts[type] || 0) + 1;
+                seenTypes[type] = true;
+                if (!tabShows(activeTab, type)) div.classList.add('filtered');
+                fragment.appendChild(div);
+                restored++;
+            }
+            if (!restored) return;
+            // Shown on every tab, like connection notices, and never saved.
+            const divider = document.createElement('div');
+            divider.className = 'message connection-notice chat-history-divider';
+            const span = document.createElement('span');
+            span.className = 'notice';
+            span.textContent = 'Earlier chat from your last connection is above.';
+            divider.appendChild(span);
+            fragment.appendChild(divider);
+            messagesContainer.insertBefore(fragment, messagesContainer.firstChild);
+            for (const type in typeCounts) {
+                while ((typeCounts[type] || 0) > MAX_MESSAGES_PER_TYPE) {
+                    const before = typeCounts[type];
+                    trimType(type);
+                    if (typeCounts[type] === before) break;
+                }
+            }
+            renderTabs();
+            followingTail = true;
+            scrollToTail();
+        }
+
+        function setChatIdentity(ckey) {
+            const name = String(ckey || '').toLowerCase();
+            if (historyKey || !/^[a-z0-9]{1,64}$/.test(name)) return;
+            historyKey = HISTORY_KEY_PREFIX + name;
+            restoreHistory();
+            scheduleHistorySave();
+        }
+
+        window.addEventListener('pagehide', saveHistory);
+        window.addEventListener('beforeunload', saveHistory);
+
         renderTabs();
 
         /**
@@ -1118,6 +1273,7 @@
                 // type. When reading above the tail, keep a surviving visible
                 // message at the same screen position.
                 trimType(chatType);
+                scheduleHistorySave();
 
                 scrollToTail();
             } catch (err) {
@@ -1135,6 +1291,7 @@
             renderTabs();
             followingTail = true;
             scrollToTail();
+            saveHistory();
         }
 
         /**
@@ -1209,6 +1366,7 @@
         // Expose to global scope for BYOND
         window.receiveMessage = receiveMessage;
         window.clearChat = clearChat;
+        window.setChatIdentity = setChatIdentity;
         window.selectChatTab = selectTab;
 
         // Notify BYOND that we are ready
