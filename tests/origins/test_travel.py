@@ -85,6 +85,16 @@ class TravelKeepsFactionVerbs(unittest.TestCase):
         for verb in ('create_faction', 'abandon_faction'):
             self.assertIn('verbs += /mob/living/human/proc/' + verb, nomad)
 
+    def test_the_arrival_is_a_nomad(self):
+        # Recruit, research levels and the faction HUD gate on "Nomad"; a bare
+        # body kept the mob default ("Sailor") and could not recruit (2026-11-15).
+        factions = '\n' + (ROOT / 'code/game/mob/groups/factions.dm').read_text(encoding='utf-8-sig').replace('\r\n', '\n')
+        restore = proc(factions, '/mob/living/human/proc/restore_role_verbs')
+        self.assertIn('if (original_job_title == initial(original_job_title))\n\t\t\toriginal_job_title = "Nomad"', restore)
+        self.assertLess(restore.index('original_job_title = "Nomad"'), restore.index('make_nomad()'))
+        recruit = (ROOT / 'code/game/mob/living/carbon/give.dm').read_text(encoding='utf-8-sig')
+        self.assertIn('user.original_job_title != "Nomad"', recruit)
+
 
 if __name__ == '__main__':
     unittest.main()
