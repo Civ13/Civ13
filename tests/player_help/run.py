@@ -11,6 +11,26 @@ import tempfile
 from render_contract import validate as validate_render
 
 ROOT = Path(__file__).resolve().parents[2]
+
+
+def source_proc(path, signature):
+    """One complete column-zero proc from production source."""
+    text = (ROOT / path).read_text(encoding='utf-8')
+    start = text.index('\n' + signature) + 1
+    following = re.search(r'^(?=[/#])', text[start + len(signature):], re.M)
+    return text[start:start + len(signature) + following.start()] if following else text[start:]
+
+
+def mood_scale_source():
+    """The real shared mood scale the Help category reads, not a copy."""
+    defines = (ROOT / 'code/__defines/mobs.dm').read_text(encoding='utf-8')
+    tiers = re.findall(r'^#define MOOD_TIER_\w+ \d+', defines, re.M)
+    assert len(tiers) == 5, tiers
+    return '\n'.join(tiers) + '\n' + ''.join((
+        source_proc('code/game/mob/living/carbon/human/human_needs.dm', '/proc/mood_tier(value)'),
+        source_proc('code/game/mob/living/carbon/human/human_needs.dm', '/proc/mood_tier_name(value)'),
+        source_proc('code/_helpers/text.dm', '/proc/capitalize(')))
+
 PRELUDE = '''
 #define TRUE 1
 #define FALSE 0
@@ -334,7 +354,7 @@ var/failures = 0
     check(H.game_context(player)["player"]["role"] == "Colony Medic" && !("role" in condition), "assigned job title snapshot is detached")
     player.mood = 10
     check(H.game_context(player)["player"]["mood_category"] == "Horrible" && condition["mood_category"] == "Neutral", "mood snapshot is detached")
-    check(H.mood_category(20) == "Horrible" && H.mood_category(40) == "Bad" && H.mood_category(60) == "Neutral" && H.mood_category(80) == "Good", "mood boundaries match print_mood order")
+    check(H.mood_category(19.9) == "Horrible" && H.mood_category(20) == "Bad" && H.mood_category(39.99) == "Bad" && H.mood_category(40) == "Neutral" && H.mood_category(60) == "Good" && H.mood_category(80) == "Excellent", "a boundary mood belongs to the higher category")
     check(snapshot["season"] == "WINTER" && snapshot["time_of_day"] == "Night", "public environment")
     check("On fire" in condition["active_effects"], "active public effect")
     player.health = 80
@@ -471,7 +491,7 @@ def main():
         conversation_probe = (ROOT / 'tests/player_help/conversation_probe.dm').read_text(encoding='utf-8')
         injury_probe = (ROOT / 'tests/player_help/injury_probe.dm').read_text(encoding='utf-8')
         probe = PROBE.replace('    world.log << "RESULT: [failures]"', conversation_probe + '\n' + injury_probe + '\n    world.log << "RESULT: [failures]"')
-        (temp / 'probe.dme').write_text(PRELUDE + '\n#include "production.dm"\n' + probe, encoding='utf-8')
+        (temp / 'probe.dme').write_text(PRELUDE + mood_scale_source() + '\n#include "production.dm"\n' + probe, encoding='utf-8')
         if args.prepare_only:
             (temp / 'prepared.json').write_text(json.dumps({
                 'control': args.negative_control,

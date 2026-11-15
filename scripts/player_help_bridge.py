@@ -547,10 +547,12 @@ def mood_knowledge(root):
         'code/_onclick/hud/base_screen_objects.dm': (
             '/obj/screen/mood/Click()', 'C.print_mood()'),
         'code/game/mob/living/carbon/human/human_life.dm': (
-            'if (mood > 50)', 'adjust_mood(-(0.05))', 'else if (mood < 40)', 'adjust_mood(0.05)'),
+            'mood_drift()',),
         'code/game/mob/living/carbon/human/human_needs.dm': (
             '/mob/living/human/proc/print_mood()', '/mob/living/human/proc/handle_mood()',
-            '/mob/living/human/proc/handle_hygiene()', 'mood_modifier = 1',
+            '/mob/living/human/proc/handle_hygiene()', 'mood_modifier = mood_stat_modifier(mood)',
+            '/mob/living/human/proc/mood_drift()', 'set_mood(max(rest, mood - MOOD_FADE))',
+            'set_mood(min(rest, mood + MOOD_RECOVER))',
             '/mob/living/human/proc/set_mood(amount, cause = null)', 'if (sleeping > 0 && amount < mood)',
             '/mob/living/human/proc/adjust_mood(amount, cause = null)', 'return set_mood(mood + amount, cause)',
             'adjust_mood(-(0.01), "being dirty")', 'adjust_mood(-(0.02), "fleas")', '/mob/living/human/proc/print_mood_causes()'),

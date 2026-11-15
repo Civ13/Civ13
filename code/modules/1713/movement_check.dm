@@ -46,15 +46,7 @@
 		if (150 to 192)
 			thirst = 1.50
 	movement_check_add(., "thirst (drink until you are over half full)", thirst)
-	var/low_mood = 0
-	switch (mood)
-		if (0 to 20)
-			low_mood = 0.90
-		if (20 to 40)
-			low_mood = 0.8
-		if (40 to 60)
-			low_mood = 0.2
-	movement_check_add(., "low mood", low_mood)
+	movement_check_add(., "low mood", mood_movement_delay(mood))
 	var/worn = 0
 	if (wear_suit)
 		var/obj/item/clothing/WS = wear_suit

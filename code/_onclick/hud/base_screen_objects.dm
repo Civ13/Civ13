@@ -939,21 +939,8 @@
 	if (isliving(parentmob))
 		var/mob/living/human/L = parentmob
 		var/old_icon = icon_state
-		switch(L.mood)
-			if(-5000000 to 19)
-				icon_state = "mood5"
-
-			if(20 to 39)
-				icon_state = "mood4"
-
-			if(40 to 59)
-				icon_state = "mood3"
-
-			if(60 to 79)
-				icon_state = "mood2"
-
-			if(80 to INFINITY)
-				icon_state = "mood1"
+		// mood1 is the best icon and mood5 the worst.
+		icon_state = "mood[6 - mood_tier(L.mood)]"
 		if(old_icon && old_icon != icon_state)
 			// mood1 is the best icon and mood5 the worst.
 			var/worse = text2num(copytext(icon_state, 5)) > text2num(copytext(old_icon, 5))

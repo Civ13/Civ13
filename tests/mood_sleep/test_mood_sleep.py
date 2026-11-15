@@ -17,7 +17,7 @@ ROOT = Path(__file__).resolve().parents[2]
 SPEC = importlib.util.spec_from_file_location('mood_source_adapter', ROOT/'tests/save_movement/source_adapter.py')
 A = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(A)
-A.FIELDS += ('mood', 'set_mood', 'adjust_mood', 'note_mood_cause', 'droid', 'resting', 'lying')
+A.FIELDS += ('mood', 'set_mood', 'adjust_mood', 'note_mood_cause', 'droid', 'resting', 'lying', 'mood_resting_level')
 CORE = 'code/game/mob/living/carbon/human/human_needs.dm'
 LIFE = 'code/game/mob/living/carbon/human/human_life.dm'
 WRITES = json.loads((Path(__file__).parent/'original_writes.json').read_text())
@@ -44,11 +44,19 @@ def actor(mood=80, sleeping=0, resting=False, lying=False, stat=0, droid=False, 
     return mob
 
 
-def maintenance(mob):
-    text = source(LIFE)
-    start = text.index('\tif (mood > 120)')
-    end = text.index('\tif(istype(buckled, /obj/structure/cross))', start)
-    proc = A.project('/maintenance()\n'+text[start:end], '/maintenance', 'src', {}, method=True)
+REST, FADE, RECOVER = 50, 0.07, 0.03
+
+
+def maintenance(mob, rest=REST):
+    # Life calls the one drift helper; its constants come from the defines.
+    life = uncomment(source(LIFE))
+    assert life.count('\tmood_drift()\n') == 1, 'life tick drifts mood once'
+    defines = source('code/__defines/mobs.dm')
+    for name, value in (('MOOD_REST', REST), ('MOOD_FADE', FADE), ('MOOD_RECOVER', RECOVER)):
+        assert re.search(r'^#define %s %s\b' % (name, re.escape(str(value))), defines, re.M), name
+    env = dict(MOOD_FADE=FADE, MOOD_RECOVER=RECOVER, max=max, min=min)
+    mob.mood_resting_level = lambda: rest
+    proc = A.project(source(CORE), '/mob/living/human/proc/mood_drift', 'src', env, method=True)
     proc(mob)
 
 
@@ -107,13 +115,24 @@ class MoodSleep(unittest.TestCase):
                         mob = actor(current, sleeping, droid=droid)
                         maintenance(mob)
                         if sleeping:
-                            expected = max(current, 100) if droid else (max(0, current)+0.05 if current < 40 else current)
+                            expected = max(current, 100) if droid else (max(0, current)+RECOVER if current < REST else current)
                         else:
                             expected = min(120, max(0, current))
-                            expected += -0.05 if expected > 50 else 0.05 if expected < 40 else 0
+                            expected += -FADE if expected > REST else RECOVER if expected < REST else 0
                             if droid:
                                 expected = 100
                         self.assertAlmostEqual(mob.mood, expected)
+
+    def test_mood_settles_exactly_at_rest_from_both_sides(self):
+        # It used to stall at 40, where the Bad effects began.
+        for start in (49.99, 50.02, 20, 110):
+            mob = actor(start)
+            for _ in range(2000):
+                maintenance(mob)
+            self.assertEqual(mob.mood, REST)
+        mob = actor(60)
+        maintenance(mob, rest=64)
+        self.assertAlmostEqual(mob.mood, 60 + RECOVER)
 
     def test_sleep_losses_are_discarded_without_waking_debt(self):
         mob = actor(sleeping=66)
@@ -124,9 +143,9 @@ class MoodSleep(unittest.TestCase):
         mob.adjust_mood(5)
         mob.sleeping = 0
         maintenance(mob)
-        self.assertAlmostEqual(mob.mood, 84.95)
+        self.assertAlmostEqual(mob.mood, 84.93)
         mob.adjust_mood(-3)
-        self.assertAlmostEqual(mob.mood, 81.95)
+        self.assertAlmostEqual(mob.mood, 81.93)
 
     def test_all_migrated_expressions_preserve_awake_results_and_sleep_gains(self):
         defaults = dict(removed=2, satisfaction=10, biteamount=3, this_exp=5,
@@ -184,6 +203,65 @@ class MoodSleep(unittest.TestCase):
         adjuster = A.extract(source(CORE), '/mob/living/human/proc/adjust_mood')
         self.assertEqual(re.findall(r'^\s*(\w+)\s*=(?!=)', setter+adjuster, re.M), ['mood'])
         self.assertNotRegex(setter+adjuster, r'\b(?:spawn|sleep|addtimer|world|client)\b')
+
+
+# One shared mood scale.
+TIERS = dict(MOOD_TIER_HORRIBLE=1, MOOD_TIER_BAD=2, MOOD_TIER_NEUTRAL=3, MOOD_TIER_GOOD=4, MOOD_TIER_EXCELLENT=5)
+
+
+def scale():
+    env = dict(TIERS)
+    for name in ('mood_tier', 'mood_tier_name', 'mood_stat_modifier', 'mood_movement_delay'):
+        env[name] = A.project(source(CORE), '/proc/' + name, 'value', env)
+    return env
+
+
+class MoodScale(unittest.TestCase):
+    def test_defines_match_the_projected_tiers(self):
+        defines = source('code/__defines/mobs.dm')
+        for name, value in TIERS.items():
+            self.assertRegex(defines, r'(?m)^#define %s %d\b' % (name, value))
+
+    def test_a_boundary_belongs_to_the_higher_tier(self):
+        env = scale()
+        for value, name in ((-5, 'horrible'), (0, 'horrible'), (19.99, 'horrible'), (20, 'bad'), (39.99, 'bad'),
+                            (40, 'neutral'), (50, 'neutral'), (59.99, 'neutral'), (60, 'good'), (79.99, 'good'),
+                            (80, 'excellent'), (120, 'excellent')):
+            with self.subTest(value=value):
+                self.assertEqual(env['mood_tier_name'](value), name)
+
+    def test_neutral_has_no_stat_or_movement_effect(self):
+        env = scale()
+        # Mood 40 used to count as Bad: 0.95 stats and 0.8 movement delay.
+        for value in (40, 40.01, 50, 59.99):
+            with self.subTest(value=value):
+                self.assertEqual(env['mood_stat_modifier'](value), 1)
+                self.assertEqual(env['mood_movement_delay'](value), 0)
+        self.assertEqual([env['mood_stat_modifier'](v) for v in (0, 9.99, 10, 20, 30, 39.99, 60, 80, 89.99, 90, 120)],
+                         [0.8, 0.8, 0.85, 0.90, 0.95, 0.95, 1.05, 1.10, 1.10, 1.15, 1.15])
+        self.assertEqual([env['mood_movement_delay'](v) for v in (0, 19.99, 20, 39.99, 60, 100)],
+                         [0.90, 0.90, 0.8, 0.8, 0, 0])
+
+    def test_sadness_flash_only_in_a_horrible_mood(self):
+        handler = A.extract(source(CORE), '/mob/living/human/proc/handle_mood')
+        self.assertIn('\tif (mood_tier(mood) == MOOD_TIER_HORRIBLE)\n\t\tflash_sadness((50-mood)/40)', handler)
+        self.assertEqual(handler.count('flash_sadness('), 1)
+
+    def test_every_reader_uses_the_shared_scale(self):
+        readers = {
+            'code/_onclick/hud/base_screen_objects.dm': 'icon_state = "mood[6 - mood_tier(L.mood)]"',
+            'code/game/mob/living/carbon/human/examine.dm': 'switch(mood_tier(mood))',
+            'code/game/mob/living/carbon/human/human_movement.dm': 'tally += mood_movement_delay(mood)',
+            'code/modules/1713/movement_check.dm': 'movement_check_add(., "low mood", mood_movement_delay(mood))',
+            'code/game/mob/player_help.dm': 'capitalize(mood_tier_name(value))',
+            CORE: 'mood_modifier = mood_stat_modifier(mood)',
+        }
+        for path, text in readers.items():
+            self.assertIn(text, source(path), path)
+        # No reader keeps its own ranges.
+        for path in sorted((ROOT / 'code').rglob('*.dm')):
+            text = uncomment(path.read_text(encoding='utf-8-sig'))
+            self.assertNotRegex(text, r'switch\s*\(\s*(?:\w+\.)?mood\s*\)', path.name)
 
 
 if __name__ == '__main__':

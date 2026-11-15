@@ -5,16 +5,16 @@
 		var/mob/living/human/H = src
 		var/msg = ""
 		var/msg_hygiene = ""
-		switch(mood)
-			if(-5000000 to 20)
+		switch(mood_tier(mood))
+			if(MOOD_TIER_HORRIBLE)
 				msg = "Your mood is horrible!"
-			if(20 to 40)
+			if(MOOD_TIER_BAD)
 				msg = "Your mood is bad."
-			if(40 to 60)
+			if(MOOD_TIER_NEUTRAL)
 				msg = "Your mood is neutral."
-			if(60 to 80)
+			if(MOOD_TIER_GOOD)
 				msg = "Your mood is good."
-			if(80 to 10000)
+			if(MOOD_TIER_EXCELLENT)
 				msg = "Your mood is excellent!"
 		switch(hygiene)
 			if(HYGIENE_LEVEL_CLEAN to INFINITY)
@@ -41,31 +41,82 @@
 		var/spoopysound = pick('sound/effects/badmood1.ogg','sound/effects/badmood2.ogg','sound/effects/badmood3.ogg','sound/effects/badmood4.ogg')
 		sound_to(src, spoopysound)
 
+// The one mood scale. A boundary value belongs to the higher tier, so mood 40
+// is Neutral and mood 60 is Good everywhere.
+/proc/mood_tier(value)
+	if (value < 20)
+		return MOOD_TIER_HORRIBLE
+	if (value < 40)
+		return MOOD_TIER_BAD
+	if (value < 60)
+		return MOOD_TIER_NEUTRAL
+	if (value < 80)
+		return MOOD_TIER_GOOD
+	return MOOD_TIER_EXCELLENT
+
+/proc/mood_tier_name(value)
+	var/tier = mood_tier(value)
+	if (tier == MOOD_TIER_HORRIBLE)
+		return "horrible"
+	if (tier == MOOD_TIER_BAD)
+		return "bad"
+	if (tier == MOOD_TIER_NEUTRAL)
+		return "neutral"
+	if (tier == MOOD_TIER_GOOD)
+		return "good"
+	return "excellent"
+
+// What mood does to every stat: nothing in Neutral, finer steps outside it.
+/proc/mood_stat_modifier(value)
+	if (value < 10)
+		return 0.8
+	if (value < 20)
+		return 0.85
+	if (value < 30)
+		return 0.90
+	if (value < 40)
+		return 0.95
+	if (value < 60)
+		return 1
+	if (value < 80)
+		return 1.05
+	if (value < 90)
+		return 1.10
+	return 1.15
+
+// Extra movement delay from low mood. Neutral and better move freely.
+/proc/mood_movement_delay(value)
+	var/tier = mood_tier(value)
+	if (tier == MOOD_TIER_HORRIBLE)
+		return 0.90
+	if (tier == MOOD_TIER_BAD)
+		return 0.8
+	return 0
+
+// Mood settles at the resting level from either side and never overshoots it.
+// Sleep discards the fade (set_mood), the recovery still applies.
+/mob/living/human/proc/mood_resting_level()
+	return MOOD_REST
+
+/mob/living/human/proc/mood_drift()
+	if (mood > 120)
+		set_mood(120)
+	else if (mood < 0)
+		set_mood(0)
+	var/rest = mood_resting_level()
+	if (mood > rest)
+		set_mood(max(rest, mood - MOOD_FADE))
+	else if (mood < rest)
+		set_mood(min(rest, mood + MOOD_RECOVER))
+	if (droid)
+		set_mood(100)
+
 /mob/living/human/proc/handle_mood()
 	fade_mood_causes()
-	switch(mood)
-		if(-5000000 to 10)
-			flash_sadness((50-mood)/40)
-			mood_modifier = 0.8
-		if(10 to 20)
-			flash_sadness((50-mood)/40)
-			mood_modifier = 0.85
-		if(20 to 30)
-			if (prob(35))
-				flash_sadness((50-mood)/40)
-			mood_modifier = 0.90
-		if(30 to 40)
-			if (prob(30))
-				flash_sadness((50-mood)/40)
-			mood_modifier = 0.95
-		if(40 to 60)
-			mood_modifier = 1
-		if(60 to 80)
-			mood_modifier = 1.05
-		if(80 to 90)
-			mood_modifier = 1.10
-		if(90 to 10000)
-			mood_modifier = 1.15
+	mood_modifier = mood_stat_modifier(mood)
+	// The sadness flash and its sounds belong to a horrible mood only.
+	if (mood_tier(mood) == MOOD_TIER_HORRIBLE)
+		flash_sadness((50-mood)/40)
 
 
 /mob/living/human/proc/handle_hygiene()
