@@ -138,16 +138,35 @@ var/global/datum/nomads_lifecycle_control/nomads_lifecycle = new
 	if(action == "diagnose") allowed = list("nomads_lifecycle", "token", "action", "session", "operation", "target")
 	if(action == "standby_open") allowed = list("nomads_lifecycle", "token", "action", "session", "operation", "port")
 	if(action == "set_epoch") allowed = list("nomads_lifecycle", "token", "action", "epoch")
+	// The launcher's Players dialog (shard_group.py players / send-players, region_admin_send.dm).
+	if(action == "players") allowed = list("nomads_lifecycle", "token", "action")
+	if(action == "send_players")
+		allowed = list("nomads_lifecycle", "token", "action", "ckeys", "to", "landing", "dry_run")
+		for(var/optional in list("at", "ship"))
+			if(optional in input) allowed += optional
 	if((action == "save_shutdown" || action == "maintenance_save_shutdown") && ("expected_persistence" in input)) allowed += "expected_persistence"
 	// The players' warning before the save, in whole seconds (0-3600); status advertises it as shutdown_warning.
 	if((action == "save_shutdown" || action == "handover_save") && ("warn" in input)) allowed += "warn"
-	if(input["nomads_lifecycle"] != "1" || input.len != allowed.len || !(action in list("status", "save_idle", "save_shutdown", "maintenance_save_shutdown", "maintenance_failed", "diagnose", "handover_save", "handover_release", "handover_cancel", "standby_load", "standby_open", "set_epoch")))
+	if(input["nomads_lifecycle"] != "1" || input.len != allowed.len || !(action in list("status", "save_idle", "save_shutdown", "maintenance_save_shutdown", "maintenance_failed", "diagnose", "handover_save", "handover_release", "handover_cancel", "standby_load", "standby_open", "set_epoch", "players", "send_players")))
 		return json_encode(snapshot(FALSE, "malformed_request"))
 	for(var/key in input)
 		if(!(key in allowed)) return json_encode(snapshot(FALSE, "malformed_request"))
 	if(action == "status") return json_encode(snapshot())
 	if(action == "save_idle") return json_encode(save_idle())
 	if(action == "set_epoch") return json_encode(host_set_epoch(input["epoch"]))
+	if(action == "players" || action == "send_players")
+		var/list/state = snapshot()
+		if(!map || !ticker || ticker.current_state < GAME_STATE_PLAYING)
+			state[action == "players" ? "players" : "send"] = action == "players" ? list() : "refused:round_not_started"
+		else if(action == "players")
+			var/list/view = region_admin_send_host_players()
+			for(var/key in view)
+				state[key] = view[key]
+		else
+			var/list/sent = region_admin_send_host(input)
+			for(var/key in sent)
+				state[key] = sent[key]
+		return json_encode(state)
 	if(action == "diagnose") return diagnose(input)
 	if(input["session"] != boot_session() || !nomads_lifecycle_hex(input["operation"], 32))
 		return json_encode(snapshot(FALSE, "invalid_session_or_operation"))

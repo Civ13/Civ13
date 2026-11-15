@@ -1002,6 +1002,43 @@ class ShardGroupTests(unittest.TestCase):
             shard_group.group_epoch(group, '2026', self.machine)
         self.assertEqual([1720], asked)
 
+    def test_players_and_send_players_ask_the_running_region(self):
+        # Send Player to Region from the launcher (region_admin_send.dm): a dry run by default.
+        group = self.write_group()
+        shard_group.setup(group, self.machine)
+        asked = []
+
+        def query(port, token, action='status', operation=None, session=None, extra=None):
+            asked.append((port, action, extra))
+            if action == 'players':
+                return {'ok': True, 'players': [{'ckey': 'ann', 'name': 'Ann'}], 'recent': [], 'running': False, 'destinations': {'The Deep (up)': 'deep'}}
+            return {'ok': True, 'send': 'dry_run' if extra['dry_run'] == '1' else 'started', 'rows': [{'ckey': 'ann', 'ok': True}]}
+        self.machine.query = query
+        with self.assertRaisesRegex(shard_group.Refused, 'not running'):
+            shard_group.region_players(group, 'gaia', self.machine)
+        self.machine.up.add(1720)
+        self.assertEqual('ann', shard_group.region_players(group, 'gaia', self.machine)['players'][0]['ckey'])
+        result = shard_group.send_players(group, 'gaia', 'ann,Bob', 'deep', platform=self.machine)
+        self.assertEqual('dry_run', result['send'])
+        self.assertEqual((1720, 'send_players', {'ckeys': 'ann,Bob', 'to': 'deep', 'landing': 'shore', 'dry_run': '1'}), asked[-1])
+        result = shard_group.send_players(group, 'gaia', 'ann', 'deep', 'coords', '10,20,1', dry_run=False, platform=self.machine)
+        self.assertEqual('started', result['send'])
+        self.assertEqual({'ckeys': 'ann', 'to': 'deep', 'landing': 'coords', 'dry_run': '0', 'at': '10,20,1'}, asked[-1][2])
+        shard_group.send_players(group, 'gaia', 'ann', 'deep', 'arrival', ship=True, platform=self.machine)
+        self.assertEqual('1', asked[-1][2]['ship'])
+        # Bad requests never reach the world.
+        count = len(asked)
+        for args in (('ann', 'gaia', 'shore', None), ('ann', 'atlantis', 'shore', None), ('ann', 'deep', 'coords', None),
+                     ('ann', 'deep', 'shore', '1,2,3'), ('ann', 'deep', 'coords', '1,2'), ('a&b=c', 'deep', 'shore', None),
+                     ('ann', 'deep', 'sky', None)):
+            with self.assertRaises(shard_group.Refused):
+                shard_group.send_players(group, 'gaia', *args, platform=self.machine)
+        self.assertEqual(count, len(asked))
+        # An older world without the request says so instead of answering nothing.
+        self.machine.query = lambda *a, **k: {'ok': False, 'error': 'malformed_request'}
+        with self.assertRaisesRegex(shard_group.Refused, 'older build'):
+            shard_group.send_players(group, 'gaia', 'ann', 'deep', platform=self.machine)
+
     def test_status_shows_each_running_region_epoch(self):
         group = self.write_group()
         shard_group.setup(group, self.machine)
