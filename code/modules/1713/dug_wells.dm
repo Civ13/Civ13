@@ -11,6 +11,9 @@
 // or dries those (waste and sewage nearby, floods, soap) applies unchanged. A
 // well or puddle with dug_depth 0 is a spring, as before: it never runs low.
 //
+// A lined well takes a fitting, built standing on it: a windlass and pail
+// brings up a full container at any depth, and a hand pump does it faster.
+//
 // Nothing here ticks. A dug well works out its water when someone uses it.
 
 #define WELL_TABLE_BASE 1
@@ -32,6 +35,8 @@
 #define WELL_DRINK_VOLUME 10
 #define WELL_DIG_TIME 150
 #define WELL_DIG_TIME_PER_SPIT 50
+#define WELL_WINDLASS_TIME 20
+#define WELL_PUMP_TIME 10
 
 /obj/structure/sink
 	// Spits dug by players; 0 for a spring.
@@ -179,8 +184,8 @@
 		return
 	var/standing = column >= 2 ? "Deep water stands" : (column >= 1 ? "A good depth of water stands" : "A little water stands")
 	to_chat(user, SPAN_NOTICE("[standing] in it, [table <= 0.5 ? "close under the rim" : "about [round(table, 0.5)] spit\s down"]."))
-	if (table > WELL_HAND_REACH)
-		to_chat(user, SPAN_NOTICE("That is too far down to drink from your hands: lower a cup or a bucket."))
+	if (table > WELL_HAND_REACH && !well_fitting())
+		to_chat(user, SPAN_NOTICE("That is too far down to drink from your hands: lower a cup or a bucket, or build a windlass over it."))
 	if (column < WELL_DRY_SPELL)
 		to_chat(user, SPAN_NOTICE("It is shallow enough to fail in a dry season or a heat wave."))
 
@@ -190,7 +195,7 @@
 		return TRUE
 	dug_settle()
 	update_icon()
-	if (volume <= 0 || !ishuman(user))
+	if (volume <= 0 || !ishuman(user) || well_fitting())
 		return TRUE
 	var/table = dug_table()
 	if (table <= WELL_HAND_REACH)
@@ -388,9 +393,136 @@
 	if (dug_depth && is_tool(O, TOOL_SHOVEL))
 		dug_dig(user, O)
 		return
+	var/obj/structure/well_fitting/F = well_fitting()
+	if (F && F.draw(src, O, user))
+		return
 	if (!dug_reach(user, O))
 		return
 	..()
+
+// ---- fittings --------------------------------------------------------------------
+
+// The windlass or pump over this water, or null.
+/obj/structure/sink/proc/well_fitting()
+	return null
+
+/obj/structure/sink/well/well_fitting()
+	return locate(/obj/structure/well_fitting) in loc
+
+/obj/structure/sink/well/Destroy()
+	for (var/obj/structure/well_fitting/F in loc)
+		qdel(F)
+	return ..()
+
+/obj/structure/well_fitting
+	icon = 'icons/obj/wells.dmi'
+	anchored = TRUE
+	density = FALSE
+	opacity = FALSE
+	layer = 3.05
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	var/draw_time = WELL_WINDLASS_TIME
+	var/use_state = null
+	var/draw_text = "wind a full pail up"
+
+/obj/structure/well_fitting/proc/well()
+	return locate(/obj/structure/sink/well) in loc
+
+// A newer fitting takes the place of the one on the well.
+/obj/structure/well_fitting/on_runtime_spawn()
+	..()
+	for (var/obj/structure/well_fitting/F in loc)
+		if (F != src)
+			qdel(F)
+
+/obj/structure/well_fitting/attack_hand(mob/user)
+	var/obj/structure/sink/well/W = well()
+	if (W)
+		return W.attack_hand(user)
+	return ..()
+
+/obj/structure/well_fitting/attackby(obj/item/O, mob/user)
+	var/obj/structure/sink/well/W = well()
+	if (W)
+		return W.attackby(O, user)
+	return ..()
+
+// Units a container takes in one drawing: all it has room for.
+/obj/structure/well_fitting/proc/draw_amount(obj/structure/sink/well/W, obj/item/weapon/reagent_containers/RG)
+	return max(0, min(RG.volume - RG.reagents.total_volume, W.volume))
+
+// Fill RG from the well in one go, foul water and all. Returns the units drawn.
+/obj/structure/well_fitting/proc/draw_into(obj/structure/sink/well/W, obj/item/weapon/reagent_containers/RG)
+	W.dug_settle()
+	if (W.heat_dried())
+		return 0
+	var/amount = draw_amount(W, RG)
+	if (amount <= 0)
+		return 0
+	if (W.has_nearby_fecal_waste())
+		W.dirty = TRUE
+	W.flood_foul()
+	var/watertype = W.radiation > 0 ? "irradiated_water" : "water"
+	if (W.dirty)
+		RG.reagents.add_reagent("cholera", amount * 0.05)
+		RG.note_food_toxin("unboiled water from a dirty [W.name] (fecal waste nearby) at ([W.x],[W.y],[W.z])")
+		RG.reagents.add_reagent(watertype, amount * 0.95)
+	else
+		RG.reagents.add_reagent(watertype, amount)
+	W.volume -= amount
+	W.update_icon()
+	return amount
+
+// Drawing with an open container. Returns TRUE when the fitting dealt with it.
+/obj/structure/well_fitting/proc/draw(obj/structure/sink/well/W, obj/item/O, mob/user)
+	var/obj/item/weapon/reagent_containers/RG = O
+	if (!istype(RG) || !RG.is_open_container() || !RG.reagents)
+		return FALSE
+	W.dug_settle()
+	W.update_icon()
+	if (W.heat_dried() || W.volume <= 0)
+		to_chat(user, SPAN_WARNING("\The [W] is dry!"))
+		return TRUE
+	if (RG.reagents.total_volume >= RG.volume)
+		to_chat(user, SPAN_WARNING("\The [RG] is full."))
+		return TRUE
+	if (use_state)
+		flick(use_state, src)
+	if (!do_after(user, draw_time, W, check_for_repeats = FALSE) || QDELETED(W) || QDELETED(RG))
+		return TRUE
+	if (draw_into(W, RG))
+		user.visible_message(SPAN_NOTICE("[user] fills \the [RG] at \the [W]."), SPAN_NOTICE("You [draw_text] and fill \the [RG]."))
+		playsound(W.loc, 'sound/effects/watersplash.ogg', 100, TRUE)
+	else
+		to_chat(user, SPAN_WARNING("\The [W] is dry!"))
+	return TRUE
+
+/obj/structure/well_fitting/windlass
+	name = "well windlass"
+	desc = "A roller on two posts over the well, with a rope and a pail. Winding it brings up a full pail from any depth."
+	icon_state = "fit_windlass"
+	use_state = "fit_windlass_use"
+
+/obj/structure/well_fitting/pump
+	name = "well pump"
+	desc = "A cast iron hand pump bolted to a plank cover over the well. A few strokes of the handle fill a bucket."
+	icon_state = "fit_pump"
+	use_state = "fit_pump_use"
+	draw_time = WELL_PUMP_TIME
+	draw_text = "work the handle"
+
+// Fittings go on a lined well and nowhere else.
+/datum/craft_guard/well_fitting
+	order = 75
+	after_wait = TRUE
+
+/datum/craft_guard/well_fitting/refusal(mob/living/human/H, datum/stack_recipe/R, phase)
+	if (!ispath(R.result_type, /obj/structure/well_fitting))
+		return null
+	if (locate(/obj/structure/sink/well) in get_turf(H))
+		return null
+	return phase == CRAFT_GUARD_START ? "<span class='warning'>Build this standing on a lined well.</span>" : ""
 
 #undef WELL_TABLE_BASE
 #undef WELL_TABLE_SLOPE
@@ -408,3 +540,5 @@
 #undef WELL_DRINK_VOLUME
 #undef WELL_DIG_TIME
 #undef WELL_DIG_TIME_PER_SPIT
+#undef WELL_WINDLASS_TIME
+#undef WELL_PUMP_TIME
