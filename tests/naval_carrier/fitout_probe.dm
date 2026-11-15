@@ -161,7 +161,7 @@ var/naval_runtime_error = FALSE
 	// The launch.
 	refusal = lever.launch(null)
 	naval_check(isnull(refusal) && A.airborne() && A.flight_state == AIRCRAFT_LOW && naval_frames_in(A, 3, 15, 17, 10, 14), "the catapult throws the plane into the air above the bow without a deck roll")
-	naval_check(A.currentspeed == A.speeds && A.moving && !lever.busy, "it flies off at full speed and the catapult is ready again")
+	naval_check(A.currentspeed == A.speeds && A.moving && !lever.busy, "it flies off at full speed and the catapult is ready again (gear [A.currentspeed] of [A.speeds], moving [A.moving], busy [lever.busy], state [A.flight_state], time [world.time], loop [A.lastmovementloop])")
 	naval_check(track.aircraft_runway() && !(locate(/obj/structure/vehicleparts/frame) in track), "the track is clear for the next plane")
 	A.moving = FALSE
 
