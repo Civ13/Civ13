@@ -6,6 +6,9 @@ Credentials come from the environment, never from arguments or MCP calls:
   CIV13_AGENT_TOKEN  its token (or CIV13_AGENT_TOKEN_FILE with the token)
   CIV13_HOST         default 127.0.0.1
   CIV13_PORT         default 1714
+  CIV13_GROUP        a shard group's group.json; with CIV13_REGION (a region id) and no
+                     CIV13_AGENT_NAME, uses that region's port and the group's host
+                     operator agent (root/operator-token.txt, scripts/shard-group)
 
   civ13_agent.py call status
   civ13_agent.py call get_vars '{"target": "global:ticker", "names": ["current_state"]}'
@@ -112,11 +115,27 @@ class AgentClient:
     @classmethod
     def from_env(cls, env=None, **kwargs):
         env = os.environ if env is None else env
+        if env.get("CIV13_GROUP") and env.get("CIV13_REGION") and not env.get("CIV13_AGENT_NAME"):
+            return cls.for_group_region(env["CIV13_GROUP"], env["CIV13_REGION"], **kwargs)
         token = env.get("CIV13_AGENT_TOKEN")
         if not token and env.get("CIV13_AGENT_TOKEN_FILE"):
             with open(env["CIV13_AGENT_TOKEN_FILE"], encoding="utf-8") as handle:
                 token = handle.read().strip()
         return cls(env.get("CIV13_AGENT_NAME"), token, env.get("CIV13_HOST", "127.0.0.1"), int(env.get("CIV13_PORT", "1714")), **kwargs)
+
+    @classmethod
+    def for_group_region(cls, group_path, region_id, **kwargs):
+        """The host operator agent of one region of a shard group (on the host itself)."""
+        with open(group_path, encoding="utf-8-sig") as handle:
+            group = json.load(handle)
+        regions = {r.get("id"): r for r in group.get("regions") or [] if isinstance(r, dict)}
+        if region_id not in regions:
+            raise AgentError(f"no region {region_id} in {group_path}")
+        token_file = Path(group["root"]) / "operator-token.txt"
+        if not token_file.is_file():
+            raise AgentError(f"{token_file} is missing; run shard_group.py config-apply on the host first")
+        token = token_file.read_text(encoding="utf-8").strip()
+        return cls("operator", token, "127.0.0.1", int(regions[region_id]["port"]), **kwargs)
 
     def request(self, action, args=None):
         if action not in ACTIONS:

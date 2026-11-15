@@ -237,6 +237,10 @@ def load_group(path):
     if root == repository or repository in root.parents or root in repository.parents:
         raise ValueError('root must be outside the repository (and not contain it)')
     group.setdefault('revision', 'HEAD')
+    # Every region gets a host operator agent (write_operator_agent) unless this is false.
+    group.setdefault('operator_agent', True)
+    if type(group['operator_agent']) is not bool:
+        raise ValueError('operator_agent must be true or false')
     group.setdefault('public', False)
     if type(group['public']) is not bool:
         raise ValueError('public must be true or false')
@@ -1473,6 +1477,8 @@ def apply_overlays(group, region, path):
         config.parent.mkdir(parents=True, exist_ok=True)
         config.write_text(text, encoding='utf-8')
         copied.append(LOCAL_CONFIG)
+    if write_operator_agent(group, path):
+        copied.append(AGENT_CONTROL)
     return copied
 
 
@@ -1832,6 +1838,7 @@ def setup(group, platform=None, region_id=None):
             settings.update(relay_settings(group))
             (config / 'relay-token.txt').write_text(relay_token(group) + '\n', encoding='utf-8')
         (config / 'shard_region.json').write_text(json.dumps(settings, indent=1) + '\n', encoding='utf-8')
+        write_operator_agent(group, path)
         if any(r['kind'] == 'BARRACKS' for r in group['regions']) and region['kind'] in ('BARRACKS', 'BATTLE'):
             (config / 'tdm-token.txt').write_text(group_token(group, 'tdm-token.txt') + '\n', encoding='utf-8')
         if any(r['kind'] == 'EVENT' for r in group['regions']):
@@ -1979,6 +1986,35 @@ def group_token(group, name):
         Path(group['root']).mkdir(parents=True, exist_ok=True)
         path.write_text(secrets.token_hex(24) + '\n', encoding='utf-8')
     return path.read_text(encoding='utf-8').strip()
+
+
+AGENT_CONTROL = 'config/agent-control.txt'
+OPERATOR_AGENT = 'operator'
+
+
+def write_operator_agent(group, path):
+    """Give the region a loopback-only host operator agent (docs/agent-control.md).
+
+    One token for the group (root/operator-token.txt, never in an overlay or the
+    repository), every scope and Host rights, so the host's own tools and LLM
+    sessions on this machine can observe a region and run any admin verb there
+    (tools/agent-control/civ13_agent.py with CIV13_GROUP and CIV13_REGION). The
+    world re-reads the file when it changes, so no restart is needed. Other agent
+    lines (from an overlay or the host) are kept. Returns True when it wrote."""
+    if not group.get('operator_agent', True):
+        return False
+    target = Path(path) / AGENT_CONTROL
+    old = target.read_text(encoding='utf-8-sig') if target.exists() else ''
+    lines = [line for line in old.splitlines() if line.split()[:2] != ['agent', OPERATOR_AGENT]]
+    while lines and not lines[-1].strip():
+        lines.pop()
+    lines.append('agent %s %s * Host' % (OPERATOR_AGENT, group_token(group, 'operator-token.txt')))
+    text = '\n'.join(lines) + '\n'
+    if text == old:
+        return False
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text(text, encoding='utf-8')
+    return True
 
 
 def relay_settings(group):
