@@ -49,6 +49,26 @@ class CrossLevelSourceTests(unittest.TestCase):
         self.assertIn('if(istype(value, /atom/movable) && drop_cross_level_reference(value))\n'
                       '\t\t\treturn list("kind" = "entry", "ref" = 0)', saving)
 
+    def test_failed_low_memory_split_restores_its_own_copy(self):
+        # A failed split must restore the exact level it replaced, never
+        # map_rollback/ (which can be an older generation or absent), and a
+        # failed restore must stop the load instead of deleting segments.
+        loading = (ROOT / 'code/modules/persistence/loading.dm').read_text(encoding='utf-8-sig')
+        start = loading.index('/map_storage/proc/split_full_file_level(z)\n')
+        body = loading[start:loading.index('\n/map_storage/proc/', start + 1)]
+        self.assertNotIn('map_rollback', body)
+        keep = body.index('if(!fcopy(path, orig_path))')
+        replace = body.index('var/replaced = fcopy(index_path, path)')
+        restore = body.index('if(fcopy(orig_path, path)) fdel(orig_path)')
+        self.assertLess(keep, replace)
+        self.assertLess(replace, restore)
+        self.assertLess(body.index('var/orig_path = "map_saves/[z].orig.tmp"'), body.index('var/savefile/F = new(path)'))
+        caller_start = loading.index('/map_storage/proc/split_large_full_file_levels()\n')
+        caller = loading[caller_start:start]
+        handler = caller[caller.index('catch(var/exception/e)'):]
+        self.assertLess(handler.index('if(fexists("map_saves/[z].orig.tmp"))\n\t\t\t\tthrow EXCEPTION('),
+                        handler.index('delete_level_segment_files("map_saves/", z)'))
+
     def test_staging_preserves_all_production_sources_and_is_relocatable(self):
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory)

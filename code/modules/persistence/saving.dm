@@ -728,7 +728,8 @@
 // use their own codec before reaching here; contents traversal keeps the
 // strict guard in BuildVarDirectory.
 /map_storage/proc/drop_cross_level_reference(atom/movable/target)
-	var/target_z = target.z
+	var/turf/target_turf = get_turf(target)
+	var/target_z = target_turf ? target_turf.z : target.z
 	if(!target_z || target_z == saving_z)
 		var/list/previous = saving_world_movables[target]
 		if(!previous || previous["atom"] != target || previous["z"] == saving_z)

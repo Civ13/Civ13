@@ -81,8 +81,8 @@ def subtree(base: str, text: str) -> str:
 
 
 class Helper:
-    def __init__(self, exe: Path, mode: str, file: Path):
-        self.proc = subprocess.Popen([str(exe), mode, str(file)], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    def __init__(self, exe: Path, mode: str, file: Path, env: dict | None = None):
+        self.proc = subprocess.Popen([str(exe), mode, str(file)], stdin=subprocess.PIPE, stdout=subprocess.PIPE, env=env)
 
     def request(self, op: str, payload: str | bytes = b"") -> bytes:
         if isinstance(payload, str):

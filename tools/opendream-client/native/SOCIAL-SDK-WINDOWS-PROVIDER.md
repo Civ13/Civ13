@@ -82,7 +82,9 @@ The ordinary companion CI uses installed .NET/MSVC tools without installers or
 SDK downloads; managed tests keep both real activation gates off.
 
 This is the concrete parent-side provider, not a runnable production companion.
-The native Windows endpoint I/O adapter/entry point, vendor linking/loading,
+The native Windows endpoint I/O adapter and entry point now exist in
+[companion/](companion/README.md#child-endpoint) and implement the argument
+contract above. Vendor linking/loading,
 actual OS identity/containment/cancellation acceptance, DLL search policy,
 licensing/distribution, live presence and startup composition remain separate
 gates. Account permissions, authentication, provisional accounts, chat/voice,

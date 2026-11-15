@@ -95,8 +95,9 @@ A pending write observed at 250ms closes even if pulses keep arriving or the
 write is reported complete late. Clear can discard an undelivered Result, and
 late callbacks/output cannot revive the closed host. The native I/O provider
 must copy at admission, retain bounded storage until cancellation/completion,
-and keep SDK pumping independent of physical I/O. No OS implementation or
-production executable entry point is supplied by this loop.
+and keep SDK pumping independent of physical I/O. The Windows child adapter
+and entry point that drive this loop are described in
+[companion/README.md](companion/README.md#child-endpoint).
 
 ## Evidence and remaining gates
 

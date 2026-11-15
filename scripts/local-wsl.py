@@ -30,8 +30,13 @@ def process_matches(record, runtime):
         pid = int(record['pid'])
         fields = Path(f'/proc/{pid}/stat').read_text().rsplit(')', 1)[1].split()
         args = Path(f'/proc/{pid}/cmdline').read_bytes().split(b'\0')
+        # DreamDaemon 516.1688 on Linux rewrites its own argument list after
+        # launch: "<runtime>/civ13.dmb" becomes the two entries "<runtime>" and
+        # "civ13.dmb". Accept the launched form and that exact rewritten pair.
+        world = str(runtime / 'civ13.dmb').encode()
+        split = [str(runtime).encode(), b'civ13.dmb']
         return (fields[19] == record['started'] and
-                str(runtime / 'civ13.dmb').encode() in args and
+                (world in args or any(args[i:i + 2] == split for i in range(1, len(args) - 1))) and
                 args[0] == str(BIN / 'DreamDaemon').encode())
     except (OSError, ValueError, KeyError, IndexError):
         return False
@@ -101,7 +106,8 @@ def main():
         elif args.action == 'stop':
             if alive:
                 os.kill(record['pid'], signal.SIGTERM)
-                for _ in range(100):
+                # A full Nomads world took about 20 s to shut down cleanly on 516.1688.
+                for _ in range(600):
                     if not process_matches(record, runtime):
                         break
                     time.sleep(.1)

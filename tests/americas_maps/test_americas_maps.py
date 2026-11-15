@@ -7,10 +7,21 @@ Pillow) is not run here. Run from the repository root:
 """
 import re
 import unittest
+import hashlib
+import json
+import os
 from collections import deque
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
+# Digests of each map and its height, current and flood files, written by
+# build.py when it writes them (line endings normalised, so any checkout matches).
+SIDECARS = json.loads((Path(__file__).resolve().parent / 'sidecars.json').read_text(encoding='utf-8'))
+
+
+def file_digest(path):
+    return hashlib.sha256(path.read_bytes().replace(b'\r\n', b'\n')).hexdigest()
+
 MAPS = {
     'north': {
         'path': 'maps/nomads/nomads_americas_north.dmm',
@@ -117,6 +128,26 @@ class AmericasMapsTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.levels = {name: Level(name) for name in MAPS}
+
+    def test_every_land_climate_has_seed_bushes_and_farm_ground_by_fresh_water(self):
+        # A nomad starts on a random tile (new_player_start_z), so every climate
+        # needs ground that seeds forage bushes and ground a digging stick can
+        # work within a crop's reach of fresh water (#3048). Dry grass and
+        # desert sand cannot be ploughed; their river banks carry plain soil.
+        import importlib.util
+        spec = importlib.util.spec_from_file_location('outdoor_bootstrap', ROOT / 'scripts/check-outdoor-bootstrap.py')
+        inventory = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(inventory)
+        climates, salt = inventory.load_inheritance()
+        for name in MAPS:
+            report = inventory.audit('americas_' + name, climates, salt)
+            self.assertEqual(set(report['farm_ground_by_climate']), set(inventory.LAND_CLIMATES), name)
+            for climate, ground in report['farm_ground_by_climate'].items():
+                with self.subTest(map=name, climate=climate):
+                    self.assertGreaterEqual(report['bush_seeding_ground_by_climate'].get(climate, 0), 500)
+                    self.assertGreaterEqual(ground['ploughable_near_water'] + ground['clearable_near_water'], 100)
+                    if climate in ('savanna', 'desert', 'semiarid', 'temperate', 'jungle'):
+                        self.assertGreaterEqual(ground['ploughable_near_water'], 100)
 
     def test_each_map_is_one_whole_level_with_even_rows(self):
         for name, level in self.levels.items():
@@ -239,7 +270,13 @@ class AmericasMapsTest(unittest.TestCase):
                     for col in range(level.width):
                         self.assertEqual(levels[row][col] == 0, 'water' in rows[row][col], (row, col))
                 self.assertGreaterEqual(max(max(r) for r in levels), 12)
-                # Currents and flood reaches are the ones the builders make from this map.
+                # The map and its three files are the set the generator wrote together.
+                for kind in ('path', 'heights', 'flow', 'flood'):
+                    self.assertEqual(file_digest(ROOT / level.spec[kind]), SIDECARS[name][kind], level.spec[kind])
+                # Rebuilding the currents and flood reaches from the map takes over a
+                # minute, so it runs on request: AMERICAS_MAPS_REBUILD=1.
+                if not os.environ.get('AMERICAS_MAPS_REBUILD'):
+                    continue
                 flow = river_flow.build(rows, heights=levels)
                 text = '%s\nsize %d %d\nz 1\n%s\n' % (river_flow.HEADER, level.width, level.height, '\n'.join(flow))
                 self.assertEqual((ROOT / level.spec['flow']).read_text(encoding='ascii'), text)
@@ -299,15 +336,18 @@ class AmericasMapsTest(unittest.TestCase):
         self.assertIn('return key == "region_edge_asking" || key == "region_edge_asked_at" || ..()', edge)
         # Drivers and draggers are told why, in plain words.
         self.assertIn('if (H.buckled || H.driver || H.driver_vehicle) return "You cannot drive across yet. Get down and walk on."', edge)
-        self.assertIn('if (H.pulling) return "You cannot drag anything across. Let go and walk on."', edge)
         # A rider takes the mount: recorded before the ask, removed only once the rider left,
         # validated on arrival, and never carried without an edge crossing.
-        self.assertIn('"voyage", "ship", "edge", "mount"))', travel)
+        self.assertIn('"voyage", "ship", "edge", "mount", "led"))', travel)
         self.assertIn('if ((H.riding || H.riding_mob) && !region_edge_mount_record(H)) return', edge)
         self.assertIn('if (took_mount && QDELETED(src) && !QDELETED(steed))', edge)
         self.assertIn('return ispath(path, /mob/living/simple_animal) && initial(A.can_ride)', edge)
         ok = edge.split('/proc/region_edge_payload_ok(list/P)\n')[1].split('\n\n')[0]
-        self.assertIn('return isnull(P["mount"])', ok)
+        self.assertIn('return isnull(P["mount"]) && isnull(P["led"])', ok)
+        self.assertIn('region_edge_mount_valid(P["led"], TRUE)', ok)
+        # An animal led by hand goes the same way; anything else dragged stays.
+        self.assertIn('if (H.pulling && !region_edge_led_record(H)) return', edge)
+        self.assertIn('if (took_led && QDELETED(src) && !QDELETED(beast))', edge)
         self.assertIn('region_edge_mount_valid(P["mount"])', ok)
         self.assertIn('\t\t\tregion_edge_replayed(H, P)\n', travel)
         # No trail posts drawn on maps any more.

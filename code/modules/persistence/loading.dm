@@ -1838,6 +1838,8 @@ var/global/persistence_memory_probe_error
 			split++
 			world.log << "Split saved level [z] into [count] segments for a low-memory load in [stop_watch(watch)]s."
 		catch(var/exception/e)
+			if(fexists("map_saves/[z].orig.tmp"))
+				throw EXCEPTION("Level [z] could not be restored after a failed split; its original is kept in map_saves/[z].orig.tmp")
 			// The level file is untouched until its index replaces it; a failed
 			// split leaves it as a full-file level and the load reads it whole.
 			fdel("map_saves/[z].index.tmp")
@@ -1849,6 +1851,10 @@ var/global/persistence_memory_probe_error
 	var/path = "map_saves/[z].sav"
 	var/index_path = "map_saves/[z].index.tmp"
 	if(fexists(index_path) && !fdel(index_path)) throw EXCEPTION("Could not replace [index_path]")
+	// This level reads as a full-file level, so it is the authoritative copy;
+	// an .orig.tmp beside it is a leftover and must not abort this split.
+	var/orig_path = "map_saves/[z].orig.tmp"
+	if(fexists(orig_path) && !fdel(orig_path)) throw EXCEPTION("Could not replace [orig_path]")
 	var/savefile/F = new(path)
 	if(F["/format_version"] != 3) throw EXCEPTION("Level [z] is not a full-file level")
 	var/generation = F["/generation"]
@@ -1930,14 +1936,25 @@ var/global/persistence_memory_probe_error
 		TICK_CHECK
 	I = null
 	F = null
-	if(!fcopy(index_path, path)) throw EXCEPTION("Could not replace level [z] with its segmented index")
+	if(!fcopy(path, orig_path))
+		fdel(orig_path)
+		throw EXCEPTION("Could not keep level [z] before replacing it")
+	var/replaced = fcopy(index_path, path)
 	fdel(index_path)
-	var/savefile/check = new(path)
-	if(check["/format_version"] != 4 || check["/segments/count"] != count || check["/generation"] != generation)
-		check = null
-		// The full-file generation was kept before any level was replaced.
-		if(fexists("map_rollback/[z].sav")) fcopy("map_rollback/[z].sav", path)
+	var/read_back = FALSE
+	if(replaced)
+		try
+			var/savefile/check = new(path)
+			read_back = check["/format_version"] == 4 && check["/segments/count"] == count && check["/generation"] == generation
+			check = null
+		catch
+			read_back = FALSE
+	if(!read_back)
+		// Restore the exact level kept before it was replaced; if that fails
+		// the .orig.tmp copy stays and the caller aborts the load.
+		if(fcopy(orig_path, path)) fdel(orig_path)
 		throw EXCEPTION("Level [z] index did not read back after replacement")
+	fdel(orig_path)
 	return count
 
 // Raw text copy keeps every node exactly, including types the build no longer

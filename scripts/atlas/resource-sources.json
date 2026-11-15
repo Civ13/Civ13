@@ -17036,6 +17036,29 @@
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
+      "name": "Burn logs to charcoal in a charcoal clamp",
+      "file": "code/modules/1713/charcoal_clamp.dm",
+      "line": 11,
+      "source_commit": "5ce7123ec9e58dfa13cfef8790871f3f040deca0",
+      "inputs": [
+        "/obj/item/stack/material/wood"
+      ],
+      "outputs": [
+        "/obj/item/stack/ore/charcoal"
+      ],
+      "tools": [
+        "/obj/structure/charcoal_clamp"
+      ],
+      "steps": [
+        "Build a charcoal clamp from 4 wood and stack up to 20 wood logs on it.",
+        "Light it by hand or with a flame; it is covered with earth and smoulders for five minutes. Every two logs come out as one lump of charcoal."
+      ],
+      "conditions": "At least 2 logs are needed to light it. It cannot be loaded or dug out while it smoulders; a shovel digs out an unlit clamp and returns its logs.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "The charcoal clamp needs the Primitive Construction research.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
       "name": "Smelt aluminium in a reduction pot",
       "file": "code/modules/1713/aluminium.dm",
       "line": 287,

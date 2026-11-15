@@ -1,7 +1,7 @@
 """Generate current-source recipes and genuine isolated BYOND icon previews."""
 from pathlib import Path
 import subprocess, re, json, hashlib, argparse, sys
-from atlas.catalog_metadata import add_processors, add_tablet_press, annotate_eras, add_intestine_casings
+from atlas.catalog_metadata import add_processors, add_tablet_press, annotate_eras, add_intestine_casings, add_organ_uses
 from atlas.tanning import add_tanning
 from atlas.rope_making import add_rope_making
 from atlas.dressmaking import add_dressmaking
@@ -430,6 +430,7 @@ for route in add_interactions(files, add, records, set(acquisition)):
 add_processors(files, add, records)
 add_tablet_press(files, add, records)
 add_intestine_casings(files, add, records)
+add_organ_uses(files, add, records)
 annotate_research(records, files, canon)
 annotate_eras(records, uncomment(nodes), splitargs)
 # Admin-only reactions (e.g. map-locked magic chemistry) never enter the public catalog.

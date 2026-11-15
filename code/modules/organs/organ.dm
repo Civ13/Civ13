@@ -126,16 +126,19 @@ var/list/organ_cache = list()
 		return
 
 	if (!owner)
+		var/sealed = is_sealed()
 		var/datum/reagent/blood/B = locate(/datum/reagent/blood) in reagents.reagent_list
-		if (B && prob(40))
+		if (B && !sealed && prob(40))
 			reagents.remove_reagent("blood",0.1)
 			blood_splatter(src,B,1)
-		if (config.organs_decay) damage += rand(1,3)
+		// Cold slows spoiling and a sealed box keeps germs out (organ_uses.dm);
+		// neither ever lowers damage or germs.
+		if (config.organs_decay) damage += rand(1,3) * spoil_rate()
 		if (damage >= max_damage)
 			damage = max_damage
-		germ_level += rand(2,6)
+		germ_level += spoil_germs(rand(2,6))
 		if (germ_level >= INFECTION_LEVEL_TWO)
-			germ_level += rand(2,6)
+			germ_level += spoil_germs(rand(2,6))
 		if (germ_level >= INFECTION_LEVEL_THREE)
 			die()
 
@@ -153,6 +156,19 @@ var/list/organ_cache = list()
 	..(user)
 	if (status & ORGAN_DEAD)
 		to_chat(user, "<span class='notice'>The decay has set in.</span>")
+		return
+	if (istype(src, /obj/item/organ/external) || owner)
+		return
+	var/condition = condition_text()
+	if (condition)
+		to_chat(user, condition)
+	var/datum/reagent/blood/B = reagents ? locate(/datum/reagent/blood) in reagents.reagent_list : null
+	if (B && B.data && B.data["blood_type"])
+		to_chat(user, SPAN_NOTICE("Its blood is type [B.data["blood_type"]]. A recipient of an incompatible type will reject it."))
+	if (spoil_rate() < 1)
+		to_chat(user, SPAN_NOTICE("It is kept cold here, so it spoils more slowly."))
+	if (is_sealed())
+		to_chat(user, SPAN_NOTICE("The sealed box keeps it clean."))
 
 // Antibiotic strength per unit, so each era has an infection cure: penicillin
 // is the full-strength reference, prontosil (sulfa drug) and the chewed
