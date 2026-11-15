@@ -41,7 +41,9 @@ class DistributionContract(unittest.TestCase):
         self.assertIn("node_ids.Cut(RECIPE_COMPENDIUM_MAX + 1)", restore)
         self.assertIn("length(kind) > 2048", self.source)
         region = read("code/modules/persistence/region_travel.dm")
-        self.assertIn("C.node_ids = recipe_compendium_wire_ids(entry[2])", region)
+        # A traveller's compendium is rebuilt by the shared item maker.
+        self.assertIn("C.node_ids = recipe_compendium_wire_ids(kind)", region)
+        self.assertIn("return region_travel_make_item(kind, amount, T)", read("code/modules/persistence/region_travel_gear.dm"))
     def test_cache_is_bounded_and_not_placed(self):
         p = proc(self.source, "/obj/structure/recipe_book_cache/proc/claim_manual")
         self.assertIn("if(restock_remaining > 0) return null", p)

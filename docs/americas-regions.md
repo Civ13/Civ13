@@ -76,6 +76,11 @@ Nothing stands there: no trail post and no gate. Each map names its neighbour
   and carry and the same rules about what can travel
   (`code/modules/persistence/region_travel.dm`). Wounds go with them; unlike a
   trail, the walk does not ask for full health.
+- Worn and held tools and weapons keep their material, quality and wear, a bag
+  keeps what it holds (one level: a bag inside a bag has to come out), and
+  whole arrows, bolts and cartridges travel one by one
+  (`code/modules/persistence/region_travel_gear.dm`). Anything that still
+  cannot travel is named in the refusal, with the bag it sits in.
 - They come out on the facing edge of the other land, as far along the neck as
   they were, three tiles in and facing inland.
 - A rider takes the mount along. A rideable animal that carries nothing goes
