@@ -3,8 +3,9 @@
 Manual native probe for issue #3582: what geometric line of sight costs the
 server with one and with several connected clients, on a small map and on
 Gaia, against the same scenes with `CIV13_GEOMETRIC_LOS_CORE` off. CI never
-compiles or runs it. Results are in
-[docs/los-cost-measurement.md](../../docs/los-cost-measurement.md).
+compiles or runs it. The phases that need clients have not been run yet;
+[docs/los-cost-measurement.md](../../docs/los-cost-measurement.md) records
+what is and is not measured.
 
 It needs real Dream Seeker clients, so it runs on a Windows PC with BYOND
 installed, never on a live server. Dream Daemon runs `-trusted` on a loopback
