@@ -764,11 +764,9 @@ default behaviour is:
 		s_active.close(src)
 
 	update_vision_cone()
-
-	if (client)
-		for(var/obj/chat_text/CT in client.stored_chat_text)
-			CT.glide_size = src.glide_size
-			CT.forceMove(src.loc)
+	// Speech bubbles are client images on the speaker (chat_overlay.dm) and
+	// follow them by themselves. Moving the bubble objects along dropped every
+	// finished bubble onto the speaker's tile, where they piled up for good.
 
 /mob/living/verb/resist()
 	set name = "Resist"
