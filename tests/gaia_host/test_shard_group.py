@@ -622,6 +622,12 @@ class ShardGroupTests(unittest.TestCase):
         self.assertEqual([4242], ended)
         self.assertEqual('deep', started[1][started[1].index('--start-region') + 1])
         started.pop()
+        # So does a new mainland.
+        with mock.patch.object(shard_group, 'coordinator_pid', lambda g: 4242):
+            self.assertTrue(shard_group.ensure_coordinator(dict(moved, mainland='deep'), start, refresh=True, terminate=ended.append))
+            self.assertFalse(shard_group.ensure_coordinator(dict(moved, mainland='deep'), start, refresh=True, terminate=ended.append))
+        self.assertEqual('deep', started[1][started[1].index('--mainland') + 1])
+        started.pop()
         self.assertEqual('4242', (self.base / 'regions' / 'coordinator.pid').read_text().strip())
         # Only a group without a coordinator database asserts a clean bootstrap.
         self.assertIn('--bootstrap-new-group', started[0])

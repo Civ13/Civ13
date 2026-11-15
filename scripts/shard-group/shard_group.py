@@ -2187,8 +2187,10 @@ def ensure_coordinator(group, start=detach, refresh=False, terminate=None):
     pid = coordinator_pid(group)
     if pid:
         record = read_record(root / 'coordinator.json')
-        # A new start region (the launcher's Start region) restarts it too.
+        # A new mainland or start region (the launcher's Start region) restarts it too.
+        # A record from before either was kept counts as the current value.
         if not refresh or (record.get('code') == code and record.get('slots', []) == slots
+                           and record.get('mainland', group['mainland']) == group['mainland']
                            and record.get('start_region', group['mainland']) == group['start_region']):
             return False
         (terminate or Platform().terminate)(pid)
@@ -2206,7 +2208,8 @@ def ensure_coordinator(group, start=detach, refresh=False, terminate=None):
         argv += ['--slots', ','.join(slots), '--expeditions', str(expedition_slots.slots_dir(group))]
     pid = start(argv, root, root / 'coordinator.log')
     (root / 'coordinator.pid').write_text('%d\n' % pid, encoding='utf-8')
-    write_record(root / 'coordinator.json', pid=pid, code=code, slots=slots, start_region=group['start_region'])
+    write_record(root / 'coordinator.json', pid=pid, code=code, slots=slots, mainland=group['mainland'],
+                 start_region=group['start_region'])
     return True
 
 
