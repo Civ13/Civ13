@@ -694,7 +694,7 @@ var/knowledge_failures = 0
 	knowledge_check(stone_ok, "the Stone Age set holds only era-0 nodes")
 	var/mob/living/human/knowledge_fixture/founder = new(locate(5,5,1))
 	var/obj/item/weapon/book/master = founder.receive_founding_books()
-	knowledge_check(master && master.loc == founder && master.research_chapter_list().len == stone.len && (locate(/obj/item/weapon/pen/pencil) in founder.contents), "a founder gets the Stone Age master book and a pencil")
+	knowledge_check(master && master.loc == founder && master.research_chapter_list().len == stone.len && (locate(/obj/item/weapon/writing_slate) in founder.contents) && !(locate(/obj/item/weapon/pen/pencil) in founder.contents), "a founder gets the Stone Age master book and a writing slate, not a pencil")
 	knowledge_check(!founder.knows_recipe_node("basic_tools") && founder.can_learn_recipe_node("basic_tools"), "the master book's chapters still have to be studied")
 	map.age = old_age
 	map.ordinal_age = old_ordinal
