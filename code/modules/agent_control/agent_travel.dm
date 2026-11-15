@@ -25,6 +25,19 @@ var/global/list/agent_departures = list()
 	var/name = copytext(ckey("[agent_name]"), 1, 27)
 	return length(name) ? "agent@[name]" : null
 
+// A body the world restored for an agent with an autospawn line, before the
+// autospawn loop has adopted it (agent_autospawn.dm). It is not a logged-off
+// player: it stays awake and keeps what it holds until its agent takes it over.
+/proc/agent_body_awaiting_adoption(mob/living/human/H)
+	if (!agent_control || !istype(H) || !H.persistence_owner_ckey || copytext(H.persistence_owner_ckey, 1, 7) != "agent@")
+		return FALSE
+	if (isnull(agent_control.config_text))
+		agent_control.reload()
+	for (var/agent_name in agent_control.autospawns)
+		if (agent_account_for(agent_name) == H.persistence_owner_ckey)
+			return TRUE
+	return FALSE
+
 // Called by the gate before it deletes the departing body.
 /proc/agent_note_departure(mob/living/human/H, destination, destination_name)
 	var/datum/agent_character/C = agent_character_for(H)

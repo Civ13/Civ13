@@ -829,11 +829,6 @@ var/global/datum/persistence_admission_identity
 /proc/persistence_save_active()
 	return persistence_active_operation && persistence_active_operation.kind == "save"
 
-// True while a saved world is being put back. Restored bodies are in the world
-// before their organs and health are, so their Life() waits (human_life.dm).
-/proc/persistence_load_active()
-	return persistence_active_operation && persistence_active_operation.kind == "load"
-
 // Sleep transfers are forbidden even on the same z during owned preparation,
 // serialization and cleanup. Retain the legacy load/recovery admission hold.
 /proc/persistence_sleep_transfer_blocked()
