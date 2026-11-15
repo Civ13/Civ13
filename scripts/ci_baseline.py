@@ -1242,6 +1242,11 @@ SUITES = {
             'code/modules/1713/siege/siege_engines.dm', 'code/modules/1713/siege/catapult.dm',
             'icons/obj/siege_engines.dmi', 'icons/obj/trebuchet.dmi', 'icons/obj/siege_tower.dmi',
             'tests/sprites/create_siege_engines.py')},
+    # Horse breaking, breeding and shoeing: source contracts (native probe tests/horse_breeding/probe.dm).
+    'horse_breeding': {'files': ('tests/horse_breeding/test_source.py',),
+        'paths': ('tests/horse_breeding/',), 'shared_paths': (
+            'code/modules/1713/horse_breeding.dm', 'icons/mob/animal_64.dmi', 'icons/obj/horseshoes.dmi',
+            'code/game/mob/mob_movement.dm', 'code/modules/agent_control/agent_movement.dm')},
     # Sewers phase S1: source contracts (the native probe is tests/sewers/probe.dm).
     'sewers': {'files': ('tests/sewers/test_sewers.py',),
         'paths': ('tests/sewers/',), 'shared_paths': (

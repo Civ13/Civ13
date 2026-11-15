@@ -137,7 +137,7 @@
 	if (M.find_trait("Gigantism"))
 		speed *= 0.9
 	if (H && H.riding && H.riding_mob)
-		delay = 0.5 + H.riding_mob.hitch_drag()
+		delay = H.riding_mob.ride_delay() + H.riding_mob.hitch_drag()
 	else
 		delay /= max(0.1, speed)
 		if (d in cornerdirs)
