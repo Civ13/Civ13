@@ -241,7 +241,10 @@ def main():
             raise RuntimeError(f'No result.json (daemon exit {daemon.poll()}); see {output}')
         passed = [row['check'] for row in result.get('checks', []) if row.get('passed')]
         missing = [name for name in REQUIRED_CHECKS if name not in passed]
-        missing_clips = [name for name in REQUIRED_CLIPS if not (output / 'clips' / (name + '.mp4')).exists()]
+        def clip_ok(name):
+            done = output / 'clips' / (name + '.done')
+            return (output / 'clips' / (name + '.mp4')).exists() and done.exists() and done.read_text().strip() == '0'
+        missing_clips = [name for name in REQUIRED_CLIPS if not clip_ok(name)]
         summary = {'passed': bool(result.get('passed')) and not missing and not missing_clips, 'failure': result.get('failure'),
                    'failed_phase': result.get('failed_phase'), 'missing_checks': missing, 'missing_clips': missing_clips,
                    'checks': result.get('checks'), 'tested_commit': head, 'output': str(output)}

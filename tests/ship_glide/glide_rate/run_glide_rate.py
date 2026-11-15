@@ -27,10 +27,11 @@ def main():
     if '0 errors' not in b.stdout + b.stderr:
         raise SystemExit('compile failed')
     port = free_port()
+    dd = ds = None
     dd = subprocess.Popen([str(a.byond_bin / 'dd.exe'), 'glide_rate.dmb', str(port), '-trusted', '-ip', '127.0.0.1', '-log', 'dd.log'], cwd=out)
-    time.sleep(4)
-    ds = subprocess.Popen([str(a.byond_bin / 'dreamseeker.exe'), f'byond://127.0.0.1:{port}'])
     try:
+        time.sleep(4)
+        ds = subprocess.Popen([str(a.byond_bin / 'dreamseeker.exe'), f'byond://127.0.0.1:{port}'])
         hwnd = None
         for _ in range(60):
             time.sleep(1)
@@ -47,10 +48,13 @@ def main():
                               '-c:v', 'libx264', '-crf', '18', '-preset', 'ultrafast', '-pix_fmt', 'yuv420p', str(out / 'glide_rate.mp4')],
                              capture_output=True, text=True)
         (out / 'ffmpeg.log').write_text(rec.stderr)
+        if rec.returncode:
+            raise SystemExit(f'ffmpeg failed ({rec.returncode}); see ffmpeg.log')
     finally:
         for proc in (ds, dd):
-            if proc.poll() is None:
+            if proc and proc.poll() is None:
                 proc.kill()
+                proc.wait()
     print('recorded', out / 'glide_rate.mp4')
 
 if __name__ == '__main__':

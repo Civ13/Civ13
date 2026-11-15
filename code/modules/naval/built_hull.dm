@@ -64,6 +64,7 @@
 /obj/structure/hull_tiller/proc/decommission()
 	if (!craft)
 		return
+	voyage_sea_stop()
 	var/datum/craft/C = craft
 	craft = null
 	var/datum/craft_body/built/B = C.body

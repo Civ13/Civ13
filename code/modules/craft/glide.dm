@@ -42,6 +42,9 @@
 
 // Holds M's glide at size in was, keeping what to give back.
 /proc/glide_hold(list/was, atom/movable/M, size)
+	// Another craft or vehicle held it last: that one gives its glide back first.
+	if (M.craft_glide_was && M.craft_glide_was != was)
+		craft_glide_release(M, M.craft_glide_was)
 	var/list/held = was[M]
 	if (!held)
 		was[M] = list(M.glide_size, size)
@@ -131,26 +134,29 @@
 	var/tmp/list/craft_glide_was = null // The record of the craft holding this thing's glide.
 
 /atom/movable/proc/craft_glide_drop()
-	if (craft_glide_was && craft_glide_mover != src)
+	if (craft_glide_was && craft_glide_was != craft_glide_holder)
 		craft_glide_release(src, craft_glide_was)
 
-// The thing her own step is moving right now: its move keeps the glide she holds.
-var/global/atom/movable/craft_glide_mover = null
+// The record of the craft whose own step is moving things right now: those
+// moves keep the glide it holds.
+var/global/list/craft_glide_holder = null
 
 // Moves M, carried by her step, to D and shows the move as her glide. The
 // engine draws a move at the glide_size the thing has when it moves, so a
-// thing that glides natively takes her pace before it moves, not after:
-// given afterwards, the step was drawn at the thing's own pace (a snap for
-// the planks and the crew) and only the next one would have been glided.
+// thing that glides natively takes her pace before it moves, not after.
 /datum/craft_body/proc/craft_step_move(atom/movable/M, turf/D, dx, dy, time)
+	if (!glide_was)
+		glide_was = list()
 	if (time > 0 && craft_glides_natively(M))
-		if (!glide_was)
-			glide_was = list()
 		glide_hold(glide_was, M, craft_glide_size(time))
-	var/was_mover = craft_glide_mover
-	craft_glide_mover = M
-	M.forceMove(D)
-	craft_glide_mover = was_mover
+	var/list/was_holder = craft_glide_holder
+	craft_glide_holder = glide_was
+	try
+		M.forceMove(D)
+	catch (var/exception/e)
+		craft_glide_holder = was_holder
+		throw e
+	craft_glide_holder = was_holder
 	if (time > 0 && M.loc == D)
 		craft_glide(M, dx, dy, time)
 
