@@ -64,7 +64,7 @@
 /obj/structure/hull_tiller/proc/decommission()
 	if (!craft)
 		return
-	voyage_sea_stop()
+	end_voyage(null) // A struck or stripped hull is on no voyage, and shows no sea.
 	var/datum/craft/C = craft
 	craft = null
 	var/datum/craft_body/built/B = C.body
