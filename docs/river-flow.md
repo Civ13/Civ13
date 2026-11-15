@@ -1,9 +1,11 @@
 # River and sea currents, swimming, and seasonal channels
 
 Rivers on the Nomads regions with terrain heights (Gaia, Europe, Jungle and
-Asia) carry a current, and so does a belt of the sea off their coasts. Lakes, broad
+Asia) carry a current, and so does a belt of the sea off their coasts and off
+the Desert's north coast. Lakes, broad
 water, swamps, floods, ice, the shallows by the beach, the open sea and
-isolated ponds stay still. The Desert region has no rivers and no sidecar.
+isolated ponds stay still. The Desert region has no rivers; its
+sidecar holds the sea current only.
 
 When a map uses `maps/heights/example.txt`, an optional
 `maps/heights/example.flow.txt` describes one z-level. The first lines are
@@ -19,6 +21,7 @@ Sidecars are generated, then reviewed with an overview render:
     python3 scripts/river_flow.py --map maps/nomads/nomads_gaia.dmm --z 2 --heights maps/heights/nomads_gaia.txt --out maps/heights/nomads_gaia.flow.txt
     python3 scripts/river_flow.py --map maps/nomads/nomads_europe.dmm --z 1 --heights maps/heights/nomads_europe.txt --lake-depth 8 --out maps/heights/nomads_europe.flow.txt
     python3 scripts/river_flow.py --map maps/nomads/nomads_jungle.dmm --z 2 --heights maps/heights/nomads_jungle.txt --out maps/heights/nomads_jungle.flow.txt
+    python3 scripts/river_flow.py --map maps/nomads/nomads_desert.dmm --z 2 --heights maps/heights/nomads_desert.txt --out maps/heights/nomads_desert.flow.txt
     python3 scripts/river_flow.py --map maps/nomads/nomads_asia.dmm --z 1 --heights maps/heights/nomads_asia.txt --out maps/heights/nomads_asia.flow.txt
 
 The generator treats water at least `--lake-depth` steps (default 5) from
