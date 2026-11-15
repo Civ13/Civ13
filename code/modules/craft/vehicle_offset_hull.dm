@@ -178,6 +178,8 @@
 	if (speed != was)
 		start_sailing()
 		return
+	// Squaring, filing and carrying are the deck's moves, not the walker's.
+	var/list/walkers = O.walks_in_step()
 	O.settle()
 	O.sync()
 	var/heading = body.heading()
@@ -185,6 +187,7 @@
 	O.speed_x = heading == EAST ? px : (heading == WEST ? -px : 0)
 	O.speed_y = heading == NORTH ? px : (heading == SOUTH ? -px : 0)
 	O.pulse()
+	vehicle_offset_rebase_walks(walkers)
 	if (O.blocked_dir)
 		O.blocked_dir = 0
 		sail_refused()

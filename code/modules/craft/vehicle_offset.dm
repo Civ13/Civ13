@@ -141,16 +141,17 @@ var/global/list/vehicle_offset_riders = list()
 // Square on the tile again, everything with it. A walk made on the deck since
 // the last pulse is taken in first, so squaring does not undo it.
 /datum/vehicle_offset/proc/snap()
+	var/list/walkers = walks_in_step()
 	settle()
 	speed_x = 0
 	speed_y = 0
 	rest_x = 0
 	rest_y = 0
-	if (!ox && !oy)
-		return
-	ox = 0
-	oy = 0
-	draw()
+	if (ox || oy)
+		ox = 0
+		oy = 0
+		draw()
+	vehicle_offset_rebase_walks(walkers)
 
 // TRUE when a player is close enough to see the pixels; cached for two seconds.
 /datum/vehicle_offset/proc/watched()
@@ -303,6 +304,7 @@ var/global/list/vehicle_offset_riders = list()
 // One pulse at the current speed: x first, then y. Returns TRUE if anything moved.
 /datum/vehicle_offset/proc/pulse()
 	pulses++
+	var/list/walkers = walks_in_step()
 	settle()
 	if (speed_x || speed_y)
 		blocked_dir = 0
@@ -322,6 +324,7 @@ var/global/list/vehicle_offset_riders = list()
 		speed_y = 0
 		rest_y = 0
 	draw()
+	vehicle_offset_rebase_walks(walkers)
 	return moved_x || moved_y
 
 // A frame vehicle (cars, trucks, tanks): the tile step is the axis's own
@@ -362,7 +365,6 @@ var/global/list/vehicle_offset_riders = list()
 		var/mob/living/human/H = A
 		H.human_subtile_anchor()
 		H.human_subtile_offset_owned = !!(H.step_x || H.step_y)
-		H.vehicle_offset_rebase_walk()
 		return
 	var/px = A.x * VEHICLE_OFFSET_TILE + A.step_x
 	var/py = A.y * VEHICLE_OFFSET_TILE + A.step_y
@@ -385,13 +387,21 @@ var/global/list/vehicle_offset_riders = list()
 /mob/living/human/vehicle_offset_drawn()
 	if (human_subtile_enabled || human_subtile_default_pending)
 		human_subtile_offset_owned = !!(step_x || step_y)
-	vehicle_offset_rebase_walk()
 
 // A step under way checks that nobody else moved the walker since its last
 // pulse. The deck carrying them is not somebody else: the step goes on from
-// where the deck put them.
-/mob/living/human/proc/vehicle_offset_rebase_walk()
-	if (human_subtile_transaction && !human_subtile_transaction.cancelled)
-		human_subtile_transaction.expected = human_subtile_snapshot()
+// where the deck put them. Only a walk whose snapshot still matched before the
+// deck moved is carried on, so a shove from anyone else still stops it.
+/datum/vehicle_offset/proc/walks_in_step()
+	for (var/mob/living/human/H in carried)
+		var/datum/human_subtile_transaction/T = H.human_subtile_transaction
+		if (T && !T.cancelled && human_subtile_same(T.expected, H.human_subtile_snapshot()))
+			LAZYADD(., H)
+
+/proc/vehicle_offset_rebase_walks(list/walkers)
+	for (var/mob/living/human/H in walkers)
+		var/datum/human_subtile_transaction/T = H.human_subtile_transaction
+		if (T && !T.cancelled)
+			T.expected = H.human_subtile_snapshot()
 
 #undef VEHICLE_OFFSET_CHUNK

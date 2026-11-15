@@ -477,10 +477,17 @@ var/naval_runtime_error = FALSE
 	deckhand.human_subtile_transaction = walk
 	P.offset_tick()
 	naval_check(deckhand.step_x == 2 && human_subtile_same(walk.expected, deckhand.human_subtile_snapshot()), "a step in progress goes on from where her deck carried the walker")
-	deckhand.human_subtile_transaction = null
-	walk.actor = null
-	for (var/i = 3 to 15)
+	// Moved by someone else since the walk's last pulse: the deck does not hide it.
+	var/list/stale = walk.expected.Copy()
+	stale["sx"] = stale["sx"] - 5
+	walk.expected = stale
+	P.offset_tick()
+	naval_check(!human_subtile_same(walk.expected, deckhand.human_subtile_snapshot()) && walk.expected["sx"] == stale["sx"], "a walker moved by someone else is not carried on by the deck")
+	walk.expected = deckhand.human_subtile_snapshot()
+	for (var/i = 4 to 15)
 		P.offset_tick()
+	naval_check(human_subtile_same(walk.expected, deckhand.human_subtile_snapshot()), "the step keeps up with her deck pulse after pulse")
+	deckhand.human_subtile_transaction = null
 	naval_check(skiff.x == 45 && skiff.step_x == 15 && bow_plank.x == 47 && bow_plank.step_x == 15 && hull_planks(locate(48, 26, 2)) == 0, "fifteen pulses in she is half a tile on and still on her own tiles")
 	// Newcomers are judged by her deck as it is drawn, half a tile on.
 	var/mob/living/human/naval_probe/boarder = new(locate(46, 25, 2))
@@ -495,7 +502,13 @@ var/naval_runtime_error = FALSE
 	qdel(swimmer)
 	// The deckhand walks three pixels aft as she sails.
 	deckhand.step_x -= 3
+	// That was the walk's own pulse, so its snapshot is where the deckhand stands.
+	walk.expected = deckhand.human_subtile_snapshot()
+	deckhand.human_subtile_transaction = walk
 	P.offset_tick()
+	naval_check(human_subtile_same(walk.expected, deckhand.human_subtile_snapshot()), "the step survives her whole-tile move as the offset wraps")
+	deckhand.human_subtile_transaction = null
+	walk.actor = null
 	naval_check(skiff.x == 46 && skiff.step_x == -16 && bow_plank.x == 48 && bow_plank.step_x == -16 && !P.path_markers.len, "past half a tile her own move carries her a tile on and the offset wraps ([skiff.x],[skiff.step_x])")
 	naval_check(deckhand.x == 47 && deckhand.step_x == -19 && pail.x == 47 && pail.step_x == -16, "the deckhand keeps the three pixels walked; the pail rides ([deckhand.x],[deckhand.step_x])")
 	naval_check(hull_planks(locate(45, 25, 2)) == 0 && hull_planks(locate(48, 25, 2)) == 1 && P.tiles_since_burn == 1, "her planks moved a tile and her drives paid for it")
