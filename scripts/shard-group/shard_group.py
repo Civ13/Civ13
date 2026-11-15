@@ -364,6 +364,9 @@ def region_config(group, region):
     for key in gaia_host.FREEZE_DEFAULTS:
         if key in group:
             config[key] = group[key]
+    # An empty land across the sea sleeps on disk, not in memory, unless the group says otherwise.
+    if region['kind'] == 'EXPEDITION' and 'freeze_cold' not in group:
+        config['freeze_cold'] = True
     return config
 
 

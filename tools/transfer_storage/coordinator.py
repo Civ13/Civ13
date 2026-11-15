@@ -318,7 +318,7 @@ class Coordinator(TrainCustody):
         if op in ('reveal', 'scout') and owner_valid(owner):
             return bool(self.chart.reveal(owner, x, y))
         if op == 'course' and owner_valid(owner):
-            return self.chart.set_course(request.get('voyage'), owner, x, y, origin) is not None
+            return self.chart.set_course(request.get('voyage'), owner, x, y, origin, by=admin) is not None
         # A land's own world, for its crew: x and y name the land it holds, as a check.
         found = self.chart.land_in(origin)
         if op not in ('settle', 'claim', 'unclaim', 'abandon') or not found or found[:2] != (x, y):

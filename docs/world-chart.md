@@ -72,8 +72,26 @@ A ship that sets course for a land asks the coordinator for a world there
 (`WorldChart.set_course`). The land must be charted, on the ship's owner's
 chart, have a coast and not be lost. A tile already `LANDED` sends her to its
 slot; otherwise a free slot is chosen and the host asked to open it
-([slots](expedition-slots.md#lands-opened-for-ships)). With no free slot the
-course is refused ("every harbour master is busy").
+([slots](expedition-slots.md#lands-opened-for-ships)). A settled or claimed
+land is on every owner's chart.
+
+### Opening new lands
+
+No admin decides who may sail. A course for a land with no world yet is
+refused while:
+
+- its owner, or the account at the tiller (`by`), still has a land it opened
+  standing undecided (`LANDED`): "your crew still has the land at X,Y undecided";
+- either opened a new land less than 3 hours ago (`OPEN_COOLDOWN_SECONDS`);
+  the reason gives the minutes left;
+- no slot is free. Then the undecided land that has stood empty longest, and
+  at least a day (`PRESSURE_SECONDS`), is given up as if abandoned
+  (`make_room`) and the course is refused with "a harbour is being cleared";
+  the crew set out again once the host has archived it. Settled and claimed
+  lands never give way. With nothing to give up: "every harbour master is busy".
+
+`chart_opened` keeps who opened each land and when. A land the host could not
+build is forgotten there, so it costs no wait.
 
 | Course state | Meaning |
 | --- | --- |
@@ -103,7 +121,7 @@ homes there go to the mainland and the host archives the slot. See
 - Coordinator database: `chart_tile` (templates and states), `chart_seen`
   (each owner's tiles), `chart_pin`, `chart_meta` (seed and revision),
   `chart_course` (ships' courses), `chart_landed` (lands opened and last
-  visited), `chart_claim` (faction claims).
+  visited), `chart_opened` (who opened each land), `chart_claim` (faction claims).
 - Each home pass sends the whole chart to any agent whose copy is older
   (`/homes`, key `chart`); a world reads it from its agent (`/chart`).
 - Requests from a world (`/chart/request`: admin ops `reroll` and `reveal`,

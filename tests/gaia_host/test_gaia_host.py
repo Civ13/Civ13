@@ -104,6 +104,11 @@ class FakeMachine:
         self.calls.append(['resume', pid])
         self.suspended -= 1
 
+    def terminate(self, pid):
+        self.calls.append(['terminate', pid])
+        self.up = False
+        self.suspended = 0
+
     def kill_tree(self, pid):
         self.calls.append(['kill_tree', pid])
         self.up = False
@@ -617,6 +622,24 @@ class GaiaHostTests(unittest.TestCase):
         self.machine.peers = ['127.0.0.1', '203.0.113.9']
         self.host.watch_step(None)
         self.assertEqual(self.machine.suspended, 0)
+
+    def test_watch_puts_an_idle_saved_world_to_sleep_on_disk_when_asked(self):
+        self.config['freeze_cold'] = True
+        self.running()
+        idle, _ = self.host.watch_step(None)
+        self.machine.clock = 15 * 60
+        # Never saved: it has nothing to start from, so it only freezes.
+        self.host.watch_step(idle)
+        self.assertEqual(self.host.status()['state'], 'asleep')
+        self.host.thaw('test')
+        saves = self.host.repo / 'map_saves'
+        saves.mkdir(parents=True, exist_ok=True)
+        (saves / 'save_complete.txt').write_text('1')
+        idle, _ = self.host.watch_step(None)
+        self.machine.clock += 15 * 60
+        self.host.watch_step(idle)
+        self.assertEqual(self.host.status()['state'], 'cold')
+        self.assertFalse(self.host.frozen())
 
     def test_watch_resets_idle_time_when_someone_plays(self):
         self.running()

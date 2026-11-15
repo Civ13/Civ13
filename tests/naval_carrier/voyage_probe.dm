@@ -146,6 +146,27 @@ var/naval_runtime_error = FALSE
 	naval_check(tiller.voyage_landfall(mine) && isnull(tiller.voyage), "a refused course turns her back at once")
 	naval_check(tiller.craft && !QDELETED(tiller), "she is still here, off the coast where she set out")
 
+	// ---- A course refused while she is still at sea turns her back early ----
+	tiller.voyage = mine = list("id" = "gaia-5-6", "kind" = "course", "x" = 1, "y" = 2, "owner" = "faction:romeempire", "label" = "a desert", "by" = "probe", "ends" = world.time + 6000, "said" = null, "asked" = world.time + 300)
+	world_chart["courses"] = list("gaia-5-6" = list("state" = "REFUSED", "reason" = "your crew opened a new land not long ago"))
+	naval_check(!tiller.voyage_refused_under_way(mine) && tiller.voyage == mine, "she asks after her course only now and then")
+	mine["asked"] = world.time
+	world_chart["courses"] = list("gaia-5-6" = list("state" = "ASSIGNED", "region" = "far1"))
+	naval_check(!tiller.voyage_refused_under_way(mine) && tiller.voyage == mine && mine["asked"] > world.time, "a course being opened keeps her sailing")
+	mine["asked"] = world.time
+	world_chart["courses"] = list("gaia-5-6" = list("state" = "REFUSED", "reason" = "your crew opened a new land not long ago"))
+	naval_check(tiller.voyage_refused_under_way(mine) && isnull(tiller.voyage), "a course refused under way turns her back before landfall")
+
+	// ---- Her crew rest after a landfall (as long as an empty world takes to sleep) ----
+	naval_check(isnull(tiller.landfall_rest_refusal()), "a ship that made no landfall may sail")
+	tiller.landfall_at = world.time
+	naval_check(findtext(tiller.landfall_rest_refusal(), "about 15 minutes"), "after a landfall she lies 15 minutes ([tiller.landfall_rest_refusal()])")
+	tiller.landfall_at = world.time - 8400
+	naval_check(findtext(tiller.landfall_rest_refusal(), "about 1 minute."), "and is told how long is left")
+	tiller.landfall_at = world.time - 9000
+	naval_check(isnull(tiller.landfall_rest_refusal()), "then she may put to sea again")
+	tiller.landfall_at = null
+
 	// ---- Sea routes between the continents (sea_lanes.dm) ----
 	naval_check(continent_distance("northamerica", "gaia") == 6 && continent_bearing("northamerica", "gaia") == "east", "Gaia lies 6 tiles east of North America")
 	naval_check(continent_bearing("gaia", "southamerica") == "southwest" && continent_distance("gaia", "asia") == 12, "and Asia 12 tiles east of Gaia ([continent_bearing("gaia", "southamerica")])")
