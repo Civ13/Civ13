@@ -556,7 +556,13 @@ def mood_knowledge(root):
             'set_mood(min(rest, mood + MOOD_RECOVER))',
             '/mob/living/human/proc/set_mood(amount, cause = null)', 'if (sleeping > 0 && amount < mood)',
             '/mob/living/human/proc/adjust_mood(amount, cause = null)', 'return set_mood(mood + amount, cause)',
-            'adjust_mood(-(0.01), "being dirty")', 'adjust_mood(-(0.02), "fleas")', '/mob/living/human/proc/print_mood_causes()'),
+            '/mob/living/human/proc/print_mood_causes()', '/mob/living/human/proc/print_mood_rest()'),
+        'code/game/mob/living/carbon/human/mood_living.dm': (
+            '/mob/living/human/collect_mood_rest_parts(list/parts)', 'parts["being clean"] = LIVING_CLEAN',
+            'parts["being filthy"] = -LIVING_FILTHY', 'parts["fleas"] = -LIVING_FLEAS',
+            'parts[sleep_comfort_name()] = sleep_comfort', 'parts["a varied diet"] = LIVING_DIET',
+            'parts["being warm and dry"] = LIVING_WARM_DRY', 'parts["being sick"] = -LIVING_SICK',
+            'parts["being in pain"] = -LIVING_PAIN', 'parts["going hungry"] = -LIVING_HUNGER'),
         'code/game/mob/living/carbon/human/human_stats.dm': (
             '/mob/living/human/proc/getStat(statname)', 'return stats[lowertext(statname)][1]*mood_modifier'),
     }
@@ -582,6 +588,9 @@ def mood_knowledge(root):
                       'Mood naturally settles toward a resting level over time while awake: neutral by default, '
                       'moved up or down by lasting conditions that the same click lists. '
                       'A lift a little above the resting level fades slowly; a large high fades fast. '
+                      'Where survival needs apply, the resting level is raised by having last slept in a bed '
+                      '(more with a sheet on it), a varied diet, being clean, and being warm and dry, and lowered '
+                      'by being filthy, fleas, illness, lasting pain, hunger and thirst. '
                       'Mood cannot decrease while actually asleep; positive mood changes still apply. '
                       'Resting or lying awake does not pause mood loss. Hygiene can affect mood, '
                       'and mood can modify some character statistics. Many factors can affect mood. '
