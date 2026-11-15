@@ -10,6 +10,12 @@
 // follows what is built (about 3.4 KB resident and 2.5 KB of save per floor
 // cell), so the ceiling stays at Gaia's plane with four building levels.
 #define NEW_Z_BUILDING_MEASURED_CELLS 1050000
+// A large one-level map (the Americas, 1132 x 920 and 848 x 1224) may keep the
+// one standing open-air level aircraft fly on (standing_building_level.dm):
+// two planes of at most 1,050,000 cells. Measured 2026-11-15 on 516.1688 with
+// the north map: about 5 MB while empty, a reload peak of 1526 MB against 1401
+// MB without it (docs/americas-regions.md). It admits that one level and nothing above it.
+#define NEW_Z_STANDING_MEASURED_CELLS 2100000
 /obj/map_metadata/var/building_levels = 0
 
 /datum/world_z_budget/building_admitted(target_z)
@@ -19,4 +25,6 @@
 	if (dug_underground_supported())
 		return FALSE
 	var/pending = (instance_reserve - instance_used) + (safehouse_reserve - safehouse_used)
+	if (map.building_level_standing && building_base_maxz() == 1 && target_z == 2 && !pending && world.maxx * world.maxy * 2 <= NEW_Z_STANDING_MEASURED_CELLS)
+		return TRUE
 	return world.maxx * world.maxy * (target_z + pending) <= NEW_Z_BUILDING_MEASURED_CELLS
