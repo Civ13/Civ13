@@ -59,7 +59,9 @@ void pipe_pair(bool child_reads, Handle &server, Handle &client) {
   check(server.value != INVALID_HANDLE_VALUE);
   SECURITY_ATTRIBUTES inherit{sizeof(inherit), nullptr, TRUE};
   client.value = CreateFileW(name.c_str(),
-                             child_reads ? GENERIC_READ : GENERIC_WRITE, 0,
+                             child_reads ? GENERIC_READ
+                                         : GENERIC_WRITE | FILE_READ_ATTRIBUTES,
+                             0,
                              &inherit, OPEN_EXISTING, FILE_FLAG_OVERLAPPED,
                              nullptr);
   check(client.value != INVALID_HANDLE_VALUE);
