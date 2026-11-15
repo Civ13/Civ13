@@ -1,0 +1,58 @@
+name: Natural crop bootstrap walkthrough
+# Full-game acceptance run for the forage, plant, save, restore, harvest and
+# replant route on the North America map (tests/natural_bootstrap/README.md).
+# About an hour of runner time, so it runs only when its own files change or
+# when started by hand.
+on:
+  pull_request:
+    branches: [master]
+    paths:
+      - tests/natural_bootstrap/**
+      - .github/workflows/natural-bootstrap.yml
+  workflow_dispatch:
+    inputs:
+      seed:
+        description: Random seed (fixes the start tile)
+        default: '3048'
+permissions:
+  contents: read
+concurrency:
+  group: natural-bootstrap-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+jobs:
+  walkthrough:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      # The canonical compiler pin (tools/byond/version.json), from the repository mirror.
+      - name: Install pinned BYOND
+        env:
+          BYOND_HOME: ${{ runner.temp }}/bootstrap-byond
+        run: bash scripts/cloud_byond_setup.sh
+      - name: Walk the natural bootstrap on North America across a save and restart
+        env:
+          SEED: ${{ inputs.seed || '3048' }}
+        run: |
+          source "$RUNNER_TEMP/bootstrap-byond/byond/bin/byondsetup"
+          python3 tests/natural_bootstrap/full_game.py --byond-bin "$RUNNER_TEMP/bootstrap-byond/byond/bin" --output "$RUNNER_TEMP/bootstrap-run" --seed "$SEED"
+      - name: Show the end of the daemon logs
+        if: failure()
+        run: |
+          cat "$RUNNER_TEMP/bootstrap-run/summary.json" 2>/dev/null || true
+          tail -n 60 "$RUNNER_TEMP"/bootstrap-run/data/logs/runtime/*.txt 2>/dev/null || true
+          tail -n 40 "$RUNNER_TEMP"/bootstrap-run/startup-*.log 2>/dev/null || true
+      - name: Retain the evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: natural-bootstrap-${{ github.event.pull_request.head.sha || github.sha }}
+          path: |
+            ${{ runner.temp }}/bootstrap-run/*.json
+            ${{ runner.temp }}/bootstrap-run/*.log
+            ${{ runner.temp }}/bootstrap-run/data/logs/**
+          if-no-files-found: warn
+          retention-days: 14
