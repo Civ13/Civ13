@@ -100,6 +100,34 @@ Define the hearing policy before implementation: distance, walls, floors,
 observers and radio rules. Keep updates bounded and coalesced, outside per-tick
 world scans. Preserve the player's explicit mute/block choices.
 
+Design (Val, 2026-11-15): one Discord voice lobby per region plus one per
+team, TDM on civ13.com first. Hold the talk key and players whose characters
+can see you hear you, louder when closer. Hold the team key and your whole
+faction in the region hears you.
+
+- Identity is the BYOND key. CivilizationBot gives each ckey a Discord
+  provisional account through the bot token endpoint, or uses the account the
+  player linked. Players need no Discord login, and Public Client stays off.
+  Guest keys are excluded.
+- The launcher joins with `byond://host:port?civ13_voice=<key>`, a random
+  per-connection secret. The game lists `{ckey, key, team}` for every voice
+  player in a roster it POSTs to the bot (`/webhook/<server>/voice_roster`,
+  webhook key in a header, https or loopback only). The bot answers with
+  `{"ids": {ckey: Discord user ID}}`.
+- The launcher shows the bot its voice key over HTTPS to get its access token,
+  so a token never crosses the game's unencrypted connection. The bot sets the
+  members of the region and team lobbies from the roster.
+- Twice a second the launcher asks the game `civ13_voice_state=<key>` for
+  `{v, gen, me, hear: {id: volume}, team}`. That call has its own per-address
+  limiter ahead of the generic topic cooldown. Region-call participants not in
+  `hear` are muted, `gen` changes on a new body or death, and an answer older
+  than three seconds mutes everyone. Dead, observing and lobby players hear
+  nobody in the region call. Knocked-out players hear but cannot talk.
+- Hearing policy: same level, line of sight (walls block, darkness does not),
+  10 tiles; volume 100 within 2 tiles, then 75, 50 and 30.
+- Status: game side source implemented and native-probe tested
+  (`tests/voice_chat/`). The bot and launcher sides follow.
+
 ### 4. Proximity and scale
 
 Per-participant volume and raw audio callbacks can implement spatial presentation.
