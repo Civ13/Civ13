@@ -9,13 +9,22 @@
 //   water out over the rim by hand.
 // - A river gauge post shows how high the river stands against its banks, and
 //   the highest it has stood lately.
+// - A plastered cistern stores rain, from the sky over it and from gutters on
+//   the roofs around it, for the dry months.
 //
-// Nothing here ticks: platforms set a turf var, gates mark the flood window
-// like a half-wall, lifts work while someone works them.
+// Platforms set a turf var, gates mark the flood window like a half-wall,
+// lifts work while someone works them. Only cisterns tick, like rain barrels.
 
 #define STILT_RAISE 2
 #define PLINTH_RAISE 1
 #define SLUICE_CREST 1.5
+#define CISTERN_CAPACITY 2000
+// Water a minute of rain puts in from the open sky over it, and from each
+// roofed tile within reach of its gutters.
+#define CISTERN_OPEN_RATE 10
+#define CISTERN_PER_ROOF 3
+#define CISTERN_GUTTER_RANGE 2
+#define CISTERN_ROOF_RECOUNT 3000
 
 // Levels a platform on this tile lifts what stands on it; rebuilt from the
 // platforms as they are built or load, so never saved.
@@ -287,6 +296,106 @@
 	for (var/line in lines)
 		to_chat(user, SPAN_NOTICE(line))
 
+// ---- cisterns ------------------------------------------------------------------
+
+/obj/structure/reagent_dispensers/cistern
+	name = "cistern"
+	desc = "A stone tank lined with lime plaster to hold water. Rain falling on it, and on the roofs around it through their gutters, runs in and keeps for the dry months. Draw from it with a bucket."
+	icon = 'icons/obj/flood_defences.dmi'
+	icon_state = "cistern0"
+	anchored = TRUE
+	not_movable = TRUE
+	not_disassemblable = FALSE
+	density = TRUE
+	max_capacity = CISTERN_CAPACITY
+	var/tmp/collection_seconds = 0
+	var/tmp/last_collection_tick = 0
+	var/tmp/roofs = 0
+	var/tmp/roofs_counted = -CISTERN_ROOF_RECOUNT
+
+/obj/structure/reagent_dispensers/cistern/persistence_runtime_var(key)
+	return (key in list("collection_seconds", "last_collection_tick", "roofs", "roofs_counted")) || ..()
+
+/obj/structure/reagent_dispensers/cistern/New()
+	..()
+	last_collection_tick = world.time
+	processing_objects |= src
+	cistern_update_icon()
+
+/obj/structure/reagent_dispensers/cistern/on_runtime_spawn()
+	..()
+	processing_objects |= src
+	cistern_update_icon()
+
+/obj/structure/reagent_dispensers/cistern/Destroy()
+	processing_objects -= src
+	return ..()
+
+/obj/structure/reagent_dispensers/cistern/proc/cistern_update_icon()
+	var/fill = reagents ? reagents.total_volume / max(1, reagents.maximum_volume) : 0
+	icon_state = "cistern[fill <= 0 ? 0 : (fill >= 0.9 ? 3 : (fill >= 0.4 ? 2 : 1))]"
+
+/obj/structure/reagent_dispensers/cistern/on_reagent_change()
+	..()
+	cistern_update_icon()
+
+// Roofs within reach of its gutters, counted now and then.
+/obj/structure/reagent_dispensers/cistern/proc/roof_count()
+	if (world.time - roofs_counted < CISTERN_ROOF_RECOUNT)
+		return roofs
+	roofs_counted = world.time
+	roofs = 0
+	for (var/turf/T in range(CISTERN_GUTTER_RANGE, src))
+		if (locate(/obj/roof) in T)
+			roofs++
+	return roofs
+
+// Water a minute it takes in now.
+/obj/structure/reagent_dispensers/cistern/proc/collection_rate()
+	var/turf/T = loc
+	if (!isturf(T))
+		return 0
+	var/falling = weather_look_at(T)
+	if (!(findtext(falling, "rain") || falling == "monsoon") || weather_heat_at(T) || get_temp(src) <= 0)
+		return 0
+	. = roof_count() * CISTERN_PER_ROOF
+	var/area/A = get_area(T)
+	if (A && A.location == AREA_OUTSIDE && !(locate(/obj/roof) in T))
+		. += CISTERN_OPEN_RATE
+
+/obj/structure/reagent_dispensers/cistern/process_interval(configured_seconds = 2)
+	if (QDELETED(src) || !isturf(loc))
+		return PROCESS_KILL
+	var/elapsed = min(2, max(0, configured_seconds), max(0, (world.time - last_collection_tick) / 10))
+	last_collection_tick = world.time
+	collection_seconds += elapsed
+	if (collection_seconds < 60)
+		return
+	collection_seconds = 0
+	collect_minute()
+
+// One minute of rain into the tank.
+/obj/structure/reagent_dispensers/cistern/proc/collect_minute()
+	if (!reagents || reagents.total_volume >= reagents.maximum_volume)
+		return 0
+	var/rate = collection_rate()
+	if (!rate)
+		return 0
+	rate = min(rate, reagents.maximum_volume - reagents.total_volume)
+	reagents.add_reagent("water", rate)
+	return rate
+
+/obj/structure/reagent_dispensers/cistern/examine(mob/user, distance = -1)
+	. = ..()
+	if (get_dist(src, user) > 2 || !reagents)
+		return
+	to_chat(user, SPAN_NOTICE("It holds [round(reagents.total_volume)] of [reagents.maximum_volume] units. In rain it takes in [CISTERN_OPEN_RATE] a minute from the open sky and [CISTERN_PER_ROOF] for each roofed tile within [CISTERN_GUTTER_RANGE] tiles."))
+
+#undef CISTERN_CAPACITY
+#undef CISTERN_OPEN_RATE
+#undef CISTERN_PER_ROOF
+#undef CISTERN_GUTTER_RANGE
+#undef CISTERN_ROOF_RECOUNT
 #undef STILT_RAISE
 #undef PLINTH_RAISE
 #undef SLUICE_CREST

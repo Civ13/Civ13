@@ -123,3 +123,41 @@ var/sewer_runtime_error = FALSE
 	sewer_check(islist(high) && findtext(high[1], "over its banks") && findtext(high[2], "highest mark"), "in flood the gauge shows the river over its banks and the high mark ([high ? jointext(high, " ") : "none"])")
 	var/obj/structure/river_gauge/DRY = new /obj/structure/river_gauge(locate(2, 2, 1))
 	sewer_check(isnull(DRY.reading()), "a gauge far from any river reads nothing")
+
+	// A cistern fills from the sky over it and the roofs around it.
+	cistern_checks()
+
+/obj/roof/cistern_tester/New()
+	return
+
+/proc/cistern_checks()
+	var/turf/site = locate(2, 5, 1)
+	var/area/A = get_area(site)
+	A.location = AREA_OUTSIDE
+	A.weather = WEATHER_NONE
+	A.icon_state = ""
+	season = "SPRING"
+	time_of_day = "Midday"
+	var/obj/structure/reagent_dispensers/cistern/C = new /obj/structure/reagent_dispensers/cistern(site)
+	sewer_check(C.reagents.total_volume == 0 && C.icon_state == "cistern0" && (C in processing_objects), "a new cistern is empty and collecting")
+	sewer_check(!C.collection_rate(), "no rain, no water")
+	A.weather = WEATHER_WET
+	A.icon_state = "rain2"
+	sewer_check(C.collection_rate() == 10, "rain from the open sky ([C.collection_rate()])")
+	new /obj/roof/cistern_tester(locate(1, 5, 1))
+	new /obj/roof/cistern_tester(locate(3, 6, 1))
+	new /obj/roof/cistern_tester(locate(5, 5, 1))
+	sewer_check(C.collection_rate() == 10, "roofs are counted only now and then")
+	C.roofs_counted = -100000
+	sewer_check(C.roof_count() == 2 && C.collection_rate() == 16, "gutters on two roofs within reach add to it ([C.collection_rate()])")
+	for (var/i in 1 to 30)
+		C.last_collection_tick = world.time - 20
+		C.process_interval(2)
+	sewer_check(C.reagents.get_reagent_amount("water") == 16 && C.icon_state == "cistern1", "a minute of rain fills it ([C.reagents.total_volume], [C.icon_state])")
+	C.reagents.add_reagent("water", 1990)
+	sewer_check(C.icon_state == "cistern3", "a full cistern shows full")
+	C.collect_minute()
+	sewer_check(C.reagents.total_volume == 2000, "it never overflows")
+	new /obj/roof/cistern_tester(site)
+	C.roofs_counted = -100000
+	sewer_check(C.collection_rate() == 9, "under a roof it takes in only from the gutters ([C.collection_rate()])")

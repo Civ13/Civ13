@@ -240,6 +240,7 @@ class DefencesTest(unittest.TestCase):
         self.assertIn('for (var/obj/structure/sluice_gate/G in T)', ground)
         self.assertIsNone(re.search(r'(?<![_\w])spawn\(', defences))
         self.assertNotIn('in world', defences)
+        self.assertIn('list("collection_seconds", "last_collection_tick", "roofs", "roofs_counted")', defences)
         dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
         self.assertLess(dme.index('1713\\sewers.dm"'), dme.index('1713\\flood_defences.dm"'))
 
@@ -252,14 +253,16 @@ class DefencesTest(unittest.TestCase):
                 ('sluice gate', '/obj/structure/sluice_gate', 'irrigation'),
                 ('shaduf', '/obj/structure/water_lift/shaduf', 'basic_agriculture'),
                 ('Archimedes screw', '/obj/structure/water_lift/archimedes_screw', 'irrigation'),
-                ('river gauge', '/obj/structure/river_gauge', 'basic_agriculture')):
+                ('river gauge', '/obj/structure/river_gauge', 'basic_agriculture'),
+                ('cistern', '/obj/structure/reagent_dispensers/cistern', 'paved_infrastructure')):
             self.assertRegex(recipes, rf'RECIPE: /material/\w+/,{name},{path},')
             self.assertIn(f'"{path}" = "{node}",', research)
         from PIL import Image
         meta = Image.open(ROOT / 'icons/obj/flood_defences.dmi').info['Description']
         states = {line.split('"')[1] for line in meta.splitlines() if line.startswith('state = ')}
         for state in ('stilts', 'plinth', 'sluice_gate', 'sluice_gate_open', 'shaduf', 'shaduf_use',
-                      'archimedes_screw', 'archimedes_screw_use', 'river_gauge'):
+                      'archimedes_screw', 'archimedes_screw_use', 'river_gauge',
+                      'cistern0', 'cistern1', 'cistern2', 'cistern3'):
             self.assertIn(state, states)
 
 

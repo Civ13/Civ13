@@ -1957,7 +1957,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/storage/envelope" = "papermaking",
 		"/obj/structure/filingcabinet" = "papermaking",
 		"/obj/structure/filingcabinet/filingcabinet" = "papermaking",
-		// --- paved_infrastructure (4) ---
+		// --- paved_infrastructure (5) ---
+		"/obj/structure/reagent_dispensers/cistern" = "paved_infrastructure",
 		"/obj/covers/road" = "paved_infrastructure",
 		"/obj/covers/roads/cobble" = "paved_infrastructure",
 		"/obj/covers/roads/modern" = "paved_infrastructure",

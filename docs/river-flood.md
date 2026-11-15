@@ -224,7 +224,13 @@ server being down counts too. Saved: pump `on` and `fuel`, `sludge`, septic
   reads the reach's stage against the bank (the tile's effective threshold)
   and the reach's high-water mark on examine.
 
-Saved: the gate's `open`.
+- **Cistern** (10 stone, Paved Infrastructure): a 2000-unit water tank
+  drawn from with a bucket. On the object scheduler like a rain barrel, each
+  minute of rain at its tile puts in 10 from the open sky (none when roofed)
+  plus 3 per roofed tile within 2 tiles, counted at most every 5 minutes.
+  No catch-up after lag or downtime.
+
+Saved: the gate's `open` and the cistern's water.
 
 ## Saving
 
