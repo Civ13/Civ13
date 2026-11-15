@@ -1166,6 +1166,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/oilwell/offshore" = "combustion",
 		"/obj/structure/refinery" = "combustion",
 		"/obj/structure/refinery/biofuel" = "combustion",
+		"/obj/structure/train_car_kit/loco_diesel" = "combustion",
 		// The bakelizer turns crude petroleum into plastic, so it belongs with the
 		// refineries in the Main tree. Under the specialist Tailoring tree
 		// (Synthetic Fabrics) factionless players could never unlock it.
@@ -1394,6 +1395,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/barricade/antitank" = "field_artillery",
 		"/obj/structure/cannon/modern" = "field_artillery",
 		"/obj/structure/train_car_kit/railgun" = "field_artillery",
+		"/obj/structure/train_car_kit/loco_armored" = "field_artillery",
 		"/obj/structure/trains/locomotive/coal/armored" = "field_artillery",
 		// --- field_defenses (14) ---
 		"/obj/item/weapon/beartrap" = "iron_tools",
@@ -2090,6 +2092,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/rail_warehouse" = "rail_steam",
 		"/obj/structure/train_car_kit" = "rail_steam",
 		"/obj/structure/train_car_kit/coach" = "rail_steam",
+		"/obj/structure/train_car_kit/loco_steam" = "rail_steam",
 		"/obj/item/stack/rail_lengths" = "rail_steam",
 		"/obj/item/stack/rail_sleepers" = "rail_steam",
 		"/obj/structure/rails/rotate" = "rail_steam",

@@ -25,7 +25,8 @@ heading, the rail tile and the tile right of it.
   tile. Not displayed yet: showing them belongs to the train roof riding work.
 - `loco_<steam|diesel|armored>_<1-4><l|c|r>` and `roof_loco_<variant>_<l|c|r>`:
   3x4 locomotive bodies and their cab roofs (steam and armoured cab on
-  segment 3, diesel cab on segment 1). Not wired to a locomotive type yet.
+  segment 3, diesel cab on segment 1), used by the heavy locomotives
+  ([trains.md](trains.md#heavy-locomotives)).
 
 ## Shape
 

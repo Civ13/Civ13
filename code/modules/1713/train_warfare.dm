@@ -163,7 +163,8 @@
 
 /obj/structure/trains/locomotive/coal/armored/New()
 	..()
-	overlays += image('icons/obj/vehicles/train_platforms.dmi', "loco_armor")
+	if (!body_kind)
+		overlays += image('icons/obj/vehicles/train_platforms.dmi', "loco_armor")
 
 /obj/structure/trains/locomotive/coal/armored/ex_act(severity)
 	var/damage = 0
