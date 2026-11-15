@@ -16,6 +16,13 @@
 /proc/daylight_lum(window_coeff = 1)
 	return time_of_day2luminosity[time_of_day] * window_coeff
 
+// BYOND only shows a dark turf (luminosity 0) within the viewer's see_in_dark,
+// so native visibility must count daylight even when the client draws it.
+// Without daylight in the mask, every daylit tile beyond see_in_dark was sent
+// as unseen: a climber's or Look into Distance's far view came out black.
+/proc/daylight_reveals_turfs()
+	return time_of_day2luminosity[time_of_day] > 0
+
 /atom/movable/lighting_overlay
 	name			 = ""
 
@@ -35,6 +42,8 @@
 
 	var/needs_update = FALSE
 	var/TOD = "Midday"
+	// TRUE when a light source (not daylight) reaches one of the corners.
+	var/tmp/light_lit = FALSE
 	// The committed matrix lives in the shared appearance (color); a private
 	// last_color copy per overlay cost about 500 bytes times ~350k Gaia turfs.
 	var/tmp/color_committed = FALSE
@@ -199,7 +208,10 @@
 	if (L.len >= 20)
 		L[20] = client_tint ? T.get_window_coeff() : 1
 
-	var/new_luminosity = (anylums > 0)
+	light_lit = anylums > 0
+	// With daylight on the client the matrix leaves it out, but the turf is
+	// still lit for BYOND's own sight (daylight_reveals_turfs).
+	var/new_luminosity = light_lit || (client_tint && daylight_reveals_turfs())
 
 	// Check against last values for early return (the committed matrix in color)
 	var/list/last_color = color_committed ? color : null
