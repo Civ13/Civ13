@@ -1684,6 +1684,7 @@ SUITES = {
             'code/_onclick/hud/base_screen_objects.dm',
             'code/game/mob/living/carbon/human/human_life.dm',
             'code/game/mob/living/carbon/human/human_needs.dm',
+            'code/game/mob/living/carbon/human/mood_living.dm',
             'code/game/mob/living/carbon/human/human_stats.dm',
             'code/modules/reagents/Chemistry-Reagents.dm',
             'code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Toxins.dm',
@@ -1714,6 +1715,7 @@ SUITES = {
             'code/_onclick/hud/base_screen_objects.dm',
             'code/game/mob/living/carbon/human/human_life.dm',
             'code/game/mob/living/carbon/human/human_needs.dm',
+            'code/game/mob/living/carbon/human/mood_living.dm',
             'code/game/mob/living/carbon/human/human_stats.dm',
             'code/modules/reagents/Chemistry-Reagents.dm',
             'code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Toxins.dm',
@@ -1730,6 +1732,7 @@ SUITES = {
                          'code/_onclick/hud/base_screen_objects.dm',
                          'code/game/mob/living/carbon/human/human_life.dm',
                          'code/game/mob/living/carbon/human/human_needs.dm',
+                         'code/game/mob/living/carbon/human/mood_living.dm',
                          'code/game/mob/living/carbon/human/human_stats.dm')},
     # Only stdlib source contracts; the shared DM inputs stay unmapped so their
     # existing all-suite fallback and other owners' coverage remain intact.
