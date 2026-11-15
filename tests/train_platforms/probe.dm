@@ -4,7 +4,7 @@
 /world
 	hub = ""
 	hub_password = ""
-	maxx = 70
+	maxx = 85
 	maxy = 26
 	maxz = 1
 	turf = /turf/floor/dirt
@@ -473,9 +473,15 @@ var/global/platform_probe_runtime_error = FALSE
 	return TRUE
 
 /proc/platform_heavy_run()
-	for (var/x in list(62, 66))
-		for (var/y in 2 to 25)
-			platform_track(x, y, NORTH)
+	for (var/y in 2 to 25)
+		platform_track(62, y, NORTH)
+	// The diesel's line turns east; the armored engine stands on a spur.
+	for (var/y in 2 to 18)
+		platform_track(66, y, NORTH)
+	for (var/x in 67 to 80)
+		platform_track(x, 18, EAST)
+	for (var/y in 2 to 10)
+		platform_track(72, y, NORTH)
 	// Steam: boiler in front, cab third, bunker last.
 	var/obj/structure/trains/locomotive/coal/heavy/E = platform_car("loco_steam", 62, 12, NORTH)
 	var/list/body = istype(E) ? platform_segments(E.connected) : list()
@@ -537,8 +543,14 @@ var/global/platform_probe_runtime_error = FALSE
 	platform_check("diesel/steps", platform_step(DL, 2) == 2 && DL.loc == platform_turf(66, 14) && heavy_parts_placed(DL) && platform_parts_placed(hood))
 	platform_check("diesel/cab_load_rides", engineer.loc == platform_turf(66, 14) && cab_crate.loc == platform_turf(65, 14) && walk_crate.loc == platform_turf(67, 12))
 
+	var/curve_steps = platform_step(DL, 30)
+	var/obj/structure/trains/platform/hood_end = hood[3]
+	platform_check("diesel/rounds_curve", curve_steps == 18 && DL.loc == platform_turf(80, 18) && DL.dir == EAST && hood_end.loc == platform_turf(77, 18) && hood_end.dir == EAST && heavy_parts_placed(DL) && platform_parts_placed(hood))
+	// The crate on the inside of the curve slips one section back, and stays on a walkway.
+	platform_check("diesel/load_rounds_curve", engineer.loc == platform_turf(80, 18) && cab_crate.loc == platform_turf(80, 19) && walk_crate.loc == platform_turf(77, 17))
+
 	// Armored: plate over everything, bulletproof cab doors.
-	var/obj/structure/trains/locomotive/coal/armored/heavy/AL = platform_car("loco_armored", 66, 24, NORTH)
+	var/obj/structure/trains/locomotive/coal/armored/heavy/AL = platform_car("loco_armored", 72, 8, NORTH)
 	var/list/plated = istype(AL) ? platform_segments(AL.connected) : list()
 	var/doors = 0
 	var/obj/structure/trains/platform/armored_cab = plated.len == 3 ? plated[2] : null

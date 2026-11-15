@@ -374,6 +374,14 @@ var/global/train_platform_plan_time = -1
 				var/mob/M = AM
 				if (M.client)
 					M.update_vision_cone()
+	// On the inside of a curve a load can end up on the rail tile; a locomotive's
+	// solid hood puts it back on the walkway beside it.
+	if (density)
+		for (var/atom/movable/AM in cargo)
+			if (cargo[AM] == 2 && AM.loc == newloc)
+				var/turf/aside = new_tiles[3] || new_tiles[1]
+				if (aside)
+					AM.persistence_set_loc(aside)
 	place_parts(newloc, newdir)
 	train_deck_clearance(cargo, OPPOSITE_DIR(newdir))
 	if (connected && !train_solo_move)

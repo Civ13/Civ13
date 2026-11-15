@@ -258,9 +258,18 @@
 // What rides in a walk-in cab at the head: atom -> tile 1..3.
 /obj/structure/trains/locomotive/proc/cab_cargo(list/tiles)
 	var/list/cargo = list()
+	// On a tight curve a cab side tile is also a tile of a section behind;
+	// what stands there stays with that section.
+	var/list/behind = list()
+	var/obj/structure/trains/car = connected
+	for (var/n in 1 to 3)
+		if (!istype(car, /obj/structure/trains/platform))
+			break
+		behind += train_platform_tiles(car.loc, car.dir)
+		car = car.connected
 	for (var/i in 1 to 3)
 		var/turf/T = tiles[i]
-		if (!T || (i != 2 && train_centre_of_other(T, src)))
+		if (!T || (i != 2 && ((T in behind) || train_centre_of_other(T, src))))
 			continue
 		for (var/atom/movable/AM in T)
 			if (AM.loc == T && train_platform_carries(AM))

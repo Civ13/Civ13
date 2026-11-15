@@ -385,7 +385,9 @@ var/global/train_solo_move = FALSE
 			TF.health -= round(5 * (impact - 1))
 		return TRUE
 	for (var/obj/O in tgtt)
-		if (O.density && !istype(O, /obj/structure/trains) && !istype(O, /obj/structure/rails))
+		// Deck and body tiles are the clearance check's business (train_consist_obstacle):
+		// on a curve the leading car's own side tile lies on the track ahead.
+		if (O.density && !istype(O, /obj/structure/trains) && !istype(O, /obj/structure/rails) && !istype(O, /obj/structure/train_part))
 			automovement = FALSE
 			if (impact < 0.5)
 				visible_message("<span class = 'warning'>\The [src] bumps into \the [O] and stops.</span>")
