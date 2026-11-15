@@ -54,39 +54,41 @@ GRASS, DIRT, SAND = "/turf/floor/grass", "/turf/floor/dirt", "/turf/floor/beach/
 
 # Per biome: the area (its climate), ground swaps for grass, dirt and sand,
 # the trees that replace generated ones, the generator's biome mix and climate.
+# tree_share is the chance a lone generated tree stays; grove_density is the
+# share of tiles that hold a tree deep inside a generated grove (see thin_trees).
 BIOME_SKINS = {
     "ICE_SHEET": dict(area="/area/caribbean/nomads/ice",
                       ground={GRASS: "/turf/floor/winter", DIRT: "/turf/floor/dirt/winter", SAND: "/turf/floor/winter"},
-                      trees=["/obj/structure/wild/tree/live_tree/pine"], tree_share=0.15,
+                      trees=["/obj/structure/wild/tree/live_tree/pine"], tree_share=0.15, grove_density=0.08,
                       mix={"STEPPE": 100}, moisture=[20, 50], temperature=[-40, -5]),
     "TUNDRA": dict(area="/area/caribbean/nomads/tundra",
                    ground={GRASS: "/turf/floor/winter/grass", DIRT: "/turf/floor/dirt/winter"},
-                   trees=["/obj/structure/wild/tree/live_tree/pine"], tree_share=0.35,
+                   trees=["/obj/structure/wild/tree/live_tree/pine"], tree_share=0.35, grove_density=0.15,
                    mix={"STEPPE": 70, "TEMPERATE": 30}, moisture=[20, 60], temperature=[-25, 10]),
     "BOREAL": dict(area="/area/caribbean/nomads/taiga", ground={},
-                   trees=["/obj/structure/wild/tree/live_tree/pine"], tree_share=1.0,
+                   trees=["/obj/structure/wild/tree/live_tree/pine"], tree_share=1.0, grove_density=0.55,
                    mix={"TEMPERATE": 70, "STEPPE": 30}, moisture=[40, 80], temperature=[-15, 18]),
     "TEMPERATE_FOREST": dict(area="/area/caribbean/nomads/forest", ground={},
-                             trees=["/obj/structure/wild/tree/live_tree"], tree_share=1.0,
+                             trees=["/obj/structure/wild/tree/live_tree"], tree_share=1.0, grove_density=0.5,
                              mix={"TEMPERATE": 80, "LUSH": 20}, moisture=[45, 85], temperature=[0, 28]),
     "GRASSLAND": dict(area="/area/caribbean/nomads", ground={},
-                      trees=["/obj/structure/wild/tree/live_tree"], tree_share=0.4,
+                      trees=["/obj/structure/wild/tree/live_tree"], tree_share=0.4, grove_density=0.15,
                       mix={"STEPPE": 60, "TEMPERATE": 40}, moisture=[25, 60], temperature=[0, 30]),
     "DESERT": dict(area="/area/caribbean/nomads/desert",
                    ground={GRASS: "/turf/floor/beach/sand/desert", DIRT: "/turf/floor/dirt/dust",
                            SAND: "/turf/floor/beach/sand/desert"},
-                   trees=["/obj/structure/wild/tree/cactus", "/obj/structure/wild/palm"], tree_share=0.3,
+                   trees=["/obj/structure/wild/tree/cactus", "/obj/structure/wild/palm"], tree_share=0.3, grove_density=0.1,
                    mix={"DESERT": 70, "ARID": 30}, moisture=[0, 25], temperature=[15, 45]),
     "SAVANNA": dict(area="/area/caribbean/nomads/forest/savanna", ground={DIRT: "/turf/floor/dirt/dust"},
-                    trees=["/obj/structure/wild/tree/live_tree"], tree_share=0.35,
+                    trees=["/obj/structure/wild/tree/live_tree"], tree_share=0.35, grove_density=0.12,
                     mix={"ARID": 50, "STEPPE": 50}, moisture=[20, 50], temperature=[18, 38]),
     "RAINFOREST": dict(area="/area/caribbean/nomads/forest/Jungle",
                        ground={GRASS: "/turf/floor/grass/jungle", DIRT: "/turf/floor/dirt/jungledirt"},
                        trees=["/obj/structure/wild/jungle", "/obj/structure/wild/largejungle", "/obj/structure/wild/palm"],
-                       tree_share=1.0, mix={"LUSH": 80, "TEMPERATE": 20}, moisture=[70, 100], temperature=[20, 35]),
+                       tree_share=1.0, grove_density=0.7, mix={"LUSH": 80, "TEMPERATE": 20}, moisture=[70, 100], temperature=[20, 35]),
     "SWAMP": dict(area="/area/caribbean/nomads/forest/Jungle",
                   ground={GRASS: "/turf/floor/grass/jungle", DIRT: "/turf/floor/dirt/jungledirt"},
-                  trees=["/obj/structure/wild/jungle", "/obj/structure/wild/palm"], tree_share=0.7,
+                  trees=["/obj/structure/wild/jungle", "/obj/structure/wild/palm"], tree_share=0.7, grove_density=0.35,
                   mix={"LUSH": 100}, moisture=[80, 100], temperature=[15, 32]),
 }
 # The slot world's map metadata (code/modules/persistence/expedition_land.dm).
@@ -236,6 +238,66 @@ def verify_skin_types(catalog_root=None):
     return True
 
 
+# Groves: the generator fills every eligible tile of a grove, so groves came out
+# as solid, hard-edged blocks. thin_trees keeps a tree with a chance that aims
+# for the biome's grove_density deep inside a grove, falls off towards the edge
+# (ragged borders) and drops in clearings, while lone trees keep tree_share.
+GROVE_RADIUS = 3
+CLEARING_CELLS = (11, 4)        # lattice sizes in tiles of the two clearing octaves
+CLEARING_EDGE = (0.22, 0.42)     # clearing noise below the first is open ground
+
+
+def _smooth(lo, hi, v):
+    v = min(1.0, max(0.0, (v - lo) / (hi - lo)))
+    return v * v * (3 - 2 * v)
+
+
+def _clearing_noise(seed, x, y, cache):
+    total = 0.0
+    for octave, (cell, weight) in enumerate(zip(CLEARING_CELLS, (0.7, 0.3))):
+        gx, gy = x // cell, y // cell
+        fx, fy = _smooth(0, 1, (x % cell) / cell), _smooth(0, 1, (y % cell) / cell)
+        corners = []
+        for cx, cy in ((gx, gy), (gx + 1, gy), (gx, gy + 1), (gx + 1, gy + 1)):
+            key = (octave, cx, cy)
+            if key not in cache:
+                cache[key] = _share(seed, cx, cy, "clearing-%d" % octave)
+            corners.append(cache[key])
+        top = corners[0] + (corners[1] - corners[0]) * fx
+        bottom = corners[2] + (corners[3] - corners[2]) * fx
+        total += weight * (top + (bottom - top) * fy)
+    return total
+
+
+def thin_trees(seed, spots, skin):
+    """Of the generated tree tiles spots, the set that keeps a tree."""
+    if not spots:
+        return set()
+    xs, ys = [x for x, _ in spots], [y for _, y in spots]
+    x0, y0, r = min(xs), min(ys), GROVE_RADIUS
+    w, h = max(xs) - x0 + 1 + 2 * r, max(ys) - y0 + 1 + 2 * r
+    sums = [[0] * (w + 1) for _ in range(h + 1)]
+    for x, y in spots:
+        sums[y - y0 + r + 1][x - x0 + r + 1] = 1
+    for j in range(1, h + 1):
+        row, above, run = sums[j], sums[j - 1], 0
+        for i in range(1, w + 1):
+            run += row[i]
+            row[i] = run + above[i]
+    window = (2 * r + 1) ** 2
+    cache = {}
+    kept = set()
+    for x, y in spots:
+        i, j = x - x0 + r, y - y0 + r
+        local = (sums[j + r + 1][i + r + 1] - sums[j - r][i + r + 1] - sums[j + r + 1][i - r] + sums[j - r][i - r]) / window
+        grove = min(skin["tree_share"], skin["grove_density"] * (0.35 + 0.65 * _smooth(0.4, 0.95, local))
+                    * _smooth(*CLEARING_EDGE, _clearing_noise(seed, x, y, cache)))
+        inside = _smooth(0.15, 0.6, local)
+        if _share(seed, x, y, "tree") < skin["tree_share"] * (1 - inside) + grove * inside:
+            kept.add((x, y))
+    return kept
+
+
 def reskin(doc, layout, t):
     """Gives the surface layer the biome's area, ground and trees. Returns
     counts of what changed."""
@@ -243,6 +305,8 @@ def reskin(doc, layout, t):
     z = doc["layers"]["SURFACE"]["native_z"]
     generated_trees = set(TREES.values())
     counts = {"trees kept": 0, "trees removed": 0, "ground swapped": 0}
+    kept = thin_trees(t["seed"], [(x, y) for (x, y, level), recipe in layout.items() if level == z
+                                  and any(atom.split("{")[0] in generated_trees for atom in recipe.split(","))], skin)
     for (x, y, level), recipe in list(layout.items()):
         if level != z:
             continue
@@ -256,7 +320,7 @@ def reskin(doc, layout, t):
                 out.append(skin["ground"][name])
                 counts["ground swapped"] += 1
             elif name in generated_trees:
-                if _share(t["seed"], x, y, "tree") < skin["tree_share"]:
+                if (x, y) in kept:
                     trees = skin["trees"]
                     out.append(trees[int(_share(t["seed"], x, y, "kind") * len(trees)) % len(trees)])
                     counts["trees kept"] += 1

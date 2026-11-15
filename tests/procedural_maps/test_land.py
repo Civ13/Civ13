@@ -63,6 +63,26 @@ class LandConfigTests(unittest.TestCase):
         self.assertLess(a["vegetation"]["suitable_site_density_pct"][1], b["vegetation"]["suitable_site_density_pct"][0])
 
 
+class ThinTreesTests(unittest.TestCase):
+    def test_groves_are_thinned_with_ragged_edges_and_lone_trees_keep_their_share(self):
+        skin = land.BIOME_SKINS["BOREAL"]
+        grove = [(x, y) for x in range(1, 61) for y in range(1, 61)]
+        lone = [(200 + 9 * i, 200 + 7 * (i % 5)) for i in range(60)]
+        kept = land.thin_trees("test:thin", grove + lone, skin)
+        self.assertEqual(kept, land.thin_trees("test:thin", grove + lone, skin), "the same seed thins the same way")
+        core = [p for p in grove if 10 < p[0] <= 50 and 10 < p[1] <= 50]
+        rim = [p for p in grove if p[0] in (1, 60) or p[1] in (1, 60)]
+        core_share = sum(p in kept for p in core) / len(core)
+        self.assertLess(core_share, 0.7, "a grove is no longer a solid block")
+        self.assertGreater(core_share, 0.2, "a grove still reads as forest")
+        self.assertLess(sum(p in kept for p in rim) / len(rim), core_share, "grove edges are thinner than the middle")
+        self.assertTrue(all(p in kept for p in lone), "lone trees in a forest biome stay")
+
+    def test_every_skin_has_a_grove_density_no_higher_than_its_tree_share(self):
+        for name, skin in land.BIOME_SKINS.items():
+            self.assertTrue(0 < skin["grove_density"] <= skin["tree_share"] <= 1, name)
+
+
 class BuildLandTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
