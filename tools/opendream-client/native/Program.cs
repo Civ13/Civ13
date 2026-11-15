@@ -207,13 +207,20 @@ public static class Program {
         var server = verified.Status;
         output.WriteLine($"Connecting to {server.Name} using BYOND {RequiredByond().Version} on port {server.Port}" +
             (ticket == null ? "." : ", signed in with Discord."));
+        var voiceExe = OperatingSystem.IsWindows() ? VoiceChat.Installed() : null;
+        var voiceKey = voiceExe == null ? null : VoiceChat.NewKey();
+        Process game;
         try {
-            return Process.Start(ServerCatalog.NativeStart(verified, byond, RequiredByond(),
-                path => OperatingSystem.IsWindows() && desktop.Matches(path, RequiredByond()), ticket: ticket))
+            game = Process.Start(ServerCatalog.NativeStart(verified, byond, RequiredByond(),
+                path => OperatingSystem.IsWindows() && desktop.Matches(path, RequiredByond()), ticket: ticket, voiceKey: voiceKey))
                 ?? throw new IOException("BYOND client did not start.");
         } catch (System.ComponentModel.Win32Exception e) {
             throw new IOException("BYOND client could not start.", e);
         }
+        // The voice app watches the game and closes with it; the launcher keeps no handle.
+        if (voiceExe != null && voiceKey != null)
+            VoiceChat.Start(verified, voiceExe, game, voiceKey, output)?.Dispose();
+        return game;
     }
 
     public static void StartByondPager(string byond) =>

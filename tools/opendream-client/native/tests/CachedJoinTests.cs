@@ -59,6 +59,19 @@ internal static class CachedJoinTests {
                     ServerCatalog.NativeStart(verified, scene.Directory, Civ13.Launcher.Program.RequiredByond(), _ => true, scene.Now, "x&admin=1");
                     throw new Exception("Malformed Discord ticket reached the join link");
                 } catch (IOException) { assertions++; }
+                var voiceKey = VoiceChat.NewKey();
+                Require(VoiceChat.ValidKey(voiceKey) && voiceKey.Length == 43 && voiceKey != VoiceChat.NewKey(), "Voice keys are random and URL-safe");
+                Require(ServerCatalog.NativeStart(verified, scene.Directory, Civ13.Launcher.Program.RequiredByond(), _ => true, scene.Now, ticket, voiceKey)
+                    .ArgumentList.Single() == "byond://72.218.249.221:1714?civ13_ticket=" + ticket + "&civ13_voice=" + voiceKey, "Voice key missing from the join link");
+                Require(ServerCatalog.NativeStart(verified, scene.Directory, Civ13.Launcher.Program.RequiredByond(), _ => true, scene.Now, voiceKey: voiceKey)
+                    .ArgumentList.Single() == "byond://72.218.249.221:1714?civ13_voice=" + voiceKey, "Voice key alone");
+                try {
+                    ServerCatalog.NativeStart(verified, scene.Directory, Civ13.Launcher.Program.RequiredByond(), _ => true, scene.Now, voiceKey: "short&admin=1");
+                    throw new Exception("Malformed voice key reached the join link");
+                } catch (IOException) { assertions++; }
+                var voice = ServerCatalog.VoiceStart(verified, Path.Combine(scene.Directory, "voice", VoiceChat.Executable), 4242);
+                Require(string.Join(" ", voice.ArgumentList) == "--host 72.218.249.221 --port 1714 --watch-pid 4242" && voice.RedirectStandardInput && !voice.ArgumentList.Contains(voiceKey),
+                    "Voice app gets the verified address and port, and its key only on stdin");
                 launches++; return Task.CompletedTask;
             });
             return launches;

@@ -2220,6 +2220,8 @@ SUITES = {
         'paths': ('tests/firefighting/', 'code/modules/1713/firefighting.dm', 'code/modules/1713/firefighting_water.dm', 'code/modules/1713/firefighting_hook.dm', 'code/modules/1713/firefighting_pump.dm', 'code/game/objects/items/weapons/tools.dm',
                   'code/modules/1713/oil_fires.dm', 'icons/obj/firefighting.dmi',
                   'tests/sprites/create_firefighting.py')},
+    'voice_chat': {'files': ('tests/voice_chat/test_voice_chat.py',),
+        'paths': ('tests/voice_chat/', 'code/modules/voice/')},
     'signal_fires': {'files': ('tests/signal_fires/test_signal_fires.py',),
         'paths': ('tests/signal_fires/', 'code/modules/1713/signal_fires.dm',
                   'icons/effects/signal_smoke.dmi', 'tests/sprites/create_signal_smoke.py')},

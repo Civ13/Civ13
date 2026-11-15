@@ -137,6 +137,7 @@
 	// A launcher join link carries a one-use Discord sign-in ticket; keep it
 	// before the topic is dropped (code/modules/accounts/discord_accounts.dm).
 	account_ticket = account_ticket_from_topic(TopicData)
+	var/voice_topic_key = voice_key_from_topic(TopicData) // code/modules/voice/voice_chat.dm
 	TopicData = null							//Prevent calls to client.Topic from connect
 
 	if (!(connection in list("seeker", "web")))					//Invalid connection type.
@@ -185,6 +186,9 @@
 
 	if (account_ticket)
 		account_signin.redeem(src) // returns at once; see set waitfor there
+
+	if (voice_topic_key)
+		voice_chat.attach(src, voice_topic_key)
 
 	if (byond_version < REAL_MIN_CLIENT_VERSION)		//Out of date client.
 		to_chat(src, "<span class = 'danger'><font size = 4>Please upgrade to BYOND [REAL_MIN_CLIENT_VERSION] to play.</font></span>")
@@ -338,6 +342,7 @@
 			paired_move.lifecycle_stop("controller_deleted", TRUE)
 	if (player_help_service)
 		player_help_service.reset_conversation(src)
+	voice_chat.detach(src)
 	if (autofire)
 		qdel(autofire)
 		autofire = null

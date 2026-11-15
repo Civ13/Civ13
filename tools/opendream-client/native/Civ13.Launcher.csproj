@@ -27,6 +27,7 @@
     <Compile Include="TopicPacing.cs" />
     <Compile Include="Connection.cs" />
     <Compile Include="ServerCatalog.cs" />
+    <Compile Include="VoiceChat.cs" />
     <Compile Include="ServerStatus.cs" />
     <Compile Include="HostStatus.cs" />
     <Compile Include="ServerBrowser.cs" />
