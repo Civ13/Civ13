@@ -74,6 +74,22 @@ With a fitting, one drawing fills the whole container (`draw_into()`, with the
 same foul-water rule as the sink code) and water at any depth can be drunk
 from the hands.
 
+## Taking a well apart
+
+Every well can be removed, map-placed and older ones included.
+
+- A hammer on a well takes its fitting down first (8 seconds; half the
+  materials back), then, after a confirmation, breaks up the lining (20
+  seconds; 3 stone or 2 wood back). `well_break_lining()` leaves a bare
+  waterhole of at most 2 spits where the well was dug, or the puddle where it
+  was built over a spring.
+- A shovel fills a bare waterhole in. It refuses on a lined well.
+- A blast at severity 1 fills a well or a waterhole in; at severity 2 it fills
+  a waterhole and half the time knocks a lining out with nothing salvaged.
+- Breaking a lining and filling a hole in are written to the game log with the
+  player and the tile. Deleting the well by any other means takes the fitting
+  with it.
+
 ## Tests
 
 - `python3 tests/ecology_spawning/run_linux.py . tests/river_flow/wells_probe.dm` (native).
