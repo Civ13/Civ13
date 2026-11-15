@@ -70,9 +70,9 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '50b07495b122290c3df5ac5f5df581883927a457'
+WIKI_REVIEWED_REVISION = '1dea06bc7ca1e9de0b8de3584778dc8c7af93322'
 WIKI_REVIEWED_GUIDES = {
-    'guides/Guide_to_Animals.md': ('dbdd9f64009c697282c90bf6d7e157100834ad2ea23f5b76ec03938e816c1083', 'animals dog dogs taming tame mount riding horse carriage'),
+    'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('c62d23a3f26db62be16140ff9a13ea5cb11c16a4f899213cae19a27297477826', 'character skills traits languages'),
     'guides/Guide_to_Peoples_and_Languages.md': ('fd2d7fd795ca8fe2bf1ffe3a4ce9296efde555b23c41a4b357e87d8b7108af07', 'peoples people origin ethnicity language languages learn teach lesson mother tongue translate accent'),
     'guides/Guide_to_Chemistry.md': ('c0c6b91965c12da9574761698cbc7d718d225b54b5ca7916ce598bcee7ba001f', 'chemistry chemicals reactions reagents'),
@@ -86,7 +86,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Fishing.md': ('bf3f53b9baf4a420b44a7621c33a825544255b0581bceff0410708a4016dd001', 'fishing fish rod bait'),
     'guides/Guide_to_Hygiene.md': ('657c1c7ae6e2b7b425255ba7c9449206ff715e8ce422fa28a15700acce240752', 'hygiene clean washing soap detergent laundry'),
     'guides/Guide_to_Leadership.md': ('d8fa16a65959d1c7f632c782de1129a9c6dfade1614a9e55ebcdd92851e972df', 'leadership squad leader officer commander artillery coordinates'),
-    'guides/Guide_to_Medical.md': ('68ca66351fa768b04ed40cdd5a55ea389d24b4524d471d8a593e8d9dd2377543', 'medical heal injury wound surgery'),
+    'guides/Guide_to_Medical.md': ('20b633b5c20b75d38f03bc6eea1a3c2733d32cdb054aa3aa5a7424ad74061f8c', 'medical heal injury wound surgery'),
     'guides/Guide_to_Pollution.md': ('f084e6ca8e6592361aba0dbc37f37d58b3f09bd20686bd067fdecdd71543f7ef', 'pollution polluted soot smog smoke charcoal clean ground growth'),
     'guides/Guide_to_Power.md': ('2cba37d02346964588303f5470f9252424d20bef190e114e3e41a1b86c1e1e41', 'power battery batteries electricity generator'),
     'guides/Guide_to_Radiation.md': ('6b6295a3bb2bf0eb54d559e32a49eb18d512a50bec9366757df81b049e0e8d00', 'radiation radioactive exposure'),
@@ -114,7 +114,7 @@ WIKI_REVIEWED_GUIDES = {
     'gamemodes/Battle_Royale.md': ('18d1e4cf951f943bd7a0f5030c1825bd82a77427349b086842a309e492c4d841', 'battle royale battleroyale'),
     'gamemodes/Gladiators.md': ('36ac7d70edff2c99d78351585450428ad5cd02542b0cc3dfc5c178bca7d1ffb6', 'gladiator gladiators arena imperator custodes medicus'),
     'gamemodes/Prison_Roleplay.md': ('8da37041c99c23ab18012006e8afd8475acdd1485f8cb3eb48d23152f9cfb613', 'prison prisoner guard gulag nkvd'),
-    'guides/Guide_to_Boats.md': ('99432e5457ed1235039f61137d4c5eab470c4ed729eefb24670e90b9c5a0b349', 'boat boats ship sailing sail raft canoe rowing oars anchor swim swimming drown drowning current currents lifejacket naval torpedo torpedoes degaussing minesweeping'),
+    'guides/Guide_to_Boats.md': ('bdd3537886b2d39fddfe9e07474cc46e2b5e924f73382b4b56c7d7baaa79fb83', 'boat boats ship sailing sail raft canoe rowing oars anchor swim swimming drown drowning current currents lifejacket naval torpedo torpedoes degaussing minesweeping'),
     'guides/Guide_to_Aircraft.md': ('062500cdad251ba9e32fa0c4ca1882b4e00f55b9bce8ec7cc8ea47724a0f9c2a', 'aircraft airplane plane planes flying fly flight runway hangar pilot takeoff landing'),
     'guides/Guide_to_Aircraft_Carriers.md': ('3402b1e488a635eb74b172c9d0c2d62038fe192efcd7d12e9b3f5d297c655ce4', 'carrier carriers aircraft carrier flight deck shipyard office arresting wires elevator bunkers'),
     'guides/Guide_to_Races.md': ('46ef1bf361c519e71acbd679119429e838348827e25dbcac27282f67bee51097', 'race races species human humans'),

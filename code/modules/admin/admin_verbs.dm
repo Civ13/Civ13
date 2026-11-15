@@ -28,6 +28,7 @@ var/list/admin_verbs_admin = list(
 	/client/proc/disable_campaign_whitelist,
 	/datum/admins/proc/event_transfer,	//send players to an event region and back, characters kept safe
 	/datum/admins/proc/place_region_trail,	//place an open trail to another land where you stand, ghosts too
+	/datum/admins/proc/send_player_to_region,	//send players or their ship to another region with everything they carry, dry run first
 	/datum/admins/proc/land_status,
 	/datum/admins/proc/player_art,	//see every finished player painting, who painted it, and remove offensive ones	//see and set each land's settlement stage (frontier, colonised, settled)
 	/datum/admins/proc/world_chart_panel,	//see the world chart for boat expeditions and reroll charted lands
@@ -44,6 +45,7 @@ var/list/admin_verbs_admin = list(
 	/client/proc/cmd_admin_restore_research,	//give back research and scholarship lost to a bug, adds only,
 	/client/proc/cmd_admin_create_divine_book,	//write a god's one original book and entrust it to a player,
 	/client/proc/cmd_admin_divine_patron,	//speak as a god: initiate followers, teach invocations, answer prayers,
+	/client/proc/cmd_admin_magic_whitelist,	//who may follow a god and learn magic on persistent worlds (shared list),
 	/client/proc/invisimin,				//allows our mob to go invisible/visible,
 	/datum/admins/proc/toggleenter,		//toggles whether people can join the current game,
 	/datum/admins/proc/toggleguests,	//toggles whether guests can join the current game,

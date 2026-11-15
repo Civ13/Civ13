@@ -153,7 +153,7 @@ SERVER 192.210.161.174:23999
 DONATIONURL https://www.patreon.com/1713ad
 
 ## rules address
-RULESURL http://civ13.com/wiki/index.php?title=Rules
+RULESURL https://civ13.github.io/civ13-wiki/rules/Rules.html
 
 ## Community links shown separately in the BYOND hub (absolute HTTP(S) URLs).
 ## discord address

@@ -23,7 +23,11 @@ headless and checks `result.json`:
   its water, a prop barrel packs, and a dressed body comes back dead, named
   and dressed. A deck record holding them passes its own check. An animal a
   player plays, a helm or vehicle as cargo, a barrel as a worn item, a barrel
-  inside an item and a forged body are refused.
+  inside an item and a forged body are refused, as are admin and map
+  structures (an engine, an animal spawner, a money printer, a dock) and a
+  barrel holding more than 10000 units. A wreck rebuilt without its
+  creatures (a failed crossing puts back the ones that waited) makes none,
+  and a display case emptied before it is deleted leaves no copy behind.
 
 ```sh
 source ~/byond-516.1688/byond/bin/byondsetup

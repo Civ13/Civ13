@@ -70,7 +70,8 @@ var/global/list/divine_invocation_names = list(
 	return null
 
 /mob/living/human/proc/divine_refresh_verbs()
-	if (istext(divine_patron) && length(divine_patron))
+	// Off the magic whitelist (magic_whitelist.dm) the patron stays saved but Beseech goes away.
+	if (istext(divine_patron) && length(divine_patron) && magic_allowed())
 		verbs |= /mob/living/human/proc/divine_beseech
 	else
 		verbs -= /mob/living/human/proc/divine_beseech
@@ -155,6 +156,8 @@ var/global/list/divine_invocation_names = list(
 /mob/living/human/proc/divine_problem(spell)
 	if (!istext(divine_patron) || !length(divine_patron))
 		return "You have no one to pray to."
+	if (!magic_allowed())
+		return "No answer comes."
 	if (stat != CONSCIOUS || incapacitated())
 		return "You can't pray like this."
 	if (map && map.persistence && (!persistence_player_restore_ready || persistence_save_in_progress || persistence_active_operation))

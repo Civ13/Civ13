@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AssemblyName>Civ13</AssemblyName>
-    <Version>1.5.23</Version>
+    <Version>1.5.25</Version>
     <Company>Civ13</Company>
     <Product>Civ13 Launcher</Product>
     <Description>Portable Civ13 launcher with verified client and launcher updates</Description>
@@ -35,6 +35,8 @@
     <Compile Include="LocalDreamDaemon.cs" />
 
     <Compile Include="LocalHosting.cs" />
+    <Compile Include="RegionPlayers.cs" />
+    <Compile Include="MagicWhitelist.cs" />
     <Compile Include="HostBoard.cs" />
     <Compile Include="HostSettings.cs" />
     <Compile Include="LocalBot.cs" />

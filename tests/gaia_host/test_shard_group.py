@@ -1002,6 +1002,68 @@ class ShardGroupTests(unittest.TestCase):
             shard_group.group_epoch(group, '2026', self.machine)
         self.assertEqual([1720], asked)
 
+    def test_players_and_send_players_ask_the_running_region(self):
+        # Send Player to Region from the launcher (region_admin_send.dm): a dry run by default.
+        group = self.write_group()
+        shard_group.setup(group, self.machine)
+        asked = []
+
+        def query(port, token, action='status', operation=None, session=None, extra=None):
+            asked.append((port, action, extra))
+            if action == 'players':
+                return {'ok': True, 'players': [{'ckey': 'ann', 'name': 'Ann'}], 'recent': [], 'running': False, 'destinations': {'The Deep (up)': 'deep'}}
+            return {'ok': True, 'send': 'dry_run' if extra['dry_run'] == '1' else 'started', 'rows': [{'ckey': 'ann', 'ok': True}]}
+        self.machine.query = query
+        with self.assertRaisesRegex(shard_group.Refused, 'not running'):
+            shard_group.region_players(group, 'gaia', self.machine)
+        self.machine.up.add(1720)
+        self.assertEqual('ann', shard_group.region_players(group, 'gaia', self.machine)['players'][0]['ckey'])
+        result = shard_group.send_players(group, 'gaia', 'ann,Bob', 'deep', platform=self.machine)
+        self.assertEqual('dry_run', result['send'])
+        self.assertEqual((1720, 'send_players', {'ckeys': 'ann,Bob', 'to': 'deep', 'landing': 'shore', 'dry_run': '1'}), asked[-1])
+        result = shard_group.send_players(group, 'gaia', 'ann', 'deep', 'coords', '10,20,1', dry_run=False, platform=self.machine)
+        self.assertEqual('started', result['send'])
+        self.assertEqual({'ckeys': 'ann', 'to': 'deep', 'landing': 'coords', 'dry_run': '0', 'at': '10,20,1'}, asked[-1][2])
+        shard_group.send_players(group, 'gaia', 'ann', 'deep', 'arrival', ship=True, platform=self.machine)
+        self.assertEqual('1', asked[-1][2]['ship'])
+        # Bad requests never reach the world.
+        count = len(asked)
+        for args in (('ann', 'gaia', 'shore', None), ('ann', 'atlantis', 'shore', None), ('ann', 'deep', 'coords', None),
+                     ('ann', 'deep', 'shore', '1,2,3'), ('ann', 'deep', 'coords', '1,2'), ('a&b=c', 'deep', 'shore', None),
+                     ('ann', 'deep', 'sky', None)):
+            with self.assertRaises(shard_group.Refused):
+                shard_group.send_players(group, 'gaia', *args, platform=self.machine)
+        self.assertEqual(count, len(asked))
+        # An older world without the request says so instead of answering nothing.
+        self.machine.query = lambda *a, **k: {'ok': False, 'error': 'malformed_request'}
+        with self.assertRaisesRegex(shard_group.Refused, 'older build'):
+            shard_group.send_players(group, 'gaia', 'ann', 'deep', platform=self.machine)
+
+    def test_magic_whitelist_is_one_shared_file(self):
+        # code/modules/divine/magic_whitelist.dm: every region reads the mainland's (or gate's) SQL file.
+        group = self.write_group()
+        path = shard_group.magic_whitelist_path(group)
+        self.assertEqual(shard_group.region_dir(group, group['mainland']) / 'SQL' / 'magic_whitelist.txt', path)
+        self.assertEqual([], shard_group.magic_whitelist(group)['keys'])
+        result = shard_group.magic_whitelist(group, add='Ann,bob_2, Cid')
+        self.assertEqual(['ann', 'bob2', 'cid'], result['keys'])
+        self.assertEqual(['ann', 'bob2', 'cid'], result['added'])
+        text = path.read_text(encoding='utf-8')
+        self.assertTrue(text.startswith(shard_group.MAGIC_WHITELIST_HEADER))
+        self.assertEqual(['ann', 'bob2', 'cid'], shard_group.magic_whitelist_keys(text))
+        # Hand edits with comments and Windows line endings still read.
+        path.write_text('# staff\r\nAnn # first\r\nzed\r\nann\r\n', encoding='utf-8')
+        result = shard_group.magic_whitelist(group, add='zed', remove='ANN,nobody')
+        self.assertEqual(['zed'], result['keys'])
+        self.assertEqual(([], ['ann']), (result['added'], result['removed']))
+        for bad in ('a&b', '', 'x' * 40, ','.join(['k%d' % i for i in range(21)])):
+            with self.assertRaises(shard_group.Refused):
+                shard_group.magic_whitelist(group, add=bad)
+        self.assertEqual(['zed'], shard_group.magic_whitelist(group)['keys'])
+        # Behind the relay the gate's file is the shared one.
+        group['relay_port'], group['gate'] = 1790, 'deep'
+        self.assertEqual(shard_group.region_dir(group, 'deep') / 'SQL' / 'magic_whitelist.txt', shard_group.magic_whitelist_path(group))
+
     def test_status_shows_each_running_region_epoch(self):
         group = self.write_group()
         shard_group.setup(group, self.machine)

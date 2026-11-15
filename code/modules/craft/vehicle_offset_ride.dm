@@ -13,8 +13,9 @@
 // movementloop() and calls it for the tile steps.
 //
 // Phase 1b: bicycles pedal by pixels on their own schedule (stamina and
-// ground are still paid per tile, in their do_move), and rafts and dugouts
-// paddle by pixels while a direction key is held, then drift to a stop.
+// ground are still paid per tile, in their do_move), rafts and dugouts
+// paddle by pixels while a direction key is held, then drift to a stop, and
+// carriages roll by pixels with their team, passengers and hitched cart.
 // ============================================================
 
 /obj/structure/vehicle
@@ -22,6 +23,7 @@
 	var/tmp/datum/vehicle_offset/single/offset_mover = null
 	var/tmp/offset_coast = 0                        // Pixels per tick still rolling after the throttle is off.
 	var/tmp/offset_last_tick = 0                    // world.time of the last pixel tick.
+	var/offset_mover_type = /datum/vehicle_offset/single
 
 /obj/structure/vehicle/motorcycle
 	offset_drive = TRUE
@@ -47,19 +49,31 @@
 
 /obj/structure/vehicle/proc/vehicle_offset_mover()
 	if (!offset_mover)
-		offset_mover = new(src)
+		offset_mover = new offset_mover_type(src)
 	return offset_mover
+
+// Everything that rides along at the vehicle's offset (besides the vehicle).
+/obj/structure/vehicle/proc/vehicle_offset_aboard()
+	. = list()
+	for (var/atom/movable/A in (ontop | ontop_o))
+		if (A.loc == loc)
+			. += A
+
+// The way the vehicle rolls: the driver's facing.
+/obj/structure/vehicle/proc/vehicle_offset_heading()
+	return driver ? driver.dir : dir
 
 // The vehicle, its riders and the things loaded on it share the offset.
 /obj/structure/vehicle/proc/vehicle_offset_sync()
 	var/datum/vehicle_offset/single/O = vehicle_offset_mover()
 	if (!(src in O.footprint))
 		O.carry_at(src, 0, 0, TRUE)
+	var/list/aboard = vehicle_offset_aboard()
 	for (var/atom/movable/A in O.carried)
-		if (A != src && !(A in ontop) && !(A in ontop_o))
+		if (A != src && !(A in aboard))
 			O.drop(A, TRUE)
-	for (var/atom/movable/A in (ontop | ontop_o))
-		if (!(A in O.carried) && A.loc == loc)
+	for (var/atom/movable/A in aboard)
+		if (!(A in O.carried))
 			O.carry_at(A)
 
 // Back to whole tiles: square on the tile, nobody carried.
@@ -136,7 +150,7 @@
 		O.speed_x = 0
 		O.speed_y = 0
 		return FALSE
-	var/d = driver.dir
+	var/d = vehicle_offset_heading()
 	O.speed_x = (d & EAST) ? speed : ((d & WEST) ? -speed : 0)
 	O.speed_y = (d & NORTH) ? speed : ((d & SOUTH) ? -speed : 0)
 	O.pulse()
@@ -250,3 +264,72 @@
 			offset_mover.speed_y = 0
 		return
 	addtimer(CALLBACK(src, PROC_REF(vehicle_offset_paddle)), world.tick_lag)
+
+// ---- Carriages ------------------------------------------------------------
+// The whole rig shares the offset: the carriage, the driver, the seats, the
+// team in harness and a hand cart hitched behind. The carriage's own do_move
+// still runs once per tile (load, team, ground, hills, running into people),
+// and it always rolls the way it faces. A turn squares it on its tile first.
+
+/obj/structure/vehicle/carriage
+	offset_drive = TRUE
+	offset_mover_type = /datum/vehicle_offset/single/carriage
+
+/obj/structure/vehicle/carriage/vehicle_offset_heading()
+	return facing
+
+/obj/structure/vehicle/carriage/vehicle_offset_aboard()
+	. = list()
+	for (var/atom/movable/A in everything_aboard())
+		if (A.loc == loc)
+			. += A
+	if (hitched_cart && isturf(hitched_cart.loc))
+		. += hitched_cart
+
+/obj/structure/vehicle/carriage/updatepassdir()
+	if (dir != facing && offset_mover && (offset_mover.ox || offset_mover.oy))
+		vehicle_offset_release()
+	return ..()
+
+/obj/structure/vehicle/carriage/movementloop()
+	if (!moving || !vehicle_offset_drives())
+		vehicle_offset_settle()
+		return ..()
+	step_timer = null
+	if (stepping || !gear || !driver_ready())
+		stopmovementloop()
+		return
+	stepping = TRUE
+	var/blocked = FALSE
+	try
+		vehicle_offset_sync()
+		var/ticks = vehicle_offset_ticks()
+		// The tile step inside the roll keeps its own schedule; the pixels are the pace now.
+		next_step = world.time
+		blocked = vehicle_offset_roll(vehicle_offset_speed(vehicle_m_delay) * ticks)
+	catch (var/exception/E)
+		stepping = FALSE
+		stopmovementloop()
+		throw E
+	stepping = FALSE
+	if (blocked || !moving)
+		stopmovementloop()
+		return
+	step_timer = addtimer(CALLBACK(src, PROC_REF(movementloop)), world.tick_lag, TIMER_STOPPABLE)
+
+// Ahead, the carriage and its team's lane must have open ground and no
+// structures; people are its own business when it steps (run into).
+/datum/vehicle_offset/single/carriage/can_cover(dir)
+	var/obj/structure/vehicle/carriage/C = owner
+	if (!istype(C) || QDELETED(C) || !isturf(C.loc))
+		return FALSE
+	if (dir != C.facing)
+		return ..()
+	var/list/now = C.cells_at(C.loc, C.facing)
+	var/list/after = C.cells_at(get_step(C.loc, dir), C.facing)
+	if (!now || !after)
+		return FALSE
+	for (var/turf/T in after - now)
+		if (C.cell_refusal(T, FALSE, FALSE))
+			return FALSE
+	return TRUE

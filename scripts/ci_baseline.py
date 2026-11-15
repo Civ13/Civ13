@@ -531,6 +531,19 @@ SUITES = {
             'code/modules/reagents/reagent_containers/food.dm',
             'code/modules/admin/admin_verbs.dm',
             'scripts/shard-group/shard_group.py')},
+    # Send Player to Region: admins and the launcher send players or a ship to another region.
+    'region_admin_send': {'files': ('tests/region_admin_send/test_sources.py',),
+        'paths': ('tests/region_admin_send/', 'code/modules/persistence/region_admin_send.dm',
+                  'code/modules/admin/send_player_to_region.dm',
+                  'tools/opendream-client/native/RegionPlayers.cs', 'tools/opendream-client/native/Gui/PlayersDialog.cs',
+                  'docs/region-admin-send.md'), 'shared_paths': (
+            'code/modules/persistence/region_travel.dm',
+            'code/modules/persistence/nomads_lifecycle.dm',
+            'code/modules/naval/ship_crossing.dm',
+            'code/modules/admin/admin_verbs.dm',
+            'scripts/shard-group/shard_group.py',
+            'tools/opendream-client/native/Gui/LauncherWindow.cs',
+            'tools/opendream-client/native/Civ13.Launcher.csproj')},
     'pedal_bicycle': {'files': ('tests/pedal_bicycle/test_bicycle.py', 'tests/pedal_bicycle/test_airship.py'),
         'paths': ('tests/pedal_bicycle/', 'code/game/objects/structures/bicycle.dm',
                   'code/game/objects/structures/pedal_airship.dm', 'icons/obj/vehicles/pedal_airship.dmi'),
@@ -2135,8 +2148,8 @@ SUITES = {
         'code/modules/persistence/save_validator.dm', 'code/modules/persistence/stream/',
         'code/modules/persistence/train_body_graph.dm', 'code/modules/persistence/derived_assets.dm')},
     # Offline source contracts for the disabled per-use divine approval foundation.
-    'divine_approval': {'files': ('tests/divine_approval/test_contract.py', 'tests/divine_approval/test_divine_book.py', 'tests/divine_approval/test_journal.py', 'tests/divine_approval/test_mundane_gear.py', 'tests/divine_approval/test_ritual.py', 'tests/divine_approval/test_covenant.py'), 'paths': (
-        'tests/divine_approval/', 'code/modules/divine/', 'code/modules/admin/verbs/divine_book.dm', 'code/modules/admin/verbs/divine_patron.dm', 'code/modules/magic/'), 'shared_paths': ('civ13.dme', 'code/modules/1713/book.dm')},
+    'divine_approval': {'files': ('tests/divine_approval/test_contract.py', 'tests/divine_approval/test_divine_book.py', 'tests/divine_approval/test_journal.py', 'tests/divine_approval/test_mundane_gear.py', 'tests/divine_approval/test_ritual.py', 'tests/divine_approval/test_covenant.py', 'tests/divine_approval/test_magic_whitelist.py'), 'paths': (
+        'tests/divine_approval/', 'code/modules/divine/', 'code/modules/admin/verbs/divine_book.dm', 'code/modules/admin/verbs/divine_patron.dm', 'code/modules/admin/verbs/magic_whitelist.dm', 'code/modules/magic/'), 'shared_paths': ('civ13.dme', 'code/modules/1713/book.dm')},
     # Offline source contracts for the fireman carry (grab on a downed human).
     'fireman_carry': {'files': ('tests/fireman_carry/test_source.py',), 'paths': (
         'tests/fireman_carry/', 'code/game/mob/grab_carry.dm'),

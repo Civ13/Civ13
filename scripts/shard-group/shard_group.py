@@ -66,7 +66,16 @@ from shard_map_selection import select_map_block  # noqa: E402
 GROUP_ACTIONS = ('setup', 'status', 'start', 'stop', 'restart', 'update', 'freeze', 'thaw', 'adopt', 'check-update',
                  'kill', 'force-restart', 'stage', 'enrol', 'help-status', 'help-start', 'help-stop', 'unlock', 'force-unlock',
                  'config-apply', 'config-migrate', 'handover', 'epoch', 'fresh-world', 'group-fresh-world', 'update-offline',
-                 'update-unsaved', 'expedition-land', 'expedition-archive', 'expedition-status', 'expedition-open')
+                 'update-unsaved', 'expedition-land', 'expedition-archive', 'expedition-status', 'expedition-open',
+                 'players', 'send-players', 'magic-whitelist')
+# send-players landings (region_admin_send.dm): the nearest dry shore facing the source,
+# exact coordinates, or the destination's normal arrival point.
+SEND_LANDINGS = ('shore', 'coords', 'arrival')
+CKEY_LIST = re.compile(r'^[A-Za-z0-9_ .@-]{1,32}(,[A-Za-z0-9_ .@-]{1,32}){0,19}$')
+COORDS = re.compile(r'^\d{1,5},\d{1,5},\d{1,5}$')
+# Magic whitelist (code/modules/divine/magic_whitelist.dm): one player key per line in the
+# source region's SQL folder, read by every region like admins.txt. Keep the header in step.
+MAGIC_WHITELIST_HEADER = '# Magic whitelist: one player key per line. Shared by every region of the group.\n'
 # Kinds nobody can start in: worlds that reset, transit/orbit, battles, events,
 # expedition slots and practice rooms (the mainland's own rules).
 START_REGION_REFUSED_KINDS = ('RAID', 'ORBIT', 'BATTLE', 'EVENT', 'EXPEDITION', 'TUTORIAL')
@@ -2802,6 +2811,118 @@ def group_epoch(group, epoch, platform=None):
     return {'epoch': ordinal, 'name': EPOCH_NAMES[ordinal], 'mainland': group['mainland'], 'regions': results}
 
 
+def awake_host(group, region_id, platform=None):
+    """The (region, host) of an awake, running region with a lifecycle token, or Refused."""
+    if not region_id:
+        raise Refused('choose the region with --region')
+    region, host = hosts(group, region_id, platform)[0]
+    if host.frozen():
+        raise Refused('%s is asleep; nobody is playing there' % region_id)
+    if not host.platform.listening(region['port']):
+        raise Refused('%s is not running' % region_id)
+    if not host.token():
+        raise Refused('%s has no config/lifecycle-token.txt' % region_id)
+    return region, host
+
+
+def region_players(group, region_id, platform=None):
+    """Who is online in one region, the regions they can be sent to and the latest transfers."""
+    region, host = awake_host(group, region_id, platform)
+    try:
+        answer = host.platform.query(region['port'], host.token(), 'players')
+    except (OSError, RuntimeError, ValueError) as error:
+        raise Refused('%s did not answer: %s' % (region_id, str(error)[:200]))
+    if not isinstance(answer, dict) or not isinstance(answer.get('players'), list):
+        raise Refused('%s did not list its players (an older build without the Players request?)' % region_id)
+    return {'region': region_id, 'players': answer['players'], 'recent': answer.get('recent') or [],
+            'running': bool(answer.get('running')), 'destinations': answer.get('destinations') or {}}
+
+
+def send_players(group, region_id, ckeys, destination, landing='shore', at=None, ship=False, dry_run=True, platform=None):
+    """Send players from one region to another (Send Player to Region, region_admin_send.dm).
+
+    Always answers with the world's dry run, one row per player (ok, reason, warnings). With
+    dry_run False the world starts the send after answering; the outcome shows in group admin
+    chat and in the next `players` answer. The world checks everything again as it sends.
+    """
+    if not isinstance(ckeys, str) or not CKEY_LIST.match(ckeys):
+        raise Refused('give up to 20 player keys separated by commas')
+    ids = [r['id'] for r in group['regions']]
+    if destination not in ids or destination == region_id:
+        raise Refused('choose another region of the group to send them to')
+    if landing not in SEND_LANDINGS:
+        raise Refused('landing must be one of %s' % ', '.join(SEND_LANDINGS))
+    if (landing == 'coords') != bool(at):
+        raise Refused('coords landing needs --at X,Y,Z (and only it takes one)')
+    if at and not COORDS.match(at):
+        raise Refused('--at must be X,Y,Z')
+    region, host = awake_host(group, region_id, platform)
+    extra = {'ckeys': ckeys, 'to': destination, 'landing': landing, 'dry_run': '1' if dry_run else '0'}
+    if at:
+        extra['at'] = at
+    if ship:
+        extra['ship'] = '1'
+    try:
+        answer = host.platform.query(region['port'], host.token(), 'send_players', extra=extra)
+    except (OSError, RuntimeError, ValueError) as error:
+        raise Refused('%s did not answer: %s' % (region_id, str(error)[:200]))
+    send = answer.get('send') if isinstance(answer, dict) else None
+    if not isinstance(send, str):
+        raise Refused('%s did not answer the send (an older build without Send Player to Region?)' % region_id)
+    return {'region': region_id, 'to': destination, 'landing': landing, 'send': send, 'rows': answer.get('rows') or []}
+
+
+def ckey(text):
+    """BYOND's ckey(): lower case, letters, digits and @ only."""
+    return re.sub(r'[^a-z0-9@]', '', str(text).lower())
+
+
+def magic_whitelist_path(group):
+    """The one file every region reads (magic_whitelist_file() in the game): the relay's gate, else the mainland."""
+    source = group.get('gate') if group.get('relay_port') and group.get('gate') else group['mainland']
+    return region_dir(group, source) / 'SQL' / 'magic_whitelist.txt'
+
+
+def magic_whitelist_keys(text):
+    keys = []
+    for line in text.replace('\r', '').split('\n'):
+        key = ckey(line.split('#', 1)[0])
+        if key and len(key) <= 32 and key not in keys:
+            keys.append(key)
+    return keys
+
+
+def magic_whitelist(group, add=None, remove=None):
+    """List the magic whitelist, or add/remove comma-separated player keys. Worlds reread it within 30 seconds."""
+    path = magic_whitelist_path(group)
+    try:
+        keys = magic_whitelist_keys(path.read_text(encoding='utf-8'))
+    except FileNotFoundError:
+        keys = []
+    changed = {'added': [], 'removed': []}
+    for value, adding in ((add, True), (remove, False)):
+        if value is None:
+            continue
+        if not isinstance(value, str) or not CKEY_LIST.match(value):
+            raise Refused('give up to 20 player keys separated by commas')
+        for raw in value.split(','):
+            key = ckey(raw)
+            if not key:
+                raise Refused('%r is not a player key' % raw)
+            if adding and key not in keys:
+                keys.append(key)
+                changed['added'].append(key)
+            elif not adding and key in keys:
+                keys.remove(key)
+                changed['removed'].append(key)
+    if changed['added'] or changed['removed']:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        temp = path.with_name(path.name + '.tmp')
+        temp.write_text(MAGIC_WHITELIST_HEADER + ''.join(k + '\n' for k in sorted(keys)), encoding='utf-8')
+        os.replace(temp, path)
+    return {'file': str(path), 'keys': sorted(keys), 'added': changed['added'], 'removed': changed['removed']}
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('--config', required=True)
@@ -2813,6 +2934,14 @@ def main(argv=None):
     parser.add_argument('--epoch', help='epoch: the epoch to advance to, by name (2026) or index (0-9)')
     parser.add_argument('--template', help='expedition-land: a world-chart template (JSON file)')
     parser.add_argument('--key', help='expedition-land: the chart tile the land belongs to, X,Y')
+    parser.add_argument('--players', help='send-players: player keys, comma separated')
+    parser.add_argument('--to', help='send-players: the region to send them to')
+    parser.add_argument('--landing', default='shore', choices=SEND_LANDINGS, help='send-players: where they land')
+    parser.add_argument('--at', help='send-players: X,Y,Z for --landing coords')
+    parser.add_argument('--ship', action='store_true', help='send-players: send the ship the first player is aboard, with everyone aboard')
+    parser.add_argument('--send', action='store_true', help='send-players: really send (without it, only the dry run)')
+    parser.add_argument('--add', help='magic-whitelist: player keys to add, comma separated')
+    parser.add_argument('--remove', help='magic-whitelist: player keys to remove, comma separated')
     parser.add_argument('--worker', nargs=2, metavar=('ACTION', 'OPERATION'), help=argparse.SUPPRESS)
     args = parser.parse_args(argv)
     if args.worker:
@@ -2871,6 +3000,16 @@ def main(argv=None):
             result = group_epoch(group, args.epoch)
         elif args.action == 'update-offline':
             result = update_offline(group, args.region)
+        elif args.action == 'players':
+            result = region_players(group, args.region)
+        elif args.action == 'send-players':
+            if not args.region or not args.players or not args.to:
+                parser.error('send-players needs --region, --players and --to')
+            result = send_players(group, args.region, args.players, args.to, args.landing, args.at, args.ship, not args.send)
+        elif args.action == 'magic-whitelist':
+            if args.region:
+                raise Refused('the magic whitelist is shared by the whole group; leave out --region')
+            result = magic_whitelist(group, args.add, args.remove)
         elif args.action == 'config-migrate':
             result = migrate_config(group)
         elif args.action == 'expedition-land':

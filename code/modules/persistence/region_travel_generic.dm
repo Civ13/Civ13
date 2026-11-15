@@ -36,6 +36,7 @@
 #define REGION_TRAVEL_GENERIC_TEXT 8192
 #define REGION_TRAVEL_GENERIC_LIST 128
 #define REGION_TRAVEL_GENERIC_SAMPLES 5
+#define REGION_TRAVEL_GENERIC_VOLUME 10000
 // A field new items do not agree on (a pelt coat picks its colour as it is made).
 #define REGION_TRAVEL_GENERIC_RANDOM "\[random]"
 
@@ -46,7 +47,7 @@ var/global/list/region_travel_generic_skip = list(
 	"verbs", "locs", "overlays", "underlays", "vis_contents", "vis_locs", "appearance",
 	"screen_loc", "layer", "plane", "mouse_opacity", "group", "reagents", "client",
 	"animate_movement", "override", "glide_size", "particles", "filters", "transform",
-	"fingerprints", "fingerprintshidden", "fingerprintslast", "suit_fibers",
+	"fingerprints", "fingerprintshidden", "fingerprintslast", "suit_fibers", "invisibility", "status_flags",
 	"gc_destroyed", "gcDestroyed", "datum_flags", "weak_reference", "active_timers",
 	"train_transfer_id", "train_transfer_journey", "train_transfer_digest")
 
@@ -72,7 +73,12 @@ var/global/list/region_travel_generic_defaults = list()
 /proc/region_travel_generic_cargo_type_ok(path)
 	if(ispath(path, /mob/living/simple_animal)) return TRUE
 	if(!ispath(path, /obj/structure)) return FALSE
-	for(var/denied in list(/obj/structure/vehicleparts, /obj/structure/vehicle, /obj/structure/hull_tiller, /obj/structure/region_gate))
+	// Nor what only an admin or the map places: spawners, traders, printers,
+	// level links, docks and helms, which a forged record must never create.
+	for(var/denied in list(/obj/structure/vehicleparts, /obj/structure/vehicle, /obj/structure/hull_tiller, /obj/structure/region_gate,
+		/obj/structure/engine, /obj/structure/animalspawner, /obj/structure/money_printer, /obj/structure/event_stash,
+		/obj/structure/npc_vendor, /obj/structure/specialist_trader, /obj/structure/supplier, /obj/structure/multiz,
+		/obj/structure/docking_port, /obj/structure/chart_helm, /obj/structure/vessel_helm, /obj/structure/cargo_hold))
 		if(ispath(path, denied)) return FALSE
 	return TRUE
 
@@ -145,7 +151,9 @@ var/global/list/region_travel_generic_defaults = list()
 		defaults = list()
 		region_travel_generic_defaults[I.type] = defaults
 		var/list/samples = list()
-		for(var/i in 1 to REGION_TRAVEL_GENERIC_SAMPLES)
+		// Only items are sampled: a new animal or structure starts its own
+		// work as it is made, so deck cargo is compared with its type's values.
+		for(var/i in 1 to (istype(I, /obj/item) ? REGION_TRAVEL_GENERIC_SAMPLES : 0))
 			var/atom/movable/fresh = null
 			try
 				fresh = new I.type(null)
@@ -313,11 +321,15 @@ var/global/list/region_travel_generic_defaults = list()
 	if(!isnull(R["r"]))
 		var/list/held = R["r"]
 		if(!islist(held) || held.len > 32) return FALSE
+		var/total = 0
 		for(var/pair in held)
 			if(!islist(pair)) return FALSE
 			var/list/P = pair
 			if(P.len != 2 || !istext(P[1]) || !chemical_reagents_list || !chemical_reagents_list[P[1]]) return FALSE
-			if(!isnum(P[2]) || P[2] < 0 || P[2] > 100000) return FALSE
+			if(!isnum(P[2]) || P[2] < 0 || P[2] > REGION_TRAVEL_GENERIC_VOLUME) return FALSE
+			total += P[2]
+		// The largest container in the game holds a few thousand units.
+		if(total > REGION_TRAVEL_GENERIC_VOLUME) return FALSE
 	var/children = 0
 	if(!isnull(R["c"]))
 		var/list/C = R["c"]
@@ -541,4 +553,5 @@ var/global/list/region_travel_generic_defaults = list()
 #undef REGION_TRAVEL_GENERIC_TEXT
 #undef REGION_TRAVEL_GENERIC_LIST
 #undef REGION_TRAVEL_GENERIC_SAMPLES
+#undef REGION_TRAVEL_GENERIC_VOLUME
 #undef REGION_TRAVEL_GENERIC_RANDOM

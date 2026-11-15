@@ -57,7 +57,8 @@ class ByondToolchainTests(unittest.TestCase):
         self.assertEqual((native / resource.get('Include')).resolve(), pin.MANIFEST)
         self.assertFalse((native / 'byond.json').exists())
         self.assertEqual(project.find('PropertyGroup/Version').text, json.loads((native / 'version.json').read_text())['version'])
-        self.assertEqual(project.find('PropertyGroup/Version').text, '1.5.23')
+        # Agreement above is the check; a pinned number here went stale on every launcher bump.
+        self.assertRegex(project.find('PropertyGroup/Version').text, r'^\d+\.\d+\.\d+$')
 
     def test_missing_malformed_and_noncanonical_versions_reject(self):
         for value in (None, True, 516.1688, '', '516', '516.01688', '0516.1688', ' 516.1688', '516.1688\n',

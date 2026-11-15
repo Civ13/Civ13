@@ -11,6 +11,21 @@ activation still apply to those actions. Missing native, graphical or
 save/load evidence belongs in the report and never blocks a source fix.
 Do not turn an evidence limitation into a new approval requirement.
 
+<!-- 2026-11-15: Magic whitelist dialog -->
+Val asked (2026-11-15) that magic and patrons be gated by a whitelist like the old TDM job whitelist. All regions >
+More > **Magic whitelist…** (Gui/MagicWhitelistDialog.cs, MagicWhitelist.cs) runs `shard_group.py magic-whitelist
+[--add K,..] [--remove K,..]`, which edits the one shared file (gate, else mainland `SQL/magic_whitelist.txt`) that
+every world rereads within 30 s (code/modules/divine/magic_whitelist.dm). Staff can also use Admin > Magic Whitelist
+in game. Hidden mechanic: no changelog line or wiki page.
+
+<!-- 2026-11-15: Players dialog (Send Player to Region) -->
+Val asked (2026-11-15) for tooling instead of hand-run call_proc transfers between regions. The selected
+region's More menu has **Players…** (Gui/PlayersDialog.cs, RegionPlayers.cs): `shard_group.py players` and
+`send-players` reach the world's loopback lifecycle Topic (`players`, `send_players`, region_admin_send.dm).
+A send always shows the dry run first; Send is enabled only for the exact choice a dry run approved, and
+only then is `--send` passed. Keep the argv checks in step with shard_group.py CKEY_LIST/SEND_LANDINGS.
+See [docs/region-admin-send.md](../../region-admin-send.md).
+
 <!-- 2026-11-09: --bot command line -->
 Val asked (2026-11-09) that the bot be manageable through the launcher without its window, so a remote
 helper can restart it. `Civ13.exe --bot ACTION` (BotCommand.cs) reuses LocalBot.Control; only start
