@@ -123,7 +123,7 @@
 		return ..()
 
 	attackby(var/obj/item/I, var/mob/living/human/H)
-		if (broken && istype(I, /obj/item/weapon/weldingtool))
+		if (broken && is_tool(I, TOOL_WELDER))
 			var/repair_type = src.type_name
 			if (wconfig)
 				repair_type = wconfig.type_name
@@ -394,4 +394,44 @@
 /obj/structure/vehicleparts/movement/tracks/m41/right_back/New()
 	..()
 	wconfig = get_wheel_config("m41_track_right_back")
+	load_config(wconfig)
+
+/obj/structure/vehicleparts/movement/tracks/hago/left/New()
+	..()
+	wconfig = get_wheel_config("hago_track_left_front")
+	load_config(wconfig)
+
+/obj/structure/vehicleparts/movement/tracks/hago/left/reversed/New()
+	..()
+	wconfig = get_wheel_config("hago_track_left_back")
+	load_config(wconfig)
+
+/obj/structure/vehicleparts/movement/tracks/hago/right/New()
+	..()
+	wconfig = get_wheel_config("hago_track_right_front")
+	load_config(wconfig)
+
+/obj/structure/vehicleparts/movement/tracks/hago/right/reversed/New()
+	..()
+	wconfig = get_wheel_config("hago_track_right_back")
+	load_config(wconfig)
+
+/obj/structure/vehicleparts/movement/tracks/m113/left/New()
+	..()
+	wconfig = get_wheel_config("m113_track_left_front")
+	load_config(wconfig)
+
+/obj/structure/vehicleparts/movement/tracks/m113/left/reversed/New()
+	..()
+	wconfig = get_wheel_config("m113_track_left_back")
+	load_config(wconfig)
+
+/obj/structure/vehicleparts/movement/tracks/m113/right/New()
+	..()
+	wconfig = get_wheel_config("m113_track_right_front")
+	load_config(wconfig)
+
+/obj/structure/vehicleparts/movement/tracks/m113/right/reversed/New()
+	..()
+	wconfig = get_wheel_config("m113_track_right_back")
 	load_config(wconfig)

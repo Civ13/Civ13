@@ -15,6 +15,9 @@ build, config and map_saves, so regions never share a save or a lock:
     python shard_group.py --config group.json help-status|help-start|help-stop
     python shard_group.py --config group.json config-apply [--region ID]  # overlays + config.local.txt, no compile
     python shard_group.py --config group.json config-migrate  # whole overlay config.txt -> config.local.txt
+    python shard_group.py --config group.json expedition-land --region ID --template T.json [--key X,Y]
+    python shard_group.py --config group.json expedition-archive --region ID
+    python shard_group.py --config group.json expedition-status
 
 Sleeping (freeze after idle, wake on a connection or a launcher request, cold
 start after a power-down) is done by the host service:
@@ -55,6 +58,7 @@ import gaia_host  # noqa: E402
 from byond_topic import frame_query  # noqa: E402
 from gaia_host import Host, Platform, Refused  # noqa: E402
 sys.path.insert(0, str(HERE))
+import expedition_slots  # noqa: E402
 import fresh_world  # noqa: E402
 import group_fresh_world  # noqa: E402
 from shard_map_selection import select_map_block  # noqa: E402
@@ -62,7 +66,7 @@ from shard_map_selection import select_map_block  # noqa: E402
 GROUP_ACTIONS = ('setup', 'status', 'start', 'stop', 'restart', 'update', 'freeze', 'thaw', 'adopt', 'check-update',
                  'kill', 'force-restart', 'stage', 'enrol', 'help-status', 'help-start', 'help-stop', 'unlock', 'force-unlock',
                  'config-apply', 'config-migrate', 'handover', 'epoch', 'fresh-world', 'group-fresh-world', 'update-offline',
-                 'update-unsaved')
+                 'update-unsaved', 'expedition-land', 'expedition-archive', 'expedition-status', 'expedition-open')
 HELP_STOP_SECONDS = 60  # help-stop waits this long for bridges to finish their answers before ending them
 HELP_STARTING_SECONDS = 300  # a bridge we started may load its corpus this long before it takes the lock
 # code/modules/persistence/functions.dm epoch_names, in order: a map's ordinal_age indexes it from 0.
@@ -95,7 +99,8 @@ KEPT_COPY = re.compile(r'\.(previous|migrated)$|\.bak(-|$)')  # earlier versions
 CONFIG_NAME = re.compile(r'^[A-Za-z][A-Za-z0-9_]*$')
 GENERATED = ('config/shard_region.json', 'config/lifecycle-token.txt', 'config/lifecycle-revision.txt',
              'config/transfer-token.txt', 'config/transfer_agent.json', 'config/relay-token.txt',
-             'config/tdm-token.txt', 'config/event-token.txt', 'config/shard_build.json', 'config/server-build.json')
+             'config/tdm-token.txt', 'config/event-token.txt', 'config/shard_build.json', 'config/server-build.json',
+             expedition_slots.WORLD_FILE)
 # BARRACKS is the always-on TDM world players wait and practise in; BATTLE runs the
 # TDM rounds, rotates its map after each vote and sends everyone back to the
 # barracks before it reboots (code/modules/tdm_barracks).
@@ -103,7 +108,10 @@ GENERATED = ('config/shard_region.json', 'config/lifecycle-token.txt', 'config/l
 # their characters wait, saved, in their own land (docs/event-regions.md). It
 # never saves and nobody lives there. TUTORIAL only runs the practice rooms, never
 # saves, and sends players back when they leave (code/modules/1713/tutorial_region.dm).
-KINDS = ('SURFACE', 'OCEANIC', 'UNDERGROUND', 'RAILYARD', 'RAID', 'ORBIT', 'OTHER', 'BARRACKS', 'BATTLE', 'EVENT', 'TUTORIAL')
+# EXPEDITION is a slot that holds one generated land at a time, reached only by
+# ship (expedition_slots.py, docs/expedition-slots.md).
+KINDS = ('SURFACE', 'OCEANIC', 'UNDERGROUND', 'RAILYARD', 'RAID', 'ORBIT', 'OTHER', 'BARRACKS', 'BATTLE', 'EVENT', 'TUTORIAL',
+         'EXPEDITION')
 ID = re.compile(r'^[a-z0-9_-]{1,32}$')
 HOST = re.compile(r'^[A-Za-z0-9.-]{1,64}$')
 HEX40 = re.compile(r'^[0-9a-f]{40}$')
@@ -180,6 +188,10 @@ def load_group(path):
         raise ValueError('the mainland cannot be a BATTLE region')
     if any(r['id'] == mainland and r['kind'] == 'EVENT' for r in regions):
         raise ValueError('the mainland cannot be an EVENT region')
+    if any(r['id'] == mainland and r['kind'] == 'EXPEDITION' for r in regions):
+        raise ValueError('the mainland cannot be an EXPEDITION slot')
+    if expedition_slots.SLOTS_FOLDER in ids:
+        raise ValueError('a region cannot be called %s: the expedition slots keep their lands there' % expedition_slots.SLOTS_FOLDER)
     tutorials = [r for r in regions if r['kind'] == 'TUTORIAL']
     if len(tutorials) > 1:
         raise ValueError('a group has at most one TUTORIAL region')
@@ -200,8 +212,8 @@ def load_group(path):
         if type(control) is not int or not 1024 <= control <= 65535 or control in ports or control == relay:
             raise ValueError('relay_control_port must be a free port from 1024 to 65535')
         gate = group.setdefault('gate', mainland)
-        if gate not in ids or any(r['id'] == gate and r['kind'] in ('RAID', 'EVENT', 'TUTORIAL') for r in regions):
-            raise ValueError('gate must be one of the region ids and not a RAID, EVENT or TUTORIAL region')
+        if gate not in ids or any(r['id'] == gate and r['kind'] in ('RAID', 'EVENT', 'TUTORIAL', 'EXPEDITION') for r in regions):
+            raise ValueError('gate must be one of the region ids and not a RAID, EVENT, TUTORIAL or EXPEDITION region')
         if type(group.setdefault('relay_bind', '0.0.0.0')) is not str or not group['relay_bind']:
             raise ValueError('relay_bind must be an address')
         if type(group.setdefault('relay_capture', False)) is not bool:
@@ -1739,6 +1751,9 @@ def place_map(group, region, path=None):
     if voted:
         return voted
     source = Path(region['map'])
+    if region['kind'] == 'EXPEDITION':
+        # A slot with a land compiles that land; a free slot its placeholder map.
+        source = expedition_slots.place_world_file(group, region, path) or source
     if not source.is_absolute():
         if '..' in source.parts or not (path / source).is_file():
             raise RuntimeError('map %s is not a file in the repository' % region['map'])
@@ -2075,9 +2090,13 @@ def ensure_coordinator(group, start=detach, refresh=False, terminate=None):
         return False
     root = Path(group['root'])
     code = transfer_code()
+    # Ships' courses open lands in these (docs/expedition-slots.md); a slot added
+    # to the group restarts the coordinator like new code does.
+    slots = [r['id'] for r in group['regions'] if r['kind'] == 'EXPEDITION']
     pid = coordinator_pid(group)
     if pid:
-        if not refresh or read_record(root / 'coordinator.json').get('code') == code:
+        record = read_record(root / 'coordinator.json')
+        if not refresh or (record.get('code') == code and record.get('slots', []) == slots):
             return False
         (terminate or Platform().terminate)(pid)
     database = root / 'coordinator.sqlite'
@@ -2090,9 +2109,11 @@ def ensure_coordinator(group, start=detach, refresh=False, terminate=None):
     for region in group['regions']:
         token = region_dir(group, region['id']) / 'config' / 'transfer-token.txt'
         argv += ['--region', '%s=http://127.0.0.1:%d=%s' % (region['id'], region['transfer_port'], token)]
+    if slots:
+        argv += ['--slots', ','.join(slots), '--expeditions', str(expedition_slots.slots_dir(group))]
     pid = start(argv, root, root / 'coordinator.log')
     (root / 'coordinator.pid').write_text('%d\n' % pid, encoding='utf-8')
-    write_record(root / 'coordinator.json', pid=pid, code=code)
+    write_record(root / 'coordinator.json', pid=pid, code=code, slots=slots)
     return True
 
 
@@ -2498,6 +2519,21 @@ def ensure_save_validation(group, start=None, free_mb=None, now=time.time, alive
     return {}
 
 
+def serve_expeditions(group, start=detach, platform=None):
+    """Open the lands ships' courses asked for in the group's EXPEDITION slots
+    and start each once built (expedition_slots.serve)."""
+    if not any(r['kind'] == 'EXPEDITION' for r in group['regions']):
+        return {}
+    folder = expedition_slots.slots_dir(group)
+
+    def launch(region_id):
+        folder.mkdir(parents=True, exist_ok=True)
+        start([sys.executable, '-I', '-B', str(Path(__file__).resolve()), '--config', group['_path'], 'expedition-open',
+               '--region', region_id], folder, folder / ('open-%s.log' % region_id))
+
+    return expedition_slots.serve(group, hosts(group, platform=platform), launch)
+
+
 def supervise(group, start=detach):
     """Start the group's routing relay, transfer agents, coordinator or Player Help bridges if any is not running.
 
@@ -2517,6 +2553,13 @@ def supervise(group, start=detach):
         started['player_help'] = helped
     if help_errors:
         started['player_help_errors'] = help_errors
+    # Lands that ships' courses asked for (expedition_slots.serve): a side job too.
+    try:
+        opened = serve_expeditions(group, start)
+        if opened:
+            started['expeditions'] = opened
+    except (OSError, RuntimeError, ValueError, KeyError) as error:
+        started['expeditions_error'] = str(error)[:300]
     # The validator is a side job: its failure must not keep the helpers down.
     try:
         started.update(ensure_save_validation(group, start))
@@ -2648,6 +2691,8 @@ def main(argv=None):
     parser.add_argument('--confirm-group', help='group-fresh-world: type the exact group id')
     parser.add_argument('--from', dest='source', help='adopt: the stopped standalone server folder')
     parser.add_argument('--epoch', help='epoch: the epoch to advance to, by name (2026) or index (0-9)')
+    parser.add_argument('--template', help='expedition-land: a world-chart template (JSON file)')
+    parser.add_argument('--key', help='expedition-land: the chart tile the land belongs to, X,Y')
     parser.add_argument('--worker', nargs=2, metavar=('ACTION', 'OPERATION'), help=argparse.SUPPRESS)
     args = parser.parse_args(argv)
     if args.worker:
@@ -2708,6 +2753,26 @@ def main(argv=None):
             result = update_offline(group, args.region)
         elif args.action == 'config-migrate':
             result = migrate_config(group)
+        elif args.action == 'expedition-land':
+            if not args.region or not args.template:
+                parser.error('expedition-land needs --region and --template')
+            (region, host), = hosts(group, args.region)
+            result = expedition_slots.give_land(group, host, args.region, expedition_slots.load_template(args.template),
+                                                key=args.key)
+        elif args.action == 'expedition-archive':
+            if not args.region:
+                parser.error('expedition-archive needs --region')
+            (region, host), = hosts(group, args.region)
+            result = expedition_slots.archive(group, host, args.region)
+        elif args.action == 'expedition-open':
+            # The host service's worker for a land a ship's course asked for (expedition_slots.serve).
+            if not args.region:
+                parser.error('expedition-open needs --region')
+            (region, host), = hosts(group, args.region)
+            expedition_slots.expedition_region(group, args.region)
+            result = expedition_slots.open_land(group, host, args.region, update_offline)
+        elif args.action == 'expedition-status':
+            result = {'slots': expedition_slots.status(group)}
         elif args.action == 'config-apply':
             done, refused = apply_config(group, args.region)
             if refused and not done:

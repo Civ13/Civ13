@@ -241,7 +241,7 @@
 		qdel(src)
 		qdel(I)
 		return
-	if (!istype(I, /obj/item/weapon/material/kitchen/utensil/knife))
+	if (!is_tool(I, TOOL_KNIFE))
 		to_chat(user, "You need a knife to cut the [src].")
 		return
 	if (reagents.get_reagent_amount("cocaine") <= 0)
@@ -343,3 +343,9 @@
 	qdel(I)
 	blocks_amount += 1
 	update_icon()
+/obj/map_metadata/drug_bust/faction_hud_icons = list(RUSSIAN = "rednikov")
+
+/obj/map_metadata/drug_bust/faction_hud_icon(mob/living/human/H, faction_flag)
+	if (faction_flag == CIVILIAN && H.original_job.is_law)
+		return "police"
+	return ..()

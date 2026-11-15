@@ -104,7 +104,7 @@ var/global/datum/shard_group/shard_group = new
 			return refuse("every region needs a unique id")
 		if(!istext(entry["name"]) || !length(entry["name"]) || length(entry["name"]) > 64)
 			return refuse("region [entry["id"]] needs a name of 1 to 64 characters")
-		if(!(entry["kind"] in list("SURFACE", "OCEANIC", "UNDERGROUND", "RAILYARD", "RAID", "ORBIT", "OTHER", "BARRACKS", "BATTLE", "EVENT", "TUTORIAL")))
+		if(!(entry["kind"] in list("SURFACE", "OCEANIC", "UNDERGROUND", "RAILYARD", "RAID", "ORBIT", "OTHER", "BARRACKS", "BATTLE", "EVENT", "TUTORIAL", "EXPEDITION")))
 			return refuse("region [entry["id"]] has an unknown kind")
 		if(!shard_address_valid(entry["address"]) || (entry["address"] in seen_addresses))
 			return refuse("region [entry["id"]] needs a unique host:port address")
@@ -439,6 +439,7 @@ var/global/datum/shard_group/shard_group = new
 			// Land stages ride the same loop (land_stage.dm).
 			land_stages_refresh_due()
 			land_sample_post()
+			nations_refresh_due() // nation.dm
 			sleep(SHARD_POLL_INTERVAL)
 		polling = FALSE
 
@@ -501,7 +502,8 @@ var/global/datum/shard_group/shard_group = new
 		var/players = isnum(peer["players"]) ? "[peer["players"]]" : "-"
 		// Joining a frozen world wakes it at once; a cold one takes minutes, so it is woken from a trail.
 		// Event regions are reached only when an admin sends players there (region_event.dm).
-		var/join = (state == "UP" || state == "ASLEEP") && peer["kind"] != "EVENT" ? "<a href='[player_href(id)]'>Join</a>" : ""
+		// Lands across the sea only by ship (expedition_land.dm).
+		var/join = (state == "UP" || state == "ASLEEP") && peer["kind"] != "EVENT" && peer["kind"] != "EXPEDITION" ? "<a href='[player_href(id)]'>Join</a>" : ""
 		lines += "<tr class='[lowertext(state)]'><td>[html_encode(peer["name"])]</td><td>[shard_kind_text(peer["kind"], id)]</td><td>[land_stage_column(id, peer["kind"])]</td><td>[shard_state_text(state)]</td><td>[players]</td><td>[join]</td></tr>"
 	lines += "</table>"
 	if(!order.len)
@@ -532,6 +534,7 @@ var/global/datum/shard_group/shard_group = new
 		if("BATTLE") return "battle"
 		if("EVENT") return "event"
 		if("TUTORIAL") return "practice rooms"
+		if("EXPEDITION") return "land across the sea"
 	// Mars and the Moon are OTHER regions with a surveyed surface (space/survey.dm).
 	if(kind == "OTHER" && survey_region_ok(id) && get_space_survey_map(id))
 		return "off-world"

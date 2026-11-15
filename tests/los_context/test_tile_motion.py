@@ -353,7 +353,8 @@ class TileMotion(unittest.TestCase):
         template=re.search(r'\treturn "([^\n]*)"',policy)[1]
         names=dict(body=body,owner=owner,revision=1,offset_key=offset_key,world=N(time=time),
                    los_eye_bucket=lambda b:f'{(b.step_x+8)//16*16},{(b.step_y+8)//16*16}',
-                   los_up_tree=lambda b:int(getattr(b,'up_tree',False)))
+                   los_up_tree=lambda b:int(getattr(b,'up_tree',False)),
+                   los_on_vehicle_deck=lambda b:int(getattr(b,'on_deck',False)))
         def expression(code):
             if code=='config ? config.disable_fov : 1':return 1
             if ' ? ' in code:

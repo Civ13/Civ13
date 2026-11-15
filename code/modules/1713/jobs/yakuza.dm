@@ -16,17 +16,16 @@
 	is_yama = TRUE
 	can_be_female = TRUE
 	allowed_maps = list(MAP_ALLEYWAY)
+/datum/job/japanese/yakuza_underboss/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/japanese/yakuza_underboss/job_loadout = list(
+	/obj/item/clothing/shoes/laceup = slot_shoes,
+	/obj/item/clothing/under/peakyblinder = slot_w_uniform,
+	/obj/item/clothing/suit/storage/coat/japcoat2/trench = slot_wear_suit,
+	/obj/item/weapon/key/japanese = slot_r_store)
 /datum/job/japanese/yakuza_underboss/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/peakyblinder(H), slot_w_uniform)
-//jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/japcoat2/trench(H), slot_wear_suit)
-//head
-//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/japanese(H), slot_r_store)
+	equip_loadout(H)
 
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/double/holsterh = new /obj/item/clothing/accessory/holster/hip/double(null)
@@ -77,14 +76,7 @@
 
 	to_chat(world, "<b><font color='yellow' size=3>[H.real_name] is the Underboss of the Yamaguchi-Gumi!</font></b>")
 	H.add_note("Role", "You are a <b>[title]</b>, an officer in charge of the gangmen and their orders. The whole operation relies on you!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	if (prob(35))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/fedora(H), slot_head)
 	else
@@ -108,18 +100,16 @@
 	is_yama = TRUE
 	can_be_female = TRUE
 	allowed_maps = list(MAP_ALLEYWAY)
+/datum/job/japanese/yakuza_underboss_deputy/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/japanese/yakuza_underboss_deputy/job_loadout = list(
+	/obj/item/clothing/shoes/laceup = slot_shoes,
+	/obj/item/clothing/under/peakyblinder = slot_w_uniform,
+	/obj/item/clothing/suit/storage/jacket/charcoal_suit = slot_wear_suit,
+	/obj/item/weapon/material/sword/wakazashi/yakuza = slot_back)
 /datum/job/japanese/yakuza_underboss_deputy/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/peakyblinder(H), slot_w_uniform)
-//jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/charcoal_suit(H), slot_wear_suit)
-//head
-//weapons
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/wakazashi/yakuza(H), slot_back)
+	equip_loadout(H)
 
 	if (prob(65))
 		if (prob(75))
@@ -173,14 +163,7 @@
 
 	to_chat(world, "<b><font color='yellow' size=3>[H.real_name] is the Deputy Underboss of the Yamaguchi-Gumi Gang!!</font></b>")
 	H.add_note("Role", "You are a <b>[title]</b>, an officer in charge of the gangmen and their orders. Second to underboss. The whole operation relies on you and your orders!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	if (prob(25))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/fedora(H), slot_head)
 	else
@@ -200,13 +183,14 @@
 	is_yama = TRUE
 	can_be_female = TRUE
 	allowed_maps = list(MAP_ALLEYWAY)
+/datum/job/japanese/yakuza/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/japanese/yakuza/job_loadout = list(
+	/obj/item/clothing/shoes/laceup = slot_shoes,
+	/obj/item/clothing/under/modern2 = slot_w_uniform)
 /datum/job/japanese/yakuza/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new/obj/item/clothing/under/modern2(H), slot_w_uniform)
+	equip_loadout(H)
 
 //head
 //jacket
@@ -271,14 +255,7 @@
 	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
 
 	H.add_note("Role", "You are a <b>[title]</b>, a gang member employed by Yamaguchi-Gumi Clan. Follow your <b>Underboss'</b> orders!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_MEDIUM_HIGH)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	if (prob(25))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/fedora(H), slot_head)
 	else
@@ -299,17 +276,16 @@
 	is_ichi = TRUE
 	can_be_female = TRUE
 	allowed_maps = list(MAP_ALLEYWAY)
+/datum/job/japanese/yakuza_underboss_ichi/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/japanese/yakuza_underboss_ichi/job_loadout = list(
+	/obj/item/clothing/shoes/laceup = slot_shoes,
+	/obj/item/clothing/under/peakyblinder = slot_w_uniform,
+	/obj/item/clothing/suit/storage/jacket/charcoal_suit = slot_wear_suit,
+	/obj/item/weapon/key/japanese_officer = slot_r_store)
 /datum/job/japanese/yakuza_underboss_ichi/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/peakyblinder(H), slot_w_uniform)
-//jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/charcoal_suit(H), slot_wear_suit)
-//head
-//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/japanese_officer(H), slot_r_store)
+	equip_loadout(H)
 
 
 
@@ -361,14 +337,7 @@
 	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
 
 	H.add_note("Role", "You are a <b>[title]</b>, an officer in charge of the gangmen and their orders. The whole operation relies on you!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	if (prob(35))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/fedora(H), slot_head)
 	else
@@ -391,18 +360,16 @@
 	is_ichi = TRUE
 	can_be_female = TRUE
 	allowed_maps = list(MAP_ALLEYWAY)
+/datum/job/japanese/yakuza_underboss_deputy_ichi/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/japanese/yakuza_underboss_deputy_ichi/job_loadout = list(
+	/obj/item/clothing/shoes/laceup = slot_shoes,
+	/obj/item/clothing/under/peakyblinder = slot_w_uniform,
+	/obj/item/clothing/suit/storage/jacket/charcoal_suit = slot_wear_suit,
+	/obj/item/weapon/material/sword/wakazashi/yakuza = slot_back)
 /datum/job/japanese/yakuza_underboss_deputy_ichi/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/peakyblinder(H), slot_w_uniform)
-//jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/charcoal_suit(H), slot_wear_suit)
-//head
-//weapons
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/wakazashi/yakuza(H), slot_back)
+	equip_loadout(H)
 
 	if (prob(55))
 		if (prob(65))
@@ -457,14 +424,7 @@
 	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
 
 	H.add_note("Role", "You are a <b>[title]</b>, an officer in charge of the gangmen and their orders. Second to underboss. The whole operation relies on you and your orders!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	if (prob(25))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/fedora(H), slot_head)
 	else
@@ -482,13 +442,14 @@
 	is_ichi = TRUE
 	can_be_female = TRUE
 	allowed_maps = list(MAP_ALLEYWAY)
+/datum/job/japanese/yakuza_ichi/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/japanese/yakuza_ichi/job_loadout = list(
+	/obj/item/clothing/shoes/laceup = slot_shoes,
+	/obj/item/clothing/under/modern2 = slot_w_uniform)
 /datum/job/japanese/yakuza_ichi/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new/obj/item/clothing/under/modern2(H), slot_w_uniform)
+	equip_loadout(H)
 
 //head
 //jacket
@@ -554,12 +515,5 @@
 	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
 
 	H.add_note("Role", "You are a <b>[title]</b>, a gang member employed by Ichiwa-Kai Clan. Follow your <b>Underboss'</b> orders!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_MEDIUM_HIGH)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	return TRUE

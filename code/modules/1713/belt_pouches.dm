@@ -8,12 +8,12 @@
 
 /obj/item/clothing/accessory/storage/belt_pouch
 	name = "leather belt pouch"
-	desc = "A small leather pouch with a flap. Hang it from a belt or attach it to your clothes to carry small things: herbs, stones, ore, coins."
+	desc = "A small leather pouch with a flap. Hang it from a belt, wear it at your hip or attach it to your clothes to carry small things: herbs, stones, ore, coins."
 	icon = 'icons/obj/belt_pouches.dmi'
 	icon_state = "leather_pouch"
 	icon_override = 'icons/mob/belt_pouches.dmi'
 	slot = "decor" // several decor accessories may share an outfit; see the cap below
-	slot_flags = SLOT_BELT | SLOT_POCKET
+	slot_flags = SLOT_BELT | SLOT_POCKET | SLOT_ID // belt, pocket or hip slot
 	w_class = ITEM_SIZE_SMALL
 	slots = 6
 	value = 4
@@ -26,7 +26,7 @@
 
 /obj/item/clothing/accessory/storage/belt_pouch/cloth
 	name = "cloth drawstring pouch"
-	desc = "A small cloth pouch closed with a drawstring. Hang it from a belt or attach it to your clothes to carry small things: herbs, stones, ore, coins."
+	desc = "A small cloth pouch closed with a drawstring. Hang it from a belt, wear it at your hip or attach it to your clothes to carry small things: herbs, stones, ore, coins."
 	icon_state = "cloth_pouch"
 	value = 3
 
@@ -76,7 +76,9 @@
 		/obj/item/clothing/accessory/storage/belt_pouch,
 		/obj/item/clothing/accessory/storage/sheath,
 		/obj/item/clothing/accessory/holster,
-		/obj/item/clothing/accessory/storage/tool_loop)
+		/obj/item/clothing/accessory/storage/tool_loop,
+		/obj/item/clothing/accessory/storage/lanyard/fob_chain,
+		/obj/item/clothing/accessory/storage/lanyard/retention)
 
 /obj/item/clothing/pouch_belt/can_attach_accessory(obj/item/clothing/accessory/A)
 	if (!is_type_in_list(A, belt_attachable))

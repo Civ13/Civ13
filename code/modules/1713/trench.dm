@@ -381,7 +381,7 @@ var/list/global/floor_cache = list()
 	return ..()
 
 /turf/floor/dirt/attackby(obj/item/C as obj, mob/user as mob)
-	if (istype(C, /obj/item/weapon/material/shovel) && user.a_intent == I_HARM)
+	if (is_tool(C, TOOL_SHOVEL) && user.a_intent == I_HARM)
 		var/mob/living/human/HU = user
 		if (map && !research_node_known(HU, "field_defenses"))
 			to_chat(user, SPAN_WARNING("Your people haven't researched Field Defenses yet."))
@@ -409,7 +409,7 @@ var/list/global/floor_cache = list()
 	map_storage_saved_vars = "icon_state;name;trench_stage"
 	var/trench_stage = 0
 /turf/floor/beach/sand/attackby(obj/item/C as obj, mob/user as mob)
-	if (istype(C, /obj/item/weapon/material/shovel) && user.a_intent == I_HARM)
+	if (is_tool(C, TOOL_SHOVEL) && user.a_intent == I_HARM)
 		var/mob/living/human/HU = user
 		if (map && !research_node_known(HU, "field_defenses"))
 			to_chat(user, SPAN_WARNING("Your people haven't researched Field Defenses yet."))
@@ -435,7 +435,7 @@ var/list/global/floor_cache = list()
 	..()
 
 /turf/floor/dirt/attackby(obj/item/C as obj, mob/user as mob)
-	if (istype(C, /obj/item/weapon/material/shovel) && user.a_intent == I_HARM)
+	if (is_tool(C, TOOL_SHOVEL) && user.a_intent == I_HARM)
 		var/mob/living/human/HU = user
 		if (map && !research_node_known(HU, "field_defenses"))
 			to_chat(user, SPAN_WARNING("Your people haven't researched Field Defenses yet."))
@@ -463,9 +463,9 @@ var/list/global/floor_cache = list()
 
 /turf/floor/grass/attackby(obj/item/C as obj, mob/user as mob)
 	var/mob/living/human/H = user
-	if (istype(C, /obj/item/weapon/material/shovel) && weather_snow > 0 && user.a_intent != I_HARM)
+	if (is_tool(C, TOOL_SHOVEL) && weather_snow > 0 && user.a_intent != I_HARM)
 		return ..() // Shovel generated snow into piles first; harm intent still removes the grass layer.
-	if (istype(C, /obj/item/weapon/material/shovel))
+	if (is_tool(C, TOOL_SHOVEL))
 		var/obj/item/weapon/material/shovel/trench/S = C
 		user.visible_message(SPAN_NOTICE("[user] starts to remove the grass layer."), SPAN_NOTICE("[user] starts to remove the grass layer."), "You hear something being uprooted.")
 		if (!do_after(user, (100/(H.getStatCoeff("strength"))/(12/S.dig_speed)))) //Think a DEFINE for the number being divided over S.dig_speed could be helpful, keeping it this for now
@@ -480,7 +480,7 @@ var/list/global/floor_cache = list()
 		else
 			ChangeTurf(/turf/floor/dirt)
 		return
-	else if (istype(C, /obj/item/weapon/material/shovel))
+	else if (is_tool(C, TOOL_SHOVEL))
 		var/obj/item/weapon/material/shovel/S = C
 		user.visible_message(SPAN_NOTICE("[user] starts to remove the grass layer."), SPAN_NOTICE("[user] starts to remove the grass layer."), "You hear something being uprooted.")
 		if (!do_after(user, (100/(H.getStatCoeff("strength"))/S.usespeed)))
@@ -497,7 +497,7 @@ var/list/global/floor_cache = list()
 
 /turf/floor/winter/attackby(obj/item/C as obj, mob/user as mob)
 	var/mob/living/human/H = user
-	if (istype(C, /obj/item/weapon/material/shovel))
+	if (is_tool(C, TOOL_SHOVEL))
 		var/obj/item/weapon/material/shovel/trench/S = C
 		user.visible_message(SPAN_NOTICE("[user] starts to remove the snow layer."), SPAN_NOTICE("[user] starts to remove the snow layer."), "You hear something digging into the ground.")
 		if (!do_after(user, (100/(H.getStatCoeff("strength"))/(12/S.dig_speed))))
@@ -650,7 +650,7 @@ var/list/global/floor_cache = list()
 		overlays += irrigation_overlay
 
 /turf/floor/attackby(obj/item/C as obj, mob/user as mob)
-	var/snow_tool = istype(C, /obj/item/weapon/material/shovel) || istype(C, /obj/item/weapon/material/kitchen/utensil/spoon)
+	var/snow_tool = is_tool(C, TOOL_SHOVEL) || istype(C, /obj/item/weapon/material/kitchen/utensil/spoon)
 	if (irrigation && irrigation_overlay && !(snow_tool && weather_snow > 0))
 		if (istype (C, /obj/item/weapon/barrier) && !istype(C, /obj/item/weapon/barrier/sandbag))
 			var/choice = WWinput(user, "Do you want to fill up the irrigation channel with \the [C]?","Irrigation Channel","Yes",list("Yes","No"))

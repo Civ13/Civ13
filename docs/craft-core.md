@@ -99,6 +99,25 @@ place over that time. Template vessels (`datum/vessel`) still jump.
 hull: it commissions, refits and strikes the hull, steers her, keeps the
 papers and saves the hull as offsets from its own tile.
 
+### Upper decks
+
+A roof built over a built hull's deck has its walkable upper face on the
+building level above (`building_levels.dm`). That upper deck sails with her:
+`upper_cells()` finds it again at every move by position, as the floor above
+each hull tile whose roof stands on that tile, or the top of a ladder whose foot
+does. Nothing about it is saved and no field links one deck to the other, so a
+loaded world finds the upper deck the same way. `plan()` refuses a move when the
+open air ahead of the upper deck holds a floor, a ladder or anything solid, and
+when her hull and upper deck together pass `BUILT_HULL_MAX_DECK_TILES` (300).
+`move_to()` carries the lower deck first, then the upper floors and ladder tops,
+then whoever stands up there, so nobody reaches open air without a floor. A
+roof makes the tile under it indoors, so the areas of her tiles sail with her
+and the sea's areas close in behind. Measured in
+`tests/naval_carrier/upper_deck_probe.dm`, a step at the cap with ten sailors
+and ten buckets aboard takes about 16 ms (a bare 200-tile hull about 10 ms).
+A hull with an upper deck cannot cross the sea or set out on a voyage yet, since
+only her own deck packs for the crossing.
+
 ## Drives aboard
 
 `naval/hull_drives.dm`: anything standing on a craft can be a drive by
@@ -107,7 +126,21 @@ collects them (on commission, when a speed is rung and before each hop), and
 `craft.max_speed()` weighs their push against the tiles of hull: half ahead
 needs `CRAFT_THRUST_HALF` per tile, full ahead `CRAFT_THRUST_FULL` per tile
 from drives whose `top_step` reaches full ahead. A rigged ship mast is a sail
-drive of `CRAFT_SAIL_THRUST` that tops out at half ahead.
+drive of `CRAFT_SAIL_THRUST` that tops out at half ahead. Its push is divided
+by `sail_delay_factor()` (`naval/points_of_sail.dm`) for how the wind stands
+to her bow: full on a beam or broad reach, 1.3 times less running before the
+wind, 2.5 times less close-hauled and 3.5 times less beating upwind. Frame
+ships (`ships/axis.dm`) and sailing boats (`transports.dm`) take their step
+delay from the same file (`sail_step_time()`), and a frame ship under sail
+keeps `currentspeed` at gear 1 instead of writing a delay into it.
+
+A manned rowing bench (`naval/rowing_bench.dm`) is an oar drive of
+`CRAFT_OAR_THRUST` that can make full ahead. Its fuel is the rower's stamina:
+`OAR_STAMINA_PER_STEP` per telegraph step at each burn, and a rower under
+`OAR_MIN_STAMINA` pushes nothing. Oars are not `sustained`, so
+`craft.sustained_full_ahead()` (which paces a world chart voyage) counts only
+engines. The steering oar is a cheaper `hull_tiller` subtype; benches and the
+helm type cross between worlds in the ship record (`"o"` entries and `"helm"`).
 
 A running engine loose on a deck (`/obj/structure/engine`, not on a vehicle
 frame) is an engine drive: it pushes its current `maxpower` and can make full
@@ -359,6 +392,15 @@ wrecks they reach are built when they arrive. No live region runs it yet;
   wreck, set down by the board: the board keeps the crate and leaves what was
   in it. A crew takes a contract with a registered ship lying in the home
   waters and can give it up.
+
+## Ships between worlds
+
+A built hull at the map edge can cross to another world of the group (a land
+across the sea, or home to the mainland): she is packed as a record that rides
+with her crew's travel payloads and built again off the far edge. See
+[ship-crossing.md](ship-crossing.md). Off a mainland she can also set out on
+a voyage across the world chart, to a land opened for her while she sails or
+to scout: [ship-voyage.md](ship-voyage.md).
 
 ## Contracts and freight
 
@@ -620,6 +662,29 @@ The carriage saves the register in `register_state`.
   step newly covers must be clear: people and large animals stop it (and are
   run into), small animals are run over, deep water needs a bridge.
 
+## Vehicle load
+
+`code/modules/1713/machinery/modular_vehicles/vehicle_load.dm` makes what a
+land vehicle carries set its pace. `get_speed()` multiplies the gear's listed
+delay by `get_load_factor()`: the vehicle as loaded against the same body with
+steel walls and a normal load (one seated person per seat plus 10 per frame).
+A rider buckled into a seat counts half their weight and one standing on the
+deck or roof counts in full (`vehicle_rider_weight()`). Wall
+sides weigh 0.5 per point of armour (`frame.wall_weight()`), so a lighter hull
+material only has to override that proc. Loose items other than the fuel
+tank, crates and the contents of crates are cargo; everything else on the
+frames is fitted.
+
+- A normally loaded vehicle reads exactly 1.0 and drives as before; the factor
+  runs from 0.7 to 1.5. At 0.8 or less `top_gear()` allows one gear above the
+  list, a tick quicker than the last (`gear_delay()`).
+- Turning time is `loaded_turntimer()`, the same factor held to 0.7 to 1.3.
+- The factor is cached and rechecked at most every 2 seconds, and the movement
+  loop refreshes the delay after each step, so boarding or unloading on the
+  move changes the pace.
+- Boats, ships and aircraft opt out (`uses_load_factor()`); the engine stall
+  limit in `check_engine()` is unchanged.
+
 ## Tests
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/craft_probe.dm 300
@@ -628,6 +693,7 @@ The carriage saves the register in `register_state`.
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/papers_probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/vehicle_papers/probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/draft_carriage/probe.dm 300
+    python3 tests/ecology_spawning/run_linux.py . tests/vehicle_load/probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/freight_probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/depot_jobs_probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/built_hull_probe.dm 300

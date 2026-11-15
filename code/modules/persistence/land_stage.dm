@@ -20,7 +20,7 @@ var/global/list/land_suggestions_told = list() // region id -> the suggestion ad
 // Lands whose stage means something: places people can live. Transit worlds,
 // event and practice worlds and battle worlds never get one.
 /proc/land_stage_kind_ok(kind)
-	return kind in list("SURFACE", "OCEANIC", "UNDERGROUND", "OTHER")
+	return kind in list("SURFACE", "OCEANIC", "UNDERGROUND", "OTHER", "EXPEDITION")
 
 // Reads the stage list from this world's transfer agent. Sleeps; returns FALSE
 // and keeps the last list when the agent cannot answer.
@@ -43,7 +43,7 @@ var/global/list/land_suggestions_told = list() // region id -> the suggestion ad
 			continue
 		clean[id] = list("stage" = entry["stage"], "paused" = entry["paused"] ? TRUE : FALSE,
 			"by" = istext(entry["by"]) ? ckey(entry["by"]) : null, "at" = isnum(entry["at"]) ? entry["at"] : 0,
-			"readiness" = land_readiness_clean(entry["readiness"]))
+			"readiness" = land_readiness_clean(entry["readiness"]), "colonies" = land_colonies_clean(entry["colonies"]))
 	var/list/waiting = list()
 	if(islist(result["pending"]))
 		for(var/list/request in result["pending"])
@@ -63,11 +63,25 @@ var/global/list/land_suggestions_told = list() // region id -> the suggestion ad
 	for(var/key in list("homes", "players_peak", "living", "hours"))
 		clean[key] = isnum(ready[key]) ? max(0, round(ready[key])) : 0
 	clean["players_avg"] = isnum(ready["players_avg"]) ? max(0, ready["players_avg"]) : 0
-	clean["suggest"] = (ready["suggest"] in list("OPEN", "PAUSE", "RESUME")) ? ready["suggest"] : null
+	clean["suggest"] = (ready["suggest"] in list("COLONY", "OPEN", "PAUSE", "RESUME")) ? ready["suggest"] : null
+	return clean
+
+// The colonies standing in one land (colony_charter.dm), as the coordinator
+// last heard of them: parent faction id, local name and living members.
+/proc/land_colonies_clean(list/colonies)
+	var/list/clean = list()
+	if(!islist(colonies))
+		return clean
+	for(var/list/colony in colonies)
+		if(clean.len >= 50)
+			break
+		if(islist(colony) && colony_parent_valid(colony["parent"]) && istext(colony["name"]) && length(colony["name"]) <= 64)
+			clean += list(list("parent" = colony["parent"], "name" = colony["name"], "members" = isnum(colony["members"]) ? max(0, round(colony["members"])) : 0, "paused" = colony["paused"] ? TRUE : FALSE))
 	return clean
 
 /proc/land_suggestion_text(suggest)
 	switch(suggest)
+		if("COLONY") return "a colony has stood there for days with members living in it"
 		if("OPEN") return "ready to settle: enough people live there and the mainland can spare them"
 		if("PAUSE") return "consider pausing new starts: the mainland is quiet or this land has outgrown it"
 		if("RESUME") return "ready to resume new starts"
@@ -97,7 +111,8 @@ var/global/list/land_suggestions_told = list() // region id -> the suggestion ad
 	for(var/mob/living/human/H in human_mob_list)
 		if(H.persistence_owner_ckey && H.stat != DEAD && !QDELETED(H))
 			living++
-	var/list/answer = transfer_bridge.request("/land/sample", list("players" = length(clients), "living" = living))
+	var/list/colonies = map ? map.colony_report() : list()
+	var/list/answer = transfer_bridge.request("/land/sample", list("players" = length(clients), "living" = living, "colonies" = colonies))
 	return answer && answer["ok"]
 
 // A refresh when the copy is older than LAND_STAGE_REFRESH; called by the
@@ -105,6 +120,9 @@ var/global/list/land_suggestions_told = list() // region id -> the suggestion ad
 /proc/land_stages_refresh_due()
 	if(land_stages_checked && world.time - land_stages_checked < LAND_STAGE_REFRESH)
 		return FALSE
+	// A land across the sea keeps its chart current too: whether it is settled (land_choices.dm).
+	if(shard_group.kind == "EXPEDITION")
+		world_chart_refresh()
 	return land_stages_refresh()
 
 // The stage of a land: MAINLAND, CLOSED, FRONTIER, COLONY or OPEN.

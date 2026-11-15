@@ -3,7 +3,8 @@
 // tanks. They are built piece by piece only (vehicle_projects.dm), never in
 // one go, from the same body layouts map vehicles use. Each spec is data:
 // the layout, the footprint, what it costs, how much of the steel is the
-// turret and gun, and the research it needs beyond the press's own.
+// turret and gun (heavier for bigger tanks), the research it needs beyond the
+// press's own, and a fixed hull material if it has one (vehicle_hulls.dm).
 //
 // A works vehicle leaves with an empty tank, empty shell racks and no loose
 // guns, ammunition or supplies: the layout's free extras are left out. A
@@ -14,23 +15,28 @@ var/global/list/works_vehicle_specs = list(
 	"Scout car" = list("path" = /obj/effects/premadevehicles/kurogane/type95, "size" = 3, "node" = null, "gun" = 0,
 		"cost" = list("steel" = 50, "glass" = 4, "cloth" = 4, "cable" = 10, "wheels" = 4)),
 	"Field car" = list("path" = /obj/effects/premadevehicles/car/mercedes, "size" = 3, "node" = null, "gun" = 0,
-		"cost" = list("steel" = 90, "glass" = 6, "cloth" = 4, "cable" = 10, "wheels" = 4)),
+		"cost" = list("steel" = 70, "glass" = 6, "cloth" = 4, "cable" = 10, "wheels" = 4)),
 	"Cargo truck" = list("path" = /obj/effects/premadevehicles/truck/daf, "size" = 4, "node" = null, "gun" = 0,
-		"cost" = list("steel" = 80, "glass" = 8, "cloth" = 6, "cable" = 10, "wheels" = 4)),
+		"cost" = list("steel" = 110, "glass" = 8, "cloth" = 6, "cable" = 10, "wheels" = 4)),
+	// Longer than the press's usual 4x4 bay: it needs a 5x5 bay when started
+	// ("oversize"), but a press can still be set up where only 4x4 fits.
+	"Double-decker bus" = list("path" = /obj/effects/premadevehicles/bus/doubledecker, "size" = 5, "node" = null, "gun" = 0, "oversize" = TRUE,
+		"cost" = list("steel" = 110, "glass" = 14, "cloth" = 10, "cable" = 12, "wheels" = 4)),
 	"Armoured car" = list("path" = /obj/effects/premadevehicles/apc/ba64, "size" = 3, "node" = "mechanized_war", "gun" = 0,
 		"cost" = list("steel" = 120, "cloth" = 4, "cable" = 10, "wheels" = 4)),
 	"Tankette" = list("path" = /obj/effects/premadevehicles/tank/l3, "size" = 3, "node" = "mechanized_war", "gun" = 0,
 		"cost" = list("steel" = 140, "cloth" = 4, "cable" = 10, "tracks" = 4)),
-	"Tracked carrier" = list("path" = /obj/effects/premadevehicles/apc/m113, "size" = 4, "node" = "mechanized_war", "gun" = 0,
-		"cost" = list("steel" = 180, "cloth" = 6, "cable" = 12, "tracks" = 4)),
-	"Light tank" = list("path" = /obj/effects/premadevehicles/tank/bt7, "size" = 4, "node" = "mechanized_war", "gun" = 70, "turret" = "round_tank_turret", "turret_x" = -16,
-		"cost" = list("steel" = 220, "cloth" = 4, "cable" = 12, "tracks" = 4)),
+	// The M113 layout is an aluminium hull (1960): only aluminium.
+	"Tracked carrier" = list("path" = /obj/effects/premadevehicles/apc/m113, "size" = 4, "node" = "mechanized_war", "gun" = 0, "hull" = "aluminium",
+		"cost" = list("aluminium" = 112, "steel" = 40, "cloth" = 6, "cable" = 12, "tracks" = 4)),
+	"Light tank" = list("path" = /obj/effects/premadevehicles/tank/bt7, "size" = 4, "node" = "mechanized_war", "gun" = 40, "turret" = "round_tank_turret", "turret_x" = -16,
+		"cost" = list("steel" = 190, "cloth" = 4, "cable" = 12, "tracks" = 4)),
 	"Medium tank" = list("path" = /obj/effects/premadevehicles/tank/t34, "size" = 4, "node" = "mechanized_war", "gun" = 70, "turret" = "tank_turret", "turret_x" = 0,
 		"cost" = list("steel" = 300, "cloth" = 6, "cable" = 14, "tracks" = 4)),
-	"Heavy tank" = list("path" = /obj/effects/premadevehicles/tank/kv1, "size" = 4, "node" = "mechanized_war", "gun" = 70, "turret" = "tank_turret", "turret_x" = 0,
-		"cost" = list("steel" = 380, "cloth" = 6, "cable" = 14, "tracks" = 4)),
-	"Main battle tank" = list("path" = /obj/effects/premadevehicles/tank/t55, "size" = 4, "node" = "modern_armor", "gun" = 70, "turret" = "round_tank_turret", "turret_x" = 0,
-		"cost" = list("steel" = 460, "cloth" = 6, "cable" = 16, "tracks" = 4)),
+	"Heavy tank" = list("path" = /obj/effects/premadevehicles/tank/kv1, "size" = 4, "node" = "mechanized_war", "gun" = 100, "turret" = "tank_turret", "turret_x" = 0,
+		"cost" = list("steel" = 410, "cloth" = 6, "cable" = 14, "tracks" = 4)),
+	"Main battle tank" = list("path" = /obj/effects/premadevehicles/tank/t55, "size" = 4, "node" = "modern_armor", "gun" = 130, "turret" = "round_tank_turret", "turret_x" = 0,
+		"cost" = list("steel" = 520, "cloth" = 6, "cable" = 16, "tracks" = 4)),
 )
 
 // Model -> layout for the works vehicles this press builds.

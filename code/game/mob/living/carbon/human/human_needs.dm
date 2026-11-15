@@ -45,18 +45,18 @@
 	fade_mood_causes()
 	switch(mood)
 		if(-5000000 to 10)
-			flash_sadness(mood/40)
+			flash_sadness((50-mood)/40)
 			mood_modifier = 0.8
 		if(10 to 20)
-			flash_sadness(mood/40)
+			flash_sadness((50-mood)/40)
 			mood_modifier = 0.85
 		if(20 to 30)
 			if (prob(35))
-				flash_sadness(mood/40)
+				flash_sadness((50-mood)/40)
 			mood_modifier = 0.90
 		if(30 to 40)
 			if (prob(30))
-				flash_sadness(mood/40)
+				flash_sadness((50-mood)/40)
 			mood_modifier = 0.95
 		if(40 to 60)
 			mood_modifier = 1

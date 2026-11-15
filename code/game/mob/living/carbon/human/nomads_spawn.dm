@@ -233,15 +233,20 @@
 				var/custom_new_hair = WWinput(src, "Choose the hair color:","Character Customization","Randomize",possible_h_list)
 				if (custom_new_hair == "Randomize")
 					possible_h_list -= "Randomize"
+				else
+					possible_h_list = list(custom_new_hair)
 				var/custom_new_eyes = WWinput(src, "Choose the eye color:","Character Customization","Randomize",possible_e_list)
 				if (custom_new_eyes == "Randomize")
 					possible_e_list -= "Randomize"
+				else
+					possible_e_list = list(custom_new_eyes)
 				var/custom_s_tone = player_input(src, "Choose the skin tone ([abs(possible_s_range[1])] to [abs(possible_s_range[2])]):", "Character Customization", null, "num", null, FALSE)
 				if (custom_s_tone > abs(possible_s_range[2]))
 					custom_s_tone = abs(possible_s_range[2])
-				else if (s_tone < abs(possible_s_range[1]))
+				else if (custom_s_tone < abs(possible_s_range[1]))
 					custom_s_tone = abs(possible_s_range[1])
 				s_tone = -(custom_s_tone)
+				possible_s_range = list(s_tone,s_tone)
 				var/list/sec_lang_list = list("Randomize","Russian","Zulu","Arabic","Latin")
 				sec_lang_list -= choice1
 				var/sec_lang = WWinput(src, "Choose your secondary language:","Character Customization","Randomize",sec_lang_list)
@@ -350,8 +355,8 @@
 			else
 				if ("temperate" && y<100)
 					add_language("Japanese",TRUE)
-					remove_language("Japanese")
-					remove_note("Known Languages","Japanese")
+					remove_language("English")
+					remove_note("Known Languages","English")
 					for (var/datum/language/japanese/A in languages)
 						default_language = A
 					name = species.get_random_japanese_name(gender)
@@ -363,8 +368,8 @@
 					give_languages()
 				else if (y>100)
 					add_language("Ainu",TRUE)
-					remove_language("Ainu")
-					remove_note("Known Languages","Ainu")
+					remove_language("English")
+					remove_note("Known Languages","English")
 					for (var/datum/language/ainu/A in languages)
 						default_language = A
 					name = species.get_random_ainu_name(gender)
@@ -527,7 +532,7 @@
 				name = species.get_random_scottishgaelic_name(gender)
 				real_name = name
 				add_note("Known Languages", "Scottish gaelic")
-				possible_h_list = list("Orange","Light Brown","Red","Dark brown")
+				possible_h_list = list("Orange","Light Brown","Red","Dark Brown")
 				possible_e_list = list("Brown","Green", "Blue")
 				possible_s_range = list(-15,-30)
 
@@ -540,7 +545,7 @@
 				name = species.get_random_welsh_name(gender)
 				real_name = name
 				add_note("Known Languages", "Welsh")
-				possible_h_list = list("Light Brown","Dark brown","Black")
+				possible_h_list = list("Light Brown","Dark Brown","Black")
 				possible_e_list = list("Brown","Green")
 				possible_s_range = list(-15,-30)
 
@@ -731,7 +736,7 @@
 	else if (map.ID == MAP_NOMADS_MEDITERRANEAN)
 		if (y<100) //SOUTH
 			if (x<100) 			//SOUTH-WEST
-				add_language("Arabic",TRUE)
+				add_language("Spanish",TRUE)
 				remove_language("English")
 				remove_note("Known Languages","English")
 				for (var/datum/language/spanish/A in languages)
@@ -841,9 +846,9 @@
 				add_language("Egyptian",TRUE)
 				remove_language("English")
 				remove_note("Known Languages","English")
-				for (var/datum/language/cherokee/A in languages)
+				for (var/datum/language/egyptian/A in languages)
 					default_language = A
-				name = species.get_random_cherokee_name(gender)
+				name = species.get_random_egyptian_name(gender)
 				real_name = name
 				add_note("Known Languages", "Egyptian")
 				possible_h_list = list("Dark Brown","Black")

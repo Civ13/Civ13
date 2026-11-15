@@ -220,6 +220,7 @@
 	if (emptyTurf)
 		var/mob/living/simple_animal/spawnedMob = new create_path(emptyTurf)
 		spawnedMob.origin = src
+		spawnedMob.make_wild()
 		register_spawned(spawnedMob)
 		if (istype(spawnedMob, /mob/living/simple_animal/hostile/bear))
 			var/mob/living/simple_animal/hostile/bear/B = spawnedMob

@@ -17,6 +17,7 @@
 /obj/structure/car_workshop
 	var/piece_projects = TRUE     // offers piece-by-piece projects
 	var/project = null            // model being built piece by piece
+	var/project_hull = null       // its hull when not steel (vehicle_hulls.dm)
 	var/project_done = 0
 	var/list/project_paid = list()
 	var/tmp/list/project_frames = list()
@@ -52,7 +53,7 @@ var/global/list/vehicle_project_layouts = list() // "type|model" -> layout
 /obj/structure/car_workshop/proc/project_plan(model)
 	if (!piece_projects || !(model in models()))
 		return null
-	var/key = "[type]|[model]"
+	var/key = "[type]|[model]|[project == model ? project_hull : null]"
 	if (vehicle_project_plans[key])
 		return vehicle_project_plans[key]
 	var/list/cost = costs(model)
@@ -64,22 +65,25 @@ var/global/list/vehicle_project_layouts = list() // "type|model" -> layout
 	var/list/spec = works_spec(model)
 	var/gun = spec ? spec["gun"] : 0
 	steel -= gun
-	var/per = round(steel / 5)
+	// An airframe of wood or aluminium pays its frame and skin in that
+	// material and its engine in steel; otherwise all three are steel.
+	var/hull = vehicle_project_hull(cost)
+	var/per = hull == "steel" ? round(steel / 5) : round(cost[hull] / 4)
 	var/datum/piece_plan/P = new
 	P.name = model
 	var/list/stages = list()
 	if (per > 0)
-		stages += list(list("name" = words["frames"][1], "pieces" = 2, "cost" = list("steel" = per), "part" = "frames", "verb" = words["frames"][2]))
+		stages += list(list("name" = words["frames"][1], "pieces" = 2, "cost" = list("[hull]" = per), "part" = "frames", "verb" = words["frames"][2]))
 	if (cost["wheels"])
 		stages += list(list("name" = words["wheels"][1], "pieces" = cost["wheels"], "cost" = list("wheels" = 1), "part" = "wheels", "verb" = words["wheels"][2]))
 	if (cost["tracks"])
 		stages += list(list("name" = words["tracks"][1], "pieces" = cost["tracks"], "cost" = list("tracks" = 1), "part" = "wheels", "verb" = words["tracks"][2]))
-	var/list/engine = list("steel" = steel - 4 * per)
+	var/list/engine = list("steel" = hull == "steel" ? steel - 4 * per : steel)
 	if (cost["cable"])
 		engine["cable"] = cost["cable"]
 	stages += list(list("name" = words["engine"][1], "pieces" = 1, "cost" = engine, "part" = "engine", "verb" = words["engine"][2]))
 	if (per > 0)
-		stages += list(list("name" = words["body"][1], "pieces" = 2, "cost" = list("steel" = per), "part" = "body", "verb" = words["body"][2]))
+		stages += list(list("name" = words["body"][1], "pieces" = 2, "cost" = list("[hull]" = per), "part" = "body", "verb" = words["body"][2]))
 	if (cost["glass"])
 		stages += list(list("name" = words["windows"][1], "pieces" = 1, "cost" = list("glass" = cost["glass"]), "part" = "windows", "verb" = words["windows"][2]))
 	if (cost["cloth"])
@@ -89,6 +93,15 @@ var/global/list/vehicle_project_layouts = list() // "type|model" -> layout
 	P.stages = stages
 	vehicle_project_plans[key] = P
 	return P
+
+// The material a project's frame and body are paid in: "wood" or
+// "aluminium" when the cost names one (a quarter each for the four pieces,
+// so those costs are multiples of 4), else "steel".
+/proc/vehicle_project_hull(list/cost)
+	for (var/hull in list("aluminium", "wood"))
+		if (cost[hull])
+			return hull
+	return "steel"
 
 // Where the parts of model stand in the bay: "dx,dy" from the press -> part
 // paths, the same cells complete_assembly() fills.
@@ -174,14 +187,17 @@ var/global/list/vehicle_project_layouts = list() // "type|model" -> layout
 		return "Clear the northeast [model_size(model)]x[model_size(model)] bay of people and objects, on dry open floor, before starting."
 	return null
 
-/obj/structure/car_workshop/proc/start_project(model)
+/obj/structure/car_workshop/proc/start_project(model, hull = null)
 	project = model
+	var/list/hulls = hull_choices(model)
+	project_hull = hull && hull != "steel" ? hull : (hulls.len == 1 && hulls[1] != "steel" ? hulls[1] : null)
 	project_done = 0
 	project_paid = list()
 	update_project_frames()
 
 /obj/structure/car_workshop/proc/abandon_project()
 	project = null
+	project_hull = null
 	project_done = 0
 	project_paid = list()
 	clear_project_frames()
@@ -289,6 +305,7 @@ var/global/list/vehicle_project_layouts = list() // "type|model" -> layout
 		result = complete_assembly(model)
 		if (result)
 			project = null
+			project_hull = null
 			project_done = 0
 			project_paid = list()
 			log_game("[key_name(H)] rolled out a [model] built piece by piece at [x],[y],[z].")
@@ -301,13 +318,16 @@ var/global/list/vehicle_project_layouts = list() // "type|model" -> layout
 		update_project_frames()
 	return result
 
-// Menu entries for projects: label -> action.
-/obj/structure/car_workshop/proc/project_options()
+// Menu entries for projects: label -> action. With H, models whose own
+// research H lacks are left out.
+/obj/structure/car_workshop/proc/project_options(mob/living/human/H = null)
 	. = list()
 	if (!piece_projects)
 		return
 	if (!project)
 		for (var/model in models())
+			if (H && length(model_missing_research(H, model)))
+				continue
 			if (project_plan(model) && project_layout(model))
 				.["Start a [model] piece by piece"] = model
 		return
@@ -331,10 +351,18 @@ var/global/list/vehicle_project_layouts = list() // "type|model" -> layout
 	if (refusal)
 		to_chat(H, SPAN_WARNING(refusal))
 		return
-	start_project(action)
+	var/hull = null
+	var/list/hulls = hull_choices(action, H)
+	if (hulls.len > 1)
+		hull = WWinput(H, "Build the [action]'s hull in steel, or in lighter aluminium that drives faster but stops less? Aluminium costs four fifths as much as the hull's steel.", name, "steel", hulls)
+		if (!(hull in hulls))
+			hull = null
+		if (busy || !Adjacent(H) || project_refusal(action, H))
+			return
+	start_project(action, hull)
 	var/datum/piece_plan/P = get_project_plan()
 	log_game("[key_name(H)] started a [action] project at [x],[y],[z].")
-	to_chat(H, SPAN_NOTICE("The jig is set up for a [action]: [P.total_pieces()] pieces, [piece_cost_text(P.total_cost())] in all. [project_status()] Bring the materials to the press or to the vehicle in the bay; drag wheels or tank tracks onto either."))
+	to_chat(H, SPAN_NOTICE("The jig is set up for a [action][project_hull ? " in [project_hull]" : ""]: [P.total_pieces()] pieces, [piece_cost_text(P.total_cost())] in all. [project_status()] Bring the materials to the press or to the vehicle in the bay; drag wheels or tank tracks onto either."))
 
 // ---- The vehicle in the bay ----
 

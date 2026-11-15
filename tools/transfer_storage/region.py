@@ -12,6 +12,7 @@ lacks a journaled effect gets it back to replay, so a trip takes seconds rather
 than two world saves.
 """
 import hashlib
+import re
 import secrets
 import json
 import sqlite3
@@ -41,7 +42,7 @@ REMOVE, CREDIT, RETURN = 'remove', 'credit', 'return'
 TENTATIVE, CONFIRMED, JOURNALED = 'tentative', 'confirmed', 'journaled'
 
 
-ACCOUNT_OPS = ('claim', 'arrive', 'depart', 'release')
+ACCOUNT_OPS = ('claim', 'arrive', 'depart', 'release', 'colony', 'colony_used', 'start')
 
 # A land's settlement stage (docs/land-stages.md). The mainland is always
 # MAINLAND; the coordinator keeps every other land's stage.
@@ -60,6 +61,28 @@ def land_stage_valid(entry):
             and entry.get('paused') in (True, False) and (entry.get('by') is None or account_key_valid(entry.get('by')))
             and isinstance(entry.get('at'), int))
 
+
+
+MAX_COLONIES = 50
+MAX_NATIONS = 200
+MAX_NATION_REQUESTS = 200
+NATION_RESULT_SECONDS = 7 * 24 * 3600
+FACTION_NAME_MAX = 64
+
+
+def faction_id_valid(value):
+    """A faction named with the land it was founded in: civ:<land>:<name>
+    (party_train.dm party_train_faction_party)."""
+    if type(value) is not str or len(value) > 100 or not value.startswith('civ:'):
+        return False
+    land, sep, name = value[4:].partition(':')
+    return bool(sep) and land_id_valid(land) and 0 < len(name) <= FACTION_NAME_MAX
+
+
+def colony_valid(c):
+    return (type(c) is dict and faction_id_valid(c.get('parent')) and type(c.get('name')) is str
+            and 0 < len(c['name']) <= FACTION_NAME_MAX and type(c.get('age_hours')) is int
+            and 0 <= c['age_hours'] <= 1_000_000 and type(c.get('members')) is int and 0 <= c['members'] <= 1000)
 
 def account_key_valid(ckey):
     """A BYOND ckey: lowercase letters, digits and @, 1 to 32 characters."""
@@ -204,13 +227,33 @@ class RegionStore(TrainLeaseQueue):
         db.execute('''CREATE TABLE IF NOT EXISTS land_request(
             id INTEGER PRIMARY KEY AUTOINCREMENT, region TEXT NOT NULL, stage TEXT NOT NULL,
             paused INTEGER NOT NULL, admin TEXT NOT NULL)''')
+        # The world chart (docs/world-chart.md): this region's copy, and admin
+        # chart requests waiting for the coordinator's next pass.
+        db.execute("INSERT OR IGNORE INTO meta VALUES ('chart', '{}')")
+        db.execute('''CREATE TABLE IF NOT EXISTS chart_request(
+            id INTEGER PRIMARY KEY AUTOINCREMENT, op TEXT NOT NULL, x INTEGER NOT NULL, y INTEGER NOT NULL,
+            owner TEXT, admin TEXT NOT NULL)''')
+        # A ship's course names its voyage (added for boat expeditions' voyages).
+        if 'voyage' not in [row[1] for row in db.execute('PRAGMA table_info(chart_request)')]:
+            db.execute('ALTER TABLE chart_request ADD COLUMN voyage TEXT')
         db.execute("INSERT OR IGNORE INTO meta VALUES ('train_history', '0')")
         self.init_train_leases()
         db.execute('CREATE TABLE IF NOT EXISTS train_home_lock(ckey TEXT PRIMARY KEY)')
+        # Colony starts granted to accounts whose home the coordinator moved
+        # here for one (colony_charter.dm): ckey -> the colony's parent faction.
+        db.execute('CREATE TABLE IF NOT EXISTS colony_grant(ckey TEXT PRIMARY KEY, faction TEXT NOT NULL)')
+        # Nations (docs/land-stages.md, "Nations"): the registry as the
+        # coordinator last sent it, leaders' requests waiting for its next
+        # pass, and outcomes waiting for the world to tell the leader.
+        db.execute("INSERT OR IGNORE INTO meta VALUES ('nations', '{}')")
+        db.execute('CREATE TABLE IF NOT EXISTS nation_request(id INTEGER PRIMARY KEY AUTOINCREMENT, body TEXT NOT NULL)')
+        db.execute('''CREATE TABLE IF NOT EXISTS nation_result(
+            id INTEGER PRIMARY KEY, actor TEXT NOT NULL, faction TEXT NOT NULL, text TEXT NOT NULL, at INTEGER NOT NULL)''')
         db.execute('CREATE TABLE IF NOT EXISTS train_home_wait(ckey TEXT PRIMARY KEY, target TEXT NOT NULL, epoch TEXT NOT NULL)')
         db.execute('CREATE TABLE IF NOT EXISTS train_custody_witness(transfer_id TEXT PRIMARY KEY, epoch TEXT NOT NULL)')
         columns = {r[1] for r in db.execute('PRAGMA table_info(account_request)')}
-        for column, sql in (('homes_epoch', "TEXT NOT NULL DEFAULT ''"), ('home_rev', 'INTEGER NOT NULL DEFAULT 0')):
+        for column, sql in (('homes_epoch', "TEXT NOT NULL DEFAULT ''"), ('home_rev', 'INTEGER NOT NULL DEFAULT 0'),
+                            ('faction', "TEXT NOT NULL DEFAULT ''")):
             if column not in columns:
                 db.execute('ALTER TABLE account_request ADD COLUMN ' + column + ' ' + sql)
 
@@ -710,7 +753,7 @@ class RegionStore(TrainLeaseQueue):
 
     # -- home worlds --------------------------------------------------------
 
-    def account(self, ckey, op, region=None, body=False):
+    def account(self, ckey, op, region=None, body=False, faction=None):
         """One account question or request from DM.
 
         claim: may this account play here? HOME, ELSEWHERE (with its home) or
@@ -720,14 +763,21 @@ class RegionStore(TrainLeaseQueue):
         for the coordinator's next pass. A claim with body (a living character of
         the account is here) asks for custody when the account has no home, so a
         lost coordinator ledger cannot strand a character off the mainland.
+        colony: start the account's next character at its faction's colony in
+        region (faction names the parent; the coordinator checks the colony
+        stands there and grants the start). colony_used: that start was taken.
+        A HOME claim says which colony start, if any, is granted here. start:
+        start the account's next character in the wilds of region, an OPEN land.
         """
         if not account_key_valid(ckey):
             raise TransferError('bad account key')
         if op not in ACCOUNT_OPS:
             raise TransferError('unknown account operation')
-        target = self.region if op != 'depart' else region
-        if op == 'depart' and (not isinstance(region, str) or not region or region == self.region):
-            raise TransferError('depart needs another region')
+        target = region if op in ('depart', 'colony', 'start') else self.region
+        if op in ('depart', 'colony', 'start') and (not isinstance(region, str) or not region or region == self.region):
+            raise TransferError(op + ' needs another region')
+        if op in ('colony', 'colony_used') and not faction_id_valid(faction):
+            raise TransferError('bad faction id')
         with self._tx():
             locked = self.db.execute('SELECT 1 FROM train_home_lock WHERE ckey = ?', (ckey,)).fetchone() or self.db.execute('SELECT 1 FROM train_home_wait WHERE ckey = ?', (ckey,)).fetchone()
             for (request,) in self.db.execute("SELECT request FROM train_lease WHERE state IN ('pending','granted','cancel_pending','sealed')"):
@@ -745,7 +795,8 @@ class RegionStore(TrainLeaseQueue):
             home = self.home_of(ckey)
             if op == 'claim':
                 if not queued and home == self.region:
-                    return {'verdict': 'HOME', 'home': home}
+                    grant = self.db.execute('SELECT faction FROM colony_grant WHERE ckey = ?', (ckey,)).fetchone()
+                    return {'verdict': 'HOME', 'home': home, 'colony_grant': grant[0] if grant else None}
                 if not queued and home is not None:
                     return {'verdict': 'ELSEWHERE', 'home': home}
                 mainland = self._meta('mainland')
@@ -756,8 +807,10 @@ class RegionStore(TrainLeaseQueue):
                     return {'verdict': 'ELSEWHERE', 'home': mainland}
                 if op in queued or 'claim' in queued:
                     return {'verdict': 'PENDING', 'home': home}
-            self.db.execute('INSERT INTO account_request(ckey, op, region, homes_epoch, home_rev) VALUES (?, ?, ?, ?, ?)',
-                            (ckey, op, target, self._meta('homes_epoch'), int(self._meta('homes_rev'))))
+            if op == 'colony_used':
+                self.db.execute('DELETE FROM colony_grant WHERE ckey = ?', (ckey,))
+            self.db.execute('INSERT INTO account_request(ckey, op, region, homes_epoch, home_rev, faction) VALUES (?, ?, ?, ?, ?, ?)',
+                            (ckey, op, target, self._meta('homes_epoch'), int(self._meta('homes_rev')), faction or ''))
         return {'verdict': 'PENDING', 'home': home}
 
     def home_of(self, ckey):
@@ -766,17 +819,23 @@ class RegionStore(TrainLeaseQueue):
 
     def account_requests(self):
         """For the coordinator: queued requests and how current our ledger copy is."""
-        return {'requests': [dict(zip(('id', 'ckey', 'op', 'region', 'homes_epoch', 'home_rev'), r)) for r in self.db.execute(
-                    'SELECT id, ckey, op, region, homes_epoch, home_rev FROM account_request ORDER BY id')],
+        return {'requests': [dict(zip(('id', 'ckey', 'op', 'region', 'homes_epoch', 'home_rev', 'faction'), r)) for r in self.db.execute(
+                    'SELECT id, ckey, op, region, homes_epoch, home_rev, faction FROM account_request ORDER BY id')],
                 'epoch': self._meta('homes_epoch'), 'rev': int(self._meta('homes_rev')),
                 'store': self._meta('store_id'), 'train_history': self._meta('train_history') == '1', 'train_requests': self.train_lease_requests(),
                 'land_sample': json.loads(self._meta('land_sample') or 'null'),
                 'land_requests': [dict(zip(('id', 'region', 'stage', 'paused', 'admin'), (i, r, st, bool(p), a)))
                                   for i, r, st, p, a in self.db.execute(
-                                      'SELECT id, region, stage, paused, admin FROM land_request ORDER BY id')]}
+                                      'SELECT id, region, stage, paused, admin FROM land_request ORDER BY id')],
+                'chart_rev': json.loads(self._meta('chart')).get('key'),
+                'chart_requests': [dict(zip(('id', 'op', 'x', 'y', 'owner', 'admin', 'voyage'), row)) for row in self.db.execute(
+                    'SELECT id, op, x, y, owner, admin, voyage FROM chart_request ORDER BY id')],
+                'nation_requests': [dict(json.loads(b), id=i) for i, b in self.db.execute(
+                    'SELECT id, body FROM nation_request ORDER BY id')]}
 
     def apply_homes(self, epoch, rev, rows, done, reset=False, mainland=None, train_locks=None, train_decisions=None,
-                    lands=None, land_done=None):
+                    lands=None, land_done=None, chart=None, chart_done=None, colony_grants=None,
+                    nations=None, nation_results=None):
         """The coordinator's answer: ledger rows newer than our copy (region
         None removes a home) and the request ids it has decided."""
         if not isinstance(epoch, str) or not epoch or not isinstance(rev, int) or rev < 0:
@@ -816,6 +875,45 @@ class RegionStore(TrainLeaseQueue):
                 self._set_meta('lands', json.dumps(lands, sort_keys=True))
             for request_id in land_done or []:
                 self.db.execute('DELETE FROM land_request WHERE id = ?', (int(request_id),))
+            # The coordinator's grants for this land replace ours; an older
+            # coordinator sends none, and we keep what we have.
+            if colony_grants is not None:
+                if type(colony_grants) is not list or not all(
+                        type(g) is dict and account_key_valid(g.get('ckey')) and faction_id_valid(g.get('faction'))
+                        for g in colony_grants):
+                    raise TransferError('invalid colony grants')
+                self.db.execute('DELETE FROM colony_grant')
+                for g in colony_grants:
+                    self.db.execute('INSERT OR REPLACE INTO colony_grant VALUES (?, ?)', (g['ckey'], g['faction']))
+            # The chart comes only when ours is older; keep ours otherwise.
+            if chart is not None:
+                if type(chart) is not dict or not isinstance(chart.get('key'), str) or type(chart.get('rows')) is not list \
+                        or not all(isinstance(r, str) for r in chart['rows']) or type(chart.get('tiles')) is not dict:
+                    raise TransferError('invalid world chart snapshot')
+                self._set_meta('chart', json.dumps(chart, sort_keys=True))
+            for request_id in chart_done or []:
+                self.db.execute('DELETE FROM chart_request WHERE id = ?', (int(request_id),))
+            if nations is not None:
+                if type(nations) is not dict or len(nations) > MAX_NATIONS:
+                    raise TransferError('invalid nation registry')
+                self._set_meta('nations', json.dumps(nations, sort_keys=True))
+            if nation_results is not None:
+                if type(nation_results) is not list or not all(
+                        type(r) is dict and type(r.get('id')) is int and (r.get('text') is None or isinstance(r['text'], str))
+                        for r in nation_results):
+                    raise TransferError('invalid nation results')
+                now = int(time.time())
+                for r in nation_results:
+                    row = self.db.execute('SELECT body FROM nation_request WHERE id = ?', (r['id'],)).fetchone()
+                    if not row:
+                        continue
+                    asked = json.loads(row[0])
+                    if r['text']:
+                        self.db.execute('INSERT OR REPLACE INTO nation_result VALUES (?, ?, ?, ?, ?)',
+                                        (r['id'], asked['actor'], asked['faction'], r['text'][:300], now))
+                    self.db.execute('DELETE FROM nation_request WHERE id = ?', (r['id'],))
+                # A leader who never comes back does not keep outcomes forever.
+                self.db.execute('DELETE FROM nation_result WHERE at < ?', (now - NATION_RESULT_SECONDS,))
         return {'rev': rev}
 
     # -- land stages ---------------------------------------------------------
@@ -838,14 +936,20 @@ class RegionStore(TrainLeaseQueue):
                                      (region, stage, 1 if paused else 0, admin))
         return {'id': cursor.lastrowid}
 
-    def land_sample(self, players, living):
+    def land_sample(self, players, living, colonies=None):
         """The world's population now: players connected and living characters
-        that belong to an account. The coordinator reads the latest one each pass."""
+        that belong to an account, and the colonies planted here (each with the
+        faction it was planted for, its local name, its age in hours, and its living
+        members). The coordinator reads the latest one each pass."""
         if type(players) is not int or type(living) is not int or not 0 <= players <= 1000 or not 0 <= living <= 10000:
             raise TransferError('bad population sample')
+        colonies = [] if colonies is None else colonies
+        if type(colonies) is not list or len(colonies) > MAX_COLONIES or not all(colony_valid(c) for c in colonies):
+            raise TransferError('bad colony list')
+        sample = {'players': players, 'living': living, 'at': int(time.time()),
+                  'colonies': [{k: c[k] for k in ('parent', 'name', 'age_hours', 'members')} for c in colonies]}
         with self._tx():
-            self._set_meta('land_sample', json.dumps({'players': players, 'living': living, 'at': int(time.time())},
-                                                     sort_keys=True))
+            self._set_meta('land_sample', json.dumps(sample, sort_keys=True))
         return {}
 
     def lands(self):
@@ -855,6 +959,82 @@ class RegionStore(TrainLeaseQueue):
                 'pending': [dict(zip(('region', 'stage', 'paused', 'admin'), (r, st, bool(p), a)))
                             for r, st, p, a in self.db.execute(
                                 'SELECT region, stage, paused, admin FROM land_request ORDER BY id')]}
+
+    # -- nations -------------------------------------------------------------
+
+    def request_nation(self, body):
+        """A faction leader's nation request from this world, decided on the
+        coordinator's next pass (tools/transfer_storage/nations.py)."""
+        from tools.transfer_storage.nations import nation_request_valid
+        if type(body) is not dict:
+            raise TransferError('bad nation request')
+        request = {k: body[k] for k in ('op', 'actor', 'faction', 'name', 'with', 'nation', 'applicant', 'yes',
+                                        'candidate', 'to', 'tier') if k in body}
+        if not nation_request_valid(request):
+            raise TransferError('bad nation request')
+        if not request['faction'].startswith('civ:%s:' % self.region):
+            raise TransferError('a world asks only for its own factions')
+        with self._tx():
+            if self.db.execute('SELECT COUNT(*) FROM nation_request').fetchone()[0] >= MAX_NATION_REQUESTS:
+                raise TransferError('too many nation requests waiting')
+            cursor = self.db.execute('INSERT INTO nation_request(body) VALUES (?)', (json.dumps(request, sort_keys=True),))
+        return {'id': cursor.lastrowid}
+
+    def nations(self):
+        """The nation registry as last sent by the coordinator, requests still
+        waiting for it, and outcomes the world has not yet told."""
+        return {'nations': json.loads(self._meta('nations')),
+                'pending': [json.loads(b) for (b,) in self.db.execute('SELECT body FROM nation_request ORDER BY id')],
+                'results': [dict(zip(('id', 'actor', 'faction', 'text'), row)) for row in self.db.execute(
+                    'SELECT id, actor, faction, text FROM nation_result ORDER BY id')]}
+
+    def nation_seen(self, ids):
+        """Outcomes the world has told their leader."""
+        if type(ids) is not list or not all(type(i) is int for i in ids):
+            raise TransferError('bad nation result ids')
+        with self._tx():
+            for i in ids:
+                self.db.execute('DELETE FROM nation_result WHERE id = ?', (i,))
+        return {}
+
+    # -- world chart ---------------------------------------------------------
+
+    def request_chart(self, op, x, y, admin, owner=None, voyage=None):
+        """A chart change from this world, decided on the coordinator's next
+        pass: an admin's 'reroll' of a charted tile or 'reveal' of the tiles
+        round one for an owner, or a ship's 'scout' (what her crew saw round a
+        tile) or 'course' (she set course for a land; voyage names her
+        voyage), or a land's own crew deciding on it: 'settle', 'claim' (owner
+        is the colony's parent faction), 'unclaim' (that faction gives its claim
+        up) or 'abandon'. admin is the account asking."""
+        if op not in ('reroll', 'reveal', 'scout', 'course', 'settle', 'claim', 'unclaim', 'abandon'):
+            raise TransferError('unknown chart request')
+        if type(x) is not int or type(y) is not int or not 0 <= x < 1000 or not 0 <= y < 1000:
+            raise TransferError('bad chart tile')
+        if not account_key_valid(admin):
+            raise TransferError('bad admin key')
+        if op in ('claim', 'unclaim'):
+            # The claim's owner is the colony's parent faction (colony_charter.dm).
+            if not (isinstance(owner, str) and re.match(r'^civ:[a-z0-9_\-]{1,40}:[^\x00-\x1f]{1,60}$', owner)):
+                raise TransferError('bad claiming faction')
+        elif op in ('settle', 'abandon'):
+            owner = None
+        elif op != 'reroll' and not (isinstance(owner, str) and re.match(r'^(admin|faction:[a-z0-9_\-]{1,40}|crew:[a-z0-9_\-]{1,40})$', owner)):
+            raise TransferError('bad chart owner')
+        if op == 'course' and not (isinstance(voyage, str) and re.match(r'^[a-z0-9_\-]{1,80}$', voyage)):
+            raise TransferError('bad voyage')
+        with self._tx():
+            cursor = self.db.execute('INSERT INTO chart_request(op, x, y, owner, admin, voyage) VALUES (?, ?, ?, ?, ?, ?)',
+                                     (op, x, y, owner if op not in ('reroll', 'settle', 'abandon') else None, admin,
+                                      voyage if op == 'course' else None))
+        return {'id': cursor.lastrowid}
+
+    def chart(self):
+        """The world chart as last sent by the coordinator, and the admin
+        changes still waiting for it."""
+        return {'chart': json.loads(self._meta('chart')),
+                'pending': [dict(zip(('op', 'x', 'y', 'owner', 'admin'), row)) for row in self.db.execute(
+                    'SELECT op, x, y, owner, admin FROM chart_request ORDER BY id')]}
 
     # -- inspection ---------------------------------------------------------
 

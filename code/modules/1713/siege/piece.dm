@@ -154,12 +154,10 @@
 				to_chat(M, SPAN_NOTICE("You load \the [src]."))
 				playsound(loc, 'sound/effects/lever.ogg', 100, TRUE)
 				return
-		else if (istype(W,/obj/item/weapon/wrench) && !can_assemble)
+		else if (is_tool(W, TOOL_WRENCH) && !can_assemble)
 			to_chat(M, (anchored ? SPAN_NOTICE("You start unfastening \the [src] from the floor.") : SPAN_NOTICE("You start securing \the [src] to the floor.")))
 			if (do_after(M, 3 SECONDS, src))
-				playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-				to_chat(M, (anchored ? SPAN_NOTICE("You unfasten \the [src] from the floor.") : SPAN_NOTICE("You secure \the [src] to the floor.")))
-				anchored = !anchored
+				toggle_anchor(M)
 		else if (can_assemble && assembled)
 			if (!gunner_chair && istype(W, /obj/structure/bed/chair/gunner))
 				M.remove_from_mob(W)
@@ -170,7 +168,7 @@
 				loader_chair = W
 				W.anchored = TRUE
 	else
-		if (istype(W, /obj/item/weapon/weldingtool)) // Repair normally with a welding tool
+		if (is_tool(W, TOOL_WELDER)) // Repair normally with a welding tool
 			visible_message("[M] starts repairing the [src]...")
 			if (do_after(M, 200, src))
 				visible_message("[M] successfully repairs the [src].")
@@ -260,14 +258,12 @@
 					to_chat(user, SPAN_NOTICE("You load \the [src]."))
 					if (M == user)
 						do_html(M)
-		else if (istype(W,/obj/item/weapon/wrench))
+		else if (is_tool(W, TOOL_WRENCH))
 			to_chat(M, (anchored ? SPAN_NOTICE("You start unfastening \the [src] from the floor.") : SPAN_NOTICE("You start securing \the [src] to the floor.")))
 			if (do_after(M, 3 SECONDS, src))
-				playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-				to_chat(M, (anchored ? SPAN_NOTICE("You unfasten \the [src] from the floor.") : SPAN_NOTICE("You secure \the [src] to the floor.")))
-				anchored = !anchored
+				toggle_anchor(M)
 	else
-		if (istype(W, /obj/item/weapon/weldingtool)) // Repair normally with a welding tool
+		if (is_tool(W, TOOL_WELDER)) // Repair normally with a welding tool
 			visible_message("[M] starts repairing the [src]...")
 			if (!do_after(M, 200, src))
 				return
@@ -435,9 +431,11 @@
 					spawn (6 SECONDS)
 						if (!loadable.len)
 							to_chat(user, SPAN_WARNING("There are no shells to load."))
+							is_loading = FALSE
 							return
 						chosen = WWinput(usr, "Select a tank shell to load", "Load Tank Shell", loadable[1], WWinput_list_or_null(loadable))
 						if (!chosen || chosen == "")
+							is_loading = FALSE
 							return
 						if (!chosen.persistence_set_loc(src))
 							is_loading = FALSE
@@ -576,6 +574,8 @@
 
 						travelled = 0
 						high = TRUE
+						explosion = initial(explosion)
+						incendiary = initial(incendiary)
 
 						if (fired_shell.atype == "INCENDIARY")
 							explosion = FALSE
@@ -1299,6 +1299,10 @@
 			travelled = 0
 			high = TRUE
 			var/obj/item/cannon_ball/fired_shell = loaded[1]
+			explosion = initial(explosion)
+			incendiary = initial(incendiary)
+			nuclear = initial(nuclear)
+			reagent_payload = initial(reagent_payload)
 
 			if (istype(fired_shell, /obj/item/cannon_ball/shell/gas))
 				explosion = FALSE

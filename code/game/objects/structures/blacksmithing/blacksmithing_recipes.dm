@@ -66,6 +66,23 @@ var/global/list/anvil_recipes = list(
 
 		/*Modern*/
 	"RPG-7" = list("RPG-7","guns",7,8,40,0,0,0,/obj/item/weapon/gun/launcher/rocket/rpg7/makeshift),
+		/*Machine guns: emplaced guns on their own mounts. Push one onto a vehicle's frame to carry it, or stand it on a built turret's tile to fit it there.*/
+	"Maxim 1895 Machine Gun" = list("Maxim 1895 Machine Gun","machine guns",5,8,50,0,0,0,/obj/item/weapon/gun/projectile/automatic/stationary/maxim),
+	"MG 08 Machine Gun" = list("MG 08 Machine Gun","machine guns",5,8,50,0,0,0,/obj/item/weapon/gun/projectile/automatic/stationary/mg08),
+	"Vickers Machine Gun" = list("Vickers Machine Gun","machine guns",5,8,50,0,0,0,/obj/item/weapon/gun/projectile/automatic/stationary/vickers),
+	"Hotchkiss M1914 Machine Gun" = list("Hotchkiss M1914 Machine Gun","machine guns",5,8,45,0,0,0,/obj/item/weapon/gun/projectile/automatic/stationary/hotchkiss1914),
+	"Type 3 Machine Gun" = list("Type 3 Machine Gun","machine guns",5,8,45,0,0,0,/obj/item/weapon/gun/projectile/automatic/stationary/type3),
+	"Mounted MG 34" = list("Mounted MG 34","machine guns",6,8,40,0,0,0,/obj/item/weapon/gun/projectile/automatic/stationary/mg34),
+	"Mounted M1919 Browning" = list("Mounted M1919 Browning","machine guns",6,8,40,0,0,0,/obj/item/weapon/gun/projectile/automatic/stationary/browning),
+	"Mounted Breda 30" = list("Mounted Breda 30","machine guns",6,8,40,0,0,0,/obj/item/weapon/gun/projectile/automatic/stationary/breda30),
+	"Type 92 Machine Gun" = list("Type 92 Machine Gun","machine guns",6,8,45,0,0,0,/obj/item/weapon/gun/projectile/automatic/stationary/type98),
+	"DShK Heavy Machine Gun" = list("DShK Heavy Machine Gun","machine guns",6,8,70,0,0,0,/obj/item/weapon/gun/projectile/automatic/stationary/dshk),
+	"M2 Browning Heavy Machine Gun" = list("M2 Browning Heavy Machine Gun","machine guns",6,8,70,0,0,0,/obj/item/weapon/gun/projectile/automatic/stationary/m2browning),
+	"Mounted PKM" = list("Mounted PKM","machine guns",7,8,40,0,0,0,/obj/item/weapon/gun/projectile/automatic/stationary/pkm),
+	"Mounted MG 3" = list("Mounted MG 3","machine guns",7,8,40,0,0,0,/obj/item/weapon/gun/projectile/automatic/stationary/mg3),
+	"Mounted FN MAG" = list("Mounted FN MAG","machine guns",7,8,40,0,0,0,/obj/item/weapon/gun/projectile/automatic/stationary/fnmag),
+	"30mm Autocannon" = list("30mm Autocannon","machine guns",7,8,90,0,0,0,/obj/item/weapon/gun/projectile/automatic/stationary/autocannon),
+	"NSVT Heavy Machine Gun" = list("NSVT Heavy Machine Gun","machine guns",7,8,70,0,0,0,/obj/item/weapon/gun/projectile/automatic/stationary/nsvt),
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///*Melee*///
@@ -367,8 +384,42 @@ var/global/list/anvil_recipes = list(
 
 			/*Modern*/
 	"SWAT Heavy Vest" = list("SWAT Heavy Vest","helmets",8,8,0,0,0,16,/obj/item/clothing/suit/swat),
+	/*Machine parts (code/modules/materials/machine_parts.dm): forged from sheet metal, or cast from a parts mold*/
+	"Gear Set" = list("Gear Set","parts",0,8,4,4,4,0,/obj/item/machine_part/gear),
+	"Shaft" = list("Shaft","parts",0,8,2,2,2,0,/obj/item/machine_part/shaft),
+	"Bushing" = list("Bushing","parts",0,8,2,2,2,0,/obj/item/machine_part/bearing),
+	"Spring" = list("Spring","parts",0,8,2,2,2,0,/obj/item/machine_part/spring),
+	"Drive Chain" = list("Drive Chain","parts",0,8,3,3,3,0,/obj/item/machine_part/belt),
+	"Wheel" = list("Wheel","parts",0,8,4,4,4,0,/obj/item/machine_part/wheel),
 	/*gulag*/
 	"Guard Key" = list("Guard Key","keys",6,6,3,3,3,0,/obj/item/weapon/key/soviet/guard),
 )
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Poured mold metal pays from one cost column of an anvil_recipes row, scaled.
+// Columns: 5 steel, 6 iron, 7 bronze. A metal missing here has no mold recipes.
+var/global/list/anvil_mold_costs = list(
+	"bronze" = list(7, 1),
+	"brass" = list(7, 1),
+	"copper" = list(7, 1.2),
+	"tin" = list(7, 1.4),
+	"gold" = list(5, 1),
+	"silver" = list(5, 1),
+	"lead" = list(5, 1),
+	"iron" = list(6, 1),
+	"steel" = list(5, 1),
+)
+
+/proc/anvil_mold_cost(list/row, material)
+	var/list/rule = anvil_mold_costs[material]
+	if (!row || !rule)
+		return 0
+	return row[rule[1]] * rule[2]
+
+// A row is on the menu when it is in this category, inside the era range, and costs something.
+/proc/anvil_recipe_offered(list/row, category, cost, material = null, cast = FALSE)
+	if (!(row && row[2] == category && map.ordinal_age >= row[3] && recipe_age_allowed(row[4]) && cost > 0))
+		return FALSE
+	// A machine part is only offered in a metal that can do its job.
+	return !material || !machine_part_refusal(row[9], material, cast)

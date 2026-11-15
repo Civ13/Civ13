@@ -393,22 +393,21 @@ var/global/list/fob_names_russian = list("Anna", "Boris", "Dmitri", "Yelena", "I
 	w_class = ITEM_SIZE_LARGE
 	opacity = FALSE
 	density = TRUE
-	var/health = 1000
+	health = 1000
 	layer = 4.0
 	var/faction_text = null // To what faction does it belong?
 	var/pickedfrom = null // All FOB names for that faction
 	var/pickedname = null // The chosen name from the FOB name list
 
-/obj/structure/fob_spawnpoint/proc/try_destroy()
-	if (health <= 0)
-		visible_message(SPAN_DANGER("<big>\The [src] is blown apart!</big>"))
-		message_admins("FOB at ([src.x], [src.y], [src.z] - <A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[src.x];Y=[src.y];Z=[src.z]'>JMP</a>) has been destroyed.")
-		if (pickedname)
-			pickedfrom += pickedname
-		for (var/obj/structure/flag/F in range(1, src))
-			qdel(F)
-		qdel(src)
-		return
+/obj/structure/fob_spawnpoint/break_message()
+	return "<big>\The [src] is blown apart!</big>"
+
+/obj/structure/fob_spawnpoint/on_break()
+	admin_destroyed_notice("FOB")
+	if (pickedname)
+		pickedfrom += pickedname
+	for (var/obj/structure/flag/F in range(1, src))
+		qdel(F)
 
 /obj/structure/fob_spawnpoint/attack_hand(mob/living/human/H as mob)
 	if (!faction_text)
@@ -472,7 +471,7 @@ var/global/list/fob_names_russian = list("Anna", "Boris", "Dmitri", "Yelena", "I
 	w_class = ITEM_SIZE_LARGE
 	opacity = FALSE
 	density = TRUE
-	var/health = 250
+	health = 250
 	var/faction_text = null // To what faction does it belong?
 	var/list/buildable = list(
 							"FOB",
@@ -495,13 +494,12 @@ var/global/list/fob_names_russian = list("Anna", "Boris", "Dmitri", "Yelena", "I
 	..()
 	faction_text = map.faction2
 
-/obj/structure/supply_crate/proc/try_destroy()
-	if (health <= 0)
-		visible_message(SPAN_DANGER("<big>\The [src] took too much damage and explodes!</big>"))
-		explosion(get_turf(src),0,1,1,1)
-		message_admins("Supply crate at ([src.x], [src.y], [src.z] - <A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[src.x];Y=[src.y];Z=[src.z]'>JMP</a>) has been destroyed.")
-		qdel(src)
-		return
+/obj/structure/supply_crate/break_message()
+	return "<big>\The [src] took too much damage and explodes!</big>"
+
+/obj/structure/supply_crate/on_break()
+	explosion(get_turf(src),0,1,1,1)
+	admin_destroyed_notice("Supply crate")
 
 /obj/structure/supply_crate/ex_act(severity)
 	switch(severity)
@@ -608,14 +606,13 @@ var/global/list/fob_names_russian = list("Anna", "Boris", "Dmitri", "Yelena", "I
 	opacity = FALSE
 	density = TRUE
 	layer = 5
-	var/health = 500
+	health = 500
 
-/obj/structure/milsim/proc/try_destroy()
-	if (health <= 0)
-		visible_message(SPAN_DANGER("<big>\The [src] is blown apart!</big>"))
-		message_admins("Anti-Air at ([src.x], [src.y], [src.z] - <A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[src.x];Y=[src.y];Z=[src.z]'>JMP</a>) has been destroyed.")
-		qdel(src)
-		return
+/obj/structure/milsim/break_message()
+	return "<big>\The [src] is blown apart!</big>"
+
+/obj/structure/milsim/on_break()
+	admin_destroyed_notice("Anti-Air")
 
 /obj/structure/milsim/ex_act(severity)
 	switch(severity)
@@ -645,3 +642,5 @@ var/global/list/fob_names_russian = list("Anna", "Boris", "Dmitri", "Yelena", "I
 		name = "[map.roundend_condition_def2name(faction_text)] [name]"
 		message_admins("[H.ckey] ([H.faction_text]) has built an Anti-Air at ([src.x], [src.y], [src.z] - <A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[src.x];Y=[src.y];Z=[src.z]'>JMP</a>).", H.ckey)
 	return
+
+/obj/map_metadata/operation_falcon/faction_hud_icons = list(RUSSIAN = "ru_basic")

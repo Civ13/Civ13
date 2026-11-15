@@ -74,7 +74,11 @@ var/global/list/sparring_attack_cache = list()
 					else
 						target.visible_message("<span class='danger'>[target] slams into [T]!</span>")
 						target.Weaken(rand(1,2))
-						target.adjustBruteLoss(rand(10,15))
+						// A pulled punch only hurts, it does no brute damage (#5323).
+						if (deal_halloss)
+							target.adjustHalLoss(rand(10,15))
+						else
+							target.adjustBruteLoss(rand(10,15))
 						playsound(get_turf(target), 'sound/effects/gore/fallsmash.ogg', 100)
 						for (var/obj/structure/window/W in T)
 							W.shatter()

@@ -15,22 +15,19 @@
 		return
 
 	if (map.ID == MAP_NOMADS_MOUNTAIN)
-		if (map.ordinal_age == 0)
-			equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/bone(src), slot_l_store)
-			equip_to_slot_or_del(new /obj/item/weapon/material/pickaxe/bone(src), slot_back)
-			equip_to_slot_or_del(new /obj/item/weapon/material/shovel/bone(src), slot_belt)
-		else if (map.ordinal_age == 1)
-			equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/bronze(src), slot_l_store)
-			equip_to_slot_or_del(new /obj/item/weapon/material/pickaxe/bone(src), slot_back)
-			equip_to_slot_or_del(new /obj/item/weapon/material/shovel/bone(src), slot_belt)
-		else if (map.ordinal_age == 2)
-			equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/iron(src), slot_l_store)
-			equip_to_slot_or_del(new /obj/item/weapon/material/pickaxe(src), slot_back)
-			equip_to_slot_or_del(new /obj/item/weapon/material/shovel(src), slot_belt)
-		else if (map.ordinal_age >= 3)
-			equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/steel(src), slot_l_store)
-			equip_to_slot_or_del(new /obj/item/weapon/material/pickaxe(src), slot_back)
-			equip_to_slot_or_del(new /obj/item/weapon/material/shovel(src), slot_belt)
+		// Knife, pickaxe and shovel for the era.
+		var/list/kit = era_pick(list(
+			"0" = list(/obj/item/weapon/material/kitchen/utensil/knife/bone, /obj/item/weapon/material/pickaxe/bone, /obj/item/weapon/material/shovel/bone),
+			"1" = list(/obj/item/weapon/material/kitchen/utensil/knife/bronze, /obj/item/weapon/material/pickaxe/bone, /obj/item/weapon/material/shovel/bone),
+			"2" = list(/obj/item/weapon/material/kitchen/utensil/knife/iron, /obj/item/weapon/material/pickaxe, /obj/item/weapon/material/shovel),
+			"3+" = list(/obj/item/weapon/material/kitchen/utensil/knife/steel, /obj/item/weapon/material/pickaxe, /obj/item/weapon/material/shovel)))
+		if (kit)
+			var/knife_type = kit[1]
+			var/pickaxe_type = kit[2]
+			var/shovel_type = kit[3]
+			equip_to_slot_or_del(new knife_type(src), slot_l_store)
+			equip_to_slot_or_del(new pickaxe_type(src), slot_back)
+			equip_to_slot_or_del(new shovel_type(src), slot_belt)
 	switch (map.ordinal_age)
 		if (0)
 			if (map && map.ID == MAP_NOMADS_ISLAND)
@@ -360,7 +357,7 @@
 //coats/////////////////////////////////////////////////
 	spawn(5)
 		var/area/mob_area = get_area(src)
-		if (mob_area.climate == "tundra" || mob_area.climate == "taiga" || (mob_area.climate == "temperate" && season == "WINTER") || map.ID == MAP_NOMADS_ICE_AGE)
+		if (mob_area.climate == "tundra" || mob_area.climate == "taiga" || (mob_area.climate == "temperate" && season == SEASON_WINTER) || map.ID == MAP_NOMADS_ICE_AGE)
 			if (map.ID != MAP_NOMADS_ASIA)
 				if (map.ordinal_age <= 4)
 					if (map.ordinal_age == 0)
@@ -835,9 +832,9 @@
 					name = species.get_random_english_name(gender)
 					real_name = name
 					give_clothes()
-		else if (map.ID == MAP_NOMADS_CONTINENTAL || MAP_NOMADS_PANGEA)
+		else if (map.ID == MAP_NOMADS_CONTINENTAL || map.ID == MAP_NOMADS_PANGEA)
 			spawn(10)
-				if (!isemptylist(whitelist_list) && config.use_job_whitelist && !client.prefs.be_random_name)
+				if (client && !isemptylist(whitelist_list) && config.use_job_whitelist && !client.prefs.be_random_name)
 					var/found = FALSE
 					for (var/i in whitelist_list)
 						var/temp_ckey = lowertext(i)
@@ -1237,6 +1234,7 @@
 	min_positions = 9999
 	max_positions = 9999
 
+/datum/job/civilian/fantasy/orc/job_stats = list("strength" = STAT_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_HIGH, "pistol" = STAT_LOW, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_MEDIUM_LOW, "philosophy" = STAT_NORMAL)
 /datum/job/civilian/fantasy/orc/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.give_languages()
@@ -1247,15 +1245,7 @@
 	H.add_note("Role", "You are a <b>[title]</b>. You are stronger than the other races but somewhat limited in what to build and use.")
 	H.add_note("Race Mechanics", "- Stronger than humans, good starting strength and average construction skills.<br>- Second most advanced after humans, but no gunpowder.<br>- Radioactive resistance, can't get cholera or food posioning from raw meat, no bad mood from raw meat, gore, or hygiene.<br>- Need to eat more often.<br>- Can handle extreme heat better.")
 
-	H.setStat("strength", STAT_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_HIGH)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("philosophy", STAT_NORMAL)
+	apply_job_stats(H)
 
 
 	return TRUE
@@ -1272,6 +1262,7 @@
 	min_positions = 9999
 	max_positions = 9999
 
+/datum/job/civilian/fantasy/ant/job_stats = list("strength" = STAT_VERY_HIGH, "crafting" = STAT_VERY_HIGH, "rifle" = STAT_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_LOW, "pistol" = STAT_LOW, "bows" = STAT_LOW, "medical" = STAT_NORMAL, "philosophy" = STAT_LOW)
 /datum/job/civilian/fantasy/ant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.give_languages()
@@ -1282,15 +1273,7 @@
 	H.add_note("Role", "You are a <b>[title]</b>. You have very high strength and crafting skills, and can dig much faster, but are very limited in what you can build.")
 	H.add_note("Race Mechanics", "- Very good strength and dexterity, decent construction skills.<br>- Lowest technology of all races. Can't build walls besides dirt walls, can't build doors.<br>- Can dig holes, mine, and collect dirt/sand without tools use grab intent and click on a floor. To dig a hole, right click and use the Dig verb.<br>- Natural armoured skin gives some melee and radioactive defense.<br>- Can't handle the extreme cold or extreme heat.")
 
-	H.setStat("strength", STAT_VERY_HIGH)
-	H.setStat("crafting", STAT_VERY_HIGH)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_LOW)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_LOW)
-	H.setStat("medical", STAT_NORMAL)
-	H.setStat("philosophy", STAT_LOW)
+	apply_job_stats(H)
 
 
 
@@ -1308,6 +1291,7 @@
 	min_positions = 9999
 	max_positions = 9999
 
+/datum/job/civilian/fantasy/gorilla/job_stats = list("strength" = STAT_VERY_HIGH, "crafting" = STAT_LOW, "rifle" = STAT_LOW, "dexterity" = STAT_VERY_HIGH, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_LOW, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_NORMAL, "philosophy" = STAT_LOW)
 /datum/job/civilian/fantasy/gorilla/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.give_languages()
@@ -1318,15 +1302,7 @@
 	H.add_note("Role", "You are a <b>[title]</b>. You are strong and nimble and can craft a wide range of things.")
 	H.add_note("Race Mechanics", "- Very high strength, dexterity, and stamina. Good on unarmed fights.<br>- Can jump further than other races. <br>- Doesn't need to drink as often as other races, as they get water from their food.<br>- Since you are an herbivore, you cannot eat meat, eggs, and so on. You can use grab intent to collect and eat leaves from trees.")
 
-	H.setStat("strength", STAT_VERY_HIGH)
-	H.setStat("crafting", STAT_LOW)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_VERY_HIGH)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_NORMAL)
-	H.setStat("philosophy", STAT_LOW)
+	apply_job_stats(H)
 	H.stats["stamina"][1] = 150
 	H.stats["stamina"][2] = 150
 
@@ -1343,6 +1319,7 @@
 	min_positions = 9999
 	max_positions = 9999
 
+/datum/job/civilian/fantasy/human/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_HIGH, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_MEDIUM_HIGH, "medical" = STAT_NORMAL, "philosophy" = STAT_MEDIUM_HIGH)
 /datum/job/civilian/fantasy/human/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.give_languages()
@@ -1353,15 +1330,7 @@
 	H.add_note("Role", "You are a <b>[title]</b>. You have weak and soft pink skin but are very intelligent and can craft a wide range of things.")
 	H.add_note("Race Mechanics", "- Advanced technology compared to all other races (can build crude gunpowder weapons like arquebuses)<br>- Good crafting and intelligence.<br>- The weakest race physically, compared to other races.")
 
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_MEDIUM_HIGH)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_MEDIUM_HIGH)
-	H.setStat("medical", STAT_NORMAL)
-	H.setStat("philosophy", STAT_MEDIUM_HIGH)
+	apply_job_stats(H)
 
 
 	return TRUE
@@ -1377,6 +1346,7 @@
 	min_positions = 9999
 	max_positions = 9999
 
+/datum/job/civilian/fantasy/wolf/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_LOW, "rifle" = STAT_LOW, "dexterity" = STAT_VERY_HIGH, "swords" = STAT_LOW, "pistol" = STAT_LOW, "bows" = STAT_LOW, "medical" = STAT_NORMAL, "philosophy" = STAT_LOW)
 /datum/job/civilian/fantasy/wolf/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.give_languages()
@@ -1387,15 +1357,7 @@
 	H.add_note("Role", "You are a <b>[title]</b>. You are very nimble, strong and with a great sense of organization.")
 	H.add_note("Race Mechanics", "- Fastest race and highest stamina. <br>- Can use howls to communicate with members far away.<br>- Powerful bite.<br>- Not attacked by wild wolves.<br>- Can only eat meat.<br>- Can handle the cold without a coat.")
 
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_LOW)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_VERY_HIGH)
-	H.setStat("swords", STAT_LOW)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_LOW)
-	H.setStat("medical", STAT_NORMAL)
-	H.setStat("philosophy", STAT_LOW)
+	apply_job_stats(H)
 	H.stats["stamina"][1] = 180
 	H.stats["stamina"][2] = 180
 
@@ -1412,6 +1374,7 @@
 	min_positions = 9999
 	max_positions = 9999
 
+/datum/job/civilian/fantasy/lizard/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_LOW, "rifle" = STAT_LOW, "dexterity" = STAT_HIGH, "swords" = STAT_LOW, "pistol" = STAT_LOW, "bows" = STAT_LOW, "medical" = STAT_MEDIUM_HIGH, "philosophy" = STAT_LOW)
 /datum/job/civilian/fantasy/lizard/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.give_languages()
@@ -1422,15 +1385,7 @@
 	H.add_note("Role", "You are a <b>[title]</b>. You have a poisonous bite and faster movement in rough terrain.")
 	H.add_note("Race Mechanics", "- Not slowed down by rough terrain (mud, snow). <br>- Poisonous bite gives toxic damage. <br>- Not attacked by wild reptiles.<br>- Can't handle the extreme cold or extreme heat.")
 
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_LOW)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_HIGH)
-	H.setStat("swords", STAT_LOW)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_LOW)
-	H.setStat("medical", STAT_MEDIUM_HIGH)
-	H.setStat("philosophy", STAT_LOW)
+	apply_job_stats(H)
 
 	return TRUE
 
@@ -1445,6 +1400,7 @@
 	min_positions = 9999
 	max_positions = 9999
 
+/datum/job/civilian/fantasy/crab/job_stats = list("strength" = STAT_VERY_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_LOW, "pistol" = STAT_LOW, "bows" = STAT_LOW, "medical" = STAT_MEDIUM_HIGH, "philosophy" = STAT_LOW)
 /datum/job/civilian/fantasy/crab/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.give_languages()
@@ -1455,14 +1411,6 @@
 	H.add_note("Role", "You are a <b>[title]</b>. You have a very hard shell and strong claws, but need water to survive.")
 	H.add_note("Race Mechanics", "- Natural armoured skin gives good melee and radioactive defense.<br>- Cannot wear shoes or gloves.<br>- Can only eat meat (including rotten, doesn't get food poisoning).<br>- No movement delay on water or sand.")
 
-	H.setStat("strength", STAT_VERY_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_LOW)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_LOW)
-	H.setStat("medical", STAT_MEDIUM_HIGH)
-	H.setStat("philosophy", STAT_LOW)
+	apply_job_stats(H)
 
 	return TRUE

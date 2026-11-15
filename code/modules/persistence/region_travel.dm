@@ -16,6 +16,8 @@
 // they complete in seconds; a world that reloads an older save replays them.
 
 #define REGION_TRAVEL_PAYLOAD_MAX 8192
+// A crossing ship's record rides with one crew member (naval/ship_crossing.dm).
+#define REGION_TRAVEL_SHIP_PAYLOAD_MAX 49152
 #define REGION_TRAVEL_ITEMS_MAX 40
 
 var/global/list/region_gates = list()
@@ -220,21 +222,30 @@ var/global/list/region_travel_carry_types = list(
 	// A party train trip says whose train it is.
 	if(party)
 		P["party"] = party
+	// The traveller's faction, named with the land it was founded in, so its
+	// members rejoin it or its colony on arrival (colony_charter.dm).
+	var/faction_id = colony_faction_id(src)
+	if(faction_id)
+		P["faction"] = faction_id
+		if(map.is_faction_leader(src, civilization))
+			P["faction_leader"] = 1
 	// A crewed flight (space/lander.dm) says which lander and where it lands.
 	for(var/key in extra)
-		if(key in list("lander", "landing", "surveyed", "rough", "return", "orbit", "cargo", "sortie", "seats"))
+		if(key in list("lander", "landing", "surveyed", "rough", "return", "orbit", "cargo", "sortie", "seats", "voyage", "ship"))
 			P[key] = extra[key]
 	return json_encode(P)
 
 // Returns the decoded payload, or null when any field is out of bounds.
 /proc/region_travel_decode(payload)
-	if(!istext(payload) || length(payload) > REGION_TRAVEL_PAYLOAD_MAX) return null
+	if(!istext(payload) || length(payload) > REGION_TRAVEL_SHIP_PAYLOAD_MAX) return null
 	var/list/P
 	try
 		P = json_decode(payload)
 	catch
 		return null
 	if(!islist(P) || !(P["v"] in list(1, 2, 3)) || P["kind"] != "character") return null
+	// Only a crossing ship's record makes a payload longer than a character's.
+	if(length(payload) > REGION_TRAVEL_PAYLOAD_MAX && !islist(P["ship"])) return null
 	if(P["v"] >= 2)
 		if(!region_travel_knowledge_valid(P["known_recipe_nodes"]) || !(P["recipe_knowledge_initialized"] in list(FALSE, TRUE))) return null
 	else if(("known_recipe_nodes" in P) || ("recipe_knowledge_initialized" in P))
@@ -275,7 +286,10 @@ var/global/list/region_travel_carry_types = list(
 	// A solo party is only ever its own player's.
 	if(istext(P["party"]) && findtext(P["party"], "ckey:") == 1 && P["party"] != "ckey:[owner]") return null
 	if(!isnull(P["from"]) && (!istext(P["from"]) || length(P["from"]) > 32)) return null
+	if(!isnull(P["faction"]) && !colony_parent_valid(P["faction"])) return null
+	if(!isnull(P["faction_leader"]) && P["faction_leader"] != 1) return null
 	if(!space_flight_payload_ok(P)) return null
+	if(!sea_crossing_payload_ok(P)) return null
 	return P
 
 // Strict travel admission never silently drops IDs that a destination cannot
@@ -363,9 +377,11 @@ var/global/list/region_travel_carry_types = list(
 		// A party train trip arrives at the party's berth or station instead.
 		// A crewed flight arrives in its landed lander (space/lander.dm).
 		// Otherwise a traveller comes out at the trail here that leads back home.
-		var/turf/at = space_flight_arrival_turf(P, incoming) || party_train_arrival_turf(P) || (incoming ? region_travel_return_trail_turf(P) : null) || T
+		// A ship's crew arrive aboard her (naval/ship_crossing.dm).
+		var/turf/at = space_flight_arrival_turf(P, incoming) || sea_crossing_arrival_turf(P, incoming) || party_train_arrival_turf(P) || (incoming ? region_travel_return_trail_turf(P) : null) || T
 		var/mob/living/human/H = region_travel_build(P, at)
 		space_flight_arrived(H, P, incoming)
+		sea_crossing_arrived(H, P, incoming)
 		// A recorded trip (or a refused one coming back) makes this land the home.
 		// A journal replay after a reload already told the coordinator once;
 		// saying it again could pull the home back from a later trip.
@@ -408,6 +424,7 @@ var/global/list/region_travel_carry_types = list(
 				else if(T)
 					H.drop_from_inventory(I, T)
 			space_flight_replayed(H, P)
+			sea_crossing_replayed(H, P)
 			qdel(H)
 
 /proc/region_travel_build(list/P, turf/T)
@@ -466,6 +483,7 @@ var/global/list/region_travel_carry_types = list(
 	if(istext(P["party"]))
 		H.party_train_party = P["party"]
 		party_train_restore_faction(H, P["party"])
+	colony_arrival(H, P)
 	region_raid_note_origin(H, P)
 	H.region_arrival_pending = TRUE
 	H.update_hair(FALSE)
@@ -475,6 +493,26 @@ var/global/list/region_travel_carry_types = list(
 	// on a later login or after the research clock has advanced.
 	H.finish_character_knowledge_restoration()
 	return H
+
+// Makes one item of a travel entry (kind, amount) at T, as it left, the way
+// region_travel_build() does for what a traveller wears. Null when the entry
+// is not allowed. Used for a crossing ship's hold (naval/ship_crossing.dm).
+/proc/region_travel_make_item(kind, amount, turf/T)
+	var/path = region_travel_item_path(kind, amount)
+	if(!path) return null
+	var/obj/item/I = ispath(path, /obj/item/stack) ? new path(T, amount) : new path(T)
+	if(istype(I, /obj/item/weapon/book/node_compendium))
+		var/obj/item/weapon/book/node_compendium/C = I
+		C.node_ids = recipe_compendium_wire_ids(kind)
+	else if(istype(I, /obj/item/weapon/book/node_book))
+		var/obj/item/weapon/book/node_book/B = I
+		B.node_id = copytext(kind, 6)
+		B.refresh_node_title()
+	else if(istype(I, /obj/item/ammo_magazine))
+		region_travel_fill_magazine(I, amount)
+	else if(istype(I, /obj/item/weapon/gun/projectile))
+		region_travel_unload_gun(I)
+	return I
 
 // A rebuilt magazine holds exactly the rounds that travelled.
 /proc/region_travel_fill_magazine(obj/item/ammo_magazine/M, rounds)
@@ -588,6 +626,10 @@ var/global/list/region_travel_carry_types = list(
 /obj/structure/region_gate/proc/accepts_strangers()
 	return TRUE
 
+// TRUE for the hidden gate a crossing ship's crew leave by (naval/ship_crossing.dm).
+/obj/structure/region_gate/proc/ship_crossing()
+	return FALSE
+
 // The party train a trip through this gate belongs to (party_train.dm), if any.
 /obj/structure/region_gate/proc/travel_party(mob/living/human/H)
 	return null
@@ -608,6 +650,9 @@ var/global/list/region_travel_carry_types = list(
 	// Event regions are reached only by an admin's event transfer (region_event.dm).
 	if(peer && peer["kind"] == "EVENT")
 		return "The trail is overgrown. It leads nowhere for now."
+	// Lands across the sea are reached only by ship (expedition_land.dm).
+	if(peer && peer["kind"] == "EXPEDITION" && !ship_crossing())
+		return "That land lies across the sea. Only a ship can reach it."
 	// A sleeping region is woken when someone sets off (travel()). A stopped
 	// one stays down until the host starts it again, so the traveller is told
 	// so plainly and the admins hear someone is waiting at the trail.
@@ -700,7 +745,7 @@ var/global/list/region_stopped_alerted = list()
 /obj/structure/region_gate/proc/depart(mob/living/human/H)
 	var/reason = closed_reason()
 	if(reason) return reason
-	if(!istype(H) || QDELETED(H) || H.loc != loc && !Adjacent(H)) return "You are too far from the trail."
+	if(!istype(H) || QDELETED(H) || H.loc != loc && H.loc != src && !Adjacent(H)) return "You are too far from the trail."
 	if(!H.persistence_owner_ckey) return "Only players with a BYOND account can travel."
 	// The traveller is sent to the destination at once, so it must be awake (travel() wakes it).
 	var/expected = destination
@@ -713,7 +758,7 @@ var/global/list/region_stopped_alerted = list()
 	if(istext(items)) return items
 	var/client/C = H.client
 	var/payload = H.region_travel_payload(items, travel_party(H), region_raid_peer(destination), travel_extra(H))
-	if(length(payload) > REGION_TRAVEL_PAYLOAD_MAX) return "You carry too much to travel."
+	if(length(payload) > (findtext(payload, "\"ship\":") ? REGION_TRAVEL_SHIP_PAYLOAD_MAX : REGION_TRAVEL_PAYLOAD_MAX)) return "You carry too much to travel."
 	// The destination decodes with the same rules; never escrow what it would drop.
 	if(!region_travel_decode(payload)) return "Something about you cannot make the journey. Ask an admin."
 	// Hold the body and its items while the agent records the escrow, so
@@ -769,4 +814,5 @@ var/global/list/region_stopped_alerted = list()
 	return destination
 
 #undef REGION_TRAVEL_PAYLOAD_MAX
+#undef REGION_TRAVEL_SHIP_PAYLOAD_MAX
 #undef REGION_TRAVEL_ITEMS_MAX

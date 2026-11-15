@@ -117,7 +117,7 @@
 /proc/footwear_wet_ground(turf/T)
 	if (!istype(T))
 		return FALSE
-	if (istype(T, /turf/floor/beach/water) && !istype(T, /turf/floor/beach/water/ice))
+	if (is_liquid_water(T))
 		return TRUE
 	if (istype(T, /turf/floor/trench/flooded))
 		return TRUE
@@ -126,7 +126,7 @@
 		return TRUE
 	for (var/obj/effect/flooding/FLD in T)
 		return TRUE
-	return FALSE
+	return flood_depth_at(T) > 0
 
 // Called for each running step: on ice, poorly gripping footwear can slip.
 // NOSLIP footwear still only halves the chance; ice grip is its own rating.

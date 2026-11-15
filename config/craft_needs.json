@@ -1,0 +1,223 @@
+{
+  "/obj/structure/vehicle/raft": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/stack/material/rope": 2
+    }
+  },
+  "/obj/structure/vehicle/carriage": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/stack/material/rope": 20
+    }
+  },
+  "/obj/item/machine_part/gear": {
+    "tools": [
+      "chisel"
+    ],
+    "inputs": {}
+  },
+  "/obj/item/machine_part/shaft": {
+    "tools": [
+      "hatchet"
+    ],
+    "inputs": {}
+  },
+  "/obj/item/machine_part/bearing": {
+    "tools": [
+      "chisel"
+    ],
+    "inputs": {
+      "/obj/item/weapon/reagent_containers/food/snacks/animalfat": 1
+    }
+  },
+  "/obj/item/machine_part/belt": {
+    "tools": [
+      "knife"
+    ],
+    "inputs": {}
+  },
+  "/obj/structure/workshop_machine/lathe/pole": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/stack/material/rope": 2
+    }
+  },
+  "/obj/structure/workshop_machine/lathe/engine": {
+    "tools": [
+      "wrench"
+    ],
+    "inputs": {
+      "/obj/item/machine_part/gear": 1,
+      "/obj/item/machine_part/shaft": 1,
+      "/obj/item/machine_part/bearing": 2
+    }
+  },
+  "/obj/structure/workshop_machine/mover/treadwheel": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/machine_part/shaft": 1,
+      "/obj/item/machine_part/bearing": 2
+    }
+  },
+  "/obj/structure/workshop_machine/mover/horse_gin": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/machine_part/gear": 1,
+      "/obj/item/machine_part/shaft": 1,
+      "/obj/item/machine_part/bearing": 1
+    }
+  },
+  "/obj/structure/workshop_machine/mover/mill_wheel": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/machine_part/gear": 1,
+      "/obj/item/machine_part/shaft": 1,
+      "/obj/item/machine_part/bearing": 2
+    }
+  },
+  "/obj/structure/workshop_machine/mover/windmill": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/machine_part/gear": 1,
+      "/obj/item/machine_part/shaft": 1,
+      "/obj/item/machine_part/bearing": 2
+    }
+  },
+  "/obj/structure/workshop_machine/shear_legs/crane": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/machine_part/shaft": 1,
+      "/obj/item/machine_part/bearing": 2,
+      "/obj/item/machine_part/belt": 1
+    }
+  },
+  "/obj/structure/workshop_machine/trip_hammer": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/stack/material/iron": 6,
+      "/obj/item/machine_part/shaft": 1
+    }
+  },
+  "/obj/structure/workshop_machine/trip_hammer/steam": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/machine_part/shaft": 1,
+      "/obj/item/machine_part/spring": 1
+    }
+  },
+  "/obj/structure/workshop_machine/fitting/drill_press": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/machine_part/gear": 1,
+      "/obj/item/machine_part/shaft": 1,
+      "/obj/item/machine_part/belt": 1
+    }
+  },
+  "/obj/structure/workshop_machine/fitting/hydraulic_press": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/machine_part/shaft": 1,
+      "/obj/item/machine_part/bearing": 2
+    }
+  },
+  "/obj/structure/workshop_machine/shear_legs/crane/steam": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/machine_part/gear": 1,
+      "/obj/item/machine_part/shaft": 1,
+      "/obj/item/machine_part/bearing": 2
+    }
+  },
+  "/obj/structure/workshop_machine/shear_legs/crane/steam/tower": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/machine_part/gear": 2,
+      "/obj/item/machine_part/shaft": 1,
+      "/obj/item/machine_part/bearing": 2
+    }
+  },
+  "/obj/structure/fluid_pump/hand": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/machine_part/shaft": 1
+    }
+  },
+  "/obj/structure/workshop_machine/steam_site/road_roller": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/machine_part/gear": 1,
+      "/obj/item/machine_part/shaft": 2,
+      "/obj/item/machine_part/bearing": 2
+    }
+  },
+  "/obj/structure/workshop_machine/steam_site/steam_shovel": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/machine_part/gear": 1,
+      "/obj/item/machine_part/shaft": 1,
+      "/obj/item/machine_part/bearing": 2
+    }
+  },
+  "/obj/structure/workshop_machine/wire_bench": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/stack/material/iron": 4,
+      "/obj/item/machine_part/shaft": 1
+    }
+  },
+  "/obj/structure/workshop_machine/rolling_mill": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/machine_part/gear": 2,
+      "/obj/item/machine_part/shaft": 2,
+      "/obj/item/machine_part/bearing": 2
+    }
+  },
+  "/obj/structure/cannon/hooped": {
+    "tools": [
+      "hammer"
+    ],
+    "inputs": {
+      "/obj/item/stack/material/iron": 4
+    }
+  },
+  "/obj/item/machine_part/wheel": {
+    "tools": [
+      "hatchet",
+      "chisel"
+    ],
+    "inputs": {}
+  },
+  "/obj/item/machine_part/wheel/shod": {
+    "tools": [
+      "hammer"
+    ],
+    "inputs": {
+      "/obj/item/machine_part/wheel": 1
+    }
+  },
+  "/obj/structure/vehicle/bicycle": {
+    "tools": [
+      "wrench"
+    ],
+    "inputs": {
+      "/obj/item/machine_part/wheel": 2,
+      "/obj/item/machine_part/belt": 1
+    }
+  },
+  "/obj/structure/vehicle/bicycle/running": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/machine_part/wheel": 2
+    }
+  },
+  "/obj/item/weapon/material/kitchen/utensil/knife/sickle": {
+    "tools": [
+      "hammer"
+    ],
+    "inputs": {
+      "/obj/item/stack/material/wood": 1
+    }
+  }
+}

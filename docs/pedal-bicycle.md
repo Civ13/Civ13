@@ -29,8 +29,8 @@ weight method without counting their contents twice. Item weight uses the same
 Load is divided by the existing strength-scaled carrying capacity:
 `max(1, (1 + (strength - 1) / 2) * 59)`.
 
-- Empty load: 1.5 deciseconds per tile, 0.5 stamina per tile.
-- Half capacity: 2.25 deciseconds, 0.75 stamina.
+- Empty load: 1.8 deciseconds per tile, 0.5 stamina per tile.
+- Half capacity: 2.7 deciseconds, 0.75 stamina.
 - Full capacity: 3 deciseconds, 1 stamina.
 - Three times capacity or more: 6 deciseconds, 2 stamina.
 

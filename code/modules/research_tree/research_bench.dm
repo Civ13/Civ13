@@ -235,6 +235,8 @@ var/global/list/research_benches = list()
 		return
 	faction = H.civilization
 	assigned_node = null // was another faction's research subject
+	studied_samples = null
+	set_queue(null)
 	to_chat(H, SPAN_NOTICE("Your faction claims the abandoned research bench."))
 
 // ------------------------------------------------------------
@@ -868,10 +870,7 @@ var/global/list/research_benches = list()
 	if (using_wrench)
 		if (not_movable || powersource || anchored != was_anchored)
 			return
-		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-		to_chat(user, (anchored ? SPAN_NOTICE("You unfasten \the [src] from the floor.") : SPAN_NOTICE("You secure \the [src] to the floor.")))
-		anchored = !anchored
-		anchor_changed()
+		toggle_anchor(user)
 		return
 	if (not_disassemblable)
 		return

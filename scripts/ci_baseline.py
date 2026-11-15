@@ -41,6 +41,17 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'pulled_punches': {'files': ('tests/pulled_punches/test_pulled_punches.py',), 'paths': (
+        'tests/pulled_punches/',), 'shared_paths': (
+        'code/game/mob/living/carbon/human/human_attackhand.dm',
+        'code/game/mob/living/carbon/human/unarmed_attack.dm')},
+    # Stdlib-only: compost bins keep their stock through a save of a running world (#5292).
+    'compost_save': {'files': ('tests/compost_save/test_compost_save.py',), 'paths': (
+        'tests/compost_save/',), 'shared_paths': ('code/modules/1713/production.dm',)},
+    # Stdlib-only: poisonous frog meat coats crossbow bolts as well as arrows (#5258).
+    'poison_frog_bolts': {'files': ('tests/poison_frog_bolts/test_bolts.py',), 'paths': (
+        'tests/poison_frog_bolts/',), 'shared_paths': (
+        'code/modules/reagents/reagent_containers/food/snacks/meat.dm',)},
     'intestine_casings': {'files': ('tests/organ_utilities/test_casings.py',),
         'paths': ('tests/organ_utilities/',),
         'shared_paths': ('code/modules/1713/animal_harvest.dm', 'scripts/atlas/catalog_metadata.py')},
@@ -187,6 +198,12 @@ SUITES = {
     'geiger_counter': {'files': ('tests/geiger_counter/test_geiger.py',),
         'paths': ('tests/geiger_counter/',),
         'shared_paths': ('code/modules/1713/radiation.dm',)},
+    'press_anchoring': {'files': ('tests/press_anchoring/test_anchoring.py',),
+        'paths': ('tests/press_anchoring/',),
+        'shared_paths': ('code/modules/1713/factory_packaging.dm', 'tests/primitive_woodworking/source_adapter.py')},
+    'splash_watering': {'files': ('tests/splash_watering/test_splash.py',),
+        'paths': ('tests/splash_watering/',),
+        'shared_paths': ('code/modules/reagents/Chemistry-Holder.dm', 'tests/primitive_woodworking/source_adapter.py')},
     'matchbox_pickup': {'files': ('tests/matchbox/test_pickup.py',),
         'paths': ('tests/matchbox/',),
         'shared_paths': ('code/game/objects/items/weapons/storage/boxes.dm',
@@ -335,6 +352,8 @@ SUITES = {
     'gong_fastening': {'files': ('tests/gong_fastening/test_fastening.py',), 'paths': (
         'tests/gong_fastening/', 'code/game/objects/structures/gong.dm'), 'shared_paths': (
         'tests/save_movement/source_adapter.py',)},
+    'lighting_overlay_idle': {'files': ('tests/lighting_idle/test_idle.py',),
+        'paths': ('tests/lighting_idle/', 'code/processes/lighting/overlays.dm')},
     'curtain_lighting': {'files': ('tests/curtain_lighting/test_curtain_lighting.py',), 'paths': (
         'tests/curtain_lighting/', 'code/game/objects/structures/curtains.dm'), 'shared_paths': (
         'tests/save_movement/source_adapter.py',)},
@@ -409,9 +428,14 @@ SUITES = {
         'paths': ('tests/weather_systems/', 'tools/weather/'),
         'shared_paths': ('icons/effects/weather.dmi', 'icons/effects/weather_chunks.dmi',
                          'icons/effects/weather_roof.dmi', 'code/modules/1713/weather.dm')},
-    'river_flow': {'files': ('tests/river_flow/test_generation.py',),
-        'paths': ('tests/river_flow/', 'scripts/river_flow.py'),
-        'shared_paths': ('code/modules/1713/river_flow.dm',
+    'river_flow': {'files': ('tests/river_flow/test_generation.py', 'tests/river_flow/test_flood.py'),
+        'paths': ('tests/river_flow/', 'scripts/river_flow.py', 'scripts/river_flood.py'),
+        'shared_paths': ('code/modules/1713/river_flow.dm', 'code/modules/1713/river_flood.dm', 'code/modules/1713/flood_effects.dm', 'code/modules/1713/flood_ground.dm', 'code/modules/1713/flood_hollows.dm',
+                         'code/modules/1713/road_tamping.dm', 'code/modules/1713/barriers/sandbag.dm',
+                         'code/game/objects/farming.dm', 'code/game/objects/structures/watercloset.dm',
+                         'code/modules/1713/rain_gear.dm', 'code/game/mob/mob_movement.dm',
+                         'code/processes/weather.dm', 'code/modules/persistence/durable_contract.dm',
+                         'maps/nomads/nomads_desert.dmm',
                          'code/processes/river_current.dm',
                          'code/modules/1713/machinery/renewable_generation.dm',
                          'scripts/terrain_heights.py', 'maps/heights/',
@@ -457,6 +481,15 @@ SUITES = {
             'code/modules/1713/barriers/snow_walls.dm',
             'code/game/objects/covers.dm',
             'code/modules/multiz/open_space.dm')},
+    'vehicle_decks': {'files': ('tests/vehicle_decks/test_sources.py',),
+        'paths': ('tests/vehicle_decks/', 'code/modules/1713/machinery/modular_vehicles/vehicle_decks.dm'), 'shared_paths': (
+            'code/modules/visibility/los_terrain.dm',
+            'code/modules/visibility/los_context.dm',
+            'code/_onclick/other_mobs.dm',
+            'code/game/mob/mob_movement.dm',
+            'code/game/objects/structures/tree_climbing.dm',
+            'code/modules/projectiles/projectile.dm',
+            'code/game/mob/living/carbon/human/human.dm')},
     'tree_climbing': {'files': ('tests/tree_climbing/test_sources.py',),
         'paths': ('tests/tree_climbing/', 'code/game/objects/structures/tree_climbing.dm'), 'shared_paths': (
             'code/modules/visibility/los_terrain.dm',
@@ -755,7 +788,8 @@ SUITES = {
     'gaia_host': {'files': ('tests/gaia_host/test_gaia_host.py', 'tests/gaia_host/test_shard_group.py',
                            'tests/gaia_host/test_fresh_world.py',
                            'tests/gaia_host/test_doorman.py', 'tests/gaia_host/test_wait_group.py',
-                           'tests/gaia_host/test_relay.py', 'tests/gaia_host/test_mobile_host.py'),
+                           'tests/gaia_host/test_relay.py', 'tests/gaia_host/test_mobile_host.py',
+                           'tests/gaia_host/test_expedition_slots.py'),
         'paths': ('tests/gaia_host/', 'scripts/gaia-host/', 'scripts/shard-group/', 'scripts/windows/host/'),
         'shared_paths': ('scripts/nomads-lifecycle/supervisor.py',)},
     # Farmer's almanac weather table and crop rule projected from production DM.
@@ -843,6 +877,110 @@ SUITES = {
     # code/, run by full and preflight sweeps (not per-file selection).
     'duplicate_overrides': {'files': ('tests/duplicate_overrides/test_duplicate_overrides.py',),
         'paths': ('tests/duplicate_overrides/',), 'shared_paths': ()},
+    # Era helpers keep the statue, anvil and kit options the old per-era
+    # branches gave; per-era equality checks only shrink. Source scan of code/.
+    'era_helpers': {'files': ('tests/era_helpers/test_era_helpers.py',),
+        'paths': ('tests/era_helpers/',), 'shared_paths': ()},
+    # Material properties and part roles: frozen ratings, the balance rule
+    # and the untouched legacy weapon numbers.
+    'material_roles': {'files': ('tests/material_roles/test_material_roles.py',),
+        'paths': ('tests/material_roles/', 'code/modules/materials/material_properties.dm',
+                  'code/modules/materials/part_roles.dm', 'code/__defines/material_roles.dm'),
+        'shared_paths': ('code/modules/materials/materials.dm',)},
+    'tool_material_speeds': {'files': ('tests/tool_material_speeds/test_tool_material_speeds.py',),
+        'paths': ('tests/tool_material_speeds/', 'code/modules/materials/tool_speeds.dm'),
+        'shared_paths': ('code/modules/materials/part_roles.dm', 'code/modules/materials/material_properties.dm',
+                         'code/modules/1713/tools.dm', 'code/game/objects/items/weapons/tools.dm',
+                         'code/game/objects/items/weapons/material/material_weapons.dm',
+                         'code/game/objects/items/weapons/material/misc.dm')},
+    'tool_materials': {'files': ('tests/tool_materials/test_tool_materials.py',
+                                 'tests/tool_materials/test_tool_wear.py',
+                                 'tests/tool_materials/test_farm_tools.py'),
+        'paths': ('tests/tool_materials/', 'code/modules/materials/tool_materials.dm',
+                  'code/modules/materials/tool_wear.dm', 'code/modules/materials/farm_tools.dm',
+                  'tests/sprites/create_farm_tools.py', 'icons/obj/farm_tools.dmi',
+                  'config/recipe_variants.json', 'scripts/recipe_variants.py'),
+        'shared_paths': ('code/modules/materials/part_roles.dm', 'code/modules/materials/material_properties.dm',
+                         'code/modules/1713/tools.dm', 'code/game/objects/items/weapons/tools.dm',
+                         'code/game/objects/weapons.dm', 'code/_helpers/tools.dm',
+                         'code/modules/reagents/reagent_containers/glass.dm', 'code/_onclick/item_attack.dm',
+                         'config/crafting/material_recipes_global.txt')},
+    'craft_needs': {'files': ('tests/craft_needs/test_craft_needs.py',),
+        'paths': ('tests/craft_needs/', 'code/game/objects/items/stacks/craft_needs.dm',
+                  'config/craft_needs.json'),
+        'shared_paths': ('code/game/objects/items/stacks/stack.dm', 'code/game/objects/items/stacks/craft_guards.dm',
+                         'scripts/build-crafting-atlas.py')},
+    'machine_parts': {'files': ('tests/machine_parts/test_machine_parts.py', 'tests/machine_parts/test_lathes.py',
+                                'tests/machine_parts/test_machine_slots.py', 'tests/machine_parts/test_pipe_materials.py',
+                                'tests/machine_parts/test_wire_materials.py', 'tests/machine_parts/test_vessel_materials.py',
+                                'tests/machine_parts/test_barrel_materials.py',
+                                'tests/machine_parts/test_rolling_stock.py'),
+        'paths': ('tests/machine_parts/', 'code/modules/materials/machine_parts.dm',
+                  'code/modules/materials/pipe_materials.dm', 'code/modules/materials/wire_materials.dm',
+                  'code/modules/materials/vessel_materials.dm', 'tests/sprites/create_fluid_tanks.py',
+                  'code/modules/materials/barrel_materials.dm', 'code/modules/materials/rolling_stock.dm',
+                  'icons/obj/fluid_tanks.dmi',
+                  'code/modules/materials/lathes.dm', 'tests/sprites/create_lathes.py', 'icons/obj/lathes.dmi',
+                  'code/modules/materials/machine_slots.dm',
+                  'tests/sprites/create_machine_parts.py', 'icons/obj/machine_parts.dmi'),
+        'shared_paths': ('code/modules/materials/part_roles.dm', 'code/modules/materials/material_properties.dm',
+                         'code/game/objects/structures/blacksmithing/blacksmithing.dm',
+                         'code/game/objects/structures/blacksmithing/blacksmithing_recipes.dm',
+                         'code/game/objects/structures/blacksmithing/anvil_window.dm',
+                         'code/game/objects/structures/blacksmithing/molds.dm',
+                         'code/modules/research_tree/research_node.dm', 'config/craft_needs.json',
+                         'config/crafting/material_recipes_global.txt', 'code/modules/1713/production.dm',
+                         'code/modules/1713/factory_pipes.dm', 'code/modules/1713/machinery/cables.dm',
+                         'code/modules/1713/machinery/cables_types.dm')},
+    'anvil_mold_costs': {'files': ('tests/anvil_mold_costs/test_anvil_mold_costs.py',),
+        'paths': ('tests/anvil_mold_costs/',), 'shared_paths': ()},
+    'processing_recipes': {'files': ('tests/processing_recipes/test_processing_recipes.py',),
+        'paths': ('tests/processing_recipes/', 'code/modules/1713/processing_recipes.dm'), 'shared_paths': (
+            'code/modules/1713/herbalism.dm', 'code/modules/1713/flint_mining.dm', 'code/modules/1713/obsidian.dm',
+            'scripts/atlas/interactions.py')},
+    'resource_stock': {'files': ('tests/resource_stock/test_resource_stock.py',),
+        'paths': ('tests/resource_stock/', 'code/_helpers/resource_stock.dm'), 'shared_paths': (
+            'code/game/objects/structures/rocks.dm', 'code/modules/1713/obsidian.dm',
+            'code/game/objects/structures/ocean_fishing.dm')},
+    'job_loadouts': {'files': ('tests/job_loadouts/test_job_loadouts.py',),
+        'paths': ('tests/job_loadouts/', 'code/game/jobs/job.dm'), 'shared_paths': ()},
+    'liquid_fuels': {'files': ('tests/liquid_fuels/test_liquid_fuels.py',),
+        'paths': ('tests/liquid_fuels/', 'code/_helpers/liquid_fuels.dm', 'code/__defines/liquid_fuels.dm'), 'shared_paths': ()},
+    'water_turfs': {'files': ('tests/water_turfs/test_water_turfs.py',),
+        'paths': ('tests/water_turfs/', 'code/_helpers/water_turfs.dm'), 'shared_paths': ()},
+    'faction_hud': {'files': ('tests/faction_hud/test_faction_hud.py',),
+        'paths': ('tests/faction_hud/', 'code/_helpers/faction_hud.dm'), 'shared_paths': ()},
+    'structure_damage': {'files': ('tests/structure_damage/test_structure_damage.py',),
+        'paths': ('tests/structure_damage/', 'code/_helpers/structure_damage.dm'), 'shared_paths': ()},
+    'season_helpers': {'files': ('tests/season_helpers/test_season_helpers.py',),
+        'paths': ('tests/season_helpers/', 'code/_helpers/seasons.dm', 'code/__defines/seasons.dm'), 'shared_paths': ()},
+    'map_traits': {'files': ('tests/map_traits/test_map_traits.py',),
+        'paths': ('tests/map_traits/', 'code/game/objects/map_metadata/'), 'shared_paths': ()},
+    'job_stats': {'files': ('tests/job_stats/test_job_stats.py',),
+        'paths': ('tests/job_stats/', 'code/modules/1713/jobs/'), 'shared_paths': ('code/game/jobs/job.dm',)},
+    'item_wear': {'files': ('tests/item_wear/test_item_wear.py',),
+        'paths': ('tests/item_wear/', 'code/_helpers/item_wear.dm'), 'shared_paths': (
+            'code/game/objects/items/weapons/material/material_weapons.dm',
+            'code/game/objects/items/weapons/shields.dm', 'code/game/objects/items/clothing/clothing.dm')},
+    'anchoring': {'files': ('tests/anchoring/test_anchoring.py',),
+        'paths': ('tests/anchoring/',), 'shared_paths': ('code/_helpers/tools.dm',)},
+    # Solid fuel kinds and per-device rates keep the old hard-coded values.
+    'solid_fuel': {'files': ('tests/solid_fuel/test_solid_fuel.py',),
+        'paths': ('tests/solid_fuel/',), 'shared_paths': ()},
+    # Stack recipe build guards keep produce_recipe()'s old order and phases;
+    # source scan of code/.
+    'craft_guards': {'files': ('tests/craft_guards/test_craft_guards.py',),
+        'paths': ('tests/craft_guards/', 'code/game/objects/items/stacks/craft_guards.dm'), 'shared_paths': ()},
+    'craft_products': {'files': ('tests/craft_products/test_craft_products.py',),
+        'paths': ('tests/craft_products/', 'code/game/objects/items/stacks/craft_products.dm'), 'shared_paths': ()},
+    # Tool quality declarations match the base paths is_tool() replaced, and
+    # legacy istype checks on base tool paths only shrink; source scan of code/.
+    'tool_qualities': {'files': ('tests/tool_qualities/test_tool_qualities.py',),
+        'paths': ('tests/tool_qualities/', 'code/__defines/tools.dm', 'code/_helpers/tools.dm'), 'shared_paths': ()},
+    # istype/ispath/locate calls that join type paths with || (only the first
+    # path is tested); source scan of code/, run by full and preflight sweeps.
+    'istype_or_paths': {'files': ('tests/istype_or_paths/test_istype_or_paths.py',),
+        'paths': ('tests/istype_or_paths/',), 'shared_paths': ()},
     # Shared Campaign win condition and Battle Royale / Hunger Games shrinking
     # zone against frozen pre-refactor bodies; source projection only.
     'map_metadata_dedupe': {'files': ('tests/map_metadata_dedupe/test_map_metadata_dedupe.py',),
@@ -866,6 +1004,11 @@ SUITES = {
     # parity against the frozen structure bodies, no BYOND runtime.
     'radio_shared': {'files': ('tests/radio_shared/test_radio_shared.py',),
         'paths': ('tests/radio_shared/',), 'shared_paths': ('code/modules/1713/radio.dm',)},
+    # Rusty bolt effect: metal near strong AM transmitters hums broadcasts.
+    'rusty_bolt': {'files': ('tests/rusty_bolt/test_sources.py',),
+        'paths': ('tests/rusty_bolt/', 'code/modules/1713/rusty_bolt.dm'), 'shared_paths': (
+            'code/modules/1713/radio.dm', 'code/modules/1713/modern_telecom.dm',
+            'code/modules/1713/radio_relay.dm')},
     # Copied capture chains in map update_win_condition use capture_step;
     # source parity against the frozen chains, no BYOND runtime.
     'capture_chain': {'files': ('tests/capture_chain/test_capture_chain.py',), 'paths': ('tests/capture_chain/',), 'shared_paths': ('code/game/objects/map_metadata/_map_metadata.dm',
@@ -985,6 +1128,10 @@ SUITES = {
             'code/modules/research_tree/book_research.dm',
             'code/modules/research_tree/book_pages.dm',
             'code/modules/research_tree/research_bench.dm')},
+    # Research tree groundwork order: real-need prerequisites, skippable side nodes, civil free of military; offline only.
+    'research_tree_order': {'files': ('tests/research_tree_order/test_order.py',),
+        'paths': ('tests/research_tree_order/',), 'shared_paths': (
+            'code/modules/research_tree/research_node.dm',)},
     # Late research: node effects, field work, teams, rushing and ciphers on book-research worlds; offline only.
     'late_research': {'files': ('tests/late_research/test_contract.py',),
         'paths': ('tests/late_research/',), 'shared_paths': (
@@ -1020,6 +1167,52 @@ SUITES = {
             'code/modules/projectiles/_ammo_casing.dm', 'icons/obj/flint_mining.dmi',
             'code/game/objects/structures/blacksmithing/dedicated_workbenches.dm',
             'code/modules/1713/light_fuel.dm')},
+    # Obsidian sources, knapping and tools: source contracts only.
+    'obsidian': {'files': ('tests/obsidian/test_source.py',),
+        'paths': ('tests/obsidian/',), 'shared_paths': (
+            'code/modules/1713/obsidian.dm', 'code/game/turfs/floor_attackby.dm',
+            'icons/obj/obsidian.dmi', 'code/modules/research_tree/research_node.dm')},
+    # Snares, deadfalls, fish weirs and pit traps: source contracts only.
+    'stone_age_traps': {'files': ('tests/stone_age_traps/test_source.py',),
+        'paths': ('tests/stone_age_traps/',), 'shared_paths': (
+            'code/modules/1713/stone_age_traps.dm', 'icons/obj/stone_age_traps.dmi')},
+    # Dugout canoe log stages, sea rules and recipes: source contracts only.
+    'dugout_canoe': {'files': ('tests/dugout_canoe/test_source.py',),
+        'paths': ('tests/dugout_canoe/',), 'shared_paths': (
+            'code/modules/1713/dugout_canoe.dm', 'icons/obj/vehicles/dugout_canoe.dmi')},
+    # Wild and tame farm animals, taming by hand feeding: source contracts only.
+    'domestication': {'files': ('tests/domestication/test_source.py',),
+        'paths': ('tests/domestication/',), 'shared_paths': (
+            'code/modules/1713/domestication.dm', 'code/modules/ecology/ecology_spawning.dm',
+            'code/game/objects/effects/spawner.dm')},
+    # Rock art on natural rock with ground pigments: source contracts only.
+    'rock_art': {'files': ('tests/rock_art/test_source.py',),
+        'paths': ('tests/rock_art/',), 'shared_paths': (
+            'code/modules/1713/rock_art.dm', 'code/modules/paintings/painting_editor.dm')},
+    # Deeds carved into tribal totem poles: source contracts only.
+    'tribal_deeds': {'files': ('tests/tribal_deeds/test_source.py',),
+        'paths': ('tests/tribal_deeds/',), 'shared_paths': (
+            'code/modules/1713/tribal_deeds.dm', 'code/modules/1713/dugout_canoe.dm',
+            'code/modules/1713/domestication.dm', 'code/modules/1713/rock_art.dm')},
+    # Burial mounds, cairns and feasts: source contracts only.
+    'stone_age_rites': {'files': ('tests/stone_age_rites/test_source.py',),
+        'paths': ('tests/stone_age_rites/',), 'shared_paths': (
+            'code/modules/1713/stone_age_rites.dm', 'icons/obj/stone_age_rites.dmi',
+            'code/game/objects/items/stacks/stack.dm')},
+    # Bead trade goods and the two-sided barter mat: source contracts only.
+    'barter': {'files': ('tests/barter/test_source.py',),
+        'paths': ('tests/barter/',), 'shared_paths': (
+            'code/modules/1713/barter.dm', 'icons/obj/barter.dmi')},
+    # Sewers phase S1: source contracts (the native probe is tests/sewers/probe.dm).
+    'sewers': {'files': ('tests/sewers/test_sewers.py',),
+        'paths': ('tests/sewers/',), 'shared_paths': (
+            'code/modules/1713/sewers.dm', 'code/modules/1713/flood_hollows.dm', 'icons/obj/sewers.dmi', 'tests/sprites/create_sewers.py',
+            'code/game/objects/structures/watercloset.dm', 'code/game/mob/living/carbon/human/shit_piss.dm')},
+    # Bone flute, frame drum, flint sickle and bison herds: source contracts only.
+    'stone_age_extras': {'files': ('tests/stone_age_extras/test_source.py',),
+        'paths': ('tests/stone_age_extras/',), 'shared_paths': (
+            'code/modules/1713/stone_age_extras.dm', 'icons/obj/stone_age_extras.dmi',
+            'code/modules/1713/processing_recipes.dm')},
     'door_intents': {'files': ('tests/door_intents/test_door_intents.py', 'tests/door_intents/test_jail_keys.py'),
         'paths': ('tests/door_intents/',), 'shared_paths': (
             'code/game/objects/structures/door.dm',
@@ -1183,7 +1376,7 @@ SUITES = {
     # Razor grooming guard and hygiene-gated razor recipes; source checks only.
     'razor_grooming': {'files': ('tests/razor_grooming/test_razor.py',),
         'paths': ('tests/razor_grooming/',), 'shared_paths': (
-            'code/game/objects/items/weapons/material/kitchen.dm',
+            'code/game/objects/items/weapons/material/misc.dm',
             'config/crafting/material_recipes_global.txt',
             'code/modules/research_tree/research_node.dm',
             'code/modules/research_tree/book_pages.dm')},
@@ -1710,7 +1903,46 @@ SUITES = {
         'shared_paths': ('scripts/atlas/facts.py', 'code/modules/ecology/ecology_spawning.dm',
                          'code/modules/ecology/wild_herbs.dm',
                          'code/modules/1713/machinery/modular_vehicles/ships/sea_life.dm')},
+    # Admin-only atlas list stays out of public atlas outputs; source contracts only.
+    'atlas_admin_only': {'files': ('tests/atlas_admin_only/test_admin_only.py',), 'paths': (
+        'tests/atlas_admin_only/', 'scripts/atlas/admin_only.py', 'code/game/mob/crafting_atlas_admin.dm'),
+        'shared_paths': ('scripts/build-crafting-atlas.py', 'code/game/mob/crafting_atlas_tgui.dm', 'UI/crafting-atlas.json', 'civ13.dme',
+                         'code/modules/magic/')},
     # Source and injected-help contracts only; this suite does not run DM.
+    'mechanical_power': {'files': ('tests/mechanical_power/test_contract.py',), 'paths': (
+        'tests/mechanical_power/', 'code/modules/1713/mechanical_power.dm', 'config/craft_needs.json',
+        'icons/obj/mechanical_power.dmi', 'tests/sprites/create_mechanical_power.py',
+        'code/modules/1713/machine_shop.dm', 'icons/obj/machine_shop.dmi', 'tests/sprites/create_machine_shop.py',
+        'code/game/objects/structures/blacksmithing/blacksmithing_recipes.dm')},
+    'building_site': {'files': ('tests/building_site/test_contract.py',), 'paths': (
+        'tests/building_site/', 'code/modules/1713/building_site.dm',
+        'icons/obj/building_site.dmi', 'tests/sprites/create_building_site.py')},
+    # Source contracts only; this suite does not run DM.
+    'power_cranes': {'files': ('tests/power_cranes/test_contract.py',), 'paths': (
+        'tests/power_cranes/', 'code/modules/1713/power_cranes.dm', 'code/modules/1713/lifting_machines.dm',
+        'config/craft_needs.json', 'icons/obj/power_cranes.dmi', 'tests/sprites/create_power_cranes.py')},
+    # Source contracts only; this suite does not run DM.
+    'earthworks': {'files': ('tests/earthworks/test_contract.py',), 'paths': (
+        'tests/earthworks/', 'code/modules/1713/earthworks.dm', 'config/craft_needs.json',
+        'icons/obj/earthworks.dmi', 'tests/sprites/create_earthworks.py')},
+    # Source contracts only; this suite does not run DM.
+    'wire_bench': {'files': ('tests/wire_bench/test_contract.py',), 'paths': (
+        'tests/wire_bench/', 'code/modules/1713/wire_bench.dm', 'code/modules/materials/wire_materials.dm',
+        'code/modules/1713/machinery/cables_types.dm', 'config/craft_needs.json',
+        'icons/obj/wire_bench.dmi', 'tests/sprites/create_wire_bench.py')},
+    # Source contracts only; this suite does not run DM.
+    'rolling_mill': {'files': ('tests/rolling_mill/test_contract.py',), 'paths': (
+        'tests/rolling_mill/', 'code/modules/1713/rolling_mill.dm', 'config/craft_needs.json',
+        'icons/obj/rolling_mill.dmi', 'tests/sprites/create_rolling_mill.py')},
+    'lifting_machines': {'files': ('tests/lifting_machines/test_contract.py',), 'paths': (
+        'tests/lifting_machines/', 'code/modules/1713/lifting_machines.dm',
+        'icons/obj/lifting_machines.dmi', 'tests/sprites/create_lifting.py')},
+    'glass_stone_machines': {'files': ('tests/glass_stone_machines/test_contract.py',), 'paths': (
+        'tests/glass_stone_machines/', 'code/modules/1713/glass_stone_machines.dm',
+        'icons/obj/glass_stone_machines.dmi', 'tests/sprites/create_glass_stone.py')},
+    'clay_lime_fire': {'files': ('tests/clay_lime_fire/test_contract.py',), 'paths': (
+        'tests/clay_lime_fire/', 'code/modules/1713/clay_lime_fire.dm',
+        'icons/obj/workshop_machines.dmi', 'tests/sprites/create_clay_lime_fire.py')},
     # Keep shared production and Atlas sources unmapped so their existing
     # conservative all-suite fallback remains intact.
     'sawmill': {'files': ('tests/sawmill/test_contract.py',
@@ -1953,6 +2185,13 @@ SUITES = {
     'wild_herbs': {'files': ('tests/wild_herbs/test_wild_herbs.py',),
         'paths': ('tests/wild_herbs/', 'code/modules/ecology/wild_herbs.dm', 'icons/farming/humanity_wild_herbs.dmi',
                   'icons/obj/food/food.dmi')},
+    'paintings': {'files': ('tests/paintings/test_paintings.py',),
+        'paths': ('tests/paintings/', 'code/modules/paintings/', 'icons/obj/paintings.dmi', 'icons/mob/paintings.dmi', 'icons/obj/paintings_gallery.dmi',
+                  'tests/sprites/create_paintings.py')},
+    'design_codes': {'files': ('tests/design_codes/test_design_codes.py',),
+        'paths': ('tests/design_codes/', 'code/modules/paintings/design_codes.dm'), 'shared_paths': (
+            'code/modules/paintings/', 'code/game/objects/structures/sign_flags.dm',
+            'code/modules/1713/structures.dm', 'code/modules/1713/dressmaking.dm')},
     'herb_garden': {'files': ('tests/herb_garden/test_herb_garden.py',),
         'paths': ('tests/herb_garden/', 'code/modules/1713/herb_garden.dm', 'code/modules/ecology/flora_regrowth.dm',
                   'code/modules/ecology/foraging.dm', 'icons/farming/plants.dmi', 'icons/farming/seeds.dmi',

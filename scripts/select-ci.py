@@ -119,7 +119,8 @@ SAFEHOUSE_MAP_OFFLINE_TESTS = frozenset({'tests/safehouse_map/test_layout.py', '
 GAIA_HOST_OFFLINE_TESTS = frozenset({'tests/gaia_host/test_gaia_host.py', 'tests/gaia_host/test_shard_group.py',
                                      'tests/gaia_host/test_fresh_world.py',
                                      'tests/gaia_host/test_doorman.py', 'tests/gaia_host/test_wait_group.py',
-                                     'tests/gaia_host/test_relay.py', 'tests/gaia_host/test_mobile_host.py'})
+                                     'tests/gaia_host/test_relay.py', 'tests/gaia_host/test_mobile_host.py',
+                                     'tests/gaia_host/test_expedition_slots.py'})
 MEDICAL_CARE_OFFLINE_TESTS = frozenset({'tests/medical_care/test_source.py'})
 # Offline source contract plus the opt-in native fixture (run by hand, not CI).
 FIREMAN_CARRY_OFFLINE_TESTS = frozenset({'tests/fireman_carry/test_source.py', 'tests/fireman_carry/probe.dm',

@@ -240,23 +240,34 @@ var/global/list/node_grid_col_cache = null
 	// Args: id, name, category(layer), cost_ticks, min_bench_tier, mode, prereqs, era_tier
 	// Three intersecting layers (Industrial/Military/Health) plus the Tailoring
 	// and Agriculture specialist trees, laddered across the 9 eras. Capstones
-	// (PROTOTYPE mode) advance the age. Cross-branch prereqs make it a tree.
+	// (PROTOTYPE mode) advance the age.
+	// Groundwork order (Val, 2026-11-14): a prereq must be a real need - the
+	// same craft one step earlier, the material the thing is made of, or the
+	// power that drives it - never just "the previous era's node". Tools,
+	// metals and power are the trunk every late branch may lean on; a node
+	// that is one era's flavour of a craft (Irrigation, Imperial Architecture,
+	// Classical Dress, Siege Engines, Mail & Plate) is a side node nothing
+	// later needs. No civil node needs a military one. tests/research_tree_order
+	// holds these rules.
 	// Rebalanced 2026-07: recipe unlocks re-clustered from the actual crafting
 	// catalogue so every node earns its place (see recipe_node_requirements).
 	// --- Industrial: Toolmaking ---
 	register_research_node(new /datum/research_node("basic_tools", "Basic Toolmaking", "Industrial", 60, 0, RESEARCH_MODE_ANALYSIS, null, 0))
-	register_research_node(new /datum/research_node("iron_tools", "Iron Tools", "Industrial", 130, 1, RESEARCH_MODE_ANALYSIS, list("basic_tools"), 2))
+	register_research_node(new /datum/research_node("iron_tools", "Iron Tools", "Industrial", 130, 1, RESEARCH_MODE_ANALYSIS, list("basic_tools","iron_smithing"), 2))
 	register_research_node(new /datum/research_node("machined_tools", "Machined Tools", "Industrial", 200, 3, RESEARCH_MODE_ANALYSIS, list("iron_tools","steelmaking"), 4))
 	register_research_node(new /datum/research_node("power_tools", "Power Tools", "Industrial", 270, 5, RESEARCH_MODE_ANALYSIS, list("machined_tools","electricity"), 6))
 	// --- Industrial: Metallurgy ---
 	// Prototype: a cast axehead mold (gated on stone_arms, era-0 baseline --
 	// always available, so it can never be circular with bronze_working itself).
-	register_research_node(new /datum/research_node("bronze_working", "Bronze Working", "Industrial", 142, 0, RESEARCH_MODE_PROTOTYPE, null, 1, /obj/item/weapon/clay/mold/axehead))
+	register_research_node(new /datum/research_node("bronze_working", "Bronze Working", "Industrial", 142, 0, RESEARCH_MODE_PROTOTYPE, list("basic_tools"), 1, /obj/item/weapon/clay/mold/axehead))
 	// Prototype: a bronze ingot mold (gated on bronze_working, its own direct prereq).
 	register_research_node(new /datum/research_node("iron_smithing", "Iron Smithing", "Industrial", 195, 1, RESEARCH_MODE_PROTOTYPE, list("bronze_working"), 2, /obj/item/weapon/clay/mold))
 	register_research_node(new /datum/research_node("steelmaking", "Steelmaking", "Industrial", 200, 3, RESEARCH_MODE_ANALYSIS, list("iron_smithing"), 4))
 	register_research_node(new /datum/research_node("alloys", "Alloys", "Industrial", 270, 5, RESEARCH_MODE_ANALYSIS, list("steelmaking"), 6))
-	// Chemical cells precede electrical power distribution.
+	// Hall-Heroult (1886) and Bayer (1888): aluminium from bauxite (aluminium.dm).
+	register_research_node(new /datum/research_node("aluminium_refining", "Aluminium Refining", "Industrial", 305, 5, RESEARCH_MODE_ANALYSIS, list("electricity","alloys"), 6))
+	// Chemical cells precede electrical power distribution: Galvanic Cells are
+	// groundwork for Electricity.
 	register_research_node(new /datum/research_node("early_cells", "Early Chemical Cells", "Industrial", 95, 0, RESEARCH_MODE_ANALYSIS, list("bronze_working"), 1))
 	register_research_node(new /datum/research_node("galvanic_cells", "Galvanic Cells", "Industrial", 200, 3, RESEARCH_MODE_ANALYSIS, list("early_cells"), 4))
 	// --- Industrial: Construction (one node per building era) ---
@@ -264,7 +275,7 @@ var/global/list/node_grid_col_cache = null
 	register_research_node(new /datum/research_node("stone_masonry", "Stone Masonry", "Industrial", 95, 0, RESEARCH_MODE_ANALYSIS, list("primitive_construction"), 1))
 	register_research_node(new /datum/research_node("brickmaking", "Brickmaking", "Industrial", 130, 1, RESEARCH_MODE_ANALYSIS, list("stone_masonry"), 2))
 	register_research_node(new /datum/research_node("imperial_architecture", "Imperial Architecture", "Industrial", 165, 2, RESEARCH_MODE_ANALYSIS, list("brickmaking"), 3))
-	register_research_node(new /datum/research_node("reinforced_concrete", "Reinforced Concrete", "Industrial", 200, 3, RESEARCH_MODE_ANALYSIS, list("imperial_architecture","steelmaking"), 4))
+	register_research_node(new /datum/research_node("reinforced_concrete", "Reinforced Concrete", "Industrial", 200, 3, RESEARCH_MODE_ANALYSIS, list("brickmaking","steelmaking"), 4))
 	register_research_node(new /datum/research_node("modern_construction", "Modern Construction", "Industrial", 270, 5, RESEARCH_MODE_ANALYSIS, list("reinforced_concrete"), 6))
 	// --- Industrial: Culture & Faith ---
 	register_research_node(new /datum/research_node("ritual_worship", "Ritual & Worship", "Industrial", 60, 0, RESEARCH_MODE_ANALYSIS, null, 0))
@@ -272,18 +283,25 @@ var/global/list/node_grid_col_cache = null
 	// faction is founded (they were ungated before the rebalance).
 	register_research_node(new /datum/research_node("regalia", "Regalia & Heraldry", "Industrial", 60, 0, RESEARCH_MODE_ANALYSIS, list("weaving"), 0))
 	register_research_node(new /datum/research_node("monuments", "Monuments & Statuary", "Industrial", 130, 1, RESEARCH_MODE_ANALYSIS, list("stone_masonry","ritual_worship"), 2))
-	register_research_node(new /datum/research_node("fine_arts", "Fine Arts & Leisure", "Industrial", 165, 2, RESEARCH_MODE_ANALYSIS, list("monuments"), 3))
+	register_research_node(new /datum/research_node("fine_arts", "Fine Arts & Leisure", "Industrial", 165, 2, RESEARCH_MODE_ANALYSIS, list("ritual_worship"), 3))
 	// --- Industrial: Production & Trade ---
 	register_research_node(new /datum/research_node("pottery_storage", "Pottery & Cookware", "Industrial", 60, 0, RESEARCH_MODE_ANALYSIS, null, 0))
 	register_research_node(new /datum/research_node("cooperage", "Cooperage & Containers", "Industrial", 95, 0, RESEARCH_MODE_ANALYSIS, list("basic_tools"), 1))
 	register_research_node(new /datum/research_node("resource_processing", "Resource Processing", "Industrial", 95, 0, RESEARCH_MODE_ANALYSIS, list("basic_tools"), 1))
 	register_research_node(new /datum/research_node("early_economy", "Trade & Coinage", "Industrial", 95, 0, RESEARCH_MODE_ANALYSIS, null, 1))
-	register_research_node(new /datum/research_node("workshops", "Workshops", "Industrial", 130, 1, RESEARCH_MODE_ANALYSIS, list("pottery_storage"), 2))
+	register_research_node(new /datum/research_node("workshops", "Workshops", "Industrial", 130, 1, RESEARCH_MODE_ANALYSIS, list("bronze_working"), 2))
 	register_research_node(new /datum/research_node("glassworking", "Glassworking", "Industrial", 130, 1, RESEARCH_MODE_ANALYSIS, list("pottery_storage"), 2))
 	register_research_node(new /datum/research_node("papermaking", "Papermaking", "Industrial", 130, 1, RESEARCH_MODE_ANALYSIS, null, 2))
-	register_research_node(new /datum/research_node("printing_currency", "Printing Press", "Industrial", 165, 2, RESEARCH_MODE_ANALYSIS, list("papermaking"), 3))
+	// Peaceful era milestones (Val, 2026-11-14): civil and military progress stay
+	// independent, so each weapon-era capstone has a civil twin that opens the
+	// same era - Printing Press beside Gunpowder (Imperial), Powered Flight
+	// beside Mechanized Warfare (WW2). Either one moves the world; the era is
+	// kept while a written record of either survives (era_loss.dm).
+	// Prototype: a carved stamp, the first movable type (gated on papermaking,
+	// its own direct prereq).
+	register_research_node(new /datum/research_node("printing_currency", "Printing Press", "Industrial", 165, 2, RESEARCH_MODE_PROTOTYPE, list("papermaking"), 3, /obj/item/weapon/stamp/mail))
 	register_research_node(new /datum/research_node("optics_instruments", "Optics & Instruments", "Industrial", 165, 2, RESEARCH_MODE_ANALYSIS, list("glassworking"), 3))
-	register_research_node(new /datum/research_node("factories", "Factories", "Industrial", 200, 3, RESEARCH_MODE_ANALYSIS, list("printing_currency","steam_power"), 4))
+	register_research_node(new /datum/research_node("factories", "Factories", "Industrial", 200, 3, RESEARCH_MODE_ANALYSIS, list("workshops","steam_power"), 4))
 	register_research_node(new /datum/research_node("assembly_line", "Assembly Line", "Industrial", 235, 4, RESEARCH_MODE_ANALYSIS, list("factories"), 5))
 	register_research_node(new /datum/research_node("automation", "Automation", "Industrial", 305, 6, RESEARCH_MODE_ANALYSIS, list("assembly_line","electricity"), 7))
 	// Prototype: an early electronic device (gated on assembly_line, era5, well
@@ -291,20 +309,20 @@ var/global/list/node_grid_col_cache = null
 	register_research_node(new /datum/research_node("digital_computing", "Digital Computing", "Industrial", 510, 7, RESEARCH_MODE_PROTOTYPE, list("automation","electricity"), 8, /obj/item/camera/coldwar))
 	// Capstone into the Digital Age (2026). Prototype: a mobile phone (gated on
 	// digital_computing, era8, so it is always buildable before this node).
-	register_research_node(new /datum/research_node("additive_manufacturing", "3D Printing", "Industrial", 420, 8, RESEARCH_MODE_ANALYSIS, list("digital_networks","automation"), 9))
+	register_research_node(new /datum/research_node("additive_manufacturing", "3D Printing", "Industrial", 420, 8, RESEARCH_MODE_ANALYSIS, list("digital_computing"), 9))
 	register_research_node(new /datum/research_node("digital_networks", "Digital Networks", "Industrial", 560, 8, RESEARCH_MODE_PROTOTYPE, list("digital_computing"), 9, /obj/item/weapon/telephone/mobile))
 	// Digital Age consumer hardware: smartphones, LED lighting, lithium-ion storage.
 	register_research_node(new /datum/research_node("consumer_electronics", "Consumer Electronics", "Industrial", 420, 8, RESEARCH_MODE_ANALYSIS, list("digital_networks"), 9))
 	// Smart home (2026): a hub that runs lights, plugs and locks by voice.
 	register_research_node(new /datum/research_node("smart_home", "Smart Home", "Industrial", 380, 8, RESEARCH_MODE_ANALYSIS, list("consumer_electronics"), 9))
-	register_research_node(new /datum/research_node("uav_drones", "Drones", "Military", 450, 8, RESEARCH_MODE_ANALYSIS, list("consumer_electronics","missiles"), 9))
+	register_research_node(new /datum/research_node("uav_drones", "Drones", "Military", 450, 8, RESEARCH_MODE_ANALYSIS, list("consumer_electronics","powered_flight"), 9))
 	// Spaceflight (space settlement phase 1): probes fly over a survey map of a
 	// barren world. Samples a probe brings home are analysed into notes on
 	// Planetary Survey. Not PROTOTYPE mode: that marks an era-changing capstone.
 	// The Moon opens in 1969 (Val, 2026-11-06), so the chain follows Missiles and
 	// a Cold War bench (tier 7) can research it; era 9 keeps it from being
 	// granted for free before 2026. Mars waits for 2026 (survey_region_open).
-	register_research_node(new /datum/research_node("rocketry", "Rocketry", "Industrial", 480, 7, RESEARCH_MODE_ANALYSIS, list("missiles"), 9))
+	register_research_node(new /datum/research_node("rocketry", "Rocketry", "Industrial", 480, 7, RESEARCH_MODE_ANALYSIS, list("aviation_rocketry"), 9))
 	register_research_node(new /datum/research_node("planetary_survey", "Planetary Survey", "Industrial", 420, 7, RESEARCH_MODE_ANALYSIS, list("rocketry"), 9))
 	register_research_node(new /datum/research_node("crewed_flight", "Crewed Flight", "Industrial", 560, 7, RESEARCH_MODE_ANALYSIS, list("planetary_survey"), 9))
 	register_research_node(new /datum/research_node("orbital_flight", "Orbital Flight", "Industrial", 600, 7, RESEARCH_MODE_ANALYSIS, list("crewed_flight"), 9))
@@ -329,37 +347,40 @@ var/global/list/node_grid_col_cache = null
 	// --- Industrial: Power ---
 	// Era 3: its unlocks (large/powered saw mills) carried ~era-4 legacy
 	// thresholds, so era 2 would have leaked them via the baseline grant.
-	register_research_node(new /datum/research_node("watermills", "Watermills", "Industrial", 165, 2, RESEARCH_MODE_ANALYSIS, null, 3))
+	register_research_node(new /datum/research_node("watermills", "Watermills", "Industrial", 165, 2, RESEARCH_MODE_ANALYSIS, list("resource_processing"), 3))
 	// Prototype: a machined component (gated on basic_tools, era0 baseline --
 	// placeholder until a dedicated "engine prototype" item exists).
-	register_research_node(new /datum/research_node("steam_power", "Steam Power", "Industrial", 300, 3, RESEARCH_MODE_PROTOTYPE, list("watermills"), 4, /obj/item/weapon/material/handle))
+	register_research_node(new /datum/research_node("steam_power", "Steam Power", "Industrial", 300, 3, RESEARCH_MODE_PROTOTYPE, list("watermills","iron_smithing"), 4, /obj/item/weapon/material/handle))
 	// Prototype: a spool of cable (gated on paved_infrastructure, era3, well
 	// before this node's era5).
-	register_research_node(new /datum/research_node("hydraulic_fracturing", "Hydraulic Fracturing", "Industrial", 400, 7, RESEARCH_MODE_ANALYSIS, list("electricity", "modern_construction"), 8))
-	register_research_node(new /datum/research_node("electricity", "Electricity", "Industrial", 352, 4, RESEARCH_MODE_PROTOTYPE, list("steam_power"), 5, /obj/item/stack/cable_coil))
+	register_research_node(new /datum/research_node("hydraulic_fracturing", "Hydraulic Fracturing", "Industrial", 400, 7, RESEARCH_MODE_ANALYSIS, list("combustion","electricity"), 8))
+	register_research_node(new /datum/research_node("electricity", "Electricity", "Industrial", 352, 4, RESEARCH_MODE_PROTOTYPE, list("steam_power","galvanic_cells"), 5, /obj/item/stack/cable_coil))
 	register_research_node(new /datum/research_node("combustion", "Combustion Engine", "Industrial", 235, 4, RESEARCH_MODE_ANALYSIS, list("steam_power","steelmaking"), 5))
 	// Prototype: a geiger counter (gated on factories, era4, well before this
 	// node's era7).
-	register_research_node(new /datum/research_node("nuclear_power", "Nuclear Power", "Industrial", 458, 6, RESEARCH_MODE_PROTOTYPE, list("combustion"), 7, /obj/item/weapon/geiger_counter))
+	register_research_node(new /datum/research_node("nuclear_power", "Nuclear Power", "Industrial", 458, 6, RESEARCH_MODE_PROTOTYPE, list("electricity","alloys"), 7, /obj/item/weapon/geiger_counter))
 	// --- Industrial: Vehicles ---
 	register_research_node(new /datum/research_node("carts", "Carts", "Industrial", 95, 0, RESEARCH_MODE_ANALYSIS, null, 1))
 	register_research_node(new /datum/research_node("wagons_ships", "Wagons & Ships", "Industrial", 165, 2, RESEARCH_MODE_ANALYSIS, list("carts"), 3))
+	register_research_node(new /datum/research_node("oared_ships", "Oared Ships", "Industrial", 95, 0, RESEARCH_MODE_ANALYSIS, list("carts"), 1))
 	register_research_node(new /datum/research_node("rail_steam", "Rail & Steam", "Industrial", 200, 3, RESEARCH_MODE_ANALYSIS, list("wagons_ships","steam_power"), 4))
-	register_research_node(new /datum/research_node("automobiles", "Automobiles", "Industrial", 235, 4, RESEARCH_MODE_ANALYSIS, list("rail_steam","combustion"), 5))
+	register_research_node(new /datum/research_node("automobiles", "Automobiles", "Industrial", 235, 4, RESEARCH_MODE_ANALYSIS, list("wagons_ships","combustion"), 5))
 	// Powered Flight (1903) unlocks the aircraft hangar that builds the light plane.
-	register_research_node(new /datum/research_node("powered_flight", "Powered Flight", "Industrial", 270, 5, RESEARCH_MODE_ANALYSIS, list("automobiles","combustion"), 6))
+	// The civil twin of Mechanized Warfare: also opens WW2. Prototype: a small
+	// fuel tank (gated on combustion, its own direct prereq).
+	register_research_node(new /datum/research_node("powered_flight", "Powered Flight", "Industrial", 270, 5, RESEARCH_MODE_PROTOTYPE, list("combustion"), 6, /obj/item/weapon/reagent_containers/glass/barrel/fueltank/small))
 	// Submarines (1900s) unlock the submarine pen that launches a diving boat.
 	register_research_node(new /datum/research_node("submarines", "Submarines", "Industrial", 270, 5, RESEARCH_MODE_ANALYSIS, list("wagons_ships","combustion","electricity"), 6))
 	register_research_node(new /datum/research_node("aviation_rocketry", "Aviation & Rocketry", "Industrial", 305, 6, RESEARCH_MODE_ANALYSIS, list("powered_flight","alloys"), 7))
 	// Naval Aviation (1920s) unlocks the shipyard office that lays down an aircraft carrier.
-	register_research_node(new /datum/research_node("naval_aviation", "Naval Aviation", "Industrial", 305, 6, RESEARCH_MODE_ANALYSIS, list("powered_flight","submarines"), 7))
+	register_research_node(new /datum/research_node("naval_aviation", "Naval Aviation", "Industrial", 305, 6, RESEARCH_MODE_ANALYSIS, list("powered_flight","wagons_ships"), 7))
 	// Naval Mines (1850s) unlock the contact mine; Magnetic Mines & Degaussing
 	// (1939) the magnetic mine and the counters to it (naval/naval_mines.dm).
-	register_research_node(new /datum/research_node("naval_mines", "Naval Mines", "Military", 235, 4, RESEARCH_MODE_ANALYSIS, list("field_artillery","rail_steam"), 5))
-	register_research_node(new /datum/research_node("magnetic_mines", "Magnetic Mines & Degaussing", "Military", 305, 6, RESEARCH_MODE_ANALYSIS, list("naval_mines","submarines"), 7))
+	register_research_node(new /datum/research_node("naval_mines", "Naval Mines", "Military", 235, 4, RESEARCH_MODE_ANALYSIS, list("gunpowder","wagons_ships"), 5))
+	register_research_node(new /datum/research_node("magnetic_mines", "Magnetic Mines & Degaussing", "Military", 305, 6, RESEARCH_MODE_ANALYSIS, list("naval_mines","electricity"), 7))
 	// --- Industrial: Infrastructure ---
 	register_research_node(new /datum/research_node("paved_infrastructure", "Paved Infrastructure", "Industrial", 165, 2, RESEARCH_MODE_ANALYSIS, list("stone_masonry"), 3))
-	register_research_node(new /datum/research_node("utilities", "Utilities", "Industrial", 235, 4, RESEARCH_MODE_ANALYSIS, list("paved_infrastructure","electricity"), 5))
+	register_research_node(new /datum/research_node("utilities", "Utilities", "Industrial", 235, 4, RESEARCH_MODE_ANALYSIS, list("electricity"), 5))
 	// --- Industrial: Agriculture ---
 	// Basic Agriculture is the Bronze Age gateway for farming: it unlocks the
 	// basic farming tools AND opens the specialized Agriculture tree below.
@@ -369,12 +390,12 @@ var/global/list/node_grid_col_cache = null
 	// Irrigation gates the "dig an irrigation channel" shovel action -- see
 	// /obj/item/weapon/material/shovel/attack_self() in code/modules/1713/tools.dm.
 	register_research_node(new /datum/research_node("irrigation", "Irrigation", "Agriculture", 165, 1, RESEARCH_MODE_ANALYSIS, list("basic_agriculture"), 2, null, "Agriculture"))
-	register_research_node(new /datum/research_node("advanced_agriculture", "Advanced Agriculture", "Agriculture", 235, 3, RESEARCH_MODE_ANALYSIS, list("irrigation"), 4, null, "Agriculture"))
-	// Hydroponics (docs/hydroponics-design.md H5): era 6, after Advanced Agriculture and Electricity.
-	register_research_node(new /datum/research_node("hydroponics", "Hydroponics", "Agriculture", 305, 5, RESEARCH_MODE_ANALYSIS, list("advanced_agriculture","electricity"), 6, null, "Agriculture"))
+	register_research_node(new /datum/research_node("advanced_agriculture", "Advanced Agriculture", "Agriculture", 235, 3, RESEARCH_MODE_ANALYSIS, list("basic_agriculture"), 4, null, "Agriculture"))
+	// Hydroponics (docs/hydroponics-design.md H5): era 6, the end of the water line, after Irrigation and Electricity.
+	register_research_node(new /datum/research_node("hydroponics", "Hydroponics", "Agriculture", 305, 5, RESEARCH_MODE_ANALYSIS, list("irrigation","electricity"), 6, null, "Agriculture"))
 	// --- Military: Melee ---
 	register_research_node(new /datum/research_node("stone_arms", "Stone Arms", "Military", 60, 0, RESEARCH_MODE_ANALYSIS, null, 0))
-	register_research_node(new /datum/research_node("bronze_weapons", "Bronze Arms & Armor", "Military", 95, 0, RESEARCH_MODE_ANALYSIS, list("stone_arms"), 1))
+	register_research_node(new /datum/research_node("bronze_weapons", "Bronze Arms & Armor", "Military", 95, 0, RESEARCH_MODE_ANALYSIS, list("stone_arms","bronze_working"), 1))
 	register_research_node(new /datum/research_node("steel_blades", "Steel Blades", "Military", 130, 1, RESEARCH_MODE_ANALYSIS, list("bronze_weapons","iron_smithing"), 2))
 	// --- Military: Archery ---
 	register_research_node(new /datum/research_node("archery", "Archery", "Military", 60, 0, RESEARCH_MODE_ANALYSIS, null, 0))
@@ -406,23 +427,23 @@ var/global/list/node_grid_col_cache = null
 	register_research_node(new /datum/research_node("selfloading_firearms", "Self-Loading Firearms", "Military", 270, 5, RESEARCH_MODE_ANALYSIS, list("cartridge_ammo"), 6))
 	register_research_node(new /datum/research_node("automatic_weapons", "Automatic Weapons", "Military", 305, 6, RESEARCH_MODE_ANALYSIS, list("selfloading_firearms"), 7))
 	// --- Military: Artillery ---
-	register_research_node(new /datum/research_node("siege_engines", "Siege Engines", "Military", 130, 1, RESEARCH_MODE_ANALYSIS, null, 2))
-	register_research_node(new /datum/research_node("cannon", "Cannon", "Military", 165, 2, RESEARCH_MODE_ANALYSIS, list("siege_engines","imperial_architecture"), 3))
+	register_research_node(new /datum/research_node("siege_engines", "Siege Engines", "Military", 130, 1, RESEARCH_MODE_ANALYSIS, list("primitive_construction"), 2))
+	register_research_node(new /datum/research_node("cannon", "Cannon", "Military", 165, 2, RESEARCH_MODE_ANALYSIS, list("gunpowder"), 3))
 	register_research_node(new /datum/research_node("field_artillery", "Field Artillery", "Military", 200, 3, RESEARCH_MODE_ANALYSIS, list("cannon","steelmaking"), 4))
 	// Prototype: a tank shell casing (gated on field_artillery, its own direct prereq).
 	register_research_node(new /datum/research_node("mechanized_war", "Mechanized Warfare", "Military", 405, 5, RESEARCH_MODE_PROTOTYPE, list("field_artillery","combustion","steelmaking"), 6, /obj/item/stack/ammopart/casing/tank))
-	register_research_node(new /datum/research_node("missiles", "Missiles", "Military", 305, 6, RESEARCH_MODE_ANALYSIS, list("mechanized_war","aviation_rocketry"), 7))
+	register_research_node(new /datum/research_node("missiles", "Missiles", "Military", 305, 6, RESEARCH_MODE_ANALYSIS, list("aviation_rocketry","gunpowder"), 7))
 	// --- Military: Armor gateway (advanced armour lives in the Tailoring tree) ---
 	register_research_node(new /datum/research_node("padded_armor", "Primitive Armor", "Military", 60, 0, RESEARCH_MODE_ANALYSIS, null, 0))
 	// --- Health: Medicine ---
 	register_research_node(new /datum/research_node("herbalism", "Herbalism", "Health", 60, 0, RESEARCH_MODE_ANALYSIS, null, 0))
 	register_research_node(new /datum/research_node("apothecary", "Apothecary", "Health", 130, 1, RESEARCH_MODE_ANALYSIS, list("herbalism"), 2))
-	register_research_node(new /datum/research_node("pharmacology", "Pharmacology", "Health", 235, 4, RESEARCH_MODE_ANALYSIS, list("apothecary","printing_currency"), 5))
+	register_research_node(new /datum/research_node("pharmacology", "Pharmacology", "Health", 235, 4, RESEARCH_MODE_ANALYSIS, list("apothecary"), 5))
 	register_research_node(new /datum/research_node("modern_medicine", "Modern Medicine", "Health", 305, 6, RESEARCH_MODE_ANALYSIS, list("pharmacology"), 7))
 	// --- Health: Surgery ---
-	register_research_node(new /datum/research_node("field_surgery", "Field Surgery", "Health", 95, 0, RESEARCH_MODE_ANALYSIS, list("bronze_working"), 1))
-	register_research_node(new /datum/research_node("surgical_theory", "Surgical Theory", "Health", 165, 2, RESEARCH_MODE_ANALYSIS, list("field_surgery","printing_currency"), 3))
-	register_research_node(new /datum/research_node("anesthetic_surgery", "Anesthetic Surgery", "Health", 235, 4, RESEARCH_MODE_ANALYSIS, list("surgical_theory"), 5))
+	register_research_node(new /datum/research_node("field_surgery", "Field Surgery", "Health", 95, 0, RESEARCH_MODE_ANALYSIS, list("herbalism"), 1))
+	register_research_node(new /datum/research_node("surgical_theory", "Surgical Theory", "Health", 165, 2, RESEARCH_MODE_ANALYSIS, list("field_surgery","papermaking"), 3))
+	register_research_node(new /datum/research_node("anesthetic_surgery", "Anesthetic Surgery", "Health", 235, 4, RESEARCH_MODE_ANALYSIS, list("surgical_theory","apothecary"), 5))
 	// --- Health: Sanitation ---
 	register_research_node(new /datum/research_node("hygiene", "Hygiene", "Health", 95, 0, RESEARCH_MODE_ANALYSIS, null, 1))
 	register_research_node(new /datum/research_node("sanitation", "Sanitation", "Health", 165, 2, RESEARCH_MODE_ANALYSIS, list("hygiene"), 3))
@@ -430,15 +451,15 @@ var/global/list/node_grid_col_cache = null
 	register_research_node(new /datum/research_node("public_health", "Public Health", "Health", 305, 6, RESEARCH_MODE_ANALYSIS, list("germ_theory"), 7))
 	// --- Tailoring tree: Textiles (clothing by era, reachable via Weaving) ---
 	register_research_node(new /datum/research_node("classical_dress", "Classical Dress", "Textiles", 95, 0, RESEARCH_MODE_ANALYSIS, list("weaving"), 1, null, "Tailoring"))
-	register_research_node(new /datum/research_node("tailoring", "Tailoring", "Textiles", 130, 1, RESEARCH_MODE_ANALYSIS, list("classical_dress"), 2, null, "Tailoring"))
+	register_research_node(new /datum/research_node("tailoring", "Tailoring", "Textiles", 130, 1, RESEARCH_MODE_ANALYSIS, list("weaving"), 2, null, "Tailoring"))
 	register_research_node(new /datum/research_node("fine_garments", "Fine Garments", "Textiles", 165, 2, RESEARCH_MODE_ANALYSIS, list("tailoring"), 3, null, "Tailoring"))
 	register_research_node(new /datum/research_node("haberdashery", "Haberdashery", "Textiles", 165, 2, RESEARCH_MODE_ANALYSIS, list("tailoring"), 3, null, "Tailoring"))
-	register_research_node(new /datum/research_node("textile_mills", "Textile Mills", "Textiles", 200, 3, RESEARCH_MODE_ANALYSIS, list("fine_garments","steam_power"), 4, null, "Tailoring"))
+	register_research_node(new /datum/research_node("textile_mills", "Textile Mills", "Textiles", 200, 3, RESEARCH_MODE_ANALYSIS, list("tailoring","steam_power"), 4, null, "Tailoring"))
 	register_research_node(new /datum/research_node("ready_made", "Ready-Made Clothing", "Textiles", 235, 4, RESEARCH_MODE_ANALYSIS, list("textile_mills"), 5, null, "Tailoring"))
-	register_research_node(new /datum/research_node("synthetics", "Synthetic Fabrics", "Textiles", 305, 6, RESEARCH_MODE_ANALYSIS, list("ready_made"), 7, null, "Tailoring"))
+	register_research_node(new /datum/research_node("synthetics", "Synthetic Fabrics", "Textiles", 305, 6, RESEARCH_MODE_ANALYSIS, list("textile_mills","combustion"), 7, null, "Tailoring"))
 	// --- Tailoring tree: Armour ---
-	register_research_node(new /datum/research_node("mail_plate", "Mail & Plate", "Armour", 130, 1, RESEARCH_MODE_ANALYSIS, list("padded_armor"), 2, null, "Tailoring"))
-	register_research_node(new /datum/research_node("trench_warfare", "Trench Warfare", "Armour", 235, 4, RESEARCH_MODE_ANALYSIS, list("mail_plate"), 5, null, "Tailoring"))
+	register_research_node(new /datum/research_node("mail_plate", "Mail & Plate", "Armour", 130, 1, RESEARCH_MODE_ANALYSIS, list("padded_armor","iron_smithing"), 2, null, "Tailoring"))
+	register_research_node(new /datum/research_node("trench_warfare", "Trench Warfare", "Armour", 235, 4, RESEARCH_MODE_ANALYSIS, list("padded_armor","field_defenses","steelmaking"), 5, null, "Tailoring"))
 	register_research_node(new /datum/research_node("modern_armor", "Modern Armor", "Armour", 305, 6, RESEARCH_MODE_ANALYSIS, list("trench_warfare","alloys"), 7, null, "Tailoring"))
 
 	// --- Late lines for book-research worlds (Val, 2026-11-12) ---
@@ -446,8 +467,8 @@ var/global/list/node_grid_col_cache = null
 	// rest of the tree. These carry them on, and exist only where research is
 	// done in books (book_only).
 	register_research_node(new /datum/research_node("emergency_medicine", "Emergency Medicine", "Health", 400, 7, RESEARCH_MODE_ANALYSIS, list("modern_medicine","anesthetic_surgery"), 8))
-	register_research_node(new /datum/research_node("soil_science", "Soil Science", "Agriculture", 340, 6, RESEARCH_MODE_ANALYSIS, list("hydroponics"), 7, null, "Agriculture"))
-	register_research_node(new /datum/research_node("crop_breeding", "Crop Breeding", "Agriculture", 400, 7, RESEARCH_MODE_ANALYSIS, list("soil_science"), 8, null, "Agriculture"))
+	register_research_node(new /datum/research_node("soil_science", "Soil Science", "Agriculture", 340, 6, RESEARCH_MODE_ANALYSIS, list("advanced_agriculture"), 7, null, "Agriculture"))
+	register_research_node(new /datum/research_node("crop_breeding", "Crop Breeding", "Agriculture", 400, 7, RESEARCH_MODE_ANALYSIS, list("advanced_agriculture"), 8, null, "Agriculture"))
 	register_research_node(new /datum/research_node("support_weapons", "Infantry Support Weapons", "Military", 340, 6, RESEARCH_MODE_ANALYSIS, list("field_artillery","automatic_weapons"), 7))
 	register_research_node(new /datum/research_node("guided_weapons", "Guided Missiles", "Military", 400, 7, RESEARCH_MODE_ANALYSIS, list("missiles","support_weapons"), 8))
 	for (var/late_id in book_only_research_nodes)
@@ -496,6 +517,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/ammo_casing/arrow/bronze" = "archery",
 		"/obj/item/ammo_casing/arrow/copper" = "archery",
 		"/obj/item/ammo_casing/arrow/flint" = "archery",
+		"/obj/item/ammo_casing/arrow/obsidian" = "archery",
 		"/obj/item/ammo_casing/arrow/iron" = "archery",
 		"/obj/item/ammo_casing/arrow/steel" = "archery",
 		"/obj/item/ammo_casing/arrow/stone" = "archery",
@@ -504,6 +526,7 @@ var/global/list/node_grid_col_cache = null
 		// basic_tools
 		// Stone Age hide working (scrape, wash, dry, tan) is basic toolmaking.
 		"/obj/item/stack/material/dryhide" = "basic_tools",
+		"/obj/structure/fluid_pipe/plain" = "basic_tools",
 		"/obj/item/stack/material/hairlesshide" = "basic_tools",
 		"/obj/item/stack/material/leather" = "basic_tools",
 		"/obj/item/stack/material/wethide" = "basic_tools",
@@ -572,8 +595,9 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/shield/scutum" = "bronze_weapons",
 		// bronze_working
 		"/obj/structure/component_workbench/toolsmith" = "bronze_working",
+		"/obj/structure/fluid_tank/plain" = "bronze_working",
 		// cooperage
-		"/obj/structure/simple_door/key_door/anyone/ship" = "cooperage",
+		"/obj/structure/simple_door/key_door/anyone/ship" = "wagons_ships",
 		// crossbows
 		"/obj/item/ammo_casing/bolt/bronze" = "crossbows",
 		"/obj/item/ammo_casing/bolt/copper" = "crossbows",
@@ -607,89 +631,102 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/stack/medical/splint/wooden" = "herbalism",
 		// iron_tools
 		"/obj/item/weapon/saw" = "iron_tools",
+		"/obj/item/weapon/crowbar" = "iron_tools",
+		// machine parts: the material and the shaping station are the real gates
+		"/obj/item/machine_part/gear" = "basic_tools",
+		"/obj/item/machine_part/shaft" = "basic_tools",
+		"/obj/item/machine_part/bearing" = "basic_tools",
+		"/obj/item/machine_part/belt" = "basic_tools",
+		"/obj/item/machine_part/wheel" = "basic_tools",
+		"/obj/item/machine_part/wheel/shod" = "basic_tools",
+		"/obj/item/machine_part/spring" = "bronze_working",
+		"/obj/item/weapon/clay/mold/parts" = "bronze_working",
+		"/obj/structure/workshop_machine/lathe/pole" = "workshops",
+		"/obj/structure/fluid_pump/hand" = "workshops",
+		"/obj/structure/workshop_machine/lathe/engine" = "machined_tools",
 		// law_order
 		"/obj/item/weapon/key/soviet/guard" = "law_order",
 		// machined_tools
 		"/obj/structure/component_workbench/toolsmith/foundry" = "machined_tools",
 		// mail_plate armor (steel_blades)
-		"/obj/item/clothing/gloves/gauntlets" = "steel_blades",
-		"/obj/item/clothing/gloves/gauntlets/orc" = "steel_blades",
-		"/obj/item/clothing/head/helmet/bascinet" = "steel_blades",
-		"/obj/item/clothing/head/helmet/imperial/cabasset" = "steel_blades",
-		"/obj/item/clothing/head/helmet/imperial/morion" = "steel_blades",
-		"/obj/item/clothing/head/helmet/medieval" = "steel_blades",
-		"/obj/item/clothing/head/helmet/medieval/coif" = "steel_blades",
-		"/obj/item/clothing/head/helmet/medieval/coif_helmet" = "steel_blades",
-		"/obj/item/clothing/head/helmet/medieval/crusader" = "steel_blades",
-		"/obj/item/clothing/head/helmet/medieval/helmet1" = "steel_blades",
-		"/obj/item/clothing/head/helmet/medieval/helmet2" = "steel_blades",
-		"/obj/item/clothing/head/helmet/medieval/helmet3" = "steel_blades",
-		"/obj/item/clothing/head/helmet/medieval/imperial_chinese" = "steel_blades",
-		"/obj/item/clothing/head/helmet/medieval/mamluk/coif" = "steel_blades",
-		"/obj/item/clothing/head/helmet/medieval/mamluk/helmet" = "steel_blades",
-		"/obj/item/clothing/head/helmet/medieval/nomads/longarab" = "steel_blades",
-		"/obj/item/clothing/head/helmet/medieval/viking" = "steel_blades",
-		"/obj/item/clothing/head/helmet/medieval/viking/valkyrie" = "steel_blades",
-		"/obj/item/clothing/head/helmet/medieval/viking/varangian" = "steel_blades",
-		"/obj/item/clothing/head/helmet/modern/pickelhaube" = "steel_blades",
-		"/obj/item/clothing/head/helmet/modern/pith" = "steel_blades",
-		"/obj/item/clothing/head/helmet/orc_beserker" = "steel_blades",
-		"/obj/item/clothing/head/helmet/orc_grunt" = "steel_blades",
-		"/obj/item/clothing/head/helmet/orc_spearman" = "steel_blades",
-		"/obj/item/clothing/head/helmet/sallet/burg" = "steel_blades",
-		"/obj/item/clothing/head/helmet/sallet/german" = "steel_blades",
-		"/obj/item/clothing/head/helmet/sallet/italian" = "steel_blades",
-		"/obj/item/clothing/head/helmet/samurai" = "steel_blades",
-		"/obj/item/clothing/head/helmet/samurai/black" = "steel_blades",
-		"/obj/item/clothing/head/helmet/samurai/blue" = "steel_blades",
-		"/obj/item/clothing/head/helmet/samurai/lord/brown" = "steel_blades",
-		"/obj/item/clothing/head/helmet/samurai/red" = "steel_blades",
-		"/obj/item/clothing/head/helmet/scrap" = "steel_blades",
-		"/obj/item/clothing/mask/bossjaw" = "steel_blades",
-		"/obj/item/clothing/shoes/medieval/knight" = "steel_blades",
-		"/obj/item/clothing/shoes/orc" = "steel_blades",
-		"/obj/item/clothing/suit/armor/imperial/imperial_chestplate" = "steel_blades",
-		"/obj/item/clothing/suit/armor/medieval" = "steel_blades",
-		"/obj/item/clothing/suit/armor/medieval/chainmail" = "steel_blades",
-		"/obj/item/clothing/suit/armor/medieval/emirate" = "steel_blades",
-		"/obj/item/clothing/suit/armor/medieval/hauberk" = "steel_blades",
-		"/obj/item/clothing/suit/armor/medieval/imperial_chinese" = "steel_blades",
-		"/obj/item/clothing/suit/armor/medieval/iron_chestplate" = "steel_blades",
-		"/obj/item/clothing/suit/armor/medieval/varangian" = "steel_blades",
-		"/obj/item/clothing/suit/armor/ork_grunt" = "steel_blades",
-		"/obj/item/clothing/suit/armor/ork_urukhai" = "steel_blades",
-		"/obj/item/clothing/suit/armor/samurai/lord" = "steel_blades",
-		"/obj/item/clothing/suit/armor/samurai/warrior" = "steel_blades",
-		"/obj/item/clothing/suit/armor/samurai/warrior/black" = "steel_blades",
-		"/obj/item/clothing/suit/armor/samurai/warrior/blue" = "steel_blades",
-		"/obj/item/clothing/suit/armor/samurai/warrior/red" = "steel_blades",
+		"/obj/item/clothing/gloves/gauntlets" = "mail_plate",
+		"/obj/item/clothing/gloves/gauntlets/orc" = "mail_plate",
+		"/obj/item/clothing/head/helmet/bascinet" = "mail_plate",
+		"/obj/item/clothing/head/helmet/imperial/cabasset" = "mail_plate",
+		"/obj/item/clothing/head/helmet/imperial/morion" = "mail_plate",
+		"/obj/item/clothing/head/helmet/medieval" = "mail_plate",
+		"/obj/item/clothing/head/helmet/medieval/coif" = "mail_plate",
+		"/obj/item/clothing/head/helmet/medieval/coif_helmet" = "mail_plate",
+		"/obj/item/clothing/head/helmet/medieval/crusader" = "mail_plate",
+		"/obj/item/clothing/head/helmet/medieval/helmet1" = "mail_plate",
+		"/obj/item/clothing/head/helmet/medieval/helmet2" = "mail_plate",
+		"/obj/item/clothing/head/helmet/medieval/helmet3" = "mail_plate",
+		"/obj/item/clothing/head/helmet/medieval/imperial_chinese" = "mail_plate",
+		"/obj/item/clothing/head/helmet/medieval/mamluk/coif" = "mail_plate",
+		"/obj/item/clothing/head/helmet/medieval/mamluk/helmet" = "mail_plate",
+		"/obj/item/clothing/head/helmet/medieval/nomads/longarab" = "mail_plate",
+		"/obj/item/clothing/head/helmet/medieval/viking" = "mail_plate",
+		"/obj/item/clothing/head/helmet/medieval/viking/valkyrie" = "mail_plate",
+		"/obj/item/clothing/head/helmet/medieval/viking/varangian" = "mail_plate",
+		"/obj/item/clothing/head/helmet/modern/pickelhaube" = "mail_plate",
+		"/obj/item/clothing/head/helmet/modern/pith" = "mail_plate",
+		"/obj/item/clothing/head/helmet/orc_beserker" = "mail_plate",
+		"/obj/item/clothing/head/helmet/orc_grunt" = "mail_plate",
+		"/obj/item/clothing/head/helmet/orc_spearman" = "mail_plate",
+		"/obj/item/clothing/head/helmet/sallet/burg" = "mail_plate",
+		"/obj/item/clothing/head/helmet/sallet/german" = "mail_plate",
+		"/obj/item/clothing/head/helmet/sallet/italian" = "mail_plate",
+		"/obj/item/clothing/head/helmet/samurai" = "mail_plate",
+		"/obj/item/clothing/head/helmet/samurai/black" = "mail_plate",
+		"/obj/item/clothing/head/helmet/samurai/blue" = "mail_plate",
+		"/obj/item/clothing/head/helmet/samurai/lord/brown" = "mail_plate",
+		"/obj/item/clothing/head/helmet/samurai/red" = "mail_plate",
+		"/obj/item/clothing/head/helmet/scrap" = "mail_plate",
+		"/obj/item/clothing/mask/bossjaw" = "mail_plate",
+		"/obj/item/clothing/shoes/medieval/knight" = "mail_plate",
+		"/obj/item/clothing/shoes/orc" = "mail_plate",
+		"/obj/item/clothing/suit/armor/imperial/imperial_chestplate" = "mail_plate",
+		"/obj/item/clothing/suit/armor/medieval" = "mail_plate",
+		"/obj/item/clothing/suit/armor/medieval/chainmail" = "mail_plate",
+		"/obj/item/clothing/suit/armor/medieval/emirate" = "mail_plate",
+		"/obj/item/clothing/suit/armor/medieval/hauberk" = "mail_plate",
+		"/obj/item/clothing/suit/armor/medieval/imperial_chinese" = "mail_plate",
+		"/obj/item/clothing/suit/armor/medieval/iron_chestplate" = "mail_plate",
+		"/obj/item/clothing/suit/armor/medieval/varangian" = "mail_plate",
+		"/obj/item/clothing/suit/armor/ork_grunt" = "mail_plate",
+		"/obj/item/clothing/suit/armor/ork_urukhai" = "mail_plate",
+		"/obj/item/clothing/suit/armor/samurai/lord" = "mail_plate",
+		"/obj/item/clothing/suit/armor/samurai/warrior" = "mail_plate",
+		"/obj/item/clothing/suit/armor/samurai/warrior/black" = "mail_plate",
+		"/obj/item/clothing/suit/armor/samurai/warrior/blue" = "mail_plate",
+		"/obj/item/clothing/suit/armor/samurai/warrior/red" = "mail_plate",
 		"/obj/item/weapon/shield/iron/nomads/semioval" = "steel_blades",
 		"/obj/item/weapon/shield/iron/nomads/semioval/templar" = "steel_blades",
 		"/obj/item/weapon/shield/steel" = "steel_blades",
 		// missiles
 		"/obj/item/weapon/gun/launcher/rocket/rpg7/makeshift" = "missiles",
 		// modern_armor (automatic_weapons)
-		"/obj/item/armor_component/aramid_panels" = "automatic_weapons",
-		"/obj/item/clothing/accessory/armor/coldwar/pasgt" = "automatic_weapons",
-		"/obj/item/clothing/accessory/armor/coldwar/pasgt/khaki" = "automatic_weapons",
-		"/obj/item/clothing/accessory/armor/nomads/kevlarblack" = "automatic_weapons",
-		"/obj/item/clothing/head/helmet/kevlarhelmet" = "automatic_weapons",
-		"/obj/item/clothing/head/helmet/korean/usm1" = "automatic_weapons",
-		"/obj/item/clothing/head/helmet/modern/a6b47" = "automatic_weapons",
-		"/obj/item/clothing/head/helmet/modern/lwh" = "automatic_weapons",
-		"/obj/item/clothing/head/helmet/modern/lwh/black" = "automatic_weapons",
-		"/obj/item/clothing/head/helmet/modern/pasgt" = "automatic_weapons",
-		"/obj/item/clothing/head/helmet/modern/pasgt/desert" = "automatic_weapons",
-		"/obj/item/clothing/head/helmet/modern/sovietfacehelmet/nomads" = "automatic_weapons",
-		"/obj/item/clothing/head/helmet/modern/sovietfacehelmet/welding/nomads" = "automatic_weapons",
-		"/obj/item/clothing/head/helmet/modern/ssh_68" = "automatic_weapons",
-		"/obj/item/clothing/head/helmet/modern/ushelmet" = "automatic_weapons",
-		"/obj/item/clothing/head/helmet/modern/zsh1" = "automatic_weapons",
-		"/obj/item/clothing/head/helmet/swat" = "automatic_weapons",
-		"/obj/item/clothing/head/helmet/tactical" = "automatic_weapons",
-		"/obj/item/clothing/suit/armor/scrap" = "automatic_weapons",
-		"/obj/item/clothing/suit/police" = "automatic_weapons",
-		"/obj/item/clothing/suit/swat" = "automatic_weapons",
+		"/obj/item/armor_component/aramid_panels" = "modern_armor",
+		"/obj/item/clothing/accessory/armor/coldwar/pasgt" = "modern_armor",
+		"/obj/item/clothing/accessory/armor/coldwar/pasgt/khaki" = "modern_armor",
+		"/obj/item/clothing/accessory/armor/nomads/kevlarblack" = "modern_armor",
+		"/obj/item/clothing/head/helmet/kevlarhelmet" = "modern_armor",
+		"/obj/item/clothing/head/helmet/korean/usm1" = "modern_armor",
+		"/obj/item/clothing/head/helmet/modern/a6b47" = "modern_armor",
+		"/obj/item/clothing/head/helmet/modern/lwh" = "modern_armor",
+		"/obj/item/clothing/head/helmet/modern/lwh/black" = "modern_armor",
+		"/obj/item/clothing/head/helmet/modern/pasgt" = "modern_armor",
+		"/obj/item/clothing/head/helmet/modern/pasgt/desert" = "modern_armor",
+		"/obj/item/clothing/head/helmet/modern/sovietfacehelmet/nomads" = "modern_armor",
+		"/obj/item/clothing/head/helmet/modern/sovietfacehelmet/welding/nomads" = "modern_armor",
+		"/obj/item/clothing/head/helmet/modern/ssh_68" = "modern_armor",
+		"/obj/item/clothing/head/helmet/modern/ushelmet" = "modern_armor",
+		"/obj/item/clothing/head/helmet/modern/zsh1" = "modern_armor",
+		"/obj/item/clothing/head/helmet/swat" = "modern_armor",
+		"/obj/item/clothing/head/helmet/tactical" = "modern_armor",
+		"/obj/item/clothing/suit/armor/scrap" = "modern_armor",
+		"/obj/item/clothing/suit/police" = "modern_armor",
+		"/obj/item/clothing/suit/swat" = "modern_armor",
 		// optics_instruments
 		"/obj/item/clothing/glasses/redglasses" = "optics_instruments",
 		// papermaking
@@ -698,6 +735,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/reagent_containers/pill" = "pharmacology",
 		// pottery_storage
 		"/obj/item/weapon/reagent_containers/food/snacks/boiledrice" = "pottery_storage",
+		"/obj/structure/workshop_machine/potters_wheel" = "pottery_storage",
 		"/obj/item/weapon/reagent_containers/food/snacks/boiledspagetti" = "pottery_storage",
 		"/obj/item/weapon/reagent_containers/food/snacks/ramen" = "pottery_storage",
 		"/obj/item/weapon/reagent_containers/food/snacks/rawlobster/boiled" = "pottery_storage",
@@ -761,26 +799,27 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/material/thrown/throwing_knife" = "steel_blades",
 		// stone_arms
 		"/obj/item/weapon/flint/sharpened" = "stone_arms",
+		"/obj/item/weapon/obsidian_core" = "stone_arms",
 		"/obj/item/weapon/material/hatchet/battleaxe" = "stone_arms",
 		"/obj/item/weapon/material/part/axehead/battleaxe" = "stone_arms",
 		"/obj/item/weapon/material/part/axehead/throwing" = "stone_arms",
 		"/obj/item/weapon/material/thrown/throwing_axe" = "stone_arms",
 		"/obj/structure/component_workbench/weapon" = "stone_arms",
 		// trench_warfare armor (cartridge_ammo)
-		"/obj/item/clothing/accessory/armor/modern/british" = "cartridge_ammo",
-		"/obj/item/clothing/accessory/armor/modern/plate" = "cartridge_ammo",
-		"/obj/item/clothing/head/helmet/modern/stahlhelm" = "cartridge_ammo",
-		"/obj/item/clothing/head/helmet/ww/adrian" = "cartridge_ammo",
-		"/obj/item/clothing/head/helmet/ww/adrian/greek" = "cartridge_ammo",
-		"/obj/item/clothing/head/helmet/ww/adrianm26" = "cartridge_ammo",
-		"/obj/item/clothing/head/helmet/ww/adriansoviet" = "cartridge_ammo",
-		"/obj/item/clothing/head/helmet/ww/mk1brodieag" = "cartridge_ammo",
-		"/obj/item/clothing/head/helmet/ww/mk1brodiedeb" = "cartridge_ammo",
-		"/obj/item/clothing/head/helmet/ww/mk2brodieog" = "cartridge_ammo",
-		"/obj/item/clothing/head/helmet/ww/pickelhaube2" = "cartridge_ammo",
-		"/obj/item/clothing/head/helmet/ww2/japhelm" = "cartridge_ammo",
-		"/obj/item/clothing/head/helmet/ww2/soviet" = "cartridge_ammo",
-		"/obj/item/clothing/head/helmet/ww2/usm1" = "cartridge_ammo",
+		"/obj/item/clothing/accessory/armor/modern/british" = "trench_warfare",
+		"/obj/item/clothing/accessory/armor/modern/plate" = "trench_warfare",
+		"/obj/item/clothing/head/helmet/modern/stahlhelm" = "trench_warfare",
+		"/obj/item/clothing/head/helmet/ww/adrian" = "trench_warfare",
+		"/obj/item/clothing/head/helmet/ww/adrian/greek" = "trench_warfare",
+		"/obj/item/clothing/head/helmet/ww/adrianm26" = "trench_warfare",
+		"/obj/item/clothing/head/helmet/ww/adriansoviet" = "trench_warfare",
+		"/obj/item/clothing/head/helmet/ww/mk1brodieag" = "trench_warfare",
+		"/obj/item/clothing/head/helmet/ww/mk1brodiedeb" = "trench_warfare",
+		"/obj/item/clothing/head/helmet/ww/mk2brodieog" = "trench_warfare",
+		"/obj/item/clothing/head/helmet/ww/pickelhaube2" = "trench_warfare",
+		"/obj/item/clothing/head/helmet/ww2/japhelm" = "trench_warfare",
+		"/obj/item/clothing/head/helmet/ww2/soviet" = "trench_warfare",
+		"/obj/item/clothing/head/helmet/ww2/usm1" = "trench_warfare",
 		// utilities
 		"/obj/structure/props/piping/small/plastic" = "utilities",
 		"/obj/structure/props/piping/small/plastic/elbow" = "utilities",
@@ -818,6 +857,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/gun/projectile/bow/sling/staff" = "archery",
 		"/obj/item/ammo_casing/atlatl_dart" = "archery",
 		"/obj/item/ammo_casing/atlatl_dart/flint" = "archery",
+		"/obj/item/ammo_casing/atlatl_dart/obsidian" = "archery",
 		"/obj/item/ammo_casing/atlatl_dart/stone" = "archery",
 		"/obj/item/weapon/gun/projectile/dartgun/blowgun" = "archery",
 		"/obj/item/weapon/storage/backpack/quiver" = "archery",
@@ -911,13 +951,14 @@ var/global/list/node_grid_col_cache = null
 		// --- basic_agriculture (10) ---
 		"/obj/item/stack/material/wool" = "basic_agriculture",
 		"/obj/item/weapon/berriesgatherer" = "basic_agriculture",
-		"/obj/item/weapon/leash" = "basic_agriculture",
 		"/obj/item/animal_tack/saddle" = "basic_agriculture",
 		"/obj/item/animal_tack/harness" = "basic_agriculture",
 		"/obj/item/weapon/material/pitchfork" = "basic_agriculture",
 		"/obj/item/weapon/material/trowel" = "basic_agriculture",
 		"/obj/item/weapon/plough" = "basic_agriculture",
 		"/obj/item/weapon/plough/iron" = "basic_agriculture",
+		"/obj/item/weapon/plough/hoe" = "basic_agriculture",
+		"/obj/item/weapon/material/kitchen/utensil/knife/sickle" = "basic_agriculture",
 		"/obj/item/weapon/shears" = "basic_agriculture",
 		"/obj/item/weapon/storage/produce_basket" = "basic_agriculture",
 		"/obj/item/weapon/storage/seed_collector" = "basic_agriculture",
@@ -936,6 +977,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/bed/wood" = "basic_furniture",
 		"/obj/structure/brazier" = "basic_furniture",
 		"/obj/structure/brazier/obsidian" = "basic_furniture",
+		"/obj/item/mirror/obsidian" = "basic_furniture",
 		"/obj/structure/brazier/sandstone" = "basic_furniture",
 		"/obj/structure/brazier/stone" = "basic_furniture",
 		"/obj/structure/closet/coffin" = "basic_furniture",
@@ -944,7 +986,11 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/table/rack" = "basic_furniture",
 		"/obj/structure/table/wood" = "basic_furniture",
 		"/obj/structure/recruitment_station" = "basic_furniture",
-		// --- basic_tools (25) ---
+		"/obj/structure/colony_charter" = "basic_furniture",
+		"/obj/structure/faction_hall" = "basic_furniture",
+		"/obj/structure/faction_hall/nation_assembly" = "basic_furniture",
+		// --- basic_tools (28) ---
+		"/obj/item/wrist_loop" = "basic_tools",
 		"/obj/structure/converter/tanning" = "basic_tools",
 		"/obj/structure/dehydrator" = "basic_tools",
 		"/obj/item/stack/wooden_dowels" = "basic_tools",
@@ -953,6 +999,12 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/cane" = "basic_tools",
 		"/obj/item/clothing/accessory/storage/harness" = "basic_tools",
 		"/obj/item/clothing/accessory/storage/belt_pouch" = "basic_tools",
+		"/obj/item/clothing/accessory/necklace" = "basic_tools",
+		"/obj/structure/easel" = "basic_tools",
+		"/obj/item/canvas" = "basic_tools",
+		"/obj/item/canvas/miniature" = "basic_tools",
+		"/obj/item/canvas/table" = "basic_tools",
+		"/obj/item/clothing/accessory/necklace/bead" = "basic_tools",
 		"/obj/item/clothing/pouch_belt" = "basic_tools",
 		"/obj/item/clothing/accessory/storage/baldric" = "basic_tools",
 		"/obj/item/clothing/accessory/storage/tool_loop" = "basic_tools",
@@ -979,6 +1031,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/plough/digging_stick" = "basic_tools",
 		"/obj/item/weapon/material/hatchet/tribal/hand_axe" = "basic_tools",
 		"/obj/item/weapon/material/hide_scraper" = "basic_tools",
+		"/obj/item/weapon/material/hide_scraper/obsidian" = "basic_tools",
 		"/obj/item/weapon/bone_needle" = "basic_tools",
 		"/obj/item/weapon/material/hatchet/tribal/adze" = "basic_tools",
 		"/obj/item/weapon/mop" = "basic_tools",
@@ -988,19 +1041,28 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/wrench" = "basic_tools",
 		"/obj/structure/fishing_cage" = "basic_tools",
 		"/obj/structure/fish_pen" = "basic_tools",
-		// --- brickmaking (10) ---
+		"/obj/item/weapon/trap_kit/snare" = "basic_tools",
+		"/obj/item/weapon/trap_kit/deadfall" = "basic_tools",
+		"/obj/item/weapon/trap_kit/weir" = "basic_tools",
+		"/obj/structure/dugout_log" = "basic_tools",
+		"/obj/item/weapon/paddle" = "basic_tools",
+		"/obj/item/weapon/leash" = "basic_tools",
+		// --- brickmaking (12) ---
 		"/obj/covers/stone_wall/brick" = "brickmaking",
 		"/obj/covers/stone_wall/brick/archway" = "brickmaking",
 		"/obj/covers/stonebrickfloor" = "brickmaking",
 		"/obj/item/stack/material/stonebrick" = "brickmaking",
+		"/obj/item/stack/material/marblebrick" = "brickmaking",
+		"/obj/covers/marble_wall/plain/brick" = "brickmaking",
 		"/obj/item/weapon/clay/advclaybricks" = "brickmaking",
+		"/obj/structure/workshop_machine/brick_bench" = "brickmaking",
 		"/obj/item/weapon/clay/advclaybricks/cement" = "brickmaking",
 		"/obj/item/weapon/clay/roofing/black" = "brickmaking",
 		"/obj/item/weapon/clay/roofing/blue" = "brickmaking",
 		"/obj/item/weapon/stucco/generic" = "brickmaking",
 		"/obj/item/weapon/stucco/roman" = "brickmaking",
 		// --- bronze_weapons (10) ---
-		"/obj/item/ammo_casing/bolt" = "bronze_weapons",
+		"/obj/item/ammo_casing/bolt" = "crossbows",
 		"/obj/item/clothing/accessory/armband/punk" = "bronze_weapons",
 		"/obj/item/clothing/head/helmet/montefortino" = "bronze_weapons",
 		"/obj/item/clothing/head/helmet/napoleonic/dragoon" = "bronze_weapons",
@@ -1016,11 +1078,33 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/furnace/kiln" = "bronze_working",
 		"/obj/structure/furnace/kiln/sandstone" = "bronze_working",
 		"/obj/structure/furnace/kiln/stone" = "bronze_working",
+		"/obj/structure/workshop_machine/bellows" = "bronze_working",
 		// --- cannon (2) ---
 		"/obj/item/cannon_ball" = "cannon",
 		"/obj/structure/cannon" = "cannon",
-		// --- cartridge_ammo (4) ---
+		"/obj/structure/cannon/hooped" = "cannon",
+		// --- cartridge_ammo (5) ---
+		"/obj/item/clothing/accessory/storage/lanyard/pistol" = "cartridge_ammo",
 		"/obj/item/ammo_magazine/emptybelt" = "cartridge_ammo",
+		// Emplaced machine guns, forged at the anvil: the water-cooled WW1 guns
+		// with cartridges, the WW2 guns and the 12.7mm heavies with self-loading
+		// arms, the post-war general-purpose guns with automatic weapons.
+		"/obj/item/weapon/gun/projectile/automatic/stationary/maxim" = "cartridge_ammo",
+		"/obj/item/weapon/gun/projectile/automatic/stationary/mg08" = "cartridge_ammo",
+		"/obj/item/weapon/gun/projectile/automatic/stationary/vickers" = "cartridge_ammo",
+		"/obj/item/weapon/gun/projectile/automatic/stationary/hotchkiss1914" = "cartridge_ammo",
+		"/obj/item/weapon/gun/projectile/automatic/stationary/type3" = "cartridge_ammo",
+		"/obj/item/weapon/gun/projectile/automatic/stationary/mg34" = "selfloading_firearms",
+		"/obj/item/weapon/gun/projectile/automatic/stationary/browning" = "selfloading_firearms",
+		"/obj/item/weapon/gun/projectile/automatic/stationary/breda30" = "selfloading_firearms",
+		"/obj/item/weapon/gun/projectile/automatic/stationary/type98" = "selfloading_firearms",
+		"/obj/item/weapon/gun/projectile/automatic/stationary/dshk" = "selfloading_firearms",
+		"/obj/item/weapon/gun/projectile/automatic/stationary/m2browning" = "selfloading_firearms",
+		"/obj/item/weapon/gun/projectile/automatic/stationary/pkm" = "automatic_weapons",
+		"/obj/item/weapon/gun/projectile/automatic/stationary/mg3" = "automatic_weapons",
+		"/obj/item/weapon/gun/projectile/automatic/stationary/fnmag" = "automatic_weapons",
+		"/obj/item/weapon/gun/projectile/automatic/stationary/nsvt" = "automatic_weapons",
+		"/obj/item/weapon/gun/projectile/automatic/stationary/autocannon" = "automatic_weapons",
 		"/obj/item/ammo_magazine/emptymagazine" = "cartridge_ammo",
 		"/obj/item/ammo_magazine/emptymagazine/rifle" = "cartridge_ammo",
 		"/obj/item/stack/ammopart/casing/grenade" = "cartridge_ammo",
@@ -1029,6 +1113,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/closet/crate/cart/stone" = "carts",
 		"/obj/structure/closet/crate/cart/wooden" = "carts",
 		"/obj/structure/vehicle/carriage" = "carts",
+		"/obj/structure/vehicle/bicycle/running" = "carts",
 		"/obj/structure/vehicle/raft" = "carts",
 		"/obj/structure/safehouse_depot" = "carts",
 		// --- classical_dress (37) ---
@@ -1086,12 +1171,16 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/oilwell/offshore" = "combustion",
 		"/obj/structure/refinery" = "combustion",
 		"/obj/structure/refinery/biofuel" = "combustion",
+		"/obj/structure/train_car_kit/loco_diesel" = "combustion",
 		// The bakelizer turns crude petroleum into plastic, so it belongs with the
 		// refineries in the Main tree. Under the specialist Tailoring tree
 		// (Synthetic Fabrics) factionless players could never unlock it.
 		"/obj/structure/bakelizer" = "combustion",
 		// --- cooperage (15) ---
 		"/obj/item/weapon/reagent_containers/glass/barrel" = "cooperage",
+		"/obj/structure/fluid_tank/cistern" = "cooperage",
+		"/obj/structure/fluid_intake/wooden" = "cooperage",
+		"/obj/structure/water_tap/trough" = "cooperage",
 		"/obj/item/weapon/storage/backpack" = "cooperage",
 		"/obj/item/weapon/storage/backpack/pack_frame" = "cooperage",
 		"/obj/item/weapon/storage/backpack/rucksack" = "cooperage",
@@ -1219,7 +1308,9 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/supplier" = "early_economy",
 		"/obj/structure/vending/sales/market_stall" = "early_economy",
 		"/obj/structure/voting" = "early_economy",
-		// --- electricity (21) ---
+		// --- electricity (23) ---
+		"/obj/structure/workshop_machine/wire_bench" = "electricity",
+		"/obj/item/gem_tester/refractometer" = "electricity",
 		"/obj/item/connector" = "electricity",
 		"/obj/item/connector/bus_tie" = "electricity",
 		"/obj/item/weapon/battery" = "electricity",
@@ -1227,11 +1318,15 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/stack/cable_coil/blue" = "electricity",
 		"/obj/item/stack/cable_coil/cyan" = "electricity",
 		"/obj/item/stack/cable_coil/green" = "electricity",
+		"/obj/item/stack/cable_coil/iron" = "electricity",
+		"/obj/item/stack/cable_coil/aluminium" = "electricity",
+		"/obj/item/stack/cable_coil/silver" = "electricity",
+		"/obj/item/stack/cable_coil/gold" = "electricity",
 		"/obj/item/stack/cable_coil/orange" = "electricity",
 		"/obj/item/stack/cable_coil/pink" = "electricity",
 		"/obj/item/stack/cable_coil/red" = "electricity",
 		// Plain cable supplies the Electricity prototype before that node unlocks.
-		"/obj/item/stack/cable_coil/white" = "paved_infrastructure",
+		"/obj/item/stack/cable_coil/white" = "electricity",
 		"/obj/item/stack/cable_coil/yellow" = "electricity",
 		"/obj/item/stack/material/electronics" = "electricity",
 		"/obj/structure/grinder/constructed" = "electricity",
@@ -1245,7 +1340,10 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/power_point/pole" = "electricity",
 		"/obj/structure/civ_generator/waterwheel" = "electricity",
 		"/obj/structure/plating_bath" = "electricity",
-		// --- factories (28) ---
+		"/obj/structure/aluminium_works/digester" = "aluminium_refining",
+		"/obj/structure/aluminium_works/reduction_pot" = "aluminium_refining",
+		// --- factories (29) ---
+		"/obj/structure/workshop_machine/fitting/hydraulic_press" = "factories",
 		// Steam-era factory floor: plain belts, their drive, parts bins and
 		// the feeder arm run on a steam engine and plain cable.
 		"/obj/item/factory_belt_assembly" = "factories",
@@ -1259,7 +1357,7 @@ var/global/list/node_grid_col_cache = null
 		// nuclear_power's prototype item: must be researchable BEFORE that
 		// node, or the tree deadlocks (can't craft the geiger counter the
 		// node itself demands).
-		"/obj/item/weapon/geiger_counter" = "factories",
+		"/obj/item/weapon/geiger_counter" = "electricity",
 		"/obj/item/weapon/can" = "factories",
 		"/obj/item/weapon/can/large" = "factories",
 		"/obj/item/weapon/can/small" = "factories",
@@ -1302,9 +1400,11 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/barricade/antitank" = "field_artillery",
 		"/obj/structure/cannon/modern" = "field_artillery",
 		"/obj/structure/train_car_kit/railgun" = "field_artillery",
+		"/obj/structure/train_car_kit/loco_armored" = "field_artillery",
 		"/obj/structure/trains/locomotive/coal/armored" = "field_artillery",
 		// --- field_defenses (14) ---
-		"/obj/item/weapon/beartrap" = "field_defenses",
+		"/obj/item/weapon/beartrap" = "iron_tools",
+		"/obj/item/weapon/pit_cover" = "field_defenses",
 		"/obj/item/weapon/dummy_armor" = "field_defenses",
 		"/obj/item/weapon/material/shovel/trench" = "field_defenses",
 		"/obj/item/weapon/punji_sticks" = "field_defenses",
@@ -1333,7 +1433,10 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/surgery/retractor/bronze" = "field_surgery",
 		"/obj/item/weapon/surgery/scalpel" = "field_surgery",
 		"/obj/item/weapon/surgery/scalpel/bronze" = "field_surgery",
-		// --- fine_arts (39) ---
+		// --- fine_arts (42) ---
+		"/obj/item/canvas/gallery" = "fine_arts",
+		"/obj/item/canvas/gallery/wide" = "fine_arts",
+		"/obj/item/pigment/oil_paints" = "fine_arts",
 		"/obj/item/clothing/mask/smokable/cigarette" = "fine_arts",
 		"/obj/item/clothing/mask/smokable/cigarette/cigar" = "fine_arts",
 		"/obj/item/clothing/mask/smokable/cigarette/cigar/havana" = "fine_arts",
@@ -1443,8 +1546,6 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/clothing/under/count_outfit" = "fine_garments",
 		"/obj/item/clothing/under/crinoline_dress" = "fine_garments",
 		"/obj/item/clothing/under/custom/tunic" = "fine_garments",
-		"/obj/item/dressmaking_project" = "fine_garments",
-		"/obj/item/clothing/under/tailored_dress" = "fine_garments",
 		"/obj/item/clothing/under/customdress" = "fine_garments",
 		"/obj/item/clothing/under/customdress2" = "fine_garments",
 		"/obj/item/clothing/under/custompontifical" = "fine_garments",
@@ -1492,7 +1593,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/clothing/suit/storage/coat/fur/grey" = "furriery",
 		"/obj/item/clothing/suit/storage/coat/fur/orc" = "furriery",
 		"/obj/item/clothing/suit/storage/coat/fur/pink" = "furriery",
-		// --- germ_theory (5) ---
+		// --- germ_theory (6) ---
+		"/obj/structure/sewer_settling_tank" = "germ_theory",
 		"/obj/item/weapon/reagent_containers/food/drinks/plastic/carton" = "germ_theory",
 		"/obj/structure/canner" = "germ_theory",
 		"/obj/structure/converter/acid_bath" = "germ_theory",
@@ -1599,7 +1701,11 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/toilet/outhouse" = "hygiene",
 		"/obj/structure/toilet/outhouse/female" = "hygiene",
 		"/obj/structure/toilet/outhouse/male" = "hygiene",
-		// --- imperial_architecture (44) ---
+		// --- imperial_architecture (48) ---
+		"/obj/structure/workshop_machine/shear_legs/crane" = "imperial_architecture",
+		"/obj/structure/workshop_machine/pile_driver" = "imperial_architecture",
+		"/obj/structure/sewer_piece/drain/brick" = "imperial_architecture",
+		"/obj/item/weapon/bridge_span/timber" = "imperial_architecture",
 		"/obj/covers/decorative_marbletile" = "imperial_architecture",
 		"/obj/covers/decorative_marbletile/black" = "imperial_architecture",
 		"/obj/covers/decorative_marbletile/pink" = "imperial_architecture",
@@ -1675,6 +1781,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/flashlight/flare/glowstick/red" = "synthetics",
 		"/obj/item/flashlight/flare/glowstick/yellow" = "synthetics",
 		"/obj/structure/display_case" = "glassworking",
+		"/obj/structure/workshop_machine/glass_bench" = "glassworking",
 		"/obj/item/weapon/attachment/under/bipod" = "gunsmithing",
 		"/obj/item/weapon/storage/lockbox" = "pottery_storage",
 		"/obj/item/weapon/attachment/under/weapon_light" = "consumer_electronics",
@@ -1701,7 +1808,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/pillory" = "law_order",
 		"/obj/structure/simple_door/key_door/custom/jail/steeljail" = "law_order",
 		"/obj/structure/simple_door/key_door/custom/jail/woodjail" = "law_order",
-		// --- machined_tools (5) ---
+		// --- machined_tools (6) ---
+		"/obj/structure/workshop_machine/fitting/drill_press" = "machined_tools",
 		"/obj/item/weapon/enginemaker" = "machined_tools",
 		"/obj/item/weapon/fishing/modern" = "machined_tools",
 		"/obj/item/weapon/reagent_containers/glass/fire_extinguisher/empty" = "machined_tools",
@@ -1741,7 +1849,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/clothing/mask/gas/modern2" = "modern_armor",
 		"/obj/item/clothing/suit/nbc" = "modern_armor",
 		"/obj/item/clothing/suit/nbc/olive" = "modern_armor",
-		// --- modern_construction (10) ---
+		// --- modern_construction (11) ---
+		"/obj/structure/workshop_machine/shear_legs/crane/steam/tower" = "modern_construction",
 		"/obj/covers/sidewalk" = "modern_construction",
 		"/obj/item/clothing/head/helmet/modern/hardhat" = "modern_construction",
 		"/obj/item/clothing/head/helmet/modern/hardhat/orange" = "modern_construction",
@@ -1776,7 +1885,10 @@ var/global/list/node_grid_col_cache = null
 		// geiger counter deliberately NOT here: it's this node's prototype
 		// item, so it must be craftable earlier (it's under factories, era4).
 		"/obj/structure/sign/radiation" = "nuclear_power",
-		// --- optics_instruments (16) ---
+		// --- optics_instruments (19) ---
+		"/obj/item/gem_tester" = "optics_instruments",
+		"/obj/item/gem_tester/scale" = "optics_instruments",
+		"/obj/item/clothing/accessory/storage/lanyard/fob_chain" = "optics_instruments",
 		"/obj/item/camera/early" = "optics_instruments",
 		"/obj/item/camera_film" = "optics_instruments",
 		"/obj/item/clothing/glasses/gglasses" = "optics_instruments",
@@ -1898,9 +2010,10 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/drill/sifter/panner" = "electricity",
 		"/obj/structure/drill/stamp_mill" = "electricity",
 		"/obj/item/weapon/resource_sieve" = "basic_tools",
-		// --- primitive_construction (24) ---
+		// --- primitive_construction (25) ---
 		"/obj/covers/fancywood" = "primitive_construction",
 		"/obj/covers/straw_wall" = "primitive_construction",
+		"/obj/structure/workshop_machine/shear_legs" = "primitive_construction",
 		"/obj/covers/tatami" = "primitive_construction",
 		"/obj/covers/tatami_dark" = "primitive_construction",
 		"/obj/covers/tatami_dark_vertical" = "primitive_construction",
@@ -1975,14 +2088,18 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/money_printer" = "printing_currency",
 		"/obj/structure/noticeboard" = "printing_currency",
 		"/obj/structure/printingpress" = "printing_currency",
-		// --- public_health (3) ---
+		// --- public_health (4) ---
+		"/obj/structure/sewer_piece/cesspit/septic" = "public_health",
 		"/obj/item/weapon/paper_bin/empty" = "public_health",
 		"/obj/item/weapon/storage/bag/trash" = "public_health",
 		"/obj/structure/closet/crate/dumpster" = "public_health",
-		// --- rail_steam (10) ---
+		// --- rail_steam (12) ---
+		"/obj/structure/workshop_machine/rolling_mill" = "rail_steam",
+		"/obj/structure/workshop_machine/steam_site/road_roller" = "rail_steam",
 		"/obj/structure/rail_warehouse" = "rail_steam",
 		"/obj/structure/train_car_kit" = "rail_steam",
 		"/obj/structure/train_car_kit/coach" = "rail_steam",
+		"/obj/structure/train_car_kit/loco_steam" = "rail_steam",
 		"/obj/item/stack/rail_lengths" = "rail_steam",
 		"/obj/item/stack/rail_sleepers" = "rail_steam",
 		"/obj/structure/rails/rotate" = "rail_steam",
@@ -2021,7 +2138,10 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/clothing/under/customuniform/short" = "ready_made",
 		"/obj/item/clothing/under/punk" = "ready_made",
 		"/obj/item/clothing/shoes/weather/rubber_boots" = "ready_made",
-		// --- regalia (21) ---
+		// --- regalia (24) ---
+		"/obj/item/clothing/accessory/necklace/copper" = "regalia",
+		"/obj/item/clothing/accessory/necklace/silver" = "regalia",
+		"/obj/item/clothing/accessory/necklace/gold" = "regalia",
 		"/obj/item/clothing/accessory/custom/armband" = "regalia",
 		"/obj/item/clothing/accessory/custom/cape" = "regalia",
 		"/obj/item/clothing/accessory/custom/sash" = "regalia",
@@ -2043,7 +2163,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/banner/faction/banner_a" = "regalia",
 		"/obj/structure/banner/faction/banner_b" = "regalia",
 		"/obj/structure/flag/pole" = "regalia",
-		// --- reinforced_concrete (13) ---
+		// --- reinforced_concrete (14) ---
 		"/obj/covers/concretefloor" = "reinforced_concrete",
 		"/obj/item/weapon/bridge_span" = "reinforced_concrete",
 		"/obj/item/weapon/bridge_span/concrete" = "reinforced_concrete",
@@ -2057,7 +2177,9 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/grille/metalsheetfence" = "reinforced_concrete",
 		"/obj/structure/mine_support/stone/concrete" = "reinforced_concrete",
 		"/obj/structure/window_frame/metal" = "reinforced_concrete",
-		// --- resource_processing (9) ---
+		"/obj/structure/workshop_machine/cement_mixer" = "reinforced_concrete",
+		// --- resource_processing (10) ---
+		"/obj/structure/workshop_machine/mover/horse_gin" = "resource_processing",
 		"/obj/structure/compost" = "resource_processing",
 		"/obj/structure/converter/retting_trough" = "resource_processing",
 		"/obj/structure/flax_comb" = "resource_processing",
@@ -2094,6 +2216,13 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/gong" = "ritual_worship",
 		"/obj/structure/religious/aztec_statue" = "ritual_worship",
 		"/obj/structure/religious/gravestone" = "ritual_worship",
+		"/obj/structure/religious/cairn" = "ritual_worship",
+		"/obj/structure/feast_mat" = "ritual_worship",
+		"/obj/item/stack/barter_beads/stone" = "regalia",
+		"/obj/item/stack/barter_beads/bone" = "regalia",
+		"/obj/structure/barter_mat" = "basic_tools",
+		"/obj/item/stone_age_instrument/bone_flute" = "ritual_worship",
+		"/obj/item/stone_age_instrument/frame_drum" = "ritual_worship",
 		"/obj/structure/religious/impaledskull" = "ritual_worship",
 		"/obj/structure/religious/moai" = "ritual_worship",
 		"/obj/structure/religious/moai/long" = "ritual_worship",
@@ -2107,7 +2236,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/religious/totem_pole" = "ritual_worship",
 		"/obj/structure/religious/woodcross1" = "ritual_worship",
 		"/obj/structure/religious/woodcross2" = "ritual_worship",
-		// --- sanitation (9) ---
+		// --- sanitation (11) ---
 		"/obj/structure/mirror" = "sanitation",
 		"/obj/structure/shower" = "sanitation",
 		"/obj/structure/shower/bathtub/big/bronze" = "sanitation",
@@ -2117,13 +2246,20 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/sink" = "sanitation",
 		"/obj/structure/sink/kitchen" = "sanitation",
 		"/obj/structure/toilet" = "sanitation",
+		"/obj/structure/sewer_piece/drain/stone" = "sanitation",
+		"/obj/structure/sewer_flap_gate" = "sanitation",
 		// --- siege_engines (3) ---
 		"/obj/item/catapult_ball" = "siege_engines",
 		"/obj/item/weapon/siegeladder" = "siege_engines",
 		"/obj/structure/catapult" = "siege_engines",
-		// --- steam_power (1) ---
+		// --- steam_power (5) ---
+		"/obj/structure/sewer_pump/steam" = "steam_power",
+		"/obj/structure/workshop_machine/steam_site/steam_shovel" = "steam_power",
+		"/obj/structure/workshop_machine/shear_legs/crane/steam" = "steam_power",
+		"/obj/structure/workshop_machine/trip_hammer/steam" = "steam_power",
 		"/obj/structure/engine/external/steam" = "steam_power",
-		// --- steel_blades (5) ---
+		// --- steel_blades (6) ---
+		"/obj/item/wrist_loop/sword_knot" = "steel_blades",
 		"/obj/item/clothing/accessory/storage/sheath" = "steel_blades",
 		"/obj/item/clothing/accessory/storage/sheath/daisho" = "steel_blades",
 		"/obj/item/clothing/accessory/storage/sheath/katana" = "steel_blades",
@@ -2145,11 +2281,13 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/clay/mold/sword" = "stone_arms",
 		"/obj/item/weapon/handcuffs/rope" = "stone_arms",
 		"/obj/item/weapon/macuahuitl" = "stone_arms",
+		"/obj/item/weapon/macuahuitl/unedged" = "stone_arms",
+		"/obj/item/weapon/macuahuitl/tepoztopilli/unedged" = "stone_arms",
 		"/obj/item/weapon/material/hatchet/bone_battleaxe" = "stone_arms",
-		"/obj/item/weapon/material/kitchen/utensil/knife/bone" = "stone_arms",
-		"/obj/item/weapon/material/kitchen/utensil/knife/wood" = "stone_arms",
-		"/obj/item/weapon/material/pickaxe/bone" = "stone_arms",
-		"/obj/item/weapon/material/pickaxe/stone" = "stone_arms",
+		"/obj/item/weapon/material/kitchen/utensil/knife/bone" = "basic_tools",
+		"/obj/item/weapon/material/kitchen/utensil/knife/wood" = "basic_tools",
+		"/obj/item/weapon/material/pickaxe/bone" = "basic_tools",
+		"/obj/item/weapon/material/pickaxe/stone" = "basic_tools",
 		"/obj/item/weapon/material/pilum" = "stone_arms",
 		"/obj/item/weapon/material/quarterstaff" = "stone_arms",
 		"/obj/item/weapon/material/spear" = "stone_arms",
@@ -2165,8 +2303,11 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/material/harpoon/bone" = "stone_arms",
 		"/obj/structure/anvil/stone" = "stone_arms",
 		"/obj/structure/noose" = "stone_arms",
-		// --- stone_masonry (44) ---
+		// --- stone_masonry (45) ---
+		"/obj/structure/workshop_machine/mover/treadwheel" = "stone_masonry",
 		"/obj/covers/cobblestone" = "stone_masonry",
+		"/obj/structure/furnace/lime_kiln" = "stone_masonry",
+		"/obj/structure/workshop_machine/masons_saw" = "stone_masonry",
 		"/obj/covers/cobblestone/stairs" = "stone_masonry",
 		"/obj/covers/roads/sandstone" = "stone_masonry",
 		"/obj/covers/sandstone" = "stone_masonry",
@@ -2215,7 +2356,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/surgery/surgicaldrill" = "surgical_theory",
 		"/obj/structure/bed/chair/wheelchair" = "surgical_theory",
 		"/obj/structure/iv_drip" = "surgical_theory",
-		// --- synthetics (21) ---
+		// --- synthetics (22) ---
+		"/obj/item/clothing/accessory/storage/lanyard/retention" = "synthetics",
 		"/obj/item/clothing/glasses/univisorcyan" = "synthetics",
 		"/obj/item/clothing/glasses/univisorflashy" = "synthetics",
 		"/obj/item/clothing/glasses/univisorgreen" = "synthetics",
@@ -2266,6 +2408,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/clothing/suit/storage/coat/monk_robes" = "tailoring",
 		"/obj/item/clothing/suit/storage/jacket/custom/haori_jacket" = "tailoring",
 		"/obj/item/clothing/suit/storage/jacket/custom/poncho" = "tailoring",
+		"/obj/item/clothing/suit/storage/jacket/tailored" = "tailoring",
 		"/obj/item/clothing/suit/storage/jacket/customcolonial" = "tailoring",
 		"/obj/item/clothing/suit/storage/jacket/customcolonialcoat" = "tailoring",
 		"/obj/item/clothing/suit/storage/jacket/piratejacket2" = "tailoring",
@@ -2371,7 +2514,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/clothing/mask/gas/british" = "trench_warfare",
 		"/obj/item/clothing/mask/gas/german" = "trench_warfare",
 		"/obj/item/clothing/suit/b3" = "trench_warfare",
-		// --- utilities (8) ---
+		// --- utilities (9) ---
+		"/obj/structure/sewer_pump/electric" = "utilities",
 		"/obj/item/lightbulb" = "utilities",
 		"/obj/item/lightbulb/tube" = "utilities",
 		"/obj/item/weapon/telephone" = "utilities",
@@ -2388,6 +2532,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/berth/quay/depot" = "wagons_ships",
 		"/obj/structure/berth/deck" = "wagons_ships",
 		"/obj/structure/hull_tiller" = "wagons_ships",
+		"/obj/structure/hull_tiller/steering_oar" = "oared_ships",
+		"/obj/structure/bed/chair/wood/rowing_bench" = "oared_ships",
 		"/obj/item/sail" = "wagons_ships",
 		"/obj/item/sail/wool" = "wagons_ships",
 		"/obj/item/vehicleparts/frame/boat" = "wagons_ships",
@@ -2400,7 +2546,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/barricade/ship/wood/a2" = "wagons_ships",
 		"/obj/structure/barricade/ship/wood/a6" = "wagons_ships",
 		"/obj/structure/barricade/ship/wood/a7" = "wagons_ships",
-		"/obj/structure/closet/crate/cart/bronze" = "wagons_ships",
+		"/obj/structure/closet/crate/cart/bronze" = "carts",
 		"/obj/structure/simple_door/key_door/anyone/wood/ship" = "wagons_ships",
 		"/obj/structure/vehicleparts/axis/ship" = "wagons_ships",
 		"/obj/structure/vehicleparts/axis/ship/heavy" = "wagons_ships",
@@ -2412,10 +2558,14 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/window/barrier/ship/blue/bport3/south" = "wagons_ships",
 		"/obj/structure/window/barrier/ship/wood/port0/north" = "wagons_ships",
 		"/obj/structure/window/barrier/ship/wood/port2/north" = "wagons_ships",
-		// --- watermills (2) ---
+		// --- watermills (5) ---
+		"/obj/structure/workshop_machine/trip_hammer" = "watermills",
+		"/obj/structure/workshop_machine/mover/mill_wheel" = "watermills",
+		"/obj/structure/workshop_machine/mover/windmill" = "watermills",
 		"/obj/structure/sawmill/large" = "watermills",
 		"/obj/structure/sawmill/powered" = "watermills",
-		// --- weaving (89) ---
+		// --- weaving (90) ---
+		"/obj/item/clothing/accessory/storage/lanyard" = "weaving",
 		"/obj/item/clothing/accessory/storage/belt_pouch/cloth" = "weaving",
 		"/obj/structure/component_workbench/armor" = "weaving",
 		"/obj/item/clothing/accessory/armband/armbangle" = "weaving",
@@ -2508,7 +2658,11 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/religious/tribalmask" = "weaving",
 		"/obj/item/clothing/shoes/weather/mukluks" = "weaving",
 		"/obj/item/clothing/shoes/weather/snowshoes" = "weaving",
-		// --- workshops (24) ---
+		"/obj/item/tailoring_project" = "weaving",
+		"/obj/item/clothing/under/tailored" = "weaving",
+		"/obj/item/clothing/head/tailored" = "weaving",
+		// --- workshops (25) ---
+		"/obj/structure/lapping_wheel" = "workshops",
 		"/obj/item/flashlight/lantern/bronze" = "workshops",
 		"/obj/item/flashlight/lantern/copper" = "workshops",
 		"/obj/item/weapon/storage/belt/keychain" = "workshops",

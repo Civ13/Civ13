@@ -35,7 +35,7 @@
 				label_text = tmp_label
 				update_name_label()
 			return
-		else if (istype(W, /obj/item/weapon/wrench))
+		else if (is_tool(W, TOOL_WRENCH))
 			..()
 		else if (istype(W, /obj/item/weapon/key))
 			var/obj/item/weapon/key/K = W

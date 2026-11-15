@@ -24,9 +24,10 @@ class NomadsCatalogTests(unittest.TestCase):
         source = (ROOT/'code/modules/persistence/durable_nomads.dm').read_text().split('/obj/map_metadata\n', 1)[0]
         admitted = set(re.findall(r'/obj/map_metadata/nomads(?:/[a-z_]+)*', source))
         # Region-only profiles declared outside the Nomads catalog folder.
-        regions = {'/obj/map_metadata/nomads/barren', '/obj/map_metadata/nomads/barren/moon', '/obj/map_metadata/nomads/orbit'}
+        regions = {'/obj/map_metadata/nomads/barren', '/obj/map_metadata/nomads/barren/moon', '/obj/map_metadata/nomads/orbit',
+                   '/obj/map_metadata/nomads/expedition'}
         self.assertEqual(set(declarations) | regions, admitted)
-        self.assertEqual(len(admitted), 31)
+        self.assertEqual(len(admitted), 32)
         # The native probe and the --spatial runner pin the same count; keep them in
         # step here so a new profile fails offline instead of in the native lane.
         probe = (ROOT/'tests/nomads_persistence/probe.dm').read_text()
@@ -43,7 +44,7 @@ class NomadsCatalogTests(unittest.TestCase):
         # every save-and-stop ("supports native BYOND Gaia and Europe only").
         source = (ROOT/'code/modules/persistence/durable_nomads.dm').read_text().split('/obj/map_metadata\n', 1)[0]
         admitted = set(re.findall(r'/obj/map_metadata/nomads(?:/[a-z_]+)*', source))
-        for path in (ROOT/'maps/space').glob('*.dmm'):
+        for path in list((ROOT/'maps/space').glob('*.dmm')) + list((ROOT/'maps/expedition').glob('*.dmm')):
             for profile in set(re.findall(r'/obj/map_metadata/nomads(?:/[a-z_]+)*', path.read_text())):
                 with self.subTest(map=path.name):
                     self.assertIn(profile, admitted)

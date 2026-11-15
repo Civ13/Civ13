@@ -15,15 +15,15 @@
 	..()
 	if(!durable_schedule("nomads_initial_climate", 1800))
 		spawn(1800)
-			if (season == "SPRING") //fixes game setting the season as spring
-				season = "Wet Season"
+			if (season == SEASON_SPRING) //fixes game setting the season as spring
+				season = SEASON_WET
 
 
 /obj/map_metadata/nomads/mountain/seasons(looping = TRUE, force = FALSE, advance_decay = null)
 	if(uses_durable_metadata()) return durable_nomads_seasons(looping, force, advance_decay)
 	advance_decay = season_decay_requested(force, advance_decay)
 	if (real_season == "dry")
-		season = "Wet Season"
+		season = SEASON_WET
 		record_abandonment_season_change(advance_decay)
 		to_chat(world, "<big>The <b>Wet Season</b> has started.</big>")
 		change_weather_somehow()
@@ -31,7 +31,7 @@
 			D.ChangeTurf(/turf/floor/beach/water/swamp)
 		real_season = "wet"
 	else
-		season = "Dry Season"
+		season = SEASON_DRY
 		record_abandonment_season_change(advance_decay)
 		to_chat(world, "<big>The <b>Dry Season</b> has started.</big>")
 		change_weather_somehow()

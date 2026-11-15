@@ -31,6 +31,15 @@ def istype(obj,kind):
     return obj is not None and (obj.type==kind or obj.type.startswith(kind+'/'))
 
 
+
+def item_wear(item):
+    """Mirror /obj/item/proc/apply_wear() (code/_helpers/item_wear.dm) for work wear."""
+    def apply_wear(amount,cause):
+        assert cause=='work'
+        item.health-=amount
+        return item.check_health()
+    item.apply_wear=apply_wear
+
 class Fixture:
     def __init__(self,mode='pieces',knife=False,text=TEXT):
         self.outputs=[]
@@ -48,6 +57,8 @@ class Fixture:
         self.wedge=NS(type='/obj/item/weapon/material/wooden_wedge',deleted=False,health=4,woodwork_owner=None)
         self.wedge.get_material=lambda:NS(name='wood',hardness=40)
         self.wedge.check_health=lambda:setattr(self.wedge,'deleted',self.wedge.health<=0)
+        for item in (self.tool,self.wedge):
+            item_wear(item)
         if mode=='plank':
             self.tool.type='/obj/item/weapon/hammer'
         if mode=='flatten':
@@ -78,7 +89,7 @@ class Fixture:
         def construct(kind,site,count=1):
             self.outputs.append((kind,count))
             self.construct_hook()
-        self.env=dict(crafting_node_allowed=lambda user,node: bool(user and user.researched and node=="basic_tools"), plank_making_allowed=lambda user: bool(user and user.researched), QDELETED=lambda obj:obj is None or getattr(obj,'deleted',False),
+        self.env=dict(WEAR_WORK='work', crafting_node_allowed=lambda user,node: bool(user and user.researched and node=="basic_tools"), plank_making_allowed=lambda user: bool(user and user.researched), QDELETED=lambda obj:obj is None or getattr(obj,'deleted',False),
                       istype=istype,ispath=lambda kind,parent:kind==parent or kind.startswith(parent+'/'),
                       get_turf=lambda obj:obj.site,
                       hide_worker_can_reach=lambda user,source:user.connected and user.reachable and user.stat==0 and not source.deleted and (source.loc is self.site or source.loc is user),

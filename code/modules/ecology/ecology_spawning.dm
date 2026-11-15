@@ -213,6 +213,7 @@ var/global/list/ecology_species_table = null
 /datum/ecology_spawner/New()
 	..()
 	species = ecology_default_species()
+	expedition_land_tune_species(species) // a land across the sea: its own game is plentiful (land_resources.dm)
 
 // Cached per spawner: the species table can be replaced (tests, admin edits).
 /datum/ecology_spawner/proc/species_for_type(path)
@@ -485,7 +486,9 @@ var/global/list/ecology_species_table = null
 			continue
 		used += T
 		var/path = S.spawn_types[((i + offset - 1) % S.spawn_types.len) + 1]
-		new path(T)
+		var/mob/living/simple_animal/A = new path(T)
+		if (istype(A))
+			A.make_wild()
 		placed++
 	return placed
 

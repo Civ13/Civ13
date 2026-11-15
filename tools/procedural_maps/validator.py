@@ -5,11 +5,18 @@ import argparse
 import hashlib
 import json
 from collections import deque
+from contextlib import contextmanager
+from copy import deepcopy
 from pathlib import Path
 
 VERSION = "civ13-geography-ir/1"
 PORT_VERSION = "civ13-geography-ir/2"
 OCEAN_VERSION = "civ13-geography-ir/3"
+# Relief lands: rivers rise at springs or lakes and need no map-edge port.
+LAND_VERSION = "civ13-geography-ir/4"
+# Longest map side the offline tools accept. What a BYOND world can hold is a
+# separate, smaller budget: see MEASURED_CELLS in land.py.
+MAX_SIDE = 1280
 PROFILES = {"SURFACE", "OCEANIC", "UNDERGROUND_CAVERN"}
 TERRAINS = {"PLAIN", "HILL", "MOUNTAIN", "BEACH", "CAVE_FLOOR", "ROCK", "WATER"}
 BIOMES = {"TEMPERATE", "LUSH", "STEPPE", "ARID", "DESERT", "ALPINE", "CAVERN", "COAST"}
@@ -34,21 +41,80 @@ POLICY_KEYS = {"mountain_min_area", "mountain_max_components", "max_moisture_ste
                "river_half_width", "max_path_uphill_m"}
 
 
+_DRAW_PREFIX = {}
+
+
 def stable_u64(seed: str, algorithm: str, content: str, profile: str,
                stage: str, layer: str, x: int, y: int, slot: int = 0) -> int:
     """Coordinate-stable draw; JSON array framing prevents concatenation collisions."""
+    if type(x) is int and type(y) is int and type(slot) is int:
+        # Same bytes as the JSON array below: the six strings are framed once
+        # per stage and the three integers appended, which is what keeps a
+        # million-tile map's draws affordable.
+        key = (seed, algorithm, content, profile, stage, layer)
+        prefix = _DRAW_PREFIX.get(key)
+        if prefix is None:
+            if len(_DRAW_PREFIX) > 4096:
+                _DRAW_PREFIX.clear()
+            prefix = _DRAW_PREFIX[key] = json.dumps(list(key), ensure_ascii=True,
+                                                    separators=(",", ":"))[:-1].encode("ascii") + b","
+        return int.from_bytes(hashlib.sha256(prefix + b"%d,%d,%d]" % (x, y, slot)).digest()[:8], "big")
     payload = json.dumps([seed, algorithm, content, profile, stage, layer, x, y, slot],
                          ensure_ascii=True, separators=(",", ":")).encode("ascii")
     return int.from_bytes(hashlib.sha256(payload).digest()[:8], "big")
 
 
+# Documents a caller has promised not to change for a while (see unchanged()):
+# id -> [document, validation errors or None, canonical hash or None, extras].
+_UNCHANGED = {}
+
+
+@contextmanager
+def unchanged(document, errors=None, sha256=None):
+    """While this block runs, validate(), canonical_hash() and the DMM
+    projection of this exact object are worked out once and reused. The
+    caller promises not to change the document inside the block. `errors` and
+    `sha256` hand over results the generator has just computed for it. Every
+    check still runs at least once, and any other object is checked in full
+    as before; a large map is simply not re-read six times."""
+    if type(document) is not dict or id(document) in _UNCHANGED:
+        yield document
+        return
+    _UNCHANGED[id(document)] = [document, None if errors is None else list(errors), sha256, {}]
+    try:
+        yield document
+    finally:
+        del _UNCHANGED[id(document)]
+
+
+def remembered(document):
+    """The unchanged() record of this exact object, or None."""
+    entry = _UNCHANGED.get(id(document))
+    return entry if entry is not None and entry[0] is document else None
+
+
 def canonical_hash(document: dict) -> str:
-    return hashlib.sha256(json.dumps(document, sort_keys=True, separators=(",", ":"),
-                                     allow_nan=False).encode()).hexdigest()
+    entry = remembered(document)
+    if entry is not None and entry[2] is not None:
+        return entry[2]
+    digest = hashlib.sha256(json.dumps(document, sort_keys=True, separators=(",", ":"),
+                                       allow_nan=False).encode()).hexdigest()
+    if entry is not None:
+        entry[2] = digest
+    return digest
 
 
 def validate(d: object) -> list[dict]:
     """Reject malformed documents before graph traversal. Never mutate input."""
+    entry = remembered(d)
+    if entry is None:
+        return _validate(d)
+    if entry[1] is None:
+        entry[1] = _validate(d)
+    return deepcopy(entry[1])
+
+
+def _validate(d: object) -> list[dict]:
     errors: list[dict] = []
 
     def err(code, detail, at=None):
@@ -67,8 +133,10 @@ def validate(d: object) -> list[dict]:
     try:
         v2=type(d) is dict and d.get("schema")==PORT_VERSION
         ocean=type(d) is dict and d.get('schema')==OCEAN_VERSION
+        relief=type(d) is dict and d.get('schema')==LAND_VERSION
         exact(d, ROOT_KEYS|({"junctions"} if v2 else set())|({'ocean_policy'} if ocean else set()), "root keys")
-        require(d["schema"] in {VERSION,PORT_VERSION,OCEAN_VERSION} and d["profile"] in PROFILES, "schema/profile")
+        require(d["schema"] in {VERSION,PORT_VERSION,OCEAN_VERSION,LAND_VERSION} and d["profile"] in PROFILES, "schema/profile")
+        if relief:require(d['profile']=='SURFACE' and not d['ports'],'relief lands are SURFACE and have no edge ports')
         if ocean:
             require(d['profile']=='OCEANIC','ocean schema profile')
             ocean_keys={'island_count','island_min_area','island_gap_tiles','start_min_spacing','coast_route_max'}
@@ -79,7 +147,7 @@ def validate(d: object) -> list[dict]:
         for k in ("seed", "algorithm_version", "content_version", "profile_version"):
             require(type(d[k]) is str and 0 < len(d[k]) <= 128, k)
         require(d["seed"].isascii(), "seed must be ASCII")
-        require(integer(d["width"], 3, 512) and integer(d["height"], 3, 512), "dimensions")
+        require(integer(d["width"], 3, MAX_SIDE) and integer(d["height"], 3, MAX_SIDE), "dimensions")
         w, h = d["width"], d["height"]
         require(type(d["layers"]) is dict and 1 <= len(d["layers"]) <= 4, "layers")
         require(d["active_layer"] in d["layers"], "active_layer")
@@ -121,8 +189,9 @@ def validate(d: object) -> list[dict]:
             for p in r["path"]: coord(p)
             for k in ("source", "sink"):
                 exact(r[k], {"kind", "target"}, "terminal keys")
-                require(r[k]["kind"] in ({"EDGE", "LAKE", "SEA","JUNCTION"} if v2 else {"EDGE", "LAKE", "SEA", "RIVER"}) and
+                require(r[k]["kind"] in ({"EDGE", "LAKE", "SEA","JUNCTION"} if v2 else {"EDGE", "LAKE", "SEA", "RIVER"}) | ({"SPRING"} if relief and k=="source" else set()) and
                         type(r[k]["target"]) is str, "terminal kind/target")
+                require(r[k]["kind"]!="SPRING" or r[k]["target"]=="", "a spring names no body")
         ids = set()
         for lake in d["lakes"]:
             exact(lake, {"id", "terminal_basin", "outflow"}, "lake keys")
@@ -182,10 +251,12 @@ def validate(d: object) -> list[dict]:
     def walkable(c):
         return not (c["blocked"] or c["hazard"] or c["tree"] != "NONE" or
                     c["water"] != "NONE" or c["terrain"] in {"ROCK", "MOUNTAIN"})
-    def connected_distances(start, allowed, links=None):
+    def connected_distances(start, allowed, links=None, limit=None):
+        # limit: stop past that many steps, for checks that only ask about nearer cells.
         distances = {start: 0}; queue = deque([start])
         while queue:
             p = queue.popleft()
+            if limit is not None and distances[p] >= limit: continue
             for q in near(p) + (links or {}).get(p, []):
                 if q in allowed and q not in distances:
                     distances[q] = distances[p]+1; queue.append(q)
@@ -328,6 +399,7 @@ def validate(d: object) -> list[dict]:
         # Island lake-to-sea rivers and cavern pool-to-pool streams are closed
         # networks with their own endpoint grammar; surface networks need an edge port.
         closed=(ocean and all(rivers[r]["source"]["kind"]=="LAKE" and rivers[r]["sink"]["kind"]=="SEA" for r in seen)) or \
+               (d["schema"]==LAND_VERSION and all(rivers[r]["source"]["kind"] in {"LAKE","SPRING"} for r in seen)) or \
                (d["profile"]=="UNDERGROUND_CAVERN" and all(rivers[r]["source"]["kind"]=="LAKE" and rivers[r]["sink"]["kind"]=="LAKE" for r in seen))
         if not closed and not any(rivers[r][k]["kind"]=="EDGE" for r in seen for k in ["source","sink"]):
             err("RIVER_NO_EDGE", "river network requires explicit map edge port")
@@ -346,7 +418,7 @@ def validate(d: object) -> list[dict]:
     for p in starts:
         if p not in walk or p not in active:
             err("START_SAFE", "start must be clear safe active-layer land", p); continue
-        distances=connected_distances(p, walk, links)
+        distances=connected_distances(p, walk, links, max(policy["max_resource_distance"],policy["max_water_distance"]))
         for resource in ("FOOD","WOOD","STONE"):
             if not any(cells[q]["resource"]==resource and dist<=policy["max_resource_distance"] for q,dist in distances.items()):
                 err("START_RESOURCE", "no safe bounded route to "+resource, p)

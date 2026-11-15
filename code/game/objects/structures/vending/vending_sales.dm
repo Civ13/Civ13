@@ -52,7 +52,7 @@
 				to_chat(user, "You put \the [W] in the [src].")
 			qdel(W)
 			return
-	else if (istype(W, /obj/item/weapon/wrench))
+	else if (is_tool(W, TOOL_WRENCH))
 		if (owner != "Global" && find_company_member(user,owner))
 			playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
 			if (anchored)

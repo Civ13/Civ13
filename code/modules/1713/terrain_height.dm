@@ -3,6 +3,36 @@
 // saves a little. Off unless a map names a height file; every tile then reads 0.
 // Heights are fixed map data loaded from a text file, so saves do not change.
 
+// Levels come in halves from 0 to TERRAIN_MAX_LEVEL (code/__defines/turfs.dm).
+// A height file writes one character per tile: 0-9 then a-v for whole levels
+// 0-31, and A-Z then !#$%&+ for the half levels 0.5-31.5. Version 1 files use
+// only 0-9 and a-f.
+#define TERRAIN_HEIGHT_WHOLE "0123456789abcdefghijklmnopqrstuv"
+#define TERRAIN_HEIGHT_HALF "ABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%&+"
+
+// Level for each character code (1-127), null for characters a file may not use.
+var/global/list/terrain_height_levels = terrain_height_level_table()
+// Character for each half level: index level * 2 + 1.
+var/global/list/terrain_height_chars = terrain_height_char_table()
+
+/proc/terrain_height_level_table()
+	var/list/table = new /list(127)
+	for (var/i in 1 to 32)
+		table[text2ascii(TERRAIN_HEIGHT_WHOLE, i)] = i - 1
+		table[text2ascii(TERRAIN_HEIGHT_HALF, i)] = i - 0.5
+	return table
+
+/proc/terrain_height_char_table()
+	var/list/table = list()
+	for (var/i in 1 to 32)
+		table += ascii2text(text2ascii(TERRAIN_HEIGHT_WHOLE, i))
+		table += ascii2text(text2ascii(TERRAIN_HEIGHT_HALF, i))
+	return table
+
+// The character a height file uses for a level, rounded to the nearest half.
+/proc/terrain_height_char(level)
+	return terrain_height_chars[clamp(round(level, 0.5), 0, TERRAIN_MAX_LEVEL) * 2 + 1]
+
 // Slope speed curve (docs/terrain-height.md). A step's delay is multiplied by
 // a factor from its grade, the levels climbed (+) or descended (-) per tile.
 // Uphill: 1 + 0.4 g + 0.1 g^2, so each extra level costs more than the last.
@@ -81,10 +111,7 @@
 	var/list/rows = rows_by_z["[z]"]
 	if (!rows || x < 1 || x > maxx || y < 1 || y > maxy)
 		return 0
-	var/code = text2ascii(rows[maxy - y + 1], x)
-	if (code >= 97)
-		return code - 87
-	return code - 48
+	return terrain_height_levels[text2ascii(rows[maxy - y + 1], x)]
 
 // Parses the height text. Returns null and sets error on any problem, so a bad
 // file leaves the map flat instead of half-loaded.
@@ -96,9 +123,10 @@
 	var/list/lines = splittext(replacetext(text, ascii2text(13), ""), "\n")
 	var/i = 1
 	var/list/header = splittext(lines[i++], " ")
-	if (header.len != 2 || header[1] != "civ13-terrain-heights" || header[2] != "1")
-		H.error = "missing 'civ13-terrain-heights 1' header"
+	if (header.len != 2 || header[1] != "civ13-terrain-heights" || (header[2] != "1" && header[2] != "2"))
+		H.error = "missing 'civ13-terrain-heights 2' header"
 		return H
+	var/version = text2num(header[2])
 	var/list/size = i <= lines.len ? splittext(lines[i++], " ") : list()
 	if (size.len != 3 || size[1] != "size")
 		H.error = "missing 'size X Y' line"
@@ -123,8 +151,8 @@
 				H.error = "z [z] has [rows.len] of [H.maxy] rows"
 				return H
 			var/row = lines[i++]
-			if (length(row) != H.maxx || !terrain_height_row_valid(row))
-				H.error = "z [z] row [r] must be [H.maxx] characters of 0-9 or a-f"
+			if (length(row) != H.maxx || !terrain_height_row_valid(row, version))
+				H.error = "z [z] row [r] must be [H.maxx] height characters ([version == 1 ? "0-9 or a-f" : "0-9, a-v, A-Z or !#$%&+"])"
 				return H
 			rows += row
 		H.rows_by_z["[z]"] = rows
@@ -138,18 +166,16 @@
 	var/list/rows = base_rows_by_z["[z]"]
 	if (!rows || x < 1 || x > maxx || y < 1 || y > maxy)
 		return 0
-	var/code = text2ascii(rows[maxy - y + 1], x)
-	return code >= 97 ? code - 87 : code - 48
+	return terrain_height_levels[text2ascii(rows[maxy - y + 1], x)]
 
 // Sets a graded tile's level and updates the corner lights around it.
 /datum/terrain_heights/proc/set_level(x, y, z, level)
 	var/list/rows = rows_by_z["[z]"]
 	if (!rows || x < 1 || x > maxx || y < 1 || y > maxy)
 		return FALSE
-	level = clamp(round(level), 0, 15)
 	var/r = maxy - y + 1
 	var/row = rows[r]
-	rows[r] = copytext(row, 1, x) + ascii2text(level < 10 ? 48 + level : 87 + level) + copytext(row, x + 1)
+	rows[r] = copytext(row, 1, x) + terrain_height_char(level) + copytext(row, x + 1)
 	var/list/lights = light_rows_by_z["[z]"]
 	if (lights)
 		// A tile moves the 4 corners around it; each light reads corners one step away.
@@ -164,9 +190,10 @@
 	los_terrain_heights_changed(locate(x, y, z))
 	return TRUE
 
-/proc/terrain_height_row_valid(row)
-	var/static/regex/bad = regex(@"[^0-9a-f]")
-	return !bad.Find(row)
+/proc/terrain_height_row_valid(row, version = 2)
+	var/static/regex/bad_v1 = regex(@"[^0-9a-f]")
+	var/static/regex/bad = regex(@"[^0-9a-vA-Z!#$%&+]")
+	return version == 1 ? !bad_v1.Find(row) : !bad.Find(row)
 
 /obj/map_metadata/proc/terrain_heights()
 	if (!terrain_height_file)
@@ -476,8 +503,7 @@ var/global/terrain_shading_applied = FALSE
 
 // Level at a north-first row and column, clamped to the edge like the tool.
 /datum/terrain_heights/proc/level_rc(list/rows, row, col)
-	var/code = text2ascii(rows[clamp(row, 1, maxy)], clamp(col, 1, maxx))
-	return code >= 97 ? code - 87 : code - 48
+	return terrain_height_levels[text2ascii(rows[clamp(row, 1, maxy)], clamp(col, 1, maxx))]
 
 /datum/terrain_heights/proc/light_rows(z)
 	var/key = "[z]"

@@ -36,6 +36,9 @@ def contracts(s,h,p):
     assert 'key == "carriage_glide" || ..()' in s
     assert '/datum/carriage_glide_lease\n\tshould_save = FALSE' in s
 
+OLD_BOAT_WIND = '\t\tswitch(map.windspeedvar)\n\t\t\tif (0)\n\t\t\t\ttimer = 40\n\t\t\tif (1)\n\t\t\t\ttimer = 15\n\t\t\tif (2)\n\t\t\t\ttimer = 11\n\t\t\tif (3)\n\t\t\t\ttimer = 7\n\t\t\tif (4)\n\t\t\t\ttimer = 4\n\t\tswitch(map.winddirection)\n\t\t\tif ("North")\n\t\t\t\tif (dir == SOUTH)\n\t\t\t\t\ttimer /= 1\n\t\t\t\tif  (dir == WEST || dir == EAST)\n\t\t\t\t\ttimer /= 0.4\n\t\t\t\tif (dir == NORTH)\n\t\t\t\t\ttimer /= 0.1\n\t\t\tif ("South")\n\t\t\t\tif (dir == NORTH)\n\t\t\t\t\ttimer /= 1\n\t\t\t\tif  (dir == WEST || dir == EAST)\n\t\t\t\t\ttimer /= 0.4\n\t\t\t\tif (dir == SOUTH)\n\t\t\t\t\ttimer /= 0.1\n\t\t\tif ("East")\n\t\t\t\tif (dir == WEST)\n\t\t\t\t\ttimer /= 1\n\t\t\t\tif  (dir == NORTH || dir == SOUTH)\n\t\t\t\t\ttimer /= 0.4\n\t\t\t\tif (dir == EAST)\n\t\t\t\t\ttimer /= 0.1\n\t\t\tif ("West")\n\t\t\t\tif (dir == EAST)\n\t\t\t\t\ttimer /= 1\n\t\t\t\tif  (dir == NORTH || dir == SOUTH)\n\t\t\t\t\ttimer /= 0.4\n\t\t\t\tif (dir == WEST)\n\t\t\t\t\ttimer /= 0.1\n'
+
+
 class Sources(unittest.TestCase):
     @classmethod
     def setUpClass(cls):cls.s=TRANSPORT.read_text();cls.c=CARRIAGE.read_text();cls.h=HUMAN.read_text();cls.p=SAVER.read_text()
@@ -113,6 +116,10 @@ class Sources(unittest.TestCase):
         # (the earlier frozen projection with the carriage block cut off).
         self.assertNotIn('/obj/structure/vehicle/carriage',self.s.split('// Appearance-only leases.')[0])
         s=self.s.split('// Appearance-only leases.')[0].removesuffix('\n\n')
+        # health moved up to /obj/structure (shared structure damage).
+        shared_health='\thealth = 100\n\tvar/customcolor'
+        self.assertEqual(s.count(shared_health),1)
+        s=s.replace(shared_health,'\tvar/health = 100\n\tvar/customcolor')
         retake='\tif (retake_controls(user))\n\t\treturn\n'
         self.assertEqual(s.count(retake),2)
         s=s.replace(retake,'')
@@ -121,6 +128,10 @@ class Sources(unittest.TestCase):
         s=s.replace('\t\tvar/interval = null\n','').replace('\t\t\tinterval = vehicle_m_delay + 1\n','')
         s=s.replace('do_move(driver.dir, interval)','do_move(driver.dir)')
         s=s.replace('spawn(vehicle_m_delay + 1)','spawn(vehicle_m_delay+1)')
+        # Sailing boats take their step from points_of_sail.dm (vehicle review item 11).
+        sail='\t\t// How the wind stands to her bow sets the pace (naval/points_of_sail.dm).\n\t\ttimer = sail_step_time(src, dir)\n'
+        self.assertEqual(s.count(sail),1)
+        s=s.replace(sail,OLD_BOAT_WIND)
         s=re.sub(r'(?m)^\t+M\.settle_on_tile\(\)\n','',s)
         own='\t\t// A rider\'s body can reach into the tile ahead; never hit our own.\n\t\tif (L == driver || (L in ontop))\n\t\t\tcontinue\n'
         self.assertEqual(s.count(own),1)

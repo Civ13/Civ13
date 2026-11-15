@@ -586,23 +586,23 @@ var/aircraft_runtime_error = FALSE
 		build_research_tree()
 	var/datum/research_node/flight = get_research_node("powered_flight")
 	var/datum/research_node/aviation = get_research_node("aviation_rocketry")
-	aircraft_check(flight && ("automobiles" in flight.prereqs) && flight.era_tier == 6 && aviation && ("powered_flight" in aviation.prereqs), "Powered Flight follows Automobiles and leads to Aviation & Rocketry (node [flight ? "found" : "missing"])")
+	aircraft_check(flight && ("combustion" in flight.prereqs) && flight.era_tier == 6 && aviation && ("powered_flight" in aviation.prereqs), "Powered Flight follows the Combustion Engine and leads to Aviation & Rocketry (node [flight ? "found" : "missing"])")
 	aircraft_check(get_recipe_node_req("/obj/structure/car_workshop/hangar") == "powered_flight", "Powered Flight gates the hangar (got [get_recipe_node_req("/obj/structure/car_workshop/hangar")])")
 	for (var/bx = 15, bx <= 18, bx++)
 		for (var/by = 3, by <= 6, by++)
 			var/turf/BT = locate(bx, by, 1)
 			BT.ChangeTurf(/turf/floor/dirt)
 	var/obj/structure/car_workshop/hangar/hangar = new(locate(14, 2, 1))
-	aircraft_check(hangar.model_size("Light plane") == 4 && hangar.costs("Light plane")["steel"] == 50 && !hangar.costs("SMC Falcon") && !hangar.allowed(null), "the hangar builds planes, not cars, after Powered Flight")
+	aircraft_check(hangar.model_size("Light plane") == 4 && hangar.costs("Light plane")["wood"] == 40 && hangar.costs("Light plane")["steel"] == 10 && !hangar.costs("SMC Falcon") && !hangar.allowed(null), "the hangar builds planes, not cars, after Powered Flight")
 	aircraft_check(!hangar.complete_assembly("Light plane"), "an empty hangar builds nothing")
-	hangar.stock = list("steel" = 60, "glass" = 10, "cloth" = 10, "cable" = 10, "wheels" = 4)
+	hangar.stock = list("steel" = 20, "wood" = 45, "glass" = 10, "cloth" = 10, "cable" = 10, "wheels" = 4)
 	var/obj/structure/vehicleparts/axis/aircraft/built = hangar.complete_assembly("Light plane")
 	aircraft_check(istype(built), "the hangar builds a light plane in its bay")
 	if (istype(built))
 		aircraft_check(built.frames().len == 12 && built.engine && built.engine.fueltank && aircraft_tank_fuel(built) == 0, "the built plane is whole with an empty tank ([built.frames().len] frames, fuel [built.engine && built.engine.fueltank ? aircraft_tank_fuel(built) : "none"])")
-		aircraft_check(built.keyed_vehicle_id && hangar.stock["steel"] == 10 && hangar.stock["wheels"] == 0, "the hangar issues keys and spends its inputs (key [built.keyed_vehicle_id], steel [hangar.stock["steel"]], wheels [hangar.stock["wheels"]])")
+		aircraft_check(built.keyed_vehicle_id && hangar.stock["steel"] == 10 && hangar.stock["wood"] == 5 && hangar.stock["wheels"] == 0, "the hangar issues keys and spends its inputs (key [built.keyed_vehicle_id], steel [hangar.stock["steel"]], wood [hangar.stock["wood"]], wheels [hangar.stock["wheels"]])")
 	aircraft_check(!hangar.complete_assembly("Light plane"), "the occupied bay refuses a second build")
-	aircraft_check(hangar.model_size("Cabin plane") == 4 && hangar.costs("Cabin plane")["steel"] == 65 && ("Cabin plane" in hangar.models()), "the hangar also offers the four-seat cabin plane in the same 4x4 bay")
+	aircraft_check(hangar.model_size("Cabin plane") == 4 && hangar.costs("Cabin plane")["aluminium"] == 48 && ("Cabin plane" in hangar.models()), "the hangar also offers the four-seat cabin plane in the same 4x4 bay")
 	var/obj/structure/vehicleparts/axis/aircraft/cabin = build_cabin_plane(locate(14, 30, 1))
 	if (istype(cabin))
 		var/seats = 0
@@ -617,7 +617,7 @@ var/aircraft_runtime_error = FALSE
 	else
 		aircraft_check(FALSE, "the cabin plane builds")
 	// The trainer turns in a 3x3 square; the cargo plane carries cargo bays.
-	aircraft_check(hangar.model_size("Trainer") == 3 && hangar.costs("Trainer")["steel"] == 35 && hangar.model_size("Cargo plane") == 4 && hangar.costs("Cargo plane")["steel"] == 60, "the hangar also offers the trainer (3x3) and the cargo plane")
+	aircraft_check(hangar.model_size("Trainer") == 3 && hangar.costs("Trainer")["wood"] == 28 && hangar.model_size("Cargo plane") == 4 && hangar.costs("Cargo plane")["aluminium"] == 44, "the hangar also offers the trainer (3x3) and the cargo plane")
 	var/list/trainer_layout = hangar.project_layout("Trainer")
 	aircraft_check(trainer_layout && trainer_layout.len == 9 && ("1,1" in trainer_layout) && ("3,3" in trainer_layout) && !("4,1" in trainer_layout), "a trainer built piece by piece fills the 3x3 bay")
 	aircraft_clear_ground(13, 29, 18, 34)
@@ -659,7 +659,7 @@ var/aircraft_runtime_error = FALSE
 		aircraft_check(FALSE, "the cargo plane builds")
 
 	// The twin-engine plane: 5 wide in a 5x5 square, an engine on each wing.
-	aircraft_check(hangar.model_size("Twin-engine plane") == 5 && hangar.costs("Twin-engine plane")["steel"] == 90 && hangar.largest_model_size() == 4, "the hangar offers the twin-engine plane in a 5x5 square and still fits where a light plane does")
+	aircraft_check(hangar.model_size("Twin-engine plane") == 5 && hangar.costs("Twin-engine plane")["aluminium"] == 64 && hangar.largest_model_size() == 4, "the hangar offers the twin-engine plane in a 5x5 square and still fits where a light plane does")
 	var/list/twin_layout = hangar.project_layout("Twin-engine plane")
 	aircraft_check(twin_layout && twin_layout.len == 20 && ("1,1" in twin_layout) && ("5,4" in twin_layout), "a twin built piece by piece fills a 5 by 4 body in its square")
 	aircraft_clear_ground(13, 29, 19, 35)
@@ -702,6 +702,29 @@ var/aircraft_runtime_error = FALSE
 	else
 		aircraft_check(FALSE, "the twin-engine plane builds")
 
+	// The airliner: the twin's airframe with a three-row walk-through cabin.
+	aircraft_check(hangar.model_size("Airliner") == 6 && hangar.costs("Airliner")["aluminium"] == 90 && hangar.largest_model_size() == 4 && aircraft_model_node("Airliner") == "aviation_rocketry", "the hangar offers the airliner in a 6x6 square, after Aviation & Rocketry")
+	var/list/liner_layout = hangar.project_layout("Airliner")
+	aircraft_check(liner_layout && liner_layout.len == 30 && ("5,6" in liner_layout), "an airliner built piece by piece fills a 5 by 6 body")
+	aircraft_clear_ground(13, 29, 20, 36)
+	var/obj/structure/vehicleparts/axis/aircraft/liner = build_aircraft_model("Airliner", locate(14, 30, 1))
+	if (istype(liner))
+		var/lseats = 0
+		var/aisle = 0
+		for (var/obj/structure/vehicleparts/frame/F in liner.frames())
+			for (var/obj/structure/bed/chair/seat in F.loc)
+				lseats++
+			if (istype(F, /obj/structure/vehicleparts/frame/car/aircraft/fuselage/center) && !(locate(/obj/structure/bed/chair) in F.loc))
+				aisle++
+		aircraft_check(liner.frames().len == 30 && liner.maxdist == 6 && lseats == 7 && aisle == 3 && liner.wing_engines().len == 1 && liner.takeoff_roll == 16, "the airliner has thirty frames, a pilot and six cabin seats along a three-tile aisle, and two engines ([liner.frames().len] frames, maxdist [liner.maxdist], [lseats] seats, [aisle] aisle)")
+		for (var/atom/movable/part in liner.components.Copy())
+			if (part != liner)
+				qdel(part)
+		aircraft_clear_ground(13, 29, 20, 36)
+		qdel(liner)
+	else
+		aircraft_check(FALSE, "the airliner builds")
+
 	// Enough hits break the airframe up: the plane comes down where it is.
 	if (istype(built))
 		for (var/bx = 15, bx <= 18, bx++)
@@ -720,12 +743,14 @@ var/aircraft_runtime_error = FALSE
 // Kept in this admitted fixture; no additional runner or runtime entry point.
 #include "level_shift.dm"
 #include "taxi.dm"
+#include "weight.dm"
 #include "assembly.dm"
 
 /proc/aircraft_run()
 	try
 		level_shift_checks()
 		aircraft_taxi_checks()
+		aircraft_weight_checks()
 		aircraft_assembly_checks()
 		aircraft_checks()
 	catch(var/exception/e)

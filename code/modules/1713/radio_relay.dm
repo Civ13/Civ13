@@ -353,6 +353,8 @@ var/global/list/civ_relay_outbound_queue = list()
 			H.hear_station_line("[speaker.real_name] (via [speaker.relay], [speaker.region]): [heard]")
 	for (var/mob/observer/O in mob_list)
 		O.hear_relayed_radio(message, verbage, speaker, null)
+	if (origin)
+		rusty_bolt_reradiate(origin, message, speaker.language)
 
 /mob/proc/hear_relayed_radio(message, verbage, datum/remote_speaker/speaker, obj/destination)
 	if (!client || !message || !speaker)

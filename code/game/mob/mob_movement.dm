@@ -67,9 +67,9 @@
 		slowdown = 0.55
 	else if (weight > max_weight * 0.75 && weight <= max_weight * 0.85)
 		slowdown = 0.66
-	else if (weight > max_weight * 0.85 && weight <= max_weight * 0.95)
+	else if (weight > max_weight * 0.85 && weight <= max_weight * 0.90)
 		slowdown = 0.77
-	else if (weight > max_weight * 0.85 && weight <= max_weight * 0.95)
+	else if (weight > max_weight * 0.90 && weight <= max_weight * 0.95)
 		slowdown = 0.88
 	else if (weight > max_weight * 0.95 && weight <= INFINITY)
 		slowdown = 0.99
@@ -457,6 +457,15 @@
 		if (N.hanging == mob)
 			return
 
+	// On top of a vehicle: walk across its roof or jump off (vehicle_decks.dm).
+	if (mob.vehicle_deck && ishuman(mob))
+		var/mob/living/human/deck_rider = mob
+		if (deck_rider.vehicle_deck_busy)
+			return
+		move_delay = world.time + mob.movement_delay()
+		deck_rider.vehicle_deck_step(direct)
+		return
+
 	// Up a tree: a movement key climbs down (tree_climbing.dm).
 	if (mob.climbed_tree && ishuman(mob))
 		var/mob/living/human/tree_climber = mob
@@ -623,26 +632,12 @@
 			var/snow = TRUE
 			for (var/obj/covers/CV in get_turf(F))
 				snow = FALSE
-			for(var/obj/effect/flooding/FLD in get_turf(F))
-				switch(FLD.flood_level)
-					if (1)
-						standing_on_snow = 2
-					if (2)
-						standing_on_snow = 4
-					if (3)
-						standing_on_snow = 6
-			if(istype(F, /turf/floor/sub_deck))
-				var/turf/floor/sub_deck/SD = F
-				if(SD.water_depth >= 150)
-					standing_on_snow = 6
-				else if(SD.water_depth >= 100)
-					standing_on_snow = 4
-				else if(SD.water_depth >= 50)
-					standing_on_snow = 2
+			// Puddles, a flooded deck or river floodwater (flood_effects.dm).
+			standing_on_snow = standing_water_delay(F)
 			standing_on_snow *= footwear_terrain_mult(H, "wade")
 			if ((weather_at(F) == WEATHER_WET && findtext(weather_look_at(F),"rain")) || weather_at(F) == WEATHER_EXTREME)
 				if (F.may_become_muddy)
-					if (!(F_area.climate in list("semiarid", "jungle", "desert", "savanna")) || season == "WINTER" || season == "SPRING")
+					if (rain_soaks_ground(F_area))
 						F.muddy = TRUE
 					else
 						F.muddy = FALSE
@@ -1047,7 +1042,7 @@
 		if (istype(src, /mob/living/human))
 			var/mob/living/human/HH = src
 			if (HH.riding == TRUE && !isnull(HH.riding_mob))
-				move_delay = 0.5
+				move_delay = 0.5 + HH.riding_mob.hitch_drag()
 			else
 				move_delay /= t_movement_speed_multiplier
 		else

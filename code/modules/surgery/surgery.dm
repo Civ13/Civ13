@@ -88,7 +88,7 @@
 		for(var/datum/surgery_step/S in surgery_steps)
 			if(!affected.open && S.req_open)
 				return FALSE
-	return FALSE
+	return TRUE
 
 proc/spread_germs_to_organ(var/obj/item/organ/external/E, var/mob/living/human/user)
 	if (!istype(user) || !istype(E)) return
@@ -140,7 +140,7 @@ proc/do_surgery(mob/living/human/M, mob/living/human/user, obj/item/tool)
 					var/mod = 1
 					if (user.religious_clergy == "Shamans")
 						mod = 2
-					H.adaptStat("medical", 1.5*mod)
+					H.adaptStat("medical", 1.5*mod, S.type)
 				M.op_stage.in_progress -= zone 									// Clear the in-progress flag.
 			else
 				if (M)

@@ -67,6 +67,10 @@ var/global/persistence_load_recovery_required = FALSE
 	var/list/faction_research_director = list()
 /obj/map_metadata/proc/allows_custom_factions()
 	return TRUE
+// Hall tiers and colonies (faction_hall.dm) are not in this fixture.
+/obj/map_metadata/var/infrastructure_limit = 1000
+/obj/map_metadata/proc/faction_infrastructure_limit(faction)
+	return infrastructure_limit
 
 /proc/check(condition, label)
 	if (!condition)
@@ -244,6 +248,12 @@ var/global/probe_people = 0
 	map.faction_limits()["Alpha"] = length(map.faction_roster("Alpha"))
 	check(map.faction_member_limit("Alpha") == length(map.faction_roster("Alpha")), "a leader's lower limit applies")
 	var/mob/living/human/E2 = person("Eli", "none", "eli")
+	var/list/leader_limits = map.faction_limits()
+	leader_limits -= "Alpha"
+	map.infrastructure_limit = length(map.faction_roster("Alpha"))
+	check(E2.faction_enrollment_block("Alpha"), "a faction its hall cannot support refuses a new account")
+	map.infrastructure_limit = 1000
+	map.faction_limits()["Alpha"] = length(map.faction_roster("Alpha"))
 	check(E2.faction_enrollment_block("Alpha"), "a full faction refuses a new account")
 	check(!E2.enroll_in_faction("Alpha"), "a full faction does not enrol")
 	E1.stat = DEAD
@@ -261,11 +271,23 @@ var/global/probe_people = 0
 	map.faction_roster_rename("Alpha", "Alpha Two")
 	check(!map.faction_rosters()["Alpha"] && map.faction_limits()["Alpha Two"], "a rename carries the roster and limit")
 	map.faction_roster_rename("Alpha Two", "Alpha")
+	var/had_alpha = ("Alpha" in map.custom_civs)
+	if (!had_alpha)
+		map.custom_civs["Alpha"] = list(0, 0, 0, null, 0)
+	map.faction_colonies()["Alpha"] = list("civ:europe:Alpha", 5)
+	map.faction_colonies()["Junk"] = list("Alpha", 5)
+	check(map.colony_named_for("civ:europe:Alpha") == "Alpha" && !map.colony_named_for("civ:asia:Alpha"), "a colony is found by its parent")
+	map.faction_roster_rename("Alpha", "Alpha Two")
+	check(map.faction_colonies()["Alpha Two"] && !map.faction_colonies()["Alpha"], "a rename carries the colony")
+	map.faction_roster_rename("Alpha Two", "Alpha")
+	if (!had_alpha)
+		map.custom_civs -= "Alpha"
 	map.faction_rosters()["Alpha"]["Bad Key"] = list(1, 2)
 	map.faction_rosters()["Alpha"]["short"] = list(1)
 	map.faction_limits()["Beta"] = 0
 	map.recruitment_normalize()
 	check(!map.faction_rosters()["Alpha"]["Bad Key"] && !map.faction_rosters()["Alpha"]["short"] && !map.faction_limits()["Beta"], "malformed roster rows and limits are dropped")
+	check(map.faction_colonies()["Alpha"] && !map.faction_colonies()["Junk"], "a colony with a bad parent is dropped")
 
 	// Queue limit (3 in this fixture) and malformed state.
 	for (var/i = 1, i <= 4, i++)

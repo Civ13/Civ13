@@ -10,7 +10,7 @@
 	var/opened = FALSE
 	var/welded = FALSE
 	var/wall_mounted = FALSE //never solid (You can always pass over it)
-	var/health = 1000
+	health = 1000
 	var/breakout = FALSE //if someone is currently breaking out. mutex
 	var/storage_capacity = 2 * MOB_MEDIUM //This is so that someone can't pack hundreds of items in a locker/crate
 							  //then open it in a populated area to crash clients.
@@ -256,7 +256,7 @@
 		if (istype(W, /obj/item/weapon/key) && W.code != custom_code)
 			to_chat(user, "This key does not match this lock!")
 			return
-	if (istype(W, /obj/item/weapon/hammer) && user.a_intent == I_HARM)
+	if (is_tool(W, TOOL_HAMMER) && user.a_intent == I_HARM)
 		if (!opened)
 			to_chat(user, "You need to open the crate first.")
 		else

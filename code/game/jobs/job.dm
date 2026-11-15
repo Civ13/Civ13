@@ -31,10 +31,28 @@
 
 	var/enabled = TRUE
 
+	// Stats this job sets when equipped, in order, as "stat" = value. equip()
+	// calls apply_job_stats(H) where the setStat() lines used to be.
+	var/list/job_stats = null
+
+	// Items this job starts with, in order, as /item/type = slot. equip() calls
+	// equip_loadout(H) where the plain equip_to_slot_or_del() lines used to be.
+	var/list/job_loadout = null
+
 /datum/job/proc/give_random_name(var/mob/living/human/H)
 	H.name = H.species.get_random_english_name(H.gender)
 	H.real_name = H.name
 	return FALSE
+
+// Set every stat in job_stats, in the order listed (setStat() adds its own randomness).
+/datum/job/proc/apply_job_stats(var/mob/living/human/H)
+	for (var/stat in job_stats)
+		H.setStat(stat, job_stats[stat])
+
+// Equip every item in job_loadout, in the order listed.
+/datum/job/proc/equip_loadout(var/mob/living/human/H)
+	for (var/item_type in job_loadout)
+		H.equip_to_slot_or_del(new item_type(H), job_loadout[item_type])
 
 /datum/job/proc/get_keys()
 	return list()

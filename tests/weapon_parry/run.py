@@ -15,17 +15,25 @@ parser.add_argument('--negative-control', choices=['sword', 'twohanded'])
 args = parser.parse_args()
 repo = Path(__file__).resolve().parents[2]
 source = 'var/list/alldirs = list(1,2,4,8)\n'
+# Tool qualities (production defines and is_tool()); the probe's hatchet declares TOOL_HATCHET like misc.dm.
+source += (repo / 'code/__defines/tools.dm').read_text()
+source += '#define isitem(A) istype(A, /obj/item)\n/obj/item/var/tool_flags = 0\n/obj/item/weapon/material/hatchet/tool_flags = TOOL_HATCHET\n'
+source += re.search(r'^/proc/is_tool[^\n]*\n(?:\t[^\n]*\n)*', (repo / 'code/_helpers/tools.dm').read_text(), re.M).group()
+# Shared wear helper first (its WEAR_* defines): apply_wear() and the base check_health() are production.
+source += (repo / 'code/_helpers/item_wear.dm').read_text()
 for kind, filename in [('sword', 'swords'), ('twohanded', 'twohanded')]:
     text = (repo / f'code/game/objects/items/weapons/material/{filename}.dm').read_text()
     body = re.search(r'^/obj/item/weapon/material/' + kind + r'/handle_shield\([^\n]*\n(?:[^/\n][^\n]*\n|\n)*', text, re.M).group()
     if args.negative_control == kind:
-        assert '\t\tcheck_health()' in body
-        body = body.replace('\t\tcheck_health()\n', '')
+        # Control: the wear still lands but the break check is skipped.
+        assert 'apply_wear(' in body
+        body = body.replace('apply_wear(', 'wear_unchecked(')
     # Audio is an external-effect adapter; all decisions/wear bodies remain production.
     body = re.sub(r"'sound/[^']+'", 'null', body)
     source += body
 text = (repo / 'code/game/objects/items/weapons/material/material_weapons.dm').read_text()
-source += re.search(r'^/obj/item/weapon/material/proc/check_health[^\n]*\n(?:\t[^\n]*\n)*', text, re.M).group()
+source += re.search(r'^/obj/item/weapon/material/check_health[^\n]*\n(?:\t[^\n]*\n)*', text, re.M).group()
+source += '/obj/item/proc/wear_unchecked(amount, cause)\n\tif (cause == WEAR_BLOW)\n\t\tamount = plating_wear(amount)\n\thealth -= amount\n'
 # Plating wear scales parry damage; an unplated item loses the full amount.
 plating = (repo / 'code/modules/1713/electroplating.dm').read_text()
 source += 'var/global/list/plating_metals = list()\n/obj/item/var/plating = null\n'

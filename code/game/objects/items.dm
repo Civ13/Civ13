@@ -28,6 +28,8 @@
 	var/fertilizer_value = 0 // the value as fertilizer
 
 	var/sharpness = 0
+	var/tool_flags = 0 // TOOL_* qualities, see code/__defines/tools.dm and is_tool()
+	var/tool_material // material name of a plain tool that is not a material item, see tool_material_name()
 
 	var/heat_protection = FALSE //flags which determine which body parts are protected from heat. Use the HEAD, UPPER_TORSO, LOWER_TORSO, etc. flags. See setup.dm
 	var/cold_protection = FALSE //flags which determine which body parts are protected from cold. Use the HEAD, UPPER_TORSO, LOWER_TORSO, etc. flags. See setup.dm

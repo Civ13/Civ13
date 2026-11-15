@@ -9,14 +9,9 @@
 /proc/heat_source_solid_fuel_energy(obj/item/I)
 	if (!I || !I.loc)
 		return 0
-	if (istype(I, /obj/item/stack/ore/coal))
-		return 240 * I.amount
-	if (istype(I, /obj/item/stack/ore/charcoal))
-		return 80 * I.amount
-	if (istype(I, /obj/item/stack/material/wood) || istype(I, /obj/item/stack/material/woodplank) || istype(I, /obj/item/weapon/branch) || istype(I, /obj/item/stack/material/bamboo) || istype(I, /obj/item/stack/dung))
-		return 60 * I.amount
-	if (istype(I, /obj/item/stack/material/leaf))
-		return 30 * I.amount
+	var/value = solid_fuel_value(I, heat_source_fuel_rates)
+	if (value)
+		return value
 	if (I.flammable)
 		if (istype(I, /obj/item/stack))
 			var/obj/item/stack/S = I
@@ -45,52 +40,18 @@
 
 /obj/structure/heatsource/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (user.a_intent == I_HELP)
-		if (istype(W, /obj/item/weapon/wrench) || (istype(W, /obj/item/weapon/hammer)))
-			if (istype(W, /obj/item/weapon/wrench))
-				visible_message("<span class='warning'>[user] starts to [anchored ? "unsecure" : "secure"] \the [src] [anchored ? "from" : "to"] the ground.</span>")
-				playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
-				if (do_after(user,50,src))
-					visible_message("<span class='warning'>[user] [anchored ? "unsecures" : "secures"] \the [src] [anchored ? "from" : "to"] the ground.</span>")
-					anchored = !anchored
+		if (is_tool(W, TOOL_WRENCH) || (is_tool(W, TOOL_HAMMER)))
+			if (is_tool(W, TOOL_WRENCH))
+				if (timed_toggle_anchor(user))
 					return
-			else if (istype(W, /obj/item/weapon/hammer))
+			else if (is_tool(W, TOOL_HAMMER))
 				visible_message("<span class='warning'>[user] starts to deconstruct \the [src].</span>")
 				playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
 				if (do_after(user,50,src))
 					visible_message("<span class='warning'>[user] deconstructs \the [src].</span>")
 					qdel(src)
 					return
-		else if (istype(W, /obj/item/stack/ore/coal))
-			fuel += heat_source_solid_fuel_energy(W)
-			user.visible_message(SPAN_NOTICE("[user] places \the [W] in \the [src], refueling it."), SPAN_NOTICE("You place \the [W] in the [src], refueling it."))
-			qdel(W)
-			return
-		else if (istype(W, /obj/item/stack/ore/charcoal))
-			fuel += heat_source_solid_fuel_energy(W)
-			user.visible_message(SPAN_NOTICE("[user] places \the [W] in \the [src], refueling it."), SPAN_NOTICE("You place \the [W] in the [src], refueling it."))
-			qdel(W)
-			return
-		else if (istype(W, /obj/item/stack/material/wood) || istype(W, /obj/item/stack/material/woodplank))
-			fuel += heat_source_solid_fuel_energy(W)
-			user.visible_message(SPAN_NOTICE("[user] places \the [W] in \the [src], refueling it."), SPAN_NOTICE("You place \the [W] in the [src], refueling it."))
-			qdel(W)
-			return
-		else if (istype(W, /obj/item/weapon/branch))
-			fuel += heat_source_solid_fuel_energy(W)
-			user.visible_message(SPAN_NOTICE("[user] places \the [W] in \the [src], refueling it."), SPAN_NOTICE("You place \the [W] in the [src], refueling it."))
-			qdel(W)
-			return
-		else if (istype(W, /obj/item/stack/material/bamboo))
-			fuel += heat_source_solid_fuel_energy(W)
-			user.visible_message(SPAN_NOTICE("[user] places \the [W] in \the [src], refueling it."), SPAN_NOTICE("You place \the [W] in the [src], refueling it."))
-			qdel(W)
-			return
-		else if (istype(W, /obj/item/stack/material/leaf))
-			fuel += heat_source_solid_fuel_energy(W)
-			user.visible_message(SPAN_NOTICE("[user] places \the [W] in \the [src], refueling it."), SPAN_NOTICE("You place \the [W] in the [src], refueling it."))
-			qdel(W)
-			return
-		else if (istype(W, /obj/item/stack/dung))
+		else if (solid_fuel_kind(W) && heat_source_solid_fuel_energy(W))
 			fuel += heat_source_solid_fuel_energy(W)
 			user.visible_message(SPAN_NOTICE("[user] places \the [W] in \the [src], refueling it."), SPAN_NOTICE("You place \the [W] in the [src], refueling it."))
 			qdel(W)

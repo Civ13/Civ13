@@ -57,10 +57,8 @@
 		update_icon()
 		if (M == user)
 			do_html(M)
-	else if (istype(W,/obj/item/weapon/hammer))
-		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-		to_chat(user, (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>"))
-		anchored = !anchored
+	else if (is_tool(W, TOOL_HAMMER))
+		toggle_anchor(user)
 	else
 		..()
 
@@ -204,12 +202,12 @@
 
 					var/highcheck = high
 					var/area/target_area = get_area(target)
-					if (target && target_area.location == AREA_INSIDE)
+					if (target && target_area && target_area.location == AREA_INSIDE)
 						highcheck = FALSE
 
 					if (v >= max_distance)
 						hit = TRUE
-					else if (target.density && !highcheck)
+					else if (target && target.density && !highcheck)
 						hit = TRUE
 					else if (target && !(target in range(1, get_turf(src))))
 						if (!highcheck)

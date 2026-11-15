@@ -126,7 +126,7 @@ var/global/list/civ_generators = list()
 	to_chat(user, "Generator [enabled ? "enabled" : "off"].")
 
 /obj/structure/civ_generator/attackby(obj/item/W, mob/user)
-	if (istype(W, /obj/item/weapon/wrench))
+	if (is_tool(W, TOOL_WRENCH))
 		if (powersource)
 			to_chat(user, "Cut the cable first.")
 			return
@@ -203,3 +203,11 @@ var/global/list/civ_generators = list()
 		if (WEATHER_EXTREME) fraction *= 0.1
 	fraction *= barren_solar_factor(A) // dust storms on the barren surface
 	return round(peak_output * fraction)
+
+// Stack recipe guard: generators need their era, research and crafting skill 105.
+/datum/craft_guard/skill_gate/civ_generation
+	order = 10
+	message = "This generator requires Modern research and crafting skill 105."
+
+/datum/craft_guard/skill_gate/civ_generation/allowed(mob/living/human/H, result_type)
+	return civ_generation_can_build(H, result_type)

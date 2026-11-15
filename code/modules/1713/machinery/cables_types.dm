@@ -159,7 +159,7 @@
 		disconnect_cables()
 		anchored = FALSE
 /obj/item/connector/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/wrench))
+	if (is_tool(W, TOOL_WRENCH))
 		var/mob/living/human/H = user
 		if (!istype(H) || H.stat != CONSCIOUS || !H.can_use_hands() || !H.item_is_in_hands(W) || H.z != z || get_dist(H,src) > 1 || !isturf(loc))
 			return
@@ -167,9 +167,7 @@
 			for (var/obj/item/connector/other in loc)
 				if (other != src && other.anchored)
 					return
-		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-		to_chat(user, (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>"))
-		anchored = !anchored
+		toggle_anchor(user)
 		if (anchored)
 			connect_cables()
 		else

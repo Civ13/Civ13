@@ -6,6 +6,28 @@ Code: `code/modules/1713/train_platforms.dm`, wartime cars in
 and `icons/obj/vehicles/railway_gun.dmi`.
 Tests: `tests/train_platforms` (source contracts plus a native fixture).
 
+## Art
+
+Both sheets are drawn by `tests/sprites/create_trains.py` (helpers in
+`tests/sprites/trainkit.py`); change the art there and rerun it rather than
+editing the sheets by hand. `--check` verifies the committed sheets and
+`--preview <dir>` writes whole trains composed the way the game lays the tiles
+out. Everything is seen from straight above and lit from the upper left in
+every direction. `l`, `c` and `r` in a state name are the tile left of the
+heading, the rail tile and the tile right of it.
+
+- `end_f*` / `end_b*`: the headstock with buffers and coupling on a car's
+  first and last segment. `apply_layout()` adds them as overlays that follow
+  their tile's own direction. `outrigger` is added either side of a braced
+  gun car's end segments by `update_car_overlays()`.
+- `roof_<coach|steel|armor>_<f|m|b><l|c|r>`: roofs for the enclosed cars
+  (front row, middle rows, back row), each with a flat walkway down the rail
+  tile. Not displayed yet: showing them belongs to the train roof riding work.
+- `loco_<steam|diesel|armored>_<1-4><l|c|r>` and `roof_loco_<variant>_<l|c|r>`:
+  3x4 locomotive bodies and their cab roofs (steam and armoured cab on
+  segment 3, diesel cab on segment 1), used by the heavy locomotives
+  ([trains.md](trains.md#heavy-locomotives)).
+
 ## Shape
 
 A platform car is three tiles wide and `TRAIN_CAR_LENGTH` (4) tiles long. Each
@@ -44,8 +66,8 @@ down when a furnished kit is assembled and the edges (side, which edge, style).
 | dining | dining car | assembly_line | stove, sink, fridge, counter, two booths |
 | storage | storage car | assembly_line | cabinets and large crates behind compartment doors |
 | railgun | railway gun car | field_artillery | railway gun on the centre, outrigger lever, shell rack |
-| armored | armored wagon | automatic_weapons | armor plate with firing doors, four machine guns |
-| flak | flak car | automatic_weapons | low armor, two autocannons, ammunition crates |
+| armored | armored wagon | automatic_weapons | armor plate with firing doors; emplaced machine guns are forged separately |
+| flak | flak car | automatic_weapons | low armor, ammunition crates; autocannons are forged separately |
 
 ## Kits, assembly and dismantling
 
@@ -113,3 +135,14 @@ the bay, facing the same way, and couples it; furniture turns with it if the
 car faces another way than when it was stored. In an empty bay it rolls to the
 far end it faces. The tiles it needs (and the deck tiles either side for a
 platform car) must be straight bay track and clear.
+
+## Riding on the roof
+
+Coaches, sleepers, dining, storage and armored cars have a roof (`"roof"` in
+`train_car_layout()`); flatbeds and gun cars stay open. Their segment and side
+deck parts are deck surfaces for `vehicle_decks.dm`: climb up from beside the
+car, walk along the roof and across couplings to the next car, and jump off
+the side. A rider is carried like any other cargo, and `train_deck_clearance()`
+knocks riders off under a building roof. Roof pictures (`roof_<kind>_<row><col>`
+in `train_platforms.dmi`) are shown by `process_train_roofs()` to everyone
+except those inside that car, and only once the art exists.

@@ -232,6 +232,7 @@ var/knowledge_failures = 0
 	bench.analysis_tick()
 	knowledge_check(!journal.research_ticks("iron_tools"), "no progress without someone who knows the groundwork")
 	knowledge_check(scholar.can_learn_recipe_node("basic_tools") && scholar.learn_recipe_node("basic_tools"), "a root node can be learned without faction research")
+	knowledge_check(!scholar.can_learn_recipe_node("iron_smithing") && scholar.learn_recipe_node("bronze_working") && scholar.learn_recipe_node("iron_smithing"), "groundwork is learned in order: Iron Tools also needs Iron Smithing")
 	bench.analysis_tick()
 	knowledge_check(!journal.research_ticks("iron_tools") && node_discipline("iron_tools") == "engineering" && node_scholar_requirement("iron_tools") == 24, "no progress without the discipline's skill")
 	var/list/open_disciplines = list()
@@ -342,7 +343,12 @@ var/knowledge_failures = 0
 	knowledge_check(!crafting_recipe_allowed(novice, "/obj/structure/writing_desk") && scholar.learn_recipe_node("basic_furniture") && crafting_recipe_allowed(scholar, "/obj/structure/writing_desk"), "the writing desk is Basic Furniture")
 	// A new character's first fire needs no research (Val, 2026-11-13).
 	knowledge_check(!novice.knows_recipe_node("basic_furniture") && crafting_recipe_allowed(novice, "/obj/structure/oven/fireplace") && !get_recipe_node_req("/obj/structure/oven/fireplace"), "a novice can make a campfire")
+	// Beside someone who knows it, a prepared novice may make it as guided work
+	// (trade_learning.dm); alone, the subject is still needed.
+	var/turf/scholar_spot = scholar.loc
+	scholar.loc = null
 	knowledge_check(!crafting_recipe_allowed(novice, "/obj/structure/brazier"), "a brazier still needs Basic Furniture")
+	scholar.loc = scholar_spot
 	var/obj/structure/research_bench/knowledge_fixture/bench = new(locate(2,2,1))
 	var/obj/structure/bookcase/near = new(locate(3,2,1))
 	var/obj/structure/bookcase/far = new(locate(8,8,1))
@@ -625,7 +631,7 @@ var/knowledge_failures = 0
 	scholar.stats["stamina"][1] = 100
 	knowledge_check(diary.commit_written_chapter(scholar, "basic_tools", sheet) && diary.has_research_chapter("basic_tools") && QDELETED(sheet) && scholar.stats["stamina"][1] == 100 - BOOK_WRITE_STAMINA(0), "writing a known node uses a sheet and stamina")
 	var/obj/item/weapon/paper/spare = new(locate(6,6,1))
-	knowledge_check(!diary.commit_written_chapter(novice, "basic_tools", spare) && !diary.commit_written_chapter(scholar, "iron_smithing", spare), "only known, unwritten nodes can be written")
+	knowledge_check(!diary.commit_written_chapter(novice, "basic_tools", spare) && !diary.commit_written_chapter(scholar, "steelmaking", spare), "only known, unwritten nodes can be written")
 	scholar.stats["stamina"][1] = 1
 	var/obj/item/weapon/book/tired = new(locate(6,6,1))
 	knowledge_check(!tired.commit_written_chapter(scholar, "basic_tools", spare) && !QDELETED(spare), "too tired to write")

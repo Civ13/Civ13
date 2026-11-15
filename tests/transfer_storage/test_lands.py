@@ -156,6 +156,111 @@ class LandStageTests(unittest.TestCase):
         self.assertEqual(c.lands(now), read_lands(self.db, 'alpha', now))
         self.assertEqual({}, read_lands(os.path.join(self.tmp.name, 'missing.sqlite'), 'alpha', now))
 
+    def test_colonies_reach_the_coordinator_and_a_standing_one_suggests_colony(self):
+        colony = {'parent': 'civ:alpha:Wolves', 'name': 'Wolves', 'age_hours': 5, 'members': 3}
+        answer = call(self.urls['beta'], TOKENS['beta'], '/land/sample', {'players': 2, 'living': 3, 'colonies': [colony]})
+        self.assertTrue(answer.get('ok'), answer)
+        for bad in ([dict(colony, parent='Wolves')], [dict(colony, parent='civ:Alpha!:Wolves')],
+                    [dict(colony, members=-1)], [dict(colony, name='')], [dict(colony, age_hours=1.5)], 'Wolves'):
+            self.assertFalse(call(self.urls['beta'], TOKENS['beta'], '/land/sample',
+                                  {'players': 2, 'living': 3, 'colonies': bad}).get('ok'), bad)
+        self.coordinator.homes_once()
+        seen = self.lands('gamma')['lands']['beta']['colonies']
+        self.assertEqual([('civ:alpha:Wolves', 'Wolves', 3)], [(c['parent'], c['name'], c['members']) for c in seen])
+        c, now = self.coordinator, 1_800_000_000
+        c.set_land('beta', 'FRONTIER', False, 'val')
+        days = coordinator_module.COLONY_SECONDS // 3600
+
+        def sample(**kw):
+            row = dict(colony, **kw)
+            self.assertTrue(c.record_land_sample('beta', {'players': 1, 'living': 3, 'at': now, 'colonies': [row]}, now=now))
+            return c.lands(now)['beta']
+
+        self.assertEqual(now - 3600, sample(age_hours=1)['colonies'][0]['founded'])
+        self.assertIsNone(sample(age_hours=days - 1)['readiness']['suggest'], 'too young')
+        self.assertIsNone(sample(age_hours=days, members=coordinator_module.COLONY_MEMBERS - 1)['readiness']['suggest'],
+                          'too few members')
+        self.assertEqual('COLONY', sample(age_hours=days)['readiness']['suggest'])
+        c.set_land('beta', 'COLONY', False, 'val')
+        self.assertIsNone(c.lands(now)['beta']['readiness']['suggest'])
+        # A colony the world stops reporting is gone.
+        c.record_land_sample('beta', {'players': 1, 'living': 3, 'at': now, 'colonies': []}, now=now)
+        self.assertEqual([], c.lands(now)['beta']['colonies'])
+    def test_a_member_starts_at_its_colony_only_where_it_stands_and_the_land_allows(self):
+        wolves = 'civ:alpha:Wolves'
+        call(self.urls['beta'], TOKENS['beta'], '/land/sample', {'players': 1, 'living': 3, 'colonies': [
+            {'parent': wolves, 'name': 'Wolves', 'age_hours': 80, 'members': 3}]})
+
+        def ask(land, ckey, op, **kw):
+            return call(self.urls[land], TOKENS[land], '/account', dict({'ckey': ckey, 'op': op}, **kw))
+
+        self.assertFalse(ask('alpha', 'val', 'colony', region='beta', faction='Wolves').get('ok'))
+        self.assertFalse(ask('alpha', 'val', 'colony', region='alpha', faction=wolves).get('ok'))
+        # A frontier land takes no colony starts yet.
+        self.coordinator.set_land('beta', 'FRONTIER', False, 'val')
+        ask('alpha', 'val', 'colony', region='beta', faction=wolves)
+        self.coordinator.homes_once()
+        self.assertIsNone(self.coordinator.home('val'))
+        self.coordinator.set_land('beta', 'COLONY', True, 'val')
+        # Only the faction's own land vouches for its members.
+        ask('gamma', 'ann', 'colony', region='beta', faction=wolves)
+        ask('alpha', 'val', 'colony', region='beta', faction=wolves)
+        self.coordinator.homes_once()
+        self.assertIsNone(self.coordinator.home('ann'))
+        self.assertEqual('beta', self.coordinator.home('val'))
+        self.coordinator.homes_once()
+        claim = ask('beta', 'val', 'claim')['result']
+        self.assertEqual(('HOME', wolves), (claim['verdict'], claim['colony_grant']))
+        self.assertEqual('ELSEWHERE', ask('alpha', 'val', 'claim')['result']['verdict'])
+        self.assertTrue(ask('beta', 'val', 'colony_used', faction=wolves).get('ok'))
+        self.assertIsNone(ask('beta', 'val', 'claim')['result'].get('colony_grant'))
+        self.coordinator.homes_once()
+        self.coordinator.homes_once()
+        self.assertEqual([], self.stores['beta'].db.execute('SELECT * FROM colony_grant').fetchall())
+        self.assertEqual([], self.coordinator.db.execute('SELECT * FROM colony_grant').fetchall())
+
+    def test_a_colony_nobody_lives_in_for_days_pauses_its_start(self):
+        c, now = self.coordinator, 1_800_000_000
+        wolves = 'civ:alpha:Wolves'
+        c.set_land('beta', 'COLONY', False, 'val')
+        quiet = coordinator_module.COLONY_QUIET_SECONDS
+
+        def sample(members, at):
+            row = {'parent': wolves, 'name': 'Wolves', 'age_hours': 100, 'members': members}
+            self.assertTrue(c.record_land_sample('beta', {'players': 1, 'living': members, 'at': at, 'colonies': [row]}, now=at))
+            return c.lands(at)['beta']['colonies'][0]['paused']
+
+        self.assertFalse(sample(1, now))
+        self.assertFalse(sample(1, now + quiet - 60), 'quiet only since the first low sample')
+        self.assertTrue(sample(0, now + quiet))
+        self.assertFalse(c.colony_start_allowed('alpha', 'beta', wolves, now + quiet))
+        # Members back: the colony takes starts again at once.
+        self.assertFalse(sample(2, now + quiet + 60))
+        self.assertTrue(c.colony_start_allowed('alpha', 'beta', wolves, now + quiet + 60))
+        self.assertFalse(sample(1, now + quiet + 120), 'the clock starts again')
+
+    def test_a_player_starts_in_an_open_lands_wilds_from_their_home_only(self):
+        def ask(land, ckey, op, **kw):
+            return call(self.urls[land], TOKENS[land], '/account', dict({'ckey': ckey, 'op': op}, **kw))
+
+        ask('alpha', 'val', 'claim')
+        self.coordinator.homes_once()
+        self.assertEqual('alpha', self.coordinator.home('val'))
+        self.assertFalse(ask('alpha', 'val', 'start', region='alpha').get('ok'))
+        for stage, paused in (('COLONY', False), ('OPEN', True)):
+            self.coordinator.set_land('beta', stage, paused, 'val')
+            ask('alpha', 'val', 'start', region='beta')
+            self.coordinator.homes_once()
+            self.assertEqual('alpha', self.coordinator.home('val'), (stage, paused))
+        self.coordinator.set_land('beta', 'OPEN', False, 'val')
+        # Only the account's home land may send it elsewhere.
+        ask('gamma', 'val', 'start', region='beta')
+        self.coordinator.homes_once()
+        self.assertEqual('alpha', self.coordinator.home('val'))
+        ask('alpha', 'val', 'start', region='beta')
+        self.coordinator.homes_once()
+        self.assertEqual('beta', self.coordinator.home('val'))
+
 
 def read(path):
     with open(os.path.join(ROOT, path), encoding='utf-8') as f:
@@ -198,11 +303,20 @@ class LandStageSourceTests(unittest.TestCase):
         self.assertNotIn('/land/set', tell)
 
     def test_only_lived_in_kinds_take_a_stage_and_the_mainland_is_fixed(self):
-        self.assertIn('return kind in list("SURFACE", "OCEANIC", "UNDERGROUND", "OTHER")', self.land)
+        self.assertIn('return kind in list("SURFACE", "OCEANIC", "UNDERGROUND", "OTHER", "EXPEDITION")', self.land)
         stage = self.land[self.land.index('/proc/land_stage(id)'):]
         self.assertLess(stage.index('return "MAINLAND"'), stage.index('return entry ? entry["stage"] : "CLOSED"'))
         choices = self.land[self.land.index('/proc/land_stage_choices()'):]
         self.assertIn('if(id == shard_group.mainland)', choices[:choices.index('/proc/land_stage_admin_html()')])
+
+    def test_the_world_keeps_each_lands_colonies_and_colony_suggestions(self):
+        refresh = self.land[self.land.index('/proc/land_stages_refresh()'):]
+        refresh = refresh[:refresh.index('/proc/land_readiness_clean(')]
+        self.assertIn('"colonies" = land_colonies_clean(entry["colonies"])', refresh)
+        clean = self.land[self.land.index('/proc/land_readiness_clean('):]
+        self.assertIn('list("COLONY", "OPEN", "PAUSE", "RESUME")', clean[:clean.index('/proc/land_colonies_clean(')])
+        colonies = self.land[self.land.index('/proc/land_colonies_clean('):]
+        self.assertIn('colony_parent_valid(colony["parent"])', colonies[:colonies.index('/proc/land_suggestion_text(')])
 
 
 if __name__ == '__main__':

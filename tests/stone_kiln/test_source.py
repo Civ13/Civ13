@@ -92,19 +92,23 @@ class KilnSourceTests(unittest.TestCase):
 
     def test_shared_heat_source_energy_and_fuel_contract(self):
         body = self.heat.split('/proc/heat_source_solid_fuel_energy(', 1)[1].split('\n/obj/', 1)[0]
-        for path, value in (('/obj/item/stack/ore/coal', 'return 240 * I.amount'), ('/obj/item/stack/ore/charcoal', 'return 80 * I.amount'), ('/obj/item/stack/material/leaf', 'return 30 * I.amount')):
-            self.assertIn(path, body)
-            self.assertIn(value, body)
-        for path in ('/obj/item/stack/material/wood', '/obj/item/stack/material/woodplank', '/obj/item/weapon/branch', '/obj/item/stack/material/bamboo', '/obj/item/stack/dung'):
-            self.assertIn(path, body)
-        self.assertIn('return 60 * I.amount', body)
+        # Solid fuel values live in the shared table (code/modules/1713/solid_fuel.dm).
+        self.assertIn('solid_fuel_value(I, heat_source_fuel_rates)', body)
+        fuel = (ROOT / 'code/modules/1713/solid_fuel.dm').read_text()
+        table = fuel[fuel.index('heat_source_fuel_rates = list('):]
+        table = table[:table.index(')\n')]
+        for kind, value in (('coal', 240), ('charcoal', 80), ('leaf', 30), ('wood', 60), ('plank', 60),
+                            ('branch', 60), ('bamboo', 60), ('dung', 60)):
+            self.assertIn(f'"{kind}" = {value}', table)
         self.assertIn('if (I.flammable)', body)
         self.assertIn('return 25 * S.amount', body)
         self.assertIn('return 25\n', body)
         self.assertIn('return 30 * amount', self.heat)
         for fuel in ('petroleum', 'gasoline', 'diesel', 'pethanol', 'biodiesel', 'olive_oil', 'fat_oil'):
             self.assertIn('"' + fuel + '"', self.heat.split('/proc/heat_source_liquid_fuels()', 1)[1].split('\n/proc/', 1)[0])
-        self.assertGreaterEqual(self.heat.count('heat_source_solid_fuel_energy(W)'), 8)
+        # One shared-table branch for every solid fuel kind, plus the flammable catch-all.
+        self.assertIn('else if (solid_fuel_kind(W) && heat_source_solid_fuel_energy(W))', self.heat)
+        self.assertGreaterEqual(self.heat.count('heat_source_solid_fuel_energy(W)'), 3)
         self.assertIn('heat_source_solid_fuel_energy(I)', self.source)
         self.assertIn('heat_source_liquid_fuel_energy(available) / 60', self.source)
         self.assertIn('record_wood_fuel(I, credit)', self.source)

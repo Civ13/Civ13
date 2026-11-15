@@ -49,6 +49,7 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 		to_chat(user, SPAN_NOTICE("It contains [reagents.total_volume] units of liquid."))
 	else
 		to_chat(user, SPAN_NOTICE("It is empty."))
+	spark_warning(user)
 	if (!is_open_container())
 		to_chat(user, SPAN_NOTICE("the airtight lid seals it completely!"))
 
@@ -407,7 +408,7 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 	var/can_explode = FALSE
 	if (!reagents)
 		return ..(proj, def_zone)
-	if (reagents.has_reagent("gasoline",10) || reagents.has_reagent("diesel",30) || reagents.has_reagent("biodiesel",30) || reagents.has_reagent("ethanol",10) || reagents.has_reagent("petroleum",40) || reagents.has_reagent("gunpowder",30))
+	if (liquid_fuel_can_explode(reagents) || reagents.has_reagent("gunpowder",30))
 		can_explode = TRUE
 	if (!can_explode)
 		if (prob(30))
@@ -896,6 +897,7 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 	New()
 		..()
 		base_name = "steel barrel"
+		reagents.remove_reagent("diesel",250)
 		reagents.add_reagent("diesel",30)
 
 /obj/item/weapon/reagent_containers/glass/barrel/modern/biodiesel

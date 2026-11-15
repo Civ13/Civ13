@@ -275,7 +275,7 @@ var/global/datum/player_help_service/player_help_service = new
 // Traverse only carried equipment and storage, never implants or other mobs.
 // At most 24 items, 64 inspected entries and two container levels per question.
 /datum/player_help_service/proc/inventory_context(mob/living/human/H)
-	var/list/slots = list("left hand" = H.l_hand, "right hand" = H.r_hand, "back" = H.back, "mask" = H.wear_mask, "suit" = H.wear_suit, "uniform" = H.w_uniform, "shoes" = H.shoes, "belt" = H.belt, "gloves" = H.gloves, "head" = H.head, "left ear" = H.l_ear, "right ear" = H.r_ear, "ID slot" = H.wear_id, "left pocket" = H.l_store, "right pocket" = H.r_store)
+	var/list/slots = list("left hand" = H.l_hand, "right hand" = H.r_hand, "back" = H.back, "mask" = H.wear_mask, "suit" = H.wear_suit, "uniform" = H.w_uniform, "shoes" = H.shoes, "belt" = H.belt, "gloves" = H.gloves, "head" = H.head, "left ear" = H.l_ear, "right ear" = H.r_ear, "hip" = H.wear_id, "left pocket" = H.l_store, "right pocket" = H.r_store)
 	var/list/queue = list()
 	for (var/slot in slots)
 		var/obj/item/I = slots[slot]

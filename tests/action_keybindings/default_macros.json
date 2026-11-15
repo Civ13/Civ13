@@ -69,7 +69,8 @@
     {"id": "", "key": "CTRL+P", "command": "open-back-storage", "disabled": false},
     {"id": "", "key": "CTRL+K", "command": "open-belt-storage", "disabled": false},
     {"id": "", "key": "CTRL+SHIFT+I", "command": "open-clothing-storage", "disabled": false},
-    {"id": "", "key": "CTRL+B", "command": "Resist", "disabled": false}
+    {"id": "", "key": "CTRL+B", "command": "Resist", "disabled": false},
+    {"id": "", "key": "CTRL+SHIFT+C", "command": "craft-within-reach", "disabled": false}
   ],
   "hotkeymode": [
     {"id": "", "key": "Return", "command": ".winset \\\"input.focus=true\\\"", "disabled": false},
@@ -194,6 +195,8 @@
     {"id": "", "key": "CTRL+K", "command": "open-belt-storage", "disabled": false},
     {"id": "", "key": "SHIFT+I", "command": "open-clothing-storage", "disabled": false},
     {"id": "", "key": "CTRL+SHIFT+I", "command": "open-clothing-storage", "disabled": false},
-    {"id": "", "key": "CTRL+B", "command": "Resist", "disabled": false}
+    {"id": "", "key": "CTRL+B", "command": "Resist", "disabled": false},
+    {"id": "", "key": "SHIFT+C", "command": "craft-within-reach", "disabled": false},
+    {"id": "", "key": "CTRL+SHIFT+C", "command": "craft-within-reach", "disabled": false}
   ]
 }

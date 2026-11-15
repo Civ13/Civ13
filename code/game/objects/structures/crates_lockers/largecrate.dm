@@ -12,7 +12,7 @@
 	return
 
 /obj/structure/largecrate/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/crowbar))
+	if (is_tool(W, TOOL_CROWBAR))
 		new /obj/item/stack/material/woodplank(src)
 		var/turf/T = get_turf(src)
 		for (var/atom/movable/AM in contents)

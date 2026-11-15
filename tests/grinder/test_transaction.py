@@ -46,6 +46,32 @@ class Returned(Exception):
         self.value = value
 
 
+FUEL_SOURCE = (ROOT / 'code/modules/1713/solid_fuel.dm').read_text(encoding='utf-8')
+
+
+def solid_fuel_globals():
+    """Mirror /proc/solid_fuel_kind and /proc/solid_fuel_value from the shared tables."""
+    kinds = re.findall(r'(/[\w/]+) = "(\w+)"', re.search(r'solid_fuel_kinds = list\((.*?)\)\n', FUEL_SOURCE, re.S)[1])
+
+    def kind_of(item):
+        kind_path = getattr(item, 'type', '') or ''
+        return next((kind for path, kind in kinds if kind_path == path or kind_path.startswith(path + '/')), None)
+
+    tables = {}
+    for name, body in re.findall(r'var/global/list/(\w+_fuel_rates) = list\((.*?)\)\n', FUEL_SOURCE, re.S):
+        tables[name] = {kind: tuple(float(v) for v in value[5:-1].split(',')) if value.startswith('list(') else (float(value), 0.0)
+                        for kind, value in re.findall(r'"(\w+)" = (list\([^)]*\)|[\d.]+)', body)}
+
+    def value(item, table):
+        kind = kind_of(item)
+        if not kind or kind not in table:
+            return 0
+        total = item.amount * table[kind][0] + table[kind][1]
+        return int(total) if total == int(total) else total
+
+    return dict(tables, solid_fuel_kind=kind_of, solid_fuel_value=value)
+
+
 class Projection:
     def __init__(self, source=SOURCE, oven=OVEN_SOURCE):
         self.source = source + '\n' + STACK_SOURCE + '\n' + SHEETS_SOURCE + '\n' + oven + '\n' + ASH_SOURCE
@@ -57,6 +83,8 @@ class Projection:
                             persistence_save_in_progress=False,
                             persistence_active_operation=None,
                             persistence_load_recovery_required=False)
+        # Fuel values come from the shared tables in code/modules/1713/solid_fuel.dm.
+        self.globals |= solid_fuel_globals()
 
     def proc(self, path):
         match = re.search(r'^' + re.escape(path) + r'\([^\n]*\)\n(.*?)(?=^/|\Z)',
@@ -770,7 +798,7 @@ class AcquisitionProjection(Projection):
                         '\n\t\tvar/atom/O\n' + constructor)
         # Only the pre-existing circuit skill predicate is needed here; payment
         # and held secondary iron are separately source-backed below.
-        circuit_gate = stack.split('else if (recipe.result_type == /obj/item/stack/material/electronics)\n', 1)[1].split(
+        circuit_gate = stack.split('if (recipe.result_type == /obj/item/stack/material/electronics)\n', 1)[1].split(
             '\t\tif (!electronics_construction_iron', 1)[0]
         self.source += '\n/datum/acquisition/proc/circuit_skill()\n' + circuit_gate + '\treturn TRUE\n'
         self.globals |= dict(recipe_node_requirements=NodeRequirements(re.findall(
@@ -784,11 +812,15 @@ class AcquisitionProjection(Projection):
             exercise_can_build=lambda *_args: True, civ_telecom_can_build=lambda *_args: True,
             civ_generation_can_build=lambda *_args: True, car_workshop_build_refusal=lambda *_args: None,
             waterwheel_build_refusal=lambda *_args: None, offshore_rig_build_refusal=lambda *_args: None,
+            # Build guards (craft_guards.dm) never refuse this grinder recipe.
+            craft_guard_refusal=lambda *_args: None, CRAFT_GUARD_START=1, CRAFT_GUARD_FINISH=2,
+            isnull=lambda value: value is None,
             # One floor and one wall per tile: a machine takes neither slot.
             tile_build_refusal=lambda *_args: None,
             # Mirrors /proc/recipe_age_allowed: max era 8 (RECIPE_OPEN_ENDED_AGE) never retires a row.
             recipe_age_allowed=lambda max_age: max_age >= 8 or self.globals['map'].ordinal_age <= max_age,
-            construct=self.construct, handReturnMap={})
+            construct=self.construct, handReturnMap={},
+            secondary_forget=lambda *args: None, secondary_refund=lambda *args: None)
 
     def expression(self, text, receiver, local):
         # Known DM interpolation/ternary and dynamic-constructor adapters only.
@@ -857,7 +889,7 @@ class GrinderAcquisition(unittest.TestCase):
         self.assertFalse(p.menu(row_until_cold_war, done=True, age=8))
         self.assertFalse(p.menu(row, done=False))
         self.assertFalse(p.menu(row, done=False, legacy=999))
-        self.assertIn('352, 4, RESEARCH_MODE_PROTOTYPE, list("steam_power"), 5, /obj/item/stack/cable_coil', RESEARCH_SOURCE)
+        self.assertIn('352, 4, RESEARCH_MODE_PROTOTYPE, list("steam_power","galvanic_cells"), 5, /obj/item/stack/cable_coil', RESEARCH_SOURCE)
 
     def test_missing_or_wrong_exact_registration_is_detected(self):
         binding = '"' + CONSTRUCTED + '" = "electricity",'

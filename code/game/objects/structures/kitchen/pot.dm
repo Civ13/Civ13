@@ -59,12 +59,8 @@
 	if (meal_portions)
 		serve_meal(I, H)
 		return TRUE
-	if (istype(I, /obj/item/weapon/wrench))
-		visible_message("<span class='warning'>[H] starts to [anchored ? "unsecure" : "secure"] the pot [anchored ? "from" : "to"] the ground.</span>")
-		playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
-		if (do_after(H,50,src))
-			visible_message("<span class='warning'>[H] [anchored ? "unsecures" : "secures"] the pot [anchored ? "from" : "to"] the ground.</span>")
-			anchored = !anchored
+	if (is_tool(I, TOOL_WRENCH))
+		timed_toggle_anchor(H, 50, "the pot")
 		return
 	else if ((istype(I, /obj/item/weapon/reagent_containers/food/drinks) || istype(I, /obj/item/weapon/reagent_containers/glass)) && state == STATE_EMPTY)
 		if (!I.reagents)

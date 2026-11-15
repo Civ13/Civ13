@@ -21,22 +21,19 @@
 	min_positions = 1
 	max_positions = 2
 
+/datum/job/polish/warsaw/lead/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_MEDIUM_LOW, "swords" = STAT_MEDIUM_HIGH, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_MEDIUM_LOW)
+/datum/job/polish/warsaw/lead/job_loadout = list(
+	/obj/item/clothing/shoes/combat = slot_shoes,
+	/obj/item/clothing/under/ww1/trenchsuit/poland = slot_w_uniform,
+	/obj/item/clothing/head/helmet/ww/adrianm26 = slot_head,
+	/obj/item/clothing/gloves/thick/combat = slot_gloves,
+	/obj/item/weapon/radio/faction2 = slot_back,
+	/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars = slot_wear_id,
+	/obj/item/clothing/suit/storage/coat/japcoat2/trench = slot_wear_suit)
 /datum/job/polish/warsaw/lead/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/combat(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww1/trenchsuit/poland(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww/adrianm26(H), slot_head)
-//gloves
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/combat(H), slot_gloves)
-//back
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction2(H), slot_back)
-//id
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_wear_id)
-//coat
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/japcoat2/trench(H), slot_wear_suit)
+	equip_loadout(H)
 //weapon
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/randimpw = rand(1,3)
@@ -59,14 +56,7 @@
 	H.add_note("Role", "You are a <b>[title]</b>, As a Commander You are in charge of the uprising, command your comrades and lead them to victory!")
 
 	give_random_name(H)
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_MEDIUM_LOW)
-	H.setStat("swords", STAT_MEDIUM_HIGH)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	return TRUE
 
 /datum/job/polish/warsaw/sl
@@ -85,16 +75,16 @@
 	min_positions = 2
 	max_positions = 4
 
+/datum/job/polish/warsaw/sl/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_MEDIUM_LOW, "swords" = STAT_MEDIUM_HIGH, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_MEDIUM_LOW)
+/datum/job/polish/warsaw/sl/job_loadout = list(
+	/obj/item/clothing/shoes/combat = slot_shoes,
+	/obj/item/clothing/under/ww1/trenchsuit/poland = slot_w_uniform,
+	/obj/item/clothing/head/helmet/ww/adrianm26 = slot_head,
+	/obj/item/clothing/gloves/thick/combat = slot_gloves)
 /datum/job/polish/warsaw/sl/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/combat(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww1/trenchsuit/poland(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww/adrianm26(H), slot_head)
-//gloves
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/combat(H), slot_gloves)
+	equip_loadout(H)
 //back
 	if (prob(45))
 		H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction2(H), slot_back)
@@ -120,14 +110,7 @@
 	H.add_note("Role", "You are a <b>[title]</b>,a Squad Leader of the polish home army, Lead and organize your Squad according to the <b>Commander's</b> orders!!")
 
 	give_random_name(H)
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_MEDIUM_LOW)
-	H.setStat("swords", STAT_MEDIUM_HIGH)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	return TRUE
 
 /datum/job/polish/warsaw/medic
@@ -147,6 +130,10 @@
 	min_positions = 2
 	max_positions = 6
 
+/datum/job/polish/warsaw/medic/job_stats = list("strength" = STAT_MEDIUM_LOW, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_MEDIUM_LOW, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_HIGH)
+/datum/job/polish/warsaw/medic/job_loadout = list(
+	/obj/item/clothing/under/ww1/trenchsuit/poland = slot_w_uniform,
+	/obj/item/clothing/suit/storage/jacket/doctor = slot_wear_suit)
 /datum/job/polish/warsaw/medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -162,9 +149,7 @@
 	else if (randshoe2 == 5)
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/winterboots(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww1/trenchsuit/poland(H), slot_w_uniform)
-//coat
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/doctor(H), slot_wear_suit)
+	equip_loadout(H)
 //head
 	if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww/adrianm26medic(H), slot_head)
@@ -189,14 +174,7 @@
 
 	H.add_note("Role", "You are a <b>[title]</b>, a well trained medic,heal your comrades and make sure everyone is in a good state, Follow your <b>Squad Leader's</b> orders!")
 	give_random_name(H)
-	H.setStat("strength", STAT_MEDIUM_LOW)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_MEDIUM_LOW)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_HIGH)
+	apply_job_stats(H)
 	return TRUE
 
 /datum/job/polish/warsaw/armedmilita
@@ -213,6 +191,7 @@
 	min_positions = 10
 	max_positions = 45
 
+/datum/job/polish/warsaw/armedmilita/job_stats = list("strength" = STAT_MEDIUM_LOW, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_MEDIUM_LOW, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
 /datum/job/polish/warsaw/armedmilita/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -313,14 +292,7 @@
 	H.add_note("Role", "You are a <b>[title]</b>, A simple Milita of the polish home army, Follow your <b>Squad Leader's</b> orders!!")
 
 	give_random_name(H)
-	H.setStat("strength", STAT_MEDIUM_LOW)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_MEDIUM_LOW)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	return TRUE
 
 /datum/job/polish/warsaw/unarmedmilita
@@ -337,6 +309,7 @@
 	min_positions = 10
 	max_positions = 90
 
+/datum/job/polish/warsaw/unarmedmilita/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_NORMAL)
 /datum/job/polish/warsaw/unarmedmilita/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -400,14 +373,7 @@
 
 	H.add_note("Role", "You are a <b>[title]</b>, you are a inexperienced pole who decided to join the uprising,use teamwork and ambushes in order to destroy the fascists! Follow your <b>Squad Leader's</b> orders!")
 	give_random_name(H)
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_NORMAL)
+	apply_job_stats(H)
 	return TRUE
 
 /datum/job/polish/warsaw/greyrank
@@ -425,6 +391,7 @@
 	min_positions = 10
 	max_positions = 20
 
+/datum/job/polish/warsaw/greyrank/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_LOW, "dexterity" = STAT_LOW, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_LOW, "medical" = STAT_LOW)
 /datum/job/polish/warsaw/greyrank/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -472,14 +439,7 @@
 	H.add_note("Role", "You are a <b>[title]</b>, a polish teenager scout. you volunteered to fight for poland, Follow your <b>Squad Leader's</b> orders!")
 	H.add_note("Age", "Due to your young age you are overall less skilled than the regular soldier. Instead of directly fighting, you should assist with static weaponry, help out with logistics and distract enemies.")
 	give_random_name(H)
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_LOW)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_LOW)
-	H.setStat("medical", STAT_LOW)
+	apply_job_stats(H)
 	return TRUE
 
 /////////////////////////////////////////////Red army warsaw reinforcements////////////////////////////////////
@@ -502,22 +462,20 @@
 	min_positions = 1
 	max_positions = 2
 
+/datum/job/polish/warsaw/redarmypolsl/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_MEDIUM_HIGH)
+/datum/job/polish/warsaw/redarmypolsl/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots/soviet = slot_shoes,
+	/obj/item/clothing/under/ww2/soviet_officer = slot_w_uniform,
+	/obj/item/weapon/storage/belt/smallpouches/rusoff = slot_belt,
+	/obj/item/clothing/head/ww2/sov_officercap = slot_head,
+	/obj/item/weapon/gun/projectile/submachinegun/ppsh = slot_shoulder,
+	/obj/item/weapon/radio/faction2 = slot_back,
+	/obj/item/weapon/grenade/ww2/rgd33 = slot_l_store,
+	/obj/item/ammo_magazine/c762x25_ppsh = slot_r_store)
 /datum/job/polish/warsaw/redarmypolsl/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/soviet(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/soviet_officer(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/rusoff(H), slot_belt)
-
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/sov_officercap(H), slot_head)
-//back
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ppsh(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction2(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/grenade/ww2/rgd33(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c762x25_ppsh(H), slot_r_store)
+	equip_loadout(H)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 //armband webbing
@@ -531,15 +489,7 @@
 	give_random_name(H)
 
 	H.add_note("Role", "You are a <b>[title]</b>, you were sent here to help the polish, coordinate with them and defeat the germans. command your squad!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_MEDIUM_HIGH)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("machinegun", STAT_MEDIUM_HIGH)
+	apply_job_stats(H)
 
 	return TRUE
 
@@ -559,6 +509,7 @@
 	min_positions = 10
 	max_positions = 10
 
+/datum/job/polish/warsaw/redarmypol/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_NORMAL, "dexterity" = STAT_MEDIUM_LOW, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_MEDIUM_LOW)
 /datum/job/polish/warsaw/redarmypol/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -600,13 +551,5 @@
 	uniform.attackby(white, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a simple soldier from the People's Army of Poland. You were sent here to assist the troops. Follow your <b>Sergeant's</b> orders!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_MEDIUM_LOW)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("machinegun", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	return TRUE

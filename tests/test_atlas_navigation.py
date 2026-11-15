@@ -197,7 +197,8 @@ class AtlasNavigationTests(unittest.TestCase):
         sys.path.insert(0, str(ROOT/'scripts'))
         from atlas.interactions import add_interactions
         paths = ('code/modules/1713/production.dm', 'code/modules/ecology/wild_herbs.dm', 'code/modules/1713/herbalism.dm',
-                 'code/modules/1713/flint_mining.dm', 'code/modules/1713/stone_age_arms.dm', 'code/modules/1713/herb_garden.dm',
+                 'code/modules/1713/flint_mining.dm', 'code/modules/1713/processing_recipes.dm', 'code/modules/1713/obsidian.dm',
+                 'code/modules/1713/herb_garden.dm',
                  'code/game/objects/farming.dm', 'code/modules/reagents/reagent_containers/food/snacks/meat.dm',
                  'code/modules/projectiles/handloading.dm', 'code/modules/projectiles/_ammo_casing.dm',
                  'code/modules/research_tree/research_node.dm')

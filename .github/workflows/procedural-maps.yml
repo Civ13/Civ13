@@ -5,6 +5,10 @@ on:
     paths:
       - tools/procedural_maps/**
       - tests/procedural_maps/**
+      - tools/transfer_storage/world_chart.py
+      - scripts/terrain_heights.py
+      - scripts/river_flow.py
+      - scripts/river_flood.py
       - docs/procedural-maps.md
       - .github/workflows/procedural-maps.yml
   push:
@@ -12,13 +16,17 @@ on:
     paths:
       - tools/procedural_maps/**
       - tests/procedural_maps/**
+      - tools/transfer_storage/world_chart.py
+      - scripts/terrain_heights.py
+      - scripts/river_flow.py
+      - scripts/river_flood.py
       - .github/workflows/procedural-maps.yml
 permissions:
   contents: read
 jobs:
   offline:
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 5
+    timeout-minutes: 10
     strategy:
       fail-fast: false
       matrix:

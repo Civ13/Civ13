@@ -48,7 +48,7 @@
 
 /proc/river_current_direction(turf/T)
 	// Ice holds what lies on it; the water under it is not this turf's affair.
-	if (!istype(T, /turf/floor/beach/water) || istype(T, /turf/floor/beach/water/ice) || !map)
+	if (!is_liquid_water(T) || !map)
 		return 0
 	var/datum/river_flow/F = map.river_flow()
 	if (!F || F.z_level != T.z || T.x < 1 || T.x > world.maxx || T.y < 1 || T.y > world.maxy)
@@ -131,13 +131,23 @@ var/global/list/river_moved = list()
 			occupied = TRUE
 			step(R, direction)
 	var/sheltered = iscovered()
+	// A river in flood carries things two tiles a pulse; at low water, sometimes none.
+	var/steps = river_current_steps(src)
 	for (var/atom/movable/A in contents.Copy())
 		if (!river_carryable(A))
 			continue
 		occupied = TRUE
 		if (!sheltered && !(A in river_moved))
 			river_moved |= A
-			step(A, direction)
+			var/d = direction
+			for (var/i in 1 to steps)
+				var/turf/before = A.loc
+				step(A, d)
+				if (A.loc == before || !istype(A.loc, /turf/floor/beach/water))
+					break
+				d = river_current_direction(A.loc)
+				if (!d)
+					break
 	if (!occupied)
 		river_active_water -= src
 

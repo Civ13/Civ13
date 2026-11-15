@@ -19,7 +19,7 @@
 	var/result = "[R.result_type]"
 	if (crafting_recipe_manual_hint(H, result) || !crafting_recipe_allowed(H, result))
 		return FALSE
-	if (!civ_generation_can_build(H, R.result_type) || !exercise_can_build(H, R.result_type) || !civ_telecom_can_build(H, R.result_type))
+	if (!isnull(craft_guard_refusal(H, R, CRAFT_GUARD_MENU)))
 		return FALSE
 	if (stone_mold_type(R.result_type))
 		var/datum/stone_mold_carving/carving = new(src, H, R)

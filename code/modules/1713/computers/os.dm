@@ -51,7 +51,7 @@
 	var/datum/program/loadedprogram
 	if (href_list["program"])
 		var/keyn = text2num(href_list["program"])
-		if (programs.len && programs[keyn] && istype(programs[keyn], /datum/program))
+		if (keyn && keyn >= 1 && keyn <= programs.len && programs[keyn] && istype(programs[keyn], /datum/program))
 			loadedprogram = programs[keyn]
 			loadedprogram.origin = src
 			loadedprogram.user = user

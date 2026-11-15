@@ -60,7 +60,7 @@
 			return
 
 /obj/structure/closet/crate/wall_mailbox/attackby(var/obj/item/W as obj, mob/user as mob)
-	if (!istype(W, /obj/item/weapon/storage/envelope) && !istype(W, /obj/item/weapon/paper) && !istype(W, /obj/item/weapon/key) && !istype(W, /obj/item/weapon/storage/belt/keychain) && !istype(W, /obj/item/weapon/photo) && !istype(W, /obj/item/weapon/hammer))
+	if (!istype(W, /obj/item/weapon/storage/envelope) && !istype(W, /obj/item/weapon/paper) && !istype(W, /obj/item/weapon/key) && !istype(W, /obj/item/weapon/storage/belt/keychain) && !istype(W, /obj/item/weapon/photo) && !is_tool(W, TOOL_HAMMER))
 		to_chat(user, "<span class='notice'>You can't put it in the mailbox!</span>")
 		return TRUE
 	if (istype(W, /obj/item/weapon/paper) || istype(W, /obj/item/weapon/photo) || istype(W, /obj/item/weapon/storage/envelope))
@@ -83,7 +83,7 @@
 		return ..()
 	if (istype(W, /obj/item/weapon/storage/belt/keychain) && custom_code != 0)
 		return ..()
-	if (istype(W, /obj/item/weapon/hammer) && user.a_intent == I_HARM)
+	if (is_tool(W, TOOL_HAMMER) && user.a_intent == I_HARM)
 		return ..()
 	return FALSE
 
@@ -201,7 +201,7 @@
 
 /obj/item/weapon/storage/envelope/attackby(obj/item/W as obj, mob/user as mob)
 	if(!opened)
-		if(istype(W, /obj/item/weapon/material/kitchen/utensil/knife))
+		if(is_tool(W, TOOL_KNIFE))
 			if (do_after(usr, 15, src))
 				to_chat(usr, "You knife the envelope.")
 				opened = TRUE

@@ -16,13 +16,13 @@ def read(path):
 class FactionRecruitmentSource(unittest.TestCase):
     def test_controls_and_extracted_procs_are_unique(self):
         for control in (None, *run.CONTROLS):
-            for path in (run.RECRUITMENT, run.MEMBERSHIP, run.FACTIONS, run.RESEARCH, run.RENAME, run.ROSTER):
+            for path in (run.RECRUITMENT, run.MEMBERSHIP, run.FACTIONS, run.RESEARCH, run.RENAME, run.ROSTER, run.COLONY, run.PARTY):
                 run.read(path, control)
         self.assertIn('#include "code\\game\\mob\\groups\\faction_recruitment.dm"', read('civ13.dme'))
 
     def test_state_is_a_durable_map_field(self):
         contract = read('code/modules/persistence/durable_contract.dm')
-        self.assertIn('"faction_renames", "faction_recruitment"),', contract)
+        self.assertIn('"faction_renames", "faction_recruitment"', contract)
         self.assertIn('if(!("faction_recruitment" in schema)) result["faction_recruitment"] = list()', contract)
 
     def test_lifecycle_hooks(self):
@@ -93,7 +93,7 @@ class FactionMemberStartSource(unittest.TestCase):
         # Nothing in the lobby adds anyone to a roster.
         prompt = run.proc_text(self.start, '/mob/new_player/proc/faction_start_prompt(')
         self.assertNotIn('faction_roster_add', prompt)
-        self.assertIn('map.faction_start_choices(client.ckey)', prompt)
+        self.assertIn('map.faction_start_choices(account, colony_start_grant)', prompt)
         choices = run.proc_text(self.start, '/obj/map_metadata/proc/faction_start_choices(')
         self.assertIn('faction_on_roster(faction, account)', choices)
 
@@ -109,6 +109,29 @@ class FactionMemberStartSource(unittest.TestCase):
         late = run.proc_text(read('code/game/mob/new_player/new_player.dm'), '/mob/new_player/proc/AttemptLateSpawn(')
         self.assertLess(late.index('map_storage.allow_new_character(src)'), late.index('faction_start_prompt()'))
 
+    def test_colony_starts_need_a_grant_from_the_factions_own_land(self):
+        # Abroad: only factions founded here, only lands taking colony starts.
+        abroad = run.proc_text(self.start, '/obj/map_metadata/proc/faction_colony_choices(')
+        for need in ('colonies[faction]', 'faction_on_roster(faction, account)', 'list("COLONY", "OPEN")'):
+            self.assertIn(need, abroad)
+        prompt = run.proc_text(self.start, '/mob/new_player/proc/faction_start_prompt(')
+        self.assertIn('region_home_ask(account, "colony", pick[1], pick[2])', prompt)
+        self.assertIn('region_home_ask(account, "colony_used", null, colony_start_grant)', prompt)
+        # Here: a grant stands in for the roster only for its own colony.
+        for name in ('/mob/new_player/proc/faction_start_apply(', '/mob/new_player/proc/faction_start_destination('):
+            self.assertIn('map.colony_home_faction(colony_start_grant) == faction', run.proc_text(self.start, name))
+        admit = run.proc_text(read('code/modules/persistence/region_home.dm'), '/proc/region_home_admit(')
+        self.assertIn('lobby.colony_start_grant = colony_parent_valid(result["colony_grant"])', admit)
+        relocate = run.proc_text(read('code/game/jobs/job_controller.dm'), '/datum/controller/occupations/proc/relocate(')
+        self.assertLess(relocate.index('H.faction_start_turf'), relocate.index('uses_random_new_player_spawn'))
+
+    def test_open_land_wild_starts_skip_new_players_and_go_through_the_coordinator(self):
+        wilds = run.proc_text(self.start, '/mob/new_player/proc/wild_start_choices(')
+        for need in ('new_player_marks.is_new(client)', 'entry["stage"] != "OPEN"', 'entry["paused"]', 'land == shard_group.region'):
+            self.assertIn(need, wilds)
+        prompt = run.proc_text(self.start, '/mob/new_player/proc/faction_start_prompt(')
+        self.assertIn('region_home_ask(account, "start", land)', prompt)
+
     def test_stations_register_and_limits_are_configurable(self):
         station = read('code/game/mob/groups/recruitment_station.dm')
         self.assertIn('recruitment_stations |= src', station)
@@ -119,6 +142,122 @@ class FactionMemberStartSource(unittest.TestCase):
             self.assertIn(f'var/{key} = ', config)
             self.assertIn(key.upper() + ' ', text)
         self.assertIn('verbs += /mob/living/human/proc/set_faction_member_limit', read(run.FACTIONS))
+
+
+class ColonyCharterSource(unittest.TestCase):
+    """Colonies: factions travel by id, a leader plants a charter abroad."""
+
+    def setUp(self):
+        self.colony = read(run.COLONY)
+        self.travel = read('code/modules/persistence/region_travel.dm')
+
+    def test_included_craftable_and_registered(self):
+        dme = read('civ13.dme')
+        self.assertLess(dme.index('faction_start.dm"'), dme.index('colony_charter.dm"'))
+        self.assertIn('colony charter,/obj/structure/colony_charter,', read('config/crafting/material_recipes_global.txt'))
+        self.assertIn('"/obj/structure/colony_charter" = "basic_furniture"', read('code/modules/research_tree/research_node.dm'))
+        self.assertIn('colony_charters |= src', self.colony)
+        self.assertIn('colony_charters -= src', self.colony)
+
+    def test_travel_carries_the_faction_and_arrival_rejoins_it(self):
+        payload = run.proc_text(self.travel, '/mob/living/human/proc/region_travel_payload(')
+        self.assertIn('P["faction"] = faction_id', payload)
+        self.assertIn('P["faction_leader"] = 1', payload)
+        decode = run.proc_text(self.travel, '/proc/region_travel_decode(')
+        self.assertIn('!colony_parent_valid(P["faction"])) return null', decode)
+        self.assertIn('P["faction_leader"] != 1) return null', decode)
+        arrive = self.travel[self.travel.index('party_train_restore_faction(H, P["party"])'):]
+        self.assertLess(arrive.index('colony_arrival(H, P)'), arrive.index('region_raid_note_origin(H, P)'))
+        arrival = run.proc_text(self.colony, '/proc/colony_arrival(')
+        # Arrival goes through the one membership transition, so limits hold.
+        self.assertIn('H.enroll_in_faction(name)', arrival)
+        self.assertNotIn('civilization = name', arrival)
+
+    def test_planting_rechecks_after_the_prompt_and_only_counts_standing_charters(self):
+        attack = run.proc_text(self.colony, '/obj/structure/colony_charter/attack_hand(')
+        self.assertEqual(2, attack.count('plant_block(user)'))
+        self.assertLess(attack.index('WWinput('), attack.rindex('plant_block(user)'))
+        block = run.proc_text(self.colony, '/obj/structure/colony_charter/proc/plant_block(')
+        for need in ('user.colony_origin_leader', 'civ:[shard_group.region]:', 'faction_name_taken(name)'):
+            self.assertIn(need, block)
+        for name in ('/obj/map_metadata/proc/colony_home_faction(', '/obj/map_metadata/proc/colony_report('):
+            self.assertIn('colony_charter_of(', run.proc_text(self.colony, name))
+        self.assertIn('"colonies" = colonies', read('code/modules/persistence/land_stage.dm'))
+
+
+class FactionHallSource(unittest.TestCase):
+    """Val (2026-11-14): factions grow through infrastructure, not purchases."""
+
+    def setUp(self):
+        self.hall = read('code/game/mob/groups/faction_hall.dm')
+
+    def test_tiers_grow_with_the_age_and_the_limit_and_later_ones_stand_indoors(self):
+        import re
+        tiers = re.findall(r'list\("([a-z ]+)", (\d+), (\d+), (TRUE|FALSE), list\(', self.hall)
+        self.assertEqual(['council fire', 'longhouse', 'town hall', 'capitol'], [t[0] for t in tiers])
+        limits = [int(t[1]) for t in tiers]
+        ages = [int(t[2]) for t in tiers]
+        self.assertEqual(sorted(limits), limits)
+        self.assertEqual(sorted(ages), ages)
+        self.assertEqual(['FALSE', 'TRUE', 'TRUE', 'TRUE'], [t[3] for t in tiers])
+        self.assertIn('#define FACTION_HALL_BASE_LIMIT 10', self.hall)
+        self.assertLess(10, limits[0])
+        # Materials only: no coins, nothing bought from an NPC.
+        self.assertNotIn('coin', self.hall)
+
+    def test_limits_follow_halls_that_stand_and_leaders_and_members_act(self):
+        roster = read(run.ROSTER)
+        cap = run.proc_text(roster, '/obj/map_metadata/proc/faction_member_cap(')
+        self.assertIn('min(faction_member_limit_default(), faction_infrastructure_limit(faction))', cap)
+        self.assertIn('var/limit = faction_member_cap(faction)', run.proc_text(roster, '/obj/map_metadata/proc/faction_member_limit('))
+        tier = run.proc_text(self.hall, '/obj/map_metadata/proc/faction_hall_tier(')
+        self.assertIn('H.tier_stands(H.tier)', tier)
+        attack = run.proc_text(self.hall, '/obj/structure/faction_hall/attack_hand(')
+        self.assertIn('map.is_faction_leader(user', run.proc_text(self.hall, '/obj/structure/faction_hall/proc/designate_block('))
+        self.assertEqual(2, attack.count('designate_block(user)'))
+        self.assertLess(attack.index('WWinput('), attack.rindex('designate_block(user)'))
+        deliver = run.proc_text(self.hall, '/obj/structure/faction_hall/attackby(')
+        self.assertLess(deliver.index('user.civilization != faction'), deliver.index('S.use(amount)'))
+        self.assertLess(deliver.index('tier_block(t)'), deliver.index('S.use(amount)'))
+        verb = run.proc_text(read('code/game/mob/groups/faction_start.dm'), '/mob/living/human/proc/set_faction_member_limit(')
+        self.assertIn('map.faction_member_cap(faction)', verb)
+        self.assertIn('faction hall seat,/obj/structure/faction_hall,', read('config/crafting/material_recipes_global.txt'))
+        self.assertIn('faction_halls |= src', self.hall)
+        self.assertIn('faction_halls -= src', self.hall)
+
+
+class NationSource(unittest.TestCase):
+    """Val (2026-11-14): factions band together into nations they can leave,
+    and nations grow through infrastructure."""
+
+    def setUp(self):
+        self.nation = read('code/game/mob/groups/nation.dm')
+
+    def test_assembly_tiers_raise_capacity_like_the_coordinator(self):
+        import re
+        NATION_CAPACITY = [int(n) for n in re.search(r'NATION_CAPACITY = \(([\d, ]+)\)', read('tools/transfer_storage/nations.py')).group(1).split(',')]
+        tiers = re.findall(r'list\("([a-z ]+)", (\d+), (\d+), (TRUE|FALSE), list\(', self.nation)
+        self.assertEqual(['meeting ground', 'assembly hall', 'parliament'], [t[0] for t in tiers])
+        self.assertEqual(list(NATION_CAPACITY[1:]), [int(t[1]) for t in tiers])
+        self.assertEqual(sorted(int(t[2]) for t in tiers), [int(t[2]) for t in tiers])
+        self.assertNotIn('coin', self.nation)
+
+    def test_assemblies_are_not_faction_halls(self):
+        new = run.proc_text(self.nation, '/obj/structure/faction_hall/nation_assembly/New(')
+        self.assertLess(new.index('..()'), new.index('faction_halls -= src'))
+        self.assertIn('nation_assemblies |= src', new)
+        self.assertIn('nation assembly seat,/obj/structure/faction_hall/nation_assembly,', read('config/crafting/material_recipes_global.txt'))
+
+    def test_only_home_leaders_act_and_choices_recheck(self):
+        menu = run.proc_text(self.nation, '/mob/living/human/proc/nation_menu(')
+        self.assertIn('map.is_faction_leader(src, faction)', menu)
+        self.assertIn('nation_home_faction(faction)', menu)
+        self.assertLess(menu.index('WWinput('), menu.rindex('map.is_faction_leader(src, faction)'))
+        found = run.proc_text(self.nation, '/mob/living/human/proc/nation_found(')
+        self.assertLess(found.index('WWinput(partner'), found.index('nation_ask('))
+        self.assertIn('nation_name_ok(name)', found)
+        self.assertIn('nation_rename_faction(old_name, new_name)', read('code/game/mob/groups/faction_rename.dm'))
+        self.assertIn('nations_refresh_due()', read('code/modules/persistence/shard_group.dm'))
 
 
 if __name__ == '__main__':

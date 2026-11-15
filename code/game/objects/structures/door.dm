@@ -19,7 +19,7 @@
 	var/hardness = TRUE
 	var/basic_icon = "metal"
 
-	var/health = 400
+	health = 400
 	var/initial_health = 400
 	not_movable = TRUE
 	not_disassemblable = TRUE
@@ -283,6 +283,7 @@
 			to_chat(user, "You attach the " + W.name + " to the door!")
 			src.name = name + "("+W.name+")"
 			//LATER WE WILL ADD A SWITCH TO CHECK FOR EACH LOCKTYPE APPROPRIATELY
+			src.haslock = TRUE
 			src.locktype = "KEYPAD"
 			src.lockicon = "icons/obj/doors/locks.dmi"
 			src.lockstate = "keypad_door_overlay"
@@ -392,9 +393,9 @@
 	if (istype(W, /obj/item/weapon/key) || istype(W, /obj/item/weapon/storage/belt/keychain))
 		if (jail_key_interact(W, user))
 			return
-	else if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
+	else if (istype(W,/obj/item/weapon) && !is_tool(W, TOOL_WRENCH) && !is_tool(W, TOOL_HAMMER)) //No weapons can harm me! If not weapon and not a wrench.
 		to_chat(user, "You pound the bars uselessly!")
-	else if (istype(W,/obj/item/weapon/wrench) || istype(W,/obj/item/weapon/hammer))//if it is a wrench
+	else if (is_tool(W, TOOL_WRENCH) || is_tool(W, TOOL_HAMMER))//if it is a wrench
 		if (state == 0)
 			to_chat(user, "You need to open the door first.")
 		else
@@ -434,9 +435,9 @@
 	if (istype(W, /obj/item/weapon/key) || istype(W, /obj/item/weapon/storage/belt/keychain))
 		if (jail_key_interact(W, user))
 			return
-	else if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/weldingtool)) //No weapons can harm me! If not weapon and not a wrench.
+	else if (istype(W,/obj/item/weapon) && !is_tool(W, TOOL_WELDER)) //No weapons can harm me! If not weapon and not a wrench.
 		to_chat(user, "You pound the bars uselessly!")
-	else if (istype(W,/obj/item/weapon/weldingtool))//if it is a welding tool
+	else if (is_tool(W, TOOL_WELDER))//if it is a welding tool
 		if (state == 0)
 			to_chat(user, "You need to open the door first.")
 		else

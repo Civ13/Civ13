@@ -41,7 +41,7 @@
 	return pipe_connected ? reagents : null
 
 /obj/item/weapon/reagent_containers/glass/barrel/modern/attackby(obj/item/I, mob/living/user)
-	if (!istype(I, /obj/item/weapon/wrench))
+	if (!is_tool(I, TOOL_WRENCH))
 		return ..()
 	if (pipe_connected)
 		playsound(loc, 'sound/items/Ratchet.ogg', 50, TRUE)

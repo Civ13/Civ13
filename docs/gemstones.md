@@ -20,7 +20,7 @@ Code: `code/modules/1713/gemstones.dm`, `code/modules/1713/belt_pouches.dm`.
 
 Leather belt pouch (1 leather, Basic Toolmaking) and cloth drawstring pouch
 (1 cloth, Weaving). Six slots, small items only, no containers. Worn in the
-belt slot, carried in a pocket, or hung from a garment or a leather belt (at
+belt slot or the Hip slot, carried in a pocket, or hung from a garment or a leather belt (at
 most two per garment or belt; the second hangs on the left hip).
 
 Belts: the leather belt (1 leather) is worn in the belt slot and takes up to
@@ -36,6 +36,91 @@ item that can be worn in the belt slot, other than bags, clothing and guns.
 A worn belt with several attachments opens the attachment strip
 (`code/_onclick/hud/attachment_strip.dm`).
 
+## Lanyards and wrist loops
+
+`code/modules/1713/lanyards.dm`. Each tether fits only what it was made for
+(history reviewed by Fable, 2026-11-14):
+
+| Item | Material, research | Fits | Worn |
+| --- | --- | --- | --- |
+| Wrist thong | 1 leather, Basic Toolmaking | hatchet, machete, knife, club, mace, hammer | bound to the tool |
+| Sword knot | 1 leather, Steel Blades | one-handed swords | bound to the sword |
+| Neck cord | 1 rope, Weaving | knife, whistle, key | outfit (decor) |
+| Fob chain | 1 brass, Optics & Instruments | compass, key | outfit or leather belt |
+| Pistol lanyard | 1 rope, Cartridge Firearms | revolver, pistol, whistle, compass, knife | outfit (decor) |
+| Retention lanyard | 1 plastic, Synthetic Fabrics | pistol, knife, compass, key, whistle, small tools | outfit or leather belt |
+
+A wrist loop is bound to a tool held in the other hand (use the loop). The
+Wrist Loop verb slips the hand in or out (1 s / 0.5 s). While looped, a
+dropped or knocked away tool returns to the hand with a short regrip delay.
+A lanyard ties the item stowed on it; when that item is dropped it goes back
+into the lanyard instead of the ground. Untie Lanyard (1 s) frees it.
+Tethered items cannot be thrown. Putting the item in another container or
+another person's hands, or the holder dying, releases the tether. Only
+boolean vars are kept on the item (`wrist_loop`, `wrist_looped`,
+`lanyard_tied`), so saves hold no tether pointers. One lanyard per garment.
+Long guns, bows, spears, flintlock pistols and two-handed weapons are left
+out on purpose. Cutting a lanyard from someone else is not implemented.
+
+## Gem science
+
+`code/modules/1713/gem_science.dm`, built in phases from a history review by
+Fable (2026-11-14).
+
+Jewel bearings (1704): chisel in the active hand and hammer in the other on a
+cut ruby or sapphire gives 4 jewel bearings, on a garnet 2 cheaper ones
+(Optics & Instruments). Two bearings fitted into a pocket watch, wrist watch
+or compass make it `jewelled`. Plain watches read only to the quarter hour
+(`watch_reading()`); jewelled ones read the exact minute. A jewelled compass
+has `max_offset` 2 and reads in 6 s.
+
+Diamond grit: a hammer on a rough diamond gives 3 grit (Regalia), and a
+diamond that splits on a flaw leaves 1 grit. The lapping wheel (4 iron,
+Workshops) takes 3 charges per grit, up to 30. Cutting a stone next to a
+charged wheel takes half the time, uses a charge and never splits the stone.
+A steel sheet on a wheel with 6 charges makes a diamond drill bit (Machined
+Tools); fitted to the base industrial drill it adds one ore per cycle.
+Diamond is kept off the jackhammer because it shatters under percussion.
+
+Quartz and the crystal set: rough quartz joins the mining gem roll (weight
+30) and cuts like the other stones. Chisel and hammer on lead ore splits out
+a galena crystal (Electricity); used with 10 cable in the other hand it makes
+a crystal radio set, a receive-only radio that needs no power. Cut quartz
+used with a tin sheet in the other hand makes a quartz crystal unit
+(Assembly Line). Fitted to a radio it adds `crystal_freq`, a second
+frequency the radio always listens to (`radio_crystal_matches`).
+Fitted to a wrist watch (Digital Computing) it sets `quartz_movement`, which
+reads exact time like a jewelled watch.
+
+Reading stones, emery and garnet paper: chisel and hammer on cut quartz
+makes a reading stone (Glassworking); held in either hand it lets you read
+and write at half the usual minimum light (`reading_light_problem`). A ruby
+or sapphire that splits on a flaw leaves a pinch of emery. Emery charges a
+lapping wheel separately (`emery_charges`) and only serves stones softer
+than corundum; ruby, sapphire and diamond still need diamond grit. A rough
+garnet used with paper in the other hand makes 4 sheets of garnet paper
+(Factories). A sheet used with a worn wooden material tool or weapon in the
+other hand restores a quarter of its health for 1 max health, like the
+grindstone does for steel. (Speeding wood crafting would need stack.dm, whose
+projection tests are pinned.) Jewel microscope lenses were left out:
+the game's microscope is a modern electron microscope.
+
+Synthetic ruby: using 4 emery while standing beside a lit furnace grows a
+synthetic ruby boule (Electricity, Verneuil 1902). Chisel and hammer on a
+boule gives 10 jewel bearings. A boule used on a lapping wheel with 2 diamond
+charges makes a ruby rod (Consumer Electronics), and a ruby rod fitted into
+field binoculars turns them into a laser rangefinder (ruby laser, 1960). The
+boule is not a gemstone, so it carries no gem trade value.
+
+Gem testing (`gem_test_attempt`, data in `gem_test_data`): a cut quartz point
+used on a stone is a scratch test (Regalia) that only tells harder than quartz
+from about as hard. The jeweller's loupe (1 brass, Optics & Instruments) maps
+a rough stack's inclusions (`inclusions_mapped`), halving its flaw chance. The
+gem scale (2 brass, Optics & Instruments) reads specific gravity, species,
+carats and value. The gem refractometer (3 brass, Electricity, 1905) reads a
+cut stone's refractive index, cannot read diamond, and marks a flame-grown
+boule as synthetic.
+
 ## Art
 
 - `icons/obj/pocket_stronghold_gems.dmi`: ruby, sapphire (cut and rough) and
@@ -44,3 +129,7 @@ A worn belt with several attachments opens the attachment strip
 - `icons/obj/gemstones.dmi`, `icons/obj/belt_pouches.dmi`,
   `icons/mob/belt_pouches.dmi`: drawn for Civ13 by placing pixels from
   `tests/sprites/create_gemstones.py` and `tests/sprites/create_belt_pouches.py`.
+- `icons/obj/lanyards.dmi`, `icons/mob/lanyards.dmi`: drawn for Civ13 from
+  `tests/sprites/create_lanyards.py`.
+- `icons/obj/gem_science.dmi`: drawn for Civ13 from
+  `tests/sprites/create_gem_science.py`.

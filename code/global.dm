@@ -29,7 +29,7 @@ var/join_motd = null
 var/datum/nanomanager/nanomanager		= new() // NanoManager, the manager for Nano UIs.
 
 
-var/season = "SPRING"
+var/season = "SPRING" // SEASON_SPRING; this file is compiled before the defines
 var/game_hour = 0
 
 var/list/chicken_count = list()

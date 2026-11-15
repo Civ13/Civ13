@@ -40,7 +40,7 @@ The carrier lies bow north in the same fixture so the light plane, which is buil
 
 The probe's map metadata answers `is_node_done()` from a global toggle, so the research gate can be exercised without a faction.
 
-- **Research:** the Naval Aviation node needs Powered Flight and Submarines; the shipyard office recipe is gated on it.
+- **Research:** the Naval Aviation node needs Powered Flight and Wagons & Ships; the shipyard office recipe is gated on it.
 - **Office:** without research the placement refusal names the research and the missing cable but not the sea; with research only the cable. A carrier fits bow east or west on the sea north-east of the office; bow north it would run off the map; fit checks lay nothing down. Laying down costs 400 steel, 20 glass and 40 cable and leaves the ship anchored with empty bunkers; an office whose sea is under another ship lays nothing down.
 - **Bunkers:** a dry ship stops with the reason; pouring a barrel takes its diesel and petroleum and leaves the water; the bunkers hold 1000 units; a hop at full ahead burns 6 and the last hop stops the ship.
 - **Chart:** heading, telegraph, fuel, hops left, the map edge or rock ahead with the distance, and the last refusal.
@@ -138,6 +138,21 @@ every hop, and wiring that stays joined aboard while a cable to the shore
 parts.
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/built_hull_probe.dm 300
+
+## Upper decks on built hulls (`upper_deck_probe.dm`)
+
+A roofed-over built hull (`code/modules/craft/built_body.dm`): fifteen roofs
+over fifteen planks, each with its floor on the level above, and a ladder
+between the decks; the tiller reads out both decks; a stray floor over the
+water is not hers. A step east carries a sailor and a pail on the upper deck,
+leaves no floor behind or doubled, keeps every roof paired with its floor and
+the ladder joined, and carries the indoor areas under her roofs. A floor or
+something solid in the air ahead stops her with the reason; coming about swings
+the upper deck whole; crossing the sea is refused. A 200-tile hull roofed over
+is past the 300-tile deck cap and refused; with half its roofs taken down
+(which takes their floors) it steps four times, and the step time is logged.
+
+    python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/upper_deck_probe.dm 300
 
 ## Sea chart and harbours (`chart_probe.dm`)
 
@@ -290,3 +305,25 @@ The fixture is sand ashore (x 1-10) and deep sea beyond, with the boathouse at 1
 - **Small boats:** a raft and an outrigger in the slip are offered; the outrigger is put away and a full office (three boats) refuses the raft.
 - **Taking out:** a rock or another boat in her tiles keeps a boat in; the Teal comes back on the same six tiles with her cargo where it lay and is a boat afloat again; the submarine comes back with her name, battery and all 15 hull frames; the outrigger comes back where it lay.
 - **Wrench:** an office with boats stored does not turn; an empty one turns its slip to the next corner clockwise.
+
+## Ships between worlds (`crossing_probe.dm`)
+
+```powershell
+./tests/resource_extraction/run.ps1 -ByondBin '<pinned BYOND bin directory>' -Probe tests/naval_carrier/crossing_probe.dm
+```
+
+- **Packing:** a 12-tile hull with a rigged mast, a crate of 20 planks and a crowbar packs into a record; a thing that cannot be rebuilt keeps her in port and is named.
+- **Records:** unknown types, a repeated tile and an overfull stack are refused; a crew payload with her decodes, one with a bad ship does not, and a long payload without a ship is refused.
+- **Leaving:** stripped, nothing of her is left and the water is open sea again; planks floating beside her stay.
+- **Arriving:** an anchorage is found off a chosen edge (past the sand to deep water); she is built named, at anchor, 12 tiles bow east, with the mast rigged, the crate holding exactly 20 planks and the crowbar where it lay; she is not built twice on the same water; a crew member of her voyage comes aboard, and another voyage's carrier builds her own ship.
+
+## Voyages on the world chart (`voyage_probe.dm`)
+
+```powershell
+./tests/resource_extraction/run.ps1 -ByondBin '<pinned BYOND bin directory>' -Probe tests/naval_carrier/voyage_probe.dm
+```
+
+- **The crew's chart:** a crew sails for their faction; the seen mask shows only that owner's tiles; only a seen land with a coast is offered, with its size, biome and voyage time from this world's pinned tile; scouting turns round within the chart.
+- **Setting out:** no voyages outside a region group or from a land across the sea; she sets out at anchor, and the tiller tells how long is left.
+- **Landfall:** with no answer, while the land is being opened, or while its world does not answer, she waits off the coast; she turns back after waiting too long or at once when the course is refused.
+- **A land across the sea:** voyages sail on from the land's own chart tile; a settled land is on every chart and the land she lies off is not offered; settling needs a mooring post and 3 beds slept in by different people within 40 tiles of it; a settled land, or the mainland, is never undecided.

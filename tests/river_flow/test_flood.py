@@ -1,0 +1,231 @@
+"""Offline checks for the river flood sidecar (scripts/river_flood.py)."""
+import importlib.util
+import sys
+import tempfile
+import unittest
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / 'scripts'))
+SPEC = importlib.util.spec_from_file_location('river_flood', ROOT / 'scripts/river_flood.py')
+flood = importlib.util.module_from_spec(SPEC)
+SPEC.loader.exec_module(flood)
+
+L = '/turf/floor/grass'
+F = '/turf/floor/beach/water'
+S = '/turf/floor/beach/water/deep/saltwater'
+SIDECARS = {'nomads_gaia': 2, 'nomads_europe': 1, 'nomads_jungle': 2, 'nomads_desert': 2, 'nomads_asia': 1}
+MODULE = (ROOT / 'code/modules/1713/river_flood.dm').read_text(encoding='utf-8')
+
+
+def valley(width=70, height=9):
+    """A river along the middle row running east into a sea column, with
+    banks that rise one level per tile, a ridge at x 20 on the north side,
+    and a puddle in the south-west corner."""
+    rows = [[L] * width for _ in range(height)]
+    heights = [[0] * width for _ in range(height)]
+    mid = height // 2
+    for y in range(height):
+        for x in range(width):
+            heights[y][x] = abs(y - mid) * 1.5
+        rows[y][width - 1] = S
+        heights[y][width - 1] = 0
+    for x in range(2, width - 1):  # rises 2 tiles from the west edge
+        rows[mid][x] = F
+        heights[mid][x] = 0
+    for y in range(mid):
+        heights[y][20] = 6  # a ridge across the north bank
+    rows[height - 1][0] = F  # one-tile puddle: not a reach
+    heights[height - 1][0] = 0
+    return rows, heights
+
+
+class BuildTest(unittest.TestCase):
+    def setUp(self):
+        self.rows, self.heights = valley()
+        self.reaches, self.labels, self.thresholds, self.hollows, self.hollow_ids = flood.build(self.rows, self.heights)
+
+    def test_reaches_drain_downstream_in_id_order(self):
+        # 67 tiles of river cut by the 32-tile grid: three reaches.
+        self.assertEqual(len(self.reaches), 3)
+        for r in self.reaches:
+            self.assertTrue(r['down'] == 0 or r['down'] > r['id'], r)
+        self.assertEqual([r['down'] for r in self.reaches], [2, 3, 0])
+        self.assertEqual(self.reaches[-1]['upstream'], sum(r['area'] for r in self.reaches))
+
+    def test_thresholds_follow_the_ground(self):
+        mid = 4
+        self.assertIsNone(self.thresholds[mid][5], 'river water has no threshold')
+        self.assertEqual(self.thresholds[mid - 1][5], 1.5)
+        self.assertEqual(self.thresholds[mid - 3][5], 4.5)
+        # Behind the ridge the river must top the ridge first.
+        self.assertEqual(self.thresholds[mid - 1][19], 1.5)
+        self.assertEqual(self.thresholds[0][10], 6)
+        # The puddle is land as far as floods go.
+        self.assertEqual(self.labels[8][0], 1)
+
+    def test_land_by_the_sea_belongs_to_no_reach(self):
+        self.assertEqual(self.labels[0][68], 0)
+        self.assertIsNone(self.thresholds[0][68])
+
+    def test_round_trip(self):
+        out = Path(tempfile.mkdtemp()) / 'valley.flood.txt'
+        flood.write_flood(out, 70, 9, 1, self.reaches, self.labels, self.thresholds, self.hollows, self.hollow_ids)
+        self.assertEqual(flood.read_flood(out), (70, 9, 1, self.reaches, self.labels, self.thresholds))
+        self.assertEqual(flood.read_hollows(out), (self.hollows, self.hollow_ids))
+        text = out.read_text(encoding='ascii')
+        self.assertTrue(text.startswith('civ13-river-flood 2\nsize 70 9\nz 1\nreaches 3\nr 1 2 '))
+
+
+def bowl():
+    """A river along the south edge and, north of it, a basin two levels deep
+    inside a rim at level 3, on ground that falls toward the river."""
+    width, height = 12, 10
+    rows = [[L] * width for _ in range(height)]
+    heights = [[1.0] * width for _ in range(height)]
+    for x in range(width):
+        rows[height - 1][x] = F
+        heights[height - 1][x] = 0
+    for y in range(1, 6):
+        for x in range(3, 9):
+            heights[y][x] = 3.0
+    for y in range(2, 5):
+        for x in range(4, 8):
+            heights[y][x] = 1.0
+    heights[3][5] = 1.5
+    return rows, heights
+
+
+class HollowTest(unittest.TestCase):
+    def test_a_closed_basin_is_a_hollow(self):
+        reaches, labels, thresholds, hollows, ids = flood.build(*bowl())
+        self.assertEqual(len(hollows), 1)
+        h = hollows[0]
+        self.assertEqual((h['spill'], h['bottom'], h['area']), (3.0, 1.0, 12))
+        # 11 tiles at the bottom, one half a level up, then nothing until the rim.
+        self.assertEqual(h['hist'], [11, 1, 0, 0])
+        self.assertGreaterEqual(h['catchment'], h['area'])
+        self.assertEqual(ids[3][5], 1)
+        self.assertEqual(ids[1][3], 0, 'the rim is not part of the hollow')
+        self.assertEqual(ids[7][0], 0)
+
+    def test_version_one_files_have_no_hollows(self):
+        reaches, labels, thresholds, hollows, ids = flood.build(*bowl())
+        out = Path(tempfile.mkdtemp()) / 'bowl.flood.txt'
+        flood.write_flood(out, 12, 10, 1, reaches, labels, thresholds, hollows, ids)
+        lines = out.read_text(encoding='ascii').split('\n')
+        cut = lines.index('hollows 1')
+        old = ['civ13-river-flood 1'] + lines[1:cut]
+        out.write_text('\n'.join(old) + '\n', encoding='ascii')
+        self.assertEqual(flood.read_hollows(out)[0], [])
+
+
+class CommittedSidecarTest(unittest.TestCase):
+    def test_sidecars_match_their_maps(self):
+        from terrain_heights import read_dmm, read_heights
+        for name, z in SIDECARS.items():
+            with self.subTest(name):
+                _, _, levels = read_dmm(ROOT / f'maps/nomads/{name}.dmm')
+                _, _, heights = read_heights(ROOT / f'maps/heights/{name}.txt')
+                built = flood.build(levels[z], heights[z])
+                path = ROOT / f'maps/heights/{name}.flood.txt'
+                width, height, fz, reaches, labels, thresholds = flood.read_flood(path)
+                self.assertEqual(fz, z)
+                self.assertEqual((reaches, labels, thresholds), built[:3], f'regenerate {name}.flood.txt (docs/river-flood.md)')
+                self.assertEqual(flood.read_hollows(path), built[3:], f'regenerate {name}.flood.txt (docs/river-flood.md)')
+                self.assertLessEqual(len(reaches), flood.MAX_REACHES)
+
+    def test_every_map_with_flow_has_a_flood_file(self):
+        for path in (ROOT / 'maps/heights').glob('*.flow.txt'):
+            self.assertTrue(path.with_name(path.name.replace('.flow.txt', '.flood.txt')).exists(), path.name)
+
+
+class WiringTest(unittest.TestCase):
+    def test_game_reads_the_tool_format(self):
+        self.assertIn(f'"{flood.HEADER}"', MODULE)
+        self.assertIn(f'#define RIVER_FLOOD_ID_DIGITS "{flood.ID_DIGITS}"', MODULE)
+        self.assertIn('/proc/flood_depth_at(turf/T)', MODULE)
+
+    def test_ticks_with_the_weather_and_never_walks_tiles(self):
+        weather = (ROOT / 'code/processes/weather.dm').read_text(encoding='utf-8')
+        self.assertIn('\tweather_systems_step()\n\triver_flood_step()\n', weather)
+        tick = MODULE.split('/datum/river_flood/proc/step_minute()', 1)[1].split('\n/', 1)[0]
+        self.assertNotIn('block(', tick)
+        self.assertNotIn('in world', tick)
+        self.assertNotIn('label_rows', tick)
+
+    def test_effects_read_the_flood_where_code_already_runs(self):
+        read = lambda rel: (ROOT / rel).read_text(encoding='utf-8')
+        self.assertIn('standing_on_snow = standing_water_delay(F)', read('code/game/mob/mob_movement.dm'))
+        self.assertIn('. = standing_water_delay(F)', read('code/modules/agent_control/agent_movement.dm'))
+        self.assertIn('var/water_depth = standing_water_delay(F)', read('code/modules/1713/movement_check.dm'))
+        self.assertIn('if (flood_douses(src))', read('code/modules/1713/oil_fires.dm'))
+        self.assertIn('flood_douses(src)', read('code/game/objects/structures/kitchen/oven.dm'))
+        self.assertIn('return flood_depth_at(T) > 0', read('code/modules/1713/weather_footwear.dm'))
+        self.assertIn('var/steps = river_current_steps(src)', read('code/modules/1713/river_flow.dm'))
+        self.assertIn('handle_drowning()\n\t\tflood_life_tick()', read('code/game/mob/living/carbon/human/human_life.dm'))
+        self.assertIn('flood_band == FLOOD_BAND_DEEP', read('code/game/mob/living/carbon/human/human_helpers.dm'))
+        self.assertIn('if (flood_plant_step())\n\t\treturn', read('code/game/objects/farming.dm'))
+        self.assertIn('W.flood_foul()', read('code/game/objects/structures/watercloset.dm'))
+        self.assertIn('|| flood_soaks(T)', read('code/modules/1713/rain_gear.dm'))
+        for rel in ('code/game/objects/structures/tree_climbing.dm', 'code/game/turfs/wall_decay.dm', 'code/modules/ecology/pollution.dm'):
+            self.assertIn('flood_mark_examine(src, user)', read(rel), rel)
+
+    def test_drawn_states_exist_in_the_sheet(self):
+        from PIL import Image
+        meta = Image.open(ROOT / 'icons/effects/floodwater.dmi').info['Description']
+        states = {line.split('"')[1]: None for line in meta.splitlines() if line.startswith('state = ')}
+        for band in range(1, 5):
+            self.assertIn(f'flood{band}', states)
+            self.assertIn(f'flood_edge{band}', states)
+        for band in range(2, 5):
+            self.assertIn(f'flood_step{band}', states)
+        effects = (ROOT / 'code/modules/1713/flood_effects.dm').read_text(encoding='utf-8')
+        self.assertIn('"flood[band]"', effects)
+        self.assertIn('"flood_edge[band]", d', effects)
+        self.assertIn('"flood_step[band]", d', effects)
+
+    def test_ground_changes_mark_windows(self):
+        ground = (ROOT / 'code/modules/1713/flood_ground.dm').read_text(encoding='utf-8')
+        self.assertIn('flood_ground_changed(src) // Floodwater follows the new ground', (ROOT / 'code/modules/1713/road_tamping.dm').read_text(encoding='utf-8'))
+        self.assertIn('\tF.process_windows()\n\tF.step_minute()', MODULE)
+        self.assertIn('var/threshold = F.effective_threshold(T)', MODULE)
+        # Walls hook New(); barriers/sandbag.dm's New() does not call ..(), so this file must come after it.
+        dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
+        self.assertLess(dme.index('barriers\\sandbag.dm"'), dme.index('1713\\flood_ground.dm"'))
+        window = ground.split('/datum/river_flood/proc/recompute_window(', 1)[1].split('\n/', 1)[0]
+        self.assertNotIn('in world', window)
+        self.assertNotIn('heapq', window)
+        self.assertIn('#define FLOOD_WINDOWS_PER_TICK 6', ground)
+
+    def test_floor_items_only_where_players_look(self):
+        effects = (ROOT / 'code/modules/1713/flood_effects.dm').read_text(encoding='utf-8')
+        view = effects.split('/client/proc/flood_refresh_view()', 1)[1].split('\n/', 1)[0]
+        self.assertIn('flood_items_at(T, band)', view)
+        self.assertEqual(effects.count('flood_items_at('), 2, 'floor items are only visited from the viewer scan')
+
+    def test_crops_drown_unless_they_grow_in_water(self):
+        effects = (ROOT / 'code/modules/1713/flood_effects.dm').read_text(encoding='utf-8')
+        step = effects.split('/obj/structure/farming/plant/proc/flood_plant_step()', 1)[1].split('\n/', 1)[0]
+        self.assertIn('!flood_tolerant && band >= FLOOD_BAND_KNEE', step)
+        self.assertIn('set_dead("drowned")', step)
+        self.assertIn('D.soil_nutrition + FLOOD_SILT_NUTRITION', step)
+        self.assertIn('/obj/structure/farming/plant/rice\n\tflood_tolerant = TRUE', effects)
+
+    def test_drawing_stays_in_the_viewers_window(self):
+        effects = (ROOT / 'code/modules/1713/flood_effects.dm').read_text(encoding='utf-8')
+        view = effects.split('/client/proc/flood_refresh_view()', 1)[1].split('\n/', 1)[0]
+        self.assertNotIn('in world', view)
+        self.assertNotIn('range(', view)
+        self.assertIn('FLOOD_VIEW_MOVE', view)
+        self.assertIn('flood_drawn_revision == flood_draw_revision', view)
+
+    def test_state_is_saved_and_cache_is_not(self):
+        self.assertIn('key == "river_flood_cache" || key == "river_flood_loaded"', MODULE)
+        self.assertIn('var/tmp/datum/river_flood/river_flood_cache', MODULE)
+        contract = (ROOT / 'code/modules/persistence/durable_contract.dm').read_text(encoding='utf-8')
+        self.assertIn('"river_flood_state"', contract)
+
+
+if __name__ == '__main__':
+    unittest.main()

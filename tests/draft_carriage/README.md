@@ -11,6 +11,14 @@ papers and the name, getting off, a dead horse and a destroyed carriage.
 It also checks the hand carts in `code/game/objects/structures/hand_cart.dm`:
 an empty cart drags more easily than a crate, the load makes it harder up to
 a cap, and the handles turn toward the puller and stay put on a blocked pull.
+It also checks hitched carts in `code/game/objects/structures/cart_hitch.dm`:
+a cart trails a horse into the tile it leaves, slows it by its drag over the
+horse's pull, refuses hand pulls while hitched and comes loose when left far
+behind or when the horse dies; behind a carriage it rolls centred behind the
+rear, adds its weight to the team's load, follows steps and swings round on
+turns, and a turn with no room for it is refused. A seated passenger takes the
+reins from a knocked-out driver, or when the driver has died. The harness
+overlay for the team's rank and the lap rugs over seated people are counted.
 
     python3 tests/ecology_spawning/run_linux.py . tests/draft_carriage/probe.dm 300
 

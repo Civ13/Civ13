@@ -102,6 +102,22 @@ until they come back, where they stood or beside their bed. See
   wait there while their players are at an event. The launcher shows it on the
   region's row, and marks the event region.
 
+## Expedition slots
+
+A region of kind `EXPEDITION` is a slot for one land across the sea at a time,
+built from a world-chart template ([docs/expedition-slots.md](../../docs/expedition-slots.md)).
+
+```sh
+python shard_group.py --config group.json expedition-land --region far1 --template tile.json --key 24,16
+python shard_group.py --config group.json update-offline --region far1   # compiles the land
+python shard_group.py --config group.json expedition-archive --region far1
+python shard_group.py --config group.json expedition-status
+```
+
+- A slot cannot be the mainland or the relay gate; trails never lead there and
+  the Regions panel offers no Join link for it.
+- Lands and archived saves are kept under `<root>/expeditions/`; nothing is deleted.
+
 ## The live group (Gaia)
 
 Gaia itself can be a region: set `"live": true` on its group, which allows

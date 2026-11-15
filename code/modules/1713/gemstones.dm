@@ -11,6 +11,7 @@
 // Weights for the stone found in a gem pocket. Rough diamonds keep their own
 // roll in the ore table (docs/mining-drop-balance.md).
 var/global/list/gem_pocket_weights = list(
+	/obj/item/stack/ore/gem/quartz = 30, // gem_science.dm
 	/obj/item/stack/ore/gem/garnet = 30,
 	/obj/item/stack/ore/gem/amethyst = 25,
 	/obj/item/stack/ore/gem/topaz = 20,
@@ -108,10 +109,10 @@ var/global/list/gem_pocket_weights = list(
 // Chisel in the active hand, hammer in the other. Cuts one stone per action.
 // Returns TRUE when the click was a cutting attempt (handled), else FALSE.
 /obj/item/stack/proc/cut_gemstone(obj/item/W, mob/user, cut_type)
-	if (!cut_type || !istype(W, /obj/item/weapon/chisel) || !ishuman(user))
+	if (!cut_type || !is_tool(W, TOOL_CHISEL) || !ishuman(user))
 		return FALSE
 	var/mob/living/human/H = user
-	if (!istype(H.l_hand, /obj/item/weapon/hammer) && !istype(H.r_hand, /obj/item/weapon/hammer))
+	if (!is_tool(H.l_hand, TOOL_HAMMER) && !is_tool(H.r_hand, TOOL_HAMMER))
 		to_chat(H, SPAN_WARNING("You need a hammer in your other hand to use a chisel."))
 		return TRUE
 	if (!H.may_do_after)
@@ -120,7 +121,10 @@ var/global/list/gem_pocket_weights = list(
 		return TRUE
 	H.visible_message(SPAN_NOTICE("[H] starts cutting \a [singular_name]."), SPAN_NOTICE("You start cutting \a [singular_name]."))
 	playsound(get_turf(src), 'sound/effects/pickaxe.ogg', 40, TRUE)
-	if (!do_after(H, GEM_CUT_TIME / max(0.5, H.getStatCoeff("dexterity")), src))
+	// A charged lapping wheel beside the cutter halves the time and takes
+	// the stone down without splitting it (gem_science.dm).
+	var/obj/structure/lapping_wheel/lap = gem_lap_near(H, cut_type)
+	if (!do_after(H, GEM_CUT_TIME / max(0.5, H.getStatCoeff("dexterity")) / (lap ? 2 : 1), src))
 		return TRUE
 	if (QDELETED(src) || amount < 1 || W.loc != H || H.get_active_hand() != W || !(loc == H || (isturf(loc) && get_dist(src, H) <= 1)))
 		return TRUE
@@ -129,8 +133,11 @@ var/global/list/gem_pocket_weights = list(
 	if (!use(1))
 		return TRUE
 	H.adaptStat("crafting", 1)
-	if (prob(GEM_CUT_FLAW_CHANCE / max(0.5, H.getStatCoeff("crafting"))))
-		to_chat(H, SPAN_WARNING("The [stone_name] cracks along a hidden flaw and splinters into worthless chips."))
+	if (lap && !QDELETED(lap) && lap.use_charge(cut_type))
+		to_chat(H, SPAN_NOTICE("You finish the stone on \the [lap]."))
+	else if (prob(GEM_CUT_FLAW_CHANCE / max(0.5, H.getStatCoeff("crafting")) / (inclusions_mapped ? 2 : 1)))
+		var/leftover = gem_flaw_leftovers(T, cut_type)
+		to_chat(H, SPAN_WARNING("The [stone_name] cracks along a hidden flaw and splinters into [leftover ? leftover : "worthless chips"]."))
 		return TRUE
 	var/obj/item/stack/gemstone/G = new cut_type(T)
 	to_chat(H, SPAN_NOTICE("You cut \a [G.singular_name]."))
@@ -148,32 +155,38 @@ var/global/list/gem_pocket_weights = list(
 	amount = 1
 	flammable = FALSE
 	value = 10
+	var/gem_colour = "#ffffff" // tint for pendant settings (necklaces.dm)
 
 /obj/item/stack/gemstone/garnet
 	name = "garnets"
 	singular_name = "garnet"
+	gem_colour = "#8b1a2b"
 	icon_state = "garnet"
 
 /obj/item/stack/gemstone/amethyst
 	name = "amethysts"
 	singular_name = "amethyst"
+	gem_colour = "#9b59d0"
 	icon_state = "amethyst"
 
 /obj/item/stack/gemstone/topaz
 	name = "topazes"
 	singular_name = "topaz"
+	gem_colour = "#e8a33a"
 	icon_state = "topaz"
 	value = 12
 
 /obj/item/stack/gemstone/emerald
 	name = "emeralds"
 	singular_name = "emerald"
+	gem_colour = "#2fa35a"
 	icon_state = "emerald"
 	value = 18
 
 /obj/item/stack/gemstone/sapphire
 	name = "sapphires"
 	singular_name = "sapphire"
+	gem_colour = "#2a5fd6"
 	icon = 'icons/obj/pocket_stronghold_gems.dmi'
 	icon_state = "sapphire"
 	value = 18
@@ -181,6 +194,7 @@ var/global/list/gem_pocket_weights = list(
 /obj/item/stack/gemstone/ruby
 	name = "rubies"
 	singular_name = "ruby"
+	gem_colour = "#d0263a"
 	icon = 'icons/obj/pocket_stronghold_gems.dmi'
 	icon_state = "ruby"
 	value = 21
@@ -188,6 +202,7 @@ var/global/list/gem_pocket_weights = list(
 /obj/item/stack/gemstone/diamond
 	name = "diamonds"
 	singular_name = "diamond"
+	gem_colour = "#d8f4ff"
 	icon = 'icons/obj/pocket_stronghold_gems.dmi'
 	icon_state = "diamond"
 	value = 30
@@ -196,6 +211,7 @@ var/global/list/gem_pocket_weights = list(
 
 /obj/item/clothing
 	var/set_gem = null // singular name of the cut stone set into it, if any
+	var/set_gem_colour = null // its colour, for items that show the stone
 
 /obj/item/clothing/attackby(obj/item/I, mob/user)
 	if (istype(I, /obj/item/stack/gemstone) && ishuman(user))
@@ -218,10 +234,13 @@ var/global/list/gem_pocket_weights = list(
 		return FALSE
 	var/stone_name = G.singular_name
 	var/stone_value = G.value
+	var/stone_colour = G.gem_colour
 	if (!G.use(1))
 		return FALSE
 	set_gem = stone_name
+	set_gem_colour = stone_colour
 	value += stone_value
+	update_icon()
 	to_chat(H, SPAN_NOTICE("You set \a [stone_name] into \the [src]."))
 	return TRUE
 

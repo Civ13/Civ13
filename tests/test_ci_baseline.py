@@ -166,7 +166,8 @@ class BaselinePolicyTests(unittest.TestCase):
         self.assertEqual(suite['files'], ('tests/gaia_host/test_gaia_host.py', 'tests/gaia_host/test_shard_group.py',
                                           'tests/gaia_host/test_fresh_world.py',
                                           'tests/gaia_host/test_doorman.py', 'tests/gaia_host/test_wait_group.py',
-                                          'tests/gaia_host/test_relay.py', 'tests/gaia_host/test_mobile_host.py'))
+                                          'tests/gaia_host/test_relay.py', 'tests/gaia_host/test_mobile_host.py',
+                                          'tests/gaia_host/test_expedition_slots.py'))
         for path in suite['files'] + suite['paths'] + suite['shared_paths'] + ('scripts/gaia-host/gaia_host.py',
                                                                                'scripts/gaia-host/doorman.py', 'scripts/shard-group/shard_group.py',
                                                                                'scripts/windows/host/wait_group.py', 'scripts/windows/host/deploy.bat'):
@@ -1065,6 +1066,7 @@ class BaselinePolicyTests(unittest.TestCase):
                              'code/modules/materials/material_sheets.dm',
                              'code/game/objects/structures/kitchen/oven.dm',
                              'code/modules/1713/wood_ash_compost.dm',
+                             'code/modules/1713/solid_fuel.dm',
                              'code/game/objects/structures.dm',
                              'code/game/objects/items/stacks/civ_recipes.dm',
                              'code/modules/research_tree/research_node.dm',

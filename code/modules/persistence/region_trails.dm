@@ -44,6 +44,8 @@ var/global/list/region_trail_next_request = list()
 		if(peer["kind"] == "ORBIT") continue
 		// The tutorial is reached from the lobby, never on foot.
 		if(peer["kind"] == "TUTORIAL") continue
+		// Lands across the sea are reached only by ship (expedition_land.dm).
+		if(peer["kind"] == "EXPEDITION") continue
 		choices["[peer["name"]] ([id])"] = id
 	return choices
 
@@ -311,3 +313,11 @@ var/global/list/region_trail_next_request = list()
 	desc = "A worn trail along the narrow land. It leads on into the northern continent."
 	destination = "northamerica"
 	requested_destination = "northamerica"
+
+// Stack recipe guard: trail markers are built at the edge of the land (checked once, before the build).
+/datum/craft_guard/region_trail
+	order = 40
+
+/datum/craft_guard/region_trail/refusal(mob/living/human/H, datum/stack_recipe/R, phase)
+	var/message = region_trail_build_refusal(H, R.result_type)
+	return message ? SPAN_WARNING(message) : null

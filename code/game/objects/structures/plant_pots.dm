@@ -4,7 +4,7 @@
 	icon_state = null
 	desc = "If you can see this, ping a @cotributor on the discord or a @sergeant"
 	anchored = FALSE
-	var/health = 20
+	health = 20
 	density = TRUE
 	opacity = FALSE
 	flammable = FALSE
@@ -438,11 +438,9 @@
 
 
 /obj/structure/plant_pot/attackby(obj/O as obj, mob/living/human/user as mob)
-	if (istype(O,/obj/item/weapon/wrench))
-		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-		to_chat(user, (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>"))
-		anchored = !anchored
-	else if (istype(O,/obj/item/weapon/hammer) || istype(O,/obj/item/weapon/hammer/modern))
+	if (is_tool(O, TOOL_WRENCH))
+		toggle_anchor(user)
+	else if (is_tool(O, TOOL_HAMMER) || istype(O,/obj/item/weapon/hammer/modern))
 		playsound(loc, 'sound/weapons/smash.ogg', 75, 1)
 		to_chat(user, "<span class='notice'>You begin smashing apart \the [src].</span>")
 		if (do_after(user,25,src))
@@ -480,13 +478,9 @@
 	visible_message("<span class='warning'>\The [src] is hit by \the [proj.name]!</span>")
 	try_destroy()
 
-/obj/structure/plant_pot/proc/try_destroy()
-	if (health <= 0)
-		if (stored_unit)
-			release_stored()
-		visible_message("<span class='danger'>[src] is broken into pieces!</span>")
-		qdel(src)
-		return
+/obj/structure/plant_pot/on_break()
+	if (stored_unit)
+		release_stored()
 
 /obj/structure/plant_pot/attack_hand(mob/user as mob)
 	if (stored_unit)

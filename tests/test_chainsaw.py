@@ -55,7 +55,7 @@ class ChainsawTests(unittest.TestCase):
         attack = wild[wild.index('/obj/structure/wild/attackby('):]
         gate = attack[:attack.index('\n', attack.index('if (istype(W,'))]
         self.assertIn('istype(W,/obj/item/weapon/material/hatchet)', gate)
-        self.assertIn('30*HT.chopping_speed', attack[:attack.index('/obj/structure/wild/proc/try_destroy')])
+        self.assertIn('30*HT.chopping_speed', attack[:attack.index('/obj/structure/wild/on_break')])
 
     def test_heavy_two_handed_power_tool_like_jackhammer(self):
         for line in ('w_class = ITEM_SIZE_GARGANTUAN', 'slot_flags = SLOT_BACK', 'health = 350'):

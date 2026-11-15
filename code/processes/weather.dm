@@ -23,6 +23,7 @@
 /process/weather/fire()
 	if(persistence_save_in_progress) return
 	weather_systems_step()
+	river_flood_step()
 	// Author policy gates random selection only, not independent event service.
 	if (!map || map.weather_policy_valid())
 		var/mod_interval = map ? map.weather_timing_value("mod_interval", mod_weather_interval) : mod_weather_interval
@@ -41,7 +42,7 @@
 		else if (prob(prob_of_weather_change))
 			if (world.realtime >= next_can_change_weather)
 				change_weather_somehow()
-			next_can_change_weather = world.realtime + change_delay
+				next_can_change_weather = world.realtime + change_delay
 	weather_events()
 
 // Blizzards, sandstorms and heat waves are weather systems like any other:
@@ -54,7 +55,7 @@
 		map.triggered_blizzard = FALSE
 		map.triggered_sandstorm = FALSE
 		weather_system_spawn(WEATHER_SYSTEM_STORM, TRUE, null, null, 600)
-	if (map.triggered_heatwave || (season == "SUMMER" && prob(1) && prob(50)))
+	if (map.triggered_heatwave || (season == SEASON_SUMMER && prob(1) && prob(50)))
 		map.triggered_heatwave = FALSE
 		if (weather_systems.len == weather_storm_count)
 			weather_system_spawn(WEATHER_SYSTEM_HEAT, FALSE, null, null, 600)

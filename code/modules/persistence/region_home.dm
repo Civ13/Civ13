@@ -21,9 +21,10 @@
 
 // The agent's verdict for one account: list("verdict" = HOME, ELSEWHERE or
 // PENDING, "home" = region id or null), or null when the agent cannot answer.
-/proc/region_home_ask(account, op = "claim", region = null)
+/proc/region_home_ask(account, op = "claim", region = null, faction = null)
 	var/list/body = list("ckey" = account, "op" = op)
 	if(region) body["region"] = region
+	if(faction) body["faction"] = faction
 	// A claim for an account with a living character here asks the coordinator
 	// to keep it here if it has no home (a lost ledger), never to start fresh.
 	if(op == "claim" && region_home_living_body(account)) body["body"] = TRUE
@@ -79,6 +80,8 @@
 			return FALSE
 		switch(result["verdict"])
 			if("HOME")
+				// A colony start granted here (colony_charter.dm, faction_start.dm).
+				lobby.colony_start_grant = colony_parent_valid(result["colony_grant"]) ? result["colony_grant"] : null
 				return TRUE
 			if("ELSEWHERE")
 				region_home_tell(lobby, result["home"])
@@ -134,7 +137,8 @@
 	// A raider who dies in a raid world goes home, not to the mainland.
 	var/origin = region_raid_death_origin(H)
 	if(!origin)
-		if(region_home_bed(account)) return
+		// On a land across the sea nobody has settled yet, a bed does not keep the home (land_choices.dm).
+		if(region_home_bed(account) && !expedition_land_unsettled()) return
 		for(var/mob/living/human/other in human_mob_list)
 			if(other != H && other.persistence_owner_ckey == account && other.stat != DEAD && !QDELETED(other))
 				return
