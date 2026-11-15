@@ -417,7 +417,7 @@ int main(int argc, char **argv) {
         }
       });
   app.client->SetTokenExpirationCallback(
-      [&app](discordpp::AuthorizationTokenType) { app.refresh_wanted = true; });
+      [&app]() { app.refresh_wanted = true; });
   app.client->SetDeviceChangeCallback(
       [](std::vector<discordpp::AudioDevice> inputs,
          std::vector<discordpp::AudioDevice> outputs) {
