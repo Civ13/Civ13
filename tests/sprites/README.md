@@ -151,3 +151,5 @@ listing was retained. These limits are not waived by a green workflow.
 `create_power_cranes.py` owns `icons/obj/power_cranes.dmi`: the steam crane and the tower crane, standing and hauling. `--check` verifies the committed sheet, `--preview <png>` writes a review sheet.
 
 `create_earthworks.py` owns `icons/obj/earthworks.dmi`: the steam roller and the steam shovel, standing and working. `--check` verifies the committed sheet, `--preview <png>` writes a review sheet.
+
+`create_wire_bench.py` owns `icons/obj/wire_bench.dmi`: the wire drawing bench, standing and drawing. `--check` verifies the committed sheet, `--preview <png>` writes a review sheet.
