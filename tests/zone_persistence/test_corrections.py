@@ -157,6 +157,8 @@ class Corrections(unittest.TestCase):
         local=NS(persistence_zone_id='local',weather=2,weather_intensity=1.25,icon='icons/custom/area.dmi',icon_state='wrong')
         fields=dict(weather=2,weather_intensity=1.25,icon_state='snow1')
         calls=[]
+        # An outdoor zone: the roof weather mask (weather_chunks.dm) leaves it alone.
+        local.weather_roof_mask=lambda:calls.append('mask')
         context=NS(require_owner=lambda:calls.append('owner'))
         env=dict(restored_zones={'local':local},validated_zones={'local':{'fields':fields}},tick=lambda:calls.append('tick'),EXCEPTION=ValueError)
         env['fail']=lambda message:(_ for _ in ()).throw(ValueError(message))
@@ -165,6 +167,7 @@ class Corrections(unittest.TestCase):
         self.assertEqual((local.weather,local.weather_intensity),(2,1.25))
         self.assertEqual((local.icon,local.icon_state),('icons/custom/area.dmi','snow1'))
         self.assertGreaterEqual(calls.count('owner'),3)
+        self.assertEqual(calls.count('mask'),1)
         mutant=source.replace('A.icon_state = fields["icon_state"]',
                               "A.icon = 'icons/effects/weather.dmi'\n\t\tA.icon_state = fields[\"icon_state\"]")
         regressed=adapter.project(mutant,'/map_storage/proc/reconcile_saved_zone_weather','context',env)
@@ -186,7 +189,8 @@ class Corrections(unittest.TestCase):
         early=read('code/game/area/areas.dm')
         late=read('code/modules/lighting/lighting_area.dm')
         calls=[]
-        env=dict(parent=lambda:calls.append('atom'),persistence_register_area=lambda area:calls.append('register'))
+        env=dict(parent=lambda:calls.append('atom'),persistence_register_area=lambda area:calls.append('register'),
+                 weather_roof_mask=lambda:None)
         # The adapter models documented .. chaining, not compiler acceptance.
         adapter.FIELDS += ('icon','layer','luminosity','dynamic_lighting')
         first=adapter.project(early.replace('..()','parent()'),'/area/New','src',env,True)

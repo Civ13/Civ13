@@ -31,6 +31,10 @@
 
 ///////////////////Vulcano//////////////////////
 
+// Every lava turf, added as it is made. A turf keeps its reference when it
+// changes type, so readers drop entries that are no longer lava.
+var/global/list/lava_turfs = list()
+
 /turf/floor/lava
 	name = "lava"
 	icon = 'icons/turf/floors.dmi'
@@ -46,6 +50,7 @@
 	New(loc, floortype, datum/durable_nomads_event/event = null)
 		nomads_event = event
 		lava_callback_identity = new /datum
+		lava_turfs[src] = TRUE
 		..(loc, floortype)
 		if (dries)
 			dryproc()

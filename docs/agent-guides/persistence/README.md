@@ -133,8 +133,16 @@ reintroduce a movement freeze to hide a capture race; fix the capture.
 `tests/zone_persistence/run_native.py --all-controls` runs the synthetic zone
 modes natively (moving-save-chunks isolated-native job). A switched roof's base
 type must be exactly one saved zone: the save is refused otherwise. Failures
-after ClearMap hold recovery; nothing is rolled back in memory. Real-map scale
-and real-save checks need production data and are not covered by it.
+after ClearMap hold recovery; nothing is rolled back in memory.
+
+<!-- 2026-11-15: real-map zone measurement (#3590) -->
+`tests/zone_persistence/real_map.py` runs the whole game on a production map:
+one save, three loads in one process, a refused schema-3 copy, roofs in every
+climate zone and the spawn-group checks. Its README section has the Gaia and
+North America numbers. A loop that visits every cell of a million-cell map
+needs a `TICK_CHECK` on every path, including the `continue` ones, or BYOND's
+loop check moves the proc to the background. Never look through `world` for a
+rare type on a path a save polls: keep a register (`lava_turfs`).
 
 <!-- 2026-11-03: low-memory segmented levels -->
 BYOND materializes a whole savefile as an in-memory tree on first access (about

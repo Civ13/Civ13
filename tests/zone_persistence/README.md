@@ -146,6 +146,95 @@ named assertion: `roof-projection` (schema-2 roof validation), `roof-ambiguity`
 (overlay clearing) and `retire-check` (retirement verification).
 
 First run, 2026-11-04, Linux 516.1688 in a cloud container: 29 cases and five
-controls passed in 2m15s. This is synthetic 8x8x2 evidence. It does not show
-real-map capacity, save pauses, memory use, connected-client behavior or
-real-save compatibility; those are tracked separately.
+controls passed in 2m15s. This is synthetic 8x8x2 evidence. Real-map scale and
+memory are measured by `real_map.py` below.
+
+The `write` fixture puts an item on the moved spawn's turf (3,3,2). An empty
+ground turf is saved as a plain cell, named only by a template, so without the
+item the zone had no membership record of its own and `absent-zone` had nothing
+to remove a zone from under.
+
+## Real maps (#3590)
+
+`real_map.py` compiles the whole game with one production map and
+`real_map_probe.dm`, then runs fresh DreamDaemon processes in their own
+directories. It never reads a server's `map_saves/`: every save is one the run
+made, and each later process gets a copy.
+
+```
+source <byond>/bin/byondsetup
+bash tools/savestream/build.sh linux        # optional: the stream helper a host uses
+python3 -B tests/zone_persistence/real_map.py --byond-bin <byond>/bin \
+    --map maps/nomads/nomads_americas_north.dmm --output <fresh dir> \
+    --savestream-bin tools/savestream/bin/linux
+```
+
+- `write`: a fresh Persistence world. The probe starts the round, builds one
+  supported roof on solid ground in every climate zone of every level, adds an
+  empty and a one-turf spawn group, saves with `ticker.savemap()` and records
+  every zone's identity and membership (cells and two position sums per zone
+  and level), the roofs and the five spawn registries.
+- `read`: a copy of that save. Startup restores it, then `ticker.loadmap()` runs
+  again in the same process (three loads by default) and the world is saved a
+  second time. Every load must give the saved inventory back unchanged, with the
+  same area count and `area_list` length each time.
+- `reject`: a copy whose `world_state.schema` is 3. Startup must hold it
+  unresolved for "Unsupported zone metadata revision", never call `ClearMap`,
+  and leave every file byte-identical.
+- Spawn groups after the third load: the emptied group is still empty and
+  `job_master.relocate` refuses it without inventing a destination, the kept
+  group places the body on its saved turf, and a spawn point an administrator
+  places afterwards is used.
+
+`summary.json` holds the timings, the memory of each phase, each zone proc's
+share of the profile, the save's file sizes, the roof base-type counts and any
+engine loop warnings from `code/`.
+
+Measured 2026-11-15 on master `97a5a94` plus this change, BYOND 516.1688, Linux
+DreamDaemon in a cloud container, stream saves on, no players. The two maps ran
+side by side on one four-core machine, so times are a little long.
+
+| | Gaia 500 x 350, 3 levels | North America 1132 x 920, 2 levels |
+| --- | --- | --- |
+| Fresh world before the save | 562 MB | 1036 MB |
+| Save (`World save: total`) | 23.5 s | 68.7 s |
+| Save, zone procs | 1.0 s (4.4% of proc time) | 3.6 s (4.5%) |
+| Startup restore (`loadmap`) | 53 s | 186 s |
+| Reload in the same process, 2nd and 3rd | 50 s, 49 s | 177 s, 172 s |
+| Load, zone procs | 3.1 s (5 to 6%) | 14.3 to 14.7 s (6.1 to 6.6%) |
+| Memory after the 1st, 2nd and 3rd load | 694, 710, 723 MB | 1474, 1540, 1544 MB |
+| Peak for the whole process | 733 MB | 1582 MB |
+| Areas in the world / `area_list` after each load | 21 / 20 every time | 20 / 19 every time |
+| Saved zones, roofs built | 20, 11 | 19, 8 |
+| `round.json` | 71 KB | 141 KB |
+| Level files (`<z>.sav` + `<z>.stream.sav`) | 31 KB + 1 KB, 1.87 MB + 3.11 MB, 1 KB + 0 KB | 5.57 MB + 6.69 MB, 1 KB + 0 KB |
+| Second save after three loads | 32.5 s | 82.6 s |
+| Schema 3 copy | refused, 0 map clears, files identical | refused, 0 map clears, files identical |
+
+The largest zone costs on North America are `restore_zone_topology` (15 s a
+load), `prepare_saved_zones` (3.4 s a save or load) and `verify_zone_topology`
+(3.1 s a load). Memory grows by under 2% between the second and third load;
+the limit is 3072 MB. One
+more area exists in the world than in `area_list` after any load, and the
+number does not grow. No zone type was saved more than once on either map, so
+no switched roof stands on an ambiguous base. No runtime errors on either map.
+
+The first North America run found two costs that grow with the map:
+
+- `durable_nomads_lava_active` looked through the whole world for lava once a
+  second while a save waited for the world to settle: 35 calls, 9.7 s of one
+  save. It now reads a register of lava turfs (0.01 s for 31 calls).
+- BYOND's loop check ("Infinite loop suspected--switching proc to background")
+  fired in loops that pass a million cells without a yield. The plain-cell
+  expansion, the zone grid's unsaved-cell path, the prospective area check and
+  the validator's turf grid now yield. Still firing, and left alone because a
+  yield there would change the order of a restore or a capture:
+  `load_world_contents` (the `after_load` pass), `ClearMap`,
+  `save_world_contents` and `seed_the_map`.
+
+Not covered: a schema-1 save (none exists any more; a schema-2 save rewritten as
+schema 1 is refused before the map is cleared, and `legacy-read` covers the
+reader), a world with players, vehicles and buildings in it, Windows, and a
+connected client seeing the late-join refusal. New nomads on Gaia and both
+Americas maps start on random ground (`uses_random_new_player_spawn`), so that
+refusal is only reachable there by a job with a named spawn group.
