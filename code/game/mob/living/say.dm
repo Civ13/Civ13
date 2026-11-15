@@ -92,6 +92,18 @@ var/list/radio_prefixes = list(";", ":b", ":l", ":r", ":t", ":f",
 
 	verb = say_quote(message, speaking)
 
+	// A language only half known comes out with gaps (proficiency.dm).
+	if (speaking && ishuman(src))
+		var/mob/living/human/learner = src
+		// Only a learned language: one spoken without being in the list is left alone.
+		if (learner.knows_language(speaking) && learner.language_score(speaking) < LANGUAGE_FLUENT)
+			if (alt_message)
+				var/spoken = learner.garble_own_speech(alt_message, speaking)
+				message = findtext(message, alt_message) ? replacetext(message, alt_message, spoken) : spoken
+				alt_message = spoken
+			else
+				message = learner.garble_own_speech(message, speaking)
+
 	if (is_muzzled())
 		to_chat(src, "<span class='danger'>You're muzzled and cannot speak!</span>")
 		return

@@ -10,6 +10,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[2]
 HEAR = (ROOT / 'code/game/mob/hear_say.dm').read_text()
 LANG = (ROOT / 'code/game/mob/language/language.dm').read_text()
+PROF = (ROOT / 'code/game/mob/language/proficiency.dm').read_text()
 
 
 def section(text, start, end):
@@ -17,16 +18,21 @@ def section(text, start, end):
 
 
 class LanguageLearning(unittest.TestCase):
+    # Learning by ear moved to proficiency.dm; the restored-copy rules still
+    # hold: scores and unlocks go through the shared language, never a copy.
     def test_exposure_check_compares_by_type(self):
-        learn = section(HEAR, 'if (language && ishuman(src))', '/mob/proc/on_hear_say(')
-        self.assertIn('H.knows_language(language)', learn)
+        learn = section(HEAR, '// Hearing a language slowly teaches it', '/mob/proc/on_hear_say(')
+        self.assertIn('H.language_exposure(language, speaker)', learn)
         self.assertNotIn('languages.Find(language)', learn)
+        score = section(PROF, '/mob/living/human/language_score(', '/proc/language_level_name(')
+        self.assertLess(score.index('L = canonical_language(L)'), score.index('partial_languages[L.name]'))
+        self.assertIn('knows_language(L)', score)
 
     def test_message_only_when_language_was_added(self):
-        learn = section(HEAR, 'if (language && ishuman(src))', '/mob/proc/on_hear_say(')
-        add = learn.index('H.add_language(')
-        self.assertLess(add, learn.index('from hearing it so much'))
-        self.assertIn('&& H.add_language(', learn)
+        gain = section(PROF, '/mob/living/human/proc/gain_language(', '// Heard speech')
+        self.assertLess(gain.index('L = canonical_language(L)'), gain.index('partial_languages[L.name] ='))
+        self.assertIn('!knows_language(L)', gain)
+        self.assertLess(gain.index('if (add_language(L.name, FALSE, FALSE))'), gain.index('add_note("Known Languages", L.name)'))
 
     def test_knows_language_matches_copies(self):
         body = section(LANG, '/mob/proc/knows_language(', '/mob/proc/canonicalize_languages()')

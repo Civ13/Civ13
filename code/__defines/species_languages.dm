@@ -9,3 +9,11 @@
 #define NO_TALK_MSG  128 // Do not show the "\The [speaker] talks into \the [radio]" message
 #define NO_STUTTER   256 // No stuttering, slurring, or other speech problems
 #define COMMON_VERBS 512
+// Language proficiency, a score from 0 to 100 (code/game/mob/language/proficiency.dm).
+#define LANGUAGE_BROKEN 25			// can speak it, with gaps
+#define LANGUAGE_CONVERSATIONAL 60	// nearly everything, with an accent
+#define LANGUAGE_FLUENT 90			// everything
+#define LANGUAGE_LEARN_COOLDOWN 200	// deciseconds between gains from hearing or speaking
+#define LANGUAGE_HEAR_GAIN 0.033	// score per heard line: about 6 an hour among speakers
+#define LANGUAGE_PRACTICE_GAIN 0.1	// score per line spoken to a better speaker
+#define LANGUAGE_DAILY_CAP 12		// score a language can gain in one real day

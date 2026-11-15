@@ -26,6 +26,7 @@ var/global/list/persistence_world_time_stamps = list(
 	"next_cannotmove_message" = list(/mob),
 	"next_gracewall_message" = list(/mob),
 	"next_language_learn" = list(/mob),
+	"next_language_practice" = list(/mob/living/human),
 	"next_mud_message" = list(/mob),
 	"next_pain_time" = list(/mob),
 	"next_slope_message" = list(/mob),

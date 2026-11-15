@@ -79,14 +79,11 @@
 	H.studied_paper_sections[lineage] = version
 	if (H.studied_paper_sections.len > PAPER_STUDY_MEMORY)
 		H.studied_paper_sections.Cut(1, 2)
-	var/lname = capitalize(L.name)
-	H.partial_languages[lname] += points
-	if (H.partial_languages[lname] >= L.difficulty && H.add_language(lname, FALSE))
-		H.add_note("Known Languages", "[L.name]")
-		to_chat(H, SPAN_NOTICE("You've learned <b>[L.name]</b> from studying its writing!"))
+	// Writing alone teaches as far as broken speech (proficiency.dm).
+	if (H.gain_language(L, points * 100 / L.difficulty, LANGUAGE_BROKEN, FALSE))
+		to_chat(H, SPAN_NOTICE("You make sense of a little more [L.name]. You now understand about [round(H.language_score(L))]% of it."))
 	else
-		var/percent = min(99, round(H.partial_languages[lname] * 100 / L.difficulty))
-		to_chat(H, SPAN_NOTICE("You make sense of a little more [L.name]. You now understand about [percent]% of it."))
+		to_chat(H, SPAN_NOTICE("Writing has taught you all it can of [L.name]. The rest you must learn from people who speak it."))
 	return TRUE
 
 #undef PAPER_STUDY_TICKS_PER_POINT

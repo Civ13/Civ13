@@ -26,7 +26,7 @@ class DeviceHearingContract(unittest.TestCase):
     def test_nearby_speech_remains_separate(self):
         code = body("hear_say")
         self.assertNotIn("comprehend_device_speech", code)
-        self.assertIn("H.knows_language(language)", code)
+        self.assertIn("H.language_exposure(language, speaker)", code)
 
     def test_transport_differences_remain(self):
         self.assertIn("ten_code(message, speaker)", body("hear_radio"))
