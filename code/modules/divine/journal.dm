@@ -1,11 +1,12 @@
 // Sealed advancement notes are attached to an ORDINARY book. No special type,
 // name, art, examine text or public interaction identifies a magical item.
-// No initiation, casting, cipher-attempt or progression grant is added here.
+// Initiation and casting live in covenant.dm; nothing here grants either.
 
 /mob/living/human/proc/can_read_divine_journal()
-	// Fail closed until the durable initiation/covenant service is integrated.
-	// Possession, mathematics, a password and an admin client are not initiation.
-	return FALSE
+	// Only a character a god has initiated (covenant.dm), played by its own
+	// client. Possession, mathematics, a password and an admin client are not
+	// initiation.
+	return istext(divine_patron) && length(divine_patron) && client && client.mob == src
 
 /obj/item/weapon/book
 	var/list/divine_advancement_entries = null

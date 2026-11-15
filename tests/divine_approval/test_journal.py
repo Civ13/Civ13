@@ -16,10 +16,15 @@ class Journal(unittest.TestCase):
                 continue # procedures extend the ordinary type, no subtype exists
             self.assertNotIn(forbidden, TEXT)
         self.assertNotIn('/obj/item/weapon/hidden_journal', TEXT)
-    def test_fail_closed_initiation(self):
+    def test_initiation_gate(self):
+        # Only a god-initiated character played by its own client reads sealed notes.
         gate = body('/mob/living/human/proc/can_read_divine_journal()')
-        self.assertIn('return FALSE', gate)
+        for check in ('istext(divine_patron)', 'length(divine_patron)', 'client.mob == src'):
+            self.assertIn(check, gate)
+        code = [line for line in gate.splitlines() if not line.strip().startswith('//')]
         self.assertNotIn('return TRUE', gate)
+        for forbidden in ('holder', 'R_ADMIN', 'math', 'password'):
+            self.assertNotIn(forbidden, '\n'.join(code))
     def test_projection_gate_and_escaping(self):
         projection = body('/obj/item/weapon/book/proc/divine_journal_html')
         self.assertLess(projection.index('!divine_journal_reader_allowed(H)'), projection.index('var/html'))

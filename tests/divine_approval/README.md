@@ -219,3 +219,32 @@ Disease rites require later immunity, treatment, contagion, offline protection
 and persistence tests. Weather rites need capped footprint/lifetime and actual
 moving-storm validation. Book-burning rites additionally need provenance and
 anti-copy farming; destroyed physical books cannot be implicitly refunded.
+
+## Casting on persistent worlds (`code/modules/divine/covenant.dm`, #5142)
+
+The adapter that makes the foundation playable. Staff use the admin verb
+Divine Patron to speak as a god (runtime claim, per staff member), initiate a
+character, teach or take back invocations, release followers, list followers
+and re-post pending prayers. An initiated character gets the Beseech verb; no
+one else has it. Saved on the character: `divine_patron`, `divine_known`,
+`divine_slot_spent` and `divine_spent_realtime`. Covenants, requests and vigil
+membership are tmp and excluded through `persistence_runtime_var`.
+
+Each Beseech builds a fresh covenant and one request (a ritual request for the
+vigil) and posts Grant/Refuse links to the god's online claimants. Nothing
+happens without that click. Moving, logging out, a body change or transfer
+breaks a pending prayer or vigil. Granting rechecks, consumes, charges and
+applies in one synchronous call (`divine_dispatch`). Costs: a held stick
+(`/obj/item/weapon/branch`) as focus, one item used up from a worn belt pouch,
+energy, and one invocation until the follower sleeps and wakes (or an hour of
+real time passes). Effects are bounded: Mercy eases pain and restores some
+energy (adjacent), Affliction adds pain and drains energy (visible, 7 tiles),
+Omen delivers one private line the god writes, Vigil of Recovery heals 15
+brute and 15 burn on a patient after a 15 second vigil kept by the leader and
+two to seven others who agree.
+
+Followers can read sealed advancement notes; a god's original book shows its
+private text only to that god's own followers.
+
+Not verified in a live client: the prompts, links, timings and effects.
+`test_covenant.py` guards the structure from source.

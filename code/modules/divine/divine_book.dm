@@ -55,6 +55,10 @@ var/global/list/divine_book_originals = list()
 		if (desc == "A book written by [divine_deity].")
 			desc = initial(desc)
 
+// The god's private text is for that god's own followers only.
+/obj/item/weapon/book/divine/divine_journal_reader_allowed(mob/living/human/H)
+	return ..() && divine_original && divine_book_key(H.divine_patron) == divine_book_key(divine_deity)
+
 // Builds on the ordinary-book projection in #5154. No private bytes enter
 // dat, page_list(), printing, copying, torn sheets or ordinary cipher metadata.
 /obj/item/weapon/book/divine/divine_journal_html(mob/living/human/H)
