@@ -2025,7 +2025,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/drill/sifter/panner" = "electricity",
 		"/obj/structure/drill/stamp_mill" = "electricity",
 		"/obj/item/weapon/resource_sieve" = "basic_tools",
-		// --- primitive_construction (27) ---
+		// --- primitive_construction (28) ---
+		"/obj/structure/charcoal_clamp" = "primitive_construction",
 		"/obj/structure/sink/well/timber" = "primitive_construction",
 		"/obj/structure/flood_platform/stilts" = "primitive_construction",
 		"/obj/covers/fancywood" = "primitive_construction",
