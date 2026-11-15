@@ -1614,6 +1614,7 @@ var/global/world_save_notice_started = null
 		target.minds = list()
 		target.collect_minds()
 		TOD_loop()
+		agent_autospawn_begin()
 		// The daylight sweep yields per batch; let the load finish beside it.
 		spawn(0)
 			apply_restored_lighting()
@@ -1636,6 +1637,7 @@ var/global/world_save_notice_started = null
 		target.minds = list()
 		target.collect_minds()
 		TOD_loop()
+		agent_autospawn_begin()
 		// The daylight sweep yields per batch; let the load finish beside it.
 		spawn(0)
 			apply_restored_lighting()

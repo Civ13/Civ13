@@ -554,6 +554,17 @@ class AutospawnSourceTests(unittest.TestCase):
         dme = (ROOT / "civ13.dme").read_text(encoding="utf-8")
         self.assertIn("code\\modules\\agent_control\\agent_autospawn.dm", dme)
 
+    def test_a_restored_round_starts_the_autospawn_loop(self):
+        # A restored round resumes without the round start hooks, so the restore
+        # itself has to start the loop that re-adopts the agent's saved body.
+        source = (ROOT / "code/modules/agent_control/agent_autospawn.dm").read_text(encoding="utf-8")
+        self.assertIn("/proc/agent_autospawn_begin()", source)
+        self.assertIn("if (agent_autospawn_started)\n\t\treturn", source.replace("\r\n", "\n"))
+        persistence = (ROOT / "code/modules/persistence/functions.dm").read_text(encoding="utf-8").replace("\r\n", "\n")
+        restore = persistence[persistence.index("/map_storage/proc/restore_round_state("):]
+        restore = restore[:restore.index("\n/datum/proc/before_save_context(")]
+        self.assertEqual(restore.count("agent_autospawn_begin()"), 2)  # legacy and current saves
+
     def test_restored_bodies_wait_for_a_driver_but_arrivals_do_not(self):
         travel = (ROOT / "code/modules/agent_control/agent_travel.dm").read_text(encoding="utf-8")
         self.assertIn("var/restored = !H.region_arrival_pending", travel)
