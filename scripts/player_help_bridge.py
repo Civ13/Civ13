@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '3f3d1798eb279961f0eb0f661c84907d5fadc04f'
+WIKI_REVIEWED_REVISION = '688ed8a74f25cdb840c6a77c164dca7d160e751f'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('dbdd9f64009c697282c90bf6d7e157100834ad2ea23f5b76ec03938e816c1083', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('0da0fcb7a71382365bf818e6e27b5e0c58056785f328a4da1bba4ed44e26a673', 'character skills traits languages'),
@@ -97,7 +97,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Tanks.md': ('9250b410333e0da30224b09ed2126ce2ed676225aa2dda2be3b13c8f7ff3442a', 'tank driving crew ammunition'),
     'guides/Guide_to_Trains.md': ('084ca499676d0ccfa7d9e64d9e52da43d7f0b5c40d95bbef0e3908ab2a35f641', 'train trains railway track locomotive station switcher rails wagon'),
     'guides/Guide_to_Trenches.md': ('c0c8506c1eb0ee5118d6f0f14d816f72e80e5c66664b547b7b3e894fe6a59881', 'trench trenches fortification sandbag dig shovel'),
-    'guides/Guide_to_Weapons.md': ('f4912630ee265fb33c96d03d1a0831d1ce0e3d8a4760ebd5538a07842bd9ce7b', 'weapons gun reload ammunition'),
+    'guides/Guide_to_Weapons.md': ('b7bd93f55e479d0dcfb8f899d0164373a697e5eff5819f163ec8d9d06e07bc8e', 'weapons gun reload ammunition'),
     'New_Player_Guide.md': ('c0d80da1236f7b15de5787584628898cc5dacddd6db97fadbe42dd5b685faee0', 'new player beginner start first round basics'),
     'Hotkeys.md': ('05090c224e1f78aac61ba054366f3138634ce2c47cdaf4b9c98be908818ae55e', 'hotkeys hotkey keys keyboard controls key press'),
     'role_guides.md': ('4117070c23ff3cfd2581b612cd08ae70ee170637381972cffebdf9c0161d78d5', 'role roles job jobs responsibilities'),
@@ -123,13 +123,13 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Paperwork.md': ('4c73cacfcb51d228b3015af280120dedf7b7a3591d291512acbee906c537d9fb', 'paper paperwork writing write pen book sign signature stamp'),
     'Crafting_Skill_Level_Requirements.md': ('eae4e1c91ce28009f16ec79d0e942f76895d80262e618320eaf44d3a7c5808a9', 'crafting skill level levels requirement requirements unlock'),
     'Food_Decay_Times.md': ('d2d63372eddc79fd7c3c9bffb390587fff7a5cb21c53d829ab5ec29ab9f11126', 'food decay rot spoil spoils spoiled expire expires lasts preserve storage'),
-    'Miscellaneous_Crafting.md': ('02c0357240d466d970644d3c68a48aa23a56c4958f154a7191dc7859ae3c0d04', 'miscellaneous crafting misc items dress dresses dressmaking tailoring tailor tailored sew sewing pattern patterns design clothes shirt gown cloak sleeves collar dye dyes wool linen fabric book hat hats headwear beret veil candle candles'),
-    'maps/The_Americas.md': ('4cd0807dae183ab5f6d95d295f5ccb902fb2795bf2061b0b86183d42cf6eaa0f', 'americas america north south isthmus mainland persistent persistence map world hills tamping grading rammer'),
-    'maps/Gaia.md': ('70fa7ee2f80fe5372b45a23994fc46faaa789ac154ec0ab6881fbc4610348e8b', 'gaia map world underground'),
-    'maps/Nomads_Maps.md': ('4bc344de025406737ca370cb5db6fd025ee32c4fdbf389bd902e45b9dd054b9e', 'nomads maps map terrain biome biomes'),
+    'Miscellaneous_Crafting.md': ('eac7513db31aeb05d3dec97040b4287d79ea61eba3076a5f9c7e889c36c4bb8b', 'miscellaneous crafting misc items dress dresses dressmaking tailoring tailor tailored sew sewing pattern patterns design clothes shirt gown cloak sleeves collar dye dyes wool linen fabric book hat hats headwear beret veil candle candles'),
+    'maps/The_Americas.md': ('6268c8fa444bbb8bfbbfc2e326dc0dae23d2de63012b33fc070382c5c8a88828', 'americas america north south isthmus mainland persistent persistence map world hills tamping grading rammer'),
+    'maps/Gaia.md': ('0e19a20e98e7e6330bc1cfc89fd067cb6752bdf50864d27d56ddd6bbad67f4a6', 'gaia map world underground'),
+    'maps/Nomads_Maps.md': ('58047561f302ec204cbb3ae304cd0c71f10a6cb2d0bb5095d6479c6106269509', 'nomads maps map terrain biome biomes'),
     'gamemodes/Voyage.md': ('9922f438d0253c6b4d812bc852422a54c37f428b4c3221b2a732397ef245ddfe', 'voyage expedition ship mode'),
     'gamemodes/Events.md': ('de6e6133e735e5da8a03a290f45e599b82cee216d9b150d25c583e3c34606336', 'events event special rounds'),
-    'guides_overview.md': ('efc67cdb556d6223fd7a57e2a30ed4b5faba56dfab3dd2796da021f0a99f714f', 'guides overview list of guides index'),
+    'guides_overview.md': ('569716c71dfafb774b23d2725b669b6070bc4a3e0096dcb9aa3c9a96b00d112f', 'guides overview list of guides index'),
 }
 WIKI_LEGACY_GUIDES = ('guides/Guide_to_Crafting.md', 'guides/Guide_to_Metallurgy.md', 'Starter_Guide.md')
 
