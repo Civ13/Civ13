@@ -148,6 +148,7 @@ def main():
     parser.add_argument('--byond-bin', type=Path, required=True)
     parser.add_argument('--output', type=Path)
     parser.add_argument('--port', type=int, default=0)
+    parser.add_argument('--config-line', action='append', default=[], help='extra line appended to the run copy of config/config.txt (e.g. DAYNIGHT_CLIENT_TINT)')
     parser.add_argument('--map', default='nomads_gaia.dmm', help='map file under maps/nomads to compile in place of Gaia')
     parser.add_argument('--deadline', type=int, default=5400, help='seconds for the whole run')
     args = parser.parse_args()
@@ -188,8 +189,11 @@ def main():
             target = output / path
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_bytes((repo / path).read_bytes())
+        if args.config_line:
+            with (output / 'config' / 'config.txt').open('a', encoding='utf-8') as extra:
+                extra.write('\n' + '\n'.join(args.config_line) + '\n')
         (output / 'manifest.json').write_text(json.dumps({
-            'tested_commit': head, 'working_tree_status': status, 'port': port,
+            'tested_commit': head, 'working_tree_status': status, 'port': port, 'map': args.map, 'config_lines': args.config_line,
             'adapters': ['probe appended to a temporary civ13.dme', 'webhooks/ToRban off', 'round started via admin_started',
                          'weather worker paused', 'staged body fed and held warm', 'look and climb through the production procs']}, indent=2), encoding='utf-8')
         with (output / 'daemon-output.log').open('w') as out:

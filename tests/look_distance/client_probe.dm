@@ -205,6 +205,21 @@ var/global/datum/look_client_probe/look_client_probe = new
 			row["los_radii"] = radii
 			var/list/terrain = los_terrain_for(H, radii ? max(radii[1], radii[2]) + 2 : 9)
 			row["terrain_field"] = !!terrain
+	var/half_dx = 22
+	var/half_dy = 20
+	// Turfs BYOND counts as dark (no luminosity): the client only sees
+	// those within see_in_dark of the eye.
+	var/list/dark_by_row = list()
+	for(var/dx2 = -half_dx to half_dx)
+		for(var/dy2 = -half_dy to half_dy)
+			var/turf/D = locate(H.x + dx2, H.y + dy2, H.z)
+			if(D && !D.luminosity && !(D.lighting_overlay && D.lighting_overlay.luminosity) && !(get_area(D)).luminosity)
+				var/ahead2 = "[dir == NORTH ? dy2 : dx2]"
+				dark_by_row[ahead2] = (dark_by_row[ahead2] || 0) + 1
+	row["dark_turfs_by_row_ahead"] = dark_by_row
+	row["see_in_dark"] = H.see_in_dark
+	row["sight"] = H.sight
+	row["daylight_on_client"] = daylight_on_client()
 	stages += list(row)
 	return row
 
@@ -302,6 +317,17 @@ var/global/datum/look_client_probe/look_client_probe = new
 				C.los_enabled = TRUE
 				C.reconcile_geometric_los()
 			unlook()
+		// Dark Night has no daylight: only lit turfs count as seen, then
+		// daylight brings the rest back.
+		if(H.climbed_tree && H.looking)
+			unlook()
+		mark("dark_night")
+		set_daylight("Dark Night")
+		record("12_dark_night")
+		shot("12_dark_night")
+		set_daylight("Midday")
+		record("13_midday_again")
+		shot("13_midday_again")
 		pass("stages_recorded", list("count" = stages.len))
 	catch(var/exception/e)
 		failure = "[e.name]"
