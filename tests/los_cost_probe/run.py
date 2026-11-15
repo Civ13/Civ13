@@ -250,6 +250,9 @@ def main():
                         pin(seekers[-1], others)
                         time.sleep(4)
                     owned.extend(seekers)
+                    time.sleep(15)
+                    screenshot(out / "desktop-clients.png")
+                    print("clients:", [seeker.poll() for seeker in seekers], "relay connections:", relay.connections, flush=True)
                 if WINDOWS and phase not in shots and phase.startswith(("field/walk-all/", "field/stand/1")):
                     shots.add(phase)
                     screenshot(out / f"desktop-{phase.replace('/', '-')}.png")

@@ -46,17 +46,18 @@ jobs:
         shell: pwsh
         run: |
           $bin = python tests/los_cost_probe/hosted_setup.py "$env:RUNNER_TEMP/byond"
+          Get-ChildItem $bin | Select-Object Name, Length | Format-Table -AutoSize
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           "BYOND_BIN=$bin" >> $env:GITHUB_ENV
       - name: Line of sight on
         shell: pwsh
         run: |
-          python tests/los_cost_probe/run.py --map ${{ matrix.map }} --los on --clients $env:CLIENTS --seconds $env:SECONDS --byond-bin "$env:BYOND_BIN" --daemon dd.exe --client-wait 240 --out "$env:RUNNER_TEMP/los/${{ matrix.map }}-on" --result tests/los_cost_probe/results/${{ matrix.map }}-on.json
+          python tests/los_cost_probe/run.py --map ${{ matrix.map }} --los on --clients $env:CLIENTS --seconds $env:SECONDS --byond-bin "$env:BYOND_BIN" --daemon dd.exe --client-wait 90 --out "$env:RUNNER_TEMP/los/${{ matrix.map }}-on" --result tests/los_cost_probe/results/${{ matrix.map }}-on.json
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Line of sight off
         shell: pwsh
         run: |
-          python tests/los_cost_probe/run.py --map ${{ matrix.map }} --los off --clients $env:CLIENTS --seconds $env:SECONDS --byond-bin "$env:BYOND_BIN" --daemon dd.exe --client-wait 240 --out "$env:RUNNER_TEMP/los/${{ matrix.map }}-off" --result tests/los_cost_probe/results/${{ matrix.map }}-off.json
+          python tests/los_cost_probe/run.py --map ${{ matrix.map }} --los off --clients $env:CLIENTS --seconds $env:SECONDS --byond-bin "$env:BYOND_BIN" --daemon dd.exe --client-wait 90 --out "$env:RUNNER_TEMP/los/${{ matrix.map }}-off" --result tests/los_cost_probe/results/${{ matrix.map }}-off.json
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Tables
         if: always()
