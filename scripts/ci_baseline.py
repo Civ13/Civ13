@@ -2294,6 +2294,12 @@ SUITES = {
     'weather_sound': {'files': ('tests/weather_sound/test_rain_loop.py',),
         'paths': ('tests/weather_sound/', 'code/game/mob/living/life.dm',
                   'code/game/mob/observer/ghost/ghost.dm', 'code/game/area/areas.dm')},
+    # Ghost animal noises preference: animals heard only nearby by choice.
+    'ghost_animal_noises': {'files': ('tests/ghost_animal_noises/test_ghost_animal_noises.py',),
+        'paths': ('tests/ghost_animal_noises/', 'code/game/mob/emote.dm'),
+        'shared_paths': ('code/game/mob/observer/ghost/ghost.dm',
+            'code/modules/client/preferencesSQLite/preference_setup/global/setting_datums.dm',
+            'code/modules/client/preferencesSQLite/preferences.dm')},
     'surgery_drinking': {'files': ('tests/surgery_drinking/test_source.py',),
         'paths': ('tests/surgery_drinking/', 'code/modules/surgery/surgery.dm')},
 }

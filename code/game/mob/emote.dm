@@ -1,6 +1,24 @@
 // All mobs should have custom emote, really..
 //m_type == TRUE --> visual.
 //m_type == 2 --> audible
+// TRUE for animals the server runs. Ghosts can mute their emotes from afar
+// with the Ghost animal noises preference. Player-run mobs never count.
+/mob/proc/makes_animal_noises()
+	return FALSE
+
+/mob/living/simple_animal/makes_animal_noises()
+	return !client
+
+// Human NPCs, hostages and wizards are people, not animals.
+/mob/living/simple_animal/hostile/human/makes_animal_noises()
+	return FALSE
+
+/mob/living/simple_animal/hostage/makes_animal_noises()
+	return FALSE
+
+/mob/living/simple_animal/wizard/makes_animal_noises()
+	return FALSE
+
 /mob/proc/custom_emote(var/m_type=1,var/message = null,var/span_class = null)
 
 	if (usr && stat || !use_me && usr == src)
@@ -32,6 +50,7 @@
  //Hearing gasp and such every five seconds is not good, emotes were not global for a reason.
  // Maybe some people are okay with that.
 
+		var/animal_noise = makes_animal_noises()
 		for (var/mob/M in player_list)
 			if (!M.client)
 				continue //skip monkeys and leavers
@@ -40,6 +59,8 @@
 			if (findtext(message," snores.")) //Because we have so many sleeping people.
 				break
 			if (M.stat == DEAD && M.is_preference_enabled(/datum/client_preference/ghost_sight) && !(M in viewers(src,null)))
+				if (animal_noise && !M.is_preference_enabled(/datum/client_preference/ghost_animals))
+					continue
 				M.show_message(chat_message, m_type)
 				M.show_chat_overlay(src, message, "#FFC0CB")
 
