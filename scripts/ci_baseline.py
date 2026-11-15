@@ -218,6 +218,9 @@ SUITES = {
     'splash_watering': {'files': ('tests/splash_watering/test_splash.py',),
         'paths': ('tests/splash_watering/',),
         'shared_paths': ('code/modules/reagents/Chemistry-Holder.dm', 'tests/primitive_woodworking/source_adapter.py')},
+    # Leader orders: a weaker order never extends a stronger one (#5488).
+    'leader_orders': {'files': ('tests/leader_orders/test_order_expiry.py',), 'paths': (
+        'tests/leader_orders/', 'code/modules/1713/leader_orders.dm')},
     'matchbox_pickup': {'files': ('tests/matchbox/test_pickup.py',),
         'paths': ('tests/matchbox/',),
         'shared_paths': ('code/game/objects/items/weapons/storage/boxes.dm',
