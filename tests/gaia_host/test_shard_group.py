@@ -431,6 +431,39 @@ class ShardGroupTests(unittest.TestCase):
         with mock.patch.object(shard_group, 'relay_add_ports', lambda group: [1720, 1721]):
             self.assertEqual([1720, 1721], shard_group.setup(group, self.machine, 'deep')['relay_ports'])
 
+    def test_supervise_teaches_a_running_relay_the_group_ports_once(self):
+        # A relay started before a region joined refused routes to it (South America, 2026-11-15).
+        self.group['relay_port'] = 1730
+        group = self.write_group()
+        shard_group.setup(group, self.machine)
+        (self.base / 'regions' / 'relay.pid').write_text('5151\n')
+        sent = []
+        def send(port, query):
+            sent.append(query)
+            return json.dumps({'ok': True})
+        real = shard_group.relay_add_ports
+        with mock.patch.object(shard_group, 'process_alive', lambda pid: pid == 5151), \
+                mock.patch.object(shard_group, 'relay_add_ports', lambda group, _=None: real(group, send)):
+            self.assertEqual({'relay_ports': True}, shard_group.supervise(group, lambda *a: 1))
+            self.assertEqual(2, len(sent))
+            # Nothing changed: no requests on the next pass.
+            self.assertEqual({}, shard_group.supervise(group, lambda *a: 1))
+            self.assertEqual(2, len(sent))
+            # A new relay process hears them all again.
+            (self.base / 'regions' / 'relay.pid').write_text('6262\n')
+        with mock.patch.object(shard_group, 'process_alive', lambda pid: pid == 6262), \
+                mock.patch.object(shard_group, 'relay_add_ports', lambda group, _=None: real(group, send)):
+            self.assertEqual({'relay_ports': True}, shard_group.supervise(group, lambda *a: 1))
+            self.assertEqual(4, len(sent))
+        # A relay that does not answer is asked again next pass.
+        def down(port, query):
+            raise OSError('refused')
+        (self.base / 'regions' / 'relay.pid').write_text('7373\n')
+        with mock.patch.object(shard_group, 'process_alive', lambda pid: pid == 7373), \
+                mock.patch.object(shard_group, 'relay_add_ports', lambda group, _=None: real(group, down)):
+            self.assertEqual({}, shard_group.supervise(group, lambda *a: 1))
+            self.assertEqual({}, shard_group.supervise(group, lambda *a: 1))
+
     def test_a_relay_that_cannot_start_does_not_stop_supervision(self):
         self.group['relay_port'] = 1730
         group = self.write_group()

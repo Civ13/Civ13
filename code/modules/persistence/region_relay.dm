@@ -114,7 +114,17 @@
 				return FALSE
 	if(!C)
 		return FALSE
-	var/list/reply = ask_relay("route=1&ip=[url_encode(public)]&ckey=[url_encode(C.ckey)]&port=[shard_address_port(peer["address"])]")
+	var/port = shard_address_port(peer["address"])
+	var/route = "route=1&ip=[url_encode(public)]&ckey=[url_encode(C.ckey)]&port=[port]"
+	var/list/reply = ask_relay(route)
+	if(reply && !reply["ok"] && C)
+		// A relay started before this region joined the group refuses its port
+		// (South America, 2026-11-15). The port is the group's own, from
+		// shard_region.json: teach it to the relay and try once more.
+		var/list/taught = ask_relay("add_port=1&port=[port]")
+		if(taught && taught["ok"] && C)
+			log_game("Region relay: the relay did not know [id]'s port [port]; added it.")
+			reply = ask_relay(route)
 	if(!reply || !reply["ok"])
 		log_game("Region relay: could not route [C.ckey] to [id].")
 		if(C) to_chat(C, SPAN_WARNING("The way to [html_encode(peer["name"])] is closed right now. Try again in a minute or ask an admin."))
