@@ -100,6 +100,14 @@ var/list/_client_preferences_by_type
 	enabled_description = "All Emotes"
 	disabled_description = "Nearby"
 
+// Wild and farm animals bark, moo and chirp all over the map. Ghosts who
+// see all emotes can keep player emotes while hearing animals only nearby.
+/datum/client_preference/ghost_animals
+	description ="Ghost animal noises"
+	key = "CHAT_GHOSTANIMALS"
+	enabled_description = "All Animals"
+	disabled_description = "Nearby"
+
 /datum/client_preference/ghost_radio
 	description ="Ghost radio"
 	key = "CHAT_GHOSTRADIO"

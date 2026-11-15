@@ -310,6 +310,16 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 	updateghostsight()
 	to_chat(usr, "You [(ghostvision?"now":"no longer")] have ghost vision.")
 
+/mob/observer/ghost/verb/toggle_animal_noises()
+	set name = "Toggle Animal Noises"
+	set desc = "Hear animal noises from everywhere, or only from animals near you"
+	set category = "Ghost"
+	if (!client)
+		return
+	var/hear_all = !is_preference_enabled(/datum/client_preference/ghost_animals)
+	set_preference("CHAT_GHOSTANIMALS", hear_all)
+	to_chat(src, "You now hear animal noises [hear_all ? "from everywhere" : "only from animals near you"].")
+
 /mob/observer/ghost/verb/toggle_darkness()
 	set name = "Toggle Darkness"
 	set category = "Ghost"
