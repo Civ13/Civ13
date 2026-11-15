@@ -1,0 +1,52 @@
+// Frozen pre-fix copy of /client/proc/run_verb for the negative control.
+/client/proc/run_verb(verb_name as text)
+	// 1) Collect all available verbs
+	var/list/all_verbs = list()
+	all_verbs += verbs
+	if (mob)
+		all_verbs += mob.verbs
+
+	// 2) Try to find and execute by name or path
+	for (var/v in all_verbs)
+		if (!v) continue
+		// Match against display name or path string
+		if (v:name == verb_name || "[v]" == verb_name)
+			var/cmd_name = replacetext(verb_name, " ", "-")
+			winset(src, null, "command='[cmd_name]'")
+			return TRUE
+		
+		// If verb_name has spaces, try matching against underscored version
+		if (findtext(verb_name, " "))
+			var/und_name = replacetext(verb_name, " ", "_")
+			if (v:name == und_name || "[v]" == und_name || findtext("[v]", und_name))
+				var/cmd_name = replacetext(v:name, " ", "-")
+				winset(src, null, "command='[cmd_name]'")
+				return TRUE
+
+	// 3) Try direct proc calls as fallback
+	// No spaces: try direct match
+	if (!findtext(verb_name, " "))
+		if (hascall(src, verb_name))
+			call(src, verb_name)()
+			return TRUE
+		
+		var/datum/admins/A = holder
+		if (A && hascall(A, verb_name))
+			if (check_rights(R_ADMIN, FALSE, src))
+				call(A, verb_name)()
+				return TRUE
+
+	// Spaces: try underscored version as proc name
+	else
+		var/und_name = lowertext(replacetext(verb_name, " ", "_"))
+		if (hascall(src, und_name))
+			call(src, und_name)()
+			return TRUE
+		var/datum/admins/A = holder
+		if (A && hascall(A, und_name))
+			if (check_rights(R_ADMIN, FALSE, src))
+				call(A, und_name)()
+				return TRUE
+
+	return FALSE
+
