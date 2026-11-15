@@ -753,11 +753,18 @@ var/global/datum/natural_bootstrap_probe/natural_bootstrap_probe = new
 		hold(food)
 		var/hunger = H.nutrition
 		var/bites = 0
+		var/eaten = FALSE
 		while(!QDELETED(food) && food.loc == H && bites < 6)
+			var/before_bite = food.reagents ? food.reagents.total_volume : 0
 			bites++
 			click(H, "eat [food]")
 			sleep(20)
-		pass("ate_the_harvest", list("food" = produce[1], "bites" = bites, "nutrition_before" = round(hunger), "nutrition_after" = round(H.nutrition), "eaten" = QDELETED(food) || H.nutrition > hunger))
+			if(QDELETED(food) || (food.reagents && food.reagents.total_volume < before_bite))
+				eaten = TRUE
+			else
+				break // the game refused the bite: a full stomach
+		// The check is named for what happened: a well fed character is turned away by the game.
+		pass(eaten ? "ate_the_harvest" : "harvest_is_food_character_full", list("food" = produce[1], "bites" = bites, "nutrition_before" = round(hunger), "nutrition_after" = round(H.nutrition), "eaten" = eaten))
 		if(!QDELETED(food) && food.loc == H)
 			hold(food)
 			act(list("do" = "drop", "label" = "[food]"))

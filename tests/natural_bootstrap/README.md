@@ -26,7 +26,8 @@ world with one agent autospawn line, and runs DreamDaemon twice:
    its faction, learned chapter and carried items, the digging stick left at
    the camp, and every crop's type, stage, soil type and soil nutrition are
    compared with the write stage's manifest. The crop then grows on to harvest,
-   is harvested with the knife, the produce is eaten when it is food, and the
+   is harvested with the knife, the produce is eaten when it is food and the
+   character has room for it (the result names which happened), and the
    harvested seed is replanted and grows a stage.
 
 The probe spawns, grants and moves nothing. Its adapters are listed in
