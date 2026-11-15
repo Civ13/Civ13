@@ -763,9 +763,12 @@ SUITES = {
     'centrifuge_seal_power': {'files': ('tests/centrifuge_seal_power/test_centrifuge.py',),
         'paths': ('tests/centrifuge_seal_power/',), 'shared_paths': ('code/modules/reagents/Chemistry-Machinery.dm',)},
     # Eating refusal follows the stomach size (Gaia 2026-11-15).
-    'food_fullness': {'files': ('tests/food_fullness/test_fullness_limit.py',),
+    'food_fullness': {'files': ('tests/food_fullness/test_fullness_limit.py',
+        'tests/food_fullness/test_overfed_vomit.py'),
         'paths': ('tests/food_fullness/',), 'shared_paths': (
             'code/game/mob/living/carbon/carbon.dm',
+            'code/game/mob/living/carbon/human/human.dm',
+            'code/modules/reagents/reagent_containers.dm',
             'code/game/mob/living/carbon/carbon_defines.dm',
             'code/modules/reagents/reagent_containers/food/snacks.dm',
             'code/game/objects/items/weapons/material/kitchen.dm')},

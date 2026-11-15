@@ -30,6 +30,7 @@
 	biochemistry_willow_checks()
 	biochemistry_willow_seed_checks()
 	biochemistry_salt_checks()
+	biochemistry_overfeeding_checks()
 	return TRUE
 
 /proc/biochemistry_plastic_pipe_checks()
@@ -550,4 +551,50 @@
 	qdel(sea)
 	qdel(soup)
 	qdel(salt)
+	qdel(eater)
+
+// The bounded world has no organs, so this eater always has a mouth.
+/mob/living/human/chemistry_builder/stomach/check_has_mouth()
+	return TRUE
+
+// Force-feeding past capacity brings the stomach back up; vomiting purges
+// poison not yet absorbed and eases more toxin damage when there was some.
+/proc/biochemistry_overfeeding_checks()
+	var/turf/site = locate(26, 25, 1)
+	var/mob/living/human/chemistry_builder/stomach/eater = new(site)
+	eater.ingested = new/datum/reagents/metabolism(1000, eater, CHEM_INGEST)
+	eater.species = new /datum/species/human
+	eater.nutrition = eater.max_nutrition
+	eater.water = eater.max_water
+	chemistry_assert(!eater.is_overfed(), "A full bar with an empty stomach counted as overfed")
+	eater.ingested.add_reagent("nutriment", 5)
+	chemistry_assert(!eater.is_overfed(), "One bite on a full bar counted as overfed")
+	eater.ingested.add_reagent("nutriment", 5)
+	chemistry_assert(eater.stomach_food_fullness() == eater.max_nutrition + 300, "Stomach food fullness was [eater.stomach_food_fullness()]")
+	chemistry_assert(eater.is_overfed(), "Ten units of food forced onto a full bar did not count as overfed")
+	var/nutrition_before = eater.nutrition
+	chemistry_assert(eater.overfed_vomit(), "Overfed eater did not throw up")
+	chemistry_assert(!eater.ingested.total_volume, "Overfed vomiting left [eater.ingested.total_volume] units in the stomach")
+	chemistry_assert(eater.nutrition < nutrition_before, "Overfed vomiting cost no nutrition")
+	chemistry_assert(locate(/obj/effect/decal/cleanable/vomit) in site, "Overfed vomiting left no vomit")
+	chemistry_assert(!eater.is_overfed(), "Still overfed after throwing up")
+	eater.water = eater.max_water
+	eater.ingested.add_reagent("water", 20)
+	chemistry_assert(eater.is_overfed(), "Twenty units of water on a full water bar did not count as overfed")
+	eater.ingested.clear_reagents()
+	eater.ingested.add_reagent("water", 10)
+	chemistry_assert(!eater.is_overfed(), "One drink on a full water bar counted as overfed")
+	eater.ingested.clear_reagents()
+	eater.ingested.add_reagent("toxin", 10)
+	eater.ingested.add_reagent("nutriment", 10)
+	eater.adjustToxLoss(20)
+	var/tox_before = eater.getToxLoss()
+	chemistry_assert(eater.stomach_holds_poison(), "Poison in the stomach was not noticed")
+	chemistry_assert(eater.throw_up(), "Plain vomiting did nothing")
+	chemistry_assert(eater.ingested.get_reagent_amount("toxin") < 10, "Vomiting left all the poison in the stomach")
+	chemistry_assert(eater.ingested.get_reagent_amount("nutriment") > 0, "Ordinary vomiting emptied the whole stomach")
+	chemistry_assert(tox_before - eater.getToxLoss() == VOMIT_TOX_RELIEF_POISONED, "Poisoned vomiting eased [tox_before - eater.getToxLoss()] toxin, not [VOMIT_TOX_RELIEF_POISONED]")
+	qdel(eater.ingested)
+	eater.ingested = null
+	eater.species = null
 	qdel(eater)

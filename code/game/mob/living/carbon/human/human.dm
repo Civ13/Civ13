@@ -515,6 +515,13 @@ var/list/coefflist = list()
 		return FALSE
 	return TRUE
 
+// Share of the stomach (reagents not yet absorbed) that one bout of vomiting
+// brings back up. Poisons still in the stomach leave with it.
+#define VOMIT_STOMACH_PURGE 0.6
+// Toxin damage eased by emptying the stomach, more when it held poison.
+#define VOMIT_TOX_RELIEF 3
+#define VOMIT_TOX_RELIEF_POISONED 8
+
 /mob/living/human/proc/vomit()
 
 	if (!check_has_mouth())
@@ -527,18 +534,7 @@ var/list/coefflist = list()
 		spawn(150)	//15 seconds until second warning
 			to_chat(src, "<span class='warning'>You feel like you are about to throw up!</span>")
 			spawn(100)	//and you have 10 more for mad dash to the bucket
-				Stun(5)
-
-				visible_message("<span class='warning'>[src] throws up!</span>","<span class='warning'>You throw up!</span>")
-				playsound(loc, 'sound/effects/splat.ogg', 50, TRUE)
-
-				var/turf/location = loc
-				if (istype(location, /turf))
-					location.add_vomit_floor(src, TRUE)
-				adjust_hygiene(-25)
-				nutrition -= 40
-				adjustToxLoss(-3)
-				adjust_mood(-(3), "vomiting")
+				throw_up()
 				spawn(1200)	//wait 2 minutes before next volley
 					lastpuke = FALSE
 
@@ -554,21 +550,63 @@ var/list/coefflist = list()
 		spawn(150)	//15 seconds until second warning
 			to_chat(src, "<span class='warning'>You feel like you are about to throw up!</span>")
 			spawn(100)	//and you have 10 more for mad dash to the bucket
-				Stun(5)
-
-				visible_message("<span class='warning'>[src] throws up blood!</span>","<span class='warning'>You throw up blood!</span>")
-				playsound(loc, 'sound/effects/splat.ogg', 50, TRUE)
-
-				var/turf/location = loc
-				if (istype(location, /turf))
-					location.add_vomit_floor_bloody(src, TRUE)
-				adjust_hygiene(-25)
-				nutrition -= 40
-				adjustToxLoss(-3)
-				adjust_mood(-(8), "vomiting blood")
-				vessel.remove_reagent("blood",10)
+				throw_up(TRUE)
 				spawn(1200)	//wait 2 minutes before next volley
 					lastpuke = FALSE
+
+// TRUE if the stomach holds a poison that has not been absorbed yet.
+/mob/living/human/proc/stomach_holds_poison()
+	if (!ingested)
+		return FALSE
+	for (var/datum/reagent/R in ingested.reagent_list)
+		if (istype(R, /datum/reagent/toxin) && R.volume > 0)
+			return TRUE
+	return FALSE
+
+// One bout of vomiting, right now. Empties part of the stomach (or all of it
+// with purge = 1), so poisons not yet absorbed leave with the food, and eases
+// some toxin damage. Returns TRUE if anything happened.
+/mob/living/human/proc/throw_up(var/bloody = FALSE, var/purge = VOMIT_STOMACH_PURGE)
+	if (!check_has_mouth() || stat == DEAD)
+		return FALSE
+	Stun(5)
+	if (bloody)
+		visible_message("<span class='warning'>[src] throws up blood!</span>","<span class='warning'>You throw up blood!</span>")
+	else
+		visible_message("<span class='warning'>[src] throws up!</span>","<span class='warning'>You throw up!</span>")
+	playsound(loc, 'sound/effects/splat.ogg', 50, TRUE)
+
+	var/turf/location = loc
+	if (istype(location, /turf))
+		if (bloody)
+			location.add_vomit_floor_bloody(src, TRUE)
+		else
+			location.add_vomit_floor(src, TRUE)
+	var/poisoned = stomach_holds_poison()
+	if (ingested && ingested.total_volume)
+		ingested.remove_any(ingested.total_volume * Clamp(purge, 0, 1))
+	adjust_hygiene(-25)
+	nutrition -= 40
+	adjustToxLoss(-(poisoned ? VOMIT_TOX_RELIEF_POISONED : VOMIT_TOX_RELIEF))
+	if (bloody)
+		adjust_mood(-(8), "vomiting blood")
+		vessel.remove_reagent("blood",10)
+	else
+		adjust_mood(-(3), "vomiting")
+	return TRUE
+
+// Force-fed past what the stomach holds: bring the excess (the whole stomach)
+// straight back up, with some food and water already absorbed.
+/mob/living/human/proc/overfed_vomit(var/mob/feeder)
+	if (!check_has_mouth() || stat == DEAD)
+		return FALSE
+	visible_message("<span class='warning'>[src] gags, too full to keep it down!</span>", "<span class='danger'>You are too full! You gag on it...</span>")
+	if (!throw_up(FALSE, 1))
+		return FALSE
+	water = max(water - 30, -max_water)
+	if (feeder && feeder != src)
+		to_chat(feeder, "<span class='warning'>[src] was too full to keep it down.</span>")
+	return TRUE
 
 /mob/living/human/proc/get_visible_gender()
 	if (wear_suit && wear_suit.flags_inv & HIDEJUMPSUIT && ((head && head.flags_inv & HIDEMASK) || wear_mask))
