@@ -382,6 +382,83 @@
 	dressmaking_ci_clear(site)
 
 // Writes in its own proc so the savefile closes before it is read back.
+// Restyling a finished bag: looks only, one sheet a job, the bag in hand.
+/proc/dressmaking_ci_bag_styles(mob/living/human/handle_ci/dress_ci/H, turf/site, datum/save_epoch)
+	dressmaking_ci_clear(site)
+	var/obj/item/weapon/storage/backpack/bag = new(H)
+	var/obj/item/weapon/storage/backpack/satchel/black/other = new(site)
+	var/obj/item/clothing/accessory/storage/webbing/bandolier = new(site)
+	var/list/kind = bag_style_kind(bag)
+	var/list/strap_kind = bag_style_kind(bandolier)
+	dressmaking_ci_expect(kind && kind[1] == "backpack" && length(kind[2]) == 3 && strap_kind && length(strap_kind[2]) == 2 && !bag_style_kind(other) && !bag_style_kind(H) && !bag_style_kind(null), "only the listed bags are restyled, never their subtypes")
+	var/obj_states = icon_states('icons/obj/clothing/bag_styles.dmi')
+	var/mob_states = icon_states('icons/mob/bag_styles.dmi')
+	var/art = TRUE
+	for (var/path in bag_style_kinds)
+		var/list/row = bag_style_kinds[path]
+		if (!ispath(text2path(path), /obj/item))
+			art = FALSE
+		for (var/zone in row[2])
+			if (!("[row[1]]_[lowertext(zone)]" in obj_states) || !("[row[1]]_[lowertext(zone)]" in mob_states))
+				art = FALSE
+	dressmaking_ci_expect(art, "every restyled bag has loose and worn art for each part")
+	var/list/blank = bag_style_colors(bag, null)
+	dressmaking_ci_expect(blank.len == 3 && !blank[1] && !blank[3] && !bag_style_text(blank) && bag_style_text(list("#3e5a86", null, "#d6c050")) == "#3e5a86|-|#d6c050", "an unstyled bag stores nothing")
+	var/list/parsed = bag_style_colors(bag, "#3E5A86|-|javascript")
+	dressmaking_ci_expect(parsed[1] == "#3e5a86" && !parsed[2] && !parsed[3], "malformed colours are dropped")
+	var/obj/item/tailoring_project/dress_ci/P = new(H)
+	P.fabric = 2
+	H.l_hand = P
+	H.r_hand = bag
+	var/space = bag.max_storage_space
+	var/old_type = bag.type
+	var/old_name = bag.name
+	var/obj/item/weapon/flint/kept = new(bag)
+	P.wait_mode = "cancel"
+	dressmaking_ci_expect(!P.sew_bag_style(H, site, save_epoch, bag, list("#3e5a86", null, "#d6c050")) && !bag.bag_style && P.fabric == 2, "an interrupted restyling costs nothing")
+	P.wait_mode = "complete"
+	dressmaking_ci_expect(!P.sew_bag_style(H, site, save_epoch, bag, list("#3e5a86", "bad", null)) && !P.sew_bag_style(H, site, save_epoch, bag, list("#3e5a86")) && !P.sew_bag_style(H, site, save_epoch, other, list("#3e5a86", null, null)) && !bag.bag_style && P.fabric == 2, "bad colours, wrong parts and unlisted bags are refused")
+	H.r_hand = null
+	bag.forceMove(site)
+	dressmaking_ci_expect(!P.sew_bag_style(H, site, save_epoch, bag, list("#3e5a86", null, null)) && P.fabric == 2, "the bag must be in the tailor's other hand")
+	bag.forceMove(H)
+	H.r_hand = bag
+	P.stage = 1
+	dressmaking_ci_expect(!P.sew_bag_style(H, site, save_epoch, bag, list("#3e5a86", null, null)) && P.fabric == 2, "cut pieces cannot restyle")
+	P.stage = 0
+	dressmaking_ci_expect(P.sew_bag_style(H, site, save_epoch, bag, list("#3e5a86", null, "#d6c050")) && bag.bag_style == "#3e5a86|-|#d6c050" && P.fabric == 1 && !P.gcDestroyed, "restyling takes one sheet")
+	dressmaking_ci_expect(bag.type == old_type && bag.name == old_name && bag.max_storage_space == space && kept.loc == bag && length(bag.bag_style_overlays) == 2 && length(bag_style_layers(bag, TRUE)) == 2, "a restyled bag is the same bag with the same storage")
+	dressmaking_ci_expect(!P.sew_bag_style(H, site, save_epoch, bag, list("#3e5a86", null, "#d6c050")) && P.fabric == 1, "the same look again costs nothing")
+	var/before = length(bag.overlays)
+	bag.after_load()
+	dressmaking_ci_expect(length(bag.overlays) == before && length(bag.bag_style_overlays) == 2, "a loaded bag draws its style once")
+	dressmaking_ci_expect(findtext(bag_style_describe(bag), "woad blue fabric") && findtext(bag_style_describe(bag), "weld yellow trim") && !bag_style_describe(other), "examining names the dyes")
+	// Undoing every part clears the style; the last sheet uses the project up.
+	dressmaking_ci_expect(P.sew_bag_style(H, site, save_epoch, bag, list(null, null, null)) && !bag.bag_style && !bag.bag_style_overlays && P.gcDestroyed && H.l_hand != P, "the last sheet uses up the project and a bag can go back to plain")
+	qdel(kept)
+	// A bandolier keeps its dyes on the clothes it is attached to.
+	var/obj/item/tailoring_project/dress_ci/Q = new(H)
+	Q.fabric = 3
+	H.l_hand = Q
+	bag.forceMove(site)
+	bandolier.forceMove(H)
+	H.r_hand = bandolier
+	var/image/plain = bandolier.get_mob_overlay()
+	dressmaking_ci_expect(!length(plain.overlays), "a plain bandolier draws nothing extra")
+	dressmaking_ci_expect(Q.sew_bag_style(H, site, save_epoch, bandolier, list("#a8342c", "#e0b030")) && bandolier.bag_style == "#a8342c|#e0b030" && Q.fabric == 2, "a bandolier is restyled the same way")
+	var/image/worn = bandolier.get_mob_overlay()
+	var/image/inv = bandolier.get_inv_overlay()
+	dressmaking_ci_expect(length(worn.overlays) == 2 && length(inv.overlays) == 2 && bandolier.slots == initial(bandolier.slots) && bandolier.hold, "a restyled bandolier keeps its pouches and shows its dyes when attached")
+	// Dyes follow the tailor's knowledge, as on a garment.
+	dressmaking_ci_expect(bag_style_allowed(H, list("#3e5a86", null)) == !!(crafting_node_allowed(H, "classical_dress") || crafting_node_allowed(H, "textile_mills")), "dyes follow knowledge")
+	H.l_hand = null
+	H.r_hand = null
+	qdel(Q)
+	qdel(bandolier)
+	qdel(bag)
+	qdel(other)
+	dressmaking_ci_clear(site)
+
 /proc/dressmaking_ci_write_book(path, list/designs)
 	var/savefile/S = new(path)
 	S["designs"] << designs
@@ -736,6 +813,7 @@
 	dressmaking_ci_book(H, site, save_epoch)
 	dressmaking_ci_headwear(H, site, save_epoch)
 	dressmaking_ci_accessories(H, site, save_epoch)
+	dressmaking_ci_bag_styles(H, site, save_epoch)
 	qdel(H)
 	dressmaking_ci_clear(site)
 	map_storage.clear_bookkeeping()

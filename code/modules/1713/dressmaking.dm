@@ -850,7 +850,7 @@ var/global/list/tailoring_dye_tiers = list(
 
 /obj/item/tailoring_project
 	name = "tailoring project"
-	desc = "Fabric or leather set aside for one garment. Use it in hand to choose what to make and colour each piece, then cut and sew it. Add more sheets of the same material to it for larger garments. Cloth and woolcloth make clothes and hats; leather makes gloves, footwear and belts. Cutting locks the design."
+	desc = "Fabric or leather set aside for one garment. Use it in hand to choose what to make and colour each piece, then cut and sew it. Add more sheets of the same material to it for larger garments. Cloth and woolcloth make clothes and hats; leather makes gloves, footwear and belts. Cutting locks the design. While uncut, hold it in one hand and use a finished bag, quiver or bandolier on it to restyle that for one sheet."
 	icon = 'icons/obj/materials.dmi'
 	icon_state = "sheet-cloth"
 	w_class = ITEM_SIZE_NORMAL
@@ -907,6 +907,10 @@ var/global/list/tailoring_dye_tiers = list(
 		return
 	if (istype(W, /obj/item/sewing_pattern))
 		load_pattern(user, W)
+		return
+	// A finished bag or bandolier used on the project is restyled (bag_styling.dm).
+	if (bag_style_kind(W))
+		style_bag(user, W)
 		return
 	var/sheet_kind = tailoring_fabric_kind_of(W)
 	if (sheet_kind)

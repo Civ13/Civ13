@@ -25,6 +25,8 @@
 			get_mob_overlay()
 		var/tmp_icon_state = "[overlay_state? "[overlay_state]" : "[icon_state]"]"
 		inv_overlay = image(icon = mob_overlay.icon, icon_state = tmp_icon_state, dir = SOUTH)
+		if (bag_style)
+			inv_overlay.overlays += bag_style_layers(src, TRUE)
 	return inv_overlay
 
 /obj/item/clothing/accessory/proc/get_mob_overlay()
@@ -36,6 +38,9 @@
 			mob_overlay = image("icon" = icon_override, "icon_state" = "[tmp_icon_state]")
 		else
 			mob_overlay = image("icon" = INV_ACCESSORIES_DEF_ICON, "icon_state" = "[tmp_icon_state]")
+		// A restyled bandolier or shoulder belt (bag_styling.dm) keeps its dyes when worn.
+		if (bag_style)
+			mob_overlay.overlays += bag_style_layers(src, TRUE)
 	return mob_overlay
 
 //when user attached an accessory to S

@@ -1331,6 +1331,9 @@ var/global/list/human_face_icon_cache = list()
 		//apply color
 		var/image/standing = image(icon = overlay_icon, icon_state = overlay_state, layer = layer+0.02)
 		standing.color = back.color
+		// A restyled bag (bag_styling.dm) draws its dyed fabric, straps and trim.
+		if (back.bag_style)
+			standing.overlays += bag_style_layers(back, TRUE)
 
 		overlays_standing[BACK_LAYER]	= standing
 	else

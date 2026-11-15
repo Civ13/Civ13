@@ -35,6 +35,20 @@ belt with its attachment points), so warmth, protection, grip and what hangs
 from a belt are unchanged. A design can only be loaded onto a project whose
 material can make it.
 
+## Restyling bags, quivers and bandoliers
+
+A finished leather backpack, leather satchel, duffel bag, rucksack, quiver, hide
+sling bag, bandolier or shoulder belt can be restyled (`code/modules/1713/bag_styling.dm`).
+The tailor holds the bag in one hand and an uncut tailoring project in the
+other, uses the bag on the project, and picks a dye for the fabric, a dye for
+the straps and a trim; a bandolier and a shoulder belt have straps and studs.
+Any part can be put back "as it was made". The job takes one sheet from the
+project and 40 ticks, and uses the dyes the tailor knows. It is looks only: the
+bag stays the same item, the style is one saved text var (`bag_style`) and the
+dyes are coloured overlays over the unchanged sprite, loose and worn. Only the
+exact types listed in `bag_style_kinds` are restyled; their subtypes are other
+bags with their own art.
+
 ## Scope
 
 This is a sprite-based adaptation of designing panels, previewing, cutting and
