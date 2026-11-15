@@ -27,6 +27,8 @@ $commands += "cl $flags /Fe:`"$build/civ13-social-companion.exe`" $endpoint"
 $commands += 'if errorlevel 1 exit /b 1'
 $commands += "cl $flags /DCIV13_COMPANION_LOOPBACK_BACKEND /Fe:`"$build/loopback-companion.exe`" $endpoint"
 $commands += 'if errorlevel 1 exit /b 1'
+$commands += "cl $flags /Fe:`"$build/voice-tests.exe`" `"$root/tests/voice_tests.cpp`""
+$commands += 'if errorlevel 1 exit /b 1'
 $commands += "cl $flags /Fe:`"$build/child-tests.exe`" `"$root/peer.cpp`" `"$root/tests/child_tests.cpp`""
 $commands += 'if errorlevel 1 exit /b 1'
 if ($SdkInclude) {
@@ -60,5 +62,6 @@ Invoke-Bounded $env:ComSpec ('/d /s /c ""' + $batch + '""') 'compile' 150
 Invoke-Bounded (Join-Path $build 'peer-tests.exe') '' 'peer-tests'
 Invoke-Bounded (Join-Path $build 'host-tests.exe') '' 'host-tests'
 Invoke-Bounded (Join-Path $build 'endpoint-tests.exe') '' 'endpoint-tests'
+Invoke-Bounded (Join-Path $build 'voice-tests.exe') '' 'voice-tests'
 Invoke-Bounded (Join-Path $build 'child-tests.exe') ('"' + (Join-Path $build 'loopback-companion.exe') + '" "' + (Join-Path $build 'civ13-social-companion.exe') + '"') 'child-tests'
 if ($SdkInclude) { Invoke-Bounded (Join-Path $build 'sdk-tests.exe') '' 'sdk-tests' }
