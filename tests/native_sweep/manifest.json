@@ -1,5 +1,40 @@
 {
  "runners": {
+  "tests/book_distribution/run.py": {
+   "args": [
+    "--trusted"
+   ]
+  },
+  "tests/late_research/run.py": {
+   "args": [
+    "--trusted"
+   ]
+  },
+  "tests/node_broadcast/run.py": {
+   "args": [
+    "--trusted"
+   ]
+  },
+  "tests/recipe_knowledge/run.py": {
+   "args": [
+    "--trusted"
+   ]
+  },
+  "tests/research_interface/run.py": {
+   "args": [
+    "--trusted"
+   ]
+  },
+  "tests/television/run.py": {
+   "args": [
+    "--trusted"
+   ]
+  },
+  "tests/train_body_graph/run.py": {
+   "args": [
+    "--allow-native-execution"
+   ]
+  },
   "tests/wildlife_arrival/run.py": {
    "serial": true
   }

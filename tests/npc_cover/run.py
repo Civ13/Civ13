@@ -19,7 +19,9 @@ parser.add_argument('--negative-control', choices=['boundary', 'tie'])
 args = parser.parse_args()
 repo = Path(__file__).resolve().parents[2]
 path = 'code/game/mob/living/simple_animal/hostile/tactical_ai.dm'
-baseline = subprocess.check_output(['git', 'show', BASELINE + ':' + path], cwd=repo, text=True)
+# The baseline cover body is frozen in baseline_cover.dm (BASELINE's version).
+baseline_cover = Path(__file__).with_name('baseline_cover.dm').read_text()
+baseline_cover = baseline_cover[baseline_cover.index('/mob/living/simple_animal/hostile/human/proc/find_best_cover('):]
 current = (repo / path).read_text()
 def cover(text):
     return re.search(r'^/mob/living/simple_animal/hostile/human/proc/find_best_cover\(atom/enemy\)\n[\s\S]*?(?=^// Checks if)', text, re.M).group()
@@ -36,14 +38,16 @@ def named(body, name, trace):
         assert '\t\tif(score >' in body or '\t\tif(score >=' in body
         body = body.replace('\t\tif(score >', '\t\tprobe_scores["[T.x],[T.y],[T.z]"] = score\n\t\tif(score >')
     return body
-helpers = baseline[:baseline.index('// Finds the best nearby cover')]
-assert helpers == current[:current.index('// Finds the best nearby cover')], 'Cover/LOS helper drift needs separate baseline handling'
+# Both bodies share the current cover and LOS helpers. The fixture is flat
+# ground, so the hill check those helpers make never blocks (los_terrain.dm).
+helpers = current[:current.index('// Finds the best nearby cover')]
+helpers = '/proc/los_terrain_ray_blocked(atom/viewer, atom/target)\n\treturn FALSE\n' + helpers
 unsorted = (repo / 'code/_helpers/unsorted.dm').read_text()
 line = re.search(r'^/proc/getline2\([\s\S]*?(?=^#define LOCATE_COORDS)', unsorted, re.M).group()
 macros = (repo / 'code/_macros.dm').read_text()
 get_turf = re.search(r'^#define get_turf\(A\) .+$', macros, re.M).group()
 source = get_turf + '\n' + helpers + line
-for body, prefix in [(cover(baseline), 'baseline'), (candidate, 'candidate')]:
+for body, prefix in [(baseline_cover, 'baseline'), (candidate, 'candidate')]:
     source += named(body, prefix + '_cover', True)
     source += named(body, prefix + '_bench', False)
 probe = Path(__file__).with_name('probe.dm').read_text()

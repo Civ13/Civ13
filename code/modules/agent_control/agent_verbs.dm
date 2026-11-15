@@ -24,9 +24,10 @@
 		return FALSE
 	return TRUE
 
-// Names of the verbs an atom offers that an agent may use (at most limit).
+// Names of the verbs an atom offers that an agent may use (at most limit). A
+// player body has well over 60, so a lower cap hid ordinary ones such as Rest.
 // Emotes are left out of the list (the emote action covers them) but can still be called.
-/proc/agent_verb_names(atom/T, limit = 60)
+/proc/agent_verb_names(atom/T, limit = 150)
 	. = list()
 	if (!T)
 		return

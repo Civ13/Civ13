@@ -65,7 +65,7 @@ with tempfile.TemporaryDirectory(prefix='civ13-wall-appearance-') as temp:
     (root / 'icons/turf').mkdir(parents=True)
     for asset in ('wall_masks.dmi', 'walls.dmi'):
         shutil.copyfile(repo / 'icons/turf' / asset, root / 'icons/turf' / asset)
-    support = ['code/predefines.dm', 'tests/world_save/stubs.dm', 'code/modules/multiz/world_z_budget.dm', 'code/modules/persistence/functions.dm', 'code/modules/persistence/debug_lossy.dm', 'code/modules/persistence/player_reclaim.dm', 'code/modules/persistence/saving.dm', 'code/modules/persistence/loading.dm']
+    support = ['code/predefines.dm', 'tests/world_save/stubs.dm', 'code/modules/multiz/world_z_budget.dm', 'code/modules/persistence/functions.dm', 'code/modules/persistence/debug_lossy.dm', 'code/modules/persistence/player_reclaim.dm', 'code/modules/persistence/saving.dm', 'code/modules/persistence/loading.dm', 'tests/world_save/stream_stubs.dm', 'code/modules/persistence/stream/save_stream.dm']
     for i, support_path in enumerate(support):
         shutil.copyfile(repo / support_path, root / f'support-{i}.dm')
     (root / 'probe.dm').write_text(probe)

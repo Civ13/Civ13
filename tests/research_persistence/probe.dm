@@ -41,6 +41,8 @@ var/global/list/probe_failures = list()
 // Books are outside this world-research-only fixture.
 /obj/map_metadata/proc/produce_first_node_book(faction, node_id)
 	return
+/obj/map_metadata/proc/book_research_enabled()
+	return FALSE
 
 /proc/check(condition, label)
 	if (!condition)

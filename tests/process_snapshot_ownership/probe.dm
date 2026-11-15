@@ -8,6 +8,8 @@ var/failures = 0
 		world.log << "FAIL [message]"
 /process
 	var/ticks = 0
+	// Set by production process() for a budgeted run left to resume.
+	var/resume_pending = FALSE
 	var/current
 	var/list/current_list
 	var/processScheduler/main = new
@@ -48,6 +50,9 @@ var/failures = 0
 	return FALSE
 // The mob loop's reset also advances the ecology rest phase; it has no scheduler effect.
 /proc/ecology_advance_rest_phase()
+	return
+// It also refreshes which tiles players watch, which no fixture player needs.
+/proc/ecology_refresh_observers()
 	return
 /proc/calculate_run_time_allowance(priority)
 	return 10

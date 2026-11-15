@@ -27,6 +27,11 @@
 
 /mob/var/tmp/datum/click_route/click_route = null
 
+// A walk in progress belongs to this process: a saved route comes back
+// without its mover and goal, and building it stops the load.
+/mob/persistence_runtime_var(key)
+	return key == "click_route" || ..(key)
+
 // ---------------------------------------------------------------- planning
 
 // Ground the character would not step onto on purpose.

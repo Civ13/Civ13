@@ -20,6 +20,8 @@ def main():
     hashes = {}
     sources = [('code/predefines.dm', 'predefines.dm'),
                ('tests/world_save/stubs.dm', 'stubs.dm'),
+               ('tests/world_save/stream_stubs.dm', 'stream_stubs.dm'),
+               ('code/modules/persistence/stream/save_stream.dm', 'save_stream.dm'),
                ('code/modules/multiz/world_z_budget.dm', 'world_z_budget.dm'),
                ('tests/world_save_operations/probe.dm', 'probe.dm')]
     sources += [(f'code/modules/persistence/{name}.dm', f'{name}.dm')
@@ -85,6 +87,8 @@ def main():
 #include "player_reclaim.dm"
 #include "saving.dm"
 #include "loading.dm"
+#include "stream_stubs.dm"
+#include "save_stream.dm"
 #include "probe.dm"
 '''
     (output / 'probe.dme').write_text(environment, encoding='utf-8')

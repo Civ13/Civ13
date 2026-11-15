@@ -31,6 +31,8 @@ var/datum/process_slots/processes = new
 	return !D
 /process
 	var/processScheduler/main
+	// Set by production process() for a budgeted run left to resume.
+	var/resume_pending = FALSE
 	var/name = "fixture"
 	var/schedule_interval = 50
 	var/start_delay = 0

@@ -769,6 +769,9 @@ var/list/coefflist = list()
 	maxHealth = species.total_health
 
 	spawn(0)
+		// The body can be deleted before this runs (made and removed in one tick).
+		if (QDELETED(src))
+			return
 		regenerate_icons()
 		if (vessel.total_volume < species.blood_volume)
 			vessel.maximum_volume = species.blood_volume

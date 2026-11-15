@@ -197,7 +197,7 @@ var/terrain_height_probe_checks = 0
 
 	// Malformed files load flat instead of half-loaded.
 	terrain_height_probe_rejects(null, "null")
-	terrain_height_probe_rejects("civ13-terrain-heights 2\nsize 2 2\nz 1\n00\n00\n", "version")
+	terrain_height_probe_rejects("civ13-terrain-heights 3\nsize 2 2\nz 1\n00\n00\n", "version") // versions 1 and 2 are valid
 	terrain_height_probe_rejects("civ13-terrain-heights 1\nsize 3 2\nz 1\n000\n000\n", "world_size")
 	terrain_height_probe_rejects("civ13-terrain-heights 1\nsize 2 2\nz 1\n00\n", "short_rows")
 	terrain_height_probe_rejects("civ13-terrain-heights 1\nsize 2 2\nz 1\n0g\n00\n", "bad_digit")

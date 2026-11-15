@@ -153,6 +153,9 @@ Please contact me on #coderbus IRC. ~Carn x
 	var/tmp/life_water_state = null
 
 /mob/living/human/proc/queue_overlay_redraw()
+	// A body deleted before a deferred redraw ran has nothing left to draw.
+	if (QDELETED(src))
+		return
 	overlays_dirty = TRUE
 	if (overlays_flush_queued)
 		return
