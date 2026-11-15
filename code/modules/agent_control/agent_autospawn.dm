@@ -22,21 +22,20 @@ var/global/agent_autospawn_started = FALSE
 	return TRUE
 
 // A round a persistent world restores resumes without the round start hooks
-// (restore_round_state), so the world also watches for a round that is simply
-// playing. Either way the loop below starts once per world.
+// (restore_round_state), so the loop starts with the world and waits for a
+// round that is playing, fresh or restored. It starts once per world.
 /hook/startup/proc/agent_autospawn_watch()
-	spawn(0)
-		while (!ticker || ticker.current_state < GAME_STATE_PLAYING)
-			sleep(50)
-		if (ticker.current_state == GAME_STATE_PLAYING)
-			agent_autospawn_begin()
+	agent_autospawn_begin()
 	return TRUE
 
 /proc/agent_autospawn_begin()
 	if (agent_autospawn_started)
 		return
 	agent_autospawn_started = TRUE
-	spawn(AGENT_AUTOSPAWN_FIRST_DELAY)
+	spawn(0)
+		while (!ticker || ticker.current_state < GAME_STATE_PLAYING)
+			sleep(50)
+		sleep(AGENT_AUTOSPAWN_FIRST_DELAY)
 		while (agent_control)
 			// Bodies are only adoptable once a load or save in flight has finished.
 			while (persistence_save_in_progress || persistence_active_operation || persistence_load_recovery_required)
