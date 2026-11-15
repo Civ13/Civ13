@@ -70,8 +70,11 @@ var/yield_high = FALSE
 	map.ID = map_id
 	var/area/above = get_area(locate(5,5,2))
 	above.climate = climate
-	for (var/obj/item/stack/S in locate(5,5,1))
-		qdel(S)
+	// Clear every find, not just stacks: flint nodules (flint_mining.dm) are
+	// items, and thousands left on the tile made each new turf's New() spawn
+	// an Entered() per item until DreamDaemon crashed.
+	for (var/obj/item/I in locate(5,5,1))
+		qdel(I)
 	var/turf/T = new terrain(locate(5,5,1))
 	var/area/normal = get_area(locate(1,1,1))
 	normal.contents += T
