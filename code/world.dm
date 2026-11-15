@@ -239,6 +239,11 @@ var/world_topic_spam_protect_time = world.timeofday
 	if (bannedsourceaddrs[addr])
 		return
 
+	// Launcher voice polls about twice a second with its own limiter
+	// (code/modules/voice/voice_chat.dm); it never touches the ban list below.
+	if (findtext(T, "civ13_voice_state=") && length(T) <= 128)
+		return voice_chat.handle_topic(params2list(T), addr)
+
 	var/list/filtering_whitelist = config.topic_filtering_whitelist
 	var/host = splittext_char(addr, ":")
 	if(!(host[1] in filtering_whitelist)) // Supports the configured positional host list and associative keys.

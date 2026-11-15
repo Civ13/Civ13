@@ -11,15 +11,24 @@ Restoring one action refuses conflicts; restoring all always succeeds.
 The catalog covers prone, aiming mode, sights/drone/tank gun, running, movement
 mode, defense and secondary intents, tactics, facing, buckling, quick equip,
 holstering, directional attacks and opening worn storage (cycle all, back, belt,
-and clothing attachments such as a leather harness, webbing or pockets) and resisting. Actions still call their original verbs and
+and clothing attachments such as a leather harness, webbing or pockets) and resisting.
+It also has two held keys for launcher voice chat: talk to players in sight
+(F5) and team radio (F6). Actions still call their original verbs and
 their existing gameplay checks. Both original mode defaults and aliases remain.
 
 The finite key list supports plain keys, Ctrl, Shift and Ctrl+Shift. Typing mode
 only permits Ctrl and Ctrl+Shift combinations plus its pre-existing F and Space shortcuts.
 Movement, held activation, chat, spell, targeting, menu and help shortcuts remain
 reserved. Movement and held activation retain their original release handlers;
-this feature adds no held state. Applying bindings changes only the 72 named
-action slots and does not set focus, replace macro sets or reset movement.
+discrete actions add no held state. Applying bindings changes only the 76 named
+action slots and 8 held slots and does not set focus, replace macro sets or reset movement.
+
+Held actions (`held_keybinding_catalog()`) have one key per mode and two skin
+slots, `held_<action>_1` (press, `<command>-down`) and `held_<action>_1_up`
+(`KEY+UP`, `<command>-up`), which always move together. They use their own key
+family (F4-F10, Numpad0) that no discrete action or fixed macro uses, in both
+modes. Applying bindings releases any hold first, and a hold lapses after two
+minutes if its release never arrives.
 
 Saved records use `mode/action/key` strings in the existing flat-list preference
 codec, with `NONE` for an explicit unbind and no record for defaults. Invalid,
@@ -28,8 +37,9 @@ No saved value becomes a command, macro ID, release handler or arbitrary winset.
 
 Extend `action_keybinding_catalog()` with a discrete action and at most two
 default aliases per mode, and add its two named slots in each skin macro set.
-Review the candidate/reservation policy if fixed macros change. Held actions
-need a separate lifecycle design; do not insert them into this discrete catalog.
+Review the candidate/reservation policy if fixed macros change. Put held actions
+in `held_keybinding_catalog()`, never in the discrete catalog, and add their
+press and release slots in each skin macro set.
 
 ## Checks
 
