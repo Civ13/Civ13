@@ -59,9 +59,19 @@
 	else
 		to_chat(user, SPAN_WARNING("\The [src] is empty."))
 
+// Loading may continue while moving, but the grenade must still be in the
+// active hand and the launcher within reach when the wait ends.
+/obj/item/weapon/gun/launcher/grenade/proc/can_finish_loading(obj/item/weapon/grenade/G, mob/user)
+	if (QDELETED(src) || QDELETED(G) || !user || user.get_active_hand() != G)
+		return FALSE
+	if (!Adjacent(user))
+		to_chat(user, SPAN_WARNING("You are too far from \the [src] to load it."))
+		return FALSE
+	return TRUE
+
 /obj/item/weapon/gun/launcher/grenade/attackby(obj/item/I, mob/user)
 	if ((istype(I, /obj/item/weapon/grenade)))
-		if (do_after(user, 10, src, can_move = TRUE))
+		if (do_after(user, 10, src, can_move = TRUE) && can_finish_loading(I, user))
 			load(I, user)
 	else
 		..()

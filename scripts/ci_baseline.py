@@ -223,6 +223,9 @@ SUITES = {
     # Leader orders: a weaker order never extends a stronger one (#5488).
     'leader_orders': {'files': ('tests/leader_orders/test_order_expiry.py',), 'paths': (
         'tests/leader_orders/', 'code/modules/1713/leader_orders.dm')},
+    # Grenade launchers only finish loading within reach (#5526).
+    'grenade_launcher_reach': {'files': ('tests/grenade_launcher_reach/test_reach.py',), 'paths': (
+        'tests/grenade_launcher_reach/', 'code/modules/1713/weapons/guns/grenade_launcher.dm')},
     'matchbox_pickup': {'files': ('tests/matchbox/test_pickup.py',),
         'paths': ('tests/matchbox/',),
         'shared_paths': ('code/game/objects/items/weapons/storage/boxes.dm',
@@ -759,6 +762,13 @@ SUITES = {
     # Centrifuge lids and grid reservations (issues 5514 and 5516).
     'centrifuge_seal_power': {'files': ('tests/centrifuge_seal_power/test_centrifuge.py',),
         'paths': ('tests/centrifuge_seal_power/',), 'shared_paths': ('code/modules/reagents/Chemistry-Machinery.dm',)},
+    # Eating refusal follows the stomach size (Gaia 2026-11-15).
+    'food_fullness': {'files': ('tests/food_fullness/test_fullness_limit.py',),
+        'paths': ('tests/food_fullness/',), 'shared_paths': (
+            'code/game/mob/living/carbon/carbon.dm',
+            'code/game/mob/living/carbon/carbon_defines.dm',
+            'code/modules/reagents/reagent_containers/food/snacks.dm',
+            'code/game/objects/items/weapons/material/kitchen.dm')},
     'human_ssd_hunger': {'files': ('tests/human_ssd_hunger/test_ssd_hunger.py',
         'tests/human_ssd_hunger/test_conscious_hunger.py'),
         'paths': ('tests/human_ssd_hunger/',), 'shared_paths': (

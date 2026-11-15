@@ -850,7 +850,7 @@ var/global/list/tailoring_dye_tiers = list(
 
 /obj/item/tailoring_project
 	name = "tailoring project"
-	desc = "Fabric or leather set aside for one garment. Use it in hand to choose what to make and colour each piece, then cut and sew it. Add more sheets of the same material to it for larger garments. Cloth and woolcloth make clothes and hats; leather makes gloves, footwear and belts. Cutting locks the design. While uncut, hold it in one hand and use a finished bag, quiver or bandolier on it to restyle that for one sheet."
+	desc = "Fabric or leather set aside for one garment. Use it in hand to choose what to make and colour each piece, then cut and sew it. Add more sheets of the same material to it for larger garments. Cloth and woolcloth make clothes and hats; leather makes gloves, footwear and belts. Cutting locks the design. While uncut, hold it in one hand and use a finished bag, quiver or bandolier on it to restyle that, or finished tailored clothing to make a minor alteration, for one sheet."
 	icon = 'icons/obj/materials.dmi'
 	icon_state = "sheet-cloth"
 	w_class = ITEM_SIZE_NORMAL
@@ -912,6 +912,12 @@ var/global/list/tailoring_dye_tiers = list(
 	if (bag_style_kind(W))
 		style_bag(user, W)
 		return
+	// Finished tailored clothing used on the project is altered (tailoring_alterations.dm).
+	if (istype(W, /obj/item/clothing))
+		var/obj/item/clothing/garment = W
+		if (tailoring_body(garment.design_body))
+			alter_garment(user, garment)
+			return
 	var/sheet_kind = tailoring_fabric_kind_of(W)
 	if (sheet_kind)
 		var/obj/item/stack/material/S = W

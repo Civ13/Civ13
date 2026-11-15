@@ -101,6 +101,63 @@ def project_follow(block, distance, turns, mode, callback_distance=None):
             ctx['stop_automated_movement'], tuple(state['calls']))
 
 
+
+def project_worker(block, distances, owned, offset, cancel_on_step):
+    """Execute a strict projection of the follow loop, not native DM."""
+    translations = {
+        'while (valid())': 'while valid():',
+        'var/interval = actor.npc_subtile_native_interval(6)': 'interval = 6',
+        'var/distance = get_dist(actor, target)': 'distance = get_dist(actor, target)',
+        'if (distance <= 1 && actor.npc_subtile_offset_owned && (actor.step_x || actor.step_y))':
+            'if distance <= 1 and actor.npc_subtile_offset_owned and (actor.step_x or actor.step_y):',
+        'if (get_dist(actor, target) <= 1 && actor.npc_subtile_offset_owned && (actor.step_x || actor.step_y))':
+            'if get_dist(actor, target) <= 1 and actor.npc_subtile_offset_owned and (actor.step_x or actor.step_y):',
+        'actor.npc_subtile_settle_axis(src, interval)': 'events.append("settle")',
+        'break': 'break',
+        'var/started = world.time': 'started = world.time',
+        'var/deadline = started + interval': 'deadline = started + interval',
+        'if (distance > 1)': 'if distance > 1:',
+        'if (get_dist(actor, target) > 1)': 'if get_dist(actor, target) > 1:',
+        'var/turf/next = get_step_to(actor, target, 1)': 'next_step = get_step_to(actor, target, 1)',
+        'if (next && valid())': 'if next_step and valid():',
+        'actor.ai_step_wait(next, interval, src)': 'step()',
+        'if (valid() && world.time < deadline)': 'if valid() and world.time < deadline:',
+        'sleep(deadline - world.time)': 'sleep(deadline - world.time)',
+        'else if (valid() && world.time == started)': 'elif valid() and world.time == started:',
+        'sleep(0)': 'sleep(0)',
+    }
+    code = []
+    for line in block.splitlines():
+        statement = line.strip()
+        if not statement or statement.startswith('//'):
+            continue
+        if statement not in translations:
+            raise AssertionError(f'Unrecognized follow worker statement: {statement}')
+        code.append('    ' * (len(line) - len(line.lstrip('\t'))) + translations[statement])
+    code = '\n'.join(line[4:] for line in code)
+    events = []
+    state = {'index': 0, 'cancelled': False}
+    world = SimpleNamespace(time=0)
+    actor = SimpleNamespace(npc_subtile_offset_owned=owned, step_x=int(offset), step_y=0)
+    def valid():
+        return not state['cancelled'] and state['index'] < len(distances)
+    def get_dist(actor, target):
+        return distances[min(state['index'], len(distances) - 1)]
+    def step():
+        events.append('step')
+        if cancel_on_step:
+            state['cancelled'] = True
+    def sleep(delay):
+        events.append(('sleep', delay))
+        world.time += delay
+        state['index'] += 1
+    context = dict(valid=valid, get_dist=get_dist, get_step_to=lambda *args: True,
+                   actor=actor, target=object(), src=object(), events=events,
+                   world=world, step=step, sleep=sleep)
+    exec(code, {'__builtins__': {}}, context)
+    return events, world.time, state['cancelled']
+
+
 class FollowContracts(unittest.TestCase):
     def setUp(self):
         self.source = SOURCE.read_text(encoding='utf-8')
@@ -188,7 +245,7 @@ class FollowContracts(unittest.TestCase):
         self.assertIn('actor.ai_step_wait(next, interval, src)', loop)
         self.assertIn('actor.npc_subtile_native_interval(6)', loop)
         self.assertIn('get_step_to(actor, target, 1)', loop)
-        self.assertIn('get_dist(actor, target) <= 1 && actor.npc_subtile_offset_owned && (actor.step_x || actor.step_y)', loop)
+        self.assertIn('distance <= 1 && actor.npc_subtile_offset_owned && (actor.step_x || actor.step_y)', loop)
         self.assertIn('actor.npc_subtile_settle_axis(src, interval)\n\t\t\tbreak', loop)
         self.assertIn('sleep(deadline - world.time)', loop)
         self.assertNotIn('sleep(6)', loop)
@@ -211,6 +268,43 @@ class FollowContracts(unittest.TestCase):
         cached_detach = current.replace('get_dist(src, following_mob) > 6', 'initial_dist > 6', 1)
         self.assertNotEqual(outputs(missing_gate), expected)
         self.assertNotEqual(outputs(cached_detach), expected)
+
+
+    def test_follow_loop_projection_refreshes_distance_and_preserves_flow(self):
+        current = section(self.source, '/datum/npc_subtile_follow/proc/perform_loop()\n',
+                          '// The scared behavior')
+        # Frozen pre-optimization worker; only the statements projected below run.
+        baseline = """\
+\twhile (valid())
+\t\tvar/interval = actor.npc_subtile_native_interval(6)
+\t\tif (get_dist(actor, target) <= 1 && actor.npc_subtile_offset_owned && (actor.step_x || actor.step_y))
+\t\t\tactor.npc_subtile_settle_axis(src, interval)
+\t\t\tbreak
+\t\tvar/started = world.time
+\t\tvar/deadline = started + interval
+\t\tif (get_dist(actor, target) > 1)
+\t\t\tvar/turf/next = get_step_to(actor, target, 1)
+\t\t\tif (next && valid())
+\t\t\t\tactor.ai_step_wait(next, interval, src)
+\t\tif (valid() && world.time < deadline)
+\t\t\tsleep(deadline - world.time)
+\t\telse if (valid() && world.time == started)
+\t\t\tsleep(0)
+"""
+        stale = current.replace('\twhile (valid())\n\t\tvar/interval',
+                                '\tvar/distance = get_dist(actor, target)\n\twhile (valid())\n\t\tvar/interval')
+        stale = stale.replace('\t\tvar/distance = get_dist(actor, target)\n', '')
+        scenarios = [([distance], owned, offset, cancel)
+                     for distance in (0, 1, 2, 6)
+                     for owned in (False, True) for offset in (False, True)
+                     for cancel in (False, True)]
+        scenarios += [([2, 1], False, False, False), ([2, 1], True, True, False),
+                      ([1, 2], False, False, False), ([2, 2], False, False, True)]
+        for case in scenarios:
+            with self.subTest(case=case):
+                self.assertEqual(project_worker(current, *case), project_worker(baseline, *case))
+        self.assertNotEqual(project_worker(stale, [2, 1], False, False, False),
+                            project_worker(baseline, [2, 1], False, False, False))
 
     def test_stage_is_default_off(self):
         self.assertIn('var/npc_subtile_follow_enabled = FALSE', self.source)

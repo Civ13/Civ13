@@ -99,7 +99,7 @@ class RegionAsay(unittest.TestCase):
         for check in ('source == shard_group.region', 'findtext(msg, "<")', 'html_encode(name)', 'html_encode(envelope["rank"])'):
             self.assertIn(check, receive)
         discord = receive.index('if (envelope["discord"])')
-        gate = '!envelope["posted"] && shard_group.region == shard_group.mainland'
+        gate = '!envelope["posted"] && shard_group.region == shard_group.discord_region()'
         self.assertLess(receive.index('findtext(msg, "<")'), discord)
         # A Discord line is shown and returns before any Discord post.
         self.assertLess(discord, receive.index(gate))

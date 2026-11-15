@@ -61,7 +61,7 @@ def main():
         sources += ["code/game/objects/structures/blacksmithing/molds.dm",
                     "code/game/objects/structures/kitchen/oven.dm",
                     "code/modules/research_tree/research_node.dm", "tests/crafting/stone_molds.dm"]
-        sources += ["code/modules/1713/dressmaking.dm", "code/modules/1713/bag_styling.dm", "tests/crafting/dressmaking.dm"]
+        sources += ["code/modules/1713/dressmaking.dm", "code/modules/1713/bag_styling.dm", "code/modules/1713/tailoring_alterations.dm", "tests/crafting/dressmaking.dm"]
         sources += ["code/game/objects/items/stacks/cloth_crafting.dm", "tests/crafting/woolcloth.dm",
                     "code/game/objects/structures/blacksmithing/armor_workbench.dm",
                     "code/modules/persistence/party_train.dm", "code/modules/1713/apparel_medieval.dm",
