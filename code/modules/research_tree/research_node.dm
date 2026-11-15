@@ -595,6 +595,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/shield/scutum" = "bronze_weapons",
 		// bronze_working
 		"/obj/structure/component_workbench/toolsmith" = "bronze_working",
+		"/obj/structure/fluid_tank/plain" = "bronze_working",
 		// cooperage
 		"/obj/structure/simple_door/key_door/anyone/ship" = "wagons_ships",
 		// crossbows

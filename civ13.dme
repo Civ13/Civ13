@@ -1379,6 +1379,7 @@
 #include "code\modules\materials\pipe_materials.dm"
 #include "code\modules\materials\tool_materials.dm"
 #include "code\modules\materials\tool_speeds.dm"
+#include "code\modules\materials\vessel_materials.dm"
 #include "code\modules\materials\wire_materials.dm"
 #include "code\modules\multiz\_stubs.dm"
 #include "code\modules\multiz\area_teleporter.dm"
