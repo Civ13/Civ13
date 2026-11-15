@@ -717,7 +717,7 @@ SUITES = {
             'code/game/objects/structures/vending/fuel_pump.dm')},
     # Complete mood helpers, maintenance and expression projections; no native world.
     # Production paths retain the prior conservative fallback/neighbor selection.
-    'mood_sleep': {'files': ('tests/mood_sleep/test_mood_sleep.py',),
+    'mood_sleep': {'files': ('tests/mood_sleep/test_mood_sleep.py',), 'timeout': 120,
         'paths': ('tests/mood_sleep/',), 'shared_paths': (
             'tests/save_movement/source_adapter.py',)},
     'dream_lifecycle': {'files': ('tests/dream_lifecycle/test_dream_lifecycle.py',),
