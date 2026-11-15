@@ -74,3 +74,14 @@ their mother tongue.
 
 Tests: `tests/language_proficiency/test_proficiency.py`,
 `tests/book_language/test_book_language.py`.
+
+## Travel between lands
+
+`code/modules/persistence/region_travel_tongues.dm` adds a `tongues` record to
+the travel payload: every language score, the default language, the people
+and birthplace, and today's gains. `region_travel_build()` gives the arriving
+body those languages in place of the ones a new body starts with, and the
+Known Languages and Origin notes are written when the player takes the body.
+A record the destination cannot read whole refuses the trip. A payload with
+no record (an older sender) leaves the body with a new body's languages.
+Test: `tests/origins/test_travel.py`.
