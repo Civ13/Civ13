@@ -21,6 +21,8 @@
 	// One standing open-air level, so aircraft can fly (building_admission.dm).
 	building_levels = 1
 	building_level_standing = TRUE
+	// Mined-out mountain floor keeps giving stone and regrowing ore seams (mountain_seams.dm).
+	mountain_seams = TRUE
 
 /obj/map_metadata/nomads/americas_south
 	ID = MAP_NOMADS_AMERICAS_SOUTH
@@ -35,3 +37,5 @@
 	// One standing open-air level, so aircraft can fly (building_admission.dm).
 	building_levels = 1
 	building_level_standing = TRUE
+	// Mined-out mountain floor keeps giving stone and regrowing ore seams (mountain_seams.dm).
+	mountain_seams = TRUE

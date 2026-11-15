@@ -41,7 +41,8 @@ the banks, within a crop's reach of the water
 
 Each map is a single surface level. Mountains are rock to mine at ground level
 (`/turf/floor/dirt/underground` and its icy and sandy kinds, with unbreakable
-cores), so neither map has or needs an underground level. Trees, bushes and
+cores), so neither map has or needs an underground level. Mined-out mountain
+floor keeps giving stone and regrowing ore seams ([mountain-seams.md](mountain-seams.md)). Trees, bushes and
 other wild plants are seeded at round start from each area's climate, and
 animals by the ecology spawner; the map files hold only ground, water, rock
 and a few hundred markers (groves, puddles in dry country, oil seeps, wolf
