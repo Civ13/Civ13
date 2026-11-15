@@ -429,7 +429,9 @@ def build(name, width=None, height=None):
     river |= tributary
     # Hollows the drainage had to fill deep become ponds and small lakes.
     depth = filled - elev
-    pond = open_land & ~river & (depth > 26.0) & (ridge < 0.5)
+    pond = open_land & ~river & (depth > spec.get('pond_depth', 26.0)) & (ridge < 0.5)
+    for kind in spec.get('dry_biomes', ()):  # lands whose deserts hold no standing water
+        pond &= biome != BIOMES.index(kind)
     labels, sizes = components(pond)
     keep = np.array([10 <= s <= 2500 * scale * scale for s in sizes])
     pond &= keep[labels]

@@ -122,6 +122,8 @@ var/global/list/horse_gin_animals = list(
 	drive_factor = 0.4
 
 /obj/structure/workshop_machine/mover/mill_wheel/idle_reason()
+	if (race_fed_until > world.time) // a mill race off an aqueduct (aqueducts.dm)
+		return null
 	for (var/turf/T in range(1, src))
 		if (river_current_direction(T))
 			return null

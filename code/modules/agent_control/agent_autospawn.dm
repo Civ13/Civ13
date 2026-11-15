@@ -15,12 +15,33 @@
 /proc/agent_autospawn_default_goal()
 	return "Survive, explore, gather food and be friendly to other players."
 
+var/global/agent_autospawn_started = FALSE
+
 /hook/roundstart/proc/agent_autospawn_start()
-	spawn(AGENT_AUTOSPAWN_FIRST_DELAY)
+	agent_autospawn_begin()
+	return TRUE
+
+// A round a persistent world restores resumes without the round start hooks
+// (restore_round_state), so the loop starts with the world and waits for a
+// round that is playing, fresh or restored. It starts once per world.
+/hook/startup/proc/agent_autospawn_watch()
+	agent_autospawn_begin()
+	return TRUE
+
+/proc/agent_autospawn_begin()
+	if (agent_autospawn_started)
+		return
+	agent_autospawn_started = TRUE
+	spawn(0)
+		while (!ticker || ticker.current_state < GAME_STATE_PLAYING)
+			sleep(50)
+		sleep(AGENT_AUTOSPAWN_FIRST_DELAY)
 		while (agent_control)
+			// Bodies are only adoptable once a load or save in flight has finished.
+			while (persistence_save_in_progress || persistence_active_operation || persistence_load_recovery_required)
+				sleep(50)
 			agent_control.autospawn_all()
 			sleep(AGENT_AUTOSPAWN_RECHECK)
-	return TRUE
 
 /datum/agent_control/proc/autospawn_all()
 	reload()

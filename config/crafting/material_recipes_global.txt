@@ -1434,11 +1434,22 @@ RECIPE: /material/stone/,stone brazier,/obj/structure/brazier/stone,3,100,1,1,no
 RECIPE: /material/stone/,stone drain,/obj/structure/sewer_piece/drain/stone,2,80,1,1,construction,0,0,0,8,null
 RECIPE: /material/stone/,stone plinth,/obj/structure/flood_platform/plinth,4,120,1,1,construction,0,0,0,8,null
 RECIPE: /material/stone/,cistern,/obj/structure/reagent_dispensers/cistern,10,200,1,1,construction,0,0,0,8,null
+RECIPE: /material/stone/,aqueduct channel,/obj/structure/aqueduct/channel,2,80,1,1,construction,0,0,0,8,null
+RECIPE: /material/stone/,aqueduct arches,/obj/structure/aqueduct/arch,5,160,1,1,construction,0,0,0,8,null
+RECIPE: /material/stone/,qanat shaft,/obj/structure/aqueduct/qanat,3,150,1,1,construction,0,0,0,8,null
+RECIPE: /material/stone/,aqueduct intake,/obj/structure/aqueduct_intake,4,120,1,1,construction,0,0,0,8,null
+RECIPE: /material/stone/,public fountain,/obj/structure/sink/aqueduct_fountain,6,150,1,1,construction,0,0,0,8,null
+RECIPE: /material/stone/,public bath,/obj/structure/aqueduct_bath,4,150,1,1,construction,0,0,0,8,null
+RECIPE: /material/clay/,clay water pipe,/obj/structure/aqueduct/pipe,1,60,1,1,construction,0,0,0,8,null
+RECIPE: /material/lead/,lead water pipe,/obj/structure/aqueduct/pipe/lead,1,60,1,1,construction,0,0,0,8,null
+RECIPE: /material/bronze/,water tap,/obj/structure/sink/aqueduct_fountain/tap,2,80,1,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,flap gate,/obj/structure/sewer_flap_gate,3,80,1,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,stilt platform,/obj/structure/flood_platform/stilts,4,100,1,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,sluice gate,/obj/structure/sluice_gate,6,120,1,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,shaduf,/obj/structure/water_lift/shaduf,4,100,1,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,Archimedes screw,/obj/structure/water_lift/archimedes_screw,8,150,1,1,construction,0,0,0,8,null
+RECIPE: /material/wood/,timber flume,/obj/structure/aqueduct/flume,3,90,1,1,construction,0,0,0,8,null
+RECIPE: /material/wood/,noria,/obj/structure/aqueduct_intake/noria,12,200,1,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,windmill pump,/obj/structure/water_lift/windmill,12,200,1,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,river gauge,/obj/structure/river_gauge,2,60,1,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,timber well lining,/obj/structure/sink/well/timber,4,150,1,1,construction,0,0,0,8,null
