@@ -26,7 +26,7 @@ CROPS = ('potato', 'carrot', 'cabbage', 'tomato', 'beans', 'wheat')
 MAPS = ('CONTINENTAL', 'PANGEA', 'NEW_WORLD', 'MEDITERRANEAN', 'EUROPE', 'GAIA')
 # Climate-restricted maps added after the historical baseline. The baseline has
 # no rule for them, so they are names for the projection, not parity cases.
-LATER_MAPS = ('AMERICAS_NORTH', 'AMERICAS_SOUTH')
+LATER_MAPS = ('AMERICAS_NORTH', 'AMERICAS_SOUTH', 'ASIA')
 COMPARISONS = 0
 
 

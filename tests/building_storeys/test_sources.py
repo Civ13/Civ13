@@ -46,6 +46,21 @@ class BuildingStoreyTests(unittest.TestCase):
         self.assertEqual(americas.count('\tbuilding_levels = 1\n'), 2)
         self.assertEqual(americas.count('\tbuilding_level_standing = TRUE\n'), 2)
 
+    def test_the_smaller_lands_fit_four_levels_in_the_measured_cells(self):
+        # name: (width, height, compiled levels). Every plane up to the fourth
+        # building level must fit the measured cell count, or roofs would be
+        # refused part of the way up.
+        for name, (width, height, base) in {'asia': (490, 255, 1), 'jungle': (300, 300, 2), 'desert': (225, 225, 2)}.items():
+            with self.subTest(name):
+                meta = read('code/game/objects/map_metadata/nomads/nomads_%s.dm' % name)
+                self.assertEqual(meta.count('\tbuilding_levels = 4\n'), 1)
+                self.assertEqual(meta.count('\tbuilding_level_standing = TRUE\n'), 1)
+                self.assertNotIn('dig_down_underground = TRUE', meta)
+                heights = read('maps/heights/nomads_%s.txt' % name).split('\n')
+                self.assertEqual(heights[1], 'size %d %d' % (width, height))
+                self.assertEqual(heights[2], 'z %d' % base)
+                self.assertLessEqual(width * height * (base + 4), 1050000)
+
     def test_a_roof_grows_only_from_the_highest_level(self):
         levels = read('code/game/objects/building_levels.dm')
         grows = body(levels, '/proc/building_grows_from(z)')

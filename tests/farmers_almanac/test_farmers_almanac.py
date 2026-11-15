@@ -95,6 +95,8 @@ class FarmersAlmanacTests(unittest.TestCase):
         almanac_maps = re.search(r'map\.ID in list\((MAP_[^)]*)\)', ALMANAC).group(1)
         self.assertEqual(sorted(growth_maps.replace(' ', '').split(',')),
                          sorted(almanac_maps.replace(' ', '').split(',')))
+        # Asia has several climates on one land, so its crops follow them too.
+        self.assertIn('MAP_NOMADS_ASIA', almanac_maps.replace(' ', '').split(','))
         # The tropical season exemption is the same set crop growth uses.
         self.assertIn('if (list("jungle", "desert", "savanna").Find(currcl))', growth)
         self.assertIn('(climate in list("jungle", "desert", "savanna"))', ALMANAC)
