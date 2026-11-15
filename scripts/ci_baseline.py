@@ -41,6 +41,9 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'gas_skin_burns': {'files': ('tests/gas_skin_burns/test_gas_skin_burns.py',), 'paths': (
+        'tests/gas_skin_burns/',), 'shared_paths': (
+        'code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Gases.dm',)},
     'pulled_punches': {'files': ('tests/pulled_punches/test_pulled_punches.py',), 'paths': (
         'tests/pulled_punches/',), 'shared_paths': (
         'code/game/mob/living/carbon/human/human_attackhand.dm',

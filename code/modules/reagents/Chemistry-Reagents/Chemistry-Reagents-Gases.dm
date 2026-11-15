@@ -38,7 +38,8 @@ var/mob/living/human/next_gas_flesh_message = -1
 			if (prob(50))
 				if (m.stat != DEAD)
 					m.emote("scream")
-		var/burnlist = "l_arm,r_arm,l_leg,r_leg,l_hand,r_hand,feet,chest,groin,head,"
+		// Grouped keys, matching the clothing checks and damage branches below (#5472).
+		var/burnlist = "arms,legs,hands,feet,chest,groin,head,"
 		for (var/obj/item/clothing/C in m.get_equipped_items())
 			if (C.permeability_coefficient == TRUE || !C.body_parts_covered)
 				continue
