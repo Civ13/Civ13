@@ -55,6 +55,11 @@ var/list/verb_metadata = list()
 	var/ID = "ordinary"
 	var/civilizations = FALSE
 	var/nomads = FALSE
+	var/tribes = FALSE
+	var/campaign = FALSE
+// The practice-room region refuses joins; this fixture is an ordinary region.
+/proc/tutorial_region_refuse_join(mob/new_player/lobby)
+	return FALSE
 /datum/job
 	var/title = "Scout"
 /datum/job/proc/base_type_flag(unused)
@@ -275,20 +280,25 @@ var/list/verb_metadata = list()
 		expect("confirmation_rejects_[action]", player.lobby_join_confirmation("Role?", "Scout") == "No")
 	player = fresh_player()
 	arm(player)
+	// Join modes come from map traits (#5331), not map IDs.
 	map.ID = MAP_CAMPAIGN
+	map.campaign = TRUE
 	faction_list_blue = list("fixture")
 	player.wait_action = "campaign_membership"
 	player.response = "Yes"
 	expect("confirmation_campaign_membership_refresh", player.lobby_join_confirmation("Role?", "Scout") == "No")
 	player = fresh_player()
+	map.ID = "ordinary"
+	map.campaign = FALSE
 	map.civilizations = TRUE
 	map.nomads = TRUE
 	expect("nomads_mode", player.lobby_join_mode() == "nomads")
-	map.ID = MAP_TRIBES
+	map.tribes = TRUE
 	expect("tribes_precede_nomads", player.lobby_join_mode() == "tribes")
-	map.ID = MAP_CAMPAIGN
+	map.tribes = FALSE
+	map.campaign = TRUE
 	expect("campaign_precedes_civilizations", player.lobby_join_mode() == "join_campaign")
-	map.ID = "ordinary"
+	map.campaign = FALSE
 	map.nomads = FALSE
 	expect("civilization_mode", player.lobby_join_mode() == "civilizations")
 	map.civilizations = FALSE

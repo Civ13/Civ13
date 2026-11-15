@@ -7,6 +7,8 @@
 # reachable from a saved atom.
 /datum/ecology_species
 /datum/timedevent
+/datum/click_route         # mob.click_route is a persistence runtime var
+/datum/vehicle_tow         # axis tow_out/tow_in are persistence runtime vars
 /datum/category_group/player_setup_category/general_preferences
 /datum/category_group/player_setup_category/global_preferences
 /datum/category_item/player_setup_item
@@ -16,7 +18,6 @@
 /datum/category_item/player_setup_item/general/test
 /datum/category_item/player_setup_item/player_global
 /datum/category_item/player_setup_item/player_global/settings
-/datum/topic_state/book_reader
 /datum/extension            # nothing attaches extensions to saved atoms
 /datum/extension/labels
 /datum/nano_module/faction_symbol_editor

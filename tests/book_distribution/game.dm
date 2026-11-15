@@ -172,6 +172,6 @@ var/distribution_mutation = null
 	catch(var/exception/e)
 		distribution_failures++
 		world.log << "FAIL: exception [e] [e.file]:[e.line]"
-	var/list/params = params2list(world.params)
+	var/list/params = islist(world.params) ? world.params : params2list(world.params)
 	text2file(json_encode(list("failures" = distribution_failures, "commit" = params["tested_commit"], "byond_build" = world.byond_build)), "result.json")
 	shutdown()

@@ -32,8 +32,9 @@ jobs:
         env:
           BYOND_HOME: ${{ runner.temp }}/sweep-byond
         run: bash scripts/cloud_byond_setup.sh
-      - name: Install Pillow
-        run: timeout -k 5 120 python3 -m pip install --disable-pip-version-check Pillow==11.3.0
+      # numpy: tests/terrain_height compares the game's corner lights with the tool's.
+      - name: Install Pillow and numpy
+        run: timeout -k 5 120 python3 -m pip install --disable-pip-version-check Pillow==11.3.0 numpy==2.5.3
       # The i686 rust-g 3.0.0 build (the version of rust_g.dll) for runners that call rust_g.
       - name: Fetch rust-g 3.0.0
         run: |

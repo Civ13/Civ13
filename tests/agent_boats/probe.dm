@@ -29,6 +29,9 @@ var/boat_runtime_error = FALSE
 	try
 		GLOB.all_observable_events = list()
 		GLOB.moved_event = new
+		GLOB.event_sources_count = list()
+		GLOB.event_listen_count = list()
+		GLOB.global_listen_count = list()
 		GLOB.dir_set_event = new
 		GLOB.destroyed_event = new
 		GLOB.stat_set_event = new

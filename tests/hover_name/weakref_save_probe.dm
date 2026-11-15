@@ -5,8 +5,7 @@
 // The world-save stubs declare /datum/var/gc_destroyed and gcDestroyed.
 /datum
 	var/datum/weakref/weak_reference
-/datum/proc/Destroy()
-	return
+// /datum/proc/Destroy() comes from tests/world_save/stream_stubs.dm.
 /datum/proc/MouseExited(atom/object, location, control, params)
 	return
 /obj/screen/hover_name

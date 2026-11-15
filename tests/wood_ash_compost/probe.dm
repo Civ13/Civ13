@@ -112,6 +112,8 @@
 		check_nitrary(ash_count(get_turf(legacy)) == 0, "unattributed legacy fuel has no wood credit")
 		var/obj/structure/oven/fireplace/fire = new(locate(5,3,1))
 		fire.cooking_time = 1
+		// Campfires burn an eighth of a log a cycle; one whole log keeps this check short.
+		fire.fuel_per_cycle = 1
 		fire.attack_hand(H)
 		check_nitrary(fire.fuel == 3 && ash_count(get_turf(fire)) == 1, "campfire construction wood produces paid residue")
 		var/obj/structure/furnace/F = new(locate(6,3,1))

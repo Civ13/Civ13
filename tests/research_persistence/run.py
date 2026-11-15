@@ -43,7 +43,8 @@ def read(path, control):
 def node_datum(source):
     start = source.index('\n/datum/research_node\n') + 1
     end = source.index('// Human-readable name', start)
-    return source[start:end] + proc_text(source, '/proc/register_research_node(') + proc_text(source, '/proc/get_research_node(')
+    return (source[start:end] + proc_text(source, '/proc/register_research_node(') + proc_text(source, '/proc/get_research_node(')
+            + proc_text(source, '/proc/research_node_dormant('))
 
 
 def build(directory, control):

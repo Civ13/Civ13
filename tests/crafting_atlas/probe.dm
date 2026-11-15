@@ -8,6 +8,11 @@ var/atlas_failed = FALSE
 	icon_state = "paper"
 /proc/to_chat(mob/viewer, message)
 	return
+// Production helpers the atlas calls (agent_prompts.dm, player_tutorial.dm).
+/proc/player_input(target, message, title, default, kind = "text", list/choices = null, can_cancel = FALSE)
+	return input(target, message, title, default) as null|text
+/client/proc/tutorial_event(id)
+	return
 /proc/check_atlas(condition, message)
 	if (!condition)
 		atlas_failed = TRUE

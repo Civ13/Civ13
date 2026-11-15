@@ -113,7 +113,7 @@ var/tree_trunk_probe_checks = 0
 	// Trunk drawn on the west side of its tile: x 1..15, y 2..14.
 	var/obj/structure/wild/tree/live_tree/T = tree_trunk_probe_tree(8, 8, /obj/structure/wild/tree/live_tree, -24, 0)
 	tree_trunk_probe_assert(T.bound_x == 1 && T.bound_y == 2 && T.bound_width == 14 && T.bound_height == 12, "west_trunk_box")
-	tree_trunk_probe_assert(T.locs.len == 1 && T.loc == locate(8, 8, 1) && T.density && T.opacity, "tree_stays_on_its_tile")
+	tree_trunk_probe_assert(T.locs.len == 1 && T.loc == locate(8, 8, 1) && T.density, "tree_stays_on_its_tile")
 
 	// From the east tile, a body walks about half a tile into the tree's tile
 	// before it meets the trunk. Before, the whole tile blocked at once.

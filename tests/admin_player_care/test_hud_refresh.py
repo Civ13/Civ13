@@ -442,7 +442,9 @@ class AppearanceAndCallers(unittest.TestCase):
     def test_species_keeps_renderer_and_invalidates_layout_once(self):
         body = CARE.proc('code/game/mob/living/carbon/human/human.dm', '/mob/living/human/proc/set_species(')
         self.assertEqual(body.count('destroy_HUD()'), 1)
-        self.assertIn('spawn(0)\n\t\tregenerate_icons()', body)
+        # The deferred refresh skips a body deleted before it runs.
+        deferred = body.split('spawn(0)', 1)[1].split('destroy_HUD()', 1)[0]
+        self.assertIn('if (QDELETED(src))\n\t\t\treturn\n\t\tregenerate_icons()', deferred)
         self.assertNotIn('client.screen', body)
         self.assertNotIn('qdel(hud_used)', body)
         self.assertNotIn('new /datum/hud', body)

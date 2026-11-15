@@ -43,6 +43,9 @@ var/measure_gap = FALSE
 		events += "weather_somehow:[season]"
 	proc/change_weather(value)
 		events += "weather:[season]:[value]"
+// Seasons now ask the weather systems for a roll (weather_systems.dm).
+/proc/weather_roll(result)
+	events += "weather_roll:[map ? map.season : null]:[result]"
 /obj/structure/sink
 	var/dry = FALSE
 	proc/update_icon()

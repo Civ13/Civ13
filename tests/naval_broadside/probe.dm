@@ -48,10 +48,14 @@ var/nb_failures = 0
 	for (var/turf/T in block(locate(x1, y1, 1), locate(x2, y2, 1)))
 		A.contents += T
 
-/proc/nb_gun(x, y, d, loaded = TRUE, path = /obj/structure/cannon)
+// No explosion subsystem in the probe. discharge() resets explosion to its
+// compiled value on every shot, so the probe gun compiles with it off.
+/obj/structure/cannon/nb_probe
+	explosion = FALSE
+
+/proc/nb_gun(x, y, d, loaded = TRUE, path = /obj/structure/cannon/nb_probe)
 	var/obj/structure/cannon/C = new path(locate(x, y, 1))
 	C.dir = d
-	C.explosion = FALSE // no explosion subsystem in the probe
 	if (loaded)
 		C.loaded += new /obj/item/cannon_ball(C)
 	return C

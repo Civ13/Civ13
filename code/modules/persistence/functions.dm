@@ -215,7 +215,9 @@ var/global/list/persistence_last_save = null
 // never drop a relationship merely because it points to another z-level.
 /datum/proc/persistence_runtime_var(key)
 	// Weak handles cache native references from this process, never durable IDs.
-	return key == "persistence_export_frame" || key == "weak_reference"
+	// Pending timers belong to this process too: a saved /datum/timedevent
+	// comes back without its callback and stops the load.
+	return key == "persistence_export_frame" || key == "weak_reference" || key == "active_timers"
 
 // Durable links which may point at a movable on another level. Only top-level
 // fields named here use the cross-level codec; every other field keeps the
