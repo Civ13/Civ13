@@ -223,6 +223,9 @@ SUITES = {
     # Leader orders: a weaker order never extends a stronger one (#5488).
     'leader_orders': {'files': ('tests/leader_orders/test_order_expiry.py',), 'paths': (
         'tests/leader_orders/', 'code/modules/1713/leader_orders.dm')},
+    # Grenade launchers only finish loading within reach (#5526).
+    'grenade_launcher_reach': {'files': ('tests/grenade_launcher_reach/test_reach.py',), 'paths': (
+        'tests/grenade_launcher_reach/', 'code/modules/1713/weapons/guns/grenade_launcher.dm')},
     'matchbox_pickup': {'files': ('tests/matchbox/test_pickup.py',),
         'paths': ('tests/matchbox/',),
         'shared_paths': ('code/game/objects/items/weapons/storage/boxes.dm',
