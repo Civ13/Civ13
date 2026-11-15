@@ -80,12 +80,12 @@ class HumanDropReturnContracts(unittest.TestCase):
 
     def test_parent_refusal_and_physical_move_contract_remain_distinct(self):
         text = block(source('code/game/mob/inventory.dm'), '/mob/proc/drop_from_inventory')
-        self.assertIn('if (W.nodrop || W.nodrop_special_check() || ignore_nodrop)\n\t\t\treturn FALSE', text)
+        self.assertIn('if ((W.nodrop || W.nodrop_special_check()) && !ignore_nodrop)\n\t\t\treturn FALSE', text)
         self.assertIn('if (!Target)\n\t\t\tTarget = loc', text)
         self.assertIn('remove_from_mob(W)', text)
         self.assertIn('W.forceMove(Target, MOVED_DROP)', text)
         self.assertIn('update_icons()\n\t\treturn TRUE', text)
-        # Do not reinterpret the existing ignore_nodrop polarity or turn the
+        # ignore_nodrop lets a nodrop item drop (polarity fixed in #5415). Do not turn the
         # parent's unchecked forceMove into proof of destination admission.
         self.assertNotIn('if (!W.forceMove', text)
 
