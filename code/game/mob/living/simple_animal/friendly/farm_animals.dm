@@ -301,12 +301,13 @@
 	. = ..()
 	if (stat == CONSCIOUS)
 		if ( plough && pulledby)
-			if ( istype(get_turf(src), /turf/floor/grass/jungle) )
-			else if ( istype(get_turf(src), /turf/floor/dirt/burned) )			//Not very modular, since the plough process isn't
-			else if ( istype(get_turf(src), /turf/floor/dirt/jungledirt) )		//We can module all the checks if the soil is ploughtable
-			else if (istype(get_turf(src), /turf/floor/grass) && !istype(get_turf(src), /turf/floor/grass/jungle))
+			var/turf/plough_turf = get_turf(src)
+			if ( istype(plough_turf, /turf/floor/grass/jungle) )
+			else if ( istype(plough_turf, /turf/floor/dirt/burned) )			//Not very modular, since the plough process isn't
+			else if ( istype(plough_turf, /turf/floor/dirt/jungledirt) )		//We can module all the checks if the soil is ploughtable
+			else if (istype(plough_turf, /turf/floor/grass) && !istype(plough_turf, /turf/floor/grass/jungle))
 				do_plough(src)			//Maybe add a Turf var or proc is_ploughtable?
-			else if (istype(get_turf(src), /turf/floor/dirt) && !(istype(get_turf(src), /turf/floor/dirt/ploughed)) && !(istype(get_turf(src), /turf/floor/dirt/dust)))
+			else if (istype(plough_turf, /turf/floor/dirt) && !(istype(plough_turf, /turf/floor/dirt/ploughed)) && !(istype(plough_turf, /turf/floor/dirt/dust)))
 				do_plough(src)
 
 /mob/living/simple_animal/cattle/cow/Life()
