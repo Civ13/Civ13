@@ -320,11 +320,24 @@ class DugWellsTest(unittest.TestCase):
         research = (ROOT / 'code/modules/research_tree/research_node.dm').read_text(encoding='utf-8')
         self.assertRegex(recipes, r'RECIPE: /material/wood/,timber well lining,/obj/structure/sink/well/timber,')
         self.assertIn('"/obj/structure/sink/well/timber" = "primitive_construction",', research)
+        for name, path, node in (('windlass and pail', '/obj/structure/well_fitting/windlass', 'cooperage'),
+                                 ('cast iron hand pump', '/obj/structure/well_fitting/pump', 'iron_tools')):
+            self.assertRegex(recipes, rf'RECIPE: /material/\w+/,{name},{path},')
+            self.assertIn(f'"{path}" = "{node}",', research)
+            # a title with "well" in it would be held to the build-over-a-puddle rule
+            self.assertNotIn('well', name)
+        import json
+        needs = json.loads((ROOT / 'config/craft_needs.json').read_text(encoding='utf-8'))
+        self.assertEqual(needs['/obj/structure/well_fitting/windlass']['inputs'], {'/obj/item/stack/material/rope': 2})
+        wells = (ROOT / 'code/modules/1713/dug_wells.dm').read_text(encoding='utf-8')
+        self.assertIn('/datum/craft_guard/well_fitting/refusal(', wells)
+        self.assertIn('if (locate(/obj/structure/sink/well) in get_turf(H))', wells)
         from PIL import Image
         meta = Image.open(ROOT / 'icons/obj/wells.dmi').info['Description']
         states = {line.split('"')[1] for line in meta.splitlines() if line.startswith('state = ')}
         # the waterhole is a puddle, which shows "puddle-splash" while in use
-        for state in ('waterhole', 'waterhole_dry', 'puddle-splash', 'timber_well', 'timber_well_dry'):
+        for state in ('waterhole', 'waterhole_dry', 'puddle-splash', 'timber_well', 'timber_well_dry',
+                      'fit_windlass', 'fit_windlass_use', 'fit_pump', 'fit_pump_use'):
             self.assertIn(state, states)
 
 

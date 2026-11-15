@@ -21,6 +21,16 @@ States, all 32x32 and 1 dir, 1 frame unless noted:
                      corners, the south side of the curb two logs high, and
                      the timbered far wall going down into the dark.
   timber_well        The same with water glinting far down the shaft.
+  fit_windlass       Drawn over a lined well: two posts, a roller with the
+                     rope wound on it, an iron crank and a pail hanging
+                     over the mouth.
+  fit_windlass_use   4 frames, 3 ds each: the crank turns, the pail goes
+                     down and comes up full and dripping.
+  fit_pump           Drawn over a lined well: a plank cover strapped with
+                     iron and a green cast iron hand pump on it, the spout
+                     to the left and the handle to the right.
+  fit_pump_use       4 frames, 3 ds each: the handle works and water runs
+                     from the spout.
 
 Every state keeps at least 1px clear on the left, right and bottom of the
 tile, which `--check` enforces together with the frame counts.
@@ -38,8 +48,8 @@ from PIL import Image, ImageDraw
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from create_water_animation import SIZE, read_dmi, write_dmi  # noqa: E402
 from create_sewers import (  # noqa: E402
-    BANK_LIT, BANK_SHADE, DARK, MUD, RIM, ROCK, SHADOW, WOOD, check_sheet, ground_tiles, image, loop, noise,
-    option, pixels)
+    BANK_LIT, BANK_SHADE, DARK, FLOW, IRON, MUD, RIM, ROCK, SHADOW, WOOD, check_sheet, ground_tiles, image, loop,
+    noise, option, pixels, rod)
 
 ROOT = Path(__file__).resolve().parents[2]
 SHEET = ROOT / 'icons/obj/wells.dmi'
@@ -244,9 +254,160 @@ def timber_well(wet=False):
     return image(px)
 
 
+# ----------------------------------------------------------------- fittings
+# Drawn to lie over any of the lined wells: the timber well here and the three
+# stone wells in watercloset.dmi.
+
+USE_FRAMES, USE_DELAY = 4, 3
+ROPE = [(204, 180, 128), (156, 130, 86)]
+PAIL = [(168, 124, 80), (138, 98, 62), (104, 72, 44)]
+HOOP = (70, 72, 78)
+WATER_IN_PAIL = (96, 140, 156)
+
+# ---- windlass: two posts, a roller with the rope wound on it, a crank, a pail
+POSTS = (2, 26)            # left column of each 3px post
+POST_TOP, POST_FOOT = 3, 21
+ROLLER_Y = 5               # top row of the 3px roller
+CRANK_X = 30
+PAIL_REST = 9              # top row of the pail hanging at rest
+# (crank angle step, pail top row) for each working frame
+WINDLASS_USE = ((0, 11), (1, 14), (2, 12), (3, 10))
+
+def windlass(frame=None):
+    px = {}
+    step, pail_y = (0, PAIL_REST) if frame is None else WINDLASS_USE[frame]
+    for x in POSTS:
+        for y in range(POST_TOP, POST_FOOT + 1):
+            px[(x, y)] = WOOD[0]
+            px[(x + 1, y)] = WOOD[1] if noise(x, y // 3, 861) < 0.7 else WOOD[2]
+            px[(x + 2, y)] = WOOD[3]
+        # the forked head the roller lies in
+        px[(x, POST_TOP - 1)] = WOOD[0]
+        px[(x + 2, POST_TOP - 1)] = WOOD[2]
+        for i in range(3):
+            px[(x + i, POST_FOOT + 1)] = SHADOW + (90,)
+    # the roller
+    for x in range(POSTS[0] + 3, POSTS[1]):
+        px[(x, ROLLER_Y)] = WOOD[0]
+        px[(x, ROLLER_Y + 1)] = WOOD[1]
+        px[(x, ROLLER_Y + 2)] = WOOD[3]
+    # rope wound round the middle of it; fewer turns left when the pail is down
+    turns = 7 - (pail_y - PAIL_REST)
+    for i in range(max(2, turns)):
+        x = 12 + i
+        px[(x, ROLLER_Y - 1)] = ROPE[0]
+        px[(x, ROLLER_Y)] = ROPE[0] if (i + step) % 2 == 0 else ROPE[1]
+        px[(x, ROLLER_Y + 1)] = ROPE[1]
+        px[(x, ROLLER_Y + 2)] = ROPE[1] if (i + step) % 2 else (116, 94, 60)
+    # the axle through the right post and the crank on it
+    for x in range(POSTS[1] + 3, CRANK_X + 1):
+        px[(x, ROLLER_Y + 1)] = IRON[1]
+    dx, dy = ((0, -3), (0, 3), (0, -3), (0, 3))[step] if frame is not None else (0, 3)
+    hy = ROLLER_Y + 1 + dy
+    for y in range(min(ROLLER_Y + 1, hy), max(ROLLER_Y + 1, hy) + 1):
+        px[(CRANK_X, y)] = IRON[0] if frame is None or step % 2 == 0 else IRON[1]
+    # the grip, sticking out toward us
+    grip = ((CRANK_X - 1, hy), (CRANK_X, hy)) if frame is None or step in (0, 3) else ((CRANK_X, hy), (CRANK_X - 1, hy + (1 if dy < 0 else -1)))
+    for at in grip:
+        px[at] = WOOD[1]
+    px[(CRANK_X, hy)] = WOOD[0]
+    # the rope down to the pail
+    rx = 15
+    for y in range(ROLLER_Y + 3, pail_y):
+        px[(rx, y)] = ROPE[y % 2]
+    # the pail: a bail, staves, two hoops
+    px[(rx - 1, pail_y)] = HOOP
+    px[(rx + 1, pail_y)] = HOOP
+    px[(rx - 2, pail_y + 1)] = HOOP
+    px[(rx + 2, pail_y + 1)] = HOOP
+    full = frame in (2, 3)
+    for y in range(pail_y + 2, pail_y + 6):
+        for x in range(rx - 2, rx + 3):
+            c = PAIL[0] if x == rx - 2 else (PAIL[2] if x == rx + 2 else PAIL[1])
+            if y in (pail_y + 2, pail_y + 4):
+                c = HOOP if y == pail_y + 4 else c
+            px[(x, y)] = c
+    for x in range(rx - 1, rx + 2):
+        px[(x, pail_y + 2)] = WATER_IN_PAIL if full else PAIL[2]
+    if frame == 2:
+        px[(rx - 3, pail_y + 5)] = FLOW[1]
+        px[(rx + 1, pail_y + 7)] = FLOW[0]
+    return image(px)
+
+# ---- hand pump: a cast iron pump on a plank cover over the mouth
+COVER = (7, 12, 24, 17)
+PUMP_X = 14                # left column of the 4px barrel
+PUMP_TOP, PUMP_FOOT = 2, 13
+PAINT = [(86, 128, 96), (62, 98, 74), (44, 72, 56), (30, 50, 40)]   # green enamel over iron
+# handle end height for each working frame, and whether water runs
+PUMP_USE = ((-4, False), (1, True), (4, True), (0, False))
+
+def pump(frame=None):
+    px = {}
+    x0, y0, x1, y1 = COVER
+    for y in range(y0, y1 + 1):
+        for x in range(x0, x1 + 1):
+            c = WOOD[1]
+            if (y - y0) % 3 == 2:
+                c = WOOD[3]
+            elif noise(x // 5, y, 871) < 0.25:
+                c = WOOD[0]
+            px[(x, y)] = c
+    for x in range(x0, x1 + 1):
+        px[(x, y1 + 1)] = WOOD[3]
+        px[(x, y0)] = WOOD[0]
+    for y in range(y0, y1 + 2):
+        px[(x0, y)] = WOOD[0]
+        px[(x1, y)] = WOOD[3]
+    # two iron straps
+    for y in range(y0, y1 + 1):
+        px[(x0 + 3, y)] = IRON[2]
+        px[(x1 - 3, y)] = IRON[2]
+    # the base flange and the barrel
+    for x in range(PUMP_X - 1, PUMP_X + 5):
+        px[(x, PUMP_FOOT)] = PAINT[1]
+        px[(x, PUMP_FOOT + 1)] = PAINT[3]
+    for y in range(PUMP_TOP + 2, PUMP_FOOT):
+        for i, tone in enumerate((0, 1, 2, 3)):
+            px[(PUMP_X + i, y)] = PAINT[tone]
+    # a band, and the cap
+    for i in range(4):
+        px[(PUMP_X + i, PUMP_TOP + 6)] = PAINT[3]
+    for x in range(PUMP_X - 1, PUMP_X + 5):
+        px[(x, PUMP_TOP + 1)] = PAINT[0] if x < PUMP_X + 2 else PAINT[2]
+    for x in range(PUMP_X, PUMP_X + 4):
+        px[(x, PUMP_TOP)] = PAINT[1]
+    # the spout, to the left and turned down
+    for x in range(PUMP_X - 5, PUMP_X):
+        px[(x, PUMP_TOP + 4)] = PAINT[0]
+        px[(x, PUMP_TOP + 5)] = PAINT[2]
+    px[(PUMP_X - 5, PUMP_TOP + 6)] = PAINT[2]
+    px[(PUMP_X - 4, PUMP_TOP + 6)] = PAINT[3]
+    # the handle: pivots on a lug right of the cap, the long end out to the right
+    pivot = (PUMP_X + 5, PUMP_TOP + 2)
+    px[(PUMP_X + 4, PUMP_TOP + 2)] = IRON[1]
+    end_dy, running = (3, False) if frame is None else PUMP_USE[frame]
+    end = (pivot[0] + 9, pivot[1] + end_dy)
+    rod(px, pivot[0], pivot[1], end[0], end[1], IRON[0])
+    rod(px, pivot[0], pivot[1] + 1, end[0], end[1] + 1, IRON[2])
+    px[pivot] = IRON[3]
+    px[end] = WOOD[0]
+    px[(end[0], end[1] + 1)] = WOOD[2]
+    # the plunger rod above the cap goes up as the handle goes down
+    for y in range(PUMP_TOP - 1 - (1 if end_dy > 0 else 0), PUMP_TOP):
+        px[(PUMP_X + 2, y)] = IRON[0]
+    if running:
+        for y in range(PUMP_TOP + 7, y0):
+            px[(PUMP_X - 5, y)] = FLOW[(y + frame) % 2]
+        px[(PUMP_X - 6, y0 - 1)] = FLOW[0]
+        px[(PUMP_X - 4, y0 - 1)] = FLOW[1]
+    return image(px)
+
+
 # -------------------------------------------------------------------- sheet
 
-STILLS = ('waterhole_dry', 'waterhole', 'timber_well_dry', 'timber_well')
+STILLS = ('waterhole_dry', 'waterhole', 'timber_well_dry', 'timber_well', 'fit_windlass', 'fit_pump')
+LOOPS = ('fit_windlass_use', 'fit_pump_use')
 
 
 def build():
@@ -256,7 +417,11 @@ def build():
             ('waterhole', dict(one), [waterhole(True)]),
             ('puddle-splash', loop(SPLASH_FRAMES, SPLASH_DELAY), [waterhole(True, 0.45), waterhole(True, 0.85)]),
             ('timber_well_dry', dict(one), [timber_well()]),
-            ('timber_well', dict(one), [timber_well(True)])]
+            ('timber_well', dict(one), [timber_well(True)]),
+            ('fit_windlass', dict(one), [windlass()]),
+            ('fit_windlass_use', loop(USE_FRAMES, USE_DELAY), [windlass(f) for f in range(USE_FRAMES)]),
+            ('fit_pump', dict(one), [pump()]),
+            ('fit_pump_use', loop(USE_FRAMES, USE_DELAY), [pump(f) for f in range(USE_FRAMES)])]
 
 
 def check_drawing(states):
@@ -264,7 +429,7 @@ def check_drawing(states):
     by = {name: images for name, _, images in states}
     keys_of = {name: keys for name, keys, _ in states}
     problems = []
-    want = list(STILLS) + ['puddle-splash']
+    want = list(STILLS) + ['puddle-splash'] + list(LOOPS)
     if sorted(by) != sorted(want) or len(states) != len(want):
         problems.append('state list is %s' % ', '.join(name for name, _, _ in states))
     for name, keys, images in states:
@@ -286,6 +451,13 @@ def check_drawing(states):
             problems.append('%s is not a single frame' % name)
     if keys_of.get('puddle-splash') != loop(SPLASH_FRAMES, SPLASH_DELAY):
         problems.append('puddle-splash is not %d frames of %d ds' % (SPLASH_FRAMES, SPLASH_DELAY))
+    for name in LOOPS:
+        if name in by:
+            if keys_of[name] != loop(USE_FRAMES, USE_DELAY):
+                problems.append('%s is not %d frames of %d ds' % (name, USE_FRAMES, USE_DELAY))
+            shots = [pixels(im) for im in by[name]]
+            if any(shots[i] == shots[j] for i in range(len(shots)) for j in range(i)):
+                problems.append('%s repeats a frame' % name)
     # wet and dry differ only inside the hole, and the splash only on the water
     for dry, wet in (('waterhole_dry', 'waterhole'), ('timber_well_dry', 'timber_well')):
         if dry in by and wet in by:
@@ -317,6 +489,8 @@ def write_preview(path, states, scale=4):
         pass
     shots = []
     for name, _, images in states:
+        if name.startswith('fit_'):
+            continue
         for n, im in enumerate(images):
             shots.append((name if len(images) == 1 else 'splash %d' % n, im))
     label_h, pad = 12, 6
@@ -325,8 +499,14 @@ def write_preview(path, states, scale=4):
               ('timber_well', by['timber_well'][0]), ('well1', stone.get('well1')),
               ('sandstone', stone.get('sandstone_well1')), ('marble', stone.get('marble_well1'))]
     family = [(label, im) for label, im in family if im is not None]
-    wide = pad + max(len(shots), len(family) + 1) * (cell + pad)
+    lined = [im for label, im in family if label not in ('puddle', 'waterhole')]
+    fits = [('windlass', by['fit_windlass'][0])] + [('winding %d' % n, im) for n, im in enumerate(by['fit_windlass_use'])]
+    fits += [('pump', by['fit_pump'][0])] + [('pumping %d' % n, im) for n, im in enumerate(by['fit_pump_use'])]
+    small = SIZE * 3
+    wide = pad + max(len(shots) * (cell + pad), (len(family) + 1) * (cell + pad), len(fits) * (small + pad))
     high = pad + 2 * (cell + label_h + pad) + (SIZE + label_h + pad) + (cell + label_h + pad)
+    fit_y = high
+    high += label_h + len(lined) * (small + pad)
     sheet = Image.new('RGB', (wide, high), DARK)
     draw = ImageDraw.Draw(sheet)
 
@@ -350,6 +530,13 @@ def write_preview(path, states, scale=4):
     for n, (label, im) in enumerate(family):
         x = pad + n * (cell + pad)
         sheet.paste(tile(grass, im).resize((cell, cell), Image.NEAREST), (x, by_y + label_h))
+    draw.text((pad, fit_y), 'the windlass and the pump over each lined well: ' + ', '.join(label for label, _ in fits), fill=(220, 220, 220))
+    for row, well in enumerate(lined):
+        for col, (_, fit) in enumerate(fits):
+            both = tile(grass, well).convert('RGBA')
+            both.alpha_composite(fit)
+            sheet.paste(both.convert('RGB').resize((small, small), Image.NEAREST),
+                        (pad + col * (small + pad), fit_y + label_h + row * (small + pad)))
     sheet.save(path)
 
 

@@ -181,7 +181,7 @@ var/sewer_runtime_error = FALSE
 	sewer_check(OW.volume == 100 && OW.max_volume == 750, "and the dug-well water rules leave it alone")
 
 	// What fouls a well fouls a dug one.
-	s2_poo(locate(3, 2, 1))
+	var/obj/item/waste = s2_poo(locate(3, 2, 1))
 	sewer_check(PW.has_nearby_fecal_waste(), "waste near a dug well fouls it like any well")
 	var/turf/basin = locate(4, 4, 1)
 	var/obj/structure/sink/well/timber/FW = new /obj/structure/sink/well/timber(basin)
@@ -189,6 +189,29 @@ var/sewer_runtime_error = FALSE
 	F.restore_hollows(list(1, 6))
 	sewer_check(FW.flood_foul() && FW.dirty && sewer_near(FW.dug_column(), 2), "floodwater over a dug well fills and fouls it")
 	F.restore_hollows(list(1, 0))
+
+	// Fittings: a windlass fills a container in one haul, a pump takes its place.
+	var/obj/structure/well_fitting/windlass/WL = new /obj/structure/well_fitting/windlass(low)
+	sewer_check(SW.well_fitting() == WL && WL.well() == SW && !PW.well_fitting(), "a windlass over a well is that well's fitting")
+	var/obj/item/weapon/reagent_containers/glass/bucket/BK = new /obj/item/weapon/reagent_containers/glass/bucket(low)
+	qdel(waste)
+	SW.dirty = FALSE
+	SW.volume = 300
+	SW.dug_settled_at = world.time
+	var/room = BK.volume - BK.reagents.total_volume
+	sewer_check(room > 20 && WL.draw_into(SW, BK) == room && BK.reagents.total_volume == BK.volume && sewer_near(SW.volume, 300 - room), "one haul fills the whole bucket ([room]) and takes it from the well ([SW.volume])")
+	sewer_check(BK.reagents.get_reagent_amount("water") == room && !BK.reagents.get_reagent_amount("cholera"), "clean water from a clean well")
+	sewer_check(!WL.draw_into(SW, BK), "a full bucket takes no more")
+	BK.reagents.clear_reagents()
+	SW.dirty = TRUE
+	SW.volume = 60
+	sewer_check(WL.draw_into(SW, BK) == 60 && !SW.volume && BK.reagents.get_reagent_amount("cholera") > 0, "a foul well gives foul water, and only what it holds")
+	BK.reagents.clear_reagents()
+	sewer_check(!WL.draw_into(SW, BK), "an empty well gives nothing")
+	var/obj/structure/well_fitting/pump/PU = new /obj/structure/well_fitting/pump(low)
+	sewer_check(QDELETED(WL) && SW.well_fitting() == PU && PU.draw_time < initial(WL.draw_time), "a pump takes the windlass's place and draws faster")
+	qdel(SW)
+	sewer_check(QDELETED(PU), "the fitting goes with its well")
 
 	// Places a well cannot go.
 	var/turf/ditch = locate(8, 5, 1)
