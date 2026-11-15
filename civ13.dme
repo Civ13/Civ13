@@ -1495,6 +1495,7 @@
 #include "code\modules\persistence\region_travel.dm"
 #include "code\modules\persistence\region_travel_gear.dm"
 #include "code\modules\persistence\region_edge.dm"
+#include "code\modules\persistence\region_edge_carriage.dm"
 #include "code\modules\persistence\region_trails.dm"
 #include "code\modules\persistence\land_stage.dm"
 #include "code\modules\persistence\party_freight.dm"
