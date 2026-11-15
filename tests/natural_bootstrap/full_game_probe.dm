@@ -637,6 +637,22 @@ var/global/datum/natural_bootstrap_probe/natural_bootstrap_probe = new
 
 // ---------------------------------------------------------------- read stage
 
+// Where an item the character carried at the save is now: evidence for a failed restore.
+/datum/natural_bootstrap_probe/proc/missing_trace(list/before_items, list/after_items)
+	var/list/rows = list("l_hand=[H.l_hand ? H.l_hand.type : "none"] r_hand=[H.r_hand ? H.r_hand.type : "none"]")
+	for(var/path_text in before_items - after_items)
+		var/path = text2path(path_text)
+		var/found = 0
+		for(var/obj/item/I in world)
+			if(I.type != path)
+				continue
+			found++
+			var/turf/T = get_turf(I)
+			rows += "[path_text] in [I.loc ? I.loc.type : "nullspace"] at [T ? "[T.x],[T.y],[T.z]" : "nowhere"]"
+		if(!found)
+			rows += "[path_text] exists nowhere in the world"
+	return jointext(rows, "; ")
+
 /datum/natural_bootstrap_probe/proc/run_read()
 	mark("restored_state")
 	require(fexists("manifest.json"), "No manifest from the write stage")
@@ -652,7 +668,7 @@ var/global/datum/natural_bootstrap_probe/natural_bootstrap_probe = new
 	require(now["civilization"] == manifest["faction"] && ("basic_tools" in H.known_recipe_nodes), "Faction or learned chapter was lost")
 	var/list/before_items = saved_body["inventory"]
 	var/list/after_items = now["inventory"]
-	require(json_encode(sortList(before_items.Copy())) == json_encode(sortList(after_items.Copy())), "Carried items changed across the restart: [json_encode(after_items)]")
+	require(json_encode(sortList(before_items.Copy())) == json_encode(sortList(after_items.Copy())), "Carried items changed across the restart: [json_encode(after_items)]; [missing_trace(before_items, after_items)]")
 	var/obj/item/knife = carried(/obj/item/weapon/material/kitchen/utensil/knife)
 	require(knife, "The flint knife is no longer in hand")
 	var/list/stick_row = manifest["stick"]
