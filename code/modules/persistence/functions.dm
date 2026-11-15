@@ -771,7 +771,7 @@ map_storage
 			if(nums.len > 1 && nums.len < 3)
 				var/integer = text2num(nums[1])
 				var/exp = text2num(nums[2])
-				if(IsNumeric(integer) && IsNumeric(exp))
+				if(isnum(integer) && isnum(exp))
 					return integer*10**exp
 		return text
 

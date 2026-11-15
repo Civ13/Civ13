@@ -243,6 +243,27 @@ class LocalWslTests(unittest.TestCase):
             self.assertFalse(module.process_matches({'pid': 77, 'started': '456'}, root))
             self.assertFalse(module.process_matches({'pid': 77, 'started': '123'}, Path('/tmp/tdm')))
 
+    def test_identity_accepts_only_the_exact_argument_pair_the_daemon_rewrites(self):
+        # Observed on Linux 516.1688: the running daemon's /proc cmdline shows
+        # the runtime directory and "civ13.dmb" as two separate arguments.
+        root = Path('/tmp/nomads')
+        fields = ['S'] + ['0'] * 18 + ['123'] + ['0'] * 5
+        daemon = str(module.BIN / 'DreamDaemon')
+        def matches(arguments, runtime=root, started='123'):
+            command = ('\0'.join(arguments) + '\0').encode()
+            with patch.object(Path, 'read_text', return_value='77 (DreamDaemon) ' + ' '.join(fields)), \
+                    patch.object(Path, 'read_bytes', return_value=command):
+                return module.process_matches({'pid': 77, 'started': started}, runtime)
+        rewritten = [daemon, str(root), 'civ13.dmb', '1715', '-trusted', '-log', 'logs/world.log']
+        self.assertTrue(matches(rewritten))
+        self.assertFalse(matches(rewritten, started='456'))
+        self.assertFalse(matches(rewritten, runtime=Path('/tmp/tdm')))
+        self.assertFalse(matches([daemon, str(root), 'other.dmb', '1715']))
+        self.assertFalse(matches([daemon, 'civ13.dmb', str(root), '1715']))
+        self.assertFalse(matches([daemon, str(root) + '-copy', 'civ13.dmb', '1715']))
+        self.assertFalse(matches(['/usr/bin/DreamDaemon', str(root), 'civ13.dmb', '1715']))
+        self.assertFalse(matches([daemon, str(root)]))
+
     def test_dirty_build_stops_before_export_or_compiler(self):
         with tempfile.TemporaryDirectory() as directory, patch.object(module.subprocess, 'check_output', side_effect=['a' * 40, ' M code/example.dm']), patch.object(module.subprocess, 'run') as run:
             with self.assertRaisesRegex(RuntimeError, 'Commit tracked changes'):

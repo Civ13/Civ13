@@ -39,7 +39,8 @@ class PublicationControlTests(unittest.TestCase):
         self.assertEqual(shlex.split(lines[positive_line + 1]), positive + ['--publication-negative-control'])
         self.assertIn('export TMPDIR="$RUNNER_TEMP/save-latency"', step)
         self.assertTrue('BYOND_MAJOR: "516"' in workflow, 'Pinned BYOND major changed')
-        self.assertTrue('BYOND_MINOR: "1681"' in workflow, 'Pinned BYOND minor changed')
+        self.assertTrue('BYOND_MINOR: "1688"' in workflow, 'Pinned BYOND minor changed')
+        self.assertNotIn('BYOND_MINOR: "1681"', workflow)
         artifact = workflow.split('      - name: Retain bounded save source and native evidence\n', 1)[1].split('      - name:', 1)[0]
         self.assertIn("if: always() && needs.changes.result == 'success' && steps.save_latency.outcome != 'skipped'", artifact)
         self.assertIn('path: ${{ runner.temp }}/save-latency/', artifact)

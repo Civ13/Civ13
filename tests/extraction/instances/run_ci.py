@@ -11,6 +11,8 @@ import sys
 import time
 
 ROOT = Path(__file__).resolve().parents[3]
+# The canonical repository pin is the only accepted engine; no older fallback.
+PIN = json.loads((ROOT / 'tools/byond/version.json').read_text(encoding='utf-8'))['version']
 SOURCE = 'code/modules/1713/extraction/instances.dm'
 PROBE = 'tests/extraction/instances/probe.dm'
 INCLUDE = '#include "../../../code/modules/1713/extraction/instances.dm"'
@@ -87,7 +89,7 @@ def verdict(log, expected, control):
 def compiler_verdict(log):
     require(not DIAGNOSTIC.search(log), 'Compiler diagnostic invalidates evidence')
     banners = re.findall(r'^DM compiler version[^\r\n]*', log, re.M)
-    require(len(banners) == 1 and re.fullmatch(r'DM compiler version 516\.1681[ \t]*', banners[0])
+    require(len(banners) == 1 and re.fullmatch('DM compiler version ' + re.escape(PIN) + r'[ \t]*', banners[0])
             and '- 0 errors, 0 warnings' in log,
             'Compiler banner/result mismatch')
 
@@ -120,7 +122,7 @@ def native_gate(output, byond):
     require(output.resolve().is_relative_to(temporary) and output.resolve() != temporary,
             'Evidence must be a new child of RUNNER_TEMP')
     require(byond.resolve(strict=True) == workspace / 'BYOND/byond/bin', 'Use pinned CI BYOND installation')
-    require(os.environ.get('BYOND_MAJOR') == '516' and os.environ.get('BYOND_MINOR') == '1681',
+    require(os.environ.get('BYOND_MAJOR', '') + '.' + os.environ.get('BYOND_MINOR', '') == PIN,
             'Pinned BYOND version changed')
 
 

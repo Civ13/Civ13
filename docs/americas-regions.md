@@ -81,14 +81,22 @@ Nothing stands there: no trail post and no gate. Each map names its neighbour
   and carry and the same rules about what can travel
   (`code/modules/persistence/region_travel.dm`). Wounds go with them; unlike a
   trail, the walk does not ask for full health.
+- Worn and held tools and weapons keep their material, quality and wear, a bag
+  keeps what it holds (one level: a bag inside a bag has to come out), and
+  whole arrows, bolts and cartridges travel one by one
+  (`code/modules/persistence/region_travel_gear.dm`). Anything that still
+  cannot travel is named in the refusal, with the bag it sits in.
 - They come out on the facing edge of the other land, as far along the neck as
   they were, three tiles in and facing inland.
 - A rider takes the mount along. A rideable animal that carries nothing goes
   as a record of its kind, name and health, and stands beside its rider on the
   far side (the rider gets back on). If the rider is turned back, the animal
   comes back with them.
-- A driver or anyone dragging something is told to go on foot.
-  **Wheeled vehicles, carts and led animals do not cross yet.**
+- One animal led by hand (pulled) crosses the same way, as long as it is not
+  wild, carries nothing and nobody rides it. It arrives as a new animal of its kind with its
+  name and health; anything else about it (milk, wool, age) starts fresh.
+- A driver or anyone dragging anything else is told to go on foot.
+  **Wheeled vehicles and carts do not cross yet.**
 
 Both regions must run in the same group under the ids above. A neighbour that
 is asleep is woken by the first walker; one that is stopped on the host is

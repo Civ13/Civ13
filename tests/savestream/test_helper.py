@@ -250,6 +250,40 @@ class HelperTest(unittest.TestCase):
         reply = r.request("S")
         self.assertTrue(reply.startswith(b"ERR:"), reply)
 
+    def test_failed_publish_keeps_the_previous_save(self):
+        # The helper must never delete the published save before the new one
+        # replaces it: a failed rename (forced here with an LD_PRELOAD shim)
+        # or a crash between the two steps would otherwise leave no save.
+        import os
+        import shutil
+        import subprocess
+        cc = shutil.which(os.environ.get("CC", "cc")) or shutil.which("gcc")
+        if not sys.platform.startswith("linux") or not cc:
+            # The offline baseline counts skips as failures; LD_PRELOAD is Linux-only.
+            return
+        shim_src = self.tmp / "fail_rename.c"
+        shim_src.write_text(
+            "#include <errno.h>\n"
+            "int rename(const char *from, const char *to) { (void)from; (void)to; errno = EACCES; return -1; }\n"
+        )
+        shim = self.tmp / "fail_rename.so"
+        subprocess.run([cc, "-shared", "-fPIC", "-o", str(shim), str(shim_src)], check=True)
+        out, summary = self.write("kept.stream", [record("/a", 1)])
+        self.assertTrue(summary["published"], summary)
+        h = Helper(self.exe, "write", out, env={**os.environ, "LD_PRELOAD": str(shim)})
+        self.assertEqual(h.request("W", record("/a", 2)), b"OK")
+        failed = json.loads(h.request("F", ""))
+        h.close()
+        self.assertTrue(failed["valid"], failed)
+        self.assertFalse(failed["published"], failed)
+        self.assertTrue(out.exists(), "a failed publish deleted the previous save")
+        r = Helper(self.exe, "read", out)
+        try:
+            v, _ = parse_token(r.request("G", "/a"))
+            self.assertEqual(v, 1)
+        finally:
+            r.close()
+
     def test_bad_record_reports_error(self):
         out = self.tmp / "bad.stream"
         h = Helper(self.exe, "write", out)

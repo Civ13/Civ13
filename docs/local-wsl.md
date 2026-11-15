@@ -105,7 +105,9 @@ python3 scripts/local-wsl.py stop --server nomads --source "$PWD"
 Use `--server tdm` for the separate port-1714 runtime; port 1714 must also be free
 and must not conflict with another server. The setup reads
 `tools/byond/version.json` and uses its existing checked official HTTPS downloader,
-with no automatic mirror fallback. It does not repair or verify an already-present
+with no automatic mirror fallback. Set `BYOND_ARCHIVE_SOURCE=repository-release`
+(or `community-mirror`) to choose another reviewed source yourself; the pinned
+size and SHA-256 are checked for every source. It does not repair or verify an already-present
 installation merely because its DreamMaker path exists. Build checks the exact
 compiler banner; Start requires a matching build receipt. A receipt/path alone is
 not proof of the installed daemon's bytes or of a live serving engine's version.

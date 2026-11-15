@@ -614,8 +614,11 @@ static void finish_write(int force, buf_t *reply) {
 	out_file = NULL;
 	int published = 0;
 	if (io_ok && (valid || force)) {
-		remove(out_path);
+#ifdef _WIN32
+		published = MoveFileExA(tmp_path, out_path, MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH) != 0;
+#else
 		published = rename(tmp_path, out_path) == 0;
+#endif
 	}
 	(void)cmp_u64;
 	buf_fmt(reply, "{\"ok\":%s,\"published\":%s,\"valid\":%s,\"nodes\":%llu,\"records\":%llu,\"bytes\":%llu,",

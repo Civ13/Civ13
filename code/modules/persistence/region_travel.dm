@@ -6,7 +6,8 @@
 // The character travels as a payload: identity, looks, skills, hunger and
 // thirst, and a list of items that can be rebuilt exactly (allowlisted stacks
 // by kind and amount, untouched items of the carry families by type, magazines
-// by round count; see region_travel_item_kind). Anything else must be
+// by round count; see region_travel_item_kind; worn material tools and
+// weapons and filled bags: region_travel_gear.dm). Anything else must be
 // left behind first, so nothing is lost or copied on the way. While the agent
 // records the escrow the body and its items wait inside the gate; once it is
 // recorded they are removed and the player is sent to the destination server.
@@ -15,7 +16,7 @@
 // comes back the same way at the source. Trips are journaled by the agent, so
 // they complete in seconds; a world that reloads an older save replays them.
 
-#define REGION_TRAVEL_PAYLOAD_MAX 8192
+#define REGION_TRAVEL_PAYLOAD_MAX 24576
 // A crossing ship's record rides with one crew member (naval/ship_crossing.dm).
 #define REGION_TRAVEL_SHIP_PAYLOAD_MAX 49152
 #define REGION_TRAVEL_ITEMS_MAX 40
@@ -137,15 +138,18 @@ var/global/list/region_travel_carry_types = list(
 /mob/living/human/proc/region_travel_items()
 	var/list/items = list()
 	var/list/refused = list()
+	var/list/known = list()
 	for(var/slot_name in region_travel_slots)
 		var/obj/item/I = get_equipped_item(region_travel_slots[slot_name])
 		if(!I) continue
-		if(!region_travel_item_kind(I))
-			refused += I.name
+		if(!region_travel_worn_kind(I))
+			// A bag is named with what in it has to come out first.
+			var/list/inside = istype(I, /obj/item/weapon/storage) ? region_travel_bag_blockers(I) : null
+			refused += length(inside) ? "[I.name] (take out [english_list(inside)])" : I.name
+			known += I
 			continue
 		items[slot_name] = I
 	// Anything else on the body (cuffs, grabs, items in odd slots) blocks travel.
-	var/list/known = list()
 	for(var/slot_name in items)
 		known += items[slot_name]
 	for(var/obj/item/I in src)
@@ -172,10 +176,10 @@ var/global/list/region_travel_carry_types = list(
 	var/list/carried = list()
 	for(var/slot_name in items)
 		var/obj/item/I = items[slot_name]
-		var/kind = region_travel_item_kind(I)
+		var/kind = region_travel_worn_kind(I)
 		if(kind == "type")
 			carried += list(list(slot_name, "[I.type]", 1))
-		else if(copytext(kind, 1, 6) == "node:" || copytext(kind, 1, 12) == "compendium:")
+		else if(copytext(kind, 1, 6) == "node:" || copytext(kind, 1, 12) == "compendium:" || copytext(kind, 1, 6) == "gear:" || copytext(kind, 1, 7) == "round:" || copytext(kind, 1, 5) == "bag:")
 			carried += list(list(slot_name, kind, 1))
 		else if(copytext(kind, 1, 6) == "ammo:")
 			carried += list(list(slot_name, kind, region_travel_ammo_count(I)))
@@ -231,7 +235,7 @@ var/global/list/region_travel_carry_types = list(
 			P["faction_leader"] = 1
 	// A crewed flight (space/lander.dm) says which lander and where it lands.
 	for(var/key in extra)
-		if(key in list("lander", "landing", "surveyed", "rough", "return", "orbit", "cargo", "sortie", "seats", "voyage", "ship", "edge", "mount"))
+		if(key in list("lander", "landing", "surveyed", "rough", "return", "orbit", "cargo", "sortie", "seats", "voyage", "ship", "edge", "mount", "led"))
 			P[key] = extra[key]
 	return json_encode(P)
 
@@ -281,7 +285,7 @@ var/global/list/region_travel_carry_types = list(
 	for(var/list/entry in P["items"])
 		if(!islist(entry) || entry.len != 3 || !(entry[1] in region_travel_slots) || !istext(entry[2]) || !isnum(entry[3])) return null
 		if(P["v"] == 1 && (copytext(entry[2], 1, 6) == "node:" || copytext(entry[2], 1, 12) == "compendium:")) return null
-		if(!region_travel_item_path(entry[2], entry[3])) return null
+		if(!region_travel_worn_valid(entry[2], entry[3])) return null
 	if(!isnull(P["party"]) && !party_train_valid_party(P["party"])) return null
 	// A solo party is only ever its own player's.
 	if(istext(P["party"]) && findtext(P["party"], "ckey:") == 1 && P["party"] != "ckey:[owner]") return null
@@ -417,7 +421,7 @@ var/global/list/region_travel_carry_types = list(
 			var/list/took = list()
 			for(var/list/entry in P["items"])
 				var/obj/item/I = H.get_equipped_item(region_travel_slots[entry[1]])
-				if(I && !(I in took) && (region_travel_item_kind(I) == "type" ? "[I.type]" == entry[2] : region_travel_item_kind(I) == entry[2]))
+				if(I && !(I in took) && region_travel_worn_matches(I, entry[2]))
 					took += I
 			var/turf/T = get_turf(H)
 			for(var/obj/item/I in H.contents)
@@ -462,19 +466,8 @@ var/global/list/region_travel_carry_types = list(
 	if(brute || burn)
 		H.take_overall_damage(brute, burn, "travel")
 	for(var/list/entry in P["items"])
-		var/path = region_travel_item_path(entry[2], entry[3])
-		var/obj/item/I = ispath(path, /obj/item/stack) ? new path(T, entry[3]) : new path(T)
-		if(istype(I, /obj/item/weapon/book/node_compendium))
-			var/obj/item/weapon/book/node_compendium/C = I
-			C.node_ids = recipe_compendium_wire_ids(entry[2])
-		else if(istype(I, /obj/item/weapon/book/node_book))
-			var/obj/item/weapon/book/node_book/B = I
-			B.node_id = copytext(entry[2], 6)
-			B.refresh_node_title()
-		else if(istype(I, /obj/item/ammo_magazine))
-			region_travel_fill_magazine(I, entry[3])
-		else if(istype(I, /obj/item/weapon/gun/projectile))
-			region_travel_unload_gun(I)
+		var/obj/item/I = region_travel_make_worn(entry[2], entry[3], T)
+		if(!I) continue
 		if(!H.equip_to_slot_if_possible(I, region_travel_slots[entry[1]], FALSE, TRUE))
 			I.forceMove(T)
 	// One durable body per account: an older clientless body here gives up its

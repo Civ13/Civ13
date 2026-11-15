@@ -58,6 +58,15 @@ prove handle ownership and child-only shutdown. SDK-free checks must not be
 labelled vendor runtime acceptance. Record the precise package/header version
 before adding a vendor-linked build; do not silently upgrade the historical pin.
 
+Status (2026-11-15): source implemented and offline tested. The child endpoint
+(`companion/main.cpp`, `endpoint.cpp`, `windows_pipe_io.cpp`) parses the fixed
+argument layout, adopts the inherited overlapped pipe ends and runs the existing
+Host until Stop, EOF, lease expiry, cancellation or failure. Portable endpoint
+tests use an injected clock; `child-tests.exe` launches the real executable over
+real Windows pipes on the CI runner. Production builds answer Hello with an
+unavailable backend, so activation stays off. Vendor runtime acceptance is not
+claimed.
+
 ### 2. Two-player opt-in push-to-talk
 
 Add the minimum usable voice session through the SDK companion: explicit
