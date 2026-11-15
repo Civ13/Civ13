@@ -50,7 +50,7 @@ def run(byond, control, compile_only=False):
     elif control == 'damage':
         source = source.replace('2.5 * configured_seconds', '5')
     elif control == 'dispatch':
-        source = source.replace('O.process_interval(configured_interval_seconds())', 'O.process()')
+        source = source.replace('O.process_interval(schedule_interval / (1 SECOND))', 'O.process()')
     with tempfile.TemporaryDirectory(prefix='civ13-process-time-') as directory:
         temp = Path(directory)
         sound = Path('sound/effects/gore/bullethit3.ogg')

@@ -41,6 +41,8 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'object_interval_dispatch': {'files': ('tests/process_time/test_dispatch_source.py',),
+        'paths': ('tests/process_time/', 'code/processes/obj.dm', 'code/processes/_process.dm')},
     'astar_current_score': {'files': ('tests/astar_current_score/test_score.py',),
         'paths': ('tests/astar_current_score/', 'code/pathfinding.dm')},
     'bag_valve_mask': {'files': ('tests/bag_valve_mask/test_bag_valve_mask.py',), 'paths': (

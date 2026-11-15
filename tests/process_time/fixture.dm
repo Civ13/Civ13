@@ -39,6 +39,15 @@ var/last_candle_remains_type
 /obj/retired
 /obj/throws/process()
     throw new/exception("controlled test failure")
+var/global/process/obj/interval_test_loop
+var/global/interval_observations = 0
+/obj/interval_changer/process_interval(configured_seconds)
+    check(configured_seconds == 2, "first callback configured interval")
+    interval_test_loop.schedule_interval = 5
+    interval_observations++
+/obj/interval_observer/process_interval(configured_seconds)
+    check(configured_seconds == 0.5, "updated callback configured interval")
+    interval_observations++
 /obj/item
     var/lit = 1
     var/wax = 10
@@ -169,6 +178,16 @@ var/last_candle_remains_type
     check(S.fuel == 9.5, "production loop seconds dispatch")
     check(!(K in processing_objects) && !(R in processing_objects), "loop kill/deleted removal")
     check(loop.errors == 2 && !loop.current_list.len, "loop exception and snapshot semantics")
+    interval_test_loop = loop
+    loop.schedule_interval = 20
+    processing_objects = list(new /obj/interval_changer, new /obj/interval_observer)
+    loop.current_list = processing_objects.Copy()
+    while(loop.current_list.len)
+        sleep(world.tick_lag)
+        loop.run_time_tick_usage = world.tick_usage
+        loop.fire()
+    check(interval_observations == 2, "both interval callbacks ran")
+    loop.schedule_interval = 10
     var/obj/item/flashlight/flare/A = new
     var/obj/item/flashlight/flare/B = new
     processing_objects = list(A, B)

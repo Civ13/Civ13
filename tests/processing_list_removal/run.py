@@ -20,6 +20,7 @@ parser.add_argument('--negative-control', action='store_true')
 parser.add_argument('--guarded-control', action='store_true')
 parser.add_argument('--remove-candidate', action='store_true')
 parser.add_argument('--benchmark', action='store_true')
+parser.add_argument('--compile-only', action='store_true', help='compile the fixture without launching DreamDaemon')
 parser.add_argument('--evidence-dir', type=Path)
 args = parser.parse_args()
 if sum((args.baseline, args.negative_control, args.guarded_control, args.benchmark, args.remove_candidate)) > 1:
@@ -78,6 +79,9 @@ with tempfile.TemporaryDirectory(prefix='civ13-list-removal-') as temp:
     (out / 'compile.log').write_text(log)
     if build.returncode or PINNED_BYOND not in log or '0 errors, 0 warnings' not in log:
         raise SystemExit(log)
+    if args.compile_only:
+        print('Production projection compiled; runtime assertions not run')
+        raise SystemExit(0)
     run = subprocess.run([str(daemon), 'probe.dmb', '-invisible', '-close', '-trusted', '-log', 'runtime.log'],
                          cwd=out, capture_output=True, timeout=120, creationflags=flags)
     log = (out / 'runtime.log').read_text(errors='replace')
