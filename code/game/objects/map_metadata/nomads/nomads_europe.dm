@@ -12,3 +12,5 @@
 	// aircraft can fly.
 	building_levels = 4
 	building_level_standing = TRUE
+	// Walk on over the east edge into Asia (region_edge.dm).
+	edge_crossings = list("east" = "asia")

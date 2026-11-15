@@ -214,18 +214,19 @@
 // was asked about travelling on (the step itself still does not happen).
 /obj/structure/vehicle/carriage/proc/region_edge_reached(m_dir)
 	var/mob/living/human/H = driver
-	if (!istype(H) || !map || !length(map.edge_crossings) || z != 1 || m_dir != facing)
+	if (!istype(H) || !map || !length(map.edge_crossings) || z != map.edge_crossing_z || m_dir != facing)
 		return FALSE
 	var/side = null
 	for (var/name in map.edge_crossings)
 		if (region_edge_dir(name) == m_dir)
 			side = name
-	var/list/span = side ? region_edge_span(side) : null
-	if (!span)
+	if (!side)
 		return FALSE
-	// Only on the neck of land itself, and only once its lane touches the border.
+	// Only on the land itself, and only once its lane touches the border.
 	var/a = (side == "north" || side == "south") ? x : y
-	if (a < span[1] || a + 1 > span[2])
+	var/id = region_edge_destination(side, a)
+	var/list/span = id ? region_edge_span(side, id) : null
+	if (!span || a < span[1] || a + 1 > span[2])
 		return FALSE
 	if (H.region_edge_asking || world.time < H.region_edge_asked_at + REGION_EDGE_WAGON_ASK_COOLDOWN)
 		return FALSE
@@ -245,9 +246,13 @@
 		region_edge_asking = FALSE
 		return
 	var/turf/T = get_turf(C)
+	var/id = region_edge_destination(side, region_edge_along(side, T))
+	if (!id)
+		region_edge_asking = FALSE
+		return
 	var/obj/structure/region_gate/land_edge/gate = new(T)
-	gate.destination = map.edge_crossings[side]
-	gate.crossing = list(side, region_edge_fraction(side, T))
+	gate.destination = id
+	gate.crossing = list(side, region_edge_fraction(side, id, T), id)
 	// The reins cannot travel in a hand: the driver gets down for the crossing.
 	C.stopmovementloop()
 	C.let_off(src, T)

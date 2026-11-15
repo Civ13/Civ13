@@ -127,6 +127,14 @@
 	if (!istype(H))
 		return ..()
 	if (!craft)
+		// A spare tiller or steering oar on a commissioned deck: only the one
+		// she was commissioned with steers her, so point the way to it.
+		var/datum/craft/aboard = craft_at(get_turf(src))
+		var/datum/craft_body/built/deck = aboard ? aboard.body : null
+		if (istype(deck) && deck.placed())
+			var/turf/helm = locate(deck.px, deck.py, deck.z)
+			to_chat(H, SPAN_WARNING("This [name] does not steer the [aboard.name]. Her helm is the tiller or steering oar [get_dist(H, helm)] tile\s to the [dir2text(get_dir(H, helm))] of you: use that one to steer her or set out on a voyage."))
+			return
 		commission_menu(H)
 		return
 	craft.fit_drives()
