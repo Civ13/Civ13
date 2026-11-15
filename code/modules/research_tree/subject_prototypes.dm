@@ -126,7 +126,7 @@
 		H.note_trial_success(node_id, result_path_string)
 	B.add_prototype_made(node_id)
 	var/points = max(1, round(N.cost_ticks * SUBJECT_PROTO_POINTS))
-	var/finished = B.add_research_work(node_id, points)
+	var/finished = B.add_research_work(node_id, points, FALSE, H)
 	H.gain_active_scholarship(node_id, points, "prototype:[node_id]:[B.prototypes_made(node_id)]")
 	to_chat(H, SPAN_NOTICE("You note how the prototype came out in [B]: <b>[N.name]</b> advances by [points] points[finished ? " and the chapter is finished" : ""]. ([B.prototypes_made(node_id)] of [SUBJECT_PROTO_MAX] prototypes for this book.)"))
 	return points
@@ -277,7 +277,7 @@
 	if (B.lessons_learned(node_id) < TRIAL_LESSON_MAX && !B.has_research_chapter(node_id))
 		B.add_lesson_learned(node_id)
 		points = max(1, round(N.cost_ticks * TRIAL_LESSON_POINTS))
-		finished = B.add_research_work(node_id, points)
+		finished = B.add_research_work(node_id, points, FALSE, H)
 		H.gain_active_scholarship(node_id, points, "lesson:[node_id]:[B.lessons_learned(node_id)]")
 	var/turf/T = get_turf(H)
 	if (T)

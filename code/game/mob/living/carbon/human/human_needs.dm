@@ -219,11 +219,10 @@
 			to_chat(src, SPAN_WARNING("You feel something biting you. Your filthy clothes are crawling with fleas! Wash them, or you may catch typhus."))
 		else if (prob(1))
 			to_chat(src, SPAN_WARNING(pick("You scratch at a flea bite.", "Your skin itches and crawls.", "Something bites you under your clothes.")))
-		if ((prob(0.2) || (prob(0.5) && find_trait("Weak Immune System"))) && !disease && !inducedSSD)
-			disease = TRUE
-			disease_type = "typhus"
-			disease_progression = 0
-			disease_treatment = 0
+		// 0.2% a second, scaled like every other way of catching an illness.
+		var/typhus_chance = 0.2 * infection_chance_scale("typhus")
+		if (typhus_chance > 0 && prob(typhus_chance))
+			catch_disease("typhus")
 	else if (has_fleas)
 		to_chat(src, SPAN_NOTICE("You no longer feel fleas biting you."))
 	has_fleas = fleas_found

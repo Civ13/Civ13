@@ -27,9 +27,20 @@ language) is at 100. A learned one joins the `languages` list at Broken through
 - **Speaking**: 0.1 per line when a better speaker hears it, same 20 second
   limit.
 - Both halve from Conversational and stop at 12 per language per real day.
-- **Language book** and **Study Writing**: up to Broken only, no daily cap.
+- **Lessons** (`teaching.dm`): the Teach Language verb. A fluent speaker
+  teaches someone standing next to them who accepts. Both stay put for two
+  minutes and the learner gains 1, up to 8 per language per real day, on top
+  of hearing and speaking. With daily lessons Conversational takes about
+  three days instead of five or more.
+- **Language book**: a primer. Each 80 second sitting gives 5, up to Broken.
+- **Study Writing**: as before, up to Broken.
+- Books and writing share an allowance of 10 per language per real day.
 - Related languages start from the `mutual_intelligibility` table, scaled by
-  the score in the language that grants it.
+  the score in the language that grants it. `symmetrize_language_kinship()`
+  makes every pair agree at world start by taking the stronger value.
+
+Reading and writing paper in a language needs Conversational. Paper stays all
+or nothing: the paper system's projection never sends partly hidden text.
 
 Nothing lowers a score.
 
@@ -44,4 +55,22 @@ Nothing lowers a score.
 - Check Known Languages shows the level and percentage of every language,
   and lists languages still below Broken as "not yet speakable".
 
-Tests: `tests/language_proficiency/test_proficiency.py`.
+## Books
+
+On book-research worlds each research chapter records the language it was
+written in (`code/modules/research_tree/book_language.dm`): the writing
+language of whoever researched, wrote or hand-copied it. A character writes
+in their default language when they are Conversational in it, otherwise in
+their mother tongue.
+
+- Below Broken in a chapter's language it cannot be studied. From Broken to
+  Fluent it takes longer, twice as long at Broken.
+- Hand-copying a chapter at a bench needs Conversational in its language and
+  writes the copy in the copier's writing language. That is translation: set
+  the default language to the one wanted, then copy.
+- A printed book and a torn-out chapter keep their language.
+- Chapters with no recorded language, such as starting books, are plain to
+  everyone. The book window lists the languages of its chapters.
+
+Tests: `tests/language_proficiency/test_proficiency.py`,
+`tests/book_language/test_book_language.py`.

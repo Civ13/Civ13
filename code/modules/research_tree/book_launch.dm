@@ -38,7 +38,7 @@
 	B.title = "Stone Age master book"
 	B.desc = "A book holding every chapter of Stone Age knowledge. Study a chapter to learn it."
 	for (var/node_id in stone_age_node_ids())
-		B.add_research_chapter(node_id)
+		B.add_research_chapter(node_id, FALSE, null, "")
 	return B
 
 // The founding gift. Returns the book, or null when book research is off.

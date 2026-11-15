@@ -643,6 +643,7 @@ var/list/vocal_emotes = list(
 						message = "sneezes."
 						m_type = 2
 						playsound(get_turf(src), "sneeze_[gender]", 100)
+						sneeze_flu()
 					else
 						message = "makes a strange noise."
 						m_type = 2

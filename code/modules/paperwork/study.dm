@@ -80,8 +80,10 @@
 	if (H.studied_paper_sections.len > PAPER_STUDY_MEMORY)
 		H.studied_paper_sections.Cut(1, 2)
 	// Writing alone teaches as far as broken speech (proficiency.dm).
-	if (H.gain_language(L, points * 100 / L.difficulty, LANGUAGE_BROKEN, FALSE))
+	if (H.gain_language(L, points * 100 / L.difficulty, LANGUAGE_BROKEN, "study"))
 		to_chat(H, SPAN_NOTICE("You make sense of a little more [L.name]. You now understand about [round(H.language_score(L))]% of it."))
+	else if (H.language_score(L) < LANGUAGE_BROKEN)
+		to_chat(H, SPAN_NOTICE("You have taken in all the [L.name] you can from writing today."))
 	else
 		to_chat(H, SPAN_NOTICE("Writing has taught you all it can of [L.name]. The rest you must learn from people who speak it."))
 	return TRUE

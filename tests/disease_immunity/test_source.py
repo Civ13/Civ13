@@ -76,8 +76,12 @@ class DiseaseImmunity(unittest.TestCase):
 
     def test_resistance_blocks_contagion_and_flu_recovery_grants_it(self):
         severe = read(HUMAN + "severe_disease.dm")
-        self.assertIn("resists_disease(H.disease_type)", severe)
-        self.assertIn('!resists_disease("flu")', severe)
+        # Proximity and filth rolls go through infection_chance_scale(), which
+        # blocks anyone whose resistance protects them.
+        self.assertIn("infection_chance_scale(H.disease_type)", severe)
+        self.assertIn('infection_chance_scale("flu")', severe)
+        scale = self.src.split("/mob/living/human/proc/infection_chance_scale(kind)", 1)[1]
+        self.assertIn("resists_disease(kind)", scale.split("\n\n", 1)[0])
         self.assertIn('disease_resistance["flu"] = 100', read(HUMAN + "human_disease.dm"))
         for kind in ("flu", "plague", "typhus", "malaria", "cholera"):
             self.assertIn(f'"{kind}"', self.src[self.src.index("builds_disease_immunity(kind)"):])

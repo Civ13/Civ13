@@ -1,7 +1,9 @@
 // ============================================================
-// Walking between lands over a shared map edge (docs/americas-regions.md)
+// Walking between lands over a shared map edge (docs/americas-regions.md,
+// docs/edge-crossings.md)
 // ------------------------------------------------------------
-// Where one land mass is split over two regions (the Americas at the isthmus),
+// Where one land mass is split over two regions (the Americas at the isthmus,
+// Europe and Asia, Asia and the Desert, the Desert and the Jungle),
 // the edge of the map is not the end of the land. A map names the neighbour
 // beyond an edge in edge_crossings. A player who walks onto dry or wadeable
 // ground at that edge is asked once whether to walk on; on "Travel" they leave
@@ -27,8 +29,14 @@
 // Wading out past the last dry tile of the edge still counts as the crossing.
 #define REGION_EDGE_SHORE 4
 
-// "north", "south", "east" or "west" = region id of the land beyond that edge.
+// "north", "south", "east" or "west" = the region id of the land beyond that
+// whole edge, or a list of region id = list(from, to): the stretch of the edge
+// that leads there, as fractions of its length counted west to east or south
+// to north. One edge may lead to several lands (Asia's west edge: Europe in
+// the north, the Desert in the south).
 /obj/map_metadata/var/list/edge_crossings = null
+// The level the crossings are walked on: the surface.
+/obj/map_metadata/var/edge_crossing_z = 1
 
 /mob/living/human/var/tmp/region_edge_asking = FALSE
 /mob/living/human/var/tmp/region_edge_asked_at = 0
@@ -36,6 +44,7 @@
 /mob/living/human/persistence_runtime_var(key)
 	return key == "region_edge_asking" || key == "region_edge_asked_at" || ..()
 
+// "side|id" = the positions of dry ground along that stretch of the border row.
 var/global/list/region_edge_spans = list()
 
 /proc/region_edge_dir(side)
@@ -64,33 +73,86 @@ var/global/list/region_edge_spans = list()
 		return FALSE
 	return TRUE
 
+/proc/region_edge_length(side)
+	return (side == "north" || side == "south") ? world.maxx : world.maxy
+
+// Position of T along a side: x on the north and south edges, y on the others.
+/proc/region_edge_along(side, turf/T)
+	return (side == "north" || side == "south") ? T.x : T.y
+
 // The turf at position a along a side, depth tiles in from the border.
 /proc/region_edge_turf(side, a, depth = 0)
+	var/z = map ? map.edge_crossing_z : 1
 	switch (side)
-		if ("north") return locate(a, world.maxy - depth, 1)
-		if ("south") return locate(a, 1 + depth, 1)
-		if ("east") return locate(world.maxx - depth, a, 1)
-		if ("west") return locate(1 + depth, a, 1)
+		if ("north") return locate(a, world.maxy - depth, z)
+		if ("south") return locate(a, 1 + depth, z)
+		if ("east") return locate(world.maxx - depth, a, z)
+		if ("west") return locate(1 + depth, a, z)
 	return null
 
-// list(first, last) positions of dry ground along a side's border row, or null.
-/proc/region_edge_span(side)
-	if (side in region_edge_spans)
-		return region_edge_spans[side]
-	var/first = 0
-	var/last = 0
-	var/length = (side == "north" || side == "south") ? world.maxx : world.maxy
-	for (var/a = 1 to length)
-		if (region_edge_ground(region_edge_turf(side, a), TRUE))
-			if (!first)
-				first = a
-			last = a
-	region_edge_spans[side] = first ? list(first, last) : null
-	return region_edge_spans[side]
+// The region ids a side leads to.
+/proc/region_edge_destinations(side)
+	. = list()
+	if (!map || !map.edge_crossings)
+		return
+	var/entry = map.edge_crossings[side]
+	if (istext(entry))
+		. += entry
+	else if (islist(entry))
+		for (var/id in entry)
+			if (istext(id))
+				. += id
+
+// list(first, last) positions of the stretch of a side that leads to id, or null.
+/proc/region_edge_bounds(side, id)
+	if (!map || !map.edge_crossings || !istext(id))
+		return null
+	var/length = region_edge_length(side)
+	var/entry = map.edge_crossings[side]
+	if (istext(entry))
+		return entry == id ? list(1, length) : null
+	if (!islist(entry))
+		return null
+	var/list/R = entry[id]
+	if (!islist(R) || R.len != 2 || !isnum(R[1]) || !isnum(R[2]))
+		return null
+	var/lo = clamp(round(R[1] * length) + 1, 1, length)
+	return list(lo, clamp(round(R[2] * length), lo, length))
+
+// The positions of dry ground along the stretch of a side that leads to id.
+/proc/region_edge_dry(side, id)
+	var/key = "[side]|[id]"
+	if (key in region_edge_spans)
+		return region_edge_spans[key]
+	var/list/bounds = region_edge_bounds(side, id)
+	var/list/dry = list()
+	if (bounds)
+		for (var/a = bounds[1] to bounds[2])
+			if (region_edge_ground(region_edge_turf(side, a), TRUE))
+				dry += a
+	region_edge_spans[key] = dry.len ? dry : null
+	return region_edge_spans[key]
+
+// list(first, last) positions of dry ground on the stretch leading to id, or null.
+/proc/region_edge_span(side, id)
+	var/list/dry = region_edge_dry(side, id)
+	return dry ? list(dry[1], dry[dry.len]) : null
+
+// The region a walker at position a along a side walks on into, or null:
+// on the stretch's dry ground, or wading just beside it.
+/proc/region_edge_destination(side, a)
+	for (var/id in region_edge_destinations(side))
+		var/list/bounds = region_edge_bounds(side, id)
+		var/list/span = region_edge_span(side, id)
+		if (!bounds || !span)
+			continue
+		if (a >= max(bounds[1], span[1] - REGION_EDGE_SHORE) && a <= min(bounds[2], span[2] + REGION_EDGE_SHORE))
+			return id
+	return null
 
 // The side whose crossing T lies on, or null.
 /proc/region_edge_side(turf/T)
-	if (!map || !length(map.edge_crossings) || !istype(T) || T.z != 1)
+	if (!map || !length(map.edge_crossings) || !istype(T) || T.z != map.edge_crossing_z)
 		return null
 	var/side = null
 	if (T.y == 1) side = "south"
@@ -99,21 +161,23 @@ var/global/list/region_edge_spans = list()
 	else if (T.x == world.maxx) side = "east"
 	if (!side || !map.edge_crossings[side] || !region_edge_ground(T))
 		return null
-	var/list/span = region_edge_span(side)
-	if (!span)
-		return null
-	var/a = (side == "north" || side == "south") ? T.x : T.y
-	if (a < span[1] - REGION_EDGE_SHORE || a > span[2] + REGION_EDGE_SHORE)
+	if (!region_edge_destination(side, region_edge_along(side, T)))
 		return null
 	return side
 
-// How far along the side's dry ground T is, 0 to 1.
-/proc/region_edge_fraction(side, turf/T)
-	var/list/span = region_edge_span(side)
-	if (!span || span[2] <= span[1])
+// How far along the stretch's dry ground T is, 0 to 1. Counted over dry tiles
+// only, so a walker on land comes out on land however the two edges differ.
+/proc/region_edge_fraction(side, id, turf/T)
+	var/list/dry = region_edge_dry(side, id)
+	if (!dry || dry.len < 2)
 		return 0.5
-	var/a = (side == "north" || side == "south") ? T.x : T.y
-	return round(clamp((a - span[1]) / (span[2] - span[1]), 0, 1), 0.001)
+	var/a = region_edge_along(side, T)
+	var/before = 0
+	for (var/d in dry)
+		if (d >= a)
+			break
+		before++
+	return round(clamp(before / (dry.len - 1), 0, 1), 0.001)
 
 // ---------------------------------------------------------------- leaving
 
@@ -242,9 +306,13 @@ var/global/list/region_edge_spans = list()
 // Asks and waits on its own; the step that led here is not held up.
 /mob/living/human/proc/region_edge_cross(side, turf/T)
 	set waitfor = FALSE
+	var/id = region_edge_destination(side, region_edge_along(side, T))
+	if (!id)
+		region_edge_asking = FALSE
+		return
 	var/obj/structure/region_gate/land_edge/gate = new(T)
-	gate.destination = map.edge_crossings[side]
-	gate.crossing = list(side, region_edge_fraction(side, T))
+	gate.destination = id
+	gate.crossing = list(side, region_edge_fraction(side, id, T), id)
 	// The mount is recorded now and leaves only if its rider did.
 	var/mob/living/simple_animal/steed = riding_mob
 	gate.mount = region_edge_mount_record(src)
@@ -440,7 +508,7 @@ var/global/list/region_edge_spans = list()
 		return FALSE
 	if (!isnull(P["led"]) && !region_edge_mount_valid(P["led"], TRUE))
 		return FALSE
-	return islist(E) && E.len == 2 && !!region_edge_dir(E[1]) && isnum(E[2]) && E[2] >= 0 && E[2] <= 1
+	return islist(E) && E.len == 3 && !!region_edge_dir(E[1]) && isnum(E[2]) && E[2] >= 0 && E[2] <= 1 && istext(E[3])
 
 // Where a walker who crossed an edge comes out: the matching place on the
 // facing edge here, a few steps in. Null when this land has no such edge.
@@ -450,12 +518,13 @@ var/global/list/region_edge_spans = list()
 	var/list/E = P["edge"]
 	// Turned back at the far side: they stand where they left.
 	var/side = incoming ? region_edge_opposite(E[1]) : E[1]
-	if (!side || (incoming && map.edge_crossings[side] != P["from"]))
+	var/id = incoming ? P["from"] : E[3]
+	if (!side || !istext(id))
 		return null
-	var/list/span = region_edge_span(side)
-	if (!span)
+	var/list/dry = region_edge_dry(side, id)
+	if (!dry)
 		return null
-	var/at = round(span[1] + E[2] * (span[2] - span[1]))
+	var/at = dry[clamp(round(E[2] * (dry.len - 1)) + 1, 1, dry.len)]
 	// The nearest free dry ground to that spot, working inland and outward.
 	for (var/depth = REGION_EDGE_ARRIVAL_INSET, depth <= REGION_EDGE_ARRIVAL_INSET + 12, depth++)
 		for (var/off = 0, off <= 12, off++)
@@ -463,16 +532,30 @@ var/global/list/region_edge_spans = list()
 				if (!off && sign < 0)
 					continue
 				var/turf/T = region_edge_turf(side, at + off * sign, depth)
-				if (!region_edge_ground(T, TRUE))
-					continue
-				var/blocked = FALSE
-				for (var/atom/movable/M in T)
-					if (M.density && !istype(M, /atom/movable/lighting_overlay))
-						blocked = TRUE
-						break
-				if (!blocked)
+				if (region_edge_arrival_free(T))
 					return T
+	// Nothing near: the closest other dry stretch of the same edge.
+	var/list/order = dry.Copy()
+	while (order.len)
+		var/best = 1
+		for (var/i = 2 to order.len)
+			if (abs(order[i] - at) < abs(order[best] - at))
+				best = i
+		var/a = order[best]
+		order.Cut(best, best + 1)
+		for (var/depth = REGION_EDGE_ARRIVAL_INSET, depth <= REGION_EDGE_ARRIVAL_INSET + 12, depth++)
+			var/turf/T = region_edge_turf(side, a, depth)
+			if (region_edge_arrival_free(T))
+				return T
 	return null
+
+/proc/region_edge_arrival_free(turf/T)
+	if (!region_edge_ground(T, TRUE))
+		return FALSE
+	for (var/atom/movable/M in T)
+		if (M.density && !istype(M, /atom/movable/lighting_overlay))
+			return FALSE
+	return TRUE
 
 /proc/region_edge_arrived(mob/living/human/H, list/P, incoming)
 	if (!istype(H) || !islist(P) || !islist(P["edge"]))

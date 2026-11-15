@@ -35,10 +35,12 @@ class NodeEffects(unittest.TestCase):
                 ("code/modules/1713/harvest_skills.dm", "farming_node_bonus(H)"),
                 ("code/modules/surgery/surgery.dm", "surgery_node_quality(user)"),
                 ("code/modules/surgery/surgery.dm", "surgery_node_time(user)"),
-                ("code/game/mob/living/carbon/human/severe_disease.dm", "disease_node_scale()"),
+                ("code/game/mob/living/carbon/human/immunity.dm", "disease_node_scale()"),
                 ("code/modules/1713/machinery/modular_vehicles/aircraft/aircraft.dm", "flight_fuel_node_scale(driver)")):
             self.assertIn(call, read(path), path)
-        self.assertEqual(read("code/game/mob/living/carbon/human/severe_disease.dm").count("disease_node_scale()"), 2)
+        # Public Health scales every natural infection roll through one helper.
+        self.assertEqual(read("code/game/mob/living/carbon/human/immunity.dm").count("disease_node_scale()"), 1)
+        self.assertIn("infection_chance_scale(", read("code/game/mob/living/carbon/human/severe_disease.dm"))
     def test_both_windows_show_the_effect(self):
         for path in ("code/modules/research_tree/book_interface.dm", "code/modules/research_tree/research_bench.dm"):
             self.assertIn('"effect" = research_node_effect_text(node_id)', read(path))

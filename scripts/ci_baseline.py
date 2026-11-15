@@ -909,6 +909,20 @@ SUITES = {
         # Rebuilding both maps' currents and flood reaches from 1M-cell maps takes
         # about 50 s locally and longer on hosted runners.
         'timeout': 180},
+    # Walking between lands over shared map edges: links answered on the facing
+    # edge with dry ground on both stretches, parsed from the DMMs; no BYOND runtime.
+    'edge_crossings': {'files': ('tests/edge_crossings/test_edge_crossings.py',), 'timeout': 120,
+        'paths': ('tests/edge_crossings/', 'code/modules/persistence/region_edge.dm',
+                  'code/modules/persistence/region_edge_carriage.dm',
+                  'code/game/objects/map_metadata/nomads/nomads_europe.dm',
+                  'code/game/objects/map_metadata/nomads/nomads_asia.dm',
+                  'code/game/objects/map_metadata/nomads/nomads_desert.dm',
+                  'code/game/objects/map_metadata/nomads/nomads_jungle.dm',
+                  'code/game/objects/map_metadata/nomads/nomads_americas.dm'), 'shared_paths': (
+            'code/modules/naval/ship_crossing.dm', 'code/modules/naval/built_hull.dm', 'code/modules/craft/under_way.dm',
+            'maps/nomads/nomads_europe.dmm', 'maps/nomads/nomads_asia.dmm',
+            'maps/nomads/nomads_desert.dmm', 'maps/nomads/nomads_jungle.dmm',
+            'maps/nomads/nomads_americas_north.dmm', 'maps/nomads/nomads_americas_south.dmm')},
     # Draft lands of the rest of the Earth (maps/earth_drafts): DMM parse, sizes,
     # file digests and that no build or region list names them; no BYOND runtime.
     'earth_maps': {'files': ('tests/earth_maps/test_earth_maps.py',), 'timeout': 120,
@@ -2320,17 +2334,28 @@ SUITES = {
         'paths': ('tests/surgery_drinking/', 'code/modules/surgery/surgery.dm')},
     # Peoples of the Nomads lands: origin table against languages, names, colours.
     'origins': {'files': ('tests/origins/test_origins.py',),
-        'paths': ('tests/origins/', 'code/game/mob/living/carbon/human/origins.dm'),
+        'paths': ('tests/origins/', 'code/game/mob/living/carbon/human/origins.dm',
+            'code/modules/admin/verbs/origin_languages.dm'),
         'shared_paths': ('code/game/mob/living/carbon/human/nomads_spawn.dm',
             'code/game/mob/language/earth.dm', 'code/_helpers/global_lists.dm',
             'code/game/mob/living/carbon/human/species/species.dm')},
+    # Research chapters carry a language: recording, reading, translation.
+    'book_language': {'files': ('tests/book_language/test_book_language.py',),
+        'paths': ('tests/book_language/', 'code/modules/research_tree/book_language.dm'),
+        'shared_paths': ('code/modules/research_tree/book_research.dm',
+            'code/modules/research_tree/book_pages.dm', 'code/modules/research_tree/book_printing.dm',
+            'code/modules/research_tree/book_interface.dm', 'code/modules/research_tree/book_launch.dm',
+            'code/modules/research_tree/compare_notes.dm',
+            'code/modules/research_tree/subject_prototypes.dm')},
     # Language proficiency: pacing numbers and learn/speak/hear boundaries.
     'language_proficiency': {'files': ('tests/language_proficiency/test_proficiency.py',),
         'paths': ('tests/language_proficiency/', 'code/game/mob/language/proficiency.dm',
-                  'code/__defines/species_languages.dm'),
+                  'code/game/mob/language/teaching.dm', 'code/__defines/species_languages.dm'),
         'shared_paths': ('code/game/mob/language/language.dm', 'code/game/mob/hear_say.dm',
             'code/game/mob/say.dm', 'code/game/mob/living/say.dm',
             'code/modules/1713/language_book.dm', 'code/modules/paperwork/study.dm',
+            'code/modules/paperwork/written_languages.dm', 'code/_helpers/global_lists.dm',
+            'code/game/mob/language/earth.dm',
             'code/modules/persistence/world_time_stamps.dm')},
 }
 CI_PATHS = ('scripts/select-ci.py', 'scripts/ci_baseline.py', 'scripts/ci_skill_prose.py',

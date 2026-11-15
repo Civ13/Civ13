@@ -103,6 +103,7 @@ CROSSROADS_MALL_OFFLINE_TESTS = frozenset({'tests/crossroads_mall/test_crossroad
 AMERICAS_MAPS_OFFLINE_TESTS = frozenset({'tests/americas_maps/test_americas_maps.py',
                                          'tests/americas_maps/build.py',
                                          'tests/americas_maps/continents.py'})
+EDGE_CROSSINGS_OFFLINE_TESTS = frozenset({'tests/edge_crossings/test_edge_crossings.py'})
 EARTH_MAPS_OFFLINE_TESTS = frozenset({'tests/earth_maps/test_earth_maps.py', 'tests/earth_maps/generate.py',
                                       'tests/earth_maps/world_overview.py', 'tests/earth_maps/lands.py',
                                       'tests/earth_maps/europe.py', 'tests/earth_maps/africa.py',
@@ -467,6 +468,10 @@ def introduced_tests(base, head, event):
             continue
         if path.startswith('tests/americas_maps/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
             raise RuntimeError('Unregistered americas-maps executable test requires explicit CI review')
+        if path in EDGE_CROSSINGS_OFFLINE_TESTS:
+            continue
+        if path.startswith('tests/edge_crossings/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
+            raise RuntimeError('Unregistered edge-crossings executable test requires explicit CI review')
         if path in EARTH_MAPS_OFFLINE_TESTS:
             continue
         if path.startswith('tests/earth_maps/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:

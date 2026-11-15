@@ -37,6 +37,25 @@
 /mob/living/human/proc/resists_disease(kind)
 	return builds_disease_immunity(kind) && disease_resistance_to(kind) >= IMMUNITY_PROTECTS
 
+// How likely this person is to catch an illness from one exposure, as a
+// multiplier on that route's base chance; 0 when it cannot take hold. Every
+// natural route (people nearby, sneezes, fleas, filth) shares this, so the
+// immune traits, research and partial resistance count the same everywhere.
+/mob/living/human/proc/infection_chance_scale(kind)
+	if (disease || droid || orc || crab || inducedSSD || (status_flags & GODMODE))
+		return 0
+	if ((kind in disease_immunity) || resists_disease(kind))
+		return 0
+	var/scale = disease_node_scale()
+	if (find_trait("Weak Immune System"))
+		scale *= 2
+	if (find_trait("Strong Immune System"))
+		scale *= 0.2
+	// Resistance below the protective level still lowers the odds.
+	if (builds_disease_immunity(kind))
+		scale *= max(0, 1 - disease_resistance_to(kind) / IMMUNITY_PROTECTS)
+	return scale
+
 // Returns TRUE when it cleared the current illness this tick.
 /mob/living/human/proc/handle_immunity()
 	if (inducedSSD || (status_flags & GODMODE))

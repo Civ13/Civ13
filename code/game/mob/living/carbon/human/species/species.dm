@@ -638,6 +638,20 @@
 		else
 			return capitalize(pick(first_names_male_mayan))
 
+/datum/species/proc/get_random_quechua_name(var/gender)
+	if (!name_language)
+		if (gender == FEMALE)
+			return capitalize(pick(first_names_female_quechua))
+		else
+			return capitalize(pick(first_names_male_quechua))
+
+/datum/species/proc/get_random_tupi_name(var/gender)
+	if (!name_language)
+		if (gender == FEMALE)
+			return capitalize(pick(first_names_female_tupi))
+		else
+			return capitalize(pick(first_names_male_tupi))
+
 /datum/species/proc/get_random_aztec_name(var/gender)
 	if (!name_language)
 		if (gender == FEMALE)

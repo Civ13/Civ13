@@ -88,6 +88,69 @@ class OriginTable(unittest.TestCase):
         self.assertIn('name = "Inuktitut"', earth)
         self.assertNotIn('name = "inuktitut"', earth)
 
+    def test_south_america_has_andean_and_forest_peoples(self):
+        named, lands = tables()
+        south = named[lands['MAP_NOMADS_AMERICAS_SOUTH']]
+        self.assertEqual(south['jungle'], 'tupi')
+        self.assertEqual(south['default'], 'inca')
+        self.assertEqual(set(south.values()), {'inca', 'tupi', 'caribs'})
+        earth = (ROOT / 'code/game/mob/language/earth.dm').read_text(encoding='latin-1')
+        written = (ROOT / 'code/modules/paperwork/written_languages.dm').read_text()
+        keys = re.findall(r'^\s*key = "(\w+)"', earth, re.M)
+        for language in ('quechua', 'tupi'):
+            self.assertIn('/datum/language/%s\n' % language, earth)
+            self.assertIn('"civ13:%s:v1" = /datum/language/%s' % (language, language), written)
+            for gender in ('male', 'female'):
+                # In code, not config/names: fixtures stage an exact pinned set of name files.
+                row = re.search(r'^var/global/list/first_names_%s_%s = list\((.+)\)$' % (gender, language), ORIGINS, re.M)
+                names = dm_list(row.group(1))
+                self.assertGreaterEqual(len(names), 20)
+                self.assertTrue(all(n.isascii() and n.isalpha() for n in names), language)
+        for key in ('qu', 'tp'):
+            self.assertEqual(keys.count(key), 1, key)
+
+
+class AdminAndAgentTools(unittest.TestCase):
+    ADMIN = (ROOT / 'code/modules/admin/verbs/origin_languages.dm').read_text()
+
+    def test_admin_verbs_are_registered_and_guarded(self):
+        registry = (ROOT / 'code/modules/admin/admin_verbs.dm').read_text(encoding='latin-1')
+        dme = (ROOT / 'civ13.dme').read_text()
+        self.assertIn('code\\modules\\admin\\verbs\\origin_languages.dm', dme)
+        for verb in ('cmd_admin_check_languages', 'cmd_admin_set_origin', 'cmd_admin_set_language_score'):
+            self.assertIn('/client/proc/%s,' % verb, registry)
+            body = self.ADMIN[self.ADMIN.index('/client/proc/%s(' % verb):]
+            body = body[:body.index('\n/client', 1)] if '\n/client' in body[1:] else body
+            self.assertIn('if (!check_rights(R_ADMIN))\n\t\treturn', body)
+        for verb in ('cmd_admin_set_origin', 'cmd_admin_set_language_score'):
+            body = self.ADMIN[self.ADMIN.index('/client/proc/%s(' % verb):]
+            self.assertIn('log_admin(', body)
+
+    def test_a_score_change_never_leaves_a_character_mute(self):
+        body = self.ADMIN[self.ADMIN.index('/mob/living/human/proc/admin_set_language_score'):self.ADMIN.index('/client/proc/cmd_admin_check_languages')]
+        self.assertLess(body.index('if (!others)\n\t\t\t\treturn FALSE'), body.index('remove_language(L.name)'))
+        self.assertIn('score = max(0, min(100, round(score)))', body)
+        self.assertIn('if (!default_language || !knows_language(default_language))', body)
+
+    def test_set_origin_keeps_name_and_looks(self):
+        body = self.ADMIN[self.ADMIN.index('/mob/living/human/proc/admin_set_origin'):self.ADMIN.index('/mob/living/human/proc/admin_set_language_score')]
+        self.assertNotIn('update_character_appearance', body)
+        self.assertNotIn('real_name', body)
+        self.assertIn('origin_id = O.id', body)
+
+    def test_agents_can_ask_for_a_people_and_read_their_languages(self):
+        chars = (ROOT / 'code/modules/agent_control/agent_characters.dm').read_text(encoding='latin-1')
+        spawn = chars[chars.index('/datum/agent_control/proc/act_character_spawn'):chars.index('/datum/agent_control/proc/act_character_list')]
+        self.assertLess(spawn.index('agent_fail("bad_origin"'), spawn.index('M = new path(T)'))
+        self.assertIn('born.origin_wish = origin_wish', spawn)
+        self.assertIn('out["languages"] = H.language_rows()', chars)
+        choose = ORIGINS[ORIGINS.index('/mob/living/human/proc/choose_origin'):ORIGINS.index('/mob/living/human/proc/apply_origin')]
+        # Only a people of this land, and the wish is used once.
+        self.assertIn('if (wished && (wished.name in land_peoples(map.ID)))', choose)
+        self.assertIn('/mob/living/human/var/tmp/origin_wish', ORIGINS)
+        catalog = (ROOT / 'tools/agent-control/catalog.py').read_text()
+        self.assertIn('"origin": {"type": "string"', catalog)
+
 
 if __name__ == '__main__':
     unittest.main()
