@@ -237,6 +237,11 @@
 	reagents.trans_to_mob(target, issmall(target) ? ceil(amount_per_transfer_from_this/2) : amount_per_transfer_from_this, CHEM_INGEST)
 	target.bladder += amount_per_transfer_from_this/2
 	feed_sound(user)
+	// Force-fed past what the stomach holds: it comes back up.
+	if (target != user && ishuman(target))
+		var/mob/living/human/overfed = target
+		if (overfed.is_overfed())
+			overfed.overfed_vomit(user)
 	return TRUE
 
 /obj/item/weapon/reagent_containers/proc/standard_pour_into(var/mob/user, var/atom/target) // This goes into afterattack and yes, it's atom-level

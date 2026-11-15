@@ -244,11 +244,11 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 					if (!non_vegetarian)
 						to_chat(user, "<span class='warning'>[H] is a carnivore! They can't eat this!</span>")
 						return
+			// Past capacity it can still be forced down, but it comes back up.
 			if (fullness <= fullness_limit)
 				user.visible_message("<span class='danger'>[user] attempts to feed [M] [src].</span>")
 			else
-				user.visible_message("<span class='danger'>[user] cannot force anymore of [src] down [M]'s throat.</span>")
-				return FALSE
+				user.visible_message("<span class='danger'>[user] attempts to force more of [src] down [M]'s throat.</span>")
 			user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 			if (!do_after(user, 30, M, check_for_repeats = FALSE))
 				return FALSE
@@ -264,6 +264,8 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 			take_food_bite(M, reagents.total_volume)
 		bitecount++
 		On_Consume(M)
+		if (C != user && C.is_overfed())
+			C.overfed_vomit(user)
 		return TRUE
 	return FALSE
 

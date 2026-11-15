@@ -477,5 +477,33 @@
 /mob/living/human/proc/food_fullness_limit()
 	return max_nutrition + 180
 
+// Food already absorbed plus food still in the stomach. Unlike get_fullness(),
+// this counts what was just swallowed, so it shows when someone has been
+// force-fed past what they can hold.
+/mob/living/human/proc/stomach_food_fullness()
+	. = nutrition
+	if (!ingested)
+		return
+	for (var/datum/reagent/nutriment/N in ingested.reagent_list)
+		. += N.volume * N.nutriment_factor
+
+// Water already absorbed plus the liquid still in the stomach (about 15
+// hydration per unit, as plain water gives).
+/mob/living/human/proc/stomach_water_fullness()
+	. = water
+	if (!ingested)
+		return
+	var/liquid = ingested.total_volume
+	for (var/datum/reagent/nutriment/N in ingested.reagent_list)
+		liquid -= N.volume
+	. += max(0, liquid) * 15
+
+/mob/living/human/proc/drink_fullness_limit()
+	return max_water + 150
+
+// TRUE once force-feeding has pushed food or drink past what the stomach holds.
+/mob/living/human/proc/is_overfed()
+	return stomach_food_fullness() > food_fullness_limit() || stomach_water_fullness() > drink_fullness_limit()
+
 /mob/living/human/proc/can_feel_pain(var/check_organ)
 	return !(species && species.flags & NO_PAIN)
