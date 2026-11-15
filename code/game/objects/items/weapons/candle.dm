@@ -20,13 +20,15 @@
 		..()
 		light()
 
-/obj/item/weapon/flame/candle/update_icon()
-	var/i
+/obj/item/weapon/flame/candle/proc/candle_wax_stage()
 	if (wax > 800)
-		i = TRUE
-	else if (wax > 500)
-		i = 2
-	else i = 3
+		return 1
+	if (wax > 500)
+		return 2
+	return 3
+
+/obj/item/weapon/flame/candle/update_icon()
+	var/i = candle_wax_stage()
 	icon_state = "candle[i][lit ? "_lit" : ""]"
 
 
@@ -101,12 +103,7 @@
 	item_state = "candle1_lard"
 
 /obj/item/weapon/flame/candle/lard/update_icon()
-	var/i
-	if (wax > 800)
-		i = TRUE
-	else if (wax > 500)
-		i = 2
-	else i = 3
+	var/i = candle_wax_stage()
 	icon_state = "candle[i][lit ? "_lit" : ""]_lard"
 
 /obj/item/weapon/flame/candle/lard/create_candle_remains()
