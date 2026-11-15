@@ -41,6 +41,9 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'bag_valve_mask': {'files': ('tests/bag_valve_mask/test_bag_valve_mask.py',), 'paths': (
+        'tests/bag_valve_mask/',), 'shared_paths': (
+        'code/game/objects/items/stacks/medical.dm',)},
     'gas_skin_burns': {'files': ('tests/gas_skin_burns/test_gas_skin_burns.py',), 'paths': (
         'tests/gas_skin_burns/',), 'shared_paths': (
         'code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Gases.dm',)},
