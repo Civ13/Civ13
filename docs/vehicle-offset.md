@@ -2,8 +2,8 @@
 
 Vehicles are moving to pixel positions the way free-moving players do. The
 plan is in five phases. The shared core is `code/modules/craft/vehicle_offset.dm`
-(Phase 0); motorcycles and boats drive with it (`vehicle_offset_ride.dm`,
-Phase 1).
+(Phase 0); motorcycles, boats, bicycles and rafts drive with it
+(`vehicle_offset_ride.dm`, Phase 1).
 
 ## How it works
 
@@ -41,6 +41,22 @@ Phase 1).
   tick squares every pixel-driving vehicle; the offsets are runtime vars
   either way. `vehicle_offset_snap_all()` squares them all at once.
 
+## Bicycles and rafts (Phase 1b)
+
+- Bicycles and running bikes keep their own pedal loop. While someone is near
+  it ticks every server tick at `vehicle_offset_speed(vehicle_m_delay)`; the
+  bicycle's `do_move()` still runs once per tile (when the offset passes half a
+  tile), so stamina, load, ground and hills are paid and set the pace exactly
+  as before. Braking or stopping pedalling stops it where it is. Pedal
+  airships fly and stay on whole tiles until the aircraft phase.
+- Rafts and dugout canoes are paddled by key: while the driver holds a
+  direction key for the way they face, the raft moves by pixels that way
+  (`offset_paddling`); let go and it drifts to a stop within about half a
+  tile. Before, each key press moved one tile. A dugout is quicker with a
+  paddle in hand, as before. With nobody near, a key press is one tile step.
+- Riders carried by any vehicle make no footstep sounds
+  (`carried_by_vehicle()`); the engine loop is the vehicle's sound.
+
 ## Cost (native probe, BYOND 516.1688, cloud container)
 
 `python3 tests/vehicle_offset/run.py --byond-bin <BYOND bin>` drives a crate,
@@ -51,6 +67,6 @@ times the pixel writes of a pulse:
 | --- | --- | --- |
 | Carriage | 1 | 0.003 |
 | 2x3 car with a passenger | 14 | 0.02 |
-| Hull-sized load | 1000 | 1.5 |
+| Hull-sized load | 1000 | 1.7 |
 
 The whole-tile step (`do_move`) still runs once per tile and costs what it did.
