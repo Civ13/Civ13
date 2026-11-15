@@ -13,7 +13,7 @@
 /world/New()
 	OpenPort("none")
 	var/list/rows = list()
-	for(var/T in typesof(/obj/item, /obj/structure, /obj/machinery))
+	for(var/T in typesof(/obj/item, /obj/structure, /obj/machinery) + typesof(/obj/effect/boathouse_pile))
 		var/I = initial(T:icon)
 		var/S = initial(T:icon_state)
 		var/list/states = I ? icon_states(I) : list()
