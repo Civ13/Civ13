@@ -8,6 +8,13 @@
 // The network is walked only when a toilet is used, at most SEWER_WALK_LIMIT
 // pieces, so nothing runs while nobody flushes. This only applies on
 // persistence maps; elsewhere plumbing still carries waste away by itself.
+//
+// Phase S2: a drain under rainwater in a hollow is an inlet and drains the
+// hollow through its outfall each river tick, up to what the outfall can take
+// (a storm can run a sewer full, and flushes then back up). A river in flood
+// over an outfall pushes back up the drains into hollows and toilets unless a
+// flap gate hangs on the outfall. Drains silt up now and then and must be dug
+// clear. Brick sewers (Imperial) carry the most and clog the least.
 
 #define SEWER_WALK_LIMIT 600
 // How long waste carried along an open ditch or out of an outfall fouls the
@@ -18,6 +25,14 @@
 #define CESSPIT_FOUL_RANGE 2
 #define CESSPIT_CAPACITY 40
 #define CESSPIT_COMPOST_PER 10
+// Deciseconds a sewer that ran full keeps refusing waste.
+#define SEWER_FULL_TIME 1200
+
+var/global/sewer_revision = 0
+// Every drain piece, for the once-a-minute hollow drainage.
+var/global/list/sewer_drains = list()
+// Set by the last sewer_carry_waste() that met a river pushing back.
+var/global/sewer_last_backflow = FALSE
 
 /proc/sewers_apply()
 	return map && map.persistence
@@ -83,6 +98,30 @@
 	var/junction_prefix = "stone_drain"
 	// Open channels foul water near them while they carry waste.
 	var/open_channel = FALSE
+	// Tile-levels of hollow water this piece takes in each minute as an inlet;
+	// an outfall takes twice this from all its inlets together.
+	var/inlet_rate = 2
+	// Percent chance a load of waste through this network silts this piece up.
+	var/clog_chance = 0.5
+	var/clogged = FALSE
+	var/tmp/hollow_id = null
+	var/tmp/obj/structure/sewer_piece/drain/outfall_cache = null
+	var/tmp/outfall_cache_revision = -1
+	var/tmp/full_until = 0
+
+/obj/structure/sewer_piece/drain/persistence_runtime_var(key)
+	return key == "hollow_id" || key == "outfall_cache" || key == "outfall_cache_revision" || key == "full_until" || ..()
+
+/obj/structure/sewer_piece/drain/New()
+	..()
+	sewer_drains |= src
+	sewer_revision++
+
+/obj/structure/sewer_piece/drain/Destroy()
+	sewer_drains -= src
+	sewer_revision++
+	outfall_cache = null
+	return ..()
 
 /obj/structure/sewer_piece/drain/ditch
 	name = "drain ditch"
@@ -90,6 +129,8 @@
 	icon_state = "ditch0"
 	junction_prefix = "ditch"
 	open_channel = TRUE
+	inlet_rate = 1
+	clog_chance = 2
 
 /obj/structure/sewer_piece/drain/stone
 	name = "stone drain"
@@ -97,6 +138,15 @@
 	icon_state = "stone_drain0"
 	junction_prefix = "stone_drain"
 	not_disassemblable = FALSE
+
+/obj/structure/sewer_piece/drain/brick
+	name = "brick sewer"
+	desc = "An arched brick sewer, big enough to carry a town's waste and a storm's water. It needs to run to a river, a lake or a cesspit."
+	icon_state = "brick_drain0"
+	junction_prefix = "brick_drain"
+	not_disassemblable = FALSE
+	inlet_rate = 5
+	clog_chance = 0.1
 
 // The open water this drain spills into, or null.
 /obj/structure/sewer_piece/drain/proc/outfall_dir()
@@ -121,6 +171,42 @@
 	var/d = outfall_dir()
 	if (d)
 		overlays += image(icon, "outfall", dir = d)
+	if (clogged)
+		overlays += image(icon, "clog")
+
+/obj/structure/sewer_piece/drain/proc/set_clogged(state)
+	if (clogged == state)
+		return
+	clogged = state
+	sewer_revision++
+	sewer_update_icon()
+
+/obj/structure/sewer_piece/drain/proc/flap_gate()
+	return locate(/obj/structure/sewer_flap_gate) in get_turf(src)
+
+// The level floodwater stands at over this outfall, or null when it is dry.
+/obj/structure/sewer_piece/drain/proc/outfall_flood_level()
+	var/turf/T = get_turf(src)
+	var/depth = flood_depth_at(T)
+	return depth > 0 ? terrain_height_at(T) + depth : null
+
+// A river in flood over an ungated outfall pushes back up the sewer.
+/obj/structure/sewer_piece/drain/proc/backflowing()
+	return !isnull(outfall_flood_level()) && !flap_gate()
+
+// An outfall that takes waste now: not backflowing, not run full in a storm.
+/obj/structure/sewer_piece/drain/proc/outfall_open()
+	return !clogged && outfall_dir() && !backflowing() && world.time >= full_until
+
+/obj/structure/sewer_piece/drain/attackby(obj/item/I, mob/living/user)
+	if (!clogged || !is_tool(I, TOOL_SHOVEL))
+		return ..()
+	user.visible_message(SPAN_NOTICE("[user] starts digging the silt out of \the [src]."), SPAN_NOTICE("You start digging the silt out of \the [src]."))
+	playsound(src, 'sound/effects/shovelling.ogg', 100, TRUE)
+	if (!do_after(user, 50, src) || !clogged)
+		return
+	set_clogged(FALSE)
+	to_chat(user, SPAN_NOTICE("You clear \the [src]."))
 
 /obj/structure/sewer_piece/drain/foul_range()
 	if (outfall_dir())
@@ -131,8 +217,14 @@
 	. = ..()
 	if (!. || get_dist(src, user) > 2)
 		return
+	if (clogged)
+		to_chat(user, SPAN_WARNING("It is choked with silt. Dig it clear with a shovel."))
 	if (outfall_dir())
 		to_chat(user, SPAN_NOTICE("It spills into the water here."))
+		if (backflowing())
+			to_chat(user, SPAN_WARNING("The river has risen over it and is pushing back up the drain. A flap gate would stop that."))
+		else if (world.time < full_until)
+			to_chat(user, SPAN_WARNING("It is running full."))
 	if (recently_fouled() && foul_range())
 		to_chat(user, SPAN_WARNING("It stinks of fresh sewage."))
 
@@ -175,7 +267,7 @@
 		to_chat(user, SPAN_NOTICE("It is [round(waste * 100 / CESSPIT_CAPACITY)]% full."))
 
 /obj/structure/sewer_piece/cesspit/attackby(obj/item/I, mob/living/user)
-	if (!istype(I, /obj/item/weapon/material/shovel))
+	if (!is_tool(I, TOOL_SHOVEL))
 		return ..()
 	if (waste <= 0)
 		to_chat(user, SPAN_NOTICE("\The [src] is empty."))
@@ -193,40 +285,36 @@
 
 // ---- network -----------------------------------------------------------
 
-// Where waste put in at turf T goes: an outfall drain, a cesspit with room,
-// or null. Pieces on T or next to it start the walk. Every open ditch and
-// outfall the waste passes is marked as carrying it.
-/proc/sewer_carry_waste(turf/T)
+// The pieces on T and next to it, where waste or water put in at T enters.
+/proc/sewer_entry_pieces(turf/T)
+	. = list()
 	if (!T)
-		return null
-	var/list/queue = list()
-	var/list/seen = list()
+		return
 	for (var/obj/structure/sewer_piece/P in T)
-		queue += P
-		seen[P] = TRUE
+		. |= P
 	for (var/d in cardinal)
 		var/turf/N = get_step(T, d)
-		if (!N)
-			continue
-		for (var/obj/structure/sewer_piece/P in N)
-			if (!seen[P])
-				queue += P
-				seen[P] = TRUE
-	var/obj/structure/sewer_piece/cesspit/pit = null
-	var/obj/structure/sewer_piece/drain/outfall = null
+		if (N)
+			for (var/obj/structure/sewer_piece/P in N)
+				. |= P
+
+// Walks the network from the pieces in queue: through drains that are not
+// clogged, never on through a cesspit. Calls visit(P) on each piece in order;
+// visit returns TRUE to stop. Returns the walked list.
+/proc/sewer_walk(list/queue, datum/callback/visit)
+	var/list/seen = list()
+	for (var/P in queue)
+		seen[P] = TRUE
 	var/i = 1
 	while (i <= queue.len && i <= SEWER_WALK_LIMIT)
 		var/obj/structure/sewer_piece/P = queue[i++]
-		if (istype(P, /obj/structure/sewer_piece/cesspit))
-			var/obj/structure/sewer_piece/cesspit/C = P
-			if (!pit && !C.is_full())
-				pit = C
-			// Waste settles in a pit; it does not flow on through it.
+		if (visit.Invoke(P))
+			break
+		if (!istype(P, /obj/structure/sewer_piece/drain))
 			continue
 		var/obj/structure/sewer_piece/drain/D = P
-		if (D.outfall_dir())
-			outfall = D
-			break
+		if (D.clogged)
+			continue
 		var/turf/PT = get_turf(D)
 		for (var/d in cardinal)
 			var/turf/N = get_step(PT, d)
@@ -236,19 +324,162 @@
 				if (!seen[Q])
 					seen[Q] = TRUE
 					queue += Q
-	if (outfall)
-		for (var/obj/structure/sewer_piece/drain/D in queue)
-			if (D.open_channel)
-				D.last_waste = world.time
-		outfall.last_waste = world.time
-		return outfall
-	if (pit)
-		pit.take_waste()
-		for (var/obj/structure/sewer_piece/drain/D in queue)
-			if (D.open_channel)
-				D.last_waste = world.time
-		return pit
-	return null
+	return queue
+
+/datum/sewer_carry
+	var/obj/structure/sewer_piece/cesspit/pit = null
+	var/obj/structure/sewer_piece/drain/outfall = null
+	var/backflow = FALSE
+
+/datum/sewer_carry/proc/visit(obj/structure/sewer_piece/P)
+	if (istype(P, /obj/structure/sewer_piece/cesspit))
+		var/obj/structure/sewer_piece/cesspit/C = P
+		if (!pit && !C.is_full())
+			pit = C
+		return FALSE
+	var/obj/structure/sewer_piece/drain/D = P
+	if (D.clogged || !D.outfall_dir())
+		return FALSE
+	if (D.backflowing())
+		backflow = TRUE
+		return FALSE
+	// A flap gate holds the waste in the sewer while the river is up.
+	if (world.time >= D.full_until)
+		outfall = D
+		return TRUE
+	return FALSE
+
+// Where waste put in at turf T goes: an outfall drain, a cesspit with room,
+// or null. Every open ditch the waste passes, and the outfall, are marked as
+// carrying it, and now and then a drain silts up. sewer_last_backflow tells
+// whether a river pushing back up an outfall stopped it.
+/proc/sewer_carry_waste(turf/T)
+	sewer_last_backflow = FALSE
+	var/datum/sewer_carry/C = new
+	var/list/walked = sewer_walk(sewer_entry_pieces(T), CALLBACK(C, /datum/sewer_carry/proc/visit))
+	sewer_last_backflow = C.backflow && !C.outfall && !C.pit
+	var/obj/structure/sewer_piece/target = C.outfall || C.pit
+	if (!target)
+		return null
+	if (C.outfall)
+		if (isnull(C.outfall.outfall_flood_level()))
+			C.outfall.last_waste = world.time
+	else
+		C.pit.take_waste()
+	var/list/drains = list()
+	for (var/obj/structure/sewer_piece/drain/D in walked)
+		drains += D
+		if (D.open_channel)
+			D.last_waste = world.time
+	if (drains.len)
+		var/obj/structure/sewer_piece/drain/D = pick(drains)
+		if (prob(D.clog_chance))
+			D.set_clogged(TRUE)
+	return target
+
+/datum/sewer_find_outfall
+	var/obj/structure/sewer_piece/drain/outfall = null
+
+/datum/sewer_find_outfall/proc/visit(obj/structure/sewer_piece/P)
+	var/obj/structure/sewer_piece/drain/D = P
+	if (istype(D) && !D.clogged && D.outfall_dir())
+		outfall = D
+		return TRUE
+	return FALSE
+
+// The outfall this drain empties to, cached until the network changes.
+/obj/structure/sewer_piece/drain/proc/find_outfall()
+	if (outfall_cache_revision == sewer_revision && (!outfall_cache || !QDELETED(outfall_cache)))
+		return outfall_cache
+	var/datum/sewer_find_outfall/F = new
+	sewer_walk(list(src), CALLBACK(F, /datum/sewer_find_outfall/proc/visit))
+	outfall_cache = F.outfall
+	outfall_cache_revision = sewer_revision
+	return outfall_cache
+
+// ---- hollows -------------------------------------------------------------
+
+// Once a minute, after the hollows fill: drains standing in hollow water take
+// it to their outfall, or a river in flood pushes up an ungated outfall into
+// the hollow. Only drains on hollow tiles do anything.
+/datum/river_flood/proc/drain_hollows()
+	if (!sewer_drains.len || !hollow_count)
+		return
+	var/list/taken = list()
+	var/list/changed = list()
+	for (var/obj/structure/sewer_piece/drain/D in sewer_drains)
+		var/turf/T = D.loc
+		if (!isturf(T) || T.z != z_level)
+			continue
+		if (isnull(D.hollow_id))
+			D.hollow_id = hollow_at(T.x, T.y)
+		var/h = D.hollow_id
+		if (!h || D.clogged)
+			continue
+		var/obj/structure/sewer_piece/drain/O = D.find_outfall()
+		if (!O)
+			continue
+		var/river = O.outfall_flood_level()
+		if (!isnull(river))
+			// The gate shuts against the river: nothing goes either way.
+			if (!O.flap_gate() && hollow_level[h] < river)
+				hollow_volume[h] = min(hollow_capacity(h), hollow_volume[h] + D.inlet_rate)
+				changed |= h
+			continue
+		if (hollow_volume[h] <= 0 || hollow_depth_at(T) <= 0)
+			continue
+		var/room = O.inlet_rate * 2 - (taken[O] || 0)
+		var/want = min(D.inlet_rate, hollow_volume[h])
+		if (want > room)
+			// A storm runs the sewer full; toilets on it back up for a while.
+			O.full_until = world.time + SEWER_FULL_TIME
+			want = max(0, room)
+		if (want <= 0)
+			continue
+		taken[O] = (taken[O] || 0) + want
+		hollow_volume[h] -= want
+		changed |= h
+		if (prob(D.clog_chance * 0.2))
+			D.set_clogged(TRUE)
+	for (var/h in changed)
+		hollow_level[h] = hollow_level_for(h, hollow_volume[h])
+
+// ---- flap gates -------------------------------------------------------------
+
+/obj/structure/sewer_flap_gate
+	name = "flap gate"
+	desc = "A hinged wooden flap hung over the end of a drain. Water and waste push it open on their way out, and a rising river presses it shut instead of running up the drain."
+	icon = 'icons/obj/sewers.dmi'
+	icon_state = "flap_gate"
+	anchored = TRUE
+	density = FALSE
+	layer = 2.035
+	not_movable = TRUE
+	not_disassemblable = FALSE
+
+/obj/structure/sewer_flap_gate/New()
+	..()
+	sewer_revision++
+
+/obj/structure/sewer_flap_gate/on_runtime_spawn()
+	..()
+	var/obj/structure/sewer_piece/drain/D = locate() in get_turf(src)
+	if (D && D.outfall_dir())
+		dir = D.outfall_dir()
+
+/obj/structure/sewer_flap_gate/Destroy()
+	sewer_revision++
+	return ..()
+
+/obj/structure/sewer_flap_gate/examine(mob/user, distance = -1)
+	. = ..()
+	if (!. || get_dist(src, user) > 2)
+		return
+	var/obj/structure/sewer_piece/drain/D = locate() in get_turf(src)
+	if (!D || !D.outfall_dir())
+		to_chat(user, SPAN_WARNING("It hangs on nothing. Put it on the end of a drain where it spills into the water."))
+	else if (!isnull(D.outfall_flood_level()))
+		to_chat(user, SPAN_NOTICE("The river presses it shut."))
 
 // TRUE when sewage close to A fouls its water.
 /proc/sewer_fouls_near(atom/A)
@@ -281,7 +512,10 @@
 		qdel(V)
 		return TRUE
 	V.forceMove(get_turf(src))
-	visible_message(SPAN_WARNING("\The [src] gurgles and backs up: its waste has nowhere to drain."))
+	if (sewer_last_backflow)
+		visible_message(SPAN_WARNING("Floodwater surges back up \the [src]: the river has risen over its drain."))
+	else
+		visible_message(SPAN_WARNING("\The [src] gurgles and backs up: its waste has nowhere to drain."))
 	return FALSE
 
 /obj/structure/toilet/examine(mob/user, distance = -1)
@@ -319,3 +553,4 @@
 #undef CESSPIT_FOUL_RANGE
 #undef CESSPIT_CAPACITY
 #undef CESSPIT_COMPOST_PER
+#undef SEWER_FULL_TIME
