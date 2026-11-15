@@ -219,5 +219,11 @@
     "inputs": {
       "/obj/item/stack/material/wood": 1
     }
+  },
+  "/obj/structure/well_fitting/windlass": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/stack/material/rope": 2
+    }
   }
 }

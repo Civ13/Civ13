@@ -1186,7 +1186,8 @@ var/global/list/node_grid_col_cache = null
 		// refineries in the Main tree. Under the specialist Tailoring tree
 		// (Synthetic Fabrics) factionless players could never unlock it.
 		"/obj/structure/bakelizer" = "combustion",
-		// --- cooperage (15) ---
+		// --- cooperage (16) ---
+		"/obj/structure/well_fitting/windlass" = "cooperage",
 		"/obj/item/weapon/reagent_containers/glass/barrel" = "cooperage",
 		"/obj/structure/fluid_tank/cistern" = "cooperage",
 		"/obj/structure/fluid_intake/wooden" = "cooperage",
@@ -1767,7 +1768,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/furnace/blast_furnace" = "iron_smithing",
 		"/obj/structure/heatsource" = "iron_smithing",
 		"/obj/item/clothing/shoes/weather/hobnail_boots" = "iron_smithing",
-		// --- iron_tools (6) ---
+		// --- iron_tools (7) ---
+		"/obj/structure/well_fitting/pump" = "iron_tools",
 		"/obj/item/weapon/fire_hook" = "iron_tools",
 		"/obj/item/weapon/flame/lighter/striker" = "iron_tools",
 		"/obj/item/flashlight/lantern" = "iron_tools",

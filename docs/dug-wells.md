@@ -58,6 +58,22 @@ a container. A drink from the hands takes 10 units.
 Dug wells are wells and waterholes are puddles to the rest of the game, so
 waste and sewage nearby, floodwater and soap work on them unchanged.
 
+## Fittings
+
+`/obj/structure/well_fitting` is built standing on any lined well (a craft
+guard refuses it elsewhere) and stays on the well's tile as its own object;
+clicks on it go to the well, a newer fitting replaces the older, and it is
+deleted with the well.
+
+| | Made with | Draw |
+| --- | --- | --- |
+| Windlass and pail | 4 wood and 2 rope, Cooperage & Containers | 2 seconds |
+| Cast iron hand pump | 6 iron, Iron Tools | 1 second |
+
+With a fitting, one drawing fills the whole container (`draw_into()`, with the
+same foul-water rule as the sink code) and water at any depth can be drunk
+from the hands.
+
 ## Tests
 
 - `python3 tests/ecology_spawning/run_linux.py . tests/river_flow/wells_probe.dm` (native).
