@@ -48,6 +48,7 @@ REVIEWED = {
     'next_call': 'var/tmp cooldown of the boatswain\'s call, never saved',
     'held_since': 'var/tmp capture clock on a Broadside TDM tiller, never saved',
     'voyage': 'var/tmp voyage of a built hull tiller (ship_voyage.dm), never saved',
+    'landfall_at': 'var/tmp landfall rest stamp of a built hull tiller (ship_voyage.dm), never saved',
     'air_crossing_hold': 'var/tmp hold of a plane arriving from another land (aircraft_crossing.dm), never saved',
     'bite_fracture_guard': 'var/tmp guard for the instant of one animal bite on humans, never saved',
 }

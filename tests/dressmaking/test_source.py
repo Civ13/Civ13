@@ -24,6 +24,8 @@ ART = {'under': ('icons/mob/uniform.dmi', 'icons/obj/clothing/uniforms.dmi'),
        'suit': ('icons/mob/suit.dmi', 'icons/obj/clothing/suits.dmi'),
        'head': ('icons/mob/head.dmi', 'icons/obj/clothing/hats.dmi'),
        'tailoring': ('icons/mob/tailoring.dmi', 'icons/obj/clothing/tailoring.dmi')}
+# Gloves, footwear and belts are drawn only as tailoring pieces.
+ACCESSORY_SLOTS = ('gloves', 'shoes', 'belt')
 
 
 def catalogue():
@@ -71,7 +73,9 @@ class TailoringTests(unittest.TestCase):
         nodes = (ROOT / 'code/modules/research_tree/research_node.dm').read_text()
         for body_id, row in rows.items():
             with self.subTest(body=body_id):
-                self.assertIn(row['slot'], ART)
+                self.assertIn(row['slot'], ART.keys() | set(ACCESSORY_SLOTS))
+                if row['slot'] in ACCESSORY_SLOTS:
+                    self.assertEqual(row['art'], 'tailoring')
                 self.assertLessEqual(1 + len(row['panels']), 6)
                 self.assertTrue(1 <= row['cost'] <= 8)
                 self.assertIn(f'register_research_node(new /datum/research_node("{row["node"]}"', nodes)
@@ -94,7 +98,7 @@ class TailoringTests(unittest.TestCase):
     def test_every_piece_state_has_template_art(self):
         body = adapter.extract(SOURCE, '/proc/tailoring_bodies')
         states = set(re.findall(r'"(tl_\w+)"', body))
-        self.assertGreaterEqual(len(states), 63)
+        self.assertGreaterEqual(len(states), 98)
         worn, item = dmi_states(ART['tailoring'][0]), dmi_states(ART['tailoring'][1])
         for state in sorted(states):
             with self.subTest(state=state):
@@ -122,6 +126,45 @@ class TailoringTests(unittest.TestCase):
         self.assertIn('#define TAILORING_MAX_COLOURS 6', SOURCE)
         sprites = (ROOT / 'tests/sprites/create_tailoring_pieces.py').read_text()
         for state in set(re.findall(r'"(tl_hat_\w+)"', body)):
+            self.assertIn("'%s'" % state, sprites)
+
+    def test_gloves_footwear_and_belts_are_looks_only(self):
+        rows = catalogue()
+        body = adapter.extract(SOURCE, '/proc/tailoring_bodies')
+        made = {k: v for k, v in rows.items() if v['slot'] in ACCESSORY_SLOTS}
+        self.assertEqual(sorted(made), ['made_belt', 'made_boots', 'made_gloves', 'made_long_gloves', 'made_sash',
+                                        'made_shoes', 'made_tall_boots', 'made_wide_belt'])
+        for body_id in made:
+            line = re.search(r'C\["%s"\] = list\((.*)\)\n' % body_id, body)[1]
+            with self.subTest(body=body_id):
+                # No accessory changes what is covered: that stays the item's own.
+                self.assertNotIn('"covers"', line)
+                self.assertLessEqual(1 + len(re.findall(r'"\w+" = (?:list\(|\w+\.Copy\(\))', line.split('"options" = ', 1)[1].split('"node"')[0])), 6)
+                if body_id != 'made_sash':
+                    self.assertIn('"fabrics" = ', line)
+        info = re.search(r'var/global/list/tailoring_piece_info = list\((.*?)\)\n\n', SOURCE, re.S)[1]
+        for state, covers in re.findall(r'"(tl_(?:glove|gloves|boot|boots|shoes|waist)\w*)" = list\("\w+", \d+, ([^)]*)\)', info):
+            self.assertEqual(covers, '0', state)
+        for path in ('/obj/item/clothing/gloves/thick/leather/tailored', '/obj/item/clothing/shoes/tailored',
+                     '/obj/item/clothing/shoes/leatherboots/tailored', '/obj/item/clothing/pouch_belt/tailored'):
+            with self.subTest(item=path):
+                self.assertIn('tailoring_rebuild_after_load()', adapter.extract(SOURCE, path + '/after_load'))
+                self.assertIn('tailoring_named_items -= src', adapter.extract(SOURCE, path + '/Destroy'))
+        refresh = adapter.extract(SOURCE, '/obj/item/clothing/proc/tailoring_refresh')
+        self.assertIn('if (design_fabric && (body["slot"] in list("under", "suit", "head")))', refresh)
+        fabrics = re.search(r'var/global/list/tailoring_fabrics = list\((.*?)\)\n\n', SOURCE, re.S)[1]
+        self.assertIn('"leather" = list("stack" = /obj/item/stack/material/leather', fabrics)
+        fits = adapter.extract(SOURCE, '/proc/tailoring_body_fits')
+        self.assertIn('body["fabrics"] ? body["fabrics"] : TAILORING_WOVEN', fits)
+        for name in ('cut_fabric', 'load_design'):
+            self.assertIn('tailoring_body_fits(', adapter.extract(SOURCE, '/obj/item/tailoring_project/proc/' + name))
+        icons = (ROOT / 'code/game/mob/living/carbon/human/update_icons.dm').read_text()
+        self.assertIn('standing.overlays += tailored_gloves.worn_design_layers()', icons)
+        self.assertIn('standing.overlays += tailored_shoes.worn_design_layers()', icons)
+        belt = adapter.extract(icons, '/mob/living/human/update_inv_belt')
+        self.assertLess(belt.index('cbelt.worn_design_layers()'), belt.index('A.get_mob_overlay()'))
+        sprites = (ROOT / 'tests/sprites/create_tailoring_pieces.py').read_text()
+        for state in set(re.findall(r'"(tl_(?:glove|gloves|boot|boots|shoes|waist)\w*)"', body)):
             self.assertIn("'%s'" % state, sprites)
 
     def test_fabric_and_dyes(self):
@@ -239,7 +282,8 @@ class TailoringTests(unittest.TestCase):
     def test_recipe_and_research(self):
         rows = (ROOT / 'config/crafting/material_recipes_global.txt').read_text().splitlines()
         projects = [line for line in rows if ',/obj/item/tailoring_project,' in line]
-        self.assertEqual(projects, ['RECIPE: /material/cloth/,tailoring project,/obj/item/tailoring_project,1,25,0,1,clothing,0,0,18,8,null'])
+        self.assertEqual(projects, ['RECIPE: /material/leather/,tailoring project,/obj/item/tailoring_project,1,25,0,1,clothing,0,0,18,8,null',
+                                    'RECIPE: /material/cloth/,tailoring project,/obj/item/tailoring_project,1,25,0,1,clothing,0,0,18,8,null'])
         self.assertFalse([line for line in rows if ',/obj/item/dressmaking_project,' in line])
         for material in ('cloth', 'woolcloth'):
             for output in ('customdress', 'customdress2'):
@@ -260,7 +304,9 @@ class TailoringTests(unittest.TestCase):
         routes = atlas.add_dressmaking({PATH: SOURCE}, add, records)
         self.assertEqual([route['outputs'] for route in routes],
                          [['/obj/item/clothing/under/tailored'], ['/obj/item/clothing/suit/storage/jacket/tailored'],
-                          ['/obj/item/clothing/head/tailored']])
+                          ['/obj/item/clothing/head/tailored'], ['/obj/item/clothing/gloves/thick/leather/tailored'],
+                          ['/obj/item/clothing/shoes/tailored'], ['/obj/item/clothing/shoes/leatherboots/tailored'],
+                          ['/obj/item/clothing/pouch_belt/tailored']])
         self.assertIn('Weaving', routes[0]['conditions'])
         for timing in ('30', '60'):
             bad = SOURCE.replace('wait_for_tailoring(user, ' + timing + ')', 'wait_for_tailoring(user, 999)')

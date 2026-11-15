@@ -78,7 +78,7 @@ watcher thaws it, then logs in normally. Things to know before running `watch`:
   12 seconds for a status reply once connected, so a wake must finish within
   that. `freeze_trim_memory` hands the frozen process's memory to the pagefile;
   it stays off by default because paging Gaia back in can outlast that wait.
-- Optional config keys: `freeze_idle_minutes` (15), `freeze_trim_memory`
+- Optional config keys: `freeze_idle_minutes` (15), `freeze_cold` (false: true shuts an idle, saved world down to its save instead of keeping it frozen in memory), `freeze_trim_memory`
   (false), `wake_ignore` (`["127.0.0.1", "::1"]`), `wake_poll_seconds` (0.2).
 
 ## The doorman (`serve`)

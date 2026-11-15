@@ -158,5 +158,54 @@ class RecursiveExplosionSpread(unittest.TestCase):
         expected = project_spread(self.original, (0, 0), 5, (0, 1))
         changed = project_spread(mutant, (0, 0), 5, (0, 1))
         self.assertNotEqual(changed[:2], expected[:2])
+def project(power, tiles, *, cache_divisor, cache_resistance=False):
+    """Return the pre-round severity input while a callback changes a later turf."""
+    if power <= 0:
+        return []
+    divisor = max(3, power / 3) if cache_divisor else None
+    first_resistance = tiles[0][1]
+    result = []
+    for index, (tile_power, resistance) in enumerate(tiles):
+        if tile_power <= 0:
+            continue
+        if cache_resistance:
+            resistance = first_resistance
+        denominator = divisor if cache_divisor else max(3, power / 3)
+        result.append(max(1, min(3, (tile_power - resistance) / denominator)))
+        if index == 0 and len(tiles) > 1:
+            # A previous ex_act can change the next turf before it is processed.
+            tiles[1] = (tiles[1][0], tiles[1][1] + 4)
+    return result
+
+
+class RecursiveSeverity(unittest.TestCase):
+    def test_source_keeps_mutable_turf_reads_inside_damage_loop(self):
+        source = (HERE.parents[1] / 'code/processes/explosion.dm').read_text()
+        body = source.split('/process/explosion/proc/explosion_rec(', 1)[1]
+        body = body.split('/process/explosion/proc/explosion_spread(', 1)[0]
+        before, loop = body.split('for (var/turf in explosion_turfs)', 1)
+        self.assertIn('if (power <= 0) return', before)
+        self.assertIn('if (!epicenter) return', before)
+        self.assertIn('var/severity_divisor = max(3,(power/3))', before)
+        self.assertIn('(explosion_turfs[T] - T.explosion_resistance) / severity_divisor', loop)
+        self.assertLess(loop.index('if (explosion_turfs[T] <= 0) continue'),
+                        loop.index('var/severity ='))
+        self.assertLess(loop.index('var/severity ='), loop.index('T.ex_act(severity)'))
+
+    def test_pre_round_values_and_resistance_mutation(self):
+        for power in (0, -1, 0.25, 8.99, 9, 9.01, 15, 30):
+            tiles = [(power, 0), (power, 0), (0, 1), (power / 2, 1)]
+            with self.subTest(power=power):
+                old = project(power, list(tiles), cache_divisor=False)
+                new = project(power, list(tiles), cache_divisor=True)
+                self.assertEqual(new, old)
+        # This control must detect incorrectly caching mutable turf resistance.
+        tiles = [(15, 0), (15, 0)]
+        correct = project(15, list(tiles), cache_divisor=True)
+        wrong = project(15, list(tiles), cache_divisor=True, cache_resistance=True)
+        self.assertNotEqual(correct, wrong)
+
+
+
 if __name__ == '__main__':
     unittest.main()
