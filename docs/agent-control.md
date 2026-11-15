@@ -151,6 +151,18 @@ cooldown, combat and crafting rules apply.
   kit but starts the character at `target`. An unknown job is
   refused with the list of open ones. Spawned characters get a mind (key
   `agent_<name>`, never active) so job notes have somewhere to go.
+- **Every round.** An `autospawn <agent> <name> [goal]` line in the config
+  (no secrets in it) spawns that agent a character at round start on whatever
+  land the world runs (`code/modules/agent_control/agent_autospawn.dm`), and
+  again on a later check (every 20 minutes) if it has died. It joins as a
+  Nomad where the map has that job (on a land that starts nomads on random
+  open ground, it starts on such a tile), otherwise as the map's first job.
+  The body belongs to the agent's account (`agent@<name>`), so a persistent
+  world that restores it re-adopts it instead of spawning a second one. The
+  character waits for a driver like one from Spawn AI Character, with the
+  line's goal (or the default survival goal), so `autopilot.py --watch` for that
+  agent picks it up. A body restored from a save is listed as waiting too; one
+  that arrived through a gate is not, because its autopilot follows it.
 - **Player handover.** With `allow_handover` in the config, players get a
   **Toggle AI Control** verb (OOC). After they confirm, any agent with the
   `characters` scope can drive that character until the player uses the verb
@@ -654,13 +666,24 @@ step, making what it needs first: `flint` (search a rock, sharpen), `stick`
 (break a branch, take its leaves, strip it, pick it up), `spear`, `axe` (spear,
 sharpened flint, two grass cuttings twisted into twine or sinew, bind), `wood`
 (`logs` wood logs with an axe), `campfire` (four logs, then craft) and `hunt`
-(butcher a carcass in view, or arm herself and attack the nearest animal that
-is not a predator). The director orders one with `"routine": {"script":
+(take a catch from one of her traps, butcher a carcass in view, or arm herself
+and attack the nearest animal that is not a predator), and `traps` (tend her
+traps: take a catch and butcher it, reset a sprung trap, scoop fish from a weir;
+otherwise craft a deadfall from 2 stone or a snare from 2 rope and set it on
+outdoor ground, until two stand). Observed traps report `trap` (caught, set or
+sprung) or a weir's `fish`, and `mine` when she set them, as examining them tells
+a player; `check_trap` refuses a set trap, because an empty hand on it takes it
+up. Covered pits are never reported. The director orders one with `"routine": {"script":
 "axe"}`; it ends when the product is in hand. With no order she follows the
 early survival ladder by herself (flint, spear, axe, campfire), after any
 blueprint or leather project, and `"routine": "none"` pauses that work until the
 director gives more. Hunger with no food in hand runs the `hunt` script as a
-need routine. The run log prints `routine <name>` or `director (<reason>)` per turn
+need routine. Floodwater is reported on her tile and each side (`flood`,
+`flood_band` 1 ankle to 4 over the head); waist-deep or deeper water drops her
+safety and the `leave flood` routine explores toward the open side with the
+shallowest water. Fixed food and water amounts the autopilot uses were written
+for the old 400 and 350 pools and are scaled to her `max_nutrition` and
+`max_water` (`needs.scaled`). The run log prints `routine <name>` or `director (<reason>)` per turn
 and, at the end, how many turns ran on routines and how many the model decided.
 
 Recipe book (`techtree.py`): the autopilot plans crafting from the game's own

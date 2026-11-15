@@ -40,6 +40,18 @@ def _ratio(value, most, default_most):
     return _clamp(100.0 * value / most) if most > 0 else None
 
 
+# The pool sizes the autopilot's fixed amounts were written for. A character with a larger pool (the
+# survival workload raised them to max_water 500, max_nutrition 600) gets those amounts scaled to it.
+BASE_POOLS = {"water": ("max_water", 350.0), "nutrition": ("max_nutrition", 400.0)}
+
+
+def scaled(me, key, amount):
+    """amount, written for the base pool of key ("water" or "nutrition"), scaled to this character's pool."""
+    most_key, base = BASE_POOLS[key]
+    most = _number((me or {}).get(most_key))
+    return amount * most / base if most and most > 0 else amount
+
+
 def warmth_level(body):
     body = _number(body)
     if body is None:

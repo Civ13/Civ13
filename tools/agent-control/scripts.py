@@ -159,11 +159,65 @@ def _prey(sit):
                        and str(row.get("type", "")).startswith("/mob/living/simple_animal") and not kit.is_predator(row))
 
 
+TRAP_TARGET = 2  # traps of hers in view before the traps script counts its work as done
+
+
+def material(me, word):
+    """Amount of a plain material stack she carries or holds ("stone", "rope"), not tools named after it."""
+    total = 0
+    for row in me.get("items") or []:
+        if not isinstance(row, dict):
+            continue
+        name = _lower(row.get("name")).split(" (", 1)[0].strip()
+        if name in (word, word + "s"):
+            value = row.get("amount")
+            total += value if isinstance(value, int) and not isinstance(value, bool) else 1
+    return total
+
+
+def _my_traps(sit):
+    return [row for row in sit.rows() if row.get("mine") and ("trap" in row or "fish" in row)]
+
+
+def tend_traps(sit):
+    """The next step at one of her traps that needs a hand (a catch, a sprung trap, fish in a weir), or None."""
+    kit = sit.kit
+    ready = sit.nearest(kit.trap_ready)
+    return [{"do": "check_trap", "target": ready["ref"]}] if ready else None
+
+
+def traps(sit):
+    """Snares and deadfalls set nearby and tended: take catches and butcher them, reset sprung traps, craft and set
+    new ones from 2 rope (snare) or 2 stone (deadfall). DONE once TRAP_TARGET traps stand and none needs her."""
+    kit = sit.kit
+    need = tend_traps(sit)
+    if need:
+        return need
+    carcass = sit.nearest(lambda row: kit.skill_targets["butcher"][0](row) and _distance(row) <= 2)
+    if carcass:
+        need = flint(sit) if not _has_blade(sit) else DONE
+        return need if need != DONE else [{"do": "butcher", "target": carcass["ref"]}]
+    if len(_my_traps(sit)) >= TRAP_TARGET:
+        return DONE
+    if sit.carrying(kit.is_trap_kit):
+        taken = {(row.get("dx"), row.get("dy")) for row in sit.rows() if "trap" in row or "fish" in row}
+        ground = sit.nearest(lambda row: kit.is_trap_ground(row) and (row.get("dx"), row.get("dy")) not in taken)
+        return [{"do": "set_trap", "target": ground["ref"]}] if ground else explore(sit)
+    if material(sit.me, "stone") >= 2:
+        return [{"do": "craft", "recipe": "deadfall trap", "material": "stone"}]
+    if material(sit.me, "rope") >= 2:
+        return [{"do": "craft", "recipe": "snare", "material": "rope"}]
+    return DONE  # nothing to make traps from: the director decides whether to gather stone or rope
+
+
 def hunt(sit):
     """Raw meat: butcher a dead animal in view, or arm herself and kill the nearest animal that is not a predator."""
     kit = sit.kit
     if sit.carrying(lambda n: kit.is_food(n)):
         return DONE
+    need = tend_traps(sit)  # a catch in one of her traps is a hunt already won
+    if need:
+        return need
     carcass = sit.nearest(kit.skill_targets["butcher"][0])
     if carcass:
         need = flint(sit) if not _has_blade(sit) else DONE
@@ -188,10 +242,12 @@ SCRIPTS = {
     "wood": wood,
     "campfire": campfire,
     "hunt": hunt,
+    "traps": traps,
 }
 ALIASES = {"sharpened flint": "flint", "make_flint": "flint", "make_spear": "spear", "sharpened stick": "spear",
            "make_axe": "axe", "flint axe": "axe", "gather_wood": "wood", "logs": "wood", "wood logs": "wood",
-           "fire": "campfire", "food": "hunt", "meat": "hunt"}
+           "fire": "campfire", "food": "hunt", "meat": "hunt",
+           "trap": "traps", "snare": "traps", "snares": "traps", "deadfall": "traps", "trapping": "traps"}
 
 
 def name_of(text):

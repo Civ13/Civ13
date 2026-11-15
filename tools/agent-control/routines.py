@@ -76,6 +76,10 @@ class Situation:
         self.ignored, self.explore_dir, self.box = ignored, explore_dir, box or {}
         self.last = ""  # the routine that ran last turn
         self.levels = needs.read(self.me, social_age, threatened)
+        # Floodwater where she stands (the observation's here.flood_band, 1 ankle to 4 over her head) is a danger too.
+        band = flood_band(observation.get("here"))
+        if band >= FLOOD_LEAVE and "safety" in self.levels:
+            self.levels["safety"] = min(self.levels["safety"], FLOOD_SAFETY.get(band, 0.0))
 
     def rows(self):
         return [row for row in self.kit.target_rows(self.observation).values()
@@ -91,6 +95,36 @@ class Situation:
 
 # Need routines: (name, need, share of the need it restores, plan function). A plan function returns plan
 # steps (targets as refs or 0) or None when the routine cannot run here.
+
+FLOOD_LEAVE = 3  # waist-deep: slow, and one step from swimming
+FLOOD_SAFETY = {3: 25.0, 4: 0.0}  # safety level while standing in that much floodwater
+
+
+def flood_band(row):
+    try:
+        return int((row or {}).get("flood_band") or 0)
+    except (TypeError, ValueError, AttributeError):
+        return 0
+
+
+def plan_leave_flood(sit):
+    """Wade out of deep floodwater: explore toward the open side with the shallowest water, ties going her way."""
+    here = flood_band(sit.observation.get("here"))
+    if here < FLOOD_LEAVE:
+        return None
+    sides = sit.observation.get("surroundings") or {}
+    best = None
+    for direction in (sit.explore_dir,) + tuple(d for d in DIRS if d != sit.explore_dir):
+        side = sides.get(direction)
+        if not isinstance(side, dict) or side.get("blocked"):
+            continue
+        band = flood_band(side)
+        if best is None or band < best[0]:
+            best = (band, direction)
+    if best is None:
+        return None
+    return [{"do": "explore", "dir": best[1]}]
+
 
 def plan_relieve(sit):
     bladder, bowels = sit.me.get("bladder") or 0, sit.me.get("bowels") or 0
@@ -179,6 +213,7 @@ def plan_rest(sit):
 
 
 NEED_ROUTINES = (
+    ("leave flood", "safety", 95, plan_leave_flood),
     ("cure", "health", 90, plan_cure),
     ("treat", "health", 60, plan_treat),
     ("drink", "thirst", 70, plan_drink),
