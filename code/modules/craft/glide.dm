@@ -46,6 +46,7 @@
 				held[1] = M.glide_size
 			held[2] = size
 		M.glide_size = size
+		M.craft_glide_was = was
 		return
 	glide_slide(M, dx, dy, time)
 
@@ -100,10 +101,35 @@
 	for (var/atom/movable/M in was.Copy())
 		if (still[M])
 			continue
-		var/list/held = was[M]
-		was -= M
-		if (M && !QDELETED(M) && M.glide_size == held[2])
-			M.glide_size = held[1]
+		craft_glide_release(M, was)
+
+// Gives M back the glide was holds for it, if it holds one.
+/proc/craft_glide_release(atom/movable/M, list/was)
+	if (!M)
+		return
+	if (M.craft_glide_was == was)
+		M.craft_glide_was = null
+	if (!was)
+		return
+	var/list/held = was[M]
+	if (!held)
+		return
+	was -= M
+	if (!QDELETED(M) && M.glide_size == held[2])
+		M.glide_size = held[1]
+
+// A held glide belongs to the craft's own steps only. Anything else that moves
+// a thing she carries (a pull, a push, a throw, a current, a hand picking it
+// up) would otherwise draw that move at her pace: a log stack shoved across
+// her deck crept a tile over half a minute. Every move gives the glide back
+// first; her own step takes it again straight after (built_body.dm, axis
+// glide_step), in the same tick, so clients only ever see her pace for her steps.
+/atom/movable
+	var/tmp/list/craft_glide_was = null // The record of the craft holding this thing's glide.
+
+/atom/movable/proc/craft_glide_drop()
+	if (craft_glide_was)
+		craft_glide_release(src, craft_glide_was)
 
 /datum/craft_body/proc/craft_glide(atom/movable/M, dx, dy, time)
 	if (!glide_was)

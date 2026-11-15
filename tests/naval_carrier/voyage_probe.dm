@@ -97,8 +97,21 @@ var/naval_runtime_error = FALSE
 	naval_check(tiller.set_out(H, "scout", 4, 3, "faction:romeempire", 8, "the unknown water to the north"), "she sets out to scout")
 	naval_check(tiller.voyage && tiller.voyage["kind"] == "scout" && tiller.craft.anchored && !tiller.craft.speed, "she lies at anchor under way on the chart")
 	naval_check(findtext(tiller.voyage_status_text(), "about 8 minutes to go"), "the tiller tells how long ([tiller.voyage_status_text()])")
+	// Live report (2026-11-15): at anchor on a voyage she looked becalmed.
+	// Her crew see the sea go by instead (voyage_sea.dm).
+	var/datum/voyage_sea/sea = tiller.voyage_sea
+	naval_check(sea && sea.heading == EAST && length(sea.images) > 100, "the water round her is drawn going by ([sea ? length(sea.images) : 0] tiles)")
+	var/sea_ok = sea != null
+	if (sea)
+		for (var/image/I in sea.images)
+			var/turf/T = I.loc
+			if (!I.override || !is_liquid_water(T) || T.iscovered() || tiller.craft.body.contains(T) || get_dist(T, tiller) > 25)
+				sea_ok = FALSE
+	naval_check(sea_ok, "only open water round her is drawn, never her own deck")
+	naval_check(sea && !length(sea.watchers), "nobody without a client is shown it")
 	tiller.end_voyage(null)
 	naval_check(isnull(tiller.voyage), "a voyage ends at the tiller")
+	naval_check(!tiller.voyage_sea && QDELETED(sea) && !length(sea.images), "and the sea stops going by")
 
 	// ---- Provisions, speed and happenings (voyage_provisions.dm) ----
 	naval_check(tiller.voyage_tile_time() == 600, "under sail a chart tile takes a minute")
