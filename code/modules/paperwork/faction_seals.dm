@@ -170,6 +170,23 @@ var/global/list/faction_seal_items = list() // every faction seal matrix
 			S.seal_faction = new_name
 			S.update_seal_name()
 
+// The faction's leader, or someone holding (in either hand) a seal of the
+// faction that is in force and cut for office. Used by the treasury and the
+// land registry to decide who acts for an office.
+/obj/map_metadata/proc/faction_office_holder(mob/living/human/H, faction, office)
+	if (!istype(H) || H.stat != CONSCIOUS || !istext(faction) || !length(faction))
+		return FALSE
+	if (H.civilization == faction && is_faction_leader(H, faction))
+		return TRUE
+	office = lowertext(office)
+	for (var/obj/item/weapon/stamp/faction_seal/S in list(H.get_active_hand(), H.get_inactive_hand()))
+		if (S.seal_faction != faction || lowertext(S.seal_office) != office)
+			continue
+		var/list/row = faction_seal_row(faction, S.seal_serial)
+		if (row && !row[3])
+			return TRUE
+	return FALSE
+
 // Who may cut and revoke seals for a faction. Offices with seal powers come
 // later; for now only the leader.
 /obj/map_metadata/proc/can_manage_faction_seals(mob/living/human/H, faction)
