@@ -262,7 +262,7 @@ describe('Crafting Atlas navigation', () => {
       detail: { ...recipe, family_variants: [{ id: 'r2', label: 'Known requirements' }, { id: 'r8', label: 'Unknown research', elsewhere: true }] } });
     const view = render(<CraftingAtlas {...props} />);
     expect(view.container.querySelectorAll('[data-result-type="recipe"]')).toHaveLength(2);
-    expect(view.container.querySelector('.atlas-chip.atlas-ok')).toBeNull();
+    expect(view.container.querySelector('.atlas-chip.kit-pill-good')).toBeNull();
     expect(screen.getByRole('option', { name: 'Unknown research - other maps' })).toBeTruthy();
     fireEvent.change(screen.getByLabelText('Recipe variant'), { target: { value: 'r8' } });
     expect(sent(props).recipe).toBe('r8');

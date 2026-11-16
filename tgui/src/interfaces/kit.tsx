@@ -8,9 +8,9 @@ import { Action, list, text } from './common';
 
 // One table for every read-only list. The first column is the row header.
 export type Column = { label: string; align?: 'right'; cell: (row: Data) => ReactNode };
-export function SnapshotTable({ label, rows, columns, hint, empty }: { label: string; rows: unknown; columns: Column[]; hint?: string; empty: string }) {
+export function SnapshotTable({ label, rows, columns, hint, empty, title, buttons }: { label: string; rows: unknown; columns: Column[]; hint?: string; empty: string; title?: string; buttons?: ReactNode }) {
   const items = list(rows);
-  return <Section>
+  return <Section title={title} buttons={buttons}>
     {hint && <p className="kit-hint">{hint}</p>}
     {items.length ? <table className="kit-table" aria-label={label}>
       <thead><tr>{columns.map((column, c) => <th key={c} scope="col" className={column.align === 'right' ? 'kit-right' : undefined}>{column.label}</th>)}</tr></thead>
@@ -20,9 +20,11 @@ export function SnapshotTable({ label, rows, columns, hint, empty }: { label: st
     </table> : <NoticeBox>{empty}</NoticeBox>}
   </Section>;
 }
-// A short state label. Tone carries meaning: good, warn, info or plain.
-export function Pill({ tone = 'plain', children }: { tone?: 'plain' | 'good' | 'warn' | 'info'; children: ReactNode }) {
-  return <span className={`kit-pill kit-pill-${tone}`}>{children}</span>;
+// A short state label. Tone carries meaning: good (done or met), warn (missing),
+// info (available now), ready (can start), progress (under way), muted (not yet).
+export type Tone = 'plain' | 'good' | 'warn' | 'info' | 'ready' | 'progress' | 'muted';
+export function Pill({ tone = 'plain', className, children }: { tone?: Tone; className?: string; children: ReactNode }) {
+  return <span className={`kit-pill kit-pill-${tone}${className ? ` ${className}` : ''}`}>{children}</span>;
 }
 // Mutually exclusive choices sent as one action; the current one is marked.
 export function Choice({ ui, action, value, options, label }: { ui: ScreenProps; action: string; value: unknown; options: [string | number, string][]; label?: string }) {

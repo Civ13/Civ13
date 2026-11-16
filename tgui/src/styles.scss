@@ -19,7 +19,6 @@ button, input { font: inherit; }
 button:focus-visible, input:focus-visible { outline: 2px solid var(--civ-highlight); outline-offset: 2px; }
 .Button { margin: 2px; }
 .Section { margin-bottom: 12px; border: 1px solid var(--civ-line); }
-.product { margin: 5px 0; }
 .tag { display: inline-block; padding: 3px 6px; margin: 3px; background: var(--civ-chip); border-radius: 3px; }
 .modern-vending { --color-primary: #bd3c3c; }
 .faction-canvas { display: grid; grid-template-columns: repeat(32, 1fr); width: min(100%, 512px); aspect-ratio: 1; margin: 16px auto; border: 1px solid #846c4b; user-select: none; touch-action: none; }
@@ -51,12 +50,6 @@ progress { width: 100%; height: 10px; accent-color: #b58d47; }
 .rs-bar > div { height: 100%; background: #c9983f; }
 .rs-progress-row { display: flex; align-items: center; gap: 10px; }
 .rs-progress-row .rs-bar { flex: 1; height: 14px; }
-.rs-badge { display: inline-block; padding: 2px 9px; font-size: 12px; white-space: nowrap; border: 1px solid var(--civ-line); border-radius: 10px; background: var(--civ-chip); }
-.rs-badge.rs-known { color: var(--civ-good); background: var(--civ-good-bg); border-color: var(--civ-good-line); }
-.rs-badge.rs-study { color: #cfe8fb; background: var(--civ-info-bg); border-color: var(--civ-info-line); }
-.rs-badge.rs-ready { color: #ffe3a6; background: #453719; border-color: #e0b85a; }
-.rs-badge.rs-progress { color: #f8d2a4; background: #43301a; border-color: #d98f3d; }
-.rs-badge.rs-study_locked, .rs-badge.rs-blocked, .rs-badge.rs-locked { color: var(--civ-muted); }
 .rs-checks { list-style: none; margin: 6px 0; padding: 0; line-height: 1.6; }
 .rs-ok { color: var(--civ-good); } .rs-missing { color: #f3b08a; }
 .rs-good { color: var(--civ-good); } .rs-bad { color: #f3b08a; } .rs-dim { color: var(--civ-dim); font-size: 13px; }
@@ -128,11 +121,10 @@ button.rs-row-main { cursor: pointer; }
 .atlas-row-text small { font-size: 12px; color: var(--civ-dim); }
 .atlas-dim strong { color: var(--civ-faint); }
 .atlas-sprite { flex: none; width: 32px; height: 32px; image-rendering: pixelated; }
-.atlas-chip { display: inline-block; margin-left: 6px; padding: 1px 8px; font-size: 11px; font-weight: normal; white-space: nowrap; background: var(--civ-chip); border: 1px solid var(--civ-line); border-radius: 10px; }
+// Atlas chips are kit pills; these rules only place them.
+.atlas-chip { margin-left: 6px; font-size: 11px; }
 .atlas-chips { margin: 0 0 8px; }
 .atlas-chips .atlas-chip { margin: 0 6px 4px 0; font-size: 12px; }
-.atlas-ok { color: var(--civ-good); background: var(--civ-good-bg); border-color: var(--civ-good-line); }
-.atlas-warn { color: var(--civ-warn); background: #4a3319; border-color: var(--civ-warn-line); }
 .atlas-admin { margin-top: 12px; padding-top: 6px; border-top: 1px dashed var(--civ-warn-line); }
 .atlas-admin h3 { color: var(--civ-warn); }
 .atlas-card { margin-bottom: 10px; padding: 12px 14px; background: var(--civ-panel); border: 1px solid var(--civ-line); overflow-wrap: anywhere; }
@@ -300,6 +292,9 @@ button.rs-row-main { cursor: pointer; }
 .kit-pill-good { color: var(--civ-good); background: var(--civ-good-bg); border-color: var(--civ-good-line); }
 .kit-pill-warn { color: var(--civ-warn); background: #4a3319; border-color: var(--civ-warn-line); }
 .kit-pill-info { color: #cfe8fb; background: var(--civ-info-bg); border-color: var(--civ-info-line); }
+.kit-pill-ready { color: #ffe3a6; background: #453719; border-color: #e0b85a; }
+.kit-pill-progress { color: #f8d2a4; background: #43301a; border-color: #d98f3d; }
+.kit-pill-muted { color: var(--civ-muted); }
 .kit-card { padding: 8px 10px; margin-bottom: 8px; background: #2a231b; border: 1px solid var(--civ-line-soft); border-radius: 4px; }
 .kit-card-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 12px; }
 .kit-card-actions { flex: none; }
@@ -316,3 +311,4 @@ button.rs-row-main { cursor: pointer; }
 .kit-choice .Button:first-child { border-radius: 3px 0 0 3px; } .kit-choice .Button:last-child { border-radius: 0 3px 3px 0; }
 .kit-choice .Button--selected { background: var(--civ-accent); color: var(--civ-bg); font-weight: bold; }
 .kit-details { margin-top: 10px; font-size: 12.5px; color: var(--civ-dim); } .kit-details summary { cursor: pointer; }
+.kit-rows + .NoticeBox { margin-top: 8px; }

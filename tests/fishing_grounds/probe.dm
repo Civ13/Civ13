@@ -279,6 +279,56 @@ var/fg_runtime_error = FALSE
 	for (var/state in list("rise_a", "rise_b", "rise_c", "jump_a", "jump_b", "gulls"))
 		fg_check(state in icon_states('icons/effects/fish_signs.dmi'), "the sheet has [state]")
 
+	// ---- Ice holes ----
+	fishing_grounds = list()
+	fg_check(ice_hole_tool_delay(new /obj/item/weapon/material/pickaxe(land)) == 80 && ice_hole_tool_delay(new /obj/item/weapon/material/hatchet(land)) == 80 && ice_hole_tool_delay(new /obj/item/weapon/chisel(land)) == 120 && !ice_hole_tool_delay(new /obj/item/weapon/fishing(land)), "an axe or pick cuts ice in 8 s, a chisel in 12, a pole not at all")
+	var/obj/structure/ice_hole/hole = new(ice)
+	fg_check(hole.icon_state in icon_states(hole.icon), "the ice hole has its sprite")
+	var/datum/fishing_ground/IG = hole.ground()
+	fg_check(hole.open() && IG && IG.kind == "fresh" && IG.capacity == 6 && IG.cx == round(ice.x / 16), "a hole in river ice fishes the fresh ground under it")
+	var/turf/sea_ice = fg_water(41, 20, /turf/floor/beach/water/ice/salty)
+	var/obj/structure/ice_hole/sea_hole = new(sea_ice)
+	var/datum/fishing_ground/SIG = sea_hole.ground()
+	fg_check(SIG && SIG.kind == "salt" && SIG.capacity == 12 && SIG != IG, "a hole in sea ice fishes the salt ground")
+	var/turf/thawed = fg_water(41, 20, /turf/floor/beach/water/shallowsaltwater)
+	fg_check(fishing_ground_at(thawed) == SIG, "and the thawed sea is the same ground")
+	fg_check(!sea_hole.open() && sea_hole.refreeze_check(sea_hole.check_epoch) && QDELETED(sea_hole), "a hole goes when the ice under it does")
+	fg_check(hole.open(trap_now_minutes() + 19) && !hole.open(trap_now_minutes() + 20), "a hole stays open for twenty minutes")
+	fg_check(!hole.refreeze_check(hole.check_epoch - 1) && !QDELETED(hole), "a stale check does nothing")
+	hole.cut_at = trap_minutes_text(trap_now_minutes() - 30)
+	fg_check(hole.refreeze_check(hole.check_epoch) && QDELETED(hole), "an old hole freezes over")
+	fg_check(abs(fish_tool_chance(list(150, 30, FALSE, 1), FALSE, IG) - 30) < 0.01 && abs(fish_tool_chance(list(150, 30, FALSE, 1), TRUE, IG) - 60) < 0.01, "a pole on a full ground has 30%, 60% baited")
+
+	// ---- Species ----
+	season = "SUMMER"
+	var/list/sp = list()
+	for (var/i = 1 to 600)
+		sp["river [fish_catch_type(river, "fresh", FALSE)]"] = TRUE
+		sp["pool [fish_catch_type(pool, "fresh", FALSE)]"] = TRUE
+		sp["shelf [fish_catch_type(shelf, "salt", FALSE)]"] = TRUE
+		sp["ocean [fish_catch_type(ocean, "salt", FALSE)]"] = TRUE
+		sp["baited [fish_catch_type(ocean, "salt", TRUE)]"] = TRUE
+		sp["towed [fish_catch_type(ocean, "salt", FALSE, TRUE)]"] = TRUE
+		sp["swamp [fish_catch_type(swamp, "swamp", FALSE)]"] = TRUE
+		sp["jungle [fish_catch_type(jungle, "jungle", FALSE)]"] = TRUE
+	var/fishes = "/obj/item/weapon/reagent_containers/food/snacks/rawfish"
+	fg_check(sp["river [fishes]/trout"] && !sp["river [fishes]/catfish"] && sp["pool [fishes]/catfish"] && sp["pool [fishes]/trout"], "trout live in rivers and lakes, catfish only in their deep water")
+	fg_check(sp["shelf [fishes]/herring"] && !sp["ocean [fishes]/herring"] && !sp["shelf [fishes]/tuna"], "herring shoal on the coast, not in the open sea")
+	fg_check(!sp["ocean [fishes]/tuna"] && sp["baited [fishes]/tuna"] && sp["towed [fishes]/tuna"], "tuna take only a baited or towed line in the open sea")
+	fg_check(sp["swamp [fishes]/catfish"] && sp["jungle [fishes]/catfish"] && !sp["swamp [fishes]/trout"] && !sp["jungle [fishes]/trout"], "swamps and jungle rivers hold catfish, no trout")
+	for (var/kind_name in list("trout", "catfish", "herring", "tuna"))
+		var/kind_path = text2path("[fishes]/[kind_name]")
+		var/obj/item/weapon/reagent_containers/food/snacks/rawfish/specimen = new kind_path(land)
+		fg_check((specimen.icon_state in icon_states(specimen.icon)) && (specimen.rotten_icon_state in icon_states(specimen.icon)) && fish_pen_stock_ok(specimen), "a [kind_name] has its fresh and rotten sprite and can stock a pen")
+	var/obj/item/weapon/reagent_containers/food/snacks/rawfish/tuna/big = new(shelf)
+	var/obj/item/weapon/reagent_containers/food/snacks/rawfish/small = new(shelf)
+	fg_check(big.reagents.get_reagent_amount("protein") == 10 && small.reagents.get_reagent_amount("protein") == 4, "a tuna carries far more meat than an ordinary fish")
+	big.cut_fillets(new /obj/item/weapon/material/kitchen/utensil/knife(shelf), null, big.fillets)
+	var/fillet_count = 0
+	for (var/obj/item/weapon/reagent_containers/food/snacks/fishfillet/FF in shelf)
+		fillet_count++
+	fg_check(fillet_count == 6 && QDELETED(big), "a knife cuts a tuna into six fillets ([fillet_count])")
+
 	// ---- Saving ----
 	fishing_grounds = list()
 	fishing_grounds_publish()

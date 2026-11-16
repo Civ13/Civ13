@@ -312,21 +312,39 @@ var/global/list/fishing_grounds_published = null
 
 // ---- The catch ----
 
-/proc/fish_catch_type(turf/T, kind, baited)
+// What comes up. baited: bait on the line. towed: a line trolled from a ship.
+/proc/fish_catch_type(turf/T, kind, baited, towed = FALSE)
 	switch (kind)
 		if (FISH_WATER_SALT)
 			if (fish_water_deep(T))
+				// Tuna hunt in open water and only take something that moves or smells.
+				if ((towed && prob(25)) || (baited && !towed && prob(12)))
+					return /obj/item/weapon/reagent_containers/food/snacks/rawfish/tuna
 				if (prob(55))
 					return /obj/item/weapon/reagent_containers/food/snacks/rawfish/cod
 				if (baited && prob(20))
 					return /obj/item/weapon/reagent_containers/food/snacks/pink_squid
 				return /obj/item/weapon/reagent_containers/food/snacks/rawfish
+			if (prob(35))
+				return /obj/item/weapon/reagent_containers/food/snacks/rawfish/herring
 			if (prob(30))
 				return /obj/item/weapon/reagent_containers/food/snacks/rawfish/cod
 			return /obj/item/weapon/reagent_containers/food/snacks/rawfish
-		if (FISH_WATER_FRESH, FISH_WATER_JUNGLE)
-			if (prob(kind == FISH_WATER_FRESH && fish_run_season() ? FISH_RUN_SALMON : 50))
+		if (FISH_WATER_FRESH)
+			if (prob(fish_run_season() ? FISH_RUN_SALMON : 50))
 				return /obj/item/weapon/reagent_containers/food/snacks/rawfish/salmon
+			if (fish_water_deep(T) && prob(40))
+				return /obj/item/weapon/reagent_containers/food/snacks/rawfish/catfish
+			if (prob(50))
+				return /obj/item/weapon/reagent_containers/food/snacks/rawfish/trout
+		if (FISH_WATER_JUNGLE)
+			if (prob(35))
+				return /obj/item/weapon/reagent_containers/food/snacks/rawfish/catfish
+			if (prob(50))
+				return /obj/item/weapon/reagent_containers/food/snacks/rawfish/salmon
+		if (FISH_WATER_SWAMP)
+			if (prob(40))
+				return /obj/item/weapon/reagent_containers/food/snacks/rawfish/catfish
 	return /obj/item/weapon/reagent_containers/food/snacks/rawfish
 
 // ---- Tools ----
@@ -375,6 +393,11 @@ var/global/list/fishing_grounds_published = null
 	if (bait_uses > 0)
 		to_chat(user, SPAN_NOTICE("It is baited for [bait_uses] more cast\s."))
 
+// A tool's chance on this ground before the water and the weather have their
+// say: bait added, then scaled by how full the ground is.
+/proc/fish_tool_chance(list/profile, baited, datum/fishing_ground/G)
+	return (profile[2] + (baited ? FISH_BAIT_BONUS : 0)) * (FISH_THIN_SHARE + (1 - FISH_THIN_SHARE) * G.fullness())
+
 // ---- Fishing ----
 
 /mob/living/human/var/tmp/ocean_fishing = FALSE
@@ -400,6 +423,13 @@ var/global/list/fishing_grounds_published = null
 		return
 	..()
 
+// An axe, pick or chisel on ice cuts a fishing hole (ice_fishing.dm).
+/turf/floor/beach/water/ice/attackby(obj/item/C as obj, mob/user as mob)
+	if (ishuman(user) && ice_hole_tool_delay(C))
+		ice_hole_cut(src, C, user)
+		return
+	..()
+
 /turf/floor/beach/water/proc/fish_cast(obj/item/W, mob/living/human/H)
 	var/list/profile = fishing_tool_profile(W)
 	if (!profile)
@@ -408,7 +438,7 @@ var/global/list/fishing_grounds_published = null
 		to_chat(H, SPAN_WARNING("You are already fishing."))
 		return
 	if (istype(src, /turf/floor/beach/water/ice))
-		to_chat(H, SPAN_WARNING("The water is frozen over."))
+		to_chat(H, SPAN_WARNING("The water is frozen over. Cut a hole with an axe, a pick or a chisel and fish through that."))
 		return
 	var/datum/craft/ship = craft_at(get_turf(H))
 	if (ship && fish_craft_step(ship))
@@ -449,7 +479,7 @@ var/global/list/fishing_grounds_published = null
 		return
 	if (baited && line.bait_uses > 0)
 		line.bait_uses--
-	var/chance = (profile[2] + (baited ? FISH_BAIT_BONUS : 0)) * (FISH_THIN_SHARE + (1 - FISH_THIN_SHARE) * G.fullness())
+	var/chance = fish_tool_chance(profile, baited, G)
 	if (deep && kind == FISH_WATER_SALT)
 		chance *= FISH_DEEP_SEA_SHARE
 	chance = min(95, chance * fish_condition_factor_at(src, kind))
@@ -459,7 +489,7 @@ var/global/list/fishing_grounds_published = null
 
 // The roll and the landing, for a cast and for a towed line. Returns the
 // number of fish landed.
-/proc/fish_land(mob/living/human/H, turf/water, datum/fishing_ground/G, kind, chance, hauls, baited, spear)
+/proc/fish_land(mob/living/human/H, turf/water, datum/fishing_ground/G, kind, chance, hauls, baited, spear, towed = FALSE)
 	var/list/landed = list()
 	var/escaped = FALSE
 	for (var/haul = 1 to hauls)
@@ -468,7 +498,7 @@ var/global/list/fishing_grounds_published = null
 		if (!G.take(1)) // the ground ran out, or someone else took the last fish during the wait
 			escaped = TRUE
 			break
-		var/catch_path = fish_catch_type(water, kind, baited)
+		var/catch_path = fish_catch_type(water, kind, baited, towed)
 		landed += new catch_path(get_turf(H))
 	if (!landed.len)
 		if (escaped)
@@ -558,11 +588,11 @@ var/global/list/fishing_grounds_published = null
 		to_chat(H, "Nothing follows the lure. These waters seem fished out; sail on.")
 		return
 	var/kind = G.kind
-	var/chance = (profile[2] + (baited ? FISH_BAIT_BONUS : 0)) * (FISH_THIN_SHARE + (1 - FISH_THIN_SHARE) * G.fullness())
+	var/chance = fish_tool_chance(profile, baited, G)
 	if (kind == FISH_WATER_SALT && fish_water_deep(water))
 		chance *= FISH_DEEP_SEA_SHARE
 	chance = min(95, chance * fish_condition_factor_at(water, kind) * fish_ship_factor(noisy, fish_craft_step(ship)))
-	fish_land(H, water, G, kind, chance, 1, baited, FALSE)
+	fish_land(H, water, G, kind, chance, 1, baited, FALSE, TRUE)
 
 // What a sonar set makes of the fish in the water at T (the surface over a
 // submerged boat), or null where there is no fishing water.

@@ -14541,7 +14541,9 @@
       ],
       "outputs": [
         "/obj/item/weapon/reagent_containers/food/snacks/rawfish/salmon",
-        "/obj/item/weapon/reagent_containers/food/snacks/rawfish"
+        "/obj/item/weapon/reagent_containers/food/snacks/rawfish",
+        "/obj/item/weapon/reagent_containers/food/snacks/rawfish/trout",
+        "/obj/item/weapon/reagent_containers/food/snacks/rawfish/catfish"
       ],
       "tools": [
         "/obj/item/weapon/fishing",
@@ -14566,7 +14568,8 @@
       ],
       "outputs": [
         "/obj/item/weapon/reagent_containers/food/snacks/rawfish",
-        "/obj/item/weapon/reagent_containers/food/snacks/rawfish/cod"
+        "/obj/item/weapon/reagent_containers/food/snacks/rawfish/cod",
+        "/obj/item/weapon/reagent_containers/food/snacks/rawfish/herring"
       ],
       "tools": [
         "/obj/item/weapon/fishing",
@@ -14592,7 +14595,8 @@
       "outputs": [
         "/obj/item/weapon/reagent_containers/food/snacks/rawfish/cod",
         "/obj/item/weapon/reagent_containers/food/snacks/rawfish",
-        "/obj/item/weapon/reagent_containers/food/snacks/pink_squid"
+        "/obj/item/weapon/reagent_containers/food/snacks/pink_squid",
+        "/obj/item/weapon/reagent_containers/food/snacks/rawfish/tuna"
       ],
       "tools": [
         "/obj/item/weapon/fishing",
