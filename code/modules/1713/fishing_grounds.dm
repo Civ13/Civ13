@@ -43,6 +43,11 @@
 #define FISH_STORM_RIVER_FACTOR 0.75
 #define FISH_SPATE_FACTOR 0.6
 #define FISH_LOW_POOL_FACTOR 1.2
+// From a ship (fish_ship_factor): a running engine scares fish; a line towed
+// at slow ahead is trolling and fishes better, at full ahead it skips.
+#define FISH_ENGINE_FACTOR 0.6
+#define FISH_TROLL_SLOW 1.3
+#define FISH_TROLL_FULL 0.5
 // Chance a watched tile of ankle-deep floodwater strands a fish in a river minute.
 #define FISH_STRAND_CHANCE 2
 
@@ -405,6 +410,10 @@ var/global/list/fishing_grounds_published = null
 	if (istype(src, /turf/floor/beach/water/ice))
 		to_chat(H, SPAN_WARNING("The water is frozen over."))
 		return
+	var/datum/craft/ship = craft_at(get_turf(H))
+	if (ship && fish_craft_step(ship))
+		fish_troll(W, H, ship, profile) // the water slides past: tow a line instead
+		return
 	var/kind = fish_water_kind(src)
 	if (!kind)
 		to_chat(H, SPAN_WARNING("There is nothing to catch here."))
@@ -426,6 +435,9 @@ var/global/list/fishing_grounds_published = null
 		return
 	var/obj/item/weapon/fishing/line = istype(W, /obj/item/weapon/fishing) ? W : null
 	var/baited = line && line.bait_uses > 0
+	var/noisy = ship && fish_craft_engines(ship)
+	if (noisy)
+		to_chat(H, SPAN_WARNING("The engine's thump carries through the hull. The fish will be wary."))
 	H.ocean_fishing = TRUE
 	if (spear)
 		H.visible_message("[H] stands ready to spear a fish.")
@@ -441,15 +453,22 @@ var/global/list/fishing_grounds_published = null
 	if (deep && kind == FISH_WATER_SALT)
 		chance *= FISH_DEEP_SEA_SHARE
 	chance = min(95, chance * fish_condition_factor_at(src, kind))
+	if (noisy)
+		chance *= fish_ship_factor(TRUE, VESSEL_SPEED_STOP)
+	fish_land(H, src, G, kind, chance, profile[4], baited, spear)
+
+// The roll and the landing, for a cast and for a towed line. Returns the
+// number of fish landed.
+/proc/fish_land(mob/living/human/H, turf/water, datum/fishing_ground/G, kind, chance, hauls, baited, spear)
 	var/list/landed = list()
 	var/escaped = FALSE
-	for (var/haul = 1 to profile[4])
+	for (var/haul = 1 to hauls)
 		if (!prob(round(chance)))
 			continue
 		if (!G.take(1)) // the ground ran out, or someone else took the last fish during the wait
 			escaped = TRUE
 			break
-		var/catch_path = fish_catch_type(src, kind, baited)
+		var/catch_path = fish_catch_type(water, kind, baited)
 		landed += new catch_path(get_turf(H))
 	if (!landed.len)
 		if (escaped)
@@ -457,8 +476,8 @@ var/global/list/fishing_grounds_published = null
 		else if (spear)
 			to_chat(H, "The fish dart away from your strike.")
 		else
-			to_chat(H, profile[4] > 1 ? "The net comes up empty..." : "Nothing bites...")
-		return
+			to_chat(H, hauls > 1 ? "The net comes up empty..." : "Nothing bites...")
+		return 0
 	var/obj/item/caught = landed[1]
 	H.put_in_hands(caught)
 	if (landed.len > 1)
@@ -467,6 +486,109 @@ var/global/list/fishing_grounds_published = null
 		to_chat(H, SPAN_NOTICE(spear ? "You spear \a [caught]!" : "You land \a [caught]!"))
 	if (!spear)
 		H.adaptStat("dexterity", 1)
+	return landed.len
+
+// ---- From a ship ----
+
+// TRUE while an engine standing aboard is running.
+/proc/fish_craft_engines(datum/craft/C)
+	for (var/datum/craft_drive/fitted/engine/D in C.drives)
+		if (D.ready())
+			return TRUE
+	return FALSE
+
+// Her telegraph step while she is making way, VESSEL_SPEED_STOP otherwise. A
+// turf-built vessel keeps her own telegraph (naval/vessel.dm).
+/proc/fish_craft_step(datum/craft/C)
+	var/datum/craft_body/template/B = C.body
+	if (istype(B) && B.vessel)
+		return B.vessel.anchored ? VESSEL_SPEED_STOP : max(VESSEL_SPEED_STOP, B.vessel.speed)
+	return C.anchored ? VESSEL_SPEED_STOP : max(VESSEL_SPEED_STOP, C.speed)
+
+// What the ship does to a line's chance. engine: one is running aboard.
+// step: her telegraph step while she is under way, VESSEL_SPEED_STOP otherwise.
+/proc/fish_ship_factor(engine, step)
+	. = 1
+	if (engine)
+		. *= FISH_ENGINE_FACTOR
+	switch (step)
+		if (VESSEL_SPEED_SLOW)
+			. *= FISH_TROLL_SLOW
+		if (VESSEL_SPEED_FULL)
+			. *= FISH_TROLL_FULL
+
+// Open fishing water within two tiles of the fisher that is not under the ship.
+/proc/fish_water_beside(mob/living/human/H, datum/craft/ship)
+	for (var/turf/T in orange(2, H))
+		if (!fish_water_kind(T) || T.iscovered())
+			continue
+		if ((locate(/obj/structure/vehicleparts/frame) in T) || (locate(/obj/structure/vehicleparts/axis) in T))
+			continue
+		if (ship && ship.body && ship.body.contains(T))
+			continue
+		return T
+	return null
+
+// Trolling: a line towed from a ship under way. The fisher stays aboard for
+// the wait; the fish come out of whatever ground she is over when it ends.
+/proc/fish_troll(obj/item/W, mob/living/human/H, datum/craft/ship, list/profile)
+	if (profile[3])
+		to_chat(H, SPAN_WARNING("You cannot spear fish from a ship under way."))
+		return
+	if (profile[4] > 1)
+		to_chat(H, SPAN_WARNING("A cast net fouls under way. Stop the ship, or tow a line."))
+		return
+	if (!fish_water_beside(H, ship))
+		to_chat(H, SPAN_WARNING("Stand by the rail, where the line can reach open water."))
+		return
+	var/obj/item/weapon/fishing/line = W
+	var/baited = istype(line) && line.bait_uses > 0
+	var/noisy = fish_craft_engines(ship)
+	H.ocean_fishing = TRUE
+	H.visible_message(SPAN_NOTICE("[H] lets \the [W] run out astern."), SPAN_NOTICE("You let the line run out astern[baited ? " with bait on it" : ""].[noisy ? " The engine will keep the fish wary." : ""]"))
+	var/done = do_after(H, profile[1], W, can_move = TRUE)
+	H.ocean_fishing = FALSE
+	if (!done || QDELETED(W) || W.loc != H || craft_at(get_turf(H)) != ship)
+		return
+	if (baited && line.bait_uses > 0)
+		line.bait_uses--
+	var/turf/water = fish_water_beside(H, ship)
+	var/datum/fishing_ground/G = water && fishing_ground_at(water)
+	if (!G || G.available() < 1)
+		to_chat(H, "Nothing follows the lure. These waters seem fished out; sail on.")
+		return
+	var/kind = G.kind
+	var/chance = (profile[2] + (baited ? FISH_BAIT_BONUS : 0)) * (FISH_THIN_SHARE + (1 - FISH_THIN_SHARE) * G.fullness())
+	if (kind == FISH_WATER_SALT && fish_water_deep(water))
+		chance *= FISH_DEEP_SEA_SHARE
+	chance = min(95, chance * fish_condition_factor_at(water, kind) * fish_ship_factor(noisy, fish_craft_step(ship)))
+	fish_land(H, water, G, kind, chance, 1, baited, FALSE)
+
+// What a sonar set makes of the fish in the water at T (the surface over a
+// submerged boat), or null where there is no fishing water.
+/proc/fish_finder_line(turf/T)
+	if (!T || !fish_water_kind(T))
+		return null
+	var/datum/fishing_ground/G = fishing_ground_at(T, FALSE)
+	var/full = G ? G.fullness() : 1
+	var/here = full >= 0.75 ? "thick shoals" : (full >= 0.4 ? "scattered shoals" : ((G && G.available() < 1) ? "no fish" : "a few fish"))
+	. = "Fish overhead: [here]."
+	if (full >= 0.75)
+		return
+	// The fullest neighbouring stretch, if it beats this one.
+	var/best = full
+	var/best_dir = 0
+	for (var/d in alldirs)
+		var/turf/N = locate(T.x + ((d & EAST) ? FISH_GROUND_SIZE : ((d & WEST) ? -FISH_GROUND_SIZE : 0)), T.y + ((d & NORTH) ? FISH_GROUND_SIZE : ((d & SOUTH) ? -FISH_GROUND_SIZE : 0)), T.z)
+		if (!N || fish_water_kind(N) != fish_water_kind(T))
+			continue
+		var/datum/fishing_ground/NG = fishing_ground_at(N, FALSE)
+		var/there = NG ? NG.fullness() : 1
+		if (there > best + 0.2)
+			best = there
+			best_dir = d
+	if (best_dir)
+		. += " Stronger returns to the [dir2text(best_dir)]."
 
 // ---- Set gear ----
 
@@ -535,3 +657,6 @@ var/global/list/fishing_grounds_published = null
 #undef FISH_SPATE_FACTOR
 #undef FISH_LOW_POOL_FACTOR
 #undef FISH_STRAND_CHANCE
+#undef FISH_ENGINE_FACTOR
+#undef FISH_TROLL_SLOW
+#undef FISH_TROLL_FULL

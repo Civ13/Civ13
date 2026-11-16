@@ -34,6 +34,14 @@ Tests: `tests/fishing_grounds/`.
   - River in spate (stage 1 or more): fresh and jungle water x0.6.
   - Low river (stage -1 or less): deep fresh and jungle water x1.2.
   The final chance is capped at 95%.
+- **From a ship** (`fish_ship_factor()`): a running engine aboard x0.6, with a
+  warning when the cast starts. While she is making way a cast becomes
+  trolling (`fish_troll()`): lines only, the fisher must stay aboard and within
+  two tiles of open water, and the fish come out of the ground she is over
+  when the wait ends. Slow ahead x1.3, half ahead x1, full ahead x0.5. Sails
+  and oars are silent.
+- **Sonar:** a submarine's ping adds what the fish overhead look like and the
+  bearing of a clearly fuller neighbouring stretch (`fish_finder_line()`).
 - **Flood strandings:** a tile of ankle-deep floodwater over outdoor land that
   somebody can see has a 2% chance each river minute to leave a fish on it
   (`fish_flood_stranding()`, asked by the flood's item pass). The fish come out

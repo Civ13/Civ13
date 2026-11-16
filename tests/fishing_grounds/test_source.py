@@ -70,6 +70,15 @@ class FishingGrounds(unittest.TestCase):
         # After the once-a-tick guard, so a tile is asked at most once a river minute.
         self.assertLess(items.index('flood_items_done[T] = TRUE'), items.index('fish_flood_stranding(T, band)'))
 
+    def test_a_ship_under_way_trolls_and_sonar_reads_the_fish(self):
+        cast = self.source[self.source.index('/turf/floor/beach/water/proc/fish_cast('):]
+        self.assertLess(cast.index('fish_troll(W, H, ship, profile)'), cast.index('do_after('))
+        troll = self.source[self.source.index('/proc/fish_troll('):]
+        self.assertLess(troll.index('do_after(H, profile[1], W, can_move = TRUE)'), troll.index('craft_at(get_turf(H)) != ship'))
+        self.assertLess(troll.index('craft_at(get_turf(H)) != ship'), troll.index('fish_land('))
+        sub = (ROOT / 'code/modules/1713/machinery/modular_vehicles/ships/submarine_systems.dm').read_text(encoding='utf-8')
+        self.assertIn('fish_finder_line(periscope_turf())', sub)
+
     def test_spears_ask_the_stone_age_numbers(self):
         arms = (ROOT / 'code/modules/1713/stone_age_arms.dm').read_text(encoding='utf-8')
         self.assertIn('/proc/spear_fishing_delay()\n\treturn SPEAR_FISHING_DELAY\n', arms)
