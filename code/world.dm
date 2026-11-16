@@ -292,6 +292,7 @@ var/world_topic_spam_protect_time = world.timeofday
 #ifndef OPENDREAM
 		// Parent reboot performs native shutdown/relogin. Do not stop the
 		// scheduler here: a returned/rejected restart must leave it running.
+		player_activity.world_stopping("restart")
 		return ..(reason)
 #else
 		return FALSE
@@ -325,6 +326,7 @@ var/world_topic_spam_protect_time = world.timeofday
 		if(persistence_restart.busy || persistence_restart.startup_hold) return
 		if (processScheduler) // just in case
 			processScheduler.stop() // will be started again after the serverswap occurs
+		player_activity.world_stopping("restart")
 		..(reason)
 
 #define COLOR_LIGHT_SEPIA "#D4C6B8"
