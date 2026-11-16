@@ -23,7 +23,7 @@ import uuid
 import zlib
 
 REQUIRED_CHECKS = ('stages_recorded',)
-REQUIRED_SHOTS = ('1_roof_midday', '2_roof_night', '4_ground_level')
+REQUIRED_SHOTS = ('1_roof_midday', '2_roof_night', '4_ground_level', '5_look_up')
 PROBE_INCLUDE = '\n#include "tests\\open_air_view\\client_probe.dm"\n'
 
 

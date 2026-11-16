@@ -259,6 +259,22 @@ var/global/datum/open_air_client_probe/open_air_client_probe = new
 		H.forceMove(locate(centre.x - 3, centre.y, centre.z))
 		sleep(10)
 		shot("4_ground_level")
+		// Look up from the ground beside the roof, with someone on the roof.
+		mark("look_up")
+		var/mob/living/human/R = new(locate(centre.x - 5, centre.y + 1, up))
+		R.dir = SOUTH
+		var/list/why = list()
+		require(H.look_up_target(why) == locate(H.x, H.y, up), "Cannot look up from beside the roof: [why.len ? why[1] : "?"]")
+		if(C)
+			require(H.start_looking_up() && C.eye == locate(H.x, H.y, up), "Look Up did not move the eye")
+			link_now()
+			sleep(20)
+			shot("5_look_up")
+			H.forceMove(locate(H.x, H.y - 1, H.z))
+			H.stop_looking_up()
+			sleep(10)
+			require(!H.looking_up_at && C.eye == H, "Look Up did not end")
+		pass("look_up")
 		pass("stages_recorded", list("shots" = shots.len))
 	catch(var/exception/e)
 		failure = "[e.name]"
