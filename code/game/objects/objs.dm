@@ -117,6 +117,10 @@
 	return FALSE
 
 /obj/proc/updateUsrDialog()
+	// Windows drawn by the interface manager refresh themselves; the rest are
+	// redrawn for whoever is still using this object.
+	if (GLOB.nanomanager)
+		GLOB.nanomanager.update_uis(src)
 	if (in_use)
 		var/is_in_use = FALSE
 		var/list/nearby = viewers(1, src)
@@ -137,6 +141,8 @@
 
 /obj/proc/updateDialog()
 	// Check that people are actually using the machine. If not, don't update anymore.
+	if (GLOB.nanomanager)
+		GLOB.nanomanager.update_uis(src)
 	if (in_use)
 		var/list/nearby = viewers(1, src)
 		var/is_in_use = FALSE

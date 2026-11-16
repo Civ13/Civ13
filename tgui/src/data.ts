@@ -25,5 +25,14 @@ export type VendingData = {
 export type CrewLogData = { crew?: { name?: string; job?: string }[] };
 export type ShipStocksData = { stocks?: { label?: string; amount?: number; unit?: string }[] };
 export type ReligionListData = { religions?: { name?: string; points?: number }[] };
+// The generic panel: sections of notes, labelled rows, item lists and buttons.
+// A button sends its action with id as the value.
+export type PanelButton = { label?: string; action?: string; id?: string | number; disabled?: Flag; selected?: Flag };
+export type PanelSection = {
+  title?: string; notes?: string[]; empty?: string; buttons?: PanelButton[];
+  rows?: { label?: string; value?: string | number; tone?: string; buttons?: PanelButton[] }[];
+  items?: { name?: string; detail?: string; buttons?: PanelButton[] }[];
+};
+export type PanelData = { notes?: string[]; sections?: PanelSection[] };
 export type PromptData = { message?: string; choices?: string[] };
 export type KnownLanguagesData = { current_default?: string; languages?: { name?: string; prefix?: string; description?: string; is_default?: Flag }[] };

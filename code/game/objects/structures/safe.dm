@@ -74,16 +74,23 @@ FLOOR SAFES
 
 
 /obj/structure/safe/attack_hand(mob/user as mob)
-	user.set_using_object(src)
-	var/dat = "<center>"
-	dat += "<a href='?src=\ref[src];open=1'>[open ? "Close" : "Open"] [src]</a> | <a href='?src=\ref[src];decrement=1'>-</a> [dial * 5] <a href='?src=\ref[src];increment=1'>+</a>"
+	ui_interact(user)
+
+/obj/structure/safe/ui_actions(ui_key)
+	return list("open", "decrement", "increment", "retrieve")
+
+/obj/structure/safe/ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = TRUE)
+	var/list/sections = list(panel_section("Lock", rows = list(
+		panel_row("Dial", dial * 5, buttons = list(panel_button("-", "decrement"), panel_button("+", "increment"))),
+		panel_row("Door", open ? "Open" : "Shut", open ? "good" : "muted")),
+		buttons = list(panel_button("[open ? "Close" : "Open"] the safe", "open"))))
 	if (open)
-		dat += "<table>"
+		var/list/items = list()
 		for (var/i = contents.len, i>=1, i--)
 			var/obj/item/P = contents[i]
-			dat += "<tr><td><a href='?src=\ref[src];retrieve=\ref[P]'>[P.name]</a></td></tr>"
-		dat += "</table></center>"
-	show_browse(user, "<html><head><title>[name]</title></head><body>[dat]</body></html>", "window=safe;size=350x300")
+			items += list(panel_item(P.name, buttons = list(panel_button("Take", "retrieve", "\ref[P]"))))
+		sections += list(panel_section("Contents", items = items, empty = "The safe is empty."))
+	open_panel(user, name, 380, 480, sections, ui = ui, force_open = force_open)
 
 
 /obj/structure/safe/Topic(href, href_list)
@@ -135,8 +142,6 @@ FLOOR SAFES
 		return
 
 	if (href_list["retrieve"])
-		show_browse(user, "", "window=safe") // Close the menu)
-
 		var/obj/item/P = locate(href_list["retrieve"]) in src
 		if (open)
 			if (P && in_range(src, user))

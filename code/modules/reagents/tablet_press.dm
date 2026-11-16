@@ -193,16 +193,26 @@
 	if (!can_operate(user))
 		to_chat(user, SPAN_WARNING("The press must be anchored, and you need to know Pharmacology."))
 		return
-	user.set_using_object(src)
-	var/dat = "Internal buffer: [reagents.total_volume]/120 units.<br>"
-	dat += "<a href='?src=\ref[src];tablet=1'>Press one aspirin tablet (1 carbonate + 4 aspirin)</a><br>"
+	ui_interact(user)
+
+/obj/structure/chem_master/tablet_press/ui_actions(ui_key)
+	return list("tablet", "load_carbonate", "load_aspirin", "return_carbonate", "return_aspirin", "eject")
+
+/obj/structure/chem_master/tablet_press/ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = TRUE)
+	if (!can_operate(user))
+		GLOB.nanomanager.close_user_uis(user, src)
+		return
+	var/list/sections = list(panel_section("Press",
+		rows = list(panel_row("Internal buffer", "[reagents.total_volume] of 120 units")),
+		buttons = list(panel_button("Press one aspirin tablet (1 carbonate + 4 aspirin)", "tablet"))))
 	if (beaker)
-		dat += "<a href='?src=\ref[src];load_carbonate=1'>Load 1 carbonate</a> | <a href='?src=\ref[src];load_aspirin=1'>Load 4 aspirin</a><br>"
-		dat += "<a href='?src=\ref[src];return_carbonate=1'>Return 1 carbonate</a> | <a href='?src=\ref[src];return_aspirin=1'>Return 4 aspirin</a><br>"
-		dat += "<a href='?src=\ref[src];eject=1'>Eject beaker (retains buffer)</a>"
+		sections += list(panel_section("Beaker", rows = list(
+			panel_row("Carbonate", "1 unit at a time", buttons = list(panel_button("Load", "load_carbonate"), panel_button("Return", "return_carbonate"))),
+			panel_row("Aspirin", "4 units at a time", buttons = list(panel_button("Load", "load_aspirin"), panel_button("Return", "return_aspirin")))),
+			buttons = list(panel_button("Eject beaker (keeps the buffer)", "eject"))))
 	else
-		dat += "Insert a glass beaker for loading or recovery."
-	show_browse(user, dat, "window=tablet_press;size=500x240")
+		sections += list(panel_section("Beaker", empty = "Insert a glass beaker for loading or recovery."))
+	open_panel(user, name, 460, 440, sections, ui = ui, force_open = force_open)
 
 // Never dispatch a crafted href to chem_master/Topic's free pill/bottle paths.
 /obj/structure/chem_master/tablet_press/Topic(href, href_list)

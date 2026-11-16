@@ -2,12 +2,12 @@
 // script and the unit tests read these, so a window's sample data lives in one
 // place. Names and text are invented for previews. Node runs this file as it is,
 // so it uses only type syntax that can be erased.
-import type { AppearanceData, ChemistryData, CrewLogData, KnownLanguagesData, PromptData, ReligionListData, ShipStocksData, VendingData, WarehouseData } from './data.ts';
+import type { AppearanceData, ChemistryData, CrewLogData, KnownLanguagesData, PanelData, PromptData, ReligionListData, ShipStocksData, VendingData, WarehouseData } from './data.ts';
 import type { Data } from './types.ts';
 // Windows with a declared snapshot type; their fixtures are checked against it.
 type Typed = {
   'appearance_changer.tmpl': AppearanceData; 'chem_disp.tmpl': ChemistryData; 'crew_log.tmpl': CrewLogData; 'known_languages.tmpl': KnownLanguagesData;
-  'prompt.tmpl': PromptData; 'religion_list.tmpl': ReligionListData; 'ship_stocks.tmpl': ShipStocksData; 'warehouse_book.tmpl': WarehouseData;
+  'panel.tmpl': PanelData; 'prompt.tmpl': PromptData; 'religion_list.tmpl': ReligionListData; 'ship_stocks.tmpl': ShipStocksData; 'warehouse_book.tmpl': WarehouseData;
   'vending_machine.tmpl': VendingData; 'vending_machine2.tmpl': VendingData; 'vending_machine_gulag.tmpl': VendingData; 'vending_machine_taotd.tmpl': VendingData;
 };
 export type Fixture = { name: string; template: string; title: string; width: number; height: number; data: Data };
@@ -17,7 +17,7 @@ const sizes = {
   'appearance_changer.tmpl': [800, 450], 'book_reader.tmpl': [625, 650], 'character_flavor.tmpl': [500, 200], 'character_notes.tmpl': [625, 650],
   'chem_disp.tmpl': [390, 655], 'crafting_atlas.tmpl': [1000, 700], 'crafting_window.tmpl': [940, 680], 'crew_log.tmpl': [500, 520],
   'faction_creation.tmpl': [620, 900], 'faction_list.tmpl': [420, 520], 'faction_symbol.tmpl': [620, 760], 'known_languages.tmpl': [600, 480],
-  'paper_editor.tmpl': [625, 650], 'photo_viewer.tmpl': [360, 400], 'prompt.tmpl': [420, 240], 'recruitment_station.tmpl': [520, 640],
+  'paper_editor.tmpl': [625, 650], 'panel.tmpl': [380, 420], 'photo_viewer.tmpl': [360, 400], 'prompt.tmpl': [420, 240], 'recruitment_station.tmpl': [520, 640],
   'religion_list.tmpl': [450, 450], 'research_bench.tmpl': [900, 680], 'research_book.tmpl': [620, 660], 'ship_stocks.tmpl': [500, 520],
   'vending_machine.tmpl': [540, 600], 'vending_machine2.tmpl': [540, 600], 'vending_machine_gulag.tmpl': [540, 600], 'vending_machine_taotd.tmpl': [540, 600],
   'warehouse_book.tmpl': [400, 500],
@@ -53,6 +53,10 @@ add('ship-stocks', 'ship_stocks.tmpl', { stocks: ([['Treasury', 1240, 'reales'],
 add('crew-log', 'crew_log.tmpl', { crew: [['Anne Hale', 'Captain'], ['Tom Reed', 'Boatswain'], ['Will Marsh', 'Sailor'], ['Edda Stone', 'Surgeon']].map(([name, job]) => ({ name, job })) });
 add('faction-list', 'faction_list.tmpl', { factions: [{ name: 'Dawnward Guild', motto: 'Build together', flavour: 'A fictional fellowship.', members: 4, symbol: '', renamed: '' }, { name: 'Ash Company', members: 1, symbol: '' }] });
 add('known-languages', 'known_languages.tmpl', { current_default: 'Common', languages: [{ name: 'Common', prefix: ',0', description: 'Spoken nearly everywhere.', is_default: 1 }, { name: 'Old Tongue', prefix: ',o', description: 'A scholarly language.' }] });
+add('panel', 'panel.tmpl', { sections: [
+  { title: 'Lock', rows: [{ label: 'Dial', value: 35, buttons: [{ label: '-', action: 'decrement' }, { label: '+', action: 'increment' }] }, { label: 'Door', value: 'Open', tone: 'good' }], buttons: [{ label: 'Close the safe', action: 'open' }] },
+  { title: 'Contents', items: [{ name: 'Ledger', detail: 'A bound book of accounts.', buttons: [{ label: 'Read', action: 'read', id: 'a' }, { label: 'Take', action: 'retrieve', id: 'a' }] }, { name: 'Silver coins', buttons: [{ label: 'Take', action: 'retrieve', id: 'b' }] }], empty: 'It is empty.' },
+] }, 'Iron safe');
 add('prompt', 'prompt.tmpl', { message: 'The tide is coming in.', choices: ['Continue'] });
 add('vending', 'vending_machine2.tmpl', { company: 'Dawnward Trading', moneyin: 12, currency_name: 'silver', currency_short: 'sp', mode: 0, products: [{ key: 1, name: 'Bread loaf', price: 2, amount: 8 }, { key: 2, name: 'Iron hatchet', price: 14, amount: 1 }, { key: 3, name: 'Linen shirt', price: 6, amount: 0 }] });
 add('recruitment', 'recruitment_station.tmpl', {

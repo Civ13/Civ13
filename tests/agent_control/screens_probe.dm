@@ -135,6 +135,26 @@ var/screens_runtime_error = FALSE
 	screens_check(findtext(page, "[marker]</script>") && length(page) < 2000, "a snapshot too large for the page is left to the ready push")
 	screen_try(C, list("screen" = 1, "close" = TRUE))
 	screens_check(!agent_open_screens(H).len, "close closes the screen")
+	// A panel window: the safe describes itself and its buttons reach its Topic.
+	var/obj/structure/safe/S = new(locate(9, 9, 1))
+	var/obj/item/weapon/paper/note = new(S)
+	note.name = "deed"
+	S.tumbler_1_open = S.tumbler_1_pos
+	S.tumbler_2_open = S.tumbler_2_pos
+	S.attack_hand(H)
+	rows = agent_screen_rows(H)
+	screens_check(rows.len == 1 && findtext(rows[1]["data"], "\"Dial\"") && !findtext(rows[1]["data"], "deed") && ("retrieve" in rows[1]["actions"]), "a shut safe shows its dial and not its contents")
+	var/dial = S.dial
+	screen_try(C, list("screen" = 1, "act" = "increment"))
+	rows = agent_screen_rows(H)
+	screens_check(S.dial == dial + 1 && findtext(rows[1]["data"], "\"value\":[S.dial * 5]"), "the dial button turns the dial and the panel refreshes")
+	screen_try(C, list("screen" = 1, "act" = "open"))
+	rows = agent_screen_rows(H)
+	screens_check(S.open && findtext(rows[1]["data"], "deed") && findtext(rows[1]["data"], "\ref[note]"), "an opened safe lists its contents with a button each")
+	screen_try(C, list("screen" = 1, "act" = "retrieve", "value" = "\ref[note]"))
+	rows = agent_screen_rows(H)
+	screens_check(note.loc != S && !findtext(rows[1]["data"], "deed"), "taking an item removes it from the safe and the list")
+	screen_try(C, list("screen" = 1, "close" = TRUE))
 	var/mob/living/human/screens_probe/P = new(locate(9, 9, 1))
 	P.species = new /datum/species/human
 	P.stat = CONSCIOUS
