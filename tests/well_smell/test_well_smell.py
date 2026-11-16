@@ -93,7 +93,7 @@ class PlumbedToiletContract(unittest.TestCase):
         self.assertIn("if (T.is_plumbed())", scan)
         self.assertIn("if (!plumbed)\n\t\t\treturn TRUE", scan)
         # Where sewers apply (sewers.dm), sewage close by also counts.
-        self.assertTrue(scan.rstrip().endswith("return sewers && sewer_fouls_near(src)"))
+        self.assertTrue(scan.rstrip().endswith("return (sewers && sewer_fouls_near(src)) || well_river_seepage()"))
 
     def test_plumbed_toilet_flushes_waste(self):
         loo = WASTE.split("//Poo in the loo.", 1)[1].split("else if(w_uniform)", 1)[0]
