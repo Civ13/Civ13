@@ -1345,8 +1345,17 @@ class RegionHost(Host):
             os.replace(temporary, target)
         self.record(phase='booting the standby')
         standby_pid = self.platform.start_standby(spare, spare_port)
-        standby = self.wait_world(spare_port, token, lambda s: s.get('standby') == 'waiting',
-                                 self.config['start_timeout_seconds'], 'the standby world did not boot', standby=True)
+        # A standby prepares the whole map before it waits, so a large land
+        # (North America, 2026-11-16) can need longer than an empty boot. A
+        # standby that never comes up is stopped here: left running, it holds
+        # region.rsc and the next build fails on locked icons.
+        boot_timeout = max(self.config['start_timeout_seconds'], self.config.get('load_timeout_seconds', 0))
+        try:
+            standby = self.wait_world(spare_port, token, lambda s: s.get('standby') == 'waiting',
+                                     boot_timeout, 'the standby world did not boot', standby=True)
+        except BaseException:
+            self.stop_standby(spare_port, standby_pid)
+            raise
         standby_session = standby.get('session', '')
         if not gaia_host.HEX32.match(standby_session or ''):
             self.stop_standby(spare_port, standby_pid)
