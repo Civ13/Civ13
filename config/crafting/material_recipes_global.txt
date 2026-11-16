@@ -421,6 +421,9 @@ RECIPE: /material/leather/,longer sword sheath,/obj/item/clothing/accessory/stor
 RECIPE: /material/leather/,longsword sheath,/obj/item/clothing/accessory/storage/sheath/longsword,4,80,0,1,weapon accessories,0,39,0,2,null
 RECIPE: /material/leather/,katana sheath,/obj/item/clothing/accessory/storage/sheath/katana,3,80,0,1,weapon accessories,0,39,0,2,null
 RECIPE: /material/leather/,daisho sheath,/obj/item/clothing/accessory/storage/sheath/daisho,6,80,0,1,weapon accessories,0,39,0,2,null
+RECIPE: /material/leather/,knife sheath,/obj/item/clothing/accessory/storage/sheath/knife,1,40,0,1,weapon accessories,0,0,0,8,null
+RECIPE: /material/leather/,boot sheath,/obj/item/clothing/accessory/storage/sheath/fitting,1,40,0,1,weapon accessories,0,0,0,8,null
+RECIPE: /material/leather/,sleeve sheath,/obj/item/clothing/accessory/storage/sheath/fitting/sleeve,1,40,0,1,weapon accessories,0,0,0,8,null
 
 RECIPE: /material/leather/,gunpowder pouch,/obj/item/weapon/reagent_containers/food/drinks/gunpowder,2,60,0,1,weapon accessories,0,54,0,8,null
 RECIPE: /material/leather/,bandolier,/obj/item/clothing/accessory/storage/webbing,3,70,0,1,weapon accessories,0,54,0,8,null

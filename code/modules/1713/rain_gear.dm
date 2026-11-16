@@ -24,11 +24,11 @@
 	var/waterproof_left = 0 // Life ticks of rain the finish still lasts
 	var/cape_wearable = FALSE // can be fastened over a uniform, coat or armor as a cape
 
-// Suits take one cape fastened over them.
+// Suits take one cape fastened over them, and one sewn-in fitting.
 /obj/item/clothing/suit
 	rain_resist = 10
-	valid_accessory_slots = list("cape")
-	restricted_accessory_slots = list("cape")
+	valid_accessory_slots = list("cape", "fitting") // fitting: a sleeve sheath (worn_tools.dm)
+	restricted_accessory_slots = list("cape", "fitting")
 
 /obj/item/clothing/head
 	rain_resist = 10

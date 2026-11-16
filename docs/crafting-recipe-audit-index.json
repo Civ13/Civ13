@@ -6,7 +6,7 @@
     "material_recipes_camp.txt": 227,
     "material_recipes_carib.txt": 1287,
     "material_recipes_crustacean.txt": 1339,
-    "material_recipes_global.txt": 2123,
+    "material_recipes_global.txt": 2126,
     "material_recipes_gorilla.txt": 1301,
     "material_recipes_kwai.txt": 204,
     "material_recipes_pygmy.txt": 1281,
@@ -82,7 +82,7 @@
     "trains": 97,
     "vehicle parts": 142,
     "wall coverings & stucco": 6,
-    "weapon accessories": 84,
+    "weapon accessories": 87,
     "weapons": 205
   },
   "audited_on": "2026-10-29",
