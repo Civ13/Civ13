@@ -259,6 +259,16 @@ static class LocalHostingTests {
         var refusedPlan = GroupPorts.ParsePlan(1, "{\"ok\": false, \"refused\": \"a TUTORIAL region cannot be the front door\"}");
         Require(!refusedPlan.Ok && GroupPorts.Describe(refusedPlan) == "Cannot do that: a TUTORIAL region cannot be the front door", "refused plan text");
         Require(!GroupPorts.ParsePlan(0, "{\"ok\": true}").Ok, "an answer without a plan (an older checkout) is not a plan");
+        // Player activity window (PlayerActivity, shard_group.py activity): a read-only report for the whole group.
+        Require(PlayerActivity.Step(host.Control!).ArgumentList.SequenceEqual(
+            new[] { "-I", "-B", shard, "--config", groupConfig, "activity" }), "player activity argv");
+        var activity = PlayerActivity.Parse(0, "noise\n{\"ok\": true, \"db\": \"D:/x/player-activity.sqlite\", \"read\": 12, \"recording\": [\"gaia\", \"<b>\"], " +
+            "\"off\": [\"europe\"], \"active\": {\"day\": 3, \"week\": 9, \"month\": 20}, \"text\": \"Player activity\\nActive players: 3 today\\u0007\"}");
+        Require(activity.Ok && activity.Recording.SequenceEqual(["gaia"]) && activity.Off.SequenceEqual(["europe"]) && activity.Read == 12
+            && activity.ActiveToday == 3 && activity.ActiveWeek == 9 && activity.Text == "Player activity" + Environment.NewLine + "Active players: 3 today"
+            && PlayerActivity.Describe(activity).StartsWith("Recording: gaia. Off: europe."), "player activity parse");
+        Require(PlayerActivity.Describe(PlayerActivity.Parse(0, "{\"ok\": true, \"recording\": [], \"off\": [\"gaia\"], \"text\": \"\"}")).Contains("PLAYER_ACTIVITY 1"), "player activity off hint");
+        Require(!PlayerActivity.Parse(1, "{\"ok\": false, \"refused\": \"player activity covers the whole group\"}").Ok && !PlayerActivity.Parse(1, "").Ok, "player activity refusal");
         var groupStep = LocalHosting.GroupStep(host.Control!, "stop");
         Require(groupStep.FileName == python && groupStep.CreateNoWindow && !groupStep.UseShellExecute && groupStep.RedirectStandardInput &&
             groupStep.ArgumentList.SequenceEqual(new[] { "-I", "-B", shard, "--config", groupConfig, "stop" }), "group argv changed: " + string.Join(" ", groupStep.ArgumentList));

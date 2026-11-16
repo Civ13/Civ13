@@ -151,6 +151,29 @@ class HostSideJob(unittest.TestCase):
             self.assertEqual(db.execute('SELECT COUNT(*) FROM event').fetchone()[0], 1)
             db.close()
 
+    def test_launcher_report(self):
+        sys.path.insert(0, str(ROOT / 'scripts' / 'shard-group'))
+        import shard_group
+        self.assertIn('activity', shard_group.GROUP_ACTIONS)
+        with tempfile.TemporaryDirectory() as tmp:
+            root = pathlib.Path(tmp)
+            group = {'root': str(root), 'regions': [{'id': 'gaia'}, {'id': 'europe'}]}
+            config = root / 'gaia' / 'config' / 'config.txt'
+            config.parent.mkdir(parents=True)
+            config.write_text('#PLAYER_ACTIVITY 1\nPLAYER_ACTIVITY 1\n', encoding='utf-8')
+            (root / 'europe' / 'config').mkdir(parents=True)
+            (root / 'europe' / 'config' / 'config.txt').write_text('#PLAYER_ACTIVITY 1\n', encoding='utf-8')
+            yesterday = (dt.date.today() - dt.timedelta(days=1)).isoformat()
+            write(root / 'gaia', yesterday, [{'e': 'boot', 's': 0, 'boot': 'b', 'tz': 0}, {'e': 'join', 's': 100, 'a': 'bob'}])
+            result = shard_group.player_activity_report(group, now=aggregate.day_start(yesterday) + 3600)
+            self.assertEqual(result['read'], 1)
+            self.assertEqual(result['recording'], ['gaia'])
+            self.assertEqual(result['off'], ['europe'])
+            self.assertEqual(result['active']['day'], 1)
+            self.assertIn('Active players: 1 today', result['text'])
+            json.dumps(result)
+            self.assertEqual(shard_group.player_activity_report(group)['read'], 0)
+
     def test_supervise_calls_it(self):
         source = (ROOT / 'scripts/shard-group/shard_group.py').read_text(encoding='utf-8')
         body = source.split('def supervise(group, start=detach):', 1)[1].split('\ndef ', 1)[0]
