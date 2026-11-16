@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = 'daa9e7a2c58577592a3eaeb308499209d7e04ea4'
+WIKI_REVIEWED_REVISION = 'b41c0207a24dc25f74f0254ded80cbf70ca98a1a'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('85a1bdb974d140a093a434fa3c472ebfd3187cd87991f7eb21a511d1476baabc', 'character skills traits languages'),
@@ -91,15 +91,15 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Pollution.md': ('f084e6ca8e6592361aba0dbc37f37d58b3f09bd20686bd067fdecdd71543f7ef', 'pollution polluted soot smog smoke charcoal clean ground growth'),
     'guides/Guide_to_Power.md': ('2cba37d02346964588303f5470f9252424d20bef190e114e3e41a1b86c1e1e41', 'power battery batteries electricity generator'),
     'guides/Guide_to_Radiation.md': ('6b6295a3bb2bf0eb54d559e32a49eb18d512a50bec9366757df81b049e0e8d00', 'radiation radioactive exposure'),
-    'guides/Guide_to_Ranching.md': ('4bfd68a7f6d60958e14da34916050fcedf06d7e1b9596a5dab8174b34a11c172', 'ranching livestock animal breeding'),
+    'guides/Guide_to_Ranching.md': ('0465cadb652571e932930a3493aee579f29931bd110436e7a0c9710d8853dcd4', 'ranching livestock animal breeding'),
     'guides/Guide_to_Religion.md': ('8f2cba3283be55c895860478ffd6969b9ee7ad70ec90ecde479cd0ef622e9943', 'religion worship clergy shrine'),
     'guides/Guide_to_Research.md': ('9a249f72384db7d800bfbde0373ce1174b5fbe6a923c8826a4250a679e9614a2', 'research unlock study technology research bench'),
     'guides/Guide_to_Resource_Extraction.md': ('5b10b34e2192801895c5e15af3ab4c5a912f311e915dbc05b8e6ced0cefde853', 'resource extraction gathering oil petroleum well fracturing'),
-    'guides/Guide_to_Survival.md': ('0cf8fd8a8ef2a66115914c4f10a6dd40fdac59b348a67e5c51cb7f827934de44', 'survival winter cold warm freezing hypothermia shelter debris footwear boots snowshoes shoes ice mud rain wet umbrella raincoat cape storm storms lightning thunder blizzard sandstorm heat wave weather fire fires wildfire firefighting beater flapper smother burning bucket blanket extinguish smoke signal signals hook firebreak pump engine nozzle hose jet reel extinguisher'),
+    'guides/Guide_to_Survival.md': ('d10258806571989ba1ef561be0653b673c5b3f63e169e448f0f1618efae3e868', 'survival winter cold warm freezing hypothermia shelter debris footwear boots snowshoes shoes ice mud rain wet umbrella raincoat cape storm storms lightning thunder blizzard sandstorm heat wave weather fire fires wildfire firefighting beater flapper smother burning bucket blanket extinguish smoke signal signals hook firebreak pump engine nozzle hose jet reel extinguisher'),
     'guides/Guide_to_Tanks.md': ('b900c1641222035e9a4940539ddf14501ec5d9133da22414333f7ca0c97578a6', 'tank driving crew ammunition'),
     'guides/Guide_to_Trains.md': ('d3989f8f25c1e27b7653024d80d8043783f4e24790f717a150a2084995c5bc25', 'train trains railway track locomotive station switcher rails wagon'),
     'guides/Guide_to_Trenches.md': ('f32b15c669a5042f9a1d7ffc6e6eb76acc2181cf859b2ec9fa503b5e5e9be507', 'trench trenches fortification sandbag dig shovel'),
-    'guides/Guide_to_Weapons.md': ('09ceff97a155094ef553dd9953542e5475264b69015256596aeb31af122deb33', 'weapons gun reload ammunition'),
+    'guides/Guide_to_Weapons.md': ('a56dbe507d6b7b7a9838dbd1812d44f91fff9a197febf2bfa90dce689849c050', 'weapons gun reload ammunition'),
     'New_Player_Guide.md': ('c0d80da1236f7b15de5787584628898cc5dacddd6db97fadbe42dd5b685faee0', 'new player beginner start first round basics'),
     'Hotkeys.md': ('17b6b9320a76019e7ce87d991fc3f76c52d5379f664386dd5883f4709eef1e48', 'hotkeys hotkey keys keyboard controls key press'),
     'role_guides.md': ('4117070c23ff3cfd2581b612cd08ae70ee170637381972cffebdf9c0161d78d5', 'role roles job jobs responsibilities'),
@@ -121,17 +121,17 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Races.md': ('46ef1bf361c519e71acbd679119429e838348827e25dbcac27282f67bee51097', 'race races species human humans'),
     'guides/Guide_to_Slang.md': ('52f9f6370922d7dede523e51247ae6ea0723d24118cecd26e594c051278dfc3f', 'slang terms jargon abbreviation meaning mean word words'),
     'guides/Guide_to_Books_and_Scholars.md': ('2e8e347267a9272394d7a4c35fe89cf83fcc13293ad1ebb62cbc7aca248d2541', 'books scholars scholarship study chapter research bench apprentice tutor library writing slate abacus'),
-    'guides/Guide_to_Your_First_Day.md': ('2a2408e9d419706c0fec82c9ebf9b37fb398c08700306295368c32ae42e63ecf', 'first day new character start starting survive survival research book study chapter food water shelter bag bags carry carrying basket travois storage chest jar pit window dump take all move moving container inventory search searching loot crate crates closet gather'),
+    'guides/Guide_to_Your_First_Day.md': ('22a7a1ad6077f5234664bcc5880c9f36a8b301f8c890f322eac3eae8614f70a2', 'first day new character start starting survive survival research book study chapter food water shelter bag bags carry carrying basket travois storage chest jar pit window dump take all move moving container inventory search searching loot crate crates closet gather'),
     'guides/Guide_to_Paperwork.md': ('2a234c6fb82cf93f4eacaf712d6d0a18a8f4eac5b4e5643069ce9da993cd670f', 'paper paperwork writing write pen book sign signature stamp'),
     'Crafting_Skill_Level_Requirements.md': ('eae4e1c91ce28009f16ec79d0e942f76895d80262e618320eaf44d3a7c5808a9', 'crafting skill level levels requirement requirements unlock'),
     'Food_Decay_Times.md': ('d2d63372eddc79fd7c3c9bffb390587fff7a5cb21c53d829ab5ec29ab9f11126', 'food decay rot spoil spoils spoiled expire expires lasts preserve storage'),
-    'Miscellaneous_Crafting.md': ('b7941002a901262850b0d31a1af2258e2c4e74e519d8bd67f8ca774db82249fa', 'miscellaneous crafting misc items dress dresses dressmaking tailoring tailor tailored sew sewing pattern patterns design clothes shirt gown cloak sleeves collar dye dyes wool linen fabric book hat hats headwear beret veil gloves boots shoes belt sash backpack satchel quiver bandolier restyle alteration alter candle candles'),
+    'Miscellaneous_Crafting.md': ('c04c002a174b9dd71a519aad0d7a29eb523a04082b92146f601a40ed25163126', 'miscellaneous crafting misc items dress dresses dressmaking tailoring tailor tailored sew sewing pattern patterns design clothes shirt gown cloak sleeves collar dye dyes wool linen fabric book hat hats headwear beret veil gloves boots shoes belt sash backpack satchel quiver bandolier restyle alteration alter candle candles'),
     'maps/The_Americas.md': ('f7589f182c236481f1971144815334796ece5e6e76c6ab7c5fea5a031d4fbede', 'americas america north south isthmus mainland persistent persistence map world hills tamping grading rammer'),
     'maps/Gaia.md': ('956e43002c3077b930f8b7b866d6276d6f7e617f348e7f7e83f6cd935265cbaa', 'gaia map world underground'),
     'maps/Nomads_Maps.md': ('9f71c98987cd40fc8b7d31a694d2984331fd23e84eb2c8248db595cd08ae18ab', 'nomads maps map terrain biome biomes'),
     'gamemodes/Voyage.md': ('9922f438d0253c6b4d812bc852422a54c37f428b4c3221b2a732397ef245ddfe', 'voyage expedition ship mode'),
     'gamemodes/Events.md': ('de6e6133e735e5da8a03a290f45e599b82cee216d9b150d25c583e3c34606336', 'events event special rounds'),
-    'guides_overview.md': ('efcb7d6c8356fd8dd5961f049f8e0ea9e4e734986a431b9f5a8ac8c908dae599', 'guides overview list of guides index'),
+    'guides_overview.md': ('55cbabecf0522760ec22c94f72aef5e62203c7767cdbbc3e68f976db6889b044', 'guides overview list of guides index'),
 }
 WIKI_LEGACY_GUIDES = ('guides/Guide_to_Crafting.md', 'guides/Guide_to_Metallurgy.md', 'Starter_Guide.md')
 
