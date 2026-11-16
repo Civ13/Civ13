@@ -38,7 +38,13 @@ The cave is admitted first at boot on any surface up to
 budgets. That admits the Americas (1132 x 920 and 848 x 1224); their standing
 open-air level then follows at `z 3` (`building_admitted` in
 building_admission.dm). Added later than first, the cave falls back to the
-ordinary cell budgets.
+ordinary cell budgets. The unformed cave plane is also left out of the
+total-cell ceiling (`free_planes` in world_z_budget.dm), once the cave exists
+or while a restore cannot see it yet. Measured 2026-11-16 on 516.1688 with
+North America (`real_map.py --map maps/nomads/nomads_americas_north.dmm`):
+cave and standing level ready 7 s after the round started, save 159 s with a
+write peak of 1352 MiB, reload 352 s with a peak of 1657 MiB (1526 MB with the
+standing level alone), the cave saved in 39 KB.
 
 Falling, holes and explosions that reach an unformed cell form it before they
 act on it (`/turf/sky/building/ex_act`).
@@ -138,7 +144,8 @@ turns one stopped region over:
   entry refusal, generator).
 - `python3 -B tests/underground_level/real_map.py --byond-bin <bin> --map
   maps/nomads/nomads_europe.dmm --output <fresh dir>` (full game: boot,
-  dig a shaft and tunnel, save, restore, resave).
+  dig a shaft and tunnel, save, restore, resave; `--storeys N` also grows N
+  open-air levels before the save).
 - `python3 tests/ecology_spawning/run_linux.py . tests/river_flow/cellar_probe.dm`
   (breach flooding, packing it, wet-earth seepage).
 - `python3 -m unittest tests/gaia_host/test_underground_migration.py`
