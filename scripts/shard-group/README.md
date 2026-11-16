@@ -307,7 +307,8 @@ which works in this order:
    carry nothing between regions. The bot's `profile.json` is pointed at the
    new gate (`port`, and `basedir`, `admin_file` and `gaia_host.config` where
    the entry has them, for every server whose `region_group` is this group
-   file); a bot that works those paths out from the group file needs no edit.
+   file); a bot entry with `"follow_front_door": true` takes those paths from the
+   group file by itself and is only restarted.
    Choosing the current gate (`set-gate --region <gate> --apply`) does only this
    move and check. Name the profile
    with the group key `bot_profile` or `--bot-profile PATH`; the bot reads it

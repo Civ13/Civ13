@@ -249,6 +249,15 @@ class GroupPortsTests(unittest.TestCase):
         self.assertEqual('# north\nDAYNIGHT_CLIENT_TINT\n', (self.overlays / 'north' / 'config' / 'config.local.txt').read_text())
         # A bot that works its paths out from the group file has no path keys: nothing to rewrite.
         self.assertEqual({'port': 1721}, group_ports.bot_wanted(shard_group, self.load(), 'north', {'region_group': str(self.path)}))
+        # A bot that follows the front door keeps its profile as written, and is restarted after a move.
+        profile = self.base / 'profile.json'
+        entry = {'basedir': '/old', 'admin_file': '/old/SQL/admins.txt', 'port': 1721, 'region_group': str(self.path), 'follow_front_door': True}
+        profile.write_text(json.dumps({'servers': {'pers': entry}}))
+        plan = group_ports.plan_gate(shard_group, self.load(), 'gaia', self.machine, bot_profile=str(profile))
+        self.assertEqual(({}, True), (plan['bot']['servers'], plan['bot']['restart']))
+        journal = self.run_plan(plan)
+        self.assertEqual(('done', True, entry), (journal['phase'], journal['bot']['restart'], json.loads(profile.read_text())['servers']['pers']))
+        self.assertFalse(group_ports.plan_gate(shard_group, self.load(), 'gaia', self.machine, bot_profile=str(profile))['bot']['restart'])
 
     def test_a_move_that_is_run_again_still_finds_the_old_front_doors_files(self):
         # The group file already names the new gate (the first run stopped after writing it).

@@ -308,7 +308,8 @@ def build_plan(sg, group, kind, changes, gate, platform, bot_profile):
         if front['files'] and any((sg.region_dir(group, r['id']) / '.git').exists() for r in group['regions']):
             warnings.append('every region must run a build that reads the shared admins file from %s: update the '
                             'regions before or right after this, or they keep reading the old copy' % front['folder'])
-        plan['bot'] = plan_bot(sg, new_group or group, gate[1], bot_profile or group.get('bot_profile'), warnings, adopting=True)
+        plan['bot'] = plan_bot(sg, new_group or group, gate[1], bot_profile or group.get('bot_profile'), warnings, adopting=True,
+                               moved=gate[0] != gate[1] or bool(front['files']))
     elif new_group and gate_of(group) in changes and 'port' in changes[gate_of(group)]:
         # The front door itself moves to another port: the outside world has to follow.
         port = changes[gate_of(group)]['port'][1]
@@ -339,6 +340,8 @@ def bot_wanted(sg, group, gate_id, server, adopting=False):
     set-gate is about to move the shared admins file to the group's front-door folder."""
     folder = sg.region_dir(group, gate_id).as_posix()
     wanted = {'port': region_of(group, gate_id)['port']}
+    if server.get('follow_front_door') is True:
+        return wanted  # the bot takes its paths from the group file when it starts (PortableProfile::followFrontDoor)
     if 'basedir' in server:
         wanted['basedir'] = folder
     if 'admin_file' in server:
@@ -356,7 +359,7 @@ def bot_current(server, key):
     return server.get(key)
 
 
-def plan_bot(sg, group, gate_id, profile_path, warnings, adopting=False):
+def plan_bot(sg, group, gate_id, profile_path, warnings, adopting=False, moved=False):
     """What set-gate changes in the bot's profile.json, or None without one."""
     if not profile_path:
         return None
@@ -373,7 +376,9 @@ def plan_bot(sg, group, gate_id, profile_path, warnings, adopting=False):
         for key, value in bot_wanted(sg, group, gate_id, server, adopting).items():
             if bot_current(server, key) != value:
                 changed.setdefault(name, {})[key] = [bot_current(server, key), value]
-    return {'profile': str(profile_path), 'servers': changed, 'restart': bool(changed)}
+    # A bot that follows the front door has nothing to rewrite, but it only looks when it starts.
+    follows = any(server.get('follow_front_door') is True for server in servers.values())
+    return {'profile': str(profile_path), 'servers': changed, 'restart': bool(changed) or (follows and moved)}
 
 
 def apply_bot(sg, group, gate_id, profile_path, stamp):
@@ -603,7 +608,10 @@ class Worker:
         target = (gate or [None, gate_of(new)])[1]
         profile = (self.plan.get('bot') or {}).get('profile')
         if profile and target:
-            self.record(bot=apply_bot(sg, new, target, profile, stamp))
+            bot = apply_bot(sg, new, target, profile, stamp)
+            if bot:
+                bot['restart'] = bot['restart'] or bool(self.plan['bot'].get('restart'))
+            self.record(bot=bot)
         return new
 
     # 3. the host service watches every region by its port: it must load the new ones first
