@@ -569,9 +569,10 @@ var/global/fluid_step_serial = 0
 	if (!W || amount <= 0)
 		return
 	var/other = 0
-	if (W.sickness > 0)
-		reagents.add_reagent("cholera", amount * W.sickness * 0.05)
-		other += amount * W.sickness * 0.05
+	var/germs = W.water_germ_level()
+	if (germs > 0)
+		reagents.add_reagent("cholera", amount * germs * 0.05)
+		other += amount * germs * 0.05
 		note_food_toxin("unboiled [W.name] water drawn by [name] at ([x],[y],[z])")
 	if (W.salty)
 		reagents.add_reagent("sodiumchloride", amount * 0.04)

@@ -590,7 +590,7 @@
 			var/washears = TRUE
 
 			if(H.is_nude())//Don't get clean showering with you clothes on.
-				H.set_hygiene(src.cleanliness)
+				H.raise_hygiene(src.cleanliness) // a plain tub never leaves you dirtier
 
 			if (H.wear_suit)
 				washgloves = !(H.wear_suit.flags_inv & HIDEGLOVES)

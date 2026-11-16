@@ -144,9 +144,10 @@
 			if (istype(RG) && RG.is_open_container() && !(istype(RG,/obj/item/weapon/reagent_containers/glass/fire_extinguisher)))
 				if (do_after(user, 15, src, check_for_repeats = FALSE))
 					var/sumex = 0
-					if (WT.sickness > 0)
-						RG.reagents.add_reagent("cholera", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*(WT.sickness*0.05))
-						sumex += min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*(WT.sickness*0.05)
+					var/germs = WT.water_germ_level()
+					if (germs > 0)
+						RG.reagents.add_reagent("cholera", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*(germs*0.05))
+						sumex += min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*(germs*0.05)
 					if (WT.salty)
 						RG.reagents.add_reagent("sodiumchloride", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.04)
 						sumex += min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.04
@@ -1263,7 +1264,7 @@
 		if (watertype == "irradiated_water")
 			H.rad_act(5)
 		else
-			H.catch_dirty_water_illness(sickness*15)
+			H.catch_dirty_water_illness(water_germ_level()*15)
 		if (H.water < 0)
 			H.water += rand(40,50)
 		H.water += 75
