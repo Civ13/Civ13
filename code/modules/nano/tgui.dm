@@ -2,6 +2,8 @@
 // topic states and gameplay Topics remain authoritative. There is no second
 // renderer: a window is the modern screen, or - only for the few windows that
 // keep one - a complete plain page for content the screen cannot show.
+#define TGUI_INLINE_SNAPSHOT_LIMIT 262144
+
 /datum/nanoui/tgui
 	// TRUE while this window shows its plain page instead of the modern screen.
 	var/plain_page = FALSE
@@ -10,6 +12,11 @@
 	var/client/pending_transfer_client
 	var/render_generation = 0
 	var/list/latest_data
+
+// The modern screen ships as its own three files, sent in open(). The classic
+// NanoUI scripts, styles and images are never used by it.
+/datum/nanoui/tgui/send_base_assets(template_filename)
+	return
 
 /datum/nanoui/tgui/set_initial_data(list/data)
 	..()
@@ -84,6 +91,15 @@
 	config["generation"] = render_generation
 	return config
 
+// The first snapshot as JSON that is safe inside a script element, so the
+// window can draw before its ready message has made the round trip. Empty when
+// it is too large to carry in the page; the ready push then delivers it.
+/datum/nanoui/tgui/proc/initial_snapshot()
+	var/json = strip_improper(json_encode(get_send_data(status == STATUS_DISABLED ? null : latest_data)))
+	if (length(json) > TGUI_INLINE_SNAPSHOT_LIMIT)
+		return ""
+	return replacetext(json, "<", "\\u003c")
+
 // Always the modern shell; a window with a plain page overrides this.
 /datum/nanoui/tgui/get_html()
 	return {"
@@ -93,6 +109,7 @@
 <body style="background:#211c16;color:#eee5d3;font-family:sans-serif" data-ref="\ref[src]" data-window="[html_encode(window_id)]" data-generation="[render_generation]">
 <div id="root"></div>
 <p id="tgui-loading">Loading interface...</p>
+<script type="application/json" id="tgui-initial">[initial_snapshot()]</script>
 <script src="civ13-tgui-bootstrap.js" onerror="document.getElementById('tgui-loading').textContent='This window could not load. Close it and open it again.'"></script>
 </body></html>
 "}

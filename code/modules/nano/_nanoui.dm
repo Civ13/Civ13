@@ -97,9 +97,14 @@ nanoui is used to open and update nano browser uis
 	if (nref)
 		ref = nref
 
+	send_base_assets(ntemplate_filename)
+
+// The scripts, styles and images a classic NanoUI page needs. A window with
+// its own renderer overrides this and sends only what it uses.
+/datum/nanoui/proc/send_base_assets(template_filename)
 	add_common_assets()
 	var/datum/asset/assets = get_asset_datum(/datum/asset/nanoui)
-	assets.send(user, ntemplate_filename)
+	assets.send(user, template_filename)
 
  /**
   * Use this proc to add assets which are common to (and required by) all nano uis

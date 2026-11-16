@@ -62,6 +62,10 @@
       return true;
     }
   };
+  // The page carries its first snapshot, so the screen draws without waiting
+  // for the ready round trip. The server still sends a fresh one on ready.
+  var initial = document.getElementById('tgui-initial');
+  if (initial && initial.textContent) { bridge.queue.push(initial.textContent); }
   window.receiveUpdateData = function (raw) {
     if (bridge.queue.length >= 32) { fallback(); return; }
     bridge.queue.push(raw);

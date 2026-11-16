@@ -118,6 +118,21 @@ var/screens_runtime_error = FALSE
 	H.forceMove(locate(9, 10, 1))
 	O.ui_interact(H)
 	screens_check(agent_open_screens(H).len == 1, "the screen opens again next to the machine")
+	// The page carries its first snapshot, safe inside a script element.
+	var/datum/nanoui/tgui/T = agent_find_screen(H, 1)
+	T.latest_data = list("amount" = 5, "note" = "</script><b>")
+	var/marker = "id=\"tgui-initial\">"
+	var/page = T.get_html()
+	var/start = findtext(page, marker)
+	var/json = copytext(page, start + length(marker), findtext(page, "</script>", start))
+	var/list/carried = json_decode(json)
+	screens_check(start && !findtext(json, "<") && carried["data"]["note"] == "</script><b>" && carried["config"]["template"] == "chem_disp.tmpl", "the page carries the first snapshot with markup escaped")
+	var/pad = "0123456789abcdef"
+	while (length(pad) < 300000)
+		pad += pad
+	T.latest_data = list("pad" = pad)
+	page = T.get_html()
+	screens_check(findtext(page, "[marker]</script>") && length(page) < 2000, "a snapshot too large for the page is left to the ready push")
 	screen_try(C, list("screen" = 1, "close" = TRUE))
 	screens_check(!agent_open_screens(H).len, "close closes the screen")
 	var/mob/living/human/screens_probe/P = new(locate(9, 9, 1))
