@@ -169,6 +169,8 @@
 //*************************************************************
 
 RECIPE: /material/leaf/,thatch roofing,/obj/item/weapon/roofbuilder/leaves,2,45,0,1,none,0,0,0,8,null
+RECIPE: /material/leaf/,woven basket,/obj/structure/storage_container/basket,6,80,1,1,storage,0,0,0,8,null
+RECIPE: /material/leaf/,pit lining,/obj/item/weapon/storage_pit_lining,4,40,0,1,storage,0,0,0,8,null
 
 //*****************| LEAVES CLOTHING |**************************
 
@@ -231,6 +233,7 @@ RECIPE: /material/clay/,unfired very small clay pot,/obj/item/weapon/clay/verysm
 RECIPE: /material/clay/,unfired small clay pot,/obj/item/weapon/clay/smallclaypot,1,30,0,1,none,0,0,0,8,null
 RECIPE: /material/clay/,unfired medium clay pot,/obj/item/weapon/clay/claypot,2,50,0,1,kitchen,0,0,0,8,null
 RECIPE: /material/clay/,unfired large clay pot,/obj/item/weapon/clay/bigclaypot,3,60,0,1,kitchen,0,0,0,8,null
+RECIPE: /material/clay/,unfired clay storage jar,/obj/item/weapon/clay/storage_jar,3,60,0,1,kitchen,0,0,0,8,null
 RECIPE: /material/clay/,unfired clay crock,/obj/item/weapon/clay/crock,3,60,0,1,kitchen,0,0,0,8,null
 RECIPE: /material/clay/,unfired clay pitcher,/obj/item/weapon/clay/claypitcher,2,50,0,1,kitchen,0,0,0,8,null
 RECIPE: /material/clay/,unfired large clay pitcher,/obj/item/weapon/clay/largeclaypitcher,3,60,0,1,kitchen,0,0,0,8,null
@@ -1744,6 +1747,7 @@ RECIPE: /material/rope/,leash,/obj/item/weapon/leash,1,20,0,1,none,0,0,0,8,null
 RECIPE: /material/rope/,garrote,/obj/item/garrote,3,120,0,1,none,0,43,0,8,null
 RECIPE: /material/rope/,rope drive belt,/obj/item/machine_part/belt,3,60,0,1,machine parts,0,0,0,8,rope
 RECIPE: /material/rope/,grass carry net,/obj/item/weapon/storage/belt/carry_net,3,60,0,1,none,0,0,0,8,null
+RECIPE: /material/rope/,woven basket,/obj/structure/storage_container/basket,3,80,1,1,storage,0,0,0,8,null
 RECIPE: /material/rope/,neck cord,/obj/item/clothing/accessory/storage/lanyard,1,20,0,1,none,0,0,0,8,null
 RECIPE: /material/rope/,pistol lanyard,/obj/item/clothing/accessory/storage/lanyard/pistol,1,40,0,1,none,0,0,0,8,null
 
@@ -2484,6 +2488,7 @@ RECIPE: /material/wood/,empty dynamite stick,/obj/item/weapon/grenade/dynamite,1
 
 RECIPE: /material/wood/,punji sticks trap,/obj/item/weapon/punji_sticks,4,70,0,1,weapons,0,0,0,8,null
 RECIPE: /material/wood/,pit cover,/obj/item/weapon/pit_cover,3,40,0,1,weapons,0,0,0,8,null
+RECIPE: /material/wood/,hewn log chest,/obj/structure/storage_container/log_chest,6,150,1,1,storage,0,0,0,8,null
 RECIPE: /material/wood/,weir stakes,/obj/item/weapon/trap_kit/weir,6,120,0,1,tools,0,0,0,8,null
 
 RECIPE: /material/wood/,quarterstaff,/obj/item/weapon/material/quarterstaff,2,50,0,1,weapons,0,0,0,8,wood
@@ -2786,6 +2791,7 @@ RECIPE: /material/bamboo/,bamboo spear,/obj/item/weapon/material/spear,3,50,0,1,
 RECIPE: /material/bamboo/,pack basket,/obj/item/weapon/storage/backpack/pack_basket,4,100,0,1,storage,0,0,0,8,null
 RECIPE: /material/bamboo/,pack frame,/obj/item/weapon/storage/backpack/pack_frame,6,120,0,1,storage,18,0,0,8,null
 RECIPE: /material/bamboo/,travois,/obj/structure/closet/crate/travois,8,150,1,1,storage,0,0,0,8,null
+RECIPE: /material/bamboo/,woven basket,/obj/structure/storage_container/basket,4,80,1,1,storage,0,0,0,8,null
 RECIPE: /material/bamboo/,bamboo pipe,/obj/structure/fluid_pipe/plain,1,40,1,1,plumbing,0,0,0,8,bamboo
 
 //*******************************************************
@@ -3117,6 +3123,7 @@ RECIPE: /material/leather/,leather saddle,/obj/item/animal_tack/saddle,6,80,0,1,
 RECIPE: /material/leather/,leather animal harness,/obj/item/animal_tack/harness,4,60,0,1,none,0,0,0,8,null
 RECIPE: /material/iron/,horseshoes,/obj/item/horseshoes,2,60,0,1,none,0,0,0,8,null
 RECIPE: /material/leather/,hide sling bag,/obj/item/weapon/storage/backpack/sling_bag,3,80,0,1,storage,0,0,0,8,null
+RECIPE: /material/leather/,pit lining,/obj/item/weapon/storage_pit_lining,2,40,0,1,storage,0,0,0,8,null
 RECIPE: /material/leather/,wrist thong,/obj/item/wrist_loop,1,20,0,1,none,0,0,0,8,null
 RECIPE: /material/leather/,sword knot,/obj/item/wrist_loop/sword_knot,1,30,0,1,none,0,0,0,8,null
 //**| SUPPLIED-ITEM RECIPES (#3563) |**
@@ -3149,6 +3156,7 @@ RECIPE: /material/bone/,study bones,/obj/item/weapon/scholar_practice/study_bone
 RECIPE: /material/wood/soft/,seed tray,/obj/item/weapon/scholar_practice/seed_tray,2,60,0,1,paper & printing,0,0,0,8,null
 RECIPE: /material/wood/soft/,war game board,/obj/item/weapon/scholar_practice/war_game,2,60,0,1,paper & printing,0,0,0,8,null
 RECIPE: /material/wood/soft/,pack basket,/obj/item/weapon/storage/backpack/pack_basket,4,100,0,1,storage,0,0,0,8,null
+RECIPE: /material/wood/soft/,woven basket,/obj/structure/storage_container/basket,4,80,1,1,storage,0,0,0,8,null
 RECIPE: /material/wood/soft/,pack frame,/obj/item/weapon/storage/backpack/pack_frame,6,120,0,1,storage,18,0,0,8,null
 RECIPE: /material/wood/soft/,travois,/obj/structure/closet/crate/travois,8,150,1,1,storage,0,0,0,8,null
 RECIPE: /material/wood/,comb,/obj/item/weapon/haircomb,1,40,0,1,none,0,0,0,8,null
