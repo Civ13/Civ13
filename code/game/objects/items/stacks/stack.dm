@@ -2000,12 +2000,16 @@
 			build_override_door.set_dir(user.dir)
 			build_override_door.add_fingerprint(user)
 			qdel(O)
+			spawn(0)
+				build_override_door.door_choose_inside(user)
 			return
 		if (faction_override_door)
 			if (!faction_override_door.persistence_set_loc(get_turf(O))) return FALSE
 			faction_override_door.set_dir(user.dir)
 			faction_override_door.add_fingerprint(user)
 			qdel(O)
+			spawn(0)
+				faction_override_door.door_choose_inside(user)
 			return
 		if (customname != "")
 			O.name = customname
@@ -2020,6 +2024,10 @@
 		if (istype(O, /obj/structure/vehicleparts/frame))
 			O.dir = 1
 		O.add_fingerprint(user)
+		if (istype(O, /obj/structure/simple_door))
+			var/obj/structure/simple_door/new_door = O
+			spawn(0)
+				new_door.door_choose_inside(user)
 		if (istype(O, /obj/item/clothing/accessory/armband/talisman))
 			var/obj/item/clothing/accessory/armband/talisman/TM = O
 			TM.name = "[H.religion] bone talisman"
