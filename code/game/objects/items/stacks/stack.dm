@@ -2029,6 +2029,8 @@
 		O.set_dir(user.dir)
 		if (istype(O, /obj/structure/vehicleparts/frame))
 			O.dir = 1
+		// A crenelated wall covers the side its builder faced (castle_defences.dm).
+		battlement_after_build(O, user)
 		O.add_fingerprint(user)
 		if (istype(O, /obj/structure/simple_door))
 			var/obj/structure/simple_door/new_door = O
