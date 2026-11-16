@@ -48,3 +48,4 @@ artifact on every tgui change; refresh the committed copy after a visible change
 | Character Setup | `character_setup.tmpl` | 860 x 913 | [character-setup.png](character-setup.png) |
 | Character Setup, traits | `character_setup.tmpl` | 860 x 913 | [character-setup-traits.png](character-setup-traits.png) |
 | Character Setup, settings | `character_setup.tmpl` | 860 x 913 | [character-setup-settings.png](character-setup-settings.png) |
+| Spawn (admin) | `spawn_menu.tmpl` | 640 x 640 | [spawn-menu.png](spawn-menu.png) |

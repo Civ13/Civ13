@@ -2,12 +2,12 @@
 // script and the unit tests read these, so a window's sample data lives in one
 // place. Names and text are invented for previews. Node runs this file as it is,
 // so it uses only type syntax that can be erased.
-import type { AppearanceData, CharacterSetupData, ChemistryData, CrewLogData, KnownLanguagesData, PanelData, PromptData, ReligionListData, ShipStocksData, StorageWindowData, VendingData, WarehouseData } from './data.ts';
+import type { AppearanceData, CharacterSetupData, ChemistryData, CrewLogData, KnownLanguagesData, PanelData, PromptData, ReligionListData, ShipStocksData, SpawnMenuData, StorageWindowData, VendingData, WarehouseData } from './data.ts';
 import type { Data } from './types.ts';
 // Windows with a declared snapshot type; their fixtures are checked against it.
 type Typed = {
   'appearance_changer.tmpl': AppearanceData; 'character_setup.tmpl': CharacterSetupData; 'chem_disp.tmpl': ChemistryData; 'crew_log.tmpl': CrewLogData; 'known_languages.tmpl': KnownLanguagesData;
-  'panel.tmpl': PanelData; 'prompt.tmpl': PromptData; 'religion_list.tmpl': ReligionListData; 'ship_stocks.tmpl': ShipStocksData; 'storage_window.tmpl': StorageWindowData; 'warehouse_book.tmpl': WarehouseData;
+  'panel.tmpl': PanelData; 'prompt.tmpl': PromptData; 'religion_list.tmpl': ReligionListData; 'ship_stocks.tmpl': ShipStocksData; 'spawn_menu.tmpl': SpawnMenuData; 'storage_window.tmpl': StorageWindowData; 'warehouse_book.tmpl': WarehouseData;
   'vending_machine.tmpl': VendingData; 'vending_machine2.tmpl': VendingData; 'vending_machine_gulag.tmpl': VendingData; 'vending_machine_taotd.tmpl': VendingData;
 };
 export type Fixture = { name: string; template: string; title: string; width: number; height: number; data: Data };
@@ -18,7 +18,7 @@ const sizes = {
   'chem_disp.tmpl': [390, 655], 'crafting_atlas.tmpl': [1000, 700], 'crafting_window.tmpl': [940, 680], 'crew_log.tmpl': [500, 520],
   'faction_creation.tmpl': [620, 900], 'faction_list.tmpl': [420, 520], 'faction_symbol.tmpl': [620, 760], 'known_languages.tmpl': [600, 480],
   'paper_editor.tmpl': [625, 650], 'panel.tmpl': [380, 420], 'photo_viewer.tmpl': [360, 400], 'prompt.tmpl': [420, 240], 'recruitment_station.tmpl': [520, 640],
-  'religion_list.tmpl': [450, 450], 'research_bench.tmpl': [900, 680], 'research_book.tmpl': [620, 660], 'ship_stocks.tmpl': [500, 520], 'storage_window.tmpl': [760, 600],
+  'religion_list.tmpl': [450, 450], 'research_bench.tmpl': [900, 680], 'research_book.tmpl': [620, 660], 'ship_stocks.tmpl': [500, 520], 'spawn_menu.tmpl': [640, 640], 'storage_window.tmpl': [760, 600],
   'vending_machine.tmpl': [540, 600], 'vending_machine2.tmpl': [540, 600], 'vending_machine_gulag.tmpl': [540, 600], 'vending_machine_taotd.tmpl': [540, 600],
   'warehouse_book.tmpl': [400, 500],
 } satisfies Record<string, [number, number]>;
@@ -173,3 +173,9 @@ const storage: StorageWindowData = {
   queue: [{ name: 'waterskin', image: '', to: 'your hands', time: 4, done: 2 }, { name: 'berries', image: '', to: 'leather backpack', time: 5, done: 0 }],
 };
 add('storage-window', 'storage_window.tmpl', storage, 'Storage');
+add('spawn-menu', 'spawn_menu.tmpl', { query: 'rifle', kind: 'obj', matches: 212, limit: 150, types: 41873, max_amount: 50, last: '/obj/item/weapon/gun/projectile/boltaction/mosin', results: [
+  { path: '/obj/item/weapon/gun/projectile/boltaction/mosin', name: 'Mosin-Nagant', kind: 'obj' },
+  { path: '/obj/item/weapon/gun/projectile/boltaction/singleshot/martini_henry', name: 'Martini-Henry rifle', kind: 'obj' },
+  { path: '/obj/item/weapon/gun/projectile/semiautomatic/svt', name: 'SVT-40', kind: 'obj' },
+  { path: '/obj/structure/closet/crate/rifles', name: 'rifle crate', kind: 'obj' },
+] }, 'Spawn');

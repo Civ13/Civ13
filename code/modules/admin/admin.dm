@@ -747,38 +747,34 @@ proc/admin_notice(var/message, var/rights)
 			to_chat(usr, "- name: [item.name] icon: [item.item_icon] path: [item.item_path] desc: [item.item_desc]")
 */
 
-/datum/admins/proc/spawn_atom(var/object as text)
+/datum/admins/proc/spawn_atom(var/object as null|text)
 	set category = "Debug"
-	set desc = "(atom path) Spawn an atom"
+	set desc = "(atom path) Spawn an atom; with nothing typed, opens the searchable picker"
 	set name = "Spawn"
 
 	if (!check_rights(R_SPAWN))	return
-
-	var/list/types = typesof(/atom)
-	var/list/matches = new()
-
-	for (var/path in types)
-		if (findtext("[path]", object))
-			matches += path
-
-	if (matches.len==0)
+	var/datum/admins/holder = usr.client ? usr.client.holder : null
+	if (!holder)
 		return
 
-	var/chosen
-	if (matches.len==1)
-		chosen = matches[1]
-	else
-		chosen = WWinput(usr, "Select an atom type", "Spawn Atom", matches[1], WWinput_list_or_null(matches))
-		if (!chosen)
-			return
+	object = trim("[object]")
+	if (!object)
+		holder.get_spawn_menu().open(usr)
+		return
 
-	if (ispath(chosen,/turf))
-		var/turf/T = get_turf(usr.loc)
-		T.ChangeTurf(chosen)
-	else
-		new chosen(usr.loc)
-
-	log_and_message_admins("spawned [chosen] at ([usr.x],[usr.y],[usr.z])")
+	// An exact type path spawns at once; text that names one type does too.
+	build_spawn_catalog()
+	var/chosen = text2path(object)
+	if (!chosen || !spawn_catalog_index[chosen])
+		chosen = null
+		var/list/matches = search_spawn_catalog(object, "all", 2, TRUE)
+		if (matches.len == 1)
+			chosen = spawn_catalog_paths[matches[1]]
+	if (chosen)
+		admin_spawn_type(usr, chosen, 1)
+		return
+	// Several or none: the picker shows the matches, searching names as well.
+	holder.get_spawn_menu().open(usr, object)
 
 /datum/admins/proc/spawn_player_as_job()
 	set category = "Admin"
