@@ -2382,6 +2382,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/sink/kitchen" = "sanitation",
 		"/obj/structure/toilet" = "sanitation",
 		"/obj/structure/sewer_piece/drain/stone" = "sanitation",
+		"/obj/structure/sewer_piece/drain/floor" = "sanitation",
 		"/obj/structure/sewer_flap_gate" = "sanitation",
 		// --- siege_engines (7) ---
 		"/obj/item/catapult_ball" = "siege_engines",
