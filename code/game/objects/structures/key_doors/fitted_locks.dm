@@ -999,7 +999,7 @@ var/global/list/LOCK_DEFEAT_METHODS = list("pick", "skeleton", "shim", "crack", 
 	qdel(F)
 	if (host_is_door(O))
 		var/obj/structure/simple_door/D = O
-		L.side = D.inner_dir > 0 ? turn(D.inner_dir, 180) : D.door_passage_axis()
+		L.side = D.inner_dir > 0 ? D.door_opposite_side(D.inner_dir) : D.door_passage_axis()
 	if (L.kind != LOCK_SEAL && L.kind != LOCK_CATCH)
 		L.locked = O.vars["mapped_lock_locked"] ? TRUE : FALSE
 	host_set_lock(O, L)

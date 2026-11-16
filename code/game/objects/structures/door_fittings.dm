@@ -62,6 +62,10 @@
 		delta = (axis == EAST) ? (T.y - D.y) : (T.x - D.x)
 	return delta > 0 ? axis : turn(axis, 180)
 
+// The other side of the door from side (a trapdoor's sides are up and down).
+/obj/structure/simple_door/proc/door_opposite_side(side)
+	return side ? turn(side, 180) : 0
+
 // A tile counts as indoors when it is in an inside area or under a roof.
 /proc/door_turf_indoors(turf/T)
 	return T && (home_turf_inside(T) || (locate(/obj/roof) in T))
@@ -75,7 +79,7 @@
 	if (inner_dir)
 		return inner_dir
 	if (door_lock && door_lock.side)
-		return turn(door_lock.side, 180)
+		return door_opposite_side(door_lock.side)
 	var/turf/D = get_turf(src)
 	if (!D)
 		return 0

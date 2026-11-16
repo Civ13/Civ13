@@ -22,7 +22,7 @@
 
 // Open air you can climb down past: no floor, wall or roof on it.
 /proc/edge_open_air(turf/T)
-	if (!T || T.density || !building_open_turf(T))
+	if (!T || T.density || !building_open_turf(T) || trapdoor_shut_at(T))
 		return FALSE
 	for (var/atom/movable/A in T)
 		if (A.density || istype(A, /obj/covers))
@@ -312,6 +312,8 @@
 	var/turf/well = level ? locate(T.x, T.y, level) : null
 	if (!problem && !well)
 		problem = "These stairs don't lead anywhere: there is no level above."
+	else if (!problem && trapdoor_shut_at(well))
+		problem = "The trapdoor over these stairs is shut."
 	else if (!problem && !edge_open_air(well))
 		problem = "There is a ceiling over these stairs. Leave the space above them open."
 	if (!problem)
@@ -333,6 +335,13 @@
 		why += problem
 
 /mob/living/human/proc/climb_stairs(obj/covers/S, wait = TRUE)
+	// A shut trapdoor over the stairs: a click pushes on it instead.
+	var/turf/stairs_turf = get_turf(S)
+	var/turf/well_turf = stairs_turf ? locate(stairs_turf.x, stairs_turf.y, multiz_level_above(stairs_turf.z)) : null
+	if (well_turf && trapdoor_shut_at(well_turf))
+		if (wait)
+			trapdoor_from_below(stairs_turf, src)
+		return FALSE
 	var/list/why = list()
 	var/turf/destination = stairs_destination(src, S, why)
 	if (!destination)

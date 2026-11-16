@@ -90,7 +90,7 @@
 		return FALSE
 	if (locate(/obj/structure/multiz/ladder/ww2/tunneltop/pit) in T)
 		return FALSE
-	var/supported = !building_open_turf(T)
+	var/supported = !building_open_turf(T) || trapdoor_shut_at(T)
 	for (var/atom/movable/A in T)
 		if (allow_occupants && isliving(A))
 			continue // A victim at the bottom must not disable the pit.
@@ -138,6 +138,8 @@
 			problem = "There is nothing above you to climb up to."
 		else if (!shaft && !building_open_turf(overhead))
 			problem = "There is a solid ceiling over you. Stand right under the opening." // No climbing through a solid ceiling.
+		else if (trapdoor_shut_at(overhead))
+			problem = "A shut trapdoor is in the way above you."
 		else
 			for (var/atom/movable/A in overhead)
 				if (A != shaft && (A.density || istype(A, /obj/covers)))

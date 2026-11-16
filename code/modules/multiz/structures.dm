@@ -64,6 +64,8 @@
 		user.Move(get_turf(target))
 
 	attackby(obj/item/C, mob/user)
+		if (!istop && trapdoor_from_below(get_turf(src), user, C))
+			return
 		. = ..()
 		attack_hand(user)
 		return
@@ -111,6 +113,14 @@
 		return
 
 	if (ladder_refuses_load(M))
+		return
+
+	// A trapdoor over the ladder: shut, it is pushed on from below and
+	// stops anyone climbing down from above.
+	if (!istop && trapdoor_from_below(get_turf(src), M))
+		return
+	if (istop && trapdoor_shut_at(get_turf(src)))
+		to_chat(M, SPAN_WARNING("\The [trapdoor_shut_at(get_turf(src))] over \the [src] is shut."))
 		return
 
 	if (!target || !istype(target.loc, /turf))

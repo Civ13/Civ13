@@ -38,6 +38,8 @@
 /obj/structure/multiz/ladder/up/hole_ladder/attack_hand(mob/user)
 	if (!isliving(user) || !isturf(user.loc) || !Adjacent(user) || user.stat || user.restrained() || persistence_save_in_progress)
 		return
+	if (trapdoor_from_below(get_turf(src), user))
+		return
 	var/obj/structure/multiz/ladder/ww2/tunneltop/pit/P = hole_above()
 	if (!P)
 		to_chat(user, SPAN_WARNING("The ladder no longer leads anywhere."))
@@ -57,6 +59,8 @@
 		to_chat(user, SPAN_NOTICE("You climb out of the hole."))
 
 /obj/structure/multiz/ladder/up/hole_ladder/attackby(obj/item/I, mob/user)
+	if (trapdoor_from_below(get_turf(src), user, I))
+		return
 	return attack_hand(user)
 
 /obj/structure/multiz/ladder/ww2/tunneltop/pit
@@ -171,6 +175,6 @@
 
 // A fitted ladder gives a foothold: walking onto the hole no longer drops you in.
 /obj/structure/multiz/ladder/ww2/tunneltop/pit/Crossed(atom/movable/A)
-	if (has_ladder)
+	if (has_ladder || trapdoor_shut_at(loc))
 		return
 	return ..()

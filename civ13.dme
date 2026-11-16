@@ -766,6 +766,7 @@
 #include "code\game\objects\structures\door_bars.dm"
 #include "code\game\objects\structures\door_features.dm"
 #include "code\game\objects\structures\fire_doors.dm"
+#include "code\game\objects\structures\trapdoors.dm"
 #include "code\game\objects\structures\window_fittings.dm"
 #include "code\game\objects\structures\door_locks.dm"
 #include "code\game\objects\structures\filingcabinet.dm"
