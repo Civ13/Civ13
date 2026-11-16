@@ -638,7 +638,7 @@ var/global/list/smart_hubs = list()
 /obj/structure/simple_door/var/smart_lock_fitted = FALSE
 
 /obj/structure/simple_door/proc/fit_smart_lock(obj/item/weapon/smart_lock/lock, mob/user)
-	if (smart_lock_fitted || haslock || istype(src, /obj/structure/simple_door/key_door))
+	if (smart_lock_fitted || haslock || door_lock || (istype(src, /obj/structure/simple_door/key_door) && !istype(src, /obj/structure/simple_door/key_door/anyone)))
 		to_chat(user, "<span class='warning'>This door already has a lock.</span>")
 		return FALSE
 	if (!user.unEquip(lock))

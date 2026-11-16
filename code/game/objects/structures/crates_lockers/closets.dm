@@ -46,6 +46,7 @@
 	storage_capacity = max((2 * items) + 5,storage_capacity)
 
 /obj/structure/closet/examine(mob/user)
+	lock_examine(src, user)
 	if (..(user, TRUE) && !opened)
 		if(istype(src, /obj/structure/closet/crate/wall_mailbox))
 			var/obj/structure/closet/crate/wall_mailbox/WM = src
@@ -215,6 +216,8 @@
 	return
 
 /obj/structure/closet/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (lock_attackby(src, W, user))
+		return
 	if (!opened && !istype(src, /obj/structure/closet/hideout) && !istype(src, /obj/structure/closet/coffin) && !istype(src, /obj/structure/closet/old_coffin))
 		if (istype(W, /obj/item/weapon/key))
 			var/obj/item/weapon/key/K = W
@@ -327,6 +330,8 @@
 
 /obj/structure/closet/attack_hand(mob/user as mob)
 	add_fingerprint(user)
+	if (!opened && fitted_lock && !lock_hand_access(src, user))
+		return
 	if (locked && !opened)
 		to_chat(user, "<span class='notice'>\The [src] is locked.</span>")
 		return
@@ -343,6 +348,8 @@
 
 	if (locked)
 		to_chat(usr, "<span class='warning'>\The [src]is locked!</span>")
+		return
+	if (!opened && fitted_lock && !lock_hand_access(src, usr))
 		return
 
 	if (!ishuman(usr))
