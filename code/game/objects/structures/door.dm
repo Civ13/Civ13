@@ -31,7 +31,7 @@
 	var/lockstate = "" //Icon_state
 	var/keycode
 
-	map_storage_saved_vars = "density;icon_state;dir;name;pixel_x;pixel_y;keycode;haslock;custom;custom_code;locked;door_closer;closer_delay;door_wedge"
+	map_storage_saved_vars = "density;icon_state;dir;name;pixel_x;pixel_y;keycode;haslock;custom;custom_code;locked;door_closer;closer_delay;door_wedge;inner_dir"
 
 /obj/structure/simple_door/fire_act(temperature)
 	var/dmg = round((temperature - 365)/20)
@@ -113,6 +113,9 @@
 
 /obj/structure/simple_door/attack_hand(mob/user as mob)
 	if (state && !isSwitchingStates && door_fitting_hand(user))
+		return TRUE
+	if (!state && !isSwitchingStates && door_lock && ishuman(user) && user.a_intent == I_HELP && !lock_hand_access(src, user))
+		door_rattle(user)
 		return TRUE
 	return door_intent_interact(user)
 
@@ -213,6 +216,8 @@
 		return FALSE
 	if (smart_lock_fitted && locked)
 		return !door_hand_locked(user)
+	if (door_lock && !lock_hand_access(src, user, TRUE))
+		return FALSE
 	return TRUE
 
 
