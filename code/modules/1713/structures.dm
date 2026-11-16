@@ -1431,6 +1431,10 @@
 		..()
 	..()
 
+// Boards nailed onto a plank wall frame (the frame itself is 2 planks), so a
+// plank wall is 6 planks: about 1.5 logs with a saw, against 4 for a log wall.
+#define WALLFRAME_PLANK_BOARDS 4
+
 /obj/structure/wallframe
 	name = "wall frame"
 	desc = "A wooden wall frame, add something like paper, bamboo bundles or wood to it.."
@@ -1531,12 +1535,12 @@
 			to_chat(H, "<span class='notice'>That does not exist!</span>")
 	else if(istype(W, /obj/item/stack/material/woodplank))
 		playsound(loc, 'sound/effects/woodfile.ogg', 100, TRUE) //rip_pack.ogg
-		if(W.amount >= 10)
-			if (do_after(H, 40, src) && pay_for_build(W, H, 10))
+		if(W.amount >= WALLFRAME_PLANK_BOARDS)
+			if (do_after(H, 40, src) && pay_for_build(W, H, WALLFRAME_PLANK_BOARDS))
 				new/obj/covers/wood_wall/adjustable(src.loc)
 				qdel(src)
 		else
-			to_chat(H, "<span class='notice'>You need 10 planks to build the wall!</span>")
+			to_chat(H, "<span class='notice'>You need [WALLFRAME_PLANK_BOARDS] planks to board the wall!</span>")
 
 /* Bamboo Wall-Frame*/
 
