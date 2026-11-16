@@ -1,0 +1,35 @@
+# Hygiene
+
+Cleanliness runs 0-250 (clean 250, normal 200, dirty 75; `code/__defines/mobs.dm`).
+Water quality is in [water-quality.md](water-quality.md).
+
+## Dirt from work (`code/modules/1713/hygiene_work.dm`)
+
+Idle cleanliness falls by 0.015 a second (about 2.3 hours from normal to
+dirty), plus 0.01 a second in heat of 27 C or more. Finished work adds steps
+through `soil(amount, hands)`:
+
+| Work | Lost | Hands |
+| --- | --- | --- |
+| Farming task (anything that trains farming) | 1 | |
+| Mining a rock | 1 | |
+| Butchering or skinning | 3 | grimy |
+| Relieving yourself | 5 | waste |
+| Soiling yourself | 25 + 5 | waste |
+| Picking up dung (not compost) | 0 | waste |
+
+## Dirty hands
+
+`dirty_hands` (saved) is 0, grimy (1) or waste (2); gloves keep it at 0. Any
+hand wash clears it: every wash that calls `clean_blood()` on the washer (sink,
+piped tap, public bath, showers) and a bare hand on fresh water with help
+intent (2 seconds). The first bite of each piece of food with dirty hands
+rolls once: waste on the hands gives cholera at 4% (worms at a share, as with
+dirty water), and either kind gives food poisoning at 5%, scaled by
+`infection_chance_scale()`. Examining someone within 2 tiles shows filthy
+hands.
+
+## Fleas and typhus
+
+`handle_hygiene()` in `human_needs.dm`; see [water-quality.md](water-quality.md)
+for the rates.

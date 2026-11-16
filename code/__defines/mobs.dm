@@ -65,7 +65,10 @@
 #define HYGIENE_LEVEL_CLEAN 250
 #define HYGIENE_LEVEL_NORMAL 200
 #define HYGIENE_LEVEL_DIRTY 75
-#define HYGIENE_FACTOR 0.025
+#define HYGIENE_FACTOR 0.015
+// How dirty the hands are (hygiene_work.dm).
+#define DIRTY_HANDS_GRIME 1
+#define DIRTY_HANDS_WASTE 2
 // Percent a second that a worn garment over 90 dirt picks up fleas (about an hour on average).
 #define FLEA_INFEST_CHANCE 0.03
 // Percent of flea infestations that carry typhus.

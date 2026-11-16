@@ -1478,6 +1478,12 @@ SUITES = {
             'code/game/turfs/floor_attackby.dm',
             'code/modules/1713/factory_pipes.dm',
             'code/__defines/mobs.dm')},
+    # Dirt from work and dirty hands; source checks only.
+    'hygiene_work': {'files': ('tests/hygiene_work/test_hygiene_work.py',),
+        'paths': ('tests/hygiene_work/', 'code/modules/1713/hygiene_work.dm'), 'shared_paths': (
+            'code/__defines/mobs.dm',
+            'code/modules/1713/animal_harvest.dm',
+            'code/game/mob/living/carbon/human/human_needs.dm')},
     # Station water tanks and running water feeds; source checks only.
     'station_water': {'files': ('tests/station_water/test_station_water.py',),
         'paths': ('tests/station_water/', 'code/modules/1713/station_water.dm'), 'shared_paths': (
