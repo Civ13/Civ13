@@ -66,14 +66,14 @@ var/land_p_runtime_error = FALSE
 	M.stat = CONSCIOUS
 	M.civilization = "Eagles"
 
-	land_p_check(map.faction_office_holder(L, "Eagles", "Registrar"), "the leader acts as registrar")
-	land_p_check(!map.faction_office_holder(M, "Eagles", "Registrar"), "an ordinary member does not")
+	land_p_check(map.faction_power(L, "Eagles", "registry"), "the leader acts as registrar")
+	land_p_check(!map.faction_power(M, "Eagles", "registry"), "an ordinary member does not")
 	var/obj/item/weapon/stamp/faction_seal/S = new(locate(4, 4, 1))
 	S.seal_faction = "Eagles"
 	S.seal_office = "Registrar"
 	S.seal_serial = map.faction_seal_register("Eagles", "Registrar")
 	M.probe_hand = S
-	land_p_check(map.faction_office_holder(M, "Eagles", "registrar"), "a bearer of the Registrar's seal does")
+	land_p_check(map.faction_power(M, "Eagles", "registry"), "a bearer of the Registrar's seal does")
 	M.probe_hand = null
 
 	var/id = map.land_register("Eagles", "the mill", locate(8, 2, 1), locate(2, 6, 1), "Ada Reeve")

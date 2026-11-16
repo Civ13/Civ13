@@ -11,7 +11,7 @@ struck at an anvil with a faction's coin die.
 
 `/obj/item/coin_die`: 1 bronze, economy & production, gated on Trade & Coinage
 (`early_economy`). The sprite reuses the blank stamp in `icons/obj/bureaucracy.dmi`. A faction
-leader uses an uncut die in hand to cut it with the faction's mark. After that, anyone holding it
+leader (or an officer with the mint power, see `docs/faction-offices.md`) uses an uncut die in hand to cut it with the faction's mark. After that, anyone holding it
 strikes that faction's coins, so a stolen die strikes genuine-looking coin. Dies follow faction
 renames.
 

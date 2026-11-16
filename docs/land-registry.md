@@ -8,8 +8,8 @@ Step 5 of the bureaucracy and currency plan. Land is registered with a faction a
 ## Boundary stones and plots
 
 `/obj/structure/boundary_stone`: 2 stone, economy & production, gated on Trade & Coinage
-(`early_economy`). It reuses the cairn sprite. A faction's registrar (its leader, or anyone holding
-an in-force faction seal cut for the office "Registrar") uses a stone and picks another stone at the
+(`early_economy`). It reuses the cairn sprite. A faction's registrar (its leader, or anyone with the
+faction's registry power, see `docs/faction-offices.md`) uses a stone and picks another stone at the
 opposite corner. The plot is the rectangle between them: 2 to 32 tiles on a side, never
 overlapping another registered plot, at most 60 per faction. The registrar names it and receives
 its deed.
@@ -36,5 +36,4 @@ what the register says.
 
 `map.faction_recruitment["plots"]`: faction -> plot id -> list(name, x1, y1, x2, y2, z, deed serial,
 tax, paid through, registered to). Renamed through `faction_roster_rename()` and cleaned by
-`faction_roster_normalize()`. `faction_office_holder()` in `faction_seals.dm` decides who acts for an
-office; the treasury keeper uses it too.
+`faction_roster_normalize()`. `faction_power()` in `faction_offices.dm` decides who acts for the registry.

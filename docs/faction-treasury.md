@@ -15,8 +15,8 @@ box then anchors and locks. A faction has one strongbox: designating a new one t
 back into a plain chest with its contents.
 
 Keys do not fit a strongbox and it cannot be unbolted. It opens for the faction leader and for
-anyone holding a seal of the faction (see `docs/faction-seals.md`) that is in force and cut for the
-keeper's office ("Treasurer" unless the leader names another). Outsiders can pry it open with a
+anyone with the faction's treasury power (`docs/faction-offices.md`): an appointed Treasurer, or
+whoever holds an in-force seal of an office with that power. Outsiders can pry it open with a
 crowbar or hammer: one minute, and every online member is warned. It can also be smashed.
 
 ## Menu
@@ -25,8 +25,7 @@ crowbar or hammer: one minute, and every online member is warned. It can also be
   still gather in the faction's tax ledger as players trade; collecting turns them into gold and
   silver coin (and whole fiat notes) inside the box. Fractions wait in the ledger.
 - Members: collect wages, pay dues with the coins in hand, read the ledger.
-- The leader also: set wages, set dues, set sales and business tax (0-30%), name the keeper's
-  office, release the box (only while open).
+- The leader also: set wages, set dues, set sales and business tax (0-30%), release the box (only while open).
 
 Wages are silver a day per account, accrued in real time and capped at 7 days unpaid (at most 50
 silver a day). Members collect them from the coin actually in the box, largest coins first,

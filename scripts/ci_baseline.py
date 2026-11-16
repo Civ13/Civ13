@@ -1295,6 +1295,12 @@ SUITES = {
         'paths': ('tests/stone_age_rites/',), 'shared_paths': (
             'code/modules/1713/stone_age_rites.dm', 'icons/obj/stone_age_rites.dmi',
             'code/game/objects/items/stacks/stack.dm')},
+    # Faction offices, powers and elections (the native probe is tests/faction_offices/probe.dm).
+    'faction_offices': {'files': ('tests/faction_offices/test_source.py',),
+        'paths': ('tests/faction_offices/',), 'shared_paths': (
+            'code/game/mob/groups/faction_offices.dm', 'code/game/mob/groups/factions.dm',
+            'code/game/mob/groups/faction_roster.dm', 'code/modules/paperwork/faction_seals.dm',
+            'code/modules/1713/coin_mint.dm')},
     # Land registry, boundary stones and deeds (the native probe is tests/land_registry/probe.dm).
     'land_registry': {'files': ('tests/land_registry/test_source.py',),
         'paths': ('tests/land_registry/',), 'shared_paths': (
