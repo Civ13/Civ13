@@ -146,13 +146,24 @@ FRONT_CONFIG_KEYS = ('WEBHOOK_CAN_FIRE', 'WEBHOOK_ADDRESS', 'WEBHOOK_KEY')
 MAX_REGIONS = 16
 
 
+def unused_backup_path(path):
+    """<name>.bak-<time>, with -2, -3... added when a rewrite in the same second already kept one,
+    so an earlier backup (the file as the host wrote it) is never overwritten."""
+    stem = '%s.bak-%s' % (path.name, time.strftime('%Y%m%d-%H%M%S', time.gmtime()))
+    candidate, number = path.with_name(stem), 1
+    while candidate.exists():
+        number += 1
+        candidate = path.with_name('%s-%d' % (stem, number))
+    return candidate
+
+
 def load_group(path):
     group = json.loads(Path(path).read_text(encoding='utf-8-sig'))
     if isinstance(group, dict) and fill_ports(group):
         # Ports the file left out were chosen: keep them, so every later reader (the launcher,
         # the bot, the host service) sees the same ones and a new region never moves an old one.
         path = Path(path)
-        shutil.copy2(path, path.with_name('%s.bak-%s' % (path.name, time.strftime('%Y%m%d-%H%M%S', time.gmtime()))))
+        shutil.copy2(path, unused_backup_path(path))
         temporary = path.with_name(path.name + '.tmp')
         temporary.write_text(json.dumps(group, indent=2) + '\n', encoding='utf-8')
         os.replace(temporary, path)

@@ -2,6 +2,7 @@
 import importlib.util
 import io
 import json
+import time
 import os
 from pathlib import Path
 import subprocess
@@ -582,18 +583,36 @@ class ShardGroupTests(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             shard_group.selected_map_dme('no block', 'x.dmm')
 
+    def test_backups_in_the_same_second_never_overwrite(self):
+        self.path = self.base / 'group.json'
+        self.path.write_text('first')
+        frozen = time.gmtime(1700000000)
+        with mock.patch.object(shard_group.time, 'gmtime', return_value=frozen):
+            first = shard_group.unused_backup_path(self.path)
+            first.write_text('first')
+            second = shard_group.unused_backup_path(self.path)
+        self.assertNotEqual(first, second)
+        self.assertEqual('group.json.bak-20231114-221320', first.name)
+        self.assertEqual('group.json.bak-20231114-221320-2', second.name)
+
     def test_transfer_and_save_options(self):
         group = self.write_group()
         self.assertEqual((False, 15, 60, True), (group['transfers'], group['save_minutes'], group['travel_save_seconds'], group['persistent']))
         self.refuse_config('transfer_port', region_transfer_port=1720)
         self.group['regions'][0]['transfer_port'] = 47201
         # Once any region has one, the others get theirs chosen and kept in the file (fill_ports).
+        earlier = set(self.base.glob('group.json.bak-*'))
+        written = json.loads(json.dumps(self.group))
         with mock.patch.object(shard_group.Platform, 'listening', return_value=False):
             filled = self.write_group()
         chosen = filled['regions'][1]['transfer_port']
         self.assertEqual((True, filled['regions'][1]['port'] + shard_group.TRANSFER_PORT_OFFSET), (filled['transfers'], chosen))
         self.assertEqual(chosen, json.loads(self.path.read_text())['regions'][1]['transfer_port'])
-        self.assertEqual(1, len(list(self.base.glob('group.json.bak-*'))), 'the file as the host wrote it is kept')
+        # Counted against the backups already there, so a slow runner crossing a second
+        # boundary between loads does not change the count.
+        kept = set(self.base.glob('group.json.bak-*')) - earlier
+        self.assertEqual(1, len(kept), 'the file as the host wrote it is kept')
+        self.assertEqual(written, json.loads(next(iter(kept)).read_text()))
         self.group['regions'][1]['transfer_port'] = 47201
         self.refuse_config('transfer_port')
         self.group['regions'][1]['transfer_port'] = 47202
