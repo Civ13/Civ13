@@ -2,12 +2,13 @@
 from pathlib import Path
 import re
 import unittest
+import reader_base
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE = (ROOT / 'code/game/mob/groups/factions.dm').read_text()
 VERB = SOURCE.split('/mob/proc/faction_list()', 1)[1].split('/mob/proc/show_faction_list()', 1)[0]
-OPEN = SOURCE.split('/mob/proc/show_faction_list()', 1)[1].split('/datum/nanoui/tgui/faction_list/update', 1)[0]
-UPDATE = SOURCE.split('/datum/nanoui/tgui/faction_list/update', 1)[1].split('/datum/topic_state/faction_list/can_use_topic', 1)[0]
-STATE = SOURCE.split('/datum/topic_state/faction_list/can_use_topic', 1)[1]
+OPEN = SOURCE.split('/mob/proc/show_faction_list()', 1)[1].split('/datum/topic_state/reader/faction_list/reader_allowed', 1)[0]
+RULE = reader_base.rule(SOURCE, 'faction_list')
+UPDATE = reader_base.UPDATE
 
 class FactionListContract(unittest.TestCase):
     def test_identity_and_mode_guard_precede_tally_and_resource_delivery(self):
@@ -46,29 +47,27 @@ class FactionListContract(unittest.TestCase):
         self.assertNotRegex(OPEN, r'Write\(|savefile|faction_symbol_grid|custom_civs\[[^]]+\]\s*=')
 
     def test_owner_state_retains_observer_and_dead_access_but_closes_stale_or_disconnected_readers(self):
-        match = re.search(r'if \((.+)\)\n\t\treturn STATUS_CLOSE', STATE)
-        self.assertIsNotNone(match)
-        expression = match.group(1).replace('!user.client', 'not connected').replace('!map.civilizations', 'not civilizations').replace('!map', 'not has_map').replace('!user', 'not user').replace('||', 'or')
-        def allowed(source, user, connected=True, has_map=True, civilizations=True):
-            return not eval(expression, {'__builtins__': {}}, dict(src_object=source, user=user, connected=connected, has_map=has_map, civilizations=civilizations))
+        # The shared guard binds the window to its owner; this window adds the mode rule.
+        self.assertEqual(RULE, 'map && map.civilizations')
+        self.assertIn('var/datum/topic_state/reader/faction_list/reader_state = new(user, user)', OPEN)
+        allowed = reader_base.allowed
         for kind in ('human', 'observer', 'dead owner'):
             owner = object()
-            self.assertTrue(allowed(owner, owner), kind)
-            self.assertFalse(allowed(object(), owner), kind)
-            self.assertFalse(allowed(owner, owner, connected=False), kind)
-            self.assertFalse(allowed(owner, owner, has_map=False), kind)
-            self.assertFalse(allowed(owner, owner, civilizations=False), kind)
-        self.assertFalse(allowed(None, None))
-        self.assertIn('return STATUS_UPDATE', STATE)
-        self.assertNotRegex(STATE, r'STATUS_INTERACTIVE|ishuman|isliving|stat|shared_nano_interaction|civilization ==')
+            self.assertTrue(allowed(owner, owner, owner, owner), kind)
+            self.assertFalse(allowed(owner, object(), owner, owner), kind)
+            self.assertFalse(allowed(owner, owner, owner, owner, connected=False), kind)
+            self.assertFalse(allowed(owner, owner, owner, owner, rule=False), kind)
+        self.assertFalse(allowed(None, None, None, None))
+        self.assertNotRegex(RULE, r'ishuman|isliving|stat|shared_nano_interaction|civilization ==')
 
     def test_close_noninterference_and_status_only_refresh_do_not_retally_or_resend(self):
         for marker in ('ui.use_on_close_logic(FALSE)', 'ui.open()', '_state = reader_state', 'var/mob/user = src', 'var/ui_key = "faction_list"'):
             self.assertIn(marker, OPEN)
         self.assertLess(OPEN.index('ui.use_on_close_logic(FALSE)'), OPEN.index('ui.open()'))
-        for marker in ('!user || src_object != user || !state', 'close()', 'push_data(null, TRUE)'):
+        for marker in ('!user || !src_object || !state', 'close()', 'push_data(null, TRUE)'):
             self.assertIn(marker, UPDATE)
-        self.assertLess(UPDATE.index('src_object != user'), UPDATE.index('push_data(null, TRUE)'))
+        self.assertLess(UPDATE.index('close()'), UPDATE.index('push_data(null, TRUE)'))
+        self.assertIn('new /datum/nanoui/tgui/snapshot(user, src, ui_key,', OPEN)
         self.assertNotRegex(OPEN + UPDATE, r'set_using_object|unset_using_object|set_auto_update|spawn\(')
         self.assertNotRegex(UPDATE, r'map\.|browse_rsc|show_faction_list\(')
 

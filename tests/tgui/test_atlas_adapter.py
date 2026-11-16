@@ -1,12 +1,13 @@
 """Atlas adapter contracts/projections only; no DM/client/native execution."""
 from pathlib import Path
 import hashlib,json,re,unittest
+import reader_base
 ROOT=Path(__file__).resolve().parents[2]
 CORE=(ROOT/'code/game/mob/crafting_atlas.dm').read_text()
 ADAPTER=(ROOT/'code/game/mob/crafting_atlas_tgui.dm').read_text()
-OPEN=ADAPTER.split('/datum/crafting_atlas_presenter/tgui/open(',1)[1].split('/datum/nanoui/tgui/crafting_atlas\n',1)[0]
+OPEN=ADAPTER.split('/datum/crafting_atlas_presenter/tgui/open(',1)[1].split('/datum/nanoui/tgui/snapshot/crafting_atlas\n',1)[0]
 NAV=ADAPTER.split('/datum/crafting_atlas_presenter/tgui/navigate(',1)[1].split('/client\n\tvar/list/atlas_icon_cache',1)[0]
-STATE=ADAPTER.split('/datum/topic_state/crafting_atlas/can_use_topic',1)[1].split('/datum/crafting_atlas_presenter/tgui/navigate',1)[0]
+STATE=ADAPTER.split('/datum/topic_state/reader/crafting_atlas\n',1)[1].split('/datum/crafting_atlas_presenter/tgui/navigate',1)[0]
 MODEL=ADAPTER.split('/datum/crafting_atlas_presenter/tgui/proc/model(',1)[1]
 def part(name,until):
  return ADAPTER.split('/datum/crafting_atlas_presenter/tgui/proc/'+name+'(',1)[1].split('/datum/crafting_atlas_presenter/tgui/proc/'+until+'(',1)[0]
@@ -82,18 +83,18 @@ class AtlasAdapterContract(unittest.TestCase):
    self.assertIn(marker,CORE)
 
  def test_owner_projection_preserves_observers_dead_readers_and_rejects_other_bodies(self):
-  match=re.search(r'if \((.+)\)\n\t\treturn STATUS_CLOSE',STATE);self.assertIsNotNone(match)
-  expression=match.group(1).replace('!user.client','not connected').replace('!user','not user').replace('||','or')
+  # The shared guard is the whole rule; the Atlas only raises the granted status.
+  self.assertIsNone(reader_base.rule(ADAPTER,'crafting_atlas'))
   def allowed(owner,user,source,reference,connected=True):
-   return not eval(expression,{'__builtins__':{}},dict(user=user,reader=owner,src_object=source,reference=reference,connected=connected))
+   return reader_base.allowed(reference,source,user,owner,connected)
   for kind in ('human','observer','dead','incapacitated'):
    owner=object();reference=object()
    self.assertTrue(allowed(owner,owner,reference,reference),kind)
    self.assertFalse(allowed(owner,object(),reference,reference),kind)
    self.assertFalse(allowed(owner,owner,object(),reference),kind)
    self.assertFalse(allowed(owner,owner,reference,reference,False),kind)
-  self.assertIn('return STATUS_INTERACTIVE',STATE)
-  self.assertNotRegex(STATE,r'ishuman|isliving|shared_nano_interaction|stat|civilization')
+  self.assertIn('granted_status = STATUS_INTERACTIVE',STATE)
+  self.assertNotRegex(STATE,r'ishuman|isliving|shared_nano_interaction|\bstat\b|civilization')
 
  def test_typed_navigation_accepts_only_its_current_ui_state_after_transport_ack(self):
   for marker in ('!istype(ui)','ui.user != viewer','ui.src_object != reference','ui.state != state','STATUS_INTERACTIVE','ui.legacy_renderer','!ui.frontend_ready','!ui.frontend_acknowledged','length(payload) > 1024','params.len > 6','!istext(params["route"])'):
@@ -157,7 +158,8 @@ class AtlasAdapterContract(unittest.TestCase):
   self.assertIn('ui.use_on_close_logic(FALSE)',OPEN)
   self.assertLess(OPEN.index('ui.use_on_close_logic(FALSE)'),OPEN.index('ui.open()'))
   self.assertIn('if (!ui.legacy_renderer)',OPEN)
-  update=ADAPTER.split('/datum/nanoui/tgui/crafting_atlas/update',1)[1].split('/datum/topic_state/crafting_atlas\n',1)[0]
+  update=reader_base.UPDATE
+  self.assertIn('fixed_classic_page = TRUE',ADAPTER.split('/datum/nanoui/tgui/snapshot/crafting_atlas\n',1)[1].split('/datum/nanoui/tgui/snapshot/crafting_atlas/allowed_actions',1)[0])
   self.assertNotRegex(update,r'\bmodel\(|resource_info|reference\.show|load_catalog|set_auto_update|spawn\(')
   self.assertIn('update_status(FALSE)',update)
   self.assertNotRegex(ADAPTER,r'set_using_object|unset_using_object|set_auto_update|spawn\(')

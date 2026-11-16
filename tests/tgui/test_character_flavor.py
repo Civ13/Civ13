@@ -1,6 +1,7 @@
 """Static flavor reader source/lease contracts; no native DM acceptance."""
 from pathlib import Path
 import re,unittest
+import reader_base
 from types import SimpleNamespace as Obj
 ROOT=Path(__file__).resolve().parents[2]
 SOURCE=(ROOT/'code/game/mob/flavor_reader.dm').read_text(encoding='utf-8')
@@ -36,10 +37,9 @@ class CharacterFlavorContract(unittest.TestCase):
   self.assertLess(opened.index('ui.legacy_snapshot = legacy_snapshot'),opened.index('ui.open()'))
   self.assertNotRegex(opened,r'copytext\(|strip_html|set_auto_update|spawn\(')
  def test_exact_reader_target_lease_allows_ghost_dead_and_disconnected_subject(self):
-  state=proc(SOURCE,'/datum/topic_state/character_flavor/can_use_topic(var/src_object, var/mob/user)')
-  guard=re.search(r'if \((.+)\)\n\t\treturn STATUS_CLOSE',state);self.assertIsNotNone(guard)
-  expression=guard[1].replace('!user.client','not user.client').replace('!subject','not subject').replace('!user','not user').replace('||','or').replace(' != ',' is not ')
-  def allowed(subject,source,user,reader):return not eval(expression,{'__builtins__':{}},dict(subject=subject,src_object=source,user=user,reader=reader))
+  # The shared guard is the whole rule: the flavor reader adds none of its own.
+  self.assertIsNone(reader_base.rule(SOURCE,'character_flavor'))
+  def allowed(subject,source,user,reader):return reader_base.allowed(subject,source,user,reader,connected=bool(user and user.client))
   target=Obj(client=None);reader=Obj(client=True,stat=2);other=Obj(client=True,stat=2)
   self.assertTrue(allowed(target,target,reader,reader))
   self.assertFalse(allowed(target,target,other,reader));self.assertFalse(allowed(target,other,reader,reader))
@@ -48,14 +48,15 @@ class CharacterFlavorContract(unittest.TestCase):
   # the old reader lease. Explicit More is required to make its own new lease.
   new_body=Obj(client=None);self.assertFalse(allowed(target,target,new_body,reader))
   new_body.client=True;self.assertFalse(allowed(target,target,new_body,reader));self.assertTrue(allowed(target,target,new_body,new_body))
-  self.assertIn('return STATUS_UPDATE',state);self.assertNotIn('view(',state);self.assertNotIn('stat',state.split('\n',1)[1].split('//')[0])
+  self.assertNotIn('view(',reader_base.STATE)
  def test_cached_html_owner_guard_no_polling_domain_actions_or_close_side_effect(self):
-  html=proc(SOURCE,'/datum/nanoui/tgui/character_flavor/get_html()')
-  self.assertIn('reader_state.can_use_topic(src_object, user) == STATUS_CLOSE',html)
+  self.assertIn('fixed_classic_page = TRUE',SOURCE.split('/datum/nanoui/tgui/snapshot/character_flavor\n',1)[1])
+  html=reader_base.GET_HTML
+  self.assertIn('state.can_use_topic(src_object, user) == STATUS_CLOSE',html)
   self.assertLess(html.index('can_use_topic'),html.index('return legacy_snapshot'))
-  update=proc(SOURCE,'/datum/nanoui/tgui/character_flavor/update(var/force_open = FALSE)')
+  update=reader_base.UPDATE
   self.assertNotIn('flavor_text',update);self.assertNotIn('present_character_flavor_ui',update)
-  for marker in ('ui.use_on_close_logic(FALSE)','if (reader_closed)\n\t\treturn','reader_closed = TRUE','legacy_snapshot = null','return ..()'):self.assertIn(marker,SOURCE)
+  for marker in ('ui.use_on_close_logic(FALSE)','if (reader_closed)\n\t\treturn','reader_closed = TRUE','legacy_snapshot = null','return ..()'):self.assertIn(marker,SOURCE+reader_base.BASE)
   self.assertNotRegex(SOURCE,r'using_object|set_auto_update|spawn\(|/Topic\(')
   self.assertNotIn('character_flavor.tmpl',(ROOT/'code/modules/nano/tgui.dm').read_text())
   self.assertIn('code/game/mob/flavor_reader.dm',(ROOT/'.github/workflows/tgui.yml').read_text())

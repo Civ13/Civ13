@@ -582,21 +582,12 @@
 	var/ui_key = "faction_list"
 	var/datum/nanoui/ui = GLOB.nanomanager.try_update_ui(user, src, ui_key, null, data, TRUE)
 	if (!ui)
-		var/datum/topic_state/faction_list/reader_state = new()
-		ui = new /datum/nanoui/tgui/faction_list(user, src, ui_key, "faction_list.tmpl", "Faction List", 420, 520, _state = reader_state)
+		var/datum/topic_state/reader/faction_list/reader_state = new(user, user)
+		ui = new /datum/nanoui/tgui/snapshot(user, src, ui_key, "faction_list.tmpl", "Faction List", 420, 520, _state = reader_state)
 		ui.use_on_close_logic(FALSE)
 		ui.set_initial_data(data)
 		ui.open()
 
-// Manager refreshes validate status without recounting or resending resources.
-/datum/nanoui/tgui/faction_list/update(var/force_open = FALSE)
-	if (!user || src_object != user || !state)
-		close()
-		return
-	push_data(null, TRUE)
-
 // Retain the original public /mob reader, including observer/dead owners.
-/datum/topic_state/faction_list/can_use_topic(var/src_object, var/mob/user)
-	if (!user || src_object != user || !user.client || !map || !map.civilizations)
-		return STATUS_CLOSE
-	return STATUS_UPDATE
+/datum/topic_state/reader/faction_list/reader_allowed(mob/user)
+	return map && map.civilizations
