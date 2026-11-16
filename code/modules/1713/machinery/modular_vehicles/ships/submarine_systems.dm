@@ -134,6 +134,9 @@
 		if (run < SUB_SONAR_RANGE)
 			rock += "[dir2text(d)] [run + 1]"
 	. += rock.len ? "Rock: [jointext(rock, ", ")] tiles." : "Open water all around."
+	var/fish = fish_finder_line(periscope_turf()) // fishing_grounds.dm
+	if (fish)
+		. += fish
 	. += contacts()
 
 /obj/structure/vehicleparts/axis/ship/submarine/proc/sonar_ping(mob/user)
