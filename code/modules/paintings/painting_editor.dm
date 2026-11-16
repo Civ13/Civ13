@@ -13,6 +13,9 @@ var/global/list/painting_editors = list() // mob -> canvas being painted
 	if (istype(C, /obj/item/canvas/sketch))
 		var/obj/item/canvas/sketch/S = C
 		return !QDELETED(S.target) && (S.target in user.get_contents()) && drawing_tool(user)
+	if (istype(C, /obj/item/canvas/pottery_band)) // pottery_design.dm: hold the pot
+		var/obj/item/canvas/pottery_band/B = C
+		return !QDELETED(B.target) && (B.target in user.get_contents())
 	if (C.loc == user || (C in user.get_contents()))
 		return !C.needs_easel
 	if (istype(C.loc, /obj/structure/easel))
