@@ -110,15 +110,14 @@
 /obj/screen/look_up_label
 	name = "stop looking up"
 	icon = null
-	screen_loc = "CENTER-3,NORTH"
+	screen_loc = "CENTER-5,NORTH-2"
 	plane = HUD_PLANE
 	layer = 1001
 	mouse_opacity = 2
-	maptext_width = 224
-	maptext_height = 32
-	maptext_y = 4
+	maptext_width = 352
+	maptext_height = 16
 	should_save = FALSE
-	maptext = "<span style='font-family:Verdana;font-size:8pt;text-align:center;color:#f2e6c8;-dm-text-outline:1px #1b140c'>Looking up - click or move to look down</span>"
+	maptext = "<span style='font-family:Verdana;font-size:8pt;text-align:center;color:#f2e6c8;-dm-text-outline:1px #1b140c'>Looking up: click here or move to stop</span>"
 	var/tmp/mob/living/human/owner
 
 /obj/screen/look_up_label/Click()
