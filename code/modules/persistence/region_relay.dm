@@ -111,6 +111,13 @@
 	if(!relay_on())
 		C << link("byond://[peer["address"]]")
 		return TRUE
+	// The gate's own port is public and players join it directly; going
+	// through the relay there left players from a relayed region waiting for a
+	// manual reconnect (North America to Gaia after Gaia became the gate,
+	// 2026-11-16). The gate checks their home again at login.
+	if(id == gate)
+		C << link("byond://[peer["address"]]")
+		return TRUE
 	if(!public)
 		// Region ports are closed to the internet behind a relay; only a true
 		// local connection (the host) can use one directly.

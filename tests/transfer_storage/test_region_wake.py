@@ -123,6 +123,15 @@ class RegionWakeTests(unittest.TestCase):
         self.assertLess(topic.index('next_region_refresh = world.time'), topic.index('shard_group.refresh_now()'))
         self.assertLess(topic.index('shard_group.refresh_now()'), topic.index('view_regions()'))
 
+    def test_players_going_to_the_gate_join_its_public_port(self):
+        # 2026-11-16: with Gaia as the gate, North America to Gaia through the
+        # relay left players waiting for a manual reconnect.
+        relay = read('code/modules/persistence/region_relay.dm')
+        send = relay[relay.index('/datum/shard_group/proc/send_player('):relay.index('/datum/shard_group/proc/send_player_soon')]
+        self.assertIn('if(id == gate)', send)
+        self.assertLess(send.index('if(id == gate)'), send.index('ask_relay(route)'))
+        self.assertLess(send.index('if(id == gate)'), send.index('if(!public)'))
+
     def test_the_doorman_address_is_validated(self):
         body = proc(GROUP, '/datum/shard_group/proc/configure')
         self.assertIn('shard_address_valid(settings["doorman"])', body)
