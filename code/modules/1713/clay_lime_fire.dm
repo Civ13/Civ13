@@ -318,7 +318,7 @@ var/global/list/brick_bench_batches = list(
 
 /obj/item/stack/ore/quicklime
 	name = "quicklime"
-	desc = "Burnt lime. Mixed into clay at a brick mould bench it makes cement bricks."
+	desc = "Burnt lime. Mixed into clay at a brick mould bench it makes cement bricks; slaked in a container of water it makes limewash for walls and floors."
 	icon = 'icons/obj/workshop_machines.dmi'
 	icon_state = "quicklime"
 	singular_name = "lump"
