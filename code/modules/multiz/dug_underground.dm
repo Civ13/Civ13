@@ -61,12 +61,19 @@
 		built--
 	return max(built, 0)
 
-// The physical z of the dug cave level, or 0. Scans the few added levels.
+// The physical z of the dug cave level, or 0. Scans the few added levels,
+// then remembers the answer (dug_underground_live_z, turf_changing.dm) while
+// its bedrock marker stands.
+
 /proc/dug_underground_z()
 	if (!dug_underground_supported())
 		return 0
+	if (dug_underground_live_z && dug_underground_live_z <= world.maxz && dug_underground_live_z != building_allocating_z && istype(locate(1, 1, dug_underground_live_z), /turf/wall/rockwall/bedrock))
+		return dug_underground_live_z
+	dug_underground_live_z = 0
 	for (var/z = building_base_maxz() + 1, z <= world.maxz, z++)
 		if (z != building_allocating_z && istype(locate(1, 1, z), /turf/wall/rockwall/bedrock))
+			dug_underground_live_z = z
 			return z
 	return 0
 
@@ -128,57 +135,127 @@
 		return /turf/floor/dirt/underground/sandy
 	return /turf/floor/dirt/underground
 
-// Coarse random lattice, smoothed: open pockets and hard veins form blobs.
-/proc/dug_underground_noise_grid()
-	var/list/grid = list()
-	var/w = round(world.maxx / DUG_CAVE_NOISE_CELL) + 2
-	var/h = round(world.maxy / DUG_CAVE_NOISE_CELL) + 2
-	for (var/i = 1 to w * h)
-		grid += rand()
-	return grid
+// Seeded lattice noise: a cell's rock is the same whenever it forms, so only
+// the cells that formed are saved. The seed is the map's ID.
+/proc/dug_underground_lattice(salt, gx, gy)
+	var/hash = md5("[map ? map.ID : "map"]:[salt]:[gx]:[gy]")
+	return text2num(copytext(hash, 1, 7), 16) / 16777216
 
-/proc/dug_underground_noise(list/grid, x, y)
-	var/w = round(world.maxx / DUG_CAVE_NOISE_CELL) + 2
+/proc/dug_underground_noise(salt, x, y)
 	var/fx = (x - 1) / DUG_CAVE_NOISE_CELL
 	var/fy = (y - 1) / DUG_CAVE_NOISE_CELL
 	var/gx = round(fx)
 	var/gy = round(fy)
 	var/tx = fx - gx
 	var/ty = fy - gy
-	var/a = grid[gy * w + gx + 1]
-	var/b = grid[gy * w + gx + 2]
-	var/c = grid[(gy + 1) * w + gx + 1]
-	var/d = grid[(gy + 1) * w + gx + 2]
+	var/a = dug_underground_lattice(salt, gx, gy)
+	var/b = dug_underground_lattice(salt, gx + 1, gy)
+	var/c = dug_underground_lattice(salt, gx, gy + 1)
+	var/d = dug_underground_lattice(salt, gx + 1, gy + 1)
 	var/top = a + (b - a) * tx
 	var/bottom = c + (d - c) * tx
 	return top + (bottom - top) * ty
 
-/proc/dug_underground_cell(x, y, list/pockets, list/veins)
+// Per-cell jitter in [0, 1), so pocket edges are ragged but repeatable.
+/proc/dug_underground_jitter(x, y)
+	var/hash = md5("[map ? map.ID : "map"]:cell:[x]:[y]")
+	return text2num(copytext(hash, 1, 5), 16) / 65536
+
+/proc/dug_underground_cell(x, y)
 	if (x == 1 || y == 1 || x == world.maxx || y == world.maxy)
 		return /turf/wall/rockwall/bedrock
 	var/turf/surface = locate(x, y, DUG_SURFACE_Z)
 	var/rock = dug_underground_rock(surface)
 	if (rock == /turf/wall/rockwall)
 		return rock
-	if (dug_underground_noise(pockets, x, y) > 0.8 && prob(70))
+	if (dug_underground_noise("pocket", x, y) > 0.8 && dug_underground_jitter(x, y) < 0.7)
 		return /turf/floor/dirt
-	if (dug_underground_noise(veins, x, y) > 0.82)
+	if (dug_underground_noise("vein", x, y) > 0.82)
 		return /turf/wall/rockwall
 	return rock
 
-// Native lighting covers the startup levels only; give the cave its corners
-// and overlays so torches light it and it starts dark.
+// Unformed rock (docs/underground-level.md): the cave level is grown as the
+// world's native open-air fill, with no constructor, lighting or saved field
+// per cell. On the cave level that fill is solid rock nobody has reached yet.
+// Real turfs form only around cells that open, so the cost of the level
+// follows what players dig, not its size.
+var/global/dug_underground_forming = FALSE
+// Most cave-pocket cells one opening forms at once; past it a pocket's far
+// side forms as plain rock and the rest of the pocket stays unformed.
+#define DUG_POCKET_LIMIT 400
+
+/proc/dug_underground_unformed(turf/T)
+	return T && T.type == /turf/sky/building && T.z == dug_underground_z()
+
+// An unformed cell is rock no one has reached: nothing but a ghost moves in.
+/turf/sky/building/Enter(atom/movable/O, atom/oldloc)
+	if (!isobserver(O) && dug_underground_unformed(src))
+		return FALSE
+	return ..()
+
+// Forms one unformed cell from the generator and lights it. With solid set,
+// a pocket cell forms as rock instead (the edge of a capped pocket).
+/proc/dug_underground_form(turf/T, solid = FALSE)
+	if (!dug_underground_unformed(T))
+		return T
+	var/path = dug_underground_cell(T.x, T.y)
+	if (solid && path == /turf/floor/dirt)
+		path = dug_underground_rock(locate(T.x, T.y, DUG_SURFACE_Z))
+	var/was_forming = dug_underground_forming
+	dug_underground_forming = TRUE
+	var/turf/W = T.ChangeTurf(path)
+	dug_underground_forming = was_forming
+	if (W && !W.lighting_overlay && created_lighting_corners_and_overlays)
+		var/area/A = W.loc
+		if (A && A.dynamic_lighting && !(map && (W.z in map.zlevels_without_lighting)))
+			W.lighting_build_overlay()
+	return W
+
+// An open cell must never touch unformed rock: forms its eight neighbours,
+// and any cave pocket it breaks into, up to DUG_POCKET_LIMIT cells.
+/proc/dug_underground_form_around(turf/start)
+	if (!start || dug_underground_forming || start.z != dug_underground_z())
+		return 0
+	dug_underground_forming = TRUE
+	var/formed = 0
+	var/pocket = 0
+	var/list/queue = list(start)
+	var/i = 1
+	try
+		while (i <= queue.len)
+			var/turf/open = queue[i++]
+			for (var/d in alldirs)
+				var/turf/N = get_step(open, d)
+				if (!dug_underground_unformed(N))
+					continue
+				var/turf/W = dug_underground_form(N, pocket >= DUG_POCKET_LIMIT)
+				formed++
+				if (W && !W.density)
+					pocket++
+					queue += W
+	catch (var/exception/e)
+		dug_underground_forming = FALSE
+		throw e
+	dug_underground_forming = FALSE
+	return formed
+
+// The core ChangeTurf hook (turf_changing.dm): a cell of the cave level that
+// opens forms what lies around it.
+/turf/underground_opened()
+	dug_underground_form_around(src)
+
+// Native lighting covers the startup levels only. Unformed cells need none;
+// formed cells of a restored cave get corners and overlays here.
 /proc/dug_underground_light_level(z)
 	if (!created_lighting_corners_and_overlays || (map && (z in map.zlevels_without_lighting)))
 		return
-	create_lighting_corners_zlevel(z)
 	for (var/turf/T in block(locate(1, 1, z), locate(world.maxx, world.maxy, z)))
-		if (T.lighting_overlay)
+		if (T.type == /turf/sky/building)
+			continue
+		if (!T.lighting_overlay)
 			for (var/i = 1 to 4)
-				var/datum/lighting_corner/C = T.get_corner(i)
-				if (C && !C.active)
-					C.update_active(TRUE)
-		else
+				if (!T.get_corner(i))
+					T.set_corner(i, new /datum/lighting_corner(T, LIGHTING_CORNER_DIAGONAL[i]))
 			var/area/A = T.loc
 			if (A && A.dynamic_lighting)
 				T.lighting_build_overlay()
@@ -193,7 +270,7 @@
 		return "The ground is settling. Try again shortly."
 	return world_z_budget.error(world.maxz + 1, "underground")
 
-// Allocates and generates the cave level. Returns TRUE once it exists.
+// Allocates the cave level as unformed rock. Returns TRUE once it exists.
 /proc/dug_underground_create()
 	if (dug_underground_z())
 		return TRUE
@@ -207,20 +284,13 @@
 		world_z_budget.finish(reservation, FALSE)
 		return FALSE
 	var/area/caves = dug_underground_area()
-	var/list/pockets = dug_underground_noise_grid()
-	var/list/veins = dug_underground_noise_grid()
 	building_allocating_z = target_z
 	try
-		// Native growth fills the plane with world.turf in one step that cannot
-		// yield. Area membership is one bulk add (per-turf adds cost ~250x more);
-		// the rock replacement after it is spread across ticks.
+		// Native growth fills the plane with unformed rock (world.turf) in one
+		// step, skipping every constructor (building_levels.dm). Area membership
+		// is one bulk add (per-turf adds cost ~250x more).
 		world.maxz = target_z
 		caves.contents.Add(block(locate(1, 1, target_z), locate(world.maxx, world.maxy, target_z)))
-		for (var/x = 1 to world.maxx)
-			for (var/y = 1 to world.maxy)
-				var/path = dug_underground_cell(x, y, pockets, veins)
-				new path(locate(x, y, target_z))
-			TICK_CHECK
 	catch (var/exception/allocation_error)
 		world_z_budget.finish(reservation, FALSE)
 		// Keep the busy flag: a partly initialized native grid requires restart.
@@ -228,19 +298,62 @@
 	building_allocating_z = 0
 	if (!world_z_budget.finish(reservation, world.maxz == target_z))
 		return FALSE
-	log_game("Dug underground level created at z [target_z] ([world.maxx]x[world.maxy]).")
-	dug_underground_light_level(target_z)
+	// The bedrock corner marks the level, so a restored world recognises it
+	// from its saved cells alone.
+	dug_underground_live_z = 0
+	var/turf/marker = locate(1, 1, target_z)
+	dug_underground_forming = TRUE
+	marker.ChangeTurf(/turf/wall/rockwall/bedrock)
+	dug_underground_forming = FALSE
+	log_game("Underground level created at z [target_z] ([world.maxx]x[world.maxy]), unformed.")
 	return dug_underground_z() == target_z
 
-// Restored worlds: build lighting for a cave level that lighting startup
-// did not cover (it ran before the level was allocated).
+// Restored worlds: the load regenerates unformed cells in the world's default
+// area, so the cave area is put back on them, and formed cells get the
+// lighting that startup did not build (it ran before the level existed).
 /map_storage/restore_dug_levels()
 	var/z = dug_underground_z()
 	if (!z)
 		return
-	var/turf/T = locate(2, 2, z)
-	if (T && !T.lighting_overlay && !T.get_corner(1))
-		dug_underground_light_level(z)
+	var/area/caves = dug_underground_area()
+	var/list/strays = list()
+	for (var/turf/T in block(locate(1, 1, z), locate(world.maxx, world.maxy, z)))
+		var/area/A = T.loc
+		if (A != caves && A.type == world.area)
+			strays += T
+		TICK_CHECK
+	if (strays.len)
+		caves.contents.Add(strays)
+	dug_underground_light_level(z)
+
+// Starts every world with its cave level (unformed rock costs about five
+// bytes a cell), after the startup import settles like the standing building
+// level: a restore recreates a saved cave itself, and adding a level while a
+// save waits to load would refuse that save. The standing open-air level waits
+// for this, so the cave is always the first added level.
+var/global/dug_underground_boot_done = FALSE
+
+/proc/dug_underground_boot_try()
+	if (!map)
+		return FALSE
+	if (!dug_underground_supported() || dug_underground_z())
+		dug_underground_boot_done = TRUE
+		return TRUE
+	if (!building_standing_ready())
+		return FALSE
+	if (!dug_underground_create())
+		world.log << "Underground level refused: [world_z_budget.last_error ? world_z_budget.last_error : dug_underground_error()]"
+	dug_underground_boot_done = TRUE
+	return TRUE
+
+/hook/startup/proc/dug_underground_level()
+	dug_underground_boot_loop()
+	return TRUE
+
+/proc/dug_underground_boot_loop()
+	set waitfor = FALSE
+	while (!dug_underground_boot_try())
+		sleep(5 SECONDS)
 
 /proc/dug_underground_dig_time(mob/living/human/user, base)
 	return base / (user.getStatCoeff("strength") * user.getStatCoeff("crafting") * user.getStatCoeff("crafting"))
@@ -303,7 +416,7 @@
 	var/dug = dug_underground_z()
 	if (!dug)
 		return !open // the level is generated when the digging finishes
-	var/turf/below = locate(here.x, here.y, dug)
+	var/turf/below = dug_underground_form(locate(here.x, here.y, dug))
 	if (!below || istype(below, /turf/wall) || (locate(/obj/structure/multiz) in below))
 		to_chat(user, SPAN_WARNING("You hit solid stone. You cannot dig down here."))
 		return null
@@ -311,7 +424,9 @@
 		return below
 	if (istype(below, /turf/floor/dirt/underground))
 		below.ChangeTurf(/turf/floor/dirt)
-	return locate(here.x, here.y, dug)
+	below = locate(here.x, here.y, dug)
+	dug_underground_form_around(below)
+	return below
 
 /proc/dug_underground_tunnel_up(mob/living/human/user, turf/floor/here)
 	if (locate(/obj/structure/multiz) in here)
@@ -342,3 +457,4 @@
 	return FALSE
 
 #undef DUG_CAVE_NOISE_CELL
+#undef DUG_POCKET_LIMIT
