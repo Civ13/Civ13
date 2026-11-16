@@ -1,43 +1,46 @@
-# Cloud UI previews
+# Window previews
 
-Actual production-bundle screenshots, captured on 2026-10-30 by hosted Chrome
-156.0.8078.47 with Playwright, using deterministic fictional fixtures. These are
-cloud browser previews, not native BYOND/OpenDream gameplay verification. No real
-player or server data is used. No generated artwork or retouching is involved.
+Production-bundle screenshots of every tgui window, captured on 2026-11-16 by
+Chromium 153.0.8010.12 with Playwright from the fictional fixtures in
+`tgui/src/fixtures.mts`. They are cloud browser previews, not checks in a BYOND
+game client. No player or server data is used and nothing is retouched.
 
-Source: `9bc71d86c38a1560bd3c23e80acacd7ba6a1c282`.
-[Capture run](https://github.com/Civ13/Civ13/actions/runs/41096145774), artifact
-`12995562935`. The production JS/CSS are unchanged from implementation commit
-`c81253581ad9c7041ec7720c935c92e7d6b2edd5`.
+Source: `71e5dd4830a27deaa297558fb6a7fd7b9e19ed8c`. Device scale factor: 1. Each window is captured
+at its in-game width. [provenance.json](provenance.json) records the browser,
+head, viewports and full fixture inputs.
 
-Device scale factor: 1. Viewports are sized to the full application content
-(the production UI scrolls inside the body), without CSS overrides:
-
-| Screen | Viewport | Scenario |
-| --- | --- | --- |
-| Research | 1000 x 990 | Fictional guild, research queue, progress and prerequisites |
-| Faction | 1000 x 1107 | Fictional founding draft and editable 32 x 32 emblem |
-| Chemistry | 1000 x 436 | Dispensing controls and a partially filled beaker |
-| Warehouse | 1000 x 400 | Fictional inventory and quantities |
-
-See [provenance.json](provenance.json) for browser, head, viewport and full fixture
-inputs. Reproduce with Node 24: `npm ci --ignore-scripts --prefix tgui`,
+Reproduce with Node 24: `npm ci --ignore-scripts --prefix tgui`,
 `npm --prefix tgui run build`, then
-`CHROMIUM_PATH=/path/to/chrome PREVIEW_SOURCE_HEAD=$(git rev-parse HEAD) node tgui/scripts/screenshots.mjs`.
-No browser download or game server is started. CI captures these as artifacts;
-the committed gallery is updated only after visual inspection.
-The script now captures every window from `tgui/src/fixtures.mts` at its in-game
-size and writes an `index.html` gallery beside the images; those are CI
-artifacts. The four images below are the earlier committed captures.
+`SCREENSHOT_DIR=docs/tgui/screenshots CHROMIUM_PATH=/path/to/chrome PREVIEW_SOURCE_HEAD=$(git rev-parse HEAD) node tgui/scripts/screenshots.mjs`
+(delete the `index.html` it also writes). CI captures the same gallery as an
+artifact on every tgui change; refresh the committed copy after a visible change.
 
-## Research
-![Research bench with queued Iron working, Bronze working progress and connected technology prerequisites](research.png)
-
-## Faction creation
-![Faction editor with fictional Dawnward Guild details, drawing tools, a gold diamond on blue canvas and founding action](faction.png)
-
-## Chemistry
-![Chemical dispenser with amount selector, reagent buttons and beaker contents](chemistry.png)
-
-## Warehouse
-![Warehouse inventory listing fictional materials and quantities](warehouse.png)
+| Window | Template | Viewport | Image |
+| --- | --- | --- | --- |
+| Research | `research_bench.tmpl` | 900 x 1016 | [research.png](research.png) |
+| Faction | `faction_creation.tmpl` | 620 x 1154 | [faction.png](faction.png) |
+| Chemistry | `chem_disp.tmpl` | 390 x 655 | [chemistry.png](chemistry.png) |
+| Warehouse | `warehouse_book.tmpl` | 400 x 500 | [warehouse.png](warehouse.png) |
+| Religion list | `religion_list.tmpl` | 450 x 450 | [religion-list.png](religion-list.png) |
+| Ship stocks | `ship_stocks.tmpl` | 500 x 520 | [ship-stocks.png](ship-stocks.png) |
+| Crew log | `crew_log.tmpl` | 500 x 520 | [crew-log.png](crew-log.png) |
+| Faction list | `faction_list.tmpl` | 420 x 520 | [faction-list.png](faction-list.png) |
+| Known languages | `known_languages.tmpl` | 600 x 480 | [known-languages.png](known-languages.png) |
+| Iron safe | `panel.tmpl` | 380 x 420 | [panel.png](panel.png) |
+| Prompt | `prompt.tmpl` | 420 x 240 | [prompt.png](prompt.png) |
+| Vending | `vending_machine2.tmpl` | 540 x 600 | [vending.png](vending.png) |
+| Recruitment | `recruitment_station.tmpl` | 520 x 961 | [recruitment.png](recruitment.png) |
+| Crafting | `crafting_window.tmpl` | 940 x 694 | [crafting.png](crafting.png) |
+| Atlas | `crafting_atlas.tmpl` | 1000 x 714 | [atlas.png](atlas.png) |
+| Appearance | `appearance_changer.tmpl` | 800 x 453 | [appearance.png](appearance.png) |
+| Vending payment | `vending_machine2.tmpl` | 540 x 600 | [vending-payment.png](vending-payment.png) |
+| Vending plain | `vending_machine.tmpl` | 540 x 600 | [vending-plain.png](vending-plain.png) |
+| Vending gulag | `vending_machine_gulag.tmpl` | 540 x 600 | [vending-gulag.png](vending-gulag.png) |
+| Vending market | `vending_machine_taotd.tmpl` | 540 x 600 | [vending-market.png](vending-market.png) |
+| Faction symbol | `faction_symbol.tmpl` | 620 x 836 | [faction-symbol.png](faction-symbol.png) |
+| Book | `research_book.tmpl` | 620 x 839 | [research-book.png](research-book.png) |
+| Mara Flint | `character_flavor.tmpl` | 500 x 200 | [character-flavor.png](character-flavor.png) |
+| Notes | `character_notes.tmpl` | 625 x 650 | [character-notes.png](character-notes.png) |
+| Photograph | `photo_viewer.tmpl` | 360 x 400 | [photo.png](photo.png) |
+| Book | `book_reader.tmpl` | 625 x 650 | [book.png](book.png) |
+| Paper | `paper_editor.tmpl` | 625 x 650 | [paper.png](paper.png) |

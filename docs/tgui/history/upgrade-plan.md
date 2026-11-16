@@ -180,7 +180,7 @@ It does not execute BYOND `Topic`, the native asset cache or a classic-window re
 
 [Four QA-reviewed Chrome previews](https://github.com/Civ13/Civ13/pull/3427#issuecomment-6528744788)
 show research, faction creation, chemistry and warehouse using fictional data.
-Reuse the [gallery and provenance](screenshots/README.md): captures came from
+Reuse the [gallery and provenance](../screenshots/README.md): captures came from
 `9bc71d86c38a1560bd3c23e80acacd7ba6a1c282` with unchanged production assets,
 and were committed at the reviewed head. These are cloud browser screenshots,
 not native BYOND/OpenDream screenshots or acceptance of all ten screens.

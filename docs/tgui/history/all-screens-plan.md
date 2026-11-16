@@ -113,13 +113,13 @@ All source paths in the table are relative to `code/` unless prefixed by
   [upgrade-plan.md](upgrade-plan.md), and the unrun native cases in
   [native-acceptance.md](native-acceptance.md). Browser renders and CI are not
   native acceptance. Do not start another UI manager/window-pool implementation.
-- [Character discoveries](../character-discoveries.md) and
+- [Character discoveries](../../character-discoveries.md) and
   [nutrition design #3313](https://github.com/Civ13/Civ13/issues/3313) constrain
   Notes: only learned information may reach the client, same-life persistence
   must remain intact, and UI rendering must not mutate saved records. This is
   a later reader migration, not permission to change nutrition or save models.
-- Reuse the existing [Crafting Atlas](../crafting-atlas.md),
-  [Player Help](../player-help.md) and character-return/reclaim contracts.
+- Reuse the existing [Crafting Atlas](../../crafting-atlas.md),
+  [Player Help](../../player-help.md) and character-return/reclaim contracts.
   Do not rebuild their retrieval, crafting or save behavior as UI work.
 - Focused accessible issue/PR searches for TGUI/NanoUI did not locate a separate
   open umbrella migration task. This is a bounded search result, not proof that

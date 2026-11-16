@@ -5,7 +5,7 @@ not a wholesale /tg/station runtime port. Reference: tgstation/tgstation
 `bf6f771a1e221e06938978e36bbaf78543f85ebe`, tgui 6.0.0, 2026-10-30.
 The component package is upstream's integrity-pinned `tgui-core` 6.1.1 with
 React 19.2.7. Civ13's application, screen components and bridge are new code.
-See [the migration plan](../docs/tgui/upgrade-plan.md).
+See [how windows work and how to add one](../docs/tgui/README.md).
 
 ## Build and test
 
