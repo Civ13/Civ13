@@ -210,7 +210,7 @@ var/global/list/nation_assembly_tiers = list(
 			if (!nation_home_faction(faction))
 				text += " Its leaders in its own land speak for it among the nations."
 			else if (nid)
-				choices += list("Vote on an application", "Vote for a head", "Secede")
+				choices += list("Vote on an application", "Vote for a head", "Vote on a common money", "Secede")
 			else
 				choices += list("Found a nation", "Apply to a nation")
 	choices += "Cancel"
@@ -232,6 +232,8 @@ var/global/list/nation_assembly_tiers = list(
 			nation_vote(faction, id, nid)
 		if ("Vote for a head")
 			nation_head(faction, id, nid)
+		if ("Vote on a common money")
+			nation_currency_vote(faction, id, nid)
 		if ("Secede")
 			nation_secede(faction, id, nid)
 
@@ -247,6 +249,8 @@ var/global/list/nation_assembly_tiers = list(
 			members += html_encode(nation_faction_label(f))
 		var/assembly = isnum(N["assembly"]) && N["assembly"] >= 1 && N["assembly"] <= nation_assembly_tiers.len ? ", a [nation_assembly_tiers[N["assembly"]][1]]" : ""
 		lines += "<b>[html_encode(N["name"])]</b>: [jointext(members, ", ")]. Head: [istext(N["head"]) ? html_encode(nation_faction_label(N["head"])) : "none"]. Holds [length(N["members"])]/[N["capacity"]] factions[assembly]."
+		if (istext(N["currency"]) && length(N["currency"]))
+			lines += "&nbsp;&nbsp;Common money: that struck by [html_encode(nation_faction_label(N["currency"]))]."
 		if (islist(N["applications"]) && length(N["applications"]))
 			var/list/applying = list()
 			for (var/list/A in N["applications"])

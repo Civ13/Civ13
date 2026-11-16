@@ -84,6 +84,33 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual(self.n.snapshot(T)[nid]['head'], B)
         self.assertIn('Only a member', self.ask('alpha', 'head', A, candidate=D))
 
+    def test_common_currency_by_majority(self):
+        nid = self.found()
+        self.assertIsNone(self.n.snapshot(T)[nid]['currency'])
+        self.assertIn('counted', self.ask('alpha', 'currency', A, issuer=B))
+        self.assertEqual(self.n.snapshot(T)[nid]['currency_votes'], {A: B})
+        self.assertIn('common money', self.ask('alpha', 'currency', B, issuer=B))
+        self.assertEqual(self.n.snapshot(T)[nid]['currency'], B)
+        self.assertIn("member faction's coin", self.ask('alpha', 'currency', A, issuer=D))
+        self.assertIn('not understood', self.ask('alpha', 'currency', A, issuer='nonsense'))
+        # A vote for no faction drops the common money.
+        self.ask('alpha', 'currency', A, issuer='')
+        self.assertIn('no common money', self.ask('alpha', 'currency', B, issuer=''))
+        self.assertIsNone(self.n.snapshot(T)[nid]['currency'])
+
+    def test_currency_follows_rename_and_leaves_with_its_faction(self):
+        nid = self.found()
+        self.ask('alpha', 'apply', C, nation=nid)
+        self.ask('alpha', 'vote', A, applicant=C, yes=True)
+        self.ask('alpha', 'vote', B, applicant=C, yes=True)
+        self.ask('alpha', 'currency', A, issuer=B)
+        self.ask('alpha', 'currency', C, issuer=B)
+        self.assertEqual(self.n.currency(nid), B)
+        self.ask('alpha', 'rename', B, to='civ:alpha:Bark')
+        self.assertEqual(self.n.currency(nid), 'civ:alpha:Bark')
+        self.ask('alpha', 'secede', 'civ:alpha:Bark')
+        self.assertIsNone(self.n.currency(nid))
+
     def test_secede_cooldown_and_dissolve(self):
         nid = self.found()
         self.ask('alpha', 'apply', C, nation=nid)

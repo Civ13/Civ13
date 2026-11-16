@@ -176,32 +176,7 @@ var/global/list/faction_strongboxes = list() // every treasury strongbox
 // Pays up to worth in whole coins from the box, never more, largest coins
 // first. Returns the worth paid.
 /obj/structure/closet/crate/faction_strongbox/proc/pay_out(worth, mob/living/human/to_user)
-	var/list/stacks = coin_stacks()
-	var/list/sorted = list()
-	while (stacks.len)
-		var/obj/item/stack/money/best = stacks[1]
-		for (var/obj/item/stack/money/M in stacks)
-			if (M.value > best.value)
-				best = M
-		stacks -= best
-		sorted += best
-	var/paid = 0
-	for (var/obj/item/stack/money/M in sorted)
-		var/remaining = worth - paid
-		var/count = min(M.amount, round((remaining + 0.001) / M.value))
-		if (count <= 0)
-			continue
-		var/obj/item/stack/money/out = M
-		if (count < M.amount)
-			out = M.split(count)
-		if (!out)
-			continue
-		M.update_icon()
-		out.update_icon()
-		out.forceMove(get_turf(to_user))
-		to_user.put_in_hands(out)
-		paid += count * out.value
-	return round(paid, 0.1)
+	return coin_pay_from(coin_stacks(), worth, to_user)
 
 // --- The strongbox ---------------------------------------------------------------
 

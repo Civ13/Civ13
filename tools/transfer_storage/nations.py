@@ -13,7 +13,10 @@ Rules (Val approved, 2026-11-14): two or more faction leaders found a nation;
 a faction joins by application and a majority vote of the member factions'
 leaders; a faction may secede at any time and then waits SECEDE_COOLDOWN
 before it may rejoin that nation; a nation left with one faction dissolves;
-member factions elect a head by majority, whose powers are symbolic. A nation
+member factions elect a head by majority, whose powers are symbolic. Member
+factions may also adopt one member faction's coin as the nation's common money
+by majority (Val GO 2026-11-16, docs/money-changers.md); a vote for no faction
+drops it. A nation
 takes at most capacity() factions: NATION_CAPACITY by the highest tier of
 assembly any member faction keeps standing (nation_assembly.dm). A faction
 renamed in its own land keeps its place.
@@ -22,7 +25,7 @@ import time
 
 from tools.transfer_storage.region import account_key_valid, faction_id_valid
 
-NATION_OPS = ('found', 'apply', 'vote', 'head', 'secede', 'rename', 'assembly')
+NATION_OPS = ('found', 'apply', 'vote', 'head', 'secede', 'rename', 'assembly', 'currency')
 NATION_NAME_MAX = 40
 # Member factions allowed by assembly tier: none, meeting ground, assembly
 # hall, parliament.
@@ -55,6 +58,9 @@ def nation_request_valid(r):
         return faction_id_valid(r.get('applicant')) and r.get('yes') in (True, False)
     if op == 'head':
         return faction_id_valid(r.get('candidate'))
+    if op == 'currency':
+        # The faction whose coin to adopt, or '' for none.
+        return r.get('issuer') == '' or faction_id_valid(r.get('issuer'))
     if op == 'rename':
         to = r.get('to')
         return faction_id_valid(to) and to != r['faction'] and faction_land(to) == faction_land(r['faction'])
@@ -84,6 +90,9 @@ class Nations:
         # The highest assembly tier each member faction keeps standing in its land.
         db.execute('''CREATE TABLE IF NOT EXISTS nation_assembly(
             faction TEXT PRIMARY KEY, tier INTEGER NOT NULL)''')
+        # The member faction whose coin the nation adopted as its common money.
+        db.execute('''CREATE TABLE IF NOT EXISTS nation_currency(
+            nation TEXT PRIMARY KEY, issuer TEXT NOT NULL)''')
         db.execute("CREATE TABLE IF NOT EXISTS nation_seq(id INTEGER PRIMARY KEY CHECK (id = 1), next INTEGER NOT NULL)")
         db.execute('INSERT OR IGNORE INTO nation_seq VALUES (1, 1)')
 
@@ -102,6 +111,10 @@ class Nations:
             WHERE m.nation = ?''', (nation,)).fetchone()
         return row[0] or 0
 
+    def currency(self, nation):
+        row = self.db.execute('SELECT issuer FROM nation_currency WHERE nation = ?', (nation,)).fetchone()
+        return row[0] if row else None
+
     def capacity(self, nation):
         """How many factions the nation may hold (raised by its assembly)."""
         return NATION_CAPACITY[self.assembly_tier(nation)]
@@ -109,7 +122,8 @@ class Nations:
     def snapshot(self, now=None):
         """The registry every world gets: nation id -> name, head, founded,
         members, capacity, assembly tier (the nation's and each member's),
-        open applications with their votes, and head votes."""
+        open applications with their votes, head votes, the common currency
+        (a member faction id or None) and currency votes."""
         now = time.time() if now is None else now
         self.expire(now)
         result = {}
@@ -124,7 +138,8 @@ class Nations:
                     JOIN nation_member m ON m.faction = a.faction WHERE m.nation = ?''', (nid,))),
                 'applications': [{'faction': f, 'at': at, 'votes': votes.get('admit:' + f, {})} for f, at in self.db.execute(
                     'SELECT faction, at FROM nation_application WHERE nation = ? ORDER BY at, faction', (nid,))],
-                'head_votes': votes.get('head', {})}
+                'head_votes': votes.get('head', {}),
+                'currency': self.currency(nid), 'currency_votes': votes.get('currency', {})}
         return result
 
     def expire(self, now):
@@ -168,6 +183,8 @@ class Nations:
             return self._secede(faction, nation, now)
         if op == 'vote':
             return self._vote(faction, nation, r['applicant'], r['yes'], now)
+        if op == 'currency':
+            return self._currency(faction, nation, r['issuer'])
         return self._head(faction, nation, r['candidate'])
 
     def _found(self, source, r, now):
@@ -240,6 +257,22 @@ class Nations:
             return 'A majority chose the new head of the nation.'
         return 'Your vote for head is counted.'
 
+    def _currency(self, voter, nation, issuer):
+        if issuer and self.nation_of(issuer) != nation:
+            return "Only a member faction's coin can be the nation's money."
+        choice = issuer or 'none'
+        self.db.execute('INSERT OR REPLACE INTO nation_vote VALUES (?, ?, ?, ?)', (nation, 'currency', voter, choice))
+        members = len(self.members(nation))
+        choices = [c for (c,) in self.db.execute("SELECT choice FROM nation_vote WHERE nation = ? AND kind = 'currency'", (nation,))]
+        if choices.count(choice) * 2 > members:
+            if issuer:
+                self.db.execute('INSERT OR REPLACE INTO nation_currency VALUES (?, ?)', (nation, issuer))
+            else:
+                self.db.execute('DELETE FROM nation_currency WHERE nation = ?', (nation,))
+            self.db.execute("DELETE FROM nation_vote WHERE nation = ? AND kind = 'currency'", (nation,))
+            return 'A majority chose the common money of the nation.' if issuer else 'A majority chose to have no common money.'
+        return 'Your vote on the common money is counted.'
+
     def _rename(self, old, new):
         """A faction renamed in its own land keeps its membership, votes,
         application, cooldowns and assembly."""
@@ -248,7 +281,7 @@ class Nations:
             return None  # a stale row under the new name; keep the old one
         for table, column in (('nation_member', 'faction'), ('nation_application', 'faction'), ('nation_vote', 'voter'),
                               ('nation_vote', 'choice'), ('nation_cooldown', 'faction'), ('nation_assembly', 'faction'),
-                              ('nation', 'head')):
+                              ('nation', 'head'), ('nation_currency', 'issuer')):
             self.db.execute('UPDATE OR REPLACE %s SET %s = ? WHERE %s = ?' % (table, column, column), (new, old))
         self.db.execute('UPDATE nation_vote SET kind = ? WHERE kind = ?', ('admit:' + new, 'admit:' + old))
         return None
@@ -262,9 +295,13 @@ class Nations:
             self.db.execute('DELETE FROM nation WHERE id = ?', (nation,))
             self.db.execute('DELETE FROM nation_member WHERE nation = ?', (nation,))
             self.db.execute('DELETE FROM nation_vote WHERE nation = ?', (nation,))
+            self.db.execute('DELETE FROM nation_currency WHERE nation = ?', (nation,))
             for (f,) in self.db.execute('SELECT faction FROM nation_application WHERE nation = ?', (nation,)).fetchall():
                 self._drop_application(f)
             return 'Your faction seceded, and with one faction left the nation dissolved.'
+        # A nation cannot keep the coin of a faction that left it.
+        self.db.execute('DELETE FROM nation_currency WHERE nation = ? AND issuer = ?', (nation, faction))
+        self.db.execute("DELETE FROM nation_vote WHERE nation = ? AND kind = 'currency' AND choice = ?", (nation, faction))
         head = self.db.execute('SELECT head FROM nation WHERE id = ?', (nation,)).fetchone()[0]
         if head == faction:
             # The longest-standing member speaks for the nation until a vote.
