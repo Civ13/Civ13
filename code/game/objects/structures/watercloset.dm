@@ -590,7 +590,7 @@
 			var/washears = TRUE
 
 			if(H.is_nude())//Don't get clean showering with you clothes on.
-				H.raise_hygiene(src.cleanliness) // a plain tub never leaves you dirtier
+				H.raise_hygiene(HYGIENE_LEVEL_NORMAL) // every tub and shower washes to 200; soap takes it to 250 (bathing.dm)
 
 			if (H.wear_suit)
 				washgloves = !(H.wear_suit.flags_inv & HIDEGLOVES)

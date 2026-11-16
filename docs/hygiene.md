@@ -29,6 +29,24 @@ dirty water), and either kind gives food poisoning at 5%, scaled by
 `infection_chance_scale()`. Examining someone within 2 tiles shows filthy
 hands.
 
+## Bathing (`code/modules/1713/bathing.dm`)
+
+| Way to wash | Water | Time | Reaches |
+| --- | --- | --- | --- |
+| Hands at a sink, tap, bath or fresh water | | 2-4 s | clears dirty hands |
+| Sponge bath, bucket on yourself (30+ water) | what it holds | instant | up to 175 |
+| **Bathe** (IC verb), undressed in a river with a current | | 15 s | 200 |
+| **Bathe** in still fresh water | | 15 s | 175 |
+| Tub or shower, any material | a tubful on Persistence maps | | 200 |
+| Soap where there is water | | 4 s | 250 |
+
+Bathing in foul water rolls the illness of drinking it at half the chance.
+On Persistence maps a tub or shower holds a tank (`station_water.dm`): turning
+it on takes 100 water (bronze and steel 80; the big tubs 200 and 160) unless
+running water or a pipe feeds it, and a bucket pours in. Piped showers keep
+their own pipe water. Reaching 200 from below gives "being freshly bathed"
+(+3 mood), at most once every 20 minutes.
+
 ## Fleas and typhus
 
 `handle_hygiene()` in `human_needs.dm`; see [water-quality.md](water-quality.md)

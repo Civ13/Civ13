@@ -179,7 +179,8 @@
 		var/mob/living/human/HT = target
 		if (HT.is_nude())
 			if (reagents.has_reagent("water", 30))
-				HT.hygiene = min(HT.hygiene+(reagents.get_reagent_amount("water")),HYGIENE_LEVEL_CLEAN)
+				HT.raise_hygiene(min(HT.hygiene + reagents.get_reagent_amount("water"), SPONGE_BATH_MAX)) // a sponge bath (bathing.dm)
+				HT.clean_blood()
 				washed = TRUE
 			else
 				user.visible_message("<span class='danger'>[target] has been splashed with something by [user]!</span>", "<span class = 'notice'>You splash the solution onto [target].</span>")

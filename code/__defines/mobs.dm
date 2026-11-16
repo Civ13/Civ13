@@ -69,6 +69,8 @@
 // How dirty the hands are (hygiene_work.dm).
 #define DIRTY_HANDS_GRIME 1
 #define DIRTY_HANDS_WASTE 2
+// Cleanliness a sponge bath from a bucket reaches at most (bathing.dm).
+#define SPONGE_BATH_MAX 175
 // Percent a second that a worn garment over 90 dirt picks up fleas (about an hour on average).
 #define FLEA_INFEST_CHANCE 0.03
 // Percent of flea infestations that carry typhus.
