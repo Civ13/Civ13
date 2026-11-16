@@ -62,6 +62,8 @@
 	opacity = TRUE
 	update_material(material_name)
 	door_list += src
+	if (mapped_lock)
+		host_apply_mapped_lock(src)
 	if (material)
 		if (get_material_name() == "wood" || "bamboo")
 			flammable = TRUE
@@ -113,6 +115,8 @@
 
 /obj/structure/simple_door/attack_hand(mob/user as mob)
 	if (state && !isSwitchingStates && door_fitting_hand(user))
+		return TRUE
+	if (!state && !isSwitchingStates && door_bar_hand(user))
 		return TRUE
 	if (!state && !isSwitchingStates && door_lock && ishuman(user) && user.a_intent == I_HELP && !lock_hand_access(src, user))
 		door_rattle(user)
@@ -216,6 +220,8 @@
 		return FALSE
 	if (smart_lock_fitted && locked)
 		return !door_hand_locked(user)
+	if (door_barred() || door_braced_against(user))
+		return FALSE
 	if (door_lock && !lock_hand_access(src, user, TRUE))
 		return FALSE
 	return TRUE

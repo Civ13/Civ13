@@ -170,7 +170,7 @@
 
 // Fittings change and the door comes down only while it is open or unlocked.
 /obj/structure/simple_door/proc/door_workable()
-	return state || !door_lock_engaged()
+	return state || (!door_lock_engaged() && !door_barred())
 
 // ---- closing on its own -----------------------------------------------------
 
@@ -254,6 +254,8 @@
 		states += state ? "closer_[door_closer]_open" : "closer_[door_closer]"
 	if (door_wedge && state)
 		states += "wedge_[door_wedge]_open"
+	for (var/bar_state in door_bar_overlay_states())
+		states[bar_state] = 'icons/obj/doors/door_bars.dmi'
 	var/lock_state = door_lock_overlay_state()
 	if (lock_state)
 		states["[lock_state]"] = 'icons/obj/doors/locks_fitted.dmi'
@@ -296,6 +298,7 @@
 	if (inner_dir || door_lock)
 		to_chat(user, SPAN_NOTICE(door_facing_text(user)))
 	lock_examine(src, user)
+	door_bar_examine(user)
 
 // ---- hands on an open door ----------------------------------------------------
 
@@ -509,6 +512,8 @@
 	if (istype(W, /obj/item/door_wedge))
 		wedge_door(W, user)
 		return TRUE
+	if (door_bar_attackby(W, user))
+		return TRUE
 	if (user.a_intent == I_HARM)
 		return FALSE
 	if (is_tool(W, TOOL_SCREWDRIVER) || is_tool(W, TOOL_HAMMER) || is_tool(W, TOOL_WRENCH))
@@ -662,6 +667,7 @@
 	if (door_lock)
 		lock_to_item(door_lock, T)
 		door_lock = null
+	door_bar_parts_returned(T)
 	user.visible_message(SPAN_NOTICE("[user] takes \the [src] down."), SPAN_NOTICE("You take the door down and salvage [sheets] sheets."))
 	qdel(src)
 	return TRUE
@@ -669,6 +675,7 @@
 // A smashed or burnt door drops its wedge; its closer is wrecked with it.
 /obj/structure/simple_door/proc/door_fittings_destroyed()
 	close_token++
+	door_bars_destroyed()
 	if (door_hold)
 		door_hold.release(TRUE)
 	if (door_wedge)
