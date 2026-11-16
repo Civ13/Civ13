@@ -1,22 +1,19 @@
 {
   "kind": "cloud-browser-preview",
   "nativeByondVerified": false,
-  "sourceHead": "9bc71d86c38a1560bd3c23e80acacd7ba6a1c282",
-  "browser": "156.0.8078.47",
-  "viewport": {
-    "width": 1000,
-    "height": 850
-  },
+  "sourceHead": "71e5dd4830a27deaa297558fb6a7fd7b9e19ed8c",
+  "browser": "153.0.8010.12",
   "deviceScaleFactor": 1,
   "data": "Deterministic fictional fixtures; no player or server data",
   "shots": [
     {
       "file": "research.png",
       "viewport": {
-        "width": 1000,
-        "height": 990
+        "width": 900,
+        "height": 1016
       },
       "template": "research_bench.tmpl",
+      "title": "Research",
       "fixture": {
         "bench_tier": 2,
         "max_tier": 3,
@@ -140,10 +137,11 @@
     {
       "file": "faction.png",
       "viewport": {
-        "width": 1000,
-        "height": 1107
+        "width": 620,
+        "height": 1154
       },
       "template": "faction_creation.tmpl",
+      "title": "Faction",
       "fixture": {
         "name": "Dawnward Guild",
         "motto": "Build together, discover together",
@@ -1181,84 +1179,61 @@
     {
       "file": "chemistry.png",
       "viewport": {
-        "width": 1000,
-        "height": 436
+        "width": 390,
+        "height": 655
       },
       "template": "chem_disp.tmpl",
+      "title": "Chemistry",
       "fixture": {
         "amount": 10,
         "chemicals": [
           {
             "title": "Water",
-            "commands": {
-              "dispense": "water"
-            }
+            "id": "water"
           },
           {
             "title": "Carbon",
-            "commands": {
-              "dispense": "carbon"
-            }
+            "id": "carbon"
           },
           {
             "title": "Hydrogen",
-            "commands": {
-              "dispense": "hydrogen"
-            }
+            "id": "hydrogen"
           },
           {
             "title": "Oxygen",
-            "commands": {
-              "dispense": "oxygen"
-            }
+            "id": "oxygen"
           },
           {
             "title": "Nitrogen",
-            "commands": {
-              "dispense": "nitrogen"
-            }
+            "id": "nitrogen"
           },
           {
             "title": "Iron",
-            "commands": {
-              "dispense": "iron"
-            }
+            "id": "iron"
           },
           {
             "title": "Copper",
-            "commands": {
-              "dispense": "copper"
-            }
+            "id": "copper"
           },
           {
             "title": "Sulfur",
-            "commands": {
-              "dispense": "sulfur"
-            }
+            "id": "sulfur"
           },
           {
             "title": "Potassium",
-            "commands": {
-              "dispense": "potassium"
-            }
+            "id": "potassium"
           },
           {
             "title": "Sodium",
-            "commands": {
-              "dispense": "sodium"
-            }
+            "id": "sodium"
           },
           {
             "title": "Chlorine",
-            "commands": {
-              "dispense": "chlorine"
-            }
+            "id": "chlorine"
           },
           {
             "title": "Phosphorus",
-            "commands": {
-              "dispense": "phosphorus"
-            }
+            "id": "phosphorus"
           }
         ],
         "isBeakerLoaded": 1,
@@ -1279,10 +1254,11 @@
     {
       "file": "warehouse.png",
       "viewport": {
-        "width": 1000,
-        "height": 400
+        "width": 400,
+        "height": 500
       },
       "template": "warehouse_book.tmpl",
+      "title": "Warehouse",
       "fixture": {
         "items": [
           {
@@ -1306,6 +1282,2019 @@
             "amount": 18
           }
         ]
+      }
+    },
+    {
+      "file": "religion-list.png",
+      "viewport": {
+        "width": 450,
+        "height": 450
+      },
+      "template": "religion_list.tmpl",
+      "title": "Religion list",
+      "fixture": {
+        "religions": [
+          {
+            "name": "Sun Wardens",
+            "points": 340
+          },
+          {
+            "name": "River Mothers",
+            "points": 215
+          },
+          {
+            "name": "Order of the Ash",
+            "points": 90
+          }
+        ]
+      }
+    },
+    {
+      "file": "ship-stocks.png",
+      "viewport": {
+        "width": 500,
+        "height": 520
+      },
+      "template": "ship_stocks.tmpl",
+      "title": "Ship stocks",
+      "fixture": {
+        "stocks": [
+          {
+            "label": "Treasury",
+            "amount": 1240,
+            "unit": "reales"
+          },
+          {
+            "label": "Wood",
+            "amount": 86,
+            "unit": "logs"
+          },
+          {
+            "label": "Cloth",
+            "amount": 40,
+            "unit": "sheets"
+          },
+          {
+            "label": "Rope",
+            "amount": 22,
+            "unit": "coils"
+          },
+          {
+            "label": "Food",
+            "amount": 310,
+            "unit": "doses"
+          }
+        ]
+      }
+    },
+    {
+      "file": "crew-log.png",
+      "viewport": {
+        "width": 500,
+        "height": 520
+      },
+      "template": "crew_log.tmpl",
+      "title": "Crew log",
+      "fixture": {
+        "crew": [
+          {
+            "name": "Anne Hale",
+            "job": "Captain"
+          },
+          {
+            "name": "Tom Reed",
+            "job": "Boatswain"
+          },
+          {
+            "name": "Will Marsh",
+            "job": "Sailor"
+          },
+          {
+            "name": "Edda Stone",
+            "job": "Surgeon"
+          }
+        ]
+      }
+    },
+    {
+      "file": "faction-list.png",
+      "viewport": {
+        "width": 420,
+        "height": 520
+      },
+      "template": "faction_list.tmpl",
+      "title": "Faction list",
+      "fixture": {
+        "factions": [
+          {
+            "name": "Dawnward Guild",
+            "motto": "Build together",
+            "flavour": "A fictional fellowship.",
+            "members": 4,
+            "symbol": "",
+            "renamed": ""
+          },
+          {
+            "name": "Ash Company",
+            "members": 1,
+            "symbol": ""
+          }
+        ]
+      }
+    },
+    {
+      "file": "known-languages.png",
+      "viewport": {
+        "width": 600,
+        "height": 480
+      },
+      "template": "known_languages.tmpl",
+      "title": "Known languages",
+      "fixture": {
+        "current_default": "Common",
+        "languages": [
+          {
+            "name": "Common",
+            "prefix": ",0",
+            "description": "Spoken nearly everywhere.",
+            "is_default": 1
+          },
+          {
+            "name": "Old Tongue",
+            "prefix": ",o",
+            "description": "A scholarly language."
+          }
+        ]
+      }
+    },
+    {
+      "file": "panel.png",
+      "viewport": {
+        "width": 380,
+        "height": 420
+      },
+      "template": "panel.tmpl",
+      "title": "Iron safe",
+      "fixture": {
+        "sections": [
+          {
+            "title": "Lock",
+            "rows": [
+              {
+                "label": "Dial",
+                "value": 35,
+                "buttons": [
+                  {
+                    "label": "-",
+                    "action": "decrement"
+                  },
+                  {
+                    "label": "+",
+                    "action": "increment"
+                  }
+                ]
+              },
+              {
+                "label": "Door",
+                "value": "Open",
+                "tone": "good"
+              }
+            ],
+            "buttons": [
+              {
+                "label": "Close the safe",
+                "action": "open"
+              }
+            ]
+          },
+          {
+            "title": "Contents",
+            "items": [
+              {
+                "name": "Ledger",
+                "detail": "A bound book of accounts.",
+                "buttons": [
+                  {
+                    "label": "Read",
+                    "action": "read",
+                    "id": "a"
+                  },
+                  {
+                    "label": "Take",
+                    "action": "retrieve",
+                    "id": "a"
+                  }
+                ]
+              },
+              {
+                "name": "Silver coins",
+                "buttons": [
+                  {
+                    "label": "Take",
+                    "action": "retrieve",
+                    "id": "b"
+                  }
+                ]
+              }
+            ],
+            "empty": "It is empty."
+          }
+        ]
+      }
+    },
+    {
+      "file": "prompt.png",
+      "viewport": {
+        "width": 420,
+        "height": 240
+      },
+      "template": "prompt.tmpl",
+      "title": "Prompt",
+      "fixture": {
+        "message": "The tide is coming in.",
+        "choices": [
+          "Continue"
+        ]
+      }
+    },
+    {
+      "file": "vending.png",
+      "viewport": {
+        "width": 540,
+        "height": 600
+      },
+      "template": "vending_machine2.tmpl",
+      "title": "Vending",
+      "fixture": {
+        "company": "Dawnward Trading",
+        "moneyin": 12,
+        "currency_name": "silver",
+        "currency_short": "sp",
+        "mode": 0,
+        "products": [
+          {
+            "key": 1,
+            "name": "Bread loaf",
+            "price": 2,
+            "amount": 8
+          },
+          {
+            "key": 2,
+            "name": "Iron hatchet",
+            "price": 14,
+            "amount": 1
+          },
+          {
+            "key": 3,
+            "name": "Linen shirt",
+            "price": 6,
+            "amount": 0
+          }
+        ]
+      }
+    },
+    {
+      "file": "recruitment.png",
+      "viewport": {
+        "width": 520,
+        "height": 961
+      },
+      "template": "recruitment_station.tmpl",
+      "title": "Recruitment",
+      "fixture": {
+        "station": 1,
+        "bound": 1,
+        "supported": 1,
+        "faction": "Dawnward Guild",
+        "motto": "Build together, discover together",
+        "summary": "Open to anyone who speaks Common and has Crafting 3.",
+        "expiry_days": 3,
+        "can_unbind": 1,
+        "can_review": 1,
+        "queue": [
+          {
+            "id": 4,
+            "name": "Mara Flint",
+            "status": "pending",
+            "status_text": "Waiting for review",
+            "submitted": "2 hours",
+            "expires": "2 days",
+            "intro": "I can smith and I have my own tools.",
+            "results": [
+              "Speaks Common: met",
+              "Crafting 4/10, needs 3: met"
+            ]
+          },
+          {
+            "id": 5,
+            "name": "Jon Weir",
+            "status": "approved",
+            "status_text": "Approved",
+            "submitted": "1 day",
+            "expires": "1 day",
+            "exception": 1,
+            "results": [
+              "Speaks Common: met",
+              "Crafting 1/10, needs 3: not met"
+            ]
+          }
+        ],
+        "policy": {
+          "mode": "manual",
+          "open": 1,
+          "language": "Common",
+          "nonmatch": "review",
+          "skills": [
+            {
+              "key": "crafting",
+              "label": "Crafting",
+              "level": 3
+            },
+            {
+              "key": "farming",
+              "label": "Farming",
+              "level": 0
+            }
+          ]
+        },
+        "audit": [
+          "Leader set Crafting to 3 (1 day ago)"
+        ]
+      }
+    },
+    {
+      "file": "crafting.png",
+      "viewport": {
+        "width": 940,
+        "height": 694
+      },
+      "template": "crafting_window.tmpl",
+      "title": "Crafting",
+      "fixture": {
+        "material": "wood logs",
+        "unit": "log",
+        "amount": 6,
+        "image": "",
+        "makeable_only": 0,
+        "categories": [
+          "weapons",
+          "joinery"
+        ],
+        "purposes": [
+          "Tools",
+          "Weapons",
+          "Building",
+          "Furniture",
+          "Other"
+        ],
+        "working": null,
+        "more_images": 0,
+        "rows": [
+          {
+            "id": "0:1:aaaaaaaa",
+            "name": "campfire",
+            "state": "ready",
+            "category": "General",
+            "purpose": "Building",
+            "pinned": 0,
+            "recent": 0,
+            "cost": "4 logs",
+            "why": "",
+            "tools": "",
+            "desc": "A campfire made with wood logs.",
+            "built": 1,
+            "one_per_turf": 1,
+            "on_floor": 1,
+            "time": 140,
+            "makes": 1,
+            "batches": 1,
+            "atlas": 1,
+            "image": ""
+          },
+          {
+            "id": "2:1:bbbbbbbb",
+            "name": "3x arrow shaft",
+            "state": "ready",
+            "category": "weapons",
+            "purpose": "Weapons",
+            "pinned": 0,
+            "recent": 0,
+            "cost": "1 log",
+            "why": "",
+            "tools": "",
+            "desc": "",
+            "built": 0,
+            "one_per_turf": 0,
+            "on_floor": 0,
+            "time": 40,
+            "makes": 3,
+            "batches": 6,
+            "atlas": 0,
+            "image": ""
+          },
+          {
+            "id": "0:2:cccccccc",
+            "name": "travois",
+            "state": "missing",
+            "category": "General",
+            "purpose": "Building",
+            "pinned": 0,
+            "recent": 0,
+            "cost": "8 logs",
+            "why": "Needs 8 logs, you have 6",
+            "tools": "",
+            "desc": "",
+            "built": 0,
+            "one_per_turf": 0,
+            "on_floor": 0,
+            "time": 140,
+            "makes": 1,
+            "batches": 0,
+            "atlas": 0,
+            "image": ""
+          },
+          {
+            "id": "2:2:eeeeeeee",
+            "name": "shortbow",
+            "state": "locked",
+            "category": "weapons",
+            "purpose": "Weapons",
+            "pinned": 0,
+            "recent": 0,
+            "cost": "8 logs",
+            "why": "Needs the Archery manual",
+            "tools": "",
+            "desc": "",
+            "built": 0,
+            "one_per_turf": 0,
+            "on_floor": 0,
+            "time": 140,
+            "makes": 1,
+            "batches": 0,
+            "atlas": 0,
+            "image": ""
+          }
+        ]
+      }
+    },
+    {
+      "file": "atlas.png",
+      "viewport": {
+        "width": 1000,
+        "height": 714
+      },
+      "template": "crafting_atlas.tmpl",
+      "title": "Atlas",
+      "fixture": {
+        "mode": "graph",
+        "query": "plank",
+        "era": "",
+        "processor": "",
+        "recipe_count": 2,
+        "resource_count": 1,
+        "recipes": [
+          {
+            "id": "r2",
+            "name": "Planks",
+            "era_label": "0: Stone Age"
+          },
+          {
+            "id": "r3",
+            "name": "Plank wall",
+            "era_label": "0: Stone Age"
+          }
+        ],
+        "resources": [
+          {
+            "id": "wood_id",
+            "name": "Wood log"
+          }
+        ],
+        "detail": {
+          "id": "r2",
+          "name": "Planks",
+          "kind": "Material / global",
+          "file": "config/crafting/material_recipes_global.txt",
+          "line": 27,
+          "conditions": "",
+          "era_label": "0: Stone Age",
+          "era_basis": "Research node",
+          "inputs": [
+            {
+              "id": "/material/wood",
+              "name": "Log",
+              "quantity": "1",
+              "image": ""
+            }
+          ],
+          "outputs": [
+            {
+              "id": "/obj/plank",
+              "name": "Planks",
+              "quantity": "4",
+              "image": ""
+            }
+          ],
+          "variants": []
+        }
+      }
+    },
+    {
+      "file": "appearance.png",
+      "viewport": {
+        "width": 800,
+        "height": 453
+      },
+      "template": "appearance_changer.tmpl",
+      "title": "Appearance",
+      "fixture": {
+        "change_gender": 1,
+        "genders": [
+          {
+            "gender_name": "Male",
+            "gender_key": "male"
+          },
+          {
+            "gender_name": "Female",
+            "gender_key": "female"
+          }
+        ],
+        "gender": "female",
+        "change_hair": 1,
+        "hair_styles": [
+          {
+            "hairstyle": "Bald"
+          },
+          {
+            "hairstyle": "Short"
+          },
+          {
+            "hairstyle": "Ponytail"
+          },
+          {
+            "hairstyle": "Braid"
+          },
+          {
+            "hairstyle": "Bun"
+          },
+          {
+            "hairstyle": "Long"
+          },
+          {
+            "hairstyle": "Topknot"
+          },
+          {
+            "hairstyle": "Curls"
+          }
+        ],
+        "hair_style": "Braid",
+        "change_facial_hair": 1,
+        "facial_hair_styles": [
+          {
+            "facialhairstyle": "Shaved"
+          },
+          {
+            "facialhairstyle": "Moustache"
+          },
+          {
+            "facialhairstyle": "Goatee"
+          },
+          {
+            "facialhairstyle": "Full beard"
+          }
+        ],
+        "facial_hair_style": "Shaved",
+        "change_eye_color": 1,
+        "change_hair_color": 1,
+        "change_facial_hair_color": 1
+      }
+    },
+    {
+      "file": "vending-payment.png",
+      "viewport": {
+        "width": 540,
+        "height": 600
+      },
+      "template": "vending_machine2.tmpl",
+      "title": "Vending payment",
+      "fixture": {
+        "company": "Dawnward Trading",
+        "moneyin": 2,
+        "currency_name": "silver",
+        "currency_short": "sp",
+        "mode": 1,
+        "product": "Iron hatchet",
+        "price": 14,
+        "message": "Please insert money to pay for the item.",
+        "message_err": 0
+      }
+    },
+    {
+      "file": "vending-plain.png",
+      "viewport": {
+        "width": 540,
+        "height": 600
+      },
+      "template": "vending_machine.tmpl",
+      "title": "Vending plain",
+      "fixture": {
+        "mode": 0,
+        "coin": "silver coin",
+        "panel": 1,
+        "speaker": 1,
+        "products": [
+          {
+            "key": 1,
+            "name": "Water flask",
+            "price": 0,
+            "amount": 6
+          },
+          {
+            "key": 2,
+            "name": "Hardtack",
+            "price": 1,
+            "amount": 0
+          }
+        ]
+      }
+    },
+    {
+      "file": "vending-gulag.png",
+      "viewport": {
+        "width": 540,
+        "height": 600
+      },
+      "template": "vending_machine_gulag.tmpl",
+      "title": "Vending gulag",
+      "fixture": {
+        "moneyin": 30,
+        "currency_short": "rub",
+        "mode": 0,
+        "products": [
+          {
+            "key": 1,
+            "name": "Black bread",
+            "price": 10,
+            "amount": 12
+          },
+          {
+            "key": 2,
+            "name": "Tea brick",
+            "price": 25,
+            "amount": 3
+          }
+        ]
+      }
+    },
+    {
+      "file": "vending-market.png",
+      "viewport": {
+        "width": 540,
+        "height": 600
+      },
+      "template": "vending_machine_taotd.tmpl",
+      "title": "Vending market",
+      "fixture": {
+        "moneyin": 5,
+        "currency_short": "usd",
+        "mode": 0,
+        "products": [
+          {
+            "key": 1,
+            "name": "Coffee",
+            "price": 2,
+            "amount": 20
+          },
+          {
+            "key": 2,
+            "name": "Newspaper",
+            "price": 1,
+            "amount": 9
+          }
+        ]
+      }
+    },
+    {
+      "file": "faction-symbol.png",
+      "viewport": {
+        "width": 620,
+        "height": 836
+      },
+      "template": "faction_symbol.tmpl",
+      "title": "Faction symbol",
+      "fixture": {
+        "grid": [
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#f6d77f",
+          "#f6d77f",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#f6d77f",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#f6d77f",
+          "#f6d77f",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#193c52",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58",
+          "#d8ae58"
+        ],
+        "color": "#f6d77f",
+        "tool": "paint",
+        "has_saved_icon": 1
+      }
+    },
+    {
+      "file": "research-book.png",
+      "viewport": {
+        "width": 620,
+        "height": 839
+      },
+      "template": "research_book.tmpl",
+      "title": "Book",
+      "fixture": {
+        "name": "Founding book",
+        "author": "Mira",
+        "has_text": 1,
+        "held": 1,
+        "busy": 0,
+        "chapters": [
+          {
+            "id": "tools",
+            "name": "Basic Toolmaking",
+            "state": "known",
+            "era_name": "Stone Age",
+            "discipline": "Engineering",
+            "groundwork": [],
+            "study_minutes": 1,
+            "recipe_names": [
+              "hatchet"
+            ]
+          },
+          {
+            "id": "pottery",
+            "name": "Pottery",
+            "state": "study",
+            "era_name": "Stone Age",
+            "discipline": "Engineering",
+            "groundwork": [
+              {
+                "id": "tools",
+                "name": "Basic Toolmaking",
+                "known": 1
+              }
+            ],
+            "study_minutes": 1,
+            "tutor": "Odo",
+            "recipe_names": [
+              "clay pot",
+              "kiln"
+            ]
+          },
+          {
+            "id": "bronze",
+            "name": "Bronze Working",
+            "state": "locked",
+            "era_name": "Bronze Age",
+            "discipline": "Natural Science",
+            "groundwork": [
+              {
+                "id": "masonry",
+                "name": "Stone Masonry",
+                "known": 0
+              }
+            ],
+            "study_minutes": 1.5,
+            "recipe_names": []
+          }
+        ],
+        "unfinished": [
+          {
+            "id": "masonry",
+            "name": "Stone Masonry",
+            "percent": 30,
+            "ticks": 30,
+            "cost": 100,
+            "prototype": "copper pickaxe",
+            "prototype_done": 0
+          }
+        ],
+        "writable": [
+          {
+            "id": "fire",
+            "name": "Firemaking",
+            "era_name": "Stone Age",
+            "write_minutes": 2,
+            "stamina": 15
+          }
+        ],
+        "viewer": {
+          "pen": "pencil",
+          "sheets": 3,
+          "stamina": 80,
+          "desk": 1,
+          "skills": []
+        }
+      }
+    },
+    {
+      "file": "character-flavor.png",
+      "viewport": {
+        "width": 500,
+        "height": 200
+      },
+      "template": "character_flavor.tmpl",
+      "title": "Mara Flint",
+      "fixture": {
+        "name": "Mara Flint",
+        "text": "A tall woman with soot on her sleeves.\nShe carries a smith&#39;s hammer at her belt."
+      }
+    },
+    {
+      "file": "character-notes.png",
+      "viewport": {
+        "width": 625,
+        "height": 650
+      },
+      "template": "character_notes.tmpl",
+      "title": "Notes",
+      "fixture": {
+        "character": [
+          {
+            "text": "Mara Flint",
+            "bold": 0,
+            "italic": 0
+          }
+        ],
+        "sections": [
+          {
+            "title": [
+              {
+                "text": "Role",
+                "bold": 0,
+                "italic": 0
+              }
+            ],
+            "entries": [
+              {
+                "runs": [
+                  {
+                    "text": "Smith ",
+                    "bold": 1,
+                    "italic": 0
+                  },
+                  {
+                    "text": "of the Dawnward Guild",
+                    "bold": 1,
+                    "italic": 1
+                  },
+                  {
+                    "br": 1
+                  },
+                  {
+                    "text": "Keep the forge lit.",
+                    "bold": 0,
+                    "italic": 0
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "memory": [
+          {
+            "text": "Owes Tom Reed two iron ingots.",
+            "bold": 0,
+            "italic": 0
+          }
+        ],
+        "discoveries": [
+          {
+            "br": 1
+          },
+          {
+            "text": "Discoveries",
+            "bold": 1,
+            "italic": 0
+          },
+          {
+            "br": 1
+          },
+          {
+            "text": "No discoveries recorded.",
+            "bold": 0,
+            "italic": 1
+          }
+        ]
+      }
+    },
+    {
+      "file": "photo.png",
+      "viewport": {
+        "width": 360,
+        "height": 400
+      },
+      "template": "photo_viewer.tmpl",
+      "title": "Photograph",
+      "fixture": {
+        "name": "Harbour at dawn",
+        "image": "",
+        "width": 192,
+        "scribble": "The first ship of the season."
+      }
+    },
+    {
+      "file": "book.png",
+      "viewport": {
+        "width": 625,
+        "height": 650
+      },
+      "template": "book_reader.tmpl",
+      "title": "Book",
+      "fixture": {
+        "runs": [
+          {
+            "text": "On the Working of Bronze",
+            "face": "times",
+            "ink": "#000000",
+            "bold": true,
+            "italic": false
+          },
+          {
+            "text": "\n\nTin is scarce and copper is not. ",
+            "face": "times",
+            "ink": "#000000",
+            "bold": false,
+            "italic": false
+          },
+          {
+            "text": "Nine parts copper to one of tin",
+            "face": "times",
+            "ink": "#000000",
+            "bold": false,
+            "italic": true
+          },
+          {
+            "text": " makes a blade that holds its edge.",
+            "face": "times",
+            "ink": "#000000",
+            "bold": false,
+            "italic": false
+          }
+        ]
+      }
+    },
+    {
+      "file": "paper.png",
+      "viewport": {
+        "width": 625,
+        "height": 650
+      },
+      "template": "paper_editor.tmpl",
+      "title": "Paper",
+      "fixture": {
+        "lease": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "document_id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "revision": 1,
+        "free_space": 2900,
+        "languages": [
+          {
+            "id": "civ13:english:v1",
+            "name": "English"
+          }
+        ],
+        "default_language_id": "civ13:english:v1",
+        "view": {
+          "legacy_name": "Paper",
+          "legacy_body_html": "",
+          "revision": 1,
+          "legacy_policy": "legacy_unclassified",
+          "sections": [
+            {
+              "id": "section-1",
+              "kind": "body",
+              "language_id": "civ13:english:v1",
+              "text": "Delivered: forty oak planks and six iron ingots.",
+              "ink": "#000000",
+              "tool": "pen"
+            }
+          ]
+        },
+        "draft_ink": "black",
+        "draft_tool": "pen",
+        "draft_signature": "Mara Flint",
+        "response_serial": 1,
+        "result": "saved"
       }
     }
   ]
