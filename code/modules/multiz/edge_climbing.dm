@@ -31,9 +31,10 @@
 
 // The lower turf a climb down from H over the open air in direction lands on,
 // or null. When it is null and why is a list, why[1] says what stopped it.
-/proc/edge_descent_destination(mob/living/human/H, direction, list/why)
+// With terrain_only, only the ground is checked, not whether H can climb now.
+/proc/edge_descent_destination(mob/living/human/H, direction, list/why, terrain_only = FALSE)
 	. = null
-	var/problem = ledge_climber_problem(H)
+	var/problem = terrain_only ? null : ledge_climber_problem(H)
 	if (!problem && !(direction in list(NORTH, SOUTH, EAST, WEST)))
 		problem = "Face straight toward the edge you want to climb down."
 	var/turf/here = problem ? null : get_turf(H)

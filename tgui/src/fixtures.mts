@@ -164,6 +164,7 @@ const storage: StorageWindowData = {
   near: [
     { id: 'near:c', kind: 'near', name: 'woven basket', focus: 1, used: 6, space: 14, slots: 7, max_size: 3, can_dump: 1, can_take: 1, items: [stor('i6', 'wheat grain', 2, { count: 12 }), stor('i7', 'clay bowl', 2), stor('i8', 'berries', 1, { queued: 1 })] },
     { id: 'near:d', kind: 'near', name: 'hewn log chest', locked: 1, items: [] },
+    { id: 'near:h', kind: 'near', name: 'wooden crate', used: 1, slots: 10, unit: 'things', can_dump: 1, can_take: 1, total: 1, items: [stor('i11', 'iron hatchet', 3)] },
     { id: 'body:f', kind: 'body', name: 'hide sling bag', owner: 'Body of Tomas Reed', used: 9, space: 16, slots: null, max_size: 3, can_dump: 0, can_take: 1, total: 5,
       items: [stor('i10', 'bone needle', 1)], search: { size_class: 2, time: 7, done: 3 }, unseen: [3, 1, 2] },
     { id: 'near:g', kind: 'near', name: 'clay storage jar', used: 4, space: 12, slots: 6, max_size: 2, can_dump: 0, can_take: 1, total: 2, items: [], unseen: [2, 2] },

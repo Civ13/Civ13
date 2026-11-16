@@ -263,6 +263,9 @@ var/global/list/node_grid_col_cache = null
 	// Prototype: a bronze ingot mold (gated on bronze_working, its own direct prereq).
 	register_research_node(new /datum/research_node("iron_smithing", "Iron Smithing", "Industrial", 195, 1, RESEARCH_MODE_PROTOTYPE, list("bronze_working"), 2, /obj/item/weapon/clay/mold))
 	register_research_node(new /datum/research_node("steelmaking", "Steelmaking", "Industrial", 200, 3, RESEARCH_MODE_ANALYSIS, list("iron_smithing"), 4))
+	// Japanese iron-sand steel (tatara.dm): iron sand smelted in a clay
+	// furnace, so steel without rock ore; Pottery is the clay craft before it.
+	register_research_node(new /datum/research_node("tatara_smelting", "Tatara Smelting", "Industrial", 165, 1, RESEARCH_MODE_ANALYSIS, list("iron_smithing","pottery_storage"), 2))
 	register_research_node(new /datum/research_node("alloys", "Alloys", "Industrial", 270, 5, RESEARCH_MODE_ANALYSIS, list("steelmaking"), 6))
 	// Hall-Heroult (1886) and Bayer (1888): aluminium from bauxite (aluminium.dm).
 	register_research_node(new /datum/research_node("aluminium_refining", "Aluminium Refining", "Industrial", 305, 5, RESEARCH_MODE_ANALYSIS, list("electricity","alloys"), 6))
@@ -1813,6 +1816,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/quench_tub" = "iron_smithing",
 		"/obj/structure/furnace" = "iron_smithing",
 		"/obj/structure/furnace/blast_furnace" = "iron_smithing",
+		"/obj/structure/tatara" = "tatara_smelting",
+		"/obj/structure/kanna_channel" = "tatara_smelting",
 		"/obj/structure/heatsource" = "iron_smithing",
 		"/obj/item/clothing/shoes/weather/hobnail_boots" = "iron_smithing",
 		// --- iron_tools (7) ---

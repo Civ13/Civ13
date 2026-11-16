@@ -13925,6 +13925,54 @@
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
+      "name": "Wash hillside soil in a washing channel",
+      "file": "code/modules/1713/tatara.dm",
+      "line": 406,
+      "source_commit": "a80c8852432ff14d96e1d570421c7c79163cfe04",
+      "inputs": [
+        "/turf/floor/dirt",
+        "/turf/floor/beach/sand"
+      ],
+      "outputs": [
+        "/obj/item/stack/ore/iron_sand"
+      ],
+      "tools": [
+        "/obj/structure/kanna_channel"
+      ],
+      "steps": [
+        "Build a washing channel (6 wood) on a tile beside shallow fresh water.",
+        "Use it with an empty hand: 30 seconds of washing leaves 2 iron sand (4 on Asia)."
+      ],
+      "conditions": "Each channel tile gives 20 loads, then one comes back every minute.",
+      "map_notes": "Asia yields 2 more per load.",
+      "era": "The channel needs the Tatara Smelting research.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Wash ordinary sand into iron sand",
+      "file": "code/modules/1713/tatara.dm",
+      "line": 438,
+      "source_commit": "a80c8852432ff14d96e1d570421c7c79163cfe04",
+      "inputs": [
+        "/obj/item/stack/ore/glass"
+      ],
+      "outputs": [
+        "/obj/item/stack/ore/iron_sand"
+      ],
+      "tools": [
+        "/obj/structure/kanna_channel",
+        "/obj/item/kitchen/wood_bowl"
+      ],
+      "steps": [
+        "Use sand on a washing channel, or on a wooden bowl while standing beside shallow fresh water.",
+        "Every 5 sand washes down to 1 iron sand (2 on Asia), 5 seconds per batch."
+      ],
+      "conditions": "Shallow natural fresh water beside the channel or the washer.",
+      "map_notes": "Asia yields twice as much.",
+      "era": "Map ordinal age at least 1 in a bowl; the channel needs Tatara Smelting.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
       "name": "Smelt iron sand in a bloomery",
       "file": "code/modules/1713/tatara.dm",
       "line": 30,
@@ -13945,6 +13993,80 @@
       "conditions": "Bloomery only; the blast furnace refuses iron sand.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "The bloomery needs the Iron Smithing research.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Fire a tatara",
+      "file": "code/modules/1713/tatara.dm",
+      "line": 226,
+      "source_commit": "2e557201bc574eca0e37fc547034b92e53acb3a9",
+      "inputs": [
+        "/obj/item/stack/ore/iron_sand",
+        "/obj/item/stack/ore/charcoal"
+      ],
+      "outputs": [
+        "/obj/item/stack/ore/kera",
+        "/obj/item/stack/ore/iron_pig",
+        "/obj/item/stack/material/clay"
+      ],
+      "tools": [
+        "/obj/structure/tatara",
+        "/obj/structure/workshop_machine/bellows"
+      ],
+      "steps": [
+        "Build a clay tatara furnace (20 clay).",
+        "Charge it by turns: charcoal, then iron sand on top, at least 3 times, up to 30 of each.",
+        "Light it and keep bellows beside it pumping through the ten-minute firing.",
+        "Break the spent furnace open with a hammer or pickaxe."
+      ],
+      "conditions": "Only sand matched by charcoal smelts: 1 kera per 3 sand at full bellows (half with none), half again if charged fewer than 3 times; 1 pig iron per 10 sand; 5 clay back. Charging stays open for the first five minutes.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "The tatara needs the Tatara Smelting research.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Sort kera on an anvil",
+      "file": "code/modules/1713/tatara.dm",
+      "line": 317,
+      "source_commit": "2e557201bc574eca0e37fc547034b92e53acb3a9",
+      "inputs": [
+        "/obj/item/stack/ore/kera"
+      ],
+      "outputs": [
+        "/obj/item/stack/ore/tamahagane",
+        "/obj/item/stack/material/iron"
+      ],
+      "tools": [
+        "/obj/structure/anvil"
+      ],
+      "steps": [
+        "Use kera on an anvil that works iron: half of it sorts out as tamahagane, 30% as wrought iron, the rest is slag."
+      ],
+      "conditions": "Anvil Crafting coefficient 1.2.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "Needs the Tatara Smelting research.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Fold tamahagane into steel",
+      "file": "code/modules/1713/tatara.dm",
+      "line": 327,
+      "source_commit": "2e557201bc574eca0e37fc547034b92e53acb3a9",
+      "inputs": [
+        "/obj/item/stack/ore/tamahagane"
+      ],
+      "outputs": [
+        "/obj/item/stack/material/steel"
+      ],
+      "tools": [
+        "/obj/structure/anvil"
+      ],
+      "steps": [
+        "Use tamahagane on an anvil that works iron: every 3 chunks fold into 2 steel sheets."
+      ],
+      "conditions": "Anvil Crafting coefficient 1.2. Forging the steel itself needs an anvil that works steel, such as a steel-faced anvil.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "Needs the Tatara Smelting research.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
