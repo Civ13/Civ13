@@ -59,7 +59,7 @@ class PitClimbing(unittest.TestCase):
         source = proc('/proc/ledge_climber_problem(mob/living/human/H)')
         for guard in ('H.stat', 'H.lying', 'H.restrained()', 'H.buckled', 'H.pulling', 'H.pulledby', '!H.has_empty_hand()', 'persistence_save_in_progress'):
             self.assertIn(guard, source)
-        source = proc('/proc/ledge_climb_destination(mob/living/human/H, direction, list/why)')
+        source = proc('/proc/ledge_climb_destination(mob/living/human/H, direction, list/why, terrain_only = FALSE)')
         self.assertIn('ledge_climber_problem(H)', source)
         self.assertIn('map.check_caribbean_block(H, destination)', source)
         self.assertIn('persistence_movement_allowed(H, destination)', source)

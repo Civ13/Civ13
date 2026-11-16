@@ -18,7 +18,7 @@ class EdgeClimbing(unittest.TestCase):
         self.assertIn('#include "code\\modules\\multiz\\edge_climbing.dm"', (ROOT / 'civ13.dme').read_text())
 
     def test_descent_reuses_climber_and_landing_checks(self):
-        source = proc('/proc/edge_descent_destination(mob/living/human/H, direction, list/why)')
+        source = proc('/proc/edge_descent_destination(mob/living/human/H, direction, list/why, terrain_only = FALSE)')
         for guard in ('ledge_climber_problem(H)', 'edge_open_air(edge)', 'edge_open_air(here)', 'multiz_level_below(edge.z)',
                       'ledge_landing_clear(destination)', 'map.check_caribbean_block(H, destination)',
                       'persistence_movement_allowed(H, destination)'):
