@@ -32,9 +32,10 @@ class KnownLanguagesContract(unittest.TestCase):
         self.assertIn('{{:value.description}}', fallback)
         assets = (ROOT / 'code/modules/client/asset_cache.dm').read_text()
         self.assertIn('"UI/templates/"', assets)
-        allowed = (ROOT / 'code/modules/nano/tgui.dm').read_text().split('/datum/nanoui/tgui/proc/allowed_actions()', 1)[1].split('/datum/nanoui/tgui/Topic', 1)[0]
-        self.assertNotIn('known_languages.tmpl', allowed)
-        self.assertIn('return list()', allowed)
+        # The reader sends nothing: its owner keeps the empty default action list.
+        self.assertIn('/datum/proc/ui_actions(ui_key)\n\treturn list()', (ROOT / 'code/modules/nano/tgui.dm').read_text())
+        for path in (ROOT / 'code/game/mob').rglob('*.dm'):
+            self.assertNotRegex(path.read_text(errors='replace'), r'(?m)^/mob(/living)?(/human)?/ui_actions\(', path.name)
 
     def test_refresh_routes_back_to_reader_without_persistent_or_movement_state(self):
         self.assertIn('/datum/nanoui/tgui/known_languages/update', READER)

@@ -168,6 +168,9 @@
  *
  *  See NanoUI documentation for details.
  */
+/obj/structure/vending/ui_actions(ui_key)
+	return list("vend", "cancelpurchase", "remove_coin", "togglevoice")
+
 /obj/structure/vending/ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = TRUE)
 	user.set_using_object(src)
 
