@@ -147,6 +147,11 @@ var/global/list/building_room_of = list()
 		if (C.wall)
 			if (C.incomplete)
 				return 0.3
+			// Log walls (log_wall_building.dm): thick and tight once chinked,
+			// draughty through the gaps until then.
+			if (istype(C, /obj/covers/wood_wall/log))
+				var/obj/covers/wood_wall/log/L = C
+				return (L.chinked ? 0.8 : 0.5) + building_lining_bonus(C.insulation_lining)
 			return building_insulation_material(C.material) + building_lining_bonus(C.insulation_lining)
 	for (var/obj/structure/window/W in N)
 		if (istype(W, /obj/structure/window/barrier))

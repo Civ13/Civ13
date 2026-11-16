@@ -437,6 +437,7 @@
 #include "code\game\objects\covers_types\covers_buildable.dm"
 #include "code\game\objects\covers_types\covers_entrances.dm"
 #include "code\game\objects\covers_types\covers_rendered.dm"
+#include "code\game\objects\covers_types\log_wall_building.dm"
 #include "code\game\objects\effects\autoassembler.dm"
 #include "code\game\objects\effects\bump_teleporter.dm"
 #include "code\game\objects\effects\effect_system.dm"
