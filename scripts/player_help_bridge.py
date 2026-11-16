@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = 'be2f26dbad0c09b1f0df478cefe54ac60264c691'
+WIKI_REVIEWED_REVISION = '3b7052d5d7d7801fb4b6887659678f61faa09103'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('2d7872e9f19303d3077a1485496ebd5ba26b8dea0b26df9848d9a6cb506ad6a8', 'character skills traits languages'),
@@ -125,12 +125,12 @@ WIKI_REVIEWED_GUIDES = {
     'Crafting_Skill_Level_Requirements.md': ('eae4e1c91ce28009f16ec79d0e942f76895d80262e618320eaf44d3a7c5808a9', 'crafting skill level levels requirement requirements unlock'),
     'Food_Decay_Times.md': ('d2d63372eddc79fd7c3c9bffb390587fff7a5cb21c53d829ab5ec29ab9f11126', 'food decay rot spoil spoils spoiled expire expires lasts preserve storage'),
     'Miscellaneous_Crafting.md': ('b7941002a901262850b0d31a1af2258e2c4e74e519d8bd67f8ca774db82249fa', 'miscellaneous crafting misc items dress dresses dressmaking tailoring tailor tailored sew sewing pattern patterns design clothes shirt gown cloak sleeves collar dye dyes wool linen fabric book hat hats headwear beret veil gloves boots shoes belt sash backpack satchel quiver bandolier restyle alteration alter candle candles'),
-    'maps/The_Americas.md': ('7da473dcae7b98efa4d7d618f8d13f919d1a278b398ce0ff7e5d8a105adadfba', 'americas america north south isthmus mainland persistent persistence map world hills tamping grading rammer'),
-    'maps/Gaia.md': ('31ac9df3080f401b012b2fd335e89e633e438fe0124fad2ced6d4ff6fd72858c', 'gaia map world underground'),
+    'maps/The_Americas.md': ('7ab1e93eae72bfdc4ebf6d0cb945008b9f8ef8f771a821a83e40c68b69502b16', 'americas america north south isthmus mainland persistent persistence map world hills tamping grading rammer'),
+    'maps/Gaia.md': ('efb869fbe411b360067f5258a600dc469a345f3e8c0d19dea073d5cd4e625afd', 'gaia map world underground'),
     'maps/Nomads_Maps.md': ('a12643f22e197e982ee0a0fe1fb8646e315b2639e1c09dd8c55cc4964e9372b0', 'nomads maps map terrain biome biomes'),
     'gamemodes/Voyage.md': ('9922f438d0253c6b4d812bc852422a54c37f428b4c3221b2a732397ef245ddfe', 'voyage expedition ship mode'),
     'gamemodes/Events.md': ('de6e6133e735e5da8a03a290f45e599b82cee216d9b150d25c583e3c34606336', 'events event special rounds'),
-    'guides_overview.md': ('876f788cd955f166d50240af250c42ed7871cbbef0b14a7d6bcf59db0218bffd', 'guides overview list of guides index'),
+    'guides_overview.md': ('14380689c72c6fa8e9ec8ea737fe265a59a740462aef50f8c9304b76de8d2e3d', 'guides overview list of guides index'),
 }
 WIKI_LEGACY_GUIDES = ('guides/Guide_to_Crafting.md', 'guides/Guide_to_Metallurgy.md', 'Starter_Guide.md')
 
