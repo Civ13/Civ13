@@ -55,6 +55,35 @@ class OpenAirView(unittest.TestCase):
         for guard in ('persistence_active_operation', 'persistence_save_in_progress', 'building_allocating_z'):
             self.assertIn(guard, busy)
 
+class LookUp(unittest.TestCase):
+    def setUp(self):
+        self.source = (ROOT / 'code/modules/multiz/look_up.dm').read_text(encoding='utf-8-sig')
+
+    def test_included_after_open_air_view(self):
+        dme = (ROOT / 'civ13.dme').read_text()
+        self.assertLess(dme.index('multiz\\open_air_view.dm'), dme.index('multiz\\look_up.dm'))
+        self.assertLess(dme.index('human\\human_life.dm'), dme.index('multiz\\look_up.dm'))
+
+    def test_blockers(self):
+        target = self.source.split('/mob/living/human/proc/look_up_target(list/why)\n', 1)[1].split('\n/', 1)[0]
+        for guard in ('multiz_level_above(here.z)', 'los_turf_roofed(here)', '(locate(/obj/roof) in here)',
+                      'building_open_turf(above)', '(locate(/obj/covers) in above)'):
+            self.assertIn(guard, target)
+
+    def test_stops_on_move_and_each_vision_update(self):
+        movement = (ROOT / 'code/game/mob/mob_movement.dm').read_text()
+        self.assertIn('H.update_laddervision(null)\n\t\tH.stop_looking_up()', movement)
+        self.assertIn('/mob/living/human/handle_vision()\n\t. = ..()\n\tlook_up_vision()', self.source)
+        vision = self.source.split('/mob/living/human/proc/look_up_vision()\n', 1)[1].split('\n/', 1)[0]
+        self.assertIn('look_up_target() != looking_up_at', vision)
+        self.assertIn('return key == "looking_up_at" || key == "look_up_label" || ..()', self.source)
+
+    def test_alt_click_up_arrow(self):
+        hud = (ROOT / 'code/_onclick/hud/updown_buttons.dm').read_text()
+        click = hud.split('/obj/screen/updown/Click(location, control, params)\n', 1)[1].split('\n/', 1)[0]
+        self.assertLess(click.index('H.toggle_look_up()'), click.index('H.press_updown(direction)'))
+        self.assertIn('direction == UP && params && params2list(params)["alt"]', click)
+
 
 if __name__ == '__main__':
     unittest.main()
