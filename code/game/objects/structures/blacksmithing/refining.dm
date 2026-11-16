@@ -142,8 +142,7 @@
 
 /obj/structure/furnace/process()
 	if (iron > 0)
-		var/obj/item/stack/ore/iron_sponge/result = new/obj/item/stack/ore/iron_sponge(src.loc)
-		result.amount = iron
+		spawn_stack(/obj/item/stack/ore/iron_sponge, src.loc, iron)
 		iron = 0
 		return
 /obj/structure/furnace/verb/empty()
@@ -151,8 +150,7 @@
 	set name = "Empty"
 	set src in range(1)
 	if (iron > 0)
-		var/obj/item/stack/ore/iron/emptyediron = new/obj/item/stack/ore/iron(src.loc)
-		emptyediron.amount = iron
+		spawn_stack(/obj/item/stack/ore/iron, src.loc, iron)
 		iron = 0
 
 
@@ -187,8 +185,7 @@
 
 /obj/structure/furnace/blast_furnace/process()
 	if (iron > 0)
-		var/obj/item/stack/ore/iron_pig/result = new/obj/item/stack/ore/iron_pig(src.loc)
-		result.amount = iron
+		spawn_stack(/obj/item/stack/ore/iron_pig, src.loc, iron)
 		iron = 0
 		return
 

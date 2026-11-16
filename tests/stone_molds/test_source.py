@@ -258,7 +258,7 @@ class StoneMoldTests(unittest.TestCase):
         metals = re.search(r'ML\.current_material in list\(([^)]*)\)', branch)[1]
         for metal in re.findall(r'"(\w+)"', metals):
             self.assertTrue(f'"/obj/item/stack/arrowhead/{metal}" = "stone_arms"' in nodes, metal)
-            self.assertTrue(re.search(r'new/obj/item/stack/arrowhead/'+metal+r'\(loc\)', branch), metal)
+            self.assertTrue(re.search(r'(?:new|spawn_stack\()/obj/item/stack/arrowhead/'+metal+r'(?:\(loc\)|, loc, )', branch), metal)
         molds = anvil.split('else if (istype(P, /obj/item/weapon/clay/mold))',1)[1].split('/obj/structure/anvil/proc/stack_metal',1)[0]
         self.assertNotRegex(molds, r'crafting_recipe_allowed\([^\n]*\)\) return', 'silent refusal')
         self.assertEqual(molds.count('crafting_recipe_refusal('), 4)

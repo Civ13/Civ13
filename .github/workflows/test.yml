@@ -2430,6 +2430,14 @@ jobs:
           source "$PWD/BYOND/byond/bin/byondsetup"
           python3 -B -m unittest discover -s tests/food_toxin_log -p 'test_*.py' -v
           python3 tests/food_toxin_log/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/food-toxin-log"
+      - name: Verify stack outputs on occupied tiles
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/stack_spawn')
+        timeout-minutes: 3
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          python3 -B -m unittest discover -s tests/stack_spawn -p 'test_*.py' -v
+          python3 tests/stack_spawn/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/stack-spawn"
       - name: Verify player activity recorder
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/player_activity')
         timeout-minutes: 3
