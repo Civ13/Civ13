@@ -13925,6 +13925,54 @@
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
+      "name": "Wash hillside soil in a washing channel",
+      "file": "code/modules/1713/tatara.dm",
+      "line": 406,
+      "source_commit": "a80c8852432ff14d96e1d570421c7c79163cfe04",
+      "inputs": [
+        "/turf/floor/dirt",
+        "/turf/floor/beach/sand"
+      ],
+      "outputs": [
+        "/obj/item/stack/ore/iron_sand"
+      ],
+      "tools": [
+        "/obj/structure/kanna_channel"
+      ],
+      "steps": [
+        "Build a washing channel (6 wood) on a tile beside shallow fresh water.",
+        "Use it with an empty hand: 30 seconds of washing leaves 2 iron sand (4 on Asia)."
+      ],
+      "conditions": "Each channel tile gives 20 loads, then one comes back every minute.",
+      "map_notes": "Asia yields 2 more per load.",
+      "era": "The channel needs the Tatara Smelting research.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Wash ordinary sand into iron sand",
+      "file": "code/modules/1713/tatara.dm",
+      "line": 438,
+      "source_commit": "a80c8852432ff14d96e1d570421c7c79163cfe04",
+      "inputs": [
+        "/obj/item/stack/ore/glass"
+      ],
+      "outputs": [
+        "/obj/item/stack/ore/iron_sand"
+      ],
+      "tools": [
+        "/obj/structure/kanna_channel",
+        "/obj/item/kitchen/wood_bowl"
+      ],
+      "steps": [
+        "Use sand on a washing channel, or on a wooden bowl while standing beside shallow fresh water.",
+        "Every 5 sand washes down to 1 iron sand (2 on Asia), 5 seconds per batch."
+      ],
+      "conditions": "Shallow natural fresh water beside the channel or the washer.",
+      "map_notes": "Asia yields twice as much.",
+      "era": "Map ordinal age at least 1 in a bowl; the channel needs Tatara Smelting.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
       "name": "Smelt iron sand in a bloomery",
       "file": "code/modules/1713/tatara.dm",
       "line": 30,
