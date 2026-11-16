@@ -258,8 +258,16 @@
 				qdel(I)
 				return
 
+			else if (istype(I, /obj/item/stack/money/goldcoin))
+				// Coins melt by their metal content (coin_mint.dm): ten full coins to a sheet.
+				var/obj/item/stack/money/GC = I
+				gold += GC.amount * GC.fineness / 10
+				copper += GC.amount * (1 - GC.fineness) / 10
+				to_chat(H, "You place \the [I] in \the [src], smelting it.")
+				qdel(I)
+				return
 			else if (istype(I, /obj/item/stack/money/coppercoin))
-				copper += I.amount/5
+				copper += I.amount/10
 				to_chat(H, "You place \the [I] in \the [src], smelting it.")
 				qdel(I)
 				return
@@ -270,7 +278,9 @@
 				return
 
 			else if (istype(I, /obj/item/stack/money/silvercoin))
-				silver += I.amount/10
+				var/obj/item/stack/money/SC = I
+				silver += SC.amount * SC.fineness / 10
+				copper += SC.amount * (1 - SC.fineness) / 10
 				to_chat(H, "You place \the [I] in \the [src], smelting it.")
 				qdel(I)
 				return

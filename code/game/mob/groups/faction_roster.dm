@@ -137,3 +137,4 @@
 	faction_rename_assoc_key(faction_limits(), old_name, new_name)
 	colony_rename(old_name, new_name)
 	faction_seal_rename(old_name, new_name)
+	coin_issuer_rename(old_name, new_name)
