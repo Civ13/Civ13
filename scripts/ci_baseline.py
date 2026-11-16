@@ -1295,6 +1295,11 @@ SUITES = {
         'paths': ('tests/stone_age_rites/',), 'shared_paths': (
             'code/modules/1713/stone_age_rites.dm', 'icons/obj/stone_age_rites.dmi',
             'code/game/objects/items/stacks/stack.dm')},
+    # Faction treasury strongboxes, wages and dues (the native probe is tests/faction_treasury/probe.dm).
+    'faction_treasury': {'files': ('tests/faction_treasury/test_source.py',),
+        'paths': ('tests/faction_treasury/',), 'shared_paths': (
+            'code/game/mob/groups/faction_treasury.dm', 'code/modules/1713/marketplace.dm',
+            'code/game/mob/groups/faction_roster.dm')},
     # Coin dies, marked coins and debasement (the native probe is tests/coin_mint/probe.dm).
     'coin_mint': {'files': ('tests/coin_mint/test_source.py',),
         'paths': ('tests/coin_mint/',), 'shared_paths': (
