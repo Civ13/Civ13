@@ -13,7 +13,7 @@ def arithmetic(source=None):
     source = source or MODULE.read_text(encoding='utf-8')
     ceiling = int(re.search(r'#define NEW_Z_CELL_CEILING (\d+)', source)[1])
     # These are the two production divisions, with native precision emulated.
-    # Multiplication only occurs after the plane bound; <=2.1m is exact in f32.
+    # Multiplication only occurs after the plane bound; <=5.3m is exact in f32.
     source = source.replace('cell_limit / (width * height)', 'divide(cell_limit, (width * height))')
     source = source.replace('cell_limit / height', 'divide(cell_limit, height)')
     source = source.replace('(purpose == "instance" ? added : 0)',
@@ -28,13 +28,20 @@ def arithmetic(source=None):
     env['new_z_integer'] = project(source, '/proc/new_z_integer(value, maximum)',
                                   'integer', 'value, maximum', env)
     return project(source,
-        '/proc/new_z_grid_error(width, height, current_z, base_z, target_z, purpose, cell_limit, roof_limit, instance_reserve, safehouse_reserve, instance_used = 0, safehouse_used = 0)',
+        '/proc/new_z_grid_error(width, height, current_z, base_z, target_z, purpose, cell_limit, roof_limit, instance_reserve, safehouse_reserve, instance_used = 0, safehouse_used = 0, free_planes = 0)',
         'grid_error', 'width, height, current_z, base_z, target_z, purpose="restore", '
         'cell_limit=1400000, roof_limit=1, instance_reserve=0, safehouse_reserve=0, '
-        'instance_used=0, safehouse_used=0', env)
+        'instance_used=0, safehouse_used=0, free_planes=0', env)
 
 
 class BudgetTests(unittest.TestCase):
+    def test_an_unformed_cave_plane_is_not_charged(self):
+        error = arithmetic()
+        # North America: surface, cave and four open-air planes under the ceiling.
+        self.assertIsNotNone(error(1132, 920, 5, 1, 6, 'restore', 5300000))
+        self.assertIsNone(error(1132, 920, 5, 1, 6, 'restore', 5300000, free_planes=1))
+        self.assertIsNotNone(error(1132, 920, 6, 1, 7, 'restore', 5300000, free_planes=1))
+
     def test_below_exact_and_single_cell_above_ceiling(self):
         error = arithmetic()
         self.assertIsNone(error(466666, 1, 2, 1, 3))  # 1,399,998
@@ -59,7 +66,7 @@ class BudgetTests(unittest.TestCase):
         self.assertIsNotNone(error(10, 10, 1, 1, 3, 'roof'))
         self.assertIsNotNone(error(10, 10, 1, 1, 10))
         self.assertIsNotNone(error(10, 10, 1, 1, 33))
-        self.assertIsNotNone(error(10, 10, 1, 1, 2, cell_limit=2100001))
+        self.assertIsNotNone(error(10, 10, 1, 1, 2, cell_limit=5300001))
         self.assertIsNotNone(error(10, 10, 1, 1, 2, 'instance'))
         self.assertIsNone(error(700001, 1, 2, 1, 2))  # existing world retained
 
@@ -70,7 +77,7 @@ class BudgetTests(unittest.TestCase):
         self.assertIn('return memory_admission_error(target_z, purpose)', source)
         self.assertIn('last_error = error(R.target_z, R.purpose, R)', source)
         self.assertIn('var/cell_limit = NEW_Z_CELL_CEILING', source)
-        self.assertIn('var/new_z_cell_budget = 2100000',
+        self.assertIn('var/new_z_cell_budget = 5300000',
                       (ROOT / 'code/datums/configuration.dm').read_text(encoding='utf-8'))
         # There is exactly one production native resize; every caller reaches
         # its reservation/claim boundary rather than writing world.maxz itself.
@@ -78,7 +85,11 @@ class BudgetTests(unittest.TestCase):
         for path in (ROOT / 'code').rglob('*.dm'):
             if re.search(r'world\.maxz\s*(?:=(?!=)|\+=|\+\+)', path.read_text(encoding='utf-8')):
                 writers.append(path.relative_to(ROOT).as_posix())
-        self.assertEqual(writers, ['code/game/objects/building_levels.dm'])
+        # The cave (dug_underground.dm) and practice rooms (practice_rooms.dm)
+        # grow through the same reservation and claim; practice rooms also shrink.
+        self.assertEqual(sorted(writers), ['code/game/objects/building_levels.dm', 'code/modules/1713/practice_rooms.dm', 'code/modules/multiz/dug_underground.dm'])
+        for path in writers:
+            self.assertIn('world_z_budget.claim_level(reservation, target_z)', (ROOT / path).read_text(encoding='utf-8'))
 
     def test_cap_denial_still_allows_roof_only_fallback(self):
         error = arithmetic()
@@ -94,7 +105,7 @@ class BudgetTests(unittest.TestCase):
         removed = arithmetic(source.replace('if (exceeds_budget)', 'if (FALSE)'))
         self.assertIsNone(removed(466667, 1, 2, 1, 3), 'removed cap must wrongly accept 1,400,001')
         # Mutate before projection, using the exact production expression.
-        marker = 'charged_levels > cell_limit / (width * height)'
+        marker = 'charged_levels - free_planes > cell_limit / (width * height)'
         self.assertEqual(source.count(marker), 1)
         exclusive = arithmetic(source.replace(marker, marker.replace(' > ', ' >= ')))
         self.assertIsNotNone(exclusive(700000, 1, 1, 1, 2, 'roof'),

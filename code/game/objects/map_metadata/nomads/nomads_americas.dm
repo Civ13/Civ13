@@ -18,8 +18,8 @@
 	// The isthmus runs off the south edge into the southern continent.
 	edge_crossings = list("south" = "southamerica")
 	new_player_start_z = 1
-	// One standing open-air level, so aircraft can fly (building_admission.dm).
-	building_levels = 1
+	// The standing open-air level aircraft fly on, and three storeys above it (building_admission.dm).
+	building_levels = 4
 	building_level_standing = TRUE
 	// Mined-out mountain floor keeps giving stone and regrowing ore seams (mountain_seams.dm).
 	mountain_seams = TRUE
@@ -34,8 +34,8 @@
 	wild_plant_cap = 650
 	edge_crossings = list("north" = "northamerica")
 	new_player_start_z = 1
-	// One standing open-air level, so aircraft can fly (building_admission.dm).
-	building_levels = 1
+	// The standing open-air level aircraft fly on, and three storeys above it (building_admission.dm).
+	building_levels = 4
 	building_level_standing = TRUE
 	// Mined-out mountain floor keeps giving stone and regrowing ore seams (mountain_seams.dm).
 	mountain_seams = TRUE

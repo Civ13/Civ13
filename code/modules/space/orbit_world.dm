@@ -60,6 +60,7 @@
 
 /obj/map_metadata/nomads/orbit
 	dig_down_underground = FALSE // no ground to dig under (dug_underground.dm)
+	building_levels = 0 // no open sky over orbit (building_admission.dm)
 	title = "Orbit"
 	description = "Open space above the world. Crews live in sealed stations they launch, dock and keep alive themselves."
 	battle_name = "orbit"

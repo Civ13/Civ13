@@ -37,6 +37,8 @@ def project(source, declaration, name, args, namespace, builder=False):
         code = code.replace('locate(/obj/roof) in T', 'has_roof(T)')
         code = code.replace('locate(/obj/covers) in above', 'has_cover(above)')
         code = code.replace('/area/caribbean/no_mans_land', 'NO_MANS_LAND')
+        # One DM ternary assignment: `x = a ? b : c`.
+        code = re.sub(r'^(\w+ = )([^?]+?) \? ([^:]+?) : (.+)$', r'\1(\3 if \2 else \4)', code)
         code = code.replace('&&', ' and ').replace('||', ' or ')
         code = re.sub(r'!(?!=)', 'not ', code)
         code = re.sub(r'\bnull\b', 'None', code)
@@ -44,6 +46,8 @@ def project(source, declaration, name, args, namespace, builder=False):
         code = re.sub(r'\bFALSE\b', 'False', code)
         if code.startswith('if (') and code.endswith(')'):
             code = 'if ' + code[4:-1] + ':'
+        elif code.startswith('else if (') and code.endswith(')'):
+            code = 'elif ' + code[9:-1] + ':'
         elif code == 'else':
             code = 'else:'
         lines.append('    ' * indent + code)
