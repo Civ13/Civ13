@@ -2661,6 +2661,36 @@ def serve_expeditions(group, start=detach, platform=None):
     return expedition_slots.serve(group, hosts(group, platform=platform), launch)
 
 
+PLAYER_ACTIVITY_MINUTES = 15
+
+
+def player_activity_db(group):
+    """The host's player activity database, beside coordinator.sqlite."""
+    return Path(group['root']) / 'player-activity.sqlite'
+
+
+def ingest_player_activity(group, now=None):
+    """Reads new player activity lines from every region when the last read is
+    PLAYER_ACTIVITY_MINUTES old. Returns the lines read, or None when not due."""
+    now = time.time() if now is None else now
+    stamp = Path(group['root']) / 'player-activity.stamp'
+    if stamp.exists() and now - stamp.stat().st_mtime < PLAYER_ACTIVITY_MINUTES * 60:
+        return None
+    dirs = {r['id']: region_dir(group, r['id']) for r in group['regions']}
+    if not any((folder / 'data' / 'player_activity').is_dir() for folder in dirs.values()):
+        return None
+    if str(TRANSFER_TOOLS.parents[1]) not in sys.path:
+        sys.path.insert(0, str(TRANSFER_TOOLS.parents[1]))
+    from tools.player_activity import aggregate
+    db = aggregate.connect(player_activity_db(group))
+    try:
+        read = aggregate.ingest(db, dirs)
+    finally:
+        db.close()
+    stamp.write_text(str(int(now)), encoding='utf-8')
+    return read
+
+
 def supervise(group, start=detach):
     """Start the group's routing relay, transfer agents, coordinator or Player Help bridges if any is not running.
 
@@ -2689,6 +2719,14 @@ def supervise(group, start=detach):
             started['expeditions'] = opened
     except (OSError, RuntimeError, ValueError, KeyError) as error:
         started['expeditions_error'] = str(error)[:300]
+    # Player activity (docs/player-activity.md) is read into the host database
+    # every PLAYER_ACTIVITY_MINUTES; a side job that never touches the helpers.
+    try:
+        read = ingest_player_activity(group)
+        if read is not None:
+            started['player_activity'] = read
+    except (OSError, ValueError, KeyError, sqlite3.Error) as error:
+        started['player_activity_error'] = str(error)[:300]
     # The validator is a side job: its failure must not keep the helpers down.
     try:
         started.update(ensure_save_validation(group, start))

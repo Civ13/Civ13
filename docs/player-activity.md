@@ -39,5 +39,39 @@ region, map and `world.timezone`.
 The account is `account_key()`: the ckey for a BYOND key, `d:<discord id>` for
 a launcher or verified player. Unsigned guests get a random `anon` id per
 session. Host agents are marked `agent`. No IP, computer id, chat text,
-coordinates or character names are written. The aggregator (`tools/player_activity`,
-next) reads every region's files into one host database and deletes them.
+coordinates or character names are written.
+
+## The host database
+
+`tools/player_activity/aggregate.py` reads every region's files into one SQLite
+database. The host service does this every 15 minutes from `supervise()` into
+`<group root>/player-activity.sqlite` (stamp file `player-activity.stamp`). It
+never opens `coordinator.sqlite` or a transfer agent's store.
+
+- Each file's read position is kept, so a re-run never counts a line twice and a
+  half-written line waits for the next run.
+- A past day's file is deleted once fully read; a compressed copy stays in
+  `data/player_activity/read/` for 7 days.
+- Event rows are kept 90 days, daily rollups per account and region 1 year, and
+  per-account first and last seen until the account is forgotten.
+- Times are stored in UTC from the file's date, `s` and the boot line's `tz`.
+  Lines written just before local midnight that land in the next day's file are
+  put back on the right day.
+- A leave on one region and a join on another within 5 minutes count as one
+  play session. Host agents (`agent@...`) are left out of player numbers.
+
+Commands, run from the repository:
+
+```
+python3 tools/player_activity/aggregate.py --group <group.json> --db <root>/player-activity.sqlite
+python3 tools/player_activity/aggregate.py --db <root>/player-activity.sqlite --report
+python3 tools/player_activity/aggregate.py --db <root>/player-activity.sqlite --report --json
+python3 tools/player_activity/aggregate.py --db <root>/player-activity.sqlite --forget <account>
+```
+
+The report shows active players for 1, 7 and 30 days, new players this week,
+session count and median length, playtime per region, deaths by cause (all and
+in the first session hour), travel between lands, refused trips, lag by player
+count, peak players by hour, day 1 and day 7 retention, and accounts that went
+quiet. `--forget` deletes one account's rows, removes it as a killer from other
+rows, and skips its lines in files not yet read.
