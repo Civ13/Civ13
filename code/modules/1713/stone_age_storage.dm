@@ -33,6 +33,11 @@
 	var/list/hold_only = null // item types it takes, null for anything that fits
 	var/tmp/obj/item/weapon/storage/internal/storage
 
+// The one lock hook: the shared lock system (door locks thread) fills this in.
+// Opening the window, putting in and Dump Out all ask it first.
+/obj/structure/storage_container/proc/storage_access_allowed(mob/user)
+	return TRUE
+
 /obj/structure/storage_container/persistence_runtime_var(key)
 	return key == "storage" || ..()
 
@@ -93,6 +98,8 @@
 /obj/structure/storage_container/attack_hand(mob/user)
 	if (!ishuman(user) || !user.Adjacent(src))
 		return
+	if (!storage_access_allowed(user))
+		return
 	ensure_storage()
 	storage.open(user)
 
@@ -104,6 +111,8 @@
 /obj/structure/storage_container/attackby(obj/item/W, mob/user)
 	if (is_tool(W, TOOL_HAMMER) || is_tool(W, TOOL_CROWBAR))
 		return ..() // dismantling goes through the usual structure rules
+	if (!storage_access_allowed(user))
+		return
 	ensure_storage()
 	storage.attackby(W, user)
 	update_icon()
@@ -131,6 +140,8 @@
 	return ..()
 
 /obj/structure/storage_container/proc/dump_contents_by(mob/living/human/H)
+	if (!storage_access_allowed(H))
+		return FALSE
 	ensure_storage()
 	if (!storage.contents.len)
 		to_chat(H, SPAN_NOTICE("\The [src] is already empty."))
