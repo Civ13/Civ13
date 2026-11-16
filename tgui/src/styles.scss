@@ -317,3 +317,9 @@ button.rs-row-main { cursor: pointer; }
 .kit-panel .kit-row dd.kit-row-buttons { display: flex; flex: 0 1 auto; flex-wrap: wrap; justify-content: flex-end; gap: 2px; margin-left: auto; } .kit-panel .kit-row-buttons .Button { margin: 0; }
 .kit-actions { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 2px; }
 .kit-table .kit-right .Button { margin: 0 0 0 2px; }
+.kit-chart { margin: 6px 0 0; } .kit-chart svg { display: block; width: 100%; height: auto; background: var(--civ-inset); border: 1px solid var(--civ-line-soft); }
+.kit-chart-axis { stroke: var(--civ-line); } .kit-chart-line { fill: none; stroke: currentColor; stroke-width: 2; vector-effect: non-scaling-stroke; }
+.kit-chart figcaption { display: flex; justify-content: space-between; gap: 8px; margin-top: 4px; font-size: 11px; color: var(--civ-dim); }
+.kit-chart-key { margin-right: 8px; } .kit-chart-key::before { content: ''; display: inline-block; width: 9px; height: 9px; margin-right: 4px; background: currentColor; }
+.kit-chart-good { color: var(--civ-good); } .kit-chart-progress { color: #d98f3d; } .kit-chart-warn { color: var(--civ-warn); } .kit-chart-info { color: #cfe8fb; }
+.kit-chart-ready { color: #e0b85a; } .kit-chart-muted { color: var(--civ-muted); }

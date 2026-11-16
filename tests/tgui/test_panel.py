@@ -36,7 +36,8 @@ class PanelTest(unittest.TestCase):
     def test_helper_fields_are_the_fields_the_screen_reads(self):
         sent = set(re.findall(r'"([a-z]+)"\]? =', PANEL))
         self.assertEqual(sent, {'label', 'action', 'id', 'disabled', 'selected', 'value', 'tone', 'buttons', 'name', 'detail',
-                                'title', 'notes', 'rows', 'items', 'empty', 'sections'})
+                                'title', 'notes', 'rows', 'items', 'empty', 'sections',
+                                'text', 'columns', 'table', 'series', 'points', 'slots', 'top', 'left', 'right', 'chart'})
         block = TYPES.split('export type PanelButton', 1)[1].split('export type PromptData', 1)[0]
         for field in sent:
             self.assertRegex(block, r'\b%s\?:' % field)
@@ -48,7 +49,7 @@ class PanelTest(unittest.TestCase):
         found = list(owners())
         self.assertGreaterEqual(len(found), 3)
         for path, source in found:
-            self.assertTrue(ACTION.findall(source) or 'panel_row(' in source or 'paper_document_container_row(' in source, path.name)
+            self.assertTrue(ACTION.findall(source) or 'panel_row(' in source or 'paper_document_container_row(' in source or 'panel_section(' in source, path.name)
             self.assertEqual(undeclared(source), [], path.name)
             self.assertNotRegex(source, r'show_browse\([^\n]*window=(safe|filingcabinet|tablet_press)', path.name)
 

@@ -163,51 +163,54 @@
 		rows[++rows.len] = list(P.x, P.y, N.pipes.len, running, pumps, state, moved)
 	return rows
 
-/obj/structure/factory_monitor/proc/pipe_network_html()
-	var/list/out = list("<h3>Pipe networks</h3>")
+/obj/structure/factory_monitor/proc/pipe_network_section()
 	if (fluid_networks_dirty)
-		out += "<p>Pipe connections changed. Network information will update on the next fluid step.</p>"
-		return out.Join()
+		return panel_section("Pipe networks", list("Pipe connections changed. Network information will update on the next fluid step."))
 	var/list/rows = pipe_network_rows()
 	if (!rows.len)
-		out += "<p>No connected pipes within [FACTORY_MONITOR_RANGE] tiles.</p>"
-		return out.Join()
-	out += "<table border=1 cellpadding=3><tr><th>Nearby pipe</th><th>Pipes</th><th>Pumps running</th><th>State</th><th>Units last step</th></tr>"
+		return panel_section("Pipe networks", empty = "No connected pipes within [FACTORY_MONITOR_RANGE] tiles.")
+	var/list/lines = list()
 	for (var/list/row in rows)
-		out += "<tr><td>[row[1] - x], [row[2] - y]</td><td>[row[3]]</td><td>[row[4]] of [row[5]]</td><td>[html_encode(row[6])]</td><td>[row[7]]</td></tr>"
-	out += "</table><p>Nearby pipe is east, north of this monitor. Each network appears once. Counts and flow cover the whole connected network, including pipes beyond this monitor's range. Flow is the last fluid step, not units per minute. Use a pipe meter for individual machine details.</p>"
-	return out.Join()
+		lines[++lines.len] = list("[row[1] - x], [row[2] - y]", row[3], "[row[4]] of [row[5]]", panel_cell(row[6], row[6] == "running" ? "good" : "muted"), row[7])
+	return panel_section("Pipe networks",
+		list("Nearby pipe is east, north of this monitor. Each network appears once. Counts and flow cover the whole connected network, including pipes beyond this monitor's range. Flow is the last fluid step, not units per minute. Use a pipe meter for individual machine details."),
+		table = panel_table(list("Nearby pipe", "Pipes", "Pumps running", "State", "Units last step"), lines))
 
-/obj/structure/factory_monitor/proc/report_html()
+// The monitor's window: machines, power and pipe networks as panel sections.
+/obj/structure/factory_monitor/proc/report_sections()
 	var/list/rows = report_rows()
-	var/list/out = list("<h3>[html_encode(name)]</h3>")
+	var/list/sections = list()
 	if (!rows.len)
-		out += "<p>No factory machines within [FACTORY_MONITOR_RANGE] tiles.</p>"
+		sections += list(panel_section("Machines", empty = "No factory machines within [FACTORY_MONITOR_RANGE] tiles."))
 	else
-		out += "<table border=1 cellpadding=3><tr><th>Machine</th><th>Where</th><th>State</th><th>Items/min</th><th>Power (kW)</th><th>Notes</th></tr>"
+		var/list/lines = list()
 		for (var/list/row in rows)
 			var/where = isnull(row[3]) ? "" : "[row[3] - x], [row[4] - y]"
 			var/state = row[5]
-			var/colour = (state == "running") ? "#3a3" : ((state in list("off", "idle", "waiting")) ? "#888" : "#c33")
-			out += "<tr><td>[html_encode(row[1])]</td><td>[where]</td><td><font color='[colour]'>[html_encode(state)]</font></td><td>[row[6]]</td><td>[row[8]]</td><td>[html_encode(row[7])]</td></tr>"
-		out += "</table>"
+			var/tone = (state == "running") ? "good" : ((state in list("off", "idle", "waiting")) ? "muted" : "warn")
+			lines[++lines.len] = list(row[1], where, panel_cell(state, tone), row[6], row[8], row[7])
+		sections += list(panel_section("Machines", list("Where is east, north of this monitor. Rates cover the last two minutes."),
+			table = panel_table(list("Machine", "Where", "State", "Items/min", "Power (kW)", "Notes"), lines)))
 		var/list/power = power_summary(rows)
-		out += "<p>These machines draw [power_text(power[1])].</p>"
+		var/list/power_rows = list(panel_row("These machines draw", power_text(power[1])))
 		var/list/grids = power[2]
 		for (var/list/grid in grids)
 			var/used = grid[1]
 			var/capacity = grid[2]
-			var/colour = (capacity <= 0 || used > capacity) ? "#c33" : (used >= capacity * 0.9 ? "#c90" : "#3a3")
-			out += "<p>Power grid: <font color='[colour]'>[power_text(used)] of [power_text(capacity)] in use</font>.</p>"
-		out += "<p>Where is east, north of this monitor. Rates cover the last two minutes. A grid's use counts everything on it.</p>"
-	out += pipe_network_html()
-	return out.Join()
+			var/tone = (capacity <= 0 || used > capacity) ? "warn" : (used >= capacity * 0.9 ? "progress" : "good")
+			power_rows += list(panel_row("Power grid", "[power_text(used)] of [power_text(capacity)] in use", tone))
+		sections += list(panel_section("Power", list("A grid's use counts everything on it."), power_rows))
+	sections += list(pipe_network_section())
+	return sections
+
+/obj/structure/factory_monitor/ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = TRUE)
+	open_panel(user, name, 680, 560, report_sections(), ui = ui, force_open = force_open)
 
 /obj/structure/factory_monitor/attack_hand(mob/user)
 	if (!istype(user) || !user.Adjacent(src))
 		return
 	icon_state = "terminal_on"
-	show_browse(user, report_html(), "window=factory_monitor;size=620x520")
+	ui_interact(user)
 	spawn(50)
 		if (!QDELETED(src))
 			icon_state = "terminal"

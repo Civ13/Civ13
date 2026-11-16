@@ -22,8 +22,8 @@ const sizes = {
   'vending_machine.tmpl': [540, 600], 'vending_machine2.tmpl': [540, 600], 'vending_machine_gulag.tmpl': [540, 600], 'vending_machine_taotd.tmpl': [540, 600],
   'warehouse_book.tmpl': [400, 500],
 } satisfies Record<string, [number, number]>;
-function add<T extends keyof typeof sizes>(name: string, template: T, data: T extends keyof Typed ? Typed[T] : Data, title?: string) {
-  const [width, height] = sizes[template];
+function add<T extends keyof typeof sizes>(name: string, template: T, data: T extends keyof Typed ? Typed[T] : Data, title?: string, size?: [number, number]) {
+  const [width, height] = size ?? sizes[template];
   screens.push({ name, template, title: title ?? name.replace(/-/g, ' ').replace(/^./, c => c.toUpperCase()), width, height, data });
 }
 const node = (id: string, name: string, status_text: string, extra: Data = {}) => ({ id, name, status_text, cost_ticks: 120, progress_percent: 0, era_tier: 1, min_bench_tier: 1, mode_text: 'Study', ...extra });
@@ -57,6 +57,13 @@ add('panel', 'panel.tmpl', { sections: [
   { title: 'Lock', rows: [{ label: 'Dial', value: 35, buttons: [{ label: '-', action: 'decrement' }, { label: '+', action: 'increment' }] }, { label: 'Door', value: 'Open', tone: 'good' }], buttons: [{ label: 'Close the safe', action: 'open' }] },
   { title: 'Contents', items: [{ name: 'Ledger', detail: 'A bound book of accounts.', buttons: [{ label: 'Read', action: 'read', id: 'a' }, { label: 'Take', action: 'retrieve', id: 'a' }] }, { name: 'Silver coins', buttons: [{ label: 'Take', action: 'retrieve', id: 'b' }] }], empty: 'It is empty.' },
 ] }, 'Iron safe');
+add('panel-readings', 'panel.tmpl', { sections: [
+  { title: 'Machines', notes: ['Where is east, north of this monitor.'], table: { columns: ['Machine', 'Where', 'State', 'Items/min', 'Notes'], rows: [
+    ['feeder arm', '2, 0', { text: 'running', tone: 'good' }, 12, 'only iron ingots'], ['fabricator', '3, 0', { text: 'starved', tone: 'warn' }, 0, 'Nails, 40%'], ['belts', '', { text: 'idle', tone: 'muted' }, 0, '14 belts, 0 carrying items']] } },
+  { title: 'Power', rows: [{ label: 'Supply', value: '100 kW' }, { label: 'Demand', value: '62 kW', tone: 'good' }],
+    chart: { slots: 60, top: '100 kW', left: 'one minute ago', right: 'now', series: [
+      { label: 'supply', tone: 'good', points: Array.from({ length: 60 }, () => 100) }, { label: 'demand', tone: 'progress', points: Array.from({ length: 60 }, (_, i) => 40 + (i * 7) % 30) }] } },
+] }, 'Factory monitor', [680, 560]);
 add('prompt', 'prompt.tmpl', { message: 'The tide is coming in.', choices: ['Continue'] });
 add('vending', 'vending_machine2.tmpl', { company: 'Dawnward Trading', moneyin: 12, currency_name: 'silver', currency_short: 'sp', mode: 0, products: [{ key: 1, name: 'Bread loaf', price: 2, amount: 8 }, { key: 2, name: 'Iron hatchet', price: 14, amount: 1 }, { key: 3, name: 'Linen shirt', price: 6, amount: 0 }] });
 add('recruitment', 'recruitment_station.tmpl', {

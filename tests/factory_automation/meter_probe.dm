@@ -100,7 +100,7 @@ var/pipe_runtime_error = FALSE
 	pipe_check(rows.len == 2, "monitor deduplicates pipes and excludes distant and other-level networks")
 	var/list/row = monitor_network_row(rows, 5)
 	pipe_check(row && row[4] == 0 && row[5] == 1 && row[6] == "idle" && row[7] == 0, "monitor counts idle pumps and flow on the whole network")
-	var/html = monitor.report_html()
+	var/html = json_encode(monitor.report_sections())
 	pipe_check(findtext(html, "No factory machines") && findtext(html, "Units last step") && findtext(html, "Pumps running"), "a pipes-only monitor still renders its network table")
 	pipe_check(meter_has(lines, "5 pipes, 0 of 1 pumps running") && meter_has(lines, "fluid pump: off"), "a meter counts pipes and pumps and shows a stopped pump")
 	pipe_check(M.icon_state == "meter", "the dial is dark while nothing moves")
@@ -118,8 +118,8 @@ var/pipe_runtime_error = FALSE
 	var/rotation_before = N.rotation
 	var/serial_before = fluid_step_serial
 	var/power_before = factory_power_draw(P)
-	monitor.report_html()
-	monitor.report_html()
+	monitor.report_sections()
+	monitor.report_sections()
 	pipe_check(T.reagents.total_volume == volume_before && N.rotation == rotation_before && fluid_step_serial == serial_before && factory_power_draw(P) == power_before, "reading the monitor does not pump, advance processing or reserve power")
 	pipe_check(M.icon_state == "meter_on", "the dial lights while liquid moves")
 	pipe_check(meter_has(lines, "holding tank: 180/1000 Gasoline") && meter_has(lines, "only Gasoline") && meter_has(lines, "Engine fuel - 9:1 blend, filling, 20/200"), "tank fill, filters and vessel recipe and stage are listed")
@@ -136,7 +136,7 @@ var/pipe_runtime_error = FALSE
 	var/obj/structure/fluid_pipe/middle = pipes[3]
 	qdel(middle)
 	rows = monitor.pipe_network_rows()
-	pipe_check(!rows.len && findtext(monitor.report_html(), "Pipe connections changed"), "dirty topology is withheld without rebuilding it during a read")
+	pipe_check(!rows.len && findtext(json_encode(monitor.report_sections()), "Pipe connections changed"), "dirty topology is withheld without rebuilding it during a read")
 	factory_fluids_step()
 	rows = monitor.pipe_network_rows()
 	pipe_check(rows.len == 3, "monitor picks up both sides of a pipe split after the next fluid step")

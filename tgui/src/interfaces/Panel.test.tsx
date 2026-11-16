@@ -24,6 +24,24 @@ describe('Panel', () => {
     fireEvent.click(screen.getByText('+')); fireEvent.click(screen.getByText('Open')); fireEvent.click(screen.getByText('Take')); fireEvent.click(screen.getByText('Burn'));
     expect(act.mock.calls).toEqual([['increment', { value: 1 }], ['open', { value: 1 }], ['retrieve', { value: '[0x2000001]' }]]);
   });
+  it('shows a table with toned cells and a chart with one line per series', () => {
+    const view = render(<Panel template="panel.tmpl" act={vi.fn()} interactive data={{ sections: [
+      { title: 'Machines', empty: 'None.', table: { columns: ['Machine', 'State', 'Rate'], rows: [['Arm &amp; belt', { text: 'running', tone: 'good' }, 12], ['Press', { text: 'odd', tone: 'nonsense' }, 0]] } },
+      { title: 'Last minute', chart: { slots: 60, top: '100 kW', left: 'one minute ago', right: 'now', series: [{ label: 'supply', tone: 'good', points: [100, 100, 100] }, { label: 'demand', tone: 'progress', points: [10, 20] }, { label: 'idle', points: [] }] } },
+    ] }} />);
+    const table = screen.getByRole('table', { name: 'Machines' });
+    expect(table.textContent).toContain('MachineStateRateArm & beltrunning12Pressodd0');
+    expect(screen.getByText('running').className).toContain('kit-pill-good');
+    expect(screen.getByText('odd').className ?? '').not.toContain('kit-pill');
+    expect(screen.queryByText('None.')).toBeNull();
+    const lines = view.container.querySelectorAll('polyline');
+    expect(lines.length).toBe(2);
+    // The newest sample sits on the right edge and the highest value at the top of the plot.
+    expect(lines[0].getAttribute('points')?.split(' ').pop()).toBe('360.0,20.0');
+    expect(lines[1].getAttribute('class')).toContain('kit-chart-progress');
+    expect(screen.getByRole('img', { name: 'supply and demand and idle' })).toBeTruthy();
+    expect(view.container.textContent).toContain('one minute ago');
+  });
   it('is inert when read-only', () => {
     const act = vi.fn();
     render(<Panel template="panel.tmpl" data={data} act={act} interactive={false} />);

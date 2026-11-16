@@ -213,6 +213,20 @@ var/screens_runtime_error = FALSE
 	rows = agent_screen_rows(H)
 	screens_check(memo.loc != board && findtext(rows[1]["data"], "Nothing is pinned here."), "removing a notice unpins it and the list refreshes")
 	GLOB.nanomanager.close_user_uis(H, board)
+	// Read-only report windows: a table section and a chart section reach the panel.
+	var/obj/structure/factory_monitor/monitor = new(locate(9, 9, 1))
+	monitor.attack_hand(H)
+	rows = agent_screen_rows(H)
+	screens_check(rows.len == 1 && findtext(rows[1]["data"], "No factory machines") && findtext(rows[1]["data"], "Pipe networks"), "a factory monitor shows its report window")
+	GLOB.nanomanager.close_user_uis(H, monitor)
+	var/obj/structure/power_meter/gauge = new(locate(9, 9, 1))
+	gauge.attack_hand(H)
+	rows = agent_screen_rows(H)
+	screens_check(rows.len == 1 && findtext(rows[1]["data"], "Not connected") && (H in gauge.readers), "a loose power meter says it is not connected")
+	GLOB.nanomanager.close_user_uis(H, gauge)
+	gauge.supply_log += 1
+	gauge.sample()
+	screens_check(!(H in gauge.readers) && !agent_open_screens(H).len, "a reader who closed the meter window is dropped and it is not reopened")
 	var/mob/living/human/screens_probe/P = new(locate(9, 9, 1))
 	P.species = new /datum/species/human
 	P.stat = CONSCIOUS
