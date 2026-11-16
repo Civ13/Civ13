@@ -219,6 +219,46 @@ static class LocalHostingTests {
         var magic = MagicWhitelist.Parse(0, "noise\n{\"ok\": true, \"file\": \"D:/x/gaia/SQL/magic_whitelist.txt\", \"keys\": [\"ann\", \"<b>\", \"cid\"], \"added\": [\"cid\"], \"removed\": []}");
         Require(magic.Ok && magic.Keys.SequenceEqual(["ann", "cid"]) && magic.Added.SequenceEqual(["cid"]) && magic.Removed.Count == 0 && magic.File!.EndsWith("magic_whitelist.txt"), "magic whitelist parse");
         Require(!MagicWhitelist.Parse(1, "{\"ok\": false, \"refused\": \"give up to 20 player keys\"}").Ok && !MagicWhitelist.Parse(1, "").Ok, "magic whitelist refusal");
+        // Front door and ports dialog (GroupPorts, shard_group.py ports / set-gate / set-port).
+        Require(GroupPorts.Step(host.Control!, "ports").ArgumentList.SequenceEqual(new[] { "-I", "-B", shard, "--config", groupConfig, "ports" }), "ports argv");
+        Require(GroupPorts.Step(host.Control!, "set-gate", "gaia").ArgumentList.SequenceEqual(
+            new[] { "-I", "-B", shard, "--config", groupConfig, "set-gate", "--region", "gaia" }), "set-gate plan argv never applies");
+        Require(GroupPorts.Step(host.Control!, "set-gate", "gaia", null, true, @"D:\bot\profile.json").ArgumentList.SequenceEqual(
+            new[] { "-I", "-B", shard, "--config", groupConfig, "set-gate", "--region", "gaia", "--bot-profile", @"D:\bot\profile.json", "--apply" }), "set-gate apply argv");
+        Require(GroupPorts.Step(host.Control!, "set-port", "moon", 1721, true).ArgumentList.SequenceEqual(
+            new[] { "-I", "-B", shard, "--config", groupConfig, "set-port", "--region", "moon", "--port", "1721", "--apply" }), "set-port argv");
+        foreach (var unsafeStep in new Action[] { () => GroupPorts.Step(host.Control!, "setup"), () => GroupPorts.Step(host.Control!, "set-gate"),
+                () => GroupPorts.Step(host.Control!, "set-gate", "--apply"), () => GroupPorts.Step(host.Control!, "ports", "gaia"),
+                () => GroupPorts.Step(host.Control!, "ports", null, null, true), () => GroupPorts.Step(host.Control!, "set-port", "moon"),
+                () => GroupPorts.Step(host.Control!, "set-port", "moon", 80), () => GroupPorts.Step(host.Control!, "set-gate", "gaia", 1721),
+                () => GroupPorts.Step(host.Control!, "set-gate", "gaia", null, true, "--config") })
+            try { unsafeStep(); throw new Exception("unsafe ports step accepted"); } catch (ArgumentException) { assertions++; }
+        var doors = GroupPorts.ParseReport(0, "noise\n{\"ok\": true, \"gate\": \"north\", \"public_host\": \"play.example\", \"public_ports\": [1713, 1714, 1717], \"problems\": [], \"host_service\": \"reloads\", " +
+            "\"ports\": [{\"port\": 1714, \"use\": \"game\", \"region\": \"north\", \"name\": \"North\\u0007 America\", \"public\": true, \"gate\": true, \"listening\": true}, " +
+            "{\"port\": 1754, \"use\": \"standby (handover)\", \"region\": \"gaia\", \"name\": \"Gaia\", \"public\": false, \"listening\": null}, {\"port\": 99999, \"use\": \"game\"}, " +
+            "{\"port\": 1717, \"use\": \"relay\", \"region\": null, \"public\": true, \"listening\": false}], " +
+            "\"change\": {\"kind\": \"set-gate\", \"phase\": \"failed\", \"error\": \"north did not stop: the save failed; nothing was changed\", \"changed\": false, \"running\": false, " +
+            "\"log\": [\"gaia: stopped\"], \"restart_needed\": null, \"bot\": null}}");
+        Require(doors.Ok && doors.Gate == "north" && doors.PublicPorts.SequenceEqual([1713, 1714, 1717]) && doors.Ports.Count == 3 && doors.HostService == "reloads"
+            && doors.Ports[0] is { Port: 1714, Gate: true, Public: true, Listening: true, Name: "North America" } && doors.Ports[1].Listening == null && doors.Ports[2].Region == null, "ports report parse");
+        Require(GroupPorts.Summary(doors) == "Front door: North America on port 1714. Players and the Discord Play button join here. Ports to forward on the router: 1713, 1714, 1717.", "front door summary: " + GroupPorts.Summary(doors));
+        Require(GroupPorts.Finished(doors.Change) && GroupPorts.Describe(doors.Change!).StartsWith("Failed. north did not stop: the save failed; nothing was changed") && GroupPorts.Describe(doors.Change!).Contains("Nothing was changed.")
+            && GroupPorts.Describe(doors.Change!).Contains("  - gaia: stopped"), "failed change text: " + GroupPorts.Describe(doors.Change!));
+        Require(!GroupPorts.ParseReport(1, "{\"ok\": false, \"error\": \"config: no such file\"}").Ok && !GroupPorts.ParseReport(1, "").Ok, "ports refusal");
+        var running = GroupPorts.ParseReport(0, "{\"ok\": true, \"gate\": \"gaia\", \"ports\": [], \"change\": {\"kind\": \"set-gate\", \"phase\": \"host service\", \"running\": true, \"changed\": true, \"log\": []}}").Change!;
+        Require(!GroupPorts.Finished(running) && GroupPorts.Describe(running) == "Waiting for the host service to load the new ports...", "running change text");
+        var finished = GroupPorts.ParseReport(0, "{\"ok\": true, \"ports\": [], \"change\": {\"kind\": \"set-gate\", \"phase\": \"done\", \"running\": true, \"changed\": true, \"log\": [], \"restart_needed\": [\"moon\"], \"bot\": {\"restart\": true}}}").Change!;
+        Require(GroupPorts.Finished(finished) && finished.BotRestart && GroupPorts.Describe(finished).Contains("learn the new ports at their next restart: moon."), "finished change text");
+        var doorPlan = GroupPorts.ParsePlan(0, "{\"ok\": true, \"applied\": false, \"plan\": {\"kind\": \"set-gate\", \"already\": false, \"steps\": [\"Gaia: port 1744 -> 1714.\", \"Gaia becomes the front door on port 1714; North America moves behind the relay.\"], " +
+            "\"problems\": [], \"warnings\": [], \"public_ports\": [1713, 1714, 1717], \"bot\": {\"profile\": \"x\", \"servers\": {}, \"restart\": true}}}");
+        Require(doorPlan.Ok && !doorPlan.Accepted && doorPlan.Steps.Count == 2 && doorPlan.BotRestart && GroupPorts.Describe(doorPlan).StartsWith("What will happen:")
+            && GroupPorts.Describe(doorPlan).EndsWith("Nothing has changed yet."), "plan text: " + GroupPorts.Describe(doorPlan));
+        var blocked = GroupPorts.ParsePlan(0, "{\"ok\": true, \"applied\": false, \"plan\": {\"steps\": [\"Moon: port 1719 -> 1714.\"], \"problems\": [\"region moon needs a unique port from 1024 to 65535\"], \"warnings\": []}}");
+        Require(blocked.Ok && blocked.Problems.Count == 1 && GroupPorts.Describe(blocked).StartsWith("This cannot run yet:") && !GroupPorts.Describe(blocked).Contains("Nothing has changed yet"), "blocked plan text");
+        Require(GroupPorts.ParsePlan(0, "{\"ok\": true, \"accepted\": true, \"operation\": \"ab\", \"plan\": {\"steps\": [], \"problems\": []}}").Accepted, "accepted plan");
+        var refusedPlan = GroupPorts.ParsePlan(1, "{\"ok\": false, \"refused\": \"a TUTORIAL region cannot be the front door\"}");
+        Require(!refusedPlan.Ok && GroupPorts.Describe(refusedPlan) == "Cannot do that: a TUTORIAL region cannot be the front door", "refused plan text");
+        Require(!GroupPorts.ParsePlan(0, "{\"ok\": true}").Ok, "an answer without a plan (an older checkout) is not a plan");
         // Player activity window (PlayerActivity, shard_group.py activity): a read-only report for the whole group.
         Require(PlayerActivity.Step(host.Control!).ArgumentList.SequenceEqual(
             new[] { "-I", "-B", shard, "--config", groupConfig, "activity" }), "player activity argv");

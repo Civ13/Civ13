@@ -33,7 +33,7 @@ public static class MagicWhitelist {
 
     // Player keys typed into one box, separated by commas or new lines (a BYOND key may hold spaces).
     public static List<string> SplitKeys(string text) =>
-        text.Split([',', '\n', '\r'], StringSplitOptions.RemoveEmptyEntries).Select(key => key.Trim()).Where(key => key.Length > 0).Distinct().ToList();
+        text.Split(new[] { ',', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries).Select(key => key.Trim()).Where(key => key.Length > 0).Distinct().ToList();
 
     // shard_group.py magic-whitelist: {"ok", "file", "keys": [ckey], "added": [ckey], "removed": [ckey]}
     public static Answer Parse(int exit, string output) {

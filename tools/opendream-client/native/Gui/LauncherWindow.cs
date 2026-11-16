@@ -284,6 +284,13 @@ internal sealed partial class LauncherWindow : Form {
                 ("Players' warning…", () => { ShowShutdownWarning(); return Task.CompletedTask; }, null),
                 ("Update when empty…", () => { ShowUpdateWhenEmpty(); return Task.CompletedTask; }, null),
                 ("Start region…", () => { ShowStartRegion(); return Task.CompletedTask; }, null),
+                ("Front door and ports…", () => {
+                    // Which region players join first, and every port of the group (GroupPorts, shard_group.py set-gate / ports).
+                    if (host?.Control is not { Group: not null } control) return Task.CompletedTask;
+                    using var dialog = new FrontDoorDialog(control, host?.Bot?.Profile, HostLine, host?.Bot != null ? RestartBotForFrontDoor : null);
+                    dialog.ShowDialog(this);
+                    return Task.CompletedTask;
+                }, null),
                 ("Hub names…", () => { ShowHubNames(); return Task.CompletedTask; }, null),
                 ("Magic whitelist…", () => {
                     // One shared file for the whole group (MagicWhitelist, shard_group.py magic-whitelist): no host gate.
