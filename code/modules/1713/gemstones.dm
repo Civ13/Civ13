@@ -7,6 +7,7 @@
 #define GEM_CUT_TIME 80
 #define GEM_CUT_FLAW_CHANCE 15
 #define GEM_SET_TIME 50
+#define GEM_PRY_TIME 40
 
 // Weights for the stone found in a gem pocket. Rough diamonds keep their own
 // roll in the ore table (docs/mining-drop-balance.md).
@@ -212,13 +213,17 @@ var/global/list/gem_pocket_weights = list(
 /obj/item/clothing
 	var/set_gem = null // singular name of the cut stone set into it, if any
 	var/set_gem_colour = null // its colour, for items that show the stone
+	var/set_gem_type = null // cut stone path, returned when the stone is pried out
 
 /obj/item/clothing/attackby(obj/item/I, mob/user)
 	if (istype(I, /obj/item/stack/gemstone) && ishuman(user))
 		var/mob/living/human/H = user
-		if (istype(H.get_inactive_hand(), /obj/item/weapon/chisel))
+		if (is_tool(H.get_inactive_hand(), TOOL_CHISEL))
 			set_gemstone(I, H)
 			return
+	if (set_gem && is_tool(I, TOOL_CHISEL) && ishuman(user))
+		pry_gemstone(I, user)
+		return
 	..()
 
 /obj/item/clothing/proc/set_gemstone(obj/item/stack/gemstone/G, mob/living/human/H)
@@ -230,18 +235,59 @@ var/global/list/gem_pocket_weights = list(
 	to_chat(H, SPAN_NOTICE("You start setting \a [G.singular_name] into \the [src]..."))
 	if (!do_after(H, GEM_SET_TIME, src))
 		return FALSE
-	if (QDELETED(src) || QDELETED(G) || G.amount < 1 || G.loc != H || set_gem || !istype(H.get_inactive_hand(), /obj/item/weapon/chisel))
+	if (QDELETED(src) || QDELETED(G) || G.amount < 1 || G.loc != H || set_gem || !is_tool(H.get_inactive_hand(), TOOL_CHISEL))
 		return FALSE
 	var/stone_name = G.singular_name
 	var/stone_value = G.value
 	var/stone_colour = G.gem_colour
+	var/stone_type = G.type
 	if (!G.use(1))
 		return FALSE
 	set_gem = stone_name
 	set_gem_colour = stone_colour
+	set_gem_type = stone_type
 	value += stone_value
 	update_icon()
 	to_chat(H, SPAN_NOTICE("You set \a [stone_name] into \the [src]."))
+	return TRUE
+
+// The cut stone path for the set stone: the stored path, or the cut stone
+// with the same singular name for items set before set_gem_type existed.
+/obj/item/clothing/proc/set_gemstone_type()
+	if (ispath(set_gem_type, /obj/item/stack/gemstone))
+		return set_gem_type
+	for (var/path in subtypesof(/obj/item/stack/gemstone))
+		var/obj/item/stack/gemstone/G = path
+		if (initial(G.singular_name) == set_gem)
+			return path
+	return null
+
+// Chisel the set stone back out: the same cut stone comes back whole, and the
+// item loses the stone's value and its tinted setting.
+/obj/item/clothing/proc/pry_gemstone(obj/item/W, mob/living/human/H)
+	if (!set_gem)
+		return FALSE
+	if (!H.may_do_after)
+		return FALSE
+	var/stone_name = set_gem
+	H.visible_message(SPAN_NOTICE("[H] starts prying \a [stone_name] out of \the [src]."), SPAN_NOTICE("You start prying \a [stone_name] out of \the [src]..."))
+	if (!do_after(H, tool_work_time(W, GEM_PRY_TIME), src))
+		return FALSE
+	if (QDELETED(src) || set_gem != stone_name || W.loc != H || H.get_active_hand() != W)
+		return FALSE
+	var/stone_type = set_gemstone_type()
+	set_gem = null
+	set_gem_colour = null
+	set_gem_type = null
+	if (!stone_type)
+		update_icon()
+		to_chat(H, SPAN_WARNING("The setting comes loose, but the stone crumbles away."))
+		return TRUE
+	var/obj/item/stack/gemstone/G = new stone_type(get_turf(H))
+	value = max(0, value - G.value)
+	update_icon()
+	H.put_in_any_hand_if_possible(G)
+	to_chat(H, SPAN_NOTICE("You pry \a [G.singular_name] out of \the [src]."))
 	return TRUE
 
 /obj/item/clothing/examine(mob/user)
@@ -253,3 +299,4 @@ var/global/list/gem_pocket_weights = list(
 #undef GEM_CUT_TIME
 #undef GEM_CUT_FLAW_CHANCE
 #undef GEM_SET_TIME
+#undef GEM_PRY_TIME

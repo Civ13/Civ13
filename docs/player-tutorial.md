@@ -33,7 +33,7 @@ regions sharing that file. States: 0 unset, 1 active, 2 finished or stopped,
   notice on their next spawn instead, and move to 3.
 - **Game Menu** (Esc), **Tutorial** (also the OOC verb **Tutorial**): show the
   current step, stop, start again, or **Reset tutorial progress**.
-- Character setup, **Settings** page: the tutorial status and **Reset progress**.
+- Character Setup, **Settings** tab: the tutorial status and **Reset progress**.
 
 The practice body from the lobby Practice Room ([practice-rooms.md](practice-rooms.md))
 never runs the tutorial. The tutorial only watches the character; it never

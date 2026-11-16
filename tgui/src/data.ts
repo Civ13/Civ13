@@ -42,3 +42,25 @@ export type PanelCell = string | number | { text?: string; tone?: string };
 export type PanelData = { notes?: string[]; sections?: PanelSection[] };
 export type PromptData = { message?: string; choices?: string[] };
 export type KnownLanguagesData = { current_default?: string; languages?: { name?: string; prefix?: string; description?: string; is_default?: Flag }[] };
+// Character setup: appearance, traits and personal settings.
+export type SetupTrait = { name?: string; cost?: number; desc?: string; note?: string; block?: string; taken?: Flag; conflicts?: string[] };
+export type SetupColor = { name?: string; hex?: string };
+export type CharacterSetupData = {
+  // tab: the tab a newly opened window starts on (character, traits or settings).
+  tab?: string; locked?: Flag; notice?: string | null;
+  character?: {
+    name?: string; name_max?: number; random_name?: Flag; random_body?: Flag; summary?: string; gender?: string;
+    age?: number; age_min?: number; age_max?: number; blood?: string; blood_types?: string[]; skin_tone?: number;
+    hair_style?: string; hair_styles?: string[]; facial_style?: string; facial_styles?: string[];
+    hair_color?: string; facial_color?: string; hair_colors?: SetupColor[]; eye_color?: string; eye_colors?: SetupColor[];
+    previews?: { label?: string; front?: string; east?: string; back?: string; west?: string }[];
+  };
+  traits?: {
+    spent?: number; earned?: number; chosen?: string[]; invalid?: string[]; error?: string | null;
+    categories?: { id?: string; title?: string; note?: string; pick_one?: Flag; traits?: SetupTrait[] }[];
+  };
+  settings?: {
+    ui_style?: string; ui_styles?: string[]; cursor?: string; cursors?: string[]; client_fps?: number; fps_choices?: number[]; tutorial?: string;
+    toggles?: { key?: string; label?: string; on?: Flag; on_label?: string; off_label?: string }[];
+  };
+};

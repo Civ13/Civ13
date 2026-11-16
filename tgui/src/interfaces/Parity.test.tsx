@@ -107,6 +107,7 @@ describe('standard screen parity', () => {
       'book_reader.tmpl',
       'character_flavor.tmpl',
       'character_notes.tmpl',
+      'character_setup.tmpl',
       'chem_disp.tmpl',
       'crafting_atlas.tmpl',
       'crafting_window.tmpl',

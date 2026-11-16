@@ -171,6 +171,7 @@ for p,s in files.items():
                 ingredients+=[(stack,amount) for stack,amount in need['inputs'].items()]
                 if need['tools']:tool_notes+=' Tools held, worn or at your feet: '+' and '.join(need['tools'])+'; reused.'
                 if need['inputs']:tool_notes+=' Second materials held or at your feet; paid when the build completes.'
+                if need.get('water'):tool_notes+=f" Takes {need['water']} units of water from an open container held or at your feet, or none beside running water."
             add(n,'Material / '+Path(p).stem.replace('material_recipes_',''),ingredients,[(b,1)],p,ln,f'Legacy research I/M/M: {ind}/{mil}/{med}; maximum era ordinal {age}; time {t} deciseconds; category {category}; one per turf {one}; floor {floor}; supplied material {mat}. Research-node and map gates also apply.'+tool_notes,row)
 
 def splitargs(s):

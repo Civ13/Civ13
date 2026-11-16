@@ -15,6 +15,9 @@ Code: `code/modules/1713/gemstones.dm`, `code/modules/1713/belt_pouches.dm`.
 - Decoration: hold a cut stone with a chisel in the other hand and use it on
   any piece of clothing (rings, crowns, belts, garments). One stone per item;
   it adds the stone's value and an examine line.
+- Removal: use a chisel on a decorated item (4 s, scaled by the chisel's
+  metal). The cut stone comes back whole, and the item loses its value and
+  pendant tint, so the stone can be reset elsewhere.
 
 ## Belt pouches
 
