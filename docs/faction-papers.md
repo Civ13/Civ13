@@ -28,6 +28,11 @@ Papers name their holder and are numbered in the faction's register (up to 200 i
 count only for the account they were issued to, so stolen or copied papers open nothing. The power
 can revoke any papers; examining papers that have run out or been revoked says so.
 
+## Changes of name
+
+The papers power also records a change of name for a member standing beside them (or for
+themselves), with a blank sheet; see `docs/name-changes.md`. The census lists the changes on record.
+
 ## Border doors
 
 Standing beside one or more of the faction's doors, the papers power sets who they open for:

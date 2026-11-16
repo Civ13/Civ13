@@ -279,6 +279,11 @@ var/global/list/faction_paper_kinds = list("citizenship" = "citizenship papers",
 	var/list/require = permits_required(faction)
 	if (require.len)
 		lines += "Required on its registered land: [english_list(require)]."
+	var/list/renames = papers_name_change_lines(faction)
+	if (renames.len)
+		lines += "Changes of name on record:"
+		for (var/line in renames)
+			lines += "- [line]"
 	return lines
 
 /obj/map_metadata/proc/papers_lines(faction)
@@ -304,7 +309,7 @@ var/global/list/faction_paper_kinds = list("citizenship" = "citizenship papers",
 	var/clerk = map.faction_power(src, faction, "papers")
 	var/list/choices = list("Read the census", "Read the papers in force")
 	if (clerk)
-		choices += list("Issue citizenship papers", "Issue a travel pass", "Issue a building permit", "Issue a trading licence", "Revoke papers", "Set the border doors beside me", "Require permits on our land")
+		choices += list("Issue citizenship papers", "Issue a travel pass", "Issue a building permit", "Issue a trading licence", "Revoke papers", "Record a change of name", "Set the border doors beside me", "Require permits on our land")
 	choices += "Cancel"
 	var/choice = WWinput(src, "Papers of [faction]", "Faction papers", "Read the census", choices)
 	if (!choice || choice == "Cancel" || !(choice in choices) || civilization != faction || stat != CONSCIOUS)
@@ -326,6 +331,8 @@ var/global/list/faction_paper_kinds = list("citizenship" = "citizenship papers",
 			papers_issue_to(faction, "trade")
 		if ("Require permits on our land")
 			permits_require_menu(faction)
+		if ("Record a change of name")
+			papers_record_name_change(faction)
 		if ("Revoke papers")
 			map.papers_prune(faction)
 			var/list/R = map.papers_record(faction)

@@ -246,6 +246,7 @@ SUITES = {
         'paths': ('tests/wood_ash_collection/', 'code/game/objects/items/misc.dm'),
         'shared_paths': ('tests/save_movement/source_adapter.py',)},
     'edge_climbing': {'files': ('tests/edge_climbing/test_sources.py',), 'paths': ('tests/edge_climbing/', 'code/modules/multiz/edge_climbing.dm'), 'shared_paths': ('code/modules/multiz/pit_climbing.dm', 'code/modules/multiz/open_space.dm', 'code/game/objects/building_levels.dm', 'code/game/turfs/turf.dm', 'code/_onclick/other_mobs.dm', 'code/game/objects/structures/tree_climbing.dm')},
+    'open_air_view': {'files': ('tests/open_air_view/test_sources.py',), 'paths': ('tests/open_air_view/', 'code/modules/multiz/open_air_view.dm', 'code/processes/open_air_view.dm'), 'shared_paths': ('code/game/objects/building_levels.dm', 'code/modules/multiz/building_lighting.dm')},
     'burial': {'files': ('tests/burial/test_burial.py',), 'paths': ('tests/burial/', 'code/modules/1713/burial.dm', 'code/game/objects/structures/religious.dm'), 'shared_paths': ('code/game/mob/living/carbon/human/human_life.dm', 'code/game/mob/living/carbon/resist.dm')},
     'underground_excavation': {'files': ('tests/underground_excavation/test_underground_excavation.py',), 'paths': ('tests/underground_excavation/', 'code/modules/1713/underground_excavation.dm'), 'shared_paths': ('code/modules/multiz/structures.dm', 'code/modules/multiz/hole_ladder.dm', 'code/modules/1713/flood_cellars.dm')},
     'pit_climbing': {'files': ('tests/pit_climbing/test_pit_climbing.py',), 'paths': ('tests/pit_climbing/', 'code/modules/multiz/pit_climbing.dm', 'code/modules/multiz/hole_ladder.dm'), 'shared_paths': ('code/modules/multiz/dug_underground.dm', 'code/modules/1713/tools.dm', 'code/game/turfs/floor_attackby.dm')},
@@ -1318,6 +1319,13 @@ SUITES = {
         'paths': ('tests/faction_treaties/',), 'shared_paths': (
             'code/game/mob/groups/faction_treaties.dm', 'code/game/mob/groups/faction_offices.dm',
             'code/game/mob/groups/faction_roster.dm', 'code/game/mob/groups/factions.dm')},
+    # Taking a new name (the native probe is tests/name_change/probe.dm).
+    'name_change': {'files': ('tests/name_change/test_source.py',),
+        'paths': ('tests/name_change/',), 'shared_paths': (
+            'code/game/mob/living/carbon/human/name_change.dm', 'code/game/mob/groups/faction_papers.dm',
+            'code/game/mob/living/carbon/human/nomads_adoption.dm', 'code/modules/admin/admin.dm',
+            'code/game/objects/structures/key_doors/fitted_locks.dm', 'code/modules/1713/stone_age_traps.dm',
+            'code/modules/craft/craft_register.dm', 'code/modules/persistence/region_travel.dm')},
     # Census, citizenship papers, passes and border doors (the native probe is tests/faction_papers/probe.dm).
     'faction_papers': {'files': ('tests/faction_papers/test_source.py',),
         'paths': ('tests/faction_papers/',), 'shared_paths': (

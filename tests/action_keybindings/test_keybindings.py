@@ -24,7 +24,7 @@ def strings(text):
 def catalog(source):
     source = source.split('/proc/action_keybinding_yielding()')[0]
     rows = re.findall(r'^\t\t"(\w+)" = list\("([^"]+)", "([^"]+)", list\(([^)]*)\), list\(([^)]*)\)\)', source, re.M)
-    if len(rows) != 19:
+    if len(rows) != 21:
         raise AssertionError('Catalog grammar or action count changed; review skin capacity')
     return {key: (label, command, strings(normal), strings(hotkey)) for key, label, command, normal, hotkey in rows}
 
@@ -102,7 +102,7 @@ class Keybindings(unittest.TestCase):
         entries = catalog(read(SOURCE))
         for mode, rows in skin(read('interface/skin.dmf')).items():
             managed = {row['id']: row for row in rows if row['id'].startswith('action_')}
-            self.assertEqual(len(managed), 38)
+            self.assertEqual(len(managed), 42)
             for action, (_, command, normal, hotkey) in entries.items():
                 defaults = normal if mode == 'macro' else hotkey
                 for index in range(2):

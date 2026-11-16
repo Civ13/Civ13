@@ -1823,6 +1823,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/tatara" = "tatara_smelting",
 		"/obj/structure/workshop_machine/mercury_retort" = "amalgamation",
 		"/obj/item/weapon/reagent_containers/glass/mercury_flask" = "ore_dressing",
+		"/obj/structure/kanna_channel" = "tatara_smelting",
 		"/obj/structure/heatsource" = "iron_smithing",
 		"/obj/item/clothing/shoes/weather/hobnail_boots" = "iron_smithing",
 		// --- iron_tools (7) ---
