@@ -10,7 +10,7 @@
 #define BUILDING_WAKE_RANGE 7
 
 /proc/building_level_lazy(z)
-	return z > building_base_maxz() && z != dug_underground_z()
+	return z > building_base_maxz() && !dug_underground_forming && z != dug_underground_z()
 
 // A cell of an added level that nothing has woken or replaced: it skipped its
 // constructor during allocation, so it holds its compiled defaults, is not in
@@ -47,7 +47,10 @@ var/global/list/building_levels_with_ground = list()
 	lighting_build_overlay()
 
 /turf/sky/building/ChangeTurf(var/path, var/tell_universe = 1, var/force_lighting_update = FALSE, datum/durable_nomads_event/nomads_event = null)
-	building_wake_cells(src)
+	// Bedrock at (1, 1) marks a dug cave level (dug_underground.dm); until it
+	// stands, a load placing it cannot tell the cave from open air.
+	if (!ispath(path, /turf/wall/rockwall/bedrock))
+		building_wake_cells(src)
 	if (!ispath(path, /turf/sky/building))
 		building_levels_with_ground["[z]"] = TRUE
 	return ..()

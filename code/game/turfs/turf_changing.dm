@@ -1,3 +1,10 @@
+// The cave level of a dig-down map once found (multiz/dug_underground.dm):
+// a cell there that opens forms the unformed rock around it.
+var/global/dug_underground_live_z = 0
+
+/turf/proc/underground_opened()
+	return
+
 //Creates a new turf
 /turf/proc/ChangeTurf(var/path, var/tell_universe=1, var/force_lighting_update = FALSE, datum/durable_nomads_event/nomads_event = null)
 	if (!path)
@@ -72,6 +79,8 @@
 	W.sync_fullbright_coverage()
 	if (terrain_shading_applied)
 		W.terrain_shade_refresh()
+	if (dug_underground_live_z && W.z == dug_underground_live_z && !W.density)
+		W.underground_opened()
 	return W
 
 /turf/proc/transport_properties_from(turf/other)

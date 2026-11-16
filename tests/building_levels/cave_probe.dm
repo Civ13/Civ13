@@ -6,7 +6,8 @@
 	maxx = 10
 	maxy = 10
 	maxz = 1
-	turf = /turf/floor/dirt
+	// The production native fill: an added cave level is unformed rock.
+	turf = /turf/sky/building
 	area = /area/caribbean
 	hub = ""
 	hub_password = ""
@@ -31,6 +32,8 @@
 /world/New()
 	OpenPort("none")
 	try
+		for (var/turf/T in block(locate(1, 1, 1), locate(world.maxx, world.maxy, 1)))
+			new /turf/floor/dirt(T)
 		world_z_budget = new /datum/world_z_budget/fixture_admission
 		// The production admission rules, asked directly: the fixture budget
 		// above admits everything so the allocator paths can run.
@@ -51,6 +54,9 @@
 		cave_assert(building_standing_try() && world.maxz == base + 2, "the standing level is added over a dug cave")
 		air = base + 2
 		#else
+		cave_assert(!building_standing_try() && world.maxz == base, "the standing level waits for the cave")
+		// A world whose cave was refused at boot, then allowed later.
+		dug_underground_boot_done = TRUE
 		cave_assert(building_standing_try() && world.maxz == base + 1, "the standing level is added first")
 		air = base + 1
 		cave_assert(rules.underground_admitted(base + 2) && !rules.underground_admitted(base + 1), "the cave is the next level")
@@ -64,7 +70,18 @@
 		cave_assert(multiz_level_above(base) == air && multiz_level_below(air) == base && !multiz_level_above(air), "the open air lies over the surface")
 		cave_assert(multiz_top_z() == base, "the surface stays the top ground level")
 		cave_assert(!building_upper_z(cave) && building_upper_z(base) == air, "roofs never pair with the cave")
-		cave_assert(map_storage.sparse_level_kind(cave) == null && map_storage.sparse_level_kind(air) == "building", "the cave saves whole, the air sparsely")
+		cave_assert(map_storage.sparse_level_kind(cave) == "building" && map_storage.sparse_level_kind(air) == "building", "the cave and the air save sparsely")
+		// Unformed rock: the cave is native fill except its bedrock marker.
+		var/turf/inner = locate(5, 5, cave)
+		cave_assert(dug_underground_unformed(inner) && building_cell_asleep(inner) && !dug_underground_unformed(locate(5, 5, air)), "the cave starts unformed and asleep")
+		cave_assert(!inner.Enter(new /obj/item(locate(5, 5, base))), "nothing enters unformed rock")
+		var/turf/opened = dug_underground_form(inner)
+		cave_assert(!dug_underground_unformed(opened) && dug_underground_form(opened) == opened, "a cell forms once")
+		opened = opened.ChangeTurf(/turf/floor/dirt)
+		for (var/d in alldirs)
+			cave_assert(!dug_underground_unformed(get_step(opened, d)), "an opened cell forms its neighbours ([d])")
+		cave_assert(dug_underground_unformed(locate(8, 8, cave)), "cells beyond the opening stay unformed")
+		cave_assert(dug_underground_cell(5, 5) == dug_underground_cell(5, 5) && dug_underground_cell(1, 4) == /turf/wall/rockwall/bedrock, "the generator is repeatable and rims the level")
 		cave_assert(!building_grows_from(base) && !building_grows_from(cave) && building_grows_from(air), "growth starts from the highest building level")
 		// Three more storeys: the cave does not use up one of the four.
 		for (var/storey = 2 to 4)

@@ -39,6 +39,10 @@ var/global/building_standing_watch = FALSE
 		return TRUE
 	if (!building_standing_ready())
 		return FALSE
+	// A dig-down map's cave is added first (dug_underground.dm), so it is
+	// always the first added level.
+	if (!dug_underground_boot_done && dug_underground_supported() && !dug_underground_z())
+		return FALSE
 	if (building_allocate_level(world.maxz + 1))
 		world.log << "Standing building level [world.maxz] added above the surface."
 		return TRUE

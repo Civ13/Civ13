@@ -15,12 +15,12 @@ world at every depth cannot be made cheap merely by calling it an instance.
 
 | Current source | Consequence for this design |
 | --- | --- |
-| [dug_underground.dm](../code/modules/multiz/dug_underground.dm), `dug_underground_supported`, `underground_admitted`, `dug_underground_create` | An opted-in single compiled level can gain exactly one cave. Creation fills the entire plane and initializes cave lighting. This is not a multi-depth allocator. |
+| [dug_underground.dm](../code/modules/multiz/dug_underground.dm), `dug_underground_supported`, `underground_admitted`, `dug_underground_create` | An opted-in single compiled level gains exactly one cave at boot, as unformed rock that forms around opened cells ([underground-level.md](underground-level.md)). This is not a multi-depth allocator. |
 | [world_z_budget.dm](../code/modules/multiz/world_z_budget.dm) and [allocation policy](new-z-budget.md) | Whole-world target dimensions, reservations and purpose admission remain mandatory. Arithmetic capacity is not memory admission. No new mine exception is authorized here. |
 | [nomads_gaia.dmm](../maps/nomads/nomads_gaia.dmm) | The shipped map is 500 x 350 x 2: 350,000 cells. Each further physical plane adds 175,000 cells regardless of rectangle occupancy. A generated single-level map has a different starting cost. |
 | [building_admission.dm](../code/modules/multiz/building_admission.dm) | Its empty-sky measurements describe optimized building levels, not lit cave rock. Do not extrapolate those numbers to mines. |
 | [practice_rooms.dm](../code/modules/1713/practice_rooms.dm), `slot_origin`, `drop_level`, `wipe_room` | Rectangular packing exists, but rooms are disposable, excluded from saves, cleared and removed. Reuse the geometric idea only; neither deletion nor admission is a mine persistence contract. |
-| [functions.dm](../code/modules/persistence/functions.dm), `sparse_level_kind` | Generated dug caves explicitly do not use a sparse baseline. Sparse disk encoding never implies a sparse native grid. |
+| [functions.dm](../code/modules/persistence/functions.dm), `sparse_level_kind` | Dug caves save sparse around unformed rock. Sparse disk encoding never implies a sparse native grid. |
 | [saving.dm](../code/modules/persistence/saving.dm), `level_link_target`, `finish_level_links` | Declared cross-z movable links have a codec. It does not identify logical floors sharing one z or make them independently unloadable. |
 | [persistence guide](agent-guides/persistence/README.md) | Cross-z movement gates and durable zone IDs exist. Same-z slot transfer, slot lifetime and logical reconnect need explicit integration; zone IDs are not geographic floor identities. |
 

@@ -1967,8 +1967,8 @@ var/global/world_save_notice_started = null
 	// Orbit planes are compiled vacuum; the arrival plane holds the registry.
 	var/orbit = text2path("/proc/orbit_world")
 	if(orbit && call(orbit)()) return z > 1 ? "orbit" : null
-	var/dug = text2path("/proc/dug_underground_z")
-	if(dug && call(dug)() == z) return null // Generated caves are random, not a baseline.
+	// A dug cave level (multiz/dug_underground.dm) is unformed rock, the same
+	// native fill as open air, around the cells players reached.
 	if(z <= building_base_maxz()) return "ground"
 	return "building"
 

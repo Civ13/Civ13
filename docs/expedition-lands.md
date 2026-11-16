@@ -110,8 +110,8 @@ measured.
 A land's map is its surface alone. The generator's second level, solid rock
 under the whole land, was a boulder on every tile, and it is left out of the
 map: mountains stand on the surface as rock to mine, and the land's map sets
-`dig_down_underground`, so the first tunnel dug down makes a cave level where
-the world's level budget allows one ([level budget](new-z-budget.md): surface
+`dig_down_underground`, so the world adds a cave level of unformed rock at boot
+([underground level](underground-level.md)) where the world's level budget allows one ([level budget](new-z-budget.md): surface
 and cave together within 350,000 cells, so lands up to 175,000 tiles, every
 tiny and small land and a medium one of Gaia's size). Larger lands have no
 caves until a world with one is measured.
