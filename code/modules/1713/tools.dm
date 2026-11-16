@@ -520,8 +520,8 @@
 					// Unformed rock below (dug_underground.dm) forms first;
 					// solid stone stops the shaft.
 					var/turf/BL = dug_underground_form(get_turf(locate(user.x, user.y, user.z-1)))
-					if (istype(BL, /turf/wall))
-						to_chat(user, SPAN_WARNING("You hit solid stone. You cannot dig down here."))
+					if (istype(BL, /turf/wall) || istype(BL, /turf/floor/dirt/underground/hot))
+						to_chat(user, SPAN_WARNING(istype(BL, /turf/wall) ? "You hit solid stone. You cannot dig down here." : "The rock below is searing hot. You cannot dig down here."))
 						return
 					new/obj/structure/multiz/ladder/ww2/tunneltop/pit(user.loc)
 					if (istype(BL, /turf/floor/dirt/underground) || dug_underground_unformed(BL))
