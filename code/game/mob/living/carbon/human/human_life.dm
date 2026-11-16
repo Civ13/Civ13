@@ -245,6 +245,8 @@
 		else if (find_trait("Dwarfism"))
 			food_m *= 0.8
 		food_m *= trait_food_mult()
+		food_m *= home_rest_hunger_mult()
+		water_m *= home_rest_hunger_mult()
 		if (orc)
 			food_m *= 1.5
 		if (goblin)
@@ -328,6 +330,7 @@
 	// recover stamina
 	diet_recover_stamina()
 	wanderer_recover_stamina()
+	home_recover_stamina()
 
 	// recover juice (mana) - ~0.5 per second at standard 2ds Life() ticks
 	if (juice < max_juice)
