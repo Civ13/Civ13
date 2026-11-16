@@ -42,7 +42,7 @@ export function Faction(ui: ScreenProps) {
     inFlight.current = true; setBusy(true);
     const send = (index: number) => {
       if (!latest.current.interactive) { cancel(); return; }
-      latest.current.act('stroke', { stroke: 1, cells: chunks[index], ...(index ? { stroke_continue: 1 } : {}) });
+      latest.current.act('stroke', { cells: chunks[index], ...(index ? { stroke_continue: 1 } : {}) });
       // Keep controls serialized until the final navigation has had time to land.
       timer.current = setTimeout(() => {
         if (index + 1 < chunks.length) send(index + 1);
@@ -88,7 +88,7 @@ export function Faction(ui: ScreenProps) {
               if (event.button !== 0 || !ui.interactive || inFlight.current) return;
               event.preventDefault();
               if (stroke.current) { end.current(); return; }
-              if (data.tool === 'bucket') { ui.act('paint', { paint: 1, x, y }); return; }
+              if (data.tool === 'bucket') { ui.act('paint', { x, y }); return; }
               stroke.current = { cells: new Set(), x, y, color: data.color || '#000000' }; paint(x, y);
             }} onMouseEnter={event => { if (stroke.current && event.buttons === 0) end.current(); else if (stroke.current) paint(x, y); }} />;
         })}

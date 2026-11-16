@@ -56,7 +56,7 @@ try {
     return '#193c52';
   });
   await capture('faction', 'faction_creation.tmpl', { name: 'Dawnward Guild', motto: 'Build together, discover together', flavour: 'A fictional fellowship for this interface preview.', grid, color: '#f6d77f', tool: 'paint' });
-  await capture('chemistry', 'chem_disp.tmpl', { amount: 10, chemicals: ['Water', 'Carbon', 'Hydrogen', 'Oxygen', 'Nitrogen', 'Iron', 'Copper', 'Sulfur', 'Potassium', 'Sodium', 'Chlorine', 'Phosphorus'].map(title => ({ title, commands: { dispense: title.toLowerCase() } })), isBeakerLoaded: 1, beakerCurrentVolume: 30, beakerMaxVolume: 100, beakerContents: [{ name: 'Water', volume: 20 }, { name: 'Carbon', volume: 10 }] });
+  await capture('chemistry', 'chem_disp.tmpl', { amount: 10, chemicals: ['Water', 'Carbon', 'Hydrogen', 'Oxygen', 'Nitrogen', 'Iron', 'Copper', 'Sulfur', 'Potassium', 'Sodium', 'Chlorine', 'Phosphorus'].map(title => ({ title, id: title.toLowerCase() })), isBeakerLoaded: 1, beakerCurrentVolume: 30, beakerMaxVolume: 100, beakerContents: [{ name: 'Water', volume: 20 }, { name: 'Carbon', volume: 10 }] });
   await capture('warehouse', 'warehouse_book.tmpl', { items: [{ name: 'Oak planks', amount: 120 }, { name: 'Stone blocks', amount: 84 }, { name: 'Iron ingots', amount: 36 }, { name: 'Linen cloth', amount: 52 }, { name: 'Wheat sacks', amount: 18 }] });
   // The rest of the windows, so a UI change can be compared before and after.
   const craftRow = (id, name, state, extra = {}) => ({ id, name, state, category: 'General', purpose: 'Building', pinned: 0, recent: 0, cost: '4 logs', why: '', tools: '', desc: '', built: 0, one_per_turf: 0, on_floor: 0, time: 140, makes: 1, batches: state === 'ready' ? 1 : 0, atlas: 0, image: '', ...extra });

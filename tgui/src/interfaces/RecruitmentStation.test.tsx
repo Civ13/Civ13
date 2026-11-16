@@ -21,7 +21,7 @@ describe('Recruitment station', () => {
     render(<RecruitmentStation {...props} />);
     expect(screen.getByText('You lead Iron & Oak.')).toBeTruthy();
     fireEvent.click(screen.getByText('Designate for my faction'));
-    expect(props.act).toHaveBeenLastCalledWith('designate', { designate: 1 });
+    expect(props.act).toHaveBeenLastCalledWith('designate', { value: 1 });
     cleanup();
     render(<RecruitmentStation {...ui({ station: 1, bound: 0, can_designate: 0 })} />);
     expect(screen.queryByRole('button')).toBeNull();
@@ -33,7 +33,7 @@ describe('Recruitment station', () => {
     render(<RecruitmentStation {...props} />);
     expect(screen.getByText('Speaks Russian: not met')).toBeTruthy();
     fireEvent.click(screen.getByText('Apply'));
-    expect(props.act).toHaveBeenLastCalledWith('apply', { apply: 1 });
+    expect(props.act).toHaveBeenLastCalledWith('apply', { value: 1 });
     expect(screen.queryByText('Applications')).toBeNull();
     expect(screen.queryByText('Rules (leader only)')).toBeNull();
   });
@@ -42,9 +42,9 @@ describe('Recruitment station', () => {
       application: { id: 'app7', status: 'approved', status_text: 'Approved', expires: '6 days', reason: '' } } });
     render(<RecruitmentStation {...props} />);
     fireEvent.click(screen.getByText('Confirm and join'));
-    expect(props.act).toHaveBeenLastCalledWith('confirm', { confirm: 'app7' });
+    expect(props.act).toHaveBeenLastCalledWith('confirm', { value: 'app7' });
     fireEvent.click(screen.getByText('Withdraw'));
-    expect(props.act).toHaveBeenLastCalledWith('withdraw', { withdraw: 'app7' });
+    expect(props.act).toHaveBeenLastCalledWith('withdraw', { value: 'app7' });
   });
   it('lets reviewers decide and leaders change rules', () => {
     const props = ui({ station: 0, bound: 1, supported: 1, faction: 'Oak', can_review: 1, queue: [
@@ -53,13 +53,13 @@ describe('Recruitment station', () => {
     ], policy: { mode: 'manual', open: 0, language: '', nonmatch: 'review', skills: [{ key: 'farming', label: 'Farming', level: 3 }] } });
     render(<RecruitmentStation {...props} />);
     fireEvent.click(screen.getByText('Approve'));
-    expect(props.act).toHaveBeenLastCalledWith('approve', { approve: 'app3' });
+    expect(props.act).toHaveBeenLastCalledWith('approve', { value: 'app3' });
     fireEvent.click(screen.getByText('Revoke offer'));
-    expect(props.act).toHaveBeenLastCalledWith('revoke', { revoke: 'app4' });
+    expect(props.act).toHaveBeenLastCalledWith('revoke', { value: 'app4' });
     fireEvent.click(screen.getByText('Accept matching applicants at once'));
-    expect(props.act).toHaveBeenLastCalledWith('set_mode', { set_mode: 'auto' });
+    expect(props.act).toHaveBeenLastCalledWith('set_mode', { value: 'auto' });
     fireEvent.click(screen.getByText('On'));
-    expect(props.act).toHaveBeenLastCalledWith('set_open', { set_open: 1 });
+    expect(props.act).toHaveBeenLastCalledWith('set_open', { value: 1 });
     expect(screen.getByText('Level 3 or higher')).toBeTruthy();
   });
   it('keeps names, introductions and reasons inert', () => {

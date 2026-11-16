@@ -11,7 +11,7 @@ let lastSent = -REQUEST_GAP, queued: ReturnType<typeof setTimeout> | undefined;
 export const resetAtlasRequests = () => { lastSent = -REQUEST_GAP; if (queued) clearTimeout(queued); queued = undefined; };
 const navigate = (ui: ScreenProps, params: Navigation) => {
   if (!ui.interactive) return;
-  const send = () => { queued = undefined; lastSent = Date.now(); ui.act('atlas_navigate', { atlas_navigate: JSON.stringify(params) }); };
+  const send = () => { queued = undefined; lastSent = Date.now(); ui.act('atlas_navigate', { value: JSON.stringify(params) }); };
   if (queued) clearTimeout(queued);
   const wait = lastSent + REQUEST_GAP - Date.now();
   if (wait <= 0) send(); else queued = setTimeout(send, wait);
@@ -121,7 +121,7 @@ function Recipe({ ui, recipe, choose, lead }: { ui: ScreenProps; recipe: Data; c
       {!!recipe.retired && <span className="atlas-chip atlas-warn">Retired in the current era</span>}
     </p>
     {!!recipe.manual_hint && <p role="status" className="atlas-locked">{text(recipe.manual_hint)}</p>}
-    {craftable && <p><button type="button" className="atlas-craft" disabled={!ui.interactive} onClick={() => ui.act('atlas_craft', { atlas_craft: craftable })}>Craft this</button>
+    {craftable && <p><button type="button" className="atlas-craft" disabled={!ui.interactive} onClick={() => ui.act('atlas_craft', { value: craftable })}>Craft this</button>
       <span className="atlas-craft-note">Opens the Crafting window on this recipe when its material is in your hands or beside you.</span></p>}
     {familyVariants.length > 1 && <label className="atlas-field">Recipe variant ({familyVariants.length} ways to make this)
       <select aria-label="Recipe variant" disabled={!ui.interactive} value={String(recipe.id)} onChange={event => choose(event.target.value)}>

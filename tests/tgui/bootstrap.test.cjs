@@ -26,12 +26,12 @@ test('React mount keeps watchdog pending until a valid current snapshot', () => 
   assert.equal(e.cancelled.size, 0, 'React mount must not clear the startup watchdog'); assert.notEqual(e.loading.style.display, 'none');
   assert.equal(b.acceptSnapshot(config()), true); assert.deepEqual(types(e), ['ready', 'ack']); assert.ok(e.cancelled.has(1)); assert.equal(e.loading.style.display, 'none');
   b.acceptSnapshot(config()); e.timers[0].callback(); assert.deepEqual(types(e), ['ready', 'ack'], 'queued stale timer is harmless');
-  b.send('act/amount', { amount: 5 }); const action = new URL(e.messages.at(-1));
-  assert.equal(action.searchParams.get('src'), '[0x123]'); assert.equal(action.searchParams.get('window_id'), 'main[0x456]'); assert.deepEqual(JSON.parse(action.searchParams.get('payload')), { amount: 5 });
+  b.send('act/amount', { value: 5 }); const action = new URL(e.messages.at(-1));
+  assert.equal(action.searchParams.get('src'), '[0x123]'); assert.equal(action.searchParams.get('window_id'), 'main[0x456]'); assert.deepEqual(JSON.parse(action.searchParams.get('payload')), { value: 5 });
 });
 test('missing first snapshot times out after ready and stops stale actions', () => {
   const e = boot(), b = e.window.Civ13Tgui; b.ready(); e.expire();
-  assert.deepEqual(types(e), ['ready', 'fallback']); assert.equal(b.acceptSnapshot(config()), false); b.send('act/amount', { amount: 10 }); assert.deepEqual(types(e), ['ready', 'fallback']);
+  assert.deepEqual(types(e), ['ready', 'fallback']); assert.equal(b.acceptSnapshot(config()), false); b.send('act/amount', { value: 10 }); assert.deepEqual(types(e), ['ready', 'fallback']);
 });
 test('stale or malformed snapshot cannot finish startup; delayed current one can', () => {
   const e = boot(), b = e.window.Civ13Tgui; b.ready();
@@ -104,7 +104,7 @@ test('a window without a plain page stays put when the browser gives up', () => 
   s.env.window.Civ13Tgui.fallback(); s.env.window.Civ13Tgui.fallback();
   assert.equal(s.state.fallbacks, 0); assert.equal(s.state.plain_page, false); assert.equal(s.state.render_generation, generation);
   assert.match(s.env.loading.textContent, /could not load/);
-  s.env.window.Civ13Tgui.send('act/amount', { amount: 10 }); assert.equal(s.state.actions.length, 0, 'a stopped page sends nothing more');
+  s.env.window.Civ13Tgui.send('act/amount', { value: 10 }); assert.equal(s.state.actions.length, 0, 'a stopped page sends nothing more');
 });
 test('a window with a plain page switches once and keeps it', () => {
   const s = server({ plainPage: true }); s.env.window.Civ13Tgui.ready(); s.env.window.Civ13Tgui.fallback();
@@ -120,21 +120,21 @@ test('a window with a plain page switches once and keeps it', () => {
 test('dropped ack rejects action; later valid ack admits only a fresh action once', () => {
   const drop = ['ack'], s = server({ drop }); s.env.window.Civ13Tgui.ready();
   assert.equal(s.state.frontend_ready, true); assert.equal(s.state.frontend_acknowledged, false);
-  s.env.window.Civ13Tgui.send('act/amount', { amount: 10 });
+  s.env.window.Civ13Tgui.send('act/amount', { value: 10 });
   assert.equal(s.state.actions.length, 0, 'pending startup must reject action');
   drop.length = 0;
   const ack = s.env.messages.find(url => new URL(url).searchParams.get('type') === 'ack');
   s.receive(ack, s.state.user); assert.equal(s.state.frontend_acknowledged, true);
   assert.equal(s.state.actions.length, 0, 'ack must not replay the rejected action');
-  s.env.window.Civ13Tgui.send('act/amount', { amount: 20 });
-  assert.deepEqual(s.state.actions, [{ type: 'act/amount', payload: { amount: 20 } }]);
+  s.env.window.Civ13Tgui.send('act/amount', { value: 20 });
+  assert.deepEqual(s.state.actions, [{ type: 'act/amount', payload: { value: 20 } }]);
   assert.equal(s.state.fallbacks, 0);
-  const normal = server(); normal.env.window.Civ13Tgui.ready(); normal.env.window.Civ13Tgui.send('act/amount', { amount: 5 }); assert.equal(normal.state.actions.length, 1);
+  const normal = server(); normal.env.window.Civ13Tgui.ready(); normal.env.window.Civ13Tgui.send('act/amount', { value: 5 }); assert.equal(normal.state.actions.length, 1);
 });
 test('real pre-client transfer order invalidates immediately, then reopens after link', () => {
   const s = server(), oldEnv = s.env, oldOwner = s.state.user; oldEnv.window.Civ13Tgui.ready();
   const target = s.transfer(); assert.equal(target.client, null); assert.equal(s.state.render_generation, 3); assert.equal(s.state.frontend_ready, false); assert.equal(s.state.frontend_acknowledged, false); assert.equal(s.env, oldEnv);
-  oldEnv.window.Civ13Tgui.send('act/amount', { amount: 10 }); assert.equal(s.state.actions.length, 0); assert.equal(s.state.fallbacks, 0);
+  oldEnv.window.Civ13Tgui.send('act/amount', { value: 10 }); assert.equal(s.state.actions.length, 0); assert.equal(s.state.fallbacks, 0);
   s.linkClient(target); assert.equal(s.state.render_generation, 4); assert.notEqual(s.env, oldEnv);
   assert.equal(s.env.window.Civ13Tgui.acceptSnapshot(config(2)), false);
   s.receive('byond://?window_id=main%5B0x456%5D&generation=4&type=ack', oldOwner); assert.equal(s.state.frontend_acknowledged, false);
@@ -160,6 +160,6 @@ test('post-client completion requires reciprocal binding to the intended client'
 });
 test('same-owner reopen expires the old page', () => {
   const reopened = server(), oldEnv = reopened.env; oldEnv.window.Civ13Tgui.ready(); reopened.open();
-  oldEnv.window.Civ13Tgui.send('act/amount', { amount: 10 }); assert.equal(reopened.state.actions.length, 0, 'old generation cannot act on the new opening');
+  oldEnv.window.Civ13Tgui.send('act/amount', { value: 10 }); assert.equal(reopened.state.actions.length, 0, 'old generation cannot act on the new opening');
   reopened.env.window.Civ13Tgui.ready(); assert.equal(reopened.state.frontend_acknowledged, true); assert.equal(reopened.state.fallbacks, 0);
 });

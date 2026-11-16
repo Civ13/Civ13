@@ -11,9 +11,7 @@ export function Chemistry(ui: ScreenProps) {
   const vessel = data.glass ? 'Glass' : 'Beaker';
   return <><Section title="Dispense amount">{[5, 10, 20, 30, 40].map(amount => <Action key={amount} ui={ui} action="amount" value={amount} selected={Number(data.amount) === amount}>{amount}</Action>)}</Section>
     <Section title={data.glass ? 'Drink Dispenser' : 'Chemical Dispenser'}>{list(data.chemicals).map((chemical, i) => {
-      const commands = chemical.commands ?? {};
-      const action = Object.keys(commands)[0];
-      return action ? <Action key={i} ui={ui} action={action} value={commands[action]} params={commands}>{text(chemical.title)}</Action> : null;
+      return chemical.id ? <Action key={i} ui={ui} action="dispense" value={chemical.id}>{text(chemical.title)}</Action> : null;
     })}</Section>
     <Section title={`${vessel} contents`} buttons={<Action ui={ui} action="ejectBeaker" disabled={!data.isBeakerLoaded}>Eject {vessel}</Action>}>
       {data.isBeakerLoaded ? <><p>Volume: {data.beakerCurrentVolume} / {data.beakerMaxVolume}</p>{list(data.beakerContents).length ? list(data.beakerContents).map((item, i) => <p key={i}>{item.volume} units of {text(item.name)}</p>) : <NoticeBox>{vessel} is empty</NoticeBox>}</> : <NoticeBox>No {vessel.toLowerCase()} loaded</NoticeBox>}

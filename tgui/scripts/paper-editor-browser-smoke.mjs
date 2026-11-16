@@ -42,7 +42,7 @@ export async function paperEditorSmoke(browser, js, css) {
     await page.waitForFunction(()=>window.sent.length===1);
     const sent=await page.evaluate(()=>window.sent[0]);
     assert.equal(sent.type,'act/paper_edit');
-    assert.deepEqual(JSON.parse(sent.payload.paper_edit),{operation:'append',lease:'a'.repeat(32),document_id:null,revision:0,language_id:EN,kind:'body',value:writing});
+    assert.deepEqual(JSON.parse(sent.payload.value),{operation:'append',lease:'a'.repeat(32),document_id:null,revision:0,language_id:EN,kind:'body',value:writing});
     current={...current,lease:'c'.repeat(32),document_id:'b'.repeat(32),revision:1,response_serial:1,result:'saved',
       view:{...current.view,revision:1,legacy_policy:'legacy_unclassified',sections:[
         {id:'section-1',kind:'body',language_id:EN,text:writing,ink:'white',tool:'pen'}]}};
@@ -76,7 +76,7 @@ export async function paperEditorSmoke(browser, js, css) {
     await legacy.getByLabel('Writing text').fill('More [i]wax[/i]');
     await legacy.getByRole('button',{name:'Write',exact:true}).click();
     await legacy.waitForFunction(()=>window.sent.length===1);
-    assert.equal(JSON.parse((await legacy.evaluate(()=>window.sent[0])).payload.paper_edit).value,'More [i]wax[/i]');
+    assert.equal(JSON.parse((await legacy.evaluate(()=>window.sent[0])).payload.value).value,'More [i]wax[/i]');
     const invalid=await load();await update(invalid,{...data(),view:{legacy_name:'Synthetic paper',legacy_body_html:'UNSUPPORTED_PARTIAL'+'x'.repeat(65536),sections:[]}});
     await invalid.getByText('This window could not be shown. Close it and open it again.',{exact:true}).waitFor();
     assert.equal(await invalid.evaluate(()=>window.fallback),true);

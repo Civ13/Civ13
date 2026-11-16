@@ -16,5 +16,5 @@ export function Action({ ui, action, value = 1, params = {}, disabled = false, s
   ui: ScreenProps; action: string; value?: string | number; params?: Params; disabled?: boolean; selected?: boolean; children: ReactNode;
 }) {
   return <Button disabled={!ui.interactive || disabled} selected={selected}
-    onClick={() => ui.act(action, { [action]: value, ...params })}>{children}</Button>;
+    onClick={() => ui.act(action, { value, ...params })}>{children}</Button>;
 }

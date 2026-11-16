@@ -69,6 +69,25 @@
 		GLOB.nanomanager.update_uis(src_object)
 	return TRUE
 
+// A tgui screen offers the press to the owner's typed ui_act() first.
+/datum/nanoui/tgui/agent_topic(list/params)
+	update_status(0)
+	if (status != STATUS_INTERACTIVE || user != usr || !params.len || !src_object)
+		return FALSE
+	var/action = params[1]
+	var/list/typed = list("value" = agent_screen_value(params[action]))
+	for (var/key in params)
+		if (key != action)
+			typed[key] = agent_screen_value(params[key])
+	if (act_typed(action, typed))
+		return TRUE
+	return ..()
+
+// Screen presses arrive as text; a typed handler gets numbers as numbers.
+/proc/agent_screen_value(value)
+	var/n = text2num("[value]")
+	return (isnum(n) && "[n]" == "[value]") ? n : value
+
 /proc/agent_screen_status(status)
 	switch (status)
 		if (STATUS_INTERACTIVE)

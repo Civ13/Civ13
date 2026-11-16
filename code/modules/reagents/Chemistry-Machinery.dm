@@ -154,7 +154,7 @@
 		if (re[2] > 0)
 			var/datum/reagent/temp = chemical_reagents_list[re[1]]
 			if (temp)
-				chemicals.Add(list(list("title" = "[temp.name] ([re[2]])", "id" = temp.id, "commands" = list("dispense" = temp.id)))) // list in a list because Byond merges the first list...
+				chemicals.Add(list(list("title" = "[temp.name] ([re[2]])", "id" = temp.id))) // list in a list because Byond merges the first list...
 	data["chemicals"] = chemicals
 
 	// update the ui if it exists, returns null if no ui is passed/found
@@ -168,24 +168,25 @@
 		// open the new ui window
 		ui.open()
 
-/obj/structure/chemical_dispenser/Topic(href, href_list)
-
-	if (href_list["amount"])
-		amount = round(text2num(href_list["amount"]), 5) // round to nearest 5
-		if (amount < 0) // Since the user can actually type the commands himself, some sanity checking
-			amount = FALSE
-		if (amount > 120)
-			amount = 120
-
-	if (href_list["dispense"])
-		dispense_into_beaker(href_list["dispense"], amount)
-	if (href_list["ejectBeaker"])
-		if (beaker)
-			var/obj/item/weapon/reagent_containers/B = beaker
-			B.loc = loc
-			beaker = null
-
-	add_fingerprint(usr)
+/obj/structure/chemical_dispenser/ui_act(action, list/params, mob/user, datum/nanoui/ui)
+	var/value = params["value"]
+	switch (action)
+		if ("amount")
+			if (!isnum(value))
+				return TRUE
+			amount = min(max(round(value, 5), 0), 120) // nearest 5
+		if ("dispense")
+			if (!istext(value))
+				return TRUE
+			dispense_into_beaker(value, amount)
+		if ("ejectBeaker")
+			if (beaker)
+				var/obj/item/weapon/reagent_containers/B = beaker
+				B.loc = loc
+				beaker = null
+		else
+			return FALSE
+	add_fingerprint(user)
 	return TRUE // update UIs attached to this object
 
 /obj/structure/chemical_dispenser/attackby(var/obj/item/weapon/reagent_containers/B as obj, var/mob/user as mob)
