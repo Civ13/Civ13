@@ -74,3 +74,14 @@ var/sw_runtime_error = FALSE
 	var/obj/structure/station_water_probe/plain = new(locate(5, 3, 1))
 	plain.water_capacity = 0
 	sw_check(plain.station_take_water(null) && !plain.station_water_pour(B, null), "a station without a tank ignores water")
+
+	// Stations that use water.
+	var/obj/structure/workshop_machine/potters_wheel/wheel = new(locate(5, 1, 1))
+	var/obj/structure/workshop_machine/brick_bench/bench = new(locate(6, 1, 1))
+	var/obj/structure/converter/retting_trough/trough = new(locate(6, 3, 1))
+	sw_check(wheel.water_per_use == 10 && bench.water_per_use == 20 && trough.water_per_use == 30, "the wheel, bench and trough take 10, 20 and 30 water")
+	sw_check(!wheel.station_has_water() && !bench.station_has_water() && !trough.station_has_water(), "away from water they start dry")
+	B.reagents.add_reagent("water", 100)
+	sw_check(wheel.station_water_pour(B, null) && wheel.station_has_water(), "a bucket wets the wheel")
+	B.reagents.add_reagent("water", 50)
+	sw_check(trough.attackby(B, null) == null && trough.water_store > 0, "a bucket fills the retting trough")

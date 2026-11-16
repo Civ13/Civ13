@@ -147,4 +147,24 @@
 			return C
 	return null
 
+// ---- stations that use water ------------------------------------------------
+// The potter's wheel and brick bench are in clay_lime_fire.dm.
+
+// A retting trough soaks fibre in water: 30 a batch. Retting in a river or
+// pond tile stays free.
+/obj/structure/converter/retting_trough
+	water_capacity = 90
+	water_per_use = 30
+
+/obj/structure/converter/retting_trough/attackby(obj/item/M, mob/user)
+	if (station_water_pour(M, user))
+		return
+	if (!filled && (istype(M, input) || istype(M, input1)) && M.amount >= inputamount && crafting_recipe_allowed(user, "[output]") && !station_take_water(user))
+		return
+	return ..()
+
+/obj/structure/converter/retting_trough/examine(mob/user, distance = -1)
+	. = ..()
+	station_water_examine(user)
+
 #undef STATION_WATER_LOW_STAGE

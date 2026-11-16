@@ -1491,7 +1491,8 @@ SUITES = {
         'paths': ('tests/station_water/', 'code/modules/1713/station_water.dm'), 'shared_paths': (
             'code/modules/1713/aqueducts.dm',
             'code/modules/1713/factory_plumbing.dm',
-            'config/craft_needs.json')},
+            'config/craft_needs.json',
+            'code/modules/1713/clay_lime_fire.dm')},
     # Reviewed stdlib-only well-odor source projection; no BYOND runtime.
     'well_smell': {'files': ('tests/well_smell/test_well_smell.py',),
         'paths': ('tests/well_smell/',), 'shared_paths': (

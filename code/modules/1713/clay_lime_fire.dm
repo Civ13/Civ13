@@ -86,6 +86,13 @@ var/global/list/brick_bench_batches = list(
 	name = "potter's wheel"
 	desc = "A kick wheel: a heavy stone flywheel under a small wheel head. Use clay on it to throw pots, cups and jugs in a third of the time of shaping them by hand. It keeps turning out the same ware until the clay runs out or you step away."
 	icon_state = "potters_wheel"
+	// Slip keeps the clay workable on the wheel (station_water.dm).
+	water_capacity = 150
+	water_per_use = 10
+
+/obj/structure/workshop_machine/potters_wheel/examine(mob/user, distance)
+	..(user, distance)
+	station_water_examine(user)
 
 /proc/potters_wheel_choices(mob/living/human/H)
 	var/list/choices = list()
@@ -103,6 +110,8 @@ var/global/list/brick_bench_batches = list(
 	if (!istype(H))
 		return
 	if (handle_machine_tool(I, H))
+		return
+	if (station_water_pour(I, H))
 		return
 	if (!istype(I, /obj/item/stack/material/clay))
 		return ..()
@@ -133,9 +142,12 @@ var/global/list/brick_bench_batches = list(
 	visible_message(SPAN_NOTICE("[H] kicks \the [src] up to speed and centres the clay."))
 	var/made = 0
 	while (worker_ready(H, S) && S.amount >= cost[1])
+		if (!station_has_water())
+			station_take_water(H)
+			break
 		if (!do_after(H, driven_time(max(5, round(cost[2] / POTTERS_WHEEL_SPEED))), src))
 			break
-		if (!worker_ready(H, S) || S.amount < cost[1] || !crafting_recipe_allowed(H, "[ware]"))
+		if (!worker_ready(H, S) || S.amount < cost[1] || !crafting_recipe_allowed(H, "[ware]") || !station_take_water(H))
 			break
 		var/last = S.amount <= cost[1]
 		S.use(cost[1])
@@ -158,9 +170,13 @@ var/global/list/brick_bench_batches = list(
 	desc = "A stout bench with an eight-cell mould frame. Use four clay on it to strike eight unfired bricks at once. Load quicklime to mould cement bricks from far less clay."
 	icon_state = "brick_bench"
 	var/lime = 0
+	// Clay and sand are mixed wet (station_water.dm).
+	water_capacity = 100
+	water_per_use = 20
 
 /obj/structure/workshop_machine/brick_bench/examine(mob/user, distance)
 	..(user, distance)
+	station_water_examine(user)
 	if (lime)
 		to_chat(user, SPAN_NOTICE("Its lime tub holds [lime] quicklime."))
 
@@ -183,6 +199,8 @@ var/global/list/brick_bench_batches = list(
 	if (!istype(H))
 		return
 	if (handle_machine_tool(I, H))
+		return
+	if (station_water_pour(I, H))
 		return
 	if (istype(I, /obj/item/stack/ore/quicklime))
 		var/obj/item/stack/ore/quicklime/Q = I
@@ -232,9 +250,12 @@ var/global/list/brick_bench_batches = list(
 	visible_message(SPAN_NOTICE("[H] packs clay into \the [src]'s mould."))
 	var/batches = 0
 	while (worker_ready(H, S) && !batch_refusal(S, brick))
+		if (!station_has_water())
+			station_take_water(H)
+			break
 		if (!do_after(H, BRICK_BENCH_TIME, src))
 			break
-		if (!worker_ready(H, S) || batch_refusal(S, brick) || !crafting_recipe_allowed(H, "[brick]"))
+		if (!worker_ready(H, S) || batch_refusal(S, brick) || !crafting_recipe_allowed(H, "[brick]") || !station_take_water(H))
 			break
 		var/last = S.amount <= cost[1]
 		S.use(cost[1])

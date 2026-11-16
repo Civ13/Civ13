@@ -33,6 +33,19 @@ A fed station counts as full, so no timer runs. Still water lets you fill a
 tank by hand but never feeds it. On a map without river flow data (round
 maps) any fresh water beside the station feeds it.
 
+## Stations that use water
+
+| Station | Tank | Per use |
+| --- | --- | --- |
+| Potter's wheel (`clay_lime_fire.dm`) | 150 | 10 per ware |
+| Brick mould bench (`clay_lime_fire.dm`) | 100 | 20 per batch of 8 |
+| Retting trough | 90 | 30 per batch |
+| Tub or shower, Persistence maps only (`bathing.dm`) | 100 (big 200) | a tubful |
+
+The wheel and bench check for water before each piece and take it when the
+piece is done, so a dry tank stops the run with a message. Retting in a water
+tile stays free. The grindstone, kilns, furnaces, looms and the mill stay dry.
+
 ## Hand recipes
 
 `config/craft_needs.json` entries may add `"water": units` per product. The

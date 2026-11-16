@@ -51,5 +51,13 @@ class StationWaterTest(unittest.TestCase):
             self.assertIn("," + product + ",", rows, product)
 
 
+    def test_stations_take_water(self):
+        clay = read("code/modules/1713/clay_lime_fire.dm")
+        self.assertEqual(clay.count("station_water_pour(I, H)"), 2)
+        self.assertEqual(clay.count("!station_take_water(H)"), 2)
+        self.assertEqual(clay.count("station_water_examine(user)"), 2)
+        self.assertIn("/obj/structure/converter/retting_trough/attackby(obj/item/M, mob/user)", SOURCE)
+
+
 if __name__ == "__main__":
     unittest.main()
