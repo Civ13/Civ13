@@ -746,6 +746,7 @@ var/aircraft_runtime_error = FALSE
 #include "weight.dm"
 #include "assembly.dm"
 #include "crossing.dm"
+#include "building_impact.dm"
 
 /proc/aircraft_run()
 	try
@@ -754,6 +755,7 @@ var/aircraft_runtime_error = FALSE
 		aircraft_weight_checks()
 		aircraft_assembly_checks()
 		aircraft_checks()
+		aircraft_building_impact_checks()
 		aircraft_crossing_checks()
 	catch(var/exception/e)
 		aircraft_check(FALSE, "exception [e] [e.file]:[e.line]")
