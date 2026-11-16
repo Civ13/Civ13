@@ -115,6 +115,8 @@
 		cave_assert(!building_grows_from(world.maxz) && world_z_budget.error(world.maxz + 1, "roof"), "the map's cap stops growth")
 		cave_assert(!rules.building_admitted(world.maxz + 1) && !rules.underground_admitted(world.maxz + 1), "nothing more is admitted")
 		cave_assert(multiz_top_z() == base, "the surface is still the top ground level")
+		var/list/report = level_report_counts(cave)
+		cave_assert(level_report_name(cave) == "cave (added)" && level_report_name(air) == "open air" && level_report_name(base) == "ground" && report[1] > 1 && report[2] >= 1, "the level report counts the dug cave")
 		text2file("PASS: cave with building levels", "result.txt")
 	catch (var/exception/E)
 		world.log << "CAVE exception: [E] at [E.file]:[E.line]"

@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = 'ccb863368000229367b8ed697a0ea674e8b72d87'
+WIKI_REVIEWED_REVISION = 'd05ab195b5feec1046d6f39ca75ef6387b6cdd9b'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('85a1bdb974d140a093a434fa3c472ebfd3187cd87991f7eb21a511d1476baabc', 'character skills traits languages'),
@@ -78,7 +78,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Chemistry.md': ('864bf107bd77e3934528bcf9c776b174ba2e86371118eedf084cbe5d42ce7ca5', 'chemistry chemicals reactions reagents'),
     'guides/Guide_to_Combat.md': ('006296f6e7501eeb36f4b486ee3a2b2a85567ecef74d0616dd2a04c2e42f53b2', 'combat fight fighting intent aim shoot melee grenade cover'),
     'guides/Guide_to_Communications.md': ('2bbf705f1e66f3ee37d2d70f46ffa9420587a9b7ae0d718f3e09d4ab9b7881e6', 'communications radio transmit'),
-    'guides/Guide_to_Construction.md': ('d259182b762a89a1e6a629c0c493e22283839a2e7ce340ac5eb9d49aec31a3f9', 'construction build building walls roof floor'),
+    'guides/Guide_to_Construction.md': ('b17a4566b1eeb23b2defbac99de2e104c6c5ef67a07f336c743ddd7bc9182e61', 'construction build building walls roof floor'),
     'guides/Guide_to_Homes.md': ('d60239afde9fcba29e97373871789a6543d99c3e8d71135cb329b8791bf22995', 'home house room comfort decorate limewash paint whitewash stain dye furniture well rested judge nudge pottery glaze vase amphora rug carpet tapestry weave loom'),
     'guides/Guide_to_Cooking.md': ('3fa0033c4d7f5b6d85cc0db329d09bb9fdbab9e44e1e741e1dd8c7ebd4882934', 'cooking cook food meal ingredients'),
     'guides/Guide_to_Exercise.md': ('cd6d6e48f3ae664458e935bb88954a0c6d2232f00b6058e92fb520f5c7c76a09', 'exercise training strength weights running fatigue'),
@@ -94,7 +94,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Ranching.md': ('4bfd68a7f6d60958e14da34916050fcedf06d7e1b9596a5dab8174b34a11c172', 'ranching livestock animal breeding'),
     'guides/Guide_to_Religion.md': ('8f2cba3283be55c895860478ffd6969b9ee7ad70ec90ecde479cd0ef622e9943', 'religion worship clergy shrine'),
     'guides/Guide_to_Research.md': ('9a249f72384db7d800bfbde0373ce1174b5fbe6a923c8826a4250a679e9614a2', 'research unlock study technology research bench'),
-    'guides/Guide_to_Resource_Extraction.md': ('94b97fc0a99093e0c0f7111ab891ce68a87430a33e59866db9ca9a52841ba7cf', 'resource extraction gathering oil petroleum well fracturing'),
+    'guides/Guide_to_Resource_Extraction.md': ('5b10b34e2192801895c5e15af3ab4c5a912f311e915dbc05b8e6ced0cefde853', 'resource extraction gathering oil petroleum well fracturing'),
     'guides/Guide_to_Survival.md': ('b6d033775aa161c89d1ad956d939df86edf46246fd33456051354e4e84e5e091', 'survival winter cold warm freezing hypothermia shelter debris footwear boots snowshoes shoes ice mud rain wet umbrella raincoat cape storm storms lightning thunder blizzard sandstorm heat wave weather fire fires wildfire firefighting beater flapper smother burning bucket blanket extinguish smoke signal signals hook firebreak pump engine nozzle hose jet reel extinguisher'),
     'guides/Guide_to_Tanks.md': ('827ceab593bb62c44600ee67d53b1c5d59fde25e71f093475f55afc361b4fc8d', 'tank driving crew ammunition'),
     'guides/Guide_to_Trains.md': ('d7a8813ae7ad15120c523d9e1d2a5dd0ee09435f36a11d3cba462a2c3e3d6bbd', 'train trains railway track locomotive station switcher rails wagon'),
@@ -126,9 +126,9 @@ WIKI_REVIEWED_GUIDES = {
     'Crafting_Skill_Level_Requirements.md': ('eae4e1c91ce28009f16ec79d0e942f76895d80262e618320eaf44d3a7c5808a9', 'crafting skill level levels requirement requirements unlock'),
     'Food_Decay_Times.md': ('d2d63372eddc79fd7c3c9bffb390587fff7a5cb21c53d829ab5ec29ab9f11126', 'food decay rot spoil spoils spoiled expire expires lasts preserve storage'),
     'Miscellaneous_Crafting.md': ('b7941002a901262850b0d31a1af2258e2c4e74e519d8bd67f8ca774db82249fa', 'miscellaneous crafting misc items dress dresses dressmaking tailoring tailor tailored sew sewing pattern patterns design clothes shirt gown cloak sleeves collar dye dyes wool linen fabric book hat hats headwear beret veil gloves boots shoes belt sash backpack satchel quiver bandolier restyle alteration alter candle candles'),
-    'maps/The_Americas.md': ('7ab1e93eae72bfdc4ebf6d0cb945008b9f8ef8f771a821a83e40c68b69502b16', 'americas america north south isthmus mainland persistent persistence map world hills tamping grading rammer'),
-    'maps/Gaia.md': ('efb869fbe411b360067f5258a600dc469a345f3e8c0d19dea073d5cd4e625afd', 'gaia map world underground'),
-    'maps/Nomads_Maps.md': ('a12643f22e197e982ee0a0fe1fb8646e315b2639e1c09dd8c55cc4964e9372b0', 'nomads maps map terrain biome biomes'),
+    'maps/The_Americas.md': ('f7589f182c236481f1971144815334796ece5e6e76c6ab7c5fea5a031d4fbede', 'americas america north south isthmus mainland persistent persistence map world hills tamping grading rammer'),
+    'maps/Gaia.md': ('956e43002c3077b930f8b7b866d6276d6f7e617f348e7f7e83f6cd935265cbaa', 'gaia map world underground'),
+    'maps/Nomads_Maps.md': ('9f71c98987cd40fc8b7d31a694d2984331fd23e84eb2c8248db595cd08ae18ab', 'nomads maps map terrain biome biomes'),
     'gamemodes/Voyage.md': ('9922f438d0253c6b4d812bc852422a54c37f428b4c3221b2a732397ef245ddfe', 'voyage expedition ship mode'),
     'gamemodes/Events.md': ('de6e6133e735e5da8a03a290f45e599b82cee216d9b150d25c583e3c34606336', 'events event special rounds'),
     'guides_overview.md': ('b942256e261bb0a1e83e1e73974b46183b4bf027cde3289c74f98225dcd21660', 'guides overview list of guides index'),

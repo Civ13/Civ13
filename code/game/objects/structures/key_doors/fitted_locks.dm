@@ -40,6 +40,41 @@
 	var/tied_by = null			// knots: who tied it last
 	var/list/known_by = null	// hidden catches: who has found it
 	var/item_type = null		// the item it comes off as
+	// Ways of defeating it that this lock refuses, for locks set up for an event
+	// or a map: any of LOCK_DEFEAT_METHODS, or "all".
+	var/list/refuses = null
+
+// Every way a lock can be beaten without its key, code or maker.
+var/global/list/LOCK_DEFEAT_METHODS = list("pick", "skeleton", "shim", "crack", "cut", "force", "untie", "search")
+
+/datum/lock/proc/refuses_method(method)
+	return refuses && (("all" in refuses) || (method in refuses))
+
+// Tells the user the lock won't give to this method; TRUE when it refused.
+/datum/lock/proc/refuse(method, mob/user)
+	if (!refuses_method(method))
+		return FALSE
+	if (user)
+		to_chat(user, SPAN_WARNING("This [name()] is too well made: [lock_defeat_refusal(method)]."))
+	return TRUE
+
+/proc/lock_defeat_refusal(method)
+	switch (method)
+		if ("pick", "skeleton")
+			return "nothing you slip into it will move it"
+		if ("shim")
+			return "there is no gap to slip a blade into"
+		if ("crack")
+			return "its dial gives nothing away"
+		if ("cut")
+			return "nothing you have will cut it"
+		if ("force")
+			return "it won't be forced"
+		if ("untie")
+			return "the knot can't be worked loose"
+		if ("search")
+			return "there is no catch you can find"
+	return "it won't give"
 
 /datum/lock/proc/name()
 	switch (kind)
@@ -272,6 +307,8 @@
 			return TRUE
 		if (silent || !user)
 			return FALSE
+		if (L.refuse("search", user))
+			return FALSE
 		to_chat(user, SPAN_WARNING("\The [host] won't open. Something is holding it shut; you feel around for a catch."))
 		if (!do_after(user, LOCK_SEARCH_TIME, host))
 			return FALSE
@@ -297,6 +334,8 @@
 	if (L.kind == LOCK_KNOT)
 		if (where == "thumb")
 			to_chat(user, SPAN_WARNING("\The [host] is tied shut from the other side."))
+			return FALSE
+		if (L.tied_by != user.real_name && L.refuse("untie", user))
 			return FALSE
 		user.visible_message(SPAN_NOTICE("[user] starts working at the knot on \the [host]."), SPAN_NOTICE("You start untying the knot."))
 		if (!do_after(user, LOCK_UNTIE_TIME, host) || QDELETED(host) || host_lock(host) != L)
@@ -376,6 +415,8 @@
 			return TRUE
 		var/obj/item/weapon/key/K = L.matching_key(W)
 		if (!K && L.skeleton_key(W))
+			if (L.refuse("skeleton", user))
+				return TRUE
 			if (!prob(75))
 				to_chat(user, SPAN_WARNING("The skeleton key won't turn in this lock."))
 				return TRUE
@@ -397,8 +438,11 @@
 		if ((L.kind == LOCK_KNOT && is_tool(W, TOOL_KNIFE)) || (L.kind != LOCK_KNOT && is_tool(W, TOOL_WIRECUTTER)))
 			cut_lock(host, L, W, user)
 			return TRUE
-	if (user.a_intent == I_HARM && !host_is_door(host) && is_tool(W, TOOL_CROWBAR) && L.blocks())
+	if (user.a_intent == I_HARM && is_tool(W, TOOL_CROWBAR) && L.blocks() && (!host_is_door(host) || L.kind == LOCK_PADLOCK || L.kind == LOCK_COMBO_PADLOCK))
 		force_lock(host, L, W, user)
+		return TRUE
+	if (user.a_intent != I_HARM && L.kind == LOCK_LATCH && L.locked && host_is_door(host) && host_is_shut(host) && is_tool(W, TOOL_KNIFE))
+		shim_latch(host, L, W, user)
 		return TRUE
 	return FALSE
 
@@ -458,6 +502,8 @@
 	if (!L.keyed() || !L.locked)
 		to_chat(user, SPAN_WARNING("There is nothing here to pick."))
 		return FALSE
+	if (L.refuse("pick", user))
+		return FALSE
 	var/need = 1.7
 	var/chance_scale = 35
 	switch (L.kind)
@@ -490,6 +536,8 @@
 	var/datum/lock/L = host_lock(host)
 	if (!L || !L.is_combination() || !L.locked)
 		return FALSE
+	if (L.refuse("crack", user))
+		return FALSE
 	user.visible_message(SPAN_WARNING("[user] presses an ear to \the [host] and starts turning the dial."), SPAN_NOTICE("You listen to the dial as you turn it."))
 	if (!do_after(user, LOCK_CRACK_TIME, host) || QDELETED(host) || host_lock(host) != L)
 		return FALSE
@@ -501,6 +549,8 @@
 	return FALSE
 
 /proc/cut_lock(atom/host, datum/lock/L, obj/item/W, mob/living/human/user)
+	if (L.refuse("cut", user))
+		return FALSE
 	user.visible_message(SPAN_DANGER("[user] starts cutting \the [L.name()] off \the [host]!"), SPAN_DANGER("You start cutting the [L.name()] off."))
 	if (!do_after(user, LOCK_FORCE_TIME, host) || QDELETED(host) || host_lock(host) != L)
 		return FALSE
@@ -510,6 +560,8 @@
 
 // Prising a locked container open breaks the lock and dents the container.
 /proc/force_lock(atom/host, datum/lock/L, obj/item/W, mob/living/human/user)
+	if (L.refuse("force", user))
+		return FALSE
 	user.visible_message(SPAN_DANGER("[user] starts prising \the [host] open!"), SPAN_DANGER("You start forcing the lid."))
 	playsound(get_turf(host), 'sound/effects/wooddoorhit.ogg', 60)
 	if (!do_after(user, LOCK_FORCE_TIME, host) || QDELETED(host) || host_lock(host) != L)
@@ -520,6 +572,23 @@
 		C.damage(20)
 	user.visible_message(SPAN_DANGER("[user] breaks the lock of \the [host]!"))
 	return TRUE
+
+// Slipping a thin blade between door and frame to push a spring latch back.
+// It only works on a latch: a deadbolt can't be pushed.
+/proc/shim_latch(atom/host, datum/lock/L, obj/item/W, mob/living/human/user)
+	if (host_lock_side(host, L, user) != "key")
+		return lock_hand_access(host, user)
+	if (L.refuse("shim", user))
+		return FALSE
+	user.visible_message(SPAN_WARNING("[user] slides \the [W] into the gap of \the [host]."), SPAN_NOTICE("You work \the [W] into the gap to push the latch back."))
+	if (!do_after(user, LOCK_SEARCH_TIME, host) || QDELETED(host) || host_lock(host) != L || !L.locked)
+		return FALSE
+	if (prob(clamp(30 * user.getStatCoeff("dexterity"), 10, 80)))
+		L.locked = FALSE
+		to_chat(user, SPAN_NOTICE("The latch slips back."))
+		return TRUE
+	to_chat(user, SPAN_WARNING("The latch won't slip."))
+	return FALSE
 
 // Taking a lock off: from inside, or while it is open, with its tool.
 /proc/remove_lock(atom/host, mob/living/human/user)
@@ -553,6 +622,8 @@
 	F.code = L.code
 	F.combo = L.combo
 	F.key_taken = TRUE
+	if (L.refuses)
+		F.refuses = L.refuses.Copy()
 	return F
 
 /proc/lock_examine(atom/host, mob/user)
@@ -579,6 +650,8 @@
 		var/where = host_lock_side(host, L, user)
 		side_text = where == "thumb" ? " Its thumb-turn is on your side." : (where == "key" ? " Its keyhole faces you." : "")
 	to_chat(user, SPAN_NOTICE("It has \a [L.name()], [L.locked ? "locked" : "unlocked"].[side_text]"))
+	if (L.refuses && L.refuses.len)
+		to_chat(user, SPAN_NOTICE("It looks unusually well made."))
 
 // ---- the verbs every lockable shares ------------------------------------------------
 
@@ -648,6 +721,7 @@
 	var/combo = null
 	var/key_taken = FALSE
 	var/key_type = /obj/item/weapon/key/warded
+	var/list/refuses = null		// see /datum/lock: methods this lock refuses, for events
 
 /obj/item/fitted_lock/proc/combination_lock()
 	return lock_kind == LOCK_COMBINATION || lock_kind == LOCK_COMBO_PADLOCK
@@ -664,6 +738,8 @@
 		L.code = code
 	L.combo = combo
 	L.locked = lock_kind == LOCK_SEAL
+	if (refuses)
+		L.refuses = refuses.Copy()
 	return L
 
 /obj/item/fitted_lock/attack_self(mob/user)
@@ -879,3 +955,58 @@
 #undef LOCK_CRACK_TIME
 #undef LOCK_COPY_TIME
 #undef LOCK_FORCE_TIME
+
+// ---- locks placed by mappers and event admins -----------------------------------
+
+// A mapped door, closet or storage can start with a lock: set mapped_lock to a
+// lock item path, and optionally its code, combination, whether it starts
+// locked and which defeat methods it refuses ("all" for every one). Keys for a
+// mapped keyed lock are mapped keys with the same code. A saved lock wins.
+/obj/structure/simple_door
+	var/mapped_lock = null
+	var/mapped_lock_code = 0
+	var/mapped_lock_combo = null
+	var/mapped_lock_locked = TRUE
+	var/list/mapped_lock_refuses = null
+
+/obj/structure/closet
+	var/mapped_lock = null
+	var/mapped_lock_code = 0
+	var/mapped_lock_combo = null
+	var/mapped_lock_locked = TRUE
+	var/list/mapped_lock_refuses = null
+
+/obj/structure/storage_container
+	var/mapped_lock = null
+	var/mapped_lock_code = 0
+	var/mapped_lock_combo = null
+	var/mapped_lock_locked = TRUE
+	var/list/mapped_lock_refuses = null
+
+/proc/host_apply_mapped_lock(obj/O)
+	var/path = O.vars["mapped_lock"]
+	if (!path || host_lock(O) || !ispath(path, /obj/item/fitted_lock))
+		return null
+	var/obj/item/fitted_lock/F = new path
+	if (O.vars["mapped_lock_code"])
+		F.code = O.vars["mapped_lock_code"]
+	if (O.vars["mapped_lock_combo"])
+		F.combo = uppertext("[O.vars["mapped_lock_combo"]]")
+	var/list/refuses = O.vars["mapped_lock_refuses"]
+	if (islist(refuses))
+		F.refuses = refuses.Copy()
+	var/datum/lock/L = F.make_lock(null)
+	qdel(F)
+	if (host_is_door(O))
+		var/obj/structure/simple_door/D = O
+		L.side = D.inner_dir > 0 ? turn(D.inner_dir, 180) : D.door_passage_axis()
+	if (L.kind != LOCK_SEAL && L.kind != LOCK_CATCH)
+		L.locked = O.vars["mapped_lock_locked"] ? TRUE : FALSE
+	host_set_lock(O, L)
+	O.vars["mapped_lock"] = null
+	return L
+
+/obj/structure/closet/New()
+	..()
+	if (mapped_lock)
+		host_apply_mapped_lock(src)
