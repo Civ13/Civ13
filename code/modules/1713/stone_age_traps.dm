@@ -277,7 +277,9 @@
 
 // ---------------------------------------------------------------- fish weir
 // Fish collect in the weir over time, up to WEIR_CAP. Unlike a fish pen it
-// needs no stocking or feeding, but it never holds many fish.
+// needs no stocking or feeding, but it never holds many fish. Every fish comes
+// out of the fishing ground the weir stands in (fishing_grounds.dm), so a weir
+// in a fished-out stretch stays empty until the fish come back.
 /obj/structure/stone_age_trap/weir
 	name = "fish weir"
 	desc = "A fence of stakes and woven wicker standing in the river. Fish swim in through the mouth and can't find the way out."
@@ -307,6 +309,8 @@
 		if (fish >= WEIR_CAP)
 			break
 		if (prob(chance))
+			if (!fish_ground_trap_catch(loc))
+				break // this stretch has no more fish to give for now
 			fish++
 	last_roll = trap_minutes_text(last + steps * roll_interval)
 	update_icon()
@@ -317,6 +321,10 @@
 	if (!weir_water_ok(loc))
 		to_chat(user, SPAN_WARNING("It is not standing in shallow fresh water, so it catches nothing."))
 	to_chat(user, fish ? SPAN_NOTICE("[fish] fish [fish == 1 ? "is" : "are"] trapped in it.") : "It is empty.")
+	if (!fish && weir_water_ok(loc))
+		var/datum/fishing_ground/G = fishing_ground_at(loc, FALSE)
+		if (G && G.available() < 1)
+			to_chat(user, SPAN_WARNING("No fish are running in this stretch. It has been fished out for now."))
 
 /obj/structure/stone_age_trap/weir/attack_hand(mob/user)
 	if (!ishuman(user) || !user.Adjacent(src))
@@ -325,8 +333,10 @@
 	if (fish > 0)
 		var/count = fish
 		fish = 0
+		var/kind = fish_water_kind(loc)
 		for (var/i = 1 to count)
-			new /obj/item/weapon/reagent_containers/food/snacks/rawfish(get_turf(user))
+			var/fish_path = kind ? fish_catch_type(loc, kind, FALSE) : /obj/item/weapon/reagent_containers/food/snacks/rawfish
+			new fish_path(get_turf(user))
 		user.visible_message(SPAN_NOTICE("[user] scoops fish out of \the [src]."), SPAN_NOTICE("You scoop [count] fish out of \the [src]."))
 		note_field_work(user, "forage")
 		update_icon()

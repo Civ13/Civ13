@@ -1318,6 +1318,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/reactor_fuel_processor" = "nuclear_power",
 		// --- early_economy (15) ---
 		"/obj/item/clothing/accessory/storage/coinpouch" = "early_economy",
+		"/obj/item/coin_die" = "early_economy",
 		"/obj/item/stack/money/coppercoin" = "early_economy",
 		"/obj/item/stack/money/goldcoin" = "early_economy",
 		"/obj/item/stack/money/silvercoin" = "early_economy",

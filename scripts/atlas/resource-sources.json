@@ -4323,102 +4323,102 @@
     },
     {
       "file": "code/game/objects/structures/sea.dm",
-      "line": 97,
-      "context": "/obj/structure/fishing_cage/proc/generate_fish()",
+      "line": 114,
+      "context": "/obj/structure/fishing_cage/proc/pick_catch(turf/T)",
       "nearest_condition": "if (prob(25))",
       "objects": [
         "/obj/item/weapon/reagent_containers/food/snacks/octopus"
       ],
       "reagents": [],
-      "expression": "found = /obj/item/weapon/reagent_containers/food/snacks/octopus"
+      "expression": "picked = /obj/item/weapon/reagent_containers/food/snacks/octopus"
     },
     {
       "file": "code/game/objects/structures/sea.dm",
-      "line": 99,
-      "context": "/obj/structure/fishing_cage/proc/generate_fish()",
+      "line": 116,
+      "context": "/obj/structure/fishing_cage/proc/pick_catch(turf/T)",
       "nearest_condition": "else if (prob(50))",
       "objects": [
         "/obj/item/weapon/reagent_containers/food/snacks/rawlobster"
       ],
       "reagents": [],
-      "expression": "found = /obj/item/weapon/reagent_containers/food/snacks/rawlobster"
+      "expression": "picked = /obj/item/weapon/reagent_containers/food/snacks/rawlobster"
     },
     {
       "file": "code/game/objects/structures/sea.dm",
-      "line": 101,
-      "context": "/obj/structure/fishing_cage/proc/generate_fish()",
-      "nearest_condition": "else if (prob(50))",
+      "line": 118,
+      "context": "/obj/structure/fishing_cage/proc/pick_catch(turf/T)",
+      "nearest_condition": "else",
       "objects": [
         "/obj/item/weapon/reagent_containers/food/snacks/rawfish/cod"
       ],
       "reagents": [],
-      "expression": "found = /obj/item/weapon/reagent_containers/food/snacks/rawfish/cod"
+      "expression": "picked = /obj/item/weapon/reagent_containers/food/snacks/rawfish/cod"
     },
     {
       "file": "code/game/objects/structures/sea.dm",
-      "line": 103,
-      "context": "/obj/structure/fishing_cage/proc/generate_fish()",
+      "line": 120,
+      "context": "/obj/structure/fishing_cage/proc/pick_catch(turf/T)",
       "nearest_condition": "if (prob(25))",
       "objects": [
         "/obj/item/weapon/reagent_containers/food/snacks/pink_squid"
       ],
       "reagents": [],
-      "expression": "found = /obj/item/weapon/reagent_containers/food/snacks/pink_squid"
+      "expression": "picked = /obj/item/weapon/reagent_containers/food/snacks/pink_squid"
     },
     {
       "file": "code/game/objects/structures/sea.dm",
-      "line": 107,
-      "context": "/obj/structure/fishing_cage/proc/generate_fish()",
+      "line": 123,
+      "context": "/obj/structure/fishing_cage/proc/pick_catch(turf/T)",
       "nearest_condition": "if (prob(50))",
       "objects": [
         "/obj/item/weapon/reagent_containers/food/snacks/rawfish"
       ],
       "reagents": [],
-      "expression": "found = /obj/item/weapon/reagent_containers/food/snacks/rawfish"
+      "expression": "picked = /obj/item/weapon/reagent_containers/food/snacks/rawfish"
     },
     {
       "file": "code/game/objects/structures/sea.dm",
-      "line": 109,
-      "context": "/obj/structure/fishing_cage/proc/generate_fish()",
+      "line": 125,
+      "context": "/obj/structure/fishing_cage/proc/pick_catch(turf/T)",
       "nearest_condition": "else if (prob(50))",
       "objects": [
         "/obj/item/shellfish"
       ],
       "reagents": [],
-      "expression": "found =/obj/item/shellfish"
+      "expression": "picked = /obj/item/shellfish"
     },
     {
       "file": "code/game/objects/structures/sea.dm",
-      "line": 113,
-      "context": "/obj/structure/fishing_cage/proc/generate_fish()",
-      "nearest_condition": "else if (istype(loc, /turf/floor/beach/water/jungle) || istype(loc, /turf/floor/beach/water/deep/jungle) || istype(loc, /turf/floor/beach/water/flooded))",
+      "line": 129,
+      "context": "/obj/structure/fishing_cage/proc/pick_catch(turf/T)",
+      "nearest_condition": "else if (istype(T, /turf/floor/beach/water/jungle) || istype(T, /turf/floor/beach/water/deep/jungle) || istype(T, /turf/floor/beach/water/flooded))",
       "objects": [
         "/obj/item/weapon/reagent_containers/food/snacks/rawfish/salmon"
       ],
       "reagents": [],
-      "expression": "found = /obj/item/weapon/reagent_containers/food/snacks/rawfish/salmon"
+      "expression": "picked = /obj/item/weapon/reagent_containers/food/snacks/rawfish/salmon"
     },
     {
       "file": "code/game/objects/structures/sea.dm",
-      "line": 120,
-      "context": "/obj/structure/fishing_cage/proc/generate_fish()",
-      "nearest_condition": "if (prob(50))",
+      "line": 131,
+      "context": "/obj/structure/fishing_cage/proc/pick_catch(turf/T)",
+      "nearest_condition": "else if (prob(50))",
       "objects": [
         "/obj/item/weapon/reagent_containers/food/snacks/rawfish/salmon"
       ],
       "reagents": [],
-      "expression": "found =/obj/item/weapon/reagent_containers/food/snacks/rawfish/salmon"
+      "expression": "picked = /obj/item/weapon/reagent_containers/food/snacks/rawfish/salmon"
     },
     {
       "file": "code/game/objects/structures/sea.dm",
-      "line": 122,
-      "context": "/obj/structure/fishing_cage/proc/generate_fish()",
-      "nearest_condition": "if (prob(50))",
+      "line": 133,
+      "context": "/obj/structure/fishing_cage/proc/pick_catch(turf/T)",
+      "nearest_condition": "else",
       "objects": [
         "/obj/item/shellfish"
       ],
       "reagents": [],
-      "expression": "found =/obj/item/shellfish"
+      "expression": "picked = /obj/item/shellfish"
     },
     {
       "file": "code/game/objects/structures/wild.dm",

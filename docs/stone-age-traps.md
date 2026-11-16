@@ -34,7 +34,9 @@ nothing while nobody is near them.
 ## Fish weir
 
 Set like a snare but in water. Every 15 minutes it has a 35% chance (half in winter) to gain a
-fish, up to 4. No stocking or feeding, unlike the fish pen. Use it with an empty hand to scoop the
+fish, up to 4. No stocking or feeding, unlike the fish pen. Each fish comes out of the fishing
+ground the weir stands in ([fishing grounds](fishing-grounds.md)): in a fished-out stretch it stays
+empty until fish return, and scooping gives the fish of that water (salmon or plain fish). Use it with an empty hand to scoop the
 fish out, or, when empty, to pull it up (6 s).
 
 ## Pit traps

@@ -113,6 +113,19 @@ var/trap_runtime_error = FALSE
 	for (var/obj/item/weapon/reagent_containers/food/snacks/rawfish/F in locate(21, 3, 1))
 		count++
 	trap_check(count == WEIR_CAP && W.fish == 0 && W.icon_state == "fish_weir", "the fish are scooped out")
+	// The weir's fish are the river's: they come out of the fishing ground it stands in.
+	var/datum/fishing_ground/G = fishing_ground_at(locate(21, 2, 1), FALSE)
+	trap_check(G && G.stock == G.capacity - WEIR_CAP, "the weir's fish came out of the fishing ground")
+	G.take(G.available())
+	W.last_roll = trap_minutes_text(now - 100000)
+	W.settle(now)
+	trap_check(W.fish == 0 && W.icon_state == "fish_weir", "a weir in a fished-out stretch stays empty")
+	G.stock = 1
+	W.last_roll = trap_minutes_text(now - 100000)
+	W.settle(now)
+	trap_check(W.fish == 1 && G.available() == 0, "and takes no more than the stretch has left")
+	W.fish = 0
+	W.update_icon()
 	var/obj/structure/stone_age_trap/weir/D = new(locate(5, 20, 1))
 	D.arm()
 	D.last_roll = trap_minutes_text(now - 100000)

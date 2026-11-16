@@ -13,10 +13,18 @@ Tests: `tests/fishing_grounds/`.
   spear, harpoon or sharpened stick works in shallow water only. Over deep
   water you need a deck, bridge or pier under you. The target tile must be open
   water, not a hull or a covered tile.
-- **Odds:** a pole or net has 30% after 15 seconds, a rod 40% after 12, a spear
+- **Odds:** a pole has 30% after 15 seconds, a rod 40% after 12, a spear
   35% after 10, a sharpened stick 20% after 12. Bait adds 30 points to a line.
   The chance is scaled by how full the ground is, from a quarter at empty to
   the whole at full, and by 0.6 in the open ocean.
+- **Cast net:** a fishing net takes 15 seconds a throw and has three separate
+  25% chances, so one throw can land up to three fish. It takes no bait. It
+  feeds more people than a line and empties a ground faster.
+- **Set gear:** a fish weir and a fishing cage take their fish from the ground
+  they stand in (`fish_ground_trap_catch()`), one a catch. In a fished-out
+  stretch a weir stays empty and a cage brings up only shellfish, crabs,
+  lobster and the like, which are not counted as stock. A fish pen is a closed
+  stock of its own and takes nothing.
 - **Catch:** rivers give salmon or plain fish; the coast plain fish or cod; the
   open ocean mostly cod, with squid on a baited line; swamps plain fish.
 - **Regrowth:** worked out from elapsed time when the ground is next asked.
