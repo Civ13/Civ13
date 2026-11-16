@@ -77,7 +77,7 @@ var/global/datum/nomads_lifecycle_control/nomads_lifecycle = new
 
 // A standby world has no lifecycle operation of its own, so its replies echo the host's
 // handover operation (standby_operation) in "operation" like any accepted request.
-// A standby world (DreamDaemon -params standby=1) reports "waiting" until the host names the
+// A standby world (DreamDaemon -params standby=PORT) reports "waiting" until the host names the
 // save, "loading" while it restores it and "loaded" until standby_open makes it the region.
 /datum/nomads_lifecycle_control/proc/standby_state()
 	if(!persistence_restart.standby) return null

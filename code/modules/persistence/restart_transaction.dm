@@ -71,7 +71,7 @@ var/global/list/persistence_frozen_levels = list()
 /datum/persistence_restart_transaction
 	var/busy = FALSE
 	var/startup_hold = FALSE
-	// A standby world (DreamDaemon -params standby=1): booted beside the running world by a
+	// A standby world (DreamDaemon -params standby=PORT): booted beside the running world by a
 	// handover, it holds like a restart boot but waits for the host to name the save.
 	var/standby = FALSE
 	// The running world's side of a handover: null, "saving", "saved", "released" or "cancelled".
@@ -94,9 +94,20 @@ var/global/list/persistence_frozen_levels = list()
 /datum/persistence_restart_transaction/proc/exists()
 	return fexists(intent_path)
 
+// TRUE when DreamDaemon was started as a standby (-params standby=PORT) and this
+// world still runs on that port.
+/proc/persistence_standby_launch(value, port)
+	if(!istext(value) || !length(value) || length(value) > 5)
+		return FALSE
+	var/launched = text2num(value)
+	return isnum(launched) && launched == port
+
 /datum/persistence_restart_transaction/proc/detect_startup()
 	startup_hold = exists()
-	if(!startup_hold && islist(world.params) && world.params["standby"])
+	// Only on the port it was launched for: a standby that took over a region keeps
+	// its launch parameters, and a reboot on the region's port came back as a standby
+	// waiting for a move that never came (North America and Jungle, 2026-11-16).
+	if(!startup_hold && persistence_standby_launch(islist(world.params) ? world.params["standby"] : null, world.port))
 		// Held like a restart boot, but the intent comes later (standby_load).
 		standby = TRUE
 		startup_hold = TRUE
