@@ -240,5 +240,11 @@
     "tools": [],
     "inputs": {},
     "water": 10
+  },
+  "/obj/covers/straw_wall": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/stack/hay": 4
+    }
   }
 }
