@@ -80,12 +80,15 @@ class BackendContract(unittest.TestCase):
             self.assertLess(act.index('in_range(src, user)'), act.index('action == "vend"'))
             self.assertLess(act.index(row), act.index('product_records[key]'))
             self.assertNotRegex(act, r'\busr\b|href_list')
-        # The sales Topic is left with the owner's management page only.
-        topic = sales.split('/obj/structure/vending/sales/Topic(href, href_list)\n', 1)[1].split('\n//VENDING MACHINES', 1)[0]
-        self.assertIn('if (href_list["manage"])', topic)
-        for moved in ('"vend"', '"cancelpurchase"', '"remove_money"'):
-            self.assertNotIn(moved, topic)
-        self.assertLess(topic.index('in_range(src, usr)'), topic.index('if (href_list["manage"])'))
+        # The owner's management page is a panel window with its own checked handler.
+        self.assertNotIn('/obj/structure/vending/sales/Topic(', sales)
+        self.assertNotIn('window=vendor_management', sales)
+        manage = sales.split('/obj/structure/vending/sales/proc/manage_act(action, list/params, mob/user)\n', 1)[1].split('\n/', 1)[0]
+        for check in ('user.stat || user.restrained()', 'in_range(src, user)', 'find_company_member(user, owner)', 'index > product_records.len'):
+            self.assertLess(manage.index(check), manage.index('switch (action)'))
+        self.assertIn('fiat.currency_list[new_currency][5]', manage)
+        self.assertIn('sanitize("[value]", 50)', manage)
+        self.assertNotRegex(manage, r'\busr\b|href_list|locate\(')
 
     def test_status_only_updates_and_ready_snapshot(self):
         self.assertIn('if (!isnull(data))\n\t\tlatest_data = data', DM)
