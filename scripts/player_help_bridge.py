@@ -70,11 +70,11 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '08d061e6252e4d4ec6c86ac7456f881853b643c2'
+WIKI_REVIEWED_REVISION = 'ebd4f3e700649d92497fc6f428919463d1fa27f0'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
-    'guides/Guide_to_Character.md': ('c62d23a3f26db62be16140ff9a13ea5cb11c16a4f899213cae19a27297477826', 'character skills traits languages'),
-    'guides/Guide_to_Peoples_and_Languages.md': ('fd2d7fd795ca8fe2bf1ffe3a4ce9296efde555b23c41a4b357e87d8b7108af07', 'peoples people origin ethnicity language languages learn teach lesson mother tongue translate accent'),
+    'guides/Guide_to_Character.md': ('2d7872e9f19303d3077a1485496ebd5ba26b8dea0b26df9848d9a6cb506ad6a8', 'character skills traits languages'),
+    'guides/Guide_to_Peoples_and_Languages.md': ('1e10b1f26c4e2f6d2659b32f0e6b045bb04b2129516382a37479574b9f107bcc', 'peoples people origin ethnicity language languages learn teach lesson mother tongue translate accent'),
     'guides/Guide_to_Chemistry.md': ('c0c6b91965c12da9574761698cbc7d718d225b54b5ca7916ce598bcee7ba001f', 'chemistry chemicals reactions reagents'),
     'guides/Guide_to_Combat.md': ('006296f6e7501eeb36f4b486ee3a2b2a85567ecef74d0616dd2a04c2e42f53b2', 'combat fight fighting intent aim shoot melee grenade cover'),
     'guides/Guide_to_Communications.md': ('2bbf705f1e66f3ee37d2d70f46ffa9420587a9b7ae0d718f3e09d4ab9b7881e6', 'communications radio transmit'),
