@@ -69,6 +69,8 @@
 // instead of "Nomads (Temperate)". The id stays "barren" for saves and travel.
 /obj/map_metadata/nomads/barren
 	title = "Mars"
+	// z 1 is unformed rock that forms as it is dug (dug_underground.dm).
+	underground_compiled_z = 1
 	description = "A cold red world with thin, unbreathable air. Settlers live in sealed habitats and walk the surface in pressure suits."
 	battle_name = "settlement of Mars"
 	mission_start_message = "<big>A cold red world with thin, unbreathable air. Settlers who land here live in sealed habitats and walk the surface in pressure suits.</big>"

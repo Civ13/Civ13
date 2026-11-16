@@ -517,10 +517,16 @@
 				if (do_after(user, digging_tunnel_time, user.loc))
 					if (!TB.is_diggable)
 						return
+					// Unformed rock below (dug_underground.dm) forms first;
+					// solid stone stops the shaft.
+					var/turf/BL = dug_underground_form(get_turf(locate(user.x, user.y, user.z-1)))
+					if (istype(BL, /turf/wall))
+						to_chat(user, SPAN_WARNING("You hit solid stone. You cannot dig down here."))
+						return
 					new/obj/structure/multiz/ladder/ww2/tunneltop/pit(user.loc)
-					var/turf/BL = get_turf(locate(user.x, user.y, user.z-1))
-					if (istype(BL, /turf/floor/dirt/underground))
+					if (istype(BL, /turf/floor/dirt/underground) || dug_underground_unformed(BL))
 						BL.ChangeTurf(/turf/floor/dirt)
+					dug_underground_form_around(locate(user.x, user.y, user.z-1))
 					user.visible_message("<span class='danger'>[user] finishes digging the tunnel entrance.</span>", "<span class='danger'>You finish digging the tunnel entrance.</span>")
 					excavation_shaft_spoil(user)
 					if (ishuman(user))

@@ -39,7 +39,7 @@
 /proc/create_startup_compatibility_overlays()
 	var/work = 0
 	for (var/turf/T in world)
-		if (!T.lighting_overlay && !T.omit_reserved_lighting_overlay())
+		if (!T.lighting_overlay && !T.lighting_never && !T.omit_reserved_lighting_overlay())
 			var/area/A = get_area(T)
 			if (A && A.dynamic_lighting)
 				PoolOrNew(/atom/movable/lighting_overlay, T)
