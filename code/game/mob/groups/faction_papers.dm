@@ -1,4 +1,4 @@
-// Census, citizenship papers, travel passes and border doors
+// Census, citizenship papers, travel passes, permits and border doors
 // (docs/faction-papers.md). Anyone with a faction's papers power (the leader,
 // an appointed office holder or the bearer of such an office's seal,
 // faction_offices.dm) issues sealed papers to a person standing beside them:
@@ -24,6 +24,8 @@
 #define PAPERS_ADMIT_PASSES 2
 
 var/global/list/faction_paper_items = list()
+// Kinds of papers and what they are called. Permits are in faction_permits.dm.
+var/global/list/faction_paper_kinds = list("citizenship" = "citizenship papers", "pass" = "travel pass", "build" = "building permit", "trade" = "trading licence")
 
 // --- Register ------------------------------------------------------------------
 
@@ -46,7 +48,7 @@ var/global/list/faction_paper_items = list()
 	return R
 
 /proc/papers_row_valid(list/row)
-	return islist(row) && row.len == 6 && (row[1] in list("citizenship", "pass")) && istext(row[2]) && istext(row[3]) && length(row[3]) && isnum(row[4]) && isnum(row[5]) && istext(row[6])
+	return islist(row) && row.len == 6 && (row[1] in faction_paper_kinds) && istext(row[2]) && istext(row[3]) && length(row[3]) && isnum(row[4]) && isnum(row[5]) && istext(row[6])
 
 /obj/map_metadata/proc/papers_normalize()
 	var/list/S = papers_state()
@@ -59,6 +61,7 @@ var/global/list/faction_paper_items = list()
 		for (var/serial in open.Copy())
 			if (!istext(serial) || !papers_row_valid(open[serial]))
 				open -= serial
+		permits_required(faction)
 
 /obj/map_metadata/proc/papers_rename(old_name, new_name)
 	faction_rename_assoc_key(papers_state(), old_name, new_name)
@@ -69,7 +72,7 @@ var/global/list/faction_paper_items = list()
 
 // Registers papers and returns the serial, or null when the register is full.
 /obj/map_metadata/proc/papers_issue(faction, kind, name, account, days, issuer)
-	if (!(kind in list("citizenship", "pass")) || !istext(account) || !length(account))
+	if (!(kind in faction_paper_kinds) || !istext(account) || !length(account))
 		return null
 	var/list/R = papers_record(faction)
 	var/list/open = R["open"]
@@ -79,7 +82,12 @@ var/global/list/faction_paper_items = list()
 	R["seq"]++
 	var/serial = "[R["seq"]]"
 	var/now = recruitment_now()
-	var/expires = kind == "pass" ? now + clamp(round(days), 1, PAPERS_PASS_DAYS_MAX) * PAPERS_DAY : 0
+	// A pass always runs out; a permit may (0 days: until revoked); citizenship never does.
+	var/expires = 0
+	if (kind == "pass")
+		expires = now + clamp(round(days), 1, PAPERS_PASS_DAYS_MAX) * PAPERS_DAY
+	else if (kind != "citizenship" && isnum(days) && days >= 1)
+		expires = now + clamp(round(days), 1, PAPERS_PASS_DAYS_MAX) * PAPERS_DAY
 	open[serial] = list(kind, istext(name) ? name : "", account, now, expires, istext(issuer) ? issuer : "")
 	return serial
 
@@ -139,17 +147,24 @@ var/global/list/faction_paper_items = list()
 	update_papers_name()
 
 /obj/item/faction_papers/proc/update_papers_name()
-	icon_state = kind == "pass" ? "paper_stamp-gaul" : "paper_seal-gaul"
+	icon_state = kind == "citizenship" ? "paper_seal-gaul" : "paper_stamp-gaul"
 	if (!length(faction))
 		name = initial(name)
 		desc = initial(desc)
 		return
-	if (kind == "pass")
-		name = "travel pass to [faction] for [holder]"
-		desc = "[faction] lets [holder] pass through its lands. No. [serial]."
-	else
-		name = "citizenship papers of [faction] for [holder]"
-		desc = "[faction] counts [holder] among its citizens. No. [serial]."
+	switch (kind)
+		if ("pass")
+			name = "travel pass to [faction] for [holder]"
+			desc = "[faction] lets [holder] pass through its lands. No. [serial]."
+		if ("build")
+			name = "building permit of [faction] for [holder]"
+			desc = "[faction] lets [holder] build on its registered land. No. [serial]."
+		if ("trade")
+			name = "trading licence of [faction] for [holder]"
+			desc = "[faction] lets [holder] set up a stall on its registered land. No. [serial]."
+		else
+			name = "citizenship papers of [faction] for [holder]"
+			desc = "[faction] counts [holder] among its citizens. No. [serial]."
 
 /obj/item/faction_papers/proc/in_force()
 	return map && length(faction) && map.papers_row(faction, serial) && TRUE
@@ -192,7 +207,7 @@ var/global/list/faction_paper_items = list()
 		if (P.faction != faction || P.holder_account != account)
 			continue
 		var/list/row = map.papers_row(faction, P.serial)
-		if (row && row[3] == account && (row[1] == "citizenship" || admits >= PAPERS_ADMIT_PASSES))
+		if (row && row[3] == account && (row[1] == "citizenship" || (row[1] == "pass" && admits >= PAPERS_ADMIT_PASSES)))
 			return TRUE
 	return FALSE
 
@@ -252,15 +267,18 @@ var/global/list/faction_paper_items = list()
 		lines += "No offices are defined."
 	papers_prune(faction)
 	var/list/P = papers_record(faction)
-	var/citizens = 0
-	var/passes = 0
+	var/list/counts = list()
 	for (var/serial in P["open"])
 		var/list/row = P["open"][serial]
-		if (row[1] == "pass")
-			passes++
-		else
-			citizens++
-	lines += "Papers in force: [citizens] citizenship, [passes] travel pass\s."
+		counts[row[1]] = (counts[row[1]] || 0) + 1
+	var/list/parts = list()
+	for (var/kind in faction_paper_kinds)
+		if (counts[kind])
+			parts += "[counts[kind]] [faction_paper_kinds[kind]]\s"
+	lines += "Papers in force: [parts.len ? english_list(parts) : "none"]."
+	var/list/require = permits_required(faction)
+	if (require.len)
+		lines += "Required on its registered land: [english_list(require)]."
 	return lines
 
 /obj/map_metadata/proc/papers_lines(faction)
@@ -269,7 +287,7 @@ var/global/list/faction_paper_items = list()
 	var/list/P = papers_record(faction)
 	for (var/serial in P["open"])
 		var/list/row = P["open"][serial]
-		lines += "No. [serial]: [row[1] == "pass" ? "travel pass" : "citizenship"] for [row[2]], issued by [row[6]][row[5] ? ", good until [faction_seal_date(row[5])]" : ""]."
+		lines += "No. [serial]: [faction_paper_kinds[row[1]]] for [row[2]], issued by [row[6]][row[5] ? ", good until [faction_seal_date(row[5])]" : ""]."
 	if (lines.len == 1)
 		lines += "[faction] has no papers in force."
 	return lines
@@ -286,7 +304,7 @@ var/global/list/faction_paper_items = list()
 	var/clerk = map.faction_power(src, faction, "papers")
 	var/list/choices = list("Read the census", "Read the papers in force")
 	if (clerk)
-		choices += list("Issue citizenship papers", "Issue a travel pass", "Revoke papers", "Set the border doors beside me")
+		choices += list("Issue citizenship papers", "Issue a travel pass", "Issue a building permit", "Issue a trading licence", "Revoke papers", "Set the border doors beside me", "Require permits on our land")
 	choices += "Cancel"
 	var/choice = WWinput(src, "Papers of [faction]", "Faction papers", "Read the census", choices)
 	if (!choice || choice == "Cancel" || !(choice in choices) || civilization != faction || stat != CONSCIOUS)
@@ -302,13 +320,19 @@ var/global/list/faction_paper_items = list()
 			papers_issue_to(faction, "citizenship")
 		if ("Issue a travel pass")
 			papers_issue_to(faction, "pass")
+		if ("Issue a building permit")
+			papers_issue_to(faction, "build")
+		if ("Issue a trading licence")
+			papers_issue_to(faction, "trade")
+		if ("Require permits on our land")
+			permits_require_menu(faction)
 		if ("Revoke papers")
 			map.papers_prune(faction)
 			var/list/R = map.papers_record(faction)
 			var/list/options = list()
 			for (var/serial in R["open"])
 				var/list/row = R["open"][serial]
-				options["No. [serial]: [row[1] == "pass" ? "travel pass" : "citizenship"] for [row[2]]"] = serial
+				options["No. [serial]: [faction_paper_kinds[row[1]]] for [row[2]]"] = serial
 			if (!options.len)
 				to_chat(src, SPAN_NOTICE("[faction] has no papers in force."))
 				return
@@ -345,7 +369,7 @@ var/global/list/faction_paper_items = list()
 	if (!people.len)
 		to_chat(src, SPAN_NOTICE("Papers are issued to someone standing beside you."))
 		return
-	var/what = kind == "pass" ? "a travel pass" : "citizenship papers"
+	var/what = kind == "citizenship" ? "citizenship papers" : "a [faction_paper_kinds[kind]]"
 	var/pick = WWinput(src, "Issue [what] to whom?", "Papers", "Cancel", people + "Cancel")
 	if (!pick || pick == "Cancel" || !(pick in people))
 		return
@@ -353,6 +377,10 @@ var/global/list/faction_paper_items = list()
 	if (kind == "pass")
 		days = player_input(src, "How many days is the pass good for (1 to [PAPERS_PASS_DAYS_MAX])?", "Travel pass", 7, "num", null, TRUE)
 		if (!isnum(days) || days < 1)
+			return
+	else if (kind != "citizenship")
+		days = player_input(src, "How many days is it good for (1 to [PAPERS_PASS_DAYS_MAX], or 0 until revoked)?", capitalize(faction_paper_kinds[kind]), 0, "num", null, TRUE)
+		if (!isnum(days) || days < 0)
 			return
 	var/mob/living/human/M = people[pick]
 	// Everything is checked again after the prompts.

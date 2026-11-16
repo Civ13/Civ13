@@ -1295,6 +1295,11 @@ SUITES = {
         'paths': ('tests/stone_age_rites/',), 'shared_paths': (
             'code/modules/1713/stone_age_rites.dm', 'icons/obj/stone_age_rites.dmi',
             'code/game/objects/items/stacks/stack.dm')},
+    # Building permits and trading licences (the native probe is tests/faction_permits/probe.dm).
+    'faction_permits': {'files': ('tests/faction_permits/test_source.py',),
+        'paths': ('tests/faction_permits/',), 'shared_paths': (
+            'code/game/mob/groups/faction_permits.dm', 'code/game/mob/groups/faction_papers.dm',
+            'code/game/mob/groups/land_registry.dm', 'code/game/objects/items/stacks/craft_guards.dm')},
     # Treaties between factions (the native probe is tests/faction_treaties/probe.dm).
     'faction_treaties': {'files': ('tests/faction_treaties/test_source.py',),
         'paths': ('tests/faction_treaties/',), 'shared_paths': (
@@ -1303,7 +1308,8 @@ SUITES = {
     # Census, citizenship papers, passes and border doors (the native probe is tests/faction_papers/probe.dm).
     'faction_papers': {'files': ('tests/faction_papers/test_source.py',),
         'paths': ('tests/faction_papers/',), 'shared_paths': (
-            'code/game/mob/groups/faction_papers.dm', 'code/game/objects/structures/key_doors/key_door.dm',
+            'code/game/mob/groups/faction_papers.dm', 'code/game/mob/groups/faction_permits.dm',
+            'code/game/objects/structures/key_doors/key_door.dm',
             'code/game/mob/groups/faction_offices.dm', 'code/game/mob/groups/faction_roster.dm',
             'code/game/mob/groups/factions.dm')},
     # Bills of exchange and treasury notes (the native probe is tests/faction_bills/probe.dm).
