@@ -155,5 +155,21 @@ class CraftNeeds(unittest.TestCase):
             self.assertEqual(NEEDS[product].get('water'), 10, product)
 
 
+    def test_logs_and_sawn_planks_both_pay_for_wood(self):
+        # Player report 2026-11-16: the iron sickle asked for a "wooden plank"
+        # (the log stack's old name) and never counted a sawn plank.
+        self.assertIn('/obj/item/stack/material/wood = list(/obj/item/stack/material/woodplank)', SOURCE)
+        self.assertIn('/obj/item/stack/material/wood = "wood (a log or a plank)"', SOURCE)
+        stack = SOURCE[SOURCE.index('/proc/craft_need_stack('):SOURCE.index('// The loose items')]
+        self.assertIn('craft_need_alternates[stack_type]', stack)
+        self.assertIn('istype(S, accepted_type)', stack)
+        self.assertNotIn('istype(S, stack_type)', stack)
+        lines = SOURCE[SOURCE.index('/proc/craft_need_lines('):SOURCE.index('/proc/craft_needs_refusal(')]
+        self.assertIn('craft_need_input_names[input_type]', lines)
+        self.assertIn('[amount] [shown_name] (held or at your feet)', lines)
+        for product, need in NEEDS.items():
+            self.assertNotIn('/obj/item/stack/material/woodplank', need['inputs'], product)
+
+
 if __name__ == '__main__':
     unittest.main()

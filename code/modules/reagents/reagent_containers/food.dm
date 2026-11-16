@@ -90,6 +90,8 @@
 			decaytimer += IH.is_cold() ? 50 : 300 // packed with snow it keeps food like a freezer
 		else if (istype(loc, /obj/structure/closet/crate/freezer))
 			decaytimer += 50 //to be readjusted according to gameplay, since freezers don't require power
+		else if (istype(loc, /obj/item/weapon/storage/internal))
+			decaytimer += storage_food_decay_step(loc) // a jar or pit keeps food longer (stone_age_storage.dm)
 		else if (isturf(loc) || istype(loc, /obj/structure/cutting_board)) // Exposed board food ages like loose food.
 			decaytimer += 600
 		else // Closed cans already returned above; opened cans age like ordinary storage.
