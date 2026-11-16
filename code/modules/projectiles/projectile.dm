@@ -670,6 +670,15 @@
 			var/obj/O = AM
 			if (O != original && !istype(O, /obj/structure/vehicleparts/frame) && height_passes_over(los_target_top(O)))
 				continue
+			// Arrow slits and battlements cover one side only (castle_defences.dm).
+			var/cover_verdict = directional_cover_verdict(O, src)
+			if (cover_verdict == DIRECTIONAL_COVER_PASS)
+				continue
+			if (cover_verdict == DIRECTIONAL_COVER_BLOCK)
+				O.pre_bullet_act(src)
+				O.bullet_act(src, def_zone)
+				passthrough = FALSE
+				continue
 			if ((istype(src, /obj/item/projectile/magic/pushum) || istype(src, /obj/item/projectile/magic/pullus)) && !O.anchored)
 				do_bullet_act(O)
 				on_impact(T)
