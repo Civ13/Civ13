@@ -8,6 +8,7 @@
 	anchored = TRUE
 	var/shattered = FALSE
 	var/list/ui_users = list()
+	var/item_type = /obj/item/mirror // what a hammer takes down
 	not_movable = FALSE
 	not_disassemblable = FALSE
 
@@ -47,7 +48,7 @@
 
 /obj/structure/mirror/attackby(obj/item/I as obj, mob/user as mob)
 	if ((is_tool(I, TOOL_HAMMER)) && (!shattered))
-		var/obj/item/mirror/S = new(loc)
+		var/obj/item/mirror/S = new item_type(loc)
 		to_chat(user, "You unfasten \the [S] with your [I].")
 		qdel(src)
 		return
@@ -100,6 +101,7 @@
 	icon_state = "mirror"
 	w_class = ITEM_SIZE_NORMAL		//big
 	value = 0
+	var/structure_type = /obj/structure/mirror // what a hammer fastens up
 
 /obj/item/mirror/attackby(obj/item/H as obj, mob/user as mob)
 	if (is_tool(H, TOOL_HAMMER) && isturf(user.loc))
@@ -107,7 +109,7 @@
 		if (direction)
 			if (!can_fasten(user, H))
 				return
-			var/obj/structure/mirror/S = new(user.loc)
+			var/obj/structure/mirror/S = new structure_type(user.loc)
 			switch(direction)
 				if ("North")
 					S.pixel_y = 32
