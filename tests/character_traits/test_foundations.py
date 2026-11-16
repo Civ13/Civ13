@@ -10,6 +10,7 @@ PREFS = 'code/modules/client/preferencesSQLite/preferences.dm'
 SAVE = 'code/modules/client/preferencesSQLite/preferences_saving&loading&del.dm'
 LIFE = 'code/game/mob/living/carbon/human/human_life.dm'
 PLAYSTYLE = 'code/game/mob/living/carbon/human/playstyle_traits.dm'
+SETUP = 'code/modules/client/preferencesSQLite/character_setup_ui.dm'
 
 
 def read(path):
@@ -102,18 +103,21 @@ class TraitFoundations(unittest.TestCase):
             decoded = encoded.split('|') if encoded else []
             self.assertEqual(decoded, choices)
 
-    def test_ui_safe_unknown_display_exact_removal_and_post_wait_validation(self):
-        source = read(BASIC)
-        self.assertIn('istext(choice) ? trait_list[choice] : null', source)
-        self.assertIn('html_encode("[choice]")', source)
-        self.assertNotIn('findtext(remove, i)', source)
-        self.assertIn('pref.traits.Cut(index, index + 1)', source)
-        self.assertIn('snapshot[i] != pref.traits[i]', source)
-        add = source.split('else if (href_list["add_traits"])', 1)[1].split('else if (href_list["remove_traits"])', 1)[0]
-        confirm = add.index('alert(user,')
-        self.assertGreater(add.rindex('get_trait_selection_error(candidate, FALSE)'), confirm)
-        self.assertGreater(add.index('pref.traits = candidate'), add.rindex('get_trait_selection_error(candidate, FALSE)'))
-        self.assertIn('!CanUseTopic(user)', add[confirm:])
+    def test_setup_window_shows_unknown_entries_and_rechecks_each_choice(self):
+        source = read(SETUP)
+        view = source.split('/datum/preferences/proc/trait_setup_data()', 1)[1].split('\n/datum/', 1)[0]
+        # Reading never rewrites saved choices; unknown and repeated ones are listed.
+        self.assertIn('if (!istext(choice) || !(choice in trait_list) || (choice in taken))\n\t\t\tinvalid += "[choice]"', view)
+        self.assertNotRegex(view, r'\btraits\s*(?:\+=|-=|=[^=])|traits\.(?:Cut|Add|Remove)')
+        add = source.split('/datum/preferences/proc/setup_add_trait(', 1)[1].split('\n/datum/', 1)[0]
+        # No prompt can yield between the check and the write.
+        for wait in ('input(', 'alert(', 'WWinput(', 'WWalert(', 'sleep('):
+            self.assertNotIn(wait, source)
+        self.assertIn('!(trait_name in trait_list)', add)
+        self.assertIn('(trait_name in traits)', add)
+        self.assertLess(add.index('get_trait_selection_error(candidate, FALSE)'), add.index('traits = candidate'))
+        remove = source.split('/datum/preferences/proc/setup_remove_trait(', 1)[1].split('\n/datum/', 1)[0]
+        self.assertIn('if (choice != trait_name)\n\t\t\tkept += choice', remove)
 
     def test_copy_is_independent_and_baldness_initializes_after_traits(self):
         source = read(PREFS).split('/datum/preferences/proc/copy_to(', 1)[1].split('/client/proc/', 1)[0]
