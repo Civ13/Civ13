@@ -111,7 +111,11 @@
 	if (!can_open())
 		return FALSE
 
-	dump_contents()
+	// Opened through the storage window, things stay inside (closet_storage.dm).
+	if (keep_items)
+		closet_release_all_but_items(src)
+	else
+		dump_contents()
 
 	icon_state = icon_opened
 	opened = TRUE
@@ -130,7 +134,7 @@
 
 	if (store_misc)
 		stored_units += store_misc(stored_units)
-	if (store_items)
+	if (store_items && !keep_items)
 		stored_units += store_items(stored_units)
 	if (store_mobs)
 		stored_units += store_mobs(stored_units)
@@ -276,6 +280,8 @@
 			return FALSE
 		if (W.loc != user) // This should stop mounted modules ending up outside the module.
 			return
+		if (closet_window_put(src, W, user))
+			return
 		usr.drop_item()
 		if (W)
 			if (istype(src, /obj/structure/closet/crate/dumpster))
@@ -335,7 +341,7 @@
 	if (locked && !opened)
 		to_chat(user, "<span class='notice'>\The [src] is locked.</span>")
 		return
-	else
+	else if (!closet_window_toggle(src, user))
 		toggle(user)
 
 /obj/structure/closet/verb/verb_toggleopen()
@@ -361,7 +367,8 @@
 	if (istype(src, /obj/structure/closet/old_coffin) && !opened)
 		to_chat(usr, "<span class='warning'>you're gonna need to use something to open this</span>")
 		return
-	toggle(usr)
+	if (!closet_window_toggle(src, usr))
+		toggle(usr)
 
 /obj/structure/closet/update_icon()//Putting the welded stuff in updateicon() so it's easy to overwrite for special cases (Fridges, cabinets, and whatnot)
 	overlays.Cut()

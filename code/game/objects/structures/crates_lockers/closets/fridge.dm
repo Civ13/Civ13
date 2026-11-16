@@ -89,7 +89,10 @@
 	if (!can_open())
 		return FALSE
 
-	dump_contents()
+	if (keep_items)
+		closet_release_all_but_items(src)
+	else
+		dump_contents()
 
 	icon_state = icon_opened
 	opened = TRUE

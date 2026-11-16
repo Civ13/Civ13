@@ -148,6 +148,10 @@
 
 // The internal storage a structure keeps its things in, when it has one.
 /proc/storage_window_structure_holder(obj/structure/O)
+	// An open crate or closet holds its things itself (closet_storage.dm).
+	if (istype(O, /obj/structure/closet))
+		var/obj/structure/closet/C = O
+		return (C.item_window && C.opened) ? C : null
 	if (!("storage" in O.vars))
 		return null
 	if (istype(O, /obj/structure/storage_container))
@@ -166,11 +170,15 @@
 
 // The structure (or null) whose rules guard a holder.
 /proc/storage_window_owner_structure(obj/item/weapon/storage/S)
+	if (istype(S, /obj/structure/closet))
+		return S
 	if (istype(S, /obj/item/weapon/storage/internal) && istype(S.loc, /obj/structure))
 		return S.loc
 	return null
 
 /proc/storage_window_access(mob/user, obj/item/weapon/storage/S)
+	if (istype(S, /obj/structure/closet))
+		return closet_window_access(user, S)
 	var/obj/structure/storage_container/C = storage_window_owner_structure(S)
 	if (istype(C) && !C.storage_access_allowed(user))
 		return FALSE
@@ -200,11 +208,10 @@
 		return TRUE
 	if (isturf(A))
 		return get_dist(A, H) <= 1 && A.z == H.z
-	if (istype(A, /obj/item/weapon/storage))
-		var/obj/item/weapon/storage/S = A
-		if (!storage_window_access(H, S))
+	if (istype(A, /obj/item/weapon/storage) || istype(A, /obj/structure/closet))
+		if (!storage_window_access(H, A))
 			return FALSE
-		return lists_holder(S)
+		return lists_holder(A)
 	return FALSE
 
 /////////////////////////////////////////////////////////////// snapshot
@@ -314,10 +321,17 @@
 				else if (I != search_item)
 					unseen += I.w_class
 			G["items"] = items
-			G["used"] = used
-			G["space"] = S.max_storage_space
-			G["slots"] = S.storage_slots
-			G["max_size"] = S.max_w_class
+			if (istype(S, /obj/structure/closet/crate))
+				// Crates count things, not space.
+				var/obj/structure/closet/crate/CR = S
+				G["used"] = items.len + unseen.len + (search_holder == S && search_item ? 1 : 0)
+				G["slots"] = CR.storagecap
+				G["unit"] = "things"
+			else if (!istype(S, /obj/structure/closet))
+				G["used"] = used
+				G["space"] = S.max_storage_space
+				G["slots"] = S.storage_slots
+				G["max_size"] = S.max_w_class
 			G["total"] = S.contents.len
 			if (unseen.len)
 				G["unseen"] = unseen
@@ -594,6 +608,15 @@
 			if (!slot || !detach(I))
 				return FALSE
 			return H.equip_to_slot_if_possible(I, slot, FALSE, TRUE)
+	if (istype(holder, /obj/structure/closet))
+		var/obj/structure/closet/C = holder
+		if (QDELETED(C) || !lists_holder(C) || !storage_window_access(H, C) || !closet_has_room(C, I, H))
+			return FALSE
+		if (!detach(I))
+			return FALSE
+		I.forceMove(C)
+		storage_note_inserted(I, H)
+		return TRUE
 	var/obj/item/weapon/storage/S = holder
 	if (!istype(S) || QDELETED(S) || !lists_holder(S) || !storage_window_access(H, S))
 		return FALSE
@@ -632,6 +655,9 @@
 	if (istype(A, /obj/item/weapon/storage))
 		var/obj/item/weapon/storage/S = A
 		return S.remove_from_storage(I, get_turf(H))
+	if (istype(A, /obj/structure/closet))
+		I.forceMove(get_turf(H))
+		return TRUE
 	return isturf(A)
 
 #undef STORAGE_WINDOW_ICONS_PER_PUSH

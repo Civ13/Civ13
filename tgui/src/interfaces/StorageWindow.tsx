@@ -44,6 +44,7 @@ export function refusal(group: StorageGroup, moving: StorageItem[], handsFree: n
   if (group.kind === 'pockets') return items.length + moving.length > 2 ? <><b>No free pocket.</b></> : null;
   const slots = Number(group.slots) || 0;
   if (slots && items.length + moving.length > slots) return <><b>No free slot.</b> Take something out first.</>;
+  if (group.unit === 'things') return null;
   const space = Number(group.space) || 0;
   const cost = moving.reduce((sum, item) => sum + (Number(item.cost) || 0), 0);
   if (space && (Number(group.used) || 0) + cost > space) return <><b>Not enough room.</b> Needs {cost}, has {space - (Number(group.used) || 0)}.</>;
@@ -168,9 +169,11 @@ export function StorageWindow(ui: ScreenProps<StorageWindowData>) {
     if (!open) cls += ' stor-shut';
     if (nomatch) cls += ' stor-group-nomatch';
     if (drag && over === id && drag.from !== id) cls += why ? ' stor-group-refused' : ' stor-group-drop';
-    const used = Number(group.used) || 0, space = Number(group.space) || 0;
+    // Crates count things rather than space.
+    const counted = group.unit === 'things';
+    const used = Number(group.used) || 0, space = (counted ? Number(group.slots) : Number(group.space)) || 0;
     const full = space > 0 && used / space >= 0.85;
-    const room = group.kind === 'pockets' ? `${all.length} / 2 pockets` : space ? `${used} / ${space} space` : '';
+    const room = group.kind === 'pockets' ? `${all.length} / 2 pockets` : space ? `${used} / ${space} ${counted ? 'things' : 'space'}` : '';
     const canMoveHere = interactive && picked.length > 0 && !group.locked && !picked.some(pid => all.some(item => str(item.id) === pid));
     return <section key={id} id={`stor-${id}`} className={cls} aria-label={str(group.name)} {...dropProps(group)}>
       <div className="stor-head">
