@@ -69,8 +69,8 @@ try {
   await capture('vending', 'vending_machine2.tmpl', { company: 'Dawnward Trading', moneyin: 12, currency_name: 'silver', currency_short: 'sp', mode: 0, products: [{ key: 1, name: 'Bread loaf', price: 2, amount: 8 }, { key: 2, name: 'Iron hatchet', price: 14, amount: 1 }, { key: 3, name: 'Linen shirt', price: 6, amount: 0 }] });
   await capture('recruitment', 'recruitment_station.tmpl', {
     station: 1, bound: 1, supported: 1, faction: 'Dawnward Guild', motto: 'Build together, discover together', summary: 'Open to anyone who speaks Common and has Crafting 3.', expiry_days: 3, can_unbind: 1, can_review: 1,
-    queue: [{ id: 4, name: 'Mara Flint', status: 'pending', status_text: 'Waiting for review', submitted: '2 hours', expires: '2 days', intro: 'I can smith and I have my own tools.', results: ['Speaks Common: yes', 'Crafting 3: has 4'] },
-      { id: 5, name: 'Jon Weir', status: 'approved', status_text: 'Approved', submitted: '1 day', expires: '1 day', exception: 1, results: ['Speaks Common: yes', 'Crafting 3: has 1'] }],
+    queue: [{ id: 4, name: 'Mara Flint', status: 'pending', status_text: 'Waiting for review', submitted: '2 hours', expires: '2 days', intro: 'I can smith and I have my own tools.', results: ['Speaks Common: met', 'Crafting 4/10, needs 3: met'] },
+      { id: 5, name: 'Jon Weir', status: 'approved', status_text: 'Approved', submitted: '1 day', expires: '1 day', exception: 1, results: ['Speaks Common: met', 'Crafting 1/10, needs 3: not met'] }],
     policy: { mode: 'manual', open: 1, language: 'Common', nonmatch: 'review', skills: [{ key: 'crafting', label: 'Crafting', level: 3 }, { key: 'farming', label: 'Farming', level: 0 }] },
     audit: ['Leader set Crafting to 3 (1 day ago)'],
   });

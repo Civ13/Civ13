@@ -58,9 +58,9 @@ describe('Recruitment station', () => {
     expect(props.act).toHaveBeenLastCalledWith('revoke', { revoke: 'app4' });
     fireEvent.click(screen.getByText('Accept matching applicants at once'));
     expect(props.act).toHaveBeenLastCalledWith('set_mode', { set_mode: 'auto' });
-    fireEvent.click(screen.getByText('Off'));
+    fireEvent.click(screen.getByText('On'));
     expect(props.act).toHaveBeenLastCalledWith('set_open', { set_open: 1 });
-    expect(screen.getByText(/Farming: 3/)).toBeTruthy();
+    expect(screen.getByText('Level 3 or higher')).toBeTruthy();
   });
   it('keeps names, introductions and reasons inert', () => {
     const view = render(<RecruitmentStation {...ui({ station: 0, bound: 1, supported: 1, faction: '&lt;b&gt;Oak&lt;/b&gt;', can_review: 1, queue: [
