@@ -285,6 +285,11 @@ BUG_REPORT_GITHUB_LABELS bug
 #BUG_REPORT_SCREENSHOT_REPO Civ13/bug-report-screenshots
 #BUG_REPORT_SCREENSHOT_TOKEN github_pat_...
 
+## Player activity recorder: 1 appends play sessions, deaths, travel and server
+## health per account to data/player_activity/ for tools/player_activity. No IP,
+## computer id or chat is written. Off when absent or 0.
+#PLAYER_ACTIVITY 1
+
 #if uncommented, sends webhook events to Civilizationbot for processing
 #WEBHOOK_CAN_FIRE
 #WEBHOOK_ADDRESS http://127.0.0.1:55555/webhook/nomads

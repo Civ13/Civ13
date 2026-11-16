@@ -171,6 +171,8 @@ var/list/gamemode_cache = list()
 	var/webhook_key = null
 	// Startup observation is separately opt-in and uses the existing bridge.
 	var/webhook_game_ready = FALSE
+	// Player activity recorder (code/modules/player_activity). Off by default.
+	var/player_activity = FALSE
 	var/webhook_game_ready_server = null
 
 	// In-game bug reports (code/modules/bug_reports). The token is deliberately not kept here.
@@ -534,6 +536,8 @@ var/list/gamemode_cache = list()
 
 				if ("webhook_can_fire")
 					config.webhook_can_fire = TRUE
+				if ("player_activity")
+					config.player_activity = text2num(value) == 1
 				if ("webhook_game_ready")
 					config.webhook_game_ready = text2num(value) == 1
 				if ("webhook_game_ready_server")

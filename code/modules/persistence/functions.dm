@@ -1132,6 +1132,17 @@ var/global/world_save_notice_started = null
 	else
 		world_save_notice_started = null
 		event = success ? "completed" : "failed"
+	var/activity = text2path("/proc/player_activity_world_save")
+	if(activity)
+		var/seconds = null
+		if(event != "started" && isnum(started))
+			var/elapsed = world.timeofday - started
+			if(elapsed < 0) elapsed += 864000 // midnight wrap
+			seconds = round(elapsed / 10, 0.1)
+		try
+			call(activity)(event, success, seconds)
+		catch
+			world.log << "Player activity save note unavailable."
 	var/hook = text2path("/proc/webhook_send_world_save")
 	if(!hook) return
 	try

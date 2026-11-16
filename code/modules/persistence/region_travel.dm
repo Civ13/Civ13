@@ -419,6 +419,8 @@ var/global/list/region_travel_carry_types = list(
 			spawn(0)
 				region_home_note(P["owner"], "arrive")
 		log_game("Region travel: [P["owner"]]'s character [H.real_name] [incoming ? "arrived" : "came back"] at [at.x],[at.y],[at.z].")
+		if(!replayed)
+			player_activity.arrive(P, incoming)
 		region_travel_offer(H)
 
 // Replays a departure the loaded save does not hold yet: the account's body
@@ -760,6 +762,7 @@ var/global/list/region_travel_carry_types = list(
 	var/result = depart(H)
 	if(result != "departed")
 		to_chat(H, SPAN_WARNING(result))
+		player_activity.travel_refused(H, destination, result)
 
 // A player turned back because the destination's server is stopped: tell the
 // admins once per land every REGION_STOPPED_ALERT_COOLDOWN, since only the host
@@ -813,6 +816,7 @@ var/global/list/region_stopped_alerted = list()
 		return "The trail is busy. Try again in a moment."
 	// Recorded: remove the traveller now, without sleeping.
 	log_game("Region travel: [H.persistence_owner_ckey]'s character [H.real_name] left for [destination].")
+	player_activity.depart(H, destination, payload)
 	// Delete everything the traveller holds now, not only what was listed: the
 	// payload carries the full amounts, so a stack split during the request
 	// must not survive.

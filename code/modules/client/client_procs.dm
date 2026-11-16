@@ -277,6 +277,7 @@
 	spawn (1)
 		log_to_db()
 		player_age_logged()
+		player_activity.session_start(src)
 
 	spawn (1)
 		if (!istype(mob, /mob/new_player))
@@ -349,6 +350,7 @@
 	human_subtile_release_visuals()
 	clear_hover_name()
 	webhook_send_logout(ckey)
+	player_activity.session_end(src)
 
 	if (processes.client)
 		processes.client.logged_next_normal_respawns[ckey] = next_normal_respawn
