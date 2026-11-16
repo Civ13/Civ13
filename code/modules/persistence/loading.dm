@@ -1227,6 +1227,13 @@ var/global/persistence_boot_build_identity = persistence_build_identity()
 				if(entry_set[key]) throw EXCEPTION("Duplicate saved entry [ref] on z=[z]")
 				entry_set[key] = isnull(type) ? TRUE : type
 				var/cell = turf_refs[key]
+				// An object whose type was removed from the code since the save reads
+				// back as null with its type entry present; Load_Entry leaves it out,
+				// so it passes here as a plain movable with nothing more to check
+				// (Gaia's fishing spot after #5620, 2026-11-16). A turf still refuses.
+				if(isnull(type) && !cell && ("type" in E.dir))
+					entry_set[key] = /atom/movable
+					continue
 				if(!ispath(type, /datum) || ispath(type, /area) || (ispath(type, /turf) && !cell))
 					throw EXCEPTION("Unsupported or unplaced saved entry [ref] on z=[z]")
 				if(cell)

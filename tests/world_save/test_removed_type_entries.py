@@ -30,6 +30,14 @@ class RemovedTypeEntryTests(unittest.TestCase):
         self.assertLess(guard, refusal, 'the removed-type skip runs before the refusal')
         self.assertIn('return null', source[guard:refusal])
 
+    def test_the_save_preflight_passes_a_removed_type_object(self):
+        text = LOADING.read_text(encoding='utf-8')
+        guard = text.index('if(isnull(type) && !cell && ("type" in E.dir))')
+        refusal = text.index('throw EXCEPTION("Unsupported or unplaced saved entry [ref] on z=[z]")')
+        self.assertLess(guard, refusal, 'the preflight passes a removed type before refusing')
+        self.assertIn('entry_set[key] = /atom/movable', text[guard:refusal])
+        self.assertIn('continue', text[guard:refusal])
+
     def test_a_turf_or_damaged_entry_still_refuses(self):
         source = load_entry_source()
         # Only a null type with its entry present is skipped: a missing entry,
