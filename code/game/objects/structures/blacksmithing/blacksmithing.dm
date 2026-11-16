@@ -472,7 +472,7 @@
 // Steel sheets an iron anvil needs to have a steel face forge-welded on.
 #define ANVIL_STEEL_FACE_COST 5
 // Knowing any one of these research nodes lets a smith forge-weld a steel face.
-var/global/list/anvil_steel_face_nodes = list("steelmaking")
+var/global/list/anvil_steel_face_nodes = list("steelmaking", "tatara_smelting")
 
 // A wrought iron anvil with a hardened steel face, the way smiths worked steel
 // for centuries before solid steel anvils: weld steel sheets onto an iron anvil.
