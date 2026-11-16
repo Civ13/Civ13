@@ -2969,6 +2969,7 @@ RECIPE: /material/iron/,locker,/obj/structure/closet,4,80,1,1,furniture,105,0,0,
 //*********************| IRON WEAPONS |**************************
 
 RECIPE: /material/iron/,mechanical trap,/obj/item/weapon/beartrap,5,140,0,1,weapons,0,32,0,8,null
+RECIPE: /material/iron/,snap mousetrap,/obj/item/weapon/mousetrap,1,40,0,1,tools,0,0,0,8,null
 RECIPE: /material/iron/,shuriken,/obj/item/weapon/material/thrown/star,2,15,0,1,weapons,0,39,0,8,iron
 RECIPE: /material/iron/,kunai,/obj/item/weapon/material/thrown/kunai_normal,3,20,0,1,weapons,0,39,0,8,iron
 

@@ -1853,6 +1853,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/heatsource" = "iron_smithing",
 		"/obj/item/clothing/shoes/weather/hobnail_boots" = "iron_smithing",
 		// --- iron_tools (7) ---
+		"/obj/item/weapon/mousetrap" = "iron_tools",
 		"/obj/structure/well_fitting/pump" = "iron_tools",
 		"/obj/item/weapon/fire_hook" = "iron_tools",
 		"/obj/item/weapon/flame/lighter/striker" = "iron_tools",
