@@ -35,6 +35,9 @@
 #define TUNNEL_DRAIN_RATE 1
 #define TUNNEL_FILL_TILES 400
 #define TUNNEL_RECHECK 600
+// Extra seconds of held breath caught in a flooded tunnel, on top of the
+// swimmer's own (10 untrained), so a new player gets about 20 s to get out.
+#define TUNNEL_BREATH_BONUS 10
 
 // Every tunnel mouth (dug holes and mapped tunnel entrances).
 var/global/list/tunnel_mouths = list()
@@ -213,7 +216,7 @@ var/global/list/cellar_pumps = list()
 	if (stat)
 		return FALSE
 	if (swim_breath < 0)
-		swim_breath = swim_breath_max()
+		swim_breath = swim_breath_max() + TUNNEL_BREATH_BONUS
 		to_chat(src, SPAN_DANGER("The tunnel is flooded to the roof! Hold your breath and find a way up!"))
 	swim_breath = max(0, swim_breath - 1)
 	return swim_breath > 0
@@ -262,3 +265,4 @@ var/global/list/cellar_pumps = list()
 #undef TUNNEL_DRAIN_RATE
 #undef TUNNEL_FILL_TILES
 #undef TUNNEL_RECHECK
+#undef TUNNEL_BREATH_BONUS

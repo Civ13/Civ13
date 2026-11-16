@@ -261,7 +261,7 @@ so Gaia's level 1 or a dug cave) is the cellar level, cached as
   (`tunnel_flood_update`). Pumps keep it back, but bailing does not.
 - Drowning below ground: roof-high tunnel water has no air (`flood_airless`).
   Instead of swimming, `handle_drowning()` spends a held breath
-  (`tunnel_hold_breath`, the swimmer's `swim_breath`) and then takes 10 oxygen
+  (`tunnel_hold_breath`: the swimmer's `swim_breath` plus 10, so about 20 s untrained and 70 s at full swimming skill) and then takes 10 oxygen
   damage a life tick, until the person reaches shallower water or a ladder.
 - Filling in: four dirt piles close a tunnel mouth, which stops pouring, and a
   shovel with a dirt pile packs an open tunnel tile into dense packed earth,
