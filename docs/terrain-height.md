@@ -143,8 +143,9 @@ four tiles around each corner, rounded to half levels): the key is the lowest
 corner's half-level remainder, then each corner's half levels above the lowest,
 capped at 6, as nw, ne, sw, se (`terrace_key` in the tool and the game; the
 native test compares them on every fixture tile). Neighbours share corners, so
-lines join across tiles, and each sprite looks 10 pixels past its tile so a
-line near an edge spills softly into the next tile. The 2,194 sprites are in
+lines join across tiles, and each sprite looks 12 pixels past its tile so a
+line near an edge spills softly into the next tile. Lines are wide and soft
+(10 pixels, fading out) so they sit quietly on grass. The 2,194 sprites are in
 `icons/turf/terrain_terrace.dmi`, a second shared overlay beside the tint
 (`terrain_terrace_overlay`), placed, refreshed and restored with it.
 Tuning: `TERRACE_DARK`, `TERRACE_LIGHT` (alpha by pixels below the lip) and

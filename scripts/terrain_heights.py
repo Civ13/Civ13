@@ -505,10 +505,10 @@ def shade_states():
 # terrace_key). A key is the lowest corner's half-level remainder (0 or 1),
 # then each corner's half levels above the lowest, capped, as nw, ne, sw, se.
 TERRACE_CAP = 6                  # half levels; steeper tiles are solid shade anyway
-TERRACE_DARK = (0.30, 0.27, 0.22, 0.17, 0.12, 0.08, 0.04)   # alpha by pixels below the lip
-TERRACE_LIGHT = (0.22, 0.19, 0.15, 0.11, 0.07, 0.03)
-TERRACE_CREST = 0.05             # one pixel on the high side of the lip
-TERRACE_MARGIN = 10              # pixels looked at beyond the tile, so lines near an edge spill over
+TERRACE_DARK = (0.24, 0.23, 0.21, 0.18, 0.15, 0.12, 0.09, 0.06, 0.04, 0.02)   # alpha by pixels below the lip
+TERRACE_LIGHT = (0.18, 0.17, 0.15, 0.13, 0.10, 0.08, 0.05, 0.03)
+TERRACE_CREST = 0.0              # one pixel on the high side of the lip; off for the soft look
+TERRACE_MARGIN = 12              # pixels looked at beyond the tile, so lines near an edge spill over
 
 
 def corner_heights(np, levels):

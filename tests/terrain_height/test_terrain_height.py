@@ -167,10 +167,10 @@ class Shading(unittest.TestCase):
         import numpy
         # Rising to the east: the drop faces west, towards the light, so the line is warm.
         east = tool.terrace_pixels(numpy, '00202')
-        self.assertTrue((east[east[..., 3] > 60][:, :3] == tool.LIGHT_COLOUR).all())
+        self.assertTrue((east[east[..., 3] > 30][:, :3] == tool.LIGHT_COLOUR).all())
         west = tool.terrace_pixels(numpy, '02020')
-        self.assertTrue((west[west[..., 3] > 60][:, :3] == tool.DARK_COLOUR).all())
-        self.assertGreater(west[..., 3].max(), 60)
+        self.assertTrue((west[west[..., 3] > 30][:, :3] == tool.DARK_COLOUR).all())
+        self.assertGreater(west[..., 3].max(), 50)
         # Soft and quiet: nothing stronger than about a third.
         self.assertLessEqual(max(tool.terrace_pixels(numpy, k)[..., 3].max() for k in tool.terrace_states()[::37]), 80)
         # Two tiles on one diagonal slope: the line crossing their shared edge agrees along it.
