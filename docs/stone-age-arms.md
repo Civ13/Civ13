@@ -14,7 +14,7 @@ Every crafted item below is limited to the Stone and Bronze Ages (recipe field 1
 | Bola | 2 leather or 2 rope | Stone Arms | Thrown. A human hit is legcuffed (no running, 6 s Resist) and trips 40% of the time; animals are knocked down for 3. |
 | Javelin | 2 wood | Stone Arms | Light throwing spear, thrown about 32, melee 14. |
 | Stone-headed club | 3 stone | Stone Arms | Force 15, 25% knockdown, cooldown 12. |
-| Bone harpoon | 4 bone | Stone Arms | Throwing spear. Harpoons and flint spears spear fish at fishing spots (10 s, 35%). |
+| Bone harpoon | 4 bone | Stone Arms | Throwing spear. Harpoons and flint spears spear fish in shallow water (10 s, 35% in well-stocked water). |
 | Digging stick | 2 wood | Basic Toolmaking | A plough subtype at half speed, so ground can be broken before Bronze Age agriculture. It can't be hitched to cattle. |
 | Hand axe | Knapped from flint | Basic Toolmaking | A hatchet with slow chopping (4.5). It also butchers and cuts. |
 | Hide scraper | Knapped from flint | Basic Toolmaking | When it's in either hand during skinning, the pelt or rawhide stack gets +1. |

@@ -46,29 +46,14 @@ var/GRACE_PERIOD_LENGTH = 7
 
 /obj/map_metadata/proc/seed_the_map()
 	var/list/jungleriverturfs = list()
-	var/list/seaturfs = list()
-	var/list/riverturfs = list()
 	var/list/jungleturfs = list()
 	for (var/turf/floor/F in world)
 		F.plant()
 		if (istype(F, /turf/floor/dirt/jungledirt))
 			jungleturfs += F
-		else if (istype(F, /turf/floor/beach/water/shallowsaltwater) || istype(F, /turf/floor/beach/water/deep/saltwater))
-			seaturfs += F
 		else if (istype(F, /turf/floor/beach/water/jungle) || istype(F, /turf/floor/beach/water/deep/jungle))
 			jungleriverturfs += F
-			riverturfs += F
-		else if (istype(F, /turf/floor/beach/water) && !istype(F, /turf/floor/beach/water/ice) && !istype(F, /turf/floor/beach/water/swamp) && !istype(F, /turf/floor/beach/water/flooded))
-			riverturfs += F
 	//gets the total number of tiles in the world, to dynamically distribute fauna and flora
-	spawn(200)
-		for (var/i = 1, i <= riverturfs.len/800, i++)
-			var/turf/areaspawn = safepick(riverturfs)
-			new/obj/structure/fish/salmon(areaspawn)
-	spawn(300)
-		for (var/i = 1, i <= seaturfs.len/1400, i++)
-			var/turf/areaspawn = safepick(seaturfs)
-			new/obj/structure/fish(areaspawn)
 	spawn(400)
 		seed_piranhas(jungleriverturfs, round(jungleriverturfs.len / PIRANHA_RIVER_TILES))
 	spawn(500)

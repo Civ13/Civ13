@@ -219,39 +219,19 @@
 
 // ---------------------------------------------------------------- bone harpoon
 /obj/item/weapon/material/harpoon/bone
-	desc = "A barbed bone point on a wooden shaft. Throw it, or use it on a fishing spot to spear fish."
+	desc = "A barbed bone point on a wooden shaft. Throw it, or use it on shallow water to spear fish."
 	default_material = "bone"
 
-// Spear fishing: barbed harpoons and flint spears work fishing spots without a line.
+// Spear fishing: barbed harpoons and flint spears take fish from shallow water without a line.
 /proc/spear_fishing_tool(obj/item/W)
 	return istype(W, /obj/item/weapon/material/harpoon) || istype(W, /obj/item/weapon/material/spear/flint)
 
-/obj/structure/fish/proc/land_fish(turf/T)
-	counter--
-	if (species == "salmon")
-		new /obj/item/weapon/reagent_containers/food/snacks/rawfish/salmon(T)
-	else if (species == "cod")
-		new /obj/item/weapon/reagent_containers/food/snacks/rawfish/cod(T)
-	else
-		new /obj/item/weapon/reagent_containers/food/snacks/rawfish(T)
-	if (counter <= 0)
-		invisibility = 101
-	get_fish()
+// Fishing grounds (fishing_grounds.dm) ask how a spear fishes.
+/proc/spear_fishing_delay()
+	return SPEAR_FISHING_DELAY
 
-/obj/structure/fish/attackby(obj/item/W, mob/living/human/H)
-	if (!spear_fishing_tool(W) || !ishuman(H))
-		return ..()
-	if (counter <= 0)
-		to_chat(H, SPAN_NOTICE("There are no fish left here for now."))
-		return
-	H.visible_message("[H] stands ready to spear a fish.")
-	if (!do_after(H, SPEAR_FISHING_DELAY, src) || QDELETED(W) || W.loc != H || counter <= 0)
-		return
-	if (!prob(SPEAR_FISHING_CHANCE))
-		to_chat(H, "The fish dart away from your strike.")
-		return
-	to_chat(H, "You spear a fish!")
-	land_fish(H.loc)
+/proc/spear_fishing_chance()
+	return SPEAR_FISHING_CHANCE
 
 // ---------------------------------------------------------------- digging stick
 // A fire-hardened, stone-weighted stick: the Neolithic farmer's hoe. It works

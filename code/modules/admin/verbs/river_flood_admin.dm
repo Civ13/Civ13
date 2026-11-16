@@ -115,3 +115,27 @@
 #undef RIVER_FLOOD_STAGE_CAP
 #undef RIVER_FLOOD_TICK
 #undef RIVER_FLOOD_ID_DIGITS
+
+// Fishing grounds (code/modules/1713/fishing_grounds.dm): every stretch of
+// water someone has fished, emptiest first. Unlisted water is full.
+/client/proc/fishing_grounds_map()
+	set category = "Debug"
+	set name = "Fishing Grounds"
+	if (!check_rights(R_DEBUG))
+		return
+	var/list/order = list()
+	for (var/key in fishing_grounds)
+		var/datum/fishing_ground/G = fishing_grounds[key]
+		order[key] = G.fullness()
+	order = sortTim(order, /proc/cmp_numeric_asc, TRUE)
+	var/list/rows = list("<table><tr><th>Water</th><th>Fish</th><th>Holds</th><th>Centre</th></tr>")
+	var/shown = 0
+	for (var/key in order)
+		var/datum/fishing_ground/G = fishing_grounds[key]
+		var/x = G.cx * FISH_GROUND_SIZE + FISH_GROUND_SIZE / 2
+		var/y = G.cy * FISH_GROUND_SIZE + FISH_GROUND_SIZE / 2
+		rows += "<tr><td>[G.kind]</td><td>[round(G.stock, 0.1)]</td><td>[G.capacity]</td><td><a href='?_src_=holder;adminplayerobservecoodjump=1;X=[x];Y=[y];Z=[G.z]'>[x],[y]</a></td></tr>"
+		if (++shown >= 80)
+			break
+	rows += "</table>"
+	usr << browse("<html><head><title>Fishing Grounds</title></head><body><p>[fishing_grounds.len] fished grounds of [FISH_GROUND_SIZE]x[FISH_GROUND_SIZE] tiles. Water nobody has fished is full and is not listed. Emptiest 80 shown.</p>[jointext(rows, "")]</body></html>", "window=fishing_grounds;size=520x700")

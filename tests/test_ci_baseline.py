@@ -1470,28 +1470,16 @@ class BaselinePolicyTests(unittest.TestCase):
             self.assertIn('save_movement', self.selected([path]))
         self.assertFalse(any('test_native.py' in f for s in ci.SUITES.values() for f in s['files']))
 
-    def test_fishing_stock_registration_is_exact_and_offline(self):
-        suite = ci.SUITES['fishing_stock']
-        self.assertEqual(suite['files'], ('tests/fishing_stock/test_source_contract.py',
-                                         'tests/fishing_stock/test_preparation.py',
-                                         'tests/fishing_stock/test_native_runner.py',
-                                         'tests/fishing_stock/test_ocean_fishing.py'))
-        self.assertEqual(suite['paths'], ('tests/fishing_stock/',))
+    def test_fishing_grounds_registration_and_selection(self):
+        suite = ci.SUITES['fishing_grounds']
+        self.assertEqual(suite['files'], ('tests/fishing_grounds/test_source.py',))
+        self.assertEqual(suite['paths'], ('tests/fishing_grounds/', 'code/modules/1713/fishing_grounds.dm'))
         self.assertFalse(suite.get('always', False))
-        source = (ROOT / suite['files'][0]).read_text()
-        tree = ast.parse(source)
-        imports = {node.module if isinstance(node, ast.ImportFrom) else alias.name
-                   for node in ast.walk(tree) if isinstance(node, (ast.Import, ast.ImportFrom))
-                   for alias in node.names}
-        self.assertEqual(imports, {'argparse', 'dataclasses', 'itertools', 'pathlib', 're', 'unittest'})
-        self.assertEqual(ci.TIMEOUT, 30)
-
-    def test_fishing_stock_selection_preserves_shared_source_fallback(self):
-        for path in ('tests/fishing_stock/test_source_contract.py', 'tests/fishing_stock/README.md',
-                     'tests/fishing_stock/run_native.py', 'tests/fishing_stock/fixture.dm'):
+        self.assertNotIn('fishing_stock', ci.SUITES)
+        for path in ('tests/fishing_grounds/test_source.py', 'tests/fishing_grounds/probe.dm',
+                     'code/modules/1713/fishing_grounds.dm'):
             with self.subTest(path=path):
-                self.assertEqual(self.selected([path]), {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'fishing_stock'})
-                self.assertEqual(ci.impact([path])['fallback_reasons'], [])
+                self.assertIn('fishing_grounds', self.selected([path]))
         shared = 'code/game/mob/living/simple_animal/friendly/static.dm'
         self.assertEqual(self.selected([shared]), set(ci.SUITES))
         self.assertIn('Unmapped impact: ' + shared, ci.impact([shared])['fallback_reasons'])

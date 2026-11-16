@@ -46,10 +46,6 @@
 		if (season == SEASON_SPRING) //fixes game setting the season as spring
 			season = SEASON_WET
 	spawn(500)
-		for (var/i = 1, i <= 65, i++)
-			var/turf/areaspawn = safepick(get_area_turfs(/area/caribbean/sea/sea))
-			new/obj/structure/fish(areaspawn)
-	spawn(500)
 		seed_piranhas(get_area_turfs(/area/caribbean/nomads/forest/Jungle/river), 15)
 	season_note_next_change(18000)
 	spawn(18000)

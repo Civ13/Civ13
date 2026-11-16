@@ -17,8 +17,7 @@ COPIES = [
     re.compile(r'!istype\((\w+(?:\.\w+)?), ?' + W + r'\) \|\| istype\(\1, ?' + W + r'/ice\)'),
     re.compile(r'istype\((\w+), ?' + W + r'/deep/saltwater\) && !istype\(\1, ?' + W + r'/deep/saltwater/underwater\)'),
 ]
-# Byte-pinned by tests/season_flow; keeps its spelled-out check.
-ALLOWED = {'code/modules/1713/roundstart_etc.dm': 1}
+ALLOWED = {}
 
 
 class WaterTurfsTest(unittest.TestCase):

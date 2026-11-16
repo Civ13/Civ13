@@ -72,7 +72,7 @@
 "bt" = (/obj/covers/fancywood,/obj/structure/bed/chair/wood/red{icon_state = "wooden_chair_red"; dir = 1},/turf/floor/dirt,/area/caribbean)
 "bu" = (/obj/covers/road,/turf/floor/grass/jungle,/area/caribbean)
 "bv" = (/obj/covers/road,/obj/structure/flag/british,/turf/floor/grass/jungle,/area/caribbean)
-"bw" = (/obj/structure/fish,/turf/floor/beach/water/shallowsaltwater,/area/caribbean)
+"bw" = (/turf/floor/beach/water/shallowsaltwater,/area/caribbean)
 "bx" = (/obj/structure/barricade/antitank,/turf/floor/dirt,/area/caribbean)
 "by" = (/obj/structure/wild/rock,/turf/floor/dirt,/area/caribbean)
 "bz" = (/obj/structure/wild/tree/dead_tree,/turf/floor/dirt,/area/caribbean)

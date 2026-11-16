@@ -25,7 +25,7 @@ Low-tech aquaculture for #3051. Code: `code/modules/1713/fish_pen.dm`.
 A full pen eats 4 feed (2 grain) per 5 minutes and, kept at 7-8 fish and fed,
 yields about one fish per 5 minutes. That is a steady protein and fat source
 that costs farm output, compared with wild fishing, which is free but limited
-by each fishing spot's stock. No power, research beyond Basic Tools, or Modern
+by the fish stock of the water. No power, research beyond Basic Tools, or Modern
 equipment is needed.
 
 ## Saving

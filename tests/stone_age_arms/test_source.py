@@ -160,7 +160,7 @@ class StoneAgeArms(unittest.TestCase):
         self.assertNotIn('copper', helper)
 
     def test_hooks_fall_through_to_parent(self):
-        for header in ('/obj/structure/fish/attackby(', '/obj/item/stack/material/wood/attackby(',
+        for header in ('/obj/item/stack/material/wood/attackby(',
                        '/mob/living/simple_animal/cattle/attackby(', '/obj/item/ammo_casing/atlatl_dart/attackby(',
                        '/obj/item/weapon/bone_needle/afterattack('):
             body = self.source[self.source.index(header):]
