@@ -75,5 +75,40 @@ class BathingTest(unittest.TestCase):
         self.assertIn("/obj/structure/shower/piped\n\twater_capacity = 0", self.BATH)
 
 
+class BodyWashingTest(unittest.TestCase):
+    WASH = read("code/modules/1713/body_washing.dm")
+
+    def test_help_intent_washes_the_targeted_part(self):
+        self.assertIn("/obj/item/weapon/reagent_containers/glass/attack(mob/living/M, mob/living/user, target_zone)", self.WASH)
+        self.assertIn("user.a_intent != I_HELP", self.WASH)
+        self.assertIn('return zone && zone != "mouth" && zone != "random"', self.WASH)
+        feed = read("code/modules/reagents/reagent_containers.dm")
+        self.assertIn('if (ishuman(user) && user.targeted_organ != "mouth")', feed)
+
+    def test_scripted_drinkers_target_the_mouth(self):
+        self.assertIn('{"do": "click", "target": me, "zone": "mouth"}', read("tools/agent-control/autopilot.py"))
+        self.assertIn("select the mouth on the body doll", read("code/modules/1713/practice_rooms.dm"))
+
+    def test_wounds_and_soap(self):
+        self.assertIn("W.germ_level *= 0.5", self.WASH)
+        self.assertIn("E.disinfect()", self.WASH)
+        self.assertIn("if (E.germ_level < INFECTION_LEVEL_ONE)", self.WASH)
+        self.assertIn('reagents.remove_reagent("water", WASH_PART_WATER)', self.WASH)
+        self.assertIn('reagents.has_reagent("food_poisoning")', self.WASH)
+
+    def test_sources_wash_parts(self):
+        for proc in ("/obj/structure/sink/attack_hand(mob/user)", "/obj/structure/water_tap/attack_hand(mob/living/user)",
+                     "/turf/floor/beach/water/attack_hand(mob/living/human/H)"):
+            self.assertIn(proc, self.WASH)
+
+    def test_loads_after_the_procs_it_extends(self):
+        dme = read("civ13.dme").splitlines()
+        def at(name):
+            return next(i for i, line in enumerate(dme) if line.endswith(name + '"'))
+        mine = at("body_washing.dm")
+        for name in ("glass.dm", "watercloset.dm", "factory_plumbing.dm", "hygiene_work.dm"):
+            self.assertLess(at(name), mine, name)
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -214,6 +214,10 @@
 	if (!reagents || !reagents.total_volume)
 		to_chat(user, "<span class='notice'>\The [src] is empty.</span>")
 		return TRUE
+	// The targeted part says what the user means: drinking takes the mouth (body_washing.dm).
+	if (ishuman(user) && user.targeted_organ != "mouth")
+		to_chat(user, SPAN_NOTICE("Target the mouth to [target == user ? "drink from" : "feed [target]"] \the [src]."))
+		return TRUE
 	if (ishuman(target))
 		var/mob/living/human/H = target
 		if (!H.check_has_mouth())

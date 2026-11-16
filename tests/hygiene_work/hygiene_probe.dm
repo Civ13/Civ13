@@ -46,6 +46,13 @@ var/hw_runtime_error = FALSE
 	if (statname == "farming")
 		soil(1)
 
+/mob/living/human/hw_tester/update_icons()
+	return
+/mob/living/human/hw_tester/update_inv_gloves(update_icons = TRUE)
+	return
+/mob/living/human/hw_tester/update_inv_shoes(update_icons = TRUE)
+	return
+
 /proc/hw_checks()
 	var/mob/living/human/hw_tester/H = new(locate(2, 2, 1))
 	H.hygiene = 200
@@ -91,3 +98,52 @@ var/hw_runtime_error = FALSE
 	var/obj/structure/shower/bathtub/wooden/round_tub = new(locate(1, 1, 1))
 	round_tub.attack_hand(H)
 	hw_check(round_tub.on, "tubs run free on round maps")
+
+	// Washing one part (body_washing.dm).
+	var/obj/item/organ/external/hand/hand = new
+	var/obj/item/organ/external/leg/leg = new
+	var/obj/item/organ/external/chest/chest = new
+	H.organs_by_name = list("l_hand" = hand, "l_leg" = leg, "chest" = chest)
+	H.dirty_hands = DIRTY_HANDS_WASTE
+	H.bloody_hands = 2
+	hw_check(H.wash_body_part("l_hand") && !H.dirty_hands && !H.bloody_hands, "washing a hand clears dirty and bloody hands")
+	H.hygiene = 100
+	hw_check(H.wash_body_part("l_leg") && H.hygiene == 110, "washing a bare leg raises cleanliness by 10 ([H.hygiene])")
+	H.hygiene = 170
+	H.wash_body_part("l_leg")
+	hw_check(H.hygiene == 175, "part washing stops at a sponge bath's 175 ([H.hygiene])")
+	var/obj/item/clothing/under/U = new(H)
+	U.body_parts_covered = LEGS
+	U.blood_DNA = list("x" = "O+")
+	H.w_uniform = U
+	H.hygiene = 100
+	H.wash_body_part("l_leg")
+	hw_check(!U.blood_DNA && H.hygiene == 100, "washing a clothed leg cleans the clothes, not the skin")
+	H.w_uniform = null
+	hw_check(!H.wash_body_part("r_foot"), "a missing part cannot be washed")
+	hw_check(container_washes_zone("l_leg") && container_washes_zone("chest") && !container_washes_zone("mouth"), "only the mouth drinks from a container")
+	hw_check(source_washes_zone("chest") && !source_washes_zone("r_hand"), "sinks keep the hand wash for hands")
+
+	// Wounds: water halves germs, soap disinfects.
+	var/datum/wound/cut/small/W = new(10)
+	W.germ_level = 80
+	leg.wounds = list(W)
+	leg.germ_level = 60
+	H.wash_body_part("l_leg")
+	hw_check(W.germ_level == 40 && leg.germ_level == 30 && !W.disinfected, "water halves the germs in a wound ([W.germ_level], [leg.germ_level])")
+	H.wash_body_part("l_leg", TRUE)
+	hw_check(W.disinfected && !W.germ_level && !leg.germ_level, "soap disinfects the wound")
+	leg.germ_level = INFECTION_LEVEL_ONE + 50
+	H.wash_body_part("l_leg")
+	hw_check(leg.germ_level == INFECTION_LEVEL_ONE + 50, "washing does not cure an infection set in")
+	H.hygiene = 230
+	H.wash_body_part("l_leg", TRUE)
+	hw_check(H.hygiene == 250, "soap washing reaches 250 ([H.hygiene])")
+
+	// Drinking takes the mouth.
+	var/obj/item/weapon/reagent_containers/glass/bucket/cup = new(locate(3, 2, 1))
+	cup.reagents.add_reagent("water", 20)
+	H.targeted_organ = "chest"
+	H.water = 0
+	cup.standard_feed_mob(H, H)
+	hw_check(cup.reagents.get_reagent_amount("water") == 20, "a container will not drink at the chest")

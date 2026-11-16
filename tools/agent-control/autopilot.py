@@ -3231,7 +3231,7 @@ def _expand_water(step, self_state, rows=None):
             return [], f"drinking from the mug: {error}"
         if self_state.get("intent") != "help":
             steps.append({"do": "intent", "intent": "help"})
-        return steps + [{"do": "click", "target": me}], ""
+        return steps + [{"do": "click", "target": me, "zone": "mouth"}], ""
     if step["do"] == "place_stone":
         # Stepping onto a lit campfire burns; throw the stone onto its tile from beside it instead.
         steps, error = _hold_pair(self_state, water.STONE)
