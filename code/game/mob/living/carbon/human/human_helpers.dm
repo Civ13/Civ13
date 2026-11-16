@@ -503,6 +503,15 @@
 		// River floodwater over land (flood_effects.dm): over the head, swim.
 		var/flood_band = T.iscovered() ? FLOOD_BAND_NONE : flood_band_at(T)
 		if (flood_band == FLOOD_BAND_DEEP && !istype(buckled, /obj/structure/vehicle/boat) && !istype(wear_suit, /obj/item/clothing/suit/lifejacket) && !seabed_diving_rating())
+			// A tunnel flooded to the roof has no air to swim up to (flood_cellars.dm).
+			if (flood_airless(T))
+				drowning = TRUE
+				water_overlay = TRUE
+				if (!tunnel_hold_breath())
+					to_chat(src, SPAN_DANGER("<font size='2'>You are drowning in the flooded tunnel!</font>"))
+					adjustOxyLoss(10)
+				life_water_refresh()
+				return
 			if (swim_step(T))
 				drowning = FALSE
 				water_overlay = TRUE

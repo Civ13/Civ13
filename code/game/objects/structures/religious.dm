@@ -528,37 +528,8 @@ obj/structure/religious/monument
 		if (do_after(user, 100, src))
 			if (open)
 				to_chat(user, "You fill up \the [src].")
-				open = FALSE
-				icon_state = "grave_filled"
-				name = "grave"
-				desc = "A grave."
-				for (var/obj/structure/religious/remains/RMN in src.loc)
-					RMN.forceMove(src)
-				for (var/obj/item/IT in src.loc)
-					IT.forceMove(src)
-				for (var/mob/living/ML in src.loc)
-					if (ML.stat != 0)
-						ML.forceMove(src)
-					else
-						if (istype(ML, /mob/living/human))
-							var/mob/living/human/H = ML
-							H.buriedalive = TRUE
-							H.buried_proc()
-							ML.anchored = TRUE
-							if (H.client)
-								H.client.perspective = EYE_PERSPECTIVE
-								H.client.eye = src
-						else
-							ML.stat = DEAD
-						ML.forceMove(src)
-				for (var/obj/structure/closet/coffin/CF in src.loc)
-					for (var/mob/living/human/HM in CF)
-						HM.buriedalive = TRUE
-						HM.buried_proc()
-						if (HM.client)
-							HM.client.perspective = EYE_PERSPECTIVE
-							HM.client.eye = src
-					CF.forceMove(src)
+				cover_grave()
+				log_game("[key_name(user)] filled in [src] at ([x],[y],[z]).")
 		else
 			return
 	else if (is_tool(W, TOOL_SHOVEL) && !open)
@@ -567,37 +538,7 @@ obj/structure/religious/monument
 		if (do_after(user, 100, src))
 			if (!open)
 				to_chat(user, "You uncover \the [src].")
-				open = TRUE
-				icon_state = "grave_overlay"
-				name = "open grave"
-				desc = "An opened grave."
-				for (var/obj/structure/religious/remains/RMN in src)
-					RMN.forceMove(src.loc)
-				for (var/obj/item/IT in src)
-					IT.forceMove(src.loc)
-				for (var/obj/structure/closet/crate/CR in src)
-					CR.forceMove(src.loc)
-				for (var/mob/living/ML in src)
-					if (ML.stat != 0)
-						ML.forceMove(src.loc)
-					else
-						if (istype(ML, /mob/living/human))
-							var/mob/living/human/H = ML
-							H.buriedalive = FALSE
-							ML.anchored = FALSE
-							if (H.client)
-								H.client.eye = H.client.mob
-								H.client.perspective = MOB_PERSPECTIVE
-						else
-							ML.stat = DEAD
-						ML.forceMove(src.loc)
-				for (var/obj/structure/closet/coffin/CF in src)
-					for (var/mob/living/human/HM in CF)
-						HM.buriedalive = FALSE
-						if (HM.client)
-							HM.client.eye = HM.client.mob
-							HM.client.perspective = MOB_PERSPECTIVE
-					CF.forceMove(src.loc)
+				uncover_grave()
 	if (istype(W, /obj/item/weapon/barrier) && open)
 		user.visible_message("[user] throws the dirt into \the [src].", "You throw the dirt into \the [src].")
 		filled++
@@ -608,6 +549,56 @@ obj/structure/religious/monument
 			return
 	else
 		return
+
+// Fills the grave over whatever lies in it. Anyone still alive in it, in the
+// open or shut in a coffin, is buried alive (code/modules/1713/burial.dm).
+/obj/structure/religious/grave/proc/cover_grave()
+	open = FALSE
+	icon_state = "grave_filled"
+	name = "grave"
+	desc = "A grave."
+	for (var/obj/structure/religious/remains/RMN in src.loc)
+		RMN.forceMove(src)
+	for (var/obj/item/IT in src.loc)
+		IT.forceMove(src)
+	for (var/mob/living/ML in src.loc)
+		if (istype(ML, /mob/living/human))
+			ML.forceMove(src)
+			var/mob/living/human/H = ML
+			H.burial_start(src)
+		else
+			ML.stat = DEAD
+			ML.forceMove(src)
+	for (var/obj/structure/closet/coffin/CF in src.loc)
+		CF.forceMove(src)
+		for (var/mob/living/human/HM in CF)
+			HM.burial_start(src)
+
+// Opens the grave and lays what it held back on the ground.
+/obj/structure/religious/grave/proc/uncover_grave()
+	open = TRUE
+	icon = initial(icon)
+	icon_state = "grave_overlay"
+	name = "open grave"
+	desc = "An opened grave."
+	mound_raised = FALSE
+	mound_dirt = 0
+	mound_for = null
+	for (var/obj/structure/religious/remains/RMN in src)
+		RMN.forceMove(src.loc)
+	for (var/obj/item/IT in src)
+		IT.forceMove(src.loc)
+	for (var/obj/structure/closet/crate/CR in src)
+		CR.forceMove(src.loc)
+	for (var/mob/living/ML in src)
+		ML.forceMove(src.loc)
+		if (istype(ML, /mob/living/human))
+			var/mob/living/human/H = ML
+			H.burial_release()
+	for (var/obj/structure/closet/coffin/CF in src)
+		CF.forceMove(src.loc)
+		for (var/mob/living/human/HM in CF)
+			HM.burial_release()
 
 /obj/structure/religious/grave/initialize()
 	..()

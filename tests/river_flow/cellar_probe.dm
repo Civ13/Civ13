@@ -15,6 +15,19 @@
 	return FALSE
 /obj/map_metadata/cellar_probe/New()
 	return
+/mob/living/human/cellar_probe/update_icons()
+	return
+/mob/living/human/cellar_probe/update_hair(update_icons = 1)
+	return
+/mob/living/human/cellar_probe/update_inv_head(update_icons = 1)
+	return
+/mob/living/human/cellar_probe/handle_hud_list()
+	return
+/mob/living/human/cellar_probe/update_inv_wear_mask(update_icons = 1)
+	return
+/mob/living/human/cellar_probe/New()
+	species = new /datum/species/human
+	return
 var/sewer_failures = 0
 var/sewer_runtime_error = FALSE
 /proc/sewer_check(condition, label)
@@ -112,6 +125,7 @@ var/sewer_runtime_error = FALSE
 	sewer_check(!flood_depth_at(locate(10, 3, 1)), "nothing seeps under the river itself")
 
 	pump_checks(F)
+	tunnel_checks(F)
 
 /proc/pump_checks(datum/river_flood/F)
 	F.cellar_dry = list()
@@ -166,3 +180,48 @@ var/sewer_runtime_error = FALSE
 	S2.on = TRUE
 	F.drain_hollows()
 	sewer_check(S2.fuel == 4 && S2.running, "the river tick steps cellar pumps")
+
+// Floodwater pouring down a tunnel mouth runs along the tunnel to the roof.
+/proc/tunnel_checks(datum/river_flood/F)
+	for (var/obj/structure/P in cellar_pumps.Copy())
+		cellar_pumps -= P
+		qdel(P)
+	F.cellar_dry = list()
+	F.stage[1] = 2
+	F.tunnel_started = FALSE
+	var/turf/near = locate(3, 5, 1)
+	var/turf/edge = locate(6, 5, 1)
+	var/turf/far = locate(8, 5, 1)
+	sewer_check(flood_depth_at(near) < 1, "a tunnel with no mouth only seeps ([flood_depth_at(near)])")
+	var/obj/structure/multiz/ladder/ww2/tunneltop/pit/M = new(locate(3, 5, 2))
+	sewer_check(M in tunnel_mouths, "a dug hole is a tunnel mouth")
+	sewer_check(F.tunnel_mouth_pouring(M), "the flood pours down the hole")
+	F.tunnel_checked = world.time - 600
+	sewer_check(abs(flood_depth_at(near) - 1.5) < 0.001 && flood_band(flood_depth_at(near)) == FLOOD_BAND_DEEP, "the tunnel under the hole floods to the roof ([flood_depth_at(near)])")
+	sewer_check(abs(flood_depth_at(edge) - 0.8) < 0.001, "the edge of the water is waist-deep ([flood_depth_at(edge)])")
+	sewer_check(flood_depth_at(far) < 0.5, "tunnel further off is not flooded yet ([flood_depth_at(far)])")
+	sewer_check(flood_airless(near) && !flood_airless(edge) && !flood_airless(locate(3, 5, 2)), "roof-high tunnel water leaves no air")
+	var/mob/living/human/cellar_probe/H = new(locate(4, 5, 1))
+	H.handle_drowning()
+	sewer_check(H.drowning && H.swim_breath > 0 && !H.getOxyLoss(), "caught in the flooded tunnel, you hold your breath")
+	for (var/i in 1 to 40)
+		H.handle_drowning()
+	sewer_check(H.getOxyLoss() > 0 && H.swim_tiredness == 0, "out of breath you drown; there is nowhere to swim up to ([H.getOxyLoss()])")
+	H.adjustOxyLoss(-500)
+	H.loc = edge
+	H.handle_drowning()
+	sewer_check(!H.drowning && !H.getOxyLoss(), "at the waist-deep edge you can breathe")
+	qdel(H)
+	F.tunnel_checked = world.time - 1200
+	sewer_check(abs(flood_depth_at(far) - 1.5) < 0.001, "the water runs further along the tunnel as it keeps pouring ([flood_depth_at(far)])")
+	for (var/y in 1 to 6)
+		var/turf/wall = locate(7, y, 1)
+		wall.ChangeTurf(/turf/floor/dirt/underground/empty/packed)
+	F.tunnel_checked = world.time - 600
+	sewer_check(flood_depth_at(locate(8, 5, 1)) <= 0.8 && flood_depth_at(locate(5, 5, 1)) > 1, "packed earth holds the water back ([flood_depth_at(locate(8, 5, 1))])")
+	qdel(M)
+	sewer_check(!(M in tunnel_mouths), "a filled hole is no longer a mouth")
+	F.tunnel_checked = world.time - 6000
+	sewer_check(flood_depth_at(near) > 0, "the water does not vanish at once")
+	F.tunnel_checked = world.time - 6000
+	sewer_check(flood_depth_at(near) < 1 && !F.tunnel_fill.len, "once the hole is filled the water soaks away ([flood_depth_at(near)])")
