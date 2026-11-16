@@ -30,6 +30,9 @@
 		return null
 	if (T.iscovered() || (locate(/obj/structure/vehicleparts/frame) in T))
 		return null
+	if (fish_shoal_at(T))
+		// A shoal shows itself whatever the ground under it holds.
+		return prob(35) ? "gulls" : (prob(40) ? pick("jump_a", "jump_b") : pick("rise_a", "rise_b", "rise_c"))
 	var/datum/fishing_ground/G = fishing_ground_at(T, FALSE)
 	if (G && G.available() < 1)
 		return null

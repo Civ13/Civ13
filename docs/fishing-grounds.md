@@ -47,6 +47,18 @@ Tests: `tests/fishing_grounds/`.
   `icons/obj/fishing_gear.dmi`.
 - **Sonar:** a submarine's ping adds what the fish overhead look like and the
   bearing of a clearly fuller neighbouring stretch (`fish_finder_line()`).
+- **Shoals** (`code/modules/1713/fish_shoals.dm`): great shoals travel the salt
+  water, one for every 300x300 tiles of level (1 to 8). Each keeps to its own
+  elliptical circuit about the middle of the map at about 3 tiles a minute and
+  makes a whole number of laps a day, so it is in the same water at the same
+  hour every day (`fish_shoal_position()`, from `world.timeofday`). Nothing is
+  stored, ticked or saved, and it stands in for a current belt: the code has no
+  ocean current field. Salt water within 12 tiles of a shoal fishes x1.5, 60%
+  of its catch is herring, half the fish landed leave the ground's stock alone,
+  and a fished-out stretch still fishes. The water reads "a great shoal is
+  passing through", always shows signs (gulls, leaping fish), and sonar gives a
+  shoal overhead or its bearing and range within 96 tiles. Debug > Fishing
+  Grounds lists where the shoals of the level are.
 - **Signs** (`code/modules/1713/fish_signs.dm`): rings where fish rise, a
   leaping fish now and then (more during the salmon run) and gulls over a
   shoal on the coast. They are images on the viewer's client from

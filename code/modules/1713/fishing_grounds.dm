@@ -55,6 +55,11 @@
 #define FISH_TROLL_FULL 0.5
 // Chance a watched tile of ankle-deep floodwater strands a fish in a river minute.
 #define FISH_STRAND_CHANCE 2
+// Under a passing shoal (fish_shoals.dm): the share of the catch that is
+// herring, and the chance a landed fish came with the shoal and leaves the
+// ground's own stock alone.
+#define FISH_SHOAL_HERRING 60
+#define FISH_SHOAL_FREE 50
 
 #define FISH_WATER_SALT "salt"
 #define FISH_WATER_FRESH "fresh"
@@ -252,6 +257,8 @@ var/global/list/fishing_grounds_published = null
 		return null
 	var/datum/fishing_ground/G = fishing_ground_at(T, FALSE)
 	var/full = G ? G.fullness() : 1
+	if (fish_shoal_at(T))
+		return "The water flickers with silver: a great shoal is passing through."
 	if (G && G.available() < 1)
 		return "Nothing stirs in the water. This stretch is fished out for now."
 	if (full >= 0.75)
@@ -296,7 +303,7 @@ var/global/list/fishing_grounds_published = null
 			. *= FISH_LOW_POOL_FACTOR // at low water the fish crowd into the pools
 
 /proc/fish_condition_factor_at(turf/T, kind)
-	return fish_condition_factor(kind, fish_water_deep(T), fish_run_season(), weather_at(T), river_stage_at(T))
+	return fish_condition_factor(kind, fish_water_deep(T), fish_run_season(), weather_at(T), river_stage_at(T)) * fish_shoal_factor(T)
 
 // A line for the water's examine text, or null when nothing is out of the ordinary.
 /proc/fish_condition_reading(turf/T, kind)
@@ -318,13 +325,17 @@ var/global/list/fishing_grounds_published = null
 // ---- The catch ----
 
 // What comes up. baited: bait on the line. towed: a line trolled from a ship.
-/proc/fish_catch_type(turf/T, kind, baited, towed = FALSE)
+// shoal: a shoal is passing (fish_shoals.dm).
+/proc/fish_catch_type(turf/T, kind, baited, towed = FALSE, shoal = FALSE)
 	switch (kind)
 		if (FISH_WATER_SALT)
-			if (fish_water_deep(T))
-				// Tuna hunt in open water and only take something that moves or smells.
-				if ((towed && prob(25)) || (baited && !towed && prob(12)))
-					return /obj/item/weapon/reagent_containers/food/snacks/rawfish/tuna
+			var/deep = fish_water_deep(T)
+			// Tuna hunt in open water and only take something that moves or smells.
+			if (deep && ((towed && prob(25)) || (baited && !towed && prob(12))))
+				return /obj/item/weapon/reagent_containers/food/snacks/rawfish/tuna
+			if (shoal && prob(FISH_SHOAL_HERRING))
+				return /obj/item/weapon/reagent_containers/food/snacks/rawfish/herring
+			if (deep)
 				if (prob(55))
 					return /obj/item/weapon/reagent_containers/food/snacks/rawfish/cod
 				if (baited && prob(20))
@@ -484,7 +495,7 @@ var/global/list/fishing_grounds_published = null
 		to_chat(H, SPAN_WARNING("You need a deck, a bridge or the bank under you to fish."))
 		return
 	var/datum/fishing_ground/G = fishing_ground_at(src)
-	if (G.available() < 1)
+	if (G.available() < 1 && !fish_shoal_at(src))
 		to_chat(H, SPAN_WARNING("Nothing stirs here. This stretch seems fished out; try further along."))
 		return
 	var/obj/item/weapon/fishing/line = istype(W, /obj/item/weapon/fishing) ? W : null
@@ -516,14 +527,18 @@ var/global/list/fishing_grounds_published = null
 /proc/fish_land(mob/living/human/H, turf/water, datum/fishing_ground/G, kind, chance, hauls, baited, spear, towed = FALSE)
 	var/list/landed = list()
 	var/escaped = FALSE
+	var/shoal = fish_shoal_at(water)
 	for (var/haul = 1 to hauls)
 		if (!prob(round(chance)))
 			continue
-		if (!G.take(1)) // the ground ran out, or someone else took the last fish during the wait
+		// Under a shoal some of the fish came with it and cost the ground nothing.
+		if (!(shoal && prob(FISH_SHOAL_FREE)) && !G.take(1)) // the ground ran out, or someone else took the last fish during the wait
 			escaped = TRUE
-			break
-		var/catch_path = fish_catch_type(water, kind, baited, towed)
+			continue
+		var/catch_path = fish_catch_type(water, kind, baited, towed, shoal)
 		landed += new catch_path(get_turf(H))
+	if (!H)
+		return landed.len
 	if (!landed.len)
 		if (escaped)
 			to_chat(H, "Whatever was there got away.")
@@ -616,7 +631,7 @@ var/global/list/fishing_grounds_published = null
 		line.bait_uses--
 	var/turf/water = fish_water_beside(H, ship)
 	var/datum/fishing_ground/G = water && fishing_ground_at(water)
-	if (!G || G.available() < 1)
+	if (!G || (G.available() < 1 && !fish_shoal_at(water)))
 		to_chat(H, trawl ? "The trawl comes up empty. These waters are fished out; sail on." : "Nothing follows the lure. These waters seem fished out; sail on.")
 		return
 	var/kind = G.kind
@@ -640,6 +655,9 @@ var/global/list/fishing_grounds_published = null
 	var/full = G ? G.fullness() : 1
 	var/here = full >= 0.75 ? "thick shoals" : (full >= 0.4 ? "scattered shoals" : ((G && G.available() < 1) ? "no fish" : "a few fish"))
 	. = "Fish overhead: [here]."
+	var/shoal = fish_shoal_finder_line(T)
+	if (shoal)
+		. += " [shoal]"
 	if (full >= 0.75)
 		return
 	// The fullest neighbouring stretch, if it beats this one.
@@ -727,6 +745,8 @@ var/global/list/fishing_grounds_published = null
 #undef FISH_SPATE_FACTOR
 #undef FISH_LOW_POOL_FACTOR
 #undef FISH_STRAND_CHANCE
+#undef FISH_SHOAL_HERRING
+#undef FISH_SHOAL_FREE
 #undef FISH_ENGINE_FACTOR
 #undef FISH_TROLL_SLOW
 #undef FISH_TROLL_FULL

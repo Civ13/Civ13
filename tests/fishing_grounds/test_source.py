@@ -48,6 +48,18 @@ class FishingGrounds(unittest.TestCase):
         self.assertLess(cast.index('prob(round(chance))'), cast.index('G.take(1)'))
         self.assertLess(cast.index('G.take(1)'), cast.index('new catch_path('))
 
+    def test_shoals_hold_no_state(self):
+        dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
+        self.assertEqual(dme.count('#include "code\\modules\\1713\\fish_shoals.dm"'), 1)
+        shoals = (ROOT / 'code/modules/1713/fish_shoals.dm').read_text(encoding='utf-8')
+        for banned in ('spawn(', 'addtimer', 'in world', '/obj/', '/datum/'):
+            self.assertNotIn(banned, shoals)
+        # A shoal's place follows from the time of day alone.
+        self.assertIn('/proc/fish_shoal_position(z, index, t)', shoals)
+        self.assertIn('world.timeofday', shoals)
+        self.assertIn('* fish_shoal_factor(T)', self.source)
+        self.assertIn('if (!(shoal && prob(FISH_SHOAL_FREE)) && !G.take(1))', self.source)
+
     def test_set_gear_draws_on_the_ground(self):
         self.assertIn('/proc/fish_ground_trap_catch(turf/T)', self.source)
         traps = (ROOT / 'code/modules/1713/stone_age_traps.dm').read_text(encoding='utf-8')

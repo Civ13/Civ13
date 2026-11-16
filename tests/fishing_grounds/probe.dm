@@ -49,6 +49,13 @@ var/fg_runtime_error = FALSE
 	G.since -= minutes * 600
 
 /proc/fishing_grounds_checks()
+	// The level's one shoal starts out of the way, at the top of its circuit.
+	for (var/clock = 0, clock < 864000, clock += 600)
+		var/list/far = fish_shoal_position(1, 1, clock)
+		if (far[2] >= 54)
+			fish_shoal_clock = clock
+			break
+	fg_check(!isnull(fish_shoal_clock), "the shoal can be found at the top of its circuit")
 	// ---- Water ----
 	var/turf/river = fg_water(5, 5, /turf/floor/beach/water)
 	var/turf/pool = fg_water(6, 5, /turf/floor/beach/water/deep)
@@ -237,13 +244,13 @@ var/fg_runtime_error = FALSE
 	qdel(hull)
 	// Sonar: the fish over a submerged boat.
 	fishing_grounds = list()
-	fg_check(fish_finder_line(ocean) == "Fish overhead: thick shoals." && isnull(fish_finder_line(land)), "a sonar set reads unfished sea as thick shoals and land as nothing")
+	fg_check(fish_finder_line(ocean) == "Fish overhead: thick shoals. A great shoal bears north, about 50 tiles off." && isnull(fish_finder_line(land)), "a sonar set reads unfished sea as thick shoals and land as nothing")
 	var/datum/fishing_ground/OG = fishing_ground_at(ocean)
 	OG.stock = 3
 	fg_check(findtext(fish_finder_line(ocean), "scattered shoals"), "half-fished water reads as scattered shoals")
 	OG.stock = 0
 	fg_water(40 + 16, 5, /turf/floor/beach/water/deep/saltwater)
-	fg_check(fish_finder_line(ocean) == "Fish overhead: no fish. Stronger returns to the east.", "fished-out water points at a fuller stretch next door ([fish_finder_line(ocean)])")
+	fg_check(fish_finder_line(ocean) == "Fish overhead: no fish. A great shoal bears north, about 50 tiles off. Stronger returns to the east.", "fished-out water points at a fuller stretch next door ([fish_finder_line(ocean)])")
 
 	// ---- Signs on the water ----
 	fishing_grounds = list()
@@ -334,6 +341,47 @@ var/fg_runtime_error = FALSE
 	var/list/trawl = fishing_tool_profile(trawl_net)
 	fg_check(trawl[1] == 200 && trawl[2] == 35 && !trawl[3] && trawl[4] == 6, "a trawl takes 20 s and has six chances of 35%")
 	fg_check((trawl_net.icon_state in icon_states(trawl_net.icon)) && trawl_net.w_class == ITEM_SIZE_LARGE, "the trawl has its sprite and is a large thing to carry")
+
+	// ---- Shoals ----
+	fg_check(fish_shoal_count() == 1, "a small level has one shoal")
+	var/list/start = fish_shoal_position(1, 1, 0)
+	var/list/midnight = fish_shoal_position(1, 1, 864000)
+	fg_check(abs(start[1] - midnight[1]) <= 1 && abs(start[2] - midnight[2]) <= 1, "a shoal is back where it started after a day")
+	var/list/later = fish_shoal_position(1, 1, 6000)
+	var/moved = max(abs(later[1] - start[1]), abs(later[2] - start[2]))
+	fg_check(moved >= 5 && moved <= 40, "in ten minutes it has moved on, but not far ([moved])")
+	var/list/second = fish_shoal_position(1, 2, 0)
+	fg_check(second[1] != start[1] || second[2] != start[2], "two shoals keep different stations")
+	fg_check(!fish_shoal_at(shelf) && !fish_shoal_at(ocean) && fish_shoal_factor(shelf) == 1, "water away from the shoal fishes as usual")
+	var/list/now = fish_shoal_position(1, 1, fish_shoal_clock)
+	var/turf/under = fg_water(now[1], now[2], /turf/floor/beach/water/deep/saltwater)
+	var/turf/beside = fg_water(now[1] - 10, now[2], /turf/floor/beach/water/shallowsaltwater)
+	var/turf/lake = fg_water(now[1] + 1, now[2], /turf/floor/beach/water)
+	fg_check(fish_shoal_at(under) && fish_shoal_at(beside) && fish_shoal_factor(under) == 1.5, "salt water within 12 tiles of the shoal fishes half as well again")
+	fg_check(!fish_shoal_at(lake) && !fish_shoal_at(land), "a shoal is nothing to fresh water or to land")
+	fg_check(fish_condition_factor_at(under, "salt") == 1.5 && fish_condition_factor_at(shelf, "salt") == 1, "the shoal is multiplied into the conditions")
+	fg_check(findtext(fish_ground_reading(under), "great shoal") && !findtext(fish_ground_reading(shelf), "great shoal"), "the water under a shoal reads as one")
+	var/shoal_herring = 0
+	var/shoal_signs = 0
+	for (var/i = 1 to 400)
+		if (fish_catch_type(beside, "salt", FALSE, FALSE, TRUE) == /obj/item/weapon/reagent_containers/food/snacks/rawfish/herring)
+			shoal_herring++
+		if (fish_sign_state(under))
+			shoal_signs++
+	fg_check(shoal_herring >= 250 && shoal_herring <= 350, "most of a shoal's catch on the coast is herring ([shoal_herring] of 400)")
+	fg_check(shoal_signs == 400, "a shoal always shows on the water")
+	// A fished-out ground still gives fish while the shoal is over it.
+	var/datum/fishing_ground/shoal_ground = fishing_ground_at(under)
+	shoal_ground.take(shoal_ground.available())
+	var/shoal_landed = 0
+	for (var/i = 1 to 40)
+		shoal_landed += fish_land(null, under, shoal_ground, "salt", 100, 1, FALSE, FALSE)
+	fg_check(shoal_ground.available() < 1 && shoal_landed >= 8 && shoal_landed <= 32, "an empty ground under a shoal gives about half the fish hooked ([shoal_landed] of 40)")
+	fg_check(findtext(fish_finder_line(under), "passing overhead"), "sonar hears a shoal overhead")
+	var/turf/west = fg_water(max(1, now[1] - 30), now[2], /turf/floor/beach/water/deep/saltwater)
+	fg_check(findtext(fish_finder_line(west), "great shoal bears east"), "and gives the bearing of one further off ([fish_finder_line(west)])")
+	fish_shoal_clock = (fish_shoal_clock + 432000) % 864000
+	fg_check(!fish_shoal_at(under) && fish_shoal_factor(under) == 1, "half a day later the shoal has gone from that water")
 
 	// ---- Saving ----
 	fishing_grounds = list()
