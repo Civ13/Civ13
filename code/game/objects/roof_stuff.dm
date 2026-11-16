@@ -409,7 +409,9 @@
 	target_type = /obj/roof/mayan
 
 /obj/item/weapon/roofbuilder/proc/building_confirm(mob/user, direction)
-	return WWinput(user, "Build a roof [dir2text(direction)] of you? A walkable floor is added above when the upper level is available.", "Roof Construction", "Continue", list("Continue", "Stop")) == "Continue"
+	var/no_floor = building_floor_above_error(get_step(user, direction))
+	var/floor_note = no_floor ? no_floor : "A walkable floor for the next storey is added above it."
+	return WWinput(user, "Build a roof [dir2text(direction)] of you? [floor_note]", "Roof Construction", "Continue", list("Continue", "Stop")) == "Continue"
 
 /obj/item/weapon/roofbuilder/proc/building_wait(mob/user, duration, turf/start)
 	return do_after(user, duration, start)
@@ -448,6 +450,7 @@
 		visible_message(SPAN_NOTICE("[user] finishes building the roof and upper floor."))
 	else
 		visible_message(SPAN_NOTICE("[user] finishes building the roof."))
+		to_chat(user, SPAN_NOTICE(building_floor_above_error(target) || "There was no room for another level just now, so this roof has no floor above it."))
 	if (ishuman(user))
 		var/mob/living/human/H = user
 		H.adaptStat("crafting", 1)

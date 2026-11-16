@@ -204,9 +204,27 @@ var/building_compiled_maxz = 0
 			return TRUE
 	return FALSE
 
+// Set only while building_design_error asks whether a foundation is all that
+// is missing; no proc sleeps while it is set.
+var/global/building_assume_founded = FALSE
+
 // Storeys the ground under a ground-floor support carries.
 /proc/building_ground_strength(atom/A)
-	return building_founded(A) ? BUILDING_GROUND_STRENGTH : BUILDING_UNFOUNDED_STOREYS
+	return building_assume_founded || building_founded(A) ? BUILDING_GROUND_STRENGTH : BUILDING_UNFOUNDED_STOREYS
+
+/proc/building_storey_name(h)
+	switch (h)
+		if (1)
+			return "first"
+		if (2)
+			return "second"
+		if (3)
+			return "third"
+		if (4)
+			return "fourth"
+		if (5)
+			return "fifth"
+	return "[h]th"
 
 // How far a support holds a slab: pillars reach further than walls.
 /proc/building_support_reach(atom/A)
@@ -332,6 +350,12 @@ var/building_compiled_maxz = 0
 	var/list/memo = list()
 	var/list/info = building_slab_info(T, memo)
 	if (!info)
+		// Would a foundation under the ground-floor supports be enough?
+		building_assume_founded = TRUE
+		var/list/founded = building_slab_info(T, list())
+		building_assume_founded = FALSE
+		if (founded && founded[1] > BUILDING_UNFOUNDED_STOREYS)
+			return "This roof would cover the [building_storey_name(founded[1])] storey, but the ground-floor walls or pillars stand on soft ground, which holds only two storeys. Supports on rock or on a stone, brick or concrete floor hold more. Lay that floor first, then build the wall or pillar on it."
 		return "This roof needs grounded walls or pillars of a sufficient tier. Wood supports two storeys, stone four, concrete six and metal eight. Above two storeys the ground-floor supports must stand on rock or on a stone, brick or concrete floor."
 	var/h = info[1]
 	var/near = FALSE
@@ -391,6 +415,21 @@ var/building_compiled_maxz = 0
 	// Nothing lies above z (the cave is never "above"), so z is the top ground
 	// level or the highest building level.
 	return z == multiz_top_z() || (z > building_base_maxz() && z != dug_underground_z() && building_stack_room(z))
+
+// Why a roof on T would get no walkable floor above it, or null when it will.
+// Shown before and after building so players know where their building stops.
+/proc/building_floor_above_error(turf/T)
+	if (!T)
+		return "There is no level above this spot."
+	if (building_upper_z(T.z))
+		return null
+	if (!map || !map.building_levels)
+		return "This land has no building levels, so the roof will have no floor above it."
+	if (building_grows_from(T.z))
+		return null
+	if (T.z > building_base_maxz())
+		return "This is the highest storey this land allows, so the roof will have no floor above it."
+	return "There is no level above this spot, so the roof will have no floor above it."
 
 /proc/building_floor_error(turf/T)
 	if (!T)

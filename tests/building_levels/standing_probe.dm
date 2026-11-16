@@ -67,10 +67,17 @@
 		standing_assert(building_standing_try() && world.maxz == base + 1, "a present level is never added twice")
 		// Roofs on the highest building level add the next one, up to the map's cap.
 		standing_assert(!building_grows_from(base + 1), "a one-level map never grows a second level")
+		// Roof builders say where the floors stop.
+		standing_assert(!building_floor_above_error(locate(1, 1, base)), "a ground roof gets the standing level's floor")
+		standing_assert(findtext(building_floor_above_error(locate(1, 1, base + 1)), "highest storey"), "a one-level map's upper roof says it is the top storey")
 		map.building_levels = 2
 		standing_assert(!building_grows_from(base) && building_grows_from(base + 1), "growth starts from the highest building level")
 		standing_assert(building_allocate_level(base + 2) && world.maxz == base + 2, "the second building level is admitted")
 		standing_assert(!building_grows_from(base + 1) && !building_grows_from(base + 2), "the map's cap stops growth")
+		standing_assert(!building_floor_above_error(locate(1, 1, base + 1)) && building_floor_above_error(locate(1, 1, base + 2)), "only the capped top level reports no floor")
+		map.building_levels = 0
+		standing_assert(findtext(building_floor_above_error(locate(1, 1, base + 2)), "no building levels"), "a map without building levels says so")
+		map.building_levels = 2
 		standing_assert(multiz_top_z() == base && multiz_level_above(base + 1) == base + 2, "added levels stack over the surface")
 		text2file("PASS: standing building level", "result.txt")
 	catch (var/exception/E)
