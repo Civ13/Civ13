@@ -141,11 +141,15 @@ var/list/mine_blasts = list()
 	naval_check(findtext(naval_mine_lay_problem(locate(31, 10, 2)), "hull"), "a mine cannot be laid on a hull")
 	// A magnetic mine in her path: she passes over it.
 	var/obj/structure/naval_mine/magnetic/under = new(locate(37, 10, 2))
+	// A fishing spot in her path as well.
+	var/obj/structure/fish/spot = new(locate(35, 10, 2))
 	W.set_anchor(FALSE)
 	W.set_speed(VESSEL_SPEED_SLOW)
 	naval_check(hull_steps(W, 4) && tiller.x == 36, "she sails four tiles east, over the magnetic mine ([tiller.x])")
 	naval_check(!QDELETED(under) && under.x == 37 && under.y == 10 && !mine_blasts.len, "the magnetic mine stays where it was laid and does not go off")
 	naval_check(!(under in W.body.aboard()), "a mine under her is not counted aboard")
+	naval_check(!QDELETED(spot) && spot.x == 35 && spot.y == 10 && !(spot in W.body.aboard()), "a fishing spot under her stays in its water ([spot.x],[spot.y])")
+	qdel(spot)
 	// A contact mine ahead: she sets it off.
 	var/obj/structure/naval_mine/contact/horned = new(locate(40, 11, 2))
 	naval_check(hull_steps(W, 2) && QDELETED(horned) && mine_blasts.len == 1, "a contact mine under her hull goes off ([mine_blasts.len])")
