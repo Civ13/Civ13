@@ -256,6 +256,8 @@ var/list/sky_drop_map = list()
 				if (!A.persistence_set_z(A.z - 1))
 					return
 				A.visible_message("\The [A] falls from the level above and slams into the floor!", "You hear something slam into the deck.")
+				if (isitem(A))
+					falling_item_strike(A, get_turf(A))
 
 /turf/floor/broken_floor/attackby(mob/user)
 	var/your_dir = "NORTH"

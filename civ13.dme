@@ -1246,6 +1246,7 @@
 #include "code\modules\1713\siege\boiling_oil.dm"
 #include "code\modules\1713\siege\cannon_types.dm"
 #include "code\modules\1713\siege\castle_defences.dm"
+#include "code\modules\1713\siege\castle_pour.dm"
 #include "code\modules\1713\siege\catapult.dm"
 #include "code\modules\1713\siege\fire.dm"
 #include "code\modules\1713\siege\naval_broadside.dm"
