@@ -12,7 +12,7 @@ var/datum/world_z_budget/world_z_budget = new
 	return isnum(value) && value >= 0 && value <= maximum && value == round(value)
 
 // Pure prospective check: large-map cases need no native grid allocation.
-/proc/new_z_grid_error(width, height, current_z, base_z, target_z, purpose, cell_limit, roof_limit, instance_reserve, safehouse_reserve, instance_used = 0, safehouse_used = 0)
+/proc/new_z_grid_error(width, height, current_z, base_z, target_z, purpose, cell_limit, roof_limit, instance_reserve, safehouse_reserve, instance_used = 0, safehouse_used = 0, free_planes = 0)
 	if (!new_z_integer(width, NEW_Z_CELL_CEILING) || !width || !new_z_integer(height, NEW_Z_CELL_CEILING) || !height || !new_z_integer(current_z, BUILDING_MAX_Z) || !current_z || !new_z_integer(base_z, BUILDING_MAX_Z) || !base_z || base_z > current_z || !new_z_integer(target_z, BUILDING_MAX_Z) || target_z < current_z)
 		return "Invalid or unsupported world dimensions; no level was allocated."
 	if (!(purpose in list("roof", "restore", "instance", "safehouse", "underground", "practice")))
@@ -39,9 +39,10 @@ var/datum/world_z_budget/world_z_budget = new
 		return "Requested and reserved whole levels exceed the structural level ceiling."
 	// Bound the plane before multiplying (at most 2100000, exactly representable).
 	// Compare levels using one division rather than two rounded divisions.
+	// An unformed cave plane (dug_underground.dm) is not charged cells.
 	var/exceeds_budget = !cell_limit || width > cell_limit / height
 	if (!exceeds_budget)
-		exceeds_budget = charged_levels > cell_limit / (width * height)
+		exceeds_budget = charged_levels - free_planes > cell_limit / (width * height)
 	if (exceeds_budget)
 		return "Level budget refused: [width] x [height] x [target_z] requested, plus [pending_instance + pending_safehouse] reserved level(s); ceiling [cell_limit] total cells. Preserve existing saves; a reviewed recovery/profile change is required."
 	return null
@@ -104,6 +105,11 @@ var/datum/world_z_budget/world_z_budget = new
 /datum/world_z_budget/proc/ground_planes()
 	return base_z
 
+// Added planes that cost about nothing until play reaches them (the
+// unformed cave, dug_underground.dm) and are left out of the cell ceiling.
+/datum/world_z_budget/proc/free_planes(target_z, purpose)
+	return 0
+
 // A map that opted into an open-air building level (building_levels.dm) may
 // add that one level, or restore it, within the measured profile there.
 /datum/world_z_budget/proc/building_admitted(target_z)
@@ -151,7 +157,7 @@ var/datum/world_z_budget/world_z_budget = new
 	// A dug cave is a ground plane, not a roof-added level: count it with the
 	// compiled levels so it does not use up one of the map's roof levels.
 	var/ground_z = ground_planes()
-	var/grid_error = new_z_grid_error(world.maxx, world.maxy, world.maxz, ground_z, target_z, purpose, cell_limit, roof_limit, instance_reserve, safehouse_reserve, charged_instance, charged_safehouse)
+	var/grid_error = new_z_grid_error(world.maxx, world.maxy, world.maxz, ground_z, target_z, purpose, cell_limit, roof_limit, instance_reserve, safehouse_reserve, charged_instance, charged_safehouse, free_planes(target_z, purpose))
 	if (grid_error || target_z == world.maxz)
 		return grid_error
 	return memory_admission_error(target_z, purpose)

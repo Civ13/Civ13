@@ -31,7 +31,7 @@
 	var/lockstate = "" //Icon_state
 	var/keycode
 
-	map_storage_saved_vars = "density;icon_state;dir;name;pixel_x;pixel_y;keycode;haslock;custom;custom_code;locked"
+	map_storage_saved_vars = "density;icon_state;dir;name;pixel_x;pixel_y;keycode;haslock;custom;custom_code;locked;door_closer;closer_delay;door_wedge"
 
 /obj/structure/simple_door/fire_act(temperature)
 	var/dmg = round((temperature - 365)/20)
@@ -112,6 +112,8 @@
 	return
 
 /obj/structure/simple_door/attack_hand(mob/user as mob)
+	if (state && !isSwitchingStates && door_fitting_hand(user))
+		return TRUE
 	return door_intent_interact(user)
 
 // Hand interactions follow intent: help opens the door (a locked door rattles
@@ -234,9 +236,11 @@
 			L.update_overlay()
 		for(var/obj/roof/R in range(1,src))
 			R.update_transparency(1)
+		door_opened()
 
 /obj/structure/simple_door/proc/Close()
 	isSwitchingStates = TRUE
+	close_token++
 	if (istype(src, /obj/structure/simple_door/key_door/anyone/shoji))
 		playsound(loc, 'sound/machines/shoji_door_close.ogg', 100, TRUE)
 	else
@@ -256,7 +260,9 @@
 			L.update_overlay()
 		for(var/obj/roof/R in range(1,src))
 			R.update_transparency(0)
+		door_closed()
 /obj/structure/simple_door/Destroy()
+	door_fittings_destroyed()
 	door_list -= src
 	processing_objects -= src
 	for (var/obj/roof/R in loc)
@@ -272,6 +278,8 @@
 		icon_state = basic_icon
 
 /obj/structure/simple_door/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (door_fitting_attackby(W, user))
+		return TRUE
 	//KEYPAD AND LOCKSAASDASD
 	if (istype(W, /obj/item/weapon/smart_lock))
 		fit_smart_lock(W, user)
@@ -325,8 +333,10 @@
 	if(haslock)
 		if (state) //if open
 			src.overlays = null
+			fitting_images = null
 		else //if closed
 			src.overlays += icon(lockicon,lockstate)
+	update_fitting_overlays()
 
 /obj/structure/simple_door/proc/CheckHardness()
 	if (hardness <= 0)

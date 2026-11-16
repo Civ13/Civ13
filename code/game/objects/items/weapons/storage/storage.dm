@@ -194,6 +194,8 @@
 	is_seeing -= user
 
 /obj/item/weapon/storage/proc/open(mob/user as mob)
+	if (storage_window_open(user, src))
+		return
 	if (use_sound)
 		playsound(loc, use_sound, 50, TRUE, -5)
 

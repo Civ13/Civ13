@@ -215,6 +215,7 @@
 /atom/movable/proc/persistence_set_loc(atom/destination)
 	if (!persistence_movement_allowed(src, destination))
 		return FALSE
+	var/atom/origin = loc
 	#if CIV13_ROOT_TREE_PRESENTATION
 	var/list/los_move_contexts = root_tree_invalidate(src)
 	#endif
@@ -224,6 +225,7 @@
 	los_refresh_moved_viewer(src, TRUE, los_move_contexts)
 	#endif
 	paper_authoring_notify(src, "relocated")
+	item_pile_moved(src, origin, destination) // raw loc changes skip Entered/Exited (item_piles.dm)
 	return TRUE
 
 /atom/movable/proc/persistence_set_z(target_z)

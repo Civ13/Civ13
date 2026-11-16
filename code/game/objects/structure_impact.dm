@@ -69,6 +69,9 @@
 	if (force <= 0 || QDELETED(src) || incomplete)
 		return force
 	var/resistance = structure_impact_resistance(kind)
+	// A buttress on the side the blow pushes towards takes the thrust.
+	if (wall && building_brace_resists(src, dir))
+		resistance *= 2
 	var/before = health
 	health -= force / resistance
 	if (wall)
@@ -102,6 +105,8 @@
 	if (force <= 0)
 		return force
 	var/resistance = structure_impact_resistance(kind)
+	if (building_brace_resists(src, dir))
+		resistance *= 2
 	var/cap = material ? material.integrity : 150
 	var/before = (cap - damage) * TURF_WALL_IMPACT_SCALE
 	take_damage(force / resistance / TURF_WALL_IMPACT_SCALE)

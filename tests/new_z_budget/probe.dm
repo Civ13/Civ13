@@ -12,6 +12,9 @@
 /world/OpenPort(port)
 	return port == "none" ? ..() : FALSE
 
+/obj/map_metadata/z_budget_fixture
+	dig_down_underground = FALSE // the cave's budget is covered by tests/building_levels/cave_probe.dm
+
 /obj/map_metadata/z_budget_fixture/New()
 	return
 
@@ -48,6 +51,7 @@ var/z_budget_existing_plane = FALSE
 	z_budget_assert(!new_z_grid_error(500,350,1,1,2,"roof",600000,1,0,0), "generated one-z Gaia admitted")
 	z_budget_assert(!new_z_grid_error(500,400,1,1,3,"restore",600000,1,0,0), "exact total-cell ceiling admitted")
 	z_budget_assert(new_z_grid_error(500,401,1,1,3,"restore",600000,1,0,0), "one-over lower host budget blocked")
+	z_budget_assert(new_z_grid_error(1132,920,2,1,3,"restore",2100000,1,0,0) && !new_z_grid_error(1132,920,2,1,3,"restore",2100000,1,0,0,0,0,1), "an unformed cave plane is not charged")
 	z_budget_assert(new_z_grid_error(500,350,2,2,4,"restore",600000,1,0,0), "multi-level Gaia target refused as a whole")
 	z_budget_assert(new_z_grid_error(375,447,1,1,3,"roof",600000,1,0,0), "second roof plane blocked")
 	z_budget_assert(new_z_grid_error(500,500,3,3,4,"restore",600000,1,0,0), "over-budget compiled world cannot grow")
