@@ -1,7 +1,9 @@
 // Read-only integration. No authoring action, language choice or model migration
 // is exposed here. Every classic paper payload uses this server-owned boundary.
-/proc/paper_document_container_row(atom/container, obj/item/weapon/item, open_action)
-	return "<A href='?src=\ref[container];remove=\ref[item]'>Remove</A> <A href='?src=\ref[container];rename=\ref[item]'>Rename</A> - <A href='?src=\ref[container];[open_action]=\ref[item]'>[item.name]</A><BR>"
+// One line of a folder's or clipboard's panel window: the document with its
+// Open, Rename and Remove buttons. The container's Topic re-checks each ref.
+/proc/paper_document_container_row(obj/item/weapon/item, open_action, open_label = "Read")
+	return panel_item(item.name, null, list(panel_button(open_label, open_action, "\ref[item]"), panel_button("Rename", "rename", "\ref[item]"), panel_button("Remove", "remove", "\ref[item]")))
 
 /proc/paper_document_route_access(obj/item/weapon/paper/P, mob/reader, route, atom/owner)
 	if (!P || P.gc_destroyed || !reader)
