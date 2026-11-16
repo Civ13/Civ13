@@ -184,7 +184,7 @@ RECIPE: /material/wood/,roof support,/obj/structure/roof_support,5,30,1,1,constr
 RECIPE: /material/wood/,wood roof builder,/obj/item/weapon/roofbuilder,4,20,0,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,rustic door,/obj/structure/simple_door/key_door/anyone/rustic,13,40,1,1,construction,18,0,0,8,null
 RECIPE: /material/wood/,thatch floor,/obj/covers/thatch,3,20,1,1,construction,0,0,0,8,null
-RECIPE: /material/wood/,straw wall,/obj/covers/straw_wall,9,90,1,1,construction,0,0,0,8,null
+RECIPE: /material/wood/,straw wall,/obj/covers/straw_wall,1,90,1,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,wood shield,/obj/item/weapon/shield,14,180,0,1,weapons,0,14,0,8,null
 RECIPE: /material/wood/,primitive bow,/obj/item/weapon/gun/projectile/bow,15,120,0,1,weapons,0,14,0,8,null
 RECIPE: /material/wood/,arrow shaft (x3),/obj/item/ammo_casing/arrow,1,40,0,1,weapons,0,14,0,8,null

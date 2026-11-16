@@ -2023,7 +2023,7 @@ RECIPE: /material/wood/,fancy wood floor,/obj/covers/fancywood,1.5,25,1,1,constr
 
 RECIPE: /material/wood/,window,/obj/structure/window_frame,5,80,1,1,construction,18,0,0,8,null
 
-RECIPE: /material/wood/,straw wall,/obj/covers/straw_wall,4,90,1,1,construction,0,0,0,8,null
+RECIPE: /material/wood/,straw wall,/obj/covers/straw_wall,1,90,1,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,log wall,/obj/covers/wood_wall/log,6,90,1,1,construction,25,0,0,8,null
 RECIPE: /material/wood/,log wall corner,/obj/covers/wood_wall/log/corner,6,90,1,1,construction,25,0,0,8,null
 RECIPE: /material/wood/,wood wall,/obj/covers/wood_wall/adjustable,7,130,1,1,construction,35,0,0,8,null

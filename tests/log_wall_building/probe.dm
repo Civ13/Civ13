@@ -73,18 +73,22 @@ var/vr_runtime_error = FALSE
 	var/obj/covers/wood_wall/log_build/B = new /obj/covers/wood_wall/log_build(site)
 	vr_check(B.stage == 1 && !B.opacity && B.density && B.health == 60 && B.incomplete, "the sill is one log, low, solid and see-through")
 	vr_check(building_insulation_edge_base(site) == 0.3, "a half-built wall holds little warmth")
+	vr_check("[B.icon]" == "icons/obj/log_wall_build.dmi" && B.icon_state == "sill" && ("sill" in icon_states(B.icon)), "the sill shows its own sprite")
 
 	var/obj/item/stack/material/wood/L = new /obj/item/stack/material/wood(null, 10)
 	vr_hold(U, L)
 	B.attackby(L, U)
 	vr_check(B.stage == 2 && !B.opacity && L.amount == 9 && B.health == 150, "a log raises it to waist height")
+	vr_check(B.icon_state == "courses", "two logs show the waist-high sprite")
 	B.attackby(L, U)
 	vr_check(B.stage == 3 && B.opacity && L.amount == 8, "the upper courses block sight")
+	vr_check(B.icon_state == "upper" && ("upper" in icon_states(B.icon)), "three logs show the head-high sprite")
 	B.attackby(L, U)
 	var/obj/covers/wood_wall/log/W = locate() in site
 	vr_check(QDELETED(B) && W && L.amount == 7, "the top plate finishes the wall: 4 logs in all")
 	vr_check(W && !W.notched && !W.chinked && W.health == 350, "a new wall is unnotched and unchinked")
 	vr_check(building_insulation_edge_base(site) == 0.5, "an unchinked wall lets warmth out")
+	vr_check(W && "[W.icon]" == "icons/obj/log_wall_build.dmi" && W.icon_state == "unchinked" && ("unchinked" in icon_states(W.icon)), "an unchinked wall shows the gaps between its logs")
 
 	var/obj/item/hatchet = vr_tool(TOOL_HATCHET)
 	vr_hold(U, hatchet)
@@ -99,9 +103,12 @@ var/vr_runtime_error = FALSE
 	W.attackby(H, U)
 	vr_check(W.chinked && H.amount == 1, "two hay chink the wall")
 	vr_check(building_insulation_edge_base(site) == 0.8, "a chinked log wall holds warmth well")
+	vr_check("[W.icon]" == "icons/turf/walls.dmi" && W.icon_state == "log_wall", "a chinked wall returns to the finished sprite")
 
 	var/obj/covers/wood_wall/log/mapped = new /obj/covers/wood_wall/log(locate(9, 5, 1))
 	vr_check(mapped.notched && mapped.chinked && mapped.health == 450, "a mapped log wall is a finished wall")
+	mapped.update_icon()
+	vr_check("[mapped.icon]" == "icons/turf/walls.dmi" && mapped.icon_state == "log_wall", "a mapped log wall keeps the finished sprite")
 
 	var/turf/corner_site = locate(12, 5, 1)
 	var/obj/covers/wood_wall/log_build/far = new /obj/covers/wood_wall/log_build(locate(12, 8, 1))
@@ -111,10 +118,13 @@ var/vr_runtime_error = FALSE
 	var/obj/covers/wood_wall/log_build/corner/C = new /obj/covers/wood_wall/log_build/corner(corner_site)
 	U.loc = locate(12, 4, 1)
 	vr_hold(U, L)
+	vr_check(C.icon_state == "sill_corner", "a corner sill shows the corner sprite")
 	C.attackby(L, U)
 	C.attackby(L, U)
+	vr_check(C.icon_state == "upper_corner" && ("upper_corner" in icon_states(C.icon)), "a corner keeps its corner sprites as it rises")
 	C.attackby(L, U)
-	vr_check(locate(/obj/covers/wood_wall/log/corner) in corner_site, "a corner sill finishes as a corner wall")
+	var/obj/covers/wood_wall/log/corner/CW = locate() in corner_site
+	vr_check(CW && CW.icon_state == "unchinked_corner", "a corner sill finishes as an unchinked corner wall")
 
 	var/turf/down_site = locate(15, 5, 1)
 	var/obj/covers/wood_wall/log_build/D = new /obj/covers/wood_wall/log_build(down_site)
