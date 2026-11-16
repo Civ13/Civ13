@@ -445,8 +445,7 @@
 			else if (simplehunger >= 800)
 				to_chat(user, SPAN_RED("\The [src] is not hungry."))
 				return
-			if (mob_size >= MOB_MEDIUM)
-				new/obj/item/weapon/reagent_containers/food/snacks/poo/animal(src.loc)
+			drop_manure()
 			simplehunger += 500
 			adjustBruteLoss(-4)
 			user.visible_message(SPAN_NOTICE("[user] feeds [src] \the [S]."))
@@ -459,8 +458,7 @@
 			if (simplehunger >= 800)
 				to_chat(user, SPAN_RED("\The [src] is not hungry."))
 				return
-			if (mob_size >= MOB_MEDIUM)
-				new/obj/item/weapon/reagent_containers/food/snacks/poo/animal(src.loc)
+			drop_manure()
 			simplehunger += 550
 			adjustBruteLoss(-4)
 			user.visible_message(SPAN_NOTICE("[user] feeds [src] \the [G].</span>"))
