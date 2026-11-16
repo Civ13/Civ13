@@ -252,5 +252,19 @@ class Contracts(unittest.TestCase):
             self.assertNotIn('unknown here',context)
 
 
+    def test_dowel_shaping_judges_planks_as_the_wood_they_were_sawn_from(self):
+        # Player report 2026-11-16: sawn planks have hardness 90, so no flint,
+        # bronze or iron knife was "harder than the plank" and dowels were
+        # impossible. Shaping now compares against plain wood (hardness 40).
+        hardness=dict(re.findall(r'^(/material(?:/\w+)+)\n(?:\t[^\n]*\n)*?\thardness = (\d+)',(ROOT/'code/modules/materials/materials.dm').read_text(),re.M))
+        self.assertGreater(int(hardness['/material/flint']),int(hardness['/material/wood']))
+        self.assertGreater(int(hardness['/material/iron']),int(hardness['/material/wood']))
+        self.assertGreaterEqual(int(hardness['/material/wood/soft']),int(hardness['/material/iron']))
+        self.assertIn('if ("shaping") return woodwork_shaping_tool(I, furniture_joinery_carving_material(stock))',TEXT)
+        carve=TEXT[TEXT.index('/proc/furniture_joinery_carving_material('):TEXT.index('/proc/furniture_joinery_tool(')]
+        self.assertIn('istype(stock, /material/wood/soft)',carve)
+        self.assertIn('get_material_by_name("wood")',carve)
+
+
 if __name__=='__main__':
     unittest.main()
