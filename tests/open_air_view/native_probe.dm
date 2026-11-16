@@ -27,6 +27,9 @@
 
 var/list/open_air_probe_log = list()
 
+/mob/living/human/open_air_probe_actor/human_subtile_authority(client/owner)
+	return TRUE
+
 /proc/open_air_probe_view(turf/sky/building/T)
 	return istype(T) ? T.open_air_view : null
 
@@ -103,6 +106,22 @@ var/list/open_air_probe_log = list()
 	// The ground level has nothing below it.
 	open_air_view_link_around(1, 6, 6, 3, 3)
 	open_air_probe_check(!length(ground.vis_contents), "ground_level_untouched")
+
+	// Looking up: open air overhead can be looked into, a floor or the top of
+	// the world cannot, and each refusal says why.
+	movementMachine = new
+	var/list/why = list()
+	var/mob/living/human/open_air_probe_actor/A = new(locate(2, 2, 1))
+	open_air_probe_check(A.look_up_target(why) == locate(2, 2, 2), "look_up_into_open_air")
+	A.loc = locate(8, 8, 1)
+	open_air_probe_check(!A.look_up_target(why) && findtext(why[1], "floor above"), "floor_blocks_look_up")
+	A.loc = locate(2, 2, 3)
+	open_air_probe_check(!A.look_up_target(why) && findtext(why[1], "only sky"), "nothing_above_top_level")
+	// Without a client nothing starts, and stopping when not looking is harmless.
+	A.loc = locate(2, 2, 1)
+	open_air_probe_check(!A.start_looking_up() && !A.looking_up_at, "no_client_no_look")
+	A.stop_looking_up(TRUE)
+	open_air_probe_check(!A.looking_up_at && !A.look_up_label, "stop_is_safe")
 
 /proc/open_air_probe_check(ok, label)
 	open_air_probe_log += label

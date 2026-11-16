@@ -1597,6 +1597,7 @@
 #include "code\modules\multiz\explosion_remains.dm"
 #include "code\modules\multiz\building_lighting.dm"
 #include "code\modules\multiz\open_air_view.dm"
+#include "code\modules\multiz\look_up.dm"
 #include "code\modules\multiz\standing_building_level.dm"
 #include "code\modules\naval\boathouse.dm"
 #include "code\modules\naval\built_hull.dm"
