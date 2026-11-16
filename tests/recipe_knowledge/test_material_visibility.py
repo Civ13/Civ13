@@ -48,6 +48,7 @@ class MaterialVisibility(unittest.TestCase):
     def test_both_entry_paths_forward_actor_and_legacy_and_expiry_remain(self):
         self.assertEqual(SOURCE.count('generate_recipes_civs(current_res, faction, user ? user.civilization : null, user)'), 2)
         self.assertIn('else if (node_req && map)\n\t\t\tresearch_allowed = map.is_node_done(research_faction, node_req)', SOURCE)
+        self.assertIn('if (!research_allowed && user && subject_in_carried_book(user, node_req))\n\t\t\t\tresearch_allowed = TRUE', SOURCE)
         self.assertIn('if(material_allowed && research_allowed && map && recipe_age_allowed(text2num(i[12])))', SOURCE)
 
 

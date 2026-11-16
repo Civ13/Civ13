@@ -81,6 +81,12 @@ var/global/list/basic_crafting_recipes = list("/obj/structure/oven/fireplace")
 	// Or guided work beside someone who knows the subject (trade_learning.dm).
 	return crafting_node_allowed(H, node_id) || demonstration_kit_allowed(H, result_path_string) || subject_prototype_allowed(H, result_path_string) || guided_work_allowed(H, result_path_string)
 
+// What to tell a player whose craft crafting_recipe_allowed() refused: on a
+// book-research world, what their prototype attempt is missing.
+/proc/crafting_recipe_refusal(mob/living/human/H, result_path_string)
+	var/why = subject_prototype_refusal(H, result_path_string)
+	return why ? SPAN_WARNING(why) : SPAN_WARNING("This recipe requires its research node.")
+
 // The only recipes that skip personal manuals are the ones needed to reach the
 // next research level: the research bench, the legacy research desk and every
 // node's prototype item (any subtype the bench would accept).

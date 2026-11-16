@@ -1550,7 +1550,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/clothing/shoes/riding1/lizard_cowboy" = "fine_garments",
 		"/obj/item/clothing/shoes/riding2" = "fine_garments",
 		"/obj/item/clothing/shoes/soldiershoes" = "fine_garments",
-		"/obj/item/clothing/suit/storage/coat/fur/white" = "fine_garments",
+		"/obj/item/clothing/suit/storage/coat/fur/white/wool" = "fine_garments",
 		"/obj/item/clothing/suit/storage/coat/japcoat2/brown" = "fine_garments",
 		"/obj/item/clothing/suit/storage/coat/ruscoat/grey" = "fine_garments",
 		"/obj/item/clothing/suit/storage/jacket/blackvest" = "fine_garments",
@@ -1618,7 +1618,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/gate/sandstone" = "fortifications",
 		"/obj/structure/gatecontrol" = "fortifications",
 		"/obj/structure/gatecontrol/sandstone" = "fortifications",
-		// --- furriery (10) ---
+		// --- furriery (11) ---
 		"/obj/item/clothing/head/furcap" = "furriery",
 		"/obj/item/clothing/head/furhat" = "furriery",
 		"/obj/item/clothing/head/furhat/bison" = "furriery",
@@ -1629,6 +1629,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/clothing/suit/storage/coat/fur/grey" = "furriery",
 		"/obj/item/clothing/suit/storage/coat/fur/orc" = "furriery",
 		"/obj/item/clothing/suit/storage/coat/fur/pink" = "furriery",
+		"/obj/item/clothing/suit/storage/coat/fur/white" = "furriery",
 		// --- germ_theory (6) ---
 		"/obj/structure/sewer_settling_tank" = "germ_theory",
 		"/obj/item/weapon/reagent_containers/food/drinks/plastic/carton" = "germ_theory",

@@ -800,6 +800,12 @@
 	specific = TRUE
 	colorn = 4
 
+// Woven from wool cloth by a tailor (Fine Garments). The white fur coat itself
+// is sewn from white pelts and belongs to Furriery like every other fur coat.
+/obj/item/clothing/suit/storage/coat/fur/white/wool
+	name = "white wool coat"
+	desc = "A thick white wool coat, great for the winter."
+
 /obj/item/clothing/suit/storage/coat/fur/black
 	name = "black fur coat"
 	desc = "A thick black fur coat, great for the winter."

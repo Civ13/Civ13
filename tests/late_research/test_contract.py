@@ -299,6 +299,18 @@ class SubjectPrototypes(unittest.TestCase):
         study = proc(self.src, "/mob/living/human/proc/study_in_field")
         for guard in ("held_writing_pen()", "do_reading(src, FIELD_STUDY_TIME, thing)", "commit_field_study(src, carrier, node_id, kind, thing.name)"):
             self.assertIn(guard, study)
+    def test_a_refused_prototype_says_what_is_missing(self):
+        refusal = proc(self.src, "/proc/subject_prototype_refusal")
+        for reason in ("until you know", "already holds the whole", "a third of it written", "all [SUBJECT_PROTO_MAX] prototypes", "early pieces", "points of <b>[N.name]</b> needed"):
+            self.assertIn(reason, refusal)
+        self.assertIn("subject_prototype_refusal(H, result_path_string)", read("code/modules/research_tree/recipe_gates.dm"))
+        self.assertIn('to_chat(user, crafting_recipe_refusal(H, "[recipe.result_type]"))', read("code/game/objects/items/stacks/stack.dm"))
+        self.assertIn("subject_in_carried_book(user, node_req)", read("code/game/objects/items/stacks/civ_recipes.dm"))
+    def test_white_fur_coats_are_furriery(self):
+        nodes = read("code/modules/research_tree/research_node.dm")
+        self.assertIn('"/obj/item/clothing/suit/storage/coat/fur/white" = "furriery"', nodes)
+        self.assertIn('"/obj/item/clothing/suit/storage/coat/fur/white/wool" = "fine_garments"', nodes)
+        self.assertNotIn("/material/woolcloth/,wool coat,/obj/item/clothing/suit/storage/coat/fur/white,", read("config/crafting/material_recipes_global.txt"))
 
 class LearningByDoing(unittest.TestCase):
     def test_included_after_scholarship(self):

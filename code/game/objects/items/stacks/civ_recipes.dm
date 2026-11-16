@@ -162,6 +162,10 @@
 			// The craft itself still rechecks permission at the point of use.
 			var/datum/research_node/RN = get_research_node(node_req)
 			research_allowed = is_book_research_writing_supply(i[3]) || (RN && RN.era_tier <= map.ordinal_age) || (user && crafting_recipe_allowed(user, i[3]))
+			// A subject a carried book is working on stays listed too, so a
+			// refused prototype says what it still needs instead of vanishing.
+			if (!research_allowed && user && subject_in_carried_book(user, node_req))
+				research_allowed = TRUE
 		else if (node_req && map)
 			research_allowed = map.is_node_done(research_faction, node_req)
 		else

@@ -131,6 +131,56 @@
 	to_chat(H, SPAN_NOTICE("You note how the prototype came out in [B]: <b>[N.name]</b> advances by [points] points[finished ? " and the chapter is finished" : ""]. ([B.prototypes_made(node_id)] of [SUBJECT_PROTO_MAX] prototypes for this book.)"))
 	return points
 
+// H carries a book that is working on node_id: its recipes stay listed in the
+// crafting menu, so a refused prototype says why instead of vanishing.
+/proc/subject_in_carried_book(mob/living/human/H, node_id)
+	if (!istype(H) || !istext(node_id) || !map || !map.book_research_enabled())
+		return FALSE
+	for (var/obj/item/weapon/book/B in H.get_demonstration_carried())
+		if (istype(B, /obj/item/weapon/book/research/tree_book))
+			continue
+		if (B.trial_subject == node_id || B.research_ticks(node_id) > 0)
+			return TRUE
+	return FALSE
+
+// Why H can't make result_path_string early from a part-written chapter,
+// naming what is missing (Val, 2026-11-16: a researcher with the chapter
+// nearly written was simply told nothing). Null when the recipe's subject is
+// not one they could be working on, so the caller keeps its own message.
+/proc/subject_prototype_refusal(mob/living/human/H, result_path_string)
+	if (!istype(H) || !istext(result_path_string) || !map || !map.book_research_enabled())
+		return null
+	var/node_id = get_recipe_node_req(result_path_string)
+	var/datum/research_node/N = istext(node_id) ? get_research_node(node_id) : null
+	if (!N || H.knows_recipe_node(node_id))
+		return null
+	var/list/missing = list()
+	for (var/req in N.prereqs)
+		if (!H.knows_recipe_node(req))
+			var/datum/research_node/R = get_research_node(req)
+			missing += "<b>[R ? R.name : req]</b>"
+	if (missing.len)
+		return "You don't know <b>[N.name]</b>, and you can't try its work early until you know [english_list(missing)]."
+	var/need = ceil(N.cost_ticks * SUBJECT_PROTO_SHARE)
+	var/obj/item/weapon/book/best = null
+	for (var/obj/item/weapon/book/B in H.get_demonstration_carried())
+		if (istype(B, /obj/item/weapon/book/research/tree_book))
+			continue
+		if (B.has_research_chapter(node_id))
+			return "[B] already holds the whole <b>[N.name]</b> chapter. Read it to learn the subject, then you can make its things."
+		if (!best || B.research_ticks(node_id) > best.research_ticks(node_id) || (B.trial_subject == node_id && best.trial_subject != node_id && B.research_ticks(node_id) == best.research_ticks(node_id)))
+			best = B
+	if (!best || (!best.research_ticks(node_id) && best.trial_subject != node_id))
+		return "You don't know <b>[N.name]</b> yet. Study its chapter, carry a book with at least a third of it written ([need] of [N.cost_ticks] points) to make prototypes, or set a book to Attempt a Subject."
+	var/written = best.research_ticks(node_id)
+	if (written >= need && best.prototypes_made(node_id) >= SUBJECT_PROTO_MAX)
+		return "[best] has already had all [SUBJECT_PROTO_MAX] prototypes of <b>[N.name]</b> it can take ([written] of [N.cost_ticks] points written). Finish the chapter at a research bench and read it to learn the subject."
+	if (written < need && best.trial_subject == node_id && H.trial_count(node_id) >= TRIAL_CHARACTER_MAX)
+		return "You have made all [TRIAL_CHARACTER_MAX] early pieces of <b>[N.name]</b> you can before a book holds a third of the chapter. [best] has [written] of the [need] points needed."
+	if (written < need)
+		return "[best] has only [written] of the [need] points of <b>[N.name]</b> needed to make prototypes (a third of [N.cost_ticks]). Write more at a research bench, or set the book to Attempt a Subject."
+	return null
+
 // ---------- Trial and error ----------
 
 /obj/item/trash/failed_attempt
