@@ -50,7 +50,8 @@
 // Says where the reader starts. Returns the time left to read.
 /mob/living/human/proc/begin_study_message(node_id, total_time, what, helper_text = "")
 	var/left = study_time_left(node_id, total_time)
-	var/minutes = round(left / 600, 0.5)
+	// Farsighted readers take longer (do_reading); say so in the estimate.
+	var/minutes = round(left * farsight_reading_mult() / 600, 0.5)
 	var/minutes_text = minutes > 0 ? "about [minutes] minute\s" : "less than a minute"
 	if (study_fraction(node_id) > 0)
 		to_chat(src, SPAN_NOTICE("You pick up [what][helper_text] where you left off, [study_percent(node_id)]% of the way through. Finishing takes [minutes_text]."))
@@ -68,7 +69,8 @@
 	var/started = world.time
 	var/done = do_reading(src, real, anchor)
 	adhd_end_reading()
-	var/spent = done ? left : clamp((world.time - started) * left / real, 0, left)
+	// do_reading stretches the wait for Farsighted readers; credit at that pace.
+	var/spent = done ? left : clamp((world.time - started) * left / (real * farsight_reading_mult()), 0, left)
 	if (spent > 0 && valid_recipe_node_id(node_id))
 		last_study_discipline = node_discipline(node_id)
 	if (spent > 0 && total_time > 0)

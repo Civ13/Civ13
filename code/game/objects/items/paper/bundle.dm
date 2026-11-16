@@ -126,6 +126,8 @@
 		show_browse(user, dat, "window=[name]")
 
 /obj/item/weapon/paper_bundle/attack_self(mob/user as mob)
+	if (!farsight_can_read(user, src))
+		return
 	show_content(user)
 	add_fingerprint(usr)
 	update_icon()

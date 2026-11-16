@@ -98,6 +98,9 @@ class ResearchInterfaceContract(unittest.TestCase):
         self.assertLess(wait.index("H.too_dark_to_read()"), wait.index("do_after(H, wait, target, TRUE, FALSE)"))
         self.assertIn("H.reading_light_problem()", wait.split("do_after(H, wait, target, TRUE, FALSE)")[1])
         self.assertIn("do_reading(src, real, anchor)", proc(progress, "/mob/living/human/proc/timed_study"))
+        # Farsighted reading is slower: interrupted study is credited at that pace and the estimate says so.
+        self.assertIn("left / (real * farsight_reading_mult())", proc(progress, "/mob/living/human/proc/timed_study"))
+        self.assertIn("left * farsight_reading_mult() / 600", proc(progress, "/mob/living/human/proc/begin_study_message"))
         # Every read, copy and written page waits through it.
         for path, token in (("code/modules/research_tree/book_research.dm", "do_reading(H, time, src)"),
                             ("code/modules/research_tree/book_pages.dm", "do_reading(H, time, anchor ? anchor : src)"),
