@@ -83,3 +83,10 @@ sweeps the tile.
   that burns away takes its flammable contents with it; metal, stone and glass
   things drop out on the tile. Clay jars do not burn. The chance per fire tick is
   the same 27 percent as any other burning object.
+
+## Admin view
+
+**Admin > View Storage** (`storage_admin.dm`) on any container, closet, structure
+or mob in range lists everything inside, nested bags included, with each thing's
+size, the players who have searched it and the faction that filled it. It is
+read-only and marks nothing as seen.
