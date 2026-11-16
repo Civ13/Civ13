@@ -35,6 +35,7 @@ var/list/admin_verbs_admin = list(
 	/client/proc/player_panel_new,		//shows an interface for all players, with links to various panels,
 	/client/proc/admin_player_map,	//live map of a level with every player on it,
 	/client/proc/admin_weather_map,	//live map of the weather systems, and sending or ending storms,
+	/client/proc/admin_view_storage,	//see everything inside a container, who has searched it and which faction filled it
 	/client/proc/admin_clothing_designs,	//list and rename player clothing designs
 	/client/proc/cmd_admin_check_illnesses,	//read-only list of everyone who is ill,
 	/client/proc/cmd_admin_check_research,	//read-only list of who knows which research,

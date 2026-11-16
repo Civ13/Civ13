@@ -409,6 +409,10 @@
 			return
 	..()
 
+// Fired bricks in one brick wall, the foundation included: 3 clay, so a brick
+// wall costs more than a clay block wall (1.5 clay) it far outlasts.
+#define BRICK_WALL_BRICKS 6
+
 /obj/covers/brick_wall/incomplete
 	name = "incomplete brick wall"
 	desc = "A red brick wall."
@@ -444,7 +448,19 @@
 		else
 			return TRUE
 
+/obj/covers/brick_wall/incomplete/examine(mob/user)
+	..()
+	to_chat(user, SPAN_NOTICE("[stage] of [BRICK_WALL_BRICKS] bricks laid."))
+
 /obj/covers/brick_wall/incomplete/attackby(obj/item/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/clay/advclaybricks/fired) && stage < BRICK_WALL_BRICKS - 1)
+		to_chat(user, "You start adding bricks to the wall...")
+		if (do_after(user, 20, src) && !QDELETED(src) && !QDELETED(W) && W.loc == user && stage < BRICK_WALL_BRICKS - 1)
+			stage++
+			health = 80 + 40 * (stage - 1)
+			to_chat(user, "You add a course of bricks to the wall ([stage] of [BRICK_WALL_BRICKS]).")
+			qdel(W)
+		return
 	if (istype(W, /obj/item/weapon/clay/advclaybricks/fired))
 		to_chat(user, "You start adding bricks to the wall...")
 		if (do_after(user, 20, src) && W)
