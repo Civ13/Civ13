@@ -1990,6 +1990,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/paper" = "papermaking",
 		"/obj/item/weapon/pen" = "papermaking",
 		"/obj/item/weapon/stamp/mail" = "papermaking",
+		"/obj/item/weapon/stamp/faction_seal" = "papermaking",
 		"/obj/item/weapon/storage/envelope" = "papermaking",
 		"/obj/structure/filingcabinet" = "papermaking",
 		"/obj/structure/filingcabinet/filingcabinet" = "papermaking",

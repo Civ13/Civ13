@@ -62,7 +62,7 @@ var/global/list/paper_stamp_icon_cache = null
 // Stored marker for one impression. The alt text names the stamp so text-only
 // readers (the editor page, screen readers) still say what was stamped.
 /proc/paper_stamp_marker(obj/item/weapon/stamp/S)
-	return "<img src=\"[paper_stamp_resource_name(S.icon_state)]\" alt=\"[html_encode(S.name)]\" title=\"[html_encode(S.name)]\" style=\"margin:4px\">"
+	return "<img src=\"[paper_stamp_resource_name(S.impression_state())]\" alt=\"[html_encode(S.name)]\" title=\"[html_encode(S.name)]\" style=\"margin:4px\">"
 
 // Send the image files a reader needs for this page's stamps.
 /proc/paper_stamp_send_assets(mob/reader, obj/item/weapon/paper/P)
@@ -129,7 +129,10 @@ var/global/list/paper_stamp_icon_cache = null
 // prepare/commit transaction as every other change, so its legacy mirror and
 // record stay in step and any open editor sees a new revision.
 /proc/paper_document_apply_stamp(obj/item/weapon/paper/P, obj/item/weapon/stamp/S, mob/user)
-	if (!paper_stamp_can_reach(P, user, S) || !istext(S.icon_state) || !length(S.icon_state) || length(S.icon_state) > 64)
+	var/look = null
+	if (S)
+		look = S.impression_state()
+	if (!paper_stamp_can_reach(P, user, S) || !istext(look) || !length(look) || length(look) > 64)
 		return "failed"
 	if (P.icon_state == "scrap" || findtext(P.icon_state, "_scrap"))
 		return "crumpled"
@@ -137,7 +140,7 @@ var/global/list/paper_stamp_icon_cache = null
 		return "full"
 	var/marker = paper_stamp_marker(S)
 	if (isnull(P.document_record))
-		var/list/next_stamped = paper_stamp_list_with(P.stamped, S.icon_state)
+		var/list/next_stamped = paper_stamp_list_with(P.stamped, look)
 		P.stamps = paper_stamp_join(P.stamps, marker)
 		P.stamped = next_stamped
 		paper_authoring_notify(P, "physical")
@@ -147,11 +150,12 @@ var/global/list/paper_stamp_icon_cache = null
 			return "failed"
 		var/list/next = edit["record"]
 		var/list/legacy = next["legacy"]
-		legacy["stamped"] = paper_stamp_list_with(legacy["stamped"], S.icon_state)
+		legacy["stamped"] = paper_stamp_list_with(legacy["stamped"], look)
 		legacy["stamps"] = paper_stamp_join(legacy["stamps"], marker)
 		next["revision"]++
 		if (!paper_document_commit_edit(P, edit))
 			return "failed"
+	faction_seal_note_impression(P, S)
 	paper_stamp_refresh_overlays(P)
 	return "stamped"
 

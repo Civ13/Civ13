@@ -62,6 +62,7 @@
 		if (!istext(faction) || !isnum(limits[faction]) || limits[faction] < 1 || limits[faction] != round(limits[faction]))
 			limits -= faction
 	colony_normalize()
+	faction_seal_normalize()
 
 // The faction's roster with idle accounts removed.
 /obj/map_metadata/proc/faction_roster(faction)
@@ -135,3 +136,4 @@
 	faction_rename_assoc_key(faction_rosters(), old_name, new_name)
 	faction_rename_assoc_key(faction_limits(), old_name, new_name)
 	colony_rename(old_name, new_name)
+	faction_seal_rename(old_name, new_name)
