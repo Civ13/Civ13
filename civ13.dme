@@ -979,6 +979,7 @@
 #include "code\modules\1713\noghost.dm"
 #include "code\modules\1713\nvg.dm"
 #include "code\modules\1713\officer.dm"
+#include "code\modules\1713\fire_smoke.dm"
 #include "code\modules\1713\oil_fires.dm"
 #include "code\modules\1713\ores.dm"
 #include "code\modules\1713\resource_sifting.dm"
