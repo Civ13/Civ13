@@ -125,9 +125,16 @@
 	// Base implementation for mobs that don't use the hostile stance system
 	return FALSE
 
+// Manure never decays, so an animal leaves no new pile while one already lies on or next to its tile.
+/mob/living/simple_animal/proc/drop_manure()
+	if (mob_size < MOB_MEDIUM || !isturf(loc))
+		return null
+	for (var/obj/item/weapon/reagent_containers/food/snacks/poo/animal/M in range(1, src))
+		return null
+	return new/obj/item/weapon/reagent_containers/food/snacks/poo/animal(loc)
+
 /mob/living/simple_animal/proc/finish_eating(var/hunger_gain)
-	if (mob_size >= MOB_MEDIUM)
-		new/obj/item/weapon/reagent_containers/food/snacks/poo/animal(src.loc)
+	drop_manure()
 	simplehunger = min(simplehunger + hunger_gain, 1000)
 	adjustBruteLoss(-4)
 
