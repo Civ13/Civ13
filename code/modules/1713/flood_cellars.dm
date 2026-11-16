@@ -41,6 +41,12 @@
 
 // Every tunnel mouth (dug holes and mapped tunnel entrances).
 var/global/list/tunnel_mouths = list()
+// Underground cells opened under a lake or a river (dug_underground.dm,
+// underground_opened): each pours like a mouth while the water above stays.
+// Unsaved; underground_breach_scan() finds them again after a load.
+var/global/list/tunnel_breaches = list()
+// Depth that seeps into an opened cell under shallows, swamp or coast water.
+#define MUD_SEEP 0.3
 
 /obj/structure/multiz/ladder/ww2/tunneltop/New()
 	..()
@@ -91,6 +97,13 @@ var/global/list/cellar_pumps = list()
 		return 0
 	var/r = reach_at(T.x, T.y)
 	var/turf/S = locate(T.x, T.y, z_level)
+	// Shallows, swamp and coast water above seep in a little, whatever the river does.
+	if (underground_above(S) == "mud")
+		. = (ignore_pumps || !cellar_kept_dry(T)) ? MUD_SEEP : 0
+		var/tunnel_mud = tunnel_depth_at(T)
+		if (tunnel_mud > . && (ignore_pumps || !cellar_pumped(T)))
+			. = tunnel_mud
+		return .
 	var/bank = S ? effective_threshold(S) : null
 	// No river here, or under the river, the lake or the sea (not a cellar):
 	// only tunnel water.
@@ -153,6 +166,11 @@ var/global/list/cellar_pumps = list()
 		tunnel_water.Cut()
 		return
 	var/list/pouring = list()
+	for (var/turf/B in tunnel_breaches.Copy())
+		if (B.z != below || underground_above_cell(B) != "wet")
+			tunnel_breaches -= B
+		else if (!B.density)
+			pouring[B] = TRUE
 	for (var/obj/structure/multiz/M in tunnel_mouths)
 		if (!tunnel_mouth_pouring(M))
 			continue
