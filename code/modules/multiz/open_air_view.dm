@@ -30,14 +30,21 @@
 // A viewer standing still is rescanned this often, for floors built or taken
 // away over open air.
 #define OPEN_AIR_VIEW_RESCAN 5 SECONDS
+// Under the ground of the viewer's level (2) and under floors over open air
+// (1.99), over anything hidden under a floor. The open-air cell's own sky
+// sprite is taken off while it shows the level below.
+#define OPEN_AIR_VIEW_LAYER 1.95
 
 // What is drawn through vis_contents takes the plane of what shows it and
 // counts as it for the mouse. Only matters for atoms shown in vis_contents.
+// A turf shown that way also takes the layer of what shows it, which is under
+// every object: a floor built over open air has layer 1.99 on the game plane,
+// and on one plane it would otherwise sit under the turf it covers.
 /atom/movable
 	vis_flags = VIS_INHERIT_PLANE | VIS_INHERIT_ID
 
 /turf
-	vis_flags = VIS_INHERIT_PLANE | VIS_INHERIT_ID
+	vis_flags = VIS_INHERIT_PLANE | VIS_INHERIT_ID | VIS_INHERIT_LAYER
 
 // Lighting cells stay on their own planes and are never shown second-hand.
 /atom/movable/lighting_overlay
@@ -53,7 +60,7 @@
 	simulated = FALSE
 	appearance_flags = KEEP_TOGETHER
 	plane = FLOOR_PLANE
-	layer = TURF_LAYER + 0.01
+	layer = OPEN_AIR_VIEW_LAYER
 	color = OPEN_AIR_VIEW_SHADE
 
 /turf/sky/building/var/tmp/obj/effect/open_air_view/open_air_view = null
@@ -75,10 +82,12 @@
 		V.loc = null
 		// Southern cells draw over northern ones, so a tall sprite below (a
 		// tree) overhangs the open air north of it instead of being cut off.
-		V.layer = TURF_LAYER + 0.01 + 0.009 * (world.maxy - y) / max(1, world.maxy)
+		V.layer = OPEN_AIR_VIEW_LAYER + 0.009 * (world.maxy - y) / max(1, world.maxy)
 		V.vis_contents += below
 		open_air_view = V
 		vis_contents += V
+		// The sky sprite would hide the view (icon is not a saved turf field).
+		icon = null
 	var/turf/sky/building/next = below
 	if (istype(next))
 		next.open_air_view_refresh(depth + 1, FALSE)
@@ -87,6 +96,7 @@
 	if (!open_air_view)
 		return
 	vis_contents -= open_air_view
+	icon = initial(icon)
 	open_air_view.vis_contents.Cut()
 	qdel(open_air_view)
 	open_air_view = null
@@ -132,3 +142,4 @@
 
 #undef OPEN_AIR_VIEW_MARGIN
 #undef OPEN_AIR_VIEW_RESCAN
+#undef OPEN_AIR_VIEW_LAYER

@@ -61,6 +61,9 @@ var/list/open_air_probe_log = list()
 	open_air_probe_check(!length(ground.vis_contents), "ground_holds_nothing")
 	open_air_probe_check(V.color && W.color && V.mouse_opacity == 0 && (V.appearance_flags & KEEP_TOGETHER), "views_are_shaded")
 	open_air_probe_check(!V.loc && !W.loc, "views_are_not_map_atoms")
+	// The sky sprite comes off while a cell shows the level below, and the view
+	// sits under floors built over open air (layer 1.99).
+	open_air_probe_check(!top.icon && !middle.icon && V.layer < 1.99 && W.layer < 1.99, "sky_off_view_under_floors")
 	// Southern cells draw over northern ones.
 	var/obj/effect/open_air_view/N = open_air_probe_view(locate(5, 6, 3))
 	open_air_probe_check(N && N.layer < V.layer, "south_draws_over_north")
@@ -76,6 +79,7 @@ var/list/open_air_probe_log = list()
 	new /obj/covers/wood(top)
 	open_air_view_link_around(3, 6, 6, 3, 3)
 	open_air_probe_check(!open_air_probe_view(top) && !(V in top.vis_contents), "new_floor_drops_view")
+	open_air_probe_check(top.icon == initial(top.icon), "sky_back_when_view_drops")
 	open_air_probe_check(open_air_probe_view(middle) == W, "chain_below_kept")
 	// Replacing a cell drops its view.
 	var/turf/sky/building/replaced = locate(4, 4, 3)
@@ -95,7 +99,7 @@ var/list/open_air_probe_log = list()
 	open_air_probe_check(initial(L.vis_flags) == VIS_HIDE, "lighting_hidden")
 	var/mob/M = /mob
 	open_air_probe_check((initial(M.vis_flags) & VIS_INHERIT_ID) && (initial(M.vis_flags) & VIS_INHERIT_PLANE), "mobs_inherit")
-	open_air_probe_check((ground.vis_flags & VIS_INHERIT_ID) && (ground.vis_flags & VIS_INHERIT_PLANE), "turfs_inherit")
+	open_air_probe_check((ground.vis_flags & VIS_INHERIT_ID) && (ground.vis_flags & VIS_INHERIT_PLANE) && (ground.vis_flags & VIS_INHERIT_LAYER), "turfs_inherit")
 	// The ground level has nothing below it.
 	open_air_view_link_around(1, 6, 6, 3, 3)
 	open_air_probe_check(!length(ground.vis_contents), "ground_level_untouched")

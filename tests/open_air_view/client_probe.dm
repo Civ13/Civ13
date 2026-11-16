@@ -239,6 +239,13 @@ var/global/datum/open_air_client_probe/open_air_client_probe = new
 			var/turf/sky/building/mid = locate(centre.x, centre.y, up)
 			require(mid.open_air_view && (mid in high.open_air_view.vis_contents), "The chain down from two levels up is broken")
 			pass("two_levels_linked")
+			var/turf/sky/building/patch_mid = locate(centre.x + 2, centre.y - 4, up)
+			var/turf/sky/building/patch_top = locate(centre.x + 2, centre.y - 4, up2)
+			var/list/found = list()
+			for(var/atom/movable/A in patch_mid)
+				found += "[A.type] inv=[A.invisibility] a=[A.alpha] icon=[A.icon] st=[A.icon_state] pl=[A.plane] ly=[A.layer] vf=[A.vis_flags]"
+			metrics["patch_mid"] = list("type" = "[patch_mid.type]", "contents" = found, "own_view" = !!patch_mid.open_air_view, "vis" = length(patch_mid.vis_contents))
+			metrics["patch_top"] = list("type" = "[patch_top.type]", "view" = !!patch_top.open_air_view, "shows" = patch_top.open_air_view ? "[patch_top.open_air_view.vis_contents.len] [(patch_mid in patch_top.open_air_view.vis_contents)]" : null)
 			shot("3_two_levels_up")
 		mark("ground_view")
 		H.forceMove(locate(centre.x - 3, centre.y, centre.z))
