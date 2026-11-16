@@ -136,6 +136,50 @@ class Shading(unittest.TestCase):
             y, x = divmod(i, 25)
             numpy.testing.assert_array_equal(sheet[y * 32:(y + 1) * 32, x * 32:(x + 1) * 32], tool.shade_pixels(numpy, key), key)
 
+    def test_baked_terrace_sprites_match_the_tool(self):
+        import numpy
+        from PIL import Image
+        dmi = Image.open(ROOT / 'icons/turf/terrain_terrace.dmi')
+        states = re.findall(r'state = "(\w+)"', dmi.info['Description'])
+        self.assertEqual(states, tool.terrace_states())
+        sheet = numpy.asarray(dmi.convert('RGBA'))
+        for i, key in enumerate(states):
+            y, x = divmod(i, tool.TERRACE_COLS)
+            pixels = tool.terrace_pixels(numpy, key)
+            self.assertTrue(pixels[..., 3].any(), f'{key} draws nothing')
+            numpy.testing.assert_array_equal(sheet[y * 32:(y + 1) * 32, x * 32:(x + 1) * 32], pixels, key)
+
+    def test_terrace_keys(self):
+        import numpy
+        # Flat ground and a rise that stays inside one level have no line.
+        self.assertIsNone(tool.terrace_key(3, 3, 3, 3))
+        self.assertIsNone(tool.terrace_key(3, 3.5, 3, 3.5))
+        # Crossing a whole level draws one; the key is relative to the lowest corner.
+        self.assertEqual(tool.terrace_key(3, 4, 3, 4), '00202')
+        self.assertEqual(tool.terrace_key(7.5, 8, 7.5, 8), '10101')
+        self.assertEqual(tool.terrace_key(0, 9, 0, 9), '00606')
+        for key in ('00202', '10101', '00606'):
+            self.assertIn(key, tool.terrace_states())
+        corners = tool.corner_heights(numpy, [[x for x in range(6)] for _ in range(6)])
+        self.assertTrue((corners * 2 == numpy.floor(corners * 2)).all())
+
+    def test_terrace_lines_face_the_light_and_join(self):
+        import numpy
+        # Rising to the east: the drop faces west, towards the light, so the line is warm.
+        east = tool.terrace_pixels(numpy, '00202')
+        self.assertTrue((east[east[..., 3] > 30][:, :3] == tool.LIGHT_COLOUR).all())
+        west = tool.terrace_pixels(numpy, '02020')
+        self.assertTrue((west[west[..., 3] > 30][:, :3] == tool.DARK_COLOUR).all())
+        self.assertGreater(west[..., 3].max(), 50)
+        # Soft and quiet: nothing stronger than about a third.
+        self.assertLessEqual(max(tool.terrace_pixels(numpy, k)[..., 3].max() for k in tool.terrace_states()[::37]), 80)
+        # Two tiles on one diagonal slope: the line crossing their shared edge agrees along it.
+        left = tool.terrace_pixels(numpy, '00112')
+        right = tool.terrace_pixels(numpy, '10112')
+        self.assertGreater(left[:, -1, 3].max(), 30)
+        # The line is diagonal, so it steps one pixel between the two edge columns.
+        self.assertLessEqual(numpy.abs(left[1:, -1, 3].astype(int) - right[:-1, 0, 3].astype(int)).max(), 16)
+
     def test_flat_ground_is_unlit_and_slopes_face_the_light(self):
         import numpy
         flat = tool.corner_lights(numpy, [[3] * 6] * 6)
@@ -159,7 +203,9 @@ class Shading(unittest.TestCase):
         self.assertIn('terrain_height_file = "maps/heights/nomads_gaia.txt"', gaia)
 
     def test_every_height_file_matches_its_map(self):
-        """Each map metadata naming a height file has that file, a design spec, and the sizes match."""
+        """Each map metadata naming a height file has that file and the sizes match; designed maps keep
+        their design spec (generated lands, docs/americas-regions.md, get heights from their generator)."""
+        generated = {'nomads_americas_north', 'nomads_americas_south'}
         named = {}
         for path in (ROOT / 'code/game/objects/map_metadata').rglob('*.dm'):
             for match in re.finditer(r'terrain_height_file = "(maps/heights/(\w+)\.txt)"', path.read_text(encoding='utf-8')):
@@ -167,7 +213,8 @@ class Shading(unittest.TestCase):
         self.assertGreaterEqual(len(named), 5)
         for name, heights in named.items():
             with self.subTest(map=name):
-                self.assertTrue((ROOT / f'maps/heights/{name}.design.json').exists(), f'{name} needs a design spec')
+                if name not in generated:
+                    self.assertTrue((ROOT / f'maps/heights/{name}.design.json').exists(), f'{name} needs a design spec')
                 tool.main(['check', '--heights', str(ROOT / heights), '--map', str(ROOT / f'maps/nomads/{name}.dmm')])
                 maxx, maxy, levels = tool.read_heights(ROOT / heights)
                 _, _, turfs = tool.read_dmm(ROOT / f'maps/nomads/{name}.dmm')

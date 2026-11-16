@@ -12,16 +12,13 @@
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--civ-bg); color: var(--civ-text); font: 14px Verdana, sans-serif; }
 .civ13-app { padding: 12px; }
-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
-h1 { font-size: 20px; margin: 0; } h2 { font-size: 18px; } h3 { font-size: 15px; }
+header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--civ-line); }
+h1 { font-size: 17px; margin: 0; } h2 { font-size: 18px; } h3 { font-size: 15px; }
 p { margin: 8px 0; line-height: 1.5; }
 button, input { font: inherit; }
 button:focus-visible, input:focus-visible { outline: 2px solid var(--civ-highlight); outline-offset: 2px; }
 .Button { margin: 2px; }
 .Section { margin-bottom: 12px; border: 1px solid var(--civ-line); }
-.inventory { width: 100%; border-collapse: collapse; }
-.inventory th, .inventory td { padding: 6px; text-align: left; border-bottom: 1px solid var(--civ-line); }
-.inventory th:last-child, .inventory td:last-child { text-align: right; }
 .product { margin: 5px 0; }
 .tag { display: inline-block; padding: 3px 6px; margin: 3px; background: var(--civ-chip); border-radius: 3px; }
 .modern-vending { --color-primary: #bd3c3c; }
@@ -288,3 +285,35 @@ button.rs-row-main { cursor: pointer; }
 .craft-qty button:disabled, .craft-go:disabled { opacity: .5; cursor: default; }
 .craft-note { color: var(--civ-missing); font-size: 13px; }
 .craft-go { margin-left: auto; font: inherit; font-weight: bold; padding: 8px 26px; color: var(--civ-bg); background: #d9a441; border: 1px solid var(--civ-highlight); border-radius: 3px; cursor: pointer; }
+
+// Shared kit (interfaces/kit.tsx). New screens use these before adding their own rules.
+.kit-classic { flex: none; font: inherit; font-size: 12px; color: var(--civ-dim); background: none; border: 1px solid var(--civ-line-soft); border-radius: 3px; padding: 2px 8px; cursor: pointer; }
+.kit-classic:hover { color: var(--civ-text); border-color: var(--civ-accent); }
+.kit-hint { margin: 2px 0; font-size: 12.5px; color: var(--civ-dim); }
+.kit-motto { margin: 0 0 4px; font-style: italic; color: #f1d9a5; }
+.kit-table { width: 100%; border-collapse: collapse; }
+.kit-table th, .kit-table td { padding: 6px 8px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--civ-line-soft); overflow-wrap: break-word; }
+.kit-table thead th { font-size: 11px; font-weight: normal; letter-spacing: .06em; text-transform: uppercase; color: var(--civ-dim); border-bottom-color: var(--civ-line); }
+.kit-table .kit-right { text-align: right; }
+.kit-table p, .kit-table em { margin: 2px 0; font-weight: normal; }
+.kit-table img { display: block; image-rendering: pixelated; }
+.kit-pill { display: inline-block; padding: 1px 9px; font-size: 12px; font-weight: normal; white-space: nowrap; vertical-align: middle; color: var(--civ-text); background: var(--civ-chip); border: 1px solid var(--civ-line); border-radius: 10px; }
+.kit-pill-good { color: var(--civ-good); background: var(--civ-good-bg); border-color: var(--civ-good-line); }
+.kit-pill-warn { color: var(--civ-warn); background: #4a3319; border-color: var(--civ-warn-line); }
+.kit-pill-info { color: #cfe8fb; background: var(--civ-info-bg); border-color: var(--civ-info-line); }
+.kit-card { padding: 8px 10px; margin-bottom: 8px; background: #2a231b; border: 1px solid var(--civ-line-soft); border-radius: 4px; }
+.kit-card-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 12px; }
+.kit-card-actions { flex: none; }
+.kit-quote { margin: 6px 0; padding: 4px 9px; font-style: italic; background: var(--civ-inset); border-left: 3px solid var(--civ-line); }
+.kit-checks { list-style: none; margin: 6px 0; padding: 0; line-height: 1.6; }
+.kit-ok { color: var(--civ-good); } .kit-no { color: var(--civ-warn); }
+.kit-rows { margin: 0; }
+.kit-row { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; padding: 5px 0; border-bottom: 1px solid var(--civ-line-soft); }
+.kit-row dt { flex: 0 0 170px; color: var(--civ-dim); }
+.kit-row dd { flex: 1 1 180px; margin: 0; min-width: 0; }
+.kit-row dd.kit-row-buttons { flex: none; }
+.kit-choice { display: inline-flex; flex-wrap: wrap; }
+.kit-choice .Button { margin: 0 1px 1px 0; border-radius: 0; background: var(--civ-chip); }
+.kit-choice .Button:first-child { border-radius: 3px 0 0 3px; } .kit-choice .Button:last-child { border-radius: 0 3px 3px 0; }
+.kit-choice .Button--selected { background: var(--civ-accent); color: var(--civ-bg); font-weight: bold; }
+.kit-details { margin-top: 10px; font-size: 12.5px; color: var(--civ-dim); } .kit-details summary { cursor: pointer; }

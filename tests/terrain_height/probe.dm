@@ -59,6 +59,18 @@ var/terrain_height_probe_checks = 0
 		if (O:icon == 'icons/turf/terrain_shade.dmi')
 			.++
 
+/proc/terrain_height_probe_terrace(turf/T)
+	for (var/O in T.overlays)
+		if (O:icon == 'icons/turf/terrain_terrace.dmi')
+			return O:icon_state
+	return null
+
+/proc/terrain_height_probe_terraces(turf/T)
+	. = 0
+	for (var/O in T.overlays)
+		if (O:icon == 'icons/turf/terrain_terrace.dmi')
+			.++
+
 /proc/terrain_height_probe_close(a, b)
 	return abs(a - b) < 0.0001
 
@@ -229,10 +241,31 @@ var/terrain_height_probe_checks = 0
 	var/turf/floor/slope_floor = slope
 	slope_floor.update_icon()
 	terrain_height_probe_assert(terrain_height_probe_shade(slope) == slope_key && terrain_height_probe_shades(slope) == 1, "floor_icon_rebuild_keeps_shading")
+	// Terrace lines: every tile's key is dumped for run.py to compare with the tool's terrace_key().
+	var/list/terrace_rows = list()
+	for (var/ty in 12 to 1 step -1)
+		var/list/terrace_keys = list()
+		for (var/tx in 1 to 12)
+			terrace_keys += fixture.terrace_key(tx, ty, 1) || "-"
+		terrace_rows += jointext(terrace_keys, " ")
+	text2file(jointext(terrace_rows, "\n"), "terraces.txt")
+	terrain_height_probe_assert(isnull(fixture.terrace_key(1, 1, 1)), "flat_tile_has_no_terrace_line")
+	var/terrace_slope_key = fixture.terrace_key(6, 9, 1)
+	terrain_height_probe_assert(terrace_slope_key && terrain_height_probe_terrace(slope) == terrace_slope_key, "slope_tile_shows_terrace_line")
+	var/image/terrace_image = terrain_terrace_image(terrace_slope_key)
+	terrain_height_probe_assert(slope.terrain_terrace_overlay == terrace_image && terrace_image.mouse_opacity == 0 && terrace_image.plane == FLOOR_PLANE, "terrace_lines_are_shared_floor_overlays")
+	slope.terrain_shade_refresh()
+	slope_floor.update_icon()
+	terrain_height_probe_assert(terrain_height_probe_terraces(slope) == 1, "terrace_line_kept_once")
+	// Snow gets its own recoloured copies; other ground shares the plain ones.
+	var/image/snow_line = terrain_terrace_image(terrace_slope_key, TRUE)
+	var/image/snow_shade = terrain_shade_image(slope_key, TRUE)
+	terrain_height_probe_assert(snow_line != terrace_image && islist(snow_line.color) && snow_shade != shade && islist(snow_shade.color) && !terrace_image.color && !shade.color, "snow_sprites_are_recoloured_copies")
+	terrain_height_probe_assert(terrain_terrace_image(terrace_slope_key, TRUE) == snow_line && !slope.terrain_shade_snowy(), "snow_sprites_are_shared")
 	terrain_height_probe_assert(terrain_shading_apply() > 0, "apply_places_shading")
 	terrain_shading_applied = TRUE
 	var/turf/flat = locate(2, 2, 1)
-	terrain_height_probe_assert(!terrain_height_probe_shade(flat), "flat_ground_left_alone")
+	terrain_height_probe_assert(!terrain_height_probe_shade(flat) && !terrain_height_probe_terrace(flat), "flat_ground_left_alone")
 	slope.ChangeTurf(/turf/floor/rocky/terrain_height_probe/other)
 	slope = locate(6, 9, 1)
 	terrain_height_probe_assert(!terrain_shading_applied || terrain_height_probe_shade(slope), "changeturf_keeps_shading")
@@ -244,7 +277,7 @@ var/terrain_height_probe_checks = 0
 	terrain_height_probe_assert(built.terrain_smoothed() && !slope.terrain_smoothed(), "built_vs_natural")
 	terrain_height_probe_assert(terrain_slope_delay(locate(6, 9, 1), built, 2.85) == 0 && terrain_slope_delay(built, locate(8, 9, 1), 2.85) == 0, "built_floor_no_slope_cost")
 	terrain_height_probe_assert(terrain_height_probe_close(terrain_slope_delay(locate(8, 9, 1), locate(9, 9, 1), 2.85), 1.425), "natural_ground_keeps_cost")
-	terrain_height_probe_assert(!terrain_height_probe_shade(built), "built_floor_unshaded")
+	terrain_height_probe_assert(!terrain_height_probe_shade(built) && !terrain_height_probe_terrace(built), "built_floor_unshaded")
 	built.ChangeTurf(/turf/floor/rocky/terrain_height_probe)
 	built = locate(7, 9, 1)
 	terrain_height_probe_assert(terrain_height_probe_shade(built), "removed_floor_shaded_again")

@@ -50,7 +50,19 @@ def compare_lights(work):
     expected = [''.join(tool.SHADE_KEYS[v + 2] for v in row) for row in tool.corner_lights(numpy, levels[1])]
     path = work / 'lights.txt'
     actual = path.read_text(encoding='ascii').strip().split('\n') if path.exists() else []
-    return 'PASS' if actual == expected else f'FAIL lights differ: game {actual} tool {expected}'
+    if actual != expected:
+        return f'FAIL lights differ: game {actual} tool {expected}'
+    # Terrace line keys, north row first, must match the tool's as well.
+    corners = tool.corner_heights(numpy, levels[1])
+    expected = [' '.join(tool.terrace_key(corners[r, c], corners[r, c + 1], corners[r + 1, c], corners[r + 1, c + 1]) or '-'
+                         for c in range(12)) for r in range(12)]
+    path = work / 'terraces.txt'
+    actual = path.read_text(encoding='ascii').strip().split('\n') if path.exists() else []
+    if actual != expected:
+        return f'FAIL terrace keys differ: game {actual} tool {expected}'
+    if not any(key != '-' for row in expected for key in row.split()):
+        return 'FAIL the fixture has no terrace lines'
+    return 'PASS'
 
 
 def main():

@@ -130,6 +130,31 @@ once per round (`terrain_shading_check`), `ChangeTurf` puts them back on
 replaced turfs, including turfs rebuilt by a save load, and a floor icon rebuild
 (`update_icon`, which clears overlays) re-adds them through `terrain_shade_icon()`.
 
+The shadow is a faint dark blue-green (`DARK_COLOUR`) and the lit side a faint
+warm straw yellow (near-white looked like snow), so grass keeps its colour and the hills do not read as lighting.
+
+### Terrace lines
+
+The tint alone read as lighting or cloud shadow, so every whole height level
+also gets a soft lip line: dark where the drop faces away from the light, warm
+where it faces it. Lines close together mean steep ground, no lines means
+flat. A tile's sprite is chosen by its four corner heights (the mean of the
+four tiles around each corner, rounded to half levels): the key is the lowest
+corner's half-level remainder, then each corner's half levels above the lowest,
+capped at 6, as nw, ne, sw, se (`terrace_key` in the tool and the game; the
+native test compares them on every fixture tile). Neighbours share corners, so
+lines join across tiles, and each sprite looks 12 pixels past its tile so a
+line near an edge spills softly into the next tile. Lines are wide and soft
+(10 pixels, fading out) so they sit quietly on grass. The 2,194 sprites are in
+`icons/turf/terrain_terrace.dmi`, a second shared overlay beside the tint
+(`terrain_terrace_overlay`), placed, refreshed and restored with it.
+Snow turfs (`/turf/floor/winter`) wear the same tint and line sprites through a
+colour matrix (`TERRAIN_SNOW_COLOUR`) that turns the warm highlight near-white
+and the shadow blue; a straw highlight on snow looked like stains.
+
+Tuning: `TERRACE_DARK`, `TERRACE_LIGHT` (alpha by pixels below the lip) and
+`TERRACE_CREST` (share of the first step drawn one pixel above the lip) in the tool; re-bake after changing them.
+
 Tuning: `RELIEF`, `LIGHT_STEP`, `DARK_ALPHA` and `LIGHT_ALPHA` at the top of the
 shading section of the tool (and `TERRAIN_RELIEF`/`TERRAIN_LIGHT_STEP` in the
 game for the first two). Re-bake after changing the alphas.
@@ -206,7 +231,8 @@ cave rock, rubble and tunnel shafts (docs/underground-excavation.md).
 - `to-png` / `from-png` convert one z-level to and from a greyscale PNG (one
   pixel per tile, level x 8) so heights can be painted by hand.
 - `check --heights FILE [--map FILE.dmm]` validates a file.
-- `bake-shading [--out icons/turf/terrain_shade.dmi]` writes the shading sprites.
+- `bake-shading [--out icons/turf/terrain_shade.dmi] [--terrace-out icons/turf/terrain_terrace.dmi]`
+  writes the shading and terrace line sprites.
 
 ## Line of sight
 
