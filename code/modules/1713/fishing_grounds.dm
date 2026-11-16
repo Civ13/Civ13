@@ -1,0 +1,342 @@
+// Fishing grounds (docs/fishing-grounds.md).
+//
+// Fish belong to the water. Every 16x16 stretch of water of one kind (salt,
+// fresh, jungle river, swamp, flooded bed) is a ground with a capacity and a
+// stock. Poles, rods, nets, spears and sharpened sticks all draw from the
+// ground under the tile they are used on, and the chance to land a fish falls
+// as the ground thins.
+//
+// Nothing ticks. A ground is made the first time someone fishes it and works
+// out its regrowth from the time that passed when it is next asked. A ground
+// nobody has fished is full and costs nothing. Grounds are not saved yet:
+// world.time restarts with the server, so they restart full with it.
+//
+// Regrowth depends on what is left: fastest at half stock (one fish in four
+// minutes), slow near empty and near full. A ground fished to nothing only
+// recovers while a neighbouring ground of its kind still holds fish.
+
+#define FISH_GROUND_SIZE 16
+#define FISH_GROUND_STEP (1 MINUTES)
+#define FISH_GROUND_MAX_STEPS 600
+// Fish a minute that drift in from neighbouring grounds, whatever the stock.
+#define FISH_GROUND_SPILL 0.0625
+#define FISH_BAIT_USES 3
+#define FISH_BAIT_BONUS 30
+// A thin ground still gives this share of a tool's chance.
+#define FISH_THIN_SHARE 0.25
+// The open sea is wide: a line finds fewer fish than its stock suggests.
+#define FISH_DEEP_SEA_SHARE 0.6
+
+#define FISH_WATER_SALT "salt"
+#define FISH_WATER_FRESH "fresh"
+#define FISH_WATER_JUNGLE "jungle"
+#define FISH_WATER_SWAMP "swamp"
+#define FISH_WATER_FLOODED "flooded"
+
+// "kind,cell x,cell y,z" -> /datum/fishing_ground
+var/global/list/fishing_grounds = list()
+
+/datum/fishing_ground
+	var/kind
+	var/cx = 0
+	var/cy = 0
+	var/z = 0
+	var/capacity = 1
+	var/stock = 1
+	var/since = 0
+
+/datum/fishing_ground/New(_kind, _cx, _cy, _z, _capacity)
+	..()
+	kind = _kind
+	cx = _cx
+	cy = _cy
+	z = _z
+	capacity = max(1, _capacity)
+	stock = capacity
+	since = world.time
+
+/proc/fishing_ground_key(kind, cx, cy, z)
+	return "[kind],[cx],[cy],[z]"
+
+// TRUE while a neighbouring ground of the same kind holds a fish. A neighbour
+// nobody has fished is full.
+/datum/fishing_ground/proc/neighbours_have_fish()
+	for (var/dx = -1, dx <= 1, dx++)
+		for (var/dy = -1, dy <= 1, dy++)
+			if (!dx && !dy)
+				continue
+			var/datum/fishing_ground/G = fishing_grounds[fishing_ground_key(kind, cx + dx, cy + dy, z)]
+			if (!G || G.stock >= 1)
+				return TRUE
+	return FALSE
+
+// Fish gained in one step at this stock.
+/datum/fishing_ground/proc/growth(spill)
+	return max(stock * (1 - stock / capacity) / capacity, spill)
+
+// Brings the stock up to now.
+/datum/fishing_ground/proc/settle()
+	if (stock >= capacity)
+		stock = capacity
+		since = world.time // a full ground does not bank regrowth
+		return
+	var/steps = round((world.time - since) / FISH_GROUND_STEP)
+	if (steps <= 0)
+		return
+	if (steps > FISH_GROUND_MAX_STEPS)
+		stock = capacity
+		since = world.time
+		return
+	since += steps * FISH_GROUND_STEP
+	var/spill = neighbours_have_fish() ? FISH_GROUND_SPILL : 0
+	for (var/i = 1, i <= steps, i++)
+		stock += growth(spill)
+		if (stock >= capacity)
+			stock = capacity
+			since = world.time
+			break
+
+// Whole fish that can be caught now.
+/datum/fishing_ground/proc/available()
+	settle()
+	return round(stock)
+
+// 0 (empty) to 1 (full).
+/datum/fishing_ground/proc/fullness()
+	settle()
+	return stock / capacity
+
+/datum/fishing_ground/proc/take(n = 1)
+	if (available() < n)
+		return FALSE
+	if (stock >= capacity)
+		since = world.time
+	stock -= n
+	return TRUE
+
+// ---- Water ----
+
+// The kind of fishing water T is, or null when nothing can be caught in it.
+/proc/fish_water_kind(turf/T)
+	if (!istype(T, /turf/floor/beach/water) || T.density)
+		return null
+	if (istype(T, /turf/floor/beach/water/ice) || istype(T, /turf/floor/beach/water/deep/saltwater/underwater))
+		return null
+	if (istype(T, /turf/floor/beach/water/swamp) || istype(T, /turf/floor/beach/water/deep/swamp))
+		return FISH_WATER_SWAMP
+	if (istype(T, /turf/floor/beach/water/flooded))
+		return FISH_WATER_FLOODED
+	var/turf/floor/F = T
+	if (F.salty)
+		return FISH_WATER_SALT
+	if (istype(T, /turf/floor/beach/water/jungle) || istype(T, /turf/floor/beach/water/deep/jungle))
+		return FISH_WATER_JUNGLE
+	return FISH_WATER_FRESH
+
+/proc/fish_water_deep(turf/T)
+	return istype(T, /turf/floor/beach/water/deep)
+
+// Fish a full ground of this water holds. The coastal shelf is the richest
+// water; the open ocean and still, stale water the poorest.
+/proc/fish_water_capacity(turf/T, kind)
+	switch (kind)
+		if (FISH_WATER_SWAMP)
+			return 3
+		if (FISH_WATER_FLOODED)
+			return 2
+		if (FISH_WATER_SALT)
+			return fish_water_deep(T) ? 6 : 12
+	return fish_water_deep(T) ? 10 : 6
+
+// The ground T lies in, made when create is set. A ground takes the capacity
+// of the best water anyone has fished in it.
+/proc/fishing_ground_at(turf/T, create = TRUE)
+	var/kind = fish_water_kind(T)
+	if (!kind)
+		return null
+	var/cx = round(T.x / FISH_GROUND_SIZE)
+	var/cy = round(T.y / FISH_GROUND_SIZE)
+	var/key = fishing_ground_key(kind, cx, cy, T.z)
+	var/datum/fishing_ground/G = fishing_grounds[key]
+	var/capacity = fish_water_capacity(T, kind)
+	if (!G)
+		if (!create)
+			return null
+		G = new /datum/fishing_ground(kind, cx, cy, T.z, capacity)
+		fishing_grounds[key] = G
+	else if (capacity > G.capacity)
+		G.settle()
+		G.stock += capacity - G.capacity
+		G.capacity = capacity
+	return G
+
+// What a person can judge of the fish in this water, or null for no water.
+/proc/fish_ground_reading(turf/T)
+	if (!fish_water_kind(T))
+		return null
+	var/datum/fishing_ground/G = fishing_ground_at(T, FALSE)
+	var/full = G ? G.fullness() : 1
+	if (G && G.available() < 1)
+		return "Nothing stirs in the water. This stretch is fished out for now."
+	if (full >= 0.75)
+		return "The water is alive with fish."
+	if (full >= 0.4)
+		return "Fish move below the surface."
+	return "A few shapes move below. This stretch has been fished hard."
+
+/turf/floor/beach/water/examine(mob/user)
+	..()
+	if (ishuman(user) && get_dist(user, src) <= 2)
+		var/reading = fish_ground_reading(src)
+		if (reading)
+			to_chat(user, reading)
+
+// ---- The catch ----
+
+/proc/fish_catch_type(turf/T, kind, baited)
+	switch (kind)
+		if (FISH_WATER_SALT)
+			if (fish_water_deep(T))
+				if (prob(55))
+					return /obj/item/weapon/reagent_containers/food/snacks/rawfish/cod
+				if (baited && prob(20))
+					return /obj/item/weapon/reagent_containers/food/snacks/pink_squid
+				return /obj/item/weapon/reagent_containers/food/snacks/rawfish
+			if (prob(30))
+				return /obj/item/weapon/reagent_containers/food/snacks/rawfish/cod
+			return /obj/item/weapon/reagent_containers/food/snacks/rawfish
+		if (FISH_WATER_FRESH, FISH_WATER_JUNGLE)
+			if (prob(50))
+				return /obj/item/weapon/reagent_containers/food/snacks/rawfish/salmon
+	return /obj/item/weapon/reagent_containers/food/snacks/rawfish
+
+// ---- Tools ----
+
+// How W fishes: list(wait, chance at a full ground, TRUE for a spear), or null
+// when it is no fishing tool.
+/proc/fishing_tool_profile(obj/item/W)
+	if (istype(W, /obj/item/weapon/fishing/modern))
+		return list(120, 40, FALSE)
+	if (istype(W, /obj/item/weapon/fishing))
+		return list(150, 30, FALSE)
+	if (spear_fishing_tool(W))
+		return list(spear_fishing_delay(), spear_fishing_chance(), TRUE)
+	if (istype(W, /obj/item/weapon/branch))
+		var/obj/item/weapon/branch/B = W
+		if (B.sharpened)
+			return list(120, 20, TRUE)
+	return null
+
+// Bait: raw meat or raw fish cut onto a line.
+/obj/item/weapon/fishing/var/bait_uses = 0
+
+/obj/item/weapon/fishing/proc/is_bait(obj/item/I)
+	return istype(I, /obj/item/weapon/reagent_containers/food/snacks/meat) || istype(I, /obj/item/weapon/reagent_containers/food/snacks/rawfish)
+
+/obj/item/weapon/fishing/attackby(obj/item/W as obj, mob/user as mob)
+	if (!is_bait(W))
+		return ..()
+	if (bait_uses > 0)
+		to_chat(user, SPAN_WARNING("\The [src] is already baited."))
+		return
+	var/bait_name = W.name
+	user.drop_from_inventory(W)
+	qdel(W)
+	bait_uses = FISH_BAIT_USES
+	to_chat(user, SPAN_NOTICE("You cut up \the [bait_name] and bait \the [src]. It's good for [FISH_BAIT_USES] casts."))
+
+/obj/item/weapon/fishing/examine(mob/user, var/distance = -1)
+	..()
+	if (bait_uses > 0)
+		to_chat(user, SPAN_NOTICE("It is baited for [bait_uses] more cast\s."))
+
+// ---- Fishing ----
+
+/mob/living/human/var/tmp/ocean_fishing = FALSE
+
+/mob/living/human/proc/on_boat_deck()
+	if (istype(driver_vehicle, /obj/structure/vehicle/boat) || istype(driver_vehicle, /obj/structure/vehicle/raft))
+		return TRUE
+	var/turf/T = get_turf(src)
+	if (!istype(T, /turf/floor/beach/water))
+		return FALSE
+	return (locate(/obj/structure/vehicleparts/frame) in T) || (locate(/obj/structure/vehicleparts/axis) in T)
+
+// Somewhere to stand over deep water: a deck, a bridge or a pier.
+/mob/living/human/proc/fishing_footing()
+	var/turf/T = get_turf(src)
+	if (!fish_water_deep(T))
+		return TRUE
+	return on_boat_deck() || T.iscovered()
+
+/turf/floor/beach/water/attackby(obj/item/C as obj, mob/user as mob)
+	if (ishuman(user) && fishing_tool_profile(C))
+		fish_cast(C, user)
+		return
+	..()
+
+/turf/floor/beach/water/proc/fish_cast(obj/item/W, mob/living/human/H)
+	var/list/profile = fishing_tool_profile(W)
+	if (!profile)
+		return
+	if (H.ocean_fishing)
+		to_chat(H, SPAN_WARNING("You are already fishing."))
+		return
+	if (istype(src, /turf/floor/beach/water/ice))
+		to_chat(H, SPAN_WARNING("The water is frozen over."))
+		return
+	var/kind = fish_water_kind(src)
+	if (!kind)
+		to_chat(H, SPAN_WARNING("There is nothing to catch here."))
+		return
+	var/spear = profile[3]
+	var/deep = fish_water_deep(src)
+	if (spear && deep)
+		to_chat(H, SPAN_WARNING("The water is too deep to spear fish here. Try the shallows."))
+		return
+	if (iscovered() || (locate(/obj/structure/vehicleparts/frame) in src) || (locate(/obj/structure/vehicleparts/axis) in src))
+		to_chat(H, SPAN_WARNING("[spear ? "Strike" : "Cast"] into open water."))
+		return
+	if (!H.fishing_footing())
+		to_chat(H, SPAN_WARNING("You need a deck, a bridge or the bank under you to fish."))
+		return
+	var/datum/fishing_ground/G = fishing_ground_at(src)
+	if (G.available() < 1)
+		to_chat(H, SPAN_WARNING("Nothing stirs here. This stretch seems fished out; try further along."))
+		return
+	var/obj/item/weapon/fishing/line = istype(W, /obj/item/weapon/fishing) ? W : null
+	var/baited = line && line.bait_uses > 0
+	H.ocean_fishing = TRUE
+	if (spear)
+		H.visible_message("[H] stands ready to spear a fish.")
+	else
+		H.visible_message(SPAN_NOTICE("[H] casts \the [W] into the water."), SPAN_NOTICE("You cast \the [W] into the water[baited ? " with bait on the line" : ""]."))
+	var/done = do_after(H, profile[1], src)
+	H.ocean_fishing = FALSE
+	if (!done || QDELETED(W) || W.loc != H || !Adjacent(H) || !H.fishing_footing())
+		return
+	if (baited && line.bait_uses > 0)
+		line.bait_uses--
+	var/chance = (profile[2] + (baited ? FISH_BAIT_BONUS : 0)) * (FISH_THIN_SHARE + (1 - FISH_THIN_SHARE) * G.fullness())
+	if (deep && kind == FISH_WATER_SALT)
+		chance *= FISH_DEEP_SEA_SHARE
+	if (!prob(round(chance)))
+		to_chat(H, spear ? "The fish dart away from your strike." : "Nothing bites...")
+		return
+	if (!G.take(1)) // someone else took the last fish during the wait
+		to_chat(H, "Whatever was there got away.")
+		return
+	var/catch_path = fish_catch_type(src, kind, baited)
+	var/obj/item/caught = new catch_path(get_turf(H))
+	H.put_in_hands(caught)
+	to_chat(H, SPAN_NOTICE(spear ? "You spear \a [caught]!" : "You land \a [caught]!"))
+	if (!spear)
+		H.adaptStat("dexterity", 1)
+
+#undef FISH_GROUND_STEP
+#undef FISH_GROUND_MAX_STEPS
+#undef FISH_GROUND_SPILL
+#undef FISH_BAIT_USES
+#undef FISH_BAIT_BONUS
+#undef FISH_THIN_SHARE
+#undef FISH_DEEP_SEA_SHARE

@@ -377,7 +377,7 @@
 "hn" = (/obj/structure/table/wood,/obj/structure/radio/transmitter_receiver/nopower,/turf/floor/plating/cobblestone/vertical,/area/caribbean/roofed)
 "ho" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/table,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/turf/floor/plating/cobblestone/vertical,/area/caribbean/roofed)
 "hp" = (/obj/structure/shelf,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/herbs,/obj/item/stack/medical/advanced/herbs,/obj/item/stack/medical/advanced/ointment,/obj/item/stack/medical/advanced/ointment,/obj/item/roller,/obj/item/roller,/obj/item/roller,/obj/item/roller,/turf/floor/grass,/area/caribbean)
-"hq" = (/obj/structure/fish,/turf/floor/beach/water,/area/caribbean)
+"hq" = (/turf/floor/beach/water,/area/caribbean)
 "hr" = (/obj/structure/flag/black,/turf/floor/beach/sand,/area/caribbean)
 "hs" = (/obj/structure/closet/fridge{powered = 1; powerneeded = 0},/obj/item/weapon/reagent_containers/food/drinks/can/lite,/obj/item/weapon/reagent_containers/food/drinks/can/lite,/obj/item/weapon/reagent_containers/food/drinks/can/lite,/obj/item/weapon/reagent_containers/food/drinks/bottle/small/cola,/obj/item/weapon/reagent_containers/food/drinks/bottle/small/cola,/obj/item/weapon/reagent_containers/food/drinks/bottle/small/cola,/turf/floor/plating/cobblestone/vertical,/area/caribbean/roofed)
 "ht" = (/obj/structure/chemical_dispenser/drinks,/turf/floor/plating/cobblestone/vertical,/area/caribbean/roofed)

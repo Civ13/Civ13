@@ -95,7 +95,7 @@
 "bQ" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 4},/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall)
 "bR" = (/obj/map_metadata/little_creek{name = "control"},/turf/wall/indestructable,/area/caribbean/void/caves)
 "bS" = (/obj/covers/sandstone,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall)
-"bT" = (/obj/structure/fish/salmon,/turf/floor/beach/water,/area/caribbean/desert)
+"bT" = (/turf/floor/beach/water,/area/caribbean/desert)
 "bU" = (/obj/structure/wild/tallgrass2,/turf/floor/grass,/area/caribbean/desert)
 "bV" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 4},/turf/floor/beach/water,/area/caribbean/desert)
 "bW" = (/obj/covers/sandstone,/turf/floor/beach/water,/area/caribbean/desert)

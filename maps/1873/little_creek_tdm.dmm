@@ -63,7 +63,7 @@
 "bk" = (/obj/structure/wild/tree/dead_tree,/turf/floor/dirt,/area/caribbean/desert)
 "bl" = (/obj/structure/sign/goldenplaque{desc = "The Biggest Bank in Arizona!"; name = "Little Creek Banking Co."},/obj/covers/brick_wall,/turf/wall/wood,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
 "bm" = (/obj/structure/wild/tallgrass,/turf/floor/beach/water,/area/caribbean/desert)
-"bn" = (/obj/structure/fish/salmon,/turf/floor/beach/water,/area/caribbean/desert)
+"bn" = (/turf/floor/beach/water,/area/caribbean/desert)
 "bo" = (/obj/structure/wild/tallgrass,/turf/floor/dirt,/area/caribbean/desert)
 "bp" = (/obj/covers/brick_wall,/turf/wall/brick,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Sheriff's Office"})
 "bq" = (/turf/floor/beach/sand,/area/caribbean/desert)

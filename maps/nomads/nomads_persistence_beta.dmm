@@ -55,7 +55,7 @@
 "bs" = (/turf/wall/rockwall,/area/caribbean/nomads/snow)
 "bt" = (/turf/floor/winter/grass,/area/caribbean/nomads/snow)
 "bu" = (/turf/floor/beach/water/deep,/area/caribbean/nomads/forest)
-"bv" = (/obj/structure/fish,/turf/floor/beach/water/deep,/area/caribbean/nomads/forest)
+"bv" = (/turf/floor/beach/water/deep,/area/caribbean/nomads/forest)
 "bw" = (/obj/structure/sink/puddle,/turf/floor/grass,/area/caribbean/nomads/forest)
 "bx" = (/obj/effect/spawner/mobspawner/rabbits,/turf/floor/grass,/area/caribbean/nomads/forest)
 "by" = (/obj/effect/spawner/mobspawner/turkeys,/turf/floor/grass,/area/caribbean/nomads/forest)

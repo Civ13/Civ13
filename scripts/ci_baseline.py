@@ -1030,8 +1030,7 @@ SUITES = {
             'scripts/atlas/interactions.py')},
     'resource_stock': {'files': ('tests/resource_stock/test_resource_stock.py',),
         'paths': ('tests/resource_stock/', 'code/_helpers/resource_stock.dm'), 'shared_paths': (
-            'code/game/objects/structures/rocks.dm', 'code/modules/1713/obsidian.dm',
-            'code/game/objects/structures/ocean_fishing.dm')},
+            'code/game/objects/structures/rocks.dm', 'code/modules/1713/obsidian.dm')},
     'job_loadouts': {'files': ('tests/job_loadouts/test_job_loadouts.py',),
         'paths': ('tests/job_loadouts/', 'code/game/jobs/job.dm'), 'shared_paths': ()},
     'liquid_fuels': {'files': ('tests/liquid_fuels/test_liquid_fuels.py',),
@@ -2017,13 +2016,10 @@ SUITES = {
             'code/game/mob/living/carbon/carbon_defines.dm',
             'code/game/mob/living/carbon/human/nomads_spawn.dm',
             'code/game/mob/living/carbon/human/human_life.dm')},
-    # Keep mixed production static.dm unmapped: its existing all-suite fallback
-    # must still cover changes to fish, piranhas and ants, not just fishing.
-    'fishing_stock': {'files': ('tests/fishing_stock/test_source_contract.py',
-                                'tests/fishing_stock/test_preparation.py',
-                                'tests/fishing_stock/test_native_runner.py',
-                                'tests/fishing_stock/test_ocean_fishing.py'), 'paths': (
-        'tests/fishing_stock/',)},
+    # Fishing grounds source contracts; the native probe beside them runs
+    # through tests/ecology_spawning/run_linux.py.
+    'fishing_grounds': {'files': ('tests/fishing_grounds/test_source.py',), 'paths': (
+        'tests/fishing_grounds/', 'code/modules/1713/fishing_grounds.dm')},
     # Read-only Examine navigation source contracts; no DM runtime is launched.
     'atlas_examine': {'files': ('tests/test_atlas_examine.py',), 'paths': (
         'tests/test_atlas_examine.py', 'code/game/mob/crafting_atlas_examine.dm'),

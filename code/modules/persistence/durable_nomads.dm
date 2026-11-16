@@ -147,11 +147,10 @@
 		throw E
 	event.release()
 
+// Fish belong to the water now (fishing_grounds.dm). The callback stays so a
+// world saved with it pending still restores; it has nothing left to seed.
 /obj/map_metadata/proc/durable_nomads_fish_boot()
-	var/count = type == /obj/map_metadata/nomads/continental ? 65 : 35
-	for(var/i = 1, i <= count, i++)
-		var/turf/T = safepick(get_area_turfs(/area/caribbean/sea/sea))
-		if(T) new /obj/structure/fish(T)
+	return
 
 /obj/map_metadata/proc/durable_nomads_piranha_boot()
 	seed_piranhas(get_area_turfs(/area/caribbean/nomads/forest/Jungle/river), 15)

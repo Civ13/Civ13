@@ -51,7 +51,6 @@ BUSH = "/obj/structure/wild/smallbush"
 # Stocked forage: starts with berries and regrows them (berries.dm).
 BERRY_BUSH = "/obj/structure/wild/berrybush/tinto"
 TALL_GRASS = "/obj/structure/wild/tallgrass"
-FISH = "/obj/structure/fish"
 # Drops wood when chopped. Cave WOOD sites can sit in narrow passages, so the
 # placed tree neither blocks movement nor sight.
 DEAD_TREE = "/obj/structure/wild/tree/dead_tree"
@@ -80,7 +79,6 @@ SOURCES = {
     BROADLEAF: "code/game/objects/structures/wild.dm",
     TREE_BY_BIOME["ARID"]: "code/game/objects/structures/wild.dm",
     TREE_BY_BIOME["COAST"]: "code/game/objects/structures/wild.dm",
-    FISH: "code/game/mob/living/simple_animal/friendly/static.dm",
     MUSHROOM_SEEDS: "code/game/objects/farming.dm",
     MUSHROOM: "code/modules/reagents/reagent_containers/food/grown.dm",
     TURKEYS: "code/game/objects/effects/spawner.dm",
@@ -136,8 +134,6 @@ SURFACE_TREES = tuple(TREES.values())
 GRASS_SHARE = 0.03
 BUSH_SHARE = 0.03
 GAME_SHARE = 0.35
-FRESH_FISH_SHARE = 0.008
-SEA_FISH_SHARE = 0.003
 MUSHROOM_SHARE = 0.25
 
 
@@ -161,10 +157,9 @@ def share(seed, x, y, z, salt):
 
 
 def surface_supply(c, value, game):
+    # Fish belong to the water itself (fishing_grounds.dm); nothing is placed.
     if c["water"] != "NONE":
-        if c["water"] == "SEA":
-            return [FISH] if value < SEA_FISH_SHARE else []
-        return [FISH] if c["salinity"] == "FRESH" and value < FRESH_FISH_SHARE else []
+        return []
     if c["terrain"] in {"MOUNTAIN", "ROCK"} or c["blocked"] or c["tree"] != "NONE":
         return []
     if c["resource"] == "STONE":

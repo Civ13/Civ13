@@ -209,7 +209,7 @@
 "uK" = (/obj/structure/table/wood,/obj/item/weapon/storage/fancy/candle_box,/turf/floor/plating/tiled/woodv,/area/caribbean/roofed/jungle)
 "uQ" = (/obj/structure/lamp/lamp_small/alwayson{dir = 1; icon_state = "bulb"},/turf/floor/plating/road,/area/caribbean/nomads/forest/Jungle)
 "uR" = (/obj/covers/jail/steeljail,/turf/floor/plating/road,/area/caribbean/nomads/forest/Jungle)
-"uX" = (/obj/structure/fish,/turf/floor/beach/water/jungle,/area/caribbean/nomads/forest/Jungle)
+"uX" = (/turf/floor/beach/water/jungle,/area/caribbean/nomads/forest/Jungle)
 "uZ" = (/obj/item/stack/farming/seeds/sugarcane,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
 "vd" = (/obj/structure/barbwire{dir = 1; layer = 5},/obj/structure/railing{dir = 8; icon_state = "railing0"},/obj/structure/railing{dir = 1; icon_state = "railing0"},/turf/floor/plating/cobblestone/vertical,/area/caribbean/nomads/forest/Jungle)
 "ve" = (/obj/structure/wild/tallgrass,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)

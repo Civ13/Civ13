@@ -1415,105 +1415,6 @@
     },
     {
       "file": "code/game/mob/living/simple_animal/friendly/static.dm",
-      "line": 36,
-      "context": "/obj/structure/fish/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)",
-      "nearest_condition": "if (species == \"salmon\")",
-      "objects": [
-        "/obj/item/weapon/reagent_containers/food/snacks/rawfish/salmon"
-      ],
-      "reagents": [],
-      "expression": "new/obj/item/weapon/reagent_containers/food/snacks/rawfish/salmon(H.loc)"
-    },
-    {
-      "file": "code/game/mob/living/simple_animal/friendly/static.dm",
-      "line": 38,
-      "context": "/obj/structure/fish/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)",
-      "nearest_condition": "else if (species == \"cod\")",
-      "objects": [
-        "/obj/item/weapon/reagent_containers/food/snacks/rawfish/cod"
-      ],
-      "reagents": [],
-      "expression": "new/obj/item/weapon/reagent_containers/food/snacks/rawfish/cod(H.loc)"
-    },
-    {
-      "file": "code/game/mob/living/simple_animal/friendly/static.dm",
-      "line": 40,
-      "context": "/obj/structure/fish/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)",
-      "nearest_condition": "else if (species == \"cod\")",
-      "objects": [
-        "/obj/item/weapon/reagent_containers/food/snacks/rawfish"
-      ],
-      "reagents": [],
-      "expression": "new/obj/item/weapon/reagent_containers/food/snacks/rawfish(H.loc)"
-    },
-    {
-      "file": "code/game/mob/living/simple_animal/friendly/static.dm",
-      "line": 54,
-      "context": "/obj/structure/fish/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)",
-      "nearest_condition": "if (species == \"salmon\")",
-      "objects": [
-        "/obj/item/weapon/reagent_containers/food/snacks/rawfish/salmon"
-      ],
-      "reagents": [],
-      "expression": "new/obj/item/weapon/reagent_containers/food/snacks/rawfish/salmon(H.loc)"
-    },
-    {
-      "file": "code/game/mob/living/simple_animal/friendly/static.dm",
-      "line": 56,
-      "context": "/obj/structure/fish/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)",
-      "nearest_condition": "else if (species == \"cod\")",
-      "objects": [
-        "/obj/item/weapon/reagent_containers/food/snacks/rawfish/cod"
-      ],
-      "reagents": [],
-      "expression": "new/obj/item/weapon/reagent_containers/food/snacks/rawfish/cod(H.loc)"
-    },
-    {
-      "file": "code/game/mob/living/simple_animal/friendly/static.dm",
-      "line": 58,
-      "context": "/obj/structure/fish/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)",
-      "nearest_condition": "else if (species == \"cod\")",
-      "objects": [
-        "/obj/item/weapon/reagent_containers/food/snacks/rawfish"
-      ],
-      "reagents": [],
-      "expression": "new/obj/item/weapon/reagent_containers/food/snacks/rawfish(H.loc)"
-    },
-    {
-      "file": "code/game/mob/living/simple_animal/friendly/static.dm",
-      "line": 75,
-      "context": "/obj/structure/fish/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)",
-      "nearest_condition": "if (species == \"salmon\")",
-      "objects": [
-        "/obj/item/weapon/reagent_containers/food/snacks/rawfish/salmon"
-      ],
-      "reagents": [],
-      "expression": "new/obj/item/weapon/reagent_containers/food/snacks/rawfish/salmon(H.loc)"
-    },
-    {
-      "file": "code/game/mob/living/simple_animal/friendly/static.dm",
-      "line": 77,
-      "context": "/obj/structure/fish/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)",
-      "nearest_condition": "else if (species == \"cod\")",
-      "objects": [
-        "/obj/item/weapon/reagent_containers/food/snacks/rawfish/cod"
-      ],
-      "reagents": [],
-      "expression": "new/obj/item/weapon/reagent_containers/food/snacks/rawfish/cod(H.loc)"
-    },
-    {
-      "file": "code/game/mob/living/simple_animal/friendly/static.dm",
-      "line": 79,
-      "context": "/obj/structure/fish/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)",
-      "nearest_condition": "else if (species == \"cod\")",
-      "objects": [
-        "/obj/item/weapon/reagent_containers/food/snacks/rawfish"
-      ],
-      "reagents": [],
-      "expression": "new/obj/item/weapon/reagent_containers/food/snacks/rawfish(H.loc)"
-    },
-    {
-      "file": "code/game/mob/living/simple_animal/friendly/static.dm",
       "line": 179,
       "context": "/obj/structure/anthill/proc/check_food()",
       "nearest_condition": "if (done == FALSE)",
@@ -14631,6 +14532,107 @@
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
+      "name": "River and lake fishing",
+      "file": "code/modules/1713/fishing_grounds.dm",
+      "line": 196,
+      "source_commit": "49c2495786057ff91f3075572f3696326872cdf9",
+      "inputs": [
+        "/turf/floor/beach/water"
+      ],
+      "outputs": [
+        "/obj/item/weapon/reagent_containers/food/snacks/rawfish/salmon",
+        "/obj/item/weapon/reagent_containers/food/snacks/rawfish"
+      ],
+      "tools": [
+        "/obj/item/weapon/fishing",
+        "/obj/item/weapon/fishing/net",
+        "/obj/item/weapon/fishing/modern"
+      ],
+      "steps": [
+        "Use a fishing pole, net or rod on fresh water next to you and wait for a bite. Raw meat or raw fish used on the pole baits it for three casts."
+      ],
+      "conditions": "Random catch. The chance falls as the 16x16 stretch of water is fished down and fish grow back over time; a fished-out stretch gives nothing.",
+      "map_notes": "Works on any map with this kind of water.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Coast fishing",
+      "file": "code/modules/1713/fishing_grounds.dm",
+      "line": 196,
+      "source_commit": "49c2495786057ff91f3075572f3696326872cdf9",
+      "inputs": [
+        "/turf/floor/beach/water/shallowsaltwater"
+      ],
+      "outputs": [
+        "/obj/item/weapon/reagent_containers/food/snacks/rawfish",
+        "/obj/item/weapon/reagent_containers/food/snacks/rawfish/cod"
+      ],
+      "tools": [
+        "/obj/item/weapon/fishing",
+        "/obj/item/weapon/fishing/net",
+        "/obj/item/weapon/fishing/modern"
+      ],
+      "steps": [
+        "Use a fishing pole, net or rod on shallow salt water next to you and wait for a bite. Bait makes a bite likelier."
+      ],
+      "conditions": "Random catch. The chance falls as the 16x16 stretch of water is fished down and fish grow back over time; a fished-out stretch gives nothing.",
+      "map_notes": "Works on any map with this kind of water.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Open-sea fishing",
+      "file": "code/modules/1713/fishing_grounds.dm",
+      "line": 196,
+      "source_commit": "49c2495786057ff91f3075572f3696326872cdf9",
+      "inputs": [
+        "/turf/floor/beach/water/deep/saltwater"
+      ],
+      "outputs": [
+        "/obj/item/weapon/reagent_containers/food/snacks/rawfish/cod",
+        "/obj/item/weapon/reagent_containers/food/snacks/rawfish",
+        "/obj/item/weapon/reagent_containers/food/snacks/pink_squid"
+      ],
+      "tools": [
+        "/obj/item/weapon/fishing",
+        "/obj/item/weapon/fishing/net",
+        "/obj/item/weapon/fishing/modern"
+      ],
+      "steps": [
+        "From a deck, bridge or pier, use a fishing pole, net or rod on open deep salt water beside you. Squid only take a baited line."
+      ],
+      "conditions": "Random catch. The chance falls as the 16x16 stretch of water is fished down and fish grow back over time; a fished-out stretch gives nothing.",
+      "map_notes": "Works on any map with this kind of water.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Spear fishing",
+      "file": "code/modules/1713/fishing_grounds.dm",
+      "line": 196,
+      "source_commit": "49c2495786057ff91f3075572f3696326872cdf9",
+      "inputs": [
+        "/turf/floor/beach/water"
+      ],
+      "outputs": [
+        "/obj/item/weapon/reagent_containers/food/snacks/rawfish/salmon",
+        "/obj/item/weapon/reagent_containers/food/snacks/rawfish"
+      ],
+      "tools": [
+        "/obj/item/weapon/material/harpoon",
+        "/obj/item/weapon/material/spear/flint",
+        "/obj/item/weapon/branch"
+      ],
+      "steps": [
+        "Use a harpoon, a flint spear or a sharpened stick on shallow water next to you. Deep water cannot be speared."
+      ],
+      "conditions": "Random catch. The chance falls as the 16x16 stretch of water is fished down and fish grow back over time; a fished-out stretch gives nothing.",
+      "map_notes": "Works on any map with this kind of water.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
       "name": "Deep saltwater cage fishing",
       "file": "code/game/objects/structures/sea.dm",
       "line": 95,
@@ -17205,7 +17207,7 @@
     {
       "name": "Fishing cages and rods",
       "file": "code/game/objects/structures/sea.dm",
-      "gate": "water subtype and probabilistic catches; cage waits18000-24000 ticks; rods have separate conditions"
+      "gate": "water subtype and probabilistic catches; cage waits18000-24000 ticks; lines and spears draw on the fish stock of the water (fishing_grounds.dm)"
     },
     {
       "name": "Animal harvest",

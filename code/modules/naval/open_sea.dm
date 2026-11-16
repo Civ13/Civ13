@@ -54,7 +54,7 @@ var/global/sea_home_span = SEA_HOME_SPAN
 /turf/floor/beach/water/deep/saltwater/tide_race/attackby(obj/item/C as obj, mob/user as mob)
 	to_chat(user, SPAN_WARNING("The tide race would tear it away."))
 
-/turf/floor/beach/water/deep/saltwater/tide_race/cast_ocean_line(obj/item/weapon/fishing/F, mob/user)
+/turf/floor/beach/water/deep/saltwater/tide_race/fish_cast(obj/item/W, mob/living/human/user)
 	to_chat(user, SPAN_WARNING("No line holds in the tide race."))
 
 // ---------------------------------------------------------------- cells

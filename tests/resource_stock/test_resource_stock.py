@@ -92,8 +92,6 @@ class ResourceStockTest(unittest.TestCase):
         obsidian = read('code/modules/1713/obsidian.dm')
         self.assertIn('new /datum/resource_stock(OBSIDIAN_OUTCROP_NODULES, OBSIDIAN_OUTCROP_REGEN, TRUE)', obsidian)
         self.assertIn('!obsidian_stock.take()', obsidian)
-        fishing = read('code/game/objects/structures/ocean_fishing.dm')
-        self.assertIn('new /datum/resource_stock(OCEAN_FISH_MAX, OCEAN_FISH_REGEN)', fishing)
 
 
 if __name__ == '__main__':

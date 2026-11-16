@@ -579,7 +579,7 @@
 "lg" = (/obj/structure/grille,/turf/floor/wood,/area/caribbean/roofed)
 "lh" = (/obj/structure/bed/chair/office/dark{dir = 1; icon_state = "officechair_dark"},/turf/floor/wood,/area/caribbean/no_mans_land/invisible_wall/inside/one)
 "li" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami/angle{dir = 4; icon_state = "tatami_frame_angle"},/obj/structure/bed/chair,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/wood,/area/caribbean/roofed)
-"lj" = (/obj/structure/fish/cod{desc = "Seems like theres some koi around here..."; name = "koi"},/turf/floor/beach/water,/area/caribbean/no_mans_land/invisible_wall/jungle)
+"lj" = (/turf/floor/beach/water,/area/caribbean/no_mans_land/invisible_wall/jungle)
 "lk" = (/obj/structure/table/modern/table,/obj/item/weapon/paper_bin,/obj/item/weapon/material/ashtray/glass,/turf/floor/wood,/area/caribbean/no_mans_land/invisible_wall/inside/one)
 "ll" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle{dir = 1; icon_state = "tatami_frame_angle"},/obj/structure/table/wood,/obj/item/weapon/paper_bin,/turf/floor/wood,/area/caribbean/roofed)
 "lm" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami{dir = 1; icon_state = "tatami_frame"},/obj/structure/table/wood,/obj/structure/lamp/lamp_big/alwayson{dir = 1; icon_state = "tube"},/obj/item/weapon/paper,/obj/item/weapon/pen,/turf/floor/wood,/area/caribbean/roofed)

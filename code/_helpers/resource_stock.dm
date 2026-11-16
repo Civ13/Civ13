@@ -1,5 +1,6 @@
 // A source that gives a few things and grows them back over time: flint in a
-// rock, glass in an obsidian outcrop, fish in a stretch of sea.
+// rock, glass in an obsidian outcrop. (Fish have their own stock, which
+// regrows by how much is left: code/modules/1713/fishing_grounds.dm.)
 //
 // The stock is lazy: nothing ticks. available() works out what grew back since
 // it was last asked, so a source nobody visits costs nothing. Hold it in a tmp
@@ -7,7 +8,7 @@
 // restarts full with it.
 //
 // - regrow_all FALSE: one comes back every `period` after the stock dropped
-//   below full (fish, flint).
+//   below full (flint).
 // - regrow_all TRUE: the stock refills completely `period` after it ran out
 //   (an outcrop that has to weather before more shows).
 

@@ -30,17 +30,6 @@ var/global/list/naval_mines = list()
 /atom/movable/proc/craft_left_behind()
 	return FALSE
 
-// A fishing spot belongs to the water, not to a hull that sails over it.
-/obj/structure/fish/craft_left_behind()
-	return TRUE
-
-// The wait for a fish to come back does not outlive a restart: a spot saved
-// short of fish starts a fresh one.
-/obj/structure/fish/after_load()
-	..()
-	if (counter < initial(counter))
-		get_fish()
-
 // ---- The item ----
 
 /obj/item/naval_mine

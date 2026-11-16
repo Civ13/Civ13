@@ -190,6 +190,7 @@ var/list/admin_verbs_debug = list(
 	/client/proc/river_flood_map,
 	/client/proc/river_flood_set_stage,
 	/client/proc/river_flood_spring,
+	/client/proc/fishing_grounds_map,
 	/client/proc/toggle_flood_thresholds,
 	/client/proc/profile_dump,
 	/client/proc/gc_outcomes,

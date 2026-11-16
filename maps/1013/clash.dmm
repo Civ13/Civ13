@@ -342,7 +342,6 @@
 /turf/floor/dirt/dust,
 /area/caribbean/void/caves)
 "gh" = (
-/obj/structure/fish,
 /turf/floor/beach/water/deep,
 /area/caribbean/no_mans_land/invisible_wall)
 "gs" = (
@@ -890,7 +889,6 @@
 /turf/floor/winter/grass,
 /area/caribbean/no_mans_land/taiga)
 "uz" = (
-/obj/structure/fish,
 /turf/floor/beach/water/deep,
 /area/caribbean/no_mans_land/taiga)
 "uA" = (
@@ -1937,7 +1935,6 @@
 /turf/floor/winter,
 /area/caribbean/houses)
 "RS" = (
-/obj/structure/fish,
 /turf/floor/beach/water,
 /area/caribbean/no_mans_land/taiga)
 "Sc" = (
