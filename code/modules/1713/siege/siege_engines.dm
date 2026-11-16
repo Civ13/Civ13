@@ -35,28 +35,17 @@
 		return T
 	return null
 
-// Damage a wall, gate or door. Returns TRUE if it is gone.
+// Damage a wall, gate or door. Returns TRUE if it is gone. Siege numbers are
+// tuned against each part's health, so they pass through unscaled by material
+// (structure_impact.dm).
 /proc/siege_hit(atom/A, damage)
 	if (!A || QDELETED(A))
 		return TRUE
-	if (istype(A, /obj/covers))
-		var/obj/covers/C = A
-		C.health -= damage
-		C.try_destroy()
-	else if (istype(A, /obj/structure/barricade))
-		var/obj/structure/barricade/B = A
-		B.health -= damage
-		B.try_destroy()
-	else if (istype(A, /obj/structure/gate) || istype(A, /obj/structure/simple_door) || istype(A, /obj/structure/castle_gate))
-		var/obj/structure/S = A
-		S.health -= damage
-		if (istype(S, /obj/structure/simple_door/key_door))
-			S:damage_display()
-		if (S.health <= 0)
-			S.visible_message(SPAN_DANGER("\The [S] is smashed apart!"))
-			qdel(S)
-	else
+	if (!structure_impact_part(A))
 		return FALSE
+	A.structure_impact(damage, IMPACT_RAW)
+	if (isturf(A))
+		return !istype(A, /turf/wall)
 	return QDELETED(A)
 
 /proc/siege_can_fight()
