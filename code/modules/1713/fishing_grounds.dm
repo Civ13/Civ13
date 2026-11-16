@@ -312,21 +312,39 @@ var/global/list/fishing_grounds_published = null
 
 // ---- The catch ----
 
-/proc/fish_catch_type(turf/T, kind, baited)
+// What comes up. baited: bait on the line. towed: a line trolled from a ship.
+/proc/fish_catch_type(turf/T, kind, baited, towed = FALSE)
 	switch (kind)
 		if (FISH_WATER_SALT)
 			if (fish_water_deep(T))
+				// Tuna hunt in open water and only take something that moves or smells.
+				if ((towed && prob(25)) || (baited && !towed && prob(12)))
+					return /obj/item/weapon/reagent_containers/food/snacks/rawfish/tuna
 				if (prob(55))
 					return /obj/item/weapon/reagent_containers/food/snacks/rawfish/cod
 				if (baited && prob(20))
 					return /obj/item/weapon/reagent_containers/food/snacks/pink_squid
 				return /obj/item/weapon/reagent_containers/food/snacks/rawfish
+			if (prob(35))
+				return /obj/item/weapon/reagent_containers/food/snacks/rawfish/herring
 			if (prob(30))
 				return /obj/item/weapon/reagent_containers/food/snacks/rawfish/cod
 			return /obj/item/weapon/reagent_containers/food/snacks/rawfish
-		if (FISH_WATER_FRESH, FISH_WATER_JUNGLE)
-			if (prob(kind == FISH_WATER_FRESH && fish_run_season() ? FISH_RUN_SALMON : 50))
+		if (FISH_WATER_FRESH)
+			if (prob(fish_run_season() ? FISH_RUN_SALMON : 50))
 				return /obj/item/weapon/reagent_containers/food/snacks/rawfish/salmon
+			if (fish_water_deep(T) && prob(40))
+				return /obj/item/weapon/reagent_containers/food/snacks/rawfish/catfish
+			if (prob(50))
+				return /obj/item/weapon/reagent_containers/food/snacks/rawfish/trout
+		if (FISH_WATER_JUNGLE)
+			if (prob(35))
+				return /obj/item/weapon/reagent_containers/food/snacks/rawfish/catfish
+			if (prob(50))
+				return /obj/item/weapon/reagent_containers/food/snacks/rawfish/salmon
+		if (FISH_WATER_SWAMP)
+			if (prob(40))
+				return /obj/item/weapon/reagent_containers/food/snacks/rawfish/catfish
 	return /obj/item/weapon/reagent_containers/food/snacks/rawfish
 
 // ---- Tools ----
@@ -471,7 +489,7 @@ var/global/list/fishing_grounds_published = null
 
 // The roll and the landing, for a cast and for a towed line. Returns the
 // number of fish landed.
-/proc/fish_land(mob/living/human/H, turf/water, datum/fishing_ground/G, kind, chance, hauls, baited, spear)
+/proc/fish_land(mob/living/human/H, turf/water, datum/fishing_ground/G, kind, chance, hauls, baited, spear, towed = FALSE)
 	var/list/landed = list()
 	var/escaped = FALSE
 	for (var/haul = 1 to hauls)
@@ -480,7 +498,7 @@ var/global/list/fishing_grounds_published = null
 		if (!G.take(1)) // the ground ran out, or someone else took the last fish during the wait
 			escaped = TRUE
 			break
-		var/catch_path = fish_catch_type(water, kind, baited)
+		var/catch_path = fish_catch_type(water, kind, baited, towed)
 		landed += new catch_path(get_turf(H))
 	if (!landed.len)
 		if (escaped)
@@ -574,7 +592,7 @@ var/global/list/fishing_grounds_published = null
 	if (kind == FISH_WATER_SALT && fish_water_deep(water))
 		chance *= FISH_DEEP_SEA_SHARE
 	chance = min(95, chance * fish_condition_factor_at(water, kind) * fish_ship_factor(noisy, fish_craft_step(ship)))
-	fish_land(H, water, G, kind, chance, 1, baited, FALSE)
+	fish_land(H, water, G, kind, chance, 1, baited, FALSE, TRUE)
 
 // What a sonar set makes of the fish in the water at T (the surface over a
 // submerged boat), or null where there is no fishing water.
