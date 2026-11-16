@@ -713,6 +713,7 @@ RECIPE: /material/cloth/,small rug warp,/obj/item/canvas/woven,2,40,0,1,none,0,0
 RECIPE: /material/cloth/,runner warp,/obj/item/canvas/woven/runner,3,50,0,1,none,0,0,0,8,null
 RECIPE: /material/cloth/,large rug warp,/obj/item/canvas/woven/large,6,80,0,1,none,0,0,0,8,null
 RECIPE: /material/cloth/,tapestry warp,/obj/item/canvas/woven/tapestry,2,40,0,1,none,0,0,0,8,null
+RECIPE: /material/cloth/,bath mat,/obj/item/bath_mat,2,30,0,1,none,0,0,0,8,null
 RECIPE: /material/cloth/,wide tapestry warp,/obj/item/canvas/woven/tapestry/wide,3,50,0,1,none,0,0,0,8,null
 RECIPE: /material/cloth/,pedal airship,/obj/structure/vehicle/bicycle/airship,30,300,1,1,vehicle parts,95,0,0,8,null
 RECIPE: /material/cloth/,cigarette pack,/obj/item/weapon/storage/fancy/cigarettes,1,20,0,1,none,90,0,0,8,null

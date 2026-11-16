@@ -2083,6 +2083,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/canvas/woven/runner" = "weaving",
 		"/obj/item/canvas/woven/large" = "weaving",
 		"/obj/item/canvas/woven/tapestry" = "weaving",
+		"/obj/item/bath_mat" = "weaving",
 		"/obj/item/canvas/woven/tapestry/wide" = "weaving",
 		"/obj/item/weapon/clay/verysmallclaypot" = "pottery_storage",
 		"/obj/item/weapon/clay/winecup" = "pottery_storage",

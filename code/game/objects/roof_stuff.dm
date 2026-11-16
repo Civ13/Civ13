@@ -676,11 +676,17 @@
 	icon_state = "egyptian_pillar"
 
 /obj/structure/mine_support/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (pillar_dismantle_tool(src, W, user))
+		pillar_dismantle(user)
+		return
 	if (istype(W, /obj/item/weapon))
 		weapon_structure_damage(W, user, 1, 0.2, 'sound/effects/wood_cutting.ogg')
 	..()
 
 /obj/structure/roof_support/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (pillar_dismantle_tool(src, W, user))
+		pillar_dismantle(user)
+		return
 	if (istype(W, /obj/item/weapon))
 		weapon_structure_damage(W, user, 1, 0.2, 'sound/effects/wood_cutting.ogg')
 	..()

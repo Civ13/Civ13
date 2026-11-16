@@ -132,3 +132,90 @@
 
 /obj/structure/window/barrier/impact_structure_damage(amount)
 	return impact_smash(amount)
+
+// ---- taking pillars down ----------------------------------------------------
+//
+// Any roof support, mine support or stone pillar comes down with a hammer (not
+// on harm intent, which strikes it instead) and gives back what it cost, but
+// not while a roof near it stands on it alone: put up another support or a
+// wall first. Concrete pillars give nothing back.
+
+#define PILLAR_DISMANTLE_WOOD 40
+#define PILLAR_DISMANTLE_STONE 80
+
+/proc/pillar_dismantle_tool(obj/structure/S, obj/item/W, mob/user)
+	if (!is_tool(W, TOOL_HAMMER) || !user || user.a_intent == I_HARM)
+		return FALSE
+	if (istype(S, /obj/structure/roof_support/admin))
+		return FALSE
+	return istype(S, /obj/structure/roof_support) || istype(S, /obj/structure/mine_support)
+
+// What a dismantled pillar gives back: list(stack type, amount), or null.
+/proc/pillar_refund(obj/structure/S)
+	if (istype(S, /obj/structure/mine_support/stone/concrete))
+		return null
+	if (istype(S, /obj/structure/roof_support/bamboo))
+		return list(/obj/item/stack/material/bamboo, 2)
+	if (!istype(S, /obj/structure/mine_support/stone))
+		return list(/obj/item/stack/material/wood, 2)
+	var/path = "[S.type]"
+	if (findtext(path, "obsidian"))
+		return list(/obj/item/stack/material/obsidian, 2)
+	if (findtext(path, "sandstone") || istype(S, /obj/structure/mine_support/stone/egyptian))
+		return list(/obj/item/stack/material/sandstone, 2)
+	if (findtext(path, "marble"))
+		return list(/obj/item/stack/material/marble, 2)
+	if (findtext(path, "/rock") || S.type == /obj/structure/mine_support/stone || S.type == /obj/structure/mine_support/stone/aztec)
+		return list(/obj/item/stack/material/stone, 2)
+	// The plain ionic and solomonic columns are marble.
+	return list(/obj/item/stack/material/marble, 2)
+
+// How many roofs near S stand only because of S.
+/proc/pillar_roofs_held(obj/structure/S)
+	. = 0
+	var/turf/T = get_turf(S)
+	if (!T)
+		return
+	var/list/standing = list()
+	for (var/obj/roof/R in range(3, T))
+		if (!QDELETED(R) && R.is_supported())
+			standing += R
+	if (!standing.len)
+		return
+	S.loc = null
+	try
+		for (var/obj/roof/R in standing)
+			if (!R.is_supported())
+				.++
+	catch (var/exception/E)
+		S.loc = T
+		throw E
+	S.loc = T
+
+/obj/structure/proc/pillar_dismantle(mob/user)
+	if (!pillar_dismantle_check(user))
+		return
+	var/stone = istype(src, /obj/structure/mine_support/stone)
+	playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
+	user.visible_message(SPAN_NOTICE("[user] starts taking \the [src] down."), SPAN_NOTICE("You start taking \the [src] down."))
+	if (!do_after(user, stone ? PILLAR_DISMANTLE_STONE : PILLAR_DISMANTLE_WOOD, src) || QDELETED(src) || !pillar_dismantle_check(user))
+		return
+	var/list/refund = pillar_refund(src)
+	var/turf/T = get_turf(src)
+	if (refund)
+		var/stack_type = refund[1]
+		new stack_type(T, refund[2])
+		user.visible_message(SPAN_NOTICE("[user] takes \the [src] down."), SPAN_NOTICE("You take \the [src] down."))
+	else
+		user.visible_message(SPAN_NOTICE("[user] breaks \the [src] down."), SPAN_NOTICE("You break \the [src] down. Nothing of it is worth keeping."))
+	qdel(src)
+
+/obj/structure/proc/pillar_dismantle_check(mob/user)
+	var/held = pillar_roofs_held(src)
+	if (!held)
+		return TRUE
+	to_chat(user, SPAN_WARNING("\The [src] is holding up the roof: [held == 1 ? "a stretch of roof" : "[held] stretches of roof"] would fall without it. Put up another support or a wall nearby first."))
+	return FALSE
+
+#undef PILLAR_DISMANTLE_WOOD
+#undef PILLAR_DISMANTLE_STONE
