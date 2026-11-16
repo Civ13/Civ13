@@ -63,7 +63,8 @@ class Actor:
         self.s_active=None;self.client=SimpleNamespace(screen=DMList(),prefs=SimpleNamespace(UI_file='ui'))
 
 def install_storage(source=STORAGE):
-    env={'typed_iter':lambda xs,kind: xs,'playsound':lambda *args:None,
+    # The storage window hands bags to its own screen only for real players; these fixtures keep the strip.
+    env={'typed_iter':lambda xs,kind: xs,'playsound':lambda *args:None,'storage_window_open':lambda *args:False,
          'new_screen':Control,'new_obj':Control,'list':DMList}
     source=source.replace('new /obj/screen/storage(  )','new_screen()')
     source=source.replace('new /obj/screen/close(  )','new_screen()')
