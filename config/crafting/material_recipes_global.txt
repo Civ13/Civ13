@@ -713,6 +713,7 @@ RECIPE: /material/cloth/,small rug warp,/obj/item/canvas/woven,2,40,0,1,none,0,0
 RECIPE: /material/cloth/,runner warp,/obj/item/canvas/woven/runner,3,50,0,1,none,0,0,0,8,null
 RECIPE: /material/cloth/,large rug warp,/obj/item/canvas/woven/large,6,80,0,1,none,0,0,0,8,null
 RECIPE: /material/cloth/,tapestry warp,/obj/item/canvas/woven/tapestry,2,40,0,1,none,0,0,0,8,null
+RECIPE: /material/cloth/,bath mat,/obj/item/bath_mat,2,30,0,1,none,0,0,0,8,null
 RECIPE: /material/cloth/,wide tapestry warp,/obj/item/canvas/woven/tapestry/wide,3,50,0,1,none,0,0,0,8,null
 RECIPE: /material/cloth/,pedal airship,/obj/structure/vehicle/bicycle/airship,30,300,1,1,vehicle parts,95,0,0,8,null
 RECIPE: /material/cloth/,cigarette pack,/obj/item/weapon/storage/fancy/cigarettes,1,20,0,1,none,90,0,0,8,null
@@ -1486,6 +1487,7 @@ RECIPE: /material/bronze/,bell,/obj/structure/bell,8,200,1,1,construction,0,0,0,
 RECIPE: /material/iron/,lighthouse beacon,/obj/structure/lighthouse_beacon,4,150,1,1,construction,0,0,0,8,null
 RECIPE: /material/bronze/,reflector lighthouse lamp,/obj/structure/lighthouse_beacon/reflector,6,200,1,1,construction,0,0,0,8,null
 RECIPE: /material/glass/,lantern room glazing,/obj/structure/lighthouse_lantern,4,120,1,1,construction,0,0,0,8,null
+RECIPE: /material/glass/,casement window,/obj/structure/simple_door/key_door/anyone/casement,4,60,1,1,construction,0,0,0,8,null
 RECIPE: /material/stone/,pound lock,/obj/structure/canal_lock,12,300,1,1,construction,0,0,0,8,null
 RECIPE: /material/clay/,clay tablet,/obj/item/weapon/paper/clay_tablet,1,40,0,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,reed stylus,/obj/item/weapon/pen/stylus,1,30,0,1,construction,0,0,0,8,null
@@ -2138,6 +2140,8 @@ RECIPE: /material/steel/,shipyard office,/obj/structure/car_workshop/shipyard,60
 RECIPE: /material/wood/soft/,shoring kit,/obj/item/weapon/shoring_kit,6,120,0,1,none,126,0,0,8,null
 RECIPE: /material/cloth/,diving dress,/obj/item/clothing/suit/pressure_suit/diving,12,200,0,1,clothing,126,0,0,8,null
 RECIPE: /material/brass/,fusible link,/obj/item/fusible_link,1,40,0,1,construction,62,0,0,8,null
+RECIPE: /material/brass/,peep-hole,/obj/item/door_feature/peephole,1,40,0,1,construction,0,0,0,8,null
+RECIPE: /material/brass/,mail slot,/obj/item/door_feature/mail_slot,1,40,0,1,construction,0,0,0,8,null
 RECIPE: /material/brass/,diving helmet,/obj/item/clothing/head/pressure_helmet/diving,8,200,0,1,none,126,0,0,8,null
 RECIPE: /material/steel/,diving air bottle,/obj/item/pressure_tank/diving,5,120,0,1,none,126,0,0,8,null
 RECIPE: /material/steel/,hard dive suit,/obj/item/clothing/suit/pressure_suit/diving/hard,20,250,0,1,none,150,0,0,8,null
@@ -2472,6 +2476,8 @@ RECIPE: /material/wood/,wooden key blank,/obj/item/weapon/key/blank/wooden,1,20,
 RECIPE: /material/wood/,hidden catch,/obj/item/fitted_lock/hidden_catch,2,60,0,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,wooden door bar,/obj/item/door_bar,3,40,0,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,bar brackets,/obj/item/door_brackets,2,40,0,1,construction,0,0,0,8,null
+RECIPE: /material/wood/,pet door,/obj/item/door_feature/pet_door,2,40,0,1,construction,0,0,0,8,null
+RECIPE: /material/wood/,wooden shutters,/obj/structure/simple_door/key_door/anyone/window_shutters,4,50,1,1,construction,0,0,0,8,null
 
 RECIPE: /material/wood/soft/,floor cover,/obj/item/weapon/covers,2,30,0,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,thatch floor,/obj/covers/thatch,0.75,20,1,1,construction,0,0,0,8,null
@@ -2483,10 +2489,8 @@ RECIPE: /material/wood/soft/,fancy wood floor,/obj/covers/fancywood,1.5,25,1,1,c
 RECIPE: /material/wood/soft/,window,/obj/structure/window_frame,5,80,1,1,construction,18,0,0,8,null
 
 RECIPE: /material/wood/,straw wall,/obj/covers/straw_wall,1,90,1,1,construction,0,0,0,8,null
-RECIPE: /material/wood/,log wall,/obj/covers/wood_wall/log,6,90,1,1,construction,25,0,0,8,null
-RECIPE: /material/wood/,log wall corner,/obj/covers/wood_wall/log/corner,6,90,1,1,construction,25,0,0,8,null
-RECIPE: /material/wood/,nordic wall,/obj/covers/wood_wall/nordic,8,170,1,1,construction,35,0,0,8,null
-RECIPE: /material/wood/,aztec wall,/obj/covers/wood_wall/aztec,8,170,1,1,construction,35,0,0,8,null
+RECIPE: /material/wood/,log wall,/obj/covers/wood_wall/log_build,1,40,1,1,construction,25,0,0,8,null
+RECIPE: /material/wood/,log wall corner,/obj/covers/wood_wall/log_build/corner,1,40,1,1,construction,25,0,0,8,null
 
 RECIPE: /material/wood/,custom rustic sign,/obj/structure/sign/custom,2.5,40,1,1,construction,0,0,0,8,null
 RECIPE: /material/wood/soft/,custom wood sign,/obj/structure/sign/custom/plaque,3,40,1,1,construction,25,0,0,8,null
@@ -2751,6 +2755,9 @@ RECIPE: /material/wood/,portcullis,/obj/structure/castle_gate/portcullis,12,200,
 RECIPE: /material/wood/,drawbridge,/obj/structure/castle_gate/drawbridge,15,200,1,1,siege weapons,24,33,0,4,null
 RECIPE: /material/wood/,gate winch,/obj/structure/castle_winch,8,120,1,1,siege weapons,24,33,0,4,null
 RECIPE: /material/stone/,murder hole,/obj/structure/murder_hole,3,100,1,1,siege weapons,24,33,0,4,null
+RECIPE: /material/stone/,machicolation,/obj/structure/castle_overhang,8,150,1,1,siege weapons,24,33,0,4,null
+RECIPE: /material/wood/,hoarding,/obj/structure/castle_overhang/hoarding,12,150,1,1,siege weapons,24,33,0,4,null
+RECIPE: /material/stone/,tar kiln,/obj/structure/tar_kiln,6,120,1,1,production,26,0,0,8,null
 
 //*********************| WOOD HEALTHCARE |**************************
 
@@ -2888,6 +2895,10 @@ RECIPE: /material/iron/,mercury retort,/obj/structure/workshop_machine/mercury_r
 RECIPE: /material/iron/,mercury flask,/obj/item/weapon/reagent_containers/glass/mercury_flask,2,60,0,1,production,25,0,0,8,null
 RECIPE: /material/wood/,sluice box,/obj/structure/placer_washer/sluice,6,120,1,1,production,0,0,0,8,null
 RECIPE: /material/wood/,gold rocker,/obj/structure/placer_washer/rocker,5,100,1,1,production,0,0,0,8,null
+RECIPE: /material/wood/,buddle,/obj/structure/placer_washer/buddle,6,100,1,1,production,0,0,0,8,null
+RECIPE: /material/wood/,water stamp mill,/obj/structure/drill/stamp_mill/water,12,200,1,1,production,0,0,0,8,null
+RECIPE: /material/iron/,amalgam press,/obj/structure/workshop_machine/amalgam_press,4,100,1,1,production,0,0,0,8,null
+RECIPE: /material/stone/,patio,/obj/structure/patio_heap,6,120,1,1,production,0,0,0,8,null
 
 
 RECIPE: /material/iron/,firearm maintenance bench,/obj/structure/repair/gun,18,180,1,1,production,25,70,0,8,null
@@ -2964,6 +2975,8 @@ RECIPE: /material/iron/,skeleton key,/obj/item/weapon/key/skeleton,1,40,0,1,cons
 RECIPE: /material/iron/,spring latch,/obj/item/fitted_lock/latch,4,80,0,1,construction,0,0,0,8,null
 RECIPE: /material/iron/,iron door bar,/obj/item/door_bar/iron,3,60,0,1,construction,0,0,0,8,null
 RECIPE: /material/iron/,slide bolt,/obj/item/door_bolt,2,60,0,1,construction,0,0,0,8,null
+RECIPE: /material/iron/,judas hatch,/obj/item/door_feature/judas_hatch,2,50,0,1,construction,0,0,0,8,null
+RECIPE: /material/iron/,iron shutters,/obj/structure/simple_door/key_door/anyone/window_shutters/iron,4,80,1,1,construction,0,0,0,8,null
 RECIPE: /material/iron/,spring door closer,/obj/item/door_fitting/spring_closer,3,80,0,1,construction,0,0,0,8,null
 RECIPE: /material/iron/,spring door hinges,/obj/item/door_fitting/spring_hinge,2,80,0,1,construction,0,0,0,8,null
 RECIPE: /material/iron/,steam pumping engine,/obj/structure/sewer_pump/steam,12,250,1,1,construction,0,0,0,8,null

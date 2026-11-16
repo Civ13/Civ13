@@ -72,11 +72,12 @@ def restore_crafting_projection(path, source):
         # Includes the independent flint nodule roll (tests/flint_mining), the
         # gem pocket roll (tests/gemstones), the obsidian roll (tests/obsidian),
         # a land across the sea's lode roll (tests/naval_carrier/voyage_probe.dm),
-        # the bauxite roll (tests/aluminium) and the cinnabar roll (tests/mercury).
+        # the bauxite roll (tests/aluminium), the cinnabar roll (tests/mercury)
+        # and the lode ore roll (tests/lode).
         mining_start = source.index('/turf/proc/mining_proc(')
         mining_end = source.index('/turf/floor/dirt/underground/attack_hand(', mining_start)
         mining = source[mining_start:mining_end]
-        if hashlib.sha256(mining.encode()).hexdigest() != '3e4a475b188c9885edb1dcc0544958d6ab5b46f2153ef77594d67e21d429faf4':
+        if hashlib.sha256(mining.encode()).hexdigest() != 'd381cc8d1e21a81634d151e22c4787e6fe803ceaf77d9049d65988c3904bbe8d':
             raise AssertionError('unreviewed mining yield projection drift')
         previous = read('tests/human_subtile/fixtures/mining_before_multi_drop.dm.txt').rstrip('\n') + '\n' * 2
         source = source[:mining_start] + previous + source[mining_end:]
@@ -127,6 +128,8 @@ def restore_crafting_projection(path, source):
             ('\t\t\t\t\tvar/germs = WT.water_germ_level()\n\t\t\t\t\tif (germs > 0)\n\t\t\t\t\t\tRG.reagents.add_reagent("cholera", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*(germs*0.05))\n\t\t\t\t\t\tsumex += min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*(germs*0.05)\n',
              '\t\t\t\t\tif (WT.sickness > 0)\n\t\t\t\t\t\tRG.reagents.add_reagent("cholera", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*(WT.sickness*0.05))\n\t\t\t\t\t\tsumex += min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*(WT.sickness*0.05)\n'),
             # Water quality (tests/water_quality): drinking asks the water's germ level.
+            # River bed mercury: drinking from a fouled reach adds burden (amalgam.dm).
+            ('\t\t\triver_mercury_drink(H, src) // amalgam.dm\n', ''),
             ('\t\t\tH.catch_dirty_water_illness(water_germ_level()*15)\n',
              '\t\t\tH.catch_dirty_water_illness(sickness*15)\n'),
             # Illness carriers (tests/disease_immunity/test_carriers.py): drinking from the

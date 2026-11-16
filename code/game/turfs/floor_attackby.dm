@@ -902,6 +902,7 @@
 	mining_gem_pocket(H) // Independent of the ore rolls; see gemstones.dm.
 	mining_obsidian(H) // Independent of the ore rolls; see obsidian.dm.
 	mining_cinnabar(H) // Independent of the ore rolls; see mercury.dm.
+	mining_lode(H) // Independent of the ore rolls; see lode.dm.
 	mining_expedition_lode(H) // A land across the sea: its own ores and rare find; see land_resources.dm.
 	if (prob(12))
 		var/obj/item/stack/ore/copper/mineral = new/obj/item/stack/ore/copper(src)
@@ -1266,6 +1267,7 @@
 			H.rad_act(5)
 		else
 			H.catch_dirty_water_illness(water_germ_level()*15)
+			river_mercury_drink(H, src) // amalgam.dm
 		if (H.water < 0)
 			H.water += rand(40,50)
 		H.water += 75

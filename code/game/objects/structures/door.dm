@@ -31,7 +31,7 @@
 	var/lockstate = "" //Icon_state
 	var/keycode
 
-	map_storage_saved_vars = "density;icon_state;dir;name;pixel_x;pixel_y;keycode;haslock;custom;custom_code;locked;door_closer;closer_delay;door_wedge;inner_dir;panic_bar_side;fire_link_holding"
+	map_storage_saved_vars = "density;icon_state;dir;name;pixel_x;pixel_y;keycode;haslock;custom;custom_code;locked;door_closer;closer_delay;door_wedge;inner_dir;panic_bar_side;fire_link_holding;door_features;door_feature_side;judas_open;pet_door_locked"
 
 /obj/structure/simple_door/fire_act(temperature)
 	var/dmg = round((temperature - 365)/20)
@@ -191,6 +191,8 @@
 
 /obj/structure/simple_door/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
 	if (air_group) return FALSE
+	if (density && pet_door_admits(mover))
+		return TRUE
 	return !density
 
 /obj/structure/simple_door/proc/TryToSwitchState(atom/user)

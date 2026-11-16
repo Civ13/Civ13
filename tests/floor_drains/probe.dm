@@ -93,6 +93,43 @@ var/vr_runtime_error = FALSE
 	new /obj/structure/sewer_piece/cesspit(locate(21, 10, 1))
 	vr_check(floor_drain_route(D2), "a floor drain beside a cesspit runs into it")
 
+	// A running shower wets the floor unless drained or curtained.
+	var/obj/structure/shower/S1 = new /obj/structure/shower(locate(5, 5, 1))
+	S1.on = TRUE
+	S1.bath_water_running()
+	vr_check(locate(/obj/effect/flooding) in locate(5, 5, 1), "a running shower with no drain puddles its floor")
+	var/obj/structure/shower/S2 = new /obj/structure/shower(locate(5, 8, 1))
+	new /obj/structure/curtain(locate(5, 8, 1))
+	S2.on = TRUE
+	S2.bath_water_running()
+	vr_check(!(locate(/obj/effect/flooding) in locate(5, 8, 1)), "a closed shower curtain keeps the water in")
+	var/obj/structure/shower/S3 = new /obj/structure/shower(locate(10, 9, 1))
+	S3.on = TRUE
+	S3.bath_water_running()
+	vr_check(!(locate(/obj/effect/flooding) in locate(10, 9, 1)), "a shower beside a floor drain stays dry")
+
+	// A tub turned off empties beside it unless a drain takes it.
+	var/obj/structure/shower/bathtub/T1 = new /obj/structure/shower/bathtub(locate(15, 5, 1))
+	T1.bath_water_turned_off()
+	var/found = FALSE
+	for (var/turf/N in floor_drain_cardinals(get_turf(T1)))
+		if (locate(/obj/effect/flooding) in N)
+			found = TRUE
+	vr_check(found, "a tub emptied with no drain slops onto the floor beside it")
+
+	// Stepping out wet drips, unless onto a bath mat.
+	var/mob/living/human/H = new /mob/living/human(locate(15, 8, 1))
+	var/obj/structure/shower/bathtub/T2 = new /obj/structure/shower/bathtub(locate(15, 8, 1))
+	T2.drips_until = world.time + 300
+	H.Move(locate(16, 8, 1))
+	sleep(3)
+	vr_check(locate(/obj/effect/flooding) in locate(16, 8, 1), "stepping out of a bath drips on the floor")
+	H.forceMove(locate(15, 8, 1))
+	new /obj/item/bath_mat(locate(14, 8, 1))
+	H.Move(locate(14, 8, 1))
+	sleep(3)
+	vr_check(H.loc == locate(14, 8, 1) && !(locate(/obj/effect/flooding) in locate(14, 8, 1)), "a bath mat catches the drips")
+
 	// Off settlement maps plumbing carries everything away.
 	map.persistence = FALSE
 	var/obj/structure/sewer_piece/drain/floor/D3 = new /obj/structure/sewer_piece/drain/floor(locate(25, 15, 1))

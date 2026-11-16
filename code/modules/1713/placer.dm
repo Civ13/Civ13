@@ -159,6 +159,7 @@ var/global/list/pay_dirt_stock = list()
 	var/grade = P.grade
 	P.use(1)
 	var/list/names = pay_dirt_output(pay_dirt_wash(grade, "pan"), T)
+	river_mercury_pan_message(H, T.panning_water())
 	switch (grade)
 		if ("rich")
 			to_chat(H, SPAN_NOTICE("Yellow flecks glint in the black sand at the bottom of the pan. This ground carries gold."))
@@ -202,6 +203,20 @@ var/global/list/pay_dirt_stock = list()
 /obj/structure/placer_washer/proc/spend_mercury()
 	return
 
+// What this washer takes: pay dirt here, crushed ore in a buddle (lode.dm).
+/obj/structure/placer_washer/proc/accepts_feed(obj/item/I)
+	return istype(I, /obj/item/stack/ore/pay_dirt)
+
+// Washes one unit of feed P (already checked): ore type -> amount found.
+/obj/structure/placer_washer/proc/wash_load(obj/item/stack/P)
+	var/obj/item/stack/ore/pay_dirt/D = P
+	var/grade = D.grade
+	P.use(1)
+	var/mercury = mercury_charged()
+	. = pay_dirt_wash(grade, method, mercury)
+	if (mercury)
+		spend_mercury()
+
 /obj/structure/placer_washer/attackby(obj/item/I, mob/living/human/H)
 	if (!istype(H))
 		return ..()
@@ -216,19 +231,20 @@ var/global/list/pay_dirt_stock = list()
 		return
 	if (station_water_pour(I, H))
 		return
-	if (istype(I, /obj/item/stack/ore/pay_dirt))
+	if (accepts_feed(I))
 		wash(I, H)
 		return
 	return ..()
 
 // Washes the held pay dirt one load at a time until it runs out, the water
 // does, or the worker stops.
-/obj/structure/placer_washer/proc/wash(obj/item/stack/ore/pay_dirt/P, mob/living/human/H)
+/obj/structure/placer_washer/proc/wash(obj/item/stack/P, mob/living/human/H)
 	if (!crafting_node_allowed_or_warn(H, node))
 		return
 	washing = TRUE
 	icon_state = busy_state
-	visible_message(SPAN_NOTICE("[H] starts washing pay dirt in \the [src]."))
+	var/feed_name = P.name
+	visible_message(SPAN_NOTICE("[H] starts washing [feed_name] in \the [src]."))
 	var/loads = 0
 	var/list/kept = list()
 	while (!QDELETED(P) && P.amount > 0 && P.loc == H && get_dist(H, src) <= 1)
@@ -239,12 +255,7 @@ var/global/list/pay_dirt_stock = list()
 			break
 		if (!station_take_water(H))
 			break
-		var/grade = P.grade
-		P.use(1)
-		var/mercury = mercury_charged()
-		var/list/found = pay_dirt_wash(grade, method, mercury)
-		if (mercury)
-			spend_mercury()
+		var/list/found = wash_load(P)
 		for (var/name in pay_dirt_output(found, get_turf(src)))
 			kept[name] = (kept[name] || 0) + 1
 		loads++
@@ -255,7 +266,7 @@ var/global/list/pay_dirt_stock = list()
 		var/list/parts = list()
 		for (var/name in kept)
 			parts += "[kept[name]] [name]"
-		to_chat(H, SPAN_NOTICE("You wash [loads] load\s of pay dirt[parts.len ? " and keep [english_list(parts)]" : ", and find nothing"]."))
+		to_chat(H, SPAN_NOTICE("You wash [loads] load\s of [feed_name][parts.len ? " and keep [english_list(parts)]" : ", and find nothing"]."))
 
 /obj/structure/placer_washer/sluice
 	name = "sluice box"
@@ -290,11 +301,10 @@ var/global/list/pay_dirt_stock = list()
 /obj/structure/placer_washer/sluice/mercury_charged()
 	return reagents && reagents.get_reagent_amount("mercury") >= 1
 
-// Mercury washed away goes into the ground here (and into the river bed once
-// river mercury exists).
+// Mercury washed away settles in the river bed beside it, or fouls the ground.
 /obj/structure/placer_washer/sluice/spend_mercury()
 	reagents.remove_reagent("mercury", SLUICE_MERCURY_LOSS)
-	pollution_add(get_turf(src), SLUICE_MERCURY_LOSS * 3)
+	river_mercury_spill(get_turf(src), SLUICE_MERCURY_LOSS)
 
 /obj/structure/placer_washer/rocker
 	name = "rocker"
