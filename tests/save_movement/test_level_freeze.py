@@ -44,8 +44,10 @@ class LevelFreeze(unittest.TestCase):
         release = proc_body(self.restart, '/proc/persistence_release_level(z)')
         self.assertIn('if(!persistence_frozen_levels["[z]"]) return', release)
         self.assertNotIn('if(world_moving ||', release)
+        self.assertIn('persistence_freeze_lifted(FALSE)', release)
+        lifted = proc_body(self.restart, '/proc/persistence_freeze_lifted(save_over)')
         # Play after a level's capture is end-of-round activity; players are told it won't carry over.
-        self.assertIn('anything you do from now until the move finishes will not carry over', release)
+        self.assertIn('anything you do from now until the move finishes will not carry over', lifted)
         release_all = proc_body(self.restart, '/proc/persistence_release_all_levels()')
         self.assertNotIn('world_moving', release_all)
         moving = proc_body(self.restart, '/proc/set_world_moving(moving)')
@@ -61,9 +63,31 @@ class LevelFreeze(unittest.TestCase):
         cancel = self.restart[self.restart.index('diagnostic_phase = "failure_cleanup"'):]
         self.assertLess(cancel.index('handover_state = null'), cancel.index('set_world_moving(FALSE)'))
 
+    def test_told_players_hear_when_they_can_act_again_on_every_exit(self):
+        # Val (2026-11-16): the freeze notice had no matching notice when it lifted.
+        notice = proc_body(self.restart, '/proc/persistence_freeze_notice(client/C)')
+        self.assertIn('persistence_freeze_notified[C.ckey] || !persistence_input_frozen(C)) return', notice)
+        self.assertIn('persistence_freeze_notified[C.ckey] = TRUE', notice)
+        freeze = proc_body(self.restart, '/proc/persistence_freeze_level(z)')
+        self.assertIn('persistence_freeze_notice(C)', freeze)
+        # Players who join or arrive mid-save, or click while held, are told too.
+        login = read('code/game/mob/login.dm')
+        self.assertIn('if(persistence_frozen_levels.len) persistence_freeze_notice(client)', login)
+        click = proc_body(self.restart, '/client/Click(atom/object, location, control, params)')
+        self.assertIn('persistence_freeze_notice(src)', click)
+        lifted = proc_body(self.restart, '/proc/persistence_freeze_lifted(save_over)')
+        # Only told players hear it; one still held on a frozen level waits.
+        self.assertIn('if(!C.ckey || !persistence_freeze_notified[C.ckey]) continue', lifted)
+        self.assertIn('if(!save_over && persistence_input_frozen(C)) continue', lifted)
+        self.assertIn('if(save_over) persistence_freeze_notified.Cut()', lifted)
+        self.assertIn('You can act again.', lifted)
+        # A finished, failed or abandoned save, or a called-off move, ends every hold.
+        release_all = proc_body(self.restart, '/proc/persistence_release_all_levels()')
+        self.assertLess(release_all.index('persistence_frozen_levels.Cut()'), release_all.index('persistence_freeze_lifted(TRUE)'))
+
     def test_player_messages_describe_the_level_freeze(self):
         admission = read(FUNCTIONS)
-        self.assertIn('Players are held still only while their own level is being saved.', admission)
+        self.assertIn('you are held still while your own level saves', admission)
         self.assertIn('Do not move between z-levels until the move finishes. Each level is held still for a moment while it saves', self.restart)
 
     def test_held_players_needs_wait_with_their_movement(self):

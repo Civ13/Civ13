@@ -264,8 +264,9 @@ var/global/list/node_grid_col_cache = null
 	register_research_node(new /datum/research_node("iron_smithing", "Iron Smithing", "Industrial", 195, 1, RESEARCH_MODE_PROTOTYPE, list("bronze_working"), 2, /obj/item/weapon/clay/mold))
 	register_research_node(new /datum/research_node("steelmaking", "Steelmaking", "Industrial", 200, 3, RESEARCH_MODE_ANALYSIS, list("iron_smithing"), 4))
 	// Japanese iron-sand steel (tatara.dm): iron sand smelted in a clay
-	// furnace, so steel without rock ore; Pottery is the clay craft before it.
-	register_research_node(new /datum/research_node("tatara_smelting", "Tatara Smelting", "Industrial", 165, 1, RESEARCH_MODE_ANALYSIS, list("iron_smithing","pottery_storage"), 2))
+	// furnace, so steel without rock ore. A trunk metal: Iron Smithing's clay
+	// mould already teaches the clay work.
+	register_research_node(new /datum/research_node("tatara_smelting", "Tatara Smelting", "Industrial", 165, 1, RESEARCH_MODE_ANALYSIS, list("iron_smithing"), 2))
 	// Ore processing and quicksilver (mercury.dm, docs/mercury.md): washing and
 	// stamping ore, then mercury amalgamation, then powered milling.
 	register_research_node(new /datum/research_node("ore_dressing", "Ore Dressing", "Industrial", 165, 1, RESEARCH_MODE_ANALYSIS, list("resource_processing"), 2))
@@ -406,6 +407,8 @@ var/global/list/node_grid_col_cache = null
 	register_research_node(new /datum/research_node("stone_arms", "Stone Arms", "Military", 60, 0, RESEARCH_MODE_ANALYSIS, null, 0))
 	register_research_node(new /datum/research_node("bronze_weapons", "Bronze Arms & Armor", "Military", 95, 0, RESEARCH_MODE_ANALYSIS, list("stone_arms","bronze_working"), 1))
 	register_research_node(new /datum/research_node("steel_blades", "Steel Blades", "Military", 130, 1, RESEARCH_MODE_ANALYSIS, list("bronze_weapons","iron_smithing"), 2))
+	// Clay-hardened Japanese blades and the tachi (tatara.dm).
+	register_research_node(new /datum/research_node("japanese_swordsmithing", "Japanese Swordsmithing", "Military", 165, 1, RESEARCH_MODE_ANALYSIS, list("steel_blades","tatara_smelting"), 2))
 	// --- Military: Archery ---
 	register_research_node(new /datum/research_node("archery", "Archery", "Military", 60, 0, RESEARCH_MODE_ANALYSIS, null, 0))
 	register_research_node(new /datum/research_node("crossbows", "Crossbows", "Military", 130, 1, RESEARCH_MODE_ANALYSIS, list("archery"), 2))
@@ -809,6 +812,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/material/sword/spadroon" = "steel_blades",
 		"/obj/item/weapon/material/sword/urukhaiscimitar" = "steel_blades",
 		"/obj/item/weapon/material/sword/wakazashi" = "steel_blades",
+		"/obj/item/weapon/material/sword/tachi" = "japanese_swordsmithing",
 		"/obj/item/weapon/material/thrown/throwing_knife" = "steel_blades",
 		// stone_arms
 		"/obj/item/weapon/flint/sharpened" = "stone_arms",
@@ -2175,6 +2179,12 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/fitted_lock/warded" = "iron_smithing",
 		"/obj/item/door_bar/iron" = "iron_smithing",
 		"/obj/item/door_bolt" = "iron_smithing",
+		// fire doors (fire_doors.dm)
+		"/obj/structure/simple_door/key_door/anyone/fire_door" = "steelmaking",
+		"/obj/structure/simple_door/key_door/anyone/fire_door/steel" = "modern_construction",
+		"/obj/item/fusible_link" = "steelmaking",
+		"/obj/item/fire_seals" = "steelmaking",
+		"/obj/item/panic_bar" = "factories",
 		"/obj/item/fitted_lock/padlock" = "iron_smithing",
 		"/obj/item/weapon/key/blank" = "iron_smithing",
 		"/obj/item/weapon/key/skeleton" = "iron_smithing",
@@ -2374,6 +2384,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/sink/kitchen" = "sanitation",
 		"/obj/structure/toilet" = "sanitation",
 		"/obj/structure/sewer_piece/drain/stone" = "sanitation",
+		"/obj/structure/sewer_piece/drain/floor" = "sanitation",
 		"/obj/structure/sewer_flap_gate" = "sanitation",
 		// --- siege_engines (7) ---
 		"/obj/item/catapult_ball" = "siege_engines",

@@ -99,6 +99,7 @@ var/global/list/anvil_recipes = list(
 	"Arming Sword " = list("Arming Sword ","swords",2,2,15,15,0,0,/obj/item/weapon/material/sword/armingsword),
 	"Saif" = list("Saif","swords",2,3,15,15,0,0,/obj/item/weapon/material/sword/saif),
 	"Katana" = list("Katana","swords",2,5,15,15,0,0,/obj/item/weapon/material/sword/katana),
+	"Tachi" = list("Tachi","swords",2,3,16,16,0,0,/obj/item/weapon/material/sword/tachi),
 	"Longsword" = list("Longsword","swords",2,2,18,18,0,0,/obj/item/weapon/material/sword/longsword),
 	"Cutlass" = list("Cutlass","swords",3,3,12,12,0,0,/obj/item/weapon/material/sword/cutlass),
 	"Spadroon" = list("Spadroon","swords",3,3,15,15,0,0,/obj/item/weapon/material/sword/spadroon),

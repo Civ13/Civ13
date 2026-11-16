@@ -37,19 +37,44 @@ var/global/list/persistence_frozen_levels = list()
 	var/hold_animals = text2path("/proc/persistence_hold_level_animals")
 	if(hold_animals) call(hold_animals)(z)
 	for(var/client/C in persistence_clients_on_level(z))
-		to_chat(C, "<span class='warning'>Your level is being saved. You can look around and chat, but not act, until it finishes in a moment.</span>")
+		persistence_freeze_notice(C)
+
+// Ckeys told their level is being saved ("ckey" = TRUE). Each of them, and only
+// they, hear when they can act again, on every way a hold ends.
+var/global/list/persistence_freeze_notified = list()
+
+// Tells a held player once per hold that their level is being saved: at the
+// freeze, on joining or arriving mid-save (/mob/Login), or on a blocked click.
+/proc/persistence_freeze_notice(client/C)
+	if(!C || !C.ckey || persistence_freeze_notified[C.ckey] || !persistence_input_frozen(C)) return
+	persistence_freeze_notified[C.ckey] = TRUE
+	to_chat(C, "<span class='warning'>Your level is being saved. You can look around and chat, but not act, until it finishes in a moment.</span>")
+
+// Tells each told player who is no longer held that they can act again. When
+// the save is over, anyone told who has since left is forgotten too.
+/proc/persistence_freeze_lifted(save_over)
+	if(!persistence_freeze_notified.len) return
+	for(var/client/C in clients)
+		if(!C.ckey || !persistence_freeze_notified[C.ckey]) continue
+		if(!save_over && persistence_input_frozen(C)) continue
+		persistence_freeze_notified -= C.ckey
+		if(save_over)
+			to_chat(C, "<span class='notice'>The save is over. You can act again.</span>")
+		else if(world_moving)
+			to_chat(C, "<span class='warning'><b>Your level is saved for the move to the updated server. You can act again, but anything you do from now until the move finishes will not carry over.</b> Stay on this level until the move finishes.</span>")
+		else
+			to_chat(C, "<span class='notice'>Your level is saved. You can act again. Stay on this level until the whole save finishes.</span>")
+	if(save_over) persistence_freeze_notified.Cut()
 
 /proc/persistence_release_level(z)
 	if(!persistence_frozen_levels["[z]"]) return
 	persistence_frozen_levels -= "[z]"
-	for(var/client/C in persistence_clients_on_level(z))
-		if(world_moving)
-			to_chat(C, "<span class='warning'><b>Your level is saved for the move to the updated server. You can play on, but anything you do from now until the move finishes will not carry over.</b> Stay on this level until the move finishes.</span>")
-		else
-			to_chat(C, "<span class='notice'>Your level is saved; carry on. Stay on this level until the whole save finishes.</span>")
+	persistence_freeze_lifted(FALSE)
 
+// Every hold ends: a finished, failed or abandoned save, or a called-off move.
 /proc/persistence_release_all_levels()
 	persistence_frozen_levels.Cut()
+	persistence_freeze_lifted(TRUE)
 
 // Null when the client may act, else the reason shown to them.
 /proc/persistence_input_frozen(client/C)
@@ -64,7 +89,10 @@ var/global/list/persistence_frozen_levels = list()
 		if (reason)
 			if (mob && world.time >= mob.next_click)
 				mob.next_click = world.time + 20
-				to_chat(src, "<span class='warning'>[reason]</span>")
+				if (ckey && !persistence_freeze_notified[ckey])
+					persistence_freeze_notice(src)
+				else
+					to_chat(src, "<span class='warning'>[reason]</span>")
 			return
 	return ..()
 
