@@ -62,3 +62,15 @@ Each settle takes one look 5 tiles around the nest (`forage_scan()`).
   a dog half of one, and a nest with any hunter near never spreads. Emitted
   mice still run home from people, cats and dogs, and cats still pounce on
   mice they reach.
+
+## Traps
+
+- **Snap mousetrap** (`/obj/item/weapon/mousetrap`, iron, Iron Tools): use it in
+  hand to set it, then put it on the floor. Each settle step every set, empty
+  trap within 5 tiles of a nest takes one mouse and holds it; use it in hand
+  to drop the dead mouse, then set it again. A mouse mob running over it is
+  caught too. A barefoot person stepping on it gets a sore toe and springs it.
+- **Baited deadfall**: the stone-age deadfall can also be set on any indoor
+  floor. Bait a set deadfall with a bit of food; each settle step a baited
+  deadfall within 5 tiles of a nest falls on one mouse, which you take out and
+  reset as with any catch. Indoors a deadfall catches no game, only mice.

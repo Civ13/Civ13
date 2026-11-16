@@ -69,6 +69,7 @@ var/global/datum/ecology_species/mouse_burrow_habitat = null
 	var/commensal = TRUE // FALSE for wild burrows
 	var/fleas = FALSE
 	var/tmp/list/out_mice = null
+	var/tmp/list/scan_traps = null // mouse traps seen by the last forage_scan()
 
 /obj/structure/mouse_nest/burrow
 	name = "mouse burrow"
@@ -80,7 +81,7 @@ var/global/datum/ecology_species/mouse_burrow_habitat = null
 
 // Out mice are live mobs of this process; the population number is what saves.
 /obj/structure/mouse_nest/persistence_runtime_var(key)
-	return key == "out_mice" || ..()
+	return key == "out_mice" || key == "scan_traps" || ..()
 
 /obj/structure/mouse_nest/New()
 	..()
@@ -180,8 +181,12 @@ var/global/datum/ecology_species/mouse_burrow_habitat = null
 // holder is the store it sits in, or its turf.
 /obj/structure/mouse_nest/proc/forage_scan()
 	var/list/found = list()
+	scan_traps = list()
 	for (var/turf/T in range(MOUSE_FORAGE_RANGE, src))
 		for (var/atom/movable/A in T)
+			if (istype(A, /obj/item/weapon/mousetrap) || istype(A, /obj/structure/stone_age_trap/deadfall))
+				scan_traps += A
+				continue
 			if (rodent_food_item(A))
 				found[++found.len] = list(A, RODENT_OPEN, T)
 			else if (istype(A, /obj/structure/farming/plant))
@@ -256,6 +261,9 @@ var/global/datum/ecology_species/mouse_burrow_habitat = null
 	var/hunted = predator_pressure()
 	if (hunted > 0)
 		population -= round(hunted) + (prob((hunted - round(hunted)) * 100) ? 1 : 0)
+	// Set traps nearby take a mouse each (mouse_traps.dm).
+	if (scan_traps && scan_traps.len)
+		spring_traps(scan_traps)
 	if (population <= 0)
 		qdel(src)
 		return
