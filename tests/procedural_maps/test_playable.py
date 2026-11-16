@@ -11,6 +11,9 @@ from tools.procedural_maps.dmm_export import project
 from tools.procedural_maps.generator import generate
 from tools.procedural_maps.source_audit import parse_classic
 
+# Removed with fishing grounds; no generated land may ever place one again.
+OLD_FISH_SPOT = "/obj/structure/fish"
+
 
 def cavern_config():
     c = preset("UNDERGROUND_CAVERN", "cave-0")
@@ -156,8 +159,10 @@ class PlayableLayerTests(unittest.TestCase):
                         atoms = parsed[(x + 1, y + 1, z)].split(",")
                         if c["water"] != "NONE":
                             self.assertFalse({playable.ROCK, playable.BUSH, playable.TALL_GRASS} & set(atoms))
+                        # Fish belong to the water (fishing_grounds.dm): no fishing spot is placed.
+                        self.assertFalse(any(atom.startswith(OLD_FISH_SPOT) for atom in atoms), atoms)
                         if c["terrain"] in {"MOUNTAIN", "ROCK"}:
-                            self.assertFalse({playable.ROCK, playable.BUSH, playable.TALL_GRASS, playable.FISH} & set(atoms))
+                            self.assertFalse({playable.ROCK, playable.BUSH, playable.TALL_GRASS} & set(atoms))
 
     def test_types_exist_in_source_and_missing_type_is_refused(self):
         self.assertTrue(playable.verify_types())
@@ -405,7 +410,7 @@ class BarrenSkinTests(unittest.TestCase):
 
     def test_nothing_lives_or_grows_and_stone_sites_keep_rocks(self):
         living = set(playable.SURFACE_TREES) | {playable.BUSH, playable.BERRY_BUSH, playable.TALL_GRASS,
-                                                playable.FISH, playable.TURKEYS, playable.BOARS,
+                                                OLD_FISH_SPOT, playable.TURKEYS, playable.BOARS,
                                                 playable.DEAD_TREE, playable.MUSHROOM, playable.MUSHROOM_SEEDS}
         for recipe in set(self.parsed.values()):
             for atom in recipe.split(","):
