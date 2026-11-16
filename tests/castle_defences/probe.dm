@@ -105,8 +105,20 @@ var/castle_defences_runtime = null
 	// Sideways along the wall: ordinary rules.
 	castle_defences_assert(directional_cover_verdict(W, castle_defences_shot(locate(4, 8, 1), 0)) == DIRECTIONAL_COVER_DEFAULT, "sideways_ordinary")
 
+	// A shutter fitted from the inside shuts the slit: opaque, nothing passes.
+	castle_defences_assert(W.slit_inside_user(H) && !W.slit_inside_user(D), "shutter_from_inside_only")
+	var/obj/item/stack/material/wood/planks = new(locate(8, 7, 1), 5)
+	castle_defences_assert(W.fit_slit_shutter(planks, D) && !W.slit_shutter, "shutter_refused_outside")
+	qdel(planks)
+	W.slit_shutter = TRUE
+	castle_defences_assert(W.set_slit_shut(TRUE) && W.opacity, "shut_slit_opaque")
+	var/list/shut_out = castle_defences_tally(W, locate(8, 7, 1), 90, 50)
+	castle_defences_assert(shut_out["2"] == 50, "shut_slit_blocks_out")
+	castle_defences_assert(W.set_slit_shut(FALSE) && !W.opacity, "opened_slit_clear")
+	W.set_slit_shut(TRUE)
 	W.fill_slit()
-	castle_defences_assert(!W.slit && W.opacity && W.maxhealth == full_health, "filled_slit_restores")
+	castle_defences_assert(!W.slit && !W.slit_shutter && !W.slit_shut && W.opacity && W.maxhealth == full_health, "filled_slit_restores")
+	castle_defences_assert(locate(/obj/item/stack/material/wood) in locate(8, 7, 1), "shutter_planks_returned")
 
 	// Gun loop works the same way.
 	W.cut_slit(SLIT_GUN, EAST)
