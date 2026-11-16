@@ -46,6 +46,7 @@ var/mouse_runtime_error = FALSE
 		mouse_food_checks()
 		mouse_cat_checks()
 		mouse_trap_checks()
+		mouse_bait_flea_checks()
 	catch(var/exception/e)
 		mouse_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = mouse_failures, "runtime_error" = mouse_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")
@@ -319,3 +320,57 @@ var/mouse_runtime_error = FALSE
 	qdel(H)
 	qdel(B)
 	qdel(user)
+
+/proc/mouse_bait_flea_checks()
+	mouse_clear(1, 1, 20, 20)
+	for (var/obj/structure/mouse_nest/old in mouse_nest_list.Copy())
+		qdel(old)
+	var/obj/structure/mouse_nest/H = new(locate(5, 5, 1))
+	H.population = 8
+	var/obj/item/weapon/reagent_containers/food/snacks/mouse_poison_bait/P = new(locate(6, 6, 1))
+	mouse_check(!rodent_food_item(P), "poison bait is not counted as food")
+	H.forage_scan()
+	mouse_check(P in H.scan_baits, "the nest finds bait near it")
+	mouse_check(H.take_bait(H.scan_baits) == 3 && H.population == 5, "a dose of bait kills three mice")
+	H.take_bait(H.scan_baits)
+	H.take_bait(H.scan_baits)
+	mouse_check(QDELETED(P), "bait is used up after three doses")
+
+	var/mob/user = new /mob(locate(7, 7, 1))
+	var/obj/item/weapon/reagent_containers/glass/G = new /obj/item/weapon/reagent_containers/glass/beaker(locate(7, 7, 1))
+	mouse_check(!mouse_bait_poison_source(G), "an empty beaker is no poison")
+	G.reagents.add_reagent("arsenic", 10)
+	mouse_check(mouse_bait_poison_source(G), "5u of arsenic makes bait")
+	mouse_check(mouse_bait_poison_source(new /obj/item/weapon/reagent_containers/food/snacks/grown/greenpotato(locate(8, 8, 1))), "a green potato makes bait")
+	qdel(G)
+	qdel(user)
+
+	map.ordinal_age = 2
+	H.population = 8
+	H.overrun_steps = 0
+	H.fleas = FALSE
+	for (var/i = 1, i <= 6, i++)
+		H.flea_step()
+	mouse_check(H.fleas, "six overrun steps in the plague eras breed fleas")
+	H.population = 4
+	H.flea_step()
+	mouse_check(!H.fleas, "thinning the nest clears the fleas")
+	map.ordinal_age = 5
+	H.population = 8
+	for (var/i = 1, i <= 8, i++)
+		H.flea_step()
+	mouse_check(!H.fleas, "no fleas outside the plague eras")
+	map.ordinal_age = 2
+	map.mouse_fleas = FALSE
+	for (var/i = 1, i <= 8, i++)
+		H.flea_step()
+	mouse_check(!H.fleas, "maps can switch fleas off")
+	map.mouse_fleas = TRUE
+	map.ordinal_age = 0
+	var/obj/structure/mouse_nest/burrow/W = new(locate(15, 15, 1))
+	W.population = 8
+	for (var/i = 1, i <= 8, i++)
+		W.flea_step()
+	mouse_check(!W.fleas, "wild burrows never get fleas")
+	qdel(W)
+	qdel(H)

@@ -1068,6 +1068,7 @@
 #include "code\modules\ecology\flora_regrowth.dm"
 #include "code\modules\ecology\foraging.dm"
 #include "code\modules\ecology\mouse_nests.dm"
+#include "code\modules\ecology\mouse_poison_fleas.dm"
 #include "code\modules\ecology\mouse_traps.dm"
 #include "code\modules\ecology\mouser_cats.dm"
 #include "code\modules\ecology\pollution.dm"

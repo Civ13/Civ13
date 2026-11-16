@@ -74,3 +74,22 @@ Each settle takes one look 5 tiles around the nest (`forage_scan()`).
   floor. Bait a set deadfall with a bit of food; each settle step a baited
   deadfall within 5 tiles of a nest falls on one mouse, which you take out and
   reset as with any catch. Indoors a deadfall catches no game, only mice.
+
+## Poison bait
+
+- Use grain (wheat, oat, barley or rice) with a green potato, poisonous frog
+  meat, or a container holding at least 5u of arsenic, cyanide or solanine to
+  make poison bait. It carries the poison: a person who eats it is poisoned.
+- Bait on the floor within 5 tiles of a nest kills up to 3 mice per settle
+  step and is used up after 3 doses. Mice never count it as food.
+
+## Fleas and plague
+
+- Only in eras 2-3 and only while the map's `mouse_fleas` is on (default).
+- A house nest kept at full size (8) for 6 steps in a row becomes flea-ridden;
+  examine says so. Thinning it below 5 mice clears the fleas. Wild burrows
+  never get fleas.
+- Each settle of a flea-ridden nest gives anyone sleeping or lying within 3
+  tiles a 10% chance of plague; digging it out without gloves a 25% chance.
+  Weak and Strong Immune System traits scale both.
+- Walking past a mouse never gives plague.

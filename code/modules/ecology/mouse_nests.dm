@@ -70,6 +70,8 @@ var/global/datum/ecology_species/mouse_burrow_habitat = null
 	var/fleas = FALSE
 	var/tmp/list/out_mice = null
 	var/tmp/list/scan_traps = null // mouse traps seen by the last forage_scan()
+	var/tmp/list/scan_baits = null // poison bait seen by the last forage_scan()
+	var/overrun_steps = 0 // steps in a row at full size, for fleas
 
 /obj/structure/mouse_nest/burrow
 	name = "mouse burrow"
@@ -81,7 +83,7 @@ var/global/datum/ecology_species/mouse_burrow_habitat = null
 
 // Out mice are live mobs of this process; the population number is what saves.
 /obj/structure/mouse_nest/persistence_runtime_var(key)
-	return key == "out_mice" || key == "scan_traps" || ..()
+	return key == "out_mice" || key == "scan_traps" || key == "scan_baits" || ..()
 
 /obj/structure/mouse_nest/New()
 	..()
@@ -133,6 +135,8 @@ var/global/datum/ecology_species/mouse_burrow_habitat = null
 /obj/structure/mouse_nest/examine(mob/user, distance = -1)
 	..(user, distance)
 	to_chat(user, SPAN_NOTICE(size_text()))
+	if (fleas)
+		to_chat(user, SPAN_WARNING("Fleas hop in the straw. Don't sleep near it, and wear gloves to dig it out."))
 	to_chat(user, SPAN_NOTICE("A shovel or digging stick would dig it out."))
 
 // What mice can reach (see docs/mouse-nests.md): loose food and seed, ripe
@@ -175,6 +179,8 @@ var/global/datum/ecology_species/mouse_burrow_habitat = null
 /proc/rodent_food_item(obj/item/I)
 	if (istype(I, /obj/item/stack/farming/seeds))
 		return TRUE
+	if (istype(I, /obj/item/weapon/reagent_containers/food/snacks/mouse_poison_bait))
+		return FALSE
 	return istype(I, /obj/item/weapon/reagent_containers/food/snacks) && !istype(I, /obj/item/weapon/reagent_containers/food/snacks/poo)
 
 // One look around the nest. Each entry is list(thing, access, holder):
@@ -182,10 +188,14 @@ var/global/datum/ecology_species/mouse_burrow_habitat = null
 /obj/structure/mouse_nest/proc/forage_scan()
 	var/list/found = list()
 	scan_traps = list()
+	scan_baits = list()
 	for (var/turf/T in range(MOUSE_FORAGE_RANGE, src))
 		for (var/atom/movable/A in T)
 			if (istype(A, /obj/item/weapon/mousetrap) || istype(A, /obj/structure/stone_age_trap/deadfall))
 				scan_traps += A
+				continue
+			if (istype(A, /obj/item/weapon/reagent_containers/food/snacks/mouse_poison_bait))
+				scan_baits += A
 				continue
 			if (rodent_food_item(A))
 				found[++found.len] = list(A, RODENT_OPEN, T)
@@ -238,6 +248,7 @@ var/global/datum/ecology_species/mouse_burrow_habitat = null
 		settle_step(scan)
 		if (QDELETED(src))
 			return i
+	flea_bites()
 	update_icon()
 	return steps
 
@@ -264,6 +275,10 @@ var/global/datum/ecology_species/mouse_burrow_habitat = null
 	// Set traps nearby take a mouse each (mouse_traps.dm).
 	if (scan_traps && scan_traps.len)
 		spring_traps(scan_traps)
+	// Poison bait nearby (mouse_poison_fleas.dm).
+	if (scan_baits && scan_baits.len)
+		take_bait(scan_baits)
+	flea_step()
 	if (population <= 0)
 		qdel(src)
 		return
@@ -439,6 +454,10 @@ var/global/datum/ecology_species/mouse_burrow_habitat = null
 	if (QDELETED(src))
 		return FALSE
 	var/turf/T = get_turf(src)
+	if (fleas && ishuman(user))
+		var/mob/living/human/H = user
+		if (!H.gloves)
+			mouse_flea_dig(H)
 	var/fleeing = min(population - out_mice.len, rand(1, 3))
 	user.visible_message(SPAN_NOTICE("[user] digs out \the [src][fleeing > 0 ? " and mice scatter from it" : ""]!"))
 	qdel(src)
