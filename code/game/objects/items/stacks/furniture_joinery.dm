@@ -28,11 +28,21 @@ var/global/list/furniture_joinery_specs
 /proc/furniture_joinery_available(mob/living/human/H, obj/item/I)
 	return furniture_joinery_equipped(H, I) || (!QDELETED(H) && !QDELETED(I) && isturf(I.loc) && I.loc == get_turf(H))
 
+// Sawn planks (/material/wood/soft) keep hardness 90 for walls and doors, more
+// than any everyday blade, so no flint, bronze or iron knife could whittle
+// dowels. A blade is judged against the wood the plank was sawn from instead.
+/proc/furniture_joinery_carving_material(material/stock)
+	if (istype(stock, /material/wood/soft))
+		var/material/wood = get_material_by_name("wood")
+		if (wood)
+			return wood
+	return stock
+
 /proc/furniture_joinery_tool(obj/item/I, role, material/stock)
 	if (QDELETED(I) || I.woodwork_owner || (!isnull(I.health) && I.health <= 0))
 		return FALSE
 	switch (role)
-		if ("shaping") return woodwork_shaping_tool(I, stock)
+		if ("shaping") return woodwork_shaping_tool(I, furniture_joinery_carving_material(stock))
 		if ("chisel") return istype(I, /obj/item/weapon/chisel)
 		if ("hammer") return istype(I, /obj/item/weapon/hammer)
 	return FALSE

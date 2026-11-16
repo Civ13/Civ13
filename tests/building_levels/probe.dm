@@ -103,7 +103,7 @@
 		qdel(C)
 		building_assert(!R.loc && !C.loc, "floor removal removes roof")
 		qdel(P)
-		sleep(60)
+		building_probe_settle()
 		building_assert(!R2.loc && !C2.loc, "unsupported upper slab collapses")
 		var/obj/structure/mine_support/stone/stone = new(locate(8,8,1))
 		for (var/level = 1 to 4)
@@ -151,24 +151,24 @@
 		building_assert(wall_roof, "turf wall supports slab")
 		new /turf/floor/dirt(test_wall)
 		persistence_save_in_progress = TRUE
-		sleep(60)
+		building_probe_settle()
 		building_assert(wall_roof.loc, "collapse waits during save")
 		persistence_save_in_progress = FALSE
-		sleep(60)
+		building_probe_settle()
 		building_assert(!wall_roof.loc, "removed wall collapses after save")
 		var/obj/structure/simple_door/test_door = new(locate(1,8,1), "wood")
 		var/obj/roof/door_roof = building_construct_roof(get_turf(test_door), /obj/roof/wood, null)
 		building_assert(door_roof, "door supports slab")
 		qdel(test_door)
-		sleep(60)
+		building_probe_settle()
 		building_assert(!door_roof.loc, "removed door collapses slab")
 		var/obj/covers/wood_wall/test_cover = new(locate(5,8,1))
 		var/obj/roof/cover_roof = building_construct_roof(get_turf(test_cover), /obj/roof/wood, null)
 		building_assert(cover_roof, "cover wall supports slab")
-		sleep(60)
+		building_probe_settle()
 		building_assert(cover_roof.loc, "cover slab survives initial support check")
 		qdel(test_cover)
-		sleep(60)
+		building_probe_settle()
 		building_assert(!cover_roof.loc, "removed cover wall collapses slab")
 		// Soft ground carries two storeys; a stone floor under the support is a foundation.
 		var/turf/soft = new /turf/floor/dirt(locate(9,3,1))
@@ -196,3 +196,13 @@
 		world.log << "BUILDING exception: [E] at [E.file]:[E.line]"
 		text2file("FAIL: [E.name]", "result.txt")
 	shutdown()
+
+// Collapses wait in the timed queue (building_collapse.dm), which this fixture's
+// timer loop does not run: drive the queue by hand until it is empty (at least
+// 1 s, at most 8 s).
+/proc/building_probe_settle()
+	for (var/i in 1 to 80)
+		sleep(1)
+		building_collapse_pass()
+		if (i >= 10 && !building_collapse_pending())
+			return

@@ -130,9 +130,50 @@
 	return new /area/caribbean/void/caves
 
 // The rock that lies under one surface tile.
+// What lies on the surface straight above an underground cell, as far as the
+// rock under it cares (docs/underground-level.md, "Water above"): "sea" under
+// deep saltwater, "wet" under a lake or a river, "mud" under shallows, swamp
+// and coast water, "lava" under lava, null under everything else.
+/proc/underground_above(turf/surface)
+	if (!surface)
+		return null
+	if (istype(surface, /turf/floor/lava))
+		return "lava"
+	if (!is_liquid_water(surface))
+		return null
+	var/turf/floor/beach/water/W = surface
+	if (istype(W, /turf/floor/beach/water/deep))
+		return W.salty ? "sea" : "wet"
+	if (!W.salty && !istype(W, /turf/floor/beach/water/swamp) && underground_river_at(W))
+		return "wet"
+	return "mud"
+
+// TRUE where surface tile T belongs to a river reach (river_flood.dm).
+/proc/underground_river_at(turf/T)
+	if (!map)
+		return FALSE
+	var/datum/river_flood/F = map.river_flood()
+	if (!F || T.z != F.z_level || T.x < 1 || T.x > F.maxx || T.y < 1 || T.y > F.maxy)
+		return FALSE
+	return F.reach_at(T.x, T.y) > 0
+
+// The water or lava above underground cell T, as underground_above() reads it.
+/proc/underground_above_cell(turf/T)
+	if (!T)
+		return null
+	var/surface_z = multiz_level_above(T.z) || DUG_SURFACE_Z
+	return underground_above(locate(T.x, T.y, surface_z))
+
 /proc/dug_underground_rock(turf/surface)
-	if (istype(surface, /turf/floor/beach/water/deep))
-		return /turf/wall/rockwall
+	switch (underground_above(surface))
+		if ("sea")
+			return /turf/wall/rockwall
+		if ("wet")
+			return /turf/floor/dirt/underground/wet
+		if ("mud")
+			return /turf/floor/dirt/underground/mud
+		if ("lava")
+			return /turf/floor/dirt/underground/hot
 	if (istype(surface, /turf/floor/winter) || istype(surface, /turf/floor/dirt/winter) || istype(surface, /turf/floor/beach/water/ice))
 		return /turf/floor/dirt/underground/icy
 	if (istype(surface, /turf/floor/beach/sand) || istype(surface, /turf/floor/dirt/dust))
@@ -170,7 +211,8 @@
 		return /turf/wall/rockwall/bedrock
 	var/turf/surface = locate(x, y, surface_z)
 	var/rock = dug_underground_rock(surface)
-	if (rock == /turf/wall/rockwall)
+	// No natural pockets under water or lava.
+	if (underground_above(surface))
 		return rock
 	if (dug_underground_noise("pocket", x, y) > 0.8 && dug_underground_jitter(x, y) < 0.7)
 		return /turf/floor/dirt
@@ -273,9 +315,67 @@ var/global/dug_underground_forming = FALSE
 	return formed
 
 // The core ChangeTurf hook (turf_changing.dm): a cell of the cave level that
-// opens forms what lies around it.
+// opens forms what lies around it. One opened under a lake or a river breaks
+// through to it, and the water pours into the tunnel (flood_cellars.dm).
 /turf/underground_opened()
+	if (underground_above_cell(src) == "wet" && !(src in tunnel_breaches))
+		tunnel_breaches += src
+		if (!dug_underground_forming && !persistence_save_in_progress)
+			visible_message(SPAN_DANGER("Water bursts through the rock overhead!"))
 	dug_underground_form_around(src)
+
+// Finds the open cells under lakes and rivers on underground level z, which
+// pour into the tunnels (flood_cellars.dm). Run once the level is in place
+// after a load; breaches are not saved.
+/proc/underground_breach_scan(z)
+	if (!z || z != underground_level_z())
+		return 0
+	var/found = 0
+	for (var/turf/T in block(locate(1, 1, z), locate(world.maxx, world.maxy, z)))
+		if (T.density || istype(T, /turf/sky/building))
+			continue
+		if (underground_above_cell(T) == "wet")
+			tunnel_breaches |= T
+			found++
+		CHECK_TICK
+	return found
+
+// Rock under a lake or a river: it holds the water back until it is broken.
+/turf/floor/dirt/underground/wet
+	name = "wet rock"
+	desc = "Soft rock dripping with water. There is a lake or a river overhead: break it and the water comes in."
+
+// Earth under shallows, swamp and coast water: an opened cell seeps a little.
+/turf/floor/dirt/underground/mud
+	name = "wet earth"
+	desc = "Soft, wet earth. Water seeps in from the shallows overhead."
+
+// Rock under lava: too hot to work, and it burns whoever touches it.
+/turf/floor/dirt/underground/hot
+	name = "hot rock"
+	desc = "Rock glowing with the heat of the lava overhead. It is far too hot to dig."
+	is_mineable = FALSE
+	light_power = 1
+	light_range = 2
+	light_color = "#FF6A00"
+
+/turf/floor/dirt/underground/hot/attackby(obj/item/W, mob/user)
+	to_chat(user, SPAN_WARNING("\The [src] is far too hot to work. There is lava overhead."))
+	underground_hot_burn(user)
+	return TRUE
+
+/turf/floor/dirt/underground/hot/attack_hand(mob/user)
+	underground_hot_burn(user)
+
+/turf/floor/dirt/underground/hot/Bumped(atom/movable/AM)
+	underground_hot_burn(AM)
+	return ..()
+
+/proc/underground_hot_burn(mob/living/L)
+	if (!istype(L) || L.stat == DEAD)
+		return
+	L.apply_damage(5, BURN)
+	to_chat(L, SPAN_DANGER("The rock is searing hot!"))
 
 // Native lighting covers the startup levels only. Unformed cells need none;
 // formed cells of a restored cave get corners and overlays here.
@@ -345,6 +445,9 @@ var/global/dug_underground_forming = FALSE
 // area, so the cave area is put back on them, and formed cells get the
 // lighting that startup did not build (it ran before the level existed).
 /map_storage/restore_dug_levels()
+	// Open cells under lakes and rivers pour again (they are not saved).
+	tunnel_breaches.Cut()
+	underground_breach_scan(underground_level_z())
 	var/z = dug_underground_z()
 	if (!z)
 		return
@@ -451,8 +554,11 @@ var/global/dug_underground_boot_done = FALSE
 	if (!dug)
 		return !open // the level is generated when the digging finishes
 	var/turf/below = dug_underground_form(locate(here.x, here.y, dug))
-	if (!below || istype(below, /turf/wall) || (locate(/obj/structure/multiz) in below))
-		to_chat(user, SPAN_WARNING("You hit solid stone. You cannot dig down here."))
+	if (!below || istype(below, /turf/wall) || istype(below, /turf/floor/dirt/underground/hot) || (locate(/obj/structure/multiz) in below))
+		if (istype(below, /turf/floor/dirt/underground/hot))
+			to_chat(user, SPAN_WARNING("The rock below is searing hot. You cannot dig down here."))
+		else
+			to_chat(user, SPAN_WARNING("You hit solid stone. You cannot dig down here."))
 		return null
 	if (!open)
 		return below
@@ -468,7 +574,13 @@ var/global/dug_underground_boot_done = FALSE
 		return TRUE
 	var/turf/above = locate(here.x, here.y, DUG_SURFACE_Z)
 	if (dug_underground_surface_blocked(above))
-		to_chat(user, SPAN_NOTICE("You can't dig up here, there is something blocking the way!"))
+		switch (underground_above(above))
+			if ("lava")
+				to_chat(user, SPAN_WARNING("The rock overhead is searing hot. There is lava above; you cannot dig up here."))
+			if ("sea", "wet", "mud")
+				to_chat(user, SPAN_WARNING("Water drips from the rock overhead. Digging up here would bring the water down on you."))
+			else
+				to_chat(user, SPAN_NOTICE("You can't dig up here, there is something blocking the way!"))
 		return TRUE
 	user.visible_message(SPAN_DANGER("[user] starts digging up!"), SPAN_NOTICE("You start digging up."))
 	if (!do_after(user, dug_underground_dig_time(user, 400), here))

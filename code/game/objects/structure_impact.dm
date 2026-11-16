@@ -8,7 +8,7 @@
 // structure_impact() returns the force left over after the part: 0 when it
 // held, more when it gave way and the rest carries on (a truck through a plank
 // wall keeps some of its push). Something that is not a building part returns
-// the whole force untouched; structure_impact_part() says which atoms are.
+// the whole force untouched; is_structure_impact_part() says which atoms are.
 
 // How much of a crushing force a material shrugs off: breaking a part takes
 // its health times this. Wood is 1.
@@ -38,7 +38,7 @@
 	return structure_material_resistance(structure_impact_material())
 
 // Whether A is a part of a building that structure_impact() damages.
-/proc/structure_impact_part(atom/A)
+/proc/is_structure_impact_part(atom/A)
 	if (!A || QDELETED(A))
 		return FALSE
 	return A.structure_impact_part()

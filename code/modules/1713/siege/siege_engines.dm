@@ -41,7 +41,7 @@
 /proc/siege_hit(atom/A, damage)
 	if (!A || QDELETED(A))
 		return TRUE
-	if (!structure_impact_part(A))
+	if (!is_structure_impact_part(A))
 		return FALSE
 	A.structure_impact(damage, IMPACT_RAW)
 	if (isturf(A))

@@ -30,6 +30,16 @@ var/global/list/craft_tool_qualities = list(
 	"chisel" = TOOL_CHISEL,
 )
 
+// Other stacks that pay for a declared stack input, and the name the
+// requirement line shows. Logs (/stack/material/wood, once called "wooden
+// plank") and sawn planks are both wood for a handle, so either one counts.
+var/global/list/craft_need_alternates = list(
+	/obj/item/stack/material/wood = list(/obj/item/stack/material/woodplank),
+)
+var/global/list/craft_need_input_names = list(
+	/obj/item/stack/material/wood = "wood (a log or a plank)",
+)
+
 /proc/craft_needs_for(result_type)
 	if (!craft_need_specs)
 		var/text = file2text("config/craft_needs.json")
@@ -76,9 +86,15 @@ var/global/list/craft_tool_qualities = list(
 	return null
 
 /proc/craft_need_stack(stack_type, amount, list/candidates, obj/item/stack/paying)
+	var/list/accepted = list(stack_type)
+	if (craft_need_alternates[stack_type])
+		accepted += craft_need_alternates[stack_type]
 	for (var/obj/item/stack/S in candidates)
-		if (S != paying && istype(S, stack_type) && S.can_use(amount))
-			return S
+		if (S == paying || !S.can_use(amount))
+			continue
+		for (var/accepted_type in accepted)
+			if (istype(S, accepted_type))
+				return S
 	return null
 
 // The loose items that pay for an input which is not a stack, or null when
@@ -110,13 +126,16 @@ var/global/list/craft_tool_qualities = list(
 		var/input_type = text2path(type_text)
 		var/amount = inputs[type_text] * max(1, quantity)
 		var/obj/item/input_name = input_type
+		var/shown_name = craft_need_input_names[input_type]
+		if (!shown_name)
+			shown_name = input_type ? lowertext(initial(input_name.name)) : type_text
 		// A stack pays from one pile; anything else pays whole items.
 		var/found = null
 		if (ispath(input_type, /obj/item/stack))
 			found = craft_need_stack(input_type, amount, candidates, paying)
 		else if (input_type)
 			found = craft_need_items(input_type, amount, candidates)
-		lines[++lines.len] = list("kind" = "input", "label" = "[amount] [input_type ? lowertext(initial(input_name.name)) : type_text] (held or at your feet)", "met" = found ? TRUE : FALSE, "item" = found, "amount" = amount)
+		lines[++lines.len] = list("kind" = "input", "label" = "[amount] [shown_name] (held or at your feet)", "met" = found ? TRUE : FALSE, "item" = found, "amount" = amount)
 	if (spec["water"])
 		var/water = spec["water"] * max(1, quantity)
 		var/source = craft_need_water(H, water, candidates)

@@ -53,6 +53,26 @@ loads the formed cells on top. `restore_dug_levels()` then puts cells the
 load left in the world's default area back into the cave area and lights
 formed cells.
 
+## Water above
+
+`underground_above(surface)` reads the surface tile over a cell:
+
+| Above | Forms as | When opened |
+| --- | --- | --- |
+| Deep saltwater (sea) | `/turf/wall/rockwall` (cannot be dug) | - |
+| Deep fresh water, or water on a river reach | wet rock, `/turf/floor/dirt/underground/wet` | breach: pours like a tunnel mouth while the water above stays |
+| Shallows, swamp, coast water | wet earth, `/turf/floor/dirt/underground/mud` | seeps 0.3 deep (`MUD_SEEP`); bailing or a pump keeps it back |
+| Lava | hot rock, `/turf/floor/dirt/underground/hot` | never: it cannot be dug and burns whoever touches it |
+
+No natural pockets form under water or lava. Breaches
+(`tunnel_breaches`, [flood_cellars.dm](../code/modules/1713/flood_cellars.dm))
+feed the existing tunnel water: roof-high a few tiles a minute, drowning
+included. Packing the breached cell with earth stops it, and the water soaks
+away. Breaches are not saved; `restore_dug_levels()` finds them again with
+`underground_breach_scan()`. Tunnel water needs the map's river flood file,
+so a map without one has no flooding. Digging up under water or lava, and
+down onto hot rock, is refused with a message that names the reason.
+
 ## Compiled underground levels
 
 Gaia, Desert, Jungle, Barren and the Moon compile their underground as z 1
@@ -101,6 +121,8 @@ turns one stopped region over:
 - `python3 -B tests/underground_level/real_map.py --byond-bin <bin> --map
   maps/nomads/nomads_europe.dmm --output <fresh dir>` (full game: boot,
   dig a shaft and tunnel, save, restore, resave).
+- `python3 tests/ecology_spawning/run_linux.py . tests/river_flow/cellar_probe.dm`
+  (breach flooding, packing it, wet-earth seepage).
 - `python3 -m unittest tests/gaia_host/test_underground_migration.py`
   (host action: refusals, backup, validation gate, swap).
 - `python3 -B tests/underground_level/migration.py --byond-bin <bin> --old-rev

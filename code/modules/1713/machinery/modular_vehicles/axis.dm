@@ -211,6 +211,11 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 									qdel(I)
 								SA.crush()
 
+			// Walls, pillars and doors in the way take a ram (vehicle_ram.dm).
+			if (!vehicle_ram(FR, T))
+				moving = FALSE
+				stopmovementloop()
+				return FALSE
 			for(var/obj/structure/O in T)
 				var/done = FALSE
 				for (var/obj/structure/vehicleparts/frame/FM in O.loc)
