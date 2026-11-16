@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { NoticeBox } from 'tgui-core/components';
 import type { Data, ScreenProps } from '../types';
 import { list, text } from './common';
+import { Pill } from './kit';
 
 type Navigation = { route: 'open' | 'page' | 'resource' | 'reset'; query?: string; era?: string; processor?: string; recipe?: string; page?: number; resource?: string; scope?: string };
 // The server accepts one atlas request per second per reader and drops the rest.
@@ -70,9 +71,9 @@ function Sprite({ image, title }: { image: unknown; title?: unknown }) {
   return src ? <img className="atlas-sprite" src={src} width={32} height={32} alt="" title={text(title)} /> : <span className="atlas-sprite atlas-sprite-empty" aria-hidden="true" />;
 }
 function Status({ row }: { row: Data }) {
-  if (row.retired) return <span className="atlas-chip atlas-warn">Retired this era</span>;
-  if (row.manual_hint) return <span className="atlas-chip atlas-warn">Needs manual</span>;
-  if (row.research === 'needed') return <span className="atlas-chip atlas-warn">Needs research</span>;
+  if (row.retired) return <Pill tone="warn" className="atlas-chip">Retired this era</Pill>;
+  if (row.manual_hint) return <Pill tone="warn" className="atlas-chip">Needs manual</Pill>;
+  if (row.research === 'needed') return <Pill tone="warn" className="atlas-chip">Needs research</Pill>;
   return null;
 }
 function Resource({ ui, resource }: { ui: ScreenProps; resource: Data }) {
@@ -114,11 +115,11 @@ function Recipe({ ui, recipe, choose, lead }: { ui: ScreenProps; recipe: Data; c
     {!!lead && <p className="atlas-eyebrow">{lead}</p>}
     <h2 style={recipe.manual_hint ? { color: '#aaa' } : undefined}>{text(recipe.name)}</h2>
     <p className="atlas-chips">
-      <span className="atlas-chip">{eraName(recipe.era_label) || 'Era varies'}</span>
-      {recipe.station_id ? <button type="button" className="atlas-chip atlas-chip-link" disabled={!ui.interactive} onClick={() => navigate(ui, { route: 'resource', resource: String(recipe.station_id) })}>{optional ? 'Also at: ' : 'Made at: '}{text(recipe.station)}</button>
-        : <span className="atlas-chip">{text(recipe.station) || how}</span>}
-      {catalogName(recipe.kind) && !!recipe.elsewhere && <span className="atlas-chip atlas-warn">Other maps only: {catalogName(recipe.kind)}</span>}
-      {!!recipe.retired && <span className="atlas-chip atlas-warn">Retired in the current era</span>}
+      <Pill className="atlas-chip">{eraName(recipe.era_label) || 'Era varies'}</Pill>
+      {recipe.station_id ? <button type="button" className="kit-pill atlas-chip atlas-chip-link" disabled={!ui.interactive} onClick={() => navigate(ui, { route: 'resource', resource: String(recipe.station_id) })}>{optional ? 'Also at: ' : 'Made at: '}{text(recipe.station)}</button>
+        : <Pill className="atlas-chip">{text(recipe.station) || how}</Pill>}
+      {catalogName(recipe.kind) && !!recipe.elsewhere && <Pill tone="warn" className="atlas-chip">Other maps only: {catalogName(recipe.kind)}</Pill>}
+      {!!recipe.retired && <Pill tone="warn" className="atlas-chip">Retired in the current era</Pill>}
     </p>
     {!!recipe.manual_hint && <p role="status" className="atlas-locked">{text(recipe.manual_hint)}</p>}
     {craftable && <p><button type="button" className="atlas-craft" disabled={!ui.interactive} onClick={() => ui.act('atlas_craft', { value: craftable })}>Craft this</button>
@@ -135,7 +136,7 @@ function Recipe({ ui, recipe, choose, lead }: { ui: ScreenProps; recipe: Data; c
     <h3>Requirements</h3>
     <ul className="atlas-requirements">
       {hint && <li>{hint}</li>}
-      {research.map((node, i) => <li key={i}>Research: <strong>{text(node.name)}</strong>{node.state === 'done' && <span className="atlas-chip atlas-ok">Researched</span>}{node.state === 'needed' && <span className="atlas-chip atlas-warn">Not researched yet</span>}</li>)}
+      {research.map((node, i) => <li key={i}>Research: <strong>{text(node.name)}</strong>{node.state === 'done' && <Pill tone="good" className="atlas-chip">Researched</Pill>}{node.state === 'needed' && <Pill tone="warn" className="atlas-chip">Not researched yet</Pill>}</li>)}
       {facts.map((fact, i) => <li key={'f' + i}>{fact}</li>)}
       {Number.isFinite(until) && recipe.maximum_era !== null && recipe.maximum_era !== undefined && until < 8 && <li>Can be made until the end of the {eras[until]}</li>}
       {rest && <li>{rest}</li>}
@@ -166,7 +167,7 @@ const routeLabels: Record<string, string> = { tools: 'Tools', conditions: 'Condi
 function AdminGuidance({ guidance }: { guidance: Data }) {
   return <article className="atlas-card" aria-label="Admin-only entry">
     <h2 className="atlas-resource-title"><Sprite image={guidance.image} /><span>{text(guidance.name)}</span></h2>
-    <p className="atlas-chips"><span className="atlas-chip atlas-warn">Admin only</span><span className="atlas-chip">Not in the public atlas</span></p>
+    <p className="atlas-chips"><Pill tone="warn" className="atlas-chip">Admin only</Pill><Pill className="atlas-chip">Not in the public atlas</Pill></p>
     {!!guidance.desc && <p className="atlas-desc">{text(guidance.desc)}</p>}
     <h3 className="atlas-section">Staff note</h3>
     <p>{text(guidance.admin_note)}</p>
@@ -180,11 +181,11 @@ function Guidance({ ui, guidance }: { ui: ScreenProps; guidance: Data }) {
   const world = worldNotes[text(guidance.kind)];
   return <article className="atlas-card" aria-label="Resource">
     <h2 className="atlas-resource-title"><Sprite image={guidance.image} /><span>{text(guidance.name)}</span></h2>
-    {!!guidance.kind && <p className="atlas-chips"><span className="atlas-chip">{text(guidance.kind)}</span>
-      {made > 0 && <span className="atlas-chip">Craftable</span>}
-      {!!guidance.entity && <span className="atlas-chip">Reference</span>}
-      {Number(guidance.used_in_count) > 0 && <span className="atlas-chip">Used in {text(guidance.used_in_count)} {Number(guidance.used_in_count) === 1 ? 'recipe' : 'recipes'}</span>}
-      {Number(guidance.made_here_count) > 0 && <span className="atlas-chip">Workstation</span>}</p>}
+    {!!guidance.kind && <p className="atlas-chips"><Pill className="atlas-chip">{text(guidance.kind)}</Pill>
+      {made > 0 && <Pill className="atlas-chip">Craftable</Pill>}
+      {!!guidance.entity && <Pill className="atlas-chip">Reference</Pill>}
+      {Number(guidance.used_in_count) > 0 && <Pill className="atlas-chip">Used in {text(guidance.used_in_count)} {Number(guidance.used_in_count) === 1 ? 'recipe' : 'recipes'}</Pill>}
+      {Number(guidance.made_here_count) > 0 && <Pill className="atlas-chip">Workstation</Pill>}</p>}
     {!!guidance.desc && <p className="atlas-desc">{text(guidance.desc)}</p>}
     {stats.length > 0 && <dl className="atlas-stats">{stats.map((stat, i) => <div key={i}><dt>{text(stat.label)}</dt><dd>{text(stat.value)}</dd></div>)}</dl>}
     <h3 className="atlas-section">{text(guidance.heading)} {text(guidance.name)}</h3>
@@ -193,7 +194,7 @@ function Guidance({ ui, guidance }: { ui: ScreenProps; guidance: Data }) {
       : world ?? (guidance.entity ? referenceNote : 'No recipe makes this and no gathering route is recorded. It is gathered, hunted, mined, traded for or found in the world.')}</p>}
     {inside.length > 0 && <div className="atlas-related"><span>Found in:</span>{inside.map((entry, i) => entry.id
       ? <Resource key={i} ui={ui} resource={{ ...entry, quantity: '' }} />
-      : <span key={i} className="atlas-chip">{text(entry.name)}</span>)}</div>}
+      : <Pill key={i} className="atlas-chip">{text(entry.name)}</Pill>)}</div>}
     {routes.map((route, i) => {
       const steps = list(route.steps), said = steps.map(step => text(step)).join(' ');
       // Some routes repeat their steps as the condition; say it once.
