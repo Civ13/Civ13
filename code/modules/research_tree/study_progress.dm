@@ -63,9 +63,14 @@
 // node (which clears the progress) once its own checks pass.
 /mob/living/human/proc/timed_study(node_id, total_time, atom/anchor)
 	var/left = study_time_left(node_id, total_time)
+	// ADHD readers go faster early in a sitting and slower late (study_fields.dm).
+	var/real = adhd_begin_reading(left)
 	var/started = world.time
-	var/done = do_reading(src, left, anchor)
-	var/spent = done ? left : clamp(world.time - started, 0, left)
+	var/done = do_reading(src, real, anchor)
+	adhd_end_reading()
+	var/spent = done ? left : clamp((world.time - started) * left / real, 0, left)
+	if (spent > 0 && valid_recipe_node_id(node_id))
+		last_study_discipline = node_discipline(node_id)
 	if (spent > 0 && total_time > 0)
 		note_study_progress(node_id, study_fraction(node_id) + spent / total_time)
 	if (!done && spent > 0)

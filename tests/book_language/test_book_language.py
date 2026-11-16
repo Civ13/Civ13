@@ -62,7 +62,7 @@ class Reading(unittest.TestCase):
         study = proc(RESEARCH, '/proc/study_research_source(')
         self.assertIn('language_reading_problem(H, written_in, LANGUAGE_BROKEN)', study)
         self.assertLess(study.index('language_reading_problem('), study.index('H.knows_recipe_node(node_id)'))
-        self.assertIn('H.scholar_study_time(N.era_tier) * language_study_factor(H, written_in)', study)
+        self.assertIn('H.scholar_study_time(N.era_tier, node_id) * language_study_factor(H, written_in)', study)
         self.assertIn('loose.chapter_language', study)
         factor = proc(LANG, '/proc/language_study_factor(')
         self.assertIn('if (score >= LANGUAGE_FLUENT)\n\t\treturn 1', factor)

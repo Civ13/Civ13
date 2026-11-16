@@ -152,6 +152,9 @@ var/global/list/fishing_grounds_published = null
 	. = max(stock * (1 - stock / capacity) / capacity, spill)
 	if (kind == FISH_WATER_FRESH && fish_run_season())
 		. *= FISH_RUN_REGROWTH // the run brings fish up from the sea
+	// Fouled river water holds fewer fish (river_foul.dm).
+	if (kind != FISH_WATER_SALT)
+		. *= river_foul_fish_factor(cx * FISH_GROUND_SIZE + FISH_GROUND_SIZE / 2, cy * FISH_GROUND_SIZE + FISH_GROUND_SIZE / 2, z)
 
 // Brings the stock up to now.
 /datum/fishing_ground/proc/settle()

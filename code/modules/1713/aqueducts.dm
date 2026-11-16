@@ -288,7 +288,7 @@ var/global/aqueduct_last_flow = -600
 		return FALSE
 	if (istype(W, /turf/floor/beach/water/swamp))
 		return TRUE
-	return sewers_apply() && sewer_fouls_near(W)
+	return (sewers_apply() && sewer_fouls_near(W)) || river_fouled_at(W)
 
 /obj/structure/aqueduct_intake/process_interval(configured_seconds = 2)
 	if (QDELETED(src) || !isturf(loc))

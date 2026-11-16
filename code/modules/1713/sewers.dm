@@ -784,7 +784,7 @@ var/global/list/sewer_pump_fuel_rates = list(
 /proc/sewer_fouls_near(atom/A)
 	for (var/obj/structure/sewer_piece/P in range(max(SEWER_OUTFALL_FOUL_RANGE, SEWER_DITCH_FOUL_RANGE, CESSPIT_FOUL_RANGE), A))
 		var/r = P.foul_range()
-		if (r && get_dist(P, A) <= r && P.recently_fouled())
+		if (r && get_dist(P, A) <= r && P.recently_fouled() && P.fouls_toward(A))
 			return TRUE
 	return FALSE
 

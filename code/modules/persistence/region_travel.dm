@@ -213,6 +213,14 @@ var/global/list/region_travel_carry_types = list(
 	if(P["v"] >= 2 && !("known_recipe_nodes" in P))
 		P["known_recipe_nodes"] = list()
 		P["recipe_knowledge_initialized"] = !!recipe_knowledge_initialized
+	// Chosen traits and the field-of-study state travel too (study_fields.dm).
+	var/list/carried_traits = region_travel_traits(traits)
+	if(carried_traits.len)
+		P["traits"] = carried_traits
+	if(study_field_lock > world.realtime)
+		P["study_field_lock"] = study_field_lock
+	if(study_interest in scholar_disciplines)
+		P["study_interest"] = study_interest
 	// People and languages travel whole (region_travel_tongues.dm).
 	var/list/tongues = region_travel_tongues()
 	if(tongues)
@@ -277,6 +285,9 @@ var/global/list/region_travel_carry_types = list(
 	else if("scholarship" in P)
 		return null
 	if(("tongues" in P) && !region_travel_tongues_valid(P["tongues"])) return null
+	if(("traits" in P) && !region_travel_traits_valid(P["traits"])) return null
+	if(("study_field_lock" in P) && !isnum(P["study_field_lock"])) return null
+	if(("study_interest" in P) && !(P["study_interest"] in scholar_disciplines)) return null
 	var/owner = P["owner"]
 	if(!persistence_owner_valid(owner) || length(owner) > 32) return null
 	if(!istext(P["name"]) || !length(P["name"]) || length(P["name"]) > MAX_NAME_LEN) return null
@@ -335,6 +346,19 @@ var/global/list/region_travel_carry_types = list(
 	for(var/discipline in value)
 		if(value[discipline] != clean[discipline]) return FALSE
 	return TRUE
+
+// Traits travel when every entry is a known trait, once each.
+/proc/region_travel_traits(list/value)
+	. = list()
+	if(!islist(value)) return
+	for(var/name in value)
+		if(istext(name) && (name in trait_list) && !(name in .))
+			. += name
+
+/proc/region_travel_traits_valid(value)
+	if(!islist(value) || !length(value) || length(value) > length(trait_list)) return FALSE
+	var/list/clean = region_travel_traits(value)
+	return clean.len == length(value)
 
 // Partial reading travels exactly: valid node ids with fractions in (0, 1).
 /proc/region_travel_reading_valid(value)
@@ -471,6 +495,13 @@ var/global/list/region_travel_carry_types = list(
 	H.scholarship = P["v"] == 3 ? clean_scholarship(P["scholarship"]) : list()
 	H.study_progress = clean_study_progress(P["reading"])
 	H.region_travel_restore_tongues(P["tongues"])
+	if(islist(P["traits"]))
+		H.traits = P["traits"].Copy()
+		H.traits_dirty = TRUE
+	if(isnum(P["study_field_lock"]))
+		H.study_field_lock = P["study_field_lock"]
+	if(P["study_interest"] in scholar_disciplines)
+		H.study_interest = P["study_interest"]
 	H.gender = P["gender"]
 	H.age = P["age"]
 	H.fully_replace_character_name(H.real_name, P["name"])
