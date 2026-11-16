@@ -50,8 +50,8 @@
 	var/tmp/sight_fog_view = null
 	var/tmp/turf/sight_fog_turf = null
 	var/tmp/sight_fog_squinting = FALSE
-	var/tmp/farsight_focus = null
-	var/tmp/farsight_focus_until = 0
+	// page ref -> world.time its squint stops covering it
+	var/tmp/list/farsight_focus = null
 
 /client/proc/fit_sight_fog()
 	var/list/V = getviewsize(view)
@@ -63,6 +63,8 @@
 
 /client/proc/clear_sight_fog()
 	if (sight_fog)
+		// Back to full strength, so the next showing is not stuck mid-squint.
+		animate(sight_fog, alpha = SIGHT_FOG_ALPHA, time = 0)
 		screen -= sight_fog
 	sight_fog_turf = null
 	sight_fog_squinting = FALSE
@@ -113,14 +115,19 @@
 		return TRUE
 	var/client/C = H.client
 	var/focus = "\ref[target]"
-	if (C && C.farsight_focus == focus && world.time < C.farsight_focus_until)
-		return TRUE
+	if (C && C.farsight_focus)
+		for (var/page in C.farsight_focus.Copy())
+			if (C.farsight_focus[page] <= world.time)
+				C.farsight_focus -= page
+		if (C.farsight_focus[focus])
+			return TRUE
 	to_chat(H, SPAN_NOTICE("You hold \the [target] at arm's length and squint at the writing..."))
 	if (!do_after(H, FARSIGHT_SQUINT_TIME, target))
 		return FALSE
 	if (C)
-		C.farsight_focus = focus
-		C.farsight_focus_until = world.time + FARSIGHT_FOCUS_TIME
+		if (!C.farsight_focus)
+			C.farsight_focus = list()
+		C.farsight_focus[focus] = world.time + FARSIGHT_FOCUS_TIME
 	return TRUE
 
 #undef SIGHT_FOG_ICON
