@@ -152,6 +152,15 @@ moved outdoors counts for nothing, and a destroyed hall takes its tiers with
 it. Each standing colony of the faction in another land adds 5. The numbers
 are placeholders. Code: `code/game/mob/groups/faction_hall.dm`.
 
+The leader, or an officer with the **works** power (`docs/faction-offices.md`),
+can move the hall: right-click it, **Fasten or Unfasten** (5 seconds), pull it
+to its new place and fasten it again. It keeps its faction, tier and delivered
+materials. A loose hall counts for nothing until it is fastened, and an indoor
+tier must be fastened indoors to count. Anyone can pull a loose hall, but only
+the leader or a works officer can fasten it. The same verb moves the faction's
+nation assembly seat, recruitment stations, colony charter and strongbox. Code:
+`code/game/mob/groups/faction_fixtures.dm`.
+
 ## Nations
 
 Val (2026-11-14): factions band together into nations that represent them all

@@ -98,7 +98,7 @@ var/list/home_comfort_categories = list(
 	var/area/A = get_area(T)
 	return A && A.location == AREA_INSIDE
 
-// What bounds a room: a solid turf, a built wall, a door or a window.
+// What bounds a room: a solid turf, a built wall, a door, a window or a closed curtain.
 /proc/home_turf_bounds_room(turf/T)
 	if (!T)
 		return TRUE
@@ -110,6 +110,8 @@ var/list/home_comfort_categories = list(
 			if (C.wall)
 				return TRUE
 		else if (istype(O, /obj/structure/simple_door) || istype(O, /obj/structure/window_frame) || istype(O, /obj/structure/window))
+			return TRUE
+		else if (istype(O, /obj/structure/curtain) && O.opacity)
 			return TRUE
 	return FALSE
 
@@ -323,6 +325,9 @@ var/list/home_comfort_categories = list(
 		text += "<br>It has [english_list(have)]."
 	if (missing.len)
 		text += "<br>It lacks [english_list(missing)]."
+	var/warmth = building_room_warmth_text(building_room_at(get_turf(src)))
+	if (warmth)
+		text += "<br>[warmth]"
 	to_chat(src, "<span class='info'>[text]</span>")
 
 #undef HOME_ROOM_LIMIT

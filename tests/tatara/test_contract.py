@@ -2,6 +2,9 @@
 
 Iron sand is panned or sifted from beach sand from the Classical age, Asia
 yields more, and the bloomery (not the blast furnace) smelts it two to one.
+The tatara takes charcoal and iron sand by turns, fires for ten minutes,
+and breaks open on kera and pig iron; kera sorts into tamahagane and wrought
+iron, and tamahagane folds into steel, all behind Tatara Smelting.
 
     python3 tests/tatara/test_contract.py
 """
@@ -17,6 +20,9 @@ SIFTING = (ROOT / 'code/modules/1713/resource_sifting.dm').read_text(encoding='u
 ASIA = (ROOT / 'code/game/objects/map_metadata/nomads/nomads_asia.dm').read_text(encoding='utf-8')
 DME = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
 DMI = ROOT / 'icons/obj/tatara.dmi'
+NODES = (ROOT / 'code/modules/research_tree/research_node.dm').read_text(encoding='utf-8')
+RECIPES = (ROOT / 'config/crafting/material_recipes_global.txt').read_text(encoding='utf-8')
+ANVIL = (ROOT / 'code/game/objects/structures/blacksmithing/blacksmithing.dm').read_text(encoding='utf-8')
 ATLAS = json.loads((ROOT / 'scripts/atlas/resource-sources.json').read_text(encoding='utf-8'))
 SAND = '/obj/item/stack/ore/iron_sand'
 
@@ -81,6 +87,104 @@ class IronSand(unittest.TestCase):
             self.assertIn(name, routes)
         self.assertIn(SAND, routes['Pan iron sand']['outputs'])
         self.assertEqual(routes['Smelt iron sand in a bloomery']['inputs'], [SAND])
+
+
+class Tatara(unittest.TestCase):
+    def test_node_and_recipe(self):
+        self.assertIn('register_research_node(new /datum/research_node("tatara_smelting", "Tatara Smelting", "Industrial", 165, 1, '
+                      'RESEARCH_MODE_ANALYSIS, list("iron_smithing","pottery_storage"), 2))', NODES)
+        self.assertIn('"/obj/structure/tatara" = "tatara_smelting"', NODES)
+        rows = [l for l in RECIPES.splitlines() if l.startswith('RECIPE: ') and ',/obj/structure/tatara,' in l]
+        self.assertEqual(rows, ['RECIPE: /material/clay/,clay tatara furnace,/obj/structure/tatara,20,200,1,1,none,26,0,0,8,null'])
+        self.assertIn('anvil_steel_face_nodes = list("steelmaking", "tatara_smelting")', ANVIL)
+
+    def test_sprites(self):
+        states = dmi_states()
+        for state in re.findall(r'icon_state = "(tatara[\w]*|kera|tamahagane)"', SOURCE):
+            self.assertIn(state, states)
+        for base in ('kera', 'tamahagane'):
+            for suffix in ('', '_2', '_3', '_4'):
+                self.assertIn(base + suffix, states)
+
+    def test_numbers(self):
+        expected = {'TATARA_LIMIT': 30, 'TATARA_MIN_SAND': 3, 'TATARA_MIN_CHARGES': 3, 'TATARA_SAND_PER_KERA': 3,
+                    'TATARA_SAND_PER_ZUKU': 10, 'TATARA_BURN_TIME': 6000, 'TATARA_TICK': 100, 'TATARA_CLAY_BACK': 5,
+                    'KERA_TAMAHAGANE_PERCENT': 50, 'KERA_WROUGHT_PERCENT': 30, 'FOLD_TAMAHAGANE': 3, 'FOLD_STEEL': 2}
+        for name, value in expected.items():
+            self.assertEqual(define(name), value, name)
+
+    def test_charging_counts_sand_on_charcoal_and_closes_halfway(self):
+        charge = proc_body(SOURCE, '/obj/structure/tatara/proc/charge(')
+        self.assertIn('burn_left < TATARA_BURN_TIME / 2', charge)
+        self.assertLess(charge.index('if (last_charcoal)'), charge.index('charges++'))
+        self.assertIn('S.use(moved)', charge)
+
+    def test_yield_and_break_open(self):
+        kera = proc_body(SOURCE, '/obj/structure/tatara/proc/kera_yield(')
+        self.assertIn('min(iron_sand, charcoal)', kera)
+        self.assertIn('(0.5 + 0.5 * blown)', kera)
+        self.assertIn('charges < TATARA_MIN_CHARGES', kera)
+        finish = proc_body(SOURCE, '/obj/structure/tatara/proc/finish_burn(')
+        self.assertLess(finish.index('kera_yield()'), finish.index('iron_sand = 0'))
+        broken = proc_body(SOURCE, '/obj/structure/tatara/proc/break_open(')
+        for path in ('/obj/item/stack/ore/kera', '/obj/item/stack/ore/iron_pig', '/obj/item/stack/material/clay'):
+            self.assertIn('spawn_stack(' + path, broken)
+        self.assertIn('qdel(src)', broken)
+
+    def test_burn_survives_a_load(self):
+        self.assertIn('key == "burn_epoch"', SOURCE)
+        load = proc_body(SOURCE, '/obj/structure/tatara/after_load(')
+        self.assertIn('start_burn_loop()', load)
+        self.assertNotIn('spawn(', SOURCE)
+
+    def test_anvil_sorts_and_folds_behind_the_node(self):
+        anvil = proc_body(SOURCE, '/obj/structure/anvil/attackby(')
+        self.assertIn('return ..()', anvil.split('\n')[1] + anvil.split('\n')[2])
+        self.assertIn('crafting_node_allowed_or_warn(H, "tatara_smelting")', anvil)
+        self.assertIn('S.amount != initial_amount', anvil)
+        self.assertIn('spawn_stack(/obj/item/stack/material/steel, loc, batches * FOLD_STEEL)', anvil)
+
+    def test_atlas_routes(self):
+        routes = {r['name'] for r in ATLAS['mechanisms']}
+        for name in ('Fire a tatara', 'Sort kera on an anvil', 'Fold tamahagane into steel'):
+            self.assertIn(name, routes)
+
+
+class Washing(unittest.TestCase):
+    def test_numbers(self):
+        expected = {'KANNA_WASH_UNITS': 2, 'KANNA_STOCK': 20, 'KANNA_REGROW': 600, 'KANNA_WASH_TIME': 300,
+                    'SAND_PER_WASH': 5, 'SAND_WASH_TIME': 50}
+        for name, value in expected.items():
+            self.assertEqual(define(name), value, name)
+        self.assertLessEqual(define('KANNA_WASH_UNITS') + 2, 5)
+
+    def test_channel_recipe_node_and_sprites(self):
+        rows = [l for l in RECIPES.splitlines() if l.startswith('RECIPE: ') and ',/obj/structure/kanna_channel,' in l]
+        self.assertEqual(rows, ['RECIPE: /material/wood/,washing channel,/obj/structure/kanna_channel,6,120,1,1,economy & production,0,0,0,8,null'])
+        self.assertIn('"/obj/structure/kanna_channel" = "tatara_smelting"', NODES)
+        states = dmi_states()
+        self.assertIn('kanna_channel', states)
+        self.assertIn('kanna_channel_working', states)
+
+    def test_channel_needs_water_and_a_shared_stock(self):
+        self.assertIn('T.panning_water()', proc_body(SOURCE, '/obj/structure/kanna_channel/proc/water_beside('))
+        stock = proc_body(SOURCE, '/obj/structure/kanna_channel/proc/stock(')
+        self.assertIn('kanna_channel_stock[key]', stock)
+        hand = proc_body(SOURCE, '/obj/structure/kanna_channel/attack_hand(')
+        self.assertLess(hand.index('do_after'), hand.index('S.take(1)'))
+        self.assertIn('map.iron_sand_rich', hand)
+
+    def test_sand_washing(self):
+        wash = proc_body(SOURCE, '/proc/wash_sand(')
+        self.assertIn('round(S.amount / SAND_PER_WASH)', wash)
+        self.assertIn('S.amount != initial_amount', wash)
+        self.assertLess(wash.index('do_after'), wash.index('S.use(batches * SAND_PER_WASH)'))
+        bowl = proc_body(SOURCE, '/obj/item/kitchen/wood_bowl/attackby(')
+        self.assertIn('T.panning_water()', bowl)
+        self.assertIn('map.ordinal_age < 1', bowl)
+        routes = {r['name'] for r in ATLAS['mechanisms']}
+        self.assertIn('Wash hillside soil in a washing channel', routes)
+        self.assertIn('Wash ordinary sand into iron sand', routes)
 
 
 if __name__ == '__main__':

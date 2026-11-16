@@ -289,6 +289,7 @@
       "code/modules/1713/siege/catapult.dm": 5,
       "code/modules/1713/siege/fire.dm": 6,
       "code/modules/1713/siege/piece.dm": 13,
+      "code/modules/1713/siege/portcullis_runs.dm": 2,
       "code/modules/1713/siege/turret.dm": 4,
       "code/modules/1713/stone_crushing.dm": 1,
       "code/modules/1713/supplysystem.dm": 1,

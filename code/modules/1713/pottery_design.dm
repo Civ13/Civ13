@@ -209,7 +209,10 @@ var/global/list/pottery_band_cache = list()
 		qdel(C)
 		band_canvas = null
 
+// A pile of unfired bricks fires into a pile (clay blocks yield two each).
 /obj/item/weapon/clay/proc/fired_result(atom/where)
+	if (loose_pile_max)
+		return loose_pile_spawn(result, where, amount * fired_yield)
 	return new result(where)
 
 /obj/item/weapon/clay/vessel/fired_result(atom/where)

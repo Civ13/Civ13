@@ -38,6 +38,9 @@
 
 	playsound(loc, 'sound/machines/click.ogg', 15, TRUE, -3)
 	for (var/obj/O in src)
+		// Opened through the storage window, things stay inside (closet_storage.dm).
+		if (keep_items && istype(O, /obj/item))
+			continue
 		O.forceMove(get_turf(src))
 	icon_state = icon_opened
 	opened = TRUE
@@ -55,6 +58,8 @@
 	playsound(loc, 'sound/machines/click.ogg', 15, TRUE, -3)
 	var/itemcount = FALSE
 	for (var/obj/O in get_turf(src))
+		if (keep_items)
+			break
 		if (itemcount >= storagecap)
 			break
 		if (O.density || O.anchored)

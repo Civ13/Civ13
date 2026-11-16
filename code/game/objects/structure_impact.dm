@@ -214,6 +214,9 @@
 	return FALSE
 
 /obj/structure/simple_door/impact_structure_damage(amount)
+	amount = door_bar_absorb(amount)
+	if (amount <= 0)
+		return FALSE
 	return impact_smash(amount)
 
 /obj/structure/gate/impact_structure_damage(amount)

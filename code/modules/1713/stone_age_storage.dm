@@ -44,6 +44,8 @@
 /obj/structure/storage_container/New()
 	..()
 	ensure_storage()
+	if (mapped_lock)
+		host_apply_mapped_lock(src)
 	update_icon()
 
 /obj/structure/storage_container/after_load()

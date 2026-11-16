@@ -252,6 +252,7 @@ RECIPE: /material/concrete/,concrete bridge span,/obj/item/weapon/bridge_span/co
 
 RECIPE: /material/clay/,clay brick bloomery,/obj/structure/furnace,10,150,1,1,none,26,0,0,8,null
 RECIPE: /material/clay/,clay kiln,/obj/structure/furnace/kiln,10,150,1,1,none,26,0,0,8,null
+RECIPE: /material/clay/,clay tatara furnace,/obj/structure/tatara,20,200,1,1,none,26,0,0,8,null
 
 RECIPE: /material/concrete/,concrete pillar,/obj/structure/mine_support/stone/concrete,2,20,0,1,none,103,0,0,8,null
 RECIPE: /material/concrete/,concrete bollard,/obj/structure/bollard/concrete,2,30,1,1,fortifications,103,0,0,8,null
@@ -2398,6 +2399,7 @@ RECIPE: /material/steel/,tanning drum,/obj/structure/tanning_drum,10,200,1,1,eco
 RECIPE: /material/wood/,primitive saw mill,/obj/structure/sawmill,28,60,1,1,economy & production,15,0,0,8,null
 RECIPE: /material/wood/,potter's wheel,/obj/structure/workshop_machine/potters_wheel,6,120,1,1,economy & production,0,0,0,8,null
 RECIPE: /material/wood/,charcoal clamp,/obj/structure/charcoal_clamp,4,120,1,1,economy & production,0,0,0,8,null
+RECIPE: /material/wood/,washing channel,/obj/structure/kanna_channel,6,120,1,1,economy & production,0,0,0,8,null
 RECIPE: /material/wood/,brick mould bench,/obj/structure/workshop_machine/brick_bench,6,100,1,1,economy & production,18,0,0,8,null
 RECIPE: /material/wood/,glassblowing bench,/obj/structure/workshop_machine/glass_bench,6,120,1,1,economy & production,35,0,0,8,null
 RECIPE: /material/wood/,mason's saw,/obj/structure/workshop_machine/masons_saw,8,120,1,1,economy & production,35,0,0,8,null
@@ -2463,6 +2465,8 @@ RECIPE: /material/rope/,knot seal,/obj/item/fitted_lock/knot,1,20,0,1,constructi
 RECIPE: /material/wood/,wooden pin lock,/obj/item/fitted_lock/pin,3,60,0,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,wooden key blank,/obj/item/weapon/key/blank/wooden,1,20,0,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,hidden catch,/obj/item/fitted_lock/hidden_catch,2,60,0,1,construction,0,0,0,8,null
+RECIPE: /material/wood/,wooden door bar,/obj/item/door_bar,3,40,0,1,construction,0,0,0,8,null
+RECIPE: /material/wood/,bar brackets,/obj/item/door_brackets,2,40,0,1,construction,0,0,0,8,null
 
 RECIPE: /material/wood/soft/,floor cover,/obj/item/weapon/covers,2,30,0,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,thatch floor,/obj/covers/thatch,0.75,20,1,1,construction,0,0,0,8,null
@@ -2944,6 +2948,8 @@ RECIPE: /material/iron/,padlock,/obj/item/fitted_lock/padlock,2,60,0,1,construct
 RECIPE: /material/iron/,iron key blank,/obj/item/weapon/key/blank,1,20,0,1,construction,0,0,0,8,null
 RECIPE: /material/iron/,skeleton key,/obj/item/weapon/key/skeleton,1,40,0,1,construction,0,0,0,8,null
 RECIPE: /material/iron/,spring latch,/obj/item/fitted_lock/latch,4,80,0,1,construction,0,0,0,8,null
+RECIPE: /material/iron/,iron door bar,/obj/item/door_bar/iron,3,60,0,1,construction,0,0,0,8,null
+RECIPE: /material/iron/,slide bolt,/obj/item/door_bolt,2,60,0,1,construction,0,0,0,8,null
 RECIPE: /material/iron/,spring door closer,/obj/item/door_fitting/spring_closer,3,80,0,1,construction,0,0,0,8,null
 RECIPE: /material/iron/,spring door hinges,/obj/item/door_fitting/spring_hinge,2,80,0,1,construction,0,0,0,8,null
 RECIPE: /material/iron/,steam pumping engine,/obj/structure/sewer_pump/steam,12,250,1,1,construction,0,0,0,8,null

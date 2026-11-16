@@ -379,7 +379,7 @@
 
 /obj/structure/castle_gate/portcullis
 	name = "portcullis"
-	desc = "An iron-shod oak grid that drops into a gateway. Arrows and spears pass through it, men do not. It is raised and dropped from a winch."
+	desc = "An iron-shod oak grid that drops into a gateway. Arrows and spears pass through it, men do not. It is raised and dropped from a winch. Build sections side by side to close a wider gateway: they join into one grid, and one winch works them all."
 	icon_state = "portcullis_closed"
 	open_state = "portcullis_open"
 	closed_state = "portcullis_closed"
@@ -395,7 +395,7 @@
 /obj/structure/castle_gate/portcullis/set_open(state)
 	. = ..()
 	if (. && open) // the frames run from shut to raised
-		flick("portcullis_moving", src)
+		flick("portcullis_moving[join_suffix]", src)
 
 /obj/structure/castle_gate/drawbridge
 	name = "drawbridge"
@@ -426,10 +426,19 @@
 	not_disassemblable = FALSE
 	var/tmp/busy = FALSE
 
+// Gates within two tiles, and every section of a wide portcullis they belong to.
 /obj/structure/castle_winch/proc/gates()
 	. = list()
 	for (var/obj/structure/castle_gate/G in range(2, src))
-		. += G
+		if (G in .)
+			continue
+		if (istype(G, /obj/structure/castle_gate/portcullis))
+			var/obj/structure/castle_gate/portcullis/P = G
+			for (var/obj/structure/castle_gate/portcullis/S in P.portcullis_run())
+				if (!(S in .))
+					. += S
+		else
+			. += G
 
 /obj/structure/castle_winch/attack_hand(mob/living/user)
 	if (!ishuman(user) || !Adjacent(user))
@@ -443,8 +452,8 @@
 	var/obj/structure/castle_gate/first = G[1]
 	var/raise = !first.open
 	busy = TRUE
-	user.visible_message(SPAN_NOTICE("[user] [raise ? "winds" : "lets out"] \the [src]."), SPAN_NOTICE("You [raise ? "wind" : "let out"] \the [src]."))
-	var/ok = do_after(user, raise ? 40 : 15, src)
+	user.visible_message(SPAN_NOTICE("[user] [raise ? "winds" : "lets out"] \the [src]."), SPAN_NOTICE("You [raise ? "wind" : "let out"] \the [src][raise && G.len > 1 ? ", taking the weight of [G.len] sections" : ""]."))
+	var/ok = do_after(user, wind_time(G, raise, user), src)
 	busy = FALSE
 	if (!ok || QDELETED(src))
 		return

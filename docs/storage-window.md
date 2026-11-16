@@ -39,7 +39,9 @@ the search; moves carry on beside it.
 - Your hands, pockets, worn gear and the floor are always known.
 - Putting a thing into a storage (`handle_item_insertion`) makes it known only to
   whoever put it there (`storage_note_inserted`), so a shared store refilled by
-  someone else must be searched again.
+  someone else must be searched again. Members of the inserter's faction
+  (`civilization`, kept as `storage_filled_by_faction`) know it too, so a
+  faction's own stores never need searching by its members.
 - What a player has seen is the item's `storage_seen_by` (keys), a runtime var:
   after a restart everything in other people's containers is unknown again.
 - Unseen things are never sent to the window, so they can't be moved, found by
@@ -49,3 +51,24 @@ the search; moves carry on beside it.
 The old HUD strip does not search.
 
 Design by Fable (mock-ups in the project files, `storage-window/`).
+
+## Crates, chests and closets
+
+Closets and crates keep their things in their own contents, as before, so every
+system that reads closet contents (freight, region travel, safehouses, extraction)
+is unchanged. For a player with the window (`closet_storage.dm`):
+
+- Clicking a shut closet opens the lid without tipping anything out and opens the
+  window on it; clicking it again closes the lid without sweeping the tile.
+  Using an item on an open one puts the item inside.
+- An open, unlocked, unwelded closet is listed under Nearby. Crates count things
+  (`storagecap`), other closets count size units (`storage_capacity`).
+- **Gather** (right-click) queues every loose thing on its tile into it as timed
+  moves; **Dump Out** tips everything out after a short wait.
+- Packed or mapped contents must be searched like any other container.
+- Mobs still go in and out the old way. Mailboxes, coffins, body bags, hideouts,
+  sandbags, dumpsters, strongboxes, money changers and extinguisher cabinets keep
+  their own behaviour (`item_window = FALSE`).
+
+Players without the window keep the old lid: opening tips things out, closing
+sweeps the tile.

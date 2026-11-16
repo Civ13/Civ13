@@ -334,8 +334,6 @@
 	visible_message(SPAN_DANGER("\The [src] cracks loudly. It is coming down!"))
 	collapse_check()
 
-#define ROOFING_PILE_MAX 25
-
 /obj/item/weapon/roofbuilder
 	name = "roof builder"
 	desc = "Use this to build roofs."
@@ -346,7 +344,7 @@
 	var/done = FALSE
 	var/target_type = /obj/roof/wood
 	amount = 1 // roofing piles up: one pile is one inventory item and one menu entry
-	var/pile_max = ROOFING_PILE_MAX
+	loose_pile_max = LOOSE_PILE_MAX
 
 /obj/item/weapon/roofbuilder/clay
 	name = "clay roofing"
@@ -414,88 +412,38 @@
 
 /////////////////////////////// Roofing piles ///////////////////////////////
 // Fired roof tiles and bundled roofing pile up instead of littering a tile
-// with dozens of separate items (each one a right-click menu entry).
+// with dozens of separate items (loose piles, item_piles.dm).
 
 /obj/item/weapon/roofbuilder/New()
 	..()
-	update_roofing_pile()
+	loose_pile_update()
 
-/obj/item/weapon/roofbuilder/proc/update_roofing_pile()
-	amount = clamp(round(amount), 1, pile_max)
-	name = amount > 1 ? "[initial(name)] ([amount])" : initial(name)
-
-/obj/item/weapon/roofbuilder/proc/can_pile_with(obj/item/weapon/roofbuilder/other)
-	return istype(other) && other != src && other.type == type && !done && !other.done && !QDELETED(other) && amount < pile_max
-
-// Moves as much of other into this pile as fits; returns the number moved.
-/obj/item/weapon/roofbuilder/proc/add_to_roofing_pile(obj/item/weapon/roofbuilder/other)
-	if (!can_pile_with(other))
-		return 0
-	var/moved = min(other.amount, pile_max - amount)
-	amount += moved
-	other.amount -= moved
-	update_roofing_pile()
-	if (other.amount <= 0)
-		if (ismob(other.loc))
-			var/mob/M = other.loc
-			M.remove_from_mob(other)
-		qdel(other)
-	else
-		other.update_roofing_pile()
-	return moved
+/obj/item/weapon/roofbuilder/loose_pile_can_join(obj/item/weapon/roofbuilder/other)
+	return ..() && !done && !other.done
 
 // Uses one piece of roofing; the rest of the pile stays usable.
 /obj/item/weapon/roofbuilder/proc/use_one_roofing(mob/user)
-	if (amount <= 1)
-		qdel(src)
-		return
-	amount--
-	done = FALSE
-	update_roofing_pile()
-
-// Drop roofing onto a pile of the same roofing and it joins the pile.
-/obj/item/weapon/roofbuilder/proc/join_roofing_pile_here()
-	if (!isturf(loc) || QDELETED(src) || throwing)
-		return
-	for (var/obj/item/weapon/roofbuilder/R in loc)
-		if (R.add_to_roofing_pile(src) && QDELETED(src))
-			return
+	if (amount > 1)
+		done = FALSE
+	loose_pile_use(1)
 
 /obj/item/weapon/roofbuilder/dropped(mob/user)
 	..()
-	addtimer(CALLBACK(src, PROC_REF(join_roofing_pile_here)), 1) // after it lands
+	loose_pile_dropped()
 
-// Roofing in hand gathers other roofing of the same kind.
 /obj/item/weapon/roofbuilder/attackby(obj/item/W, mob/user)
-	var/obj/item/weapon/roofbuilder/held = W
-	if (istype(held) && held.type == type)
-		var/moved = held.add_to_roofing_pile(src)
-		if (isturf(loc)) // gather the whole tile's roofing of this kind
-			for (var/obj/item/weapon/roofbuilder/R in loc)
-				if (R.type == type)
-					moved += held.add_to_roofing_pile(R)
-		if (!moved)
-			to_chat(user, SPAN_WARNING("You can't carry more roofing in one pile."))
-			return
-		to_chat(user, SPAN_NOTICE("You gather the roofing. You now hold [held.amount]."))
+	if (loose_pile_gather(W, user))
 		return
 	..()
 
-// Click a held pile with your other hand to take one piece off it.
 /obj/item/weapon/roofbuilder/attack_hand(mob/user)
-	if (amount > 1 && user.get_inactive_hand() == src)
-		var/obj/item/weapon/roofbuilder/one = new type(get_turf(user))
-		amount--
-		update_roofing_pile()
-		user.put_in_hands(one)
-		to_chat(user, SPAN_NOTICE("You take one roofing from the pile."))
+	if (loose_pile_take_one(user))
 		return
 	..()
 
 /obj/item/weapon/roofbuilder/examine(mob/user)
 	..()
-	if (amount > 1)
-		to_chat(user, "There are [amount] in the pile; each roofs one tile.")
+	loose_pile_examine(user)
 
 /obj/item/weapon/roofbuilder/proc/building_confirm(mob/user, direction)
 	var/no_floor = building_floor_above_error(get_step(user, direction))

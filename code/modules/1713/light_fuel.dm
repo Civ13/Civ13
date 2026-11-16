@@ -221,6 +221,78 @@
 	to_chat(user, "<span class='notice'>You make \the [torch].</span>")
 	return torch
 
+////////////////
+// TIKI TORCH //
+////////////////
+
+#define TIKI_TORCH_REFUND 2 // sheets returned beside the handle; the torch costs 5
+
+/obj/item/flashlight/tiki_torch/examine(mob/user)
+	..()
+	if (!unlimited && !on)
+		to_chat(user, "Unlit, it can be taken apart with a hammer or a blade for a handle and some [frame_material].")
+
+// A burnt-out (or any unlit) tiki torch comes apart into a tool handle and part of its wood.
+/obj/item/flashlight/tiki_torch/attackby(obj/item/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/animalfat))
+		if (unlimited || fuel >= max_fuel)
+			to_chat(user, "\The [src] is already full.")
+			return TRUE
+		fuel = min(max_fuel, max(0, fuel) + TORCH_FAT_FUEL)
+		user.drop_from_inventory(W)
+		qdel(W)
+		to_chat(user, "<span class='notice'>You stuff the fat into \the [src].</span>")
+		return TRUE
+	if (tiki_torch_dismantle_tool(W))
+		dismantle_tiki_torch(user)
+		return TRUE
+	return ..()
+
+/proc/tiki_torch_dismantle_tool(obj/item/W)
+	if (!W)
+		return FALSE
+	if (is_tool(W, TOOL_HAMMER))
+		return TRUE
+	return istype(W, /obj/item/weapon) && (W.edge || W.sharp) && !istype(W, /obj/item/weapon/reagent_containers)
+
+/obj/item/flashlight/tiki_torch/proc/dismantle_tiki_torch(mob/user)
+	if (unlimited)
+		to_chat(user, "\The [src] is fixed in place.")
+		return FALSE
+	if (on)
+		to_chat(user, "<span class='warning'>Put \the [src] out before taking it apart.</span>")
+		return FALSE
+	user.visible_message("<span class='notice'>\The [user] starts taking \the [src] apart.</span>", "<span class='notice'>You start taking \the [src] apart.</span>")
+	if (!do_after(user, 30, src) || QDELETED(src) || on)
+		return FALSE
+	var/obj/item/weapon/material/handle/H = take_apart_tiki_torch()
+	if (!H)
+		return FALSE
+	playsound(H.loc, 'sound/effects/woodhit.ogg', 50, TRUE)
+	to_chat(user, "<span class='notice'>You take \the [src] apart into \a [H] and some [H.material.sheet_plural_name].</span>")
+	qdel(src)
+	return TRUE
+
+// Leaves a handle and TIKI_TORCH_REFUND sheets of the pole material where the torch is.
+// Returns the handle; the caller deletes the torch.
+/obj/item/flashlight/tiki_torch/proc/take_apart_tiki_torch()
+	var/turf/T = get_turf(src)
+	if (!T)
+		return null
+	var/material/M = get_material_by_name(frame_material ? frame_material : "wood")
+	if (!M || !M.stack_type)
+		M = get_material_by_name("wood")
+	if (ismob(loc))
+		var/mob/holder = loc
+		holder.drop_from_inventory(src)
+	on = FALSE
+	set_light(0)
+	var/obj/item/weapon/material/handle/H = new(T, M.name)
+	new M.stack_type(T, TIKI_TORCH_REFUND)
+	return H
+
+#undef TIKI_TORCH_REFUND
+
 /////////////////////////
 // DYNAMO FLASHLIGHT   //
 /////////////////////////

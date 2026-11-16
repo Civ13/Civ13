@@ -50,6 +50,10 @@
 /obj/covers/proc/building_service_attackby(obj/item/W, mob/living/user)
 	if (!wall || incomplete || !ishuman(user))
 		return FALSE
+	// Straw, cloth or wool lines the wall against the cold (building_insulation.dm).
+	if (user.a_intent != I_HARM && building_lining_kind(W))
+		building_line_wall(W, user)
+		return TRUE
 	if (!service_chase)
 		if ((is_tool(W, TOOL_CHISEL) || is_tool(W, TOOL_PICKAXE)) && user.a_intent != I_HARM)
 			cut_service_chase(W, user)
@@ -137,6 +141,8 @@
 
 /obj/covers/examine(mob/user)
 	..()
+	if (wall && insulation_lining)
+		to_chat(user, "<span class='notice'>It is lined with [insulation_lining] against the cold.</span>")
 	if (!wall || !service_chase)
 		return
 	var/obj/structure/cable/C = service_cable()

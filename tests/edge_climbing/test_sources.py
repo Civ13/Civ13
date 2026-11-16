@@ -18,7 +18,7 @@ class EdgeClimbing(unittest.TestCase):
         self.assertIn('#include "code\\modules\\multiz\\edge_climbing.dm"', (ROOT / 'civ13.dme').read_text())
 
     def test_descent_reuses_climber_and_landing_checks(self):
-        source = proc('/proc/edge_descent_destination(mob/living/human/H, direction, list/why)')
+        source = proc('/proc/edge_descent_destination(mob/living/human/H, direction, list/why, terrain_only = FALSE)')
         for guard in ('ledge_climber_problem(H)', 'edge_open_air(edge)', 'edge_open_air(here)', 'multiz_level_below(edge.z)',
                       'ledge_landing_clear(destination)', 'map.check_caribbean_block(H, destination)',
                       'persistence_movement_allowed(H, destination)'):
@@ -66,6 +66,54 @@ class EdgeClimbing(unittest.TestCase):
     def test_stairs_cooldown_is_runtime_only(self):
         self.assertIn('/mob/living/human/var/tmp/stairs_moved_at', SOURCE)
         self.assertIn('key == "stairs_moved_at"', SOURCE)
+
+
+class UpDownButtons(unittest.TestCase):
+    """The HUD up and down buttons; behaviour is in the native probe."""
+
+    def test_every_style_places_both_buttons_on_their_own_spots(self):
+        import re
+        hud = (ROOT / 'code/datums/hud.dm').read_text()
+        blocks = re.split(r'^(?=/datum/hud/human)', hud, flags=re.M)[1:]
+        self.assertEqual(len(blocks), 5)
+        for block in blocks:
+            for key, kind in (('go up', '/obj/screen/updown'), ('go down', '/obj/screen/updown/down')):
+                spot = re.search(r'"' + key + r'" = \s*list\("type" = ' + re.escape(kind) + r',\s*"loc" = "([^"]+)"\)', block)
+                self.assertIsNotNone(spot, key)
+                self.assertEqual(len(re.findall(r'"loc" = "' + re.escape(spot[1]) + '"', block)), 1, key)
+        species = (ROOT / 'code/game/mob/living/carbon/human/species/species_hud.dm').read_text()
+        self.assertIn('"go up", "go down"', species)
+
+    def test_every_sheet_has_lit_and_greyed_arrows(self):
+        for sheet in ('1713Style', 'ConsoleStyle', 'litewebStyle', 'FoFStyle'):
+            data = (ROOT / f'icons/mob/screen/{sheet}.dmi').read_bytes()
+            import zlib, struct
+            i = data.find(b'zTXt')
+            length = struct.unpack('>I', data[i - 4:i])[0]
+            chunk = data[i + 4:i + 4 + length]
+            text = zlib.decompress(chunk[chunk.index(bytes(1)) + 2:]).decode()
+            for state in ('arrow_up', 'arrow_up_off', 'arrow_down', 'arrow_down_off'):
+                self.assertIn(f'state = "{state}"', text, sheet)
+
+    def test_buttons_and_keys_share_one_press(self):
+        hud = (ROOT / 'code/_onclick/hud/updown_buttons.dm').read_text()
+        self.assertIn('set name = "go-up"', hud)
+        self.assertIn('set name = "go-down"', hud)
+        self.assertEqual(hud.count('press_updown('), 4)  # proc, two keys, the tile
+        keys = (ROOT / 'code/modules/client/action_keybindings.dm').read_text()
+        self.assertIn('"floor_up" = list("Go up a level (ladder, stairs, ledge)", "go-up", list(), list())', keys)
+        self.assertIn('"floor_down" = list("Go down a level (ladder, edge, tree)", "go-down", list(), list())', keys)
+        floors = (ROOT / 'code/modules/multiz/floor_buttons.dm').read_text()
+        # The offer looks at the ground only; the press goes through the same
+        # checked climbs as the verbs.
+        self.assertIn('ledge_climb_destination(src, d, null, TRUE)', floors)
+        self.assertIn('edge_descent_destination(src, d, null, TRUE)', floors)
+        for climb in ('climb_ledge(d)', 'climb_down_edge(d)', 'climb_stairs(stairs)', 'L.attack_hand(src)',
+                      'start_vehicle_deck_down()', 'start_climb_down()'):
+            self.assertIn(climb, floors)
+        dme = (ROOT / 'civ13.dme').read_text()
+        self.assertIn('updown_buttons.dm', dme)
+        self.assertIn('floor_buttons.dm', dme)
 
 
 if __name__ == '__main__':

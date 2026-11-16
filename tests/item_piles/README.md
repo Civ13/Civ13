@@ -1,8 +1,10 @@
 # Item piles
 
 Headless probe for `code/game/objects/items/item_piles.dm` (identical items on a
-tile collapse into one right-click menu entry) and the roofing piles in
-`code/game/objects/roof_stuff.dm`.
+tile collapse into one right-click menu entry, and loose piles: plain items such
+as roofing and bricks that gather into one counted pile of up to 25), the
+roofing piles in `code/game/objects/roof_stuff.dm` and the brick, clay block and
+roof tile piles in `code/game/objects/items/clay_items.dm`.
 
 ```
 bash scripts/cloud_byond_setup.sh   # once, installs the pinned compiler
@@ -15,7 +17,11 @@ the top item away (forceMove or a raw `persistence_set_loc`) reveals the next,
 that a picked-up item is always clickable, and that items with different names
 stay separate. For roofing it checks piling, the pile cap, different roofing
 staying apart, building using one piece, dropping onto a pile, and kiln firing
-adding to a pile. Exit status 0 means no failures and no runtime errors.
+adding to a pile. For bricks it checks piling and the count in the name, fired,
+unfired and cement bricks staying apart, building using one brick, the brick
+bench and crates putting out piles (and non-pile items still coming out one by
+one), kiln firing a pile into a pile (clay blocks still yield two each), dropping
+onto a pile, the pile cap and taking several pieces at once. Exit status 0 means no failures and no runtime errors.
 
 Not established: the right-click menu in a real client and a save/load roundtrip
 of a collapsed pile.

@@ -628,3 +628,42 @@ var/global/dug_underground_boot_done = FALSE
 
 #undef DUG_CAVE_NOISE_CELL
 #undef DUG_POCKET_LIMIT
+
+// Admin > Debug: what every level holds, so staff can see how far play has
+// reached into the cave and the open-air levels (docs/underground-level.md).
+/proc/level_report_name(z)
+	if (z == practice_room_z)
+		return "practice rooms"
+	if (z == underground_level_z())
+		return dug_underground_z() == z ? "cave (added)" : "cave (compiled)"
+	if (z <= building_base_maxz())
+		return "ground"
+	return "open air"
+
+/proc/level_report_counts(z)
+	var/formed = 0
+	var/open = 0
+	for (var/turf/T in block(locate(1, 1, z), locate(world.maxx, world.maxy, z)))
+		if (!istype(T, /turf/sky/building))
+			formed++
+			if (!T.density)
+				open++
+		CHECK_TICK
+	return list(formed, open)
+
+/client/proc/underground_level_report()
+	set category = "Debug"
+	set name = "Level Report"
+	set desc = "Formed cells on every level: the cave's dug rock and what stands on the open-air levels."
+	if (!check_rights(R_DEBUG))
+		return
+	to_chat(src, "Counting [world.maxz] level(s) of [world.maxx] x [world.maxy]...")
+	var/list/lines = list("<b>Levels</b> ([world.maxx] x [world.maxy], [building_levels_built()] open-air level(s) built)")
+	for (var/z = 1 to world.maxz)
+		var/name = level_report_name(z)
+		if (name == "ground")
+			lines += "z [z]: ground"
+			continue
+		var/list/counts = level_report_counts(z)
+		lines += "z [z]: [name], [counts[1]] formed cell(s), [counts[2]] open"
+	to_chat(src, jointext(lines, "<br>"))

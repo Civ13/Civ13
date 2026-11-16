@@ -535,14 +535,18 @@
 	loc_temp -= elevation_temperature_drop(A)
 	loc_temp = round(loc_temp)
 
-	//inside areas have natural insulation, so the temp will be more moderate than outside.
+	// A roofed room holds warmth by how well its walls, doors and windows
+	// insulate it (building_insulation.dm); a bare roof only breaks the wind.
+	var/datum/building_room/room = null
 	if (mob_area.location == AREA_INSIDE)
+		room = building_room_at(get_turf(A))
+		var/shelter = room ? room.moderation() : 5
 		if (loc_temp > 22)
-			loc_temp = (max(22,loc_temp-40))
+			loc_temp = (max(22,loc_temp-shelter))
 		else if (loc_temp < 10)
-			loc_temp = (min(10,loc_temp+40))
-		if (local_weather == WEATHER_EXTREME && season == SEASON_WINTER && (mob_area.climate == "temperate" || mob_area.climate == "taiga" || mob_area.climate == "tundra"))
-			loc_temp = -10
+			loc_temp = (min(10,loc_temp+shelter))
+		if ((!room || room.draughty) && local_weather == WEATHER_EXTREME && season == SEASON_WINTER && (mob_area.climate == "temperate" || mob_area.climate == "taiga" || mob_area.climate == "tundra"))
+			loc_temp = min(loc_temp, -10)
 		if (loc_temp < 19 && map && map.ID == MAP_ANTARCTICA)
 			for (var/obj/structure/oven/big/FN in range(5, A))
 				if (FN.on)
@@ -550,6 +554,9 @@
 						loc_temp = 19
 						break
 	if (loc_temp < 22)
+		// A fire in the room warms it as far as the room can hold the heat.
+		if (room && room.heat > 0)
+			loc_temp = round(loc_temp + (22 - loc_temp) * room.heat)
 		// A human asks every Life tick; it remembers the answer for its tile for 3 seconds.
 		var/mob/living/human/H = A
 		if (istype(H) ? H.life_nearby_heat() : nearby_heat_source(A))
@@ -557,12 +564,12 @@
 
 	return loc_temp
 
-// A lit brazier or heat source within 3 tiles, or a lit fireplace or running engine next to A.
+// A lit brazier or heat source within 2 tiles, or a lit fireplace or running engine next to A.
 /proc/nearby_heat_source(var/atom/A)
-	for (var/obj/structure/brazier/BR in range(3, A))
+	for (var/obj/structure/brazier/BR in range(2, A))
 		if (BR.on)
 			return TRUE
-	for (var/obj/structure/heatsource/HS in range(3, A))
+	for (var/obj/structure/heatsource/HS in range(2, A))
 		if (HS.on)
 			return TRUE
 	for (var/obj/structure/oven/fireplace/FP in range(1, A))

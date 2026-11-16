@@ -21,6 +21,7 @@ member (for 0-60 days, 0 for no term), dismiss a holder, and set the faction's t
 | justice | hold court (`docs/faction-justice.md`) |
 | papers | issue citizenship papers, travel passes and permits, set border doors and permit rules (`docs/faction-papers.md`, `docs/faction-permits.md`) |
 | diplomacy | make and sign treaties (`docs/faction-treaties.md`) |
+| works | unfasten and move the hall, assembly seat, recruitment stations, colony charter and strongbox (`docs/land-stages.md`, "Faction halls") |
 
 A faction that has not changed its offices has a Treasurer (treasury) and a Registrar (registry).
 The leader holds every power. A member acts for an office while appointed to it, or while holding
