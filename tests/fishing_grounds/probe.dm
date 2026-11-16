@@ -155,3 +155,23 @@ var/fg_runtime_error = FALSE
 	fg_check(sharp && sharp[3] && sharp[2] == 20, "a sharpened branch spears at 20%")
 	fg_check(isnull(fishing_tool_profile(new /obj/item/weapon/reagent_containers/food/snacks/rawfish(land))), "a fish is no fishing tool")
 	fg_check(!ispath(text2path("/obj/structure/fish")), "the old fishing spot object is gone")
+
+	// ---- Saving ----
+	fishing_grounds = list()
+	fishing_grounds_publish()
+	fg_check(islist(map.fishing_grounds_state) && !map.fishing_grounds_state.len, "with every ground full nothing is saved")
+	var/datum/fishing_ground/A = fishing_ground_at(shelf)
+	var/datum/fishing_ground/B = fishing_ground_at(ocean)
+	A.take(3)
+	fg_check(map.fishing_grounds_state.len == 6 && fishing_grounds.len == 1 && !(B in fishing_grounds), "a catch saves the fished ground and forgets the full one")
+	var/list/saved = map.fishing_grounds_state
+	fg_check(saved[1] == "salt" && saved[2] == A.cx && saved[3] == A.cy && saved[4] == 1 && saved[5] == 12 && saved[6] == 9, "a saved ground is kind, cell, level, capacity and stock")
+	// A save loaded later: the map carries a different list.
+	map.fishing_grounds_state = list("salt", A.cx, A.cy, 1, 12, 2.5, "fresh", 0, 0, 1, 10, 0, "lava", 1, 1, 1, 5, 1, "salt", 9, 9, 1, 0, 0)
+	var/datum/fishing_ground/R = fishing_ground_at(shelf)
+	fg_check(R != A && R.stock == 2.5 && R.capacity == 12 && fishing_grounds.len == 2, "a loaded save brings its own grounds and drops bad rows ([fishing_grounds.len])")
+	var/datum/fishing_ground/R2 = fishing_ground_at(river)
+	fg_check(R2.stock == 0 && R2.capacity == 10 && findtext(fish_ground_reading(river), "fished out"), "a fished-out river is still fished out after the load")
+	fg_check(fishing_ground_at(shelf) == R, "and the grounds are read from the save only once")
+	map.fishing_grounds_state = list("salt", 1, 1)
+	fg_check(isnull(fishing_ground_at(shelf, FALSE)) && !fishing_grounds.len, "a malformed save leaves every ground full")
