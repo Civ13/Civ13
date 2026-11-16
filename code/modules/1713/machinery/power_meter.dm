@@ -125,64 +125,38 @@ var/global/list/power_meters = list()
 		demand_log.Cut(1, 2)
 	if (readers.len)
 		for (var/mob/M in readers.Copy())
-			if (!M.client || get_dist(M, src) > 1 || M.z != z)
+			// A reader who closed the window or walked away stops being refreshed.
+			if (!GLOB.nanomanager.get_open_ui(M, src, "main"))
 				readers -= M
 				continue
-			show(M)
+			if (!M.client || get_dist(M, src) > 1 || M.z != z)
+				readers -= M
+				GLOB.nanomanager.close_user_uis(M, src)
+				continue
+			ui_interact(M, force_open = FALSE)
 
-/obj/structure/power_meter/proc/chart_svg()
-	var/width = 360
-	var/height = 120
+// The meter's window: live readings and a one-minute chart as panel sections.
+/obj/structure/power_meter/proc/report_sections()
+	if (!in_service())
+		return list(panel_section("Readings", empty = "Not connected. Secure it on a cable with a wrench."))
+	var/supply = max(0, powersource.powerflow)
+	var/demand = max(0, powersource.currentflow)
+	var/tone = (supply <= 0 || demand > supply) ? "warn" : (demand >= supply * 0.9 ? "progress" : "good")
+	var/list/rows = list(panel_row("Supply", power_text(supply)), panel_row("Demand", power_text(demand), tone))
+	if (supply > 0)
+		rows += list(panel_row("Load", "[round(demand * 100 / supply)]%"))
+	rows += list(panel_row("Grid", "[powersource.component_size] cable section\s"))
 	var/top = 1
 	for (var/v in supply_log)
 		top = max(top, v)
 	for (var/v in demand_log)
 		top = max(top, v)
-	var/list/out = list("<svg width='[width]' height='[height + 16]' style='background:#14181c'>")
-	out += "<line x1='0' y1='[height]' x2='[width]' y2='[height]' stroke='#555'/>"
-	for (var/list/series in list(list(supply_log, "#4caf50"), list(demand_log, "#ffb300")))
-		var/list/samples = series[1]
-		if (!samples.len)
-			continue
-		var/list/points = list()
-		for (var/i = 1, i <= samples.len, i++)
-			var/px = round((POWER_METER_SAMPLES - samples.len + i - 1) * width / (POWER_METER_SAMPLES - 1), 0.1)
-			var/py = round(height - (samples[i] / top) * (height - 20), 0.1)
-			points += "[px],[py]"
-		out += "<polyline fill='none' stroke='[series[2]]' stroke-width='2' points='[points.Join(" ")]'/>"
-	out += "<text x='4' y='12' fill='#bbb' font-size='11'>[power_text(top)]</text>"
-	out += "<text x='4' y='[height + 13]' fill='#bbb' font-size='11'>one minute ago</text>"
-	out += "<text x='[width - 30]' y='[height + 13]' fill='#bbb' font-size='11'>now</text>"
-	out += "</svg>"
-	return out.Join()
+	return list(panel_section("Readings", rows = rows),
+		panel_section("Last minute", list("The chart updates every second while you stand by the meter."),
+			chart = panel_chart(list(panel_series("supply", "good", supply_log.Copy()), panel_series("demand", "progress", demand_log.Copy())), POWER_METER_SAMPLES, power_text(top), "one minute ago", "now")))
 
-/obj/structure/power_meter/proc/report_html()
-	var/list/out = list("<html><head><meta charset='utf-8'></head><body style='background:#1c2126;color:#ddd;font-family:Verdana,sans-serif;font-size:12px'>")
-	out += "<h3>[html_encode(name)]</h3>"
-	if (!in_service())
-		out += "<p>Not connected. Secure it on a cable with a wrench.</p></body></html>"
-		return out.Join()
-	var/supply = max(0, powersource.powerflow)
-	var/demand = max(0, powersource.currentflow)
-	var/colour = (supply <= 0 || demand > supply) ? "#e57373" : (demand >= supply * 0.9 ? "#ffb300" : "#81c784")
-	out += "<p>Supply: <b>[power_text(supply)]</b> &nbsp; Demand: <b><font color='[colour]'>[power_text(demand)]</font></b>"
-	if (supply > 0)
-		out += " &nbsp; Load: <b>[round(demand * 100 / supply)]%</b>"
-	out += "</p>"
-	out += "<p>Grid: [powersource.component_size] cable section\s.</p>"
-	out += chart_svg()
-	out += "<p><font color='#4caf50'>&#9632;</font> supply &nbsp; <font color='#ffb300'>&#9632;</font> demand. The chart updates every second while you stand by the meter.</p>"
-	out += "</body></html>"
-	return out.Join()
-
-/obj/structure/power_meter/proc/show(mob/M)
-	show_browse(M, report_html(), "window=power_meter_\ref[src];size=420x320")
-
-/obj/structure/power_meter/Topic(href, href_list)
-	if (href_list["close"])
-		readers -= usr
-		return
-	..()
+/obj/structure/power_meter/ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = TRUE)
+	open_panel(user, name, 440, 540, report_sections(), ui = ui, force_open = force_open)
 
 /obj/structure/power_meter/attack_hand(mob/user)
 	if (!ishuman(user) || get_dist(user, src) > 1)
@@ -190,8 +164,7 @@ var/global/list/power_meters = list()
 	if (in_service() && !supply_log.len)
 		sample()
 	readers |= user
-	show(user)
-	onclose(user, "power_meter_\ref[src]", src)
+	ui_interact(user)
 
 /obj/structure/power_meter/attackby(obj/item/W, mob/user)
 	var/mob/living/human/H = user

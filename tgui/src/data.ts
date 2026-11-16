@@ -32,7 +32,10 @@ export type PanelSection = {
   title?: string; notes?: string[]; empty?: string; buttons?: PanelButton[];
   rows?: { label?: string; value?: string | number; tone?: string; buttons?: PanelButton[] }[];
   items?: { name?: string; detail?: string; buttons?: PanelButton[] }[];
+  table?: { columns?: string[]; rows?: PanelCell[][] };
+  chart?: { series?: { label?: string; tone?: string; points?: number[] }[]; slots?: number; top?: string; left?: string; right?: string };
 };
+export type PanelCell = string | number | { text?: string; tone?: string };
 export type PanelData = { notes?: string[]; sections?: PanelSection[] };
 export type PromptData = { message?: string; choices?: string[] };
 export type KnownLanguagesData = { current_default?: string; languages?: { name?: string; prefix?: string; description?: string; is_default?: Flag }[] };

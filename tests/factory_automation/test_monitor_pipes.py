@@ -164,12 +164,14 @@ class PipeMonitorTests(unittest.TestCase):
             self.assertNotIn(forbidden, body)
 
     def test_network_table_does_not_depend_on_item_rows(self):
-        body = vm.extract(SOURCE, '/obj/structure/factory_monitor/proc/report_html')
-        self.assertEqual(body.count('return out.Join()'), 1)
-        self.assertIn('\n\tout += pipe_network_html()', body)
-        self.assertLess(body.index('pipe_network_html()'), body.index('return out.Join()'))
-        table = vm.extract(SOURCE, '/obj/structure/factory_monitor/proc/pipe_network_html')
-        self.assertIn('html_encode(row[6])', table)
+        body = vm.extract(SOURCE, '/obj/structure/factory_monitor/proc/report_sections')
+        self.assertEqual(body.count('return sections'), 1)
+        # The pipe section is added outside the machine rows branch.
+        self.assertIn('\n\tsections += list(pipe_network_section())', body)
+        self.assertLess(body.index('pipe_network_section()'), body.index('return sections'))
+        table = vm.extract(SOURCE, '/obj/structure/factory_monitor/proc/pipe_network_section')
+        self.assertIn('panel_cell(row[6]', table)
+        self.assertNotIn('show_browse(', SOURCE)
         self.assertIn('Units last step', table)
         self.assertIn('including pipes beyond', table)
         self.assertIn('fluid_networks_dirty', table)

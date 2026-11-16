@@ -28,8 +28,28 @@
 	if (buttons)
 		.["buttons"] = buttons
 
-// empty is shown when the section has neither rows nor items.
-/proc/panel_section(title, list/notes, list/rows, list/items, list/buttons, empty)
+// A table cell that carries a tone as well as its text.
+/proc/panel_cell(text, tone)
+	. = list("text" = "[text]")
+	if (tone)
+		.["tone"] = tone
+
+// A table: columns is a list of headings, rows a list of lists of cells. A cell
+// is text, a number or a panel_cell().
+/proc/panel_table(list/columns, list/rows)
+	return list("columns" = columns, "rows" = rows)
+
+// One line of a chart: points are numbers, oldest first. tone colours it.
+/proc/panel_series(label, tone, list/points)
+	return list("label" = "[label]", "tone" = tone, "points" = points)
+
+// A line chart of up to slots points per series, newest at the right edge.
+// top labels the highest value, left and right the ends of the time axis.
+/proc/panel_chart(list/series, slots, top, left, right)
+	return list("series" = series, "slots" = slots, "top" = "[top]", "left" = "[left]", "right" = "[right]")
+
+// empty is shown when the section has no rows, items or table rows.
+/proc/panel_section(title, list/notes, list/rows, list/items, list/buttons, empty, list/table, list/chart)
 	. = list()
 	if (title)
 		.["title"] = "[title]"
@@ -43,6 +63,10 @@
 		.["buttons"] = buttons
 	if (empty)
 		.["empty"] = "[empty]"
+	if (table)
+		.["table"] = table
+	if (chart)
+		.["chart"] = chart
 
 // Opens or refreshes this owner's panel. sections is a list of panel_section().
 /datum/proc/open_panel(mob/user, title, width, height, list/sections, list/notes, ui_key = "main", datum/nanoui/ui, force_open = TRUE, state, auto_update = FALSE)

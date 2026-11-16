@@ -53,6 +53,10 @@ frontend change or rebuild is needed.
   `ready`, `progress` and `muted`.
 - `panel_item(name, detail, buttons)` and
   `panel_section(title, notes, rows, items, buttons, empty)`.
+- A section can also carry `table = panel_table(columns, rows)`, whose cells
+  are text, numbers or `panel_cell(text, tone)`, and
+  `chart = panel_chart(list(panel_series(label, tone, points)), slots, top, left, right)`
+  for a line chart. The factory monitor and power meter use both.
 - Text is shown as text. Do not send HTML.
 - `tests/tgui/test_panel.py` fails when a button's action is missing from the
   same file's `ui_actions`.

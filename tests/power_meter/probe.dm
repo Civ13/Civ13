@@ -66,11 +66,17 @@ var/global/meter_failures = 0
 			M.sample()
 		meter_check("log keeps one minute", M.supply_log.len, 60)
 		meter_check("demand log keeps one minute", M.demand_log.len, 60)
-		var/html = M.report_html()
-		meter_check("page shows supply in kW", findtext(html, "Supply: <b>100 kW</b>") ? 1 : 0, 1)
-		meter_check("page shows load", findtext(html, "Load: <b>10%</b>") ? 1 : 0, 1)
-		meter_check("page draws two lines", length(splittext(html, "<polyline")) - 1, 2)
-		text2file(html, "meter.html")
+		var/list/sections = M.report_sections()
+		var/html = json_encode(sections)
+		meter_check("page shows supply in kW", findtext(html, "{\"label\":\"Supply\",\"value\":\"100 kW\"}") ? 1 : 0, 1)
+		meter_check("page shows load", findtext(html, "{\"label\":\"Load\",\"value\":\"10%\"}") ? 1 : 0, 1)
+		var/list/chart = sections[2]["chart"]
+		var/list/series = chart["series"]
+		var/list/first_line = series[1]
+		var/list/first_points = first_line["points"]
+		meter_check("page charts two lines", series.len, 2)
+		meter_check("a line carries the whole minute", first_points.len, 60)
+		text2file(html, "meter.json")
 
 		// Unfastened: no service, and the log clears.
 		M.detach_cable()
@@ -79,7 +85,7 @@ var/global/meter_failures = 0
 		meter_check("unfastened: log cleared", M.supply_log.len, 0)
 		M.sample()
 		meter_check("unfastened: no samples taken", M.supply_log.len, 0)
-		meter_check("unfastened page asks for a cable", findtext(M.report_html(), "Not connected") ? 1 : 0, 1)
+		meter_check("unfastened page asks for a cable", findtext(json_encode(M.report_sections()), "Not connected") ? 1 : 0, 1)
 		qdel(M)
 		meter_check("destroyed meter leaves the registry", (M in power_meters) ? 1 : 0, 0)
 	catch (var/exception/ex)
