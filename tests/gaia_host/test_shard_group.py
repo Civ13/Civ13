@@ -1250,7 +1250,7 @@ class ShardGroupTests(unittest.TestCase):
         group = self.write_group()
         shard_group.setup(group, self.machine)
         gaia_host = shard_group.gaia_host
-        hosts, supervisors = gaia_host.group_hosts([str(self.path)])
+        hosts, supervisors, watches = gaia_host.group_hosts([str(self.path)])
         self.assertEqual([1720, 1721], [host.config['port'] for host in hosts])
         self.assertEqual(['region:gaia', 'region:deep'], [host.config['task'] for host in hosts])
         self.assertEqual(1, len(supervisors))

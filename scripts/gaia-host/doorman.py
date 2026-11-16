@@ -153,8 +153,10 @@ def is_loopback(address):
     return (mapped or ip).is_loopback
 
 class Doorman:
-    def __init__(self, hosts, platform, clock=time.monotonic, wall=time.time, supervisors=()):
+    def __init__(self, hosts, platform, clock=time.monotonic, wall=time.time, supervisors=(), groups=()):
         self.instances = {}
+        # Group configs that may change while we serve (gaia_host.GroupWatch): see reload_groups.
+        self.groups = list(groups)
         # Callables that restart a group's helper processes if they died; each
         # returns a dict of what it started (empty when everything was running).
         self.supervisors = list(supervisors)
@@ -400,11 +402,48 @@ class Doorman:
                 continue
             threading.Thread(target=self.serve_connection, args=(connection, peer[0]), daemon=True).start()
 
+    def reload_groups(self):
+        """Take the new region hosts of a group whose config file changed (a region moved to
+        another port, or the front door moved: scripts/shard-group/group_ports.py). What we
+        know of a region (its last status, how long it has been idle) follows it to its new
+        port. A change that would put two worlds on one port is refused and reported."""
+        for watch in self.groups:
+            changed = watch.poll()
+            if changed is None:
+                continue
+            old, new = changed
+            with self.lock:
+                kept = {port: instance for port, instance in self.instances.items()
+                        if not any(instance.host is host for host in old)}
+                known = {instance.host.config.get('region'): instance for instance in self.instances.values()
+                         if any(instance.host is host for host in old)}
+                fresh = {}
+                for host in new:
+                    port = host.config['port']
+                    if port in kept or port in fresh:
+                        fresh = None
+                        break
+                    instance = Instance(host)
+                    before = known.get(host.config.get('region'))
+                    if before is not None:
+                        for name in ('status', 'region', 'status_at', 'idle_since'):
+                            setattr(instance, name, getattr(before, name))
+                    fresh[port] = instance
+                if fresh is None:
+                    print(json.dumps({'group_reload_refused': 'two worlds would share a port', 'time': int(self.wall())}), flush=True)
+                    continue
+                kept.update(fresh)
+                self.instances = kept
+            print(json.dumps({'group_reloaded': sorted(fresh), 'instances': sorted(self.instances), 'time': int(self.wall())}), flush=True)
+
     # -- the watch loop for every instance -----------------------------------
     def step(self):
         """One pass over every instance; returns seconds until the next pass."""
         now = self.clock()
         soonest = 30.0
+        if self.groups:
+            self.reload_groups()
+            soonest = 5.0  # a port change waits for us to load the new ports
         if self.supervisors and now >= self.next_supervise:
             self.next_supervise = now + SUPERVISE_SECONDS
             for supervise in self.supervisors:

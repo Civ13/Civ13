@@ -18,6 +18,9 @@ build, config and map_saves, so regions never share a save or a lock:
     python shard_group.py --config group.json expedition-land --region ID --template T.json [--key X,Y]
     python shard_group.py --config group.json expedition-archive --region ID
     python shard_group.py --config group.json expedition-status
+    python shard_group.py --config group.json ports                         # every port, who holds it, clashes
+    python shard_group.py --config group.json set-gate --region ID [--apply]  # make ID the front door (group_ports.py)
+    python shard_group.py --config group.json set-port --region ID --port N [--apply]
 
 Sleeping (freeze after idle, wake on a connection or a launcher request, cold
 start after a power-down) is done by the host service:
@@ -61,13 +64,14 @@ sys.path.insert(0, str(HERE))
 import expedition_slots  # noqa: E402
 import fresh_world  # noqa: E402
 import group_fresh_world  # noqa: E402
+import group_ports  # noqa: E402
 from shard_map_selection import select_map_block  # noqa: E402
 
 GROUP_ACTIONS = ('setup', 'status', 'start', 'stop', 'restart', 'update', 'freeze', 'thaw', 'adopt', 'check-update',
                  'kill', 'force-restart', 'stage', 'enrol', 'help-status', 'help-start', 'help-stop', 'unlock', 'force-unlock',
                  'config-apply', 'config-migrate', 'handover', 'epoch', 'fresh-world', 'group-fresh-world', 'update-offline',
                  'update-unsaved', 'expedition-land', 'expedition-archive', 'expedition-status', 'expedition-open',
-                 'players', 'send-players', 'magic-whitelist')
+                 'players', 'send-players', 'magic-whitelist', 'ports', 'set-gate', 'set-port')
 # send-players landings (region_admin_send.dm): the nearest dry shore facing the source,
 # exact coordinates, or the destination's normal arrival point.
 SEND_LANDINGS = ('shore', 'coords', 'arrival')
@@ -132,7 +136,12 @@ MAX_REGIONS = 16
 
 
 def load_group(path):
-    group = json.loads(Path(path).read_text(encoding='utf-8-sig'))
+    return check_group(json.loads(Path(path).read_text(encoding='utf-8-sig')), path)
+
+
+def check_group(group, path):
+    """Validate a group config read from path and fill in its defaults (load_group).
+    group_ports checks a planned change with it before anything is written."""
     # A live group hosts the live server itself, so it may use its port.
     if type(group.setdefault('live', False)) is not bool:
         raise ValueError('live must be true or false')
@@ -253,6 +262,9 @@ def load_group(path):
             raise ValueError('only a RAID region can reset (region %s)' % r['id'])
     if group.get('python') is not None and (type(group['python']) is not str or not group['python']):
         raise ValueError('python must be a path')
+    # The CivilizationBot profile.json that watches the gate; set-gate repoints it (group_ports).
+    if group.get('bot_profile') is not None and (type(group['bot_profile']) is not str or not group['bot_profile']):
+        raise ValueError('bot_profile must be a path')
     group.setdefault('python', sys.executable)
     if group.get('rust_g') is not None and (type(group['rust_g']) is not str or not group['rust_g']):
         raise ValueError('rust_g must be a path')
@@ -1870,44 +1882,7 @@ def setup(group, platform=None, region_id=None):
             if code != 0:
                 raise Refused('worktree for %s failed: %s' % (region['id'], out.strip()[-300:]))
             made.append(region['id'])
-        (path / 'map_saves').mkdir(exist_ok=True)
-        config = path / 'config'
-        config.mkdir(exist_ok=True)
-        settings = {'group': group['group'], 'region': region['id'], 'regions': directory(group), 'mainland': group['mainland'],
-                    'start_region': group['start_region'],
-                    'save_minutes': group['save_minutes'] if group['persistent'] and not region['reset_minutes'] and region['kind'] not in ('EVENT', 'TUTORIAL') else 0,
-                    'travel_save_seconds': group['travel_save_seconds'], 'reset_minutes': region['reset_minutes'],
-                    # The host service's doorman on this machine; regions ask it which peers
-                    # sleep (a direct poll would wake them) and to wake one for a traveller.
-                    'doorman': '127.0.0.1:%d' % group.get('doorman_port', gaia_host.FREEZE_DEFAULTS['doorman_port'])}
-        if group['relay_port']:
-            settings.update(relay_settings(group))
-            (config / 'relay-token.txt').write_text(relay_token(group) + '\n', encoding='utf-8')
-        (config / 'shard_region.json').write_text(json.dumps(settings, indent=1) + '\n', encoding='utf-8')
-        write_operator_agent(group, path)
-        if any(r['kind'] == 'BARRACKS' for r in group['regions']) and region['kind'] in ('BARRACKS', 'BATTLE'):
-            (config / 'tdm-token.txt').write_text(group_token(group, 'tdm-token.txt') + '\n', encoding='utf-8')
-        if any(r['kind'] == 'EVENT' for r in group['regions']):
-            # Every region: home worlds and the event world tell each other who went where.
-            (config / 'event-token.txt').write_text(group_token(group, 'event-token.txt') + '\n', encoding='utf-8')
-        if region['kind'] == 'BATTLE':
-            # What scripts/shard-group/battle_mapswap.py needs to build the next voted map.
-            build = {'root': str(Path(group['root']).resolve()), 'region': region['id'], 'git': group['git'],
-                     'compiler': group['compiler']}
-            (config / 'shard_build.json').write_text(json.dumps(build, indent=1) + '\n', encoding='utf-8')
-        token = config / 'lifecycle-token.txt'
-        if not token.exists():
-            token.write_text(secrets.token_hex(16) + '\n', encoding='utf-8')
-        if group['transfers']:
-            secret = config / 'transfer-token.txt'
-            if not secret.exists():
-                secret.write_text(secrets.token_hex(24) + '\n', encoding='utf-8')
-            peers = [r['id'] for r in group['regions'] if r['id'] != region['id']]
-            agent = {'port': region['transfer_port'], 'token_file': 'config/transfer-token.txt', 'peers': peers, 'poll_seconds': 5}
-            (config / 'transfer_agent.json').write_text(json.dumps(agent, indent=1) + '\n', encoding='utf-8')
-        host = region_config(group, region)
-        Path(host['state_dir']).mkdir(parents=True, exist_ok=True)
-        write_json_atomic(Path(host['_path']), host)
+        write_region_files(group, region, path)
     result = {'revision': revision, 'created': made, 'regions': [r['id'] for r in group['regions']]}
     if region_id is not None:
         result['region'] = region_id
@@ -1916,6 +1891,49 @@ def setup(group, platform=None, region_id=None):
         if group['relay_port']:
             result['relay_ports'] = relay_add_ports(group)
     return result
+
+
+def write_region_files(group, region, path):
+    """Write everything setup generates for one region: its shard_region.json, tokens,
+    transfer agent settings and host config. Safe to repeat; existing tokens are kept."""
+    (path / 'map_saves').mkdir(exist_ok=True)
+    config = path / 'config'
+    config.mkdir(exist_ok=True)
+    settings = {'group': group['group'], 'region': region['id'], 'regions': directory(group), 'mainland': group['mainland'],
+                'start_region': group['start_region'],
+                'save_minutes': group['save_minutes'] if group['persistent'] and not region['reset_minutes'] and region['kind'] not in ('EVENT', 'TUTORIAL') else 0,
+                'travel_save_seconds': group['travel_save_seconds'], 'reset_minutes': region['reset_minutes'],
+                # The host service's doorman on this machine; regions ask it which peers
+                # sleep (a direct poll would wake them) and to wake one for a traveller.
+                'doorman': '127.0.0.1:%d' % group.get('doorman_port', gaia_host.FREEZE_DEFAULTS['doorman_port'])}
+    if group['relay_port']:
+        settings.update(relay_settings(group))
+        (config / 'relay-token.txt').write_text(relay_token(group) + '\n', encoding='utf-8')
+    write_json_atomic(config / 'shard_region.json', settings)  # a running world may be rereading it (reload_group)
+    write_operator_agent(group, path)
+    if any(r['kind'] == 'BARRACKS' for r in group['regions']) and region['kind'] in ('BARRACKS', 'BATTLE'):
+        (config / 'tdm-token.txt').write_text(group_token(group, 'tdm-token.txt') + '\n', encoding='utf-8')
+    if any(r['kind'] == 'EVENT' for r in group['regions']):
+        # Every region: home worlds and the event world tell each other who went where.
+        (config / 'event-token.txt').write_text(group_token(group, 'event-token.txt') + '\n', encoding='utf-8')
+    if region['kind'] == 'BATTLE':
+        # What scripts/shard-group/battle_mapswap.py needs to build the next voted map.
+        build = {'root': str(Path(group['root']).resolve()), 'region': region['id'], 'git': group['git'],
+                 'compiler': group['compiler']}
+        (config / 'shard_build.json').write_text(json.dumps(build, indent=1) + '\n', encoding='utf-8')
+    token = config / 'lifecycle-token.txt'
+    if not token.exists():
+        token.write_text(secrets.token_hex(16) + '\n', encoding='utf-8')
+    if group['transfers']:
+        secret = config / 'transfer-token.txt'
+        if not secret.exists():
+            secret.write_text(secrets.token_hex(24) + '\n', encoding='utf-8')
+        peers = [r['id'] for r in group['regions'] if r['id'] != region['id']]
+        agent = {'port': region['transfer_port'], 'token_file': 'config/transfer-token.txt', 'peers': peers, 'poll_seconds': 5}
+        (config / 'transfer_agent.json').write_text(json.dumps(agent, indent=1) + '\n', encoding='utf-8')
+    host = region_config(group, region)
+    Path(host['state_dir']).mkdir(parents=True, exist_ok=True)
+    write_json_atomic(Path(host['_path']), host)
 
 
 def relay_add_ports(group, send=None):
@@ -2215,12 +2233,15 @@ def ensure_coordinator(group, start=detach, refresh=False, terminate=None):
     # Ships' courses open lands in these (docs/expedition-slots.md); a slot added
     # to the group restarts the coordinator like new code does.
     slots = [r['id'] for r in group['regions'] if r['kind'] == 'EXPEDITION']
+    agents = {r['id']: r['transfer_port'] for r in group['regions']}
     pid = coordinator_pid(group)
     if pid:
         record = read_record(root / 'coordinator.json')
         # A new mainland or start region (the launcher's Start region) restarts it too.
         # A record from before either was kept counts as the current value.
+        # So does a region whose agent moved to another port (set-port --transfer-port).
         if not refresh or (record.get('code') == code and record.get('slots', []) == slots
+                           and record.get('agents', agents) == agents
                            and record.get('mainland', group['mainland']) == group['mainland']
                            and record.get('start_region', group['mainland']) == group['start_region']):
             return False
@@ -2240,7 +2261,7 @@ def ensure_coordinator(group, start=detach, refresh=False, terminate=None):
     pid = start(argv, root, root / 'coordinator.log')
     (root / 'coordinator.pid').write_text('%d\n' % pid, encoding='utf-8')
     write_record(root / 'coordinator.json', pid=pid, code=code, slots=slots, mainland=group['mainland'],
-                 start_region=group['start_region'])
+                 start_region=group['start_region'], agents=agents)
     return True
 
 
@@ -2923,6 +2944,18 @@ def magic_whitelist(group, add=None, remove=None):
     return {'file': str(path), 'keys': sorted(keys), 'added': changed['added'], 'removed': changed['removed']}
 
 
+class _ThisModule:
+    """This module as group_ports sees it (it cannot import us back: we may be __main__)."""
+    def __getattr__(self, name):
+        try:
+            return globals()[name]
+        except KeyError:
+            raise AttributeError(name)
+
+
+_THIS = _ThisModule()
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('--config', required=True)
@@ -2942,7 +2975,13 @@ def main(argv=None):
     parser.add_argument('--send', action='store_true', help='send-players: really send (without it, only the dry run)')
     parser.add_argument('--add', help='magic-whitelist: player keys to add, comma separated')
     parser.add_argument('--remove', help='magic-whitelist: player keys to remove, comma separated')
+    parser.add_argument('--port', type=int, help='set-port: the game port')
+    parser.add_argument('--transfer-port', type=int, help='set-port: the transfer agent port')
+    parser.add_argument('--standby-port', type=int, help='set-port: the handover standby port')
+    parser.add_argument('--apply', action='store_true', help='set-gate, set-port: carry the plan out (without it, only the plan)')
+    parser.add_argument('--bot-profile', help='set-gate: the bot profile.json to repoint (default: the group\'s bot_profile)')
     parser.add_argument('--worker', nargs=2, metavar=('ACTION', 'OPERATION'), help=argparse.SUPPRESS)
+    parser.add_argument('--ports-worker', metavar='OPERATION', help=argparse.SUPPRESS)
     args = parser.parse_args(argv)
     if args.worker:
         # A detached worker is started with one region's own host.json.
@@ -2954,6 +2993,10 @@ def main(argv=None):
     except (OSError, ValueError) as error:
         print(json.dumps({'ok': False, 'error': 'config: %s' % error}))
         return 2
+    this = _THIS
+    if args.ports_worker:
+        # The detached worker of set-gate / set-port --apply (group_ports.apply).
+        return 0 if group_ports.work(this, group, args.ports_worker) else 1
     if not args.action:
         parser.error('an action is required')
     try:
@@ -3010,6 +3053,17 @@ def main(argv=None):
             if args.region:
                 raise Refused('the magic whitelist is shared by the whole group; leave out --region')
             result = magic_whitelist(group, args.add, args.remove)
+        elif args.action == 'ports':
+            result = group_ports.report(this, group)
+        elif args.action in ('set-gate', 'set-port'):
+            if not args.region:
+                parser.error('%s needs --region' % args.action)
+            if args.action == 'set-gate':
+                plan = group_ports.plan_gate(this, group, args.region, bot_profile=args.bot_profile)
+            else:
+                plan = group_ports.plan_port(this, group, args.region, args.port, args.transfer_port, args.standby_port,
+                                             bot_profile=args.bot_profile)
+            result = group_ports.apply(this, group, plan) if args.apply else {'plan': plan, 'applied': False}
         elif args.action == 'config-migrate':
             result = migrate_config(group)
         elif args.action == 'expedition-land':

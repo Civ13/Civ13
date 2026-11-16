@@ -140,6 +140,8 @@ var/global/datum/nomads_lifecycle_control/nomads_lifecycle = new
 	if(action == "set_epoch") allowed = list("nomads_lifecycle", "token", "action", "epoch")
 	// The launcher's Players dialog (shard_group.py players / send-players, region_admin_send.dm).
 	if(action == "players") allowed = list("nomads_lifecycle", "token", "action")
+	// A port or the front door moved (scripts/shard-group/group_ports.py): read the directory again.
+	if(action == "reload_group") allowed = list("nomads_lifecycle", "token", "action")
 	if(action == "send_players")
 		allowed = list("nomads_lifecycle", "token", "action", "ckeys", "to", "landing", "dry_run")
 		for(var/optional in list("at", "ship"))
@@ -147,13 +149,17 @@ var/global/datum/nomads_lifecycle_control/nomads_lifecycle = new
 	if((action == "save_shutdown" || action == "maintenance_save_shutdown") && ("expected_persistence" in input)) allowed += "expected_persistence"
 	// The players' warning before the save, in whole seconds (0-3600); status advertises it as shutdown_warning.
 	if((action == "save_shutdown" || action == "handover_save") && ("warn" in input)) allowed += "warn"
-	if(input["nomads_lifecycle"] != "1" || input.len != allowed.len || !(action in list("status", "save_idle", "save_shutdown", "maintenance_save_shutdown", "maintenance_failed", "diagnose", "handover_save", "handover_release", "handover_cancel", "standby_load", "standby_open", "set_epoch", "players", "send_players")))
+	if(input["nomads_lifecycle"] != "1" || input.len != allowed.len || !(action in list("status", "save_idle", "save_shutdown", "maintenance_save_shutdown", "maintenance_failed", "diagnose", "handover_save", "handover_release", "handover_cancel", "standby_load", "standby_open", "reload_group", "set_epoch", "players", "send_players")))
 		return json_encode(snapshot(FALSE, "malformed_request"))
 	for(var/key in input)
 		if(!(key in allowed)) return json_encode(snapshot(FALSE, "malformed_request"))
 	if(action == "status") return json_encode(snapshot())
 	if(action == "save_idle") return json_encode(save_idle())
 	if(action == "set_epoch") return json_encode(host_set_epoch(input["epoch"]))
+	if(action == "reload_group")
+		var/list/reloaded = snapshot()
+		reloaded["reload"] = shard_group ? shard_group.reload_directory() : "refused:no_group"
+		return json_encode(reloaded)
 	if(action == "players" || action == "send_players")
 		var/list/state = snapshot()
 		if(!map || !ticker || ticker.current_state < GAME_STATE_PLAYING)

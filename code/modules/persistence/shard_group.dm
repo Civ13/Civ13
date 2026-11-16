@@ -170,6 +170,66 @@ var/global/datum/shard_group/shard_group = new
 	last_error = null
 	return TRUE
 
+// The host moved a region to another port, or made another region the front door
+// (scripts/shard-group/group_ports.py), and rewrote config/shard_region.json while
+// this world kept running. Takes the new addresses, the gate and the relay from
+// the file without a restart: what is known of each peer (state, players) stays.
+// A file for another group or region, or one that does not validate, changes
+// nothing. Returns "reloaded" or "refused:<reason>".
+/datum/shard_group/proc/reload_directory()
+	if(!enabled)
+		return "refused:not_in_a_group"
+	if(!fexists("config/shard_region.json"))
+		return "refused:no_file"
+	var/list/settings
+	try
+		settings = json_decode(file2text("config/shard_region.json"))
+	catch
+		return "refused:not_json"
+	if(!islist(settings) || settings["group"] != group || settings["region"] != region || !islist(settings["regions"]))
+		return "refused:another_region"
+	var/list/regions = settings["regions"]
+	if(regions.len < 1 || regions.len > SHARD_MAX_REGIONS)
+		return "refused:region_count"
+	var/list/found = list()
+	var/list/seen_addresses = list()
+	for(var/list/entry in regions)
+		if(!islist(entry) || !shard_id_valid(entry["id"]) || (entry["id"] in found) || !istext(entry["name"]) || !length(entry["name"]) || length(entry["name"]) > 64)
+			return "refused:bad_region"
+		if(!shard_address_valid(entry["address"]) || (entry["address"] in seen_addresses))
+			return "refused:bad_address"
+		found += entry["id"]
+		seen_addresses += entry["address"]
+	if(!(region in found))
+		return "refused:another_region"
+	for(var/list/entry in regions)
+		if(entry["id"] == region)
+			address = entry["address"]
+			continue
+		var/list/peer = peers[entry["id"]]
+		if(!peer)
+			// A region added since this world started.
+			order += entry["id"]
+			peers[entry["id"]] = list("name" = entry["name"], "kind" = entry["kind"], "address" = entry["address"], "state" = "UNKNOWN", "players" = null, "map" = null, "checked" = null)
+			continue
+		if(peer["address"] != entry["address"])
+			peer["address"] = entry["address"]
+			// Whatever answered on the old port was another world: ask again.
+			peer["state"] = "UNKNOWN"
+			peer["checked"] = null
+	if(istext(settings["mainland"]) && (settings["mainland"] in found))
+		mainland = settings["mainland"]
+	if(istext(settings["start_region"]) && (settings["start_region"] in found))
+		start_region = settings["start_region"]
+	configure_relay(settings)
+	// The shared admins file and magic whitelist follow the gate (admins_file(), magic_whitelist_file()).
+	admins_file_path = null
+	magic_whitelist_path = null
+	magic_whitelist_read_at = -1
+	load_admins()
+	world.log << "Region group: directory reloaded; the front door is [gate ? gate : mainland]."
+	return "reloaded"
+
 // A region's display name: this one, a peer's, or the id when unknown.
 /datum/shard_group/proc/region_name(id)
 	if(id == region)
