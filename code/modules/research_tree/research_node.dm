@@ -1082,6 +1082,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/wrench" = "basic_tools",
 		"/obj/structure/fishing_cage" = "basic_tools",
 		"/obj/structure/fish_pen" = "basic_tools",
+		"/obj/item/weapon/smoke_bundle" = "basic_tools",
 		"/obj/item/weapon/trap_kit/snare" = "basic_tools",
 		"/obj/item/weapon/trap_kit/deadfall" = "basic_tools",
 		"/obj/item/weapon/trap_kit/weir" = "basic_tools",

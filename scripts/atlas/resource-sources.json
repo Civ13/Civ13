@@ -17981,6 +17981,95 @@
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified",
       "source_commit": "10a0c246"
+    },
+    {
+      "name": "Rob a wild bee nest",
+      "file": "code/modules/1713/wild_bees.dm",
+      "line": 147,
+      "inputs": [],
+      "outputs": [
+        "/obj/item/weapon/reagent_containers/food/snacks/honeycomb",
+        "/obj/item/weapon/reagent_containers/food/snacks/brood_comb"
+      ],
+      "tools": [
+        "/obj/structure/wild_bee_nest",
+        "/obj/item/weapon/smoke_bundle",
+        "/obj/item/flashlight/torch"
+      ],
+      "steps": [
+        "Find a wild bee nest in a living tree in temperate, taiga, jungle or savanna land.",
+        "Smoke it with a lit smoke bundle or torch.",
+        "Reach in by hand, or faster with a knife or axe."
+      ],
+      "conditions": "One honeycomb per try, and brood comb 25% of the time. Unsmoked, the bees chase and sting the robber. Taking the last comb empties the nest; combs refill in spring, summer or the wet season.",
+      "era": "Stone Age; no research.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified",
+      "source_commit": "90a1dab4"
+    },
+    {
+      "name": "Squeeze honeycomb",
+      "file": "code/modules/1713/wild_bees.dm",
+      "line": 389,
+      "inputs": [
+        "/obj/item/weapon/reagent_containers/food/snacks/honeycomb"
+      ],
+      "outputs": [
+        "/datum/reagent/nutriment/honey",
+        "/obj/item/weapon/crushed_comb"
+      ],
+      "tools": [
+        "/obj/item/weapon/reagent_containers/glass"
+      ],
+      "steps": [
+        "Click an open bowl, pot or bucket with a honeycomb."
+      ],
+      "conditions": "All 10 honey runs into the container; the container needs room for it.",
+      "era": "Stone Age; no research.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified",
+      "source_commit": "90a1dab4"
+    },
+    {
+      "name": "Render beeswax",
+      "file": "code/modules/1713/wild_bees.dm",
+      "line": 435,
+      "inputs": [
+        "/obj/item/weapon/crushed_comb"
+      ],
+      "outputs": [
+        "/obj/item/weapon/beeswax"
+      ],
+      "tools": [],
+      "steps": [
+        "Click a campfire, torch, candle or other open flame with the crushed comb."
+      ],
+      "conditions": "Any open flame; a 4 second wait.",
+      "era": "Stone Age; no research.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified",
+      "source_commit": "90a1dab4"
+    },
+    {
+      "name": "Dip a beeswax candle",
+      "file": "code/modules/1713/wild_bees.dm",
+      "line": 453,
+      "inputs": [
+        "/obj/item/weapon/beeswax",
+        "/obj/item/stack/material/rope"
+      ],
+      "outputs": [
+        "/obj/item/weapon/flame/candle/beeswax"
+      ],
+      "tools": [],
+      "steps": [
+        "Click the beeswax with rope."
+      ],
+      "conditions": "One beeswax and one rope make one candle that burns about 40% longer than an ordinary candle.",
+      "era": "Stone Age; no research.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified",
+      "source_commit": "90a1dab4"
     }
   ],
   "mechanism_overview": [

@@ -294,6 +294,7 @@ var/global/list/playstyle_combat_stats = list("rifle", "pistol", "bows", "machin
 /mob/living/human/proc/handle_playstyle_traits()
 	if (find_trait("Wanderer"))
 		handle_wanderer()
+	handle_allergy_traits()
 
 // Other living humans within 3 tiles, counted up to a limit.
 /mob/living/human/proc/mood_company(limit = 1)
