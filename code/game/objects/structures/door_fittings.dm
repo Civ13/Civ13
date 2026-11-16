@@ -456,8 +456,17 @@
 	update_fitting_overlays()
 	return TRUE
 
+// Some mapped door types keep their material as a name.
+/obj/structure/simple_door/proc/door_material_datum()
+	if (istype(material, /material))
+		return material
+	if (istext(material))
+		return get_material_by_name(material)
+	return null
+
 /obj/structure/simple_door/proc/door_take_down_tool()
-	if (istype(material, /material/wood) || !material || (material.name in list("bamboo", "bone", "paper", "stone", "sandstone", "marble", "cloth", "leather")))
+	var/material/M = door_material_datum()
+	if (!M || istype(M, /material/wood) || (M.name in list("bamboo", "bone", "paper", "stone", "sandstone", "marble", "cloth", "leather")))
 		return TOOL_HAMMER
 	return TOOL_WRENCH
 
@@ -522,7 +531,8 @@
 	if (!door_workable())
 		to_chat(user, SPAN_WARNING("\The [src] is locked. Unlock it before taking it down."))
 		return TRUE
-	if (istype(src, /obj/structure/simple_door/key_door/faction_door) || istype(src, /obj/structure/simple_door/blast) || !material)
+	var/material/M = door_material_datum()
+	if (istype(src, /obj/structure/simple_door/key_door/faction_door) || istype(src, /obj/structure/simple_door/blast) || !M)
 		to_chat(user, SPAN_WARNING("\The [src] can't be taken down by hand."))
 		return TRUE
 	user.visible_message(SPAN_NOTICE("[user] starts taking \the [src] off its hinges."), SPAN_NOTICE("You start taking the door down."))
@@ -533,7 +543,7 @@
 	var/turf/T = get_turf(src)
 	var/sheets = door_take_down_refund()
 	for (var/i in 1 to sheets)
-		material.place_sheet(T)
+		M.place_sheet(T)
 	if (door_closer)
 		var/fitting_type = door_fitting_item_type(door_closer)
 		if (fitting_type)
