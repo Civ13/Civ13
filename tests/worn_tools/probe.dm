@@ -163,3 +163,74 @@ var/wt_runtime_error = FALSE
 	var/obj/item/weapon/material/kitchen/utensil/knife/stale = new(old)
 	old.after_load()
 	wt_check(stale.loc == T, "an old hidden boot knife drops beside the shoe on load")
+
+	// Fire pouch: a flint inside lights a held candle against the worn pouch.
+	var/mob/living/human/wt_probe/F = new
+	F.loc = T
+	F.may_do_after = TRUE
+	var/obj/item/clothing/under/tunic = new(F)
+	F.w_uniform = tunic
+	var/obj/item/clothing/accessory/storage/belt_pouch/fire_pouch/fire = new(T)
+	var/obj/item/clothing/accessory/storage/belt_pouch/plain = new(T)
+	wt_check(tunic.can_attach_accessory(fire), "a fire pouch hangs from clothes")
+	tunic.accessories += fire
+	fire.on_attached(tunic, null)
+	tunic.accessories += plain
+	plain.on_attached(tunic, null)
+	var/obj/item/weapon/flint/firestone = new(T)
+	var/obj/item/stack/material/wood/stick = new(T)
+	wt_check(fire.hold.can_be_inserted(firestone, TRUE), "a flint goes in the fire pouch")
+	wt_check(!fire.hold.can_be_inserted(stick, TRUE), "wood does not")
+	var/obj/item/weapon/flame/candle/C = new(F)
+	F.r_hand = C
+	F.hand = FALSE
+	wt_check(!fire.light_held(C, F), "an empty fire pouch makes no spark")
+	fire.hold.handle_item_insertion(firestone, TRUE)
+	var/lit_now = FALSE
+	for (var/i in 1 to 20)
+		if (C.lit)
+			break
+		tunic.attackby(C, F)
+	lit_now = C.lit
+	wt_check(lit_now, "a candle held against clothes with a fire pouch lights from its flint")
+	wt_check(C.loc == F && !plain.hold.contents.len, "the candle stays in hand, not in the plain pouch beside it")
+	wt_check(!fire.sparking && !isflamesource(fire), "the pouch is no flame once the candle is lit")
+
+	// Fire drill in hand: an ember for a few seconds.
+	var/obj/item/weapon/flame/fire_drill/drill = new(F)
+	F.r_hand = drill
+	drill.attack_self(F)
+	wt_check(drill.lit && isflamesource(drill), "a fire drill spun in hand makes an ember")
+	drill.snuff()
+
+	// Needle case: sinew in the worn case mends a damaged garment.
+	var/obj/item/clothing/accessory/storage/needle_case/case = new(T)
+	var/obj/item/weapon/bone_needle/needle = new(T)
+	var/obj/item/stack/sinew/sinew = new(T)
+	sinew.amount = 3
+	wt_check(case.hold.can_be_inserted(needle, TRUE) && case.hold.can_be_inserted(sinew, TRUE), "the case takes a needle and sinew")
+	wt_check(!case.hold.can_be_inserted(stick, TRUE), "the case takes nothing else")
+	tunic.accessories += case
+	case.on_attached(tunic, null)
+	case.hold.handle_item_insertion(sinew, TRUE)
+	wt_check(F.needle_case_thread() == sinew, "sinew in a worn needle case is found for mending")
+	var/obj/item/clothing/under/torn = new(T)
+	torn.health = max(1, initial(torn.health) - 5)
+	F.r_hand = needle
+	needle.loc = F
+	F.l_hand = null
+	needle.afterattack(torn, F, TRUE)
+	wt_check(torn.health > max(1, initial(torn.health) - 5) && sinew.amount == 2, "the needle mends with sinew from the case")
+	var/obj/item/clothing/accessory/storage/belt_pouch/leather_box = new(T)
+	var/obj/item/stack/material/leather/hide = new(leather_box.hold)
+	tunic.accessories -= case
+	case.has_suit = null
+	wt_check(!F.needle_case_thread(), "without the case, no thread is reached (not even leather in a pouch)")
+
+	// Neck sheath: a small knife only.
+	var/obj/item/clothing/accessory/storage/sheath/neck/neck = new(T)
+	var/obj/item/weapon/material/kitchen/utensil/knife/flint/small = new(T)
+	var/obj/item/weapon/material/kitchen/utensil/knife/butcher/big = new(T)
+	wt_check(neck.hold.can_be_inserted(small, TRUE) && !neck.hold.can_be_inserted(big, TRUE), "a neck sheath takes a small knife, not a butcher knife")
+	wt_check(tunic.can_attach_accessory(neck), "a neck sheath hangs from clothes")
+	hide.loc = T

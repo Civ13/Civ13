@@ -59,9 +59,20 @@ class WornToolsSource(unittest.TestCase):
         research = read('code/modules/research_tree/research_node.dm')
         for name, path, node in (('knife sheath', '/obj/item/clothing/accessory/storage/sheath/knife', 'basic_tools'),
                                  ('boot sheath', '/obj/item/clothing/accessory/storage/sheath/fitting', 'iron_tools'),
-                                 ('sleeve sheath', '/obj/item/clothing/accessory/storage/sheath/fitting/sleeve', 'iron_tools')):
+                                 ('sleeve sheath', '/obj/item/clothing/accessory/storage/sheath/fitting/sleeve', 'iron_tools'),
+                                 ('fire pouch', '/obj/item/clothing/accessory/storage/belt_pouch/fire_pouch', 'basic_tools'),
+                                 ('neck sheath', '/obj/item/clothing/accessory/storage/sheath/neck', 'basic_tools')):
             self.assertIn(f'RECIPE: /material/leather/,{name},{path},', recipes)
             self.assertIn(f'"{path}" = "{node}"', research)
+        self.assertIn('RECIPE: /material/bone/,needle case,/obj/item/clothing/accessory/storage/needle_case,', recipes)
+        self.assertIn('RECIPE: /material/wood/,fire drill,/obj/item/weapon/flame/fire_drill,', recipes)
+
+    def test_needle_reaches_only_the_case(self):
+        needle = body(read('code/modules/1713/stone_age_arms.dm'), '/obj/item/weapon/bone_needle/afterattack(')
+        self.assertIn('H.needle_case_thread()', needle)
+        self.assertNotIn('reach_worn_tool', needle)
+        case = body(self.worn, '/mob/living/human/proc/needle_case_thread()')
+        self.assertIn('needle_case', case)
 
 
 if __name__ == '__main__':

@@ -385,7 +385,9 @@
 	var/mob/living/human/H = user
 	var/obj/item/stack/thread = H.get_inactive_hand()
 	if (!needle_mending_material(thread))
-		to_chat(H, SPAN_WARNING("Hold sinew, leather, rawhide or a pelt in your other hand to mend \the [C]."))
+		thread = H.needle_case_thread() // sinew kept in a worn needle case (worn_tools.dm)
+	if (!needle_mending_material(thread))
+		to_chat(H, SPAN_WARNING("Hold sinew, leather, rawhide or a pelt in your other hand, or keep sinew in a worn needle case, to mend \the [C]."))
 		return
 	if (C.health >= initial(C.health))
 		to_chat(H, SPAN_NOTICE("\The [C] doesn't need mending."))
@@ -393,7 +395,7 @@
 	if (!H.may_do_after)
 		return
 	to_chat(H, SPAN_NOTICE("You start stitching \the [C]..."))
-	if (!do_after(H, 80 / max(0.5, H.getStatCoeff("crafting")), C) || QDELETED(C) || QDELETED(thread) || H.get_inactive_hand() != thread || H.get_active_hand() != src || C.health >= initial(C.health))
+	if (!do_after(H, 80 / max(0.5, H.getStatCoeff("crafting")), C) || QDELETED(C) || QDELETED(thread) || (H.get_inactive_hand() != thread && H.needle_case_thread() != thread) || H.get_active_hand() != src || C.health >= initial(C.health))
 		return
 	if (!thread.use(1))
 		return
