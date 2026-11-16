@@ -158,7 +158,7 @@ var/list/gamemode_cache = list()
 	var/persistence_stream_saves = TRUE // write levels through the savestream helper when its files are present.
 	var/persistence_candidate_readback = FALSE // walk every stream level back from disk during a save's candidate check instead of checking the pinned objects.
 	// Mirrors the accepted allocator settings; the controller enforces hard bounds.
-	var/new_z_cell_budget = 2100000
+	var/new_z_cell_budget = 5300000
 	var/new_z_roof_levels = 1
 	var/new_z_instance_reserve = 0
 	var/new_z_safehouse_reserve = 0

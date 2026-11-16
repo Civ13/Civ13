@@ -11,6 +11,7 @@
 
 /obj/map_metadata/tutorial
 	dig_down_underground = FALSE // no ground to dig under (dug_underground.dm)
+	building_levels = 0 // practice rooms own the added levels here (practice_rooms.dm)
 	ID = MAP_TUTORIAL
 	title = "Tutorial"
 	description = "Guided practice rooms for new players."
