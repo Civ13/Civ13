@@ -323,6 +323,9 @@ var/list/home_comfort_categories = list(
 		text += "<br>It has [english_list(have)]."
 	if (missing.len)
 		text += "<br>It lacks [english_list(missing)]."
+	var/warmth = building_room_warmth_text(building_room_at(get_turf(src)))
+	if (warmth)
+		text += "<br>[warmth]"
 	to_chat(src, "<span class='info'>[text]</span>")
 
 #undef HOME_ROOM_LIMIT
