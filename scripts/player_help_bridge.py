@@ -98,6 +98,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Survival.md': ('d10258806571989ba1ef561be0653b673c5b3f63e169e448f0f1618efae3e868', 'survival winter cold warm freezing hypothermia shelter debris footwear boots snowshoes shoes ice mud rain wet umbrella raincoat cape storm storms lightning thunder blizzard sandstorm heat wave weather fire fires wildfire firefighting beater flapper smother burning bucket blanket extinguish smoke signal signals hook firebreak pump engine nozzle hose jet reel extinguisher'),
     'guides/Guide_to_Tanks.md': ('b900c1641222035e9a4940539ddf14501ec5d9133da22414333f7ca0c97578a6', 'tank driving crew ammunition'),
     'guides/Guide_to_Trains.md': ('d3989f8f25c1e27b7653024d80d8043783f4e24790f717a150a2084995c5bc25', 'train trains railway track locomotive station switcher rails wagon'),
+    'guides/Guide_to_Castles.md': ('2c2c9c61672cc8d98aeba434521e3bff44ef28f56f5ebc02f67910cac2c56b5c', 'castle castles defend defending siege gatehouse portcullis murder hole arrow slit battlement caltrops trapdoor'),
     'guides/Guide_to_Trenches.md': ('489f490577786cd0443c303116db8b42b01cdcc193f059c3275f4ca08b5928aa', 'trench trenches fortification sandbag dig shovel'),
     'guides/Guide_to_Weapons.md': ('a56dbe507d6b7b7a9838dbd1812d44f91fff9a197febf2bfa90dce689849c050', 'weapons gun reload ammunition'),
     'New_Player_Guide.md': ('c0d80da1236f7b15de5787584628898cc5dacddd6db97fadbe42dd5b685faee0', 'new player beginner start first round basics'),
