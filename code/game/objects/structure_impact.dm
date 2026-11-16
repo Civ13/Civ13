@@ -16,7 +16,7 @@
 	if (!name)
 		return 1
 	switch (lowertext("[name]"))
-		if ("thatch", "straw", "palm", "leaves", "cloth", "canvas", "hide", "leather", "glass", "paper")
+		if ("thatch", "straw", "palm", "leaves", "cloth", "canvas", "hide", "leather", "glass", "paper", "snow", "ice")
 			return 0.5
 		if ("clay", "adobe", "mud", "earth", "dirt", "cob", "sandbag")
 			return 1.5
@@ -179,7 +179,12 @@
 	return "concrete"
 
 /obj/structure/structure_impact_part()
-	return !isnull(health) && (istype(src, /obj/structure/roof_support) || istype(src, /obj/structure/mine_support) || istype(src, /obj/structure/simple_door) || istype(src, /obj/structure/gate) || istype(src, /obj/structure/castle_gate) || istype(src, /obj/structure/barricade))
+	return !isnull(health) && (istype(src, /obj/structure/roof_support) || istype(src, /obj/structure/mine_support) || istype(src, /obj/structure/simple_door) || istype(src, /obj/structure/gate) || istype(src, /obj/structure/castle_gate) || istype(src, /obj/structure/barricade) || istype(src, /obj/structure/bollard))
+
+// Field barriers (sandbags, jersey barriers, palisades, railings) once built.
+// A ship's rail is part of the ship, not of a building.
+/obj/structure/window/barrier/structure_impact_part()
+	return !isnull(health) && !incomplete && !istype(src, /obj/structure/window/barrier/incomplete) && !istype(src, /obj/structure/window/barrier/ship)
 
 /obj/structure/structure_impact(force, kind = IMPACT_CRUSH, atom/source = null, dir = 0)
 	if (force <= 0 || QDELETED(src) || !structure_impact_part())

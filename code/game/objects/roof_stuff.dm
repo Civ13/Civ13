@@ -460,7 +460,7 @@
 	flammable = TRUE
 	anchored = TRUE
 	opacity = FALSE
-	density = FALSE
+	density = TRUE
 	health = 100
 	not_movable = TRUE
 	not_disassemblable = FALSE
@@ -510,7 +510,7 @@
 	flammable = FALSE
 	anchored = TRUE
 	opacity = FALSE
-	density = FALSE
+	density = TRUE
 	health = 180
 	not_movable = TRUE
 	not_disassemblable = TRUE
@@ -522,7 +522,7 @@
 	flammable = FALSE
 	anchored = TRUE
 	opacity = FALSE
-	density = FALSE
+	density = TRUE
 	health = 220
 	not_movable = TRUE
 	not_disassemblable = TRUE
