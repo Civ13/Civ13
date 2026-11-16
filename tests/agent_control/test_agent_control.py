@@ -1064,7 +1064,7 @@ class AutopilotTests(unittest.TestCase):
         steps = water.next_steps(obs)[0]
         self.assertEqual(steps, [{"do": "drink_mug", "item": "wood mug"}])
         expanded, _ = autopilot.expand_plan(steps, dict(me, intent="help"), rows)
-        self.assertEqual(expanded[-1], {"do": "click", "target": "[0x9]"})
+        self.assertEqual(expanded[-1], {"do": "click", "target": "[0x9]", "zone": "mouth"})  # drinking takes the mouth
         # An unlit fire is lit first; the nearby list marks it and the puddle.
         obs["nearby"] = [puddle, dict(fire, lit=False)]
         me["items"] = [{"name": "wood mug", "liquids": {"water": 9.5, "cholera": 0.5}}]

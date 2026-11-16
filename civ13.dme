@@ -1659,6 +1659,7 @@
 #include "code\modules\reagents\reagent_containers\dropper.dm"
 #include "code\modules\reagents\reagent_containers\food.dm"
 #include "code\modules\reagents\reagent_containers\glass.dm"
+#include "code\modules\1713\body_washing.dm"
 #include "code\modules\reagents\reagent_containers\pill.dm"
 #include "code\modules\reagents\reagent_containers\pill_bottle.dm"
 #include "code\modules\reagents\reagent_containers\spray.dm"

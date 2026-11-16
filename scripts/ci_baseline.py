@@ -1487,7 +1487,8 @@ SUITES = {
             'code/__defines/mobs.dm')},
     # Dirt from work and dirty hands; source checks only.
     'hygiene_work': {'files': ('tests/hygiene_work/test_hygiene_work.py',),
-        'paths': ('tests/hygiene_work/', 'code/modules/1713/hygiene_work.dm', 'code/modules/1713/bathing.dm'), 'shared_paths': (
+        'paths': ('tests/hygiene_work/', 'code/modules/1713/hygiene_work.dm', 'code/modules/1713/bathing.dm', 'code/modules/1713/body_washing.dm'), 'shared_paths': (
+            'code/modules/1713/practice_rooms.dm', 'tools/agent-control/autopilot.py',
             'code/game/objects/structures/watercloset.dm',
             'code/modules/reagents/reagent_containers.dm',
             'code/__defines/mobs.dm',

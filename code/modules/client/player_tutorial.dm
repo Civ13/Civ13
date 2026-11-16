@@ -70,7 +70,7 @@
 		if ("atlas")
 			return "Open the Crafting Atlas (IC tab) to see what you can make."
 		if ("eat")
-			return "Eat or drink something: click yourself with it."
+			return "Eat or drink something: click yourself with it (target the mouth to drink)."
 		if ("chat")
 			return "Talk: T to speak in character, O for out-of-character."
 		if ("research")
@@ -99,7 +99,7 @@
 		if ("atlas")
 			return "Almost everything is made by hand. Use <b>Crafting Atlas</b> (IC tab) to search recipes, see what each one needs and where it is made, and look up raw materials."
 		if ("eat")
-			return "Hold some food or a drink and click yourself with it to eat or drink. Water can be drunk from rivers and wells with a container. Food spoils over time."
+			return "Hold some food and click yourself with it to eat, or hold a drink, target the mouth and click yourself to drink. Water can be drunk from rivers and wells with a container. Food spoils over time."
 		if ("chat")
 			return "Press <b>T</b> to speak in character and <b>O</b> for out-of-character chat. The tabs on the chat window (All, IC, Radio, OOC) filter messages; these tutorial steps appear under All."
 		if ("research")

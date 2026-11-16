@@ -34,11 +34,24 @@ hands.
 | Way to wash | Water | Time | Reaches |
 | --- | --- | --- | --- |
 | Hands at a sink, tap, bath or fresh water | | 2-4 s | clears dirty hands |
-| Sponge bath, bucket on yourself (30+ water) | what it holds | instant | up to 175 |
+| One body part, help intent (`body_washing.dm`) | 5 from a container | 2 s | +10 on bare skin up to 175; soap +20 up to 250 |
+| Sponge bath, bucket on yourself undressed, harm intent (30+ water) | what it holds | instant | up to 175 |
 | **Bathe** (IC verb), undressed in a river with a current | | 15 s | 200 |
 | **Bathe** in still fresh water | | 15 s | 175 |
 | Tub or shower, any material | a tubful on Persistence maps | | 200 |
 | Soap where there is water | | 4 s | 250 |
+
+Washing one part (`body_washing.dm`): the targeted part says what you mean.
+Drinking from a container, or feeding someone, needs the mouth targeted
+(`standard_feed_mob`). On help intent any other part washes: click yourself or
+someone beside you with an open container holding at least 5 clean water, or
+target the part and click a sink, tap, fountain or fresh water to wash it on
+yourself (a hand there keeps the hand wash). A hand clears dirty and bloody
+hands; another part cleans the blood off the clothes over it, or on bare skin
+adds 10 cleanliness up to 175 (20 up to 250 with soap in your other hand).
+Water halves the germs in that part's open wounds, and in the part while it is
+below the first infection level; soap disinfects the wounds. An infection that
+has set in still needs medicine. Water with food poisoning in it is refused.
 
 Bathing in foul water rolls the illness of drinking it at half the chance.
 On Persistence maps a tub or shower holds a tank (`station_water.dm`): turning
