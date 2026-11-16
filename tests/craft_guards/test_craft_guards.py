@@ -16,6 +16,7 @@ ROOT = Path(__file__).resolve().parents[2]
 EXPECTED = {
     'skill_gate/civ_generation': (10, True, True),
     'skill_gate/exercise': (20, True, True),
+    'skill_gate/cast_steel_anvil': (35, True, True),
     'skill_gate/civ_telecom': (30, True, True),
     'region_trail': (40, False, False),
     'car_workshop': (50, True, False),

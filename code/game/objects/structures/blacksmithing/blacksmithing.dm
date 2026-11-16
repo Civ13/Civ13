@@ -120,6 +120,10 @@
 	else
 		if (istype(P, /obj/item/stack/material))
 			var/obj/item/stack/material/MTR = P
+			// Steel sheets on a plain iron anvil weld on a steel face.
+			if (istype(P, /obj/item/stack/material/steel) && type == /obj/structure/anvil)
+				forge_steel_face(P, H)
+				return
 			if (!(MTR.default_type in accepted_materials))
 				to_chat(user, "<span class='warning'>You can't use this material on this anvil.</span>")
 				return
@@ -465,9 +469,66 @@
 		optlist += "flintlock parts"
 	return optlist
 
+// Steel sheets an iron anvil needs to have a steel face forge-welded on.
+#define ANVIL_STEEL_FACE_COST 5
+// Knowing any one of these research nodes lets a smith forge-weld a steel face.
+var/global/list/anvil_steel_face_nodes = list("steelmaking")
+
+// A wrought iron anvil with a hardened steel face, the way smiths worked steel
+// for centuries before solid steel anvils: weld steel sheets onto an iron anvil.
+/obj/structure/anvil/proc/forge_steel_face(obj/item/stack/material/steel/S, mob/living/human/H)
+	if (in_use || !istype(S) || !istype(H))
+		return FALSE
+	var/known = FALSE
+	for (var/node_id in anvil_steel_face_nodes)
+		if (crafting_node_allowed(H, node_id))
+			known = TRUE
+			break
+	if (!known)
+		crafting_node_allowed_or_warn(H, anvil_steel_face_nodes[1]) // says what is missing
+		return FALSE
+	if (S.amount < ANVIL_STEEL_FACE_COST)
+		to_chat(H, SPAN_WARNING("You need [ANVIL_STEEL_FACE_COST] steel sheets to forge-weld a steel face onto this iron anvil."))
+		return FALSE
+	to_chat(H, "You begin forge-welding a steel face onto the anvil...")
+	in_use = TRUE
+	update_icon()
+	playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+	if (!do_after(H, 300 / max(H.getStatCoeff("crafting"), 0.5), src) || QDELETED(S) || S.amount < ANVIL_STEEL_FACE_COST)
+		in_use = FALSE
+		update_icon()
+		return FALSE
+	S.use(ANVIL_STEEL_FACE_COST)
+	var/obj/structure/anvil/steel_faced/F = new(loc)
+	F.dir = dir
+	F.anchored = anchored
+	to_chat(H, SPAN_NOTICE("The steel face takes. The anvil can now work steel."))
+	qdel(src)
+	return TRUE
+
+#undef ANVIL_STEEL_FACE_COST
+
+// Stack recipe guard: a solid steel anvil needs the Industrial Age. Earlier
+// smiths forge-weld a steel face onto an iron anvil instead.
+/datum/craft_guard/skill_gate/cast_steel_anvil
+	order = 35
+	message = "Solid steel anvils are cast only from the Industrial Age. Until then, forge-weld a steel face onto an iron anvil by using 5 steel sheets on it."
+
+/datum/craft_guard/skill_gate/cast_steel_anvil/allowed(mob/living/human/H, result_type)
+	return !ispath(result_type, /obj/structure/anvil/steel) || (map && map.ordinal_age >= 4)
+
+/obj/structure/anvil/steel_faced
+	name = "steel-faced anvil"
+	desc = "A wrought iron anvil with a hardened steel face forge-welded onto it. Hard enough to work steel. The blacksmith's main work tool."
+	icon_state = "steelfaced_anvil"
+	base_icon = "steelfaced"
+	accepted_materials = list("copper", "tin", "gold", "silver", "lead", "bronze", "iron", "steel", "brass", "zinc")
+
+// A solid cast-steel anvil. Steel cheap enough to cast a whole anvil came only
+// with the Industrial Age, so it is crafted from then on (craft guard above).
 /obj/structure/anvil/steel
 	name = "steel anvil"
-	desc = "An advanced steel anvil. The blacksmith's main work tool."
+	desc = "A solid cast-steel anvil. The blacksmith's main work tool."
 	icon_state = "steel_anvil"
 	base_icon = "steel"
 	accepted_materials = list("copper", "tin", "gold", "silver", "lead", "bronze", "iron", "steel", "kevlar", "brass", "zinc")
