@@ -408,6 +408,13 @@ var/global/aqueduct_last_flow = -600
 			if (N && !(N in queue))
 				queue += N
 				queue[N] = list(level, is_foul)
+		// Water falls through a floor sleeve to the piece under it, with head
+		// enough to enter it; it never climbs one.
+		var/turf/below = floor_sleeve_link(T, FALSE)
+		var/obj/structure/aqueduct/D = aqueduct_piece_at(below)
+		if (D && !(D in queue))
+			queue += D
+			queue[D] = list(max(level, terrain_height_at(below)), is_foul)
 
 // Feed what stands next to a wet piece. Returns TRUE if A took water.
 /proc/aqueduct_feed(atom/A, obj/structure/aqueduct/P)

@@ -6,7 +6,7 @@
 	hub_password = ""
 	maxx = 30
 	maxy = 20
-	maxz = 1
+	maxz = 2
 	turf = /turf/floor/dirt
 	area = /area
 	visibility = 0
@@ -97,3 +97,46 @@ var/vr_runtime_error = FALSE
 	qdel(W2)
 	vr_check(QDELETED(P), "the pipe inside bursts when the wall breaks")
 	vr_check(!QDELETED(south) && !QDELETED(north), "cables outside the wall survive")
+
+	// Floor sleeves: pipes at the same spot on two levels join.
+	var/turf/up_t = locate(20, 10, 2)
+	var/turf/down_t = locate(20, 10, 1)
+	var/obj/structure/fluid_pipe/FU = new /obj/structure/fluid_pipe(up_t)
+	var/obj/structure/fluid_pipe/FD = new /obj/structure/fluid_pipe(down_t)
+	vr_check(!(FD in fluid_pipe_neighbours(FU)), "pipes on two levels do not join without sleeves")
+	new /obj/structure/floor_sleeve(up_t)
+	vr_check(!floor_sleeve_link(up_t, FALSE), "one sleeve alone joins nothing")
+	var/obj/structure/floor_sleeve/SD = new /obj/structure/floor_sleeve(down_t)
+	vr_check(floor_sleeve_link(up_t, FALSE) == down_t && floor_sleeve_link(down_t, TRUE) == up_t, "a sleeve pair links the two levels")
+	vr_check((FD in fluid_pipe_neighbours(FU)) && (FU in fluid_pipe_neighbours(FD)), "factory pipes join through sleeves both ways")
+
+	// Aqueduct water falls through a sleeve but never climbs one.
+	new /turf/floor/beach/water(locate(22, 12, 2))
+	var/obj/structure/aqueduct_intake/IU = new /obj/structure/aqueduct_intake(locate(21, 12, 2))
+	new /obj/structure/aqueduct/pipe(locate(21, 11, 2))
+	new /obj/structure/aqueduct/pipe(locate(21, 10, 2))
+	var/obj/structure/aqueduct/pipe/AU = new /obj/structure/aqueduct/pipe(locate(20, 10, 2))
+	var/obj/structure/aqueduct/pipe/AD = new /obj/structure/aqueduct/pipe(locate(20, 10, 1))
+	var/obj/structure/aqueduct/pipe/AD2 = new /obj/structure/aqueduct/pipe(locate(19, 10, 1))
+	var/list/reached = aqueduct_walk(IU)
+	vr_check(reached[AU] && reached[AD] && reached[AD2], "aqueduct water falls through the sleeve to the level below")
+	new /turf/floor/beach/water(locate(17, 10, 1))
+	var/obj/structure/aqueduct_intake/ID = new /obj/structure/aqueduct_intake(locate(18, 10, 1))
+	reached = aqueduct_walk(ID)
+	vr_check(reached[AD] && !reached[AU], "aqueduct water does not climb a sleeve")
+
+	// Drains: waste falls through a sleeve, never up.
+	var/obj/structure/sewer_piece/drain/DU = new /obj/structure/sewer_piece/drain(locate(25, 15, 2))
+	var/obj/structure/sewer_piece/drain/DD = new /obj/structure/sewer_piece/drain(locate(25, 15, 1))
+	new /obj/structure/floor_sleeve(locate(25, 15, 2))
+	new /obj/structure/floor_sleeve(locate(25, 15, 1))
+	var/datum/callback/never = CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(building_probe_never))
+	vr_check(DD in sewer_walk(list(DU), never), "waste falls through a sleeve to the drain below")
+	vr_check(!(DU in sewer_walk(list(DD), never)), "waste does not climb a sleeve")
+
+	// Taking a sleeve away parts the levels.
+	qdel(SD)
+	vr_check(!floor_sleeve_link(up_t, FALSE) && !(FD in fluid_pipe_neighbours(FU)), "removing a sleeve parts the pipes")
+
+/proc/building_probe_never(obj/O)
+	return FALSE

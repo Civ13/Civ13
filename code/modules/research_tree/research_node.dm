@@ -968,6 +968,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/aqueduct_intake/noria" = "irrigation",
 		"/obj/structure/sink/aqueduct_fountain" = "irrigation",
 		"/obj/structure/aqueduct/pipe" = "irrigation",
+		"/obj/structure/floor_sleeve" = "irrigation",
 		// --- basic_agriculture (12) ---
 		"/obj/structure/water_lift/shaduf" = "basic_agriculture",
 		"/obj/structure/river_gauge" = "basic_agriculture",
