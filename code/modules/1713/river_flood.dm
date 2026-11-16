@@ -236,7 +236,10 @@ var/global/next_river_flood_tick = 0
 	if (!islist(state) || state.len < count * 2 + 1 || state[1] != count)
 		return FALSE
 	var/marks = state.len >= count * 3 + 1
-	if (state.len != count * 2 + 1 && state.len != count * 3 + 1 && !(state.len > count * 3 + 1 && isnum(state[count * 3 + 2]) && state.len == count * 3 + 2 + state[count * 3 + 2]))
+	// After the marks: the hollows block, then the foul load of each reach.
+	var/hollows_end = state.len > count * 3 + 1 && isnum(state[count * 3 + 2]) ? count * 3 + 2 + state[count * 3 + 2] : 0
+	var/has_foul = hollows_end && state.len == hollows_end + count
+	if (state.len != count * 2 + 1 && state.len != count * 3 + 1 && !(hollows_end && (state.len == hollows_end || has_foul)))
 		return FALSE
 	for (var/i in 1 to count)
 		var/s = state[i + 1]
@@ -253,7 +256,14 @@ var/global/next_river_flood_tick = 0
 		peak[i] = marks ? clamp(state[count * 2 + i + 1], RIVER_FLOOD_STAGE_MIN, RIVER_FLOOD_STAGE_CAP) : stage[i]
 	// Hollow water (flood_hollows.dm); a save from before hollows, or from a
 	// flood file with other hollows, starts them dry.
-	restore_hollows(state.len > count * 3 + 1 ? state.Copy(count * 3 + 2) : null)
+	restore_hollows(hollows_end ? state.Copy(count * 3 + 2, hollows_end + 1) : null)
+	foul = null
+	foul_ready()
+	if (has_foul)
+		for (var/i in 1 to count)
+			var/v = state[hollows_end + i]
+			foul[i] = isnum(v) && v > 0 ? v : 0
+	foul_update_shown()
 	stages_changed()
 	return TRUE
 
@@ -283,6 +293,10 @@ var/global/next_river_flood_tick = 0
 	. += hollow_count
 	for (var/i in 1 to hollow_count)
 		. += round(hollow_volume[i], 0.001)
+	// Foul load per reach (river_foul.dm).
+	foul_ready()
+	for (var/i in 1 to count)
+		. += round(foul[i], 0.0001)
 
 // Big rivers rise furthest: a stream draining a few hundred tiles moves about
 // half as much for the same rain.
@@ -372,6 +386,7 @@ var/global/next_river_flood_tick = 0
 	// Grading and walls built since the last tick (flood_ground.dm).
 	F.process_windows()
 	F.step_minute()
+	F.step_foul() // river_foul.dm
 	F.publish()
 
 // Stage of the reach a tile belongs to, in levels above normal (0 without a sidecar).

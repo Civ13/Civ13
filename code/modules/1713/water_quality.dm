@@ -12,6 +12,12 @@
 #define WATER_STAGNANT_GERMS 1.5
 
 /turf/floor/beach/water/proc/water_germ_level()
+	. = water_kind_germs()
+	// What a river carries down from upstream (river_foul.dm).
+	if (!salty)
+		. += river_foul_germs(src)
+
+/turf/floor/beach/water/proc/water_kind_germs()
 	if (sickness <= 0)
 		return 0
 	// Swamps and floodwater stay as foul as they are, moving or not.
@@ -33,7 +39,7 @@
 		return "The water is thick with mud."
 	if (river_current_direction(src))
 		return sickness > 1 ? "The water is brown with silt, but it keeps moving." : "The water runs clear and quick."
-	if (water_germ_level() > sickness)
+	if (water_kind_germs() > sickness)
 		return "The water lies still and warm, green at the edges."
 	return "The water lies still."
 
@@ -43,6 +49,8 @@
 		var/reading = water_quality_reading()
 		if (reading)
 			to_chat(user, reading)
+		if (!salty && river_fouled_at(src))
+			to_chat(user, SPAN_WARNING("There is scum on the water. Something upstream is fouling it."))
 
 #undef WATER_STAGNANT_HEAT
 #undef WATER_STAGNANT_GERMS
