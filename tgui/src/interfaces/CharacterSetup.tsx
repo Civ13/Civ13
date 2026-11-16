@@ -143,7 +143,8 @@ function Cost({ cost }: { cost: number }) {
 const kinds = [['all', 'All'], ['perk', 'Perks'], ['drawback', 'Drawbacks'], ['free', 'Free']] as const;
 function TraitCard({ ui, trait, group, strip }: { ui: UI; trait: SetupTrait; group: string[] | null; strip: boolean }) {
   const name = str(trait.name), conflicts = list(trait.conflicts).map(other => str(other)), taken = !!trait.taken, block = trait.block ? str(trait.block) : '';
-  const desc = strip ? str(trait.desc).replace(/^Playstyle\.\s*/, '') : str(trait.desc);
+  // A pick-one group's heading already says what its traits are.
+  const desc = strip ? str(trait.desc).replace(/^(Playstyle|Field of study)\.\s*/, '') : str(trait.desc);
   // In a pick-one group the swap is plain from the button; only name what else would go.
   const outside = group ? conflicts.filter(other => !group.includes(other)) : conflicts;
   let button: ReactNode;
@@ -209,7 +210,7 @@ function Traits({ ui }: { ui: UI }) {
       <div className="setup-main">
         {shown.map(({ category, rows }) => <Section key={str(category.id)} title={str(category.title)} buttons={category.pick_one ? <Pill tone="info">Pick one</Pill> : undefined}>
           {!!category.note && <p className="kit-hint">{str(category.note)}</p>}
-          <div className="setup-traits">{rows.map(trait => <TraitCard key={str(trait.name)} ui={ui} trait={trait} group={category.pick_one ? list(category.traits).map(other => str(other.name)) : null} strip={str(category.id) === 'playstyle'} />)}</div>
+          <div className="setup-traits">{rows.map(trait => <TraitCard key={str(trait.name)} ui={ui} trait={trait} group={category.pick_one ? list(category.traits).map(other => str(other.name)) : null} strip={!!category.pick_one} />)}</div>
         </Section>)}
         {!shown.length && <NoticeBox>No trait matches.</NoticeBox>}
       </div>
