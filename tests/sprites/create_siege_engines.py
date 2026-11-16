@@ -3,8 +3,9 @@
 
   icons/obj/siege_engines.dmi (32x32): the battering ram and its swing, the
       ballista (unloaded and loaded), its loose bolt and the bolt in flight,
-      the gate winch, the portcullis (closed, open, moving), the drawbridge
-      (down and up) and the murder hole.
+      the gate winch, the portcullis (closed, open, moving), the sections of
+      a portcullis several tiles wide, the drawbridge (down and up) and the
+      murder hole.
   icons/obj/trebuchet.dmi (64x64): trebuchet0, trebuchet1, trebuchet_fire.
   icons/obj/siege_tower.dmi (64x64): siege_tower, siege_tower_bridge.
 
@@ -22,7 +23,9 @@ facing one still fits in the cell.
 
 Run with Pillow to reproduce the sheets. `--check` verifies the committed
 sheets match and `--preview <png>` writes a 4x review sheet with every state,
-direction and frame labelled. Released under Civ13 AGPL-3.0.
+direction and frame labelled. `--runs <png>` writes a 4x sheet of assembled
+portcullis runs (one, three and five tiles wide, three tiles tall), closed and
+open, on the murder hole's stone floor. Released under Civ13 AGPL-3.0.
 """
 import math
 import sys
@@ -502,6 +505,163 @@ def portcullis_states():
     ]
 
 
+# A portcullis several tiles wide is built from one-tile sections. Across a
+# run the uprights stand every eight pixels (four of bar, four of gap), so a
+# middle section tiles with itself and with both ends; an end section closes
+# the run with a six-pixel stile in place of its outermost upright.
+RUN_BARS = (2, 10, 18, 26)
+RUN_RAILS = (2, 10, 18)
+RUN_LIFTS = (5, 10, 15, 20)                  # the frames of portcullis_moving
+SHOE = ((25, (3, 1, 2, 4)), (26, (3, 0, 2, 4)), (27, (3, 1, 2, 4)),
+        (28, (None, 1, 3, None)), (29, (None, 1, 3, None)), (30, (None, 2, 4, None)))
+STILE_SHOE = ((25, (3, 1, 1, 2, 2, 4)), (26, (3, 0, 1, 2, 2, 4)), (27, (3, 1, 1, 2, 2, 4)),
+              (28, (None, 1, 1, 3, 3, None)), (29, (None, None, 1, 3, None, None)),
+              (30, (None, None, 2, 4, None, None)))
+
+
+def portcullis_section(end, lift=0):
+    """One tile of a run along x. `end` is 'w' or 'e' for the section that
+    closes the run on that side, 'c' for one with a neighbour on both sides."""
+    c = {}
+    bars = [b for b in RUN_BARS if not (end == 'w' and b == 2) and not (end == 'e' and b == 26)]
+    stile = {'w': 0, 'e': 26}.get(end)
+    for bx in bars:
+        for y in range(0, 25):
+            c[(bx, y)] = OUT
+            c[(bx + 1, y)] = WOOD[1] if noise(bx, y // 3, 0, 11) > 60 else WOOD[2]
+            c[(bx + 2, y)] = WOOD[4] if noise(bx, y // 2, 1, 11) > 50 else WOOD[5]
+            c[(bx + 3, y)] = OUT
+        for y, row in SHOE:
+            for i, k in enumerate(row):
+                if k is not None:
+                    c[(bx + i, y)] = IRON[k]
+        c[(bx, 28)] = c[(bx + 3, 28)] = OUT
+    if stile is not None:
+        for y in range(0, 25):
+            c[(stile, y)] = OUT
+            c[(stile + 1, y)] = WOOD[0] if noise(stile, y // 4, 3, 11) > 150 else WOOD[1]
+            c[(stile + 2, y)] = WOOD[1] if noise(stile, y // 3, 0, 11) > 60 else WOOD[2]
+            c[(stile + 3, y)] = WOOD[3] if noise(stile, y // 3, 4, 11) > 90 else WOOD[4]
+            c[(stile + 4, y)] = WOOD[4] if noise(stile, y // 2, 1, 11) > 50 else WOOD[5]
+            c[(stile + 5, y)] = OUT
+        for y, row in STILE_SHOE:
+            for i, k in enumerate(row):
+                if k is not None:
+                    c[(stile + i, y)] = IRON[k]
+        c[(stile, 28)] = c[(stile + 5, 28)] = OUT
+        c[(stile + 1, 29)] = c[(stile + 4, 29)] = OUT
+    posts = [(b, 4) for b in bars] + ([(stile, 6)] if stile is not None else [])
+    for ry in RUN_RAILS:
+        for x in range(32):
+            if not any(b <= x < b + w for b, w in posts):
+                c[(x, ry)] = OUT
+                # texture by the place along the run, so every join matches
+                c[(x, ry + 1)] = WOOD[1] if noise((x + 2) % 8 // 3, ry, 2, 11) > 60 else WOOD[2]
+                c[(x, ry + 2)] = WOOD[5]
+                c[(x, ry + 3)] = OUT
+        for bx, w in posts:                   # crossing plates
+            for i in range(w):
+                for j in range(4):
+                    rim = i in (0, w - 1) or j in (0, 3)
+                    c[(bx + i, ry + j)] = IRON[4] if rim else IRON[2]
+            c[(bx + 1, ry + 1)] = IRON[0]
+            if w == 6:
+                c[(bx + 2, ry + 1)] = IRON[1]
+    out = {(x, y - lift): col for (x, y), col in c.items() if y - lift >= 0}
+    return paint(out, 32, 32, outline=False)
+
+
+# A run along y is seen edge on from above: a six-pixel band down the middle
+# of the tile, an iron plate where each upright stands (every eight pixels)
+# and the head rail between them. As the grid is drawn up each upright shows
+# less of its timber and more of its iron shoe and spike, until only the row
+# of spikes hangs in the gateway.
+EDGE_X = 13
+EDGE_WOOD = (None, 1, 2, 4, 5, None)         # the band across x; None is the outline
+EDGE_SHOE = ((3, 1, 1, 2, 2, 4), (3, 0, 1, 2, 2, 4), (3, 1, 1, 2, 2, 4),
+             (None, 3, 1, 3, 4, None), (None, None, 1, 3, None, None), (None, None, 2, 4, None, None))
+
+
+def edge_column(lift):
+    """The eight rows of band that one upright shows at this lift, top row
+    first; each row is six ramp entries or None for open air."""
+    plate = [(IRON[4],) * 6, (IRON[4], IRON[0], IRON[1], IRON[2], IRON[2], IRON[4]),
+             (IRON[4], IRON[2], IRON[2], IRON[2], IRON[3], IRON[4]), (IRON[4],) * 6]
+    rail = [tuple(OUT if k is None else WOOD[k] for k in EDGE_WOOD)] * 4
+    shoe = [tuple(None if k is None else IRON[k] for k in row) for row in EDGE_SHOE]
+    rows = plate + rail + shoe + [(None,) * 6] * 8
+    drop = (lift * 8 + 12) // 25                # 0 closed .. 8 open
+    return rows[drop:drop + 8]
+
+
+def portcullis_edge(end, lift=0):
+    """One tile of a run along y. `end` is 'n' or 's' for the section that
+    closes the run on that side, 'm' for one with a neighbour on both sides."""
+    c = {}
+    column = edge_column(lift)
+    hanging = lift >= 25                       # drawn right up: only the spikes show
+    for y in range(32):
+        row = column[y % 8]
+        for i, col in enumerate(row):
+            if col is None:
+                continue
+            if col in WOOD and noise(i, y // 3, 5, 11) < 50:
+                col = WOOD[WOOD.index(col) + 1]
+            c[(EDGE_X + i, y)] = col
+        for i in range(1, 5):                  # the outline down the sides of a spike
+            if row[i] is not None:
+                for q in (i - 1, i + 1):
+                    if row[q] is None:
+                        c[(EDGE_X + q, y)] = OUT
+    # the end stile: an iron-bound head while any timber shows, a broader
+    # shoe once only the spikes hang
+    y0 = {'n': 0, 's': 24 if hanging else 21}.get(end)
+    if y0 is not None and hanging:
+        for j in (0, 1, 2):
+            c[(EDGE_X - 1, y0 + j)] = IRON[3]
+            c[(EDGE_X + 6, y0 + j)] = IRON[4]
+    elif y0 is not None:
+        for y in range(y0, 6 if end == 'n' else 32):
+            for x in range(EDGE_X, EDGE_X + 6):
+                c.pop((x, y), None)
+        stile_cap(c, y0)
+        if end == 's':                         # the south face of the stile, its shoe and spike
+            for y, row in ((27, (6, 3, 4, 4, 5, 5, 6, 6)), (28, (6, 3, 4, 4, 5, 5, 6, 6))):
+                for i, k in enumerate(row):
+                    c[(EDGE_X - 1 + i, y)] = OUT if i in (0, 7) else WOOD[k]
+            for y, row in ((29, (4, 3, 1, 1, 2, 2, 4, 4)), (30, (None, 4, 1, 1, 3, 3, 4, None)),
+                           (31, (None, None, 4, 2, 4, 4, None, None))):
+                for i, k in enumerate(row):
+                    if k is not None:
+                        c[(EDGE_X - 1 + i, y)] = IRON[k]
+    return paint(c, 32, 32, outline=False)
+
+
+def stile_cap(c, y0):
+    """The iron-bound head of an end stile, eight wide and six deep."""
+    for j in range(6):
+        for i in range(8):
+            x, y = EDGE_X - 1 + i, y0 + j
+            if i in (0, 7) or j in (0, 5):
+                col = OUT
+            elif j in (1, 4):
+                col = IRON[1] if i < 4 else IRON[3]
+            else:
+                col = (WOOD[0], WOOD[1], WOOD[1], WOOD[3], WOOD[4], WOOD[5])[i - 1]
+            c[(x, y)] = col
+    c[(EDGE_X, y0 + 1)] = IRON[0]
+
+
+def portcullis_run_states():
+    out = []
+    for ends, draw in (('wce', portcullis_section), ('nms', portcullis_edge)):
+        for name, lifts in (('closed', (0,)), ('open', (25,)), ('moving', RUN_LIFTS)):
+            for end in ends:
+                out.append(('portcullis_%s_%s' % (name, end), [[draw(end, k)] for k in lifts],
+                            1 if len(lifts) > 1 else 0))
+    return out
+
+
 def drawbridge_down():
     """The lowered deck spanning north: cross planks between two stringers,
     two iron bands along it and a chain down each side."""
@@ -828,6 +988,7 @@ def engine_states():
     out = ram_states() + ballista_states()
     out += [bolt_item(), bolt_flight(), winch_state()]
     out += portcullis_states()
+    out += portcullis_run_states()
     out += [drawbridge_down(), drawbridge_up(), murder_hole()]
     return out
 
@@ -916,6 +1077,43 @@ def preview(path, built, scale=4):
     out.save(path)
 
 
+def runs_preview(path, states, scale=4):
+    """Assembled portcullis runs at 4x on a stone floor: one, three and five
+    tiles wide and three tiles tall, each closed and open."""
+    icon = {name: frames[0][0] for name, frames, _ in states}
+    slab = icon['murder_hole'].copy()
+    patch = slab.crop((2, 2, 9, 30))             # plain slab to cover the opening
+    for x in range(9, 23, 7):
+        slab.paste(patch, (x, 2))
+    pad, label = 8, 12
+
+    def across(n):
+        return ['portcullis_%s'] if n == 1 else ['portcullis_%s_' + e for e in 'w' + 'c' * (n - 2) + 'e']
+
+    groups = [('%d wide' % n, [(i, 0, s) for i, s in enumerate(across(n))], n, 1) for n in (1, 3, 5)]
+    groups.append(('3 tall', [(0, i, 'portcullis_%s_' + e) for i, e in enumerate('nms')], 1, 3))
+    width = pad + sum(w * 32 * scale + pad for _, _, w, _ in groups)
+    height = pad + 2 * (label + 3 * 32 * scale + pad)
+    out = Image.new('RGBA', (width, height), (24, 24, 24, 255))
+    draw = ImageDraw.Draw(out)
+    y = pad
+    for state in ('closed', 'open'):
+        x = pad
+        for title, cells, w, h in groups:
+            draw.text((x, y), '%s, %s' % (title, state), fill=(240, 240, 240, 255))
+            tile = Image.new('RGBA', (w * 32, 3 * 32))
+            for tx in range(w):
+                for ty in range(3):
+                    tile.paste(slab, (tx * 32, ty * 32))
+            for tx, ty, name in cells:
+                tile.alpha_composite(icon[name % state], (tx * 32, (ty if h == 3 else 1) * 32))
+            out.paste(tile.resize((tile.width * scale, tile.height * scale), Image.NEAREST), (x, y + label))
+            x += w * 32 * scale + pad
+        y += label + 3 * 32 * scale + pad
+    Path(path).parent.mkdir(parents=True, exist_ok=True)
+    out.save(path)
+
+
 def main(argv):
     built = sheets()
     if '--check' in argv:
@@ -929,6 +1127,8 @@ def main(argv):
             print('wrote %s (%d states)' % (path.relative_to(ROOT), len(states)))
     if '--preview' in argv:
         preview(argv[argv.index('--preview') + 1], built)
+    if '--runs' in argv:
+        runs_preview(argv[argv.index('--runs') + 1], built[0][2])
 
 
 if __name__ == '__main__':
