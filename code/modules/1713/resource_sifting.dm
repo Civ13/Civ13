@@ -126,6 +126,8 @@
 		to_chat(src, SPAN_WARNING("Clear the output tile before sifting more resources."))
 		return FALSE
 	to_chat(src, SPAN_NOTICE(units > 1 ? "You wash out [units] units of black iron sand without destroying the terrain." : "You recover one unit without destroying the terrain."))
+	if (water)
+		river_mercury_pan_message(src, water) // amalgam.dm
 	return TRUE
 
 /mob/living/human/proc/choices_values(list/choices)
