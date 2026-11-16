@@ -138,7 +138,7 @@ class WikiGuideTests(unittest.TestCase):
                 self.assertIn(expected, self.prompt(corpus, status, question))
 
     def test_current_revision_changed_topics_reach_injected_transport(self):
-        self.assertEqual(bridge.WIKI_REVIEWED_REVISION, 'b52fa2d8c953b42a982dbbb9d017c051d8bef72f')
+        self.assertEqual(bridge.WIKI_REVIEWED_REVISION, '7376d2a2c896982dcabb17be7576e8b44ee5a29f')
         cases = {
             'Chemistry': ('864bf107bd77e3934528bcf9c776b174ba2e86371118eedf084cbe5d42ce7ca5',
                           'chemistry reaction bench',
