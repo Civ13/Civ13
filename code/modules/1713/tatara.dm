@@ -53,3 +53,290 @@
 #undef IRON_SAND_SIFT_UNITS
 #undef IRON_SAND_RICH_BONUS
 #undef IRON_SAND_PER_SPONGE
+
+//////////////////////////////////////////////////////////////////////////////
+// The tatara: a clay box furnace built for one firing. Iron sand and charcoal
+// go in by turns, the bellows blow, and after ten minutes the furnace is
+// broken open on a bloom of kera and a little pig iron (zuku).
+
+#define TATARA_LIMIT 30 // iron sand and charcoal each
+#define TATARA_MIN_SAND 3
+#define TATARA_MIN_CHARGES 3 // iron sand added on top of charcoal this often for a full yield
+#define TATARA_SAND_PER_KERA 3
+#define TATARA_SAND_PER_ZUKU 10
+#define TATARA_BURN_TIME 6000 // deciseconds, ten minutes
+#define TATARA_TICK 100
+#define TATARA_BLAST_TIME 900 // one pump of the bellows keeps the blast this long
+#define TATARA_CLAY_BACK 5
+#define KERA_TAMAHAGANE_PERCENT 50
+#define KERA_WROUGHT_PERCENT 30
+#define FOLD_TAMAHAGANE 3
+#define FOLD_STEEL 2
+
+/obj/item/stack/ore/kera
+	name = "kera"
+	desc = "Broken pieces of a tatara bloom: steel, softer iron and slag fused together. Sort it on an anvil."
+	icon = 'icons/obj/tatara.dmi'
+	icon_state = "kera"
+	singular_name = "lump"
+	flags = CONDUCT
+
+/obj/item/stack/ore/tamahagane
+	name = "tamahagane"
+	desc = "The best of the kera: bright, hard steel that breaks with a crystalline face. Fold it on an anvil into steel."
+	icon = 'icons/obj/tatara.dmi'
+	icon_state = "tamahagane"
+	singular_name = "chunk"
+	flags = CONDUCT
+
+/obj/structure/tatara
+	name = "tatara"
+	desc = "A long clay box furnace with a row of tuyere holes along each side. Feed it charcoal and iron sand by turns, light it, and keep the bellows working beside it. It is broken open when the firing is done."
+	icon = 'icons/obj/tatara.dmi'
+	icon_state = "tatara"
+	density = TRUE
+	anchored = TRUE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	var/iron_sand = 0
+	var/charcoal = 0
+	var/charges = 0 // times iron sand went in on top of fresh charcoal
+	var/last_charcoal = FALSE // the last thing loaded was charcoal
+	var/burning = FALSE
+	var/burnt_out = FALSE
+	var/burn_left = 0 // saved, so a load resumes the firing
+	var/burn_ticks = 0
+	var/blown_ticks = 0
+	var/kera_out = 0 // what breaking the burnt-out furnace yields
+	var/zuku_out = 0
+	var/tmp/burn_epoch = 0
+	var/tmp/bellows_until = 0
+
+/obj/structure/tatara/persistence_runtime_var(key)
+	return key == "burn_epoch" || key == "bellows_until" || ..()
+
+/obj/structure/tatara/update_icon()
+	if (burning)
+		icon_state = "tatara_on"
+		set_light(3)
+	else if (burnt_out)
+		icon_state = "tatara_spent"
+		set_light(1)
+	else if (iron_sand || charcoal)
+		icon_state = "tatara_loaded"
+		set_light(0)
+	else
+		icon_state = "tatara"
+		set_light(0)
+
+/obj/structure/tatara/examine(mob/user, distance)
+	..(user, distance)
+	if (burnt_out)
+		to_chat(user, SPAN_NOTICE("The firing is over. Break the furnace open with a hammer or pickaxe to get the kera out."))
+	else if (burning)
+		to_chat(user, SPAN_NOTICE("It roars with heat. About [max(1, round(burn_left / 600))] minute\s left. It holds [iron_sand] iron sand and [charcoal] charcoal, charged [charges] time\s."))
+	else
+		to_chat(user, SPAN_NOTICE("It holds [iron_sand] of [TATARA_LIMIT] iron sand and [charcoal] of [TATARA_LIMIT] charcoal, charged [charges] time\s. Add charcoal, then iron sand on top, at least [TATARA_MIN_CHARGES] times."))
+
+/obj/structure/tatara/attackby(obj/item/I, mob/living/human/H)
+	if (!I || !I.loc || !istype(H))
+		return
+	if (burnt_out && (is_tool(I, TOOL_HAMMER) || is_tool(I, TOOL_PICKAXE)))
+		break_open(H)
+		return
+	if (isflamesource(I))
+		light(H)
+		return
+	if (istype(I, /obj/item/stack/ore/iron_sand) || istype(I, /obj/item/stack/ore/charcoal))
+		charge(I, H)
+		return
+	return ..()
+
+/obj/structure/tatara/attack_hand(mob/living/human/H)
+	if (istype(H) && !burnt_out)
+		light(H)
+
+// Charging stays open for the first half of the firing, as the smelters did.
+/obj/structure/tatara/proc/charge(obj/item/stack/S, mob/living/human/H)
+	if (burnt_out || (burning && burn_left < TATARA_BURN_TIME / 2))
+		to_chat(H, SPAN_WARNING("It is too late to charge \the [src] now."))
+		return
+	var/sand = istype(S, /obj/item/stack/ore/iron_sand)
+	var/moved = min(S.amount, TATARA_LIMIT - (sand ? iron_sand : charcoal))
+	if (moved <= 0)
+		to_chat(H, SPAN_WARNING("\The [src] can take no more [sand ? "iron sand" : "charcoal"]."))
+		return
+	if (sand)
+		iron_sand += moved
+		if (last_charcoal)
+			charges++
+		last_charcoal = FALSE
+	else
+		charcoal += moved
+		last_charcoal = TRUE
+	S.use(moved)
+	update_icon()
+	visible_message(SPAN_NOTICE("[H] charges \the [src] with [moved] [sand ? "iron sand" : "charcoal"]."))
+
+/obj/structure/tatara/proc/light(mob/living/human/H)
+	if (burning || burnt_out)
+		return
+	if (iron_sand < TATARA_MIN_SAND || charcoal < TATARA_MIN_SAND)
+		to_chat(H, SPAN_WARNING("Charge \the [src] with at least [TATARA_MIN_SAND] charcoal and [TATARA_MIN_SAND] iron sand first."))
+		return
+	visible_message(SPAN_NOTICE("[H] starts lighting \the [src] through its tuyeres."))
+	if (!do_after(H, 50, src) || QDELETED(src) || burning || burnt_out)
+		return
+	burning = TRUE
+	burn_left = TATARA_BURN_TIME
+	burn_ticks = 0
+	blown_ticks = 0
+	update_icon()
+	visible_message(SPAN_NOTICE("\The [src] catches. Flame starts licking out of its open top."))
+	start_burn_loop()
+
+/obj/structure/tatara/proc/start_burn_loop()
+	addtimer(CALLBACK(src, PROC_REF(burn_tick), ++burn_epoch), TATARA_TICK)
+
+/obj/structure/tatara/proc/burn_tick(epoch)
+	if (QDELETED(src) || !burning || epoch != burn_epoch)
+		return
+	burn_ticks++
+	if (world.time < bellows_until)
+		blown_ticks++
+	burn_left -= TATARA_TICK
+	if (burn_left <= 0)
+		finish_burn()
+		return
+	addtimer(CALLBACK(src, PROC_REF(burn_tick), epoch), TATARA_TICK)
+
+// Only sand matched by charcoal smelts. The bellows decide how much becomes
+// steel bloom; a poorly charged furnace makes half the kera.
+/obj/structure/tatara/proc/kera_yield()
+	var/smelted = min(iron_sand, charcoal)
+	var/blown = burn_ticks ? blown_ticks / burn_ticks : 0
+	var/kera = (smelted / TATARA_SAND_PER_KERA) * (0.5 + 0.5 * blown)
+	if (charges < TATARA_MIN_CHARGES)
+		kera *= 0.5
+	return round(kera)
+
+/obj/structure/tatara/proc/zuku_yield()
+	return round(min(iron_sand, charcoal) / TATARA_SAND_PER_ZUKU)
+
+/obj/structure/tatara/proc/finish_burn()
+	kera_out = kera_yield()
+	zuku_out = zuku_yield()
+	burning = FALSE
+	burnt_out = TRUE
+	burn_left = 0
+	iron_sand = 0
+	charcoal = 0
+	burn_epoch++
+	update_icon()
+	visible_message(SPAN_NOTICE("\The [src] dies down, its clay walls cracked and glowing. It is ready to be broken open."))
+
+/obj/structure/tatara/proc/break_open(mob/living/human/H)
+	visible_message(SPAN_NOTICE("[H] starts breaking \the [src] open."))
+	playsound(src, 'sound/effects/pickaxe.ogg', 80, TRUE)
+	if (!do_after(H, 50, src) || QDELETED(src) || !burnt_out)
+		return
+	var/turf/T = get_turf(src)
+	if (kera_out > 0)
+		spawn_stack(/obj/item/stack/ore/kera, T, kera_out)
+	if (zuku_out > 0)
+		spawn_stack(/obj/item/stack/ore/iron_pig, T, zuku_out)
+	spawn_stack(/obj/item/stack/material/clay, T, TATARA_CLAY_BACK)
+	visible_message(SPAN_NOTICE("[H] breaks \the [src] apart and drags out [kera_out] lump\s of kera[zuku_out ? " and [zuku_out] pig iron" : ""]."))
+	qdel(src)
+
+/obj/structure/tatara/after_load()
+	..()
+	burn_epoch = 0
+	if (burning)
+		if (burn_left <= 0)
+			burn_left = TATARA_TICK
+		start_burn_loop()
+	update_icon()
+
+// Bellows beside a tatara blow into it as they do into a bloomery.
+/obj/structure/workshop_machine/bellows/attack_hand(mob/living/human/H)
+	var/obj/structure/tatara/F = locate(/obj/structure/tatara) in range(1, src)
+	if (!F || !istype(H) || busy || length(furnaces_in_reach()))
+		return ..()
+	if (!anchored)
+		to_chat(H, SPAN_WARNING("Fasten \the [src] down first."))
+		return
+	busy = TRUE
+	icon_state = "bellows_pump"
+	visible_message(SPAN_NOTICE("[H] works \the [src]."))
+	var/done = do_after(H, 30, src)
+	busy = FALSE
+	if (QDELETED(src))
+		return
+	icon_state = "bellows"
+	if (!done || !anchored || QDELETED(F))
+		return
+	F.bellows_until = world.time + TATARA_BLAST_TIME
+	to_chat(H, SPAN_NOTICE(F.burning ? "Air roars into \the [F]." : "Air blows through \the [F]. Light it to make use of the blast."))
+
+//////////////////////////////////////////////////////////////////////////////
+// Sorting kera and folding tamahagane on an anvil
+
+/obj/structure/anvil/attackby(obj/item/P as obj, mob/user as mob)
+	if (!istype(P, /obj/item/stack/ore/kera) && !istype(P, /obj/item/stack/ore/tamahagane))
+		return ..()
+	var/mob/living/human/H = user
+	if (!istype(H) || in_use)
+		return
+	if (H.getStatCoeff("crafting") < 1.2)
+		to_chat(H, "This anvil requires an effective Crafting coefficient of at least 1.20x.")
+		return
+	if (!("iron" in accepted_materials))
+		to_chat(H, SPAN_WARNING("You can't use this material on this anvil."))
+		return
+	if (!crafting_node_allowed_or_warn(H, "tatara_smelting"))
+		return
+	var/obj/item/stack/S = P
+	var/kera = istype(S, /obj/item/stack/ore/kera)
+	if (!kera && S.amount < FOLD_TAMAHAGANE)
+		to_chat(H, SPAN_WARNING("Fold at least [FOLD_TAMAHAGANE] chunks of tamahagane together."))
+		return
+	var/initial_amount = S.amount
+	var/batches = kera ? initial_amount : round(initial_amount / FOLD_TAMAHAGANE)
+	to_chat(H, kera ? "You begin breaking and sorting the kera..." : "You begin folding the tamahagane...")
+	icon_state = "[base_icon]_anvil_use"
+	in_use = TRUE
+	update_icon()
+	playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+	var/done = do_after(H, 15 * (kera ? initial_amount : batches * FOLD_TAMAHAGANE), src)
+	in_use = FALSE
+	update_icon()
+	if (!done || QDELETED(S) || S.amount != initial_amount)
+		return
+	if (kera)
+		var/tama = round(initial_amount * KERA_TAMAHAGANE_PERCENT / 100)
+		var/wrought = round(initial_amount * KERA_WROUGHT_PERCENT / 100)
+		S.use(initial_amount)
+		if (tama > 0)
+			spawn_stack(/obj/item/stack/ore/tamahagane, loc, tama)
+		if (wrought > 0)
+			spawn_stack(/obj/item/stack/material/iron, loc, wrought)
+		to_chat(H, SPAN_NOTICE("You sort out [tama] chunk\s of tamahagane and [wrought] bar\s of soft iron; the rest is slag."))
+	else
+		S.use(batches * FOLD_TAMAHAGANE)
+		spawn_stack(/obj/item/stack/material/steel, loc, batches * FOLD_STEEL)
+		to_chat(H, SPAN_NOTICE("You heat, fold and weld the tamahagane over and over into [batches * FOLD_STEEL] sheet\s of steel."))
+
+#undef TATARA_LIMIT
+#undef TATARA_MIN_SAND
+#undef TATARA_MIN_CHARGES
+#undef TATARA_SAND_PER_KERA
+#undef TATARA_SAND_PER_ZUKU
+#undef TATARA_BURN_TIME
+#undef TATARA_TICK
+#undef TATARA_BLAST_TIME
+#undef TATARA_CLAY_BACK
+#undef KERA_TAMAHAGANE_PERCENT
+#undef KERA_WROUGHT_PERCENT
+#undef FOLD_TAMAHAGANE
+#undef FOLD_STEEL
