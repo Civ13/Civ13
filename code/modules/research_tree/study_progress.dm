@@ -119,7 +119,7 @@
 		return do_after(H, delay, target)
 	if (H.too_dark_to_read())
 		return FALSE
-	delay = max(1, round(delay))
+	delay = max(1, round(delay * H.farsight_reading_mult()))
 	var/datum/progressbar/bar = H.client ? new /datum/progressbar(H, delay, target) : null
 	var/started = world.time
 	var/steps = max(1, -round(-delay / READING_LIGHT_CHECK))

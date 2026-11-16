@@ -86,6 +86,8 @@
 
 /obj/item/weapon/paper_bundle/examine(mob/user)
 	if (..(user, TRUE))
+		if (!farsight_can_read(user, src))
+			return
 		show_content(user)
 	else
 		to_chat(user, "<span class='notice'>It is too far away.</span>")

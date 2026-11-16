@@ -1899,7 +1899,8 @@ SUITES = {
             'code/modules/client/preferencesSQLite/preferences_saving&loading&del.dm',
             'code/game/mob/living/carbon/human/human_life.dm',
             'code/game/mob/living/carbon/human/human_stats.dm',
-            'code/game/mob/living/carbon/human/playstyle_traits.dm')},
+            'code/game/mob/living/carbon/human/playstyle_traits.dm',
+            'code/game/mob/living/carbon/human/sight_traits.dm')},
     # Stdlib-only source contracts for the character setup window; the shared
     # sources keep the character_traits fallback above.
     'character_setup': {'files': ('tests/character_setup/test_setup_window.py',),

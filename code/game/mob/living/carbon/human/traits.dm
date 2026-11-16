@@ -70,6 +70,8 @@ var/global/list/trait_list = list(
 	"Butterfingers" = list(-2,list("Steady Hands"),"Crafting and medical skill x0.9."),
 	"Strong Back" = list(1,list("Bad Back","Quartermaster"),"Pulling carts, crates and bodies slows you 20% less."),
 	"Bad Back" = list(-1,list("Strong Back"),"Pulling carts, crates and bodies slows you 25% more."),
+	"Nearsighted" = list(-2,list("Blind"),"Past about 4 tiles the world fades into grey fog. Standing still lets you squint and thin it; corrective glasses or a monocle clear it."),
+	"Farsighted" = list(-1,list("Blind"),"You squint for a moment before a paper or book opens, and studying, writing and copying take 50% longer. Corrective glasses or a monocle fix it."),
 	"Squeamish" = list(-1,list("Hardened Fighter"),"Seeing someone maimed hurts your mood twice as much."),
 	"Recluse Scholar" = list(0,list("Menacing","Hardened Fighter","Quartermaster","Green Thumb","Tinkerer","Wanderer","Rallying Voice","Extroverted"),"Playstyle. Studying and research are 25% faster with nobody else within 5 tiles, but 25% slower with people around, and your mood settles lower in crowds of 3 or more."),
 	"Menacing" = list(0,list("Recluse Scholar","Hardened Fighter","Quartermaster","Green Thumb","Tinkerer","Wanderer","Rallying Voice"),"Playstyle. You can Intimidate someone who can see you, souring their mood a little, and wild grazing animals bolt from your glare. Others see you look dangerous, and you tutor students more slowly."),
@@ -115,7 +117,7 @@ var/global/list/trait_list = list(
 	return rand(1, upper)
 
 // Bounded, biased sampling of valid prefixes, not uniform sampling of all sets.
-// The current catalog has 54 entries. Refuse oversized future catalogs rather
+// The current catalog has 56 entries. Refuse oversized future catalogs rather
 // than silently truncating eligibility or letting a click do unbounded work.
 /proc/random_zero_point_traits(datum/trait_random_source/random_source = null)
 	if (!islist(trait_list) || trait_list.len > 64)

@@ -1638,7 +1638,10 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/converter/acid_bath" = "germ_theory",
 		"/obj/structure/shower/bathtub/big/steel" = "germ_theory",
 		"/obj/structure/shower/bathtub/steel" = "germ_theory",
-		// --- glassworking (10) ---
+		// --- glassworking (12) ---
+		// Corrective eyewear follows the first glass (Nearsighted/Farsighted traits).
+		"/obj/item/clothing/glasses/monocle" = "glassworking",
+		"/obj/item/clothing/glasses/regular" = "glassworking",
 		"/obj/item/hourglass" = "glassworking",
 		"/obj/structure/lighthouse_lantern" = "glassworking",
 		"/obj/item/weapon/reagent_containers/food/drinks/bottle/large" = "glassworking",
@@ -1929,7 +1932,7 @@ var/global/list/node_grid_col_cache = null
 		// geiger counter deliberately NOT here: it's this node's prototype
 		// item, so it must be craftable earlier (it's under factories, era4).
 		"/obj/structure/sign/radiation" = "nuclear_power",
-		// --- optics_instruments (22) ---
+		// --- optics_instruments (20) ---
 		"/obj/structure/tower_clock" = "optics_instruments",
 		"/obj/structure/clock_face" = "optics_instruments",
 		"/obj/structure/lighthouse_beacon/reflector" = "optics_instruments",
@@ -1939,9 +1942,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/camera/early" = "optics_instruments",
 		"/obj/item/camera_film" = "optics_instruments",
 		"/obj/item/clothing/glasses/gglasses" = "optics_instruments",
-		"/obj/item/clothing/glasses/monocle" = "optics_instruments",
 		"/obj/item/clothing/glasses/redlense" = "optics_instruments",
-		"/obj/item/clothing/glasses/regular" = "optics_instruments",
 		"/obj/item/clothing/glasses/sunglasses" = "optics_instruments",
 		"/obj/item/clothing/glasses/sunglasses/large" = "optics_instruments",
 		"/obj/item/clothing/gloves/watch/goldwatch" = "optics_instruments",
