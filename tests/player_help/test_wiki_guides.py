@@ -138,13 +138,13 @@ class WikiGuideTests(unittest.TestCase):
                 self.assertIn(expected, self.prompt(corpus, status, question))
 
     def test_current_revision_changed_topics_reach_injected_transport(self):
-        self.assertEqual(bridge.WIKI_REVIEWED_REVISION, '79a0700fb4194cccdbbfc05dcf0683812a7cc351')
+        self.assertEqual(bridge.WIKI_REVIEWED_REVISION, 'f21c6126ff0db9ab7940d5601279839319172267')
         cases = {
             'Chemistry': ('864bf107bd77e3934528bcf9c776b174ba2e86371118eedf084cbe5d42ce7ca5',
                           'chemistry reaction bench',
                           'The installed mixture stays inert, avoiding competing automatic reactions.',
                           'How do I use a laboratory reaction bench?'),
-            'Medical': ('2b0f94e763671fd1163321cb367af5a4997c6b8489429feeb6e67e8e3ebb7456',
+            'Medical': ('c46e87ade8f9a325d8011adc6ac9fa72f32e860d8762f9177aca049696ed295b',
                         'medical severe illness treatment penicillin',
                         'Continuous appropriate treatment pauses deterioration and cures the illness after three minutes.',
                         'How do I treat severe illness?'),
