@@ -79,6 +79,23 @@ class FishingGrounds(unittest.TestCase):
         sub = (ROOT / 'code/modules/1713/machinery/modular_vehicles/ships/submarine_systems.dm').read_text(encoding='utf-8')
         self.assertIn('fish_finder_line(periscope_turf())', sub)
 
+    def test_signs_are_client_images_fed_by_the_grounds(self):
+        dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
+        self.assertEqual(dme.count('#include "code\\modules\\1713\\fish_signs.dm"'), 1)
+        signs = (ROOT / 'code/modules/1713/fish_signs.dm').read_text(encoding='utf-8')
+        # Images on the viewer's client, never objects in the world a hull could carry.
+        self.assertNotIn('/obj/', signs.replace('/obj/structure/vehicleparts/frame', ''))
+        self.assertNotIn('in world', signs)
+        self.assertNotIn('spawn(', signs)
+        self.assertIn('fishing_ground_at(T, FALSE)', signs)
+        self.assertIn('I.mouse_opacity = 0', signs)
+        used = set(re.findall(r'"((?:rise|jump)_[a-c]|gulls)"', signs))
+        self.assertEqual(used, {'rise_a', 'rise_b', 'rise_c', 'jump_a', 'jump_b', 'gulls'})
+        self.assertTrue((ROOT / 'icons/effects/fish_signs.dmi').is_file())
+        self.assertTrue((ROOT / 'tests/sprites/create_fishing_signs.py').is_file())
+        flood = (ROOT / 'code/modules/1713/flood_effects.dm').read_text(encoding='utf-8')
+        self.assertIn('client.fish_signs_refresh()', flood)
+
     def test_spears_ask_the_stone_age_numbers(self):
         arms = (ROOT / 'code/modules/1713/stone_age_arms.dm').read_text(encoding='utf-8')
         self.assertIn('/proc/spear_fishing_delay()\n\treturn SPEAR_FISHING_DELAY\n', arms)

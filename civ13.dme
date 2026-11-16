@@ -991,6 +991,7 @@
 #include "code\modules\1713\flood_effects.dm"
 #include "code\modules\1713\river_flow.dm"
 #include "code\modules\1713\fishing_grounds.dm"
+#include "code\modules\1713\fish_signs.dm"
 #include "code\modules\1713\tools.dm"
 #include "code\modules\1713\practice_rooms.dm"
 #include "code\modules\1713\tutorial_region.dm"

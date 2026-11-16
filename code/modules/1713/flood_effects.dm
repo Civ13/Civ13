@@ -304,6 +304,7 @@ var/global/flood_draw_revision = 0
 /mob/living/human/proc/flood_life_tick()
 	if (client)
 		client.flood_refresh_view()
+		client.fish_signs_refresh() // fish_signs.dm
 
 #undef FLOOD_VIEW_RADIUS
 #undef FLOOD_VIEW_MOVE

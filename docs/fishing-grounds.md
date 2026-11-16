@@ -42,6 +42,13 @@ Tests: `tests/fishing_grounds/`.
   and oars are silent.
 - **Sonar:** a submarine's ping adds what the fish overhead look like and the
   bearing of a clearly fuller neighbouring stretch (`fish_finder_line()`).
+- **Signs** (`code/modules/1713/fish_signs.dm`): rings where fish rise, a
+  leaping fish now and then (more during the salmon run) and gulls over a
+  shoal on the coast. They are images on the viewer's client from
+  `icons/effects/fish_signs.dmi` (drawn by
+  `tests/sprites/create_fishing_signs.py`), not objects. Every 8 seconds a
+  client with a living human asks 14 random tiles within 9; a tile shows a sign
+  with a chance equal to its ground's fullness, and never when fished out.
 - **Flood strandings:** a tile of ankle-deep floodwater over outdoor land that
   somebody can see has a 2% chance each river minute to leave a fish on it
   (`fish_flood_stranding()`, asked by the flood's item pass). The fish come out
