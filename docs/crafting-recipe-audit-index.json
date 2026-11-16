@@ -6,7 +6,7 @@
     "material_recipes_camp.txt": 227,
     "material_recipes_carib.txt": 1287,
     "material_recipes_crustacean.txt": 1339,
-    "material_recipes_global.txt": 2112,
+    "material_recipes_global.txt": 2113,
     "material_recipes_gorilla.txt": 1301,
     "material_recipes_kwai.txt": 204,
     "material_recipes_pygmy.txt": 1281,
@@ -29,7 +29,7 @@
     "doorways and other buildings": 21,
     "drinks": 110,
     "drones": 3,
-    "economy & production": 170,
+    "economy & production": 171,
     "electrical": 137,
     "entertainment & other": 70,
     "eyewear": 32,
@@ -122,6 +122,6 @@
   ],
   "reviewed_follow_on_families": 14,
   "reviewed_legacy_bedroll_rows": 11,
-  "current_furniture_candidates": 576,
+  "current_furniture_candidates": 577,
   "reviewed_legacy_canopy_rows": 12
 }

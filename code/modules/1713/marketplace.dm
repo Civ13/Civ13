@@ -85,14 +85,18 @@
 		var/sales_tax = map.custom_civs[user.civilization][9]
 		var/business_tax = map.custom_civs[user.civilization][10]
 		var/tax_funds = map.custom_civs[user.civilization][5]
+		var/obj/structure/closet/crate/faction_strongbox/box = map.faction_strongbox(user.civilization)
+		if (box)
+			treasury_html += "<div class='item'>Taxes are collected into the faction's strongbox ([tax_funds] sc waiting). Wages and dues are kept there too.</div>"
 		treasury_html += "<div class='item'><b>Sales Tax:</b> [sales_tax]% <button class='btn' onclick=\"var v=prompt('Sales Tax (0-30%):','[sales_tax]');if(v!==null&&!isNaN(v)&&Number(v)>=0&&Number(v)<=30)window.location='byond://?src=\ref[src];setsalestax='+v\">Set</button></div>"
 		treasury_html += "<div class='item'><b>Business Tax:</b> [business_tax]% <button class='btn' onclick=\"var v=prompt('Business Tax (0-30%):','[business_tax]');if(v!==null&&!isNaN(v)&&Number(v)>=0&&Number(v)<=30)window.location='byond://?src=\ref[src];setbusinesstax='+v\">Set</button></div>"
-		treasury_html += "<div class='item'><b>Tax Funds:</b> [tax_funds] sc <button class='btn' onclick=\"window.location='byond://?src=\ref[src];withdrawtaxes'\">Withdraw</button></div>"
-		if (map.custom_civs[user.civilization].len >= 11 && istype(map.custom_civs[user.civilization][11], /list))
-			var/list/fiat_treasury = map.custom_civs[user.civilization][11]
-			for (var/fid in fiat_treasury)
-				if (fiat_treasury[fid] > 0)
-					treasury_html += "<div class='item'>[fiat_treasury[fid]] [fiat.currency_list[fid][1]] <button class='btn' onclick=\"window.location='byond://?src=\ref[src];withdrawfiat=[fid]'\">Withdraw</button></div>"
+		if (!box)
+			treasury_html += "<div class='item'><b>Tax Funds:</b> [tax_funds] sc <button class='btn' onclick=\"window.location='byond://?src=\ref[src];withdrawtaxes'\">Withdraw</button></div>"
+			if (map.custom_civs[user.civilization].len >= 11 && istype(map.custom_civs[user.civilization][11], /list))
+				var/list/fiat_treasury = map.custom_civs[user.civilization][11]
+				for (var/fid in fiat_treasury)
+					if (fiat_treasury[fid] > 0)
+						treasury_html += "<div class='item'>[fiat_treasury[fid]] [fiat.currency_list[fid][1]] <button class='btn' onclick=\"window.location='byond://?src=\ref[src];withdrawfiat=[fid]'\">Withdraw</button></div>"
 
 	var/dat = "<html><head><style>"
 	dat += "body{font-family:'Segoe UI',monospace;background:#2b1e0e;color:#f0e0c0;margin:0;padding:20px;}"
@@ -400,6 +404,9 @@
 		if (map.custom_civs[H.civilization][4] != H)
 			to_chat(H, "<span class='warning'>You do not have the permissions to do that!</span>")
 			return
+		if (map.faction_strongbox(H.civilization))
+			to_chat(H, "<span class='notice'>Your faction keeps its treasury in a strongbox; collect taxes there.</span>")
+			return
 		var/withdrew_something = FALSE
 		if (map.custom_civs[H.civilization][5] >= 1)
 			var/funds = map.custom_civs[H.civilization][5]
@@ -420,6 +427,9 @@
 	if (href_list["withdrawfiat"])
 		if (map.custom_civs[H.civilization][4] != H)
 			to_chat(H, "<span class='warning'>You do not have the permissions to do that!</span>")
+			return
+		if (map.faction_strongbox(H.civilization))
+			to_chat(H, "<span class='notice'>Your faction keeps its treasury in a strongbox; collect taxes there.</span>")
 			return
 		var/fid = href_list["withdrawfiat"]
 		if (map.custom_civs[H.civilization].len >= 11 && istype(map.custom_civs[H.civilization][11], /list))

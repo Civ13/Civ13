@@ -63,6 +63,7 @@
 			limits -= faction
 	colony_normalize()
 	faction_seal_normalize()
+	treasury_normalize()
 
 // The faction's roster with idle accounts removed.
 /obj/map_metadata/proc/faction_roster(faction)
@@ -138,3 +139,4 @@
 	colony_rename(old_name, new_name)
 	faction_seal_rename(old_name, new_name)
 	coin_issuer_rename(old_name, new_name)
+	treasury_rename(old_name, new_name)
