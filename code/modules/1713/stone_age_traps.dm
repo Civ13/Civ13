@@ -470,7 +470,7 @@
 	if (!ishuman(M))
 		return FALSE
 	var/mob/living/human/H = M
-	if (setter_name && H.real_name == setter_name)
+	if (setter_name && H.answers_to_name(setter_name))
 		return TRUE
 	return tribe && H.civilization == tribe
 

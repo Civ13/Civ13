@@ -1318,6 +1318,13 @@ SUITES = {
         'paths': ('tests/faction_treaties/',), 'shared_paths': (
             'code/game/mob/groups/faction_treaties.dm', 'code/game/mob/groups/faction_offices.dm',
             'code/game/mob/groups/faction_roster.dm', 'code/game/mob/groups/factions.dm')},
+    # Taking a new name (the native probe is tests/name_change/probe.dm).
+    'name_change': {'files': ('tests/name_change/test_source.py',),
+        'paths': ('tests/name_change/',), 'shared_paths': (
+            'code/game/mob/living/carbon/human/name_change.dm', 'code/game/mob/groups/faction_papers.dm',
+            'code/game/mob/living/carbon/human/nomads_adoption.dm', 'code/modules/admin/admin.dm',
+            'code/game/objects/structures/key_doors/fitted_locks.dm', 'code/modules/1713/stone_age_traps.dm',
+            'code/modules/craft/craft_register.dm', 'code/modules/persistence/region_travel.dm')},
     # Census, citizenship papers, passes and border doors (the native probe is tests/faction_papers/probe.dm).
     'faction_papers': {'files': ('tests/faction_papers/test_source.py',),
         'paths': ('tests/faction_papers/',), 'shared_paths': (

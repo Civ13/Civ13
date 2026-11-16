@@ -300,6 +300,7 @@
 #include "code\game\mob\living\carbon\human\human_stats.dm"
 #include "code\game\mob\living\carbon\human\inventory.dm"
 #include "code\game\mob\living\carbon\human\matt_combat.dm"
+#include "code\game\mob\living\carbon\human\name_change.dm"
 #include "code\game\mob\living\carbon\human\MedicalSideEffects.dm"
 #include "code\game\mob\living\carbon\human\nomads_adoption.dm"
 #include "code\game\mob\living\carbon\human\nomads_spawn.dm"

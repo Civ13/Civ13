@@ -223,6 +223,13 @@ var/global/list/region_travel_carry_types = list(
 		P["trade_lock"] = trade_lock
 	if(study_interest in scholar_disciplines)
 		P["study_interest"] = study_interest
+	// Former names and the wait for the next change travel too (name_change.dm).
+	if(name_history_valid(former_names) && former_names.len)
+		P["former_names"] = former_names.Copy()
+	if(name_history_valid(name_history) && name_history.len)
+		P["name_history"] = name_history.Copy()
+	if(name_change_lock > world.realtime)
+		P["name_change_lock"] = name_change_lock
 	// People and languages travel whole (region_travel_tongues.dm).
 	var/list/tongues = region_travel_tongues()
 	if(tongues)
@@ -291,6 +298,9 @@ var/global/list/region_travel_carry_types = list(
 	if(("study_field_lock" in P) && !isnum(P["study_field_lock"])) return null
 	if(("trade_lock" in P) && !isnum(P["trade_lock"])) return null
 	if(("study_interest" in P) && !(P["study_interest"] in scholar_disciplines)) return null
+	for(var/field in list("former_names", "name_history"))
+		if((field in P) && !name_history_valid(P[field])) return null
+	if(("name_change_lock" in P) && !isnum(P["name_change_lock"])) return null
 	var/owner = P["owner"]
 	if(!persistence_owner_valid(owner) || length(owner) > 32) return null
 	if(!istext(P["name"]) || !length(P["name"]) || length(P["name"]) > MAX_NAME_LEN) return null
@@ -507,6 +517,12 @@ var/global/list/region_travel_carry_types = list(
 		H.trade_lock = P["trade_lock"]
 	if(P["study_interest"] in scholar_disciplines)
 		H.study_interest = P["study_interest"]
+	if(islist(P["former_names"]))
+		H.former_names = P["former_names"].Copy()
+	if(islist(P["name_history"]))
+		H.name_history = P["name_history"].Copy()
+	if(isnum(P["name_change_lock"]))
+		H.name_change_lock = P["name_change_lock"]
 	H.gender = P["gender"]
 	H.age = P["age"]
 	H.fully_replace_character_name(H.real_name, P["name"])
