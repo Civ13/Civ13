@@ -49,6 +49,21 @@ describe('Panel', () => {
     expect(images.length).toBe(1);
     expect(images[0].getAttribute('src')).toBe('pill1.png');
   });
+  it('sends a form as its action with the value and each typed field', () => {
+    const act = vi.fn();
+    const view = render(<Panel template="panel.tmpl" act={act} interactive data={{ sections: [{ title: 'Offers', empty: 'None.', forms: [
+      { label: 'Dawn Mill', action: 'sell', id: 3, button: 'Sell', fields: [{ name: 'amt', label: 'Amount', kind: 'number', value: 40 }, { name: 'price', label: 'Price', kind: 'number', value: 10 },
+        { name: 'cur', label: 'Currency', kind: 'choice', options: [{ id: 'standard', label: 'Standard Coins' }, { id: 'fiat_2', label: 'Marks' }] }, { name: 'Bad Name', label: 'Dropped', value: 1 }] }] }] }} />);
+    expect(screen.queryByText('None.')).toBeNull();
+    expect(view.container.querySelectorAll('input').length).toBe(2);
+    fireEvent.change(screen.getByLabelText('Amount'), { target: { value: '25' } });
+    fireEvent.change(screen.getByLabelText('Currency'), { target: { value: 'fiat_2' } });
+    fireEvent.click(screen.getByText('Sell'));
+    expect(act).toHaveBeenLastCalledWith('sell', { value: 3, amt: 25, price: 10, cur: 'fiat_2' });
+    fireEvent.change(screen.getByLabelText('Price'), { target: { value: 'lots' } });
+    fireEvent.click(screen.getByText('Sell'));
+    expect(act).toHaveBeenCalledTimes(1);
+  });
   it('is inert when read-only', () => {
     const act = vi.fn();
     render(<Panel template="panel.tmpl" data={data} act={act} interactive={false} />);

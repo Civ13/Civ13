@@ -234,6 +234,34 @@ var/screens_runtime_error = FALSE
 	rows = agent_screen_rows(H)
 	screens_check(mixer.pillsprite == "7" && findtext(rows[1]["data"], "pill7.png"), "a listed pill style is taken and shown")
 	GLOB.nanomanager.close_user_uis(H, mixer)
+	// The stock market: a form sends its fields, and the members window is keyed by company.
+	var/obj/structure/stockmarket/exchange = new(locate(9, 9, 1))
+	var/made_map = !map
+	if (made_map)
+		map = new /obj/map_metadata(locate(1, 1, 1))
+	map.custom_company_nr += "Probe & Sons"
+	map.custom_company["Probe & Sons"] = list(list(H, 100, 0))
+	map.custom_company_value["Probe & Sons"] = 0
+	var/company_index = map.custom_company_nr.Find("Probe & Sons")
+	exchange.attack_hand(H)
+	rows = agent_screen_rows(H)
+	screens_check(rows.len == 1 && findtext(rows[1]["data"], "you own 100%") && ("sell" in rows[1]["actions"]), "the stock market offers a sell form for an owned company")
+	var/listed = map.sales_registry.len
+	screen_try(C, list("screen" = 1, "act" = "sell", "value" = company_index, "amt" = 40, "price" = 20, "cur" = "standard"))
+	rows = agent_screen_rows(H)
+	screens_check(map.sales_registry.len == listed + 1 && findtext(rows[1]["data"], "40% of Probe"), "the sell form lists the stake and the window refreshes")
+	screen_try(C, list("screen" = 1, "act" = "sell", "value" = company_index, "amt" = 40, "price" = 20, "cur" = "no_such_currency"))
+	screens_check(map.sales_registry.len == listed + 1, "an unknown currency is refused")
+	screen_try(C, list("screen" = 1, "act" = "viewmembers", "value" = company_index))
+	screens_check(GLOB.nanomanager.get_open_ui(H, exchange, "members_[company_index]") != null, "the members window opens for that company")
+	GLOB.nanomanager.close_user_uis(H, exchange)
+	map.sales_registry.Cut(listed + 1)
+	map.custom_company_nr -= "Probe & Sons"
+	map.custom_company -= "Probe & Sons"
+	map.custom_company_value -= "Probe & Sons"
+	if (made_map)
+		qdel(map)
+		map = null
 	// Read-only report windows: a table section and a chart section reach the panel.
 	var/obj/structure/factory_monitor/monitor = new(locate(9, 9, 1))
 	monitor.attack_hand(H)

@@ -151,8 +151,13 @@
 		agent_fail("bad_args", "[ui.title] accepts [allowed.len ? jointext(allowed, ", ") : "no actions"]")
 	var/list/params = list()
 	params[action] = isnull(req["value"]) ? "1" : "[req["value"]]"
-	// The extra fields the tgui transport lets a painting action carry.
-	for (var/key in list("x", "y", "cells", "stroke_continue"))
+	// The extra fields the tgui transport lets a painting action carry, plus
+	// the ones the window's owner declares for this action (a form's boxes).
+	var/list/extra = list("x", "y", "cells", "stroke_continue")
+	var/list/declared = ui.src_object ? ui.src_object.ui_action_fields(ui.ui_key, action) : null
+	if (islist(declared))
+		extra |= declared
+	for (var/key in extra)
 		if (!isnull(req[key]))
 			params[key] = "[req[key]]"
 	// A gameplay Topic may prompt (an amount, a name), which sleeps.
