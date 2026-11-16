@@ -41,6 +41,9 @@ export type PanelForm = { label?: string; action?: string; id?: string | number;
 export type PanelCell = string | number | { text?: string; tone?: string };
 export type PanelData = { notes?: string[]; sections?: PanelSection[] };
 export type PromptData = { message?: string; choices?: string[] };
+// Admin Spawn picker: the server searches its cached type list; results are the best matches.
+export type SpawnMenuEntry = { path?: string; name?: string; kind?: string };
+export type SpawnMenuData = { query?: string; kind?: string; results?: SpawnMenuEntry[]; matches?: number; limit?: number; types?: number; max_amount?: number; last?: string };
 export type KnownLanguagesData = { current_default?: string; languages?: { name?: string; prefix?: string; description?: string; is_default?: Flag }[] };
 // Character setup: appearance, traits and personal settings.
 export type SetupTrait = { name?: string; cost?: number; desc?: string; note?: string; block?: string; taken?: Flag; conflicts?: string[] };

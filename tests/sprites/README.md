@@ -162,6 +162,8 @@ listing was retained. These limits are not waived by a green workflow.
 
 `create_tachi.py` owns the `tachi` state in five shared sheets: the drawn sword in `icons/obj/weapons.dmi`, the held sword in `icons/mob/items/lefthand_weapons.dmi` and `righthand_weapons.dmi`, and the worn sword in `icons/mob/belt.dmi` and `icons/mob/back.dmi`. Each follows the `katana` state of its sheet for directions, frames, placement and colours, with a longer blade curved hardest above the hilt, gilt tachi fittings and, on the belt, a level scabbard slung edge down from two hangers. `--check` verifies the committed sheets, `--preview <png>` writes a sheet of katana beside tachi in every direction. It appends its tiles and leaves every other state in those sheets untouched.
 
+`create_mercury.py` owns `icons/obj/mercury.dmi`: the wrought iron mercury flask (open and empty, stoppered and full), the cinnabar retort on its brick firebox with condenser arm and receiver (cold, four-frame firing, cracked and leaking) and the four-frame mercury vapour effect. `--check` verifies the committed sheet, `--preview <png>` writes a review sheet on grass and dirt, `--gif <path>` writes the firing loop.
+
 `create_glass_stone.py` owns `icons/obj/glass_stone_machines.dmi`: the glassblowing bench and the mason's saw with their working loops. `--check` verifies the committed sheet, `--preview <png>` writes a review sheet.
 
 `create_lifting.py` owns `icons/obj/lifting_machines.dmi`: the shear legs and the treadwheel crane with their hauling loops. `--check` verifies the committed sheet, `--preview <png>` writes a review sheet.

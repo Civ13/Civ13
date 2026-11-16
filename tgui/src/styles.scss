@@ -489,3 +489,8 @@ button.rs-row-main { cursor: pointer; }
 .stor-queue > .Button { flex: none; align-self: center; margin: 0; font-size: 12px; }
 .stor-hands .stor-primary { flex: none; margin: 0; }
 @media (prefers-reduced-motion: reduce) { .stor-item-searching::before { animation: none; background: #ffd98522; } }
+// Admin Spawn picker.
+.spawn-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin-bottom: 8px; }
+.spawn-search { flex: 1 1 260px; min-width: 0; padding: 5px 7px; font: inherit; color: inherit; background: var(--civ-inset); border: 1px solid var(--civ-line); }
+.spawn-amount { color: var(--civ-dim); } .spawn-amount input { width: 44px; padding: 3px 5px; font: inherit; color: inherit; background: var(--civ-inset); border: 1px solid var(--civ-line); }
+.spawn-path { font-size: 12px; color: var(--civ-dim); overflow-wrap: anywhere; }

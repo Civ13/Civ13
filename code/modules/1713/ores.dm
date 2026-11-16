@@ -446,28 +446,12 @@
 			..()
 /obj/item/stack/ore/mercury
 	name = "cinnabar ore"
-	desc = "A brownish-red rock of mercury sulfide."
+	desc = "A brick-red rock of mercury sulfide. Roasted over a fire it sweats out quicksilver, and poisonous fumes with it; a retort with a condenser catches far more of it. Ground fine it is vermilion paint."
 	icon_state = "ore_mercury"
 	singular_name = "rock"
 	flammable = FALSE
 	flags = CONDUCT
-	attackby(var/obj/W as obj, var/mob/living/human/H as mob)
-		if (istype(W, /obj/item/weapon/reagent_containers/glass/extraction_kit))
-			var/obj/item/weapon/reagent_containers/glass/extraction_kit/ET = W
-			if (ET.reagents.total_volume > 0)
-				to_chat(H, "<span class = 'notice'>Empty \the [ET] first.</span>")
-				return
-			if (istype(H))
-				visible_message("<span class = 'notice'>[H] starts to purify \the [src] with \the [W.name]...</span>", "<span class = 'notice'>You start to purify \the [src] with \the [W.name].</span>")
-				playsound(src,'sound/effects/pickaxe.ogg',100,1)
-				var/timera = 110/(H.getStatCoeff("dexterity"))
-				if (do_after(H, timera))
-					if (ET.reagents.total_volume <= 0)
-						ET.reagents.add_reagent("mercury",5)
-						ET.update_icon()
-						qdel(src)
-		else
-			..()
+	// Quicksilver comes out by roasting it, not the extraction kit (mercury.dm).
 /obj/item/stack/ore/fossilskull1
 	name = "Fossils"
 	desc = "An ancient fossil... must be from ages ago!"

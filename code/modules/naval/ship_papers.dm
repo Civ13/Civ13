@@ -233,7 +233,7 @@
 		if ("Sign on crew")
 			var/list/near = list()
 			for (var/mob/living/human/M in view(3, at))
-				if (M != H && M.stat != DEAD && !R.is_barred(M) && isnull(R.crew[M.real_name]))
+				if (M != H && M.stat != DEAD && !R.is_barred(M) && isnull(R.role_of(M)))
 					near[M.real_name] = M
 			if (!near.len)
 				to_chat(H, SPAN_WARNING("Nobody who could sign on is near the [helm_word]."))

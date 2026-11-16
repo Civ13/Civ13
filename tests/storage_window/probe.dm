@@ -46,6 +46,7 @@ var/storwin_runtime_error = FALSE
 		storwin_window_checks()
 		storwin_search_checks()
 		storwin_closet_checks()
+		storwin_fire_checks()
 	catch(var/exception/e)
 		storwin_check(FALSE, "exception [e] [e.file]:[e.line] [e.desc]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = storwin_failures, "runtime_error" = storwin_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")
@@ -234,3 +235,28 @@ var/storwin_runtime_error = FALSE
 	D.opened = TRUE
 	storwin_check(!storage_window_structure_holder(D), "a dumpster keeps its own rummaging")
 	qdel(W)
+
+// A wooden or woven store that burns away takes its flammable things with it.
+/proc/storwin_fire_checks()
+	var/obj/structure/storage_container/basket/B = new(locate(5, 12, 1))
+	var/obj/item/cloth = storwin_item(B.storage, ITEM_SIZE_SMALL, "burning cloth")
+	cloth.flammable = TRUE
+	var/obj/item/blade = storwin_item(B.storage, ITEM_SIZE_SMALL, "iron blade")
+	blade.flammable = FALSE
+	for (var/i = 1, i <= 200 && !QDELETED(B), i++)
+		B.fire_act(1000)
+	storwin_check(QDELETED(B), "a basket in a fire burns away")
+	storwin_check(QDELETED(cloth), "the cloth in it burns too")
+	storwin_check(!QDELETED(blade) && blade.loc == locate(5, 12, 1), "the iron blade drops out whole")
+	var/obj/structure/storage_container/storage_jar/J = new(locate(6, 12, 1))
+	var/obj/item/grain = storwin_item(J.storage, ITEM_SIZE_SMALL, "grain")
+	for (var/i = 1, i <= 50, i++)
+		J.fire_act(1000)
+	storwin_check(!QDELETED(J) && grain.loc == J.storage, "a clay jar keeps its things through a fire")
+	var/obj/structure/closet/crate/wood/W = new(locate(7, 12, 1))
+	W.flammable = TRUE
+	var/obj/item/rag = storwin_item(W, ITEM_SIZE_SMALL, "rag")
+	rag.flammable = TRUE
+	for (var/i = 1, i <= 200 && !QDELETED(W), i++)
+		W.fire_act(1000)
+	storwin_check(QDELETED(W) && QDELETED(rag), "a burning crate takes its rag with it")

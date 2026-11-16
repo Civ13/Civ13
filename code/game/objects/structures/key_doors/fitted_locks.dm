@@ -146,7 +146,7 @@ var/global/list/LOCK_DEFEAT_METHODS = list("pick", "skeleton", "shim", "crack", 
 	return locked
 
 /datum/lock/proc/catch_known(mob/user)
-	return user && (user.real_name == owner_name || (known_by && (user.real_name in known_by)))
+	return user && (user.answers_to_name(owner_name) || (known_by && user.any_name_in(known_by)))
 
 /datum/lock/proc/learn_catch(mob/user)
 	if (!user)
