@@ -340,3 +340,132 @@
 #undef KERA_WROUGHT_PERCENT
 #undef FOLD_TAMAHAGANE
 #undef FOLD_STEEL
+
+//////////////////////////////////////////////////////////////////////////////
+// Washing for iron sand (kanna-nagashi). Running water carries light grains
+// away and leaves the heavy black sand behind: a wooden channel by a river
+// washes hillside soil, and ordinary sand washed in a channel or a pan gives
+// up a little of its iron sand.
+
+#define KANNA_WASH_UNITS 2 // iron sand from one load of soil
+#define KANNA_STOCK 20 // soil loads one channel tile gives before it rests
+#define KANNA_REGROW 600 // deciseconds per load coming back (20 minutes for all)
+#define KANNA_WASH_TIME 300
+#define SAND_PER_WASH 5 // ordinary sand washed down to one iron sand
+#define SAND_WASH_TIME 50 // per batch of SAND_PER_WASH
+
+// "x,y,z" -> /datum/resource_stock, so a rebuilt channel does not refill.
+var/global/list/kanna_channel_stock = list()
+
+/obj/structure/kanna_channel
+	name = "washing channel"
+	desc = "A kanna-nagashi channel: a plank trough with riffles, set by shallow fresh water. Wash hillside soil through it with an empty hand, or pour ordinary sand into it, and the heavy black iron sand settles behind the riffles."
+	icon = 'icons/obj/tatara.dmi'
+	icon_state = "kanna_channel"
+	density = FALSE
+	anchored = TRUE
+	not_movable = TRUE
+	var/tmp/washing = FALSE
+
+/obj/structure/kanna_channel/proc/water_beside()
+	var/turf/T = get_turf(src)
+	return T && T.panning_water()
+
+/obj/structure/kanna_channel/proc/stock()
+	var/key = "[x],[y],[z]"
+	var/datum/resource_stock/S = kanna_channel_stock[key]
+	if (!S)
+		S = new /datum/resource_stock(KANNA_STOCK, KANNA_REGROW)
+		kanna_channel_stock[key] = S
+	return S
+
+/obj/structure/kanna_channel/examine(mob/user, distance)
+	..(user, distance)
+	if (!water_beside())
+		to_chat(user, SPAN_WARNING("It is dry: it needs shallow fresh water right beside it."))
+	else
+		var/datum/resource_stock/S = stock()
+		to_chat(user, SPAN_NOTICE("The hillside here has [S.available()] of [KANNA_STOCK] loads of soil worth washing."))
+
+/obj/structure/kanna_channel/proc/start_washing(mob/living/human/H)
+	if (washing)
+		to_chat(H, SPAN_WARNING("Someone is already washing in \the [src]."))
+		return FALSE
+	if (!water_beside())
+		to_chat(H, SPAN_WARNING("\The [src] needs shallow fresh water right beside it."))
+		return FALSE
+	washing = TRUE
+	icon_state = "kanna_channel_working"
+	return TRUE
+
+/obj/structure/kanna_channel/proc/stop_washing()
+	washing = FALSE
+	if (!QDELETED(src))
+		icon_state = "kanna_channel"
+
+/obj/structure/kanna_channel/attack_hand(mob/living/human/H)
+	if (!istype(H) || !start_washing(H))
+		return
+	var/datum/resource_stock/S = stock()
+	if (S.available() < 1)
+		stop_washing()
+		to_chat(H, SPAN_WARNING("The soil around here is washed out. Give it time to weather."))
+		return
+	visible_message(SPAN_NOTICE("[H] starts washing soil down \the [src]."))
+	var/done = do_after(H, KANNA_WASH_TIME, src)
+	stop_washing()
+	if (!done || QDELETED(src) || !water_beside() || !S.take(1))
+		return
+	var/units = KANNA_WASH_UNITS + (map && map.iron_sand_rich ? 2 : 0)
+	spawn_stack(/obj/item/stack/ore/iron_sand, get_turf(src), units)
+	to_chat(H, SPAN_NOTICE("The muddy water runs off and leaves [units] iron sand behind the riffles."))
+
+/obj/structure/kanna_channel/attackby(obj/item/I, mob/living/human/H)
+	if (istype(I, /obj/item/stack/ore/glass) && istype(H))
+		if (start_washing(H))
+			wash_sand(I, H, src)
+			stop_washing()
+		return
+	if (is_tool(I, TOOL_HAMMER) && istype(H))
+		visible_message(SPAN_NOTICE("[H] starts taking \the [src] apart."))
+		if (do_after(H, 40, src) && !QDELETED(src))
+			spawn_stack(/obj/item/stack/material/wood, get_turf(src), 3)
+			qdel(src)
+		return
+	return ..()
+
+// Washes the held sand in batches; TRUE when any iron sand came out.
+/proc/wash_sand(obj/item/stack/S, mob/living/human/H, atom/where)
+	var/batches = round(S.amount / SAND_PER_WASH)
+	if (batches < 1)
+		to_chat(H, SPAN_WARNING("Wash at least [SAND_PER_WASH] sand at a time."))
+		return FALSE
+	var/initial_amount = S.amount
+	to_chat(H, SPAN_NOTICE("You start washing the sand, letting the water carry the light grains away."))
+	if (!do_after(H, SAND_WASH_TIME * batches, where) || QDELETED(S) || S.amount != initial_amount)
+		return FALSE
+	var/units = batches * (map && map.iron_sand_rich ? 2 : 1)
+	S.use(batches * SAND_PER_WASH)
+	spawn_stack(/obj/item/stack/ore/iron_sand, get_turf(H), units)
+	to_chat(H, SPAN_NOTICE("[batches * SAND_PER_WASH] sand washes down to [units] iron sand."))
+	return TRUE
+
+// A wooden bowl pans ordinary sand the same way beside shallow fresh water.
+/obj/item/kitchen/wood_bowl/attackby(obj/item/I, mob/living/human/H)
+	if (!istype(I, /obj/item/stack/ore/glass) || !istype(H))
+		return ..()
+	var/turf/T = get_turf(H)
+	if (!T || !T.panning_water())
+		to_chat(H, SPAN_WARNING("Stand beside shallow fresh water to wash sand."))
+		return
+	if (map && map.ordinal_age < 1)
+		to_chat(H, SPAN_WARNING("You see nothing worth keeping in the sand."))
+		return
+	wash_sand(I, H, H)
+
+#undef KANNA_WASH_UNITS
+#undef KANNA_STOCK
+#undef KANNA_REGROW
+#undef KANNA_WASH_TIME
+#undef SAND_PER_WASH
+#undef SAND_WASH_TIME

@@ -150,5 +150,42 @@ class Tatara(unittest.TestCase):
             self.assertIn(name, routes)
 
 
+class Washing(unittest.TestCase):
+    def test_numbers(self):
+        expected = {'KANNA_WASH_UNITS': 2, 'KANNA_STOCK': 20, 'KANNA_REGROW': 600, 'KANNA_WASH_TIME': 300,
+                    'SAND_PER_WASH': 5, 'SAND_WASH_TIME': 50}
+        for name, value in expected.items():
+            self.assertEqual(define(name), value, name)
+        self.assertLessEqual(define('KANNA_WASH_UNITS') + 2, 5)
+
+    def test_channel_recipe_node_and_sprites(self):
+        rows = [l for l in RECIPES.splitlines() if l.startswith('RECIPE: ') and ',/obj/structure/kanna_channel,' in l]
+        self.assertEqual(rows, ['RECIPE: /material/wood/,washing channel,/obj/structure/kanna_channel,6,120,1,1,economy & production,0,0,0,8,null'])
+        self.assertIn('"/obj/structure/kanna_channel" = "tatara_smelting"', NODES)
+        states = dmi_states()
+        self.assertIn('kanna_channel', states)
+        self.assertIn('kanna_channel_working', states)
+
+    def test_channel_needs_water_and_a_shared_stock(self):
+        self.assertIn('T.panning_water()', proc_body(SOURCE, '/obj/structure/kanna_channel/proc/water_beside('))
+        stock = proc_body(SOURCE, '/obj/structure/kanna_channel/proc/stock(')
+        self.assertIn('kanna_channel_stock[key]', stock)
+        hand = proc_body(SOURCE, '/obj/structure/kanna_channel/attack_hand(')
+        self.assertLess(hand.index('do_after'), hand.index('S.take(1)'))
+        self.assertIn('map.iron_sand_rich', hand)
+
+    def test_sand_washing(self):
+        wash = proc_body(SOURCE, '/proc/wash_sand(')
+        self.assertIn('round(S.amount / SAND_PER_WASH)', wash)
+        self.assertIn('S.amount != initial_amount', wash)
+        self.assertLess(wash.index('do_after'), wash.index('S.use(batches * SAND_PER_WASH)'))
+        bowl = proc_body(SOURCE, '/obj/item/kitchen/wood_bowl/attackby(')
+        self.assertIn('T.panning_water()', bowl)
+        self.assertIn('map.ordinal_age < 1', bowl)
+        routes = {r['name'] for r in ATLAS['mechanisms']}
+        self.assertIn('Wash hillside soil in a washing channel', routes)
+        self.assertIn('Wash ordinary sand into iron sand', routes)
+
+
 if __name__ == '__main__':
     unittest.main()

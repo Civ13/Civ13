@@ -2399,6 +2399,7 @@ RECIPE: /material/steel/,tanning drum,/obj/structure/tanning_drum,10,200,1,1,eco
 RECIPE: /material/wood/,primitive saw mill,/obj/structure/sawmill,28,60,1,1,economy & production,15,0,0,8,null
 RECIPE: /material/wood/,potter's wheel,/obj/structure/workshop_machine/potters_wheel,6,120,1,1,economy & production,0,0,0,8,null
 RECIPE: /material/wood/,charcoal clamp,/obj/structure/charcoal_clamp,4,120,1,1,economy & production,0,0,0,8,null
+RECIPE: /material/wood/,washing channel,/obj/structure/kanna_channel,6,120,1,1,economy & production,0,0,0,8,null
 RECIPE: /material/wood/,brick mould bench,/obj/structure/workshop_machine/brick_bench,6,100,1,1,economy & production,18,0,0,8,null
 RECIPE: /material/wood/,glassblowing bench,/obj/structure/workshop_machine/glass_bench,6,120,1,1,economy & production,35,0,0,8,null
 RECIPE: /material/wood/,mason's saw,/obj/structure/workshop_machine/masons_saw,8,120,1,1,economy & production,35,0,0,8,null

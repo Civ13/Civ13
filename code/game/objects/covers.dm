@@ -253,12 +253,12 @@
 				start_fire()
 				message_admins("[user.name] ([user.ckey]) started a fire with a torch at [src.name] ([src.x],[src.y],[src.z]) (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[user.x];Y=[user.y];Z=[user.z]'>JMP</a>)", user.ckey)
 				log_game("[user.name] ([user.ckey]) started a fire with a torch at [src.name] ([src.x],[src.y],[src.z])")
-		if (istype(W, /obj/item/stack))
-			var/obj/item/stack/S = W
-			if (S.amount <= 0)
-				qdel(S)
+		// Stacks, and piles of the wall's own bricks or blocks, repair it.
+		if (istype(W, /obj/item/stack) || (W.loose_pile_max && istype(W, buildstack)))
+			if (W.amount <= 0)
+				qdel(W)
 			else
-				repair(S, user)
+				repair(W, user)
 				playsound(get_turf(src), 'sound/weapons/smash.ogg', 100)
 				user.do_attack_animation(src)
 				return

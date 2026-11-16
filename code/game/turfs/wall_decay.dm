@@ -56,8 +56,9 @@
 				moldy = max(0,moldy-=1)
 				cracked = max(0, cracked-=1)
 		else
-			src.health += (1/buildstackamount)*src.maxhealth
-			qdel(I)
+			// A pile of bricks or blocks pays like a stack, a plain item counts once.
+			var/used = I.loose_pile_use(amt)
+			src.health = min(src.maxhealth, src.health + (used/buildstackamount)*src.maxhealth)
 			to_chat(user, "The wall is repaired.")
 			moldy = max(0,moldy-=1)
 			cracked = max(0, cracked-=1)

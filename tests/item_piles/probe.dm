@@ -1,5 +1,5 @@
-// Headless probe for item piles (code/game/objects/items/item_piles.dm) and
-// roofing piles (code/game/objects/roof_stuff.dm).
+// Headless probe for item piles and loose piles (code/game/objects/items/item_piles.dm),
+// roofing piles (code/game/objects/roof_stuff.dm) and brick piles (clay_items.dm).
 // Run: python3 tests/ecology_spawning/run_linux.py . tests/item_piles/probe.dm
 /world
 	hub = ""
@@ -34,6 +34,7 @@ var/pile_runtime_error = FALSE
 		GLOB.destroyed_event = new
 		pile_collapse_checks()
 		roofing_pile_checks()
+		brick_pile_checks()
 	catch(var/exception/e)
 		pile_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = pile_failures, "runtime_error" = pile_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")
@@ -91,7 +92,7 @@ var/pile_runtime_error = FALSE
 	var/obj/item/weapon/roofbuilder/clay/black/A = new(T3)
 	var/obj/item/weapon/roofbuilder/clay/black/B = new(T3)
 	B.amount = 4
-	B.update_roofing_pile()
+	B.loose_pile_update()
 	item_pile_flush()
 	pile_check(A.mouse_opacity && B.mouse_opacity, "items with different names are not collapsed together")
 
@@ -99,13 +100,13 @@ var/pile_runtime_error = FALSE
 	var/turf/T = locate(12, 12, 1)
 	var/obj/item/weapon/roofbuilder/clay/black/A = new(T)
 	var/obj/item/weapon/roofbuilder/clay/black/B = new(T)
-	pile_check(A.add_to_roofing_pile(B) == 1 && A.amount == 2 && QDELETED(B), "roofing joins a pile of the same roofing")
+	pile_check(A.loose_pile_add(B) == 1 && A.amount == 2 && QDELETED(B), "roofing joins a pile of the same roofing")
 	pile_check(A.name == "black clay roofing (2)", "a pile shows its count in its name")
 	var/obj/item/weapon/roofbuilder/clay/blue/C = new(T)
-	pile_check(!A.add_to_roofing_pile(C) && C.amount == 1, "different roofing does not pile")
-	A.amount = A.pile_max
+	pile_check(!A.loose_pile_add(C) && C.amount == 1, "different roofing does not pile")
+	A.amount = A.loose_pile_max
 	var/obj/item/weapon/roofbuilder/clay/black/D = new(T)
-	pile_check(!A.add_to_roofing_pile(D) && !QDELETED(D), "a full pile takes no more")
+	pile_check(!A.loose_pile_add(D) && !QDELETED(D), "a full pile takes no more")
 	A.amount = 2
 	A.done = TRUE
 	A.use_one_roofing(null)
@@ -116,7 +117,7 @@ var/pile_runtime_error = FALSE
 	var/turf/T2 = locate(14, 12, 1)
 	var/obj/item/weapon/roofbuilder/clay/black/E = new(T2)
 	var/obj/item/weapon/roofbuilder/clay/black/F = new(T2)
-	F.join_roofing_pile_here()
+	F.loose_pile_join_here()
 	pile_check(QDELETED(F) && E.amount == 2, "roofing dropped on a pile joins it")
 
 	var/obj/kiln = new /obj(locate(16, 12, 1))
@@ -128,3 +129,72 @@ var/pile_runtime_error = FALSE
 	for (var/obj/item/weapon/roofbuilder/R in kiln)
 		n++
 	pile_check(R1 == R2 && n == 1 && R1.amount == 2, "fired roof tiles pile up in the kiln")
+
+
+/proc/brick_pile_count(atom/where, path)
+	. = 0
+	for (var/obj/item/I in where)
+		if (I.type == path && !QDELETED(I))
+			. += I.amount
+
+/proc/brick_pile_checks()
+	var/turf/T = locate(4, 16, 1)
+	var/obj/item/weapon/clay/advclaybricks/fired/A = new(T)
+	var/obj/item/weapon/clay/advclaybricks/fired/B = new(T)
+	pile_check(A.loose_pile_add(B) == 1 && A.amount == 2 && QDELETED(B) && A.name == "bricks (2)", "fired bricks pile up and show the count")
+	var/obj/item/weapon/clay/advclaybricks/fired/cement/C = new(T)
+	pile_check(!A.loose_pile_add(C) && C.amount == 1, "cement bricks and bricks stay apart")
+	var/obj/item/weapon/clay/advclaybricks/U = new(T)
+	pile_check(!A.loose_pile_add(U), "unfired and fired bricks stay apart")
+	pile_check(A.loose_pile_use(1) == 1 && A.amount == 1 && A.name == "bricks", "building uses one brick from the pile")
+	pile_check(A.loose_pile_use(1) == 1 && QDELETED(A), "the last brick is used up")
+
+	// The brick bench and crates put out one pile, not separate bricks.
+	var/turf/T2 = locate(6, 16, 1)
+	var/obj/item/weapon/clay/claybricks/P = loose_pile_spawn(/obj/item/weapon/clay/claybricks, T2, 30)
+	var/piles = 0
+	for (var/obj/item/weapon/clay/claybricks/X in T2)
+		piles++
+	pile_check(istype(P) && piles == 2 && brick_pile_count(T2, /obj/item/weapon/clay/claybricks) == 30, "30 unfired clay blocks make two piles (25 + 5)")
+	var/obj/item/weapon/barrier/D = loose_pile_spawn(/obj/item/weapon/barrier, T2, 3)
+	var/dirt = 0
+	for (var/obj/item/weapon/barrier/X in T2)
+		dirt++
+	pile_check(istype(D) && dirt == 3 && D.amount == 1, "items that do not pile still come out one by one")
+
+	// Kiln: a pile of unfired bricks fires into one pile; clay blocks yield two each.
+	var/obj/kiln = new /obj(locate(8, 16, 1))
+	var/obj/item/weapon/clay/advclaybricks/UB = new(null)
+	UB.amount = 5
+	UB.loose_pile_update()
+	var/obj/item/weapon/clay/advclaybricks/fired/FB = UB.fired_result(kiln)
+	pile_check(istype(FB) && FB.amount == 5 && FB.loc == kiln, "five unfired bricks fire into a pile of five")
+	var/obj/item/weapon/clay/claybricks/UC = new(null)
+	UC.amount = 4
+	UC.loose_pile_update()
+	UC.fired_result(kiln)
+	pile_check(brick_pile_count(kiln, /obj/item/weapon/clay/claybricks/fired) == 8, "four clay blocks fire into eight, as before")
+	var/obj/item/weapon/clay/roofing/black/UR = new(null)
+	UR.amount = 3
+	UR.loose_pile_update()
+	var/obj/item/weapon/roofbuilder/RR = UR.fired_result(kiln)
+	pile_check(istype(RR) && RR.amount == 3, "a pile of unfired roof tiles fires into one roofing pile")
+
+	// Dropping onto a pile joins it; a full pile refuses more.
+	var/turf/T3 = locate(10, 16, 1)
+	var/obj/item/weapon/clay/advclaybricks/fired/cement/E = new(T3)
+	var/obj/item/weapon/clay/advclaybricks/fired/cement/F = new(T3)
+	F.loose_pile_join_here()
+	pile_check(QDELETED(F) && E.amount == 2, "a cement brick dropped on a pile joins it")
+	E.amount = E.loose_pile_max
+	var/obj/item/weapon/clay/advclaybricks/fired/cement/G = new(T3)
+	G.loose_pile_join_here()
+	pile_check(!QDELETED(G) && G.amount == 1, "a full pile takes no more")
+
+	// Repairs and builds take several pieces from one pile.
+	var/turf/T4 = locate(12, 16, 1)
+	var/obj/item/weapon/clay/advclaybricks/fired/R = new(T4)
+	R.amount = 10
+	R.loose_pile_update()
+	var/used = R.loose_pile_use(2)
+	pile_check(used == 2 && R.amount == 8, "a repair takes only the bricks it needs")
