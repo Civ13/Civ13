@@ -172,6 +172,7 @@ RECIPE: /material/leaf/,thatch roofing,/obj/item/weapon/roofbuilder/leaves,2,45,
 RECIPE: /material/leaf/,woven basket,/obj/structure/storage_container/basket,6,80,1,1,storage,0,0,0,8,null
 RECIPE: /material/leaf/,pit lining,/obj/item/weapon/storage_pit_lining,4,40,0,1,storage,0,0,0,8,null
 RECIPE: /material/leaf/,smoke bundle,/obj/item/weapon/smoke_bundle,2,30,0,1,tools,0,0,0,8,null
+RECIPE: /material/leaf/,skep,/obj/structure/kept_hive/skep,8,160,1,1,tools,0,0,0,8,null
 
 //*****************| LEAVES CLOTHING |**************************
 
@@ -217,6 +218,7 @@ RECIPE: /material/leaf/fern/,long leaf skirt,/obj/item/clothing/under/leaves_ski
 
 RECIPE: /material/clay/,unfired clay roofing,/obj/item/weapon/clay/roofing,0.5,25,0,1,none,0,0,0,8,null
 RECIPE: /material/clay/,clay seal,/obj/item/fitted_lock/seal,1,20,0,1,construction,0,0,0,8,null
+RECIPE: /material/clay/,clay hive,/obj/structure/kept_hive/clay,6,160,1,1,tools,0,0,0,8,null
 RECIPE: /material/clay/,unfired blue clay roofing,/obj/item/weapon/clay/roofing/blue,0.5,25,0,1,none,18,0,0,8,null
 RECIPE: /material/clay/,unfired black clay roofing,/obj/item/weapon/clay/roofing/black,0.5,25,0,1,none,18,0,0,8,null
 RECIPE: /material/clay/,unfired black kerawa roofing,/obj/item/weapon/clay/roofing/kerawa,0.5,25,0,1,none,0,0,0,8,null
@@ -2602,6 +2604,7 @@ RECIPE: /material/wood/,produce basket,/obj/item/weapon/storage/produce_basket,5
 
 RECIPE: /material/wood/soft/,fishing cage,/obj/structure/fishing_cage,12,200,1,1,tools,12,0,12,8,null
 RECIPE: /material/wood/soft/,fish pen,/obj/structure/fish_pen,10,200,1,1,tools,12,0,12,8,null
+RECIPE: /material/wood/soft/,log hive,/obj/structure/kept_hive,6,200,1,1,tools,0,0,0,8,null
 RECIPE: /material/wood/soft/,weir stakes,/obj/item/weapon/trap_kit/weir,6,120,0,1,tools,0,0,0,8,null
 RECIPE: /material/wood/soft/,dugout log,/obj/structure/dugout_log,12,200,1,1,vehicle parts,0,0,0,8,null
 RECIPE: /material/wood/soft/,paddle,/obj/item/weapon/paddle,2,40,0,1,vehicle parts,0,0,0,8,null

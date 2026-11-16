@@ -18070,6 +18070,54 @@
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified",
       "source_commit": "90a1dab4"
+    },
+    {
+      "name": "Catch a bee swarm in a hive",
+      "file": "code/modules/1713/kept_hives.dm",
+      "line": 248,
+      "inputs": [],
+      "outputs": [],
+      "tools": [
+        "/obj/structure/bee_swarm_cluster",
+        "/obj/structure/kept_hive",
+        "/obj/structure/kept_hive/clay",
+        "/obj/structure/kept_hive/skep"
+      ],
+      "steps": [
+        "In spring or the wet season, find a swarm hanging near a strong colony or a wild nest.",
+        "Pull an empty log hive, clay hive or skep next to it.",
+        "Click the swarm to shake it in."
+      ],
+      "conditions": "Swarms hang for about 20 minutes and do not sting.",
+      "era": "Basic Agriculture for the hives.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified",
+      "source_commit": "aef497fa"
+    },
+    {
+      "name": "Cut comb from a kept hive",
+      "file": "code/modules/1713/kept_hives.dm",
+      "line": 141,
+      "inputs": [],
+      "outputs": [
+        "/obj/item/weapon/reagent_containers/food/snacks/honeycomb",
+        "/obj/item/weapon/reagent_containers/food/snacks/brood_comb"
+      ],
+      "tools": [
+        "/obj/structure/kept_hive",
+        "/obj/structure/kept_hive/clay",
+        "/obj/structure/kept_hive/skep",
+        "/obj/item/weapon/smoke_bundle"
+      ],
+      "steps": [
+        "Smoke the hive with a lit smoke bundle or torch.",
+        "Cut a comb out with a knife, or slowly by hand."
+      ],
+      "conditions": "One honeycomb per cut, brood comb 25% of the time; each cut costs the colony strength. Unsmoked, the bees sting.",
+      "era": "Basic Agriculture for the hives.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified",
+      "source_commit": "aef497fa"
     }
   ],
   "mechanism_overview": [
