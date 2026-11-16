@@ -251,6 +251,41 @@ var/global/list/LOCK_DEFEAT_METHODS = list("pick", "skeleton", "shim", "crack", 
 		return "both"
 	return S == L.side ? "key" : "thumb"
 
+// Whether M walking into this door now gets through by hand, with no key,
+// tool or wait: route planners (click_route.dm, pathfinding.dm) and agents
+// use it, so a walk is never planned through a barred, braced or locked door
+// or a window. For a shut trapdoor (walked across like floor) it says whether
+// a hand opens it. A thumb-turn or latch on M's side and a hidden catch M knows
+// let them through; a seal is broken in passing.
+/obj/structure/simple_door/proc/door_route_passable(mob/M)
+	if (state || (!density && !is_trapdoor()))
+		return TRUE
+	if (is_window_door())
+		return FALSE
+	if (door_barred() || door_braced_against(M) || cell_sentence_left > 0)
+		return FALSE
+	if (door_lock && door_lock.blocks())
+		if (door_lock.kind == LOCK_CATCH)
+			if (!door_lock.catch_known(M) && host_lock_side(src, door_lock, M) == "key")
+				return FALSE
+		else if (host_lock_side(src, door_lock, M) == "key" || !door_lock.has_thumb_turn())
+			return FALSE
+	return !door_locked_against(M)
+
+// The door's own older locks (keypads, keyslots, faction membership), with no side effects.
+/obj/structure/simple_door/proc/door_locked_against(mob/M)
+	return locked
+
+/obj/structure/simple_door/key_door/door_locked_against(mob/M)
+	if (istype(src, /obj/structure/simple_door/key_door/custom))
+		return locked
+	if (istype(src, /obj/structure/simple_door/key_door/anyone))
+		return FALSE
+	return keyslot && keyslot.locked
+
+/obj/structure/simple_door/key_door/faction_door/door_locked_against(mob/M)
+	return !faction_door_admits(M)
+
 // A host that already has a lock of another system takes no fitted lock.
 /proc/host_has_other_lock(atom/host)
 	if (istype(host, /obj/structure/simple_door))

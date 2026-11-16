@@ -113,6 +113,23 @@ var/click_route_runtime_error = FALSE
 	path = click_route_plan(H, get_turf(H), get_turf(H))
 	click_route_check(islist(path) && !path.len, "the spot you stand on needs no route")
 
+	// A door in the room's wall: walked through while walking into it opens it,
+	// never while it is barred, or when it is a shut window.
+	click_route_set(42, 10, 42, 11, /turf/floor/dirt)
+	var/turf/doorway = locate(42, 10, 1)
+	var/obj/structure/simple_door/key_door/anyone/wood/D = new(doorway)
+	path = click_route_plan(H, get_turf(H), locate(42, 12, 1))
+	click_route_check(islist(path) && (doorway in path), "walks through a shut door ([path])")
+	D.door_brackets = list(SOUTH)
+	D.door_bar_kind = list("[SOUTH]" = "wood")
+	D.door_bar_health = list("[SOUTH]" = 100)
+	path = click_route_plan(H, get_turf(H), locate(42, 12, 1))
+	click_route_check(istext(path), "a barred door is no way through ([path])")
+	qdel(D)
+	new /obj/structure/simple_door/key_door/anyone/window_shutters(locate(42, 10, 1))
+	path = click_route_plan(H, get_turf(H), locate(42, 12, 1))
+	click_route_check(istext(path), "a shut window is no way through ([path])")
+
 	// Agents walk the route tile by tile until it arrives.
 	H.loc = locate(3, 10, 1)
 	var/turf/goal = locate(16, 10, 1)

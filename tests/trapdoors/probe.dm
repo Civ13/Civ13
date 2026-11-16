@@ -193,6 +193,23 @@ var/trapdoors_runtime = null
 	S.attackby(wrench, climber)
 	trapdoors_assert(QDELETED(H) && (locate(/obj/item/trapdoor_kit/iron) in get_turf(climber)), "taken_out_from_below")
 
+	// Agents see which side they are on and what holds it; with no client, an
+	// agent character still opens it by hand.
+	var/list/row = agent_door_row(TD, above)
+	trapdoors_assert(row["kind"] == "trapdoor" && row["open"] && row["inside"] == "your side", "agent_row_open")
+	TD.Close()
+	sleep(12)
+	row = agent_door_row(TD, above)
+	trapdoors_assert(!row["open"] && row["passable"] && islist(row["lock"]) && row["lock"]["keyhole"] == "far side", "agent_row_shut")
+	var/list/below_row = agent_door_row(TD, below)
+	trapdoors_assert(!below_row["passable"], "agent_row_latched_below")
+	agent_characters[above] = new /datum/agent_character
+	above.last_bumped = 0
+	TD.TryToSwitchState(above)
+	sleep(12)
+	trapdoors_assert(TD.state, "agent_opens_without_client")
+	agent_characters -= above
+
 	// Door-only fittings are refused.
 	var/obj/item/door_fitting/spring_closer/closer = new
 	trapdoors_hands(above, closer, driver)
