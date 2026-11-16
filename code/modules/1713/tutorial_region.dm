@@ -10,6 +10,7 @@
 #define TUTORIAL_START_WAIT (2 MINUTES)
 
 /obj/map_metadata/tutorial
+	dig_down_underground = FALSE // no ground to dig under (dug_underground.dm)
 	ID = MAP_TUTORIAL
 	title = "Tutorial"
 	description = "Guided practice rooms for new players."

@@ -30,6 +30,7 @@ var/global/sea_home_span = SEA_HOME_SPAN
 	return 2
 
 /obj/map_metadata/nomads/open_sea
+	dig_down_underground = FALSE // no ground to dig under (dug_underground.dm)
 	title = "The Open Sea"
 	description = "Blue water in every direction. Crews build their ships in the home waters and make passage by the chart to islands and wrecks beyond the horizon."
 	battle_name = "open sea"

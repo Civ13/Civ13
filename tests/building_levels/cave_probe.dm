@@ -81,6 +81,9 @@
 		for (var/d in alldirs)
 			cave_assert(!dug_underground_unformed(get_step(opened, d)), "an opened cell forms its neighbours ([d])")
 		cave_assert(dug_underground_unformed(locate(8, 8, cave)), "cells beyond the opening stay unformed")
+		var/turf/blasted = locate(8, 2, cave)
+		blasted.ex_act(3)
+		cave_assert(!dug_underground_unformed(locate(8, 2, cave)), "an explosion forms the rock it reaches")
 		cave_assert(dug_underground_cell(5, 5) == dug_underground_cell(5, 5) && dug_underground_cell(1, 4) == /turf/wall/rockwall/bedrock, "the generator is repeatable and rims the level")
 		// Water above (docs/underground-level.md): the surface over a cell picks its rock.
 		locate(3, 3, base).ChangeTurf(/turf/floor/beach/water/deep)

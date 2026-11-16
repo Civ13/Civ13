@@ -1,4 +1,5 @@
 /obj/map_metadata/battle_ships
+	dig_down_underground = FALSE // no ground to dig under (dug_underground.dm)
 	ID = MAP_BATTLE_SHIPS
 	title = "Battle Ships"
 	no_winner = "The battle is still going on."

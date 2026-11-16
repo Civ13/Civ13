@@ -1,7 +1,7 @@
 # Underground level: unformed rock
 
-A dig-down map (`dig_down_underground` on its map metadata, compiled with one
-level) has a cave level under its surface. The code is in
+Every map compiled with one level has a cave level under its surface
+(`dig_down_underground`, TRUE by default on the map metadata). The code is in
 [dug_underground.dm](../code/modules/multiz/dug_underground.dm).
 
 ## Unformed rock
@@ -24,6 +24,24 @@ the cave area took 0.23 s and 8 MB.
 A bedrock cell at (1, 1) marks the level, so a restored world recognises it
 from its saved cells alone. `dug_underground_z()` caches the answer in
 `dug_underground_live_z` while that marker stands.
+
+## Every map
+
+Maps with no ground to dig under opt out with `dig_down_underground = FALSE`:
+the open sea, orbit, the tutorial region, the TDM barracks, Battleships and
+the Extraction survival instances. Maps compiled with more than one level keep
+their authored tunnels and get no generated level.
+
+The cave is admitted first at boot on any surface up to
+`DUG_UNFORMED_MEASURED_CELLS` (1,050,000 cells): an unformed plane costs about
+14 bytes a cell until dug, so it does not count against the full-level cell
+budgets. That admits the Americas (1132 x 920 and 848 x 1224); their standing
+open-air level then follows at `z 3` (`building_admitted` in
+building_admission.dm). Added later than first, the cave falls back to the
+ordinary cell budgets.
+
+Falling, holes and explosions that reach an unformed cell form it before they
+act on it (`/turf/sky/building/ex_act`).
 
 ## Forming on demand
 

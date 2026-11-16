@@ -39,7 +39,8 @@ class BuildingStoreyTests(unittest.TestCase):
         admission = read('code/modules/multiz/building_admission.dm')
         self.assertIn('#define NEW_Z_STANDING_MEASURED_CELLS 2100000\n', admission)
         admitted = body(admission, '/datum/world_z_budget/building_admitted(target_z)')
-        self.assertIn('if (map.building_level_standing && building_base_maxz() == 1 && target_z == 2 && !pending && world.maxx * world.maxy * 2 <= NEW_Z_STANDING_MEASURED_CELLS)', admitted)
+        self.assertIn('var/standing_z = target_z == 2 + cave || (target_z == 2 && !dug_underground_z())', admitted)
+        self.assertIn('if (map.building_level_standing && building_base_maxz() == 1 && standing_z && !pending && world.maxx * world.maxy * 2 <= NEW_Z_STANDING_MEASURED_CELLS)', admitted)
         # The map cap is checked first, so the clause never admits a level a map did not ask for.
         self.assertLess(admitted.index('min(map.building_levels, NEW_Z_ROOF_CEILING)'), admitted.index('NEW_Z_STANDING_MEASURED_CELLS'))
         americas = read('code/game/objects/map_metadata/nomads/nomads_americas.dm')
@@ -72,10 +73,14 @@ class BuildingStoreyTests(unittest.TestCase):
         self.assertIn('target_z > building_base_maxz() + min(map.building_levels, NEW_Z_ROOF_CEILING) + cave', admitted)
         self.assertIn('if (cave && !dug_underground_fits())', admitted)
         dug = read('code/modules/multiz/dug_underground.dm')
-        self.assertIn('return world.maxx * world.maxy * (DUG_SURFACE_Z + 1) <= NEW_Z_MEASURED_CELLS', dug)
+        # The unformed cave costs about nothing until dug, so any measured surface fits it.
+        self.assertIn('#define DUG_UNFORMED_MEASURED_CELLS 1050000\n', dug)
+        self.assertIn('return world.maxx * world.maxy <= DUG_UNFORMED_MEASURED_CELLS', dug)
         under = body(dug, '/datum/world_z_budget/underground_admitted(target_z)')
-        # A map without building levels keeps the old rule exactly.
-        self.assertIn('return target_z == building_base_maxz() + 1 && world.maxx * world.maxy * (target_z + pending) <= NEW_Z_MEASURED_CELLS', under)
+        # Added first at boot the cave is admitted on any measured surface;
+        # otherwise a map without building levels keeps the cell budget.
+        self.assertIn('var/first = target_z == building_base_maxz() + 1 && !pending && dug_underground_fits()', under)
+        self.assertIn('return target_z == building_base_maxz() + 1 && (first || cells * (target_z + pending) <= NEW_Z_MEASURED_CELLS)', under)
         self.assertIn('return z - 1 == dug ? z - 2 : z - 1', dug)
         standing = read('code/modules/multiz/standing_building_level.dm')
         self.assertIn('return map && map.building_level_standing && map.building_levels\n', standing)
