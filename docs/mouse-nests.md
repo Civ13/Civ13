@@ -9,6 +9,32 @@ Mice do not appear out of rotten food. They live in nests.
   breed outdoors in winter.
 - **House nests** (`/obj/structure/mouse_nest`): hold 0-8 mice; a nest with no
   reachable food loses one mouse per step and disappears at 0.
+
+## Food and spreading
+
+Each settle takes one look 5 tiles around the nest (`forage_scan()`).
+
+| Store | Access |
+| --- | --- |
+| Loose food or seed on the floor, ripe crops, woven baskets, racks | Open: 1 unit each |
+| Hewn log chests, storage pits, wooden crates and closets | Gnawed: 1/4 unit each |
+| Clay storage jars, fridges, ice houses, freezer crates, metal, stone, glass and brick crates, anything carried | Proof |
+
+- A nest grows by one mouse per step while it has more food units than mice,
+  up to its cap; a house nest with no food loses one. Burrows hold 2-4 and do
+  not breed outdoors in winter.
+- Each step the nest eats half its mice (rounded up) in food, open stores
+  first (gnawable ones only 1 time in 4): a food item is gone, a seed stack
+  loses one seed, a ripe crop loses its harvest but the plant lives and grows
+  again. Each meal fouls one more food in the same store: it is renamed
+  "gnawed ...", gets the gnawed overlay and 1u food poisoning.
+- A full nest with food has a 20% chance per step to found a house nest of 2
+  within 2 tiles of a store it eats from (and within 12 tiles of itself),
+  taking two of its own mice. The site must be dirt, grass, a wooden floor or
+  carpet, not seen by a player, and not where 3 nests already lie within 15
+  tiles. This is how burrows next to fields and stores move into settlements.
+- Mice no longer use the generic granivore/scavenger AI: everything they eat
+  goes through the nest.
 - A nest saves `population`, `last_settle`, `commensal` and `fleas`. Loading
   restarts its settle clock, so downtime never causes a burst of growth.
 - The `mouse nests` process runs every 10 s: it settles two nests (each applies

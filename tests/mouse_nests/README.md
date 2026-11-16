@@ -9,6 +9,8 @@ Mice live in nests (`code/modules/ecology/mouse_nests.dm`), settled by the
   cycle, emitted mice are not saved, sprites exist).
 - `python3 tests/ecology_spawning/run_linux.py . tests/mouse_nests/probe.dm`:
   headless DM probe of settle growth and starving, the 12-step clamp, the
-  load clock reset, emitted mice and the wild burrow target. Needs the pinned
+  load clock reset, emitted mice, the wild burrow target, store access
+  (jar, basket, log chest), feeding and fouling, seeds and crops, and
+  spreading (floor, crowding, range). Needs the pinned
   BYOND from `scripts/cloud_byond_setup.sh`.
 - Sprites: `python3 tests/sprites/create_mouse_nests.py` (`--check`, `--preview`).

@@ -56,6 +56,15 @@ class TimidMouse(unittest.TestCase):
         birth = block(self.source, "/mob/living/simple_animal/mouse/New()")
         self.assertNotIn("plaguemouse = TRUE", birth)
 
+    def test_mice_eat_only_through_their_nest(self):
+        base = block(self.source, "/mob/living/simple_animal/mouse\n")
+        self.assertIn("granivore = 0", base)
+        self.assertIn("scavenger = 0", base)
+
+    def test_clay_jars_keep_mice_out(self):
+        nests = read("code/modules/ecology/mouse_nests.dm")
+        self.assertIn("/obj/structure/storage_container/storage_jar\n\trodent_access = RODENT_PROOF", nests)
+
     def test_butchering_gives_plain_meat(self):
         harvest = block(self.source, "/mob/living/simple_animal/mouse/harvest_products(")
         self.assertNotIn("meat/human", harvest)
