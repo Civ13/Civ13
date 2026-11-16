@@ -119,3 +119,128 @@ var/global/item_pile_flush_pending = FALSE
 /turf/Click(var/location, var/control, var/params)
 	item_pile_mark(src)
 	return ..()
+
+/////////////////////////////// Loose piles ///////////////////////////////
+// Plain items that are not /obj/item/stack (roofing, bricks, clay blocks) can
+// still gather into one counted pile: one inventory item and one menu entry.
+// loose_pile_max above 0 turns it on; amount is the count and the name shows
+// it. Code that used to qdel() one piece calls loose_pile_use() instead.
+
+#define LOOSE_PILE_MAX 25
+
+/obj/item/var/loose_pile_max = 0
+
+/obj/item/proc/loose_pile_update()
+	if (!loose_pile_max)
+		return
+	amount = clamp(round(amount), 1, loose_pile_max)
+	name = amount > 1 ? "[initial(name)] ([amount])" : initial(name)
+
+/obj/item/proc/loose_pile_can_join(obj/item/other)
+	return loose_pile_max && istype(other) && other != src && other.type == type && !QDELETED(src) && !QDELETED(other) && amount < loose_pile_max
+
+// Moves as much of other into this pile as fits; returns the number moved.
+/obj/item/proc/loose_pile_add(obj/item/other)
+	if (!loose_pile_can_join(other))
+		return 0
+	var/moved = min(other.amount, loose_pile_max - amount)
+	amount += moved
+	other.amount -= moved
+	loose_pile_update()
+	if (other.amount <= 0)
+		if (ismob(other.loc))
+			var/mob/M = other.loc
+			M.remove_from_mob(other)
+		qdel(other)
+	else
+		other.loose_pile_update()
+	return moved
+
+// Uses count pieces (default one) and returns how many were used; the last
+// piece deletes the item. A plain item without a pile is simply used up.
+/obj/item/proc/loose_pile_use(count = 1)
+	if (QDELETED(src) || count <= 0)
+		return 0
+	if (!loose_pile_max || amount <= count)
+		. = loose_pile_max ? amount : 1
+		if (ismob(loc))
+			var/mob/M = loc
+			M.remove_from_mob(src)
+		qdel(src)
+		return .
+	amount -= count
+	loose_pile_update()
+	return count
+
+// Dropped on a pile of the same kind, it joins that pile.
+/obj/item/proc/loose_pile_join_here()
+	if (!loose_pile_max || !isturf(loc) || QDELETED(src) || throwing)
+		return
+	for (var/obj/item/I in loc)
+		if (I.loose_pile_add(src) && QDELETED(src))
+			return
+
+/obj/item/proc/loose_pile_dropped()
+	if (loose_pile_max)
+		addtimer(CALLBACK(src, PROC_REF(loose_pile_join_here)), 1) // after it lands
+
+// A held pile used on more of the same gathers it, and the rest of that tile's
+// pile with it. Returns TRUE when it handled the click.
+/obj/item/proc/loose_pile_gather(obj/item/held, mob/user)
+	if (!loose_pile_max || !istype(held) || held.type != type)
+		return FALSE
+	var/moved = held.loose_pile_add(src)
+	if (isturf(loc))
+		for (var/obj/item/I in loc)
+			if (I.type == type)
+				moved += held.loose_pile_add(I)
+	if (!moved)
+		to_chat(user, SPAN_WARNING("You can't carry more than [loose_pile_max] [initial(name)] in one pile."))
+	else
+		to_chat(user, SPAN_NOTICE("You gather \the [initial(name)]. You now hold [held.amount]."))
+	return TRUE
+
+// A pile in the other hand: take one piece off it. Returns TRUE when handled.
+/obj/item/proc/loose_pile_take_one(mob/user)
+	if (!loose_pile_max || amount <= 1 || !user || user.get_inactive_hand() != src)
+		return FALSE
+	var/obj/item/one = new type(get_turf(user))
+	amount--
+	loose_pile_update()
+	user.put_in_hands(one)
+	to_chat(user, SPAN_NOTICE("You take one [initial(name)] from the pile."))
+	return TRUE
+
+/obj/item/proc/loose_pile_examine(mob/user)
+	if (loose_pile_max && amount > 1)
+		to_chat(user, "There are [amount] in the pile. Use one pile on another to gather them, or click a pile in your other hand to take one.")
+
+// Puts count new items of path at where, filling piles already there first.
+// Returns the last pile touched.
+/proc/loose_pile_spawn(path, atom/where, count = 1)
+	if (!ispath(path, /obj/item) || count <= 0)
+		return null
+	var/obj/item/proto = path
+	var/max = initial(proto.loose_pile_max)
+	if (!max)
+		var/obj/item/last
+		for (var/i in 1 to count)
+			last = new path(where)
+		return last
+	. = null
+	for (var/obj/item/I in where)
+		if (count <= 0)
+			break
+		if (I.type != path || QDELETED(I) || I.amount >= max)
+			continue
+		var/add = min(count, max - I.amount)
+		I.amount += add
+		I.loose_pile_update()
+		count -= add
+		. = I
+	while (count > 0)
+		var/obj/item/P = new path(where)
+		P.amount = min(count, max)
+		P.loose_pile_update()
+		count -= P.amount
+		. = P

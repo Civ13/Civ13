@@ -262,8 +262,7 @@ var/global/list/brick_bench_batches = list(
 		var/last = S.amount <= cost[1]
 		S.use(cost[1])
 		lime -= cost[2]
-		for (var/i in 1 to BRICK_BENCH_BATCH)
-			new brick(get_turf(src))
+		loose_pile_spawn(brick, get_turf(src), BRICK_BENCH_BATCH)
 		batches++
 		if (last)
 			break
