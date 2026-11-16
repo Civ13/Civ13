@@ -119,7 +119,7 @@ class BackendContract(unittest.TestCase):
             pages.update(re.findall(r'(?m)^/datum/nanoui/tgui/(?!proc/)([\w/]+)/has_plain_page\(\)', source))
             endings.update(re.findall(r'(?m)^/datum/nanoui/tgui/(?!proc/)([\w/]+)/show_plain_page\(\)', source))
         self.assertEqual(pages, {'snapshot', 'paper_editor'})
-        self.assertEqual(endings, {'prompt', 'crafting_window'})
+        self.assertEqual(endings, {'prompt', 'crafting_window', 'storage_window'})
         client = (ROOT / 'code/modules/client/client_procs.dm').read_text(errors='replace')
         self.assertIn('#define REAL_MIN_CLIENT_VERSION 516', client)
         self.assertNotIn('UI/templates', client)
@@ -167,7 +167,7 @@ class BackendContract(unittest.TestCase):
             templates.update(re.findall(r'open_tgui\(user, ui_key, "([^"]+)"', source))
             templates.update(re.findall(r'(?m)^\t+(?:var/)?template = "([^"]+\.tmpl)"', source))
             self.assertNotRegex(source, r'ui = new\(user, src, ui_key, "[^"\n]+\.tmpl"')
-        self.assertEqual(templates, {'appearance_changer.tmpl', 'book_reader.tmpl', 'character_flavor.tmpl', 'character_notes.tmpl', 'character_setup.tmpl', 'chem_disp.tmpl', 'crafting_atlas.tmpl', 'crafting_window.tmpl', 'crew_log.tmpl', 'faction_creation.tmpl', 'faction_list.tmpl', 'faction_symbol.tmpl', 'known_languages.tmpl', 'panel.tmpl', 'photo_viewer.tmpl', 'recruitment_station.tmpl', 'religion_list.tmpl', 'research_bench.tmpl', 'research_book.tmpl', 'ship_stocks.tmpl', 'vending_machine.tmpl', 'vending_machine2.tmpl', 'vending_machine_gulag.tmpl', 'vending_machine_taotd.tmpl', 'warehouse_book.tmpl'})
+        self.assertEqual(templates, {'appearance_changer.tmpl', 'book_reader.tmpl', 'character_flavor.tmpl', 'character_notes.tmpl', 'character_setup.tmpl', 'chem_disp.tmpl', 'crafting_atlas.tmpl', 'crafting_window.tmpl', 'crew_log.tmpl', 'faction_creation.tmpl', 'faction_list.tmpl', 'faction_symbol.tmpl', 'known_languages.tmpl', 'panel.tmpl', 'photo_viewer.tmpl', 'recruitment_station.tmpl', 'religion_list.tmpl', 'research_bench.tmpl', 'research_book.tmpl', 'ship_stocks.tmpl', 'storage_window.tmpl', 'vending_machine.tmpl', 'vending_machine2.tmpl', 'vending_machine_gulag.tmpl', 'vending_machine_taotd.tmpl', 'warehouse_book.tmpl'})
 
     def test_plain_owners_open_through_one_helper(self):
         helper = DM.split('/datum/proc/open_tgui(', 1)[1].split('\n/', 1)[0]

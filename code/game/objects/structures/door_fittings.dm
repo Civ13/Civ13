@@ -25,6 +25,7 @@
 	var/door_closer = null		// one of the DOOR_CLOSER_* kinds
 	var/closer_delay = 50		// hydraulic closer delay in ds
 	var/door_wedge = null		// "wood" or "iron" while wedged open
+	var/inner_dir = 0			// inside face chosen at build; -1 neither, 0 work it out
 	var/tmp/close_token = 0
 	var/tmp/obj/item/door_hold/door_hold = null
 	var/tmp/list/fitting_images = null
@@ -61,12 +62,104 @@
 		delta = (axis == EAST) ? (T.y - D.y) : (T.x - D.x)
 	return delta > 0 ? axis : turn(axis, 180)
 
+// A tile counts as indoors when it is in an inside area or under a roof.
+/proc/door_turf_indoors(turf/T)
+	return T && (home_turf_inside(T) || (locate(/obj/roof) in T))
+
+// The face a door's hinges and fixings are on: the side opposite its keyhole
+// when it has a keyed lock, otherwise the side that is indoors. 0 when both or
+// neither side is indoors (an inner door or a garden gate): then either works.
+/obj/structure/simple_door/proc/door_inner_side()
+	if (inner_dir == -1)
+		return 0
+	if (inner_dir)
+		return inner_dir
+	if (door_lock && door_lock.side)
+		return turn(door_lock.side, 180)
+	var/turf/D = get_turf(src)
+	if (!D)
+		return 0
+	var/axis = door_passage_axis()
+	var/ahead = door_turf_indoors(get_step(D, axis))
+	var/behind = door_turf_indoors(get_step(D, turn(axis, 180)))
+	if (ahead && !behind)
+		return axis
+	if (behind && !ahead)
+		return turn(axis, 180)
+	return 0
+
+// ---- which way a new door faces --------------------------------------------
+
+// Asked when a door is built: which side is the inside. The hinges and fixings
+// go on that side, so the door can only be taken off its hinges from there.
+// inner_dir: 0 not chosen (mapped doors work it out), -1 neither side.
+/obj/structure/simple_door/proc/door_choose_inside(mob/user)
+	if (!user || QDELETED(src))
+		return
+	var/axis = door_passage_axis()
+	var/back = turn(axis, 180)
+	var/ahead = (user.dir == back) ? back : axis
+	var/behind = turn(ahead, 180)
+	var/guess = door_inner_side()
+	var/ahead_label = "[capitalize(dir2text(ahead))] (in front of you)"
+	var/behind_label = "[capitalize(dir2text(behind))] (behind you)"
+	var/neither_label = "Neither (an inner door or a gate)"
+	var/default_label = (guess == behind) ? behind_label : ahead_label
+	var/choice = player_input(user, "Which side of \the [src] is the inside? Its hinges and fittings go on that side, and it can only be taken off its hinges from there.", "Door facing", default_label, "anything", list(ahead_label, behind_label, neither_label), FALSE)
+	if (QDELETED(src))
+		return
+	if (choice == behind_label)
+		inner_dir = behind
+	else if (choice == neither_label)
+		inner_dir = -1
+	else
+		inner_dir = ahead
+	to_chat(user, SPAN_NOTICE(door_facing_text(user)))
+	door_show_inside(user)
+
+// Plain words for examine and the builder: which side is inside, and which
+// side the reader stands on.
+/obj/structure/simple_door/proc/door_facing_text(mob/user)
+	var/inner = door_inner_side()
+	if (!inner)
+		return "It has no inside or outside: it can be worked from either side."
+	var/where = ""
+	if (user)
+		var/side = door_side_of(user)
+		if (side == inner)
+			where = " You are on the inside."
+		else if (side)
+			where = " You are on the outside."
+	return "Its inside faces [dir2text(inner)]; the hinges are on that side.[where]"
+
+// A short arrow on the inside tile, seen only by the builder.
+/obj/structure/simple_door/proc/door_show_inside(mob/user)
+	var/inner = door_inner_side()
+	if (!inner || !user || !user.client)
+		return
+	var/turf/T = get_step(get_turf(src), inner)
+	if (!T)
+		return
+	var/image/arrow = image('icons/mob/screen/effects.dmi', T, "arrow")
+	arrow.plane = CHAT_PLANE
+	arrow.layer = 16.0
+	arrow.appearance_flags = RESET_COLOR | RESET_ALPHA | RESET_TRANSFORM
+	var/client/C = user.client
+	C.images += arrow
+	spawn (50)
+		if (C)
+			C.images -= arrow
+
 // ---- locked state, without the side effects of door_hand_locked() ----------
 
 /obj/structure/simple_door/proc/door_lock_engaged()
+	if (door_lock && door_lock.blocks())
+		return TRUE
 	return locked
 
 /obj/structure/simple_door/key_door/door_lock_engaged()
+	if (door_lock && door_lock.blocks())
+		return TRUE
 	if (istype(src, /obj/structure/simple_door/key_door/custom))
 		return locked
 	if (istype(src, /obj/structure/simple_door/key_door/anyone))
@@ -139,6 +232,7 @@
 
 // Called once a door has finished opening.
 /obj/structure/simple_door/proc/door_opened()
+	door_lock_opened()
 	update_fitting_overlays()
 	door_schedule_close()
 
@@ -146,6 +240,7 @@
 	close_token++
 	if (door_hold)
 		door_hold.release(TRUE)
+	door_lock_closed()
 	update_fitting_overlays()
 
 // ---- overlays and examine ---------------------------------------------------
@@ -159,11 +254,14 @@
 		states += state ? "closer_[door_closer]_open" : "closer_[door_closer]"
 	if (door_wedge && state)
 		states += "wedge_[door_wedge]_open"
+	var/lock_state = door_lock_overlay_state()
+	if (lock_state)
+		states["[lock_state]"] = 'icons/obj/doors/locks_fitted.dmi'
 	if (!states.len)
 		return
 	fitting_images = list()
 	for (var/S in states)
-		var/image/I = image('icons/obj/doors/door_fittings.dmi', S)
+		var/image/I = image(states[S] ? states[S] : 'icons/obj/doors/door_fittings.dmi', S)
 		I.appearance_flags = RESET_COLOR
 		fitting_images += I
 	overlays += fitting_images
@@ -195,6 +293,9 @@
 	var/obj/item/door_hold/hold = door_held()
 	if (hold)
 		to_chat(user, SPAN_NOTICE("[hold.holder] is holding it open."))
+	if (inner_dir || door_lock)
+		to_chat(user, SPAN_NOTICE(door_facing_text(user)))
+	lock_examine(src, user)
 
 // ---- hands on an open door ----------------------------------------------------
 
@@ -400,6 +501,8 @@
 /obj/structure/simple_door/proc/door_fitting_attackby(obj/item/W, mob/living/human/user)
 	if (!istype(user))
 		return FALSE
+	if (lock_attackby(src, W, user))
+		return TRUE
 	if (istype(W, /obj/item/door_fitting))
 		fit_door_fitting(W, user)
 		return TRUE
@@ -536,10 +639,14 @@
 	if (istype(src, /obj/structure/simple_door/key_door/faction_door) || istype(src, /obj/structure/simple_door/blast) || !M)
 		to_chat(user, SPAN_WARNING("\The [src] can't be taken down by hand."))
 		return TRUE
+	var/inner = door_inner_side()
+	if (inner && door_side_of(user) != inner)
+		to_chat(user, SPAN_WARNING("The hinges of \the [src] are on the inside. From out here you would have to break it down."))
+		return TRUE
 	user.visible_message(SPAN_NOTICE("[user] starts taking \the [src] off its hinges."), SPAN_NOTICE("You start taking the door down."))
 	if (!do_after(user, DOOR_TAKE_DOWN_TIME, src))
 		return TRUE
-	if (QDELETED(src) || user.get_active_hand() != W || !door_workable())
+	if (QDELETED(src) || user.get_active_hand() != W || !door_workable() || (inner && door_side_of(user) != inner))
 		return TRUE
 	var/turf/T = get_turf(src)
 	var/sheets = door_take_down_refund()
@@ -552,6 +659,9 @@
 		door_closer = null
 	if (door_wedge)
 		pull_door_wedge(null)
+	if (door_lock)
+		lock_to_item(door_lock, T)
+		door_lock = null
 	user.visible_message(SPAN_NOTICE("[user] takes \the [src] down."), SPAN_NOTICE("You take the door down and salvage [sheets] sheets."))
 	qdel(src)
 	return TRUE
