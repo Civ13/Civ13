@@ -85,7 +85,9 @@ host service restarts the coordinator on the new mainland, and running worlds
 take it from their agent within about a minute: the era source, land stages
 and the lander's home follow with no world restart. `config-apply` then brings
 each region's `config/shard_region.json` up to date, so a world started later
-agrees. Moving a region's port still needs that region restarted.
+agrees. To move the gate itself or a region's port, use
+[`set-gate` and `set-port`](#ports-and-the-front-door), which save, stop, move
+and start the worlds in the right order.
 
 ## TDM: Barracks and battle worlds
 
@@ -251,6 +253,73 @@ relay after `link()` and a world reboot, and what its first packet looks like
 of Dream Seeker reaches a region as a loopback Topic caller; token-checked
 Topics (agent control, lifecycle) stay closed, but the Topic rate limit does
 not apply to them.
+
+## Ports and the front door
+
+```
+python shard_group.py --config group.json ports
+python shard_group.py --config group.json set-gate --region gaia [--apply]
+python shard_group.py --config group.json set-port --region moon --port 1721 [--transfer-port N] [--standby-port N] [--apply]
+```
+
+`ports` lists every port of the group (each region's game, transfer agent and
+standby port, the relay, its control port and the doorman), whether something
+listens on it, which ones must be forwarded on the router (`public_ports`) and
+any port used twice (`problems`). It changes nothing.
+
+`set-gate` makes another region the front door, the `gate`: the world on the
+public port, which players and the Discord Play button join, which the bot
+watches and whose `SQL/admins.txt` every region reads. The new gate takes the
+public port and the old gate takes the new gate's port, so the router forward,
+the Play button, the launcher address and the bot's address stay as they are.
+`set-port` moves one region to other ports.
+
+Both answer with a **plan** and change nothing until `--apply`: the ports that
+move, what happens to each world, and every `problem` that would stop it (a
+port another region or another program holds, a world that cannot save right
+now, an action or handover still running). A plan with problems is refused.
+`--apply` hands the plan to one detached worker ([group_ports.py](group_ports.py)),
+which works in this order:
+
+1. **Stop.** Each world whose port moves is saved and stopped like `stop`
+   (players get the usual countdown, the save is backed up). A world that is
+   asleep saved before it slept and is only ended. If a world cannot be stopped,
+   the ones already stopped are started again and nothing is changed.
+2. **Write.** The group file (the old one is kept beside it as
+   `<name>.bak-<time>`), every set-up region's `config/shard_region.json` and
+   host config. When the gate moves: the bot link lines (`WEBHOOK_CAN_FIRE`,
+   `WEBHOOK_ADDRESS`, `WEBHOOK_KEY`) move from the old gate's overlay
+   `config.local.txt` to the new gate's, `SQL/admins.txt` and the shared
+   whitelist are copied to the new gate, and the bot's `profile.json` is
+   pointed at the new gate's folder (`basedir`, `admin_file`, `gaia_host.config`
+   of every server whose `region_group` is this group file). Name the profile
+   with the group key `bot_profile` or `--bot-profile PATH`; the bot reads it
+   when it starts, so restart the bot afterwards. Every changed file keeps a
+   `.bak-<time>` copy.
+3. **Host service.** The service watches each world by its port, so the worker
+   waits until it has loaded the new group file. `gaia_host.py serve` checks the
+   file on every pass, takes the new ports by itself and records each load in
+   `<root>/host-service.json`; no `restart-host` is needed. A host service
+   started before this existed leaves no record: the plan then lists it as a
+   problem, and one `restart-host.bat` fixes it for good.
+4. **Start.** The worlds it stopped are started on their new ports, the new
+   gate first. The gate is started even when it was not running.
+5. **Tell.** A running relay is given the ports, and every other running world
+   reads the new directory through its lifecycle Topic (`reload_group`): peer
+   addresses, the gate and the shared admins file follow without a restart. A
+   world on a build from before `reload_group` is listed under
+   `restart_needed`; it learns the ports at its next restart.
+
+Progress is in `<root>/port-change.json` (`phase`: `stopping`, `writing`,
+`host service`, `starting`, `telling`, `done` or `failed` with `error`, and a
+`log`), and `ports` shows it under `change`. Once step 2 has run (`changed` is
+true) the same command converges: run it again and it finds the ports already
+moved, checks the files and the bot again, and starts what is not running.
+`set-gate` for the region that already is the gate does exactly that and stops
+nothing.
+
+The Windows wrappers are `ports.bat`, `set-gate.bat REGION [apply]` and
+`set-port.bat REGION PORT [apply]`.
 
 ## Travel between regions
 

@@ -1854,16 +1854,79 @@ def region_host(config):
     return shard_group_module().RegionHost(config)
 
 
+class GroupWatch:
+    """One group config the host service serves: its region hosts, its supervisor, and a
+    check that loads the file again when it changes (a region moved to another port, or
+    another region became the front door: scripts/shard-group/group_ports.py).
+
+    The service watches each world by its port, so it must take the new ports before the
+    worlds start on them. Every load is recorded in <root>/host-service.json (pid and the
+    file's SHA-256), which is how a port change knows the service has caught up."""
+
+    def __init__(self, path, shard_group=None):
+        self.shard_group = shard_group or shard_group_module()
+        self.path = str(path)
+        self.error = None
+        self.stamp = self.file_stamp()
+        self.load()
+
+    def file_stamp(self):
+        try:
+            status = os.stat(self.path)
+        except OSError:
+            return None
+        return status.st_mtime_ns, status.st_size
+
+    def load(self):
+        self.group = self.shard_group.load_group(self.path)
+        self.hosts = [host for _, host in self.shard_group.hosts(self.group)]
+        self.record()
+
+    def record(self):
+        try:
+            signature = hashlib.sha256(Path(self.path).read_bytes()).hexdigest()
+            target = Path(self.group['root']) / 'host-service.json'
+            target.parent.mkdir(parents=True, exist_ok=True)
+            temporary = target.with_name(target.name + '.tmp')
+            temporary.write_text(json.dumps({'pid': os.getpid(), 'signature': signature, 'config': self.path,
+                                             'loaded_at': int(time.time())}) + '\n', encoding='utf-8')
+            os.replace(temporary, target)
+        except OSError:
+            pass  # the record only tells a port change we caught up; serving goes on without it
+
+    def supervise(self):
+        return self.shard_group.supervise(self.group)
+
+    def poll(self):
+        """(old hosts, new hosts) once after the file changed and loads; None otherwise.
+        A file that does not load (half written, or a mistake) keeps the old ports and is
+        reported once; the next change is tried again."""
+        stamp = self.file_stamp()
+        if stamp is None or stamp == self.stamp:
+            return None
+        self.stamp = stamp
+        old = self.hosts
+        try:
+            self.load()
+        except (OSError, ValueError) as error:
+            self.error = str(error)[:300]
+            print(json.dumps({'group_reload_error': self.error, 'config': self.path, 'time': int(time.time())}), flush=True)
+            return None
+        self.error = None
+        return old, self.hosts
+
+
 def group_hosts(paths):
-    """The region hosts of every group config, and one supervisor per group that keeps
-    its transfer agents and coordinator running (they never sleep with their world)."""
-    shard_group = shard_group_module()
-    hosts, supervisors = [], []
+    """The region hosts of every group config, one supervisor per group that keeps its
+    transfer agents and coordinator running (they never sleep with their world), and
+    the watches that reload a group whose config file changed."""
+    hosts, supervisors, watches = [], [], []
     for path in paths:
-        group = shard_group.load_group(path)
-        hosts += [host for _, host in shard_group.hosts(group)]
-        supervisors.append(lambda group=group: shard_group.supervise(group))
-    return hosts, supervisors
+        watch = GroupWatch(path)
+        hosts += watch.hosts
+        supervisors.append(watch.supervise)
+        watches.append(watch)
+    return hosts, supervisors, watches
 
 
 def start_pager_first(hosts):
@@ -1915,10 +1978,10 @@ def main(argv=None):
     for config, path in zip(configs, args.config):
         config['_path'] = str(Path(path).resolve())
     hosts = [region_host(config) if config.get('group_config') else Host(config) for config in configs]
-    supervisors = []
+    supervisors, watches = [], []
     if args.group:
         try:
-            region_hosts, supervisors = group_hosts(args.group)
+            region_hosts, supervisors, watches = group_hosts(args.group)
         except (OSError, ValueError) as error:
             print(json.dumps({'ok': False, 'error': 'group config: %s' % error}))
             return 2
@@ -1936,7 +1999,7 @@ def main(argv=None):
         from doorman import Doorman
         start_pager_first(hosts)
         try:
-            Doorman(hosts, host.platform, supervisors=supervisors).run()
+            Doorman(hosts, host.platform, supervisors=supervisors, groups=watches).run()
         except (OSError, ValueError) as error:
             print(json.dumps({'ok': False, 'error': 'doorman: %s' % error}))
             return 2
