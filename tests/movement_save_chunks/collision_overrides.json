@@ -48,6 +48,26 @@
       ]
     },
     {
+      "path": "code/game/objects/building_defences.dm",
+      "declarations": [
+        {
+          "owner": "",
+          "declaration": "/obj/structure/roof_support/CanPass(atom/movable/mover, turf/target, height = 0, air_group = 0)",
+          "sha256_body": "e5476441f2e474b568dadfc425ecef3e1ecf588d5dcd9476821f80ba92e9032e"
+        },
+        {
+          "owner": "",
+          "declaration": "/obj/structure/mine_support/stone/CanPass(atom/movable/mover, turf/target, height = 0, air_group = 0)",
+          "sha256_body": "3a34edee87cd4ad505ca959b3cb76fe4ec7f32d85c902f4a561de5e48a97fe58"
+        },
+        {
+          "owner": "",
+          "declaration": "/obj/structure/bollard/CanPass(atom/movable/mover, turf/target, height = 0, air_group = 0)",
+          "sha256_body": "121fc8d40272e566e7207bc3a719e26de73abf0b800aee3c80d4693df88868fc"
+        }
+      ]
+    },
+    {
       "path": "code/game/objects/covers.dm",
       "declarations": [
         {

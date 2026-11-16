@@ -16,9 +16,6 @@
 	var/dismantlable = TRUE
 	maxhealth = 100
 	health = 100
-	New()
-		..()
-		health = maxhealth
 
 /obj/structure/window/barrier/attack_hand(var/mob/user as mob)
 	if (locate(src) in range(user, 1)) // TODO: Somehow make the user face what they are dismantling.
@@ -47,6 +44,9 @@ var/set_dir = null // Set the variable outside of any scopes
 
 /obj/structure/window/barrier/New(location, var/mob/creator, direction)
 	loc = location
+	// Every barrier starts at its own full strength (a jersey barrier or a
+	// stone railing is much tougher than a dirt wall).
+	health = maxhealth
 	flags |= ON_BORDER
 
 	if (creator && ismob(creator))
