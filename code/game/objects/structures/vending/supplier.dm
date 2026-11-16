@@ -234,128 +234,79 @@
 /** Management interface for company members to configure buy orders, name, currency, and withdraw operating funds. */
 /obj/structure/supplier/attack_hand(mob/living/human/H as mob)
 	if (find_company_member(H,owner))
-		show_ui(H)
+		ui_interact(H)
 	else
 		var/currency_name = accepted_currency == "standard" ? "sc" : fiat.currency_list[accepted_currency][1]
 		to_chat(H, "<big>This company is currently buying [orderamount] of [ordername] for [orderprice] [currency_name] per unit.</big>")
 
-/obj/structure/supplier/proc/show_ui(mob/living/human/H)
-	if (!H || !H.client)
-		return
+/obj/structure/supplier/ui_actions(ui_key)
+	return list("rename", "changeprice", "changeamount", "changecurrency", "removeorder", "removeproducts", "removemoney")
 
+/obj/structure/supplier/ui_interact(mob/user, ui_key = "main", datum/nanoui/ui = null, force_open = TRUE)
+	if (!find_company_member(user, owner))
+		GLOB.nanomanager.close_user_uis(user, src, ui_key)
+		return
 	var/currency_name = accepted_currency == "standard" ? "standard coins" : fiat.currency_list[accepted_currency][1]
-
-	// Build currency dropdown
-	var/cur_opts = "<option value='standard'>Standard Coins</option>"
-	for (var/fid in fiat.currency_list)
-		if (fiat.currency_list[fid][5])
-			var/sel = (accepted_currency == fid) ? " selected" : ""
-			cur_opts += "<option value='[fid]'[sel]>[fiat.currency_list[fid][1]]</option>"
-
+	var/list/currencies = list(panel_option("standard", "Standard Coins"))
+	if (fiat)
+		for (var/fid in fiat.currency_list)
+			if (fiat.currency_list[fid][5])
+				currencies += list(panel_option(fid, fiat.currency_list[fid][1]))
 	var/has_order = (ordertype != null && orderamount > 0)
+	var/list/sections = list(
+		panel_section("Current Buy Order", rows = list(
+			panel_row("Buying", has_order ? "[orderamount]x [ordername] at [orderprice] [currency_name] each" : "No active buy order", has_order ? null : "muted",
+				has_order ? list(panel_button("Remove Order", "removeorder")) : null),
+			panel_row("Available funds", "[moneyin] [currency_name]", null, list(panel_button("Remove Money", "removemoney", 1, moneyin <= 0))))),
+		panel_section("Order Settings", forms = list(
+			panel_form("Price per unit", "changeprice", 1, list(panel_field("value", currency_name, orderprice)), "Change"),
+			panel_form("Amount to buy", "changeamount", 1, list(panel_field("value", "Units", orderamount)), "Change"),
+			panel_form("Currency", "changecurrency", 1, list(panel_field("value", "Paid in", accepted_currency, "choice", currencies)), "Apply"))),
+		panel_section("Stall", notes = list("Removing products ejects every item stored in the stall."),
+			forms = list(panel_form("Name", "rename", 1, list(panel_field("value", "New name", name, "text")), "Change Name")),
+			buttons = list(panel_button("Remove Products Inside", "removeproducts"))))
+	open_panel(user, "Supply Stall - [name]", 520, 520, sections, ui_key = ui_key, ui = ui, force_open = force_open)
 
-	var/dat = "<html><head><style>"
-	dat += "body{font-family:'Segoe UI',monospace;background:#2b1e0e;color:#f0e0c0;margin:0;padding:20px;}"
-	dat += "h2{color:#ffd700;border-bottom:2px solid #5a3a1a;padding-bottom:8px;margin-top:0;}"
-	dat += ".section{background:#3d2b14;border:1px solid #5a3a1a;border-radius:4px;padding:12px;margin-bottom:12px;}"
-	dat += ".section h3{color:#ffd700;margin:0 0 8px 0;font-size:14px;}"
-	dat += ".info{font-size:13px;padding:4px 0;}"
-	dat += ".info b{color:#b09070;}"
-	dat += ".item{background:#2b1e0e;border:1px solid #5a3a1a;border-radius:3px;padding:8px 10px;margin:4px 0;font-size:13px;}"
-	dat += ".num{width:80px;background:#2b1e0e;color:#f0e0c0;border:1px solid #5a3a1a;border-radius:2px;padding:3px 5px;font-family:monospace;font-size:12px;}"
-	dat += "select{background:#2b1e0e;color:#f0e0c0;border:1px solid #5a3a1a;border-radius:2px;padding:3px 5px;font-family:monospace;font-size:12px;}"
-	dat += ".btn{background:#5a3a1a;color:#ffd700;border:1px solid #5a3a1a;border-radius:3px;padding:4px 10px;cursor:pointer;font-size:12px;text-decoration:none;}"
-	dat += ".btn:hover{background:#8a6a3a;}"
-	dat += ".btn-danger{background:#5e2a2a;color:#ff7070;border:1px solid #8a3a3a;}"
-	dat += ".btn-danger:hover{background:#8a3a3a;}"
-	dat += "</style></head><body>"
-	dat += "<h2>Supply Stall - [name]</h2>"
-
-	// Current order info
-	dat += "<div class='section'><h3>Current Buy Order</h3>"
-	if (has_order)
-		dat += "<div class='info'><b>Buying:</b> [orderamount]x [ordername] at [orderprice] [currency_name] each</div>"
-	else
-		dat += "<div class='info' style='color:#707090;font-style:italic;'>No active buy order.</div>"
-	dat += "<div class='info'><b>Available funds:</b> [moneyin] [currency_name]</div></div>"
-
-	// Name
-	dat += "<div class='section'><h3>Name</h3>"
-	dat += "<div class='item'><input type='text' id='new_name' class='num' style='width:200px;' value='[name]' placeholder='Enter new name...'> "
-	dat += "<button class='btn' onclick=\"var v=document.getElementById('new_name').value;if(v)window.location='byond://?src=\ref[src];rename='+encodeURIComponent(v)\">Change Name</button></div></div>"
-
-	// Order settings
-	dat += "<div class='section'><h3>Order Settings</h3>"
-	dat += "<div class='item'><b>Price per unit:</b> [orderprice] [currency_name] "
-	dat += "<button class='btn' onclick=\"var v=prompt('Price per unit in [currency_name]:','[orderprice]');if(v!==null&&!isNaN(v)&&Number(v)>=0&&Number(v)<=100000)window.location='byond://?src=\ref[src];changeprice='+v\">Change</button></div>"
-	dat += "<div class='item'><b>Amount to buy:</b> [orderamount] "
-	dat += "<button class='btn' onclick=\"var v=prompt('How many units to buy?','[orderamount]');if(v!==null&&!isNaN(v)&&Number(v)>=0)window.location='byond://?src=\ref[src];changeamount='+v\">Change</button></div>"
-	dat += "<div class='item'><b>Currency:</b> <select id='cur_select'>[cur_opts]</select> "
-	dat += "<button class='btn' onclick=\"window.location='byond://?src=\ref[src];changecurrency='+document.getElementById('cur_select').value\">Apply</button></div>"
-	dat += "<div class='item'><button class='btn btn-danger' onclick=\"window.location='byond://?src=\ref[src];removeorder'\">Remove Order</button>"
-	if (has_order)
-		dat += " <span style='color:#707090;font-size:11px;'>Clears the buy order.</span>"
-	dat += "</div></div>"
-
-	// Actions
-	dat += "<div class='section'><h3>Actions</h3>"
-	dat += "<div class='item'><button class='btn btn-danger' onclick=\"window.location='byond://?src=\ref[src];removeproducts'\">Remove Products Inside</button>"
-	dat += " <span style='color:#707090;font-size:11px;'>Ejects all items stored in the stall.</span></div>"
-	dat += "<div class='item'><button class='btn' onclick=\"window.location='byond://?src=\ref[src];removemoney'\">Remove Money</button>"
-	if (moneyin > 0)
-		dat += " <span style='color:#a0a0c0;font-size:11px;'>[moneyin] [currency_name] will be ejected.</span>"
-	else
-		dat += " <span style='color:#707090;font-size:11px;'>No funds to remove.</span>"
-	dat += "</div></div>"
-
-	dat += "<div class='section'><button class='btn' onclick=\"window.location='byond://?src=\ref[src];close'\">Close</button></div>"
-	dat += "</body></html>"
-
-	show_browse(H, dat, "window=supplystall;size=500x500")
-
-/obj/structure/supplier/Topic(href, href_list)
-	if (!usr || !usr.client)
-		return
-	var/mob/living/human/H = usr
+// The window's buttons and forms: only a conscious member of the owning company, close by.
+/obj/structure/supplier/ui_act(action, list/params, mob/user, datum/nanoui/ui)
+	var/mob/living/human/H = user
 	if (!istype(H) || H.stat || get_dist(src, H) > 2)
-		return
+		return TRUE
 	if (!find_company_member(H, owner))
-		return
-
-	if (href_list["close"])
-		return
+		return TRUE
+	var/list/href_list = list("[action]" = "[params["value"]]")
 
 	if (href_list["rename"])
-		var/new_name = href_list["rename"]
+		var/new_name = sanitize(href_list["rename"], 50)
 		if (new_name && new_name != "")
 			name = new_name
-		return
+		return TRUE
 
 	if (href_list["changeprice"])
 		var/val = text2num(href_list["changeprice"])
 		if (isnull(val))
-			return
+			return TRUE
 		if (val < 0) val = 0
 		if (val > 100000) val = 100000
 		orderprice = val
-		return
+		return TRUE
 
 	if (href_list["changeamount"])
 		var/val = text2num(href_list["changeamount"])
 		if (isnull(val) || val < 0)
-			return
+			return TRUE
 		orderamount = round(val)
-		return
+		return TRUE
 
 	if (href_list["changecurrency"])
 		var/new_cur = href_list["changecurrency"]
-		if (!new_cur)
-			return
+		if (new_cur != "standard" && !(fiat && (new_cur in fiat.currency_list) && fiat.currency_list[new_cur][5]))
+			return TRUE
 		if (moneyin > 0)
 			to_chat(H, "<span class='warning'>You must remove all money from the stall before changing the accepted currency!</span>")
-			return
+			return TRUE
 		accepted_currency = new_cur
-		return
+		return TRUE
 
 	if (href_list["removeorder"])
 		ordertype = null
@@ -364,21 +315,22 @@
 		orderamount = 0
 		orderfiat_id = null
 		to_chat(H, "<span class='notice'>Buy order removed.</span>")
-		return
+		return TRUE
 
 	if (href_list["removeproducts"])
 		for (var/obj/item/I in src)
 			I.forceMove(loc)
 		to_chat(H, "<span class='notice'>You empty the stall.</span>")
-		return
+		return TRUE
 
 	if (href_list["removemoney"])
 		if (moneyin <= 0)
-			return
+			return TRUE
 		if (accepted_currency == "standard")
 			pay_standard_coins(moneyin)
 		else
 			new/obj/item/stack/money/fiat(loc, moneyin, accepted_currency)
 		moneyin = 0
 		to_chat(H, "<span class='notice'>Money removed from stall.</span>")
-		return
+		return TRUE
+	return TRUE

@@ -255,10 +255,43 @@ var/screens_runtime_error = FALSE
 	screen_try(C, list("screen" = 1, "act" = "viewmembers", "value" = company_index))
 	screens_check(GLOB.nanomanager.get_open_ui(H, exchange, "members_[company_index]") != null, "the members window opens for that company")
 	GLOB.nanomanager.close_user_uis(H, exchange)
+	// A supply stall: its forms set the order, and only a real currency is accepted.
+	var/obj/structure/supplier/stall = new(locate(9, 9, 1))
+	stall.owner = "Probe & Sons"
+	stall.invisibility = 0 // a new stall stays hidden until its colours are painted
+	stall.attack_hand(H)
+	rows = agent_screen_rows(H)
+	screens_check(rows.len == 1 && findtext(rows[1]["data"], "No active buy order") && ("changeprice" in rows[1]["actions"]), "a company member opens the supply stall")
+	screen_try(C, list("screen" = 1, "act" = "changeprice", "value" = 12))
+	screen_try(C, list("screen" = 1, "act" = "changeamount", "value" = 30))
+	screen_try(C, list("screen" = 1, "act" = "rename", "value" = "<b>Probe</b> stall"))
+	screen_try(C, list("screen" = 1, "act" = "changecurrency", "value" = "no_such_currency"))
+	screens_check(stall.orderprice == 12 && stall.orderamount == 30 && stall.accepted_currency == "standard", "the stall's forms set the order and refuse an unknown currency")
+	screens_check(!findtext(stall.name, "<") && findtext(stall.name, "Probe"), "a new stall name is stored without markup")
+	GLOB.nanomanager.close_user_uis(H, stall)
+	qdel(stall)
 	map.sales_registry.Cut(listed + 1)
 	map.custom_company_nr -= "Probe & Sons"
 	map.custom_company -= "Probe & Sons"
 	map.custom_company_value -= "Probe & Sons"
+	// A trader: the shop lists its goods, a purchase takes the held money, and a busy trader closes the shop.
+	var/mob/living/simple_animal/npc_vendor/walter/trader = new(locate(9, 9, 1))
+	trader.walter_cooldown = -1 // the probe runs at world.time 0
+	var/obj/item/stack/money/dollar/cash = new(H.loc)
+	cash.amount = 500
+	H.drop_item()
+	H.put_in_active_hand(cash)
+	trader.attack_hand(H)
+	rows = agent_screen_rows(H)
+	screens_check(rows.len == 1 && findtext(rows[1]["data"], "Supplies") && findtext(rows[1]["data"], "$100") && ("buy" in rows[1]["actions"]), "a trader's shop lists goods with prices")
+	screen_try(C, list("screen" = 1, "act" = "buy", "value" = 99))
+	screens_check(cash.amount == 500 && agent_screen_rows(H).len == 1, "a product the trader does not sell is refused")
+	screen_try(C, list("screen" = 1, "act" = "buy", "value" = 1))
+	screens_check(cash.amount == 480 && trader.walter_cooldown > world.time, "buying takes the money held in hand")
+	screens_check(!agent_screen_rows(H).len, "a trader who is busy closes the shop")
+	H.drop_from_inventory(cash)
+	qdel(cash)
+	qdel(trader)
 	if (made_map)
 		qdel(map)
 		map = null

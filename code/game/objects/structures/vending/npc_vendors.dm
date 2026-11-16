@@ -57,42 +57,62 @@
 		src.say(pick(speak))
 	show_shop(H)
 
+// Opens the shop, or says why this customer is turned away.
 /mob/living/simple_animal/npc_vendor/proc/show_shop(mob/living/human/H)
+	var/refusal = shop_refusal(H)
+	if (!isnull(refusal))
+		if (length(refusal))
+			to_chat(H, "\icon[getFlatIcon(src)] [refusal]")
+		GLOB.nanomanager.close_user_uis(H, src, "main")
+		return
+	shop_greeting(H)
+	ui_interact(H)
+
+// Why this customer cannot trade right now: text to say, "" to stay silent, null to trade.
+/mob/living/simple_animal/npc_vendor/proc/shop_refusal(mob/living/human/H)
+	return ""
+
+// Anything said or done when the shop opens, beyond showing it.
+/mob/living/simple_animal/npc_vendor/proc/shop_greeting(mob/living/human/H)
 	return
 
-/mob/living/simple_animal/npc_vendor/proc/build_shop_html(shop_content, mob/living/human/H)
+// The shop's panel_section() list for this customer.
+/mob/living/simple_animal/npc_vendor/proc/shop_sections(mob/living/human/H)
+	return list()
+
+// One press of a shop button; href_list names the action and its value.
+/mob/living/simple_animal/npc_vendor/proc/shop_act(mob/living/human/H, list/href_list)
+	return
+
+// The money stack in either hand, active hand first.
+/mob/living/simple_animal/npc_vendor/proc/held_money(mob/living/human/H)
+	if (istype(H.get_active_hand(), /obj/item/stack/money))
+		return H.get_active_hand()
+	if (istype(H.get_inactive_hand(), /obj/item/stack/money))
+		return H.get_inactive_hand()
+	return null
+
+/mob/living/simple_animal/npc_vendor/ui_interact(mob/user, ui_key = "main", datum/nanoui/ui = null, force_open = TRUE)
+	var/mob/living/human/H = user
+	if (!istype(H) || !isnull(shop_refusal(H)))
+		GLOB.nanomanager.close_user_uis(user, src, ui_key)
+		return
 	var/total_money = 0
 	for (var/obj/item/stack/money/M in H.contents)
 		total_money += M.value * M.amount
+	var/list/sections = list(panel_section(null, rows = list(panel_row("Money", "$[total_money]"))))
+	sections += shop_sections(H)
+	open_panel(H, name, 500, 520, sections, ui_key = ui_key, ui = ui, force_open = force_open)
 
-	var/dat = {"<html>
-<head><meta charset="UTF-8"><style>
-body { font-family: Verdana, Geneva, sans-serif; background: #1a1a1a; color: #ffffff; margin: 0; padding: 20px; font-size: 14px; }
-h2 { color: #cc0000; border-bottom: 2px solid #cc0000; padding-bottom: 8px; margin-top: 0; font-size: 18px; letter-spacing: 1px; }
-.money { color: #ffd700; text-align: right; margin-bottom: 16px; font-size: 14px; font-weight: bold; }
-.btn { background: #cc0000; color: #ffffff; border: 1px solid #aa0000; padding: 6px 14px; cursor: pointer; font-size: 13px; font-family: Verdana, Geneva, sans-serif; display: inline-block; margin: 2px; text-decoration: none; }
-.btn:hover { background: #ff3333; }
-.btn-sm { padding: 4px 10px; font-size: 12px; }
-.message { color: #ffd700; margin-bottom: 12px; font-style: italic; }
-</style></head>
-<body>
-<h2>[name]</h2>
-<div class="money">Money: $[total_money]</div>
-[shop_content]
-<div style="margin-top:16px;"><a class="btn" href="byond://?src=\ref[src];close=1" style="background:#666666;border-color:#444444;">Close</a></div>
-</body></html>"}
-	return dat
-
-/mob/living/simple_animal/npc_vendor/Topic(href, href_list)
-	if (!usr || !usr.client || !ishuman(usr))
-		return
-	var/mob/living/human/H = usr
+/mob/living/simple_animal/npc_vendor/ui_act(action, list/params, mob/user, datum/nanoui/ui)
+	var/mob/living/human/H = user
+	if (!istype(H) || stat)
+		return TRUE
 	if (get_dist(src, H) > 2)
 		to_chat(H, SPAN_WARNING("You're too far away!"))
-		return
-	if (href_list["close"])
-		show_browse(H, null, "window=npc_vendor")
-		return
+		return TRUE
+	shop_act(H, list("[action]" = "[params["value"]]"))
+	return TRUE
 
 // ============================================================
 // Plastique override - protect NPC vendors and safes on TAOTD
@@ -125,42 +145,30 @@ h2 { color: #cc0000; border-bottom: 2px solid #cc0000; padding-bottom: 8px; marg
 	)
 	update_icons()
 
-/mob/living/simple_animal/npc_vendor/smuggler/show_shop(mob/living/human/H)
+/mob/living/simple_animal/npc_vendor/smuggler/ui_actions(ui_key)
+	return list("buy_shipment")
+
+/mob/living/simple_animal/npc_vendor/smuggler/shop_refusal(mob/living/human/H)
 	if (world.time < smuggler_cooldown)
-		to_chat(H, SPAN_WARNING("\icon[getFlatIcon(src)] No shipments available, come back later."))
-		return
+		return SPAN_WARNING("No shipments available, come back later.")
 	if (H.civilization == "Sheriff Office" || H.civilization == "Government")
-		to_chat(H, "\icon[getFlatIcon(src)] Good day, everything is okay and running smoothly.")
-		return
+		return "Good day, everything is okay and running smoothly."
 	if (H.civilization == "Paramedics")
-		to_chat(H, "\icon[getFlatIcon(src)] Keep up the good work, no one here is injured, see you.")
-		return
+		return "Keep up the good work, no one here is injured, see you."
+	return null
 
-	var/content = {"<div class="message">"A shipment will arrive at the Docks. Better be ready."</div>
-<div style="background:#272727;border:1px solid #cc0000;padding:12px;margin-bottom:8px;border-radius:4px;">
-<div style="font-weight:bold;margin-bottom:8px;">Smuggler's Package - $500</div>
-<a class="btn btn-sm" href="byond://?src=\ref[src];buy_shipment=1">Buy Shipment</a>
-</div>"}
-	show_browse(H, build_shop_html(content, H), "window=npc_vendor;size=500x400")
+/mob/living/simple_animal/npc_vendor/smuggler/shop_sections(mob/living/human/H)
+	return list(panel_section("Shipments", notes = list("\"A shipment will arrive at the Docks. Better be ready.\""),
+		items = list(panel_item("Smuggler's Package", "$500", list(panel_button("Buy Shipment", "buy_shipment"))))))
 
-/mob/living/simple_animal/npc_vendor/smuggler/Topic(href, href_list)
-	..()
-	if (!usr || !ishuman(usr))
-		return
-	var/mob/living/human/H = usr
-	if (get_dist(src, H) > 2)
-		return
+/mob/living/simple_animal/npc_vendor/smuggler/shop_act(mob/living/human/H, list/href_list)
 	if (href_list["buy_shipment"])
 		if (world.time < smuggler_cooldown)
 			to_chat(H, SPAN_WARNING("\icon[getFlatIcon(src)] No shipments available, come back later."))
 			return
 		if (H.civilization == "Sheriff Office" || H.civilization == "Government" || H.civilization == "Paramedics")
 			return
-		var/obj/item/stack/money/M = null
-		if (istype(H.get_active_hand(), /obj/item/stack/money))
-			M = H.get_active_hand()
-		else if (istype(H.get_inactive_hand(), /obj/item/stack/money))
-			M = H.get_inactive_hand()
+		var/obj/item/stack/money/M = held_money(H)
 		if (!M || M.value * M.amount < 500 * 4)
 			to_chat(H, SPAN_WARNING("\icon[getFlatIcon(src)] Not enough money! You need at least 500 dollars."))
 			return
@@ -249,22 +257,24 @@ h2 { color: #cc0000; border-bottom: 2px solid #cc0000; padding-bottom: 8px; marg
 	)
 	update_icons()
 
-/mob/living/simple_animal/npc_vendor/biker/show_shop(mob/living/human/H)
-	if (reputation[H.civilization] < 0)
-		to_chat(H, "\icon[getFlatIcon(src)] I'm not dealing with you punks anymore, get the fuck out of here.")
-		return
-	if (H.civilization == "Sheriff Office" || H.civilization == "Paramedics" || H.civilization == "Government")
-		if (H.civilization == "Sheriff Office")
-			to_chat(H, "\icon[getFlatIcon(src)] Get off my property, pig.")
-		else
-			to_chat(H, "\icon[getFlatIcon(src)] Sorry, who the fuck are you? Get outta here!")
-		return
-	if (world.time <= biker_cooldown)
-		to_chat(H, "\icon[getFlatIcon(src)] My boys are busy for now. Come back later.")
-		return
+/mob/living/simple_animal/npc_vendor/biker/ui_actions(ui_key)
+	return list("sell", "buy_weapon")
 
-	// Build sell drug section - check hands for pills
-	var/sell_html = ""
+/mob/living/simple_animal/npc_vendor/biker/shop_refusal(mob/living/human/H)
+	if (reputation[H.civilization] < 0)
+		return "I'm not dealing with you punks anymore, get the fuck out of here."
+	if (H.civilization == "Sheriff Office")
+		return "Get off my property, pig."
+	if (H.civilization == "Paramedics" || H.civilization == "Government")
+		return "Sorry, who the fuck are you? Get outta here!"
+	if (world.time <= biker_cooldown)
+		return "My boys are busy for now. Come back later."
+	return null
+
+/mob/living/simple_animal/npc_vendor/biker/shop_sections(mob/living/human/H)
+	// What he will buy depends on the drugs in the customer's hands.
+	var/list/selling = list()
+	var/sell_note = "Have drugs in your hand to sell them."
 	var/obj/item/weapon/reagent_containers/pill/P = null
 	var/obj/item/weapon/reagent_containers/cocaineblock/CB = null
 	if (istype(H.get_active_hand(), /obj/item/weapon/reagent_containers/pill/))
@@ -278,72 +288,28 @@ h2 { color: #cc0000; border-bottom: 2px solid #cc0000; padding-bottom: 8px; marg
 
 	if (P)
 		if (P.reagents.has_reagent("methamphetamine") && P.reagents.get_reagent_amount("methamphetamine") >= 10)
-			sell_html = {"<div style="background:#272727;border:1px solid #cc0000;padding:12px;margin-bottom:8px;border-radius:4px;">
-<div style="font-weight:bold;margin-bottom:4px;">Methamphetamine Pill</div>
-<div style="font-size:11px;color:#999999;margin-bottom:8px;">Sell for: $[buying_price1 + max(reputation[H.civilization], 0)]</div>
-<a class="btn btn-sm" href="byond://?src=\ref[src];sell=meth">Sell</a>
-</div>"}
+			selling += list(panel_item("Methamphetamine Pill", "Sell for: $[buying_price1 + max(reputation[H.civilization], 0)]", list(panel_button("Sell", "sell", "meth"))))
 		else if (P.reagents.has_reagent("cocaine") && P.reagents.get_reagent_amount("cocaine") >= 25 && !P.reagents.has_reagent("methamphetamine"))
-			sell_html = {"<div style="background:#272727;border:1px solid #cc0000;padding:12px;margin-bottom:8px;border-radius:4px;">
-<div style="font-weight:bold;margin-bottom:4px;">Cocaine (10g Bag)</div>
-<div style="font-size:11px;color:#999999;margin-bottom:8px;">Sell for: $[buying_price2 + min(reputation[H.civilization], 15)]</div>
-<a class="btn btn-sm" href="byond://?src=\ref[src];sell=coke">Sell</a>
-</div>"}
+			selling += list(panel_item("Cocaine (10g Bag)", "Sell for: $[buying_price2 + min(reputation[H.civilization], 15)]", list(panel_button("Sell", "sell", "coke"))))
 		else if (P.reagents.has_reagent("cocaine") && P.reagents.has_reagent("methamphetamine"))
-			to_chat(H, "\icon[getFlatIcon(src)] Are you trying to get my clients killed? Tell your cook to separate his shit.")
-			return
+			sell_note = "Are you trying to get my clients killed? Tell your cook to separate his shit."
 		else if (P.reagents.has_reagent("crack"))
-			to_chat(H, "\icon[getFlatIcon(src)] Fuck off, my boys don't mess with that shit.")
-			return
+			sell_note = "Fuck off, my boys don't mess with that shit."
 		else
-			to_chat(H, "\icon[getFlatIcon(src)] What the hell is this weak shit? Fuck off!")
-			return
+			sell_note = "What the hell is this weak shit? Fuck off!"
 	else if (CB)
-		sell_html = {"<div style="background:#272727;border:1px solid #cc0000;padding:12px;margin-bottom:8px;border-radius:4px;">
-<div style="font-weight:bold;margin-bottom:4px;">Cocaine Brick</div>
-<div style="font-size:11px;color:#999999;margin-bottom:8px;">Sell for: $[(buying_price2 + max(reputation[H.civilization], 0)) * 20]</div>
-<a class="btn btn-sm" href="byond://?src=\ref[src];sell=brick">Sell</a>
-</div>"}
-	else
-		sell_html = {"<div style="background:#272727;border:1px solid #cc0000;padding:12px;margin-bottom:8px;border-radius:4px;">
-<div style="font-size:12px;color:#999999;">Have drugs in your hand to sell them.</div>
-</div>"}
+		selling += list(panel_item("Cocaine Brick", "Sell for: $[(buying_price2 + max(reputation[H.civilization], 0)) * 20]", list(panel_button("Sell", "sell", "brick"))))
 
-	// Build buy weapons section
-	var/weapons_html = ""
-	for (var/i = 1 to 2)
-		var/item_path = products[i]
-		var/obj/item/I = new item_path
-		if (i == 1)
-			weapons_html += {"<div style="background:#272727;border:1px solid #cc0000;padding:12px;margin-bottom:8px;border-radius:4px;">
-<div style="font-weight:bold;margin-bottom:4px;">[I.name]</div>
-<div style="font-size:11px;color:#999999;margin-bottom:8px;">[I.desc]</div>
-<div style="color:#ffd700;font-weight:bold;font-size:14px;margin-bottom:4px;">$[prices[item_path]]</div>
-<a class="btn btn-sm" href="byond://?src=\ref[src];buy_weapon=[i]">Buy</a>
-</div>"}
-		else
-			weapons_html += {"<div style="background:#272727;border:1px solid #cc0000;padding:12px;margin-bottom:8px;border-radius:4px;">
-<div style="font-weight:bold;margin-bottom:4px;">[I.name]</div>
-<div style="font-size:11px;color:#999999;margin-bottom:8px;">[I.desc]</div>
-<div style="color:#ffd700;font-weight:bold;font-size:14px;margin-bottom:4px;">$[prices[item_path]]</div>
-<a class="btn btn-sm" href="byond://?src=\ref[src];buy_weapon=[i]">Buy</a>
-</div>"}
-		qdel(I)
+	var/list/weapons = list()
+	for (var/i = 1 to products.len)
+		var/obj/item/item_path = products[i]
+		weapons += list(panel_item(initial(item_path.name), "$[prices[item_path]] - [initial(item_path.desc)]", list(panel_button("Buy", "buy_weapon", i))))
 
-	var/content = {"<h3 style="color:#cc0000;margin:12px 0 8px 0;">Sell Drugs</h3>
-[sell_html]
-<h3 style="color:#cc0000;margin:12px 0 8px 0;">Buy Weapons</h3>
-[weapons_html]"}
-	show_browse(H, build_shop_html(content, H), "window=npc_vendor;size=500x600")
+	return list(
+		panel_section("Sell Drugs", items = selling, empty = sell_note),
+		panel_section("Buy Weapons", notes = list("Hold the money in your hand."), items = weapons))
 
-/mob/living/simple_animal/npc_vendor/biker/Topic(href, href_list)
-	if (..())
-		return
-	if (!usr || !ishuman(usr))
-		return
-	var/mob/living/human/H = usr
-	if (get_dist(src, H) > 2)
-		return
+/mob/living/simple_animal/npc_vendor/biker/shop_act(mob/living/human/H, list/href_list)
 
 	if (href_list["sell"])
 		if (world.time <= biker_cooldown)
@@ -423,11 +389,7 @@ h2 { color: #cc0000; border-bottom: 2px solid #cc0000; padding-bottom: 8px; marg
 			i++
 		if (!picked_path)
 			return
-		var/obj/item/stack/money/M = null
-		if (istype(H.get_active_hand(), /obj/item/stack/money))
-			M = H.get_active_hand()
-		else if (istype(H.get_inactive_hand(), /obj/item/stack/money))
-			M = H.get_inactive_hand()
+		var/obj/item/stack/money/M = held_money(H)
 		if (!M || M.value * M.amount < picked_price * 4)
 			to_chat(H, "\icon[getFlatIcon(src)] Not enough money. You need [picked_price] dollars.")
 			return
@@ -486,13 +448,17 @@ h2 { color: #cc0000; border-bottom: 2px solid #cc0000; padding-bottom: 8px; marg
 	)
 	update_icons()
 
-/mob/living/simple_animal/npc_vendor/cartel/show_shop(mob/living/human/H)
+/mob/living/simple_animal/npc_vendor/cartel/ui_actions(ui_key)
+	return list("buy_coke")
+
+/mob/living/simple_animal/npc_vendor/cartel/shop_refusal(mob/living/human/H)
 	if (reputation[H.civilization] < 0)
-		to_chat(H, "\icon[getFlatIcon(src)] Don't waste my time, find another hole to climb into, sapo.")
-		return
+		return "Don't waste my time, find another hole to climb into, sapo."
 	if (H.civilization == "Sheriff Office" || H.civilization == "Paramedics" || H.civilization == "Government")
-		to_chat(H, "\icon[getFlatIcon(src)] I have nothing to tell you.")
-		return
+		return "I have nothing to tell you."
+	return null
+
+/mob/living/simple_animal/npc_vendor/cartel/shop_greeting(mob/living/human/H)
 	if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
 		var/obj/map_metadata/art_of_the_deal/AD = map
 		if (AD.heat[H.civilization] >= 35 && AD.heat[H.civilization] < 40)
@@ -507,7 +473,8 @@ h2 { color: #cc0000; border-bottom: 2px solid #cc0000; padding-bottom: 8px; marg
 						global_broadcast(FREQP, "<big> The DEA informs the local authorities that [H.real_name], working for [H.civilization], <b>may be</b> involved in drug trafficking. Surveillance of the individual is required, detain and search if necessary.</big>")
 				heat_message_cooldown[H.civilization] = world.time + 1200
 
-	// Determine available products based on reputation
+/mob/living/simple_animal/npc_vendor/cartel/shop_sections(mob/living/human/H)
+	// Better standing lowers prices and opens the larger lots.
 	var/gram_price = 70
 	if (reputation[H.civilization] >= 10)
 		gram_price = max(50, 70 - Floor(reputation[H.civilization] / 2))
@@ -515,53 +482,20 @@ h2 { color: #cc0000; border-bottom: 2px solid #cc0000; padding-bottom: 8px; marg
 	if (reputation[H.civilization] >= 20)
 		tenner_price = max(500, tenner_price - (2 * reputation[H.civilization]))
 
-	var/products_html = ""
-	// 1 gram
-	products_html += {"<div style="background:#272727;border:1px solid #cc0000;padding:12px;margin-bottom:8px;border-radius:4px;">
-<div style="font-weight:bold;margin-bottom:4px;">1 Gram Cocaine</div>
-<div style="font-size:11px;color:#999999;margin-bottom:8px;">A single gram of pure Colombian cocaine.</div>
-<div style="color:#ffd700;font-weight:bold;font-size:14px;margin-bottom:4px;">$[gram_price]</div>
-<a class="btn btn-sm" href="byond://?src=\ref[src];buy_coke=1g">Buy</a>
-</div>"}
-	// 10 grams (reputation 15+)
+	var/list/items = list(panel_item("1 Gram Cocaine", "$[gram_price] - A single gram of pure Colombian cocaine.", list(panel_button("Buy", "buy_coke", "1g"))))
 	if (reputation[H.civilization] >= 15)
-		products_html += {"<div style="background:#272727;border:1px solid #cc0000;padding:12px;margin-bottom:8px;border-radius:4px;">
-<div style="font-weight:bold;margin-bottom:4px;">10 Grams Cocaine</div>
-<div style="font-size:11px;color:#999999;margin-bottom:8px;">A briefcase with ten grams of high-quality cocaine.</div>
-<div style="color:#ffd700;font-weight:bold;font-size:14px;margin-bottom:4px;">$[tenner_price]</div>
-<a class="btn btn-sm" href="byond://?src=\ref[src];buy_coke=10g">Buy</a>
-</div>"}
-	// a block (reputation 30+)
+		items += list(panel_item("10 Grams Cocaine", "$[tenner_price] - A briefcase with ten grams of high-quality cocaine.", list(panel_button("Buy", "buy_coke", "10g"))))
 	if (reputation[H.civilization] >= 30)
-		products_html += {"<div style="background:#272727;border:1px solid #cc0000;padding:12px;margin-bottom:8px;border-radius:4px;">
-<div style="font-weight:bold;margin-bottom:4px;">Cocaine Brick</div>
-<div style="font-size:11px;color:#999999;margin-bottom:8px;">A full brick of uncut Colombian product. The real deal.</div>
-<div style="color:#ffd700;font-weight:bold;font-size:14px;margin-bottom:4px;">$1,200</div>
-<a class="btn btn-sm" href="byond://?src=\ref[src];buy_coke=block">Buy</a>
-</div>"}
+		items += list(panel_item("Cocaine Brick", "$1,200 - A full brick of uncut Colombian product. The real deal.", list(panel_button("Buy", "buy_coke", "block"))))
+	return list(panel_section("Product", notes = list("What do you need, jefe?"), items = items))
 
-	var/content = {"<div class="message">What do you need, jefe?</div>
-[products_html]"}
-	show_browse(H, build_shop_html(content, H), "window=npc_vendor;size=500x500")
-
-/mob/living/simple_animal/npc_vendor/cartel/Topic(href, href_list)
-	if (..())
-		return
-	if (!usr || !ishuman(usr))
-		return
-	var/mob/living/human/H = usr
-	if (get_dist(src, H) > 2)
-		return
+/mob/living/simple_animal/npc_vendor/cartel/shop_act(mob/living/human/H, list/href_list)
 
 	if (href_list["buy_coke"])
 		if (reputation[H.civilization] < 0)
 			to_chat(H, "\icon[getFlatIcon(src)] Don't waste my time, sapo.")
 			return
-		var/obj/item/stack/money/M = null
-		if (istype(H.get_active_hand(), /obj/item/stack/money))
-			M = H.get_active_hand()
-		else if (istype(H.get_inactive_hand(), /obj/item/stack/money))
-			M = H.get_inactive_hand()
+		var/obj/item/stack/money/M = held_money(H)
 		if (!M)
 			to_chat(H, "\icon[getFlatIcon(src)] You need money in your hand, maricon.")
 			return
@@ -666,43 +600,26 @@ h2 { color: #cc0000; border-bottom: 2px solid #cc0000; padding-bottom: 8px; marg
 	)
 	update_icons()
 
-/mob/living/simple_animal/npc_vendor/walter/show_shop(mob/living/human/H)
+/mob/living/simple_animal/npc_vendor/walter/ui_actions(ui_key)
+	return list("buy")
+
+/mob/living/simple_animal/npc_vendor/walter/shop_refusal(mob/living/human/H)
 	if (reputation[H.civilization] < 0)
-		to_chat(H, "\icon[getFlatIcon(src)] Don't waste my time.")
-		return
+		return "Don't waste my time."
 	if (H.civilization == "Sheriff Office" || H.civilization == "Government")
-		to_chat(H, "\icon[getFlatIcon(src)] I have nothing to tell you.")
-		return
+		return "I have nothing to tell you."
 	if (world.time <= walter_cooldown)
-		to_chat(H, "\icon[getFlatIcon(src)] I need more time to cook. Come back later.")
-		return
+		return "I need more time to cook. Come back later."
+	return null
 
-	var/products_html = ""
-	var/i = 1
-	for (var/item_path in products)
-		var/obj/item/I = new item_path
-		var/price = prices[item_path]
-		products_html += {"<div style="background:#272727;border:1px solid #cc0000;padding:12px;margin-bottom:8px;border-radius:4px;">
-<div style="font-weight:bold;margin-bottom:4px;">[I.name]</div>
-<div style="font-size:11px;color:#999999;margin-bottom:8px;">[I.desc]</div>
-<div style="color:#ffd700;font-weight:bold;font-size:14px;margin-bottom:4px;">$[price]</div>
-<a class="btn btn-sm" href="byond://?src=\ref[src];buy=[i]">Buy</a>
-</div>"}
-		qdel(I)
-		i++
+/mob/living/simple_animal/npc_vendor/walter/shop_sections(mob/living/human/H)
+	var/list/items = list()
+	for (var/i = 1 to products.len)
+		var/obj/item/item_path = products[i]
+		items += list(panel_item(initial(item_path.name), "$[prices[item_path]] - [initial(item_path.desc)]", list(panel_button("Buy", "buy", i))))
+	return list(panel_section("Supplies", notes = list("What do you need?"), items = items))
 
-	var/content = {"<div class="message">What do you need?</div>
-[products_html]"}
-	show_browse(H, build_shop_html(content, H), "window=npc_vendor;size=500x600")
-
-/mob/living/simple_animal/npc_vendor/walter/Topic(href, href_list)
-	if (..())
-		return
-	if (!usr || !ishuman(usr))
-		return
-	var/mob/living/human/H = usr
-	if (get_dist(src, H) > 2)
-		return
+/mob/living/simple_animal/npc_vendor/walter/shop_act(mob/living/human/H, list/href_list)
 
 	if (href_list["buy"])
 		var/item_id = text2num(href_list["buy"])
@@ -720,11 +637,7 @@ h2 { color: #cc0000; border-bottom: 2px solid #cc0000; padding-bottom: 8px; marg
 		if (world.time <= walter_cooldown)
 			to_chat(H, "\icon[getFlatIcon(src)] I need more time to cook. Come back later.")
 			return
-		var/obj/item/stack/money/M = null
-		if (istype(H.get_active_hand(), /obj/item/stack/money))
-			M = H.get_active_hand()
-		else if (istype(H.get_inactive_hand(), /obj/item/stack/money))
-			M = H.get_inactive_hand()
+		var/obj/item/stack/money/M = held_money(H)
 		if (!M || M.value * M.amount < picked_price * 4)
 			to_chat(H, "\icon[getFlatIcon(src)] You need [picked_price] dollars in one of your hands.")
 			return
@@ -776,71 +689,45 @@ h2 { color: #cc0000; border-bottom: 2px solid #cc0000; padding-bottom: 8px; marg
 	)
 	update_icons()
 
-/mob/living/simple_animal/npc_vendor/fed/show_shop(mob/living/human/H)
-	if (H.civilization == "Paramedics" || H.civilization == "none")
-		return
+/mob/living/simple_animal/npc_vendor/fed/ui_actions(ui_key)
+	return list("bribe", "reduce", "intel")
 
-	var/content = ""
+/mob/living/simple_animal/npc_vendor/fed/shop_refusal(mob/living/human/H)
+	if (H.civilization == "Paramedics" || H.civilization == "none")
+		return ""
+	return null
+
+/mob/living/simple_animal/npc_vendor/fed/shop_sections(mob/living/human/H)
 	if (H.civilization == "Sheriff Office" || H.civilization == "Government")
 		if (world.time <= intel_cooldown)
-			content = {"<div style="background:#272727;border:1px solid #cc0000;padding:12px;margin-bottom:8px;border-radius:4px;">
-<div style="font-size:12px;color:#999999;">I need more time to investigate. Come back later.</div>
-</div>"}
-		else
-			content = {"<div style="background:#272727;border:1px solid #cc0000;padding:12px;margin-bottom:8px;border-radius:4px;">
-<div style="font-weight:bold;margin-bottom:8px;">Get Intel</div>
-<a class="btn btn-sm" href="byond://?src=\ref[src];intel=narc">Narcotics</a>
-<a class="btn btn-sm" href="byond://?src=\ref[src];intel=firearms">Illegal Firearms</a>
-<a class="btn btn-sm" href="byond://?src=\ref[src];intel=disks">Disks</a>
-</div>"}
-	else
-		if (reputation[H.civilization] < 0)
-			content = {"<div style="background:#272727;border:1px solid #cc0000;padding:12px;margin-bottom:8px;border-radius:4px;">
-<div style="font-size:12px;color:#999999;">Don't waste my time. I can't do anything for you anymore.</div>
-</div>"}
-		else
-			content = {"<div style="background:#272727;border:1px solid #cc0000;padding:12px;margin-bottom:8px;border-radius:4px;">
-<div style="font-weight:bold;margin-bottom:8px;">Bribe - $500</div>
-<div style="font-size:11px;color:#999999;margin-bottom:8px;">Improve your standing with the Agency.</div>
-<a class="btn btn-sm" href="byond://?src=\ref[src];bribe=1">Bribe</a>
-</div>"}
-			if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
-				var/obj/map_metadata/art_of_the_deal/AD = map
-				if (AD.heat[H.civilization] > 0 && reputation[H.civilization] > 0)
-					if (world.time > heat_cooldown)
-						var/heat_price = ceil(200 / reputation[H.civilization])
-						content += {"<div style="background:#272727;border:1px solid #cc0000;padding:12px;margin-bottom:8px;border-radius:4px;">
-<div style="font-weight:bold;margin-bottom:8px;">Reduce Heat</div>
-<div style="font-size:11px;color:#999999;margin-bottom:8px;">Current heat: [AD.heat[H.civilization]] evidence files. $[heat_price] per file.</div>
-<a class="btn btn-sm" href="byond://?src=\ref[src];reduce=1">Remove 1</a>
-<a class="btn btn-sm" href="byond://?src=\ref[src];reduce=5">Remove 5</a>
-<a class="btn btn-sm" href="byond://?src=\ref[src];reduce=10">Remove 10</a>
-</div>"}
-					else
-						content += {"<div style="background:#272727;border:1px solid #cc0000;padding:12px;margin-bottom:8px;border-radius:4px;">
-<div style="font-size:12px;color:#999999;">I can't tamper with evidence that fast.</div>
-</div>"}
+			return list(panel_section("Get Intel", empty = "I need more time to investigate. Come back later."))
+		return list(panel_section("Get Intel", buttons = list(
+			panel_button("Narcotics", "intel", "narc"),
+			panel_button("Illegal Firearms", "intel", "firearms"),
+			panel_button("Disks", "intel", "disks"))))
+	if (reputation[H.civilization] < 0)
+		return list(panel_section("Favours", empty = "Don't waste my time. I can't do anything for you anymore."))
+	var/list/sections = list(panel_section("Favours", items = list(
+		panel_item("Bribe", "$500 - Improve your standing with the Agency.", list(panel_button("Bribe", "bribe"))))))
+	if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
+		var/obj/map_metadata/art_of_the_deal/AD = map
+		if (AD.heat[H.civilization] > 0 && reputation[H.civilization] > 0)
+			if (world.time > heat_cooldown)
+				var/heat_price = ceil(200 / reputation[H.civilization])
+				sections += list(panel_section("Reduce Heat",
+					notes = list("Current heat: [AD.heat[H.civilization]] evidence files. $[heat_price] per file."),
+					buttons = list(panel_button("Remove 1", "reduce", 1), panel_button("Remove 5", "reduce", 5), panel_button("Remove 10", "reduce", 10))))
+			else
+				sections += list(panel_section("Reduce Heat", empty = "I can't tamper with evidence that fast."))
+	return sections
 
-	show_browse(H, build_shop_html(content, H), "window=npc_vendor;size=500x450")
-
-/mob/living/simple_animal/npc_vendor/fed/Topic(href, href_list)
-	if (..())
-		return
-	if (!usr || !ishuman(usr))
-		return
-	var/mob/living/human/H = usr
-	if (get_dist(src, H) > 2)
-		return
+/mob/living/simple_animal/npc_vendor/fed/shop_act(mob/living/human/H, list/href_list)
 
 	if (href_list["bribe"])
 		if (reputation[H.civilization] < 0)
 			to_chat(H, "\icon[getFlatIcon(src)] Don't waste my time. I can't do anything for you anymore.")
 			return
-		var/obj/item/stack/money/M = null
-		if (istype(H.get_active_hand(), /obj/item/stack/money))
-			M = H.get_active_hand()
-		else if (istype(H.get_inactive_hand(), /obj/item/stack/money))
-			M = H.get_inactive_hand()
+		var/obj/item/stack/money/M = held_money(H)
 		if (!M || M.value * M.amount < 500 * 4)
 			to_chat(H, "\icon[getFlatIcon(src)] You need at least 500 dollars in one of your hands.")
 			return
@@ -864,13 +751,11 @@ h2 { color: #cc0000; border-bottom: 2px solid #cc0000; padding-bottom: 8px; marg
 				to_chat(H, "\icon[getFlatIcon(src)] Not so fast, pal. I can't just tamper with evidence that fast.")
 				return
 			var/amount = text2num(href_list["reduce"])
+			if (!(amount in list(1, 5, 10)))
+				return
 			var/heat_price = ceil(200 / reputation[H.civilization])
 			var/total_price = amount * heat_price
-			var/obj/item/stack/money/M = null
-			if (istype(H.get_active_hand(), /obj/item/stack/money))
-				M = H.get_active_hand()
-			else if (istype(H.get_inactive_hand(), /obj/item/stack/money))
-				M = H.get_inactive_hand()
+			var/obj/item/stack/money/M = held_money(H)
 			if (!M || M.value * M.amount < total_price * 4)
 				to_chat(H, "\icon[getFlatIcon(src)] You need at least [total_price] dollars in one of your hands.")
 				return
