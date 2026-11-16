@@ -10,7 +10,7 @@ function boot(ua = 'Chrome/130.0', options = {}) {
     cef_to_byond: url => { messages.push(url); options.deliver?.(url); },
     setTimeout: (callback, delay) => (timers.push({ callback, delay }), timers.length), clearTimeout: id => cancelled.add(id) };
   const document = { body: { getAttribute: key => ({ 'data-ref': '[0x123]', 'data-window': 'main[0x456]', 'data-generation': String(options.generation || 2) })[key] },
-    getElementById: id => id === 'tgui-loading' ? loading : button, createElement: tag => ({ tag }), head: { appendChild: x => nodes.push(x) } };
+    getElementById: id => id === 'tgui-loading' ? loading : id === 'tgui-initial' ? (options.initial === undefined ? null : { textContent: options.initial }) : button, createElement: tag => ({ tag }), head: { appendChild: x => nodes.push(x) } };
   vm.runInNewContext(source, { window, document, navigator: { userAgent: ua }, JSON, Object, Array, Number, String, encodeURIComponent });
   return { window, nodes, messages, timers, cancelled, button, loading, expire: () => { for (let i = 0; i < timers.length; i++) if (!cancelled.has(i + 1)) timers[i].callback(); } };
 }
@@ -41,6 +41,16 @@ test('stale or malformed snapshot cannot finish startup; delayed current one can
 });
 test('early snapshot waits for React before acknowledgement', () => {
   const e = boot(), b = e.window.Civ13Tgui; assert.equal(b.acceptSnapshot(config()), true); assert.equal(e.cancelled.size, 0); assert.deepEqual(types(e), []); b.ready(); assert.deepEqual(types(e), ['ready', 'ack']);
+});
+test('the snapshot carried in the page is queued first; an empty one is not', () => {
+  const raw = JSON.stringify({ config: config(), data: { amount: 5 } });
+  const e = boot('Chrome/130.0', { initial: raw }); assert.deepEqual([...e.window.Civ13Tgui.queue], [raw]); assert.deepEqual(types(e), []);
+  e.window.receiveUpdateData('{}'); assert.equal(e.window.Civ13Tgui.queue.length, 2); assert.equal(e.window.Civ13Tgui.queue[0], raw);
+  assert.equal(boot('Chrome/130.0', { initial: '' }).window.Civ13Tgui.queue.length, 0); assert.equal(boot().window.Civ13Tgui.queue.length, 0);
+  // The server builds it from the same snapshot as the ready push, hides data while disabled and escapes it for a script element.
+  const proc = dm.split('/datum/nanoui/tgui/proc/initial_snapshot()', 2)[1].split('\n/datum', 1)[0];
+  assert.match(proc, /get_send_data\(status == STATUS_DISABLED \? null : latest_data\)/); assert.match(proc, /replacetext\(json, "<", "\\\\u003c"\)/); assert.match(proc, /length\(json\) > TGUI_INLINE_SNAPSHOT_LIMIT/);
+  assert.match(dm, /<script type="application\/json" id="tgui-initial">\[initial_snapshot\(\)\]<\/script>\n<script src="civ13-tgui-bootstrap\.js"/);
 });
 test('asset/error/timeout fallback, bounded queue and throwing bridge', () => {
   for (const failure of ['script', 'css', 'timeout', 'error', 'rejection']) { const e = boot();

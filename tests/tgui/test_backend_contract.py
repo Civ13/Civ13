@@ -179,6 +179,14 @@ class BackendContract(unittest.TestCase):
             if path.name not in ('tgui.dm', 'voyage.dm'):
                 self.assertNotIn('new /datum/nanoui/tgui(', source, path.name)
 
+    def test_modern_windows_skip_the_classic_asset_send(self):
+        # The classic NanoUI scripts, styles and images are megabytes the modern screen never loads.
+        base = (ROOT / "code/modules/nano/_nanoui.dm").read_text(errors='replace')
+        self.assertIn("\tsend_base_assets(ntemplate_filename)\n", base)
+        self.assertEqual(base.count("get_asset_datum(/datum/asset/nanoui)"), 1)
+        self.assertIn("/datum/nanoui/tgui/send_base_assets(template_filename)\n\treturn\n", DM)
+        self.assertIn("get_asset_datum(/datum/asset/simple/civ13_tgui)", DM)
+
     def test_recovery_without_bootstrap_and_close_ownership(self):
         self.assertIn("document.getElementById('tgui-loading').textContent=", DM)
         external = (ROOT / "code/modules/nano/nanoexternal.dm").read_text()
