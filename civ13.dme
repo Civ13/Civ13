@@ -501,6 +501,7 @@
 #include "code\modules\paperwork\lifecycle.dm"
 #include "code\modules\paperwork\physical.dm"
 #include "code\modules\paperwork\stamps.dm"
+#include "code\modules\paperwork\faction_seals.dm"
 #include "code\modules\paperwork\study.dm"
 #include "code\modules\paperwork\editor.dm"
 #include "code\game\objects\items\paper\photography.dm"

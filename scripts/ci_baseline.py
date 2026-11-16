@@ -1296,6 +1296,11 @@ SUITES = {
         'paths': ('tests/stone_age_rites/',), 'shared_paths': (
             'code/modules/1713/stone_age_rites.dm', 'icons/obj/stone_age_rites.dmi',
             'code/game/objects/items/stacks/stack.dm')},
+    # Faction seal matrices and Check Seals (the native probe is tests/faction_seals/probe.dm).
+    'faction_seals': {'files': ('tests/faction_seals/test_source.py',),
+        'paths': ('tests/faction_seals/',), 'shared_paths': (
+            'code/modules/paperwork/faction_seals.dm', 'code/modules/paperwork/stamps.dm',
+            'code/game/mob/groups/faction_roster.dm')},
     # Bead trade goods and the two-sided barter mat: source contracts only.
     'barter': {'files': ('tests/barter/test_source.py',),
         'paths': ('tests/barter/',), 'shared_paths': (
