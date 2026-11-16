@@ -1887,6 +1887,7 @@
 #include "code\modules\1713\stone_age_arms.dm"
 #include "code\modules\1713\obsidian.dm"
 #include "code\modules\1713\stone_age_traps.dm"
+#include "code\modules\1713\stone_age_storage.dm"
 #include "code\modules\1713\dugout_canoe.dm"
 #include "code\modules\1713\domestication.dm"
 #include "code\modules\1713\horse_breeding.dm"
