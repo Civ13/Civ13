@@ -610,6 +610,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/ammo_casing/bolt/vial" = "crossbows",
 		// early_cells
 		"/obj/structure/battery" = "early_cells",
+		"/obj/structure/gilding_dish" = "early_cells",
 		// field_defenses
 		"/obj/item/stack/material/barbedwire" = "field_defenses",
 		// fortifications
