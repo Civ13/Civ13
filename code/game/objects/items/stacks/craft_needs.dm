@@ -6,6 +6,9 @@
 // - "inputs": item type path = amount per product, paid when the build
 //   completes: units of a stack, or whole items of any other type. Nothing is
 //   taken if the build is cancelled.
+// - "water" (optional): units of water per product, from an open container
+//   held or at the builder's feet, or free beside running water
+//   (station_water.dm).
 // Tools and inputs count when held, worn in a real equipment slot or lying at
 // the builder's feet; containers are never searched. The same file feeds the
 // Crafting Atlas, and the guard below reports each line to the Crafting window.
@@ -114,6 +117,10 @@ var/global/list/craft_tool_qualities = list(
 		else if (input_type)
 			found = craft_need_items(input_type, amount, candidates)
 		lines[++lines.len] = list("kind" = "input", "label" = "[amount] [input_type ? lowertext(initial(input_name.name)) : type_text] (held or at your feet)", "met" = found ? TRUE : FALSE, "item" = found, "amount" = amount)
+	if (spec["water"])
+		var/water = spec["water"] * max(1, quantity)
+		var/source = craft_need_water(H, water, candidates)
+		lines[++lines.len] = list("kind" = "water", "label" = "[water] units of water (an open container held or at your feet, or running water beside you)", "met" = source ? TRUE : FALSE, "item" = source, "amount" = water)
 	return lines
 
 // The message for the first thing missing, or null when everything is there.
@@ -127,6 +134,11 @@ var/global/list/craft_tool_qualities = list(
 // returned null, with no wait in between.
 /proc/craft_needs_pay(mob/living/human/H, datum/stack_recipe/R, quantity = 1, obj/item/stack/paying = null)
 	for (var/list/line in craft_need_lines(H, R, quantity, paying))
+		if (line["kind"] == "water")
+			var/obj/item/weapon/reagent_containers/C = line["item"]
+			if (istype(C))
+				C.reagents.remove_reagent("water", line["amount"])
+			continue
 		if (line["kind"] != "input")
 			continue
 		var/obj/item/stack/S = line["item"]
