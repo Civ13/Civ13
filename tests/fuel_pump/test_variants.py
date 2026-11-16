@@ -84,11 +84,13 @@ class ManagementPriceTests(unittest.TestCase):
                             'pump, user, custp, updatedesc, show_manage_ui',
                             {'isnum': lambda value: isinstance(value, (int, float))})
 
-        for action in ('change_price_direct', 'change_price'):
+        # The typed-in price is the only price action; the script prompt variant went with the HTML page.
+        self.assertNotIn('"change_price")', topic)
+        for action in ('change_price_direct',):
             marker = '\tif (href_list["action"] == "' + action + '")\n'
             self.assertEqual(topic.count(marker), 1)
             branch = topic.split(marker, 1)[1].split('\n\tif (href_list["action"]', 1)[0]
-            if action == 'change_price':
+            if action == 'change_price_direct':
                 branch = branch.split('\n\tshow_manage_ui(user)', 1)[0]
             branch = '\n'.join(line[1:] if line.startswith('\t') else line
                                for line in branch.splitlines())

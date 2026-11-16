@@ -12,140 +12,27 @@
 	var/reversed = FALSE
 
 /obj/structure/vehicleparts/shipwheel/proc/do_html(var/mob/m)
-
 	if (m && ship)
-		if (ship.engine && ship.masts.len<=0)
+		ui_interact(m)
 
-			show_browse(m, {"
+/obj/structure/vehicleparts/shipwheel/ui_actions(ui_key)
+	return list("set_anchor", "set_sails", "set_heading_left", "set_heading_right", "set_reversed", "set_engine", "increase_speed", "decrease_speed")
 
-			<br>
-			<html>
+// The helm: heading and anchor always, sails with masts, engine and speed with an engine.
+/obj/structure/vehicleparts/shipwheel/ui_interact(mob/viewer, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = TRUE)
+	if (!ship)
+		GLOB.nanomanager.close_user_uis(viewer, src)
+		return
+	var/list/rows = list(
+		panel_row("Heading", "[dir2text(ship.dir)][reversed ? " (reversed)" : ""]", buttons = list(panel_button("Turn left", "set_heading_left"), panel_button("Reverse", "set_reversed", selected = reversed), panel_button("Turn right", "set_heading_right"))),
+		panel_row("Anchor", ship.anchor ? "Anchored" : "Lifted", buttons = list(panel_button(ship.anchor ? "Lift" : "Drop", "set_anchor"))))
+	if (ship.masts.len >= 1)
+		rows += list(panel_row("Sails", sails_on ? "Hoisted" : "Retracted", buttons = list(panel_button(sails_on ? "Retract" : "Hoist", "set_sails"))))
+	if (ship.engine)
+		rows += list(panel_row("Engine", ship.engine.on ? "On" : "Off", ship.engine.on ? "good" : "muted", list(panel_button(ship.engine.on ? "Turn off" : "Turn on", "set_engine"))))
+		rows += list(panel_row("Speed", speed2text(), buttons = list(panel_button("Decrease", "decrease_speed"), panel_button("Increase", "increase_speed"))))
+	open_panel(viewer, name, 520, 400, list(panel_section("Helm", rows = rows)), ui = ui, force_open = force_open)
 
-			<head>
-			[common_browser_style]
-			</head>
-
-			<body>
-
-			<script language="javascript">
-
-			function set(input) {
-			  window.location="byond://?src=\ref[src];action="+input.name+"&value="+input.value;
-			}
-
-			</script>
-
-			<center>
-			<big><b>[ship] wheel</b></big><br><br>
-			</center>
-			<font size='3'>
-			<i>Current wind: [map.windspeed], from [map.winddirection][ship.masts.len ? ". Under sail she is [point_of_sail_name(ship.reverse ? OPPOSITE_DIR(ship.dir) : ship.dir)]" : ""]</i><br><br>
-			Heading: <b>[dir2text(ship.dir)] [reversed ? "(reversed)" : ""]</b>  <a href='?src=\ref[src];set_heading_left=1'>Turn Left</a> <a href='?src=\ref[src];set_reversed=1'>Reverse</a> <a href='?src=\ref[src];set_heading_right=1'>Turn Right</a><br><br>
-			Anchor: <a href='?src=\ref[src];set_anchor=1'>[ship.anchor ? "anchored" : "anchor lifted"]</a><br><br>
-			Engine: <b><a href='?src=\ref[src];set_engine=1'>[ship.engine.on ? "On" : "Off"]</a></b> - Speed <b>[speed2text()]</b><br><br>
-			<a href='?src=\ref[src];decrease_speed=1'>Decrease Speed</a>  <a href='?src=\ref[src];increase_speed=1'>Increase Speed</a><br><br>
-			</font>
-			</body>
-			</html>
-			"},  "window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=500x500")
-		else if (!ship.engine && ship.masts.len>=1)
-
-			show_browse(m, {"
-
-			<br>
-			<html>
-
-			<head>
-			[common_browser_style]
-			</head>
-
-			<body>
-
-			<script language="javascript">
-
-			function set(input) {
-			  window.location="byond://?src=\ref[src];action="+input.name+"&value="+input.value;
-			}
-
-			</script>
-
-			<center>
-			<big><b>[ship] wheel</b></big><br><br>
-			</center>
-			<font size='3'>
-			<i>Current wind: [map.windspeed], from [map.winddirection][ship.masts.len ? ". Under sail she is [point_of_sail_name(ship.reverse ? OPPOSITE_DIR(ship.dir) : ship.dir)]" : ""]</i><br><br>
-			Heading: <b>[dir2text(ship.dir)] [reversed ? "(reversed)" : ""]</b>  <a href='?src=\ref[src];set_heading_left=1'>Turn Left</a> <a href='?src=\ref[src];set_reversed=1'>Reverse</a> <a href='?src=\ref[src];set_heading_right=1'>Turn Right</a><br><br>
-			Anchor: <a href='?src=\ref[src];set_anchor=1'>[ship.anchor ? "anchored" : "anchor lifted"]</a><br><br>
-			Sails: <a href='?src=\ref[src];set_sails=1'>[sails_on ? "hoisted" : "retracted"]</a><br><br>
-			</font>
-			</body>
-			</html>
-			"},  "window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=500x500")
-		else if (ship.engine && ship.masts.len>=1)
-			show_browse(m, {"
-
-			<br>
-			<html>
-
-			<head>
-			[common_browser_style]
-			</head>
-
-			<body>
-
-			<script language="javascript">
-
-			function set(input) {
-			  window.location="byond://?src=\ref[src];action="+input.name+"&value="+input.value;
-			}
-
-			</script>
-
-			<center>
-			<big><b>[ship] wheel</b></big><br><br>
-			</center>
-			<font size='3'>
-			<i>Current wind: [map.windspeed], from [map.winddirection][ship.masts.len ? ". Under sail she is [point_of_sail_name(ship.reverse ? OPPOSITE_DIR(ship.dir) : ship.dir)]" : ""]</i><br><br>
-			Heading: <b>[dir2text(ship.dir)] [reversed ? "(reversed)" : ""]</b>  <a href='?src=\ref[src];set_heading_left=1'>Turn Left</a> <a href='?src=\ref[src];set_reversed=1'>Reverse</a> <a href='?src=\ref[src];set_heading_right=1'>Turn Right</a><br><br>
-			Anchor: <a href='?src=\ref[src];set_anchor=1'>[ship.anchor ? "anchored" : "anchor lifted"]</a><br><br>
-			Sails: <a href='?src=\ref[src];set_sails=1'>[sails_on ? "hoisted" : "retracted"]</a><br><br>
-			Engine: <b><a href='?src=\ref[src];set_engine=1'>[ship.engine.on ? "On" : "Off"]</a></b> - Speed <b>[speed2text()]</b><br><br>
-			<a href='?src=\ref[src];decrease_speed=1'>Decrease Speed</a>  <a href='?src=\ref[src];increase_speed=1'>Increase Speed</a><br><br>
-			</font>
-			</body>
-			</html>
-			"},  "window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=500x500")
-		else
-			show_browse(m, {"
-
-			<br>
-			<html>
-
-			<head>
-			[common_browser_style]
-			</head>
-
-			<body>
-
-			<script language="javascript">
-
-			function set(input) {
-			  window.location="byond://?src=\ref[src];action="+input.name+"&value="+input.value;
-			}
-
-			</script>
-
-			<center>
-			<big><b>[ship] wheel</b></big><br><br>
-			</center>
-			<font size='3'>
-			<i>Current wind: [map.windspeed], from [map.winddirection][ship.masts.len ? ". Under sail she is [point_of_sail_name(ship.reverse ? OPPOSITE_DIR(ship.dir) : ship.dir)]" : ""]</i><br><br>
-			Heading: <b>[dir2text(ship.dir)] [reversed ? "(reversed)" : ""]</b>  <a href='?src=\ref[src];set_heading_left=1'>Turn Left</a> <a href='?src=\ref[src];set_reversed=1'>Reverse</a> <a href='?src=\ref[src];set_heading_right=1'>Turn Right</a><br><br>
-			Anchor: <a href='?src=\ref[src];set_anchor=1'>[ship.anchor ? "anchored" : "anchor lifted"]</a><br><br>
-			</font>
-			</body>
-			</html>
-			"},  "window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=500x500")
 /obj/structure/vehicleparts/shipwheel/interact(var/mob/m)
 	if (user)
 		if (get_dist(src, user) > 1)

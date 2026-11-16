@@ -314,5 +314,6 @@ button.rs-row-main { cursor: pointer; }
 .kit-rows + .NoticeBox { margin-top: 8px; }
 .kit-note { margin: 2px 0 6px; }
 .kit-panel .kit-row dt { flex: 0 0 120px; } .kit-panel .kit-row dd { flex: 1 1 90px; }
+.kit-panel .kit-row dd.kit-row-buttons { display: flex; flex: 0 1 auto; flex-wrap: wrap; justify-content: flex-end; gap: 2px; margin-left: auto; } .kit-panel .kit-row-buttons .Button { margin: 0; }
 .kit-actions { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 2px; }
 .kit-table .kit-right .Button { margin: 0 0 0 2px; }

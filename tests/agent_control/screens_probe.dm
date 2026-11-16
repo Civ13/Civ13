@@ -155,6 +155,16 @@ var/screens_runtime_error = FALSE
 	rows = agent_screen_rows(H)
 	screens_check(note.loc != S && !findtext(rows[1]["data"], "deed"), "taking an item removes it from the safe and the list")
 	screen_try(C, list("screen" = 1, "close" = TRUE))
+	// A radio set describes its frequency and switches, and a switch reaches the shared radio Topic.
+	var/obj/item/weapon/radio/R = new(locate(9, 9, 1))
+	R.do_html(H)
+	rows = agent_screen_rows(H)
+	var/was_on = R.receiver_on
+	screens_check(rows.len == 1 && findtext(rows[1]["data"], "\"Frequency\"") && ("receiver" in rows[1]["actions"]), "a radio shows its frequency and switches")
+	screen_try(C, list("screen" = 1, "act" = "receiver"))
+	rows = agent_screen_rows(H)
+	screens_check(R.receiver_on != was_on && findtext(rows[1]["data"], R.receiver_on ? "Turn off" : "Turn on"), "the receiver switch toggles and the panel refreshes")
+	screen_try(C, list("screen" = 1, "close" = TRUE))
 	var/mob/living/human/screens_probe/P = new(locate(9, 9, 1))
 	P.species = new /datum/species/human
 	P.stat = CONSCIOUS

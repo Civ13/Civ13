@@ -200,35 +200,31 @@
 			B.reagents.trans_to_obj(dart, mix_amount)
 
 /obj/item/weapon/gun/projectile/dartgun/attack_self(mob/user)
-	var/dat = "<b>[src] mixing control:</b><br><br>"
+	ui_interact(user)
 
-	if (beakers.len)
-		var/i = TRUE
-		for(var/obj/item/weapon/reagent_containers/B in beakers)
-			dat += "[B] [i] contains: "
-			if(B.reagents && B.reagents.reagent_list.len)
-				for(var/datum/reagent/R in B.reagents.reagent_list)
-					dat += "<br>	[R.volume] units of [R.name], "
-				if (check_beaker_mixing(B))
-					dat += text("<A href='?src=\ref[src];stop_mix=[i]'><font color='green'>Mixing</font></A> ")
-				else
-					dat += text("<A href='?src=\ref[src];mix=[i]'><font color='red'>Not mixing</font></A> ")
-			else
-				dat += "nothing."
-			dat += " \[<A href='?src=\ref[src];eject=[i]'>Eject</A>\]<br>"
-			i++
-	else
-		dat += "There is no container inserted!<br><br>"
+/obj/item/weapon/gun/projectile/dartgun/ui_actions(ui_key)
+	return list("mix", "stop_mix", "eject", "eject_cart")
 
-	if(ammo_magazine)
-		if(ammo_magazine.stored_ammo && ammo_magazine.stored_ammo.len)
-			dat += "The dart cartridge has [ammo_magazine.stored_ammo.len] shots remaining."
-		else
-			dat += "<font color='red'>The dart cartridge is empty!</font>"
-		dat += " \[<A href='?src=\ref[src];eject_cart=1'>Eject</A>\]"
-
-	show_browse(user, dat, "window=dartgun")
-	onclose(user, "dartgun", src)
+// Mixing control: each inserted container with its contents, and the dart cartridge.
+/obj/item/weapon/gun/projectile/dartgun/ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = TRUE)
+	var/list/items = list()
+	var/i = 1
+	for (var/obj/item/weapon/reagent_containers/B in beakers)
+		var/list/contents_text = list()
+		if (B.reagents && B.reagents.reagent_list.len)
+			for (var/datum/reagent/R in B.reagents.reagent_list)
+				contents_text += "[R.volume] units of [R.name]"
+		var/mixed = check_beaker_mixing(B)
+		items += list(panel_item("[B] [i]", contents_text.len ? jointext(contents_text, ", ") : "Empty", list(
+			panel_button(mixed ? "Mixing" : "Not mixing", mixed ? "stop_mix" : "mix", i, selected = mixed),
+			panel_button("Eject", "eject", i))))
+		i++
+	var/list/sections = list(panel_section("Containers", items = items, empty = "There is no container inserted!"))
+	if (ammo_magazine)
+		var/shots = ammo_magazine.stored_ammo ? ammo_magazine.stored_ammo.len : 0
+		sections += list(panel_section("Dart cartridge", rows = list(
+			panel_row("Shots", shots ? "[shots] remaining" : "Empty", shots ? null : "warn", list(panel_button("Eject", "eject_cart"))))))
+	open_panel(user, "[name] mixing control", 440, 380, sections, ui = ui, force_open = force_open)
 
 /obj/item/weapon/gun/projectile/dartgun/proc/check_beaker_mixing(var/obj/item/B)
 	if(!mixing || !beakers)

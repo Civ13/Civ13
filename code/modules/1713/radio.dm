@@ -99,134 +99,19 @@ var/global/FREQM = rand(101,120)
 	radio_name_prompt(src, usr)
 
 /obj/structure/radio/proc/do_html(var/mob/m)
+	if (m)
+		ui_interact(m)
+
+/obj/structure/radio/ui_actions(ui_key)
+	return list("set_frequency", "receiver", "transmitter")
+
+/obj/structure/radio/ui_interact(mob/viewer, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = TRUE)
 	var/style = "Radio Receiver/Transmitter"
 	if (receiver && !transmitter)
 		style = "Radio Receiver"
 	if (!receiver && transmitter)
 		style = "Radio Transmitter"
-	if (m)
-		if (check_power() == FALSE && powerneeded > 0)
-			show_browse(m, {"
-
-			<br>
-			<html>
-
-			<head>
-			[common_browser_style]
-			</head>
-
-			<body>
-
-			<script language="javascript">
-
-			function set(input) {
-			  window.location="byond://?src=\ref[src];action="+input.name+"&value="+input.value;
-			}
-
-			</script>
-
-			<center>
-			<font size=3><b>[style]</b></font><br><br>
-			<b><font size=2 color=#8b0000>POWER OFF</a><br><br>
-			</center>
-			</font></b><br>
-			</body>
-			</html>
-			<br>
-			"},  "window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=500x500")
-		else
-
-			if (receiver && transmitter)
-				show_browse(m, {"
-
-				<br>
-				<html>
-
-				<head>
-				[common_browser_style]
-				</head>
-
-				<body>
-
-				<script language="javascript">
-
-				function set(input) {
-				  window.location="byond://?src=\ref[src];action="+input.name+"&value="+input.value;
-				}
-
-				</script>
-
-				<center>
-				<font size=3><b>[style]</b></font><br><br>
-				</center>
-				<b><font size=2>Frequency: <a href='?src=\ref[src];set_frequency=1'>[freq][multifreq ? "" : "kHz"]</a><br><br>
-				Transmitter: <a href='?src=\ref[src];transmitter=1'>[transmitter_on ? "ON" : "OFF"]</a><br><br>
-				Receiver: <a href='?src=\ref[src];receiver=1'>[receiver_on ? "ON" : "OFF"]</a><br><br>
-				</font></b><br>
-				</body>
-				</html>
-				<br>
-				"},  "window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=500x500")
-			else if (receiver && !transmitter)
-				show_browse(m, {"
-
-				<br>
-				<html>
-
-				<head>
-				[common_browser_style]
-				</head>
-
-				<body>
-
-				<script language="javascript">
-
-				function set(input) {
-				  window.location="byond://?src=\ref[src];action="+input.name+"&value="+input.value;
-				}
-
-				</script>
-
-				<center>
-				<font size=3><b>[style]</b></font><br><br>
-				</center>
-				<b><font size=2>Frequency: <a href='?src=\ref[src];set_frequency=1'>[freq][multifreq ? "" : "kHz"]</a><br><br>
-				Receiver: <a href='?src=\ref[src];receiver=1'>[receiver_on ? "ON" : "OFF"]</a><br><br>
-				</font></b><br>
-				</body>
-				</html>
-				<br>
-				"},  "window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=500x500")
-			else if (!receiver && transmitter)
-				show_browse(m, {"
-
-				<br>
-				<html>
-
-				<head>
-				[common_browser_style]
-				</head>
-
-				<body>
-
-				<script language="javascript">
-
-				function set(input) {
-				  window.location="byond://?src=\ref[src];action="+input.name+"&value="+input.value;
-				}
-
-				</script>
-
-				<center>
-				<font size=3><b>[style]</b></font><br><br>
-				</center>
-				<b><font size=2>Frequency: <a href='?src=\ref[src];set_frequency=1'>[freq][multifreq ? "" : "kHz"]</a><br><br>
-				Transmitter: <a href='?src=\ref[src];transmitter=1'>[transmitter_on ? "ON" : "OFF"]</a><br><br>
-				</font></b><br>
-				</body>
-				</html>
-				<br>
-				"},  "window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=500x500")
+	radio_panel(src, viewer, style, check_power() == FALSE && powerneeded > 0, ui, force_open)
 
 /obj/structure/radio/proc/broadcast(var/msg, var/mob/living/human/speaker, var/verbage = "says")
 	radio_broadcast(src, msg, speaker, verbage)
@@ -251,6 +136,19 @@ var/global/FREQM = rand(101,120)
 	else
 		R:user = m
 		R:do_html(m)
+
+// The radio's window: its frequency and the switches this set has.
+/proc/radio_panel(obj/R, mob/user, style, unpowered, datum/nanoui/ui, force_open = TRUE)
+	var/list/rows = list()
+	if (unpowered)
+		rows += list(panel_row("Power", "Off", "warn"))
+	else
+		rows += list(panel_row("Frequency", "[R:freq][R:multifreq ? "" : " kHz"]", buttons = list(panel_button("Change", "set_frequency"))))
+		if (R:transmitter)
+			rows += list(panel_row("Transmitter", R:transmitter_on ? "On" : "Off", R:transmitter_on ? "good" : "muted", list(panel_button(R:transmitter_on ? "Turn off" : "Turn on", "transmitter"))))
+		if (R:receiver)
+			rows += list(panel_row("Receiver", R:receiver_on ? "On" : "Off", R:receiver_on ? "good" : "muted", list(panel_button(R:receiver_on ? "Turn off" : "Turn on", "receiver"))))
+	R.open_panel(user, R.name, 400, 300, list(panel_section(style, rows = rows)), ui = ui, force_open = force_open)
 
 /proc/radio_topic(obj/R, mob/user, list/href_list)
 	if (!user || user.lying)
@@ -609,38 +507,14 @@ var/global/FREQM = rand(101,120)
 	radio_name_prompt(src, usr)
 
 /obj/item/weapon/radio/proc/do_html(var/mob/m)
-	var/style = "PORTABLE RADIO"
 	if (m)
-		show_browse(m, {"
+		ui_interact(m)
 
-		<br>
-		<html>
+/obj/item/weapon/radio/ui_actions(ui_key)
+	return list("set_frequency", "receiver", "transmitter")
 
-		<head>
-		[common_browser_style]
-		</head>
-
-		<body>
-
-		<script language="javascript">
-
-		function set(input) {
-		  window.location="byond://?src=\ref[src];action="+input.name+"&value="+input.value;
-		}
-
-		</script>
-
-		<center>
-		<font size=3><b>[style]</b></font><br><br>
-		</center>
-		<b><font size=2>Frequency: <a href='?src=\ref[src];set_frequency=1'>[freq][multifreq ? "" : "kHz"]</a><br><br>
-		Transmitter: <a href='?src=\ref[src];transmitter=1'>[transmitter_on ? "ON" : "OFF"]</a><br><br>
-		Receiver: <a href='?src=\ref[src];receiver=1'>[receiver_on ? "ON" : "OFF"]</a><br><br>
-		</font></b><br>
-		</body>
-		</html>
-		<br>
-		"},  "window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=500x500")
+/obj/item/weapon/radio/ui_interact(mob/viewer, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = TRUE)
+	radio_panel(src, viewer, "Portable radio", FALSE, ui, force_open)
 
 /obj/item/weapon/radio/proc/broadcast(var/msg, var/mob/living/human/speaker, var/verbage = "says")
 	radio_broadcast(src, msg, speaker, verbage)
