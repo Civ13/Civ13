@@ -113,8 +113,10 @@ var/building_compiled_maxz = 0
 		if ("steel", "iron")
 			return 8
 		if ("concrete")
-			return 6
-		if ("stone", "clay")
+			return 6 + building_brace_tier_bonus(src)
+		if ("stone")
+			return 4 + building_brace_tier_bonus(src)
+		if ("clay")
 			return 4
 	return 2
 
@@ -122,7 +124,7 @@ var/building_compiled_maxz = 0
 	return health > 0 && !gc_destroyed && !gcDestroyed ? 6 : 0
 
 /turf/wall/building_support_tier()
-	return 4
+	return 4 + building_brace_tier_bonus(src)
 
 /obj/structure/simple_door/building_support_tier()
 	return !gc_destroyed && !gcDestroyed ? 2 : 0
@@ -212,10 +214,13 @@ var/building_compiled_maxz = 0
 /proc/building_support_reach(atom/A)
 	if (istype(A, /obj/structure/roof_support))
 		return 3
-	if (istype(A, /obj/structure/mine_support/stone) || isturf(A))
+	if (istype(A, /obj/structure/mine_support/stone))
 		return 2
+	// A flying buttress or a corbel lets a wall hold a slab a tile further out.
+	if (isturf(A))
+		return max(2, building_brace_reach(A))
 	if (istype(A, /obj/covers))
-		return 1
+		return max(1, building_brace_reach(A))
 	return 0
 
 // What support A stands on: list(storey, strength). Ground is storey 0 and
