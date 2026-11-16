@@ -128,7 +128,7 @@
 			if (wconfig)
 				repair_type = wconfig.type_name
 			visible_message("[H] starts repairing \the [repair_type]...")
-			if (do_after(H, 200, src))
+			if (do_after(H, trade_time(H, 200, "mechanic"), src))
 				visible_message("[H] successfully repairs \the [repair_type].")
 				broken = FALSE
 				update_icon()

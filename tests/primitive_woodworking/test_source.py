@@ -96,7 +96,7 @@ class Fixture:
                       woodwork_spec=lambda mode:SPECS.get(mode), persistence_admission_identity=object(),
                       persistence_save_in_progress=False,persistence_active_operation=None,persistence_load_recovery_required=False,
                       construct=construct,qdel=lambda obj:setattr(obj,'deleted',True),parent_new=lambda:None,
-                      round=round,
+                      round=round,trade_time=lambda user,delay,kind:delay,
                       do_after=lambda *args:self.wait_hook(),SPAN_NOTICE=lambda value:value,to_chat=lambda *args:None)
         install_persistence_admission(self.env)
         self.namespaces.append(self.env)

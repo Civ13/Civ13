@@ -181,7 +181,7 @@
 /obj/structure/engine/attackby(obj/item/W as obj, mob/user as mob)
 	if (broken && is_tool(W, TOOL_WELDER))
 		visible_message("[user] starts repairing \the [src]...")
-		if (do_after(user, 200, src))
+		if (do_after(user, trade_time(user, 200, "mechanic"), src))
 			visible_message("[user] successfully repairs \the [src].")
 			broken = FALSE
 			return
@@ -295,7 +295,7 @@
 			else
 				to_chat(H, "You start building the engine...")
 				done = TRUE
-				if (do_after(H,220,src))
+				if (do_after(H,trade_time(H, 220, "mechanic"),src))
 					if (done)
 						if (!enginemaker_pay_steel(H, (enginesize/1000)*33))
 							to_chat(H, "<span class = 'warning'>You no longer have enough steel in hand for this engine.</span>")
@@ -321,7 +321,7 @@
 			else
 				to_chat(H, "You start building the engine...")
 				done = TRUE
-				if (do_after(H,220,src))
+				if (do_after(H,trade_time(H, 220, "mechanic"),src))
 					if (done)
 						if (!enginemaker_pay_steel(H, (enginesize/1000)*73))
 							to_chat(H, "<span class = 'warning'>You no longer have enough steel in hand for this engine.</span>")
@@ -347,7 +347,7 @@
 			else
 				to_chat(H, "You start building the engine...")
 				done = TRUE
-				if (do_after(H,200,src))
+				if (do_after(H,trade_time(H, 200, "mechanic"),src))
 					if (done)
 						if (!enginemaker_pay_steel(H, (enginesize/1000)*40))
 							to_chat(H, "<span class = 'warning'>You no longer have enough steel in hand for this engine.</span>")
@@ -373,7 +373,7 @@
 			else
 				to_chat(H, "You start building the engine...")
 				done = TRUE
-				if (do_after(H,200,src))
+				if (do_after(H,trade_time(H, 200, "mechanic"),src))
 					if (done)
 						if (!enginemaker_pay_steel(H, (enginesize/1000)*50))
 							to_chat(H, "<span class = 'warning'>You no longer have enough steel in hand for this engine.</span>")
@@ -399,7 +399,7 @@
 			else
 				to_chat(H, "You start building the engine...")
 				done = TRUE
-				if (do_after(H,200,src))
+				if (do_after(H,trade_time(H, 200, "mechanic"),src))
 					if (done)
 						if (!enginemaker_pay_steel(H, (enginesize/1000)*100))
 							to_chat(H, "<span class = 'warning'>You no longer have enough steel in hand for this engine.</span>")
@@ -425,7 +425,7 @@
 			else
 				to_chat(H, "You start building the engine...")
 				done = TRUE
-				if (do_after(H,200,src))
+				if (do_after(H,trade_time(H, 200, "mechanic"),src))
 					if (done)
 						if (!enginemaker_pay_steel(H, (enginesize/1000)*60))
 							to_chat(H, "<span class = 'warning'>You no longer have enough steel in hand for this engine.</span>")
@@ -451,7 +451,7 @@
 			else
 				to_chat(H, "You start building the engine...")
 				done = TRUE
-				if (do_after(H,270,src))
+				if (do_after(H,trade_time(H, 270, "mechanic"),src))
 					if (done)
 						if (!enginemaker_pay_steel(H, (enginesize/1000)*40))
 							to_chat(H, "<span class = 'warning'>You no longer have enough steel in hand for this engine.</span>")
@@ -477,7 +477,7 @@
 			else
 				to_chat(H, "You start building the engine...")
 				done = TRUE
-				if (do_after(H,270,src))
+				if (do_after(H,trade_time(H, 270, "mechanic"),src))
 					if (done)
 						if (!enginemaker_pay_steel(H, (enginesize/1000)*45))
 							to_chat(H, "<span class = 'warning'>You no longer have enough steel in hand for this engine.</span>")
@@ -503,7 +503,7 @@
 			else
 				to_chat(H, "You start building the engine...")
 				done = TRUE
-				if (do_after(H,240,src))
+				if (do_after(H,trade_time(H, 240, "mechanic"),src))
 					if (done)
 						if (!enginemaker_pay_steel(H, (enginesize/1000)*43))
 							to_chat(H, "<span class = 'warning'>You no longer have enough steel in hand for this engine.</span>")

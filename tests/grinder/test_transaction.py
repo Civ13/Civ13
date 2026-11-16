@@ -849,6 +849,7 @@ class AcquisitionProjection(Projection):
         actor = Record(type='/mob/living/human', loc=BuildTurf(floor, occupied), key='fixture', civilization='fixture')
         actor.getStatCoeff = lambda name: crafting if name == 'crafting' else strength
         actor.adaptStat = lambda *_args: None
+        actor.trade_time_mult = lambda _kind: 1  # no trade (trade_traits.dm)
         actor.religion_check = lambda: 'Production' if production else 'none'
         stock = Stock(actor, amount, '/obj/item/stack/material/electronics')
         def wait(_actor, duration):
@@ -858,7 +859,7 @@ class AcquisitionProjection(Projection):
             return complete
         self.globals |= dict(can_use=lambda used: self.run(STACK + '/proc/can_use', stock, used=used),
                              use=lambda used, human: self.run(STACK + '/proc/use', stock, used=used, H=human),
-                             do_after=wait)
+                             do_after=wait, stack_trade=lambda: None)
         recipe = Record(req_amount=int(row[3]), time=int(row[4]), one_per_turf=int(row[5]),
                         on_floor=int(row[6]), title=row[1], use_material=None, result_type=row[2])
         self.run('/datum/acquisition/proc/build', stock, user=actor, H=actor, recipe=recipe,

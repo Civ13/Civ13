@@ -122,7 +122,7 @@ var/global/datum/vehicle_key_service/vehicle_key_service = new
 			if (current[key] != payment[key]) return FALSE
 		return TRUE
 	proc/wait_for_key_service(mob/living/human/H, duration)
-		return do_after(H, duration, src)
+		return do_after(H, trade_time(H, duration, "mechanic"), src)
 	proc/service_vehicle_key(mob/living/human/H, obj/structure/vehicleparts/axis/A, rekey = FALSE)
 		if (busy || !key_service_vehicle(A)) return null
 		var/list/payment = key_service_inputs(H, rekey)

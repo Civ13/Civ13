@@ -21,7 +21,7 @@
 	return (loc == H || (isturf(loc) && in_range(src, H)))
 
 /obj/item/blackpowder_part/proc/wait_for_assembly(mob/living/human/H, delay)
-	return do_after(H, delay, src)
+	return do_after(H, trade_time(H, delay, "gunsmith"), src)
 
 // Reserve both parts before yielding; every success predicate is checked again after the wait.
 /obj/item/blackpowder_part/proc/assemble(obj/item/W, mob/living/human/H)
@@ -169,7 +169,7 @@
 	return !QDELETED(src) && !QDELETED(P) && !QDELETED(H) && isturf(H.loc) && in_range(src, H) && P.loc == H && H.get_active_hand() == P && !H.incapacitated()
 
 /obj/structure/anvil/proc/wait_for_blackpowder_forging(mob/living/human/H, delay)
-	return do_after(H, delay, src)
+	return do_after(H, trade_time(H, delay, "gunsmith"), src)
 
 /obj/structure/anvil/proc/produce_blackpowder_part(key, obj/item/stack/material/P, mob/living/human/H)
 	if (in_use || !blackpowder_forge_access(P, H))

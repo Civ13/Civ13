@@ -116,3 +116,17 @@ var/ps_runtime_error = FALSE
 	ps_check(sf_near(D.adhd_bench_mult(), 0.9), "a long bench session runs x0.9")
 	// Trait table: one field only, Tinkerer and Engineer exclude each other.
 	ps_check(get_trait_selection_error(list("Engineer", "Physician")) && get_trait_selection_error(list("Engineer", "Tinkerer")) && !get_trait_selection_error(list("Physician", "Autistic", "ADHD", "Recluse Scholar")), "trait choices validate")
+	// Trades (trade_traits.dm).
+	var/mob/living/human/M = ps_human(12, 12, "Mechanic")
+	ps_check(M.trade() == "mechanic" && !plain.trade(), "a Mechanic has the mechanic trade")
+	ps_check(trade_time(M, 200, "mechanic") == 120 && trade_time(plain, 200, "mechanic") == 200, "a Mechanic's vehicle work takes 40% less time")
+	ps_check(trade_time(M, 200, "smith") == 220 && trade_time(M, 200, null) == 200, "other trades take 10% longer, untagged work is unchanged")
+	M.set_trade("Carpenter")
+	ps_check(M.trade() == "carpenter" && M.trade_wait_text(), "a new trade replaces the old one and starts the wait")
+	M.traits += "Physician"; M.traits_dirty = TRUE
+	ps_check(M.trade() == "carpenter" && M.study_field() == "medicine", "a trade and a field of study can be held together")
+	var/obj/item/stack/material/wood/wood = new(locate(2, 2, 1))
+	var/obj/item/stack/material/leather/leather = new(locate(2, 2, 1))
+	var/obj/item/stack/material/iron/iron = new(locate(2, 2, 1))
+	ps_check(wood.stack_trade() == "carpenter" && leather.stack_trade() == "tailor" && !iron.stack_trade(), "stack crafting is classed by material")
+	ps_check(get_trait_selection_error(list("Mechanic", "Smith")) && !get_trait_selection_error(list("Mechanic", "Physician", "Autistic")), "one trade only, alongside a field")

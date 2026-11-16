@@ -876,7 +876,7 @@ var/global/list/tailoring_dye_tiers = list(
 	return istype(user) && !QDELETED(src) && !QDELETED(user) && !gcDestroyed && loc == user && (user.l_hand == src || user.r_hand == src) && isturf(user.loc) && user.loc == site && !user.incapacitated() && user.can_use_hands() && !persistence_save_in_progress && !persistence_active_operation && !persistence_load_recovery_required && save_epoch == persistence_admission_identity && crafting_node_allowed(user, "weaving")
 
 /obj/item/tailoring_project/proc/wait_for_tailoring(mob/living/human/user, delay)
-	return do_after(user, delay, src)
+	return do_after(user, trade_time(user, delay, "tailor"), src)
 
 /obj/item/tailoring_project/proc/body_cost()
 	return tailoring_design_cost(design_body, design_pieces)
@@ -1305,7 +1305,7 @@ var/global/list/tailoring_name_block_list = null
 	return TRUE
 
 /mob/living/human/proc/tailoring_trace_wait(obj/item/source)
-	return do_after(src, TAILORING_TRACE_TIME, source)
+	return do_after(src, trade_time(src, TAILORING_TRACE_TIME, "tailor"), source)
 
 // Traces a design onto a blank sheet the user holds, which becomes a pattern.
 /proc/tailoring_trace_pattern(mob/living/human/user, obj/item/weapon/paper/sheet, obj/item/source, body_id, colors_text, design_name, maker, author, pieces_text = null)

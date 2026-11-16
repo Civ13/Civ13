@@ -180,7 +180,7 @@
 			to_chat(user, SPAN_NOTICE("The hull has no leaks to shore up."))
 			return
 		to_chat(user, SPAN_NOTICE("You wedge timbers against the worst leak..."))
-		if (!do_after(user, SUB_SHORING_TIME, src) || QDELETED(W) || QDELETED(B) || !B.hull_leaks)
+		if (!do_after(user, trade_time(user, SUB_SHORING_TIME, "mechanic"), src) || QDELETED(W) || QDELETED(B) || !B.hull_leaks)
 			return
 		B.hull_leaks--
 		qdel(W)
@@ -194,7 +194,7 @@
 			to_chat(user, SPAN_WARNING("Fit the plating on the surface."))
 			return
 		to_chat(user, SPAN_NOTICE("You start riveting the plating over the hull..."))
-		if (!do_after(user, SUB_PLATING_TIME, src) || QDELETED(W) || QDELETED(B) || B.submerged)
+		if (!do_after(user, trade_time(user, SUB_PLATING_TIME, "mechanic"), src) || QDELETED(W) || QDELETED(B) || B.submerged)
 			return
 		B.hull_rating = SEA_ZONE_DEEP
 		B.hull_leaks = 0

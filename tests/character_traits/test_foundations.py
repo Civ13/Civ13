@@ -55,7 +55,7 @@ def validator_contract(source):
 class TraitFoundations(unittest.TestCase):
     def test_table_and_all_exclusions_both_orders(self):
         table = definitions(read(TRAITS))
-        self.assertEqual(len(table), 54)
+        self.assertEqual(len(table), 59)
         self.assertEqual(table['Baldness'][0], 0)
         for name, (_, excluded, _) in table.items():
             for other in excluded:

@@ -234,7 +234,7 @@ var/global/list/vehicle_project_layouts = list() // "type|model" -> layout
 	return TRUE
 
 /obj/structure/car_workshop/proc/wait_for_piece(mob/living/human/H, atom/target)
-	return do_after(H, VEHICLE_PIECE_TIME, target || src)
+	return do_after(H, trade_time(H, VEHICLE_PIECE_TIME, "mechanic"), target || src)
 
 // A player brings a stack or a wheel to the press or to the vehicle in the bay.
 /obj/structure/car_workshop/proc/project_add(mob/living/human/H, atom/movable/I, atom/target)

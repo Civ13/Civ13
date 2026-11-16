@@ -255,7 +255,7 @@ var/global/list/car_workshop_prototypes = list()
 	return
 
 /obj/structure/car_workshop/proc/wait_for_assembly(mob/living/human/H)
-	return do_after(H, assembly_time, src)
+	return do_after(H, trade_time(H, assembly_time, "mechanic"), src)
 
 /obj/structure/car_workshop/proc/assemble_for(mob/living/human/H, choice)
 	if (busy || !Adjacent(H) || !allowed(H))

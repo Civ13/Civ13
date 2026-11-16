@@ -440,6 +440,8 @@ var/global/list/crafting_purpose_cache = list()
 	if (viewer.getStatCoeff("strength"))
 		buildtime /= viewer.getStatCoeff("strength")
 		buildtime /= (viewer.getStatCoeff("crafting") * viewer.getStatCoeff("crafting"))
+		if (source)
+			buildtime *= viewer.trade_time_mult(source.stack_trade())
 	return round(buildtime)
 
 // The preview file for a product, sent to this client once. budget is a
