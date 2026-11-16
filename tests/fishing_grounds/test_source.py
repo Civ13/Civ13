@@ -48,11 +48,24 @@ class FishingGrounds(unittest.TestCase):
         self.assertLess(cast.index('prob(round(chance))'), cast.index('G.take(1)'))
         self.assertLess(cast.index('G.take(1)'), cast.index('new catch_path('))
 
+    def test_set_gear_draws_on_the_ground(self):
+        self.assertIn('/proc/fish_ground_trap_catch(turf/T)', self.source)
+        traps = (ROOT / 'code/modules/1713/stone_age_traps.dm').read_text(encoding='utf-8')
+        weir = traps[traps.index('/obj/structure/stone_age_trap/weir/settle('):]
+        self.assertLess(weir.index('prob(chance)'), weir.index('fish_ground_trap_catch(loc)'))
+        self.assertLess(weir.index('fish_ground_trap_catch(loc)'), weir.index('fish++'))
+        sea = (ROOT / 'code/game/objects/structures/sea.dm').read_text(encoding='utf-8')
+        self.assertIn('ispath(picked, /obj/item/weapon/reagent_containers/food/snacks/rawfish) && !fish_ground_trap_catch(T)', sea)
+
+    def test_a_net_takes_no_bait(self):
+        bait = self.source[self.source.index('/obj/item/weapon/fishing/attackby('):]
+        self.assertLess(bait.index('/obj/item/weapon/fishing/net'), bait.index('bait_uses = FISH_BAIT_USES'))
+
     def test_spears_ask_the_stone_age_numbers(self):
         arms = (ROOT / 'code/modules/1713/stone_age_arms.dm').read_text(encoding='utf-8')
         self.assertIn('/proc/spear_fishing_delay()\n\treturn SPEAR_FISHING_DELAY\n', arms)
         self.assertIn('/proc/spear_fishing_chance()\n\treturn SPEAR_FISHING_CHANCE\n', arms)
-        self.assertIn('list(spear_fishing_delay(), spear_fishing_chance(), TRUE)', self.source)
+        self.assertIn('list(spear_fishing_delay(), spear_fishing_chance(), TRUE, 1)', self.source)
 
     def test_world_start_seeds_no_fish(self):
         for path in ('code/modules/1713/roundstart_etc.dm', 'code/game/objects/map_metadata/jungle_colony.dm',

@@ -30,6 +30,9 @@
 #define FISH_THIN_SHARE 0.25
 // The open sea is wide: a line finds fewer fish than its stock suggests.
 #define FISH_DEEP_SEA_SHARE 0.6
+// A cast net: each of its chances is worse than a line's, but one throw can land several fish.
+#define FISH_NET_CHANCE 25
+#define FISH_NET_HAUL 3
 
 #define FISH_WATER_SALT "salt"
 #define FISH_WATER_FRESH "fresh"
@@ -261,19 +264,22 @@ var/global/list/fishing_grounds_published = null
 
 // ---- Tools ----
 
-// How W fishes: list(wait, chance at a full ground, TRUE for a spear), or null
-// when it is no fishing tool.
+// How W fishes: list(wait, chance at a full ground, TRUE for a spear, fish a
+// cast can land), or null when it is no fishing tool. A line or a spear takes
+// one fish at a time; a cast net can come up with several.
 /proc/fishing_tool_profile(obj/item/W)
+	if (istype(W, /obj/item/weapon/fishing/net))
+		return list(150, FISH_NET_CHANCE, FALSE, FISH_NET_HAUL)
 	if (istype(W, /obj/item/weapon/fishing/modern))
-		return list(120, 40, FALSE)
+		return list(120, 40, FALSE, 1)
 	if (istype(W, /obj/item/weapon/fishing))
-		return list(150, 30, FALSE)
+		return list(150, 30, FALSE, 1)
 	if (spear_fishing_tool(W))
-		return list(spear_fishing_delay(), spear_fishing_chance(), TRUE)
+		return list(spear_fishing_delay(), spear_fishing_chance(), TRUE, 1)
 	if (istype(W, /obj/item/weapon/branch))
 		var/obj/item/weapon/branch/B = W
 		if (B.sharpened)
-			return list(120, 20, TRUE)
+			return list(120, 20, TRUE, 1)
 	return null
 
 // Bait: raw meat or raw fish cut onto a line.
@@ -285,6 +291,9 @@ var/global/list/fishing_grounds_published = null
 /obj/item/weapon/fishing/attackby(obj/item/W as obj, mob/user as mob)
 	if (!is_bait(W))
 		return ..()
+	if (istype(src, /obj/item/weapon/fishing/net))
+		to_chat(user, SPAN_WARNING("A net takes whatever swims into it. Bait is for a line."))
+		return
 	if (bait_uses > 0)
 		to_chat(user, SPAN_WARNING("\The [src] is already baited."))
 		return
@@ -369,18 +378,43 @@ var/global/list/fishing_grounds_published = null
 	var/chance = (profile[2] + (baited ? FISH_BAIT_BONUS : 0)) * (FISH_THIN_SHARE + (1 - FISH_THIN_SHARE) * G.fullness())
 	if (deep && kind == FISH_WATER_SALT)
 		chance *= FISH_DEEP_SEA_SHARE
-	if (!prob(round(chance)))
-		to_chat(H, spear ? "The fish dart away from your strike." : "Nothing bites...")
+	var/list/landed = list()
+	var/escaped = FALSE
+	for (var/haul = 1 to profile[4])
+		if (!prob(round(chance)))
+			continue
+		if (!G.take(1)) // the ground ran out, or someone else took the last fish during the wait
+			escaped = TRUE
+			break
+		var/catch_path = fish_catch_type(src, kind, baited)
+		landed += new catch_path(get_turf(H))
+	if (!landed.len)
+		if (escaped)
+			to_chat(H, "Whatever was there got away.")
+		else if (spear)
+			to_chat(H, "The fish dart away from your strike.")
+		else
+			to_chat(H, profile[4] > 1 ? "The net comes up empty..." : "Nothing bites...")
 		return
-	if (!G.take(1)) // someone else took the last fish during the wait
-		to_chat(H, "Whatever was there got away.")
-		return
-	var/catch_path = fish_catch_type(src, kind, baited)
-	var/obj/item/caught = new catch_path(get_turf(H))
+	var/obj/item/caught = landed[1]
 	H.put_in_hands(caught)
-	to_chat(H, SPAN_NOTICE(spear ? "You spear \a [caught]!" : "You land \a [caught]!"))
+	if (landed.len > 1)
+		to_chat(H, SPAN_NOTICE("You haul in [landed.len] fish!"))
+	else
+		to_chat(H, SPAN_NOTICE(spear ? "You spear \a [caught]!" : "You land \a [caught]!"))
 	if (!spear)
 		H.adaptStat("dexterity", 1)
+
+// ---- Set gear ----
+
+// One fish for gear left standing in the water at T (a weir, a cage): the type
+// caught, or null when this stretch has none to give. It comes out of the same
+// ground a line fishes.
+/proc/fish_ground_trap_catch(turf/T)
+	var/datum/fishing_ground/G = fishing_ground_at(T)
+	if (!G || !G.take(1))
+		return null
+	return fish_catch_type(T, G.kind, FALSE)
 
 #undef FISH_GROUND_STEP
 #undef FISH_GROUND_MAX_STEPS
@@ -389,3 +423,5 @@ var/global/list/fishing_grounds_published = null
 #undef FISH_BAIT_BONUS
 #undef FISH_THIN_SHARE
 #undef FISH_DEEP_SEA_SHARE
+#undef FISH_NET_CHANCE
+#undef FISH_NET_HAUL

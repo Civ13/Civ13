@@ -2032,6 +2032,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/clay/roofing/kerawa" = "pottery_storage",
 		"/obj/item/weapon/clay/smallclaypot" = "pottery_storage",
 		"/obj/item/weapon/clay/vase" = "pottery_storage",
+		"/obj/item/weapon/clay/vessel" = "pottery_storage",
 		"/obj/item/weapon/clay/verysmallclaypot" = "pottery_storage",
 		"/obj/item/weapon/clay/winecup" = "pottery_storage",
 		"/obj/item/weapon/key" = "pottery_storage",

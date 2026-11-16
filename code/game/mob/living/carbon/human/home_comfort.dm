@@ -193,7 +193,7 @@ var/list/home_comfort_categories = list(
 					table = TRUE
 				if (home_is_light(A))
 					have["light"] = TRUE
-				if (istype(A, /obj/structure) && mood_is_art(A))
+				if (isobj(A) && mood_is_art(A))
 					have["art"] = TRUE
 				if (home_is_plant(A))
 					have["plants"] = TRUE
@@ -212,7 +212,7 @@ var/list/home_comfort_categories = list(
 			for (var/obj/O in W)
 				if (home_is_named_sign(O))
 					have["name"] = TRUE
-				else if (istype(O, /obj/structure) && mood_is_art(O))
+				else if (mood_is_art(O))
 					have["art"] = TRUE
 				if (!istype(O, /obj/covers))
 					continue

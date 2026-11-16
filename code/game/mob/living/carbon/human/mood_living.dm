@@ -126,15 +126,18 @@
 	return FALSE
 
 // Whether a thing is a work of art worth looking at.
-/proc/mood_is_art(obj/structure/S)
+/proc/mood_is_art(obj/S)
 	if (istype(S, /obj/structure/painting_frame) || istype(S, /obj/structure/rock_art))
 		return TRUE
+	if (istype(S, /obj/item/weapon/reagent_containers/food/drinks/clay/designed)) // pottery_design.dm
+		var/obj/item/weapon/reagent_containers/food/drinks/clay/designed/P = S
+		return isturf(P.loc) && P.decorated()
 	return istype(S, /obj/structure/religious) && !istype(S, /obj/structure/religious/gravestone)
 
 // Works of art in sight, counted up to LIVING_ART_PIECES.
 /mob/living/human/proc/mood_art_in_sight()
 	. = 0
-	for (var/obj/structure/S in view(LIVING_ART_REACH, src))
+	for (var/obj/S in view(LIVING_ART_REACH, src))
 		if (mood_is_art(S))
 			.++
 			if (. >= LIVING_ART_PIECES)

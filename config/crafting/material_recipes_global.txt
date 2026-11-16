@@ -221,6 +221,7 @@ RECIPE: /material/concrete/,concrete roof builder,/obj/item/weapon/roofbuilder/c
 //*****************| CLAY KITCHEN OBJECTS |***************************
 
 RECIPE: /material/clay/,unfired clay vase,/obj/item/weapon/clay/vase,3,50,0,1,kitchen,0,0,0,8,null
+RECIPE: /material/clay/,unfired clay vessel (your own design),/obj/item/weapon/clay/vessel,3,50,0,1,kitchen,0,0,0,8,null
 RECIPE: /material/clay/,unfired clay wine cup,/obj/item/weapon/clay/winecup,1,30,0,1,kitchen,0,0,0,8,null
 RECIPE: /material/clay/,unfired clay bowl,/obj/item/weapon/clay/claybowl,1,30,0,1,kitchen,0,0,0,8,null
 RECIPE: /material/clay/,unfired clay jug,/obj/item/weapon/clay/clayjug,2,50,0,1,kitchen,0,0,0,8,null
