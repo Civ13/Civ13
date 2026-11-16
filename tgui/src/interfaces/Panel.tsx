@@ -8,6 +8,8 @@ import { Pill, Row, Rows, type Tone } from './kit';
 // notes, labelled rows, item lists and buttons, and the owner declares which
 // actions those buttons may send. A window needs its own screen only when this
 // one cannot show it.
+// Only a bare file name the server sent beforehand; never a URL.
+const picture = /^[\w-]+\.png$/;
 const tones = new Set<string>(['good', 'warn', 'info', 'ready', 'progress', 'muted']);
 function Buttons({ ui, rows }: { ui: ScreenProps; rows?: PanelButton[] }) {
   return <>{list(rows).map((button, i) => button.action
@@ -44,7 +46,7 @@ export function Panel(ui: ScreenProps<PanelData>) {
         {!!rows.length && <Rows>{rows.map((row, i) => <Row key={i} label={str(row.label)} buttons={list(row.buttons).length ? <Buttons ui={ui} rows={row.buttons} /> : undefined}>
           {toned(row.tone, row.value)}</Row>)}</Rows>}
         {!!items.length && <table className="kit-table" aria-label={section.title ? str(section.title) : 'Items'}><tbody>{items.map((item, i) => <tr key={i}>
-          <th scope="row">{str(item.name)}{item.detail ? <p className="kit-hint">{str(item.detail)}</p> : null}</th>
+          <th scope="row">{picture.test(str(item.image)) ? <img className="kit-item-image" src={str(item.image)} width={32} height={32} alt="" /> : null}{str(item.name)}{item.detail ? <p className="kit-hint">{str(item.detail)}</p> : null}</th>
           <td className="kit-right"><Buttons ui={ui} rows={item.buttons} /></td></tr>)}</tbody></table>}
         {!!lines.length && <table className="kit-table" aria-label={section.title ? str(section.title) : 'Table'}>
           <thead><tr>{list(section.table?.columns).map((column, c) => <th key={c} scope="col">{str(column)}</th>)}</tr></thead>

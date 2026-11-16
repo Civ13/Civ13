@@ -42,6 +42,13 @@ describe('Panel', () => {
     expect(screen.getByRole('img', { name: 'supply and demand and idle' })).toBeTruthy();
     expect(view.container.textContent).toContain('one minute ago');
   });
+  it('shows an item picture only for a bare file name', () => {
+    const view = render(<Panel template="panel.tmpl" act={vi.fn()} interactive data={{ sections: [{ title: 'Styles', items: [
+      { name: 'Style 1', image: 'pill1.png' }, { name: 'Remote', image: 'https://example.invalid/x.png' }, { name: 'Path', image: '../x.png' }] }] }} />);
+    const images = view.container.querySelectorAll('img');
+    expect(images.length).toBe(1);
+    expect(images[0].getAttribute('src')).toBe('pill1.png');
+  });
   it('is inert when read-only', () => {
     const act = vi.fn();
     render(<Panel template="panel.tmpl" data={data} act={act} interactive={false} />);

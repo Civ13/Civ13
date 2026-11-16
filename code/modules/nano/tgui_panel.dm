@@ -20,9 +20,12 @@
 	if (buttons)
 		.["buttons"] = buttons
 
-// One line of an item list with its own buttons.
-/proc/panel_item(name, detail, list/buttons)
+// One line of an item list with its own buttons. image is the file name of a
+// picture already sent to the viewer with browse_rsc.
+/proc/panel_item(name, detail, list/buttons, image)
 	. = list("name" = "[name]")
+	if (image)
+		.["image"] = "[image]"
 	if (detail)
 		.["detail"] = "[detail]"
 	if (buttons)
