@@ -8,8 +8,12 @@
 //
 // Nothing ticks. A ground is made the first time someone fishes it and works
 // out its regrowth from the time that passed when it is next asked. A ground
-// nobody has fished is full and costs nothing. Grounds are not saved yet:
-// world.time restarts with the server, so they restart full with it.
+// nobody has fished is full and costs nothing.
+//
+// Grounds short of fish are saved with the durable world metadata in the map
+// field fishing_grounds_state (field version 5), as six values a ground:
+// kind, cell x, cell y, z, capacity, stock. The time a server is down does not
+// count towards regrowth.
 //
 // Regrowth depends on what is left: fastest at half stock (one fish in four
 // minutes), slow near empty and near full. A ground fished to nothing only
@@ -57,6 +61,49 @@ var/global/list/fishing_grounds = list()
 
 /proc/fishing_ground_key(kind, cx, cy, z)
 	return "[kind],[cx],[cy],[z]"
+
+// ---- Saving ----
+
+/obj/map_metadata/var/list/fishing_grounds_state = list()
+
+// The list last written to, or read from, the map.
+var/global/list/fishing_grounds_published = null
+
+// Writes every ground short of fish to the map, where the durable world save
+// picks it up, and forgets the grounds that have filled up again.
+/proc/fishing_grounds_publish()
+	if (!map)
+		return
+	var/list/state = list()
+	for (var/key in fishing_grounds.Copy())
+		var/datum/fishing_ground/G = fishing_grounds[key]
+		G.settle()
+		if (G.stock >= G.capacity)
+			fishing_grounds -= key
+			continue
+		state += list(G.kind, G.cx, G.cy, G.z, G.capacity, round(G.stock, 0.01))
+	fishing_grounds_published = state
+	map.fishing_grounds_state = state
+
+// A save loaded since the last look brings its own grounds.
+/proc/fishing_grounds_sync()
+	if (!map || map.fishing_grounds_state == fishing_grounds_published)
+		return
+	var/list/state = map.fishing_grounds_state
+	fishing_grounds_published = state
+	fishing_grounds = list()
+	if (!islist(state) || state.len % 6)
+		return
+	var/static/list/kinds = list(FISH_WATER_SALT, FISH_WATER_FRESH, FISH_WATER_JUNGLE, FISH_WATER_SWAMP, FISH_WATER_FLOODED)
+	for (var/i = 1, i + 5 <= state.len, i += 6)
+		var/kind = state[i]
+		var/capacity = state[i + 4]
+		var/stock = state[i + 5]
+		if (!(kind in kinds) || !isnum(state[i + 1]) || !isnum(state[i + 2]) || !isnum(state[i + 3]) || !isnum(capacity) || !isnum(stock) || capacity < 1)
+			continue
+		var/datum/fishing_ground/G = new /datum/fishing_ground(kind, state[i + 1], state[i + 2], state[i + 3], capacity)
+		G.stock = min(G.capacity, max(0, stock))
+		fishing_grounds[fishing_ground_key(kind, G.cx, G.cy, G.z)] = G
 
 // TRUE while a neighbouring ground of the same kind holds a fish. A neighbour
 // nobody has fished is full.
@@ -112,6 +159,7 @@ var/global/list/fishing_grounds = list()
 	if (stock >= capacity)
 		since = world.time
 	stock -= n
+	fishing_grounds_publish()
 	return TRUE
 
 // ---- Water ----
@@ -154,6 +202,7 @@ var/global/list/fishing_grounds = list()
 	var/kind = fish_water_kind(T)
 	if (!kind)
 		return null
+	fishing_grounds_sync()
 	var/cx = round(T.x / FISH_GROUND_SIZE)
 	var/cy = round(T.y / FISH_GROUND_SIZE)
 	var/key = fishing_ground_key(kind, cx, cy, T.z)

@@ -1295,6 +1295,10 @@ SUITES = {
         'paths': ('tests/stone_age_rites/',), 'shared_paths': (
             'code/modules/1713/stone_age_rites.dm', 'icons/obj/stone_age_rites.dmi',
             'code/game/objects/items/stacks/stack.dm')},
+    # Trading balance and weighed money (the native probe is tests/weighed_money/probe.dm).
+    'weighed_money': {'files': ('tests/weighed_money/test_source.py',),
+        'paths': ('tests/weighed_money/',), 'shared_paths': (
+            'code/modules/1713/weighed_money.dm', 'code/modules/1713/barter.dm')},
     # Faction seal matrices and Check Seals (the native probe is tests/faction_seals/probe.dm).
     'faction_seals': {'files': ('tests/faction_seals/test_source.py',),
         'paths': ('tests/faction_seals/',), 'shared_paths': (

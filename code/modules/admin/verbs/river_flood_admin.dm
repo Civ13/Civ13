@@ -123,6 +123,7 @@
 	set name = "Fishing Grounds"
 	if (!check_rights(R_DEBUG))
 		return
+	fishing_grounds_sync()
 	var/list/order = list()
 	for (var/key in fishing_grounds)
 		var/datum/fishing_ground/G = fishing_grounds[key]

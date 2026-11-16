@@ -2271,6 +2271,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/stack/barter_beads/stone" = "regalia",
 		"/obj/item/stack/barter_beads/bone" = "regalia",
 		"/obj/structure/barter_mat" = "basic_tools",
+		"/obj/item/weighing_balance" = "basic_tools",
 		"/obj/item/stone_age_instrument/bone_flute" = "ritual_worship",
 		"/obj/item/stone_age_instrument/frame_drum" = "ritual_worship",
 		"/obj/structure/religious/impaledskull" = "ritual_worship",

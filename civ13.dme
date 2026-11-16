@@ -1866,6 +1866,7 @@
 #include "code\modules\1713\stone_age_rites.dm"
 #include "code\modules\1713\burial.dm"
 #include "code\modules\1713\barter.dm"
+#include "code\modules\1713\weighed_money.dm"
 #include "code\modules\1713\stone_age_extras.dm"
 #include "code\modules\1713\underground_excavation.dm"
 #include "code\modules\1713\mountain_seams.dm"

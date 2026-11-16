@@ -285,6 +285,7 @@ RECIPE: /material/leather/,slingstaff,/obj/item/weapon/gun/projectile/bow/sling/
 RECIPE: /material/leather/,bola,/obj/item/weapon/legcuffs/bola,2,50,0,1,weapons,0,0,0,1,null
 RECIPE: /material/leather/,feasting mat,/obj/structure/feast_mat,3,60,1,1,furniture,0,0,0,8,null
 RECIPE: /material/leather/,barter mat,/obj/structure/barter_mat,2,40,1,1,economy & production,0,0,0,8,null
+RECIPE: /material/wood/,trading balance,/obj/item/weighing_balance,2,40,0,1,economy & production,0,0,0,8,null
 RECIPE: /material/leather/,frame drum,/obj/item/stone_age_instrument/frame_drum,2,80,0,1,none,0,0,0,8,null
 RECIPE: /material/leather/,bug swatter,/obj/item/weapon/swatter,3,90,0,1,tools,0,0,0,8,null
 RECIPE: /material/leather/,bellows,/obj/structure/workshop_machine/bellows,3,100,1,1,tools,26,0,0,8,null

@@ -26,7 +26,11 @@ Tests: `tests/fishing_grounds/`.
   has no record.
 - **Reading:** examining water within two tiles tells a player how full it is.
 - **Admin:** Debug > Fishing Grounds lists fished grounds, emptiest first.
-- **Not saved yet:** grounds restart full with the server.
+- **Saved:** grounds short of fish are saved with the durable world metadata
+  in the map field `fishing_grounds_state` (field version 5), six values a
+  ground: kind, cell x, cell y, z, capacity, stock. Full grounds are not kept.
+  A save from before the field restores with every ground full. Time the
+  server is down does not count towards regrowth.
 
 The old fishing spot objects (`/obj/structure/fish`, salmon, cod) and the 8x8
 open-sea stock are gone, from code, world-start seeding, maps and the land
