@@ -176,7 +176,9 @@
 		for (var/level = 1 to 2)
 			building_assert(building_construct_roof(locate(9,3,level), /obj/roof/wood, null), "soft ground carries storey [level]")
 			new /obj/structure/mine_support/stone(locate(9,3,level + 1))
-		building_assert(building_roof_error(locate(9,3,3)), "soft ground carries two storeys")
+		var/soft_error = building_roof_error(locate(9,3,3))
+		building_assert(soft_error, "soft ground carries two storeys")
+		building_assert(findtext(soft_error, "third storey") && findtext(soft_error, "Lay that floor first"), "an unfounded third storey names the foundation rule")
 		new /obj/covers/cobblestone(locate(9,3,1))
 		building_assert(!building_roof_error(locate(9,3,3)), "a stone floor under the ground support is a foundation")
 		// From the second storey up: no slab on one distant pillar, and supports stand over supports.
