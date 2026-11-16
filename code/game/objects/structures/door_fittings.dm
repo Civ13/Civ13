@@ -99,7 +99,8 @@
 	if (isnull(delay))
 		delay = door_close_delay()
 	var/token = ++close_token
-	addtimer(CALLBACK(src, PROC_REF(door_auto_close), token), max(1, delay))
+	spawn(max(1, delay))
+		door_auto_close(token)
 	return TRUE
 
 // Someone or something solid in the doorway keeps the door from shutting.
