@@ -127,7 +127,7 @@
 
 // Whether a thing is a work of art worth looking at.
 /proc/mood_is_art(obj/S)
-	if (istype(S, /obj/structure/painting_frame) || istype(S, /obj/structure/rock_art))
+	if (istype(S, /obj/structure/painting_frame) || istype(S, /obj/structure/rock_art) || istype(S, /obj/structure/woven_rug))
 		return TRUE
 	if (istype(S, /obj/item/weapon/reagent_containers/food/drinks/clay/designed)) // pottery_design.dm
 		var/obj/item/weapon/reagent_containers/food/drinks/clay/designed/P = S

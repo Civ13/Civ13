@@ -691,6 +691,11 @@ RECIPE: /material/woolcloth/,red bedsheet,/obj/item/weapon/bedsheet/red,2,75,0,1
 //**************************************************************
 
 RECIPE: /material/cloth/,small cloth sail,/obj/item/sail,15,125,0,1,none,0,0,22,8,null
+RECIPE: /material/cloth/,small rug warp,/obj/item/canvas/woven,2,40,0,1,none,0,0,0,8,null
+RECIPE: /material/cloth/,runner warp,/obj/item/canvas/woven/runner,3,50,0,1,none,0,0,0,8,null
+RECIPE: /material/cloth/,large rug warp,/obj/item/canvas/woven/large,6,80,0,1,none,0,0,0,8,null
+RECIPE: /material/cloth/,tapestry warp,/obj/item/canvas/woven/tapestry,2,40,0,1,none,0,0,0,8,null
+RECIPE: /material/cloth/,wide tapestry warp,/obj/item/canvas/woven/tapestry/wide,3,50,0,1,none,0,0,0,8,null
 RECIPE: /material/cloth/,pedal airship,/obj/structure/vehicle/bicycle/airship,30,300,1,1,vehicle parts,95,0,0,8,null
 RECIPE: /material/cloth/,cigarette pack,/obj/item/weapon/storage/fancy/cigarettes,1,20,0,1,none,90,0,0,8,null
 RECIPE: /material/cloth/,sandbag,/obj/item/weapon/barrier/sandbag/empty,1,105,0,1,none,0,0,90,8,null

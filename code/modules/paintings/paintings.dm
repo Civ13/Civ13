@@ -134,7 +134,7 @@
 // pigment's colours, and any two of those mixed half and half.
 /proc/painting_allowed_colours(mob/user, obj/item/canvas/C)
 	var/list/base = list(C.base_colour) | C.extra_colours(user)
-	for (var/obj/item/pigment/P in user.get_contents())
+	for (var/obj/item/pigment/P in (C.uses_pigments ? user.get_contents() : list()))
 		if (P.pigment_uses <= 0)
 			continue
 		for (var/hex in P.pigment_colors)
@@ -183,6 +183,8 @@
 	var/author_name = null
 	var/painted_at = null // date text
 	var/imported_design = FALSE // painted from a pasted design code (design_codes.dm)
+	var/uses_pigments = TRUE // FALSE: colours come only from extra_colours() (woven dyes)
+	var/wide_hang = FALSE // hangs two tiles wide on a wall to the north
 	var/tmp/mob/editing = null
 	var/tmp/list/upload_parts = null
 	var/tmp/upload_count = 0
@@ -240,6 +242,7 @@
 	art_left = 4
 	art_top = 4
 	frame_state = "gallery"
+	wide_hang = TRUE
 	pixel_use_scale = 8 // a full 128x128 canvas uses at most 8 of a pigment
 	value = 4
 
@@ -372,6 +375,8 @@
 // Pigment for a finished painting: each pigment whose colours it uses loses
 // one use per PAINT_PIXELS_PER_USE pixels painted with them.
 /obj/item/canvas/proc/use_pigments(mob/user, plain, list/pal)
+	if (!uses_pigments)
+		return
 	var/list/counts = list()
 	for (var/i = 1, i <= length(plain), i++)
 		var/d = copytext(plain, i, i + 1)
@@ -500,11 +505,11 @@
 		to_chat(user, SPAN_WARNING("Stand straight in front of the wall to hang it."))
 		return FALSE
 	var/list/spots = list(T)
-	if (C.format == "gallery")
+	if (C.wide_hang)
 		// Two tiles wide, from the painter's tile to the east, on a wall to the north.
 		var/turf/E = get_step(T, EAST)
 		if (dir != NORTH || !E || !painting_is_wall_turf(get_step(E, NORTH)) || E.density)
-			to_chat(user, SPAN_WARNING("A gallery painting hangs on a wall to your north, two tiles wide: the wall must run on to your right."))
+			to_chat(user, SPAN_WARNING("\The [C] hangs on a wall to your north, two tiles wide: the wall must run on to your right."))
 			return FALSE
 		spots += E
 	for (var/turf/spot in spots)
@@ -515,7 +520,7 @@
 	var/turf/west = get_step(T, WEST)
 	for (var/obj/structure/painting_frame/F in west)
 		var/obj/item/canvas/G = F.held_canvas()
-		if (F.dir == dir && G && G.format == "gallery")
+		if (F.dir == dir && G && G.wide_hang)
 			to_chat(user, SPAN_WARNING("A painting already hangs there."))
 			return FALSE
 	var/obj/structure/painting_frame/F = new(T)
