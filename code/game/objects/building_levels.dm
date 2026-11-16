@@ -482,6 +482,8 @@ var/building_compiled_maxz = 0
 	if (T && building_open_turf(T))
 		// Exclude the retiring floor before native fall callbacks inspect covers.
 		loc = null
+		// Walls, pillars and doors that stood on this floor fall and break.
+		building_floor_lost(T)
 		for (var/atom/movable/A in T)
 			T.Entered(A)
 		for (var/obj/roof/above in range(3, T))
@@ -498,3 +500,15 @@ var/building_compiled_maxz = 0
 	unregister_seasonal_construction()
 	building_remove_floor()
 	return ..()
+
+// Whatever was built on a floor that is gone falls: walls (and the floors'
+// other fixed covers) and the pillars and doors that held roofs up.
+/proc/building_floor_lost(turf/T)
+	for (var/obj/covers/C in T)
+		if (QDELETED(C) || !C.wall)
+			continue
+		C.building_fall(C.material, C.building_wall_salvage())
+	for (var/obj/structure/S in T)
+		if (QDELETED(S) || !S.building_support_tier())
+			continue
+		S.building_fall(S.structure_impact_material(), null)

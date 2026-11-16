@@ -9,6 +9,10 @@
 #define DUG_CAVE_NOISE_CELL 8
 
 /obj/map_metadata/var/dig_down_underground = FALSE
+// A map compiled with its own underground level (Gaia, Desert, Jungle, Barren,
+// Moon: z 1 under a z 2 surface) names it here. Its map file holds unformed
+// rock there, which forms on demand like a dug cave (see below).
+/obj/map_metadata/var/underground_compiled_z = 0
 
 /turf/wall/rockwall/bedrock
 	name = "bedrock"
@@ -161,10 +165,10 @@
 	var/hash = md5("[map ? map.ID : "map"]:cell:[x]:[y]")
 	return text2num(copytext(hash, 1, 5), 16) / 65536
 
-/proc/dug_underground_cell(x, y)
+/proc/dug_underground_cell(x, y, surface_z = DUG_SURFACE_Z)
 	if (x == 1 || y == 1 || x == world.maxx || y == world.maxy)
 		return /turf/wall/rockwall/bedrock
-	var/turf/surface = locate(x, y, DUG_SURFACE_Z)
+	var/turf/surface = locate(x, y, surface_z)
 	var/rock = dug_underground_rock(surface)
 	if (rock == /turf/wall/rockwall)
 		return rock
@@ -184,8 +188,26 @@ var/global/dug_underground_forming = FALSE
 // side forms as plain rock and the rest of the pocket stays unformed.
 #define DUG_POCKET_LIMIT 400
 
+// Unformed rock compiled into a map's own underground level. Its constructor
+// does nothing, as a native cell of an added level skips its constructor, so
+// the level costs no registry entry, lighting or saved field per cell.
+/turf/sky/building/unformed
+	name = "rock"
+	desc = "Solid rock nobody has dug into yet."
+	lighting_never = TRUE
+
+/turf/sky/building/unformed/New()
+	return
+
+// The underground level of this map: a compiled one, or the dug cave.
+/proc/underground_level_z()
+	if (map && map.underground_compiled_z)
+		dug_underground_live_z = map.underground_compiled_z
+		return map.underground_compiled_z
+	return dug_underground_z()
+
 /proc/dug_underground_unformed(turf/T)
-	return T && T.type == /turf/sky/building && T.z == dug_underground_z()
+	return T && istype(T, /turf/sky/building) && T.z == underground_level_z()
 
 // An unformed cell is rock no one has reached: nothing but a ghost moves in.
 /turf/sky/building/Enter(atom/movable/O, atom/oldloc)
@@ -193,14 +215,23 @@ var/global/dug_underground_forming = FALSE
 		return FALSE
 	return ..()
 
+// Something put straight into unformed rock (a fall, a shaft, an admin) finds
+// a pocket opened around it rather than being sealed in.
+/turf/sky/building/Entered(atom/movable/A)
+	if (!isobserver(A) && !istype(A, /atom/movable/lighting_overlay) && !istype(A, /atom/movable/lighting_fullbright) && !persistence_save_in_progress && dug_underground_unformed(src))
+		ChangeTurf(/turf/floor/dirt)
+		return
+	return ..()
+
 // Forms one unformed cell from the generator and lights it. With solid set,
 // a pocket cell forms as rock instead (the edge of a capped pocket).
 /proc/dug_underground_form(turf/T, solid = FALSE)
 	if (!dug_underground_unformed(T))
 		return T
-	var/path = dug_underground_cell(T.x, T.y)
+	var/surface_z = multiz_level_above(T.z) || DUG_SURFACE_Z
+	var/path = dug_underground_cell(T.x, T.y, surface_z)
 	if (solid && path == /turf/floor/dirt)
-		path = dug_underground_rock(locate(T.x, T.y, DUG_SURFACE_Z))
+		path = dug_underground_rock(locate(T.x, T.y, surface_z))
 	var/was_forming = dug_underground_forming
 	dug_underground_forming = TRUE
 	var/turf/W = T.ChangeTurf(path)
@@ -214,7 +245,9 @@ var/global/dug_underground_forming = FALSE
 // An open cell must never touch unformed rock: forms its eight neighbours,
 // and any cave pocket it breaks into, up to DUG_POCKET_LIMIT cells.
 /proc/dug_underground_form_around(turf/start)
-	if (!start || dug_underground_forming || start.z != dug_underground_z())
+	// A load restores formed cells itself; forming around them would only be
+	// overwritten by the cells still to come.
+	if (!start || dug_underground_forming || persistence_save_in_progress || start.z != underground_level_z())
 		return 0
 	dug_underground_forming = TRUE
 	var/formed = 0
@@ -336,6 +369,7 @@ var/global/dug_underground_boot_done = FALSE
 /proc/dug_underground_boot_try()
 	if (!map)
 		return FALSE
+	underground_level_z() // A compiled underground starts forming at once.
 	if (!dug_underground_supported() || dug_underground_z())
 		dug_underground_boot_done = TRUE
 		return TRUE

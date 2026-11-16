@@ -1,6 +1,8 @@
 
 /obj/map_metadata/nomads/gaia
 	ID = MAP_NOMADS_GAIA
+	// z 1 is unformed rock that forms as it is dug (dug_underground.dm).
+	underground_compiled_z = 1
 	title = "Nomads (Gaia)"
 	lobby_icon = 'icons/lobby/gaia_volcano.dmi' // the volcano crater, with drifting embers
 	lobby_icon_wide = 'icons/lobby/gaia_volcano_wide.dmi'

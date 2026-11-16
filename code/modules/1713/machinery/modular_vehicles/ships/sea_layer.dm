@@ -82,8 +82,12 @@ var/global/sea_layer_ready_at = 0 // world.time the world was first seen ready
 	return multiz_level_below(map.sea_layer_surface_z)
 
 // TRUE when the rock at B (under surface cell S) may become sea.
+// Unformed rock (dug_underground.dm) counts as rock: the layer forms it.
+/proc/sea_layer_rock(turf/T)
+	return T && (T.type == /turf/wall/rockwall || dug_underground_unformed(T))
+
 /proc/sea_layer_candidate(turf/B, turf/S)
-	if (!B || B.type != /turf/wall/rockwall || !sea_layer_open_surface(S))
+	if (!sea_layer_rock(B) || !sea_layer_open_surface(S))
 		return FALSE
 	for (var/atom/movable/M in B)
 		if (M.density)
@@ -93,7 +97,7 @@ var/global/sea_layer_ready_at = 0 // world.time the world was first seen ready
 		if (N && !sea_layer_open_surface(N))
 			return FALSE
 		var/turf/NB = get_step(B, d)
-		if (NB && NB.type != /turf/wall/rockwall && !sea_layer_cell(NB))
+		if (NB && !sea_layer_rock(NB) && !sea_layer_cell(NB))
 			return FALSE
 	return TRUE
 

@@ -109,6 +109,13 @@
 
 #undef TURF_WALL_IMPACT_SCALE
 
+// Natural rock is a hillside, not a building: it stops everything and takes nothing.
+/turf/wall/rockwall/structure_impact_part()
+	return FALSE
+
+/turf/wall/rockwall/structure_impact(force, kind = IMPACT_CRUSH, atom/source = null, dir = 0)
+	return 0
+
 // The map's edge and other unbreakable walls take nothing and stop everything.
 /turf/wall/indestructable/structure_impact(force, kind = IMPACT_CRUSH, atom/source = null, dir = 0)
 	return 0

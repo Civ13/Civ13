@@ -67,13 +67,15 @@ import expedition_slots  # noqa: E402
 import fresh_world  # noqa: E402
 import group_fresh_world  # noqa: E402
 import group_ports  # noqa: E402
+import underground_migration  # noqa: E402
 from shard_map_selection import select_map_block  # noqa: E402
 
 GROUP_ACTIONS = ('setup', 'status', 'start', 'stop', 'restart', 'update', 'freeze', 'thaw', 'adopt', 'check-update',
                  'kill', 'force-restart', 'stage', 'enrol', 'help-status', 'help-start', 'help-stop', 'unlock', 'force-unlock',
                  'config-apply', 'config-migrate', 'handover', 'epoch', 'fresh-world', 'group-fresh-world', 'update-offline',
                  'update-unsaved', 'expedition-land', 'expedition-archive', 'expedition-status', 'expedition-open',
-                 'players', 'send-players', 'magic-whitelist', 'activity', 'ports', 'set-gate', 'set-port')
+                 'players', 'send-players', 'magic-whitelist', 'activity', 'ports', 'set-gate', 'set-port',
+                 'migrate-underground')
 # send-players landings (region_admin_send.dm): the nearest dry shore facing the source,
 # exact coordinates, or the destination's normal arrival point.
 SEND_LANDINGS = ('shore', 'coords', 'arrival')
@@ -3295,6 +3297,11 @@ def main(argv=None):
                 raise Refused('the group fresh world acts on every region; leave out --region')
             result = group_fresh_world.request(group, hosts(group), args.confirm_group, coordinator_pid,
                                                Platform().terminate)
+        elif args.action == 'migrate-underground':
+            if not args.region:
+                raise Refused('migrate-underground acts on one --region')
+            [(_region, host)] = hosts(group, args.region)
+            result = underground_migration.migrate(this, group, host, args.region)
         elif args.action == 'setup':
             result = setup(group, region_id=args.region)
         elif args.action == 'enrol':

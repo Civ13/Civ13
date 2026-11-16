@@ -420,9 +420,13 @@ var/global/list/airborne_aircraft = list()
 
 // No clear ground within reach: the airframe breaks up over whatever is
 // below. The crew and cargo fall to the ground, hurt; the frames become
-// debris on the clear tiles under the footprint, and the rest is lost.
-/obj/structure/vehicleparts/axis/aircraft/proc/wreck(reason = "a crash")
+// debris on the clear tiles under the footprint, and the rest is lost. Over
+// a building it comes down on the roof (aircraft_impact.dm); onto_buildings
+// is FALSE when the plane already spent its blow flying into one.
+/obj/structure/vehicleparts/axis/aircraft/proc/wreck(reason = "a crash", onto_buildings = TRUE)
 	var/down = multiz_level_below(flight_z())
+	if (onto_buildings)
+		wreck_onto_buildings(down)
 	add_transporting(FALSE)
 	var/list/F = frames()
 	var/turf/here = get_turf(src)
@@ -526,13 +530,20 @@ var/global/list/airborne_aircraft = list()
 			continue
 		var/hit = obstacle_at(T)
 		if (hit)
-			crash_land("a collision with [hit]")
+			// Into a building: the plane hits it and breaks up there.
+			if (aircraft_building_at(T))
+				building_crash(m_dir, flight_z(), "a collision with [hit]")
+			else
+				crash_land("a collision with [hit]")
 			return FALSE
 	// In low flight the hills, trees and walls below reach up to the aircraft.
 	if (flight_state == AIRCRAFT_LOW)
 		var/turf/G = ground_collision_ahead(m_dir, next_altitude())
 		if (G)
-			crash_land("a collision with [aircraft_ground_obstacle_name(G)]")
+			if (aircraft_building_at(G))
+				building_crash(m_dir, G.z, "a collision with [aircraft_ground_obstacle_name(G)]")
+			else
+				crash_land("a collision with [aircraft_ground_obstacle_name(G)]")
 			return FALSE
 	edge_blocked = FALSE
 	return TRUE

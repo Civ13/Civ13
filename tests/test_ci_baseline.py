@@ -167,7 +167,7 @@ class BaselinePolicyTests(unittest.TestCase):
                                           'tests/gaia_host/test_fresh_world.py',
                                           'tests/gaia_host/test_doorman.py', 'tests/gaia_host/test_wait_group.py',
                                           'tests/gaia_host/test_relay.py', 'tests/gaia_host/test_mobile_host.py',
-                                          'tests/gaia_host/test_expedition_slots.py'))
+                                          'tests/gaia_host/test_expedition_slots.py', 'tests/gaia_host/test_underground_migration.py'))
         for path in suite['files'] + suite['paths'] + suite['shared_paths'] + ('scripts/gaia-host/gaia_host.py',
                                                                                'scripts/gaia-host/doorman.py', 'scripts/shard-group/shard_group.py',
                                                                                'scripts/windows/host/wait_group.py', 'scripts/windows/host/deploy.bat'):
