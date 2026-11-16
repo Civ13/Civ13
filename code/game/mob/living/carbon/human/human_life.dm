@@ -420,15 +420,35 @@
 	last_hair_key = key
 	update_hair()
 
-/mob/living/human/proc/handle_hair_growth() //hair will increase in size every ~16.666 mins
+// Hours of play for hair to grow one length step (short, ears, shoulders,
+// mid-back). Growth follows elapsed world time, not Life ticks, so a faster
+// mob process cannot speed it up: the old flat 0.002 per tick assumed a 2 s
+// tick and regrew a shaved beard in about eight minutes once Life ran every
+// second.
+#define HEAD_HAIR_HOURS_PER_STEP 4
+#define FACIAL_HAIR_HOURS_PER_STEP 3
+// Longest gap one Life call may count, so a save freeze or a long pause
+// never jumps a whole step at once.
+#define HAIR_GROWTH_MAX_GAP (10 SECONDS)
+
+/mob/living/human/var/tmp/last_hair_growth_time = 0
+
+// Length steps gained since the last call, for a full step every [hours].
+/mob/living/human/proc/hair_growth_step(hours, elapsed)
+	return elapsed / (hours * 36000)
+
+/mob/living/human/proc/handle_hair_growth()
+	var/elapsed = last_hair_growth_time ? world.time - last_hair_growth_time : 0
+	last_hair_growth_time = world.time
+	elapsed = clamp(elapsed, 0, HAIR_GROWTH_MAX_GAP)
 	if (gender == MALE)
 		var/currh = h_growth
 		var/currf = f_growth
 		var/has_baldness = find_trait("Baldness")
 		if (h_growth < 4 && !has_baldness)
-			h_growth += 0.002
+			h_growth = min(4, h_growth + hair_growth_step(HEAD_HAIR_HOURS_PER_STEP, elapsed))
 		if (f_growth < 4)
-			f_growth += 0.002
+			f_growth = min(4, f_growth + hair_growth_step(FACIAL_HAIR_HOURS_PER_STEP, elapsed))
 		if (has_baldness)
 			h_growth = 0
 			h_style = "Bald"
@@ -455,7 +475,7 @@
 	else if (gender == FEMALE)
 		var/currh = h_growth
 		if (h_growth < 4)
-			h_growth += 0.002
+			h_growth = min(4, h_growth + hair_growth_step(HEAD_HAIR_HOURS_PER_STEP, elapsed))
 		if (h_growth >= 1 && currh < 1)
 			h_style = pick("Short Hair")
 		else if (h_growth >= 2 && currh < 2)
@@ -468,6 +488,9 @@
 	else
 		return
 
+#undef HEAD_HAIR_HOURS_PER_STEP
+#undef FACIAL_HAIR_HOURS_PER_STEP
+#undef HAIR_GROWTH_MAX_GAP
 
 /mob/living/human/proc/handle_some_updates()
 	if (life_tick > 5 && timeofdeath && (timeofdeath < 5 || world.time - timeofdeath > 6000))	//We are long dead, or we're junk mobs spawned
