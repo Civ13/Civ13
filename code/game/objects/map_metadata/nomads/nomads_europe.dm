@@ -1,6 +1,8 @@
 
 /obj/map_metadata/nomads/europe
 	ID = MAP_NOMADS_EUROPE
+	// Cinnabar on an old mercury belt: twice as common (mercury.dm).
+	cinnabar_rich = TRUE
 	title = "Nomads (Europe)"
 	// Hills: per-tile heights for the surface, z 1 (docs/terrain-height.md).
 	terrain_height_file = "maps/heights/nomads_europe.txt"
