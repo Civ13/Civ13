@@ -21,6 +21,7 @@ EXPECTED = {
     'car_workshop': (50, True, False),
     'waterwheel': (60, True, False),
     'offshore_rig': (70, True, False),
+    'land_permit': (70, True, False),
     'well_fitting': (75, True, False),
     'deep_water': (80, False, False),
     'religious_work': (90, False, False),

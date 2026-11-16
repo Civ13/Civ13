@@ -21,6 +21,9 @@ person standing beside them. Each takes a blank sheet of paper from the issuer's
 - **Citizenship papers** are good until revoked.
 - **Travel passes** are good for 1 to 30 days.
 
+- **Building permits** and **trading licences** (`docs/faction-permits.md`) last 1 to 30 days, or
+  until revoked. They never open a border door.
+
 Papers name their holder and are numbered in the faction's register (up to 200 in force). They
 count only for the account they were issued to, so stolen or copied papers open nothing. The power
 can revoke any papers; examining papers that have run out or been revoked says so.
