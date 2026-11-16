@@ -71,6 +71,18 @@ separate authorized acceptance.
 NanoUI owns windows, authorization, processing and cleanup. Modern actions go
 through a UI-datum ref, window id and generation token; the backend allowlists
 one action and its payload keys and rechecks ownership/status before dispatch.
+`src/data.ts` declares the snapshot each window receives, with every field
+optional, and a screen takes it as `ScreenProps<ItsData>`. `src/fixtures.mts`
+holds one fictional snapshot set for every window; fixtures of typed windows
+are checked against those types. `src/fixtures.test.tsx` fails when a
+registered window has no fixture or does not render from it. Add the type and
+the fixture with any new window.
+
+`node tgui/scripts/screenshots.mjs` renders every fixture from the production
+bundle in Chromium at the size the game opens the window, and writes one PNG
+per window plus an `index.html` gallery into `SCREENSHOT_DIR`. CI uploads that
+folder as the `tgui-previews` artifact.
+
 Server text may arrive entity encoded. `updateState()` decodes every display
 string in a snapshot once (`decodeData()` in `src/state.ts`), so a screen shows
 a field as it is and never calls a decoder. Fields named `id`, `key` or ending

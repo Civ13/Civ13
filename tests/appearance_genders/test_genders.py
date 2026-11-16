@@ -34,7 +34,9 @@ class AppearanceGendersTest(unittest.TestCase):
         self.assertIn('var/list/genders = list(MALE, FEMALE)', SPECIES.read_text(encoding='utf-8'))
 
     def test_interfaces_read_gender_fields(self):
-        self.assertIn("'genders', 'gender_name', 'gender_key'", TSX.read_text(encoding='utf-8'))
+        # The window sends gender_key and shows gender_name, and the snapshot type declares both.
+        self.assertIn("list(data.genders).map(row => [str(row.gender_key), str(row.gender_name)])", TSX.read_text(encoding='utf-8'))
+        self.assertIn("genders?: { gender_name?: string; gender_key?: string }[]; gender?: string;", (TSX.parents[1] / 'data.ts').read_text(encoding='utf-8'))
 
     def test_server_sends_gender_choices(self):
         self.assertEqual(data_problems(MODULE.read_text(encoding='utf-8')), [])

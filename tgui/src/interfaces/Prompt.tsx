@@ -1,10 +1,11 @@
 import { Button, Section } from 'tgui-core/components';
+import type { PromptData } from '../data';
 import type { ScreenProps } from '../types';
 import { list, str } from './common';
 
 // One prompt window per WWinput call. The answer is the 1-based index of the
 // offered choice; the server maps it back and drops anything out of range.
-export function Prompt({ data, act, interactive }: ScreenProps) {
+export function Prompt({ data, act, interactive }: ScreenProps<PromptData>) {
   const choices = list(data.choices).map(choice => str(choice));
   return <Section>
     <p className="civ13-prompt-message">{str(data.message)}</p>

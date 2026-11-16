@@ -1,12 +1,13 @@
 import { Section, NoticeBox } from 'tgui-core/components';
+import type { AppearanceData, ChemistryData, Flag, VendingData, WarehouseData } from '../data';
 import type { ScreenProps } from '../types';
 import { Action, list, str } from './common';
 import { Choice, Pill, Row, Rows, SnapshotTable, cell } from './kit';
-export function Warehouse({ data }: ScreenProps) {
+export function Warehouse({ data }: ScreenProps<WarehouseData>) {
   return <SnapshotTable label="Warehouse inventory" rows={data.items} empty="The warehouse is currently empty."
     columns={[{ label: 'Item Name', cell: cell('name') }, { label: 'Quantity', align: 'right', cell: cell('amount') }]} />;
 }
-export function Chemistry(ui: ScreenProps) {
+export function Chemistry(ui: ScreenProps<ChemistryData>) {
   const { data } = ui;
   const vessel = data.glass ? 'Glass' : 'Beaker';
   const eject = <Action ui={ui} action="ejectBeaker" disabled={!data.isBeakerLoaded}>Eject {vessel}</Action>;
@@ -22,21 +23,23 @@ export function Chemistry(ui: ScreenProps) {
           columns={[{ label: 'Reagent', cell: cell('name') }, { label: 'Units', align: 'right', cell: cell('volume') }]} />
       : <Section title={`${vessel} contents`} buttons={eject}><NoticeBox>No {vessel.toLowerCase()} loaded</NoticeBox></Section>}</>;
 }
-export function Appearance(ui: ScreenProps) {
+export function Appearance(ui: ScreenProps<AppearanceData>) {
   const { data } = ui;
-  const choices = [
-    ['change_race', 'Species', 'species', 'specimen', 'specimen', 'race', 'specimen'],
-    ['change_gender', 'Gender', 'genders', 'gender_name', 'gender_key', 'gender', 'gender'],
-    ['change_hair', 'Hair style', 'hair_styles', 'hairstyle', 'hairstyle', 'hair', 'hair_style'],
-    ['change_facial_hair', 'Facial hair', 'facial_hair_styles', 'facialhairstyle', 'facialhairstyle', 'facial_hair', 'facial_hair_style'],
+  const same = (rows: unknown[], field: string): [string, string][] => rows.map(row => [str((row as Record<string, unknown>)[field]), str((row as Record<string, unknown>)[field])]);
+  const groups: { show?: Flag; title: string; action: string; current?: string; options: [string, string][] }[] = [
+    { show: data.change_race, title: 'Species', action: 'race', current: data.specimen, options: same(list(data.species), 'specimen') },
+    { show: data.change_gender, title: 'Gender', action: 'gender', current: data.gender, options: list(data.genders).map(row => [str(row.gender_key), str(row.gender_name)]) },
+    { show: data.change_hair, title: 'Hair style', action: 'hair', current: data.hair_style, options: same(list(data.hair_styles), 'hairstyle') },
+    { show: data.change_facial_hair, title: 'Facial hair', action: 'facial_hair', current: data.facial_hair_style, options: same(list(data.facial_hair_styles), 'facialhairstyle') },
   ];
-  const colors = ['eye_color', 'skin_tone', 'skin_color', 'hair_color', 'facial_hair_color'];
-  return <>{choices.map(([flag, title, source, label, key, action, selected]) => !!data[flag] && <Section key={flag} title={title}>
-      <Choice ui={ui} action={action} value={data[selected]} label={title} options={list(data[source]).map(item => [item[key] as string, str(item[label])])} />
+  const colors: [Flag | undefined, string][] = [[data.change_eye_color, 'eye_color'], [data.change_skin_tone, 'skin_tone'], [data.change_skin_color, 'skin_color'],
+    [data.change_hair_color, 'hair_color'], [data.change_facial_hair_color, 'facial_hair_color']];
+  return <>{groups.map(group => !!group.show && <Section key={group.action} title={group.title}>
+      <Choice ui={ui} action={group.action} value={group.current} label={group.title} options={group.options} />
     </Section>)}
-    {colors.some(color => data[`change_${color}`]) && <Section title="Colors">{colors.map(color => !!data[`change_${color}`] && <Action key={color} ui={ui} action={color}>Change {color.replaceAll('_', ' ')}</Action>)}</Section>}</>;
+    {colors.some(([show]) => show) && <Section title="Colors">{colors.map(([show, action]) => !!show && <Action key={action} ui={ui} action={action}>Change {action.replaceAll('_', ' ')}</Action>)}</Section>}</>;
 }
-export function Vending(ui: ScreenProps) {
+export function Vending(ui: ScreenProps<VendingData>) {
   const { data, template } = ui;
   const sales = template !== 'vending_machine.tmpl';
   const unit = sales && data.currency_short ? ` ${str(data.currency_short)}` : '';

@@ -26,9 +26,9 @@ inputs. Reproduce with Node 24: `npm ci --ignore-scripts --prefix tgui`,
 `CHROMIUM_PATH=/path/to/chrome PREVIEW_SOURCE_HEAD=$(git rev-parse HEAD) node tgui/scripts/screenshots.mjs`.
 No browser download or game server is started. CI captures these as artifacts;
 the committed gallery is updated only after visual inspection.
-The script also captures the other converted windows (lists, recruitment,
-crafting, Atlas, vending, prompt) for before/after comparison of UI changes;
-those are CI artifacts only and are not part of the committed gallery.
+The script now captures every window from `tgui/src/fixtures.mts` at its in-game
+size and writes an `index.html` gallery beside the images; those are CI
+artifacts. The four images below are the earlier committed captures.
 
 ## Research
 ![Research bench with queued Iron working, Bronze working progress and connected technology prerequisites](research.png)
