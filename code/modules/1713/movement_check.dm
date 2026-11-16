@@ -203,6 +203,7 @@
 	set desc = "See what is slowing you down and how to move faster."
 	if (stat == DEAD)
 		return
+	player_activity.feature_used(src, "check_movement")
 	to_chat(src, jointext(movement_check_report(), "<br>"))
 
 /mob/living/human/proc/movement_check_report()

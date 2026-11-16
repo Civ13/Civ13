@@ -245,6 +245,7 @@ var/global/list/tree_canopy_tops = list()
 	tree_climb_apply_pose(4)
 	visible_message(SPAN_NOTICE("[src] climbs up \the [W]."), SPAN_NOTICE("You climb up \the [W]. You can see far from up here; Look into Distance reaches further. Move or grab the tree again to climb down."))
 	tree_climb_refresh_sight()
+	player_activity.feature_used(src, "tree_climb")
 	return TRUE
 
 /mob/living/human/proc/start_climb_down()

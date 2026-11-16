@@ -255,6 +255,7 @@
 	craft.crew_message(SPAN_NOTICE("[H] at the tiller: the [craft.name] sets out for [label]. About [max(1, minutes)] minute\s at sea. Stay aboard: whoever leaves her is left behind."))
 	voyage_sea_show() // Her crew see the sea go by (voyage_sea.dm).
 	addtimer(CALLBACK(src, PROC_REF(voyage_tick), voyage), VOYAGE_TICK)
+	player_activity.voyage(H, kind)
 	return TRUE
 
 /obj/structure/hull_tiller/proc/voyage_status_text()

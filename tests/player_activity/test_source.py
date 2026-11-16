@@ -138,3 +138,30 @@ class HiddenContentStaysOut(unittest.TestCase):
                 self.assertNotIn('register_research_node', text, path)
                 self.assertNotIn('learn_recipe_node', text, path)
                 self.assertNotIn('player_activity', text, path)
+
+
+class FeatureWiring(unittest.TestCase):
+    def test_feature_counters(self):
+        expected = {
+            'code/game/mob/crafting_atlas.dm': 'player_activity.feature_used(src, "atlas")',
+            'code/modules/1713/movement_check.dm': 'player_activity.feature_used(src, "check_movement")',
+            'code/game/mob/player_help.dm': 'player_activity.feature_used(src, "player_help")',
+            'code/game/objects/items/stacks/crafting_window.dm': 'player_activity.feature_used(src, "crafting_within_reach")',
+            'code/modules/1713/click_route.dm': 'player_activity.feature_used(src, "click_route")',
+            'code/game/objects/structures/tree_climbing.dm': 'player_activity.feature_used(src, "tree_climb")',
+            'code/modules/bug_reports/bug_reports.dm': 'player_activity.feature_used(src, "bug_report")',
+            'code/modules/1713/signal_fires.dm': 'player_activity.feature_used(user, "signal_fire")',
+            'code/modules/voice/voice_chat.dm': 'player_activity.feature_used(C, "voice")',
+            'code/modules/naval/ship_voyage.dm': 'player_activity.voyage(H, kind)',
+        }
+        for path, call in expected.items():
+            self.assertIn(call, read(path), path)
+
+    def test_help_outcomes_without_question_text(self):
+        source = read('code/game/mob/player_help.dm')
+        for outcome in ('ok', 'rate_limited', 'busy', 'failed', 'timeout'):
+            self.assertIn('player_activity.help_outcome(C, "%s")' % outcome, source)
+        for line in source.splitlines():
+            if 'player_activity.' in line:
+                self.assertNotIn('question', line)
+                self.assertNotIn('answer', line)

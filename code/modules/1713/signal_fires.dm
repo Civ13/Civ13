@@ -89,6 +89,7 @@
 	user.visible_message(SPAN_NOTICE("[user] waves \a [what] over \the [name], sending up puffs of smoke."), SPAN_NOTICE("You wave \a [what] over \the [name], sending up puffs of smoke. It scorches through."))
 	S.use(1)
 	show_signal_plume()
+	player_activity.feature_used(user, "signal_fire")
 	var/turf/T = get_turf(src)
 	for (var/mob/living/human/H in signal_fire_watchers(user))
 		to_chat(H, "<b>You see smoke signals rising [signal_fire_bearing(get_turf(H), T)]...</b>")

@@ -38,7 +38,9 @@ region, map and `world.timezone`.
 | `faction_found`, `faction_join`, `faction_leave` | `a`, `fac` |
 | `first_craft` | `a`, `type`: the first time since this boot anyone made that recipe |
 | `tutorial` | `a`/`anon`, `step` (each tutorial step id, then `finished`) |
-| `counts` | `a`, `c` counter name to amount since the last flush: `craft:<family>` (for example `craft:item/weapon`), `locked:<node>` when a hand action was refused for missing research |
+| `voyage` | `a`, `kind` when a boat sets out from a tiller |
+| `reach` | once a day: `levels`, level number to [visited chunks, all chunks] from the visited record; no per-player data |
+| `counts` | `a`, `c` counter name to amount since the last flush: `craft:<family>` (for example `craft:item/weapon`), `locked:<node>` when a hand action was refused for missing research, `use:<feature>` (atlas, crafting_within_reach, check_movement, player_help, click_route, tree_climb, signal_fire, voice, bug_report), `help:<outcome>` (ok, rate_limited, busy, failed, timeout; never the question) |
 | `dropped` | `n` lines dropped because the 2000-line buffer was full |
 
 The account is `account_key()`: the ckey for a BYOND key, `d:<discord id>` for
@@ -82,7 +84,8 @@ quiet, the new-player funnel (joined, finished the tutorial, crafted, learned
 research, joined a faction, travelled, died, came back another day), tutorial
 steps reached, research walls (nodes players were refused for most), crafting
 by family, how many players know each research node, faction events, era by
-region and how many recipes were made at least once.
+region, how many recipes were made at least once, features used, AI help
+outcomes, voyages and how much of each level anyone has reached.
 
 Research node ids come only from `research_node.dm` and crafted types only from
 the `config/crafting` recipe files; `tests/player_activity/test_source.py`

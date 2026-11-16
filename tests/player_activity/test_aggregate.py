@@ -176,6 +176,10 @@ class ProgressReport(unittest.TestCase):
                 {'e': 'first_craft', 's': 1500, 'a': 'alice', 'type': '/obj/item/weapon/material/hatchet'},
                 {'e': 'health', 's': 1500, 'p': 2, 'era': 1},
                 {'e': 'join', 's': 1600, 'a': 'bob'},
+                {'e': 'counts', 's': 1700, 'a': 'alice', 'c': {'use:atlas': 2, 'help:ok': 1}},
+                {'e': 'counts', 's': 1700, 'a': 'bob', 'c': {'use:atlas': 1}},
+                {'e': 'voyage', 's': 1800, 'a': 'alice', 'kind': 'course'},
+                {'e': 'reach', 's': 1900, 'levels': {'1': [25, 100], '2': [0, 100]}},
             ])
             aggregate.ingest(db, {'gaia': root / 'gaia'})
             data = aggregate.report(db)
@@ -187,4 +191,8 @@ class ProgressReport(unittest.TestCase):
             self.assertEqual({r['step']: r['players'] for r in data['tutorial_steps']}, {'move': 2, 'finished': 1})
             self.assertEqual(data['recipes_made_this_world'], 1)
             self.assertEqual(data['era_by_region'], [{'region': 'gaia', 'era': 1}])
+            self.assertEqual(data['feature_use'], [{'feature': 'atlas', 'uses': 3, 'players': 2}])
+            self.assertEqual(data['help_outcomes'], {'ok': 1})
+            self.assertEqual(data['voyages'], [{'region': 'gaia', 'kind': 'course', 'n': 1}])
+            self.assertEqual(data['map_reach'][0], {'region': 'gaia', 'level': '1', 'visited': 25, 'chunks': 100, 'percent': 25.0})
             db.close()
