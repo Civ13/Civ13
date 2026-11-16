@@ -23,7 +23,7 @@ DMI = ROOT / 'icons/obj/workshop_machines.dmi'
 STATIONS = {
     '/obj/structure/workshop_machine/potters_wheel': ('/material/wood/', 6, 'pottery_storage'),
     '/obj/structure/workshop_machine/brick_bench': ('/material/wood/', 6, 'brickmaking'),
-    '/obj/structure/workshop_machine/bellows': ('/material/leather/', 3, 'bronze_working'),
+    '/obj/structure/workshop_machine/bellows': ('/material/leather/', 2, 'bronze_working'),
     '/obj/structure/furnace/lime_kiln': ('/material/stone/', 20, 'stone_masonry'),
 }
 STATES = {

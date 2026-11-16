@@ -45,15 +45,7 @@
 	rotten = TRUE
 	disgusting = TRUE
 	satisfaction = -30
-	spawn(1000)
-		if (isturf(loc) && prob(30))
-			var/scavengerspawn = rand(1,3)
-			if(scavengerspawn ==  1)
-				new/mob/living/simple_animal/mouse(get_turf(src))
-			else if(scavengerspawn ==  2)
-				new/mob/living/simple_animal/cockroach(get_turf(src))
-			else
-				new/mob/living/simple_animal/fly(get_turf(src))
+	// Rot no longer creates pests: mice, cockroaches and flies come from their own sources.
 
 
 /obj/item/weapon/reagent_containers/food/proc/food_decay()

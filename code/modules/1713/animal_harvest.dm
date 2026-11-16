@@ -209,13 +209,119 @@
 		F.name = "[name] [F.name]"
 	return F
 
-/mob/living/simple_animal/proc/harvest_skin_yield()
-	// Skin eligibility is independent of mammalian organs. Chicks yield no skin.
+// Whole-hide area in pieces. One piece is about 60 cm square (4 sq ft), the
+// same unit as one leather sheet or one pelt sheet in recipes, so a recipe
+// cost reads as the area of hide the item really needs. Most specific first.
+/mob/living/simple_animal/proc/harvest_hide_pieces()
 	if (istype(src, /mob/living/simple_animal/turkey_f) || istype(src, /mob/living/simple_animal/turkey_m))
+		return 1 // Chicks yield no skin.
+	// Bears
+	if (istype(src, /mob/living/simple_animal/hostile/bear/boar/polar))
+		return 11
+	if (istype(src, /mob/living/simple_animal/hostile/bear/sow/polar))
+		return 7
+	if (istype(src, /mob/living/simple_animal/hostile/bear/boar/brown))
+		return 9
+	if (istype(src, /mob/living/simple_animal/hostile/bear/sow/brown))
+		return 6
+	if (istype(src, /mob/living/simple_animal/hostile/bear/sow))
+		return 4
+	if (istype(src, /mob/living/simple_animal/hostile/bear))
+		return 5
+	// Canids and cats
+	if (istype(src, /mob/living/simple_animal/hostile/wolf))
+		return 3
+	if (istype(src, /mob/living/simple_animal/hostile/fox) || istype(src, /mob/living/simple_animal/pet/cat) || istype(src, /mob/living/simple_animal/pet/dog))
 		return 1
+	if (istype(src, /mob/living/simple_animal/hostile/commanded/dog))
+		return 2
+	if (istype(src, /mob/living/simple_animal/hostile/panther))
+		return 4
+	if (istype(src, /mob/living/simple_animal/hostile/sabertooth/lion))
+		return 6
+	if (istype(src, /mob/living/simple_animal/hostile/sabertooth))
+		return 7
+	// Apes
+	if (istype(src, /mob/living/simple_animal/hostile/gorilla/gigantopithecus))
+		return 9
+	if (istype(src, /mob/living/simple_animal/hostile/gorilla))
+		return 5
+	if (istype(src, /mob/living/simple_animal/monkey))
+		return 1
+	// Livestock and game
+	if (istype(src, /mob/living/simple_animal/cattle/bull))
+		return 13
+	if (istype(src, /mob/living/simple_animal/cattle))
+		return 11
+	if (istype(src, /mob/living/simple_animal/bisonbull))
+		return 16
+	if (istype(src, /mob/living/simple_animal/bison))
+		return 11
+	if (istype(src, /mob/living/simple_animal/hostile/buffalo))
+		return 13
+	if (istype(src, /mob/living/simple_animal/horse) || istype(src, /mob/living/simple_animal/camel))
+		return istype(src, /mob/living/simple_animal/camel) ? 11 : 10
+	if (istype(src, /mob/living/simple_animal/deer/dikdik))
+		return 1
+	if (istype(src, /mob/living/simple_animal/deer/elk/female))
+		return 6
+	if (istype(src, /mob/living/simple_animal/deer/elk))
+		return 8
+	if (istype(src, /mob/living/simple_animal/deer/reindeer/female))
+		return 3
+	if (istype(src, /mob/living/simple_animal/deer/reindeer))
+		return 4
+	if (istype(src, /mob/living/simple_animal/deer/female))
+		return 3
+	if (istype(src, /mob/living/simple_animal/deer))
+		return 4
+	if (istype(src, /mob/living/simple_animal/pig_boar) || istype(src, /mob/living/simple_animal/boar_boar))
+		return 4
+	if (istype(src, /mob/living/simple_animal/pig_gilt) || istype(src, /mob/living/simple_animal/boar_gilt))
+		return 3
+	if (istype(src, /mob/living/simple_animal/sheep) || istype(src, /mob/living/simple_animal/goat))
+		return 2
+	if (istype(src, /mob/living/simple_animal/rabbit))
+		return 1
+	if (istype(src, /mob/living/simple_animal/blackbat) || istype(src, /mob/living/simple_animal/vampirebatblack))
+		return 0 // Bat skin is too thin and small to work.
+	// Giants
+	if (istype(src, /mob/living/simple_animal/hostile/mammoth))
+		return 45
+	if (istype(src, /mob/living/simple_animal/hostile/groundsloth))
+		return 20
+	// Reptiles
+	if (istype(src, /mob/living/simple_animal/hostile/dinosaur/trex))
+		return 50
+	if (istype(src, /mob/living/simple_animal/hostile/alligator))
+		return 5
+	if (istype(src, /mob/living/simple_animal/pachy) || istype(src, /mob/living/simple_animal/hostile/dinosaur/pachycephalosaurus))
+		return 9
+	if (istype(src, /mob/living/simple_animal/hostile/dinosaur/velociraptor))
+		return 3
+	if (istype(src, /mob/living/simple_animal/hostile/dinosaur/dimetrodon))
+		return 5
+	if (istype(src, /mob/living/simple_animal/hostile/dinosaur/compsognathus))
+		return 1
+	// Any other mammal: estimate from body size.
 	if (harvest_mammal())
-		return min(6, max(1, butcher_yield()-2))
+		switch (mob_size)
+			if (MOB_HUGE)
+				return 15
+			if (MOB_LARGE)
+				return 6
+			if (MOB_MEDIUM)
+				return 2
+		return 1
 	return 0
+
+// Quick butchering hacks the skin apart: only half the hide survives as raw
+// hide. Skinning (grab intent) takes longer and keeps the whole hide.
+/mob/living/simple_animal/proc/harvest_skin_yield()
+	var/pieces = harvest_hide_pieces()
+	if (pieces < 1)
+		return 0
+	return max(1, round(pieces / 2))
 
 /mob/living/simple_animal/proc/harvest_products(turf/site, skin)
 	var/size = min(8, max(1, butcher_yield()))
@@ -286,63 +392,66 @@
 	rotten_icon_state = "stomach-x"
 
 /mob/living/simple_animal/proc/harvest_hide(turf/site)
+	var/pieces = harvest_hide_pieces()
+	if (pieces < 1)
+		return
 	if (istype(src, /mob/living/simple_animal/hostile/bear/boar/black))
-		new /obj/item/stack/material/pelt/bearpelt/black(site, 6)
+		new /obj/item/stack/material/pelt/bearpelt/black(site, pieces)
 	else if (istype(src, /mob/living/simple_animal/hostile/bear/sow/black))
-		new /obj/item/stack/material/pelt/bearpelt/black(site, 6)
+		new /obj/item/stack/material/pelt/bearpelt/black(site, pieces)
 	else if (istype(src, /mob/living/simple_animal/hostile/bear/boar/polar))
-		new /obj/item/stack/material/pelt/bearpelt/white(site, 6)
+		new /obj/item/stack/material/pelt/bearpelt/white(site, pieces)
 	else if (istype(src, /mob/living/simple_animal/hostile/bear/sow/polar))
-		new /obj/item/stack/material/pelt/bearpelt/white(site, 6)
+		new /obj/item/stack/material/pelt/bearpelt/white(site, pieces)
 	else if (istype(src, /mob/living/simple_animal/hostile/bear/boar/brown))
-		new /obj/item/stack/material/pelt/bearpelt/brown(site, 6)
+		new /obj/item/stack/material/pelt/bearpelt/brown(site, pieces)
 	else if (istype(src, /mob/living/simple_animal/hostile/bear/sow/brown))
-		new /obj/item/stack/material/pelt/bearpelt/brown(site, 6)
+		new /obj/item/stack/material/pelt/bearpelt/brown(site, pieces)
+	else if (istype(src, /mob/living/simple_animal/hostile/bear))
+		new /obj/item/stack/material/pelt/bearpelt/black(site, pieces)
 	else if (istype(src, /mob/living/simple_animal/hostile/wolf/white))
-		new /obj/item/stack/material/pelt/wolfpelt/white(site, 4)
+		new /obj/item/stack/material/pelt/wolfpelt/white(site, pieces)
 	else if (istype(src, /mob/living/simple_animal/hostile/wolf))
-		new /obj/item/stack/material/pelt/wolfpelt(site, 4)
+		new /obj/item/stack/material/pelt/wolfpelt(site, pieces)
 	else if (istype(src, /mob/living/simple_animal/monkey))
-		new /obj/item/stack/material/pelt/monkeypelt(site, 3)
+		new /obj/item/stack/material/pelt/monkeypelt(site, pieces)
 	else if (istype(src, /mob/living/simple_animal/hostile/gorilla/gigantopithecus))
-		new /obj/item/stack/material/pelt/gorillapelt(site, 6)
+		new /obj/item/stack/material/pelt/gorillapelt(site, pieces)
 	else if (istype(src, /mob/living/simple_animal/hostile/gorilla))
-		new /obj/item/stack/material/pelt/gorillapelt(site, 3)
+		new /obj/item/stack/material/pelt/gorillapelt(site, pieces)
 	else if (istype(src, /mob/living/simple_animal/hostile/fox/arctic))
-		new /obj/item/stack/material/pelt/foxpelt/white(site, 3)
+		new /obj/item/stack/material/pelt/foxpelt/white(site, pieces)
 	else if (istype(src, /mob/living/simple_animal/hostile/fox))
-		new /obj/item/stack/material/pelt/foxpelt(site, 3)
+		new /obj/item/stack/material/pelt/foxpelt(site, pieces)
 	else if (istype(src, /mob/living/simple_animal/pet/cat))
-		new /obj/item/stack/material/pelt/catpelt(site, 2)
+		new /obj/item/stack/material/pelt/catpelt(site, pieces)
 	else if (istype(src, /mob/living/simple_animal/hostile/panther) && !istype(src, /mob/living/simple_animal/hostile/panther/jaguar))
-		new /obj/item/stack/material/pelt/pantherpelt(site, 3)
+		new /obj/item/stack/material/pelt/pantherpelt(site, pieces)
 	else if (istype(src, /mob/living/simple_animal/hostile/sabertooth/lion) && !istype(src, /mob/living/simple_animal/hostile/sabertooth/lion/gladiator))
-		new /obj/item/stack/material/pelt/lionpelt(site, 3)
+		new /obj/item/stack/material/pelt/lionpelt(site, pieces)
 	else if (istype(src, /mob/living/simple_animal/hostile/sabertooth) && !istype(src, /mob/living/simple_animal/hostile/sabertooth/white) && !istype(src, /mob/living/simple_animal/hostile/sabertooth/lion))
-		new /obj/item/stack/material/pelt/lionpelt(site, 6)
+		new /obj/item/stack/material/pelt/lionpelt(site, pieces)
 	else if (istype(src, /mob/living/simple_animal/hostile/alligator))
-		new /obj/item/stack/material/pelt/gatorpelt(site, 3)
+		new /obj/item/stack/material/pelt/gatorpelt(site, pieces)
 	else if (istype(src, /mob/living/simple_animal/hostile/dinosaur/trex))
-		new /obj/item/stack/material/pelt/lizardpelt(site, 10)
+		new /obj/item/stack/material/pelt/lizardpelt(site, pieces)
 	else if (istype(src, /mob/living/simple_animal/hostile/dinosaur/velociraptor))
-		new /obj/item/stack/material/pelt/lizardpelt(site, 3)
+		new /obj/item/stack/material/pelt/lizardpelt(site, pieces)
 	else if (istype(src, /mob/living/simple_animal/pachy))
-		new /obj/item/stack/material/pelt/lizardpelt(site, 3)
+		new /obj/item/stack/material/pelt/lizardpelt(site, pieces)
 	else if (istype(src, /mob/living/simple_animal/hostile/dinosaur/compsognathus))
-		new /obj/item/stack/material/pelt/lizardpelt(site, 1)
+		new /obj/item/stack/material/pelt/lizardpelt(site, pieces)
 	else if (istype(src, /mob/living/simple_animal/sheep))
-		new /obj/item/stack/material/pelt/sheeppelt(site, 2)
+		new /obj/item/stack/material/pelt/sheeppelt(site, pieces)
 	else if (istype(src, /mob/living/simple_animal/goat))
-		new /obj/item/stack/material/pelt/goatpelt(site, 2)
+		new /obj/item/stack/material/pelt/goatpelt(site, pieces)
 	else if (istype(src, /mob/living/simple_animal/cattle/cow))
-		new /obj/item/stack/material/pelt/cowpelt(site, 2)
+		new /obj/item/stack/material/pelt/cowpelt(site, pieces)
 	else if (istype(src, /mob/living/simple_animal/cattle/bull))
-		new /obj/item/stack/material/pelt/cowpelt(site, 3)
+		new /obj/item/stack/material/pelt/cowpelt(site, pieces)
 	else if (istype(src, /mob/living/simple_animal/bison))
-		new /obj/item/stack/material/pelt/bisonpelt(site, 3)
+		new /obj/item/stack/material/pelt/bisonpelt(site, pieces)
 	else if (istype(src, /mob/living/simple_animal/bisonbull))
-		new /obj/item/stack/material/pelt/bisonpelt(site, 4)
+		new /obj/item/stack/material/pelt/bisonpelt(site, pieces)
 	else
-		var/skin_units = harvest_skin_yield()
-		if (skin_units > 0)
-			new /obj/item/stack/material/rawhide(site, skin_units)
+		new /obj/item/stack/material/rawhide(site, pieces)

@@ -46,11 +46,28 @@
 	to_chat(user, SPAN_NOTICE("You scrape a hide clean. Wash it with water next."))
 	return TRUE
 
+// Keep scraping piece after piece until the stack is done or the work stops.
+// Every piece still pays its own wait; nothing is batched for free.
+/obj/item/stack/material/proc/prepare_hide_stack(mob/living/user, obj/item/tool)
+	var/done = 0
+	while (!QDELETED(src) && amount >= 1 && prepare_hide(user, tool))
+		done++
+	return done
+
 /obj/item/stack/material/pelt/attackby(obj/item/W, mob/user)
 	if (W.sharp)
-		prepare_hide(user, W)
+		prepare_hide_stack(user, W)
 		return TRUE
 	return ..()
+
+// Pelts and leather share the hide piece unit: about 60 cm square (4 sq ft).
+/obj/item/stack/material/pelt/update_strings()
+	..()
+	desc += " Each piece is about 60 cm square."
+
+/obj/item/stack/material/leather/update_strings()
+	..()
+	desc += " Each sheet is about 60 cm square, one piece of tanned hide."
 
 /obj/item/stack/material/rawhide
 	name = "raw hide"
@@ -61,11 +78,11 @@
 
 /obj/item/stack/material/rawhide/update_strings()
 	..()
-	desc = "Untanned animal skin. Scrape one piece with a held sharp tool, wash it, dry it on a tanning rack, then apply tannin."
+	desc = "Untanned animal skin; each piece is about 60 cm square. Scrape it with a held sharp tool, wash it, dry it on a tanning rack, then apply tannin."
 
 /obj/item/stack/material/rawhide/attackby(obj/item/W, mob/user)
 	if (W.sharp)
-		prepare_hide(user, W)
+		prepare_hide_stack(user, W)
 		return TRUE
 	return ..()
 

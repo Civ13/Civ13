@@ -100,7 +100,7 @@ class Canopy(unittest.TestCase):
         for row in rows:
             self.assertIn(row['row'], (ROOT / row['file']).read_text().splitlines())
         global_rows = (ROOT / 'config/crafting/material_recipes_global.txt').read_text()
-        for row in ('/material/leather/,foldable canopy,' + ITEM + ',5,75,0,1,furniture,0,0,0,8,null',
+        for row in ('/material/leather/,foldable canopy,' + ITEM + ',10,75,0,1,furniture,0,0,0,8,null',
                     '/material/cloth/,foldable canopy,' + ITEM + ',4,75,0,1,furniture,0,0,19,8,null'):
             self.assertIn('RECIPE: ' + row, global_rows)
         self.assertIn('"' + ITEM + '" = "weaving"',
