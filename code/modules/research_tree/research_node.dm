@@ -1817,6 +1817,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/furnace" = "iron_smithing",
 		"/obj/structure/furnace/blast_furnace" = "iron_smithing",
 		"/obj/structure/tatara" = "tatara_smelting",
+		"/obj/structure/kanna_channel" = "tatara_smelting",
 		"/obj/structure/heatsource" = "iron_smithing",
 		"/obj/item/clothing/shoes/weather/hobnail_boots" = "iron_smithing",
 		// --- iron_tools (7) ---
