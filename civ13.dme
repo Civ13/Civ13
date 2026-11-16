@@ -998,6 +998,7 @@
 #include "code\modules\1713\river_flood.dm"
 #include "code\modules\1713\flood_hollows.dm"
 #include "code\modules\1713\flood_effects.dm"
+#include "code\modules\1713\river_foul.dm"
 #include "code\modules\1713\river_flow.dm"
 #include "code\modules\1713\fishing_grounds.dm"
 #include "code\modules\1713\water_quality.dm"

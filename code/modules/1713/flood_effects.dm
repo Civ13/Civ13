@@ -305,6 +305,7 @@ var/global/flood_draw_revision = 0
 	if (client)
 		client.flood_refresh_view()
 		client.fish_signs_refresh() // fish_signs.dm
+		client.scum_refresh_view() // river_foul.dm
 
 #undef FLOOD_VIEW_RADIUS
 #undef FLOOD_VIEW_MOVE

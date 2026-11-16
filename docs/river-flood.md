@@ -297,7 +297,9 @@ The water held, the snowpack and the high-water mark of every reach are the
 map field `river_flood_state`, saved with the durable world metadata (field version 4;
 older saves load with rivers at their dry-spell level; saves from before flood
 marks load with the marks at the water). A loaded save's water is
-taken up on the next tick. The parsed sidecar is never saved.
+taken up on the next tick. The parsed sidecar is never saved. After the
+hollows comes one foul load per reach (docs/river-foul.md); a state without it
+loads with clean rivers.
 
 ## Admin tools
 
