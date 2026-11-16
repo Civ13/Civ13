@@ -87,6 +87,11 @@ var/global/datum/open_air_client_probe/open_air_client_probe = new
 		update_lighting(name, null, FALSE)
 	sleep(10)
 	wait_for("lighting_settled", 6000, "Lighting never settled on [name]")
+	// With daylight drawn on the client, its plane master takes the new light.
+	for(var/client/K in clients)
+		if(K.mob)
+			K.mob.update_lighting_plane()
+	metrics["time_of_day_[name]"] = time_of_day
 	sleep(20)
 
 /datum/open_air_client_probe/proc/open_tile(turf/T)
@@ -206,6 +211,9 @@ var/global/datum/open_air_client_probe/open_air_client_probe = new
 			P.dir = SOUTH
 		new /mob/living/simple_animal/deer(locate(centre.x + 2, centre.y + 2, centre.z))
 		new /obj/structure/closet/crate(locate(centre.x - 1, centre.y - 2, centre.z))
+		// A wooden floor on the ground, which must show over the ground turf.
+		new /obj/covers/wood(locate(centre.x + 3, centre.y, centre.z))
+		new /obj/covers/wood(locate(centre.x + 4, centre.y, centre.z))
 		take_body(roof)
 		H.dir = EAST
 		link_now()
