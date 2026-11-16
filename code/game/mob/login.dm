@@ -68,6 +68,8 @@
 			client.perspective = MOB_PERSPECTIVE
 
 	client.apply_action_keybindings()
+	// Joined or arrived while this level is being saved (restart_transaction.dm).
+	if(persistence_frozen_levels.len) persistence_freeze_notice(client)
 
 	//set macro to normal in case it was overridden.
 	winset(client, null, "mainwindow.macro=hotkeymode input.focus=true input.background-color=#D3B5B5")
