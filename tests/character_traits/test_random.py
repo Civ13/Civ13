@@ -10,7 +10,7 @@ def sample(table, roll, trace=None):
     """Model the bounded prefix sampler against the independent validator spec."""
     if trace is None:
         trace = {'attempts': 0, 'candidates': 0}
-    if not isinstance(table, dict) or len(table) > 64:
+    if not isinstance(table, dict) or len(table) > 80:
         return None
     choices, result, matches = [], None, 0
     for choice in table:
@@ -67,7 +67,7 @@ def admit(current, candidate, table, owner=True, usable=True):
 
 def generator_contract(source):
     body = source.split('/proc/random_zero_point_traits(', 1)[1]
-    for guard in ('trait_list.len > 64', 'attempt <= 64', 'i > 1, i--',
+    for guard in ('trait_list.len > 80', 'attempt <= 64', 'i > 1, i--',
                   'get_trait_selection_error(singleton, FALSE)',
                   'get_trait_selection_error(candidate, FALSE)',
                   'get_trait_selection_error(result)', 'check_trait_points(result) != 0',
@@ -169,7 +169,7 @@ class RandomTraits(unittest.TestCase):
         # a supported failure, never permission to return an invalid/empty set.
         table = {'Plus': (1, [], ''), 'Minus': (-1, [], '')}
         self.assertIsNone(sample(table, lambda upper: 1))
-        for table in (None, [], {str(i): (0, [], '') for i in range(65)}):
+        for table in (None, [], {str(i): (0, [], '') for i in range(81)}):
             self.assertIsNone(sample(table, lambda upper: self.fail('must not call RNG')))
 
     def test_failure_preserves_exact_old_object_and_no_save(self):
@@ -202,7 +202,7 @@ class RandomTraits(unittest.TestCase):
                          ('get_trait_selection_error(result)', 'FALSE'),
                          ('check_trait_points(result) != 0', 'FALSE'),
                          ('result = selected.Copy()', 'result = selected'),
-                         ('trait_list.len > 64', 'FALSE')):
+                         ('trait_list.len > 80', 'FALSE')):
             with self.subTest(generator_guard=old), self.assertRaises(AssertionError):
                 generator_contract(traits.replace(old, new))
         for old, new in (('user.client.prefs != src', 'FALSE'),
