@@ -130,6 +130,9 @@ once per round (`terrain_shading_check`), `ChangeTurf` puts them back on
 replaced turfs, including turfs rebuilt by a save load, and a floor icon rebuild
 (`update_icon`, which clears overlays) re-adds them through `terrain_shade_icon()`.
 
+The shadow is a faint dark blue-green (`DARK_COLOUR`) and the lit side a faint
+warm straw yellow (near-white looked like snow), so grass keeps its colour and the hills do not read as lighting.
+
 Tuning: `RELIEF`, `LIGHT_STEP`, `DARK_ALPHA` and `LIGHT_ALPHA` at the top of the
 shading section of the tool (and `TERRAIN_RELIEF`/`TERRAIN_LIGHT_STEP` in the
 game for the first two). Re-bake after changing the alphas.

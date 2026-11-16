@@ -561,8 +561,53 @@ var/global/terrain_shading_applied = FALSE
 	var/row = maxy - y + 1
 	return copytext(lights[row], x, x + 2) + copytext(lights[row + 1], x, x + 2)
 
+// Terrace lines (scripts/terrain_heights.py bake-shading makes these sprites
+// too). The faint slope tint alone reads as lighting, so every whole height
+// level also gets a soft lip line, dark where the drop faces away from the
+// light and warm where it faces it; lines close together mean steep ground.
+// A tile shows the sprite for its four corner heights rounded to half levels,
+// so the lines join across tiles. Same slot rules as the shading.
+#define TERRAIN_TERRACE_CAP 6
+
+var/global/list/terrain_terrace_images = list()
+
+/turf/var/tmp/image/terrain_terrace_overlay = null
+
+/proc/terrain_terrace_image(key)
+	var/image/I = terrain_terrace_images[key]
+	if (!I)
+		I = image('icons/turf/terrain_terrace.dmi', icon_state = key, layer = TERRAIN_SHADE_LAYER)
+		I.plane = FLOOR_PLANE
+		I.mouse_opacity = 0
+		terrain_terrace_images[key] = I
+	return I
+
+// Corner height in half levels (a whole number), matching the tool's corner_heights().
+/datum/terrain_heights/proc/corner_half_levels(list/rows, cy, cx)
+	return floor(corner_level(rows, cy, cx) * 2 + 0.5)
+
+// Sprite key for a tile's terrace lines, or null when it crosses no whole level:
+// the lowest corner's half-level remainder, then each corner's half levels above
+// the lowest (capped), as nw, ne, sw, se. Matches the tool's terrace_key().
+/datum/terrain_heights/proc/terrace_key(x, y, z)
+	var/list/rows = rows_by_z["[z]"]
+	if (!rows || x < 1 || x > maxx || y < 1 || y > maxy)
+		return null
+	var/row = maxy - y
+	var/nw = corner_half_levels(rows, row, x - 1)
+	var/ne = corner_half_levels(rows, row, x)
+	var/sw = corner_half_levels(rows, row + 1, x - 1)
+	var/se = corner_half_levels(rows, row + 1, x)
+	var/low = min(nw, ne, sw, se)
+	var/top = min(max(nw, ne, sw, se) - low, TERRAIN_TERRACE_CAP)
+	var/rest = low % 2
+	if (rest + top < 2)
+		return null
+	return "[rest][min(nw - low, TERRAIN_TERRACE_CAP)][min(ne - low, TERRAIN_TERRACE_CAP)][min(sw - low, TERRAIN_TERRACE_CAP)][min(se - low, TERRAIN_TERRACE_CAP)]"
+
 /turf/proc/terrain_shade_refresh()
 	var/image/shade = null
+	var/image/terrace = null
 	// Water wears flow lines in the same slot (river_flow.dm); it is never shaded.
 	if (istype(src, /turf/floor/beach/water))
 		terrain_shade_set(water_flow_image(src))
@@ -572,20 +617,31 @@ var/global/terrain_shading_applied = FALSE
 		var/key = H ? H.shade_key(x, y, z) : null
 		if (key && key != "cccc")
 			shade = terrain_shade_image(key)
-	terrain_shade_set(shade)
+		key = H ? H.terrace_key(x, y, z) : null
+		if (key)
+			terrace = terrain_terrace_image(key)
+	terrain_shade_set(shade, terrace)
 
-/turf/proc/terrain_shade_set(image/shade)
+/turf/proc/terrain_shade_set(image/shade, image/terrace)
 	if (terrain_shade_overlay)
 		overlays -= terrain_shade_overlay
+	if (terrain_terrace_overlay)
+		overlays -= terrain_terrace_overlay
 	terrain_shade_overlay = shade
+	terrain_terrace_overlay = terrace
 	if (shade)
 		overlays += shade
+	if (terrace)
+		overlays += terrace
 
 // Floor icon rebuilds clear every overlay; this puts the shading back.
 /turf/proc/terrain_shade_icon()
 	if (terrain_shade_overlay)
 		overlays -= terrain_shade_overlay
 		overlays += terrain_shade_overlay
+	if (terrain_terrace_overlay)
+		overlays -= terrain_terrace_overlay
+		overlays += terrain_terrace_overlay
 
 // A floor cover laid or removed after the shading was placed changes whether
 // its tile is shaded. Covers call updateturf() shortly after they are placed.
@@ -621,8 +677,9 @@ var/global/terrain_shading_applied = FALSE
 				if (!T || T.terrain_smoothed())
 					continue
 				var/key = H.shade_key(x, y, z)
-				if (key != "cccc")
-					T.terrain_shade_set(terrain_shade_image(key))
+				var/terrace = H.terrace_key(x, y, z)
+				if (key != "cccc" || terrace)
+					T.terrain_shade_set(key != "cccc" ? terrain_shade_image(key) : null, terrace ? terrain_terrace_image(terrace) : null)
 					count++
 			CHECK_TICK
 	return count
@@ -699,3 +756,4 @@ var/global/terrain_shading_applied = FALSE
 #undef TERRAIN_LIGHT_STEP
 #undef TERRAIN_RELIEF
 #undef TERRAIN_SHADE_LAYER
+#undef TERRAIN_TERRACE_CAP
