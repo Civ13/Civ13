@@ -1,5 +1,6 @@
 import { NoticeBox, Section } from 'tgui-core/components';
-import type { PanelButton, PanelCell, PanelData, PanelSection } from '../data';
+import { useState } from 'react';
+import type { PanelButton, PanelCell, PanelData, PanelForm, PanelSection } from '../data';
 import type { ScreenProps } from '../types';
 import { Action, list, str } from './common';
 import { Pill, Row, Rows, type Tone } from './kit';
@@ -35,6 +36,34 @@ function Chart({ chart }: { chart: NonNullable<PanelSection['chart']> }) {
     <figcaption><span>{str(chart.left)}</span><span>{series.map((line, i) => <span key={i} className={`kit-chart-key kit-chart-${tones.has(str(line.tone)) ? str(line.tone) : 'info'}`}>{str(line.label)}</span>)}{chart.top ? ` (top ${str(chart.top)})` : ''}</span><span>{str(chart.right)}</span></figcaption>
   </figure>;
 }
+// A line of boxes and one button. What the player typed stays through
+// refreshes; number boxes send numbers, and an empty or non-numeric one blocks the button.
+function Form({ ui, form }: { ui: ScreenProps; form: PanelForm }) {
+  const fields = list(form.fields).filter(field => /^[a-z_]+$/.test(str(field.name)));
+  const [typed, setTyped] = useState<Record<string, string>>({});
+  const text = (field: typeof fields[number]) => typed[str(field.name)] ?? str(field.value ?? (list(field.options)[0]?.id ?? ''));
+  const values: Record<string, string | number> = {};
+  let ready = true;
+  for (const field of fields) {
+    const entry = text(field);
+    if (field.kind === 'number' && !list(field.options).length) {
+      if (entry.trim() === '' || !Number.isFinite(Number(entry))) ready = false;
+      values[str(field.name)] = Number(entry);
+    } else values[str(field.name)] = entry;
+  }
+  return <div className="kit-form">
+    {form.label ? <span className="kit-form-label">{str(form.label)}</span> : null}
+    {fields.map(field => {
+      const name = str(field.name), options = list(field.options);
+      const change = (value: string) => setTyped({ ...typed, [name]: value });
+      return <label key={name}>{str(field.label)} {options.length
+        ? <select value={text(field)} disabled={!ui.interactive} onChange={event => change(event.target.value)}>{options.map(option => <option key={str(option.id)} value={str(option.id)}>{str(option.label)}</option>)}</select>
+        : <input type="text" inputMode={field.kind === 'number' ? 'decimal' : 'text'} className={field.kind === 'number' ? 'kit-form-number' : undefined} maxLength={64}
+          value={text(field)} disabled={!ui.interactive} onChange={event => change(event.target.value)} />}</label>;
+    })}
+    <Action ui={ui} action={str(form.action)} value={form.id ?? 1} params={values} disabled={!ready || !form.action}>{str(form.button ?? 'Confirm')}</Action>
+  </div>;
+}
 export function Panel(ui: ScreenProps<PanelData>) {
   const { data } = ui;
   return <div className="kit-panel">
@@ -52,7 +81,8 @@ export function Panel(ui: ScreenProps<PanelData>) {
           <thead><tr>{list(section.table?.columns).map((column, c) => <th key={c} scope="col">{str(column)}</th>)}</tr></thead>
           <tbody>{lines.map((line, i) => <tr key={i}>{list(line).map((cell, c) => c === 0 ? <th key={c} scope="row"><Cell cell={cell} /></th> : <td key={c}><Cell cell={cell} /></td>)}</tr>)}</tbody></table>}
         {section.chart ? <Chart chart={section.chart} /> : null}
-        {!rows.length && !items.length && !lines.length && !!section.empty && <NoticeBox>{str(section.empty)}</NoticeBox>}
+        {list(section.forms).map((form, i) => <Form key={`${str(form.action)}-${str(form.id)}-${i}`} ui={ui} form={form} />)}
+        {!rows.length && !items.length && !lines.length && !list(section.forms).length && !!section.empty && <NoticeBox>{str(section.empty)}</NoticeBox>}
         {!!buttons.length && <div className="kit-actions"><Buttons ui={ui} rows={buttons} /></div>}
       </Section>;
     })}

@@ -57,6 +57,12 @@ frontend change or rebuild is needed.
   are text, numbers or `panel_cell(text, tone)`, and
   `chart = panel_chart(list(panel_series(label, tone, points)), slots, top, left, right)`
   for a line chart. The factory monitor and power meter use both.
+- `forms = list(panel_form(label, action, value, fields, button))` adds a line of
+  boxes with one button; `panel_field(name, label, value, kind, options)` is a
+  number box, a text box or a choice of `panel_option(id, label)`. The owner
+  names the fields in `ui_action_fields(ui_key, action)`.
+- `panel_item(name, detail, buttons, image)` can show a picture already sent
+  with `browse_rsc`; pass its bare `.png` file name.
 - Text is shown as text. Do not send HTML.
 - `tests/tgui/test_panel.py` fails when a button's action is missing from the
   same file's `ui_actions`.

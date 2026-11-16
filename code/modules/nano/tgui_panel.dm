@@ -51,8 +51,25 @@
 /proc/panel_chart(list/series, slots, top, left, right)
 	return list("series" = series, "slots" = slots, "top" = "[top]", "left" = "[left]", "right" = "[right]")
 
+// One box of a form. kind is "number" or "text"; options, a list of
+// panel_option(), turns it into a choice. A field named "value" replaces the
+// form's own value.
+/proc/panel_field(name, label, value, kind = "number", list/options)
+	. = list("name" = name, "label" = "[label]", "value" = value, "kind" = kind)
+	if (options)
+		.["options"] = options
+
+/proc/panel_option(id, label)
+	return list("id" = id, "label" = "[label]")
+
+// A line of fields with one button. It sends action with value plus each field
+// under its name; the owner names those fields in ui_action_fields() and must
+// check every one, as with any button.
+/proc/panel_form(label, action, value = 1, list/fields, button = "Confirm")
+	return list("label" = "[label]", "action" = action, "id" = value, "fields" = fields, "button" = "[button]")
+
 // empty is shown when the section has no rows, items or table rows.
-/proc/panel_section(title, list/notes, list/rows, list/items, list/buttons, empty, list/table, list/chart)
+/proc/panel_section(title, list/notes, list/rows, list/items, list/buttons, empty, list/table, list/chart, list/forms)
 	. = list()
 	if (title)
 		.["title"] = "[title]"
@@ -70,6 +87,8 @@
 		.["table"] = table
 	if (chart)
 		.["chart"] = chart
+	if (forms)
+		.["forms"] = forms
 
 // Opens or refreshes this owner's panel. sections is a list of panel_section().
 /datum/proc/open_panel(mob/user, title, width, height, list/sections, list/notes, ui_key = "main", datum/nanoui/ui, force_open = TRUE, state, auto_update = FALSE)

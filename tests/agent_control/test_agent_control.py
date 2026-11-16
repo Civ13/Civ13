@@ -2806,7 +2806,10 @@ class ScreenTests(unittest.TestCase):
         self.assertIn("if (status != STATUS_INTERACTIVE || user != usr)", screens)
         self.assertIn("src_object.Topic(href, params, state)", screens)
         tgui = (ROOT / "code/modules/nano/tgui.dm").read_text(encoding="utf-8")
-        self.assertIn('for (var/key in list("x", "y", "cells", "stroke_continue"))', screens)
+        self.assertIn('var/list/extra = list("x", "y", "cells", "stroke_continue")', screens)
+        # A form's declared fields ride along too, and only those.
+        self.assertIn('var/list/declared = ui.src_object ? ui.src_object.ui_action_fields(ui.ui_key, action) : null', screens)
+        self.assertIn('for (var/key in extra)', screens)
         # The transport admits the extra fields the window's owner declares; the banner editors declare these four.
         self.assertIn("var/list/fields = allowed_fields(action)", tgui)
         for owner in ("faction_symbol.dm", "faction_creation.dm"):

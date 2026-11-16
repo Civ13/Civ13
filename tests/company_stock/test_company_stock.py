@@ -65,8 +65,11 @@ class StockMarket(unittest.TestCase):
         self.assertNotIn('for (var/list/LL in map.sales_registry)', estate.split('to_chat(', 1)[0])
 
     def test_links_use_company_index(self):
+        # Every button and the sell form name the company by its index, never by its text.
+        self.assertIn('panel_form("[cmp] - you own [i[2]]%", "sell", cmp_idx,', MARKET)
+        for key in ('viewmembers', 'distribute', 'withdraw'):
+            self.assertIn(f'"{key}", cmp_idx)', MARKET)
         for key in ('sell', 'viewmembers', 'distribute', 'withdraw'):
-            self.assertIn(f';{key}=[cmp_idx]', MARKET)
             self.assertIn(f'var/cmp = href_company(href_list["{key}"])', MARKET)
 
     def test_taxes_clamp_to_thirty(self):

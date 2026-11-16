@@ -318,6 +318,9 @@ button.rs-row-main { cursor: pointer; }
 .kit-actions { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 2px; }
 .kit-table .kit-right .Button { margin: 0 0 0 2px; }
 .kit-table img.kit-item-image { display: inline-block; vertical-align: middle; margin-right: 8px; }
+.kit-form { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; padding: 6px 0; border-bottom: 1px solid var(--civ-line-soft); }
+.kit-form-label { flex: 1 1 160px; font-weight: bold; } .kit-form label { color: var(--civ-dim); } .kit-form .Button { margin: 0; }
+.kit-form input, .kit-form select { background: var(--civ-inset); color: inherit; border: 1px solid var(--civ-line); padding: 3px 5px; font: inherit; } .kit-form .kit-form-number { width: 64px; }
 .kit-chart { margin: 6px 0 0; } .kit-chart svg { display: block; width: 100%; height: auto; background: var(--civ-inset); border: 1px solid var(--civ-line-soft); }
 .kit-chart-axis { stroke: var(--civ-line); } .kit-chart-line { fill: none; stroke: currentColor; stroke-width: 2; vector-effect: non-scaling-stroke; }
 .kit-chart figcaption { display: flex; justify-content: space-between; gap: 8px; margin-top: 4px; font-size: 11px; color: var(--civ-dim); }

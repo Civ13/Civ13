@@ -55,7 +55,8 @@ class FactionMembershipSource(unittest.TestCase):
     def test_treasury_uses_the_stored_leader(self):
         self.assertNotIn('H.leader', MARKET)
         self.assertNotIn('user.leader', MARKET)
-        self.assertEqual(MARKET.count('map.is_faction_leader(H, H.civilization)'), 2)
+        # The treasury section of the window and both tax setters.
+        self.assertEqual(MARKET.count('map.is_faction_leader(H, H.civilization)'), 3)
 
     def test_shared_record_keeps_identity_and_legacy_fallback(self):
         source = run.read(run.MEMBERSHIP)

@@ -13,119 +13,112 @@
 	show_ui(user)
 
 /obj/structure/stockmarket/proc/show_ui(mob/living/human/user)
-	if (!user || !user.client)
+	if (!istype(user))
 		return
+	ui_interact(user)
 
-	// Build company overview
+/obj/structure/stockmarket/ui_actions(ui_key)
+	return list("buy", "sell", "viewmembers", "distribute", "withdraw", "setsalestax", "setbusinesstax", "withdrawtaxes", "withdrawfiat")
+
+/obj/structure/stockmarket/ui_action_fields(ui_key, action)
+	if (action == "sell")
+		return list("amt", "price", "cur")
+	return ..()
+
+// The window's buttons run the same checks as before, then every open window refreshes.
+/obj/structure/stockmarket/ui_act(action, list/params, mob/user, datum/nanoui/ui)
+	var/list/href_list = list()
+	for (var/key in params)
+		href_list[key == "value" ? action : key] = "[params[key]]"
+	market_action(user, href_list)
+	return TRUE
+
+// Members of one company, shown in a window of its own.
+/obj/structure/stockmarket/proc/members_sections(cmp)
+	var/list/rows = list()
+	for (var/list/i in map.custom_company[cmp])
+		if (i[2] > 0)
+			rows += list(panel_row(i[1] ? "[i[1]]" : "Estate of a dead shareholder (for sale)", "[i[2]]%"))
+	return list(panel_section("[cmp] Members", rows = rows, empty = "Nobody holds a share."))
+
+/obj/structure/stockmarket/ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = TRUE)
+	var/mob/living/human/H = user
+	if (!istype(H))
+		return
+	// A members window is keyed by the company's position, so it needs no stored state.
+	if (findtext(ui_key, "members_") == 1)
+		var/cmp = href_company(copytext(ui_key, 9))
+		if (!cmp)
+			GLOB.nanomanager.close_user_uis(H, src, ui_key)
+			return
+		open_panel(H, "Company members", 320, 450, members_sections(cmp), ui_key = ui_key, ui = ui, force_open = force_open)
+		return
+	var/list/sections = list()
+
+	// Company overview
 	var/sorted = sortTim(map.custom_company_value, /proc/cmp_numeric_dsc, TRUE)
-	var/company_rows = ""
+	var/list/company_rows = list()
 	for (var/cmp in map.custom_company_nr)
 		var/vm_owned = 0
 		for (var/obj/structure/vending/sales/S in vending_machine_list)
 			if (S.owner == cmp)
 				vm_owned++
-		company_rows += "<tr><td class='cmp-name'>[cmp]</td><td>[sorted[cmp]]</td><td>[vm_owned]</td></tr>"
+		company_rows[++company_rows.len] = list(cmp, sorted[cmp], vm_owned)
+	sections += list(panel_section("Companies", table = panel_table(list("Company", "Value", "Points"), company_rows), empty = "No companies have been founded."))
 
-	// Build buy stocks section
-	var/buy_html = ""
-	if (isemptylist(map.sales_registry))
-		buy_html = "<div class='none'>No stocks for sale.</div>"
-	else
-		var/sale_id = 1
-		for (var/list/i in map.sales_registry)
-			if (i[5])
-				var/curr_name = "sc"
-				if (i.len >= 6 && i[6] != "standard")
-					curr_name = fiat.currency_list[i[6]][1]
-				buy_html += "<div class='item'><span>[i[2]]% of <b>[i[1]]</b> at [i[3]*10] [curr_name]</span><button class='btn buy' onclick=\"window.location='byond://?src=\ref[src];buy=[sale_id]'\">Buy</button></div>"
-				sale_id++
+	// Stocks for sale. A listing is named by its position among the open ones.
+	var/list/offers = list()
+	var/sale_id = 1
+	for (var/list/i in map.sales_registry)
+		if (i[5])
+			var/curr_name = "sc"
+			if (i.len >= 6 && i[6] != "standard")
+				curr_name = fiat.currency_list[i[6]][1]
+			offers += list(panel_item("[i[2]]% of [i[1]]", "[i[3]*10] [curr_name]", list(panel_button("Buy", "buy", sale_id))))
+			sale_id++
+	sections += list(panel_section("Buy Stocks", list("Hold the money in your inactive hand."), items = offers, empty = "No stocks for sale."))
 
-	// Build sell stocks section
-	var/sell_html = ""
-	var/has_stocks = FALSE
+	// Own stocks. A company is named by its position in custom_company_nr, so
+	// quotes, & or = in a name cannot break a button.
+	var/list/currencies = list(panel_option("standard", "Standard Coins"))
+	for (var/fid in fiat.currency_list)
+		if (fiat.currency_list[fid][5])
+			currencies += list(panel_option(fid, fiat.currency_list[fid][1]))
+	var/list/sell_forms = list()
+	var/list/manage = list()
 	for (var/cmp in map.custom_company_nr)
-		if (find_company_member(user, cmp))
-			has_stocks = TRUE
-			// Element ids and links must not carry the raw name: quotes, & and = in
-			// a company name used to break the Sell/Withdraw buttons.
+		if (find_company_member(H, cmp))
 			var/cmp_idx = map.custom_company_nr.Find(cmp)
 			for (var/list/i in map.custom_company[cmp])
-				if (i[1] == user)
-					// Build currency dropdown for this company
-					var/cur_opts = "<select id='sell_cur_[cmp_idx]'><option value='standard'>Standard Coins</option>"
-					for (var/fid in fiat.currency_list)
-						if (fiat.currency_list[fid][5])
-							cur_opts += "<option value='[fid]'>[fiat.currency_list[fid][1]]</option>"
-					cur_opts += "</select>"
-					sell_html += "<div class='item'><b>[cmp]</b> &mdash; You own [i[2]]%<br>"
-					sell_html += "Amount: <input type='text' id='sell_amt_[cmp_idx]' value='[i[2]]' class='num'> "
-					sell_html += "Price: <input type='text' id='sell_price_[cmp_idx]' value='10' class='num'> "
-					sell_html += "Currency: [cur_opts] "
-					sell_html += "<button class='btn' onclick=\"var a=document.getElementById('sell_amt_[cmp_idx]').value;var p=document.getElementById('sell_price_[cmp_idx]').value;var c=document.getElementById('sell_cur_[cmp_idx]').value;if(a&&!isNaN(a)&&Number(a)>=1&&p&&!isNaN(p)&&Number(p)>0)window.location='byond://?src=\ref[src];sell=[cmp_idx]&amt='+a+'&price='+p+'&cur='+c\">Sell</button></div>"
-	if (!has_stocks)
-		sell_html = "<div class='none'>You do not own any stocks.</div>"
+				if (i[1] == H)
+					sell_forms += list(panel_form("[cmp] - you own [i[2]]%", "sell", cmp_idx, list(
+						panel_field("amt", "Amount", i[2]), panel_field("price", "Price", 10), panel_field("cur", "Currency", "standard", "choice", currencies)), "Sell"))
+			manage += list(panel_item(cmp, null, list(panel_button("Members", "viewmembers", cmp_idx), panel_button("Distribute", "distribute", cmp_idx), panel_button("Withdraw", "withdraw", cmp_idx))))
+	sections += list(panel_section("Sell Stocks", forms = sell_forms, empty = "You do not own any stocks."))
+	sections += list(panel_section("Manage Company", items = manage, empty = "You are not a member of any company."))
 
-	// Build manage company section
-	var/manage_html = ""
-	var/has_manage = FALSE
-	for (var/cmp in map.custom_company_nr)
-		if (find_company_member(user, cmp))
-			has_manage = TRUE
-			var/cmp_idx = map.custom_company_nr.Find(cmp)
-			manage_html += "<div class='item'><b>[cmp]</b>"
-			manage_html += " <button class='btn' onclick=\"window.location='byond://?src=\ref[src];viewmembers=[cmp_idx]'\">Members</button>"
-			manage_html += " <button class='btn' onclick=\"window.location='byond://?src=\ref[src];distribute=[cmp_idx]'\">Distribute</button>"
-			manage_html += " <button class='btn' onclick=\"window.location='byond://?src=\ref[src];withdraw=[cmp_idx]'\">Withdraw</button></div>"
-	if (!has_manage)
-		manage_html = "<div class='none'>You are not a member of any company.</div>"
-
-	// Build faction treasury section
-	var/treasury_html = ""
-	if (user.civilization != "none" && map.is_faction_leader(user, user.civilization))
-		var/sales_tax = map.custom_civs[user.civilization][9]
-		var/business_tax = map.custom_civs[user.civilization][10]
-		var/tax_funds = map.custom_civs[user.civilization][5]
-		var/obj/structure/closet/crate/faction_strongbox/box = map.faction_strongbox(user.civilization)
+	// Faction treasury
+	if (H.civilization != "none" && map.is_faction_leader(H, H.civilization))
+		var/sales_tax = map.custom_civs[H.civilization][9]
+		var/business_tax = map.custom_civs[H.civilization][10]
+		var/tax_funds = map.custom_civs[H.civilization][5]
+		var/obj/structure/closet/crate/faction_strongbox/box = map.faction_strongbox(H.civilization)
+		var/list/notes = list()
+		var/list/funds = list()
 		if (box)
-			treasury_html += "<div class='item'>Taxes are collected into the faction's strongbox ([tax_funds] sc waiting). Wages and dues are kept there too.</div>"
-		treasury_html += "<div class='item'><b>Sales Tax:</b> [sales_tax]% <button class='btn' onclick=\"var v=prompt('Sales Tax (0-30%):','[sales_tax]');if(v!==null&&!isNaN(v)&&Number(v)>=0&&Number(v)<=30)window.location='byond://?src=\ref[src];setsalestax='+v\">Set</button></div>"
-		treasury_html += "<div class='item'><b>Business Tax:</b> [business_tax]% <button class='btn' onclick=\"var v=prompt('Business Tax (0-30%):','[business_tax]');if(v!==null&&!isNaN(v)&&Number(v)>=0&&Number(v)<=30)window.location='byond://?src=\ref[src];setbusinesstax='+v\">Set</button></div>"
+			notes += "Taxes are collected into the faction's strongbox ([tax_funds] sc waiting). Wages and dues are kept there too."
+		// With a strongbox the window offers no withdrawal; the Topic refuses one too.
 		if (!box)
-			treasury_html += "<div class='item'><b>Tax Funds:</b> [tax_funds] sc <button class='btn' onclick=\"window.location='byond://?src=\ref[src];withdrawtaxes'\">Withdraw</button></div>"
-			if (map.custom_civs[user.civilization].len >= 11 && istype(map.custom_civs[user.civilization][11], /list))
-				var/list/fiat_treasury = map.custom_civs[user.civilization][11]
+			funds += list(panel_item("Tax Funds", "[tax_funds] sc", list(panel_button("Withdraw", "withdrawtaxes"))))
+			if (map.custom_civs[H.civilization].len >= 11 && istype(map.custom_civs[H.civilization][11], /list))
+				var/list/fiat_treasury = map.custom_civs[H.civilization][11]
 				for (var/fid in fiat_treasury)
 					if (fiat_treasury[fid] > 0)
-						treasury_html += "<div class='item'>[fiat_treasury[fid]] [fiat.currency_list[fid][1]] <button class='btn' onclick=\"window.location='byond://?src=\ref[src];withdrawfiat=[fid]'\">Withdraw</button></div>"
-
-	var/dat = "<html><head><style>"
-	dat += "body{font-family:'Segoe UI',monospace;background:#2b1e0e;color:#f0e0c0;margin:0;padding:20px;}"
-	dat += "h2{color:#ffd700;border-bottom:2px solid #5a3a1a;padding-bottom:8px;margin-top:0;}"
-	dat += ".section{background:#3d2b14;border:1px solid #5a3a1a;border-radius:4px;padding:12px;margin-bottom:12px;}"
-	dat += ".section h3{color:#ffd700;margin:0 0 8px 0;font-size:14px;}"
-	dat += "table{width:100%;border-collapse:collapse;font-size:13px;}"
-	dat += "td,th{padding:4px 8px;text-align:left;border-bottom:1px solid #5a3a1a;}"
-	dat += "th{color:#ffd700;}"
-	dat += ".cmp-name{color:#f0e0c0;font-weight:bold;}"
-	dat += ".none{color:#807060;font-style:italic;padding:8px 4px;font-size:13px;}"
-	dat += ".item{background:#2b1e0e;border:1px solid #5a3a1a;border-radius:3px;padding:6px 10px;margin:4px 0;font-size:13px;}"
-	dat += ".num{width:60px;background:#2b1e0e;color:#f0e0c0;border:1px solid #5a3a1a;border-radius:2px;padding:3px 5px;font-family:monospace;font-size:12px;}"
-	dat += "select{background:#2b1e0e;color:#f0e0c0;border:1px solid #5a3a1a;border-radius:2px;padding:3px 5px;font-family:monospace;font-size:12px;}"
-	dat += ".btn{background:#5a3a1a;color:#ffd700;border:1px solid #5a3a1a;border-radius:3px;padding:4px 10px;cursor:pointer;font-size:12px;text-decoration:none;}"
-	dat += ".btn:hover{background:#8a6a3a;}"
-	dat += ".buy{background:#2a4e2a;border-color:#4a7e4a;}"
-	dat += "</style></head><body>"
-	dat += "<h2>Stock Market</h2>"
-	dat += "<div class='section'><h3>Companies</h3><table><tr><th>Company</th><th>Value</th><th>Points</th></tr>[company_rows]</table></div>"
-	dat += "<div class='section'><h3>Buy Stocks</h3>[buy_html]</div>"
-	dat += "<div class='section'><h3>Sell Stocks</h3>[sell_html]</div>"
-	dat += "<div class='section'><h3>Manage Company</h3>[manage_html]</div>"
-	if (treasury_html)
-		dat += "<div class='section'><h3>Faction Treasury</h3>[treasury_html]</div>"
-	dat += "<div class='section'><button class='btn' onclick=\"window.location='byond://?src=\ref[src];close'\">Close</button></div>"
-	dat += "</body></html>"
-
-	show_browse(user, dat, "window=stockmarket;size=550x600")
+						funds += list(panel_item("[fiat_treasury[fid]] [fiat.currency_list[fid][1]]", null, list(panel_button("Withdraw", "withdrawfiat", fid))))
+		sections += list(panel_section("Faction Treasury", notes, items = funds, forms = list(
+			panel_form("Sales Tax: [sales_tax]%", "setsalestax", 0, list(panel_field("value", "0-30%", sales_tax)), "Set"),
+			panel_form("Business Tax: [business_tax]%", "setbusinesstax", 0, list(panel_field("value", "0-30%", business_tax)), "Set"))))
+	open_panel(H, "Stock Market", 600, 640, sections, ui = ui, force_open = force_open)
 
 // Links name a company by its position in custom_company_nr (companies are
 // only ever appended), so quotes, & or = in a name cannot break them.
@@ -149,7 +142,10 @@
 /obj/structure/stockmarket/Topic(href, href_list)
 	if (!usr || !usr.client)
 		return
-	var/mob/living/human/H = usr
+	market_action(usr, href_list)
+
+// One request from the window or a link, for the person who made it.
+/obj/structure/stockmarket/proc/market_action(mob/living/human/H, list/href_list)
 	if (!istype(H) || H.stat || get_dist(src, H) > 2)
 		return
 
@@ -283,12 +279,7 @@
 		var/cmp = href_company(href_list["viewmembers"])
 		if (!cmp)
 			return
-		var/body = "<html><head><title>[cmp]</title></head>[common_browser_style]<b>[cmp] Members</b><br><br>"
-		for (var/list/i in map.custom_company[cmp])
-			if (i[2] > 0)
-				body += "<b>[i[1] ? i[1] : "Estate of a dead shareholder (for sale)"]</b> owns [i[2]]%.<br>"
-		body += "<br></body></html>"
-		show_browse(H, body, "window=stockmembers;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=250x450")
+		ui_interact(H, "members_[map.custom_company_nr.Find(cmp)]")
 		return
 
 	// Manage company - distribute profits
