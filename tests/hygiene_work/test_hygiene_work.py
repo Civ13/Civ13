@@ -52,5 +52,28 @@ class HygieneWorkTest(unittest.TestCase):
         self.assertIsNone(re.search(r"var/tmp/dirty_hands", SOURCE))
 
 
+class BathingTest(unittest.TestCase):
+    BATH = read("code/modules/1713/bathing.dm")
+
+    def test_bathe_verb(self):
+        self.assertIn("/mob/living/human/verb/bathe()", self.BATH)
+        self.assertIn("W.salty || !is_liquid_water(W)", self.BATH)
+        self.assertIn("catch_dirty_water_illness(germs * 15 * 0.5)", self.BATH)
+        self.assertIn("river_current_direction(W) ? BATHE_RUNNING : BATHE_STILL", self.BATH)
+
+    def test_tubs_wash_to_the_same_level(self):
+        closet = read("code/game/objects/structures/watercloset.dm")
+        self.assertIn("H.raise_hygiene(HYGIENE_LEVEL_NORMAL)", closet)
+        self.assertNotIn("raise_hygiene(src.cleanliness)", closet)
+
+    def test_sponge_bath_is_capped(self):
+        self.assertIn("SPONGE_BATH_MAX", read("code/modules/reagents/reagent_containers.dm"))
+        self.assertIn("#define SPONGE_BATH_MAX 175", DEFINES)
+
+    def test_tank_only_on_persistence(self):
+        self.assertIn("return water_capacity && map && map.persistence", self.BATH)
+        self.assertIn("/obj/structure/shower/piped\n\twater_capacity = 0", self.BATH)
+
+
 if __name__ == "__main__":
     unittest.main()

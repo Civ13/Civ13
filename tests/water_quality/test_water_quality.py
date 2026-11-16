@@ -85,7 +85,7 @@ class WaterQualityTest(unittest.TestCase):
 
     def test_tubs_never_lower_hygiene(self):
         shower = read("code/game/objects/structures/watercloset.dm")
-        self.assertIn("H.raise_hygiene(src.cleanliness)", shower)
+        self.assertIn("H.raise_hygiene(HYGIENE_LEVEL_NORMAL)", shower)
         self.assertNotIn("H.set_hygiene(src.cleanliness)", shower)
         body = proc_body(NEEDS, "/mob/living/human/proc/raise_hygiene(amount)")
         self.assertIn("if (amount > hygiene)", body)
