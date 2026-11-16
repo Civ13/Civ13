@@ -2196,6 +2196,9 @@ SUITES = {
     'mercury': {'files': ('tests/mercury/test_contract.py',), 'paths': (
         'tests/mercury/', 'code/modules/1713/mercury.dm', 'docs/mercury.md',
         'icons/obj/mercury.dmi', 'tests/sprites/create_mercury.py')},
+    'placer': {'files': ('tests/placer/test_contract.py',), 'paths': (
+        'tests/placer/', 'code/modules/1713/placer.dm', 'docs/placer.md',
+        'icons/obj/placer.dmi', 'tests/sprites/create_placer.py')},
     # Keep shared production and Atlas sources unmapped so their existing
     # conservative all-suite fallback remains intact.
     'sawmill': {'files': ('tests/sawmill/test_contract.py',

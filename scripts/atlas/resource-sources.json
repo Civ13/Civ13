@@ -17365,6 +17365,118 @@
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified",
       "source_commit": "63e26060"
+    },
+    {
+      "name": "Dig pay dirt",
+      "file": "code/modules/1713/placer.dm",
+      "line": 75,
+      "inputs": [
+        "/turf/floor/dirt"
+      ],
+      "outputs": [
+        "/obj/item/stack/ore/pay_dirt",
+        "/obj/item/stack/ore/pay_dirt/tin",
+        "/obj/item/stack/ore/pay_dirt/rich"
+      ],
+      "tools": [
+        "/obj/item/weapon/material/shovel"
+      ],
+      "steps": [
+        "Stand on uncovered dirt or sand right beside shallow fresh water with a shovel in hand.",
+        "Use Dig pay dirt in the Crafting tab."
+      ],
+      "conditions": "3 loads a bank tile, then it rests. What the gravel carries depends on the stretch of river: about a quarter carry gold.",
+      "era": "No research needed.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified",
+      "source_commit": "f0c4e8d9"
+    },
+    {
+      "name": "Pan pay dirt",
+      "file": "code/modules/1713/placer.dm",
+      "line": 148,
+      "inputs": [
+        "/obj/item/stack/ore/pay_dirt/rich",
+        "/obj/item/stack/ore/pay_dirt/tin",
+        "/obj/item/stack/ore/pay_dirt"
+      ],
+      "outputs": [
+        "/obj/item/stack/ore/gold",
+        "/obj/item/stack/ore/silver",
+        "/obj/item/stack/ore/tin",
+        "/obj/item/stack/ore/iron_sand",
+        "/obj/item/stack/ore/glass"
+      ],
+      "tools": [
+        "/obj/item/kitchen/wood_bowl"
+      ],
+      "steps": [
+        "Stand beside shallow fresh water.",
+        "Use pay dirt on a wooden bowl: one load in 20 seconds, and it tells you what the ground carries."
+      ],
+      "conditions": "Slow; for prospecting.",
+      "era": "No research needed.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified",
+      "source_commit": "f0c4e8d9"
+    },
+    {
+      "name": "Wash pay dirt in a sluice box",
+      "file": "code/modules/1713/placer.dm",
+      "line": 226,
+      "inputs": [
+        "/obj/item/stack/ore/pay_dirt/rich",
+        "/obj/item/stack/ore/pay_dirt/tin",
+        "/obj/item/stack/ore/pay_dirt"
+      ],
+      "outputs": [
+        "/obj/item/stack/ore/gold",
+        "/obj/item/stack/ore/silver",
+        "/obj/item/stack/ore/tin",
+        "/obj/item/stack/ore/iron_sand",
+        "/obj/item/stack/ore/glass"
+      ],
+      "tools": [
+        "/obj/structure/placer_washer/sluice"
+      ],
+      "steps": [
+        "Build a sluice box by running water, or pour water into it.",
+        "Use pay dirt on it: it washes one load every 6 seconds until the stack runs out."
+      ],
+      "conditions": "5 water a load unless running water feeds it. Mercury in the riffles catches a quarter more gold and silver.",
+      "era": "Needs the Bronze Working research.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified",
+      "source_commit": "f0c4e8d9"
+    },
+    {
+      "name": "Wash pay dirt in a rocker",
+      "file": "code/modules/1713/placer.dm",
+      "line": 299,
+      "inputs": [
+        "/obj/item/stack/ore/pay_dirt/rich",
+        "/obj/item/stack/ore/pay_dirt/tin",
+        "/obj/item/stack/ore/pay_dirt"
+      ],
+      "outputs": [
+        "/obj/item/stack/ore/gold",
+        "/obj/item/stack/ore/silver",
+        "/obj/item/stack/ore/tin",
+        "/obj/item/stack/ore/iron_sand",
+        "/obj/item/stack/ore/glass"
+      ],
+      "tools": [
+        "/obj/structure/placer_washer/rocker"
+      ],
+      "steps": [
+        "Pour water into a rocker.",
+        "Use pay dirt on it: one load every 4.5 seconds."
+      ],
+      "conditions": "5 water a load from its 40-unit tank. Movable.",
+      "era": "Needs the Ore Dressing research.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified",
+      "source_commit": "f0c4e8d9"
     }
   ],
   "mechanism_overview": [

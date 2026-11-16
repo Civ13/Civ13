@@ -162,6 +162,8 @@ listing was retained. These limits are not waived by a green workflow.
 
 `create_mercury.py` owns `icons/obj/mercury.dmi`: the wrought iron mercury flask (open and empty, stoppered and full), the cinnabar retort on its brick firebox with condenser arm and receiver (cold, four-frame firing, cracked and leaking) and the four-frame mercury vapour effect. `--check` verifies the committed sheet, `--preview <png>` writes a review sheet on grass and dirt, `--gif <path>` writes the firing loop.
 
+`create_placer.py` owns `icons/obj/placer.dmi`: the wet pay dirt heap, the sluice box on trestles with riffle bars and a fleece lining (dry, three-frame running loop with muddy outflow) and the rocker cradle with its perforated iron hopper and upright handle (idle, two-frame rocking loop). `--check` verifies the committed sheet, `--preview <png>` writes a review sheet on grass and dirt, `--gif <path>` writes the running sluice loop.
+
 `create_glass_stone.py` owns `icons/obj/glass_stone_machines.dmi`: the glassblowing bench and the mason's saw with their working loops. `--check` verifies the committed sheet, `--preview <png>` writes a review sheet.
 
 `create_lifting.py` owns `icons/obj/lifting_machines.dmi`: the shear legs and the treadwheel crane with their hauling loops. `--check` verifies the committed sheet, `--preview <png>` writes a review sheet.
