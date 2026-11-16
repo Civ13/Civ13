@@ -139,6 +139,18 @@
 	W.insert(wood, H)
 	component_check(!W.ready_count("Shovel"), "toolsmith iron anvil accepted steel")
 	qdel(A)
+	// A steel-faced iron anvil works steel in the Middle Ages; kevlar stays on solid steel.
+	A = new /obj/structure/anvil/steel_faced(locate(2,1,1))
+	component_check(W.ready_count("Shovel") == 3, "toolsmith steel-faced anvil steel ready count")
+	component_check(!("kevlar" in A.accepted_materials), "steel-faced anvil accepted kevlar")
+	qdel(A)
+	// Solid steel anvils are cast only from the Industrial Age.
+	var/datum/craft_guard/skill_gate/cast_steel_anvil/G = new
+	component_check(!G.allowed(H, /obj/structure/anvil/steel) && G.allowed(H, /obj/structure/anvil/steel_faced) && G.allowed(H, /obj/structure/anvil), "steel anvil craftable before the Industrial Age")
+	map.ordinal_age = 4
+	component_check(G.allowed(H, /obj/structure/anvil/steel), "steel anvil refused in the Industrial Age")
+	map.ordinal_age = 2
+	qdel(G)
 	A = new /obj/structure/anvil/steel(locate(2,1,1))
 	component_check(W.ready_count("Shovel") == 3, "toolsmith steel ready count")
 	W.assembly_time = 10
