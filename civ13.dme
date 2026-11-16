@@ -1062,6 +1062,7 @@
 #include "code\modules\1713\aqueducts.dm"
 #include "code\modules\1713\station_water.dm"
 #include "code\modules\1713\quench_tub.dm"
+#include "code\modules\1713\wash_places.dm"
 #include "code\modules\1713\flood_cellars.dm"
 #include "code\modules\1713\flood_pumps.dm"
 #include "code\modules\1713\dug_wells.dm"

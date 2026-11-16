@@ -166,7 +166,26 @@ var/hc_runtime_error = FALSE
 	for (var/obj/covers/hc_wall/W in walls)
 		W.hc_finished = TRUE
 	judged = hc_judge()
-	hc_check(judged["points"] == 9 && judged["tier"] == 4 && !length(judged["missing"]), "finished walls make it splendid")
+	hc_check(judged["points"] == 9 && judged["tier"] == 4 && length(judged["missing"]) == 1, "finished walls make it splendid")
+
+	// A place to wash (wash_places.dm): a basin counts only with water in it.
+	var/obj/structure/washbasin/basin = new(locate(6, 6, 1))
+	judged = hc_judge()
+	hc_check(judged["points"] == 9 && ("a place to wash" in judged["missing"]), "a dry basin is no place to wash")
+	basin.water_store = 30
+	judged = hc_judge()
+	hc_check(judged["points"] == 10 && !length(judged["missing"]), "a basin of water is ([judged["points"]])")
+	var/obj/item/weapon/reagent_containers/food/snacks/poo/dung = new(locate(4, 6, 1))
+	judged = hc_judge()
+	hc_check(!judged["have"]["clean"], "dung on the floor fouls the room")
+	qdel(dung)
+	var/obj/structure/toilet/pit_latrine/latrine = new(locate(3, 6, 1))
+	judged = hc_judge()
+	hc_check(!judged["have"]["clean"], "a pit latrine in the room fouls it")
+	latrine.loc = null
+	basin.station_take_water(null)
+	hc_check(basin.water_store == 25, "a wash at the basin takes 5 water")
+	basin.loc = null
 
 	// Upkeep.
 	var/list/trash = list()
