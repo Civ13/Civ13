@@ -85,7 +85,7 @@ class ResearchInterfaceContract(unittest.TestCase):
         self.assertIn("has_research_chapter(href_list[\"rip\"])", topic)
         opened = proc(self.interface, "/obj/item/weapon/book/ui_interact")
         self.assertIn('ui_key != "research_book"', opened)
-        self.assertIn("_state = research_book_state", opened)
+        self.assertIn("data, ui, force_open, research_book_state, keep_interaction = TRUE)", opened)
         # Characters without a client keep the menu the agent prompts can answer.
         use = proc(self.research, "/obj/item/weapon/book/attack_self")
         self.assertLess(use.index("if (H.client && (chapters.len || length(research_progress_map())))"), use.index("player_input("))

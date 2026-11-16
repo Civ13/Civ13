@@ -830,11 +830,7 @@ var/global/datum/external_relations/external_relations = new()
 	
 	data["items"] = item_list
 
-	ui = GLOB.nanomanager.try_update_ui(user, src, ui_key, ui, data, force_open)
-	if (!ui)
-		ui = new /datum/nanoui/tgui(user, src, ui_key, "warehouse_book.tmpl", name, 400, 500)
-		ui.set_initial_data(data)
-		ui.open()
+	open_tgui(user, ui_key, "warehouse_book.tmpl", name, 400, 500, data, ui, force_open)
 
 /obj/structure/warehouse_book/proc/get_supplies()
 	var/list/supplies = list()

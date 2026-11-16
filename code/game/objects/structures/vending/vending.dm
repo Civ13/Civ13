@@ -198,11 +198,7 @@
 
 		data["products"] = listed_products
 
-	ui = GLOB.nanomanager.try_update_ui(user, src, ui_key, ui, data, force_open)
-	if (!ui)
-		ui = new /datum/nanoui/tgui(user, src, ui_key, "vending_machine.tmpl", name, 540, 600)
-		ui.set_initial_data(data)
-		ui.open()
+	open_tgui(user, ui_key, "vending_machine.tmpl", name, 540, 600, data, ui, force_open)
 
 /obj/structure/vending/Topic(href, href_list)
 	if (isliving(usr))

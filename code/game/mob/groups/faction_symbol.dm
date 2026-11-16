@@ -392,17 +392,7 @@ var/global/list/faction_symbol_shapes = list("star", "sun", "moon", "cross", "bi
 	data["shapes"] = faction_symbol_shapes
 	data["has_saved_icon"] = map.get_faction_symbol_icon(faction) ? TRUE : FALSE
 
-	ui = GLOB.nanomanager.try_update_ui(user, src, ui_key, ui, data, force_open)
-	if (!ui)
-		ui = new /datum/nanoui/tgui(user, src, ui_key, "faction_symbol.tmpl", name, 620, 760)
-		// "basic" layout: no stock SS13 NanoUI chrome around the parchment
-		// (see the research bench UI for the same choice).
-		ui.set_layout_key("basic")
-		ui.add_stylesheet("civ13_theme.css")
-		ui.add_stylesheet("faction_symbol.css")
-		ui.add_script("faction_symbol.js")
-		ui.set_initial_data(data)
-		ui.open()
+	open_tgui(user, ui_key, "faction_symbol.tmpl", name, 620, 760, data, ui, force_open)
 
 /datum/nano_module/faction_symbol_editor/Topic(href, href_list)
 	if (!istype(owner) || owner.stat)

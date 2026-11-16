@@ -552,15 +552,8 @@
 	if (!istype(H) || ui_key != "research_book" || !map || !map.book_research_enabled() || !can_hold_research())
 		return
 	var/list/data = research_book_ui_data(H)
-	ui = GLOB.nanomanager.try_update_ui(user, src, ui_key, ui, data, force_open)
-	if (!ui)
-		ui = new /datum/nanoui/tgui(user, src, ui_key, "research_book.tmpl", "Book", 620, 660, _state = research_book_state)
-		ui.set_layout_key("basic")
-		ui.add_stylesheet("research_tree.css")
-		// Closing the book window must not unset an unrelated machine interaction.
-		ui.use_on_close_logic(FALSE)
-		ui.set_initial_data(data)
-		ui.open()
+	// Closing the book window must not unset an unrelated machine interaction.
+	open_tgui(user, ui_key, "research_book.tmpl", "Book", 620, 660, data, ui, force_open, research_book_state, keep_interaction = TRUE)
 
 /obj/item/weapon/book/Topic(href, href_list, var/datum/topic_state/state = default_state)
 	if (!href_list["study"] && !href_list["write"] && !href_list["rip"] && !href_list["read"])
