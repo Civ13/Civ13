@@ -66,6 +66,14 @@
 	. = ..()
 	. |= list("has_ladder")
 
+// A fitted ladder comes back out when the hole is filled in.
+/obj/structure/multiz/ladder/ww2/tunneltop/pit/tunnel_filled(mob/user)
+	if (!has_ladder)
+		return
+	has_ladder = FALSE
+	new /obj/item/weapon/hole_ladder(user ? get_turf(user) : get_turf(src))
+	to_chat(user, SPAN_NOTICE("You pull the ladder out before the earth buries it."))
+
 /obj/structure/multiz/ladder/ww2/tunneltop/pit/proc/lower_ladder()
 	var/level = multiz_level_below(z)
 	var/turf/T = level ? locate(x, y, level) : null

@@ -24,6 +24,24 @@ result, so a shovel on a cave wall no longer falls through to the dirt-ground
 handlers (trench digging on harm intent, grading on disarm intent, scooping
 on help intent), none of which applied to solid rock.
 
+## Filling tunnels back in
+
+- **Entrance** (`tunneltop`, including player-dug holes): hit it with a dirt
+  pile; each pile takes 2 s (before strength) and four close it, removing the
+  shaft and any ladder link below. The count is saved on dug holes (`filled`),
+  examine shows how many piles are left, and a fitted wooden ladder is handed
+  back (`tunnel_filled`). Sandbags do not count.
+- **Open tunnel tiles** on the dug cave level or in a cave area
+  (`tunnel_level_turf`): a shovel on help or grab intent, with a dirt pile in
+  the other hand or lying on the tile, packs it into
+  `/turf/floor/dirt/underground/empty/packed` in 6 s (before strength and
+  shovel speed). The tile must be clear of people and objects (loose dirt piles
+  are fine), the digger must stand off it, and the hole above it must be filled
+  first. Without a pile the shovel scoops as before. Packed earth is dense, so
+  seepage and floodwater no longer stand on it (`seep_depth_at` skips dense
+  tiles); a shovel or pickaxe clears it for its one pile and the reopened floor
+  holds no extra scoopable dirt.
+
 Underground levels have no terrain height rows, so cave floors cannot be
 graded; their dirt comes from these routes and from scooping the opened floor.
 
@@ -33,7 +51,9 @@ graded; their dirt comes from these routes and from scooping the opened floor.
   (pinned BYOND from `scripts/cloud_byond_setup.sh`). Full sources, ordinary
   startup disabled; checks the yields, the opened floors, sand from sandy rock,
   rubble, refusals (busy, frozen, unmineable, open or built floors), a shovel on
-  frozen rock leaving it intact, and the shaft spoil.
+  frozen rock leaving it intact, the shaft spoil, packing a tunnel tile (refusals,
+  dense packed earth, one pile back when re-dug) and a filled hole returning
+  its ladder.
 - Offline: `python3 -m unittest tests/underground_excavation/test_underground_excavation.py`
   checks every tunnel shaft route calls the spoil and the include order.
 

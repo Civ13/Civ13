@@ -15,6 +15,8 @@
 #define EXCAVATION_ROCK_PILES 2
 #define EXCAVATION_DEBRIS_PILES 1
 #define EXCAVATION_SHAFT_PILES 2
+// Deciseconds to pack one dirt pile into an open tunnel tile.
+#define BACKFILL_TIME 60
 
 // Why this tile cannot be dug out with a shovel, or null when it can.
 /proc/underground_excavation_problem(turf/T)
@@ -86,9 +88,12 @@
 /proc/underground_excavation_finish(turf/floor/dirt/underground/T)
 	var/debris = istype(T, /turf/floor/dirt/underground/empty)
 	var/sandy = istype(T, /turf/floor/dirt/underground/sandy)
+	var/packed = istype(T, /turf/floor/dirt/underground/empty/packed)
 	T.collapse_check()
 	T.change_the_turf()
 	var/turf/opened = locate(T.x, T.y, T.z)
+	if (packed)
+		opened.available_dirt = 0 // the pile packed into it is all the earth it holds
 	excavation_spoil(opened, debris ? EXCAVATION_DEBRIS_PILES : EXCAVATION_ROCK_PILES)
 	if (sandy)
 		new /obj/item/stack/ore/glass(opened)
@@ -100,6 +105,105 @@
 		return TRUE
 	return ..()
 
+// Backfilling: a shovel packs a dirt pile into an open tunnel tile, turning it
+// back into solid ground. Packed earth is dense, so seepage and floodwater no
+// longer stand on it (flood_cellars.dm), and digging it out again gives back
+// the one pile it took and nothing more.
+/turf/floor/dirt/underground/empty/packed
+	name = "packed earth"
+	desc = "Earth packed back into a dug-out tunnel. A shovel or pickaxe can clear it again."
+
+/turf/floor/dirt/underground/empty/packed/mining_clear_debris()
+	var/tx = x
+	var/ty = y
+	var/tz = z
+	..()
+	var/turf/T = locate(tx, ty, tz)
+	if (T)
+		T.available_dirt = 0
+
+// TRUE when T lies on a level under the ground: the dug cave level, or a cave.
+/proc/tunnel_level_turf(turf/T)
+	if (!T)
+		return FALSE
+	var/dug = dug_underground_z()
+	if (dug && T.z == dug)
+		return TRUE
+	return istype(T.loc, /area/caribbean/void/caves)
+
+// A dirt pile for backfilling: in the user's other hand first, then on T.
+/proc/backfill_pile(turf/T, mob/user, obj/item/tool)
+	var/obj/item/weapon/barrier/B = user.get_inactive_hand()
+	if (istype(B) && B != tool && !istype(B, /obj/item/weapon/barrier/sandbag))
+		return B
+	for (var/obj/item/weapon/barrier/P in T)
+		if (!istype(P, /obj/item/weapon/barrier/sandbag))
+			return P
+	return null
+
+// Why open tunnel tile T cannot be packed with earth, or null when it can.
+/proc/tunnel_backfill_problem(turf/T, mob/user)
+	if (!istype(T, /turf/floor/dirt) || T.density || istype(T, /turf/floor/dirt/underground))
+		return "There is nothing to fill here."
+	if (get_turf(user) == T)
+		return "Step off the spot you want to fill."
+	var/above_z = multiz_level_above(T.z)
+	var/turf/above = above_z ? locate(T.x, T.y, above_z) : null
+	if (above && (locate(/obj/structure/multiz) in above))
+		return "The shaft above is still open. Fill the hole from above first."
+	for (var/mob/living/M in T)
+		return "[M] is in the way."
+	for (var/obj/O in T)
+		if (istype(O, /obj/item/weapon/barrier) || istype(O, /obj/effect))
+			continue
+		return "Clear \the [O] out of the way first."
+	return null
+
+// Uses up the pile and packs T solid. Returns the packed turf.
+/proc/tunnel_backfill_finish(turf/T, obj/item/weapon/barrier/pile)
+	qdel(pile)
+	T.ChangeTurf(/turf/floor/dirt/underground/empty/packed)
+	return locate(T.x, T.y, T.z)
+
+/proc/tunnel_backfill(turf/floor/dirt/T, mob/living/human/H, obj/item/tool)
+	if (H.shoveling || persistence_save_in_progress)
+		return TRUE
+	var/problem = tunnel_backfill_problem(T, H)
+	if (problem)
+		to_chat(H, SPAN_WARNING(problem))
+		return TRUE
+	var/delay = BACKFILL_TIME / max(0.1, H.getStatCoeff("strength"))
+	var/obj/item/weapon/material/shovel/S = tool
+	if (istype(S))
+		delay /= max(0.1, S.usespeed)
+	H.shoveling = TRUE
+	H.visible_message(SPAN_NOTICE("[H] starts packing earth into the tunnel."), SPAN_NOTICE("You start packing earth into the tunnel."), "You hear digging.")
+	playsound(T, 'sound/effects/shovelling.ogg', 100, TRUE)
+	var/completed = do_after(H, delay, T)
+	H.shoveling = FALSE
+	if (!completed || persistence_save_in_progress || H.get_active_hand() != tool)
+		return TRUE
+	problem = tunnel_backfill_problem(T, H)
+	if (problem)
+		to_chat(H, SPAN_WARNING(problem))
+		return TRUE
+	var/obj/item/weapon/barrier/pile = backfill_pile(T, H, tool)
+	if (!pile)
+		return TRUE
+	tunnel_backfill_finish(T, pile)
+	H.adaptStat("strength", 1)
+	H.visible_message(SPAN_NOTICE("[H] packs the tunnel full of earth."), SPAN_NOTICE("You pack the tunnel full of earth. Water can no longer stand here."))
+	log_game("[key_name(H)] packed a tunnel tile with earth at [T.x],[T.y],[T.z]")
+	return TRUE
+
+// Help or grab intent with a shovel and a dirt pile (in the other hand or on
+// the tile) packs an open tunnel tile; without a pile the shovel scoops as before.
+/turf/floor/dirt/attackby(obj/item/C, mob/user)
+	if (!density && is_tool(C, TOOL_SHOVEL) && ishuman(user) && (user.a_intent == I_HELP || user.a_intent == I_GRAB) && !istype(src, /turf/floor/dirt/underground) && tunnel_level_turf(src) && backfill_pile(src, user, C))
+		return tunnel_backfill(src, user, C)
+	return ..()
+
+#undef BACKFILL_TIME
 #undef EXCAVATION_TIME
 #undef EXCAVATION_DEBRIS_TIME
 #undef EXCAVATION_ROCK_PILES

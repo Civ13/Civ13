@@ -250,6 +250,9 @@ so Gaia's level 1 or a dug cave) is the cellar level, cached as
   (`cellar_dry`, unsaved).
 - Pumps: any structure in `cellar_pumps` keeps tiles within its
   `cellar_reach` dry while its `cellar_pumping()` is TRUE.
+- Filling in: four dirt piles close a tunnel mouth, which stops pouring, and a
+  shovel with a dirt pile packs an open tunnel tile into dense packed earth,
+  which stops seepage there for good (docs/underground-excavation.md).
 
 Cellar water is drawn like floodwater when a player is on the cellar level.
 Nothing ticks.
