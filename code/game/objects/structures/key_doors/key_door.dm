@@ -120,7 +120,7 @@ var/list/nonbreaking_types = list(
 	spawn (2)
 		if (unique_door_name && map_door_name == "door")
 			name = "[unique_door_name] door"
-		else if (map_door_name != "door" && !is_window_door())
+		else if (map_door_name != "door" && !is_window_door() && !is_trapdoor())
 			name = "[map_door_name] door"
 
 	// should fix doors always being the wrong type

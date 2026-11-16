@@ -252,7 +252,7 @@ var/ws_runtime_error = FALSE
 	ws_age(S, 300)
 	ws_check(weather_at(field) != WEATHER_NONE, "raining at the forecast time")
 	forecast = weather_forecast(field)
-	ws_check(forecast["now"] >= WEATHER_BAND_LIGHT && forecast["eta"] == -1 && findtext(barometer_reading(field), "needle is low"), "under the storm the barometer is low")
+	ws_check(forecast["now"] >= WEATHER_BAND_LIGHT && forecast["eta"] == -1 && findtext(barometer_reading(field), "column is low"), "under the storm the barometer is low")
 	var/clears = forecast["clears"]
 	if (clears > 0)
 		ws_age(S, clears)

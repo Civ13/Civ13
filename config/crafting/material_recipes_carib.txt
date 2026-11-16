@@ -1567,7 +1567,7 @@ RECIPE: /material/iron/,laboratory burner,/obj/item/weapon/laboratory_burner,4,8
 //*************| GLASS FURNITURE |***************
 
 RECIPE: /material/glass/,toilet,/obj/structure/toilet,4,80,1,1,furniture,102,0,0,8,null
-RECIPE: /material/glass/,mirror,/obj/structure/mirror,3,80,1,1,furniture,102,0,0,8,null
+RECIPE: /material/glass/,unsilvered mirror,/obj/structure/mirror/unsilvered,3,80,1,1,furniture,102,0,0,8,null
 RECIPE: /material/glass/,shower,/obj/structure/shower,10,190,1,1,furniture,115,0,0,8,null
 RECIPE: /material/glass/,sink,/obj/structure/sink,40,180,1,1,furniture,115,0,0,8,null
 RECIPE: /material/glass/,ashtray,/obj/item/weapon/material/ashtray/glass,3,120,0,1,none,110,0,0,8,null

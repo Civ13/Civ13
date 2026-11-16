@@ -72,6 +72,8 @@ var/list/sky_drop_map = list()
 #endif
 	if (isobserver(mover))
 		return
+	if (trapdoor_shut_at(src))
+		return ..(mover)
 	if (locate_dense_type(contents, /obj/structure))
 		return ..(mover)
 	else
@@ -219,6 +221,8 @@ var/list/sky_drop_map = list()
 	for (var/obj/structure/multiz/ladder/LD in src)
 		if (istype(LD, /obj/structure/multiz/ladder))
 			return
+	if (trapdoor_shut_at(src))
+		return
 	for(var/obj/structure/voyage/grid/G in src)
 		if(G.opened == FALSE)
 			return

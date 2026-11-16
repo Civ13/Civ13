@@ -1811,7 +1811,7 @@ RECIPE: /material/iron/,laboratory burner,/obj/item/weapon/laboratory_burner,4,8
 //*************| GLASS FURNITURE |***************
 
 RECIPE: /material/glass/,toilet,/obj/structure/toilet,4,80,1,1,furniture,95,0,0,8,null
-RECIPE: /material/glass/,mirror,/obj/structure/mirror,3,80,1,1,furniture,55,0,0,8,null
+RECIPE: /material/glass/,unsilvered mirror,/obj/structure/mirror/unsilvered,3,80,1,1,furniture,55,0,0,8,null
 RECIPE: /material/glass/,shower,/obj/structure/shower,10,190,1,1,furniture,115,0,0,8,null
 RECIPE: /material/glass/,sink,/obj/structure/sink,40,180,1,1,furniture,115,0,0,8,null
 RECIPE: /material/glass/,ashtray,/obj/item/weapon/material/ashtray/glass,3,120,0,1,none,110,0,0,8,null
@@ -2478,6 +2478,7 @@ RECIPE: /material/wood/,wooden door bar,/obj/item/door_bar,3,40,0,1,construction
 RECIPE: /material/wood/,bar brackets,/obj/item/door_brackets,2,40,0,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,pet door,/obj/item/door_feature/pet_door,2,40,0,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,wooden shutters,/obj/structure/simple_door/key_door/anyone/window_shutters,4,50,1,1,construction,0,0,0,8,null
+RECIPE: /material/wood/,wooden trapdoor,/obj/item/trapdoor_kit,4,50,0,1,construction,0,0,0,8,null
 
 RECIPE: /material/wood/soft/,floor cover,/obj/item/weapon/covers,2,30,0,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,thatch floor,/obj/covers/thatch,0.75,20,1,1,construction,0,0,0,8,null
@@ -2932,7 +2933,8 @@ RECIPE: /material/iron/,pitchfork,/obj/item/weapon/material/pitchfork,4,120,0,1,
 RECIPE: /material/iron/,extraction kit,/obj/item/weapon/reagent_containers/glass/extraction_kit,14,200,0,1,tools,33,0,0,8,null
 RECIPE: /material/iron/,telescope,/obj/item/weapon/attachment/scope/adjustable/binoculars,5,140,0,1,tools,0,46,0,8,null
 RECIPE: /material/iron/,compass,/obj/item/weapon/compass,8,140,0,1,tools,46,0,0,8,null
-RECIPE: /material/iron/,barometer,/obj/item/weapon/barometer,8,140,0,1,tools,46,0,0,8,null
+RECIPE: /material/iron/,barometer,/obj/item/weapon/barometer/empty,8,140,0,1,tools,46,0,0,8,null
+RECIPE: /material/glass/,thermometer,/obj/item/weapon/thermometer/empty,1,80,0,1,tools,46,0,0,8,null
 RECIPE: /material/iron/,firearm cleaning kit,/obj/item/weapon/gun_cleaning_kit,5,80,0,1,tools,0,90,0,8,null
 RECIPE: /material/iron/,clawhammer,/obj/item/weapon/hammer/modern,3,40,0,1,tools,110,0,0,8,null
 RECIPE: /material/iron/,fishing rod,/obj/item/weapon/fishing/modern,5,60,0,1,tools,120,0,0,8,null
@@ -2982,6 +2984,7 @@ RECIPE: /material/iron/,iron door bar,/obj/item/door_bar/iron,3,60,0,1,construct
 RECIPE: /material/iron/,slide bolt,/obj/item/door_bolt,2,60,0,1,construction,0,0,0,8,null
 RECIPE: /material/iron/,judas hatch,/obj/item/door_feature/judas_hatch,2,50,0,1,construction,0,0,0,8,null
 RECIPE: /material/iron/,iron shutters,/obj/structure/simple_door/key_door/anyone/window_shutters/iron,4,80,1,1,construction,0,0,0,8,null
+RECIPE: /material/iron/,iron hatch,/obj/item/trapdoor_kit/iron,6,80,0,1,construction,0,0,0,8,null
 RECIPE: /material/iron/,spring door closer,/obj/item/door_fitting/spring_closer,3,80,0,1,construction,0,0,0,8,null
 RECIPE: /material/iron/,spring door hinges,/obj/item/door_fitting/spring_hinge,2,80,0,1,construction,0,0,0,8,null
 RECIPE: /material/iron/,steam pumping engine,/obj/structure/sewer_pump/steam,12,250,1,1,construction,0,0,0,8,null

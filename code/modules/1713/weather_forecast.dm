@@ -180,7 +180,7 @@ var/global/list/weather_vanes = list()
 
 /obj/item/weapon/barometer
 	name = "barometer"
-	desc = "A brass dial that feels the weight of the air. A falling needle means a storm is on its way."
+	desc = "A glass tube of quicksilver in a brass case that feels the weight of the air. A falling column means a storm is on its way."
 	icon = 'icons/obj/weather_instruments.dmi'
 	icon_state = "barometer"
 	slot_flags = SLOT_BELT | SLOT_POCKET | SLOT_ID
@@ -188,13 +188,13 @@ var/global/list/weather_vanes = list()
 	force = WEAPON_FORCE_HARMLESS
 	throwforce = WEAPON_FORCE_HARMLESS
 
-// What the needle says at a place, in one sentence.
+// What the column says at a place, in one sentence.
 /proc/barometer_reading(atom/A)
 	var/list/forecast = weather_forecast(A)
 	if (forecast["now"] >= WEATHER_BAND_LIGHT)
 		if (forecast["clears"] >= 0)
-			return "The needle is low but rising: this should pass in about [weather_minutes(forecast["clears"])]."
-		return "The needle is low and steady: this weather is staying a while."
+			return "The column is low but rising: this should pass in about [weather_minutes(forecast["clears"])]."
+		return "The column is low and steady: this weather is staying a while."
 	if (forecast["eta"] >= 0)
 		var/how = "falling"
 		var/what = "Wet weather"
@@ -204,10 +204,10 @@ var/global/list/weather_vanes = list()
 		else if (forecast["peak"] >= WEATHER_BAND_HEAVY)
 			how = "falling steadily"
 			what = "A heavy storm"
-		return "The needle is [how]. [what] should break here in about [weather_minutes(forecast["eta"])]."
+		return "The column is [how]. [what] should break here in about [weather_minutes(forecast["eta"])]."
 	if (forecast["heat"])
-		return "The needle is high and still: hot, dry air, and no rain in sight."
-	return "The needle is steady: no change in the next quarter of an hour."
+		return "The column is high and still: hot, dry air, and no rain in sight."
+	return "The column is steady: no change in the next quarter of an hour."
 
 /obj/item/weapon/barometer/attack_self(mob/user)
 	to_chat(user, SPAN_NOTICE("You tap the glass of \the [src]. [barometer_reading(user)]"))

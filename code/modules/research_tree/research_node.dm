@@ -1993,7 +1993,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/clothing/gloves/watch/specialwatch" = "optics_instruments",
 		"/obj/item/clothing/gloves/watch/watch" = "optics_instruments",
 		"/obj/item/weapon/attachment/scope/adjustable/binoculars" = "optics_instruments",
-		"/obj/item/weapon/barometer" = "optics_instruments",
+		"/obj/item/weapon/barometer/empty" = "optics_instruments",
+		"/obj/item/weapon/thermometer/empty" = "optics_instruments",
 		"/obj/item/weapon/compass" = "optics_instruments",
 		"/obj/item/weapon/globe" = "optics_instruments",
 		"/obj/item/weapon/watch/pocket" = "optics_instruments",
@@ -2202,6 +2203,9 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/simple_door/key_door/anyone/casement" = "glassworking",
 		"/obj/structure/simple_door/key_door/anyone/window_shutters" = "primitive_construction",
 		"/obj/structure/simple_door/key_door/anyone/window_shutters/iron" = "iron_smithing",
+		// trapdoors and hatches (trapdoors.dm)
+		"/obj/item/trapdoor_kit" = "primitive_construction",
+		"/obj/item/trapdoor_kit/iron" = "iron_smithing",
 		// fire doors (fire_doors.dm)
 		"/obj/structure/simple_door/key_door/anyone/fire_door" = "steelmaking",
 		"/obj/structure/simple_door/key_door/anyone/fire_door/steel" = "modern_construction",
@@ -2398,7 +2402,7 @@ var/global/list/node_grid_col_cache = null
 		// --- sanitation (13) ---
 		"/obj/structure/aqueduct/pipe/lead" = "sanitation",
 		"/obj/structure/sink/aqueduct_fountain/tap" = "sanitation",
-		"/obj/structure/mirror" = "sanitation",
+		"/obj/structure/mirror/unsilvered" = "sanitation",
 		"/obj/structure/shower" = "sanitation",
 		"/obj/structure/shower/bathtub/big/bronze" = "sanitation",
 		"/obj/structure/shower/bathtub/big/copper" = "sanitation",
