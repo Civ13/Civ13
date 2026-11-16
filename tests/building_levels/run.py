@@ -34,7 +34,7 @@ CONTROLS = {
     'foundation': ('var/cap = min(tier, under[2])', 'var/cap = tier', 'FAIL: strong upper pillar cannot bypass weaker foundation'),
     'persistence': ('"building_pair_id", "building_floor_z", "health"', '"building_floor_z", "health"', 'FAIL: disk restored slab links'),
     'pair': ('R.building_pair_id = id', 'R.building_pair_id = null', 'FAIL: pair resolves both faces'),
-    'unfounded': ('return building_founded(A) ? BUILDING_GROUND_STRENGTH : BUILDING_UNFOUNDED_STOREYS', 'return BUILDING_GROUND_STRENGTH', 'FAIL: soft ground carries two storeys'),
+    'unfounded': ('return building_assume_founded || building_founded(A) ? BUILDING_GROUND_STRENGTH : BUILDING_UNFOUNDED_STOREYS', 'return BUILDING_GROUND_STRENGTH', 'FAIL: soft ground carries two storeys'),
     'span': ('(h < 2 && sides.len)', 'sides.len', 'FAIL: one distant pillar cannot hold an upper storey'),
     'column': ('if (!building_column_carries(A, h))', 'if (FALSE)', 'FAIL: upper support needs a support beneath it'),
     'support': ('\t\tif (h > cap)\n\t\t\tcontinue\n', '', 'FAIL: wood height limit'),
