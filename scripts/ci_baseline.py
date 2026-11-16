@@ -2202,6 +2202,9 @@ SUITES = {
     'lode': {'files': ('tests/lode/test_contract.py',), 'paths': (
         'tests/lode/', 'code/modules/1713/lode.dm', 'docs/lode.md',
         'icons/obj/lode.dmi', 'tests/sprites/create_lode.py')},
+    'amalgam': {'files': ('tests/amalgam/test_contract.py',), 'paths': (
+        'tests/amalgam/', 'code/modules/1713/amalgam.dm', 'docs/amalgam.md',
+        'icons/obj/amalgam.dmi', 'tests/sprites/create_amalgam.py')},
     # Keep shared production and Atlas sources unmapped so their existing
     # conservative all-suite fallback remains intact.
     'sawmill': {'files': ('tests/sawmill/test_contract.py',
@@ -2437,7 +2440,8 @@ SUITES = {
         'paths': ('tests/hay/', 'code/modules/1713/hay.dm', 'icons/obj/hay.dmi')},
     'log_wall_building': {'files': ('tests/log_wall_building/test_log_walls.py',),
         'paths': ('tests/log_wall_building/', 'code/game/objects/covers_types/log_wall_building.dm',
-                  'code/game/objects/covers_types/cover_walltypes.dm', 'code/game/objects/building_insulation.dm')},
+                  'code/game/objects/covers_types/cover_walltypes.dm', 'code/game/objects/building_insulation.dm',
+                  'icons/obj/log_wall_build.dmi', 'tests/sprites/create_log_wall_build.py')},
     'firefighting': {'files': ('tests/firefighting/test_firefighting.py',),
         'paths': ('tests/firefighting/', 'code/modules/1713/firefighting.dm', 'code/modules/1713/firefighting_water.dm', 'code/modules/1713/firefighting_hook.dm', 'code/modules/1713/firefighting_pump.dm', 'code/game/objects/items/weapons/tools.dm',
                   'code/modules/1713/oil_fires.dm', 'icons/obj/firefighting.dmi',

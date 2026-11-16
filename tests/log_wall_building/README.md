@@ -12,3 +12,7 @@ a 1-log sill from the crafting menu, two courses and a top plate added by hand
 ```
 python3 tests/ecology_spawning/run_linux.py . tests/log_wall_building/probe.dm 300
 ```
+
+The stage sprites (`sill`, `courses`, `upper`, `unchinked` and their `_corner`
+states in `icons/obj/log_wall_build.dmi`) are drawn by
+`tests/sprites/create_log_wall_build.py`; `test_log_walls.py` runs its `--check`.

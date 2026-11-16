@@ -29,10 +29,9 @@ the sides may cross (`siege_can_fight`).
   every portcullis and drawbridge within two tiles. A shut portcullis stops men
   but not arrows; a raised drawbridge blocks sight as well. Both have 900
   health and take ram, explosive and weapon damage.
-- **Murder hole** (3 stone): pour a container through it onto the level below
-  (or, on a single level, the tile it faces). With a lit fire or brazier beside
-  the hole the liquid is boiling: water burns for 8-12, oil (corn, olive or fat
-  oil) for 20-30.
+- **Murder hole** (3 stone): pour a container through it, or drop anything
+  else, onto the level below (or, on a single level, the tile it faces). The
+  level below shows through the hole. See "Pouring and dropping" below.
 
 Moats need no new object: dig a ditch next to the wall and flood it with the
 existing river and flood mechanics, then span it with a drawbridge.
@@ -67,3 +66,45 @@ Probe: `python3 tests/castle_defences/run.py --byond-bin <BYOND bin>`.
   shoots out over it freely; shots from outside are stopped 85% of the time,
   and always when the person behind it is lying down. Crenelated walls placed
   on maps keep the old two-way cover.
+
+## Pouring and dropping
+
+Code: `code/modules/1713/siege/castle_pour.dm` (the murder hole stays in
+`siege_engines.dm`). Probe: `tests/castle_defences` (same runner).
+
+- **Heating.** Hold an open container over a lit brazier, hearth, campfire or
+  stove on grab intent: water 5 s, oil 8 s, pitch 10 s, sand 6 s, lead 20 s.
+  It stays hot for 2 minutes (not across a reload). Quicklime needs no heat.
+- **Solids.** Sand, lead sheets and quicklime (into a dry container) go in as
+  10 units a piece.
+- **Openings.** Murder hole (Fortifications, 3 stone), **machicolation**
+  (Fortifications, 8 stone) and **hoarding** (Siege Engines, 12 wood). Build a
+  machicolation or hoarding on the wall walk facing out: it pours and drops one
+  tile out and one level down, onto the foot of the wall. Pour a container (any
+  intent but harm) or drop any other held item through it.
+- **Spread.** Under 60 units hits the one tile; 60 or more also splashes the 8
+  tiles around at half strength.
+
+| Poured | Effect on each person hit |
+| --- | --- |
+| Cold water | wet, puts out fire |
+| Hot water (or any other hot liquid) | 8-12 burn |
+| Hot oil (corn, olive, fat) | 20-30 burn, leaves a slick |
+| Hot pitch | 15-25 burn and sets them alight, leaves a slick |
+| Hot sand | 10-15 burn that ignores armour |
+| Quicklime | 5-10 burn (double if the container also holds water), blinds 10 s |
+| Molten lead | 35-45 burn; solid lead won't pour |
+
+Liquid burns are halved by melee armour on the zone hit (except sand).
+
+- **Slicks** of oil or pitch last a minute. A lit torch (harm or help) or a fire
+  arrow or bolt landing on the tile sets them alight.
+- **Falling items.** Anything that falls through open air, or is dropped
+  through an opening, hits the first standing person on the tile it lands on:
+  stone and ore 15-25 brute to the head, wood and huge items 25-35 and a
+  knockdown, large items 15-25, normal 5-10, small 0-5. A helmet takes its share.
+- **Hoardings** burn: a lit torch on harm intent, fire, or a fire arrow or bolt
+  landing at the foot of the wall under it (40%) sets one alight. It loses 25
+  health every 2 s until it falls; 10 units of water put it out.
+- **Tar kiln** (6 stone, Stone Masonry): load 10 wood, light it with a torch,
+  and two minutes later it holds 40 units of pitch to draw into a container.

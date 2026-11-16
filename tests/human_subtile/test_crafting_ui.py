@@ -128,6 +128,8 @@ def restore_crafting_projection(path, source):
             ('\t\t\t\t\tvar/germs = WT.water_germ_level()\n\t\t\t\t\tif (germs > 0)\n\t\t\t\t\t\tRG.reagents.add_reagent("cholera", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*(germs*0.05))\n\t\t\t\t\t\tsumex += min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*(germs*0.05)\n',
              '\t\t\t\t\tif (WT.sickness > 0)\n\t\t\t\t\t\tRG.reagents.add_reagent("cholera", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*(WT.sickness*0.05))\n\t\t\t\t\t\tsumex += min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*(WT.sickness*0.05)\n'),
             # Water quality (tests/water_quality): drinking asks the water's germ level.
+            # River bed mercury: drinking from a fouled reach adds burden (amalgam.dm).
+            ('\t\t\triver_mercury_drink(H, src) // amalgam.dm\n', ''),
             ('\t\t\tH.catch_dirty_water_illness(water_germ_level()*15)\n',
              '\t\t\tH.catch_dirty_water_illness(sickness*15)\n'),
             # Illness carriers (tests/disease_immunity/test_carriers.py): drinking from the

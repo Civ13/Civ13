@@ -92,6 +92,10 @@
 	if (!proximity_flag || !istype(target, /obj/item/weapon/reagent_containers))
 		return ..()
 	var/obj/item/weapon/reagent_containers/C = target
+	// Into a dry container it goes as caustic powder to pour (castle_pour.dm).
+	if (C.reagents && C.is_open_container() && !C.reagents.has_reagent("water"))
+		tip_solid_into(src, C, "quicklime_powder", user)
+		return TRUE
 	if (!C.reagents || !C.is_open_container() || !C.reagents.has_reagent("water", FINISH_SLAKE))
 		to_chat(user, "<span class='warning'>Slake the quicklime in an open container holding at least [FINISH_SLAKE] units of water.</span>")
 		return TRUE

@@ -15,6 +15,15 @@ checks `code/modules/1713/siege/castle_defences.dm`:
 - a mapped crenelated wall keeps two-way cover; a player-built one faces its
   builder's direction, lets shots out freely, stops most shots in, and fully
   covers someone lying behind it; plain barricades are not battlements;
+- pouring (`castle_pour.dm`): the leading liquid of a mix, cold water is
+  harmless and boiling water and molten lead burn in range; a murder hole on
+  one level pours on the tile it faces; hot oil burns the person below, leaves
+  a slick, empties and cools the container, and a small pour stays on one tile
+  while a big one splashes the person beside it; solid lead is refused,
+  quicklime blinds and hot pitch sets alight;
+- a falling stone hurts; a machicolation targets the tile in front; a hoarding
+  catches fire; a tar kiln batch yields 40 pitch to draw off; a brazier heats
+  only when lit;
 - no runtime errors.
 
 It needs the pinned compiler (`bash scripts/cloud_byond_setup.sh`).
