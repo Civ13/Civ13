@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = 'ebd4f3e700649d92497fc6f428919463d1fa27f0'
+WIKI_REVIEWED_REVISION = 'f19894dc7d7ff4badb47c060375dcdfba2a6410e'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('2d7872e9f19303d3077a1485496ebd5ba26b8dea0b26df9848d9a6cb506ad6a8', 'character skills traits languages'),
@@ -93,7 +93,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Ranching.md': ('4bfd68a7f6d60958e14da34916050fcedf06d7e1b9596a5dab8174b34a11c172', 'ranching livestock animal breeding'),
     'guides/Guide_to_Religion.md': ('8f2cba3283be55c895860478ffd6969b9ee7ad70ec90ecde479cd0ef622e9943', 'religion worship clergy shrine'),
     'guides/Guide_to_Research.md': ('698e0d0b98fcff745bfedbd816a8f4c7dcbc50ecb3c7be466f0cd3b8a2b847e2', 'research unlock study technology research bench'),
-    'guides/Guide_to_Resource_Extraction.md': ('7a5761156ca1e80fa50cd6558b0b7bedacdde2649e16a3be05bd43fb9caa5f0c', 'resource extraction gathering oil petroleum well fracturing'),
+    'guides/Guide_to_Resource_Extraction.md': ('94b97fc0a99093e0c0f7111ab891ce68a87430a33e59866db9ca9a52841ba7cf', 'resource extraction gathering oil petroleum well fracturing'),
     'guides/Guide_to_Survival.md': ('a449eed1a1668a02a460076c3a08e61b512202b1cdfa95e13b18226238967bba', 'survival winter cold warm freezing hypothermia shelter debris footwear boots snowshoes shoes ice mud rain wet umbrella raincoat cape storm storms lightning thunder blizzard sandstorm heat wave weather fire fires wildfire firefighting beater flapper smother burning bucket blanket extinguish smoke signal signals hook firebreak pump engine nozzle hose jet reel extinguisher'),
     'guides/Guide_to_Tanks.md': ('827ceab593bb62c44600ee67d53b1c5d59fde25e71f093475f55afc361b4fc8d', 'tank driving crew ammunition'),
     'guides/Guide_to_Trains.md': ('084ca499676d0ccfa7d9e64d9e52da43d7f0b5c40d95bbef0e3908ab2a35f641', 'train trains railway track locomotive station switcher rails wagon'),
