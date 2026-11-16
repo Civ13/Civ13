@@ -13,7 +13,7 @@ halves from 0 to 31.5: 0-9 then a-v write whole levels 0-31, and A-Z then
   to-png    write a greyscale PNG of a height file, one pixel per tile
   from-png  turn a painted greyscale PNG back into a height file
   check     validate a height file against a .dmm's size
-  bake-shading  write the slope shading sprites (icons/turf/terrain_shade.dmi)
+  bake-shading  write the slope shading and terrace line sprites (icons/turf/terrain_shade.dmi, terrain_terrace.dmi)
 
 Needs numpy and Pillow.
 """
@@ -453,9 +453,12 @@ LIGHT = (-1.0, -1.0, 1.2)        # from the north-west, above
 RELIEF = 1.6                     # vertical exaggeration of one level
 LIGHT_STEP = 0.22                # intensity per light level
 SHADE_KEYS = 'abcde'             # light level -2..2
-DARK_ALPHA = 0.30
-LIGHT_ALPHA = 0.24
-LIGHT_COLOUR = (255, 247, 224)
+# Kept faint and tinted: plain black at 0.30 turned grass grey and read as
+# lighting or cloud shadow. The shadow is a dark blue-green so grass stays green.
+DARK_ALPHA = 0.13
+LIGHT_ALPHA = 0.11
+DARK_COLOUR = (10, 28, 38)
+LIGHT_COLOUR = (238, 196, 84)    # warm straw: near-white looked like snow
 
 
 def corner_lights(np, levels):
@@ -480,6 +483,7 @@ def shade_pixels(np, key, size=32):
     v = (nw * (1 - tx) * (1 - ty) + ne * tx * (1 - ty) + sw * (1 - tx) * ty + se * tx * ty) / 2
     out = np.zeros((size, size, 4), dtype=np.uint8)
     dark = v < 0
+    out[dark, :3] = DARK_COLOUR
     out[dark, 3] = np.round(-v[dark] * DARK_ALPHA * 255)
     light = v > 0
     out[light, :3] = LIGHT_COLOUR
@@ -492,25 +496,133 @@ def shade_states():
     return [k for k in keys if k != 'cccc']
 
 
-def cmd_bake_shading(args):
-    np = load_numpy()
+# Terrace lines. The soft tint alone reads as lighting, so every whole height
+# level also gets a soft lip line: dark where the drop faces away from the
+# light, warm where it faces it. Lines close together mean steep ground. Each
+# tile shows the sprite for its four corner heights (the mean of the four tiles
+# around the corner, rounded to half levels); neighbours share corners, so the
+# lines join across tiles. The game builds the same key (terrain_height.dm,
+# terrace_key). A key is the lowest corner's half-level remainder (0 or 1),
+# then each corner's half levels above the lowest, capped, as nw, ne, sw, se.
+TERRACE_CAP = 6                  # half levels; steeper tiles are solid shade anyway
+TERRACE_DARK = (0.24, 0.23, 0.21, 0.18, 0.15, 0.12, 0.09, 0.06, 0.04, 0.02)   # alpha by pixels below the lip
+TERRACE_LIGHT = (0.18, 0.17, 0.15, 0.13, 0.10, 0.08, 0.05, 0.03)
+TERRACE_CREST = 0.45             # share of the first step drawn one pixel above the lip, to soften it
+TERRACE_MARGIN = 12              # pixels looked at beyond the tile, so lines near an edge spill over
+
+
+def corner_heights(np, levels):
+    """Height at each tile corner, rounded to half levels, shape (h + 1, w + 1)."""
+    p = np.pad(np.asarray(levels, dtype=float), 1, mode='edge')
+    corners = (p[:-1, :-1] + p[1:, :-1] + p[:-1, 1:] + p[1:, 1:]) / 4
+    return np.floor(corners * 2 + 0.5) / 2
+
+
+def terrace_key(nw, ne, sw, se):
+    """Sprite key for corner heights, or None when no whole level is crossed."""
+    low = min(nw, ne, sw, se)
+    offsets = [min(int(round((c - low) * 2)), TERRACE_CAP) for c in (nw, ne, sw, se)]
+    rest = int(round(low * 2)) % 2
+    if rest + max(offsets) < 2:
+        return None
+    return str(rest) + ''.join(str(o) for o in offsets)
+
+
+def terrace_states():
+    keys = []
+    n = TERRACE_CAP + 1
+    for rest in (0, 1):
+        for i in range(n ** 4):
+            offsets = (i // n ** 3, i // n ** 2 % n, i // n % n, i % n)
+            if min(offsets) == 0 and rest + max(offsets) >= 2:
+                keys.append(str(rest) + ''.join(str(o) for o in offsets))
+    return keys
+
+
+def terrace_pixels(np, key, size=32):
+    """RGBA pixels for one terrace state."""
+    rest = int(key[0]) / 2
+    nw, ne, sw, se = (rest + int(c) / 2 for c in key[1:])
+    m = TERRACE_MARGIN
+    t = (np.arange(-m, size + m) + 0.5) / size
+    tx, ty = t[None, :], t[:, None]
+    h = nw * (1 - tx) * (1 - ty) + ne * tx * (1 - ty) + sw * (1 - tx) * ty + se * tx * ty
+    gx = ((ne - nw) * (1 - ty) + (se - sw) * ty) + 0 * tx
+    gy = ((sw - nw) * (1 - tx) + (se - ne) * tx) + 0 * ty
+    facing = (gx + gy) / (np.sqrt(gx * gx + gy * gy) + 1e-9) / 2 ** 0.5   # > 0: the drop faces the north-west light
+    shadow = np.clip(0.5 - facing * 0.9, 0, 1)      # drops running along the light still show, at half strength
+    lit = np.clip(facing * 1.3 - 0.1, 0, 1)
+    q = np.floor(h + 0.25)
+
+    def around(mask):
+        out = np.zeros_like(mask)
+        out[1:, :] |= mask[:-1, :]
+        out[:-1, :] |= mask[1:, :]
+        out[:, 1:] |= mask[:, :-1]
+        out[:, :-1] |= mask[:, 1:]
+        return out
+
+    pad = np.pad(q, 1, mode='edge')
+    near = (pad[:-2, 1:-1], pad[2:, 1:-1], pad[1:-1, :-2], pad[1:-1, 2:])
+    low = np.zeros(q.shape, dtype=bool)
+    high = np.zeros(q.shape, dtype=bool)
+    for n in near:
+        low |= n > q
+        high |= n < q
+    alpha = np.zeros(q.shape)
+    warm = np.zeros(q.shape, dtype=bool)
+
+    def put(mask, value, is_warm):
+        sel = mask & (value > alpha)
+        alpha[sel] = value[sel]
+        warm[sel] = is_warm
+
+    ring, seen = low, low | high
+    for i in range(max(len(TERRACE_DARK), len(TERRACE_LIGHT))):
+        if i < len(TERRACE_DARK):
+            put(ring, TERRACE_DARK[i] * shadow, False)
+        if i < len(TERRACE_LIGHT):
+            put(ring, TERRACE_LIGHT[i] * lit, True)
+        ring = around(ring) & ~seen
+        seen = seen | ring
+    crest = high & ~low
+    put(crest, TERRACE_CREST * TERRACE_DARK[0] * shadow, False)
+    put(crest, TERRACE_CREST * TERRACE_LIGHT[0] * lit, True)
+    alpha = alpha[m:-m, m:-m]
+    warm = warm[m:-m, m:-m]
+    out = np.zeros((size, size, 4), dtype=np.uint8)
+    out[..., 3] = np.round(alpha * 255)
+    shown = out[..., 3] > 0
+    out[shown & ~warm, :3] = DARK_COLOUR
+    out[shown & warm, :3] = LIGHT_COLOUR
+    return out
+
+
+def write_dmi(np, path, states, pixels, cols):
     from PIL import Image
     from PIL.PngImagePlugin import PngInfo
-    states = shade_states()
-    cols = 25
     rows = -(-len(states) // cols)
     sheet = np.zeros((rows * 32, cols * 32, 4), dtype=np.uint8)
     for i, key in enumerate(states):
         y, x = divmod(i, cols)
-        sheet[y * 32:(y + 1) * 32, x * 32:(x + 1) * 32] = shade_pixels(np, key)
+        sheet[y * 32:(y + 1) * 32, x * 32:(x + 1) * 32] = pixels(np, key)
     lines = ['# BEGIN DMI', 'version = 4.0', '\twidth = 32', '\theight = 32']
     for key in states:
         lines += [f'state = "{key}"', '\tdirs = 1', '\tframes = 1']
     lines.append('# END DMI')
     info = PngInfo()
     info.add_text('Description', '\n'.join(lines) + '\n', zip=True)
-    Image.fromarray(sheet, 'RGBA').save(args.out, format='PNG', pnginfo=info, optimize=True)
-    print(f'wrote {args.out}: {len(states)} states')
+    Image.fromarray(sheet, 'RGBA').save(path, format='PNG', pnginfo=info, optimize=True)
+    print(f'wrote {path}: {len(states)} states')
+
+
+TERRACE_COLS = 48
+
+
+def cmd_bake_shading(args):
+    np = load_numpy()
+    write_dmi(np, args.out, shade_states(), shade_pixels, 25)
+    write_dmi(np, args.terrace_out, terrace_states(), terrace_pixels, TERRACE_COLS)
 
 
 def cmd_generate(args):
@@ -613,6 +725,7 @@ def main(argv=None):
     c.set_defaults(func=cmd_check)
     b = sub.add_parser('bake-shading')
     b.add_argument('--out', default='icons/turf/terrain_shade.dmi')
+    b.add_argument('--terrace-out', default='icons/turf/terrain_terrace.dmi')
     b.set_defaults(func=cmd_bake_shading)
     args = parser.parse_args(argv)
     args.func(args)
