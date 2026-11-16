@@ -235,6 +235,14 @@ var/global/list/crafting_purpose_cache = list()
 	W.ui_interact(H)
 	return TRUE
 
+/datum/crafting_window/ui_actions(ui_key)
+	return list("make", "makeable_only", "images", "atlas", "pin", "source", "detail")
+
+/datum/crafting_window/ui_action_fields(ui_key, action)
+	if (action == "make")
+		return list("quantity", "options")
+	return ..()
+
 /datum/crafting_window/ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = TRUE, var/datum/nanoui/master_ui = null, var/datum/topic_state/state = null)
 	if (user != viewer || !still_valid(viewer))
 		return

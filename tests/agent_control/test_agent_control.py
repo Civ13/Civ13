@@ -2807,8 +2807,12 @@ class ScreenTests(unittest.TestCase):
         self.assertIn("src_object.Topic(href, params, state)", screens)
         tgui = (ROOT / "code/modules/nano/tgui.dm").read_text(encoding="utf-8")
         self.assertIn('for (var/key in list("x", "y", "cells", "stroke_continue"))', screens)
-        self.assertIn('keys += list("x", "y")', tgui)
-        self.assertIn('keys += list("cells", "stroke_continue")', tgui)
+        # The transport admits the extra fields the window's owner declares; the banner editors declare these four.
+        self.assertIn("var/list/fields = allowed_fields(action)", tgui)
+        for owner in ("faction_symbol.dm", "faction_creation.dm"):
+            editor = (ROOT / "code/game/mob/groups" / owner).read_text(encoding="utf-8").split("/ui_action_fields(ui_key, action)", 1)[1].split("\n/", 1)[0]
+            self.assertIn('return list("x", "y")', editor)
+            self.assertIn('return list("cells", "stroke_continue")', editor)
 
     def test_gameplay_states_admit_agent_bodies(self):
         self.assertIn("if (stat || !nano_viewer_present(src))", (ROOT / "code/modules/nano/interaction/base.dm").read_text(encoding="utf-8"))

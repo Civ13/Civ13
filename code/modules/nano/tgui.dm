@@ -115,31 +115,20 @@
 	var/list/send_data = get_send_data(data)
 	user << output(list2params(list(strip_improper(json_encode(send_data)))), "[window_id].browser:receiveUpdateData")
 
-// One primary action per request; optional fields are specific to that action.
+// Each window's owner declares what its buttons may send. One primary action
+// per request; ui_action_fields() names any extra fields that action carries.
 // This is a transport boundary, not a replacement for each source Topic's checks.
-/datum/nanoui/tgui/proc/allowed_actions()
-	switch (templates["main"])
-		if ("chem_disp.tmpl")
-			return list("amount", "dispense", "ejectBeaker")
-		if ("appearance_changer.tmpl")
-			return list("race", "gender", "skin_tone", "skin_color", "hair", "hair_color", "facial_hair", "facial_hair_color", "eye_color")
-		if ("vending_machine.tmpl")
-			return list("vend", "cancelpurchase", "remove_coin", "togglevoice")
-		if ("vending_machine2.tmpl", "vending_machine_gulag.tmpl", "vending_machine_taotd.tmpl")
-			return list("vend", "cancelpurchase", "remove_money", "togglevoice")
-		if ("research_bench.tmpl")
-			return list("assign", "queue", "clear_queue", "write_book", "write_notes", "claim", "appoint_director", "dismiss_director", "set_director_title", "appoint_researcher", "dismiss_researcher", "take_book", "swap_books", "copy_chapter", "study_shelf", "study", "copy", "copy_all", "write", "unqueue", "stop_research", "toggle_rush")
-		if ("research_book.tmpl")
-			return list("study", "write", "rip", "read")
-		if ("recruitment_station.tmpl")
-			return list("designate", "unbind", "apply", "withdraw", "confirm", "approve", "reject", "revoke", "set_mode", "set_open", "set_language", "set_skill", "set_nonmatch", "refresh")
-		if ("crafting_window.tmpl")
-			return list("make", "makeable_only", "images", "atlas", "pin", "source", "detail")
-		if ("faction_symbol.tmpl")
-			return list("set_tool", "pick_color", "paint", "stroke", "stamp", "clear", "undo", "save")
-		if ("faction_creation.tmpl")
-			return list("set_name", "set_motto", "set_flavour", "set_tool", "pick_color", "paint", "stroke", "stamp", "clear", "undo", "found")
+/datum/proc/ui_actions(ui_key)
 	return list()
+
+/datum/proc/ui_action_fields(ui_key, action)
+	return null
+
+/datum/nanoui/tgui/proc/allowed_actions()
+	return src_object ? src_object.ui_actions(ui_key) : list()
+
+/datum/nanoui/tgui/proc/allowed_fields(action)
+	return src_object ? src_object.ui_action_fields(ui_key, action) : null
 
 /datum/nanoui/tgui/Topic(href, href_list)
 	if (!user || usr != user || !user.client || !src_object || !state)
@@ -184,13 +173,9 @@
 	if (!islist(params) || params.len > 8 || isnull(params[action]))
 		return
 	var/list/keys = list(action)
-	switch (action)
-		if ("paint")
-			keys += list("x", "y")
-		if ("stroke")
-			keys += list("cells", "stroke_continue")
-		if ("make")
-			keys += list("quantity", "options")
+	var/list/fields = allowed_fields(action)
+	if (islist(fields))
+		keys += fields
 	for (var/key in params)
 		if (!istext(key) || !(key in keys) || (!istext(params[key]) && !isnum(params[key])))
 			return

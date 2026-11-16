@@ -358,6 +358,9 @@ var/global/list/research_benches = list()
 // per-node status/progress for the viewing player's faction and
 // clickable Assign links wherever the viewer's role + node status allow it.
 // ------------------------------------------------------------
+/obj/structure/research_bench/ui_actions(ui_key)
+	return list("assign", "queue", "clear_queue", "write_book", "write_notes", "claim", "appoint_director", "dismiss_director", "set_director_title", "appoint_researcher", "dismiss_researcher", "take_book", "swap_books", "copy_chapter", "study_shelf", "study", "copy", "copy_all", "write", "unqueue", "stop_research", "toggle_rush")
+
 /obj/structure/research_bench/ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = TRUE)
 	if (!ishuman(user))
 		return
