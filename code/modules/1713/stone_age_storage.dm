@@ -36,7 +36,7 @@
 // The one lock hook: the shared lock system (door locks thread) fills this in.
 // Opening the window, putting in and Dump Out all ask it first.
 /obj/structure/storage_container/proc/storage_access_allowed(mob/user)
-	return TRUE
+	return lock_hand_access(src, user)
 
 /obj/structure/storage_container/persistence_runtime_var(key)
 	return key == "storage" || ..()
@@ -87,6 +87,7 @@
 
 /obj/structure/storage_container/examine(mob/user, distance = -1)
 	..()
+	lock_examine(src, user)
 	if (!storage)
 		return
 	var/count = storage.contents.len
@@ -109,6 +110,8 @@
 		..(over_object)
 
 /obj/structure/storage_container/attackby(obj/item/W, mob/user)
+	if (lock_attackby(src, W, user))
+		return
 	if (is_tool(W, TOOL_HAMMER) || is_tool(W, TOOL_CROWBAR))
 		return ..() // dismantling goes through the usual structure rules
 	if (!storage_access_allowed(user))
