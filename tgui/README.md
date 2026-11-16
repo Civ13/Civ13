@@ -71,6 +71,11 @@ separate authorized acceptance.
 NanoUI owns windows, authorization, processing and cleanup. Modern actions go
 through a UI-datum ref, window id and generation token; the backend allowlists
 one action and its payload keys and rechecks ownership/status before dispatch.
+A request is one declared action with an optional `value` and the extra fields
+the owner names in `ui_action_fields()`; text and numbers arrive typed. An owner
+that defines `ui_act(action, params, user, ui)` handles it there and needs no
+`Topic()`; other owners still receive it as href-style text, with the action
+naming its value.
 Server gameplay checks remain authoritative. The frontend does not import
 upstream pooled-window routing, client identifiers, chat, key-command hooks,
 lobby or machine behavior.

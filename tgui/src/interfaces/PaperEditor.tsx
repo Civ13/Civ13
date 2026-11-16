@@ -198,7 +198,7 @@ export function paperEditParams(model: PaperEditorModel, operation: 'append' | '
   const request: Record<string, unknown> = { operation, lease: model.lease };
   if (operation === 'append') Object.assign(request, { document_id: model.document_id, revision: model.revision, language_id: languageId, kind, value });
   if (operation === 'append' && kind === 'field_answer') request.target = target;
-  const params = { paper_edit: JSON.stringify(request) };
+  const params = { value: JSON.stringify(request) };
   if (JSON.stringify(params).length > 8192) throw new Error('Paper request exceeds transport limit');
   return params;
 }

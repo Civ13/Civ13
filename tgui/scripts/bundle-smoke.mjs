@@ -37,13 +37,13 @@ try {
   w.eval(readFileSync(new URL('../../UI/tgui/civ13-tgui.js', import.meta.url), 'utf8'));
   await settle(); assert.equal(messages[0]?.type, 'ready');
   assert.notEqual(w.document.getElementById('tgui-loading').style.display, 'none');
-  await update('chem_disp.tmpl', { amount: 5, chemicals: [{ title: 'Water', commands: { dispense: 'water' } }] });
+  await update('chem_disp.tmpl', { amount: 5, chemicals: [{ title: 'Water', id: 'water' }] });
   assert.equal(messages[1]?.type, 'ack');
   assert.equal(w.document.getElementById('tgui-loading').style.display, 'none');
   w.receiveUpdateData(JSON.stringify({ config: { template: 'warehouse_book.tmpl', ref: '[0x123]', window: 'main[0x456]', generation: 1, status: 2 }, data: { items: [{ name: 'STALE GENERATION', amount: 99 }] } }));
   await settle(); assert.ok(!w.document.body.textContent.includes('STALE GENERATION'));
-  click('Water'); assert.equal(messages.at(-1).type, 'act/dispense'); assert.equal(messages.at(-1).payload.dispense, 'water');
-  await update('chem_disp.tmpl', { amount: 5, chemicals: [{ title: 'Water', commands: { dispense: 'water' } }] }, 1);
+  click('Water'); assert.equal(messages.at(-1).type, 'act/dispense'); assert.equal(messages.at(-1).payload.value, 'water');
+  await update('chem_disp.tmpl', { amount: 5, chemicals: [{ title: 'Water', id: 'water' }] }, 1);
   const before = messages.length; click('Water'); assert.equal(messages.length, before);
   for (const template of ['appearance_changer.tmpl', 'vending_machine.tmpl', 'vending_machine2.tmpl', 'vending_machine_gulag.tmpl', 'vending_machine_taotd.tmpl', 'warehouse_book.tmpl', 'faction_symbol.tmpl', 'faction_creation.tmpl', 'research_bench.tmpl']) {
     await update(template, {}); assert.ok(!messages.some(message => message.type === 'fallback'), `Render failed: ${template}`);
@@ -107,7 +107,7 @@ try {
   assert.equal(w.document.querySelectorAll('script:not([src])').length, 0);
   clickRow('Indexed ore');
   assert.equal(messages.at(-1).type, 'act/atlas_navigate');
-  assert.equal(messages.at(-1).payload.atlas_navigate, JSON.stringify({ route: 'resource', resource: '/material/ore' }));
+  assert.equal(messages.at(-1).payload.value, JSON.stringify({ route: 'resource', resource: '/material/ore' }));
   await update('crafting_atlas.tmpl', atlasFixture, 1);
   const atlasBefore = messages.length; clickRow('Indexed ore'); assert.equal(messages.length, atlasBefore);
   await update('crafting_atlas.tmpl', { mode: 'graph', recipes: [], resources: [], recipe_count: 0, resource_count: 0 });

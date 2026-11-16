@@ -56,11 +56,11 @@ describe('research bench in book mode', () => {
     const names = [...document.querySelectorAll('.rs-row-main strong')].map(el => el.textContent);
     expect(names).toEqual(['Pottery', 'Stone Masonry', 'Basic Agriculture', 'Bronze Working', 'Basic Toolmaking']);
     fireEvent.click(screen.getByText('Study'));
-    expect(ui.act).toHaveBeenLastCalledWith('study', { study: 'pottery' });
+    expect(ui.act).toHaveBeenLastCalledWith('study', { value: 'pottery' });
     fireEvent.click(screen.getByText('Research'));
-    expect(ui.act).toHaveBeenLastCalledWith('assign', { assign: 'masonry' });
+    expect(ui.act).toHaveBeenLastCalledWith('assign', { value: 'masonry' });
     fireEvent.click(screen.getByText('Write'));
-    expect(ui.act).toHaveBeenLastCalledWith('write', { write: 'tools' });
+    expect(ui.act).toHaveBeenLastCalledWith('write', { value: 'tools' });
     fireEvent.click(screen.getByText('Known'));
     expect([...document.querySelectorAll('.rs-row-main strong')].map(el => el.textContent)).toEqual(['Basic Toolmaking']);
   });
@@ -70,7 +70,7 @@ describe('research bench in book mode', () => {
     const dialog = screen.getByRole('dialog');
     expect(dialog.querySelector('.rs-missing')?.textContent).toContain('Stone Masonry');
     fireEvent.click(within(dialog).getByText('Remove from queue'));
-    expect(ui.act).toHaveBeenLastCalledWith('unqueue', { unqueue: 'bronze' });
+    expect(ui.act).toHaveBeenLastCalledWith('unqueue', { value: 'bronze' });
     fireEvent.click(within(dialog).getByText('Stone Masonry'));
     const next = screen.getByRole('dialog');
     expect(next.getAttribute('aria-label')).toBe('Stone Masonry');
@@ -79,19 +79,19 @@ describe('research bench in book mode', () => {
     expect(within(next).getByText(/about 17 minutes at your pace/)).toBeTruthy();
     expect(within(next).getByText('Bronze Working')).toBeTruthy();
     fireEvent.click(within(next).getByText('Add to queue'));
-    expect(ui.act).toHaveBeenLastCalledWith('queue', { queue: 'masonry' });
+    expect(ui.act).toHaveBeenLastCalledWith('queue', { value: 'masonry' });
     fireEvent.click(within(next).getByText('Research this here'));
-    expect(ui.act).toHaveBeenLastCalledWith('assign', { assign: 'masonry' });
+    expect(ui.act).toHaveBeenLastCalledWith('assign', { value: 'masonry' });
   });
   it('offers copy and write for a chapter from its detail', () => {
     const ui = bench(); render(<Research {...ui} />);
     fireEvent.click(screen.getByText('Pottery'));
     fireEvent.click(screen.getByText('Copy into the other book'));
-    expect(ui.act).toHaveBeenLastCalledWith('copy', { copy: 'pottery' });
+    expect(ui.act).toHaveBeenLastCalledWith('copy', { value: 'pottery' });
     fireEvent.keyDown(document, { key: 'Escape' });
     fireEvent.click(screen.getByText('Basic Toolmaking'));
     fireEvent.click(screen.getByText('Write it from memory (about 2 minutes)'));
-    expect(ui.act).toHaveBeenLastCalledWith('write', { write: 'tools' });
+    expect(ui.act).toHaveBeenLastCalledWith('write', { value: 'tools' });
   });
   it('shows progress, pace, the checklist and the queue for the current subject', () => {
     const ui = bench({ assigned: { id: 'masonry', name: 'Stone Masonry', percent: 40, ticks: 40, cost: 100, working: 1, eta_minutes: 10, supply: 0, supply_cap: 200, supply_text: 'Engineering supplies (wood, stone or metal)', library_bonus: 20,
@@ -104,11 +104,11 @@ describe('research bench in book mode', () => {
     expect(document.querySelector('.rs-checks .rs-missing')?.textContent).toContain('Light to work by');
     expect(screen.getByText('Being researched')).toBeTruthy();
     fireEvent.click(screen.getByText('Stop researching'));
-    expect(ui.act).toHaveBeenLastCalledWith('stop_research', { stop_research: 1 });
+    expect(ui.act).toHaveBeenLastCalledWith('stop_research', { value: 1 });
     fireEvent.click(screen.getByLabelText('Remove Bronze Working from the queue'));
-    expect(ui.act).toHaveBeenLastCalledWith('unqueue', { unqueue: 'bronze' });
+    expect(ui.act).toHaveBeenLastCalledWith('unqueue', { value: 'bronze' });
     fireEvent.click(screen.getByText('Clear queue'));
-    expect(ui.act).toHaveBeenLastCalledWith('clear_queue', { clear_queue: 1 });
+    expect(ui.act).toHaveBeenLastCalledWith('clear_queue', { value: 1 });
   });
   it('warns when the scholar holds no writing tool or sheets', () => {
     render(<Research {...bench()} />);

@@ -94,7 +94,7 @@ class PromptContract(unittest.TestCase):
         index = (ROOT / 'tgui/src/interfaces/index.tsx').read_text()
         self.assertIn("'prompt.tmpl': Prompt,", index)
         screen = (ROOT / 'tgui/src/interfaces/Prompt.tsx').read_text()
-        self.assertIn("act('answer', { answer: index + 1 })", screen)
+        self.assertIn("act('answer', { value: index + 1 })", screen)
 
     def test_stock_sale_confirmation_asks_the_seller(self):
         # The message used to be passed as the client, so WWinput returned

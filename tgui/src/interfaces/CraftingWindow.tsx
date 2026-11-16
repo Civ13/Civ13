@@ -71,8 +71,8 @@ function Card({ ui, row, working }: { ui: ScreenProps; row: Row; working: Data |
   const unanswered = fields.some(field => (field.kind === 'company' || !!field.required) && !answer(field).trim());
   const craft = () => {
     if (!ui.interactive || !ready || busy || unanswered) return;
-    if (fields.length) ui.act('make', { make: row.id, quantity: amount, options: JSON.stringify(Object.fromEntries(fields.map(field => [text(field.field), answer(field)]))) });
-    else ui.act('make', { make: row.id, quantity: amount });
+    if (fields.length) ui.act('make', { value: row.id, quantity: amount, options: JSON.stringify(Object.fromEntries(fields.map(field => [text(field.field), answer(field)]))) });
+    else ui.act('make', { value: row.id, quantity: amount });
   };
   return <section className="craft-card" aria-label="Selected recipe">
     <div className="craft-card-top">
@@ -106,8 +106,8 @@ function Card({ ui, row, working }: { ui: ScreenProps; row: Row; working: Data |
     {row.built ? <p className="craft-place">Builds on the tile you stand on, facing the way you face.
       {row.one_per_turf ? ' Only one per tile.' : ''}{row.on_floor ? ' Needs a floor under you.' : ''}</p> : null}
     <p className="craft-links">
-      <button type="button" className="craft-link" aria-pressed={!!row.pinned} disabled={!ui.interactive || busy} onClick={() => ui.act('pin', { pin: row.id })}>{row.pinned ? 'Unpin' : 'Pin this recipe'}</button>
-      {row.atlas ? <button type="button" className="craft-link" disabled={!ui.interactive} onClick={() => ui.act('atlas', { atlas: row.id })}>Open in Atlas</button> : null}
+      <button type="button" className="craft-link" aria-pressed={!!row.pinned} disabled={!ui.interactive || busy} onClick={() => ui.act('pin', { value: row.id })}>{row.pinned ? 'Unpin' : 'Pin this recipe'}</button>
+      {row.atlas ? <button type="button" className="craft-link" disabled={!ui.interactive} onClick={() => ui.act('atlas', { value: row.id })}>Open in Atlas</button> : null}
     </p>
     {mine && <div className="craft-progress" role="status">
       <p>Making {text(working?.name)}...</p>
@@ -145,11 +145,11 @@ export function CraftingWindow(ui: ScreenProps) {
   }, [data.focus_seq]);
   // Ask the server what exactly the selected recipe needs. This spends nothing.
   useEffect(() => {
-    if (selected && ui.interactive && !data.working && rows.some(row => row.id === selected)) ui.act('detail', { detail: selected });
+    if (selected && ui.interactive && !data.working && rows.some(row => row.id === selected)) ui.act('detail', { value: selected });
   }, [selected]);
   // Pictures arrive a batch at a time; ask for the next batch once per snapshot.
   useEffect(() => {
-    if (data.more_images && !data.working && ui.interactive) ui.act('images', { images: 1 });
+    if (data.more_images && !data.working && ui.interactive) ui.act('images');
   }, [data]);
   const words = useMemo(() => query.toLowerCase().trim().split(/\s+/).filter(Boolean).slice(0, 6), [query]);
   const visible = useMemo(() => rows.filter(row => matches(row, words, words.length ? '' : purpose, readyOnly)), [rows, words, purpose, readyOnly]);
@@ -162,8 +162,8 @@ export function CraftingWindow(ui: ScreenProps) {
   const chip = (row: Row) => <button key={row.id} type="button" className={'craft-chip' + (row.id === selected ? ' craft-chip-selected' : '')}
     title={text(row.name)} onClick={() => setSelected(row.id)}><Sprite image={row.image} /><span>{text(row.name)}</span></button>;
   const chosen = rows.find(row => row.id === selected) ?? null;
-  const toggleReady = (next: boolean) => { setReadyOnly(next); ui.act('makeable_only', { makeable_only: next ? 1 : 0 }); };
-  const quick = (row: Row) => { if (ui.interactive && row.state === 'ready' && !working) ui.act('make', { make: row.id, quantity: 1 }); };
+  const toggleReady = (next: boolean) => { setReadyOnly(next); ui.act('makeable_only', { value: next ? 1 : 0 }); };
+  const quick = (row: Row) => { if (ui.interactive && row.state === 'ready' && !working) ui.act('make', { value: row.id, quantity: 1 }); };
   return <div className="craft">
     <div className="craft-head">
       <Sprite image={data.image} />
@@ -174,7 +174,7 @@ export function CraftingWindow(ui: ScreenProps) {
     {!!data.reach && list(data.sources).length > 1 && <div className="craft-reach" role="group" aria-label="Materials within reach">
       <span className="craft-strip-label">In reach</span>
       {list(data.sources).map((source, i) => <button key={i} type="button" className={'craft-chip' + (source.current ? ' craft-chip-selected' : '')} aria-pressed={!!source.current}
-        disabled={!ui.interactive || !!working} onClick={() => { if (!source.current) ui.act('source', { source: text(source.key) }); }}>
+        disabled={!ui.interactive || !!working} onClick={() => { if (!source.current) ui.act('source', { value: text(source.key) }); }}>
         <Sprite image={source.image} /><span>{text(source.name)}</span><small>{text(source.amount)} {text(source.where)}</small></button>)}
     </div>}
     <div className="craft-columns">

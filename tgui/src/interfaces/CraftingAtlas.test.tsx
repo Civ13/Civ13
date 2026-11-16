@@ -24,8 +24,8 @@ const ui = (data: Data = {}, interactive = true): ScreenProps => ({
 const sent = (props: ScreenProps) => {
   const call = vi.mocked(props.act).mock.calls.at(-1);
   expect(call?.[0]).toBe('atlas_navigate');
-  expect(Object.keys(call?.[1] ?? {})).toEqual(['atlas_navigate']);
-  return JSON.parse(String(call?.[1]?.atlas_navigate));
+  expect(Object.keys(call?.[1] ?? {})).toEqual(['value']);
+  return JSON.parse(String(call?.[1]?.value));
 };
 describe('Crafting Atlas navigation', () => {
   it('keeps typed search local until submit and applies era and station choices at once', () => {
@@ -297,7 +297,7 @@ describe('Crafting Atlas hand-off to the Crafting window', () => {
     const props = ui(); render(<CraftingAtlas {...props} />);
     fireEvent.click(screen.getByText('Craft this'));
     expect(props.act).toHaveBeenCalledTimes(1);
-    expect(props.act).toHaveBeenLastCalledWith('atlas_craft', { atlas_craft: '/obj/plank' });
+    expect(props.act).toHaveBeenLastCalledWith('atlas_craft', { value: '/obj/plank' });
   });
   it('does not offer it for bench recipes, other maps, retired recipes or a locked window', () => {
     for (const detail of [{ ...recipe, kind: 'Anvil' }, { ...recipe, elsewhere: true }, { ...recipe, retired: true }, { ...recipe, outputs: [] }]) {

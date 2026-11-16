@@ -35,12 +35,38 @@ class BackendContract(unittest.TestCase):
 
     def test_owner_and_generation_precede_dispatch(self):
         topic = DM.split('/datum/nanoui/tgui/Topic', 1)[1]
-        dispatch = topic.index('return ..(list2params(params), params)')
+        dispatch = topic.index('if (act_typed(action, params))')
         for guard in ('usr != user', '!src_object || !state', 'href_list["window_id"] != window_id',
                       'href_list["generation"] != "[render_generation]"', 'status != STATUS_INTERACTIVE', '!frontend_acknowledged',
                       '!(action in allowed_actions())', 'length(raw_payload) > 8192', 'params.len > 8',
                       '!(key in keys)', '!istext(params[key]) && !isnum(params[key])'):
             self.assertLess(topic.index(guard), dispatch)
+
+    def test_typed_actions_reach_ui_act_before_the_href_bridge(self):
+        self.assertIn('/datum/proc/ui_act(action, list/params, mob/user, datum/nanoui/ui)\n\treturn FALSE', DM)
+        topic = DM.split('/datum/nanoui/tgui/Topic', 1)[1]
+        # The action no longer doubles as a payload key, and values stay typed.
+        self.assertIn('var/list/keys = list("value")', topic)
+        self.assertNotIn('isnull(params[action])', topic)
+        self.assertNotIn('params[key] = "[params[key]]"', topic)
+        self.assertLess(topic.index('if (act_typed(action, params))'), topic.index('return ..(list2params(legacy), legacy)'))
+        typed = DM.split('/datum/nanoui/tgui/proc/act_typed(action, list/params)', 1)[1].split('\n/', 1)[0]
+        self.assertIn('if (!src_object.ui_act(action, params, user, src))\n\t\treturn FALSE', typed)
+        self.assertIn('GLOB.nanomanager.update_uis(src_object)', typed)
+        bridge = DM.split('/datum/nanoui/tgui/proc/href_form(action, list/params)', 1)[1]
+        self.assertIn('.[action] = "[params["value"]]"', bridge)
+        # The reference owner: one guarded handler, no Topic a typed href could reach.
+        chem = (ROOT / 'code/modules/reagents/Chemistry-Machinery.dm').read_text(errors='replace')
+        self.assertNotIn('/obj/structure/chemical_dispenser/Topic(', chem)
+        act = chem.split('/obj/structure/chemical_dispenser/ui_act(', 1)[1].split('\n/', 1)[0]
+        self.assertIn('amount = min(max(round(value, 5), 0), 120)', act)
+        self.assertIn('if (!isnum(value))', act)
+        self.assertIn('add_fingerprint(user)', act)
+        # No screen sends the action name as its own payload key any more.
+        for path in (ROOT / 'tgui/src').rglob('*.tsx'):
+            if not path.name.endswith('.test.tsx'):
+                self.assertNotRegex(path.read_text(), r"act\('(\w+)',\s*\{\s*\1:", path.name)
+        self.assertIn('ui.act(action, { value, ...params })', (ROOT / 'tgui/src/interfaces/common.tsx').read_text())
 
     def test_status_only_updates_and_ready_snapshot(self):
         self.assertIn('if (!isnull(data))\n\t\tlatest_data = data', DM)
@@ -151,7 +177,7 @@ class BackendContract(unittest.TestCase):
         # The common transport still admits only one action and its own scalar
         # payload. The existing owner/generation test covers forged windows.
         transport = DM.split('/datum/nanoui/tgui/Topic', 1)[1]
-        self.assertIn('var/list/keys = list(action)', transport)
+        self.assertIn('var/list/keys = list("value")', transport)
         self.assertIn('!(key in keys)', transport)
         self.assertNotIn('if ("designate")', transport)
 
@@ -277,7 +303,7 @@ class BackendContract(unittest.TestCase):
         for guard in ('ui.user != viewer', 'ui.state != state', 'ui.plain_page', '!ui.frontend_ready', '!ui.frontend_acknowledged', 'resource_exists(product)'):
             self.assertLess(craft.index(guard), craft.index('crafting_window_from_atlas(viewer, product)'))
         atlas = (ROOT / 'tgui/src/interfaces/CraftingAtlas.tsx').read_text()
-        self.assertIn("ui.act('atlas_craft', { atlas_craft: craftable })", atlas)
+        self.assertIn("ui.act('atlas_craft', { value: craftable })", atlas)
 
     def test_crafting_window_details_read_only_and_choices_stay_declared(self):
         source = (ROOT / 'code/game/objects/items/stacks/crafting_window.dm').read_text()

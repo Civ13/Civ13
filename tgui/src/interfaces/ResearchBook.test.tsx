@@ -30,14 +30,14 @@ describe('research book window', () => {
   it('studies, reads and tears out with one click', () => {
     const ui = book(); render(<ResearchBook {...ui} />);
     fireEvent.click(screen.getByText('Study'));
-    expect(ui.act).toHaveBeenLastCalledWith('study', { study: 'pottery' });
+    expect(ui.act).toHaveBeenLastCalledWith('study', { value: 'pottery' });
     fireEvent.click(screen.getByText('Read the written pages'));
-    expect(ui.act).toHaveBeenLastCalledWith('read', { read: 1 });
+    expect(ui.act).toHaveBeenLastCalledWith('read', { value: 1 });
     fireEvent.click(screen.getByText('Pottery'));
     expect(screen.getByText('Teaches 2 recipes')).toBeTruthy();
     expect(screen.getByText('kiln')).toBeTruthy();
     fireEvent.click(screen.getByText('Tear this chapter out'));
-    expect(ui.act).toHaveBeenLastCalledWith('rip', { rip: 'pottery' });
+    expect(ui.act).toHaveBeenLastCalledWith('rip', { value: 'pottery' });
   });
   it('filters by state and searches recipes', () => {
     render(<ResearchBook {...book()} />);
@@ -57,7 +57,7 @@ describe('research book window', () => {
   it('writes a known chapter only with a pen, a sheet and the stamina for it', () => {
     const ui = book(); const view = render(<ResearchBook {...ui} />);
     fireEvent.click(screen.getByText('Write'));
-    expect(ui.act).toHaveBeenLastCalledWith('write', { write: 'fire' });
+    expect(ui.act).toHaveBeenLastCalledWith('write', { value: 'fire' });
     for (const viewer of [{ pen: null, sheets: 3, stamina: 80 }, { pen: 'pencil', sheets: 0, stamina: 80 }, { pen: 'pencil', sheets: 3, stamina: 5 }]) {
       view.rerender(<ResearchBook {...ui} data={{ ...ui.data, viewer }} />);
       expect((screen.getByText('Write') as HTMLButtonElement).disabled).toBe(true);

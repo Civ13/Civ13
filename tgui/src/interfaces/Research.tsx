@@ -95,7 +95,7 @@ function Assigned({ ui, open }: { ui: ScreenProps; open: (id: string) => void })
       {!!assigned.can_rush && <p className={assigned.rushed ? 'rs-bad' : 'rs-dim'}>{assigned.rushed ? 'Rushed: half again as fast, but accidents can hurt the researcher and undo work.' : 'Careful work: no accidents.'}</p>}
       <Button onClick={() => open(String(assigned.id))}>Details</Button><Action ui={ui} action="stop_research">Stop researching</Action>{!!assigned.can_rush && <Action ui={ui} action="toggle_rush">{assigned.rushed ? 'Work carefully' : 'Rush the work'}</Action>}
     </>)}
-    {!!queue.length && <div className="rs-queue"><strong>Queued next:</strong> {queue.map((item, i) => <span className="tag" key={item.id}>{i + 1}. <button type="button" className="rs-link" onClick={() => open(String(item.id))}>{text(item.name)}</button> <button type="button" className="rs-link" disabled={!ui.interactive} aria-label={`Remove ${text(item.name)} from the queue`} onClick={() => ui.act('unqueue', { unqueue: item.id })}>x</button></span>)}
+    {!!queue.length && <div className="rs-queue"><strong>Queued next:</strong> {queue.map((item, i) => <span className="tag" key={item.id}>{i + 1}. <button type="button" className="rs-link" onClick={() => open(String(item.id))}>{text(item.name)}</button> <button type="button" className="rs-link" disabled={!ui.interactive} aria-label={`Remove ${text(item.name)} from the queue`} onClick={() => ui.act('unqueue', { value: item.id })}>x</button></span>)}
       <Action ui={ui} action="clear_queue">Clear queue</Action></div>}
   </Section>;
 }

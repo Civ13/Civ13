@@ -27,9 +27,9 @@ try {
   const update = async (template, data, status = 2) => {
     await page.evaluate(({ template, data, status }) => window.receiveUpdateData(JSON.stringify({ config: { template, title: 'Civ13 UI', status }, data })), { template, data, status });
   };
-  await update('chem_disp.tmpl', { amount: 5, chemicals: [{ title: 'Water', commands: { dispense: 'water' } }], isBeakerLoaded: 1, beakerContents: [] });
+  await update('chem_disp.tmpl', { amount: 5, chemicals: [{ title: 'Water', id: 'water' }], isBeakerLoaded: 1, beakerContents: [] });
   await page.getByText('Water', { exact: true }).click();
-  assert.deepEqual(await page.evaluate(() => window.sent.at(-1)), { type: 'act/dispense', payload: { dispense: 'water' } });
+  assert.deepEqual(await page.evaluate(() => window.sent.at(-1)), { type: 'act/dispense', payload: { value: 'water' } });
   await update('warehouse_book.tmpl', { items: [{ name: '&lt;img src=x onerror=alert(1)&gt;', amount: 4 }] });
   await page.getByText('<img src=x onerror=alert(1)>', { exact: true }).waitFor();
   assert.equal(await page.locator('img').count(), 0);
@@ -46,7 +46,7 @@ try {
   await page.getByText('Stone tools', { exact: true }).click();
   await page.getByRole('dialog').waitFor();
   await page.getByText('Assign this bench', { exact: true }).click();
-  assert.deepEqual(await page.evaluate(() => window.sent.at(-1)), { type: 'act/assign', payload: { assign: 'stone' } });
+  assert.deepEqual(await page.evaluate(() => window.sent.at(-1)), { type: 'act/assign', payload: { value: 'stone' } });
   await page.keyboard.press('Escape');
   assert.equal(await page.getByRole('dialog').count(), 0);
   const atlas = { mode: 'graph', query: 'ore', era: '', processor: '', recipe_count: 1, resource_count: 1,
@@ -57,7 +57,7 @@ try {
       conditions: 'Fictional browser data; map and skill requirements still apply.', file: 'code/game/fixture.dm', line: 12 } };
   await update('crafting_atlas.tmpl', atlas);
   await page.getByText('Indexed ore', { exact: true }).click();
-  assert.deepEqual(await page.evaluate(() => window.sent.at(-1)), { type: 'act/atlas_navigate', payload: { atlas_navigate: JSON.stringify({ route: 'resource', resource: '/material/ore' }) } });
+  assert.deepEqual(await page.evaluate(() => window.sent.at(-1)), { type: 'act/atlas_navigate', payload: { value: JSON.stringify({ route: 'resource', resource: '/material/ore' }) } });
   const search = page.getByRole('searchbox', { name: 'Search', exact: true });
   await search.fill('draft');
   const beforeSearch = await page.evaluate(() => window.sent.length);
@@ -67,7 +67,7 @@ try {
   await page.getByRole('button', { name: 'Search', exact: true }).click();
   assert.equal(await page.evaluate(() => window.sent.length), beforeSearch);
   await page.waitForFunction(count => window.sent.length > count, beforeSearch);
-  assert.deepEqual(await page.evaluate(() => window.sent.at(-1)), { type: 'act/atlas_navigate', payload: { atlas_navigate: JSON.stringify({ route: 'open', query: 'new query', era: '', processor: '' }) } });
+  assert.deepEqual(await page.evaluate(() => window.sent.at(-1)), { type: 'act/atlas_navigate', payload: { value: JSON.stringify({ route: 'open', query: 'new query', era: '', processor: '' }) } });
   await update('crafting_atlas.tmpl', atlas, 1);
   await page.getByRole('searchbox').waitFor();
   assert.equal(await search.isDisabled(), true);
