@@ -32,7 +32,7 @@ class AtlasNavigationTests(unittest.TestCase):
         producer, consumer = routes
         self.assertEqual(producer['outputs'], [chips])
         self.assertEqual(producer['inputs'], ['/material/wood'])
-        self.assertIn('Five logs produce one abstract batch', producer['conditions'])
+        self.assertIn('Every five logs make one batch of chips', producer['conditions'])
         self.assertIn('wizard_boy.dmm', producer['map_notes'])
         self.assertIn('Mapped base grinder:', producer['era'])
         self.assertIn('Constructed variant: Electricity', producer['era'])
@@ -83,7 +83,7 @@ class AtlasNavigationTests(unittest.TestCase):
             self.assertIn(note, recipe['conditions'])
         route, = self.catalog['acquisition'][kind]
         self.assertEqual(route['outputs'], [])  # Details for the real recipe, no duplicate build route.
-        self.assertIn('global catalog', route['conditions'])
+        self.assertIn('Needs Electricity', route['conditions'])
         self.assertIn('Wizard Boy', route['map_notes'])
         self.assertNotIn('/obj/structure/grinder', self.catalog['acquisition'])
 
@@ -157,7 +157,7 @@ class AtlasNavigationTests(unittest.TestCase):
                 self.assertFalse(unrelated_conditions_are_clean(route | {'conditions': route['conditions'] + ' flint blade'}))
             else:
                 self.assertIn('sharpened flint', route['conditions'])
-                self.assertIn('one ordinary log into one plank and one bark', route['conditions'])
+                self.assertIn('cuts one log into one plank and one piece of bark', route['conditions'])
                 self.assertEqual(route['source_commit'], 'd228a3ec507660d79d14019e800af5f5310ce685')
                 self.assertEqual(route['line'], 2216)
         generated = [r for entries in self.catalog['acquisition'].values() for r in entries
