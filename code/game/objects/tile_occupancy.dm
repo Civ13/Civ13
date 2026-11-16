@@ -69,6 +69,8 @@
 		if (floor)
 			return "There is already \a [floor] here. Remove it with a hammer first."
 		return null
+	if (type_is_window_door(new_type))
+		return window_door_build_refusal(T, new_type)
 	if (type_takes_wall_slot(new_type))
 		var/atom/piece = tile_wall_piece(T)
 		if (!piece)
