@@ -2706,6 +2706,8 @@ def ingest_player_activity(group, now=None):
     db = aggregate.connect(player_activity_db(group))
     try:
         read = aggregate.ingest(db, dirs)
+        # Totals only, for the Discord bot's activity command (no account keys).
+        aggregate.write_weekly(aggregate.report(db, now=now), Path(group['root']) / aggregate.WEEKLY_FILE)
     finally:
         db.close()
     stamp.write_text(str(int(now)), encoding='utf-8')
@@ -2743,6 +2745,7 @@ def player_activity_report(group, now=None):
     try:
         read = aggregate.ingest(db, dirs)
         data = aggregate.report(db, now=now)
+        aggregate.write_weekly(data, Path(group['root']) / aggregate.WEEKLY_FILE)
     finally:
         db.close()
     (Path(group['root']) / 'player-activity.stamp').write_text(str(int(now)), encoding='utf-8')

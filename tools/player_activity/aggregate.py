@@ -390,6 +390,33 @@ def report(db, now=None):
     }
 
 
+WEEKLY_FILE = 'player-activity-weekly.json'
+
+
+def weekly_totals(data):
+    """The totals the Discord bot may show (decision 7): numbers and region ids only,
+    never account keys, research nodes or recipe types."""
+    return {
+        'v': 1,
+        'generated': data['generated'],
+        'active': dict(data['active']),
+        'new_this_week': data['new_this_week'],
+        'sessions_this_week': data['sessions_this_week'],
+        'session_minutes_median': data['session_minutes_median'],
+        'deaths_this_week': sum(row['n'] for row in data['deaths_by_cause']),
+        'trips_this_week': sum(row['n'] for row in data['travel']),
+        'hours_by_region': [{'region': row['region'], 'hours': row['hours']} for row in data['playtime_by_region']],
+    }
+
+
+def write_weekly(data, path):
+    """Write weekly_totals() atomically for the bot to read."""
+    path = Path(path)
+    temp = path.with_name(path.name + '.tmp')
+    temp.write_text(json.dumps(weekly_totals(data), indent=1), encoding='utf-8')
+    os.replace(temp, path)
+
+
 def print_report(data, out=sys.stdout):
     w = out.write
     w('Player activity, %s\n\n' % data['generated'])
