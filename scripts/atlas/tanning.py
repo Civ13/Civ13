@@ -64,10 +64,12 @@ def add_tanning(files, add, records, variants):
                            status='source-reviewed route; native gameplay and graphical acceptance pending'))
 
     route('Butcher mammals for raw hides', [('/mob/living/simple_animal', 'eligible corpse; consumed')],
-          [(STACK+'rawhide', '1-6, species dependent')], HARVEST, '/mob/living/simple_animal/proc/harvest_skin_yield()',
+          [(STACK+'rawhide', 'half the hide, species dependent')], HARVEST, '/mob/living/simple_animal/proc/harvest_skin_yield()',
           ('Use a held sharp tool on a dead eligible mammal on harm intent and complete harvesting nearby.',
-           'Raw-hide pieces = min(6, max(1, butcher_yield() - 2)); meat and other corpse products are separate.',
-           'Grab-intent skinning preserves species fur pelts where defined; the corpse can be claimed only once.'), ['Held sharp tool'])
+           'Quick butchering keeps half the hide as raw hide (at least one piece); meat and other corpse products are separate.',
+           'Grab-intent skinning takes longer and keeps the whole hide: a species fur pelt where defined, otherwise raw hide.',
+           'Hide pieces follow the animal: about 60 cm square each, from 1 for a fox or rabbit to 11 for a cow and 16 for a bison bull.',
+           'The corpse can be claimed only once.'), ['Held sharp tool'])
     for sex in ('f', 'm'):
         route('Harvest adult turkey '+('hen' if sex == 'f' else 'tom')+' skin',
               [('/mob/living/simple_animal/turkey_'+sex, 'dead corpse; consumed')], [(STACK+'rawhide', 1)],
@@ -80,7 +82,7 @@ def add_tanning(files, add, records, variants):
         name = pelt_label(source, files)
         route('Scrape '+name+' into a prepared hide', [(source, 1)], [(STACK+'hairlesshide', 1)], LEATHER,
               '/obj/item/stack/material/proc/prepare_hide(',
-              ('Apply a held sharp tool to a nearby raw hide or fur pelt; complete 50 ticks of scraping.',
+              ('Apply a held sharp tool to a nearby raw hide or fur pelt; complete 50 ticks of scraping per piece; scraping carries on through the stack until it is done or interrupted.',
                'One piece becomes one prepared hairless hide; cancellation retains the input.',
                'Scraping a pelt sacrifices that piece for leather; unprocessed fur remains usable in pelt recipes.'), ['Held sharp tool'])
     route('Wash a prepared hide', [(STACK+'hairlesshide', 1), ('water', 5)], [(STACK+'wethide', 1)],
