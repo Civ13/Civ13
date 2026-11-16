@@ -366,7 +366,7 @@
 
 /obj/item/weapon/reagent_containers/food/snacks/honeycomb
 	name = "honeycomb"
-	icon = 'icons/farming/beekeeping.dmi'
+	icon = 'icons/farming/bee_products.dmi'
 	icon_state = "honeycomb"
 	filling_color = "#ffbf00"
 	decay = 250*600
