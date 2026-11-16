@@ -85,3 +85,17 @@ var/sw_runtime_error = FALSE
 	sw_check(wheel.station_water_pour(B, null) && wheel.station_has_water(), "a bucket wets the wheel")
 	B.reagents.add_reagent("water", 50)
 	sw_check(trough.attackby(B, null) == null && trough.water_store > 0, "a bucket fills the retting trough")
+
+	// The quench tub hardens iron and steel forged beside it.
+	var/obj/structure/anvil/anvil = new(locate(6, 2, 1))
+	var/obj/structure/quench_tub/tub = new(locate(5, 2, 1))
+	sw_check(!anvil.quench_tub(), "a dry quench tub does not count")
+	B.reagents.add_reagent("water", 100)
+	tub.station_water_pour(B, null)
+	sw_check(anvil.quench_tub() == tub && tub.water_store == 60, "a bucket fills the quench tub to 60")
+	var/obj/item/weapon/material/knife = new /obj/item/weapon/material/kitchen/utensil/knife(locate(6, 2, 1), "iron")
+	sw_check(tub.quench(knife, null) && knife.crafting_quality == 1.2 && tub.water_store == 50, "quenching hardens a piece one step for 10 water")
+	sw_check(!tub.quench(knife, null) && tub.water_store == 50, "a piece is only quenched once")
+	sw_check(quench_hardens("steel") && quench_hardens("iron") && !quench_hardens("bronze") && !quench_hardens("copper"), "only iron and steel harden")
+	tub.water_store = 5
+	sw_check(!anvil.quench_tub(), "a near-empty tub is passed over")

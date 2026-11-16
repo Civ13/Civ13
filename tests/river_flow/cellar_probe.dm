@@ -228,3 +228,29 @@ var/sewer_runtime_error = FALSE
 	sewer_check(flood_depth_at(near) > 0, "the water does not vanish at once")
 	F.tunnel_checked = world.time - 6000
 	sewer_check(flood_depth_at(near) < 1 && !F.tunnel_fill.len, "once the hole is filled the water soaks away ([flood_depth_at(near)])")
+	breach_checks(F)
+
+// A cell opened under a lake or river pours like a mouth (underground_opened);
+// shallows and swamp above seep a little (dug_underground.dm, "Water above").
+/proc/breach_checks(datum/river_flood/F)
+	F.stage[1] = 0
+	F.tunnel_fill = list()
+	var/turf/B = locate(9, 2, 1)
+	var/turf/S = locate(9, 2, 2)
+	S.ChangeTurf(/turf/floor/beach/water/deep)
+	sewer_check(underground_above_cell(B) == "wet", "a lake lies over the cell")
+	tunnel_breaches += B
+	F.tunnel_checked = world.time - 600
+	sewer_check(abs(flood_depth_at(B) - 1.5) < 0.001 && flood_airless(B), "a breach under a lake floods the tunnel to the roof, river low or not ([flood_depth_at(B)])")
+	B.ChangeTurf(/turf/floor/dirt/underground/empty/packed)
+	F.tunnel_checked = world.time - 6000
+	flood_depth_at(locate(8, 2, 1))
+	sewer_check(!F.tunnel_fill[locate(9, 2, 1)], "packing the breach stops the water")
+	tunnel_breaches -= locate(9, 2, 1)
+	S = locate(9, 2, 2)
+	S.ChangeTurf(/turf/floor/dirt)
+	var/turf/M = locate(2, 1, 1)
+	locate(2, 1, 2).ChangeTurf(/turf/floor/beach/water/swamp)
+	sewer_check(abs(flood_depth_at(M) - 0.3) < 0.001 && !flood_airless(M), "swamp above seeps ankle-deep into the cell below ([flood_depth_at(M)])")
+	F.bail_cellar(M)
+	sewer_check(!flood_depth_at(M), "bailing keeps the seep back")

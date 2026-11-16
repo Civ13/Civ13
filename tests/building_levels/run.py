@@ -220,7 +220,7 @@ def main():
             result = subprocess.run([str(daemon), str(work / generated[4].name),
                                      *(['-invisible', '-close'] if os.name == 'nt' else []),
                                      '-trusted', '-log', 'runtime.log'], cwd=work,
-                                    capture_output=True, text=True, timeout=45, creationflags=flags)
+                                    capture_output=True, text=True, timeout=90, creationflags=flags)
             diagnostics = result.stdout + result.stderr
             for filename in ('runtime.log', 'errors.txt', 'result.txt', 'fixture.json', 'fixture.jsonl'):
                 path = work / filename

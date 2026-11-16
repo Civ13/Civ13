@@ -2838,6 +2838,7 @@ RECIPE: /material/steel/,heavy armored locomotive kit,/obj/structure/train_car_k
 //*********************| IRON PRODUCTION & ECONOMY |**************************
 
 RECIPE: /material/iron/,iron anvil,/obj/structure/anvil,20,150,1,1,production,25,0,0,8,null
+RECIPE: /material/wood/soft/,quench tub,/obj/structure/quench_tub,8,120,1,1,production,25,0,0,8,null
 RECIPE: /material/iron/,armor repair bench,/obj/structure/repair/workbench,16,180,1,1,production,25,0,0,8,null
 
 RECIPE: /material/iron/,engine maker,/obj/item/weapon/enginemaker,5,80,0,1,tools,115,0,0,8,null

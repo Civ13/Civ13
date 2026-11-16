@@ -1496,7 +1496,7 @@ SUITES = {
             'code/game/mob/living/carbon/human/human_needs.dm')},
     # Station water tanks and running water feeds; source checks only.
     'station_water': {'files': ('tests/station_water/test_station_water.py',),
-        'paths': ('tests/station_water/', 'code/modules/1713/station_water.dm'), 'shared_paths': (
+        'paths': ('tests/station_water/', 'code/modules/1713/station_water.dm', 'code/modules/1713/quench_tub.dm'), 'shared_paths': (
             'code/modules/1713/aqueducts.dm',
             'code/modules/1713/factory_plumbing.dm',
             'config/craft_needs.json',
@@ -1599,13 +1599,15 @@ SUITES = {
         'paths': ('tests/bone_armor/',), 'shared_paths': (
             'config/crafting/', 'code/modules/1713/apparel_stoneage.dm', 'code/__defines/maps.dm')},
 
-    # Razor grooming guard and hygiene-gated razor recipes; source checks only.
-    'razor_grooming': {'files': ('tests/razor_grooming/test_razor.py',),
+    # Razor grooming guard, hygiene-gated razor recipes and hair regrowth pace; source checks only.
+    'razor_grooming': {'files': ('tests/razor_grooming/test_razor.py', 'tests/razor_grooming/test_hair_growth.py'),
         'paths': ('tests/razor_grooming/',), 'shared_paths': (
             'code/game/objects/items/weapons/material/misc.dm',
             'config/crafting/material_recipes_global.txt',
             'code/modules/research_tree/research_node.dm',
-            'code/modules/research_tree/book_pages.dm')},
+            'code/modules/research_tree/book_pages.dm',
+            'code/game/mob/living/carbon/human/human_life.dm',
+            'code/modules/persistence/region_travel.dm')},
 
     # Stdlib-only startup loader projection with inert file/log boundaries.
     # Existing startup/source-adapter coverage is retained additively.
