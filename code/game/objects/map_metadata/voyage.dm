@@ -565,9 +565,9 @@
 
 	proc/crew_log_data()
 		var/list/entries = list()
-		// Preserve the existing world-wide non-dead human roster, including NPCs
-		// and non-pirate jobs; this is a renderer migration, not a roster rewrite.
-		for(var/mob/living/human/HM in world)
+		// Every non-dead human, including NPCs and non-pirate jobs, from the
+		// human list rather than a walk over everything in the world.
+		for(var/mob/living/human/HM in human_mob_list)
 			if (HM.stat != DEAD)
 				var/t_title = HM.original_job_title
 				if (t_title == "Pirate")

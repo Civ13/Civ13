@@ -12,6 +12,10 @@
 	var/client/pending_transfer_client
 	var/render_generation = 0
 	var/list/latest_data
+	// Digest of the last snapshot this page was sent.
+	var/last_sent
+	// TRUE from an accepted button press until the next snapshot is sent.
+	var/reply_owed = FALSE
 
 // The modern screen ships as its own three files, sent in open(). The classic
 // NanoUI scripts, styles and images are never used by it.
@@ -29,6 +33,8 @@
 	frontend_ready = FALSE
 	frontend_acknowledged = FALSE
 	pending_transfer_client = null
+	last_sent = null
+	reply_owed = FALSE
 	if (!plain_page)
 		var/datum/asset/assets = get_asset_datum(/datum/asset/simple/civ13_tgui)
 		assets.send(user)
@@ -122,8 +128,15 @@
 	update_status(FALSE)
 	if (!state || !frontend_ready || (status == STATUS_DISABLED && !force_push))
 		return
-	var/list/send_data = get_send_data(data)
-	user << output(list2params(list(strip_improper(json_encode(send_data)))), "[window_id].browser:receiveUpdateData")
+	var/json = strip_improper(json_encode(get_send_data(data)))
+	// An automatic refresh that changes nothing is not sent again. A button
+	// press always gets its answer, changed or not.
+	var/digest = md5(json)
+	if (digest == last_sent && !force_push && !reply_owed)
+		return
+	last_sent = digest
+	reply_owed = FALSE
+	user << output(list2params(list(json)), "[window_id].browser:receiveUpdateData")
 
 // Opens this owner's window for a user, or refreshes the one already open.
 // state may be a topic state or the type of one to create for a new window;
@@ -214,6 +227,7 @@
 	for (var/key in params)
 		if (!istext(key) || !(key in keys) || (!istext(params[key]) && !isnum(params[key])))
 			return
+	reply_owed = TRUE
 	if (act_typed(action, params))
 		return
 	var/list/legacy = href_form(action, params)

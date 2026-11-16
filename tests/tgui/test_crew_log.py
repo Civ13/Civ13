@@ -36,7 +36,7 @@ class CrewLogContract(unittest.TestCase):
         self.assertLess(OPEN.index('default_state.can_use_topic'),OPEN.index('var/list/data = crew_log_data()'))
 
     def test_projected_roster_retains_non_dead_world_humans_npcs_and_non_pirate_jobs(self):
-        self.assertIn('for(var/mob/living/human/HM in world)',DATA)
+        self.assertIn('for(var/mob/living/human/HM in human_mob_list)',DATA)
         condition=re.search(r'if \((HM\.stat .+)\)',DATA).group(1).replace('HM.stat','stat')
         pirate,sailor=re.search(r'if \(t_title == "([^"]+)"\)\n\s+t_title = "([^"]+)"',DATA).groups()
         strip,replacement=re.search(r'replacetext\(HM\.original_job_title,"([^"]*)","([^"]*)"\)',DATA).groups()

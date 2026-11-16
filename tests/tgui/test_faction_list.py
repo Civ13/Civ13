@@ -20,7 +20,7 @@ class FactionListContract(unittest.TestCase):
 
     def test_preserves_explicit_tally_and_all_non_dead_humans_without_player_or_member_filter(self):
         for marker in ('map.facl = list()', 'map.custom_faction_nr.len', 'map.facl += list(map.custom_faction_nr[i] = nu)',
-                       'map.facl[relf] = 0', 'for (var/mob/living/human/H in world)',
+                       'map.facl[relf] = 0', 'for (var/mob/living/human/H in human_mob_list)',
                        'if (relf == H.civilization && H.stat != DEAD)', 'map.facl[relf] += 1', 'if (map.facl[relf] > 0)'):
             self.assertIn(marker, OPEN)
         self.assertNotIn('H.client', OPEN)
