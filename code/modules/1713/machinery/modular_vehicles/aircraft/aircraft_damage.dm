@@ -109,7 +109,7 @@
 			return
 		var/gear = !A.airframe_damage
 		to_chat(user, SPAN_NOTICE(gear ? "You start welding the bent landing gear..." : "You start welding the torn airframe..."))
-		if (do_after(user, 60, src) && istype(A) && !A.airborne())
+		if (do_after(user, trade_time(user, 60, "mechanic"), src) && istype(A) && !A.airborne())
 			if (gear)
 				A.mend_landing_gear()
 				to_chat(user, SPAN_NOTICE("The landing gear is fixed. The plane can roll again."))

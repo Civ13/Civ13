@@ -335,7 +335,7 @@
 /obj/structure/gunbench/proc/do_rechamber(var/obj/item/weapon/gun/projectile/P, var/choice, var/mob/living/human/H)
 	to_chat(H, "You start converting \the [P] into [choice]...")
 	playsound(loc, 'sound/effects/gunbench.ogg', 100, TRUE)
-	if (do_after(H, 100, src))
+	if (do_after(H, trade_time(H, 100, "gunsmith"), src))
 		switch (choice)
 			if ("7.92x57mm Mauser")
 				P.caliber = "a792x57"
@@ -795,7 +795,7 @@
 	using_steel = bpsource.cost_steel
 	to_chat(user, "You begin crafting the [bpsource.custom_name]...")
 	playsound(loc, 'sound/effects/gunbench.ogg', 100, TRUE)
-	if (do_after(user,200,src))
+	if (do_after(user,trade_time(user, 200, "gunsmith"),src))
 		if (!bpsource)
 			return
 		if (wood_amt < bpsource.cost_wood)

@@ -88,6 +88,11 @@ var/global/list/trait_list = list(
 	"Physician" = list(0,list("Engineer","Strategist","Naturalist","Agronomist"),"Field of study. Medicine research x1.4 and its scholarship grows 25% faster. Other disciplines except Basic Mathematics: research x0.9, scholarship grows 25% slower, their chapters take 15% longer to study. Can also be taken or dropped in play from the Scholarship tab."),
 	"Autistic" = list(0,list(),"You study your special interest with deep, sustained focus: its chapters take 20% less time. Changing subjects takes settling in: the first chapter after you switch to a different discipline takes 35% longer. Your interest is your field of study, or one you choose from the Scholarship tab."),
 	"ADHD" = list(0,list(),"You take in new material in fast bursts: the first minute of a reading sitting goes 30% faster, and the first five minutes at a research bench 20% faster. Long unbroken sessions wear on you: reading slows by 20% after three minutes, and bench work by 10% after twenty."),
+	"Mechanic" = list(0,list("Gunsmith","Smith","Tailor","Carpenter"),"Trade. Your vehicle, aircraft, engine and submarine work takes 40% less time. Work of the other trades takes 10% longer. Crafting skill and recipes are not affected. Can also be taken or dropped in play with Choose trade."),
+	"Gunsmith" = list(0,list("Mechanic","Smith","Tailor","Carpenter"),"Trade. Your gunsmithing, black powder gun assembly and fletching takes 30% less time. Work of the other trades takes 10% longer. Crafting skill and recipes are not affected. Can also be taken or dropped in play with Choose trade."),
+	"Smith" = list(0,list("Mechanic","Gunsmith","Tailor","Carpenter"),"Trade. Your anvil and metal workbench work takes 25% less time. Work of the other trades takes 10% longer. Crafting skill and recipes are not affected. Can also be taken or dropped in play with Choose trade."),
+	"Tailor" = list(0,list("Mechanic","Gunsmith","Smith","Carpenter"),"Trade. Your dressmaking and crafting from cloth, hides and leather takes 25% less time. Work of the other trades takes 10% longer. Crafting skill and recipes are not affected. Can also be taken or dropped in play with Choose trade."),
+	"Carpenter" = list(0,list("Mechanic","Gunsmith","Smith","Tailor"),"Trade. Your crafting from wood and stone, and woodworking takes 8% less time. Work of the other trades takes 10% longer. Crafting skill and recipes are not affected. Can also be taken or dropped in play with Choose trade."),
 
 )
 
@@ -117,7 +122,7 @@ var/global/list/trait_list = list(
 	return rand(1, upper)
 
 // Bounded, biased sampling of valid prefixes, not uniform sampling of all sets.
-// The current catalog has 56 entries. Refuse oversized future catalogs rather
+// The current catalog has 61 entries. Refuse oversized future catalogs rather
 // than silently truncating eligibility or letting a click do unbounded work.
 /proc/random_zero_point_traits(datum/trait_random_source/random_source = null)
 	if (!islist(trait_list) || trait_list.len > 64)

@@ -6,7 +6,8 @@
 // the picker offers them as one choice and swaps instead of refusing.
 var/global/list/trait_categories = list(
 	list("id" = "playstyle", "title" = "Playstyle", "note" = "A way of playing. Each has its own strength and its own price.", "pick_one" = TRUE),
-	list("id" = "study", "title" = "Field of study", "note" = "", "pick_one" = TRUE),
+	list("id" = "study", "title" = "Field of study", "note" = "Optional. Faster research in one discipline, a little slower in the others. Basic Mathematics is never affected.", "pick_one" = TRUE),
+	list("id" = "trade", "title" = "Trade", "note" = "Optional. Your own kind of hands-on work goes faster, other trades a little slower. Can be held with a field of study.", "pick_one" = TRUE),
 	list("id" = "body", "title" = "Body and build", "note" = "", "pick_one" = FALSE),
 	list("id" = "health", "title" = "Health and diet", "note" = "", "pick_one" = FALSE),
 	list("id" = "senses", "title" = "Senses and speech", "note" = "", "pick_one" = FALSE),
@@ -18,6 +19,7 @@ var/global/list/trait_categories = list(
 var/global/list/trait_category_members = list(
 	"playstyle" = list("Recluse Scholar", "Menacing", "Hardened Fighter", "Quartermaster", "Green Thumb", "Tinkerer", "Wanderer", "Rallying Voice"),
 	"study" = list("Engineer", "Strategist", "Naturalist", "Agronomist", "Physician"),
+	"trade" = list("Mechanic", "Gunsmith", "Smith", "Tailor", "Carpenter"),
 	"body" = list("Dwarfism", "Short", "Tall", "Gigantism", "Agile", "Slowness", "Flat Footed", "Deep Lungs", "Asthmatic", "Strong Back", "Bad Back", "Steady Hands", "Butterfingers", "Baldness"),
 	"health" = list("Strong Immune System", "Weak Immune System", "Hemophilia", "Thick Skinned", "Low Pain Tolerance", "Heat Tolerance", "Heat Sensitivity", "Cold Tolerance", "Cold Sensitivity", "Light Eater", "Glutton", "Vegan", "Carnivore"),
 	"senses" = list("Blind", "Nearsighted", "Farsighted", "Deaf", "Mute", "Stutter"),

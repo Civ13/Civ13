@@ -1704,6 +1704,7 @@
 		if (H && H.getStatCoeff("strength"))
 			buildtime /= H.getStatCoeff("strength")
 			buildtime /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
+			buildtime *= H.trade_time_mult(stack_trade()) // trades (trade_traits.dm)
 
 		buildtime = round(buildtime)
 

@@ -287,7 +287,7 @@
 			cantdo = TRUE
 		if (!cantdo)
 			visible_message("[H] starts repairing \the [mwheel.ntype]...")
-			if (do_after(H, 200, src))
+			if (do_after(H, trade_time(H, 200, "mechanic"), src))
 				visible_message("[H] successfully repairs \the [mwheel.ntype].")
 				mwheel.broken = FALSE
 				mwheel.update_icon()

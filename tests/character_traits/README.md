@@ -122,6 +122,12 @@ Autistic special interest and switch cost, and the ADHD reading and bench pace.
 python3 tests/ecology_spawning/run_linux.py . tests/character_traits/study_fields_probe.dm
 ```
 
+The same probe covers the optional trades in
+`code/game/mob/living/carbon/human/trade_traits.dm` (Mechanic, Gunsmith, Smith,
+Tailor, Carpenter): own-trade waits, the x1.1 cost on other trades, untagged
+work left alone, the material classifier for stack crafting, and holding a trade
+alongside a field of study.
+
 ## Nearsighted and Farsighted
 
 `sight_probe.dm` is a native probe for the sight traits: which eyewear corrects

@@ -65,6 +65,8 @@ class AnvilStackRecipe(unittest.TestCase):
                    do_after=wait, qdel=discard,
                    # No trip hammer or machine beside this anvil: the job takes its base time.
                    forge_time=lambda base, category=None: base,
+                   # No trade (trade_traits.dm): the wait is unchanged.
+                   trade_time=lambda user, delay, kind: delay,
                    to_chat=lambda user, message: self.messages.append(message),
                    update_icon=lambda: None,
                    note_craft_practice=lambda user, path: None,

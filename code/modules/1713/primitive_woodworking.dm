@@ -253,7 +253,7 @@
 	if (wedge)
 		wedge.woodwork_owner = src
 	to_chat(user, SPAN_NOTICE("You begin working the wood ([mode]). Keep the materials and tools in place."))
-	var/completed = do_after(user, spec["delay"] / user.getStatCoeff("strength"), source)
+	var/completed = do_after(user, trade_time(user, spec["delay"] / user.getStatCoeff("strength"), "carpenter"), source)
 	var/success = completed && commit()
 	release()
 	if (success)

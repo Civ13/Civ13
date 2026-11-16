@@ -219,6 +219,8 @@ var/global/list/region_travel_carry_types = list(
 		P["traits"] = carried_traits
 	if(study_field_lock > world.realtime)
 		P["study_field_lock"] = study_field_lock
+	if(trade_lock > world.realtime)
+		P["trade_lock"] = trade_lock
 	if(study_interest in scholar_disciplines)
 		P["study_interest"] = study_interest
 	// People and languages travel whole (region_travel_tongues.dm).
@@ -287,6 +289,7 @@ var/global/list/region_travel_carry_types = list(
 	if(("tongues" in P) && !region_travel_tongues_valid(P["tongues"])) return null
 	if(("traits" in P) && !region_travel_traits_valid(P["traits"])) return null
 	if(("study_field_lock" in P) && !isnum(P["study_field_lock"])) return null
+	if(("trade_lock" in P) && !isnum(P["trade_lock"])) return null
 	if(("study_interest" in P) && !(P["study_interest"] in scholar_disciplines)) return null
 	var/owner = P["owner"]
 	if(!persistence_owner_valid(owner) || length(owner) > 32) return null
@@ -500,6 +503,8 @@ var/global/list/region_travel_carry_types = list(
 		H.traits_dirty = TRUE
 	if(isnum(P["study_field_lock"]))
 		H.study_field_lock = P["study_field_lock"]
+	if(isnum(P["trade_lock"]))
+		H.trade_lock = P["trade_lock"]
 	if(P["study_interest"] in scholar_disciplines)
 		H.study_interest = P["study_interest"]
 	H.gender = P["gender"]
