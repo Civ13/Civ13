@@ -152,7 +152,7 @@ class TeamsAndRushing(unittest.TestCase):
             self.assertIn(part, panel)
     def test_the_rush_button_reaches_the_bench(self):
         self.assertIn('href_list["toggle_rush"]', read("code/modules/research_tree/research_bench.dm"))
-        self.assertIn('"toggle_rush"', read("code/modules/nano/tgui.dm"))
+        self.assertIn('"toggle_rush"', read("code/modules/research_tree/research_bench.dm").split("/obj/structure/research_bench/ui_actions(ui_key)", 1)[1].split("\n/", 1)[0])
         self.assertIn('action="toggle_rush"', read("tgui/src/interfaces/Research.tsx"))
         self.assertIn("'toggle_rush'", read("UI/templates/research_bench.tmpl"))
 class LateLines(unittest.TestCase):

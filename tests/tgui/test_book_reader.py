@@ -1,6 +1,7 @@
 """Source-derived offline projections only; no native DM/client execution."""
 from pathlib import Path
 import json,re,unittest
+import reader_base
 from book_projection import SOURCE,ROOT,Budget,body,parser,project
 
 BOOK=(ROOT/'code/modules/1713/book.dm').read_text(encoding='utf-8')
@@ -94,19 +95,21 @@ class BookReaderContract(unittest.TestCase):
   self.assertIn('color=[P ? P.colour : "black"]',writer)
   self.assertIn('[get_signature(P, user)]',writer)
  def test_detached_owner_lifecycle_and_close_noninterference(self):
-  state=body(SOURCE,'/datum/topic_state/book_reader/can_use_topic(var/src_object, var/mob/user)')
-  for token in ['!user.client','!book','src_object != book','user != reader','user.client != reader_client','return STATUS_CLOSE','return STATUS_UPDATE']:
+  state=reader_base.STATE
+  for token in ['!user.client','!subject','src_object != subject','user != reader','reader_allowed(user)','return STATUS_CLOSE']:
    self.assertIn(token,state)
+  self.assertEqual(reader_base.rule(SOURCE,'book_reader'),'user.client == reader_client')
   self.assertNotIn('in_range',state);self.assertNotIn('ishuman',state)
-  update=body(SOURCE,'/datum/nanoui/tgui/book_reader/update(var/force_open = FALSE)')
+  self.assertIn('fixed_classic_page = TRUE',SOURCE.split('/datum/nanoui/tgui/snapshot/book_reader\n',1)[1])
+  update=reader_base.UPDATE
   self.assertIn('push_data(null, TRUE)',update);self.assertNotIn('dat',update.replace('push_data','').replace('update_status',''))
   self.assertIn('ui.use_on_close_logic(FALSE)',SOURCE)
   self.assertNotIn('using_object =',SOURCE)
-  close=body(SOURCE,'/datum/nanoui/tgui/book_reader/close()')
+  close=body(reader_base.BASE,'/datum/nanoui/tgui/snapshot/close()')
   self.assertLess(close.index('reader_closed = TRUE'),close.index('return ..()'))
   self.assertIn('legacy_snapshot = null',close)
   self.assertIn('if (reader_closed)\n\t\treturn',close)
-  get_html=body(SOURCE,'/datum/nanoui/tgui/book_reader/get_html()')
+  get_html=body(reader_base.BASE,'/datum/nanoui/tgui/snapshot/get_html()')
   self.assertIn('can_use_topic',get_html)
   self.assertIn('return legacy_snapshot',get_html)
   self.assertLess(get_html.index('can_use_topic'),get_html.index('return legacy_snapshot'))
@@ -114,14 +117,14 @@ class BookReaderContract(unittest.TestCase):
   with self.assertRaisesRegex(AssertionError,'Unprojected'):
    parser(SOURCE.replace('var/cursor = 5','var/cursor = 6'))
  def test_projected_lease_rejects_logout_transfer_and_wrong_book(self):
-  state=body(SOURCE,'/datum/topic_state/book_reader/can_use_topic(var/src_object, var/mob/user)')
-  condition=re.search(r'if \((.+)\)',state)[1]
-  expression=re.sub(r'!(?!=)','not ',condition.replace('||','or'))
+  # The shared guard binds book and body; the book adds that the connection is the one that opened it.
+  rule=reader_base.rule(SOURCE,'book_reader');self.assertEqual(rule,'user.client == reader_client')
   class Reader:
    def __init__(self,client):self.client=client
   book=object();linked_client=object();reader=Reader(linked_client)
   def closed(user,source=book,live_book=book):
-   return bool(eval(expression,{'__builtins__':{}},dict(user=user,src_object=source,book=live_book,reader=reader,reader_client=linked_client)))
+   same=bool(user) and eval(rule.replace(' == ',' is '),{'__builtins__':{}},dict(user=user,reader_client=linked_client))
+   return not reader_base.allowed(live_book,source,user,reader,connected=bool(user and user.client),rule=same)
   self.assertFalse(closed(reader)) # Same owner remains admitted, with no distance/type seam.
   self.assertTrue(closed(None));self.assertTrue(closed(reader,object()));self.assertTrue(closed(reader,live_book=None))
   self.assertTrue(closed(Reader(linked_client))) # Transfer to another body.

@@ -2,13 +2,14 @@
 from pathlib import Path
 import re
 import unittest
+import reader_base
 
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE = (ROOT / 'code/game/mob/groups/religions.dm').read_text(errors='replace')
 VERB = SOURCE.split('/mob/proc/religion_list()', 1)[1].split('/mob/proc/show_religion_list()', 1)[0]
-OPEN = SOURCE.split('/mob/proc/show_religion_list()', 1)[1].split('/datum/nanoui/tgui/religion_list/update', 1)[0]
-UPDATE = SOURCE.split('/datum/nanoui/tgui/religion_list/update', 1)[1].split('/datum/topic_state/religion_list/can_use_topic', 1)[0]
-STATE = SOURCE.split('/datum/topic_state/religion_list/can_use_topic', 1)[1]
+OPEN = SOURCE.split('/mob/proc/show_religion_list()', 1)[1].split('/datum/topic_state/reader/religion_list/reader_allowed', 1)[0]
+RULE = reader_base.rule(SOURCE, 'religion_list')
+UPDATE = reader_base.UPDATE
 
 
 class ReligionListContract(unittest.TestCase):
@@ -29,21 +30,18 @@ class ReligionListContract(unittest.TestCase):
         self.assertNotRegex(OPEN, r'map\.\w+\s*(?:\+=|-=|=(?!=))')
 
     def test_state_projection_preserves_observer_and_dead_owner_access_and_rejects_stale_owners(self):
-        guard = re.search(r'if \((.+)\)\n\t\treturn STATUS_CLOSE', STATE).group(1)
-        expression = guard.replace('!user.client', 'not connected').replace('!map.civilizations', 'not civilizations').replace('!map', 'not has_map').replace('!user', 'not user').replace('||', 'or')
-        def allowed(source, user, connected=True, has_map=True, civilizations=True):
-            return not eval(expression, {'__builtins__': {}}, dict(src_object=source, user=user, connected=connected, has_map=has_map, civilizations=civilizations))
+        # The shared guard binds the window to its owner; this window adds the mode rule.
+        self.assertEqual(RULE, 'map && map.civilizations')
+        self.assertIn('var/datum/topic_state/reader/religion_list/reader_state = new(user, user)', OPEN)
+        allowed = reader_base.allowed
         for kind in ('human', 'observer', 'dead owner'):
             owner = object()
-            self.assertTrue(allowed(owner, owner), kind)
-            self.assertFalse(allowed(object(), owner), kind)
-            self.assertFalse(allowed(owner, owner, connected=False), kind)
-            self.assertFalse(allowed(owner, owner, has_map=False), kind)
-            self.assertFalse(allowed(owner, owner, civilizations=False), kind)
-        self.assertFalse(allowed(None, None))
-        self.assertIn('return STATUS_UPDATE', STATE)
-        self.assertNotIn('STATUS_INTERACTIVE', STATE)
-        self.assertNotRegex(STATE, r'ishuman|isliving|stat|shared_nano_interaction|religious_leader')
+            self.assertTrue(allowed(owner, owner, owner, owner), kind)
+            self.assertFalse(allowed(owner, object(), owner, owner), kind)
+            self.assertFalse(allowed(owner, owner, owner, owner, connected=False), kind)
+            self.assertFalse(allowed(owner, owner, owner, owner, rule=False), kind)
+        self.assertFalse(allowed(None, None, None, None))
+        self.assertNotRegex(RULE, r'ishuman|isliving|stat|shared_nano_interaction|religious_leader|civilization ==')
 
     def test_close_is_noninterfering_and_state_and_snapshot_are_bound_to_this_mob(self):
         for marker in ('ui.use_on_close_logic(FALSE)', 'ui.open()', '_state = reader_state', 'var/mob/user = src', 'var/ui_key = "religion_list"'):
@@ -54,9 +52,10 @@ class ReligionListContract(unittest.TestCase):
         self.assertNotIn('artillery_window', OPEN)
 
     def test_manager_refresh_checks_owner_and_only_sends_status_without_querying_points(self):
-        for marker in ('!user || src_object != user || !state', 'close()', 'push_data(null, TRUE)'):
+        for marker in ('!user || !src_object || !state', 'close()', 'push_data(null, TRUE)'):
             self.assertIn(marker, UPDATE)
-        self.assertLess(UPDATE.index('src_object != user'), UPDATE.index('push_data(null, TRUE)'))
+        self.assertLess(UPDATE.index('close()'), UPDATE.index('push_data(null, TRUE)'))
+        self.assertIn('new /datum/nanoui/tgui/snapshot(user, src, ui_key,', OPEN)
         self.assertNotIn('map.custom_religions', UPDATE)
         self.assertNotIn('show_religion_list()', UPDATE)
         self.assertNotIn('set_auto_update', OPEN + UPDATE)

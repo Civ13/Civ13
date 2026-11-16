@@ -404,7 +404,7 @@ if source_path.exists():
             x[field]=[canon(value) for value in x.get(field,[]) if isinstance(value,str)]
         outputs=[(o,'conditional yield') for o in x.get('outputs',[]) if isinstance(o,str)]
         inputs=[(i,'conditional') for i in x.get('inputs',[]) if isinstance(i,str)]
-        if outputs:add(x['name'],'Acquisition / processing', inputs or [('source:'+x['name'],'see source inputs')],outputs,x['file'],x.get('line',1),x.get('conditions',x.get('gate',''))+'; '+x.get('status','')+'; outputs may be alternatives, not a simultaneous bundle.')
+        if outputs:add(x['name'],'Acquisition / processing', inputs or [('source:'+x['name'],'see source inputs')],outputs,x['file'],x.get('line',1),x.get('conditions',x.get('gate','')))
 # Curated player acquisition routes, separate from raw production occurrences.
 acquisition={}
 for route in data['sources'].get('mechanisms',[]) if isinstance(data['sources'],dict) else []:

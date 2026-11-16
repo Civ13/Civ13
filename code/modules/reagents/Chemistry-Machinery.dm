@@ -119,6 +119,9 @@
   *
   * @return nothing
   */
+/obj/structure/chemical_dispenser/ui_actions(ui_key)
+	return list("amount", "dispense", "ejectBeaker")
+
 /obj/structure/chemical_dispenser/ui_interact(mob/user, ui_key = "main",var/datum/nanoui/ui = null, var/force_open = TRUE)
 	if (user.stat || user.restrained()) return
 	var/mob/living/human/H = user

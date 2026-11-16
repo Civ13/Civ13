@@ -589,23 +589,13 @@ obj/structure/altar/iron
 	var/ui_key = "religion_list"
 	var/datum/nanoui/ui = GLOB.nanomanager.try_update_ui(user, src, ui_key, null, data, TRUE)
 	if (!ui)
-		var/datum/topic_state/religion_list/reader_state = new()
-		ui = new /datum/nanoui/tgui/religion_list(user, src, ui_key, "religion_list.tmpl", "Religion List", 450, 450, _state = reader_state)
+		var/datum/topic_state/reader/religion_list/reader_state = new(user, user)
+		ui = new /datum/nanoui/tgui/snapshot(user, src, ui_key, "religion_list.tmpl", "Religion List", 450, 450, _state = reader_state)
 		ui.use_on_close_logic(FALSE)
 		ui.set_initial_data(data)
 		ui.open()
 
-// Keep the old snapshot semantics: only invoking the verb rebuilds the list.
-// Manager refreshes still validate ownership/status without polling map data.
-/datum/nanoui/tgui/religion_list/update(var/force_open = FALSE)
-	if (!user || src_object != user || !state)
-		close()
-		return
-	push_data(null, TRUE)
-
 // The original /mob reader is also registered for observers on nomad maps.
 // Do not introduce living/conscious/human or religion-membership restrictions.
-/datum/topic_state/religion_list/can_use_topic(var/src_object, var/mob/user)
-	if (!user || src_object != user || !user.client || !map || !map.civilizations)
-		return STATUS_CLOSE
-	return STATUS_UPDATE
+/datum/topic_state/reader/religion_list/reader_allowed(mob/user)
+	return map && map.civilizations

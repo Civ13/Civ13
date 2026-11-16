@@ -96,6 +96,9 @@
 
 	return FALSE
 
+/datum/nano_module/appearance_changer/ui_actions(ui_key)
+	return list("race", "gender", "skin_tone", "skin_color", "hair", "hair_color", "facial_hair", "facial_hair_color", "eye_color")
+
 /datum/nano_module/appearance_changer/ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = TRUE, var/datum/topic_state/_state = default_state)
 	if (!owner || !owner.species)
 		return

@@ -147,18 +147,13 @@
 	var/list/data = character_notes_ui_data(discovery_snapshot)
 	var/ui_key = "character_notes"
 	if (islist(user.open_uis))
-		for (var/datum/nanoui/tgui/character_notes/old_ui in user.open_uis.Copy())
+		for (var/datum/nanoui/tgui/snapshot/character_notes/old_ui in user.open_uis.Copy())
 			if (istype(old_ui) && old_ui.user == user && old_ui.src_object != src)
 				old_ui.close()
-	var/datum/nanoui/tgui/character_notes/ui = GLOB.nanomanager.get_open_ui(user, src, ui_key)
-	if (ui)
-		var/datum/topic_state/character_notes/old_state = ui.state
-		if (!istype(ui) || !istype(old_state) || old_state.mind != src || old_state.reader != user)
-			ui.close()
-			ui = null
+	var/datum/nanoui/tgui/snapshot/character_notes/ui = open_reader_ui(user, src, ui_key, /datum/nanoui/tgui/snapshot/character_notes, /datum/topic_state/reader/character_notes)
 	if (!ui)
-		var/datum/topic_state/character_notes/reader_state = new(src, user)
-		ui = new /datum/nanoui/tgui/character_notes(user, src, ui_key, "character_notes.tmpl", "Notes", 625, 650, _state = reader_state)
+		var/datum/topic_state/reader/character_notes/reader_state = new(src, user)
+		ui = new /datum/nanoui/tgui/snapshot/character_notes(user, src, ui_key, "character_notes.tmpl", "Notes", 625, 650, _state = reader_state)
 		ui.use_on_close_logic(FALSE)
 	ui.legacy_snapshot = legacy_snapshot
 	if (isnull(data))
@@ -169,44 +164,10 @@
 	ui.open()
 	return TRUE
 
-/datum/nanoui/tgui/character_notes
-	var/legacy_snapshot
-	var/reader_closed = FALSE
+// The classic renderer is the complete cached Notes page.
+/datum/nanoui/tgui/snapshot/character_notes
+	fixed_classic_page = TRUE
 
-/datum/nanoui/tgui/character_notes/get_html()
-	var/datum/topic_state/character_notes/reader_state = state
-	if (!istype(reader_state) || reader_state.can_use_topic(src_object, user) == STATUS_CLOSE)
-		return ""
-	if (legacy_renderer)
-		return legacy_snapshot
-	return ..()
-
-/datum/nanoui/tgui/character_notes/update(var/force_open = FALSE)
-	if (!user || !src_object || !state)
-		close()
-		return
-	if (legacy_renderer)
-		update_status(FALSE)
-	else
-		push_data(null, TRUE)
-
-/datum/nanoui/tgui/character_notes/close()
-	if (reader_closed)
-		return
-	reader_closed = TRUE
-	legacy_snapshot = null
-	return ..()
-
-/datum/topic_state/character_notes
-	var/datum/mind/mind
-	var/mob/reader
-
-/datum/topic_state/character_notes/New(datum/mind/new_mind, mob/new_reader)
-	..()
-	mind = new_mind
-	reader = new_reader
-
-/datum/topic_state/character_notes/can_use_topic(var/src_object, var/mob/user)
-	if (!user || !user.client || !mind || src_object != mind || user != reader || user.mind != mind)
-		return STATUS_CLOSE
-	return STATUS_UPDATE
+// Notes belong to one mind: a body that no longer holds it loses the window.
+/datum/topic_state/reader/character_notes/reader_allowed(mob/user)
+	return user.mind == subject

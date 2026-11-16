@@ -343,15 +343,15 @@ describe('Crafting Atlas requirement notes', () => {
     fireEvent.click(screen.getByRole('button', { name: /honeycomb/ }));
     expect(sent(props).resource).toBe('/obj/item/honeycomb');
     view.rerender(<CraftingAtlas {...ui({ query: '', detail: null, guidance: { ...page, id: '/mob/living/simple_animal/sheep', name: 'sheep', kind: 'Animal' } })} />);
-    expect(screen.getByText(/A living creature, not something you craft/)).toBeTruthy();
+    expect(screen.getByText(/A living creature. Look for it/)).toBeTruthy();
     view.rerender(<CraftingAtlas {...ui({ query: '', detail: null, guidance: { ...page, id: '/turf/floor/grass', name: 'grass', kind: 'Terrain', heading: 'Gathering from' } })} />);
     expect(screen.getByText(/Part of the landscape/)).toBeTruthy();
     // A reference entry is a type page, not a claim about the current map.
     view.rerender(<CraftingAtlas {...ui({ query: '', detail: null, guidance: { ...page, id: '/obj/item/clothing/head/kepi', name: 'kepi', kind: 'Clothing', used_in_count: 0, entity: true } })} />);
-    expect(screen.getByText(/Reference entry\. No recipe makes or uses this/)).toBeTruthy();
+    expect(screen.getByText(/Reference entry\. It may be found/)).toBeTruthy();
     expect(screen.getByText('Reference')).toBeTruthy();
     view.rerender(<CraftingAtlas {...ui({ query: '', detail: null, guidance: { ...page, id: '/mob/living/simple_animal/hostile/bear', name: 'bear', kind: 'Animal', entity: true } })} />);
-    expect(screen.getByText(/A living creature, not something you craft/)).toBeTruthy();
+    expect(screen.getByText(/A living creature. Look for it/)).toBeTruthy();
   });
   it('lifts time and placement out of generated bookkeeping and keeps real notes', () => {
     expect(notes('Legacy research I/M/M: 0/0/0; maximum era ordinal 8; time 80 deciseconds; category none; one per turf 0; floor 1; supplied material null. Research-node and map gates also apply. Explicit research node: weaving.'))

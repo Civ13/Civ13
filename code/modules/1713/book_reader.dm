@@ -224,15 +224,10 @@
 		budget.units_left -= length(title_snapshot) + length(name_snapshot)
 		runs = book_page_parse(visible_snapshot, budget)
 	var/ui_key = "book_reader"
-	var/datum/nanoui/tgui/book_reader/ui = GLOB.nanomanager.get_open_ui(reader, src, ui_key)
-	if (ui)
-		var/datum/topic_state/book_reader/old_state = ui.state
-		if (!istype(ui) || !istype(old_state) || old_state.book != src || old_state.reader != reader || old_state.reader_client != reader.client)
-			ui.close()
-			ui = null
+	var/datum/nanoui/tgui/snapshot/book_reader/ui = open_reader_ui(reader, src, ui_key, /datum/nanoui/tgui/snapshot/book_reader, /datum/topic_state/reader/book_reader)
 	if (!ui)
-		var/datum/topic_state/book_reader/reader_state = new(src, reader)
-		ui = new /datum/nanoui/tgui/book_reader(reader, src, ui_key, "book_reader.tmpl", "Book", 625, 650, _state = reader_state)
+		var/datum/topic_state/reader/book_reader/reader_state = new(src, reader)
+		ui = new /datum/nanoui/tgui/snapshot/book_reader(reader, src, ui_key, "book_reader.tmpl", "Book", 625, 650, _state = reader_state)
 		ui.use_on_close_logic(FALSE)
 	ui.legacy_snapshot = legacy_snapshot
 	if (isnull(runs))
@@ -245,46 +240,20 @@
 	ui.open()
 	return TRUE
 
-/datum/nanoui/tgui/book_reader
-	var/legacy_snapshot
-	var/reader_closed = FALSE
+// The classic renderer is the complete existing book page.
+/datum/nanoui/tgui/snapshot/book_reader
+	fixed_classic_page = TRUE
 
-/datum/nanoui/tgui/book_reader/get_html()
-	var/datum/topic_state/book_reader/reader_state = state
-	if (!istype(reader_state) || reader_state.can_use_topic(src_object, user) == STATUS_CLOSE)
-		return ""
-	if (legacy_renderer)
-		return legacy_snapshot
-	return ..()
-
-/datum/nanoui/tgui/book_reader/update(var/force_open = FALSE)
-	if (!user || !src_object || !state)
-		close()
-		return
-	if (legacy_renderer)
-		update_status(FALSE)
-	else
-		push_data(null, TRUE)
-
-/datum/nanoui/tgui/book_reader/close()
-	if (reader_closed)
-		return
-	reader_closed = TRUE
-	legacy_snapshot = null
-	return ..()
-
-/datum/topic_state/book_reader
-	var/obj/item/weapon/book/book
-	var/mob/reader
+// A book page stays with the connection that opened it, not only the body.
+/datum/topic_state/reader/book_reader
 	var/client/reader_client
 
-/datum/topic_state/book_reader/New(obj/item/weapon/book/new_book, mob/new_reader)
+/datum/topic_state/reader/book_reader/New(datum/new_subject, mob/new_reader)
 	..()
-	book = new_book
-	reader = new_reader
 	reader_client = new_reader.client
 
-/datum/topic_state/book_reader/can_use_topic(var/src_object, var/mob/user)
-	if (!user || !user.client || !book || src_object != book || user != reader || user.client != reader_client)
-		return STATUS_CLOSE
-	return STATUS_UPDATE
+/datum/topic_state/reader/book_reader/reader_allowed(mob/user)
+	return user.client == reader_client
+
+/datum/topic_state/reader/book_reader/bound_to(datum/expected_subject, mob/expected_reader)
+	return ..() && expected_reader && reader_client == expected_reader.client
