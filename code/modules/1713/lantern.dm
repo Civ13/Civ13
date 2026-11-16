@@ -187,6 +187,8 @@
 	refuel_reagents = list("fat_oil" = 60, "olive_oil" = 60, "cornoil" = 60, "sunflower_oil" = 60, "linseed_oil" = 60, "petroleum" = 60)
 	empty_message = "is out of oil"
 	open_flame = TRUE
+	// What the pole was built from; dismantling returns a handle and some of it.
+	var/frame_material = "wood"
 
 /obj/item/flashlight/tiki_torch/update_icon()
 	..()

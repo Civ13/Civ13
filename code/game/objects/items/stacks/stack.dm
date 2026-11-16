@@ -1892,6 +1892,12 @@
 			var/obj/covers/floor = O
 			floor.building_finish_floor()
 
+		// A tiki torch remembers its pole material so dismantling returns the same.
+		if (istype(O, /obj/item/flashlight/tiki_torch) && istype(src, /obj/item/stack/material))
+			var/obj/item/stack/material/pole_stack = src
+			var/obj/item/flashlight/tiki_torch/tiki = O
+			if (pole_stack.material)
+				tiki.frame_material = pole_stack.material.name
 		// Tailoring: the project is made of whichever woven fabric paid for it.
 		if (istype(O, /obj/item/tailoring_project))
 			var/obj/item/tailoring_project/project = O

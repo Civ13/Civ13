@@ -176,6 +176,28 @@ class LightFuelTests(unittest.TestCase):
         self.assertIn('burn_out_light()', loop)
         self.assertNotIn('qdel(src)', loop)
 
+    def test_unlit_tiki_torches_come_apart_into_handle_and_wood(self):
+        fuel = source(FUEL)
+        self.assertIn('var/frame_material = "wood"', type_block(source(LANTERN), '/obj/item/flashlight/tiki_torch'))
+        hit = proc_body(fuel, '/obj/item/flashlight/tiki_torch/attackby')
+        self.assertIn('/obj/item/weapon/reagent_containers/food/snacks/animalfat', hit)
+        self.assertIn('dismantle_tiki_torch(user)', hit)
+        tool = proc_body(fuel, '/proc/tiki_torch_dismantle_tool')
+        self.assertIn('is_tool(W, TOOL_HAMMER)', tool)
+        self.assertIn('W.edge || W.sharp', tool)
+        body = proc_body(fuel, '/obj/item/flashlight/tiki_torch/proc/dismantle_tiki_torch')
+        # Mapped fixtures and lit torches stay; the do_after rechecks both.
+        self.assertLess(body.index('if (unlimited)'), body.index('do_after(user'))
+        self.assertLess(body.index('if (on)'), body.index('do_after(user'))
+        self.assertIn('QDELETED(src) || on', body)
+        self.assertIn('take_apart_tiki_torch()', body)
+        apart = proc_body(fuel, '/obj/item/flashlight/tiki_torch/proc/take_apart_tiki_torch')
+        self.assertIn('/obj/item/weapon/material/handle/H = new(T, M.name)', apart)
+        self.assertIn('new M.stack_type(T, TIKI_TORCH_REFUND)', apart)
+        self.assertIn('#define TIKI_TORCH_REFUND 2', fuel)
+        crafted = source('code/game/objects/items/stacks/stack.dm')
+        self.assertIn('tiki.frame_material = pole_stack.material.name', crafted)
+
     def test_recipes(self):
         for path in sorted((ROOT / 'config/crafting').glob('material_recipes_*.txt')):
             text = path.read_text(encoding='utf-8')
