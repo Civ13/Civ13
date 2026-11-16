@@ -34,6 +34,7 @@ def project(source, declaration, name, args, namespace, builder=False):
         if builder:
             code = re.sub(r'\bdone\b', 'src.done', code)
             code = re.sub(r'\btarget_type\b', 'src.target_type', code)
+            code = re.sub(r'locate\(src\.target_type\) in (\w+)', r'find_damaged(\1)', code)
         code = code.replace('locate(/obj/roof) in T', 'has_roof(T)')
         code = code.replace('locate(/obj/covers) in above', 'has_cover(above)')
         code = code.replace('/area/caribbean/no_mans_land', 'NO_MANS_LAND')
@@ -42,8 +43,11 @@ def project(source, declaration, name, args, namespace, builder=False):
         code = re.sub(r'\bnull\b', 'None', code)
         code = re.sub(r'\bTRUE\b', 'True', code)
         code = re.sub(r'\bFALSE\b', 'False', code)
+        code = re.sub(r'= (\w+) \? (.+) : (.+)$', r'= (\2 if \1 else \3)', code)
         if code.startswith('if (') and code.endswith(')'):
             code = 'if ' + code[4:-1] + ':'
+        elif code.startswith('else if (') and code.endswith(')'):
+            code = 'elif ' + code[9:-1] + ':'
         elif code == 'else':
             code = 'else:'
         lines.append('    ' * indent + code)
@@ -76,7 +80,11 @@ class RoofProjection:
                    has_cover=lambda t: bool(t.covers),
                    building_supported_height=lambda t: t.supported,
                    building_open_turf=lambda t: bool(t and t.open),
-                   locate=lambda x, y, z: self.upper if z == 2 else None,
+                   locate=lambda x, y, z: self.upper if self.upper and z == self.upper.z else None,
+                   building_design_error=lambda t: None if t.supported else "unsupported",
+                   building_upper_z=lambda z: z + 1 if self.world.maxz > z else 0,
+                   building_grows_from=lambda z: z == self.world.maxz,
+                   practice_room_z=0, building_stack_room=lambda z: False,
                    building_allocate_level=self.allocate_level,
                    building_item_usable=lambda s, u: s.loc == u and not s.deleted,
                    get_dist=lambda u, t: u.distance,
@@ -127,7 +135,8 @@ class RoofProjection:
             source.deleted = True
             source.loc = None
 
-        self.env.update(src=item, get_turf=lambda u: u.loc,
+        self.env.update(src=item, get_turf=lambda u: u.loc, find_damaged=lambda t: None,
+                        building_floor_above_error=lambda t: None,
                         get_step=lambda u, d: self.site, ishuman=lambda u: False,
                         building_confirm=lambda u, d: True,
                         building_wait=lambda u, t, start: not cancel,
@@ -246,9 +255,9 @@ class RoofTests(unittest.TestCase):
 
     def test_negative_controls_detect_old_abort_and_null_floor(self):
         source = CORE.read_text(encoding='utf-8')
-        old = '\tif (T.z == world.maxz)\n\t\tbuilding_allocate_level(T.z + 1)'
+        old = '\tif (building_grows_from(T.z))\n\t\tbuilding_allocate_level(world.maxz + 1)'
         self.assertEqual(source.count(old), 1)
-        abort = source.replace(old, '\tif (T.z == world.maxz and not building_allocate_level(T.z + 1))\n\t\treturn null')
+        abort = source.replace(old, '\tif (building_grows_from(T.z) and not building_allocate_level(world.maxz + 1))\n\t\treturn null')
         f = RoofProjection(abort)
         self.assertIsNone(f.construct(f.site, True), 'old allocation abort control must lose roof')
         guard = '\tif (!above)\n\t\treturn R // Allocation was refused: the paid roof still provides shelter.\n'
