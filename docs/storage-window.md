@@ -90,3 +90,22 @@ sweeps the tile.
 or mob in range lists everything inside, nested bags included, with each thing's
 size, the players who have searched it and the faction that filled it. It is
 read-only and marks nothing as seen.
+
+## Racks
+
+`storage_racks.dm` adds open wooden frames, each a storage container that takes
+one kind of thing and draws what it holds on its pegs (shrunk overlays at
+`rack_spots`, the points the sprites in `icons/obj/storage_racks.dmi` leave free;
+drawn by `tests/sprites/create_storage_racks.py`):
+
+| Rack | Research | Holds | Slots |
+| --- | --- | --- | --- |
+| Peg post | Primitive Construction | hats, clothes, bags, tools | 4 |
+| Tool rack | Basic Furniture | tools | 5 |
+| Weapon rack | Basic Furniture | weapons, bows, guns, shields | 4 |
+| Coat stand | Fine Furniture | coats, cloaks, hats, bags | 4 |
+| Clothes rail | Fine Furniture | clothing | 5 |
+
+All are crafted from wood, open the storage window, have Dump Out, count toward
+a tidy room and burn like other wooden stores. They take no lock. Food on a rack
+keeps no better than on the floor.
