@@ -76,6 +76,10 @@ python3 tools/player_activity/aggregate.py --db <root>/player-activity.sqlite --
 python3 tools/player_activity/aggregate.py --db <root>/player-activity.sqlite --forget <account>
 ```
 
+In the launcher's Host tab, All regions > More > **Player activity…** shows the
+same report. It runs `shard_group.py --config <group.json> activity`, which reads
+new lines from every region first and says which regions have the recorder on.
+
 The report shows active players for 1, 7 and 30 days, new players this week,
 session count and median length, playtime per region, deaths by cause (all and
 in the first session hour), travel between lands, refused trips, lag by player

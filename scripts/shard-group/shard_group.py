@@ -18,6 +18,7 @@ build, config and map_saves, so regions never share a save or a lock:
     python shard_group.py --config group.json expedition-land --region ID --template T.json [--key X,Y]
     python shard_group.py --config group.json expedition-archive --region ID
     python shard_group.py --config group.json expedition-status
+    python shard_group.py --config group.json activity                      # player activity report (launcher)
     python shard_group.py --config group.json ports                         # every port, who holds it, clashes
     python shard_group.py --config group.json set-gate --region ID [--apply]  # make ID the front door (group_ports.py)
     python shard_group.py --config group.json set-port --region ID --port N [--apply]
@@ -41,6 +42,7 @@ import argparse
 import contextlib
 import filecmp
 import hashlib
+import io
 import json
 import os
 from pathlib import Path
@@ -71,7 +73,7 @@ GROUP_ACTIONS = ('setup', 'status', 'start', 'stop', 'restart', 'update', 'freez
                  'kill', 'force-restart', 'stage', 'enrol', 'help-status', 'help-start', 'help-stop', 'unlock', 'force-unlock',
                  'config-apply', 'config-migrate', 'handover', 'epoch', 'fresh-world', 'group-fresh-world', 'update-offline',
                  'update-unsaved', 'expedition-land', 'expedition-archive', 'expedition-status', 'expedition-open',
-                 'players', 'send-players', 'magic-whitelist', 'ports', 'set-gate', 'set-port')
+                 'players', 'send-players', 'magic-whitelist', 'activity', 'ports', 'set-gate', 'set-port')
 # send-players landings (region_admin_send.dm): the nearest dry shore facing the source,
 # exact coordinates, or the destination's normal arrival point.
 SEND_LANDINGS = ('shore', 'coords', 'arrival')
@@ -2700,9 +2702,7 @@ def ingest_player_activity(group, now=None):
     dirs = {r['id']: region_dir(group, r['id']) for r in group['regions']}
     if not any((folder / 'data' / 'player_activity').is_dir() for folder in dirs.values()):
         return None
-    if str(TRANSFER_TOOLS.parents[1]) not in sys.path:
-        sys.path.insert(0, str(TRANSFER_TOOLS.parents[1]))
-    from tools.player_activity import aggregate
+    aggregate = player_activity_module()
     db = aggregate.connect(player_activity_db(group))
     try:
         read = aggregate.ingest(db, dirs)
@@ -2710,6 +2710,48 @@ def ingest_player_activity(group, now=None):
         db.close()
     stamp.write_text(str(int(now)), encoding='utf-8')
     return read
+
+
+def player_activity_module():
+    if str(TRANSFER_TOOLS.parents[1]) not in sys.path:
+        sys.path.insert(0, str(TRANSFER_TOOLS.parents[1]))
+    from tools.player_activity import aggregate
+    return aggregate
+
+
+def player_activity_recording(group):
+    """The regions whose config/config.txt switches the recorder on (PLAYER_ACTIVITY 1)."""
+    on = []
+    for r in group['regions']:
+        path = region_dir(group, r['id']) / 'config' / 'config.txt'
+        try:
+            line = active_settings(path.read_text(encoding='utf-8', errors='replace')).get('PLAYER_ACTIVITY', '')
+        except OSError:
+            continue
+        if line.split(' ', 1)[1:] and line.split(' ', 1)[1].strip() == '1':
+            on.append(r['id'])
+    return on
+
+
+def player_activity_report(group, now=None):
+    """The launcher's Player activity window: read new lines from every region now, then
+    the host report (totals by account key only; no IPs, chat or positions are recorded)."""
+    now = time.time() if now is None else now
+    aggregate = player_activity_module()
+    dirs = {r['id']: region_dir(group, r['id']) for r in group['regions']}
+    db = aggregate.connect(player_activity_db(group))
+    try:
+        read = aggregate.ingest(db, dirs)
+        data = aggregate.report(db, now=now)
+    finally:
+        db.close()
+    (Path(group['root']) / 'player-activity.stamp').write_text(str(int(now)), encoding='utf-8')
+    text = io.StringIO()
+    aggregate.print_report(data, text)
+    recording = player_activity_recording(group)
+    return {'db': str(player_activity_db(group)), 'read': read, 'recording': recording,
+            'off': [r['id'] for r in group['regions'] if r['id'] not in recording],
+            'active': data['active'], 'text': text.getvalue()}
 
 
 def supervise(group, start=detach):
@@ -3091,6 +3133,10 @@ def main(argv=None):
             if args.region:
                 raise Refused('the magic whitelist is shared by the whole group; leave out --region')
             result = magic_whitelist(group, args.add, args.remove)
+        elif args.action == 'activity':
+            if args.region:
+                raise Refused('player activity covers the whole group; leave out --region')
+            result = player_activity_report(group)
         elif args.action == 'ports':
             result = group_ports.report(this, group)
         elif args.action in ('set-gate', 'set-port'):

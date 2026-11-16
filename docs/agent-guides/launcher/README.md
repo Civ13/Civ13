@@ -11,6 +11,12 @@ activation still apply to those actions. Missing native, graphical or
 save/load evidence belongs in the report and never blocks a source fix.
 Do not turn an evidence limitation into a new approval requirement.
 
+<!-- 2026-11-16: Player activity window -->
+Val asked (2026-11-15) for player metadata: who is active and what they do. All regions > More > **Player
+activity…** (Gui/PlayerActivityDialog.cs, PlayerActivity.cs, launcher 1.5.26) runs `shard_group.py activity`,
+which reads new lines from every region into `<group root>/player-activity.sqlite` and returns the report text
+plus which regions record (`PLAYER_ACTIVITY 1`). Read-only; see docs/player-activity.md.
+
 <!-- 2026-11-15: Magic whitelist dialog -->
 Val asked (2026-11-15) that magic and patrons be gated by a whitelist like the old TDM job whitelist. All regions >
 More > **Magic whitelist…** (Gui/MagicWhitelistDialog.cs, MagicWhitelist.cs) runs `shard_group.py magic-whitelist

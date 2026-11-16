@@ -219,6 +219,16 @@ static class LocalHostingTests {
         var magic = MagicWhitelist.Parse(0, "noise\n{\"ok\": true, \"file\": \"D:/x/gaia/SQL/magic_whitelist.txt\", \"keys\": [\"ann\", \"<b>\", \"cid\"], \"added\": [\"cid\"], \"removed\": []}");
         Require(magic.Ok && magic.Keys.SequenceEqual(["ann", "cid"]) && magic.Added.SequenceEqual(["cid"]) && magic.Removed.Count == 0 && magic.File!.EndsWith("magic_whitelist.txt"), "magic whitelist parse");
         Require(!MagicWhitelist.Parse(1, "{\"ok\": false, \"refused\": \"give up to 20 player keys\"}").Ok && !MagicWhitelist.Parse(1, "").Ok, "magic whitelist refusal");
+        // Player activity window (PlayerActivity, shard_group.py activity): a read-only report for the whole group.
+        Require(PlayerActivity.Step(host.Control!).ArgumentList.SequenceEqual(
+            new[] { "-I", "-B", shard, "--config", groupConfig, "activity" }), "player activity argv");
+        var activity = PlayerActivity.Parse(0, "noise\n{\"ok\": true, \"db\": \"D:/x/player-activity.sqlite\", \"read\": 12, \"recording\": [\"gaia\", \"<b>\"], " +
+            "\"off\": [\"europe\"], \"active\": {\"day\": 3, \"week\": 9, \"month\": 20}, \"text\": \"Player activity\\nActive players: 3 today\\u0007\"}");
+        Require(activity.Ok && activity.Recording.SequenceEqual(["gaia"]) && activity.Off.SequenceEqual(["europe"]) && activity.Read == 12
+            && activity.ActiveToday == 3 && activity.ActiveWeek == 9 && activity.Text == "Player activity" + Environment.NewLine + "Active players: 3 today"
+            && PlayerActivity.Describe(activity).StartsWith("Recording: gaia. Off: europe."), "player activity parse");
+        Require(PlayerActivity.Describe(PlayerActivity.Parse(0, "{\"ok\": true, \"recording\": [], \"off\": [\"gaia\"], \"text\": \"\"}")).Contains("PLAYER_ACTIVITY 1"), "player activity off hint");
+        Require(!PlayerActivity.Parse(1, "{\"ok\": false, \"refused\": \"player activity covers the whole group\"}").Ok && !PlayerActivity.Parse(1, "").Ok, "player activity refusal");
         var groupStep = LocalHosting.GroupStep(host.Control!, "stop");
         Require(groupStep.FileName == python && groupStep.CreateNoWindow && !groupStep.UseShellExecute && groupStep.RedirectStandardInput &&
             groupStep.ArgumentList.SequenceEqual(new[] { "-I", "-B", shard, "--config", groupConfig, "stop" }), "group argv changed: " + string.Join(" ", groupStep.ArgumentList));
