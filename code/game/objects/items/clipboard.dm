@@ -43,6 +43,8 @@
 			return
 
 /obj/item/weapon/clipboard/update_icon()
+	if (GLOB.nanomanager)
+		GLOB.nanomanager.update_uis(src)
 	overlays.Cut()
 	if (toppaper)
 		overlays += toppaper.icon_state
@@ -73,28 +75,34 @@
 	return
 
 /obj/item/weapon/clipboard/attack_self(mob/user as mob)
-	var/dat = "<title>Clipboard</title>"
-	if (haspen)
-		dat += "<A href='?src=\ref[src];pen=1'>Remove Pen</A><BR><HR>"
-	else
-		dat += "<A href='?src=\ref[src];addpen=1'>Add Pen</A><BR><HR>"
+	ui_interact(user)
+	add_fingerprint(user)
+
+/obj/item/weapon/clipboard/ui_actions(ui_key)
+	return list("pen", "addpen", "write", "read", "look", "rename", "remove")
+
+/obj/item/weapon/clipboard/ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = TRUE)
+	var/list/sections = list()
+	sections += list(panel_section("Pen", rows = list(panel_row("Pen", haspen ? "Clipped on" : "None", haspen ? "good" : "muted",
+		list(haspen ? panel_button("Remove Pen", "pen") : panel_button("Add Pen", "addpen"))))))
 
 	//The topmost paper. I don't think there's any way to organise contents in byond, so this is what we're stuck with.	-Pete
 	if (toppaper)
 		var/obj/item/weapon/paper/P = toppaper
-		dat += "<A href='?src=\ref[src];write=\ref[P]'>Write</A> <A href='?src=\ref[src];remove=\ref[P]'>Remove</A> <A href='?src=\ref[src];rename=\ref[P]'>Rename</A> - <A href='?src=\ref[src];read=\ref[P]'>[P.name]</A><BR><HR>"
+		sections += list(panel_section("Top paper", items = list(panel_item(P.name, null, list(
+			panel_button("Read", "read", "\ref[P]"), panel_button("Write", "write", "\ref[P]"),
+			panel_button("Rename", "rename", "\ref[P]"), panel_button("Remove", "remove", "\ref[P]"))))))
 
+	var/list/items = list()
 	for (var/obj/item/weapon/paper/P in src)
 		if (P==toppaper)
 			continue
-		dat += paper_document_container_row(src, P, "read")
+		items += list(paper_document_container_row(P, "read"))
 	for (var/obj/item/weapon/photo/Ph in src)
-		dat += paper_document_container_row(src, Ph, "look")
-
-	show_browse(user, dat, "window=clipboard")
-	onclose(user, "clipboard")
-	add_fingerprint(usr)
-	return
+		items += list(paper_document_container_row(Ph, "look", "Look"))
+	if (items.len || !toppaper)
+		sections += list(panel_section(toppaper ? "Underneath" : "Papers", items = items, empty = "The clipboard is empty."))
+	open_panel(user, name, 460, 460, sections, ui = ui, force_open = force_open)
 
 /obj/item/weapon/clipboard/Topic(href, href_list)
 	..()

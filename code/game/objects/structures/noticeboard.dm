@@ -28,6 +28,7 @@
 			O.loc = src
 			notices++
 			icon_state = "nboard0[notices]"	//update sprite
+			GLOB.nanomanager.update_uis(src)
 			to_chat(user, "<span class='notice'>You pin the paper to the noticeboard.</span>")
 		else
 			to_chat(user, "<span class='notice'>You reach to pin your paper to the board but hesitate. You are certain your paper will not be seen among the many others already attached.</span>")
@@ -42,13 +43,18 @@
 	if (!user)
 		user = usr
 	if (user.Adjacent(src))
-		var/dat = "<b>Noticeboard</b><BR>"
-		for (var/obj/item/weapon/paper/P in src)
-			dat += "<A href='?src=\ref[src];read=\ref[P]'>[P.name]</A> <A href='?src=\ref[src];write=\ref[P]'>Write</A> <A href='?src=\ref[src];remove=\ref[P]'>Remove</A><BR>"
-		show_browse(user, "<HEAD><TITLE>Notices</TITLE></HEAD>[dat]","window=noticeboard")
-		onclose(user, "noticeboard")
+		ui_interact(user)
 	else
 		..()
+
+/obj/structure/noticeboard/ui_actions(ui_key)
+	return list("read", "write", "remove")
+
+/obj/structure/noticeboard/ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = TRUE)
+	var/list/items = list()
+	for (var/obj/item/weapon/paper/P in src)
+		items += list(panel_item(P.name, null, list(panel_button("Read", "read", "\ref[P]"), panel_button("Write", "write", "\ref[P]"), panel_button("Remove", "remove", "\ref[P]"))))
+	open_panel(user, "Notices", 420, 400, list(panel_section("Noticeboard", items = items, empty = "Nothing is pinned here.")), ui = ui, force_open = force_open)
 
 /obj/structure/noticeboard/Topic(href, href_list)
 	if (..())
@@ -67,6 +73,7 @@
 			add_fingerprint(usr)
 			notices--
 			icon_state = "nboard0[notices]"
+			GLOB.nanomanager.update_uis(src)
 	if (href_list["write"])
 		if ((usr.stat || usr.restrained())) //For when a player is handcuffed while they have the notice window open
 			return

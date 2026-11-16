@@ -192,6 +192,27 @@ var/screens_runtime_error = FALSE
 	rows = agent_screen_rows(H)
 	screens_check(rows.len == 1 && findtext(rows[1]["data"], "No projectile loaded"), "a catapult shows its window")
 	GLOB.nanomanager.close_user_uis(H, sling)
+	// A held folder lists its papers; Remove hands one back and the list refreshes.
+	var/obj/item/weapon/folder/binder = new(H)
+	var/obj/item/weapon/paper/memo = new(binder)
+	memo.name = "memo"
+	binder.attack_self(H)
+	rows = agent_screen_rows(H)
+	screens_check(rows.len == 1 && findtext(rows[1]["data"], "memo") && ("rename" in rows[1]["actions"]), "a folder lists its papers with a button each")
+	screen_try(C, list("screen" = 1, "act" = "remove", "value" = "\ref[memo]"))
+	rows = agent_screen_rows(H)
+	screens_check(memo.loc != binder && findtext(rows[1]["data"], "The folder is empty."), "removing a paper takes it out of the folder and the list")
+	GLOB.nanomanager.close_user_uis(H, binder)
+	var/obj/structure/noticeboard/board = new(locate(9, 9, 1))
+	memo.loc = board
+	board.notices = 1
+	board.examine(H)
+	rows = agent_screen_rows(H)
+	screens_check(rows.len == 1 && findtext(rows[1]["data"], "memo") && ("write" in rows[1]["actions"]), "a notice board lists its pinned papers")
+	screen_try(C, list("screen" = 1, "act" = "remove", "value" = "\ref[memo]"))
+	rows = agent_screen_rows(H)
+	screens_check(memo.loc != board && findtext(rows[1]["data"], "Nothing is pinned here."), "removing a notice unpins it and the list refreshes")
+	GLOB.nanomanager.close_user_uis(H, board)
 	var/mob/living/human/screens_probe/P = new(locate(9, 9, 1))
 	P.species = new /datum/species/human
 	P.stat = CONSCIOUS

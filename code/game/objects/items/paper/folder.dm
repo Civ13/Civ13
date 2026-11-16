@@ -31,6 +31,8 @@
 	icon_state = "folder_sred"
 
 /obj/item/weapon/folder/update_icon()
+	if (GLOB.nanomanager)
+		GLOB.nanomanager.update_uis(src)
 	overlays.Cut()
 	if (contents.len)
 		overlays += "folder_paper"
@@ -49,18 +51,21 @@
 	return
 
 /obj/item/weapon/folder/attack_self(mob/user as mob)
-	var/dat = "<title>[name]</title>"
+	ui_interact(user)
+	add_fingerprint(user)
 
+/obj/item/weapon/folder/ui_actions(ui_key)
+	return list("read", "look", "browse", "rename", "remove")
+
+/obj/item/weapon/folder/ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = TRUE)
+	var/list/items = list()
 	for (var/obj/item/weapon/paper/P in src)
-		dat += paper_document_container_row(src, P, "read")
+		items += list(paper_document_container_row(P, "read"))
 	for (var/obj/item/weapon/photo/Ph in src)
-		dat += paper_document_container_row(src, Ph, "look")
+		items += list(paper_document_container_row(Ph, "look", "Look"))
 	for (var/obj/item/weapon/paper_bundle/Pb in src)
-		dat += paper_document_container_row(src, Pb, "browse")
-	show_browse(user, dat, "window=folder")
-	onclose(user, "folder")
-	add_fingerprint(usr)
-	return
+		items += list(paper_document_container_row(Pb, "browse", "Browse"))
+	open_panel(user, name, 420, 420, list(panel_section("Contents", items = items, empty = "The folder is empty.")), ui = ui, force_open = force_open)
 
 /obj/item/weapon/folder/Topic(href, href_list)
 	..()

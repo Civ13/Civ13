@@ -19,7 +19,12 @@ def owners():
 
 def undeclared(source):
     declared = set(re.findall(r'"([A-Za-z_]+)"', ''.join(re.findall(r'/ui_actions\([^)]*\)\n((?:\t.*\n)+)', source))))
-    return sorted(set(ACTION.findall(source)) - declared)
+    used = set(ACTION.findall(source))
+    # The shared document row adds an open action of the caller's choice plus rename and remove.
+    rows = re.findall(r'paper_document_container_row\(\w+, "([A-Za-z_]+)"', source)
+    if rows:
+        used |= set(rows) | {'rename', 'remove'}
+    return sorted(used - declared)
 
 
 class PanelTest(unittest.TestCase):
@@ -43,13 +48,15 @@ class PanelTest(unittest.TestCase):
         found = list(owners())
         self.assertGreaterEqual(len(found), 3)
         for path, source in found:
-            self.assertTrue(ACTION.findall(source) or 'panel_row(' in source, path.name)
+            self.assertTrue(ACTION.findall(source) or 'panel_row(' in source or 'paper_document_container_row(' in source, path.name)
             self.assertEqual(undeclared(source), [], path.name)
             self.assertNotRegex(source, r'show_browse\([^\n]*window=(safe|filingcabinet|tablet_press)', path.name)
 
     def test_negative_control_undeclared_action_is_reported(self):
         sample = '/obj/x/ui_actions(ui_key)\n\treturn list("open")\n\n/obj/x/ui_interact()\n\tpanel_button("[open ? "Close" : "Open"] it", "open")\n\tpanel_button("Take", "retrieve", "\\ref[P]")\n'
         self.assertEqual(undeclared(sample), ['retrieve'])
+        rows = '/obj/x/ui_actions(ui_key)\n\treturn list("read", "remove")\n\n/obj/x/ui_interact()\n\tpaper_document_container_row(P, "look", "Look")\n'
+        self.assertEqual(undeclared(rows), ['look', 'rename'])
 
     def test_object_refresh_reaches_manager_windows(self):
         objs = (ROOT / 'code/game/objects/objs.dm').read_text(encoding='utf-8', errors='replace')
