@@ -269,7 +269,6 @@
 	cold_protection = FEET
 	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
 	flammable = TRUE
-	can_hold_knife = FALSE
 
 // Stone Age (leather): warm soft boots for snow; poor in wet ground.
 /obj/item/clothing/shoes/weather/mukluks

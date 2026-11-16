@@ -492,7 +492,6 @@ def resource_knowledge(root):
     base = section(materials, '/material/New()', '/material/proc/get_blunt_damage()')
     placement = section(materials, '/material/proc/place_shard(var/turf/target)', '/material/proc/is_brittle()')
     shard = section(shards, '/obj/item/weapon/material/shard\n', '// Preset types')
-    shoes = section(clothing, '/obj/item/clothing/shoes/attackby', '/obj/item/clothing/shoes/proc/handle_movement')
     food = section(sandwich, '/obj/item/weapon/reagent_containers/food/snacks/csandwich/attackby', '/obj/item/weapon/reagent_containers/food/snacks/csandwich/proc/update()')
     default = next((line.strip() for line in materials.splitlines() if 'var/shard_type = SHARD_SHRAPNEL' in line), '')
     macros = '\n'.join(line for line in definitions.splitlines() if line.startswith(('#define SHARD_SHRAPNEL ', '#define SHARD_SHARD ')))
@@ -514,7 +513,7 @@ def resource_knowledge(root):
         if shard_override != (['SHARD_SHARD'] if material == 'glass' else []):
             raise ValueError('Reviewed material shard type changed: ' + material)
         text = ('CURRENT GAMEPLAY CODE (material shard: ' + alias + '):\n' + default + '\n' + macros +
-                '\n' + base + '\n' + placement + '\n' + details + '\n' + shard + '\n' + shoes + '\n' + food +
+                '\n' + base + '\n' + placement + '\n' + details + '\n' + shard + '\n' + food +
                 '\nThe display name is constructed from material and shard type. Shards are sharp items; '
                 'the code describes throwing and defines contact injury with stated protections. '
                 'These excerpts do not establish a material-specific crafting recipe or availability.')

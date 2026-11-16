@@ -179,7 +179,7 @@
 // but it only stays "lit" for a few seconds and needs a flint each time.
 /obj/item/weapon/flame/lighter/striker
 	name = "fire striker"
-	desc = "A curved steel strike-a-light. Hold a flint in your other hand and strike it to throw sparks for lighting candles and pipes."
+	desc = "A curved steel strike-a-light. Hold a flint in your other hand, or wear one in a belt pouch, and strike it to throw sparks for lighting candles and pipes."
 	icon = 'icons/obj/flint_mining.dmi'
 	icon_state = "striker"
 	item_state = "zippo"
@@ -200,8 +200,11 @@
 		snuff()
 		return
 	var/obj/item/weapon/flint/F = user.get_inactive_hand()
+	if (!istype(F) && ishuman(user)) // or a flint worn in a pouch at the belt (worn_tools.dm)
+		var/mob/living/human/H = user
+		F = H.reach_worn_tool(/obj/item/weapon/flint)
 	if (!istype(F))
-		to_chat(user, SPAN_WARNING("You need a flint in your other hand to strike \the [src] against."))
+		to_chat(user, SPAN_WARNING("You need a flint in your other hand, or in a pouch you are wearing, to strike \the [src] against."))
 		return
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 	playsound(get_turf(src), sound_toggleON, 30, TRUE)
