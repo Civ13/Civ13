@@ -326,7 +326,7 @@
 	if (using_cannon)
 		to_chat(src, "You stopped using [using_cannon.name].")
 		using_cannon.clear_aiming_line(src)
-		show_browse(src, null, "window=artillery_window")
+		GLOB.nanomanager.close_user_uis(src, using_cannon)
 		using_cannon.user = null
 		using_cannon = null
 
@@ -675,44 +675,26 @@
 	do_html(user)
 
 /obj/structure/cannon/proc/do_html(var/mob/m)
-
 	if (m)
-
 		max_distance = maxrange
+		ui_interact(m)
 
-		show_browse(m, {"
+/obj/structure/cannon/ui_actions(ui_key)
+	return list("load", "set_distance", "distance_1minus", "distance_10minus", "distance_1plus", "distance_10plus",
+		"set_azimuth", "azimuth_1minus", "azimuth_10minus", "azimuth_1plus", "azimuth_10plus", "fire")
 
-		<br>
-		<html>
-
-		<head>
-		[common_browser_style]
-		</head>
-
-		<body>
-
-		<script language="javascript">
-
-		function set(input) {
-		  window.location="byond://?src=\ref[src];action="+input.name+"&value="+input.value;
-		}
-
-		</script>
-
-		<center>
-		<big><b>[name]</b></big><br><br>
-		</center>
-		Shell: <a href='?src=\ref[src];load=1'>[loaded.len ? loaded[1].name : (autoloader ? "Click here to load shell" : "No shell loaded")]</a>[see_amount_loaded ? (loaded.len ? " <b>There are [loaded.len] [loaded[1].name]s loaded.</b>" : " <b>There is nothing loaded.</b>") : ""]<br><br>
-		Increase/Decrease distance: <a href='?src=\ref[src];distance_10minus=1'>-10</a> | <a href='?src=\ref[src];distance_1minus=1'>-1</a> | <a href='?src=\ref[src];set_distance=1'>[distance] meters</a> | <a href='?src=\ref[src];distance_1plus=1'>+1</a> | <a href='?src=\ref[src];distance_10plus=1'>+10</a><br><br>
-		Increase/Decrease angle: <a href='?src=\ref[src];azimuth_10minus=1'>-10</a> | <a href='?src=\ref[src];azimuth_1minus=1'>-1</a> | <a href='?src=\ref[src];set_azimuth=1'>[azimuth] azimuth</a> | <a href='?src=\ref[src];azimuth_1plus=1'>+1</a> | <a href='?src=\ref[src];azimuth_10plus=1'>+10</a><br><br>
-		<br>
-		<center>
-		<a href='?src=\ref[src];fire=1'><big><b>FIRE!</b></big></a>
-		</center>
-		</body>
-		</html>
-		<br>
-		"},  "window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=500x400")
+// The gun's laying window: the shell, the range and the bearing, and the firing button.
+// A gunner may sit a tile or more from the piece, so the window stays up while they are
+// conscious; Topic() checks the seat and stop_using_cannon() closes it.
+/obj/structure/cannon/ui_interact(mob/viewer, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = TRUE)
+	var/shell = loaded.len ? loaded[1].name : "No shell loaded"
+	if (see_amount_loaded)
+		shell = loaded.len ? "[loaded.len] [loaded[1].name]s loaded" : "Nothing loaded"
+	var/list/rows = list(
+		panel_row("Shell", shell, loaded.len ? null : "muted", list(panel_button(loaded.len ? "Unload" : "Load", "load"))),
+		panel_row("Distance", "[distance] meters", buttons = list(panel_button("-10", "distance_10minus"), panel_button("-1", "distance_1minus"), panel_button("Set", "set_distance"), panel_button("+1", "distance_1plus"), panel_button("+10", "distance_10plus"))),
+		panel_row("Angle", "[azimuth] azimuth", buttons = list(panel_button("-10", "azimuth_10minus"), panel_button("-1", "azimuth_1minus"), panel_button("Set", "set_azimuth"), panel_button("+1", "azimuth_1plus"), panel_button("+10", "azimuth_10plus"))))
+	open_panel(viewer, name, 520, 320, list(panel_section("Laying", rows = rows, buttons = list(panel_button("FIRE!", "fire")))), ui = ui, force_open = force_open, state = conscious_state)
 	//		<A href = '?src=\ref[src];topic_type=[topic_custom_input];continue_num=1'>
 
 /obj/structure/cannon/proc/face_dir(var/new_dir)

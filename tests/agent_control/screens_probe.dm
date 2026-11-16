@@ -179,6 +179,19 @@ var/screens_runtime_error = FALSE
 	rows = agent_screen_rows(H)
 	screens_check(rows.len == 1 && findtext(rows[1]["data"], "There is no container inserted!"), "an empty dart gun says it has no container")
 	GLOB.nanomanager.close_user_uis(H, dart)
+	// A gun's laying window stays up for a conscious gunner and closes when they stop using it.
+	var/obj/structure/cannon/gun = new(locate(9, 9, 1))
+	gun.do_html(H)
+	rows = agent_screen_rows(H)
+	screens_check(rows.len == 1 && findtext(rows[1]["data"], "FIRE!") && ("distance_10plus" in rows[1]["actions"]), "a cannon shows its laying window")
+	H.using_cannon = gun
+	H.stop_using_cannon()
+	screens_check(!agent_open_screens(H).len, "stopping use of the cannon closes its window")
+	var/obj/structure/catapult/sling = new(locate(9, 9, 1))
+	sling.do_html(H)
+	rows = agent_screen_rows(H)
+	screens_check(rows.len == 1 && findtext(rows[1]["data"], "No projectile loaded"), "a catapult shows its window")
+	GLOB.nanomanager.close_user_uis(H, sling)
 	var/mob/living/human/screens_probe/P = new(locate(9, 9, 1))
 	P.species = new /datum/species/human
 	P.stat = CONSCIOUS

@@ -146,7 +146,7 @@
 	if (using_turret)
 		using_turret.clear_aiming_line(src)
 		to_chat(src, SPAN_NOTICE("You have stopped using the [using_turret.name]."))
-		show_browse(src, null, "window=artillery_window")
+		GLOB.nanomanager.close_user_uis(src, using_turret)
 		using_turret = null
 
 /obj/structure/turret/proc/place_user(var/mob/living/M)
@@ -371,33 +371,18 @@
 			weapon_name = C.name
 			if(C.loaded.len >= 1)
 				loaded = C.loaded[1].name
-	show_browse(m, {"
+	open_panel(m, name, 420, 260, list(panel_section("Weapons", rows = list(
+		panel_row("Selected", weapon_name, buttons = list(panel_button("Switch", "switch"))),
+		panel_row("Loaded", loaded, buttons = list(panel_button("Load", "load")))))), state = conscious_state)
 
-	<br>
-	<html>
+/obj/structure/turret/ui_actions(ui_key)
+	return list("switch", "load")
 
-	<head>
-	[common_browser_style]
-	</head>
-
-	<body>
-
-	<script language="javascript">
-
-	function set(input) {
-	  window.location="byond://?src=\ref[src];action="+input.name+"&value="+input.value;
-	}
-
-	</script>
-	<center>
-	<big><b>[name]</b></big><br>
-	</center>
-	<big>Switch weapon:</big><br>
-	<big><a href='?src=\ref[src];switch=1'>[weapon_name]</a>|<a href='?src=\ref[src];load=1'>[loaded]</a></big><br>
-	</body>
-	</html>
-	<br>
-	"},  "window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=400x400")
+/obj/structure/turret/ui_interact(mob/viewer, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = TRUE)
+	if (viewer != gunner)
+		GLOB.nanomanager.close_user_uis(viewer, src)
+		return
+	do_html(viewer)
 
 /obj/structure/turret/bt7
 	turret_color = "#5c784f"

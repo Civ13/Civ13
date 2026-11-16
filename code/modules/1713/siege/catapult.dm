@@ -258,44 +258,18 @@
 	do_html(user)
 
 /obj/structure/catapult/proc/do_html(var/mob/m)
-
 	if (m)
-
 		max_distance = angle
+		ui_interact(m)
 
-		show_browse(m, {"
+/obj/structure/catapult/ui_actions(ui_key)
+	return list("load", "set_angle", "fire")
 
-		<br>
-		<html>
-
-		<head>
-		[common_browser_style]
-		</head>
-
-		<body>
-
-		<script language="javascript">
-
-		function set(input) {
-		  window.location="byond://?src=\ref[src];action="+input.name+"&value="+input.value;
-		}
-
-		</script>
-
-		<center>
-		<big><b>[name]</b></big><br><br>
-		</center>
-		Shell: <a href='?src=\ref[src];load=1'>[loaded ? loaded.name : "No projectile loaded"]</a><br><br>
-		Distance: <a href='?src=\ref[src];set_angle=1'>[angle] meters</a><br><br>
-		<br>
-		<center>
-		<a href='?src=\ref[src];fire=1'><big><b>FIRE!</b></big></a>
-		</center>
-
-		</body>
-		</html>
-		<br>
-		"},  "window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=500x500")
+/obj/structure/catapult/ui_interact(mob/viewer, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = TRUE)
+	var/list/rows = list(
+		panel_row("Projectile", loaded ? loaded.name : "No projectile loaded", loaded ? null : "muted", list(panel_button(loaded ? "Unload" : "Load", "load"))),
+		panel_row("Distance", "[angle] meters", buttons = list(panel_button("Set", "set_angle"))))
+	open_panel(viewer, name, 420, 280, list(panel_section("Laying", rows = rows, buttons = list(panel_button("FIRE!", "fire")))), ui = ui, force_open = force_open)
 	//		<A href = '?src=\ref[src];topic_type=[topic_custom_input];continue_num=1'>
 
 /obj/structure/catapult/verb/rotate_left()
