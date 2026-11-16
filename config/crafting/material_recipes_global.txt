@@ -2884,6 +2884,8 @@ RECIPE: /material/iron/,iron blast furnace,/obj/structure/furnace/blast_furnace,
 RECIPE: /material/iron/,iron furnace,/obj/structure/heatsource,15,140,1,1,production,0,87,0,8,null
 RECIPE: /material/iron/,mercury retort,/obj/structure/workshop_machine/mercury_retort,10,150,1,1,production,25,0,0,8,null
 RECIPE: /material/iron/,mercury flask,/obj/item/weapon/reagent_containers/glass/mercury_flask,2,60,0,1,production,25,0,0,8,null
+RECIPE: /material/wood/,sluice box,/obj/structure/placer_washer/sluice,6,120,1,1,production,0,0,0,8,null
+RECIPE: /material/wood/,gold rocker,/obj/structure/placer_washer/rocker,5,100,1,1,production,0,0,0,8,null
 
 
 RECIPE: /material/iron/,firearm maintenance bench,/obj/structure/repair/gun,18,180,1,1,production,25,70,0,8,null
