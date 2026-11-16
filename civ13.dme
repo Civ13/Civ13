@@ -1856,6 +1856,7 @@
 #include "code\modules\1713\rock_art.dm"
 #include "code\modules\1713\tribal_deeds.dm"
 #include "code\modules\1713\stone_age_rites.dm"
+#include "code\modules\1713\burial.dm"
 #include "code\modules\1713\barter.dm"
 #include "code\modules\1713\stone_age_extras.dm"
 #include "code\modules\1713\underground_excavation.dm"
