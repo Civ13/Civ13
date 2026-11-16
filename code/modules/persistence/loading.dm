@@ -260,6 +260,9 @@
 /map_storage/proc/rejuvenate_unowned_human_on_load()
 	return TRUE
 
+// Entries left out because their type was removed from the code since the save.
+/map_storage/var/removed_type_entries = 0
+
 /map_storage/proc/Load_Entry(savefile/savefile, var/ind, var/turf/old_turf, var/atom/starting_loc, var/atom/replacement, var/nocontents = 0, var/lag_fix = 0, var/defer_fields = FALSE)
 	try
 		TICK_CHECK
@@ -276,6 +279,15 @@
 		var/type = savefile["type"]
 		var/format_version = savefile["/format_version"]
 		if(!ispath(type, /datum))
+			// A type removed from the code since the save reads back as null. An
+			// object of it is left out (the fishing spots removed in #5620 stopped
+			// North America loading its save, 2026-11-16); a turf still refuses,
+			// since its tile cannot be left out.
+			if(isnull(type) && ("type" in savefile.dir) && !old_turf && !saved_turfs["[ind]"])
+				removed_type_entries++
+				if(removed_type_entries <= 5)
+					world.log << "World load: entry [ind] has a type this build no longer has; left out."
+				return null
 			throw EXCEPTION("Invalid saved type at entry [ind]: [type]")
 		// Older completed saves can contain client HUD graphs. Never construct
 		// their screen/datum objects without the live client owner they require.
