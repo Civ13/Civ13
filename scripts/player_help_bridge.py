@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = 'd05ab195b5feec1046d6f39ca75ef6387b6cdd9b'
+WIKI_REVIEWED_REVISION = '98245c843a574fd6ff94fa4e1fda6b4282d4d340'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('85a1bdb974d140a093a434fa3c472ebfd3187cd87991f7eb21a511d1476baabc', 'character skills traits languages'),
@@ -109,7 +109,7 @@ WIKI_REVIEWED_GUIDES = {
     'Blacksmith.md': ('73e814dbe4cda23643b735dc3d694e8c5b081bb082d6688a1e5d9cc81ee8816e', 'blacksmith role anvil forge colony'),
     'gamemodes/Game_Modes.md': ('aa29af667563cabab26238b30efc94f6e5ec44de1e1ef198bc3c96995e7da01b', 'game mode modes gamemode'),
     'gamemodes/Team_Combat.md': ('37102cd630a71889feff9884e1cc2cf8521fed380ad9404ad7ff6fa037748975', 'team combat tdm deathmatch siege king hill area control objectives grace'),
-    'gamemodes/Civilizations_and_Nomads.md': ('1d2bc5fe50143e10cf28bbd06354a672bab5e1cf8f488d98fc453bd00aa28b36', 'civilizations nomads gaia faction'),
+    'gamemodes/Civilizations_and_Nomads.md': ('b93f0fcc2ae0f0b15e0a191c00dc1453750964e320ecccc3c84b2cea08f3e83d', 'civilizations nomads gaia faction'),
     'gamemodes/Colony_Building.md': ('498a18c35178fc60be2ab365642ff9d2540dcc2033018472df5ec9d8e1cbbace', 'colony building colonist colonists'),
     'gamemodes/Survival_Scenarios.md': ('d0102e9cd9e34835ee673175271b91be2b1d69a69473569f2c0e4422d92c67d4', 'survival scenario scenarios stranded wasteland zombie'),
     'gamemodes/Battle_Royale.md': ('18d1e4cf951f943bd7a0f5030c1825bd82a77427349b086842a309e492c4d841', 'battle royale battleroyale'),
