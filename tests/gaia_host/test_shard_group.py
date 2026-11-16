@@ -2391,6 +2391,41 @@ class HandoverTests(unittest.TestCase):
         self.assertFalse(revision_file.exists() and revision_file.read_text().strip() == NEWER)
         self.assertFalse(host.lock.exists())
 
+    def test_a_standby_that_never_boots_is_stopped_and_the_world_keeps_running(self):
+        # North America, 2026-11-16: a standby still preparing a large map timed
+        # out and was left running, holding region.rsc against the next build.
+        group, host = self.staged()
+        query = self.machine.query
+        started = []
+
+        def silent(port, token, action='status', operation=None, session=None, extra=None):
+            if port == self.STANDBY:
+                raise OSError('busy preparing the map')
+            return query(port, token, action, operation, session, extra)
+        self.machine.query = silent
+        host.work('handover', host.request('handover')['operation'])
+        state = host.read_state()
+        self.assertEqual(state['phase'], 'failed', state)
+        self.assertIn('the standby world did not boot', state['error'])
+        self.assertIn((['kill_tree', 200], None), self.machine.calls, 'the standby is stopped')
+        self.assertIn(self.LIVE, self.machine.up, 'the old world keeps running')
+        self.assertNotIn('handover_save', [action for _, action, _ in self.actions])
+        self.assertTrue(host.update_pending())
+        self.assertFalse(host.lock.exists())
+
+    def test_the_standby_boot_waits_as_long_as_a_load(self):
+        group, host = self.staged()
+        host.config['start_timeout_seconds'], host.config['load_timeout_seconds'] = 300, 1800
+        waits = []
+        wait_world = host.wait_world
+
+        def recording(port, token, done, timeout, what, standby=False):
+            waits.append((what, timeout))
+            return wait_world(port, token, done, timeout, what, standby)
+        host.wait_world = recording
+        host.work('handover', host.request('handover')['operation'])
+        self.assertIn(('the standby world did not boot', 1800), waits)
+
     def test_a_failed_save_leaves_the_world_running_and_stops_the_standby(self):
         group, host = self.staged(save_error='World save failed; server remains running')
         host.work('handover', host.request('handover')['operation'])
