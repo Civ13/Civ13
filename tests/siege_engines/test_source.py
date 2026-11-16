@@ -23,6 +23,9 @@ class SiegeSource(unittest.TestCase):
                   'portcullis_closed', 'portcullis_open', 'portcullis_moving', 'drawbridge_down', 'drawbridge_up',
                   'murder_hole'):
             self.assertIn(s, states)
+        for s in ('closed', 'open', 'moving'):          # the sections of a wide portcullis
+            for end in 'wcenms':
+                self.assertIn('portcullis_%s_%s' % (s, end), states)
         self.assertTrue({'trebuchet0', 'trebuchet1', 'trebuchet_fire'} <= dmi_states('icons/obj/trebuchet.dmi'))
         self.assertTrue({'siege_tower', 'siege_tower_bridge'} <= dmi_states('icons/obj/siege_tower.dmi'))
 
