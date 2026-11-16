@@ -17820,6 +17820,118 @@
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified",
       "source_commit": "49f5eaca"
+    },
+    {
+      "name": "Fire gilding",
+      "file": "code/modules/1713/mercury_crafts.dm",
+      "line": 69,
+      "inputs": [
+        "/obj/item/stack/ore/amalgam/gold",
+        "/obj/item/stack/ore/amalgam/gold_pressed"
+      ],
+      "outputs": [],
+      "tools": [
+        "/obj/structure/brazier",
+        "/obj/structure/furnace"
+      ],
+      "steps": [
+        "Hold a copper, bronze, brass or silver piece in one hand.",
+        "Use gold amalgam on a lit fire, brazier or furnace."
+      ],
+      "conditions": "The piece becomes gilded and worth more. The quicksilver fumes poison everyone within two tiles.",
+      "era": "Bronze Working.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified",
+      "source_commit": "6b54c258"
+    },
+    {
+      "name": "Silvering a wall mirror",
+      "file": "code/modules/1713/mercury_crafts.dm",
+      "line": 142,
+      "inputs": [
+        "/obj/structure/mirror/unsilvered",
+        "/obj/item/stack/material/tin",
+        "/datum/reagent/mercury"
+      ],
+      "outputs": [
+        "/obj/structure/mirror"
+      ],
+      "tools": [],
+      "steps": [
+        "Use a sheet of tin on an unsilvered mirror.",
+        "Pour 5 units of quicksilver over it."
+      ],
+      "conditions": "Silvering gives off a little quicksilver vapour.",
+      "era": "Sanitation.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified",
+      "source_commit": "6b54c258"
+    },
+    {
+      "name": "Filling a mercury barometer or thermometer",
+      "file": "code/modules/1713/mercury_crafts.dm",
+      "line": 226,
+      "inputs": [
+        "/obj/item/weapon/barometer/empty",
+        "/obj/item/weapon/thermometer/empty",
+        "/datum/reagent/mercury"
+      ],
+      "outputs": [
+        "/obj/item/weapon/barometer",
+        "/obj/item/weapon/thermometer"
+      ],
+      "tools": [],
+      "steps": [
+        "Pour quicksilver into the empty instrument: 5 units for a barometer, 2 for a thermometer."
+      ],
+      "conditions": "The tube is sealed once filled.",
+      "era": "Optics and Instruments.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified",
+      "source_commit": "6b54c258"
+    },
+    {
+      "name": "Carroted felt",
+      "file": "code/modules/1713/mercury_crafts.dm",
+      "line": 275,
+      "inputs": [
+        "/obj/item/stack/material/pelt",
+        "/datum/reagent/mercury"
+      ],
+      "outputs": [
+        "/obj/item/stack/carroted_felt"
+      ],
+      "tools": [],
+      "steps": [
+        "Pour quicksilver from an open vessel onto a pelt."
+      ],
+      "conditions": "One pelt and 2 units of quicksilver give 2 felt; the hatter breathes a little vapour.",
+      "era": "Haberdashery.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified",
+      "source_commit": "6b54c258"
+    },
+    {
+      "name": "Felt hats",
+      "file": "code/modules/1713/mercury_crafts.dm",
+      "line": 256,
+      "inputs": [
+        "/obj/item/stack/carroted_felt"
+      ],
+      "outputs": [
+        "/obj/item/clothing/head/tricorne_black/felt",
+        "/obj/item/clothing/head/bicorne_british_soldier/felt",
+        "/obj/item/clothing/head/top_hat/felt"
+      ],
+      "tools": [],
+      "steps": [
+        "Use carroted felt in your hand and pick a hat."
+      ],
+      "conditions": "Two felt per hat. Felt hats keep more rain off than cloth ones.",
+      "era": "Haberdashery.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified",
+      "source_commit": "6b54c258"
     }
   ],
   "mechanism_overview": [

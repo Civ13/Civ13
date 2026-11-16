@@ -390,7 +390,7 @@
 	. = ..()
 	if (H.mercury_stage >= 1)
 		var/static/list/words = list("mild", "moderate", "heavy", "deadly")
-		. += "Mercury poisoning, [words[H.mercury_stage]] (burden [round(H.mercury_burden)]). Treatment: keep away from quicksilver and its fumes; it drains slowly over hours."
+		. += "Mercury poisoning, [words[H.mercury_stage]] (burden [round(H.mercury_burden)]). Treatment: keep away from quicksilver and its fumes; it drains slowly over hours, and a dose of dimercaprol draws much of it out."
 
 // Admin Check Illnesses lists mercury poisoning when nothing else is wrong.
 /mob/living/human/illness_summary()

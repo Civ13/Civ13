@@ -5,7 +5,7 @@
   },
   {
     "file": "config/crafting/material_recipes_abashiri.txt",
-    "row": "RECIPE: /material/glass/,mirror,/obj/structure/mirror,3,80,1,1,furniture,55,0,0,8,null"
+    "row": "RECIPE: /material/glass/,unsilvered mirror,/obj/structure/mirror/unsilvered,3,80,1,1,furniture,55,0,0,8,null"
   },
   {
     "file": "config/crafting/material_recipes_abashiri.txt",
@@ -145,7 +145,7 @@
   },
   {
     "file": "config/crafting/material_recipes_battle_ships.txt",
-    "row": "RECIPE: /material/glass/,mirror,/obj/structure/mirror,3,80,1,1,furniture,55,0,0,8,null"
+    "row": "RECIPE: /material/glass/,unsilvered mirror,/obj/structure/mirror/unsilvered,3,80,1,1,furniture,55,0,0,8,null"
   },
   {
     "file": "config/crafting/material_recipes_battle_ships.txt",
@@ -397,7 +397,7 @@
   },
   {
     "file": "config/crafting/material_recipes_carib.txt",
-    "row": "RECIPE: /material/glass/,mirror,/obj/structure/mirror,3,80,1,1,furniture,102,0,0,8,null"
+    "row": "RECIPE: /material/glass/,unsilvered mirror,/obj/structure/mirror/unsilvered,3,80,1,1,furniture,102,0,0,8,null"
   },
   {
     "file": "config/crafting/material_recipes_carib.txt",
@@ -689,7 +689,7 @@
   },
   {
     "file": "config/crafting/material_recipes_crustacean.txt",
-    "row": "RECIPE: /material/glass/,mirror,/obj/structure/mirror,3,80,1,1,furniture,55,0,0,8,null"
+    "row": "RECIPE: /material/glass/,unsilvered mirror,/obj/structure/mirror/unsilvered,3,80,1,1,furniture,55,0,0,8,null"
   },
   {
     "file": "config/crafting/material_recipes_crustacean.txt",
@@ -981,7 +981,7 @@
   },
   {
     "file": "config/crafting/material_recipes_global.txt",
-    "row": "RECIPE: /material/glass/,mirror,/obj/structure/mirror,3,80,1,1,furniture,55,0,0,8,null"
+    "row": "RECIPE: /material/glass/,unsilvered mirror,/obj/structure/mirror/unsilvered,3,80,1,1,furniture,55,0,0,8,null"
   },
   {
     "file": "config/crafting/material_recipes_global.txt",
@@ -1277,7 +1277,7 @@
   },
   {
     "file": "config/crafting/material_recipes_gorilla.txt",
-    "row": "RECIPE: /material/glass/,mirror,/obj/structure/mirror,3,80,1,1,furniture,102,0,0,8,null"
+    "row": "RECIPE: /material/glass/,unsilvered mirror,/obj/structure/mirror/unsilvered,3,80,1,1,furniture,102,0,0,8,null"
   },
   {
     "file": "config/crafting/material_recipes_gorilla.txt",
@@ -1509,7 +1509,7 @@
   },
   {
     "file": "config/crafting/material_recipes_kwai.txt",
-    "row": "RECIPE: /material/glass/,mirror,/obj/structure/mirror,3,80,1,1,furniture,55,0,0,8,null"
+    "row": "RECIPE: /material/glass/,unsilvered mirror,/obj/structure/mirror/unsilvered,3,80,1,1,furniture,55,0,0,8,null"
   },
   {
     "file": "config/crafting/material_recipes_kwai.txt",
@@ -1629,7 +1629,7 @@
   },
   {
     "file": "config/crafting/material_recipes_pygmy.txt",
-    "row": "RECIPE: /material/glass/,mirror,/obj/structure/mirror,3,80,1,1,furniture,102,0,0,8,null"
+    "row": "RECIPE: /material/glass/,unsilvered mirror,/obj/structure/mirror/unsilvered,3,80,1,1,furniture,102,0,0,8,null"
   },
   {
     "file": "config/crafting/material_recipes_pygmy.txt",
@@ -1913,7 +1913,7 @@
   },
   {
     "file": "config/crafting/material_recipes_sovafghan.txt",
-    "row": "RECIPE: /material/glass/,mirror,/obj/structure/mirror,3,80,1,1,furniture,55,0,0,8,null"
+    "row": "RECIPE: /material/glass/,unsilvered mirror,/obj/structure/mirror/unsilvered,3,80,1,1,furniture,55,0,0,8,null"
   },
   {
     "file": "config/crafting/material_recipes_sovafghan.txt",
