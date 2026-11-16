@@ -153,6 +153,7 @@
 /obj/item/weapon/reagent_containers/food/snacks/poo/animal
 	name = "manure"
 	desc = "Makes good fertilizer at least."
+	decay = 0 // fertilizer keeps until it is used
 	dry_size = 6
 	dried_type = /obj/item/stack/dung
 	fertilizer_value = 10
@@ -163,7 +164,7 @@
 /obj/item/weapon/reagent_containers/food/snacks/poo/fertilizer
 	name = "compost"
 	desc = "Natural fertilizer for your plants."
-	decay = 120*600
+	decay = 0 // fertilizer keeps until it is used
 	dry_size = 6
 	dried_type = /obj/item/stack/dung
 	fertilizer_value = 60

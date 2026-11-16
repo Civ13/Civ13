@@ -27,7 +27,7 @@
 
 /obj/item/weapon/reagent_containers/food/New()
 	..()
-	if (decay > 0)
+	if (decay > 0 && fertilizer_value <= 0) // fertilizer (manure, compost) never rots away
 		food_decay()
 	if (center_of_mass.len && !pixel_x && !pixel_y)
 		pixel_x = rand(-6.0, 6) //Randomizes position
@@ -50,7 +50,7 @@
 
 /obj/item/weapon/reagent_containers/food/proc/food_decay()
 	spawn(rand(590,610)) //some spreading and randomness
-		if (decay == 0)
+		if (decay == 0 || fertilizer_value > 0)
 			return
 		if (istype(loc, /obj/structure/vending))
 			food_decay()
