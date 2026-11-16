@@ -365,7 +365,7 @@ RECIPE: /material/electronics/,television,/obj/structure/telecom/tv,3,80,1,1,non
 //**************************************************************
 
 RECIPE: /material/woolcloth/,wool gloves,/obj/item/clothing/gloves/thick/leather/white,3,80,0,1,gloves,0,0,0,8,null
-RECIPE: /material/woolcloth/,wool coat,/obj/item/clothing/suit/storage/coat/fur/white,6,150,0,1,jackets & vests,0,0,20,8,null
+RECIPE: /material/woolcloth/,wool coat,/obj/item/clothing/suit/storage/coat/fur/white/wool,6,150,0,1,jackets & vests,0,0,20,8,null
 RECIPE: /material/woolcloth/,oven mittens,/obj/item/clothing/gloves/oven,3,80,0,1,gloves,45,0,8,8,null
 RECIPE: /material/woolcloth/,motorist gloves,/obj/item/clothing/gloves/motorist,3,80,0,1,gloves,0,0,180,8,null
 

@@ -382,7 +382,7 @@
 	var/mob/living/human/H = user
 	secondary_forget(H)
 	if (!crafting_recipe_allowed(H, "[recipe.result_type]"))
-		to_chat(user, SPAN_WARNING("This recipe requires its research node."))
+		to_chat(user, crafting_recipe_refusal(H, "[recipe.result_type]"))
 		return
 	var/datum/cloth_recipe_payment/cloth_payment
 	if (is_cloth_sheet(src))
