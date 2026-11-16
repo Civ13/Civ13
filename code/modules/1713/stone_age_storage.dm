@@ -90,6 +90,7 @@
 /obj/structure/storage_container/examine(mob/user, distance = -1)
 	..()
 	lock_examine(src, user)
+	to_chat(user, SPAN_NOTICE(rodent_access_text(rodent_access_level())))
 	if (!storage)
 		return
 	var/count = storage.contents.len

@@ -31,6 +31,14 @@
 #define MOUSE_TIME_OUT (3 MINUTES)
 #define MOUSE_STRAY_LIFE (10 MINUTES)
 #define MOUSE_DIG_TIME 100
+#define MOUSE_FORAGE_RANGE 5
+#define MOUSE_SPREAD_RANGE 12
+#define MOUSE_SPREAD_CHANCE 20
+#define MOUSE_NEST_CROWD 3
+#define MOUSE_NEST_CROWD_RANGE 15
+#define RODENT_PROOF 0
+#define RODENT_GNAW 1
+#define RODENT_OPEN 2
 
 var/global/list/mouse_nest_list = list()
 var/global/list/mouse_out_list = list()
@@ -126,13 +134,91 @@ var/global/datum/ecology_species/mouse_burrow_habitat = null
 	to_chat(user, SPAN_NOTICE(size_text()))
 	to_chat(user, SPAN_NOTICE("A shovel or digging stick would dig it out."))
 
-// Food mice can reach from this nest, in units. Store access lands with the
-// house nests; until then nests live on what wild ground provides.
+// What mice can reach (see docs/mouse-nests.md): loose food and seed, ripe
+// crops, baskets and racks are open; wooden chests, crates and pits are gnawed
+// into at a quarter of the rate; fired clay, metal, stone and cold stores keep
+// them out, and so does anything a person carries.
+/atom/movable/proc/rodent_access_level()
+	return RODENT_PROOF
+
+/obj/structure/storage_container
+	var/rodent_access = RODENT_GNAW
+
+/obj/structure/storage_container/rodent_access_level()
+	return rodent_access
+
+/obj/structure/storage_container/basket
+	rodent_access = RODENT_OPEN
+
+/obj/structure/storage_container/rack
+	rodent_access = RODENT_OPEN
+
+/obj/structure/storage_container/storage_jar
+	rodent_access = RODENT_PROOF
+
+/obj/structure/closet/rodent_access_level()
+	if (istype(src, /obj/structure/closet/fridge) || istype(src, /obj/structure/closet/ice_house) || istype(src, /obj/structure/closet/crate/freezer))
+		return RODENT_PROOF
+	if (istype(src, /obj/structure/closet/crate/steel) || istype(src, /obj/structure/closet/crate/iron) || istype(src, /obj/structure/closet/crate/stone) || istype(src, /obj/structure/closet/crate/glass) || istype(src, /obj/structure/closet/crate/brick))
+		return RODENT_PROOF
+	return RODENT_GNAW
+
+/proc/rodent_access_text(level)
+	switch (level)
+		if (RODENT_OPEN)
+			return "Mice can get into it easily."
+		if (RODENT_GNAW)
+			return "Mice could gnaw their way in, slowly."
+	return "Mice cannot get into it."
+
+/proc/rodent_food_item(obj/item/I)
+	if (istype(I, /obj/item/stack/farming/seeds))
+		return TRUE
+	return istype(I, /obj/item/weapon/reagent_containers/food/snacks) && !istype(I, /obj/item/weapon/reagent_containers/food/snacks/poo)
+
+// One look around the nest. Each entry is list(thing, access, holder):
+// holder is the store it sits in, or its turf.
+/obj/structure/mouse_nest/proc/forage_scan()
+	var/list/found = list()
+	for (var/turf/T in range(MOUSE_FORAGE_RANGE, src))
+		for (var/atom/movable/A in T)
+			if (rodent_food_item(A))
+				found[++found.len] = list(A, RODENT_OPEN, T)
+			else if (istype(A, /obj/structure/farming/plant))
+				var/obj/structure/farming/plant/P = A
+				if (!P.vstatic && P.readyHarvest())
+					found[++found.len] = list(P, RODENT_OPEN, T)
+			else if (istype(A, /obj/structure/storage_container) || istype(A, /obj/structure/closet))
+				if (istype(A, /obj/structure/closet))
+					var/obj/structure/closet/C = A
+					if (C.opened)
+						continue
+				var/level = A.rodent_access_level()
+				if (level == RODENT_PROOF)
+					continue
+				var/list/inside = A.contents
+				if (istype(A, /obj/structure/storage_container))
+					var/obj/structure/storage_container/SC = A
+					inside = SC.stored_items()
+				for (var/obj/item/I in inside)
+					if (rodent_food_item(I))
+						found[++found.len] = list(I, level, A)
+	return found
+
+/proc/rodent_food_units(list/scan)
+	. = 0
+	for (var/list/entry in scan)
+		if (QDELETED(entry[1]))
+			continue
+		. += entry[2] == RODENT_OPEN ? 1 : 0.25
+	. = round(.)
+
+// Food mice can reach from this nest, in units: one per open item, a quarter per gnawable one.
 /obj/structure/mouse_nest/proc/reachable_food_units()
-	return 0
+	return rodent_food_units(forage_scan())
 
 // Applies every whole interval since the last settle, at most MOUSE_SETTLE_MAX_STEPS.
-// Returns the number of intervals applied.
+// Returns the number of intervals applied. One look around serves every step.
 /obj/structure/mouse_nest/proc/settle(now = trap_now_minutes())
 	var/last = trap_minutes(last_settle)
 	var/steps = round((now - last) / MOUSE_SETTLE_MINUTES)
@@ -142,28 +228,165 @@ var/global/datum/ecology_species/mouse_burrow_habitat = null
 		last = now - MOUSE_SETTLE_MAX_STEPS * MOUSE_SETTLE_MINUTES
 		steps = MOUSE_SETTLE_MAX_STEPS
 	last_settle = trap_minutes_text(last + steps * MOUSE_SETTLE_MINUTES)
+	var/list/scan = forage_scan()
 	for (var/i = 1, i <= steps, i++)
-		settle_step()
+		settle_step(scan)
 		if (QDELETED(src))
 			return i
 	update_icon()
 	return steps
 
-/obj/structure/mouse_nest/proc/settle_step()
-	var/food = reachable_food_units()
+/obj/structure/mouse_nest/proc/settle_step(list/scan = null)
+	if (isnull(scan))
+		scan = forage_scan()
+	var/food = rodent_food_units(scan)
+	if (food > 0 && population > 0)
+		feed(scan)
 	if (!commensal)
 		// A burrow holds steady on wild seed; winter stops it breeding.
 		if (population < MOUSE_BURROW_FLOOR && !trap_cold_season(src))
 			population++
 		else if (food > population && population < MOUSE_BURROW_MAX && !trap_cold_season(src))
 			population++
-		return
-	if (food > population && population < MOUSE_HOUSE_MAX)
+	else if (food > population && population < MOUSE_HOUSE_MAX)
 		population++
 	else if (food <= 0)
 		population--
 	if (population <= 0)
 		qdel(src)
+		return
+	if (food > 0 && population >= max_population() && prob(MOUSE_SPREAD_CHANCE))
+		try_spread(scan)
+
+// Mice eat half their number in food each step, from open stores first.
+/obj/structure/mouse_nest/proc/feed(list/scan)
+	var/bites = round((population + 1) / 2)
+	var/list/open = list()
+	var/list/gnaw = list()
+	for (var/list/entry in scan)
+		if (entry[2] == RODENT_OPEN)
+			open[++open.len] = entry
+		else
+			gnaw[++gnaw.len] = entry
+	. = 0
+	while (bites-- > 0)
+		var/list/entry = null
+		while (open.len && !entry)
+			entry = pick(open)
+			if (QDELETED(entry[1]))
+				open -= list(entry)
+				entry = null
+		if (!entry && gnaw.len && prob(25))
+			entry = pick(gnaw)
+			if (QDELETED(entry[1]))
+				gnaw -= list(entry)
+				entry = null
+		if (!entry)
+			continue
+		var/atom/movable/eaten = entry[1]
+		rodent_eat(eaten)
+		.++
+		if (QDELETED(eaten))
+			open -= list(entry)
+			gnaw -= list(entry)
+		rodent_foul_neighbour(entry[3], eaten, scan)
+
+/proc/rodent_eat(atom/movable/A)
+	if (istype(A, /obj/item/stack/farming/seeds))
+		var/obj/item/stack/farming/seeds/S = A
+		if (S.amount >= 2)
+			S.amount -= 1
+			S.update_icon()
+		else
+			qdel(S)
+	else if (istype(A, /obj/structure/farming/plant))
+		var/obj/structure/farming/plant/P = A
+		P.rodent_strip_harvest()
+	else
+		qdel(A)
+
+// Droppings and nibbling spoil one more thing in the same store.
+/proc/rodent_foul_neighbour(holder, atom/movable/eaten, list/scan)
+	for (var/list/entry in scan)
+		if (entry[3] != holder || entry[1] == eaten || QDELETED(entry[1]))
+			continue
+		var/obj/item/weapon/reagent_containers/food/F = entry[1]
+		if (istype(F) && !F.rodent_fouled)
+			F.rodent_foul()
+			return F
+	return null
+
+/obj/item/weapon/reagent_containers/food
+	var/rodent_fouled = FALSE
+
+/obj/item/weapon/reagent_containers/food/proc/rodent_foul()
+	if (rodent_fouled)
+		return FALSE
+	rodent_fouled = TRUE
+	name = "gnawed [name]"
+	overlays += image('icons/obj/mouse_nests.dmi', "gnawed")
+	if (reagents)
+		reagents.add_reagent("food_poisoning", 1)
+		note_food_toxin("fouled by mice")
+	return TRUE
+
+// The ripe crop is eaten; the plant lives and grows another harvest.
+/obj/structure/farming/plant/proc/rodent_strip_harvest()
+	if (vstatic || !readyHarvest())
+		return FALSE
+	stage = max(1, readyStageMin - 1)
+	var/sprite_name = sprite_plant ? sprite_plant : plant
+	icon_state = "[sprite_name]-grow[stage]"
+	desc = "A young [plant] plant. Something has eaten its crop."
+	name = "young [plant] plant"
+	return TRUE
+
+// House nests found on soft ground and wooden floors, never stone, tile or metal.
+/proc/mouse_nest_floor_ok(turf/T)
+	if (!T || T.density)
+		return FALSE
+	if (istype(T, /turf/floor/dirt))
+		return !istype(T, /turf/floor/dirt/flooded)
+	return istype(T, /turf/floor/grass) || istype(T, /turf/floor/wood) || istype(T, /turf/floor/wood_broken) || istype(T, /turf/floor/carpet)
+
+/proc/mouse_nest_site_error(turf/T)
+	if (!mouse_nest_floor_ok(T))
+		return "floor"
+	if (locate(/obj/structure/mouse_nest) in T)
+		return "nest"
+	for (var/atom/movable/A in T)
+		if (A.density)
+			return "blocked"
+	var/near = 0
+	for (var/obj/structure/mouse_nest/N in mouse_nest_list)
+		if (N.z == T.z && get_dist(N, T) <= MOUSE_NEST_CROWD_RANGE)
+			near++
+	if (near >= MOUSE_NEST_CROWD)
+		return "crowded"
+	if (ecology_visible_to_players(T, 7))
+		return "seen"
+	return null
+
+// A full nest with food sends a colony to found a house nest beside a store.
+/obj/structure/mouse_nest/proc/try_spread(list/scan)
+	if (mouse_nest_list.len >= MOUSE_NEST_CAP || !scan.len)
+		return null
+	var/list/entry = pick(scan)
+	var/turf/store = get_turf(entry[3])
+	if (!store)
+		return null
+	for (var/i = 1, i <= 8, i++)
+		var/turf/T = locate(store.x + rand(-2, 2), store.y + rand(-2, 2), store.z)
+		if (!T || get_dist(T, src) > MOUSE_SPREAD_RANGE)
+			continue
+		if (mouse_nest_site_error(T))
+			continue
+		var/obj/structure/mouse_nest/N = new /obj/structure/mouse_nest(T)
+		N.population = 2
+		N.update_icon()
+		population = max(1, population - 2)
+		return N
+	return null
 
 // Lets one mouse out when someone is near enough to meet it.
 /obj/structure/mouse_nest/proc/try_emerge()

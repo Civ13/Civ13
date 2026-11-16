@@ -279,6 +279,8 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 			to_chat(user, "<span class='notice'>[diet_summary]</span>")
 	if (rotten && isturf(loc))
 		to_chat(user, "<span class='warning'>Flies buzz around it.</span>")
+	if (rodent_fouled)
+		to_chat(user, "<span class='warning'>Mice have been at it: it is nibbled and fouled with droppings.</span>")
 	if (bitecount == 0)
 		return
 	else if (bitecount == 1)
