@@ -1,10 +1,13 @@
 """Bounded in-memory omission controls; never edits repository source."""
 import io,json,unittest
 import notes_projection as projection
+import reader_base
 import test_character_notes as contract
 
 original=contract.SOURCE
 parser=projection.parser
+base=reader_base.BASE
+BASE_CONTROLS=('owner','close_idempotence') # guards the shared reader base owns
 controls=[
  ('depth','\t\t\tif (tags.len >= budget.max_depth)\n\t\t\t\treturn null\n','',contract.NotesParser,'test_depth_node_and_full_unicode_boundaries_never_truncate'),
  ('balance','\tif (tags.len)\n\t\treturn null\n','',contract.NotesParser,'test_mixed_malformed_unsupported_entities_and_controls_fallback_whole'),
@@ -16,12 +19,15 @@ controls=[
 ]
 results=[]
 for name,before,after,cls,method in controls:
- assert original.count(before)==1,(name,'ambiguous preimage')
- changed=original.replace(before,after,1)
+ if name in BASE_CONTROLS:
+  assert base.count(before)==1,(name,'ambiguous preimage');reader_base.load(base.replace(before,after,1));changed=original
+ else:
+  assert original.count(before)==1,(name,'ambiguous preimage');changed=original.replace(before,after,1)
  contract.SOURCE=changed
  contract.parser=lambda *args,**kwargs:parser(source=changed,*args,**kwargs)
  output=io.StringIO()
  result=unittest.TextTestRunner(stream=output,verbosity=2).run(unittest.TestSuite([cls(method)]))
+ reader_base.load(base)
  results.append(dict(control=name,tests=result.testsRun,failures=len(result.failures),errors=len(result.errors),caught=len(result.failures)>0 and not result.errors,details=output.getvalue()))
 contract.SOURCE=original;contract.parser=parser
 print(json.dumps(results,ensure_ascii=True,indent=2))

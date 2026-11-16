@@ -2,6 +2,7 @@
 from pathlib import Path
 import copy, importlib.util, json, re, unittest
 from types import SimpleNamespace as Obj
+import reader_base
 from notes_projection import SOURCE,ROOT,Budget,body,parser,view
 
 class NotesParser(unittest.TestCase):
@@ -54,10 +55,11 @@ class NotesParser(unittest.TestCase):
   self.assertEqual(records,before)
 
 def admitted(mind,reader,source,user):
- guard=re.search(r'if \((.+)\)\n\t\treturn STATUS_CLOSE',body(SOURCE,'/datum/topic_state/character_notes/can_use_topic(var/src_object, var/mob/user)'))
- assert guard,'Missing owner guard'
- expression=guard[1].replace('!user.client','not user.client').replace('!mind','not mind').replace('!user','not user').replace('||','or').replace(' != ',' is not ')
- return not eval(expression,{'__builtins__':{}},dict(mind=mind,reader=reader,src_object=source,user=user))
+ # The shared guard binds mind, body and connection; Notes adds that the body still holds the mind.
+ rule=reader_base.rule(SOURCE,'character_notes')
+ assert rule=='user.mind == subject','Missing mind rule'
+ holds=bool(user) and eval(rule.replace(' == ',' is '),{'__builtins__':{}},dict(user=user,subject=mind))
+ return reader_base.allowed(mind,source,user,reader,connected=bool(user and user.client),rule=holds)
 
 class NotesOwnership(unittest.TestCase):
  def test_owner_wrong_source_logout_ghost_and_real_transfer_order(self):
@@ -77,18 +79,19 @@ class NotesOwnership(unittest.TestCase):
    self.assertIn(marker,presentation)
   self.assertLess(presentation.index('!user.client'),presentation.index('character_notes_ui_data('))
   self.assertLess(presentation.index('ui.legacy_snapshot = legacy_snapshot'),presentation.index('ui.open()'))
-  html=body(SOURCE,'/datum/nanoui/tgui/character_notes/get_html()')
-  self.assertIn('reader_state.can_use_topic(src_object, user) == STATUS_CLOSE',html)
+  self.assertIn('fixed_classic_page = TRUE',SOURCE.split('/datum/nanoui/tgui/snapshot/character_notes\n',1)[1])
+  html=reader_base.GET_HTML
+  self.assertIn('state.can_use_topic(src_object, user) == STATUS_CLOSE',html)
   self.assertLess(html.index('can_use_topic'),html.index('return legacy_snapshot'))
   self.assertNotIn('character_notes_ui_data',html);self.assertNotIn('discoveries_html',SOURCE)
-  close=body(SOURCE,'/datum/nanoui/tgui/character_notes/close()')
+  close=body(reader_base.BASE,'/datum/nanoui/tgui/snapshot/close()')
   self.assertEqual([x.strip() for x in close.splitlines() if x.strip()],['if (reader_closed)','return','reader_closed = TRUE','legacy_snapshot = null','return ..()'])
   self.assertNotIn('set_using_object',SOURCE);self.assertNotIn('unset_using_object',SOURCE)
   # Source-projected close idempotence: cancel clears cache once; a delayed old
   # close cannot send a second browse(null) after a new reader is opened.
   instructions={'if (reader_closed)':'if state["closed"]:','return':'return','reader_closed = TRUE':'state["closed"] = True','legacy_snapshot = null':'state["snapshot"] = None','return ..()':'state["parent_closes"] += 1'}
   from notes_projection import project
-  f=project(SOURCE,'/datum/nanoui/tgui/character_notes/close()','state',instructions,{})
+  f=project(reader_base.BASE,'/datum/nanoui/tgui/snapshot/close()','state',instructions,{})
   old=dict(closed=False,snapshot='FULL_PRIVATE_SNAPSHOT',parent_closes=0);f(old)
   new=dict(closed=False,snapshot='REFRESHED_PRIVATE_SNAPSHOT',parent_closes=0);f(old)
   self.assertEqual(old,dict(closed=True,snapshot=None,parent_closes=1));self.assertEqual(new['snapshot'],'REFRESHED_PRIVATE_SNAPSHOT')

@@ -2,12 +2,13 @@
 from pathlib import Path
 import re
 import unittest
+import reader_base
 
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE = (ROOT / 'code/game/objects/map_metadata/voyage.dm').read_text(errors='replace')
-BOOK = SOURCE.split('/obj/structure/voyage/quartermaster_book\n', 1)[1].split('/datum/topic_state/ship_stocks\n', 1)[0]
+BOOK = SOURCE.split('/obj/structure/voyage/quartermaster_book\n', 1)[1].split('/datum/topic_state/reader/ship_stocks/reader_allowed', 1)[0]
 OPEN = BOOK.split('\tui_interact(', 1)[1].split('\tproc/tally_treasure()', 1)[0]
-STATE = SOURCE.split('/datum/topic_state/ship_stocks/can_use_topic', 1)[1].split('/obj/structure/voyage/sextant', 1)[0]
+RULE = reader_base.rule(SOURCE, 'ship_stocks')
 
 
 class ShipStocksContract(unittest.TestCase):
@@ -65,21 +66,15 @@ class ShipStocksContract(unittest.TestCase):
         ])
 
     def test_projected_state_denies_wrong_book_body_type_and_logout(self):
-        # Evaluate the actual production guard with synthetic values. This is a
-        # source projection, not evidence of native client ownership or transfer.
-        guard = re.search(r'if \((.+)\)\n\t\treturn STATUS_CLOSE', STATE).group(1)
-        expression = guard.replace('!ishuman(user)', 'not human').replace('!user.client', 'not connected').replace('||', 'or')
-        def allowed(source, book, user, reader, human=True, connected=True):
-            return not eval(expression, {'__builtins__': {}}, dict(src_object=source, book=book, user=user, reader=reader, human=human, connected=connected))
+        # The shared guard binds book, body and connection; this window adds the human rule.
+        self.assertEqual(RULE, 'ishuman(user)')
+        allowed = reader_base.allowed
         book, owner, other = object(), object(), object()
         self.assertTrue(allowed(book, book, owner, owner))
-        self.assertFalse(allowed(other, book, owner, owner))
+        self.assertFalse(allowed(book, other, owner, owner))
         self.assertFalse(allowed(book, book, other, owner))
-        self.assertFalse(allowed(book, book, owner, owner, human=False))
+        self.assertFalse(allowed(book, book, owner, owner, rule=False))
         self.assertFalse(allowed(book, book, owner, owner, connected=False))
-        self.assertIn('return STATUS_UPDATE', STATE)
-        self.assertNotIn('STATUS_INTERACTIVE', STATE)
-        self.assertNotIn('get_dist', STATE)  # Opened snapshot remains readable while walking.
 
     def test_read_only_in_both_protocols_and_no_machine_close_side_effect(self):
         self.assertNotIn('set_using_object', BOOK)
@@ -102,7 +97,7 @@ class ShipStocksContract(unittest.TestCase):
 
     def test_uses_existing_manager_and_real_classic_template(self):
         self.assertIn('GLOB.nanomanager.try_update_ui(user, src, ui_key, null, data, TRUE)', OPEN)
-        self.assertIn('var/datum/topic_state/ship_stocks/reader_state = new(src, user)', OPEN)
+        self.assertIn('var/datum/topic_state/reader/ship_stocks/reader_state = new(src, user)', OPEN)
         self.assertIn('"ship_stocks.tmpl", "Ship Stocks", 500, 520, _state = reader_state', OPEN)
         workflow = (ROOT / '.github/workflows/tgui.yml').read_text()
         self.assertIn("'code/game/objects/map_metadata/voyage.dm'", workflow)

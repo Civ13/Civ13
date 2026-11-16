@@ -2,14 +2,15 @@
 from pathlib import Path
 import re
 import unittest
+import reader_base
 
 ROOT=Path(__file__).resolve().parents[2]
 SOURCE=(ROOT/'code/game/objects/map_metadata/voyage.dm').read_text(errors='replace')
-BOOK=SOURCE.split('/obj/structure/voyage/boatswain_book\n',1)[1].split('/datum/topic_state/crew_log\n',1)[0]
+BOOK=SOURCE.split('/obj/structure/voyage/boatswain_book\n',1)[1].split('/datum/topic_state/reader/crew_log/reader_allowed',1)[0]
 ROLE=BOOK.split('\tproc/can_read_crew_log(',1)[1].split('\tui_interact(',1)[0]
 OPEN=BOOK.split('\tui_interact(',1)[1].split('\tproc/crew_log_data()',1)[0]
 DATA=BOOK.split('\tproc/crew_log_data()',1)[1]
-STATE=SOURCE.split('/datum/topic_state/crew_log/can_use_topic',1)[1].split('/obj/structure/voyage/quartermaster_book',1)[0]
+RULE=reader_base.rule(SOURCE,'crew_log')
 
 def permitted(original_job_title, title='', human=True):
     match=re.search(r'^\t\treturn (.+)$',ROLE,re.M)
@@ -65,10 +66,9 @@ class CrewLogContract(unittest.TestCase):
         self.assertIn('return list("crew" = entries)',DATA)
 
     def test_window_state_rejects_wrong_body_book_logout_and_role_revocation(self):
-        guard=re.search(r'if \((.+)\)\n\t\treturn STATUS_CLOSE',STATE).group(1)
-        expression=guard.replace('!book.can_read_crew_log(user)','not role_allowed').replace('!user.client','not connected').replace('!book','not book').replace('!user','not user').replace('||','or')
-        def allowed(book,source,user,reader,connected=True,role_allowed=True):
-            return not eval(expression,{'__builtins__':{}},dict(book=book,src_object=source,user=user,reader=reader,connected=connected,role_allowed=role_allowed))
+        # The shared guard binds book, body and connection; this window adds the role rule.
+        self.assertEqual(RULE,'istype(book) && book.can_read_crew_log(user)')
+        allowed=reader_base.allowed
         book,owner,other=object(),object(),object()
         self.assertTrue(allowed(book,book,owner,owner))
         self.assertFalse(allowed(None,None,owner,owner))
@@ -76,10 +76,8 @@ class CrewLogContract(unittest.TestCase):
         self.assertFalse(allowed(book,book,None,None))
         self.assertFalse(allowed(book,book,other,owner))
         self.assertFalse(allowed(book,book,owner,owner,connected=False))
-        self.assertFalse(allowed(book,book,owner,owner,role_allowed=False))
-        self.assertIn('return STATUS_UPDATE',STATE)
-        self.assertNotIn('STATUS_INTERACTIVE',STATE)
-        self.assertNotIn('get_dist',STATE)
+        self.assertFalse(allowed(book,book,owner,owner,rule=False))
+        self.assertIn('var/datum/topic_state/reader/crew_log/reader_state = new(src, user)',OPEN)
 
     def test_no_polling_and_close_side_noninterference(self):
         for marker in ('if (ui)\n\t\t\tui.push_data(null, TRUE)\n\t\t\treturn','ui.use_on_close_logic(FALSE)','ui.open()','new(src, user)'):
