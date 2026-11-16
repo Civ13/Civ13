@@ -126,11 +126,11 @@
 		to_chat(user, SPAN_NOTICE("This die strikes coins of [issuer]. Use it on copper, silver or gold sheets beside an anvil."))
 		return
 	var/faction = user.civilization
-	if (!faction || faction == "none" || !map.is_faction_leader(user, faction))
-		to_chat(user, SPAN_NOTICE("Only a faction's leader can cut this die with the faction's mark."))
+	if (!faction || faction == "none" || !map.faction_power(user, faction, "mint"))
+		to_chat(user, SPAN_NOTICE("Only a faction's leader, or an officer it trusts with the mint, can cut this die with the faction's mark."))
 		return
 	var/choice = WWinput(user, "Cut this die with the mark of [faction]? Anyone holding it can then strike [faction]'s coins.", "Coin die", "Cancel", list("Cut it", "Cancel"))
-	if (choice != "Cut it" || length(issuer) || user.get_active_hand() != src || user.civilization != faction || !map.is_faction_leader(user, faction))
+	if (choice != "Cut it" || length(issuer) || user.get_active_hand() != src || user.civilization != faction || !map.faction_power(user, faction, "mint"))
 		return
 	issuer = faction
 	update_die_name()

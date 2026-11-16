@@ -94,10 +94,11 @@ var/treasury_p_runtime_error = FALSE
 	S.seal_serial = map.faction_seal_register("Eagles", "Treasurer")
 	M.probe_hand = S
 	treasury_p_check(B.holds_key(M), "a bearer of the Treasurer's seal holds the key")
+	var/list/O_rec = map.office_record("Eagles")
+	O_rec["offices"]["Treasurer"] -= "treasury"
+	treasury_p_check(!B.holds_key(M), "not once the office loses the treasury power")
+	O_rec["offices"]["Treasurer"] += "treasury"
 	var/list/R = map.treasury_record("Eagles")
-	R["keeper"] = "Steward"
-	treasury_p_check(!B.holds_key(M), "not once the keeper's office changes")
-	R["keeper"] = "Treasurer"
 	map.faction_seal_revoke("Eagles", S.seal_serial)
 	treasury_p_check(!B.holds_key(M), "nor with a revoked seal")
 	O.probe_hand = S

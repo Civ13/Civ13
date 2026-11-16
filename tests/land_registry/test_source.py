@@ -34,7 +34,7 @@ class LandRegistrySource(unittest.TestCase):
     def test_registrar_rechecked_after_prompts(self):
         stone = self.text.split('/obj/structure/boundary_stone/attack_hand(', 1)[1].split('\n/', 1)[0]
         after = stone.split('var/choice = WWinput(', 1)[1]
-        self.assertGreaterEqual(after.count('faction_office_holder(user, faction, LAND_OFFICE_REGISTRAR)'), 4)
+        self.assertGreaterEqual(after.count('faction_power(user, faction, "registry")'), 4)
 
     def test_deed_never_opens_jails_or_the_treasury(self):
         locks = self.text.split('/obj/item/land_deed/proc/lockables(', 1)[1].split('\n/', 1)[0]

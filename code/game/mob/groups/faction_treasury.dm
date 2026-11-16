@@ -9,14 +9,14 @@
 // strongbox open with a crowbar or hammer, which takes a minute and warns the
 // faction.
 //
-// Who holds the key: the faction leader, and anyone carrying a seal of the
-// faction (faction_seals.dm) that is in force and cut for the keeper's office
-// ("Treasurer" unless the leader names another).
+// Who holds the key: the faction leader, and anyone with the faction's
+// treasury power (faction_offices.dm): an appointed Treasurer, or whoever
+// carries an in-force seal of such an office.
 //
 // The box keeps its faction in its own var (saved with the world). The rest
 // lives in map.faction_recruitment["treasury"] (durable, renamed with the
 // faction):
-//   faction -> list("keeper" = office, "dues" = silver a week,
+//   faction -> list("dues" = silver a week,
 //                   "wages" = list(account = list(silver a day, owed, last time, name)),
 //                   "paid" = list(account = list(silver this week, week start, name)),
 //                   "ledger" = list(text, newest last))
@@ -24,7 +24,6 @@
 // Nothing here creates money: wages are paid only from coin in the box.
 // Nothing sleeps except the prompts and the prying do_after, which recheck.
 
-#define TREASURY_KEEPER_DEFAULT "Treasurer"
 #define TREASURY_TAX_MAX 30
 #define TREASURY_WAGE_MAX 50 // silver a day
 #define TREASURY_WAGE_CAP_DAYS 7 // unpaid wages stop growing after this
@@ -51,8 +50,6 @@ var/global/list/faction_strongboxes = list() // every treasury strongbox
 	if (!islist(R))
 		R = list()
 		T[faction] = R
-	if (!istext(R["keeper"]) || !length(R["keeper"]))
-		R["keeper"] = TREASURY_KEEPER_DEFAULT
 	if (!isnum(R["dues"]) || R["dues"] < 0)
 		R["dues"] = 0
 	for (var/key in list("wages", "paid", "ledger"))
@@ -233,7 +230,7 @@ var/global/list/faction_strongboxes = list() // every treasury strongbox
 /obj/structure/closet/crate/faction_strongbox/proc/update_box_name()
 	if (length(faction))
 		name = "strongbox of [faction]"
-		desc = "The treasury of [faction]. Its keepers hold the leader's trust or a seal of the keeper's office."
+		desc = "The treasury of [faction]. It opens for the leader and the faction's treasurers."
 		anchored = TRUE
 		locked = TRUE
 	else
@@ -248,15 +245,11 @@ var/global/list/faction_strongboxes = list() // every treasury strongbox
 		if (H.civilization == faction)
 			to_chat(user, SPAN_NOTICE("It holds coin worth [weighed_silver_text(coin_worth())]."))
 
-/obj/structure/closet/crate/faction_strongbox/proc/keeper_office()
-	var/list/R = map.treasury_record(faction)
-	return R["keeper"]
-
-// The leader, or a bearer of an in-force seal of the keeper's office.
+// The leader, or anyone with the faction's treasury power.
 /obj/structure/closet/crate/faction_strongbox/proc/holds_key(mob/living/human/H)
 	if (!map || !length(faction))
 		return FALSE
-	return map.faction_office_holder(H, faction, keeper_office())
+	return map.faction_power(H, faction, "treasury")
 
 /obj/structure/closet/crate/faction_strongbox/attack_hand(mob/living/human/user)
 	if (!istype(user) || !map)
@@ -292,7 +285,7 @@ var/global/list/faction_strongboxes = list() // every treasury strongbox
 	faction = civ
 	update_box_name()
 	map.treasury_log(civ, "[user.real_name] made a new strongbox the treasury.")
-	to_chat(user, SPAN_NOTICE("\The [src] is now the treasury of [civ]. It locks, and only you and bearers of the [keeper_office()]'s seal can open it."))
+	to_chat(user, SPAN_NOTICE("\The [src] is now the treasury of [civ]. It locks, and only you and the faction's treasurers can open it."))
 	log_game("[key_name(user)] designated a strongbox for [civ] at ([x],[y],[z]).")
 	return TRUE
 
@@ -305,7 +298,7 @@ var/global/list/faction_strongboxes = list() // every treasury strongbox
 		choices += "Collect taxes into the box"
 	choices += list("Collect my wages", "Pay dues from my hand", "Pay land tax from my hand", "Read the ledger")
 	if (leader)
-		choices += list("Set wages", "Set dues", "Set taxes", "Name the keeper's office", "Release the box")
+		choices += list("Set wages", "Set dues", "Set taxes", "Release the box")
 	choices += "Cancel"
 	var/choice = WWinput(user, "Treasury of [faction]. It holds coin worth [weighed_silver_text(coin_worth())].", "Strongbox", "Cancel", choices)
 	if (!choice || choice == "Cancel" || !(choice in choices) || QDELETED(src) || !user.Adjacent(src) || user.stat != CONSCIOUS)
@@ -313,7 +306,7 @@ var/global/list/faction_strongboxes = list() // every treasury strongbox
 	// Powers are checked again: the prompt may have waited.
 	if ((choice in list("Close and lock it", "Unlock and open it", "Collect taxes into the box")) && !holds_key(user))
 		return
-	if ((choice in list("Set wages", "Set dues", "Set taxes", "Name the keeper's office", "Release the box")) && !map.is_faction_leader(user, faction))
+	if ((choice in list("Set wages", "Set dues", "Set taxes", "Release the box")) && !map.is_faction_leader(user, faction))
 		return
 	if (user.civilization != faction && !(choice in list("Close and lock it", "Unlock and open it", "Collect taxes into the box")))
 		return
@@ -347,15 +340,6 @@ var/global/list/faction_strongboxes = list() // every treasury strongbox
 			to_chat(user, SPAN_NOTICE("Dues are now [R["dues"]] silver a week."))
 		if ("Set taxes")
 			set_taxes(user)
-		if ("Name the keeper's office")
-			var/value = player_input(user, "Which office's seal opens the box? Cut a seal for that office with a seal matrix.", "Keeper", keeper_office(), "text", null, TRUE)
-			value = faction_seal_office_clean(value)
-			if (!length(value) || !map.is_faction_leader(user, faction))
-				return
-			var/list/R = map.treasury_record(faction)
-			R["keeper"] = value
-			map.treasury_log(faction, "[user.real_name] gave the key to the office of [value].")
-			to_chat(user, SPAN_NOTICE("Seals of the office of [value] now open the box."))
 		if ("Release the box")
 			if (!opened)
 				to_chat(user, SPAN_WARNING("Open the box first, so nothing is locked inside a plain chest by mistake."))
@@ -482,7 +466,7 @@ var/global/list/faction_strongboxes = list() // every treasury strongbox
 /obj/structure/closet/crate/faction_strongbox/proc/ledger_text()
 	var/list/R = map.treasury_record(faction)
 	var/list/lines = list("<b>Ledger of [faction]</b>")
-	lines += "Coin in the box: [weighed_silver_text(coin_worth())]. Keeper's office: [R["keeper"]]."
+	lines += "Coin in the box: [weighed_silver_text(coin_worth())]."
 	if (faction in map.custom_civs)
 		var/list/civ = map.custom_civs[faction]
 		lines += "Taxes waiting: [isnum(civ[5]) ? round(civ[5], 0.1) : 0] silver. Sales tax [civ[9]]%, business tax [civ[10]]%."
@@ -535,7 +519,6 @@ var/global/list/faction_strongboxes = list() // every treasury strongbox
 	user.visible_message(SPAN_DANGER("[user] pries \the [src] open!"))
 	log_game("[key_name(user)] pried open the strongbox of [faction] at ([x],[y],[z]).")
 
-#undef TREASURY_KEEPER_DEFAULT
 #undef TREASURY_TAX_MAX
 #undef TREASURY_WAGE_MAX
 #undef TREASURY_WAGE_CAP_DAYS
