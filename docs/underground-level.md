@@ -143,6 +143,13 @@ turns one stopped region over:
    the region and print the report. On any failure the region keeps its old
    save. Start the region afterwards as usual.
 
+## Admin view
+
+Admin > Debug > **Level Report** lists every level: ground, the cave (added or
+compiled), open air and practice rooms, with the number of formed cells and
+how many of them are open. It walks each plane, so it takes a few seconds on
+the Americas.
+
 ## Checks
 
 - `python3 tests/building_levels/run.py --cave` and `--cave-first`
