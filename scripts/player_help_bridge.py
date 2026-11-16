@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '265fb2fa546ed89726982ff3b7760b2efbebe059'
+WIKI_REVIEWED_REVISION = 'a3d9d9796f2a6e1d4c09cdfced18ca886703cb7b'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('2d7872e9f19303d3077a1485496ebd5ba26b8dea0b26df9848d9a6cb506ad6a8', 'character skills traits languages'),
@@ -93,7 +93,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Radiation.md': ('6b6295a3bb2bf0eb54d559e32a49eb18d512a50bec9366757df81b049e0e8d00', 'radiation radioactive exposure'),
     'guides/Guide_to_Ranching.md': ('4bfd68a7f6d60958e14da34916050fcedf06d7e1b9596a5dab8174b34a11c172', 'ranching livestock animal breeding'),
     'guides/Guide_to_Religion.md': ('8f2cba3283be55c895860478ffd6969b9ee7ad70ec90ecde479cd0ef622e9943', 'religion worship clergy shrine'),
-    'guides/Guide_to_Research.md': ('5901b2fd4338787bbf8f8d2aea5f4516cd73e579aa835801d8eaa5b10cff31cf', 'research unlock study technology research bench'),
+    'guides/Guide_to_Research.md': ('9a249f72384db7d800bfbde0373ce1174b5fbe6a923c8826a4250a679e9614a2', 'research unlock study technology research bench'),
     'guides/Guide_to_Resource_Extraction.md': ('94b97fc0a99093e0c0f7111ab891ce68a87430a33e59866db9ca9a52841ba7cf', 'resource extraction gathering oil petroleum well fracturing'),
     'guides/Guide_to_Survival.md': ('b6d033775aa161c89d1ad956d939df86edf46246fd33456051354e4e84e5e091', 'survival winter cold warm freezing hypothermia shelter debris footwear boots snowshoes shoes ice mud rain wet umbrella raincoat cape storm storms lightning thunder blizzard sandstorm heat wave weather fire fires wildfire firefighting beater flapper smother burning bucket blanket extinguish smoke signal signals hook firebreak pump engine nozzle hose jet reel extinguisher'),
     'guides/Guide_to_Tanks.md': ('827ceab593bb62c44600ee67d53b1c5d59fde25e71f093475f55afc361b4fc8d', 'tank driving crew ammunition'),
@@ -120,7 +120,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Aircraft_Carriers.md': ('3402b1e488a635eb74b172c9d0c2d62038fe192efcd7d12e9b3f5d297c655ce4', 'carrier carriers aircraft carrier flight deck shipyard office arresting wires elevator bunkers'),
     'guides/Guide_to_Races.md': ('46ef1bf361c519e71acbd679119429e838348827e25dbcac27282f67bee51097', 'race races species human humans'),
     'guides/Guide_to_Slang.md': ('52f9f6370922d7dede523e51247ae6ea0723d24118cecd26e594c051278dfc3f', 'slang terms jargon abbreviation meaning mean word words'),
-    'guides/Guide_to_Books_and_Scholars.md': ('a401a54200444acab7c776a27d44975b2f40bc693780a86c4511722e353496c9', 'books scholars scholarship study chapter research bench apprentice tutor library writing slate abacus'),
+    'guides/Guide_to_Books_and_Scholars.md': ('181258b39751c6d812a183fb7380fc6533aa95ac701f6d21f0daa0c7542c6b9d', 'books scholars scholarship study chapter research bench apprentice tutor library writing slate abacus'),
     'guides/Guide_to_Your_First_Day.md': ('35aa1bd71622730c4f8238d97ab4ac999502266a4caf5c1113062d16a3ff0ebd', 'first day new character start starting survive survival research book study chapter food water shelter bag bags carry carrying basket travois'),
     'guides/Guide_to_Paperwork.md': ('2a234c6fb82cf93f4eacaf712d6d0a18a8f4eac5b4e5643069ce9da993cd670f', 'paper paperwork writing write pen book sign signature stamp'),
     'Crafting_Skill_Level_Requirements.md': ('eae4e1c91ce28009f16ec79d0e942f76895d80262e618320eaf44d3a7c5808a9', 'crafting skill level levels requirement requirements unlock'),
