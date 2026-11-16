@@ -1295,6 +1295,11 @@ SUITES = {
         'paths': ('tests/stone_age_rites/',), 'shared_paths': (
             'code/modules/1713/stone_age_rites.dm', 'icons/obj/stone_age_rites.dmi',
             'code/game/objects/items/stacks/stack.dm')},
+    # Treaties between factions (the native probe is tests/faction_treaties/probe.dm).
+    'faction_treaties': {'files': ('tests/faction_treaties/test_source.py',),
+        'paths': ('tests/faction_treaties/',), 'shared_paths': (
+            'code/game/mob/groups/faction_treaties.dm', 'code/game/mob/groups/faction_offices.dm',
+            'code/game/mob/groups/faction_roster.dm', 'code/game/mob/groups/factions.dm')},
     # Census, citizenship papers, passes and border doors (the native probe is tests/faction_papers/probe.dm).
     'faction_papers': {'files': ('tests/faction_papers/test_source.py',),
         'paths': ('tests/faction_papers/',), 'shared_paths': (

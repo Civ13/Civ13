@@ -7,8 +7,8 @@
 //
 // Powers: "treasury" (open the strongbox and collect taxes), "registry"
 // (register land and manage plots), "seals" (cut and revoke seals), "mint"
-// (cut coin dies), "justice" (courts) and "papers" (citizenship papers, travel
-// passes and border doors). A faction that has defined no
+// (cut coin dies), "justice" (courts), "papers" (citizenship papers, travel
+// passes and border doors) and "diplomacy" (treaties). A faction that has defined no
 // offices has a Treasurer (treasury) and a Registrar (registry).
 //
 // Elections: the leader can call an election for the leadership or for an
@@ -41,7 +41,8 @@ var/global/list/faction_power_labels = list(
 	"seals" = "cut and revoke seals",
 	"mint" = "cut coin dies",
 	"justice" = "hold court",
-	"papers" = "issue papers and keep the border")
+	"papers" = "issue papers and keep the border",
+	"diplomacy" = "make and sign treaties")
 
 // --- State -------------------------------------------------------------------
 
