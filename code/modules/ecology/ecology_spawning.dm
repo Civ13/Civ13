@@ -93,6 +93,9 @@ var/global/ecology_admin_disabled = FALSE
 		return FALSE
 	if (length(A.friends) || A.rider || A.following_mob)
 		return FALSE
+	// A tamed wildcat keeps its type but no longer counts as wild.
+	if (istype(A, /mob/living/simple_animal/pet/cat) && !A.wild)
+		return FALSE
 	return TRUE
 
 /proc/eco_species(name, list/types, list/biomes, grounds, density, max_target, herd_min = 1, herd_max = 1, list/covers = null, list/excludes = null)
@@ -148,6 +151,7 @@ var/global/ecology_admin_disabled = FALSE
 		eco_species("polar bear", list(/mob/living/simple_animal/hostile/bear/boar/polar, /mob/living/simple_animal/hostile/bear/sow/polar), list("tundra"), S, 0.15, 6),
 		eco_species("panther", list(/mob/living/simple_animal/hostile/panther), list("jungle"), G|D, 0.1, 6),
 		eco_species("jaguar", list(/mob/living/simple_animal/hostile/panther/jaguar), list("jungle", "savanna"), G|D, 0.1, 6),
+		eco_species("wildcat", list(/mob/living/simple_animal/pet/cat/wild), list("temperate", "semiarid", "savanna"), G|D, 0.1, 8),
 		eco_species("lion", list(/mob/living/simple_animal/hostile/sabertooth/lion), list("savanna", "semiarid"), G|D|A, 0.2, 8, 1, 3),
 	)
 

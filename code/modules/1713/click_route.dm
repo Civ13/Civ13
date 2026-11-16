@@ -8,6 +8,8 @@
 // the ground (snow, mud, flood, wading) and the hill, so roads and floors win
 // over mud and climbs. It never plans through walls, closed locked doors,
 // lava, deep water, open air or fire, and it never cuts a corner diagonally.
+// A shut door counts as a way through only when walking into it opens it for
+// that character: not barred, braced, locked against their side or a window.
 //
 // A player's route steers the same held-key axes the movement keys set, so
 // free movement, running, pulling and every movement rule stay exactly as
@@ -36,7 +38,10 @@
 
 // Ground the character would not step onto on purpose.
 /proc/click_route_hazard_turf(turf/T)
-	if (istype(T, /turf/floor/lava) || istype(T, /turf/floor/beach/water/deep) || istype(T, /turf/floor/broken_floor))
+	if (istype(T, /turf/floor/lava) || istype(T, /turf/floor/beach/water/deep))
+		return TRUE
+	// Open air with nothing to stand on (a shut trapdoor or a ladder top holds you).
+	if (building_open_turf(T) && edge_open_air(T) && !(locate(/obj/structure/multiz/ladder) in T))
 		return TRUE
 	if (locate(/obj/effect/fire) in T)
 		return TRUE
@@ -62,7 +67,7 @@
 			continue // people and animals move or swap; they only cost time
 		if (istype(O, /obj/structure/simple_door))
 			var/obj/structure/simple_door/D = O
-			if (D.density && D.locked)
+			if (D.density && !D.door_route_passable(M))
 				return FALSE
 			continue // a closed door opens when walked into
 		if (!O.CanPass(M, A, TRUE, FALSE))

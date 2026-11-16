@@ -138,7 +138,7 @@ class WikiGuideTests(unittest.TestCase):
                 self.assertIn(expected, self.prompt(corpus, status, question))
 
     def test_current_revision_changed_topics_reach_injected_transport(self):
-        self.assertEqual(bridge.WIKI_REVIEWED_REVISION, 'cbf182f12bddaf87e09d277f6a29a871ee9afbc6')
+        self.assertEqual(bridge.WIKI_REVIEWED_REVISION, '047ce57e548f642c02702880139281191e11bb14')
         cases = {
             'Chemistry': ('864bf107bd77e3934528bcf9c776b174ba2e86371118eedf084cbe5d42ce7ca5',
                           'chemistry reaction bench',
@@ -148,7 +148,7 @@ class WikiGuideTests(unittest.TestCase):
                         'medical severe illness treatment penicillin',
                         'Continuous appropriate treatment pauses deterioration and cures the illness after three minutes.',
                         'How do I treat severe illness?'),
-            'Construction': ('b74e7d028c98254f24eb090a7ad63fdcf2e98d543776c197b22914ee7613f42f',
+            'Construction': ('5d3d6a8da3367384e83ad1de7fc88304ae772585642c678718e37b680179f93f',
                              'construction trench digging save',
                              'Partial trench digging and filling progress survives world saves, alongside trench layout and contents.',
                              'Does trench digging progress survive world saves?'),

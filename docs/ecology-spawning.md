@@ -19,7 +19,7 @@ anywhere on the map, instead of at fixed map spawn points. Source:
   beach sand, desert sand and shallow fresh water (base, swamp and jungle
   water). Farmland, caves, deep water, ice, salt shallows, flooded tiles and
   regolith are never wildlife ground.
-- Each of the 41 species has biomes, ground classes, a density per 1000 tiles
+- Each of the 42 species has biomes, ground classes, a density per 1000 tiles
   of matching habitat, a maximum and a herd size. Its target is
   `habitat * density * ecology_density_scale / 1000`, at least 1 when the map
   has 128 tiles of its habitat, and at most its maximum. The total is scaled
