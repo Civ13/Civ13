@@ -1461,6 +1461,7 @@ RECIPE: /material/bone/,bone gear set,/obj/item/machine_part/gear,4,150,0,1,mach
 RECIPE: /material/stone/,stone brazier,/obj/structure/brazier/stone,3,100,1,1,none,0,0,0,8,null
 RECIPE: /material/stone/,pendant hone,/obj/item/clothing/accessory/pendant_hone,1,40,0,1,none,0,0,0,8,null
 RECIPE: /material/stone/,stone drain,/obj/structure/sewer_piece/drain/stone,2,80,1,1,construction,0,0,0,8,null
+RECIPE: /material/stone/,floor drain,/obj/structure/sewer_piece/drain/floor,1,60,1,1,construction,0,0,0,8,null
 RECIPE: /material/stone/,stone plinth,/obj/structure/flood_platform/plinth,4,120,1,1,construction,0,0,0,8,null
 RECIPE: /material/stone/,cistern,/obj/structure/reagent_dispensers/cistern,10,200,1,1,construction,0,0,0,8,null
 RECIPE: /material/stone/,aqueduct channel,/obj/structure/aqueduct/channel,2,80,1,1,construction,0,0,0,8,null

@@ -1023,6 +1023,9 @@
 					qdel(FLD)
 			if (QDELETED(src))
 				return
+			// A floor drain on or beside the puddle takes it (floor_drains.dm).
+			if (floor_drain_take_puddle(src))
+				return
 			update_icon()
 			flooding_refresh_neighbors(loc, src)
 		spawn(6000)

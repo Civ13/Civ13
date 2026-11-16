@@ -1071,6 +1071,7 @@
 #include "code\modules\1713\barriers\sandbag.dm"
 #include "code\modules\1713\flood_ground.dm"
 #include "code\modules\1713\sewers.dm"
+#include "code\modules\1713\floor_drains.dm"
 #include "code\modules\1713\flood_defences.dm"
 #include "code\modules\1713\aqueducts.dm"
 #include "code\modules\1713\station_water.dm"
