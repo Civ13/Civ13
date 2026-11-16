@@ -58,6 +58,15 @@ class StationWaterTest(unittest.TestCase):
         self.assertEqual(clay.count("station_water_examine(user)"), 2)
         self.assertIn("/obj/structure/converter/retting_trough/attackby(obj/item/M, mob/user)", SOURCE)
 
+    def test_wash_places(self):
+        wash = read("code/modules/1713/wash_places.dm")
+        self.assertIn("water_per_use = 5", wash)
+        self.assertIn("washed = H.wash_part_of(H, zone", wash)
+        comfort = read("code/game/mob/living/carbon/human/home_comfort.dm")
+        self.assertIn('"wash" = "a place to wash"', comfort)
+        self.assertIn("if (mess <= HOME_MESS_ALLOWED && !foul)", comfort)
+        self.assertIn("/obj/item/weapon/clay/washbasin = list(3, 50)", read("code/modules/1713/clay_lime_fire.dm"))
+
     def test_quench_tub(self):
         quench = read("code/modules/1713/quench_tub.dm")
         self.assertIn("water_per_use = 10", quench)

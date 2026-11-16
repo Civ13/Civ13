@@ -16,12 +16,16 @@
 /obj/map_metadata/standing_level_tester
 	building_levels = 1
 	building_level_standing = TRUE
+	// The standing level alone; cave_probe.dm covers a map with its cave.
+	dig_down_underground = FALSE
 
 /obj/map_metadata/standing_level_tester/New()
 	return
 
 /obj/map_metadata/standing_level_off
 	building_levels = 1
+	// The standing level alone; cave_probe.dm covers a map with its cave.
+	dig_down_underground = FALSE
 
 /obj/map_metadata/standing_level_off/New()
 	return

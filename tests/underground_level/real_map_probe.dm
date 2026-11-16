@@ -131,6 +131,14 @@ var/global/datum/underground_real_probe/underground_real_probe = new
 		TICK_CHECK
 	check(!exposed, "write: no open cell touches unformed rock ([exposed])")
 	check(dug["open"] >= 1 && dug["lit_open"] == dug["open"], "write: open cells are lit ([dug["lit_open"]] of [dug["open"]])")
+	// --storeys N: grow the open-air levels a roof would add, up to N built.
+	var/storeys = text2num(world.params["storeys"])
+	if(storeys)
+		mark("storeys")
+		while(building_levels_built() < storeys)
+			if(!check(building_allocate_level(world.maxz + 1), "write: open-air level [world.maxz + 1] is admitted ([world_z_budget.last_error])")) break
+		result["storeys"] = building_levels_built()
+	result["maxz"] = world.maxz
 	var/obj/item/stone = new(below)
 	check(!dug_underground_unformed(locate(1, 2, z)) || !locate(2, 2, z).Enter(stone), "write: unformed rock refuses entry")
 	qdel(stone)
@@ -150,6 +158,8 @@ var/global/datum/underground_real_probe/underground_real_probe = new
 	var/z = dug_underground_z()
 	if(!check(z, "read: the restored world has its cave")) return
 	var/list/restored = census(z, "restored")
+	if(world.params["maxz"])
+		check(world.maxz == text2num(world.params["maxz"]), "read: every added level came back ([world.maxz] of [world.params["maxz"]])")
 	var/expected = text2num(world.params["formed"])
 	check(restored["formed"] == expected, "read: every formed cell came back ([restored["formed"]] of [expected])")
 	check(!restored["unformed_outside_caves"], "read: unformed cells are back in the cave area ([restored["unformed_outside_caves"]])")

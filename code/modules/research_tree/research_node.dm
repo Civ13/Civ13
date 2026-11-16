@@ -1738,7 +1738,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/reagent_containers/glass/mortar" = "herbalism",
 		"/obj/item/weapon/reagent_containers/pill/opium" = "herbalism",
 		"/obj/structure/drying_rack" = "herbalism",
-		// --- hygiene (12) ---
+		// --- hygiene (14) ---
 		"/obj/structure/aqueduct_bath" = "hygiene",
 		"/obj/item/weapon/material/kitchen/utensil/knife/razorblade" = "hygiene",
 		"/obj/structure/shower/bathtub/bronze" = "hygiene",
@@ -1751,6 +1751,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/toilet/outhouse" = "hygiene",
 		"/obj/structure/toilet/outhouse/female" = "hygiene",
 		"/obj/structure/toilet/outhouse/male" = "hygiene",
+		"/obj/item/weapon/clay/washbasin" = "hygiene",
+		"/obj/structure/washbasin/washstand" = "hygiene",
 		// --- imperial_architecture (48) ---
 		"/obj/structure/workshop_machine/shear_legs/crane" = "imperial_architecture",
 		"/obj/structure/workshop_machine/pile_driver" = "imperial_architecture",

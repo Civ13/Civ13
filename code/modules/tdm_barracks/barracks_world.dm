@@ -3,6 +3,7 @@
 // the TDM battle world (barracks.dm). Layout: docs/tdm-barracks.md.
 
 /obj/map_metadata/tdm_barracks
+	dig_down_underground = FALSE // no ground to dig under (dug_underground.dm)
 	ID = MAP_TDM_BARRACKS
 	title = "Barracks"
 	description = "Wait for the next battle, practise on the ranges and arenas, and check the leaderboards."

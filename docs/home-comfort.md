@@ -18,7 +18,8 @@ upkeep matter, not quantity.
 | A work of art | anything `mood_is_art()` accepts, in the room or on its walls |
 | A living plant | a filled plant pot, a crop or flowers |
 | A named house | a custom sign given a name, in the room or on its walls |
-| A clean room | at most 2 stains or bits of rubbish |
+| A place to wash | a wash basin or washstand holding water, a sink or tap with water, a shower, tub or public bath (`code/modules/1713/wash_places.dm`) |
+| A clean room | at most 2 stains or bits of rubbish, and no pit latrine, outhouse or dung in the room |
 | Sound walls | no bordering built wall below half health |
 
 | Points | Tier | Resting mood | Resting cap | Well rested |
@@ -27,7 +28,7 @@ upkeep matter, not quantity.
 | 3 to 4 | Cosy | +4 | 75 | no |
 | 5 to 6 | Comfortable | +5 | 75 | 30 minutes |
 | 7 to 8 | Fine | +6 | 77 | 45 minutes |
-| 9 | Splendid | +8 | 79 | 60 minutes |
+| 9 or 10 | Splendid | +8 | 79 | 60 minutes |
 
 The tier (`home_comfort`) is saved with the body and counts from waking until
 the next sleep, like `sleep_comfort`; the home part replaces the plain shelter

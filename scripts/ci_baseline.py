@@ -1496,7 +1496,8 @@ SUITES = {
             'code/game/mob/living/carbon/human/human_needs.dm')},
     # Station water tanks and running water feeds; source checks only.
     'station_water': {'files': ('tests/station_water/test_station_water.py',),
-        'paths': ('tests/station_water/', 'code/modules/1713/station_water.dm', 'code/modules/1713/quench_tub.dm'), 'shared_paths': (
+        'paths': ('tests/station_water/', 'code/modules/1713/station_water.dm', 'code/modules/1713/quench_tub.dm',
+            'code/modules/1713/wash_places.dm', 'code/game/mob/living/carbon/human/home_comfort.dm'), 'shared_paths': (
             'code/modules/1713/aqueducts.dm',
             'code/modules/1713/factory_plumbing.dm',
             'config/craft_needs.json',

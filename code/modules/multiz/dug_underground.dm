@@ -8,7 +8,9 @@
 #define DUG_SURFACE_Z 1
 #define DUG_CAVE_NOISE_CELL 8
 
-/obj/map_metadata/var/dig_down_underground = FALSE
+// Every single-level map has an underground (docs/underground-level.md); a
+// map whose surface is not ground (open sea, orbit, a lobby) opts out.
+/obj/map_metadata/var/dig_down_underground = TRUE
 // A map compiled with its own underground level (Gaia, Desert, Jungle, Barren,
 // Moon: z 1 under a z 2 surface) names it here. Its map file holds unformed
 // rock there, which forms on demand like a dug cave (see below).
@@ -31,10 +33,13 @@
 /proc/dug_underground_supported()
 	return map && map.dig_down_underground && building_base_maxz() == DUG_SURFACE_Z
 
-// The surface and its cave are the two full planes of a dig-down map; they
-// must fit the measured Gaia profile (two full planes of 175,000 cells).
+// An unformed cave plane costs about 14 bytes a cell until it is dug (native
+// grid plus cave area: +6 MB and +8 MB on a 1020 x 1020 plane, 2026-11-16), so
+// it is admitted beside a surface up to the largest measured one, the
+// Americas (1132 x 920 and 848 x 1224); see DUG_UNFORMED_MEASURED_CELLS.
+#define DUG_UNFORMED_MEASURED_CELLS 1050000
 /proc/dug_underground_fits()
-	return world.maxx * world.maxy * (DUG_SURFACE_Z + 1) <= NEW_Z_MEASURED_CELLS
+	return world.maxx * world.maxy <= DUG_UNFORMED_MEASURED_CELLS
 
 // The cave is the one full level a dig-down map may add; restoring a saved
 // world recreates it through the same admission before the save fills it in.
@@ -46,11 +51,22 @@
 	if (!dug_underground_supported())
 		return FALSE
 	var/pending = (instance_reserve - instance_used) + (safehouse_reserve - safehouse_used)
+	var/cells = world.maxx * world.maxy
+	// Added first at boot, the unformed cave fits beside any measured surface.
+	var/first = target_z == building_base_maxz() + 1 && !pending && dug_underground_fits()
 	if (!map.building_levels)
-		return target_z == building_base_maxz() + 1 && world.maxx * world.maxy * (target_z + pending) <= NEW_Z_MEASURED_CELLS
+		return target_z == building_base_maxz() + 1 && (first || cells * (target_z + pending) <= NEW_Z_MEASURED_CELLS)
 	if (target_z != world.maxz + 1 || target_z > building_base_maxz() + 1 + min(map.building_levels, NEW_Z_ROOF_CEILING) || !dug_underground_fits())
 		return FALSE
-	return world.maxx * world.maxy * (target_z + pending) <= NEW_Z_BUILDING_MEASURED_CELLS
+	return first || cells * (target_z + pending) <= NEW_Z_BUILDING_MEASURED_CELLS
+
+// The unformed cave: about 14 bytes a cell until dug, so a map's cave plane
+// is left out of the total-cell ceiling. A restore cannot see the cave until
+// its cells load, so a restored added level counts it on a map that has one.
+/datum/world_z_budget/free_planes(target_z, purpose)
+	if (target_z <= building_base_maxz() || !dug_underground_supported() || !dug_underground_fits())
+		return 0
+	return dug_underground_z() || (purpose in list("underground", "restore")) ? 1 : 0
 
 /datum/world_z_budget/ground_planes()
 	return base_z + (dug_underground_z() ? 1 : 0)
@@ -313,6 +329,14 @@ var/global/dug_underground_forming = FALSE
 		throw e
 	dug_underground_forming = FALSE
 	return formed
+
+// An explosion that reaches unformed rock forms it first, then breaks it.
+/turf/sky/building/ex_act(severity)
+	if (!dug_underground_unformed(src))
+		return ..()
+	var/turf/W = dug_underground_form(src)
+	if (W && !dug_underground_unformed(W))
+		W.ex_act(severity)
 
 // The core ChangeTurf hook (turf_changing.dm): a cell of the cave level that
 // opens forms what lies around it. One opened under a lake or a river breaks

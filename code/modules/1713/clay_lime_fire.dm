@@ -22,6 +22,7 @@ var/global/list/potters_wheel_wares = list(
 	/obj/item/weapon/clay/crock = list(3, 60),
 	/obj/item/weapon/clay/storage_jar = list(3, 60), // stone_age_storage.dm
 	/obj/item/weapon/clay/vessel = list(3, 50), // pottery_design.dm
+	/obj/item/weapon/clay/washbasin = list(3, 50), // wash_places.dm
 )
 #define POTTERS_WHEEL_SPEED 3
 

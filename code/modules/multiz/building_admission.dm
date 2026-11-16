@@ -30,6 +30,10 @@
 	if (cave && !dug_underground_fits())
 		return FALSE
 	var/pending = (instance_reserve - instance_used) + (safehouse_reserve - safehouse_used)
-	if (map.building_level_standing && building_base_maxz() == 1 && target_z == 2 && !pending && world.maxx * world.maxy * 2 <= NEW_Z_STANDING_MEASURED_CELLS)
+	// The standing level stands over the surface, after the unformed cave (a
+	// restore cannot see the cave yet, so the level after it is admitted), or
+	// first when the cave was refused this round.
+	var/standing_z = target_z == 2 + cave || (target_z == 2 && !dug_underground_z())
+	if (map.building_level_standing && building_base_maxz() == 1 && standing_z && !pending && world.maxx * world.maxy * 2 <= NEW_Z_STANDING_MEASURED_CELLS)
 		return TRUE
 	return world.maxx * world.maxy * (target_z + pending) <= NEW_Z_BUILDING_MEASURED_CELLS

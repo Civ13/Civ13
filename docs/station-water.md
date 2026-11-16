@@ -41,6 +41,7 @@ maps) any fresh water beside the station feeds it.
 | Brick mould bench (`clay_lime_fire.dm`) | 100 | 20 per batch of 8 |
 | Retting trough | 90 | 30 per batch |
 | Quench tub beside an anvil (`quench_tub.dm`) | 60 | 10 per forged iron or steel piece |
+| Wash basin / washstand (`wash_places.dm`) | 30 / 50 | 5 per wash |
 | Tub or shower, Persistence maps only (`bathing.dm`) | 100 (big 200) | a tubful |
 
 The wheel and bench check for water before each piece and take it when the
@@ -70,3 +71,11 @@ takes 10 water and raises the piece's `crafting_quality` to 1.2 (Excellent,
 and `update_force()` gives it the matching force). A dry tub, or one below 10,
 is passed over and forging works as before. Other metals, molds and
 blackpowder parts are not quenched.
+
+## Wash basins and washstands
+
+A fired clay wash basin (3 clay at the wheel or by hand, set down from the
+hand) or a wooden washstand (6 soft wood, Hygiene) holds water like any
+station. On help intent, clicking it with a hand targeted washes the hands;
+any other target washes that part (`body_washing.dm`). Each wash takes 5.
+With water in it, it is "a place to wash" for home comfort.

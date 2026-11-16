@@ -30,6 +30,7 @@ var/list/home_comfort_categories = list(
 	"art" = "a work of art",
 	"plants" = "a living plant",
 	"name" = "a named house (a sign)",
+	"wash" = "a place to wash",
 	"clean" = "a clean room",
 	"sound" = "sound walls")
 
@@ -174,6 +175,7 @@ var/list/home_comfort_categories = list(
 	if (turfs.len)
 		var/covered = 0
 		var/mess = 0
+		var/foul = FALSE
 		var/bed = FALSE
 		var/seat = FALSE
 		var/table = FALSE
@@ -199,11 +201,15 @@ var/list/home_comfort_categories = list(
 					have["plants"] = TRUE
 				if (home_is_named_sign(A))
 					have["name"] = TRUE
+				if (home_is_wash_place(A))
+					have["wash"] = TRUE
+				if (home_is_foul(A))
+					foul = TRUE
 		if (covered >= turfs.len * HOME_FLOOR_SHARE)
 			have["floor"] = TRUE
 		if (bed && seat && table)
 			have["furniture"] = TRUE
-		if (mess <= HOME_MESS_ALLOWED)
+		if (mess <= HOME_MESS_ALLOWED && !foul)
 			have["clean"] = TRUE
 		var/built_walls = 0
 		var/finished_walls = 0

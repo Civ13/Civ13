@@ -14,6 +14,7 @@
 		ready.Cut()
 
 /obj/map_metadata/extraction_survival
+	dig_down_underground = FALSE // no ground to dig under (dug_underground.dm)
 	var/list/parties = list()
 	var/list/party_by_owner = list()
 	proc/group_eligible(mob/living/human/H)
