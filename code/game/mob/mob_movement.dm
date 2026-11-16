@@ -596,6 +596,7 @@
 	if (mob_is_human)
 		var/mob/living/human/H = mob
 		H.update_laddervision(null)
+		H.stop_looking_up()
 
 	if (!mob.lastarea)
 		mob.lastarea = get_area(mob_loc)

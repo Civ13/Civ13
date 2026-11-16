@@ -92,7 +92,7 @@ class IronSand(unittest.TestCase):
 class Tatara(unittest.TestCase):
     def test_node_and_recipe(self):
         self.assertIn('register_research_node(new /datum/research_node("tatara_smelting", "Tatara Smelting", "Industrial", 165, 1, '
-                      'RESEARCH_MODE_ANALYSIS, list("iron_smithing","pottery_storage"), 2))', NODES)
+                      'RESEARCH_MODE_ANALYSIS, list("iron_smithing"), 2))', NODES)
         self.assertIn('"/obj/structure/tatara" = "tatara_smelting"', NODES)
         rows = [l for l in RECIPES.splitlines() if l.startswith('RECIPE: ') and ',/obj/structure/tatara,' in l]
         self.assertEqual(rows, ['RECIPE: /material/clay/,clay tatara furnace,/obj/structure/tatara,20,200,1,1,none,26,0,0,8,null'])
@@ -185,6 +185,42 @@ class Washing(unittest.TestCase):
         routes = {r['name'] for r in ATLAS['mechanisms']}
         self.assertIn('Wash hillside soil in a washing channel', routes)
         self.assertIn('Wash ordinary sand into iron sand', routes)
+
+
+class JapaneseBlades(unittest.TestCase):
+    BLADES = ('/obj/item/weapon/material/sword/katana', '/obj/item/weapon/material/sword/wakazashi',
+              '/obj/item/weapon/material/sword/tachi', '/obj/item/weapon/material/kitchen/utensil/knife/tanto',
+              '/obj/item/weapon/material/naginata', '/obj/item/weapon/material/spear/naginata')
+
+    def test_node_and_tachi(self):
+        self.assertIn('register_research_node(new /datum/research_node("japanese_swordsmithing", "Japanese Swordsmithing", "Military", 165, 1, '
+                      'RESEARCH_MODE_ANALYSIS, list("steel_blades","tatara_smelting"), 2))', NODES)
+        self.assertIn('"/obj/item/weapon/material/sword/tachi" = "japanese_swordsmithing"', NODES)
+        recipes = (ROOT / 'code/game/objects/structures/blacksmithing/blacksmithing_recipes.dm').read_text(encoding='utf-8')
+        self.assertIn('"Tachi" = list("Tachi","swords",2,3,16,16,0,0,/obj/item/weapon/material/sword/tachi)', recipes)
+        for sheet in ('icons/obj/weapons.dmi', 'icons/mob/items/lefthand_weapons.dmi', 'icons/mob/items/righthand_weapons.dmi',
+                      'icons/mob/belt.dmi', 'icons/mob/back.dmi'):
+            data = (ROOT / sheet).read_bytes()
+            at = data.index(b'zTXtDescription\x00\x00') + len(b'zTXtDescription\x00\x00')
+            self.assertIn('state = "tachi"', zlib.decompressobj().decompress(data[at:]).decode(), sheet)
+
+    def test_japanese_blades(self):
+        body = proc_body(SOURCE, '/proc/is_japanese_blade(')
+        for path in self.BLADES:
+            self.assertIn('istype(W, %s)' % path, body)
+
+    def test_clay_hardening(self):
+        self.assertEqual(float(re.search(r'#define CLAY_HARDENED_QUALITY ([\d.]+)', SOURCE).group(1)), 1.35)
+        harden = proc_body(SOURCE, '/obj/structure/anvil/proc/clay_harden(')
+        self.assertIn('W.get_material_name() != "steel"', harden)
+        self.assertIn('crafting_node_allowed(H, "japanese_swordsmithing")', harden)
+        self.assertLess(harden.index('Q.station_take_water(null)'), harden.index('C.use(1)'))
+        self.assertIn('W.hamon = TRUE', harden)
+        self.assertIn('W.update_force()', harden)
+        forge = proc_body(SOURCE, '/obj/structure/anvil/forge_stack_recipe(')
+        self.assertIn('material_name != "steel"', forge)
+        self.assertLess(forge.index('before += W'), forge.index('. = ..()'))
+        self.assertIn('clay_harden(W, H)', forge)
 
 
 if __name__ == '__main__':

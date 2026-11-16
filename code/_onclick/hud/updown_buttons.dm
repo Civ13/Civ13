@@ -100,9 +100,13 @@
 		icon_state = state
 	name = offer ? offer : (direction == UP ? "Go up (no way up here)" : "Go down (no way down here)")
 
-/obj/screen/updown/Click()
+/obj/screen/updown/Click(location, control, params)
 	var/mob/living/human/H = usr
 	if (!istype(H) || H != parentmob)
+		return TRUE
+	// Alt+click the up arrow: look up at the level above (multiz/look_up.dm).
+	if (direction == UP && params && params2list(params)["alt"])
+		H.toggle_look_up()
 		return TRUE
 	H.press_updown(direction)
 	return TRUE

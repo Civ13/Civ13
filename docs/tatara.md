@@ -25,7 +25,7 @@ still take only iron ore.
 ## The tatara
 
 Research: **Tatara Smelting** (`tatara_smelting`, Industrial, era 2, needs
-Iron Smithing and Pottery & Cookware). It unlocks the furnace (20 clay),
+Iron Smithing; a trunk metal node, so military nodes may need it). It unlocks the furnace (20 clay),
 kera sorting and tamahagane folding, and also opens the steel-faced anvil
 (`anvil_steel_face_nodes`), so tatara steel can be forged before
 Steelmaking.
@@ -62,3 +62,18 @@ Smelting) stands on a tile beside shallow fresh water (`panning_water()`).
   beside shallow fresh water (age 1+), washes down 5 to 1 iron sand (5 to 2
   with `iron_sand_rich`), 5 s per batch (`wash_sand()`).
 - A hammer takes the channel apart for 3 wood.
+
+## Japanese blades
+
+Research: **Japanese Swordsmithing** (`japanese_swordsmithing`, Military,
+era 2, needs Steel Blades and Tatara Smelting). It unlocks the tachi (anvil
+row, ages 2-3, steel or iron) and clay hardening.
+
+Clay hardening runs after the anvil forges a steel katana, wakizashi,
+tachi, tanto or naginata (`is_japanese_blade()`), when the smith knows the
+node, a watered quench tub stands beside the anvil and clay is in the other
+hand or on the anvil's tile. It takes 1 clay and the tub's water, sets
+quality 1.35 (`CLAY_HARDENED_QUALITY`, above the tub's plain 1.2) and
+`hamon = TRUE`, which examine shows. The override in tatara.dm is defined
+before quench_tub.dm's, so the tub's own quench sees the higher quality and
+leaves the blade alone. Iron blades and other weapons are only quenched.
