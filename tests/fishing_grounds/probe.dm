@@ -147,7 +147,7 @@ var/fg_runtime_error = FALSE
 	var/list/rod = fishing_tool_profile(new /obj/item/weapon/fishing/modern(land))
 	var/list/harpoon = fishing_tool_profile(new /obj/item/weapon/material/harpoon/bone(land))
 	var/obj/item/weapon/branch/stick = new(land)
-	fg_check(pole[1] == 150 && pole[2] == 30 && !pole[3] && net[2] == 30 && rod[1] == 120 && rod[2] == 40, "a pole waits 15 s for 30%, a rod 12 s for 40%")
+	fg_check(pole[1] == 150 && pole[2] == 30 && !pole[3] && pole[4] == 1 && rod[1] == 120 && rod[2] == 40, "a pole waits 15 s for 30%, a rod 12 s for 40%")
 	fg_check(harpoon && harpoon[3] && harpoon[1] == spear_fishing_delay() && harpoon[2] == spear_fishing_chance(), "a bone harpoon fishes as a spear")
 	fg_check(isnull(fishing_tool_profile(stick)), "a blunt branch is no fishing tool")
 	stick.sharpened = TRUE
@@ -155,6 +155,33 @@ var/fg_runtime_error = FALSE
 	fg_check(sharp && sharp[3] && sharp[2] == 20, "a sharpened branch spears at 20%")
 	fg_check(isnull(fishing_tool_profile(new /obj/item/weapon/reagent_containers/food/snacks/rawfish(land))), "a fish is no fishing tool")
 	fg_check(!ispath(text2path("/obj/structure/fish")), "the old fishing spot object is gone")
+
+	// ---- Cast net and set gear ----
+	fg_check(net[1] == 150 && net[2] == 25 && !net[3] && net[4] == 3, "a cast net has three chances of 25% a throw")
+	fg_check(harpoon[4] == 1 && sharp[4] == 1 && rod[4] == 1, "lines and spears take one fish at a time")
+	fishing_grounds = list()
+	var/datum/fishing_ground/T1 = fishing_ground_at(shelf)
+	var/trapped = fish_ground_trap_catch(shelf)
+	fg_check(ispath(trapped, /obj/item/weapon/reagent_containers/food/snacks/rawfish) && T1.stock == 11, "set gear takes its fish out of the ground")
+	T1.take(T1.available())
+	fg_check(isnull(fish_ground_trap_catch(shelf)), "set gear in a fished-out stretch gets nothing")
+	fg_check(isnull(fish_ground_trap_catch(land)) && isnull(fish_ground_trap_catch(ice)), "nor on land or ice")
+	var/obj/structure/fishing_cage/cage = new(land)
+	fg_check(isnull(cage.pick_catch(swamp)) && isnull(cage.pick_catch(ice)), "a cage in a swamp or on ice catches nothing")
+	var/cage_fish = 0
+	var/cage_other = 0
+	for (var/i = 1 to 200)
+		var/picked = cage.pick_catch(shelf)
+		if (ispath(picked, /obj/item/weapon/reagent_containers/food/snacks/rawfish))
+			cage_fish++
+		else if (picked)
+			cage_other++
+	fg_check(!cage_fish && cage_other > 20, "a cage in fished-out water still brings up shellfish and crabs, never fish ([cage_fish], [cage_other])")
+	T1.stock = 2
+	for (var/i = 1 to 200)
+		if (ispath(cage.pick_catch(shelf), /obj/item/weapon/reagent_containers/food/snacks/rawfish))
+			cage_fish++
+	fg_check(cage_fish == 2 && T1.available() == 0, "and takes no more fish than the stretch holds ([cage_fish])")
 
 	// ---- Saving ----
 	fishing_grounds = list()
