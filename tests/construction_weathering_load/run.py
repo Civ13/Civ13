@@ -24,7 +24,7 @@ CONTROLS = {
                 'FAIL: a founded wall under a roof weathers at half the rate'),
     'ruin': ('code/processes/seasonal_construction.dm', 'if (seasonal_construction_ruin())', 'if (FALSE)',
              'FAIL: then stands as a ruin'),
-    'sag': ('code/game/objects/roof_stuff.dm', '\t\t\tif (slow)\n\t\t\t\tsag()\n\t\t\t\treturn\n', '',
+    'sag': ('code/game/objects/building_collapse.dm', '\t\tif ("slow")\n\t\t\tsag()\n', '\t\tif ("slow")\n\t\t\treturn\n',
             'FAIL: roofs over a ruin sag before they fall'),
     'pace': ('code/processes/seasonal_construction_pacing.dm', '\tif (seasons < reserve - floor - 0.001)\n', '\tif (TRUE)\n',
              'FAIL: a backlog stops at the last-year warning'),

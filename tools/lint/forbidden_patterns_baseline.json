@@ -191,7 +191,7 @@
       "code/game/objects/map_metadata/wizard_boy.dm": 5,
       "code/game/objects/map_metadata/yeltsin.dm": 2,
       "code/game/objects/map_metadata/ypres.dm": 3,
-      "code/game/objects/roof_stuff.dm": 2,
+      "code/game/objects/roof_stuff.dm": 1,
       "code/game/objects/structures.dm": 1,
       "code/game/objects/structures/animalspawner/bearcave.dm": 4,
       "code/game/objects/structures/animalspawner/wolfcave.dm": 4,
