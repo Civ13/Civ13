@@ -52,7 +52,20 @@ describe('Storage window', () => {
     fireEvent.change(screen.getByLabelText('Find'), { target: { value: 'grain' } });
     expect(screen.getByTitle('wheat grain').querySelector('mark')?.textContent).toBe('grain');
     expect(screen.queryByText('clay bowl')).toBeNull();
-    expect(screen.getByText('of 9 things shown', { exact: false })).toBeTruthy();
+    expect(screen.getByText('of 10 things shown', { exact: false })).toBeTruthy();
+  });
+  it('shows what is not seen yet as size boxes and searches on request', () => {
+    const props = ui(); render(<StorageWindow {...props} />);
+    const sling = screen.getByLabelText('hide sling bag');
+    expect(within(sling).getByText('bone needle')).toBeTruthy();
+    expect(within(sling).getByText('Searching... 2 of 5')).toBeTruthy();
+    expect(within(sling).getByText('3 not seen yet')).toBeTruthy();
+    expect(within(sling).queryByText('Dump out')).toBeNull();
+    expect(within(sling).queryByText('Search')).toBeNull();
+    const jar = screen.getByLabelText('clay storage jar');
+    expect(within(jar).getByText('2 things are inside. Search it to see what.')).toBeTruthy();
+    fireEvent.click(within(jar).getByText('Search'));
+    expect(props.act).toHaveBeenCalledWith('search', { value: 'near:g' });
   });
   it('explains a refusal before the drop', () => {
     const jar = { id: 'j', kind: 'near', max_size: 2, slots: 6, space: 12, used: 0, items: [] };

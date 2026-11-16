@@ -1768,6 +1768,7 @@
 #include "code\modules\space\satellites.dm"
 #include "code\modules\space\water_scarcity.dm"
 #include "code\modules\storage_window\storage_window.dm"
+#include "code\modules\storage_window\storage_search.dm"
 #include "code\modules\statpanel\statpanel.dm"
 #include "code\modules\submarine\damage_control.dm"
 #include "code\modules\submarine\enemy_types.dm"

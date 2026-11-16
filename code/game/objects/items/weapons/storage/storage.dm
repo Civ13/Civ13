@@ -469,6 +469,7 @@
 		usr.remove_from_mob(W)
 		usr.update_icons()	//update our overlays
 	if (!W.persistence_set_loc(src)) return FALSE
+	storage_note_inserted(W, usr)
 	W.on_enter_storage(src)
 	if (usr)
 		if (usr.client && usr.s_active != src)

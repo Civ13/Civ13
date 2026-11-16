@@ -28,5 +28,24 @@ Fallbacks: agent characters, a browser that can't run the window, and players
 who choose the **Storage Window** verb (OOC tab, saved in preferences) keep the
 old HUD strip.
 
-Design by Fable (mock-ups in the project files, `storage-window/`). Searching
-other people's bags comes next.
+## Searching
+
+Things in a container someone else filled show as grey "?" boxes of their real
+size until you have looked at each one. Opening a container (or pressing Search)
+looks through it top first: 0.4 s for a tiny thing up to 1.5 s for a bulky one
+(`storage_search_time`). Walking away, being stunned or closing the window stops
+the search; moves carry on beside it.
+
+- Your hands, pockets, worn gear and the floor are always known.
+- Putting a thing into a storage (`handle_item_insertion`) makes it known only to
+  whoever put it there (`storage_note_inserted`), so a shared store refilled by
+  someone else must be searched again.
+- What a player has seen is the item's `storage_seen_by` (keys), a runtime var:
+  after a restart everything in other people's containers is unknown again.
+- Unseen things are never sent to the window, so they can't be moved, found by
+  the find box or taken with Take all. Dump out is off until a container has
+  been searched.
+
+The old HUD strip does not search.
+
+Design by Fable (mock-ups in the project files, `storage-window/`).

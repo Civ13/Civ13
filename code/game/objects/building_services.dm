@@ -11,6 +11,14 @@
 //   wall first, then push it in; it joins its neighbours by adjacency as before.
 // What runs inside shows when the wall is examined. When the wall breaks, the
 // cable snaps and the pipe bursts.
+//
+// Floor sleeves carry pipes between levels, the way cable risers carry power.
+// Set one sleeve on a tile and another at the same spot on the level above or
+// below. Factory pipes on the two tiles join one network, both ways, since a
+// pump drives them. Aqueduct water and sewage only fall: a water pipe or drain
+// over a sleeve feeds the piece under the sleeve below, never the other way.
+// To lift water a level, pump it in a factory pipe or fill a cistern above.
+// Nothing is saved for the pairing; it is read from where the sleeves stand.
 
 #define SERVICE_CHASE_SOFT_TIME 60
 #define SERVICE_CHASE_HARD_TIME 150
@@ -156,6 +164,73 @@
 			visible_message(SPAN_WARNING("\The [P] inside \the [src] bursts and spills!"))
 			qdel(P)
 	return ..()
+
+// ---- floor sleeves ----------------------------------------------------------
+
+/obj/structure/floor_sleeve
+	name = "floor sleeve"
+	desc = "A short lined shaft through the floor. Set one here and another at the same spot on the level above or below, and the pipes on both tiles join: factory pipes both ways, water pipes and drains only downwards."
+	icon = 'icons/obj/floor_sleeves.dmi'
+	icon_state = "sleeve"
+	anchored = TRUE
+	density = FALSE
+	opacity = FALSE
+	layer = 2.02
+	flammable = FALSE
+	not_movable = TRUE
+	not_disassemblable = FALSE
+
+/obj/structure/floor_sleeve/New()
+	..()
+	floor_sleeve_changed(get_turf(src))
+
+/obj/structure/floor_sleeve/on_runtime_spawn()
+	..()
+	floor_sleeve_changed(get_turf(src))
+
+/obj/structure/floor_sleeve/Destroy()
+	var/turf/T = get_turf(src)
+	. = ..()
+	floor_sleeve_changed(T)
+
+/obj/structure/floor_sleeve/examine(mob/user)
+	..()
+	var/turf/T = get_turf(src)
+	var/list/ends = list()
+	if (floor_sleeve_link(T, TRUE))
+		ends += "the level above"
+	if (floor_sleeve_link(T, FALSE))
+		ends += "the level below"
+	if (ends.len)
+		to_chat(user, SPAN_NOTICE("It meets a sleeve on [english_list(ends)]."))
+	else
+		to_chat(user, SPAN_WARNING("No sleeve meets it on the level above or below."))
+
+/proc/floor_sleeve_at(turf/T)
+	if (!T)
+		return null
+	for (var/obj/structure/floor_sleeve/S in T)
+		if (!QDELETED(S))
+			return S
+	return null
+
+// The turf a sleeve on T joins, on the level above (up) or below, or null.
+/proc/floor_sleeve_link(turf/T, up)
+	if (!floor_sleeve_at(T))
+		return null
+	var/level = up ? multiz_level_above(T.z) : multiz_level_below(T.z)
+	if (!level || level == T.z)
+		return null
+	var/turf/O = locate(T.x, T.y, level)
+	return floor_sleeve_at(O) ? O : null
+
+// Pipe networks on both ends notice a sleeve set or taken away.
+/proc/floor_sleeve_changed(turf/T)
+	if (!T)
+		return
+	aqueduct_revision++
+	sewer_revision++
+	fluid_mark_dirty()
 
 #undef SERVICE_CHASE_SOFT_TIME
 #undef SERVICE_CHASE_HARD_TIME

@@ -355,6 +355,13 @@ var/global/list/sewer_pumps = list()
 				if (!seen[Q])
 					seen[Q] = TRUE
 					queue += Q
+		// Waste falls through a floor sleeve to the piece under it.
+		var/turf/below = floor_sleeve_link(PT, FALSE)
+		if (below)
+			for (var/obj/structure/sewer_piece/Q in below)
+				if (!seen[Q])
+					seen[Q] = TRUE
+					queue += Q
 	return queue
 
 /datum/sewer_carry
