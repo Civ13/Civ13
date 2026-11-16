@@ -64,22 +64,28 @@
 		to_chat(user, "<span class='notice'>\The [src] is empty.</span>")
 		return
 
-	user.set_using_object(src)
+	ui_interact(user)
+
+/obj/structure/filingcabinet/ui_actions(ui_key)
+	return list("retrieve", "read")
+
+/obj/structure/filingcabinet/ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = TRUE)
+	if (!contents.len)
+		GLOB.nanomanager.close_user_uis(user, src)
+		return
 	// Filed by name, so a drawer reads like an index. Papers can be read in place.
 	var/list/by_name = list()
 	for (var/obj/item/P in src)
 		by_name += P
 	by_name = sortAtom(by_name)
-	var/dat = "<center><table>"
+	var/list/items = list()
 	for (var/obj/item/P in by_name)
-		dat += "<tr><td><a href='?src=\ref[src];retrieve=\ref[P]'>[P.name]</a></td>"
+		var/list/buttons = list()
 		if (istype(P, /obj/item/weapon/paper))
-			dat += "<td><a href='?src=\ref[src];read=\ref[P]'>Read</a></td>"
-		dat += "</tr>"
-	dat += "</table></center>"
-	show_browse(user, "<html><head><title>[name]</title></head><body>[dat]</body></html>", "window=filingcabinet;size=350x300")
-
-	return
+			buttons += list(panel_button("Read", "read", "\ref[P]"))
+		buttons += list(panel_button("Take", "retrieve", "\ref[P]"))
+		items += list(panel_item(P.name, buttons = buttons))
+	open_panel(user, name, 380, 420, list(panel_section("Filed", items = items)), ui = ui, force_open = force_open)
 
 /obj/structure/filingcabinet/Topic(href, href_list)
 	if (!usr || usr.stat || usr.restrained() || !Adjacent(usr))
@@ -90,8 +96,6 @@
 			R.show_document(usr, FALSE, "filing", src)
 		return
 	if (href_list["retrieve"])
-		show_browse(usr, "", "window=filingcabinet") // Close the menu)
-
 		//var/retrieveindex = text2num(href_list["retrieve"])
 		var/obj/item/P = locate(href_list["retrieve"])//contents[retrieveindex]
 		if (istype(P) && (P.loc == src) && Adjacent(usr))

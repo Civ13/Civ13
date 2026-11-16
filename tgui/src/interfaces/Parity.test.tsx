@@ -115,6 +115,7 @@ describe('standard screen parity', () => {
       'faction_list.tmpl',
       'faction_symbol.tmpl',
       'known_languages.tmpl',
+      'panel.tmpl',
       'paper_editor.tmpl',
       'photo_viewer.tmpl',
       'prompt.tmpl',
