@@ -16,7 +16,9 @@
 // cave not counted. Measured 2026-11-15 on 516.1688 with the north map: the
 // standing level costs about 5 MB while empty, a reload peak of 1526 MB
 // against 1401 MB without it (docs/americas-regions.md); with the cave 1657 MiB
-// (docs/underground-level.md).
+// (docs/underground-level.md). Measured 2026-11-16 with the cave and all four
+// open-air levels (z 6): save 181 s at a 1416 MiB peak, reload 536 s at a
+// 2053 MiB peak, each empty plane saved in 465 bytes.
 #define NEW_Z_STANDING_MEASURED_CELLS 5300000
 /obj/map_metadata/var/building_levels = 4
 
