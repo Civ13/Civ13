@@ -84,7 +84,11 @@ var/admins_file_path = null
 			var/source = istext(settings["gate"]) ? settings["gate"] : settings["mainland"]
 			var/region = settings["region"]
 			var/shared = "../[source]/SQL/admins.txt"
-			if (shard_id_valid(source) && shard_id_valid(region) && source != region && fexists(shared))
+			// A group that has moved its front door keeps one copy beside the regions
+			// (shard_group.py adopt_front_door), so no later move has to carry it.
+			if (shard_id_valid(region) && fexists("../front-door/SQL/admins.txt"))
+				admins_file_path = "../front-door/SQL/admins.txt"
+			else if (shard_id_valid(source) && shard_id_valid(region) && source != region && fexists(shared))
 				admins_file_path = shared
 	return admins_file_path
 

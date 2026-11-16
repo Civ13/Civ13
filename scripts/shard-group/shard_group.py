@@ -134,11 +134,83 @@ ID = re.compile(r'^[a-z0-9_-]{1,32}$')
 HOST = re.compile(r'^[A-Za-z0-9.-]{1,64}$')
 HEX40 = re.compile(r'^[0-9a-f]{40}$')
 RESERVED_PORTS = (1714,)  # live Gaia
+AUTO_PORT_BASE = 1724  # where fill_ports starts when the group names no port at all (1714 for a live group)
+TRANSFER_PORT_OFFSET = 10  # a transfer agent the group does not place sits this far above its region's port
+# <root>/front-door holds what belongs to whichever region is the front door (the relay's gate,
+# else the mainland), so moving the front door carries nothing: SQL/admins.txt and the magic
+# whitelist every region reads, and config.local.txt, the bot link lines merged into the front
+# door's config.txt only (adopt_front_door).
+FRONT_FOLDER = 'front-door'
+FRONT_FILES = ('admins.txt', 'magic_whitelist.txt')
+FRONT_CONFIG_KEYS = ('WEBHOOK_CAN_FIRE', 'WEBHOOK_ADDRESS', 'WEBHOOK_KEY')
 MAX_REGIONS = 16
 
 
 def load_group(path):
-    return check_group(json.loads(Path(path).read_text(encoding='utf-8-sig')), path)
+    group = json.loads(Path(path).read_text(encoding='utf-8-sig'))
+    if isinstance(group, dict) and fill_ports(group):
+        # Ports the file left out were chosen: keep them, so every later reader (the launcher,
+        # the bot, the host service) sees the same ones and a new region never moves an old one.
+        path = Path(path)
+        shutil.copy2(path, path.with_name('%s.bak-%s' % (path.name, time.strftime('%Y%m%d-%H%M%S', time.gmtime()))))
+        temporary = path.with_name(path.name + '.tmp')
+        temporary.write_text(json.dumps(group, indent=2) + '\n', encoding='utf-8')
+        os.replace(temporary, path)
+    return check_group(group, path)
+
+
+def fill_ports(group, listening=None):
+    """Choose every port the group file leaves out. Returns what was chosen ([] = nothing).
+
+    A region without "port" gets the next free one, the front door first; a region without
+    "transfer_port" gets one when the group travels ("transfers": true, or any region has
+    one); "relay_port": "auto" gets two free ports in a row (the relay and its control
+    port). Ports already in the file are never moved, and a port another program on this
+    machine listens on is skipped. Anything malformed is left for check_group to refuse."""
+    regions = group.get('regions')
+    if type(regions) is not list or not regions or any(type(r) is not dict for r in regions):
+        return []
+    number = lambda value: value if type(value) is int else None
+    missing = [r for r in regions if r.get('port') is None]
+    travels = group.get('transfers') is True or any(number(r.get('transfer_port')) for r in regions)
+    agents = [r for r in regions if r.get('transfer_port') is None] if travels else []
+    relay = group.get('relay_port') == 'auto'
+    if not missing and not agents and not relay:
+        return []
+    if listening is None:
+        listening = Platform().listening
+    taken = {number(r.get(key)) for r in regions for key in ('port', 'transfer_port', 'standby_port')}
+    taken |= {number(group.get('relay_port')), number(group.get('relay_control_port')),
+              number(group.get('doorman_port')) or gaia_host.FREEZE_DEFAULTS['doorman_port']}
+    taken.discard(None)
+    reserved = () if group.get('live') is True else RESERVED_PORTS
+
+    def free(start, run=1, game=False):
+        port = max(1024, start)
+        while any(p in taken or p in (reserved if game else RESERVED_PORTS) or listening(p) for p in range(port, port + run)):
+            port += 1
+            if port + run > 65536:
+                raise ValueError('no free port left to choose; set the ports in the group file')
+        taken.update(range(port, port + run))
+        return port
+
+    placed = [number(r.get('port')) for r in regions if number(r.get('port'))]
+    base = number(group.get('port_base')) or (min(placed) if placed else 1714 if group.get('live') is True else AUTO_PORT_BASE)
+    front = group.get('gate') if group.get('relay_port') and group.get('gate') else group.get('mainland', regions[0].get('id'))
+    chosen = []
+    for region in sorted(missing, key=lambda r: r.get('id') != front):
+        region['port'] = free(base, game=True)
+        chosen.append('%s port %d' % (region.get('id'), region['port']))
+    for region in agents:
+        if type(region.get('port')) is not int:
+            continue
+        region['transfer_port'] = free(region['port'] + TRANSFER_PORT_OFFSET)
+        chosen.append('%s transfer port %d' % (region.get('id'), region['transfer_port']))
+    if relay:
+        group['relay_port'] = free(max(p for p in taken) + 1, run=2)
+        group.setdefault('relay_control_port', group['relay_port'] + 1)
+        chosen.append('relay port %d' % group['relay_port'])
+    return chosen
 
 
 def check_group(group, path):
@@ -213,6 +285,10 @@ def check_group(group, path):
         raise ValueError('the mainland cannot be an EVENT region')
     if any(r['id'] == mainland and r['kind'] == 'EXPEDITION' for r in regions):
         raise ValueError('the mainland cannot be an EXPEDITION slot')
+    if FRONT_FOLDER in ids:
+        raise ValueError('a region cannot be called %s: the group keeps its front door files there' % FRONT_FOLDER)
+    if group.get('port_base') is not None and (type(group['port_base']) is not int or not 1024 <= group['port_base'] <= 65535):
+        raise ValueError('port_base must be a port from 1024 to 65535')
     if expedition_slots.SLOTS_FOLDER in ids:
         raise ValueError('a region cannot be called %s: the expedition slots keep their lands there' % expedition_slots.SLOTS_FOLDER)
     tutorials = [r for r in regions if r['kind'] == 'TUTORIAL']
@@ -374,6 +450,102 @@ def resolve_standby_ports(group):
 
 def region_dir(group, region_id):
     return Path(group['root']) / region_id
+
+
+def front_region(group):
+    """The region players join first and the bot watches: the relay's gate, else the mainland."""
+    return group['gate'] if group.get('relay_port') and group.get('gate') else group['mainland']
+
+
+def front_dir(group):
+    return Path(group['root']) / FRONT_FOLDER
+
+
+def front_shared(group):
+    """True once the group keeps its shared files in <root>/front-door (adopt_front_door)."""
+    return (front_dir(group) / 'SQL' / 'admins.txt').is_file()
+
+
+def shared_file(group, name):
+    """SQL/<name> as every region reads it (admins_file() and magic_whitelist_file() in the
+    game): the group's front-door folder once it is adopted, else the front door's own."""
+    if front_shared(group):
+        return front_dir(group) / 'SQL' / name
+    return region_dir(group, front_region(group)) / 'SQL' / name
+
+
+def front_config_lines(text):
+    """The lines of a config.local.txt that link its world to the bot (set or switched off)."""
+    return [line for line in text.splitlines() if (config_key(line) or commented_key(line)) in FRONT_CONFIG_KEYS]
+
+
+def front_sources(group, also=()):
+    """Region ids whose folders may hold the front door's files: the front door, then also
+    (set-gate names both ends of a move, so a move that is run again still finds them)."""
+    known = {r['id'] for r in group['regions']}
+    return [region_id for region_id in dict.fromkeys([front_region(group), *also]) if region_id in known]
+
+
+def front_link_file(group, also=()):
+    """The first source overlay's config.local.txt that holds bot link lines, or None."""
+    for region_id in front_sources(group, also):
+        overlay = next(r for r in group['regions'] if r['id'] == region_id).get('overlay')
+        local = Path(overlay) / LOCAL_CONFIG if overlay else None
+        try:
+            if local and front_config_lines(local.read_text(encoding='utf-8-sig')):
+                return local
+        except OSError:
+            continue
+    return None
+
+
+def plan_front_door(group, also=()):
+    """What adopt_front_door would still move: {'files': [names], 'keys': [setting names]}.
+    Names only: the values (the webhook key) never leave the files."""
+    front = front_dir(group)
+    files = [name for name in FRONT_FILES if not (front / 'SQL' / name).exists()]
+    local = front_link_file(group, also)
+    keys = sorted({config_key(line) or commented_key(line)
+                   for line in front_config_lines(local.read_text(encoding='utf-8-sig'))}) if local else []
+    return {'files': files, 'keys': keys, 'folder': str(front)}
+
+
+def adopt_front_door(group, stamp=None, also=()):
+    """Move what belongs to the front door, whichever region that is, into <root>/front-door.
+
+    The shared admins file and magic whitelist are copied from the current front door's
+    SQL folder (worlds find them by the admins file being there), and the bot link lines
+    leave its overlay's config.local.txt for front-door/config.local.txt, which
+    apply_overlays merges into the front door's config.txt only. Safe to repeat; a file
+    that is rewritten keeps a .bak-<stamp> copy. Returns what moved."""
+    stamp = stamp or time.strftime('%Y%m%d-%H%M%S', time.gmtime())
+    plan, front = plan_front_door(group, also), front_dir(group)
+    folders = [region_dir(group, region_id) / 'SQL' for region_id in front_sources(group, also)]
+    (front / 'SQL').mkdir(parents=True, exist_ok=True)
+    moved = []
+    # The whitelist first: the admins file is what tells a world the folder is in use.
+    for name in sorted(plan['files'], key=lambda name: name == 'admins.txt'):
+        source = next((folder / name for folder in folders if (folder / name).is_file()), None)
+        if source:
+            shutil.copy2(source, front / 'SQL' / name)
+        else:
+            (front / 'SQL' / name).write_text(MAGIC_WHITELIST_HEADER if name == 'magic_whitelist.txt' else '', encoding='utf-8')
+        moved.append('SQL/' + name)
+    if plan['keys']:
+        local, target = front_link_file(group, also), front / 'config.local.txt'
+        text = local.read_text(encoding='utf-8-sig')
+        lines = front_config_lines(text)
+        old = target.read_text(encoding='utf-8-sig') if target.exists() else \
+            '# Settings of whichever region is the front door (scripts/shard-group/README.md).\n'
+        kept = [line for line in old.splitlines() if line not in front_config_lines(old)]
+        if target.exists():
+            shutil.copy2(target, target.with_name('%s.bak-%s' % (target.name, stamp)))
+        shutil.copy2(local, local.with_name('%s.bak-%s' % (local.name, stamp)))
+        # The shared file first, so a failure between the two writes leaves the lines in both.
+        target.write_text('\n'.join(kept + lines) + '\n', encoding='utf-8')
+        local.write_text('\n'.join(line for line in text.splitlines() if line not in lines) + '\n', encoding='utf-8')
+        moved.append('config.local.txt')
+    return moved
 
 
 def region_config(group, region):
@@ -1506,6 +1678,10 @@ def apply_overlays(group, region, path):
             except PermissionError:
                 raise RuntimeError('%s is in use (is the region running?); stop it and try again' % relative.as_posix())
             copied.append(relative.as_posix())
+    # The front door's own lines (the bot link) follow whichever region is the front door.
+    front = front_dir(group) / 'config.local.txt'
+    if region['id'] == front_region(group) and front.is_file():
+        local.append(front)
     if local:
         config = path / 'config' / 'config.txt'
         text = config.read_text(encoding='utf-8') if config.exists() else ''
@@ -2982,9 +3158,8 @@ def ckey(text):
 
 
 def magic_whitelist_path(group):
-    """The one file every region reads (magic_whitelist_file() in the game): the relay's gate, else the mainland."""
-    source = group.get('gate') if group.get('relay_port') and group.get('gate') else group['mainland']
-    return region_dir(group, source) / 'SQL' / 'magic_whitelist.txt'
+    """The one file every region reads (magic_whitelist_file() in the game)."""
+    return shared_file(group, 'magic_whitelist.txt')
 
 
 def magic_whitelist_keys(text):

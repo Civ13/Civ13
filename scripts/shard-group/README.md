@@ -267,9 +267,19 @@ standby port, the relay, its control port and the doorman), whether something
 listens on it, which ones must be forwarded on the router (`public_ports`) and
 any port used twice (`problems`). It changes nothing.
 
+**Ports are optional.** A region without `port` gets the next free one (the
+front door first, starting at the lowest port in the file, else `port_base`,
+else 1724, or 1714 for a `live` group); with `"transfers": true`, or once any
+region has a `transfer_port`, the others get theirs (port + 10 when free);
+`"relay_port": "auto"` gets two free ports in a row. A port another program on
+the machine listens on is skipped, a port already in the file is never moved,
+and what was chosen is written back to the group file at once (the file as it
+was is kept as `<name>.bak-<time>`), so every reader sees the same ports and a
+region added later never moves an older one.
+
 `set-gate` makes another region the front door, the `gate`: the world on the
-public port, which players and the Discord Play button join, which the bot
-watches and whose `SQL/admins.txt` every region reads. The new gate takes the
+public port, which players and the Discord Play button join and which the bot
+watches. The new gate takes the
 public port and the old gate takes the new gate's port, so the router forward,
 the Play button, the launcher address and the bot's address stay as they are.
 `set-port` moves one region to other ports.
@@ -287,12 +297,20 @@ which works in this order:
    the ones already stopped are started again and nothing is changed.
 2. **Write.** The group file (the old one is kept beside it as
    `<name>.bak-<time>`), every set-up region's `config/shard_region.json` and
-   host config. When the gate moves: the bot link lines (`WEBHOOK_CAN_FIRE`,
-   `WEBHOOK_ADDRESS`, `WEBHOOK_KEY`) move from the old gate's overlay
-   `config.local.txt` to the new gate's, `SQL/admins.txt` and the shared
-   whitelist are copied to the new gate, and the bot's `profile.json` is
-   pointed at the new gate's folder (`basedir`, `admin_file`, `gaia_host.config`
-   of every server whose `region_group` is this group file). Name the profile
+   host config. The first `set-gate` also moves what belongs to the front
+   door, whichever region that is, into `<root>/front-door`: the bot link lines
+   (`WEBHOOK_CAN_FIRE`, `WEBHOOK_ADDRESS`, `WEBHOOK_KEY`) leave the gate's
+   overlay `config.local.txt` for `front-door/config.local.txt`, which is
+   merged into the front door's `config.txt` only, and `SQL/admins.txt` and the
+   shared whitelist are copied to `front-door/SQL`, where every region reads
+   them from then on (regions need a build that knows the folder). Later moves
+   carry nothing between regions. The bot's `profile.json` is pointed at the
+   new gate (`port`, and `basedir`, `admin_file` and `gaia_host.config` where
+   the entry has them, for every server whose `region_group` is this group
+   file); a bot entry with `"follow_front_door": true` takes those paths from the
+   group file by itself and is only restarted.
+   Choosing the current gate (`set-gate --region <gate> --apply`) does only this
+   move and check. Name the profile
    with the group key `bot_profile` or `--bot-profile PATH`; the bot reads it
    when it starts, so restart the bot afterwards. Every changed file keeps a
    `.bak-<time>` copy.
