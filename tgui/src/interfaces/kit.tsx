@@ -20,9 +20,11 @@ export function SnapshotTable({ label, rows, columns, hint, empty, title, button
     </table> : <NoticeBox>{empty}</NoticeBox>}
   </Section>;
 }
-// A short state label. Tone carries meaning: good, warn, info or plain.
-export function Pill({ tone = 'plain', children }: { tone?: 'plain' | 'good' | 'warn' | 'info'; children: ReactNode }) {
-  return <span className={`kit-pill kit-pill-${tone}`}>{children}</span>;
+// A short state label. Tone carries meaning: good (done or met), warn (missing),
+// info (available now), ready (can start), progress (under way), muted (not yet).
+export type Tone = 'plain' | 'good' | 'warn' | 'info' | 'ready' | 'progress' | 'muted';
+export function Pill({ tone = 'plain', className, children }: { tone?: Tone; className?: string; children: ReactNode }) {
+  return <span className={`kit-pill kit-pill-${tone}${className ? ` ${className}` : ''}`}>{children}</span>;
 }
 // Mutually exclusive choices sent as one action; the current one is marked.
 export function Choice({ ui, action, value, options, label }: { ui: ScreenProps; action: string; value: unknown; options: [string | number, string][]; label?: string }) {
