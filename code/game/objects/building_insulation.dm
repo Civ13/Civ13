@@ -14,6 +14,13 @@
 // room's size and kept by its insulation; in the open a fire only warms
 // people right beside it (nearby_heat_source).
 //
+// Insulation you add:
+// - A wall lined on its inside with straw, cloth or wool (two of them on a
+//   built wall, not on harm intent) holds more warmth.
+// - A closed curtain closes a doorway or covers a window; it bounds a room.
+// - A tapestry hung on a wall, and rugs or boards over most of the floor,
+//   add a little.
+//
 // Each room is surveyed when someone in it first asks, and the answer is kept
 // for BUILDING_ROOM_KEEP, so nothing scans the map on a timer.
 
@@ -25,6 +32,9 @@
 #define BUILDING_ROOF_SHELTER 5
 // Tiles of room one unit of heat warms fully at insulation 1.
 #define BUILDING_HEAT_TILES 30
+// What a closed curtain in a doorway or empty frame is worth.
+#define BUILDING_CURTAIN_VALUE 0.35
+#define BUILDING_LINING_COST 2
 
 var/global/list/building_room_of = list()
 
@@ -84,7 +94,7 @@ var/global/list/building_room_of = list()
 				continue
 			seen[N] = TRUE
 			if (home_turf_bounds_room(N))
-				var/value = building_insulation_edge(N)
+				var/value = building_insulation_edge(N, T, dir)
 				R.edges++
 				total += value
 				if (value <= 0)
@@ -98,29 +108,95 @@ var/global/list/building_room_of = list()
 				R.edges++
 				R.gaps++
 	R.insulation = R.edges ? total / R.edges : 0
+	// Rugs, boards or carpet over most of the floor keep a little more in.
+	var/covered = 0
+	for (var/turf/F in turfs)
+		if (home_floor_covered(F))
+			covered++
+	if (covered * 2 >= turfs.len)
+		R.insulation += 0.05
 	R.draughty = R.gaps > 0
 	R.heat = building_room_heat(R)
 	return R
 
-// How well what stands on an edge tile holds warmth in.
-/proc/building_insulation_edge(turf/N)
+// How well what stands on an edge tile holds warmth in. from and dir are the
+// room tile it was reached from and the way to it, for what hangs on the wall.
+/proc/building_insulation_edge(turf/N, turf/from = null, dir = 0)
 	if (!N)
 		return 0
+	var/value = building_insulation_edge_base(N)
+	if (value > 0 && from && building_tapestry_on(from, dir))
+		value += 0.1
+	return value
+
+/proc/building_insulation_edge_base(turf/N)
 	if (N.density)
 		if (istype(N, /turf/wall/rockwall))
 			return 1.2
 		return 1
+	var/curtained = FALSE
+	for (var/obj/structure/curtain/CU in N)
+		if (CU.opacity)
+			curtained = TRUE
+			break
 	for (var/obj/structure/simple_door/D in N)
-		return D.door_seals_room() ? building_insulation_material(D.material ? D.material.name : "wood") * 0.8 : 0
+		if (D.door_seals_room())
+			return building_insulation_material(D.material ? D.material.name : "wood") * 0.8
+		return curtained ? BUILDING_CURTAIN_VALUE : 0
 	for (var/obj/covers/C in N)
 		if (C.wall)
-			return C.incomplete ? 0.3 : building_insulation_material(C.material)
+			if (C.incomplete)
+				return 0.3
+			return building_insulation_material(C.material) + building_lining_bonus(C.insulation_lining)
 	for (var/obj/structure/window/W in N)
 		if (istype(W, /obj/structure/window/barrier))
 			return building_insulation_material(W.structure_impact_material() || "dirt")
-		return 0.3
-	// A frame with no glass in it.
+		return curtained ? 0.5 : 0.3
+	// An empty window frame or doorway, closed only by a curtain if anything.
+	return curtained ? BUILDING_CURTAIN_VALUE : 0
+
+// Whether a tapestry hangs on T facing dir.
+/proc/building_tapestry_on(turf/T, dir)
+	for (var/obj/structure/painting_frame/F in T)
+		if (F.dir == dir && istype(F.held_canvas(), /obj/item/canvas/woven/tapestry))
+			return TRUE
+	return FALSE
+
+// ---- wall linings -------------------------------------------------------
+
+/obj/covers/var/insulation_lining = null
+
+/proc/building_lining_kind(obj/item/W)
+	if (istype(W, /obj/item/stack/material/straw))
+		return "straw"
+	if (istype(W, /obj/item/stack/material/wool))
+		return "wool"
+	if (istype(W, /obj/item/stack/material/cloth))
+		return "cloth"
+	return null
+
+/proc/building_lining_bonus(kind)
+	switch (kind)
+		if ("straw", "cloth")
+			return 0.15
+		if ("wool")
+			return 0.25
 	return 0
+
+/obj/covers/proc/building_line_wall(obj/item/stack/S, mob/living/user)
+	var/kind = building_lining_kind(S)
+	if (insulation_lining)
+		to_chat(user, SPAN_WARNING("\The [src] is already lined with [insulation_lining]."))
+		return
+	if (S.amount < BUILDING_LINING_COST)
+		to_chat(user, SPAN_WARNING("You need [BUILDING_LINING_COST] [S.name] to line \the [src]."))
+		return
+	user.visible_message(SPAN_NOTICE("[user] starts packing [kind] against \the [src]."), SPAN_NOTICE("You start lining \the [src] with [kind] to keep the warmth in."))
+	if (!do_after(user, 40, src) || QDELETED(src) || QDELETED(S) || insulation_lining || S.amount < BUILDING_LINING_COST)
+		return
+	S.use(BUILDING_LINING_COST)
+	insulation_lining = kind
+	user.visible_message(SPAN_NOTICE("[user] lines \the [src] with [kind]."), SPAN_NOTICE("You line \the [src] with [kind]."))
 
 /proc/building_insulation_material(name)
 	switch (lowertext("[name]"))
@@ -199,3 +275,5 @@ var/global/list/building_room_of = list()
 #undef BUILDING_INSULATION_DEGREES
 #undef BUILDING_ROOF_SHELTER
 #undef BUILDING_HEAT_TILES
+#undef BUILDING_CURTAIN_VALUE
+#undef BUILDING_LINING_COST

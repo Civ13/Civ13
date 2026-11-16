@@ -103,6 +103,22 @@ var/vr_runtime_error = FALSE
 	R = building_room_at(locate(22, 5, 1))
 	vr_check(R && R.draughty && draughty < wood && draughty >= roof_only, "a hole in the wall makes it draughty ([draughty])")
 
+	// A closed curtain over the hole closes the room again, but less well than the wall.
+	var/obj/structure/curtain/CU = new /obj/structure/curtain(locate(24, 5, 1))
+	var/curtained = insul_fresh(locate(22, 5, 1))
+	R = building_room_at(locate(22, 5, 1))
+	vr_check(R && !R.draughty && curtained > draughty && curtained <= wood, "a closed curtain stops the draught ([curtained])")
+	CU.opacity = FALSE
+	vr_check(insul_fresh(locate(22, 5, 1)) == draughty, "an open curtain lets it through again")
+	CU.opacity = TRUE
+
+	// Lining the walls with wool keeps more warmth in.
+	for (var/obj/covers/C in range(3, locate(22, 5, 1)))
+		C.insulation_lining = "wool"
+	var/lined = insul_fresh(locate(22, 5, 1))
+	vr_check(lined > curtained, "wool-lined walls hold more warmth ([lined])")
+	vr_check(building_lining_kind(new /obj/item/stack/material/straw) == "straw" && !building_lining_kind(new /obj/item/stack/material/wood), "straw lines a wall, planks do not")
+
 	// A brazier heats its room; a bigger room needs more fire.
 	insul_room(30, 3, 42, 7, /obj/covers/wood_wall)
 	var/hall_cold = get_temp(locate(41, 5, 1))
