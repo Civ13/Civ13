@@ -108,6 +108,24 @@
 	var/list/send_data = get_send_data(data)
 	user << output(list2params(list(strip_improper(json_encode(send_data)))), "[window_id].browser:receiveUpdateData")
 
+// Opens this owner's window for a user, or refreshes the one already open.
+// state may be a topic state or the type of one to create for a new window;
+// keep_interaction leaves the user's current machine alone when it closes.
+/datum/proc/open_tgui(mob/user, ui_key, template, title, width, height, list/data, datum/nanoui/ui, force_open = TRUE, state, keep_interaction = FALSE, auto_update = FALSE)
+	ui = GLOB.nanomanager.try_update_ui(user, src, ui_key, ui, data, force_open)
+	if (ui)
+		return ui
+	if (ispath(state))
+		state = new state()
+	ui = new /datum/nanoui/tgui(user, src, ui_key, template, title, width, height, _state = state ? state : default_state)
+	if (keep_interaction)
+		ui.use_on_close_logic(FALSE)
+	ui.set_initial_data(data)
+	ui.open()
+	if (auto_update)
+		ui.set_auto_update(TRUE)
+	return ui
+
 // Each window's owner declares what its buttons may send. A request is one
 // action with an optional "value" plus the extra fields ui_action_fields() names.
 // This is a transport boundary, not a replacement for each owner's own checks.

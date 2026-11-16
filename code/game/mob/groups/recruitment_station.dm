@@ -125,12 +125,7 @@
 	if (user != viewer)
 		return
 	var/list/data = build_data()
-	ui = GLOB.nanomanager.try_update_ui(user, src, ui_key, ui, data, force_open)
-	if (!ui)
-		var/datum/topic_state/recruitment_panel/panel_state = new()
-		ui = new /datum/nanoui/tgui(user, src, ui_key, "recruitment_station.tmpl", station ? "Recruitment Station" : "Recruitment Applications", 520, 640, _state = panel_state)
-		ui.set_initial_data(data)
-		ui.open()
+	open_tgui(user, ui_key, "recruitment_station.tmpl", station ? "Recruitment Station" : "Recruitment Applications", 520, 640, data, ui, force_open, /datum/topic_state/recruitment_panel)
 
 /proc/recruitment_time_text(deciseconds)
 	if (deciseconds <= 0)

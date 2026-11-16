@@ -368,17 +368,7 @@ var/global/list/research_benches = list()
 	if (!data)
 		return
 
-	ui = GLOB.nanomanager.try_update_ui(user, src, ui_key, ui, data, force_open)
-	if (!ui)
-		ui = new /datum/nanoui/tgui(user, src, ui_key, "research_bench.tmpl", name, 900, 680)
-		// "basic" layout: just the content region, none of the stock SS13
-		// NanoUI chrome (title bar/status icon) that the default layout wraps
-		// around every UI -- this window is all parchment, edge to edge.
-		ui.set_layout_key("basic")
-		ui.add_stylesheet("research_tree.css")
-		ui.add_script("research_tree.js")
-		ui.set_initial_data(data)
-		ui.open()
+	open_tgui(user, ui_key, "research_bench.tmpl", name, 900, 680, data, ui, force_open)
 		// No auto_update: that polls and fully re-renders every ~1s regardless
 		// of whether anything changed, which is what was causing the whole
 		// window to visibly flash/reset constantly. Ticks land every 10s at

@@ -142,8 +142,23 @@ class BackendContract(unittest.TestCase):
         for path in (ROOT / 'code').rglob('*.dm'):
             source = path.read_text(errors='replace')
             templates.update(re.findall(r'new /datum/nanoui/tgui(?:/\w+)*\((?:user, src|reader, src|viewer, src|viewer, reference), ui_key, "([^"]+)"', source))
+            templates.update(re.findall(r'open_tgui\(user, ui_key, "([^"]+)"', source))
+            templates.update(re.findall(r'(?m)^\t+(?:var/)?template = "([^"]+\.tmpl)"', source))
             self.assertNotRegex(source, r'ui = new\(user, src, ui_key, "[^"\n]+\.tmpl"')
         self.assertEqual(templates, {'appearance_changer.tmpl', 'book_reader.tmpl', 'character_flavor.tmpl', 'character_notes.tmpl', 'chem_disp.tmpl', 'crafting_atlas.tmpl', 'crafting_window.tmpl', 'crew_log.tmpl', 'faction_creation.tmpl', 'faction_list.tmpl', 'faction_symbol.tmpl', 'known_languages.tmpl', 'photo_viewer.tmpl', 'recruitment_station.tmpl', 'religion_list.tmpl', 'research_bench.tmpl', 'research_book.tmpl', 'ship_stocks.tmpl', 'vending_machine.tmpl', 'vending_machine2.tmpl', 'vending_machine_gulag.tmpl', 'vending_machine_taotd.tmpl', 'warehouse_book.tmpl'})
+
+    def test_plain_owners_open_through_one_helper(self):
+        helper = DM.split('/datum/proc/open_tgui(', 1)[1].split('\n/', 1)[0]
+        self.assertLess(helper.index('GLOB.nanomanager.try_update_ui(user, src, ui_key, ui, data, force_open)'), helper.index('new /datum/nanoui/tgui('))
+        self.assertLess(helper.index('ui.use_on_close_logic(FALSE)'), helper.index('ui.open()'))
+        self.assertLess(helper.index('ui.set_initial_data(data)'), helper.index('ui.open()'))
+        self.assertIn('_state = state ? state : default_state', helper)
+        # Plain windows no longer build the adapter by hand or call NanoUI layout setup.
+        for path in (ROOT / 'code').rglob('*.dm'):
+            source = path.read_text(errors='replace')
+            self.assertNotRegex(source, r'ui\.(set_layout_key|add_stylesheet|add_script)\(', path.name)
+            if path.name not in ('tgui.dm', 'voyage.dm'):
+                self.assertNotIn('new /datum/nanoui/tgui(', source, path.name)
 
     def test_recovery_without_bootstrap_and_close_ownership(self):
         self.assertIn("document.getElementById('tgui-loading').textContent=", DM)

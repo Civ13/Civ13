@@ -158,15 +158,7 @@
 	data["chemicals"] = chemicals
 
 	// update the ui if it exists, returns null if no ui is passed/found
-	ui = GLOB.nanomanager.try_update_ui(user, src, ui_key, ui, data, force_open)
-	if (!ui)
-		// the ui does not exist, so we'll create a new() one
-		// for a list of parameters and their descriptions see the code docs in \code\modules\nano\nanoui.dm
-		ui = new /datum/nanoui/tgui(user, src, ui_key, "chem_disp.tmpl", ui_title, 390, 655)
-		// when the ui is first opened this is the data it will use
-		ui.set_initial_data(data)
-		// open the new ui window
-		ui.open()
+	open_tgui(user, ui_key, "chem_disp.tmpl", ui_title, 390, 655, data, ui, force_open)
 
 /obj/structure/chemical_dispenser/ui_act(action, list/params, mob/user, datum/nanoui/ui)
 	var/value = params["value"]

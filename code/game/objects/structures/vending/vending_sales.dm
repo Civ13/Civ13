@@ -283,18 +283,12 @@
 
 		data["products"] = listed_products
 
-	ui = GLOB.nanomanager.try_update_ui(user, src, ui_key, ui, data, force_open)
-	if (!ui)
-		if (map.ID == MAP_THE_ART_OF_THE_DEAL)
-			ui = new /datum/nanoui/tgui(user, src, ui_key, "vending_machine_taotd.tmpl", name, 540, 600)
-		else if (map.ID == MAP_GULAG13)
-			ui = new /datum/nanoui/tgui(user, src, ui_key, "vending_machine_gulag.tmpl", name, 540, 600)
-		else if (map.ID == MAP_KANDAHAR)
-			ui = new /datum/nanoui/tgui(user, src, ui_key, "vending_machine_taotd.tmpl", name, 540, 600)
-		else
-			ui = new /datum/nanoui/tgui(user, src, ui_key, "vending_machine2.tmpl", name, 540, 600)
-		ui.set_initial_data(data)
-		ui.open()
+	var/template = "vending_machine2.tmpl"
+	if (map.ID == MAP_THE_ART_OF_THE_DEAL || map.ID == MAP_KANDAHAR)
+		template = "vending_machine_taotd.tmpl"
+	else if (map.ID == MAP_GULAG13)
+		template = "vending_machine_gulag.tmpl"
+	open_tgui(user, ui_key, template, name, 540, 600, data, ui, force_open)
 
 /** Processes signals from the NanoUI, including purchase requests, cancellations, and withdrawal of inserted funds. */
 /obj/structure/vending/sales/Topic(href, href_list)

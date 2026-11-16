@@ -74,19 +74,7 @@
 	data["tool"] = tool
 	data["color"] = paint_color
 
-	ui = GLOB.nanomanager.try_update_ui(user, src, ui_key, ui, data, force_open)
-	if (!ui)
-		// Reuses the symbol editor's canvas stylesheet and cell-binding
-		// script wholesale -- same grid markup, same behavior.
-		ui = new /datum/nanoui/tgui(user, src, ui_key, "faction_creation.tmpl", name, 620, 900)
-		// "basic" layout: no stock SS13 NanoUI chrome around the parchment
-		// (see the research bench UI for the same choice).
-		ui.set_layout_key("basic")
-		ui.add_stylesheet("civ13_theme.css")
-		ui.add_stylesheet("faction_symbol.css")
-		ui.add_script("faction_symbol.js")
-		ui.set_initial_data(data)
-		ui.open()
+	open_tgui(user, ui_key, "faction_creation.tmpl", name, 620, 900, data, ui, force_open)
 
 /datum/nano_module/faction_creation/Topic(href, href_list)
 	if (!istype(owner) || owner.stat)
