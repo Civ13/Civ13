@@ -82,6 +82,11 @@ var/bc_runtime_error = FALSE
 
 	// Clearing rubble gives back part of what it was made of.
 	var/obj/structure/rubble/clear_me = new /obj/structure/rubble(locate(9, 9, 1), /obj/item/stack/material/wood, 3)
+	bc_check(findtext(clear_me.icon_state, "rubble_wood") == 1 && (clear_me.icon_state in icon_states(clear_me.icon)), "wooden rubble looks like wood ([clear_me.icon_state])")
+	var/obj/structure/rubble/stone_rubble = new /obj/structure/rubble(locate(10, 9, 1), /obj/item/stack/material/stone, 2)
+	bc_check(findtext(stone_rubble.icon_state, "rubble_stone") == 1 && (stone_rubble.icon_state in icon_states(stone_rubble.icon)), "stone rubble looks like stone ([stone_rubble.icon_state])")
+	building_collapse_dust(locate(10, 10, 1))
+	bc_check(locate(/obj/effect/collapse_dust) in locate(10, 10, 1), "a collapse raises a dust cloud")
 	clear_me.rubble_salvage()
 	var/obj/item/stack/material/wood/salvaged = locate() in locate(9, 9, 1)
 	bc_check(salvaged && salvaged.amount == 3, "rubble salvage returns its stack ([salvaged ? salvaged.amount : 0])")

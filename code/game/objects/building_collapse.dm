@@ -130,6 +130,7 @@ var/global/building_collapse_running = FALSE
 		to_chat(M, SPAN_DANGER("The roof collapses!"))
 	qdel(src)
 	if (T)
+		building_collapse_dust(T)
 		building_debris_land(T, weight, salvage)
 
 // Debris of the given weight lands on T: it hits the floor there (an upper
@@ -163,6 +164,7 @@ var/global/building_collapse_running = FALSE
 			M.Weaken(10)
 			to_chat(M, SPAN_DANGER("\The [src] comes crashing down on you!"))
 		playsound(below, 'sound/effects/rocksfalling.ogg', 80, 0, 6)
+		building_collapse_dust(below)
 	qdel(src)
 	if (below)
 		building_debris_land(below, weight, salvage)
@@ -200,7 +202,34 @@ var/global/building_collapse_running = FALSE
 		salvage_type = type_to_salvage
 		salvage_amount = amount
 	if (icon_state == initial(icon_state))
-		icon_state = pick("debris1", "debris2", "debris3")
+		icon = 'icons/obj/rubble.dmi'
+		icon_state = "rubble_[rubble_material()][rand(1, 3)]"
+
+// What the rubble looks like it was: wood, brick or stone.
+/obj/structure/rubble/proc/rubble_material()
+	if (ispath(salvage_type, /obj/item/stack/material/wood) || ispath(salvage_type, /obj/item/stack/material/straw) || ispath(salvage_type, /obj/item/stack/material/bamboo))
+		return "wood"
+	var/text = "[salvage_type]"
+	if (findtext(text, "brick") || findtext(text, "clay"))
+		return "brick"
+	return "stone"
+
+// A cloud of dust where part of a building came down.
+/obj/effect/collapse_dust
+	name = "dust"
+	icon = 'icons/effects/collapse_dust.dmi'
+	icon_state = "dust"
+	anchored = TRUE
+	mouse_opacity = FALSE
+	layer = 4.5
+
+/obj/effect/collapse_dust/New()
+	..()
+	QDEL_IN(src, 10)
+
+/proc/building_collapse_dust(turf/T)
+	if (T && !(locate(/obj/effect/collapse_dust) in T))
+		new /obj/effect/collapse_dust(T)
 
 /obj/structure/rubble/attack_hand(mob/living/user)
 	clear(user, null)
