@@ -19,6 +19,8 @@ two levels with real humans, a wooden ladder and a flight of stairs, checks
   the stairs under it climb again; shut, the stairs say the trapdoor is shut;
 - with its hinges below, it comes out only from below, through the stairs,
   back into a kit;
+- an agent's view of it says which side is inside, where the keyhole is and
+  whether it opens for them, and an agent character with no client opens it;
 - closers and other door-only fittings are refused;
 - no runtime errors.
 

@@ -1368,6 +1368,7 @@
 #include "code\modules\agent_control\agent_actions.dm"
 #include "code\modules\agent_control\agent_autospawn.dm"
 #include "code\modules\agent_control\agent_characters.dm"
+#include "code\modules\agent_control\agent_doors.dm"
 #include "code\modules\agent_control\agent_movement.dm"
 #include "code\modules\agent_control\agent_prompts.dm"
 #include "code\modules\agent_control\agent_stance.dm"

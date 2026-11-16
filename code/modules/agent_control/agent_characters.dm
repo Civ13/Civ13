@@ -533,6 +533,9 @@
 					row["verbs"] = near_verbs
 			if (istype(AM, /obj/item/weapon/storage) && get_dist(M, AM) <= 1)
 				row["contents"] = agent_container_contents(AM) // what opening it shows; click an item ref to take it
+			if (istype(AM, /obj/structure/simple_door))
+				// Open or shut, which side is inside, locks, bars, bolt and who holds it.
+				row["door"] = agent_door_row(AM, M)
 			if (istype(AM, /obj/roof))
 				var/obj/roof/R = AM
 				row["supported"] = R.is_supported() ? TRUE : FALSE // the same rule collapse_check uses

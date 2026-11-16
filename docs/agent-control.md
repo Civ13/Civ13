@@ -807,6 +807,17 @@ local model. Player lines are stored as game text and stay inside the untrusted
 observation. To reset a character, delete its file. `--memory DIR` moves the
 folder, and `--memory none` turns memory off.
 
+Doors: `character_observe` gives each door, window and trapdoor in view a `door` field
+(`code/modules/agent_control/agent_doors.dm`): its `kind` (door, window or trapdoor), whether it is
+`open`, and for a shut one whether walking into it (clicking a trapdoor) opens it for this character
+now (`passable`), which side is the `inside`, its `lock` (kind, `locked`, which side the keyhole is
+on), its bar brackets and bars per side (`bars`), its slide `bolt`, who has it `braced_by` or
+`held_by`, its `closer` and whether it is `wedged`. Sides are "your side" or "far side". `walk_to`
+plans through a shut door only when it is `passable` (`/obj/structure/simple_door/proc/door_route_passable`),
+never through a window. On their own side, a click with help intent lifts a bar or draws a bolt, and
+grab intent shoots a bolt or braces the door shut. Agent characters open doors by walking into or
+clicking them like players, though they have no client.
+
 Structures and supports: `character_observe` marks each roof in view `supported` and the nearest
 underground rock `safe_to_mine`. If the character stands in an underground tunnel, `here` also says
 `cave_supported`. These use the same procs as the game's collapse checks: `/obj/roof/proc/is_supported`
