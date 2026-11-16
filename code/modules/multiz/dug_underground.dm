@@ -62,9 +62,11 @@
 
 // The unformed cave: about 14 bytes a cell until dug, so a map's cave plane
 // is left out of the total-cell ceiling. A restore cannot see the cave until
-// its cells load, so any added level counts it on a map that has one.
-/datum/world_z_budget/free_planes(target_z)
-	return target_z > building_base_maxz() && dug_underground_supported() && dug_underground_fits() ? 1 : 0
+// its cells load, so a restored added level counts it on a map that has one.
+/datum/world_z_budget/free_planes(target_z, purpose)
+	if (target_z <= building_base_maxz() || !dug_underground_supported() || !dug_underground_fits())
+		return 0
+	return dug_underground_z() || (purpose in list("underground", "restore")) ? 1 : 0
 
 /datum/world_z_budget/ground_planes()
 	return base_z + (dug_underground_z() ? 1 : 0)
