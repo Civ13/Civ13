@@ -68,6 +68,7 @@
 	office_normalize()
 	justice_normalize()
 	bill_normalize()
+	papers_normalize()
 
 // The faction's roster with idle accounts removed.
 /obj/map_metadata/proc/faction_roster(faction)
@@ -148,3 +149,4 @@
 	office_rename(old_name, new_name)
 	justice_rename(old_name, new_name)
 	bill_rename(old_name, new_name)
+	papers_rename(old_name, new_name)

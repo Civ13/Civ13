@@ -23,13 +23,24 @@ var/list/nonbreaking_types = list(
 
 /obj/structure/simple_door/key_door/faction_door
 	var/faction = null
+	// Who else it opens for: 0 members only, 1 citizens, 2 citizens and pass
+	// holders (faction_papers.dm).
+	var/admits = 0
 	locked = 1
 
+// Members, and whoever carries papers the door was set to take.
+/obj/structure/simple_door/key_door/faction_door/proc/faction_door_admits(mob/living/human/H)
+	if (!istype(H))
+		return FALSE
+	return H.civilization == faction || papers_admit(H, faction, admits)
+
 /obj/structure/simple_door/key_door/faction_door/door_hand_locked(mob/user)
-	if (istype(user, /mob/living/human))
-		var/mob/living/human/H = user
-		return H.civilization != faction
-	return TRUE
+	return !faction_door_admits(user)
+
+/obj/structure/simple_door/key_door/faction_door/examine(mob/user)
+	..()
+	if (admits && faction)
+		to_chat(user, SPAN_NOTICE("It opens for [papers_admit_label(admits)] of [faction]."))
 
 /obj/structure/simple_door/key_door/faction_door/door_takes_kick_damage()
 	return FALSE
@@ -46,7 +57,7 @@ var/list/nonbreaking_types = list(
 	if (!istype(H) || state || isSwitchingStates)
 		return
 	if (!door_hand_locked(H))
-		to_chat(H, SPAN_NOTICE("This is your faction's door; it opens for you."))
+		to_chat(H, SPAN_NOTICE("This door opens for you."))
 		return
 	if (H.getStatCoeff("dexterity") < 1.7)
 		to_chat(H, SPAN_WARNING("You don't have the skills to use this."))
@@ -71,7 +82,7 @@ var/list/nonbreaking_types = list(
 	if(istype(user, /mob/living/human))
 		var/mob/living/human/H = user
 
-		if(H.civilization == faction)
+		if(faction_door_admits(H))
 			if(!state && !isSwitchingStates)
 				Open()
 		else
@@ -81,7 +92,7 @@ var/list/nonbreaking_types = list(
 /obj/structure/simple_door/key_door/faction_door/Crossed(atom/user)
 	if(istype(user, /mob/living/human))
 		var/mob/living/human/H = user
-		if(H.civilization == faction)
+		if(faction_door_admits(H))
 			if(state && !isSwitchingStates)
 				spawn(10)
 					if (!isSwitchingStates)
