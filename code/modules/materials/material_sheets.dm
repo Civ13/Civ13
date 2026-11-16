@@ -8,7 +8,7 @@
 /obj/item/stack/wood_chips
 	name = "wood chip batches"
 	singular_name = "batch of wood chips"
-	desc = "Each batch contains five log units' worth of wood chips. Use it as oven fuel; it cannot replace logs in crafting."
+	desc = "A heap of wood chips, worth five logs in an oven. Good only as fuel."
 	icon = 'icons/obj/materials.dmi'
 	icon_state = "sheet-wood"
 	w_class = ITEM_SIZE_NORMAL

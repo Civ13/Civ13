@@ -1,7 +1,7 @@
 // Constructed-car authority. No constructors mint identities or replacement keys.
 /obj/item/vehicle_key
 	name = "vehicle ignition key"
-	desc = "A cut key for one vehicle and one lock generation."
+	desc = "A cut key for one vehicle."
 	icon = 'icons/obj/key.dmi'
 	icon_state = "modern"
 	item_state = "key"
@@ -15,7 +15,7 @@
 		return type == /obj/item/vehicle_key && A && A.keyed_vehicle_id == vehicle_id && A.key_generation == key_generation && vehicle_key_binding_valid(vehicle_id, key_generation)
 	examine(mob/user)
 		..()
-		to_chat(user, "Vehicle [vehicle_id], lock generation [key_generation].")
+		to_chat(user, "Vehicle [vehicle_id], lock [key_generation].")
 
 /proc/vehicle_key_binding_valid(id, generation)
 	return istext(id) && length(id) == 32 && ckey(id) == id && isnum(generation) && round(generation) == generation && generation >= 1 && generation <= 1000000

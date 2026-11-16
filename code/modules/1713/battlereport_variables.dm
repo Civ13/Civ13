@@ -297,4 +297,4 @@ var/list/recently_died = list()
 	var/list/counts = factions[faction]
 	if (!counts)
 		counts = list(0, 0, 0)
-	return "[faction_name]: [counts[1]] alive ([counts[3]] heavily injured or unconscious), [counts[2]] dead bodies currently present."
+	return "[faction_name]: [counts[1]] alive ([counts[3]] heavily injured or unconscious), [counts[2]] dead."

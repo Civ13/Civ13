@@ -162,7 +162,7 @@
 	if (!allowed.len)
 		to_chat(user, SPAN_WARNING("No other [lowertext(label)] is a small enough change for an alteration."))
 		return pieces_text
-	var/selected = WWinput(user, "Choose the [lowertext(label)]. Pieces that need extra fabric or change what the garment covers are a new garment, not an alteration.", label, null, allowed)
+	var/selected = WWinput(user, "Choose the [lowertext(label)]. Bigger changes need a new garment.", label, null, allowed)
 	if (!alteration_ready(user, site, save_epoch, G) || !(selected in allowed))
 		return pieces_text
 	return tailoring_set_piece(body_id, pieces_text, label, selected)

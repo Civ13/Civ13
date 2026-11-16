@@ -275,7 +275,7 @@
 		var/details = ""
 		var/list/joint_spec = furniture_joinery_spec(R)
 		if (stone_mold_type(R.result_type))
-			details += "Chisel and hammer/mallet equipped or at your feet; no firing needed. "
+			details += "Chisel and hammer/mallet equipped or at your feet. "
 		if (joint_spec)
 			if (joint_spec["component_cost"])
 				cost += " + [joint_spec["component_cost"]] wooden dowel set(s)"
@@ -403,7 +403,7 @@
 	if (findtext(recipe.title, "joinery: ") == 1)
 		joinery = new(src, H, recipe)
 		if (quantity != 1 || !joinery.valid())
-			to_chat(user, SPAN_WARNING("Joinery needs its exact materials, completed research and equipped tools. Consult the Crafting Atlas."))
+			to_chat(user, SPAN_WARNING("Joinery needs its materials, research and equipped tools. Check the Crafting Atlas."))
 			return
 	var/needs_crafting_handle = FALSE
 	var/obj/item/weapon/material/handle/crafting_handle = null

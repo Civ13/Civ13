@@ -11,7 +11,7 @@
 
 /obj/structure/civ_generator/nuclear
 	name = "controlled reactor generator"
-	desc = "A finite-fuel generator with coolant, controls and maintenance. Heat is local; this machine never changes global radiation."
+	desc = "A reactor that turns a load of fuel into steady power. It needs coolant and upkeep."
 	icon = 'icons/obj/engines32.dmi'
 	icon_state = "reactor_3"
 	var/fuel_energy = 0

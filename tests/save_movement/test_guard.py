@@ -288,7 +288,7 @@ class GuardTests(unittest.TestCase):
         messages = []
         f.env['to_chat'] = lambda target, message: messages.append(message)
         first = f.begin(f.store, 'save')
-        self.assertIn('Do not move between z-levels until saving finishes.', messages[0])
+        self.assertIn('Stairs, ladders and other level changes are blocked until it finishes', messages[0])
         self.assertIsNone(f.begin(f.store, 'save'))
         self.assertEqual(len(messages), 1)
         first.finish(False)

@@ -90,18 +90,18 @@ def render(mind, berry_context, source=MIND):
         'continue': 'continue',
         'output += "<b>[html_encode(record["label"])]</b>: [html_encode(record["observation"])]"': "output += '<b>' + html.escape(record['label']) + '</b>: ' + html.escape(record['observation'])",
         'if (record["category"] == "berry_smell")': "if record.get('category') == 'berry_smell':",
-        'output += "<br><i>Observation of a sample, not proof that these berries are safe to eat.</i>"': 'output += "<br><i>Observation of a sample, not proof that these berries are safe to eat.</i>"',
+        'output += "<br><i>One sample\'s smell. Eat with care.</i>"': 'output += "<br><i>One sample\'s smell. Eat with care.</i>"',
         'if (!berry_context || record["context"] != berry_context)': "if not berry_context or record.get('context') != berry_context:",
-        'output += "<br><i>Historical observation: the world\'s berry configuration has changed or is unavailable.</i>"': 'output += "<br><i>Historical observation: the world\'s berry configuration has changed or is unavailable.</i>"',
+        'output += "<br><i>An old note. The berries may have changed since.</i>"': 'output += "<br><i>An old note. The berries may have changed since.</i>"',
         'output += "<br><br>"': 'output += "<br><br>"',
         'if (learned_discoveries.len >= 256)': "if len(mind['learned_discoveries']) >= 256:",
-        'output += "<i>Discovery notes are full (256 records). Existing knowledge is kept; new observations are not added. Personal notes remain available.</i><br>"': 'output += "<i>Discovery notes are full (256 records). Existing knowledge is kept; new observations are not added. Personal notes remain available.</i><br>"',
+        'output += "<i>Your discovery notes are full (256). New observations will not be written down.</i><br>"': 'output += "<i>Your discovery notes are full (256). New observations will not be written down.</i><br>"',
         'var/berry_records = 0': 'berry_records = 0',
         'berry_records++': 'berry_records += 1',
         'if (berry_records >= 64)': 'if berry_records >= 64:',
-        'output += "<i>Berry smell notes are full (64 records). Existing observations are kept; other categories remain subject to the overall limit.</i><br>"': 'output += "<i>Berry smell notes are full (64 records). Existing observations are kept; other categories remain subject to the overall limit.</i><br>"',
+        'output += "<i>Your berry smell notes are full (64).</i><br>"': 'output += "<i>Your berry smell notes are full (64).</i><br>"',
         'if (omitted)': 'if omitted:',
-        'output += "<i>Some stored discoveries exceed display limits or are invalid and are not shown. Stored records have not been changed.</i>"': 'output += "<i>Some stored discoveries exceed display limits or are invalid and are not shown. Stored records have not been changed.</i>"',
+        'output += "<i>Some notes are too long or damaged to show.</i>"': 'output += "<i>Some notes are too long or damaged to show.</i>"',
         'return output': 'return output',
     }
     return project(source, '/datum/mind/proc/discoveries_html()', 'mind, berry_context', instructions,
@@ -137,10 +137,10 @@ class DiscoveryTests(unittest.TestCase):
     def test_changed_world_and_unavailable_context_are_historical(self):
         mind = {}
         self.remember(mind)
-        self.assertNotIn('Historical observation', render(mind, 'world-a'))
+        self.assertNotIn('An old note', render(mind, 'world-a'))
         for context in ('world-b', None):
-            self.assertIn('Historical observation', render(mind, context))
-        self.assertIn('not proof', render(mind, 'world-a'))
+            self.assertIn('An old note', render(mind, context))
+        self.assertIn('Eat with care', render(mind, 'world-a'))
         self.assertTrue(self.remember(mind, context='world-b'))
         self.assertEqual(len(mind['learned_discoveries']), 2)
 
@@ -241,11 +241,11 @@ class DiscoveryTests(unittest.TestCase):
         self.remember(mind)
         self.assertTrue(learn(mind, 'berry_smell', '/berries/tinto|tinto', 'world-a', 'tinto berries', 'I smelled a sample and noticed fruit.', source=no_dedupe))
         # The ordinary dedupe assertion expects False and rejects this mutant.
-        stale_line = '\t\t\t\toutput += "<br><i>Historical observation: the world\'s berry configuration has changed or is unavailable.</i>"\n'
+        stale_line = '\t\t\t\toutput += "<br><i>An old note. The berries may have changed since.</i>"\n'
         no_stale = MIND.replace(stale_line, '\t\t\t\toutput += "<br><br>"\n')
         self.assertNotEqual(no_stale, MIND)
-        self.assertNotIn('Historical observation', render(mind, 'world-b', source=no_stale))
-        self.assertIn('Historical observation', render(mind, 'world-b'))
+        self.assertNotIn('An old note', render(mind, 'world-b', source=no_stale))
+        self.assertIn('An old note', render(mind, 'world-b'))
 
     def test_repeated_renames_keep_first_label_and_single_record(self):
         mind = {}
@@ -276,7 +276,7 @@ class DiscoveryTests(unittest.TestCase):
         self.assertFalse(self.remember(mind, observation='extra'))
         self.assertEqual(json.dumps(mind), before)
         self.assertTrue(learn(mind, 'future_taste', 'food', 'character', 'taste', 'observed'))
-        self.assertIn('Berry smell notes are full (64 records)', render(mind, 'world-a'))
+        self.assertIn('Your berry smell notes are full (64)', render(mind, 'world-a'))
 
     def test_overall_capacity_preserves_all_established_records(self):
         mind = {'memory': 'private'}
@@ -285,7 +285,7 @@ class DiscoveryTests(unittest.TestCase):
         before = json.dumps(mind)
         self.assertFalse(learn(mind, 'future_taste', 'extra', 'character', 'taste', 'observed'))
         self.assertEqual(json.dumps(mind), before)
-        self.assertIn('Discovery notes are full (256 records)', render(mind, 'world-a'))
+        self.assertIn('Your discovery notes are full (256)', render(mind, 'world-a'))
         self.assertEqual(render(mind, 'world-a').count('<b>taste</b>'), 256)
 
     def test_bad_import_is_bounded_without_mutating_stored_data(self):
@@ -305,7 +305,7 @@ class DiscoveryTests(unittest.TestCase):
         self.assertNotIn('label-300', output)
         self.assertLessEqual(output.count('noticed fruit'), 256)
         self.assertLess(len(output), 650000)
-        self.assertIn('Some stored discoveries exceed display limits', output)
+        self.assertIn('Some notes are too long or damaged', output)
         self.assertFalse(self.remember(mind, observation='new'))
         self.assertEqual(json.dumps(mind), before)
 

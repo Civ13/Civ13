@@ -1,6 +1,6 @@
 /obj/structure/telecom/terminal
 	name = "cable network terminal"
-	desc = "A powered local text terminal. It sends immediate messages to terminals on the same electrical cable network; no Internet or email storage."
+	desc = "A powered text terminal. It sends messages to other terminals on the same cable network."
 	icon = 'icons/obj/computers.dmi'
 	icon_state = "ibm"
 	powerneeded = 5

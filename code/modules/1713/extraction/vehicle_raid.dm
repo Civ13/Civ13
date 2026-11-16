@@ -138,7 +138,7 @@
 		return FALSE
 	if (!T.relocate(destination))
 		S.locked = TRUE
-		to_chat(H, "Vehicle transfer stopped after durable debit. This session is locked for recovery; the saved garage will not reissue the car.")
+		to_chat(H, "The car transfer failed after payment. Your session is frozen until staff sort it out.")
 		return FALSE
 	S.raid_vehicle = A
 	S.raid_vehicle_parts = S.garage_parts.Copy()
@@ -184,7 +184,7 @@
 		return FALSE
 	if (!T.relocate(garage_anchor(S)))
 		S.locked = TRUE
-		to_chat(H, "Vehicle extraction saved but physical transfer stopped. This session is locked for recovery.")
+		to_chat(H, "The car was saved, but moving it failed. Your session is frozen until staff sort it out.")
 		return FALSE
 	S.garage_vehicle = A
 	S.garage_parts = T.parts - T.cargo

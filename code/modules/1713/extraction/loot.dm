@@ -284,7 +284,7 @@
 					key = K
 					break
 			if (!unlock(M, H, key))
-				to_chat(H, unlock_recovery_required ? "Unlock recovery is required. No replacement key or use will be issued." : "This cache needs its exact tagged key in your carried inventory.")
+				to_chat(H, unlock_recovery_required ? "This cache is locked until staff sort it out." : "You need this cache's own key on you.")
 				return
 		busy = TRUE
 		if (prepare(M))
@@ -299,7 +299,7 @@
 				var/choice = WWinput(H, "Take one generated item. This container does not restock during this raid.", name, "Cancel", options + list("Cancel"))
 				if (options[choice]) claim(M, H, options[choice])
 			else to_chat(H, "The container is empty.")
-		else to_chat(H, "Container unavailable; pending delivery or recovery may require reconciliation.")
+		else to_chat(H, "That container is unavailable right now.")
 		busy = FALSE
 
 /obj/map_metadata/extraction_survival

@@ -485,7 +485,7 @@ var/global/list/crafting_purpose_cache = list()
 	var/tools = ""
 	var/list/joint_spec = furniture_joinery_spec(R)
 	if (stone_mold_type(R.result_type))
-		tools = "Chisel and hammer/mallet equipped or at your feet; no firing needed."
+		tools = "Chisel and hammer/mallet equipped or at your feet."
 	if (joint_spec)
 		if (joint_spec["component_cost"])
 			cost += " + [joint_spec["component_cost"]] wooden dowel set(s)"

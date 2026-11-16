@@ -285,7 +285,9 @@
 	if (!dug_underground_z())
 		user.visible_message(SPAN_DANGER("The ground groans as [user] breaks into the deep rock below!"), SPAN_DANGER("You break into the deep rock below. The ground groans and settles..."))
 	if (!dug_underground_create())
-		to_chat(user, SPAN_WARNING(world_z_budget.last_error ? world_z_budget.last_error : "The ground below will not give way."))
+		if (world_z_budget.last_error)
+			log_debug("Dug underground refused: [world_z_budget.last_error]")
+		to_chat(user, SPAN_WARNING("The ground below will not give way."))
 		return TRUE
 	var/turf/below = dug_underground_open_below(user, here, TRUE)
 	if (!below)
