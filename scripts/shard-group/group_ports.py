@@ -56,6 +56,7 @@ PORT_KEYS = ('port', 'transfer_port', 'standby_port')
 RUNNING_PHASES = ('accepted', 'stopping', 'writing', 'host service', 'starting', 'telling')
 SERVICE_RELOAD_SECONDS = 180
 POLL_SECONDS = 5
+ACCEPT_SECONDS = 60
 
 
 def journal_path(group):
@@ -74,7 +75,15 @@ def write_json(path, value, indent=1):
     path = Path(path)
     temporary = path.with_name(path.name + '.tmp')
     temporary.write_text(json.dumps(value, indent=indent) + '\n', encoding='utf-8')
-    os.replace(temporary, path)
+    for attempt in range(20):
+        try:
+            os.replace(temporary, path)
+            return
+        except PermissionError:
+            # Windows: the launcher or `ports` is reading the file this instant.
+            if attempt == 19:
+                raise
+            time.sleep(0.1)
 
 
 def signature(path):
@@ -109,9 +118,13 @@ def machine_of(sg, group, platform=None):
 def change_running(sg, group):
     """The journal of a port change whose worker still runs, or None."""
     journal = read_json(journal_path(group))
-    if journal and journal.get('phase') in RUNNING_PHASES and type(journal.get('pid')) is int and sg.process_alive(journal['pid']):
-        return journal
-    return None
+    if not journal or journal.get('phase') not in RUNNING_PHASES:
+        return None
+    if type(journal.get('pid')) is int:
+        return journal if sg.process_alive(journal['pid']) else None
+    # Accepted a moment ago: its worker has not written its pid yet.
+    started = journal.get('started')
+    return journal if type(started) is int and 0 <= time.time() - started < ACCEPT_SECONDS else None
 
 
 def service_state(sg, group, machine):
@@ -456,8 +469,8 @@ def apply(sg, group, plan, start=None):
                'started': int(time.time()), 'updated': int(time.time()), 'pid': None}
     write_json(journal_path(group), journal)
     argv = [sys.executable, '-I', '-B', str(Path(sg.__file__).resolve()), '--config', group['_path'], '--ports-worker', operation]
-    journal['pid'] = (start or sg.detach)(argv, root, root / 'port-change.log')
-    write_json(journal_path(group), journal)
+    # The worker records its own pid: two writers of one journal could collide.
+    (start or sg.detach)(argv, root, root / 'port-change.log')
     return {'accepted': True, 'operation': operation, 'journal': str(journal_path(group)), 'plan': plan}
 
 
@@ -609,8 +622,8 @@ class Worker:
                 target.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copy2(source, target)
             if moved:
-                done, refused = sg.apply_config(new, None, self.platform)
-                for region_id in gate:
+                for region_id in gate:  # only the two worlds whose settings moved; both are stopped
+                    _done, refused = sg.apply_config(new, region_id, self.platform)
                     if region_id in refused:
                         raise RuntimeError('could not write the config of %s: %s' % (region_id, refused[region_id]))
                 self.note('bot link settings moved to %s' % gate[1])

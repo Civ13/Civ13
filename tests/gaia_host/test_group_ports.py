@@ -323,7 +323,11 @@ class GroupPortsTests(unittest.TestCase):
             self.assertIn('unique port', json.loads(out.getvalue())['refused'])
             out.seek(0), out.truncate()
             self.assertEqual(0, shard_group.main(['--config', str(self.path), 'ports']))
-            self.assertEqual('accepted', json.loads(out.getvalue())['change']['phase'])
+            change = json.loads(out.getvalue())['change']
+            self.assertEqual(('accepted', True), (change['phase'], change['running']), 'a change just accepted counts as running')
+            out.seek(0), out.truncate()
+            self.assertEqual(1, shard_group.main(['--config', str(self.path), 'set-gate', '--region', 'gaia', '--apply']))
+            self.assertIn('another port change is still running', json.loads(out.getvalue())['refused'])
 
 
 class GroupWatchTests(unittest.TestCase):
