@@ -1,6 +1,7 @@
 import React from 'react';
 import { afterEach, expect, it, vi } from 'vitest';
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, screen } from '@testing-library/react';
+import { render } from '../testing';
 vi.mock('tgui-core/components', () => ({
   Button: ({ children, onClick, disabled }: any) => <button disabled={disabled} onClick={onClick}>{children}</button>,
   Section: ({ children }: any) => <section>{children}</section>,

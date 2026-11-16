@@ -1,6 +1,7 @@
 import React from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, screen } from '@testing-library/react';
+import { render } from '../testing';
 
 vi.mock('tgui-core/components', () => ({
   Section: ({ children, title }: any) => <section><h2>{title}</h2>{children}</section>,
