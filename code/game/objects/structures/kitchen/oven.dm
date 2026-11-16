@@ -197,9 +197,9 @@
 			var/obj/item/weapon/clay/CL = I
 			if (stone_mold_type(CL.type))
 				continue // Carved stone is already usable; never replace it with clay.
+			if (CL.result == CL.type)
+				continue // already fired (bricks and blocks); firing again must not copy them
 			contents += CL.fired_result(src)
-			if (CL.result == /obj/item/weapon/clay/claybricks/fired)
-				contents += new CL.result(src)
 			contents -= I
 			qdel(I)
 

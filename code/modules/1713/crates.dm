@@ -33,6 +33,10 @@
 			if (ref.contents.len < 100)
 				limit += pick(2,3)
 			qdel(ref)
+		var/obj/item/pile_proto = typepath
+		if (ispath(typepath, /obj/item) && initial(pile_proto.loose_pile_max))
+			loose_pile_spawn(typepath, src, limit) // bricks come as piles
+			continue
 		for (var/v in 1 to limit)
 			new typepath (src)
 	update_capacity(contents.len)

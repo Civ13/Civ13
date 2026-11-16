@@ -17309,7 +17309,7 @@
     {
       "name": "Clay firing",
       "file": "code/game/objects/structures/kitchen/oven.dm",
-      "gate": "new CL.result dynamic output; claybricks fired creates twice; type declarations resolve products"
+      "gate": "CL.fired_result dynamic output; a pile of unfired bricks fires into one pile, clay blocks yield two each, already-fired bricks are skipped; type declarations resolve products"
     },
     {
       "name": "Generic roasting",
