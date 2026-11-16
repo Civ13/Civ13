@@ -32,7 +32,7 @@ def define(name, text=None):
 
 
 def germ_level(sickness, kind="fresh", current=False, salty=False, temp=20):
-    """Mirror of water_germ_level(); kept equal by the source checks below."""
+    """Mirror of water_kind_germs(); kept equal by the source checks below."""
     if sickness <= 0:
         return 0
     if kind in ("swamp", "flooded"):
@@ -49,7 +49,11 @@ class WaterQualityTest(unittest.TestCase):
         self.assertIn('#include "code\\modules\\1713\\water_quality.dm"', read("civ13.dme"))
 
     def test_proc_shape_matches_model(self):
-        body = proc_body(QUALITY, "/turf/floor/beach/water/proc/water_germ_level()")
+        outer = proc_body(QUALITY, "/turf/floor/beach/water/proc/water_germ_level()")
+        self.assertIn(". = water_kind_germs()", outer)
+        self.assertIn("if (!salty)", outer)
+        self.assertIn(". += river_foul_germs(src)", outer)
+        body = proc_body(QUALITY, "/turf/floor/beach/water/proc/water_kind_germs()")
         order = ["sickness <= 0", "/turf/floor/beach/water/swamp", "river_current_direction(src)",
                  "sickness * 0.5", "get_temp(src) >= WATER_STAGNANT_HEAT"]
         positions = [body.index(part) for part in order]
@@ -102,6 +106,27 @@ class WaterQualityTest(unittest.TestCase):
         self.assertIn("typhus_fleas ? FLEA_TYPHUS_RATE", body)
         self.assertIn('infection_chance_scale("typhus")', body)
         self.assertNotIn("0.2 * infection_chance_scale", body)
+
+
+class RiverFoulTest(unittest.TestCase):
+    FOUL = read("code/modules/1713/river_foul.dm")
+
+    def test_included_before_river_flow(self):
+        dme = read("civ13.dme")
+        self.assertLess(dme.index("river_foul.dm"), dme.index("river_flow.dm"))
+
+    def test_load_steps_with_the_water(self):
+        self.assertIn("F.step_foul()", read("code/modules/1713/river_flood.dm"))
+        body = proc_body(self.FOUL, "/datum/river_flood/proc/step_foul()")
+        self.assertIn("RIVER_FLOOD_RELEASE", body)
+        self.assertIn("incoming[down[i]]", body)
+
+    def test_users_of_foul_water(self):
+        self.assertIn("river_fouled_at(W)", read("code/modules/1713/aqueducts.dm"))
+        self.assertIn("P.fouls_toward(A)", read("code/modules/1713/sewers.dm"))
+        self.assertIn("river_foul_fish_factor(", read("code/modules/1713/fishing_grounds.dm"))
+        self.assertIn("scum_refresh_view()", read("code/modules/1713/flood_effects.dm"))
+        self.assertTrue((ROOT / "icons/effects/water_scum.dmi").exists())
 
 
 if __name__ == "__main__":

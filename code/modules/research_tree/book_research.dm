@@ -224,6 +224,7 @@
 			best_rate = rate
 	if (!researcher || !has_research_instrument(assigned_node, researcher))
 		return
+	researcher.note_bench_work() // ADHD session pace (study_fields.dm)
 	researcher.gain_scholarship(assigned_node, SCHOLAR_RESEARCH_GAIN * analysis_scale * apprentice_research_gain(researcher, assigned_node))
 	if (B.add_research_work(assigned_node, round(base_tick_rate * analysis_scale * best_rate * late_bench_rate(N) * team_rate(assigned_node, researcher) * rush_rate(N) * library_rate(assigned_node) * use_research_supply(assigned_node, analysis_scale), 0.1), FALSE, researcher))
 		for (var/mob/living/human/H in viewers(world.view, src))
@@ -489,7 +490,7 @@
 		return FALSE
 	if (H.too_dark_to_read())
 		return FALSE
-	var/time = round(H.scholar_study_time(N.era_tier) * language_study_factor(H, written_in))
+	var/time = round(H.scholar_study_time(N.era_tier, node_id) * language_study_factor(H, written_in))
 	// A tutor who knows the chapter, standing beside the student, speeds it up.
 	var/mob/living/human/tutor = H.find_tutor(node_id)
 	if (tutor)
