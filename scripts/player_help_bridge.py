@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = 'cbf182f12bddaf87e09d277f6a29a871ee9afbc6'
+WIKI_REVIEWED_REVISION = 'a3fe1238280863e4f4bc7b0a5db4a1489afd5d02'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('85a1bdb974d140a093a434fa3c472ebfd3187cd87991f7eb21a511d1476baabc', 'character skills traits languages'),
@@ -98,10 +98,10 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Survival.md': ('d10258806571989ba1ef561be0653b673c5b3f63e169e448f0f1618efae3e868', 'survival winter cold warm freezing hypothermia shelter debris footwear boots snowshoes shoes ice mud rain wet umbrella raincoat cape storm storms lightning thunder blizzard sandstorm heat wave weather fire fires wildfire firefighting beater flapper smother burning bucket blanket extinguish smoke signal signals hook firebreak pump engine nozzle hose jet reel extinguisher'),
     'guides/Guide_to_Tanks.md': ('b900c1641222035e9a4940539ddf14501ec5d9133da22414333f7ca0c97578a6', 'tank driving crew ammunition'),
     'guides/Guide_to_Trains.md': ('d3989f8f25c1e27b7653024d80d8043783f4e24790f717a150a2084995c5bc25', 'train trains railway track locomotive station switcher rails wagon'),
-    'guides/Guide_to_Trenches.md': ('f32b15c669a5042f9a1d7ffc6e6eb76acc2181cf859b2ec9fa503b5e5e9be507', 'trench trenches fortification sandbag dig shovel'),
+    'guides/Guide_to_Trenches.md': ('489f490577786cd0443c303116db8b42b01cdcc193f059c3275f4ca08b5928aa', 'trench trenches fortification sandbag dig shovel'),
     'guides/Guide_to_Weapons.md': ('a56dbe507d6b7b7a9838dbd1812d44f91fff9a197febf2bfa90dce689849c050', 'weapons gun reload ammunition'),
     'New_Player_Guide.md': ('c0d80da1236f7b15de5787584628898cc5dacddd6db97fadbe42dd5b685faee0', 'new player beginner start first round basics'),
-    'Hotkeys.md': ('17b6b9320a76019e7ce87d991fc3f76c52d5379f664386dd5883f4709eef1e48', 'hotkeys hotkey keys keyboard controls key press'),
+    'Hotkeys.md': ('8087190f5b5332c54beb040e13274e54966d7aa4e865aaee8a3807445653ee6c', 'hotkeys hotkey keys keyboard controls key press'),
     'role_guides.md': ('4117070c23ff3cfd2581b612cd08ae70ee170637381972cffebdf9c0161d78d5', 'role roles job jobs responsibilities'),
     'Governor.md': ('131ef4f1f37d1bd38c1cd0c71bf6805cd677f308bef000c39ddb3cf0e7cd584d', 'governor role laws treasury colony'),
     'Merchant.md': ('9d9317e9e196b3e14f4b9237a68d6a41d3e2906d35e1b6cae529d389765eeebb', 'merchant role supplies export trade colony'),
@@ -131,7 +131,7 @@ WIKI_REVIEWED_GUIDES = {
     'maps/Nomads_Maps.md': ('9f71c98987cd40fc8b7d31a694d2984331fd23e84eb2c8248db595cd08ae18ab', 'nomads maps map terrain biome biomes'),
     'gamemodes/Voyage.md': ('9922f438d0253c6b4d812bc852422a54c37f428b4c3221b2a732397ef245ddfe', 'voyage expedition ship mode'),
     'gamemodes/Events.md': ('de6e6133e735e5da8a03a290f45e599b82cee216d9b150d25c583e3c34606336', 'events event special rounds'),
-    'guides_overview.md': ('57b48c146ab5130589ce7e5fc2d8e3508d19fb62eb8fc15c9a0bb73455d70d69', 'guides overview list of guides index'),
+    'guides_overview.md': ('0e93c602407739b3d24b048e82c184301693d222269cd679977de44c411dbc28', 'guides overview list of guides index'),
 }
 WIKI_LEGACY_GUIDES = ('guides/Guide_to_Crafting.md', 'guides/Guide_to_Metallurgy.md', 'Starter_Guide.md')
 
