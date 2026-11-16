@@ -2463,6 +2463,8 @@ RECIPE: /material/rope/,knot seal,/obj/item/fitted_lock/knot,1,20,0,1,constructi
 RECIPE: /material/wood/,wooden pin lock,/obj/item/fitted_lock/pin,3,60,0,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,wooden key blank,/obj/item/weapon/key/blank/wooden,1,20,0,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,hidden catch,/obj/item/fitted_lock/hidden_catch,2,60,0,1,construction,0,0,0,8,null
+RECIPE: /material/wood/,wooden door bar,/obj/item/door_bar,3,40,0,1,construction,0,0,0,8,null
+RECIPE: /material/wood/,bar brackets,/obj/item/door_brackets,2,40,0,1,construction,0,0,0,8,null
 
 RECIPE: /material/wood/soft/,floor cover,/obj/item/weapon/covers,2,30,0,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,thatch floor,/obj/covers/thatch,0.75,20,1,1,construction,0,0,0,8,null
@@ -2944,6 +2946,8 @@ RECIPE: /material/iron/,padlock,/obj/item/fitted_lock/padlock,2,60,0,1,construct
 RECIPE: /material/iron/,iron key blank,/obj/item/weapon/key/blank,1,20,0,1,construction,0,0,0,8,null
 RECIPE: /material/iron/,skeleton key,/obj/item/weapon/key/skeleton,1,40,0,1,construction,0,0,0,8,null
 RECIPE: /material/iron/,spring latch,/obj/item/fitted_lock/latch,4,80,0,1,construction,0,0,0,8,null
+RECIPE: /material/iron/,iron door bar,/obj/item/door_bar/iron,3,60,0,1,construction,0,0,0,8,null
+RECIPE: /material/iron/,slide bolt,/obj/item/door_bolt,2,60,0,1,construction,0,0,0,8,null
 RECIPE: /material/iron/,spring door closer,/obj/item/door_fitting/spring_closer,3,80,0,1,construction,0,0,0,8,null
 RECIPE: /material/iron/,spring door hinges,/obj/item/door_fitting/spring_hinge,2,80,0,1,construction,0,0,0,8,null
 RECIPE: /material/iron/,steam pumping engine,/obj/structure/sewer_pump/steam,12,250,1,1,construction,0,0,0,8,null
