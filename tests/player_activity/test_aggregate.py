@@ -146,6 +146,9 @@ class HostSideJob(unittest.TestCase):
             yesterday = (dt.date.today() - dt.timedelta(days=1)).isoformat()
             write(root / 'gaia', yesterday, [{'e': 'boot', 's': 0, 'boot': 'b', 'tz': 0}, {'e': 'join', 's': 100, 'a': 'bob'}])
             self.assertEqual(shard_group.ingest_player_activity(group), 1)
+            weekly = json.loads((root / aggregate.WEEKLY_FILE).read_text(encoding='utf-8'))
+            self.assertEqual(weekly['active']['week'], 1)
+            self.assertNotIn('bob', json.dumps(weekly))  # totals only, never account keys
             self.assertIsNone(shard_group.ingest_player_activity(group))  # not due again yet
             db = sqlite3.connect(str(root / 'player-activity.sqlite'))
             self.assertEqual(db.execute('SELECT COUNT(*) FROM event').fetchone()[0], 1)
@@ -178,6 +181,32 @@ class HostSideJob(unittest.TestCase):
         source = (ROOT / 'scripts/shard-group/shard_group.py').read_text(encoding='utf-8')
         body = source.split('def supervise(group, start=detach):', 1)[1].split('\ndef ', 1)[0]
         self.assertIn('ingest_player_activity(group)', body)
+
+
+class WeeklyTotals(unittest.TestCase):
+    def test_totals_only(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = pathlib.Path(tmp)
+            db = aggregate.connect(root / 'a.sqlite')
+            yesterday = (dt.date.today() - dt.timedelta(days=1)).isoformat()
+            write(root / 'gaia', yesterday, [
+                {'e': 'boot', 's': 0, 'boot': 'b', 'tz': 0, 'region': 'gaia'},
+                {'e': 'join', 's': 100, 'a': 'alice'},
+                {'e': 'death', 's': 200, 'a': 'alice', 'cause': 'starved', 'by': 'carol'},
+                {'e': 'depart', 's': 300, 'a': 'alice', 'to': 'europe', 'how': 'edge'},
+                {'e': 'node', 's': 310, 'a': 'alice', 'node': 'secret_node'},
+                {'e': 'leave', 's': 400, 'a': 'alice', 'min': 5},
+            ])
+            aggregate.ingest(db, {'gaia': root / 'gaia'})
+            aggregate.write_weekly(aggregate.report(db, now=aggregate.day_start(yesterday) + 3600), root / aggregate.WEEKLY_FILE)
+            db.close()
+            text = (root / aggregate.WEEKLY_FILE).read_text(encoding='utf-8')
+            weekly = json.loads(text)
+            self.assertEqual((weekly['deaths_this_week'], weekly['trips_this_week'], weekly['active']['day']), (1, 1, 1))
+            for private in ('alice', 'carol', 'secret_node', 'starved'):
+                self.assertNotIn(private, text)
+            self.assertEqual(sorted(weekly), sorted(['v', 'generated', 'active', 'new_this_week', 'sessions_this_week',
+                                                     'session_minutes_median', 'deaths_this_week', 'trips_this_week', 'hours_by_region']))
 
 
 class ProgressReport(unittest.TestCase):

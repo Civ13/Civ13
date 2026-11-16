@@ -76,6 +76,12 @@ python3 tools/player_activity/aggregate.py --db <root>/player-activity.sqlite --
 python3 tools/player_activity/aggregate.py --db <root>/player-activity.sqlite --forget <account>
 ```
 
+Each host read also writes `<group root>/player-activity-weekly.json`: totals only
+(active players, new players, sessions, deaths, trips, hours per region), never
+account keys, research nodes or recipe types. The Discord bot's `<key>activity`
+command shows it. While the recorder is on, the join message tells players in one
+line what is counted.
+
 In the launcher's Host tab, All regions > More > **Player activity…** shows the
 same report. It runs `shard_group.py --config <group.json> activity`, which reads
 new lines from every region first and says which regions have the recorder on.

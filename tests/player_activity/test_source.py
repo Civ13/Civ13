@@ -29,6 +29,12 @@ class PlayerActivityWiring(unittest.TestCase):
         self.assertIn('config.player_activity = text2num(value) == 1', config)
         self.assertIn('#PLAYER_ACTIVITY 1', read('config/config.txt'))
 
+    def test_join_notice_only_when_on(self):
+        motd = read('code/game/mob/motd.dm')
+        notice = motd.split('if (config.player_activity)', 1)[1].split('//to_chat', 1)[0]
+        self.assertIn('No chat, IP addresses or positions are recorded', notice)
+        self.assertNotIn('magic', notice.lower())
+
     def test_client_join_and_leave(self):
         client = read('code/modules/client/client_procs.dm')
         self.assertIn('player_activity.session_start(src)', client)
