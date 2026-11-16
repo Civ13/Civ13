@@ -5,7 +5,7 @@ Chromium 153.0.8010.12 with Playwright from the fictional fixtures in
 `tgui/src/fixtures.mts`. They are cloud browser previews, not checks in a BYOND
 game client. No player or server data is used and nothing is retouched.
 
-Source: `71e5dd4830a27deaa297558fb6a7fd7b9e19ed8c`. Device scale factor: 1. Each window is captured
+Source: `5d32f552cced2446c73d14ab3bbfe5445b20c04f`. Device scale factor: 1. Each window is captured
 at its in-game width. [provenance.json](provenance.json) records the browser,
 head, viewports and full fixture inputs.
 
@@ -27,6 +27,7 @@ artifact on every tgui change; refresh the committed copy after a visible change
 | Faction list | `faction_list.tmpl` | 420 x 520 | [faction-list.png](faction-list.png) |
 | Known languages | `known_languages.tmpl` | 600 x 480 | [known-languages.png](known-languages.png) |
 | Iron safe | `panel.tmpl` | 380 x 420 | [panel.png](panel.png) |
+| Factory monitor | `panel.tmpl` | 680 x 658 | [panel-readings.png](panel-readings.png) |
 | Prompt | `prompt.tmpl` | 420 x 240 | [prompt.png](prompt.png) |
 | Vending | `vending_machine2.tmpl` | 540 x 600 | [vending.png](vending.png) |
 | Recruitment | `recruitment_station.tmpl` | 520 x 961 | [recruitment.png](recruitment.png) |
