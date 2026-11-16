@@ -137,6 +137,7 @@ var/castle_defences_runtime = null
 	battlement_after_build(plain, builder)
 	castle_defences_assert(!plain.outward_dir, "plain_barricade_not_battlement")
 	castle_defences_pour_checks()
+	castle_defences_trap_checks()
 
 /proc/castle_defences_bucket(turf/T, id, amount, hot = FALSE)
 	var/obj/item/weapon/reagent_containers/glass/bucket/B = new(T)
@@ -222,6 +223,61 @@ var/castle_defences_runtime = null
 	castle_defences_assert(!pour_heat_source_lit(BR), "cold_brazier")
 	BR.on = TRUE
 	castle_defences_assert(pour_heat_source_lit(BR), "lit_brazier")
+
+// Gateway traps (castle_traps.dm), in the free corner x 13-16, y 11-16.
+/proc/castle_defences_trap_checks()
+	// A trapdoor goes only over an open pit (or open air with a level below).
+	castle_defences_assert(trapdoor_site_refusal(locate(13, 11, 1)), "trapdoor_needs_hole")
+	var/obj/structure/stone_age_trap/pit/pit = new(locate(13, 12, 1))
+	pit.staked = TRUE
+	castle_defences_assert(!trapdoor_site_refusal(pit.loc), "trapdoor_fits_open_pit")
+	var/obj/structure/castle_trapdoor/D = new(pit.loc)
+	castle_defences_assert(trapdoor_site_refusal(pit.loc), "one_trapdoor_per_tile")
+	var/mob/living/human/victim = new(pit.loc)
+	var/brute = victim.getBruteLoss()
+	var/obj/structure/castle_trap_lever/lever = new(locate(15, 12, 1))
+	castle_defences_assert(D in lever.trapdoors(), "lever_reaches_trapdoor")
+	castle_defences_assert(!(D in new /obj/structure/castle_trap_lever(locate(16, 16, 1)).trapdoors()), "lever_range_limited")
+	lever.work(TRUE)
+	castle_defences_assert(D.open && D.icon_state == "trapdoor_open" && lever.pulled, "lever_drops_trapdoor")
+	castle_defences_assert(pit.buckled_mob == victim && victim.getBruteLoss() > brute, "victim_falls_on_stakes")
+	var/mob/living/human/second = new(locate(13, 13, 1))
+	second.Move(pit.loc)
+	castle_defences_assert(pit.buckled_mob == victim && second.loc == pit.loc, "second_faller_not_rebuckled")
+	lever.work(FALSE)
+	castle_defences_assert(!D.open && !lever.pulled, "lever_shuts_trapdoor")
+	castle_defences_assert(castle_trapdoor_holds(pit.loc, second) && castle_trapdoor_holds(locate(16, 11, 1), D), "shut_trapdoor_holds")
+	D.open = TRUE
+	castle_defences_assert(!castle_trapdoor_holds(pit.loc, second), "open_trapdoor_drops")
+
+	// Pits belong to the digger's side on a team map too.
+	var/mob/living/human/redcoat = new(locate(14, 16, 1))
+	redcoat.faction_text = "RED"
+	var/mob/living/human/bluecoat = new(locate(14, 16, 1))
+	bluecoat.faction_text = "BLUE"
+	var/obj/structure/stone_age_trap/pit/side_pit = new(locate(16, 13, 1))
+	side_pit.dug_by(redcoat)
+	castle_defences_assert(side_pit.tribe == "RED" && side_pit.knows_pit(redcoat) && !side_pit.knows_pit(bluecoat), "pit_keyed_to_side")
+
+	// A portcullis dropped on someone crushes and pins them.
+	var/obj/structure/castle_gate/portcullis/PC = new(locate(14, 14, 1))
+	PC.open = TRUE
+	PC.update_state()
+	var/mob/living/human/under = new(PC.loc)
+	brute = under.getBruteLoss()
+	PC.set_open(FALSE)
+	castle_defences_assert(under.getBruteLoss() >= brute + 10 && under.weakened, "portcullis_crushes")
+
+	// Caltrops wound a bare foot and lame a horse.
+	var/obj/item/weapon/caltrops/C = new(locate(15, 15, 1))
+	var/mob/living/human/walker = new(locate(15, 16, 1))
+	brute = walker.getBruteLoss()
+	castle_defences_assert(C.caltrop_step(walker) && walker.getBruteLoss() > brute, "caltrops_hurt_feet")
+	var/mob/living/simple_animal/horse/H = new(locate(16, 15, 1))
+	castle_defences_assert(C.caltrop_step(H) && H.lamed_until > world.time, "caltrops_lame_horse")
+
+	// A ladder fork pushes a deployed siege ladder off the wall.
+	castle_defences_assert(ladder_pusher(new /obj/item/weapon/ladder_fork(locate(16, 11, 1))), "fork_pushes")
 
 /world/New()
 	OpenPort("none")

@@ -56,10 +56,26 @@ Pouring and dropping:
   falling_stone (4 frames of 1,1,1,3 ds, loop = 1): a stone dropping onto its
         shadow, the hit, and the stone lying cracked in its dust.
 
+Gateway traps:
+
+  trapdoor_shut (1 dir): a plank trapdoor flush in an oak frame, two iron
+        strap hinges on the north side and a bolt shot into the south side.
+        The leaf is columns and rows 4-27. Floor layer; it is walked over.
+  trapdoor_open (1 dir): the same frame round a black shaft, the leaf
+        hanging down from its north hinges.
+  trapdoor_dropping (4 frames of 1 ds, loop = 1): the leaf swinging down from
+        shut to open, with a bounce at the end, for a flick().
+  trap_lever / trap_lever_pulled (1 dir): a floor lever in an iron-bound oak
+        block; the handle standing (set) or thrown over to the east.
+  caltrops (1 dir): six small dark iron caltrops scattered on the ground;
+        also the item icon.
+  ladder_fork (1 dir): a long pole with a two-pronged iron fork, butt at the
+        lower left (item icon).
+
 pour_splash and oil_slick are light greys only (every pixel r = g = b, 150 or
 more) with soft half-transparent edges and no outline, because the game
 tints them per liquid with `color`; `--check` enforces that, the clear centre
-of the rim and the two play-once states. A state with both dirs and frames
+of the rim and the three play-once states. A state with both dirs and frames
 stores all four dirs of frame 1, then frame 2, and so on. The eight
 wall-opening frames keep the first row of the sheet.
 
@@ -70,8 +86,9 @@ sheet; `--check` verifies the committed sheet instead of writing it,
 openings over the real wall sprites, and `--preview-drop <png>` writes a 4x
 and 1x review sheet of the pouring and dropping states: the rim over a
 darkened floor, the machicolation and hoarding on a stone wall-walk, every
-animation frame, and the splash and slick in six liquid colours. Released
-under Civ13 AGPL-3.0.
+animation frame, and the splash and slick in six liquid colours.
+`--preview-traps <png>` writes a 6x and 1x review sheet of the gateway traps
+on stone, cobble, dirt and grass floors. Released under Civ13 AGPL-3.0.
 """
 import math
 import sys
@@ -984,6 +1001,235 @@ def falling_stone(frame):
     return f
 
 
+# ============================================================ gateway traps
+#
+# The third part of the sheet: a trapdoor for a gate passage with the lever
+# that drops it, caltrops, and the fork that pushes a scaling ladder off.
+
+IRON = [(150, 152, 158), (104, 106, 112), (66, 68, 74), (40, 41, 46)]
+PIT_WALL = (54, 50, 50)             # masonry far down the shaft
+
+DOOR = (4, 27)                      # the leaf: columns and rows DOOR[0] .. DOOR[1]
+DOOR_SIZE = DOOR[1] - DOOR[0] + 1
+STRAPS = (7, 23)                    # left column of each two-pixel strap hinge
+# rows of the leaf showing below the north hinge as it swings down, the last
+# one a bounce past the hanging position; trapdoor_open hangs at OPEN_ROWS
+DROP_ROWS = (21, 15, 7, 10)
+OPEN_ROWS = 9
+DROP_DELAY = '1'
+
+
+def _shaded(c, shade):
+    return tuple(int(v * shade) for v in c)
+
+
+def _trap_frame(f):
+    """The oak frame let into the floor, with the hinge knuckles on its north
+    side and the keeper for the bolt on its south side."""
+    for y in range(32):
+        for x in range(32):
+            ring = min(x, y, 31 - x, 31 - y)
+            if ring > 3:
+                continue
+            horizontal = y == ring or y == 31 - ring
+            if x in (ring, 31 - ring) and horizontal and ring < 3:
+                c = WOOD[3]                                 # mitres
+            elif ring == 0:
+                c = WOOD[3]
+            elif ring == 3:
+                c = OUT                                     # the gap round the leaf
+            else:
+                lit = y == ring or x == ring                # north and west sides
+                along, across = (x, y) if horizontal else (y, x)
+                c = _wood((1 if lit else 2) + (ring - 1 if lit else 0), along, across, 6)
+            f.put(x, y, c)
+    for x0 in STRAPS:
+        for x in range(x0 - 1, x0 + 3):
+            f.put(x, 2, IRON[1] if x < x0 + 1 else IRON[2])
+            f.put(x, 3, IRON[3])
+        f.put(x0, 1, IRON[2])
+        f.put(x0 + 1, 1, IRON[2])
+        f.put(x0, 2, IRON[0])
+    for x in range(14, 18):
+        f.put(x, 29, IRON[3] if x in (14, 17) else IRON[2])
+
+
+def _trap_leaf(f, rows, shade=1.0):
+    """The plank leaf, hinged along its north edge, drawn `rows` deep: the
+    full DOOR_SIZE lying shut, fewer as it swings down and is seen end on."""
+    lo = DOOR[0]
+    for i in range(rows):
+        src = i * DOOR_SIZE // rows
+        y = lo + i
+        for x in range(lo, DOOR[1] + 1):
+            p = x - lo
+            if p % 6 == 5:
+                c = WOOD[3]                                 # between two planks
+            elif src in (2, DOOR_SIZE - 3) and p % 6 == 2:
+                c = WOOD[3]                                 # nail heads
+            else:
+                c = _wood(1 if (p // 6) % 2 else 2, src, x, 7)
+            for x0 in STRAPS:                               # the strap hinges
+                if src < 14 and x in (x0, x0 + 1):
+                    c = IRON[1] if x == x0 else IRON[2]
+                    if src in (1, 6, 11) and x == x0:
+                        c = IRON[0]
+                elif src == 14 and x == x0:
+                    c = IRON[2]
+            if src >= 17:                                   # the bolt and its staples
+                if x in (15, 16):
+                    c = IRON[1] if x == 15 else IRON[2]
+                    if src == 20:
+                        c = IRON[0]
+                if src in (18, 22) and x in (14, 15, 16, 17):
+                    c = IRON[3] if x in (14, 17) else IRON[2]
+            f.put(x, y, _shaded(c, shade))
+    if rows < DOOR_SIZE:                                    # the free edge
+        for x in range(lo, DOOR[1] + 1):
+            f.put(x, lo + rows, _shaded(WOOD[3], shade * 0.8))
+
+
+def _trap_pit(f, top):
+    """The shaft from row `top` down: a little of the far wall under the
+    hanging leaf, then nothing."""
+    for y in range(top, DOOR[1] + 1):
+        for x in range(DOOR[0], DOOR[1] + 1):
+            d = y - top
+            if d < 3:
+                c = DEEP if (d == 2 or (x + (4 if d else 0)) % 8 == 0) else PIT_WALL
+            elif d < 5 or x in (DOOR[0], DOOR[1]):
+                c = DEEP if d < 5 and x not in (DOOR[0], DOOR[1]) else (30, 27, 29)
+            else:
+                c = GAP
+            f.put(x, y, c)
+
+
+def trapdoor(rows=None, shade=1.0):
+    """rows None = shut and bolted; otherwise the leaf hanging `rows` deep."""
+    f = Canvas()
+    _trap_frame(f)
+    if rows is None:
+        _trap_leaf(f, DOOR_SIZE)
+        for y in (28, 29):                                  # the bolt shot home
+            f.put(15, y, IRON[1])
+            f.put(16, y, IRON[2])
+        return f
+    _trap_leaf(f, rows, shade)
+    _trap_pit(f, DOOR[0] + rows + 1)
+    return f
+
+
+def trapdoor_dropping(frame):
+    return trapdoor(DROP_ROWS[frame], (0.9, 0.78, 0.6, 0.66)[frame])
+
+
+def _outlined(fill):
+    """A Canvas of the pixels in `fill` with a dark outline round them."""
+    f = Canvas()
+    for (x, y) in fill:
+        for dx in (-1, 0, 1):
+            for dy in (-1, 0, 1):
+                if (x + dx, y + dy) not in fill:
+                    f.put(x + dx, y + dy, OUT)
+    for (x, y), c in fill.items():
+        f.put(x, y, c)
+    return f
+
+
+def _bar(fill, x0, y0, x1, y1, brush, tones):
+    """A straight bar from (x0, y0) to (x1, y1): each step stamps the brush
+    offsets in the matching tones."""
+    steps = max(abs(x1 - x0), abs(y1 - y0), 1)
+    for i in range(steps + 1):
+        x = int(round(x0 + (x1 - x0) * i / float(steps)))
+        y = int(round(y0 + (y1 - y0) * i / float(steps)))
+        for (dx, dy), c in zip(brush, tones):
+            fill[(x + dx, y + dy)] = c
+
+
+LEVER_KEY = {'O': OUT, 'h': WOOD[0], 'l': WOOD[1], 'm': WOOD[2], 'd': WOOD[3],
+             'I': IRON[0], 'i': IRON[1], 'j': IRON[2], 'J': IRON[3], 'k': GAP}
+# An oak block bound with two iron straps, a slot in its top for the lever.
+# Columns start at x = 8, rows at y = 20.
+LEVER_BASE = [
+    'OOOOOOOOOOOOOOOO',
+    'OhiihhhhhhhhiilO',
+    'OlIilOkkkkOlIimO',
+    'OlijlOkkkkOlijmO',
+    'OliillOOOOlliimO',
+    'OdjjddddddddjjdO',
+    'OmjJmmmmmmmmjJmO',
+    'OmIjmmmlmmmmIjmO',
+    'OmjJmmmmmmmmjJdO',
+    'OdjJddddddddjJdO',
+    'OOOOOOOOOOOOOOOO',
+]
+
+
+def trap_lever(pulled):
+    f = Canvas()
+    f.rows(20, 8, LEVER_BASE, LEVER_KEY)
+    _ground_shadow(f, 16, 30, 11, 1.8, 70)
+    fill = {}
+    if pulled:      # thrown over to the east, the grip low
+        _bar(fill, 16, 22, 25, 16, ((0, 0), (0, 1)), (WOOD[1], WOOD[2]))
+        _bar(fill, 23, 17, 24, 17, ((0, 0), (0, 1)), (IRON[1], IRON[2]))
+        for (x, y), c in (((26, 14), WOOD[0]), ((27, 14), WOOD[1]), ((25, 15), WOOD[0]),
+                          ((26, 15), WOOD[1]), ((27, 15), WOOD[1]), ((28, 15), WOOD[2]),
+                          ((26, 16), WOOD[1]), ((27, 16), WOOD[2]), ((28, 16), WOOD[3]),
+                          ((27, 17), WOOD[3])):
+            fill[(x, y)] = c
+    else:           # set: standing, leaning a little to the west
+        _bar(fill, 15, 22, 13, 9, ((0, 0), (1, 0)), (WOOD[1], WOOD[2]))
+        _bar(fill, 13, 10, 13, 9, ((0, 0), (1, 0)), (IRON[1], IRON[2]))
+        for (x, y), c in (((13, 4), WOOD[0]), ((14, 4), WOOD[1]), ((12, 5), WOOD[0]),
+                          ((13, 5), WOOD[0]), ((14, 5), WOOD[1]), ((15, 5), WOOD[2]),
+                          ((12, 6), WOOD[1]), ((13, 6), WOOD[1]), ((14, 6), WOOD[2]),
+                          ((15, 6), WOOD[2]), ((12, 7), WOOD[1]), ((13, 7), WOOD[2]),
+                          ((14, 7), WOOD[2]), ((15, 7), WOOD[3]), ((13, 8), WOOD[2]),
+                          ((14, 8), WOOD[3])):
+            fill[(x, y)] = c
+    for (x, y), c in _outlined(fill).px.items():
+        if y <= 22 or c != OUT:                             # the foot is down in the slot
+            f.px[(x, y)] = c
+    return f
+
+
+CALTROP_KEY = {'h': IRON[0], 'm': IRON[3], 'd': (24, 24, 28)}
+# one spike always stands up from three on the ground
+CALTROPS = (
+    ['..h..', '..m..', '.dmd.', 'd...d'],
+    ['.h...', '.m...', '.mmd.', 'd...d'],
+    ['...h.', '..m..', 'dmm..', '...d.'],
+)
+CALTROP_AT = ((5, 7, 0), (19, 5, 1), (12, 14, 2), (23, 16, 0), (6, 22, 1), (17, 24, 2))
+
+
+def caltrops():
+    f = Canvas()
+    for x, y, kind in CALTROP_AT:
+        art = CALTROPS[kind]
+        for dx in range(1, 5):                              # a faint shadow
+            f.over(x + dx, y + 4, (0, 0, 0), 55)
+        f.rows(y, x, art, CALTROP_KEY)
+    return f
+
+
+def ladder_fork():
+    """A long pole with a two-pronged iron fork, for pushing a scaling
+    ladder off the wall: butt at the lower left, fork at the upper right."""
+    fill = {}
+    _bar(fill, 2, 28, 20, 10, ((0, 0), (0, 1)), (WOOD[1], WOOD[2]))
+    for x, y in ((6, 24), (11, 19), (15, 15)):              # grain
+        fill[(x, y)] = WOOD[0]
+    fill[(2, 29)] = WOOD[3]
+    _bar(fill, 18, 12, 21, 9, ((0, 0), (0, 1)), (IRON[1], IRON[2]))      # the socket
+    _bar(fill, 18, 6, 24, 12, ((0, 0), (1, 0)), (IRON[1], IRON[2]))      # the crossbar
+    _bar(fill, 18, 6, 22, 2, ((0, 0), (1, 0)), (IRON[0], IRON[1]))       # the prongs
+    _bar(fill, 24, 12, 28, 8, ((0, 0), (1, 0)), (IRON[1], IRON[2]))
+    return _outlined(fill)
+
+
 # ------------------------------------------------------------------- sheet
 
 def states():
@@ -1025,6 +1271,16 @@ def all_states():
     out.append(('falling_stone',
                 {'dirs': 1, 'frames': len(STONE_DELAYS), 'delay': ','.join(STONE_DELAYS), 'loop': 1},
                 [falling_stone(fr) for fr in range(len(STONE_DELAYS))]))
+    out.append(('trapdoor_shut', {'dirs': 1, 'frames': 1}, [trapdoor()]))
+    out.append(('trapdoor_open', {'dirs': 1, 'frames': 1}, [trapdoor(OPEN_ROWS, 0.62)]))
+    out.append(('trapdoor_dropping',
+                {'dirs': 1, 'frames': len(DROP_ROWS),
+                 'delay': ','.join([DROP_DELAY] * len(DROP_ROWS)), 'loop': 1},
+                [trapdoor_dropping(fr) for fr in range(len(DROP_ROWS))]))
+    out.append(('trap_lever', {'dirs': 1, 'frames': 1}, [trap_lever(False)]))
+    out.append(('trap_lever_pulled', {'dirs': 1, 'frames': 1}, [trap_lever(True)]))
+    out.append(('caltrops', {'dirs': 1, 'frames': 1}, [caltrops()]))
+    out.append(('ladder_fork', {'dirs': 1, 'frames': 1}, [ladder_fork()]))
     return out
 
 
@@ -1070,7 +1326,7 @@ def check_drawing(st):
             for (x, y), c in fr.px.items():
                 if not (c[0] == c[1] == c[2] and c[0] >= 150):
                     problems.append('%s frame %d: (%d,%d) %s is not a light grey' % (name, n + 1, x, y, c))
-    for name in ('pour_splash', 'falling_stone'):
+    for name in ('pour_splash', 'falling_stone', 'trapdoor_dropping'):
         if by_name[name][0].get('loop') != 1:
             problems.append('%s must play once' % name)
     return problems[:20]
@@ -1266,6 +1522,50 @@ def preview_drop(path, st, scale=4):
             cells.append(('%s slick' % label, on(ground, tinted(by['oil_slick'][0], colour))))
         rows.append(('tinted with color: ' + ', '.join('%s rgb%s' % lc for lc in LIQUIDS[i:i + 2]), cells))
 
+    layout(path, rows, scale)
+
+
+# ------------------------------------------------------ gateway traps preview
+
+def preview_traps(path, st, scale=6):
+    by = {name: [fr.image() for fr in group] for name, keys, group in st}
+    floor = wall_frame(FLOORS, 'stone_bricks')
+    cobble = wall_frame(FLOORS, 'cobble_horizontal')
+    dirt = wall_frame(FLOORS, 'dirt')
+    grass = wall_frame(FLOORS, 'grass0')
+
+    def on(tile, *layers):
+        im = tile.copy()
+        for layer in layers:
+            im.alpha_composite(layer)
+        return im
+
+    def passage(door):
+        im = scene(3, 3, floor)
+        im.alpha_composite(door, (32, 32))
+        return im
+
+    rows = [
+        ('trapdoor_shut, trapdoor_open and trapdoor_dropping (%d frames of %s ds, plays once), on a stone floor'
+         % (len(DROP_ROWS), DROP_DELAY),
+         [('shut', on(floor, by['trapdoor_shut'][0]))]
+         + [('dropping %d' % (i + 1), on(floor, im)) for i, im in enumerate(by['trapdoor_dropping'])]
+         + [('open', on(floor, by['trapdoor_open'][0]))]),
+        ('in a 3x3 stone passage', [('shut', passage(by['trapdoor_shut'][0])),
+                                    ('open', passage(by['trapdoor_open'][0]))]),
+        ('trap_lever, trap_lever_pulled and ladder_fork',
+         [('lever, set', on(floor, by['trap_lever'][0])), ('pulled', on(floor, by['trap_lever_pulled'][0])),
+          ('set, cobbles', on(cobble, by['trap_lever'][0])), ('pulled, dirt', on(dirt, by['trap_lever_pulled'][0])),
+          ('ladder_fork', on(floor, by['ladder_fork'][0])), ('fork, grass', on(grass, by['ladder_fork'][0]))]),
+        ('caltrops', [(label, on(tile, by['caltrops'][0])) for label, tile in
+                      (('stone floor', floor), ('cobbles', cobble), ('dirt', dirt), ('grass', grass))]),
+    ]
+    layout(path, rows, scale)
+
+
+def layout(path, rows, scale=4):
+    """Write a review sheet: titled rows of labelled cells, each at `scale`
+    with the 1x game-scale tile under it."""
     pad, head, label_h = 8, 18, 14
     width = max(sum(im.width * scale + pad for _, im in cells) for _, cells in rows) + pad
     height = sum(head + label_h + max(im.height for _, im in cells) * (scale + 1) + 3 * pad
@@ -1305,3 +1605,5 @@ if __name__ == '__main__':
         preview(option('--preview'), states())
     if option('--preview-drop'):
         preview_drop(option('--preview-drop'), st)
+    if option('--preview-traps'):
+        preview_traps(option('--preview-traps'), st)

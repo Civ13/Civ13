@@ -46,8 +46,10 @@ adjacent outdoor ground tile: it digs the pit and hides it under branches. Punji
 uncovered pit plant stakes. A pit cover used on an open pit covers it again; a shovel or digging
 stick fills an open, empty pit in (10 s, stakes returned).
 
-A covered pit looks like branches to anyone outside the digger's tribe; the digger and their
-tribe never fall in and see it as their pit trap on examine. Anyone else who walks onto it, and any
+A covered pit looks like branches to anyone outside the digger's people (their civilization, or
+their side on a team map); the digger and their people never fall in and see it as their pit trap
+on examine. Any faction can dig one: a staked pit is also a castle gateway trap, and a trapdoor can
+be built over an open pit (docs/siege-engines.md). Anyone else who walks onto it, and any
 animal of medium size or larger, falls in:
 
 - People: knocked down, 5 brute to a leg or foot, plus 20 brute from stakes (armour applies).

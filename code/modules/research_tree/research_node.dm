@@ -1113,7 +1113,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/material/thrown/kunai_normal" = "bronze_weapons",
 		"/obj/item/weapon/material/thrown/star" = "bronze_weapons",
 		"/obj/item/weapon/melee/classic_baton/whip" = "bronze_weapons",
-		// --- bronze_working (6) ---
+		// --- bronze_working (7) ---
 		"/obj/structure/bell" = "bronze_working",
 		"/obj/item/weapon/clay/mold" = "bronze_working",
 		"/obj/item/weapon/storage/ore_collector" = "bronze_working",
@@ -1121,6 +1121,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/furnace/kiln/sandstone" = "bronze_working",
 		"/obj/structure/furnace/kiln/stone" = "bronze_working",
 		"/obj/structure/workshop_machine/bellows" = "bronze_working",
+		"/obj/item/weapon/caltrops" = "bronze_working",
 		// --- cannon (2) ---
 		"/obj/item/cannon_ball" = "cannon",
 		"/obj/structure/cannon" = "cannon",
@@ -1613,7 +1614,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/storage/belt/gator_belt" = "fine_garments",
 		"/obj/item/weapon/storage/belt/lizard_belt" = "fine_garments",
 		"/obj/item/weapon/storage/briefcase" = "fine_garments",
-		// --- fortifications (25) ---
+		// --- fortifications (27) ---
 		"/obj/item/stack/material/barbwire" = "fortifications",
 		"/obj/item/weapon/barrier/sandbag/empty" = "fortifications",
 		"/obj/structure/barbwire" = "fortifications",
@@ -1636,6 +1637,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/castle_winch" = "fortifications",
 		"/obj/structure/murder_hole" = "fortifications",
 		"/obj/structure/castle_overhang" = "fortifications",
+		"/obj/item/castle_trapdoor_kit" = "fortifications",
+		"/obj/structure/castle_trap_lever" = "fortifications",
 		"/obj/structure/gate/sandstone" = "fortifications",
 		"/obj/structure/gatecontrol" = "fortifications",
 		"/obj/structure/gatecontrol/sandstone" = "fortifications",
@@ -2416,7 +2419,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/sewer_piece/drain/stone" = "sanitation",
 		"/obj/structure/sewer_piece/drain/floor" = "sanitation",
 		"/obj/structure/sewer_flap_gate" = "sanitation",
-		// --- siege_engines (8) ---
+		// --- siege_engines (9) ---
 		"/obj/item/catapult_ball" = "siege_engines",
 		"/obj/item/weapon/siegeladder" = "siege_engines",
 		"/obj/structure/catapult" = "siege_engines",
@@ -2424,6 +2427,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/siege_engine/ballista" = "siege_engines",
 		"/obj/structure/castle_overhang/hoarding" = "siege_engines",
 		"/obj/item/ballista_bolt" = "siege_engines",
+		"/obj/item/weapon/ladder_fork" = "siege_engines",
 		"/obj/structure/siege_engine/tower" = "siege_engines",
 		// --- steam_power (6) ---
 		"/obj/structure/cellar_pump/steam" = "steam_power",
