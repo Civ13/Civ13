@@ -1829,6 +1829,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/reagent_containers/glass/mercury_flask" = "ore_dressing",
 		"/obj/structure/placer_washer/sluice" = "bronze_working",
 		"/obj/structure/placer_washer/rocker" = "ore_dressing",
+		"/obj/structure/placer_washer/buddle" = "ore_dressing",
+		"/obj/structure/drill/stamp_mill/water" = "ore_dressing",
 		"/obj/structure/kanna_channel" = "tatara_smelting",
 		"/obj/structure/heatsource" = "iron_smithing",
 		"/obj/item/clothing/shoes/weather/hobnail_boots" = "iron_smithing",
@@ -2181,6 +2183,10 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/fitted_lock/warded" = "iron_smithing",
 		"/obj/item/door_bar/iron" = "iron_smithing",
 		"/obj/item/door_bolt" = "iron_smithing",
+		// opening windows and shutters (window_fittings.dm)
+		"/obj/structure/simple_door/key_door/anyone/casement" = "glassworking",
+		"/obj/structure/simple_door/key_door/anyone/window_shutters" = "primitive_construction",
+		"/obj/structure/simple_door/key_door/anyone/window_shutters/iron" = "iron_smithing",
 		// fire doors (fire_doors.dm)
 		"/obj/structure/simple_door/key_door/anyone/fire_door" = "steelmaking",
 		"/obj/structure/simple_door/key_door/anyone/fire_door/steel" = "modern_construction",

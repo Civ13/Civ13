@@ -687,6 +687,9 @@
 				new /obj/structure/window_frame/villafull(loc)
 				qdel(W)
 				qdel(src)
+	if (istype(W, /obj/item/stack/material/glass) && (locate(/obj/structure/simple_door/key_door/anyone/casement) in loc))
+		to_chat(user, SPAN_WARNING("The frame already holds a casement. Take it down before fitting a fixed pane."))
+		return
 	if (istype(W, /obj/item/stack/material/glass))
 		var/obj/item/stack/S = W
 		if (S.amount >= 3)
