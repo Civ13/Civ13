@@ -245,6 +245,40 @@ var/fg_runtime_error = FALSE
 	fg_water(40 + 16, 5, /turf/floor/beach/water/deep/saltwater)
 	fg_check(fish_finder_line(ocean) == "Fish overhead: no fish. Stronger returns to the east.", "fished-out water points at a fuller stretch next door ([fish_finder_line(ocean)])")
 
+	// ---- Signs on the water ----
+	fishing_grounds = list()
+	season = "SUMMER"
+	var/list/signs = list()
+	for (var/i = 1 to 400)
+		var/sign = fish_sign_state(shelf)
+		if (sign)
+			signs[sign] = TRUE
+	fg_check(signs["rise_a"] && signs["rise_b"] && signs["rise_c"] && signs["jump_a"] && signs["jump_b"] && signs["gulls"], "full coastal water shows rings, leaping fish and gulls")
+	var/river_gulls = FALSE
+	var/river_signs = 0
+	for (var/i = 1 to 400)
+		var/sign = fish_sign_state(river)
+		if (sign)
+			river_signs++
+		if (sign == "gulls")
+			river_gulls = TRUE
+	fg_check(river_signs == 400 && !river_gulls, "a full river always has a sign to show, and never gulls")
+	var/datum/fishing_ground/SG = fishing_ground_at(river)
+	SG.stock = SG.capacity / 4
+	var/thin_signs = 0
+	for (var/i = 1 to 400)
+		if (fish_sign_state(river))
+			thin_signs++
+	fg_check(thin_signs > 50 && thin_signs < 160, "water at a quarter stock shows a quarter of the signs ([thin_signs] of 400)")
+	SG.stock = 0
+	var/dead_signs = 0
+	for (var/i = 1 to 200)
+		if (fish_sign_state(river) || fish_sign_state(land) || fish_sign_state(ice))
+			dead_signs++
+	fg_check(!dead_signs, "fished-out water, land and ice show nothing")
+	for (var/state in list("rise_a", "rise_b", "rise_c", "jump_a", "jump_b", "gulls"))
+		fg_check(state in icon_states('icons/effects/fish_signs.dmi'), "the sheet has [state]")
+
 	// ---- Saving ----
 	fishing_grounds = list()
 	fishing_grounds_publish()
