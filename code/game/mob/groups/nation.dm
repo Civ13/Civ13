@@ -344,7 +344,7 @@ var/global/list/nation_assembly_tiers = list(
 /proc/nation_assembly_tier(faction)
 	var/best = 0
 	for (var/obj/structure/faction_hall/nation_assembly/A in nation_assemblies)
-		if (!QDELETED(A) && A.faction == faction && isturf(A.loc) && A.tier > best && A.tier_stands(A.tier))
+		if (!QDELETED(A) && A.faction == faction && isturf(A.loc) && A.anchored && A.tier > best && A.tier_stands(A.tier))
 			best = A.tier
 	return best
 
