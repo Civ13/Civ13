@@ -97,7 +97,7 @@ class ResearchInterfaceContract(unittest.TestCase):
         # Refuses to start in the dark, and rechecks the light between short waits.
         self.assertLess(wait.index("H.too_dark_to_read()"), wait.index("do_after(H, wait, target, TRUE, FALSE)"))
         self.assertIn("H.reading_light_problem()", wait.split("do_after(H, wait, target, TRUE, FALSE)")[1])
-        self.assertIn("do_reading(src, left, anchor)", proc(progress, "/mob/living/human/proc/timed_study"))
+        self.assertIn("do_reading(src, real, anchor)", proc(progress, "/mob/living/human/proc/timed_study"))
         # Every read, copy and written page waits through it.
         for path, token in (("code/modules/research_tree/book_research.dm", "do_reading(H, time, src)"),
                             ("code/modules/research_tree/book_pages.dm", "do_reading(H, time, anchor ? anchor : src)"),

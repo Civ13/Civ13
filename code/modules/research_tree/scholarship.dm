@@ -102,7 +102,7 @@ var/global/list/scholar_entry_tiers = null
 // Research speed multiplier: 1 at the requirement, up to 2 well above it.
 /mob/living/human/proc/scholar_research_rate(node_id)
 	var/margin = scholar_level(node_discipline(node_id)) - node_scholar_requirement(node_id)
-	return (1 + clamp(margin / 50, 0, 1)) * recluse_rate()
+	return (1 + clamp(margin / 50, 0, 1)) * recluse_rate() * study_field_research_mult(node_discipline(node_id)) * adhd_bench_mult()
 
 // Adds skill for work on node_id. Work well below the character's level
 // teaches less, so the way up is the next tier, not old chapters.
@@ -116,7 +116,9 @@ var/global/list/scholar_entry_tiers = null
 		scholarship = list()
 	var/level = scholar_level(discipline)
 	var/factor = clamp(1 - (level - req) / (SCHOLAR_LEVEL_PER_TIER * 2), 0.1, 1)
-	scholarship[discipline] = min(SCHOLAR_MAX_LEVEL, round(level + amount * factor, 0.01))
+	// A field of study (study_fields.dm) changes the discipline's own gain,
+	// never its Basic Mathematics share.
+	scholarship[discipline] = min(SCHOLAR_MAX_LEVEL, round(level + amount * study_field_gain_mult(discipline) * factor, 0.01))
 	if (discipline != "mathematics")
 		var/math = scholar_level("mathematics")
 		var/math_factor = clamp(1 - (math - req / 2) / (SCHOLAR_LEVEL_PER_TIER * 2), 0.1, 1)
@@ -188,6 +190,7 @@ var/global/list/scholar_entry_tiers = null
 	rows[++rows.len] = list("<h3>Scholarship</h3>", "")
 	for (var/discipline in scholar_disciplines)
 		rows[++rows.len] = list("<b>[scholar_disciplines[discipline]]:</b>", "[round(scholar_level(discipline))] / [SCHOLAR_MAX_LEVEL], research up to the [ordinal_age_name(scholar_research_reach(discipline))]")
+	rows += study_field_panel_rows()
 	var/title = scholar_title()
 	rows[++rows.len] = list("<b>Title:</b>", title ? title : "None yet (reach [SCHOLAR_TITLE_APPRENTICE] in a discipline)")
 	if (istext(scholar_master))

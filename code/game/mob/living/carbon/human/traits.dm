@@ -76,9 +76,16 @@ var/global/list/trait_list = list(
 	"Hardened Fighter" = list(0,list("Recluse Scholar","Menacing","Quartermaster","Green Thumb","Tinkerer","Wanderer","Rallying Voice","Thick Skinned","Squeamish"),"Playstyle. Sword and melee skill trains 50% faster and wounds hurt you 15% less. Crafting and scholarship train 25% slower."),
 	"Quartermaster" = list(0,list("Recluse Scholar","Menacing","Hardened Fighter","Green Thumb","Tinkerer","Wanderer","Rallying Voice","Strong Back"),"Playstyle. Pulling carts, crates and bodies slows you 40% less, and you can count the items in a closed crate. Combat skills train 25% slower."),
 	"Green Thumb" = list(0,list("Recluse Scholar","Menacing","Hardened Fighter","Quartermaster","Tinkerer","Wanderer","Rallying Voice"),"Playstyle. Farming trains 50% faster and harvests yield about 10% more. Hunting and combat skills train 25% slower."),
-	"Tinkerer" = list(0,list("Recluse Scholar","Menacing","Hardened Fighter","Quartermaster","Green Thumb","Wanderer","Rallying Voice"),"Playstyle. Crafting x1.1 and Engineering scholarship trains 50% faster. Strength x0.9."),
+	"Tinkerer" = list(0,list("Recluse Scholar","Menacing","Hardened Fighter","Quartermaster","Green Thumb","Wanderer","Rallying Voice","Engineer"),"Playstyle. Crafting x1.1 and Engineering scholarship trains 50% faster. Strength x0.9."),
 	"Wanderer" = list(0,list("Recluse Scholar","Menacing","Hardened Fighter","Quartermaster","Green Thumb","Tinkerer","Rallying Voice"),"Playstyle. You recover stamina 50% faster while on the move and use 10% less food where hunger applies. Your mood settles lower once you have stayed within 20 tiles of one spot for 45 minutes."),
 	"Rallying Voice" = list(0,list("Recluse Scholar","Menacing","Hardened Fighter","Quartermaster","Green Thumb","Tinkerer","Wanderer","Introverted"),"Playstyle. When you shout, friendly people who hear you get a small mood lift, at most once every 2 minutes each. Your own mood settles lower when nobody is within 3 tiles."),
+	"Engineer" = list(0,list("Strategist","Naturalist","Agronomist","Physician","Tinkerer"),"Field of study. Engineering research x1.1 and its scholarship grows 25% faster. Other disciplines except Basic Mathematics: research x0.9, scholarship grows 25% slower, their chapters take 15% longer to study. Can also be taken or dropped in play from the Scholarship tab."),
+	"Strategist" = list(0,list("Engineer","Naturalist","Agronomist","Physician"),"Field of study. Military Science research x1.2 and its scholarship grows 25% faster. Other disciplines except Basic Mathematics: research x0.9, scholarship grows 25% slower, their chapters take 15% longer to study. Can also be taken or dropped in play from the Scholarship tab."),
+	"Naturalist" = list(0,list("Engineer","Strategist","Agronomist","Physician"),"Field of study. Natural Science research x1.3 and its scholarship grows 25% faster. Other disciplines except Basic Mathematics: research x0.9, scholarship grows 25% slower, their chapters take 15% longer to study. Can also be taken or dropped in play from the Scholarship tab."),
+	"Agronomist" = list(0,list("Engineer","Strategist","Naturalist","Physician"),"Field of study. Agriculture research x1.4 and its scholarship grows 25% faster. Other disciplines except Basic Mathematics: research x0.9, scholarship grows 25% slower, their chapters take 15% longer to study. Can also be taken or dropped in play from the Scholarship tab."),
+	"Physician" = list(0,list("Engineer","Strategist","Naturalist","Agronomist"),"Field of study. Medicine research x1.4 and its scholarship grows 25% faster. Other disciplines except Basic Mathematics: research x0.9, scholarship grows 25% slower, their chapters take 15% longer to study. Can also be taken or dropped in play from the Scholarship tab."),
+	"Autistic" = list(0,list(),"You study your special interest with deep, sustained focus: its chapters take 20% less time. Changing subjects takes settling in: the first chapter after you switch to a different discipline takes 35% longer. Your interest is your field of study, or one you choose from the Scholarship tab."),
+	"ADHD" = list(0,list(),"You take in new material in fast bursts: the first minute of a reading sitting goes 30% faster, and the first five minutes at a research bench 20% faster. Long unbroken sessions wear on you: reading slows by 20% after three minutes, and bench work by 10% after twenty."),
 
 )
 
@@ -108,7 +115,7 @@ var/global/list/trait_list = list(
 	return rand(1, upper)
 
 // Bounded, biased sampling of valid prefixes, not uniform sampling of all sets.
-// The current catalog has 47 entries. Refuse oversized future catalogs rather
+// The current catalog has 54 entries. Refuse oversized future catalogs rather
 // than silently truncating eligibility or letting a click do unbounded work.
 /proc/random_zero_point_traits(datum/trait_random_source/random_source = null)
 	if (!islist(trait_list) || trait_list.len > 64)
