@@ -238,7 +238,9 @@ var/global/next_river_flood_tick = 0
 	var/marks = state.len >= count * 3 + 1
 	// After the marks: the hollows block, then the foul load of each reach.
 	var/hollows_end = state.len > count * 3 + 1 && isnum(state[count * 3 + 2]) ? count * 3 + 2 + state[count * 3 + 2] : 0
-	var/has_foul = hollows_end && state.len == hollows_end + count
+	// Then the quicksilver in each reach's bed (amalgam.dm).
+	var/has_mercury = hollows_end && state.len == hollows_end + count * 2
+	var/has_foul = hollows_end && (state.len == hollows_end + count || has_mercury)
 	if (state.len != count * 2 + 1 && state.len != count * 3 + 1 && !(hollows_end && (state.len == hollows_end || has_foul)))
 		return FALSE
 	for (var/i in 1 to count)
@@ -263,6 +265,12 @@ var/global/next_river_flood_tick = 0
 		for (var/i in 1 to count)
 			var/v = state[hollows_end + i]
 			foul[i] = isnum(v) && v > 0 ? v : 0
+	bed_mercury = null
+	bed_mercury_ready()
+	if (has_mercury)
+		for (var/i in 1 to count)
+			var/m = state[hollows_end + count + i]
+			bed_mercury[i] = isnum(m) && m > 0 ? m : 0
 	foul_update_shown()
 	stages_changed()
 	return TRUE
@@ -297,6 +305,10 @@ var/global/next_river_flood_tick = 0
 	foul_ready()
 	for (var/i in 1 to count)
 		. += round(foul[i], 0.0001)
+	// Quicksilver in each reach's bed (amalgam.dm).
+	bed_mercury_ready()
+	for (var/i in 1 to count)
+		. += round(bed_mercury[i], 0.001)
 
 // Big rivers rise furthest: a stream draining a few hundred tiles moves about
 // half as much for the same rain.
@@ -387,6 +399,7 @@ var/global/next_river_flood_tick = 0
 	F.process_windows()
 	F.step_minute()
 	F.step_foul() // river_foul.dm
+	F.step_bed_mercury() // amalgam.dm
 	F.publish()
 
 // Stage of the reach a tile belongs to, in levels above normal (0 without a sidecar).

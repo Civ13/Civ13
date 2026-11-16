@@ -168,6 +168,8 @@ listing was retained. These limits are not waived by a green workflow.
 
 `create_lode.py` owns `icons/obj/lode.dmi`: the gold-bearing quartz and lead-silver vein ores, the two crushed ores, the slime tailings, the water stamp mill with its three iron-shod stamps, cam shaft and gear hub (standing, four-frame stamping loop) and the buddle washing pit with its cone and sweep arm (dry, three-frame working loop). `--check` verifies the committed sheet, `--preview <png>` writes a review sheet on grass and dirt, `--gif <path>` writes the stamping loop.
 
+`create_amalgam.py` owns `icons/obj/amalgam.dmi`: the soft balls of gold and silver amalgam, the porous sponge gold and sponge silver left by retorting, the dark amalgamation tailings with their stray mercury beads, the amalgam press (iron screw and cross handle over a cast iron pot in a catch tray on a wooden stand), the patio heap on its flagstones (fresh and salted, turned, fully worked) and the arrastra overlay of dark water and mercury beads that sits in the open frame of the `grindstone` state in `icons/obj/structures.dmi`. `--check` verifies the committed sheet and that the overlay covers no grindstone pixel, `--preview <png>` writes a review sheet on grass and dirt with the overlay shown on the grindstone.
+
 `create_glass_stone.py` owns `icons/obj/glass_stone_machines.dmi`: the glassblowing bench and the mason's saw with their working loops. `--check` verifies the committed sheet, `--preview <png>` writes a review sheet.
 
 `create_lifting.py` owns `icons/obj/lifting_machines.dmi`: the shear legs and the treadwheel crane with their hauling loops. `--check` verifies the committed sheet, `--preview <png>` writes a review sheet.

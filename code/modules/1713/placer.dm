@@ -159,6 +159,7 @@ var/global/list/pay_dirt_stock = list()
 	var/grade = P.grade
 	P.use(1)
 	var/list/names = pay_dirt_output(pay_dirt_wash(grade, "pan"), T)
+	river_mercury_pan_message(H, T.panning_water())
 	switch (grade)
 		if ("rich")
 			to_chat(H, SPAN_NOTICE("Yellow flecks glint in the black sand at the bottom of the pan. This ground carries gold."))
@@ -300,11 +301,10 @@ var/global/list/pay_dirt_stock = list()
 /obj/structure/placer_washer/sluice/mercury_charged()
 	return reagents && reagents.get_reagent_amount("mercury") >= 1
 
-// Mercury washed away goes into the ground here (and into the river bed once
-// river mercury exists).
+// Mercury washed away settles in the river bed beside it, or fouls the ground.
 /obj/structure/placer_washer/sluice/spend_mercury()
 	reagents.remove_reagent("mercury", SLUICE_MERCURY_LOSS)
-	pollution_add(get_turf(src), SLUICE_MERCURY_LOSS * 3)
+	river_mercury_spill(get_turf(src), SLUICE_MERCURY_LOSS)
 
 /obj/structure/placer_washer/rocker
 	name = "rocker"

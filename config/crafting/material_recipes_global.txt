@@ -2890,6 +2890,8 @@ RECIPE: /material/wood/,sluice box,/obj/structure/placer_washer/sluice,6,120,1,1
 RECIPE: /material/wood/,gold rocker,/obj/structure/placer_washer/rocker,5,100,1,1,production,0,0,0,8,null
 RECIPE: /material/wood/,buddle,/obj/structure/placer_washer/buddle,6,100,1,1,production,0,0,0,8,null
 RECIPE: /material/wood/,water stamp mill,/obj/structure/drill/stamp_mill/water,12,200,1,1,production,0,0,0,8,null
+RECIPE: /material/iron/,amalgam press,/obj/structure/workshop_machine/amalgam_press,4,100,1,1,production,0,0,0,8,null
+RECIPE: /material/stone/,patio,/obj/structure/patio_heap,6,120,1,1,production,0,0,0,8,null
 
 
 RECIPE: /material/iron/,firearm maintenance bench,/obj/structure/repair/gun,18,180,1,1,production,25,70,0,8,null

@@ -70,7 +70,7 @@ class Balance(unittest.TestCase):
     def test_mercury_bonus(self):
         self.assertEqual(define('SLUICE_MERCURY_BONUS'), 1.25)
         self.assertEqual(define('SLUICE_MERCURY_LOSS'), 0.05)
-        self.assertIn('pollution_add(get_turf(src), SLUICE_MERCURY_LOSS * 3)', SOURCE)
+        self.assertIn('river_mercury_spill(get_turf(src), SLUICE_MERCURY_LOSS)', SOURCE)
 
 
 class Districts(unittest.TestCase):

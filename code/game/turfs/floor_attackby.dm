@@ -1267,6 +1267,7 @@
 			H.rad_act(5)
 		else
 			H.catch_dirty_water_illness(water_germ_level()*15)
+			river_mercury_drink(H, src) // amalgam.dm
 		if (H.water < 0)
 			H.water += rand(40,50)
 		H.water += 75
