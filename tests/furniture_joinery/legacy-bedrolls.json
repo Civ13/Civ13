@@ -21,7 +21,7 @@
   },
   {
     "file": "config/crafting/material_recipes_global.txt",
-    "row": "RECIPE: /material/leather/,leather bedroll,/obj/item/weapon/bedroll,4,100,0,1,furniture,0,0,0,8,null"
+    "row": "RECIPE: /material/leather/,leather bedroll,/obj/item/weapon/bedroll,5,100,0,1,furniture,0,0,0,8,null"
   },
   {
     "file": "config/crafting/material_recipes_gorilla.txt",
