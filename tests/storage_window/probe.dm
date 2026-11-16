@@ -45,6 +45,7 @@ var/storwin_runtime_error = FALSE
 		storwin_time_checks()
 		storwin_window_checks()
 		storwin_search_checks()
+		storwin_closet_checks()
 	catch(var/exception/e)
 		storwin_check(FALSE, "exception [e] [e.file]:[e.line] [e.desc]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = storwin_failures, "runtime_error" = storwin_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")
@@ -192,3 +193,44 @@ var/storwin_runtime_error = FALSE
 	. = list()
 	for (var/id in served_items)
 		. += served_items[id]
+
+/proc/storwin_closet_checks()
+	var/turf/here = locate(2, 10, 1)
+	var/mob/living/human/storwin_probe/H = new(here)
+	var/obj/structure/closet/crate/C = new(locate(3, 10, 1))
+	C.storagecap = 2
+	var/obj/item/packed = storwin_item(C, ITEM_SIZE_SMALL, "packed cloth")
+	storwin_check(!storage_window_structure_holder(C), "a shut crate lists nothing")
+	C.keep_items = TRUE
+	C.open()
+	C.keep_items = FALSE
+	storwin_check(C.opened && packed.loc == C, "opened through the window, the crate keeps its things inside")
+	storwin_check(storage_window_structure_holder(C) == C, "an open crate is its own holder")
+	var/datum/storage_window/W = new(H)
+	storwin_check(W.lists_holder(C) && storage_window_access(H, C), "the open crate next to you is listed and open to you")
+	storwin_check(!W.knows(packed, "near"), "what was packed before you came must be searched")
+	storwin_check(W.begin_search(C), "searching the crate starts")
+	W.finish_look()
+	storwin_check(W.knows(packed, "near") && W.reachable(packed), "once seen it is in reach")
+	var/obj/item/stone = storwin_item(here, ITEM_SIZE_SMALL, "stone")
+	storwin_check(W.perform_move(stone, "near", C) && stone.loc == C, "a thing goes into the crate")
+	var/obj/item/third = storwin_item(here, ITEM_SIZE_TINY, "flint")
+	storwin_check(!W.perform_move(third, "near", C) && third.loc == here, "a crate refuses more things than it takes")
+	storwin_check(W.perform_move(packed, STORAGE_WINDOW_KIND_FLOOR, null) && packed.loc == here, "and gives them back to the floor")
+	var/list/data = W.build_data()
+	var/list/crate
+	for (var/list/G in data["near"])
+		if (G["id"] == "near:[ref(C)]")
+			crate = G
+	storwin_check(crate && crate["unit"] == "things" && crate["slots"] == 2 && crate["used"] == 1, "the window counts the crate in things")
+	C.locked = TRUE
+	storwin_check(!storage_window_access(H, C) && !W.reachable(stone), "a locked crate keeps its things")
+	C.locked = FALSE
+	C.close()
+	storwin_check(!C.opened && stone.loc == C, "closing the lid for someone without the window still works")
+	C.open()
+	storwin_check(stone.loc == get_turf(C), "and opening it the old way tips things out as before")
+	var/obj/structure/closet/crate/dumpster/D = new(locate(1, 10, 1))
+	D.opened = TRUE
+	storwin_check(!storage_window_structure_holder(D), "a dumpster keeps its own rummaging")
+	qdel(W)
