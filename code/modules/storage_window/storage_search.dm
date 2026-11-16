@@ -6,14 +6,18 @@
 // What a character has seen is kept per item and never saved: after a restart
 // other people's containers must be searched again. Your hands, pockets, worn
 // gear and the floor are always known, and so is anything you put in yourself.
-// Putting a thing into a container makes it unknown to everyone else.
+// Putting a thing into a container makes it unknown to everyone else, except
+// members of the same faction as whoever put it there: a faction's own stores
+// never need searching by its members.
 
 /obj/item
 	// Players (by key) who have seen this item where it lies now.
 	var/tmp/list/storage_seen_by
+	// The faction of whoever put it where it lies now; its members know it too.
+	var/tmp/storage_filled_by_faction
 
 /obj/item/persistence_runtime_var(key)
-	return key == "storage_seen_by" || ..()
+	return key == "storage_seen_by" || key == "storage_filled_by_faction" || ..()
 
 /proc/storage_seer_key(mob/M)
 	if (!M)
@@ -26,10 +30,21 @@
 		return
 	var/key = storage_seer_key(by)
 	I.storage_seen_by = key ? list(key) : null
+	I.storage_filled_by_faction = storage_faction_of(by)
+
+// A real faction name, or null for someone in none.
+/proc/storage_faction_of(mob/M)
+	var/mob/living/human/H = M
+	if (!istype(H) || !H.civilization || H.civilization == "none")
+		return null
+	return H.civilization
 
 /proc/storage_item_seen(obj/item/I, mob/M)
 	var/key = storage_seer_key(M)
-	return key && I.storage_seen_by && (key in I.storage_seen_by)
+	if (key && I.storage_seen_by && (key in I.storage_seen_by))
+		return TRUE
+	var/faction = storage_faction_of(M)
+	return faction && I.storage_filled_by_faction == faction
 
 /proc/storage_mark_seen(obj/item/I, mob/M)
 	var/key = storage_seer_key(M)
