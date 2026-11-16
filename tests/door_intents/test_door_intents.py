@@ -205,7 +205,9 @@ class CustomDoorKeyDispatch(unittest.TestCase):
                'to_chat': lambda actor, text: events.append(('chat', text)),
                'is_key': lambda obj: obj.kind == 'key',
                'is_chain': lambda obj: obj.kind == 'chain',
-               'typed_iter': lambda objects, _type: (obj for obj in objects if obj.kind == 'key')}
+               'typed_iter': lambda objects, _type: (obj for obj in objects if obj.kind == 'key'),
+               # Keys and keychains are not door fittings (door_fittings.dm).
+               'door_fitting_attackby': lambda W, user: False}
         original_fields = source_adapter.FIELDS
         try:
             source_adapter.FIELDS += ('locked',)

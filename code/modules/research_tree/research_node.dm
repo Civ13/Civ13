@@ -2143,6 +2143,13 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/simple_door/key_door/anyone/nordic" = "primitive_construction",
 		"/obj/structure/simple_door/key_door/anyone/rustic" = "primitive_construction",
 		"/obj/structure/simple_door/key_door/anyone/wood" = "primitive_construction",
+		// door fittings (door_fittings.dm)
+		"/obj/item/door_wedge" = "primitive_construction",
+		"/obj/item/door_fitting/counterweight" = "primitive_construction",
+		"/obj/item/door_wedge/iron" = "iron_smithing",
+		"/obj/item/door_fitting/spring_closer" = "bronze_working",
+		"/obj/item/door_fitting/spring_hinge" = "bronze_working",
+		"/obj/item/door_fitting/hydraulic" = "factories",
 		"/obj/structure/torch_stand" = "primitive_construction",
 		"/obj/item/weapon/storage_pit_lining" = "primitive_construction",
 		"/obj/structure/wallframe" = "primitive_construction",
