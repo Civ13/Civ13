@@ -35,9 +35,11 @@ var/global/list/craft_tool_qualities = list(
 // plank") and sawn planks are both wood for a handle, so either one counts.
 var/global/list/craft_need_alternates = list(
 	/obj/item/stack/material/wood = list(/obj/item/stack/material/woodplank),
+	/obj/item/stack/hay = list(/obj/item/stack/material/straw),
 )
 var/global/list/craft_need_input_names = list(
 	/obj/item/stack/material/wood = "wood (a log or a plank)",
+	/obj/item/stack/hay = "hay or straw",
 )
 
 /proc/craft_needs_for(result_type)
