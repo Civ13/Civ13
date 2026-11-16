@@ -13755,6 +13755,7 @@
 "/turf/floor/wood_broken":{"name":"floor","type":"/turf/floor/wood_broken","label":"Initial sprite; runtime appearance may differ","entity":true,"kind":"Terrain"},
 "/turf/sky":{"name":"the sky","type":"/turf/sky","label":"Initial sprite; runtime appearance may differ","entity":true,"kind":"Terrain"},
 "/turf/sky/building":{"name":"open air","type":"/turf/sky/building","label":"Initial sprite; runtime appearance may differ","entity":true,"kind":"Terrain","desc":"There is no floor here."},
+"/turf/sky/building/unformed":{"name":"rock","type":"/turf/sky/building/unformed","label":"Initial sprite; runtime appearance may differ","entity":true,"kind":"Terrain","desc":"Solid rock nobody has dug into yet."},
 "/turf/wall":{"name":"wall","type":"/turf/wall","label":"Initial sprite; runtime appearance may differ","entity":true,"kind":"Wall","desc":"A huge chunk of metal used to separate rooms."},
 "/turf/wall/habitat_shell":{"name":"habitat hull","type":"/turf/wall/habitat_shell","label":"Initial sprite; runtime appearance may differ","entity":true,"kind":"Wall","desc":"Insulated, airtight panels of a habitat module."},
 "/turf/wall/indestructable/party_train":{"name":"carriage wall","type":"/turf/wall/indestructable/party_train","label":"Initial sprite; runtime appearance may differ","entity":true,"kind":"Wall","desc":"The riveted steel side of a railway carriage."},

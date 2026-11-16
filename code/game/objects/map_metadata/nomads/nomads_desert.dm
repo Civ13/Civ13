@@ -1,6 +1,8 @@
 
 /obj/map_metadata/nomads/desert
 	ID = MAP_NOMADS_DESERT
+	// z 1 is unformed rock that forms as it is dug (dug_underground.dm).
+	underground_compiled_z = 1
 	title = "Nomads (Desert)"
 	// Hills: per-tile heights for the surface, z 2 (docs/terrain-height.md).
 	terrain_height_file = "maps/heights/nomads_desert.txt"

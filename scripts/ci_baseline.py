@@ -850,7 +850,7 @@ SUITES = {
                            'tests/gaia_host/test_fresh_world.py',
                            'tests/gaia_host/test_doorman.py', 'tests/gaia_host/test_wait_group.py',
                            'tests/gaia_host/test_relay.py', 'tests/gaia_host/test_mobile_host.py',
-                           'tests/gaia_host/test_expedition_slots.py'),
+                           'tests/gaia_host/test_expedition_slots.py', 'tests/gaia_host/test_underground_migration.py'),
         'paths': ('tests/gaia_host/', 'scripts/gaia-host/', 'scripts/shard-group/', 'scripts/windows/host/'),
         'shared_paths': ('scripts/nomads-lifecycle/supervisor.py',)},
     # Farmer's almanac weather table and crop rule projected from production DM.

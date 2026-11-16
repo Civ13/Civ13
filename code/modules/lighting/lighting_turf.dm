@@ -7,6 +7,9 @@
 	// Map-authored, pre-startup policy only. Never infer this from empty space or z.
 	// Activation is one-way; imported cells deliberately fail open to ordinary lighting.
 	var/tmp/lighting_reserved = FALSE
+	// Never lit while it stands (unformed rock, multiz/dug_underground.dm):
+	// the startup sweeps skip it; the turf that replaces it builds its own.
+	var/tmp/lighting_never = FALSE
 	var/dynamic_lighting = TRUE
 	luminosity		   = TRUE
 
@@ -241,6 +244,8 @@
 
 // don't put this proc anywhere other than where it already is, because it checks for the lack of lighting overlays - Kachnov
 /turf/proc/supports_lighting_overlays()
+	if (lighting_never)
+		return FALSE
 	. = TRUE
 	if (locate(/atom/movable/lighting_overlay) in src)
 		. = FALSE
