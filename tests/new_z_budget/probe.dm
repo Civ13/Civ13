@@ -14,6 +14,7 @@
 
 /obj/map_metadata/z_budget_fixture
 	dig_down_underground = FALSE // the cave's budget is covered by tests/building_levels/cave_probe.dm
+	building_levels = 0 // the unmeasured default; opted-in levels are covered by tests/building_levels
 
 /obj/map_metadata/z_budget_fixture/New()
 	return
