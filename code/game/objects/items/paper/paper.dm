@@ -258,6 +258,8 @@
 /obj/item/weapon/paper/examine(mob/user)
 	..()
 	if (in_range(user, src) || isghost(user))
+		if (!farsight_can_read(user, src))
+			return
 		show_content(user)
 		paper_study_examine_hint(user, src)
 	else

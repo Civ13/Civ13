@@ -523,7 +523,7 @@ class ViewReset(unittest.TestCase):
         stack = N(check_eye=eye)
         env.update(using_object=stack, laddervision=None, sight=0,
                    global_hud=N(**{key: None for key in ['blurry', 'druggy', 'vimpaired', 'darkMask', 'nvg', 'thermal']}),
-                   update_equipment_vision=lambda: None, species=N(handle_vision=lambda src: None))
+                   update_equipment_vision=lambda: None, update_sight_fog=lambda: None, species=N(handle_vision=lambda src: None))
         vision_source = (ROOT/'code/game/mob/living/carbon/human/human_life.dm').read_text(encoding='utf-8').replace('if (', 'if(')
         vision = compile_proc(vision_source, '/mob/living/human/handle_vision(', '', env)
         writes.clear()

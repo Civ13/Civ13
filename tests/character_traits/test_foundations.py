@@ -55,7 +55,7 @@ def validator_contract(source):
 class TraitFoundations(unittest.TestCase):
     def test_table_and_all_exclusions_both_orders(self):
         table = definitions(read(TRAITS))
-        self.assertEqual(len(table), 47)
+        self.assertEqual(len(table), 49)
         self.assertEqual(table['Baldness'][0], 0)
         for name, (_, excluded, _) in table.items():
             for other in excluded:
@@ -237,6 +237,20 @@ class TraitFoundations(unittest.TestCase):
                        'proc/trait_gore_mood_mult()', '/mob/living/human/adjust_mood(amount, cause = null)'):
             self.assertIn(needle, source)
 
+    def test_sight_traits_cost_exclude_blind_and_hook(self):
+        table = definitions(read(TRAITS))
+        self.assertEqual(table['Nearsighted'][0], -2)
+        self.assertEqual(table['Farsighted'][0], -1)
+        for trait in ('Nearsighted', 'Farsighted'):
+            self.assertEqual(validate([trait, 'Blind'], table, False), 'incompatible')
+            self.assertIsNone(validate([trait], table))
+        self.assertIsNone(validate(['Nearsighted', 'Farsighted'], table))
+        sight = read('code/game/mob/living/carbon/human/sight_traits.dm')
+        for needle in ('/obj/item/clothing/glasses/regular\n\tcorrects_vision = TRUE',
+                       '/obj/item/clothing/glasses/monocle\n\tcorrects_vision = TRUE',
+                       'proc/update_sight_fog()', 'proc/farsight_can_read(', 'proc/farsight_reading_mult()'):
+            self.assertIn(needle, sight)
+        self.assertIn('update_sight_fog()', read(LIFE))
 
 if __name__ == '__main__':
     unittest.main()

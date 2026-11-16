@@ -108,3 +108,13 @@ rallying). Run it with the pinned compiler:
 ```
 python3 tests/ecology_spawning/run_linux.py . tests/character_traits/playstyle_probe.dm
 ```
+
+## Nearsighted and Farsighted
+
+`sight_probe.dm` is a native probe for the sight traits: which eyewear corrects
+them, the reading multiplier, the squint gate for pages, costs and exclusions.
+The fog overlay itself needs a connected client and is not exercised here.
+
+```
+python3 tests/ecology_spawning/run_linux.py . tests/character_traits/sight_probe.dm
+```

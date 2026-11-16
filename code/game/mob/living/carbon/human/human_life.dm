@@ -1387,6 +1387,7 @@
 
 	update_equipment_vision()
 	species.handle_vision(src)
+	update_sight_fog()
 
 /mob/living/human/update_sight()
 	..()

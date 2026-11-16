@@ -138,6 +138,8 @@
 /obj/item/weapon/book/examine(mob/user)
 	..()
 	if (in_range(user, src) || isghost(user))
+		if (!farsight_can_read(user, src))
+			return
 		show_content(usr)
 	else
 		to_chat(user, "<span class='notice'>You have to go closer if you want to read it.</span>")
