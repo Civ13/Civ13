@@ -49,7 +49,8 @@ With the cave and all four open-air levels (`--storeys 4`, z 6): save 181 s
 at a 1416 MiB peak, reload 536 s at a 2053 MiB peak. Every map now allows
 four open-air levels (`building_levels` defaults to 4; orbit and the tutorial
 region opt out); on the Americas the standing rule in building_admission.dm
-admits all of them, about 130 MiB of reload peak per empty plane.
+admits all of them, about 130 MiB of reload peak per empty plane. South
+America with all of them: save 209 s at 1619 MiB, reload 617 s at 2238 MiB.
 
 Falling, holes and explosions that reach an unformed cell form it before they
 act on it (`/turf/sky/building/ex_act`).

@@ -193,7 +193,8 @@ it.
   (`NEW_Z_STANDING_MEASURED_CELLS`, 5,300,000 cells with the unformed cave not
   charged; see [new-z-budget.md](new-z-budget.md) and
   [underground-level.md](underground-level.md)). North with all of them, empty:
-  reload peak 2053 MiB, about 130 MiB per empty open-air plane.
+  reload peak 2053 MiB; South 2238 MiB (save 209 s, reload 617 s), about
+  130 MiB per empty open-air plane, under the 3072 MB low-memory threshold.
 - The time-of-day lighting pass takes about three times as long as Gaia's.
 - The wildlife caps (`ecology_wildlife_cap` 1000 north, 1200 south) and wild
   plant caps (550 and 650) scale with the land, short of in proportion.
