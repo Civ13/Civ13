@@ -217,6 +217,21 @@ internal sealed partial class LauncherWindow {
         await StartBot();
     });
 
+    // The front door moved (FrontDoorDialog): the bot reads its profile when it starts, so a running bot is
+    // restarted without asking again (the operator already confirmed the move). A stopped bot stays stopped.
+    private async Task RestartBotForFrontDoor() {
+        await RefreshBot();
+        if (!(botStatus?.Running ?? false) && !ownedBot.Running) {
+            BotLine("The bot profile now points at the new front door; the bot reads it when it next starts.");
+            return;
+        }
+        await WithBotBusy(async () => {
+            if (!await StopBotAndWait()) return;
+            botBusy = false;
+            await StartBot();
+        });
+    }
+
     // Stops a running bot, fast-forwards its checkout through control.php update, and starts it again.
     private Task UpdateBot() => WithBotBusy(async () => {
         var wasRunning = botStatus?.Running ?? false;

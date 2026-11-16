@@ -172,3 +172,11 @@ or a game. Release publication builds the exact tag and verifies immutable asset
 readback before advancing the separate native feed; prereleases do not activate it.
 Preserve the existing client channel and distinguish package integrity/BYOND setup
 from identity/gameplay acceptance. Never silently accept installer licenses.
+
+<!-- 2026-11-16: Front door and ports dialog -->
+Val asked (2026-11-16) that moving the gate and managing ports need no technical knowledge. All regions > More >
+**Front door and ports…** (Gui/FrontDoorDialog.cs, GroupPorts.cs) runs `shard_group.py ports`, `set-gate --region ID`
+and `set-port --region ID --port N` (scripts/shard-group/group_ports.py). The dialog always asks for the plan first
+(no `--apply`), shows it for one confirmation, then applies and follows `<root>/port-change.json` through `ports`
+every 3 s. It passes `--bot-profile` from host.json's bot and restarts a running bot itself when the change ends
+with `bot.restart`. Keep the wording plain: the dialog says "front door", never "gate" or "relay".
