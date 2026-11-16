@@ -64,14 +64,18 @@ var/plate_runtime_error = FALSE
 	var/obj/item/weapon/material/kitchen/utensil/spoon/S = new(T, "bronze")
 	var/base_value = S.value
 	var/base_name = S.name
+	plate_check(D.icon_state == "dish", "a new dish shows the dry empty dish")
 	plate_check(D.start_refusal(S) == "Hang a sheet of gold or silver in \the [D] first.", "a dish without a sheet refuses")
 	var/obj/item/stack/material/copper/Cu = new(T)
 	plate_check(!D.hang_anode(Cu) && !D.anode, "a copper sheet will not hang in the dish")
 	var/obj/item/stack/material/silver/Ag = new(T)
 	Ag.amount = 2
 	plate_check(D.hang_anode(Ag) && D.anode == "silver" && Ag.amount == 1, "hanging a silver sheet uses one sheet")
+	plate_check(D.icon_state == "dish_silver", "the hung silver sheet shows in the dry dish")
 	plate_check(findtext(D.start_refusal(S), "grape juice"), "a dry dish refuses")
 	D.reagents.add_reagent("grapejuice", 12)
+	D.update_icon()
+	plate_check(D.icon_state == "dish_juice_silver", "the filled dish shows the juice and the sheet")
 	plate_check(D.start_refusal(S) == "\The [D] needs a charged cell beside it.", "a dish without a cell refuses")
 	var/obj/structure/battery/B = new(locate(6, 5, 1))
 	B.assembled = TRUE
@@ -84,6 +88,7 @@ var/plate_runtime_error = FALSE
 	plate_check(!B.powersource, "the jar cell has no cable")
 	D.start_coat(S)
 	plate_check(S.loc == D && (D in processing_objects), "the item goes into the dish and the dish processes")
+	plate_check(D.icon_state == "dish_silver_on", "the dish bubbles while the coat goes on")
 	plate_check(gild_run(D, 9) != PROCESS_KILL && D.progress == 9 && !S.plating, "the coat takes ten steps")
 	plate_check(gild_run(D, 1) == PROCESS_KILL, "the coat finishes on the tenth step")
 	plate_check(S.plating == "silver" && S.loc == T && S.name == "silver-plated [base_name]", "the spoon comes out silver-plated beside the dish")
@@ -91,6 +96,7 @@ var/plate_runtime_error = FALSE
 	plate_check(B.stored_energy == B.energy_capacity - 50, "the coat drew 50 PU s from the jar cell")
 	plate_check(!D.anode && D.juice() == 7, "the coat used the sheet and five units of grape juice")
 	plate_check(!(D in processing_objects), "a finished dish stops processing")
+	plate_check(D.icon_state == "dish_juice", "a finished dish shows only the juice left")
 	// A cell running dry pauses the coat until a charged one is back.
 	var/obj/item/weapon/material/kitchen/utensil/fork/F = new(T, "iron")
 	var/obj/item/stack/material/gold/Au = new(T)
@@ -98,6 +104,7 @@ var/plate_runtime_error = FALSE
 	D.start_coat(F)
 	B.stored_energy = 49
 	plate_check(gild_run(D, 12) != PROCESS_KILL && D.progress == 0 && !F.plating, "a nearly flat cell gives no progress")
+	plate_check(D.icon_state == "dish_gold_wait", "a waiting dish shows the item but no bubbles")
 	B.stored_energy = 100
 	gild_run(D, 4)
 	B.forceMove(locate(9, 9, 1))
@@ -120,7 +127,12 @@ var/plate_runtime_error = FALSE
 
 /proc/gilding_catalog_checks()
 	plate_check(get_recipe_node_req("/obj/structure/gilding_dish") == "early_cells", "the gilding dish unlocks with Early Chemical Cells")
-	plate_check(("claybowl" in icon_states('icons/obj/claystuff.dmi')), "the dish reuses the existing clay bowl sprite")
+	var/list/drawn = icon_states('icons/obj/gilding_dish.dmi')
+	var/missing = ""
+	for (var/state in list("dish", "dish_gold", "dish_silver", "dish_juice", "dish_juice_gold", "dish_juice_silver", "dish_gold_wait", "dish_gold_on", "dish_silver_wait", "dish_silver_on"))
+		if (!(state in drawn))
+			missing += " [state]"
+	plate_check(missing == "", "the dish sheet has every state the dish shows[missing]")
 	var/found = FALSE
 	for (var/line in splittext(file2text("config/crafting/material_recipes_global.txt"), "\n"))
 		if (findtext(line, "RECIPE: /material/copper/,gilding dish,/obj/structure/gilding_dish,") == 1)

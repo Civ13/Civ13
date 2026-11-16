@@ -17,8 +17,8 @@ var/global/list/gilding_metals = list("gold", "silver")
 /obj/structure/gilding_dish
 	name = "gilding dish"
 	desc = "A shallow copper-lined clay dish for grape juice. Hang a sheet of gold or silver in it, set a charged jar cell beside it, then lower a small metal item in to gild it."
-	icon = 'icons/obj/claystuff.dmi'
-	icon_state = "claybowl"
+	icon = 'icons/obj/gilding_dish.dmi' // tests/sprites/create_gilding_dish.py
+	icon_state = "dish"
 	anchored = TRUE
 	density = FALSE
 	flammable = FALSE
@@ -31,6 +31,7 @@ var/global/list/gilding_metals = list("gold", "silver")
 /obj/structure/gilding_dish/New()
 	..()
 	create_reagents(30)
+	update_icon()
 
 /obj/structure/gilding_dish/Destroy()
 	processing_objects -= src
@@ -47,6 +48,25 @@ var/global/list/gilding_metals = list("gold", "silver")
 	progress = 0
 	if (workpiece())
 		processing_objects |= src
+	update_icon()
+
+// The dry or filled dish, the hung sheet, and an item in it: bubbling while
+// the coat goes on, still while it waits for a charged cell.
+/obj/structure/gilding_dish/update_icon()
+	var/state = "dish"
+	if (workpiece() && anode)
+		state = "dish_[anode]_[can_coat() ? "on" : "wait"]"
+	else
+		if (juice() >= 1)
+			state += "_juice"
+		if (anode)
+			state += "_[anode]"
+	if (icon_state != state)
+		icon_state = state
+
+// Everything a coat in progress needs is in place.
+/obj/structure/gilding_dish/proc/can_coat()
+	return anode && anchored && isturf(loc) && juice() >= GILDING_JUICE_PER_COAT && power_cell()
 
 /obj/structure/gilding_dish/proc/workpiece()
 	for (var/obj/item/I in contents)
@@ -89,21 +109,25 @@ var/global/list/gilding_metals = list("gold", "silver")
 	I.forceMove(src)
 	progress = 0
 	processing_objects |= src
+	update_icon()
 
 /obj/structure/gilding_dish/proc/hang_anode(obj/item/stack/material/S)
 	var/metal = plating_metal_of_sheet(S)
 	if (!(metal in gilding_metals) || anode || !S.use(1))
 		return FALSE
 	anode = metal
+	update_icon()
 	return TRUE
 
 /obj/structure/gilding_dish/process()
 	var/obj/item/I = workpiece()
 	if (!I || !anchored || !isturf(loc))
 		processing_objects -= src
+		update_icon()
 		return PROCESS_KILL
+	update_icon()
 	// Waits until juice, an anode and a charged cell are back.
-	if (!anode || juice() < GILDING_JUICE_PER_COAT || !power_cell())
+	if (!can_coat())
 		return
 	if (++progress < GILDING_STEPS)
 		return
@@ -121,6 +145,7 @@ var/global/list/gilding_metals = list("gold", "silver")
 	processing_objects -= src
 	I.apply_plating(metal)
 	I.forceMove(get_turf(src))
+	update_icon()
 	visible_message(SPAN_NOTICE("\The [I] comes out of \the [src] with a thin [metal] coat."))
 	return TRUE
 
@@ -133,6 +158,7 @@ var/global/list/gilding_metals = list("gold", "silver")
 			return
 		C.reagents.remove_reagent("grapejuice", amount)
 		reagents.add_reagent("grapejuice", amount)
+		update_icon()
 		to_chat(user, SPAN_NOTICE("You pour [amount] units of grape juice into \the [src]."))
 		return
 	var/metal = plating_metal_of_sheet(W)
@@ -164,6 +190,7 @@ var/global/list/gilding_metals = list("gold", "silver")
 		progress = 0
 		processing_objects -= src
 		I.forceMove(get_turf(src))
+		update_icon()
 		user.put_in_hands(I)
 		to_chat(user, SPAN_NOTICE("You lift \the [I] out of \the [src] before it is coated."))
 		return
@@ -174,6 +201,7 @@ var/global/list/gilding_metals = list("gold", "silver")
 		S.update_icon()
 		to_chat(user, SPAN_NOTICE("You take the sheet of [anode] out of \the [src]."))
 		anode = null
+		update_icon()
 		user.put_in_hands(S)
 		return
 	return ..()
