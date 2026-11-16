@@ -1007,6 +1007,7 @@
 #include "code\modules\1713\placer.dm"
 #include "code\modules\1713\lode.dm"
 #include "code\modules\1713\amalgam.dm"
+#include "code\modules\1713\milling.dm"
 #include "code\modules\1713\clay_lime_fire.dm"
 #include "code\modules\1713\home_finishes.dm"
 #include "code\modules\1713\furniture_fabric_dye.dm"

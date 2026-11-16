@@ -2899,6 +2899,11 @@ RECIPE: /material/wood/,buddle,/obj/structure/placer_washer/buddle,6,100,1,1,pro
 RECIPE: /material/wood/,water stamp mill,/obj/structure/drill/stamp_mill/water,12,200,1,1,production,0,0,0,8,null
 RECIPE: /material/iron/,amalgam press,/obj/structure/workshop_machine/amalgam_press,4,100,1,1,production,0,0,0,8,null
 RECIPE: /material/stone/,patio,/obj/structure/patio_heap,6,120,1,1,production,0,0,0,8,null
+RECIPE: /material/iron/,trommel,/obj/structure/drill/stamp_mill/water/mill/trommel,12,200,1,1,production,0,0,0,8,null
+RECIPE: /material/iron/,amalgamator drum,/obj/structure/drill/stamp_mill/water/mill/drum,15,200,1,1,production,0,0,0,8,null
+RECIPE: /material/iron/,mercury separator,/obj/structure/mercury_separator,8,150,1,1,production,0,0,0,8,null
+RECIPE: /material/iron/,shaking table,/obj/structure/drill/stamp_mill/water/mill/table,10,200,1,1,production,0,0,0,8,null
+RECIPE: /material/copper/,amalgamation plates,/obj/item/amalgamation_plates,4,80,0,1,production,0,0,0,8,null
 
 
 RECIPE: /material/iron/,firearm maintenance bench,/obj/structure/repair/gun,18,180,1,1,production,25,70,0,8,null
