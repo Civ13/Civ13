@@ -106,9 +106,13 @@
 /mob/living/human/proc/scholar_desk_rate()
 	return at_writing_desk() ? SCHOLAR_DESK_RATE : 1
 
-// Studying a chapter of era tier, at a desk or not.
-/mob/living/human/proc/scholar_study_time(tier)
-	return round(BOOK_STUDY_TIME(tier) * trait_study_time_mult() / (scholar_desk_rate() * recluse_rate()))
+// Studying a chapter of era tier, at a desk or not. With node_id, a field of
+// study or the Autistic trait can change it too (study_fields.dm).
+/mob/living/human/proc/scholar_study_time(tier, node_id = null)
+	var/mult = trait_study_time_mult()
+	if (node_id)
+		mult *= study_field_study_mult(node_discipline(node_id)) * autistic_study_mult(node_id)
+	return round(BOOK_STUDY_TIME(tier) * mult / (scholar_desk_rate() * recluse_rate()))
 
 // Research speed from a library: distinct chapters on the node's groundwork or
 // in its discipline, in books on bookcases near the bench.

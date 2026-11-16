@@ -108,3 +108,16 @@ rallying). Run it with the pinned compiler:
 ```
 python3 tests/ecology_spawning/run_linux.py . tests/character_traits/playstyle_probe.dm
 ```
+
+## Fields of study, Autistic and ADHD
+
+`study_fields_probe.dm` is a native probe for the optional research traits in
+`code/modules/research_tree/study_fields.dm`: the five fields of study (focus
+bench speed x1.1-x1.4, other applied disciplines x0.9, scholarship gain x1.25 /
+x0.75 without touching the Basic Mathematics share, 15% slower off-focus
+reading), picking/dropping in play, the Tinkerer/Engineer exclusion, the
+Autistic special interest and switch cost, and the ADHD reading and bench pace.
+
+```sh
+python3 tests/ecology_spawning/run_linux.py . tests/character_traits/study_fields_probe.dm
+```
