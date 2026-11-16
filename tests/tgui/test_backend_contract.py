@@ -52,7 +52,7 @@ class BackendContract(unittest.TestCase):
         self.assertLess(topic.index('if (act_typed(action, params))'), topic.index('return ..(list2params(legacy), legacy)'))
         typed = DM.split('/datum/nanoui/tgui/proc/act_typed(action, list/params)', 1)[1].split('\n/', 1)[0]
         self.assertIn('if (!src_object.ui_act(action, params, user, src))\n\t\treturn FALSE', typed)
-        self.assertIn('GLOB.nanomanager.update_uis(src_object)', typed)
+        self.assertIn('if (src_object)\n\t\tGLOB.nanomanager.update_uis(src_object)', typed)
         bridge = DM.split('/datum/nanoui/tgui/proc/href_form(action, list/params)', 1)[1]
         self.assertIn('.[action] = "[params["value"]]"', bridge)
         # The reference owner: one guarded handler, no Topic a typed href could reach.
@@ -67,6 +67,25 @@ class BackendContract(unittest.TestCase):
             if not path.name.endswith('.test.tsx'):
                 self.assertNotRegex(path.read_text(), r"act\('(\w+)',\s*\{\s*\1:", path.name)
         self.assertIn('ui.act(action, { value, ...params })', (ROOT / 'tgui/src/interfaces/common.tsx').read_text())
+
+    def test_vending_buttons_use_typed_handlers(self):
+        base = (ROOT / 'code/game/objects/structures/vending/vending.dm').read_text(errors='replace')
+        sales = (ROOT / 'code/game/objects/structures/vending/vending_sales.dm').read_text(errors='replace')
+        self.assertNotIn('/obj/structure/vending/Topic(', base)
+        row = 'if (!isnum(key) || key != round(key) || key < 1 || key > product_records.len)'
+        for source, owner in ((base, '/obj/structure/vending'), (sales, '/obj/structure/vending/sales')):
+            act = source.split(f'{owner}/ui_act(action, list/params, mob/user, datum/nanoui/ui)\n', 1)[1].split('\n/', 1)[0]
+            self.assertTrue(act.startswith('\t. = TRUE\n'))
+            self.assertLess(act.index('user.stat || user.restrained()'), act.index('action == "vend"'))
+            self.assertLess(act.index('in_range(src, user)'), act.index('action == "vend"'))
+            self.assertLess(act.index(row), act.index('product_records[key]'))
+            self.assertNotRegex(act, r'\busr\b|href_list')
+        # The sales Topic is left with the owner's management page only.
+        topic = sales.split('/obj/structure/vending/sales/Topic(href, href_list)\n', 1)[1].split('\n//VENDING MACHINES', 1)[0]
+        self.assertIn('if (href_list["manage"])', topic)
+        for moved in ('"vend"', '"cancelpurchase"', '"remove_money"'):
+            self.assertNotIn(moved, topic)
+        self.assertLess(topic.index('in_range(src, usr)'), topic.index('if (href_list["manage"])'))
 
     def test_status_only_updates_and_ready_snapshot(self):
         self.assertIn('if (!isnull(data))\n\t\tlatest_data = data', DM)

@@ -290,30 +290,34 @@
 		template = "vending_machine_gulag.tmpl"
 	open_tgui(user, ui_key, template, name, 540, 600, data, ui, force_open)
 
-/** Processes signals from the NanoUI, including purchase requests, cancellations, and withdrawal of inserted funds. */
-/obj/structure/vending/sales/Topic(href, href_list)
-	if (isliving(usr))
-		if (usr.stat || usr.restrained())
+/** Handles the purchase window's buttons: buying, cancelling and withdrawing inserted funds. The product is its row number in product_records. */
+/obj/structure/vending/sales/ui_act(action, list/params, mob/user, datum/nanoui/ui)
+	. = TRUE
+	var/value = params["value"]
+	if (isliving(user))
+		if (user.stat || user.restrained())
 			return
-	else if (isobserver(usr))
+	else if (isobserver(user))
 		if (!check_rights(R_MOD))
 			return
 
-	if ((usr.contents.Find(src) || (in_range(src, usr) && istype(loc, /turf))))
-		if ((href_list["vend"]) && (vend_ready) && (!currently_vending))
+	if ((user.contents.Find(src) || (in_range(src, user) && istype(loc, /turf))))
+		if ((action == "vend") && (vend_ready) && (!currently_vending))
 
-			if (find_company_member(usr,owner))
-				to_chat(usr, "<span class='warning'>You can't buy from your own company. Remove the product instead.</span>")
+			if (find_company_member(user,owner))
+				to_chat(user, "<span class='warning'>You can't buy from your own company. Remove the product instead.</span>")
 				status_error = FALSE
 				currently_vending = null
 			else
 
-				var/key = text2num(href_list["vend"])
+				var/key = value
+				if (!isnum(key) || key != round(key) || key < 1 || key > product_records.len)
+					return
 				var/datum/data/vending_product/R = product_records[key]
 
 				var/inp = 1
 				if (R.amount > 1)
-					inp = player_input(usr, "How many do you want to buy? (1 to [R.amount])", 1, null, "num", null, FALSE)
+					inp = player_input(user, "How many do you want to buy? (1 to [R.amount])", 1, null, "num", null, FALSE)
 					inp = round(inp)
 					if (inp>R.amount)
 						inp = R.amount
@@ -321,10 +325,10 @@
 						inp = 1
 
 				if (R.price <= 0)
-					vend(R, usr, inp)
+					vend(R, user, inp)
 
 				else
-					var/mob/living/human/H = usr
+					var/mob/living/human/H = user
 					var/salestax = 0
 					if (map.ID != MAP_KANDAHAR)
 						if (H.civilization != "none")
@@ -396,13 +400,13 @@
 								if (NM.amount <= 0)
 									qdel(NM)
 						moneyin = 0
-						vend(R, usr, inp)
+						vend(R, user, inp)
 						GLOB.nanomanager.update_uis(src)
 
-		else if (href_list["cancelpurchase"])
+		else if (action == "cancelpurchase")
 			currently_vending = null
 
-		else if (href_list["remove_money"])
+		else if (action == "remove_money")
 			if (accepted_currency != "standard")
 				if (moneyin > 0)
 					new/obj/item/stack/money/fiat(loc, moneyin, accepted_currency)
@@ -435,7 +439,21 @@
 			GLOB.nanomanager.update_uis(src)
 			return
 
-		else if (href_list["manage"])
+		add_fingerprint(user)
+		playsound(user.loc, 'sound/machines/button.ogg', 100, TRUE)
+		GLOB.nanomanager.update_uis(src)
+
+/** Handles the owner's management page, which is an ordinary browser window. */
+/obj/structure/vending/sales/Topic(href, href_list)
+	if (isliving(usr))
+		if (usr.stat || usr.restrained())
+			return
+	else if (isobserver(usr))
+		if (!check_rights(R_MOD))
+			return
+
+	if ((usr.contents.Find(src) || (in_range(src, usr) && istype(loc, /turf))))
+		if (href_list["manage"])
 			if (owner == "Global" || !find_company_member(usr, owner))
 				return
 			var/action = href_list["manage"]
@@ -468,10 +486,6 @@
 						to_chat(usr, "<span class='notice'>This vendor now accepts [curr_name].</span>")
 			GLOB.nanomanager.update_uis(src)
 			return
-
-		add_fingerprint(usr)
-		playsound(usr.loc, 'sound/machines/button.ogg', 100, TRUE)
-		GLOB.nanomanager.update_uis(src)
 
 
 //VENDING MACHINES

@@ -200,33 +200,38 @@
 
 	open_tgui(user, ui_key, "vending_machine.tmpl", name, 540, 600, data, ui, force_open)
 
-/obj/structure/vending/Topic(href, href_list)
-	if (isliving(usr))
-		if (usr.stat || usr.restrained())
+// A window button. The product is its row number in product_records.
+/obj/structure/vending/ui_act(action, list/params, mob/user, datum/nanoui/ui)
+	. = TRUE
+	var/value = params["value"]
+	if (isliving(user))
+		if (user.stat || user.restrained())
 			return
-	else if (isobserver(usr))
+	else if (isobserver(user))
 		if (!check_rights(R_MOD))
 			return
 
-	if ((usr.contents.Find(src) || (in_range(src, usr) && istype(loc, /turf))))
-		if ((href_list["vend"]) && (vend_ready) && (!currently_vending))
+	if ((user.contents.Find(src) || (in_range(src, user) && istype(loc, /turf))))
+		if ((action == "vend") && (vend_ready) && (!currently_vending))
 
-			var/key = text2num(href_list["vend"])
+			var/key = value
+			if (!isnum(key) || key != round(key) || key < 1 || key > product_records.len)
+				return
 			var/datum/data/vending_product/R = product_records[key]
 
 			if (R.price <= 0)
-				vend(R, usr)
+				vend(R, user)
 
 			else
 				currently_vending = R
 				status_message = "Please insert money to pay for the item."
 				status_error = FALSE
 
-		else if (href_list["cancelpurchase"])
+		else if (action == "cancelpurchase")
 			currently_vending = null
 
-		add_fingerprint(usr)
-		playsound(usr.loc, 'sound/machines/button.ogg', 100, TRUE)
+		add_fingerprint(user)
+		playsound(user.loc, 'sound/machines/button.ogg', 100, TRUE)
 		GLOB.nanomanager.update_uis(src)
 
 /obj/structure/vending/proc/vend(datum/data/vending_product/R, mob/user)
