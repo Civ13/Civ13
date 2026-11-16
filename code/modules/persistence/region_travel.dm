@@ -39,7 +39,7 @@ var/global/list/region_travel_coins = list(
 	"silver_coin" = /obj/item/stack/money/silvercoin,
 	"gold_coin" = /obj/item/stack/money/goldcoin)
 
-var/global/list/region_travel_look_vars = list("r_hair", "g_hair", "b_hair", "h_style", "r_facial", "g_facial", "b_facial", "f_style", "r_eyes", "g_eyes", "b_eyes", "s_tone", "r_skin", "g_skin", "b_skin")
+var/global/list/region_travel_look_vars = list("r_hair", "g_hair", "b_hair", "h_style", "r_facial", "g_facial", "b_facial", "f_style", "h_growth", "f_growth", "r_eyes", "g_eyes", "b_eyes", "s_tone", "r_skin", "g_skin", "b_skin")
 
 // Medical stacks travel by kind and amount, like materials. Exact types only.
 var/global/list/region_travel_stack_goods = list(
