@@ -52,7 +52,11 @@ var/global/list/weighed_metal_worth = list(
 	var/list/W = weighed_money_of(I)
 	if (!W)
 		return null
-	return "[I.name]: [W[2]] shekel[W[2] == 1 ? "" : "s"] of [W[1]], worth [weighed_silver_text(W[3])]"
+	var/metal = W[1]
+	var/obj/item/stack/money/C = I
+	if (istype(C) && C.fineness < 1)
+		metal = "debased [metal] ([round(C.fineness * 100)]% fine)"
+	return "[I.name]: [W[2]] shekel[W[2] == 1 ? "" : "s"] of [metal], worth [weighed_silver_text(W[3])]"
 
 // Totals a list of items: list(silver worth, lines, unweighed count).
 /proc/weighed_money_total(list/items)

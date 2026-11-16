@@ -286,6 +286,7 @@ RECIPE: /material/leather/,bola,/obj/item/weapon/legcuffs/bola,2,50,0,1,weapons,
 RECIPE: /material/leather/,feasting mat,/obj/structure/feast_mat,3,60,1,1,furniture,0,0,0,8,null
 RECIPE: /material/leather/,barter mat,/obj/structure/barter_mat,2,40,1,1,economy & production,0,0,0,8,null
 RECIPE: /material/wood/,trading balance,/obj/item/weighing_balance,2,40,0,1,economy & production,0,0,0,8,null
+RECIPE: /material/bronze/,coin die,/obj/item/coin_die,1,60,0,1,economy & production,0,0,0,8,null
 RECIPE: /material/leather/,frame drum,/obj/item/stone_age_instrument/frame_drum,2,80,0,1,none,0,0,0,8,null
 RECIPE: /material/leather/,bug swatter,/obj/item/weapon/swatter,3,90,0,1,tools,0,0,0,8,null
 RECIPE: /material/leather/,bellows,/obj/structure/workshop_machine/bellows,3,100,1,1,tools,26,0,0,8,null
@@ -1895,7 +1896,6 @@ RECIPE: /material/steel/,steel razor blade,/obj/item/weapon/material/kitchen/ute
 //*********************| GOLD |*******************************
 //************************************************************
 
-RECIPE: /material/gold/,gold coins,/obj/item/stack/money/goldcoin,1,35,0,1,none,0,0,0,8,null
 
 RECIPE: /material/gold/,large gold double doors,/obj/structure/simple_door/key_door/anyone/doubledoor/gold,5,100,1,1,none,18,0,0,8,null
 
@@ -1920,7 +1920,6 @@ RECIPE: /material/gold/,gold sceptre,/obj/item/weapon/goldsceptre,3,105,0,1,none
 //*********************| SILVER |*****************************
 //************************************************************
 
-RECIPE: /material/silver/,silver coins,/obj/item/stack/money/silvercoin,1,35,0,1,none,0,0,0,8,null
 RECIPE: /material/silver/,silver chain necklace,/obj/item/clothing/accessory/necklace/silver,1,60,0,1,none,0,0,0,8,null
 
 RECIPE: /material/silver/,large silver double doors,/obj/structure/simple_door/key_door/anyone/doubledoor/silver,5,100,1,1,none,18,0,0,8,null
@@ -1962,7 +1961,6 @@ RECIPE: /material/tin/,beer can,/obj/item/weapon/reagent_containers/food/drinks/
 //*********************| COPPER |**************************
 //*********************************************************
 
-RECIPE: /material/copper/,copper coins,/obj/item/stack/money/coppercoin,1,35,0,1,none,0,0,0,8,null
 RECIPE: /material/copper/,copper lamp,/obj/item/flashlight/lantern/copper,3,55,0,1,none,0,0,0,8,null
 RECIPE: /material/copper/,small copper pot,/obj/item/weapon/reagent_containers/glass/small_pot/copper_small,3,90,0,1,none,0,0,0,8,null
 RECIPE: /material/copper/,large copper pot,/obj/item/weapon/reagent_containers/glass/small_pot/copper_large,5,120,0,1,none,0,0,0,8,null

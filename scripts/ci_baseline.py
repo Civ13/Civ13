@@ -1295,6 +1295,11 @@ SUITES = {
         'paths': ('tests/stone_age_rites/',), 'shared_paths': (
             'code/modules/1713/stone_age_rites.dm', 'icons/obj/stone_age_rites.dmi',
             'code/game/objects/items/stacks/stack.dm')},
+    # Coin dies, marked coins and debasement (the native probe is tests/coin_mint/probe.dm).
+    'coin_mint': {'files': ('tests/coin_mint/test_source.py',),
+        'paths': ('tests/coin_mint/',), 'shared_paths': (
+            'code/modules/1713/coin_mint.dm', 'code/game/objects/items/stacks/money.dm',
+            'code/game/objects/structures/factory/factory.dm')},
     # Trading balance and weighed money (the native probe is tests/weighed_money/probe.dm).
     'weighed_money': {'files': ('tests/weighed_money/test_source.py',),
         'paths': ('tests/weighed_money/',), 'shared_paths': (
