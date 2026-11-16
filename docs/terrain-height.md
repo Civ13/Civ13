@@ -133,6 +133,23 @@ replaced turfs, including turfs rebuilt by a save load, and a floor icon rebuild
 The shadow is a faint dark blue-green (`DARK_COLOUR`) and the lit side a faint
 warm straw yellow (near-white looked like snow), so grass keeps its colour and the hills do not read as lighting.
 
+### Terrace lines
+
+The tint alone read as lighting or cloud shadow, so every whole height level
+also gets a soft lip line: dark where the drop faces away from the light, warm
+where it faces it. Lines close together mean steep ground, no lines means
+flat. A tile's sprite is chosen by its four corner heights (the mean of the
+four tiles around each corner, rounded to half levels): the key is the lowest
+corner's half-level remainder, then each corner's half levels above the lowest,
+capped at 6, as nw, ne, sw, se (`terrace_key` in the tool and the game; the
+native test compares them on every fixture tile). Neighbours share corners, so
+lines join across tiles, and each sprite looks 10 pixels past its tile so a
+line near an edge spills softly into the next tile. The 2,194 sprites are in
+`icons/turf/terrain_terrace.dmi`, a second shared overlay beside the tint
+(`terrain_terrace_overlay`), placed, refreshed and restored with it.
+Tuning: `TERRACE_DARK`, `TERRACE_LIGHT` (alpha by pixels below the lip) and
+`TERRACE_CREST` in the tool; re-bake after changing them.
+
 Tuning: `RELIEF`, `LIGHT_STEP`, `DARK_ALPHA` and `LIGHT_ALPHA` at the top of the
 shading section of the tool (and `TERRAIN_RELIEF`/`TERRAIN_LIGHT_STEP` in the
 game for the first two). Re-bake after changing the alphas.
@@ -209,7 +226,8 @@ cave rock, rubble and tunnel shafts (docs/underground-excavation.md).
 - `to-png` / `from-png` convert one z-level to and from a greyscale PNG (one
   pixel per tile, level x 8) so heights can be painted by hand.
 - `check --heights FILE [--map FILE.dmm]` validates a file.
-- `bake-shading [--out icons/turf/terrain_shade.dmi]` writes the shading sprites.
+- `bake-shading [--out icons/turf/terrain_shade.dmi] [--terrace-out icons/turf/terrain_terrace.dmi]`
+  writes the shading and terrace line sprites.
 
 ## Line of sight
 
