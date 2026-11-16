@@ -155,6 +155,30 @@ var/screens_runtime_error = FALSE
 	rows = agent_screen_rows(H)
 	screens_check(note.loc != S && !findtext(rows[1]["data"], "deed"), "taking an item removes it from the safe and the list")
 	screen_try(C, list("screen" = 1, "close" = TRUE))
+	// A radio set describes its frequency and switches, and a switch reaches the shared radio Topic.
+	var/obj/item/weapon/radio/R = new(locate(9, 9, 1))
+	R.do_html(H)
+	rows = agent_screen_rows(H)
+	var/was_on = R.receiver_on
+	screens_check(rows.len == 1 && findtext(rows[1]["data"], "\"Frequency\"") && ("receiver" in rows[1]["actions"]), "a radio shows its frequency and switches")
+	screen_try(C, list("screen" = 1, "act" = "receiver"))
+	rows = agent_screen_rows(H)
+	screens_check(R.receiver_on != was_on && findtext(rows[1]["data"], R.receiver_on ? "Turn off" : "Turn on"), "the receiver switch toggles and the panel refreshes")
+	screen_try(C, list("screen" = 1, "close" = TRUE))
+	// A window chosen by key: the fuel pump asks before a sale is finished.
+	var/obj/structure/fuelpump/pump = new(locate(9, 9, 1))
+	pump.fueltype = "diesel"
+	pump.unlocked = 1
+	pump.unlockedvol = 5
+	pump.attack_hand(H)
+	rows = agent_screen_rows(H)
+	screens_check(rows.len == 1 && findtext(rows[1]["data"], "finish_yes") && findtext(rows[1]["data"], "5 units of diesel"), "the fuel pump asks before finishing a sale")
+	GLOB.nanomanager.close_user_uis(H, pump)
+	var/obj/item/weapon/gun/projectile/dartgun/dart = new(locate(9, 9, 1))
+	dart.attack_self(H)
+	rows = agent_screen_rows(H)
+	screens_check(rows.len == 1 && findtext(rows[1]["data"], "There is no container inserted!"), "an empty dart gun says it has no container")
+	GLOB.nanomanager.close_user_uis(H, dart)
 	var/mob/living/human/screens_probe/P = new(locate(9, 9, 1))
 	P.species = new /datum/species/human
 	P.stat = CONSCIOUS

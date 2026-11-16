@@ -103,15 +103,7 @@
 /obj/structure/fuelpump/attack_hand(var/mob/living/human/user)
 	if (unlocked)
 		if (unlockedvol>0)
-			var/dat = {"<html><head>
-[common_browser_style]
-</head><body>
-<h2>[name]</h2>
-<p>This pump still has [unlockedvol] units of [fueltype] inside! Are you sure you want to finish?</p>
-<a href='?src=\ref[src];action=finish_yes'>Yes</a>
-<a href='?src=\ref[src];action=finish_no'>No</a>
-</body></html>"}
-			show_browse(user, dat, "window=fuelpump_confirm;size=350x200")
+			ui_interact(user, "confirm")
 			return
 		else
 			to_chat(user, "You lock the pump, finishing the transaction.")
@@ -131,15 +123,7 @@
 		var/obj/item/stack/money/MN = W
 		var/valp = MN.amount*MN.value
 		if (price > 0 && (valp/price) <= vol)
-			var/dat = {"<html><head>
-[common_browser_style]
-</head><body>
-<h2>[name]</h2>
-<p>You can buy [round(valp/price, 0.1)] units of [fueltype] with this amount. Confirm?</p>
-<a href='?src=\ref[src];action=buy_yes'>Yes</a>
-<a href='?src=\ref[src];action=buy_no'>No</a>
-</body></html>"}
-			show_browse(user, dat, "window=fuelpump_buy;size=350x200")
+			ui_interact(user, "buy")
 			return
 		else
 			to_chat(user, "<span class = 'notice'>The fuelpump doesn't have that much fuel inside! Try with a smaller amount. This pump has [vol] units of [fueltype] inside.</span>")
@@ -218,28 +202,62 @@
 		return
 
 /obj/structure/fuelpump/proc/show_manage_ui(mob/user)
-	var/dat = {"<html><head>
-[common_browser_style]
-<script language="javascript">
-function changeName() {
-	var n = prompt('Choose a name for this pump:');
-	if (n && n.trim()!='') window.location='byond://?src=\ref[src];action=change_name&name='+encodeURIComponent(n.trim());
-}
-function changePrice() {
-	var p = prompt('Enter price in silver coins (0-50):', '0.3');
-	var n = parseFloat(p);
-	if (!isNaN(n) && n>=0 && n<=50) window.location='byond://?src=\ref[src];action=change_price&price='+n;
-}
-</script>
-</head><body>
-<h2>[name] Management</h2>
-<p>Current fuel: [fueltype] &mdash; Price: [price] silver/unit</p>
-<p><a href='?src=\ref[src];action=change_name_direct'>Change Name</a></p>
-<p><a href='?src=\ref[src];action=change_fuel'>Change Fuel Type</a></p>
-<p><a href='?src=\ref[src];action=change_price_direct'>Change Price</a></p>
-<p><a href='?src=\ref[src];action=close_manage'>Close</a></p>
-</body></html>"}
-	show_browse(user, dat, "window=fuelpump_manage;size=350x300")
+	ui_interact(user, "manage")
+
+// The fuels a pump can be set to sell.
+/obj/structure/fuelpump/proc/fuel_choices()
+	return list("gasoline", "diesel", "biodiesel", "pethanol", "petroleum")
+
+/obj/structure/fuelpump/proc/money_in_hand(mob/living/human/user)
+	if (!istype(user))
+		return null
+	if (istype(user.l_hand, /obj/item/stack/money))
+		return user.l_hand
+	if (istype(user.r_hand, /obj/item/stack/money))
+		return user.r_hand
+	return null
+
+// Every button sends "action" with the name of what it does.
+/obj/structure/fuelpump/ui_actions(ui_key)
+	return list("action")
+
+// Three small windows: "buy" and "confirm" ask before a sale starts or ends,
+// "manage" is the owner's settings.
+/obj/structure/fuelpump/ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = TRUE)
+	var/list/sections
+	var/height = 240
+	switch (ui_key)
+		if ("buy")
+			var/obj/item/stack/money/MN = money_in_hand(user)
+			if (!MN || unlocked || price <= 0)
+				GLOB.nanomanager.close_user_uis(user, src, ui_key)
+				return
+			sections = list(panel_section("Buy fuel",
+				notes = list("You can buy [round(MN.amount * MN.value / price, 0.1)] units of [fueltype] with this amount. Confirm?"),
+				buttons = list(panel_button("Yes", "action", "buy_yes"), panel_button("No", "action", "buy_no"))))
+		if ("confirm")
+			if (!unlocked || unlockedvol <= 0)
+				GLOB.nanomanager.close_user_uis(user, src, ui_key)
+				return
+			sections = list(panel_section("Finish the sale",
+				notes = list("This pump still has [unlockedvol] units of [fueltype] inside! Are you sure you want to finish?"),
+				buttons = list(panel_button("Yes", "action", "finish_yes"), panel_button("No", "action", "finish_no"))))
+		if ("manage")
+			if (!find_company_member(user, owner))
+				GLOB.nanomanager.close_user_uis(user, src, ui_key)
+				return
+			var/list/fuels = list()
+			for (var/fuel in fuel_choices())
+				fuels += list(panel_button(capitalize(fuel), "action", "fuel_[fuel]", vol > 0, fueltype == fuel))
+			sections = list(
+				panel_section("Management", rows = list(
+					panel_row("Name", name, buttons = list(panel_button("Change", "action", "change_name_direct"))),
+					panel_row("Price", "[price] silver a unit", buttons = list(panel_button("Change", "action", "change_price_direct"))))),
+				panel_section("Fuel sold", notes = vol > 0 ? list("Empty the pump before changing its fuel.") : null, buttons = fuels))
+			height = 340
+		else
+			return
+	open_panel(user, name, 400, height, sections, ui_key = ui_key, ui = ui, force_open = force_open)
 
 /obj/structure/fuelpump/proc/update_management_price(mob/user, custp)
 	if (!isnum(custp))
@@ -261,12 +279,8 @@ function changePrice() {
 
 	// Purchase confirmation
 	if (href_list["action"] == "buy_yes")
-		show_browse(user, null, "window=fuelpump_buy")
-		var/obj/item/stack/money/MN = null
-		if (istype(user.l_hand, /obj/item/stack/money))
-			MN = user.l_hand
-		else if (istype(user.r_hand, /obj/item/stack/money))
-			MN = user.r_hand
+		GLOB.nanomanager.close_user_uis(user, src, "buy")
+		var/obj/item/stack/money/MN = money_in_hand(user)
 		if (!MN)
 			to_chat(user, "You no longer have the money in your hand.")
 			return
@@ -287,25 +301,21 @@ function changePrice() {
 			return
 
 	if (href_list["action"] == "buy_no")
-		show_browse(user, null, "window=fuelpump_buy")
+		GLOB.nanomanager.close_user_uis(user, src, "buy")
 		return
 
 	// Finish confirmation
 	if (href_list["action"] == "finish_yes")
-		show_browse(user, null, "window=fuelpump_confirm")
+		GLOB.nanomanager.close_user_uis(user, src, "confirm")
 		unlocked = 0
 		unlockedvol = 0
 		return
 
 	if (href_list["action"] == "finish_no")
-		show_browse(user, null, "window=fuelpump_confirm")
+		GLOB.nanomanager.close_user_uis(user, src, "confirm")
 		return
 
 	// Management
-	if (href_list["action"] == "close_manage")
-		show_browse(user, null, "window=fuelpump_manage")
-		return
-
 	if (!find_company_member(user, owner))
 		return
 
@@ -321,47 +331,18 @@ function changePrice() {
 		show_manage_ui(user)
 		return
 
-	if (href_list["action"] == "change_name")
+	if (copytext(href_list["action"], 1, 6) == "fuel_")
 		if (unlocked)
 			to_chat(user, "The pump is being used! Finish it first.")
 			return
-		var/custn = href_list["name"]
-		if (custn && custn != "")
-			name = custn
-			updatedesc()
-		show_manage_ui(user)
-		return
-
-	if (href_list["action"] == "change_fuel")
-		if (unlocked)
-			to_chat(user, "The pump is being used! Finish it first.")
+		var/fuel = copytext(href_list["action"], 6)
+		if (!(fuel in fuel_choices()))
 			return
 		if (vol > 0)
 			to_chat(user, "<span class = 'notice'>The [src] still has fuel inside! Empty it before changing!</span>")
 			return
-		var/dat = {"<html><head>
-[common_browser_style]
-</head><body>
-<h2>Choose Fuel Type</h2>
-<a href='?src=\ref[src];action=set_fuel&fuel=gasoline'>Gasoline</a><br>
-<a href='?src=\ref[src];action=set_fuel&fuel=diesel'>Diesel</a><br>
-<a href='?src=\ref[src];action=set_fuel&fuel=biodiesel'>Biodiesel</a><br>
-<a href='?src=\ref[src];action=set_fuel&fuel=pethanol'>Pethanol</a><br>
-<a href='?src=\ref[src];action=set_fuel&fuel=petroleum'>Petroleum</a><br>
-<br><a href='?src=\ref[src];action=close_manage'>Cancel</a>
-</body></html>"}
-		show_browse(user, dat, "window=fuelpump_fuel;size=300x300")
-		return
-
-	if (href_list["action"] == "set_fuel")
-		if (unlocked)
-			to_chat(user, "The pump is being used! Finish it first.")
-			return
-		var/fuel = href_list["fuel"]
-		if (fuel && vol <= 0)
-			fueltype = fuel
-			updatedesc()
-		show_browse(user, null, "window=fuelpump_fuel")
+		fueltype = fuel
+		updatedesc()
 		show_manage_ui(user)
 		return
 
@@ -370,14 +351,6 @@ function changePrice() {
 			to_chat(user, "The pump is being used! Finish it first.")
 			return
 		var/custp = player_input(user, "What should the price be, in silver coins? (Min: 0, Max: 50):", null, null, "num", null, TRUE)
-		update_management_price(user, custp)
-		return
-
-	if (href_list["action"] == "change_price")
-		if (unlocked)
-			to_chat(user, "The pump is being used! Finish it first.")
-			return
-		var/custp = text2num(href_list["price"])
 		update_management_price(user, custp)
 		return
 
