@@ -2646,6 +2646,7 @@ RECIPE: /material/wood/soft/,official faction paper,/obj/item/weapon/paper/offic
 RECIPE: /material/wood/soft/,envelope,/obj/item/weapon/storage/envelope,2,35,0,1,paper & printing,40,0,0,8,null
 RECIPE: /material/wood/soft/,envelope seal stamp,/obj/item/weapon/stamp/mail,1,30,0,1,paper & printing,40,0,0,8,null
 RECIPE: /material/wood/soft/,wax seal stamp,/obj/item/weapon/stamp/mail,1,30,0,1,paper & printing,40,0,0,8,null
+RECIPE: /material/wood/soft/,seal matrix,/obj/item/weapon/stamp/faction_seal,1,30,0,1,paper & printing,40,0,0,8,null
 
 RECIPE: /material/wood/soft/,book,/obj/item/weapon/book,4,75,0,1,paper & printing,45,0,0,8,null
 RECIPE: /material/wood/soft/,grey folder,/obj/item/weapon/folder,1,75,0,1,paper & printing,120,0,0,8,null

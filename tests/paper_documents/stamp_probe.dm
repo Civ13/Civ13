@@ -39,7 +39,7 @@ var/stamp_probe_runtime = FALSE
 /proc/stamp_probe_icons()
 	for (var/path in typesof(/obj/item/weapon/stamp))
 		var/obj/item/weapon/stamp/S = new path
-		var/state = S.icon_state
+		var/state = S.impression_state()
 		stamp_probe_check(!!paper_stamp_reader_icon(state), "reader image for [path] ([state])")
 		stamp_probe_check(!!paper_stamp_sheet_state(state), "sheet impression for [path] ([state])")
 		var/marker = paper_stamp_marker(S)

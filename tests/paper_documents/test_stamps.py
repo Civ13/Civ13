@@ -14,6 +14,7 @@ LIMIT=int(re.search(r'#define PAPER_STAMP_LIMIT (\d+)',STAMPS)[1])
 
 class Stamp(vm.Ref):
  def __init__(self,state='stamp-approved',name='APPROVED ink stamp'):self.icon_state=state;self.name=name;self.gc_destroyed=False
+ def impression_state(self):return self.icon_state
 
 def environment(reach=True):
  env,Base,Reader,langs,render=views.environment()
@@ -25,8 +26,10 @@ def environment(reach=True):
  env['paper_stamp_can_reach']=lambda P,user,S:reach
  env['paper_stamp_marker']=lambda S:'<img src="paperstamp_'+S.icon_state+'.png">'
  env['paper_stamp_refresh_overlays']=lambda P:env['refreshed'].append(P)
- vm.ALLOWED |= {'findtext','paper_stamp_can_reach','paper_stamp_marker','paper_stamp_list_with','paper_stamp_join','paper_stamp_refresh_overlays'}
- vm.METHODS |= {'Copy'}
+ env['sealed']=[]
+ env['faction_seal_note_impression']=lambda P,S:env['sealed'].append(S)
+ vm.ALLOWED |= {'findtext','paper_stamp_can_reach','paper_stamp_marker','paper_stamp_list_with','paper_stamp_join','paper_stamp_refresh_overlays','faction_seal_note_impression'}
+ vm.METHODS |= {'Copy','impression_state'}
  class DMList(list):
   def Copy(self):return DMList(self)
  def list_with(current,state):
@@ -67,13 +70,14 @@ class Stamps(unittest.TestCase):
   self.assertEqual(after['legacy']['stamped'],['stamp-approved']);self.assertEqual(self.paper.stamped,['stamp-approved'])
   self.assertEqual(after['legacy']['stamps'],self.paper.stamps);self.assertTrue(self.paper.stamps.endswith('paperstamp_stamp-approved.png">'))
   self.assertTrue(self.env['paper_document_record_valid'](after))
+  self.assertEqual(len(self.env['sealed']),1)
   # The committed record still projects for a reader after the stamp.
   projected=self.service.project(self.actor);self.assertNotIn('error',projected)
   self.assertTrue(projected['legacy_body_html'].endswith('paperstamp_stamp-approved.png">'))
  def test_classified_stale_legacy_refuses_without_change(self):
   self.classify();self.paper.info='changed outside the transaction';before=copy.deepcopy(self.paper.document_record)
   self.assertEqual(self.apply(self.paper,Stamp(),self.actor),'failed')
-  self.assertEqual(self.paper.document_record,before);self.assertEqual(self.paper.stamped,[]);self.assertEqual(self.env['refreshed'],[])
+  self.assertEqual(self.paper.document_record,before);self.assertEqual(self.paper.stamped,[]);self.assertEqual(self.env['refreshed'],[]);self.assertEqual(self.env['sealed'],[])
  def test_crumpled_full_and_unreachable_pages_refuse(self):
   self.paper.icon_state='scrap';self.assertEqual(self.apply(self.paper,Stamp(),self.actor),'crumpled')
   self.paper.icon_state='scrollpaper1_scrap';self.assertEqual(self.apply(self.paper,Stamp(),self.actor),'crumpled')
