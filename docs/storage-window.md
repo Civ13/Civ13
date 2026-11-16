@@ -39,7 +39,9 @@ the search; moves carry on beside it.
 - Your hands, pockets, worn gear and the floor are always known.
 - Putting a thing into a storage (`handle_item_insertion`) makes it known only to
   whoever put it there (`storage_note_inserted`), so a shared store refilled by
-  someone else must be searched again.
+  someone else must be searched again. Members of the inserter's faction
+  (`civilization`, kept as `storage_filled_by_faction`) know it too, so a
+  faction's own stores never need searching by its members.
 - What a player has seen is the item's `storage_seen_by` (keys), a runtime var:
   after a restart everything in other people's containers is unknown again.
 - Unseen things are never sent to the window, so they can't be moved, found by

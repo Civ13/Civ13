@@ -173,6 +173,18 @@ var/storwin_runtime_error = FALSE
 	IS.handle_item_insertion(knife, TRUE)
 	usr = null
 	storwin_check(!storage_item_seen(knife, H), "a thing someone else puts back is unknown again")
+	other.civilization = "Dawnward"
+	H.civilization = "Dawnward"
+	usr = other
+	IS.remove_from_storage(knife, here)
+	IS.handle_item_insertion(knife, TRUE)
+	usr = null
+	storwin_check(storage_item_seen(knife, H), "a thing your own faction put in needs no searching")
+	H.civilization = "Ash Company"
+	storwin_check(!storage_item_seen(knife, H), "a thing another faction put in still does")
+	H.civilization = "none"
+	other.civilization = "none"
+	storwin_check(!storage_item_seen(knife, H), "people in no faction don't count as one faction")
 	storwin_check(W.knows(knife, STORAGE_WINDOW_KIND_WORN) && W.knows(knife, STORAGE_WINDOW_KIND_FLOOR), "your own gear and the floor are always known")
 	qdel(W)
 
