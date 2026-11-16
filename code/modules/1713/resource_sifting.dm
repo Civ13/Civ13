@@ -11,16 +11,26 @@
 /turf/proc/can_sift_resources()
 	return (istype(src, /turf/floor/dirt) || istype(src, /turf/floor/beach/sand)) && !is_mineable && !(locate(/obj/covers) in src)
 
-/mob/living/human/proc/sifting_choices()
+/mob/living/human/proc/sifting_choices(turf/T = null)
 	var/list/choices = list("Stone" = /obj/item/stack/material/stone, "Sand" = /obj/item/stack/ore/glass, "Copper ore" = /obj/item/stack/ore/copper, "Tin ore" = /obj/item/stack/ore/tin)
 	if (map && map.ordinal_age >= 1)
 		choices["Iron ore"] = /obj/item/stack/ore/iron
 		choices["Calamine (zinc ore)"] = /obj/item/stack/ore/zinc
+		// Black iron sand settles out of beach sand (tatara.dm).
+		if (istype(T, /turf/floor/beach/sand))
+			choices["Iron sand"] = /obj/item/stack/ore/iron_sand
 	if (map && map.ordinal_age >= 2)
 		choices["Coal"] = /obj/item/stack/ore/coal
 		choices["Saltpeter"] = /obj/item/stack/ore/saltpeter
 		choices["Sulphur"] = /obj/item/stack/ore/sulphur
 		choices["Lead ore"] = /obj/item/stack/ore/lead
+	return choices
+
+// River panning: heavy metals, and black iron sand from the Classical age.
+/mob/living/human/proc/panning_choices()
+	var/list/choices = list("Copper ore" = /obj/item/stack/ore/copper, "Tin ore" = /obj/item/stack/ore/tin, "Silver ore" = /obj/item/stack/ore/silver, "Gold ore" = /obj/item/stack/ore/gold)
+	if (map && map.ordinal_age >= 1)
+		choices["Iron sand"] = /obj/item/stack/ore/iron_sand
 	return choices
 
 /mob/living/human/verb/sift_resources()
@@ -36,13 +46,13 @@
 		to_chat(src, SPAN_WARNING("Stand on uncovered, non-mineable dirt or sand."))
 		return
 	sifting_resources = TRUE
-	var/list/choices = panning ? list("Copper ore" = /obj/item/stack/ore/copper, "Tin ore" = /obj/item/stack/ore/tin, "Silver ore" = /obj/item/stack/ore/silver, "Gold ore" = /obj/item/stack/ore/gold) : sifting_choices()
+	var/list/choices = panning ? panning_choices() : sifting_choices(T)
 	var/choice
 	if (!client && agent_character_for(src))
 		// An agent-controlled character has no client for input(); it names its pick with the step's choose answer.
 		choice = WWinput(src, "Trace gathering", "Trace gathering", null, choices)
 	else
-		choice = player_input(src, "Trace gathering yields one unit: three uninterrupted minutes by hand, two minutes with a sieve or river pan. Mining finite deposits produces much larger batches.", "Trace gathering", null, "anything", choices, TRUE)
+		choice = player_input(src, "Trace gathering yields one unit: three uninterrupted minutes by hand, two minutes with a sieve or river pan. Iron sand comes out in larger batches. Mining finite deposits produces much larger batches.", "Trace gathering", null, "anything", choices, TRUE)
 	if (choice)
 		sift_resource(T, choices[choice], tool, panning)
 	sifting_resources = FALSE
@@ -93,7 +103,7 @@
 	sifting_action = FALSE
 
 /mob/living/human/proc/perform_sifting(turf/T, resource_type, obj/item/tool, panning)
-	var/list/choices = panning ? list("Copper ore" = /obj/item/stack/ore/copper, "Tin ore" = /obj/item/stack/ore/tin, "Silver ore" = /obj/item/stack/ore/silver, "Gold ore" = /obj/item/stack/ore/gold) : sifting_choices()
+	var/list/choices = panning ? panning_choices() : sifting_choices(T)
 	if (stat || !T || loc != T || !T.can_sift_resources() || !valid_sifting_tool(tool, panning) || !(resource_type in choices_values(choices)))
 		return FALSE
 	if (!T.sifting_identity)
@@ -111,10 +121,11 @@
 		return FALSE
 	if (panning && (!water || T.panning_water() != water || water.sifting_identity != water_identity))
 		return FALSE
-	if (!T.deposit_small_resource(resource_type, 1))
+	var/units = ispath(resource_type, /obj/item/stack/ore/iron_sand) ? iron_sand_yield(panning) : 1
+	if (!T.deposit_small_resource(resource_type, units))
 		to_chat(src, SPAN_WARNING("Clear the output tile before sifting more resources."))
 		return FALSE
-	to_chat(src, SPAN_NOTICE("You recover one unit without destroying the terrain."))
+	to_chat(src, SPAN_NOTICE(units > 1 ? "You wash out [units] units of black iron sand without destroying the terrain." : "You recover one unit without destroying the terrain."))
 	return TRUE
 
 /mob/living/human/proc/choices_values(list/choices)
