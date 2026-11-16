@@ -1451,6 +1451,7 @@ RECIPE: /material/bone/,bone gear set,/obj/item/machine_part/gear,4,150,0,1,mach
 //**************************************************************
 
 RECIPE: /material/stone/,stone brazier,/obj/structure/brazier/stone,3,100,1,1,none,0,0,0,8,null
+RECIPE: /material/stone/,pendant hone,/obj/item/clothing/accessory/pendant_hone,1,40,0,1,none,0,0,0,8,null
 RECIPE: /material/stone/,stone drain,/obj/structure/sewer_piece/drain/stone,2,80,1,1,construction,0,0,0,8,null
 RECIPE: /material/stone/,stone plinth,/obj/structure/flood_platform/plinth,4,120,1,1,construction,0,0,0,8,null
 RECIPE: /material/stone/,cistern,/obj/structure/reagent_dispensers/cistern,10,200,1,1,construction,0,0,0,8,null
@@ -1466,6 +1467,8 @@ RECIPE: /material/bronze/,water tap,/obj/structure/sink/aqueduct_fountain/tap,2,
 RECIPE: /material/stone/,sundial,/obj/structure/sundial,3,100,1,1,construction,0,0,0,8,null
 RECIPE: /material/clay/,water clock,/obj/structure/water_clock,4,120,1,1,construction,0,0,0,8,null
 RECIPE: /material/glass/,hourglass,/obj/item/hourglass,1,60,0,1,construction,0,0,0,8,null
+RECIPE: /material/iron/,strike-a-light pouch,/obj/item/clothing/accessory/storage/belt_pouch/fire_pouch/strike_a_light,1,40,0,1,none,0,0,0,8,null
+RECIPE: /material/iron/,chatelaine,/obj/item/clothing/accessory/storage/chatelaine,2,60,0,1,none,0,0,0,8,null
 RECIPE: /material/iron/,tower clock,/obj/structure/tower_clock,15,300,1,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,clock face,/obj/structure/clock_face,3,100,0,1,construction,0,0,0,8,null
 RECIPE: /material/bronze/,bell,/obj/structure/bell,8,200,1,1,construction,0,0,0,8,null

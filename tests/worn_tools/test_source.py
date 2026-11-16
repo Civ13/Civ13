@@ -61,11 +61,19 @@ class WornToolsSource(unittest.TestCase):
                                  ('boot sheath', '/obj/item/clothing/accessory/storage/sheath/fitting', 'iron_tools'),
                                  ('sleeve sheath', '/obj/item/clothing/accessory/storage/sheath/fitting/sleeve', 'iron_tools'),
                                  ('fire pouch', '/obj/item/clothing/accessory/storage/belt_pouch/fire_pouch', 'basic_tools'),
-                                 ('neck sheath', '/obj/item/clothing/accessory/storage/sheath/neck', 'basic_tools')):
-            self.assertIn(f'RECIPE: /material/leather/,{name},{path},', recipes)
+                                 ('neck sheath', '/obj/item/clothing/accessory/storage/sheath/neck', 'basic_tools'),
+                                 ('strike-a-light pouch', '/obj/item/clothing/accessory/storage/belt_pouch/fire_pouch/strike_a_light', 'iron_tools'),
+                                 ('chatelaine', '/obj/item/clothing/accessory/storage/chatelaine', 'iron_tools'),
+                                 ('pendant hone', '/obj/item/clothing/accessory/pendant_hone', 'bronze_working')):
+            self.assertRegex(recipes, r'RECIPE: /material/\w+/,' + re.escape(f'{name},{path},'))
             self.assertIn(f'"{path}" = "{node}"', research)
         self.assertIn('RECIPE: /material/bone/,needle case,/obj/item/clothing/accessory/storage/needle_case,', recipes)
         self.assertIn('RECIPE: /material/wood/,fire drill,/obj/item/weapon/flame/fire_drill,', recipes)
+
+    def test_hone_is_not_storage(self):
+        # A storage hone would swallow the blade it is meant to hone.
+        self.assertIn('\n/obj/item/clothing/accessory/pendant_hone\n', self.worn)
+        self.assertNotIn('/obj/item/clothing/accessory/storage/pendant_hone', self.worn)
 
     def test_needle_reaches_only_the_case(self):
         needle = body(read('code/modules/1713/stone_age_arms.dm'), '/obj/item/weapon/bone_needle/afterattack(')

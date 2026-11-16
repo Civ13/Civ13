@@ -234,3 +234,42 @@ var/wt_runtime_error = FALSE
 	wt_check(neck.hold.can_be_inserted(small, TRUE) && !neck.hold.can_be_inserted(big, TRUE), "a neck sheath takes a small knife, not a butcher knife")
 	wt_check(tunic.can_attach_accessory(neck), "a neck sheath hangs from clothes")
 	hide.loc = T
+
+	// Pendant hone: a chipped blade clicked on clothes with a hone is honed, not pouched.
+	var/mob/living/human/wt_probe/G = new
+	G.loc = T
+	var/obj/item/clothing/under/smock = new(G)
+	G.w_uniform = smock
+	var/obj/item/clothing/accessory/storage/belt_pouch/side = new(T)
+	var/obj/item/clothing/accessory/pendant_hone/hone = new(T)
+	smock.accessories += side
+	side.on_attached(smock, null)
+	smock.accessories += hone
+	hone.on_attached(smock, null)
+	var/obj/item/weapon/material/kitchen/utensil/knife/iron/blade = new(G)
+	blade.unbreakable = FALSE
+	blade.maxhealth = 20
+	blade.health = 10
+	G.r_hand = blade
+	G.hand = FALSE
+	smock.attackby(blade, G)
+	wt_check(blade.loc == G && !side.hold.contents.len, "a chipped knife is honed, not put in the pouch beside the hone")
+	wt_check(blade.health == 16 && blade.maxhealth == 16, "honing gives +6 condition and costs 4 most condition")
+
+	// Strike-a-light pouch: a better-odds fire pouch.
+	var/obj/item/clothing/accessory/storage/belt_pouch/fire_pouch/strike_a_light/sal = new(T)
+	wt_check(sal.spark_chance > 70 && istype(sal, /obj/item/clothing/accessory/storage/belt_pouch), "the strike-a-light pouch sparks better and counts as a pouch")
+
+	// Chatelaine: small tools only, and a needle case on it still feeds the needle.
+	var/obj/item/clothing/accessory/storage/chatelaine/chat = new(T)
+	var/obj/item/weapon/material/kitchen/utensil/knife/flint/chat_knife = new(T)
+	var/obj/item/clothing/accessory/storage/needle_case/chat_case = new(T)
+	var/obj/item/stack/sinew/chat_sinew = new(chat_case.hold)
+	wt_check(chat.hold.can_be_inserted(chat_knife, TRUE) && chat.hold.can_be_inserted(chat_case, TRUE), "a chatelaine takes a small knife and a needle case")
+	wt_check(!chat.hold.can_be_inserted(stick, TRUE) && !chat.hold.can_be_inserted(big, TRUE), "a chatelaine refuses wood and a butcher knife")
+	smock.accessories += chat
+	chat.on_attached(smock, null)
+	chat.hold.handle_item_insertion(chat_case, TRUE)
+	wt_check(G.needle_case_thread() == chat_sinew, "sinew in a needle case on a chatelaine is found")
+	chat.hold.handle_item_insertion(chat_knife, TRUE)
+	wt_check(G.reach_worn_tool(/obj/item/weapon/material/kitchen/utensil/knife) == chat_knife, "a knife on a chatelaine is at hand")
