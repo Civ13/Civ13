@@ -31,13 +31,14 @@
 	var/lockstate = "" //Icon_state
 	var/keycode
 
-	map_storage_saved_vars = "density;icon_state;dir;name;pixel_x;pixel_y;keycode;haslock;custom;custom_code;locked;door_closer;closer_delay;door_wedge;inner_dir"
+	map_storage_saved_vars = "density;icon_state;dir;name;pixel_x;pixel_y;keycode;haslock;custom;custom_code;locked;door_closer;closer_delay;door_wedge;inner_dir;panic_bar_side;fire_link_holding"
 
 /obj/structure/simple_door/fire_act(temperature)
 	var/dmg = round((temperature - 365)/20)
 	if (temperature >= 380)
 		dmg = max(dmg, 5)
 	if (dmg > 0)
+		dmg = max(1, round(dmg * door_fire_share()))
 		health -= dmg
 		if (istype(src, /obj/structure/simple_door/key_door))
 			src:damage_display()
@@ -115,6 +116,9 @@
 
 /obj/structure/simple_door/attack_hand(mob/user as mob)
 	if (state && !isSwitchingStates && door_fitting_hand(user))
+		return TRUE
+	if (!state && !isSwitchingStates && door_panic_release(user))
+		TryToSwitchState(user)
 		return TRUE
 	if (!state && !isSwitchingStates && door_bar_hand(user))
 		return TRUE
@@ -218,6 +222,7 @@
 /obj/structure/simple_door/proc/canOpen(var/mob/user as mob)
 	if (!user || !istype(user))
 		return FALSE
+	door_panic_release(user)
 	if (smart_lock_fitted && locked)
 		return !door_hand_locked(user)
 	if (door_barred() || door_braced_against(user))
