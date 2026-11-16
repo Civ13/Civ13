@@ -60,7 +60,7 @@
 				H.divine_known = list()
 			H.divine_refresh_verbs()
 			if (words)
-				to_chat(H, "<span class='notice'><i>[words]</i></span>")
+				to_chat(H, CHAT_TYPED(CHAT_PRAYER, "<span class='notice'><i>[words]</i></span>"))
 			to_chat(usr, SPAN_NOTICE("[H.real_name] now follows [claim_label]. Teach them an invocation next."))
 			log_admin("[key_name(usr)] initiated [key_name(H)] as a follower of [claim].")
 		if ("Teach an invocation", "Take back an invocation")
@@ -83,12 +83,12 @@
 				H.divine_known = list()
 			if (teaching)
 				H.divine_known |= spell
-				to_chat(H, SPAN_NOTICE("You understand a new prayer: [picked]. Use Beseech, with your stick in hand and something in your pouch."))
+				to_chat(H, CHAT_TYPED(CHAT_PRAYER, SPAN_NOTICE("You understand a new prayer: [picked]. Use Beseech, with your stick in hand and something in your pouch.")))
 			else
 				H.divine_known -= spell
 				if (H.divine_covenant)
 					H.divine_break_covenant()
-				to_chat(H, SPAN_NOTICE("The prayer of [picked] slips from your mind."))
+				to_chat(H, CHAT_TYPED(CHAT_PRAYER, SPAN_NOTICE("The prayer of [picked] slips from your mind.")))
 			to_chat(usr, SPAN_NOTICE("[teaching ? "Taught" : "Took back"] [picked] [teaching ? "to" : "from"] [H.real_name]."))
 			log_admin("[key_name(usr)] as [claim] [teaching ? "taught" : "took back"] [spell] [teaching ? "to" : "from"] [key_name(H)].")
 		if ("Release a follower")
@@ -138,3 +138,28 @@
 		return null
 	var/pick = input(usr, question, "Divine Patron") as null|anything in sortList(choices)
 	return pick ? choices[pick] : null
+
+// A god answers one of its own followers in words. Anyone else only gets a
+// subtle message (SM): an answer needs a character who follows this god.
+/client/proc/divine_answer_prayer(mob/M)
+	if (!check_rights(R_ADMIN))
+		return
+	var/list/entry = divine_identity_of(ckey)
+	if (!entry)
+		to_chat(src, SPAN_WARNING("Set your divine name first (Divine Patron > Set my divine name)."))
+		return
+	var/mob/living/human/H = M
+	var/label = divine_identity_label(entry)
+	if (!istype(H) || QDELETED(H) || divine_book_key(H.divine_patron) != divine_book_key(entry["name"]))
+		to_chat(src, SPAN_WARNING("[M ? M.real_name : "They"] do not follow [label]. Use SM for a subtle message instead."))
+		return
+	var/words = sanitize(input(src, "What does [label] say to [H.real_name]? Only they hear it.", "Answer a prayer") as message|null)
+	if (!words || QDELETED(H) || !check_rights(R_ADMIN) || divine_book_key(H.divine_patron) != divine_book_key(entry["name"]))
+		return
+	to_chat(H, CHAT_TYPED(CHAT_PRAYER, "<span class='notice'><b>[label]</b> answers: <i>[words]</i></span>"))
+	var/note = "<span class='notice'><b><font color=purple>ANSWER from [label]</font> ([key]) to [key_name(H, TRUE)]:</b> [words]</span>"
+	var/list/hearers = prayer_hearers()
+	hearers |= src
+	for (var/client/C in hearers)
+		to_chat(C, CHAT_TYPED(CHAT_PRAYER, note))
+	log_admin("[key_name(src)] as [entry["name"]] answered [key_name(H)]: [words]")

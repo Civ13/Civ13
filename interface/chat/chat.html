@@ -771,6 +771,7 @@
             ['dead', 'Dead chat'],
             ['pm', 'Admin PMs'],
             ['admin', 'Admin messages and logs'],
+            ['prayer', 'Prayers and answers from the gods'],
             ['warning', 'Warnings and combat'],
             ['other', 'Other game messages']
         ];
@@ -790,9 +791,16 @@
             { name: 'Radio', types: ['radio'] },
             { name: 'OOC', types: ['ooc', 'pm'] },
             { name: 'Dead', types: ['dead'] },
-            { name: 'Admin', types: ['admin', 'pm'], auto: 'admin' }
+            { name: 'Admin', types: ['admin', 'pm'], auto: 'admin' },
+            { name: 'Prayer', types: ['prayer'], auto: 'prayer' }
         ];
         const TAB_STORAGE_KEY = 'civ13-chat-tabs-v1';
+        // Types added after players had saved their own tabs. Each is offered
+        // once to saved settings: the tab that already showed every older type
+        // (normally All) gains it, and its default tab is appended, so the
+        // new messages never vanish and a removed tab stays removed.
+        const ADDED_TYPES = ['prayer'];
+        const ADDED_TYPES_KEY = 'civ13-chat-tabs-added-v1';
         const MAX_MESSAGES_PER_TYPE = 250;
 
         function chatStorage() {
@@ -833,13 +841,44 @@
                                 auto: autoType(tab.auto)
                             });
                         });
-                        if (clean.length) return clean;
+                        if (clean.length) return offerAddedTypes(clean, store);
                     }
                 }
             } catch (e) {
                 console.warn('Chat: could not load tab settings', e);
             }
             return cloneTabs(DEFAULT_TABS);
+        }
+
+        function offerAddedTypes(tabs, store) {
+            let offered = [];
+            try {
+                const raw = store.getItem(ADDED_TYPES_KEY);
+                const parsed = raw ? JSON.parse(raw) : [];
+                if (Array.isArray(parsed)) offered = parsed;
+            } catch (e) { }
+            const older = KNOWN_TYPES.filter(function (t) { return ADDED_TYPES.indexOf(t) === -1; });
+            let changed = false;
+            ADDED_TYPES.forEach(function (type) {
+                if (offered.indexOf(type) !== -1) return;
+                offered.push(type);
+                changed = true;
+                tabs.forEach(function (tab) {
+                    const all = older.every(function (t) { return tab.types.indexOf(t) !== -1; });
+                    if (all && tab.types.indexOf(type) === -1) tab.types.push(type);
+                });
+                const shown = tabs.some(function (tab) { return tab.types.indexOf(type) !== -1 && tab.types.length === 1; });
+                DEFAULT_TABS.forEach(function (tab) {
+                    if (!shown && tab.types.length === 1 && tab.types[0] === type) tabs.push(cloneTabs([tab])[0]);
+                });
+            });
+            if (changed) {
+                try {
+                    store.setItem(ADDED_TYPES_KEY, JSON.stringify(offered));
+                    store.setItem(TAB_STORAGE_KEY, JSON.stringify(tabs));
+                } catch (e) { }
+            }
+            return tabs;
         }
 
         function saveTabs() {

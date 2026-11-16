@@ -31,22 +31,33 @@
 			return
 
 	var/image/cross = image('icons/obj/storage.dmi',"bible")
-	msg = "<span class = 'notice'>\icon[getFlatIcon(cross)] <b><font color=purple>PRAY[deity_label ? " to [deity_label]" : ""]: </font>[key_name(src, TRUE)] (<A HREF='?_src_=holder;adminmoreinfo=\ref[src]'>?</A>) (<A HREF='?_src_=holder;adminplayeropts=\ref[src]'>PP</A>) (<A HREF='?_src_=vars;Vars=\ref[src]'>VV</A>) (<A HREF='?_src_=holder;subtlemessage=\ref[src]'>SM</A>) ([admin_jump_link(src, src)]) (<A HREF='?_src_=holder;secretsadmin=check_antagonist'>CA</A>) (<A HREF='?_src_=holder;adminspawncookie=\ref[src]'>SC</a>):</b> [msg]</span>"
-
-	for (var/client/C in admins)
-		if (R_ADMIN & C.holder.rights)
-			if (C.is_preference_enabled(/datum/client_preference/admin/show_chat_prayers))
-				to_chat(C, msg)
-				to_chat(C, "<i>Please do <big>not</big> respond to prayers with revives or anything that might affect the course of the round in favor of one faction.</i>")
+	var/answer_link = ""
+	var/mob/living/human/follower = src
+	if (istype(follower) && follower.divine_patron)
+		answer_link = " (<A HREF='?_src_=holder;divine_reply=\ref[src]'>Answer</A>)"
+	var/text = "<span class = 'notice'>\icon[getFlatIcon(cross)] <b><font color=purple>PRAY[deity_label ? " to [deity_label]" : ""]: </font>[key_name(src, TRUE)] (<A HREF='?_src_=holder;adminmoreinfo=\ref[src]'>?</A>) (<A HREF='?_src_=holder;adminplayeropts=\ref[src]'>PP</A>) (<A HREF='?_src_=vars;Vars=\ref[src]'>VV</A>) (<A HREF='?_src_=holder;subtlemessage=\ref[src]'>SM</A>) ([admin_jump_link(src, src)]) (<A HREF='?_src_=holder;secretsadmin=check_antagonist'>CA</A>) (<A HREF='?_src_=holder;adminspawncookie=\ref[src]'>SC</a>)[answer_link]:</b> [msg]</span>"
+	var/list/hearers = prayer_hearers()
+	for (var/client/C in hearers)
+		to_chat(C, CHAT_TYPED(CHAT_PRAYER, text))
 
 	// The god's own staff hear it even with prayers hidden, with a sound.
 	if (deity)
 		for (var/client/C in divine_staff_for(deity))
-			if (!C.is_preference_enabled(/datum/client_preference/admin/show_chat_prayers))
-				to_chat(C, msg)
+			if (!(C in hearers))
+				to_chat(C, CHAT_TYPED(CHAT_PRAYER, text))
 			C << 'sound/effects/adminhelp.ogg'
 
-	to_chat(usr, deity_label ? "Your prayer has been received by [deity_label]." : "Your prayers have been received by the gods.")
-
+	// The player's own copy, in their Prayer tab.
+	to_chat(usr, CHAT_TYPED(CHAT_PRAYER, "<span class='notice'><i>You pray to [deity_label ? deity_label : "the gods"]:</i> [msg]</span>"))
 
 	//log_admin("HELP: [key_name(src)]: [msg]")
+
+// Staff who see every prayer: admins with prayers shown, and every admin who
+// plays a god (code/modules/divine/identity.dm), whatever their setting.
+/proc/prayer_hearers()
+	. = list()
+	for (var/client/C in admins)
+		if (!C.holder || !(R_ADMIN & C.holder.rights))
+			continue
+		if (C.is_preference_enabled(/datum/client_preference/admin/show_chat_prayers) || divine_identity_of(C.ckey))
+			. += C

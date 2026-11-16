@@ -7,6 +7,7 @@
 #define CHAT_DEAD	"dead"
 #define CHAT_ADMIN	"admin"
 #define CHAT_PM		"pm"
+#define CHAT_PRAYER	"prayer"	// prayers, answers from the gods and divine alerts
 #define CHAT_WARNING	"warning"
 #define CHAT_OTHER	"other"
 #define CHAT_TYPED(kind, message) ("<span class='chattype-" + kind + "'>" + "[message]" + "</span>")
