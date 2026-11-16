@@ -138,7 +138,7 @@ class WikiGuideTests(unittest.TestCase):
                 self.assertIn(expected, self.prompt(corpus, status, question))
 
     def test_current_revision_changed_topics_reach_injected_transport(self):
-        self.assertEqual(bridge.WIKI_REVIEWED_REVISION, '98245c843a574fd6ff94fa4e1fda6b4282d4d340')
+        self.assertEqual(bridge.WIKI_REVIEWED_REVISION, 'c19c09aaa8c802bbd48475be30edc8f49a376c87')
         cases = {
             'Chemistry': ('864bf107bd77e3934528bcf9c776b174ba2e86371118eedf084cbe5d42ce7ca5',
                           'chemistry reaction bench',
@@ -148,11 +148,11 @@ class WikiGuideTests(unittest.TestCase):
                         'medical severe illness treatment penicillin',
                         'Continuous appropriate treatment pauses deterioration and cures the illness after three minutes.',
                         'How do I treat severe illness?'),
-            'Construction': ('b17a4566b1eeb23b2defbac99de2e104c6c5ef67a07f336c743ddd7bc9182e61',
+            'Construction': ('099eac1da49b978b87e25c3ec4b9c18fbae8561e7132c4317fae449624f1cf60',
                              'construction trench digging save',
                              'Partial trench digging and filling progress survives world saves, alongside trench layout and contents.',
                              'Does trench digging progress survive world saves?'),
-            'Trains': ('d7a8813ae7ad15120c523d9e1d2a5dd0ee09435f36a11d3cba462a2c3e3d6bbd',
+            'Trains': ('d3989f8f25c1e27b7653024d80d8043783f4e24790f717a150a2084995c5bc25',
                        'train trains railway track locomotive station switcher rails wagon',
                        'A split switcher moves the vehicle one tile sideways without changing its heading.',
                        'How does a train switcher work?'),
