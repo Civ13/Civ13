@@ -183,3 +183,5 @@ listing was retained. These limits are not waived by a green workflow.
 `create_fishing_signs.py` owns `icons/effects/fish_signs.dmi`, the signs of fish laid on water as client images (`code/modules/1713/fish_signs.dm`): the rising rings `rise_a`-`rise_c` (one ring at three moments of a 4 second loop), the leaping fish `jump_a` and its mirror `jump_b` (8 second loop) and `gulls` wheeling over a coastal shoal. `--check` verifies the committed sheet, `--gif` writes a review animation over water.
 
 `create_fishing_gear.py` owns `icons/obj/fishing_gear.dmi`: `ice_hole`, the hole cut through river or sea ice for a line (`code/modules/1713/ice_fishing.dm`). `--check` verifies the committed sheet, `--png` writes an enlarged review picture over ice.
+
+`create_fish_species.py` owns `icons/obj/food/fish_species.dmi`: `trout`, `catfish`, `herring` and `tuna` and a `rotten_` state of each (`code/modules/1713/fish_species.dm`), drawn from pixel maps and palettes in the script. `--check` verifies the committed sheet, `--png` writes an enlarged review picture.

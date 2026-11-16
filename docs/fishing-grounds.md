@@ -62,8 +62,15 @@ Tests: `tests/fishing_grounds/`.
   (`fish_flood_stranding()`, asked by the flood's item pass). The fish come out
   of a flooded-ground stock of 2 for the 16x16 stretch, so a flood plain gives
   a few fish and then waits for regrowth.
-- **Catch:** rivers give salmon or plain fish; the coast plain fish or cod; the
-  open ocean mostly cod, with squid on a baited line; swamps plain fish.
+- **Catch** (`fish_catch_type()`): rivers and lakes give salmon, trout and
+  plain fish, with catfish from their deep water; jungle rivers catfish, salmon
+  and plain fish; swamps catfish and plain fish; the coast herring, cod and
+  plain fish; the open ocean mostly cod, squid on a baited line, and tuna on a
+  baited (12%) or towed (25%) line only. The new fish
+  (`code/modules/1713/fish_species.dm`, sprites in
+  `icons/obj/food/fish_species.dmi` from `tests/sprites/create_fish_species.py`)
+  are raw fish like any other; a catfish cuts into 4 fillets, a herring 2, a
+  tuna 6.
 - **Regrowth:** worked out from elapsed time when the ground is next asked.
   Fastest at half stock (about one fish in four minutes), slow near full. An
   empty ground gets a fish every sixteen minutes while a neighbouring ground of
