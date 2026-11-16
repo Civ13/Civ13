@@ -510,8 +510,6 @@
 /obj/structure/simple_door/proc/door_fitting_attackby(obj/item/W, mob/living/human/user)
 	if (!istype(user))
 		return FALSE
-	if (window_door_attackby(W, user))
-		return TRUE
 	if (lock_attackby(src, W, user))
 		return TRUE
 	if (istype(W, /obj/item/door_fitting))

@@ -72,12 +72,11 @@ def restore_crafting_projection(path, source):
         # Includes the independent flint nodule roll (tests/flint_mining), the
         # gem pocket roll (tests/gemstones), the obsidian roll (tests/obsidian),
         # a land across the sea's lode roll (tests/naval_carrier/voyage_probe.dm),
-        # the bauxite roll (tests/aluminium), the cinnabar roll (tests/mercury)
-        # and the lode ore roll (tests/lode).
+        # the bauxite roll (tests/aluminium) and the cinnabar roll (tests/mercury).
         mining_start = source.index('/turf/proc/mining_proc(')
         mining_end = source.index('/turf/floor/dirt/underground/attack_hand(', mining_start)
         mining = source[mining_start:mining_end]
-        if hashlib.sha256(mining.encode()).hexdigest() != 'd381cc8d1e21a81634d151e22c4787e6fe803ceaf77d9049d65988c3904bbe8d':
+        if hashlib.sha256(mining.encode()).hexdigest() != '3e4a475b188c9885edb1dcc0544958d6ab5b46f2153ef77594d67e21d429faf4':
             raise AssertionError('unreviewed mining yield projection drift')
         previous = read('tests/human_subtile/fixtures/mining_before_multi_drop.dm.txt').rstrip('\n') + '\n' * 2
         source = source[:mining_start] + previous + source[mining_end:]

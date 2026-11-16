@@ -82,6 +82,9 @@ var/building_compiled_maxz = 0
 		return
 	if (below)
 		A.forceMove(below)
+		// A falling item hits whoever it lands on (castle_pour.dm).
+		if (isitem(A) && A.loc == below)
+			falling_item_strike(A, below)
 		if (isliving(A))
 			to_chat(A, SPAN_WARNING("The floor gives way beneath you!"))
 		if (ishuman(A))

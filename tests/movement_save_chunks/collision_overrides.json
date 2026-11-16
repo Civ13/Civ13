@@ -333,16 +333,6 @@
       ]
     },
     {
-      "path": "code/game/objects/structures/window_fittings.dm",
-      "declarations": [
-        {
-          "owner": "",
-          "declaration": "/obj/structure/simple_door/key_door/anyone/casement/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)",
-          "sha256_body": "5ed4d8bdc01690999a9e67615f487592db73f6db9a5c94c6d2e6e027db3f84d6"
-        }
-      ]
-    },
-    {
       "path": "code/game/objects/structures.dm",
       "declarations": [
         {

@@ -136,6 +136,92 @@ var/castle_defences_runtime = null
 	var/obj/structure/barricade/stone_h/plain = new(locate(10, 12, 1))
 	battlement_after_build(plain, builder)
 	castle_defences_assert(!plain.outward_dir, "plain_barricade_not_battlement")
+	castle_defences_pour_checks()
+
+/proc/castle_defences_bucket(turf/T, id, amount, hot = FALSE)
+	var/obj/item/weapon/reagent_containers/glass/bucket/B = new(T)
+	B.reagents.add_reagent(id, amount)
+	if (hot)
+		B.heated_until = world.time + 600
+	return B
+
+/proc/castle_defences_pour_checks()
+	var/turf/up = locate(2, 14, 1)
+	// What leads in a container.
+	castle_defences_assert(pour_liquid_of(castle_defences_bucket(up, "water", 20)) == "water", "water_is_water")
+	castle_defences_assert(pour_liquid_of(castle_defences_bucket(up, "olive_oil", 20)) == "oil", "olive_oil_is_oil")
+	var/obj/item/weapon/reagent_containers/glass/bucket/mix = castle_defences_bucket(up, "water", 40)
+	mix.reagents.add_reagent("pitch", 5)
+	castle_defences_assert(pour_liquid_of(mix) == "pitch", "pitch_leads")
+	castle_defences_assert(pour_burn_damage("water", FALSE) == 0, "cold_water_harmless")
+	var/hot_water = pour_burn_damage("water", TRUE)
+	castle_defences_assert(hot_water >= 8 && hot_water <= 12, "boiling_water_scalds")
+	var/lead = pour_burn_damage("lead", TRUE)
+	castle_defences_assert(lead >= 35 && lead <= 45, "molten_lead_worst")
+
+	// A murder hole on one level pours onto the tile it faces.
+	var/obj/structure/murder_hole/MH = new(locate(12, 4, 1))
+	MH.set_dir(SOUTH)
+	castle_defences_assert(MH.pour_target() == locate(12, 3, 1), "murder_hole_target")
+	var/mob/living/human/pourer = new(locate(12, 5, 1))
+	pourer.a_intent = I_HELP
+	var/mob/living/human/under = new(locate(12, 3, 1))
+	var/mob/living/human/beside = new(locate(13, 3, 1))
+	var/before = under.getBurnLoss()
+	var/beside_before = beside.getBurnLoss()
+	var/obj/item/weapon/reagent_containers/glass/bucket/oil = castle_defences_bucket(locate(12, 5, 1), "olive_oil", 30, TRUE)
+	castle_defences_assert(castle_pour(MH, oil, pourer, MH.pour_target()), "hot_oil_poured")
+	castle_defences_assert(under.getBurnLoss() > before, "hot_oil_burns_below")
+	castle_defences_assert(beside.getBurnLoss() == beside_before, "small_pour_one_tile")
+	castle_defences_assert(locate(/obj/effect/castle_slick) in locate(12, 3, 1), "oil_leaves_slick")
+	castle_defences_assert(!oil.reagents.total_volume && !oil.is_hot(), "pour_empties_and_cools")
+
+	// A big pour splashes the tiles around at half strength.
+	beside_before = beside.getBurnLoss()
+	var/obj/item/weapon/reagent_containers/glass/bucket/big = castle_defences_bucket(locate(12, 5, 1), "water", 80, TRUE)
+	castle_pour(MH, big, pourer, MH.pour_target())
+	castle_defences_assert(beside.getBurnLoss() > beside_before, "big_pour_splashes_beside")
+
+	// Solid lead won't pour; quicklime blinds; hot pitch sets people alight.
+	var/obj/item/weapon/reagent_containers/glass/bucket/cold_lead = castle_defences_bucket(locate(12, 5, 1), "lead", 10)
+	castle_defences_assert(!castle_pour(MH, cold_lead, pourer, MH.pour_target()) && cold_lead.reagents.total_volume == 10, "cold_lead_refused")
+	castle_pour(MH, castle_defences_bucket(locate(12, 5, 1), "quicklime_powder", 10), pourer, MH.pour_target())
+	castle_defences_assert(under.eye_blind >= 5, "quicklime_blinds")
+	castle_pour(MH, castle_defences_bucket(locate(12, 5, 1), "pitch", 20, TRUE), pourer, MH.pour_target())
+	castle_defences_assert(under.on_fire, "hot_pitch_ignites")
+
+	// A stone dropped from above hits the head.
+	var/mob/living/human/target = new(locate(14, 9, 1))
+	var/brute = target.getBruteLoss()
+	var/obj/item/stack/material/stone/rock = new(locate(14, 9, 1))
+	falling_item_strike(rock, locate(14, 9, 1))
+	castle_defences_assert(target.getBruteLoss() > brute, "falling_stone_hurts")
+	castle_defences_assert(falling_item_damage(rock) >= 15, "stone_heavy")
+
+	// A machicolation drops onto the tile in front of it on one level.
+	var/obj/structure/castle_overhang/M = new(locate(3, 9, 1))
+	M.set_dir(WEST)
+	castle_defences_assert(M.pour_target() == locate(2, 9, 1), "machicolation_target")
+	var/obj/structure/castle_overhang/hoarding/HO = new(locate(3, 7, 1))
+	HO.catch_fire()
+	castle_defences_assert(HO.burning && HO.icon_state == "hoarding_burning", "hoarding_burns")
+
+	// A tar kiln turns a load of wood into pitch.
+	var/obj/structure/tar_kiln/K = new(locate(6, 2, 1))
+	K.burning = TRUE
+	K.burn_left = 50
+	K.kiln_tick()
+	castle_defences_assert(K.pitch == 40 && !K.burning, "kiln_makes_pitch")
+	var/obj/item/weapon/reagent_containers/glass/bucket/tar = new(locate(6, 3, 1))
+	var/mob/living/human/tarrer = new(locate(6, 3, 1))
+	K.attackby(tar, tarrer)
+	castle_defences_assert(tar.reagents.get_reagent_amount("pitch") > 0, "draw_pitch")
+
+	// A brazier heats only when lit.
+	var/obj/structure/brazier/BR = new(locate(9, 2, 1))
+	castle_defences_assert(!pour_heat_source_lit(BR), "cold_brazier")
+	BR.on = TRUE
+	castle_defences_assert(pour_heat_source_lit(BR), "lit_brazier")
 
 /world/New()
 	OpenPort("none")

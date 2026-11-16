@@ -119,7 +119,7 @@ var/sg_runtime_error = FALSE
 	MH.set_dir(SOUTH)
 	var/obj/item/weapon/reagent_containers/glass/bucket/BK = new /obj/item/weapon/reagent_containers/glass/bucket(MH.loc)
 	BK.reagents.add_reagent("water", 50)
-	sg_check(MH.pour_burn(BK) == 0, "cold water through a murder hole doesn't burn")
+	sg_check(pour_burn_damage(pour_liquid_of(BK), BK.is_hot()) == 0, "cold water through a murder hole doesn't burn")
 	sg_check(MH.drop_turf() == locate(9, 7, 1), "with no level below, it pours on the tile it faces")
 
 	// Undermining: a tunnel dug under a wall on the level above.

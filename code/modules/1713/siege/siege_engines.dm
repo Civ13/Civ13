@@ -7,7 +7,8 @@
 //   attackers cross over the wall from it.
 // - A trebuchet is a bigger, slower catapult (catapult.dm) for walls far off.
 // - A portcullis and a drawbridge are worked from a winch beside them; a
-//   murder hole over a gateway lets defenders pour boiling oil through it.
+//   murder hole over a gateway lets defenders pour and drop through it
+//   (castle_pour.dm).
 
 #define RAM_BLOW 60
 #define RAM_MAX_CREW 4
@@ -464,17 +465,51 @@
 	for (var/obj/structure/castle_gate/G in gates())
 		G.set_open(raise)
 
-// A murder hole: boiling oil poured into it falls on the tile below it.
+// A murder hole: an opening in a floor. What is poured or dropped through it
+// lands on the tile below (castle_pour.dm), and the level below shows through it.
 /obj/structure/murder_hole
 	name = "murder hole"
-	desc = "An opening in the floor over a gateway. Heat oil or water on a fire beside it, then pour it through onto whoever stands below."
-	icon = 'icons/obj/siege_engines.dmi'
-	icon_state = "murder_hole"
+	desc = "An opening in the floor over a gateway. Heat oil, water, pitch, sand or lead over a fire and pour it through, or drop stones, onto whoever stands below."
+	icon = 'icons/obj/castle_defences.dmi'
+	icon_state = "murder_hole_rim"
 	anchored = TRUE
 	density = FALSE
-	layer = 2.05
+	layer = 2.15
 	not_movable = TRUE
 	not_disassemblable = FALSE
+	var/tmp/obj/effect/open_air_view/below_view = null
+
+/obj/structure/murder_hole/New()
+	..()
+	addtimer(CALLBACK(src, PROC_REF(show_below)), 1)
+
+/obj/structure/murder_hole/after_load()
+	..()
+	show_below()
+
+/obj/structure/murder_hole/Destroy()
+	if (below_view)
+		vis_contents -= below_view
+		below_view.vis_contents.Cut()
+		qdel(below_view)
+		below_view = null
+	return ..()
+
+// The tile below shows through the hole, darkened like open air (open_air_view.dm).
+/obj/structure/murder_hole/proc/show_below()
+	if (below_view || QDELETED(src))
+		return
+	var/turf/T = get_turf(src)
+	var/turf/below = T ? GetBelow(T) : null
+	if (!below)
+		return
+	var/obj/effect/open_air_view/V = new
+	V.loc = null
+	// Drawn as an underlay of the hole, so the rim stays on top.
+	V.vis_flags = VIS_INHERIT_PLANE | VIS_INHERIT_ID | VIS_UNDERLAY
+	V.vis_contents += below
+	below_view = V
+	vis_contents += V
 
 // The tile under the hole: the level below on a multi-level castle,
 // otherwise the gateway tile in front of it (the way it faces).
@@ -487,31 +522,11 @@
 		return below
 	return get_step(T, dir)
 
-// Burn damage what RG holds does to each man below: it must have been heated
-// on a fire or brazier beside the hole, and oil burns worse than water.
-/obj/structure/murder_hole/proc/pour_burn(obj/item/weapon/reagent_containers/RG)
-	if (!nearby_heat_source(src))
-		return 0
-	for (var/id in list("cornoil", "olive_oil", "fat_oil"))
-		if (RG.reagents.has_reagent(id))
-			return rand(20, 30)
-	return rand(8, 12)
+/obj/structure/murder_hole/pour_target()
+	return drop_turf()
 
 /obj/structure/murder_hole/attackby(obj/item/W, mob/user)
-	var/obj/item/weapon/reagent_containers/RG = W
-	if (istype(RG) && RG.is_open_container() && RG.reagents && RG.reagents.total_volume)
-		var/turf/T = drop_turf()
-		if (!T)
-			return
-		user.visible_message(SPAN_DANGER("[user] pours \the [RG] down \the [src]!"))
-		var/burn = pour_burn(RG)
-		for (var/mob/living/L in T)
-			if (burn)
-				L.apply_damage(burn, BURN)
-				to_chat(L, SPAN_DANGER("Scalding liquid pours down on you from above!"))
-			else
-				to_chat(L, SPAN_WARNING("Something wet pours down on you from above."))
-		RG.reagents.splash(T, RG.reagents.total_volume)
+	if (castle_opening_attackby(src, W, user))
 		return
 	return ..()
 

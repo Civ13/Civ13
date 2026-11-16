@@ -1612,7 +1612,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/storage/belt/gator_belt" = "fine_garments",
 		"/obj/item/weapon/storage/belt/lizard_belt" = "fine_garments",
 		"/obj/item/weapon/storage/briefcase" = "fine_garments",
-		// --- fortifications (24) ---
+		// --- fortifications (25) ---
 		"/obj/item/stack/material/barbwire" = "fortifications",
 		"/obj/item/weapon/barrier/sandbag/empty" = "fortifications",
 		"/obj/structure/barbwire" = "fortifications",
@@ -1634,6 +1634,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/castle_gate/drawbridge" = "fortifications",
 		"/obj/structure/castle_winch" = "fortifications",
 		"/obj/structure/murder_hole" = "fortifications",
+		"/obj/structure/castle_overhang" = "fortifications",
 		"/obj/structure/gate/sandstone" = "fortifications",
 		"/obj/structure/gatecontrol" = "fortifications",
 		"/obj/structure/gatecontrol/sandstone" = "fortifications",
@@ -1829,8 +1830,6 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/reagent_containers/glass/mercury_flask" = "ore_dressing",
 		"/obj/structure/placer_washer/sluice" = "bronze_working",
 		"/obj/structure/placer_washer/rocker" = "ore_dressing",
-		"/obj/structure/placer_washer/buddle" = "ore_dressing",
-		"/obj/structure/drill/stamp_mill/water" = "ore_dressing",
 		"/obj/structure/kanna_channel" = "tatara_smelting",
 		"/obj/structure/heatsource" = "iron_smithing",
 		"/obj/item/clothing/shoes/weather/hobnail_boots" = "iron_smithing",
@@ -2081,7 +2080,6 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/canvas/woven/runner" = "weaving",
 		"/obj/item/canvas/woven/large" = "weaving",
 		"/obj/item/canvas/woven/tapestry" = "weaving",
-		"/obj/item/bath_mat" = "weaving",
 		"/obj/item/canvas/woven/tapestry/wide" = "weaving",
 		"/obj/item/weapon/clay/verysmallclaypot" = "pottery_storage",
 		"/obj/item/weapon/clay/winecup" = "pottery_storage",
@@ -2184,10 +2182,6 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/fitted_lock/warded" = "iron_smithing",
 		"/obj/item/door_bar/iron" = "iron_smithing",
 		"/obj/item/door_bolt" = "iron_smithing",
-		// opening windows and shutters (window_fittings.dm)
-		"/obj/structure/simple_door/key_door/anyone/casement" = "glassworking",
-		"/obj/structure/simple_door/key_door/anyone/window_shutters" = "primitive_construction",
-		"/obj/structure/simple_door/key_door/anyone/window_shutters/iron" = "iron_smithing",
 		// fire doors (fire_doors.dm)
 		"/obj/structure/simple_door/key_door/anyone/fire_door" = "steelmaking",
 		"/obj/structure/simple_door/key_door/anyone/fire_door/steel" = "modern_construction",
@@ -2396,12 +2390,13 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/sewer_piece/drain/stone" = "sanitation",
 		"/obj/structure/sewer_piece/drain/floor" = "sanitation",
 		"/obj/structure/sewer_flap_gate" = "sanitation",
-		// --- siege_engines (7) ---
+		// --- siege_engines (8) ---
 		"/obj/item/catapult_ball" = "siege_engines",
 		"/obj/item/weapon/siegeladder" = "siege_engines",
 		"/obj/structure/catapult" = "siege_engines",
 		"/obj/structure/siege_engine/ram" = "siege_engines",
 		"/obj/structure/siege_engine/ballista" = "siege_engines",
+		"/obj/structure/castle_overhang/hoarding" = "siege_engines",
 		"/obj/item/ballista_bolt" = "siege_engines",
 		"/obj/structure/siege_engine/tower" = "siege_engines",
 		// --- steam_power (6) ---
@@ -2461,12 +2456,13 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/material/harpoon/bone" = "stone_arms",
 		"/obj/structure/anvil/stone" = "stone_arms",
 		"/obj/structure/noose" = "stone_arms",
-		// --- stone_masonry (47) ---
+		// --- stone_masonry (48) ---
 		"/obj/structure/sundial" = "stone_masonry",
 		"/obj/structure/flood_platform/plinth" = "stone_masonry",
 		"/obj/structure/workshop_machine/mover/treadwheel" = "stone_masonry",
 		"/obj/covers/cobblestone" = "stone_masonry",
 		"/obj/structure/furnace/lime_kiln" = "stone_masonry",
+		"/obj/structure/tar_kiln" = "stone_masonry",
 		"/obj/structure/workshop_machine/masons_saw" = "stone_masonry",
 		"/obj/covers/cobblestone/stairs" = "stone_masonry",
 		"/obj/covers/roads/sandstone" = "stone_masonry",

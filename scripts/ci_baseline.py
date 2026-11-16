@@ -2199,9 +2199,6 @@ SUITES = {
     'placer': {'files': ('tests/placer/test_contract.py',), 'paths': (
         'tests/placer/', 'code/modules/1713/placer.dm', 'docs/placer.md',
         'icons/obj/placer.dmi', 'tests/sprites/create_placer.py')},
-    'lode': {'files': ('tests/lode/test_contract.py',), 'paths': (
-        'tests/lode/', 'code/modules/1713/lode.dm', 'docs/lode.md',
-        'icons/obj/lode.dmi', 'tests/sprites/create_lode.py')},
     # Keep shared production and Atlas sources unmapped so their existing
     # conservative all-suite fallback remains intact.
     'sawmill': {'files': ('tests/sawmill/test_contract.py',

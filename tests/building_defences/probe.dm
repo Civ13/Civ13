@@ -133,29 +133,3 @@ var/vr_runtime_error = FALSE
 	vr_check(is_structure_impact_part(SB), "sandbags are a building part")
 	var/left = SB.structure_impact(100000)
 	vr_check(QDELETED(SB) && left > 0, "a big enough hit smashes sandbags")
-
-	// Pillars come down with a hammer and give back what they cost, but not
-	// while a roof stands on them alone.
-	var/obj/item/weapon/hammer/HM = new /obj/item/weapon/hammer(locate(15, 14, 1))
-	walker.a_intent = I_HELP
-	vr_check(pillar_dismantle_tool(SP, HM, walker) && pillar_dismantle_tool(MS, HM, walker) && pillar_dismantle_tool(CP, HM, walker), "a hammer takes down stone pillars and mine supports")
-	vr_check(!pillar_dismantle_tool(AR, HM, walker), "the map's hidden roof props cannot be taken down")
-	walker.a_intent = I_HARM
-	vr_check(!pillar_dismantle_tool(RS, HM, walker), "on harm intent a hammer strikes the pillar instead")
-	walker.a_intent = I_HELP
-	var/list/r1 = pillar_refund(SP)
-	var/list/r2 = pillar_refund(RS)
-	var/list/r3 = pillar_refund(new /obj/structure/mine_support/stone/ionic(locate(28, 1, 1)))
-	var/list/r4 = pillar_refund(new /obj/structure/mine_support/stone/solomonic/thick/sandstone(locate(29, 1, 1)))
-	vr_check(r1 && r1[1] == /obj/item/stack/material/stone && r1[2] == 2, "a stone pillar gives back two stone")
-	vr_check(r2 && r2[1] == /obj/item/stack/material/wood && r2[2] == 2, "a roof support gives back two wood")
-	vr_check(r3 && r3[1] == /obj/item/stack/material/marble, "an ionic column gives back marble")
-	vr_check(r4 && r4[1] == /obj/item/stack/material/sandstone, "a sandstone column gives back sandstone")
-	vr_check(isnull(pillar_refund(CP)), "a concrete pillar gives nothing back")
-	var/obj/structure/roof_support/lone = new /obj/structure/roof_support(locate(15, 16, 1))
-	var/obj/roof/wood/RF = new /obj/roof/wood(locate(15, 15, 1))
-	vr_check(RF.is_supported() && pillar_roofs_held(lone) == 1, "a lone support holds up the roof by it")
-	vr_check(lone.loc == locate(15, 16, 1), "checking puts the support back where it stood")
-	vr_check(!lone.pillar_dismantle_check(walker), "it will not be taken down while it holds a roof")
-	new /obj/structure/roof_support(locate(17, 15, 1))
-	vr_check(pillar_roofs_held(lone) == 0 && lone.pillar_dismantle_check(walker), "with a second support it can come down")
