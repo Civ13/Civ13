@@ -36,6 +36,12 @@ water's own germs for non-salt water. At 0.5 the water counts as foul: the
 examine text warns of scum, an aqueduct intake there is fouled, and fishing
 grounds regrow more slowly (down to a quarter at the cap).
 
+A well or dug hole within 3 tiles of foul river water draws the filth through
+the bank: drawing from it then marks it dirty (`well_river_seepage()`, via
+`has_nearby_fecal_waste()`), and it stays dirty until scrubbed with soap, like
+a flood-fouled well. Mapped sinks and fountains are not affected; a fountain
+fouls through its aqueduct intake instead.
+
 ## Scum
 
 Each reach shows scum 0 to 3, rising at germ levels 0.5, 1 and 1.5 and falling

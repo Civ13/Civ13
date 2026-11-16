@@ -40,7 +40,7 @@ class SewersSource(unittest.TestCase):
         poo = (ROOT / 'code/game/mob/living/carbon/human/shit_piss.dm').read_text(encoding='utf-8')
         self.assertIn('T.flush_waste(V)', poo)
         closet = (ROOT / 'code/game/objects/structures/watercloset.dm').read_text(encoding='utf-8')
-        self.assertIn('return sewers && sewer_fouls_near(src)', closet)
+        self.assertIn('return (sewers && sewer_fouls_near(src)) || well_river_seepage()', closet)
         self.assertIn('return map && map.persistence', SEWERS)
 
     def test_digging_and_recipe(self):

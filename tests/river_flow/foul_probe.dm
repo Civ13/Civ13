@@ -73,6 +73,11 @@ var/foul_runtime_error = FALSE
 	F.foul[1] = 1000
 	F.foul_update_shown()
 	foul_check(F.foul_shown[1] == 3 && F.foul_scum_anywhere && river_fouled_at(locate(1, 2, 1)), "heavy load shows heavy scum")
+	new /turf/floor/beach/water(locate(2, 2, 1))
+	var/obj/structure/sink/hole = new(locate(2, 1, 1))
+	hole.dug_depth = 2
+	var/obj/structure/sink/mapped = new(locate(3, 1, 1))
+	foul_check(hole.well_river_seepage() && !mapped.well_river_seepage(), "a well beside a fouled river draws its filth, a mapped sink does not")
 	var/revision = river_scum_revision
 	F.foul_update_shown()
 	foul_check(river_scum_revision == revision, "no redraw while nothing changes")
@@ -80,6 +85,7 @@ var/foul_runtime_error = FALSE
 	F.foul[2] = 0
 	F.foul_update_shown()
 	foul_check(!F.foul_shown[1] && !F.foul_scum_anywhere && river_scum_revision == revision + 1, "scum clears with the load")
+	foul_check(!hole.well_river_seepage(), "a well draws clean once the river clears")
 
 	// The load fades away within a quarter of an hour once nothing adds to it.
 	F.foul[1] = 10

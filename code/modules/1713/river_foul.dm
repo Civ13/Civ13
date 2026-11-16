@@ -148,6 +148,28 @@ var/global/river_scum_revision = 0
 /proc/river_fouled_at(turf/T)
 	return river_foul_germs(T) >= RIVER_FOUL_THRESHOLD
 
+// Tiles from a fouled river within which a well draws its filth.
+#define RIVER_FOUL_WELL_SEEP 3
+
+// TRUE when non-salt river water within `radius` tiles of T is foul.
+/proc/river_fouled_near(turf/T, radius)
+	if (!T || !map)
+		return FALSE
+	var/datum/river_flood/F = map.river_flood()
+	if (!F || !F.foul_scum_anywhere || T.z != F.z_level)
+		return FALSE
+	for (var/turf/floor/beach/water/W in range(radius, T))
+		if (!W.salty && river_fouled_at(W))
+			return TRUE
+	return FALSE
+
+// A well or dug hole near a fouled river draws the river's filth through the
+// bank. Mapped sinks and fountains do not.
+/obj/structure/sink/proc/well_river_seepage()
+	if (!dug_depth && !istype(src, /obj/structure/sink/well))
+		return FALSE
+	return river_fouled_near(get_turf(src), RIVER_FOUL_WELL_SEEP)
+
 // Share of its usual regrowth a fishing ground gets in foul water.
 /proc/river_foul_fish_factor(x, y, z)
 	var/turf/T = locate(x, y, z)
@@ -226,3 +248,4 @@ var/global/river_scum_revision = 0
 #undef RIVER_FOUL_MIN_STORAGE
 #undef RIVER_FOUL_TRACK_LIMIT
 #undef RIVER_FOUL_SCUM_GIVE
+#undef RIVER_FOUL_WELL_SEEP
