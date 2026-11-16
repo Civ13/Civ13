@@ -315,6 +315,8 @@ RECIPE: /material/leather/,seed collector,/obj/item/weapon/storage/seed_collecto
 RECIPE: /material/leather/,quiver,/obj/item/weapon/storage/backpack/quiver,3,60,0,1,storage,0,0,0,8,null
 RECIPE: /material/leather/,leather belt satchel,/obj/item/weapon/storage/belt/leather,3,60,0,1,storage,0,0,0,8,null
 RECIPE: /material/leather/,leather belt pouch,/obj/item/clothing/accessory/storage/belt_pouch,1,40,0,1,storage,0,0,0,8,null
+RECIPE: /material/leather/,fire pouch,/obj/item/clothing/accessory/storage/belt_pouch/fire_pouch,1,40,0,1,storage,0,0,0,8,null
+RECIPE: /material/leather/,neck sheath,/obj/item/clothing/accessory/storage/sheath/neck,1,40,0,1,storage,0,0,0,8,null
 RECIPE: /material/leather/,leather cord necklace,/obj/item/clothing/accessory/necklace,1,30,0,1,storage,0,0,0,8,null
 RECIPE: /material/leather/,leather belt,/obj/item/clothing/pouch_belt,1,40,0,1,storage,0,0,0,8,null
 RECIPE: /material/leather/,tailoring project,/obj/item/tailoring_project,1,25,0,1,clothing,0,0,18,8,null
@@ -1429,6 +1431,7 @@ RECIPE: /material/bone/,battle axe,/obj/item/weapon/material/hatchet/bone_battle
 RECIPE: /material/bone/,tribal bone knife,/obj/item/weapon/material/kitchen/utensil/knife/bone,4,90,0,1,none,0,0,0,4,bone
 RECIPE: /material/bone/,bone harpoon,/obj/item/weapon/material/harpoon/bone,4,90,0,1,none,0,0,0,1,bone
 RECIPE: /material/bone/,bone needle and awl,/obj/item/weapon/bone_needle,1,40,0,1,none,0,0,0,1,null
+RECIPE: /material/bone/,needle case,/obj/item/clothing/accessory/storage/needle_case,1,40,0,1,none,0,0,0,8,null
 RECIPE: /material/bone/,bone pickaxe,/obj/item/weapon/material/pickaxe/bone,2,50,0,1,none,0,0,0,8,null
 RECIPE: /material/bone/,bone shovel,/obj/item/weapon/material/shovel/bone,2,50,0,1,none,0,0,0,8,bone
 RECIPE: /material/bone/,blowing horn,/obj/item/weapon/horn,4,110,0,1,none,0,0,0,4,null
@@ -2518,6 +2521,7 @@ RECIPE: /material/wood/soft/,bolt shaft (x3),/obj/item/ammo_casing/bolt,1,40,0,1
 
 RECIPE: /material/wood/,hammer,/obj/item/weapon/hammer,5,75,0,1,tools,0,0,0,8,null
 RECIPE: /material/wood/,wooden spade,/obj/item/weapon/material/shovel/spade/wood,3,60,0,1,tools,0,0,0,8,wood
+RECIPE: /material/wood/,fire drill,/obj/item/weapon/flame/fire_drill,1,40,0,1,tools,0,0,0,8,null
 RECIPE: /material/wood/,digging stick,/obj/item/weapon/plough/digging_stick,2,40,0,1,tools,0,0,0,1,null
 RECIPE: /material/wood/,hoe,/obj/item/weapon/plough/hoe,2,60,0,1,tools,0,0,0,8,null
 RECIPE: /material/wood/,fire beater,/obj/item/weapon/fire_beater,2,40,0,1,tools,0,0,0,8,null

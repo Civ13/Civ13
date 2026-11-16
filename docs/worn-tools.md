@@ -34,3 +34,19 @@ one drops it beside itself (`/obj/item/clothing/shoes/after_load`).
 
 Attaching any accessory now redraws the slot the garment is worn in
 (`update_clothing_icon()`), not only the uniform.
+
+## Stone Age kits
+
+| Item | Worn as | What it does | Research |
+| --- | --- | --- | --- |
+| fire pouch | belt, hip or clothes (counts as a belt pouch) | Holds flint, fire drill, striker and small flint tools. A candle, pipe or cigarette held against the worn pouch lights from a flint inside (1 s, 70%) or a fire drill (4 s, sure) | Basic Toolmaking |
+| fire drill | in hand or in a fire pouch | Spun in hand for 4 s, an ember for 5 s that lights candles and pipes | Basic Toolmaking |
+| needle case | clothes | Holds the bone needle and sinew. The needle mends with sinew from a worn case | Basic Toolmaking |
+| neck sheath | clothes | One small knife; click the clothes with an empty hand to draw it | Basic Toolmaking |
+
+Campfires, ovens and torches still light by hand (Val's choice); the kits are
+for things that need a flame.
+
+A damaged garment with attachments is mended by a bone needle clicked onto it;
+an undamaged one stores the needle in an attached case. A candle or pipe held
+against clothes with a fire pouch always goes to the fire pouch.
