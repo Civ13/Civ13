@@ -1,0 +1,21 @@
+# Item piles
+
+Headless probe for `code/game/objects/items/item_piles.dm` (identical items on a
+tile collapse into one right-click menu entry) and the roofing piles in
+`code/game/objects/roof_stuff.dm`.
+
+```
+bash scripts/cloud_byond_setup.sh   # once, installs the pinned compiler
+python3 tests/ecology_spawning/run_linux.py . tests/item_piles/probe.dm
+```
+
+It puts 70 identical roofing items on a tile and checks that only the top one
+stays clickable, that an item hidden by its own code is left alone, that moving
+the top item away (forceMove or a raw `persistence_set_loc`) reveals the next,
+that a picked-up item is always clickable, and that items with different names
+stay separate. For roofing it checks piling, the pile cap, different roofing
+staying apart, building using one piece, dropping onto a pile, and kiln firing
+adding to a pile. Exit status 0 means no failures and no runtime errors.
+
+Not established: the right-click menu in a real client and a save/load roundtrip
+of a collapsed pile.

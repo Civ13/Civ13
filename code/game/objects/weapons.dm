@@ -29,6 +29,7 @@
 	return
 
 /obj/item/weapon/pickup(mob/user)
+	pile_reveal() // this override skips /obj/item/pickup (item_piles.dm)
 	drawsound(user)
 
 /obj/item/weapon/proc/drawsound(mob/user)
