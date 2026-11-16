@@ -183,16 +183,23 @@ var/global/kept_hive_cycle_count = 0
 
 // Flowering and fruiting things within reach: crops, wild plants and trees.
 /obj/structure/kept_hive/proc/refresh_forage()
+	forage = bee_forage_points(src)
+	forage_at = world.time
+
+// Shared with frame hives (beekeeping.dm).
+/proc/bee_forage_points(atom/A)
 	var/points = 0
-	for (var/obj/structure/O in range(KEPT_HIVE_FORAGE_RANGE, src))
+	for (var/obj/structure/O in range(KEPT_HIVE_FORAGE_RANGE, A))
 		if (istype(O, /obj/structure/farming/plant))
 			points += 1
 		else if (istype(O, /obj/structure/wild/tree) || istype(O, /obj/structure/wild/jungle) || istype(O, /obj/structure/wild/bush))
 			points += 0.5
 		if (points >= KEPT_HIVE_FORAGE_FULL)
 			break
-	forage = min(points, KEPT_HIVE_FORAGE_FULL)
-	forage_at = world.time
+	return min(points, KEPT_HIVE_FORAGE_FULL)
+
+/proc/bee_forage_full()
+	return KEPT_HIVE_FORAGE_FULL
 
 /obj/structure/kept_hive/proc/colony_tick(active, swarm_season)
 	if (!occupied)
@@ -250,11 +257,7 @@ var/global/kept_hive_cycle_count = 0
 		return ..()
 	if (shaking)
 		return TRUE
-	var/obj/structure/kept_hive/H = null
-	for (var/obj/structure/kept_hive/K in range(1, src))
-		if (!K.occupied)
-			H = K
-			break
+	var/obj/structure/H = bee_swarm_home_near(src)
 	if (!H)
 		to_chat(user, SPAN_NOTICE("You need an empty hive right next to the swarm to shake it into."))
 		return TRUE
@@ -262,10 +265,31 @@ var/global/kept_hive_cycle_count = 0
 	user.visible_message(SPAN_NOTICE("[user] starts brushing the swarm down into \the [H]."), SPAN_NOTICE("You brush and shake the swarm down into \the [H]..."))
 	var/done = do_after(user, 50, src)
 	shaking = FALSE
-	if (!done || QDELETED(src) || QDELETED(H) || H.occupied || get_dist(H, src) > 1)
+	if (!done || QDELETED(src) || QDELETED(H) || get_dist(H, src) > 1 || bee_swarm_home_near(src) != H)
 		return TRUE
-	H.settle(colony_strength)
+	H:settle(colony_strength)
 	user.visible_message(SPAN_NOTICE("The bees march into \the [H] and settle."), SPAN_NOTICE("The bees march into \the [H], fanning their wings. They have a new home."))
+	qdel(src)
+	return TRUE
+
+// An empty nucleus box can catch the swarm to carry it to a frame hive.
+/obj/structure/bee_swarm_cluster/attackby(obj/item/I, mob/user)
+	if (!istype(I, /obj/item/nucleus_box) || !ishuman(user))
+		return ..()
+	var/obj/item/nucleus_box/B = I
+	if (B.full)
+		to_chat(user, SPAN_NOTICE("\The [B] already has bees in it."))
+		return TRUE
+	if (shaking)
+		return TRUE
+	shaking = TRUE
+	user.visible_message(SPAN_NOTICE("[user] holds \the [B] under the swarm and gives the branch a sharp knock."), SPAN_NOTICE("You hold \the [B] under the swarm and knock the branch..."))
+	var/done = do_after(user, 40, src)
+	shaking = FALSE
+	if (!done || QDELETED(src) || QDELETED(B) || B.full)
+		return TRUE
+	B.fill(colony_strength)
+	to_chat(user, SPAN_NOTICE("The swarm drops into \the [B] in a humming mass. Close it up and carry it to an empty frame hive."))
 	qdel(src)
 	return TRUE
 
@@ -306,6 +330,14 @@ var/global/kept_hive_cycle_count = 0
 		if (!isturf(H.loc))
 			continue
 		H.colony_tick(active, swarm_season)
+		ticked++
+	for (var/obj/structure/beehive/F in frame_hives.Copy())
+		if (QDELETED(F))
+			frame_hives -= F
+			continue
+		if (!isturf(F.loc))
+			continue
+		F.colony_tick(active, swarm_season)
 		ticked++
 	return ticked
 
