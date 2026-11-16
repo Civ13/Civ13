@@ -35,7 +35,7 @@ var/global/mountain_seam_marked = FALSE
 	var/static/list/ores = list(
 		/obj/item/stack/ore/copper = list(22, 0, 4, 8),
 		/obj/item/stack/ore/tin = list(16, 0, 4, 8),
-		/obj/item/stack/ore/iron = list(28, 1, 4, 8),
+		/obj/item/stack/ore/iron = list(22, 1, 4, 8),
 		/obj/item/stack/ore/zinc = list(6, 1, 4, 8),
 		/obj/item/stack/ore/coal = list(10, 2, 8, 12),
 		/obj/item/stack/ore/saltpeter = list(4, 2, 3, 4),
@@ -44,6 +44,8 @@ var/global/mountain_seam_marked = FALSE
 		/obj/item/stack/ore/silver = list(3, 0, 1, 2),
 		/obj/item/stack/ore/gold = list(1, 0, 1, 2),
 		/obj/item/stack/ore/mercury = list(2, 1, 1, 2), // cinnabar (mercury.dm)
+		/obj/item/stack/ore/gold_quartz = list(3, 1, 2, 4), // lode ore (lode.dm)
+		/obj/item/stack/ore/silver_lode = list(3, 1, 2, 4),
 	)
 	return ores
 

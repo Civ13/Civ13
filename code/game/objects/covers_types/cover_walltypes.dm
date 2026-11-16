@@ -248,7 +248,7 @@
 	opacity = TRUE
 	amount = 4
 	layer = 3
-	health = 330
+	health = 450 // the strongest timber wall; built in steps in log_wall_building.dm
 	wall = TRUE
 	explosion_resistance = 7
 	material = "Wood"
@@ -748,6 +748,7 @@
 	icon_state = "aztec0"
 	base_icon_state = "aztec"
 	adjusts = TRUE
+	health = 450 // carved from a finished log wall
 
 /obj/covers/wood_wall/nordic
 	name = "nordic wood wall"
@@ -755,6 +756,7 @@
 	icon_state = "nordic0"
 	base_icon_state = "nordic"
 	adjusts = TRUE
+	health = 450 // carved from a finished log wall
 
 /obj/covers/stone_wall/mayan
 	name = "mayan stone wall"

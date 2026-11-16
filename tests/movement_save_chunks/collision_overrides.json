@@ -118,6 +118,16 @@
       ]
     },
     {
+      "path": "code/game/objects/covers_types/log_wall_building.dm",
+      "declarations": [
+        {
+          "owner": "",
+          "declaration": "/obj/covers/wood_wall/log_build/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)",
+          "sha256_body": "7ea043f7534a6e11439edd44face1bb049406607d87b04ef200be9a50f856730"
+        }
+      ]
+    },
+    {
       "path": "code/game/objects/effects/effect_system.dm",
       "declarations": [
         {
@@ -319,6 +329,16 @@
           "owner": "",
           "declaration": "/obj/structure/window/CheckExit(atom/movable/O as mob|obj, target as turf, exit_direction = null)",
           "sha256_body": "6a5da245ff1573d698d9e555f467f95579c71af36ca0903b8938482c0ab98a1d"
+        }
+      ]
+    },
+    {
+      "path": "code/game/objects/structures/window_fittings.dm",
+      "declarations": [
+        {
+          "owner": "",
+          "declaration": "/obj/structure/simple_door/key_door/anyone/casement/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)",
+          "sha256_body": "5ed4d8bdc01690999a9e67615f487592db73f6db9a5c94c6d2e6e027db3f84d6"
         }
       ]
     },
