@@ -29,8 +29,8 @@
 /obj/covers/wood_wall/log_build
 	name = "log wall sill"
 	desc = "The bottom log of a log wall. Add logs to raise it."
-	icon = 'icons/turf/walls.dmi'
-	icon_state = "log_wall"
+	icon = 'icons/obj/log_wall_build.dmi' // drawn by tests/sprites/create_log_wall_build.py
+	icon_state = "sill"
 	passable = TRUE
 	opacity = FALSE
 	incomplete = TRUE
@@ -40,21 +40,27 @@
 	var/stage = 1 // logs laid
 	var/tmp/log_wall_busy = FALSE
 	var/finished_type = /obj/covers/wood_wall/log
+	var/state_suffix = "" // "_corner" for the corner states
 
 /obj/covers/wood_wall/log_build/corner
 	name = "log wall corner sill"
-	icon_state = "log_wall_corner"
+	icon_state = "sill_corner"
 	finished_type = /obj/covers/wood_wall/log/corner
+	state_suffix = "_corner"
 
 /obj/covers/wood_wall/log_build/New()
 	..()
 	update_stage()
 
-// Stand-in for the stage sprites: the finished wall drawn as tall as the
-// courses laid so far.
+// One sprite for each log laid: the sill, two courses, the upper courses.
 /obj/covers/wood_wall/log_build/proc/update_stage()
-	var/frac = stage / LOG_WALL_LOGS
-	transform = matrix(1, 0, 0, 0, frac, -16 * (1 - frac))
+	var/stage_state = "upper"
+	switch (stage)
+		if (1)
+			stage_state = "sill"
+		if (2)
+			stage_state = "courses"
+	icon_state = "[stage_state][state_suffix]"
 	opacity = stage >= LOG_WALL_LOGS - 1
 	switch (stage)
 		if (1)
@@ -135,6 +141,24 @@
 	var/notched = TRUE // map walls and old saves are finished walls
 	var/chinked = TRUE
 	var/tmp/log_wall_busy = FALSE
+	var/unchinked_state = "unchinked"
+
+/obj/covers/wood_wall/log/corner
+	unchinked_state = "unchinked_corner"
+
+// Until it is chinked the wall shows daylight between its logs; a chinked or
+// mapped wall keeps its own sprite from walls.dmi.
+/obj/covers/wood_wall/log/proc/log_wall_appearance()
+	if (chinked)
+		icon = initial(icon)
+		icon_state = initial(icon_state)
+	else
+		icon = 'icons/obj/log_wall_build.dmi'
+		icon_state = unchinked_state
+
+/obj/covers/wood_wall/log/update_icon()
+	log_wall_appearance()
+	..()
 
 /obj/covers/wood_wall/log/examine(mob/user)
 	..()
@@ -196,6 +220,7 @@
 	if (!done || !log_worker_valid(H, S) || chinked || !S.use(cost))
 		return FALSE
 	chinked = TRUE
+	log_wall_appearance()
 	to_chat(H, SPAN_NOTICE("You chink the gaps. The wall will keep the warmth in now."))
 	return TRUE
 

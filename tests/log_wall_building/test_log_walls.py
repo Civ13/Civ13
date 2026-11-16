@@ -3,6 +3,8 @@ native probe: python3 tests/ecology_spawning/run_linux.py . tests/log_wall_build
 """
 from pathlib import Path
 import re
+import subprocess
+import sys
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -64,6 +66,19 @@ class LogWallTests(unittest.TestCase):
     def test_insulation_reads_chinking(self):
         text = (ROOT / 'code/game/objects/building_insulation.dm').read_text(encoding='utf-8')
         self.assertIn('L.chinked ? 0.8 : 0.5', text)
+
+    def test_stage_sprites_are_the_committed_drawing(self):
+        done = subprocess.run([sys.executable, str(ROOT / 'tests/sprites/create_log_wall_build.py'), '--check'],
+                              capture_output=True, text=True)
+        self.assertEqual(done.returncode, 0, done.stdout + done.stderr)
+
+    def test_stages_use_the_stage_sheet(self):
+        self.assertNotIn('transform', SOURCE)
+        for state in ('sill', 'courses', 'upper', 'unchinked', 'unchinked_corner', '_corner'):
+            self.assertIn('"%s"' % state, SOURCE)
+        self.assertIn("icon = 'icons/obj/log_wall_build.dmi'", SOURCE)
+        # A chinked or mapped wall goes back to its walls.dmi sprite.
+        self.assertIn('icon_state = initial(icon_state)', SOURCE)
 
 
 if __name__ == '__main__':
