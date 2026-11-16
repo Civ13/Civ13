@@ -1,7 +1,7 @@
 // Electrochemical devices are cable-only sources, never mechanical engines.
 /obj/structure/battery
 	name = "Baghdad-style jar cell"
-	desc = "A speculative reconstruction of a disputed ancient battery interpretation. Replace its iron electrode and grape juice electrolyte when empty; it cannot be electrically recharged."
+	desc = "A clay jar holding an iron rod in grape juice. It gives a weak current. Replace the iron and the juice when it runs flat; it cannot be recharged."
 	icon = 'icons/obj/claystuff.dmi'
 	icon_state = "clayvase"
 	anchored = FALSE
@@ -25,7 +25,7 @@
 
 /obj/structure/battery/pile
 	name = "iron-copper voltaic-style pile"
-	desc = "A gameplay substitute for an early nineteenth-century pile, using iron instead of zinc. It consumes iron electrodes and grape juice electrolyte and cannot be electrically recharged."
+	desc = "A stack of iron and copper discs with grape juice between them. It wears down its iron and juice and cannot be recharged."
 	assembled = TRUE
 	energy_capacity = 3000
 	discharge_rate = 5

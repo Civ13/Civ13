@@ -105,7 +105,7 @@ var/global/list/region_home_summoned = list()
 	if(!lobby || !lobby.client) return FALSE
 	var/client/C = lobby.client
 	if(train_escrow_account_held(C.ckey))
-		to_chat(lobby, SPAN_WARNING("Your train is held in safe transfer escrow. Wait for its destination or recovery before joining."))
+		to_chat(lobby, SPAN_WARNING("Your train is still on its way. Wait for it to arrive before joining."))
 		return FALSE
 	// Guests own no durable character and cannot travel.
 	if(IsGuestKey(C.key)) return TRUE

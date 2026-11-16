@@ -242,7 +242,7 @@ var/global/list/car_workshop_prototypes = list()
 		for (var/obj/structure/vehicleparts/axis/A in range(5, src))
 			if (key_service_vehicle(A)) cars["[A.reg_number] ([A.keyed_vehicle_id])"] = A
 		var/car = WWinput(H, "Select a stopped unoccupied vehicle in the northeast service bay.", name, "Cancel", cars + list("Cancel"))
-		var/action = WWinput(H, "Copy requires a matching key. Rekey requires physical custody and invalidates old copies.", name, "Cancel", list("Copy", "Rekey", "Cancel"))
+		var/action = WWinput(H, "Copy needs a matching key. Rekey needs the car here and makes old keys useless.", name, "Cancel", list("Copy", "Rekey", "Cancel"))
 		if (cars[car] && (action in list("Copy", "Rekey"))) service_vehicle_key(H, cars[car], action == "Rekey")
 		return
 	assemble_for(H, choice)

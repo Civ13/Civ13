@@ -89,7 +89,7 @@
 	return TRUE
 
 /obj/map_metadata/extraction_survival/proc/confirm_car_purchase(mob/living/human/H)
-	return WWinput(H, "Buy a Piccolino for 25 workshop parts? The car has no fuel. Your level-two private bay must be clear. Construction uncertainty locks the account for explicit offline forfeiture; it never reissues a car or refunds parts automatically.", "Private garage", "Cancel", list("Buy car", "Cancel")) == "Buy car"
+	return WWinput(H, "Buy a Piccolino for 25 workshop parts? The car has no fuel. Your level-two private bay must be clear. If the build is interrupted, your account is frozen until staff sort it out.", "Private garage", "Cancel", list("Buy car", "Cancel")) == "Buy car"
 
 /obj/map_metadata/extraction_survival/proc/buy_car(mob/living/human/H)
 	if (!owned(H) || H.stat != CONSCIOUS) return FALSE
@@ -137,7 +137,7 @@
 	qdel(W)
 	if (!record || !S.finish_vehicle_purchase(record, plan["garage_purchase"]["id"]))
 		S.locked = TRUE
-		to_chat(H, "Paid car construction is uncertain. Account quarantined for explicit offline forfeiture; no car or payment will be reissued automatically.")
+		to_chat(H, "Something went wrong building your car. Your account is frozen until staff sort it out.")
 		return FALSE
 	S.transitioning = FALSE
 	to_chat(H, "Car purchased and saved in your private bay. It has no fuel.")

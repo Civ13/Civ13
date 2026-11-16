@@ -907,10 +907,8 @@ var/tsfsr_forceEnabled = FALSE
 	var/msg29 = "[fact29]: [alive_tsfsr.len] alive, [heavily_injured_tsfsr.len] heavily injured or unconscious, [dead_tsfsr.len] deceased. Mortality rate: [mortality_tsfsr]%"
 
 
-	var/report_scope = ""
 	if (map && map.persistence)
 		var/list/current_counts = persistence_battle_report_counts()
-		report_scope = "Current-world snapshot by job faction. Removed bodies and historical deaths are not counted; this is not a lifetime mortality report."
 		msg1 = persistence_battle_report_line(fact1, BRITISH, current_counts)
 		msg2 = persistence_battle_report_line(fact2, PIRATES, current_counts)
 		msg3 = persistence_battle_report_line(fact3, CIVILIAN, current_counts)
@@ -1059,8 +1057,6 @@ var/tsfsr_forceEnabled = FALSE
 	if (public == "Yes")
 		if (!shower || (input(shower, "Are you sure you want to show the battle report? Unless the Battle Controller Process died, it will happen automatically!", "Battle Report") in list ("Yes", "No")) == "Yes")
 			to_chat(world, "<font size=4>Status Report:</font>")
-			if (report_scope)
-				to_chat(world, report_scope)
 
 			if (msg1)
 				to_chat(world, "<font size=3>[msg1]</font>")
@@ -1133,8 +1129,6 @@ var/tsfsr_forceEnabled = FALSE
 			else
 				message_admins("the <b>Battle Controller Process</b> showed everyone the battle report.")
 	else
-		if (report_scope)
-			shower << report_scope
 		if (msg1)
 			shower << msg1
 		if (msg2)

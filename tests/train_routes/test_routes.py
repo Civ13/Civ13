@@ -15,7 +15,7 @@ class RouteContracts(unittest.TestCase):
 
     def test_ids_are_hex_and_preview_is_explicit(self):
         self.assertIn('findtext("0123456789abcdef", copytext(id, i, i + 1))', ROUTES)
-        self.assertIn("Physical departures remain unavailable", ROUTES)
+        self.assertIn("Trains cannot yet run to other lands", ROUTES)
         station = (ROOT / "code/modules/persistence/party_train.dm").read_text()
         self.assertIn("boarded;freight;train_station_id", station)
 

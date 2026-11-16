@@ -358,6 +358,8 @@
 
 		handle_drowning()
 		flood_life_tick()
+		if (buriedalive)
+			burial_life_tick() // burial.dm
 
 		handle_blood()
 
@@ -1408,14 +1410,6 @@
 			else
 				invisibility = 0
 				return
-
-/mob/living/human/proc/buried_proc()
-	if (buriedalive)
-		spawn(300)
-			if (buriedalive && stat != DEAD)
-				adjustOxyLoss(5)
-				to_chat(src, "<span class='danger'>You can't breathe!</span>")
-
 
 /mob/living/human/proc/process_addictions(drug = null, value = 0)
 	if (!drug || value == 0)

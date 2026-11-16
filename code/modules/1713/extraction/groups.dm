@@ -215,7 +215,7 @@
 		var/list/actions = list("Create PMC group", "Create Scav group", "Cancel")
 		if (P)
 			prompt += "\nLeader: [P.leader]. Faction: [P.faction]. Members: [jointext(P.members, ", ")]. Ready: [P.ready.len]/[P.members.len]."
-			if (P.vehicle_id) prompt += "\nTravel: selected leader car; each readiness requires rider consent."
+			if (P.vehicle_id) prompt += "\nTravel: the leader's car. Each rider must agree before it leaves."
 			actions = P.leader == H.extraction_session.owner ? list("Invite player", "Use garage car", "Travel on foot", "Ready loadout", "Ready insured loadout", "Deploy group", "Leave group", "Cancel") : list("Ready loadout", "Ready insured loadout", "Leave group", "Cancel")
 		var/choice = WWinput(H, prompt, "Raid group", "Cancel", actions)
 		if (!group_eligible(H)) return FALSE

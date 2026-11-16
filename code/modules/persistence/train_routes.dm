@@ -197,7 +197,7 @@
 			if(entry["party"] == party)
 				destinations["[peer["name"]]: [entry["name"]] ([entry["id"]])"] = list("destination" = region, "station" = entry["id"], "destination_revision" = entry["revision"])
 	if(!destinations.len)
-		to_chat(H, SPAN_WARNING("No established railway station for your party is known at the other end. Build its office and edge-connected rails first, and let the regions refresh."))
+		to_chat(H, SPAN_WARNING("Your party has no railway station at the other end. Build its office and rails to the edge there first, then wait a few minutes."))
 		return
 	var/engine_choice = WWinput(H, "Choose the stopped locomotive.", "Railway destination", null, engines + list("Cancel"))
 	var/obj/structure/trains/locomotive/L = engines[engine_choice]
@@ -208,7 +208,7 @@
 	if(!route || QDELETED(src) || QDELETED(L) || !H.client || !Adjacent(H) || !train_endpoint_ready() || train_endpoint_party() != party || !party_train_may_board(H, party)) return
 	if(get_dist(src, L) > train_endpoint_range() || L.z != z || L.automovement || L.train_transfer_busy || !train_route_link_allowed(route["destination"])) return
 	L.train_route = list("source_station" = physical_station_id(), "destination" = route["destination"], "station" = route["station"], "party" = party, "source_revision" = train_route_revision(src), "destination_revision" = route["destination_revision"])
-	to_chat(H, SPAN_NOTICE("Route planned. Physical departures remain unavailable pending safe transfer integration; this does not move your train or passengers."))
+	to_chat(H, SPAN_NOTICE("Route planned. Trains cannot yet run to other lands, so the train stays here."))
 
 // Available at an assigned berth without replacing its existing travel/home UI.
 /obj/structure/region_gate/verb/plan_physical_train_route()

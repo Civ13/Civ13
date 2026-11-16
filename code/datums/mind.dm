@@ -151,16 +151,16 @@
 		output += "<b>[html_encode(record["label"])]</b>: [html_encode(record["observation"])]"
 		if (record["category"] == "berry_smell")
 			berry_records++
-			output += "<br><i>Observation of a sample, not proof that these berries are safe to eat.</i>"
+			output += "<br><i>One sample's smell. Eat with care.</i>"
 			if (!berry_context || record["context"] != berry_context)
-				output += "<br><i>Historical observation: the world's berry configuration has changed or is unavailable.</i>"
+				output += "<br><i>An old note. The berries may have changed since.</i>"
 		output += "<br><br>"
 	if (learned_discoveries.len >= 256)
-		output += "<i>Discovery notes are full (256 records). Existing knowledge is kept; new observations are not added. Personal notes remain available.</i><br>"
+		output += "<i>Your discovery notes are full (256). New observations will not be written down.</i><br>"
 	if (berry_records >= 64)
-		output += "<i>Berry smell notes are full (64 records). Existing observations are kept; other categories remain subject to the overall limit.</i><br>"
+		output += "<i>Your berry smell notes are full (64).</i><br>"
 	if (omitted)
-		output += "<i>Some stored discoveries exceed display limits or are invalid and are not shown. Stored records have not been changed.</i>"
+		output += "<i>Some notes are too long or damaged to show.</i>"
 	return output
 
 /datum/mind/proc/store_memory(new_text)

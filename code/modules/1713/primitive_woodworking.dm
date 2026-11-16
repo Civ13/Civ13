@@ -19,7 +19,7 @@
 
 /obj/item/stack/material/crude_plank
 	name = "crude plank"
-	desc = "An uneven split plank. Flatten it with sharpened flint or another sharp non-wooden working material, without tool wear. It cannot substitute for finished planks."
+	desc = "An uneven split plank. Flatten it into a proper plank with sharpened flint or another sharp edge."
 	icon_state = "sheet-wood"
 	default_type = "crude_plank"
 	value = 0

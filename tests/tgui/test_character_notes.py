@@ -49,7 +49,7 @@ class NotesParser(unittest.TestCase):
   serialized=json.dumps(data)
   self.assertIn('Public smell',serialized)
   self.assertIn('HIDDEN_OBSERVATION',serialized) # Existing historical observation remains visible, with warning.
-  self.assertIn('Historical observation',serialized)
+  self.assertIn('An old note',serialized)
   for secret in ('HIDDEN_ID','OLD_CONTEXT','SECOND_ID','berry_smell','Hidden malformed'):self.assertNotIn(secret,serialized)
   self.assertEqual(records,before)
 

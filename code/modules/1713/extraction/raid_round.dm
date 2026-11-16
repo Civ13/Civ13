@@ -69,7 +69,7 @@
 				if (entry["state"] != "eligible") continue
 				ids += entry["item_id"]
 		if (!ids.len)
-			to_chat(H, "Insurance returns are pending another full completed round. Expiration: to be implemented.")
+			to_chat(H, "Insurance returns arrive after one more full round.")
 			return FALSE
 		var/list/claimed = S.claim_insurance_mail(ids)
 		if (!claimed) return FALSE
@@ -102,7 +102,7 @@
 			var/list/choices = options.Copy()
 			if (data["next_cursor"]) choices += "Next page"
 			choices += list("First page", "Cancel")
-			var/choice = WWinput(H, "Returns require one additional full completed round. Completed generation: [data["completed_generation"]]. Expiration: [data["expiration"]]. Select a return to inspect its condition and reclaim eligible equipment.", "Insurance mail", "Cancel", choices)
+			var/choice = WWinput(H, "Returns arrive after one more full round. Expires: [data["expiration"]]. Pick a return to check its condition and reclaim what you can.", "Insurance mail", "Cancel", choices)
 			if (!owned(H) || H.extraction_session != S || H.stat != CONSCIOUS || !H.Adjacent(S.house)) return FALSE
 			if (choice == "Cancel" || isnull(choice)) return TRUE
 			if (choice == "Next page" && data["next_cursor"])

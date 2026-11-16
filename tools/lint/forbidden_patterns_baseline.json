@@ -29,7 +29,7 @@
       "code/game/mob/living/carbon/human/human_attackhand.dm": 5,
       "code/game/mob/living/carbon/human/human_defense.dm": 9,
       "code/game/mob/living/carbon/human/human_helpers.dm": 2,
-      "code/game/mob/living/carbon/human/human_life.dm": 4,
+      "code/game/mob/living/carbon/human/human_life.dm": 3,
       "code/game/mob/living/carbon/human/human_mutations.dm": 1,
       "code/game/mob/living/carbon/human/pull_pair_lifecycle.dm": 1,
       "code/game/mob/living/carbon/human/shit_piss.dm": 2,

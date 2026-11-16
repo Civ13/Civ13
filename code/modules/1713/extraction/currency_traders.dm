@@ -238,7 +238,7 @@ var/datum/extraction_trade_policy/extraction_trader_policy = new
 		var/list/lines = list()
 		for (var/currency in required)
 			lines += "€1 = [extraction_currency_symbol(currency)][snapshot["rates"][currency]]"
-		return "[jointext(lines, ", ")] ([snapshot["provider"]], published [snapshot["effective"]], fetched [snapshot["fetched"]], snapshot [snapshot["id"]][stale(snapshot, today) ? ", STALE" : ""]). Reference rates are not guaranteed market prices."
+		return "[jointext(lines, ", ")] ([snapshot["provider"]], published [snapshot["effective"]], fetched [snapshot["fetched"]][stale(snapshot, today) ? ", out of date" : ""])."
 
 	// Base value in euros -> exact (unrounded) amount in currency.
 	proc/from_base(list/snapshot, euros, currency)

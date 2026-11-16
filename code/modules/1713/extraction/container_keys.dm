@@ -92,7 +92,7 @@
 /obj/effect/extraction_loot_marker/keyed
 	icon_state = "securecrate"
 	name = "locked scavenger cache"
-	desc = "The surviving lock needs the exact key named on this container."
+	desc = "The lock needs the key named on this container."
 /obj/effect/extraction_loot_marker/keyed/industrial_tool_cage
 	name = "Industrial District maintenance stock cage"
 	container_id = 61

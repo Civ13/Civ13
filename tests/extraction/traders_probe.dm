@@ -28,7 +28,7 @@
 	tampered["rates"]["GBP"] = "1.00000"
 	equipment_assert(!fx.valid(tampered), "an edited cached rate no longer matches its snapshot id")
 	equipment_assert(fx.usable(S, day + 3) && !fx.stale(S, day + 3), "rates three days old are fresh")
-	equipment_assert(fx.usable(S, day + 6) && fx.stale(S, day + 6) && findtext(fx.describe(S, day + 6), "STALE"), "rates six days old still trade but are labelled stale")
+	equipment_assert(fx.usable(S, day + 6) && fx.stale(S, day + 6) && findtext(fx.describe(S, day + 6), "out of date"), "rates six days old still trade but are labelled stale")
 	equipment_assert(!fx.usable(S, day + 8) && !fx.usable(S, day - 3), "rates over a week old, or dated in the future, are refused")
 	equipment_assert(fx.accept(S, FALSE) && fx.round_snapshot(day + 1) == S, "the round pins its first usable snapshot")
 	var/list/newer = fx.parse(traders_ecb_xml("2026-11-07", "0.90000"), "2026-11-07 16:30:00")

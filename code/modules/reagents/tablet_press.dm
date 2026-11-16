@@ -191,7 +191,7 @@
 
 /obj/structure/chem_master/tablet_press/attack_hand(mob/living/human/user)
 	if (!can_operate(user))
-		to_chat(user, SPAN_WARNING("Anchor the press and meet its historical and Pharmacology admission first."))
+		to_chat(user, SPAN_WARNING("The press must be anchored, and you need to know Pharmacology."))
 		return
 	user.set_using_object(src)
 	var/dat = "Internal buffer: [reagents.total_volume]/120 units.<br>"

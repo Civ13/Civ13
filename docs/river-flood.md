@@ -250,6 +250,19 @@ so Gaia's level 1 or a dug cave) is the cellar level, cached as
   (`cellar_dry`, unsaved).
 - Pumps: any structure in `cellar_pumps` keeps tiles within its
   `cellar_reach` dry while its `cellar_pumping()` is TRUE.
+- Tunnels: floodwater pouring down a tunnel mouth
+  (`/obj/structure/multiz/ladder/ww2/tunneltop`, registered in `tunnel_mouths`)
+  runs along the open tunnel below. From the tile under each pouring mouth,
+  the water reaches 3 more tiles a minute, up to 30 and at most 400 tiles,
+  roof-high (1.5) except for a waist-deep edge (0.8). Dense tiles, packed earth
+  included, stop it (`tunnel_spread`). When the mouth stops pouring, because
+  the river fell or the hole was filled, the reach shrinks a tile a minute.
+  This is worked out at most once a minute, on demand, and is unsaved
+  (`tunnel_flood_update`). Pumps keep it back, but bailing does not.
+- Drowning below ground: roof-high tunnel water has no air (`flood_airless`).
+  Instead of swimming, `handle_drowning()` spends a held breath
+  (`tunnel_hold_breath`: the swimmer's `swim_breath` plus 10, so about 20 s untrained and 70 s at full swimming skill) and then takes 10 oxygen
+  damage a life tick, until the person reaches shallower water or a ladder.
 - Filling in: four dirt piles close a tunnel mouth, which stops pouring, and a
   shovel with a dirt pile packs an open tunnel tile into dense packed earth,
   which stops seepage there for good (docs/underground-excavation.md).
