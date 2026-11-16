@@ -412,6 +412,7 @@
 #include "code\game\objects\explosion.dm"
 #include "code\game\objects\farming.dm"
 #include "code\game\objects\items.dm"
+#include "code\game\objects\items\item_piles.dm"
 #include "code\game\objects\objs.dm"
 #include "code\game\objects\random.dm"
 #include "code\game\objects\roof_stuff.dm"

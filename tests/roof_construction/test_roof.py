@@ -141,7 +141,8 @@ class RoofProjection:
                         building_confirm=lambda u, d: True,
                         building_wait=lambda u, t, start: not cancel,
                         SPAN_NOTICE=lambda m: m, visible_message=lambda m: None,
-                        qdel=retire, building_construct_roof=self.construct)
+                        qdel=retire, use_one_roofing=lambda u: retire(item),
+                        building_construct_roof=self.construct)
         attack = project(ROOF.read_text(encoding='utf-8'),
             '/obj/item/weapon/roofbuilder/attack_self(mob/user)',
             'attack_self', 'user', self.env, builder=True)
@@ -214,10 +215,11 @@ class RoofTests(unittest.TestCase):
         # success/failure branch; projection above establishes returned outcomes.
         source = body(ROOF.read_text(encoding='utf-8'),
                       '/obj/item/weapon/roofbuilder/attack_self(mob/user)')
-        self.assertEqual(source.count('qdel(src)'), 1)
+        self.assertEqual(source.count('use_one_roofing(user)'), 1)
+        self.assertNotIn('qdel(src)', source)
         self.assertIn('\tdone = TRUE\n\tvar/obj/roof/R = building_construct_roof', source)
         self.assertIn('\tif (!R)\n\t\tdone = FALSE\n\t\treturn\n', source)
-        self.assertLess(source.index('if (!R)'), source.index('qdel(src)'))
+        self.assertLess(source.index('if (!R)'), source.index('use_one_roofing(user)'))
         self.assertIn('!building_wait(user, covers_time, start) || !building_item_usable', source)
         self.assertIn('if (R.building_floor())', source)
         self.assertIn('finishes building the roof."', source)
