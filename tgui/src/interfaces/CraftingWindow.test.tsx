@@ -1,6 +1,7 @@
 import React from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { cleanup, fireEvent, render, screen, within } from '@testing-library/react';
+import { cleanup, fireEvent, screen, within } from '@testing-library/react';
+import { render } from '../testing';
 import { CraftingWindow, matches, seconds, startingAnswers } from './CraftingWindow';
 import type { Data, ScreenProps } from '../types';
 

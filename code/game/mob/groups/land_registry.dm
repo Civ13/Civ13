@@ -1,5 +1,5 @@
 // Land registry and deeds (docs/land-registry.md). A faction's registrar (its
-// leader, or anyone holding a seal of the registrar's office) marks a plot
+// leader, or anyone with the registry power, faction_offices.dm) marks a plot
 // between two boundary stones at its opposite corners and issues a deed for
 // it. The deed is the title: whoever holds it holds the plot, so land is sold
 // by handing the deed over. A valid deed is also the master key of its plot:
@@ -20,7 +20,6 @@
 //
 // Nothing here sleeps except the prompts, which recheck after.
 
-#define LAND_OFFICE_REGISTRAR "Registrar"
 #define LAND_PLOT_MAX_SIDE 32
 #define LAND_PLOT_MIN_SIDE 2
 #define LAND_PLOTS_PER_FACTION 60
@@ -311,7 +310,7 @@ var/global/list/land_deeds = list()
 	if (!istype(user) || !map)
 		return ..()
 	var/faction = user.civilization
-	var/registrar = faction && faction != "none" && map.faction_office_holder(user, faction, LAND_OFFICE_REGISTRAR)
+	var/registrar = faction && faction != "none" && map.faction_power(user, faction, "registry")
 	var/list/at = map.land_plot_at(get_turf(src))
 	var/list/row = at ? map.land_plot(at[1], at[2]) : null
 	if (!registrar || (at && at[1] != faction))
@@ -327,7 +326,7 @@ var/global/list/land_deeds = list()
 		choices += "Register a plot to another stone"
 	choices += "Cancel"
 	var/choice = WWinput(user, row ? "[row[1]] of [faction]" : "Land registry of [faction]", "Boundary stone", "Cancel", choices)
-	if (!choice || choice == "Cancel" || !(choice in choices) || !user.Adjacent(src) || !map.faction_office_holder(user, faction, LAND_OFFICE_REGISTRAR))
+	if (!choice || choice == "Cancel" || !(choice in choices) || !user.Adjacent(src) || !map.faction_power(user, faction, "registry"))
 		return
 	if (choice == "Register a plot to another stone")
 		register_plot(user, faction)
@@ -342,7 +341,7 @@ var/global/list/land_deeds = list()
 			to_chat(user, SPAN_NOTICE(land_plot_text(faction, id, row)))
 		if ("Set the land tax")
 			var/value = player_input(user, "Land tax on [row[1]], in silver a week (0 to [LAND_TAX_MAX]). It is paid into the faction's strongbox.", "Land tax", row[8], "num", null, TRUE)
-			if (!isnum(value) || !map.faction_office_holder(user, faction, LAND_OFFICE_REGISTRAR) || !map.land_plot(faction, id))
+			if (!isnum(value) || !map.faction_power(user, faction, "registry") || !map.land_plot(faction, id))
 				return
 			var/owed = land_tax_owed(row, recruitment_now())
 			row[8] = clamp(round(value), 0, LAND_TAX_MAX)
@@ -354,7 +353,7 @@ var/global/list/land_deeds = list()
 			to_chat(user, SPAN_NOTICE("The land tax on [row[1]] is now [row[8]] silver a week."))
 		if ("Reissue the deed")
 			var/confirm = WWinput(user, "Reissue the deed to [row[1]]? The old deed becomes void, wherever it is. Use this for a lost deed, or land taken back for unpaid tax.", "Reissue", "Cancel", list("Reissue it", "Cancel"))
-			if (confirm != "Reissue it" || !map.faction_office_holder(user, faction, LAND_OFFICE_REGISTRAR) || !map.land_plot(faction, id))
+			if (confirm != "Reissue it" || !map.faction_power(user, faction, "registry") || !map.land_plot(faction, id))
 				return
 			row[7]++
 			row[10] = user.real_name
@@ -364,7 +363,7 @@ var/global/list/land_deeds = list()
 			to_chat(user, SPAN_NOTICE("You write out a new deed to [row[1]]. The old one is void."))
 		if ("Rename the plot")
 			var/value = land_name_clean(player_input(user, "New name for the plot:", "Plot", row[1], "text", null, TRUE), null)
-			if (!value || !map.faction_office_holder(user, faction, LAND_OFFICE_REGISTRAR) || !map.land_plot(faction, id))
+			if (!value || !map.faction_power(user, faction, "registry") || !map.land_plot(faction, id))
 				return
 			row[1] = value
 			for (var/obj/item/land_deed/D in land_deeds)
@@ -374,7 +373,7 @@ var/global/list/land_deeds = list()
 			to_chat(user, SPAN_NOTICE("The plot is now called [value]."))
 		if ("Strike the plot from the register")
 			var/confirm = WWinput(user, "Strike [row[1]] from the register? Its deed becomes void and the land is unclaimed.", "Strike", "Cancel", list("Strike it", "Cancel"))
-			if (confirm != "Strike it" || !map.faction_office_holder(user, faction, LAND_OFFICE_REGISTRAR))
+			if (confirm != "Strike it" || !map.faction_power(user, faction, "registry"))
 				return
 			var/list/rows = map.land_plots(faction)
 			rows -= id
@@ -399,7 +398,7 @@ var/global/list/land_deeds = list()
 		return
 	var/obj/structure/boundary_stone/other = options[pick]
 	var/name = player_input(user, "Name the plot (for example, \"the mill\" or \"Reeve's farm\"):", "Register a plot", "", "text", null, TRUE)
-	if (QDELETED(other) || !user.Adjacent(src) || !map.faction_office_holder(user, faction, LAND_OFFICE_REGISTRAR))
+	if (QDELETED(other) || !user.Adjacent(src) || !map.faction_power(user, faction, "registry"))
 		return
 	var/id = map.land_register(faction, name, get_turf(src), get_turf(other), user.real_name)
 	if (copytext(id, 1, 2) == "!")
@@ -446,7 +445,6 @@ var/global/list/land_deeds = list()
 	map.treasury_log(faction, "[user.real_name] paid land tax worth [weighed_silver_text(worth)] on [row[1]].")
 	to_chat(user, SPAN_NOTICE("You pay [weighed_silver_text(worth)] of land tax on [row[1]]. [owed > 0 ? "[weighed_silver_text(owed)] is still owed." : "It is paid up."]"))
 
-#undef LAND_OFFICE_REGISTRAR
 #undef LAND_PLOT_MAX_SIDE
 #undef LAND_PLOT_MIN_SIDE
 #undef LAND_PLOTS_PER_FACTION

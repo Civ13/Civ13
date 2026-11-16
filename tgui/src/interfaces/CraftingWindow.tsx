@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import type { Data, ScreenProps } from '../types';
-import { list, text } from './common';
+import { list, str } from './common';
 
 // The Crafting window for a held material. The server decides what a row's
 // state is and rechecks everything when a craft is requested; this screen only
@@ -16,8 +16,8 @@ const GROUPS: [Row['state'], string, string][] = [
 
 export function matches(row: Data, words: string[], purpose: string, readyOnly: boolean) {
   if (readyOnly && row.state !== 'ready') return false;
-  if (purpose && text(row.purpose) !== purpose) return false;
-  const hay = (text(row.name) + ' ' + text(row.category)).toLowerCase();
+  if (purpose && str(row.purpose) !== purpose) return false;
+  const hay = (str(row.name) + ' ' + str(row.category)).toLowerCase();
   return words.every(word => hay.includes(word));
 }
 export function seconds(deciseconds: unknown) {
@@ -30,10 +30,10 @@ export function seconds(deciseconds: unknown) {
 export function startingAnswers(fields: Data[]) {
   const start: Record<string, string> = {};
   for (const field of fields) {
-    const given = text(field.default);
-    if (field.kind === 'color') start[text(field.field)] = /^#[0-9a-fA-F]{6}$/.test(given) ? given.toLowerCase() : '#000000';
-    else if (field.kind === 'company') start[text(field.field)] = text(list(field.choices)[0] ?? '');
-    else start[text(field.field)] = given;
+    const given = str(field.default);
+    if (field.kind === 'color') start[str(field.field)] = /^#[0-9a-fA-F]{6}$/.test(given) ? given.toLowerCase() : '#000000';
+    else if (field.kind === 'company') start[str(field.field)] = str(list(field.choices)[0] ?? '');
+    else start[str(field.field)] = given;
   }
   return start;
 }
@@ -61,48 +61,48 @@ function Card({ ui, row, working }: { ui: ScreenProps; row: Row; working: Data |
   const ready = row.state === 'ready';
   // The server looks closely at the selected recipe only: exact unmet
   // requirements, and the choices it would otherwise ask in pop-ups.
-  const detail: Data | null = data.detail && text(data.detail.id) === row.id ? data.detail : null;
+  const detail: Data | null = data.detail && str(data.detail.id) === row.id ? data.detail : null;
   const needs = list(detail?.needs);
   const fields = list(detail?.fields);
   const [answers, setAnswers] = useState<Record<string, string>>({});
-  useEffect(() => { setAnswers(startingAnswers(fields)); }, [row.id, fields.map(field => text(field.field) + text(field.default)).join('|')]);
-  const answer = (field: Data) => answers[text(field.field)] ?? '';
-  const set = (field: Data, value: string) => setAnswers({ ...answers, [text(field.field)]: value });
+  useEffect(() => { setAnswers(startingAnswers(fields)); }, [row.id, fields.map(field => str(field.field) + str(field.default)).join('|')]);
+  const answer = (field: Data) => answers[str(field.field)] ?? '';
+  const set = (field: Data, value: string) => setAnswers({ ...answers, [str(field.field)]: value });
   const unanswered = fields.some(field => (field.kind === 'company' || !!field.required) && !answer(field).trim());
   const craft = () => {
     if (!ui.interactive || !ready || busy || unanswered) return;
-    if (fields.length) ui.act('make', { value: row.id, quantity: amount, options: JSON.stringify(Object.fromEntries(fields.map(field => [text(field.field), answer(field)]))) });
+    if (fields.length) ui.act('make', { value: row.id, quantity: amount, options: JSON.stringify(Object.fromEntries(fields.map(field => [str(field.field), answer(field)]))) });
     else ui.act('make', { value: row.id, quantity: amount });
   };
   return <section className="craft-card" aria-label="Selected recipe">
     <div className="craft-card-top">
       <div className="craft-pic"><Sprite image={row.image} large /></div>
       <div>
-        <h2>{text(row.name)}</h2>
-        {row.desc ? <p className="craft-desc">{text(row.desc)}</p> : null}
-        <p className="craft-meta">{row.built ? 'Structure' : 'Item'} · takes {seconds(row.time)} · makes {text(row.makes)}</p>
+        <h2>{str(row.name)}</h2>
+        {row.desc ? <p className="craft-desc">{str(row.desc)}</p> : null}
+        <p className="craft-meta">{row.built ? 'Structure' : 'Item'} · takes {seconds(row.time)} · makes {str(row.makes)}</p>
       </div>
     </div>
     <h3>Needs</h3>
     <ul className="craft-needs">
-      <Need met={batches > 0}>{text(row.cost)} <small>{data.where && text(data.where) !== 'in your hand' ? text(data.where) + ': ' : 'you have '}{text(data.amount)}</small></Need>
-      {row.state === 'locked' && <Need met={false}>{text(row.why)}</Need>}
-      {needs.map((need, i) => <Need key={i} met={!!need.met}>{text(need.label)}</Need>)}
-      {row.state === 'missing' && batches > 0 && !needs.some(need => !need.met) && <Need met={false}>{text(row.why)}</Need>}
+      <Need met={batches > 0}>{str(row.cost)} <small>{data.where && str(data.where) !== 'in your hand' ? str(data.where) + ': ' : 'you have '}{str(data.amount)}</small></Need>
+      {row.state === 'locked' && <Need met={false}>{str(row.why)}</Need>}
+      {needs.map((need, i) => <Need key={i} met={!!need.met}>{str(need.label)}</Need>)}
+      {row.state === 'missing' && batches > 0 && !needs.some(need => !need.met) && <Need met={false}>{str(row.why)}</Need>}
       {row.state === 'ready' && !needs.some(need => !need.met) && <Need met>Everything else is in place</Need>}
     </ul>
     {fields.length > 0 && <div className="craft-fields" role="group" aria-label="Choices">
       <h3>Choices</h3>
-      {fields.map((field, i) => <label key={i} className="craft-field"><span>{text(field.question).replace(/:\s*$/, '')}{field.required || field.kind === 'company' ? ' (needed)' : ''}</span>
+      {fields.map((field, i) => <label key={i} className="craft-field"><span>{str(field.question).replace(/:\s*$/, '')}{field.required || field.kind === 'company' ? ' (needed)' : ''}</span>
         {field.kind === 'color' ? <input type="color" disabled={busy} value={answer(field) || '#000000'} onChange={event => set(field, event.target.value)} />
           : field.kind === 'company' ? (list(field.choices).length
-            ? <select disabled={busy} value={answer(field)} onChange={event => set(field, event.target.value)}>{list(field.choices).map((name, j) => <option key={j} value={text(name)}>{text(name)}</option>)}</select>
+            ? <select disabled={busy} value={answer(field)} onChange={event => set(field, event.target.value)}>{list(field.choices).map((name, j) => <option key={j} value={str(name)}>{str(name)}</option>)}</select>
             : <em className="craft-note">You are not part of any company.</em>)
           : <input type="text" disabled={busy} maxLength={Math.min(1024, Number(field.max_length) || 256)} value={answer(field)} onChange={event => set(field, event.target.value)}
               onKeyDown={event => { if (event.key === 'Enter') event.preventDefault(); }} />}
       </label>)}
     </div>}
-    {row.tools ? <p className="craft-tools">Tools: {text(row.tools)}</p> : null}
+    {row.tools ? <p className="craft-tools">Tools: {str(row.tools)}</p> : null}
     {row.built ? <p className="craft-place">Builds on the tile you stand on, facing the way you face.
       {row.one_per_turf ? ' Only one per tile.' : ''}{row.on_floor ? ' Needs a floor under you.' : ''}</p> : null}
     <p className="craft-links">
@@ -110,7 +110,7 @@ function Card({ ui, row, working }: { ui: ScreenProps; row: Row; working: Data |
       {row.atlas ? <button type="button" className="craft-link" disabled={!ui.interactive} onClick={() => ui.act('atlas', { value: row.id })}>Open in Atlas</button> : null}
     </p>
     {mine && <div className="craft-progress" role="status">
-      <p>Making {text(working?.name)}...</p>
+      <p>Making {str(working?.name)}...</p>
       <div className="craft-track"><div key={row.id} className="craft-fill" style={{ animationDuration: Math.max(0.1, (Number(working?.time) || 0) / 10) + 's' }} /></div>
       <p className="craft-hint">Moving away cancels the work.</p>
     </div>}
@@ -138,7 +138,7 @@ export function CraftingWindow(ui: ScreenProps) {
   const [showLocked, setShowLocked] = useState(false);
   // The Atlas can hand over a recipe: show it whatever tab or search was left open.
   useEffect(() => {
-    const focus = text(data.focus);
+    const focus = str(data.focus);
     if (!focus || !rows.some(row => row.id === focus)) return;
     setSelected(focus); setQuery(''); setPurpose('');
     if (rows.find(row => row.id === focus)?.state === 'locked') setShowLocked(true);
@@ -154,28 +154,28 @@ export function CraftingWindow(ui: ScreenProps) {
   const words = useMemo(() => query.toLowerCase().trim().split(/\s+/).filter(Boolean).slice(0, 6), [query]);
   const visible = useMemo(() => rows.filter(row => matches(row, words, words.length ? '' : purpose, readyOnly)), [rows, words, purpose, readyOnly]);
   // Tabs come from what this material can make, in the server's fixed order.
-  const tabs = useMemo(() => list(data.purposes).map(name => text(name))
-    .map(name => [name, rows.filter(row => text(row.purpose) === name).length] as [string, number]).filter(tab => tab[1] > 0), [rows, data.purposes]);
+  const tabs = useMemo(() => list(data.purposes).map(name => str(name))
+    .map(name => [name, rows.filter(row => str(row.purpose) === name).length] as [string, number]).filter(tab => tab[1] > 0), [rows, data.purposes]);
   const active = words.length ? '' : purpose;
   const recent = useMemo(() => rows.filter(row => Number(row.recent) > 0).sort((a, b) => Number(a.recent) - Number(b.recent)).slice(0, 6), [rows]);
   const pinned = useMemo(() => rows.filter(row => !!row.pinned), [rows]);
   const chip = (row: Row) => <button key={row.id} type="button" className={'craft-chip' + (row.id === selected ? ' craft-chip-selected' : '')}
-    title={text(row.name)} onClick={() => setSelected(row.id)}><Sprite image={row.image} /><span>{text(row.name)}</span></button>;
+    title={str(row.name)} onClick={() => setSelected(row.id)}><Sprite image={row.image} /><span>{str(row.name)}</span></button>;
   const chosen = rows.find(row => row.id === selected) ?? null;
   const toggleReady = (next: boolean) => { setReadyOnly(next); ui.act('makeable_only', { value: next ? 1 : 0 }); };
   const quick = (row: Row) => { if (ui.interactive && row.state === 'ready' && !working) ui.act('make', { value: row.id, quantity: 1 }); };
   return <div className="craft">
     <div className="craft-head">
       <Sprite image={data.image} />
-      <h2>{text(data.material)}</h2>
-      <span className="craft-amount">{text(data.amount)} {text(data.where) || 'in your hand'}</span>
-      {data.station ? <span className="craft-station">At the {text(data.station)}</span> : null}
+      <h2>{str(data.material)}</h2>
+      <span className="craft-amount">{str(data.amount)} {str(data.where) || 'in your hand'}</span>
+      {data.station ? <span className="craft-station">At the {str(data.station)}</span> : null}
     </div>
     {!!data.reach && list(data.sources).length > 1 && <div className="craft-reach" role="group" aria-label="Materials within reach">
       <span className="craft-strip-label">In reach</span>
       {list(data.sources).map((source, i) => <button key={i} type="button" className={'craft-chip' + (source.current ? ' craft-chip-selected' : '')} aria-pressed={!!source.current}
-        disabled={!ui.interactive || !!working} onClick={() => { if (!source.current) ui.act('source', { value: text(source.key) }); }}>
-        <Sprite image={source.image} /><span>{text(source.name)}</span><small>{text(source.amount)} {text(source.where)}</small></button>)}
+        disabled={!ui.interactive || !!working} onClick={() => { if (!source.current) ui.act('source', { value: str(source.key) }); }}>
+        <Sprite image={source.image} /><span>{str(source.name)}</span><small>{str(source.amount)} {str(source.where)}</small></button>)}
     </div>}
     <div className="craft-columns">
       <div className="craft-left">
@@ -198,18 +198,18 @@ export function CraftingWindow(ui: ScreenProps) {
             const group = visible.filter(row => row.state === state);
             if (readyOnly && state !== 'ready') return null;
             // The old categories stay as sub-headings wherever a group mixes several.
-            const mixed = new Set(group.map(row => text(row.category))).size > 1;
+            const mixed = new Set(group.map(row => str(row.category))).size > 1;
             const folded = state === 'locked' && !showLocked && !words.length && group.length > 0;
             return <div key={state} className="craft-group">
               <h3 className={tone}>{title} <small>{group.length} {group.length === 1 ? 'recipe' : 'recipes'}</small>
                 {state === 'locked' && group.length > 0 && !words.length && <button type="button" className="craft-link" onClick={() => setShowLocked(!showLocked)}>{showLocked ? 'Hide' : 'Show'}</button>}</h3>
               {!folded && <ul>{group.map((row, i) => <li key={row.id}>
-                {mixed && (i === 0 || text(group[i - 1].category) !== text(row.category)) && <h4 className="craft-sub">{text(row.category)}</h4>}
+                {mixed && (i === 0 || str(group[i - 1].category) !== str(row.category)) && <h4 className="craft-sub">{str(row.category)}</h4>}
                 <button type="button" className={'craft-row craft-row-' + row.state + (row.id === selected ? ' craft-row-selected' : '')}
                   aria-pressed={row.id === selected} onClick={() => setSelected(row.id)} onDoubleClick={() => quick(row)}>
                   <Sprite image={row.image} />
-                  <span className="craft-row-text"><strong>{text(row.name)}</strong>{row.state !== 'ready' && <small>{text(row.why)}</small>}</span>
-                  <span className="craft-cost">{text(row.cost)}</span>
+                  <span className="craft-row-text"><strong>{str(row.name)}</strong>{row.state !== 'ready' && <small>{str(row.why)}</small>}</span>
+                  <span className="craft-cost">{str(row.cost)}</span>
                 </button>
               </li>)}</ul>}
             </div>;
@@ -221,7 +221,7 @@ export function CraftingWindow(ui: ScreenProps) {
         {chosen ? <Card ui={ui} row={chosen} working={working} />
           : <section className="craft-card craft-card-empty"><p>Pick a recipe to see what it needs. Nothing is spent until you press Craft.</p>
             <p className="craft-hint">Double-click a ready recipe to make one straight away.</p>
-            {working && <p role="status">Making {text(working.name)}...</p>}</section>}
+            {working && <p role="status">Making {str(working.name)}...</p>}</section>}
       </div>
     </div>
   </div>;

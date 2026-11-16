@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { NoticeBox } from 'tgui-core/components';
 import type { Data, ScreenProps } from '../types';
-import { list, text } from './common';
+import { list, str } from './common';
 import { Pill } from './kit';
 
 type Navigation = { route: 'open' | 'page' | 'resource' | 'reset'; query?: string; era?: string; processor?: string; recipe?: string; page?: number; resource?: string; scope?: string };
@@ -18,7 +18,7 @@ const navigate = (ui: ScreenProps, params: Navigation) => {
   if (wait <= 0) send(); else queued = setTimeout(send, wait);
 };
 const eras = ['Stone Age', 'Bronze Age', 'Middle Ages', 'Imperial Age', 'Industrial Age', 'Early Modern Age', 'WW2', 'Cold War', 'Modern Age', 'Digital Age'];
-const eraName = (label: unknown) => text(label).replace(/(^|\/ )\d+: /g, '$1').replace(/^Unknown \/ context dependent$/, '');
+const eraName = (label: unknown) => str(label).replace(/(^|\/ )\d+: /g, '$1').replace(/^Unknown \/ context dependent$/, '');
 // How a recipe is carried out, in the player's terms. Unknown kinds keep their catalog label.
 const methods: Record<string, [string, string]> = {
   'Material': ['Crafting menu', 'Hold the material and use it in your hand to open its crafting menu.'],
@@ -37,11 +37,11 @@ const reactionHints: Record<string, string> = {
   bench_heated: 'Reacts only in the secured beaker of a laboratory reaction bench heated with a laboratory burner, or in a powered factory reaction vessel.',
 };
 const reagentList = (found: string) => Array.from(found.matchAll(/\('(\w+)', '([\d.]+)'\)/g)).map(match => match[2] + ' ' + match[1].replace(/_/g, ' ')).join(' and ');
-const method = (kind: unknown) => { const name = text(kind); return methods[name.split(' / ')[0]] ?? methods[name] ?? [name, '']; };
-const catalogName = (kind: unknown) => { const parts = text(kind).split(' / '); return parts[0] === 'Material' && parts[1] ? parts[1].replace(/_/g, ' ') : ''; };
+const method = (kind: unknown) => { const name = str(kind); return methods[name.split(' / ')[0]] ?? methods[name] ?? [name, '']; };
+const catalogName = (kind: unknown) => { const parts = str(kind).split(' / '); return parts[0] === 'Material' && parts[1] ? parts[1].replace(/_/g, ' ') : ''; };
 // Generated bookkeeping that the layout already shows as research, time and era.
 export function notes(conditions: unknown) {
-  let rest = text(conditions);
+  let rest = str(conditions);
   const facts: string[] = [];
   const time = /\btime (\d+) deciseconds\b/.exec(rest);
   if (time && Number(time[1]) > 0) facts.push('Takes about ' + Number(time[1]) / 10 + ' s');
@@ -64,11 +64,11 @@ function Source({ file, line, revision = 'master' }: Data) {
   if (segments.some(segment => !segment || segment === '.' || segment === '..')) return null;
   const path = segments.map(encodeURIComponent).join('/');
   const href = 'https://github.com/Civ13/Civ13/blob/' + ref + '/' + path + '#L' + encodeURIComponent(String(line));
-  return <p><a href={href} target="_blank" rel="noreferrer">Catalog source: {text(file)}:{text(line)}</a></p>;
+  return <p><a href={href} target="_blank" rel="noreferrer">Catalog source: {str(file)}:{str(line)}</a></p>;
 }
 function Sprite({ image, title }: { image: unknown; title?: unknown }) {
   const src = typeof image === 'string' && /^atlas_[0-9a-f]{32}\.png$/.test(image) ? image : '';
-  return src ? <img className="atlas-sprite" src={src} width={32} height={32} alt="" title={text(title)} /> : <span className="atlas-sprite atlas-sprite-empty" aria-hidden="true" />;
+  return src ? <img className="atlas-sprite" src={src} width={32} height={32} alt="" title={str(title)} /> : <span className="atlas-sprite atlas-sprite-empty" aria-hidden="true" />;
 }
 function Status({ row }: { row: Data }) {
   if (row.retired) return <Pill tone="warn" className="atlas-chip">Retired this era</Pill>;
@@ -80,19 +80,19 @@ function Resource({ ui, resource }: { ui: ScreenProps; resource: Data }) {
   return <button type="button" className="atlas-tile" disabled={!ui.interactive} title="Show how to get this and what it is used for"
     onClick={() => navigate(ui, { route: 'resource', resource: String(resource.id) })}>
     <Sprite image={resource.image} title={resource.preview} />
-    <span className="atlas-tile-name">{text(resource.name)}</span>
-    {text(resource.quantity) !== '' && <span className="atlas-amount">({text(resource.quantity)})</span>}
+    <span className="atlas-tile-name">{str(resource.name)}</span>
+    {str(resource.quantity) !== '' && <span className="atlas-amount">({str(resource.quantity)})</span>}
   </button>;
 }
 function RecipeRow({ ui, row, selected, onPick }: { ui: ScreenProps; row: Data; selected: boolean; onPick: () => void }) {
   const dim = !!row.manual_hint || !!row.retired || !!row.elsewhere;
-  const variants = Number(row.variant_count) > 1 ? text(row.variant_count) + (row.ways ? ' versions: ' + text(row.ways) : ' recipe variants') : text(row.needs);
+  const variants = Number(row.variant_count) > 1 ? str(row.variant_count) + (row.ways ? ' versions: ' + str(row.ways) : ' recipe variants') : str(row.needs);
   return <li data-result-type="recipe" className={selected ? 'atlas-selected' : undefined}>
     <button type="button" className={'atlas-row' + (dim ? ' atlas-dim' : '')} disabled={!ui.interactive} aria-current={selected ? 'true' : undefined} onClick={onPick}>
       <Sprite image={row.image} />
-      <span className="atlas-row-text"><strong>{text(row.name)}</strong>
+      <span className="atlas-row-text"><strong>{str(row.name)}</strong>
         <small>{[eraName(row.era_label), variants].filter(Boolean).join(' - ')}</small>
-        {!!row.manual_hint && <small>{text(row.manual_hint)}</small>}
+        {!!row.manual_hint && <small>{str(row.manual_hint)}</small>}
         {!!row.elsewhere && <small>Other maps only</small>}</span>
       <Status row={row} />
     </button>
@@ -102,31 +102,31 @@ function Recipe({ ui, recipe, choose, lead }: { ui: ScreenProps; recipe: Data; c
   const variants = list(recipe.variants);
   const familyVariants = list(recipe.family_variants);
   const research = list(recipe.research);
-  const site = text(recipe.site);
+  const site = str(recipe.site);
   const [how, base] = method(recipe.kind);
-  const hint = text(recipe.kind) === 'Chemistry' ? reactionHints[site] ?? base : base;
+  const hint = str(recipe.kind) === 'Chemistry' ? reactionHints[site] ?? base : base;
   const optional = site === 'bench';
   const { facts, rest } = notes(recipe.conditions);
   const until = Number(recipe.maximum_era);
   // Only recipes made from a held material have a Crafting window to open.
   const product = list(recipe.outputs)[0];
-  const craftable = text(recipe.kind).split(' / ')[0] === 'Material' && !recipe.elsewhere && !recipe.retired && product && typeof product.id === 'string' ? product.id : '';
+  const craftable = str(recipe.kind).split(' / ')[0] === 'Material' && !recipe.elsewhere && !recipe.retired && product && typeof product.id === 'string' ? product.id : '';
   return <article className="atlas-card" aria-label="Recipe">
     {!!lead && <p className="atlas-eyebrow">{lead}</p>}
-    <h2 style={recipe.manual_hint ? { color: '#aaa' } : undefined}>{text(recipe.name)}</h2>
+    <h2 style={recipe.manual_hint ? { color: '#aaa' } : undefined}>{str(recipe.name)}</h2>
     <p className="atlas-chips">
       <Pill className="atlas-chip">{eraName(recipe.era_label) || 'Era varies'}</Pill>
-      {recipe.station_id ? <button type="button" className="kit-pill atlas-chip atlas-chip-link" disabled={!ui.interactive} onClick={() => navigate(ui, { route: 'resource', resource: String(recipe.station_id) })}>{optional ? 'Also at: ' : 'Made at: '}{text(recipe.station)}</button>
-        : <Pill className="atlas-chip">{text(recipe.station) || how}</Pill>}
+      {recipe.station_id ? <button type="button" className="kit-pill atlas-chip atlas-chip-link" disabled={!ui.interactive} onClick={() => navigate(ui, { route: 'resource', resource: String(recipe.station_id) })}>{optional ? 'Also at: ' : 'Made at: '}{str(recipe.station)}</button>
+        : <Pill className="atlas-chip">{str(recipe.station) || how}</Pill>}
       {catalogName(recipe.kind) && !!recipe.elsewhere && <Pill tone="warn" className="atlas-chip">Other maps only: {catalogName(recipe.kind)}</Pill>}
       {!!recipe.retired && <Pill tone="warn" className="atlas-chip">Retired in the current era</Pill>}
     </p>
-    {!!recipe.manual_hint && <p role="status" className="atlas-locked">{text(recipe.manual_hint)}</p>}
+    {!!recipe.manual_hint && <p role="status" className="atlas-locked">{str(recipe.manual_hint)}</p>}
     {craftable && <p><button type="button" className="atlas-craft" disabled={!ui.interactive} onClick={() => ui.act('atlas_craft', { value: craftable })}>Craft this</button>
       <span className="atlas-craft-note">Opens the Crafting window on this recipe when its material is in your hands or beside you.</span></p>}
     {familyVariants.length > 1 && <label className="atlas-field">Recipe variant ({familyVariants.length} ways to make this)
       <select aria-label="Recipe variant" disabled={!ui.interactive} value={String(recipe.id)} onChange={event => choose(event.target.value)}>
-        {familyVariants.map(variant => <option key={String(variant.id)} value={String(variant.id)}>{text(variant.label)}{variant.research === 'needed' ? ' - needs research' : ''}{variant.elsewhere ? ' - other maps' : ''}</option>)}
+        {familyVariants.map(variant => <option key={String(variant.id)} value={String(variant.id)}>{str(variant.label)}{variant.research === 'needed' ? ' - needs research' : ''}{variant.elsewhere ? ' - other maps' : ''}</option>)}
       </select></label>}
     <div className="atlas-flow" aria-label="Recipe dependency">
       <div><h3>You need</h3><ul>{list(recipe.inputs).map((resource, i) => <li key={i}><Resource ui={ui} resource={resource} /></li>)}</ul></div>
@@ -136,18 +136,18 @@ function Recipe({ ui, recipe, choose, lead }: { ui: ScreenProps; recipe: Data; c
     <h3>Requirements</h3>
     <ul className="atlas-requirements">
       {hint && <li>{hint}</li>}
-      {research.map((node, i) => <li key={i}>Research: <strong>{text(node.name)}</strong>{node.state === 'done' && <Pill tone="good" className="atlas-chip">Researched</Pill>}{node.state === 'needed' && <Pill tone="warn" className="atlas-chip">Not researched yet</Pill>}</li>)}
+      {research.map((node, i) => <li key={i}>Research: <strong>{str(node.name)}</strong>{node.state === 'done' && <Pill tone="good" className="atlas-chip">Researched</Pill>}{node.state === 'needed' && <Pill tone="warn" className="atlas-chip">Not researched yet</Pill>}</li>)}
       {facts.map((fact, i) => <li key={'f' + i}>{fact}</li>)}
       {Number.isFinite(until) && recipe.maximum_era !== null && recipe.maximum_era !== undefined && until < 8 && <li>Can be made until the end of the {eras[until]}</li>}
       {rest && <li>{rest}</li>}
     </ul>
     <details className="atlas-technical"><summary>Catalog details</summary>
-      <p>{text(recipe.kind)}. Unlock era: {text(recipe.era_label)}. {text(recipe.era_basis)}</p>
+      <p>{str(recipe.kind)}. Unlock era: {str(recipe.era_label)}. {str(recipe.era_basis)}</p>
       {variants.length > 1 && <label className="atlas-field">Map recipe list
         <select aria-label="Transformation / catalog variant" disabled={!ui.interactive} value={String(recipe.id)} onChange={event => choose(event.target.value)}>
-          {variants.map(variant => <option key={String(variant.id)} value={String(variant.id)}>{text(variant.kind)} (line {text(variant.line)})</option>)}
+          {variants.map(variant => <option key={String(variant.id)} value={String(variant.id)}>{str(variant.kind)} (line {str(variant.line)})</option>)}
         </select></label>}
-      <p>{text(recipe.conditions)}</p>
+      <p>{str(recipe.conditions)}</p>
       <Source file={recipe.file} line={recipe.line} />
     </details>
   </article>;
@@ -166,57 +166,57 @@ const routeLabels: Record<string, string> = { tools: 'Tools', conditions: 'Condi
 // Staff-only page: deliberately left out of the public atlas, web atlas and wiki.
 function AdminGuidance({ guidance }: { guidance: Data }) {
   return <article className="atlas-card" aria-label="Admin-only entry">
-    <h2 className="atlas-resource-title"><Sprite image={guidance.image} /><span>{text(guidance.name)}</span></h2>
+    <h2 className="atlas-resource-title"><Sprite image={guidance.image} /><span>{str(guidance.name)}</span></h2>
     <p className="atlas-chips"><Pill tone="warn" className="atlas-chip">Admin only</Pill><Pill className="atlas-chip">Not in the public atlas</Pill></p>
-    {!!guidance.desc && <p className="atlas-desc">{text(guidance.desc)}</p>}
+    {!!guidance.desc && <p className="atlas-desc">{str(guidance.desc)}</p>}
     <h3 className="atlas-section">Staff note</h3>
-    <p>{text(guidance.admin_note)}</p>
+    <p>{str(guidance.admin_note)}</p>
     <p className="atlas-footnote">Only admins see this entry. It is deliberately left out of the public atlas, the web atlas and the wiki; do not share it with players.</p>
-    <details className="atlas-technical"><summary>Catalog details</summary><p>{text(guidance.id)}</p></details>
+    <details className="atlas-technical"><summary>Catalog details</summary><p>{str(guidance.id)}</p></details>
   </article>;
 }
 function Guidance({ ui, guidance }: { ui: ScreenProps; guidance: Data }) {
   if (guidance.admin_only) return <AdminGuidance guidance={guidance} />;
   const routes = list(guidance.routes), stats = list(guidance.stats), made = Number(guidance.made_by_count) || 0, inside = list(guidance.found_in);
-  const world = worldNotes[text(guidance.kind)];
+  const world = worldNotes[str(guidance.kind)];
   return <article className="atlas-card" aria-label="Resource">
-    <h2 className="atlas-resource-title"><Sprite image={guidance.image} /><span>{text(guidance.name)}</span></h2>
-    {!!guidance.kind && <p className="atlas-chips"><Pill className="atlas-chip">{text(guidance.kind)}</Pill>
+    <h2 className="atlas-resource-title"><Sprite image={guidance.image} /><span>{str(guidance.name)}</span></h2>
+    {!!guidance.kind && <p className="atlas-chips"><Pill className="atlas-chip">{str(guidance.kind)}</Pill>
       {made > 0 && <Pill className="atlas-chip">Craftable</Pill>}
       {!!guidance.entity && <Pill className="atlas-chip">Reference</Pill>}
-      {Number(guidance.used_in_count) > 0 && <Pill className="atlas-chip">Used in {text(guidance.used_in_count)} {Number(guidance.used_in_count) === 1 ? 'recipe' : 'recipes'}</Pill>}
+      {Number(guidance.used_in_count) > 0 && <Pill className="atlas-chip">Used in {str(guidance.used_in_count)} {Number(guidance.used_in_count) === 1 ? 'recipe' : 'recipes'}</Pill>}
       {Number(guidance.made_here_count) > 0 && <Pill className="atlas-chip">Workstation</Pill>}</p>}
-    {!!guidance.desc && <p className="atlas-desc">{text(guidance.desc)}</p>}
-    {stats.length > 0 && <dl className="atlas-stats">{stats.map((stat, i) => <div key={i}><dt>{text(stat.label)}</dt><dd>{text(stat.value)}</dd></div>)}</dl>}
-    <h3 className="atlas-section">{text(guidance.heading)} {text(guidance.name)}</h3>
+    {!!guidance.desc && <p className="atlas-desc">{str(guidance.desc)}</p>}
+    {stats.length > 0 && <dl className="atlas-stats">{stats.map((stat, i) => <div key={i}><dt>{str(stat.label)}</dt><dd>{str(stat.value)}</dd></div>)}</dl>}
+    <h3 className="atlas-section">{str(guidance.heading)} {str(guidance.name)}</h3>
     {!routes.length && <p>{made > 0 ? 'Crafted. ' + (made === 1 ? 'Its recipe is shown below.' : 'The first of its ' + made + ' recipes is shown below, and the rest are listed under Made by.')
       : inside.length ? 'No recipe makes this. It comes inside the items below.'
       : world ?? (guidance.entity ? referenceNote : 'No recipe makes this and no gathering route is recorded. It is gathered, hunted, mined, traded for or found in the world.')}</p>}
     {inside.length > 0 && <div className="atlas-related"><span>Found in:</span>{inside.map((entry, i) => entry.id
       ? <Resource key={i} ui={ui} resource={{ ...entry, quantity: '' }} />
-      : <Pill key={i} className="atlas-chip">{text(entry.name)}</Pill>)}</div>}
+      : <Pill key={i} className="atlas-chip">{str(entry.name)}</Pill>)}</div>}
     {routes.map((route, i) => {
-      const steps = list(route.steps), said = steps.map(step => text(step)).join(' ');
+      const steps = list(route.steps), said = steps.map(step => str(step)).join(' ');
       // Some routes repeat their steps as the condition; say it once.
-      const details = list(route.details).filter(detail => !(steps.length && (detail.label === 'steps' || text(detail.value) === said)));
+      const details = list(route.details).filter(detail => !(steps.length && (detail.label === 'steps' || str(detail.value) === said)));
       const plain = details.filter(detail => ['steps', 'tools', 'conditions'].includes(String(detail.label)));
       const fine = details.filter(detail => !plain.includes(detail));
       return <section key={i} className="atlas-route">
-        <h3>{text(route.name)}</h3>
-        {steps.length > 0 && <ol>{steps.map((step, j) => <li key={j}>{text(step)}</li>)}</ol>}
-        {plain.map((detail, j) => <p key={j}><strong>{routeLabels[String(detail.label)] ?? text(detail.label)}:</strong> {text(detail.value)}</p>)}
+        <h3>{str(route.name)}</h3>
+        {steps.length > 0 && <ol>{steps.map((step, j) => <li key={j}>{str(step)}</li>)}</ol>}
+        {plain.map((detail, j) => <p key={j}><strong>{routeLabels[String(detail.label)] ?? str(detail.label)}:</strong> {str(detail.value)}</p>)}
         {['Needs', 'Can provide (conditional)'].map(heading => {
           const related = list(route.related).filter(entry => entry.heading === heading);
           return related.length > 0 && <div key={heading} className="atlas-related"><span>{heading}:</span>{related.map((entry, j) => <Resource key={j} ui={ui} resource={{ ...entry, quantity: '' }} />)}</div>;
         })}
         <details className="atlas-technical"><summary>Catalog details</summary>
-          {fine.map((detail, j) => <p key={j}>{routeLabels[String(detail.label)] ?? text(detail.label)}: {text(detail.value)}</p>)}
+          {fine.map((detail, j) => <p key={j}>{routeLabels[String(detail.label)] ?? str(detail.label)}: {str(detail.value)}</p>)}
           <Source file={route.file} line={route.line} revision={route.revision} />
         </details>
       </section>;
     })}
     {!!guidance.more && <p>More routes are available in the full web atlas.</p>}
-    <p className="atlas-wiki"><a href={'https://civ13.github.io/civ13-wiki/?search=' + encodeURIComponent(text(guidance.name))} target="_blank" rel="noreferrer">Search the wiki for {text(guidance.name)}</a></p>
+    <p className="atlas-wiki"><a href={'https://civ13.github.io/civ13-wiki/?search=' + encodeURIComponent(str(guidance.name))} target="_blank" rel="noreferrer">Search the wiki for {str(guidance.name)}</a></p>
   </article>;
 }
 export function CraftingAtlas(ui: ScreenProps) {
@@ -224,25 +224,25 @@ export function CraftingAtlas(ui: ScreenProps) {
   const graph = data.mode !== 'page';
   const guidance: Data | null = data.guidance ?? null;
   const scope = String(data.scope ?? '');
-  const [query, setQuery] = useState(text(data.query));
+  const [query, setQuery] = useState(str(data.query));
   const [era, setEra] = useState(String(data.era ?? ''));
   const [processor, setProcessor] = useState(String(data.processor ?? ''));
   const [allResources, setAllResources] = useState(false);
-  const resetDraft = () => { setQuery(text(data.query)); setEra(String(data.era ?? '')); setProcessor(String(data.processor ?? '')); setAllResources(false); };
+  const resetDraft = () => { setQuery(str(data.query)); setEra(String(data.era ?? '')); setProcessor(String(data.processor ?? '')); setAllResources(false); };
   useEffect(resetDraft, [data]);
   useEffect(() => () => resetAtlasRequests(), []);
   const resources = list(data.resources), recipes = list(data.recipes), adminEntries = list(data.admin_entries);
   const families = Number(data.family_count ?? data.recipe_count), hidden = Number(data.hidden_count ?? 0);
   const open = (next: Partial<Navigation> = {}) => navigate(ui, { route: 'open', query, era, processor, ...next });
   const selectedId = data.detail ? String(data.detail.id) : '';
-  const chooseVariant = (id: string) => navigate(ui, !graph ? { route: 'page', query: text(data.query), page: Number(data.page), recipe: id }
+  const chooseVariant = (id: string) => navigate(ui, !graph ? { route: 'page', query: str(data.query), page: Number(data.page), recipe: id }
     : guidance ? { route: 'resource', resource: String(guidance.id), recipe: id }
-      : { route: 'open', query: text(data.query), era: String(data.era ?? ''), processor: String(data.processor ?? ''), recipe: id });
-  const counts = !graph ? text(data.recipe_count) + ' matching recipes. Page ' + text(data.page) + '.'
-    : guidance ? text(guidance.made_by_count ?? 0) + (Number(guidance.made_by_count) === 1 ? ' recipe makes this, ' : ' recipes make this, ') + text(guidance.used_in_count ?? 0) + (Number(guidance.used_in_count) === 1 ? ' uses it' : ' use it') + (Number(guidance.made_here_count) > 0 ? ', ' + text(guidance.made_here_count) + ' made here.' : '.')
-      : text(families) + (families === 1 ? ' recipe' : ' recipes') + (Number(data.recipe_count) > families ? ' (' + text(data.recipe_count) + ' with variants)' : '') + ', ' + text(data.resource_count) + (Number(data.resource_count) === 1 ? ' resource.' : ' resources.');
+      : { route: 'open', query: str(data.query), era: String(data.era ?? ''), processor: String(data.processor ?? ''), recipe: id });
+  const counts = !graph ? str(data.recipe_count) + ' matching recipes. Page ' + str(data.page) + '.'
+    : guidance ? str(guidance.made_by_count ?? 0) + (Number(guidance.made_by_count) === 1 ? ' recipe makes this, ' : ' recipes make this, ') + str(guidance.used_in_count ?? 0) + (Number(guidance.used_in_count) === 1 ? ' uses it' : ' use it') + (Number(guidance.made_here_count) > 0 ? ', ' + str(guidance.made_here_count) + ' made here.' : '.')
+      : str(families) + (families === 1 ? ' recipe' : ' recipes') + (Number(data.recipe_count) > families ? ' (' + str(data.recipe_count) + ' with variants)' : '') + ', ' + str(data.resource_count) + (Number(data.resource_count) === 1 ? ' resource.' : ' resources.');
   const related = (title: string, rows: any[], total: unknown) => rows.length > 0 && <>
-    <h3>{title} ({text(total)})</h3>
+    <h3>{title} ({str(total)})</h3>
     <ul>{rows.map(row => <RecipeRow key={title + String(row.id)} ui={ui} row={row} selected={String(row.id) === selectedId} onPick={() => chooseVariant(String(row.id))} />)}</ul>
     {Number(total) > rows.length && <p>First {rows.length} shown.</p>}
   </>;
@@ -267,8 +267,8 @@ export function CraftingAtlas(ui: ScreenProps) {
         Include other maps{hidden > 0 ? ' (' + hidden + ' hidden)' : ''}</label>}
       <span className="atlas-links">
         <button type="button" className="atlas-link" disabled={!ui.interactive} onClick={() => navigate(ui, { route: 'page', page: 1 })}>{graph ? 'Paginated list' : 'All recipes'}</button>
-        {!graph && !!data.previous && <button type="button" className="atlas-link" disabled={!ui.interactive} onClick={() => navigate(ui, { route: 'page', page: Number(data.page) - 1, query: text(data.query) })}>Previous</button>}
-        {!graph && !!data.next && <button type="button" className="atlas-link" disabled={!ui.interactive} onClick={() => navigate(ui, { route: 'page', page: Number(data.page) + 1, query: text(data.query) })}>Next</button>}
+        {!graph && !!data.previous && <button type="button" className="atlas-link" disabled={!ui.interactive} onClick={() => navigate(ui, { route: 'page', page: Number(data.page) - 1, query: str(data.query) })}>Previous</button>}
+        {!graph && !!data.next && <button type="button" className="atlas-link" disabled={!ui.interactive} onClick={() => navigate(ui, { route: 'page', page: Number(data.page) + 1, query: str(data.query) })}>Next</button>}
         <a href="https://civ13.github.io/Civ13/crafting/" target="_blank" rel="noreferrer">Full web atlas</a>
       </span>
     </p>
@@ -280,21 +280,21 @@ export function CraftingAtlas(ui: ScreenProps) {
           {related('Made here', list(guidance.made_here), guidance.made_here_count)}
           {!list(guidance.made_by).length && !list(guidance.used_in).length && !list(guidance.made_here).length && <p>No recipes on this map make or use it.</p>}
         </> : <>
-          {resources.length > 0 && <><h3>Resources ({text(data.resource_count)})</h3><ul>{resources.slice(0, allResources ? resources.length : 4).map(resource => <li key={String(resource.id)} data-result-type="resource">
+          {resources.length > 0 && <><h3>Resources ({str(data.resource_count)})</h3><ul>{resources.slice(0, allResources ? resources.length : 4).map(resource => <li key={String(resource.id)} data-result-type="resource">
             <button type="button" className="atlas-row" disabled={!ui.interactive} onClick={() => navigate(ui, { route: 'resource', resource: String(resource.id) })}>
-              <Sprite image={resource.image} /><span className="atlas-row-text"><strong>{text(resource.name)}</strong><small>How to get it and what it makes</small></span>
+              <Sprite image={resource.image} /><span className="atlas-row-text"><strong>{str(resource.name)}</strong><small>How to get it and what it makes</small></span>
             </button></li>)}</ul>
             {!allResources && resources.length > 4 && <button type="button" className="atlas-link atlas-more" onClick={() => setAllResources(true)}>Show all {resources.length} resources</button>}</>}
           {Number(data.resource_count) > 150 && <p>First 150 resource matches shown. Refine your search to find more.</p>}
-          <h3>Recipes ({text(families)})</h3>
+          <h3>Recipes ({str(families)})</h3>
           <ul>{recipes.map(recipe => <RecipeRow key={String(recipe.family_id ?? recipe.id)} ui={ui} row={recipe} selected={String(recipe.id) === selectedId}
-            onPick={() => navigate(ui, { route: 'open', query: text(data.query), era: String(data.era ?? ''), processor: String(data.processor ?? ''), recipe: String(recipe.id) })} />)}</ul>
+            onPick={() => navigate(ui, { route: 'open', query: str(data.query), era: String(data.era ?? ''), processor: String(data.processor ?? ''), recipe: String(recipe.id) })} />)}</ul>
           {families > 150 && <p>First 150 recipe families shown. Refine filters to find more.</p>}
           {adminEntries.length > 0 && <section className="atlas-admin" aria-label="Admin only"><h3>Admin only ({adminEntries.length})</h3>
             <p className="atlas-footnote">Deliberately left out of the public atlas. Only admins see this list.</p>
             <ul>{adminEntries.map(entry => <li key={String(entry.id)} data-result-type="admin">
               <button type="button" className="atlas-row" disabled={!ui.interactive} onClick={() => navigate(ui, { route: 'resource', resource: String(entry.id) })}>
-                <Sprite image={entry.image} /><span className="atlas-row-text"><strong>{text(entry.name)}</strong><small>{text(entry.note)}</small></span>
+                <Sprite image={entry.image} /><span className="atlas-row-text"><strong>{str(entry.name)}</strong><small>{str(entry.note)}</small></span>
               </button></li>)}</ul></section>}
         </>}
       </nav>

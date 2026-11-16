@@ -12,11 +12,11 @@ warrants and notes all prove themselves with a faction seal.
 `/obj/item/weapon/stamp/faction_seal` (1 softwood, paper & printing, gated on Papermaking).
 Uncut, it works like a plain wax seal and leaves no record.
 
-- A faction leader uses an uncut matrix in hand to **cut** it as a seal of their faction and
+- A faction leader (or an officer with the seals power, see `docs/faction-offices.md`) uses an uncut matrix in hand to **cut** it as a seal of their faction and
   names the office it speaks for (Leader, Treasurer, Registrar, ... up to 32 letters).
   It becomes "seal of FACTION (OFFICE)", seal no. N.
 - A faction keeps at most 24 seals in force.
-- The leader, holding any matrix, can **list** the faction's seals and **revoke** one. A
+- The same people, holding any matrix, can **list** the faction's seals and **revoke** one. A
   revoked seal still presses an impression, but it checks as void.
 - Anyone holding a cut seal can use it. A stolen seal works until it is revoked; that is the
   game.
