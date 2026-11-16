@@ -171,6 +171,7 @@
 		H.adaptStat("medical", butcher_yield()/3)
 		H.adaptStat("hunting", butcher_yield()/2)
 		note_field_work(H, "butchering")
+		H.soil(3, DIRTY_HANDS_GRIME) // hygiene_work.dm
 	crush()
 	qdel(src)
 	return TRUE

@@ -186,6 +186,7 @@
 	if (sleeping)
 		return
 	adjust_hygiene(-HYGIENE_FACTOR)
+	hygiene_sweat() // hygiene_work.dm
 	if (hygiene > HYGIENE_LEVEL_CLEAN)
 		hygiene = HYGIENE_LEVEL_CLEAN
 	if (hygiene < 0)
