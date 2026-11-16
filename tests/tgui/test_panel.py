@@ -37,7 +37,7 @@ class PanelTest(unittest.TestCase):
         sent = set(re.findall(r'"([a-z]+)"\]? =', PANEL))
         self.assertEqual(sent, {'label', 'action', 'id', 'disabled', 'selected', 'value', 'tone', 'buttons', 'name', 'detail',
                                 'title', 'notes', 'rows', 'items', 'empty', 'sections',
-                                'text', 'columns', 'table', 'series', 'points', 'slots', 'top', 'left', 'right', 'chart'})
+                                'text', 'columns', 'table', 'image', 'series', 'points', 'slots', 'top', 'left', 'right', 'chart'})
         block = TYPES.split('export type PanelButton', 1)[1].split('export type PromptData', 1)[0]
         for field in sent:
             self.assertRegex(block, r'\b%s\?:' % field)

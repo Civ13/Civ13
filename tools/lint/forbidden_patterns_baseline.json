@@ -368,7 +368,7 @@
       "code/modules/projectiles/projectile.dm": 2,
       "code/modules/projectiles/projectile/cannon.dm": 4,
       "code/modules/projectiles/targeting/targeting_overlay.dm": 1,
-      "code/modules/reagents/Chemistry-Machinery.dm": 6,
+      "code/modules/reagents/Chemistry-Machinery.dm": 5,
       "code/modules/reagents/Chemistry-Recipes.dm": 2,
       "code/modules/reagents/reagent_containers/food.dm": 2,
       "code/modules/reagents/reagent_containers/food/drinks.dm": 1,

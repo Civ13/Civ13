@@ -213,6 +213,27 @@ var/screens_runtime_error = FALSE
 	rows = agent_screen_rows(H)
 	screens_check(memo.loc != board && findtext(rows[1]["data"], "Nothing is pinned here."), "removing a notice unpins it and the list refreshes")
 	GLOB.nanomanager.close_user_uis(H, board)
+	// The pill maker: amount buttons carry the reagent id, and analysis looks the reagent up on the server.
+	var/obj/structure/chem_master/mixer = new(locate(9, 9, 1))
+	mixer.anchored = TRUE
+	var/obj/item/weapon/reagent_containers/glass/beaker/jar = new(mixer)
+	jar.reagents.add_reagent("water", 30)
+	mixer.beaker = jar
+	mixer.attack_hand(H)
+	rows = agent_screen_rows(H)
+	screens_check(rows.len == 1 && findtext(rows[1]["data"], "Add to buffer") && ("add_5" in rows[1]["actions"]), "the pill maker lists the beaker's reagents with amount buttons")
+	screen_try(C, list("screen" = 1, "act" = "add_5", "value" = "water"))
+	screens_check(mixer.reagents.get_reagent_amount("water") == 5 && jar.reagents.get_reagent_amount("water") == 25, "an amount button moves that much into the buffer")
+	screen_try(C, list("screen" = 1, "act" = "analyze", "value" = "water"))
+	rows = agent_screen_rows(H)
+	screens_check(findtext(rows[1]["data"], "\"Description\"") && !findtext(rows[1]["data"], "Add to buffer"), "analysis shows the reagent's own description")
+	screen_try(C, list("screen" = 1, "act" = "main"))
+	screen_try(C, list("screen" = 1, "act" = "pill_sprite", "value" = 99))
+	screens_check(mixer.pillsprite == "1", "a pill style outside the list is refused")
+	screen_try(C, list("screen" = 1, "act" = "pill_sprite", "value" = 7))
+	rows = agent_screen_rows(H)
+	screens_check(mixer.pillsprite == "7" && findtext(rows[1]["data"], "pill7.png"), "a listed pill style is taken and shown")
+	GLOB.nanomanager.close_user_uis(H, mixer)
 	// Read-only report windows: a table section and a chart section reach the panel.
 	var/obj/structure/factory_monitor/monitor = new(locate(9, 9, 1))
 	monitor.attack_hand(H)

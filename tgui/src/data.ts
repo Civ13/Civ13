@@ -31,7 +31,7 @@ export type PanelButton = { label?: string; action?: string; id?: string | numbe
 export type PanelSection = {
   title?: string; notes?: string[]; empty?: string; buttons?: PanelButton[];
   rows?: { label?: string; value?: string | number; tone?: string; buttons?: PanelButton[] }[];
-  items?: { name?: string; detail?: string; buttons?: PanelButton[] }[];
+  items?: { name?: string; detail?: string; image?: string; buttons?: PanelButton[] }[];
   table?: { columns?: string[]; rows?: PanelCell[][] };
   chart?: { series?: { label?: string; tone?: string; points?: number[] }[]; slots?: number; top?: string; left?: string; right?: string };
 };
