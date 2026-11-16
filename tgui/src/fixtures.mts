@@ -2,11 +2,11 @@
 // script and the unit tests read these, so a window's sample data lives in one
 // place. Names and text are invented for previews. Node runs this file as it is,
 // so it uses only type syntax that can be erased.
-import type { AppearanceData, ChemistryData, CrewLogData, KnownLanguagesData, PanelData, PromptData, ReligionListData, ShipStocksData, VendingData, WarehouseData } from './data.ts';
+import type { AppearanceData, CharacterSetupData, ChemistryData, CrewLogData, KnownLanguagesData, PanelData, PromptData, ReligionListData, ShipStocksData, VendingData, WarehouseData } from './data.ts';
 import type { Data } from './types.ts';
 // Windows with a declared snapshot type; their fixtures are checked against it.
 type Typed = {
-  'appearance_changer.tmpl': AppearanceData; 'chem_disp.tmpl': ChemistryData; 'crew_log.tmpl': CrewLogData; 'known_languages.tmpl': KnownLanguagesData;
+  'appearance_changer.tmpl': AppearanceData; 'character_setup.tmpl': CharacterSetupData; 'chem_disp.tmpl': ChemistryData; 'crew_log.tmpl': CrewLogData; 'known_languages.tmpl': KnownLanguagesData;
   'panel.tmpl': PanelData; 'prompt.tmpl': PromptData; 'religion_list.tmpl': ReligionListData; 'ship_stocks.tmpl': ShipStocksData; 'warehouse_book.tmpl': WarehouseData;
   'vending_machine.tmpl': VendingData; 'vending_machine2.tmpl': VendingData; 'vending_machine_gulag.tmpl': VendingData; 'vending_machine_taotd.tmpl': VendingData;
 };
@@ -14,7 +14,7 @@ export type Fixture = { name: string; template: string; title: string; width: nu
 export const screens: Fixture[] = [];
 // Window sizes as the game opens them (width, height).
 const sizes = {
-  'appearance_changer.tmpl': [800, 450], 'book_reader.tmpl': [625, 650], 'character_flavor.tmpl': [500, 200], 'character_notes.tmpl': [625, 650],
+  'appearance_changer.tmpl': [800, 450], 'book_reader.tmpl': [625, 650], 'character_flavor.tmpl': [500, 200], 'character_notes.tmpl': [625, 650], 'character_setup.tmpl': [860, 720],
   'chem_disp.tmpl': [390, 655], 'crafting_atlas.tmpl': [1000, 700], 'crafting_window.tmpl': [940, 680], 'crew_log.tmpl': [500, 520],
   'faction_creation.tmpl': [620, 900], 'faction_list.tmpl': [420, 520], 'faction_symbol.tmpl': [620, 760], 'known_languages.tmpl': [600, 480],
   'paper_editor.tmpl': [625, 650], 'panel.tmpl': [380, 420], 'photo_viewer.tmpl': [360, 400], 'prompt.tmpl': [420, 240], 'recruitment_station.tmpl': [520, 640],
@@ -115,3 +115,41 @@ add('paper', 'paper_editor.tmpl', { lease: 'a'.repeat(32), document_id: 'b'.repe
   view: { legacy_name: 'Paper', legacy_body_html: '', revision: 1, legacy_policy: 'legacy_unclassified',
     sections: [{ id: 'section-1', kind: 'body', language_id: 'civ13:english:v1', text: 'Delivered: forty oak planks and six iron ingots.', ink: '#000000', tool: 'pen' }] },
   draft_ink: 'black', draft_tool: 'pen', draft_signature: 'Mara Flint', response_serial: 1, result: 'saved' }, 'Paper');
+// Character setup. Trait wording here is sample text for previews.
+const trait = (name: string, cost: number, desc: string, extra: Data = {}) => ({ name, cost, desc, taken: 0, conflicts: [], ...extra });
+const setup: CharacterSetupData = {
+  character: {
+    name: 'Maren Holt', name_max: 45, random_name: 0, random_body: 0, summary: 'Young adult, tan, female.', gender: 'female', age: 27, age_min: 18, age_max: 80,
+    blood: 'O+', blood_types: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'], skin_tone: 52,
+    hair_style: 'Braid', hair_styles: ['Bald', 'Short Hair', 'Ponytail', 'Braid', 'Bun', 'Long Hair', 'Topknot', 'Curls', 'Bob', 'Crew Cut', 'Side Part', 'Undercut', 'Pigtails', 'Bedhead', 'Dreadlocks', 'Mohawk', 'Beehive', 'Parted'],
+    facial_style: 'Shaved', facial_styles: ['Shaved'], hair_color: 'Brown', facial_color: 'Brown', eye_color: 'Green',
+    hair_colors: [{ name: 'Black', hex: '#090806' }, { name: 'Light Brown', hex: '#6A4E42' }, { name: 'Brown', hex: '#4F3B2E' }, { name: 'Dark Brown', hex: '#3B3024' }, { name: 'Red', hex: '#B55239' }, { name: 'Blond', hex: '#E5C8A8' }, { name: 'Grey', hex: '#808080' }],
+    eye_colors: [{ name: 'Black', hex: '#000000' }, { name: 'Brown', hex: '#542A0E' }, { name: 'Green', hex: '#4B7248' }, { name: 'Blue', hex: '#5EA4E7' }],
+    previews: [{ label: 'Body' }, { label: 'Clothed' }],
+  },
+  traits: {
+    spent: 5, earned: 3, chosen: ['Green Thumb', 'Agile', 'Light Eater', 'Deaf'], invalid: [], error: 'Your traits are not balanced. The sum must be 0 or less.',
+    categories: [
+      { id: 'playstyle', title: 'Playstyle', note: 'A way of playing. Each has its own strength and its own price.', pick_one: 1, traits: [
+        trait('Green Thumb', 0, 'Playstyle. Farming trains faster and harvests yield a little more. Hunting and combat skills train slower.', { taken: 1 }),
+        trait('Tinkerer', 0, 'Playstyle. Better crafting and faster engineering study. Less strength.', { conflicts: ['Green Thumb'] }),
+        trait('Wanderer', 0, 'Playstyle. Stamina returns faster on the move. Your mood sinks when you stay in one place.', { conflicts: ['Green Thumb'] })] },
+      { id: 'study', title: 'Field of study', note: 'The branch of learning you give yourself to.', pick_one: 1, traits: [
+        trait('Naturalist', 0, 'Natural science comes quicker to you and other branches slower.', { note: 'A new field can be chosen 7 days after the last change.' }),
+        trait('Physician', 0, 'Medicine comes quicker to you and other branches slower.', { block: 'You can choose again in 5 days.' })] },
+      { id: 'body', title: 'Body and build', traits: [
+        trait('Agile', 3, 'You move 15% faster.', { taken: 1 }), trait('Slowness', -2, 'You move 15% slower.', { conflicts: ['Agile'] }),
+        trait('Tall', 1, 'More strength, less dexterity.'), trait('Short', -1, 'Less strength, better crafting.')] },
+      { id: 'health', title: 'Health and diet', traits: [trait('Light Eater', 2, 'You need less food.', { taken: 1 }), trait('Glutton', -2, 'You need more food.', { conflicts: ['Light Eater'] }), trait('Hemophilia', -2, 'You bleed more.')] },
+      { id: 'senses', title: 'Senses and speech', traits: [trait('Deaf', -3, 'You cannot hear at all.', { taken: 1 }), trait('Stutter', -1, 'You have a permanent stutter.')] },
+    ],
+  },
+  settings: {
+    ui_style: 'ConsoleStyle', ui_styles: ['ConsoleStyle', '1713Style', 'NewStyle'], cursor: 'Default', cursors: ['Default', 'Red Crosshair', 'Green Crosshair', 'White Crosshair'],
+    client_fps: 60, fps_choices: [30, 60, 100, 120, 144], tutorial: 'in progress (3 of 9 steps done)',
+    toggles: [{ key: 'SOUND_LOBBY', label: 'Lobby music', on: 1, on_label: 'Yes', off_label: 'No' }, { key: 'CHAT_OOC', label: 'OOC chat', on: 0, on_label: 'Show', off_label: 'Hide' }],
+  },
+};
+add('character-setup', 'character_setup.tmpl', setup, 'Character Setup');
+add('character-setup-traits', 'character_setup.tmpl', { ...setup, tab: 'traits' }, 'Character Setup');
+add('character-setup-settings', 'character_setup.tmpl', { ...setup, tab: 'settings' }, 'Character Setup');

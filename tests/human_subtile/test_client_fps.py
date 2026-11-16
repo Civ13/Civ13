@@ -6,7 +6,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[2]
 PREFERENCES = "code/modules/client/preferencesSQLite/preferences.dm"
 SAVE = "code/modules/client/preferencesSQLite/preferences_saving&loading&del.dm"
-SETTINGS = "code/modules/client/preferencesSQLite/preference_setup/global/01_settings.dm"
+SETUP = "code/modules/client/preferencesSQLite/character_setup_ui.dm"
 MOVEMENT = "code/game/mob/living/carbon/human/subtile_movement.dm"
 
 
@@ -101,17 +101,18 @@ class ClientFpsContracts(unittest.TestCase):
             with self.subTest(addition=addition), self.assertRaises(AssertionError):
                 check_movement_owner(source + addition)
 
-    def test_ui_revalidates_owner_choice_and_cancel_after_wait(self):
-        source = body(read(SETTINGS), "/datum/category_item/player_setup_item/player_global/settings/OnTopic(var/href,var/list/href_list, var/mob/user)")
-        prompt = source.index("var/target = input(")
-        guard = source.index("if (isnull(target)", prompt)
-        publication = source.index("pref.client_fps = target", guard)
-        self.assertLess(source.index("var/client/fps_owner = user.client"), prompt)
-        for condition in ("!user", "!user.client", "user.client != fps_owner", "user != preference_mob()", "user.client.prefs != pref", "!CanUseTopic(user)", "!(target in client_fps_choices())"):
-            self.assertIn(condition, source[guard:publication])
-        self.assertIn("return TOPIC_NOACTION", source[guard:publication])
-        self.assertLess(publication, source.index("user.client.apply_client_fps_preference()"))
-        self.assertIn("pref.save_preferences()", source[publication:])
+    def test_setup_window_checks_owner_and_choice_before_applying(self):
+        source = read(SETUP)
+        act = body(source, "/datum/preferences/ui_act(action, list/params, mob/user, datum/nanoui/ui)")
+        self.assertLess(act.index("if (!user || !user.client || user.client.prefs != src)\n\t\treturn"), act.index("setup_settings_act(action, value, user)"))
+        settings = body(source, "/datum/preferences/proc/setup_settings_act(action, value, mob/user)")
+        branch = settings[settings.index('if ("client_fps")'):settings.index('if ("reset_tutorial")')]
+        guard = branch.index("if (isnum(value) && (value in client_fps_choices()))")
+        publication = branch.index("client_fps = value", guard)
+        self.assertLess(publication, branch.index("user.client.apply_client_fps_preference()"))
+        self.assertIn("save_preferences()", branch[publication:])
+        # The choice arrives with the press: nothing waits between check and write.
+        self.assertNotIn("input(", source)
 
 
 if __name__ == "__main__":

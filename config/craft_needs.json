@@ -225,5 +225,20 @@
     "inputs": {
       "/obj/item/stack/material/rope": 2
     }
+  },
+  "/obj/item/weapon/clay/advclaybricks": {
+    "tools": [],
+    "inputs": {},
+    "water": 10
+  },
+  "/obj/item/weapon/clay/advclaybricks/cement": {
+    "tools": [],
+    "inputs": {},
+    "water": 10
+  },
+  "/obj/item/weapon/paper": {
+    "tools": [],
+    "inputs": {},
+    "water": 10
   }
 }

@@ -127,3 +127,13 @@ The same probe covers the optional trades in
 Tailor, Carpenter): own-trade waits, the x1.1 cost on other trades, untagged
 work left alone, the material classifier for stack crafting, and holding a trade
 alongside a field of study.
+
+## Nearsighted and Farsighted
+
+`sight_probe.dm` is a native probe for the sight traits: which eyewear corrects
+them, the reading multiplier, the squint gate for pages, costs and exclusions.
+The fog overlay itself needs a connected client and is not exercised here.
+
+```
+python3 tests/ecology_spawning/run_linux.py . tests/character_traits/sight_probe.dm
+```

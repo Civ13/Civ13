@@ -65,8 +65,11 @@ class CraftNeeds(unittest.TestCase):
         self.assertTrue(NEEDS)
         for product, need in NEEDS.items():
             self.assertIn(product, products, product)
-            self.assertEqual(set(need), {'tools', 'inputs'}, product)
-            self.assertTrue(need['tools'] or need['inputs'], product)
+            self.assertTrue({'tools', 'inputs'} <= set(need) <= {'tools', 'inputs', 'water'}, product)
+            self.assertTrue(need['tools'] or need['inputs'] or need.get('water'), product)
+            if 'water' in need:
+                self.assertIsInstance(need['water'], int, product)
+                self.assertGreater(need['water'], 0, product)
             for tool in need['tools']:
                 self.assertIn(tool, qualities, product)
             for input_type, amount in need['inputs'].items():
@@ -142,6 +145,14 @@ class CraftNeeds(unittest.TestCase):
         self.assertIn('G.describe_lines(H, R)', GUARDS)
         self.assertIn('config/craft_needs.json', ATLAS)
         self.assertIn('craft_needs.dm', DME)
+        self.assertIn("need.get('water')", ATLAS)
+
+    def test_water_is_drawn_from_a_container_or_running_water(self):
+        self.assertIn('if (spec["water"])', SOURCE)
+        self.assertIn('craft_need_water(H, water, candidates)', SOURCE)
+        self.assertIn('C.reagents.remove_reagent("water", line["amount"])', SOURCE)
+        for product in ('/obj/item/weapon/clay/advclaybricks', '/obj/item/weapon/clay/advclaybricks/cement', '/obj/item/weapon/paper'):
+            self.assertEqual(NEEDS[product].get('water'), 10, product)
 
 
 if __name__ == '__main__':

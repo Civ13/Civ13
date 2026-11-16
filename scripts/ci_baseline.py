@@ -1478,6 +1478,12 @@ SUITES = {
             'code/game/turfs/floor_attackby.dm',
             'code/modules/1713/factory_pipes.dm',
             'code/__defines/mobs.dm')},
+    # Station water tanks and running water feeds; source checks only.
+    'station_water': {'files': ('tests/station_water/test_station_water.py',),
+        'paths': ('tests/station_water/', 'code/modules/1713/station_water.dm'), 'shared_paths': (
+            'code/modules/1713/aqueducts.dm',
+            'code/modules/1713/factory_plumbing.dm',
+            'config/craft_needs.json')},
     # Reviewed stdlib-only well-odor source projection; no BYOND runtime.
     'well_smell': {'files': ('tests/well_smell/test_well_smell.py',),
         'paths': ('tests/well_smell/',), 'shared_paths': (
@@ -1886,12 +1892,19 @@ SUITES = {
                                    'tests/character_traits/test_random.py'),
         'paths': ('tests/character_traits/',), 'shared_paths': (
             'code/game/mob/living/carbon/human/traits.dm',
+            'code/modules/client/preferencesSQLite/character_setup_ui.dm',
             'code/modules/client/preferencesSQLite/preference_setup/general/01_basic.dm',
+            'code/game/mob/living/carbon/human/trait_catalog.dm',
             'code/modules/client/preferencesSQLite/preferences.dm',
             'code/modules/client/preferencesSQLite/preferences_saving&loading&del.dm',
             'code/game/mob/living/carbon/human/human_life.dm',
             'code/game/mob/living/carbon/human/human_stats.dm',
-            'code/game/mob/living/carbon/human/playstyle_traits.dm')},
+            'code/game/mob/living/carbon/human/playstyle_traits.dm',
+            'code/game/mob/living/carbon/human/sight_traits.dm')},
+    # Stdlib-only source contracts for the character setup window; the shared
+    # sources keep the character_traits fallback above.
+    'character_setup': {'files': ('tests/character_setup/test_setup_window.py',),
+        'paths': ('tests/character_setup/',), 'shared_paths': ()},
     # Reviewed stdlib-only projection; shared production changes keep fallback.
     'tablet_press': {'files': ('tests/tablet_press/test_contract.py',),
         'paths': ('tests/tablet_press/',),

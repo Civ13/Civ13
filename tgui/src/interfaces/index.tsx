@@ -19,6 +19,7 @@ import { Prompt } from './Prompt';
 import { RecruitmentStation } from './RecruitmentStation';
 import { CraftingWindow } from './CraftingWindow';
 import { Panel } from './Panel';
+import { CharacterSetup } from './CharacterSetup';
 export const interfaces: Record<string, ComponentType<ScreenProps>> = {
   'appearance_changer.tmpl': Appearance,
   'chem_disp.tmpl': Chemistry,
@@ -46,4 +47,5 @@ export const interfaces: Record<string, ComponentType<ScreenProps>> = {
   'recruitment_station.tmpl': RecruitmentStation,
   'crafting_window.tmpl': CraftingWindow,
   'panel.tmpl': Panel,
+  'character_setup.tmpl': CharacterSetup,
 };

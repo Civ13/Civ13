@@ -815,11 +815,14 @@ class BaselinePolicyTests(unittest.TestCase):
         expected_sources = {
             'code/game/mob/living/carbon/human/traits.dm',
             'code/modules/client/preferencesSQLite/preference_setup/general/01_basic.dm',
+            'code/modules/client/preferencesSQLite/character_setup_ui.dm',
+            'code/game/mob/living/carbon/human/trait_catalog.dm',
             'code/modules/client/preferencesSQLite/preferences.dm',
             'code/modules/client/preferencesSQLite/preferences_saving&loading&del.dm',
             'code/game/mob/living/carbon/human/human_life.dm',
             'code/game/mob/living/carbon/human/human_stats.dm',
             'code/game/mob/living/carbon/human/playstyle_traits.dm',
+            'code/game/mob/living/carbon/human/sight_traits.dm',
         }
         self.assertEqual(set(suite['shared_paths']), expected_sources)
         for path in expected_sources:
@@ -828,7 +831,7 @@ class BaselinePolicyTests(unittest.TestCase):
                 self.assertEqual(self.selected([path]), set(ci.SUITES))
         for path, imports, from_imports in (
             (suite['files'][0], {'re', 'unittest'}, {'pathlib'}),
-            (suite['files'][1], {'random', 'unittest'}, {'test_foundations'}),
+            (suite['files'][1], {'random', 're', 'unittest'}, {'test_foundations'}),
         ):
             tree = ast.parse((ROOT / path).read_text())
             self.assertEqual({alias.name for node in ast.walk(tree) if isinstance(node, ast.Import)
@@ -895,7 +898,7 @@ class BaselinePolicyTests(unittest.TestCase):
                     self.assertFalse(baseline['tracked_dirty_after'])
                     self.assertEqual(traits['exit_code'], int(failing))
                     self.assertEqual(traits['counts'], dict(status='failed' if failing else 'passed',
-                        tests=19, failures=int(failing), errors=0, skipped=0))
+                        tests=20, failures=int(failing), errors=0, skipped=0))
                     self.assertEqual(traits['files'], list(ci.SUITES[suite_name]['files']))
                     errors = ci.aggregate(plan, baseline, compiler, jobs, False)
                     if failing:
