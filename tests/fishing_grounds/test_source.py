@@ -121,6 +121,18 @@ class FishingGrounds(unittest.TestCase):
             self.assertIn('snacks/rawfish/%s' % name, self.source)
         self.assertTrue((ROOT / 'icons/obj/food/fish_species.dmi').is_file())
 
+    def test_the_trawl_is_industrial_and_only_works_under_way(self):
+        research = (ROOT / 'code/modules/research_tree/research_node.dm').read_text(encoding='utf-8')
+        self.assertIn('"/obj/item/weapon/fishing/trawl" = "rail_steam",', research)
+        recipes = (ROOT / 'config/crafting/material_recipes_global.txt').read_text(encoding='utf-8')
+        self.assertEqual(recipes.count(',/obj/item/weapon/fishing/trawl,'), 1)
+        cast = self.source[self.source.index('/turf/floor/beach/water/proc/fish_cast('):]
+        # Under way she goes to fish_troll; standing still the trawl is refused before any wait.
+        self.assertLess(cast.index('fish_troll(W, H, ship, profile)'), cast.index('A trawl has to be dragged.'))
+        self.assertLess(cast.index('A trawl has to be dragged.'), cast.index('do_after('))
+        troll = self.source[self.source.index('/proc/fish_troll('):]
+        self.assertLess(troll.index('fish_craft_step(ship) >= VESSEL_SPEED_FULL'), troll.index('do_after('))
+
     def test_spears_ask_the_stone_age_numbers(self):
         arms = (ROOT / 'code/modules/1713/stone_age_arms.dm').read_text(encoding='utf-8')
         self.assertIn('/proc/spear_fishing_delay()\n\treturn SPEAR_FISHING_DELAY\n', arms)

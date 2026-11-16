@@ -40,6 +40,11 @@ Tests: `tests/fishing_grounds/`.
   two tiles of open water, and the fish come out of the ground she is over
   when the wait ends. Slow ahead x1.3, half ahead x1, full ahead x0.5. Sails
   and oars are silent.
+- **Trawl** (`/obj/item/weapon/fishing/trawl`, 12 rope, research node
+  `rail_steam`): only from a ship making way at slow or half ahead. 20 seconds,
+  six separate 35% chances, no bait, no engine penalty, no speed bonus and no
+  tuna. It is the gear that empties a ground. Sprite `trawl_net` in
+  `icons/obj/fishing_gear.dmi`.
 - **Sonar:** a submarine's ping adds what the fish overhead look like and the
   bearing of a clearly fuller neighbouring stretch (`fish_finder_line()`).
 - **Signs** (`code/modules/1713/fish_signs.dm`): rings where fish rise, a

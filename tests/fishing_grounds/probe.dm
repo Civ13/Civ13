@@ -329,6 +329,12 @@ var/fg_runtime_error = FALSE
 		fillet_count++
 	fg_check(fillet_count == 6 && QDELETED(big), "a knife cuts a tuna into six fillets ([fillet_count])")
 
+	// ---- Trawl ----
+	var/obj/item/weapon/fishing/trawl/trawl_net = new(land)
+	var/list/trawl = fishing_tool_profile(trawl_net)
+	fg_check(trawl[1] == 200 && trawl[2] == 35 && !trawl[3] && trawl[4] == 6, "a trawl takes 20 s and has six chances of 35%")
+	fg_check((trawl_net.icon_state in icon_states(trawl_net.icon)) && trawl_net.w_class == ITEM_SIZE_LARGE, "the trawl has its sprite and is a large thing to carry")
+
 	// ---- Saving ----
 	fishing_grounds = list()
 	fishing_grounds_publish()

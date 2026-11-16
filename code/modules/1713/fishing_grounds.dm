@@ -33,6 +33,11 @@
 // A cast net: each of its chances is worse than a line's, but one throw can land several fish.
 #define FISH_NET_CHANCE 25
 #define FISH_NET_HAUL 3
+// A trawl dragged behind a ship: a longer wait, and a bigger haul than any
+// other gear. It is what empties a ground.
+#define FISH_TRAWL_WAIT 200
+#define FISH_TRAWL_CHANCE 35
+#define FISH_TRAWL_HAUL 6
 // Conditions (fish_condition_factor): what the season, the sky and the river
 // do to a cast.
 #define FISH_RUN_FACTOR 1.5
@@ -353,6 +358,8 @@ var/global/list/fishing_grounds_published = null
 // cast can land), or null when it is no fishing tool. A line or a spear takes
 // one fish at a time; a cast net can come up with several.
 /proc/fishing_tool_profile(obj/item/W)
+	if (istype(W, /obj/item/weapon/fishing/trawl))
+		return list(FISH_TRAWL_WAIT, FISH_TRAWL_CHANCE, FALSE, FISH_TRAWL_HAUL)
 	if (istype(W, /obj/item/weapon/fishing/net))
 		return list(150, FISH_NET_CHANCE, FALSE, FISH_NET_HAUL)
 	if (istype(W, /obj/item/weapon/fishing/modern))
@@ -367,6 +374,20 @@ var/global/list/fishing_grounds_published = null
 			return list(120, 20, TRUE, 1)
 	return null
 
+// A trawl: a bag of net held open by two boards and dragged behind a ship
+// that is making way (fish_troll). Industrial: recipe in
+// config/crafting/material_recipes_global.txt, research node rail_steam.
+/obj/item/weapon/fishing/trawl
+	name = "trawl net"
+	desc = "A long bag of tarred net with cork floats and two heavy boards to hold its mouth open. Shoot it from a ship that is under way, at slow or half ahead, and it comes up with whatever was in its path."
+	icon = 'icons/obj/fishing_gear.dmi'
+	icon_state = "trawl_net"
+	w_class = ITEM_SIZE_LARGE
+	slot_flags = null
+	force = WEAPON_FORCE_WEAK
+	throwforce = WEAPON_FORCE_WEAK
+	attack_verb = list("slapped")
+
 // Bait: raw meat or raw fish cut onto a line.
 /obj/item/weapon/fishing/var/bait_uses = 0
 
@@ -376,7 +397,7 @@ var/global/list/fishing_grounds_published = null
 /obj/item/weapon/fishing/attackby(obj/item/W as obj, mob/user as mob)
 	if (!is_bait(W))
 		return ..()
-	if (istype(src, /obj/item/weapon/fishing/net))
+	if (istype(src, /obj/item/weapon/fishing/net) || istype(src, /obj/item/weapon/fishing/trawl))
 		to_chat(user, SPAN_WARNING("A net takes whatever swims into it. Bait is for a line."))
 		return
 	if (bait_uses > 0)
@@ -443,6 +464,9 @@ var/global/list/fishing_grounds_published = null
 	var/datum/craft/ship = craft_at(get_turf(H))
 	if (ship && fish_craft_step(ship))
 		fish_troll(W, H, ship, profile) // the water slides past: tow a line instead
+		return
+	if (istype(W, /obj/item/weapon/fishing/trawl))
+		to_chat(H, SPAN_WARNING("A trawl has to be dragged. Shoot it from a ship that is under way."))
 		return
 	var/kind = fish_water_kind(src)
 	if (!kind)
@@ -565,17 +589,25 @@ var/global/list/fishing_grounds_published = null
 	if (profile[3])
 		to_chat(H, SPAN_WARNING("You cannot spear fish from a ship under way."))
 		return
-	if (profile[4] > 1)
+	var/trawl = istype(W, /obj/item/weapon/fishing/trawl)
+	if (profile[4] > 1 && !trawl)
 		to_chat(H, SPAN_WARNING("A cast net fouls under way. Stop the ship, or tow a line."))
+		return
+	if (trawl && fish_craft_step(ship) >= VESSEL_SPEED_FULL)
+		to_chat(H, SPAN_WARNING("She is going too fast: the trawl would tear away. Ring slow or half ahead."))
 		return
 	if (!fish_water_beside(H, ship))
 		to_chat(H, SPAN_WARNING("Stand by the rail, where the line can reach open water."))
 		return
 	var/obj/item/weapon/fishing/line = W
 	var/baited = istype(line) && line.bait_uses > 0
-	var/noisy = fish_craft_engines(ship)
+	// A trawl works deep and wide; the engine that drags it does not spoil it.
+	var/noisy = !trawl && fish_craft_engines(ship)
 	H.ocean_fishing = TRUE
-	H.visible_message(SPAN_NOTICE("[H] lets \the [W] run out astern."), SPAN_NOTICE("You let the line run out astern[baited ? " with bait on it" : ""].[noisy ? " The engine will keep the fish wary." : ""]"))
+	if (trawl)
+		H.visible_message(SPAN_NOTICE("[H] shoots \the [W] over the stern."), SPAN_NOTICE("You shoot the trawl over the stern and pay out the warp."))
+	else
+		H.visible_message(SPAN_NOTICE("[H] lets \the [W] run out astern."), SPAN_NOTICE("You let the line run out astern[baited ? " with bait on it" : ""].[noisy ? " The engine will keep the fish wary." : ""]"))
 	var/done = do_after(H, profile[1], W, can_move = TRUE)
 	H.ocean_fishing = FALSE
 	if (!done || QDELETED(W) || W.loc != H || craft_at(get_turf(H)) != ship)
@@ -585,12 +617,17 @@ var/global/list/fishing_grounds_published = null
 	var/turf/water = fish_water_beside(H, ship)
 	var/datum/fishing_ground/G = water && fishing_ground_at(water)
 	if (!G || G.available() < 1)
-		to_chat(H, "Nothing follows the lure. These waters seem fished out; sail on.")
+		to_chat(H, trawl ? "The trawl comes up empty. These waters are fished out; sail on." : "Nothing follows the lure. These waters seem fished out; sail on.")
 		return
 	var/kind = G.kind
 	var/chance = fish_tool_chance(profile, baited, G)
 	if (kind == FISH_WATER_SALT && fish_water_deep(water))
 		chance *= FISH_DEEP_SEA_SHARE
+	if (trawl)
+		// Any speed she can be dragged at fishes the same, and tuna outrun a trawl.
+		chance = min(95, chance * fish_condition_factor_at(water, kind))
+		fish_land(H, water, G, kind, chance, profile[4], FALSE, FALSE)
+		return
 	chance = min(95, chance * fish_condition_factor_at(water, kind) * fish_ship_factor(noisy, fish_craft_step(ship)))
 	fish_land(H, water, G, kind, chance, 1, baited, FALSE, TRUE)
 
@@ -678,6 +715,9 @@ var/global/list/fishing_grounds_published = null
 #undef FISH_DEEP_SEA_SHARE
 #undef FISH_NET_CHANCE
 #undef FISH_NET_HAUL
+#undef FISH_TRAWL_WAIT
+#undef FISH_TRAWL_CHANCE
+#undef FISH_TRAWL_HAUL
 #undef FISH_RUN_FACTOR
 #undef FISH_RUN_SALMON
 #undef FISH_RUN_REGROWTH
