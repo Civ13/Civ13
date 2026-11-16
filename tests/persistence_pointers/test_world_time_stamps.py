@@ -53,6 +53,7 @@ REVIEWED = {
     'bite_fracture_guard': 'var/tmp guard for the instant of one animal bite on humans, never saved',
     'hold_started': 'var/tmp brace stamp of a hand holding a car door (vehicle_door_hold.dm), never saved',
     'strain_time': 'var/tmp strain clock of a hand holding a car door (vehicle_door_hold.dm), never saved',
+    'last_hair_growth_time': 'var/tmp last hair-growth tick on humans (human_life.dm), never saved',
 }
 
 # An optional [key] catches stamps kept in a keyed list, such as next_emote["normal"].
