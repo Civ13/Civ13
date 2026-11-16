@@ -85,10 +85,13 @@
 		wild = FALSE
 		tame_trust = 0
 		tame_fed = null
-		user.visible_message(SPAN_NOTICE("\The [src] has grown used to people. It is tame now."), SPAN_NOTICE("\The [src] trusts you now. It is tame: you can lead, milk, shear and work it."))
+		user.visible_message(SPAN_NOTICE("\The [src] has grown used to people. It is tame now."), SPAN_NOTICE("\The [src] trusts you now. It is tame: [tame_done_text()]"))
 	else
 		to_chat(user, SPAN_NOTICE("\The [src] is getting used to you ([tame_trust] of [TAME_FEEDINGS]). Feed it again later."))
 	return TRUE
+
+/mob/living/simple_animal/proc/tame_done_text()
+	return "you can lead, milk, shear and work it."
 
 /mob/living/simple_animal/proc/tame_state_text()
 	if (!domesticable)

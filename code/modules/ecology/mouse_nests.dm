@@ -252,10 +252,14 @@ var/global/datum/ecology_species/mouse_burrow_habitat = null
 		population++
 	else if (food <= 0)
 		population--
+	// Cats (and dogs, at half) hunt the nest down and stop it spreading.
+	var/hunted = predator_pressure()
+	if (hunted > 0)
+		population -= round(hunted) + (prob((hunted - round(hunted)) * 100) ? 1 : 0)
 	if (population <= 0)
 		qdel(src)
 		return
-	if (food > 0 && population >= max_population() && prob(MOUSE_SPREAD_CHANCE))
+	if (!hunted && food > 0 && population >= max_population() && prob(MOUSE_SPREAD_CHANCE))
 		try_spread(scan)
 
 // Mice eat half their number in food each step, from open stores first.
