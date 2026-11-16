@@ -296,6 +296,7 @@ var/global/list/faction_strongboxes = list() // every treasury strongbox
 	if (key)
 		choices += opened ? "Close and lock it" : "Unlock and open it"
 		choices += "Collect taxes into the box"
+		choices += "Draw bills or notes"
 	choices += list("Collect my wages", "Pay dues from my hand", "Pay land tax from my hand", "Pay a fine from my hand", "Read the ledger")
 	if (leader)
 		choices += list("Set wages", "Set dues", "Set taxes", "Release the box")
@@ -304,11 +305,11 @@ var/global/list/faction_strongboxes = list() // every treasury strongbox
 	if (!choice || choice == "Cancel" || !(choice in choices) || QDELETED(src) || !user.Adjacent(src) || user.stat != CONSCIOUS)
 		return
 	// Powers are checked again: the prompt may have waited.
-	if ((choice in list("Close and lock it", "Unlock and open it", "Collect taxes into the box")) && !holds_key(user))
+	if ((choice in list("Close and lock it", "Unlock and open it", "Collect taxes into the box", "Draw bills or notes")) && !holds_key(user))
 		return
 	if ((choice in list("Set wages", "Set dues", "Set taxes", "Release the box")) && !map.is_faction_leader(user, faction))
 		return
-	if (user.civilization != faction && !(choice in list("Close and lock it", "Unlock and open it", "Collect taxes into the box")))
+	if (user.civilization != faction && !(choice in list("Close and lock it", "Unlock and open it", "Collect taxes into the box", "Draw bills or notes")))
 		return
 	switch (choice)
 		if ("Unlock and open it")
@@ -320,6 +321,8 @@ var/global/list/faction_strongboxes = list() // every treasury strongbox
 			locked = TRUE
 		if ("Collect taxes into the box")
 			collect_taxes(user)
+		if ("Draw bills or notes")
+			draw_bills(user)
 		if ("Collect my wages")
 			collect_wages(user)
 		if ("Pay dues from my hand")
@@ -468,7 +471,7 @@ var/global/list/faction_strongboxes = list() // every treasury strongbox
 /obj/structure/closet/crate/faction_strongbox/proc/ledger_text()
 	var/list/R = map.treasury_record(faction)
 	var/list/lines = list("<b>Ledger of [faction]</b>")
-	lines += "Coin in the box: [weighed_silver_text(coin_worth())]."
+	lines += "Coin in the box: [weighed_silver_text(coin_worth())]. Promised on open bills and notes: [map.bills_outstanding(faction)] silver."
 	if (faction in map.custom_civs)
 		var/list/civ = map.custom_civs[faction]
 		lines += "Taxes waiting: [isnum(civ[5]) ? round(civ[5], 0.1) : 0] silver. Sales tax [civ[9]]%, business tax [civ[10]]%."
