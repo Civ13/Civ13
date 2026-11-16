@@ -51,8 +51,8 @@ class BookReaderContract(unittest.TestCase):
   self.assertIn('if (book_page_metadata(title_snapshot) && book_page_metadata(name_snapshot))',producer)
   self.assertIn('budget.units_left -= length(title_snapshot) + length(name_snapshot)',producer)
   self.assertIn('ui.legacy_snapshot = legacy_snapshot',producer)
-  self.assertIn('if (isnull(runs))\n\t\tui.legacy_renderer = TRUE',producer)
-  self.assertNotIn('legacy_renderer = FALSE',producer)
+  self.assertIn('if (isnull(runs))\n\t\tui.plain_page = TRUE',producer)
+  self.assertNotIn('plain_page = FALSE',producer)
  def test_admission_and_single_authorized_snapshot(self):
   mapping={
    'var/display_snapshot':'display_snapshot=None',

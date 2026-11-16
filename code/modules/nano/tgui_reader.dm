@@ -44,18 +44,21 @@
 // A window that keeps its snapshot. Manager refreshes recheck status and
 // never collect data again.
 /datum/nanoui/tgui/snapshot
-	// The complete classic page, for windows whose classic renderer is a fixed
-	// page instead of a NanoUI template.
+	// The complete plain page, for windows that keep one for content the
+	// modern screen cannot show.
 	var/legacy_snapshot
 	var/fixed_classic_page = FALSE
 	var/reader_closed = FALSE
+
+/datum/nanoui/tgui/snapshot/has_plain_page()
+	return fixed_classic_page
 
 /datum/nanoui/tgui/snapshot/get_html()
 	if (!fixed_classic_page)
 		return ..()
 	if (!state || state.can_use_topic(src_object, user) == STATUS_CLOSE)
 		return ""
-	if (legacy_renderer)
+	if (plain_page)
 		return legacy_snapshot
 	return ..()
 
@@ -63,7 +66,7 @@
 	if (!user || !src_object || !state)
 		close()
 		return
-	if (legacy_renderer && fixed_classic_page)
+	if (plain_page && fixed_classic_page)
 		update_status(FALSE)
 	else
 		push_data(null, TRUE)

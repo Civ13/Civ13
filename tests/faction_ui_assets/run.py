@@ -21,7 +21,7 @@ ASSETS = 'code/modules/client/asset_cache.dm'
 CREATION = 'code/game/mob/groups/faction_creation.dm'
 OMISSION_FAILURES = {
     'cold lookup registers once', 'cold cache contains JavaScript',
-    'cold cache contains faction templates', 'cold common contains styles',
+    'cold cache contains modern screen assets', 'cold common contains styles',
     'repeat lookup and disconnected sends do not register again',
 }
 

@@ -40,7 +40,7 @@ class PromptContract(unittest.TestCase):
         self.assertLess(ack.index('if (frontend_ready)'), ack.index('user.client.modern_ui_acknowledged = TRUE'))
 
     def test_fallback_ends_the_prompt_and_is_sticky_for_the_client(self):
-        fallback = section(PROMPT, '/datum/nanoui/tgui/prompt/use_legacy_renderer()', '/datum/nanoui/tgui/prompt/')
+        fallback = section(PROMPT, '/datum/nanoui/tgui/prompt/show_plain_page()', '/datum/nanoui/tgui/prompt/')
         self.assertIn('user.client.modern_ui_failed = TRUE', fallback)
         self.assertIn('old_prompt.fell_back = TRUE', fallback)
         self.assertLess(fallback.index('old_prompt.fell_back = TRUE'), fallback.index('old_prompt.finish(null)'))
@@ -51,7 +51,7 @@ class PromptContract(unittest.TestCase):
     def test_answer_is_one_allowed_action_checked_by_index_and_owner(self):
         self.assertIn('/datum/nanoui/tgui/prompt/allowed_actions()\n\treturn list("answer")', PROMPT)
         consume = section(PROMPT, '/datum/nanoui/tgui/prompt/consume_topic', '/proc/')
-        for guard in ('!prompt || prompt.finished', 'legacy_renderer', '!frontend_acknowledged', 'status != STATUS_INTERACTIVE', 'usr != user'):
+        for guard in ('!prompt || prompt.finished', 'plain_page', '!frontend_acknowledged', 'status != STATUS_INTERACTIVE', 'usr != user'):
             self.assertLess(consume.index(guard), consume.index('prompt.choose('))
         choose = section(PROMPT, '/datum/nano_module/prompt/proc/choose(index)', '/datum/nanoui/tgui/prompt')
         for guard in ('finished', '!isnum(index)', 'index != round(index)', 'index < 1', 'index > length(choices)'):

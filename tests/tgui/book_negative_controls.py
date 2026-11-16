@@ -7,7 +7,7 @@ controls=[
  ('client',' || user.client != reader_client','','test_detached_owner_lifecycle_and_close_noninterference'),
  ('close_side_effect','\t\tui.use_on_close_logic(FALSE)\n','','test_detached_owner_lifecycle_and_close_noninterference'),
  ('cached_html_guard','\tif (!istype(reader_state) || reader_state.can_use_topic(src_object, user) == STATUS_CLOSE)\n\t\treturn ""\n','','test_detached_owner_lifecycle_and_close_noninterference'),
- ('complete_fallback','\t\tui.legacy_renderer = TRUE\n','','test_metadata_rejects_whole_view'),
+ ('complete_fallback','\t\tui.plain_page = TRUE\n','','test_metadata_rejects_whole_view'),
  ('metadata_admission','book_page_metadata(title_snapshot) && book_page_metadata(name_snapshot)','book_page_metadata(title_snapshot)','test_metadata_rejects_whole_view'),
  ('close_idempotence','\tif (reader_closed)\n\t\treturn\n','','test_detached_owner_lifecycle_and_close_noninterference'),
 ]

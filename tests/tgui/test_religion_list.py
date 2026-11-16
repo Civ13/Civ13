@@ -71,9 +71,7 @@ class ReligionListContract(unittest.TestCase):
         for marker in ('status != STATUS_INTERACTIVE', 'src_object.Topic'):
             self.assertIn(marker, legacy)
         self.assertLess(legacy.index('status != STATUS_INTERACTIVE'), legacy.index('src_object.Topic'))
-        template = (ROOT / 'UI/templates/religion_list.tmpl').read_text()
-        self.assertNotIn('href=', template)
-        self.assertNotIn('<input', template)
+        self.assertFalse((ROOT / 'UI/templates').exists())
         workflow = (ROOT / '.github/workflows/tgui.yml').read_text()
         self.assertIn("'code/game/mob/groups/religions.dm'", workflow)
         self.assertIn("'UI/js/libraries/doT.js'", workflow)

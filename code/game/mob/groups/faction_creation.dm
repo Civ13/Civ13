@@ -53,7 +53,7 @@
 	draft_grid = faction_symbol_new_grid()
 
 /datum/nano_module/faction_creation/ui_actions(ui_key)
-	return list("set_name", "set_motto", "set_flavour", "set_tool", "pick_color", "paint", "stroke", "stamp", "clear", "undo", "found")
+	return list("set_name", "set_motto", "set_flavour", "set_tool", "pick_color", "paint", "stroke", "stamp", "clear", "undo", "export_code", "import_code", "found")
 
 /datum/nano_module/faction_creation/ui_action_fields(ui_key, action)
 	switch (action)

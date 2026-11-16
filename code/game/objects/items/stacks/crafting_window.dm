@@ -15,7 +15,7 @@
 #define CRAFTING_WINDOW_REACH_LIMIT 12
 
 /client
-	// Set once this client's browser fell back, or the player asked for the classic list.
+	// Set once this client's browser could not run the Crafting window.
 	var/tmp/crafting_window_classic = FALSE
 	// Product type path -> preview file already sent to this client ("-" = no picture).
 	var/tmp/list/craft_icon_cache
@@ -183,9 +183,9 @@ var/global/list/crafting_purpose_cache = list()
 	if (istype(W))
 		W.closed()
 
-// A browser that cannot run the window, or a player who asked for the classic
-// list, gets the retained HTML list for the rest of this connection.
-/datum/nanoui/tgui/crafting_window/use_legacy_renderer()
+// A browser that cannot run the window gets the plain HTML list for the rest
+// of this connection.
+/datum/nanoui/tgui/crafting_window/show_plain_page()
 	var/datum/crafting_window/W = src_object
 	var/mob/living/human/H = user
 	var/obj/item/stack/S = istype(W) ? W.source : null

@@ -70,13 +70,16 @@
 /datum/nanoui/tgui/paper_editor/persistence_runtime_var(key)
 	return (key in list("editor_session", "editor_closed", "response_serial", "last_result")) || ..()
 
+/datum/nanoui/tgui/paper_editor/has_plain_page()
+	return TRUE
+
 /datum/nanoui/tgui/paper_editor/allowed_actions()
 	return list("paper_edit")
 
 // A classic fallback is a complete projected read-only view, never the old
 // field/EOF editor. It cannot downgrade a classified write to legacy HTML.
 /datum/nanoui/tgui/paper_editor/Topic(href, href_list)
-	if (editor_closed || legacy_renderer)
+	if (editor_closed || plain_page)
 		return
 	return ..()
 
@@ -116,7 +119,7 @@
 		close()
 		return
 	if (!paper_editor_modern_supported(data))
-		legacy_renderer = TRUE
+		plain_page = TRUE
 	set_initial_data(data)
 	return ..()
 
@@ -127,19 +130,19 @@
 	if (!current)
 		close()
 		return
-	if (!legacy_renderer && !paper_editor_modern_supported(current))
-		use_legacy_renderer()
+	if (!plain_page && !paper_editor_modern_supported(current))
+		show_plain_page()
 		return
 	return ..(current, force_push)
 
 /datum/nanoui/tgui/paper_editor/update(force_open = FALSE)
-	if (legacy_renderer)
+	if (plain_page)
 		open()
 	else
 		push_data(null, TRUE)
 
 /datum/nanoui/tgui/paper_editor/get_html()
-	if (!legacy_renderer)
+	if (!plain_page)
 		return ..()
 	var/list/data = editor_data()
 	if (!data)
@@ -150,7 +153,7 @@
 	return "<HTML><HEAD><TITLE>" + title + "</TITLE></HEAD><BODY style=\"background:#FFFFFF;color:#000000\"><p>This document is shown in a read-only view.</p>" + body + "</BODY></HTML>"
 
 /datum/nanoui/tgui/paper_editor/consume_topic(href, list/href_list)
-	if (!editor_current() || legacy_renderer || !frontend_ready || !frontend_acknowledged || status != STATUS_INTERACTIVE || usr != user)
+	if (!editor_current() || plain_page || !frontend_ready || !frontend_acknowledged || status != STATUS_INTERACTIVE || usr != user)
 		return TRUE
 	if (!paper_document_keys(href_list, list("paper_edit")))
 		return TRUE
@@ -168,7 +171,7 @@
 	last_result = "refreshed"
 	if (operation == "append")
 		if (!paper_editor_modern_supported(editor_data()))
-			use_legacy_renderer()
+			show_plain_page()
 			return TRUE
 		var/answer_target = request["kind"] == "field_answer" ? request["target"] : null
 		last_result = editor_session.append(user, editor_session.writing_pen, request["document_id"], request["revision"], request["language_id"], request["kind"], request["value"], request["lease"], answer_target) ? "saved" : "rejected"

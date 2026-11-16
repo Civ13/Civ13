@@ -19,7 +19,7 @@ def environment(source=SOURCE):
  env['request_value']=lambda record,key:record.get(key) if isinstance(record,dict) else None
  env.update(STATUS_CLOSE=-1,STATUS_INTERACTIVE=2,json_decode=json.loads,paper_document_view_body=render)
  vm.ALLOWED|={'text2num','paper_editor_modern_supported','request_value','paper_editor_request','json_decode','paper_document_view_body','paper_document_view_title','parent_open','parent_push','parent_html','parent_close'}
- vm.METHODS|={'use_legacy_renderer','open','can_use_topic','editor_current','editor_data','set_initial_data','push_data','cancel','snapshot','Topic'}
+ vm.METHODS|={'show_plain_page','open','can_use_topic','editor_current','editor_data','set_initial_data','push_data','cancel','snapshot','Topic'}
  decoder=source
  # DM missing associative keys yield null. Python dicts need an explicit get.
  for key in ('operation','lease'):decoder=decoder.replace('request["'+key+'"]','request_value(request,"'+key+'")')
@@ -30,10 +30,10 @@ def environment(source=SOURCE):
  class UI(ParentUI):
   def __init__(self,paper,actor,session):
    super().__init__(paper,actor);self.editor_session=session;self.editor_closed=False;self.response_serial=0;self.last_result='ready'
-   self.on_close_logic=False;self.state=State(session);self.status=2;self.frontend_ready=True;self.frontend_acknowledged=True;self.legacy_renderer=False
+   self.on_close_logic=False;self.state=State(session);self.status=2;self.frontend_ready=True;self.frontend_acknowledged=True;self.plain_page=False
    self.sent=[];self.latest_data=None;self.opens=0
   def set_initial_data(self,data):self.latest_data=copy.deepcopy(data)
-  def use_legacy_renderer(self):self.legacy_renderer=True;self.open()
+  def show_plain_page(self):self.plain_page=True;self.open()
  def parent_open(ui):
   ui.opens+=1
   if ui not in ui.user.open_uis:ui.user.open_uis.append(ui)
@@ -45,8 +45,8 @@ def environment(source=SOURCE):
   ParentUI.close(ui);ui.state=None
   if ui in ui.user.open_uis:ui.user.open_uis.remove(ui)
  env.update(parent_open=parent_open,parent_push=parent_push,parent_close=parent_close,parent_html=lambda ui:'modern shell')
- fields=('user','src_object','state','status','editor_session','editor_closed','response_serial','last_result','legacy_renderer','frontend_ready','frontend_acknowledged')
- methods=('use_legacy_renderer','open','editor_current','editor_data','set_initial_data','close','push_data')
+ fields=('user','src_object','state','status','editor_session','editor_closed','response_serial','last_result','plain_page','frontend_ready','frontend_acknowledged')
+ methods=('show_plain_page','open','editor_current','editor_data','set_initial_data','close','push_data')
  for name,args in [('editor_current','self'),('editor_data','self'),('open','self'),('push_data','self,data,force_push=False'),('update','self,force_open=False'),('get_html','self'),('consume_topic','self,href,href_list'),('close','self')]:
   signature='/datum/nanoui/tgui/paper_editor/'+('proc/' if name in ('editor_current','editor_data') else '')+name
   fragment=vm.body(source,signature)
@@ -131,7 +131,7 @@ class Editor(unittest.TestCase):
   self.assertEqual(self.paper.document_record['sections'][0]['text'],'Actual pen signature')
   self.assertNotIn('CLIENT_CANARY',json.dumps(self.ui.sent))
  def test_ready_ack_status_owner_legacy_state_and_binding_guards(self):
-  for field,value in [('frontend_ready',False),('frontend_acknowledged',False),('status',1),('legacy_renderer',True),('state',None)]:
+  for field,value in [('frontend_ready',False),('frontend_acknowledged',False),('status',1),('plain_page',True),('state',None)]:
    with self.subTest(field=field):
     self.setUp();req=self.request();setattr(self.ui,field,value);self.dispatch(req);self.assertIsNone(self.paper.document_record)
   self.setUp();self.env['usr']=vm.Actor();self.dispatch(self.request());self.assertIsNone(self.paper.document_record)
@@ -146,12 +146,12 @@ class Editor(unittest.TestCase):
   cached=copy.deepcopy(self.ui.sent[-1]);self.assertIn('UNKNOWN_LANGUAGE_CANARY',json.dumps(cached))
   self.actor.languages=[self.langs[EN]];self.ui.push_data(cached,True)
   self.assertNotIn('UNKNOWN_LANGUAGE_CANARY',json.dumps(self.ui.sent[-1]));self.assertIn('Unintelligible',json.dumps(self.ui.sent[-1]))
-  self.ui.legacy_renderer=True;html=self.ui.get_html()
+  self.ui.plain_page=True;html=self.ui.get_html()
   self.assertNotIn('UNKNOWN_LANGUAGE_CANARY',html);self.assertIn('Unintelligible',html)
   self.assertIn('background:#FFFFFF;color:#000000',html)
  def test_classic_view_is_complete_readonly_and_cannot_dispatch_writes(self):
   self.paper.info='<table><tr><td>Old</td></tr></table>';self.session.capture_state()
-  self.ui.legacy_renderer=True;html=self.ui.get_html();self.assertIn(self.paper.info,html)
+  self.ui.plain_page=True;html=self.ui.get_html();self.assertIn(self.paper.info,html)
   self.assertNotIn('DO_NOT_SEND_EDITOR_HREF',html);self.assertIn('read-only',html)
   self.dispatch(self.request());self.assertIsNone(self.paper.document_record)
  def test_refresh_old_lease_is_readonly_and_never_replays_text(self):
@@ -191,7 +191,7 @@ class Editor(unittest.TestCase):
   self.assertNotIn('paper_editor_open',(vm.ROOT/'code/game/objects/items/paper/paper.dm').read_text(encoding='utf-8'))
   self.assertEqual(SOURCE.count('paper_editor_open('),2)
   self.assertIn('#define PAPER_EDITOR_ENTRYPOINT_ENABLED TRUE', SOURCE)
-  self.assertIn('if (editor_closed || legacy_renderer)',vm.body(SOURCE,'/datum/nanoui/tgui/paper_editor/Topic'))
+  self.assertIn('if (editor_closed || plain_page)',vm.body(SOURCE,'/datum/nanoui/tgui/paper_editor/Topic'))
   for forbidden in ('hear_say(', 'add_language(', 'partial_languages','update_uis('):
    if forbidden=='update_uis(':continue # Comment explicitly says not to broadcast.
    self.assertNotIn(forbidden,SOURCE)
@@ -204,10 +204,10 @@ class Editor(unittest.TestCase):
     else:self.paper.info='x'*65537;self.session.capture_state()
     self.ui.open()
     if mode=='oversize':
-     self.assertTrue(self.ui.legacy_renderer)
+     self.assertTrue(self.ui.plain_page)
      self.dispatch(self.request());self.assertIsNone(self.paper.document_record)
      self.assertIn('read-only',self.ui.get_html());continue
-    self.assertFalse(self.ui.legacy_renderer)
+    self.assertFalse(self.ui.plain_page)
     data=self.ui.editor_data()
     # The authored bytes, never the legacy href cache, reach the client.
     self.assertEqual(data['view']['legacy_body_html'],self.paper.info)
@@ -265,7 +265,7 @@ class Editor(unittest.TestCase):
   self.actor.active=self.pen
   self.paper.info='<table><tr><td>Legacy text</td></tr></table>'
   self.assertTrue(route(self.paper,self.actor,self.pen))
-  ui=self.actor.open_uis[0];self.assertFalse(ui.legacy_renderer)
+  ui=self.actor.open_uis[0];self.assertFalse(ui.plain_page)
   self.assertEqual(ui.editor_data()['view']['legacy_body_html'],self.paper.info)
   ui.consume_topic('',{'paper_edit':json.dumps({'operation':'append','lease':ui.editor_data()['lease'],'document_id':None,'revision':0,'language_id':EN,'kind':'body','value':'NEW'})})
   self.assertIsNotNone(self.paper.document_record);ui.close()

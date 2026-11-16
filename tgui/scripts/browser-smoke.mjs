@@ -117,14 +117,14 @@ try {
   await page.getByText('No captured image is available.', { exact: true }).waitFor();
   assert.equal(await page.locator('.photo-viewer img,.photo-viewer em').count(), 0);
   if (process.env.SCREENSHOT_PATH) await page.screenshot({ path: process.env.SCREENSHOT_PATH, fullPage: true });
-  await page.getByText('Classic interface', { exact: true }).click();
-  assert.equal(await page.evaluate(() => window.fallback), true);
+  assert.equal(await page.getByText('Classic interface', { exact: true }).count(), 0);
+  assert.notEqual(await page.evaluate(() => window.fallback), true);
   assert.deepEqual(errors, []);
   const invalid = await browser.newPage();
   await invalid.goto(`http://127.0.0.1:${server.address().port}`);
   await invalid.waitForFunction(() => window.ready);
   await invalid.evaluate(() => window.receiveUpdateData(JSON.stringify({ config: { template: 'character_flavor.tmpl', status: 1 }, data: { name: 'Fictional subject', text: 'PARTIAL\n<bad>' } })));
-  await invalid.getByText('Switching to classic interface...', { exact: true }).waitFor();
+  await invalid.getByText('This window could not be shown. Close it and open it again.', { exact: true }).waitFor();
   assert.equal(await invalid.evaluate(() => window.fallback), true);
   assert.ok(!(await invalid.locator('body').textContent()).includes('PARTIAL'));
   await invalid.close();

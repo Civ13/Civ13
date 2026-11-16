@@ -47,26 +47,41 @@ class BackendContract(unittest.TestCase):
         self.assertIn('push_data(status == STATUS_DISABLED ? null : latest_data, TRUE)', DM)
         self.assertIn('if (!state || !frontend_ready', DM)
 
-    def test_legacy_fallback_preserves_parent(self):
-        self.assertIn('legacy_renderer = TRUE\n\tset_initial_data(latest_data)\n\topen()', DM)
-        self.assertIn('if (legacy_renderer)\n\t\treturn ..()', DM)
+    def test_single_renderer_and_plain_pages_only_where_declared(self):
+        # No NanoUI template renderer, no server startup watchdog, no link to
+        # another interface: the modern screen is the window.
+        self.assertFalse((ROOT / 'UI/templates').exists())
+        self.assertNotIn('spawn(', DM)
+        html = DM.split('/datum/nanoui/tgui/get_html()', 1)[1].split('/datum/nanoui/tgui/push_data', 1)[0]
+        self.assertNotIn('..()', html)
+        self.assertNotIn('byond://', html)
+        self.assertNotRegex(html, r'(?i)classic')
+        self.assertIn('This window could not load. Close it and open it again.', html)
+        self.assertIn('/datum/nanoui/tgui/proc/has_plain_page()\n\treturn FALSE', DM)
+        show = DM.split('/datum/nanoui/tgui/proc/show_plain_page()', 1)[1].split('/datum/nanoui/tgui/get_config_data()', 1)[0]
+        self.assertLess(show.index('!has_plain_page()'), show.index('plain_page = TRUE'))
+        self.assertLess(show.index('update_status(FALSE)'), show.index('plain_page = TRUE'))
+        self.assertIn('if (!state || status == STATUS_CLOSE)', show)
+        self.assertIn('plain_page = TRUE\n\tset_initial_data(latest_data)\n\topen()', DM)
         self.assertIn('if (href_list["type"])\n\t\t\treturn', DM)
+        # Only these windows keep a page of their own, or end in the game's own dialog or list.
+        pages, endings = set(), set()
+        for path in (ROOT / 'code').rglob('*.dm'):
+            source = path.read_text(errors='replace')
+            pages.update(re.findall(r'(?m)^/datum/nanoui/tgui/(?!proc/)([\w/]+)/has_plain_page\(\)', source))
+            endings.update(re.findall(r'(?m)^/datum/nanoui/tgui/(?!proc/)([\w/]+)/show_plain_page\(\)', source))
+        self.assertEqual(pages, {'snapshot', 'paper_editor'})
+        self.assertEqual(endings, {'prompt', 'crafting_window'})
+        client = (ROOT / 'code/modules/client/client_procs.dm').read_text(errors='replace')
+        self.assertIn('#define REAL_MIN_CLIENT_VERSION 516', client)
+        self.assertNotIn('UI/templates', client)
+        index = (ROOT / 'tgui/src/index.tsx').read_text()
+        self.assertNotRegex(index, r'(?i)classic')
 
     def test_reopening_and_close_invalidate_generation(self):
         self.assertEqual(DM.count('render_generation++'), 3)
         self.assertGreaterEqual(DM.count('frontend_ready = FALSE'), 3)
         self.assertGreaterEqual(DM.count('frontend_acknowledged = FALSE'), 3)
-
-    def test_startup_watchdog_has_owner_client_generation_and_lifecycle_guards(self):
-        opening = DM.split('/datum/nanoui/tgui/open()', 1)[1].split('/datum/nanoui/tgui/close()', 1)[0]
-        self.assertLess(opening.index('. = ..()'), opening.index('spawn(200)'))
-        timeout = opening.split('spawn(200)', 1)[1]
-        for guard in ('legacy_renderer', 'frontend_acknowledged', 'render_generation != open_generation',
-                      'user != open_user', '!user || user.client != open_client', '!src_object || !state'):
-            self.assertLess(timeout.index(guard), timeout.index('use_legacy_renderer()'))
-        fallback = DM.split('/datum/nanoui/tgui/proc/use_legacy_renderer()', 1)[1].split('/datum/nanoui/tgui/get_config_data()', 1)[0]
-        self.assertLess(fallback.index('update_status(FALSE)'), fallback.index('legacy_renderer = TRUE'))
-        self.assertIn('if (!state || status == STATUS_CLOSE)', fallback)
 
     def test_ack_is_owner_and_generation_guarded_and_requires_ready(self):
         topic = DM.split('/datum/nanoui/tgui/Topic', 1)[1]
@@ -82,10 +97,10 @@ class BackendContract(unittest.TestCase):
         self.assertLess(transfer.index('ui.user = newMob'), transfer.index('modern_ui.prepare_user_transfer(oldMob.client)'))
         self.assertIn('if (istype(ui, /datum/nanoui/tgui))', transfer)
         prepare = DM.split('/datum/nanoui/tgui/proc/prepare_user_transfer', 1)[1].split('/datum/nanoui/tgui/proc/complete_user_transfer', 1)[0]
-        self.assertLess(prepare.index('render_generation++'), prepare.index('if (legacy_renderer)'))
+        self.assertLess(prepare.index('render_generation++'), prepare.index('if (plain_page)'))
         self.assertNotIn('open()', prepare)
         self.assertIn('expected_client = pending_transfer_client', prepare)
-        complete = DM.split('/datum/nanoui/tgui/proc/complete_user_transfer', 1)[1].split('/datum/nanoui/tgui/proc/use_legacy_renderer', 1)[0]
+        complete = DM.split('/datum/nanoui/tgui/proc/complete_user_transfer', 1)[1].split('/datum/nanoui/tgui/proc/show_plain_page', 1)[0]
         for guard in ('user != linked_user', '!state || !src_object', 'user.client != pending_transfer_client', 'pending_transfer_client.mob != user'):
             self.assertLess(complete.index(guard), complete.index('open()'))
         self.assertIn('ui.user == newMob', manager)
@@ -94,7 +109,7 @@ class BackendContract(unittest.TestCase):
         self.assertLess(mind.index('new_character.key = key'), mind.index('user_transfer_completed(new_character)'))
 
     def test_modern_adapter_is_default_for_converted_producers(self):
-        self.assertIn('var/legacy_renderer = FALSE', DM)
+        self.assertIn('var/plain_page = FALSE', DM)
 
     def test_direct_tgui_templates_adopted(self):
         templates = set()
@@ -105,8 +120,7 @@ class BackendContract(unittest.TestCase):
         self.assertEqual(templates, {'appearance_changer.tmpl', 'book_reader.tmpl', 'character_flavor.tmpl', 'character_notes.tmpl', 'chem_disp.tmpl', 'crafting_atlas.tmpl', 'crafting_window.tmpl', 'crew_log.tmpl', 'faction_creation.tmpl', 'faction_list.tmpl', 'faction_symbol.tmpl', 'known_languages.tmpl', 'photo_viewer.tmpl', 'recruitment_station.tmpl', 'religion_list.tmpl', 'research_bench.tmpl', 'research_book.tmpl', 'ship_stocks.tmpl', 'vending_machine.tmpl', 'vending_machine2.tmpl', 'vending_machine_gulag.tmpl', 'vending_machine_taotd.tmpl', 'warehouse_book.tmpl'})
 
     def test_recovery_without_bootstrap_and_close_ownership(self):
-        self.assertIn('href="byond://?src=\\ref[src]&amp;window_id=', DM)
-        self.assertIn('onerror="window.location.href=', DM)
+        self.assertIn("document.getElementById('tgui-loading').textContent=", DM)
         external = (ROOT / "code/modules/nano/nanoexternal.dm").read_text()
         self.assertIn("istype(ui, /datum/nanoui/tgui) && ui.user != mob", external)
         self.assertNotIn('"manage"', DM)
@@ -167,11 +181,6 @@ class BackendContract(unittest.TestCase):
         self.assertEqual(allowed('research_book.tmpl'), set(re.findall(r'href_list\["([^"\n]+)"\]', book)))
         self.assertEqual(buttons('ResearchBook.tsx'), allowed('research_book.tmpl'))
         self.assertLess(book.index('research_book_state.can_use_topic(src, H) != STATUS_INTERACTIVE'), book.index('study_research_source('))
-        for template in ('research_bench.tmpl', 'research_book.tmpl'):
-            if template.startswith('faction_'):
-                continue  # the classic banner editor also has code import and export, which the modern screen does not send
-            classic = (ROOT / 'UI/templates' / template).read_text()
-            self.assertLessEqual(set(re.findall(r"\{\s*['\"](\w+)['\"]\s*:", classic)), allowed(template), template)
 
     def test_crafting_window_actions_reach_its_topic(self):
         # The same transport allowlist that once swallowed recruitment actions.
@@ -265,7 +274,7 @@ class BackendContract(unittest.TestCase):
         self.assertNotIn('crafting_window', core)
         self.assertIn('crafting_atlas_presenter.craft(viewer, copytext("[href_list["atlas_craft"]]", 1, 257), state)', core)
         craft = adapter.split('/datum/crafting_atlas_presenter/tgui/craft(mob/viewer, product, state)', 1)[1].split('\n/', 1)[0]
-        for guard in ('ui.user != viewer', 'ui.state != state', 'ui.legacy_renderer', '!ui.frontend_ready', '!ui.frontend_acknowledged', 'resource_exists(product)'):
+        for guard in ('ui.user != viewer', 'ui.state != state', 'ui.plain_page', '!ui.frontend_ready', '!ui.frontend_acknowledged', 'resource_exists(product)'):
             self.assertLess(craft.index(guard), craft.index('crafting_window_from_atlas(viewer, product)'))
         atlas = (ROOT / 'tgui/src/interfaces/CraftingAtlas.tsx').read_text()
         self.assertIn("ui.act('atlas_craft', { atlas_craft: craftable })", atlas)
@@ -324,13 +333,13 @@ class BackendContract(unittest.TestCase):
         valid = window.split('/datum/crafting_window/anvil/still_valid(', 1)[1].split('/datum/crafting_window/anvil/load_recipes', 1)[0]
         self.assertIn('source.loc == H && H.get_active_hand() == source && isturf(H.loc) && in_range(anvil, H)', valid)
         base = (ROOT / 'code/game/objects/items/stacks/crafting_window.dm').read_text()
-        fallback = base.split('/datum/nanoui/tgui/crafting_window/use_legacy_renderer()', 1)[1].split('/obj/item/stack/proc/crafting_window_shown', 1)[0]
+        fallback = base.split('/datum/nanoui/tgui/crafting_window/show_plain_page()', 1)[1].split('/obj/item/stack/proc/crafting_window_shown', 1)[0]
         self.assertLess(fallback.index('crafting_window_classic = TRUE'), fallback.index('A.attackby(S, H)'))
         self.assertIn('W.type != /datum/crafting_window', base)
 
     def test_crafting_window_falls_back_to_the_classic_list(self):
         source = (ROOT / 'code/game/objects/items/stacks/crafting_window.dm').read_text()
-        fallback = source.split('/datum/nanoui/tgui/crafting_window/use_legacy_renderer()', 1)[1].split('/obj/item/stack/proc/crafting_window_shown', 1)[0]
+        fallback = source.split('/datum/nanoui/tgui/crafting_window/show_plain_page()', 1)[1].split('/obj/item/stack/proc/crafting_window_shown', 1)[0]
         self.assertLess(fallback.index('crafting_window_classic = TRUE'), fallback.index('S.list_recipes(H)'))
         shown = source.split('/obj/item/stack/proc/crafting_window_shown', 1)[1].split('/datum/crafting_window/ui_interact', 1)[0]
         self.assertIn('!H.client || H.client.crafting_window_classic || H.client.modern_ui_failed', shown)
@@ -358,11 +367,6 @@ class BackendContract(unittest.TestCase):
         for template, (path, owner) in owners.items():
             actions = declared(path, owner)
             self.assertTrue(actions, template)
-            # Every key a classic template sends is declared, so both renderers reach the same Topic.
-            if template.startswith('faction_'):
-                continue  # the classic banner editor also has code import and export, which the modern screen does not send
-            classic = (ROOT / 'UI/templates' / template).read_text()
-            self.assertLessEqual(set(re.findall(r"\{\s*['\"](\w+)['\"]\s*:", classic)), actions, template)
         for path, owner in (owners['faction_symbol.tmpl'], owners['faction_creation.tmpl']):
             fields = declared_fields(path, owner)
             self.assertEqual(fields, {'paint': ['x', 'y'], 'stroke': ['cells', 'stroke_continue']})

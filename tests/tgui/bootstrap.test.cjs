@@ -15,8 +15,9 @@ function boot(ua = 'Chrome/130.0', options = {}) {
   return { window, nodes, messages, timers, cancelled, button, loading, expire: () => { for (let i = 0; i < timers.length; i++) if (!cancelled.has(i + 1)) timers[i].callback(); } };
 }
 const types = env => env.messages.map(url => new URL(url).searchParams.get('type'));
-test('legacy gate and idempotent fallback', () => {
-  for (const ua of ['Trident/7.0', 'Chrome/122.0', 'Firefox/130.0']) { const e = boot(ua); assert.equal(e.nodes.length, 0); e.button.onclick(); assert.deepEqual(types(e), ['fallback']); }
+test('unsupported browser loads nothing, reports once and shows the notice', () => {
+  for (const ua of ['Trident/7.0', 'Chrome/122.0', 'Firefox/130.0']) { const e = boot(ua); assert.equal(e.nodes.length, 0); e.window.Civ13Tgui.fallback(); assert.deepEqual(types(e), ['fallback']); assert.match(e.loading.textContent, /could not load/); assert.notEqual(e.loading.style.display, 'none'); }
+  assert.doesNotMatch(source, /tgui-legacy|classic/i);
   assert.equal(boot('Chrome/123.0', { missingPromise: true }).nodes.length, 0);
 });
 test('React mount keeps watchdog pending until a valid current snapshot', () => {
@@ -47,23 +48,25 @@ test('asset/error/timeout fallback, bounded queue and throwing bridge', () => {
   const q = boot(); for (let i = 0; i < 33; i++) q.window.receiveUpdateData('{}'); assert.equal(q.window.Civ13Tgui.queue.length, 32); assert.deepEqual(types(q), ['fallback']);
   const broken = boot('Chrome/130.0', { deliver: () => { throw Error('bridge unavailable'); } }); broken.window.Civ13Tgui.ready(); broken.expire(); broken.expire(); assert.deepEqual(types(broken), ['ready', 'fallback']);
 });
-// Server behavior is modeled, not DM execution. Execute production watchdog
-// guard expressions against fake owners/generations so omission controls matter.
-const watchdog = dm.split('spawn(', 2)[1]?.split('use_legacy_renderer()', 1)[0];
-const delay = Number(watchdog?.match(/^(\d+)\)/)?.[1]) * 100;
-const guards = [...(watchdog || '').matchAll(/if \((.+)\)/g)].map(m => m[1]);
+// Server behavior is modeled, not DM execution. There is no server startup
+// watchdog and no second renderer: only a window with its own plain page switches.
+assert.doesNotMatch(dm, /spawn\(/);
+const plainGuard = dm.split('/datum/nanoui/tgui/proc/show_plain_page()', 2)[1]?.match(/if \((.+)\)/)?.[1];
 const actionGuard = dm.match(/if \((status != STATUS_INTERACTIVE[^\n]+)\)/)?.[1];
-const completeTransfer = dm.split('/datum/nanoui/tgui/proc/complete_user_transfer', 2)[1]?.split('/datum/nanoui/tgui/proc/use_legacy_renderer', 1)[0];
+const completeTransfer = dm.split('/datum/nanoui/tgui/proc/complete_user_transfer', 2)[1]?.split('/datum/nanoui/tgui/proc/show_plain_page', 1)[0];
 const transferGuards = [...(completeTransfer || '').matchAll(/if \((.+)\)/g)].map(m => m[1]);
 function server(options = {}) {
-  assert.equal(delay, 20000); assert.equal(guards.length, 2);
+  assert.equal(plainGuard, 'plain_page || !has_plain_page() || !user || !user.client || !src_object || !state');
   const client = {}, owner = { client }; client.mob = owner;
-  const s = { user: owner, render_generation: 1, legacy_renderer: false, frontend_ready: false, frontend_acknowledged: false, pending_transfer_client: null, src_object: {}, state: {}, status: 2, fallbacks: 0, callbacks: [], actions: [] };
+  const s = { user: owner, render_generation: 1, plain_page: false, frontend_ready: false, frontend_acknowledged: false, pending_transfer_client: null, src_object: {}, state: {}, status: 2, fallbacks: 0, actions: [] };
   let env;
-  const fallback = () => { if (!s.state || !s.src_object || !s.user?.client || s.status === -1 || s.legacy_renderer) return; s.legacy_renderer = true; s.fallbacks++; open(); };
+  const fallback = () => {
+    if (vm.runInNewContext(plainGuard.replace('user.client', 'user?.client'), { ...s, has_plain_page: () => !!options.plainPage }) || s.status === -1) return;
+    s.plain_page = true; s.fallbacks++; open();
+  };
   const receive = (url, caller) => {
     const p = new URL(url).searchParams;
-    if (!s.state || s.legacy_renderer || caller !== s.user || !caller?.client || !s.src_object || s.status === -1 || p.get('window_id') !== 'main[0x456]' || p.get('generation') !== String(s.render_generation) || options.drop?.includes(p.get('type'))) return;
+    if (!s.state || s.plain_page || caller !== s.user || !caller?.client || !s.src_object || s.status === -1 || p.get('window_id') !== 'main[0x456]' || p.get('generation') !== String(s.render_generation) || options.drop?.includes(p.get('type'))) return;
     if (p.get('type') === 'ready') { s.frontend_ready = true; if (!options.dropSnapshot) env.window.Civ13Tgui.acceptSnapshot(config(s.render_generation)); }
     if (p.get('type') === 'ack' && s.frontend_ready) s.frontend_acknowledged = true;
     if (p.get('type') === 'fallback') fallback();
@@ -73,9 +76,7 @@ function server(options = {}) {
     }
   };
   function open() {
-    s.render_generation++; s.frontend_ready = false; s.frontend_acknowledged = false; s.pending_transfer_client = null; if (s.legacy_renderer) return;
-    const captured = { open_generation: s.render_generation, open_user: s.user, open_client: s.user.client };
-    s.callbacks.push(() => { if (guards.some(expr => vm.runInNewContext(expr, { ...s, ...captured }))) return; fallback(); });
+    s.render_generation++; s.frontend_ready = false; s.frontend_acknowledged = false; s.pending_transfer_client = null; if (s.plain_page) return;
     const caller = s.user; env = boot('Chrome/130.0', { generation: s.render_generation, deliver: url => receive(url, caller) });
   }
   function completeHook(linked_user) {
@@ -85,12 +86,11 @@ function server(options = {}) {
     s.pending_transfer_client = null; open();
   }
   open(); return { state: s, get env() { return env; }, receive, open,
-    timeout: () => { for (const callback of [...s.callbacks]) callback(); },
     close: () => { s.render_generation++; s.frontend_ready = false; s.frontend_acknowledged = false; s.pending_transfer_client = null; s.state = null; },
     transfer: () => {
       const expected = s.user.client || s.pending_transfer_client;
       s.user = { client: null }; s.render_generation++; s.frontend_ready = false; s.frontend_acknowledged = false;
-      s.pending_transfer_client = s.legacy_renderer ? null : expected;
+      s.pending_transfer_client = s.plain_page ? null : expected;
       return s.user;
     },
     linkClient: linked_user => {
@@ -99,12 +99,23 @@ function server(options = {}) {
       completeHook(linked_user);
     }, completeHook };
 }
-test('server watchdog recovers undelivered ready and client fallback', () => {
-  const s = server({ drop: ['ready', 'fallback'] }); s.env.window.Civ13Tgui.ready(); s.env.expire(); assert.equal(s.state.frontend_ready, false); s.timeout(); assert.equal(s.state.fallbacks, 1); assert.equal(s.state.legacy_renderer, true); const generation = s.state.render_generation; const target = s.transfer(); s.linkClient(target); assert.equal(s.state.render_generation, generation + 1, 'classic transfer invalidates old startup but does not reopen modern UI'); s.open(); s.timeout(); assert.equal(s.state.fallbacks, 1, 'classic fallback stays sticky');
+test('a window without a plain page stays put when the browser gives up', () => {
+  const s = server(); s.env.window.Civ13Tgui.ready(); const generation = s.state.render_generation;
+  s.env.window.Civ13Tgui.fallback(); s.env.window.Civ13Tgui.fallback();
+  assert.equal(s.state.fallbacks, 0); assert.equal(s.state.plain_page, false); assert.equal(s.state.render_generation, generation);
+  assert.match(s.env.loading.textContent, /could not load/);
+  s.env.window.Civ13Tgui.send('act/amount', { amount: 10 }); assert.equal(s.state.actions.length, 0, 'a stopped page sends nothing more');
 });
-test('server watchdog recovers lost snapshot or ack; normal ack cancels recovery', () => {
-  for (const options of [{ dropSnapshot: true, drop: ['fallback'] }, { drop: ['ack'] }]) { const s = server(options); s.env.window.Civ13Tgui.ready(); s.env.expire(); s.timeout(); assert.equal(s.state.fallbacks, 1); }
-  const normal = server(); normal.env.window.Civ13Tgui.ready(); normal.timeout(); assert.equal(normal.state.frontend_acknowledged, true); assert.equal(normal.state.fallbacks, 0);
+test('a window with a plain page switches once and keeps it', () => {
+  const s = server({ plainPage: true }); s.env.window.Civ13Tgui.ready(); s.env.window.Civ13Tgui.fallback();
+  assert.equal(s.state.fallbacks, 1); assert.equal(s.state.plain_page, true);
+  const generation = s.state.render_generation; const target = s.transfer(); s.linkClient(target);
+  assert.equal(s.state.render_generation, generation + 1, 'a plain page is invalidated by a transfer but not reopened as the modern screen');
+  s.open(); assert.equal(s.state.fallbacks, 1, 'the plain page stays for this window');
+  for (const change of [x => x.close(), x => { x.state.user.client = null; }, x => { x.state.src_object = null; }, x => { x.state.status = -1; }]) {
+    const closed = server({ plainPage: true }), env = closed.env, caller = closed.state.user; env.window.Civ13Tgui.ready(); change(closed);
+    closed.receive('byond://?window_id=main%5B0x456%5D&generation=' + closed.state.render_generation + '&type=fallback', caller); assert.equal(closed.state.fallbacks, 0);
+  }
 });
 test('dropped ack rejects action; later valid ack admits only a fresh action once', () => {
   const drop = ['ack'], s = server({ drop }); s.env.window.Civ13Tgui.ready();
@@ -117,23 +128,20 @@ test('dropped ack rejects action; later valid ack admits only a fresh action onc
   assert.equal(s.state.actions.length, 0, 'ack must not replay the rejected action');
   s.env.window.Civ13Tgui.send('act/amount', { amount: 20 });
   assert.deepEqual(s.state.actions, [{ type: 'act/amount', payload: { amount: 20 } }]);
-  s.timeout(); assert.equal(s.state.fallbacks, 0);
+  assert.equal(s.state.fallbacks, 0);
   const normal = server(); normal.env.window.Civ13Tgui.ready(); normal.env.window.Civ13Tgui.send('act/amount', { amount: 5 }); assert.equal(normal.state.actions.length, 1);
 });
-test('server callbacks cannot reopen closed/logged-out/deleted windows', () => {
-  for (const change of [s => s.close(), s => { s.state.user.client = null; }, s => { s.state.src_object = null; }, s => { s.state.state = null; }, s => { s.state.status = -1; }]) { const s = server(); change(s); s.timeout(); assert.equal(s.state.fallbacks, 0); }
-});
 test('real pre-client transfer order invalidates immediately, then reopens after link', () => {
-  const s = server(), oldEnv = s.env, oldCallback = s.state.callbacks[0], oldOwner = s.state.user; oldEnv.window.Civ13Tgui.ready();
+  const s = server(), oldEnv = s.env, oldOwner = s.state.user; oldEnv.window.Civ13Tgui.ready();
   const target = s.transfer(); assert.equal(target.client, null); assert.equal(s.state.render_generation, 3); assert.equal(s.state.frontend_ready, false); assert.equal(s.state.frontend_acknowledged, false); assert.equal(s.env, oldEnv);
-  oldEnv.window.Civ13Tgui.send('act/amount', { amount: 10 }); oldCallback(); assert.equal(s.state.actions.length, 0); assert.equal(s.state.fallbacks, 0);
+  oldEnv.window.Civ13Tgui.send('act/amount', { amount: 10 }); assert.equal(s.state.actions.length, 0); assert.equal(s.state.fallbacks, 0);
   s.linkClient(target); assert.equal(s.state.render_generation, 4); assert.notEqual(s.env, oldEnv);
   assert.equal(s.env.window.Civ13Tgui.acceptSnapshot(config(2)), false);
   s.receive('byond://?window_id=main%5B0x456%5D&generation=4&type=ack', oldOwner); assert.equal(s.state.frontend_acknowledged, false);
-  s.env.window.Civ13Tgui.ready(); s.timeout(); assert.equal(s.state.frontend_acknowledged, true); assert.equal(s.state.fallbacks, 0);
+  s.env.window.Civ13Tgui.ready(); assert.equal(s.state.frontend_acknowledged, true); assert.equal(s.state.fallbacks, 0);
 });
 test('logout before post-client hook cannot reopen a closed transferred UI', () => {
-  const s = server(), target = s.transfer(), oldEnv = s.env; s.close(); s.linkClient(target); s.timeout();
+  const s = server(), target = s.transfer(), oldEnv = s.env; s.close(); s.linkClient(target);
   assert.equal(s.env, oldEnv); assert.equal(s.state.state, null); assert.equal(s.state.pending_transfer_client, null); assert.equal(s.state.fallbacks, 0);
 });
 test('second pre-client transfer keeps intended client and rejects first completion', () => {
@@ -141,7 +149,7 @@ test('second pre-client transfer keeps intended client and rejects first complet
   const second = s.transfer(); assert.equal(first.client, null); assert.equal(second.client, null); assert.equal(s.state.pending_transfer_client, pending);
   s.linkClient(first); assert.equal(s.env, oldEnv); assert.equal(s.state.user, second); assert.equal(s.state.render_generation, 4);
   s.linkClient(second); assert.equal(s.state.render_generation, 5); assert.notEqual(s.env, oldEnv);
-  s.env.window.Civ13Tgui.ready(); s.timeout(); assert.equal(s.state.frontend_acknowledged, true); assert.equal(s.state.fallbacks, 0);
+  s.env.window.Civ13Tgui.ready(); assert.equal(s.state.frontend_acknowledged, true); assert.equal(s.state.fallbacks, 0);
 });
 test('post-client completion requires reciprocal binding to the intended client', () => {
   const s = server(), target = s.transfer(), oldEnv = s.env;
@@ -150,11 +158,8 @@ test('post-client completion requires reciprocal binding to the intended client'
   target.client = { mob: target }; s.completeHook(target); assert.equal(s.env, oldEnv, 'wrong client must not reopen transferred UI');
   target.client = null; s.linkClient(target); assert.notEqual(s.env, oldEnv);
 });
-test('same-owner reopen expires old generation; owner/client replacement expires callbacks', () => {
-  const reopened = server(), oldCallback = reopened.state.callbacks[0]; reopened.open(); oldCallback();
-  assert.equal(reopened.state.fallbacks, 0, 'old generation must not recover a new opening');
-  reopened.env.window.Civ13Tgui.ready(); reopened.timeout(); assert.equal(reopened.state.fallbacks, 0);
-  for (const replace of [s => { s.state.user = { client: s.state.user.client }; }, s => { s.state.user.client = {}; }]) {
-    const s = server(); replace(s); s.timeout(); assert.equal(s.state.fallbacks, 0, 'old owner/client callback must expire');
-  }
+test('same-owner reopen expires the old page', () => {
+  const reopened = server(), oldEnv = reopened.env; oldEnv.window.Civ13Tgui.ready(); reopened.open();
+  oldEnv.window.Civ13Tgui.send('act/amount', { amount: 10 }); assert.equal(reopened.state.actions.length, 0, 'old generation cannot act on the new opening');
+  reopened.env.window.Civ13Tgui.ready(); assert.equal(reopened.state.frontend_acknowledged, true); assert.equal(reopened.state.fallbacks, 0);
 });

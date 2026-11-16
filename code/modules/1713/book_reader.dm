@@ -231,7 +231,7 @@
 		ui.use_on_close_logic(FALSE)
 	ui.legacy_snapshot = legacy_snapshot
 	if (isnull(runs))
-		ui.legacy_renderer = TRUE
+		ui.plain_page = TRUE
 		ui.title = "Book"
 		ui.set_initial_data(list())
 	else

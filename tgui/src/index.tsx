@@ -22,7 +22,7 @@ class Boundary extends Component<{ children: ReactNode }, { failed: boolean }> {
   state = { failed: false };
   static getDerivedStateFromError() { return { failed: true }; }
   componentDidCatch() { window.Civ13Tgui.fallback(); }
-  render() { return this.state.failed ? <p>Switching to classic interface...</p> : this.props.children; }
+  render() { return this.state.failed ? <p className="kit-failed">This window could not be shown. Close it and open it again.</p> : this.props.children; }
 }
 function App() {
   const current = useSyncExternalStore(subscribe, () => state);
@@ -34,10 +34,10 @@ function App() {
   const act = (action: string, params: Params = {}) => {
     if (state.config.status === 2) window.Civ13Tgui.send(`act/${action}`, params);
   };
-  return <main className="civ13-app"><header><h1>{text(config.title) || 'Civilization 13'}</h1><button type="button" className="kit-classic" title="Switch this window to the classic interface" onClick={() => window.Civ13Tgui.fallback()}>Classic interface</button></header>
+  return <main className="civ13-app"><header><h1>{text(config.title) || 'Civilization 13'}</h1></header>
     {config.status === 0 ? <NoticeBox>This interface is unavailable.</NoticeBox> : config.status === -1 ? <NoticeBox>This interface has closed.</NoticeBox> : <>
       {config.status === 1 && <NoticeBox>Read-only: interaction is unavailable.</NoticeBox>}
-      {Screen ? <Screen key={template} template={template} data={data} act={act} interactive={interactive} /> : <NoticeBox>{template ? 'Unsupported interface. Use the classic interface.' : 'Waiting for interface data...'}</NoticeBox>}
+      {Screen ? <Screen key={template} template={template} data={data} act={act} interactive={interactive} /> : <NoticeBox>{template ? 'This window is not available.' : 'Waiting for interface data...'}</NoticeBox>}
     </>}
   </main>;
 }

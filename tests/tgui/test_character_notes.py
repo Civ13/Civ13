@@ -75,7 +75,7 @@ class NotesOwnership(unittest.TestCase):
   new_body.mind=object();self.assertFalse(admitted(mind,new_body,mind,new_body))
  def test_complete_cached_snapshot_guarded_fallback_and_close_noninterference(self):
   presentation=body(SOURCE,'/datum/mind/proc/present_character_notes_ui(mob/user, legacy_snapshot, discovery_snapshot)')
-  for marker in ('if (!user || !user.client || user.mind != src)','ui.legacy_snapshot = legacy_snapshot','if (isnull(data))','ui.legacy_renderer = TRUE','ui.use_on_close_logic(FALSE)'):
+  for marker in ('if (!user || !user.client || user.mind != src)','ui.legacy_snapshot = legacy_snapshot','if (isnull(data))','ui.plain_page = TRUE','ui.use_on_close_logic(FALSE)'):
    self.assertIn(marker,presentation)
   self.assertLess(presentation.index('!user.client'),presentation.index('character_notes_ui_data('))
   self.assertLess(presentation.index('ui.legacy_snapshot = legacy_snapshot'),presentation.index('ui.open()'))

@@ -27,11 +27,10 @@ class KnownLanguagesContract(unittest.TestCase):
         self.assertIn('GLOB.nanomanager.try_update_ui(user, src, ui_key, null, data, TRUE)', READER)
         self.assertIn('new /datum/nanoui/tgui/known_languages(user, src, ui_key, "known_languages.tmpl"', READER)
         self.assertIn('_state = self_read_only_state', READER)
-        fallback = (ROOT / 'UI/templates/known_languages.tmpl').read_text()
-        self.assertIn('{{:value.name}}', fallback)
-        self.assertIn('{{:value.description}}', fallback)
+        # One renderer: no classic template is kept or sent to clients.
+        self.assertFalse((ROOT / 'UI/templates').exists())
         assets = (ROOT / 'code/modules/client/asset_cache.dm').read_text()
-        self.assertIn('"UI/templates/"', assets)
+        self.assertNotIn('UI/templates', assets)
         # The reader sends nothing: its owner keeps the empty default action list.
         self.assertIn('/datum/proc/ui_actions(ui_key)\n\treturn list()', (ROOT / 'code/modules/nano/tgui.dm').read_text())
         for path in (ROOT / 'code/game/mob').rglob('*.dm'):

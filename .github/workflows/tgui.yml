@@ -5,7 +5,6 @@ on:
     paths:
       - 'tgui/**'
       - 'UI/tgui/**'
-      - 'UI/templates/**'
       - 'UI/js/libraries/doT.js'
       - 'UI/images/civ13.png'
       - 'code/modules/nano/**'

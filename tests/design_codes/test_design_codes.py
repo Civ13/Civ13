@@ -69,11 +69,14 @@ class DesignCodesTest(unittest.TestCase):
                 self.assertIn('href_list["export_code"]', text)
                 self.assertIn('href_list["import_code"]', text)
                 self.assertIn('faction_symbol_ask_code(owner,', text)
-        for path in ('UI/templates/faction_symbol.tmpl', 'UI/templates/faction_creation.tmpl'):
+        # Both banner editors share one screen, and their owners admit the two buttons.
+        screen = read('tgui/src/interfaces/Faction.tsx')
+        self.assertIn('action="export_code">Copy design code<', screen)
+        self.assertIn('action="import_code">Paste design code<', screen)
+        for path in ('code/game/mob/groups/faction_symbol.dm', 'code/game/mob/groups/faction_creation.dm'):
             with self.subTest(path=path):
-                text = read(path)
-                self.assertIn("'export_code' : 1", text)
-                self.assertIn("'import_code' : 1", text)
+                declared = read(path).split('/ui_actions(ui_key)', 1)[1].split('\n/', 1)[0]
+                self.assertIn('"export_code", "import_code"', declared)
         editor = read('code/game/mob/groups/faction_symbol.dm')
         # A pasted symbol only fills the canvas, and only for the Leader; Save puts it on banners.
         self.assertIn('if (imported && map.is_faction_leader(owner, faction))', editor)
