@@ -1295,6 +1295,12 @@ SUITES = {
         'paths': ('tests/stone_age_rites/',), 'shared_paths': (
             'code/modules/1713/stone_age_rites.dm', 'icons/obj/stone_age_rites.dmi',
             'code/game/objects/items/stacks/stack.dm')},
+    # Money changers and a nation's common money (the native probe is tests/money_changer/probe.dm).
+    'money_changer': {'files': ('tests/money_changer/test_source.py',),
+        'paths': ('tests/money_changer/',), 'shared_paths': (
+            'code/modules/1713/money_changer.dm', 'code/game/mob/groups/faction_treasury.dm',
+            'code/game/mob/groups/nation.dm', 'tools/transfer_storage/nations.py',
+            'config/crafting/material_recipes_global.txt')},
     # Building permits and trading licences (the native probe is tests/faction_permits/probe.dm).
     'faction_permits': {'files': ('tests/faction_permits/test_source.py',),
         'paths': ('tests/faction_permits/',), 'shared_paths': (
