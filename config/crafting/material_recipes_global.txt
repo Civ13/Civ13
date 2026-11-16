@@ -2140,6 +2140,8 @@ RECIPE: /material/steel/,shipyard office,/obj/structure/car_workshop/shipyard,60
 RECIPE: /material/wood/soft/,shoring kit,/obj/item/weapon/shoring_kit,6,120,0,1,none,126,0,0,8,null
 RECIPE: /material/cloth/,diving dress,/obj/item/clothing/suit/pressure_suit/diving,12,200,0,1,clothing,126,0,0,8,null
 RECIPE: /material/brass/,fusible link,/obj/item/fusible_link,1,40,0,1,construction,62,0,0,8,null
+RECIPE: /material/brass/,peep-hole,/obj/item/door_feature/peephole,1,40,0,1,construction,0,0,0,8,null
+RECIPE: /material/brass/,mail slot,/obj/item/door_feature/mail_slot,1,40,0,1,construction,0,0,0,8,null
 RECIPE: /material/brass/,diving helmet,/obj/item/clothing/head/pressure_helmet/diving,8,200,0,1,none,126,0,0,8,null
 RECIPE: /material/steel/,diving air bottle,/obj/item/pressure_tank/diving,5,120,0,1,none,126,0,0,8,null
 RECIPE: /material/steel/,hard dive suit,/obj/item/clothing/suit/pressure_suit/diving/hard,20,250,0,1,none,150,0,0,8,null
@@ -2474,6 +2476,7 @@ RECIPE: /material/wood/,wooden key blank,/obj/item/weapon/key/blank/wooden,1,20,
 RECIPE: /material/wood/,hidden catch,/obj/item/fitted_lock/hidden_catch,2,60,0,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,wooden door bar,/obj/item/door_bar,3,40,0,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,bar brackets,/obj/item/door_brackets,2,40,0,1,construction,0,0,0,8,null
+RECIPE: /material/wood/,pet door,/obj/item/door_feature/pet_door,2,40,0,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,wooden shutters,/obj/structure/simple_door/key_door/anyone/window_shutters,4,50,1,1,construction,0,0,0,8,null
 
 RECIPE: /material/wood/soft/,floor cover,/obj/item/weapon/covers,2,30,0,1,construction,0,0,0,8,null
@@ -2967,6 +2970,7 @@ RECIPE: /material/iron/,skeleton key,/obj/item/weapon/key/skeleton,1,40,0,1,cons
 RECIPE: /material/iron/,spring latch,/obj/item/fitted_lock/latch,4,80,0,1,construction,0,0,0,8,null
 RECIPE: /material/iron/,iron door bar,/obj/item/door_bar/iron,3,60,0,1,construction,0,0,0,8,null
 RECIPE: /material/iron/,slide bolt,/obj/item/door_bolt,2,60,0,1,construction,0,0,0,8,null
+RECIPE: /material/iron/,judas hatch,/obj/item/door_feature/judas_hatch,2,50,0,1,construction,0,0,0,8,null
 RECIPE: /material/iron/,iron shutters,/obj/structure/simple_door/key_door/anyone/window_shutters/iron,4,80,1,1,construction,0,0,0,8,null
 RECIPE: /material/iron/,spring door closer,/obj/item/door_fitting/spring_closer,3,80,0,1,construction,0,0,0,8,null
 RECIPE: /material/iron/,spring door hinges,/obj/item/door_fitting/spring_hinge,2,80,0,1,construction,0,0,0,8,null
