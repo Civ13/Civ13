@@ -375,6 +375,11 @@ var/global/list/fishing_grounds_published = null
 	if (bait_uses > 0)
 		to_chat(user, SPAN_NOTICE("It is baited for [bait_uses] more cast\s."))
 
+// A tool's chance on this ground before the water and the weather have their
+// say: bait added, then scaled by how full the ground is.
+/proc/fish_tool_chance(list/profile, baited, datum/fishing_ground/G)
+	return (profile[2] + (baited ? FISH_BAIT_BONUS : 0)) * (FISH_THIN_SHARE + (1 - FISH_THIN_SHARE) * G.fullness())
+
 // ---- Fishing ----
 
 /mob/living/human/var/tmp/ocean_fishing = FALSE
@@ -400,6 +405,13 @@ var/global/list/fishing_grounds_published = null
 		return
 	..()
 
+// An axe, pick or chisel on ice cuts a fishing hole (ice_fishing.dm).
+/turf/floor/beach/water/ice/attackby(obj/item/C as obj, mob/user as mob)
+	if (ishuman(user) && ice_hole_tool_delay(C))
+		ice_hole_cut(src, C, user)
+		return
+	..()
+
 /turf/floor/beach/water/proc/fish_cast(obj/item/W, mob/living/human/H)
 	var/list/profile = fishing_tool_profile(W)
 	if (!profile)
@@ -408,7 +420,7 @@ var/global/list/fishing_grounds_published = null
 		to_chat(H, SPAN_WARNING("You are already fishing."))
 		return
 	if (istype(src, /turf/floor/beach/water/ice))
-		to_chat(H, SPAN_WARNING("The water is frozen over."))
+		to_chat(H, SPAN_WARNING("The water is frozen over. Cut a hole with an axe, a pick or a chisel and fish through that."))
 		return
 	var/datum/craft/ship = craft_at(get_turf(H))
 	if (ship && fish_craft_step(ship))
@@ -449,7 +461,7 @@ var/global/list/fishing_grounds_published = null
 		return
 	if (baited && line.bait_uses > 0)
 		line.bait_uses--
-	var/chance = (profile[2] + (baited ? FISH_BAIT_BONUS : 0)) * (FISH_THIN_SHARE + (1 - FISH_THIN_SHARE) * G.fullness())
+	var/chance = fish_tool_chance(profile, baited, G)
 	if (deep && kind == FISH_WATER_SALT)
 		chance *= FISH_DEEP_SEA_SHARE
 	chance = min(95, chance * fish_condition_factor_at(src, kind))
@@ -558,7 +570,7 @@ var/global/list/fishing_grounds_published = null
 		to_chat(H, "Nothing follows the lure. These waters seem fished out; sail on.")
 		return
 	var/kind = G.kind
-	var/chance = (profile[2] + (baited ? FISH_BAIT_BONUS : 0)) * (FISH_THIN_SHARE + (1 - FISH_THIN_SHARE) * G.fullness())
+	var/chance = fish_tool_chance(profile, baited, G)
 	if (kind == FISH_WATER_SALT && fish_water_deep(water))
 		chance *= FISH_DEEP_SEA_SHARE
 	chance = min(95, chance * fish_condition_factor_at(water, kind) * fish_ship_factor(noisy, fish_craft_step(ship)))

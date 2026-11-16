@@ -96,6 +96,20 @@ class FishingGrounds(unittest.TestCase):
         flood = (ROOT / 'code/modules/1713/flood_effects.dm').read_text(encoding='utf-8')
         self.assertIn('client.fish_signs_refresh()', flood)
 
+    def test_ice_holes_fish_the_ground_under_the_ice(self):
+        dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
+        self.assertEqual(dme.count('#include "code\\modules\\1713\\ice_fishing.dm"'), 1)
+        ice = (ROOT / 'code/modules/1713/ice_fishing.dm').read_text(encoding='utf-8')
+        self.assertIn('/turf/floor/beach/water/ice/attackby(obj/item/C as obj, mob/user as mob)\n'
+                      '\tif (ishuman(user) && ice_hole_tool_delay(C))\n\t\tice_hole_cut(src, C, user)\n', self.source)
+        fish = ice[ice.index('/obj/structure/ice_hole/attackby('):]
+        self.assertLess(fish.index('G.available() < 1'), fish.index('do_after('))
+        self.assertLess(fish.index('do_after('), fish.index('fish_land('))
+        # The hole closes by a saved wall-clock time, and its timer token is not saved.
+        self.assertIn('cut_at = trap_minutes_text(trap_now_minutes())', ice)
+        self.assertIn('return key == "check_epoch" || ..()', ice)
+        self.assertTrue((ROOT / 'icons/obj/fishing_gear.dmi').is_file())
+
     def test_spears_ask_the_stone_age_numbers(self):
         arms = (ROOT / 'code/modules/1713/stone_age_arms.dm').read_text(encoding='utf-8')
         self.assertIn('/proc/spear_fishing_delay()\n\treturn SPEAR_FISHING_DELAY\n', arms)

@@ -279,6 +279,26 @@ var/fg_runtime_error = FALSE
 	for (var/state in list("rise_a", "rise_b", "rise_c", "jump_a", "jump_b", "gulls"))
 		fg_check(state in icon_states('icons/effects/fish_signs.dmi'), "the sheet has [state]")
 
+	// ---- Ice holes ----
+	fishing_grounds = list()
+	fg_check(ice_hole_tool_delay(new /obj/item/weapon/material/pickaxe(land)) == 80 && ice_hole_tool_delay(new /obj/item/weapon/material/hatchet(land)) == 80 && ice_hole_tool_delay(new /obj/item/weapon/chisel(land)) == 120 && !ice_hole_tool_delay(new /obj/item/weapon/fishing(land)), "an axe or pick cuts ice in 8 s, a chisel in 12, a pole not at all")
+	var/obj/structure/ice_hole/hole = new(ice)
+	fg_check(hole.icon_state in icon_states(hole.icon), "the ice hole has its sprite")
+	var/datum/fishing_ground/IG = hole.ground()
+	fg_check(hole.open() && IG && IG.kind == "fresh" && IG.capacity == 6 && IG.cx == round(ice.x / 16), "a hole in river ice fishes the fresh ground under it")
+	var/turf/sea_ice = fg_water(41, 20, /turf/floor/beach/water/ice/salty)
+	var/obj/structure/ice_hole/sea_hole = new(sea_ice)
+	var/datum/fishing_ground/SIG = sea_hole.ground()
+	fg_check(SIG && SIG.kind == "salt" && SIG.capacity == 12 && SIG != IG, "a hole in sea ice fishes the salt ground")
+	var/turf/thawed = fg_water(41, 20, /turf/floor/beach/water/shallowsaltwater)
+	fg_check(fishing_ground_at(thawed) == SIG, "and the thawed sea is the same ground")
+	fg_check(!sea_hole.open() && sea_hole.refreeze_check(sea_hole.check_epoch) && QDELETED(sea_hole), "a hole goes when the ice under it does")
+	fg_check(hole.open(trap_now_minutes() + 19) && !hole.open(trap_now_minutes() + 20), "a hole stays open for twenty minutes")
+	fg_check(!hole.refreeze_check(hole.check_epoch - 1) && !QDELETED(hole), "a stale check does nothing")
+	hole.cut_at = trap_minutes_text(trap_now_minutes() - 30)
+	fg_check(hole.refreeze_check(hole.check_epoch) && QDELETED(hole), "an old hole freezes over")
+	fg_check(abs(fish_tool_chance(list(150, 30, FALSE, 1), FALSE, IG) - 30) < 0.01 && abs(fish_tool_chance(list(150, 30, FALSE, 1), TRUE, IG) - 60) < 0.01, "a pole on a full ground has 30%, 60% baited")
+
 	// ---- Saving ----
 	fishing_grounds = list()
 	fishing_grounds_publish()

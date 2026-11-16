@@ -49,6 +49,14 @@ Tests: `tests/fishing_grounds/`.
   `tests/sprites/create_fishing_signs.py`), not objects. Every 8 seconds a
   client with a living human asks 14 random tiles within 9; a tile shows a sign
   with a chance equal to its ground's fullness, and never when fished out.
+- **Ice** (`code/modules/1713/ice_fishing.dm`): frozen water cannot be cast
+  into. A pickaxe or hatchet (8 s) or a chisel (12 s) used on an ice tile cuts
+  an ice hole. A pole or rod used on the hole fishes the ground under the ice
+  (fresh 6, sea ice 12, the same ground the water has when it thaws) at 0.8 of
+  the usual chance; bait works, nets and spears do not fit. A hole freezes over
+  after 20 minutes, also across a save, and goes when the ice thaws. Sprite
+  `ice_hole` in `icons/obj/fishing_gear.dmi`
+  (`tests/sprites/create_fishing_gear.py`).
 - **Flood strandings:** a tile of ankle-deep floodwater over outdoor land that
   somebody can see has a 2% chance each river minute to leave a fish on it
   (`fish_flood_stranding()`, asked by the flood's item pass). The fish come out
