@@ -48,6 +48,10 @@
 /proc/is_crushable_stone(obj/item/I)
 	return I && I.type == /obj/item/stack/material/stone
 
+// Stone blocks, or lode ore that crushes to crushed ore (lode.dm).
+/proc/is_mill_feed(obj/item/I)
+	return is_crushable_stone(I) || lode_crushed_type(I)
+
 // Hand-worked edge-runner mill. Several people may work it at once.
 /obj/structure/stone_crusher
 	name = "stone crusher"
@@ -81,7 +85,7 @@
 	return get_turf(src)
 
 /obj/structure/stone_crusher/attackby(obj/item/W, mob/living/human/H)
-	if (!is_crushable_stone(W) || !istype(H))
+	if (!is_mill_feed(W) || !istype(H))
 		return ..()
 	crush_stones(H, W)
 
@@ -116,11 +120,14 @@
 	var/turf/T = crushing_output_turf()
 	if (!T)
 		return FALSE
-	var/result = roll_stone_crushing(stone_crushing_table(stone_crushing_age(), FALSE), roll)
+	var/crushed = lode_crushed_type(S)
+	var/result = crushed || roll_stone_crushing(stone_crushing_table(stone_crushing_age(), FALSE), roll)
 	if (result && !T.deposit_small_resource(result, 1, output_stack_limit))
 		to_chat(H, SPAN_WARNING("Clear the output under \the [src] before crushing more stone."))
 		return FALSE
 	S.use(1)
+	if (crushed)
+		return TRUE
 	if (result)
 		var/obj/item/stack/sample = result
 		to_chat(H, SPAN_NOTICE("The stone breaks open: you find some [initial(sample.name)]."))
@@ -130,34 +137,36 @@
 // seconds with better recovery, until the hopper is empty or output is full.
 /obj/structure/drill/stamp_mill
 	name = "powered stamp mill"
-	desc = "Electric stamps pound loaded stone blocks and wash out sand, ore and minerals. Anchor it, connect 150 cable power and load up to fifty stone blocks. It crushes one stone every four seconds with better recovery than a hand crusher; clear its output before twelve stacks accumulate."
+	desc = "Electric stamps pound loaded stone blocks and wash out sand, ore and minerals. Anchor it, connect 150 cable power and load up to fifty stone blocks or lumps of gold-bearing quartz or silver-bearing ore. It crushes one every four seconds with better recovery than a hand crusher; clear its output before twelve stacks accumulate."
 	ore_types = list()
 	var/hopper_limit = 50
 	var/crush_interval = 2 // process ticks of two seconds each
 
+// Stone blocks or lode ore in the hopper; each stack is stamped in turn.
 /obj/structure/drill/stamp_mill/proc/loaded_stone()
-	for (var/obj/item/stack/material/stone/S in contents)
-		if (S.type == /obj/item/stack/material/stone && S.amount > 0)
+	for (var/obj/item/stack/S in contents)
+		if (is_mill_feed(S) && S.amount > 0)
 			return S
 	return null
 
 /obj/structure/drill/stamp_mill/proc/loaded_stone_amount()
 	var/total = 0
-	for (var/obj/item/stack/material/stone/S in contents)
-		total += S.amount
+	for (var/obj/item/stack/S in contents)
+		if (is_mill_feed(S))
+			total += S.amount
 	return total
 
 /obj/structure/drill/stamp_mill/examine(mob/user, distance)
 	..(user, distance)
-	to_chat(user, SPAN_NOTICE("Its hopper holds [loaded_stone_amount()] of [hopper_limit] stone blocks."))
+	to_chat(user, SPAN_NOTICE("Its hopper holds [loaded_stone_amount()] of [hopper_limit] stone blocks or lumps of ore."))
 
 /obj/structure/drill/stamp_mill/attackby(obj/item/W, mob/living/human/H)
-	if (is_crushable_stone(W))
+	if (is_mill_feed(W))
 		load_stone(H, W)
 		return
 	return ..()
 
-/obj/structure/drill/stamp_mill/proc/load_stone(mob/living/human/H, obj/item/stack/material/stone/S)
+/obj/structure/drill/stamp_mill/proc/load_stone(mob/living/human/H, obj/item/stack/S)
 	if (!istype(H) || S.loc != H || get_dist(src, H) > 1)
 		return 0
 	if (hopper_space() <= 0)
@@ -165,7 +174,7 @@
 		return 0
 	var/moved = fill_hopper(S, S.amount, H)
 	if (moved)
-		to_chat(H, SPAN_NOTICE("You load [moved] stone block[moved == 1 ? "" : "s"] into \the [src]."))
+		to_chat(H, SPAN_NOTICE("You load [moved] [moved == 1 ? S.singular_name : S.name] into \the [src]."))
 	return moved
 
 /obj/structure/drill/stamp_mill/proc/hopper_space()
@@ -173,11 +182,14 @@
 
 // Move up to amount stone into the hopper. H is only passed for hand loading,
 // which keeps the existing stack-use rules for a worker.
-/obj/structure/drill/stamp_mill/proc/fill_hopper(obj/item/stack/material/stone/S, amount, mob/living/human/H = null)
+/obj/structure/drill/stamp_mill/proc/fill_hopper(obj/item/stack/S, amount, mob/living/human/H = null)
 	var/moved = min(hopper_space(), amount, S.amount)
 	if (moved <= 0)
 		return 0
-	var/obj/item/stack/material/stone/hopper = loaded_stone()
+	var/feed_type = S.type
+	var/obj/item/stack/hopper = locate(feed_type) in contents
+	if (hopper && hopper.type != feed_type)
+		hopper = null
 	if (H)
 		if (!S.use(moved))
 			return 0
@@ -190,15 +202,15 @@
 	if (hopper)
 		hopper.amount += moved
 	else
-		new /obj/item/stack/material/stone(src, moved, FALSE)
+		new feed_type(src, moved, FALSE)
 	return moved
 
 // Factory port: plain stone blocks fill the hopper. Nothing is offered;
 // crushed output still lands on the mill's tile.
 /obj/structure/drill/stamp_mill/factory_accepts(obj/item/I, from_dir = 0)
-	if (!is_crushable_stone(I) || !factory_movable_item(I))
+	if (!is_mill_feed(I) || !factory_movable_item(I))
 		return 0
-	var/obj/item/stack/material/stone/S = I
+	var/obj/item/stack/S = I
 	return min(S.amount, hopper_space())
 
 /obj/structure/drill/stamp_mill/factory_insert(obj/item/I, from_dir = 0)
@@ -222,7 +234,7 @@
 		to_chat(H, SPAN_NOTICE("Fix \the [src] in place with a wrench first."))
 		return
 	if (!loaded_stone())
-		to_chat(H, SPAN_WARNING("Load stone blocks into \the [src] first."))
+		to_chat(H, SPAN_WARNING("Load stone blocks or ore into \the [src] first."))
 		return
 	active = TRUE
 	next_spawn = crush_interval
@@ -233,11 +245,11 @@
 		to_chat(H, "You power up \the [src].")
 
 /obj/structure/drill/stamp_mill/proc/stamp_one_stone(roll = null)
-	var/obj/item/stack/material/stone/S = loaded_stone()
+	var/obj/item/stack/S = loaded_stone()
 	var/turf/T = get_turf(src)
 	if (!S || !T)
 		return FALSE
-	var/result = roll_stone_crushing(stone_crushing_table(stone_crushing_age(), TRUE), roll)
+	var/result = lode_crushed_type(S) || roll_stone_crushing(stone_crushing_table(stone_crushing_age(), TRUE), roll)
 	if (result && !T.deposit_small_resource(result, 1, output_stack_limit))
 		return FALSE
 	S.amount--

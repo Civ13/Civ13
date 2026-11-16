@@ -138,3 +138,129 @@
 	F.visible_message(SPAN_NOTICE("The water runs away down \the [D]."))
 	qdel(F)
 	return TRUE
+
+// ---- bath water ---------------------------------------------------------------
+//
+// On settlement maps a bath's water has to go somewhere:
+// - A running shower wets the floor under it each minute, unless a floor drain
+//   is on or beside it, or a closed curtain hangs round it.
+// - A tub turned off empties onto the floor beside it, unless a floor drain is
+//   on or beside it.
+// - Someone stepping out of a shower or tub that ran lately drips a little
+//   puddle where they step, unless a bath mat lies there.
+// The puddles run away down a floor drain like any other.
+
+#define BATH_SPILL_GAP 600
+#define BATH_DRIP_TIME 300
+
+/obj/structure/shower/var/tmp/next_bath_spill = 0
+/obj/structure/shower/var/tmp/drips_until = 0
+
+/obj/structure/shower/persistence_runtime_var(key)
+	return key == "next_bath_spill" || key == "drips_until" || ..()
+
+/proc/bath_water_applies()
+	return sewers_apply()
+
+// Whether the bath water at S's spot has somewhere to go, or is kept in.
+/obj/structure/shower/proc/bath_water_contained()
+	var/turf/T = get_turf(src)
+	if (floor_drain_near(T))
+		return TRUE
+	if (!istype(src, /obj/structure/shower/bathtub))
+		for (var/obj/structure/curtain/C in T)
+			if (C.opacity)
+				return TRUE
+	return FALSE
+
+/proc/bath_water_puddle(turf/T, level)
+	if (!istype(T, /turf/floor) || T.density)
+		return null
+	var/obj/effect/flooding/F = new /obj/effect/flooding(T)
+	F.flood_level = level
+	F.update_icon()
+	return F
+
+// A free floor tile beside a tub for its water to run onto.
+/obj/structure/shower/proc/bath_spill_turf()
+	var/turf/T = get_turf(src)
+	for (var/d in list(dir, turn(dir, 90), turn(dir, -90), turn(dir, 180)))
+		var/turf/N = get_step(T, d)
+		if (!istype(N, /turf/floor) || N.density)
+			continue
+		var/blocked = FALSE
+		for (var/obj/O in N)
+			if (O.density)
+				blocked = TRUE
+				break
+		if (!blocked)
+			return N
+	return null
+
+/obj/structure/shower/proc/bath_water_running()
+	drips_until = world.time + BATH_DRIP_TIME
+	if (!bath_water_applies() || istype(src, /obj/structure/shower/bathtub) || world.time < next_bath_spill)
+		return
+	next_bath_spill = world.time + BATH_SPILL_GAP
+	if (bath_water_contained())
+		return
+	bath_water_puddle(get_turf(src), 1)
+
+/obj/structure/shower/proc/bath_water_turned_off()
+	drips_until = world.time + BATH_DRIP_TIME
+	if (!bath_water_applies() || !istype(src, /obj/structure/shower/bathtub) || bath_water_contained())
+		return
+	var/turf/T = bath_spill_turf()
+	if (T && bath_water_puddle(T, 2))
+		visible_message(SPAN_WARNING("The bathwater slops out of \the [src] across the floor. A floor drain beside it would take it away."))
+
+/obj/structure/shower/process()
+	. = ..()
+	if (on)
+		bath_water_running()
+
+/obj/structure/shower/bathtub/big/process()
+	. = ..()
+	if (on)
+		bath_water_running()
+
+/obj/structure/shower/attack_hand(mob/M)
+	var/was_on = on
+	. = ..()
+	if (was_on && !on)
+		bath_water_turned_off()
+
+/obj/structure/shower/bathtub/big/attack_hand(mob/living/M)
+	var/was_on = on
+	. = ..()
+	if (was_on && !on)
+		bath_water_turned_off()
+
+// Stepping out wet drips on the floor, unless onto a bath mat.
+/obj/structure/shower/Uncrossed(atom/movable/AM)
+	..()
+	if (!ishuman(AM) || world.time >= drips_until || !bath_water_applies())
+		return
+	addtimer(CALLBACK(src, PROC_REF(bath_drip), AM), 1)
+
+/obj/structure/shower/proc/bath_drip(mob/living/human/H)
+	if (QDELETED(H) || QDELETED(src))
+		return
+	var/turf/T = H.loc
+	if (!isturf(T) || T == loc || get_dist(T, src) > 1 || bath_mat_on(T))
+		return
+	bath_water_puddle(T, 1)
+
+/proc/bath_mat_on(turf/T)
+	return locate(/obj/item/bath_mat) in T
+
+/obj/item/bath_mat
+	name = "bath mat"
+	desc = "A thick cloth mat. Lay it beside a bath or shower and step out onto it, and the drips soak into it instead of puddling on the floor."
+	icon = 'icons/obj/bath_mat.dmi'
+	icon_state = "bath_mat"
+	w_class = ITEM_SIZE_NORMAL
+	flammable = TRUE
+
+#undef BATH_SPILL_GAP
+#undef BATH_DRIP_TIME

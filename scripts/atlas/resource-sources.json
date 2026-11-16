@@ -17498,6 +17498,107 @@
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified",
       "source_commit": "f0c4e8d9"
+    },
+    {
+      "name": "Mine lode ore",
+      "file": "code/modules/1713/lode.dm",
+      "line": 75,
+      "inputs": [
+        "/turf/floor/mining"
+      ],
+      "outputs": [
+        "/obj/item/stack/ore/gold_quartz",
+        "/obj/item/stack/ore/silver_lode"
+      ],
+      "tools": [
+        "/obj/item/weapon/material/pickaxe"
+      ],
+      "steps": [
+        "Mine rock from the Classical age on."
+      ],
+      "conditions": "About 4% of mined rock gives 4 lumps of gold-bearing quartz, and about 3% gives silver-bearing ore. Regrowing mountain seams can also give them.",
+      "era": "No research needed.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified",
+      "source_commit": "dca5816c"
+    },
+    {
+      "name": "Crush lode ore",
+      "file": "code/modules/1713/lode.dm",
+      "line": 65,
+      "inputs": [
+        "/obj/item/stack/ore/gold_quartz",
+        "/obj/item/stack/ore/silver_lode"
+      ],
+      "outputs": [
+        "/obj/item/stack/ore/crushed_ore/gold",
+        "/obj/item/stack/ore/crushed_ore/silver"
+      ],
+      "tools": [
+        "/obj/structure/stone_crusher",
+        "/obj/structure/drill/stamp_mill/water",
+        "/obj/structure/drill/stamp_mill"
+      ],
+      "steps": [
+        "Use lode ore on a stone crusher, or load it into a water or powered stamp mill."
+      ],
+      "conditions": "One lump gives one load of crushed ore.",
+      "era": "Stone crusher: Resource Processing. Water stamp mill: Ore Dressing. Powered stamp mill: Electricity.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified",
+      "source_commit": "dca5816c"
+    },
+    {
+      "name": "Pan crushed ore",
+      "file": "code/modules/1713/lode.dm",
+      "line": 104,
+      "inputs": [
+        "/obj/item/stack/ore/crushed_ore/gold",
+        "/obj/item/stack/ore/crushed_ore/silver"
+      ],
+      "outputs": [
+        "/obj/item/stack/ore/gold",
+        "/obj/item/stack/ore/silver",
+        "/obj/item/stack/ore/tailings"
+      ],
+      "tools": [
+        "/obj/item/kitchen/wood_bowl"
+      ],
+      "steps": [
+        "Stand beside shallow fresh water.",
+        "Use crushed ore on a wooden bowl."
+      ],
+      "conditions": "Recovers about a fifth of the metal; every load leaves tailings.",
+      "era": "No research needed.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified",
+      "source_commit": "dca5816c"
+    },
+    {
+      "name": "Buddle",
+      "file": "code/modules/1713/lode.dm",
+      "line": 124,
+      "inputs": [
+        "/obj/item/stack/ore/crushed_ore/gold",
+        "/obj/item/stack/ore/crushed_ore/silver"
+      ],
+      "outputs": [
+        "/obj/item/stack/ore/gold",
+        "/obj/item/stack/ore/silver",
+        "/obj/item/stack/ore/tailings"
+      ],
+      "tools": [
+        "/obj/structure/placer_washer/buddle"
+      ],
+      "steps": [
+        "Build a buddle beside water or pour water into it.",
+        "Use crushed ore on it."
+      ],
+      "conditions": "Recovers about a third of the metal; every load leaves tailings.",
+      "era": "Ore Dressing.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified",
+      "source_commit": "dca5816c"
     }
   ],
   "mechanism_overview": [
