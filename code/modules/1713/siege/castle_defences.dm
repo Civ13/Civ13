@@ -17,11 +17,15 @@
 #define SLIT_CUT_TIME 150		// ds to cut a slit, before skill
 #define SLIT_FILL_TIME 50		// ds to fill one in again
 #define SLIT_HEALTH_CUT 0.2		// share of the wall's health lost to the opening
+#define SLIT_SHUTTER_WOOD 2		// planks for a slit shutter
+#define SLIT_SHUTTER_TIME 30	// ds to fit one
 
 /obj/covers
 	var/slit = SLIT_NONE
 	var/slit_dir = 0		// the outside face: the way a shot leaves through it
 	var/slit_lost_health = 0	// maxhealth the opening took, given back when filled
+	var/slit_shutter = FALSE	// a wooden shutter is fitted on the inside
+	var/slit_shut = FALSE		// and it is shut: opaque, and nothing passes either way
 
 /obj/structure/barricade
 	var/outward_dir = 0		// a player-built battlement: the side it covers against
@@ -38,6 +42,8 @@
 		var/obj/covers/C = A
 		if (!C.slit || !C.slit_dir || !C.density)
 			return DIRECTIONAL_COVER_DEFAULT
+		if (C.slit_shut)
+			return DIRECTIONAL_COVER_BLOCK
 		out = C.slit_dir
 		out_pass = SLIT_OUT_PASS
 		in_block = SLIT_IN_BLOCK
@@ -120,6 +126,10 @@
 	update_icon()
 
 /obj/covers/proc/fill_slit()
+	if (slit_shutter)
+		new /obj/item/stack/material/wood(get_step(src, turn(slit_dir, 180)) || get_turf(src), SLIT_SHUTTER_WOOD)
+	slit_shutter = FALSE
+	slit_shut = FALSE
 	slit = SLIT_NONE
 	slit_dir = 0
 	maxhealth += slit_lost_health
@@ -144,6 +154,8 @@
 		fill_slit()
 		user.visible_message(SPAN_NOTICE("[user] fills in the opening in \the [src]."))
 		return TRUE
+	if (slit && !slit_shutter && istype(W, /obj/item/stack/material/wood))
+		return fit_slit_shutter(W, user)
 	if (!slit_tool(W))
 		return FALSE
 	var/refusal = slit_cut_refusal(user)
@@ -172,6 +184,47 @@
 	user.visible_message(SPAN_NOTICE("[user] cuts \a [slit_name()] through \the [src]."), SPAN_NOTICE("You finish \the [slit_name()]. Stand right behind it to shoot out."))
 	return TRUE
 
+// ---- slit shutters -------------------------------------------------------------------
+
+// Standing right behind the slit, on its inside.
+/obj/covers/proc/slit_inside_user(mob/user)
+	return slit && slit_dir && get_turf(user) == get_step(src, turn(slit_dir, 180))
+
+// Planks used on a slit from the inside fit a shutter that opens and shuts by hand.
+/obj/covers/proc/fit_slit_shutter(obj/item/stack/material/wood/S, mob/living/human/user)
+	if (!slit_inside_user(user))
+		to_chat(user, SPAN_WARNING("Fit the shutter from the inside, standing right behind \the [slit_name()]."))
+		return TRUE
+	if (S.amount < SLIT_SHUTTER_WOOD)
+		to_chat(user, SPAN_WARNING("You need [SLIT_SHUTTER_WOOD] planks to make a shutter."))
+		return TRUE
+	user.visible_message(SPAN_NOTICE("[user] starts fitting a shutter over \the [slit_name()]."), SPAN_NOTICE("You start fitting a shutter over \the [slit_name()]."))
+	if (!do_after(user, SLIT_SHUTTER_TIME, src) || slit_shutter || !slit || !slit_inside_user(user) || !S.use(SLIT_SHUTTER_WOOD))
+		return TRUE
+	slit_shutter = TRUE
+	update_icon()
+	to_chat(user, SPAN_NOTICE("You fit a shutter over \the [slit_name()]. Click the wall from here to shut or open it."))
+	return TRUE
+
+/obj/covers/proc/set_slit_shut(state)
+	if (!slit_shutter || slit_shut == state)
+		return FALSE
+	slit_shut = state
+	set_opacity(slit_shut ? initial(opacity) : FALSE)
+	var/turf/T = get_turf(src)
+	if (T)
+		T.recalc_atom_opacity()
+	update_icon()
+	playsound(get_turf(src), 'sound/machines/door_close.ogg', 30, TRUE)
+	return TRUE
+
+/obj/covers/attack_hand(mob/user)
+	if (slit_shutter && ishuman(user) && user.a_intent != I_HARM && slit_inside_user(user))
+		set_slit_shut(!slit_shut)
+		user.visible_message(SPAN_NOTICE("[user] [slit_shut ? "shuts" : "opens"] the shutter on \the [slit_name()]."), SPAN_NOTICE("You [slit_shut ? "shut" : "open"] the shutter on \the [slit_name()]."))
+		return
+	return ..()
+
 /obj/covers/attackby(obj/item/W, mob/user)
 	if (slit_attackby(W, user))
 		return TRUE
@@ -180,16 +233,20 @@
 /obj/covers/update_icon()
 	..()
 	if (slit && slit_dir)
-		overlays += image(icon = 'icons/obj/castle_defences.dmi', icon_state = slit == SLIT_GUN ? "gun_loop" : "arrow_slit", dir = slit_dir, layer = layer + 0.03)
+		overlays += image(icon = 'icons/obj/castle_defences.dmi', icon_state = "[slit == SLIT_GUN ? "gun_loop" : "arrow_slit"][slit_shut ? "_shuttered" : ""]", dir = slit_dir, layer = layer + 0.03)
 
 /obj/covers/examine(mob/user)
 	..()
 	if (slit && slit_dir)
 		to_chat(user, SPAN_NOTICE("\A [slit_name()] is cut through it, opening to the [dir2text(slit_dir)]. Stand right behind it on the [dir2text(turn(slit_dir, 180))] side to shoot out."))
+		if (slit_shutter)
+			to_chat(user, SPAN_NOTICE("A wooden shutter is fitted on the inside[slit_shut ? ", and it is shut" : ""]."))
 
 /obj/covers/after_load()
 	..()
 	if (slit)
+		if (slit_shut)
+			set_opacity(initial(opacity))
 		update_icon()
 
 // ---- battlements ----------------------------------------------------------------
@@ -216,3 +273,5 @@
 #undef SLIT_CUT_TIME
 #undef SLIT_FILL_TIME
 #undef SLIT_HEALTH_CUT
+#undef SLIT_SHUTTER_WOOD
+#undef SLIT_SHUTTER_TIME

@@ -59,6 +59,10 @@ Probe: `python3 tests/castle_defences/run.py --byond-bin <BYOND bin>`.
   further back gets the usual wall block. Shots from outside hit the stone 95%
   of the time; the rest fly on and can hit the defender behind the slit.
   The wall stays solid but can be seen through.
+- **Shutters.** Two planks used on a slit from the tile right behind it (3 s)
+  fit a wooden shutter. Clicking the wall from that tile with an empty hand
+  shuts or opens it. Shut, the slit is opaque and stops every shot both ways.
+  Filling the slit in gives the planks back.
 - Fill an opening in again with one piece of the wall's own material on help
   intent (5 s); the wall gets its health back.
 - **Battlements.** A crenelated stone or sandstone wall built by a player

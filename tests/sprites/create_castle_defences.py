@@ -6,6 +6,11 @@ Wall openings, laid over a built wall tile to show a loophole cut through it:
   gun_loop   (4 dirs): a keyhole gun loop - a round hole for the muzzle with
                        a short vertical sighting slit above it.
 
+  arrow_slit_shuttered / gun_loop_shuttered (4 dirs): the same openings
+                       shut by a small oak shutter of upright planks on iron
+                       straps. They replace the open state, same position
+                       and facings; they are the last states of the sheet.
+
 The dir of each state is the OUTSIDE face of the wall, the side attackers
 stand on; defenders stand on the opposite tile and shoot out. Walls are drawn
 in the 3/4 top-down view (the top of the wall along the upper rows of the
@@ -88,7 +93,8 @@ and 1x review sheet of the pouring and dropping states: the rim over a
 darkened floor, the machicolation and hoarding on a stone wall-walk, every
 animation frame, and the splash and slick in six liquid colours.
 `--preview-traps <png>` writes a 6x and 1x review sheet of the gateway traps
-on stone, cobble, dirt and grass floors. Released under Civ13 AGPL-3.0.
+on stone, cobble, dirt and grass floors. `--preview-shutters <png>` writes
+the wall-opening sheet with each open facing next to its shuttered one. Released under Civ13 AGPL-3.0.
 """
 import math
 import sys
@@ -1230,6 +1236,174 @@ def ladder_fork():
     return _outlined(fill)
 
 
+# ------------------------------------------------------------------ shutters
+#
+# The same openings shut: a small oak shutter of upright planks on iron
+# straps fitted over the slit. Each facing keeps the outline of the open
+# state, so swapping the icon_state does not move anything.
+
+SHUT_KEY = dict(KEY)
+SHUT_KEY.update({'a': WOOD[0], 'b': WOOD[1], 'c': WOOD[2], 'e': WOOD[3],
+                 'i': IRON[0], 'I': IRON[1], 'j': IRON[2], 'J': IRON[3]})
+
+# South: the shutter fills the dressed opening on the outside face.
+ARROW_FACE_SHUT = [
+    '..OOOOOO..',
+    '..OHLLMO..',
+    '..OababO..',
+    '..ObcbcO..',
+    '..OiIjJO..',
+    '..ObcbcO..',
+    '..ObcbcO..',
+    '..ObcbcO..',
+    '..ObcbcO..',
+    '..ObcbcO..',
+    '..ObcbcO..',
+    '..OiIjJO..',
+    '..ObcbcO..',
+    '.OObcbcOO.',
+    '.OLbcbcMO.',
+    'OHLceceMDO',
+    'OLLLMMMMDO',
+    'OOOOOOOOOO',
+]
+GUN_FACE_SHUT = [
+    '..OOOOOO..',
+    '..OHLLMO..',
+    '..OababO..',
+    '..ObcbcO..',
+    '..OiIjJO..',
+    '..ObcbcO..',
+    '..ObcbcO..',
+    '.OObcbcOO.',
+    'OOLabcbMOO',
+    'OHabcbcbDO',
+    'OLbcbcbcDO',
+    'OiIIIjjJDO',
+    'OLbcbcbcDO',
+    'OLMcececDO',
+    'OOMMDDDDOO',
+    '.OOOOOOOO.',
+]
+# North: the shutter stands in the throat of the niche and hides the daylight.
+ARROW_NICHE_SHUT = [
+    'OOOOOOOOOOOOOO',
+    'ODDDDDDDDDDDHO',
+    'ODsdOababOsLHO',
+    'ODsdObcbcOsLHO',
+    'ODsdOiIjJOsLHO',
+    'ODsdObcbcOsLHO',
+    'ODsdObcbcOsLHO',
+    'ODsdObcbcOsLHO',
+    'ODsdObcbcOsLHO',
+    'ODsdObcbcOsLHO',
+    'ODsdOiIjJOsLHO',
+    'ODsdObcbcOsLHO',
+    'ODsdOceceOsLHO',
+    'ODssdOOOOdsLHO',
+    'OMLLLLLLLLLLHO',
+    'OMMMMMMMMMMMMO',
+    'OOOOOOOOOOOOOO',
+]
+GUN_NICHE_SHUT = [
+    'OOOOOOOOOOOOOO',
+    'ODDDDDDDDDDDHO',
+    'ODsdOababOsLHO',
+    'ODsdObcbcOsLHO',
+    'ODsdOiIjJOsLHO',
+    'ODsdObcbcOsLHO',
+    'ODsdObcbcOsLHO',
+    'ODsOabcbcbOLHO',
+    'ODsObcbcbcOLHO',
+    'ODsOiIIjjJOLHO',
+    'ODsObcbcbcOLHO',
+    'ODsOcececeOLHO',
+    'ODssOOOOOOsLHO',
+    'OMLLLLLLLLLLHO',
+    'OMMMMMMMMMMMMO',
+    'OOOOOOOOOOOOOO',
+]
+# On the wall top the pinched slit is plugged by the top edge of the board.
+TOP_NORTH_SHUT = ['.....OabO.....', '....OMceDO....'] + TOP_NORTH[2:]
+# East: the slit edge-on in its jamb, boarded. Starts x = 27.
+ARROW_EDGE_SHUT = [
+    'OOOOO',
+    'OLaMO',
+    'OLbMO',
+    'OiIJO',
+    'OLbMO',
+    'OLbMO',
+    'OLbMO',
+    'OLbMO',
+    'OLbMO',
+    'OiIJO',
+    'OLbcO',
+    'OLceO',
+    'OLMMO',
+    'OOOOO',
+]
+GUN_EDGE_SHUT = [
+    'OOOOO',
+    'OLaMO',
+    'OLbMO',
+    'OiIJO',
+    'OLbMO',
+    'OLbMO',
+    'OabcO',
+    'OiIJO',
+    'ObbcO',
+    'OceeO',
+    'OLMMO',
+    'OOOOO',
+]
+BOARD_X = 24            # the shutter seen from above, across the throat (EAST)
+
+
+def south_shut(face):
+    f = Frame()
+    f.rows(0, 10, TOP_SOUTH)
+    f.rows(7, 11, face, SHUT_KEY)
+    return f
+
+
+def north_shut(niche):
+    f = Frame()
+    f.rows(0, 9, TOP_NORTH_SHUT, SHUT_KEY)
+    f.rows(8, 9, niche, SHUT_KEY)
+    return f
+
+
+def east_shut(top, left, edge):
+    """The open plan wedge with a board across its throat, an iron strap on
+    the board, and the boarded slit in the jamb."""
+    f = Frame()
+    f.rows(16 - len(top) // 2, left, top)
+    ys = [y for y in range(32) if f.px.get((BOARD_X, y)) in (DEEP, SHADE)]
+    for x in range(BOARD_X + 1, 27):
+        for y in ys:
+            f.put(x, y, OUT)                 # nothing shows past the board
+    for n, y in enumerate(ys):
+        f.put(BOARD_X - 1, y, OUT)
+        f.put(BOARD_X, y, WOOD[0] if n == 0 else WOOD[1])
+        f.put(BOARD_X + 1, y, WOOD[2] if n < len(ys) - 1 else WOOD[3])
+    mid = ys[len(ys) // 2 - 1]
+    f.put(BOARD_X, mid, IRON[0])
+    f.put(BOARD_X + 1, mid, IRON[2])
+    f.rows(16 - len(edge) // 2, 27, edge, SHUT_KEY)
+    return f
+
+
+def shutter_states():
+    """The shuttered openings: name -> the four facings in DMI order."""
+    out = {}
+    for name, face, niche, top, left, edge in (
+            ('arrow_slit_shuttered', ARROW_FACE_SHUT, ARROW_NICHE_SHUT, TOP_EAST, 8, ARROW_EDGE_SHUT),
+            ('gun_loop_shuttered', GUN_FACE_SHUT, GUN_NICHE_SHUT, GUN_TOP_EAST, 14, GUN_EDGE_SHUT)):
+        e = east_shut(top, left, edge)
+        out[name] = [south_shut(face), north_shut(niche), e, e.mirrored()]
+    return out
+
+
 # ------------------------------------------------------------------- sheet
 
 def states():
@@ -1281,6 +1455,8 @@ def all_states():
     out.append(('trap_lever_pulled', {'dirs': 1, 'frames': 1}, [trap_lever(True)]))
     out.append(('caltrops', {'dirs': 1, 'frames': 1}, [caltrops()]))
     out.append(('ladder_fork', {'dirs': 1, 'frames': 1}, [ladder_fork()]))
+    # appended last, so every older state keeps its place in the sheet
+    out += [(name, {'dirs': 4, 'frames': 1}, group) for name, group in shutter_states().items()]
     return out
 
 
@@ -1389,11 +1565,11 @@ PREVIEW_WALLS = [
 ]
 
 
-def preview(path, st, scale=4):
+def preview(path, st, scale=4, cols=None):
     ground = (86, 120, 60)
     cell, pad, head = 32 * scale, 6, 30
     left = 236
-    cols = [(name, d) for name in st for d in range(4)]
+    cols = cols or [(name, d) for name in st for d in range(4)]
     strip = len(cols) * 40 + pad
     width = left + len(cols) * (cell + pad) + strip
     row_h = cell + pad
@@ -1402,7 +1578,7 @@ def preview(path, st, scale=4):
     draw = ImageDraw.Draw(sheet)
     for c, (name, d) in enumerate(cols):
         x = left + c * (cell + pad)
-        draw.text((x, 2), name, fill=(230, 230, 230))
+        draw.text((x, 2), name.replace('_shuttered', ', shut'), fill=(230, 230, 230))
         draw.text((x, 14), '%s = outside' % DIRS[d], fill=(170, 200, 230))
     draw.text((left + len(cols) * (cell + pad), 2), '1x (game scale), same order', fill=(230, 230, 230))
     for r, (label, typepath, src, state) in enumerate(PREVIEW_WALLS):
@@ -1423,6 +1599,14 @@ def preview(path, st, scale=4):
               'daylight.  E/W: plan wedge across the wall top to an edge-on slit.', fill=(200, 200, 200))
     Path(path).parent.mkdir(parents=True, exist_ok=True)
     sheet.save(path)
+
+
+def preview_shutters(path, scale=4):
+    """Each open facing beside its shuttered one, over the same walls."""
+    st = dict(states())
+    st.update(shutter_states())
+    cols = [(name + tail, d) for name in states() for d in range(4) for tail in ('', '_shuttered')]
+    preview(path, st, scale, cols)
 
 
 # ---------------------------------------------- pouring and dropping preview
@@ -1603,6 +1787,8 @@ if __name__ == '__main__':
         write_dmi(SHEET, st)
     if option('--preview'):
         preview(option('--preview'), states())
+    if option('--preview-shutters'):
+        preview_shutters(option('--preview-shutters'))
     if option('--preview-drop'):
         preview_drop(option('--preview-drop'), st)
     if option('--preview-traps'):
