@@ -42,3 +42,28 @@ wall, gate, door or barricade on the level above, the wall falls 30 s later
 unless a mine support stands within one tile of that tunnel tile. Pulling out
 or burning the prop brings it down at once. Natural rock walls are not
 affected. Defenders countermine by digging toward the tunnel.
+
+## Castle defences
+
+Code: `code/modules/1713/siege/castle_defences.dm`. Art:
+`icons/obj/castle_defences.dmi` from `tests/sprites/create_castle_defences.py`.
+Probe: `python3 tests/castle_defences/run.py --byond-bin <BYOND bin>`.
+
+- **Arrow slits and gun loops.** On help intent, use a chisel on a built stone,
+  clay or timber wall (a hatchet also works on timber) while standing right
+  against it, square on. Your side becomes the inside and the far side the
+  outside. It takes 15 s, needs Fortifications for an arrow slit and Gunpowder
+  for a gun loop, and costs the wall 20% of its health. Straw walls, paper
+  screens, unfinished walls and archways can't take one.
+- Whoever stands on the tile right behind the opening shoots out through it:
+  95% of shots pass, straight out or up to 45 degrees either side. Anyone
+  further back gets the usual wall block. Shots from outside hit the stone 95%
+  of the time; the rest fly on and can hit the defender behind the slit.
+  The wall stays solid but can be seen through.
+- Fill an opening in again with one piece of the wall's own material on help
+  intent (5 s); the wall gets its health back.
+- **Battlements.** A crenelated stone or sandstone wall built by a player
+  covers the side the builder faced while building it. Whoever stands behind it
+  shoots out over it freely; shots from outside are stopped 85% of the time,
+  and always when the person behind it is lying down. Crenelated walls placed
+  on maps keep the old two-way cover.

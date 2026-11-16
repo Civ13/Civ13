@@ -2523,6 +2523,11 @@ RECIPE: /material/wood/,empty dynamite stick,/obj/item/weapon/grenade/dynamite,1
 RECIPE: /material/wood/,punji sticks trap,/obj/item/weapon/punji_sticks,4,70,0,1,weapons,0,0,0,8,null
 RECIPE: /material/wood/,pit cover,/obj/item/weapon/pit_cover,3,40,0,1,weapons,0,0,0,8,null
 RECIPE: /material/wood/,hewn log chest,/obj/structure/storage_container/log_chest,6,150,1,1,storage,0,0,0,8,null
+RECIPE: /material/wood/,peg post,/obj/structure/storage_container/rack/peg_post,3,60,1,1,storage,0,0,0,8,null
+RECIPE: /material/wood/,tool rack,/obj/structure/storage_container/rack/tool_rack,4,90,1,1,storage,0,0,0,8,null
+RECIPE: /material/wood/,weapon rack,/obj/structure/storage_container/rack/weapon_rack,5,100,1,1,storage,0,0,0,8,null
+RECIPE: /material/wood/,coat stand,/obj/structure/storage_container/rack/coat_stand,4,100,1,1,storage,0,0,0,8,null
+RECIPE: /material/wood/,clothes rail,/obj/structure/storage_container/rack/clothes_rail,5,120,1,1,storage,0,0,0,8,null
 RECIPE: /material/wood/,weir stakes,/obj/item/weapon/trap_kit/weir,6,120,0,1,tools,0,0,0,8,null
 
 RECIPE: /material/wood/,quarterstaff,/obj/item/weapon/material/quarterstaff,2,50,0,1,weapons,0,0,0,8,wood

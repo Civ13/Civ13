@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '00a6e785cf358271fc79f437f0595689c48bdc0c'
+WIKI_REVIEWED_REVISION = '71f8bced4a4e71b7be6689eade71280979b40642'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('85a1bdb974d140a093a434fa3c472ebfd3187cd87991f7eb21a511d1476baabc', 'character skills traits languages'),
@@ -78,7 +78,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Chemistry.md': ('864bf107bd77e3934528bcf9c776b174ba2e86371118eedf084cbe5d42ce7ca5', 'chemistry chemicals reactions reagents'),
     'guides/Guide_to_Combat.md': ('006296f6e7501eeb36f4b486ee3a2b2a85567ecef74d0616dd2a04c2e42f53b2', 'combat fight fighting intent aim shoot melee grenade cover'),
     'guides/Guide_to_Communications.md': ('2bbf705f1e66f3ee37d2d70f46ffa9420587a9b7ae0d718f3e09d4ab9b7881e6', 'communications radio transmit'),
-    'guides/Guide_to_Construction.md': ('3595be70c01edf22c5c71ae08503d931866b27e3f3293132513c50d22572f93e', 'construction build building walls roof floor'),
+    'guides/Guide_to_Construction.md': ('1a4c069fc4bc685a2728e8bf50b038be939ad9120e40de366253a5a1e2ab0a55', 'construction build building walls roof floor'),
     'guides/Guide_to_Homes.md': ('0287248f8b0857043f7557f8eac8e5a2360d5eafc95b5144dbf693979ccd6234', 'home house room comfort decorate limewash paint whitewash stain dye furniture well rested judge nudge pottery glaze vase amphora rug carpet tapestry weave loom'),
     'guides/Guide_to_Cooking.md': ('3fa0033c4d7f5b6d85cc0db329d09bb9fdbab9e44e1e741e1dd8c7ebd4882934', 'cooking cook food meal ingredients'),
     'guides/Guide_to_Exercise.md': ('cd6d6e48f3ae664458e935bb88954a0c6d2232f00b6058e92fb520f5c7c76a09', 'exercise training strength weights running fatigue'),
@@ -98,7 +98,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Survival.md': ('0cf8fd8a8ef2a66115914c4f10a6dd40fdac59b348a67e5c51cb7f827934de44', 'survival winter cold warm freezing hypothermia shelter debris footwear boots snowshoes shoes ice mud rain wet umbrella raincoat cape storm storms lightning thunder blizzard sandstorm heat wave weather fire fires wildfire firefighting beater flapper smother burning bucket blanket extinguish smoke signal signals hook firebreak pump engine nozzle hose jet reel extinguisher'),
     'guides/Guide_to_Tanks.md': ('b900c1641222035e9a4940539ddf14501ec5d9133da22414333f7ca0c97578a6', 'tank driving crew ammunition'),
     'guides/Guide_to_Trains.md': ('d3989f8f25c1e27b7653024d80d8043783f4e24790f717a150a2084995c5bc25', 'train trains railway track locomotive station switcher rails wagon'),
-    'guides/Guide_to_Trenches.md': ('ea36edda1d3149f0f07c907034ae3b351b545f9ae48f1c2a725e486729728edd', 'trench trenches fortification sandbag dig shovel'),
+    'guides/Guide_to_Trenches.md': ('2666ace513e4bda79ed704559c455c6c044ad668adde68abfb6c0c5816f6de06', 'trench trenches fortification sandbag dig shovel'),
     'guides/Guide_to_Weapons.md': ('09ceff97a155094ef553dd9953542e5475264b69015256596aeb31af122deb33', 'weapons gun reload ammunition'),
     'New_Player_Guide.md': ('c0d80da1236f7b15de5787584628898cc5dacddd6db97fadbe42dd5b685faee0', 'new player beginner start first round basics'),
     'Hotkeys.md': ('17b6b9320a76019e7ce87d991fc3f76c52d5379f664386dd5883f4709eef1e48', 'hotkeys hotkey keys keyboard controls key press'),
@@ -121,7 +121,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Races.md': ('46ef1bf361c519e71acbd679119429e838348827e25dbcac27282f67bee51097', 'race races species human humans'),
     'guides/Guide_to_Slang.md': ('52f9f6370922d7dede523e51247ae6ea0723d24118cecd26e594c051278dfc3f', 'slang terms jargon abbreviation meaning mean word words'),
     'guides/Guide_to_Books_and_Scholars.md': ('2e8e347267a9272394d7a4c35fe89cf83fcc13293ad1ebb62cbc7aca248d2541', 'books scholars scholarship study chapter research bench apprentice tutor library writing slate abacus'),
-    'guides/Guide_to_Your_First_Day.md': ('6e6d6f5c49e0dea742c3cf228005a61834d46eb572902faeba1fabca92286249', 'first day new character start starting survive survival research book study chapter food water shelter bag bags carry carrying basket travois storage chest jar pit window dump take all move moving container inventory search searching loot crate crates closet gather'),
+    'guides/Guide_to_Your_First_Day.md': ('14534e5aff7c9fe41f04bc0fccacf50aca8df4264a3ad0e9502f4cd863b8e83f', 'first day new character start starting survive survival research book study chapter food water shelter bag bags carry carrying basket travois storage chest jar pit window dump take all move moving container inventory search searching loot crate crates closet gather'),
     'guides/Guide_to_Paperwork.md': ('2a234c6fb82cf93f4eacaf712d6d0a18a8f4eac5b4e5643069ce9da993cd670f', 'paper paperwork writing write pen book sign signature stamp'),
     'Crafting_Skill_Level_Requirements.md': ('eae4e1c91ce28009f16ec79d0e942f76895d80262e618320eaf44d3a7c5808a9', 'crafting skill level levels requirement requirements unlock'),
     'Food_Decay_Times.md': ('d2d63372eddc79fd7c3c9bffb390587fff7a5cb21c53d829ab5ec29ab9f11126', 'food decay rot spoil spoils spoiled expire expires lasts preserve storage'),
