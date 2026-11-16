@@ -139,4 +139,10 @@
 		if (++shown >= 80)
 			break
 	rows += "</table>"
+	var/list/shoals = list()
+	if (mob)
+		for (var/index = 1 to fish_shoal_count())
+			var/list/at = fish_shoal_position(mob.z, index, world.timeofday)
+			shoals += "<a href='?_src_=holder;adminplayerobservecoodjump=1;X=[at[1]];Y=[at[2]];Z=[mob.z]'>[at[1]],[at[2]]</a>"
+	rows += "<p>Shoals on this level now: [jointext(shoals, " ")]</p>"
 	usr << browse("<html><head><title>Fishing Grounds</title></head><body><p>[fishing_grounds.len] fished grounds of [FISH_GROUND_SIZE]x[FISH_GROUND_SIZE] tiles. Water nobody has fished is full and is not listed. Emptiest 80 shown.</p>[jointext(rows, "")]</body></html>", "window=fishing_grounds;size=520x700")
