@@ -108,3 +108,33 @@ Liquid burns are halved by melee armour on the zone hit (except sand).
   health every 2 s until it falls; 10 units of water put it out.
 - **Tar kiln** (6 stone, Stone Masonry): load 10 wood, light it with a torch,
   and two minutes later it holds 40 units of pitch to draw into a container.
+
+## Gateway traps
+
+Code: `code/modules/1713/siege/castle_traps.dm`; probe `tests/castle_defences`.
+
+- **Drop trapdoor** (6 wood, Fortifications; not the lockable trapdoor between
+  levels in `structures/trapdoors.dm`) is an item fitted over an open pit
+  (dig one with a pit cover and a shovel; stake it for worse) or over open air
+  on an upper floor with a level below. Shut, it is floor: nothing falls
+  (`castle_trapdoor_holds()` is checked by `/turf/sky/building/Entered` and
+  `/turf/floor/broken_floor/Entered`).
+- **Trap lever** (3 wood, Fortifications): pulling it (0.5 s) drops every
+  trapdoor within 3 tiles on its own level and the level below. Over a pit,
+  everyone on it falls in (pit fall damage and stakes; the first is held in
+  the pit, the rest are hurt but free) and anyone walking onto it while open
+  falls in too. Over open air, people and items fall a level with the usual
+  fall damage. Pushing the lever back (3 s) shuts them.
+- **Crushing portcullis**: a portcullis dropping onto someone does 30-40 brute
+  (melee armour applies) to the head, chest or an arm and knocks them down.
+- **Caltrops** (1 iron, Bronze Working): use in hand to scatter where you
+  stand, or drop or throw them. Stepping on them does 5-10 brute to a foot
+  (halved by boots) and costs 1.5 s. A horse that treads on them takes 5-10
+  brute, is lamed for 30 s (double ride delay) and throws its rider half the
+  time. Picking them up takes 2 s.
+- **Ladder fork** (3 wood, Siege Engines): used on a deployed siege ladder
+  (a spear, pike or halberd works too) it pushes the ladder off the wall in 3 s.
+  The ladder lands on the far side; anyone mid-climb falls with it (5-15
+  brute, knocked down).
+- **Pit traps** belong to the digger's civilization, or their side on a team
+  map; that side never falls in (docs/stone-age-traps.md).

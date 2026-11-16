@@ -350,8 +350,8 @@
 
 // ---------------------------------------------------------------- pit trap
 // A pit dug with a shovel or digging stick and hidden under branches. It
-// catches whoever walks onto it, people included, except members of the tribe
-// that dug it, who know where it is. Someone walking (not running) may feel
+// catches whoever walks onto it, people included, except the digger's own
+// people (their civilization, or their side on a team map), who know where it is. Someone walking (not running) may feel
 // the cover give and catch themselves. Punji sticks at the bottom wound.
 /obj/item/weapon/pit_cover
 	name = "pit cover"
@@ -423,10 +423,19 @@
 /obj/structure/stone_age_trap/pit/settle(now)
 	return 0
 
+// Whose pit it is: the digger's civilization, or their side on a team map.
+/proc/pit_side_of(mob/living/human/H)
+	if (!istype(H))
+		return null
+	if (H.civilization && H.civilization != "none")
+		return H.civilization
+	return H.faction_text
+
 /obj/structure/stone_age_trap/pit/proc/dug_by(mob/living/human/H)
 	setter_name = H.real_name
-	if (istype(H) && H.civilization && H.civilization != "none")
-		tribe = H.civilization
+	var/side = pit_side_of(H)
+	if (side)
+		tribe = side
 
 /obj/structure/stone_age_trap/pit/update_icon()
 	if (covered)
@@ -455,14 +464,14 @@
 	if (!tribe)
 		dug_by(user)
 	update_icon()
-	to_chat(user, SPAN_NOTICE("You hide the pit under branches and leaves.[tribe ? " Your tribe knows where it is and won't fall in." : ""]"))
+	to_chat(user, SPAN_NOTICE("You hide the pit under branches and leaves.[tribe ? " Your people know where it is and won't fall in." : ""]"))
 	return TRUE
 
 /obj/structure/stone_age_trap/pit/trap_status(mob/user)
 	if (covered && !knows_pit(user))
 		return
 	if (covered)
-		to_chat(user, SPAN_NOTICE("It is your tribe's pit trap, hidden under branches[staked ? ", with stakes at the bottom" : ""]."))
+		to_chat(user, SPAN_NOTICE("It is your people's pit trap, hidden under branches[staked ? ", with stakes at the bottom" : ""]."))
 	if (buckled_mob)
 		to_chat(user, SPAN_WARNING("[buckled_mob] is trapped in it."))
 
@@ -472,7 +481,7 @@
 	var/mob/living/human/H = M
 	if (setter_name && H.answers_to_name(setter_name))
 		return TRUE
-	return tribe && H.civilization == tribe
+	return tribe && pit_side_of(H) == tribe
 
 /obj/structure/stone_age_trap/pit/attackby(obj/item/W, mob/user)
 	if (istype(W, /obj/item/weapon/punji_sticks))
@@ -553,7 +562,7 @@
 			H.apply_damage(PIT_STAKE_DAMAGE, BRUTE, zone, blocked, sharp = TRUE, used_weapon = "wooden stakes")
 	else
 		L.adjustBruteLoss(PIT_FALL_DAMAGE + (staked ? PIT_STAKE_DAMAGE : 0))
-	if (L.stat == DEAD || QDELETED(L))
+	if (L.stat == DEAD || QDELETED(L) || buckled_mob)
 		return
 	can_buckle = TRUE
 	buckle_mob(L)
