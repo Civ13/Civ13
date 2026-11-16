@@ -145,7 +145,7 @@
 	plant = "coffee"
 	icon_state = "seeds_dark"
 	color = "#e68c38" //coffee-brown
-	biomes = list("jungle", "savanna", "desert", "semiarid")
+	biomes = list("jungle", "savanna", "semiarid")
 
 /obj/item/stack/farming/seeds/tree
 	name = "tree seeds"
@@ -514,7 +514,7 @@
 	desc = "A coffee plant."
 	icon_state = "coffee-grow1"
 	plant = "coffee"
-	biomes = list("jungle", "savanna", "desert", "semiarid")
+	biomes = list("jungle", "savanna", "semiarid")
 	max_water = 80
 
 /obj/structure/farming/plant/juniper

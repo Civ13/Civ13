@@ -136,6 +136,8 @@
 					I.reagents.kill_germs()
 					I.reagents.boil_nitrary()
 					visible_message("<span class = 'notice'>\The [I] finishes boiling.</span>")
+					// Brew before the salt step below, which boils the water away.
+					coffee_brew_notice(I.reagents, src, I.reagents.brew_coffee())
 					if (I.reagents.get_reagent_amount("sodiumchloride")>0 && I.reagents.get_reagent_amount("water")>0)
 						var/obj/item/weapon/reagent_containers/food/condiment/saltpile/empty/NSP = new /obj/item/weapon/reagent_containers/food/condiment/saltpile/empty(get_turf(src))
 						NSP.reagents.add_reagent("sodiumchloride",I.reagents.get_reagent_amount("sodiumchloride"))
@@ -176,6 +178,10 @@
 				contents += new /obj/item/weapon/reagent_containers/food/snacks/sliceable/bread(src)
 			else
 				contents += new /obj/item/weapon/reagent_containers/food/snacks/flatbread(src)
+			contents -= I
+			qdel(I)
+		else if (istype(I, /obj/item/weapon/reagent_containers/food/snacks/grown/coffee))
+			contents += new /obj/item/weapon/reagent_containers/food/snacks/roasted_coffee(src)
 			contents -= I
 			qdel(I)
 		else if (istype(I, /obj/item/weapon/reagent_containers/food/snacks/grown/cocoa))

@@ -54,12 +54,12 @@
 
 /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wood/examine(mob/user)
 	..()
-	to_chat(user, SPAN_NOTICE("To boil water away from the flames, hold a stick or handle and use this mug's hot-stone action beside a lit campfire or active stone kiln with a stone on it. Boiling removes cholera and food poisoning, but leaves salt."))
+	to_chat(user, SPAN_NOTICE("To boil water away from the flames, hold a stick or handle and use this mug's hot-stone action beside a lit campfire or active stone kiln with a stone on it. Boiling removes cholera and food poisoning, but leaves salt. Coffee grounds in the water brew into coffee."))
 
 /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wood/proc/stone_boil_mixture()
 	if (!reagents || reagents.get_reagent_amount("water") <= 0)
 		return null
-	var/list/mixture = list("water" = 0, "sodiumchloride" = 0, "cholera" = 0, "food_poisoning" = 0)
+	var/list/mixture = list("water" = 0, "sodiumchloride" = 0, "cholera" = 0, "food_poisoning" = 0, "coffee_grounds" = 0)
 	for (var/datum/reagent/R in reagents.reagent_list)
 		if (!(R.id in mixture))
 			return null
@@ -113,7 +113,7 @@
 				break
 	var/list/mixture = stone_boil_mixture()
 	if (!(istype(tool, /obj/item/weapon/branch) || istype(tool, /obj/item/weapon/material/handle)) || !F || !S || !mixture || stone_boil_busy || F.stone_heat_busy())
-		to_chat(H, SPAN_NOTICE("Hold this open mug and a stick or handle, with a stone on a lit campfire or active stone kiln that has spare fuel. The mug must contain water, salt, cholera or food poisoning only."))
+		to_chat(H, SPAN_NOTICE("Hold this open mug and a stick or handle, with a stone on a lit campfire or active stone kiln that has spare fuel. The mug must contain water, salt, cholera, food poisoning or coffee grounds only."))
 		return
 	var/datum/reagents/holder = reagents
 	var/turf/site = get_turf(F)
@@ -133,6 +133,7 @@
 		holder.del_reagent("cholera")
 		holder.del_reagent("food_poisoning")
 		to_chat(H, SPAN_NOTICE("The water has boiled. Salt remains in the mug."))
+		coffee_brew_notice(holder, H, holder.brew_coffee())
 	if (!QDELETED(src))
 		stone_boil_busy = FALSE
 	if (!QDELETED(F))

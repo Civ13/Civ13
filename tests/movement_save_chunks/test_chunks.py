@@ -167,6 +167,8 @@ class ProductionBoundaryTests(unittest.TestCase):
             '/mob/living/simple_animal/sea/reef_eel/persistence_runtime_var',
             # Audited for the Stone Age bison herds: a nonyielding key comparison.
             '/mob/living/simple_animal/bison/persistence_runtime_var',
+            # Audited for mouse nests: a nonyielding key comparison of tmp nest links.
+            '/mob/living/simple_animal/mouse/persistence_runtime_var',
         }, 'New animal projection hooks require a nonyielding/ownership audit')
 
     def test_packet_materializes_only_hashed_sources(self):

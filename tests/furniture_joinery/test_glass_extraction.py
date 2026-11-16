@@ -45,7 +45,7 @@ class GlassExtraction(unittest.TestCase):
             reagent, dose = re.search(r'add_reagent\("([^"]+)", (\d+)\)', branch).groups()
             actual.append(dict(input=re.search(r'istype\(W, ([^)]+)\)', branch)[1], reagent=reagent, dose=int(dose)))
         self.assertEqual(actual, ROUTES)
-        self.assertEqual(len(actual), 15)
+        self.assertEqual(len(actual), 14)
 
     def test_each_whole_yield_fits_exactly_or_with_headroom(self):
         run = handler()

@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '660693bf60248c938dd5c78888c066772f84158f'
+WIKI_REVIEWED_REVISION = 'cbf182f12bddaf87e09d277f6a29a871ee9afbc6'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('85a1bdb974d140a093a434fa3c472ebfd3187cd87991f7eb21a511d1476baabc', 'character skills traits languages'),
@@ -83,7 +83,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Cooking.md': ('3fa0033c4d7f5b6d85cc0db329d09bb9fdbab9e44e1e741e1dd8c7ebd4882934', 'cooking cook food meal ingredients'),
     'guides/Guide_to_Exercise.md': ('cd6d6e48f3ae664458e935bb88954a0c6d2232f00b6058e92fb520f5c7c76a09', 'exercise training strength weights running fatigue'),
     'guides/Guide_to_Factory_Automation.md': ('e49b07d8eea1fe3c785b450c486e4b412e9ab4e4d0df30c8e9dc1dc34f666be0', 'factory automation belt belts conveyor arm arms fabricator fabricators pipe pipes pump tank bottler monitor crusher stamp mill'),
-    'guides/Guide_to_Farming.md': ('acc46a7f9076a43b5ae1b6b01c8b3d1472ec20668356a3f19aaa8579ffbace2b', 'farming farm plant crops soil water'),
+    'guides/Guide_to_Farming.md': ('944931763740534ec1f9d554df9c7b1dfe37952083fae505c727965084397008', 'farming farm plant crops soil water'),
     'guides/Guide_to_Fishing.md': ('aef17fa1c8019e470c40d79baae65ebe8c88258766a590844c873b7cc9cf25fd', 'fishing fish rod bait'),
     'guides/Guide_to_Hygiene.md': ('4b8173587991ef1364e88dd0f69909167c8263c75fd2c1a9e4a04d96898de4b6', 'hygiene clean washing soap detergent laundry'),
     'guides/Guide_to_Leadership.md': ('d8fa16a65959d1c7f632c782de1129a9c6dfade1614a9e55ebcdd92851e972df', 'leadership squad leader officer commander artillery coordinates'),
@@ -124,14 +124,14 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Your_First_Day.md': ('22a7a1ad6077f5234664bcc5880c9f36a8b301f8c890f322eac3eae8614f70a2', 'first day new character start starting survive survival research book study chapter food water shelter bag bags carry carrying basket travois storage chest jar pit window dump take all move moving container inventory search searching loot crate crates closet gather'),
     'guides/Guide_to_Paperwork.md': ('2a234c6fb82cf93f4eacaf712d6d0a18a8f4eac5b4e5643069ce9da993cd670f', 'paper paperwork writing write pen book sign signature stamp'),
     'Crafting_Skill_Level_Requirements.md': ('eae4e1c91ce28009f16ec79d0e942f76895d80262e618320eaf44d3a7c5808a9', 'crafting skill level levels requirement requirements unlock'),
-    'Food_Decay_Times.md': ('d2d63372eddc79fd7c3c9bffb390587fff7a5cb21c53d829ab5ec29ab9f11126', 'food decay rot spoil spoils spoiled expire expires lasts preserve storage'),
+    'Food_Decay_Times.md': ('cc9ff28b0ce7d92226c252a1bbab0e0c0234aecc6a38a3c6932446befb7bf0a8', 'food decay rot spoil spoils spoiled expire expires lasts preserve storage'),
     'Miscellaneous_Crafting.md': ('c04c002a174b9dd71a519aad0d7a29eb523a04082b92146f601a40ed25163126', 'miscellaneous crafting misc items dress dresses dressmaking tailoring tailor tailored sew sewing pattern patterns design clothes shirt gown cloak sleeves collar dye dyes wool linen fabric book hat hats headwear beret veil gloves boots shoes belt sash backpack satchel quiver bandolier restyle alteration alter candle candles'),
     'maps/The_Americas.md': ('f7589f182c236481f1971144815334796ece5e6e76c6ab7c5fea5a031d4fbede', 'americas america north south isthmus mainland persistent persistence map world hills tamping grading rammer'),
     'maps/Gaia.md': ('956e43002c3077b930f8b7b866d6276d6f7e617f348e7f7e83f6cd935265cbaa', 'gaia map world underground'),
     'maps/Nomads_Maps.md': ('9f71c98987cd40fc8b7d31a694d2984331fd23e84eb2c8248db595cd08ae18ab', 'nomads maps map terrain biome biomes'),
     'gamemodes/Voyage.md': ('9922f438d0253c6b4d812bc852422a54c37f428b4c3221b2a732397ef245ddfe', 'voyage expedition ship mode'),
     'gamemodes/Events.md': ('de6e6133e735e5da8a03a290f45e599b82cee216d9b150d25c583e3c34606336', 'events event special rounds'),
-    'guides_overview.md': ('55cbabecf0522760ec22c94f72aef5e62203c7767cdbbc3e68f976db6889b044', 'guides overview list of guides index'),
+    'guides_overview.md': ('57b48c146ab5130589ce7e5fc2d8e3508d19fb62eb8fc15c9a0bb73455d70d69', 'guides overview list of guides index'),
 }
 WIKI_LEGACY_GUIDES = ('guides/Guide_to_Crafting.md', 'guides/Guide_to_Metallurgy.md', 'Starter_Guide.md')
 

@@ -79,6 +79,7 @@ var/global/list/regrowing_stump_list = list()
 		/obj/structure/farming/plant/mint = 1,
 		/obj/structure/farming/plant/sunflower = 1,
 		/obj/structure/farming/plant/rose = 1,
+		/obj/structure/farming/plant/coffee = 1,
 	)
 
 /////// Wild plants

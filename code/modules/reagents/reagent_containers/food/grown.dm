@@ -130,13 +130,10 @@
 
 /obj/item/weapon/reagent_containers/food/snacks/grown/coffee
 	name = "green coffee"
-	icon_state = "coffee"
-	color = "#a5201d"
+	icon_state = "green_coffee"
+	desc = "Coffee cherries with raw green beans inside. Roast them in a fire before grinding and brewing."
+	nutriment_desc = list("sour fruit" = 1)
 	decay = 180*600
-	satisfaction = 8
-	New()
-		..()
-		reagents.add_reagent("coffee", 15)
 // fruit
 /obj/item/weapon/reagent_containers/food/snacks/grown/grapes
 	name = "bunch of grapes"
