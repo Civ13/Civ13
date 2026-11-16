@@ -70,10 +70,10 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = 'f21c6126ff0db9ab7940d5601279839319172267'
+WIKI_REVIEWED_REVISION = '0d454f338837223cbcc51a9c27535c2c50bda45c'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
-    'guides/Guide_to_Character.md': ('2d7872e9f19303d3077a1485496ebd5ba26b8dea0b26df9848d9a6cb506ad6a8', 'character skills traits languages'),
+    'guides/Guide_to_Character.md': ('9c80b7d61dad00cd3cfd860a0401cd194d344cf0e915433ab844a6a1ee0c2614', 'character skills traits languages'),
     'guides/Guide_to_Peoples_and_Languages.md': ('1e10b1f26c4e2f6d2659b32f0e6b045bb04b2129516382a37479574b9f107bcc', 'peoples people origin ethnicity language languages learn teach lesson mother tongue translate accent'),
     'guides/Guide_to_Chemistry.md': ('864bf107bd77e3934528bcf9c776b174ba2e86371118eedf084cbe5d42ce7ca5', 'chemistry chemicals reactions reagents'),
     'guides/Guide_to_Combat.md': ('006296f6e7501eeb36f4b486ee3a2b2a85567ecef74d0616dd2a04c2e42f53b2', 'combat fight fighting intent aim shoot melee grenade cover'),
@@ -120,7 +120,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Aircraft_Carriers.md': ('3402b1e488a635eb74b172c9d0c2d62038fe192efcd7d12e9b3f5d297c655ce4', 'carrier carriers aircraft carrier flight deck shipyard office arresting wires elevator bunkers'),
     'guides/Guide_to_Races.md': ('46ef1bf361c519e71acbd679119429e838348827e25dbcac27282f67bee51097', 'race races species human humans'),
     'guides/Guide_to_Slang.md': ('52f9f6370922d7dede523e51247ae6ea0723d24118cecd26e594c051278dfc3f', 'slang terms jargon abbreviation meaning mean word words'),
-    'guides/Guide_to_Books_and_Scholars.md': ('181258b39751c6d812a183fb7380fc6533aa95ac701f6d21f0daa0c7542c6b9d', 'books scholars scholarship study chapter research bench apprentice tutor library writing slate abacus'),
+    'guides/Guide_to_Books_and_Scholars.md': ('2e8e347267a9272394d7a4c35fe89cf83fcc13293ad1ebb62cbc7aca248d2541', 'books scholars scholarship study chapter research bench apprentice tutor library writing slate abacus'),
     'guides/Guide_to_Your_First_Day.md': ('1507799450276bd07568090b3f8084f372926f9e32e86cf166a0b6b851ed4257', 'first day new character start starting survive survival research book study chapter food water shelter bag bags carry carrying basket travois'),
     'guides/Guide_to_Paperwork.md': ('2a234c6fb82cf93f4eacaf712d6d0a18a8f4eac5b4e5643069ce9da993cd670f', 'paper paperwork writing write pen book sign signature stamp'),
     'Crafting_Skill_Level_Requirements.md': ('eae4e1c91ce28009f16ec79d0e942f76895d80262e618320eaf44d3a7c5808a9', 'crafting skill level levels requirement requirements unlock'),
