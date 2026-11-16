@@ -171,6 +171,7 @@
 RECIPE: /material/leaf/,thatch roofing,/obj/item/weapon/roofbuilder/leaves,2,45,0,1,none,0,0,0,8,null
 RECIPE: /material/leaf/,woven basket,/obj/structure/storage_container/basket,6,80,1,1,storage,0,0,0,8,null
 RECIPE: /material/leaf/,pit lining,/obj/item/weapon/storage_pit_lining,4,40,0,1,storage,0,0,0,8,null
+RECIPE: /material/leaf/,smoke bundle,/obj/item/weapon/smoke_bundle,2,30,0,1,tools,0,0,0,8,null
 
 //*****************| LEAVES CLOTHING |**************************
 

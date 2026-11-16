@@ -396,7 +396,7 @@ class AtlasFactsContract(unittest.TestCase):
   # Where raw materials come from.
   for key in ('/material/copper','/material/tin','/material/clay','/material/marble','/material/bearpelt/brown','grapejuice','ethanol','/material/leaf'):
    self.assertTrue(routes.get(key),key)
-  self.assertEqual(resources['honey']['found_in'],[['/obj/item/weapon/reagent_containers/food/snacks/honeycomb','honeycomb']])
+  self.assertEqual(resources['honey']['found_in'],[['/obj/item/weapon/reagent_containers/food/snacks/brood_comb','brood comb'],['/obj/item/weapon/reagent_containers/food/snacks/honeycomb','honeycomb']])
   self.assertEqual(resources['/obj/structure/wild/tree']['kind'],'Natural feature')
   made={product['id'] for recipe in catalog['recipes'] for product in recipe['outputs']}
   craftable=[key for key,value in resources.items() if value['type'].startswith('/obj/item') and key not in made and key not in routes and not value.get('entity')]
