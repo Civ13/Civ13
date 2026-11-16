@@ -7,6 +7,8 @@
 #define QDELETED(X) (!X)
 #define isobserver(A) istype(A, /mob/observer)
 #define isliving(A) istype(A, /mob/living)
+#define ishuman(A) istype(A, /mob/living/human)
+var/list/persistence_visited_levels = list(list(TRUE, null, TRUE, null), list(null, null))
 
 var/list/checks = list()
 var/list/failed = list()
@@ -190,6 +192,13 @@ var/season = "WINTER"
 	A.crafted(human("agent@ada"), /obj/structure/bed)
 	A.research_wall(human("alice"), "iron_working")
 	A.research_wall(human("alice"), "iron_working")
+	A.feature_used(human("alice"), "atlas")
+	A.feature_used(human("alice"), "atlas")
+	A.feature_used(human("agent@ada"), "atlas")
+	A.feature_used(human(null), "atlas")
+	A.help_outcome(null, "timeout")
+	A.voyage(human("alice"), "course")
+	A.map_reach()
 	A.flush()
 	var/list/L = lines_of(path)
 	check("header first", length(L) && L[1]["e"] == "boot" && L[1]["region"] == "gaia" && L[1]["v"] == 1)
@@ -227,6 +236,17 @@ var/season = "WINTER"
 	check("node done with era", by["node_done"] && by["node_done"]["fac"] == "Rome" && by["node_done"]["era"] == 1)
 	check("faction join, not none", joins == 1 && by["faction_join"]["fac"] == "Rome")
 	check("health carries era", by["health"]["era"] == 2)
+	check("feature use counted", AC && AC["use:atlas"] == 2)
+	var/anon_help = FALSE
+	var/agent_use = FALSE
+	for (var/list/E in L)
+		if (E["e"] == "counts" && E["a"] == "anonymous" && E["c"]["help:timeout"] == 1) anon_help = TRUE
+		if (E["e"] == "counts" && E["a"] == "agent@ada" && E["c"]["use:atlas"]) agent_use = TRUE
+	check("help outcome without a client is anonymous", anon_help)
+	check("agents not counted for features", !agent_use)
+	check("voyage line", by["voyage"] && by["voyage"]["a"] == "alice" && by["voyage"]["kind"] == "course")
+	var/list/R = by["reach"]
+	check("map reach per level", R && R["levels"]["1"][1] == 2 && R["levels"]["1"][2] == 4 && R["levels"]["2"][1] == 0)
 	check("craft family", player_activity_craft_family("/obj/structure/bed") == "structure/bed" && player_activity_craft_family("/obj/item") == "item")
 	check("health line", by["health"] && by["health"]["dil"] == 12.3 && by["health"]["cpu"] == 56.8)
 	check("save line", by["save"] && by["save"]["ok"] == 1 && by["save"]["sec"] == 4.5)

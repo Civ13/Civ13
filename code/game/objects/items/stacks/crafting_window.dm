@@ -156,6 +156,7 @@ var/global/list/crafting_purpose_cache = list()
 	if (!client || stat || restrained())
 		return
 	var/list/near = crafting_stacks_within_reach()
+	player_activity.feature_used(src, "crafting_within_reach")
 	if (!near.len)
 		to_chat(src, "<span class='notice'>Nothing to craft with is within reach. Hold a material, or stand next to one.</span>")
 		return

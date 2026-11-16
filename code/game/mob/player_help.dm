@@ -21,6 +21,7 @@ var/global/datum/player_help_service/player_help_service = new
 	var/question = player_help_prompt()
 	player_help_service.bind_body(src, mob)
 	if (question && (src in clients) && generation == player_help_generation)
+		player_activity.feature_used(src, "player_help")
 		player_help_service.submit(src, question)
 
 /client/proc/player_help_prompt()
@@ -521,15 +522,20 @@ var/global/datum/player_help_service/player_help_service = new
 					reset_conversation(C)
 					C.player_help_action_token = md5("[entry["id"]]-[rand(1, 1000000000)]")
 				show_browse(C, render_answer(response["answer"], answer_format, C, entry["question"], previous_pairs), "window=player_help;size=600x500")
+				player_activity.help_outcome(C, "ok")
 			else if (C && response["status"] == "rate_limited")
+				player_activity.help_outcome(C, "rate_limited")
 				C << "AI gameplay help rate limit reached. Please wait [max(1, min(86400, text2num("[response["retry_seconds"]]")))] seconds and try again."
 			else if (C && (response["status"] == "busy" || response["status"] == "pending"))
+				player_activity.help_outcome(C, "busy")
 				C << "AI gameplay help is busy or your previous question is pending. Please wait [max(1, min(86400, text2num("[response["retry_seconds"]]")))] seconds before trying again."
 			else if (C)
+				player_activity.help_outcome(C, "failed")
 				C << "AI gameplay help did not receive a usable response. Please try again later or use the Crafting Atlas."
 			clear_slot(i)
 		else if (world.time >= entry["deadline"])
 			if (C)
+				player_activity.help_outcome(C, "timeout")
 				C << "AI gameplay help timed out without a response. Please try again later or use the Crafting Atlas."
 			clear_slot(i)
 

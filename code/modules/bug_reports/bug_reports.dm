@@ -429,6 +429,7 @@ var/global/datum/bug_report_queue/bug_reports = new
 		to_chat(src, "<span class='warning'>[why]</span>")
 		return
 	var/datum/bug_report/R = bug_reports.add(src, title, what, steps, expected, picture)
+	player_activity.feature_used(src, "bug_report")
 	to_chat(src, "<span class='notice'>Bug report #[R.id] sent. An admin will review it; your BYOND key, the map, round and your location[R.screenshot ? " and a picture of your screen" : ""] are attached. You will hear back here if you are online.</span>")
 
 /client/proc/bug_reports_panel()

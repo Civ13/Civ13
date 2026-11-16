@@ -335,6 +335,24 @@ def report(db, now=None):
                 continue
             entry[0] += amount if isinstance(amount, (int, float)) else 0
             entry[1].add(row['account'])
+    features = {}
+    help_outcomes = {}
+    for row in db.execute("SELECT account, data FROM event WHERE e = 'counts' AND ts >= ?", (now - 7 * DAY,)):
+        for name, amount in (json.loads(row['data']).get('c') or {}).items():
+            amount = amount if isinstance(amount, (int, float)) else 0
+            if name.startswith('use:'):
+                entry = features.setdefault(name[4:], [0, set()])
+                entry[0] += amount
+                entry[1].add(row['account'])
+            elif name.startswith('help:'):
+                help_outcomes[name[5:]] = help_outcomes.get(name[5:], 0) + amount
+    feature_use = sorted(({'feature': k, 'uses': v[0], 'players': len(v[1])} for k, v in features.items()), key=lambda r: (-r['players'], -r['uses']))
+    voyages = counts("SELECT region, json_extract(data, '$.kind') AS kind, COUNT(*) AS n FROM event WHERE e = 'voyage' AND ts >= ? GROUP BY region, kind ORDER BY n DESC", now - 7 * DAY)
+    reach = []
+    for row in db.execute("SELECT region, data FROM event WHERE e = 'reach' AND id IN (SELECT MAX(id) FROM event WHERE e = 'reach' GROUP BY region) ORDER BY region"):
+        for level, pair in sorted((json.loads(row['data']).get('levels') or {}).items(), key=lambda kv: int(kv[0]) if kv[0].isdigit() else 0):
+            if isinstance(pair, list) and len(pair) == 2 and pair[1]:
+                reach.append({'region': row['region'], 'level': level, 'visited': pair[0], 'chunks': pair[1], 'percent': round(100.0 * pair[0] / pair[1], 1)})
     research_walls = sorted(({'node': k, 'refusals': v[0], 'players': len(v[1])} for k, v in walls.items()), key=lambda r: (-r['players'], -r['refusals']))[:20]
     crafting = sorted(({'family': k, 'crafts': v[0], 'players': len(v[1])} for k, v in crafts.items()), key=lambda r: -r['crafts'])[:20]
     learned = counts("SELECT json_extract(data, '$.node') AS node, COUNT(DISTINCT account) AS players FROM event WHERE e = 'learn' AND json_extract(data, '$.agent') IS NULL GROUP BY node ORDER BY players DESC")
@@ -365,6 +383,10 @@ def report(db, now=None):
         'recipes_made_this_world': first_crafts,
         'factions': factions,
         'era_by_region': eras,
+        'feature_use': feature_use,
+        'help_outcomes': help_outcomes,
+        'voyages': voyages,
+        'map_reach': reach,
     }
 
 
@@ -402,6 +424,10 @@ def print_report(data, out=sys.stdout):
     table('Faction events (7 days)', data['factions'], ('event', 'n'))
     table('Era by region', data['era_by_region'], ('region', 'era'))
     w('Recipes made at least once (90 days): %d\n' % data['recipes_made_this_world'])
+    table('Features used (7 days)', data['feature_use'], ('feature', 'players', 'uses'))
+    w('AI help outcomes (7 days): %s\n' % (', '.join('%s=%s' % kv for kv in sorted(data['help_outcomes'].items())) or '(none)'))
+    table('Voyages (7 days)', data['voyages'], ('region', 'kind', 'n'))
+    table('Map reach (latest)', data['map_reach'], ('region', 'level', 'visited', 'chunks', 'percent'))
     w('\nPeak players by UTC hour: %s\n' % (', '.join('%s:%s' % kv for kv in data['peak_players_by_utc_hour'].items()) or '(none)'))
 
 

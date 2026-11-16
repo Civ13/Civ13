@@ -34,6 +34,7 @@ var/global/datum/crafting_atlas_presenter/crafting_atlas_presenter
 	if (client)
 		crafting_atlas_reference.show(src)
 		client.tutorial_event("atlas")
+		player_activity.feature_used(src, "atlas")
 
 /obj/structure/sawmill/verb/processing_reference()
 	set name = "Processing Reference"

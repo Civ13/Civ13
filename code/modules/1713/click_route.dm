@@ -439,6 +439,7 @@
 		return TRUE
 	click_route = new /datum/click_route(src, goal, route)
 	click_route.steer()
+	player_activity.feature_used(src, "click_route")
 	return TRUE
 
 // Why this character can't follow a route right now, or null.

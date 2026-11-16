@@ -31,6 +31,7 @@ var/global/datum/player_activity/player_activity = new
 	var/list/sessions = list()
 	var/header_written = FALSE
 	var/last_heartbeat = 0
+	var/last_reach_date = null
 	// Result types already reported as crafted by someone since this boot.
 	var/list/crafted_types = list()
 	var/last_date = null
@@ -112,6 +113,10 @@ var/global/datum/player_activity/player_activity = new
 	if(world.time - last_heartbeat >= PLAYER_ACTIVITY_HEARTBEAT)
 		last_heartbeat = world.time
 		heartbeat()
+	var/date = today()
+	if(date != last_reach_date && length(clients))
+		last_reach_date = date
+		map_reach()
 	flush()
 
 // ---------------------------------------------------------------- sessions
@@ -375,6 +380,53 @@ var/global/datum/player_activity/player_activity = new
 	var/list/F = client_fields(C, S || list("a" = account_key(C)))
 	F["step"] = step_id
 	record("tutorial", F)
+
+// ---------------------------------------------------------------- features
+
+// Counts one use of a feature ("use:<name>") for the client or mob's account.
+/datum/player_activity/proc/feature_used(who, feature)
+	if(!enabled() || !istext(feature)) return
+	var/account = null
+	if(istype(who, /client))
+		account = account_key(who)
+	else if(istype(who, /mob))
+		var/mob/M = who
+		if(ishuman(M))
+			account = player_activity_account(M)
+		else if(M.client)
+			account = account_key(M.client)
+	if(!account || is_agent_account(account)) return
+	count(account, "use:[feature]")
+
+// How an AI help question ended: ok, rate_limited, busy, failed or timeout.
+/datum/player_activity/proc/help_outcome(client/C, outcome)
+	if(!enabled() || !istext(outcome)) return
+	var/account = C ? account_key(C) : null
+	if(account) count(account, "help:[outcome]")
+	else count("anonymous", "help:[outcome]")
+
+// A boat leaving on a voyage from a tiller (naval/ship_voyage.dm).
+/datum/player_activity/proc/voyage(mob/living/human/H, kind)
+	if(!enabled()) return
+	var/list/F = character_fields(H)
+	if(!F) return
+	F["kind"] = "[kind]"
+	record("voyage", F)
+
+// Once a day: how many map chunks of each level anyone has stood in, from
+// the existing visited record (persistence/visited_areas.dm). No per-player data.
+/datum/player_activity/proc/map_reach()
+	if(!enabled() || !islist(persistence_visited_levels)) return
+	var/list/levels = list()
+	for(var/z = 1, z <= length(persistence_visited_levels), z++)
+		var/list/level = persistence_visited_levels[z]
+		if(!islist(level) || !length(level)) continue
+		var/seen = 0
+		for(var/cell in level)
+			if(cell) seen++
+		levels["[z]"] = list(seen, length(level))
+	if(length(levels))
+		record("reach", list("levels" = levels))
 
 // ---------------------------------------------------------------- hooks
 

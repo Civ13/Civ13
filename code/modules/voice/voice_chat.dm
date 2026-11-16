@@ -93,6 +93,7 @@ var/global/datum/voice_chat/voice_chat = new
 		return // a duplicate key keeps its first owner; the second launcher gets nothing
 	C.voice_key = key
 	clients_by_key[key] = C
+	player_activity.feature_used(C, "voice")
 	poll_ids[voice_poll_id(key)] = key
 	if(!roster_timer)
 		roster_timer = addtimer(CALLBACK(src, PROC_REF(roster_tick)), VOICE_ROSTER_INTERVAL, TIMER_LOOP | TIMER_STOPPABLE)
