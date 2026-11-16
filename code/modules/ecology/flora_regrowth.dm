@@ -374,7 +374,8 @@ var/global/list/regrowing_stump_list = list()
 				break
 	plants_grown += grown
 	var/nests = wild_bee_cycle(src)
-	last_report = "[wild_plant_list.len]/[plant_target] wild plants (+[grown], -[withered] withered), [regrowing_stump_list.len] stumps, +[regrown] trees regrown, [wild_bee_nests.len] bee nests (+[nests]); totals: [plants_grown] plants, [trees_regrown] trees"
+	kept_hive_cycle()
+	last_report = "[wild_plant_list.len]/[plant_target] wild plants (+[grown], -[withered] withered), [regrowing_stump_list.len] stumps, +[regrown] trees regrown, [wild_bee_nests.len] bee nests (+[nests]), [kept_hives.len] kept hives; totals: [plants_grown] plants, [trees_regrown] trees"
 	return grown + regrown
 
 // Started by the ticker once a round is playing, including after a world load.
