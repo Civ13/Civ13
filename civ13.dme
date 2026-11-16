@@ -1180,6 +1180,7 @@
 #include "code\modules\1713\machinery\modular_vehicles\vehicle_door_hold.dm"
 #include "code\modules\1713\machinery\modular_vehicles\vehicle_projects.dm"
 #include "code\modules\1713\machinery\modular_vehicles\vehicle_speeds.dm"
+#include "code\modules\1713\machinery\modular_vehicles\vehicle_ram.dm"
 #include "code\modules\1713\machinery\modular_vehicles\frame.dm"
 #include "code\modules\1713\machinery\modular_vehicles\frame_icons.dm"
 #include "code\modules\1713\machinery\modular_vehicles\frame_parts.dm"

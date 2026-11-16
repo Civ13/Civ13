@@ -373,6 +373,11 @@ var/global/train_solo_move = FALSE
 /obj/structure/trains/proc/collision_impact()
 	return 1
 
+// Ram force of a train at impact 1, in wood-part hit points, and how much
+// absorbed force costs the car one point of health.
+#define TRAIN_RAM_FORCE 600
+#define TRAIN_RAM_HULL_PER_FORCE 20
+
 // Hits whatever stands on tgtt. TRUE when the train must stop there.
 /obj/structure/trains/proc/rail_hit(turf/tgtt, fdir, impact = null)
 	if (isnull(impact))
@@ -388,6 +393,18 @@ var/global/train_solo_move = FALSE
 		// Deck and body tiles are the clearance check's business (train_consist_obstacle):
 		// on a curve the leading car's own side tile lies on the track ahead.
 		if (O.density && !istype(O, /obj/structure/trains) && !istype(O, /obj/structure/rails) && !istype(O, /obj/structure/train_part))
+			// A wall, door or pillar on the line takes the train's weight
+			// (structure_impact.dm); one that gives way does not stop it.
+			if (impact >= 0.5 && is_structure_impact_part(O))
+				var/force = TRAIN_RAM_FORCE * impact
+				var/left = O.structure_impact(force, IMPACT_CRUSH, src, fdir)
+				health -= round((force - left) / TRAIN_RAM_HULL_PER_FORCE)
+				if (left > 0 && QDELETED(O))
+					visible_message("<span class = 'danger'>\The [src] smashes through \the [O]!</span>")
+					continue
+				automovement = FALSE
+				visible_message("<span class = 'warning'>\The [src] crashes into \the [O]!</span>")
+				return TRUE
 			automovement = FALSE
 			if (impact < 0.5)
 				visible_message("<span class = 'warning'>\The [src] bumps into \the [O] and stops.</span>")

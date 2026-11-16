@@ -25,13 +25,13 @@
 /proc/aircraft_building_at(turf/T)
 	if (!T)
 		return FALSE
-	if (T.density && structure_impact_part(T))
+	if (T.density && is_structure_impact_part(T))
 		return TRUE
 	for (var/obj/covers/C in T)
-		if (C.density && structure_impact_part(C))
+		if (C.density && is_structure_impact_part(C))
 			return TRUE
 	for (var/obj/structure/S in T)
-		if (S.density && structure_impact_part(S))
+		if (S.density && is_structure_impact_part(S))
 			return TRUE
 	return FALSE
 
@@ -47,13 +47,13 @@
 	if (!T || force <= 0)
 		return force
 	var/list/parts = list()
-	if (T.density && structure_impact_part(T))
+	if (T.density && is_structure_impact_part(T))
 		parts += T
 	for (var/obj/covers/C in T)
-		if (C.density && structure_impact_part(C))
+		if (C.density && is_structure_impact_part(C))
 			parts += C
 	for (var/obj/structure/S in T)
-		if (S.density && structure_impact_part(S))
+		if (S.density && is_structure_impact_part(S))
 			parts += S
 	for (var/obj/roof/R in T)
 		parts += R
