@@ -19,7 +19,6 @@ button, input { font: inherit; }
 button:focus-visible, input:focus-visible { outline: 2px solid var(--civ-highlight); outline-offset: 2px; }
 .Button { margin: 2px; }
 .Section { margin-bottom: 12px; border: 1px solid var(--civ-line); }
-.product { margin: 5px 0; }
 .tag { display: inline-block; padding: 3px 6px; margin: 3px; background: var(--civ-chip); border-radius: 3px; }
 .modern-vending { --color-primary: #bd3c3c; }
 .faction-canvas { display: grid; grid-template-columns: repeat(32, 1fr); width: min(100%, 512px); aspect-ratio: 1; margin: 16px auto; border: 1px solid #846c4b; user-select: none; touch-action: none; }
@@ -316,3 +315,4 @@ button.rs-row-main { cursor: pointer; }
 .kit-choice .Button:first-child { border-radius: 3px 0 0 3px; } .kit-choice .Button:last-child { border-radius: 0 3px 3px 0; }
 .kit-choice .Button--selected { background: var(--civ-accent); color: var(--civ-bg); font-weight: bold; }
 .kit-details { margin-top: 10px; font-size: 12.5px; color: var(--civ-dim); } .kit-details summary { cursor: pointer; }
+.kit-rows + .NoticeBox { margin-top: 8px; }

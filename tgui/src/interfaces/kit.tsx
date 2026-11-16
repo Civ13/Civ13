@@ -8,9 +8,9 @@ import { Action, list, text } from './common';
 
 // One table for every read-only list. The first column is the row header.
 export type Column = { label: string; align?: 'right'; cell: (row: Data) => ReactNode };
-export function SnapshotTable({ label, rows, columns, hint, empty }: { label: string; rows: unknown; columns: Column[]; hint?: string; empty: string }) {
+export function SnapshotTable({ label, rows, columns, hint, empty, title, buttons }: { label: string; rows: unknown; columns: Column[]; hint?: string; empty: string; title?: string; buttons?: ReactNode }) {
   const items = list(rows);
-  return <Section>
+  return <Section title={title} buttons={buttons}>
     {hint && <p className="kit-hint">{hint}</p>}
     {items.length ? <table className="kit-table" aria-label={label}>
       <thead><tr>{columns.map((column, c) => <th key={c} scope="col" className={column.align === 'right' ? 'kit-right' : undefined}>{column.label}</th>)}</tr></thead>
