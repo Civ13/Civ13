@@ -398,16 +398,9 @@ var/global/list/ecology_species_table = null
 /datum/ecology_spawner/proc/size_targets()
 	var/cap = map ? map.ecology_wildlife_cap : 450
 	var/scale_density = map ? map.ecology_density_scale : 2
-	var/tile_per_hit = (ECOLOGY_CELL_SIZE * ECOLOGY_CELL_SIZE) / ECOLOGY_INDEX_SAMPLES
 	var/total = 0
 	for (var/datum/ecology_species/S in species)
-		S.habitat_keys = list()
-		S.habitat_tiles = 0
-		for (var/key in habitat_hits)
-			var/list/parts = splittext(key, "|")
-			if ((parts[1] in S.biomes) && (text2num(parts[2]) & S.grounds))
-				S.habitat_keys += key
-				S.habitat_tiles += habitat_hits[key] * tile_per_hit
+		index_habitat(S)
 		if (S.density <= 0)
 			continue // a fixed target (tests, admin edits) stays as given
 		if (S.habitat_tiles < ECOLOGY_MIN_HABITAT)
@@ -423,6 +416,19 @@ var/global/list/ecology_species_table = null
 				S.target = max(1, round(S.target * scale, 1))
 				total += S.target
 	total_target = total
+
+// Fills S.habitat_keys and S.habitat_tiles from the habitat index. Returns
+// the habitat tiles, or 0 when there is too little ground to count.
+/datum/ecology_spawner/proc/index_habitat(datum/ecology_species/S)
+	var/tile_per_hit = (ECOLOGY_CELL_SIZE * ECOLOGY_CELL_SIZE) / ECOLOGY_INDEX_SAMPLES
+	S.habitat_keys = list()
+	S.habitat_tiles = 0
+	for (var/key in habitat_hits)
+		var/list/parts = splittext(key, "|")
+		if ((parts[1] in S.biomes) && (text2num(parts[2]) & S.grounds))
+			S.habitat_keys += key
+			S.habitat_tiles += habitat_hits[key] * tile_per_hit
+	return S.habitat_tiles < ECOLOGY_MIN_HABITAT ? 0 : S.habitat_tiles
 
 // Living wild animals per species, one pass over the living mobs.
 /datum/ecology_spawner/proc/census()
@@ -542,7 +548,9 @@ var/global/list/ecology_species_table = null
 	var/sea_spawned = sea_life_cycle()
 	spawned += sea_spawned
 	spawned_total += spawned
-	last_report = "[total]/[total_target] wild animals, +[spawned - sea_spawned] this cycle: [jointext(notes, ", ")]. Sea: [sea_life_last_report]"
+	// Mice live in burrows, not as free-roaming herds (mouse_nests.dm).
+	var/burrow_report = mouse_burrow_cycle()
+	last_report = "[total]/[total_target] wild animals, +[spawned - sea_spawned] this cycle: [jointext(notes, ", ")]. Sea: [sea_life_last_report]. [burrow_report]"
 	return spawned
 
 // Far from every player, wild animals live at a slower pace: the mob process

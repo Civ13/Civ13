@@ -1,6 +1,7 @@
 """Source contracts for the mouse rework: rot creates no pests, mice are timid."""
 from pathlib import Path
 import re
+import zlib
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -59,6 +60,30 @@ class TimidMouse(unittest.TestCase):
         harvest = block(self.source, "/mob/living/simple_animal/mouse/harvest_products(")
         self.assertNotIn("meat/human", harvest)
         self.assertIn("/obj/item/weapon/reagent_containers/food/snacks/meat,", harvest)
+
+
+class NestsAreTheSource(unittest.TestCase):
+    def test_ecology_cycle_places_burrows(self):
+        cycle = block(read("code/modules/ecology/ecology_spawning.dm"), "/datum/ecology_spawner/proc/cycle()")
+        self.assertIn("mouse_burrow_cycle()", cycle)
+
+    def test_process_settles_a_few_nests_per_fire(self):
+        process = read("code/processes/mouse_nests.dm")
+        self.assertIn("#define MOUSE_PROCESS_SETTLES 2", process)
+        self.assertIn("schedule_interval = 10 SECONDS", process)
+
+    def test_emitted_mice_are_not_saved(self):
+        nests = read("code/modules/ecology/mouse_nests.dm")
+        self.assertIn("should_save = FALSE // the nest's population already counts this mouse", nests)
+        self.assertIn('return key == "out_mice" || ..()', nests)
+
+    def test_nest_sprites_exist(self):
+        data = (ROOT / "icons/obj/mouse_nests.dmi").read_bytes()
+        start = data.index(b"zTXtDescription\x00\x00") + len(b"zTXtDescription\x00\x00")
+        length = int.from_bytes(data[start - len(b"zTXtDescription\x00\x00") - 4:start - len(b"zTXtDescription\x00\x00")], "big")
+        meta = zlib.decompress(data[start:start - len(b"Description\x00\x00") + length]).decode()
+        for state in ("burrow", "nest_light", "nest_used", "nest_overrun"):
+            self.assertIn(f'state = "{state}"', meta)
 
 
 if __name__ == "__main__":
