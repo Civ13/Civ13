@@ -174,9 +174,9 @@
 /obj/structure/beehive/proc/pollinate_flowers()
 	var/coef = bee_count / 100
 	var/trays = 0
+	// Pollination pays out at harvest (pollination.dm); flowers only feed the hive here.
 	for(var/obj/structure/farming/plant/P in view(7, src))
 		if(P.stage != 8)
-			P.plant_nutrition += 0.05 * coef
 			++trays
 	honeycombs = min(honeycombs + 0.1 * coef * min(trays, 5), frames * 100)
 
