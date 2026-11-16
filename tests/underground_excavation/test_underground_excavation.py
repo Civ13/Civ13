@@ -38,6 +38,19 @@ class Wiring(unittest.TestCase):
         self.assertIn('/turf/floor/dirt/underground/attackby(obj/item/C, mob/user)', module)
         self.assertIn('return ..()', module)
 
+    def test_tunnel_fill_routes(self):
+        module = read('code/modules/1713/underground_excavation.dm')
+        self.assertIn('/turf/floor/dirt/attackby(obj/item/C, mob/user)', module)
+        self.assertIn('tunnel_level_turf(src) && backfill_pile(src, user, C)', module)
+        structures = read('code/modules/multiz/structures.dm')
+        self.assertIn('tunnel_filled(user)', structures)
+        self.assertIn('do_after(user, delay, src)', structures)
+        self.assertIn('. |= list("filled")', structures)
+        self.assertIn('pit/tunnel_filled(mob/user)', read('code/modules/multiz/hole_ladder.dm'))
+        # Packed earth must stay dense so flood_cellars.dm seepage skips it.
+        cellars = read('code/modules/1713/flood_cellars.dm')
+        self.assertIn('if (T.density', cellars)
+
 
 if __name__ == '__main__':
     unittest.main()

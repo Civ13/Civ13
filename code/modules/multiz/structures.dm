@@ -450,18 +450,49 @@
 	area_id = "5"
 
 
+// Dirt piles thrown into a tunnel entrance fill it; four close it for good.
+#define TUNNEL_FILL_PILES 4
+#define TUNNEL_FILL_TIME 20
 /obj/structure/multiz/ladder/ww2/tunneltop/attackby(obj/item/I as obj, mob/user as mob)
-	if (istype(I, /obj/item/weapon/barrier))
-		visible_message("[user] throws the dirt into \the [src].", "You throw the dirt into \the [src].")
+	if (istype(I, /obj/item/weapon/barrier) && !istype(I, /obj/item/weapon/barrier/sandbag))
+		if (!Adjacent(user) || user.stat || user.restrained() || persistence_save_in_progress)
+			return
+		var/delay = TUNNEL_FILL_TIME
+		if (ishuman(user))
+			var/mob/living/human/H = user
+			delay /= max(0.1, H.getStatCoeff("strength"))
+		if (!do_after(user, delay, src) || QDELETED(src) || QDELETED(I) || user.get_active_hand() != I || !Adjacent(user) || persistence_save_in_progress)
+			return
+		user.visible_message("[user] throws the dirt into \the [src].", "You throw the dirt into \the [src].")
 		filled++
 		qdel(I)
-		if (filled >= 4)
-			visible_message("The hole gets covered.")
-			for (var/obj/structure/multiz/ladder/ww2/tunnelbottom/TB in locate(src.x, src.y, multiz_level_below(src.z)))
-				qdel(TB)
-			qdel(src)
+		if (filled < TUNNEL_FILL_PILES)
+			to_chat(user, SPAN_NOTICE("[TUNNEL_FILL_PILES - filled] more pile\s of dirt will fill it."))
+			return
+		visible_message("The hole gets covered.")
+		tunnel_filled(user)
+		for (var/obj/structure/multiz/ladder/ww2/tunnelbottom/TB in locate(src.x, src.y, multiz_level_below(src.z)))
+			qdel(TB)
+		log_game("[key_name(user)] filled in [src] at [x],[y],[z]")
+		qdel(src)
 	else
 		..()
+
+// Fill progress survives a save, so a half-filled hole stays half filled.
+/obj/structure/multiz/ladder/ww2/tunneltop/get_saved_vars()
+	. = ..()
+	. |= list("filled")
+
+// Called just before a filled entrance is deleted.
+/obj/structure/multiz/ladder/ww2/tunneltop/proc/tunnel_filled(mob/user)
+	return
+
+/obj/structure/multiz/ladder/ww2/tunneltop/examine(mob/user, distance = -1)
+	..(user, distance)
+	if (filled > 0)
+		to_chat(user, SPAN_NOTICE("It is partly filled with dirt. [TUNNEL_FILL_PILES - filled] more pile\s will close it."))
+#undef TUNNEL_FILL_PILES
+#undef TUNNEL_FILL_TIME
 /obj/structure/multiz/stairs
 	name = "stairs"
 	icon_state = "rampup"

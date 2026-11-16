@@ -104,3 +104,41 @@ var/excavation_runtime_error = FALSE
 	H.forceMove(locate(11, 11, 1))
 	excavation_shaft_spoil(H)
 	excavation_check(excavation_count(locate(11, 11, 1), /obj/item/weapon/barrier) == 2, "a tunnel shaft leaves two dirt piles")
+
+	// Backfilling: a dirt pile packs an open tunnel tile solid again.
+	var/turf/tunnel = locate(3, 3, 1)
+	excavation_check(!tunnel_level_turf(tunnel), "a tile outside the caves is not a tunnel level")
+	var/area/caribbean/void/caves/C = new
+	C.contents += tunnel
+	C.contents += locate(3, 4, 1)
+	excavation_check(tunnel_level_turf(tunnel), "a cave tile counts as a tunnel level")
+	excavation_check(isnull(tunnel_backfill_problem(tunnel, H)), "an open tunnel tile with only dirt piles can be packed")
+	excavation_check(backfill_pile(tunnel, H, S) != null, "a dirt pile on the tile is used for packing")
+	excavation_check(findtext(tunnel_backfill_problem(locate(3, 5, 1), H), "nothing to fill"), "solid rock has nothing to fill")
+	var/obj/structure/blocker = new /obj/structure(tunnel)
+	excavation_check(findtext(tunnel_backfill_problem(tunnel, H), "out of the way"), "a structure on the tile blocks packing")
+	qdel(blocker)
+	H.forceMove(tunnel)
+	excavation_check(findtext(tunnel_backfill_problem(tunnel, H), "Step off"), "the digger cannot pack the tile they stand on")
+	H.forceMove(locate(11, 11, 1))
+	var/piles_before = excavation_count(tunnel, /obj/item/weapon/barrier)
+	for (var/obj/item/weapon/barrier/B in tunnel)
+		qdel(B)
+	var/obj/item/weapon/barrier/pile = new(tunnel)
+	var/turf/packed = tunnel_backfill_finish(tunnel, pile)
+	excavation_check(piles_before == 2, "the dug tile still held its two piles before packing")
+	excavation_check(istype(packed, /turf/floor/dirt/underground/empty/packed) && packed.density && packed.opacity, "packing turns the tile into solid packed earth")
+	excavation_check(QDELETED(pile) || !(pile in packed), "packing uses up the dirt pile")
+	excavation_check(isnull(underground_excavation_problem(packed)), "packed earth can be shovelled out again")
+	var/turf/reopened = underground_excavation_finish(packed)
+	excavation_check(excavation_count(reopened, /obj/item/weapon/barrier) == 1 && reopened.available_dirt == 0, "digging packed earth out gives back only its one pile")
+	excavation_check(!reopened.density, "packed earth reopens into floor")
+
+	// Filling a dug hole hands back a fitted ladder.
+	var/turf/hole_turf = locate(1, 11, 1)
+	hole_turf.ChangeTurf(/turf/floor/dirt)
+	var/obj/structure/multiz/ladder/ww2/tunneltop/pit/P = new(locate(1, 11, 1))
+	P.has_ladder = TRUE
+	P.tunnel_filled(H)
+	excavation_check(!P.has_ladder && excavation_count(get_turf(H), /obj/item/weapon/hole_ladder) == 1, "filling a hole with a fitted ladder returns the ladder")
+	excavation_check("filled" in P.get_saved_vars(), "a hole's fill progress is saved")
