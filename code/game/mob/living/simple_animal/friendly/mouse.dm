@@ -36,9 +36,9 @@
 	can_pull_mobs = MOB_PULL_NONE
 	granivore = 1
 	scavenger = 1
-	behaviour = "defends"
-	melee_damage_lower = 2
-	melee_damage_upper = 5
+	behaviour = "scared" // mice bolt from people; they never attack
+	melee_damage_lower = 0
+	melee_damage_upper = 0
 
 /mob/living/simple_animal/mouse/New()
 	..()
@@ -50,21 +50,7 @@
 	icon_living = "mouse_[body_color]"
 	icon_dead = "mouse_[body_color]_dead"
 	desc = "It's a small [body_color] rodent."
-
-	if(body_color == "black")
-		if(era_between(2, 3)) //Approx epochs where black plague was a thing.
-			if(prob(50))
-				plaguemouse = TRUE
-		else
-			if(prob(25))
-				plaguemouse = TRUE
-	else
-		if(era_between(2, 3)) //Approx epochs where black plague was a thing.
-			if(prob(10))
-				plaguemouse = TRUE
-		else
-			if(prob(5))
-				plaguemouse = TRUE
+	// Plague no longer comes from a coin flip at birth; only the admin plague subtype carries it.
 
 /mob/living/simple_animal/mouse/proc/splat()
 	health = FALSE
@@ -83,32 +69,13 @@
 	else
 		return ..()
 */
+// Stepping near a mouse startles it; it squeaks and runs rather than biting.
 /mob/living/simple_animal/mouse/Crossed(AM as mob|obj)
-	if ( ishuman(AM) )
-		if (!stat)
-			var/mob/living/human/M = AM
-			var/dmod = 1
-			if (find_trait("Weak Immune System"))
-				dmod = 2
-			if (find_trait("Strong Immune System"))
-				dmod = 0.2
-			to_chat(M, "<span class = 'notice'>\icon[getFlatIcon(src)] Squeek!</span>")
-			to_chat(M, 'sound/effects/mousesqueek.ogg')
-			npc_set_combat_target(M)
-			stance = HOSTILE_STANCE_ATTACK
-			stance_step = 6
-			if(plaguemouse && prob(2*dmod))
-				M.disease = TRUE
-				M.disease_type = "plague"
-			else if((plaguemouse && prob(0.03*dmod)) && era_between(2, 3)) //2 percent chance because of if-else logic,
-				M.disease = TRUE
-				M.disease_type = "plague"
-			else if(plaguemouse && body_color == "black" && prob(4*dmod)) //prob is 3 percent.
-				M.disease = TRUE
-				M.disease_type = "plague"
-			else if((plaguemouse && body_color == "black" && prob(5*dmod)) && era_between(2, 3)) //four percent chance kinda
-				M.disease = TRUE
-				M.disease_type = "plague"
+	if (ishuman(AM) && !stat)
+		var/mob/living/human/M = AM
+		to_chat(M, "<span class = 'notice'>\icon[getFlatIcon(src)] Squeek!</span>")
+		to_chat(M, 'sound/effects/mousesqueek.ogg')
+		do_behaviour("scared")
 	..()
 
 /mob/living/simple_animal/mouse/death()
@@ -121,8 +88,8 @@
 	return ..()
 
 /mob/living/simple_animal/mouse/harvest_products(turf/site, skin)
-	var/obj/item/weapon/reagent_containers/food/snacks/meat/human/M = harvest_food(/obj/item/weapon/reagent_containers/food/snacks/meat/human, site)
-	if (plaguemouse)
+	var/obj/item/weapon/reagent_containers/food/snacks/meat/M = harvest_food(/obj/item/weapon/reagent_containers/food/snacks/meat, site)
+	if (plaguemouse && M.reagents)
 		M.reagents.add_reagent("plague", 3)
 
 /*

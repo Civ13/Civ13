@@ -277,6 +277,8 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 		var/diet_summary = H.diet_food_summary(src)
 		if (diet_summary)
 			to_chat(user, "<span class='notice'>[diet_summary]</span>")
+	if (rotten && isturf(loc))
+		to_chat(user, "<span class='warning'>Flies buzz around it.</span>")
 	if (bitecount == 0)
 		return
 	else if (bitecount == 1)
