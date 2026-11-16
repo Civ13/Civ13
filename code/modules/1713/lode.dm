@@ -116,6 +116,7 @@
 	var/metal = C.metal_type
 	C.use(1)
 	var/list/names = pay_dirt_output(crushed_ore_wash(metal, LODE_PAN_RECOVERY), T)
+	river_mercury_pan_message(H, T.panning_water())
 	to_chat(H, SPAN_NOTICE("You keep: [english_list(names)]. A buddle would save more of it."))
 
 //////////////////////////////////////////////////////////////////////////////

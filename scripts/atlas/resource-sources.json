@@ -17599,6 +17599,115 @@
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified",
       "source_commit": "dca5816c"
+    },
+    {
+      "name": "Arrastra (stone crusher charged with quicksilver)",
+      "file": "code/modules/1713/amalgam.dm",
+      "line": 288,
+      "inputs": [
+        "/obj/item/stack/ore/crushed_ore/gold",
+        "/obj/item/stack/ore/crushed_ore/silver",
+        "/datum/reagent/mercury"
+      ],
+      "outputs": [
+        "/obj/item/stack/ore/amalgam/gold",
+        "/obj/item/stack/ore/amalgam/silver",
+        "/obj/item/stack/ore/tailings/amalgam"
+      ],
+      "tools": [
+        "/obj/structure/stone_crusher"
+      ],
+      "steps": [
+        "Pour quicksilver and water into a stone crusher.",
+        "Use crushed ore on it."
+      ],
+      "conditions": "Recovers about 55% of the metal as amalgam; a little quicksilver is lost every load. A mover next to it works it faster.",
+      "era": "Amalgamation.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified",
+      "source_commit": "163d8b9b"
+    },
+    {
+      "name": "Patio process",
+      "file": "code/modules/1713/amalgam.dm",
+      "line": 579,
+      "inputs": [
+        "/obj/item/stack/ore/crushed_ore/silver",
+        "/datum/reagent/mercury",
+        "/datum/reagent/sodiumchloride",
+        "/obj/item/stack/ore/copper"
+      ],
+      "outputs": [
+        "/obj/item/stack/ore/amalgam/silver",
+        "/obj/item/stack/ore/tailings/amalgam"
+      ],
+      "tools": [
+        "/obj/structure/patio_heap"
+      ],
+      "steps": [
+        "Build a patio under the open sky.",
+        "Add 20 crushed silver ore, 20 units of quicksilver, 10 units of salt and 1 copper ore.",
+        "Turn it six times."
+      ],
+      "conditions": "Recovers 70% of the silver; about 30% of the quicksilver is lost to the ground or river.",
+      "era": "Amalgamation.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified",
+      "source_commit": "163d8b9b"
+    },
+    {
+      "name": "Amalgam press",
+      "file": "code/modules/1713/amalgam.dm",
+      "line": 375,
+      "inputs": [
+        "/obj/item/stack/ore/amalgam/gold",
+        "/obj/item/stack/ore/amalgam/silver"
+      ],
+      "outputs": [
+        "/obj/item/stack/ore/amalgam/gold_pressed",
+        "/obj/item/stack/ore/amalgam/silver_pressed",
+        "/datum/reagent/mercury"
+      ],
+      "tools": [
+        "/obj/structure/workshop_machine/amalgam_press"
+      ],
+      "steps": [
+        "Use wet amalgam on a fastened amalgam press.",
+        "Draw the quicksilver off the tray."
+      ],
+      "conditions": "Squeezes 1.2 units of quicksilver back from each lump.",
+      "era": "Amalgamation.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified",
+      "source_commit": "163d8b9b"
+    },
+    {
+      "name": "Retort amalgam",
+      "file": "code/modules/1713/amalgam.dm",
+      "line": 421,
+      "inputs": [
+        "/obj/item/stack/ore/amalgam/gold",
+        "/obj/item/stack/ore/amalgam/silver",
+        "/obj/item/stack/ore/amalgam/gold_pressed",
+        "/obj/item/stack/ore/amalgam/silver_pressed"
+      ],
+      "outputs": [
+        "/obj/item/stack/ore/gold/sponge",
+        "/obj/item/stack/ore/silver/sponge",
+        "/datum/reagent/mercury"
+      ],
+      "tools": [
+        "/obj/structure/workshop_machine/mercury_retort"
+      ],
+      "steps": [
+        "Charge a mercury retort with amalgam.",
+        "Fire it with charcoal, coal or wood."
+      ],
+      "conditions": "Each lump leaves one sponge metal; 90% of its quicksilver condenses in the receiver.",
+      "era": "Amalgamation.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified",
+      "source_commit": "163d8b9b"
     }
   ],
   "mechanism_overview": [
