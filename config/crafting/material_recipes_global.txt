@@ -2873,6 +2873,8 @@ RECIPE: /material/iron/,engine maker,/obj/item/weapon/enginemaker,5,80,0,1,tools
 
 RECIPE: /material/iron/,iron blast furnace,/obj/structure/furnace/blast_furnace,25,220,1,1,production,0,45,0,8,null
 RECIPE: /material/iron/,iron furnace,/obj/structure/heatsource,15,140,1,1,production,0,87,0,8,null
+RECIPE: /material/iron/,mercury retort,/obj/structure/workshop_machine/mercury_retort,10,150,1,1,production,25,0,0,8,null
+RECIPE: /material/iron/,mercury flask,/obj/item/weapon/reagent_containers/glass/mercury_flask,2,60,0,1,production,25,0,0,8,null
 
 
 RECIPE: /material/iron/,firearm maintenance bench,/obj/structure/repair/gun,18,180,1,1,production,25,70,0,8,null
