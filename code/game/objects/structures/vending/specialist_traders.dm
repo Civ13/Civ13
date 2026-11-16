@@ -345,51 +345,58 @@ var/global/list/specialist_trader_sell_floor = null
 	show_stock(H)
 
 /obj/structure/specialist_trader/proc/show_stock(mob/living/human/H)
+	if (trader() && can_deal(H))
+		ui_interact(H)
+
+/obj/structure/specialist_trader/ui_actions(ui_key)
+	return list("buy")
+
+/obj/structure/specialist_trader/ui_interact(mob/user, ui_key = "main", datum/nanoui/ui = null, force_open = TRUE)
+	var/mob/living/human/H = user
 	var/datum/specialist_trader/T = trader()
 	if (!T || !can_deal(H))
+		GLOB.nanomanager.close_user_uis(user, src, ui_key)
 		return
 	T.restock_if_due()
 	var/held = specialist_trader_purse_total(specialist_trader_purse_of(H, T.accepts))
 	var/minutes = max(1, round((T.next_restock - world.time) / 600))
-	var/list/rows = list()
-	rows += "<b>[T.dealer]</b>, [T.title]: <i>\"[T.greeting]\"</i><br>"
-	rows += "Deals in [T.deals_in_text]. Takes [specialist_trader_coin_list_text(T.accepts)] held in your hands or pockets; you have [specialist_trader_price_text(held, T.accepts)].<br>"
-	rows += "To sell, hit the post with the goods. Buying money left: [specialist_trader_price_text(T.purse, T.pays)]. New stock in [minutes] minute\s.<hr>"
-	var/shown = 0
+	var/list/notes = list(
+		"\"[T.greeting]\"",
+		"Deals in [T.deals_in_text]. Takes [specialist_trader_coin_list_text(T.accepts)] held in your hands or pockets; you have [specialist_trader_price_text(held, T.accepts)].",
+		"To sell, hit the post with the goods. Buying money left: [specialist_trader_price_text(T.purse, T.pays)]. New stock in [minutes] minute\s.")
+	if (istype(T, /datum/specialist_trader/jeweller))
+		notes += "Hit the post with copper, silver or gold coins to change them (5% fee)."
+	var/list/items = list()
 	for (var/i = 1, i <= T.catalogue.len, i++)
 		var/list/entry = T.catalogue[i]
 		if (!T.entry_in_season(entry))
 			continue
-		shown++
 		var/path = entry[1]
 		var/atom/proto = path
 		var/item_name = initial(proto.name)
 		var/label = entry[2] > 1 ? "[entry[2]] x [item_name]" : "[item_name]"
 		var/price = specialist_trader_price_text(T.price_for(i, H), T.accepts)
 		if (T.stock_left[i] <= 0)
-			rows += "[label]: [price] <i>(sold out)</i><br>"
+			items += list(panel_item(label, "[price] (sold out)"))
 		else if (!T.entry_researched(entry, H))
-			rows += "[label]: [price] <i>(your people have not researched it)</i><br>"
+			items += list(panel_item(label, "[price] (your people have not researched it)"))
 		else
-			rows += "[label]: [price], [T.stock_left[i]] left <a href='?src=\ref[src];buy=[i]'>Buy</a><br>"
-	if (!shown)
-		rows += "<i>Nothing for sale in this age.</i><br>"
-	if (istype(T, /datum/specialist_trader/jeweller))
-		rows += "<hr>Hit the post with copper, silver or gold coins to change them (5% fee).<br>"
-	show_browse(H, jointext(rows, ""), "window=specialist_trader;size=520x480")
+			items += list(panel_item(label, "[price], [T.stock_left[i]] left", list(panel_button("Buy", "buy", i))))
+	open_panel(H, "[T.dealer], [T.title]", 520, 480, list(
+		panel_section(null, notes = notes),
+		panel_section("Stock", items = items, empty = "Nothing for sale in this age.")), ui_key = ui_key, ui = ui, force_open = force_open)
 
-/obj/structure/specialist_trader/Topic(href, href_list)
-	..()
-	var/mob/living/human/H = usr
-	if (!href_list["buy"] || !can_deal(H))
-		return
+/obj/structure/specialist_trader/ui_act(action, list/params, mob/user, datum/nanoui/ui)
+	var/mob/living/human/H = user
+	if (action != "buy" || !can_deal(H))
+		return TRUE
 	var/datum/specialist_trader/T = trader()
 	if (!T || busy)
-		return
+		return TRUE
 	busy = TRUE
-	buy(H, text2num(href_list["buy"]))
+	buy(H, text2num("[params["value"]]"))
 	busy = FALSE
-	show_stock(H)
+	return TRUE
 
 /obj/structure/specialist_trader/proc/buy(mob/living/human/H, index)
 	var/datum/specialist_trader/T = trader()
