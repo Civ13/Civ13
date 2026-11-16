@@ -1983,7 +1983,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/shield/chitin/large" = "padded_armor",
 		"/obj/item/weapon/shield/nguni_shield" = "padded_armor",
 		"/obj/structure/repair/workbench" = "padded_armor",
-		// --- papermaking (13) ---
+		// --- papermaking (16) ---
 		"/obj/item/weapon/book" = "papermaking",
 		"/obj/item/weapon/book/holybook" = "papermaking",
 		"/obj/item/weapon/book/language_book" = "papermaking",
@@ -1991,6 +1991,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/folder" = "papermaking",
 		"/obj/item/weapon/folder/red" = "papermaking",
 		"/obj/item/weapon/folder/yellow" = "papermaking",
+		"/obj/item/weapon/gavelblock" = "papermaking",
+		"/obj/item/weapon/gavelhammer" = "papermaking",
 		"/obj/item/weapon/paper" = "papermaking",
 		"/obj/item/weapon/pen" = "papermaking",
 		"/obj/item/weapon/stamp/mail" = "papermaking",
