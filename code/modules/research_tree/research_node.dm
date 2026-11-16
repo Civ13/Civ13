@@ -2338,8 +2338,13 @@ var/global/list/node_grid_col_cache = null
 		// --- steelmaking (2) ---
 		"/obj/structure/anvil/steel" = "steelmaking",
 		"/obj/structure/machinery/factory/coinsmelter" = "steelmaking",
-		// --- stone_arms (28) ---
+		// --- stone_arms (32) ---
 		"/obj/item/ammo_casing/chemdart/bone" = "stone_arms",
+		// Metal arrowheads cast in an arrowhead mold and finished on an anvil.
+		"/obj/item/stack/arrowhead/bronze" = "stone_arms",
+		"/obj/item/stack/arrowhead/copper" = "stone_arms",
+		"/obj/item/stack/arrowhead/iron" = "stone_arms",
+		"/obj/item/stack/arrowhead/steel" = "stone_arms",
 		"/obj/item/stack/arrowhead/sandstone" = "stone_arms",
 		"/obj/item/stack/arrowhead/stone" = "stone_arms",
 		"/obj/item/stack/arrowhead/vial" = "stone_arms",

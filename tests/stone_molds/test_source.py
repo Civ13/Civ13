@@ -249,5 +249,24 @@ class StoneMoldTests(unittest.TestCase):
         for label in ('repeated pour during an open prompt is refused','pour rechecks reach after the prompt'):
             self.assertIn(label,native)
 
+    def test_anvil_mold_outputs_are_gated_by_a_real_node_and_refusals_speak(self):
+        # A mold output with no research node fails closed in crafting_recipe_allowed(),
+        # so metal arrowheads were silently refused on every anvil.
+        anvil = read('code/game/objects/structures/blacksmithing/blacksmithing.dm')
+        nodes = read('code/modules/research_tree/research_node.dm')
+        branch = anvil.split('if ("arrowheads")',1)[1].split('if ("keys")',1)[0]
+        metals = re.search(r'ML\.current_material in list\(([^)]*)\)', branch)[1]
+        for metal in re.findall(r'"(\w+)"', metals):
+            self.assertTrue(f'"/obj/item/stack/arrowhead/{metal}" = "stone_arms"' in nodes, metal)
+            self.assertTrue(re.search(r'new/obj/item/stack/arrowhead/'+metal+r'\(loc\)', branch), metal)
+        molds = anvil.split('else if (istype(P, /obj/item/weapon/clay/mold))',1)[1].split('/obj/structure/anvil/proc/stack_metal',1)[0]
+        self.assertNotRegex(molds, r'crafting_recipe_allowed\([^\n]*\)\) return', 'silent refusal')
+        self.assertEqual(molds.count('crafting_recipe_refusal('), 4)
+        self.assertIn('Arrowheads can only be cast from copper, bronze, iron or steel.', branch)
+        for word in ('arrowheads', 'spearheads', 'pickaxe heads', 'shovel head'):
+            # The message names the metal, so it comes before the mold is emptied.
+            after = molds.split(f'You finish crafting the [ML.current_material] {word}.")',1)[1]
+            self.assertEqual(after.split('\n')[1].strip(), 'ML.current_material = null', word)
+
 if __name__=='__main__':
     unittest.main()
