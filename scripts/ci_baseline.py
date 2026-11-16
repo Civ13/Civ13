@@ -2184,7 +2184,7 @@ SUITES = {
         'icons/obj/charcoal_clamp.dmi', 'tests/sprites/create_charcoal_clamp.py')},
     'tatara': {'files': ('tests/tatara/test_contract.py',), 'paths': (
         'tests/tatara/', 'code/modules/1713/tatara.dm', 'docs/tatara.md',
-        'icons/obj/tatara.dmi', 'tests/sprites/create_tatara.py')},
+        'icons/obj/tatara.dmi', 'tests/sprites/create_tatara.py', 'tests/sprites/create_tachi.py')},
     # Keep shared production and Atlas sources unmapped so their existing
     # conservative all-suite fallback remains intact.
     'sawmill': {'files': ('tests/sawmill/test_contract.py',
