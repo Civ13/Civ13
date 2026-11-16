@@ -50,7 +50,7 @@ var/si_runtime_error = FALSE
 
 	// A wooden wall takes the force as damage and holds a small knock.
 	var/obj/covers/wood_wall/WW = new /obj/covers/wood_wall(locate(2, 2, 1))
-	si_check(structure_impact_part(WW), "a player wall is a building part")
+	si_check(is_structure_impact_part(WW), "a player wall is a building part")
 	var/left = WW.structure_impact(50)
 	si_check(left == 0 && WW.health == 250, "a wooden wall holds a 50 knock and loses 50 health ([WW.health], left [left])")
 	si_check(WW.impact_crack_stage() == 0, "a lightly hit wall shows no cracks")
@@ -72,7 +72,7 @@ var/si_runtime_error = FALSE
 	var/turf/wall/wood/TW = locate(4, 4, 1)
 	TW.ChangeTurf(/turf/wall/wood)
 	TW = locate(4, 4, 1)
-	si_check(structure_impact_part(TW), "a mapped wall is a building part")
+	si_check(is_structure_impact_part(TW), "a mapped wall is a building part")
 	var/cap = TW.material ? TW.material.integrity : 150
 	left = TW.structure_impact(10)
 	si_check(left == 0 && TW.damage > 0, "a mapped wall takes damage from a knock ([TW.damage])")
@@ -92,7 +92,7 @@ var/si_runtime_error = FALSE
 
 	// Pillars, doors and barricades.
 	var/obj/structure/roof_support/RS = new /obj/structure/roof_support(locate(10, 2, 1))
-	si_check(structure_impact_part(RS), "a roof support is a building part")
+	si_check(is_structure_impact_part(RS), "a roof support is a building part")
 	left = RS.structure_impact(1000)
 	si_check(QDELETED(RS) && left == 900, "a hit beyond its 100 health breaks a wooden pillar (left [left])")
 	var/obj/structure/gate/G = new /obj/structure/gate(locate(12, 2, 1))
@@ -102,5 +102,5 @@ var/si_runtime_error = FALSE
 
 	// Things that are not building parts pass the force on untouched.
 	var/obj/item/stack/material/wood/I = new /obj/item/stack/material/wood(locate(14, 2, 1))
-	si_check(!structure_impact_part(I) && I.structure_impact(77) == 77, "an item is not a building part")
-	si_check(!structure_impact_part(null), "nothing is not a building part")
+	si_check(!is_structure_impact_part(I) && I.structure_impact(77) == 77, "an item is not a building part")
+	si_check(!is_structure_impact_part(null), "nothing is not a building part")
