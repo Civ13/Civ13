@@ -47,6 +47,8 @@ var/screens_runtime_error = FALSE
 /obj/structure/screens_probe
 	name = "probe dispenser"
 	var/last_amount
+	var/typed_value
+	var/typed_user
 	var/amount = 5
 
 /obj/structure/screens_probe/ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = TRUE, var/datum/nanoui/master_ui = null, var/datum/topic_state/state = default_state)
@@ -56,6 +58,17 @@ var/screens_runtime_error = FALSE
 		ui = new /datum/nanoui/tgui(user, src, ui_key, "chem_disp.tmpl", "Probe Dispenser", 390, 655)
 		ui.set_initial_data(data)
 		ui.open()
+
+/obj/structure/screens_probe/ui_actions(ui_key)
+	return list("amount", "typed")
+
+/obj/structure/screens_probe/ui_act(action, list/params, mob/user, datum/nanoui/ui)
+	if (action != "typed")
+		return FALSE
+	typed_value = params["value"]
+	typed_user = user
+	amount = 30
+	return TRUE
 
 /obj/structure/screens_probe/Topic(href, href_list, state)
 	if (href_list["amount"])
@@ -91,6 +104,12 @@ var/screens_runtime_error = FALSE
 	screens_check(O.last_amount == "20" && O.amount == 20, "the button reaches the machine's Topic ([detail])")
 	rows = agent_screen_rows(H)
 	screens_check(rows.len && findtext(rows[1]["data"], "\"amount\":20"), "the screen data refreshes after the press")
+	screen_try(C, list("screen" = 1, "act" = "typed", "value" = 7))
+	screens_check(O.typed_value == 7 && O.typed_user == H && O.last_amount == "20", "a typed handler gets the number and the presser, and its Topic is not called")
+	rows = agent_screen_rows(H)
+	screens_check(rows.len && findtext(rows[1]["data"], "\"amount\":30"), "the screen data refreshes after a typed action")
+	screen_try(C, list("screen" = 1, "act" = "typed", "value" = "iron"))
+	screens_check(O.typed_value == "iron", "a typed handler gets text as text")
 	H.forceMove(locate(1, 1, 1))
 	O.forceMove(locate(10, 10, 1))
 	var/datum/nanoui/ui = agent_find_screen(H, 1)

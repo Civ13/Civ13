@@ -26,7 +26,7 @@ function committed(original: Data, text = 'Saved', result = 'saved'): Data {
       sections: [{ id: 'section-1', kind: 'body', language_id: EN, text, ink: '#ffffff', tool: 'pen' }] } };
 }
 function props(value = data()): ScreenProps { return { data: value, template: 'paper_editor.tmpl', interactive: true, act: vi.fn() }; }
-const sent = (ui: ScreenProps, index = 0) => JSON.parse(String(vi.mocked(ui.act).mock.calls[index][1]?.paper_edit));
+const sent = (ui: ScreenProps, index = 0) => JSON.parse(String(vi.mocked(ui.act).mock.calls[index][1]?.value));
 afterEach(() => { cleanup(); vi.useRealTimers(); });
 it('requires a complete finite model and rejects unsupported metadata', () => {
   expect(paperEditorModel(data()).languages.map(x => x.id)).toEqual([EN,RU]);
@@ -100,7 +100,7 @@ it('signs with no client-supplied signature text and keeps cancel finite', () =>
   expect(preview.textContent).toBe('Fixture Name');expect(preview.querySelector('span')!.style.fontStyle).toBe('italic');
   fireEvent.click(screen.getByRole('button',{name:'Sign'}));
   expect(sent(ui).kind).toBe('signature');expect(sent(ui).value).toBe('');
-  expect(paperEditParams(paperEditorModel(data()),'cancel')).toEqual({paper_edit:JSON.stringify({operation:'cancel',lease:'a'.repeat(32)})});
+  expect(paperEditParams(paperEditorModel(data()),'cancel')).toEqual({value:JSON.stringify({operation:'cancel',lease:'a'.repeat(32)})});
 });
 it('does not truncate escaped payloads to fit the transport limit', () => {
   const ui=props();render(<PaperEditor {...ui} />);
@@ -232,8 +232,8 @@ it('draws answers on their blank line and lists only open blanks', () => {
   const model = paperEditorModel(formData(true));
   expect(formPieces(model.runs).map(p => p.br ? '|' : p.text).join('')).toBe('|Name: Ada|Rank: __________');
   expect(openFields(model.runs)).toEqual([{ id: 'section-2', text: 'Rank' }]);
-  expect(paperEditParams(model, 'append', EN, 'field_answer', 'Major', 'section-2')).toEqual({ paper_edit: JSON.stringify({ operation: 'append', lease: model.lease, document_id: model.document_id, revision: 1, language_id: EN, kind: 'field_answer', value: 'Major', target: 'section-2' }) });
-  expect(JSON.parse(paperEditParams(model, 'append', EN, 'body', 'x', 'section-2').paper_edit as string)).not.toHaveProperty('target');
+  expect(paperEditParams(model, 'append', EN, 'field_answer', 'Major', 'section-2')).toEqual({ value: JSON.stringify({ operation: 'append', lease: model.lease, document_id: model.document_id, revision: 1, language_id: EN, kind: 'field_answer', value: 'Major', target: 'section-2' }) });
+  expect(JSON.parse(paperEditParams(model, 'append', EN, 'body', 'x', 'section-2').value as string)).not.toHaveProperty('target');
 });
 it('rejects answers with no target, unknown targets or targets on other kinds', () => {
   const bad = formData(true);

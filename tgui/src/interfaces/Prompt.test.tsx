@@ -19,14 +19,14 @@ it('shows the notice and answers with the 1-based index of the choice', () => {
   render(<Prompt {...ui} />);
   expect(screen.getByText('You feel rested.')).toBeTruthy();
   fireEvent.click(screen.getByText('Continue'));
-  expect(ui.act).toHaveBeenCalledWith('answer', { answer: 1 });
+  expect(ui.act).toHaveBeenCalledWith('answer', { value: 1 });
 });
 
 it('maps each choice to its own index', () => {
   const ui = props({ message: 'Pick one', choices: ['Yes', 'No'] });
   render(<Prompt {...ui} />);
   fireEvent.click(screen.getByText('No'));
-  expect(ui.act).toHaveBeenLastCalledWith('answer', { answer: 2 });
+  expect(ui.act).toHaveBeenLastCalledWith('answer', { value: 2 });
 });
 
 it('disables answers when the window is not interactive', () => {

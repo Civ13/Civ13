@@ -10,7 +10,7 @@ export function Prompt({ data, act, interactive }: ScreenProps) {
     <p className="civ13-prompt-message">{text(data.message)}</p>
     <div className="civ13-prompt-choices">
       {choices.map((choice, index) => <Button key={index} disabled={!interactive}
-        onClick={() => act('answer', { answer: index + 1 })}>{choice}</Button>)}
+        onClick={() => act('answer', { value: index + 1 })}>{choice}</Button>)}
     </div>
   </Section>;
 }

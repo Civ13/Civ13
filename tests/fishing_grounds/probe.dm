@@ -183,6 +183,102 @@ var/fg_runtime_error = FALSE
 			cage_fish++
 	fg_check(cage_fish == 2 && T1.available() == 0, "and takes no more fish than the stretch holds ([cage_fish])")
 
+	// ---- Season, sky and river ----
+	season = "SUMMER"
+	fg_check(fish_condition_factor("fresh", FALSE, FALSE, WEATHER_NONE, 0) == 1 && fish_condition_factor("salt", TRUE, FALSE, WEATHER_NONE, 0) == 1, "ordinary conditions change nothing")
+	fg_check(fish_condition_factor("fresh", FALSE, TRUE, WEATHER_NONE, 0) == 1.5 && fish_condition_factor("salt", FALSE, TRUE, WEATHER_NONE, 0) == 1 && fish_condition_factor("jungle", FALSE, TRUE, WEATHER_NONE, 0) == 1, "the salmon run lifts river fishing by half, and only there")
+	fg_check(fish_condition_factor("salt", FALSE, FALSE, WEATHER_WET, 0) == 1.25 && fish_condition_factor("swamp", FALSE, FALSE, WEATHER_WET, 0) == 1.25, "rain brings fish up everywhere")
+	fg_check(fish_condition_factor("salt", TRUE, FALSE, WEATHER_EXTREME, 0) == 0.5 && fish_condition_factor("fresh", FALSE, FALSE, WEATHER_EXTREME, 0) == 0.75, "a storm halves sea fishing and cuts river fishing by a quarter")
+	fg_check(fish_condition_factor("fresh", TRUE, FALSE, WEATHER_NONE, 1) == 0.6 && fish_condition_factor("salt", TRUE, FALSE, WEATHER_NONE, 1) == 1, "a river in spate fishes badly; the sea does not care")
+	fg_check(fish_condition_factor("fresh", TRUE, FALSE, WEATHER_NONE, -1) == 1.2 && fish_condition_factor("fresh", FALSE, FALSE, WEATHER_NONE, -1) == 1, "at low water the deep pools fish better, the shallows no better")
+	fg_check(abs(fish_condition_factor("fresh", FALSE, TRUE, WEATHER_WET, 1) - 1.5 * 1.25 * 0.6) < 0.001, "conditions stack")
+	fg_check(fish_condition_factor_at(river, "fresh") == 1 && isnull(fish_condition_reading(river, "fresh")), "a summer river under a clear sky reads as ordinary")
+	season = "FALL"
+	fg_check(fish_run_season() && fish_condition_factor_at(river, "fresh") == 1.5 && findtext(fish_condition_reading(river, "fresh"), "salmon are running") && isnull(fish_condition_reading(shelf, "salt")), "in autumn the river says the salmon are running")
+	var/run_salmon = 0
+	for (var/i = 1 to 400)
+		if (fish_catch_type(river, "fresh", FALSE) == /obj/item/weapon/reagent_containers/food/snacks/rawfish/salmon)
+			run_salmon++
+	fg_check(run_salmon > 300, "during the run most river fish are salmon ([run_salmon] of 400)")
+	fishing_grounds = list()
+	var/datum/fishing_ground/RG = fishing_ground_at(pool)
+	RG.stock = 5
+	fg_wait(RG, 4)
+	var/run_stock = RG.stock
+	season = "SUMMER"
+	RG.stock = 5
+	fg_wait(RG, 4)
+	fg_check(abs((run_stock - 5) - 2 * (RG.stock - 5)) < 0.15, "a river regrows twice as fast during the run ([run_stock] against [RG.stock])")
+
+	// ---- Flood strandings ----
+	fishing_grounds = list()
+	var/turf/plain = fg_water(60, 50, /turf/floor/grass)
+	var/area/outside = get_area(plain)
+	outside.location = AREA_OUTSIDE
+	fg_check(isnull(fish_flood_stranding(plain, FLOOD_BAND_KNEE, 100)) && isnull(fish_flood_stranding(river, FLOOD_BAND_ANKLE, 100)) && isnull(fish_flood_stranding(plain, FLOOD_BAND_ANKLE, 0)), "fish strand only in ankle-deep floodwater over land")
+	var/obj/item/stranded = fish_flood_stranding(plain, FLOOD_BAND_ANKLE, 100)
+	var/datum/fishing_ground/FG = fishing_ground_cell(plain, "flooded", 2, FALSE)
+	fg_check(istype(stranded, /obj/item/weapon/reagent_containers/food/snacks/rawfish) && stranded.loc == plain && FG && FG.stock == 1, "a stranded fish lies on the flooded ground and comes out of the stretch's stock")
+	fg_check(isnull(fish_flood_stranding(plain, FLOOD_BAND_ANKLE, 100)), "a tile with a fish on it strands no second one")
+	var/turf/plain2 = fg_water(61, 50, /turf/floor/grass)
+	var/turf/plain3 = fg_water(62, 50, /turf/floor/grass)
+	fg_check(fish_flood_stranding(plain2, FLOOD_BAND_ANKLE, 100) && isnull(fish_flood_stranding(plain3, FLOOD_BAND_ANKLE, 100)) && FG.available() == 0, "a stretch of flood plain gives two fish and then no more for a while")
+
+	// ---- From a ship ----
+	fg_check(fish_ship_factor(FALSE, VESSEL_SPEED_STOP) == 1 && fish_ship_factor(FALSE, VESSEL_SPEED_HALF) == 1, "a quiet ship, stopped or at half ahead, changes nothing")
+	fg_check(fish_ship_factor(TRUE, VESSEL_SPEED_STOP) == 0.6, "a running engine costs four bites in ten")
+	fg_check(fish_ship_factor(FALSE, VESSEL_SPEED_SLOW) == 1.3 && fish_ship_factor(FALSE, VESSEL_SPEED_FULL) == 0.5, "a line towed at slow ahead fishes better, at full ahead it skips")
+	fg_check(abs(fish_ship_factor(TRUE, VESSEL_SPEED_SLOW) - 0.78) < 0.001, "an engine and a slow tow stack")
+	var/datum/craft/hull = new
+	fg_check(fish_craft_step(hull) == VESSEL_SPEED_STOP && !fish_craft_engines(hull), "an anchored hull with no engine is still and quiet")
+	hull.anchored = FALSE
+	hull.speed = VESSEL_SPEED_SLOW
+	fg_check(fish_craft_step(hull) == VESSEL_SPEED_SLOW, "a hull under way reports her telegraph step")
+	qdel(hull)
+	// Sonar: the fish over a submerged boat.
+	fishing_grounds = list()
+	fg_check(fish_finder_line(ocean) == "Fish overhead: thick shoals." && isnull(fish_finder_line(land)), "a sonar set reads unfished sea as thick shoals and land as nothing")
+	var/datum/fishing_ground/OG = fishing_ground_at(ocean)
+	OG.stock = 3
+	fg_check(findtext(fish_finder_line(ocean), "scattered shoals"), "half-fished water reads as scattered shoals")
+	OG.stock = 0
+	fg_water(40 + 16, 5, /turf/floor/beach/water/deep/saltwater)
+	fg_check(fish_finder_line(ocean) == "Fish overhead: no fish. Stronger returns to the east.", "fished-out water points at a fuller stretch next door ([fish_finder_line(ocean)])")
+
+	// ---- Signs on the water ----
+	fishing_grounds = list()
+	season = "SUMMER"
+	var/list/signs = list()
+	for (var/i = 1 to 400)
+		var/sign = fish_sign_state(shelf)
+		if (sign)
+			signs[sign] = TRUE
+	fg_check(signs["rise_a"] && signs["rise_b"] && signs["rise_c"] && signs["jump_a"] && signs["jump_b"] && signs["gulls"], "full coastal water shows rings, leaping fish and gulls")
+	var/river_gulls = FALSE
+	var/river_signs = 0
+	for (var/i = 1 to 400)
+		var/sign = fish_sign_state(river)
+		if (sign)
+			river_signs++
+		if (sign == "gulls")
+			river_gulls = TRUE
+	fg_check(river_signs == 400 && !river_gulls, "a full river always has a sign to show, and never gulls")
+	var/datum/fishing_ground/SG = fishing_ground_at(river)
+	SG.stock = SG.capacity / 4
+	var/thin_signs = 0
+	for (var/i = 1 to 400)
+		if (fish_sign_state(river))
+			thin_signs++
+	fg_check(thin_signs > 50 && thin_signs < 160, "water at a quarter stock shows a quarter of the signs ([thin_signs] of 400)")
+	SG.stock = 0
+	var/dead_signs = 0
+	for (var/i = 1 to 200)
+		if (fish_sign_state(river) || fish_sign_state(land) || fish_sign_state(ice))
+			dead_signs++
+	fg_check(!dead_signs, "fished-out water, land and ice show nothing")
+	for (var/state in list("rise_a", "rise_b", "rise_c", "jump_a", "jump_b", "gulls"))
+		fg_check(state in icon_states('icons/effects/fish_signs.dmi'), "the sheet has [state]")
+
 	// ---- Saving ----
 	fishing_grounds = list()
 	fishing_grounds_publish()

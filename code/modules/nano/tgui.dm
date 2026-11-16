@@ -108,14 +108,21 @@
 	var/list/send_data = get_send_data(data)
 	user << output(list2params(list(strip_improper(json_encode(send_data)))), "[window_id].browser:receiveUpdateData")
 
-// Each window's owner declares what its buttons may send. One primary action
-// per request; ui_action_fields() names any extra fields that action carries.
-// This is a transport boundary, not a replacement for each source Topic's checks.
+// Each window's owner declares what its buttons may send. A request is one
+// action with an optional "value" plus the extra fields ui_action_fields() names.
+// This is a transport boundary, not a replacement for each owner's own checks.
 /datum/proc/ui_actions(ui_key)
 	return list()
 
 /datum/proc/ui_action_fields(ui_key, action)
 	return null
+
+// Typed handler for one declared action. params holds "value" and any declared
+// fields as the text or numbers the window sent. Return TRUE when the action
+// was handled here; the open windows of this owner are then refreshed. An
+// owner without one keeps receiving the action through its Topic().
+/datum/proc/ui_act(action, list/params, mob/user, datum/nanoui/ui)
+	return FALSE
 
 /datum/nanoui/tgui/proc/allowed_actions()
 	return src_object ? src_object.ui_actions(ui_key) : list()
@@ -163,16 +170,35 @@
 		params = json_decode(raw_payload)
 	catch
 		return
-	if (!islist(params) || params.len > 8 || isnull(params[action]))
+	if (!islist(params) || params.len > 8)
 		return
-	var/list/keys = list(action)
+	var/list/keys = list("value")
 	var/list/fields = allowed_fields(action)
 	if (islist(fields))
 		keys += fields
 	for (var/key in params)
 		if (!istext(key) || !(key in keys) || (!istext(params[key]) && !isnum(params[key])))
 			return
-		// Existing Topics consume href values as strings, including numbers.
-		params[key] = "[params[key]]"
+	if (act_typed(action, params))
+		return
+	var/list/legacy = href_form(action, params)
 	// Parent rechecks CanUseTopic and ownership immediately before dispatch.
-	return ..(list2params(params), params)
+	return ..(list2params(legacy), legacy)
+
+// Offers one validated action to the owner's ui_act(). The caller has just
+// rechecked status and owner.
+/datum/nanoui/tgui/proc/act_typed(action, list/params)
+	if (isnull(params["value"]))
+		params["value"] = 1
+	if (!src_object.ui_act(action, params, user, src))
+		return FALSE
+	GLOB.nanomanager.update_uis(src_object)
+	return TRUE
+
+// Owners without ui_act() read href-style text: the action names its value.
+/datum/nanoui/tgui/proc/href_form(action, list/params)
+	. = list()
+	.[action] = "[params["value"]]"
+	for (var/key in params)
+		if (key != "value" && key != action)
+			.[key] = "[params[key]]"

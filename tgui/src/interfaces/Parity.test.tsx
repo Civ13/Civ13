@@ -34,7 +34,7 @@ describe('faction parity', () => {
     expect(vi.mocked(ui.act).mock.calls[1][1]?.stroke_continue).toBe(1);
     act(() => vi.advanceTimersByTime(250));
     fireEvent.click(screen.getByText('Undo'));
-    expect(ui.act).toHaveBeenLastCalledWith('undo', { undo: 1 });
+    expect(ui.act).toHaveBeenLastCalledWith('undo', { value: 1 });
   });
   it('cancels remaining chunks when interaction is revoked', () => {
     vi.useFakeTimers();
@@ -71,7 +71,7 @@ describe('research parity', () => {
     view.rerender(<Research {...ui} data={{ ...ui.data, bench_tier: 2 }} />);
     expect(screen.getByRole('dialog')).toBeTruthy();
     fireEvent.click(screen.getByText('Assign this bench'));
-    expect(ui.act).toHaveBeenCalledWith('assign', { assign: 'b' });
+    expect(ui.act).toHaveBeenCalledWith('assign', { value: 'b' });
     fireEvent.keyDown(document, { key: 'Escape' });
     expect(screen.queryByRole('dialog')).toBeNull();
     expect(screen.getByText('Second tech')).toBeTruthy();
@@ -86,14 +86,14 @@ describe('research parity', () => {
     render(<Research {...ui} />);
     expect(screen.queryByText(/Owned by/)).toBeNull();
     fireEvent.click(screen.getAllByText('Take')[1]);
-    expect(ui.act).toHaveBeenCalledWith('take_book', { take_book: 2 });
+    expect(ui.act).toHaveBeenCalledWith('take_book', { value: 2 });
     fireEvent.click(screen.getByText('Write research here'));
-    expect(ui.act).toHaveBeenCalledWith('swap_books', { swap_books: 1 });
+    expect(ui.act).toHaveBeenCalledWith('swap_books', { value: 1 });
     fireEvent.click(screen.getByText('Copy the 1 chapter Copybook lacks'));
-    expect(ui.act).toHaveBeenCalledWith('copy_all', { copy_all: 1 });
+    expect(ui.act).toHaveBeenCalledWith('copy_all', { value: 1 });
     fireEvent.click(screen.getByTitle('You can study this chapter now'));
     fireEvent.click(screen.getByText('Study this chapter (about 1 minute)'));
-    expect(ui.act).toHaveBeenCalledWith('study', { study: 'basic_tools' });
+    expect(ui.act).toHaveBeenCalledWith('study', { value: 'basic_tools' });
   });
 });
 
@@ -132,15 +132,15 @@ describe('standard screen parity', () => {
   it('keeps chemistry command payloads, vessel state, and amount controls', () => {
     const ui: ScreenProps = { template: 'chem_disp.tmpl', interactive: true, act: vi.fn(), data: {
       amount: 10, glass: 1, isBeakerLoaded: 1, beakerCurrentVolume: 20, beakerMaxVolume: 50,
-      chemicals: [{ title: 'Water (5)', commands: { dispense: 'water' } }], beakerContents: [{ volume: 20, name: 'Water' }],
+      chemicals: [{ title: 'Water (5)', id: 'water' }], beakerContents: [{ volume: 20, name: 'Water' }],
     } };
     render(<Chemistry {...ui} />);
     fireEvent.click(screen.getByText('Water (5)'));
-    expect(ui.act).toHaveBeenLastCalledWith('dispense', { dispense: 'water' });
+    expect(ui.act).toHaveBeenLastCalledWith('dispense', { value: 'water' });
     fireEvent.click(screen.getByText('30'));
-    expect(ui.act).toHaveBeenLastCalledWith('amount', { amount: 30 });
+    expect(ui.act).toHaveBeenLastCalledWith('amount', { value: 30 });
     fireEvent.click(screen.getByText('Eject Glass'));
-    expect(ui.act).toHaveBeenLastCalledWith('ejectBeaker', { ejectBeaker: 1 });
+    expect(ui.act).toHaveBeenLastCalledWith('ejectBeaker', { value: 1 });
     expect(screen.getByText('20 units of Water')).toBeTruthy();
   });
   it('preserves sales purchase, payment cancel and withdrawal, without allowing sold-out purchases', () => {
@@ -151,14 +151,14 @@ describe('standard screen parity', () => {
     } };
     const view = render(<Vending {...ui} />);
     fireEvent.click(screen.getByText('Buy (5 s)'));
-    expect(ui.act).toHaveBeenLastCalledWith('vend', { vend: 1 });
+    expect(ui.act).toHaveBeenLastCalledWith('vend', { value: 1 });
     fireEvent.click(screen.getByText('Vend'));
     expect(ui.act).toHaveBeenCalledTimes(1);
     view.rerender(<Vending {...ui} data={{ ...ui.data, mode: 1, product: 'Bread', price: 5 }} />);
     fireEvent.click(screen.getByText('Cancel'));
-    expect(ui.act).toHaveBeenLastCalledWith('cancelpurchase', { cancelpurchase: 1 });
+    expect(ui.act).toHaveBeenLastCalledWith('cancelpurchase', { value: 1 });
     fireEvent.click(screen.getByText('20 s'));
-    expect(ui.act).toHaveBeenLastCalledWith('remove_money', { remove_money: 1 });
+    expect(ui.act).toHaveBeenLastCalledWith('remove_money', { value: 1 });
   });
   it('renders entity-encoded user text as text rather than executable markup', () => {
     const view = render(<Warehouse template="warehouse_book.tmpl" interactive={false} act={vi.fn()}
@@ -172,9 +172,9 @@ describe('standard screen parity', () => {
     } };
     render(<Appearance {...ui} />);
     fireEvent.click(screen.getByText('Female'));
-    expect(ui.act).toHaveBeenLastCalledWith('gender', { gender: 'female' });
+    expect(ui.act).toHaveBeenLastCalledWith('gender', { value: 'female' });
     fireEvent.click(screen.getByText('Change eye color'));
-    expect(ui.act).toHaveBeenLastCalledWith('eye_color', { eye_color: 1 });
+    expect(ui.act).toHaveBeenLastCalledWith('eye_color', { value: 1 });
     expect(screen.queryByText('Species')).toBeNull();
   });
 });

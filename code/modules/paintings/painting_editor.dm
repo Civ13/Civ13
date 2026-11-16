@@ -13,6 +13,8 @@ var/global/list/painting_editors = list() // mob -> canvas being painted
 	if (istype(C, /obj/item/canvas/sketch))
 		var/obj/item/canvas/sketch/S = C
 		return !QDELETED(S.target) && (S.target in user.get_contents()) && drawing_tool(user)
+	if (istype(C, /obj/item/canvas/woven)) // woven_art.dm: hold it beside a loom
+		return (C in user.get_contents()) && (locate(/obj/structure/loom) in range(1, user))
 	if (istype(C, /obj/item/canvas/pottery_band)) // pottery_design.dm: hold the pot
 		var/obj/item/canvas/pottery_band/B = C
 		return !QDELETED(B.target) && (B.target in user.get_contents())
@@ -69,7 +71,7 @@ var/global/list/painting_editors = list() // mob -> canvas being painted
 		pal = list(C.base_colour)
 		plain = ""
 	var/list/pigments = list()
-	for (var/obj/item/pigment/P in painting_carried_pigments(user))
+	for (var/obj/item/pigment/P in (C.uses_pigments ? painting_carried_pigments(user) : list()))
 		pigments += "[html_encode(P.name)] ([P.pigment_uses])"
 	var/list/html = list("<html><head><meta charset='utf-8'><title>Painting [html_encode(C.name)]</title><style>")
 	html += "body{background:#2b2622;color:#e9dfc8;font-family:Verdana,sans-serif;font-size:12px;margin:6px}"
@@ -95,7 +97,7 @@ var/global/list/painting_editors = list() // mob -> canvas being painted
 
 /proc/painting_base_colours(mob/user, obj/item/canvas/C)
 	var/list/out = list(C.base_colour) | C.extra_colours(user)
-	for (var/obj/item/pigment/P in painting_carried_pigments(user))
+	for (var/obj/item/pigment/P in (C.uses_pigments ? painting_carried_pigments(user) : list()))
 		for (var/hex in P.pigment_colors)
 			out |= painting_hex(hex)
 	return out

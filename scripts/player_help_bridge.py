@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '3b7052d5d7d7801fb4b6887659678f61faa09103'
+WIKI_REVIEWED_REVISION = '5e2d8bf5f67d6ed0841febf6470e7e50e157182c'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('2d7872e9f19303d3077a1485496ebd5ba26b8dea0b26df9848d9a6cb506ad6a8', 'character skills traits languages'),
@@ -79,12 +79,12 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Combat.md': ('006296f6e7501eeb36f4b486ee3a2b2a85567ecef74d0616dd2a04c2e42f53b2', 'combat fight fighting intent aim shoot melee grenade cover'),
     'guides/Guide_to_Communications.md': ('2bbf705f1e66f3ee37d2d70f46ffa9420587a9b7ae0d718f3e09d4ab9b7881e6', 'communications radio transmit'),
     'guides/Guide_to_Construction.md': ('3e395fc3d9ea335b4f38eeed767ecea27b27fb774de2121bed3f85df75f85c9b', 'construction build building walls roof floor'),
-    'guides/Guide_to_Homes.md': ('b96157cc234f3e19c633f9074794d5e0b5ed4cbf92488ea4c3a6a013bd341950', 'home house room comfort decorate limewash paint whitewash stain dye furniture well rested judge'),
+    'guides/Guide_to_Homes.md': ('b96157cc234f3e19c633f9074794d5e0b5ed4cbf92488ea4c3a6a013bd341950', 'home house room comfort decorate limewash paint whitewash stain dye furniture well rested judge nudge pottery glaze vase amphora rug carpet tapestry weave loom'),
     'guides/Guide_to_Cooking.md': ('3fa0033c4d7f5b6d85cc0db329d09bb9fdbab9e44e1e741e1dd8c7ebd4882934', 'cooking cook food meal ingredients'),
     'guides/Guide_to_Exercise.md': ('cd6d6e48f3ae664458e935bb88954a0c6d2232f00b6058e92fb520f5c7c76a09', 'exercise training strength weights running fatigue'),
     'guides/Guide_to_Factory_Automation.md': ('e49b07d8eea1fe3c785b450c486e4b412e9ab4e4d0df30c8e9dc1dc34f666be0', 'factory automation belt belts conveyor arm arms fabricator fabricators pipe pipes pump tank bottler monitor crusher stamp mill'),
     'guides/Guide_to_Farming.md': ('acc46a7f9076a43b5ae1b6b01c8b3d1472ec20668356a3f19aaa8579ffbace2b', 'farming farm plant crops soil water'),
-    'guides/Guide_to_Fishing.md': ('bf3f53b9baf4a420b44a7621c33a825544255b0581bceff0410708a4016dd001', 'fishing fish rod bait'),
+    'guides/Guide_to_Fishing.md': ('9b660cdbb325a34a565ecfc18d43ff411fcfa124bc85e3b8386d3579db70a239', 'fishing fish rod bait'),
     'guides/Guide_to_Hygiene.md': ('657c1c7ae6e2b7b425255ba7c9449206ff715e8ce422fa28a15700acce240752', 'hygiene clean washing soap detergent laundry'),
     'guides/Guide_to_Leadership.md': ('d8fa16a65959d1c7f632c782de1129a9c6dfade1614a9e55ebcdd92851e972df', 'leadership squad leader officer commander artillery coordinates'),
     'guides/Guide_to_Medical.md': ('2b0f94e763671fd1163321cb367af5a4997c6b8489429feeb6e67e8e3ebb7456', 'medical heal injury wound surgery'),
@@ -93,13 +93,13 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Radiation.md': ('6b6295a3bb2bf0eb54d559e32a49eb18d512a50bec9366757df81b049e0e8d00', 'radiation radioactive exposure'),
     'guides/Guide_to_Ranching.md': ('4bfd68a7f6d60958e14da34916050fcedf06d7e1b9596a5dab8174b34a11c172', 'ranching livestock animal breeding'),
     'guides/Guide_to_Religion.md': ('8f2cba3283be55c895860478ffd6969b9ee7ad70ec90ecde479cd0ef622e9943', 'religion worship clergy shrine'),
-    'guides/Guide_to_Research.md': ('698e0d0b98fcff745bfedbd816a8f4c7dcbc50ecb3c7be466f0cd3b8a2b847e2', 'research unlock study technology research bench'),
+    'guides/Guide_to_Research.md': ('5901b2fd4338787bbf8f8d2aea5f4516cd73e579aa835801d8eaa5b10cff31cf', 'research unlock study technology research bench'),
     'guides/Guide_to_Resource_Extraction.md': ('94b97fc0a99093e0c0f7111ab891ce68a87430a33e59866db9ca9a52841ba7cf', 'resource extraction gathering oil petroleum well fracturing'),
     'guides/Guide_to_Survival.md': ('b6d033775aa161c89d1ad956d939df86edf46246fd33456051354e4e84e5e091', 'survival winter cold warm freezing hypothermia shelter debris footwear boots snowshoes shoes ice mud rain wet umbrella raincoat cape storm storms lightning thunder blizzard sandstorm heat wave weather fire fires wildfire firefighting beater flapper smother burning bucket blanket extinguish smoke signal signals hook firebreak pump engine nozzle hose jet reel extinguisher'),
     'guides/Guide_to_Tanks.md': ('827ceab593bb62c44600ee67d53b1c5d59fde25e71f093475f55afc361b4fc8d', 'tank driving crew ammunition'),
     'guides/Guide_to_Trains.md': ('d7a8813ae7ad15120c523d9e1d2a5dd0ee09435f36a11d3cba462a2c3e3d6bbd', 'train trains railway track locomotive station switcher rails wagon'),
     'guides/Guide_to_Trenches.md': ('c0c8506c1eb0ee5118d6f0f14d816f72e80e5c66664b547b7b3e894fe6a59881', 'trench trenches fortification sandbag dig shovel'),
-    'guides/Guide_to_Weapons.md': ('49a0a5e2dfbb8ee17d71f5d55a0a9b697b259090a881eec19af81c1385612cf5', 'weapons gun reload ammunition'),
+    'guides/Guide_to_Weapons.md': ('7651d8b75c593ce57620474461138395718a0d028303d36806bf6377b67abff0', 'weapons gun reload ammunition'),
     'New_Player_Guide.md': ('c0d80da1236f7b15de5787584628898cc5dacddd6db97fadbe42dd5b685faee0', 'new player beginner start first round basics'),
     'Hotkeys.md': ('05090c224e1f78aac61ba054366f3138634ce2c47cdaf4b9c98be908818ae55e', 'hotkeys hotkey keys keyboard controls key press'),
     'role_guides.md': ('4117070c23ff3cfd2581b612cd08ae70ee170637381972cffebdf9c0161d78d5', 'role roles job jobs responsibilities'),
@@ -109,7 +109,7 @@ WIKI_REVIEWED_GUIDES = {
     'Blacksmith.md': ('73e814dbe4cda23643b735dc3d694e8c5b081bb082d6688a1e5d9cc81ee8816e', 'blacksmith role anvil forge colony'),
     'gamemodes/Game_Modes.md': ('aa29af667563cabab26238b30efc94f6e5ec44de1e1ef198bc3c96995e7da01b', 'game mode modes gamemode'),
     'gamemodes/Team_Combat.md': ('37102cd630a71889feff9884e1cc2cf8521fed380ad9404ad7ff6fa037748975', 'team combat tdm deathmatch siege king hill area control objectives grace'),
-    'gamemodes/Civilizations_and_Nomads.md': ('84f42723c030a8b0f7159b3af723171086354100d0f6db02716de01937c8cd17', 'civilizations nomads gaia faction'),
+    'gamemodes/Civilizations_and_Nomads.md': ('8b20855ce33bf9ec6ea2d425bd0b96a14315663d50e06297910536c9483fc4e9', 'civilizations nomads gaia faction'),
     'gamemodes/Colony_Building.md': ('498a18c35178fc60be2ab365642ff9d2540dcc2033018472df5ec9d8e1cbbace', 'colony building colonist colonists'),
     'gamemodes/Survival_Scenarios.md': ('d0102e9cd9e34835ee673175271b91be2b1d69a69473569f2c0e4422d92c67d4', 'survival scenario scenarios stranded wasteland zombie'),
     'gamemodes/Battle_Royale.md': ('18d1e4cf951f943bd7a0f5030c1825bd82a77427349b086842a309e492c4d841', 'battle royale battleroyale'),
@@ -122,7 +122,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Slang.md': ('52f9f6370922d7dede523e51247ae6ea0723d24118cecd26e594c051278dfc3f', 'slang terms jargon abbreviation meaning mean word words'),
     'guides/Guide_to_Books_and_Scholars.md': ('a401a54200444acab7c776a27d44975b2f40bc693780a86c4511722e353496c9', 'books scholars scholarship study chapter research bench apprentice tutor library writing slate abacus'),
     'guides/Guide_to_Your_First_Day.md': ('35aa1bd71622730c4f8238d97ab4ac999502266a4caf5c1113062d16a3ff0ebd', 'first day new character start starting survive survival research book study chapter food water shelter bag bags carry carrying basket travois'),
-    'guides/Guide_to_Paperwork.md': ('4c73cacfcb51d228b3015af280120dedf7b7a3591d291512acbee906c537d9fb', 'paper paperwork writing write pen book sign signature stamp'),
+    'guides/Guide_to_Paperwork.md': ('b44933bfa269f3e3d9b172d14b9a52fce0b9893fa41dfbfd958c5cdb03b74312', 'paper paperwork writing write pen book sign signature stamp'),
     'Crafting_Skill_Level_Requirements.md': ('eae4e1c91ce28009f16ec79d0e942f76895d80262e618320eaf44d3a7c5808a9', 'crafting skill level levels requirement requirements unlock'),
     'Food_Decay_Times.md': ('d2d63372eddc79fd7c3c9bffb390587fff7a5cb21c53d829ab5ec29ab9f11126', 'food decay rot spoil spoils spoiled expire expires lasts preserve storage'),
     'Miscellaneous_Crafting.md': ('b7941002a901262850b0d31a1af2258e2c4e74e519d8bd67f8ca774db82249fa', 'miscellaneous crafting misc items dress dresses dressmaking tailoring tailor tailored sew sewing pattern patterns design clothes shirt gown cloak sleeves collar dye dyes wool linen fabric book hat hats headwear beret veil gloves boots shoes belt sash backpack satchel quiver bandolier restyle alteration alter candle candles'),
@@ -131,7 +131,7 @@ WIKI_REVIEWED_GUIDES = {
     'maps/Nomads_Maps.md': ('a12643f22e197e982ee0a0fe1fb8646e315b2639e1c09dd8c55cc4964e9372b0', 'nomads maps map terrain biome biomes'),
     'gamemodes/Voyage.md': ('9922f438d0253c6b4d812bc852422a54c37f428b4c3221b2a732397ef245ddfe', 'voyage expedition ship mode'),
     'gamemodes/Events.md': ('de6e6133e735e5da8a03a290f45e599b82cee216d9b150d25c583e3c34606336', 'events event special rounds'),
-    'guides_overview.md': ('14380689c72c6fa8e9ec8ea737fe265a59a740462aef50f8c9304b76de8d2e3d', 'guides overview list of guides index'),
+    'guides_overview.md': ('b942256e261bb0a1e83e1e73974b46183b4bf027cde3289c74f98225dcd21660', 'guides overview list of guides index'),
 }
 WIKI_LEGACY_GUIDES = ('guides/Guide_to_Crafting.md', 'guides/Guide_to_Metallurgy.md', 'Starter_Guide.md')
 

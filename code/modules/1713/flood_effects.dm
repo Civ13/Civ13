@@ -163,6 +163,7 @@ var/global/flood_items_revision = -1
 	if (flood_items_done[T])
 		return
 	flood_items_done[T] = TRUE
+	fish_flood_stranding(T, band) // fishing_grounds.dm
 	if (band < FLOOD_BAND_WAIST && (locate(/obj/structure/table) in T))
 		return
 	var/turf/deeper = null
@@ -303,6 +304,7 @@ var/global/flood_draw_revision = 0
 /mob/living/human/proc/flood_life_tick()
 	if (client)
 		client.flood_refresh_view()
+		client.fish_signs_refresh() // fish_signs.dm
 
 #undef FLOOD_VIEW_RADIUS
 #undef FLOOD_VIEW_MOVE

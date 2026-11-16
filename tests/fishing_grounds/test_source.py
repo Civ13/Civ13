@@ -61,6 +61,41 @@ class FishingGrounds(unittest.TestCase):
         bait = self.source[self.source.index('/obj/item/weapon/fishing/attackby('):]
         self.assertLess(bait.index('/obj/item/weapon/fishing/net'), bait.index('bait_uses = FISH_BAIT_USES'))
 
+    def test_conditions_scale_the_cast_and_strandings_ride_the_flood_pass(self):
+        cast = self.source[self.source.index('/turf/floor/beach/water/proc/fish_cast('):]
+        self.assertLess(cast.index('fish_condition_factor_at(src, kind)'), cast.index('prob(round(chance))'))
+        self.assertIn('chance = min(95, chance * fish_condition_factor_at(src, kind))', cast)
+        flood = (ROOT / 'code/modules/1713/flood_effects.dm').read_text(encoding='utf-8')
+        items = flood[flood.index('/proc/flood_items_at('):]
+        # After the once-a-tick guard, so a tile is asked at most once a river minute.
+        self.assertLess(items.index('flood_items_done[T] = TRUE'), items.index('fish_flood_stranding(T, band)'))
+
+    def test_a_ship_under_way_trolls_and_sonar_reads_the_fish(self):
+        cast = self.source[self.source.index('/turf/floor/beach/water/proc/fish_cast('):]
+        self.assertLess(cast.index('fish_troll(W, H, ship, profile)'), cast.index('do_after('))
+        troll = self.source[self.source.index('/proc/fish_troll('):]
+        self.assertLess(troll.index('do_after(H, profile[1], W, can_move = TRUE)'), troll.index('craft_at(get_turf(H)) != ship'))
+        self.assertLess(troll.index('craft_at(get_turf(H)) != ship'), troll.index('fish_land('))
+        sub = (ROOT / 'code/modules/1713/machinery/modular_vehicles/ships/submarine_systems.dm').read_text(encoding='utf-8')
+        self.assertIn('fish_finder_line(periscope_turf())', sub)
+
+    def test_signs_are_client_images_fed_by_the_grounds(self):
+        dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
+        self.assertEqual(dme.count('#include "code\\modules\\1713\\fish_signs.dm"'), 1)
+        signs = (ROOT / 'code/modules/1713/fish_signs.dm').read_text(encoding='utf-8')
+        # Images on the viewer's client, never objects in the world a hull could carry.
+        self.assertNotIn('/obj/', signs.replace('/obj/structure/vehicleparts/frame', ''))
+        self.assertNotIn('in world', signs)
+        self.assertNotIn('spawn(', signs)
+        self.assertIn('fishing_ground_at(T, FALSE)', signs)
+        self.assertIn('I.mouse_opacity = 0', signs)
+        used = set(re.findall(r'"((?:rise|jump)_[a-c]|gulls)"', signs))
+        self.assertEqual(used, {'rise_a', 'rise_b', 'rise_c', 'jump_a', 'jump_b', 'gulls'})
+        self.assertTrue((ROOT / 'icons/effects/fish_signs.dmi').is_file())
+        self.assertTrue((ROOT / 'tests/sprites/create_fishing_signs.py').is_file())
+        flood = (ROOT / 'code/modules/1713/flood_effects.dm').read_text(encoding='utf-8')
+        self.assertIn('client.fish_signs_refresh()', flood)
+
     def test_spears_ask_the_stone_age_numbers(self):
         arms = (ROOT / 'code/modules/1713/stone_age_arms.dm').read_text(encoding='utf-8')
         self.assertIn('/proc/spear_fishing_delay()\n\treturn SPEAR_FISHING_DELAY\n', arms)

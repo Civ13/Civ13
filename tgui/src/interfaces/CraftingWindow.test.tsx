@@ -37,14 +37,14 @@ describe('Crafting window', () => {
     expect(card.getByText(/Only one per tile\. Needs a floor under you\./)).toBeTruthy();
     fireEvent.click(card.getByText('Craft'));
     expect(others(props).length).toBe(1);
-    expect(props.act).toHaveBeenLastCalledWith('make', { make: '0:1:aaaaaaaa', quantity: 1 });
+    expect(props.act).toHaveBeenLastCalledWith('make', { value: '0:1:aaaaaaaa', quantity: 1 });
   });
   it('crafts one on a double click of a ready row only', () => {
     const props = ui(); render(<CraftingWindow {...props} />);
     fireEvent.doubleClick(rowButton('travois'));
     expect(others(props)).toEqual([]);
     fireEvent.doubleClick(rowButton('campfire'));
-    expect(props.act).toHaveBeenLastCalledWith('make', { make: '0:1:aaaaaaaa', quantity: 1 });
+    expect(props.act).toHaveBeenLastCalledWith('make', { value: '0:1:aaaaaaaa', quantity: 1 });
   });
   it('names what is missing and keeps Craft off', () => {
     const props = ui(); render(<CraftingWindow {...props} />);
@@ -93,7 +93,7 @@ describe('Crafting window', () => {
     expect(others(props)).toEqual([]);
     const card = within(screen.getByLabelText('Selected recipe'));
     fireEvent.click(card.getByText('Unpin'));
-    expect(props.act).toHaveBeenLastCalledWith('pin', { pin: '3:1:dddddddd' });
+    expect(props.act).toHaveBeenLastCalledWith('pin', { value: '3:1:dddddddd' });
   });
   it('has no shortcut strip or tabs when there is nothing to put in them', () => {
     const data = rows().slice(0, 1);
@@ -113,7 +113,7 @@ describe('Crafting window', () => {
     fireEvent.click(reach.getByText('wood logs'));
     expect(others(props)).toEqual([]);
     fireEvent.click(reach.getByText('stone'));
-    expect(props.act).toHaveBeenLastCalledWith('source', { source: '[0x2]' });
+    expect(props.act).toHaveBeenLastCalledWith('source', { value: '[0x2]' });
   });
   it('says where the material is and hides the picker with one source or outside reach mode', () => {
     render(<CraftingWindow {...ui({ reach: 1, where: 'next to you', sources: [{ key: '[0x1]', name: 'wood logs', amount: 6, where: 'next to you', current: 1, image }] })} />);
@@ -139,7 +139,7 @@ describe('Crafting window', () => {
   it('asks for the selected recipe and lists each exact unmet requirement', () => {
     const props = ui(); const view = render(<CraftingWindow {...props} />);
     fireEvent.click(rowButton('hewn table (wooden pegs)'));
-    expect(props.act).toHaveBeenLastCalledWith('detail', { detail: '3:1:dddddddd' });
+    expect(props.act).toHaveBeenLastCalledWith('detail', { value: '3:1:dddddddd' });
     const detail = { id: '3:1:dddddddd', needs: [{ label: 'You need a chisel in your other hand.', met: 0 }, { label: 'You must stand on a floor.', met: 0 }], fields: [] };
     view.rerender(<CraftingWindow {...ui({ detail })} />);
     const card = within(screen.getByLabelText('Selected recipe'));
@@ -165,7 +165,7 @@ describe('Crafting window', () => {
     fireEvent.change(name, { target: { value: 'The Old Oak' } });
     fireEvent.change(choices.getByLabelText(/Which company/), { target: { value: 'Rivermill' } });
     fireEvent.click(within(screen.getByLabelText('Selected recipe')).getByText('Craft'));
-    expect(props.act).toHaveBeenLastCalledWith('make', { make: '0:1:aaaaaaaa', quantity: 1, options: JSON.stringify({ name: 'The Old Oak', color: '#ffffff', company: 'Rivermill' }) });
+    expect(props.act).toHaveBeenLastCalledWith('make', { value: '0:1:aaaaaaaa', quantity: 1, options: JSON.stringify({ name: 'The Old Oak', color: '#ffffff', company: 'Rivermill' }) });
   });
   it('keeps Craft off until a needed choice is answered or when no company can own it', () => {
     const text = { field: 'label', kind: 'text', question: 'Name it:', default: '', required: 1, max_length: 20 };
@@ -193,7 +193,7 @@ describe('Crafting window', () => {
   it('remembers Only what I can make on the server and hides the rest', () => {
     const props = ui(); render(<CraftingWindow {...props} />);
     fireEvent.click(screen.getByLabelText('Only what I can make'));
-    expect(props.act).toHaveBeenLastCalledWith('makeable_only', { makeable_only: 1 });
+    expect(props.act).toHaveBeenLastCalledWith('makeable_only', { value: 1 });
     expect(screen.queryByText('travois')).toBeNull();
     expect(screen.queryByText('Not learned yet')).toBeNull();
     expect(screen.getByText('campfire')).toBeTruthy();
@@ -210,7 +210,7 @@ describe('Crafting window', () => {
     expect(out()).toBe('18');
     expect((card.getByLabelText('More') as HTMLButtonElement).disabled).toBe(true);
     fireEvent.click(card.getByText('Craft'));
-    expect(props.act).toHaveBeenLastCalledWith('make', { make: '2:1:bbbbbbbb', quantity: 6 });
+    expect(props.act).toHaveBeenLastCalledWith('make', { value: '2:1:bbbbbbbb', quantity: 6 });
   });
   it('names the station when a workstation opened the window', () => {
     const props = ui({ station: 'iron anvil', material: 'iron', rows: [row('a1b2c3d4e5f60718', 'Conical Helmet', 'ready', { category: 'Helmets', purpose: 'Armor', cost: '5 iron', time: 50 })] });
@@ -218,7 +218,7 @@ describe('Crafting window', () => {
     expect(screen.getByText('At the iron anvil')).toBeTruthy();
     fireEvent.click(rowButton('Conical Helmet'));
     fireEvent.click(within(screen.getByLabelText('Selected recipe')).getByText('Craft'));
-    expect(props.act).toHaveBeenLastCalledWith('make', { make: 'a1b2c3d4e5f60718', quantity: 1 });
+    expect(props.act).toHaveBeenLastCalledWith('make', { value: 'a1b2c3d4e5f60718', quantity: 1 });
     cleanup();
     render(<CraftingWindow {...ui()} />);
     expect(screen.queryByText(/^At the/)).toBeNull();
@@ -237,7 +237,7 @@ describe('Crafting window', () => {
   it('asks once per snapshot for pictures that did not fit', () => {
     const props = ui({ more_images: 1 }); const view = render(<CraftingWindow {...props} />);
     expect(props.act).toHaveBeenCalledTimes(1);
-    expect(props.act).toHaveBeenLastCalledWith('images', { images: 1 });
+    expect(props.act).toHaveBeenLastCalledWith('images');
     view.rerender(<CraftingWindow {...props} />);
     expect(props.act).toHaveBeenCalledTimes(1);
     cleanup();
