@@ -1316,9 +1316,10 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/civ_generator/wind/turbine" = "digital_computing",
 		"/obj/structure/civ_generator/nuclear" = "nuclear_power",
 		"/obj/structure/reactor_fuel_processor" = "nuclear_power",
-		// --- early_economy (16) ---
+		// --- early_economy (17) ---
 		"/obj/item/clothing/accessory/storage/coinpouch" = "early_economy",
 		"/obj/item/coin_die" = "early_economy",
+		"/obj/structure/boundary_stone" = "early_economy",
 		"/obj/structure/closet/crate/faction_strongbox" = "early_economy",
 		"/obj/item/stack/money/coppercoin" = "early_economy",
 		"/obj/item/stack/money/goldcoin" = "early_economy",

@@ -254,18 +254,9 @@ var/global/list/faction_strongboxes = list() // every treasury strongbox
 
 // The leader, or a bearer of an in-force seal of the keeper's office.
 /obj/structure/closet/crate/faction_strongbox/proc/holds_key(mob/living/human/H)
-	if (!istype(H) || H.stat != CONSCIOUS || !map || !length(faction))
+	if (!map || !length(faction))
 		return FALSE
-	if (H.civilization == faction && map.is_faction_leader(H, faction))
-		return TRUE
-	var/office = lowertext(keeper_office())
-	for (var/obj/item/weapon/stamp/faction_seal/S in list(H.get_active_hand(), H.get_inactive_hand()))
-		if (S.seal_faction != faction || lowertext(S.seal_office) != office)
-			continue
-		var/list/row = map.faction_seal_row(faction, S.seal_serial)
-		if (row && !row[3])
-			return TRUE
-	return FALSE
+	return map.faction_office_holder(H, faction, keeper_office())
 
 /obj/structure/closet/crate/faction_strongbox/attack_hand(mob/living/human/user)
 	if (!istype(user) || !map)
@@ -312,7 +303,7 @@ var/global/list/faction_strongboxes = list() // every treasury strongbox
 	if (key)
 		choices += opened ? "Close and lock it" : "Unlock and open it"
 		choices += "Collect taxes into the box"
-	choices += list("Collect my wages", "Pay dues from my hand", "Read the ledger")
+	choices += list("Collect my wages", "Pay dues from my hand", "Pay land tax from my hand", "Read the ledger")
 	if (leader)
 		choices += list("Set wages", "Set dues", "Set taxes", "Name the keeper's office", "Release the box")
 	choices += "Cancel"
@@ -340,6 +331,8 @@ var/global/list/faction_strongboxes = list() // every treasury strongbox
 			collect_wages(user)
 		if ("Pay dues from my hand")
 			pay_dues(user)
+		if ("Pay land tax from my hand")
+			pay_land_tax(user)
 		if ("Read the ledger")
 			to_chat(user, ledger_text())
 		if ("Set wages")

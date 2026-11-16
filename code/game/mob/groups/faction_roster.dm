@@ -64,6 +64,7 @@
 	colony_normalize()
 	faction_seal_normalize()
 	treasury_normalize()
+	land_normalize()
 
 // The faction's roster with idle accounts removed.
 /obj/map_metadata/proc/faction_roster(faction)
@@ -140,3 +141,4 @@
 	faction_seal_rename(old_name, new_name)
 	coin_issuer_rename(old_name, new_name)
 	treasury_rename(old_name, new_name)
+	land_rename(old_name, new_name)
