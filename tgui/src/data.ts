@@ -64,3 +64,13 @@ export type CharacterSetupData = {
     toggles?: { key?: string; label?: string; on?: Flag; on_label?: string; off_label?: string }[];
   };
 };
+// The storage window: hands, worn bags and pockets, storages nearby, the queue of moves.
+export type StorageItem = { id?: string; name?: string; size?: string; size_class?: number; cost?: number; image?: string; count?: number; queued?: Flag; moving?: Flag };
+export type StorageGroup = {
+  id?: string; kind?: string; name?: string; image?: string; focus?: number; locked?: Flag; owner?: string; items?: StorageItem[];
+  used?: number; space?: number; slots?: number | null; max_size?: number; can_dump?: Flag; can_take?: Flag; unit?: string;
+};
+export type StorageWindowData = {
+  hands_id?: string; hands?: { side?: string; active?: Flag; item?: StorageItem }[]; you?: StorageGroup[]; near?: StorageGroup[];
+  queue?: { name?: string; image?: string; to?: string; time?: number; done?: number }[]; more_images?: Flag;
+};
