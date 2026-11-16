@@ -2,6 +2,9 @@ import { Button } from 'tgui-core/components';
 import type { ReactNode } from 'react';
 import type { ScreenProps, Params } from '../types';
 import { decode } from '../state';
+// A typed field keeps its row type; anything else is treated as loose rows.
+export function list<T>(value: T[] | null | undefined): T[];
+export function list(value: unknown): any[];
 export function list(value: unknown): any[] { return Array.isArray(value) ? value : []; }
 // Screens receive decoded snapshots (see decodeData), so a field is shown as it is.
 export function str(value: unknown): string { return String(value ?? ''); }

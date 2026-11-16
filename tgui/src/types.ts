@@ -1,6 +1,6 @@
 export type Params = Record<string, string | number>;
 export type Data = Record<string, any>;
-export type ScreenProps = { data: Data; act: (action: string, params?: Params) => void; interactive: boolean; template: string };
+export type ScreenProps<D extends Data = Data> = { data: D; act: (action: string, params?: Params) => void; interactive: boolean; template: string };
 export type Config = { title?: string; status?: number; template?: string; ref?: string; window?: string; generation?: number };
 export type State = { config: Config; data: Data };
 declare global {
