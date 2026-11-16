@@ -47,3 +47,18 @@ Each settle takes one look 5 tiles around the nest (`forage_scan()`).
 - A shovel or digging stick digs a nest out in 10 s; 1-3 mice scatter and
   slip away out of sight after 10 minutes.
 - Cap: 60 nests world-wide.
+
+## Cats and dogs
+
+- Wildcats (`/mob/living/simple_animal/pet/cat/wild`) are an ecology species:
+  temperate, semiarid and savanna grass or dirt, density 0.1, at most 8. They
+  run from anyone within 3 tiles who is not holding meat or fish.
+- Cats take raw meat, raw or dried fish and fish fillets by hand. A wildcat
+  becomes a tame cat after the usual domestication feedings (6, at least 10
+  minutes apart; `domestication.dm`) and then leaves the wild census.
+- Two tame adult cats within 3 tiles can raise a kitten, at most once every
+  2 real hours each, while there are fewer than 12 cats in the world.
+- Each conscious cat within 7 tiles of a nest takes one mouse per settle step,
+  a dog half of one, and a nest with any hunter near never spreads. Emitted
+  mice still run home from people, cats and dogs, and cats still pounce on
+  mice they reach.

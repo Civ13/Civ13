@@ -1067,6 +1067,7 @@
 #include "code\modules\ecology\flora_regrowth.dm"
 #include "code\modules\ecology\foraging.dm"
 #include "code\modules\ecology\mouse_nests.dm"
+#include "code\modules\ecology\mouser_cats.dm"
 #include "code\modules\ecology\pollution.dm"
 #include "code\modules\ecology\protected_cultivation.dm"
 #include "code\modules\ecology\wild_herbs.dm"
