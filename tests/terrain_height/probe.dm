@@ -257,6 +257,11 @@ var/terrain_height_probe_checks = 0
 	slope.terrain_shade_refresh()
 	slope_floor.update_icon()
 	terrain_height_probe_assert(terrain_height_probe_terraces(slope) == 1, "terrace_line_kept_once")
+	// Snow gets its own recoloured copies; other ground shares the plain ones.
+	var/image/snow_line = terrain_terrace_image(terrace_slope_key, TRUE)
+	var/image/snow_shade = terrain_shade_image(slope_key, TRUE)
+	terrain_height_probe_assert(snow_line != terrace_image && islist(snow_line.color) && snow_shade != shade && islist(snow_shade.color) && !terrace_image.color && !shade.color, "snow_sprites_are_recoloured_copies")
+	terrain_height_probe_assert(terrain_terrace_image(terrace_slope_key, TRUE) == snow_line && !slope.terrain_shade_snowy(), "snow_sprites_are_shared")
 	terrain_height_probe_assert(terrain_shading_apply() > 0, "apply_places_shading")
 	terrain_shading_applied = TRUE
 	var/turf/flat = locate(2, 2, 1)

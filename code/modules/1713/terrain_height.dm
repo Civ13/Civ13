@@ -489,14 +489,24 @@ var/global/terrain_shading_applied = FALSE
 
 /turf/var/tmp/image/terrain_shade_overlay = null
 
-/proc/terrain_shade_image(key)
-	var/image/I = terrain_shade_images[key]
+// On snow the warm highlight looked like stains: snow turfs get the same sprites
+// through a colour matrix that turns the highlight near-white and the shadow blue.
+#define TERRAIN_SNOW_COLOUR list(1.07, 0, 0, 0, 1.27, 0, 0, 0, 2.8)
+
+/proc/terrain_shade_image(key, snow = FALSE)
+	var/cache_key = snow ? "[key]s" : key
+	var/image/I = terrain_shade_images[cache_key]
 	if (!I)
 		I = image('icons/turf/terrain_shade.dmi', icon_state = key, layer = TERRAIN_SHADE_LAYER)
 		I.plane = FLOOR_PLANE
 		I.mouse_opacity = 0
-		terrain_shade_images[key] = I
+		if (snow)
+			I.color = TERRAIN_SNOW_COLOUR
+		terrain_shade_images[cache_key] = I
 	return I
+
+/turf/proc/terrain_shade_snowy()
+	return istype(src, /turf/floor/winter)
 
 // "z" -> list of (maxy + 1) strings of (maxx + 1) light chars a-e, north first.
 /datum/terrain_heights/var/list/light_rows_by_z = list()
@@ -573,13 +583,16 @@ var/global/list/terrain_terrace_images = list()
 
 /turf/var/tmp/image/terrain_terrace_overlay = null
 
-/proc/terrain_terrace_image(key)
-	var/image/I = terrain_terrace_images[key]
+/proc/terrain_terrace_image(key, snow = FALSE)
+	var/cache_key = snow ? "[key]s" : key
+	var/image/I = terrain_terrace_images[cache_key]
 	if (!I)
 		I = image('icons/turf/terrain_terrace.dmi', icon_state = key, layer = TERRAIN_SHADE_LAYER)
 		I.plane = FLOOR_PLANE
 		I.mouse_opacity = 0
-		terrain_terrace_images[key] = I
+		if (snow)
+			I.color = TERRAIN_SNOW_COLOUR
+		terrain_terrace_images[cache_key] = I
 	return I
 
 // Corner height in half levels (a whole number), matching the tool's corner_heights().
@@ -615,11 +628,12 @@ var/global/list/terrain_terrace_images = list()
 	if (map && map.terrain_height_file && !istype(src, /turf/floor/beach/water) && !terrain_smoothed())
 		var/datum/terrain_heights/H = map.terrain_heights()
 		var/key = H ? H.shade_key(x, y, z) : null
+		var/snow = terrain_shade_snowy()
 		if (key && key != "cccc")
-			shade = terrain_shade_image(key)
+			shade = terrain_shade_image(key, snow)
 		key = H ? H.terrace_key(x, y, z) : null
 		if (key)
-			terrace = terrain_terrace_image(key)
+			terrace = terrain_terrace_image(key, snow)
 	terrain_shade_set(shade, terrace)
 
 /turf/proc/terrain_shade_set(image/shade, image/terrace)
@@ -679,7 +693,8 @@ var/global/list/terrain_terrace_images = list()
 				var/key = H.shade_key(x, y, z)
 				var/terrace = H.terrace_key(x, y, z)
 				if (key != "cccc" || terrace)
-					T.terrain_shade_set(key != "cccc" ? terrain_shade_image(key) : null, terrace ? terrain_terrace_image(terrace) : null)
+					var/snow = T.terrain_shade_snowy()
+					T.terrain_shade_set(key != "cccc" ? terrain_shade_image(key, snow) : null, terrace ? terrain_terrace_image(terrace, snow) : null)
 					count++
 			CHECK_TICK
 	return count
@@ -757,3 +772,4 @@ var/global/list/terrain_terrace_images = list()
 #undef TERRAIN_RELIEF
 #undef TERRAIN_SHADE_LAYER
 #undef TERRAIN_TERRACE_CAP
+#undef TERRAIN_SNOW_COLOUR

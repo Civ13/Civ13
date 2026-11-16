@@ -148,8 +148,12 @@ line near an edge spills softly into the next tile. Lines are wide and soft
 (10 pixels, fading out) so they sit quietly on grass. The 2,194 sprites are in
 `icons/turf/terrain_terrace.dmi`, a second shared overlay beside the tint
 (`terrain_terrace_overlay`), placed, refreshed and restored with it.
+Snow turfs (`/turf/floor/winter`) wear the same tint and line sprites through a
+colour matrix (`TERRAIN_SNOW_COLOUR`) that turns the warm highlight near-white
+and the shadow blue; a straw highlight on snow looked like stains.
+
 Tuning: `TERRACE_DARK`, `TERRACE_LIGHT` (alpha by pixels below the lip) and
-`TERRACE_CREST` in the tool; re-bake after changing them.
+`TERRACE_CREST` (share of the first step drawn one pixel above the lip) in the tool; re-bake after changing them.
 
 Tuning: `RELIEF`, `LIGHT_STEP`, `DARK_ALPHA` and `LIGHT_ALPHA` at the top of the
 shading section of the tool (and `TERRAIN_RELIEF`/`TERRAIN_LIGHT_STEP` in the

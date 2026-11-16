@@ -507,7 +507,7 @@ def shade_states():
 TERRACE_CAP = 6                  # half levels; steeper tiles are solid shade anyway
 TERRACE_DARK = (0.24, 0.23, 0.21, 0.18, 0.15, 0.12, 0.09, 0.06, 0.04, 0.02)   # alpha by pixels below the lip
 TERRACE_LIGHT = (0.18, 0.17, 0.15, 0.13, 0.10, 0.08, 0.05, 0.03)
-TERRACE_CREST = 0.0              # one pixel on the high side of the lip; off for the soft look
+TERRACE_CREST = 0.45             # share of the first step drawn one pixel above the lip, to soften it
 TERRACE_MARGIN = 12              # pixels looked at beyond the tile, so lines near an edge spill over
 
 
@@ -550,7 +550,7 @@ def terrace_pixels(np, key, size=32):
     gx = ((ne - nw) * (1 - ty) + (se - sw) * ty) + 0 * tx
     gy = ((sw - nw) * (1 - tx) + (se - ne) * tx) + 0 * ty
     facing = (gx + gy) / (np.sqrt(gx * gx + gy * gy) + 1e-9) / 2 ** 0.5   # > 0: the drop faces the north-west light
-    shadow = np.clip(-facing * 1.3 + 0.25, 0, 1)
+    shadow = np.clip(0.5 - facing * 0.9, 0, 1)      # drops running along the light still show, at half strength
     lit = np.clip(facing * 1.3 - 0.1, 0, 1)
     q = np.floor(h + 0.25)
 
@@ -586,8 +586,8 @@ def terrace_pixels(np, key, size=32):
         ring = around(ring) & ~seen
         seen = seen | ring
     crest = high & ~low
-    put(crest, TERRACE_CREST * shadow, True)
-    put(crest, TERRACE_CREST * lit, False)
+    put(crest, TERRACE_CREST * TERRACE_DARK[0] * shadow, False)
+    put(crest, TERRACE_CREST * TERRACE_LIGHT[0] * lit, True)
     alpha = alpha[m:-m, m:-m]
     warm = warm[m:-m, m:-m]
     out = np.zeros((size, size, 4), dtype=np.uint8)
