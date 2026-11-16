@@ -2205,6 +2205,9 @@ SUITES = {
     'amalgam': {'files': ('tests/amalgam/test_contract.py',), 'paths': (
         'tests/amalgam/', 'code/modules/1713/amalgam.dm', 'docs/amalgam.md',
         'icons/obj/amalgam.dmi', 'tests/sprites/create_amalgam.py')},
+    'milling': {'files': ('tests/milling/test_contract.py',), 'paths': (
+        'tests/milling/', 'code/modules/1713/milling.dm', 'docs/milling.md',
+        'icons/obj/milling.dmi', 'tests/sprites/create_milling.py')},
     # Keep shared production and Atlas sources unmapped so their existing
     # conservative all-suite fallback remains intact.
     'sawmill': {'files': ('tests/sawmill/test_contract.py',

@@ -372,6 +372,7 @@ var/global/list/node_grid_col_cache = null
 	register_research_node(new /datum/research_node("wagons_ships", "Wagons & Ships", "Industrial", 165, 2, RESEARCH_MODE_ANALYSIS, list("carts"), 3))
 	register_research_node(new /datum/research_node("oared_ships", "Oared Ships", "Industrial", 95, 0, RESEARCH_MODE_ANALYSIS, list("carts"), 1))
 	register_research_node(new /datum/research_node("rail_steam", "Rail & Steam", "Industrial", 200, 3, RESEARCH_MODE_ANALYSIS, list("wagons_ships","steam_power"), 4))
+	register_research_node(new /datum/research_node("industrial_milling", "Industrial Milling", "Industrial", 235, 3, RESEARCH_MODE_ANALYSIS, list("amalgamation","steam_power"), 4))
 	register_research_node(new /datum/research_node("automobiles", "Automobiles", "Industrial", 235, 4, RESEARCH_MODE_ANALYSIS, list("wagons_ships","combustion"), 5))
 	// Powered Flight (1903) unlocks the aircraft hangar that builds the light plane.
 	// The civil twin of Mechanized Warfare: also opens WW2. Prototype: a small
@@ -1833,6 +1834,11 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/drill/stamp_mill/water" = "ore_dressing",
 		"/obj/structure/workshop_machine/amalgam_press" = "amalgamation",
 		"/obj/structure/patio_heap" = "amalgamation",
+		"/obj/structure/drill/stamp_mill/water/mill/trommel" = "industrial_milling",
+		"/obj/structure/drill/stamp_mill/water/mill/drum" = "industrial_milling",
+		"/obj/structure/mercury_separator" = "industrial_milling",
+		"/obj/structure/drill/stamp_mill/water/mill/table" = "industrial_milling",
+		"/obj/item/amalgamation_plates" = "industrial_milling",
 		"/obj/structure/kanna_channel" = "tatara_smelting",
 		"/obj/structure/heatsource" = "iron_smithing",
 		"/obj/item/clothing/shoes/weather/hobnail_boots" = "iron_smithing",

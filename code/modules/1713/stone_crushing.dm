@@ -141,18 +141,25 @@
 	ore_types = list()
 	var/hopper_limit = 50
 	var/crush_interval = 2 // process ticks of two seconds each
+	// Why the last step failed, when it was not a full output tile (milling.dm).
+	var/tmp/mill_stop_reason = null
+
+// What the hopper takes: stone blocks and lode ore here; milling machines
+// (milling.dm) take crushed ore or pay dirt.
+/obj/structure/drill/stamp_mill/proc/hopper_accepts(obj/item/I)
+	return is_mill_feed(I)
 
 // Stone blocks or lode ore in the hopper; each stack is stamped in turn.
 /obj/structure/drill/stamp_mill/proc/loaded_stone()
 	for (var/obj/item/stack/S in contents)
-		if (is_mill_feed(S) && S.amount > 0)
+		if (hopper_accepts(S) && S.amount > 0)
 			return S
 	return null
 
 /obj/structure/drill/stamp_mill/proc/loaded_stone_amount()
 	var/total = 0
 	for (var/obj/item/stack/S in contents)
-		if (is_mill_feed(S))
+		if (hopper_accepts(S))
 			total += S.amount
 	return total
 
@@ -161,7 +168,7 @@
 	to_chat(user, SPAN_NOTICE("Its hopper holds [loaded_stone_amount()] of [hopper_limit] stone blocks or lumps of ore."))
 
 /obj/structure/drill/stamp_mill/attackby(obj/item/W, mob/living/human/H)
-	if (is_mill_feed(W))
+	if (hopper_accepts(W))
 		load_stone(H, W)
 		return
 	return ..()
@@ -208,7 +215,7 @@
 // Factory port: plain stone blocks fill the hopper. Nothing is offered;
 // crushed output still lands on the mill's tile.
 /obj/structure/drill/stamp_mill/factory_accepts(obj/item/I, from_dir = 0)
-	if (!is_mill_feed(I) || !factory_movable_item(I))
+	if (!hopper_accepts(I) || !factory_movable_item(I))
 		return 0
 	var/obj/item/stack/S = I
 	return min(S.amount, hopper_space())
@@ -274,7 +281,8 @@
 	if (next_spawn <= 0)
 		if (!stamp_one_stone())
 			stop_drilling()
-			visible_message(SPAN_WARNING("\The [src] stops: clear its output tile and restart it."))
+			visible_message(SPAN_WARNING("\The [src] stops: [mill_stop_reason || "clear its output tile and restart it"]."))
+			mill_stop_reason = null
 			return
 		next_spawn = crush_interval
 	playsound(loc, 'sound/effects/pickaxe.ogg', 50, FALSE)
