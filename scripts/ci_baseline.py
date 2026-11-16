@@ -1478,6 +1478,12 @@ SUITES = {
             'code/game/turfs/floor_attackby.dm',
             'code/modules/1713/factory_pipes.dm',
             'code/__defines/mobs.dm')},
+    # Station water tanks and running water feeds; source checks only.
+    'station_water': {'files': ('tests/station_water/test_station_water.py',),
+        'paths': ('tests/station_water/', 'code/modules/1713/station_water.dm'), 'shared_paths': (
+            'code/modules/1713/aqueducts.dm',
+            'code/modules/1713/factory_plumbing.dm',
+            'config/craft_needs.json')},
     # Reviewed stdlib-only well-odor source projection; no BYOND runtime.
     'well_smell': {'files': ('tests/well_smell/test_well_smell.py',),
         'paths': ('tests/well_smell/',), 'shared_paths': (
