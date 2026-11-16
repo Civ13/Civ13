@@ -48,10 +48,6 @@ JOURNAL = 'port-change.json'
 SERVICE_RECORD = 'host-service.json'
 # As check_group: nobody lives in these, so none can be the front door.
 GATE_REFUSED_KINDS = ('RAID', 'EVENT', 'TUTORIAL', 'EXPEDITION')
-# config.local.txt lines that link the gate's world to the bot; they follow the gate.
-GATE_CONFIG_KEYS = ('WEBHOOK_CAN_FIRE', 'WEBHOOK_ADDRESS', 'WEBHOOK_KEY')
-# Files every region reads from the gate's folder (admins_file(), magic_whitelist_file()).
-GATE_FILES = ('SQL/admins.txt', 'SQL/magic_whitelist.txt')
 PORT_KEYS = ('port', 'transfer_port', 'standby_port')
 RUNNING_PHASES = ('accepted', 'stopping', 'writing', 'host service', 'starting', 'telling')
 SERVICE_RELOAD_SECONDS = 180
@@ -306,9 +302,13 @@ def build_plan(sg, group, kind, changes, gate, platform, bot_profile):
             'problems': problems, 'warnings': warnings, 'already': not changes, 'host_service': service,
             'public_ports': sorted(row['port'] for row in port_rows(sg, new_group, machine) if row['public']) if new_group else None}
     if gate:
-        plan['gate_settings'] = plan_gate_settings(sg, group, gate, warnings)
-        plan['gate_files'] = [name for name in GATE_FILES if gate[0] != gate[1] and (sg.region_dir(group, gate[0]) / name).exists()]
-        plan['bot'] = plan_bot(sg, new_group or group, gate[1], bot_profile or group.get('bot_profile'), warnings)
+        # The front door's files and bot link lines move to the group once; later moves carry nothing.
+        front = sg.plan_front_door(group, gate)
+        plan['front_door'] = front if front['files'] or front['keys'] else None
+        if front['files'] and any((sg.region_dir(group, r['id']) / '.git').exists() for r in group['regions']):
+            warnings.append('every region must run a build that reads the shared admins file from %s: update the '
+                            'regions before or right after this, or they keep reading the old copy' % front['folder'])
+        plan['bot'] = plan_bot(sg, new_group or group, gate[1], bot_profile or group.get('bot_profile'), warnings, adopting=True)
     elif new_group and gate_of(group) in changes and 'port' in changes[gate_of(group)]:
         # The front door itself moves to another port: the outside world has to follow.
         port = changes[gate_of(group)]['port'][1]
@@ -317,38 +317,6 @@ def build_plan(sg, group, kind, changes, gate, platform, bot_profile):
         plan['bot'] = plan_bot(sg, new_group, gate_of(group), bot_profile or group.get('bot_profile'), warnings)
     plan['steps'] = describe(sg, group, plan)
     return plan
-
-
-def overlay_local(group, region_id):
-    """The region overlay's config.local.txt path, or None when the region has no overlay."""
-    overlay = region_of(group, region_id).get('overlay')
-    return Path(overlay) / 'config' / 'config.local.txt' if overlay else None
-
-
-def gate_lines(sg, text):
-    """The lines of a config.local.txt that link its world to the bot (set or switched off)."""
-    return [line for line in text.splitlines()
-            if (sg.config_key(line) or sg.commented_key(line)) in GATE_CONFIG_KEYS]
-
-
-def plan_gate_settings(sg, group, gate, warnings):
-    """Which bot link settings move from the old gate's overlay to the new one's."""
-    if gate[0] == gate[1]:
-        return None
-    source, target = overlay_local(group, gate[0]), overlay_local(group, gate[1])
-    try:
-        lines = gate_lines(sg, source.read_text(encoding='utf-8-sig')) if source and source.exists() else []
-    except OSError:
-        lines = []
-    keys = sorted({sg.config_key(line) or sg.commented_key(line) for line in lines})
-    if not keys:
-        return None
-    if target is None:
-        warnings.append('%s has no overlay folder, so the bot link settings (%s) stay with %s: Discord will hear nothing '
-                        'from the new front door until they are copied into its config' % (gate[1], ', '.join(keys), gate[0]))
-        return None
-    # Names only: the values (the webhook key) never leave the two files.
-    return {'keys': keys, 'from': str(source), 'to': str(target)}
 
 
 def norm(path):
@@ -365,12 +333,17 @@ def bot_servers(profile, group):
             and norm(server['region_group']) == norm(group['_path'])}
 
 
-def bot_wanted(sg, group, gate_id, server):
-    """The values a bot server entry needs to watch gate_id: only keys it already has."""
+def bot_wanted(sg, group, gate_id, server, adopting=False):
+    """The values a bot server entry needs to watch gate_id: only keys it already has, so a
+    bot that works its paths out from the group file by itself is left alone. adopting:
+    set-gate is about to move the shared admins file to the group's front-door folder."""
     folder = sg.region_dir(group, gate_id).as_posix()
-    wanted = {'basedir': folder, 'port': region_of(group, gate_id)['port']}
+    wanted = {'port': region_of(group, gate_id)['port']}
+    if 'basedir' in server:
+        wanted['basedir'] = folder
     if 'admin_file' in server:
-        wanted['admin_file'] = folder + '/SQL/admins.txt'
+        shared = adopting or sg.front_shared(group)
+        wanted['admin_file'] = (sg.front_dir(group).as_posix() if shared else folder) + '/SQL/admins.txt'
     host = server.get('gaia_host')
     if isinstance(host, dict) and 'config' in host:
         wanted['gaia_host.config'] = folder + '/data/shard-host/host.json'
@@ -383,7 +356,7 @@ def bot_current(server, key):
     return server.get(key)
 
 
-def plan_bot(sg, group, gate_id, profile_path, warnings):
+def plan_bot(sg, group, gate_id, profile_path, warnings, adopting=False):
     """What set-gate changes in the bot's profile.json, or None without one."""
     if not profile_path:
         return None
@@ -397,7 +370,7 @@ def plan_bot(sg, group, gate_id, profile_path, warnings):
         return None
     changed = {}
     for name, server in servers.items():
-        for key, value in bot_wanted(sg, group, gate_id, server).items():
+        for key, value in bot_wanted(sg, group, gate_id, server, adopting).items():
             if bot_current(server, key) != value:
                 changed.setdefault(name, {})[key] = [bot_current(server, key), value]
     return {'profile': str(profile_path), 'servers': changed, 'restart': bool(changed)}
@@ -405,7 +378,7 @@ def plan_bot(sg, group, gate_id, profile_path, warnings):
 
 def apply_bot(sg, group, gate_id, profile_path, stamp):
     """Repoint the bot profile at gate_id. Returns the plan it carried out, or None."""
-    plan = plan_bot(sg, group, gate_id, profile_path, [])
+    plan = plan_bot(sg, group, gate_id, profile_path, [])  # after the write: the front-door folder says where admins live
     if not plan or not plan['servers']:
         return plan
     profile = read_json(profile_path)
@@ -444,10 +417,12 @@ def describe(sg, group, plan):
         steps.append('The router forward, the Play button and the launcher address stay as they are.')
     elif gate:
         steps.append('%s is already the front door; its files, the bot and the running worlds are checked again.' % name(gate[1]))
-    if plan.get('gate_settings'):
-        steps.append('The bot link settings (%s) move to %s.' % (', '.join(plan['gate_settings']['keys']), name(gate[1])))
-    if plan.get('gate_files'):
-        steps.append('The shared admins files are copied to %s.' % name(gate[1]))
+    front = plan.get('front_door')
+    if front:
+        what = ['the bot link settings (%s)' % ', '.join(front['keys'])] if front['keys'] else []
+        what += ['the shared admins files'] if front['files'] else []
+        steps.append('%s move to the group\'s front-door folder, where they follow whichever region is the front door.'
+                     % (lambda text: text[0].upper() + text[1:])(' and '.join(what)))
     bot = plan.get('bot')
     if bot and bot['servers']:
         steps.append('The bot profile is pointed at %s; restart the bot afterwards.' % name((gate or [None, gate_of(group)])[1]))
@@ -611,49 +586,25 @@ class Worker:
                 machine = sg.RegionPlatform(sg.region_config(new, region_of(new, region_id)))
                 for pid in machine.listener_pids(change['transfer_port'][0]):
                     machine.terminate(pid)
-        if gate and gate[0] != gate[1]:
-            moved = self.move_gate_settings(group, gate, stamp)
-            for name in GATE_FILES:
-                source, target = sg.region_dir(new, gate[0]) / name, sg.region_dir(new, gate[1]) / name
-                if not source.exists():
-                    continue
-                if target.exists() and target.read_bytes() != source.read_bytes():
-                    shutil.copy2(target, target.with_name('%s.bak-%s' % (target.name, stamp)))
-                target.parent.mkdir(parents=True, exist_ok=True)
-                shutil.copy2(source, target)
-            if moved:
-                for region_id in gate:  # only the two worlds whose settings moved; both are stopped
+        if gate:
+            # From the old front door (or the new one, when a move is run again): its admins files and bot link lines
+            # become the group's, so this and every later move carries nothing between regions.
+            adopted = sg.adopt_front_door(group, stamp, gate)
+            if adopted:
+                self.note('moved to the front-door folder: %s' % ', '.join(adopted))
+            if gate[0] != gate[1] and (sg.front_dir(new) / 'config.local.txt').is_file():
+                for region_id in gate:  # the two worlds the bot link moves between; both are stopped
+                    if not (sg.region_dir(new, region_id) / '.git').exists():
+                        continue
                     _done, refused = sg.apply_config(new, region_id, self.platform)
                     if region_id in refused:
                         raise RuntimeError('could not write the config of %s: %s' % (region_id, refused[region_id]))
-                self.note('bot link settings moved to %s' % gate[1])
+                self.note('the bot link settings follow %s' % gate[1])
         target = (gate or [None, gate_of(new)])[1]
         profile = (self.plan.get('bot') or {}).get('profile')
         if profile and target:
             self.record(bot=apply_bot(sg, new, target, profile, stamp))
         return new
-
-    def move_gate_settings(self, group, gate, stamp):
-        """Move the bot link lines between the two overlays' config.local.txt. True when moved."""
-        sg = self.sg
-        source, target = overlay_local(group, gate[0]), overlay_local(group, gate[1])
-        if not source or not target or not source.exists():
-            return False
-        text = source.read_text(encoding='utf-8-sig')
-        lines = gate_lines(sg, text)
-        if not lines:
-            return False
-        old = target.read_text(encoding='utf-8-sig') if target.exists() else ''
-        kept = [line for line in old.splitlines() if line not in gate_lines(sg, old)]
-        target.parent.mkdir(parents=True, exist_ok=True)
-        if target.exists():
-            shutil.copy2(target, target.with_name('%s.bak-%s' % (target.name, stamp)))
-        shutil.copy2(source, source.with_name('%s.bak-%s' % (source.name, stamp)))
-        # The new gate first, so a failure between the two writes leaves the lines in both.
-        target.write_text('\n'.join(kept + lines) + '\n', encoding='utf-8')
-        remaining = [line for line in text.splitlines() if line not in lines]
-        source.write_text('\n'.join(remaining) + '\n', encoding='utf-8')
-        return True
 
     # 3. the host service watches every region by its port: it must load the new ones first
     def wait_for_service(self, group):

@@ -40,7 +40,10 @@ var/global/magic_whitelist_path = null
 			// The same source admins_file() reads: the gate, else the mainland.
 			var/source = istext(settings["gate"]) ? settings["gate"] : settings["mainland"]
 			var/region = settings["region"]
-			if (shard_id_valid(source) && shard_id_valid(region) && source != region && fexists("../[source]/config/shard_region.json"))
+			// The group's own folder once it has one (found by its admins file, like admins_file()).
+			if (shard_id_valid(region) && fexists("../front-door/SQL/admins.txt"))
+				magic_whitelist_path = "../front-door/SQL/[MAGIC_WHITELIST_NAME]"
+			else if (shard_id_valid(source) && shard_id_valid(region) && source != region && fexists("../[source]/config/shard_region.json"))
 				magic_whitelist_path = "../[source]/SQL/[MAGIC_WHITELIST_NAME]"
 	return magic_whitelist_path
 

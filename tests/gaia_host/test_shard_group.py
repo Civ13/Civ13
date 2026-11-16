@@ -587,7 +587,13 @@ class ShardGroupTests(unittest.TestCase):
         self.assertEqual((False, 15, 60, True), (group['transfers'], group['save_minutes'], group['travel_save_seconds'], group['persistent']))
         self.refuse_config('transfer_port', region_transfer_port=1720)
         self.group['regions'][0]['transfer_port'] = 47201
-        self.refuse_config('transfer_port')  # every region needs one once any has one
+        # Once any region has one, the others get theirs chosen and kept in the file (fill_ports).
+        with mock.patch.object(shard_group.Platform, 'listening', return_value=False):
+            filled = self.write_group()
+        chosen = filled['regions'][1]['transfer_port']
+        self.assertEqual((True, filled['regions'][1]['port'] + shard_group.TRANSFER_PORT_OFFSET), (filled['transfers'], chosen))
+        self.assertEqual(chosen, json.loads(self.path.read_text())['regions'][1]['transfer_port'])
+        self.assertEqual(1, len(list(self.base.glob('group.json.bak-*'))), 'the file as the host wrote it is kept')
         self.group['regions'][1]['transfer_port'] = 47201
         self.refuse_config('transfer_port')
         self.group['regions'][1]['transfer_port'] = 47202

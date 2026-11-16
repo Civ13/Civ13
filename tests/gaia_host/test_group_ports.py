@@ -118,9 +118,11 @@ class GroupPortsTests(unittest.TestCase):
         self.assertEqual({'gaia': {'port': [1720, 1721], 'public': [None, True]}, 'north': {'port': [1721, 1720]}}, plan['changes'])
         self.assertEqual((['north', 'gaia'], [], [1713, 1721, 1730]), (plan['gate'], plan['problems'], plan['public_ports']))
         self.assertEqual(('awake', 2), (plan['regions']['gaia']['state'], plan['regions']['gaia']['players']))
-        self.assertEqual({'keys': ['WEBHOOK_ADDRESS', 'WEBHOOK_CAN_FIRE', 'WEBHOOK_KEY'],
-                          'from': str(self.overlays / 'north' / 'config' / 'config.local.txt'),
-                          'to': str(self.overlays / 'gaia' / 'config' / 'config.local.txt')}, plan['gate_settings'])
+        self.assertEqual({'keys': ['WEBHOOK_ADDRESS', 'WEBHOOK_CAN_FIRE', 'WEBHOOK_KEY'], 'files': ['admins.txt', 'magic_whitelist.txt'],
+                          'folder': str(self.base / 'regions' / 'front-door')}, plan['front_door'])
+        self.assertIn("The bot link settings (WEBHOOK_ADDRESS, WEBHOOK_CAN_FIRE, WEBHOOK_KEY) and the shared admins files move to "
+                      "the group's front-door folder, where they follow whichever region is the front door.", plan['steps'])
+        self.assertFalse((self.base / 'regions' / 'front-door').exists(), 'a plan moves nothing')
         self.assertNotIn('secret', json.dumps(plan), 'the webhook key never leaves the overlay files')
         self.assertIn('Gaia becomes the front door on port 1721; North moves behind the relay.', plan['steps'])
         self.assertEqual(before, self.path.read_text())
@@ -201,18 +203,22 @@ class GroupPortsTests(unittest.TestCase):
                          tuple((hosts[r]['port'], hosts[r]['routed'], hosts[r]['public']) for r in ('gaia', 'north')))
         # The moon kept running and was told; no region needs a restart.
         self.assertEqual(([1722], []), (self.machine.reloaded, journal['restart_needed']))
-        # The bot link settings and the shared admins file followed the gate.
-        gaia_local = (self.overlays / 'gaia' / 'config' / 'config.local.txt').read_text()
-        north_local = (self.overlays / 'north' / 'config' / 'config.local.txt').read_text()
-        self.assertEqual('# gaia\nDAYNIGHT_CLIENT_TINT\nWEBHOOK_CAN_FIRE\nWEBHOOK_ADDRESS http://127.0.0.1:55555/webhook/nomads\nWEBHOOK_KEY secret\n', gaia_local)
-        self.assertEqual('# north\nDAYNIGHT_CLIENT_TINT\n', north_local)
+        # The bot link settings and the shared admins files left the old gate for the group's
+        # front-door folder: no region's overlay holds them, and the front door's config gets them.
+        front = self.base / 'regions' / 'front-door'
+        self.assertEqual('# gaia\nDAYNIGHT_CLIENT_TINT\n', (self.overlays / 'gaia' / 'config' / 'config.local.txt').read_text())
+        self.assertEqual('# north\nDAYNIGHT_CLIENT_TINT\n', (self.overlays / 'north' / 'config' / 'config.local.txt').read_text())
+        self.assertEqual(['WEBHOOK_CAN_FIRE', 'WEBHOOK_ADDRESS http://127.0.0.1:55555/webhook/nomads', 'WEBHOOK_KEY secret'],
+                         (front / 'config.local.txt').read_text().splitlines()[1:])
         self.assertIn('WEBHOOK_KEY secret', (self.base / 'regions' / 'gaia' / 'config' / 'config.txt').read_text())
         self.assertIn('#WEBHOOK_KEY', (self.base / 'regions' / 'north' / 'config' / 'config.txt').read_text())
-        self.assertEqual('val;Host;65535|||\n', (self.base / 'regions' / 'gaia' / 'SQL' / 'admins.txt').read_text())
+        self.assertEqual('val;Host;65535|||\n', (front / 'SQL' / 'admins.txt').read_text())
+        self.assertEqual(shard_group.MAGIC_WHITELIST_HEADER, (front / 'SQL' / 'magic_whitelist.txt').read_text())
+        self.assertEqual(front / 'SQL' / 'magic_whitelist.txt', shard_group.magic_whitelist_path(self.load()))
         # The bot profile watches the new gate's folder; other servers are left alone.
         servers = json.loads(profile.read_text())['servers']
         gaia = (self.base / 'regions' / 'gaia').as_posix()
-        self.assertEqual((gaia, gaia + '/SQL/admins.txt', gaia + '/data/shard-host/host.json', 1721, '/elsewhere'),
+        self.assertEqual((gaia, front.as_posix() + '/SQL/admins.txt', gaia + '/data/shard-host/host.json', 1721, '/elsewhere'),
                          (servers['pers']['basedir'], servers['pers']['admin_file'], servers['pers']['gaia_host']['config'],
                           servers['pers']['port'], servers['tdm']['basedir']))
         self.assertTrue(journal['bot']['restart'])
@@ -220,12 +226,73 @@ class GroupPortsTests(unittest.TestCase):
         self.assertNotIn('secret', json.dumps(journal))
         # Running it again finds nothing to move and only checks that everything is in place.
         again = group_ports.plan_gate(shard_group, self.load(), 'gaia', self.machine)
-        self.assertEqual((True, {}, []), (again['already'], again['changes'], again['problems']))
+        self.assertEqual((True, {}, [], None), (again['already'], again['changes'], again['problems'], again['front_door']))
+        self.assertEqual({}, again['bot']['servers'])
         count = len(self.machine.detached)
         self.assertEqual('done', self.run_plan(again)['phase'])
         self.assertEqual(count, len(self.machine.detached), 'no world is stopped or started when all is in place')
         report = group_ports.report(shard_group, self.load(), self.machine)
         self.assertEqual(('gaia', 'done', False), (report['gate'], report['change']['phase'], report['change']['running']))
+
+    def test_a_later_move_carries_nothing_between_regions(self):
+        self.machine.up = {1720, 1721}
+        self.assertEqual('done', self.run_plan(group_ports.plan_gate(shard_group, self.load(), 'gaia', self.machine))['phase'])
+        front = self.base / 'regions' / 'front-door'
+        (front / 'SQL' / 'admins.txt').write_text('val;Host;65535|||\nada;Admin;8191|||\n')  # the bot's later edit
+        back = group_ports.plan_gate(shard_group, self.load(), 'north', self.machine)
+        self.assertEqual(([], None), (back['problems'], back['front_door']))
+        self.assertEqual('done', self.run_plan(back)['phase'])
+        # Only the generated configs changed hands: the bot link is north's again, the files stayed put.
+        self.assertIn('WEBHOOK_KEY secret', (self.base / 'regions' / 'north' / 'config' / 'config.txt').read_text())
+        self.assertIn('#WEBHOOK_KEY', (self.base / 'regions' / 'gaia' / 'config' / 'config.txt').read_text())
+        self.assertIn('ada;Admin', (front / 'SQL' / 'admins.txt').read_text())
+        self.assertEqual('# north\nDAYNIGHT_CLIENT_TINT\n', (self.overlays / 'north' / 'config' / 'config.local.txt').read_text())
+        # A bot that works its paths out from the group file has no path keys: nothing to rewrite.
+        self.assertEqual({'port': 1721}, group_ports.bot_wanted(shard_group, self.load(), 'north', {'region_group': str(self.path)}))
+
+    def test_a_move_that_is_run_again_still_finds_the_old_front_doors_files(self):
+        # The group file already names the new gate (the first run stopped after writing it).
+        self.group['gate'] = 'gaia'
+        group = self.write()
+        moved = shard_group.adopt_front_door(group, 'stamp', ['north', 'gaia'])
+        self.assertEqual(['SQL/magic_whitelist.txt', 'SQL/admins.txt', 'config.local.txt'], moved)
+        front = self.base / 'regions' / 'front-door'
+        self.assertEqual('val;Host;65535|||\n', (front / 'SQL' / 'admins.txt').read_text())
+        self.assertIn('WEBHOOK_KEY secret', (front / 'config.local.txt').read_text())
+        self.assertEqual([], shard_group.adopt_front_door(group, 'stamp', ['north', 'gaia']))
+        with self.assertRaisesRegex(ValueError, 'front-door'):
+            shard_group.check_group(dict(self.group, regions=self.group['regions'] + [dict(self.group['regions'][2], id='front-door', port=1790, transfer_port=1791)]), self.path)
+
+    def test_ports_the_file_leaves_out_are_chosen_and_kept(self):
+        busy = {1726, 1734}
+        raw = {'live': False, 'transfers': True, 'relay_port': 'auto', 'mainland': 'gaia', 'gate': 'north',
+               'regions': [{'id': 'gaia'}, {'id': 'north'}, {'id': 'moon', 'port': 1800, 'transfer_port': 1735}]}
+        chosen = shard_group.fill_ports(raw, listening=busy.__contains__)
+        ports = {r['id']: (r['port'], r['transfer_port']) for r in raw['regions']}
+        # The front door first from the lowest port already in the file; 1726 belongs to another
+        # program, so no port lands there; a port in the file is never moved.
+        self.assertEqual({'north': (1800 + 1, 1811), 'gaia': (1802, 1812), 'moon': (1800, 1735)}, ports)
+        self.assertEqual((1813, 1814), (raw['relay_port'], raw['relay_control_port']))
+        self.assertEqual(5, len(chosen))
+        self.assertEqual([], shard_group.fill_ports(raw, listening=busy.__contains__), 'nothing is chosen twice')
+        fresh = {'regions': [{'id': 'a'}, {'id': 'b'}]}
+        shard_group.fill_ports(fresh, listening=busy.__contains__)
+        self.assertEqual([1724, 1725], [r['port'] for r in fresh['regions']])
+        self.assertNotIn('transfer_port', fresh['regions'][0])
+        live = {'live': True, 'transfers': True, 'regions': [{'id': 'a'}, {'id': 'b'}]}
+        shard_group.fill_ports(live, listening=busy.__contains__)
+        self.assertEqual([(1714, 1724), (1715, 1725)], [(r['port'], r['transfer_port']) for r in live['regions']])
+        # load_group keeps what it chose: the next load, and every other reader, sees the same ports.
+        for region in self.group['regions']:
+            del region['port'], region['transfer_port']
+        self.group.update(transfers=True, relay_port='auto')
+        self.path.write_text(json.dumps(self.group))
+        with mock.patch.object(shard_group.Platform, 'listening', return_value=False):
+            loaded = shard_group.load_group(self.path)
+        kept = json.loads(self.path.read_text())
+        self.assertEqual([r['port'] for r in loaded['regions']], [r['port'] for r in kept['regions']])
+        self.assertEqual((1724, kept['relay_port']), (next(r['port'] for r in kept['regions'] if r['id'] == 'north'), loaded['relay_port']))
+        self.assertEqual(kept, json.loads(self.path.read_text()) if shard_group.load_group(self.path) else None)
 
     def test_a_sleeping_or_stopped_gate_and_worlds_on_older_builds(self):
         # North (the gate) is stopped and Gaia is not running either; the moon runs an older build.
