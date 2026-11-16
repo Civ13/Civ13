@@ -187,6 +187,18 @@ class BackendContract(unittest.TestCase):
         self.assertIn("/datum/nanoui/tgui/send_base_assets(template_filename)\n\treturn\n", DM)
         self.assertIn("get_asset_datum(/datum/asset/simple/civ13_tgui)", DM)
 
+    def test_unchanged_automatic_refreshes_are_not_resent(self):
+        push = DM.split('/datum/nanoui/tgui/push_data(', 1)[1].split('\n/datum', 1)[0]
+        self.assertIn('if (digest == last_sent && !force_push && !reply_owed)\n\t\treturn', push)
+        self.assertLess(push.index('last_sent = digest'), push.index('user << output('))
+        # A reopened page starts clean, and a press is owed an answer even when nothing changed.
+        opening = DM.split('/datum/nanoui/tgui/open()', 1)[1].split('\n/datum', 1)[0]
+        self.assertIn('last_sent = null', opening)
+        topic = DM.split('/datum/nanoui/tgui/Topic(', 1)[1].split('\n/datum', 1)[0]
+        self.assertLess(topic.index('reply_owed = TRUE'), topic.index('act_typed(action, params)'))
+        # The ready push stays forced.
+        self.assertIn('push_data(status == STATUS_DISABLED ? null : latest_data, TRUE)', topic)
+
     def test_recovery_without_bootstrap_and_close_ownership(self):
         self.assertIn("document.getElementById('tgui-loading').textContent=", DM)
         external = (ROOT / "code/modules/nano/nanoexternal.dm").read_text()

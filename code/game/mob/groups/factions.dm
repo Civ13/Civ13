@@ -561,7 +561,7 @@
 
 	for (var/relf in map.facl)
 		map.facl[relf] = 0
-		for (var/mob/living/human/H in world)
+		for (var/mob/living/human/H in human_mob_list)
 			if (relf == H.civilization && H.stat != DEAD)
 				map.facl[relf] += 1
 
