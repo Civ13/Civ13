@@ -364,72 +364,14 @@ BLIND	 // can't see anything
 	slot_flags = SLOT_FEET
 
 	ripable = FALSE
-	var/can_hold_knife = TRUE
-	var/obj/item/holding
+	// A boot sheath (worn_tools.dm) is the one thing sewn into a shoe.
+	valid_accessory_slots = list("fitting")
+	restricted_accessory_slots = list("fitting")
 
 	permeability_coefficient = 0.50
 	slowdown = SHOES_SLOWDOWN
 	force = 2
 	var/overshoes = FALSE
-
-/obj/item/clothing/shoes/proc/draw_knife()
-	set name = "Draw Shoe Knife"
-	set desc = "Pull out your shoe's knife."
-	set category = "IC"
-	set src in usr
-
-	if (!holding)
-		return FALSE
-
-	if (usr.stat || usr.restrained() || usr.incapacitated())
-		return FALSE
-
-	holding.forceMove(get_turf(usr))
-
-	if (usr.put_in_hands(holding))
-		usr.visible_message(SPAN_DANGER("\The [usr] pulls \a [holding] out of \the [src]!"), SPAN_DANGER("You pull \a [holding] out of \the [src]!"))
-		holding = null
-	else
-		to_chat(usr, SPAN_WARNING("You must not be holding anything to do that."))
-		holding.forceMove(src)
-
-	update_icon()
-	return TRUE
-
-/obj/item/clothing/shoes/attack_hand(var/mob/living/M)
-	if (hasorgans(M)) // if ishuman
-		var/mob/living/human/user = M
-		var/obj/item/organ/external/temp = user.organs_by_name["r_hand"]
-		if (user.hand)
-			temp = user.organs_by_name["l_hand"]
-		if (temp && !temp.is_usable())
-			to_chat(user, SPAN_NOTICE("You try to move your [temp.name], but cannot!"))
-			return
-		if (!temp)
-			to_chat(user, SPAN_NOTICE("You try to use your hand, but realise it is no longer attached!"))
-			return
-	if (holding && src.loc == M)
-		draw_knife(M)
-		return
-	else
-		return ..()
-
-/obj/item/clothing/shoes/attackby(var/obj/item/I, var/mob/user)
-	if (can_hold_knife && istype(I, /obj/item/weapon/material/shard) || \
-	 istype(I, /obj/item/weapon/material/kitchen/utensil) || \
-	 istype(I, /obj/item/weapon/gun/projectile/revolver/derringer) || \
-	 istype(I, /obj/item/weapon/attachment/bayonet))
-		if (holding)
-			to_chat(user, "<span class='warning'>\The [src] is already holding \a [holding].</span>")
-			return
-		user.unEquip(I)
-		I.forceMove(src)
-		holding = I
-		user.visible_message("<span class='notice'>\The [user] shoves \a [I] into \the [src].</span>")
-		//verbs |= /obj/item/clothing/shoes/proc/draw_knife
-		update_icon()
-	else
-		return ..()
 
 /obj/item/clothing/shoes/proc/handle_movement(var/turf/walking, var/running)
 	return

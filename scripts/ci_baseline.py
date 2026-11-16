@@ -1257,6 +1257,13 @@ SUITES = {
             'code/game/objects/structures/blacksmithing/dedicated_workbenches.dm',
             'code/modules/1713/light_fuel.dm')},
     # Obsidian sources, knapping and tools: source contracts only.
+    # Tools built into wearable gear: wiring checks; tests/worn_tools/probe.dm is the native probe.
+    'worn_tools': {'files': ('tests/worn_tools/test_source.py',),
+        'paths': ('tests/worn_tools/',), 'shared_paths': (
+            'code/modules/1713/worn_tools.dm', 'code/modules/1713/flint_mining.dm',
+            'code/game/objects/items/clothing/clothing.dm', 'code/modules/1713/rain_gear.dm',
+            'code/game/objects/items/clothing/clothing_accessories.dm',
+            'config/crafting/material_recipes_global.txt', 'code/modules/research_tree/research_node.dm')},
     'obsidian': {'files': ('tests/obsidian/test_source.py',),
         'paths': ('tests/obsidian/',), 'shared_paths': (
             'code/modules/1713/obsidian.dm', 'code/game/turfs/floor_attackby.dm',

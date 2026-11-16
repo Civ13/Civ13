@@ -26,9 +26,10 @@
 			accessories += A
 			A.on_attached(src, user)
 			verbs |= /obj/item/clothing/proc/removetie_verb
+			// Redraw whatever slot this garment is worn in (uniform, belt, coat, shoes).
+			update_clothing_icon()
 			if (istype(loc, /mob/living/human))
 				var/mob/living/human/H = loc
-				H.update_inv_w_uniform()
 				H.refresh_attachment_strip(src)
 			return
 		else
