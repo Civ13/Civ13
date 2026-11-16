@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { NoticeBox, Section } from 'tgui-core/components';
 import type { Data, ScreenProps } from '../types';
 import { Action, list, text } from './common';
-import { Bar, FilterChips, RecipeTags, matches, minutes } from './researchShared';
+import { Pill } from './kit';
+import { Bar, FilterChips, RecipeTags, matches, minutes, stateTone } from './researchShared';
 
 type ChapterFilter = 'all' | 'study' | 'locked' | 'known';
 const filters: [ChapterFilter, string][] = [['all', 'All'], ['study', 'Ready to study'], ['locked', 'Needs groundwork'], ['known', 'Known']];
@@ -46,7 +47,7 @@ export function ResearchBook(ui: ScreenProps) {
             <strong>{text(row.name)}</strong>
             <small>{text(row.era_name)} - {text(row.discipline)}{row.state === 'locked' && missing.length ? ` - first learn ${missing.map(item => text(item.name)).join(', ')}` : ''}{row.state === 'study' ? `${Number(row.read_percent) > 0 ? ` - ${row.read_percent}% read` : ''} - about ${minutes(row.study_minutes)}${Number(row.read_percent) > 0 ? ' left' : ''}${row.tutor ? ` with ${text(row.tutor)} tutoring` : ''}` : ''}</small>
           </button>
-          <span className={`rs-badge rs-${row.state === 'locked' ? 'locked' : row.state}`}>{labels[row.state] ?? text(row.state)}</span>
+          <Pill tone={stateTone(row.state)}>{labels[row.state] ?? text(row.state)}</Pill>
           <span className="rs-row-action">{row.state === 'study' && <Action ui={ui} action="study" value={row.id}>{Number(row.read_percent) > 0 ? 'Continue' : 'Study'}</Action>}</span>
           {isOpen && <div className="rs-row-detail">
             <h3>Groundwork</h3>

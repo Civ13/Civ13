@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { Data } from '../types';
 import { list, text } from './common';
+import { Pill, type Tone } from './kit';
 
 // One vocabulary for both research modes. Book research sends `state`; the
 // faction tree only sends status_text, which maps onto the same names.
@@ -13,9 +14,11 @@ export function nodeState(node: Data): NodeState {
 export const stateOrder: NodeState[] = ['study', 'ready', 'progress', 'study_locked', 'blocked', 'locked', 'known'];
 export const stateRank = (node: Data) => stateOrder.indexOf(nodeState(node));
 const shortLabels: Record<NodeState, string> = { known: 'Known', study: 'Study', study_locked: 'Chapter', progress: 'In progress', ready: 'Research', blocked: 'Blocked', locked: 'Locked' };
+// One colour language for research states, shared by the bench and the book.
+export const stateTone = (state: unknown): Tone => state === 'known' ? 'good' : state === 'study' ? 'info' : state === 'ready' ? 'ready' : state === 'progress' ? 'progress' : 'muted';
 export function StateBadge({ node, long = false }: { node: Data; long?: boolean }) {
   const state = nodeState(node);
-  return <span className={`rs-badge rs-${state}`}>{long ? text(node.state_label ?? node.status_text ?? shortLabels[state]) : shortLabels[state]}</span>;
+  return <Pill tone={stateTone(state)}>{long ? text(node.state_label ?? node.status_text ?? shortLabels[state]) : shortLabels[state]}</Pill>;
 }
 export function minutes(value: unknown): string {
   const n = Number(value) || 0;
