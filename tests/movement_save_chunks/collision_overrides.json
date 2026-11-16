@@ -118,6 +118,16 @@
       ]
     },
     {
+      "path": "code/game/objects/covers_types/log_wall_building.dm",
+      "declarations": [
+        {
+          "owner": "",
+          "declaration": "/obj/covers/wood_wall/log_build/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)",
+          "sha256_body": "7ea043f7534a6e11439edd44face1bb049406607d87b04ef200be9a50f856730"
+        }
+      ]
+    },
+    {
       "path": "code/game/objects/effects/effect_system.dm",
       "declarations": [
         {
