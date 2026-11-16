@@ -53,6 +53,7 @@ var/bee_runtime_error = FALSE
 /proc/bee_checks()
 	var/turf/race_turf = locate(2, 2, 1)
 	var/obj/structure/beehive/race = new(race_turf)
+	race.closed = FALSE
 	race.frames = 1
 	race.honeycombs = 100
 	var/mob/living/human/bee_probe/first = new(race_turf)
@@ -64,7 +65,9 @@ var/bee_runtime_error = FALSE
 	var/obj/structure/beehive/colony = new(colony_turf)
 	var/mob/living/human/bee_probe/dismantler = new(colony_turf)
 	var/obj/item/weapon/screwdriver/tool = new(colony_turf)
-	var/obj/item/bee_jar/jar = new(colony_turf)
+	var/obj/item/nucleus_box/jar = new(colony_turf)
+	jar.fill(20)
+	colony.closed = FALSE
 	spawn(0) colony.attackby(tool, dismantler)
 
 	var/turf/refund_turf = locate(6, 2, 1)
@@ -76,6 +79,7 @@ var/bee_runtime_error = FALSE
 
 	var/turf/lid_turf = locate(8, 2, 1)
 	var/obj/structure/beehive/lid = new(lid_turf)
+	lid.closed = FALSE
 	lid.frames = 1
 	lid.honeycombs = 100
 	var/mob/living/human/bee_probe/lid_user = new(lid_turf)
@@ -83,10 +87,11 @@ var/bee_runtime_error = FALSE
 
 	var/turf/smoke_turf = locate(10, 2, 1)
 	var/obj/structure/beehive/smoke = new(smoke_turf)
+	smoke.closed = FALSE
 	smoke.frames = 1
 	smoke.honeycombs = 100
 	smoke.bee_count = 20
-	smoke.smoked = 1
+	smoke.smoked_until = world.time + 600
 	var/mob/living/human/bee_probe/smoke_user = new(smoke_turf)
 	spawn(0) smoke.attack_hand(smoke_user)
 
@@ -110,7 +115,7 @@ var/bee_runtime_error = FALSE
 	sleep(5)
 	colony.attackby(jar, dismantler)
 	lid.closed = TRUE
-	smoke.smoked = 0
+	smoke.smoked_until = 0
 	moved.loc = locate(15, 2, 1)
 	moved_frame.loc = frame_destination
 	sleep(40)

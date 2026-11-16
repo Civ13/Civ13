@@ -202,6 +202,9 @@ var/global/list/wild_bee_nests = list()
 	if (istype(I, /obj/item/weapon/smoke_bundle))
 		var/obj/item/weapon/smoke_bundle/B = I
 		return B.lit
+	if (istype(I, /obj/item/bee_smoker))
+		var/obj/item/bee_smoker/S = I
+		return S.lit
 	return istype(I, /obj/item/flashlight/torch) && isflamesource(I)
 
 // A tied bundle of green grass and leaves. Lit from a flame it smoulders for a
