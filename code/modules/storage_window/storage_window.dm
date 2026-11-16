@@ -69,6 +69,10 @@
 		H.s_active.close(H)
 	W.focus = S
 	W.focus_seq++
+	for (var/list/entry in W.holders())
+		if (entry[2] == S && !storage_window_kind_known(entry[1]))
+			W.begin_search(S)
+			break
 	W.ui_interact(H)
 	return TRUE
 
@@ -93,6 +97,7 @@
 
 /datum/storage_window/Destroy()
 	cancel_all(FALSE)
+	stop_search()
 	if (viewer && viewer.storage_window == src)
 		viewer.storage_window = null
 	viewer = null
@@ -102,7 +107,8 @@
 	return ..()
 
 /datum/storage_window/proc/closed()
-	// The queue keeps running after the window closes; the snapshot does not.
+	// The queue keeps running after the window closes; the snapshot and the search do not.
+	stop_search()
 	focus = null
 	served_items = list()
 	served_groups = list()
@@ -299,16 +305,26 @@
 			G["items"] = list()
 		else
 			var/list/items = list()
+			var/list/unseen = list()
 			var/used = 0
 			for (var/obj/item/I in S.contents)
-				items += list(item_row(I, budget))
 				used += I.get_storage_cost()
+				if (knows(I, kind))
+					items += list(item_row(I, budget))
+				else if (I != search_item)
+					unseen += I.w_class
 			G["items"] = items
 			G["used"] = used
 			G["space"] = S.max_storage_space
 			G["slots"] = S.storage_slots
 			G["max_size"] = S.max_w_class
-			G["can_dump"] = 1
+			G["total"] = S.contents.len
+			if (unseen.len)
+				G["unseen"] = unseen
+			if (search_holder == S && search_item)
+				G["search"] = list("size_class" = search_item.w_class, "time" = storage_search_time(search_item), "done" = world.time - search_started)
+			// Nothing is tipped out before it has been looked at.
+			G["can_dump"] = (unseen.len || G["search"]) ? 0 : 1
 			G["can_take"] = kind != STORAGE_WINDOW_KIND_WORN ? 1 : 0
 		if (kind == STORAGE_WINDOW_KIND_BODY)
 			var/mob/M = entry[5]
@@ -384,7 +400,7 @@
 		S.open(H)
 
 /datum/storage_window/ui_actions(ui_key)
-	return list("move", "take_all", "dump", "cancel", "images")
+	return list("move", "take_all", "dump", "cancel", "images", "search")
 
 /datum/storage_window/ui_action_fields(ui_key, action)
 	if (action == "move")
@@ -415,6 +431,11 @@
 			return TRUE
 		if ("cancel")
 			cancel_all(TRUE)
+			return TRUE
+		if ("search")
+			var/list/group = served_groups["[params["value"]]"]
+			if (group && !storage_window_kind_known(group[1]))
+				begin_search(group[2])
 			return TRUE
 		if ("move")
 			var/list/ids = splittext("[params["value"]]", ",")

@@ -44,6 +44,7 @@ var/storwin_runtime_error = FALSE
 			GLOB.nanomanager = new
 		storwin_time_checks()
 		storwin_window_checks()
+		storwin_search_checks()
 	catch(var/exception/e)
 		storwin_check(FALSE, "exception [e] [e.file]:[e.line] [e.desc]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = storwin_failures, "runtime_error" = storwin_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")
@@ -129,3 +130,53 @@ var/storwin_runtime_error = FALSE
 	storwin_check(storage_window_in_group(stone, list(STORAGE_WINDOW_KIND_HANDS, H), H), "the hands group knows what is held")
 	W.cancel_all(FALSE)
 	qdel(W)
+
+/proc/storwin_search_checks()
+	var/turf/here = locate(8, 8, 1)
+	var/mob/living/human/storwin_probe/H = new(here)
+	var/mob/living/human/storwin_probe/other = new(locate(8, 9, 1))
+	var/obj/structure/storage_container/basket/B = new(locate(9, 8, 1))
+	var/obj/item/weapon/storage/internal/IS = storage_window_structure_holder(B)
+	var/obj/item/knife = storwin_item(null, ITEM_SIZE_SMALL, "knife")
+	var/obj/item/axe = storwin_item(null, ITEM_SIZE_NORMAL, "axe")
+	usr = other
+	IS.handle_item_insertion(knife, TRUE)
+	IS.handle_item_insertion(axe, TRUE)
+	usr = null
+	storwin_check(storage_item_seen(knife, other) && !storage_item_seen(knife, H), "only the one who put a thing in knows it")
+	var/datum/storage_window/W = new(H)
+	var/list/data = W.build_data()
+	var/list/basket
+	for (var/list/G in data["near"])
+		if (G["id"] == "near:[ref(IS)]")
+			basket = G
+	storwin_check(basket && !length(basket["items"]) && length(basket["unseen"]) == 2 && !basket["can_dump"], "someone else's basket shows two unseen things and can't be dumped")
+	storwin_check(!W.served_items.len || !(knife in W.served_items_values()), "unseen things are never named to the window")
+	storwin_check(storage_search_time(knife) == 7 && storage_search_time(axe) == 10, "looking takes 0.7 s for a small thing, 1.0 s for a normal one")
+	storwin_check(W.begin_search(IS) && W.search_item == knife, "searching starts with the top thing")
+	W.finish_look()
+	storwin_check(storage_item_seen(knife, H) && W.search_item == axe, "the knife is seen and the axe is next")
+	data = W.build_data()
+	for (var/list/G in data["near"])
+		if (G["id"] == "near:[ref(IS)]")
+			basket = G
+	storwin_check(length(basket["items"]) == 1 && basket["search"], "the seen knife is listed while the axe is looked at")
+	W.search_turf = locate(8, 7, 1) // as if the character had stepped off
+	W.finish_look()
+	storwin_check(!W.search_holder && !storage_item_seen(axe, H), "walking away stops the search")
+	W.begin_search(IS)
+	W.finish_look()
+	storwin_check(storage_item_seen(axe, H) && !W.search_holder, "searching again finishes the basket")
+	storwin_check(!W.begin_search(IS), "a searched container has nothing left to search")
+	usr = other
+	IS.remove_from_storage(knife, here)
+	IS.handle_item_insertion(knife, TRUE)
+	usr = null
+	storwin_check(!storage_item_seen(knife, H), "a thing someone else puts back is unknown again")
+	storwin_check(W.knows(knife, STORAGE_WINDOW_KIND_WORN) && W.knows(knife, STORAGE_WINDOW_KIND_FLOOR), "your own gear and the floor are always known")
+	qdel(W)
+
+/datum/storage_window/proc/served_items_values()
+	. = list()
+	for (var/id in served_items)
+		. += served_items[id]
