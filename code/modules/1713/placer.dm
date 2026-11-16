@@ -207,6 +207,10 @@ var/global/list/pay_dirt_stock = list()
 /obj/structure/placer_washer/proc/accepts_feed(obj/item/I)
 	return istype(I, /obj/item/stack/ore/pay_dirt)
 
+// Whether another load can go through now (a cyanide vat needs its charge).
+/obj/structure/placer_washer/proc/can_wash_load(mob/living/human/H)
+	return TRUE
+
 // Washes one unit of feed P (already checked): ore type -> amount found.
 /obj/structure/placer_washer/proc/wash_load(obj/item/stack/P)
 	var/obj/item/stack/ore/pay_dirt/D = P
@@ -248,6 +252,8 @@ var/global/list/pay_dirt_stock = list()
 	var/loads = 0
 	var/list/kept = list()
 	while (!QDELETED(P) && P.amount > 0 && P.loc == H && get_dist(H, src) <= 1)
+		if (!can_wash_load(H))
+			break
 		if (!station_has_water())
 			station_take_water(H)
 			break

@@ -2909,6 +2909,8 @@ RECIPE: /material/iron/,amalgamator drum,/obj/structure/drill/stamp_mill/water/m
 RECIPE: /material/iron/,mercury separator,/obj/structure/mercury_separator,8,150,1,1,production,0,0,0,8,null
 RECIPE: /material/iron/,shaking table,/obj/structure/drill/stamp_mill/water/mill/table,10,200,1,1,production,0,0,0,8,null
 RECIPE: /material/copper/,amalgamation plates,/obj/item/amalgamation_plates,4,80,0,1,production,0,0,0,8,null
+RECIPE: /material/iron/,hydraulic monitor,/obj/structure/hydraulic_monitor,15,200,1,1,production,0,0,0,8,null
+RECIPE: /material/wood/,cyanide vat,/obj/structure/placer_washer/cyanide_vat,8,150,1,1,production,0,0,0,8,null
 
 
 RECIPE: /material/iron/,firearm maintenance bench,/obj/structure/repair/gun,18,180,1,1,production,25,70,0,8,null

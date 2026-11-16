@@ -2212,6 +2212,9 @@ SUITES = {
         'tests/mercury_crafts/', 'code/modules/1713/mercury_crafts.dm', 'docs/mercury_crafts.md',
         'icons/obj/mercury_crafts.dmi', 'icons/mob/mercury_crafts.dmi',
         'tests/sprites/create_mercury_crafts.py')},
+    'late_mining': {'files': ('tests/late_mining/test_contract.py',), 'paths': (
+        'tests/late_mining/', 'code/modules/1713/late_mining.dm', 'docs/late_mining.md',
+        'icons/obj/late_mining.dmi', 'tests/sprites/create_late_mining.py')},
     # Keep shared production and Atlas sources unmapped so their existing
     # conservative all-suite fallback remains intact.
     'sawmill': {'files': ('tests/sawmill/test_contract.py',

@@ -17932,6 +17932,55 @@
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified",
       "source_commit": "6b54c258"
+    },
+    {
+      "name": "Hydraulic monitor",
+      "file": "code/modules/1713/late_mining.dm",
+      "line": 127,
+      "inputs": [],
+      "outputs": [
+        "/obj/item/stack/ore/pay_dirt/rich",
+        "/obj/item/stack/ore/pay_dirt/tin",
+        "/obj/item/stack/ore/pay_dirt"
+      ],
+      "tools": [
+        "/obj/structure/hydraulic_monitor"
+      ],
+      "steps": [
+        "Bolt a hydraulic monitor beside fresh river water and a mover.",
+        "Aim it at a dirt or sand bank and work it."
+      ],
+      "conditions": "Strips the bank tile into 6 pay dirt at once. The tile is left as dead gravel and the silt fouls the river.",
+      "era": "Industrial Milling.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified",
+      "source_commit": "10a0c246"
+    },
+    {
+      "name": "Cyanide vat",
+      "file": "code/modules/1713/late_mining.dm",
+      "line": 182,
+      "inputs": [
+        "/obj/item/stack/ore/tailings",
+        "/obj/item/stack/ore/tailings/amalgam",
+        "/datum/reagent/cyanide",
+        "/obj/item/stack/material/zinc"
+      ],
+      "outputs": [
+        "/obj/item/stack/ore/gold"
+      ],
+      "tools": [
+        "/obj/structure/placer_washer/cyanide_vat"
+      ],
+      "steps": [
+        "Pour water and cyanide into the vat and pack its zinc box.",
+        "Wash tailings in it."
+      ],
+      "conditions": "Early Modern age onward. 15% of tailings loads give a gold ore. Drained solution fouls the river.",
+      "era": "Industrial Milling.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified",
+      "source_commit": "10a0c246"
     }
   ],
   "mechanism_overview": [
