@@ -72,6 +72,22 @@ class GemstoneTest(unittest.TestCase):
         self.assertEqual(gems.count("\tgem_colour = \"#"), 7)  # 7 cut stones
         self.assertIn('set_gem_colour = stone_colour', gems)
 
+    def test_set_stone_can_be_pried_out(self):
+        gems = (ROOT / 'code/modules/1713/gemstones.dm').read_text(encoding='utf-8')
+        attack = gems[gems.index('/obj/item/clothing/attackby('):]
+        attack = attack[:attack.index('\n/obj/')]
+        self.assertIn('if (set_gem && is_tool(I, TOOL_CHISEL) && ishuman(user))', attack)
+        self.assertIn('set_gem_type = stone_type', gems)
+        pry = gems[gems.index('/obj/item/clothing/proc/pry_gemstone('):]
+        pry = pry[:pry.index('\n/obj/')]
+        self.assertIn('do_after(H, tool_work_time(W, GEM_PRY_TIME), src)', pry)
+        # Clears every setting var, refunds the stone's value, returns the stone.
+        for line in ('set_gem = null', 'set_gem_colour = null', 'set_gem_type = null',
+                     'value = max(0, value - G.value)', 'update_icon()',
+                     'new stone_type(get_turf(H))', 'H.put_in_any_hand_if_possible(G)'):
+            self.assertIn(line, pry)
+        self.assertNotIn('prob(', pry)  # the stone always comes back whole
+
     def test_items_read_as_ordinary(self):
         # Player-facing text stays plain: names and descriptions only describe
         # ordinary pouches and stones.
