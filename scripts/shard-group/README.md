@@ -505,7 +505,8 @@ without stopping it for the load:
    live one in `file`) and started as a **standby world** on a loopback port
    (`standby_port`; by default the region's port + 10, or the next port above
    it that no region, transfer agent, relay or doorman of the group uses) with
-   `-params standby=1`.
+   `-params standby=PORT` (its own port, so a world that took over and later
+   reboots on the region's port comes back as the region, not as a standby).
    It boots the map and lighting (about 3 minutes for Gaia) and then waits; it
    is hidden from the hub, refuses joins and never saves. While it waits it
    does load work ahead (`code/modules/persistence/standby_prepare.dm`): it

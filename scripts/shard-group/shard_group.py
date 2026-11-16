@@ -659,12 +659,16 @@ class RegionPlatform(Platform):
 
     def start_standby(self, dmb, port):
         """Boot dmb as a standby world on a loopback control port: it loads the map and waits for the
-        host to name the save (DM reads -params standby=1), hidden from the hub until it is opened."""
+        host to name the save (DM reads -params standby=PORT), hidden from the hub until it is opened.
+
+        The parameter names the standby port: a standby that took over keeps its launch
+        parameters, and a reboot on the region's port must come back as the region, not
+        as a standby waiting for a move (North America and Jungle, 2026-11-16)."""
         path = Path(self.config['repository'])
         (path / 'logs').mkdir(exist_ok=True)
         self.start_agent()
         argv = [self.config['daemon'], dmb, str(port), '-trusted', '-close', '-invisible', '-log', STANDBY_LOG,
-                '-params', 'standby=1']
+                '-params', 'standby=%d' % port]
         return detach(scoped(argv, self.config), path, None)
 
     def task_ready(self, name):

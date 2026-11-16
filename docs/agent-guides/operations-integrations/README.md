@@ -84,7 +84,7 @@ replaces existing action-time confirmations, held-runner rules or runtime guards
 - Config in `config/config.txt` controls gamemodes, ports, hub visibility, logging, etc.
 - Discord integration via Civilizationbot (file-based IPC through `SQL/discord2*.txt` files).
 - Region groups update running worlds with a handover (`scripts/shard-group/README.md`): a
-  standby world (`-params standby=1`) boots the staged build beside the running one, the
+  standby world (`-params standby=PORT`) boots the staged build beside the running one, the
   running world saves, freezing each level only during its capture (`persistence_frozen_levels`;
   play after a level's capture does not carry over and players are warned, `world_moving`),
   the standby loads the save and then

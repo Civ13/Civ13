@@ -666,6 +666,26 @@ class ShardGroupTests(unittest.TestCase):
         shard_group.setup(self.write_group(), self.machine)
         self.assertEqual(0, json.loads((config / 'shard_region.json').read_text())['save_minutes'])
 
+    def test_a_standby_is_launched_for_its_own_port(self):
+        # A standby that took over keeps its launch parameters; naming its own port
+        # lets a later reboot on the region's port come back as the region
+        # (North America and Jungle, 2026-11-16).
+        group = self.write_group()
+        platform = shard_group.RegionPlatform(shard_group.region_config(group, group['regions'][0]))
+        platform.config['repository'] = str(self.base)
+        platform.start_agent = lambda: None
+        launched = []
+        detach = shard_group.detach
+        shard_group.detach = lambda argv, cwd, log: launched.append(argv) or 4242
+        try:
+            self.assertEqual(4242, platform.start_standby('region.b.dmb', 1755))
+        finally:
+            shard_group.detach = detach
+        self.assertEqual(['-params', 'standby=1755'], launched[0][-2:])
+        dm = (Path(__file__).resolve().parents[2] / 'code/modules/persistence/restart_transaction.dm').read_text()
+        self.assertIn('persistence_standby_launch(islist(world.params) ? world.params["standby"] : null, world.port)', dm)
+        self.assertIn('return isnum(launched) && launched == port', dm)
+
     def host(self, group, region_id):
         region = next(r for r in group['regions'] if r['id'] == region_id)
         return shard_group.RegionHost(shard_group.region_config(group, region), self.machine)
