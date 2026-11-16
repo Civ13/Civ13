@@ -472,11 +472,11 @@
 
 /obj/structure/simple_door/proc/door_tool_work(obj/item/W, mob/living/human/user)
 	if (door_closer == DOOR_CLOSER_HYDRAULIC && is_tool(W, TOOL_SCREWDRIVER))
-		var/choice = input(user, "Adjust the closer or take it off?", "Hydraulic closer") as null|anything in list("Adjust delay", "Take it off")
+		var/choice = player_input(user, "Adjust the closer or take it off?", "Hydraulic closer", null, "anything", list("Adjust delay", "Take it off"), TRUE)
 		if (!choice || QDELETED(src) || user.get_active_hand() != W || get_dist(user, src) > 1)
 			return TRUE
 		if (choice == "Adjust delay")
-			var/seconds = input(user, "Seconds before it shuts ([DOOR_HYDRAULIC_MIN / 10]-[DOOR_HYDRAULIC_MAX / 10]):", "Hydraulic closer", closer_delay / 10) as null|num
+			var/seconds = player_input(user, "Seconds before it shuts ([DOOR_HYDRAULIC_MIN / 10]-[DOOR_HYDRAULIC_MAX / 10]):", "Hydraulic closer", closer_delay / 10, "num", null, TRUE)
 			if (isnull(seconds) || QDELETED(src) || get_dist(user, src) > 1)
 				return TRUE
 			closer_delay = clamp(round(seconds * 10), DOOR_HYDRAULIC_MIN, DOOR_HYDRAULIC_MAX)

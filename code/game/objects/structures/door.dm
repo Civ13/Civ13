@@ -112,6 +112,8 @@
 	return
 
 /obj/structure/simple_door/attack_hand(mob/user as mob)
+	if (state && !isSwitchingStates && door_fitting_hand(user))
+		return TRUE
 	return door_intent_interact(user)
 
 // Hand interactions follow intent: help opens the door (a locked door rattles
@@ -120,8 +122,6 @@
 /obj/structure/simple_door/proc/door_intent_interact(mob/user)
 	if (!user || !istype(user) || isSwitchingStates)
 		return FALSE
-	if (state && door_fitting_hand(user))
-		return TRUE
 	if (state)
 		return TryToSwitchState(user)
 	if (user.a_intent == I_HELP)
