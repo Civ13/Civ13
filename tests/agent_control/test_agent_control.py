@@ -1695,9 +1695,9 @@ class StructureAndHabitTest(unittest.TestCase):
         self.assertIn('row["supported"] = R.is_supported()', characters)
         self.assertIn('row["safe_to_mine"] = U.mine_supported()', characters)
         self.assertIn('here_row["cave_supported"] = U.mine_supported()', characters)
-        roof = (ROOT / "code/game/objects/roof_stuff.dm").read_text(encoding="utf-8")
+        collapse = (ROOT / "code/game/objects/building_collapse.dm").read_text(encoding="utf-8")
         floor = (ROOT / "code/game/turfs/floor_attackby.dm").read_text(encoding="utf-8")
-        self.assertIn("var/supportfound = is_supported()", roof)  # collapse_check uses the same proc
+        self.assertIn("/obj/roof/proc/building_collapse_step(stage)\n\tif (is_supported())", collapse)  # collapse checks use the same proc
         self.assertIn("var/supportfound = mine_supported()", floor)
 
 

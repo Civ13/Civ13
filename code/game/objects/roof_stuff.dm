@@ -312,26 +312,10 @@
 	var/tmp/sagging = FALSE
 
 // slow is for supports that wore out: the roof sags and warns first. Supports
-// that were knocked down, burnt or taken away keep the short fuse.
+// that were knocked down, burnt or taken away creak and fall within seconds.
+// Checks wait in one shared queue (building_collapse.dm).
 /obj/roof/proc/collapse_check(slow = FALSE)
-	spawn(slow ? 10 : 50)
-		if (!src || gcDestroyed || gc_destroyed)
-			return
-		if (persistence_save_in_progress)
-			collapse_check(slow)
-			return
-		var/supportfound = is_supported()
-	//if no support >> roof falls down
-		if (!supportfound)
-			if (slow)
-				sag()
-				return
-			playsound(src,'sound/effects/rocksfalling.ogg',100,0,6)
-			for (var/mob/living/human/M in range(1, src))
-				M.adjustBruteLoss(rand(17,27))
-				M.Weaken(15)
-				to_chat(M, "The roof collapses!")
-			qdel(src)
+	building_collapse_queue(src, slow)
 
 /obj/roof/proc/sag()
 	if (sagging)
