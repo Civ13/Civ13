@@ -29,7 +29,9 @@ The separate workflow runs these cases on relevant PR and master changes.
 checks that messages tagged by `CHAT_TYPED` (`code/__defines/chat.dm`) and untagged
 OOC, PM, dead, whisper, warning and plain messages land in the right type,
 that tabs hide other types and count unread lines, that the Admin tab stays
-hidden until admin output arrives, that custom tabs are saved, that a flood of
+hidden until admin output arrives, that prayers and answers from the gods get
+their own Prayer tab (hidden until the first prayer and kept out of Admin),
+that tabs saved before the Prayer tab gain it once, that custom tabs are saved, that a flood of
 one type does not trim another, and that malformed saved settings fall back to
 the defaults. Set `CHAT_SCREENSHOT` to a path to save a picture of the
 settings panel.

@@ -75,6 +75,20 @@ const script = String.raw`
         await delay(20);
         check(tabs().indexOf('Admin') !== -1 && typeOf('m-admin') === 'admin', 'Admin tab appears after admin output');
 
+        // Prayers get their own tab, hidden until the first prayer, and stay out of Admin.
+        check(tabs().indexOf('Prayer') === -1, 'Prayer tab hidden before any prayer');
+        add('m-pray', "<span class='chattype-prayer'><span class='notice'><b><font color=purple>PRAY: </font>Val:</b> test</span></span>");
+        add('m-answer', "<span class='chattype-prayer'><span class='notice'><b>Valithor, The Weaver</b> answers: <i>yes</i></span></span>");
+        await delay(20);
+        check(typeOf('m-pray') === 'prayer' && typeOf('m-answer') === 'prayer', 'prayers typed prayer');
+        check(tabs().indexOf('Prayer') !== -1, 'Prayer tab appears after a prayer');
+        tabButton('Admin').click(); await delay(20);
+        check(!shown('m-pray') && shown('m-admin'), 'Admin tab leaves prayers out');
+        tabButton('Prayer').click(); await delay(20);
+        check(shown('m-pray') && shown('m-answer') && !shown('m-admin') && !shown('m-say'), 'Prayer tab shows only prayers');
+        tabButton('All').click(); await delay(20);
+        check(shown('m-pray'), 'All tab shows prayers');
+
         // Custom tab via settings, saved to storage.
         document.getElementById('chat-tab-settings').click(); await delay(20);
         check(document.getElementById('chat-settings').classList.contains('open'), 'settings panel opens');
@@ -103,8 +117,20 @@ const script = String.raw`
 
         // Malformed saved settings fall back to defaults on the next load.
         localStorage.setItem('civ13-chat-tabs-v1', '{not json');
-        check(typeof loadTabs === 'function' && loadTabs().map(t => t.name).join(',') === 'All,IC,Radio,OOC,Dead,Admin', 'malformed settings fall back to defaults');
+        check(typeof loadTabs === 'function' && loadTabs().map(t => t.name).join(',') === 'All,IC,Radio,OOC,Dead,Admin,Prayer', 'malformed settings fall back to defaults');
+
+        // Tabs saved before prayers existed: All gains prayers and a Prayer tab is
+        // added once; a Prayer tab the player later removes stays removed.
+        const oldAll = ['ic', 'radio', 'ooc', 'dead', 'pm', 'admin', 'warning', 'other'];
+        localStorage.removeItem('civ13-chat-tabs-added-v1');
+        localStorage.setItem('civ13-chat-tabs-v1', JSON.stringify([{ name: 'All', types: oldAll }, { name: 'IC', types: ['ic'] }]));
+        const migrated = loadTabs();
+        check(migrated.map(t => t.name).join(',') === 'All,IC,Prayer', 'old settings gain a Prayer tab [' + migrated.map(t => t.name).join(',') + ']');
+        check(migrated[0].types.indexOf('prayer') !== -1 && migrated[1].types.indexOf('prayer') === -1, 'only the all-types tab gains prayers');
+        localStorage.setItem('civ13-chat-tabs-v1', JSON.stringify([{ name: 'All', types: oldAll.concat(['prayer']) }, { name: 'IC', types: ['ic'] }]));
+        check(loadTabs().map(t => t.name).join(',') === 'All,IC', 'removed Prayer tab is not added back');
         localStorage.removeItem('civ13-chat-tabs-v1');
+        localStorage.removeItem('civ13-chat-tabs-added-v1');
     } catch (e) { failures.push('exception: ' + String(e && e.stack || e)); }
     document.documentElement.setAttribute('data-chat-test', failures.length ? 'FAIL: ' + failures.join(' | ') : 'PASS');
 })();`;

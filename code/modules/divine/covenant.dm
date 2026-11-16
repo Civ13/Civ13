@@ -260,7 +260,7 @@ var/global/list/divine_invocation_names = list(
 	for (var/client/C in divine_online_operators(divine_patron))
 		operators += C.ckey
 	if (!operators.len)
-		to_chat(src, SPAN_NOTICE("You pray, but nothing answers."))
+		to_chat(src, CHAT_TYPED(CHAT_PRAYER, SPAN_NOTICE("You pray, but nothing answers.")))
 		return
 	var/datum/divine_covenant_runtime/covenant = new(src, divine_book_key(divine_patron), operators, divine_known)
 	covenant.active = TRUE
@@ -282,7 +282,7 @@ var/global/list/divine_invocation_names = list(
 		for (var/mob/living/human/M in V.participants)
 			if (M != src)
 				M.divine_vigil_member = V
-	to_chat(src, SPAN_NOTICE("You hold still and pray to [divine_label_for(divine_patron)]."))
+	to_chat(src, CHAT_TYPED(CHAT_PRAYER, SPAN_NOTICE("You hold still and pray to [divine_label_for(divine_patron)].")))
 	visible_message("<span class='notice'>[src] bows their head.</span>", null, 3)
 	log_game("[key_name(src)] beseeched [divine_patron]: [spell] on [key_name(target)].")
 	divine_alert_operators(R)
@@ -291,7 +291,7 @@ var/global/list/divine_invocation_names = list(
 		if (watched && watched.state == "requested")
 			watched.state = "expired"
 			if (watched.covenant && watched.covenant.caster)
-				to_chat(watched.covenant.caster, SPAN_NOTICE("No answer comes."))
+				to_chat(watched.covenant.caster, CHAT_TYPED(CHAT_PRAYER, SPAN_NOTICE("No answer comes.")))
 			divine_finish_request(watched)
 
 // Asks nearby people, at once, whether they will keep the vigil. Ordinary words:
@@ -354,7 +354,7 @@ var/global/list/divine_invocation_names = list(
 	text += "<a href='?src=\ref[R];divine_answer=approve'>Grant</a> | <a href='?src=\ref[R];divine_answer=deny'>Refuse</a> | <a href='?_src_=holder;adminplayerobservefollow=\ref[caster]'>Follow</a>"
 	for (var/client/C in divine_online_operators(caster.divine_patron))
 		if (C.ckey in R.covenant.operator_ckeys)
-			to_chat(C, "<span class='notice'>[text]</span>")
+			to_chat(C, CHAT_TYPED(CHAT_PRAYER, "<span class='notice'>[text]</span>"))
 			C << 'sound/effects/adminhelp.ogg'
 
 /datum/divine_use_request/Topic(href, href_list)
@@ -374,8 +374,8 @@ var/global/list/divine_invocation_names = list(
 		to_chat(C, SPAN_WARNING("That prayer can't be answered now."))
 		return
 	var/mob/caster = R.covenant.caster
-	to_chat(C, SPAN_NOTICE("You refused [caster.real_name]."))
-	to_chat(caster, SPAN_NOTICE("Your prayer goes unanswered."))
+	to_chat(C, CHAT_TYPED(CHAT_PRAYER, SPAN_NOTICE("You refused [caster.real_name].")))
+	to_chat(caster, CHAT_TYPED(CHAT_PRAYER, SPAN_NOTICE("Your prayer goes unanswered.")))
 	divine_finish_request(R)
 
 /proc/divine_grant(datum/divine_use_request/R, client/C)
@@ -410,7 +410,7 @@ var/global/list/divine_invocation_names = list(
 			if (V && (V in divine_pending_requests))
 				divine_dispatch(V, null)
 		return
-	to_chat(C, SPAN_NOTICE("You granted [R.covenant.caster.real_name]'s prayer."))
+	to_chat(C, CHAT_TYPED(CHAT_PRAYER, SPAN_NOTICE("You granted [R.covenant.caster.real_name]'s prayer.")))
 	divine_dispatch(R, omen_text)
 
 // Recheck, consume, charge and apply in one synchronous call with no yield.
@@ -452,7 +452,7 @@ var/global/list/divine_invocation_names = list(
 			to_chat(target, SPAN_WARNING("A sudden ache runs through you and your limbs feel heavy."))
 			to_chat(caster, SPAN_NOTICE("You feel drained."))
 		if ("omen")
-			to_chat(caster, "<span class='notice'><i>[omen_text]</i></span>")
+			to_chat(caster, CHAT_TYPED(CHAT_PRAYER, "<span class='notice'><i>[omen_text]</i></span>"))
 		if ("vigil")
 			var/datum/divine_use_request/ritual/V = R
 			for (var/mob/living/human/M in V.participants)
