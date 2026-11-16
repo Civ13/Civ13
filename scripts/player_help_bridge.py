@@ -70,10 +70,10 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '047ce57e548f642c02702880139281191e11bb14'
+WIKI_REVIEWED_REVISION = 'edddb6902ff65dc8616e16902df156d67581bb93'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
-    'guides/Guide_to_Character.md': ('85a1bdb974d140a093a434fa3c472ebfd3187cd87991f7eb21a511d1476baabc', 'character skills traits languages'),
+    'guides/Guide_to_Character.md': ('19a2099a895672d6d6d77c383bcd167d5fd617d156f4245bceaad86fe273c303', 'character skills traits languages'),
     'guides/Guide_to_Peoples_and_Languages.md': ('1e10b1f26c4e2f6d2659b32f0e6b045bb04b2129516382a37479574b9f107bcc', 'peoples people origin ethnicity language languages learn teach lesson mother tongue translate accent'),
     'guides/Guide_to_Chemistry.md': ('864bf107bd77e3934528bcf9c776b174ba2e86371118eedf084cbe5d42ce7ca5', 'chemistry chemicals reactions reagents'),
     'guides/Guide_to_Combat.md': ('006296f6e7501eeb36f4b486ee3a2b2a85567ecef74d0616dd2a04c2e42f53b2', 'combat fight fighting intent aim shoot melee grenade cover'),
@@ -83,7 +83,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Cooking.md': ('3fa0033c4d7f5b6d85cc0db329d09bb9fdbab9e44e1e741e1dd8c7ebd4882934', 'cooking cook food meal ingredients'),
     'guides/Guide_to_Exercise.md': ('cd6d6e48f3ae664458e935bb88954a0c6d2232f00b6058e92fb520f5c7c76a09', 'exercise training strength weights running fatigue'),
     'guides/Guide_to_Factory_Automation.md': ('e49b07d8eea1fe3c785b450c486e4b412e9ab4e4d0df30c8e9dc1dc34f666be0', 'factory automation belt belts conveyor arm arms fabricator fabricators pipe pipes pump tank bottler monitor crusher stamp mill'),
-    'guides/Guide_to_Farming.md': ('944931763740534ec1f9d554df9c7b1dfe37952083fae505c727965084397008', 'farming farm plant crops soil water'),
+    'guides/Guide_to_Farming.md': ('1a8935c2b47d3306143fe57e8318eb6614bf1c25a49484f014f230d59c3be458', 'farming farm plant crops soil water'),
     'guides/Guide_to_Fishing.md': ('aef17fa1c8019e470c40d79baae65ebe8c88258766a590844c873b7cc9cf25fd', 'fishing fish rod bait'),
     'guides/Guide_to_Hygiene.md': ('4b8173587991ef1364e88dd0f69909167c8263c75fd2c1a9e4a04d96898de4b6', 'hygiene clean washing soap detergent laundry'),
     'guides/Guide_to_Leadership.md': ('d8fa16a65959d1c7f632c782de1129a9c6dfade1614a9e55ebcdd92851e972df', 'leadership squad leader officer commander artillery coordinates'),
@@ -98,6 +98,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Survival.md': ('d10258806571989ba1ef561be0653b673c5b3f63e169e448f0f1618efae3e868', 'survival winter cold warm freezing hypothermia shelter debris footwear boots snowshoes shoes ice mud rain wet umbrella raincoat cape storm storms lightning thunder blizzard sandstorm heat wave weather fire fires wildfire firefighting beater flapper smother burning bucket blanket extinguish smoke signal signals hook firebreak pump engine nozzle hose jet reel extinguisher'),
     'guides/Guide_to_Tanks.md': ('b900c1641222035e9a4940539ddf14501ec5d9133da22414333f7ca0c97578a6', 'tank driving crew ammunition'),
     'guides/Guide_to_Trains.md': ('d3989f8f25c1e27b7653024d80d8043783f4e24790f717a150a2084995c5bc25', 'train trains railway track locomotive station switcher rails wagon'),
+    'guides/Guide_to_Castles.md': ('2c2c9c61672cc8d98aeba434521e3bff44ef28f56f5ebc02f67910cac2c56b5c', 'castle castles defend defending siege gatehouse portcullis murder hole arrow slit battlement caltrops trapdoor'),
     'guides/Guide_to_Trenches.md': ('489f490577786cd0443c303116db8b42b01cdcc193f059c3275f4ca08b5928aa', 'trench trenches fortification sandbag dig shovel'),
     'guides/Guide_to_Weapons.md': ('a56dbe507d6b7b7a9838dbd1812d44f91fff9a197febf2bfa90dce689849c050', 'weapons gun reload ammunition'),
     'New_Player_Guide.md': ('c0d80da1236f7b15de5787584628898cc5dacddd6db97fadbe42dd5b685faee0', 'new player beginner start first round basics'),
