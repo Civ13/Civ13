@@ -187,7 +187,7 @@
 	return 0
 
 /obj/structure/simple_door/proc/door_schedule_close(delay = null)
-	if (!door_closer || door_wedge || !state || QDELETED(src))
+	if (!door_closer || door_wedge || fire_link_holding || !state || QDELETED(src))
 		return FALSE
 	if (isnull(delay))
 		delay = door_close_delay()
@@ -256,6 +256,8 @@
 		states += "wedge_[door_wedge]_open"
 	for (var/bar_state in door_bar_overlay_states())
 		states[bar_state] = 'icons/obj/doors/door_bars.dmi'
+	for (var/fire_state in fire_door_overlay_states())
+		states[fire_state] = 'icons/obj/doors/fire_doors.dmi'
 	var/lock_state = door_lock_overlay_state()
 	if (lock_state)
 		states["[lock_state]"] = 'icons/obj/doors/locks_fitted.dmi'
@@ -299,6 +301,7 @@
 		to_chat(user, SPAN_NOTICE(door_facing_text(user)))
 	lock_examine(src, user)
 	door_bar_examine(user)
+	fire_door_examine(user)
 
 // ---- hands on an open door ----------------------------------------------------
 
@@ -309,6 +312,9 @@
 	var/mob/living/human/H = user
 	if (door_wedge)
 		pull_door_wedge(H, H.a_intent == I_HARM)
+		return TRUE
+	if (fire_link_holding && H.a_intent != I_HARM)
+		unhook_fire_link(H)
 		return TRUE
 	if (door_closer && H.a_intent == I_GRAB)
 		take_door_hold(H)
@@ -514,6 +520,8 @@
 		return TRUE
 	if (door_bar_attackby(W, user))
 		return TRUE
+	if (fire_door_attackby(W, user))
+		return TRUE
 	if (user.a_intent == I_HARM)
 		return FALSE
 	if (is_tool(W, TOOL_SCREWDRIVER) || is_tool(W, TOOL_HAMMER) || is_tool(W, TOOL_WRENCH))
@@ -604,6 +612,9 @@
 	return FALSE
 
 /obj/structure/simple_door/proc/remove_door_fitting(obj/item/W, mob/living/human/user)
+	if (door_closer_fixed())
+		to_chat(user, SPAN_WARNING("The closer is part of the fire door's rated frame and stays on."))
+		return TRUE
 	if (!door_workable())
 		to_chat(user, SPAN_WARNING("\The [src] is locked. Unlock or open it first."))
 		return TRUE
@@ -668,6 +679,7 @@
 		lock_to_item(door_lock, T)
 		door_lock = null
 	door_bar_parts_returned(T)
+	fire_door_parts_returned(T)
 	user.visible_message(SPAN_NOTICE("[user] takes \the [src] down."), SPAN_NOTICE("You take the door down and salvage [sheets] sheets."))
 	qdel(src)
 	return TRUE

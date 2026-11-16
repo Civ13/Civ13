@@ -248,6 +248,13 @@ var/global/list/nomads_fire_callbacks = list()
 	if(isDeleted(src) || !loc) return
 	var/datum/nomads_fire_callback/C = new(src)
 	C.invoke("burningproc_work", list())
+// Fire spreads onto a tile unless a shut, rated fire door stands there.
+/proc/fire_spread_to(T)
+	var/turf/target = get_turf(T)
+	if (!target || fire_blocked_at(target))
+		return null
+	return new/obj/effect/fire(target)
+
 /obj/effect/fire/proc/burningproc_work()
 //this tile
 	if (prob(3))
@@ -293,6 +300,9 @@ var/global/list/nomads_fire_callbacks = list()
 			OS.update_icon()
 			OS.refill()
 
+	// Fusible links melt and rated fire doors spend their minutes (fire_doors.dm).
+	fire_nearby_doors(src)
+
 //burn floors
 	if (istype(get_turf(src), /turf/floor/grass))
 		var/turf/T = get_turf(src)
@@ -305,10 +315,10 @@ var/global/list/nomads_fire_callbacks = list()
 	for (var/obj/effect/decal/cleanable/blood/OL in orange(1, src))
 		if (istype(OL, /obj/effect/decal/cleanable/blood/oil))
 			if (prob(35))
-				new/obj/effect/fire(OL.loc)
+				fire_spread_to(OL.loc)
 		if (istype(OL, /obj/effect/decal/cleanable/blood/tracks) && OL.color == "#030303")
 			if (prob(35))
-				new/obj/effect/fire(OL.loc)
+				fire_spread_to(OL.loc)
 
 	for (var/turf/floor/grass/GR in orange(1, src))
 		var/blocked = 0
@@ -322,14 +332,14 @@ var/global/list/nomads_fire_callbacks = list()
 			if (!found)
 				blocked = 1
 		if (prob(10) && !blocked)
-			new/obj/effect/fire(GR)
+			fire_spread_to(GR)
 
 	for (var/turf/floor/wood/WF in orange(1, src))
 		if (prob(21))
-			new/obj/effect/fire(WF)
+			fire_spread_to(WF)
 	for (var/obj/covers/repairedfloor/RF in orange(1, src))
 		if (prob(12))
-			new/obj/effect/fire(RF)
+			fire_spread_to(RF)
 
 //remove duplicates
 	for (var/obj/effect/fire/OTH in src.loc)

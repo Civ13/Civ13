@@ -569,6 +569,7 @@ RECIPE: /material/electronics/,tape recorder,/obj/item/tape_recorder,4,100,0,1,n
 //*********************| WOOLCLOTH |****************************
 //**************************************************************
 
+RECIPE: /material/woolcloth/,fire seals,/obj/item/fire_seals,2,40,0,1,construction,62,0,0,8,null
 RECIPE: /material/woolcloth/,small wool sail,/obj/item/sail/wool,15,125,0,1,none,0,0,22,8,null
 
 RECIPE: /material/woolcloth/,wool gloves,/obj/item/clothing/gloves/thick/leather/white,3,80,0,1,gloves,0,0,0,8,null
@@ -2095,6 +2096,8 @@ RECIPE: /material/steel/,blast door control,/obj/structure/gatecontrol/blastcont
 RECIPE: /material/steel/,electric sewage pump,/obj/structure/sewer_pump/electric,8,200,1,1,construction,0,0,0,8,null
 RECIPE: /material/steel/,sump pump,/obj/structure/cellar_pump/sump,4,120,1,1,construction,0,0,0,8,null
 RECIPE: /material/steel/,large reinforced large steel double doors,/obj/structure/simple_door/key_door/anyone/doubledoor/steel,10,250,1,1,construction,62,0,0,8,null
+RECIPE: /material/steel/,steel fire door,/obj/structure/simple_door/key_door/anyone/fire_door/steel,15,250,1,1,construction,62,0,0,8,null
+RECIPE: /material/steel/,panic bar,/obj/item/panic_bar,3,60,0,1,construction,75,0,0,8,null
 RECIPE: /material/steel/,hydraulic door closer,/obj/item/door_fitting/hydraulic,4,120,0,1,construction,0,0,0,8,null
 RECIPE: /material/steel/,tumbler lock,/obj/item/fitted_lock/tumbler,3,100,0,1,construction,0,0,0,8,null
 RECIPE: /material/steel/,tumbler key blank,/obj/item/weapon/key/blank/tumbler,1,20,0,1,construction,0,0,0,8,null
@@ -2133,6 +2136,7 @@ RECIPE: /material/steel/,submarine air bank,/obj/structure/vehicleparts/sub_fitt
 RECIPE: /material/steel/,shipyard office,/obj/structure/car_workshop/shipyard,60,260,1,1,production,150,0,0,8,null
 RECIPE: /material/wood/soft/,shoring kit,/obj/item/weapon/shoring_kit,6,120,0,1,none,126,0,0,8,null
 RECIPE: /material/cloth/,diving dress,/obj/item/clothing/suit/pressure_suit/diving,12,200,0,1,clothing,126,0,0,8,null
+RECIPE: /material/brass/,fusible link,/obj/item/fusible_link,1,40,0,1,construction,62,0,0,8,null
 RECIPE: /material/brass/,diving helmet,/obj/item/clothing/head/pressure_helmet/diving,8,200,0,1,none,126,0,0,8,null
 RECIPE: /material/steel/,diving air bottle,/obj/item/pressure_tank/diving,5,120,0,1,none,126,0,0,8,null
 RECIPE: /material/steel/,hard dive suit,/obj/item/clothing/suit/pressure_suit/diving/hard,20,250,0,1,none,150,0,0,8,null
@@ -2961,6 +2965,7 @@ RECIPE: /material/iron/,cast iron hand pump,/obj/structure/well_fitting/pump,6,1
 RECIPE: /material/iron/,faction door,/obj/structure/simple_door/key_door/faction_door,15,180,1,1,construction,28,0,0,8,null
 
 RECIPE: /material/iron/,unlocked large iron double doors,/obj/structure/simple_door/key_door/anyone/doubledoor/iron,10,100,1,1,construction,28,0,0,8,null
+RECIPE: /material/iron/,iron-clad fire door,/obj/structure/simple_door/key_door/anyone/fire_door,15,200,1,1,construction,62,0,0,8,null
 
 RECIPE: /material/iron/,key,/obj/item/weapon/key,2,35,0,1,none,28,0,0,8,null
 
