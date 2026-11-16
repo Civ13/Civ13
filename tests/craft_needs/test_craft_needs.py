@@ -28,6 +28,10 @@ DME = (ROOT / 'civ13.dme').read_text(encoding='utf-8', errors='ignore')
 
 
 # Second inputs that are whole items, not stacks: type -> the file that defines it.
+# Stack inputs declared outside material_sheets.dm.
+OTHER_STACKS = {
+    '/obj/item/stack/hay': 'code/modules/1713/hay.dm',
+}
 LOOSE_INPUTS = {
     '/obj/item/weapon/reagent_containers/food/snacks/animalfat':
         'code/modules/reagents/reagent_containers/food/snacks/meat.dm',
@@ -74,7 +78,10 @@ class CraftNeeds(unittest.TestCase):
                 self.assertIn(tool, qualities, product)
             for input_type, amount in need['inputs'].items():
                 if input_type.startswith('/obj/item/stack/'):
-                    self.assertRegex(SHEETS, r'(?m)^' + re.escape(input_type) + r'$')
+                    source = SHEETS
+                    if input_type in OTHER_STACKS:
+                        source = (ROOT / OTHER_STACKS[input_type]).read_text(encoding='utf-8', errors='ignore')
+                    self.assertRegex(source, r'(?m)^' + re.escape(input_type) + r'$')
                 else:
                     self.assertIn(input_type, LOOSE_INPUTS, product)
                     defined = (ROOT / LOOSE_INPUTS[input_type]).read_text(encoding='utf-8', errors='ignore')

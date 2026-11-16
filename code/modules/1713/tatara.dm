@@ -469,3 +469,78 @@ var/global/list/kanna_channel_stock = list()
 #undef KANNA_WASH_TIME
 #undef SAND_PER_WASH
 #undef SAND_WASH_TIME
+
+//////////////////////////////////////////////////////////////////////////////
+// Japanese blades: clay hardening (tsuchioki and yaki-ire). A steel blade
+// forged beside a watered quench tub, with clay to hand, is coated thin at
+// the edge and thick at the spine before the quench: the edge comes out
+// harder than plain quenching makes it, with a hamon line along it.
+
+#define CLAY_HARDENED_QUALITY 1.35
+
+/obj/item/weapon/material/var/hamon = FALSE
+
+/obj/item/weapon/material/sword/tachi
+	name = "tachi"
+	desc = "The older Japanese cavalry sword: long and deeply curved, worn edge down slung from the belt."
+	icon_state = "tachi"
+	item_state = "tachi"
+	block_chance = 25
+	force_divisor = 0.8
+	thrown_force_divisor = 0.5
+	slot_flags = SLOT_BELT | SLOT_BACK
+	value = 60
+	cooldownw = 7
+
+/proc/is_japanese_blade(obj/item/weapon/material/W)
+	return istype(W, /obj/item/weapon/material/sword/katana) || istype(W, /obj/item/weapon/material/sword/wakazashi) \
+		|| istype(W, /obj/item/weapon/material/sword/tachi) || istype(W, /obj/item/weapon/material/kitchen/utensil/knife/tanto) \
+		|| istype(W, /obj/item/weapon/material/naginata) || istype(W, /obj/item/weapon/material/spear/naginata)
+
+/obj/item/weapon/material/examine(mob/user)
+	..()
+	if (hamon)
+		to_chat(user, SPAN_NOTICE("A misty hamon line runs along its clay-hardened edge."))
+
+// Clay in the smith's other hand, or on the anvil's tile.
+/obj/structure/anvil/proc/hardening_clay(mob/living/human/H)
+	var/obj/item/stack/material/clay/C = H.get_inactive_hand()
+	if (istype(C) && C.amount > 0)
+		return C
+	for (var/obj/item/stack/material/clay/S in get_turf(src))
+		if (S.amount > 0)
+			return S
+	return null
+
+/obj/structure/anvil/proc/clay_harden(obj/item/weapon/material/W, mob/living/human/H)
+	if (!is_japanese_blade(W) || W.get_material_name() != "steel" || W.crafting_quality >= CLAY_HARDENED_QUALITY)
+		return FALSE
+	if (!crafting_node_allowed(H, "japanese_swordsmithing"))
+		return FALSE
+	var/obj/structure/quench_tub/Q = quench_tub()
+	var/obj/item/stack/material/clay/C = hardening_clay(H)
+	if (!Q || !C || !Q.station_take_water(null))
+		return FALSE
+	C.use(1)
+	W.crafting_quality = CLAY_HARDENED_QUALITY
+	W.hamon = TRUE
+	W.update_force()
+	playsound(Q, 'sound/effects/watersplash.ogg', 30, TRUE)
+	to_chat(H, SPAN_NOTICE("You coat \the [W] in clay, thin at the edge and thick at the spine, and quench it. A hamon line blooms along the edge."))
+	return TRUE
+
+/obj/structure/anvil/forge_stack_recipe(obj/item/P, mob/user, mob/living/human/H, choice, material_index, material_name, picked = null)
+	if (material_name != "steel" || !istype(H))
+		return ..()
+	var/turf/T = get_turf(src)
+	var/list/before = list()
+	for (var/obj/item/weapon/material/W in T)
+		before += W
+	. = ..()
+	if (!T)
+		return
+	for (var/obj/item/weapon/material/W in T)
+		if (!(W in before))
+			clay_harden(W, H)
+
+#undef CLAY_HARDENED_QUALITY

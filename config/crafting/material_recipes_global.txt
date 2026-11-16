@@ -569,6 +569,7 @@ RECIPE: /material/electronics/,tape recorder,/obj/item/tape_recorder,4,100,0,1,n
 //*********************| WOOLCLOTH |****************************
 //**************************************************************
 
+RECIPE: /material/woolcloth/,fire seals,/obj/item/fire_seals,2,40,0,1,construction,62,0,0,8,null
 RECIPE: /material/woolcloth/,small wool sail,/obj/item/sail/wool,15,125,0,1,none,0,0,22,8,null
 
 RECIPE: /material/woolcloth/,wool gloves,/obj/item/clothing/gloves/thick/leather/white,3,80,0,1,gloves,0,0,0,8,null
@@ -1616,7 +1617,7 @@ RECIPE: /material/stone/,stone wall,/obj/covers/stone_wall,8,140,1,1,constructio
 RECIPE: /material/stone/,stone block wall,/obj/covers/stone_wall/classic,8,140,1,1,construction,0,0,0,2,null
 RECIPE: /material/stone/,roman stone wall,/obj/covers/stone_wall/roman,6,70,1,1,construction,28,0,0,2,null
 RECIPE: /material/stone/,mayan wall,/obj/covers/stone_wall/mayan,6,70,1,1,construction,28,0,0,2,null
-RECIPE: /material/stone/,fortress wall,/obj/covers/stone_wall/fortress,8,190,1,1,construction,45,35,0,3,null
+RECIPE: /material/stone/,fortress wall,/obj/covers/stone_wall/fortress,12,190,1,1,construction,45,35,0,3,null
 RECIPE: /material/stone/,tiled white brick wall,/obj/covers/stone_wall/roman/modern,6,70,1,1,construction,115,0,0,8,null
 
 RECIPE: /material/stone/,stone block archway,/obj/covers/stone_wall/classic/archway,8,140,1,1,doorways and other buildings,0,0,0,2,null
@@ -2095,6 +2096,8 @@ RECIPE: /material/steel/,blast door control,/obj/structure/gatecontrol/blastcont
 RECIPE: /material/steel/,electric sewage pump,/obj/structure/sewer_pump/electric,8,200,1,1,construction,0,0,0,8,null
 RECIPE: /material/steel/,sump pump,/obj/structure/cellar_pump/sump,4,120,1,1,construction,0,0,0,8,null
 RECIPE: /material/steel/,large reinforced large steel double doors,/obj/structure/simple_door/key_door/anyone/doubledoor/steel,10,250,1,1,construction,62,0,0,8,null
+RECIPE: /material/steel/,steel fire door,/obj/structure/simple_door/key_door/anyone/fire_door/steel,15,250,1,1,construction,62,0,0,8,null
+RECIPE: /material/steel/,panic bar,/obj/item/panic_bar,3,60,0,1,construction,75,0,0,8,null
 RECIPE: /material/steel/,hydraulic door closer,/obj/item/door_fitting/hydraulic,4,120,0,1,construction,0,0,0,8,null
 RECIPE: /material/steel/,tumbler lock,/obj/item/fitted_lock/tumbler,3,100,0,1,construction,0,0,0,8,null
 RECIPE: /material/steel/,tumbler key blank,/obj/item/weapon/key/blank/tumbler,1,20,0,1,construction,0,0,0,8,null
@@ -2133,6 +2136,7 @@ RECIPE: /material/steel/,submarine air bank,/obj/structure/vehicleparts/sub_fitt
 RECIPE: /material/steel/,shipyard office,/obj/structure/car_workshop/shipyard,60,260,1,1,production,150,0,0,8,null
 RECIPE: /material/wood/soft/,shoring kit,/obj/item/weapon/shoring_kit,6,120,0,1,none,126,0,0,8,null
 RECIPE: /material/cloth/,diving dress,/obj/item/clothing/suit/pressure_suit/diving,12,200,0,1,clothing,126,0,0,8,null
+RECIPE: /material/brass/,fusible link,/obj/item/fusible_link,1,40,0,1,construction,62,0,0,8,null
 RECIPE: /material/brass/,diving helmet,/obj/item/clothing/head/pressure_helmet/diving,8,200,0,1,none,126,0,0,8,null
 RECIPE: /material/steel/,diving air bottle,/obj/item/pressure_tank/diving,5,120,0,1,none,126,0,0,8,null
 RECIPE: /material/steel/,hard dive suit,/obj/item/clothing/suit/pressure_suit/diving/hard,20,250,0,1,none,150,0,0,8,null
@@ -2450,7 +2454,7 @@ RECIPE: /material/wood/,nordic roof support,/obj/structure/roof_support/nordic,2
 
 RECIPE: /material/wood/soft/,wood roof builder,/obj/item/weapon/roofbuilder,1,20,0,1,construction,0,0,0,8,null
 
-RECIPE: /material/wood/soft/,wall frame,/obj/structure/wallframe,1,150,1,1,construction,35,0,0,8,null
+RECIPE: /material/wood/soft/,wall frame,/obj/structure/wallframe,2,150,1,1,construction,35,0,0,8,null
 
 RECIPE: /material/wood/soft/,door,/obj/structure/simple_door/key_door/anyone/wood,5,50,1,1,construction,18,0,0,8,null
 RECIPE: /material/wood/soft/,large wood double doors,/obj/structure/simple_door/key_door/anyone/doubledoor/wood,5,50,1,1,construction,18,0,0,8,null
@@ -2477,7 +2481,7 @@ RECIPE: /material/wood/soft/,fancy wood floor,/obj/covers/fancywood,1.5,25,1,1,c
 
 RECIPE: /material/wood/soft/,window,/obj/structure/window_frame,5,80,1,1,construction,18,0,0,8,null
 
-RECIPE: /material/wood/,straw wall,/obj/covers/straw_wall,4,90,1,1,construction,0,0,0,8,null
+RECIPE: /material/wood/,straw wall,/obj/covers/straw_wall,1,90,1,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,log wall,/obj/covers/wood_wall/log,6,90,1,1,construction,25,0,0,8,null
 RECIPE: /material/wood/,log wall corner,/obj/covers/wood_wall/log/corner,6,90,1,1,construction,25,0,0,8,null
 RECIPE: /material/wood/,nordic wall,/obj/covers/wood_wall/nordic,8,170,1,1,construction,35,0,0,8,null
@@ -2961,6 +2965,7 @@ RECIPE: /material/iron/,cast iron hand pump,/obj/structure/well_fitting/pump,6,1
 RECIPE: /material/iron/,faction door,/obj/structure/simple_door/key_door/faction_door,15,180,1,1,construction,28,0,0,8,null
 
 RECIPE: /material/iron/,unlocked large iron double doors,/obj/structure/simple_door/key_door/anyone/doubledoor/iron,10,100,1,1,construction,28,0,0,8,null
+RECIPE: /material/iron/,iron-clad fire door,/obj/structure/simple_door/key_door/anyone/fire_door,15,200,1,1,construction,62,0,0,8,null
 
 RECIPE: /material/iron/,key,/obj/item/weapon/key,2,35,0,1,none,28,0,0,8,null
 
@@ -3030,11 +3035,11 @@ RECIPE: /material/sandstone/,stone bricks,/obj/item/stack/material/stonebrick,3,
 //*********************| SANDSTONE CONSTRUCTIONS |**************************
 
 RECIPE: /material/sandstone/,smooth sandstone wall,/obj/covers/sandstone_smooth_wall/plain,8,125,1,1,construction,0,0,0,8,null
-RECIPE: /material/sandstone/,egyptian wall,/obj/covers/sandstone_wall/egyptian,6,125,1,1,construction,0,0,0,1,null
+RECIPE: /material/sandstone/,egyptian wall,/obj/covers/sandstone_wall/egyptian,8,125,1,1,construction,0,0,0,1,null
 RECIPE: /material/sandstone/,sandstone block wall,/obj/covers/sandstone_wall/classic,8,125,1,1,construction,0,0,0,8,null
 RECIPE: /material/sandstone/,red sandstone block wall,/obj/covers/sandstone_wall/classic/red,8,125,1,1,construction,0,0,0,8,null
 
-RECIPE: /material/sandstone/,sandstone fortress wall,/obj/covers/sandstone_wall/fortress,8,190,1,1,construction,45,35,0,3,null
+RECIPE: /material/sandstone/,sandstone fortress wall,/obj/covers/sandstone_wall/fortress,12,190,1,1,construction,45,35,0,3,null
 
 RECIPE: /material/sandstone/,castle gate,/obj/structure/gate/sandstone,15,210,1,1,construction,30,30,0,8,null
 RECIPE: /material/sandstone/,castle gate control,/obj/structure/gatecontrol/sandstone,5,100,1,1,construction,30,30,0,8,null

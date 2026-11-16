@@ -14230,6 +14230,27 @@
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
+      "name": "Dry grass into hay",
+      "file": "code/modules/1713/hay.dm",
+      "line": 169,
+      "source_commit": "63e260603574d1c43d4f84b24e9e3f93fe84cba2",
+      "inputs": [
+        "/obj/item/stack/grass_cuttings"
+      ],
+      "outputs": [
+        "/obj/item/stack/hay"
+      ],
+      "tools": [],
+      "steps": [
+        "Click open ground next to you with grass cuttings in hand to spread them out.",
+        "After three minutes of dry weather the cuttings become hay, one per portion spread."
+      ],
+      "conditions": "Rain or snow on open ground stops the drying; under a roof it keeps drying.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
       "name": "Extract trace ground chemicals",
       "file": "code/game/turfs/floor_attackby.dm",
       "line": 693,
