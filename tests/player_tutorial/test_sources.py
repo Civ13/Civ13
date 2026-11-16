@@ -37,8 +37,9 @@ class PlayerTutorialSourceTests(unittest.TestCase):
 
     def test_reset_is_offered_in_menu_and_settings(self):
         self.assertIn('owner.tutorial_menu()', read('code/modules/client/escape_menu.dm'))
-        settings = read('code/modules/client/preferencesSQLite/preference_setup/global/01_settings.dm')
-        self.assertIn('reset_tutorial=1', settings)
+        settings = read('code/modules/client/preferencesSQLite/character_setup_ui.dm')
+        self.assertIn('if ("reset_tutorial")', settings)
+        self.assertIn('action="reset_tutorial"', read('tgui/src/interfaces/CharacterSetup.tsx'))
         self.assertIn('user.client.reset_tutorial()', settings)
         self.assertIn('"Reset tutorial progress"', read(TUTORIAL))
 

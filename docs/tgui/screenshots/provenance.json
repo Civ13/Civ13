@@ -1,7 +1,7 @@
 {
   "kind": "cloud-browser-preview",
   "nativeByondVerified": false,
-  "sourceHead": "5d32f552cced2446c73d14ab3bbfe5445b20c04f",
+  "sourceHead": "f8d667f8fa33126db5c5a80668909e7f4d14c6a1",
   "browser": "153.0.8010.12",
   "deviceScaleFactor": 1,
   "data": "Deterministic fictional fixtures; no player or server data",
@@ -3509,6 +3509,950 @@
         "draft_signature": "Mara Flint",
         "response_serial": 1,
         "result": "saved"
+      }
+    },
+    {
+      "file": "character-setup.png",
+      "viewport": {
+        "width": 860,
+        "height": 913
+      },
+      "template": "character_setup.tmpl",
+      "title": "Character Setup",
+      "fixture": {
+        "character": {
+          "name": "Maren Holt",
+          "name_max": 45,
+          "random_name": 0,
+          "random_body": 0,
+          "summary": "Young adult, tan, female.",
+          "gender": "female",
+          "age": 27,
+          "age_min": 18,
+          "age_max": 80,
+          "blood": "O+",
+          "blood_types": [
+            "A+",
+            "A-",
+            "B+",
+            "B-",
+            "AB+",
+            "AB-",
+            "O+",
+            "O-"
+          ],
+          "skin_tone": 52,
+          "hair_style": "Braid",
+          "hair_styles": [
+            "Bald",
+            "Short Hair",
+            "Ponytail",
+            "Braid",
+            "Bun",
+            "Long Hair",
+            "Topknot",
+            "Curls",
+            "Bob",
+            "Crew Cut",
+            "Side Part",
+            "Undercut",
+            "Pigtails",
+            "Bedhead",
+            "Dreadlocks",
+            "Mohawk",
+            "Beehive",
+            "Parted"
+          ],
+          "facial_style": "Shaved",
+          "facial_styles": [
+            "Shaved"
+          ],
+          "hair_color": "Brown",
+          "facial_color": "Brown",
+          "eye_color": "Green",
+          "hair_colors": [
+            {
+              "name": "Black",
+              "hex": "#090806"
+            },
+            {
+              "name": "Light Brown",
+              "hex": "#6A4E42"
+            },
+            {
+              "name": "Brown",
+              "hex": "#4F3B2E"
+            },
+            {
+              "name": "Dark Brown",
+              "hex": "#3B3024"
+            },
+            {
+              "name": "Red",
+              "hex": "#B55239"
+            },
+            {
+              "name": "Blond",
+              "hex": "#E5C8A8"
+            },
+            {
+              "name": "Grey",
+              "hex": "#808080"
+            }
+          ],
+          "eye_colors": [
+            {
+              "name": "Black",
+              "hex": "#000000"
+            },
+            {
+              "name": "Brown",
+              "hex": "#542A0E"
+            },
+            {
+              "name": "Green",
+              "hex": "#4B7248"
+            },
+            {
+              "name": "Blue",
+              "hex": "#5EA4E7"
+            }
+          ],
+          "previews": [
+            {
+              "label": "Body"
+            },
+            {
+              "label": "Clothed"
+            }
+          ]
+        },
+        "traits": {
+          "spent": 5,
+          "earned": 3,
+          "chosen": [
+            "Green Thumb",
+            "Agile",
+            "Light Eater",
+            "Deaf"
+          ],
+          "invalid": [],
+          "error": "Your traits are not balanced. The sum must be 0 or less.",
+          "categories": [
+            {
+              "id": "playstyle",
+              "title": "Playstyle",
+              "note": "A way of playing. Each has its own strength and its own price.",
+              "pick_one": 1,
+              "traits": [
+                {
+                  "name": "Green Thumb",
+                  "cost": 0,
+                  "desc": "Playstyle. Farming trains faster and harvests yield a little more. Hunting and combat skills train slower.",
+                  "taken": 1,
+                  "conflicts": []
+                },
+                {
+                  "name": "Tinkerer",
+                  "cost": 0,
+                  "desc": "Playstyle. Better crafting and faster engineering study. Less strength.",
+                  "taken": 0,
+                  "conflicts": [
+                    "Green Thumb"
+                  ]
+                },
+                {
+                  "name": "Wanderer",
+                  "cost": 0,
+                  "desc": "Playstyle. Stamina returns faster on the move. Your mood sinks when you stay in one place.",
+                  "taken": 0,
+                  "conflicts": [
+                    "Green Thumb"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "study",
+              "title": "Field of study",
+              "note": "The branch of learning you give yourself to.",
+              "pick_one": 1,
+              "traits": [
+                {
+                  "name": "Naturalist",
+                  "cost": 0,
+                  "desc": "Natural science comes quicker to you and other branches slower.",
+                  "taken": 0,
+                  "conflicts": [],
+                  "note": "A new field can be chosen 7 days after the last change."
+                },
+                {
+                  "name": "Physician",
+                  "cost": 0,
+                  "desc": "Medicine comes quicker to you and other branches slower.",
+                  "taken": 0,
+                  "conflicts": [],
+                  "block": "You can choose again in 5 days."
+                }
+              ]
+            },
+            {
+              "id": "body",
+              "title": "Body and build",
+              "traits": [
+                {
+                  "name": "Agile",
+                  "cost": 3,
+                  "desc": "You move 15% faster.",
+                  "taken": 1,
+                  "conflicts": []
+                },
+                {
+                  "name": "Slowness",
+                  "cost": -2,
+                  "desc": "You move 15% slower.",
+                  "taken": 0,
+                  "conflicts": [
+                    "Agile"
+                  ]
+                },
+                {
+                  "name": "Tall",
+                  "cost": 1,
+                  "desc": "More strength, less dexterity.",
+                  "taken": 0,
+                  "conflicts": []
+                },
+                {
+                  "name": "Short",
+                  "cost": -1,
+                  "desc": "Less strength, better crafting.",
+                  "taken": 0,
+                  "conflicts": []
+                }
+              ]
+            },
+            {
+              "id": "health",
+              "title": "Health and diet",
+              "traits": [
+                {
+                  "name": "Light Eater",
+                  "cost": 2,
+                  "desc": "You need less food.",
+                  "taken": 1,
+                  "conflicts": []
+                },
+                {
+                  "name": "Glutton",
+                  "cost": -2,
+                  "desc": "You need more food.",
+                  "taken": 0,
+                  "conflicts": [
+                    "Light Eater"
+                  ]
+                },
+                {
+                  "name": "Hemophilia",
+                  "cost": -2,
+                  "desc": "You bleed more.",
+                  "taken": 0,
+                  "conflicts": []
+                }
+              ]
+            },
+            {
+              "id": "senses",
+              "title": "Senses and speech",
+              "traits": [
+                {
+                  "name": "Deaf",
+                  "cost": -3,
+                  "desc": "You cannot hear at all.",
+                  "taken": 1,
+                  "conflicts": []
+                },
+                {
+                  "name": "Stutter",
+                  "cost": -1,
+                  "desc": "You have a permanent stutter.",
+                  "taken": 0,
+                  "conflicts": []
+                }
+              ]
+            }
+          ]
+        },
+        "settings": {
+          "ui_style": "ConsoleStyle",
+          "ui_styles": [
+            "ConsoleStyle",
+            "1713Style",
+            "NewStyle"
+          ],
+          "cursor": "Default",
+          "cursors": [
+            "Default",
+            "Red Crosshair",
+            "Green Crosshair",
+            "White Crosshair"
+          ],
+          "client_fps": 60,
+          "fps_choices": [
+            30,
+            60,
+            100,
+            120,
+            144
+          ],
+          "tutorial": "in progress (3 of 9 steps done)",
+          "toggles": [
+            {
+              "key": "SOUND_LOBBY",
+              "label": "Lobby music",
+              "on": 1,
+              "on_label": "Yes",
+              "off_label": "No"
+            },
+            {
+              "key": "CHAT_OOC",
+              "label": "OOC chat",
+              "on": 0,
+              "on_label": "Show",
+              "off_label": "Hide"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "file": "character-setup-traits.png",
+      "viewport": {
+        "width": 860,
+        "height": 913
+      },
+      "template": "character_setup.tmpl",
+      "title": "Character Setup",
+      "fixture": {
+        "character": {
+          "name": "Maren Holt",
+          "name_max": 45,
+          "random_name": 0,
+          "random_body": 0,
+          "summary": "Young adult, tan, female.",
+          "gender": "female",
+          "age": 27,
+          "age_min": 18,
+          "age_max": 80,
+          "blood": "O+",
+          "blood_types": [
+            "A+",
+            "A-",
+            "B+",
+            "B-",
+            "AB+",
+            "AB-",
+            "O+",
+            "O-"
+          ],
+          "skin_tone": 52,
+          "hair_style": "Braid",
+          "hair_styles": [
+            "Bald",
+            "Short Hair",
+            "Ponytail",
+            "Braid",
+            "Bun",
+            "Long Hair",
+            "Topknot",
+            "Curls",
+            "Bob",
+            "Crew Cut",
+            "Side Part",
+            "Undercut",
+            "Pigtails",
+            "Bedhead",
+            "Dreadlocks",
+            "Mohawk",
+            "Beehive",
+            "Parted"
+          ],
+          "facial_style": "Shaved",
+          "facial_styles": [
+            "Shaved"
+          ],
+          "hair_color": "Brown",
+          "facial_color": "Brown",
+          "eye_color": "Green",
+          "hair_colors": [
+            {
+              "name": "Black",
+              "hex": "#090806"
+            },
+            {
+              "name": "Light Brown",
+              "hex": "#6A4E42"
+            },
+            {
+              "name": "Brown",
+              "hex": "#4F3B2E"
+            },
+            {
+              "name": "Dark Brown",
+              "hex": "#3B3024"
+            },
+            {
+              "name": "Red",
+              "hex": "#B55239"
+            },
+            {
+              "name": "Blond",
+              "hex": "#E5C8A8"
+            },
+            {
+              "name": "Grey",
+              "hex": "#808080"
+            }
+          ],
+          "eye_colors": [
+            {
+              "name": "Black",
+              "hex": "#000000"
+            },
+            {
+              "name": "Brown",
+              "hex": "#542A0E"
+            },
+            {
+              "name": "Green",
+              "hex": "#4B7248"
+            },
+            {
+              "name": "Blue",
+              "hex": "#5EA4E7"
+            }
+          ],
+          "previews": [
+            {
+              "label": "Body"
+            },
+            {
+              "label": "Clothed"
+            }
+          ]
+        },
+        "traits": {
+          "spent": 5,
+          "earned": 3,
+          "chosen": [
+            "Green Thumb",
+            "Agile",
+            "Light Eater",
+            "Deaf"
+          ],
+          "invalid": [],
+          "error": "Your traits are not balanced. The sum must be 0 or less.",
+          "categories": [
+            {
+              "id": "playstyle",
+              "title": "Playstyle",
+              "note": "A way of playing. Each has its own strength and its own price.",
+              "pick_one": 1,
+              "traits": [
+                {
+                  "name": "Green Thumb",
+                  "cost": 0,
+                  "desc": "Playstyle. Farming trains faster and harvests yield a little more. Hunting and combat skills train slower.",
+                  "taken": 1,
+                  "conflicts": []
+                },
+                {
+                  "name": "Tinkerer",
+                  "cost": 0,
+                  "desc": "Playstyle. Better crafting and faster engineering study. Less strength.",
+                  "taken": 0,
+                  "conflicts": [
+                    "Green Thumb"
+                  ]
+                },
+                {
+                  "name": "Wanderer",
+                  "cost": 0,
+                  "desc": "Playstyle. Stamina returns faster on the move. Your mood sinks when you stay in one place.",
+                  "taken": 0,
+                  "conflicts": [
+                    "Green Thumb"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "study",
+              "title": "Field of study",
+              "note": "The branch of learning you give yourself to.",
+              "pick_one": 1,
+              "traits": [
+                {
+                  "name": "Naturalist",
+                  "cost": 0,
+                  "desc": "Natural science comes quicker to you and other branches slower.",
+                  "taken": 0,
+                  "conflicts": [],
+                  "note": "A new field can be chosen 7 days after the last change."
+                },
+                {
+                  "name": "Physician",
+                  "cost": 0,
+                  "desc": "Medicine comes quicker to you and other branches slower.",
+                  "taken": 0,
+                  "conflicts": [],
+                  "block": "You can choose again in 5 days."
+                }
+              ]
+            },
+            {
+              "id": "body",
+              "title": "Body and build",
+              "traits": [
+                {
+                  "name": "Agile",
+                  "cost": 3,
+                  "desc": "You move 15% faster.",
+                  "taken": 1,
+                  "conflicts": []
+                },
+                {
+                  "name": "Slowness",
+                  "cost": -2,
+                  "desc": "You move 15% slower.",
+                  "taken": 0,
+                  "conflicts": [
+                    "Agile"
+                  ]
+                },
+                {
+                  "name": "Tall",
+                  "cost": 1,
+                  "desc": "More strength, less dexterity.",
+                  "taken": 0,
+                  "conflicts": []
+                },
+                {
+                  "name": "Short",
+                  "cost": -1,
+                  "desc": "Less strength, better crafting.",
+                  "taken": 0,
+                  "conflicts": []
+                }
+              ]
+            },
+            {
+              "id": "health",
+              "title": "Health and diet",
+              "traits": [
+                {
+                  "name": "Light Eater",
+                  "cost": 2,
+                  "desc": "You need less food.",
+                  "taken": 1,
+                  "conflicts": []
+                },
+                {
+                  "name": "Glutton",
+                  "cost": -2,
+                  "desc": "You need more food.",
+                  "taken": 0,
+                  "conflicts": [
+                    "Light Eater"
+                  ]
+                },
+                {
+                  "name": "Hemophilia",
+                  "cost": -2,
+                  "desc": "You bleed more.",
+                  "taken": 0,
+                  "conflicts": []
+                }
+              ]
+            },
+            {
+              "id": "senses",
+              "title": "Senses and speech",
+              "traits": [
+                {
+                  "name": "Deaf",
+                  "cost": -3,
+                  "desc": "You cannot hear at all.",
+                  "taken": 1,
+                  "conflicts": []
+                },
+                {
+                  "name": "Stutter",
+                  "cost": -1,
+                  "desc": "You have a permanent stutter.",
+                  "taken": 0,
+                  "conflicts": []
+                }
+              ]
+            }
+          ]
+        },
+        "settings": {
+          "ui_style": "ConsoleStyle",
+          "ui_styles": [
+            "ConsoleStyle",
+            "1713Style",
+            "NewStyle"
+          ],
+          "cursor": "Default",
+          "cursors": [
+            "Default",
+            "Red Crosshair",
+            "Green Crosshair",
+            "White Crosshair"
+          ],
+          "client_fps": 60,
+          "fps_choices": [
+            30,
+            60,
+            100,
+            120,
+            144
+          ],
+          "tutorial": "in progress (3 of 9 steps done)",
+          "toggles": [
+            {
+              "key": "SOUND_LOBBY",
+              "label": "Lobby music",
+              "on": 1,
+              "on_label": "Yes",
+              "off_label": "No"
+            },
+            {
+              "key": "CHAT_OOC",
+              "label": "OOC chat",
+              "on": 0,
+              "on_label": "Show",
+              "off_label": "Hide"
+            }
+          ]
+        },
+        "tab": "traits"
+      }
+    },
+    {
+      "file": "character-setup-settings.png",
+      "viewport": {
+        "width": 860,
+        "height": 913
+      },
+      "template": "character_setup.tmpl",
+      "title": "Character Setup",
+      "fixture": {
+        "character": {
+          "name": "Maren Holt",
+          "name_max": 45,
+          "random_name": 0,
+          "random_body": 0,
+          "summary": "Young adult, tan, female.",
+          "gender": "female",
+          "age": 27,
+          "age_min": 18,
+          "age_max": 80,
+          "blood": "O+",
+          "blood_types": [
+            "A+",
+            "A-",
+            "B+",
+            "B-",
+            "AB+",
+            "AB-",
+            "O+",
+            "O-"
+          ],
+          "skin_tone": 52,
+          "hair_style": "Braid",
+          "hair_styles": [
+            "Bald",
+            "Short Hair",
+            "Ponytail",
+            "Braid",
+            "Bun",
+            "Long Hair",
+            "Topknot",
+            "Curls",
+            "Bob",
+            "Crew Cut",
+            "Side Part",
+            "Undercut",
+            "Pigtails",
+            "Bedhead",
+            "Dreadlocks",
+            "Mohawk",
+            "Beehive",
+            "Parted"
+          ],
+          "facial_style": "Shaved",
+          "facial_styles": [
+            "Shaved"
+          ],
+          "hair_color": "Brown",
+          "facial_color": "Brown",
+          "eye_color": "Green",
+          "hair_colors": [
+            {
+              "name": "Black",
+              "hex": "#090806"
+            },
+            {
+              "name": "Light Brown",
+              "hex": "#6A4E42"
+            },
+            {
+              "name": "Brown",
+              "hex": "#4F3B2E"
+            },
+            {
+              "name": "Dark Brown",
+              "hex": "#3B3024"
+            },
+            {
+              "name": "Red",
+              "hex": "#B55239"
+            },
+            {
+              "name": "Blond",
+              "hex": "#E5C8A8"
+            },
+            {
+              "name": "Grey",
+              "hex": "#808080"
+            }
+          ],
+          "eye_colors": [
+            {
+              "name": "Black",
+              "hex": "#000000"
+            },
+            {
+              "name": "Brown",
+              "hex": "#542A0E"
+            },
+            {
+              "name": "Green",
+              "hex": "#4B7248"
+            },
+            {
+              "name": "Blue",
+              "hex": "#5EA4E7"
+            }
+          ],
+          "previews": [
+            {
+              "label": "Body"
+            },
+            {
+              "label": "Clothed"
+            }
+          ]
+        },
+        "traits": {
+          "spent": 5,
+          "earned": 3,
+          "chosen": [
+            "Green Thumb",
+            "Agile",
+            "Light Eater",
+            "Deaf"
+          ],
+          "invalid": [],
+          "error": "Your traits are not balanced. The sum must be 0 or less.",
+          "categories": [
+            {
+              "id": "playstyle",
+              "title": "Playstyle",
+              "note": "A way of playing. Each has its own strength and its own price.",
+              "pick_one": 1,
+              "traits": [
+                {
+                  "name": "Green Thumb",
+                  "cost": 0,
+                  "desc": "Playstyle. Farming trains faster and harvests yield a little more. Hunting and combat skills train slower.",
+                  "taken": 1,
+                  "conflicts": []
+                },
+                {
+                  "name": "Tinkerer",
+                  "cost": 0,
+                  "desc": "Playstyle. Better crafting and faster engineering study. Less strength.",
+                  "taken": 0,
+                  "conflicts": [
+                    "Green Thumb"
+                  ]
+                },
+                {
+                  "name": "Wanderer",
+                  "cost": 0,
+                  "desc": "Playstyle. Stamina returns faster on the move. Your mood sinks when you stay in one place.",
+                  "taken": 0,
+                  "conflicts": [
+                    "Green Thumb"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "study",
+              "title": "Field of study",
+              "note": "The branch of learning you give yourself to.",
+              "pick_one": 1,
+              "traits": [
+                {
+                  "name": "Naturalist",
+                  "cost": 0,
+                  "desc": "Natural science comes quicker to you and other branches slower.",
+                  "taken": 0,
+                  "conflicts": [],
+                  "note": "A new field can be chosen 7 days after the last change."
+                },
+                {
+                  "name": "Physician",
+                  "cost": 0,
+                  "desc": "Medicine comes quicker to you and other branches slower.",
+                  "taken": 0,
+                  "conflicts": [],
+                  "block": "You can choose again in 5 days."
+                }
+              ]
+            },
+            {
+              "id": "body",
+              "title": "Body and build",
+              "traits": [
+                {
+                  "name": "Agile",
+                  "cost": 3,
+                  "desc": "You move 15% faster.",
+                  "taken": 1,
+                  "conflicts": []
+                },
+                {
+                  "name": "Slowness",
+                  "cost": -2,
+                  "desc": "You move 15% slower.",
+                  "taken": 0,
+                  "conflicts": [
+                    "Agile"
+                  ]
+                },
+                {
+                  "name": "Tall",
+                  "cost": 1,
+                  "desc": "More strength, less dexterity.",
+                  "taken": 0,
+                  "conflicts": []
+                },
+                {
+                  "name": "Short",
+                  "cost": -1,
+                  "desc": "Less strength, better crafting.",
+                  "taken": 0,
+                  "conflicts": []
+                }
+              ]
+            },
+            {
+              "id": "health",
+              "title": "Health and diet",
+              "traits": [
+                {
+                  "name": "Light Eater",
+                  "cost": 2,
+                  "desc": "You need less food.",
+                  "taken": 1,
+                  "conflicts": []
+                },
+                {
+                  "name": "Glutton",
+                  "cost": -2,
+                  "desc": "You need more food.",
+                  "taken": 0,
+                  "conflicts": [
+                    "Light Eater"
+                  ]
+                },
+                {
+                  "name": "Hemophilia",
+                  "cost": -2,
+                  "desc": "You bleed more.",
+                  "taken": 0,
+                  "conflicts": []
+                }
+              ]
+            },
+            {
+              "id": "senses",
+              "title": "Senses and speech",
+              "traits": [
+                {
+                  "name": "Deaf",
+                  "cost": -3,
+                  "desc": "You cannot hear at all.",
+                  "taken": 1,
+                  "conflicts": []
+                },
+                {
+                  "name": "Stutter",
+                  "cost": -1,
+                  "desc": "You have a permanent stutter.",
+                  "taken": 0,
+                  "conflicts": []
+                }
+              ]
+            }
+          ]
+        },
+        "settings": {
+          "ui_style": "ConsoleStyle",
+          "ui_styles": [
+            "ConsoleStyle",
+            "1713Style",
+            "NewStyle"
+          ],
+          "cursor": "Default",
+          "cursors": [
+            "Default",
+            "Red Crosshair",
+            "Green Crosshair",
+            "White Crosshair"
+          ],
+          "client_fps": 60,
+          "fps_choices": [
+            30,
+            60,
+            100,
+            120,
+            144
+          ],
+          "tutorial": "in progress (3 of 9 steps done)",
+          "toggles": [
+            {
+              "key": "SOUND_LOBBY",
+              "label": "Lobby music",
+              "on": 1,
+              "on_label": "Yes",
+              "off_label": "No"
+            },
+            {
+              "key": "CHAT_OOC",
+              "label": "OOC chat",
+              "on": 0,
+              "on_label": "Show",
+              "off_label": "Hide"
+            }
+          ]
+        },
+        "tab": "settings"
       }
     }
   ]

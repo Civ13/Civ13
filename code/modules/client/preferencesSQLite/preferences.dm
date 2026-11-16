@@ -107,30 +107,7 @@ var/list/preferences_datums = list()
 		to_chat(user, "<span class='danger'>No mob exists for the given client!</span>")
 		return
 
-	var/dat = {"
-	<br>
-	<html>
-	<head>
-	[common_browser_style]
-	</head>
-	<body><center><big><b>PREFERENCES<br><br>
-	"}
-	dat += player_setup.header()
-	dat += "</b></big><br><HR></center>"
-	dat += player_setup.content(user)
-
-	var/datlist = splittext(dat, "<br>")
-	var/datlist2 = list()
-	for (var/line in datlist)
-		datlist2 += "[line]<br>"
-	dat = ""
-	for (var/line in datlist2)
-		dat += line
-
-	dat += "</body></html>"
-	show_browse(user, dat, "window=preferences;size=800x800")
-
-
+	ui_interact(user)
 
 /datum/preferences/proc/process_link(mob/user, list/href_list)
 	if (!user)	return

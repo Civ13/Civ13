@@ -5,7 +5,7 @@ Chromium 153.0.8010.12 with Playwright from the fictional fixtures in
 `tgui/src/fixtures.mts`. They are cloud browser previews, not checks in a BYOND
 game client. No player or server data is used and nothing is retouched.
 
-Source: `5d32f552cced2446c73d14ab3bbfe5445b20c04f`. Device scale factor: 1. Each window is captured
+Source: `f8d667f8fa33126db5c5a80668909e7f4d14c6a1`. Device scale factor: 1. Each window is captured
 at its in-game width. [provenance.json](provenance.json) records the browser,
 head, viewports and full fixture inputs.
 
@@ -45,3 +45,6 @@ artifact on every tgui change; refresh the committed copy after a visible change
 | Photograph | `photo_viewer.tmpl` | 360 x 400 | [photo.png](photo.png) |
 | Book | `book_reader.tmpl` | 625 x 650 | [book.png](book.png) |
 | Paper | `paper_editor.tmpl` | 625 x 650 | [paper.png](paper.png) |
+| Character Setup | `character_setup.tmpl` | 860 x 913 | [character-setup.png](character-setup.png) |
+| Character Setup, traits | `character_setup.tmpl` | 860 x 913 | [character-setup-traits.png](character-setup-traits.png) |
+| Character Setup, settings | `character_setup.tmpl` | 860 x 913 | [character-setup-settings.png](character-setup-settings.png) |
