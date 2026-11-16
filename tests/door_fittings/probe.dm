@@ -152,11 +152,12 @@ var/door_fittings_runtime = null
 	door_fittings_assert(!D.door_wedge && (locate(/obj/item/door_wedge) in D.loc), "wedge_kicked_out")
 	sleep(57)
 
-	// Taking the closer off returns it; a hammer is the wrong tool.
+	// Taking the closer off returns it; a wrench is the wrong tool.
 	var/obj/item/weapon/hammer/hammer = new
-	door_fittings_hands(west, hammer, null)
-	D.attackby(hammer, west)
-	door_fittings_assert(D.door_closer == "spring", "wrong_tool_keeps_closer")
+	var/obj/item/weapon/wrench/spanner = new
+	door_fittings_hands(west, spanner, null)
+	D.attackby(spanner, west)
+	door_fittings_assert(D.door_closer == "spring" && !QDELETED(D), "wrong_tool_keeps_closer")
 	door_fittings_hands(west, driver, null)
 	D.attackby(driver, west)
 	door_fittings_assert(!D.door_closer && istype(west.l_hand, /obj/item/door_fitting/spring_closer), "closer_removed")
@@ -218,7 +219,7 @@ var/door_fittings_runtime = null
 	door_fittings_assert(!QDELETED(locked), "locked_stays_up")
 
 	// Taking a wooden door down: hammer, fittings back, three quarters of the wood.
-	D.door_closer = "counterweight"
+	D.door_closer = "spring"
 	door_fittings_hands(west, hammer, null)
 	var/turf/T = D.loc
 	D.attackby(hammer, west)
@@ -227,7 +228,7 @@ var/door_fittings_runtime = null
 	for (var/obj/item/stack/material/S in T)
 		sheets += S.amount
 	door_fittings_assert(sheets == 3, "refund_three_quarters")
-	door_fittings_assert(locate(/obj/item/door_fitting/counterweight) in T, "fitting_returned")
+	door_fittings_assert(locate(/obj/item/door_fitting/spring_closer) in T, "fitting_returned")
 
 	// A smashed door drops its wedge.
 	var/obj/structure/simple_door/W = door_fittings_door(10, 5)

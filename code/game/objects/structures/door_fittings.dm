@@ -487,11 +487,12 @@
 		var/obj/item/door_fitting/kind = door_fitting_item_type(door_closer)
 		if (kind && is_tool(W, initial(kind.fit_tool)))
 			return remove_door_fitting(W, user)
-		if (is_tool(W, TOOL_SCREWDRIVER) || is_tool(W, TOOL_HAMMER))
-			to_chat(user, SPAN_WARNING("The [door_fitting_name(door_closer)] come off with a [initial(kind.fit_tool_name)]."))
-			return TRUE
 	if (is_tool(W, door_take_down_tool()))
 		return take_down_door(W, user)
+	if (door_closer && (is_tool(W, TOOL_SCREWDRIVER) || is_tool(W, TOOL_HAMMER)))
+		var/obj/item/door_fitting/fitting = door_fitting_item_type(door_closer)
+		to_chat(user, SPAN_WARNING("The [door_fitting_name(door_closer)] come off with a [initial(fitting.fit_tool_name)]."))
+		return TRUE
 	return FALSE
 
 /obj/structure/simple_door/proc/remove_door_fitting(obj/item/W, mob/living/human/user)
