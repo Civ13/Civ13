@@ -26,6 +26,12 @@ function Marked({ name, query }: { name: string; query: string }) {
   return <>{name.slice(0, at)}<mark>{name.slice(at, at + query.length)}</mark>{name.slice(at + query.length)}</>;
 }
 
+// A grey "?" box drawn at the unseen thing's size class.
+function Unknown({ size }: { size: unknown }) {
+  const n = Math.min(5, Math.max(1, Number(size) || 3));
+  return <span className={`stor-q stor-q-${n}`} aria-hidden="true"><i>?</i></span>;
+}
+
 // Why a container would refuse what is being dragged, as one short sentence.
 export function refusal(group: StorageGroup, moving: StorageItem[], handsFree: number): ReactNode {
   if (group.locked) return 'It is locked.';
@@ -104,16 +110,17 @@ export function StorageWindow(ui: ScreenProps<StorageWindowData>) {
     document.getElementById(`stor-${str(target.id)}`)?.scrollIntoView?.({ block: 'nearest' });
   }, [focusSeq]);
 
-  // The running move's bar advances here between snapshots.
+  // The running move's and the search's bars advance here between snapshots.
   const queue = list(data.queue);
+  const searching = groups.some(group => group.search);
   const [tick, setTick] = useState(0);
   const stamp = useRef(Date.now());
-  useEffect(() => { stamp.current = Date.now(); setTick(0); }, [data.queue]);
+  useEffect(() => { stamp.current = Date.now(); setTick(0); }, [data]);
   useEffect(() => {
-    if (!queue.length) return;
+    if (!queue.length && !searching) return;
     const timer = setInterval(() => setTick((Date.now() - stamp.current) / 100), 100);
     return () => clearInterval(timer);
-  }, [queue.length]);
+  }, [queue.length, searching]);
 
   const moveTo = (to: string, ids: string[]) => {
     if (!interactive || !ids.length || !to) return;
@@ -149,8 +156,13 @@ export function StorageWindow(ui: ScreenProps<StorageWindowData>) {
     const id = str(group.id);
     const all = list(group.items);
     const shown = all.filter(matches);
+    const unseen = list(group.unseen);
+    const search = group.search && typeof group.search === 'object' ? group.search : null;
+    const hidden = unseen.length + (search ? 1 : 0);
     const nomatch = !!find && !shown.length;
-    const open = !shut[id] && !group.locked && !nomatch;
+    // A container nobody has looked into yet stays shut until you search it.
+    const unsearched = hidden > 0 && !search && !all.length;
+    const open = !shut[id] && !group.locked && !nomatch && !unsearched;
     const why = drag && over === id && drag.from !== id ? refusal(group, moving, handsFree) : null;
     let cls = 'stor-group';
     if (!open) cls += ' stor-shut';
@@ -166,9 +178,11 @@ export function StorageWindow(ui: ScreenProps<StorageWindowData>) {
           onClick={() => setShut(old => ({ ...old, [id]: open }))} />}
         <Sprite image={group.image} />
         <span className="stor-name">{str(group.name)}</span>
-        {group.locked ? <Pill tone="warn">Locked</Pill> : !open && room ? <span className={`stor-space${full ? ' stor-space-full' : ''}`}>{room}</span> : null}
+        {search && <Pill tone="progress">Searching... {all.length + 1} of {Number(group.total) || all.length + hidden}</Pill>}
+        {group.locked ? <Pill tone="warn">Locked</Pill> : !open && room && !search ? <span className={`stor-space${full ? ' stor-space-full' : ''}`}>{room}</span> : null}
         {find && !nomatch && shown.length < all.length && <span className="stor-space">{shown.length} of {all.length} shown</span>}
         {!nomatch && <span className="stor-actions">
+          {interactive && hidden > 0 && !search && !find && <Button onClick={() => { setShut(old => ({ ...old, [id]: false })); act('search', { value: id }); }}>Search</Button>}
           {canMoveHere && <Button className="stor-primary" onClick={() => moveTo(id, picked)}>Move here</Button>}
           {!!group.can_take && all.length > 0 && <Button disabled={!interactive} onClick={() => act('take_all', { value: id })}>Take all</Button>}
           {!!group.can_dump && all.length > 0 && group.kind !== 'floor' && <Button disabled={!interactive} onClick={() => setAsking(id)}>Dump out</Button>}
@@ -187,8 +201,13 @@ export function StorageWindow(ui: ScreenProps<StorageWindowData>) {
         {shown.length ? shown.map(item => <Tile key={str(item.id)} item={item} query={find} interactive={interactive}
           selected={picked.includes(str(item.id))} onPick={() => pick(str(item.id))} onDrag={startDrag(str(item.id), id)}
           onEnter={() => moveTo(lastTarget.current, picked.length ? picked : [str(item.id)])} />)
-          : <p className="stor-empty">{group.kind === 'floor' ? 'Nothing on the floor.' : 'Empty.'}</p>}
+          : hidden && !find ? null : <p className="stor-empty">{group.kind === 'floor' ? 'Nothing on the floor.' : 'Empty.'}</p>}
+        {search && !find && <span className="stor-item stor-item-unknown stor-item-searching">
+          <Unknown size={search.size_class} /><span className="stor-item-text"><strong>?</strong><small>looking - {seconds((Number(search.time) || 0) - Math.min(Number(search.time) || 0, (Number(search.done) || 0) + tick))}</small></span></span>}
+        {unseen.length > 0 && !find && <div className="stor-unseen">{unseen.map((size, i) => <Unknown key={i} size={size} />)}
+          <small>{unseen.length} not seen yet</small></div>}
       </div>}
+      {unsearched && !group.locked && !find && <p className="stor-note">{hidden === 1 ? 'Something is' : `${hidden} things are`} inside. Search it to see what.</p>}
     </section>;
   };
 
