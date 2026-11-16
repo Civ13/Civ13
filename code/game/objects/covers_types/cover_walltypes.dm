@@ -11,6 +11,10 @@
 	..()
 	check_relatives(1,1)
 	overlays.Cut()
+	if (finish_color)
+		var/image/F = finish_overlay(finish_color, finish_faded())
+		if (F)
+			overlays += F
 	overlays |= bullethole_overlays
 	if (moldy>0)
 		overlays += image(icon = 'icons/turf/walls.dmi', icon_state = "mold[moldy]", layer = src.layer+0.02)

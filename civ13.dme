@@ -971,6 +971,8 @@
 #include "code\modules\1713\movement_check.dm"
 #include "code\modules\1713\charcoal_clamp.dm"
 #include "code\modules\1713\clay_lime_fire.dm"
+#include "code\modules\1713\home_finishes.dm"
+#include "code\modules\1713\furniture_fabric_dye.dm"
 #include "code\modules\1713\click_route.dm"
 #include "code\modules\1713\round_facts.dm"
 #include "code\modules\1713\roundstart_etc.dm"

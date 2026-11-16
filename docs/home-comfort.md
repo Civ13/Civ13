@@ -12,7 +12,7 @@ upkeep matter, not quantity.
 | Category | Counts when |
 | --- | --- |
 | A covered floor | at least half the tiles have a non-wall cover, carpet or wood floor |
-| Finished walls | at least half the built walls report `home_finished()` (whitewash, plaster, paint) |
+| Finished walls | at least half the built walls carry a coat that has not faded (`docs/home-finishes.md`) |
 | A light | any lamp, brazier, torch stand, fireplace, flashlight-type lamp, or anything lit |
 | A bed, a seat and a table | all three in the room; a bedroll is not a bed |
 | A work of art | anything `mood_is_art()` accepts, in the room or on its walls |

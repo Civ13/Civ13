@@ -81,16 +81,16 @@ var/global/list/stool_cache = list() //haha stool
 	overlays |= stool_cache[cache_key]
 	// Padding overlay.
 	if (padding_material)
-		var/padding_cache_key = "stool-padding-[padding_material.name]"
+		var/padding_cache_key = "stool-padding-[padding_material.name]-[padding_shade()]"
 		if (isnull(stool_cache[padding_cache_key]))
 			var/image/I =  image(icon, "stool_padding")
-			I.color = padding_material.icon_colour
+			I.color = padding_shade()
 			stool_cache[padding_cache_key] = I
 		overlays |= stool_cache[padding_cache_key]
 	// Strings.
 	if (padding_material)
-		name = "[padding_material.display_name] [initial(name)]" //this is not perfect but it will do for now.
-		desc = "A padded stool. Apply butt. It's made of [material.use_name] and covered with [padding_material.use_name]."
+		name = "[padding_label()] [initial(name)]" //this is not perfect but it will do for now.
+		desc = "A padded stool. Apply butt. It's made of [material.use_name] and covered with [padding_label(TRUE)]."
 	else
 		name = "[material.display_name] [initial(name)]"
 		desc = "A stool. Apply butt with care. It's made of [material.use_name]."
@@ -104,6 +104,7 @@ var/global/list/stool_cache = list() //haha stool
 	if (!padding_material || !furniture_padding_sheet(padding_material, get_turf(src)))
 		return FALSE
 	padding_material = null
+	padding_color = null
 	update_icon()
 	return TRUE
 
