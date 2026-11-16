@@ -218,7 +218,7 @@
         {
           "owner": "",
           "declaration": "/obj/structure/simple_door/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)",
-          "sha256_body": "94e52a67eb47fd8944544e99d31bbd125e306df135ba96a141ff5115f9674d52"
+          "sha256_body": "19b643390d5be022fa6e724b074b40606010df6f582e973dda93b5452119c210"
         }
       ]
     },

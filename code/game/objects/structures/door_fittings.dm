@@ -241,6 +241,7 @@
 	if (door_hold)
 		door_hold.release(TRUE)
 	door_lock_closed()
+	door_features_closed()
 	update_fitting_overlays()
 
 // ---- overlays and examine ---------------------------------------------------
@@ -254,6 +255,8 @@
 		states += state ? "closer_[door_closer]_open" : "closer_[door_closer]"
 	if (door_wedge && state)
 		states += "wedge_[door_wedge]_open"
+	for (var/feature_state in door_feature_overlay_states())
+		states[feature_state] = 'icons/obj/doors/door_features.dmi'
 	for (var/bar_state in door_bar_overlay_states())
 		states[bar_state] = 'icons/obj/doors/door_bars.dmi'
 	for (var/fire_state in fire_door_overlay_states())
@@ -302,6 +305,7 @@
 	lock_examine(src, user)
 	door_bar_examine(user)
 	fire_door_examine(user)
+	door_feature_examine(user)
 
 // ---- hands on an open door ----------------------------------------------------
 
@@ -524,6 +528,8 @@
 		return TRUE
 	if (fire_door_attackby(W, user))
 		return TRUE
+	if (door_feature_attackby(W, user))
+		return TRUE
 	if (user.a_intent == I_HARM)
 		return FALSE
 	if (is_tool(W, TOOL_SCREWDRIVER) || is_tool(W, TOOL_HAMMER) || is_tool(W, TOOL_WRENCH))
@@ -682,6 +688,7 @@
 		door_lock = null
 	door_bar_parts_returned(T)
 	fire_door_parts_returned(T)
+	door_feature_parts_returned(T)
 	user.visible_message(SPAN_NOTICE("[user] takes \the [src] down."), SPAN_NOTICE("You take the door down and salvage [sheets] sheets."))
 	qdel(src)
 	return TRUE

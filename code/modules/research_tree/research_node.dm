@@ -1832,6 +1832,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/placer_washer/rocker" = "ore_dressing",
 		"/obj/structure/placer_washer/buddle" = "ore_dressing",
 		"/obj/structure/drill/stamp_mill/water" = "ore_dressing",
+		"/obj/structure/workshop_machine/amalgam_press" = "amalgamation",
+		"/obj/structure/patio_heap" = "amalgamation",
 		"/obj/structure/kanna_channel" = "tatara_smelting",
 		"/obj/structure/heatsource" = "iron_smithing",
 		"/obj/item/clothing/shoes/weather/hobnail_boots" = "iron_smithing",
@@ -2185,6 +2187,11 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/fitted_lock/warded" = "iron_smithing",
 		"/obj/item/door_bar/iron" = "iron_smithing",
 		"/obj/item/door_bolt" = "iron_smithing",
+		// door features (door_features.dm)
+		"/obj/item/door_feature/peephole" = "optics_instruments",
+		"/obj/item/door_feature/judas_hatch" = "iron_smithing",
+		"/obj/item/door_feature/mail_slot" = "bronze_working",
+		"/obj/item/door_feature/pet_door" = "primitive_construction",
 		// opening windows and shutters (window_fittings.dm)
 		"/obj/structure/simple_door/key_door/anyone/casement" = "glassworking",
 		"/obj/structure/simple_door/key_door/anyone/window_shutters" = "primitive_construction",

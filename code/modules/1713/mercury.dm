@@ -144,11 +144,25 @@
 	..(user, distance)
 	if (distance > 2)
 		return
-	to_chat(user, SPAN_NOTICE("It holds [cinnabar] cinnabar and [reagents ? round(reagents.total_volume) : 0] units of quicksilver."))
+	to_chat(user, SPAN_NOTICE("It holds [retort_contents()] and [reagents ? round(reagents.total_volume) : 0] units of quicksilver."))
 	if (seal < RETORT_SEAL_LEAKS)
 		to_chat(user, SPAN_WARNING("Its clay seal is cracked through: it will leak fumes. Patch it with clay."))
 	else if (seal < 60)
 		to_chat(user, SPAN_NOTICE("Its clay seal is getting worn."))
+
+// What is charged in the pot, for examine; amalgam.dm adds amalgam.
+/obj/structure/workshop_machine/mercury_retort/proc/retort_contents()
+	return "[cinnabar] cinnabar"
+
+// Lumps charged in the pot; each adds to the firing time.
+/obj/structure/workshop_machine/mercury_retort/proc/retort_charge()
+	return cinnabar
+
+// Empties the pot after a firing: the quicksilver it gives (before any leak),
+// and any metal it leaves (amalgam.dm).
+/obj/structure/workshop_machine/mercury_retort/proc/retort_empty(mob/living/human/H)
+	. = cinnabar * MERCURY_RETORT_UNITS
+	cinnabar = 0
 
 /obj/structure/workshop_machine/mercury_retort/proc/retort_fuel(obj/item/I)
 	return istype(I, /obj/item/stack/ore/charcoal) || istype(I, /obj/item/stack/ore/coal) || istype(I, /obj/item/stack/material/wood)
@@ -184,7 +198,7 @@
 	return ..()
 
 /obj/structure/workshop_machine/mercury_retort/proc/load_cinnabar(obj/item/stack/ore/mercury/S, mob/living/human/H)
-	var/room = min(RETORT_CAPACITY - cinnabar, round((reagents.get_free_space()) / MERCURY_RETORT_UNITS) - cinnabar)
+	var/room = min(RETORT_CAPACITY - retort_charge(), round((reagents.get_free_space()) / MERCURY_RETORT_UNITS) - cinnabar)
 	if (room <= 0)
 		to_chat(H, SPAN_WARNING("\The [src] is full, or its receiver is: draw off the quicksilver first."))
 		return
@@ -208,24 +222,23 @@
 	if (!anchored)
 		to_chat(H, SPAN_WARNING("Fasten \the [src] down with a wrench first."))
 		return
-	if (cinnabar <= 0)
-		to_chat(H, SPAN_WARNING("Charge \the [src] with cinnabar first."))
+	if (retort_charge() <= 0)
+		to_chat(H, SPAN_WARNING("Charge \the [src] with cinnabar or amalgam first."))
 		return
 	if (!crafting_node_allowed_or_warn(H, "amalgamation"))
 		return
 	busy = TRUE
 	update_icon()
 	H.visible_message(SPAN_NOTICE("[H] fires \the [src]."), SPAN_NOTICE("You feed the firebox and fire \the [src]."))
-	var/done = do_after(H, 40 + 10 * cinnabar, src) && worker_ready(H, S)
+	var/done = do_after(H, 40 + 10 * retort_charge(), src) && worker_ready(H, S)
 	busy = FALSE
-	if (!done || cinnabar <= 0)
+	if (!done || retort_charge() <= 0)
 		update_icon()
 		return
 	S.use(1)
-	var/ores = cinnabar
-	cinnabar = 0
+	var/ores = retort_charge()
 	var/leaking = seal < RETORT_SEAL_LEAKS
-	var/units = ores * MERCURY_RETORT_UNITS
+	var/units = retort_empty(H)
 	if (leaking)
 		units = round(units * 0.7)
 		mercury_vapour(src, MERCURY_LEAK_VAPOUR, "fumes leaking from a cracked retort")

@@ -539,7 +539,9 @@ var/global/list/fishing_grounds_published = null
 			escaped = TRUE
 			continue
 		var/catch_path = fish_catch_type(water, kind, baited, towed, shoal)
-		landed += new catch_path(get_turf(H))
+		var/obj/item/fish = new catch_path(get_turf(H))
+		river_mercury_taint_catch(fish, water) // amalgam.dm
+		landed += fish
 	if (!H)
 		return landed.len
 	if (!landed.len)
