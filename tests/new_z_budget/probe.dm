@@ -12,6 +12,9 @@
 /world/OpenPort(port)
 	return port == "none" ? ..() : FALSE
 
+/obj/map_metadata/z_budget_fixture
+	dig_down_underground = FALSE // the cave's budget is covered by tests/building_levels/cave_probe.dm
+
 /obj/map_metadata/z_budget_fixture/New()
 	return
 
