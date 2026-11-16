@@ -6671,17 +6671,6 @@
       "expression": "ET.reagents.add_reagent(\"lead\",5)"
     },
     {
-      "file": "code/modules/1713/ores.dm",
-      "line": 393,
-      "context": "/obj/item/stack/ore/mercury",
-      "nearest_condition": "if (ET.reagents.total_volume <= 0)",
-      "objects": [],
-      "reagents": [
-        "mercury"
-      ],
-      "expression": "ET.reagents.add_reagent(\"mercury\",5)"
-    },
-    {
       "file": "code/modules/1713/production.dm",
       "line": 205,
       "context": "/obj/structure/loom",
@@ -13925,6 +13914,54 @@
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
+      "name": "Wash hillside soil in a washing channel",
+      "file": "code/modules/1713/tatara.dm",
+      "line": 406,
+      "source_commit": "a80c8852432ff14d96e1d570421c7c79163cfe04",
+      "inputs": [
+        "/turf/floor/dirt",
+        "/turf/floor/beach/sand"
+      ],
+      "outputs": [
+        "/obj/item/stack/ore/iron_sand"
+      ],
+      "tools": [
+        "/obj/structure/kanna_channel"
+      ],
+      "steps": [
+        "Build a washing channel (6 wood) on a tile beside shallow fresh water.",
+        "Use it with an empty hand: 30 seconds of washing leaves 2 iron sand (4 on Asia)."
+      ],
+      "conditions": "Each channel tile gives 20 loads, then one comes back every minute.",
+      "map_notes": "Asia yields 2 more per load.",
+      "era": "The channel needs the Tatara Smelting research.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Wash ordinary sand into iron sand",
+      "file": "code/modules/1713/tatara.dm",
+      "line": 438,
+      "source_commit": "a80c8852432ff14d96e1d570421c7c79163cfe04",
+      "inputs": [
+        "/obj/item/stack/ore/glass"
+      ],
+      "outputs": [
+        "/obj/item/stack/ore/iron_sand"
+      ],
+      "tools": [
+        "/obj/structure/kanna_channel",
+        "/obj/item/kitchen/wood_bowl"
+      ],
+      "steps": [
+        "Use sand on a washing channel, or on a wooden bowl while standing beside shallow fresh water.",
+        "Every 5 sand washes down to 1 iron sand (2 on Asia), 5 seconds per batch."
+      ],
+      "conditions": "Shallow natural fresh water beside the channel or the washer.",
+      "map_notes": "Asia yields twice as much.",
+      "era": "Map ordinal age at least 1 in a bowl; the channel needs Tatara Smelting.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
       "name": "Smelt iron sand in a bloomery",
       "file": "code/modules/1713/tatara.dm",
       "line": 30,
@@ -15342,28 +15379,6 @@
       ],
       "outputs": [
         "reagent:lead"
-      ],
-      "tools": [
-        "/obj/item/weapon/reagent_containers/glass/extraction_kit"
-      ],
-      "steps": [
-        "Use an empty extraction kit on the listed ore stack. Collect the resulting reagent in the kit."
-      ],
-      "conditions": "Uses up the whole stack it is given, so split off a small stack first. The yield depends on the ore.",
-      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
-      "era": "No additional era restriction established by this procedure.",
-      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
-    },
-    {
-      "name": "Ore extraction kit",
-      "file": "code/modules/1713/ores.dm",
-      "line": 374,
-      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
-      "inputs": [
-        "/obj/item/stack/ore/mercury"
-      ],
-      "outputs": [
-        "reagent:mercury"
       ],
       "tools": [
         "/obj/item/weapon/reagent_containers/glass/extraction_kit"
@@ -17299,6 +17314,78 @@
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "Map ordinal age at least 4.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Mine cinnabar",
+      "file": "code/modules/1713/mercury.dm",
+      "line": 47,
+      "inputs": [
+        "/turf/floor/dirt/underground"
+      ],
+      "outputs": [
+        "/obj/item/stack/ore/mercury"
+      ],
+      "tools": [
+        "/obj/item/weapon/material/pickaxe"
+      ],
+      "steps": [
+        "Mine rock from the Classical age on.",
+        "Now and then a mining action also turns up four lumps of cinnabar, on top of the usual ore roll."
+      ],
+      "conditions": "1% of mining actions, 2% on lands with an old mercury belt (Europe, Asia, both Americas). Special caves give double. Mountain seams on the Americas and Asia can also be cinnabar seams.",
+      "era": "From the Classical age.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified",
+      "source_commit": "63e26060"
+    },
+    {
+      "name": "Roast cinnabar over a fire",
+      "file": "code/modules/1713/mercury.dm",
+      "line": 74,
+      "inputs": [
+        "/obj/item/stack/ore/mercury"
+      ],
+      "outputs": [
+        "reagent:mercury"
+      ],
+      "tools": [
+        "/obj/structure/heatsource",
+        "/obj/item/weapon/reagent_containers/glass/mercury_flask"
+      ],
+      "steps": [
+        "Hold an open vessel in one hand and cinnabar in the other.",
+        "Use the cinnabar on a lit fire, furnace or brazier."
+      ],
+      "conditions": "2 units of mercury per lump. The fumes poison everyone within 2 tiles, half as much under the open sky.",
+      "era": "Needs the Bronze Working research.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified",
+      "source_commit": "63e26060"
+    },
+    {
+      "name": "Fire a mercury retort",
+      "file": "code/modules/1713/mercury.dm",
+      "line": 207,
+      "inputs": [
+        "/obj/item/stack/ore/mercury",
+        "/obj/item/stack/ore/charcoal"
+      ],
+      "outputs": [
+        "reagent:mercury"
+      ],
+      "tools": [
+        "/obj/structure/workshop_machine/mercury_retort"
+      ],
+      "steps": [
+        "Fasten a mercury retort down and charge it with up to 10 cinnabar.",
+        "Use charcoal, coal or wood on it to fire it.",
+        "Draw the quicksilver off with a mercury flask or any open vessel."
+      ],
+      "conditions": "6 units of mercury per lump while the clay seal holds; a cracked seal loses 30% and leaks fumes. Patch the seal with 1 clay.",
+      "era": "Needs the Amalgamation research.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified",
+      "source_commit": "63e26060"
     }
   ],
   "mechanism_overview": [
@@ -17364,6 +17451,7 @@
         "/obj/item/stack/ore/gold",
         "/obj/item/stack/ore/iron",
         "/obj/item/stack/ore/lead",
+        "/obj/item/stack/ore/mercury",
         "/obj/item/stack/ore/obsidian",
         "/obj/item/stack/ore/saltpeter",
         "/obj/item/stack/ore/silver",
@@ -17404,7 +17492,7 @@
     {
       "name": "Clay firing",
       "file": "code/game/objects/structures/kitchen/oven.dm",
-      "gate": "new CL.result dynamic output; claybricks fired creates twice; type declarations resolve products"
+      "gate": "CL.fired_result dynamic output; a pile of unfired bricks fires into one pile, clay blocks yield two each, already-fired bricks are skipped; type declarations resolve products"
     },
     {
       "name": "Generic roasting",

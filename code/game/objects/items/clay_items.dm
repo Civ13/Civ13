@@ -12,22 +12,38 @@
 	throw_range = 5
 	var/result = "none"
 	var/base_icon = "claylump"
+	var/fired_yield = 1 // pieces fired from each piece in a pile
 	value = 1
 	flags = FALSE
+
+// Bricks, clay blocks and roof tiles pile up (loose piles, item_piles.dm).
+/obj/item/weapon/clay/New()
+	..()
+	loose_pile_update()
+
+/obj/item/weapon/clay/dropped(mob/user)
+	..()
+	loose_pile_dropped()
+
+/obj/item/weapon/clay/attackby(obj/item/W, mob/user)
+	if (loose_pile_gather(W, user))
+		return
+	..()
+
+/obj/item/weapon/clay/attack_hand(mob/user)
+	if (loose_pile_take_one(user))
+		return
+	..()
+
+/obj/item/weapon/clay/examine(mob/user)
+	..()
+	loose_pile_examine(user)
 
 /obj/item/weapon/clay/roofing
 	name = "unfired clay roof tiles"
 	icon_state = "unfired_clayroofing"
 	result = /obj/item/weapon/roofbuilder/clay
-
-// Fired roof tiles join a pile of the same roofing already in the kiln.
-/obj/item/weapon/clay/roofing/fired_result(atom/where)
-	for (var/obj/item/weapon/roofbuilder/R in where)
-		if (R.type == result && !R.done && R.amount < R.pile_max)
-			R.amount++
-			R.update_roofing_pile()
-			return R
-	return new result(where)
+	loose_pile_max = LOOSE_PILE_MAX // fired roof tiles join the roofing pile in the kiln
 
 /obj/item/weapon/clay/roofing/blue
 	name = "unfired blue clay roof tiles"
@@ -65,11 +81,14 @@
 	name = "unfired clay blocks"
 	icon_state = "unfired_claybricks"
 	result = /obj/item/weapon/clay/claybricks/fired
+	loose_pile_max = LOOSE_PILE_MAX
+	fired_yield = 2
 
 /obj/item/weapon/clay/advclaybricks
 	name = "unfired bricks"
 	icon_state = "unfired_advclaybricks"
 	result = /obj/item/weapon/clay/advclaybricks/fired
+	loose_pile_max = LOOSE_PILE_MAX
 
 /obj/item/weapon/clay/advclaybricks/cement
 	name = "unfired cement bricks"
@@ -153,7 +172,7 @@
 		if (do_after(user, 25, src) && wall_foundation_tile_free(user, /obj/covers/clay_wall/incomplete))
 			to_chat(user, "You finish the placement of the clay block wall foundation.")
 			new /obj/covers/clay_wall/incomplete(user.loc)
-			qdel(src)
+			loose_pile_use(1)
 			return
 
 	else if (choice == "Sumerian Clay")
@@ -161,7 +180,7 @@
 		if (do_after(user, 25, src) && wall_foundation_tile_free(user, /obj/covers/clay_wall/sumerian/incomplete))
 			to_chat(user, "You finish the placement of the sumerian clay wall foundation.")
 			new /obj/covers/clay_wall/sumerian/incomplete(user.loc)
-			qdel(src)
+			loose_pile_use(1)
 			return
 
 /obj/item/weapon/clay/advclaybricks/fired/attack_self(mob/user)
@@ -171,7 +190,7 @@
 	if (do_after(user, 25, src) && wall_foundation_tile_free(user, /obj/covers/brick_wall/incomplete))
 		to_chat(user, "You finish the placement of the brick wall foundation.")
 		new /obj/covers/brick_wall/incomplete(user.loc)
-		qdel(src)
+		loose_pile_use(1)
 		return
 
 /obj/item/weapon/clay/advclaybricks/fired/cement/attack_self(mob/user)
@@ -181,7 +200,7 @@
 	if (do_after(user, 25, src) && wall_foundation_tile_free(user, /obj/covers/cement_wall/incomplete))
 		to_chat(user, "You finish the placement of the cement wall foundation.")
 		new /obj/covers/cement_wall/incomplete(user.loc)
-		qdel(src)
+		loose_pile_use(1)
 		return
 
 //pots

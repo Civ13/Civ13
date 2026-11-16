@@ -52,7 +52,7 @@ describe('Storage window', () => {
     fireEvent.change(screen.getByLabelText('Find'), { target: { value: 'grain' } });
     expect(screen.getByTitle('wheat grain').querySelector('mark')?.textContent).toBe('grain');
     expect(screen.queryByText('clay bowl')).toBeNull();
-    expect(screen.getByText('of 10 things shown', { exact: false })).toBeTruthy();
+    expect(screen.getByText('of 11 things shown', { exact: false })).toBeTruthy();
   });
   it('shows what is not seen yet as size boxes and searches on request', () => {
     const props = ui(); render(<StorageWindow {...props} />);
@@ -66,6 +66,10 @@ describe('Storage window', () => {
     expect(within(jar).getByText('2 things are inside. Search it to see what.')).toBeTruthy();
     fireEvent.click(within(jar).getByText('Search'));
     expect(props.act).toHaveBeenCalledWith('search', { value: 'near:g' });
+  });
+  it('counts a crate in things, not space', () => {
+    render(<StorageWindow {...ui()} />);
+    expect(within(screen.getByLabelText('wooden crate')).getByText('1 / 10 things')).toBeTruthy();
   });
   it('explains a refusal before the drop', () => {
     const jar = { id: 'j', kind: 'near', max_size: 2, slots: 6, space: 12, used: 0, items: [] };

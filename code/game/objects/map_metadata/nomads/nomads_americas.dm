@@ -6,6 +6,8 @@
 // (dug_underground.dm), under the standing open-air level's slot.
 /obj/map_metadata/nomads/americas_north
 	ID = MAP_NOMADS_AMERICAS_NORTH
+	// Cinnabar on an old mercury belt: twice as common (mercury.dm).
+	cinnabar_rich = TRUE
 	title = "Nomads (Northern Americas)"
 	description = "A northern continent from the ice to the isthmus."
 	research_active = TRUE
@@ -26,6 +28,8 @@
 
 /obj/map_metadata/nomads/americas_south
 	ID = MAP_NOMADS_AMERICAS_SOUTH
+	// Cinnabar on an old mercury belt: twice as common (mercury.dm).
+	cinnabar_rich = TRUE
 	title = "Nomads (Southern Americas)"
 	description = "A southern continent from the isthmus to the cold cape."
 	research_active = TRUE

@@ -21,6 +21,7 @@ import { CraftingWindow } from './CraftingWindow';
 import { Panel } from './Panel';
 import { CharacterSetup } from './CharacterSetup';
 import { StorageWindow } from './StorageWindow';
+import { SpawnMenu } from './SpawnMenu';
 export const interfaces: Record<string, ComponentType<ScreenProps>> = {
   'appearance_changer.tmpl': Appearance,
   'chem_disp.tmpl': Chemistry,
@@ -50,4 +51,5 @@ export const interfaces: Record<string, ComponentType<ScreenProps>> = {
   'panel.tmpl': Panel,
   'character_setup.tmpl': CharacterSetup,
   'storage_window.tmpl': StorageWindow,
+  'spawn_menu.tmpl': SpawnMenu,
 };

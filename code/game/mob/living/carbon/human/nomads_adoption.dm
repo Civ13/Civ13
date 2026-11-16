@@ -63,9 +63,11 @@
 /mob/living/human/proc/adoption_rename(var/new_name)
 	if (!new_name || new_name == real_name)
 		return FALSE
+	var/old_name = real_name
 	fully_replace_character_name(real_name, new_name)
 	if (name != real_name)
 		name = real_name
+	record_name_change(old_name, new_name, "adoption")
 	return TRUE
 
 /mob/living/human/proc/adoption_can_respond()

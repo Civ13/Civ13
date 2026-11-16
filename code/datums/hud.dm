@@ -60,6 +60,8 @@
 		"allow movement" = 		list("type" = /obj/screen/gun/move,	   "loc" = "-2,7"),
 		"allow item use" = 		list("type" = /obj/screen/gun/item,	   "loc" = "-1,7"),
 		"craft" = 				list("type" = /obj/screen/craft,	   "loc" = "0,7"),
+		"go up" = 				list("type" = /obj/screen/updown,	   "loc" = "-1,9"),
+		"go down" = 			list("type" = /obj/screen/updown/down,	   "loc" = "-1,8"),
 		)
 
 	slot_data = list (
@@ -135,6 +137,8 @@
 		"allow item use" = 		list("type" = /obj/screen/gun/item,	   "loc" = "6,2"),
 		"toggle inventory" = 	list("type" = /obj/screen/toggle_inventory,	   "loc" = "1,1"),
 		"craft" = 				list("type" = /obj/screen/craft,	   "loc" = "13,2"),
+		"go up" = 				list("type" = /obj/screen/updown,	   "loc" = "15,5"),
+		"go down" = 			list("type" = /obj/screen/updown/down,	   "loc" = "15,4"),
 		)
 
 	slot_data = list (
@@ -220,6 +224,9 @@
 		// Clothing corner.
 		"toggle inventory" = 	list("type" = /obj/screen/toggle_inventory,	   "loc" = "WEST:2,SOUTH:2"),
 		"craft" = 				list("type" = /obj/screen/craft,	   "loc" = "WEST+2:2,SOUTH:2"),
+		// Up and down a level, above the body part selector.
+		"go up" = 				list("type" = /obj/screen/updown,	   "loc" = "EAST,SOUTH+4:18"),
+		"go down" = 			list("type" = /obj/screen/updown/down,	   "loc" = "EAST,SOUTH+3:18"),
 		)
 
 	slot_data = list (
@@ -289,6 +296,8 @@
 		"allow item use" 	 = list("type" = /obj/screen/gun/item,	   "loc" = "6,2"),
 		"toggle inventory"   = list("type" = /obj/screen/toggle_inventory,	   "loc" = "1,1"),
 		"craft" = 				list("type" = /obj/screen/craft,	   "loc" = "13,2"),
+		"go up" = 				list("type" = /obj/screen/updown,	   "loc" = "15,5"),
+		"go down" = 			list("type" = /obj/screen/updown/down,	   "loc" = "15,4"),
 		)
 
 	slot_data = list (
@@ -356,6 +365,8 @@
 		"allow item use" 	 = list("type" = /obj/screen/gun/item,	   "loc" = "6,2"),
 		"toggle inventory"   = list("type" = /obj/screen/toggle_inventory,	   "loc" = "1,1"),
 		"craft" = 				list("type" = /obj/screen/craft,	   "loc" = "13,2"),
+		"go up" = 				list("type" = /obj/screen/updown,	   "loc" = "15,5"),
+		"go down" = 			list("type" = /obj/screen/updown/down,	   "loc" = "15,4"),
 		)
 
 	slot_data = list (

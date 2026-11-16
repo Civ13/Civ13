@@ -33,6 +33,16 @@
 
 var/list/edge_probe_log = list()
 
+/datum/edge_probe_lift
+	var/pressed = 0
+
+/datum/edge_probe_lift/updown_offer(mob/living/human/user, direction)
+	return direction == DOWN ? "Lower the lift" : null
+
+/datum/edge_probe_lift/updown_press(mob/living/human/user, direction)
+	pressed = direction
+	return TRUE
+
 /proc/edge_probe_human(turf/T)
 	var/mob/living/human/edge_climbing_native/H = new(T)
 	H.canmove = TRUE
@@ -76,6 +86,9 @@ var/list/edge_probe_log = list()
 	H.r_hand = new /obj/item/stack/rods(H)
 	H.l_hand = new /obj/item/stack/rods(H)
 	edge_probe_check(!edge_descent_destination(H, EAST, why) && findtext(why[1], "free hand"), "no_free_hand_reason")
+	// The down button stays lit with full hands; pressing it says what to change.
+	edge_probe_check(findtext(H.updown_offer(H, DOWN), "over the edge"), "button_down_edge_full_hands")
+	edge_probe_check(!H.updown_offer(H, UP), "button_up_nothing_above")
 	qdel(H.r_hand)
 	H.r_hand = null
 	edge_probe_check(edge_descent_destination(H, EAST), "one_free_hand")
@@ -90,6 +103,12 @@ var/list/edge_probe_log = list()
 	var/obj/structure/multiz/ladder/up/placed/bottom = new(locate(6, 5, 1))
 	var/obj/structure/multiz/ladder/placed/top = new(locate(6, 5, 2))
 	edge_probe_check(bottom.find_target() == top && top.find_target() == bottom, "ladder_ends_pair")
+	// The up button climbs the ladder H stands on; from the floor above, the
+	// down button prefers the ladder beside you to the open edge.
+	edge_probe_check(H.loc == bottom.loc && findtext(H.updown_offer(H, UP), "Climb up") && findtext(H.updown_offer(H, UP), "ladder"), "button_up_ladder")
+	var/mob/living/human/L = edge_probe_human(locate(5, 6, 2))
+	edge_probe_check(findtext(L.updown_offer(L, DOWN), "Climb down") && findtext(L.updown_offer(L, DOWN), "ladder"), "button_down_ladder_beside")
+	qdel(L)
 	edge_probe_check(!(top in ladder_list) && !(bottom in ladder_list), "ladder_not_in_mapped_numbering")
 	edge_probe_check(!placed_ladder_spot(locate(6, 5, 2), H, why) && findtext(why[1], "already"), "ladder_twice_reason")
 	// Walking onto the ladder top does not drop you.
@@ -107,6 +126,27 @@ var/list/edge_probe_log = list()
 	var/mob/living/human/C = edge_probe_human(locate(3, 3, 1))
 	edge_probe_check(stairs_in(locate(3, 3, 1)) == S, "stairs_found")
 	edge_probe_check(stairs_destination(C, S) == locate(3, 4, 2), "stairs_lead_up")
+	edge_probe_check(C.updown_offer(C, UP) == "Climb the stairs", "button_up_stairs")
+	// The HUD tiles light or grey out from the same offer.
+	var/obj/screen/updown/up_tile = new("go up", "1,1", C)
+	var/obj/screen/updown/down/down_tile = new("go down", "1,2", C)
+	edge_probe_check(up_tile.name == "go up" && down_tile.name == "go down", "button_name_kept_until_first_check")
+	up_tile.refresh(TRUE)
+	down_tile.refresh(TRUE)
+	edge_probe_check(up_tile.icon_state == "arrow_up" && up_tile.name == "Climb the stairs", "button_up_lit")
+	edge_probe_check(down_tile.icon_state == "arrow_down_off", "button_down_greyed")
+	edge_probe_check(!C.updown_press(C, DOWN), "button_down_press_refuses")
+	// A machine can take the buttons over and hand them back.
+	var/datum/edge_probe_lift/lift = new
+	C.updown_control = lift
+	down_tile.refresh(TRUE)
+	edge_probe_check(down_tile.icon_state == "arrow_down" && down_tile.name == "Lower the lift", "button_taken_over")
+	edge_probe_check(C.updown_handler().updown_press(C, DOWN) && lift.pressed == DOWN, "button_press_reaches_control")
+	C.updown_control = null
+	down_tile.refresh(TRUE)
+	edge_probe_check(down_tile.icon_state == "arrow_down_off", "button_handed_back")
+	qdel(up_tile)
+	qdel(down_tile)
 	// A floor over the stairs is a ceiling.
 	var/obj/covers/wood/stairs/S2 = new(locate(9, 9, 1))
 	new /obj/covers/wood(locate(9, 9, 2))

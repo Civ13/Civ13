@@ -48,3 +48,17 @@ Steelmaking.
 On any anvil that works iron (Crafting 1.2): kera sorts into 50%
 tamahagane and 30% wrought iron (the rest is slag); every 3 tamahagane fold
 into 2 steel sheets. Pig iron keeps its existing steel step.
+
+## Washing for iron sand
+
+The washing channel (`/obj/structure/kanna_channel`, 6 wood, Tatara
+Smelting) stands on a tile beside shallow fresh water (`panning_water()`).
+
+- Empty hand: 30 s of washing hillside soil leaves 2 iron sand (4 with
+  `iron_sand_rich`). Each tile has 20 loads in `kanna_channel_stock`
+  (keyed by coordinates, so rebuilding does not refill it); one load comes
+  back every minute.
+- Ordinary sand used on the channel, or on a wooden bowl while standing
+  beside shallow fresh water (age 1+), washes down 5 to 1 iron sand (5 to 2
+  with `iron_sand_rich`), 5 s per batch (`wash_sand()`).
+- A hammer takes the channel apart for 3 wood.

@@ -51,3 +51,35 @@ the search; moves carry on beside it.
 The old HUD strip does not search.
 
 Design by Fable (mock-ups in the project files, `storage-window/`).
+
+## Crates, chests and closets
+
+Closets and crates keep their things in their own contents, as before, so every
+system that reads closet contents (freight, region travel, safehouses, extraction)
+is unchanged. For a player with the window (`closet_storage.dm`):
+
+- Clicking a shut closet opens the lid without tipping anything out and opens the
+  window on it; clicking it again closes the lid without sweeping the tile.
+  Using an item on an open one puts the item inside.
+- An open, unlocked, unwelded closet is listed under Nearby. Crates count things
+  (`storagecap`), other closets count size units (`storage_capacity`).
+- **Gather** (right-click) queues every loose thing on its tile into it as timed
+  moves; **Dump Out** tips everything out after a short wait.
+- Packed or mapped contents must be searched like any other container.
+- Mobs still go in and out the old way. Mailboxes, coffins, body bags, hideouts,
+  sandbags, dumpsters, strongboxes, money changers and extinguisher cabinets keep
+  their own behaviour (`item_window = FALSE`).
+
+Players without the window keep the old lid: opening tips things out, closing
+sweeps the tile.
+
+## Reasons to build storage
+
+`storage_incentives.dm` gives storage a place in the rest of the game:
+
+- **A tidy room** is a home comfort point (`docs/home-comfort.md`): a container
+  in the room and no more than 5 loose things on its floor.
+- **Fire**: a flammable container (basket, log chest, wooden crate or closet)
+  that burns away takes its flammable contents with it; metal, stone and glass
+  things drop out on the tile. Clay jars do not burn. The chance per fire tick is
+  the same 27 percent as any other burning object.

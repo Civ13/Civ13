@@ -20,20 +20,20 @@
 	return list(CRAFT_ROLE_CAPTAIN, CRAFT_ROLE_HELMSMAN)
 
 /datum/craft_register/proc/role_of(mob/user)
-	return user ? crew[user.real_name] : null
+	return user ? user.value_by_name(crew) : null
 
 /datum/craft_register/proc/is_owner(mob/living/human/H)
 	return istype(H) && party && party_train_party_of(H) == party
 
 /datum/craft_register/proc/is_barred(mob/user)
-	return user && (user.real_name in barred)
+	return user && user.any_name_in(barred)
 
 // TRUE when this mob counts as crew: a member of the owning party, or someone
 // on the crew list.
 /datum/craft_register/proc/is_crew(mob/user)
 	if (!user || is_barred(user))
 		return FALSE
-	return is_owner(user) || !isnull(crew[user.real_name])
+	return is_owner(user) || !isnull(role_of(user))
 
 // TRUE when this mob may steer. Members of the owning party always may; listed
 // crew need a steering role. A register with no party guards nothing.

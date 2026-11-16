@@ -140,7 +140,7 @@
 			to_chat(user, "You start adding clay blocks to the wall...")
 			if (do_after(user, 20, src) && W)
 				to_chat(user, "You finish adding clay blocks to the wall, completing it.")
-				qdel(W)
+				W.loose_pile_use(1)
 				var/obj/covers/clay_wall/S = new /obj/covers/clay_wall(loc)
 				qdel(src)
 				var/choice = WWinput(user, "What type of construction?","Clay Constructions","Normal",list("Wall", "Alternative Brick Style", "Doorway"))
@@ -163,7 +163,7 @@
 					icon_state = "claybrickwall_inc[stage]"
 					base_icon_state = icon_state
 					health = (30*stage)
-					qdel(W)
+					W.loose_pile_use(1)
 					return
 	..()
 
@@ -231,7 +231,7 @@
 			to_chat(user, "You start adding clay to the wall...")
 			if (do_after(user, 20, src) && W)
 				to_chat(user, "You finish adding clay to the wall, completing it.")
-				qdel(W)
+				W.loose_pile_use(1)
 				var/obj/covers/clay_wall/sumerian/S = new /obj/covers/clay_wall/sumerian(loc)
 				qdel(src)
 				var/choice = WWinput(user, "What type of wall?","Sumerian Clay Walls","Normal",list("Normal","Doorway","Window","Corner"))
@@ -268,7 +268,7 @@
 					icon_state = "sumerian-wall_inc[stage]"
 					base_icon_state = icon_state
 					health = (30*stage)
-					qdel(W)
+					W.loose_pile_use(1)
 					return
 	..()
 
@@ -403,7 +403,7 @@
 		to_chat(user, "You start adding cement to the wall...")
 		if (do_after(user, 20, src) && W)
 			to_chat(user, "You finish adding cement to the wall, completing it.")
-			qdel(W)
+			W.loose_pile_use(1)
 			new /obj/covers/cement_wall(loc)
 			qdel(src)
 			return
@@ -470,17 +470,17 @@
 			if (QDELETED(src) || QDELETED(W) || W.loc != user)
 				return
 			if (choice == "Wall")
-				qdel(W)
+				W.loose_pile_use(1)
 				new /obj/covers/brick_wall(loc)
 				qdel(src)
 				return
 			else if (choice == "Window")
-				qdel(W)
+				W.loose_pile_use(1)
 				new /obj/structure/window_frame/brick(loc)
 				qdel(src)
 				return
 			else if (choice == "Full Window")
-				qdel(W)
+				W.loose_pile_use(1)
 				new /obj/structure/window_frame/brickfull(loc)
 				qdel(src)
 				return
