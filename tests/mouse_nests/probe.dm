@@ -43,6 +43,8 @@ var/mouse_runtime_error = FALSE
 		mouse_settle_checks()
 		mouse_mob_checks()
 		mouse_burrow_target_checks()
+		mouse_food_checks()
+		mouse_cat_checks()
 	catch(var/exception/e)
 		mouse_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = mouse_failures, "runtime_error" = mouse_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")
@@ -148,3 +150,126 @@ var/mouse_runtime_error = FALSE
 	E.habitat_hits = list("desert|[ECO_SAND]" = 30000)
 	S = E.mouse_burrow_species()
 	mouse_check(S.target == 0, "deserts hold no burrows")
+
+/proc/mouse_clear(x1, y1, x2, y2)
+	for (var/turf/T in block(locate(x1, y1, 1), locate(x2, y2, 1)))
+		for (var/atom/movable/A in T)
+			if (!ismob(A))
+				qdel(A)
+
+/proc/mouse_food_checks()
+	mouse_clear(1, 1, 20, 20)
+	for (var/obj/structure/mouse_nest/old in mouse_nest_list.Copy())
+		qdel(old)
+	var/now = trap_now_minutes()
+
+	// Only a clay jar of food nearby: nothing reachable, the nest starves.
+	var/obj/structure/storage_container/storage_jar/J = new(locate(6, 5, 1))
+	new /obj/item/weapon/reagent_containers/food/snacks/meat(J.ensure_storage())
+	var/obj/structure/mouse_nest/H = new(locate(5, 5, 1))
+	H.population = 3
+	mouse_check(H.reachable_food_units() == 0, "food in a clay jar is out of reach")
+	H.last_settle = mouse_minutes_ago(5)
+	H.settle(now)
+	mouse_check(H.population == 2, "a nest beside only a jar loses a mouse (got [H.population])")
+	mouse_check(J.ensure_storage().contents.len == 1, "the jar's food is untouched")
+
+	// A basket of food is open: the nest grows and eats.
+	var/obj/structure/storage_container/basket/B = new(locate(4, 5, 1))
+	for (var/i = 1, i <= 6, i++)
+		new /obj/item/weapon/reagent_containers/food/snacks/meat(B.ensure_storage())
+	mouse_check(H.reachable_food_units() == 6, "a basket's food is open to mice")
+	H.last_settle = mouse_minutes_ago(5)
+	H.settle(now)
+	mouse_check(H.population == 3, "a nest with plenty of food grows (got [H.population])")
+	mouse_check(B.ensure_storage().contents.len == 5, "a nest of 2 eats one item a step (left [B.ensure_storage().contents.len])")
+	var/fouled = 0
+	for (var/obj/item/weapon/reagent_containers/food/F in B.ensure_storage().contents)
+		if (F.rodent_fouled)
+			fouled++
+			mouse_check(findtext(F.name, "gnawed") == 1, "fouled food is named gnawed")
+	mouse_check(fouled == 1, "eating fouls one more item in the same store (got [fouled])")
+
+	// A log chest is gnawed at a quarter of the rate.
+	var/obj/structure/storage_container/log_chest/L = new(locate(7, 7, 1))
+	for (var/i = 1, i <= 8, i++)
+		new /obj/item/weapon/reagent_containers/food/snacks/meat(L.ensure_storage())
+	mouse_check(H.reachable_food_units() == 5 + 2, "eight items in a log chest count as two units")
+
+	// Seeds and ripe crops.
+	var/obj/item/stack/farming/seeds/S = new /obj/item/stack/farming/seeds/wheat(locate(5, 6, 1))
+	S.amount = 3
+	rodent_eat(S)
+	mouse_check(S.amount == 2, "mice eat one seed from a stack")
+	var/obj/structure/farming/plant/P = new /obj/structure/farming/plant/wheat(locate(5, 7, 1))
+	P.stage = P.readyStageMin
+	mouse_check(P.rodent_strip_harvest() && !QDELETED(P) && P.stage < P.readyStageMin, "mice eat a ripe crop but the plant lives")
+	qdel(P)
+	qdel(S)
+
+	// Spreading needs soft ground, room and nobody watching.
+	var/turf/stone = locate(15, 15, 1)
+	stone.ChangeTurf(/turf/floor/plating, FALSE, FALSE)
+	mouse_check(mouse_nest_site_error(stone) == "floor", "no nest on a hard floor")
+	mouse_check(isnull(mouse_nest_site_error(locate(12, 12, 1))), "grass far from players takes a nest")
+	var/turf/wood = locate(13, 13, 1)
+	wood.ChangeTurf(/turf/floor/wood, FALSE, FALSE)
+	mouse_check(isnull(mouse_nest_site_error(wood)), "a wooden floor takes a nest")
+	new /obj/structure/mouse_nest(locate(10, 12, 1))
+	new /obj/structure/mouse_nest(locate(10, 14, 1))
+	mouse_check(mouse_nest_site_error(locate(12, 12, 1)) == "crowded", "three nests within 15 tiles crowd out a fourth")
+	H.population = 8
+	var/list/scan = H.forage_scan()
+	var/before = mouse_nest_list.len
+	for (var/obj/structure/mouse_nest/N in mouse_nest_list.Copy())
+		if (N != H)
+			qdel(N)
+	before = mouse_nest_list.len
+	var/obj/structure/mouse_nest/child = null
+	for (var/i = 1, i <= 20 && !child, i++)
+		child = H.try_spread(scan)
+	mouse_check(child && mouse_nest_list.len == before + 1 && child.commensal, "a full nest founds a house nest beside a store")
+	mouse_check(child && get_dist(child, H) <= 12, "the new nest is within spreading range")
+	mouse_check(H.population == 6, "the colony takes two mice from the old nest (got [H.population])")
+
+/proc/mouse_cat_checks()
+	mouse_clear(1, 1, 20, 20)
+	for (var/obj/structure/mouse_nest/old in mouse_nest_list.Copy())
+		qdel(old)
+	var/now = trap_now_minutes()
+	var/obj/structure/mouse_nest/H = new(locate(5, 5, 1))
+	var/obj/structure/storage_container/basket/B = new(locate(4, 5, 1))
+	for (var/i = 1, i <= 7, i++)
+		new /obj/item/weapon/reagent_containers/food/snacks/meat(B.ensure_storage())
+	H.population = 5
+	mouse_check(H.predator_pressure() == 0, "no cats, no pressure")
+	var/mob/living/simple_animal/pet/cat/C = new(locate(8, 5, 1))
+	mouse_check(H.predator_pressure() == 1, "a cat within 7 tiles hunts the nest")
+	mouse_check(C in mouser_cat_list, "cats register for the cat cap")
+	H.last_settle = mouse_minutes_ago(5)
+	H.settle(now)
+	mouse_check(H.population == 5, "a cat cancels a well-fed nest's growth (got [H.population])")
+	var/before = mouse_nest_list.len
+	H.population = 8
+	for (var/i = 1, i <= 30, i++)
+		H.last_settle = mouse_minutes_ago(5)
+		H.population = 8
+		H.settle(now)
+	mouse_check(mouse_nest_list.len == before, "a nest with a cat nearby never spreads")
+	qdel(C)
+	var/mob/living/simple_animal/pet/dog/D = new(locate(8, 5, 1))
+	mouse_check(H.predator_pressure() == 0.5, "a dog counts for half a cat")
+	qdel(D)
+
+	var/mob/living/simple_animal/pet/cat/wild/W = new(locate(15, 15, 1))
+	mouse_check(W.wild && W.name == "wildcat", "a wildcat starts wild")
+	mouse_check(ecology_wild_animal(W), "a wild wildcat counts toward the ecology census")
+	var/mob/feeder = new /mob(locate(16, 15, 1))
+	for (var/i = 1, i <= 6, i++)
+		W.tame_feeding(feeder, now + i * 20)
+	mouse_check(!W.wild && W.name == "cat", "six spaced feedings tame a wildcat into a cat")
+	mouse_check(!ecology_wild_animal(W), "a tamed cat leaves the wild census")
+	qdel(W)
+	qdel(feeder)
+	qdel(H)
+	qdel(B)

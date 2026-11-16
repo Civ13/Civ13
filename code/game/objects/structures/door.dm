@@ -204,7 +204,8 @@
 			user.last_bumped = FALSE
 		if (user.last_bumped && world.time - user.last_bumped <= 60)
 			return FALSE
-		if (M.client)
+		// Players, and agent characters, which play without a client.
+		if (M.client || agent_character_for(M))
 			if (ishuman(M))
 				var/mob/living/human/C = M
 				if (!C.handcuffed)

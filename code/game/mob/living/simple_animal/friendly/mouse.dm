@@ -34,8 +34,9 @@
 
 	can_pull_size = TRUE
 	can_pull_mobs = MOB_PULL_NONE
-	granivore = 1
-	scavenger = 1
+	// Mice eat through their nest (code/modules/ecology/mouse_nests.dm), not by roaming.
+	granivore = 0
+	scavenger = 0
 	behaviour = "scared" // mice bolt from people; they never attack
 	melee_damage_lower = 0
 	melee_damage_upper = 0

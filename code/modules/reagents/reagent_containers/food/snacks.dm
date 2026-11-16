@@ -178,6 +178,8 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 			H.adjust_mood(abs(ceil(satisfaction/biteamount)), "the food you ate") //orcs, crabs and wolfmans will be get satisfaction positive anyway from any food
 		else
 			H.adjust_mood(ceil(satisfaction/biteamount), "the food you ate") //standard humans and other human-races reactions
+		if (H.find_trait("Shellfish Allergy") && is_shellfish(src))
+			H.shellfish_reaction()
 		if (raw)
 			if (!H.orc && !H.crab && !H.wolfman && !H.lizard)
 				var/raw_poison = pick(0,0,1) //1/3 chance per bite to be poisoned if you are not orc, crab, wolfman or lizard
@@ -279,6 +281,8 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 			to_chat(user, "<span class='notice'>[diet_summary]</span>")
 	if (rotten && isturf(loc))
 		to_chat(user, "<span class='warning'>Flies buzz around it.</span>")
+	if (rodent_fouled)
+		to_chat(user, "<span class='warning'>Mice have been at it: it is nibbled and fouled with droppings.</span>")
 	if (bitecount == 0)
 		return
 	else if (bitecount == 1)

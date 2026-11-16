@@ -224,6 +224,9 @@ How to play:
 - Build: {"do": "build", "recipe": "<structure>", "material": "<stack>", "dir": north|south|east|west} builds on the tile you stand on,
   facing dir. Roofing ({"do": "roof", "dir": ...}) covers the tile next to you in that direction.
   A house is easiest with a blueprint (build_next): it walks to each tile and builds walls, a door, a roof support, the roof and furniture.
+- Doors, windows and trapdoors say whether they are open, and when shut whether walking into one opens it for you. A door that
+  won't open is locked, barred, bolted or held shut: walk_to plans around it. On your side, help intent on it lifts a bar or draws a
+  bolt, grab intent shoots a bolt or braces it shut with your body. A shut trapdoor is floor; click it to open it.
 - Water: rivers, lakes, puddles and wells marked "(unclean)" give you cholera, which kills in about 20 minutes. Drink from a
   clean well, or boil unclean water first: {"do": "boil_water"} does the next step (craft a wood mug from 1 wood log, fill it,
   put a stone on a lit campfire, hold the mug and a stick, boil it with a hot stone, drink from the mug). Stone comes from
@@ -391,7 +394,7 @@ def summarize(observation, note="", ignored=(), muted=()):
     for row in nearby:
         refs.append(row.get("ref"))
         kind = " (predator: dangerous)" if is_predator(row) else " (dead)" if row.get("mob") and row.get("stat") == 2 else " (animal)" if str(row.get("type", "")).startswith("/mob/living/simple_animal") else " (person)" if row.get("mob") else ""
-        lines.append(f"  {len(refs) - 1}. {row.get('name')} dx={row.get('dx')} dy={row.get('dy')}{kind}{_hurt_mark(row)}{_branch_mark(row)}{' (unclean)' if row.get('sickness') else ''}{_fire_mark(row)}{_verb_mark(row)}")
+        lines.append(f"  {len(refs) - 1}. {row.get('name')} dx={row.get('dx')} dy={row.get('dy')}{kind}{_hurt_mark(row)}{_branch_mark(row)}{_door_mark(row)}{' (unclean)' if row.get('sickness') else ''}{_fire_mark(row)}{_verb_mark(row)}")
         for inside in [item for item in row.get("contents") or [] if isinstance(item, dict)][:MAX_CONTENTS]:
             refs.append(inside.get("ref"))
             lines.append(f"     {len(refs) - 1}. {inside.get('name')} (inside {row.get('name')}; click it with an empty hand to take it)")
@@ -473,6 +476,33 @@ def _hurt_mark(row):
         elif wound.get("broken") and not wound.get("splinted"):
             marks.append(f"broken {wound.get('name')}")
     return f" (hurt: {', '.join(marks)})" if marks else ""
+
+
+def _door_mark(row):
+    """A door, window or trapdoor: open, or shut and whether walking into it gets you through."""
+    door = row.get("door")
+    if not isinstance(door, dict):
+        return ""
+    kind = str(door.get("kind") or "door")
+    if door.get("open"):
+        return f" ({kind}: open)"
+    marks = [f"{kind}: shut"]
+    bars = door.get("bars") if isinstance(door.get("bars"), dict) else {}
+    if bars.get("your side") == "barred":
+        marks.append("barred on your side: click with help intent to lift the bar")
+    elif bars.get("far side") == "barred":
+        marks.append("barred from the far side")
+    bolt = door.get("bolt") if isinstance(door.get("bolt"), dict) else {}
+    if bolt.get("shot"):
+        marks.append("bolted on your side: click with help intent to draw it" if bolt.get("side") == "your side" else "bolted from the far side")
+    lock = door.get("lock") if isinstance(door.get("lock"), dict) else {}
+    if lock.get("locked"):
+        marks.append("locked" + (", keyhole on your side" if lock.get("keyhole") == "your side" else ""))
+    if door.get("braced_by") and door.get("braced_by") != "you":
+        marks.append(f"held shut by {door.get('braced_by')}")
+    if "passable" in door:
+        marks.append("opens for you" if door.get("passable") else "won't open for you")
+    return " (" + "; ".join(marks) + ")"
 
 
 def _branch_mark(row):

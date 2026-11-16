@@ -141,7 +141,7 @@
 			if(O.density)
 				if(istype(O, /obj/structure/simple_door))
 					var/obj/structure/simple_door/D = O
-					if(D.locked)
+					if(!D.door_route_passable(null))
 						return FALSE
 					continue
 				if(istype(O, /obj/covers))

@@ -73,6 +73,10 @@ var/global/list/trait_list = list(
 	"Nearsighted" = list(-2,list("Blind"),"Past about 4 tiles the world fades into grey fog. Standing still lets you squint and thin it; corrective glasses or a monocle clear it."),
 	"Farsighted" = list(-1,list("Blind"),"You squint for a moment before a paper or book opens, and studying, writing and copying take 50% longer. Corrective glasses or a monocle fix it."),
 	"Squeamish" = list(-1,list("Hardened Fighter"),"Seeing someone maimed hurts your mood twice as much."),
+	"Bee Sting Allergy" = list(-2,list("Sting Resistant"),"Bee stings hurt twice as much, and from the second sting your face swells and your throat tightens: you collapse, choking, for a while. It never kills, but keep away from angry bees."),
+	"Sting Resistant" = list(1,list("Bee Sting Allergy"),"Bee stings hurt you a third as much and never knock you down."),
+	"Hay Fever" = list(-1,list(),"Outdoors in spring or the wet season, pollen sets you sneezing now and then and blurs your eyes for a moment."),
+	"Shellfish Allergy" = list(-1,list(),"Eating crab or lobster brings out an itchy rash and makes you throw up."),
 	"Recluse Scholar" = list(0,list("Menacing","Hardened Fighter","Quartermaster","Green Thumb","Tinkerer","Wanderer","Rallying Voice","Extroverted"),"Playstyle. Studying and research are 25% faster with nobody else within 5 tiles, but 25% slower with people around, and your mood settles lower in crowds of 3 or more."),
 	"Menacing" = list(0,list("Recluse Scholar","Hardened Fighter","Quartermaster","Green Thumb","Tinkerer","Wanderer","Rallying Voice"),"Playstyle. You can Intimidate someone who can see you, souring their mood a little, and wild grazing animals bolt from your glare. Others see you look dangerous, and you tutor students more slowly."),
 	"Hardened Fighter" = list(0,list("Recluse Scholar","Menacing","Quartermaster","Green Thumb","Tinkerer","Wanderer","Rallying Voice","Thick Skinned","Squeamish"),"Playstyle. Sword and melee skill trains 50% faster and wounds hurt you 15% less. Crafting and scholarship train 25% slower."),
@@ -122,10 +126,10 @@ var/global/list/trait_list = list(
 	return rand(1, upper)
 
 // Bounded, biased sampling of valid prefixes, not uniform sampling of all sets.
-// The current catalog has 61 entries. Refuse oversized future catalogs rather
+// The current catalog has 65 entries. Refuse oversized future catalogs rather
 // than silently truncating eligibility or letting a click do unbounded work.
 /proc/random_zero_point_traits(datum/trait_random_source/random_source = null)
-	if (!islist(trait_list) || trait_list.len > 64)
+	if (!islist(trait_list) || trait_list.len > 80)
 		return null
 	if (!random_source)
 		random_source = new /datum/trait_random_source
