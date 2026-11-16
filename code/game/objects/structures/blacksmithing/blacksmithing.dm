@@ -138,8 +138,7 @@
 				if (P && P.amount == initial_amount)
 					var/amt = P.amount
 					qdel(P)
-					var/obj/item/stack/material/steel/I = new/obj/item/stack/material/steel(loc)
-					I.amount = amt*0.8
+					spawn_stack(/obj/item/stack/material/steel, loc, amt*0.8)
 				in_use = FALSE
 			else
 				in_use = FALSE
@@ -156,8 +155,7 @@
 				if (P && P.amount == initial_amount)
 					var/amt = P.amount
 					qdel(P)
-					var/obj/item/stack/material/iron/I = new/obj/item/stack/material/iron(loc)
-					I.amount = amt
+					spawn_stack(/obj/item/stack/material/iron, loc, amt)
 				in_use = FALSE
 			else
 				in_use = FALSE
@@ -222,71 +220,61 @@
 										var/tamt = ML.capacity
 										ML.capacity = 0
 										ML.current_material = null
-										var/obj/item/stack/material/copper/NM = new/obj/item/stack/material/copper(loc)
-										NM.amount = tamt
+										spawn_stack(/obj/item/stack/material/copper, loc, tamt)
 										to_chat(user, "You finish crafting the ingot.")
 									if ("bronze")
 										var/tamt = ML.capacity
 										ML.capacity = 0
 										ML.current_material = null
-										var/obj/item/stack/material/bronze/NM = new/obj/item/stack/material/bronze(loc)
-										NM.amount = tamt
+										spawn_stack(/obj/item/stack/material/bronze, loc, tamt)
 										to_chat(user, "You finish crafting the ingot.")
 									if ("tin")
 										var/tamt = ML.capacity
 										ML.capacity = 0
 										ML.current_material = null
-										var/obj/item/stack/material/tin/NM = new/obj/item/stack/material/tin(loc)
-										NM.amount = tamt
+										spawn_stack(/obj/item/stack/material/tin, loc, tamt)
 										to_chat(user, "You finish crafting the ingot.")
 									if ("brass")
 										var/tamt = ML.capacity
 										ML.capacity = 0
 										ML.current_material = null
-										var/obj/item/stack/material/brass/NM = new/obj/item/stack/material/brass(loc)
-										NM.amount = tamt
+										spawn_stack(/obj/item/stack/material/brass, loc, tamt)
 										to_chat(user, "You finish crafting the ingot.")
 									if ("zinc")
 										var/tamt = ML.capacity
 										ML.capacity = 0
 										ML.current_material = null
-										var/obj/item/stack/material/zinc/NM = new/obj/item/stack/material/zinc(loc)
-										NM.amount = tamt
+										spawn_stack(/obj/item/stack/material/zinc, loc, tamt)
 										to_chat(user, "You finish crafting the ingot.")
 									if ("gold")
 										var/tamt = ML.capacity
 										ML.capacity = 0
 										ML.current_material = null
-										var/obj/item/stack/material/gold/NM = new/obj/item/stack/material/gold(loc)
-										NM.amount = tamt
+										spawn_stack(/obj/item/stack/material/gold, loc, tamt)
 										to_chat(user, "You finish crafting the ingot.")
 									if ("silver")
 										var/tamt = ML.capacity
 										ML.capacity = 0
 										ML.current_material = null
-										var/obj/item/stack/material/silver/NM = new/obj/item/stack/material/silver(loc)
-										NM.amount = tamt
+										spawn_stack(/obj/item/stack/material/silver, loc, tamt)
 										to_chat(user, "You finish crafting the ingot.")
 									if ("lead")
 										var/tamt = ML.capacity
 										ML.capacity = 0
 										ML.current_material = null
-										var/obj/item/stack/material/lead/NM = new/obj/item/stack/material/lead(loc)
-										NM.amount = tamt
+										spawn_stack(/obj/item/stack/material/lead, loc, tamt)
 										to_chat(user, "You finish crafting the ingot.")
 									if ("iron")
 										var/tamt = ML.capacity
 										ML.capacity = 0
 										ML.current_material = null
-										var/obj/item/stack/material/iron/NM = new/obj/item/stack/material/iron(loc)
-										NM.amount = tamt
+										spawn_stack(/obj/item/stack/material/iron, loc, tamt)
 										to_chat(user, "You finish crafting the ingot.")
 									if ("steel")
 										var/tamt = ML.capacity
 										ML.capacity = 0
 										ML.current_material = null
-										var/obj/item/stack/material/steel/NM = new/obj/item/stack/material/steel(loc)
-										NM.amount = tamt
+										spawn_stack(/obj/item/stack/material/steel, loc, tamt)
 										to_chat(user, "You finish crafting the steel sheet.")
 								ML.update_icon()
 
@@ -401,17 +389,13 @@
 								ML.capacity = 0
 								switch(ML.current_material)
 									if ("copper")
-										var/obj/item/stack/arrowhead/copper/AH = new/obj/item/stack/arrowhead/copper(loc)
-										AH.amount = tamt*3
+										spawn_stack(/obj/item/stack/arrowhead/copper, loc, tamt*3)
 									if ("iron")
-										var/obj/item/stack/arrowhead/iron/AH = new/obj/item/stack/arrowhead/iron(loc)
-										AH.amount = tamt*3
+										spawn_stack(/obj/item/stack/arrowhead/iron, loc, tamt*3)
 									if ("steel")
-										var/obj/item/stack/arrowhead/steel/AH = new/obj/item/stack/arrowhead/steel(loc)
-										AH.amount = tamt*3
+										spawn_stack(/obj/item/stack/arrowhead/steel, loc, tamt*3)
 									if ("bronze")
-										var/obj/item/stack/arrowhead/bronze/AH = new/obj/item/stack/arrowhead/bronze(loc)
-										AH.amount = tamt*3
+										spawn_stack(/obj/item/stack/arrowhead/bronze, loc, tamt*3)
 								to_chat(user, "You finish crafting the [ML.current_material] arrowheads.")
 								ML.current_material = null
 								ML.update_icon()
