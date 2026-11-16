@@ -2183,6 +2183,10 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/fitted_lock/warded" = "iron_smithing",
 		"/obj/item/door_bar/iron" = "iron_smithing",
 		"/obj/item/door_bolt" = "iron_smithing",
+		// opening windows and shutters (window_fittings.dm)
+		"/obj/structure/simple_door/key_door/anyone/casement" = "glassworking",
+		"/obj/structure/simple_door/key_door/anyone/window_shutters" = "primitive_construction",
+		"/obj/structure/simple_door/key_door/anyone/window_shutters/iron" = "iron_smithing",
 		// fire doors (fire_doors.dm)
 		"/obj/structure/simple_door/key_door/anyone/fire_door" = "steelmaking",
 		"/obj/structure/simple_door/key_door/anyone/fire_door/steel" = "modern_construction",
