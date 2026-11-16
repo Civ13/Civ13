@@ -141,7 +141,8 @@ describe('standard screen parity', () => {
     expect(ui.act).toHaveBeenLastCalledWith('amount', { value: 30 });
     fireEvent.click(screen.getByText('Eject Glass'));
     expect(ui.act).toHaveBeenLastCalledWith('ejectBeaker', { value: 1 });
-    expect(screen.getByText('20 units of Water')).toBeTruthy();
+    expect(screen.getByRole('table', { name: 'Glass contents' }).textContent).toContain('Water20');
+    expect(screen.getByText('Holds 20 of 50 units.')).toBeTruthy();
   });
   it('preserves sales purchase, payment cancel and withdrawal, without allowing sold-out purchases', () => {
     const ui: ScreenProps = { template: 'vending_machine2.tmpl', interactive: true, act: vi.fn(), data: {
@@ -150,14 +151,17 @@ describe('standard screen parity', () => {
       ],
     } };
     const view = render(<Vending {...ui} />);
-    fireEvent.click(screen.getByText('Buy (5 s)'));
+    expect(screen.getByRole('table', { name: 'Goods for sale' }).textContent).toContain('Bread15 s');
+    fireEvent.click(screen.getByText('Buy'));
     expect(ui.act).toHaveBeenLastCalledWith('vend', { value: 1 });
-    fireEvent.click(screen.getByText('Vend'));
+    expect(screen.getByText('Sold out')).toBeTruthy();
+    fireEvent.click(screen.getByText('Take'));
     expect(ui.act).toHaveBeenCalledTimes(1);
     view.rerender(<Vending {...ui} data={{ ...ui.data, mode: 1, product: 'Bread', price: 5 }} />);
     fireEvent.click(screen.getByText('Cancel'));
     expect(ui.act).toHaveBeenLastCalledWith('cancelpurchase', { value: 1 });
-    fireEvent.click(screen.getByText('20 s'));
+    expect(screen.getByText('20 s')).toBeTruthy();
+    fireEvent.click(screen.getByText('Take it back'));
     expect(ui.act).toHaveBeenLastCalledWith('remove_money', { value: 1 });
   });
   it('renders entity-encoded user text as text rather than executable markup', () => {
