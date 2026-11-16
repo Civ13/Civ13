@@ -74,6 +74,7 @@
 	// Joining in play earns the account its place (faction_roster.dm).
 	if (map)
 		map.faction_roster_add(faction, faction_roster_account(src))
+	player_activity.faction_event(src, "faction_join", faction)
 	return TRUE
 
 // Strip leadership, permissions, title, research appointment and the role

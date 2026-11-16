@@ -155,3 +155,36 @@ class HostSideJob(unittest.TestCase):
         source = (ROOT / 'scripts/shard-group/shard_group.py').read_text(encoding='utf-8')
         body = source.split('def supervise(group, start=detach):', 1)[1].split('\ndef ', 1)[0]
         self.assertIn('ingest_player_activity(group)', body)
+
+
+class ProgressReport(unittest.TestCase):
+    def test_funnel_walls_and_reach(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = pathlib.Path(tmp)
+            db = aggregate.connect(root / 'a.sqlite')
+            yesterday = (dt.date.today() - dt.timedelta(days=1)).isoformat()
+            write(root / 'gaia', yesterday, [
+                {'e': 'boot', 's': 0, 'boot': 'b', 'tz': 0},
+                {'e': 'join', 's': 1000, 'a': 'alice'},
+                {'e': 'tutorial', 's': 1100, 'a': 'alice', 'step': 'move'},
+                {'e': 'tutorial', 's': 1200, 'a': 'alice', 'step': 'finished'},
+                {'e': 'tutorial', 's': 1200, 'anon': 'g1', 'step': 'move'},
+                {'e': 'learn', 's': 1300, 'a': 'alice', 'node': 'basic_toolmaking'},
+                {'e': 'faction_found', 's': 1400, 'a': 'alice', 'fac': 'Rome'},
+                {'e': 'counts', 's': 1500, 'a': 'alice', 'c': {'craft:item/weapon': 3, 'locked:iron_working': 2}},
+                {'e': 'counts', 's': 1500, 'a': 'bob', 'c': {'locked:iron_working': 1}},
+                {'e': 'first_craft', 's': 1500, 'a': 'alice', 'type': '/obj/item/weapon/material/hatchet'},
+                {'e': 'health', 's': 1500, 'p': 2, 'era': 1},
+                {'e': 'join', 's': 1600, 'a': 'bob'},
+            ])
+            aggregate.ingest(db, {'gaia': root / 'gaia'})
+            data = aggregate.report(db)
+            f = data['new_player_funnel']
+            self.assertEqual((f['accounts'], f['joined'], f['tutorial_finished'], f['crafted'], f['learned_research'], f['joined_faction']), (2, 2, 1, 1, 1, 1))
+            self.assertEqual(data['research_walls'][0], {'node': 'iron_working', 'refusals': 3, 'players': 2})
+            self.assertEqual(data['crafting_by_family'], [{'family': 'item/weapon', 'crafts': 3, 'players': 1}])
+            self.assertEqual(data['research_reach'], [{'node': 'basic_toolmaking', 'players': 1}])
+            self.assertEqual({r['step']: r['players'] for r in data['tutorial_steps']}, {'move': 2, 'finished': 1})
+            self.assertEqual(data['recipes_made_this_world'], 1)
+            self.assertEqual(data['era_by_region'], [{'region': 'gaia', 'era': 1}])
+            db.close()

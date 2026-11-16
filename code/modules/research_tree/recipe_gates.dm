@@ -33,6 +33,7 @@ var/global/list/basic_crafting_recipes = list("/obj/structure/oven/fireplace")
 		return TRUE
 	var/datum/research_node/N = istext(node_id) ? get_research_node(node_id) : null
 	if (istype(H) && N)
+		player_activity.research_wall(H, node_id)
 		if (map && map.book_research_enabled())
 			to_chat(H, SPAN_WARNING("You don't know how to do this yet. Study the <b>[N.name]</b> chapter first."))
 		else

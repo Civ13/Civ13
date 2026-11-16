@@ -78,3 +78,63 @@ class PlayerActivityWiring(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class ProgressWiring(unittest.TestCase):
+    def test_hooks(self):
+        expected = {
+            'code/modules/research_tree/character_knowledge.dm': 'player_activity.node_learned(src, node_id)',
+            'code/modules/research_tree/research_faction.dm': 'player_activity.node_done(faction, node_id,',
+            'code/game/mob/groups/faction_membership.dm': 'player_activity.faction_event(src, "faction_join", faction)',
+            'code/game/mob/groups/factions.dm': 'player_activity.faction_event(src, "faction_leave", civilization)',
+            'code/game/mob/groups/faction_creation.dm': 'player_activity.faction_event(owner, "faction_found", newname)',
+            'code/game/objects/items/stacks/stack.dm': 'player_activity.crafted(H, recipe.result_type)',
+            'code/modules/research_tree/recipe_gates.dm': 'player_activity.research_wall(H, node_id)',
+            'code/modules/client/player_tutorial.dm': 'player_activity.tutorial_step(owner, step_id)',
+        }
+        for path, call in expected.items():
+            self.assertIn(call, read(path), path)
+
+    def test_learn_records_only_new_nodes(self):
+        body = read('code/modules/research_tree/character_knowledge.dm').split('/mob/living/human/proc/learn_recipe_node(node_id)', 1)[1].split('\n/', 1)[0]
+        self.assertLess(body.index('var/is_new = !(node_id in known_recipe_nodes)'), body.index('known_recipe_nodes |= node_id'))
+
+
+class HiddenContentStaysOut(unittest.TestCase):
+    """Ids are written by name, so the sources they come from must hold nothing hidden."""
+
+    HIDDEN = ('code/modules/magic', 'code/modules/divine')
+
+    def hidden_types(self):
+        types = set()
+        for folder in self.HIDDEN:
+            for path in (ROOT / folder).rglob('*.dm'):
+                for match in re.finditer(r'^(/(?:obj|mob)/[A-Za-z0-9_/]+)', path.read_text(encoding='utf-8', errors='replace'), re.M):
+                    types.add(match.group(1).split('/proc')[0].split('/verb')[0])
+        return types
+
+    def test_crafting_recipes_hold_no_hidden_types(self):
+        hidden = self.hidden_types()
+        self.assertTrue(hidden)
+        recipes = '\n'.join(p.read_text(encoding='utf-8', errors='replace') for p in (ROOT / 'config/crafting').iterdir() if p.is_file())
+        found = sorted(t for t in hidden if re.search(re.escape(t) + r'(?![A-Za-z0-9_/])', recipes))
+        # A type also defined outside the hidden modules (/obj/item/weapon/book) is ordinary.
+        ordinary = set()
+        pattern = re.compile(r'^(/(?:obj|mob)/[A-Za-z0-9_/]+)', re.M)
+        for path in (ROOT / 'code').rglob('*.dm'):
+            if any(str(path).startswith(str(ROOT / folder)) for folder in self.HIDDEN):
+                continue
+            for match in pattern.finditer(path.read_text(encoding='utf-8', errors='replace')):
+                ordinary.add(match.group(1))
+        self.assertEqual([t for t in found if t not in ordinary], [])
+
+    def test_research_nodes_hold_nothing_hidden(self):
+        nodes = read('code/modules/research_tree/research_node.dm').lower()
+        for word in ('magic', 'spell', 'wand', 'shrine', 'divine'):
+            self.assertNotIn(word, nodes)
+        for folder in self.HIDDEN:
+            for path in (ROOT / folder).rglob('*.dm'):
+                text = path.read_text(encoding='utf-8', errors='replace')
+                self.assertNotIn('register_research_node', text, path)
+                self.assertNotIn('learn_recipe_node', text, path)
+                self.assertNotIn('player_activity', text, path)
