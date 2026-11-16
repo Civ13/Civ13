@@ -11,6 +11,12 @@ States, all 32x32, 1 dir, 1 frame:
              rim of chipped ice and a few loose shards and cracks around it.
              It sits on the "seashallow_frozen" tile of icons/turf/beach.dmi.
 
+  trawl_net  A trawl bundled for carrying
+             (code/modules/1713/fishing_grounds.dm, /obj/item/weapon/fishing/trawl):
+             a heap of tarred mesh, a row of cork floats along its head rope,
+             the two wooden boards that hold its mouth open, and a coil of
+             towing warp.
+
 Run with Pillow to rewrite the sheet (safe to rerun). `--out <dmi>` writes it
 somewhere else, `--png <png>` writes an enlarged review picture over ice,
 `--check` only verifies that the committed sheet is what this script draws.
@@ -89,8 +95,62 @@ def ice_hole():
     return im
 
 
+TRAWL = (
+    '................................',
+    '................................',
+    '................................',
+    '................................',
+    '................................',
+    '................................',
+    '................................',
+    '..........cc..cc..cc..cc........',
+    '.........cCCccCCccCCccCCc.......',
+    '.......rrrrrrrrrrrrrrrrrrrr.....',
+    '......nNnNnNnNnNnNnNnNnNnNn.....',
+    '.....nNnMnNnMnNnMnNnMnNnMnNn....',
+    '....nNnNnNnNnNnNnNnNnNnNnNnNn...',
+    '...bbnMnNnMnNnMnNnMnNnMnNnMbb...',
+    '...bBbNnNnNnNnNnNnNnNnNnNnbBb...',
+    '...bBbnNnMnNnMnNnMnNnMnNnNbBb...',
+    '...bBbNnNnNnNnNnNnNnNnNnNnbBb...',
+    '...bBbnMnNnMnNnMnNnMnNnMnNbBb...',
+    '...bBbNnNnNnNnNnNnNnNnNnNnbBb...',
+    '...bbbnNnMnNnMnNnMnNnMnNnNbbb...',
+    '....i.nNnNnNnNnNnNnNnNnNnN.i....',
+    '.....wwnNnMnNnMnNnMnNnMnww......',
+    '....wWWw.nNnNnNnNnNnNn.wWWw.....',
+    '....wW.Ww..............wW.Ww....',
+    '....wWWw................wWWw....',
+    '.....ww..................ww.....',
+    '................................',
+    '................................',
+    '................................',
+    '................................',
+    '................................',
+    '................................',
+)
+TRAWL_INK = {
+    'n': (58, 48, 38, 255), 'N': (92, 76, 56, 255), 'M': (124, 104, 76, 255),     # tarred mesh
+    'r': (176, 152, 104, 255),                                                   # head rope
+    'c': (150, 98, 52, 255), 'C': (206, 146, 84, 255),                           # cork floats
+    'b': (74, 52, 34, 255), 'B': (128, 92, 58, 255),                             # trawl boards
+    'i': (96, 100, 106, 255),                                                    # iron shackle
+    'w': (140, 118, 78, 255), 'W': (186, 162, 112, 255),                         # coiled warp
+}
+
+
+def trawl_net():
+    im = Image.new('RGBA', (SIZE, SIZE), (0, 0, 0, 0))
+    for y, row in enumerate(TRAWL):
+        for x, c in enumerate(row):
+            if c != '.':
+                im.putpixel((x, y), TRAWL_INK[c])
+    return im
+
+
 def build():
-    return [('ice_hole', {'dirs': 1, 'frames': 1}, [ice_hole()])]
+    return [('ice_hole', {'dirs': 1, 'frames': 1}, [ice_hole()]),
+            ('trawl_net', {'dirs': 1, 'frames': 1}, [trawl_net()])]
 
 
 def check_sheet(path, states):
@@ -111,11 +171,12 @@ def write_png(path, states, scale=6):
     ground = {name: ims[0].convert('RGBA') for name, _, ims in read_dmi(TURFS)}.get('seashallow_frozen')
     if ground is None:
         ground = Image.new('RGBA', (SIZE, SIZE), (192, 209, 216, 255))
-    canvas = Image.new('RGBA', (SIZE * 3 * len(states), SIZE * 3))
+    canvas = Image.new('RGBA', (SIZE * 3 * len(states), SIZE * 3), (90, 90, 90, 255))
     for i, (_, _, ims) in enumerate(states):
         for ty in range(3):
             for tx in range(3):
-                canvas.paste(ground, ((i * 3 + tx) * SIZE, ty * SIZE))
+                if i == 0:
+                    canvas.paste(ground, ((i * 3 + tx) * SIZE, ty * SIZE))
         canvas.alpha_composite(ims[0], ((i * 3 + 1) * SIZE, SIZE))
     canvas.resize((canvas.width * scale, canvas.height * scale), Image.NEAREST).save(path)
 

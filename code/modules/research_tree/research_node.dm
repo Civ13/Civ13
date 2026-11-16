@@ -746,6 +746,7 @@ var/global/list/node_grid_col_cache = null
 		// primitive_construction
 		"/obj/structure/region_gate/trail_marker" = "primitive_construction",
 		// rail_steam
+		"/obj/item/weapon/fishing/trawl" = "rail_steam",
 		"/obj/structure/region_gate/railway_station" = "rail_steam",
 		"/obj/structure/trains/locomotive/coal" = "rail_steam",
 		"/obj/structure/trains/storage/closed" = "rail_steam",
