@@ -10,7 +10,8 @@
 // members joining. A destroyed hall takes its tiers with it.
 //
 // The hall keeps its faction, tier and delivered materials in its own vars,
-// so it saves with the world. Nothing here sleeps except the designate
+// so it saves with the world. The leader or a works officer can unfasten it
+// and move it (faction_fixtures.dm); a loose hall counts for nothing. Nothing here sleeps except the designate
 // prompt, which rechecks after it.
 
 #define FACTION_HALL_BASE_LIMIT 10
@@ -44,7 +45,7 @@ var/global/list/faction_hall_tiers = list(
 /obj/map_metadata/proc/faction_hall_tier(faction)
 	var/best = 0
 	for (var/obj/structure/faction_hall/H in faction_halls)
-		if (!QDELETED(H) && H.faction == faction && isturf(H.loc) && H.tier > best && H.tier_stands(H.tier))
+		if (!QDELETED(H) && H.faction == faction && isturf(H.loc) && H.anchored && H.tier > best && H.tier_stands(H.tier))
 			best = H.tier
 	return best
 
@@ -157,7 +158,9 @@ var/global/list/faction_hall_tiers = list(
 	if (!faction)
 		to_chat(user, "No faction holds it yet. A faction leader can designate it as their faction's hall.")
 		return
-	if (tier && !tier_stands(tier))
+	if (!anchored)
+		to_chat(user, SPAN_WARNING("It stands loose. Until its leader or a works officer fastens it again, it counts for nothing."))
+	else if (tier && !tier_stands(tier))
 		to_chat(user, SPAN_WARNING("A [tiers()[tier][1]] must stand indoors; out in the open it counts for nothing."))
 	var/limit = limit_text()
 	if (limit)

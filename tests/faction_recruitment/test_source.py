@@ -225,6 +225,30 @@ class FactionHallSource(unittest.TestCase):
         self.assertIn('faction_halls -= src', self.hall)
 
 
+class FactionFixtureSource(unittest.TestCase):
+    """Val (2026-11-16): faction leaders and officers can move their faction's fixtures."""
+
+    def setUp(self):
+        self.fixtures = read('code/game/mob/groups/faction_fixtures.dm')
+
+    def test_works_power_gates_both_ends_and_rechecks_after_the_wait(self):
+        self.assertIn('"works" = "move the faction\'s hall and fixtures"', read('code/game/mob/groups/faction_offices.dm'))
+        self.assertIn('#include "code\\game\\mob\\groups\\faction_fixtures.dm"', read('civ13.dme'))
+        block = run.proc_text(self.fixtures, '/obj/structure/proc/fixture_move_block(')
+        self.assertIn('map.faction_power(user, faction, "works")', block)
+        toggle = run.proc_text(self.fixtures, '/obj/structure/proc/fixture_toggle(')
+        self.assertEqual(2, toggle.count('fixture_move_block(user)'))
+        self.assertLess(toggle.index('do_after('), toggle.rindex('fixture_move_block(user)'))
+        self.assertLess(toggle.rindex('fixture_move_block(user)'), toggle.index('anchored = fasten'))
+        for path in ('faction_hall', 'recruitment_station', 'colony_charter', 'closet/crate/faction_strongbox'):
+            self.assertIn('/obj/structure/%s/fixture_faction()' % path, self.fixtures)
+            self.assertIn('/obj/structure/%s/verb/fixture_fasten()' % path, self.fixtures)
+
+    def test_loose_halls_and_assemblies_count_for_nothing(self):
+        self.assertIn('H.anchored', run.proc_text(read('code/game/mob/groups/faction_hall.dm'), '/obj/map_metadata/proc/faction_hall_tier('))
+        self.assertIn('A.anchored', run.proc_text(read('code/game/mob/groups/nation.dm'), '/proc/nation_assembly_tier('))
+
+
 class NationSource(unittest.TestCase):
     """Val (2026-11-14): factions band together into nations they can leave,
     and nations grow through infrastructure."""

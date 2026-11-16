@@ -238,6 +238,7 @@
 #include "code\game\mob\groups\faction_papers.dm"
 #include "code\game\mob\groups\faction_treaties.dm"
 #include "code\game\mob\groups\faction_permits.dm"
+#include "code\game\mob\groups\faction_fixtures.dm"
 #include "code\game\mob\groups\faction_rename.dm"
 #include "code\game\mob\groups\faction_symbol.dm"
 #include "code\game\mob\groups\factions.dm"
