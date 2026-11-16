@@ -210,7 +210,9 @@
 		params["value"] = 1
 	if (!src_object.ui_act(action, params, user, src))
 		return FALSE
-	GLOB.nanomanager.update_uis(src_object)
+	// A handler may wait on the player; the owner can be gone by then.
+	if (src_object)
+		GLOB.nanomanager.update_uis(src_object)
 	return TRUE
 
 // Owners without ui_act() read href-style text: the action names its value.
