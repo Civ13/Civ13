@@ -266,12 +266,7 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 		if (!is_open_container())
 			to_chat(user, "<span class='notice'>\The [src] is closed.</span>")
 			return
-		if (reagents.get_free_space() < 15)
-			to_chat(user, "<span class='danger'>There is not enough room for the whole ingredient.</span>")
-			return
-		user.visible_message("<span class='warning'>[user] grinds the coffee against \the [src].</span>", "<span class='notice'>You grind the coffee and produce a coffee drink.</span>", "<span class='notice'>You grind the coffee and produce a coffee drink.</span>", "You hear the sound of something grinding.")
-		reagents.add_reagent("coffee", 15)
-		qdel(W)
+		to_chat(user, SPAN_NOTICE("Green coffee makes no drink yet. Roast it in a fire, grind the roasted beans in a mortar and pestle, then brew the grounds in boiling water."))
 		return
 	else if (istype(W, /obj/item/stack/material/cotton)) //item transfer? what is it?
 		var/obj/item/stack/material/cotton/CT = W

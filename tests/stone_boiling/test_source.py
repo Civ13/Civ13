@@ -13,7 +13,7 @@ def contract(source, oven, persistence):
     mixture = source.split("/proc/stone_boil_mixture()", 1)[1].split("\n/obj/", 1)[0]
     valid = source.split("/proc/stone_boil_valid(", 1)[1].split("\n/obj/", 1)[0]
     action = source.split("/verb/stone_boil_water()", 1)[1]
-    assert 'list("water" = 0, "sodiumchloride" = 0, "cholera" = 0, "food_poisoning" = 0)' in mixture
+    assert 'list("water" = 0, "sodiumchloride" = 0, "cholera" = 0, "food_poisoning" = 0, "coffee_grounds" = 0)' in mixture
     assert 'if (!(R.id in mixture))' in mixture
     assert 'get_reagent_amount("water") <= 0' in mixture
     for guard in ("persistence_save_in_progress", "persistence_active_operation", "persistence_load_recovery_required", "persistence_admission_identity != save_identity", "H.Adjacent(F)", "get_active_hand_owner(H)", "tool.loc != H", "F.loc != site", "S.loc != site", "S.amount < 1", "!F.stone_heat_ready()", "F.stone_heat_token() != epoch", "reagents != holder", "holder.my_atom != src", "stone_boil_reagent_identity != reagent_identity", "!is_open_container()", "current[id] != mixture[id]"):

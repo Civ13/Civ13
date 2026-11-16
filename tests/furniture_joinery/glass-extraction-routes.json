@@ -65,11 +65,6 @@
     "dose": 5
   },
   {
-    "input": "/obj/item/weapon/reagent_containers/food/snacks/grown/coffee",
-    "reagent": "coffee",
-    "dose": 15
-  },
-  {
     "input": "/obj/item/weapon/reagent_containers/food/snacks/grown/corn",
     "reagent": "cornoil",
     "dose": 5

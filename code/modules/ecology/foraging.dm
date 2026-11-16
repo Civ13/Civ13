@@ -166,6 +166,7 @@
 		/obj/item/stack/farming/seeds/mint = list("temperate", "sea", "semiarid", "jungle"),
 		/obj/item/stack/farming/seeds/sunflower = list("temperate", "semiarid", "savanna", "desert"),
 		/obj/item/stack/farming/seeds/rose = list("temperate", "semiarid", "sea"),
+		/obj/item/stack/farming/seeds/coffee = list("jungle", "savanna"),
 	)
 
 // Mushrooms grow where the mushroom crop does, outside the cold and dry seasons.
