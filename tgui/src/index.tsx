@@ -1,6 +1,6 @@
 import { Component, type ReactNode, useEffect, useSyncExternalStore } from 'react';
 import { createRoot } from 'react-dom/client';
-import { Button, NoticeBox } from 'tgui-core/components';
+import { NoticeBox } from 'tgui-core/components';
 import { interfaces } from './interfaces';
 import { text } from './interfaces/common';
 import { emptyState, updateState } from './state';
@@ -34,7 +34,7 @@ function App() {
   const act = (action: string, params: Params = {}) => {
     if (state.config.status === 2) window.Civ13Tgui.send(`act/${action}`, params);
   };
-  return <main className="civ13-app"><header><h1>{text(config.title) || 'Civilization 13'}</h1><Button onClick={() => window.Civ13Tgui.fallback()}>Classic interface</Button></header>
+  return <main className="civ13-app"><header><h1>{text(config.title) || 'Civilization 13'}</h1><button type="button" className="kit-classic" title="Switch this window to the classic interface" onClick={() => window.Civ13Tgui.fallback()}>Classic interface</button></header>
     {config.status === 0 ? <NoticeBox>This interface is unavailable.</NoticeBox> : config.status === -1 ? <NoticeBox>This interface has closed.</NoticeBox> : <>
       {config.status === 1 && <NoticeBox>Read-only: interaction is unavailable.</NoticeBox>}
       {Screen ? <Screen key={template} template={template} data={data} act={act} interactive={interactive} /> : <NoticeBox>{template ? 'Unsupported interface. Use the classic interface.' : 'Waiting for interface data...'}</NoticeBox>}

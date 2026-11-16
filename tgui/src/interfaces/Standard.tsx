@@ -1,8 +1,10 @@
 import { Section, NoticeBox } from 'tgui-core/components';
 import type { ScreenProps } from '../types';
 import { Action, list, text } from './common';
+import { SnapshotTable, cell } from './kit';
 export function Warehouse({ data }: ScreenProps) {
-  return <Section title="Warehouse Inventory">{list(data.items).length ? <table className="inventory"><thead><tr><th>Item Name</th><th>Quantity</th></tr></thead><tbody>{list(data.items).map((item, i) => <tr key={i}><td>{text(item.name)}</td><td>{item.amount}</td></tr>)}</tbody></table> : <NoticeBox>The warehouse is currently empty.</NoticeBox>}</Section>;
+  return <SnapshotTable label="Warehouse inventory" rows={data.items} empty="The warehouse is currently empty."
+    columns={[{ label: 'Item Name', cell: cell('name') }, { label: 'Quantity', align: 'right', cell: cell('amount') }]} />;
 }
 export function Chemistry(ui: ScreenProps) {
   const { data } = ui;
