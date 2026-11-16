@@ -32,6 +32,15 @@
 	can_pull_mobs = MOB_PULL_NONE
 	scavenger = 1
 
+// Cockroaches are short-lived like flies, so no source can build up an uncapped swarm.
+/mob/living/simple_animal/cockroach/New()
+	..()
+	addtimer(CALLBACK(src, PROC_REF(expire)), 10 MINUTES)
+
+/mob/living/simple_animal/cockroach/proc/expire()
+	if (!QDELETED(src) && stat != DEAD)
+		qdel(src)
+
 /mob/living/simple_animal/cockroach/death()
 	layer = MOB_LAYER
 	..()
