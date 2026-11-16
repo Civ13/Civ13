@@ -305,6 +305,43 @@ def report(db, now=None):
         last = db.execute("SELECT e, region, data FROM event WHERE account = ? AND e NOT IN ('hb', 'leave', 'counts') ORDER BY ts DESC LIMIT 1", (row['account'],)).fetchone()
         churn.append({'account': row['account'], 'last_seen': utc_day(row['last_ts']), 'last_event': last['e'] if last else None, 'region': last['region'] if last else None})
 
+    # New-player funnel: of the accounts first seen in the last 30 days, how many reached each step.
+    fresh = [row['account'] for row in db.execute('SELECT account FROM account WHERE agent = 0 AND first_ts >= ?', (now - 30 * DAY,))]
+    funnel_steps = (
+        ('joined', "e = 'join'"),
+        ('tutorial_finished', "e = 'tutorial' AND json_extract(data, '$.step') = 'finished'"),
+        ('crafted', "e = 'counts' AND data LIKE '%\"craft:%'"),
+        ('learned_research', "e = 'learn'"),
+        ('joined_faction', "e IN ('faction_join', 'faction_found')"),
+        ('travelled', "e = 'depart'"),
+        ('died', "e = 'death'"),
+    )
+    funnel = {}
+    for name, where in funnel_steps:
+        funnel[name] = sum(1 for account in fresh if db.execute('SELECT 1 FROM event WHERE account = ? AND ' + where + ' LIMIT 1', (account,)).fetchone())
+    funnel['came_back_another_day'] = sum(1 for account in fresh if db.execute('SELECT COUNT(DISTINCT day) FROM event WHERE account = ? AND e = ?', (account, 'join')).fetchone()[0] > 1)
+    tutorial = counts("SELECT json_extract(data, '$.step') AS step, COUNT(DISTINCT COALESCE(account, anon)) AS players FROM event WHERE e = 'tutorial' AND ts >= ? GROUP BY step ORDER BY players DESC", now - 30 * DAY)
+
+    # Research walls: hand actions refused for missing research (counter "locked:<node>").
+    walls = {}
+    crafts = {}
+    for row in db.execute("SELECT account, data FROM event WHERE e = 'counts' AND ts >= ?", (now - 7 * DAY,)):
+        for name, amount in (json.loads(row['data']).get('c') or {}).items():
+            if name.startswith('locked:'):
+                entry = walls.setdefault(name[7:], [0, set()])
+            elif name.startswith('craft:'):
+                entry = crafts.setdefault(name[6:], [0, set()])
+            else:
+                continue
+            entry[0] += amount if isinstance(amount, (int, float)) else 0
+            entry[1].add(row['account'])
+    research_walls = sorted(({'node': k, 'refusals': v[0], 'players': len(v[1])} for k, v in walls.items()), key=lambda r: (-r['players'], -r['refusals']))[:20]
+    crafting = sorted(({'family': k, 'crafts': v[0], 'players': len(v[1])} for k, v in crafts.items()), key=lambda r: -r['crafts'])[:20]
+    learned = counts("SELECT json_extract(data, '$.node') AS node, COUNT(DISTINCT account) AS players FROM event WHERE e = 'learn' AND json_extract(data, '$.agent') IS NULL GROUP BY node ORDER BY players DESC")
+    first_crafts = db.execute("SELECT COUNT(DISTINCT json_extract(data, '$.type')) FROM event WHERE e = 'first_craft'").fetchone()[0]
+    factions = counts("SELECT e AS event, COUNT(*) AS n FROM event WHERE e IN ('faction_found', 'faction_join', 'faction_leave') AND ts >= ? GROUP BY e", now - 7 * DAY)
+    eras = counts("SELECT region, MAX(json_extract(data, '$.era')) AS era FROM event WHERE e = 'health' GROUP BY region ORDER BY region")
+
     return {
         'generated': dt.datetime.fromtimestamp(now, dt.timezone.utc).strftime('%Y-%m-%d %H:%M UTC'),
         'active': {'day': len(active_since(DAY)), 'week': len(active_since(7 * DAY)), 'month': len(active_since(30 * DAY))},
@@ -320,6 +357,14 @@ def report(db, now=None):
         'refused_travel': refused,
         'retention': retention,
         'churn': churn,
+        'new_player_funnel': dict(funnel, accounts=len(fresh)),
+        'tutorial_steps': tutorial,
+        'research_walls': research_walls,
+        'crafting_by_family': crafting,
+        'research_reach': learned,
+        'recipes_made_this_world': first_crafts,
+        'factions': factions,
+        'era_by_region': eras,
     }
 
 
@@ -346,6 +391,17 @@ def print_report(data, out=sys.stdout):
     table('Refused travel (7 days)', data['refused_travel'], ('why', 'n'))
     table('Lag by player count (7 days)', data['lag_by_player_count'], ('players', 'dilation', 'samples'))
     table('Went quiet (active 8-14 days ago, not since)', data['churn'], ('account', 'last_seen', 'last_event', 'region'))
+    f = data['new_player_funnel']
+    w('\nNew players (first seen in 30 days): %d\n' % f['accounts'])
+    for name in ('joined', 'tutorial_finished', 'crafted', 'learned_research', 'joined_faction', 'travelled', 'died', 'came_back_another_day'):
+        w('  %s: %d\n' % (name, f[name]))
+    table('Tutorial steps reached (30 days)', data['tutorial_steps'], ('step', 'players'))
+    table('Research walls (7 days)', data['research_walls'], ('node', 'players', 'refusals'))
+    table('Crafting by family (7 days)', data['crafting_by_family'], ('family', 'players', 'crafts'))
+    table('Research known by players (90 days)', data['research_reach'], ('node', 'players'))
+    table('Faction events (7 days)', data['factions'], ('event', 'n'))
+    table('Era by region', data['era_by_region'], ('region', 'era'))
+    w('Recipes made at least once (90 days): %d\n' % data['recipes_made_this_world'])
     w('\nPeak players by UTC hour: %s\n' % (', '.join('%s:%s' % kv for kv in data['peak_players_by_utc_hour'].items()) or '(none)'))
 
 

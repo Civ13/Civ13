@@ -31,6 +31,8 @@ var/global/datum/player_activity/player_activity = new
 	var/list/sessions = list()
 	var/header_written = FALSE
 	var/last_heartbeat = 0
+	// Result types already reported as crafted by someone since this boot.
+	var/list/crafted_types = list()
 	var/last_date = null
 
 /datum/player_activity/New()
@@ -174,6 +176,7 @@ var/global/datum/player_activity/player_activity = new
 		if(H.persistence_owner_ckey && H.stat != DEAD && !QDELETED(H) && !is_agent_account(H.persistence_owner_ckey))
 			living++
 	var/list/health = list("p" = length(clients), "living" = living)
+	if(map) health["era"] = map.ordinal_age
 	if(processes && processes.time_track)
 		health["dil"] = round(processes.time_track.stored_averages["dilation"], 0.1)
 		health["cpu"] = round(processes.time_track.stored_averages["cpu"], 0.1)
@@ -307,6 +310,71 @@ var/global/datum/player_activity/player_activity = new
 	var/account = player_activity_account(H)
 	if(!account) return
 	record("refused", list("a" = account, "to" = destination, "why" = player_activity_refusal_class(reason)))
+
+// ---------------------------------------------------------------- progress
+// Research node ids come only from research_node.dm and crafted types only
+// from the config/crafting recipe files; tests/player_activity keeps both free
+// of anything hidden.
+
+// Records for owned characters only; host agents are marked.
+/datum/player_activity/proc/character_fields(mob/living/human/H)
+	var/account = player_activity_account(H)
+	if(!account) return null
+	var/list/F = list("a" = account)
+	if(is_agent_account(account)) F["agent"] = 1
+	return F
+
+/datum/player_activity/proc/node_learned(mob/living/human/H, node_id)
+	if(!enabled() || !istext(node_id)) return
+	var/list/F = character_fields(H)
+	if(!F) return
+	F["node"] = node_id
+	record("learn", F)
+
+/datum/player_activity/proc/node_done(faction, node_id, era = null)
+	if(!enabled() || !istext(node_id)) return
+	var/list/F = list("fac" = "[faction]", "node" = node_id)
+	if(isnum(era)) F["era"] = era
+	record("node_done", F)
+
+/datum/player_activity/proc/faction_event(mob/living/human/H, event, faction)
+	if(!enabled() || !istext(faction) || faction == "none") return
+	var/list/F = character_fields(H)
+	if(!F) return
+	F["fac"] = faction
+	record(event, F)
+
+// The family a crafted type belongs to: /obj/item/weapon/foo -> item/weapon.
+/proc/player_activity_craft_family(type_text)
+	var/list/parts = splittext("[type_text]", "/")
+	// "", "obj", "item", "weapon", ...
+	if(length(parts) >= 4) return "[parts[3]]/[parts[4]]"
+	if(length(parts) >= 3) return parts[3]
+	return "other"
+
+/datum/player_activity/proc/crafted(mob/living/human/H, result_type)
+	if(!enabled() || !result_type) return
+	var/account = player_activity_account(H)
+	if(!account || is_agent_account(account)) return
+	var/type_text = "[result_type]"
+	count(account, "craft:[player_activity_craft_family(type_text)]")
+	if(!crafted_types[type_text])
+		crafted_types[type_text] = TRUE
+		record("first_craft", list("a" = account, "type" = type_text))
+
+// A hand action refused for missing research: where players hit walls.
+/datum/player_activity/proc/research_wall(mob/living/human/H, node_id)
+	if(!enabled() || !istext(node_id)) return
+	var/account = player_activity_account(H)
+	if(!account || is_agent_account(account)) return
+	count(account, "locked:[node_id]")
+
+/datum/player_activity/proc/tutorial_step(client/C, step_id)
+	if(!enabled() || !C || !istext(step_id)) return
+	var/list/S = sessions[C.ckey]
+	var/list/F = client_fields(C, S || list("a" = account_key(C)))
+	F["step"] = step_id
+	record("tutorial", F)
 
 // ---------------------------------------------------------------- hooks
 

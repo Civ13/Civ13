@@ -25,8 +25,11 @@ var/datum/configuration/config = new
 	var/region = "gaia"
 var/datum/shard_group/shard_group = new
 
+/obj/item/weapon/material/hatchet
+/obj/structure/bed
 /obj/map_metadata
 	var/ID = "NOMADS"
+	var/ordinal_age = 2
 var/obj/map_metadata/map = new
 
 #define PROCESS_PRIORITY_IRRELEVANT 1
@@ -177,6 +180,17 @@ var/season = "WINTER"
 	var/process/player_activity/P = new
 	P.setup()
 	check("process fires each minute", P.schedule_interval == 600)
+	A.node_learned(human("alice"), "basic_toolmaking")
+	A.node_learned(human(null), "basic_toolmaking")
+	A.node_done("Rome", "bronze_age", 1)
+	A.faction_event(human("alice"), "faction_join", "Rome")
+	A.faction_event(human("alice"), "faction_join", "none")
+	A.crafted(human("alice"), /obj/item/weapon/material/hatchet)
+	A.crafted(human("dave"), /obj/item/weapon/material/hatchet)
+	A.crafted(human("agent@ada"), /obj/structure/bed)
+	A.research_wall(human("alice"), "iron_working")
+	A.research_wall(human("alice"), "iron_working")
+	A.flush()
 	var/list/L = lines_of(path)
 	check("header first", length(L) && L[1]["e"] == "boot" && L[1]["region"] == "gaia" && L[1]["v"] == 1)
 	var/list/by = list()
@@ -191,7 +205,29 @@ var/season = "WINTER"
 	check("depart line", by["depart"] && by["depart"]["to"] == "europe" && by["depart"]["how"] == "edge")
 	check("arrive line", by["arrive"] && by["arrive"]["from"] == "asia" && !by["arrive"]["back"])
 	check("refused line", by["refused"] && by["refused"]["why"] == "busy")
-	check("counters merged", by["counts"] && by["counts"]["c"]["atlas"] == 5)
+	var/atlas = 0
+	for (var/list/E in L)
+		if (E["e"] == "counts" && E["a"] == "alice" && E["c"]["atlas"]) atlas += E["c"]["atlas"]
+	check("counters merged", atlas == 5)
+	var/list/AC = null
+	var/list/DC = null
+	var/learns = 0
+	var/joins = 0
+	var/firsts = 0
+	for (var/list/E in L)
+		if (E["e"] == "counts" && E["a"] == "alice") AC = E["c"]
+		if (E["e"] == "counts" && E["a"] == "dave") DC = E["c"]
+		if (E["e"] == "learn") learns++
+		if (E["e"] == "faction_join") joins++
+		if (E["e"] == "first_craft") firsts++
+	check("craft counted by family", AC && AC["craft:item/weapon"] == 1 && DC && DC["craft:item/weapon"] == 1)
+	check("research wall counted", AC && AC["locked:iron_working"] == 2)
+	check("first craft once per type, not for agents", firsts == 1 && by["first_craft"]["a"] == "alice" && by["first_craft"]["type"] == "/obj/item/weapon/material/hatchet")
+	check("learn only for owned", learns == 1 && by["learn"]["node"] == "basic_toolmaking")
+	check("node done with era", by["node_done"] && by["node_done"]["fac"] == "Rome" && by["node_done"]["era"] == 1)
+	check("faction join, not none", joins == 1 && by["faction_join"]["fac"] == "Rome")
+	check("health carries era", by["health"]["era"] == 2)
+	check("craft family", player_activity_craft_family("/obj/structure/bed") == "structure/bed" && player_activity_craft_family("/obj/item") == "item")
 	check("health line", by["health"] && by["health"]["dil"] == 12.3 && by["health"]["cpu"] == 56.8)
 	check("save line", by["save"] && by["save"]["ok"] == 1 && by["save"]["sec"] == 4.5)
 	var/text = file2text(path)

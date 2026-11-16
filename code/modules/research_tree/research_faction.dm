@@ -267,6 +267,7 @@
 	entry[RNODE_ENTRY_STATUS] = RNODE_DONE
 	entry[RNODE_ENTRY_TICKS] = N.cost_ticks
 	produce_first_node_book(faction, node_id)
+	player_activity.node_done(faction, node_id, N.mode == RESEARCH_MODE_PROTOTYPE && N.era_tier > ordinal_age ? N.era_tier : null)
 	// Era-changing nodes (the PROTOTYPE-mode capstones) advance the WHOLE WORLD
 	// into their era the first time anyone completes one -- a global event,
 	// announced server-wide. Every other completion is a quiet faction notice

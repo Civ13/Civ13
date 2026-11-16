@@ -27,13 +27,18 @@ region, map and `world.timezone`.
 | `join` | `a` account or `anon` id, `ck` (ckey when the account is a Discord key), `via` (byond, discord, guest), `staff` |
 | `leave` | `a`/`anon`, `min` minutes connected, `why` (quit, travel, restart), `to` |
 | `hb` | every 5 minutes per player: `a`/`anon`, `act` (1 active, 0 idle over 5 minutes), `st` (lobby, alive, dead, observer) |
-| `health` | every 5 minutes: `p` players, `living` owned living characters, `dil` time dilation %, `cpu` |
+| `health` | every 5 minutes: `p` players, `living` owned living characters, `dil` time dilation %, `cpu`, `era` |
 | `save` | `ok`, `sec` seconds |
 | `death` | `a`, `cause` (player, npc, starved, thirst, cold, heat, disease, burned, drowned, suffocated, poison, wounded, unknown), `by` killer account for player kills, `tod`, `season`, `fac`, `smin` session minutes, `gib`, `agent` |
 | `depart` | `a`, `to`, `how` (trail, edge, ship, aircraft, lander, train, raid, admin) |
 | `arrive` | `a`, `from`, `how`, `back` when a refused trip came home |
 | `refused` | `a`, `to`, `why` (destination_down, too_much, too_far, busy, no_account, closed, other) |
-| `counts` | `a`, `c` counter name to amount since the last flush |
+| `learn` | `a`, `node` research node a character newly learned |
+| `node_done` | `fac`, `node`, `era` when it moved the world into a new era |
+| `faction_found`, `faction_join`, `faction_leave` | `a`, `fac` |
+| `first_craft` | `a`, `type`: the first time since this boot anyone made that recipe |
+| `tutorial` | `a`/`anon`, `step` (each tutorial step id, then `finished`) |
+| `counts` | `a`, `c` counter name to amount since the last flush: `craft:<family>` (for example `craft:item/weapon`), `locked:<node>` when a hand action was refused for missing research |
 | `dropped` | `n` lines dropped because the 2000-line buffer was full |
 
 The account is `account_key()`: the ckey for a BYOND key, `d:<discord id>` for
@@ -72,6 +77,15 @@ python3 tools/player_activity/aggregate.py --db <root>/player-activity.sqlite --
 The report shows active players for 1, 7 and 30 days, new players this week,
 session count and median length, playtime per region, deaths by cause (all and
 in the first session hour), travel between lands, refused trips, lag by player
-count, peak players by hour, day 1 and day 7 retention, and accounts that went
-quiet. `--forget` deletes one account's rows, removes it as a killer from other
+count, peak players by hour, day 1 and day 7 retention, accounts that went
+quiet, the new-player funnel (joined, finished the tutorial, crafted, learned
+research, joined a faction, travelled, died, came back another day), tutorial
+steps reached, research walls (nodes players were refused for most), crafting
+by family, how many players know each research node, faction events, era by
+region and how many recipes were made at least once.
+
+Research node ids come only from `research_node.dm` and crafted types only from
+the `config/crafting` recipe files; `tests/player_activity/test_source.py`
+checks that neither holds anything from the hidden modules, and that those
+modules never call the recorder. `--forget` deletes one account's rows, removes it as a killer from other
 rows, and skips its lines in files not yet read.

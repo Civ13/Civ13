@@ -42,9 +42,12 @@
 	if (!can_learn_recipe_node(node_id))
 		return FALSE
 	known_recipe_nodes = clean_recipe_node_ids(known_recipe_nodes)
+	var/is_new = !(node_id in known_recipe_nodes)
 	known_recipe_nodes |= node_id
 	recipe_knowledge_initialized = TRUE
 	refresh_recipe_knowledge_menus()
+	if (is_new)
+		player_activity.node_learned(src, node_id)
 	return TRUE
 
 /mob/living/human/proc/initialize_recipe_knowledge()

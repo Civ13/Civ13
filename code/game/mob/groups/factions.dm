@@ -137,6 +137,7 @@
 /mob/living/human/proc/faction_leaving_proc()
 	if (civilization == null || civilization == "none")
 		return FALSE
+	player_activity.faction_event(src, "faction_leave", civilization)
 	left_factions += list(list(civilization,world.realtime+864000)) //24 hours
 	if (map)
 		map.clear_faction_leader(src, civilization)
