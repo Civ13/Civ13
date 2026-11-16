@@ -329,6 +329,22 @@ macro "macro"
 		name = ""
 		command = "craft-within-reach"
 		is-disabled = true
+	elem "action_floor_up_1"
+		name = ""
+		command = "go-up"
+		is-disabled = true
+	elem "action_floor_up_2"
+		name = ""
+		command = "go-up"
+		is-disabled = true
+	elem "action_floor_down_1"
+		name = ""
+		command = "go-down"
+		is-disabled = true
+	elem "action_floor_down_2"
+		name = ""
+		command = "go-down"
+		is-disabled = true
 	elem "held_voice_talk_1"
 		name = "F5"
 		command = "voice-talk-down"
@@ -758,6 +774,22 @@ macro "hotkeymode"
 	elem "action_craft_2"
 		name = "CTRL+SHIFT+C"
 		command = "craft-within-reach"
+	elem "action_floor_up_1"
+		name = ""
+		command = "go-up"
+		is-disabled = true
+	elem "action_floor_up_2"
+		name = ""
+		command = "go-up"
+		is-disabled = true
+	elem "action_floor_down_1"
+		name = ""
+		command = "go-down"
+		is-disabled = true
+	elem "action_floor_down_2"
+		name = ""
+		command = "go-down"
+		is-disabled = true
 	elem "held_voice_talk_1"
 		name = "F5"
 		command = "voice-talk-down"
