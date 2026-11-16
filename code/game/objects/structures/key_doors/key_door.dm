@@ -158,6 +158,8 @@ var/list/nonbreaking_types = list(
 		return
 
 /obj/structure/simple_door/key_door/custom/attackby(obj/item/W as obj, mob/user as mob)
+	if (door_fitting_attackby(W, user))
+		return
 	if (istype(W, /obj/item/weapon/key))
 		if (W.code == custom_code)
 			toggle_key_lock(user)
@@ -207,6 +209,8 @@ var/list/nonbreaking_types = list(
 				return
 
 /obj/structure/simple_door/key_door/attackby(obj/item/W as obj, mob/user as mob)
+	if (door_fitting_attackby(W, user))
+		return
 
 	var/keyslot_original_locked = keyslot.locked
 
