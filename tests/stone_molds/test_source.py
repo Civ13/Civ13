@@ -182,7 +182,7 @@ class StoneMoldTests(unittest.TestCase):
         branch=oven.split('var/obj/item/weapon/clay/CL = I',1)[1]
         self.assertLess(branch.index('if (stone_mold_type(CL.type))'),branch.index('contents += new CL.result(src)'))
         self.assertIn('continue // Carved stone',branch)
-        self.assertIn('no firing needed',read(STACK))
+        self.assertIn('Chisel and hammer/mallet equipped or at your feet.',read(STACK))
         for file in ('scripts/build-crafting-atlas.py','scripts/player_help_bridge.py'):
             source=read(file)
             self.assertIn('hammer/mallet',source)

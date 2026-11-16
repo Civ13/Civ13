@@ -1,6 +1,6 @@
 /obj/structure/TV
 	name = "television"
-	desc = "A legacy decorative television. New television receivers can receive stations from 1969."
+	desc = "An old television set. A television receiver can pick up stations from 1969."
 	icon = 'icons/obj/modern_structures.dmi'
 	icon_state = "TV"
 	anchored = TRUE
@@ -18,11 +18,11 @@
 
 /obj/structure/TV/active //no television channels... yet.
 	icon_state = "TV_wn"
-	desc = "A legacy decorative television showing static. Build a new television receiver for live stations."
+	desc = "An old television set showing only static."
 	active = TRUE
 
 /obj/structure/TV/active/examine(var/mob/living/L)
-	to_chat(L, "This legacy decorative set only shows static. Build a television receiver for live stations.")
+	to_chat(L, "Nothing but static. A television receiver would pick up the stations.")
 	return
 
 /* Clocks*/
@@ -74,11 +74,11 @@
 
 /obj/structure/TV/television/active
 	icon_state = "TV_wn"
-	desc = "A legacy decorative television showing static. Build a new television receiver for live stations."
+	desc = "An old television set showing only static."
 	active = TRUE
 
 /obj/structure/TV/television/active/examine(var/mob/living/L)
-	to_chat(L, "This legacy decorative set only shows static. Build a television receiver for live stations.")
+	to_chat(L, "Nothing but static. A television receiver would pick up the stations.")
 	return
 
 /* TV Technical*/

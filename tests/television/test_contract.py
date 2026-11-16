@@ -103,7 +103,7 @@ class TelevisionContracts(unittest.TestCase):
         legacy = (ROOT / 'code/game/objects/structures/appliances.dm').read_text()
         self.assertIn('/obj/structure/TV/grandfather/attackby', legacy)
         self.assertIn('/obj/structure/TV/television/attackby', legacy)
-        self.assertIn('legacy decorative', legacy)
+        self.assertIn('Nothing but static', legacy)
 
     def test_isolated_fixture_and_opt_in_native(self):
         runner = (ROOT / 'tests/television/run.py').read_text()

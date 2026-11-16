@@ -336,7 +336,7 @@
 		return
 	if (N.mode == RESEARCH_MODE_PROTOTYPE && N.prototype_type && istype(W, N.prototype_type))
 		if (node_needs_demonstration(assigned_node))
-			to_chat(user, SPAN_WARNING("<b>[N.name]</b> needs a working demonstration, not a part: [demonstration_text(assigned_node)]. Record it with Record a Demonstration on paper or in a book."))
+			to_chat(user, SPAN_WARNING("<b>[N.name]</b> needs a working demonstration: [demonstration_text(assigned_node)]. Record it with Record a Demonstration on paper or in a book."))
 			return
 		if (tier < N.min_bench_tier)
 			to_chat(user, SPAN_WARNING("This bench isn't upgraded enough to complete this prototype."))

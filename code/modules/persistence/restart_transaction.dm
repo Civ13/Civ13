@@ -302,7 +302,7 @@ var/global/list/persistence_frozen_levels = list()
 			to_chat(world, "<font color='yellow' size=4><b>Saving the world now. The server will [stay_down || shutdown ? "shut down" : "restart"] when the save completes.</b></font>")
 	else if(clients.len && !prewarned)
 		if(!isnull(expected_persistence) && expected_persistence == 0)
-			to_chat(world, "<font color='yellow' size=4><b>Attention - The server will save and restart in 1 minute. This nonpersistent round will start fresh; the save will be retained for recovery.</b></font>")
+			to_chat(world, "<font color='yellow' size=4><b>Attention - The server will save and restart in 1 minute. The next round starts fresh.</b></font>")
 		else if(stay_down)
 			to_chat(world, "<font color='yellow' size=4><b>Attention - The server will save the world and shut down in 1 minute. Your progress will be kept for when it comes back.</b></font>")
 		else
@@ -347,7 +347,7 @@ var/global/list/persistence_frozen_levels = list()
 			write_stop_marker(stopped_by)
 			request_shutdown(expected_persistence)
 		else
-			to_chat(world, "<b>Save validated. Restarting now; reconnect to resume the saved generation.</b>")
+			to_chat(world, "<b>World saved. Restarting now; reconnect to carry on.</b>")
 			diagnostic_phase = "shutdown"
 			request_restart()
 	catch(var/exception/e)

@@ -895,7 +895,7 @@ var/global/datum/persistence_admission_identity
 			return null
 #endif
 		if(kind == "save")
-			to_chat(world, "<FONT color='yellow'><B>SAVING THE MAP. Do not move between z-levels until saving finishes. Normal gameplay level transfers and protected sleep teleports are blocked; admins should avoid cross-z movement. Players are held still only while their own level is being saved.</B></FONT>")
+			to_chat(world, "<FONT color='yellow'><B>SAVING THE MAP. Stairs, ladders and other level changes are blocked until it finishes, and you are held still while your own level saves.</B></FONT>")
 	catch(var/exception/admission_error)
 		operation.withdraw()
 		throw admission_error

@@ -510,7 +510,7 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 	var/list/snapshot = records(home_roots(S))
 	var/list/garage = garage_snapshot(S)
 	if (!snapshot || isnull(garage) || !S.checkpoint_home(snapshot, garage))
-		to_chat(S.body, "Stash save rejected. Unsupported equipment, capacity or recovery lock; nothing has been transferred.")
+		to_chat(S.body, "Your stash could not be saved: unsupported gear, no room, or a frozen account. Nothing was moved.")
 		return FALSE
 	return TRUE
 
@@ -627,7 +627,7 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 	var/required = S.profile["level"] * 5
 	if (required > 15 || options.len < required) return null
 	while (selected.len < required)
-		var/choice = WWinput(S.body, "Choose part [selected.len + 1] of [required]. These exact items will appear in the final upgrade quote.", "Upgrade parts", "Cancel", options + list("Cancel"))
+		var/choice = WWinput(S.body, "Choose part [selected.len + 1] of [required]. These items go into the upgrade quote.", "Upgrade parts", "Cancel", options + list("Cancel"))
 		if (!owned(S.body) || !S.body.Adjacent(S.house) || !options[choice]) return null
 		selected += options[choice]
 		options -= choice

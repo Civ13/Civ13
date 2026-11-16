@@ -54,7 +54,7 @@ var/global/planned_shutdown_serial = 0 // bumped by every new countdown and by a
 		if("shutdown") return "Your progress will be kept for when it comes back."
 		if("maintenance") return "Your progress will be kept; reconnect when it is back."
 		if("update") return "You will be moved over automatically. Each level is held still for a moment while it saves, and anything done after your level is saved will not carry over."
-		if("fresh") return "This nonpersistent round will start fresh; the save will be retained for recovery."
+		if("fresh") return "The next round starts fresh."
 		if("reboot") return "Reconnect in a minute or two."
 	return "Your progress will be kept; reconnect in a few minutes to continue."
 

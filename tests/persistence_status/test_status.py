@@ -135,7 +135,7 @@ class PersistenceStatus(unittest.TestCase):
         counts = census(bodies)
         self.assertEqual(counts['CIVILIAN'].keys, [2, 1, 1])
         self.assertEqual(line('Civilians', 'CIVILIAN', counts),
-                         'Civilians: 2 alive (1 heavily injured or unconscious), 1 dead bodies currently present.')
+                         'Civilians: 2 alive (1 heavily injured or unconscious), 1 dead.')
 
     def test_repeated_load_discards_old_uids_without_mutating_history(self):
         history = DMList('old-uid', 'another-deleted-uid')
@@ -184,7 +184,7 @@ class PersistenceStatus(unittest.TestCase):
 
     def test_empty_factions_show_zero_without_mortality_claim(self):
         text = line('Civilians', 'CIVILIAN', census([]))
-        self.assertEqual(text, 'Civilians: 0 alive (0 heavily injured or unconscious), 0 dead bodies currently present.')
+        self.assertEqual(text, 'Civilians: 0 alive (0 heavily injured or unconscious), 0 dead.')
         self.assertNotIn('Mortality', text)
         self.assertNotIn('%', text)
 
@@ -212,15 +212,13 @@ class PersistenceStatus(unittest.TestCase):
         self.assertIn(predicate, FACTIONS)
 
     def test_all_29_factions_route_to_census_only_for_persistence(self):
-        block = REPORT.split('\tvar/report_scope = ""\n', 1)[1].split('\n\tvar/msg_npcs', 1)[0]
+        block = REPORT.split('\tvar/msg29 = ', 1)[1].split('\n\n\n', 1)[1].split('\n\tvar/msg_npcs', 1)[0]
         self.assertTrue(block.startswith('\tif (map && map.persistence)\n'))
         expected = 'BRITISH PIRATES CIVILIAN SPANISH PORTUGUESE FRENCH INDIANS DUTCH ROMAN GREEK ARAB JAPANESE RUSSIAN GERMAN AMERICAN VIETNAMESE CHINESE FILIPINO CHECHEN FINNISH NORWEGIAN SWEDISH DANISH POLISH ITALIAN BLUEFACTION REDFACTION CAFR TSFSR'.split()
         actual = re.findall(r'\t\tmsg(\d+) = persistence_battle_report_line\(fact(\d+), (\w+), current_counts\)', block)
         self.assertEqual(actual, [(str(i), str(i), faction) for i, faction in enumerate(expected, 1)])
         self.assertEqual(block.count('persistence_battle_report_counts()'), 1)
-        self.assertIn('Removed bodies and historical deaths are not counted', block)
-        self.assertEqual(REPORT.count('to_chat(world, report_scope)'), 1)
-        self.assertEqual(REPORT.count('shower << report_scope'), 1)
+        self.assertNotIn('report_scope', REPORT)
         for number in range(1, 30):
             self.assertIn(f'shower << msg{number}\n', REPORT)
 

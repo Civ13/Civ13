@@ -51,7 +51,7 @@
 	var/datum/extraction_ipc_economy/economy = new(accounts)
 	var/list/result = economy.confirm(offer.adapter, request, offer.candidate, current, extraction_ipc_now())
 	if (!admit(H))
-		to_chat(H, "Your market result is [result?["status"]]: [result?["reason"]]. Private storage is locked for recovery; no equipment was issued.")
+		to_chat(H, "Your market result is [result?["status"]]: [result?["reason"]]. Your private storage is frozen until staff sort it out.")
 		return result
 	to_chat(H, "Market result [result?["status"]]: [result?["reason"]]. Receipt [request["request_id"]]. Balance [game_credits(H.extraction_session)] game credits.")
 	return result
@@ -76,7 +76,7 @@
 		options["[initial(prototype.name)] - [entry["id"]], [economy.price(entry) * (require_fir ? 2 : 1)] credits"] = entry["id"]
 	var/list/selected = list()
 	while (options.len && selected.len < 16)
-		var/choice = WWinput(H, "Select up to sixteen exact item IDs. [require_fir ? "Listings require found-in-raid gear." : "The vendor pays from its finite game-credit treasury."]", "Market items", "Cancel", options + list("Review quote", "Cancel"))
+		var/choice = WWinput(H, "Pick up to sixteen items. [require_fir ? "Listings require found-in-raid gear." : "The vendor pays from its finite game-credit treasury."]", "Market items", "Cancel", options + list("Review quote", "Cancel"))
 		if (!supply_access(H) || choice == "Cancel") return null
 		if (choice == "Review quote") break
 		if (!options[choice]) return null
@@ -91,7 +91,7 @@
 		to_chat(H, "Market quote [offer.result["status"]]: [offer.result["reason"]].")
 		return FALSE
 	var/list/data = offer.result["data"]
-	var/choice = WWinput(H, "[data["confirm_action"]]: [data["price"]["amount"]] game credits. Selected IDs: [jointext(data["item_ids"], ", ")]. Quote expires at [data["expires_at"]]. Settlement returns your equipment to private storage. Confirm this exact quote?", "Market quote", "Cancel", list("Confirm", "Cancel"))
+	var/choice = WWinput(H, "[data["confirm_action"]]: [data["price"]["amount"]] game credits. Selected IDs: [jointext(data["item_ids"], ", ")]. Quote expires at [data["expires_at"]]. Your gear goes back to private storage. Accept this quote?", "Market quote", "Cancel", list("Confirm", "Cancel"))
 	if (choice != "Confirm") return FALSE
 	var/list/result = native_market_confirm(H, offer)
 	if (!result) to_chat(H, "Market confirmation rejected; check terminal access and quote freshness.")
@@ -110,7 +110,7 @@
 		for (var/id in H.extraction_session.profile["bot_receipts"])
 			var/list/receipt = H.extraction_session.profile["bot_receipts"][id]
 			options["[receipt["request_id"]]"] = receipt["request_id"]
-		var/selected = WWinput(H, "Choose a saved operation receipt. Pending operations require journal recovery before another transfer.", "Market receipts", "Cancel", options + list("Cancel"))
+		var/selected = WWinput(H, "Choose a receipt. An unfinished trade must be settled before another one.", "Market receipts", "Cancel", options + list("Cancel"))
 		var/list/receipt = options[selected] ? native_market_status(H, options[selected]) : null
 		if (receipt) to_chat(H, "Receipt [receipt["request_id"]]: [receipt["status"]], [receipt["reason"]].")
 		return !!receipt

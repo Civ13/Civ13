@@ -23,7 +23,7 @@
 		return model == "ASNO Piccolino" && istype(M) && build_session && M.car_bay_clear(build_session)
 	attackby(obj/item/I, mob/living/human/H)
 		if (feeding && H == build_session?.body) return ..()
-		to_chat(H, "Keep the exact paid recipe components beside the press, then use it to confirm assembly. Drag an active laid cable onto the press for power.")
+		to_chat(H, "Keep the paid parts beside the press, then use it to assemble. Drag an active laid cable onto the press for power.")
 	MouseDrop_T(atom/movable/O, mob/living/human/H)
 		if (!allowed(H)) return
 		if (feeding && H == build_session?.body) return ..()
@@ -73,7 +73,7 @@
 			to_chat(H, "Bring exactly 40 steel, 6 glass, 4 cloth, 10 cable and four boxed standard wheels beside the press. Split oversized stacks first. A level-two empty bay and 20 available cable power are required.")
 			return
 		var/digest = md5(json_encode(S.profile))
-		if (WWinput(H, "Assemble a Piccolino from these exact paid components? Assembly needs native research, 20 cable power and an uninterrupted action. Finished cars have no fuel. An uncertain paid build quarantines the account for explicit offline forfeiture.", name, "Cancel", list("Assemble", "Cancel")) != "Assemble") return
+		if (WWinput(H, "Assemble a Piccolino from these paid parts? It needs the research, 20 cable power and an unbroken action. Finished cars have no fuel. If the build is interrupted, your account is frozen until staff sort it out.", name, "Cancel", list("Assemble", "Cancel")) != "Assemble") return
 		if (busy || !allowed(H) || !Adjacent(H) || md5(json_encode(S.profile)) != digest) return
 		build_session = S
 		build_objects = objects
