@@ -124,7 +124,7 @@ var/global/harvest_duplicate_result = null
 			var/obj/item/stack/material/bone/bone = locate() in site
 			var/obj/item/stack/material/rawhide/hide = locate() in site
 			var/obj/item/stack/sinew/tendons = locate() in site
-			harvest_assert(slabs == yield_count && bone.amount == max(1, yield_count-2) && hide.amount == max(1, yield_count-2), "Size portions/stacks incorrect")
+			harvest_assert(slabs == yield_count && bone.amount == max(1, yield_count-2) && hide.amount == C.harvest_skin_yield(), "Size portions/stacks incorrect")
 			harvest_assert(!harvest_count(site, /obj/item/stack/material/leather), "Size-based harvest bypassed tanning")
 			harvest_assert(yield_count >= 3 ? tendons && tendons.amount == min(4, max(1, yield_count-2)) : !tendons, "Sinew quantity incorrect")
 			qdel(C)
@@ -161,7 +161,7 @@ var/global/harvest_duplicate_result = null
 		var/obj/item/stack/material/pelt/cowpelt/existing_hide = new(site, 5)
 		var/mob/living/simple_animal/cattle/cow/harvest_tester/pelt_cow = new(site)
 		pelt_cow.harvest_products(site, TRUE)
-		harvest_assert(existing_hide.amount == 7 && harvest_count(site, /obj/item/stack/material/pelt/cowpelt) == 1, "Hide constructor merged before setting yield")
+		harvest_assert(existing_hide.amount == 5 + pelt_cow.harvest_hide_pieces() && harvest_count(site, /obj/item/stack/material/pelt/cowpelt) == 1, "Hide constructor merged before setting yield")
 		qdel(pelt_cow)
 		harvest_clear(site)
 		var/obj/item/stack/material/rope/existing_rope = new(site, 10)
@@ -198,7 +198,7 @@ var/global/harvest_duplicate_result = null
 			var/mob/living/simple_animal/A = new path(site)
 			A.harvest_hide(site)
 			var/obj/item/stack/material/pelt/lionpelt/pelt = locate() in site
-			var/expected = path == /mob/living/simple_animal/hostile/sabertooth/lion/gladiator ? 0 : (path == /mob/living/simple_animal/hostile/sabertooth/lion ? 3 : 6)
+			var/expected = path == /mob/living/simple_animal/hostile/sabertooth/lion/gladiator ? 0 : (path == /mob/living/simple_animal/hostile/sabertooth/lion ? 6 : 7)
 			harvest_assert(expected ? pelt && pelt.amount == expected : !pelt, "Lion hide subtype yield: [path]")
 			harvest_assert(!harvest_count(site, /obj/item/stack/material/leather), "Lion skinning emitted leather")
 			qdel(A)

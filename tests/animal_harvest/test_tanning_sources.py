@@ -106,26 +106,68 @@ class TanningSourceContracts(unittest.TestCase):
         self.assertEqual(block(old, name).split('\tif (mammal)')[0], block(new, name).split('\tif (mammal)')[0])
         self.assertNotIn('new /obj/item/stack/material/leather', new)
 
-    def test_fur_pelt_outputs_and_their_quantities_remain_available(self):
-        pattern = r'new (/obj/item/stack/material/pelt/[\w/]+)\(site, (\d+)\)'
-        self.assertEqual(re.findall(pattern, source(ANIMALS)), re.findall(pattern, baseline(ANIMALS)))
+    def test_fur_pelt_outputs_remain_available_and_take_the_species_hide_size(self):
+        pattern = r'new (/obj/item/stack/material/pelt/[\w/]+)\(site, (\w+)\)'
+        old_types = {t for t, _ in re.findall(pattern, baseline(ANIMALS))}
+        new_rows = re.findall(pattern, source(ANIMALS))
+        self.assertTrue(old_types <= {t for t, _ in new_rows})
+        self.assertEqual({count for _, count in new_rows}, {'pieces'})
+        hide = block(source(ANIMALS), '/mob/living/simple_animal/proc/harvest_hide')
+        self.assertLess(hide.index('var/pieces = harvest_hide_pieces()'), hide.index('new '))
+        self.assertIn('if (pieces < 1)', hide)
 
-    def test_turkey_skin_is_one_unit_without_mammal_reclassification(self):
+    def hide_table(self):
+        """Ordered (istype paths, pieces) rows from harvest_hide_pieces."""
+        body = block(source(ANIMALS), '/mob/living/simple_animal/proc/harvest_hide_pieces')
+        rows = []
+        for cond, value in re.findall(r'\tif \((istype\(src.*?)\)\n\t\treturn ([^\n]+)', body):
+            rows.append((re.findall(r'istype\(src, (/mob/[\w/]+)\)', cond), value.split(' //')[0]))
+        return rows
+
+    def pieces(self, path):
+        for paths, value in self.hide_table():
+            for p in paths:
+                if path == p or path.startswith(p + '/'):
+                    m = re.match(r'istype\(src, ([\w/]+)\) \? (\d+) : (\d+)', value)
+                    if m:
+                        return int(m[2]) if (path == m[1] or path.startswith(m[1] + '/')) else int(m[3])
+                    return int(value)
+        return None
+
+    def test_hide_pieces_scale_with_real_hide_area(self):
+        A = '/mob/living/simple_animal/'
+        expected = {
+            'hostile/fox': 1, 'hostile/fox/arctic': 1, 'rabbit': 1, 'pet/cat': 1, 'monkey': 1,
+            'sheep': 2, 'goat/female': 2, 'hostile/wolf': 3, 'hostile/wolf/white/female': 3,
+            'hostile/panther': 4, 'deer/female': 3, 'deer/male': 4, 'pig_gilt': 3, 'boar_boar': 4,
+            'hostile/bear/sow/black': 4, 'hostile/bear/boar/black': 5, 'hostile/alligator': 5,
+            'hostile/sabertooth/lion': 6, 'hostile/bear/boar/brown': 9, 'hostile/bear/boar/polar': 11,
+            'horse': 10, 'camel': 11, 'cattle/cow': 11, 'cattle/bull': 13, 'bison': 11, 'bisonbull': 16,
+            'deer/elk/male': 8, 'deer/reindeer/male': 4, 'hostile/dinosaur/velociraptor': 3, 'pachy': 9, 'hostile/gorilla': 5, 'hostile/gorilla/gigantopithecus/yeti': 9,
+            'hostile/mammoth': 45, 'hostile/dinosaur/trex': 50, 'blackbat': 0, 'turkey_m': 1,
+        }
+        for path, count in expected.items():
+            with self.subTest(path=path):
+                self.assertEqual(self.pieces(A + path), count)
+        # Bigger animals never give less hide than smaller relatives.
+        for small, big in (('hostile/fox', 'hostile/wolf'), ('sheep', 'cattle/cow'), ('cattle/cow', 'cattle/bull'),
+                           ('bison', 'bisonbull'), ('hostile/bear/sow/brown', 'hostile/bear/boar/brown'),
+                           ('deer/female', 'deer/elk/female'), ('hostile/bear/boar/black', 'hostile/bear/boar/polar')):
+            self.assertLess(self.pieces(A + small), self.pieces(A + big), (small, big))
+        for paths, value in self.hide_table():
+            self.assertLessEqual(max(map(int, re.findall(r'\d+', value))), 50, 'one stack holds a whole hide')
+
+    def test_turkey_skin_is_one_unit_and_butchering_keeps_half_the_hide(self):
         text = source(ANIMALS)
-        skin = block(text, '/mob/living/simple_animal/proc/harvest_skin_yield')
-        turkey_gate = re.search(r'\tif \((.*)\)\n\t\treturn (\d+)', skin)
-        self.assertIsNotNone(turkey_gate)
-        for species, expected in (('turkey_f', True), ('turkey_m', True), ('turkeychick', False),
-                                  ('chicken', False), ('crab', False), ('cattle/cow', False)):
-            obj = NS(type='/mob/living/simple_animal/' + species)
-            self.assertEqual(gate(turkey_gate[1], {'src': obj}), expected)
-        self.assertEqual(int(turkey_gate[2]), 1)
+        self.assertEqual(self.pieces('/mob/living/simple_animal/turkey_f'), 1)
+        self.assertIsNone(self.pieces('/mob/living/simple_animal/turkeychick'))
         self.assertNotIn('turkey', block(text, '/mob/living/simple_animal/proc/harvest_mammal'))
-        bounds = re.search(r'return min\((\d+), max\((\d+), butcher_yield\(\)-(\d+)\)\)', skin)
-        self.assertIsNotNone(bounds)
-        cap, floor, deducted = map(int, bounds.groups())
-        for size, expected in ((1,1), (2,1), (3,1), (4,2), (5,3), (8,6), (999,6)):
-            self.assertEqual(min(cap, max(floor, size-deducted)), expected)
+        skin = block(text, '/mob/living/simple_animal/proc/harvest_skin_yield')
+        self.assertIn('var/pieces = harvest_hide_pieces()', skin)
+        self.assertIn('if (pieces < 1)\n\t\treturn 0', skin)
+        floor, = map(int, re.search(r'return max\((\d+), round\(pieces / 2\)\)', skin).groups())
+        for whole, kept in ((1, 1), (2, 1), (3, 1), (11, 5), (16, 8)):
+            self.assertEqual(max(floor, whole // 2), kept)
 
     def test_preparation_gate_rejects_lost_tool_source_movement_empty_or_disconnected(self):
         text = source(LEATHER)
