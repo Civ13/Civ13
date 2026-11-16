@@ -78,7 +78,7 @@ export async function paperEditorSmoke(browser, js, css) {
     await legacy.waitForFunction(()=>window.sent.length===1);
     assert.equal(JSON.parse((await legacy.evaluate(()=>window.sent[0])).payload.paper_edit).value,'More [i]wax[/i]');
     const invalid=await load();await update(invalid,{...data(),view:{legacy_name:'Synthetic paper',legacy_body_html:'UNSUPPORTED_PARTIAL'+'x'.repeat(65536),sections:[]}});
-    await invalid.getByText('Switching to classic interface...',{exact:true}).waitFor();
+    await invalid.getByText('This window could not be shown. Close it and open it again.',{exact:true}).waitFor();
     assert.equal(await invalid.evaluate(()=>window.fallback),true);
     assert.equal((await invalid.locator('body').textContent()).includes('UNSUPPORTED_PARTIAL'),false);
     assert.equal(await invalid.locator('textarea').count(),0);

@@ -5,7 +5,6 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE = ROOT / 'code/game/objects/map_metadata/pepelsibirsk.dm'
-TEMPLATE = ROOT / 'UI/templates/warehouse_book.tmpl'
 
 # Pre-fix sources, frozen as negative controls.
 OLD_SUPPLIES = '''/obj/structure/warehouse_book/proc/get_supplies()
@@ -48,10 +47,9 @@ class WarehouseInventoryTest(unittest.TestCase):
     def test_negative_control_old_count_drops_loose_goods(self):
         self.assertEqual(counts(OLD_SUPPLIES, TURF), {'ammo': 5})
 
-    def test_classic_template_encodes_names(self):
-        template = TEMPLATE.read_text(encoding='utf-8')
-        self.assertIn('{{>value.name}}', template)
-        self.assertNotIn('{{:value.name}}', template)
+    def test_screen_shows_names_as_text(self):
+        screen = (ROOT / 'tgui/src/interfaces/Standard.tsx').read_text(encoding='utf-8') + (ROOT / 'tgui/src/interfaces/kit.tsx').read_text(encoding='utf-8')
+        self.assertNotIn('dangerouslySetInnerHTML', screen)
         self.assertIn('{{:value.name}}', OLD_TEMPLATE)
 
     def test_names_are_sent_as_plain_text(self):

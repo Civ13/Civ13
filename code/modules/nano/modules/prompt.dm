@@ -6,6 +6,8 @@
 
 // A notice nobody answers still ends, as if dismissed, so a caller never sleeps forever.
 #define PROMPT_WAIT_LIMIT 6000
+// How long a prompt window may take to start before the classic dialog is used.
+#define PROMPT_STARTUP_LIMIT 200
 
 // Per-session browser capability: set by any modern UI's acknowledgement, and by
 // a prompt whose window had to fall back. Clients are never saved.
@@ -69,7 +71,12 @@
 // Sleeps the caller until an answer, a close, a fallback or the time limit.
 /datum/nano_module/prompt/proc/wait(limit = PROMPT_WAIT_LIMIT)
 	var/deadline = world.time + limit
+	// A window that never starts ends the prompt, so the caller shows BYOND's own dialog.
+	var/startup_deadline = world.time + PROMPT_STARTUP_LIMIT
 	while (!finished)
+		if (ui && !ui.frontend_acknowledged && world.time >= startup_deadline)
+			ui.show_plain_page()
+			break
 		if (world.time >= deadline || !owner || !owner.client || !ui || !ui.state)
 			finish(null)
 			break
@@ -108,12 +115,12 @@
 	if (prompt && !prompt.finished)
 		push_data(prompt.prompt_data(), TRUE)
 
-// There is no classic template for a prompt: a browser that cannot run the
-// modern frontend ends the prompt and the caller shows BYOND's own dialog.
-/datum/nanoui/tgui/prompt/use_legacy_renderer()
-	if (legacy_renderer)
+// A prompt has no plain page: a browser that cannot run the modern frontend
+// ends the prompt and the caller shows BYOND's own dialog.
+/datum/nanoui/tgui/prompt/show_plain_page()
+	if (plain_page)
 		return
-	legacy_renderer = TRUE
+	plain_page = TRUE
 	if (user && user.client)
 		user.client.modern_ui_failed = TRUE
 	var/datum/nano_module/prompt/old_prompt = prompt
@@ -137,7 +144,7 @@
 // The parent Topic has already checked owner, window, generation, status and
 // the one allowed action before this runs.
 /datum/nanoui/tgui/prompt/consume_topic(href, list/href_list)
-	if (!prompt || prompt.finished || legacy_renderer || !frontend_ready || !frontend_acknowledged || status != STATUS_INTERACTIVE || usr != user)
+	if (!prompt || prompt.finished || plain_page || !frontend_ready || !frontend_acknowledged || status != STATUS_INTERACTIVE || usr != user)
 		return TRUE
 	prompt.choose(text2num(href_list["answer"]))
 	return TRUE
@@ -155,3 +162,4 @@
 	return shown
 
 #undef PROMPT_WAIT_LIMIT
+#undef PROMPT_STARTUP_LIMIT

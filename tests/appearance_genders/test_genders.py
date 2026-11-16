@@ -7,7 +7,6 @@ ROOT = Path(__file__).resolve().parents[2]
 MODULE = ROOT / 'code/modules/nano/modules/appearance_changer.dm'
 SPECIES = ROOT / 'code/game/mob/living/carbon/human/species/species.dm'
 TSX = ROOT / 'tgui/src/interfaces/Standard.tsx'
-TMPL = ROOT / 'UI/templates/appearance_changer.tmpl'
 
 # The pre-fix data block, frozen as a negative control.
 OLD_DATA = '''	data["change_gender"] = can_change(APPEARANCE_GENDER)
@@ -36,9 +35,6 @@ class AppearanceGendersTest(unittest.TestCase):
 
     def test_interfaces_read_gender_fields(self):
         self.assertIn("'genders', 'gender_name', 'gender_key'", TSX.read_text(encoding='utf-8'))
-        tmpl = TMPL.read_text(encoding='utf-8')
-        self.assertIn('data.genders', tmpl)
-        self.assertIn('value.gender_key', tmpl)
 
     def test_server_sends_gender_choices(self):
         self.assertEqual(data_problems(MODULE.read_text(encoding='utf-8')), [])

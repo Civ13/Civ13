@@ -22,11 +22,18 @@
       else { window.location.href = url; }
     } catch (error) { /* The bounded server watchdog owns silent-bridge recovery. */ }
   };
+  // The modern screen cannot run or rejected its data. The server swaps in a
+  // plain page for the few windows that keep one; otherwise this notice stays.
   var fallback = function () {
     if (stopped) { return; }
     send('fallback');
     stopped = true;
     window.clearTimeout(timer);
+    var loading = document.getElementById('tgui-loading');
+    if (loading) {
+      loading.style.display = '';
+      loading.textContent = 'This window could not load. Close it and open it again.';
+    }
   };
   var completeStartup = function () {
     if (stopped || !ready || !snapshotReceived || acknowledged) { return; }
@@ -59,7 +66,6 @@
     if (bridge.queue.length >= 32) { fallback(); return; }
     bridge.queue.push(raw);
   };
-  document.getElementById('tgui-legacy').onclick = function () { fallback(); return false; };
   // Do not infer the browser from the Dream Seeker version. Old engines never
   // parse the modern bundle, even when they are attached to a newer server.
   var match = navigator.userAgent.match(/(?:Chrome|Edg)\/(\d+)/);

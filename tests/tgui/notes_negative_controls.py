@@ -15,7 +15,7 @@ controls=[
  ('owner',' || user != reader','',contract.NotesOwnership,'test_owner_wrong_source_logout_ghost_and_real_transfer_order'),
  ('cache','\tui.legacy_snapshot = legacy_snapshot\n','',contract.NotesOwnership,'test_complete_cached_snapshot_guarded_fallback_and_close_noninterference'),
  ('close_idempotence','\tif (reader_closed)\n\t\treturn\n','',contract.NotesOwnership,'test_complete_cached_snapshot_guarded_fallback_and_close_noninterference'),
- ('complete_fallback','\t\tui.legacy_renderer = TRUE\n','',contract.NotesOwnership,'test_complete_cached_snapshot_guarded_fallback_and_close_noninterference'),
+ ('complete_fallback','\t\tui.plain_page = TRUE\n','',contract.NotesOwnership,'test_complete_cached_snapshot_guarded_fallback_and_close_noninterference'),
 ]
 results=[]
 for name,before,after,cls,method in controls:

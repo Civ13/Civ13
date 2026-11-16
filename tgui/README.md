@@ -35,36 +35,38 @@ fetching external fonts, CDNs, developer servers or gameplay resources.
 
 ## Browser/lifecycle contract
 
-Modern assets target Edge/Chromium >=123. The ES5 bootstrap checks the actual
-browser before loading them, installs the early update queue, and falls back to
-retained NanoUI on incompatibility, loading timeout or runtime error. Every
-modern screen also exposes **Classic interface**. It is a per-window fallback,
-not an account setting. No IE support is claimed for React19.
+Modern assets target Edge/Chromium >=123, the browser in BYOND 516, which is
+the minimum client. The ES5 bootstrap checks the actual browser before loading
+them and installs the early update queue. There is one renderer: no classic
+NanoUI templates, no **Classic interface** button and no server startup
+watchdog. If the browser cannot run the screen, the assets fail to load, startup
+times out or a screen throws, the window says it could not load and asks the
+player to close and reopen it.
 
-The ten converted producers select the modern adapter by default; there is no
-opt-in feature toggle. Capability checks and retained classic rendering provide
-compatibility fallback, not a dormant modern path.
+A few windows keep a complete plain page of their own for content the modern
+screen cannot show (old imported markup in books, Notes, flavor text and
+documents, and the Crafting Atlas page). They declare it with
+`has_plain_page()`; the browser's `fallback` message, or the window itself,
+switches such a window with `show_plain_page()`, and it keeps that page until it
+closes. A prompt ends instead, so the caller shows BYOND's own dialog, and the
+Crafting window hands over to the plain recipe list.
 
-React mounting sends `ready` but leaves the 15-second startup watchdog pending.
-Only a valid snapshot matching this UI ref, window and generation completes
-client startup and sends `ack`. The server retains a separate 20-second startup
-watchdog until that owner/generation's acknowledgement arrives. If ready,
-snapshot or ack delivery fails, the server can select the retained classic
-renderer without a successful client fallback message. Close invalidates the
-callback. Mob transfer invalidates startup state before the new mob has a client;
-the post-key-assignment hook reopens only after reciprocal binding to the intended
-client is confirmed, then starts a new bounded handshake. Classic fallback remains sticky for that
-UI datum. This covers initial handshake recovery, not failures after startup.
-Modern gameplay actions require ready and acknowledgement in addition to the
-existing owner/status/generation checks. Pre-ack actions are rejected; a later
-ack does not queue or replay them.
+React mounting sends `ready` but leaves the 15-second browser startup timer
+pending. Only a valid snapshot matching this UI ref, window and generation
+completes client startup and sends `ack`. Close invalidates the generation. Mob
+transfer invalidates startup state before the new mob has a client; the
+post-key-assignment hook reopens only after reciprocal binding to the intended
+client is confirmed, then starts a new handshake. Modern gameplay actions
+require ready and acknowledgement in addition to the existing
+owner/status/generation checks. Pre-ack actions are rejected; a later ack does
+not queue or replay them.
 
 `node tests/tgui/bootstrap.test.cjs` executes the actual bootstrap with fake
-transport and clocks. Its server side is a model using the production watchdog
-guard expressions, not DM execution. The production-bundle JSDOM check uses the
-real bootstrap, completes ready/snapshot/ack and rejects a stale-generation
-snapshot. Native Topic delivery, timer scheduling, actual classic reopen,
-cache, focus and transfer still require separate authorized acceptance.
+transport and clocks. Its server side is a model using the production guard
+expressions, not DM execution. The production-bundle JSDOM check uses the real
+bootstrap, completes ready/snapshot/ack and rejects a stale-generation
+snapshot. Native Topic delivery, cache, focus and transfer still require
+separate authorized acceptance.
 
 NanoUI owns windows, authorization, processing and cleanup. Modern actions go
 through a UI-datum ref, window id and generation token; the backend allowlists

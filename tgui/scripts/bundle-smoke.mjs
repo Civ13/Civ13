@@ -3,106 +3,16 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { JSDOM, VirtualConsole } from 'jsdom';
-import vm from 'node:vm';
-// Compile the actual classic template with the retained NanoUI doT compiler.
-// Object.size is the existing utility seam; no browser or native transport here.
-const classic = vm.createContext({ module: { exports: {} } });
-vm.runInContext('Object.size = function (value) { return Object.keys(value).length; };', classic);
-vm.runInContext(readFileSync(new URL('../../UI/js/libraries/doT.js', import.meta.url), 'utf8'), classic);
-const renderClassicLanguages = classic.module.exports.template(readFileSync(new URL('../../UI/templates/known_languages.tmpl', import.meta.url), 'utf8'));
-const classicMarkup = renderClassicLanguages({ current_default: 'Common', languages: [{ name: 'Common', prefix: ':c', description: '&lt;script&gt;fictional&lt;/script&gt;', is_default: 1 }] }, {}, {});
-assert.ok(classicMarkup.includes('Common (:c)'));
-assert.ok(classicMarkup.includes('&lt;script&gt;fictional&lt;/script&gt;'));
-assert.ok(!classicMarkup.includes('<script>'));
-assert.ok(renderClassicLanguages({ languages: [], current_default: '' }, {}, {}).includes('No known languages are available.'));
-// Exercise the actual retained NanoUI compiler and this reader's fallback.
-const shipClassicContext = vm.createContext({ module: { exports: {} } });
-vm.runInContext('Object.size = value => Object.keys(value).length;', shipClassicContext);
-vm.runInContext(readFileSync(new URL('../../UI/js/libraries/doT.js', import.meta.url), 'utf8'), shipClassicContext);
-const renderShipClassic = shipClassicContext.module.exports.template(readFileSync(new URL('../../UI/templates/ship_stocks.tmpl', import.meta.url), 'utf8'));
-const shipClassicMarkup = renderShipClassic({ stocks: [
-  { label: 'Wood', amount: 0, unit: 'logs' }, { label: 'Water', amount: 12.5, unit: 'units' },
-  { label: '<script>fictional</script>', amount: '<img src=x>', unit: '<b>units</b>' },
-] }, {}, {});
-assert.ok(shipClassicMarkup.includes('>0 logs<'));
-assert.ok(shipClassicMarkup.includes('>12.5 units<'));
-assert.ok(shipClassicMarkup.includes('&#60;script&#62;fictional'));
-assert.ok(!shipClassicMarkup.includes('<script>'));
-assert.ok(!shipClassicMarkup.includes('<img'));
-assert.ok(!shipClassicMarkup.includes('<b>'));
-assert.ok(renderShipClassic({ stocks: [] }, {}, {}).includes('No stock snapshot is available.'));
-// Compile the actual retained template; this is an offline fallback fixture.
-const religionClassicContext = vm.createContext({ module: { exports: {} } });
-vm.runInContext('Object.size = value => Object.keys(value).length;', religionClassicContext);
-vm.runInContext(readFileSync(new URL('../../UI/js/libraries/doT.js', import.meta.url), 'utf8'), religionClassicContext);
-const renderReligionClassic = religionClassicContext.module.exports.template(readFileSync(new URL('../../UI/templates/religion_list.tmpl', import.meta.url), 'utf8'));
-const religionClassicMarkup = renderReligionClassic({ religions: [
-  { name: 'First', points: 0 }, { name: 'Second', points: -2 }, { name: 'Third', points: 12.5 },
-  { name: '&lt;script&gt;fictional&lt;/script&gt;', points: '<img src=x>' },
-] }, {}, {});
-assert.ok(religionClassicMarkup.indexOf('First') < religionClassicMarkup.indexOf('Second'));
-assert.ok(religionClassicMarkup.includes('>0</td>'));
-assert.ok(religionClassicMarkup.includes('>-2</td>'));
-assert.ok(religionClassicMarkup.includes('>12.5</td>'));
-assert.ok(religionClassicMarkup.includes('&lt;script&gt;fictional&lt;/script&gt;'));
-assert.ok(!religionClassicMarkup.includes('<script>'));
-assert.ok(!religionClassicMarkup.includes('<img'));
-assert.ok(renderReligionClassic({ religions: [] }, {}, {}).includes('No religions have been founded.'));
-const crewClassicContext = vm.createContext({ module: { exports: {} } });
-vm.runInContext('Object.size = value => Object.keys(value).length;', crewClassicContext);
-vm.runInContext(readFileSync(new URL('../../UI/js/libraries/doT.js', import.meta.url), 'utf8'), crewClassicContext);
-const renderCrewClassic = crewClassicContext.module.exports.template(readFileSync(new URL('../../UI/templates/crew_log.tmpl', import.meta.url), 'utf8'));
-const crewClassicMarkup = renderCrewClassic({ crew: [
-  { name: 'Masked sailor', job: 'Sailor' }, { name: 'NPC doctor', job: 'Doctor' },
-  { name: 'Unassigned', job: '' }, { name: '&lt;img src=x&gt;', job: '&lt;script&gt;inert&lt;/script&gt;' },
-] }, {}, {});
-assert.ok(crewClassicMarkup.indexOf('Masked sailor') < crewClassicMarkup.indexOf('NPC doctor'));
-assert.ok(crewClassicMarkup.includes('&lt;img src=x&gt;'));
-assert.ok(crewClassicMarkup.includes('&lt;script&gt;inert&lt;/script&gt;'));
-assert.ok(!crewClassicMarkup.includes('<img'));
-assert.ok(!crewClassicMarkup.includes('<script>'));
-assert.ok(!crewClassicMarkup.includes('null'));
-assert.ok(renderCrewClassic({ crew: [] }, {}, {}).includes('No crew are listed.'));
-const factionClassic = vm.createContext({ module: { exports: {} } });
-vm.runInContext('Object.size = value => Object.keys(value).length;', factionClassic);
-vm.runInContext(readFileSync(new URL('../../UI/js/libraries/doT.js', import.meta.url), 'utf8'), factionClassic);
-const renderFactionClassic = factionClassic.module.exports.template(readFileSync(new URL('../../UI/templates/faction_list.tmpl', import.meta.url), 'utf8'));
 const factionFixture = [
   { name: 'First', motto: 'Together &amp; safe', flavour: '&lt;script&gt;inert&lt;/script&gt;', members: 1, symbol: 'flist_first.png' },
   { name: 'Second', members: 2, symbol: '' },
   { name: '&lt;img src=x&gt;', members: 3, symbol: 'https://example.com/a.png' },
   { name: 'Unicode symbol', members: 4, symbol: 'flist_ÐºÐ¸Ñ€Ð¸Ð»Ð»Ð¸Ñ†Ð°.png' },
 ];
-const classicDom = new JSDOM(renderFactionClassic({ factions: factionFixture }, {}, {}));
-assert.equal(classicDom.window.document.querySelectorAll('tbody tr').length, 4);
-assert.equal(classicDom.window.document.querySelectorAll('img').length, 2);
-assert.equal(classicDom.window.document.querySelectorAll('img')[0].getAttribute('src'), 'flist_first.png');
-assert.equal(classicDom.window.document.querySelectorAll('img')[1].getAttribute('src'), encodeURIComponent('flist_ÐºÐ¸Ñ€Ð¸Ð»Ð»Ð¸Ñ†Ð°.png'));
-assert.equal(classicDom.window.document.querySelector('script'), null);
-assert.ok(classicDom.window.document.body.textContent.includes('<script>inert</script>'));
-assert.ok(classicDom.window.document.body.textContent.includes('1 member.'));
-assert.ok(classicDom.window.document.body.textContent.includes('2 members.'));
-assert.ok(classicDom.window.document.body.textContent.indexOf('First') < classicDom.window.document.body.textContent.indexOf('Second'));
-assert.ok(renderFactionClassic({ factions: [] }, {}, {}).includes('No populated factions are available.'));
-classicDom.window.close();
 const photoFixture = { name: 'Sand &amp; sea', image: 'tmp_photo_12.png', width: 448, scribble: '&lt;script&gt;inert&lt;/script&gt; &amp; a boat.' };
-const renderPhotoClassic = classic.module.exports.template(readFileSync(new URL('../../UI/templates/photo_viewer.tmpl', import.meta.url), 'utf8'));
-const photoClassicDom = new JSDOM(renderPhotoClassic(photoFixture, {}, {}));
-assert.equal(photoClassicDom.window.document.querySelector('h3').textContent, 'Sand & sea');
-assert.equal(photoClassicDom.window.document.querySelector('img').getAttribute('src'), 'tmp_photo_12.png');
-assert.equal(photoClassicDom.window.document.querySelector('img').width, 448);
-assert.ok(photoClassicDom.window.document.body.textContent.includes('<script>inert</script> & a boat.'));
-assert.equal(photoClassicDom.window.document.querySelectorAll('script,[onerror],a,input,button').length, 0);
-photoClassicDom.window.close();
-for (const image of ['', 'https://example.com/a.png', '../tmp_photo_1.png', 'tmp_photo_1.png?x', 'tmp_photo_x.png']) {
-  const fixture = new JSDOM(renderPhotoClassic({ ...photoFixture, image, scribble: '' }, {}, {}));
-  assert.equal(fixture.window.document.querySelectorAll('img').length, 0);
-  assert.ok(!fixture.window.document.body.textContent.includes('Written on the back:'));
-  fixture.window.close();
-}
 const errors = [];
 const console = new VirtualConsole(); console.on('jsdomError', error => errors.push(error.message));
-const dom = new JSDOM('<!doctype html><body data-ref="[0x123]" data-window="main[0x456]" data-generation="2"><div id="root"></div><p id="tgui-loading">Loading... <a id="tgui-legacy">Classic</a></p></body>', { runScripts: 'outside-only', url: 'http://127.0.0.1/', virtualConsole: console });
+const dom = new JSDOM('<!doctype html><body data-ref="[0x123]" data-window="main[0x456]" data-generation="2"><div id="root"></div><p id="tgui-loading">Loading...</p></body>', { runScripts: 'outside-only', url: 'http://127.0.0.1/', virtualConsole: console });
 const w = dom.window, messages = [];
 Object.defineProperty(w.navigator, 'userAgent', { value: 'Chrome/130.0 (JSDOM fixture)' });
 w.cef_to_byond = url => {
@@ -230,14 +140,16 @@ try {
   await update('photo_viewer.tmpl', { name: 'Empty', image: '', scribble: '' }, 1);
   assert.equal(w.document.querySelectorAll('.photo-viewer img,.photo-viewer em').length, 0);
   assert.ok(!w.document.body.textContent.includes('inert'));
-  click('Classic interface'); assert.equal(messages.at(-1).type, 'fallback');
+  // There is one renderer: no control offers another interface.
+  assert.ok(![...w.document.querySelectorAll('.Button,button')].some(el => /classic/i.test(el.textContent)));
+  assert.ok(!messages.some(message => message.type === 'fallback'));
   assert.deepEqual(errors, []);
   process.stdout.write("PASS: production bundle and 19 retained routes, retained photo/Notes/flavor fixtures, inert text/snapshot replacement, handshake/action/text/image/fallback contracts\n");
 } finally { w.close(); }
 
 // Preserve this reviewed reader recovery in its own fresh root.
 {
-const recovery = new JSDOM('<body data-ref="[0x123]" data-window="main[0x456]" data-generation="2"><div id="root"></div><p id="tgui-loading"><a id="tgui-legacy">Classic</a></p>', { runScripts: 'outside-only', url: 'http://127.0.0.1/', virtualConsole: new VirtualConsole() });
+const recovery = new JSDOM('<body data-ref="[0x123]" data-window="main[0x456]" data-generation="2"><div id="root"></div><p id="tgui-loading"></p>', { runScripts: 'outside-only', url: 'http://127.0.0.1/', virtualConsole: new VirtualConsole() });
 try {
   const rw = recovery.window, sent = [];
   Object.defineProperty(rw.navigator, 'userAgent', { value: 'Chrome/130.0 (JSDOM fixture)' });
@@ -256,7 +168,7 @@ try {
 
 // Preserve this reviewed reader recovery in its own fresh root.
 {
-const recovery = new JSDOM('<body data-ref="[0x123]" data-window="main[0x456]" data-generation="2"><div id="root"></div><p id="tgui-loading"><a id="tgui-legacy">Classic</a></p>', { runScripts: 'outside-only', url: 'http://127.0.0.1/', virtualConsole: new VirtualConsole() });
+const recovery = new JSDOM('<body data-ref="[0x123]" data-window="main[0x456]" data-generation="2"><div id="root"></div><p id="tgui-loading"></p>', { runScripts: 'outside-only', url: 'http://127.0.0.1/', virtualConsole: new VirtualConsole() });
 try {
   const rw = recovery.window, sent = [];
   Object.defineProperty(rw.navigator, 'userAgent', { value: 'Chrome/130.0 (JSDOM fixture)' });
@@ -268,7 +180,7 @@ try {
   await settle();
   assert.equal(sent.filter(type => type === 'fallback').length, 1);
   assert.ok(!rw.document.body.textContent.includes('UNSAFE_PARTIAL'));
-  assert.ok(rw.document.body.textContent.includes('Switching to classic interface'));
+  assert.ok(rw.document.body.textContent.includes('This window could not be shown'));
   process.stdout.write('PASS: fresh production Notes root rejects malformed content through real bootstrap fallback; cached server HTML verified separately by source contracts\n');
 } finally { recovery.window.close(); }
 

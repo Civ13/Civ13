@@ -76,7 +76,7 @@ export function Faction(ui: ScreenProps) {
       <p>32x32 pixels, shown on your faction's banners.{founding && ' Your faction colors are taken from this drawing.'}</p>
       <div className="faction-tools"><span className="swatch" style={{ backgroundColor: data.color }} /><Action ui={locked} action="pick_color">Pick color</Action>
         <Action ui={locked} action="set_tool" value="paint" selected={data.tool === 'paint'}>Paint</Action><Action ui={locked} action="set_tool" value="bucket" selected={data.tool === 'bucket'}>Bucket fill</Action>
-        <Action ui={locked} action="stamp">Stamp a shape...</Action><Action ui={locked} action="undo">Undo</Action><Action ui={locked} action="clear">Clear to blank</Action>{!founding && <Action ui={locked} action="save">Save</Action>}
+        <Action ui={locked} action="stamp">Stamp a shape...</Action><Action ui={locked} action="undo">Undo</Action><Action ui={locked} action="clear">Clear to blank</Action><Action ui={locked} action="export_code">Copy design code</Action><Action ui={locked} action="import_code">Paste design code</Action>{!founding && <Action ui={locked} action="save">Save</Action>}
       </div>
       {busy && <NoticeBox>Sending brush stroke...</NoticeBox>}
       <div className="faction-canvas" role="group" aria-label="Faction symbol pixels" onDragStart={event => event.preventDefault()}>

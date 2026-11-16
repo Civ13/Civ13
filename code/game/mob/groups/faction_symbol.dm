@@ -368,7 +368,7 @@ var/global/list/faction_symbol_shapes = list("star", "sun", "moon", "cross", "bi
 	faction = H.civilization
 
 /datum/nano_module/faction_symbol_editor/ui_actions(ui_key)
-	return list("set_tool", "pick_color", "paint", "stroke", "stamp", "clear", "undo", "save")
+	return list("set_tool", "pick_color", "paint", "stroke", "stamp", "clear", "undo", "export_code", "import_code", "save")
 
 /datum/nano_module/faction_symbol_editor/ui_action_fields(ui_key, action)
 	switch (action)

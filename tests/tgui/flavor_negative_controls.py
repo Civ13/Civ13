@@ -9,7 +9,7 @@ controls=[
  ('owner',' || user != reader','', 'test_exact_reader_target_lease_allows_ghost_dead_and_disconnected_subject'),
  ('admission',' || !(src in view(viewer))','', 'test_admission_precedes_capture_and_canonical_budget_fallback_is_complete'),
  ('canonical_roundtrip',' && html_encode(html_decode(flavor_text)) == flavor_text','', 'test_admission_precedes_capture_and_canonical_budget_fallback_is_complete'),
- ('complete_fallback','\t\tui.legacy_renderer = TRUE\n','', 'test_admission_precedes_capture_and_canonical_budget_fallback_is_complete'),
+ ('complete_fallback','\t\tui.plain_page = TRUE\n','', 'test_admission_precedes_capture_and_canonical_budget_fallback_is_complete'),
  ('cached_html_owner_guard','\tif (!state || state.can_use_topic(src_object, user) == STATUS_CLOSE)\n\t\treturn ""\n','', 'test_cached_html_owner_guard_no_polling_domain_actions_or_close_side_effect'),
  ('close_idempotence','\tif (reader_closed)\n\t\treturn\n','', 'test_cached_html_owner_guard_no_polling_domain_actions_or_close_side_effect'),
 ]

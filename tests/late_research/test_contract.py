@@ -44,8 +44,7 @@ class NodeEffects(unittest.TestCase):
     def test_both_windows_show_the_effect(self):
         for path in ("code/modules/research_tree/book_interface.dm", "code/modules/research_tree/research_bench.dm"):
             self.assertIn('"effect" = research_node_effect_text(node_id)', read(path))
-        for path, field in (("tgui/src/interfaces/Research.tsx", "detail.effect"), ("tgui/src/interfaces/ResearchBook.tsx", "row.effect"),
-                            ("UI/templates/research_bench.tmpl", "node.effect"), ("UI/templates/research_book.tmpl", "chapter.effect")):
+        for path, field in (("tgui/src/interfaces/Research.tsx", "detail.effect"), ("tgui/src/interfaces/ResearchBook.tsx", "row.effect")):
             self.assertIn(field, read(path))
 class FieldWork(unittest.TestCase):
     def setUp(self):
@@ -105,7 +104,6 @@ class FieldWork(unittest.TestCase):
         self.assertEqual(self.interface.count('out["field_work"] = field_work_rows(H, '), 2)
         self.assertIn("book_mode()", proc(self.field, "/obj/structure/research_bench/proc/field_work_rows"))
         self.assertEqual(read("tgui/src/interfaces/Research.tsx").count("<FieldWork rows="), 2)
-        self.assertIn("node.field_work", read("UI/templates/research_bench.tmpl"))
 class TeamsAndRushing(unittest.TestCase):
     def setUp(self):
         self.team = read("code/modules/research_tree/team_research.dm")
@@ -154,7 +152,6 @@ class TeamsAndRushing(unittest.TestCase):
         self.assertIn('href_list["toggle_rush"]', read("code/modules/research_tree/research_bench.dm"))
         self.assertIn('"toggle_rush"', read("code/modules/research_tree/research_bench.dm").split("/obj/structure/research_bench/ui_actions(ui_key)", 1)[1].split("\n/", 1)[0])
         self.assertIn('action="toggle_rush"', read("tgui/src/interfaces/Research.tsx"))
-        self.assertIn("'toggle_rush'", read("UI/templates/research_bench.tmpl"))
 class LateLines(unittest.TestCase):
     NEW = ("emergency_medicine", "soil_science", "crop_breeding", "support_weapons", "guided_weapons")
     def setUp(self):
@@ -234,7 +231,6 @@ class Ciphers(unittest.TestCase):
         self.assertIn("cipher_menu(user)", book)
         self.assertIn('data["cipher_note"]', read("code/modules/research_tree/book_interface.dm"))
         self.assertIn("data.cipher_note", read("tgui/src/interfaces/ResearchBook.tsx"))
-        self.assertIn("data.cipher_note", read("UI/templates/research_book.tmpl"))
 
 
 class Practice(unittest.TestCase):

@@ -1,8 +1,10 @@
 // Civ13 transport adapter for the modern tgui frontend. The NanoUI manager,
-// topic states and gameplay Topics remain authoritative. Legacy rendering stays
-// available for older embedded browsers and failed asset loads.
+// topic states and gameplay Topics remain authoritative. There is no second
+// renderer: a window is the modern screen, or - only for the few windows that
+// keep one - a complete plain page for content the screen cannot show.
 /datum/nanoui/tgui
-	var/legacy_renderer = FALSE
+	// TRUE while this window shows its plain page instead of the modern screen.
+	var/plain_page = FALSE
 	var/frontend_ready = FALSE
 	var/frontend_acknowledged = FALSE
 	var/client/pending_transfer_client
@@ -20,22 +22,10 @@
 	frontend_ready = FALSE
 	frontend_acknowledged = FALSE
 	pending_transfer_client = null
-	if (!legacy_renderer)
+	if (!plain_page)
 		var/datum/asset/assets = get_asset_datum(/datum/asset/simple/civ13_tgui)
 		assets.send(user)
 	. = ..()
-	if (!legacy_renderer && state && user && user.client)
-		var/open_generation = render_generation
-		var/mob/open_user = user
-		var/client/open_client = user.client
-		// Browser ready alone does not prove receipt of a server snapshot.
-		// Recover even when client-to-server ready/fallback never arrives.
-		spawn(200)
-			if (legacy_renderer || frontend_acknowledged || render_generation != open_generation || user != open_user)
-				return
-			if (!user || user.client != open_client || !src_object || !state)
-				return
-			use_legacy_renderer()
 
 /datum/nanoui/tgui/close()
 	frontend_ready = FALSE
@@ -52,7 +42,7 @@
 	if (!expected_client)
 		expected_client = pending_transfer_client
 	pending_transfer_client = null
-	if (legacy_renderer)
+	if (plain_page)
 		return
 	if (!expected_client)
 		close()
@@ -61,22 +51,28 @@
 
 // Called only after key assignment, with current ownership checked by manager.
 /datum/nanoui/tgui/proc/complete_user_transfer(var/mob/linked_user)
-	if (legacy_renderer || user != linked_user || !user || !state || !src_object || !pending_transfer_client)
+	if (plain_page || user != linked_user || !user || !state || !src_object || !pending_transfer_client)
 		return
 	if (user.client != pending_transfer_client || pending_transfer_client.mob != user)
 		return
 	pending_transfer_client = null
 	open()
 
-// Shared by a validated browser fallback and the server startup watchdog.
-// Retain classic rendering for this UI datum once recovery is selected.
-/datum/nanoui/tgui/proc/use_legacy_renderer()
-	if (legacy_renderer || !user || !user.client || !src_object || !state)
+// Whether this window keeps a complete plain page of its own (a book page with
+// old markup, a read-only document). Most windows do not.
+/datum/nanoui/tgui/proc/has_plain_page()
+	return FALSE
+
+// The browser asked to give up on the modern screen, or the window found
+// content the screen cannot show. Only a window with a plain page switches;
+// it then keeps that page until it is closed.
+/datum/nanoui/tgui/proc/show_plain_page()
+	if (plain_page || !has_plain_page() || !user || !user.client || !src_object || !state)
 		return
 	update_status(FALSE)
 	if (!state || status == STATUS_CLOSE)
 		return
-	legacy_renderer = TRUE
+	plain_page = TRUE
 	set_initial_data(latest_data)
 	open()
 
@@ -88,26 +84,23 @@
 	config["generation"] = render_generation
 	return config
 
+// Always the modern shell; a window with a plain page overrides this.
 /datum/nanoui/tgui/get_html()
-	if (legacy_renderer)
-		return ..()
 	return {"
 <!DOCTYPE html>
 <html><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>Civ13 Interface</title></head>
-<body data-ref="\ref[src]" data-window="[html_encode(window_id)]" data-generation="[render_generation]">
+<body style="background:#211c16;color:#eee5d3;font-family:sans-serif" data-ref="\ref[src]" data-window="[html_encode(window_id)]" data-generation="[render_generation]">
 <div id="root"></div>
-<p id="tgui-loading">Loading interface... <a id="tgui-legacy" href="byond://?src=\ref[src]&amp;window_id=[url_encode(window_id)]&amp;generation=[render_generation]&amp;type=fallback">Use classic interface</a></p>
-<script src="civ13-tgui-bootstrap.js" onerror="window.location.href=document.getElementById('tgui-legacy').href"></script>
+<p id="tgui-loading">Loading interface...</p>
+<script src="civ13-tgui-bootstrap.js" onerror="document.getElementById('tgui-loading').textContent='This window could not load. Close it and open it again.'"></script>
 </body></html>
 "}
 
 /datum/nanoui/tgui/push_data(data, force_push = FALSE)
 	if (!isnull(data))
 		latest_data = data
-	if (legacy_renderer)
-		return ..()
-	if (!user || !user.client || !src_object || !state)
+	if (plain_page || !user || !user.client || !src_object || !state)
 		return
 	update_status(FALSE)
 	if (!state || !frontend_ready || (status == STATUS_DISABLED && !force_push))
@@ -133,8 +126,8 @@
 /datum/nanoui/tgui/Topic(href, href_list)
 	if (!user || usr != user || !user.client || !src_object || !state)
 		return
-	// Old templates still use the original NanoUI protocol after fallback.
-	if (legacy_renderer)
+	// A plain page is ordinary HTML: its links keep the original protocol.
+	if (plain_page)
 		if (href_list["type"])
 			return
 		return ..()
@@ -145,7 +138,7 @@
 		return
 	var/message_type = href_list["type"]
 	if (message_type == "fallback")
-		use_legacy_renderer()
+		show_plain_page()
 		return
 	if (message_type == "ready")
 		frontend_ready = TRUE

@@ -91,9 +91,7 @@ class ShipStocksContract(unittest.TestCase):
         self.assertIn('status != STATUS_INTERACTIVE', legacy)
         self.assertIn('src_object.Topic', legacy)
         self.assertLess(legacy.index('status != STATUS_INTERACTIVE'), legacy.index('src_object.Topic'))
-        template = (ROOT / 'UI/templates/ship_stocks.tmpl').read_text()
-        self.assertNotIn('href=', template)
-        self.assertNotIn('<input', template)
+        self.assertFalse((ROOT / 'UI/templates').exists())
 
     def test_uses_existing_manager_and_real_classic_template(self):
         self.assertIn('GLOB.nanomanager.try_update_ui(user, src, ui_key, null, data, TRUE)', OPEN)

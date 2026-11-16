@@ -31,7 +31,7 @@ class CharacterFlavorContract(unittest.TestCase):
   self.assertIn('if (C.body_parts_covered & FACE)',proc(human,'/mob/living/human/print_flavor_text(var/shrink = TRUE)'))
  def test_admission_precedes_capture_and_canonical_budget_fallback_is_complete(self):
   opened=proc(SOURCE,'/mob/proc/present_character_flavor_ui(mob/viewer, legacy_snapshot)')
-  for marker in ('!viewer || !viewer.client || !(src in view(viewer))','length(flavor_text) + length(encoded_name) <= 65536','html_encode(html_decode(flavor_text)) == flavor_text','lines.len > 2048','ui.legacy_snapshot = legacy_snapshot','if (!modern)','ui.legacy_renderer = TRUE','ui.set_initial_data(list())','"name" = encoded_name, "text" = flavor_text'):
+  for marker in ('!viewer || !viewer.client || !(src in view(viewer))','length(flavor_text) + length(encoded_name) <= 65536','html_encode(html_decode(flavor_text)) == flavor_text','lines.len > 2048','ui.legacy_snapshot = legacy_snapshot','if (!modern)','ui.plain_page = TRUE','ui.set_initial_data(list())','"name" = encoded_name, "text" = flavor_text'):
    self.assertIn(marker,opened)
   self.assertLess(opened.index('!viewer.client'),opened.index('html_encode('))
   self.assertLess(opened.index('ui.legacy_snapshot = legacy_snapshot'),opened.index('ui.open()'))

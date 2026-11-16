@@ -192,9 +192,7 @@ You can set verify to TRUE if you want send() to sleep until the client has the 
 		"UI/js/",
 		"UI/fonts/"
 	)
-	var/list/uncommon_dirs = list(
-		"UI/templates/"
-	)
+	var/list/uncommon_dirs = list()
 
 /datum/asset/nanoui/register()
 	// Crawl the directories to find files.

@@ -72,9 +72,10 @@ class FactionListContract(unittest.TestCase):
         self.assertNotRegex(UPDATE, r'map\.|browse_rsc|show_faction_list\(')
 
     def test_classic_modern_are_read_only_and_ci_tracks_producer_and_compiler(self):
-        classic = (ROOT / 'UI/templates/faction_list.tmpl').read_text()
+        # One renderer: there is no classic template to keep in step.
+        self.assertFalse((ROOT / 'UI/templates').exists())
         modern = (ROOT / 'tgui/src/interfaces/FactionList.tsx').read_text()
-        for source in (classic, modern):
+        for source in (modern,):
             self.assertNotRegex(source, r'href=|<input|onClick|dangerouslySetInnerHTML')
             self.assertIn('encodeURIComponent', source)
         transport = (ROOT / 'code/modules/nano/tgui.dm').read_text().split('/datum/nanoui/tgui/Topic', 1)[0]

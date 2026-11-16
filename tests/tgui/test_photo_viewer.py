@@ -68,9 +68,8 @@ class PhotoViewerContract(unittest.TestCase):
   self.assertNotIn('photo_viewer',transport)
   component=(ROOT/'tgui/src/interfaces/PhotoViewer.tsx').read_text()
   self.assertNotRegex(component,r'\.act\(|dangerouslySetInnerHTML|innerHTML|\bonClick\b|\bonChange\b')
-  classic=(ROOT/'UI/templates/photo_viewer.tmpl').read_text()
-  self.assertNotRegex(classic,r'\bhref\s*=|\bonclick\s*=|<input|<button|<script')
-  self.assertIn('tmp_photo_[0-9]+',classic);self.assertIn('tmp_photo_[0-9]+',component)
+  self.assertFalse((ROOT/'UI/templates').exists())
+  self.assertIn('tmp_photo_[0-9]+',component)
 
  def test_previous_photo_replacement_is_scoped_to_this_owner_and_subtype(self):
   self.assertIn('if (islist(user.open_uis))',SHOW)

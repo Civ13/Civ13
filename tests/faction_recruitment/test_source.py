@@ -57,7 +57,6 @@ class FactionRecruitmentSource(unittest.TestCase):
         factions = read(run.FACTIONS)
         self.assertGreaterEqual(factions.count('verbs += /mob/living/human/proc/recruitment_applications'), 2)
         self.assertIn("'recruitment_station.tmpl': RecruitmentStation", read('tgui/src/interfaces/index.tsx'))
-        self.assertTrue((ROOT / 'UI/templates/recruitment_station.tmpl').is_file())
 
     def test_panel_rechecks_after_prompts(self):
         station = read('code/game/mob/groups/recruitment_station.dm')
@@ -70,8 +69,8 @@ class FactionRecruitmentSource(unittest.TestCase):
         self.assertNotIn('faction_recruitment[', topic)
         self.assertGreaterEqual(topic.count('still_valid(H)'), 6)
         # The client only ever sends opaque ids or fixed values.
-        template = read('UI/templates/recruitment_station.tmpl')
-        self.assertNotIn("'name': ", template)
+        screen = read('tgui/src/interfaces/RecruitmentStation.tsx')
+        self.assertNotRegex(screen, r"name:\s*(row|applicant|data)\.")
 
 
 

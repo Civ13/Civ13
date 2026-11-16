@@ -797,7 +797,6 @@ jobs:
           echo "started=true" >> "$GITHUB_OUTPUT"
           source "$PWD/BYOND/byond/bin/byondsetup"
           /usr/bin/python3 -B -m unittest discover -s tests/faction_ui_assets -v
-          node tests/faction_ui_assets/check_templates.mjs
           /usr/bin/python3 -B tests/faction_ui_assets/run.py --byond-bin "$PWD/BYOND/byond/bin" --evidence-dir "$RUNNER_TEMP/faction-ui-assets-positive"
           /usr/bin/python3 -B tests/faction_ui_assets/run.py --byond-bin "$PWD/BYOND/byond/bin" --omit-registration --evidence-dir "$RUNNER_TEMP/faction-ui-assets-omission"
       - name: Upload focused faction UI asset evidence

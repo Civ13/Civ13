@@ -2,7 +2,7 @@
 import { JSDOM, VirtualConsole } from 'jsdom';
 import { readFileSync } from 'node:fs';
 import assert from 'node:assert/strict';
-const dom=new JSDOM('<!doctype html><body data-ref="[0x123]" data-window="book[0x456]" data-generation="2"><div id="root"></div><p id="tgui-loading"><a id="tgui-legacy">Classic</a></p></body>',{runScripts:'outside-only',url:'http://127.0.0.1/',virtualConsole:new VirtualConsole()});
+const dom=new JSDOM('<!doctype html><body data-ref="[0x123]" data-window="book[0x456]" data-generation="2"><div id="root"></div><p id="tgui-loading"></p></body>',{runScripts:'outside-only',url:'http://127.0.0.1/',virtualConsole:new VirtualConsole()});
 const w=dom.window,messages=[];
 Object.defineProperty(w.navigator,'userAgent',{value:'Chrome/130.0 (JSDOM fixture)'});
 w.cef_to_byond=url=>messages.push(new URL(url).searchParams.get('type'));

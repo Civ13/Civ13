@@ -67,7 +67,7 @@ class AtlasAdapterContract(unittest.TestCase):
   fixture=json.loads((ROOT/'tests/tgui/fixtures/atlas-legacy-contract.json').read_text())
   for name,digest in fixture['procs'].items():
    self.assertEqual(hashlib.sha256(proc(CORE,name).encode()).hexdigest(),digest,name)
-  self.assertIn('legacy_renderer',ADAPTER)
+  self.assertIn('plain_page',ADAPTER)
   self.assertIn('var/list/arguments = list(user) + render_arguments',ADAPTER)
   self.assertIn('return reference.render_html(arglist(arguments))',ADAPTER)
 
@@ -97,7 +97,7 @@ class AtlasAdapterContract(unittest.TestCase):
   self.assertNotRegex(STATE,r'ishuman|isliving|shared_nano_interaction|\bstat\b|civilization')
 
  def test_typed_navigation_accepts_only_its_current_ui_state_after_transport_ack(self):
-  for marker in ('!istype(ui)','ui.user != viewer','ui.src_object != reference','ui.state != state','STATUS_INTERACTIVE','ui.legacy_renderer','!ui.frontend_ready','!ui.frontend_acknowledged','length(payload) > 1024','params.len > 6','!istext(params["route"])'):
+  for marker in ('!istype(ui)','ui.user != viewer','ui.src_object != reference','ui.state != state','STATUS_INTERACTIVE','ui.plain_page','!ui.frontend_ready','!ui.frontend_acknowledged','length(payload) > 1024','params.len > 6','!istext(params["route"])'):
    self.assertIn(marker,NAV)
    self.assertLess(NAV.index(marker),NAV.index('var/route = params["route"]'))
   self.assertIn('return list("atlas_navigate", "atlas_craft")',ADAPTER)
@@ -157,7 +157,7 @@ class AtlasAdapterContract(unittest.TestCase):
  def test_close_polling_and_standalone_fixture_boundaries(self):
   self.assertIn('ui.use_on_close_logic(FALSE)',OPEN)
   self.assertLess(OPEN.index('ui.use_on_close_logic(FALSE)'),OPEN.index('ui.open()'))
-  self.assertIn('if (!ui.legacy_renderer)',OPEN)
+  self.assertIn('if (!ui.plain_page)',OPEN)
   update=reader_base.UPDATE
   self.assertIn('fixed_classic_page = TRUE',ADAPTER.split('/datum/nanoui/tgui/snapshot/crafting_atlas\n',1)[1].split('/datum/nanoui/tgui/snapshot/crafting_atlas/allowed_actions',1)[0])
   self.assertNotRegex(update,r'\bmodel\(|resource_info|reference\.show|load_catalog|set_auto_update|spawn\(')

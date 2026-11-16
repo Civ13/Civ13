@@ -17,7 +17,6 @@ class FactionAssets(unittest.TestCase):
         step = workflow.split(title, 1)[1].split('      - name:', 1)[0]
         self.assertIn("contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/faction_ui_assets')", step)
         self.assertIn('unittest discover -s tests/faction_ui_assets', step)
-        self.assertIn('node tests/faction_ui_assets/check_templates.mjs', step)
         self.assertEqual(step.count('tests/faction_ui_assets/run.py'), 2)
         self.assertEqual(step.count('--omit-registration'), 1)
         self.assertIn('id: faction_ui_assets', step)
@@ -86,7 +85,7 @@ class FactionAssets(unittest.TestCase):
         creation = (ROOT / CREATION).read_text(encoding='utf-8')
         self.assertIn('"faction_creation.tmpl"', creation)
         for directory, files in {'UI/js': ['libraries.min.js', 'nano_template.js', 'faction_symbol.js'],
-                                 'UI/templates': ['faction_creation.tmpl', 'layout_basic.tmpl'],
+                                 'UI/tgui': ['civ13-tgui-bootstrap.js', 'civ13-tgui.js', 'civ13-tgui.css'],
                                  'UI/css': ['civ13_theme.css', 'faction_symbol.css', 'layout_basic.css']}.items():
             for name in files:
                 self.assertTrue((ROOT / directory / name).is_file())
@@ -111,7 +110,7 @@ class FactionAssets(unittest.TestCase):
             generated, metadata = prepare(destination)
             self.assertEqual(set(generated), set(metadata['generated_sha256']))
             self.assertIn(ASSETS, metadata['source_sha256'])
-            self.assertIn('UI/templates/faction_creation.tmpl', metadata['source_sha256'])
+            self.assertIn('UI/tgui/civ13-tgui.js', metadata['source_sha256'])
             with self.assertRaises(ValueError):
                 prepare(destination)
 

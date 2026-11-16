@@ -3,7 +3,7 @@
 	////////////
 #define UPLOAD_LIMIT		100000000	//Restricts client uploads to the server to 1000MB //Boosted this thing. What's the worst that can happen?
 #define ABSOLUTE_MIN_CLIENT_VERSION 512
-#define REAL_MIN_CLIENT_VERSION 513
+#define REAL_MIN_CLIENT_VERSION 516
 #define PLAYERCAP 200
 	/*
 	When somebody clicks a link in game, this Topic is called first.
@@ -443,13 +443,6 @@
 		'UI/images/uos.png',
 		'UI/images/civ13.png',
 		'UI/images/favicon.ico',
-		'UI/templates/appearance_changer.tmpl',
-		'UI/templates/chem_disp.tmpl',
-		'UI/templates/layout_basic.tmpl',
-		'UI/templates/layout_default.tmpl',
-		'UI/templates/vending_machine.tmpl',
-		'UI/templates/vending_machine2.tmpl',
-		'UI/templates/vending_machine_taotd.tmpl',
 		)
 
 	spawn (10) //removing this spawn causes all clients to not get verbs.

@@ -22,7 +22,7 @@
 		ui.use_on_close_logic(FALSE)
 	ui.legacy_snapshot = legacy_snapshot
 	if (!modern)
-		ui.legacy_renderer = TRUE
+		ui.plain_page = TRUE
 		ui.set_initial_data(list())
 	else
 		ui.set_initial_data(list("name" = encoded_name, "text" = flavor_text))

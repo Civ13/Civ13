@@ -22,7 +22,7 @@ var/global/datum/crafting_atlas_presenter/tgui/crafting_atlas_tgui_presenter = n
 		ui = new /datum/nanoui/tgui/snapshot/crafting_atlas(viewer, reference, ui_key, "crafting_atlas.tmpl", "Crafting Atlas", 1000, 700, _state = reader_state)
 		ui.use_on_close_logic(FALSE)
 	ui.render_arguments = list(query, page, resource_id, legacy, era, processor, recipe_id)
-	if (!ui.legacy_renderer)
+	if (!ui.plain_page)
 		ui.set_initial_data(model(reference, viewer, query, page, resource_id, legacy, era, processor, recipe_id, ui.scope))
 	ui.open()
 	return TRUE
@@ -40,7 +40,7 @@ var/global/datum/crafting_atlas_presenter/tgui/crafting_atlas_tgui_presenter = n
 	return list("atlas_navigate", "atlas_craft")
 
 /datum/nanoui/tgui/snapshot/crafting_atlas/get_html()
-	if (legacy_renderer)
+	if (plain_page)
 		var/datum/crafting_atlas_reference/reference = src_object
 		var/list/arguments = list(user) + render_arguments
 		return reference.render_html(arglist(arguments))
@@ -57,7 +57,7 @@ var/global/datum/crafting_atlas_presenter/tgui/crafting_atlas_tgui_presenter = n
 	var/datum/nanoui/tgui/snapshot/crafting_atlas/ui = GLOB.nanomanager.get_open_ui(viewer, reference, "crafting_atlas")
 	if (!istype(ui) || ui.user != viewer || ui.src_object != reference || !state || ui.state != state)
 		return FALSE
-	if (state:can_use_topic(reference, viewer) != STATUS_INTERACTIVE || ui.legacy_renderer || !ui.frontend_ready || !ui.frontend_acknowledged)
+	if (state:can_use_topic(reference, viewer) != STATUS_INTERACTIVE || ui.plain_page || !ui.frontend_ready || !ui.frontend_acknowledged)
 		return FALSE
 	if (!istext(payload) || length(payload) > 1024)
 		return FALSE
@@ -107,7 +107,7 @@ var/global/datum/crafting_atlas_presenter/tgui/crafting_atlas_tgui_presenter = n
 // The same current-window checks as navigation, then the Crafting window takes over.
 /datum/crafting_atlas_presenter/tgui/craft(mob/viewer, product, state)
 	var/datum/nanoui/tgui/snapshot/crafting_atlas/ui = GLOB.nanomanager.get_open_ui(viewer, crafting_atlas_reference, "crafting_atlas")
-	if (!istype(ui) || ui.user != viewer || !state || ui.state != state || ui.legacy_renderer || !ui.frontend_ready || !ui.frontend_acknowledged)
+	if (!istype(ui) || ui.user != viewer || !state || ui.state != state || ui.plain_page || !ui.frontend_ready || !ui.frontend_acknowledged)
 		return FALSE
 	if (!istext(product) || !crafting_atlas_reference.resource_exists(product))
 		return FALSE
@@ -688,7 +688,7 @@ var/global/datum/crafting_atlas_presenter/tgui/crafting_atlas_tgui_presenter = n
 	var/datum/nanoui/tgui/snapshot/crafting_atlas/ui = GLOB.nanomanager.get_open_ui(src, crafting_atlas_reference, "crafting_atlas")
 	if (istype(ui) && ui.user == src && islist(ui.render_arguments))
 		var/list/arguments = list(crafting_atlas_reference, src) + ui.render_arguments
-		if (ui.legacy_renderer)
+		if (ui.plain_page)
 			crafting_atlas_tgui_presenter.open(arglist(arguments))
 		else
 			ui.push_data(crafting_atlas_tgui_presenter.model(arglist(arguments + ui.scope)), TRUE)
