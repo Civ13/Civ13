@@ -1,5 +1,6 @@
 """Language proficiency: pacing numbers and the source boundaries that keep
 learning slow, capped and shared by hearing, speaking and study. Offline only."""
+import math
 import re
 import unittest
 from pathlib import Path
@@ -112,10 +113,15 @@ class Rules(unittest.TestCase):
 class Teaching(unittest.TestCase):
     TEACH = read('code/game/mob/language/teaching.dm')
 
-    def test_lessons_are_the_fast_route_but_still_take_days(self):
+    def test_lessons_reach_fluent_in_a_short_sitting(self):
+        # Players found 1 point per two-minute lesson far too slow (about
+        # 200 minutes to Fluent). A teacher's time is the cost: a beginner
+        # should reach Fluent in roughly 10-20 minutes of lessons, in one day.
         self.assertGreater(D['LANGUAGE_LESSON_GAIN'], 10 * D['LANGUAGE_PRACTICE_GAIN'] - 1e-9)
-        best_day = D['LANGUAGE_DAILY_CAP'] + D['LANGUAGE_LESSON_DAILY_CAP']
-        self.assertTrue(2 <= D['LANGUAGE_CONVERSATIONAL'] / best_day <= 5)
+        lessons = math.ceil(D['LANGUAGE_FLUENT'] / D['LANGUAGE_LESSON_GAIN'])
+        minutes = lessons * D['LANGUAGE_LESSON_TIME'] / 600
+        self.assertTrue(10 <= minutes <= 20, minutes)
+        self.assertGreaterEqual(D['LANGUAGE_LESSON_DAILY_CAP'], D['LANGUAGE_FLUENT'])
         # A primer needs several sittings and more than one day to reach Broken.
         self.assertGreaterEqual(D['LANGUAGE_BROKEN'] / D['LANGUAGE_STUDY_GAIN'], 3)
         self.assertGreater(D['LANGUAGE_BROKEN'], D['LANGUAGE_STUDY_DAILY_CAP'])
@@ -128,7 +134,7 @@ class Teaching(unittest.TestCase):
         self.assertLess(lesson.index('learner.language_day_left(L, "lesson")'), lesson.index('WWinput(learner'))
         self.assertLess(lesson.index('if (answer != "Accept")'), lesson.index('do_after(src, LANGUAGE_LESSON_TIME, learner)'))
         self.assertLess(lesson.index('do_after(src, LANGUAGE_LESSON_TIME, learner)'),
-                        lesson.index('learner.gain_language(L, LANGUAGE_LESSON_GAIN, 100, "lesson")'))
+                        lesson.index('learner.gain_language(L, LANGUAGE_LESSON_GAIN, language_score(L), "lesson")'))
         self.assertIn('get_turf(learner) != learner_spot', lesson)
         possible = proc(self.TEACH, '/mob/living/human/proc/lesson_still_possible(')
         self.assertIn('get_dist(src, learner) > 1', possible)

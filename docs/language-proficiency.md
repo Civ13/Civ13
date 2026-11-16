@@ -28,10 +28,11 @@ language) is at 100. A learned one joins the `languages` list at Broken through
   limit.
 - Both halve from Conversational and stop at 12 per language per real day.
 - **Lessons** (`teaching.dm`): the Teach Language verb. A fluent speaker
-  teaches someone standing next to them who accepts. Both stay put for two
-  minutes and the learner gains 1, up to 8 per language per real day, on top
-  of hearing and speaking. With daily lessons Conversational takes about
-  three days instead of five or more.
+  teaches someone standing next to them who accepts. Both stay put for one
+  minute and the learner gains 6, never past the teacher's own score, up to
+  90 per language per real day, on top of hearing and speaking. Fifteen
+  lessons (about 15 minutes of a teacher's time) take a beginner to Fluent;
+  the teacher's time is the cost.
 - **Language book**: a primer. Each 80 second sitting gives 5, up to Broken.
 - **Study Writing**: as before, up to Broken.
 - Books and writing share an allowance of 10 per language per real day.

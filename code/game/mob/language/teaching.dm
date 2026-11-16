@@ -1,7 +1,8 @@
 // Language lessons: the fastest way to learn, and it takes another person.
 // A fluent speaker teaches someone next to them. Both stay put for the
-// lesson; the learner gains LANGUAGE_LESSON_GAIN, up to
-// LANGUAGE_LESSON_DAILY_CAP a day, on top of what hearing and speaking give.
+// lesson; the learner gains LANGUAGE_LESSON_GAIN, never past the teacher's
+// own score, up to LANGUAGE_LESSON_DAILY_CAP a day, on top of what hearing
+// and speaking give. About fifteen one-minute lessons take a beginner to Fluent.
 
 // The languages src could teach learner now: fluent in it, and better at it.
 /mob/living/human/proc/teachable_languages(mob/living/human/learner)
@@ -67,14 +68,14 @@
 		to_chat(src, SPAN_WARNING("[learner] has had all the [L.name] lessons they can take in today."))
 		return FALSE
 	if (learner.client)
-		var/answer = WWinput(learner, "[src] offers you a lesson in [L.name]. It takes about two minutes and you both need to stay put.", "Language Lesson", "Accept", list("Accept", "Decline"))
+		var/answer = WWinput(learner, "[src] offers you a lesson in [L.name]. It takes about a minute and you both need to stay put.", "Language Lesson", "Accept", list("Accept", "Decline"))
 		if (answer != "Accept")
 			if (!QDELETED(src))
 				to_chat(src, SPAN_WARNING("[learner] declines the lesson."))
 			return FALSE
 		if (QDELETED(src) || !lesson_still_possible(learner, L))
 			return FALSE
-	visible_message(SPAN_NOTICE("[src] starts teaching [learner] [L.name]."), SPAN_NOTICE("You start a [L.name] lesson with [learner]. It takes about two minutes and you both need to stay put."))
+	visible_message(SPAN_NOTICE("[src] starts teaching [learner] [L.name]."), SPAN_NOTICE("You start a [L.name] lesson with [learner]. It takes about a minute and you both need to stay put."))
 	var/turf/learner_spot = get_turf(learner)
 	if (!do_after(src, LANGUAGE_LESSON_TIME, learner))
 		to_chat(src, SPAN_WARNING("The lesson is cut short."))
@@ -84,7 +85,7 @@
 	if (!lesson_still_possible(learner, L) || get_turf(learner) != learner_spot)
 		to_chat(src, SPAN_WARNING("The lesson is cut short."))
 		return FALSE
-	var/gained = learner.gain_language(L, LANGUAGE_LESSON_GAIN, 100, "lesson")
+	var/gained = learner.gain_language(L, LANGUAGE_LESSON_GAIN, language_score(L), "lesson")
 	if (!gained)
 		to_chat(src, SPAN_WARNING("[learner] could not take in any more today."))
 		return FALSE
