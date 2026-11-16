@@ -270,6 +270,18 @@ var/screens_runtime_error = FALSE
 	screens_check(!findtext(stall.name, "<") && findtext(stall.name, "Probe"), "a new stall name is stored without markup")
 	GLOB.nanomanager.close_user_uis(H, stall)
 	qdel(stall)
+	// A company vendor's management window has its own actions beside the purchase window's.
+	var/obj/structure/vending/sales/shop = new(locate(9, 9, 1))
+	shop.owner = "Probe & Sons"
+	shop.show_management_ui(H)
+	rows = agent_screen_rows(H)
+	screens_check(rows.len == 1 && findtext(rows[1]["data"], "No products in this vendor") && ("changecurrency" in rows[1]["actions"]) && !("vend" in rows[1]["actions"]), "a company member opens the vendor's management window")
+	screen_try(C, list("screen" = 1, "act" = "rename", "value" = "<i>Probe</i> shop"))
+	screen_try(C, list("screen" = 1, "act" = "changecurrency", "value" = "no_such_currency"))
+	screen_try(C, list("screen" = 1, "act" = "removeproduct", "value" = 3))
+	screens_check(!findtext(shop.name, "<") && findtext(shop.name, "Probe") && shop.accepted_currency == "standard", "the vendor is renamed without markup and refuses an unknown currency")
+	GLOB.nanomanager.close_user_uis(H, shop)
+	qdel(shop)
 	map.sales_registry.Cut(listed + 1)
 	map.custom_company_nr -= "Probe & Sons"
 	map.custom_company -= "Probe & Sons"
@@ -281,6 +293,20 @@ var/screens_runtime_error = FALSE
 	cash.amount = 500
 	H.drop_item()
 	H.put_in_active_hand(cash)
+	// The gunsmithing bench: only the step the design is on, and only a part it offers, is accepted.
+	var/obj/structure/gunbench/bench = new(locate(9, 9, 1))
+	bench.attack_hand(H)
+	rows = agent_screen_rows(H)
+	screens_check(rows.len == 1 && findtext(rows[1]["data"], "Start New Gun") && ("step1" in rows[1]["actions"]), "the gunsmithing bench opens with money in hand")
+	screen_try(C, list("screen" = 1, "act" = "start"))
+	screens_check(bench.current_gun && findtext(agent_screen_rows(H)[1]["data"], "Step 1: Choose Stock"), "starting a gun shows the first step")
+	screen_try(C, list("screen" = 1, "act" = "step2", "value" = "Bolt-Action"))
+	screen_try(C, list("screen" = 1, "act" = "step1", "value" = "Golden Stock"))
+	screen_try(C, list("screen" = 1, "act" = "name", "value" = "free gun"))
+	screens_check(bench.current_gun && bench.current_gun.receiver_type == "none" && bench.current_gun.stock_type == "none" && cash.amount == 500, "a step out of order, an unknown part and an early finish are refused")
+	screen_try(C, list("screen" = 1, "act" = "cancel"))
+	screens_check(!bench.current_gun && !agent_screen_rows(H).len, "cancelling drops the design and closes the bench")
+	qdel(bench)
 	trader.attack_hand(H)
 	rows = agent_screen_rows(H)
 	screens_check(rows.len == 1 && findtext(rows[1]["data"], "Supplies") && findtext(rows[1]["data"], "$100") && ("buy" in rows[1]["actions"]), "a trader's shop lists goods with prices")

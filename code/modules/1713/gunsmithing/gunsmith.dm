@@ -79,7 +79,6 @@
 	var/mob/living/human/H = user
 	if (!istype(H))
 		return
-	var/band = gunsmith_tech_band(H)
 	if (H.getStatCoeff("crafting") < 2.5 && map.civilizations)
 		to_chat(H, "You don't have the skills to design a new gun! Use an existing blueprint.")
 		return
@@ -95,75 +94,46 @@
 	if (!found)
 		to_chat(H, "You don't have enough money to make a new blueprint! You need 10 gold or equivalent in one of your hands.")
 		return
+	ui_interact(H)
 
-	var/dat = {"<html><head>
-[common_browser_style]
-<script language="javascript">
-function pickAction(action) {
-	window.location='byond://?src=\ref[src];action='+action;
-}
-function setStep(step) {
-	window.location='byond://?src=\ref[src];step='+step;
-}
-function setName() {
-	var n = document.getElementById('gun_name').value;
-	if (n.trim()=='') n='gun';
-	window.location='byond://?src=\ref[src];action=name&name='+encodeURIComponent(n.trim());
-}
-function pickCaliber(c) {
-	window.location='byond://?src=\ref[src];action=caliber&cal='+encodeURIComponent(c);
-}
-function pickAppearance(a) {
-	window.location='byond://?src=\ref[src];action=appearance&look='+encodeURIComponent(a);
-}
-</script>
-</head><body>"}
-	dat += "<h2>Gunsmithing Bench</h2>"
-	dat += "<p>Resources: <b>[steel_amt]</b> steel, <b>[wood_amt]</b> wood</p>"
-	if (current_gun)
-		dat += "<p>Current project: <b>[current_gun.name]</b></p>"
-		dat += "<table><tr><th>Part</th><th>Selected</th></tr>"
-		dat += "<tr><td>Stock</td><td>[current_gun.stock_type == "none" ? "<span style='color:#ff6666;'>Not set</span>" : current_gun.stock_type]</td></tr>"
-		dat += "<tr><td>Receiver</td><td>[current_gun.receiver_type == "none" ? "<span style='color:#ff6666;'>Not set</span>" : current_gun.receiver_type]</td></tr>"
-		dat += "<tr><td>Feeding System</td><td>[current_gun.feeding_type == "none" ? "<span style='color:#ff6666;'>Not set</span>" : current_gun.feeding_type]</td></tr>"
-		dat += "<tr><td>Barrel</td><td>[current_gun.barrel_type == "none" ? "<span style='color:#ff6666;'>Not set</span>" : current_gun.barrel_type]</td></tr>"
-		dat += "<tr><td>Caliber</td><td>[current_gun.caliber == "caliber" ? "<span style='color:#ff6666;'>Not set</span>" : current_gun.caliber]</td></tr>"
-		dat += "</table><br>"
+// What the design asks for next: 1 to 4 are the part steps, then "caliber",
+// "appearance", "look" and "name". null when no gun is being designed.
+/obj/structure/gunbench/proc/design_stage()
+	if (!current_gun)
+		return null
+	if (current_gun.step < 4)
+		return max(current_gun.step, 0) + 1
+	if (current_gun.caliber == "caliber")
+		return "caliber"
+	if (!current_gun.finished_appearance_locked && !current_gun.override_icon)
+		return "appearance"
+	if (!current_gun.finished_appearance_locked && !current_gun.override_sprite)
+		return "look"
+	return "name"
 
-		var/step = current_gun.step
-		if (step < 1)
-			dat += "<b>Step 1: Choose Stock</b><br>"
+// The choices a stage offers at this tech band, as choice = label shown.
+/obj/structure/gunbench/proc/design_options(stage, band)
+	. = list()
+	switch (stage)
+		if (1)
+			if (band >= 5)
+				. = list("Rifle Wooden Stock" = "Rifle Wooden Stock (7 wood)", "Carbine Wooden Stock" = "Carbine Wooden Stock (5 wood)", "Pistol Grip" = "Pistol Grip (3 steel)")
+			if (band >= 6)
+				.["Steel Stock"] = "Steel Stock (5 steel)"
+			if (band >= 7)
+				.["Folding Stock"] = "Folding Stock (7 steel)"
+		if (2)
+			var/list/receivers = list()
 			if (band == 5)
-				dat += "<a href='?src=\ref[src];step=1&choice=Rifle Wooden Stock'>Rifle Wooden Stock (7 wood)</a><br>"
-				dat += "<a href='?src=\ref[src];step=1&choice=Carbine Wooden Stock'>Carbine Wooden Stock (5 wood)</a><br>"
-				dat += "<a href='?src=\ref[src];step=1&choice=Pistol Grip'>Pistol Grip (3 steel)</a><br>"
+				receivers = list("Bolt-Action","Revolver","Semi-Auto (small)","Pump-Action")
 			else if (band == 6)
-				dat += "<a href='?src=\ref[src];step=1&choice=Rifle Wooden Stock'>Rifle Wooden Stock (7 wood)</a><br>"
-				dat += "<a href='?src=\ref[src];step=1&choice=Carbine Wooden Stock'>Carbine Wooden Stock (5 wood)</a><br>"
-				dat += "<a href='?src=\ref[src];step=1&choice=Pistol Grip'>Pistol Grip (3 steel)</a><br>"
-				dat += "<a href='?src=\ref[src];step=1&choice=Steel Stock'>Steel Stock (5 steel)</a><br>"
+				receivers = list("Bolt-Action","Revolver","Semi-Auto (small)","Semi-Auto (large)","Open-Bolt (small)","Open-Bolt (large)","Pump-Action")
 			else if (band >= 7)
-				dat += "<a href='?src=\ref[src];step=1&choice=Rifle Wooden Stock'>Rifle Wooden Stock (7 wood)</a><br>"
-				dat += "<a href='?src=\ref[src];step=1&choice=Carbine Wooden Stock'>Carbine Wooden Stock (5 wood)</a><br>"
-				dat += "<a href='?src=\ref[src];step=1&choice=Pistol Grip'>Pistol Grip (3 steel)</a><br>"
-				dat += "<a href='?src=\ref[src];step=1&choice=Steel Stock'>Steel Stock (5 steel)</a><br>"
-				dat += "<a href='?src=\ref[src];step=1&choice=Folding Stock'>Folding Stock (7 steel)</a><br>"
-
-		else if (step < 2)
-			dat += "<b>Step 2: Choose Receiver</b><br>"
-			if (band == 5)
-				for (var/r in list("Bolt-Action","Revolver","Semi-Auto (small)","Pump-Action"))
-					dat += "<a href='?src=\ref[src];step=2&choice=[r]'>[r]</a><br>"
-			else if (band == 6)
-				for (var/r in list("Bolt-Action","Revolver","Semi-Auto (small)","Semi-Auto (large)","Open-Bolt (small)","Open-Bolt (large)","Pump-Action"))
-					dat += "<a href='?src=\ref[src];step=2&choice=[r]'>[r]</a><br>"
-			else if (band >= 7)
-				for (var/r in list("Bolt-Action","Revolver","Semi-Auto (small)","Semi-Auto (large)","Open-Bolt (small)","Open-Bolt (large)","Pump-Action","Dual Selective Fire","Triple Selective Fire"))
-					dat += "<a href='?src=\ref[src];step=2&choice=[r]'>[r]</a><br>"
-
-		else if (step < 3)
+				receivers = list("Bolt-Action","Revolver","Semi-Auto (small)","Semi-Auto (large)","Open-Bolt (small)","Open-Bolt (large)","Pump-Action","Dual Selective Fire","Triple Selective Fire")
+			for (var/r in receivers)
+				.[r] = r
+		if (3)
 			var/receiver_type = current_gun.receiver_type
-			dat += "<b>Step 3: Choose Feeding System</b><br>"
 			var/list/feeding_opts = list()
 			if (band == 5)
 				feeding_opts = list("Internal Magazine","Tubular")
@@ -180,141 +150,159 @@ function pickAppearance(a) {
 			if ((receiver_type == "Bolt-Action" || receiver_type == "Semi-Auto (large)") && band >= 6)
 				feeding_opts = list("Internal Magazine", "Tubular", "External Magazine","Large External Magazine")
 			for (var/f in feeding_opts)
-				dat += "<a href='?src=\ref[src];step=3&choice=[f]'>[f]</a><br>"
-
-		else if (step < 4)
-			dat += "<b>Step 4: Choose Barrel</b><br>"
+				.[f] = f
+		if (4)
 			if (current_gun.feeding_type == "Internal Magazine (Removable)")
-				dat += "<a href='?src=\ref[src];step=4&choice=Pistol Barrel'>Pistol Barrel (4 steel)</a><br>"
+				. = list("Pistol Barrel" = "Pistol Barrel (4 steel)")
 			else if (current_gun.feeding_type == "Open (Belt-Fed)")
-				dat += "<a href='?src=\ref[src];step=4&choice=Air-Cooled Barrel'>Air-Cooled Barrel (10 steel)</a><br>"
+				. = list("Air-Cooled Barrel" = "Air-Cooled Barrel (10 steel)")
 			else if (band == 5)
-				dat += "<a href='?src=\ref[src];step=4&choice=Pistol Barrel'>Pistol Barrel (4 steel)</a><br>"
-				dat += "<a href='?src=\ref[src];step=4&choice=Rifle Barrel'>Rifle Barrel (3 steel)</a><br>"
-				dat += "<a href='?src=\ref[src];step=4&choice=Long Rifle Barrel'>Long Rifle Barrel (8 steel)</a><br>"
+				. = list("Pistol Barrel" = "Pistol Barrel (4 steel)", "Rifle Barrel" = "Rifle Barrel (3 steel)", "Long Rifle Barrel" = "Long Rifle Barrel (8 steel)")
 			else if (band >= 6)
-				dat += "<a href='?src=\ref[src];step=4&choice=Pistol Barrel'>Pistol Barrel (4 steel)</a><br>"
-				dat += "<a href='?src=\ref[src];step=4&choice=Carbine Barrel'>Carbine Barrel (5 steel)</a><br>"
-				dat += "<a href='?src=\ref[src];step=4&choice=Rifle Barrel'>Rifle Barrel (3 steel)</a><br>"
-				dat += "<a href='?src=\ref[src];step=4&choice=Long Rifle Barrel'>Long Rifle Barrel (8 steel)</a><br>"
-				dat += "<a href='?src=\ref[src];step=4&choice=Air-Cooled Barrel'>Air-Cooled Barrel (10 steel)</a><br>"
+				. = list("Pistol Barrel" = "Pistol Barrel (4 steel)", "Carbine Barrel" = "Carbine Barrel (5 steel)", "Rifle Barrel" = "Rifle Barrel (3 steel)", "Long Rifle Barrel" = "Long Rifle Barrel (8 steel)", "Air-Cooled Barrel" = "Air-Cooled Barrel (10 steel)")
+		if ("caliber")
+			for (var/c in custom_gun_calibers(current_gun.receiver_type, current_gun.feeding_type))
+				.[c] = c
+		if ("appearance")
+			. = list("Keep" = "Keep Default Look", "Change" = "Change Look")
+		if ("look")
+			var/list/look_opts = list()
+			switch (current_gun.receiver_type)
+				if ("Pump-Action")
+					look_opts = list("shotgun", "remington870", "remington11", "winchester1873")
+				if ("Bolt-Action")
+					if (band >= 6)
+						look_opts = list("gewehr71", "gewehr98", "kar98k", "lebel", "mosin", "mosin30", "murata", "enfield", "p14enfield", "carcano", "springfieldww2", "arisaka30", "arisaka35", "arisaka38", "arisaka99")
+					else
+						look_opts = list("gewehr71", "gewehr98", "lebel", "mosin", "murata", "enfield", "p14enfield", "carcano", "arisaka30", "arisaka35")
+				if ("Semi-Auto (large)")
+					look_opts = list("svt", "g41", "g43", "m1garand", "m14", "sks")
+				if ("Open-Bolt (small)")
+					look_opts = list("pps", "ppsh", "mp40", "greasegun", "tommygun", "thompson", "avtomat", "victor", "p90")
+				if ("Open-Bolt (large)")
+					look_opts = list("madsen", "mg34", "type99lmg", "bar", "dp", "pkmp", "negev", "m60")
+				if ("Revolver")
+					look_opts = list("revolver", "t26revolver", "nagant", "panther", "detective", "detective_leopard", "detective_gold", "goldrevolver", "mateba", "peacemaker", "colt1877", "dragoon", "coltnewpolice", "enfield02", "smithwesson32", "graysonfito", "magnum58", "webley4", "m1892")
+				if ("Semi-Auto (small)")
+					look_opts = list("p220", "nambu", "mauser", "luger", "borchardt", "colt", "m9beretta", "tanm9", "black1911","tt30","makarov", "waltherp38", "jericho941", "glock17", "coltpockethammerles", "tarusg3", "mp443", "chinese_ms14", "chinese_plastic", "pl14", "sig250")
+				if ("Dual Selective Fire")
+					look_opts = list("stg", "g3", "ar12", "ak47", "ak74", "aks74", "akms", "ak74m", "vz58", "whitevz58", "blackvz58", "chinese_assault_rifle", "c7")
+				if ("Triple Selective Fire")
+					look_opts = list("m16","m16a2","m16a4","m4", "m4mws", "hk417", "scarl", "scarh", "ar15", "mk18", "mk18tan", "sigsauer")
+			for (var/l in look_opts)
+				.[l] = l
 
-		else if (step >= 4)
-			if (current_gun.caliber == "caliber")
-				dat += "<b>Step 5: Choose Caliber</b><br>"
-				var/receiver_type = current_gun.receiver_type
-				var/feeding_type = current_gun.feeding_type
-				var/list/cal_opts = list()
-				if (map.ID == MAP_NOMADS_KARAFUTO)
-					switch (receiver_type)
-						if ("Pump-Action")
-							cal_opts = list("shotgun")
-						if ("Bolt-Action","Semi-Auto (large)")
-							cal_opts = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mmR","8x53mm murata")
-						if ("Open-Bolt (small)","Revolver","Semi-Auto (small)")
-							cal_opts = list("9x19 Parabellum","9x18 Makarov","8x22mmB nambu","9x22mm nambu","7.62x38mmR",".45 Colt")
-						if ("Open-Bolt (large)")
-							cal_opts = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mmR")
-						if ("Dual Selective Fire", "Triple Selective Fire")
-							cal_opts = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mmR")
-					if (feeding_type == "Internal Magazine (Removable)")
-						cal_opts = list("9x19 Parabellum","9x18 Makarov","8x22mmB nambu","9x22mm nambu","7.62x38mmR",".45 Colt")
-				else
-					switch (receiver_type)
-						if ("Pump-Action")
-							cal_opts = list("shotgun")
-						if ("Bolt-Action","Semi-Auto (large)")
-							cal_opts = list("7.92x57mm Mauser","6.5x50mm small rifle","7.62x39mm intermediate rifle","5.56x45mm intermediate rifle")
-						if ("Open-Bolt (small)","Revolver","Semi-Auto (small)")
-							cal_opts = list("9x19 Parabellum","9x18 Makarov",".45 Colt")
-						if ("Open-Bolt (large)")
-							cal_opts = list("7.62x39mm intermediate rifle","5.56x45mm intermediate rifle")
-						if ("Dual Selective Fire", "Triple Selective Fire")
-							cal_opts = list("7.62x39mm intermediate rifle","5.56x45mm intermediate rifle")
-					if (feeding_type == "Internal Magazine (Removable)")
-						cal_opts = list("9x19 Parabellum","9x18 Makarov",".45 Colt")
-				for (var/c in cal_opts)
-					dat += "<a href='?src=\ref[src];action=caliber&cal=[c]'>[c]</a><br>"
-			else if (!current_gun.finished_appearance_locked && !current_gun.override_icon)
-				dat += {"<b>Appearance</b><br>
-<p>Do you want to give this gun a different appearance?</p>
-<a href='?src=\ref[src];action=appearance&look=Keep'>Keep Default Look</a><br>
-<a href='?src=\ref[src];action=appearance&look=Change'>Change Look</a><br>"}
-			else if (!current_gun.finished_appearance_locked && current_gun.override_icon && !current_gun.override_sprite)
-				dat += "<b>Choose Look</b><br>"
-				var/receiver_type = current_gun.receiver_type
-				var/list/look_opts = list()
-				switch (receiver_type)
-					if ("Pump-Action")
-						look_opts = list("shotgun", "remington870", "remington11", "winchester1873")
-					if ("Bolt-Action")
-						if (band >= 6)
-							look_opts = list("gewehr71", "gewehr98", "kar98k", "lebel", "mosin", "mosin30", "murata", "enfield", "p14enfield", "carcano", "springfieldww2", "arisaka30", "arisaka35", "arisaka38", "arisaka99")
-						else
-							look_opts = list("gewehr71", "gewehr98", "lebel", "mosin", "murata", "enfield", "p14enfield", "carcano", "arisaka30", "arisaka35")
-					if ("Semi-Auto (large)")
-						look_opts = list("svt", "g41", "g43", "m1garand", "m14", "sks")
-					if ("Open-Bolt (small)")
-						look_opts = list("pps", "ppsh", "mp40", "greasegun", "tommygun", "thompson", "avtomat", "victor", "p90")
-					if ("Open-Bolt (large)")
-						look_opts = list("madsen", "mg34", "type99lmg", "bar", "dp", "pkmp", "negev", "m60")
-					if ("Revolver")
-						look_opts = list("revolver", "t26revolver", "nagant", "panther", "detective", "detective_leopard", "detective_gold", "goldrevolver", "mateba", "peacemaker", "colt1877", "dragoon", "coltnewpolice", "enfield02", "smithwesson32", "graysonfito", "magnum58", "webley4", "m1892")
-					if ("Semi-Auto (small)")
-						look_opts = list("p220", "nambu", "mauser", "luger", "borchardt", "colt", "m9beretta", "tanm9", "black1911","tt30","makarov", "waltherp38", "jericho941", "glock17", "coltpockethammerles", "tarusg3", "mp443", "chinese_ms14", "chinese_plastic", "pl14", "sig250")
-					if ("Dual Selective Fire")
-						look_opts = list("stg", "g3", "ar12", "ak47", "ak74", "aks74", "akms", "ak74m", "vz58", "whitevz58", "blackvz58", "chinese_assault_rifle", "c7")
-					if ("Triple Selective Fire")
-						look_opts = list("m16","m16a2","m16a4","m4", "m4mws", "hk417", "scarl", "scarh", "ar15", "mk18", "mk18tan", "sigsauer")
-				for (var/l in look_opts)
-					dat += "<a href='?src=\ref[src];action=appearance&look=[l]'>[l]</a><br>"
-			else if (!current_gun.name || current_gun.name == "unfinished gun")
-				dat += {"<b>Name Your Gun</b><br>
-<input type='text' id='gun_name' placeholder='Max 15 chars' maxlength='15' style='width:100%;box-sizing:border-box;padding:4px;'>
-<button class='btn' onclick='setName()' style='display:block;width:100%;margin:4px 0;'>Finish</button>"}
-		dat += "<br><a href='?src=\ref[src];action=cancel'>Cancel</a>"
+// Calibers a bench-made gun of this receiver and feed can take on this map.
+/proc/custom_gun_calibers(receiver_type, feeding_type)
+	. = list()
+	if (map.ID == MAP_NOMADS_KARAFUTO)
+		switch (receiver_type)
+			if ("Pump-Action")
+				. = list("shotgun")
+			if ("Bolt-Action","Semi-Auto (large)")
+				. = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mmR","8x53mm murata")
+			if ("Open-Bolt (small)","Revolver","Semi-Auto (small)")
+				. = list("9x19 Parabellum","9x18 Makarov","8x22mmB nambu","9x22mm nambu","7.62x38mmR",".45 Colt")
+			if ("Open-Bolt (large)")
+				. = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mmR")
+			if ("Dual Selective Fire", "Triple Selective Fire")
+				. = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mmR")
+		if (feeding_type == "Internal Magazine (Removable)")
+			. = list("9x19 Parabellum","9x18 Makarov","8x22mmB nambu","9x22mm nambu","7.62x38mmR",".45 Colt")
 	else
-		dat += "<p><a href='?src=\ref[src];action=start'><b>Start New Gun</b></a></p>"
-		dat += "<p><a href='?src=\ref[src];action=close'>Close</a></p>"
+		switch (receiver_type)
+			if ("Pump-Action")
+				. = list("shotgun")
+			if ("Bolt-Action","Semi-Auto (large)")
+				. = list("7.92x57mm Mauser","6.5x50mm small rifle","7.62x39mm intermediate rifle","5.56x45mm intermediate rifle")
+			if ("Open-Bolt (small)","Revolver","Semi-Auto (small)")
+				. = list("9x19 Parabellum","9x18 Makarov",".45 Colt")
+			if ("Open-Bolt (large)")
+				. = list("7.62x39mm intermediate rifle","5.56x45mm intermediate rifle")
+			if ("Dual Selective Fire", "Triple Selective Fire")
+				. = list("7.62x39mm intermediate rifle","5.56x45mm intermediate rifle")
+		if (feeding_type == "Internal Magazine (Removable)")
+			. = list("9x19 Parabellum","9x18 Makarov",".45 Colt")
 
-	dat += "</body></html>"
-	show_browse(H, dat, "window=gunsmith;size=500x600")
+/obj/structure/gunbench/ui_actions(ui_key)
+	if (ui_key == "rechamber")
+		return list("do_rechamber", "cancel_rechamber")
+	return list("start", "cancel", "step1", "step2", "step3", "step4", "caliber", "appearance", "name")
+
+/obj/structure/gunbench/ui_interact(mob/user, ui_key = "main", datum/nanoui/ui = null, force_open = TRUE)
+	if (ui_key == "rechamber")
+		var/obj/item/weapon/gun/projectile/P = rechambering_gun
+		if (!P)
+			GLOB.nanomanager.close_user_uis(user, src, ui_key)
+			return
+		var/list/calibers = list()
+		for (var/c in rechamber_options(P))
+			calibers += list(panel_button(c, "do_rechamber", c))
+		open_panel(user, "Rechamber: [P.name]", 400, 400, list(
+			panel_section("Caliber", notes = list("Which caliber do you want to convert this gun into? Be aware that this will permanently reduce accuracy by around 10%!"),
+				buttons = calibers, empty = "No caliber is available for this gun."),
+			panel_section(null, buttons = list(panel_button("Cancel", "cancel_rechamber")))), ui_key = ui_key, ui = ui, force_open = force_open)
+		return
+
+	var/list/sections = list(panel_section("Resources", rows = list(panel_row("Steel", steel_amt), panel_row("Wood", wood_amt))))
+	if (!current_gun)
+		sections += list(panel_section(null, buttons = list(panel_button("Start New Gun", "start"))))
+	else
+		var/list/parts = list()
+		var/list/chosen = list("Stock" = current_gun.stock_type, "Receiver" = current_gun.receiver_type, "Feeding System" = current_gun.feeding_type, "Barrel" = current_gun.barrel_type, "Caliber" = current_gun.caliber)
+		for (var/part in chosen)
+			var/unset = (chosen[part] == "none" || chosen[part] == "caliber")
+			parts += list(panel_row(part, unset ? "Not set" : chosen[part], unset ? "warn" : null))
+		sections += list(panel_section("Current project: [current_gun.name]", rows = parts))
+
+		var/stage = design_stage()
+		var/list/titles = list("Step 1: Choose Stock", "Step 2: Choose Receiver", "Step 3: Choose Feeding System", "Step 4: Choose Barrel")
+		if (stage == "name")
+			sections += list(panel_section("Name Your Gun", forms = list(
+				panel_form("Name", "name", 1, list(panel_field("value", "Max 15 chars", "", "text")), "Finish"))))
+		else
+			var/list/options = design_options(stage, gunsmith_tech_band(user))
+			var/list/choices = list()
+			for (var/option in options)
+				choices += list(panel_button(options[option], isnum(stage) ? "step[stage]" : (stage == "look" ? "appearance" : stage), option))
+			var/title = isnum(stage) ? titles[stage] : (stage == "caliber" ? "Step 5: Choose Caliber" : (stage == "look" ? "Choose Look" : "Appearance"))
+			sections += list(panel_section(title, notes = stage == "appearance" ? list("Do you want to give this gun a different appearance?") : null,
+				buttons = choices, empty = "Your people cannot make these parts yet."))
+		sections += list(panel_section(null, buttons = list(panel_button("Cancel", "cancel"))))
+	open_panel(user, "Gunsmithing Bench", 500, 600, sections, ui_key = ui_key, ui = ui, force_open = force_open)
+
+// A press in either window, turned into the request the bench has always handled.
+/obj/structure/gunbench/ui_act(action, list/params, mob/user, datum/nanoui/ui)
+	var/mob/living/human/H = user
+	if (!istype(H) || H.stat || get_dist(src, H) > 2)
+		return TRUE
+	var/value = "[params["value"]]"
+	var/list/href_list
+	switch (action)
+		if ("step1", "step2", "step3", "step4")
+			href_list = list("step" = copytext(action, 5), "choice" = value)
+		if ("caliber", "do_rechamber")
+			href_list = list("action" = action, "cal" = value)
+		if ("appearance")
+			href_list = list("action" = action, "look" = value)
+		if ("name")
+			href_list = list("action" = action, "name" = value)
+		else
+			href_list = list("action" = action)
+	bench_action(H, href_list)
+	return TRUE
 
 /obj/structure/gunbench/proc/show_rechamber_ui(mob/user)
 	if (!rechambering_gun)
 		return
-	var/obj/item/weapon/gun/projectile/P = rechambering_gun
+	ui_interact(user, "rechamber")
+
+// Calibers the bench can convert this gun into.
+/obj/structure/gunbench/proc/rechamber_options(obj/item/weapon/gun/projectile/P)
 	var/list/caliber_options = list()
 	if (istype(P, /obj/item/weapon/gun/projectile/custom))
 		var/obj/item/weapon/gun/projectile/custom/PC = P
-		if (map.ID == MAP_NOMADS_KARAFUTO)
-			switch (PC.receiver_type)
-				if ("Pump-Action")
-					caliber_options = list("shotgun")
-				if ("Bolt-Action","Semi-Auto (large)")
-					caliber_options = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mmR","8x53mm murata")
-				if ("Open-Bolt (large)")
-					caliber_options = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mmR")
-				if ("Open-Bolt (small)","Revolver","Semi-Auto (small)")
-					caliber_options = list("9x19 Parabellum","9x18 Makarov","8x22mmB nambu","9x22mm nambu","7.62x38mmR",".45 Colt")
-				if ("Dual Selective Fire", "Triple Selective Fire")
-					caliber_options = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mmR")
-			if (PC.feeding_type == "Internal Magazine (Removable)")
-				caliber_options = list("9x19 Parabellum","9x18 Makarov","8x22mmB nambu","9x22mm nambu","7.62x38mmR",".45 Colt")
-		else
-			switch (PC.receiver_type)
-				if ("Pump-Action")
-					caliber_options = list("shotgun")
-				if ("Bolt-Action","Semi-Auto (large)")
-					caliber_options = list("7.92x57mm Mauser","6.5x50mm small rifle","7.62x39mm intermediate rifle","5.56x45mm intermediate rifle")
-				if ("Open-Bolt (large)")
-					caliber_options = list("7.62x39mm intermediate rifle","5.56x45mm intermediate rifle")
-				if ("Open-Bolt (small)","Revolver","Semi-Auto (small)")
-					caliber_options = list("9x19 Parabellum","9x18 Makarov",".45 Colt")
-				if ("Dual Selective Fire", "Triple Selective Fire")
-					caliber_options = list("7.62x39mm intermediate rifle","5.56x45mm intermediate rifle")
-			if (PC.feeding_type == "Internal Magazine (Removable)")
-				caliber_options = list("9x19 Parabellum","9x18 Makarov",".45 Colt")
+		caliber_options = custom_gun_calibers(PC.receiver_type, PC.feeding_type)
 	else
 		if (map.ID == MAP_NOMADS_KARAFUTO)
 			if (istype(P, /obj/item/weapon/gun/projectile/automatic))
@@ -342,18 +330,7 @@ function pickAppearance(a) {
 				caliber_options = list("7.92x57mm Mauser","6.5x50mm small rifle","7.62x39mm intermediate rifle","5.56x45mm intermediate rifle")
 			else if (istype(P, /obj/item/weapon/gun/projectile/special) || istype(P, /obj/item/weapon/gun/projectile/submachinegun))
 				caliber_options = list("7.62x39mm intermediate rifle","5.56x45mm intermediate rifle")
-	if (!caliber_options.len)
-		caliber_options = list("(none available)")
-	var/dat = {"<html><head>
-[common_browser_style]
-</head><body>
-<h2>Rechamber: [P.name]</h2>
-<p>Which caliber do you want to convert this gun into? Be aware that this will permanently reduce accuracy by around 10%!</p>"}
-	for (var/c in caliber_options)
-		dat += "<a href='?src=\ref[src];action=do_rechamber&cal=[c]'>[c]</a><br>"
-	dat += "<br><a href='?src=\ref[src];action=cancel_rechamber'>Cancel</a>"
-	dat += "</body></html>"
-	show_browse(user, dat, "window=gunsmith_rechamber;size=400x400")
+	return caliber_options
 
 /obj/structure/gunbench/proc/do_rechamber(var/obj/item/weapon/gun/projectile/P, var/choice, var/mob/living/human/H)
 	to_chat(H, "You start converting \the [P] into [choice]...")
@@ -415,12 +392,8 @@ function pickAppearance(a) {
 			P.desc = "[split_desc[1]]. Rechambered into [choice]."
 	rechambering_gun = null
 
-/obj/structure/gunbench/Topic(href, href_list)
-	if (!usr || !usr.client)
-		return
-	var/mob/living/human/H = usr
-	if (!istype(H) || H.stat || get_dist(src, H) > 2)
-		return
+/obj/structure/gunbench/proc/bench_action(mob/living/human/H, list/href_list)
+	var/band = gunsmith_tech_band(H)
 
 	// Rechambering flow
 	if (href_list["action"] == "do_rechamber")
@@ -428,29 +401,26 @@ function pickAppearance(a) {
 			to_chat(H, "No gun selected for rechambering.")
 			return
 		var/choice = href_list["cal"]
-		if (!choice || choice == "(none available)")
+		if (!choice || !(choice in rechamber_options(rechambering_gun)))
 			return
-		show_browse(H, null, "window=gunsmith_rechamber")
-		do_rechamber(rechambering_gun, choice, H)
+		GLOB.nanomanager.close_user_uis(H, src, "rechamber")
+		spawn (0)
+			do_rechamber(rechambering_gun, choice, H)
 		return
 
 	if (href_list["action"] == "cancel_rechamber")
 		rechambering_gun = null
-		show_browse(H, null, "window=gunsmith_rechamber")
+		GLOB.nanomanager.close_user_uis(H, src, "rechamber")
 		return
 
 	// Gun creation flow
-	if (href_list["action"] == "close")
-		show_browse(H, null, "window=gunsmith")
-		return
-
 	if (href_list["action"] == "cancel")
 		if (current_gun)
 			qdel(current_gun)
 			current_gun = null
 		using_wood = 0
 		using_steel = 0
-		show_browse(H, null, "window=gunsmith")
+		GLOB.nanomanager.close_user_uis(H, src, "main")
 		to_chat(H, "Canceled gun crafting.")
 		return
 
@@ -471,6 +441,11 @@ function pickAppearance(a) {
 		// A stale window can still send later steps after the gun was cancelled.
 		if (step > 1 && !current_gun)
 			to_chat(H, "Start a new gun first.")
+			return
+		// Only the step the design is on, and only a choice it offers.
+		if (current_gun && design_stage() != step)
+			return
+		if (current_gun && !(choice in design_options(step, band)))
 			return
 
 		// Step 1: Stock
@@ -593,7 +568,7 @@ function pickAppearance(a) {
 	// Caliber choice
 	if (href_list["action"] == "caliber")
 		var/choice_caliber = href_list["cal"]
-		if (!choice_caliber || !current_gun)
+		if (!choice_caliber || design_stage() != "caliber" || !(choice_caliber in design_options("caliber", band)))
 			return
 		switch (choice_caliber)
 			if ("shotgun")
@@ -649,7 +624,8 @@ function pickAppearance(a) {
 		if (!current_gun)
 			return
 		var/look = href_list["look"]
-		if (!look)
+		var/stage = design_stage()
+		if (!look || (stage != "appearance" && stage != "look") || !(look in design_options(stage, band)))
 			return
 		if (look == "Keep")
 			current_gun.finished_appearance_locked = TRUE
@@ -701,7 +677,7 @@ function pickAppearance(a) {
 
 	// Name choice
 	if (href_list["action"] == "name")
-		if (!current_gun)
+		if (design_stage() != "name")
 			return
 		var/named = href_list["name"]
 		if (named && named != "")
@@ -795,7 +771,7 @@ function pickAppearance(a) {
 			var/obj/item/weapon/gun/projectile/custom/NEWGUN = current_gun
 			NEWGUN.loc = get_turf(src)
 			current_gun = null
-			show_browse(H, null, "window=gunsmith")
+			GLOB.nanomanager.close_user_uis(H, src, "main")
 			to_chat(H, "You finish crafting the [NEWGUN.name]!")
 			return
 		return

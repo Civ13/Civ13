@@ -249,7 +249,7 @@
       "code/modules/1713/fiatcurrency.dm": 1,
       "code/modules/1713/flying_objects.dm": 5,
       "code/modules/1713/forensics.dm": 1,
-      "code/modules/1713/gunsmithing/gunsmith.dm": 1,
+      "code/modules/1713/gunsmithing/gunsmith.dm": 2,
       "code/modules/1713/hydraulic_fracturing.dm": 1,
       "code/modules/1713/jobs/_special.dm": 1,
       "code/modules/1713/jobs/civilian.dm": 14,
