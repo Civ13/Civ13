@@ -194,6 +194,8 @@
 	is_seeing -= user
 
 /obj/item/weapon/storage/proc/open(mob/user as mob)
+	if (storage_window_open(user, src))
+		return
 	if (use_sound)
 		playsound(loc, use_sound, 50, TRUE, -5)
 
@@ -467,6 +469,7 @@
 		usr.remove_from_mob(W)
 		usr.update_icons()	//update our overlays
 	if (!W.persistence_set_loc(src)) return FALSE
+	storage_note_inserted(W, usr)
 	W.on_enter_storage(src)
 	if (usr)
 		if (usr.client && usr.s_active != src)

@@ -20,6 +20,15 @@
 	icon_state = "unfired_clayroofing"
 	result = /obj/item/weapon/roofbuilder/clay
 
+// Fired roof tiles join a pile of the same roofing already in the kiln.
+/obj/item/weapon/clay/roofing/fired_result(atom/where)
+	for (var/obj/item/weapon/roofbuilder/R in where)
+		if (R.type == result && !R.done && R.amount < R.pile_max)
+			R.amount++
+			R.update_roofing_pile()
+			return R
+	return new result(where)
+
 /obj/item/weapon/clay/roofing/blue
 	name = "unfired blue clay roof tiles"
 	icon_state = "unfired_clayroofing"

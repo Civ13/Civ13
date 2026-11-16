@@ -215,6 +215,7 @@ RECIPE: /material/leaf/fern/,long leaf skirt,/obj/item/clothing/under/leaves_ski
 //*****************| CLAY ROOFING |****************************
 
 RECIPE: /material/clay/,unfired clay roofing,/obj/item/weapon/clay/roofing,0.5,25,0,1,none,0,0,0,8,null
+RECIPE: /material/clay/,clay seal,/obj/item/fitted_lock/seal,1,20,0,1,construction,0,0,0,8,null
 RECIPE: /material/clay/,unfired blue clay roofing,/obj/item/weapon/clay/roofing/blue,0.5,25,0,1,none,18,0,0,8,null
 RECIPE: /material/clay/,unfired black clay roofing,/obj/item/weapon/clay/roofing/black,0.5,25,0,1,none,18,0,0,8,null
 RECIPE: /material/clay/,unfired black kerawa roofing,/obj/item/weapon/clay/roofing/kerawa,0.5,25,0,1,none,0,0,0,8,null
@@ -1467,6 +1468,7 @@ RECIPE: /material/stone/,aqueduct intake,/obj/structure/aqueduct_intake,4,120,1,
 RECIPE: /material/stone/,public fountain,/obj/structure/sink/aqueduct_fountain,6,150,1,1,construction,0,0,0,8,null
 RECIPE: /material/stone/,public bath,/obj/structure/aqueduct_bath,4,150,1,1,construction,0,0,0,8,null
 RECIPE: /material/clay/,clay water pipe,/obj/structure/aqueduct/pipe,1,60,1,1,construction,0,0,0,8,null
+RECIPE: /material/clay/,floor sleeve,/obj/structure/floor_sleeve,1,60,1,1,construction,0,0,0,8,null
 RECIPE: /material/lead/,lead water pipe,/obj/structure/aqueduct/pipe/lead,1,60,1,1,construction,0,0,0,8,null
 RECIPE: /material/bronze/,water tap,/obj/structure/sink/aqueduct_fountain/tap,2,80,1,1,construction,0,0,0,8,null
 RECIPE: /material/stone/,sundial,/obj/structure/sundial,3,100,1,1,construction,0,0,0,8,null
@@ -1508,6 +1510,9 @@ RECIPE: /material/stone/,mortar and pestle,/obj/item/weapon/reagent_containers/g
 
 RECIPE: /material/stone/,stone pillar,/obj/structure/mine_support/stone,2,130,1,1,construction,0,0,0,8,null
 RECIPE: /material/stone/,stone bollard,/obj/structure/bollard/stone,2,90,1,1,fortifications,0,0,0,8,null
+RECIPE: /material/stone/,buttress,/obj/structure/building_brace,6,150,1,1,construction,0,0,0,8,null
+RECIPE: /material/stone/,flying buttress,/obj/structure/building_brace/flying,10,250,1,1,construction,0,0,0,8,null
+RECIPE: /material/stone/,stone corbel,/obj/structure/building_brace/corbel,1,60,1,1,construction,0,0,0,8,null
 RECIPE: /material/stone/,stone ionic column,/obj/structure/mine_support/stone/ionic/rock,2.5,130,1,1,construction,22,0,0,8,null
 RECIPE: /material/stone/,stone solomonic column,/obj/structure/mine_support/stone/solomonic/rock,2.5,130,1,1,construction,22,0,0,8,null
 RECIPE: /material/stone/,stone thick solomonic column,/obj/structure/mine_support/stone/solomonic/thick/rock,2.5,130,1,1,construction,22,0,0,8,null
@@ -2089,6 +2094,11 @@ RECIPE: /material/steel/,blast door control,/obj/structure/gatecontrol/blastcont
 RECIPE: /material/steel/,electric sewage pump,/obj/structure/sewer_pump/electric,8,200,1,1,construction,0,0,0,8,null
 RECIPE: /material/steel/,sump pump,/obj/structure/cellar_pump/sump,4,120,1,1,construction,0,0,0,8,null
 RECIPE: /material/steel/,large reinforced large steel double doors,/obj/structure/simple_door/key_door/anyone/doubledoor/steel,10,250,1,1,construction,62,0,0,8,null
+RECIPE: /material/steel/,hydraulic door closer,/obj/item/door_fitting/hydraulic,4,120,0,1,construction,0,0,0,8,null
+RECIPE: /material/steel/,tumbler lock,/obj/item/fitted_lock/tumbler,3,100,0,1,construction,0,0,0,8,null
+RECIPE: /material/steel/,tumbler key blank,/obj/item/weapon/key/blank/tumbler,1,20,0,1,construction,0,0,0,8,null
+RECIPE: /material/steel/,combination lock,/obj/item/fitted_lock/combination,3,100,0,1,construction,0,0,0,8,null
+RECIPE: /material/steel/,combination padlock,/obj/item/fitted_lock/padlock/combination,2,80,0,1,construction,0,0,0,8,null
 RECIPE: /material/steel/,jail bars,/obj/covers/jail/steeljail,8,30,1,1,construction,75,0,0,8,null
 RECIPE: /material/steel/,locked jail door,/obj/structure/simple_door/key_door/custom/jail/steeljail,12,30,1,1,construction,75,0,0,8,null
 
@@ -2261,6 +2271,8 @@ RECIPE: /material/bronze/,bronze etsy lamp,/obj/item/flashlight/lantern/bronze,4
 RECIPE: /material/bronze/,ashtray,/obj/item/weapon/material/ashtray/bronze,3,30,0,1,none,20,0,0,8,null
 
 RECIPE: /material/bronze/,large bronze double doors,/obj/structure/simple_door/key_door/anyone/doubledoor/bronze,8,100,1,1,none,18,0,0,8,null
+RECIPE: /material/bronze/,spring door closer,/obj/item/door_fitting/spring_closer,3,80,0,1,construction,0,0,0,8,null
+RECIPE: /material/bronze/,spring door hinges,/obj/item/door_fitting/spring_hinge,2,80,0,1,construction,0,0,0,8,null
 
 //*********************| BRONZE WEAPONS & TOOLS |*************************
 
@@ -2429,6 +2441,7 @@ RECIPE: /material/wood/soft/,jeweller's post,/obj/structure/specialist_trader/je
 
 RECIPE: /material/wood/,roof support,/obj/structure/roof_support,2,30,1,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,wooden bollard,/obj/structure/bollard,2,40,1,1,fortifications,0,0,0,8,null
+RECIPE: /material/wood/,wooden corbel,/obj/structure/building_brace/corbel/wood,1,40,1,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,mine support,/obj/structure/mine_support,2,30,1,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,trail marker,/obj/structure/region_gate/trail_marker,10,100,1,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,nordic roof support,/obj/structure/roof_support/nordic,2,30,1,1,construction,47,0,0,8,null
@@ -2444,6 +2457,12 @@ RECIPE: /material/wood/,rustic door,/obj/structure/simple_door/key_door/anyone/r
 RECIPE: /material/wood/,nordic door,/obj/structure/simple_door/key_door/anyone/nordic,5,50,1,1,construction,35,0,0,8,null
 RECIPE: /material/wood/soft/,wooden privacy door,/obj/structure/simple_door/key_door/anyone/singledoor/privacy,10,100,1,1,construction,47,0,0,8,null
 RECIPE: /material/wood/soft/,wooden house door,/obj/structure/simple_door/key_door/anyone/singledoor/housedoor,5,50,1,1,construction,82,0,0,8,null
+RECIPE: /material/wood/,wooden wedge,/obj/item/door_wedge,1,20,0,1,construction,0,0,0,8,null
+RECIPE: /material/rope/,counterweight door closer,/obj/item/door_fitting/counterweight,3,60,0,1,construction,0,0,0,8,null
+RECIPE: /material/rope/,knot seal,/obj/item/fitted_lock/knot,1,20,0,1,construction,0,0,0,8,null
+RECIPE: /material/wood/,wooden pin lock,/obj/item/fitted_lock/pin,3,60,0,1,construction,0,0,0,8,null
+RECIPE: /material/wood/,wooden key blank,/obj/item/weapon/key/blank/wooden,1,20,0,1,construction,0,0,0,8,null
+RECIPE: /material/wood/,hidden catch,/obj/item/fitted_lock/hidden_catch,2,60,0,1,construction,0,0,0,8,null
 
 RECIPE: /material/wood/soft/,floor cover,/obj/item/weapon/covers,2,30,0,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,thatch floor,/obj/covers/thatch,0.75,20,1,1,construction,0,0,0,8,null
@@ -2919,7 +2938,14 @@ RECIPE: /material/leather/,gun sling,/obj/item/weapon/gun_sling,2,40,0,1,weapons
 //*********************| IRON CONSTRUCTIONS |**************************
 
 RECIPE: /material/iron/,unlocked iron door,/obj/structure/simple_door/key_door/anyone,10,100,1,1,construction,28,0,0,8,null
-RECIPE: /material/iron/,locked iron door,/obj/structure/simple_door/key_door/custom,15,180,1,1,construction,28,0,0,8,null
+RECIPE: /material/iron/,iron wedge,/obj/item/door_wedge/iron,1,20,0,1,construction,0,0,0,8,null
+RECIPE: /material/iron/,warded lock,/obj/item/fitted_lock/warded,3,80,0,1,construction,0,0,0,8,null
+RECIPE: /material/iron/,padlock,/obj/item/fitted_lock/padlock,2,60,0,1,construction,0,0,0,8,null
+RECIPE: /material/iron/,iron key blank,/obj/item/weapon/key/blank,1,20,0,1,construction,0,0,0,8,null
+RECIPE: /material/iron/,skeleton key,/obj/item/weapon/key/skeleton,1,40,0,1,construction,0,0,0,8,null
+RECIPE: /material/iron/,spring latch,/obj/item/fitted_lock/latch,4,80,0,1,construction,0,0,0,8,null
+RECIPE: /material/iron/,spring door closer,/obj/item/door_fitting/spring_closer,3,80,0,1,construction,0,0,0,8,null
+RECIPE: /material/iron/,spring door hinges,/obj/item/door_fitting/spring_hinge,2,80,0,1,construction,0,0,0,8,null
 RECIPE: /material/iron/,steam pumping engine,/obj/structure/sewer_pump/steam,12,250,1,1,construction,0,0,0,8,null
 RECIPE: /material/iron/,lever pump,/obj/structure/cellar_pump/lever,6,120,1,1,construction,0,0,0,8,null
 RECIPE: /material/iron/,steam mine pump,/obj/structure/cellar_pump/steam,12,250,1,1,construction,0,0,0,8,null

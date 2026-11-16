@@ -165,6 +165,15 @@ var/global/fluid_step_serial = 0
 		for (var/obj/structure/fluid_pipe/N in T)
 			if (N.fluid_open() && !QDELETED(N))
 				found += N
+	// Floor sleeves join pipes at the same spot on the next level, both ways.
+	var/turf/here = get_turf(P)
+	for (var/up in list(TRUE, FALSE))
+		var/turf/T = floor_sleeve_link(here, up)
+		if (!T)
+			continue
+		for (var/obj/structure/fluid_pipe/N in T)
+			if (N.fluid_open() && !QDELETED(N))
+				found += N
 	return found
 
 /proc/fluid_has_role(obj/O)

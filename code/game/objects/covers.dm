@@ -205,6 +205,9 @@
 		return ..()
 
 /obj/covers/attackby(obj/item/W as obj, mob/user as mob)
+	// Cables and pipes through a wall (building_services.dm).
+	if (building_service_attackby(W, user))
+		return
 	if (is_tool(W, TOOL_WRENCH) && not_movable == TRUE)
 		return
 	if (is_tool(W, TOOL_HAMMER))
