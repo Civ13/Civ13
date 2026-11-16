@@ -104,6 +104,7 @@ var/global/list/persistence_world_time_stamps = list(
 	"cooldown_bell_stand" = list(/obj/structure/voyage/shipbell, /obj/structure/bell_stand),
 	"debounce" = list(/obj/structure/naval_cannon_control),
 	"heated_until" = list(/obj/structure/reaction_bench),
+	"lamed_until" = list(/mob/living/simple_animal/horse),
 	"last_drain_time" = list(/obj/structure/machinery/sub_control/misc_systems),
 	"last_rad_message_time" = list(/obj/structure/machinery/sub_physical/reactor_core),
 	"last_slogan" = list(/obj/structure/vending),

@@ -226,6 +226,8 @@ var/list/sky_drop_map = list()
 	for(var/obj/structure/voyage/grid/G in src)
 		if(G.opened == FALSE)
 			return
+	if (castle_trapdoor_holds(src, A))
+		return
 	if (floorbelowz)
 		// Open air over stairs is a stairwell: walk down instead of falling.
 		if (!push_dir && stairs_soft_descent(A, floorbelowz))
