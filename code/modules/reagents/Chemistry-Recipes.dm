@@ -1248,14 +1248,6 @@ datum/admins/proc/print_chemical_reactions()
 	catalysts = list("enzyme" = 5)
 	result_amount = 2
 
-/datum/chemical_reaction/mead
-	name = "Mead"
-	id = "mead"
-	result = "mead"
-	required_reagents = list("sugar" = 1, "water" = 1)
-	catalysts = list("enzyme" = 5)
-	result_amount = 2
-
 /datum/chemical_reaction/iced_beer2
 	name = "Iced Beer"
 	id = "iced_beer"
@@ -1362,11 +1354,12 @@ datum/admins/proc/print_chemical_reactions()
 	catalysts = list("enzyme" = 5)
 	result_amount = 2
 
-/datum/chemical_reaction/mead
-	name = "mead"
-	id = "mead"
-	result = "mead"
-	required_reagents = list("honey" = 2, "water" = 2)
+// Mead ferments over time from mead must in a closed barrel (mead.dm).
+/datum/chemical_reaction/honey_must
+	name = "Mead must"
+	id = "honey_must"
+	result = "honey_must"
+	required_reagents = list("honey" = 1, "water" = 1)
 	result_amount = 2
 
 //Soap making

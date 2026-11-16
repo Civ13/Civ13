@@ -1625,6 +1625,14 @@
 	color = "#8CFF8C"
 	strength = 15
 
+/datum/reagent/drink/honey_must
+	name = "Mead must"
+	id = "honey_must"
+	description = "Honey stirred into water. Left closed in a barrel, yeast will turn it into mead."
+	taste_description = "watery honey"
+	color = "#e4b44c"
+	nutrition = 2
+
 /datum/reagent/ethanol/mead
 	name = "Mead"
 	id = "mead"

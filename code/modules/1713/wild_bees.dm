@@ -315,17 +315,24 @@ var/global/list/wild_bee_nests = list()
 // Clothing over the head, face, body and hands keeps most stings off.
 /proc/bee_sting_chance(mob/living/human/H)
 	var/chance = 70
-	if (H.head)
+	var/veil = istype(H.head, /obj/item/clothing/head/bee_veil)
+	var/suit = istype(H.wear_suit, /obj/item/clothing/suit/beekeeper_suit)
+	if (veil)
+		chance -= 30
+	else if (H.head)
 		chance -= 15
 	if (H.wear_mask)
 		chance -= 10
-	if (H.wear_suit)
+	if (suit)
+		chance -= 30
+	else if (H.wear_suit)
 		chance -= 15
 	else if (H.w_uniform)
 		chance -= 5
 	if (H.gloves)
 		chance -= 10
-	return max(chance, 10)
+	// Veil and suit together leave almost nowhere to sting.
+	return max(chance, (veil && suit) ? 2 : 10)
 
 // One sting. Stings hurt and swell, and many at once can knock someone down,
 // but never kill; an allergic reaction is worse but still not lethal.
@@ -447,13 +454,15 @@ var/global/list/wild_bee_nests = list()
 
 /obj/item/weapon/beeswax
 	name = "beeswax"
-	desc = "A golden cake of rendered beeswax. Dip a rope wick into it to make a candle."
+	desc = "A golden cake of rendered beeswax. Dip a rope wick into it to make a candle, or melt it with pitch for sealing wax."
 	icon = 'icons/farming/wild_bees.dmi'
 	icon_state = "beeswax"
 	w_class = ITEM_SIZE_TINY
 	flammable = TRUE
 
 /obj/item/weapon/beeswax/attackby(obj/item/W, mob/user)
+	if (istype(W, /obj/item/weapon/reagent_containers/glass) && W.reagents && W.reagents.get_reagent_amount("pitch") > 0)
+		return make_sealing_wax(W, user)
 	if (istype(W, /obj/item/stack/material/rope))
 		var/obj/item/stack/material/rope/R = W
 		user.visible_message(SPAN_NOTICE("[user] dips a wick into \the [src], shaping a candle."), SPAN_NOTICE("You warm \the [src] and dip a rope wick into it again and again, shaping a candle."))
