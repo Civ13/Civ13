@@ -186,12 +186,15 @@ it.
 
 ## Limits
 
-- **One open-air level, no more.** Both maps keep one standing open-air level
-  above the surface (`building_levels = 1`, `building_level_standing`), so
-  aircraft fly and a roof carries one upper floor. The admission for it is its
-  own measured bound (`NEW_Z_STANDING_MEASURED_CELLS`, see
-  [new-z-budget.md](new-z-budget.md)); a second level above it, and a dug cave
-  level (`dig_down_underground`), are still refused on a plane this large.
+- **Cave and four open-air levels.** Both maps get the unformed cave level
+  under the surface and may grow four open-air levels above it as roofs go up
+  (`building_levels = 4`, `building_level_standing`; the first is the standing
+  level aircraft fly on). The admission for them is their own measured bound
+  (`NEW_Z_STANDING_MEASURED_CELLS`, 5,300,000 cells with the unformed cave not
+  charged; see [new-z-budget.md](new-z-budget.md) and
+  [underground-level.md](underground-level.md)). North with all of them, empty:
+  reload peak 2053 MiB; South 2238 MiB (save 209 s, reload 617 s), about
+  130 MiB per empty open-air plane, under the 3072 MB low-memory threshold.
 - The time-of-day lighting pass takes about three times as long as Gaia's.
 - The wildlife caps (`ecology_wildlife_cap` 1000 north, 1200 south) and wild
   plant caps (550 and 650) scale with the land, short of in proportion.

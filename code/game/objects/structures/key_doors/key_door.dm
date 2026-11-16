@@ -315,6 +315,10 @@ var/list/nonbreaking_types = list(
 
 
 /obj/structure/simple_door/key_door/proc/update_damage(amt)
+	if (amt < 0)
+		amt = -door_bar_absorb(-amt)
+		if (!amt)
+			return
 	health += amt
 	damage_display()
 	if (health <= 0)

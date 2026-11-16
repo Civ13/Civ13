@@ -133,7 +133,8 @@ class NearbyHeat(unittest.TestCase):
 
     def test_get_temp_keeps_every_heat_source_and_radius(self):
         scan = body(self.WEATHER, '/proc/nearby_heat_source(')
-        for kind, radius in (('brazier', 3), ('heatsource', 3), ('oven/fireplace', 1), ('engine', 1)):
+        # Outdoor fires warm two tiles round them; rooms are heated by building_insulation.dm.
+        for kind, radius in (('brazier', 2), ('heatsource', 2), ('oven/fireplace', 1), ('engine', 1)):
             self.assertRegex(scan, r'for \(var/obj/structure/%s/\w+ in range\(%d, A\)\)\n\t\tif \(\w+\.on\)\n\t\t\treturn TRUE' % (kind, radius))
         temp = body(self.WEATHER, '/proc/get_temp(')
         self.assertIn('if (loc_temp < 22)', temp)

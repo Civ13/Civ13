@@ -14,6 +14,7 @@
 
 /obj/map_metadata/z_budget_fixture
 	dig_down_underground = FALSE // the cave's budget is covered by tests/building_levels/cave_probe.dm
+	building_levels = 0 // the unmeasured default; opted-in levels are covered by tests/building_levels
 
 /obj/map_metadata/z_budget_fixture/New()
 	return
@@ -96,7 +97,7 @@ var/z_budget_existing_plane = FALSE
 		var/datum/world_z_budget/fixture_admission/F = new
 		world_z_budget = F
 		world_z_budget.record_compiled_dimensions()
-		z_budget_assert(!world_z_budget.configure("new_z_cell_budget", "2100001"), "raising ceiling rejected")
+		z_budget_assert(!world_z_budget.configure("new_z_cell_budget", "5300001"), "raising ceiling rejected")
 		z_budget_assert(!world_z_budget.configure("new_z_roof_levels", "5"), "raising roof allowance rejected")
 		for (var/bad in list("-1", "1.5", "none", "600000x", "1e3", ""))
 			z_budget_assert(!world_z_budget.configure("new_z_cell_budget", bad), "malformed config rejected")
