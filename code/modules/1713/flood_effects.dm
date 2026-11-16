@@ -163,6 +163,7 @@ var/global/flood_items_revision = -1
 	if (flood_items_done[T])
 		return
 	flood_items_done[T] = TRUE
+	fish_flood_stranding(T, band) // fishing_grounds.dm
 	if (band < FLOOD_BAND_WAIST && (locate(/obj/structure/table) in T))
 		return
 	var/turf/deeper = null

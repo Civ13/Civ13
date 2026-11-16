@@ -25,6 +25,20 @@ Tests: `tests/fishing_grounds/`.
   stretch a weir stays empty and a cage brings up only shellfish, crabs,
   lobster and the like, which are not counted as stock. A fish pen is a closed
   stock of its own and takes nothing.
+- **Conditions** (`fish_condition_factor()`), multiplied into the chance and
+  shown as a second line when the water is examined:
+  - Salmon run, in autumn (`SEASON_FALL`): fresh water x1.5, 85% of the catch
+    is salmon, and fresh grounds regrow twice as fast.
+  - Rain on the tile: x1.25 everywhere.
+  - A storm (extreme weather) on the tile: the sea x0.5, other water x0.75.
+  - River in spate (stage 1 or more): fresh and jungle water x0.6.
+  - Low river (stage -1 or less): deep fresh and jungle water x1.2.
+  The final chance is capped at 95%.
+- **Flood strandings:** a tile of ankle-deep floodwater over outdoor land that
+  somebody can see has a 2% chance each river minute to leave a fish on it
+  (`fish_flood_stranding()`, asked by the flood's item pass). The fish come out
+  of a flooded-ground stock of 2 for the 16x16 stretch, so a flood plain gives
+  a few fish and then waits for regrowth.
 - **Catch:** rivers give salmon or plain fish; the coast plain fish or cod; the
   open ocean mostly cod, with squid on a baited line; swamps plain fish.
 - **Regrowth:** worked out from elapsed time when the ground is next asked.

@@ -33,6 +33,18 @@
 // A cast net: each of its chances is worse than a line's, but one throw can land several fish.
 #define FISH_NET_CHANCE 25
 #define FISH_NET_HAUL 3
+// Conditions (fish_condition_factor): what the season, the sky and the river
+// do to a cast.
+#define FISH_RUN_FACTOR 1.5
+#define FISH_RUN_SALMON 85
+#define FISH_RUN_REGROWTH 2
+#define FISH_RAIN_FACTOR 1.25
+#define FISH_STORM_SEA_FACTOR 0.5
+#define FISH_STORM_RIVER_FACTOR 0.75
+#define FISH_SPATE_FACTOR 0.6
+#define FISH_LOW_POOL_FACTOR 1.2
+// Chance a watched tile of ankle-deep floodwater strands a fish in a river minute.
+#define FISH_STRAND_CHANCE 2
 
 #define FISH_WATER_SALT "salt"
 #define FISH_WATER_FRESH "fresh"
@@ -122,7 +134,9 @@ var/global/list/fishing_grounds_published = null
 
 // Fish gained in one step at this stock.
 /datum/fishing_ground/proc/growth(spill)
-	return max(stock * (1 - stock / capacity) / capacity, spill)
+	. = max(stock * (1 - stock / capacity) / capacity, spill)
+	if (kind == FISH_WATER_FRESH && fish_run_season())
+		. *= FISH_RUN_REGROWTH // the run brings fish up from the sea
 
 // Brings the stock up to now.
 /datum/fishing_ground/proc/settle()
@@ -242,6 +256,54 @@ var/global/list/fishing_grounds_published = null
 		var/reading = fish_ground_reading(src)
 		if (reading)
 			to_chat(user, reading)
+			var/conditions = fish_condition_reading(src, fish_water_kind(src))
+			if (conditions)
+				to_chat(user, conditions)
+
+// ---- Conditions ----
+
+// Autumn: salmon run up the rivers.
+/proc/fish_run_season()
+	return season == SEASON_FALL
+
+// What the season, the weather overhead and the state of the river do to a
+// tool's chance in this water. run: the salmon run is on. sky: WEATHER_NONE,
+// WEATHER_WET or WEATHER_EXTREME. stage: the river's stage in levels above
+// normal (0 away from a charted river).
+/proc/fish_condition_factor(kind, deep, run, sky, stage)
+	. = 1
+	var/river = kind == FISH_WATER_FRESH || kind == FISH_WATER_JUNGLE
+	if (run && kind == FISH_WATER_FRESH)
+		. *= FISH_RUN_FACTOR
+	if (sky == WEATHER_WET)
+		. *= FISH_RAIN_FACTOR // fish rise to feed in the rain
+	else if (sky == WEATHER_EXTREME)
+		. *= kind == FISH_WATER_SALT ? FISH_STORM_SEA_FACTOR : FISH_STORM_RIVER_FACTOR
+	if (river)
+		if (stage >= 1)
+			. *= FISH_SPATE_FACTOR // a river in spate runs brown and fast
+		else if (stage <= -1 && deep)
+			. *= FISH_LOW_POOL_FACTOR // at low water the fish crowd into the pools
+
+/proc/fish_condition_factor_at(turf/T, kind)
+	return fish_condition_factor(kind, fish_water_deep(T), fish_run_season(), weather_at(T), river_stage_at(T))
+
+// A line for the water's examine text, or null when nothing is out of the ordinary.
+/proc/fish_condition_reading(turf/T, kind)
+	var/river = kind == FISH_WATER_FRESH || kind == FISH_WATER_JUNGLE
+	var/stage = river_stage_at(T)
+	if (river && stage >= 1)
+		return "The river is running high and brown; fish will be hard to find in it."
+	var/sky = weather_at(T)
+	if (sky == WEATHER_EXTREME)
+		return kind == FISH_WATER_SALT ? "The sea is too rough for good fishing." : "The storm is churning the water."
+	if (kind == FISH_WATER_FRESH && fish_run_season())
+		return "The salmon are running."
+	if (sky == WEATHER_WET)
+		return "Fish are rising to the rain."
+	if (river && stage <= -1 && fish_water_deep(T))
+		return "The river is low, and the fish have gathered in the deep pools."
+	return null
 
 // ---- The catch ----
 
@@ -258,7 +320,7 @@ var/global/list/fishing_grounds_published = null
 				return /obj/item/weapon/reagent_containers/food/snacks/rawfish/cod
 			return /obj/item/weapon/reagent_containers/food/snacks/rawfish
 		if (FISH_WATER_FRESH, FISH_WATER_JUNGLE)
-			if (prob(50))
+			if (prob(kind == FISH_WATER_FRESH && fish_run_season() ? FISH_RUN_SALMON : 50))
 				return /obj/item/weapon/reagent_containers/food/snacks/rawfish/salmon
 	return /obj/item/weapon/reagent_containers/food/snacks/rawfish
 
@@ -378,6 +440,7 @@ var/global/list/fishing_grounds_published = null
 	var/chance = (profile[2] + (baited ? FISH_BAIT_BONUS : 0)) * (FISH_THIN_SHARE + (1 - FISH_THIN_SHARE) * G.fullness())
 	if (deep && kind == FISH_WATER_SALT)
 		chance *= FISH_DEEP_SEA_SHARE
+	chance = min(95, chance * fish_condition_factor_at(src, kind))
 	var/list/landed = list()
 	var/escaped = FALSE
 	for (var/haul = 1 to profile[4])
@@ -416,6 +479,44 @@ var/global/list/fishing_grounds_published = null
 		return null
 	return fish_catch_type(T, G.kind, FALSE)
 
+// ---- Flood strandings ----
+
+// The ground of one kind that the tile lies in, for callers that are not
+// standing on fishing water (floodwater over land).
+/proc/fishing_ground_cell(turf/T, kind, capacity, create = TRUE)
+	fishing_grounds_sync()
+	var/cx = round(T.x / FISH_GROUND_SIZE)
+	var/cy = round(T.y / FISH_GROUND_SIZE)
+	var/key = fishing_ground_key(kind, cx, cy, T.z)
+	var/datum/fishing_ground/G = fishing_grounds[key]
+	if (!G && create)
+		G = new /datum/fishing_ground(kind, cx, cy, T.z, capacity)
+		fishing_grounds[key] = G
+	return G
+
+// A river over its banks carries fish out onto the land, and the shallows at
+// the flood's edge leave them flapping. Asked by the flood's own item pass
+// (flood_effects.dm): once a river minute for a tile somebody can see, so
+// unwatched land costs nothing. The fish come out of a small flooded-ground
+// stock for the stretch, so a flood plain gives a few fish, not a harvest.
+// Returns the fish, or null.
+/proc/fish_flood_stranding(turf/T, band, chance = FISH_STRAND_CHANCE)
+	if (band != FLOOD_BAND_ANKLE || !istype(T, /turf/floor) || istype(T, /turf/floor/beach/water) || T.density)
+		return null
+	if (!prob(chance))
+		return null
+	var/area/A = get_area(T)
+	if (!A || A.location != AREA_OUTSIDE)
+		return null
+	if (locate(/obj/item/weapon/reagent_containers/food/snacks/rawfish) in T)
+		return null
+	var/datum/fishing_ground/G = fishing_ground_cell(T, FISH_WATER_FLOODED, 2)
+	if (!G.take(1))
+		return null
+	var/obj/item/weapon/reagent_containers/food/snacks/rawfish/F = new(T)
+	F.visible_message(SPAN_NOTICE("A fish flaps in the shallows the flood has left."))
+	return F
+
 #undef FISH_GROUND_STEP
 #undef FISH_GROUND_MAX_STEPS
 #undef FISH_GROUND_SPILL
@@ -425,3 +526,12 @@ var/global/list/fishing_grounds_published = null
 #undef FISH_DEEP_SEA_SHARE
 #undef FISH_NET_CHANCE
 #undef FISH_NET_HAUL
+#undef FISH_RUN_FACTOR
+#undef FISH_RUN_SALMON
+#undef FISH_RUN_REGROWTH
+#undef FISH_RAIN_FACTOR
+#undef FISH_STORM_SEA_FACTOR
+#undef FISH_STORM_RIVER_FACTOR
+#undef FISH_SPATE_FACTOR
+#undef FISH_LOW_POOL_FACTOR
+#undef FISH_STRAND_CHANCE
