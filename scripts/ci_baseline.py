@@ -1295,6 +1295,11 @@ SUITES = {
         'paths': ('tests/stone_age_rites/',), 'shared_paths': (
             'code/modules/1713/stone_age_rites.dm', 'icons/obj/stone_age_rites.dmi',
             'code/game/objects/items/stacks/stack.dm')},
+    # Faction laws, courts, warrants and fines (the native probe is tests/faction_justice/probe.dm).
+    'faction_justice': {'files': ('tests/faction_justice/test_source.py',),
+        'paths': ('tests/faction_justice/',), 'shared_paths': (
+            'code/game/mob/groups/faction_justice.dm', 'code/modules/1713/cmss13_ops.dm',
+            'code/game/mob/groups/faction_treasury.dm', 'code/game/mob/groups/factions.dm')},
     # Faction offices, powers and elections (the native probe is tests/faction_offices/probe.dm).
     'faction_offices': {'files': ('tests/faction_offices/test_source.py',),
         'paths': ('tests/faction_offices/',), 'shared_paths': (

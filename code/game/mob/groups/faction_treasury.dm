@@ -296,7 +296,7 @@ var/global/list/faction_strongboxes = list() // every treasury strongbox
 	if (key)
 		choices += opened ? "Close and lock it" : "Unlock and open it"
 		choices += "Collect taxes into the box"
-	choices += list("Collect my wages", "Pay dues from my hand", "Pay land tax from my hand", "Read the ledger")
+	choices += list("Collect my wages", "Pay dues from my hand", "Pay land tax from my hand", "Pay a fine from my hand", "Read the ledger")
 	if (leader)
 		choices += list("Set wages", "Set dues", "Set taxes", "Release the box")
 	choices += "Cancel"
@@ -326,6 +326,8 @@ var/global/list/faction_strongboxes = list() // every treasury strongbox
 			pay_dues(user)
 		if ("Pay land tax from my hand")
 			pay_land_tax(user)
+		if ("Pay a fine from my hand")
+			pay_fine(user)
 		if ("Read the ledger")
 			to_chat(user, ledger_text())
 		if ("Set wages")

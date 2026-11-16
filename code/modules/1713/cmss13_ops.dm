@@ -203,7 +203,7 @@
 		return FALSE
 	if (team_round_active())
 		return H.original_job && (H.original_job.is_officer || H.original_job.is_commander)
-	return map && H.civilization && H.civilization != "none" && map.is_faction_leader(H, H.civilization)
+	return map && H.civilization && H.civilization != "none" && (map.is_faction_leader(H, H.civilization) || justice_can_jail(H))
 
 /obj/structure/simple_door/canOpen(var/mob/user as mob)
 	if (cell_sentence_left > 0)
@@ -257,7 +257,7 @@
 	if (!istype(H) || !H.Adjacent(src))
 		return
 	if (!can_set_cell_timer(H))
-		to_chat(H, "<span class='warning'>Only faction leaders, and officers in battle, can set a cell timer.</span>")
+		to_chat(H, "<span class='warning'>Only faction leaders and judges, and officers in battle, can set a cell timer.</span>")
 		return
 	if (cell_sentence_left > 0)
 		var/choice = WWinput(H, "[src] is held shut for [cell_time_text()] more (set by [cell_sentence_by]).", "Cell Timer", "Keep", list("Keep", "Release now"))

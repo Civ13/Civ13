@@ -232,6 +232,7 @@
 #include "code\game\mob\groups\faction_treasury.dm"
 #include "code\game\mob\groups\land_registry.dm"
 #include "code\game\mob\groups\faction_offices.dm"
+#include "code\game\mob\groups\faction_justice.dm"
 #include "code\game\mob\groups\faction_rename.dm"
 #include "code\game\mob\groups\faction_symbol.dm"
 #include "code\game\mob\groups\factions.dm"
