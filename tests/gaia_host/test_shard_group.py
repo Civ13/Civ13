@@ -587,6 +587,9 @@ class ShardGroupTests(unittest.TestCase):
         self.assertEqual((False, 15, 60, True), (group['transfers'], group['save_minutes'], group['travel_save_seconds'], group['persistent']))
         self.refuse_config('transfer_port', region_transfer_port=1720)
         self.group['regions'][0]['transfer_port'] = 47201
+        # Earlier writes may have kept backups in another second; count only this one.
+        for old in self.base.glob('group.json.bak-*'):
+            old.unlink()
         # Once any region has one, the others get theirs chosen and kept in the file (fill_ports).
         with mock.patch.object(shard_group.Platform, 'listening', return_value=False):
             filled = self.write_group()
