@@ -40,6 +40,7 @@ maps) any fresh water beside the station feeds it.
 | Potter's wheel (`clay_lime_fire.dm`) | 150 | 10 per ware |
 | Brick mould bench (`clay_lime_fire.dm`) | 100 | 20 per batch of 8 |
 | Retting trough | 90 | 30 per batch |
+| Quench tub beside an anvil (`quench_tub.dm`) | 60 | 10 per forged iron or steel piece |
 | Tub or shower, Persistence maps only (`bathing.dm`) | 100 (big 200) | a tubful |
 
 The wheel and bench check for water before each piece and take it when the
@@ -60,3 +61,12 @@ take 10.
 `tests/station_water/station_water_probe.dm` (native) and
 `tests/station_water/test_station_water.py` (source checks);
 `tests/craft_needs/test_craft_needs.py` covers the JSON key.
+
+## Quench tub
+
+A quench tub (8 soft wood, Iron Smithing) anchored within a tile of an anvil
+quenches each iron or steel piece forged there (`forge_stack_recipe`): it
+takes 10 water and raises the piece's `crafting_quality` to 1.2 (Excellent,
+and `update_force()` gives it the matching force). A dry tub, or one below 10,
+is passed over and forging works as before. Other metals, molds and
+blackpowder parts are not quenched.

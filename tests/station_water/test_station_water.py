@@ -58,6 +58,16 @@ class StationWaterTest(unittest.TestCase):
         self.assertEqual(clay.count("station_water_examine(user)"), 2)
         self.assertIn("/obj/structure/converter/retting_trough/attackby(obj/item/M, mob/user)", SOURCE)
 
+    def test_quench_tub(self):
+        quench = read("code/modules/1713/quench_tub.dm")
+        self.assertIn("water_per_use = 10", quench)
+        self.assertIn('return material_name == "iron" || material_name == "steel"', quench)
+        self.assertIn("/obj/structure/anvil/forge_stack_recipe(", quench)
+        self.assertIn("quench_tub,", read("config/crafting/material_recipes_global.txt"))
+        self.assertIn('"/obj/structure/quench_tub" = "iron_smithing"', read("code/modules/research_tree/research_node.dm"))
+        dme = read("civ13.dme")
+        self.assertLess(dme.index("blacksmithing\\blacksmithing.dm"), dme.index("1713\\quench_tub.dm"))
+
 
 if __name__ == "__main__":
     unittest.main()
