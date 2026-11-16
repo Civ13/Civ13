@@ -316,7 +316,9 @@
 							return
 						return forge_mold_recipe(ML, user, H, choice, list("bronze", "copper", "iron", "steel"))
 					if ("spearheads")
-						if (!crafting_recipe_allowed(H, "/obj/item/weapon/material/part/spearhead")) return
+						if (!crafting_recipe_allowed(H, "/obj/item/weapon/material/part/spearhead"))
+							to_chat(user, crafting_recipe_refusal(H, "/obj/item/weapon/material/part/spearhead"))
+							return
 						to_chat(user, "You begin crafting the [ML.current_material] spearheads...")
 						in_use = TRUE
 						update_icon()
@@ -328,8 +330,8 @@
 									ML.update_icon()
 									for (var/i=1, i<=tamt, i++)
 										new/obj/item/weapon/material/part/spearhead(loc,ML.current_material)
-									ML.current_material = null
 									to_chat(user, "You finish crafting the [ML.current_material] spearheads.")
+									ML.current_material = null
 
 							in_use = FALSE
 						else
@@ -338,7 +340,9 @@
 						return
 
 					if ("pickaxes")
-						if (!crafting_recipe_allowed(H, "/obj/item/weapon/material/part/pickaxe")) return
+						if (!crafting_recipe_allowed(H, "/obj/item/weapon/material/part/pickaxe"))
+							to_chat(user, crafting_recipe_refusal(H, "/obj/item/weapon/material/part/pickaxe"))
+							return
 						to_chat(user, "You begin crafting the [ML.current_material] pickaxe heads...")
 						in_use = TRUE
 						update_icon()
@@ -350,8 +354,8 @@
 									ML.update_icon()
 									for (var/i=1, i<=tamt, i++)
 										new/obj/item/weapon/material/part/pickaxe(loc,ML.current_material)
-									ML.current_material = null
 									to_chat(user, "You finish crafting the [ML.current_material] pickaxe heads.")
+									ML.current_material = null
 
 							in_use = FALSE
 						else
@@ -359,7 +363,9 @@
 						update_icon()
 						return
 					if ("shovels")
-						if (!crafting_recipe_allowed(H, "/obj/item/weapon/material/part/shovel")) return
+						if (!crafting_recipe_allowed(H, "/obj/item/weapon/material/part/shovel"))
+							to_chat(user, crafting_recipe_refusal(H, "/obj/item/weapon/material/part/shovel"))
+							return
 						to_chat(user, "You begin crafting the [ML.current_material] shovel head...")
 						in_use = TRUE
 						update_icon()
@@ -371,8 +377,8 @@
 									ML.update_icon()
 									for (var/i=1, i<=tamt, i++)
 										new/obj/item/weapon/material/part/shovel(loc,ML.current_material)
-									ML.current_material = null
 									to_chat(user, "You finish crafting the [ML.current_material] shovel head.")
+									ML.current_material = null
 
 							in_use = FALSE
 						else
@@ -380,37 +386,41 @@
 						update_icon()
 						return
 					if ("arrowheads")
-						if (!crafting_recipe_allowed(H, "/obj/item/stack/arrowhead/[ML.current_material]")) return
-						if (ML.current_material in list("copper", "bronze", "iron", "steel"))
-							to_chat(user, "You begin crafting the [ML.current_material] arrowheads...")
-							in_use = TRUE
-							update_icon()
-							if (do_after(user,10*ML.capacity,src,can_move=FALSE))
-								if (ML && ML.capacity && crafting_recipe_allowed(H, "/obj/item/stack/arrowhead/[ML.current_material]"))
-									var/tamt = ML.capacity
-									ML.capacity = 0
-									switch(ML.current_material)
-										if ("copper")
-											var/obj/item/stack/arrowhead/copper/AH = new/obj/item/stack/arrowhead/copper(loc)
-											AH.amount = tamt*3
-										if ("iron")
-											var/obj/item/stack/arrowhead/iron/AH = new/obj/item/stack/arrowhead/iron(loc)
-											AH.amount = tamt*3
-										if ("steel")
-											var/obj/item/stack/arrowhead/steel/AH = new/obj/item/stack/arrowhead/steel(loc)
-											AH.amount = tamt*3
-										if ("bronze")
-											var/obj/item/stack/arrowhead/bronze/AH = new/obj/item/stack/arrowhead/bronze(loc)
-											AH.amount = tamt*3
-									ML.current_material = null
-									ML.update_icon()
-									to_chat(user, "You finish crafting the [ML.current_material] arrowheads.")
-
-								in_use = FALSE
-							else
-								in_use = FALSE
-							update_icon()
+						if (!(ML.current_material in list("copper", "bronze", "iron", "steel")))
+							to_chat(user, "<span class='warning'>Arrowheads can only be cast from copper, bronze, iron or steel.</span>")
 							return
+						if (!crafting_recipe_allowed(H, "/obj/item/stack/arrowhead/[ML.current_material]"))
+							to_chat(user, crafting_recipe_refusal(H, "/obj/item/stack/arrowhead/[ML.current_material]"))
+							return
+						to_chat(user, "You begin crafting the [ML.current_material] arrowheads...")
+						in_use = TRUE
+						update_icon()
+						if (do_after(user,10*ML.capacity,src,can_move=FALSE))
+							if (ML && ML.capacity && crafting_recipe_allowed(H, "/obj/item/stack/arrowhead/[ML.current_material]"))
+								var/tamt = ML.capacity
+								ML.capacity = 0
+								switch(ML.current_material)
+									if ("copper")
+										var/obj/item/stack/arrowhead/copper/AH = new/obj/item/stack/arrowhead/copper(loc)
+										AH.amount = tamt*3
+									if ("iron")
+										var/obj/item/stack/arrowhead/iron/AH = new/obj/item/stack/arrowhead/iron(loc)
+										AH.amount = tamt*3
+									if ("steel")
+										var/obj/item/stack/arrowhead/steel/AH = new/obj/item/stack/arrowhead/steel(loc)
+										AH.amount = tamt*3
+									if ("bronze")
+										var/obj/item/stack/arrowhead/bronze/AH = new/obj/item/stack/arrowhead/bronze(loc)
+										AH.amount = tamt*3
+								to_chat(user, "You finish crafting the [ML.current_material] arrowheads.")
+								ML.current_material = null
+								ML.update_icon()
+
+							in_use = FALSE
+						else
+							in_use = FALSE
+						update_icon()
+						return
 					if ("keys")
 						return forge_mold_recipe(ML, user, H, "keys")
 // The cost column and name of a sheet metal the anvil works by hand, or null.
