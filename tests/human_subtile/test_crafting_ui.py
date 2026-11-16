@@ -123,6 +123,12 @@ def restore_crafting_projection(path, source):
             ('// A free-moving body stands on the tile under its centre and may bump a wall\n// with its edge, so the wall need only be within a tile (get_dir follows pixel\n// positions and can point past it).\n/turf/proc/start_pickaxe_mining(',
              '/turf/proc/start_pickaxe_mining('),
             ('z != H.z || get_dist(H, src) > 1 || !Adjacent(H))', 'z != H.z || src != get_step(H, get_dir(H, src)) || !Adjacent(H))'),
+            # Water quality (tests/water_quality): filling a container asks the water's germ level.
+            ('\t\t\t\t\tvar/germs = WT.water_germ_level()\n\t\t\t\t\tif (germs > 0)\n\t\t\t\t\t\tRG.reagents.add_reagent("cholera", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*(germs*0.05))\n\t\t\t\t\t\tsumex += min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*(germs*0.05)\n',
+             '\t\t\t\t\tif (WT.sickness > 0)\n\t\t\t\t\t\tRG.reagents.add_reagent("cholera", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*(WT.sickness*0.05))\n\t\t\t\t\t\tsumex += min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*(WT.sickness*0.05)\n'),
+            # Water quality (tests/water_quality): drinking asks the water's germ level.
+            ('\t\t\tH.catch_dirty_water_illness(water_germ_level()*15)\n',
+             '\t\t\tH.catch_dirty_water_illness(sickness*15)\n'),
             # Illness carriers (tests/disease_immunity/test_carriers.py): drinking from the
             # ground rolls cholera and worms through one shared proc.
             ('\t\t\tH.catch_dirty_water_illness(sickness*15)\n',

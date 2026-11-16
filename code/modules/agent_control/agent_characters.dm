@@ -588,7 +588,7 @@
 			var/kind = T.name
 			if (istype(T, /turf/floor/beach/water))
 				var/turf/floor/beach/water/W = T
-				if (W.sickness > 0)
+				if (W.water_germ_level() > 0)
 					kind = "[T.name] (unclean)"
 			var/list/best = nearest[kind]
 			if (!best || d < best["d"])
@@ -600,7 +600,7 @@
 			var/list/row = list("ref" = "turf:[T.x],[T.y],[T.z]", "name" = T.name, "type" = "[T.type]", "dx" = T.x - here.x, "dy" = T.y - here.y)
 			if (istype(T, /turf/floor/beach/water))
 				var/turf/floor/beach/water/W = T
-				row["sickness"] = W.sickness
+				row["sickness"] = W.water_germ_level()
 				if (W.salty)
 					row["salty"] = TRUE
 			if (istype(T, /turf/floor/dirt/underground) && !istype(T, /turf/floor/dirt/underground/empty))

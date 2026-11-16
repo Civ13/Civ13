@@ -206,12 +206,18 @@
 					to_chat(HM, "<span class='notice'>You sense a strong, nasty smell coming from [src].</span>")
 					HM.adjust_mood(-(1.5), "a nasty smell nearby")
 	var/fleas_found = FALSE
+	var/typhus_fleas = FALSE
 	for (var/obj/item/clothing/C in list(wear_suit,w_uniform,shoes))
 		if (C)
 			C.gain_dirt(C.blood_DNA ? 0.02 : 0.015)
-			if (C.dirtyness > 90)
+			// Filthy clothes only slowly pick up fleas, and few of them carry typhus.
+			if (!C.fleas && C.dirtyness > 90 && prob(FLEA_INFEST_CHANCE))
 				C.fleas = TRUE
+				C.flea_typhus = prob(FLEA_TYPHUS_SHARE)
+			if (C.fleas)
 				fleas_found = TRUE
+				if (C.flea_typhus)
+					typhus_fleas = TRUE
 	if (fleas_found)
 		var/image/fleas = image('icons/effects/effects.dmi', "lice_overlay")
 		img_nasties.overlays += fleas
@@ -219,8 +225,8 @@
 			to_chat(src, SPAN_WARNING("You feel something biting you. Your filthy clothes are crawling with fleas! Wash them, or you may catch typhus."))
 		else if (prob(1))
 			to_chat(src, SPAN_WARNING(pick("You scratch at a flea bite.", "Your skin itches and crawls.", "Something bites you under your clothes.")))
-		// 0.2% a second, scaled like every other way of catching an illness.
-		var/typhus_chance = 0.2 * infection_chance_scale("typhus")
+		// Only fleas that carry it spread typhus, scaled like every other way of catching an illness.
+		var/typhus_chance = typhus_fleas ? FLEA_TYPHUS_RATE * infection_chance_scale("typhus") : 0
 		if (typhus_chance > 0 && prob(typhus_chance))
 			catch_disease("typhus")
 	else if (has_fleas)
@@ -248,6 +254,11 @@
 /mob/living/human/proc/set_hygiene(var/amount)
 	if(amount >= 0)
 		hygiene = min(HYGIENE_LEVEL_CLEAN, amount)
+
+// Washing only ever makes someone cleaner.
+/mob/living/human/proc/raise_hygiene(amount)
+	if (amount > hygiene)
+		set_hygiene(amount)
 
 // Mood changes use the recipient's actual sleep state, including off-tick events.
 // Discard losses immediately; waking never replays them. Resting alone is awake.

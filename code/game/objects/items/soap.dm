@@ -70,7 +70,6 @@
 				else
 					user.visible_message("<span class='notice'>[user] start to wash [src.name] with \the [W.name]</span>", "<span class = 'notice'>You start to wash [src.name] with \the [W.name].</span>")
 				S.washing = TRUE
-				src.hygiene = HYGIENE_LEVEL_CLEAN //Very clean
 				if(do_after(user, 40))
 					src.hygiene = HYGIENE_LEVEL_CLEAN //Very clean
 					S.washing = FALSE

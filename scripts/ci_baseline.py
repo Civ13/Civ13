@@ -1457,6 +1457,15 @@ SUITES = {
     'agent_ci_digest': {'files': ('tests/agent_ci_digest/test_ci_digest.py',),
         'paths': ('tests/agent_ci_digest/', 'scripts/ci_digest.py'), 'shared_paths': (
             '.github/workflows/',)},
+    # Water quality by kind, washing fixes and flea typhus; source checks only.
+    'water_quality': {'files': ('tests/water_quality/test_water_quality.py',),
+        'paths': ('tests/water_quality/', 'code/modules/1713/water_quality.dm'), 'shared_paths': (
+            'code/game/mob/living/carbon/human/human_needs.dm',
+            'code/game/objects/items/soap.dm',
+            'code/game/objects/structures/watercloset.dm',
+            'code/game/turfs/floor_attackby.dm',
+            'code/modules/1713/factory_pipes.dm',
+            'code/__defines/mobs.dm')},
     # Reviewed stdlib-only well-odor source projection; no BYOND runtime.
     'well_smell': {'files': ('tests/well_smell/test_well_smell.py',),
         'paths': ('tests/well_smell/',), 'shared_paths': (

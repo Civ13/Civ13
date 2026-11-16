@@ -66,6 +66,12 @@
 #define HYGIENE_LEVEL_NORMAL 200
 #define HYGIENE_LEVEL_DIRTY 75
 #define HYGIENE_FACTOR 0.025
+// Percent a second that a worn garment over 90 dirt picks up fleas (about an hour on average).
+#define FLEA_INFEST_CHANCE 0.03
+// Percent of flea infestations that carry typhus.
+#define FLEA_TYPHUS_SHARE 10
+// Percent a second that typhus-carrying fleas pass it on (about one in three over an hour).
+#define FLEA_TYPHUS_RATE 0.01
 // Mood tiers. Every reader (stats, movement, HUD icon, messages, examine, Help)
 // goes through mood_tier(), and each boundary belongs to the higher tier.
 #define MOOD_TIER_HORRIBLE 1 // below 20

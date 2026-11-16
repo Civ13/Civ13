@@ -16,6 +16,7 @@
 
 	var/dirtyness = 0
 	var/fleas = FALSE
+	var/flea_typhus = FALSE // whether these fleas carry typhus; rolled when they arrive
 
 	var/ripable = FALSE
 	var/rag_amount = 1
