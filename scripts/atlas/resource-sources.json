@@ -112,7 +112,8 @@
     "code/modules/reagents/reagent_containers/pill_bottle.dm",
     "code/modules/reagents/reagent_containers/spray.dm",
     "code/modules/reagents/reagent_containers/syringe.dm",
-    "code/modules/1713/stone_crushing.dm"
+    "code/modules/1713/stone_crushing.dm",
+    "code/modules/1713/tatara.dm"
   ],
   "plant_harvest_mappings": [
     {
@@ -13877,6 +13878,76 @@
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
+      "name": "Pan iron sand",
+      "file": "code/modules/1713/resource_sifting.dm",
+      "line": 30,
+      "source_commit": "0ae9f9d74c00a76322d7d4434cf3c09c5a657a1a",
+      "inputs": [
+        "/turf/floor/dirt",
+        "/turf/floor/beach/sand"
+      ],
+      "outputs": [
+        "/obj/item/stack/ore/iron_sand"
+      ],
+      "tools": [
+        "/obj/item/kitchen/wood_bowl"
+      ],
+      "steps": [
+        "Stand on uncovered non-mineable dirt or sand beside shallow fresh water. Hold a wooden bowl and use Pan river sediment.",
+        "Choose Iron sand and remain there for two uninterrupted minutes: the pan leaves 3 iron sand (5 on Asia)."
+      ],
+      "conditions": "Stand beside shallow natural fresh water. It never runs out.",
+      "map_notes": "Asia yields 2 more per pan.",
+      "era": "Map ordinal age must be at least 1.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Sift iron sand from beach sand",
+      "file": "code/modules/1713/resource_sifting.dm",
+      "line": 20,
+      "source_commit": "0ae9f9d74c00a76322d7d4434cf3c09c5a657a1a",
+      "inputs": [
+        "/turf/floor/beach/sand"
+      ],
+      "outputs": [
+        "/obj/item/stack/ore/iron_sand"
+      ],
+      "tools": [
+        "/obj/item/weapon/resource_sieve"
+      ],
+      "steps": [
+        "Stand on uncovered beach sand. Choose Iron sand in the soil-sifting menu.",
+        "Complete the three-minute hand action or two-minute sieve action: it leaves 2 iron sand (4 on Asia)."
+      ],
+      "conditions": "Beach sand only. It never runs out.",
+      "map_notes": "Asia yields 2 more per sift.",
+      "era": "Map ordinal age must be at least 1.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Smelt iron sand in a bloomery",
+      "file": "code/modules/1713/tatara.dm",
+      "line": 30,
+      "source_commit": "0ae9f9d74c00a76322d7d4434cf3c09c5a657a1a",
+      "inputs": [
+        "/obj/item/stack/ore/iron_sand"
+      ],
+      "outputs": [
+        "/obj/item/stack/ore/iron_sponge"
+      ],
+      "tools": [
+        "/obj/structure/furnace"
+      ],
+      "steps": [
+        "Pour iron sand into a fuelled bloomery and light it.",
+        "Each finished smelt turns every 2 iron sand into 1 sponge iron; an odd grain stays in the bloomery for the next smelt."
+      ],
+      "conditions": "Bloomery only; the blast furnace refuses iron sand.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "The bloomery needs the Iron Smithing research.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
       "name": "Powered soil sifter",
       "file": "code/modules/1713/automated_sifting.dm",
       "line": 2,
@@ -17148,9 +17219,10 @@
         "/obj/item/stack/ore/coal",
         "/obj/item/stack/ore/saltpeter",
         "/obj/item/stack/ore/sulphur",
-        "/obj/item/stack/ore/lead"
+        "/obj/item/stack/ore/lead",
+        "/obj/item/stack/ore/iron_sand"
       ],
-      "gate": "uncovered non-mineable dirt/sand; 1 unit per 1800 ticks hand or 1200 sieve; iron age>=1; coal/saltpeter/sulphur/lead age>=2"
+      "gate": "uncovered non-mineable dirt/sand; 1 unit per 1800 ticks hand or 1200 sieve; iron age>=1; coal/saltpeter/sulphur/lead age>=2; iron sand on beach sand age>=1 (2 per sift, +2 on Asia)"
     },
     {
       "name": "River panning",
@@ -17159,9 +17231,10 @@
         "/obj/item/stack/ore/copper",
         "/obj/item/stack/ore/tin",
         "/obj/item/stack/ore/silver",
-        "/obj/item/stack/ore/gold"
+        "/obj/item/stack/ore/gold",
+        "/obj/item/stack/ore/iron_sand"
       ],
-      "gate": "held wooden bowl; adjacent shallow freshwater; eligible dirt/sand; 1 unit/1200 ticks"
+      "gate": "held wooden bowl; adjacent shallow freshwater; eligible dirt/sand; 1 unit/1200 ticks; iron sand age>=1 (3 per pan, +2 on Asia)"
     },
     {
       "name": "Stone crushing",

@@ -17,6 +17,8 @@
 	// (mountain_seams.dm), and a tunnel dug down opens a cave level
 	// (dug_underground.dm).
 	mountain_seams = TRUE
+	// Black iron sand on its coasts and rivers (tatara.dm).
+	iron_sand_rich = TRUE
 	dig_down_underground = TRUE
 
 /obj/map_metadata/nomads/asia/season_transition_complete(var/epoch)

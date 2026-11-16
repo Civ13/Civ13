@@ -158,6 +158,8 @@ listing was retained. These limits are not waived by a green workflow.
 
 `create_charcoal_clamp.py` owns `icons/obj/charcoal_clamp.dmi`: the empty charcoal clamp hearth, the hearth stacked with logs and the earth-covered clamp smouldering (four-frame smoke loop). `--check` verifies the committed sheet, `--preview <png>` writes a review sheet on grass and dark ground, `--gif <path>` writes the burning loop.
 
+`create_tatara.py` owns `icons/obj/tatara.dmi`: iron sand, kera and tamahagane piles (four sizes each), the tatara clay furnace (empty, charged, four-frame firing, spent) and the kanna-nagashi washing channel (empty, three-frame flow). `--check` verifies the committed sheet, `--preview <png>` writes a review sheet on grass and dirt, `--gif <path>` writes the firing loop.
+
 `create_glass_stone.py` owns `icons/obj/glass_stone_machines.dmi`: the glassblowing bench and the mason's saw with their working loops. `--check` verifies the committed sheet, `--preview <png>` writes a review sheet.
 
 `create_lifting.py` owns `icons/obj/lifting_machines.dmi`: the shear legs and the treadwheel crane with their hauling loops. `--check` verifies the committed sheet, `--preview <png>` writes a review sheet.
