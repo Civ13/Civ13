@@ -67,7 +67,7 @@ var/building_compiled_maxz = 0
 	// Lighting renderers belong to their turf; they are not falling cargo.
 	if (istype(A, /atom/movable/lighting_overlay) || istype(A, /atom/movable/lighting_fullbright))
 		return
-	if (!A || !A.loc || istype(A, /obj/covers) || istype(A, /obj/roof) || isobserver(A) || (locate(/obj/covers) in src) || (locate(/obj/structure/multiz/ladder) in src))
+	if (!A || !A.loc || istype(A, /obj/covers) || istype(A, /obj/roof) || isobserver(A) || (locate(/obj/covers) in src) || (locate(/obj/structure/multiz/ladder) in src) || trapdoor_shut_at(src))
 		return
 	if (istype(A, /obj/effect) || istype(A, /obj/item/projectile))
 		return

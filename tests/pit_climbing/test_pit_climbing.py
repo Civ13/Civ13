@@ -112,7 +112,7 @@ class HoleLadder(unittest.TestCase):
         self.assertLess(dme.index('multiz\\pit_climbing.dm'), dme.index('multiz\\hole_ladder.dm'))
     def test_fitted_ladder_stops_falls_and_is_saved(self):
         crossed = ladder_proc('/obj/structure/multiz/ladder/ww2/tunneltop/pit/Crossed(atom/movable/A)')
-        self.assertLess(crossed.index('if (has_ladder)'), crossed.index('return ..()'))
+        self.assertLess(crossed.index('if (has_ladder || trapdoor_shut_at(loc))'), crossed.index('return ..()'))
         self.assertIn('. |= list("has_ladder")', LADDER)
     def test_fitting_rechecks_after_wait_and_pays_once(self):
         fit = ladder_proc('/obj/structure/multiz/ladder/ww2/tunneltop/pit/proc/fit_ladder(obj/item/weapon/hole_ladder/ladder, mob/user)')
