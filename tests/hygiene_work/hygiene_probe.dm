@@ -64,3 +64,30 @@ var/hw_runtime_error = FALSE
 	hw_check(!H.dirty_hands, "gloves keep the hands clean")
 	H.gloves = null
 	hw_check(HYGIENE_FACTOR == 0.015, "idle dirt is slower (0.015 a second)")
+
+	// Freshly bathed: once on reaching 200 from below, not again soon.
+	H.hygiene = 150
+	var/mood_before = H.mood
+	H.raise_hygiene(200)
+	hw_check(H.hygiene == 200 && H.mood == mood_before + 3, "a wash to 200 gives freshly bathed ([H.mood - mood_before])")
+	H.hygiene = 150
+	mood_before = H.mood
+	H.raise_hygiene(200)
+	hw_check(H.mood == mood_before, "freshly bathed waits twenty minutes")
+
+	// Tubs hold their own water on Persistence maps.
+	map.persistence = TRUE
+	var/obj/structure/shower/bathtub/wooden/tub = new(locate(6, 3, 1))
+	tub.attack_hand(H)
+	hw_check(!tub.on, "a dry tub will not run")
+	var/obj/item/weapon/reagent_containers/glass/bucket/B = new(locate(6, 2, 1))
+	B.reagents.add_reagent("water", 150)
+	hw_check(tub.attackby(B, H) && tub.water_store == 100, "a bucket fills the tub to its tank")
+	tub.attack_hand(H)
+	hw_check(tub.on && tub.water_store == 0, "running the tub takes a tubful")
+	var/obj/structure/shower/bathtub/steel/steel_tub = new(locate(1, 3, 1))
+	hw_check(steel_tub.water_per_use == 80, "a steel tub takes less water")
+	map.persistence = FALSE
+	var/obj/structure/shower/bathtub/wooden/round_tub = new(locate(1, 1, 1))
+	round_tub.attack_hand(H)
+	hw_check(round_tub.on, "tubs run free on round maps")

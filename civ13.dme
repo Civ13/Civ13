@@ -1006,6 +1006,7 @@
 #include "code\modules\1713\fishing_grounds.dm"
 #include "code\modules\1713\water_quality.dm"
 #include "code\modules\1713\hygiene_work.dm"
+#include "code\modules\1713\bathing.dm"
 #include "code\modules\1713\fish_shoals.dm"
 #include "code\modules\1713\fish_signs.dm"
 #include "code\modules\1713\ice_fishing.dm"

@@ -113,3 +113,22 @@
 #undef DIRTY_HANDS_CHOLERA_CHANCE
 #undef HYGIENE_SWEAT
 #undef HYGIENE_SWEAT_HEAT
+
+// ---- the HUD ----------------------------------------------------------------
+// A grimy hand on the hunger icon while the hands are dirty
+// (icons/effects/dirty_hands.dmi, tests/sprites/create_wash_places.py).
+
+var/global/image/dirty_hands_badge = image('icons/effects/dirty_hands.dmi', "dirty_hands")
+/obj/screen/nutrition/var/tmp/hands_badge_shown = FALSE
+
+/obj/screen/nutrition/update_icon()
+	. = ..()
+	var/mob/living/human/H = parentmob
+	var/show = istype(H) && H.dirty_hands && !H.gloves
+	if (show == hands_badge_shown)
+		return
+	hands_badge_shown = show
+	if (show)
+		overlays += dirty_hands_badge
+	else
+		overlays -= dirty_hands_badge
