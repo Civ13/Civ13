@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { Data } from '../types';
-import { list, text } from './common';
+import { list, str } from './common';
 import { Pill, type Tone } from './kit';
 
 // One vocabulary for both research modes. Book research sends `state`; the
@@ -18,7 +18,7 @@ const shortLabels: Record<NodeState, string> = { known: 'Known', study: 'Study',
 export const stateTone = (state: unknown): Tone => state === 'known' ? 'good' : state === 'study' ? 'info' : state === 'ready' ? 'ready' : state === 'progress' ? 'progress' : 'muted';
 export function StateBadge({ node, long = false }: { node: Data; long?: boolean }) {
   const state = nodeState(node);
-  return <Pill tone={stateTone(state)}>{long ? text(node.state_label ?? node.status_text ?? shortLabels[state]) : shortLabels[state]}</Pill>;
+  return <Pill tone={stateTone(state)}>{long ? str(node.state_label ?? node.status_text ?? shortLabels[state]) : shortLabels[state]}</Pill>;
 }
 export function minutes(value: unknown): string {
   const n = Number(value) || 0;
@@ -35,7 +35,7 @@ export function FieldWork({ rows }: { rows: unknown }) {
   if (!items.length) return null;
   return <><h3>Field work</h3><p className="rs-dim">Optional. Someone who has done the work stands at the bench and it is written into the book.</p>
     <ul className="rs-checks">{items.map((row, i) => <li key={i} className={row.done ? 'rs-ok' : 'rs-dim'}>
-      <span aria-hidden="true">{row.done ? '✓' : '○'}</span> {text(row.label)}: {row.percent}% of the work
+      <span aria-hidden="true">{row.done ? '✓' : '○'}</span> {str(row.label)}: {row.percent}% of the work
       <span className="rs-dim"> ({row.done ? 'in the book' : `you have ${row.have} of ${row.needed}`})</span>
     </li>)}</ul></>;
 }
@@ -44,7 +44,7 @@ export function Checks({ rows }: { rows: unknown }) {
   const items = list(rows);
   if (!items.length) return null;
   return <ul className="rs-checks">{items.map((row, i) => <li key={i} className={row.ok ? 'rs-ok' : 'rs-missing'}>
-    <span aria-hidden="true">{row.ok ? '✓' : '✗'}</span> {text(row.label)}<span className="rs-sr"> ({row.ok ? 'met' : 'not met'})</span>
+    <span aria-hidden="true">{row.ok ? '✓' : '✗'}</span> {str(row.label)}<span className="rs-sr"> ({row.ok ? 'met' : 'not met'})</span>
   </li>)}</ul>;
 }
 // Long recipe lists stay short until asked for.
@@ -53,13 +53,13 @@ export function RecipeTags({ names, limit = 18 }: { names: unknown; limit?: numb
   const [open, setOpen] = useState(false);
   if (!all.length) return <span className="rs-dim">Nothing yet</span>;
   const shown = open ? all : all.slice(0, limit);
-  return <>{shown.map((name, i) => <span className="tag" key={i}>{text(name)}</span>)}
+  return <>{shown.map((name, i) => <span className="tag" key={i}>{str(name)}</span>)}
     {all.length > limit && <button type="button" className="rs-link" onClick={() => setOpen(!open)}>{open ? 'Show fewer' : `and ${all.length - limit} more`}</button>}</>;
 }
 export function matches(query: string, ...fields: unknown[]): boolean {
   const words = query.toLowerCase().split(/\s+/).filter(Boolean);
   if (!words.length) return true;
-  const hay = fields.flat(2).map(field => text(field).toLowerCase()).join('\n');
+  const hay = fields.flat(2).map(field => str(field).toLowerCase()).join('\n');
   return words.every(word => hay.includes(word));
 }
 export function FilterChips<T extends string>({ options, value, counts, onChange }: {

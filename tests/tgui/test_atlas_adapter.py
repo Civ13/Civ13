@@ -437,7 +437,7 @@ class AtlasFactsContract(unittest.TestCase):
   self.assertIn('row["variant_count"] = members.len',source)
   self.assertIn('detail["family_variants"] = family_variants(reference, viewer, siblings, selected["id"], catalog, known)',source)
   self.assertIn('common &= splittext(name, " ")',source)
-  self.assertIn("' versions: ' + text(row.ways)",(ROOT/'tgui/src/interfaces/CraftingAtlas.tsx').read_text())
+  self.assertIn("' versions: ' + str(row.ways)",(ROOT/'tgui/src/interfaces/CraftingAtlas.tsx').read_text())
   # The catalog really has such repeats: the hatchet is made nine ways but in three distinct manners.
   recipes=[recipe for recipe in json.loads((ROOT/'UI/crafting-atlas.json').read_text())['recipes'] if any(product['id']=='/obj/item/weapon/material/hatchet' for product in recipe['outputs'])]
   shapes={(recipe['kind'],recipe['era_label'],tuple(product['id'] for product in recipe['outputs'])) for recipe in recipes}

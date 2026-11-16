@@ -71,6 +71,14 @@ separate authorized acceptance.
 NanoUI owns windows, authorization, processing and cleanup. Modern actions go
 through a UI-datum ref, window id and generation token; the backend allowlists
 one action and its payload keys and rechecks ownership/status before dispatch.
+Server text may arrive entity encoded. `updateState()` decodes every display
+string in a snapshot once (`decodeData()` in `src/state.ts`), so a screen shows
+a field as it is and never calls a decoder. Fields named `id`, `key` or ending
+in `_id` are left untouched because they go back to the server. The document
+windows listed in `documentTemplates` (book, paper, Notes, flavor, photo) get
+their snapshot exactly as sent and validate it themselves. Tests that render a
+screen directly import `render` from `src/testing.tsx`, which takes the same step.
+
 A request is one declared action with an optional `value` and the extra fields
 the owner names in `ui_action_fields()`; text and numbers arrive typed. An owner
 that defines `ui_act(action, params, user, ui)` handles it there and needs no

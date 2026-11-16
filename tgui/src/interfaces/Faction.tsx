@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Section, NoticeBox } from 'tgui-core/components';
 import type { ScreenProps } from '../types';
-import { Action, list, text } from './common';
+import { Action, list, str } from './common';
 export function lineCells(x0: number, y0: number, x1: number, y1: number): string[] {
   const cells: string[] = [];
   const dx = Math.abs(x1 - x0), dy = Math.abs(y1 - y0), sx = x0 < x1 ? 1 : -1, sy = y0 < y1 ? 1 : -1;
@@ -69,9 +69,9 @@ export function Faction(ui: ScreenProps) {
   };
   const locked = { ...ui, interactive: ui.interactive && !busy && !stroke.current };
   return <>
-    {founding && <Section title="Found a new faction"><p><strong>{text(data.name) || '(no name chosen yet)'}</strong> <Action ui={locked} action="set_name">Choose a name...</Action></p>
-      <p>Both words are optional and shown in the server's Faction List.</p><p>Motto: {text(data.motto) || '(none)'} <Action ui={locked} action="set_motto">Set motto...</Action></p>
-      <p>Flavour text: {text(data.flavour) || '(none)'} <Action ui={locked} action="set_flavour">Set flavour text...</Action></p></Section>}
+    {founding && <Section title="Found a new faction"><p><strong>{str(data.name) || '(no name chosen yet)'}</strong> <Action ui={locked} action="set_name">Choose a name...</Action></p>
+      <p>Both words are optional and shown in the server's Faction List.</p><p>Motto: {str(data.motto) || '(none)'} <Action ui={locked} action="set_motto">Set motto...</Action></p>
+      <p>Flavour text: {str(data.flavour) || '(none)'} <Action ui={locked} action="set_flavour">Set flavour text...</Action></p></Section>}
     <Section title={founding ? "Draw your faction's symbol" : "Design your faction's symbol"}>
       <p>32x32 pixels, shown on your faction's banners.{founding && ' Your faction colors are taken from this drawing.'}</p>
       <div className="faction-tools"><span className="swatch" style={{ backgroundColor: data.color }} /><Action ui={locked} action="pick_color">Pick color</Action>

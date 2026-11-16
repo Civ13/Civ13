@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Button, Section, NoticeBox } from 'tgui-core/components';
 import type { Data, ScreenProps } from '../types';
-import { Action, list, text } from './common';
+import { Action, list, str } from './common';
 import { Bar, Checks, FieldWork, FilterChips, RecipeTags, StateBadge, matches, minutes, nodeState, stateRank } from './researchShared';
 export function lockedAncestors(nodes: Data[], id: string): Set<string> {
   const byId = new Map(nodes.map(node => [String(node.id), node]));
@@ -29,7 +29,7 @@ const bookFilters: [FilterKey, string][] = [['all', 'All'], ['study', 'Ready to 
 const factionFilters: [FilterKey, string][] = [['all', 'All'], ['ready', 'Available'], ['progress', 'In progress'], ['known', 'Done'], ['locked', 'Locked']];
 function costLine(node: Data, book: boolean): string {
   if (node.mode_text === 'Book only') return 'Book only';
-  if (book && node.state_label) return text(node.state_label);
+  if (book && node.state_label) return str(node.state_label);
   return `${node.cost_ticks} ticks${node.mode_text === 'Prototype' ? ' + prototype' : ''}`;
 }
 
@@ -38,8 +38,8 @@ function BenchSummary({ ui }: { ui: ScreenProps }) {
   return <Section title="Research bench"><p>Bench tier: {data.bench_tier} / {data.max_tier}</p>
     {!!data.tier_upgrade_cost && <p>Upgrade progress: {data.tier_progress}/{data.tier_upgrade_cost} silver in coins fed</p>}
     {!!data.era_capped && <NoticeBox>Capped at tier {data.era_max_tier} until your civilization reaches the next era.</NoticeBox>}
-    <p>Owned by: {text(data.bench_faction) || 'Unclaimed'}</p>
-    {!!data.has_faction && <><p>Viewing as: {text(data.viewer_role)} of the {text(data.viewer_faction)}</p><p>Your faction's benches: {data.viewer_bench_count} / {data.viewer_cap}</p></>}
+    <p>Owned by: {str(data.bench_faction) || 'Unclaimed'}</p>
+    {!!data.has_faction && <><p>Viewing as: {str(data.viewer_role)} of the {str(data.viewer_faction)}</p><p>Your faction's benches: {data.viewer_bench_count} / {data.viewer_cap}</p></>}
     {data.can_claim ? <Action ui={ui} action="claim">Claim this bench for your faction</Action> : !!data.bench_faction && !data.owns_bench && <NoticeBox>This bench belongs to another faction. You can only observe it.</NoticeBox>}
   </Section>;
 }
@@ -55,23 +55,23 @@ function BookShelf({ ui, open }: { ui: ScreenProps; open: (id: string) => void }
       {!!data.era_capped && <> - the highest tier this era allows</>}</p>
     {!books.length && <NoticeBox>None. Place a book on the bench; research done here is written into it.</NoticeBox>}
     <div className="rs-books">{books.map(book => <div key={String(book.idx)} className={`rs-book ${book.is_target ? 'rs-book-target' : ''}`}>
-      <div className="rs-book-head"><strong>{text(book.name)}</strong>
+      <div className="rs-book-head"><strong>{str(book.name)}</strong>
         <span className="rs-dim">{book.is_target ? 'Research is written here' : 'Second book'}</span>
         <span className="rs-book-actions">{!book.is_target && !!data.can_swap && <Action ui={ui} action="swap_books">Write research here</Action>}
           <Action ui={ui} action="take_book" value={Number(book.idx)}>Take</Action></span></div>
       {list(book.chapters).length ? <div className="rs-chapters">{list(book.chapters).map(chapter =>
         <button type="button" key={chapter.id} className={`rs-chapter rs-${chapter.state}`} title={chapter.state === 'known' ? 'You know this chapter' : chapter.state === 'study' ? 'You can study this chapter now' : 'You need its groundwork first'} onClick={() => open(String(chapter.id))}>
-          {text(chapter.name)}{chapter.state === 'study' && <em> - study</em>}
+          {str(chapter.name)}{chapter.state === 'study' && <em> - study</em>}
         </button>)}</div> : <p className="rs-dim">No finished chapters yet.</p>}
       {list(book.unfinished).map(item => <div key={item.id} className="rs-unfinished">
-        <button type="button" className="rs-link" onClick={() => open(String(item.id))}>{text(item.name)}</button> <span className="rs-dim">{item.percent}% written</span><Bar value={item.percent} label={`${text(item.name)} progress`} /></div>)}
-      {Number(book.copy_missing) > 0 && <Action ui={ui} action="copy_all" value={Number(book.idx)}>Copy {book.copy_missing === 1 ? 'the 1 chapter' : `all ${book.copy_missing} chapters`} {text(book.other_name)} lacks</Action>}
+        <button type="button" className="rs-link" onClick={() => open(String(item.id))}>{str(item.name)}</button> <span className="rs-dim">{item.percent}% written</span><Bar value={item.percent} label={`${str(item.name)} progress`} /></div>)}
+      {Number(book.copy_missing) > 0 && <Action ui={ui} action="copy_all" value={Number(book.idx)}>Copy {book.copy_missing === 1 ? 'the 1 chapter' : `all ${book.copy_missing} chapters`} {str(book.other_name)} lacks</Action>}
     </div>)}</div>
     {!!data.book_room && !!books.length && <p className="rs-dim">There's room for one more book. With two, chapters can be copied between them.</p>}
-    <p className="rs-you"><strong>You have:</strong> {viewer.tool ? <span className="tag">{text(viewer.tool)} in hand</span> : <span className="tag rs-warn">no pencil, pen or slate in hand</span>}
+    <p className="rs-you"><strong>You have:</strong> {viewer.tool ? <span className="tag">{str(viewer.tool)} in hand</span> : <span className="tag rs-warn">no pencil, pen or slate in hand</span>}
       <span className={`tag ${viewer.sheets ? '' : 'rs-warn'}`}>{Number(viewer.sheets) || 0} blank sheet{Number(viewer.sheets) === 1 ? '' : 's'}</span>
       {!!viewer.desk && <span className="tag">writing desk beside you</span>}
-      {list(viewer.skills).filter(skill => Number(skill.level) > 0).map((skill, i) => <span className="tag" key={i}>{text(skill.name)} {skill.level}</span>)}</p>
+      {list(viewer.skills).filter(skill => Number(skill.level) > 0).map((skill, i) => <span className="tag" key={i}>{str(skill.name)} {skill.level}</span>)}</p>
   </Section>;
 }
 
@@ -80,7 +80,7 @@ function Assigned({ ui, open }: { ui: ScreenProps; open: (id: string) => void })
   const assigned: Data | null = data.assigned ?? null;
   const queue = list(data.queue);
   if (!assigned && !queue.length) return null;
-  return <Section title={assigned ? `Currently researching: ${text(assigned.name)}` : 'Research queue'}>
+  return <Section title={assigned ? `Currently researching: ${str(assigned.name)}` : 'Research queue'}>
     {assigned && (assigned.done ? <>
       <p className="rs-good">The chapter is finished. Study it from the book to learn it.</p>
       {!!assigned.can_study && <Action ui={ui} action="study" value={assigned.id}>Study this chapter</Action>}
@@ -90,12 +90,12 @@ function Assigned({ ui, open }: { ui: ScreenProps; open: (id: string) => void })
         {assigned.working ? <span className="rs-good">Work is going on{assigned.eta_minutes ? `: about ${minutes(assigned.eta_minutes)} left at this pace` : ''}.</span> : <span className="rs-bad">Nobody is working on it right now.</span>}</p>
       <Checks rows={assigned.checks} />
       <FieldWork rows={assigned.field_work} />
-      <p className={Number(assigned.supply) >= 1 ? 'rs-dim' : 'rs-bad'}>{text(assigned.supply_text)}: {assigned.supply}/{assigned.supply_cap}{Number(assigned.supply) < 1 && ' - research runs at half speed until some are used on the bench'}</p>
+      <p className={Number(assigned.supply) >= 1 ? 'rs-dim' : 'rs-bad'}>{str(assigned.supply_text)}: {assigned.supply}/{assigned.supply_cap}{Number(assigned.supply) < 1 && ' - research runs at half speed until some are used on the bench'}</p>
       {!!assigned.library_bonus && <p className="rs-dim">Library nearby: research is {assigned.library_bonus}% faster.</p>}
       {!!assigned.can_rush && <p className={assigned.rushed ? 'rs-bad' : 'rs-dim'}>{assigned.rushed ? 'Rushed: half again as fast, but accidents can hurt the researcher and undo work.' : 'Careful work: no accidents.'}</p>}
       <Button onClick={() => open(String(assigned.id))}>Details</Button><Action ui={ui} action="stop_research">Stop researching</Action>{!!assigned.can_rush && <Action ui={ui} action="toggle_rush">{assigned.rushed ? 'Work carefully' : 'Rush the work'}</Action>}
     </>)}
-    {!!queue.length && <div className="rs-queue"><strong>Queued next:</strong> {queue.map((item, i) => <span className="tag" key={item.id}>{i + 1}. <button type="button" className="rs-link" onClick={() => open(String(item.id))}>{text(item.name)}</button> <button type="button" className="rs-link" disabled={!ui.interactive} aria-label={`Remove ${text(item.name)} from the queue`} onClick={() => ui.act('unqueue', { value: item.id })}>x</button></span>)}
+    {!!queue.length && <div className="rs-queue"><strong>Queued next:</strong> {queue.map((item, i) => <span className="tag" key={item.id}>{i + 1}. <button type="button" className="rs-link" onClick={() => open(String(item.id))}>{str(item.name)}</button> <button type="button" className="rs-link" disabled={!ui.interactive} aria-label={`Remove ${str(item.name)} from the queue`} onClick={() => ui.act('unqueue', { value: item.id })}>x</button></span>)}
       <Action ui={ui} action="clear_queue">Clear queue</Action></div>}
   </Section>;
 }
@@ -168,12 +168,12 @@ export function Research(ui: ScreenProps) {
   return <>
     {book ? <BookShelf ui={ui} open={open} /> : <BenchSummary ui={ui} />}
     {!!data.owns_bench && (!!data.is_leader || !!data.is_director) && <Section title="Research staff">
-      {!!data.is_leader && <>{data.has_director ? <><Action ui={ui} action="appoint_director">Reassign {text(data.director_title)}</Action><Action ui={ui} action="set_director_title">Rename role</Action><Action ui={ui} action="dismiss_director">Dismiss {text(data.director_title)}</Action></> : <Action ui={ui} action="appoint_director">Appoint a Research Director</Action>}</>}
+      {!!data.is_leader && <>{data.has_director ? <><Action ui={ui} action="appoint_director">Reassign {str(data.director_title)}</Action><Action ui={ui} action="set_director_title">Rename role</Action><Action ui={ui} action="dismiss_director">Dismiss {str(data.director_title)}</Action></> : <Action ui={ui} action="appoint_director">Appoint a Research Director</Action>}</>}
       <Action ui={ui} action="appoint_researcher">Appoint a Researcher</Action><Action ui={ui} action="dismiss_researcher">Dismiss a Researcher</Action>
     </Section>}
     {book ? <Assigned ui={ui} open={open} /> : <>
-      {!!data.assigned_name && <Section title={`Currently researching: ${text(data.assigned_name)}`}>{data.assigned_done ? 'Completed! Open any completed tech below to write research notes or a book on it.' : text(data.assigned_status_text)}</Section>}
-      {!!list(data.queue_names).length && <Section title="Queued next">{list(data.queue_names).map((name, i) => <span className="tag" key={i}>{text(name)}</span>)}{!!data.can_queue && <Action ui={ui} action="clear_queue">Clear queue</Action>}</Section>}
+      {!!data.assigned_name && <Section title={`Currently researching: ${str(data.assigned_name)}`}>{data.assigned_done ? 'Completed! Open any completed tech below to write research notes or a book on it.' : str(data.assigned_status_text)}</Section>}
+      {!!list(data.queue_names).length && <Section title="Queued next">{list(data.queue_names).map((name, i) => <span className="tag" key={i}>{str(name)}</span>)}{!!data.can_queue && <Action ui={ui} action="clear_queue">Clear queue</Action>}</Section>}
     </>}
     <Section title="Research trees">
       <div className="rs-toolbar">
@@ -184,15 +184,15 @@ export function Research(ui: ScreenProps) {
       {view === 'tree' ? <>
         <div role="tablist">{trees.map(item => {
           const inTree = hits.filter(node => node.tree_idx === item.idx).length;
-          return <Button key={item.idx} selected={item === tree} onClick={() => setActive(Number(item.idx))}>{text(item.tree_name)}{narrowed && ` (${inTree})`}</Button>;
+          return <Button key={item.idx} selected={item === tree} onClick={() => setActive(Number(item.idx))}>{str(item.tree_name)}{narrowed && ` (${inTree})`}</Button>;
         })}</div>
         <div className="research-scroll"><div className="research-graph" ref={graph}>
           <svg className="research-lines" width={lines.width} height={lines.height} aria-hidden="true">{lines.paths.map((path, i) => <path key={i} d={path} />)}</svg>
-          {list(tree?.layers).map((layer, i) => <section key={i}><h3>{text(layer.layer_name)}</h3><div className="research-layer">{list(layer.nodes).map(node => {
+          {list(tree?.layers).map((layer, i) => <section key={i}><h3>{str(layer.layer_name)}</h3><div className="research-layer">{list(layer.nodes).map(node => {
             const state = nodeState(node);
             const percent = Number(node.progress_percent) || 0;
             return <button key={node.id} type="button" data-node={node.id} data-prereqs={node.prereq_ids} className={`research-node rs-${state} ${state === 'known' ? 'done' : state === 'locked' ? 'locked' : ''} ${ancestors.has(String(node.id)) ? 'ancestor' : ''} ${selected === String(node.id) ? 'selected' : ''} ${shown({ ...node, layer_name: layer.layer_name }) ? '' : 'muted'}`} style={{ gridColumn: Math.max(1, Number(node.grid_col) || 1) }} onClick={() => setSelected(String(node.id))}>
-              <strong>{text(node.name)}{!!node.is_era_changing && <span title="Advances the era"> ★</span>}</strong><small>{costLine(node, book)}</small>
+              <strong>{str(node.name)}{!!node.is_era_changing && <span title="Advances the era"> ★</span>}</strong><small>{costLine(node, book)}</small>
               {Number(node.queue_pos) > 0 && <small className="rs-queued">Queued #{node.queue_pos}</small>}
               {String(node.id) === assignedId && <small className="rs-queued">Being researched</small>}
               {percent > 0 && percent < 100 && <Bar value={percent} />}
@@ -201,19 +201,19 @@ export function Research(ui: ScreenProps) {
         </div></div>
       </> : <div className="rs-list">
         {!hits.length && <p className="rs-dim">Nothing matches.</p>}
-        {[...hits].sort((a, b) => stateRank(a) - stateRank(b) || Number(a.era_tier) - Number(b.era_tier) || text(a.name).localeCompare(text(b.name))).map(node => <div key={node.id} className="rs-row">
+        {[...hits].sort((a, b) => stateRank(a) - stateRank(b) || Number(a.era_tier) - Number(b.era_tier) || str(a.name).localeCompare(str(b.name))).map(node => <div key={node.id} className="rs-row">
           <button type="button" className="rs-row-main" onClick={() => open(String(node.id))}>
-            <strong>{text(node.name)}{!!node.is_era_changing && ' ★'}</strong>
-            <small>{text(node.tree_name)} - {text(node.layer_name)}{node.era_name ? ` - ${text(node.era_name)}` : ''}{node.discipline ? ` - ${text(node.discipline)}` : ''}</small>
+            <strong>{str(node.name)}{!!node.is_era_changing && ' ★'}</strong>
+            <small>{str(node.tree_name)} - {str(node.layer_name)}{node.era_name ? ` - ${str(node.era_name)}` : ''}{node.discipline ? ` - ${str(node.discipline)}` : ''}</small>
           </button>
           <StateBadge node={node} long />
           <span className="rs-row-action">{quick(node)}</span>
         </div>)}
       </div>}
     </Section>
-    {detail && <div className="modal-backdrop" onClick={() => setSelected(null)}><section role="dialog" aria-modal="true" aria-label={text(detail.name)} className="detail-modal" onClick={event => event.stopPropagation()}>
-      <Button onClick={() => setSelected(null)}>Close</Button><h2>{text(detail.name)}{!!detail.is_era_changing && ' ★'}</h2>
-      <p>{text(detail.layer_name)} - {detail.era_name ? text(detail.era_name) : `era ${detail.era_tier}`}{detail.discipline ? ` - ${text(detail.discipline)}` : ''} - {text(detail.mode_text)}{!!detail.is_era_changing && ' - advances the era'}</p>
+    {detail && <div className="modal-backdrop" onClick={() => setSelected(null)}><section role="dialog" aria-modal="true" aria-label={str(detail.name)} className="detail-modal" onClick={event => event.stopPropagation()}>
+      <Button onClick={() => setSelected(null)}>Close</Button><h2>{str(detail.name)}{!!detail.is_era_changing && ' ★'}</h2>
+      <p>{str(detail.layer_name)} - {detail.era_name ? str(detail.era_name) : `era ${detail.era_tier}`}{detail.discipline ? ` - ${str(detail.discipline)}` : ''} - {str(detail.mode_text)}{!!detail.is_era_changing && ' - advances the era'}</p>
       {book ? <>
         <p><StateBadge node={detail} long /></p>
         <div className="rs-actions">
@@ -228,22 +228,22 @@ export function Research(ui: ScreenProps) {
         {nodeState(detail) === 'progress' && <><Bar value={detail.progress_percent} label="Research progress" /><p className="rs-dim">{detail.progress_percent}% written into the research book.</p></>}
         <h3>Groundwork</h3>
         {list(detail.groundwork).length ? <ul className="rs-checks">{list(detail.groundwork).map(item => <li key={item.id} className={item.known ? 'rs-ok' : 'rs-missing'}>
-          <span aria-hidden="true">{item.known ? '✓' : '✗'}</span> <button type="button" className="rs-link" onClick={() => open(String(item.id))}>{text(item.name)}</button> <span className="rs-dim">{item.known ? 'known' : 'not known yet'}</span></li>)}</ul> : <p className="rs-dim">None. Anyone can study or research this.</p>}
+          <span aria-hidden="true">{item.known ? '✓' : '✗'}</span> <button type="button" className="rs-link" onClick={() => open(String(item.id))}>{str(item.name)}</button> <span className="rs-dim">{item.known ? 'known' : 'not known yet'}</span></li>)}</ul> : <p className="rs-dim">None. Anyone can study or research this.</p>}
         {nodeState(detail) !== 'known' && detail.mode_text !== 'Book only' && <><h3>To research it at this bench</h3>
           <Checks rows={detail.research_needs} />
           <FieldWork rows={detail.field_work} />
           <p className="rs-dim">{detail.cost_ticks} points of work, about {minutes(detail.research_minutes)} at your pace with supplies. Studying a finished chapter takes about {minutes(detail.study_minutes)}.</p></>}
       </> : <>
-        <h3>Status</h3><p>{text(detail.status_text)} - {text(detail.detail)}</p>
-        {detail.mode_text !== 'Book only' && <><Bar value={detail.progress_percent} label="Research progress" />{detail.mode_text === 'Prototype' && <p>Also requires a working {text(detail.prototype_name) || 'prototype'} fed to the bench - the full study alone will not finish it.</p>}</>}
-        <p>Minimum bench tier: {detail.min_bench_tier}</p><h3>Requires</h3><p>{text(detail.prereq_names)}</p>
+        <h3>Status</h3><p>{str(detail.status_text)} - {str(detail.detail)}</p>
+        {detail.mode_text !== 'Book only' && <><Bar value={detail.progress_percent} label="Research progress" />{detail.mode_text === 'Prototype' && <p>Also requires a working {str(detail.prototype_name) || 'prototype'} fed to the bench - the full study alone will not finish it.</p>}</>}
+        <p>Minimum bench tier: {detail.min_bench_tier}</p><h3>Requires</h3><p>{str(detail.prereq_names)}</p>
       </>}
       {(() => {
         const next = nodes.filter(node => String(node.prereq_ids ?? '').split(',').includes(String(detail.id)));
-        return !!next.length && <><h3>Leads to</h3><p>{next.map(node => <button type="button" key={node.id} className="rs-link rs-lead" onClick={() => open(String(node.id))}>{text(node.name)}</button>)}</p></>;
+        return !!next.length && <><h3>Leads to</h3><p>{next.map(node => <button type="button" key={node.id} className="rs-link rs-lead" onClick={() => open(String(node.id))}>{str(node.name)}</button>)}</p></>;
       })()}
       <h3>Unlocks {list(detail.recipe_names).length} recipes</h3>{list(detail.recipe_names).length ? <RecipeTags names={detail.recipe_names} /> : 'None yet'}
-      {!!detail.effect && <><h3>Knowing it</h3><p>{text(detail.effect)}</p></>}
+      {!!detail.effect && <><h3>Knowing it</h3><p>{str(detail.effect)}</p></>}
       {!book && <div>{!!detail.assignable && <Action ui={ui} action="assign" value={detail.id}>Assign this bench</Action>}{!!detail.can_write_notes && <Action ui={ui} action="write_notes" value={detail.id}>Write Research Notes (quick, boosts a buyer)</Action>}{!!detail.can_write_book && <Action ui={ui} action="write_book" value={detail.id}>Write Research Book (slow, completes for a buyer)</Action>}{!!detail.queueable && <Action ui={ui} action="queue" value={detail.id}>Add to research queue</Action>}</div>}
     </section></div>}
   </>;

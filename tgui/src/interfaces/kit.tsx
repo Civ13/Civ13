@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { NoticeBox, Section } from 'tgui-core/components';
 import type { Data, ScreenProps } from '../types';
-import { Action, list, text } from './common';
+import { Action, list, str } from './common';
 
 // Shared parts for Civ13 screens. Build a screen from these before writing new
 // markup or CSS; colours come from the --civ-* palette in styles.scss.
@@ -43,4 +43,4 @@ export function Row({ label, buttons, children }: { label: ReactNode; buttons?: 
   return <div className="kit-row"><dt>{label}</dt><dd>{children}</dd>{buttons ? <dd className="kit-row-buttons">{buttons}</dd> : null}</div>;
 }
 export function Card({ children }: { children: ReactNode }) { return <div className="kit-card">{children}</div>; }
-export const cell = (key: string, unit?: string) => (row: Data) => unit ? `${text(row[key])} ${text(row[unit])}` : text(row[key]);
+export const cell = (key: string, unit?: string) => (row: Data) => unit ? `${str(row[key])} ${str(row[unit])}` : str(row[key]);

@@ -1,6 +1,8 @@
 import React from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { cleanup, fireEvent, render, screen, within } from '@testing-library/react';
+import { cleanup, fireEvent, screen, within } from '@testing-library/react';
+import { render } from '../testing';
+import { decode } from '../state';
 vi.mock('tgui-core/components', () => ({
   NoticeBox: ({ children }: any) => <aside>{children}</aside>,
 }));
@@ -358,7 +360,7 @@ describe('Crafting Atlas requirement notes', () => {
       .toEqual({ facts: ['Takes about 8 s'], rest: '' });
     expect(notes('Catalysts: []; inhibitors: []; additional can_happen/process callbacks may apply.')).toEqual({ facts: [], rest: '' });
     expect(notes('Boiling water and pot/stove conditions apply. Explicit research node: pottery_storage.').rest).toBe('Boiling water and pot/stove conditions apply.');
-    expect(notes('Catalysts: [(&#39;enzyme&#39;, &#39;5&#39;)]; inhibitors: [(&#39;phosphorus&#39;, &#39;1&#39;)]; additional can_happen/process callbacks may apply.'))
+    expect(notes(decode('Catalysts: [(&#39;enzyme&#39;, &#39;5&#39;)]; inhibitors: [(&#39;phosphorus&#39;, &#39;1&#39;)]; additional can_happen/process callbacks may apply.')))
       .toEqual({ facts: ['Needs 5 enzyme in the container as a catalyst. It is not used up', 'Does not react while the container holds 1 phosphorus'], rest: '' });
     expect(notes(undefined)).toEqual({ facts: [], rest: '' });
   });
