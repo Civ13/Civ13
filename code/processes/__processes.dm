@@ -18,6 +18,7 @@ var/datum/process_list/processes = new
 	var/process/weather/weather = null
 	var/process/snowfall_ground/snowfall_ground = null
 	var/process/decal_decay/decal_decay = null
+	var/process/mouse_nests/mouse_nests = null
 	var/process/soil_recovery/soil_recovery = null
 	var/process/cleanables/cleanables = null
 	var/process/casings/casings = null
