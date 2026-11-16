@@ -16,6 +16,7 @@
 #define HOME_TIER_SPLENDID 4
 #define HOME_FLOOR_SHARE 0.5    // share of the room that must be covered
 #define HOME_MESS_ALLOWED 2     // stains and rubbish a clean room may still have
+#define HOME_TIDY_LOOSE 5       // loose things a tidy room may have on its floor
 #define HOME_SOUND_SHARE 0.5    // walls below this share of health are cracked
 #define HOME_RESTED_STAMINA 0.25 // extra stamina recovery while well rested
 #define HOME_RESTED_HUNGER 0.85  // hunger and thirst rate while well rested
@@ -32,6 +33,7 @@ var/list/home_comfort_categories = list(
 	"name" = "a named house (a sign)",
 	"wash" = "a place to wash",
 	"clean" = "a clean room",
+	"tidy" = "a tidy room (a chest or basket, and no more than 5 things on the floor)",
 	"sound" = "sound walls")
 
 /proc/home_tier_for(points)
@@ -181,6 +183,8 @@ var/list/home_comfort_categories = list(
 		var/bed = FALSE
 		var/seat = FALSE
 		var/table = FALSE
+		var/container = FALSE
+		var/loose = 0
 		for (var/turf/T in turfs)
 			if (home_floor_covered(T))
 				covered++
@@ -195,6 +199,10 @@ var/list/home_comfort_categories = list(
 					bed = TRUE
 				else if (istype(A, /obj/structure/table))
 					table = TRUE
+				if (home_is_container(A))
+					container = TRUE
+				else if (home_is_loose_thing(A))
+					loose++
 				if (home_is_light(A))
 					have["light"] = TRUE
 				if (isobj(A) && mood_is_art(A))
@@ -213,6 +221,8 @@ var/list/home_comfort_categories = list(
 			have["furniture"] = TRUE
 		if (mess <= HOME_MESS_ALLOWED && !foul)
 			have["clean"] = TRUE
+		if (container && loose <= HOME_TIDY_LOOSE)
+			have["tidy"] = TRUE
 		var/built_walls = 0
 		var/finished_walls = 0
 		var/sound = TRUE

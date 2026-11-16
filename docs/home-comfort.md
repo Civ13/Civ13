@@ -20,6 +20,7 @@ upkeep matter, not quantity.
 | A named house | a custom sign given a name, in the room or on its walls |
 | A place to wash | a wash basin or washstand holding water, a sink or tap with water, a shower, tub or public bath (`code/modules/1713/wash_places.dm`) |
 | A clean room | at most 2 stains or bits of rubbish, and no pit latrine, outhouse or dung in the room |
+| A tidy room | at least one container (a basket, jar, chest, crate, closet or other store with an item window) and no more than 5 loose things on the floor (`code/modules/storage_window/storage_incentives.dm`) |
 | Sound walls | no bordering built wall below half health |
 
 | Points | Tier | Resting mood | Resting cap | Well rested |
@@ -28,7 +29,7 @@ upkeep matter, not quantity.
 | 3 to 4 | Cosy | +4 | 75 | no |
 | 5 to 6 | Comfortable | +5 | 75 | 30 minutes |
 | 7 to 8 | Fine | +6 | 77 | 45 minutes |
-| 9 or 10 | Splendid | +8 | 79 | 60 minutes |
+| 9 to 11 | Splendid | +8 | 79 | 60 minutes |
 
 The tier (`home_comfort`) is saved with the body and counts from waking until
 the next sleep, like `sleep_comfort`; the home part replaces the plain shelter
@@ -38,5 +39,6 @@ recovery and slows hunger and thirst to 85 percent. On waking the player is told
 the tier and what the room lacks; the IC verb **Judge This Room** shows the same
 for the room they stand in. Battle maps ignore all of it (`mood_needs_mode()`).
 
-Upkeep costs comfort, not belongings: rubbish and stains drop "clean" and
+Upkeep costs comfort, not belongings: rubbish and stains drop "clean", things
+left lying about drop "tidy", and
 weathered walls (see `docs/seasonal-construction.md`) drop "sound".

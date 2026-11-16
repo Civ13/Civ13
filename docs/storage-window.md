@@ -72,3 +72,14 @@ is unchanged. For a player with the window (`closet_storage.dm`):
 
 Players without the window keep the old lid: opening tips things out, closing
 sweeps the tile.
+
+## Reasons to build storage
+
+`storage_incentives.dm` gives storage a place in the rest of the game:
+
+- **A tidy room** is a home comfort point (`docs/home-comfort.md`): a container
+  in the room and no more than 5 loose things on its floor.
+- **Fire**: a flammable container (basket, log chest, wooden crate or closet)
+  that burns away takes its flammable contents with it; metal, stone and glass
+  things drop out on the tile. Clay jars do not burn. The chance per fire tick is
+  the same 27 percent as any other burning object.
