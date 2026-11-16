@@ -50,3 +50,15 @@ for things that need a flame.
 A damaged garment with attachments is mended by a bone needle clicked onto it;
 an undamaged one stores the needle in an attached case. A candle or pipe held
 against clothes with a fire pouch always goes to the fire pouch.
+
+## Bronze and Iron kits
+
+| Item | Worn as | What it does | Research |
+| --- | --- | --- | --- |
+| pendant hone | clothes, or on a chatelaine | Use a chipped blade on it, or on the worn clothes, to hone it (25 s, +6 condition, -4 most condition, as on a flint). Not storage, so it never swallows the blade | Bronze Working |
+| strike-a-light pouch | belt, hip or clothes (counts as a belt pouch) | A fire pouch with a steel striker: 85% per strike | Iron Tools |
+| chatelaine | clothes | Three chains for a small knife, keys, a needle case, a hone or shears; all count as at hand | Iron Tools |
+
+A chipped blade clicked on worn clothes is honed when the wearer reaches a hone,
+before any pouch is offered the blade. A needle case on a chatelaine still feeds
+the bone needle.

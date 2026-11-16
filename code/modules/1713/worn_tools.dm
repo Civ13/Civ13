@@ -167,6 +167,7 @@
 	icon_override = 'icons/mob/worn_tools.dmi'
 	slots = 3
 	value = 4
+	var/spark_chance = 70 // flint against the pouch's pyrite
 	var/tmp/sparking = FALSE // TRUE only while lighting something
 
 /obj/item/clothing/accessory/storage/belt_pouch/fire_pouch/New()
@@ -218,7 +219,7 @@
 	playsound(get_turf(H), 'sound/effects/chop.ogg', 30, TRUE)
 	if (!do_after(H, drilling ? 4 SECONDS : 1 SECOND, src) || QDELETED(I) || I.loc != H || QDELETED(source) || source.loc != hold)
 		return FALSE
-	if (!drilling && !prob(70))
+	if (!drilling && !prob(spark_chance))
 		to_chat(H, SPAN_NOTICE("The sparks fail to catch. Try again."))
 		return FALSE
 	sparking = TRUE
@@ -287,9 +288,11 @@
 // Sinew in a worn needle case, for the bone needle (stone_age_arms.dm). Only
 // the case is searched, so mending never eats leather from a belt pouch.
 /mob/living/human/proc/needle_case_thread()
-	for (var/obj/item/clothing/accessory/storage/needle_case/N in worn_tool_holders())
-		for (var/obj/item/stack/sinew/S in N.hold.contents)
-			return S
+	for (var/obj/item/holder in worn_tool_holders())
+		var/list/reachable = list(holder) + worn_tool_contents(holder) // a case may hang from a chatelaine
+		for (var/obj/item/clothing/accessory/storage/needle_case/N in reachable)
+			for (var/obj/item/stack/sinew/S in N.hold.contents)
+				return S
 	return null
 
 // A damaged garment is mended by the needle (its afterattack), not offered to a
@@ -302,6 +305,14 @@
 	if (worn_lightable(I))
 		for (var/obj/item/clothing/accessory/storage/belt_pouch/fire_pouch/P in accessories)
 			return P.attackby(I, user)
+	// A worn, chipped blade is honed on a hone worn with these clothes.
+	if (honable_blade(I) && ishuman(user) && loc == user)
+		var/obj/item/weapon/material/B = I
+		var/mob/living/human/H = user
+		var/obj/item/clothing/accessory/pendant_hone/hone = H.reach_worn_tool(/obj/item/clothing/accessory/pendant_hone)
+		if (hone && B.health < B.maxhealth)
+			hone.hone(B, H)
+			return TRUE
 	return ..()
 
 // Neck knife: a small rawhide sheath hung on a thong at the chest, as worn on
@@ -336,3 +347,86 @@
 	if (draw_worn_contents(user))
 		return
 	..()
+
+// ---------------------------------------------------------------- Bronze and Iron kits
+
+// Pendant whetstone of schist or sandstone, worn on a cord as in the Bronze Age
+// and the Viking Age. Use a chipped blade on it (or on the clothes it hangs
+// from) to hone it as on a flint: +6 condition, -4 most condition.
+/obj/item/clothing/accessory/pendant_hone
+	name = "pendant hone"
+	desc = "A small whetstone with a drilled hole, worn on a cord. Use a chipped blade on it, or on the clothes it hangs from, to hone the edge."
+	icon = 'icons/obj/worn_tools.dmi'
+	icon_state = "pendant_hone"
+	icon_override = 'icons/mob/worn_tools.dmi'
+	slot = "decor"
+	w_class = ITEM_SIZE_TINY
+	ripable = FALSE
+	flammable = FALSE
+	value = 2
+
+/proc/honable_blade(obj/item/I)
+	return istype(I, /obj/item/weapon/material) && (I.sharp || I.edge)
+
+/obj/item/clothing/accessory/pendant_hone/attackby(obj/item/I, mob/user)
+	if (honable_blade(I) && ishuman(user))
+		hone(I, user)
+		return TRUE
+	return ..()
+
+/obj/item/clothing/accessory/pendant_hone/proc/hone(obj/item/weapon/material/B, mob/living/human/H)
+	if (B.unbreakable || B.health >= B.maxhealth)
+		to_chat(H, SPAN_NOTICE("\The [B] needs no honing."))
+		return FALSE
+	if (!H.may_do_after)
+		return FALSE
+	H.visible_message(SPAN_NOTICE("[H] starts honing \the [B] on \the [src]."), SPAN_NOTICE("You start honing \the [B] on \the [src]..."))
+	playsound(get_turf(H), 'sound/machines/grindstone.ogg', 30, TRUE)
+	if (!do_after(H, 25 SECONDS, H) || QDELETED(B) || B.loc != H || QDELETED(src))
+		return FALSE
+	B.maxhealth -= 4
+	B.health = min(B.health + 6, B.maxhealth)
+	if (B.maxhealth <= 0 || B.health <= 0)
+		H.visible_message(SPAN_WARNING("\The [B] breaks from the strain!"))
+		playsound(get_turf(H), "shatter", 70, TRUE)
+		qdel(B)
+		return TRUE
+	to_chat(H, SPAN_NOTICE("You finish honing \the [B]."))
+	return TRUE
+
+// Strike-a-light pouch: a leather pouch with a curved steel striker riveted
+// along its base, after Migration-period purse-mount firesteels and the later
+// chuckmuck. Works like the fire pouch, with better odds from its steel.
+/obj/item/clothing/accessory/storage/belt_pouch/fire_pouch/strike_a_light
+	name = "strike-a-light pouch"
+	desc = "A small leather pouch with a curved steel striker riveted along its base. Keep a flint and tinder in it, then hold a candle, pipe or cigarette against the pouch to light it."
+	icon_state = "strike_pouch"
+	spark_chance = 85
+	value = 6
+
+// Chatelaine: a clasp with three short chains for small tools, worn at the
+// waist (Viking oval-brooch chains, medieval and Victorian chatelaines). Tools
+// on it count as at hand.
+/obj/item/clothing/accessory/storage/chatelaine
+	name = "chatelaine"
+	desc = "A metal clasp with three short chains, worn on the clothes, for hanging small tools: a small knife, keys, a needle case, a hone."
+	icon = 'icons/obj/worn_tools.dmi'
+	icon_state = "chatelaine"
+	icon_override = 'icons/mob/worn_tools.dmi'
+	slot = "decor"
+	slots = 3
+	w_class = ITEM_SIZE_SMALL
+	ripable = FALSE
+	flammable = FALSE
+	value = 6
+
+/obj/item/clothing/accessory/storage/chatelaine/New()
+	..()
+	hold.max_w_class = ITEM_SIZE_SMALL
+	hold.max_storage_space = 6
+
+/obj/item/clothing/accessory/storage/chatelaine/internal_storage_accepts(obj/item/W, stop_messages = FALSE)
+	var/fits = worn_small_knife(W) || istype(W, /obj/item/weapon/key) || istype(W, /obj/item/clothing/accessory/storage/needle_case) || istype(W, /obj/item/clothing/accessory/pendant_hone) || istype(W, /obj/item/weapon/bone_needle) || is_tool(W, TOOL_WIRECUTTER)
+	if (!fits && !stop_messages)
+		to_chat(usr, SPAN_NOTICE("\The [src] only carries small tools: a small knife, keys, a needle case, a hone, shears."))
+	return fits
