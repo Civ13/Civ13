@@ -542,6 +542,11 @@
 	data["busy"] = page_busy ? 1 : 0
 	return data
 
+/obj/item/weapon/book/ui_actions(ui_key)
+	if (ui_key == "research_book")
+		return list("study", "write", "rip", "read")
+	return ..()
+
 /obj/item/weapon/book/ui_interact(mob/user, ui_key = "research_book", var/datum/nanoui/ui = null, var/force_open = TRUE, var/datum/nanoui/master_ui = null, var/datum/topic_state/state = default_state)
 	var/mob/living/human/H = user
 	if (!istype(H) || ui_key != "research_book" || !map || !map.book_research_enabled() || !can_hold_research())

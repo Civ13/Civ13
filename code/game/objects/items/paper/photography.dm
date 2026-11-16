@@ -89,41 +89,20 @@ var/global/photo_count = 0
 	// The original shared photo window replaced its previous image. Keep one
 	// photo reader per viewer without closing books or unrelated machine UIs.
 	if (islist(user.open_uis))
-		for (var/datum/nanoui/tgui/photo_viewer/old_ui in user.open_uis.Copy())
+		for (var/datum/nanoui/tgui/snapshot/photo_viewer/old_ui in user.open_uis.Copy())
 			if (istype(old_ui) && old_ui.user == user && old_ui.src_object != src)
 				old_ui.close()
-	var/datum/nanoui/tgui/photo_viewer/ui = GLOB.nanomanager.get_open_ui(user, src, ui_key)
-	if (ui)
-		var/datum/topic_state/photo_viewer/old_state = ui.state
-		if (!istype(ui) || !istype(old_state) || old_state.photo != src || old_state.reader != user)
-			ui.close()
-			ui = null
+	var/datum/nanoui/tgui/snapshot/photo_viewer/ui = open_reader_ui(user, src, ui_key, /datum/nanoui/tgui/snapshot/photo_viewer, /datum/topic_state/reader/photo_viewer)
 	if (!ui)
-		var/datum/topic_state/photo_viewer/reader_state = new(src, user)
-		ui = new /datum/nanoui/tgui/photo_viewer(user, src, ui_key, "photo_viewer.tmpl", "Photograph", max(360, display_width + 48), max(400, display_width + 200), _state = reader_state)
+		var/datum/topic_state/reader/photo_viewer/reader_state = new(src, user)
+		ui = new /datum/nanoui/tgui/snapshot/photo_viewer(user, src, ui_key, "photo_viewer.tmpl", "Photograph", max(360, display_width + 48), max(400, display_width + 200), _state = reader_state)
 		ui.use_on_close_logic(FALSE)
 	ui.set_initial_data(data)
 	ui.open()
 
-/datum/nanoui/tgui/photo_viewer/update(var/force_open = FALSE)
-	if (!user || !src_object || !state)
-		close()
-		return
-	push_data(null, TRUE)
-
-/datum/topic_state/photo_viewer
-	var/obj/item/weapon/photo/photo
-	var/mob/reader
-
-/datum/topic_state/photo_viewer/New(obj/item/weapon/photo/new_photo, mob/new_reader)
-	..()
-	photo = new_photo
-	reader = new_reader
-
-/datum/topic_state/photo_viewer/can_use_topic(var/src_object, var/mob/user)
-	if (!user || !user.client || !photo || user != reader || src_object != photo)
-		return STATUS_CLOSE
-	return STATUS_UPDATE
+// One photo reader per viewer; the types only mark which window is a photo.
+/datum/nanoui/tgui/snapshot/photo_viewer
+/datum/topic_state/reader/photo_viewer
 
 /obj/item/weapon/photo/verb/rename()
 	set name = "Rename photo"

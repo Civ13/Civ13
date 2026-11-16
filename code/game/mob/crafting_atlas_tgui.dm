@@ -16,15 +16,10 @@ var/global/datum/crafting_atlas_presenter/tgui/crafting_atlas_tgui_presenter = n
 	processor = copytext("[processor]", 1, 32)
 	recipe_id = copytext("[recipe_id]", 1, 32)
 	var/ui_key = "crafting_atlas"
-	var/datum/nanoui/tgui/crafting_atlas/ui = GLOB.nanomanager.get_open_ui(viewer, reference, ui_key)
-	if (ui)
-		var/datum/topic_state/crafting_atlas/old_state = ui.state
-		if (!istype(ui) || !istype(old_state) || old_state.reader != viewer)
-			ui.close()
-			ui = null
+	var/datum/nanoui/tgui/snapshot/crafting_atlas/ui = open_reader_ui(viewer, reference, ui_key, /datum/nanoui/tgui/snapshot/crafting_atlas, /datum/topic_state/reader/crafting_atlas)
 	if (!ui)
-		var/datum/topic_state/crafting_atlas/reader_state = new(reference, viewer)
-		ui = new /datum/nanoui/tgui/crafting_atlas(viewer, reference, ui_key, "crafting_atlas.tmpl", "Crafting Atlas", 1000, 700, _state = reader_state)
+		var/datum/topic_state/reader/crafting_atlas/reader_state = new(reference, viewer)
+		ui = new /datum/nanoui/tgui/snapshot/crafting_atlas(viewer, reference, ui_key, "crafting_atlas.tmpl", "Crafting Atlas", 1000, 700, _state = reader_state)
 		ui.use_on_close_logic(FALSE)
 	ui.render_arguments = list(query, page, resource_id, legacy, era, processor, recipe_id)
 	if (!ui.legacy_renderer)
@@ -34,49 +29,32 @@ var/global/datum/crafting_atlas_presenter/tgui/crafting_atlas_tgui_presenter = n
 
 // Only this UI subtype admits navigation. Existing transport limits, owner,
 // generation, ready/snapshot/ack and parent Topic checks still run first.
-/datum/nanoui/tgui/crafting_atlas
+/datum/nanoui/tgui/snapshot/crafting_atlas
+	// Manager refreshes are status only: no catalog queries or resource generation.
+	fixed_classic_page = TRUE
 	var/list/render_arguments
 	// "" lists the recipes of the reader's own map; "all" adds every other map's list.
 	var/scope = ""
 
-/datum/nanoui/tgui/crafting_atlas/allowed_actions()
+/datum/nanoui/tgui/snapshot/crafting_atlas/allowed_actions()
 	return list("atlas_navigate", "atlas_craft")
 
-/datum/nanoui/tgui/crafting_atlas/get_html()
+/datum/nanoui/tgui/snapshot/crafting_atlas/get_html()
 	if (legacy_renderer)
 		var/datum/crafting_atlas_reference/reference = src_object
 		var/list/arguments = list(user) + render_arguments
 		return reference.render_html(arglist(arguments))
 	return ..()
 
-/datum/nanoui/tgui/crafting_atlas/update(var/force_open = FALSE)
-	if (!user || !src_object || !state)
-		close()
-		return
-	// Status only: no catalog queries or resource generation from manager polling.
-	if (legacy_renderer)
-		update_status(FALSE)
-	else
-		push_data(null, TRUE)
-
-/datum/topic_state/crafting_atlas
-	var/datum/crafting_atlas_reference/reference
-	var/mob/reader
-
-/datum/topic_state/crafting_atlas/New(datum/crafting_atlas_reference/new_reference, mob/new_reader)
-	..()
-	reference = new_reference
-	reader = new_reader
-
-/datum/topic_state/crafting_atlas/can_use_topic(var/src_object, var/mob/user)
-	if (!user || src_object != reference || user != reader || !user.client)
-		return STATUS_CLOSE
-	// Original reference navigation is public to every connected mob, including
-	// observers and incapacitated/dead readers. These actions cannot craft items.
-	return STATUS_INTERACTIVE
+// Only this UI subtype admits navigation. Existing transport limits, owner,
+// generation, ready/snapshot/ack and parent Topic checks still run first.
+// Original reference navigation is public to every connected mob, including
+// observers and incapacitated/dead readers. These actions cannot craft items.
+/datum/topic_state/reader/crafting_atlas
+	granted_status = STATUS_INTERACTIVE
 
 /datum/crafting_atlas_presenter/tgui/navigate(datum/crafting_atlas_reference/reference, mob/viewer, payload, state)
-	var/datum/nanoui/tgui/crafting_atlas/ui = GLOB.nanomanager.get_open_ui(viewer, reference, "crafting_atlas")
+	var/datum/nanoui/tgui/snapshot/crafting_atlas/ui = GLOB.nanomanager.get_open_ui(viewer, reference, "crafting_atlas")
 	if (!istype(ui) || ui.user != viewer || ui.src_object != reference || !state || ui.state != state)
 		return FALSE
 	if (state:can_use_topic(reference, viewer) != STATUS_INTERACTIVE || ui.legacy_renderer || !ui.frontend_ready || !ui.frontend_acknowledged)
@@ -128,7 +106,7 @@ var/global/datum/crafting_atlas_presenter/tgui/crafting_atlas_tgui_presenter = n
 
 // The same current-window checks as navigation, then the Crafting window takes over.
 /datum/crafting_atlas_presenter/tgui/craft(mob/viewer, product, state)
-	var/datum/nanoui/tgui/crafting_atlas/ui = GLOB.nanomanager.get_open_ui(viewer, crafting_atlas_reference, "crafting_atlas")
+	var/datum/nanoui/tgui/snapshot/crafting_atlas/ui = GLOB.nanomanager.get_open_ui(viewer, crafting_atlas_reference, "crafting_atlas")
 	if (!istype(ui) || ui.user != viewer || !state || ui.state != state || ui.legacy_renderer || !ui.frontend_ready || !ui.frontend_acknowledged)
 		return FALSE
 	if (!istext(product) || !crafting_atlas_reference.resource_exists(product))
@@ -707,7 +685,7 @@ var/global/datum/crafting_atlas_presenter/tgui/crafting_atlas_tgui_presenter = n
 /mob/living/human/proc/refresh_recipe_knowledge_menus()
 	if (!client)
 		return
-	var/datum/nanoui/tgui/crafting_atlas/ui = GLOB.nanomanager.get_open_ui(src, crafting_atlas_reference, "crafting_atlas")
+	var/datum/nanoui/tgui/snapshot/crafting_atlas/ui = GLOB.nanomanager.get_open_ui(src, crafting_atlas_reference, "crafting_atlas")
 	if (istype(ui) && ui.user == src && islist(ui.render_arguments))
 		var/list/arguments = list(crafting_atlas_reference, src) + ui.render_arguments
 		if (ui.legacy_renderer)

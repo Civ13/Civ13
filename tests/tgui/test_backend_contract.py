@@ -8,6 +8,27 @@ ROOT = Path(__file__).resolve().parents[2]
 DM = (ROOT / 'code/modules/nano/tgui.dm').read_text()
 
 
+def declared(path, owner):
+    """The actions a window's owner declares in its ui_actions()."""
+    source = (ROOT / path).read_text(errors='replace')
+    signature = f'/{owner}/ui_actions(ui_key)\n'
+    assert source.count(signature) == 1, f'{owner} must declare its actions once'
+    body = source.split(signature, 1)[1].split('\n/', 1)[0]
+    lists = re.findall(r'return list\(([^\n]+)\)', body)
+    assert len(lists) == 1, f'{owner} must return one action list'
+    return set(re.findall(r'"([^"\n]+)"', lists[0]))
+
+
+def declared_fields(path, owner):
+    """{action: extra fields} from the owner's ui_action_fields()."""
+    source = (ROOT / path).read_text(errors='replace')
+    body = source.split(f'/{owner}/ui_action_fields(ui_key, action)\n', 1)[1].split('\n/', 1)[0]
+    found = {}
+    for action, fields in re.findall(r'(?:if \(action == |if \()"(\w+)"\)+\n\t+return list\(([^\n]+)\)', body):
+        found[action] = re.findall(r'"([^"\n]+)"', fields)
+    return found
+
+
 class BackendContract(unittest.TestCase):
     def test_dm_include(self):
         self.assertIn('#include "code\\modules\\nano\\tgui.dm"', (ROOT / 'civ13.dme').read_text())
@@ -99,9 +120,7 @@ class BackendContract(unittest.TestCase):
         expected = {'designate', 'unbind', 'apply', 'withdraw', 'confirm',
                     'approve', 'reject', 'revoke', 'set_mode', 'set_open',
                     'set_language', 'set_skill', 'set_nonmatch', 'refresh'}
-        branch = re.search(r'if \("recruitment_station\.tmpl"\)\s+return list\(([^\n]+)\)', DM)
-        self.assertIsNotNone(branch, 'modern recruitment buttons need a transport allowlist')
-        allowed = set(re.findall(r'"([^"\n]+)"', branch.group(1)))
+        allowed = declared('code/game/mob/groups/recruitment_station.dm', 'datum/recruitment_panel')
         self.assertEqual(allowed, expected)
         # Both local station and remote application review use this producer.
         self.assertIn('station ? "Recruitment Station" : "Recruitment Applications"', source)
@@ -125,10 +144,10 @@ class BackendContract(unittest.TestCase):
     def test_research_actions_reach_their_topics(self):
         # Every button on the bench screen and the book window must pass the
         # transport allowlist and have a branch in the Topic that receives it.
+        owners = {'research_bench.tmpl': ('code/modules/research_tree/research_bench.dm', 'obj/structure/research_bench'),
+                  'research_book.tmpl': ('code/modules/research_tree/book_interface.dm', 'obj/item/weapon/book')}
         def allowed(template):
-            branch = re.search(r'if \("%s"\)\s+return list\(([^\n]+)\)' % re.escape(template), DM)
-            self.assertIsNotNone(branch, template)
-            return set(re.findall(r'"([^"\n]+)"', branch.group(1)))
+            return declared(*owners[template])
         def buttons(*names):
             found = set()
             for name in names:
@@ -149,6 +168,8 @@ class BackendContract(unittest.TestCase):
         self.assertEqual(buttons('ResearchBook.tsx'), allowed('research_book.tmpl'))
         self.assertLess(book.index('research_book_state.can_use_topic(src, H) != STATUS_INTERACTIVE'), book.index('study_research_source('))
         for template in ('research_bench.tmpl', 'research_book.tmpl'):
+            if template.startswith('faction_'):
+                continue  # the classic banner editor also has code import and export, which the modern screen does not send
             classic = (ROOT / 'UI/templates' / template).read_text()
             self.assertLessEqual(set(re.findall(r"\{\s*['\"](\w+)['\"]\s*:", classic)), allowed(template), template)
 
@@ -157,14 +178,13 @@ class BackendContract(unittest.TestCase):
         source = (ROOT / 'code/game/objects/items/stacks/crafting_window.dm').read_text()
         frontend = (ROOT / 'tgui/src/interfaces/CraftingWindow.tsx').read_text()
         topic = source.split('/datum/crafting_window/Topic', 1)[1]
-        branch = re.search(r'if \("crafting_window\.tmpl"\)\s+return list\(([^\n]+)\)', DM)
-        self.assertIsNotNone(branch, 'Crafting window buttons need a transport allowlist')
-        allowed = set(re.findall(r'"([^"\n]+)"', branch.group(1)))
+        allowed = declared('code/game/objects/items/stacks/crafting_window.dm', 'datum/crafting_window')
         self.assertEqual(allowed, {'make', 'makeable_only', 'images', 'atlas', 'pin', 'source', 'detail'})
         self.assertEqual(set(re.findall(r'href_list\["([^"\n]+)"\]', topic)), allowed | {'quantity', 'options'})
         self.assertEqual(set(re.findall(r"ui\.act\('([^'\n]+)'", frontend)), allowed)
         transport = DM.split('/datum/nanoui/tgui/Topic', 1)[1]
-        self.assertRegex(transport, r'if \("make"\)\s+keys \+= list\("quantity", "options"\)')
+        self.assertEqual(declared_fields('code/game/objects/items/stacks/crafting_window.dm', 'datum/crafting_window'), {'make': ['quantity', 'options']})
+        self.assertIn('var/list/fields = allowed_fields(action)\n\tif (islist(fields))\n\t\tkeys += fields', transport)
 
     def test_crafting_window_requests_keep_server_admission(self):
         source = (ROOT / 'code/game/objects/items/stacks/crafting_window.dm').read_text()
@@ -318,6 +338,39 @@ class BackendContract(unittest.TestCase):
         menu = stack.split('/obj/item/stack/proc/list_recipes(', 1)[1].split('// Custom qdel', 1)[0]
         self.assertLess(menu.index('if (crafting_window_shown(user))'), menu.index('user.set_using_object(src)'))
         self.assertIn("<title>Crafting</title>", menu)
+
+    def test_windows_declare_their_own_actions(self):
+        # The transport asks the window's owner; it holds no per-window table,
+        # so a new window cannot forget to register its buttons somewhere else.
+        self.assertIn('/datum/proc/ui_actions(ui_key)\n\treturn list()', DM)
+        self.assertIn('/datum/proc/ui_action_fields(ui_key, action)\n\treturn null', DM)
+        self.assertIn('return src_object ? src_object.ui_actions(ui_key) : list()', DM)
+        self.assertIn('return src_object ? src_object.ui_action_fields(ui_key, action) : null', DM)
+        self.assertNotIn('.tmpl")', DM.split('/datum/nanoui/tgui/push_data', 1)[1])
+        owners = {
+            'chem_disp.tmpl': ('code/modules/reagents/Chemistry-Machinery.dm', 'obj/structure/chemical_dispenser'),
+            'appearance_changer.tmpl': ('code/modules/nano/modules/appearance_changer.dm', 'datum/nano_module/appearance_changer'),
+            'vending_machine.tmpl': ('code/game/objects/structures/vending/vending.dm', 'obj/structure/vending'),
+            'vending_machine2.tmpl': ('code/game/objects/structures/vending/vending_sales.dm', 'obj/structure/vending/sales'),
+            'faction_symbol.tmpl': ('code/game/mob/groups/faction_symbol.dm', 'datum/nano_module/faction_symbol_editor'),
+            'faction_creation.tmpl': ('code/game/mob/groups/faction_creation.dm', 'datum/nano_module/faction_creation'),
+        }
+        for template, (path, owner) in owners.items():
+            actions = declared(path, owner)
+            self.assertTrue(actions, template)
+            # Every key a classic template sends is declared, so both renderers reach the same Topic.
+            if template.startswith('faction_'):
+                continue  # the classic banner editor also has code import and export, which the modern screen does not send
+            classic = (ROOT / 'UI/templates' / template).read_text()
+            self.assertLessEqual(set(re.findall(r"\{\s*['\"](\w+)['\"]\s*:", classic)), actions, template)
+        for path, owner in (owners['faction_symbol.tmpl'], owners['faction_creation.tmpl']):
+            fields = declared_fields(path, owner)
+            self.assertEqual(fields, {'paint': ['x', 'y'], 'stroke': ['cells', 'stroke_continue']})
+            self.assertLessEqual(set(fields), declared(path, owner))
+        self.assertEqual(declared(*owners['vending_machine.tmpl']) ^ declared(*owners['vending_machine2.tmpl']), {'remove_coin', 'remove_money'})
+        # A book's reader window shares the object but sends nothing.
+        book = (ROOT / 'code/modules/research_tree/book_interface.dm').read_text()
+        self.assertIn('/obj/item/weapon/book/ui_actions(ui_key)\n\tif (ui_key == "research_book")', book)
 
     def test_assets_registered(self):
         assets = (ROOT / 'code/modules/client/asset_cache.dm').read_text()

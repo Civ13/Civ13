@@ -11747,7 +11747,7 @@
       "steps": [
         "Load copper and tin into a fired clay jug or clay pot and place the filled mold in a fueled kiln. After alloying, use the filled bronze mold to cast its product."
       ],
-      "conditions": "fired empty mold, kiln; capacity=min(copper,tin); equal consumed units; material-state change inside mold",
+      "conditions": "Fire the empty mold in a kiln first. It takes equal parts copper and tin and turns them into bronze inside the mold.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -11772,7 +11772,7 @@
       "steps": [
         "Load copper and tin into a fired clay jug or clay pot and place the filled mold in a fueled kiln. After alloying, use the filled bronze mold to cast its product."
       ],
-      "conditions": "fired empty mold, kiln; capacity=min(copper,zinc); equal consumed units; material-state change inside mold",
+      "conditions": "Fire the empty mold in a kiln first. It takes equal parts copper and zinc and turns them into brass inside the mold.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -11794,7 +11794,7 @@
       "steps": [
         "Use an empty extraction kit on fresh raw meat to obtain four units of collagen. The meat is consumed."
       ],
-      "conditions": "fresh raw unroasted meat; empty extraction kit with >=4 space; source consumed; 4 reagent units",
+      "conditions": "Needs fresh raw meat and an empty extraction kit with room for 4 units. The meat is used up and gives 4 units.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -11816,7 +11816,7 @@
       "steps": [
         "Use an empty extraction kit on a vomit decal to obtain four units of digestive protease. The decal is consumed."
       ],
-      "conditions": "empty extraction kit with >=4 space; source consumed; 4 reagent units",
+      "conditions": "Needs an empty extraction kit with room for 4 units. The source is used up and gives 4 units.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -11838,7 +11838,7 @@
       "steps": [
         "Use an empty extraction kit on fresh papaya to obtain four units of fruit protease. The fruit is consumed."
       ],
-      "conditions": "non-rotten papaya; empty extraction kit; source consumed; 4 reagent units",
+      "conditions": "Needs a fresh papaya and an empty extraction kit. The papaya is used up and gives 4 units.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -11863,7 +11863,7 @@
       "steps": [
         "Anchor the fracking rig beside mineable underground rock. Connect 300 cable power and load pure freshwater, raw sand and a petroleum-only or empty output barrel. Start a two-minute batch."
       ],
-      "conditions": "adjacent mineable underground terrain consumed; 20 pure freshwater + 5 sand -> 50 petroleum; anchored rig; cable capacity300; two-minute batch",
+      "conditions": "Set up the rig beside underground rock it can drill. Each two-minute batch turns 20 pure fresh water and 5 sand into 50 petroleum and needs 300 cable power.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -11886,7 +11886,7 @@
       "steps": [
         "Build the wooden oil well on an oil spring. Load a barrel into the well; collect petroleum while the spring has reserves."
       ],
-      "conditions": "linked spring; native contained output barrel with free space; min(free space,10) per extraction callback",
+      "conditions": "Link the well to an oil spring and give it a barrel with free space. Each pump fills up to 10 units.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -11906,7 +11906,7 @@
       "steps": [
         "Use one held sinew portion in hand to twist it into binding cord, which functions as rope."
       ],
-      "conditions": "one held sinew unit consumed -> one named sinew binding cord",
+      "conditions": "Twist one held sinew into one sinew binding cord.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -11928,7 +11928,7 @@
       "steps": [
         "Put spaghetti in a water-filled heated pot and wait for boiling."
       ],
-      "conditions": "BOIL_MAP; water/heat/timing required",
+      "conditions": "Boil it in a pot of water over a fire or stove.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -11950,7 +11950,7 @@
       "steps": [
         "Put milled rice in a water-filled heated pot and wait for boiling."
       ],
-      "conditions": "BOIL_MAP; water/heat/timing required",
+      "conditions": "Boil it in a pot of water over a fire or stove.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -11972,7 +11972,7 @@
       "steps": [
         "Put raw lobster in a water-filled heated pot and wait for boiling."
       ],
-      "conditions": "BOIL_MAP; water/heat/timing required",
+      "conditions": "Boil it in a pot of water over a fire or stove.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -11994,7 +11994,7 @@
       "steps": [
         "Put noodles in a water-filled heated pot and wait for boiling."
       ],
-      "conditions": "BOIL_MAP; water/heat/timing required",
+      "conditions": "Boil it in a pot of water over a fire or stove.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -12018,7 +12018,7 @@
         "Use yeast (5 units) on dough and wait about five minutes for it to rise.",
         "Place the risen dough in a fueled oven and cook it into bread. Dough without risen yeast bakes into flatbread."
       ],
-      "conditions": "fuel, cooking process; consume source",
+      "conditions": "Cook it in a fuelled oven.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -12040,7 +12040,7 @@
       "steps": [
         "Place harvested cocoa in a fueled oven and cook it into a chocolate bar."
       ],
-      "conditions": "fuel, cooking process; consume source",
+      "conditions": "Cook it in a fuelled oven.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -12062,7 +12062,7 @@
       "steps": [
         "Place flat dough in a fueled oven and cook it into flatbread."
       ],
-      "conditions": "fuel, cooking process; consume source",
+      "conditions": "Cook it in a fuelled oven.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -12084,7 +12084,7 @@
       "steps": [
         "Place raw potato sticks in a fueled oven and cook them into fries."
       ],
-      "conditions": "fuel, cooking process; consume source",
+      "conditions": "Cook it in a fuelled oven.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -12151,7 +12151,7 @@
       "steps": [
         "Heat an ash-containing container on the stove. The game converts five units of ash into one unit of lye."
       ],
-      "conditions": "in container atop stove; consume ash, produce ash amount/5 lye",
+      "conditions": "Boil ash in a container on a stove. Every 5 units of ash give 1 unit of lye.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -12174,7 +12174,7 @@
       "steps": [
         "Heat a lard-containing container on the stove. The game converts two units of lard into one unit of fat oil."
       ],
-      "conditions": "in container atop stove; consume lard, produce amount/2 fat_oil",
+      "conditions": "Boil lard in a container on a stove. Every 2 units of lard give 1 unit of fat oil.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -12396,7 +12396,7 @@
       "steps": [
         "Secure the Sawmill in place, then use the listed raw ingredient on it. Complete the work to collect the processed product."
       ],
-      "conditions": "Anchored machine and completed work required. The primitive mill needs sharpened flint, cuts one ordinary log into one plank and one bark, and wears its blade. Large and powered mills use their existing stack, skill and interruption rules; the powered mill needs power.",
+      "conditions": "The mill must be anchored. The primitive mill needs sharpened flint, cuts one log into one plank and one piece of bark, and wears its blade. The powered mill needs power.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -12703,7 +12703,7 @@
         "Water and feed the seedling through six successful minute-long growth stages. Clear obstructions and wait for a suitable climate and season.",
         "The seedling becomes an ordinary seasonal tree. Chop the mature tree for seven logs. Uprooting a living or dead seedling requires a shovel or spade (unfold folding tools first) and returns no logs or seeds; knives and hatchets cannot uproot it."
       ],
-      "conditions": "One seed portion per successful planting. Outdoor ploughed space must stay clear of roofs, dense objects, living occupants and other crops. Drought and storms can kill seedlings; poor soil may delay growth. Winter pauses development but not water use. Growth progress survives saves; downtime adds no growth.",
+      "conditions": "Plant one seed portion in ploughed soil outdoors, clear of roofs, furniture, people and other crops. Drought and storms can kill seedlings and poor soil slows growth. Trees stop growing in winter but still need water.",
       "map_notes": "Seed foraging is random and map-placed crates are not guaranteed. Tree growth requires both a declared biome and season on every map. Existing tree biomes are inherited; seasons are SUMMER, SPRING, FALL, Wet Season and Dry Season.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed proposed shovel-only update; changed uprooting native acceptance pending"
@@ -13818,7 +13818,7 @@
       "steps": [
         "Stand on uncovered non-mineable dirt or sand. Choose iron in the soil-sifting menu. Complete the three-minute hand action or two-minute sieve action for one unit."
       ],
-      "conditions": "Renewable trace gathering; same position and tool guards as soil sifting.",
+      "conditions": "Sift soil the same way as for trace finds. It never runs out.",
       "map_notes": "",
       "era": "Map ordinal age must be at least 1.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -13844,7 +13844,7 @@
       "steps": [
         "Stand on uncovered non-mineable dirt or sand. Choose the mineral in the soil-sifting menu. Complete the three-minute hand action or two-minute sieve action for one unit."
       ],
-      "conditions": "Renewable trace gathering; same position and tool guards as soil sifting.",
+      "conditions": "Sift soil the same way as for trace finds. It never runs out.",
       "map_notes": "",
       "era": "Map ordinal age must be at least 2.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -13871,7 +13871,7 @@
         "Stand on uncovered non-mineable dirt or sand beside shallow fresh water. Hold a wooden bowl and use Pan river sediment.",
         "Choose a metal and remain there for two uninterrupted minutes to obtain one ore unit."
       ],
-      "conditions": "Adjacent natural water tile must be fresh, water_level <= 30 and watertile true. Bottled water does not qualify.",
+      "conditions": "Stand beside shallow natural fresh water. Bottled water will not do.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -13904,7 +13904,7 @@
         "Anchor a powered soil sifter on uncovered non-mineable dirt or sand. Connect its power cable.",
         "Run it and clear its output tile; it selects a random mineral and produces two units per two-minute cycle."
       ],
-      "conditions": "Requires 150 available power for active processing and inherited cable connection. Output accumulation is bounded; construction/research gates apply separately.",
+      "conditions": "Needs 150 cable power. The output tray fills up and must be emptied.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -13931,7 +13931,7 @@
         "Anchor and power a river panner on uncovered non-mineable soil beside shallow fresh water.",
         "Run it and clear its output tile; random copper, tin, silver or gold ore is produced in two-unit batches."
       ],
-      "conditions": "Natural fresh water within one tile, water_level <= 30, plus machine power and output-space guards.",
+      "conditions": "Needs shallow natural fresh water next to it and cable power. Empty its output when full.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -13999,7 +13999,7 @@
         "Anchor a powered stamp mill, connect its power cable and load up to fifty stone blocks.",
         "Run it and clear its output tile; it stamps one stone every four seconds until the hopper is empty."
       ],
-      "conditions": "Requires 150 available cable power. Ore and mineral odds are 1.5 times the hand crusher's and sand is 25%; output accumulation is bounded.",
+      "conditions": "Needs 150 cable power. It finds ore 1.5 times as often as the hand crusher, and sand a quarter of the time. Empty its output when full.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "Recipe unlocks at Electricity.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -14022,7 +14022,7 @@
       "steps": [
         "Sharpen flint against a rock, or take any sharp knife, then use it on grass. Remain adjacent with the tool while cutting. Collect two portions of grass cuttings."
       ],
-      "conditions": "Conscious connected actor holding sharpened flint or a sharp knife; action changes the grass turf, so this is a terrain-consuming route.",
+      "conditions": "Hold sharpened flint or a sharp knife and cut the grass you stand on. The grass is used up.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -14076,7 +14076,7 @@
       "steps": [
         "Use an empty extraction kit on suitable ground and finish the extraction action. Collect five units of a randomly selected chemical in the kit."
       ],
-      "conditions": "Random output; the procedure overwrites its initial larger element list, so only the listed 13 elements are reachable here. No ore stack is consumed.",
+      "conditions": "Gives a random one of the 13 listed elements. No ore is used.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -14257,7 +14257,7 @@
       "steps": [
         "Use a kitchen knife on a jungle bush. A successful medicinal-leaf search yields an herb portion, which can also be planted in ploughed soil."
       ],
-      "conditions": "Random 25% branch, radiation below 15, and remaining bush health/stock required.",
+      "conditions": "A bush sometimes has herbs (about 1 in 4). Bushes in high radiation give none.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -14309,7 +14309,7 @@
         "Use a pickaxe on a mineable underground deposit. Complete the mining action and collect the randomly selected mineral.",
         "Mining converts the deposit terrain, so find another mineable tile for the next batch."
       ],
-      "conditions": "Random branch and finite deposit; copper/tin/iron 12-24, silver/gold/diamond ore 4, stone branch or bonus varies. Special caves can double output. Uranium and mercury branches are commented out and excluded. Calamine (zinc ore) 12-24 at 6% from age 1.",
+      "conditions": "Deposits run out. Copper, tin and iron give 12-24, silver, gold and diamond 4. Special caves can give double. Calamine (zinc ore) gives 12-24 from the Bronze Age.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -14332,7 +14332,7 @@
         "Mine rock near a volcano, on the volcano's level or the level below it.",
         "Now and then a mining action also turns up four to eight pieces of rough obsidian, on top of the usual ore roll."
       ],
-      "conditions": "Independent roll on each completed mining action; only near volcanic turf. Special caves double the amount.",
+      "conditions": "Mining near a volcano sometimes turns up obsidian. Special caves give double.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -14357,7 +14357,7 @@
       "steps": [
         "Mine a mineable underground deposit with a pickaxe. The random later-era branch yields coal, saltpeter, sulphur or lead plus stone."
       ],
-      "conditions": "Finite terrain; random branch, coal 24-32 or other listed minerals 8, with special-cave doubling.",
+      "conditions": "Deposits run out. Coal gives 24-32, the other minerals 8. Special caves give double.",
       "map_notes": "Unavailable through this branch on Antarctica.",
       "era": "Map ordinal age at least 2.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -14389,7 +14389,7 @@
         "Place a dead eligible mammal corpse on a turf. Use a sharp held tool and choose butcher.",
         "Remain adjacent until harvesting finishes. Collect meat, organs, bones, sinew and untanned raw hides according to species and size."
       ],
-      "conditions": "Organs need harvest_mammal-listed species; bone and sinew also come from large reptiles and penguins, turkeys, geese and pelicans; size >= 3 required for sinew and named organs. Pig species yield pig legs instead of ordinary meat; chicken, crab and poisonous frog have separate products. Corpse can be claimed only once; zombie meat is unsafe. Raw hides yield min(6, max(1, butcher_yield() - 2)); finished leather requires scraping, washing, rack drying and tannin.",
+      "conditions": "Larger animals give organs, bone and sinew; large reptiles and big birds give bone and sinew too. Pigs give pig legs, and chickens, crabs and poison frogs have their own products. Each carcass can be butchered once, and zombie meat is unsafe. Hides still need scraping, washing, drying on a rack and tanning to become leather.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -14411,7 +14411,7 @@
       "steps": [
         "Butcher an eligible dead mammal with fat using a sharp held tool. Collect any animal fat produced with the other corpse products."
       ],
-      "conditions": "has_fat and bounded size/fat modifiers must permit a positive yield; maximum two portions.",
+      "conditions": "Only animals with enough fat give any, up to two portions.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -14433,7 +14433,7 @@
       "steps": [
         "Use a sharp held tool on the dead animal and complete the harvesting action. Collect the listed species product."
       ],
-      "conditions": "Dead, unharvested corpse on a turf; connected conscious adjacent actor. Pig route also includes pig_boar, boar_gilt and boar_boar; chicken route also includes rooster.",
+      "conditions": "Butcher a fresh dead animal lying on the ground beside you. Each carcass can be butchered once.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -14455,7 +14455,7 @@
       "steps": [
         "Use a sharp held tool on the dead animal and complete the harvesting action. Collect the listed species product."
       ],
-      "conditions": "Dead, unharvested corpse on a turf; connected conscious adjacent actor. Pig route also includes pig_boar, boar_gilt and boar_boar; chicken route also includes rooster.",
+      "conditions": "Butcher a fresh dead animal lying on the ground beside you. Each carcass can be butchered once.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -14477,7 +14477,7 @@
       "steps": [
         "Use a sharp held tool on the dead animal and complete the harvesting action. Collect the listed species product."
       ],
-      "conditions": "Dead, unharvested corpse on a turf; connected conscious adjacent actor. Pig route also includes pig_boar, boar_gilt and boar_boar; chicken route also includes rooster.",
+      "conditions": "Butcher a fresh dead animal lying on the ground beside you. Each carcass can be butchered once.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -14526,7 +14526,7 @@
       "steps": [
         "Use shears on an unsheared sheep and complete the shearing action. Collect wool. Wait for coat regrowth before repeating."
       ],
-      "conditions": "Sheared flag prevents immediate repeat; both male and female sheep have shearing branches.",
+      "conditions": "A sheared sheep needs time to grow its wool back.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -14699,7 +14699,7 @@
       "steps": [
         "Place a fishing cage in eligible water. Wait 30-40 minutes and open it by hand."
       ],
-      "conditions": "Jungle, deep jungle and flooded water yield salmon; other eligible waters randomly yield salmon or shellfish. Swamp, deep swamp and ice branches produce no catch.",
+      "conditions": "Jungle and flooded water give salmon. Other waters give salmon or shellfish. Swamps and ice give nothing.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -14719,7 +14719,7 @@
       "steps": [
         "Keep a live chicken and collect eggs it lays on its turf. Egg production depends on its available egg stock and Life-cycle timer."
       ],
-      "conditions": "Requires conscious live chicken, egg_timer >= 120 and eggsleft > 0. Timer is Life calls, not a verified real-time duration.",
+      "conditions": "A live hen lays eggs every few minutes until she runs out.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -14739,7 +14739,7 @@
       "steps": [
         "With Grab intent, interact with an edible jungle bush that has leaves. Complete the foraging action to collect two fern leaf portions."
       ],
-      "conditions": "Human actor, edible bush and leaves >= 1; stock rechecked after the wait.",
+      "conditions": "Pick leaves from an edible bush. A bush runs out after a while.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -14761,7 +14761,7 @@
       "steps": [
         "Use a sharp held tool on the dead animal and choose skin. Stay adjacent until the harvesting action finishes, then collect the species pelt and other bounded corpse products."
       ],
-      "conditions": "Dead, unharvested corpse on a turf. One claim per corpse; pelt yield depends on species subtype.",
+      "conditions": "Skin a fresh dead animal lying on the ground. Each carcass can be skinned once; the pelt depends on the animal.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -14783,7 +14783,7 @@
       "steps": [
         "Use a sharp held tool on the dead animal and choose skin. Stay adjacent until the harvesting action finishes, then collect the species pelt and other bounded corpse products."
       ],
-      "conditions": "Dead, unharvested corpse on a turf. One claim per corpse; pelt yield depends on species subtype.",
+      "conditions": "Skin a fresh dead animal lying on the ground. Each carcass can be skinned once; the pelt depends on the animal.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -14805,7 +14805,7 @@
       "steps": [
         "Use a sharp held tool on the dead animal and choose skin. Stay adjacent until the harvesting action finishes, then collect the species pelt and other bounded corpse products."
       ],
-      "conditions": "Dead, unharvested corpse on a turf. One claim per corpse; pelt yield depends on species subtype.",
+      "conditions": "Skin a fresh dead animal lying on the ground. Each carcass can be skinned once; the pelt depends on the animal.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -14827,7 +14827,7 @@
       "steps": [
         "Use a sharp held tool on the dead animal and choose skin. Stay adjacent until the harvesting action finishes, then collect the species pelt and other bounded corpse products."
       ],
-      "conditions": "Dead, unharvested corpse on a turf. One claim per corpse; pelt yield depends on species subtype.",
+      "conditions": "Skin a fresh dead animal lying on the ground. Each carcass can be skinned once; the pelt depends on the animal.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -14849,7 +14849,7 @@
       "steps": [
         "Light a consumable campfire and let its fuel run out. Collect the charcoal left when it burns away."
       ],
-      "conditions": "Only ovens with consume_itself TRUE use this burnout branch; ordinary persistent ovens do not automatically yield charcoal.",
+      "conditions": "A campfire that burns itself out leaves charcoal. Ovens do not.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -14871,7 +14871,7 @@
       "steps": [
         "Use an empty extraction kit on the listed ore stack. Collect the resulting reagent in the kit."
       ],
-      "conditions": "Ore-dependent extraction yield; this legacy procedure deletes the supplied stack object, so separate a small stack before using it.",
+      "conditions": "Uses up the whole stack it is given, so split off a small stack first. The yield depends on the ore.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -14893,7 +14893,7 @@
       "steps": [
         "Use an empty extraction kit on the listed ore stack. Collect the resulting reagent in the kit."
       ],
-      "conditions": "Ore-dependent extraction yield; this legacy procedure deletes the supplied stack object, so separate a small stack before using it.",
+      "conditions": "Uses up the whole stack it is given, so split off a small stack first. The yield depends on the ore.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -14915,7 +14915,7 @@
       "steps": [
         "Use an empty extraction kit on the listed ore stack. Collect the resulting reagent in the kit."
       ],
-      "conditions": "Ore-dependent extraction yield; this legacy procedure deletes the supplied stack object, so separate a small stack before using it.",
+      "conditions": "Uses up the whole stack it is given, so split off a small stack first. The yield depends on the ore.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -14937,7 +14937,7 @@
       "steps": [
         "Use an empty extraction kit on the listed ore stack. Collect the resulting reagent in the kit."
       ],
-      "conditions": "Ore-dependent extraction yield; this legacy procedure deletes the supplied stack object, so separate a small stack before using it.",
+      "conditions": "Uses up the whole stack it is given, so split off a small stack first. The yield depends on the ore.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -14959,7 +14959,7 @@
       "steps": [
         "Use an empty extraction kit on the listed ore stack. Collect the resulting reagent in the kit."
       ],
-      "conditions": "Ore-dependent extraction yield; this legacy procedure deletes the supplied stack object, so separate a small stack before using it.",
+      "conditions": "Uses up the whole stack it is given, so split off a small stack first. The yield depends on the ore.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -14981,7 +14981,7 @@
       "steps": [
         "Use an empty extraction kit on the listed ore stack. Collect the resulting reagent in the kit."
       ],
-      "conditions": "Ore-dependent extraction yield; this legacy procedure deletes the supplied stack object, so separate a small stack before using it.",
+      "conditions": "Uses up the whole stack it is given, so split off a small stack first. The yield depends on the ore.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -15003,7 +15003,7 @@
       "steps": [
         "Use an empty extraction kit on the listed ore stack. Collect the resulting reagent in the kit."
       ],
-      "conditions": "Ore-dependent extraction yield; this legacy procedure deletes the supplied stack object, so separate a small stack before using it.",
+      "conditions": "Uses up the whole stack it is given, so split off a small stack first. The yield depends on the ore.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -15025,7 +15025,7 @@
       "steps": [
         "Use an empty extraction kit on the listed ore stack. Collect the resulting reagent in the kit."
       ],
-      "conditions": "Ore-dependent extraction yield; this legacy procedure deletes the supplied stack object, so separate a small stack before using it.",
+      "conditions": "Uses up the whole stack it is given, so split off a small stack first. The yield depends on the ore.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -15047,7 +15047,7 @@
       "steps": [
         "Use an empty extraction kit on the listed ore stack. Collect the resulting reagent in the kit."
       ],
-      "conditions": "Ore-dependent extraction yield; this legacy procedure deletes the supplied stack object, so separate a small stack before using it.",
+      "conditions": "Uses up the whole stack it is given, so split off a small stack first. The yield depends on the ore.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -15069,7 +15069,7 @@
       "steps": [
         "Use an empty extraction kit on the listed ore stack. Collect the resulting reagent in the kit."
       ],
-      "conditions": "Ore-dependent extraction yield; this legacy procedure deletes the supplied stack object, so separate a small stack before using it.",
+      "conditions": "Uses up the whole stack it is given, so split off a small stack first. The yield depends on the ore.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -15091,7 +15091,7 @@
       "steps": [
         "Use an empty extraction kit on the listed ore stack. Collect the resulting reagent in the kit."
       ],
-      "conditions": "Ore-dependent extraction yield; this legacy procedure deletes the supplied stack object, so separate a small stack before using it.",
+      "conditions": "Uses up the whole stack it is given, so split off a small stack first. The yield depends on the ore.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -15113,7 +15113,7 @@
       "steps": [
         "Use an empty extraction kit on the listed ore stack. Collect the resulting reagent in the kit."
       ],
-      "conditions": "Ore-dependent extraction yield; this legacy procedure deletes the supplied stack object, so separate a small stack before using it.",
+      "conditions": "Uses up the whole stack it is given, so split off a small stack first. The yield depends on the ore.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -15135,7 +15135,7 @@
       "steps": [
         "Use an empty extraction kit on the listed ore stack. Collect the resulting reagent in the kit."
       ],
-      "conditions": "Ore-dependent extraction yield; this legacy procedure deletes the supplied stack object, so separate a small stack before using it.",
+      "conditions": "Uses up the whole stack it is given, so split off a small stack first. The yield depends on the ore.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -15157,7 +15157,7 @@
       "steps": [
         "Use an empty extraction kit on the listed ore stack. Collect the resulting reagent in the kit."
       ],
-      "conditions": "Ore-dependent extraction yield; this legacy procedure deletes the supplied stack object, so separate a small stack before using it.",
+      "conditions": "Uses up the whole stack it is given, so split off a small stack first. The yield depends on the ore.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -15179,7 +15179,7 @@
       "steps": [
         "Use an empty extraction kit on the listed ore stack. Collect the resulting reagent in the kit."
       ],
-      "conditions": "Ore-dependent extraction yield; this legacy procedure deletes the supplied stack object, so separate a small stack before using it.",
+      "conditions": "Uses up the whole stack it is given, so split off a small stack first. The yield depends on the ore.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -15201,7 +15201,7 @@
       "steps": [
         "Use an empty extraction kit on the listed ore stack. Collect the resulting reagent in the kit."
       ],
-      "conditions": "Ore-dependent extraction yield; this legacy procedure deletes the supplied stack object, so separate a small stack before using it.",
+      "conditions": "Uses up the whole stack it is given, so split off a small stack first. The yield depends on the ore.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -15223,7 +15223,7 @@
       "steps": [
         "Use a kitchen knife in Help intent on a small bush with seed stock. The random seed pool includes this crop."
       ],
-      "conditions": "Turnip seeds occur in temperate, sea, tundra and taiga forage pools. Existing ten-minute bush cooldown; selection is random, not guaranteed.",
+      "conditions": "Turnip seeds turn up when foraging in temperate, coastal, tundra and taiga lands. Each bush can be searched every ten minutes and finds are random.",
       "map_notes": "Requires an accessible bush or traded seed; no cave/spawn placement guarantee.",
       "era": "Foraging has no new era gate; farming needs existing tools/research.",
       "status": "Source-reviewed proposed extension of pinned base; native/map reachability unverified"
@@ -15249,7 +15249,7 @@
         "Keep the crop alive until harvest-ready, then harvest with a suitable sharp tool.",
         "Keep spores/seeds for another planting; eat the produce or store it off the floor."
       ],
-      "conditions": "temperate, sea, tundra or taiga outdoor/open-sky ploughed soil; all four ordinary seasons including winter. Each harvest retires the crop and returns two seeds/spores plus one to three food items depending on fertility; each food has two nutriment. Snowstorm protection does not remove water/soil costs, drought or sandstorm death. Normal stage progression.",
+      "conditions": "Grow in ploughed soil under open sky in temperate, coastal, tundra or taiga lands, in any season including winter. Each harvest ends the plant and gives two seeds and one to three turnips, more in fertile soil.",
       "map_notes": "Rock must be cleared then suitable dirt ploughed. Jungle dirt and Desert-map dust remain unsuitable.",
       "era": "Plough: four wood planks, Basic Agriculture research rules (node tier 1); no new era gate for seed or food.",
       "status": "Source-reviewed proposed extension of pinned base; native harvest/consumption/save acceptance unverified"
@@ -15271,7 +15271,7 @@
       "steps": [
         "Use a kitchen knife in Help intent on a small bush with seed stock. The random seed pool includes this crop."
       ],
-      "conditions": "Plump helmet spores occur in all eight default biome forage pools. Existing ten-minute bush cooldown; selection is random, not guaranteed.",
+      "conditions": "Plump helmet spores turn up when foraging in any land. Each bush can be searched every ten minutes and finds are random.",
       "map_notes": "Requires an accessible bush or traded seed; no cave/spawn placement guarantee.",
       "era": "Foraging has no new era gate; farming needs existing tools/research.",
       "status": "Source-reviewed proposed extension of pinned base; native/map reachability unverified"
@@ -15297,7 +15297,7 @@
         "Keep the crop alive until harvest-ready, then harvest with a suitable sharp tool.",
         "Keep spores/seeds for another planting; eat the produce or store it off the floor."
       ],
-      "conditions": "ploughed soil; indoors/underground bypasses season and biome using mushroom ancestry. Each harvest retires the crop and returns two seeds/spores plus one to three food items depending on fertility; each food has two nutriment. No watering/light requirement; half of normal stage attempts, normal soil debit and eventual overmaturity. This is not a higher guaranteed calories-per-minute route.",
+      "conditions": "Grow in ploughed soil. Indoors or underground they ignore season and climate and need no water or light, but grow at half speed. Each harvest ends the plant and gives two spores and one to three plump helmets, more in fertile soil.",
       "map_notes": "Rock must be cleared then suitable dirt ploughed. Jungle dirt and Desert-map dust remain unsuitable.",
       "era": "Plough: four wood planks, Basic Agriculture research rules (node tier 1); no new era gate for seed or food.",
       "status": "Source-reviewed proposed extension of pinned base; native harvest/consumption/save acceptance unverified"
@@ -15322,7 +15322,7 @@
         "After the existing ten-plus-five-second cycle, collect one chip batch per five logs. Unpaid remainders stay installed.",
         "Hold the chips and apply them to an adjacent oven-family structure to refuel it."
       ],
-      "conditions": "Five logs produce one abstract batch containing five log units of feedstock, not a physical yield measurement. Ten batches per stack. Power/ownership/input checks must succeed at completion; observed power loss or cancellation gives no output. Chips cannot replace logs in crafting or convert back to logs.",
+      "conditions": "Every five logs make one batch of chips. A stack holds ten batches. The grinder needs power until it finishes, or nothing comes out. Chips are only good as fuel.",
       "map_notes": "Wizard Boy retains its mapped base grinder in maps/special/wizard_boy.dmm and its camp catalog. The global catalog can build a constructed wood grinder under Electricity; no recipe in camp, Carib or species overrides and no map-level resource reachability guarantee.",
       "era": "Mapped base grinder: no added machine research gate. Constructed variant: Electricity node (era tier 5), maximum recipe era 8; existing baseline grants apply.",
       "status": "Source-reviewed candidate; offline transaction checks passed; native gameplay and save/load unverified"
@@ -15346,7 +15346,7 @@
         "Hold a chip stack in hand and use it on an adjacent oven, campfire or wood stove.",
         "Each paid batch supplies five existing oven fuel units and five paid-wood residue units, equal to its five input logs."
       ],
-      "conditions": "Consumes held whole batches once before assigning fuel or residue credit. Loading creates no ash; the existing paid-fuel burn ledger governs residue. No other fuel family or pulp recipe added.",
+      "conditions": "Load whole batches into the oven as fuel.",
       "map_notes": "Requires an accessible existing oven-family structure and chip stock; no map-level reachability guarantee.",
       "era": "No new fuel-specific era/research gate; station availability remains separate.",
       "status": "Source-reviewed candidate; offline raw-log parity checks passed; native burn and save/load unverified"
@@ -15373,7 +15373,7 @@
         "Anchor the initially empty, off machine, connect paid cable supply and insert at least five raw logs.",
         "To relocate, remove cables and unfasten it; constructed machines cannot be dismantled for materials."
       ],
-      "conditions": "Existing global catalog only; Electricity completed or supplied by baseline-era rules. Base 120-ds construction time is scaled by strength and crafting. No new grinder skill gate. Circuit crafting requires coefficient >= 2.2 plus copper and iron; input costs are nominal because bulk discounts apply. All grinder transaction and chip/fuel behavior is inherited unchanged.",
+      "conditions": "Needs Electricity. Building it is faster with strength and crafting skill, and its circuit needs crafting skill plus copper and iron.",
       "map_notes": "Wizard Boy mapped base grinder and camp catalog unchanged; no new Carib, camp or species recipe. Existing steam engine plus two lit heatsources is a source-backed 30-capacity option, not a native or full-map guarantee.",
       "era": "Electricity node era tier 5, minimum bench tier 4, Steam Power prerequisite and cable prototype; maximum recipe era 8. No new calendar-year/minimum-era gate.",
       "status": "Source-reviewed candidate; offline acquisition checks passed; native construction, inventory, power network and save/load unverified"

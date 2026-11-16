@@ -217,6 +217,9 @@
  */
 
 /** Displays the NanoUI purchase interface to customers. */
+/obj/structure/vending/sales/ui_actions(ui_key)
+	return list("vend", "cancelpurchase", "remove_money", "togglevoice")
+
 /obj/structure/vending/sales/ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = TRUE)
 	user.set_using_object(src)
 

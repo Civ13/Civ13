@@ -1,11 +1,11 @@
 """Photo producer/state contracts; no DM/client/native execution."""
 from pathlib import Path
 import re,unittest
+import reader_base
 ROOT=Path(__file__).resolve().parents[2]
 DM=(ROOT/'code/game/objects/items/paper/photography.dm').read_text()
-SHOW=DM.split('/obj/item/weapon/photo/proc/show(',1)[1].split('/datum/nanoui/tgui/photo_viewer/update',1)[0]
-STATE=DM.split('/datum/topic_state/photo_viewer/can_use_topic',1)[1].split('/obj/item/weapon/photo/verb/rename()',1)[0]
-UPDATE=DM.split('/datum/nanoui/tgui/photo_viewer/update',1)[1].split('/datum/topic_state/photo_viewer\n',1)[0]
+SHOW=DM.split('/obj/item/weapon/photo/proc/show(',1)[1].split('/datum/nanoui/tgui/snapshot/photo_viewer\n',1)[0]
+UPDATE=reader_base.UPDATE
 
 class PhotoViewerContract(unittest.TestCase):
  def test_rename_waits_for_post_prompt_possession_and_consciousness(self):
@@ -42,21 +42,19 @@ class PhotoViewerContract(unittest.TestCase):
   self.assertIn('isnum(photo_size)',SHOW)
 
  def test_owner_projection_retains_admitted_readers_and_rejects_other_mobs_items_and_logout(self):
-  match=re.search(r'if \((.+)\)\n\t\treturn STATUS_CLOSE',STATE);self.assertIsNotNone(match)
-  expression=match.group(1).replace('!user.client','not connected').replace('!user','not user').replace('!photo','not photo').replace('||','or')
+  # The shared guard is the whole rule: a photo adds none of its own.
+  self.assertIsNone(reader_base.rule(DM,'photo_viewer'))
   def permits(reader,user,photo,src_object,connected=True):
-   return not eval(expression,{'__builtins__':{}},dict(reader=reader,user=user,photo=photo,src_object=src_object,connected=connected))
+   return reader_base.allowed(photo,src_object,user,reader,connected)
   owner=object();photo=object()
   for label in ('human','observer','dead','incapacitated'):
    self.assertTrue(permits(owner,owner,photo,photo),label)
   self.assertFalse(permits(owner,object(),photo,photo));self.assertFalse(permits(owner,owner,photo,object()))
   self.assertFalse(permits(owner,owner,photo,photo,False));self.assertFalse(permits(owner,None,photo,photo))
   self.assertFalse(permits(owner,owner,None,None))
-  self.assertIn('return STATUS_UPDATE',STATE)
-  self.assertNotRegex(STATE,r'Adjacent|in_range|ishuman|isliving|shared_nano_interaction|STATUS_INTERACTIVE')
 
  def test_stale_state_is_replaced_and_close_cannot_clear_another_machine(self):
-  for marker in ('GLOB.nanomanager.get_open_ui(user, src, ui_key)','!istype(ui)','!istype(old_state)','old_state.photo != src','old_state.reader != user','ui.close()','ui = null','new(src, user)'):
+  for marker in ('open_reader_ui(user, src, ui_key, /datum/nanoui/tgui/snapshot/photo_viewer, /datum/topic_state/reader/photo_viewer)','if (!ui)','new(src, user)'):
    self.assertIn(marker,SHOW)
   self.assertIn('ui.use_on_close_logic(FALSE)',SHOW)
   self.assertLess(SHOW.index('ui.use_on_close_logic(FALSE)'),SHOW.index('ui.open()'))
@@ -76,7 +74,7 @@ class PhotoViewerContract(unittest.TestCase):
 
  def test_previous_photo_replacement_is_scoped_to_this_owner_and_subtype(self):
   self.assertIn('if (islist(user.open_uis))',SHOW)
-  self.assertIn('for (var/datum/nanoui/tgui/photo_viewer/old_ui in user.open_uis.Copy())',SHOW)
+  self.assertIn('for (var/datum/nanoui/tgui/snapshot/photo_viewer/old_ui in user.open_uis.Copy())',SHOW)
   marker='istype(old_ui) && old_ui.user == user && old_ui.src_object != src'
   self.assertIn(marker,SHOW)
   self.assertIn('old_ui.close()',SHOW)
@@ -90,7 +88,7 @@ class PhotoViewerContract(unittest.TestCase):
   self.assertFalse(closes(False,user,other_photo))
 
  def test_source_dependencies_and_registration_reuse_the_existing_adapter(self):
-  self.assertIn('new /datum/nanoui/tgui/photo_viewer(user, src, ui_key, "photo_viewer.tmpl"',SHOW)
+  self.assertIn('new /datum/nanoui/tgui/snapshot/photo_viewer(user, src, ui_key, "photo_viewer.tmpl"',SHOW)
   workflow=(ROOT/'.github/workflows/tgui.yml').read_text()
   self.assertIn("'code/game/objects/items/paper/photography.dm'",workflow)
   self.assertIn("'photo_viewer.tmpl': PhotoViewer",(ROOT/'tgui/src/interfaces/index.tsx').read_text())

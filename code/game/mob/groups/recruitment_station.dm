@@ -118,6 +118,9 @@
 		return station.faction
 	return viewer.civilization
 
+/datum/recruitment_panel/ui_actions(ui_key)
+	return list("designate", "unbind", "apply", "withdraw", "confirm", "approve", "reject", "revoke", "set_mode", "set_open", "set_language", "set_skill", "set_nonmatch", "refresh")
+
 /datum/recruitment_panel/ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = TRUE, var/datum/nanoui/master_ui = null, var/datum/topic_state/state = null)
 	if (user != viewer)
 		return

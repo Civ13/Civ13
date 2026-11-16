@@ -557,7 +557,7 @@
 		var/list/data = crew_log_data()
 		ui = GLOB.nanomanager.try_update_ui(user, src, ui_key, null, data, TRUE)
 		if (!ui)
-			var/datum/topic_state/crew_log/reader_state = new(src, user)
+			var/datum/topic_state/reader/crew_log/reader_state = new(src, user)
 			ui = new /datum/nanoui/tgui(user, src, ui_key, "crew_log.tmpl", "Crew Log", 500, 520, _state = reader_state)
 			ui.use_on_close_logic(FALSE)
 			ui.set_initial_data(data)
@@ -578,19 +578,9 @@
 		return list("crew" = entries)
 
 // Bound to the original reader/book; roles are rechecked on status/transport.
-/datum/topic_state/crew_log
-	var/obj/structure/voyage/boatswain_book/book
-	var/mob/reader
-
-/datum/topic_state/crew_log/New(var/obj/structure/voyage/boatswain_book/new_book, var/mob/new_reader)
-	..()
-	book = new_book
-	reader = new_reader
-
-/datum/topic_state/crew_log/can_use_topic(var/src_object, var/mob/user)
-	if (!book || src_object != book || !user || user != reader || !user.client || !book.can_read_crew_log(user))
-		return STATUS_CLOSE
-	return STATUS_UPDATE
+/datum/topic_state/reader/crew_log/reader_allowed(mob/user)
+	var/obj/structure/voyage/boatswain_book/book = subject
+	return istype(book) && book.can_read_crew_log(user)
 
 /obj/structure/voyage/quartermaster_book
 	name = "ship inventory"
@@ -632,7 +622,7 @@
 			list("label" = "Blunderbuss Ammo", "amount" = wep["blunderbuss"], "unit" = "projectiles")))
 		ui = GLOB.nanomanager.try_update_ui(user, src, ui_key, null, data, TRUE)
 		if (!ui)
-			var/datum/topic_state/ship_stocks/reader_state = new(src, user)
+			var/datum/topic_state/reader/ship_stocks/reader_state = new(src, user)
 			ui = new /datum/nanoui/tgui(user, src, ui_key, "ship_stocks.tmpl", "Ship Stocks", 500, 520, _state = reader_state)
 			ui.set_initial_data(data)
 			ui.use_on_close_logic(FALSE)
@@ -712,19 +702,8 @@
 
 // A detached ledger snapshot can stay readable while walking, but cannot be
 // used by a transferred body or forward actions through either renderer.
-/datum/topic_state/ship_stocks
-	var/obj/structure/voyage/quartermaster_book/book
-	var/mob/reader
-
-/datum/topic_state/ship_stocks/New(var/obj/structure/voyage/quartermaster_book/new_book, var/mob/new_reader)
-	..()
-	book = new_book
-	reader = new_reader
-
-/datum/topic_state/ship_stocks/can_use_topic(var/src_object, var/mob/user)
-	if (src_object != book || user != reader || !ishuman(user) || !user.client)
-		return STATUS_CLOSE
-	return STATUS_UPDATE
+/datum/topic_state/reader/ship_stocks/reader_allowed(mob/user)
+	return ishuman(user)
 
 /obj/structure/voyage/sextant
 	name = "sextant"

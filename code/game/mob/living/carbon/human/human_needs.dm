@@ -122,7 +122,7 @@
 		total += parts[condition]
 	var/list/before = mood_rest_parts
 	mood_rest_parts = parts
-	mood_rest = clamp(MOOD_REST + total, MOOD_REST_MIN, MOOD_REST_MAX)
+	mood_rest = clamp(MOOD_REST + total, MOOD_REST_MIN, MOOD_REST_MAX + home_rest_cap_bonus())
 	for (var/condition in parts)
 		if (!islist(before) || !(condition in before))
 			tell_mood_rest(condition, parts[condition])

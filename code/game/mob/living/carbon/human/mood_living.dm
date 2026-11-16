@@ -162,7 +162,9 @@
 /mob/living/human/refresh_mood_rest()
 	if (inducedSSD && sleeping)
 		sleep_comfort = sleeping_place_comfort()
+		home_comfort_sleep_tick()
 		return
+	home_comfort_wake()
 	..()
 
 /mob/living/human/collect_mood_rest_parts(list/parts)
@@ -194,9 +196,14 @@
 		parts["being warm and dry"] = LIVING_WARM_DRY
 	if (mood_dressed_long_enough())
 		parts["being dressed for the weather"] = LIVING_DRESSED
-	var/shelter = mood_shelter_name()
-	if (shelter)
-		parts[shelter] = LIVING_SHELTER
+	// A home slept in counts all day, like the bed; otherwise a roof or a fire.
+	var/home = home_tier_mood(home_comfort)
+	if (home)
+		parts["a [home_tier_name(home_comfort)] home"] = home
+	else
+		var/shelter = mood_shelter_name()
+		if (shelter)
+			parts[shelter] = LIVING_SHELTER
 	if (mood_tame_animal_near())
 		parts["animal company"] = LIVING_ANIMAL
 	var/art = mood_art_in_sight()

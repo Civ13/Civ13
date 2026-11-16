@@ -50,7 +50,7 @@ lift faded at 0.07 a tick.
 ## Resting level
 
 `mood_resting_level()` is `MOOD_REST` (50) plus the lasting conditions, limited
-to `MOOD_REST_MIN`..`MOOD_REST_MAX` (30 to 75). It is refreshed every
+to `MOOD_REST_MIN`..`MOOD_REST_MAX` (30 to 75); a fine or splendid home lifts the top to 77 or 79 (`home_rest_cap_bonus()`). It is refreshed every
 `MOOD_REST_CHECK` (10 seconds) by `refresh_mood_rest()`, which calls
 `collect_mood_rest_parts(parts)`; each override adds `parts[condition] = change`.
 The parts are listed when the player clicks the mood icon, and a new part is
@@ -88,6 +88,7 @@ sickness, which could only ever pin mood to the floor.
 | Lasting pain (traumatic shock 50 or more) | -5 | everywhere |
 | Dressed for the weather for 10 minutes (see below) | +3 | hunger-enabled maps |
 | Sheltered: a roofed area, or a lit fire within drying range at night | +3 | hunger-enabled maps |
+| A cosy / comfortable / fine / splendid home last slept in (replaces sheltered, see docs/home-comfort.md) | +4 / +5 / +6 / +8 | hunger-enabled maps |
 | A tame animal within 3 tiles (tamed dog or wolf, tame horse or livestock) | +3 | hunger-enabled maps |
 | Art in sight within 4 tiles: paintings, rock art, statues and monuments | +2 each, up to +6 | hunger-enabled maps |
 

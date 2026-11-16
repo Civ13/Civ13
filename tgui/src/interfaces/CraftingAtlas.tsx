@@ -26,7 +26,7 @@ const methods: Record<string, [string, string]> = {
   'Chemistry': ['Mixing', 'Combine the reagents in one container.'],
   'Cooking': ['Boiling', 'Boil it in a pot of water over a stove or fire.'],
   'Factory fabricator': ['Fabricator', 'Load the materials into a powered assembly fabricator.'],
-  'Acquisition / processing': ['Gathering', 'Gathered or processed in the world rather than crafted from a menu.'],
+  'Acquisition / processing': ['Gathering', 'Gathered or processed in the world.'],
 };
 // Where a reaction runs. Most happen in any container; the bench offers some and is the only place for a few.
 const reactionHints: Record<string, string> = {
@@ -153,14 +153,14 @@ function Recipe({ ui, recipe, choose, lead }: { ui: ScreenProps; recipe: Data; c
 }
 // Things nobody crafts: say where they are instead of "no recipe".
 const worldNotes: Record<string, string> = {
-  'Animal': 'A living creature, not something you craft. Look for it in the wild on maps where it lives, or keep and breed a herd.',
-  'Terrain': 'Part of the landscape, not something you craft. Look for this ground on the map.',
-  'Natural feature': 'Grows or lies in the wild, not something you craft. Look for it on the map.',
-  'Hostile person': 'A hostile non-player character, not something you craft. Met only on maps and events that place them.',
-  'Wall': 'Part of a building or the landscape, not something you craft from a menu.',
+  'Animal': 'A living creature. Look for it in the wild on maps where it lives, or keep and breed a herd.',
+  'Terrain': 'Part of the landscape. Look for this ground on the map.',
+  'Natural feature': 'Grows or lies in the wild. Look for it on the map.',
+  'Hostile person': 'A hostile character, met on some maps and events.',
+  'Wall': 'Part of a building or the landscape.',
 };
 // Reference entries describe a type of thing; they never report what is in the world right now.
-const referenceNote = 'Reference entry. No recipe makes or uses this and no gathering route is recorded. It may be placed on some maps, sold, issued to a role or built another way. A page here does not mean it exists on the current map.';
+const referenceNote = 'Reference entry. It may be found on some maps, sold, issued to a role or built another way.';
 const routeLabels: Record<string, string> = { tools: 'Tools', conditions: 'Conditions', era: 'Era', map_notes: 'Map notes', status: 'Review status' };
 // Staff-only page: deliberately left out of the public atlas, web atlas and wiki.
 function AdminGuidance({ guidance }: { guidance: Data }) {
