@@ -302,6 +302,8 @@ var/global/list/nomads_fire_callbacks = list()
 
 	// Fusible links melt and rated fire doors spend their minutes (fire_doors.dm).
 	fire_nearby_doors(src)
+	// The fire fills its room with smoke (fire_smoke.dm).
+	add_fire_smoke(get_turf(src), 2)
 
 //burn floors
 	if (istype(get_turf(src), /turf/floor/grass))
