@@ -155,13 +155,16 @@
 	icon_state = "water_stamp_mill"
 	powerneeded = 0
 	crush_interval = 3
+	var/idle_state = "water_stamp_mill"
+	var/active_state = "water_stamp_mill_on"
 
 /obj/structure/drill/stamp_mill/water/check_power()
 	powered = mechanical_drive_factor(src) < 1
 	return powered
 
 /obj/structure/drill/stamp_mill/water/update_icon()
-	icon_state = active ? "water_stamp_mill_on" : "water_stamp_mill"
+	icon_state = active ? active_state : idle_state
+	update_plates_overlay() // milling.dm
 
 /obj/structure/drill/stamp_mill/water/process_machine()
 	if (active && !process_pending && anchored && isturf(loc) && loaded_stone() && !check_power())

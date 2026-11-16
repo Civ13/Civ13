@@ -17708,6 +17708,118 @@
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified",
       "source_commit": "163d8b9b"
+    },
+    {
+      "name": "Trommel feeding a sluice",
+      "file": "code/modules/1713/milling.dm",
+      "line": 89,
+      "inputs": [
+        "/obj/item/stack/ore/pay_dirt/rich",
+        "/obj/item/stack/ore/pay_dirt/tin",
+        "/obj/item/stack/ore/pay_dirt"
+      ],
+      "outputs": [
+        "/obj/item/stack/ore/gold",
+        "/obj/item/stack/ore/silver",
+        "/obj/item/stack/ore/tin",
+        "/obj/item/stack/ore/iron_sand",
+        "/obj/item/stack/ore/glass"
+      ],
+      "tools": [
+        "/obj/structure/drill/stamp_mill/water/mill/trommel",
+        "/obj/structure/placer_washer/sluice"
+      ],
+      "steps": [
+        "Set a trommel beside a sluice box and a mover.",
+        "Load pay dirt and water, then start it."
+      ],
+      "conditions": "One load every four seconds, washed at sluice rates. Driven by a mill wheel, treadwheel, horse gin or windmill next to it.",
+      "era": "Industrial Milling.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified",
+      "source_commit": "49f5eaca"
+    },
+    {
+      "name": "Amalgamator drum",
+      "file": "code/modules/1713/milling.dm",
+      "line": 137,
+      "inputs": [
+        "/obj/item/stack/ore/crushed_ore/gold",
+        "/obj/item/stack/ore/crushed_ore/silver",
+        "/datum/reagent/mercury"
+      ],
+      "outputs": [
+        "/obj/item/stack/ore/amalgam/gold",
+        "/obj/item/stack/ore/amalgam/silver",
+        "/obj/item/stack/ore/tailings/amalgam"
+      ],
+      "tools": [
+        "/obj/structure/drill/stamp_mill/water/mill/drum"
+      ],
+      "steps": [
+        "Pour quicksilver and water into the drum.",
+        "Load crushed ore and start it."
+      ],
+      "conditions": "80% recovery as amalgam; a mercury separator beside it cuts the quicksilver lost. Driven by a mill wheel, treadwheel, horse gin or windmill next to it.",
+      "era": "Industrial Milling.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified",
+      "source_commit": "49f5eaca"
+    },
+    {
+      "name": "Shaking table",
+      "file": "code/modules/1713/milling.dm",
+      "line": 183,
+      "inputs": [
+        "/obj/item/stack/ore/crushed_ore/gold",
+        "/obj/item/stack/ore/crushed_ore/silver"
+      ],
+      "outputs": [
+        "/obj/item/stack/ore/gold",
+        "/obj/item/stack/ore/silver",
+        "/obj/item/stack/ore/tailings"
+      ],
+      "tools": [
+        "/obj/structure/drill/stamp_mill/water/mill/table"
+      ],
+      "steps": [
+        "Pour water into the table.",
+        "Load crushed ore and start it."
+      ],
+      "conditions": "65% recovery as clean ore, no quicksilver. Driven by a mill wheel, treadwheel, horse gin or windmill next to it.",
+      "era": "Industrial Milling.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified",
+      "source_commit": "49f5eaca"
+    },
+    {
+      "name": "Amalgamation plates on a stamp mill",
+      "file": "code/modules/1713/milling.dm",
+      "line": 256,
+      "inputs": [
+        "/obj/item/stack/ore/gold_quartz",
+        "/obj/item/stack/ore/silver_lode",
+        "/datum/reagent/mercury"
+      ],
+      "outputs": [
+        "/obj/item/stack/ore/amalgam/gold",
+        "/obj/item/stack/ore/amalgam/silver",
+        "/obj/item/stack/ore/tailings/amalgam"
+      ],
+      "tools": [
+        "/obj/structure/drill/stamp_mill/water",
+        "/obj/structure/drill/stamp_mill",
+        "/obj/item/amalgamation_plates"
+      ],
+      "steps": [
+        "Fit amalgamation plates to a stamp mill.",
+        "Pour quicksilver into it and load lode ore."
+      ],
+      "conditions": "Stamped lode ore gives amalgam straight away at 50% recovery.",
+      "era": "Industrial Milling.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified",
+      "source_commit": "49f5eaca"
     }
   ],
   "mechanism_overview": [
