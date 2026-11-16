@@ -18,8 +18,10 @@
 	overlays |= bullethole_overlays
 	if (moldy>0)
 		overlays += image(icon = 'icons/turf/walls.dmi', icon_state = "mold[moldy]", layer = src.layer+0.02)
-	if (cracked>0)
-		overlays += image(icon = 'icons/turf/walls.dmi', icon_state = "cracks[cracked]", layer = src.layer+0.01)
+	// Weathering (cracked) or impact damage, whichever shows more.
+	var/crack_stage = max(cracked, impact_crack_stage())
+	if (crack_stage > 0)
+		overlays += image(icon = 'icons/turf/walls.dmi', icon_state = "cracks[crack_stage]", layer = src.layer+0.01)
 /obj/covers/New()
 	..()
 	register_seasonal_construction()

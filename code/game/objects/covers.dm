@@ -277,7 +277,7 @@
 	if (health <= 0)
 		visible_message("<span class='danger'>\The [src] is broken into pieces!</span>")
 		if (material == "Wood")
-			new /obj/item/stack/material/wood(get_turf(usr))
+			new /obj/item/stack/material/wood(get_turf(src))
 		qdel(src)
 		return
 
