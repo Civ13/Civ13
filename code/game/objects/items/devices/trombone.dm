@@ -14,75 +14,71 @@
 	value = 0
 	flags = CONDUCT
 
-/obj/item/trombone/proc/playnote(var/note as text)
-	//to_chat(world, "Note: [note]")
-	var/soundfile
-	/*BYOND loads resource files at compile time if they are ''. This means you can't really manipulate them dynamically.
-	Tried doing it dynamically at first but its more trouble than its worth. Would have saved many lines tho.*/
-	switch(note)
-		if ("Ab2", "G#2")	soundfile = 'sound/trombone/Ab2.mid'
-		if ("Ab3", "G#3")	soundfile = 'sound/trombone/Ab3.mid'
-		if ("Ab4", "G#4")	soundfile = 'sound/trombone/Ab4.mid'
-		if ("Ab5", "G#5")	soundfile = 'sound/trombone/Ab5.mid'
-		if ("Ab6", "G#6")	soundfile = 'sound/trombone/Ab6.mid'
-		if ("An2")	soundfile = 'sound/trombone/An2.mid'
-		if ("An3")	soundfile = 'sound/trombone/An3.mid'
-		if ("An4")	soundfile = 'sound/trombone/An4.mid'
-		if ("An5")	soundfile = 'sound/trombone/An5.mid'
-		if ("An6")	soundfile = 'sound/trombone/An6.mid'
-		if ("Bb2", "A#2")	soundfile = 'sound/trombone/Bb2.mid'
-		if ("Bb3", "A#3")	soundfile = 'sound/trombone/Bb3.mid'
-		if ("Bb4", "A#4")	soundfile = 'sound/trombone/Bb4.mid'
-		if ("Bb5", "A#5")	soundfile = 'sound/trombone/Bb5.mid'
-		if ("Bb6", "A#6")	soundfile = 'sound/trombone/Bb6.mid'
-		if ("Bn2")	soundfile = 'sound/trombone/Bn2.mid'
-		if ("Bn3")	soundfile = 'sound/trombone/Bn3.mid'
-		if ("Bn4")	soundfile = 'sound/trombone/Bn4.mid'
-		if ("Bn5")	soundfile = 'sound/trombone/Bn5.mid'
-		if ("Bn6")	soundfile = 'sound/trombone/Bn6.mid'
-		if ("Cn2")	soundfile = 'sound/trombone/Cn2.mid'
-		if ("Cn3", "B#2")	soundfile = 'sound/trombone/Cn3.mid'
-		if ("Cn4", "B#3")	soundfile = 'sound/trombone/Cn4.mid'
-		if ("Cn5", "B#4")	soundfile = 'sound/trombone/Cn5.mid'
-		if ("Cn6", "B#5")	soundfile = 'sound/trombone/Cn6.mid'
-		if ("Db2", "C#2")	soundfile = 'sound/trombone/Db2.mid'
-		if ("Db3", "C#3")	soundfile = 'sound/trombone/Db3.mid'
-		if ("Db4", "C#4")	soundfile = 'sound/trombone/Db4.mid'
-		if ("Db5", "C#5")	soundfile = 'sound/trombone/Db5.mid'
-		if ("Db6", "C#6")	soundfile = 'sound/trombone/Db6.mid'
-		if ("Dn2")	soundfile = 'sound/trombone/Dn2.mid'
-		if ("Dn3")	soundfile = 'sound/trombone/Dn3.mid'
-		if ("Dn4")	soundfile = 'sound/trombone/Dn4.mid'
-		if ("Dn5")	soundfile = 'sound/trombone/Dn5.mid'
-		if ("Dn6")	soundfile = 'sound/trombone/Dn6.mid'
-		if ("Eb2", "D#2")	soundfile = 'sound/trombone/Eb2.mid'
-		if ("Eb3", "D#3")	soundfile = 'sound/trombone/Eb3.mid'
-		if ("Eb4", "D#4")	soundfile = 'sound/trombone/Eb4.mid'
-		if ("Eb5", "D#5")	soundfile = 'sound/trombone/Eb5.mid'
-		if ("Eb6", "D#6")	soundfile = 'sound/trombone/Eb6.mid'
-		if ("En2")	soundfile = 'sound/trombone/En2.mid'
-		if ("En3")	soundfile = 'sound/trombone/En3.mid'
-		if ("En4")	soundfile = 'sound/trombone/En4.mid'
-		if ("En5")	soundfile = 'sound/trombone/En5.mid'
-		if ("En6")	soundfile = 'sound/trombone/En6.mid'
-		if ("Fn2", "E#2")	soundfile = 'sound/trombone/Fn2.mid'
-		if ("Fn3", "E#3")	soundfile = 'sound/trombone/Fn3.mid'
-		if ("Fn4", "E#4")	soundfile = 'sound/trombone/Fn4.mid'
-		if ("Fn5", "E#5")	soundfile = 'sound/trombone/Fn5.mid'
-		if ("Fn6", "E#6")	soundfile = 'sound/trombone/Fn6.mid'
-		if ("Gb2", "F#2")	soundfile = 'sound/trombone/Gb2.mid'
-		if ("Gb3", "F#3")	soundfile = 'sound/trombone/Gb3.mid'
-		if ("Gb4", "F#4")	soundfile = 'sound/trombone/Gb4.mid'
-		if ("Gb5", "F#5")	soundfile = 'sound/trombone/Gb5.mid'
-		if ("Gb6", "F#6")	soundfile = 'sound/trombone/Gb6.mid'
-		if ("Gn2")	soundfile = 'sound/trombone/Gn2.mid'
-		if ("Gn3")	soundfile = 'sound/trombone/Gn3.mid'
-		if ("Gn4")	soundfile = 'sound/trombone/Gn4.mid'
-		if ("Gn5")	soundfile = 'sound/trombone/Gn5.mid'
-		if ("Gn6")	soundfile = 'sound/trombone/Gn6.mid'
-		else		return
+// Note name to sample; notes without a sample play the nearest one, retuned.
+/obj/item/trombone/var/static/list/samples = list(
+	"Cn2" = 'sound/trombone/Cn2.ogg',
+	"Db2" = 'sound/trombone/Db2.ogg',
+	"Dn2" = 'sound/trombone/Dn2.ogg',
+	"Eb2" = 'sound/trombone/Eb2.ogg',
+	"En2" = 'sound/trombone/En2.ogg',
+	"Fn2" = 'sound/trombone/Fn2.ogg',
+	"Gb2" = 'sound/trombone/Gb2.ogg',
+	"Gn2" = 'sound/trombone/Gn2.ogg',
+	"Ab2" = 'sound/trombone/Ab2.ogg',
+	"An2" = 'sound/trombone/An2.ogg',
+	"Bb2" = 'sound/trombone/Bb2.ogg',
+	"Bn2" = 'sound/trombone/Bn2.ogg',
+	"Cn3" = 'sound/trombone/Cn3.ogg',
+	"Db3" = 'sound/trombone/Db3.ogg',
+	"Dn3" = 'sound/trombone/Dn3.ogg',
+	"Eb3" = 'sound/trombone/Eb3.ogg',
+	"En3" = 'sound/trombone/En3.ogg',
+	"Fn3" = 'sound/trombone/Fn3.ogg',
+	"Gb3" = 'sound/trombone/Gb3.ogg',
+	"Gn3" = 'sound/trombone/Gn3.ogg',
+	"Ab3" = 'sound/trombone/Ab3.ogg',
+	"An3" = 'sound/trombone/An3.ogg',
+	"Bb3" = 'sound/trombone/Bb3.ogg',
+	"Bn3" = 'sound/trombone/Bn3.ogg',
+	"Cn4" = 'sound/trombone/Cn4.ogg',
+	"Db4" = 'sound/trombone/Db4.ogg',
+	"Dn4" = 'sound/trombone/Dn4.ogg',
+	"Eb4" = 'sound/trombone/Eb4.ogg',
+	"En4" = 'sound/trombone/En4.ogg',
+	"Fn4" = 'sound/trombone/Fn4.ogg',
+	"Gb4" = 'sound/trombone/Gb4.ogg',
+	"Gn4" = 'sound/trombone/Gn4.ogg',
+	"Ab4" = 'sound/trombone/Ab4.ogg',
+	"An4" = 'sound/trombone/An4.ogg',
+	"Bb4" = 'sound/trombone/Bb4.ogg',
+	"Bn4" = 'sound/trombone/Bn4.ogg',
+	"Cn5" = 'sound/trombone/Cn5.ogg',
+	"Db5" = 'sound/trombone/Db5.ogg',
+	"Dn5" = 'sound/trombone/Dn5.ogg',
+	"Eb5" = 'sound/trombone/Eb5.ogg',
+	"En5" = 'sound/trombone/En5.ogg',
+	"Fn5" = 'sound/trombone/Fn5.ogg',
+	"Gb5" = 'sound/trombone/Gb5.ogg',
+	"Gn5" = 'sound/trombone/Gn5.ogg',
+	"Ab5" = 'sound/trombone/Ab5.ogg',
+	"An5" = 'sound/trombone/An5.ogg',
+	"Bb5" = 'sound/trombone/Bb5.ogg',
+	"Bn5" = 'sound/trombone/Bn5.ogg',
+	"Cn6" = 'sound/trombone/Cn6.ogg',
+	"Db6" = 'sound/trombone/Db6.ogg',
+	"Dn6" = 'sound/trombone/Dn6.ogg',
+	"Eb6" = 'sound/trombone/Eb6.ogg',
+	"En6" = 'sound/trombone/En6.ogg',
+	"Fn6" = 'sound/trombone/Fn6.ogg',
+	"Gb6" = 'sound/trombone/Gb6.ogg',
+	"Gn6" = 'sound/trombone/Gn6.ogg',
+	"Ab6" = 'sound/trombone/Ab6.ogg',
+	"An6" = 'sound/trombone/An6.ogg',
+	"Bb6" = 'sound/trombone/Bb6.ogg',
+	"Bn6" = 'sound/trombone/Bn6.ogg')
 
-	hearers(15, get_turf(src)) << sound(soundfile)
+/obj/item/trombone/proc/playnote(note)
+	instrument_play_note(src, note, samples)
 
 /obj/item/trombone/attack_self(mob/user as mob)
 	if (!isliving(user) || user.stat || user.restrained() || user.lying)	return

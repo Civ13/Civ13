@@ -1,7 +1,72 @@
 // Shared song player and editor for the piano, violin, shamisen and trumpet.
 // Each instrument keeps song, playing, help, edit and repeat vars and its own
-// playnote(note) sound table. A structure plays while anchored; a held
-// instrument plays while a living mob carries it.
+// samples table (note name to .ogg); playnote(note) hands both to
+// instrument_play_note. A structure plays while anchored; a held instrument
+// plays while a living mob carries it.
+
+// Notes run from C0 to B#9 (one past B9).
+#define INSTRUMENT_SEMITONES 121
+// The furthest a sample is retuned to stand in for a missing note.
+#define INSTRUMENT_MAX_RETUNE 40
+
+var/global/list/instrument_sample_tables = list()
+var/global/list/instrument_note_bases = list("C" = 0, "D" = 2, "E" = 4, "F" = 5, "G" = 7, "A" = 9, "B" = 11)
+var/global/list/instrument_note_accidentals = list("b" = -1, "n" = 0, "#" = 1)
+
+// "C#3" -> semitones above C0, or null for anything that is not a note.
+/proc/instrument_note_semitone(note)
+	if (!istext(note) || length(note) != 3)
+		return null
+	var/base = instrument_note_bases[copytext(note, 1, 2)]
+	var/accidental = instrument_note_accidentals[copytext(note, 2, 3)]
+	var/octave = text2num(copytext(note, 3, 4))
+	if (isnull(base) || isnull(accidental) || isnull(octave))
+		return null
+	var/semitone = octave * 12 + base + accidental
+	if (semitone < 0 || semitone >= INSTRUMENT_SEMITONES)
+		return null
+	return semitone
+
+// The instrument's samples indexed by semitone + 1, built once per type.
+/proc/instrument_sample_table(obj/I, list/samples)
+	var/list/table = instrument_sample_tables["[I.type]"]
+	if (table)
+		return table
+	table = new /list(INSTRUMENT_SEMITONES)
+	for (var/name in samples)
+		var/semitone = instrument_note_semitone(name)
+		if (!isnull(semitone))
+			table[semitone + 1] = samples[name]
+	instrument_sample_tables["[I.type]"] = table
+	return table
+
+// Plays one note to everyone in earshot. A note without its own sample uses
+// the nearest sample, retuned by changing its playback rate.
+/proc/instrument_play_note(obj/I, note, list/samples)
+	var/target = instrument_note_semitone(note)
+	if (isnull(target))
+		return FALSE
+	var/list/table = instrument_sample_table(I, samples)
+	var/soundfile
+	var/shift = 0
+	for (var/distance = 0 to INSTRUMENT_MAX_RETUNE)
+		if (target - distance >= 0 && table[target - distance + 1])
+			soundfile = table[target - distance + 1]
+			shift = distance
+			break
+		if (target + distance < INSTRUMENT_SEMITONES && table[target + distance + 1])
+			soundfile = table[target + distance + 1]
+			shift = -distance
+			break
+	if (!soundfile)
+		return FALSE
+	var/turf/source = get_turf(I)
+	if (!source)
+		return FALSE
+	var/frequency = shift ? 2 ** (shift / 12) : 0
+	for (var/mob/M in hearers(15, source))
+		M.playsound_local(source, soundfile, 100, shift != 0, frequency, 5)
+	return TRUE
 
 /datum/song
 	var/name = "Untitled"
@@ -216,3 +281,6 @@
 
 	I.add_fingerprint(user)
 	instrument_refresh(I)
+
+#undef INSTRUMENT_SEMITONES
+#undef INSTRUMENT_MAX_RETUNE
