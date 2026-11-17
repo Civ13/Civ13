@@ -280,8 +280,8 @@ default behaviour is:
 /mob/living/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
 	if (riding_pair(mover))
 		return TRUE
-	// A pulled thing may trail into the puller's tile; native bounds still
-	// keep it from overlapping the puller (see human_subtile_pull_follow).
+	// A pulled thing only moves into a tile the puller has wholly left (see
+	// human_subtile_pull_follow), so the puller's own offset never refuses it.
 	if (mover && mover == pulling && (mover.step_x || mover.step_y || step_x || step_y))
 		return TRUE
 	if (isliving(mover))
@@ -684,8 +684,8 @@ default behaviour is:
 			T = get_step(pull_pulse.destination, turn(pull_pulse.direction, 180))
 		moved = ..()
 		if (subtile_pull_step && (step_x || step_y || (pull_walker.human_subtile_transaction && pull_walker.human_subtile_transaction.fine_step)))
-			// A free slide drags the pulled object along the body's path on
-			// every pulse, aligned or not, once the body has cleared a tile.
+			// Under free movement the pulled thing moves into the tile the
+			// body last stood on once the body has wholly left it.
 			if (pull_walker.human_subtile_transaction && pull_walker.human_subtile_transaction.fine_step && pulling && isturf(pulling.loc) && !pulling.anchored)
 				pull_walker.human_subtile_pull_follow()
 			return moved

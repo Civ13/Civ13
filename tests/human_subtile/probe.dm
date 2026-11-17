@@ -161,12 +161,15 @@ var/human_subtile_fixture_deer_watched = FALSE
 	H.after_load()
 	human_subtile_fixture_reset(H)
 
-// Walks a body to an absolute pixel column on its row, as free pulses do,
-// without the restore path (which refuses a body that is pulling).
-/proc/human_subtile_fixture_glide(mob/living/human/subtile_fixture/H, px)
-	if (H.x != round(px / 32))
-		H.loc = locate(round(px / 32), H.y, H.z)
-	H.step_x = px % 32
+// Walks a body to an absolute pixel position as free pulses do, filed under
+// its centre tile (human_subtile_anchor), without the restore path (which
+// refuses a body that is pulling).
+/proc/human_subtile_fixture_glide_centre(mob/living/human/subtile_fixture/H, px, py)
+	var/tx = round((px + 16) / 32)
+	var/ty = round((py + 16) / 32)
+	H.loc = locate(tx, ty, H.z)
+	H.step_x = px - tx * 32
+	H.step_y = py - ty * 32
 
 /proc/human_subtile_fixture_headless()
 	human_subtile_fixture_assert(world.byond_version == 516 && world.byond_build == 1688, "pinned_native_engine")
@@ -422,9 +425,9 @@ var/human_subtile_fixture_deer_watched = FALSE
 	D2.movement_eastwest = null
 	for (var/turf/WS in slide_wall)
 		WS.density = FALSE
-	// Free movement pulling works like a rope: the pulled thing slides in
-	// pixels after the body, snags on walls, and the pull ends when too far.
-	human_subtile_fixture_phase = "headless pull rope"
+	// Free movement pulls like tile walking: the pulled thing waits until the
+	// body has wholly left the tile it last stood on, then moves into it.
+	human_subtile_fixture_phase = "headless pull last tile"
 	var/mob/living/human/subtile_fixture/PF = human_subtile_fixture_actor(16, 6)
 	PF.set_human_subtile(TRUE)
 	var/obj/structure/pull_crate = new(locate(15, 6, 1))
@@ -432,61 +435,41 @@ var/human_subtile_fixture_deer_watched = FALSE
 	pull_crate.density = TRUE
 	PF.pulling = pull_crate
 	pull_crate.pulledby = PF
-	human_subtile_fixture_assert(!PF.human_subtile_pull_follow() && pull_crate.loc == locate(15, 6, 1) && !pull_crate.step_x, "pull_waits_while_touching")
-	human_subtile_fixture_place(PF, 8, 0)
-	PF.pulling = pull_crate
-	pull_crate.pulledby = PF
-	var/rope_first = PF.human_subtile_pull_follow() && pull_crate.x == 15 && pull_crate.step_x == 4 && !pull_crate.step_y
+	human_subtile_fixture_assert(!PF.human_subtile_pull_follow() && pull_crate.loc == locate(15, 6, 1) && !pull_crate.step_x, "pull_waits_on_first_tile")
+	// Past halfway the body files under the next tile but still covers this one.
+	human_subtile_fixture_glide_centre(PF, 16 * 32 + 20, 6 * 32)
+	human_subtile_fixture_assert(PF.x == 17 && !PF.human_subtile_pull_follow() && pull_crate.loc == locate(15, 6, 1) && !pull_crate.step_x && PF.pulling == pull_crate, "pull_waits_until_tile_left")
+	human_subtile_fixture_glide_centre(PF, 17 * 32, 6 * 32)
+	human_subtile_fixture_assert(PF.human_subtile_pull_follow() && pull_crate.loc == locate(16, 6, 1) && !pull_crate.step_x && !pull_crate.step_y && PF.pulling == pull_crate, "pull_moves_into_last_tile")
+	// Turning north, it follows round the corner into the tile the body left.
+	human_subtile_fixture_glide_centre(PF, 17 * 32, 6 * 32 + 18)
 	PF.human_subtile_pull_follow()
-	human_subtile_fixture_assert(rope_first && pull_crate.x == 15 && pull_crate.step_x == 6 && !PF.human_subtile_pull_follow() && PF.pulling == pull_crate, "pull_rope_trails_in_pixels")
-	// Moving up past it (here: it sits half a tile lower), the rope tugs it along at once rather than waiting
-	// until the body has cleared it and then catching up a whole tile, but only
-	// 1px a pulse while beside the body, so it drops back behind.
-	pull_crate.Move(locate(15, 5, 1), SOUTH, 6, 16)
-	human_subtile_fixture_assert(PF.human_subtile_pull_follow() && pull_crate.x == 15 && pull_crate.y == 5 && pull_crate.step_x == 6 && pull_crate.step_y == 17, "pull_rope_tugs_sideways")
-	// Pulling straight into a wall snags: no free axis or corner to slide round.
-	var/turf/rope_wall = locate(17, 10, 1)
-	rope_wall.density = TRUE
-	var/mob/living/human/subtile_fixture/PS = human_subtile_fixture_actor(17, 11)
+	human_subtile_fixture_glide_centre(PF, 17 * 32, 7 * 32)
+	human_subtile_fixture_assert(PF.human_subtile_pull_follow() && pull_crate.loc == locate(17, 6, 1) && !pull_crate.step_x && !pull_crate.step_y && PF.pulling == pull_crate, "pull_follows_round_turn")
+	PF.pulling = null
+	pull_crate.pulledby = null
+	qdel(pull_crate)
+	// Something filling the last tile blocks it, and the hold ends.
+	human_subtile_fixture_phase = "headless pull blocked"
+	var/mob/living/human/subtile_fixture/PS = human_subtile_fixture_actor(16, 9)
 	PS.set_human_subtile(TRUE)
-	var/obj/structure/snag_crate = new(locate(17, 9, 1))
+	var/obj/structure/snag_crate = new(locate(15, 9, 1))
 	snag_crate.anchored = FALSE
 	snag_crate.density = TRUE
 	PS.pulling = snag_crate
 	snag_crate.pulledby = PS
-	var/snagged = !PS.human_subtile_pull_follow() && snag_crate.loc == locate(17, 9, 1) && !snag_crate.step_x && !snag_crate.step_y
-	human_subtile_fixture_assert(snagged, "pull_snags_on_walls")
+	PS.human_subtile_pull_follow()
+	human_subtile_fixture_glide_centre(PS, 16 * 32 + 18, 9 * 32)
+	PS.human_subtile_pull_follow()
+	var/obj/structure/snag_block = new(locate(16, 9, 1))
+	snag_block.anchored = TRUE
+	snag_block.density = TRUE
+	human_subtile_fixture_glide_centre(PS, 17 * 32, 9 * 32)
+	var/snagged = !PS.human_subtile_pull_follow() && snag_crate.loc == locate(15, 9, 1) && !snag_crate.step_x && !snag_crate.step_y
+	human_subtile_fixture_assert(snagged, "pull_snags_when_blocked")
 	human_subtile_fixture_assert(!PS.pulling && !snag_crate.pulledby, "pull_breaks_when_too_far")
-	rope_wall.density = FALSE
-	PF.pulling = null
-	pull_crate.pulledby = null
-	qdel(pull_crate)
-	// Walking east with the crate beside it (south), the crate falls in behind
-	// the body within a few tiles instead of riding alongside.
-	human_subtile_fixture_phase = "headless pull falls in behind"
-	var/mob/living/human/subtile_fixture/PB = human_subtile_fixture_actor(8, 4)
-	PB.set_human_subtile(TRUE)
-	var/obj/structure/side_crate = new(locate(8, 3, 1))
-	side_crate.anchored = FALSE
-	side_crate.density = TRUE
-	var/body_px = 8 * 32
-	var/behind = FALSE
-	for (var/pulse in 1 to 112)
-		body_px += 2
-		human_subtile_fixture_glide(PB, body_px)
-		PB.pulling = side_crate
-		side_crate.pulledby = PB
-		PB.human_subtile_pull_follow()
-		if (PB.pulling != side_crate)
-			break
-		var/crate_px = side_crate.x * 32 + side_crate.step_x
-		if (side_crate.y == 4 && !side_crate.step_y && crate_px <= body_px - 32)
-			behind = TRUE
-			break
-	human_subtile_fixture_assert(behind && PB.pulling == side_crate && body_px <= 12 * 32, "pull_falls_in_behind")
-	PB.pulling = null
-	side_crate.pulledby = null
-	qdel(side_crate)
+	qdel(snag_block)
+	qdel(snag_crate)
 	// Swapping places keeps each body's exact position: the swapped body takes
 	// the other's pixel offset instead of carrying its own into a wall.
 	human_subtile_fixture_phase = "headless exact swap"
