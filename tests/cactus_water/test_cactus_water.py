@@ -55,6 +55,21 @@ class CactusWater(unittest.TestCase):
         self.assertNotIn('do_after(', action)
         self.assertNotIn('sleep(', action)
 
+    def test_needs_blade_in_other_hand(self):
+        action = proc(WILD, "/obj/structure/wild/tree/cactus/attackby")
+        check = proc(WILD, "/obj/structure/wild/tree/cactus/proc/cactus_water_blade")
+        for term in ('is_sharp(blade)', 'blade.has_edge()', 'is_tool(blade, TOOL_KNIFE)'):
+            self.assertIn(term, check)
+        self.assertIn('var/obj/item/blade = user.get_inactive_hand()', action)
+        self.assertIn('You need something sharp in your other hand', action)
+        # The blade is required before any water is reserved, and rechecked after callbacks.
+        self.assertLess(action.index('cactus_water_blade(blade)'), action.index('cactus_water_busy = TRUE'))
+        self.assertIn('user.get_inactive_hand() != blade', action[action.index('holder.update_total()'):])
+
+    def test_player_messages_do_not_name_persistence(self):
+        for line in re.findall(r'to_chat\([^\n]*', WILD):
+            self.assertNotIn('persistence', line.lower(), line)
+
     def test_finite_stock_partial_full_failure_and_restore(self):
         stock, received = 20, 0
         for free in (5, 2, 0, 5, 5, 5, 5):

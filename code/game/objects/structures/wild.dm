@@ -384,6 +384,12 @@ var/list/seed_list_jungle
 /obj/structure/wild/tree/cactus/persistence_runtime_var(key)
 	return key == "cactus_water_busy" || ..()
 
+// Cutting a cactus open needs an edged or pointed item, or any knife tool.
+/obj/structure/wild/tree/cactus/proc/cactus_water_blade(obj/item/blade)
+	if (!istype(blade) || QDELETED(blade))
+		return FALSE
+	return is_sharp(blade) || blade.has_edge() || is_tool(blade, TOOL_KNIFE)
+
 /obj/structure/wild/tree/cactus/attackby(obj/item/W, mob/user)
 	if (!istype(W, /obj/item/weapon/reagent_containers) || !user || user.a_intent == I_HARM)
 		return ..()
@@ -392,7 +398,11 @@ var/list/seed_list_jungle
 	if (cactus_water_busy || QDELETED(src) || QDELETED(vessel) || QDELETED(user) || !isturf(loc) || user.get_active_hand() != vessel || vessel.loc != user || !user.Adjacent(src) || user.stat != CONSCIOUS || user.incapacitated())
 		return TRUE
 	if (persistence_save_in_progress || persistence_active_operation || persistence_load_recovery_required)
-		to_chat(user, SPAN_WARNING("You cannot collect cactus water during persistence operations."))
+		to_chat(user, SPAN_WARNING("You cannot collect cactus water while the world is saving."))
+		return TRUE
+	var/obj/item/blade = user.get_inactive_hand()
+	if (!cactus_water_blade(blade))
+		to_chat(user, SPAN_WARNING("You need something sharp in your other hand, like a knife, flint blade or hatchet, to cut the cactus open."))
 		return TRUE
 	if (!vessel.is_open_container() || !vessel.reagents)
 		to_chat(user, SPAN_NOTICE("Open the container first."))
@@ -408,7 +418,7 @@ var/list/seed_list_jungle
 	holder.update_total()
 	if (QDELETED(src))
 		return TRUE
-	if (QDELETED(user) || QDELETED(vessel) || QDELETED(holder) || vessel.reagents != holder || !vessel.is_open_container() || vessel.loc != user || user.get_active_hand() != vessel || !isturf(loc) || !user.Adjacent(src) || user.stat != CONSCIOUS || user.incapacitated() || persistence_save_in_progress || persistence_active_operation || persistence_load_recovery_required)
+	if (QDELETED(user) || QDELETED(vessel) || QDELETED(holder) || vessel.reagents != holder || !vessel.is_open_container() || vessel.loc != user || user.get_active_hand() != vessel || QDELETED(blade) || blade.loc != user || user.get_inactive_hand() != blade || !isturf(loc) || !user.Adjacent(src) || user.stat != CONSCIOUS || user.incapacitated() || persistence_save_in_progress || persistence_active_operation || persistence_load_recovery_required)
 		cactus_water_busy = FALSE
 		return TRUE
 	var/collected = min(5, cactus_water_remaining, holder.get_free_space())
@@ -428,7 +438,7 @@ var/list/seed_list_jungle
 	if (!QDELETED(holder))
 		holder.handle_reactions()
 	if (accepted > 0 && !QDELETED(user) && !QDELETED(vessel))
-		to_chat(user, SPAN_NOTICE("You collect [accepted] units of water from the cactus in [vessel]."))
+		to_chat(user, SPAN_NOTICE("You cut into the cactus with [blade] and collect [accepted] units of water in [vessel]."))
 	return TRUE
 
 /obj/structure/wild/tree/dead_tree
