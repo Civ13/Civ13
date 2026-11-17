@@ -101,16 +101,15 @@
 	if(istype(M, itemtype1) || istype(M, itemtype2) || istype(M, itemtype3) || istype(M, itemtype4) || istype(M, itemtype5) || istype(M, itemtype6) || istype(M, itemtype7) || istype(M, itemtype8) || istype(M, itemtype9) || istype(M, itemtype10) || istype(M, itemtype11))
 		if (!user || !user.may_do_after)
 			return
+		if (!item_ready_for_repair(M, user, damageamount, actiontext))
+			return
 		visible_message("<span class='notice'>[user] starts to [actiontext] the [M.name]...</span>")
 		playsound(src,noise,40,1)
 		if (do_after(user, delay, src))
-			M.maxhealth -= damageamount
-			M.health = min(M.health + repairamount, M.maxhealth)
+			if (QDELETED(M) || !item_ready_for_repair(M, user, damageamount, actiontext))
+				return
+			M.repair_wear(repairamount, damageamount)
 			visible_message("<span class='notice'>[user] finishes [actiontext]ing the [M.name].</span>")
-			if(M.maxhealth <= 0 || M.health <= 0)
-				qdel(M)
-				playsound(src, "shatter", 70, TRUE)
-				visible_message("<span class='alert'>The [M.name] breaks from strain!</span>")
 		else
 			visible_message("<span class='notice'>[user] stops [actiontext]ing the [M.name].</span>")
 	else if (is_tool(M, TOOL_HAMMER) || is_tool(M, TOOL_WRENCH))

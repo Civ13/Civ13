@@ -383,19 +383,14 @@
 	if (B.unbreakable || B.health >= B.maxhealth)
 		to_chat(H, SPAN_NOTICE("\The [B] needs no honing."))
 		return FALSE
-	if (!H.may_do_after)
+	if (!H.may_do_after || !item_ready_for_repair(B, H, 4, "hone"))
 		return FALSE
 	H.visible_message(SPAN_NOTICE("[H] starts honing \the [B] on \the [src]."), SPAN_NOTICE("You start honing \the [B] on \the [src]..."))
 	playsound(get_turf(H), 'sound/machines/grindstone.ogg', 30, TRUE)
 	if (!do_after(H, 25 SECONDS, H) || QDELETED(B) || B.loc != H || QDELETED(src))
 		return FALSE
-	B.maxhealth -= 4
-	B.health = min(B.health + 6, B.maxhealth)
-	if (B.maxhealth <= 0 || B.health <= 0)
-		H.visible_message(SPAN_WARNING("\The [B] breaks from the strain!"))
-		playsound(get_turf(H), "shatter", 70, TRUE)
-		qdel(B)
-		return TRUE
+	if (!B.repair_wear(6, 4))
+		return FALSE
 	to_chat(H, SPAN_NOTICE("You finish honing \the [B]."))
 	return TRUE
 
