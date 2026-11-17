@@ -327,9 +327,81 @@ var/naval_runtime_error = FALSE
 	qdel(tiller)
 	naval_check(!hull_ledgers.len, "no ledger outlives its tiller")
 
+// Small craft (naval/small_craft_leaks.dm): a raft or canoe stove in below
+// half her strength ships water as she moves, and lies swamped at ten.
+/proc/small_craft_checks()
+	// A vehicle's own move registers glide listeners.
+	if (!GLOB.global_listen_count)
+		GLOB.global_listen_count = list()
+	if (!GLOB.event_sources_count)
+		GLOB.event_sources_count = list()
+	if (!GLOB.event_listen_count)
+		GLOB.event_listen_count = list()
+	var/obj/structure/vehicle/raft/R = new(locate(25, 40, 2))
+	var/mob/living/human/naval_probe/H = new(locate(25, 40, 2))
+	R.driver = H
+	R.ontop += H
+	H.dir = NORTH
+	naval_check(R.takes_water() && !R.leaky() && !R.leak_chance(), "a sound raft does not leak")
+	naval_check(R.do_vehicle_check(), "a sound raft answers her paddle")
+	var/obj/structure/vehicle/motorcycle/M = new(locate(5, 40, 2))
+	naval_check(!M.takes_water() && !M.small_craft_damage(50) && !M.ship_water(), "a land vehicle is none of this")
+	qdel(M)
+	R.small_craft_damage(20)
+	naval_check(R.health == 30 && !R.leaky(), "a knock above half her strength leaves her tight")
+	naval_check(findtext(R.small_craft_text(), "still tight"), "a look says she is damaged but tight")
+	R.small_craft_damage(10)
+	naval_check(R.health == 20 && R.leaky() && R.leak_chance() == 44, "below half she leaks, the more the worse ([R.leak_chance()])")
+	R.small_craft_damage(500)
+	naval_check(R.health == 1 && !QDELETED(R) && R.leak_chance() == 97, "blows leave a hulk and never break her up ([R.leak_chance()])")
+	// A hulk ships water on nearly every move; a sound raft on none.
+	var/obj/structure/vehicle/raft/sound = new(locate(27, 40, 2))
+	for (var/i = 1, i <= 60, i++)
+		R.do_move(NORTH)
+		sound.do_move(NORTH)
+		if (R.swamped())
+			break
+	naval_check(R.swamped() && R.bilge == 10 && R.y > 40, "moving swamps a hulk (after [R.y - 40] tiles)")
+	naval_check(sound.bilge == 0 && sound.y > 40, "the sound raft beside her stays dry")
+	qdel(sound)
+	H.forceMove(R.loc)
+	naval_check(!R.do_vehicle_check(), "a swamped raft will not move")
+	naval_check(!R.ship_water() && R.bilge == 10, "a swamped raft holds no more")
+	naval_check((H in R.ontop) && R.driver == H && !QDELETED(R), "nobody is thrown out and nothing is lost")
+	naval_check(findtext(R.small_craft_text(), "swamped") && findtext(R.small_craft_text(), "hulk"), "a look says she is a swamped hulk")
+	R.bilge = 4
+	naval_check(R.do_vehicle_check(), "bailed below the brim she moves again")
+	naval_check(findtext(R.small_craft_text(), "4 bucketfuls"), "a look counts the water in her")
+	// What mends and what harms.
+	var/obj/item/stack/material/wood/logs = new(locate(25, 40, 2))
+	var/obj/item/stack/material/cloth/cloth = new(locate(25, 40, 2))
+	naval_check(R.mends_with(logs) && !R.mends_with(cloth), "wood mends a raft, cloth does not")
+	var/obj/structure/vehicle/boat/rhib/rib = new(locate(30, 40, 2))
+	naval_check(rib.takes_water() && rib.mends_with(cloth) && !rib.mends_with(logs), "cloth mends an inflatable")
+	rib.small_craft_damage(160)
+	naval_check(rib.health == 140 && rib.leaky(), "an inflatable holed below half leaks too")
+	qdel(rib)
+	var/obj/structure/vehicle/raft/dugout/C = new(locate(32, 40, 2))
+	naval_check(C.takes_water() && !C.leaky(), "a canoe is a small craft")
+	C.small_craft_damage(41)
+	naval_check(C.leaky(), "a canoe below half her strength leaks")
+	C.bilge = 10
+	C.driver = H
+	naval_check(!C.do_vehicle_check(), "a swamped canoe will not move")
+	C.driver = null
+	qdel(C)
+	naval_check(!R.small_craft_work_refusal(H), "her paddler can work on her")
+	H.forceMove(locate(40, 60, 2))
+	naval_check(R.small_craft_work_refusal(H), "nobody bails or mends from afar")
+	R.driver = null
+	R.ontop -= H
+	qdel(R)
+	qdel(H)
+
 /proc/naval_run()
 	try
 		naval_checks()
+		small_craft_checks()
 	catch(var/exception/e)
 		naval_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = naval_failures, "runtime_error" = naval_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")
