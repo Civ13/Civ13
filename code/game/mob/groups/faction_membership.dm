@@ -90,6 +90,23 @@
 	remove_title_changer()
 	remove_faction_symbol_editor()
 
+// The leader and permission verbs (the Officer tab: Faction Announcement,
+// Give/Remove Faction Title, plus Design Symbol and Rename) are granted when
+// leadership or a permission changes, and verbs are never saved. Re-grant them
+// from the saved leader record and faction_perms after a load or an arrival.
+/mob/living/human/proc/restore_faction_privilege_verbs()
+	if (!map || !civilization || civilization == "none")
+		return
+	var/is_leader = map.is_faction_leader(src, civilization)
+	if (is_leader)
+		grant_faction_symbol_editor()
+	if (!islist(faction_perms) || faction_perms.len < 3)
+		faction_perms = is_leader ? list(1,1,1,1) : list(0,0,0,0)
+	if (is_leader || faction_perms[2] == 1)
+		make_commander()
+	if (is_leader || faction_perms[3] == 1)
+		make_title_changer()
+
 // Return the authoritative record without inventing a faction or leader. Maps
 // without this record retain is_faction_leader()'s legacy flag fallback, but
 // cannot perform a stored-record leadership transition.
