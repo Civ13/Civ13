@@ -45,6 +45,9 @@
 // Returns null when done, else the reason.
 /obj/structure/hull_tiller/proc/commission(hull_name = null, heading = null)
 	var/turf/T = get_turf(src)
+	// A refit would survey a holed tile out of her hull: patch her first.
+	if (craft && craft.ledger && craft.ledger.holes > 0)
+		return "Patch the [craft.ledger.holes == 1 ? "hole" : "holes"] in her hull before she is surveyed again."
 	var/survey = built_hull_survey(T, craft)
 	if (istext(survey))
 		return survey

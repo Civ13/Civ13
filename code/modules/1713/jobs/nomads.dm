@@ -28,6 +28,72 @@
 			equip_to_slot_or_del(new knife_type(src), slot_l_store)
 			equip_to_slot_or_del(new pickaxe_type(src), slot_back)
 			equip_to_slot_or_del(new shovel_type(src), slot_belt)
+	// Lands with peoples dress each newcomer like the people of their birthplace
+	// in the current era (spawn_outfits.dm), once they stand on that land.
+	var/land_outfit = map && land_has_origins(map.ID)
+	if (!land_outfit)
+		give_era_clothes()
+	if (map.ID == MAP_PEPELSIBIRSK)
+		equip_to_slot_or_del(new /obj/item/weapon/personal_documents(src), slot_wear_id)
+//coats/////////////////////////////////////////////////
+	spawn(5)
+		var/area/mob_area = get_area(src)
+		if (land_outfit && !QDELETED(src))
+			give_land_clothes(mob_area)
+		if (spawn_area_is_cold(mob_area))
+			if (land_outfit || map.ID != MAP_NOMADS_ASIA)
+				if (map.ordinal_age <= 4)
+					if (map.ordinal_age == 0)
+						equip_to_slot_or_del(new /obj/item/clothing/suit/prehistoricfurcoat(src), slot_wear_suit)
+					else
+						equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur(src), slot_wear_suit)
+					equip_to_slot_or_del(new /obj/item/clothing/shoes/fur(src), slot_shoes)
+				else if (map.ordinal_age >= 5)
+					equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ruscoat/grey(src), slot_wear_suit)
+					equip_to_slot_or_del(new /obj/item/clothing/shoes/winterboots(src), slot_shoes)
+				update_inv_wear_suit(1)
+		else if (mob_area.climate == "desert")
+			if (map.ordinal_age > 0)
+				equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(src), slot_shoes)
+			equip_to_slot_or_del(new /obj/item/clothing/suit/arabic_robe(src), slot_wear_suit)
+			update_inv_w_uniform(1)
+		if (mob_area.climate == "savanna" || mob_area.climate == "jungle" || mob_area.climate == "desert")
+			var/f_res = FALSE
+			var/f_sens = FALSE
+			for (var/i in traits)
+				if (i == "Cold Sensitivity")
+					f_sens = TRUE
+				else if (i == "Heat Tolerance")
+					f_res = TRUE
+				else if (i == "Heat Sensitivity")
+					traits -= i
+				else if (i == "Cold Tolerance")
+					traits -= i
+			if (!f_res)
+				traits += "Heat Tolerance"
+			if (!f_sens)
+				traits += "Cold Sensitivity"
+			traits_dirty = TRUE
+		else if (mob_area.climate == "tundra" || mob_area.climate == "taiga")
+			var/f_res = FALSE
+			var/f_sens = FALSE
+			for (var/i in traits)
+				if (i == "Heat Sensitivity")
+					f_sens = TRUE
+				else if (i == "Cold Tolerance")
+					f_res = TRUE
+				else if (i == "Cold Sensitivity")
+					traits -= i
+				else if (i == "Heat Tolerance")
+					traits -= i
+			if (!f_res)
+				traits += "Cold Tolerance"
+			if (!f_sens)
+				traits += "Heat Sensitivity"
+			traits_dirty = TRUE
+
+// Starting clothes by era alone, for maps without peoples.
+/mob/living/human/proc/give_era_clothes()
 	switch (map.ordinal_age)
 		if (0)
 			if (map && map.ID == MAP_NOMADS_ISLAND)
@@ -352,62 +418,6 @@
 					equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
 					equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(src), slot_shoes)
 				give_starting_copper_coins()
-	if (map.ID == MAP_PEPELSIBIRSK)
-		equip_to_slot_or_del(new /obj/item/weapon/personal_documents(src), slot_wear_id)
-//coats/////////////////////////////////////////////////
-	spawn(5)
-		var/area/mob_area = get_area(src)
-		if (mob_area.climate == "tundra" || mob_area.climate == "taiga" || (mob_area.climate == "temperate" && season == SEASON_WINTER) || map.ID == MAP_NOMADS_ICE_AGE)
-			if (map.ID != MAP_NOMADS_ASIA)
-				if (map.ordinal_age <= 4)
-					if (map.ordinal_age == 0)
-						equip_to_slot_or_del(new /obj/item/clothing/suit/prehistoricfurcoat(src), slot_wear_suit)
-					else
-						equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur(src), slot_wear_suit)
-					equip_to_slot_or_del(new /obj/item/clothing/shoes/fur(src), slot_shoes)
-				else if (map.ordinal_age >= 5)
-					equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ruscoat/grey(src), slot_wear_suit)
-					equip_to_slot_or_del(new /obj/item/clothing/shoes/winterboots(src), slot_shoes)
-				update_inv_wear_suit(1)
-		else if (mob_area.climate == "desert")
-			if (map.ordinal_age > 0)
-				equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(src), slot_shoes)
-			equip_to_slot_or_del(new /obj/item/clothing/suit/arabic_robe(src), slot_wear_suit)
-			update_inv_w_uniform(1)
-		if (mob_area.climate == "savanna" || mob_area.climate == "jungle" || mob_area.climate == "desert")
-			var/f_res = FALSE
-			var/f_sens = FALSE
-			for (var/i in traits)
-				if (i == "Cold Sensitivity")
-					f_sens = TRUE
-				else if (i == "Heat Tolerance")
-					f_res = TRUE
-				else if (i == "Heat Sensitivity")
-					traits -= i
-				else if (i == "Cold Tolerance")
-					traits -= i
-			if (!f_res)
-				traits += "Heat Tolerance"
-			if (!f_sens)
-				traits += "Cold Sensitivity"
-			traits_dirty = TRUE
-		else if (mob_area.climate == "tundra" || mob_area.climate == "taiga")
-			var/f_res = FALSE
-			var/f_sens = FALSE
-			for (var/i in traits)
-				if (i == "Heat Sensitivity")
-					f_sens = TRUE
-				else if (i == "Cold Tolerance")
-					f_res = TRUE
-				else if (i == "Cold Sensitivity")
-					traits -= i
-				else if (i == "Heat Tolerance")
-					traits -= i
-			if (!f_res)
-				traits += "Cold Tolerance"
-			if (!f_sens)
-				traits += "Heat Sensitivity"
-			traits_dirty = TRUE
 
 ///////////////LANGUAGE PROC/////////////////////////
 

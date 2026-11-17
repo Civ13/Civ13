@@ -384,13 +384,18 @@ var/late_wait_result = TRUE
 
 // Practice and gathering for early nodes (practice_work.dm).
 /proc/late_test_practice_work()
+	// Every real subject below the late tiers has hand-written deeds, so the
+	// generated practice is checked on two subjects made up for this test.
+	register_research_node(new /datum/research_node("test_practice_one", "Test Practice One", "General", 130, 0, RESEARCH_MODE_ANALYSIS, list("iron_smithing"), 4))
+	register_research_node(new /datum/research_node("test_practice_two", "Test Practice Two", "General", 200, 0, RESEARCH_MODE_ANALYSIS, list("brickmaking", "steelmaking"), 4))
+	practice_experiments_built = FALSE
 	build_practice_experiments()
-	var/list/iron = node_field_experiments("steelmaking")
-	late_check(iron.len == 1 && iron[1] == "practice_steelmaking_iron_smithing", "Steelmaking is advanced by practising Iron Smithing")
-	var/list/E = field_experiments["practice_steelmaking_iron_smithing"]
-	var/datum/research_node/IN = get_research_node("steelmaking")
+	var/list/iron = node_field_experiments("test_practice_one")
+	late_check(iron.len == 1 && iron[1] == "practice_test_practice_one_iron_smithing", "a subject without deeds is advanced by practising its groundwork")
+	var/list/E = field_experiments["practice_test_practice_one_iron_smithing"]
+	var/datum/research_node/IN = get_research_node("test_practice_one")
 	late_check(E[2] == "craft:iron_smithing" && E[3] == practice_items_needed(IN) && E[4] == 0.5, "the experiment asks for [E[3]] things for half the node")
-	var/list/concrete = node_field_experiments("reinforced_concrete")
+	var/list/concrete = node_field_experiments("test_practice_two")
 	late_check(concrete.len == 2 && field_experiments[concrete[1]][4] == 0.25, "two prerequisites split the practice share")
 	late_check(!node_field_experiments("power_tools").len, "late nodes keep only their own field work")
 	late_check(node_field_experiments("basic_tools").len == 1 && node_field_experiments("archery").len == 1, "first nodes advance by foraging or butchering")
@@ -413,11 +418,11 @@ var/late_wait_result = TRUE
 	var/obj/structure/research_bench/late_fixture/bench = new(locate(4,3,1))
 	bench.tier = 8
 	var/obj/item/weapon/book/notes = new(bench)
-	bench.assigned_node = "steelmaking"
+	bench.assigned_node = "test_practice_one"
 	// The fixture has no craft lists, so name ten Iron Smithing recipes by hand.
 	var/list/saved_names = recipe_names_by_node
 	recipe_names_by_node = list("iron_smithing" = list("r1", "r2", "r3", "r4", "r5", "r6", "r7", "r8", "r9", "r10"))
-	var/list/rows = bench.field_work_rows(smith, "steelmaking")
+	var/list/rows = bench.field_work_rows(smith, "test_practice_one")
 	recipe_names_by_node = saved_names
 	late_check(rows.len == 1 && rows[1]["percent"] == 50 && rows[1]["have"] == E[3], "the bench lists the practice and the smith's own count")
 	var/list/examples = rows[1]["examples"]
@@ -427,8 +432,13 @@ var/late_wait_result = TRUE
 	pace = bench.book_pace_factors(IN, smith, 1, 5, 1)
 	late_check(pace[3]["effect"] == "full speed" && pace[3]["ok"], "supplies are full speed, never a bonus")
 	var/expected = round(IN.cost_ticks * 0.5)
-	late_check(bench.credit_field_work() && notes.research_ticks("steelmaking") == expected && !bench.credit_field_work(), "the practice is written into the book once ([expected] of [IN.cost_ticks] points)")
+	late_check(bench.credit_field_work() && notes.research_ticks("test_practice_one") == expected && !bench.credit_field_work(), "the practice is written into the book once ([expected] of [IN.cost_ticks] points)")
 	qdel(bench)
+	for(var/id in list("test_practice_one", "test_practice_two"))
+		for(var/exp in node_field_experiments(id))
+			field_experiments -= exp
+		research_nodes -= id
+	field_activity_caps = null
 // Hand-written deeds for the first ages (practice_work.dm).
 /proc/late_test_subject_deeds()
 	build_practice_experiments()
@@ -436,7 +446,7 @@ var/late_wait_result = TRUE
 	for(var/node_id in subject_deeds)
 		var/datum/research_node/N = get_research_node(node_id)
 		var/total = 0
-		if(!N || N.era_tier > 3 || !N.prereqs.len)
+		if(!N || N.era_tier > 4 || !N.prereqs.len)
 			sound = FALSE
 			world.log << "bad deed subject [node_id]"
 			continue
@@ -454,7 +464,7 @@ var/late_wait_result = TRUE
 		for(var/id in node_field_experiments(node_id))
 			if(findtext(id, "practice_") == 1)
 				sound = FALSE
-	late_check(sound && subject_deeds.len == 43, "every subject of era tiers 0 to 3 has deeds its groundwork teaches, worth half the chapter, and no counter")
+	late_check(sound && subject_deeds.len == 56, "every subject of era tiers 0 to 4 has deeds its groundwork teaches, worth half the chapter, and no counter")
 	var/list/coop = node_field_experiments("cooperage")
 	late_check(coop.len == 3 && ("deed_cooperage_handles" in coop), "Cooperage asks for three deeds")
 	var/mob/living/human/late_fixture/cooper = new(locate(4,6,1))
