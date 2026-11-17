@@ -98,7 +98,7 @@
 			"id" = node_id,
 			"name" = N.name,
 			"era_tier" = N.era_tier,
-			"era_name" = ordinal_age_name(N.era_tier),
+			"era_name" = research_era_label(N),
 			"grid_col" = get_node_grid_col(node_id),
 			"is_era_changing" = (N.mode == RESEARCH_MODE_PROTOTYPE),
 			"mode_text" = mode_text,

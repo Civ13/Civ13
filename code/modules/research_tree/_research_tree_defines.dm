@@ -100,3 +100,8 @@
 #define SCHOLAR_PRACTICE_STAMINA 10
 #define SCHOLAR_PRACTICE_CAP 24
 #define SCHOLAR_PRACTICE_INSTRUMENT_RATE 1.5
+
+// How widely a subject is known (knowledge_spread.dm).
+#define KNOWLEDGE_GUARDED 0
+#define KNOWLEDGE_SPREADING 1
+#define KNOWLEDGE_COMMON 2

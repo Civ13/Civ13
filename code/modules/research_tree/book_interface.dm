@@ -152,7 +152,7 @@
 		label = "Can be researched"
 	out["state"] = state
 	out["state_label"] = label
-	out["era_name"] = ordinal_age_name(N.era_tier)
+	out["era_name"] = research_era_label(N)
 	var/discipline = node_discipline(node_id)
 	out["discipline"] = scholar_disciplines[discipline]
 	out["groundwork"] = node_groundwork_rows(H, N)
@@ -527,7 +527,7 @@
 			"name" = name,
 			"state" = state,
 			"category" = N.category,
-			"era_name" = ordinal_age_name(N.era_tier),
+			"era_name" = research_era_label(N),
 			"discipline" = scholar_disciplines[node_discipline(node_id)],
 			"groundwork" = node_groundwork_rows(H, N),
 			"study_minutes" = ui_minutes(H.study_time_left(node_id, BOOK_STUDY_TIME(N.era_tier) / desk)),
@@ -559,7 +559,7 @@
 		known = sortAssoc(known)
 		for (var/name in known)
 			var/datum/research_node/N = get_research_node(known[name])
-			writable += list(list("id" = known[name], "name" = name, "era_name" = ordinal_age_name(N.era_tier), "write_minutes" = ui_minutes(BOOK_WRITE_TIME(N.era_tier) / pen_rate / desk), "stamina" = BOOK_WRITE_STAMINA(N.era_tier)))
+			writable += list(list("id" = known[name], "name" = name, "era_name" = research_era_label(N), "write_minutes" = ui_minutes(BOOK_WRITE_TIME(N.era_tier) / pen_rate / desk), "stamina" = BOOK_WRITE_STAMINA(N.era_tier)))
 	data["writable"] = writable
 	var/list/viewer = book_viewer_ui(H)
 	viewer["stamina"] = round(H.stats["stamina"][1])
