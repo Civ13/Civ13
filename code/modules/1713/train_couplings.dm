@@ -117,6 +117,12 @@
 		var/state = coupling_state(front)
 		C.name = coupling_noun(front)
 		C.icon_state = "[(coupling_auto(front) && state != "none") ? "knuckle" : "coupler"]_[front ? "f" : "b"]_[state]"
+		C.overlays.Cut()
+		if (plough_at(front))
+			var/image/blade = image('icons/obj/vehicles/train_plough.dmi', front ? "plough_f" : "plough_b")
+			blade.pixel_x = -32
+			blade.pixel_y = -32
+			C.overlays += blade
 
 // Unhitches at that end without a word. Returns the car that was there.
 /obj/structure/trains/proc/part_at(front)
@@ -207,6 +213,9 @@
 	for (var/front in list(TRUE, FALSE))
 		if (has_coupling_end(front) && coupling_at(front) < TRAIN_COUPLING_HEALTH)
 			to_chat(user, coupling_text(front))
+	var/plough = plough_text()
+	if (plough)
+		to_chat(user, plough)
 
 // Explosions strain the couplings of the cars they catch.
 /obj/structure/trains/ex_act(severity)
@@ -225,6 +234,9 @@
 	if (!istype(user) || user.incapacitated() || !isturf(loc) || get_dist(user, src) > 1 || !has_coupling_end(front))
 		return FALSE
 	var/obj/item/W = user.get_active_hand()
+	// A snowplough is bolted on over the coupling (train_snow.dm).
+	if (plough_use(user, front, W))
+		return TRUE
 	var/v = coupling_at(front)
 	var/obj/structure/trains/other = end_neighbour(front)
 	if (istype(W, /obj/item/train_coupling))
@@ -333,6 +345,8 @@
 	if (!car)
 		return
 	to_chat(user, car.coupling_text(front))
+	if (car.plough_at(front))
+		to_chat(user, "A snowplough is bolted on here. It clears snow from the line when this end leads the train. A wrench takes it off.")
 	if (car.coupling_auto(front) && car.coupling_at(front) > 0)
 		to_chat(user, "It locks by itself onto another automatic coupler when the cars are pushed together slowly, and its lever lets go at once.")
 	to_chat(user, "Click it to couple or uncouple. Harm intent with a weapon strikes it.")

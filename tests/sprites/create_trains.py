@@ -34,6 +34,7 @@ ROOT = Path(__file__).resolve().parents[2]
 PLATFORMS = ROOT / 'icons/obj/vehicles/train_platforms.dmi'
 GUN = ROOT / 'icons/obj/vehicles/railway_gun.dmi'
 WATER = ROOT / 'icons/obj/vehicles/rail_water.dmi'
+PLOUGH = ROOT / 'icons/obj/vehicles/train_plough.dmi'
 RAILS = ROOT / 'icons/obj/vehicles/trains.dmi'
 
 # ramps: lit, face, shade, outline
@@ -621,6 +622,60 @@ def knuckle_states():
         out['knuckle_f_' + kind] = front
         out['knuckle_b_' + kind] = [front[DIR_INDEX[OPPOSITE[h]]] for h in 'SNEW']
     return out
+
+
+def plough_blade(c):
+    """A wedge snowplough bolted to the headstock, 96 x 96 and centred on the
+    car's end tile (car heading north): it stands out ahead of the car, two
+    blades meeting at a point, the left one lit, over a drift of thrown snow."""
+    for y in range(18, 35):
+        half = 2 + int((y - 18) * 1.4)
+        x0, x1 = 47 - half, 48 + half
+        c.shade(x0 + 2, y + 2, x1 + 3, y + 2, 50)
+    for y in range(18, 35):
+        half = 2 + int((y - 18) * 1.4)
+        x0, x1 = 47 - half, 48 + half
+        c.rect(x0 - 1, y, x1 + 1, y, STEEL_O)
+        c.rect(x0, y, 47, y, RED[0] if y < 30 else RED[1])
+        c.rect(48, y, x1, y, RED[2] if y < 30 else RED[3])
+        c.put(x0, y, STEEL[0])
+        c.put(x0 + 1, y, STEEL[1])
+        c.put(x1, y, STEEL[3])
+        c.put(47, y, STEEL[1])
+        c.put(48, y, STEEL_O)
+    c.rect(46, 17, 49, 17, STEEL_O)
+    c.rect(24, 35, 71, 35, STEEL_O)
+    # the angle iron along the foot and its bolts
+    c.rect(26, 33, 46, 33, STEEL[2])
+    c.rect(49, 33, 69, 33, STEEL[4])
+    for x in (30, 38, 57, 65):
+        c.put(x, 31, STEEL[0])
+
+
+def plough_states():
+    front = directions(plough_blade, w=96, h=96, order=HEADING)
+    return {'plough_f': front, 'plough_b': [front[DIR_INDEX[OPPOSITE[h]]] for h in 'SNEW']}
+
+
+def plough_item():
+    """A snowplough standing on the ground, point up."""
+    c = Canvas(32, 32)
+    c.shade(5, 24, 28, 27, 60)
+    for y in range(6, 24):
+        half = 1 + int((y - 6) * 0.72)
+        x0, x1 = 15 - half, 16 + half
+        c.rect(x0 - 1, y, x1 + 1, y, STEEL_O)
+        c.rect(x0, y, 15, y, RED[0] if y < 20 else RED[1])
+        c.rect(16, y, x1, y, RED[2])
+        c.put(x0, y, STEEL[0])
+        c.put(15, y, STEEL[1])
+        c.put(16, y, STEEL_O)
+    c.rect(2, 24, 29, 24, STEEL_O)
+    c.put(15, 5, STEEL_O)
+    c.put(16, 5, STEEL_O)
+    for x in (8, 13, 18, 23):
+        c.put(x, 21, STEEL[0])
+    return [c.image()]
 
 
 def knuckle_item():
@@ -2041,6 +2096,7 @@ def platform_states():
     states['ash_pit_full'] = ash_pit(2)
     states['fire_rake'] = fire_rake()
     states['brake_shoes'] = brake_shoes()
+    states['plough_item'] = plough_item()
     states['fusible_plug'] = fusible_plug()
     states['brake_wheel'] = brake_wheel(False)
     states['brake_wheel_on'] = brake_wheel(True)
@@ -2329,6 +2385,20 @@ def write_previews(out, states, gun):
     im.alpha_composite(water['sand_bin'][0], (16 + 160, 80))
     big(im, 3).save(out / 'depot.png')
 
+    # the snowplough: on the front of an engine heading east and north, and
+    # the plough standing on the ground
+    plough = plough_states()
+    engine = render_loco(states, 'steam', 'E')
+    engine_n = render_loco(states, 'steam', 'N')
+    im = ground(engine.width + engine_n.width + 160, max(engine.height, engine_n.height) + 64, seed=19)
+    lay_track(im, y_tile=2)
+    im.alpha_composite(engine, (16, 32))
+    im.alpha_composite(plough['plough_f'][DIR_INDEX['E']], (16 + engine.width - 64, 32))
+    im.alpha_composite(engine_n, (engine.width + 96, 40))
+    im.alpha_composite(plough['plough_f'][DIR_INDEX['N']], (engine.width + 96, 8))
+    im.alpha_composite(states['plough_item'][0].resize((64, 64), Image.NEAREST), (16, engine.height + 40))
+    big(im, 3).save(out / 'snowplough.png')
+
     im = ground(6 * 104 + 8 + 2 * 264, 264 + 16, seed=9)
     for i, (kind, roof) in enumerate((('bogie_coach', False), ('bogie_coach', True), ('boxcar', False),
                                       ('boxcar', True), ('open_wagon', False), ('long_flatbed', False))):
@@ -2383,18 +2453,20 @@ def main(argv):
     states = platform_states()
     gun = gun_states()
     water = water_states()
+    plough = plough_states()
     if '--check' in argv:
         bad = [str(p.relative_to(ROOT)) for p, s, size, cols in ((PLATFORMS, states, (32, 32), 16), (GUN, gun, (96, 96), 2),
-                                                                 (WATER, water, (64, 64), 4))
+                                                                 (WATER, water, (64, 64), 4), (PLOUGH, plough, (96, 96), 4))
                if not same(p, s, size, cols)]
         if bad:
             print('out of date: ' + ', '.join(bad))
             return 1
-        print('train sheets match (%d + %d + %d states)' % (len(states), len(gun), len(water)))
+        print('train sheets match (%d + %d + %d + %d states)' % (len(states), len(gun), len(water), len(plough)))
         return 0
     write_dmi(PLATFORMS, states, cols=16)
     write_dmi(GUN, gun, size=(96, 96), cols=2)
     write_dmi(WATER, water, size=(64, 64), cols=4)
+    write_dmi(PLOUGH, plough, size=(96, 96), cols=4)
     print('wrote %d platform states and the railway gun' % len(states))
     if '--preview' in argv:
         write_previews(Path(argv[argv.index('--preview') + 1]), states, gun)
