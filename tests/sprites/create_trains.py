@@ -647,6 +647,46 @@ def lever(down):
     return [c.image()]
 
 
+def brake_wheel(on):
+    """A handbrake seen from above: a spoked hand wheel on a column over a
+    bolted floor plate (train_brakes.dm). Wound on, the pawl is dropped into
+    the ratchet and its tell-tale shows red; off, it stands clear in green."""
+    c = Canvas(32, 32)
+    c.shade(7, 25, 26, 28, 60)
+    # floor plate
+    c.bevel(8, 19, 24, 26, STEEL[1], STEEL[3], STEEL[4], outline=STEEL_O)
+    for x, y in ((10, 21), (22, 21), (10, 24), (22, 24)):
+        c.rivet(x, y, STEEL[0], STEEL_O)
+    # the wheel's shadow on the plate, then the column under its hub
+    c.shade(9, 17, 23, 20, 70)
+    c.bevel(14, 14, 18, 21, STEEL[1], STEEL[2], STEEL[4], outline=STEEL_O)
+    # rim: dark iron with a worn bright edge
+    c.ring(16.0, 13.0, 9.2, STEEL_O, width=3.6)
+    c.ring(16.0, 13.0, 9.0, STEEL[3], width=2.0)
+    c.ring(16.0, 12.6, 9.4, STEEL[0], a=150, width=0.8)
+    # four spokes, turned an eighth when the brake is on
+    turn = math.pi / 4 if on else 0.0
+    for i in range(4):
+        a = turn + i * math.pi / 2
+        x, y = 16.0 + math.cos(a) * 8.0, 13.0 + math.sin(a) * 8.0
+        c.line(16, 13, round(x), round(y), STEEL_O)
+        c.line(16, 12, round(x), round(y) - 1, STEEL[1])
+    # brass hub and its nut
+    c.disc(16.0, 13.0, 2.8, [BRASS[0], BRASS[1], BRASS[3]], outline=DARK)
+    c.put(16, 13, BRASS[4])
+    # ratchet pawl and tell-tale on the plate
+    tell = RED if on else ((112, 214, 96), (52, 160, 60), (26, 96, 36), (12, 44, 16))
+    c.rect(19, 22, 23, 25, STEEL_O)
+    c.rect(20, 23, 22, 24, tell[1])
+    c.put(20, 23, tell[0])
+    c.put(22, 24, tell[2])
+    if on:
+        c.line(18, 20, 21, 22, STEEL[0])
+    else:
+        c.line(22, 19, 23, 21, STEEL[1])
+    return [c.image()]
+
+
 def car_kit():
     c = Canvas(32, 32)
     c.shade(2, 28, 29, 30, 70)
@@ -1767,6 +1807,8 @@ def platform_states():
     states.update(coupler_states())
     states['coupling_item'] = coupling_item()
     states['fusible_plug'] = fusible_plug()
+    states['brake_wheel'] = brake_wheel(False)
+    states['brake_wheel_on'] = brake_wheel(True)
     return states
 
 
@@ -1806,6 +1848,9 @@ CARS = {
     'boxcar': ('boards', 'boards', [_van + _van_f, _van, _van, _van_d, _van_d, _van, _van, _van + _van_b], 'boxcar'),
     'open_wagon': ('boards', 'boards', [_low + _low_f, _low, _low, _low_d, _low_d, _low, _low, _low + _low_b], None),
     'long_flatbed': ('wood', 'wood', [_rails, [], [], [], [], [], [], _rails], None),
+    'brake_van': ('boards', 'boards', [_rails, _win + [(L, 'front', 'plank'), (0, 'front', 'door'), (R, 'front', 'plank')],
+                                       _van, _win + [(L, 'back', 'plank'), (0, 'back', 'door'), (R, 'back', 'plank')]],
+                  'boxcar'),
 }
 
 
@@ -2023,6 +2068,26 @@ def write_previews(out, states, gun):
     im.alpha_composite(render_car(states, 'boxcar', 'S'), (6 * 104 + 8 + 264 + 40, 12))
     im.alpha_composite(render_car(states, 'open_wagon', 'S'), (6 * 104 + 8 + 264 + 144, 12))
     big(im, 3).save(out / 'long-stock-cars.png')
+
+    # the brake van: at the back of a goods train, then with its roof off and
+    # the brake wheel in the cabin, wound off and on
+    def van(heading, on, roof=False):
+        car = render_car(states, 'brake_van', heading, roof=roof)
+        if not roof:
+            x, y = tile_pos(heading, 2, L)
+            car.alpha_composite(states['brake_wheel_on' if on else 'brake_wheel'][0], (x * 32, y * 32))
+        return car
+    goods = train_east(states, gun, [
+        render_loco(states, 'steam', 'E'), render_car(states, 'open_wagon', 'E'), van('E', False, roof=True)])
+    im = Image.new('RGBA', (goods.width, goods.height + 2 * 104 + 8), (96, 120, 84, 255))
+    im.alpha_composite(goods, (0, 0))
+    im.alpha_composite(van('E', False), (16, goods.height + 4))
+    im.alpha_composite(van('E', True), (16 + 152, goods.height + 4))
+    im.alpha_composite(van('N', True), (16 + 304, goods.height + 4))
+    im.alpha_composite(van('E', True, roof=True), (16, goods.height + 108))
+    for i, name in enumerate(('brake_wheel', 'brake_wheel_on')):
+        im.alpha_composite(states[name][0].resize((96, 96), Image.NEAREST), (16 + 152 + i * 104, goods.height + 108))
+    big(im, 3).save(out / 'brake-van.png')
 
     im = ground(2 * 104 + 8 + 136, 2 * 136 + 8, seed=7)
     for i, (kind, roof) in enumerate((('coach', False), ('coach', True))):

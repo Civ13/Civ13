@@ -2931,6 +2931,8 @@ RECIPE: /material/iron/,passenger coach kit,/obj/structure/train_car_kit/coach,1
 RECIPE: /material/iron/,bogie flatcar kit,/obj/structure/train_car_kit/long_flatbed,22,450,1,1,trains,101,0,0,8,null
 RECIPE: /material/iron/,open wagon kit,/obj/structure/train_car_kit/open_wagon,26,450,1,1,trains,101,0,0,8,null
 RECIPE: /material/iron/,boxcar kit,/obj/structure/train_car_kit/boxcar,30,500,1,1,trains,101,0,0,8,null
+RECIPE: /material/iron/,brake van kit,/obj/structure/train_car_kit/brake_van,24,350,1,1,trains,101,0,0,8,null
+RECIPE: /material/iron/,brake wheel,/obj/structure/train_brake_wheel,6,150,1,1,trains,101,0,0,8,null
 RECIPE: /material/steel/,bogie coach kit,/obj/structure/train_car_kit/bogie_coach,26,500,1,1,trains,140,0,0,8,null
 RECIPE: /material/steel/,sleeper car kit,/obj/structure/train_car_kit/sleeper,20,350,1,1,trains,140,0,0,8,null
 RECIPE: /material/steel/,dining car kit,/obj/structure/train_car_kit/dining,20,350,1,1,trains,140,0,0,8,null
