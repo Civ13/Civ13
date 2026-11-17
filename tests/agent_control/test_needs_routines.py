@@ -282,6 +282,30 @@ class ScriptTests(unittest.TestCase):
         self.assertEqual(next_step(scripts.hunt, armed, [dead]), [{"do": "butcher", "target": "[0xdeer]"}])
         self.assertEqual(next_step(scripts.hunt, holding("raw meat")), scripts.DONE)
 
+    def test_water_fetches_what_boiling_lacks(self):
+        unclean = [RIVER]
+        thirsty = lambda *names, items=None: dict(holding(*names, items=items), water=140)
+        sit = lambda row, nearby=(): situation(observe(row, nearby=nearby, terrain=unclean))[0]
+        # No mug and no log: the wood chain, which starts with flint for an axe.
+        self.assertEqual(scripts.water(sit(thirsty(), [ROCK, TREE])), [{"do": "find_flint", "target": "[0xrock]"}])
+        self.assertEqual(scripts.water(sit(thirsty("flint axe"), [TREE])), [{"do": "chop", "target": "[0xtree]"}])
+        # A log in hand: the mug is crafted by the boil_water steps.
+        logs = thirsty("flint axe", items=[{"name": "wood log", "amount": 1}])
+        self.assertEqual(scripts.water(sit(logs, [TREE])), [{"do": "boil_water"}])
+        # Water in the mug but no campfire: the campfire chain.
+        mug = thirsty("flint axe", items=[{"name": "wood mug", "liquids": {"water": 20, "cholera": 1}}])
+        self.assertEqual(scripts.water(sit(mug, [TREE])), [{"do": "chop", "target": "[0xtree]"}])
+        # A lit fire but no stone block: sift soil for one.
+        lit = dict(FIRE, lit=True)
+        self.assertEqual(scripts.water(sit(mug, [lit])), [scripts.SIFT_STONE])
+        self.assertEqual(scripts.water(sit(dict(holding(), water=340))), scripts.DONE)
+        self.assertEqual(scripts.name_of("drink"), "water")
+
+    def test_drink_routine_uses_the_water_script(self):
+        sit, _ = situation(observe(dict(holding(), water=140), nearby=[ROCK], terrain=[RIVER]))
+        choice = quiet().choose(sit)
+        self.assertEqual((choice.name, choice.plan), ("drink", [{"do": "find_flint", "target": 2}]))
+
     def test_ladder_order(self):
         rows = [ROCK, TREE]
         self.assertEqual(scripts.ladder(situation(observe(holding(), nearby=rows))[0]), "flint")
@@ -384,6 +408,25 @@ class LoopTests(unittest.TestCase):
         code, game, model = self.run_loop(observe(holding(), nearby=[ROCK]), answer, steps=4)
         self.assertEqual(model.calls, 1)
         self.assertEqual(sum(1 for actions in game.queued if any(a.get("target") == "[0xrock]" for a in actions)), 3)
+
+    def test_thirst_without_a_mug_gathers_for_one_instead_of_looping(self):
+        # Live Gaia 2026-11-17: an unclean river in view, no mug and no logs; the drink routine asked for boil_water
+        # every turn, the game had nothing to do, and she stood still for 2000 turns.
+        answer = json.dumps({"plan": ["Find water", "Make a mug"]})  # a director reply the parser cannot read
+        thirsty = dict(holding(), water=140)
+        code, game, model = self.run_loop(observe(thirsty, nearby=[ROCK], terrain=[RIVER]), answer, steps=4)
+        self.assertEqual(code, 0)
+        self.assertEqual(model.calls, 1)
+        self.assertEqual(sum(1 for actions in game.queued if any(a.get("target") == "[0xrock]" for a in actions)), 3)
+
+    def test_a_routine_whose_plan_is_dropped_counts_as_failed(self):
+        # A routine step the game cannot start (boil_water with nothing to boil in) must not repeat forever:
+        # two dropped plans in a row hand the turn back to the director.
+        answer = json.dumps({"plan": ["Find water"]})
+        with mock.patch.object(scripts, "water", return_value=[{"do": "boil_water"}]):
+            code, game, model = self.run_loop(observe(me(water=140), terrain=[RIVER]), answer, steps=4)
+        self.assertEqual(code, 0)
+        self.assertEqual(model.calls, 2)
 
     def test_no_routines_asks_the_model_every_turn(self):
         answer = json.dumps({"plan": [{"do": "wait", "ticks": 5}]})

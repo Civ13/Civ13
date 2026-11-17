@@ -126,8 +126,8 @@ You are the director of your character. Between your decisions her body runs rou
 when NEEDS run low it drinks, eats, cooks, warms up, treats wounds, chews healing herbs, relieves itself and catches its
 breath, and otherwise it carries out your standing ROUTINE. You are asked when something needs judgement (talk, danger,
 a question, a routine that failed or finished, nothing left to do) and every few turns to review. Routines:
-"routine": {"script": "flint"|"spear"|"axe"|"wood"|"campfire"|"hunt"|"traps"} runs a whole chain until it is made (sharpened
-flint; a spear from a branch; a flint axe from spear, flint and twine; "logs": n wood logs; a campfire; raw meat from a hunt;
+"routine": {"script": "flint"|"spear"|"axe"|"wood"|"campfire"|"water"|"hunt"|"traps"} runs a whole chain until it is made (sharpened
+flint; a spear from a branch; a flint axe from spear, flint and twine; "logs": n wood logs; a campfire; a mug of boiled water; raw meat from a hunt;
 traps: crafts snares (2 rope) or deadfalls (2 stone), sets them nearby and tends them),
 making what it needs first. {"skill": "<skill>", "times": 1-40, "word": "<a word in the target's name>"} repeats a skill on
 the nearest fitting target (chop trees, mine rock, cut grass); {"do": "build_next"|"leather_next"|"boil_water"|"explore",
@@ -2893,7 +2893,8 @@ def _run(client, args, character, token, model_pool):
                 previous_self = self_state
                 feedback = "\n" + built_note
                 if choice is not None:
-                    scheduler.record(choice, built_note)
+                    # Nothing ran: a routine whose whole plan was dropped failed, or it loops on the same note forever.
+                    scheduler.record(choice, f"failed: {built_note}")
                 if memory is not None:
                     memory.save()  # a plan just started or dropped must outlive a crash before the next turn
                 continue

@@ -6,6 +6,8 @@ spear and sharpened flint), and return DONE once the product is in hand. Every s
 step ({"do": skill, "target": ref or 0}), so it runs through the same expansion and checks as the model's.
 """
 
+import water as water_steps
+
 DONE = "done"
 
 PREY_RANGE = 8  # tiles: animals farther away are left to exploring or the director
@@ -153,6 +155,31 @@ def campfire(sit):
     return [{"do": "craft", "recipe": "campfire", "material": "wood log"}]
 
 
+QUENCHED = 90  # thirst level at which a water order is done
+SIFT_STONE = {"do": "verb", "name": "Sift soil for resources", "choose": "Stone"}
+
+
+def water(sit):
+    """A drink of boiled water: the boil_water steps while they can run, else the chain that supplies what they lack
+    (wood for a mug or fuel, a campfire, a stone block, a stick, or water in view), so thirst never waits on the model."""
+    if sit.levels.get("thirst", 0) >= QUENCHED:
+        return DONE
+    steps, _, missing = water_steps.next_need(sit.observation)
+    if steps:
+        return [{"do": "boil_water"}]
+    if missing in ("mug", "fuel"):
+        need = wood(sit, 1)
+    elif missing == "fire":
+        need = campfire(sit)
+    elif missing == "stick":
+        need = stick(sit)
+    elif missing == "stone":
+        return [dict(SIFT_STONE)]
+    else:
+        return explore(sit)
+    return [{"do": "boil_water"}] if need == DONE else need
+
+
 def _prey(sit):
     kit = sit.kit
     return sit.nearest(lambda row: row.get("mob") and row.get("stat") in (None, 0) and _distance(row) <= PREY_RANGE
@@ -241,12 +268,13 @@ SCRIPTS = {
     "axe": axe,
     "wood": wood,
     "campfire": campfire,
+    "water": water,
     "hunt": hunt,
     "traps": traps,
 }
 ALIASES = {"sharpened flint": "flint", "make_flint": "flint", "make_spear": "spear", "sharpened stick": "spear",
            "make_axe": "axe", "flint axe": "axe", "gather_wood": "wood", "logs": "wood", "wood logs": "wood",
-           "fire": "campfire", "food": "hunt", "meat": "hunt",
+           "fire": "campfire", "drink": "water", "boil_water": "water", "food": "hunt", "meat": "hunt",
            "trap": "traps", "snare": "traps", "snares": "traps", "deadfall": "traps", "trapping": "traps"}
 
 
