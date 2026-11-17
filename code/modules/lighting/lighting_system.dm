@@ -145,7 +145,10 @@ var/created_lighting_corners_and_overlays = FALSE
 	if (P.updating_lighting)
 		return TRUE
 	P.lighting_revision++
-	return P.apply_daylight(time_of_day, P.lighting_revision)
+	. = P.apply_daylight(time_of_day, P.lighting_revision)
+	// Restored rounds skip apply_time_of_day_effects: put the sun back (sun_shadows.dm).
+	if (.)
+		sun_shadows_phase(time_of_day)
 
 /proc/update_lighting(_time_of_day, var/client/admincaller = null, var/announce = TRUE)
 

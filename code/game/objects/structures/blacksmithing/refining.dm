@@ -262,6 +262,14 @@
 				for(var/i in MCC.contents_materials)
 					MCC.capacity = MCC.contents_materials[i]
 					MCC.current_material = i
-			MCC.contents_materials = list()
+					MCC.contents_materials[i] = 0
+			// An alloy takes equal parts. The metal left over stays in the vessel
+			// unmelted (it used to vanish) and melts on the next firing, once the
+			// alloy has been poured out.
+			var/list/left_over = list()
+			for (var/i in MCC.contents_materials)
+				if (MCC.contents_materials[i] > 0)
+					left_over[i] = MCC.contents_materials[i]
+			MCC.contents_materials = left_over
 			MCC.loc = src.loc
 			MCC.update_icon()

@@ -98,7 +98,7 @@
 			if (!vessel_accepts_metal(metal))
 				to_chat(user, "<span class='warning'>\The [O] can't be mixed with what is already in \the [src].</span>")
 				return
-			var/current_cap = 0
+			var/current_cap = capacity // molten metal already inside takes room too
 			for (var/i in contents_materials)
 				current_cap += contents_materials[i]
 			if (current_cap >= max_capacity)

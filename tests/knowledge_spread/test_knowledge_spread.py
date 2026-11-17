@@ -50,6 +50,26 @@ class KnowledgeSpreadTests(unittest.TestCase):
     def test_losing_an_era_takes_nothing_back(self):
         self.assertNotIn('knowledge', read('code/modules/research_tree/era_loss.dm'))
 
+    def test_spreading_subjects_are_quicker_to_learn(self):
+        self.assertRegex(read('code/modules/research_tree/_research_tree_defines.dm'), r'#define KNOWLEDGE_SPREADING_STUDY 0\.5\b')
+        self.assertIn('* knowledge_study_mult(node_id)', read('code/modules/research_tree/scholar_tools.dm'))
+        self.assertIn('knowledge_band(N.id) == KNOWLEDGE_SPREADING) ? 1 : TRADE_LATE_CAP', read('code/modules/research_tree/trade_learning.dm'))
+        book = read('code/modules/research_tree/book_interface.dm')
+        self.assertEqual(book.count('BOOK_STUDY_TIME(N.era_tier) * knowledge_study_mult(node_id) / desk'), 3)
+
+    def test_rediscovery_costs_a_third_at_the_bench_only(self):
+        self.assertRegex(read('code/modules/research_tree/_research_tree_defines.dm'), r'#define KNOWLEDGE_REDISCOVERY_RATE 3\b')
+        research = read('code/modules/research_tree/book_research.dm')
+        self.assertEqual(research.count('knowledge_rediscovery_rate('), 1)
+        tick = research[research.index('if (B.add_research_work(assigned_node, round(base_tick_rate'):]
+        self.assertIn('* knowledge_rediscovery_rate(assigned_node) *', tick[:tick.index('\n')])
+        book = read('code/modules/research_tree/book_interface.dm')
+        self.assertIn('* late_bench_rate(N) * knowledge_rediscovery_rate(node_id) *', book)
+        self.assertIn('"Spreading knowledge, already known in the world"', book)
+        # Samples, field work, prototypes and compared notes keep their usual shares.
+        for path in ('field_work.dm', 'subject_prototypes.dm', 'compare_notes.dm', 'naturalist_finds.dm'):
+            self.assertNotIn('knowledge_rediscovery_rate', read('code/modules/research_tree/' + path))
+
     def test_the_band_is_not_saved(self):
         module = read('code/modules/research_tree/knowledge_spread.dm')
         self.assertIsNone(re.search(r'map_storage_saved_vars|round_state', module))

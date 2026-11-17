@@ -40,7 +40,8 @@
 /proc/trade_learning_cap(datum/research_node/N)
 	if (!N)
 		return 0
-	return N.era_tier < TRADE_FULL_BELOW_TIER ? 1 : TRADE_LATE_CAP
+	// A spreading subject (knowledge_spread.dm) can be learned wholly by hand.
+	return (N.era_tier < TRADE_FULL_BELOW_TIER || knowledge_band(N.id) == KNOWLEDGE_SPREADING) ? 1 : TRADE_LATE_CAP
 
 // Whether src could learn more of node_id from a teacher now.
 /mob/living/human/proc/can_learn_trade(node_id)

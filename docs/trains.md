@@ -3,7 +3,8 @@
 Code: `code/modules/1713/trains.dm` (cars, rails, locomotives),
 `code/modules/1713/train_platforms.dm` (walkable cars and clearance) and
 `code/modules/1713/train_warfare.dm` (armored locomotive) and
-`code/modules/1713/train_locomotives.dm` (heavy 3x4 locomotives).
+`code/modules/1713/train_locomotives.dm` (heavy 3x4 locomotives, cab stations
+and the 3x6 main-line engine).
 Tests: `tests/train_platforms` (the `drive/`, `load/`, `brake/`,
 `double_heading/`, `tender/` and `collision/` checks) and `tests/train_collision`.
 Step cost by train length: [train-step-cost.md](train-step-cost.md).
@@ -13,6 +14,8 @@ Step cost by train length: [train-step-cost.md](train-step-cost.md).
 Using a locomotive opens its controls: start or stop the engine, throttle up
 or down (notches 0 to 3), brake, and the reverser (forward or backward, only
 while the train stands). Examine shows the notch, reverser, speed and load.
+The heavy steam engines split these between three
+[cab stations](#cab-stations-and-the-main-line-engine).
 
 Stopping the engine or closing the throttle lets the train coast; the brake
 stops it faster. Neither stops it on the spot.
@@ -119,11 +122,13 @@ The body art is `loco_<kind>_<1-4><l|c|r>` in `train_platforms.dmi`.
 | Heavy steam locomotive | 2 | 30 | 6 | coal, wood, branches (250) | third section |
 | Heavy diesel locomotive | 1.2 | 32 | 5 | diesel or biodiesel, 1 per unit (300) | front section |
 | Heavy armored locomotive | 2.4 | 40 | 10 | coal, wood, branches (300) | third section, armor doors |
+| Main-line steam locomotive | 1.4 | 60 | 10 | coal, wood, branches (400), from a tender | sixth section |
 
 The step delays are the locomotive rows of [vehicle-speeds.md](vehicle-speeds.md);
 a heavy engine is no faster than its one-tile counterpart, it pulls about twice
-the train. The controls open from the cab section (`control_spot()`), or from a
-tile beside it. Fuel goes in through any section. Boilers, bunkers and the
+the train. The controls open from the cab section (`control_spot()`); the
+diesel's also from a tile beside it. Water goes in through any section; the
+fire is fed at the firebox door (below). Boilers, bunkers and the
 diesel's hood are solid; the diesel has a walkway either side of the hood, and
 whatever stands in its front cab rides along (`cab_cargo()`). The front of the
 body hits people standing beside the rails (`sweep_sides()`).
@@ -132,6 +137,36 @@ Explosions wear the steam and diesel engines down to `broken_down`, and the
 armored one to `disabled`, instead of deleting them; a welding tool repairs
 them. Heavy locomotives cannot be packed back into a kit, put away in a rail
 warehouse, or sent over an inter-region railway.
+
+## Cab stations and the main-line engine
+
+Tests: the `cab/` and `mainline/` checks of `tests/train_platforms`.
+
+A steam cab is three tiles and each is a station (`cab_station()`), so a full
+crew is a driver and a fireman and a lone driver has to leave the regulator to
+fire. Layouts with `"stations" = TRUE` have them: the heavy steam, heavy
+armored and main-line engines. The diesel and the one-tile engines are worked
+from one place (`"all"`).
+
+| Station | Cab tile | Works |
+| --- | --- | --- |
+| Driver's stand | right of the engine's front | throttle, brake, reverser |
+| Firebox door | middle | lighting and dropping the fire, coal or wood by hand, the shovel, the fusible plug |
+| Fireman's side | left | the injector |
+
+`attack_hand()` offers `station_controls(station)` for the tile the user
+stands on and `work_control()` checks the station again when the choice comes
+back. `at_firebox()` gates fuel and the shovel in `coal/attackby()`. Water
+from a bucket and welding work from anywhere beside the engine.
+
+The main-line steam locomotive (`loco_mainline`, kit 90 steel) is six sections
+long with the cab last, built and driven like the heavy engines. Step delay
+1.4, haul 60, weight 10, firebox 400, boiler 160, 360 seconds from cold. It
+has no bunker and only a 100-unit feed tank: couple a
+[tender](#tenders-and-water-stops) behind the cab, so the fireman at the
+firebox door shovels from the tender's plate and `tender_top_up()` keeps the
+feed tank full. Body art is `loco_mainline_<1-6><l|c|r>` with the stations
+drawn in the cab (`cab_stations()` in `tests/sprites/create_trains.py`).
 
 ## Several engines and the tender
 

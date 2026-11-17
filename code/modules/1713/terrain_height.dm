@@ -196,6 +196,7 @@ var/global/list/terrain_height_chars = terrain_height_char_table()
 			var/first = max(0, x - 3) + 1
 			var/old = lights[cy + 1]
 			lights[cy + 1] = copytext(old, 1, first) + jointext(chars, "") + copytext(old, first + chars.len)
+	sun_heights_changed(x, y, z)
 	// Line of sight caches terrain answers per eye position (los_terrain.dm).
 	los_terrain_heights_changed(locate(x, y, z))
 	return TRUE
@@ -614,7 +615,8 @@ var/global/terrain_shading_applied = FALSE
 
 // Sprite key for a tile: corner lights nw, ne, sw, se; "cccc" means flat.
 /datum/terrain_heights/proc/shade_key(x, y, z)
-	var/list/lights = light_rows(z)
+	// Lit by the sun where there is one (sun_hills.dm), else from the north-west.
+	var/list/lights = sun_hill_rows(z) || light_rows(z)
 	if (!lights || x < 1 || x > maxx || y < 1 || y > maxy)
 		return null
 	var/row = maxy - y + 1
@@ -624,6 +626,7 @@ var/global/terrain_shading_applied = FALSE
 // too). The faint slope tint alone reads as lighting, so every whole height
 // level also gets a soft lip line, dark where the drop faces away from the
 // light and warm where it faces it; lines close together mean steep ground.
+// The light is the north-west one, or the sun's side where the sun lights the hills.
 // A tile shows the sprite for its four corner heights rounded to half levels,
 // so the lines join across tiles. Same slot rules as the shading.
 #define TERRAIN_TERRACE_CAP 6
@@ -632,13 +635,26 @@ var/global/list/terrain_terrace_images = list()
 
 /turf/var/tmp/image/terrain_terrace_overlay = null
 
+// The sprites are baked for a light from the north-west and, in a second file,
+// from the north. The sun's other six sides (sun_terrace_octant, sun_hills.dm)
+// are the same sprites turned by quarter turns: the tile's corners are read a
+// quarter turn back for each, and the sprite is turned forward again.
 /proc/terrain_terrace_image(key, snow = FALSE)
-	var/cache_key = snow ? "[key]s" : key
+	var/cache_key = "[key][snow ? "s" : ""][sun_terrace_octant]"
 	var/image/I = terrain_terrace_images[cache_key]
 	if (!I)
-		I = image('icons/turf/terrain_terrace.dmi', icon_state = key, layer = TERRAIN_SHADE_LAYER)
+		var/turns = (sun_terrace_octant % 2 ? (sun_terrace_octant + 1) / 2 : sun_terrace_octant / 2) % 4
+		var/state = key
+		for (var/i in 1 to turns)
+			// nw, ne, sw, se <- ne, se, nw, sw
+			state = copytext(state, 1, 2) + copytext(state, 3, 4) + copytext(state, 5, 6) + copytext(state, 2, 3) + copytext(state, 4, 5)
+		I = image(sun_terrace_octant % 2 ? 'icons/turf/terrain_terrace.dmi' : 'icons/turf/terrain_terrace_n.dmi', icon_state = state, layer = TERRAIN_SHADE_LAYER)
 		I.plane = FLOOR_PLANE
 		I.mouse_opacity = 0
+		if (turns)
+			var/matrix/M = matrix()
+			M.Turn(90 * turns)
+			I.transform = M
 		if (snow)
 			I.color = TERRAIN_SNOW_COLOUR
 		terrain_terrace_images[cache_key] = I
@@ -760,6 +776,8 @@ var/global/list/terrain_terrace_images = list()
 	set waitfor = FALSE
 	var/started = REALTIMEOFDAY
 	var/count = terrain_shading_apply()
+	// The hills take the sun now up, if the day already has one (sun_hills.dm).
+	sun_hills_phase(sun_tree_angles, sun_next_tod(time_of_day))
 	log_game("Terrain shading placed on [count] tiles of [map ? map.title : "no map"] in [(REALTIMEOFDAY - started) / 10] s.")
 
 // Admin view: the height number on every tile in view, until toggled off.

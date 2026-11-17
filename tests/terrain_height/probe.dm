@@ -437,6 +437,59 @@ var/terrain_height_probe_checks = 0
 	high.terrain_grade_apply()
 	qdel(rammer)
 
+	// Hills lit by the sun (sun_hills.dm). The north half rises eastward, so a
+	// low western sun lights its slope and a low eastern one leaves it in the
+	// shadow of the higher ground east of it.
+	var/list/east_sun = list(90, 10)
+	var/list/west_sun = list(270, 10)
+	var/list/sun_e = fixture.sun_light_rows(1, east_sun)
+	var/list/sun_w = fixture.sun_light_rows(1, west_sun)
+	terrain_height_probe_assert(text2ascii(sun_e[4], 6) == 97 && text2ascii(sun_w[4], 6) > 99, "sun_lights_slope_by_direction")
+	terrain_height_probe_assert(text2ascii(sun_e[10], 6) == 99 && text2ascii(sun_w[10], 6) == 99, "sun_flat_ground_plain")
+	// Every corner of a table matches the single-corner rule used for patches,
+	// for suns that march along rows, along columns and between corners.
+	var/sun_top_level = fixture.sun_top(1)
+	var/sun_rule_ok = TRUE
+	for (var/list/rule_sun in list(east_sun, list(140, 30), list(250, 20), list(180, 45)))
+		var/list/rule_rows = fixture.sun_light_rows(1, rule_sun)
+		for (var/cy in 0 to fixture.maxy)
+			for (var/cx in 0 to fixture.maxx)
+				if (fixture.sun_corner_char(fixture.rows_by_z["1"], cy, cx, rule_sun, sun_top_level) != ascii2text(text2ascii(rule_rows[cy + 1], cx + 1)))
+					sun_rule_ok = FALSE
+	terrain_height_probe_assert(sun_rule_ok, "sun_corner_rule_matches_table")
+	// A pillar raised on the flat half casts a long shadow west under the
+	// eastern sun, and the patched tables match a full recompute.
+	fixture.set_level(10, 3, 1, 6)
+	sun_e = fixture.sun_rows_by_key[sun_hill_key(1, east_sun)]
+	terrain_height_probe_assert(text2ascii(sun_e[10], 6) == 97 && text2ascii(sun_e[10], 12) != 97, "pillar_shadow_points_away_from_sun")
+	// The shadow's tip fades out: full shadow, then a half-dark corner, then plain ground.
+	terrain_height_probe_assert(findtext(sun_e[10], "ab") || findtext(sun_e[10], "ba"), "sun_shadow_edge_is_soft")
+	var/sun_patched = jointext(sun_e, "|") + "/" + jointext(fixture.sun_rows_by_key[sun_hill_key(1, west_sun)], "|")
+	fixture.sun_rows_by_key = list()
+	terrain_height_probe_assert(sun_patched == jointext(fixture.sun_light_rows(1, east_sun), "|") + "/" + jointext(fixture.sun_light_rows(1, west_sun), "|"), "sun_patch_matches_full_pass")
+	// The shading follows the hills' sun, and goes back to the north-west light without one.
+	sun_hill_angles = east_sun
+	sun_hills_reshade_box(1, 1, 1, 12, 12)
+	terrain_height_probe_assert(terrain_height_probe_shade(locate(6, 3, 1)) == "aaaa" && fixture.shade_key(6, 3, 1) == "aaaa", "sun_shadow_drawn")
+	fixture.set_level(10, 3, 1, fixture.base_at(10, 3, 1))
+	terrain_height_probe_assert(!terrain_height_probe_shade(locate(6, 3, 1)), "sun_shadow_gone_when_pillar_cut")
+	sun_hill_angles = null
+	sun_hills_reshade_box(1, 1, 1, 12, 12)
+	terrain_height_probe_assert((terrain_height_probe_shade(locate(5, 9, 1)) || "cccc") == fixture.shade_key(5, 9, 1) && fixture.shade_key(5, 9, 1) == copytext(fixture.light_rows(1)[4], 5, 7) + copytext(fixture.light_rows(1)[5], 5, 7), "north_west_light_back")
+
+	// Terrace lines are lit from the sun's side: the north-west sprites turned by
+	// quarter turns for the diagonals, the north sprites for the cardinals.
+	var/image/lines_nw = terrain_terrace_image("00202")
+	sun_terrace_octant = 3
+	var/image/lines_se = terrain_terrace_image("00202")
+	sun_terrace_octant = 2
+	var/image/lines_e = terrain_terrace_image("00202")
+	sun_terrace_octant = 7
+	terrain_height_probe_assert(lines_nw.icon == 'icons/turf/terrain_terrace.dmi' && lines_nw.icon_state == "00202" && lines_nw.transform.a == 1, "terrace_lines_north_west_unturned")
+	terrain_height_probe_assert(lines_se.icon == 'icons/turf/terrain_terrace.dmi' && lines_se.icon_state == "02020" && lines_se.transform.a == -1 && lines_se.transform.e == -1, "terrace_lines_turn_with_the_sun")
+	terrain_height_probe_assert(lines_e.icon == 'icons/turf/terrain_terrace_n.dmi' && lines_e.icon_state == "02200" && lines_e.transform.b == 1 && lines_e.transform.d == -1, "terrace_lines_cardinal_set")
+	terrain_height_probe_assert(terrain_terrace_image("00202") == lines_nw, "terrace_images_shared")
+
 	var/obj/map_metadata/terrain_height_probe/broken = new
 	broken.terrain_height_file = "tests/terrain_height/missing.txt"
 	map = broken

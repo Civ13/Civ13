@@ -118,3 +118,19 @@
 		if (H.grant_common_knowledge())
 			reached++
 	return reached
+
+// ------------------------------------------------------------
+// Spreading knowledge: quicker to learn
+// ------------------------------------------------------------
+// Reading a spreading subject's chapter, or hearing it read aloud, takes half
+// the time (scholar_study_time), and watching and guided work can teach all
+// of it at any era (trade_learning_cap). It still needs a book or a teacher.
+
+/proc/knowledge_study_mult(node_id)
+	return knowledge_band(node_id) == KNOWLEDGE_SPREADING ? KNOWLEDGE_SPREADING_STUDY : 1
+
+// Researching a spreading subject again is cheaper: the world already knows
+// it can be done. Bench work on it counts KNOWLEDGE_REDISCOVERY_RATE times;
+// samples, field work and prototypes keep their usual shares.
+/proc/knowledge_rediscovery_rate(node_id)
+	return knowledge_band(node_id) == KNOWLEDGE_SPREADING ? KNOWLEDGE_REDISCOVERY_RATE : 1

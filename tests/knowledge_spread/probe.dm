@@ -45,6 +45,8 @@ var/spread_runtime_error = FALSE
 		build_research_tree()
 		spread_band_checks()
 		spread_common_checks()
+		spread_learning_checks()
+		spread_rediscovery_checks()
 	catch(var/exception/e)
 		spread_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = spread_failures, "runtime_error" = spread_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")
@@ -147,3 +149,44 @@ var/spread_runtime_error = FALSE
 				gaps++
 	spread_check(!gaps, "every common subject's groundwork is common as well")
 	human_mob_list -= old
+
+/proc/spread_learning_checks()
+	var/mob/living/human/reader = spread_tester()
+	var/cold_war = spread_node_of_tier(7)
+	var/datum/research_node/N = get_research_node(cold_war)
+	map.ordinal_age = 7
+	var/guarded_time = reader.scholar_study_time(N.era_tier, cold_war)
+	spread_check(knowledge_study_mult(cold_war) == 1 && trade_learning_cap(N) == 0.5, "a guarded late subject reads at full length and hands teach half of it")
+	map.ordinal_age = 9
+	var/spreading_time = reader.scholar_study_time(N.era_tier, cold_war)
+	spread_check(knowledge_band(cold_war) == KNOWLEDGE_SPREADING && spreading_time == round(guarded_time / 2), "a spreading chapter reads in half the time ([guarded_time] to [spreading_time])")
+	spread_check(trade_learning_cap(N) == 1, "hands can teach the whole of a spreading subject")
+	// Hearing it read aloud is paced by the same reading time.
+	var/mob/living/human/listener = spread_tester()
+	listener.known_recipe_nodes = N.prereqs ? N.prereqs.Copy() : list()
+	listener.hear_chapter_read(cold_war, 600, reader)
+	var/heard_spreading = listener.study_fraction(cold_war)
+	map.ordinal_age = 7
+	listener.clear_study_progress(cold_war)
+	listener.hear_chapter_read(cold_war, 600, reader)
+	var/heard_guarded = listener.study_fraction(cold_war)
+	spread_check(heard_guarded > 0 && abs(heard_spreading - heard_guarded * 2) < 0.01, "a minute of listening fills twice as much of a spreading chapter")
+	var/modern = spread_node_of_tier(8)
+	map.ordinal_age = 9
+	var/datum/research_node/M = get_research_node(modern)
+	spread_check(knowledge_study_mult(modern) == 1 && trade_learning_cap(M) == 0.5, "the newest two eras are untouched")
+
+/proc/spread_rediscovery_checks()
+	var/cold_war = spread_node_of_tier(7)
+	var/modern = spread_node_of_tier(8)
+	var/stone = spread_node_of_tier(0)
+	map.ordinal_age = 9
+	spread_check(knowledge_rediscovery_rate(cold_war) == 3, "bench work on a spreading subject counts three times")
+	spread_check(knowledge_rediscovery_rate(modern) == 1, "bench work on a guarded subject counts once")
+	spread_check(knowledge_rediscovery_rate(stone) == 1, "a common subject needs no research, so its rate is plain")
+	map.ordinal_age = 7
+	spread_check(knowledge_rediscovery_rate(cold_war) == 1, "the same subject at the frontier counts once")
+	map.ordinal_age = 9
+	map.book_research = FALSE
+	spread_check(knowledge_rediscovery_rate(cold_war) == 1, "no rediscovery rate off a book-research world")
+	map.book_research = TRUE

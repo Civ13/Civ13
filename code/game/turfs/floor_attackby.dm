@@ -978,10 +978,6 @@
 			var/material/M = get_material_by_name("lead")
 			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[M.icon_colour]><b>lead</font> ore</b>!"))
 		found_ore = TRUE
-	// Common ores share one rubble batch, rather than minting stone per ore.
-	if (found_ore)
-		var/obj/item/stack/material/stone/bonusstone = new/obj/item/stack/material/stone(src)
-		bonusstone.amount = rand(8,12)
 	if (prob(uranium_chance) && uranium_chance)
 		new /obj/item/stack/ore/uranium(src) // Retain one unit; no special-cave multiplier.
 		found_ore = TRUE
@@ -1020,7 +1016,12 @@
 		if (H)
 			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=#b5603a><b>bauxite</b></font> (aluminium ore)!"))
 		found_ore = TRUE
+	// Every ore find shares one rubble batch, rather than minting stone per ore.
 	if (found_ore)
+		var/obj/item/stack/material/stone/bonusstone = new/obj/item/stack/material/stone(src)
+		bonusstone.amount = rand(8,12)
+		if (H)
+			to_chat(H, SPAN_NOTICE("Some loose stone breaks away with it."))
 		change_the_turf()
 		return
 	// Independent rolls leave more ore-free walls. Admit the old geology table

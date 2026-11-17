@@ -170,11 +170,11 @@
 		needs += team_rows(node_id, null)
 	out["research_needs"] = needs
 	var/desk = cache["desk_rate"]
-	out["study_minutes"] = ui_minutes(H.study_time_left(node_id, BOOK_STUDY_TIME(N.era_tier) / desk))
+	out["study_minutes"] = ui_minutes(H.study_time_left(node_id, BOOK_STUDY_TIME(N.era_tier) * knowledge_study_mult(node_id) / desk))
 	out["read_percent"] = state == "study" ? H.study_percent(node_id) : 0
 	var/list/supplies = cache["supplies"]
 	var/supplied = islist(supplies) ? (supplies[discipline] || 0) >= 1 : TRUE
-	var/pace = base_tick_rate * H.scholar_research_rate(node_id) * max(cache["tool_rate"], 1) * late_bench_rate(N) * (supplied ? 1 : SCHOLAR_UNSUPPLIED_RATE)
+	var/pace = base_tick_rate * H.scholar_research_rate(node_id) * max(cache["tool_rate"], 1) * late_bench_rate(N) * knowledge_rediscovery_rate(node_id) * (supplied ? 1 : SCHOLAR_UNSUPPLIED_RATE)
 	out["field_work"] = field_work_rows(H, node_id)
 	out["research_minutes"] = pace > 0 ? ui_minutes((N.cost_ticks - ticks) / pace * RESEARCH_TICK_INTERVAL) : 0
 	out["write_minutes"] = ui_minutes(BOOK_WRITE_TIME(N.era_tier) / max(cache["pen_rate"], 1) / desk)
@@ -221,6 +221,9 @@
 	var/late = late_bench_rate(N)
 	if (late != 1)
 		factors += list(list("label" = "Late subject", "effect" = "x[late]", "ok" = 1))
+	var/rediscovery = knowledge_rediscovery_rate(N.id)
+	if (rediscovery != 1)
+		factors += list(list("label" = "Spreading knowledge, already known in the world", "effect" = "x[rediscovery]", "ok" = 1))
 	if (rush_rate(N) != 1)
 		factors += list(list("label" = "Rushed", "effect" = "x[rush_rate(N)]", "ok" = 1))
 	return factors
@@ -530,7 +533,7 @@
 			"era_name" = research_era_label(N),
 			"discipline" = scholar_disciplines[node_discipline(node_id)],
 			"groundwork" = node_groundwork_rows(H, N),
-			"study_minutes" = ui_minutes(H.study_time_left(node_id, BOOK_STUDY_TIME(N.era_tier) / desk)),
+			"study_minutes" = ui_minutes(H.study_time_left(node_id, BOOK_STUDY_TIME(N.era_tier) * knowledge_study_mult(node_id) / desk)),
 			"read_percent" = state == "study" ? H.study_percent(node_id) : 0,
 			"recipe_names" = get_node_recipe_names(node_id),
 			"effect" = research_node_effect_text(node_id))
@@ -538,7 +541,7 @@
 			tutor_cache = H.find_tutor(node_id)
 			if (tutor_cache)
 				row["tutor"] = "[tutor_cache.name]"
-				row["study_minutes"] = ui_minutes(H.study_time_left(node_id, BOOK_STUDY_TIME(N.era_tier) / desk / SCHOLAR_TUTOR_RATE))
+				row["study_minutes"] = ui_minutes(H.study_time_left(node_id, BOOK_STUDY_TIME(N.era_tier) * knowledge_study_mult(node_id) / desk / SCHOLAR_TUTOR_RATE))
 		chapters += list(row)
 	data["chapters"] = chapters
 	var/list/unfinished = list()
