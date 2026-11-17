@@ -176,8 +176,8 @@
 
 /mob/observer/ghost/Stat()
 	. = ..()
-	if (client && statpanel("Status"))
-		stat("Respawn in:", respawn_wait_text(respawn_wait_seconds(client)))
+	if (. && client.shows_status_tab())
+		client.add_stat("<b>Respawn in:</b>", respawn_wait_text(respawn_wait_seconds(client)))
 
 //////////////////////////////////////////////////////////////////////////////
 // CELL TIMERS: a leader sets a sentence on a closed door; it stays shut until

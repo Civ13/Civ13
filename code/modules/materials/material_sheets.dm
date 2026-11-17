@@ -1085,6 +1085,12 @@
 
 /obj/item/stack/material/list_recipes(mob/user as mob, recipes_sublist)
 	var/mob/living/human/U = user
+	// A stack can reach here without its material datum; look it up again
+	// rather than fail, and show nothing when the name is unknown.
+	if (!material)
+		material = get_material_by_name("[default_type]")
+	if (!material)
+		return
 	recipes = material.get_recipes_civs(U)
 	..()
 

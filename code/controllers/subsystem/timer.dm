@@ -508,8 +508,12 @@ SUBSYSTEM_DEF(timer)
 	. = "ERROR"
 	if (callBack.object == GLOBAL_PROC)
 		. = "GLOBAL_PROC"
-	else
+	else if (callBack.object)
 		. = "[callBack.object.type]"
+	else
+		// The target was deleted before the timer was made; naming it must not
+		// stop the timer from joining its bucket.
+		. = "null"
 
 /**
   * Create a new timer and insert it in the queue.

@@ -1110,6 +1110,8 @@ SUITES = {
     'use_hints': {'files': ('tests/use_hints/test_use_hints.py',),
         'paths': ('tests/use_hints/', 'code/game/objects/structures/use_hints.dm'), 'shared_paths': (
             'code/game/objects/structures/wild.dm',)},
+    'log_runtimes': {'files': ('tests/log_runtimes/test_log_runtimes.py',),
+        'paths': ('tests/log_runtimes/', 'code/modules/statpanel/statpanel.dm', 'code/controllers/subsystem/timer.dm'), 'shared_paths': ()},
     'immigration_fires': {'files': ('tests/immigration_fires/test_immigration_fires.py',),
         'paths': ('tests/immigration_fires/', 'code/modules/1713/immigration_fires.dm'), 'shared_paths': ()},
     'craft_products': {'files': ('tests/craft_products/test_craft_products.py',),
