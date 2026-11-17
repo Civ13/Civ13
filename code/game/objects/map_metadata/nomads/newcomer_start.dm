@@ -48,8 +48,8 @@
 	for (var/attempt = 1, attempt <= NEWCOMER_ATTEMPTS, attempt++)
 		var/angle = rand(0, 359)
 		var/distance = rand(NEWCOMER_MIN_DISTANCE, NEWCOMER_MAX_DISTANCE)
-		var/x = round(centre.x + distance * cos(angle))
-		var/y = round(centre.y + distance * sin(angle))
+		var/x = round(centre.x + distance * cos(angle), 1)
+		var/y = round(centre.y + distance * sin(angle), 1)
 		if (x < 1 || y < 1 || x > world.maxx || y > world.maxy)
 			continue
 		var/turf/T = locate(x, y, new_player_start_z)

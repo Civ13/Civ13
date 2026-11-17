@@ -36,6 +36,13 @@ describe('Faction List snapshot', () => {
     expect(screen.queryByRole('link')).toBeNull();
     expect(props.act).not.toHaveBeenCalled();
   });
+  it('marks a faction whose signal fire is calling newcomers', () => {
+    render(<FactionList {...ui([{ name: 'Rivermen', members: 3, calling: 1 }, { name: 'Hillfolk', members: 2, calling: 0 }])} />);
+    const rows = within(screen.getByRole('table', { name: 'Faction list' })).getAllByRole('row');
+    expect(rows[1].textContent).toContain('Calling newcomers by smoke signal.');
+    expect(rows[2].textContent).not.toContain('Calling newcomers');
+    expect(screen.getByText(/A smoke signal from a lit fire lets you invite newcomers/)).toBeTruthy();
+  });
   it('replaces a previous snapshot without retaining old symbols or details', () => {
     const view = render(<FactionList {...ui([{ name: 'Old', motto: 'Old motto', members: 1, symbol: 'flist_old.png' }])} />);
     view.rerender(<FactionList {...ui([{ name: 'Current', members: 2 }])} />);

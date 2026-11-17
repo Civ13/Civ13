@@ -110,17 +110,24 @@ var/global/list/recruitment_stations = list() // every recruitment station, for 
 	var/list/choices = map.faction_start_choices(account, colony_start_grant)
 	var/list/abroad = map.faction_colony_choices(account)
 	var/list/wilds = wild_start_choices()
-	if (!choices.len && !abroad.len && !wilds.len)
+	// Signal fires whose keepers invited newcomers (immigration_fires.dm).
+	var/list/fires = immigration_fire_choices()
+	immigration_fire_choice = null
+	if (!choices.len && !abroad.len && !wilds.len && !fires.len)
 		return TRUE
 	var/list/options = list(FACTION_START_WILDS)
 	for (var/faction in choices)
 		options += "With [faction]"
+	options += fires
 	options += abroad
 	options += wilds
 	var/answer = WWinput(src, "Where should your new character start?[death_legacy_preview(choices, FACTION_START_WILDS)]", "Starting place", FACTION_START_WILDS, options)
 	if (!client || client.mob != src)
 		return FALSE
 	if (!istext(answer) || answer == FACTION_START_WILDS)
+		return TRUE
+	if (answer in fires)
+		immigration_fire_choice = fires[answer]
 		return TRUE
 	if (answer in wilds)
 		// The coordinator moves this account's home to that open land.
