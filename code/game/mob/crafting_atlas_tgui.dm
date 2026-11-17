@@ -322,7 +322,24 @@ var/global/datum/crafting_atlas_presenter/tgui/crafting_atlas_tgui_presenter = n
 			variants += list(list("id" = variant["id"], "kind" = html_encode("[variant["kind"]]"), "line" = variant["line"]))
 	var/station_id = station_of(reference, group)
 	var/station = station_id ? display_name(reference, station_id, recipe["processor_name"]) : ""
-	return list("id" = recipe["id"], "name" = html_encode("[recipe["name"]]"), "kind" = html_encode("[recipe["kind"]]"), "inputs" = inputs, "outputs" = outputs, "manual_hint" = html_encode(manual_hint(viewer, recipe)), "conditions" = html_encode("[recipe["conditions"]]"), "era_label" = html_encode("[recipe["era_label"]]"), "era_basis" = html_encode("[recipe["era_basis"]]"), "file" = recipe["file"], "line" = recipe["line"], "variants" = variants, "research" = research_data(viewer, recipe, known), "retired" = retired(recipe), "maximum_era" = recipe["maximum_era"], "station" = html_encode(station), "station_id" = station_id, "site" = html_encode("[group["site"]]"), "elsewhere" = !has_local(matches, catalog))
+	return list("id" = recipe["id"], "name" = html_encode("[recipe["name"]]"), "kind" = html_encode("[recipe["kind"]]"), "inputs" = inputs, "outputs" = outputs, "manual_hint" = html_encode(manual_hint(viewer, recipe)), "conditions" = html_encode("[recipe["conditions"]]"), "era_label" = html_encode("[recipe["era_label"]]"), "era_basis" = html_encode("[recipe["era_basis"]]"), "file" = recipe["file"], "line" = recipe["line"], "variants" = variants, "research" = research_data(viewer, recipe, known), "retired" = retired(recipe), "maximum_era" = recipe["maximum_era"], "station" = html_encode(station), "station_id" = station_id, "site" = html_encode("[group["site"]]"), "elsewhere" = !has_local(matches, catalog), "skill" = skill_data(viewer, recipe))
+
+// The skill a material recipe needs beside the viewer's own level
+// (recipe_skill_needs.dm), or null when it needs none.
+/datum/crafting_atlas_presenter/tgui/proc/skill_data(mob/viewer, list/recipe)
+	if (!findtext("[recipe["kind"]]", "Material") || !istext(recipe["name"]))
+		return null
+	var/result_id = null
+	var/list/outputs = recipe["outputs"]
+	if (islist(outputs) && outputs.len)
+		var/list/product = outputs[1]
+		result_id = product["id"]
+	var/list/need = recipe_skill_need_named(recipe["name"], result_id)
+	if (!need)
+		return null
+	var/mob/living/human/H = viewer
+	var/have = istype(H) ? H.getStatCoeff(need[1]) : null
+	return list("name" = capitalize(need[1]), "need" = round(need[2] * 100), "have" = isnull(have) ? null : round(have * 100), "met" = !isnull(have) && have >= need[2])
 
 /datum/crafting_atlas_presenter/tgui/proc/guidance_data(datum/crafting_atlas_reference/reference, mob/viewer, resource_id)
 	var/list/all_routes = reference.catalog["acquisition"]
