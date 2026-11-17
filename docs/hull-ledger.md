@@ -59,6 +59,25 @@ they put the bucket away. A step of the hull does not stop them.
 - Full over mostly shallow water she is grounded: no speed, no turn. She floats
   again when no hole is open and she is bailed below awash.
 
+## One-object craft: rafts, canoes, outriggers, inflatables
+
+These are single objects with no ledger (`code/modules/naval/small_craft_leaks.dm`).
+A sound one never leaks. Below half her `health` she ships a bucketful on some
+of her moves: a 30 in 100 chance just under half, rising to nearly every move
+for a hulk. Ten bucketfuls swamp her and she will not move until she is bailed;
+nothing is deleted and nobody is thrown out.
+
+- Damage comes from a weapon of force 10 or more swung with harm intent, and
+  from a shot that hits her (a quarter of its damage). It stops at 1 health.
+- An empty bucket used on her bails three bucketfuls every three seconds.
+- Wood or planks used on her (cloth on an inflatable) give back a quarter of
+  her strength a piece, five seconds each.
+- There is no timer: water comes in only on a move. It is not saved.
+
+The hooks chain on `do_move`, `do_vehicle_check`, `attackby`, `bullet_act` and
+`examine` of `/obj/structure/vehicle/raft` and `/obj/structure/vehicle/boat`, so
+the pinned `transports.dm` is untouched.
+
 ## Cost and saves
 
 One looping timer (`hull_ledgers_tick`, every 30 seconds) steps the ledgers that

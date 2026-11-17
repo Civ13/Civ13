@@ -76,6 +76,7 @@
 		var/salvage = round(C.buildstackamount / 2)
 		if (ispath(C.buildstack, /obj/item/stack) && salvage > 0 && !C.onfire && !(locate(/obj/effect/fire) in T))
 			new C.buildstack(T, salvage)
+		C.amount = 0 // this is its salvage
 	if (user)
 		user.visible_message(SPAN_WARNING("[user] pulls down \the [A] with \the [src]!"), SPAN_NOTICE("You pull down \the [A] with \the [src]."))
 	playsound(T, 'sound/effects/wood_cutting.ogg', 100, TRUE)

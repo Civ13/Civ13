@@ -64,3 +64,67 @@
 		if (knowledge_band(node_id) == band)
 			ids += node_id
 	return ids
+
+// ------------------------------------------------------------
+// Common knowledge: everyone knows it
+// ------------------------------------------------------------
+// A living character gains every common subject it lacks: when a player
+// takes the body (so a new character starts with them) and when the era
+// advances. What was gained is kept if the era later falls. It brings no
+// scholarship and no skill: only the subjects themselves.
+
+// The latest era that is common knowledge now, or -1 when none is.
+/proc/knowledge_common_era()
+	if (!map || !map.book_research_enabled())
+		return -1
+	return min(9, map.ordinal_age - knowledge_common_lag())
+
+// Adds the common subjects src lacks. Returns how many were added.
+/mob/living/human/proc/grant_common_knowledge(announce = TRUE)
+	if (stat == DEAD || !map || !map.book_research_enabled() || recipe_knowledge_exempt())
+		return 0
+	var/list/common = knowledge_band_node_ids(KNOWLEDGE_COMMON)
+	if (!common.len)
+		return 0
+	var/list/known = clean_recipe_node_ids(known_recipe_nodes)
+	var/had = known.len
+	known |= common
+	var/gained = known.len - had
+	if (!gained)
+		return 0
+	known_recipe_nodes = known
+	recipe_knowledge_initialized = TRUE
+	for (var/node_id in common)
+		clear_study_progress(node_id)
+	refresh_recipe_knowledge_menus()
+	if (announce)
+		var/through = ordinal_age_name(knowledge_common_era())
+		if (had)
+			to_chat(src, SPAN_NOTICE("Knowledge up to the <b>[through]</b> is common now: you know [gained] more subject\s without a book. The tech tree shows them."))
+		else
+			to_chat(src, SPAN_NOTICE("Knowledge up to the <b>[through]</b> is common in this age: you already know [gained] subject\s. The tech tree shows them. Newer subjects are learned from books, from people who know them, or by research."))
+	return gained
+
+/mob/living/human/Login()
+	..()
+	grant_common_knowledge()
+
+// The era moved up: every living character gains what became common.
+/proc/knowledge_era_advanced()
+	if (!map || !map.book_research_enabled() || knowledge_common_era() < 0)
+		return 0
+	var/reached = 0
+	for (var/mob/living/human/H in human_mob_list)
+		if (H.grant_common_knowledge())
+			reached++
+	return reached
+
+// ------------------------------------------------------------
+// Spreading knowledge: quicker to learn
+// ------------------------------------------------------------
+// Reading a spreading subject's chapter, or hearing it read aloud, takes half
+// the time (scholar_study_time), and watching and guided work can teach all
+// of it at any era (trade_learning_cap). It still needs a book or a teacher.
+
+/proc/knowledge_study_mult(node_id)
+	return knowledge_band(node_id) == KNOWLEDGE_SPREADING ? KNOWLEDGE_SPREADING_STUDY : 1

@@ -101,6 +101,7 @@
 	if (!T || !building_pair_id || is_subfloor() || !is_floor_cover())
 		return null
 	var/obj/roof/R = building_roof()
+	drop_dismantle_refund() // the finished floor's material comes back
 	var/obj/covers/repairedfloor/sub = new(T)
 	sub.building_take_upper_face(R)
 	if (!sub.replace_subfloor(src))

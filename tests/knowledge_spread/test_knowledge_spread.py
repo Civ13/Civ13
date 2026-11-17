@@ -36,6 +36,27 @@ class KnowledgeSpreadTests(unittest.TestCase):
         self.assertIn('out["era_name"] = research_era_label(N)', book)
         self.assertNotIn('ordinal_age_name(N.era_tier)', book)
 
+    def test_common_knowledge_reaches_new_and_living_characters(self):
+        module = read('code/modules/research_tree/knowledge_spread.dm')
+        login = module[module.index('/mob/living/human/Login()'):]
+        self.assertLess(login.index('..()'), login.index('grant_common_knowledge()'))
+        grant = module[module.index('/mob/living/human/proc/grant_common_knowledge'):module.index('/mob/living/human/Login()')]
+        self.assertIn('stat == DEAD', grant)
+        self.assertIn('recipe_knowledge_exempt()', grant)
+        book = read('code/modules/research_tree/book_research.dm')
+        finished = book[book.index('/obj/map_metadata/proc/book_research_node_finished'):]
+        self.assertLess(finished.index('ordinal_age = N.era_tier'), finished.index('knowledge_era_advanced()'))
+
+    def test_losing_an_era_takes_nothing_back(self):
+        self.assertNotIn('knowledge', read('code/modules/research_tree/era_loss.dm'))
+
+    def test_spreading_subjects_are_quicker_to_learn(self):
+        self.assertRegex(read('code/modules/research_tree/_research_tree_defines.dm'), r'#define KNOWLEDGE_SPREADING_STUDY 0\.5\b')
+        self.assertIn('* knowledge_study_mult(node_id)', read('code/modules/research_tree/scholar_tools.dm'))
+        self.assertIn('knowledge_band(N.id) == KNOWLEDGE_SPREADING) ? 1 : TRADE_LATE_CAP', read('code/modules/research_tree/trade_learning.dm'))
+        book = read('code/modules/research_tree/book_interface.dm')
+        self.assertEqual(book.count('BOOK_STUDY_TIME(N.era_tier) * knowledge_study_mult(node_id) / desk'), 3)
+
     def test_the_band_is_not_saved(self):
         module = read('code/modules/research_tree/knowledge_spread.dm')
         self.assertIsNone(re.search(r'map_storage_saved_vars|round_state', module))

@@ -10,7 +10,8 @@
 // open level, and flies, sees, shoots, is shot, bombs and falls from there.
 // A third is built on the ground, creeps, lifts off, lands, and sinks onto a
 // floor, a lone tree and a stand of trees; a pedal airship snags in a forest.
-// Production code runs unchanged.
+// Aluminium, steel and wooden deck tiles and rubberised and skin cells are
+// weighed, holed, patched and set alight. Production code runs unchanged.
 var/global/datum/air_hull_probe/air_hull_probe = new
 
 /mob/living/human/air_hull_actor/ssd_check()
@@ -612,6 +613,89 @@ var/global/datum/air_hull_probe/air_hull_probe = new
 	R.loc = null
 	sleep(5)
 
+// Deck frames weigh what they are made of, cells lift and tear by theirs, and
+// only a wooden deck catches fire.
+/datum/air_hull_probe/proc/materials(turf/g)
+	var/mob/living/human/air_hull_actor/B = new(g)
+	B.a_intent = I_HELP
+	sleep(5)
+	var/list/kinds = list(/obj/item/airship_planks/aluminium, /obj/item/airship_planks/steel, /obj/item/airship_planks)
+	for(var/i = 1 to kinds.len)
+		var/turf/T = sky(g, i, 0, g.z)
+		B.forceMove(sky(g, i - 1, 0, g.z))
+		var/kind = kinds[i]
+		var/obj/item/airship_planks/P = new kind(B)
+		B.put_in_active_hand(P)
+		var/deck = P.deck_type
+		P.resolve_attackby(T, B)
+		expect(locate(deck) in T, "no [deck] laid at +[i]")
+	expect(istype(locate(/obj/covers/airship_deck) in sky(g, 2, 0, g.z), /obj/covers/airship_deck/steel), "the steel frame laid the wrong deck")
+	// A cloth cell rubberised with plastic, another lined with skin.
+	var/obj/item/airship_gas_cell/cloth = new(B)
+	B.put_in_active_hand(cloth)
+	var/obj/item/stack/material/plastic/sheets = new(g)
+	sheets.amount = 5
+	cloth.attackby(sheets, B)
+	var/obj/item/airship_gas_cell/rubber/R = B.get_active_hand()
+	expect(istype(R) && QDELETED(cloth), "plastic did not rubberise the cell: [B.get_active_hand()]")
+	B.drop_from_inventory(R)
+	cloth = new(B)
+	B.put_in_active_hand(cloth)
+	var/obj/item/stack/sausagecasing/casings = new(g, 6)
+	for(var/i = 1 to 6)
+		if(!QDELETED(cloth))
+			cloth.attackby(casings, B)
+	var/obj/item/airship_gas_cell/skin/S = B.get_active_hand()
+	expect(istype(S), "six casings did not line the cell with skin: [B.get_active_hand()]")
+	// Hang them: skin over aluminium, rubber over steel.
+	B.forceMove(g)
+	S.resolve_attackby(sky(g, 1, 0, g.z), B)
+	B.forceMove(sky(g, 1, 0, g.z))
+	B.put_in_active_hand(R)
+	R.resolve_attackby(sky(g, 2, 0, g.z), B)
+	var/obj/structure/airship_gas_cell/skin/SG = locate() in sky(g, 1, 0, g.z)
+	var/obj/structure/airship_gas_cell/rubber/RG = locate() in sky(g, 2, 0, g.z)
+	expect(SG && SG.lift() == 15, "skin cell lifts [SG ? SG.lift() : "nothing"]")
+	expect(RG && RG.lift() == 12, "rubber cell lifts [RG ? RG.lift() : "nothing"]")
+	if(SG && RG)
+		SG.holes = 1
+		RG.holes = 1
+		expect(SG.lift() == 10 && RG.lift() == 10, "one hole: skin [SG.lift()], rubber [RG.lift()]")
+		RG.update_icon()
+		expect(RG.icon_state == "gas_cell_rubber_holed", "rubber cell shows [RG.icon_state]")
+		var/obj/item/stack/material/plastic/patch = new(g)
+		B.forceMove(g)
+		RG.attackby(patch, B)
+		expect(!RG.holes, "plastic did not patch the rubber cell")
+		SG.holes = 0
+	// The helm, and her weight: aluminium half, steel two, wood one.
+	B.forceMove(g)
+	var/obj/item/airship_helm_kit/kit = new(B)
+	B.put_in_active_hand(kit)
+	B.dir = EAST
+	B.forceMove(sky(g, 2, 0, g.z))
+	kit.resolve_attackby(sky(g, 3, 0, g.z), B)
+	var/obj/structure/airship_helm/H = locate() in sky(g, 3, 0, g.z)
+	B.forceMove(g)
+	expect(H, "no helm on the mixed deck")
+	if(H)
+		var/problem = H.commission("mixed ship", EAST)
+		expect(!problem, "mixed commission refused: [problem]")
+		var/datum/craft/air/C = H.craft
+		if(C)
+			var/datum/craft_body/built/air/body = C.body
+			notes["mixed_load"] = body.load()
+			expect(body.load() == 3.5, "mixed deck weighs [body.load()], not 3.5")
+			H.decommission()
+	// Only the wooden tile catches fire.
+	air_deck_catch_fire(sky(g, 2, 0, g.z))
+	air_deck_catch_fire(sky(g, 3, 0, g.z))
+	var/obj/covers/airship_deck/steel = locate() in sky(g, 2, 0, g.z)
+	var/obj/covers/airship_deck/wood = locate() in sky(g, 3, 0, g.z)
+	expect(steel && !steel.onfire, "the steel deck caught fire")
+	expect(wood && wood.onfire, "the wooden deck did not catch fire")
+	B.loc = null
+
 /datum/air_hull_probe/proc/run_probe()
 	var/failure = null
 	try
@@ -634,6 +718,7 @@ var/global/datum/air_hull_probe/air_hull_probe = new
 		notes["start"] = "[start.x],[start.y],[start.z] under [sky_z]"
 		ground_build(locate(start.x - 14, start.y + 6, start.z), sky_z)
 		pedal_snag(locate(start.x + 8, start.y + 10, start.z), sky_z)
+		materials(locate(start.x - 14, start.y + 12, start.z))
 		build_and_fly(start, sky_z)
 		high_flight(locate(start.x - 8, start.y - 8, start.z), sky_z)
 		if(problems.len)
