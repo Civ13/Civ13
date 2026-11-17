@@ -1415,6 +1415,9 @@ SUITES = {
         'paths': ('tests/canals/',), 'shared_paths': (
             'code/modules/1713/canals.dm', 'code/modules/1713/trench.dm', 'icons/obj/canal_lock.dmi',
             'tests/sprites/create_canal_lock.py')},
+    # Shooting down from an upper storey: source contracts (native probe tests/storey_fire/probe.dm).
+    'storey_fire': {'files': ('tests/storey_fire/test_source.py',),
+        'paths': ('tests/storey_fire/',), 'shared_paths': ('code/modules/projectiles/storey_fire.dm',)},
     # Storey stores (loft drying, upstairs mice, flood rot): source contracts (native probe tests/storey_stores/probe.dm).
     'storey_stores': {'files': ('tests/storey_stores/test_source.py',),
         'paths': ('tests/storey_stores/',), 'shared_paths': ('code/modules/1713/storey_stores.dm',)},
