@@ -37,6 +37,9 @@ heading, the rail tile and the tile right of it.
   `coal_stage_empty`, `coal_stage`, `coal_stage_full`, `sand_bin_empty` and
   `sand_bin`: the coaling stage and the sand bin
   ([trains.md](trains.md#the-depot)).
+- `plough_item`: a snowplough on the ground. `train_plough.dmi` (96 x 96,
+  from the same script) holds `plough_f` and `plough_b`, the plough on a
+  car's front or rear end ([trains.md](trains.md#snow)).
 - `brake_wheel` and `brake_wheel_on`: the brake wheel of a brake van, wound
   off and on ([trains.md](trains.md#brakes)).
 - `edge_plank`, `edge_freight_door[_open]`, `edge_side`, `edge_drop_door[_open]`

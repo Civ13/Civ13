@@ -389,6 +389,29 @@ class TrainPlatformSourceTests(unittest.TestCase):
         for state in ('coal_stage_empty', 'coal_stage', 'coal_stage_full', 'sand_bin_empty', 'sand_bin'):
             self.assertIn('state = "%s"' % state, water)
 
+    def test_snow_slows_trains_and_a_plough_clears_it(self):
+        dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
+        self.assertEqual(dme.count('#include "code\\modules\\1713\\train_snow.dm"'), 1)
+        snow = (ROOT / 'code/modules/1713/train_snow.dm').read_text(encoding='utf-8')
+        couplings = (ROOT / 'code/modules/1713/train_couplings.dm').read_text(encoding='utf-8')
+        self.assertIn('\tvar/front_plough = FALSE\n\tvar/rear_plough = FALSE\n', snow)
+        # One tile is looked at for each tile run, and nothing ticks.
+        drive = TRAINS[TRAINS.index('/obj/structure/trains/locomotive/proc/drive()'):]
+        self.assertEqual(drive.count('meet_snow()'), 1)
+        self.assertIn('top * lead_factor * snow_factor * ', TRAINS)
+        self.assertIn('drive_tail = cars.len ? cars[cars.len] : src', TRAINS)
+        self.assertIsNone(re.search(r'(?<!\w)(spawn|addtimer|sleep|while|range|view) ?\(', snow))
+        # The plough is worked at the coupling, before the coupling itself.
+        use = couplings[couplings.index('/obj/structure/trains/proc/coupler_use('):]
+        self.assertLess(use.index('if (plough_use(user, front, W))'), use.index('var/v = coupling_at(front)'))
+        self.assertIn("image('icons/obj/vehicles/train_plough.dmi', front ? \"plough_f\" : \"plough_b\")", couplings)
+        self.assertIn('RECIPE: /material/iron/,snowplough,/obj/item/train_snowplough,10,', RECIPES)
+        self.assertIn('"/obj/item/train_snowplough" = "rail_steam"', NODES)
+        states = dmi_description(ROOT / 'icons/obj/vehicles/train_plough.dmi')
+        for state in ('plough_f', 'plough_b'):
+            self.assertIn('state = "%s"' % state, states)
+        self.assertIn('state = "plough_item"', dmi_description(ROOT / 'icons/obj/vehicles/train_platforms.dmi'))
+
     def test_native_fixture_preparation(self):
         generated = run.sources()
         self.assertIn('#include "tests/train_platforms/probe.dm"', generated[run.PREFIX + '.dme'])

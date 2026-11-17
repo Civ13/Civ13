@@ -4,7 +4,7 @@
 /world
 	hub = ""
 	hub_password = ""
-	maxx = 216
+	maxx = 220
 	maxy = 26
 	maxz = 1
 	turf = /turf/floor/dirt
@@ -1881,6 +1881,53 @@ var/global/platform_probe_runtime_error = FALSE
 	var/list/sheet = icon_states('icons/obj/vehicles/rail_water.dmi')
 	platform_check("depot/sand_bin_fills_the_sandbox", bare && binned && E.sand_room() == 15 && bin.fill_takers() == 15 && E.sand == 20 && bin.sand == 15 && bin.fill_takers() == 0 && ("coal_stage" in sheet) && ("coal_stage_empty" in sheet) && ("coal_stage_full" in sheet) && ("sand_bin" in sheet) && ("sand_bin_empty" in sheet) && ("brake_shoes" in icon_states('icons/obj/vehicles/train_platforms.dmi')))
 
+// Snow on the line (train_snow.dm): the leading car pushes into it and the
+// train slows, unless a snowplough leads and clears it.
+/proc/platform_snow_run()
+	var/obj/structure/trains/locomotive/coal/E = drive_train(218, 12, 2)
+	var/obj/structure/trains/W1 = E.connected
+	var/obj/structure/trains/W2 = W1.connected
+	E.refresh_consist()
+	E.throttle = 3
+	var/turf/T = E.loc
+	var/list/end = E.leading_end()
+	E.meet_snow()
+	var/full = E.cruise_speed()
+	var/clear = full > 0 && E.snow_factor == 1 && E.drive_tail == W2 && end[1] == E && end[2] == TRUE && !T.rail_snow() && !T.plough_snow()
+	T.weather_snow = 1
+	E.meet_snow()
+	var/light = abs(E.snow_factor - 0.75) < 0.001 && abs(E.cruise_speed() - 0.75 * full) < 0.001 && T.rail_snow() == 1
+	T.weather_snow = 2
+	E.meet_snow()
+	var/deep = abs(E.snow_factor - 0.5) < 0.001 && abs(E.cruise_speed() - 0.5 * full) < 0.001
+	T.weather_snow = 0
+	E.meet_snow()
+	platform_check("snow/drifts_slow_the_train", clear && light && deep && E.snow_factor == 1 && E.cruise_speed() == full)
+
+	// A plough at the leading end throws the snow clear.
+	var/bare = !E.plough_at(TRUE) && !E.plough_text() && !E.coupler_f.overlays.len
+	E.set_plough(TRUE, TRUE)
+	T.weather_snow = 2
+	var/generation = T.snowfall_ground_generation
+	E.meet_snow()
+	platform_check("snow/plough_clears_the_line", bare && E.plough_at(TRUE) && !E.plough_at(FALSE) && E.snow_factor == 1 && T.weather_snow == 0 && T.snowfall_ground_generation != generation && E.coupler_f.overlays.len == 1 && !E.coupler_r.overlays.len && findtext(E.plough_text(), "front end"))
+
+	// Only the end that leads counts: backing up, the last car goes first.
+	E.reverser = -1
+	end = E.leading_end()
+	var/turf/back = W2.loc
+	back.weather_snow = 1
+	E.meet_snow()
+	var/backing = end[1] == W2 && end[2] == FALSE && abs(E.snow_factor - 0.75) < 0.001 && back.weather_snow == 1
+	W2.set_plough(FALSE, TRUE)
+	E.meet_snow()
+	platform_check("snow/only_the_leading_end_ploughs", backing && E.snow_factor == 1 && back.weather_snow == 0)
+
+	// It comes off again as a part.
+	var/mob/living/human/platform_rider/fitter = new(platform_turf(217, 12))
+	var/obj/item/train_snowplough/part = W2.remove_plough(FALSE, platform_turf(217, 11))
+	platform_check("snow/plough_is_a_part", istype(part) && part.loc == platform_turf(217, 11) && !W2.plough_at(FALSE) && !W2.remove_plough(FALSE) && !W2.coupler_r.overlays.len && !E.plough_use(fitter, TRUE, null) && ("plough_f" in icon_states('icons/obj/vehicles/train_plough.dmi')) && ("plough_b" in icon_states('icons/obj/vehicles/train_plough.dmi')) && ("plough_item" in icon_states('icons/obj/vehicles/train_platforms.dmi')))
+
 /world/New()
 	OpenPort("none")
 	GLOB.all_observable_events = list()
@@ -1910,6 +1957,7 @@ var/global/platform_probe_runtime_error = FALSE
 		platform_shunting_run()
 		platform_servicing_run()
 		platform_depot_run()
+		platform_snow_run()
 	catch (var/exception/E)
 		platform_probe_runtime_error = TRUE
 		world.log << "Fixture aborted: [E] at [E.file]:[E.line]"
