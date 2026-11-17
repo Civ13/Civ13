@@ -100,7 +100,21 @@ class LevelFreeze(unittest.TestCase):
         self.assertIn('!(persistence_frozen_levels.len && persistence_life_frozen(M))', mob)
         self.assertLess(mob.index('persistence_life_frozen(M)'), mob.index('\t\t\t\tM.Life()'))
         living = read('code/game/mob/living/living.dm')
-        self.assertIn('!persistence_life_frozen(src) && !persistence_load_holds_life())\n\t\t\t\tLife()', living)
+        self.assertIn('!persistence_life_frozen(src) && !persistence_load_holds_life() && !persistence_restore_holds_life(src))\n\t\t\t\tLife()', living)
+
+    def test_loaded_bodies_wait_until_players_are_restored(self):
+        # Gaia 2026-11-17: after the load, restored bodies still wait for the
+        # player hand-back, so an unresolved import does not starve them.
+        life = read('code/game/mob/living/life.dm')
+        helper = proc_body(life, '/proc/persistence_restore_holds_life(mob/living/M)')
+        self.assertIn('if (!H.persistence_restored)', helper)
+        self.assertIn('(!H.loc || !persistence_player_restore_ready)', helper)
+        mob = read('code/processes/mob.dm')
+        self.assertIn('!persistence_restore_holds_life(M)', mob)
+        self.assertLess(mob.index('persistence_restore_holds_life(M)'), mob.index('\t\t\t\tM.Life()'))
+        reclaim = read('code/modules/persistence/player_reclaim.dm')
+        finish = proc_body(reclaim, '/map_storage/proc/finish_player_restoration()')
+        self.assertIn('persistence_player_restore_ready = TRUE', finish)
 
     def test_animals_hold_still_while_their_level_is_saved(self):
         # Val (2026-11-14): simple animals are held like players while their

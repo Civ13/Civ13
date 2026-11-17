@@ -19,6 +19,17 @@
 /proc/persistence_load_holds_life()
 	return persistence_active_operation && persistence_active_operation.kind == "load"
 
+// After the load, a restored body still waits, without hunger, breathing or drowning, until the load
+// hands players back (finish_player_restoration),
+// so a world whose import stays unresolved does not starve logged-off players' bodies.
+/proc/persistence_restore_holds_life(mob/living/M)
+	if (!ishuman(M))
+		return FALSE
+	var/mob/living/human/H = M
+	if (!H.persistence_restored)
+		return FALSE
+	return (!H.loc || !persistence_player_restore_ready) ? TRUE : FALSE
+
 /mob/living/Life()
 
 	..()
