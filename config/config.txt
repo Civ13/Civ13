@@ -302,7 +302,7 @@ LANGUAGE english
 # Dynamic z allocation: optional examples (defaults shown; all lines commented).
 # decimal integer 0..5300000 total native cells (inclusive)
 # NEW_Z_CELL_BUDGET 5300000
-# decimal integer 0..1 roof-added planes
+# decimal integer 0..6 roof-added planes (at most the map's building_levels)
 # NEW_Z_ROOF_LEVELS 1
 # decimal integer 0..8 reserved whole planes
 # NEW_Z_INSTANCE_RESERVE 0

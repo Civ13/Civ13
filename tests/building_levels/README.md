@@ -22,7 +22,7 @@ merged and its full restart contract passes.
 A roof builder adds a linked floor on the level above. Floor covers placed over
 open air add the matching roof below. Ground-level floor finishes retain their
 existing behavior. Existing mapped roofs and tent canopies are not converted.
-Grounded wood supports permit two storeys, stone/clay four, concrete six, and
+Grounded wood supports permit two storeys, stone/clay four, concrete walls and pillars six, and
 metal eight; all supporting levels must have sufficient strength. Soft ground
 carries two storeys: taller buildings need their ground-floor supports on rock,
 mapped masonry or a stone, brick, concrete or metal floor. New roofs from the
@@ -36,7 +36,7 @@ their own tile. Removing a support schedules the normal roof collapse check;
 removing either slab face removes its partner and exposes the floor opening.
 
 New levels are open air, with no broken-floor render registry. Expansion is
-bounded by the shared total-cell budget, default 1,400,000 cells and four roof-added
+bounded by the shared total-cell budget, default 1,400,000 cells and six roof-added
 planes (a map opts in with `building_levels`), with lower-only host settings. Existing structural ceilings remain;
 see `docs/new-z-budget.md`. Native BYOND allocates the default turf synchronously;
 replacement is budgeted across ticks. These bounds do not establish low latency

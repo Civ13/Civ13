@@ -203,6 +203,13 @@
 		building_assert(QDELETED(plank_upper) && !QDELETED(plank_roof) && plank_roof.building_floor() == plank_floor && plank_floor.building_roof() == plank_roof, "ceiling stays linked to the wood floor")
 		qdel(plank_floor)
 		building_assert(QDELETED(plank_roof), "removing the wood floor still removes the ceiling")
+		// Concrete walls cast from cement bricks carry six storeys, like concrete pillars.
+		var/obj/covers/cement_wall/cast = new(locate(10,1,1))
+		building_assert(cast.building_support_tier() == 6, "concrete wall tier")
+		for (var/level = 1 to 6)
+			building_assert(building_construct_roof(locate(10,1,level), /obj/roof/concrete, null), "concrete walls carry storey [level]")
+			new /obj/covers/cement_wall(locate(10,1,level + 1))
+		building_assert(building_roof_error(locate(10,1,7)), "concrete walls stop at six storeys")
 		text2file("PASS: linked building levels", "result.txt")
 	catch (var/exception/E)
 		world.log << "BUILDING exception: [E] at [E.file]:[E.line]"

@@ -129,6 +129,13 @@ var/building_compiled_maxz = 0
 /obj/covers/vault/building_support_tier()
 	return health > 0 && !gc_destroyed && !gcDestroyed ? 6 : 0
 
+// A concrete wall is cast from cement bricks. Its material reads "Stone" for
+// slits and salvage, but it carries what a concrete pillar carries.
+/obj/covers/cement_wall/building_support_tier()
+	if (!wall || incomplete || health <= 0 || gc_destroyed || gcDestroyed)
+		return 0
+	return 6 + building_brace_tier_bonus(src)
+
 /turf/wall/building_support_tier()
 	return 4 + building_brace_tier_bonus(src)
 
@@ -367,7 +374,7 @@ var/global/building_assume_founded = FALSE
 		building_assume_founded = FALSE
 		if (founded && founded[1] > BUILDING_UNFOUNDED_STOREYS)
 			return "This roof would cover the [building_storey_name(founded[1])] storey, but the ground-floor walls or pillars stand on soft ground, which holds only two storeys. Supports on rock or on a stone, brick or concrete floor hold more. Lay that floor first, then build the wall or pillar on it."
-		return "This roof needs grounded walls or pillars of a sufficient tier. Wood supports two storeys, stone four, concrete six and metal eight. Above two storeys the ground-floor supports must stand on rock or on a stone, brick or concrete floor."
+		return "This roof needs grounded walls or pillars of a sufficient tier. Wood supports two storeys, stone four, concrete walls and pillars six and metal eight. Above two storeys the ground-floor supports must stand on rock or on a stone, brick or concrete floor."
 	var/h = info[1]
 	var/near = FALSE
 	var/uncarried = FALSE

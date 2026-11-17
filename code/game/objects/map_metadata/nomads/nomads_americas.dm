@@ -21,6 +21,7 @@
 	edge_crossings = list("south" = "southamerica")
 	new_player_start_z = 1
 	// The standing open-air level aircraft fly on, and three storeys above it (building_admission.dm).
+	// Kept at four: each of these million-cell planes adds about 130 MiB to a reload.
 	building_levels = 4
 	building_level_standing = TRUE
 	// Mined-out mountain floor keeps giving stone and regrowing ore seams (mountain_seams.dm).
@@ -39,6 +40,7 @@
 	edge_crossings = list("north" = "northamerica")
 	new_player_start_z = 1
 	// The standing open-air level aircraft fly on, and three storeys above it (building_admission.dm).
+	// Kept at four: each of these million-cell planes adds about 130 MiB to a reload.
 	building_levels = 4
 	building_level_standing = TRUE
 	// Mined-out mountain floor keeps giving stone and regrowing ore seams (mountain_seams.dm).

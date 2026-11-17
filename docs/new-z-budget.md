@@ -11,15 +11,16 @@ may add, and restore, exactly one cave level below its single compiled level
 while the whole world stays within Gaia's measured live profile (500 x 350 x 2 =
 350,000 cells, `NEW_Z_MEASURED_CELLS`). A map that opts into open-air
 building levels (`building_levels = N`, see `code/modules/multiz/building_admission.dm`;
-Gaia, Europe, Asia, Jungle and Desert set 4) may add, and restore, up to N roof-added levels, at most four, while
-the world stays within 1,050,000 cells (`NEW_Z_BUILDING_MEASURED_CELLS`, Gaia's
-500 x 350 x 6). A level is added only when a roof is built on the highest
+Gaia, Europe, Asia, Jungle and Desert set 6, the storeys concrete walls carry;
+the Americas keep 4 for memory) may add, and restore, up to N roof-added levels, at most six, while
+the world stays within 1,400,000 cells (`NEW_Z_BUILDING_MEASURED_CELLS`, Gaia's
+500 x 350 x 8). A level is added only when a roof is built on the highest
 existing one, so the world grows only as high as something stands.
 A map may opt into both (Europe and Asia): the cave is then one more added
 level beside the building levels, wherever it falls among them, because BYOND
 only appends levels. The admission keeps Gaia's measured shape: the surface and
 the cave, the two full planes, must fit 350,000 cells, and every plane together
-must fit 1,050,000. The cave counts as a ground plane, so it does not use up
+must fit 1,400,000. The cave counts as a ground plane, so it does not use up
 one of the map's roof levels. `multiz_level_above` and `multiz_level_below`
 step over the cave, so storeys stack on the surface whatever their level
 numbers. `tests/building_levels/run.py --cave` and `--cave-first` run both
@@ -50,7 +51,7 @@ z still allocates a full world plane. BYOND does not provide a sparse grid here.
 
 The provisional default and inclusive hard ceiling is **2,100,000 total cells**
 (1,400,000 until 2026-11-15; raised so a one-level map of up to 1,050,000 cells
-can keep its one standing open-air level, see below), with at most **four
+can keep its one standing open-air level, see below), with at most **six
 roof-added planes** above the actual compiled maximum (and only as many as the
 map's `building_levels`). Existing limits of 32
 absolute levels and 8 added levels remain. A host may lower these settings in
@@ -58,12 +59,12 @@ absolute levels and 8 added levels remain. A host may lower these settings in
 
 ```text
 NEW_Z_CELL_BUDGET 2100000
-NEW_Z_ROOF_LEVELS 4
+NEW_Z_ROOF_LEVELS 6
 NEW_Z_INSTANCE_RESERVE 0
 NEW_Z_SAFEHOUSE_RESERVE 0
 ```
 
-The first two accept decimal integers in 0..2100000 and 0..4 respectively. Zero
+The first two accept decimal integers in 0..2100000 and 0..6 respectively. Zero
 disables the corresponding arithmetic permission; no value enables the missing
 production memory admission. The reservation counts accept
 integers in 0..8 and reserve whole planes for future explicit consumers. Unknown
