@@ -10,6 +10,8 @@
 #define DUGOUT_CHAR_TIME 80
 #define DUGOUT_HOLLOW_TIME 120
 #define DUGOUT_ROUGH_WIND 3
+#define DUGOUT_SEAT_SPACING 6
+#define DUGOUT_SEAT_LIFT 5
 
 /obj/structure/dugout_log
 	name = "dugout log"
@@ -135,16 +137,20 @@
 	..()
 	seat_paddlers()
 
+// One paddler sits amidships; two sit fore and aft. Lying east or west the hull
+// is drawn low on its tile, so they are lifted to keep their feet inside it.
 /obj/structure/vehicle/raft/dugout/proc/seat_paddlers()
-	var/offset = 6
+	var/list/aboard = list()
 	for (var/mob/living/M in ontop)
-		if (M.loc != loc)
-			continue
+		if (M.loc == loc)
+			aboard += M
+	var/offset = aboard.len > 1 ? DUGOUT_SEAT_SPACING : 0
+	for (var/mob/living/M in aboard)
 		switch (dir)
 			if (NORTH, SOUTH)
 				M.pixel_x = 0
 				M.pixel_y = (dir == NORTH ? offset : -offset)
 			else
-				M.pixel_y = 0
+				M.pixel_y = DUGOUT_SEAT_LIFT
 				M.pixel_x = (dir == EAST ? offset : -offset)
 		offset = -offset
