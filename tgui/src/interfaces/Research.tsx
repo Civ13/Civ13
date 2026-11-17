@@ -37,9 +37,7 @@ function costLine(node: Data, book: boolean): string {
 
 function BenchSummary({ ui }: { ui: ScreenProps }) {
   const { data } = ui;
-  return <Section title="Research bench"><p>Bench tier: {data.bench_tier} / {data.max_tier}</p>
-    {!!data.tier_upgrade_cost && <p>Upgrade progress: {data.tier_progress}/{data.tier_upgrade_cost} silver in coins fed</p>}
-    {!!data.era_capped && <NoticeBox>Capped at tier {data.era_max_tier} until your civilization reaches the next era.</NoticeBox>}
+  return <Section title="Research bench"><p>Bench tier: {data.bench_tier} / {data.max_tier} (rises with each era)</p>
     <p>Owned by: {str(data.bench_faction) || 'Unclaimed'}</p>
     {!!data.has_faction && <><p>Viewing as: {str(data.viewer_role)} of the {str(data.viewer_faction)}</p><p>Your faction's benches: {data.viewer_bench_count} / {data.viewer_cap}</p></>}
     {data.can_claim ? <Action ui={ui} action="claim">Claim this bench for your faction</Action> : !!data.bench_faction && !data.owns_bench && <NoticeBox>This bench belongs to another faction. You can only observe it.</NoticeBox>}
@@ -52,9 +50,7 @@ function BookShelf({ ui, open }: { ui: ScreenProps; open: (id: string) => void }
   const books = list(data.books);
   const viewer: Data = data.viewer ?? {};
   return <Section title="Books on the bench">
-    <p className="rs-dim">Bench tier {data.bench_tier} / {data.max_tier}
-      {!!data.tier_upgrade_cost && <> - next tier: {data.tier_progress}/{data.tier_upgrade_cost} silver in coins used on the bench</>}
-      {!!data.era_capped && <> - the highest tier this era allows</>}</p>
+    <p className="rs-dim">Bench tier {data.bench_tier} / {data.max_tier} - rises with each era</p>
     {!books.length && <NoticeBox>None. Place a book on the bench; research done here is written into it.</NoticeBox>}
     <div className="rs-books">{books.map(book => <div key={String(book.idx)} className={`rs-book ${book.is_target ? 'rs-book-target' : ''}`}>
       <div className="rs-book-head"><strong>{str(book.name)}</strong>

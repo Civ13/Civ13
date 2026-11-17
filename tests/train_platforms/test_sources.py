@@ -80,6 +80,34 @@ class TrainPlatformSourceTests(unittest.TestCase):
         self.assertIn('/obj/structure/trains/platform/ex_act(severity)\n\tblast_couplings(severity)\n', WARFARE)
         self.assertIn('RECIPE: /material/iron/,train coupling,/obj/item/train_coupling,4,80,0,0,trains,101,', RECIPES)
 
+    def test_steam_engines_have_a_boiler(self):
+        # Built filled and in steam, so saved engines and fixtures keep running.
+        self.assertIn('\tvar/water = 240 // in the tank\n\tvar/max_water = 240\n', TRAINS)
+        self.assertIn('\tvar/pressure = 100 // percent of working pressure\n', TRAINS)
+        self.assertIn('\tvar/injector = TRUE', TRAINS)
+        # Pressure limits speed and a helper's pull; neglect drops the plug, nothing explodes.
+        self.assertIn('* min(1, pull_ratio()) * steam_factor() * throttle / LOCO_NOTCHES', TRAINS)
+        self.assertIn('consist_power += L.haul * ((L == src) ? 1 : L.steam_factor())', TRAINS)
+        self.assertIn('/obj/structure/trains/locomotive/coal/proc/drop_plug()', TRAINS)
+        self.assertNotIn('explosion(', TRAINS)
+        self.assertIn('RECIPE: /material/lead/,fusible plug,/obj/item/fusible_plug,1,60,0,0,trains,101,', RECIPES)
+
+    def test_tenders_are_shovelled_and_water_comes_from_towers(self):
+        dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
+        self.assertEqual(dme.count('#include "code\\modules\\1713\\train_water.dm"'), 1)
+        water = (ROOT / 'code/modules/1713/train_water.dm').read_text(encoding='utf-8')
+        # The firebox is fed by hand: the automatic tender feed is gone.
+        self.assertNotIn('feed_from', TRAINS)
+        self.assertIn('/obj/structure/trains/locomotive/coal/proc/shovel_coal(mob/user)', water)
+        self.assertIn('\tif (is_tool(W, TOOL_SHOVEL))\n\t\tboiler_tick()\n\t\tshovel_coal(user)\n', TRAINS)
+        # The walkable tender is a one-piece body without an engine.
+        self.assertIn('\tlayouts["tender"] = list(', LOCOS)
+        self.assertIn('/obj/structure/train_car_kit/tender\n\tname = "tender kit"\n\tcar_kind = "tender"\n', LOCOS)
+        for line in ('RECIPE: /material/iron/,tender kit,/obj/structure/train_car_kit/tender,24,400,1,1,trains,101,',
+                     'RECIPE: /material/iron/,water crane,/obj/structure/rail_water,8,200,1,1,trains,101,',
+                     'RECIPE: /material/wood/,water tower,/obj/structure/rail_water/tower,30,300,1,1,trains,101,'):
+            self.assertIn(line, RECIPES)
+
     def test_heavy_locomotives_drive_like_the_one_tile_engines(self):
         dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
         self.assertEqual(dme.count('#include "code\\modules\\1713\\train_locomotives.dm"'), 1)

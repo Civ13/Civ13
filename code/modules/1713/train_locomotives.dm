@@ -58,6 +58,15 @@
 			list("edges" = list(), "solid" = 2),
 			list("edges" = armor_cab, "solid" = 0),
 			list("edges" = list(), "solid" = 2)))
+	// Not an engine: a tender is drawn and built the same way, in one piece.
+	layouts["tender"] = list(
+		"name" = "tender", "desc" = "A locomotive tender: a coal bunker and a water tank on wheels, with a shovelling plate at the front. Couple it next to a steam locomotive.",
+		"body" = "tender",
+		"segments" = list(
+			list("edges" = list(), "solid" = 0),
+			list("edges" = list(), "solid" = 2),
+			list("edges" = list(), "solid" = 2),
+			list("edges" = list(), "solid" = 2)))
 
 /////////////////////////////////////////////////////////////////////////////
 // Body tiles either side of the track
@@ -383,6 +392,11 @@
 	max_fuel = 250
 	train_weight = 4.5 // with its three body sections the locomotive weighs 6
 	haul = 30
+	water = 600
+	max_water = 600
+	boiler_water = 100
+	max_boiler = 100
+	steam_time = 240
 
 /obj/structure/trains/locomotive/coal/heavy/ex_act(severity)
 	blast_couplings(severity)
@@ -446,6 +460,11 @@
 	max_fuel = 300
 	train_weight = 8.5 // 10 with its body sections
 	haul = 40
+	water = 600
+	max_water = 600
+	boiler_water = 100
+	max_boiler = 100
+	steam_time = 240
 
 /obj/structure/trains/locomotive/coal/armored/heavy/examine(mob/user)
 	..()
@@ -454,6 +473,9 @@
 /////////////////////////////////////////////////////////////////////////////
 // Kits
 
+/obj/structure/train_car_kit/tender
+	name = "tender kit"
+	car_kind = "tender"
 /obj/structure/train_car_kit/loco_steam
 	name = "heavy steam locomotive kit"
 	car_kind = "loco_steam"

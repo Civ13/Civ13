@@ -6,7 +6,8 @@
 // aboard, comes about, is stopped by an upper storey, fires down at the
 // ground, saves and restores her, has a cell holed
 // from the ground and patched, drops a bomb through the hatch, and is wrecked
-// when both cells burn. Production code runs unchanged.
+// when both cells burn. A second airship is built two levels up, over an
+// open level, and flies, sees, shoots, is shot, bombs and falls from there. Production code runs unchanged.
 var/global/datum/air_hull_probe/air_hull_probe = new
 
 /mob/living/human/air_hull_actor/ssd_check()
@@ -218,9 +219,10 @@ var/global/datum/air_hull_probe/air_hull_probe = new
 	gun.safetyon = FALSE
 	var/shots = 0
 	while(!G1.holes && !G2.holes && shots < 12)
-		if(!gun.loaded.len)
-			for(var/i = 1 to 3)
-				gun.loaded += new gun.ammo_type(gun)
+		// Spent casings stay in a revolver's cylinder: give it a fresh round.
+		for(var/obj/item/ammo_casing/spent in gun.loaded)
+			spent.loc = null
+		gun.loaded = list(new gun.ammo_type(gun))
 		S.last_movement = world.time - 100
 		gun.Fire(mark, S)
 		shots++
@@ -290,6 +292,174 @@ var/global/datum/air_hull_probe/air_hull_probe = new
 	if(!QDELETED(F2))
 		qdel(F2)
 
+// Two levels up: a floor on the first open level, a ladder from it to the next,
+// and a deck there. Everything is seen, dropped and shot through the open
+// level between her and the ground.
+/datum/air_hull_probe/proc/high_flight(turf/start, sky_z)
+	var/high_z = multiz_level_above(sky_z)
+	if(!high_z)
+		building_allocate_level(world.maxz + 1)
+		high_z = multiz_level_above(sky_z)
+	expect(high_z, "no level above the open air: [world_z_budget.last_error]")
+	if(!high_z)
+		return
+	notes["high_z"] = high_z
+	for(var/dx = -2 to 8)
+		for(var/dy = -2 to 6)
+			var/turf/T = locate(start.x + dx, start.y + dy, high_z)
+			if(T && T.type != /turf/sky/building)
+				new /turf/sky/building(T)
+	var/turf/landing = sky(start, 0, 0, sky_z)
+	new /obj/covers/repairedfloor(landing)
+	var/obj/structure/multiz/ladder/up/placed/bottom = new(landing)
+	var/turf/top_turf = sky(start, 0, 0, high_z)
+	var/obj/structure/multiz/ladder/placed/top = new(top_turf)
+	bottom.target = top
+	top.target = bottom
+	var/mob/living/human/air_hull_actor/B = new(top_turf)
+	B.a_intent = I_HELP
+	sleep(5)
+	expect(B.z == high_z, "builder fell off the upper ladder top")
+	// A 3x2 deck, one cell and a helm.
+	for(var/dx = 1 to 3)
+		for(var/dy = 0 to 1)
+			var/turf/T = sky(start, dx, dy, high_z)
+			for(var/turf/S in range(1, T))
+				if(S != T && ((locate(/obj/covers/airship_deck) in S) || (locate(/obj/structure/multiz) in S)))
+					B.forceMove(S)
+					break
+			expect(lay(B, T), "no high deck laid at +[dx],+[dy]: [air_deck_lay_refusal(T, B)]")
+	B.forceMove(sky(start, 1, 0, high_z))
+	var/obj/item/airship_gas_cell/cell = new(B)
+	B.put_in_active_hand(cell)
+	cell.resolve_attackby(sky(start, 2, 1, high_z), B)
+	var/obj/structure/airship_gas_cell/G = locate() in sky(start, 2, 1, high_z)
+	expect(G, "no high gas cell hung")
+	var/obj/item/airship_helm_kit/kit = new(B)
+	B.put_in_active_hand(kit)
+	B.dir = EAST
+	kit.resolve_attackby(sky(start, 2, 0, high_z), B)
+	var/obj/structure/airship_helm/H = locate() in sky(start, 2, 0, high_z)
+	expect(H, "no high helm set up")
+	if(!H || !G)
+		return
+	var/problem = H.commission("high ship", EAST)
+	expect(!problem, "high commission refused: [problem]")
+	var/datum/craft/air/C = H.craft
+	if(!C)
+		return
+	var/datum/craft_body/built/air/body = C.body
+	expect(body.z == high_z && body.tile_count() == 6, "high body: z [body.z], [body.tile_count()] tiles")
+	// Her shadow and the crew's view reach the ground through the open level.
+	expect(C.shadow_anchor && C.shadow_anchor.z == start.z, "high shadow on z [C.shadow_anchor ? C.shadow_anchor.z : 0], not the ground")
+	var/ground_seen = 0
+	for(var/turf/V in C.ground_view.vis_contents)
+		if(V.z == start.z)
+			ground_seen++
+	expect(ground_seen > 50, "the crew sees [ground_seen] ground tiles from two levels up")
+	// A floor in between is what she sees and drops onto there.
+	var/turf/roof_under = sky(start, 3, 1, sky_z)
+	new /obj/covers/repairedfloor(roof_under)
+	expect(air_hull_solid_below(sky(start, 3, 1, high_z)) == roof_under, "a floor between her and the ground is not what lies under her")
+	expect(air_hull_levels_between(locate(start.x + 3, start.y + 1, start.z), sky(start, 3, 1, high_z)) == 0, "a floor between did not shield her")
+	expect(air_hull_levels_between(locate(start.x + 2, start.y + 1, start.z), sky(start, 2, 1, high_z)) == 2, "two open levels not counted")
+	for(var/obj/covers/repairedfloor/F in roof_under)
+		F.loc = null
+	// She flies a tile east, two levels up.
+	B.forceMove(sky(start, 1, 1, high_z))
+	C.set_anchor(FALSE)
+	C.speed = VESSEL_SPEED_SLOW
+	C.stop_sailing()
+	var/turf/was = body.origin()
+	expect(C.sail_hop(), "high hop refused: [C.last_refusal]")
+	var/turf/now = body.origin()
+	expect(now.x == was.x + 1 && now.z == high_z, "high hop went to [now.x],[now.y],[now.z]")
+	expect(B.z == high_z && body.contains(get_turf(B)), "builder fell from the high deck")
+	C.set_anchor(TRUE)
+	var/turf/GT = get_turf(G)
+	// The crew's shots and clicks on open air go to the ground two levels down.
+	var/turf/here = get_turf(B)
+	var/turf/aim = locate(here.x, here.y + 2, start.z)
+	expect(airborne_launch_turf(B, aim) == locate(here.x, here.y, start.z), "a high deck shot does not start on the ground under her")
+	var/turf/air = locate(here.x, here.y + 2, high_z)
+	expect(airborne_aim_turf(B, air) == aim, "clicking open air from the high deck does not aim at the ground below")
+	var/mob/living/human/air_hull_actor/T = new(aim)
+	sleep(5)
+	var/obj/item/weapon/gun/projectile/revolver/nagant_revolver/gun = new(B)
+	B.put_in_active_hand(gun)
+	gun.safetyon = FALSE
+	for(var/i = 1 to 3)
+		gun.loaded += new gun.ammo_type(gun)
+	B.last_movement = world.time - 100
+	gun.Fire(air, B)
+	sleep(20)
+	notes["high_click_shot_brute"] = T.getBruteLoss()
+	expect(T.getBruteLoss() > 0, "a click on open air from the high deck missed the person below")
+	T.loc = null
+	B.drop_from_inventory(gun)
+	gun.loc = null
+	// Ground fire reaches her through the open level, less often.
+	notes["high_levels_under_cell"] = air_hull_levels_between(locate(GT.x, GT.y, start.z), GT)
+	// Close under her, so the shot's spread cannot carry it wide of the cell.
+	var/mob/living/human/air_hull_actor/S = new(locate(GT.x - 1, GT.y, start.z))
+	var/mob/living/human/air_hull_actor/mark = new(locate(GT.x + 2, GT.y, start.z))
+	S.a_intent = I_HARM
+	gun = new(S)
+	S.put_in_active_hand(gun)
+	gun.safetyon = FALSE
+	var/shots = 0
+	while(!G.holes && shots < 30)
+		// Spent casings stay in a revolver's cylinder: give it a fresh round.
+		for(var/obj/item/ammo_casing/spent in gun.loaded)
+			spent.loc = null
+		gun.loaded = list(new gun.ammo_type(gun))
+		S.last_movement = world.time - 100
+		gun.Fire(mark, S)
+		shots++
+		sleep(10)
+	notes["high_shots_to_hole"] = shots
+	expect(G.holes > 0, "[shots] shots from two levels down never holed her cell")
+	S.loc = null
+	mark.loc = null
+	gun.loc = null
+	G.holes = 0
+	G.update_icon()
+	// The bomb falls through the open level to the ground.
+	var/turf/hatch_turf = null
+	for(var/turf/D in body.cells())
+		if(!(locate(/obj/structure/airship_gas_cell) in D) && !(locate(/obj/structure/airship_helm) in D) && D != get_turf(B))
+			hatch_turf = D
+			break
+	var/obj/structure/airship_bomb_hatch/hatch = new(hatch_turf)
+	for(var/turf/D in range(1, hatch_turf))
+		if(D != hatch_turf && D != GT && body.contains(D) && !(locate(/obj/structure/airship_helm) in D))
+			B.forceMove(D)
+			break
+	var/obj/item/weapon/aircraft_bomb/bomb = new(hatch)
+	bomb.filled = TRUE
+	var/mob/living/human/air_hull_actor/V = new(locate(hatch_turf.x, hatch_turf.y, start.z))
+	sleep(2)
+	hatch.attack_hand(B)
+	sleep(10)
+	notes["high_bomb_victim_brute"] = V.getBruteLoss()
+	expect(QDELETED(bomb) || bomb.z == start.z, "the high bomb stopped at z [bomb.z]")
+	expect(V.getBruteLoss() > 0 || V.stat == DEAD || QDELETED(V), "the high bomb hurt no one on the ground")
+	expect(!QDELETED(C) && B.z == high_z, "the high bomb blast reached her")
+	if(!QDELETED(V))
+		V.loc = null
+	// Burnt out, she falls two levels and the fall hurts more.
+	var/brute = B.getBruteLoss()
+	var/turf/GG = locate(GT.x, GT.y, start.z)
+	var/obj/item/projectile/arrow/arrow/fire/F = new(GG)
+	C.struck_by(F, GT, GG)
+	sleep(5)
+	notes["high_crash_brute"] = B.getBruteLoss() - brute
+	expect(QDELETED(C), "the burnt high airship did not break up")
+	expect(B.z == start.z && B.getBruteLoss() - brute >= 30, "builder not thrown to the ground hard: z [B.z], [B.getBruteLoss() - brute] brute")
+	if(!QDELETED(F))
+		qdel(F)
+	B.loc = null
+
 /datum/air_hull_probe/proc/run_probe()
 	var/failure = null
 	try
@@ -311,6 +481,7 @@ var/global/datum/air_hull_probe/air_hull_probe = new
 			throw EXCEPTION("no ground with open sky above found")
 		notes["start"] = "[start.x],[start.y],[start.z] under [sky_z]"
 		build_and_fly(start, sky_z)
+		high_flight(locate(start.x - 8, start.y - 8, start.z), sky_z)
 		if(problems.len)
 			notes["problems"] = problems
 			throw EXCEPTION(jointext(problems, "; "))

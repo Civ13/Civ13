@@ -197,6 +197,11 @@
 
 	// Fired down from an airship's gondola at the ground below (pedal_airship_combat.dm).
 	if (aloft_pedal_airships.len || air_hull_crafts.len)
+		var/turf/aimed = airborne_aim_turf(user, targloc)
+		if (aimed != targloc)
+			if (target == targloc)
+				target = aimed
+			targloc = aimed
 		var/turf/gondola = airborne_launch_turf(user, targloc)
 		if (gondola)
 			curloc = gondola

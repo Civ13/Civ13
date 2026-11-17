@@ -1,6 +1,8 @@
 
 /obj/map_metadata/nomads/jungle
 	ID = MAP_NOMADS_JUNGLE
+	// The sun's path (sun_shadows.dm): near the equator, the noon sun is almost overhead.
+	sun_latitude = 2
 	// z 1 is unformed rock that forms as it is dug (dug_underground.dm).
 	underground_compiled_z = 1
 	title = "Nomads (Jungle)"

@@ -168,6 +168,7 @@
 		overlays += image('icons/obj/vehicles/train_platforms.dmi', "loco_armor")
 
 /obj/structure/trains/locomotive/coal/armored/ex_act(severity)
+	blast_couplings(severity)
 	var/damage = 0
 	switch (severity)
 		if (1.0)

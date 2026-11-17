@@ -91,6 +91,8 @@ var/list/seed_list_jungle
 	spawn(15)
 		if (map && map.ID == MAP_LIGHTS_OUT)
 			opacity = FALSE
+	// Trees cast a ground shadow away from the sun (sun_shadows.dm).
+	sun_shadow_register()
 
 /obj/structure/wild/proc/grow_branch()
 	if (max_branches <= 0)
@@ -179,6 +181,8 @@ var/list/seed_list_jungle
 		return pick_seed_by_biome(A.climate)
 
 /obj/structure/wild/Destroy()
+	if (sun_shadow_shape)
+		sun_shadow_casters -= src
 	#if CIV13_ROOT_TREE_PRESENTATION
 	root_tree_invalidate(src)
 	#endif
@@ -504,9 +508,11 @@ var/list/seed_list_jungle
 	if (radiation >= 15)
 		icon = deadicon
 		icon_state = deadicon_state
-		return
 	else
 		icon = current_icon
+	// The new sheet (leafy, bare, dead) picks the sun shadow's shape (sun_shadows.dm).
+	if (sun_tree_angles && sun_shadow_shape)
+		sun_shadow_update()
 
 /obj/structure/wild/tree/live_tree/proc/change_season()
 	if (radiation >= 15)
@@ -641,8 +647,9 @@ var/list/seed_list_jungle
 	edible = FALSE
 	leaves = 0
 	max_leaves = 0
-	branches = 0
-	max_branches = 0
+	// Palm frond stems: on a beach palms are the only source of branches.
+	branches = 2
+	max_branches = 2
 
 /obj/structure/wild/palm/attackby(obj/item/W as obj, mob/user as mob)
 	if(is_tool(W, TOOL_KNIFE) && user.a_intent == I_HELP)
@@ -1409,6 +1416,9 @@ var/list/seed_list_jungle
 				to_chat(user, SPAN_WARNING("There are no useful branches in this tree."))
 				return
 		return
+	else if (user.a_intent == I_HARM && max_branches > 0)
+		// Said plainly: without this the click fell through to a punch.
+		to_chat(user, SPAN_WARNING("\The [src] has no branches left to break off. They grow back in time; try another tree."))
 	else
 		..()
 

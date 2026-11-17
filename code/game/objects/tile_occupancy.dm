@@ -100,7 +100,9 @@
 	var/turf/T = get_turf(src)
 	if (!T || !building_pair_id || is_subfloor() || !is_floor_cover())
 		return null
+	var/obj/roof/R = building_roof()
 	var/obj/covers/repairedfloor/sub = new(T)
+	sub.building_take_upper_face(R)
 	if (!sub.replace_subfloor(src))
 		qdel(sub)
 		return null

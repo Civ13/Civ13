@@ -1,5 +1,7 @@
 /obj/map_metadata/nomads/asia
 	ID = MAP_NOMADS_ASIA
+	// The sun's path (sun_shadows.dm): degrees north.
+	sun_latitude = 40
 	// Cinnabar on an old mercury belt: twice as common (mercury.dm).
 	cinnabar_rich = TRUE
 	title = "Nomads (Asia)"

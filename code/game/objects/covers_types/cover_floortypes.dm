@@ -2,7 +2,7 @@
 
 /obj/item/weapon/covers
 	name = "floor cover"
-	desc = "Use this to cover holes."
+	desc = "Planks for covering a hole or extending an upper floor. Face the hole or the open air beside you and use it in hand, or click that spot with it."
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "wood_ship_repaired2"
 	w_class = ITEM_SIZE_SMALL

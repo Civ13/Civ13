@@ -4,7 +4,7 @@
 /world
 	hub = ""
 	hub_password = ""
-	maxx = 147
+	maxx = 156
 	maxy = 26
 	maxz = 1
 	turf = /turf/floor/dirt
@@ -455,8 +455,10 @@ var/global/platform_probe_runtime_error = FALSE
 	var/obj/item/stack/ore/coal/coal = new(tender.storage)
 	coal.amount = 5
 	T.fuel = 20
-	T.refresh_consist()
-	platform_check("tender/feeds_firebox", T.fuel == 95 && QDELETED(coal))
+	T.refresh_consist(6)
+	var/unfed = T.fuel == 20
+	var/stroke = T.shovel_coal(null)
+	platform_check("tender/shovelled_by_hand", unfed && stroke && T.fuel == 50 && coal.amount == 3 && tender.tender_fuel_left() == 45)
 
 	// Collisions scale with speed: a crawl shoves a person aside unhurt,
 	// a fast train throws them clear and keeps going.
@@ -1060,6 +1062,162 @@ var/global/platform_probe_runtime_error = FALSE
 	var/obj/structure/trains/platform/last = segs[4]
 	platform_check("coupling/car_ends_only", flat.coupler_f && !flat.coupler_r && !mid.coupler_f && !mid.coupler_r && last.coupler_r && !last.coupler_f && !mid.damage_coupling(TRUE, 100) && mid.front_coupling == 100)
 
+/proc/boiler_near(a, b)
+	return abs(a - b) < 0.01
+
+// The boiler (trains.dm): steam made and used, water, the injector, raising
+// steam by the clock and the fusible plug.
+/proc/platform_boiler_run()
+	var/obj/structure/trains/locomotive/coal/L = drive_train(142, 4, 2)
+	platform_check("boiler/built_in_steam", L.pressure == 100 && L.steam_factor() == 1 && L.water == 240 && L.boiler_water == 60 && L.injector && !L.plug_dropped && L.start_text == "Light the fire")
+	L.steam_use(3, L.haul, 10)
+	platform_check("boiler/work_boils_water_and_the_injector_feeds", boiler_near(L.water, 230) && boiler_near(L.boiler_water, 60) && boiler_near(L.pressure, 98))
+	L.throttle = 3
+	L.refresh_consist()
+	L.pressure = 100
+	var/full = L.cruise_speed()
+	L.pressure = 70
+	L.steam_use(3, L.haul * 2, 40)
+	var/winded = L.cruise_speed()
+	platform_check("boiler/overload_winds_the_engine", boiler_near(L.pressure, 46) && full > 0 && boiler_near(winded, full * 46 / 60))
+	L.pressure = 100
+	L.fuel = 10
+	L.steam_use(3, L.haul, 10)
+	platform_check("boiler/thin_fire_loses_steam", boiler_near(L.pressure, 90.2))
+	L.pressure = 10
+	platform_check("boiler/no_steam_no_power", L.steam_factor() == 0 && L.cruise_speed() == 0)
+	L.throttle = 0
+
+	L.pressure = 0
+	L.fuel = 100
+	L.boiler_time = world.time - 600
+	L.boiler_tick()
+	platform_check("boiler/raises_steam_by_the_clock", boiler_near(L.pressure, 50) && boiler_near(L.fuel, 98.8) && L.on)
+	L.on = FALSE
+	L.boiler_time = world.time - 1200
+	L.boiler_tick()
+	platform_check("boiler/cools_with_the_fire_out", boiler_near(L.pressure, 40) && boiler_near(L.fuel, 98.8))
+
+	var/mob/living/human/platform_rider/fireman = new(platform_turf(141, 4))
+	platform_check("boiler/injector_control", ("Injector off" in L.extra_controls()) && L.handle_control("Injector off", fireman) && !L.injector && ("Injector on" in L.extra_controls()) && !L.handle_control("Whistle", fireman) && findtext(L.state_text(), "injector off"))
+	L.on = TRUE
+	L.pressure = 100
+	L.boiler_water = 60
+	L.steam_use(3, L.haul, 50)
+	var/low = boiler_near(L.boiler_water, 10) && L.water_warned && !L.plug_dropped && L.on
+	L.steam_use(3, L.haul, 10)
+	platform_check("boiler/dry_boiler_drops_the_plug", low && L.plug_dropped && !L.on && L.pressure == 0 && L.steam_factor() == 0 && L.boiler_water == 0)
+	var/plug_stops = findtext(L.start_problem(), "plug")
+	L.plug_dropped = FALSE
+	platform_check("boiler/no_fire_without_plug_or_water", plug_stops && findtext(L.start_problem(), "water"))
+
+	L.water = 100
+	var/cold = L.add_water(120)
+	var/cold_ok = cold == 120 && L.boiler_water == 60 && L.water == 160 && !L.start_problem()
+	L.water = 240
+	var/full_tank = L.add_water(50) == 0
+	L.pressure = 100
+	L.boiler_water = 30
+	L.water = 0
+	platform_check("boiler/cold_boiler_fills_first", cold_ok && full_tank && L.add_water(50) == 50 && L.boiler_water == 30 && L.water == 50)
+	var/obj/item/weapon/reagent_containers/glass/bucket/pail = new(platform_turf(141, 4))
+	pail.reagents.clear_reagents()
+	pail.reagents.add_reagent("water", 100)
+	L.water = 0
+	var/wants = L.takes_fuel(pail)
+	L.attackby(pail, fireman)
+	platform_check("boiler/filled_from_a_bucket", wants && L.water == 100 && !pail.reagents.has_reagent("water") && !L.takes_fuel(pail))
+	qdel(pail)
+
+	// A helper engine low on steam adds less pull.
+	var/obj/structure/trains/W2 = L.connected.connected
+	var/obj/structure/trains/locomotive/coal/H = new(platform_turf(142, 1))
+	H.dir = NORTH
+	H.fuel = 100
+	H.on = TRUE
+	W2.connected = H
+	L.on = TRUE
+	L.fuel = 100
+	L.refresh_consist()
+	var/both = L.consist_power
+	H.pressure = 30
+	L.refresh_consist()
+	platform_check("boiler/weak_helper_pulls_less", both == L.haul + H.haul && boiler_near(L.consist_power, L.haul + H.haul * 0.5))
+	var/before = H.water
+	L.throttle = 3
+	L.refresh_consist(6)
+	L.throttle = 0
+	platform_check("boiler/helper_uses_its_own_water", H.water < before && H.boiler_water == 60)
+	var/obj/structure/trains/locomotive/coal/heavy/big = /obj/structure/trains/locomotive/coal/heavy
+	var/obj/structure/trains/locomotive/coal/armored/heavy/plated = /obj/structure/trains/locomotive/coal/armored/heavy
+	var/obj/structure/trains/locomotive/plain = /obj/structure/trains/locomotive
+	platform_check("boiler/heavy_engines_carry_more", initial(big.max_water) == 600 && initial(big.water) == 600 && initial(big.max_boiler) == 100 && initial(big.steam_time) == 240 && initial(plated.max_water) == 600 && initial(plain.start_text) == "Start the engine")
+	platform_check("boiler/plug_spare", ("fusible_plug" in icon_states('icons/obj/vehicles/train_platforms.dmi')) && ispath(/obj/item/fusible_plug))
+
+// The walkable tender, shovelling, and water from a tower or a crane
+// (train_water.dm).
+/proc/platform_tender_run()
+	for (var/y in 2 to 25)
+		platform_track(150, y, NORTH)
+	var/obj/structure/trains/platform/tender = platform_car("tender", 150, 12, NORTH)
+	var/list/segs = platform_segments(tender)
+	var/obj/structure/trains/platform/last = segs.len == 4 ? segs[4] : null
+	var/list/states = icon_states('icons/obj/vehicles/train_platforms.dmi')
+	platform_check("tender/built_in_one_piece", last && tender.icon_state == "loco_tender_1c" && !tender.density && last.density && tender.tender_store() == tender && last.tender_store() == tender && tender.dismantle_problem() && tender.coupler_f && last.coupler_r && ("loco_tender_1l" in states) && ("loco_tender_4r" in states) && platform_parts_placed(segs))
+	var/obj/structure/trains/locomotive/coal/L = new(platform_turf(150, 13))
+	L.dir = NORTH
+	L.fuel = 20
+	L.on = TRUE
+	L.connected = tender
+	var/list/found = L.engine_tenders()
+	platform_check("tender/found_next_to_the_engine", found.len == 1 && found[1] == tender && last.train_head() == L)
+
+	var/mob/living/human/platform_rider/fireman = new(platform_turf(148, 12))
+	var/obj/item/stack/ore/coal/C = new(platform_turf(148, 12))
+	C.amount = 10
+	last.attackby(C, fireman)
+	var/obj/item/weapon/reagent_containers/glass/bucket/pail = new(platform_turf(148, 12))
+	pail.reagents.clear_reagents()
+	pail.reagents.add_reagent("water", 100)
+	last.attackby(pail, fireman)
+	platform_check("tender/loaded_by_hand", tender.tender_fuel == 150 && QDELETED(C) && tender.tender_water == 100 && !pail.reagents.has_reagent("water") && findtext(last.tender_text(), "10% full"))
+	qdel(pail)
+
+	var/first = L.shovel_coal(fireman)
+	var/after_one = L.fuel == 50 && tender.tender_fuel == 120
+	L.shovel_coal(fireman)
+	var/third = L.shovel_coal(fireman)
+	platform_check("tender/shovel_fills_the_firebox", first && after_one && third && L.fuel == 100 && tender.tender_fuel == 70 && !L.shovel_coal(fireman) && L.takes_fuel(new /obj/item/weapon/material/shovel(null)))
+	L.water = 200
+	L.tender_top_up()
+	var/topped = L.water == 240 && tender.tender_water == 60
+	L.water = 230
+	L.refresh_consist()
+	platform_check("tender/water_runs_to_the_engine", topped && L.water == 240 && tender.tender_water == 50)
+	var/obj/structure/trains/locomotive/coal/lone = new(platform_turf(150, 20))
+	lone.dir = NORTH
+	lone.fuel = 10
+	platform_check("tender/no_tender_no_shovelling", !lone.engine_tenders().len && !lone.shovel_coal(fireman) && lone.fuel == 10)
+	var/obj/structure/trains/storage/tender/wagon = new(platform_turf(150, 24))
+	platform_check("tender/wagon_carries_water", wagon.tender_store() == wagon && wagon.tender_add_water(700) == 600 && wagon.tender_water == 600 && findtext(wagon.tender_text(), "100%") && !segs[2].tender_load(null, fireman))
+	qdel(wagon)
+
+	var/obj/structure/rail_water/tower/TW = new(platform_turf(153, 12))
+	var/list/reach = TW.takers()
+	L.water = 0
+	tender.tender_water = 0
+	var/filled = TW.add_tower_water(7000) == 6000 && !TW.pump_water() && TW.source() == TW
+	var/gave = TW.fill_takers()
+	platform_check("water/tower_fills_what_stands_by", filled && reach.len == 2 && (L in reach) && (tender in reach) && gave == 2640 && L.water == 240 && tender.tender_water == 2400 && TW.water == 3360 && TW.fill_takers() == 0)
+	var/obj/structure/rail_water/crane = new(platform_turf(152, 20))
+	lone.water = 40
+	var/list/near = crane.takers()
+	platform_check("water/crane_draws_from_the_tower", crane.source() == TW && near.len == 1 && near[1] == lone && crane.fill_takers() == 200 && lone.water == 240 && TW.water == 3160)
+	lone.water = 0
+	qdel(TW)
+	var/list/sheet = icon_states('icons/obj/vehicles/rail_water.dmi')
+	platform_check("water/crane_needs_a_tower", !crane.source() && crane.fill_takers() == 0 && lone.water == 0 && ("water_tower" in sheet) && ("water_crane" in sheet))
+
 /world/New()
 	OpenPort("none")
 	GLOB.all_observable_events = list()
@@ -1079,6 +1237,8 @@ var/global/platform_probe_runtime_error = FALSE
 		platform_facing_run()
 		platform_long_run()
 		platform_coupling_run()
+		platform_boiler_run()
+		platform_tender_run()
 	catch (var/exception/E)
 		platform_probe_runtime_error = TRUE
 		world.log << "Fixture aborted: [E] at [E.file]:[E.line]"

@@ -67,6 +67,19 @@ class TileOccupancySources(unittest.TestCase):
     def test_beds_accept_upper_floors(self):
         self.assertIn('if(!tile_has_floor(T) || T.density', read('code/modules/persistence/bed_return.dm'))
 
+    def test_floor_cover_item_one_floor_per_tile(self):
+        covers = read('code/game/objects/covers.dm')
+        body = covers[covers.index('/obj/item/weapon/covers/attack_self('):]
+        body = body[:body.index('/obj/item/weapon/covers/ship/attack_self(')]
+        self.assertEqual(body.count('tile_build_refusal(target, /obj/covers/repairedfloor)'), 2)
+        self.assertLess(body.rindex('tile_build_refusal(target'), body.index('new(target)'))
+
+    def test_open_air_click_lays_floor_cover(self):
+        sky = read('code/modules/multiz/open_space.dm')
+        body = sky[sky.index('/turf/sky/attackby('):]
+        self.assertIn('istype(W, /obj/item/weapon/covers)', body)
+        self.assertIn('W.attack_self(user)', body)
+
     def test_wall_foundations_checked(self):
         for path, count in (('code/game/objects/items/clay_items.dm', 7),
                             ('code/modules/1713/barriers/sandbag.dm', 2),

@@ -159,6 +159,7 @@ var/created_lighting_corners_and_overlays = FALSE
 
 // Run map effects for the completed request, after a queued target has settled.
 /proc/apply_time_of_day_effects(target)
+	sun_shadows_phase(target)
 	if (target == "Night" && map && map.ID == MAP_NOMADS_WASTELAND_2)
 		var/obj/map_metadata/nomads/wasteland/two/map2 = map
 		map2.zombies(TRUE)

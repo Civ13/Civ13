@@ -45,6 +45,9 @@
 // Returns null when done, else the reason.
 /obj/structure/hull_tiller/proc/commission(hull_name = null, heading = null)
 	var/turf/T = get_turf(src)
+	// A refit would survey a holed tile out of her hull: patch her first.
+	if (craft && craft.ledger && craft.ledger.holes > 0)
+		return "Patch the [craft.ledger.holes == 1 ? "hole" : "holes"] in her hull before she is surveyed again."
 	var/survey = built_hull_survey(T, craft)
 	if (istext(survey))
 		return survey
@@ -58,6 +61,8 @@
 	if (hull_name)
 		B.hull_name = hull_name
 		craft.name = hull_name
+	// Her condition afloat: bilge water and what follows (hull_ledger.dm).
+	craft.fit_ledger()
 	return null
 
 // Strikes the hull: the floors stay where they are, nothing sails.
@@ -87,6 +92,8 @@
 	var/list/passage = craft.open_sea_state()
 	if (passage)
 		state["sea"] = passage
+	if (craft.ledger)
+		state["ledger"] = craft.ledger.to_list()
 	hull_state = json_encode(state)
 	register_state = (craft.register && craft.register.party) ? craft.register.register_state() : ""
 
@@ -105,6 +112,7 @@
 		return
 	craft = new /datum/craft(B)
 	craft.anchored = state["anchored"] ? TRUE : FALSE
+	craft.fit_ledger(islist(state["ledger"]) ? state["ledger"] : null)
 	if (register_state)
 		craft.register = craft_register_restore(register_state)
 	if (isnum(state["speed"]) && state["speed"] > 0)
@@ -118,7 +126,7 @@
 	var/datum/craft_body/built/B = craft.body
 	var/list/speeds = list("all stop", "slow ahead", "half ahead", "full ahead")
 	var/upper = B.upper_tile_count()
-	return "[capitalize(craft.name)]: [B.tile_count()] tiles of hull[upper ? " and [upper] of upper deck" : ""], [speeds[craft.speed + 1]], bow to the [dir2text(B.dir)], anchor [craft.anchored ? "down" : "up"][craft.running_dark ? ", running dark" : ""][craft.grapple ? ", held by grappling lines" : ""]. [craft.drives_text()] [craft.magnetic_text()]"
+	return "[capitalize(craft.name)]: [B.tile_count()] tiles of hull[upper ? " and [upper] of upper deck" : ""], [speeds[craft.speed + 1]], bow to the [dir2text(B.dir)], anchor [craft.anchored ? "down" : "up"][craft.running_dark ? ", running dark" : ""][craft.grapple ? ", held by grappling lines" : ""]. [craft.drives_text()] [craft.magnetic_text()][craft.ledger ? " [craft.ledger.status_text()]" : ""]"
 
 /obj/structure/hull_tiller/examine(mob/user)
 	..()

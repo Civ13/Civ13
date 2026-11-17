@@ -74,6 +74,20 @@ class DiseaseImmunity(unittest.TestCase):
         # Only the illness being fought is exempt from fading.
         self.assertIn("if (kind == fighting)\n\t\t\tcontinue", self.src)
 
+    def test_flu_never_sleeps_or_paralyses_and_floors_once(self):
+        # Chat feedback 2026-11-17: sick players spent minutes unable to act.
+        disease = read(HUMAN + "human_disease.dm")
+        flu = disease.split('else if (disease_type == "flu")', 1)[1].split('else if (disease_type == "zombie")', 1)[0]
+        for banned in ("DROWSY", "Weaken(", "Paralyse(", "Stun(", "sleeping"):
+            self.assertNotIn(banned, flu)
+        self.assertEqual(flu.count("flu_knockdown()"), 1)
+        self.assertIn("#define FLU_MAX_DOWNS 1\n#define FLU_DOWN_TIME 2\n", disease)
+        helper = disease.split("/mob/living/human/proc/flu_knockdown()", 1)[1].split("/mob/living/human/proc/handle_disease()", 1)[0]
+        self.assertIn("if (flu_downs >= FLU_MAX_DOWNS)\n\t\treturn FALSE", helper)
+        self.assertIn("Weaken(FLU_DOWN_TIME)", helper)
+        self.assertEqual(flu.count("flu_downs = 0"), 2)
+        self.assertIn("<big><font color='#3d9e3d'><b>You feel much better now! The illness is gone.</b></font></big>", flu)
+
     def test_resistance_blocks_contagion_and_flu_recovery_grants_it(self):
         severe = read(HUMAN + "severe_disease.dm")
         # Proximity and filth rolls go through infection_chance_scale(), which

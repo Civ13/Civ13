@@ -112,7 +112,7 @@
 	var/known = H.knows_recipe_node(node_id)
 	var/groundwork = H.knows_research_prereqs(node_id)
 	var/skilled = H.meets_scholar_requirement(node_id)
-	var/tier_ok = N.min_bench_tier <= tier
+	var/tier_ok = N.min_bench_tier <= bench_tier()
 	var/holder = 0
 	var/lacking = 0
 	for (var/i = 1, i <= books.len, i++)
@@ -143,7 +143,7 @@
 		label = "Only found in books"
 	else if (!tier_ok)
 		state = "blocked"
-		label = "Needs a tier [N.min_bench_tier] bench"
+		label = "Needs a later era"
 	else if (!skilled)
 		state = "blocked"
 		label = "Needs more scholarship"
@@ -158,7 +158,7 @@
 	out["groundwork"] = node_groundwork_rows(H, N)
 	var/list/needs = node_scholar_rows(H, node_id)
 	if (N.min_bench_tier > 0)
-		needs += list(list("label" = "Bench tier [N.min_bench_tier] (this bench is tier [tier])", "ok" = tier_ok ? 1 : 0))
+		needs += list(list("label" = "Bench tier [N.min_bench_tier] (this bench is tier [bench_tier()])", "ok" = tier_ok ? 1 : 0))
 	if (node_needs_instrument(node_id))
 		var/list/instruments = cache["instruments"]
 		if (isnull(instruments[discipline]))
@@ -258,7 +258,7 @@
 		checks += node_scholar_rows(H, assigned_node)
 		checks += list(list("label" = "A pencil, pen or writing slate in your hand or resting on the bench", "ok" = lead_tool_rate(H) > 0 ? 1 : 0))
 	if (N.min_bench_tier > 0)
-		checks += list(list("label" = "Bench tier [N.min_bench_tier] (this bench is tier [tier])", "ok" = tier >= N.min_bench_tier ? 1 : 0))
+		checks += list(list("label" = "Bench tier [N.min_bench_tier] (this bench is tier [bench_tier()])", "ok" = bench_tier() >= N.min_bench_tier ? 1 : 0))
 	checks += list(list("label" = "Light to work by", "ok" = lit ? 1 : 0))
 	if (node_needs_instrument(assigned_node))
 		checks += list(list("label" = "[capitalize(scholar_instrument_text(discipline))] on or next to the bench", "ok" = instrument_ok ? 1 : 0))
@@ -275,7 +275,7 @@
 	var/library = library_rate(assigned_node)
 	if (library > 1)
 		out["library_bonus"] = round((library - 1) * 100)
-	var/working = researcher && B && lit && instrument_ok && tier >= N.min_bench_tier
+	var/working = researcher && B && lit && instrument_ok && bench_tier() >= N.min_bench_tier
 	out["working"] = working ? 1 : 0
 	if (working)
 		out["factors"] = book_pace_factors(N, researcher, worker[2], supply, library)
