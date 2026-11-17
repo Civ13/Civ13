@@ -39,6 +39,8 @@ class AnvilStackRecipe(unittest.TestCase):
             'crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]")':
                 'crafting_recipe_allowed(H, anvil_recipes[parsed_choice2[1]][9])',
             'new rtype (loc,material_name)': 'spawn_output(rtype, loc, material_name)',
+            'reference_build_time(H, "[anvil_recipes[parsed_choice2[1]][9]]", ':
+                'reference_build_time(H, anvil_recipes[parsed_choice2[1]][9], ',
         }
         for before, after in changes.items():
             self.assertEqual(source.count(before), 3 if before.startswith('crafting_recipe_allowed') else 1)
@@ -67,6 +69,7 @@ class AnvilStackRecipe(unittest.TestCase):
                    forge_time=lambda base, category=None: base,
                    # No trade (trade_traits.dm): the wait is unchanged.
                    trade_time=lambda user, delay, kind: delay,
+                   reference_build_time=lambda human, recipe, delay: delay,  # no book reference (subject_prototypes.dm)
                    to_chat=lambda user, message: self.messages.append(message),
                    update_icon=lambda: None,
                    note_craft_practice=lambda user, path: None,

@@ -158,8 +158,8 @@ class MechanicalPower(unittest.TestCase):
 
     def test_both_anvil_forging_waits_ask_with_the_recipe_category(self):
         anvil = (ROOT / 'code/game/objects/structures/blacksmithing/blacksmithing.dm').read_text(encoding='utf-8')
-        self.assertIn('do_after(user,trade_time(user, forge_time(10*anvil_recipes[parsed_choice2[1]][material_index],anvil_recipes[parsed_choice2[1]][2]), "smith"),src,can_move=FALSE)', anvil)
-        self.assertIn('do_after(user,trade_time(user, forge_time(10*mat,row[2]), "smith"),src,can_move=FALSE)', anvil)
+        self.assertIn('trade_time(user, forge_time(10*anvil_recipes[parsed_choice2[1]][material_index],anvil_recipes[parsed_choice2[1]][2]), "smith")),src,can_move=FALSE)', anvil)
+        self.assertIn('trade_time(user, forge_time(10*mat,row[2]), "smith")),src,can_move=FALSE)', anvil)
         self.assertNotIn('do_after(user,10*anvil_recipes', anvil)
         self.assertNotIn('do_after(user,10*mat', anvil)
 

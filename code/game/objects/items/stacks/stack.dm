@@ -1723,7 +1723,7 @@
 			buildtime /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
 			buildtime *= H.trade_time_mult(stack_trade()) // trades (trade_traits.dm)
 
-		buildtime = round(buildtime)
+		buildtime = reference_build_time(H, "[recipe.result_type]", round(buildtime)) // working from a book (subject_prototypes.dm)
 
 		to_chat(user, "<span class='notice'>Building [recipe.title] ...</span>")
 		if (!do_after(user, buildtime) || !crafting_recipe_allowed(H, "[recipe.result_type]"))

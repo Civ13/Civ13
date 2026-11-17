@@ -4,8 +4,10 @@
 // Two more ways to research away from the bench, from a player's suggestions:
 // - Prototypes: once a carried book holds a third of a chapter, its carrier
 //   can make that subject's own things before knowing it. Each one made
-//   writes a share of the chapter into that book, up to a limit per book, and
-//   no more can be made early once the book has had its fill.
+//   writes a share of the chapter into that book, up to a limit per book.
+//   After that the book stays a reference with no limit on uses (Val,
+//   2026-11-17): it writes no more research, and building from it is slower
+//   until the subject is learned (reference_build_time below).
 // - Field study: take paper, parchment or a book to something that already
 //   exists and that the subject makes (a building, a machine, a tool...) and
 //   study it. Each kind of thing counts once per book.
@@ -23,6 +25,13 @@
 // Share of the chapter each prototype writes, and how many count per book.
 #define SUBJECT_PROTO_POINTS 0.08
 #define SUBJECT_PROTO_MAX 5
+// Building from a book before knowing the subject (Val, 2026-11-17): the
+// first piece takes this many times as long, each later one takes off
+// REFERENCE_SLOW_STEP of the extra time, never below REFERENCE_SLOW_FLOOR.
+// Learning the subject (reading its finished chapter) brings it back to 1.
+#define REFERENCE_SLOW_START 2
+#define REFERENCE_SLOW_STEP 0.1
+#define REFERENCE_SLOW_FLOOR 1.5
 // Share of the chapter each kind of thing studied writes, and how many kinds count.
 #define FIELD_STUDY_POINTS 0.1
 #define FIELD_STUDY_MAX 3
@@ -87,17 +96,22 @@
 	if (!N)
 		return null
 	var/obj/item/weapon/book/trial = null
+	var/obj/item/weapon/book/reference = null
 	for (var/obj/item/weapon/book/B in get_demonstration_carried())
 		if (istype(B, /obj/item/weapon/book/research/tree_book) || B.has_research_chapter(node_id))
 			continue
-		if (B.prototypes_made(node_id) >= SUBJECT_PROTO_MAX)
-			continue
+		// A third written: a reference with no limit on uses. Prefer a book
+		// that can still take a prototype's research.
 		if (B.research_ticks(node_id) >= N.cost_ticks * SUBJECT_PROTO_SHARE)
-			return B
+			if (B.prototypes_made(node_id) < SUBJECT_PROTO_MAX)
+				return B
+			if (!reference)
+				reference = B
+			continue
 		// Not a third written yet: only by trial and error (below).
 		if (!trial && B.trial_subject == node_id && trial_count(node_id) < TRIAL_CHARACTER_MAX)
 			trial = B
-	return trial
+	return reference || trial
 
 // The subject a prototype of result_path_string would be for, if H may make one.
 /proc/subject_prototype_node(mob/living/human/H, result_path_string)
@@ -113,6 +127,33 @@
 /proc/subject_prototype_allowed(mob/living/human/H, result_path_string)
 	return subject_prototype_node(H, result_path_string) ? TRUE : FALSE
 
+// Builds from a book before learning the subject: counted per character, so
+// practice makes it quicker even across books.
+#define REFERENCE_SLOW_BUILDS 5
+/proc/reference_build_key(node_id)
+	return "ref:[node_id]"
+
+// How many times as long H takes to make result_path_string: more than 1 only
+// while working from a book without knowing the subject. Guided work beside a
+// teacher (trade_learning.dm) is not slowed.
+/proc/reference_build_mult(mob/living/human/H, result_path_string)
+	if (!istype(H) || guided_work_node(H, result_path_string))
+		return 1
+	var/node_id = subject_prototype_node(H, result_path_string)
+	if (!node_id)
+		return 1
+	var/done = H.trial_count(reference_build_key(node_id))
+	return max(REFERENCE_SLOW_FLOOR, REFERENCE_SLOW_START - REFERENCE_SLOW_STEP * done)
+
+// Called by whatever makes things, before its wait: the wait while working
+// from a book (Val, 2026-11-17: unlimited uses, but slower until learned).
+/proc/reference_build_time(mob/user, result_path_string, time)
+	var/mult = reference_build_mult(user, "[result_path_string]")
+	if (mult <= 1)
+		return time
+	to_chat(user, SPAN_NOTICE("You work slowly, checking each step against your book."))
+	return round(time * mult)
+
 // Called when something is made (from note_craft_practice): a prototype writes
 // its share into the carried book.
 /proc/record_subject_prototype(mob/living/human/H, result_path_string)
@@ -121,9 +162,15 @@
 		return 0
 	var/datum/research_node/N = get_research_node(node_id)
 	var/obj/item/weapon/book/B = H.prototype_book(node_id)
+	H.add_trial_count(reference_build_key(node_id), REFERENCE_SLOW_BUILDS)
 	// Made before the chapter is a third written: trial and error paid off.
 	if (B.research_ticks(node_id) < N.cost_ticks * SUBJECT_PROTO_SHARE)
 		H.note_trial_success(node_id, result_path_string)
+	// The book has had all the prototypes it can learn from: still a
+	// reference, but nothing more is written.
+	if (B.prototypes_made(node_id) >= SUBJECT_PROTO_MAX)
+		to_chat(H, SPAN_NOTICE("You work from [B] as a reference. It has nothing more to learn from prototypes of <b>[N.name]</b>; finish the chapter and read it to work at full speed."))
+		return 0
 	B.add_prototype_made(node_id)
 	var/points = max(1, round(N.cost_ticks * SUBJECT_PROTO_POINTS))
 	var/finished = B.add_research_work(node_id, points, FALSE, H)
@@ -173,8 +220,6 @@
 	if (!best || (!best.research_ticks(node_id) && best.trial_subject != node_id))
 		return "You don't know <b>[N.name]</b> yet. Study its chapter, carry a book with at least a third of it written ([need] of [N.cost_ticks] points) to make prototypes, or set a book to Attempt a Subject."
 	var/written = best.research_ticks(node_id)
-	if (written >= need && best.prototypes_made(node_id) >= SUBJECT_PROTO_MAX)
-		return "[best] has already had all [SUBJECT_PROTO_MAX] prototypes of <b>[N.name]</b> it can take ([written] of [N.cost_ticks] points written). Finish the chapter at a research bench and read it to learn the subject."
 	if (written < need && best.trial_subject == node_id && H.trial_count(node_id) >= TRIAL_CHARACTER_MAX)
 		return "You have made all [TRIAL_CHARACTER_MAX] early pieces of <b>[N.name]</b> you can before a book holds a third of the chapter. [best] has [written] of the [need] points needed."
 	if (written < need)
@@ -575,3 +620,7 @@
 #undef TRIAL_MISHAP_TIER
 #undef TRIAL_MISHAP_CHANCE
 #undef TRIAL_RECORD_LIMIT
+#undef REFERENCE_SLOW_START
+#undef REFERENCE_SLOW_STEP
+#undef REFERENCE_SLOW_FLOOR
+#undef REFERENCE_SLOW_BUILDS

@@ -107,7 +107,7 @@ var/global/list/engine_lathe_materials = list("copper", "bronze", "brass", "iron
 	icon_state = "[initial(icon_state)]_on"
 	visible_message(SPAN_NOTICE("[H] sets a piece of [material_name] turning on \the [src]."))
 	var/obj/item/machine_part/made = null
-	if (do_after(H, max(10, round(row[3] / turn_speed)), src) && turner_ready(H, S) && S.amount >= row[2] && !tool_refusal(H) && crafting_recipe_allowed(H, "[row[1]]"))
+	if (do_after(H, reference_build_time(H, "[row[1]]", max(10, round(row[3] / turn_speed))), src) && turner_ready(H, S) && S.amount >= row[2] && !tool_refusal(H) && crafting_recipe_allowed(H, "[row[1]]"))
 		S.use(row[2])
 		var/part_type = row[1]
 		if (!trial_craft_ruined(H, "[part_type]"))
