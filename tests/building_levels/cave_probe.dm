@@ -18,7 +18,7 @@
 	return FALSE
 
 /obj/map_metadata/cave_level_tester
-	building_levels = 4
+	building_levels = 6
 	building_level_standing = TRUE
 	dig_down_underground = TRUE
 
@@ -44,7 +44,7 @@
 		ticker.current_state = GAME_STATE_PLAYING
 		cave_assert(dug_underground_supported() && building_standing_wanted(), "a dig-down map still wants its standing level")
 		cave_assert(rules.underground_admitted(base + 1) && rules.building_admitted(base + 1), "either level may come first")
-		cave_assert(rules.building_admitted(base + 5) && !rules.building_admitted(base + 6), "four building levels and the cave are the cap")
+		cave_assert(rules.building_admitted(base + 7) && !rules.building_admitted(base + 8), "six building levels and the cave are the cap")
 		var/cave
 		var/air
 		#ifdef CAVE_PROBE_CAVE_FIRST
@@ -102,13 +102,13 @@
 		var/turf/hot = dug_underground_form(locate(7, 3, cave)).ChangeTurf(/turf/floor/dirt/underground/hot)
 		cave_assert(!hot.is_mineable && underground_excavation_problem(hot), "hot rock cannot be dug")
 		cave_assert(!building_grows_from(base) && !building_grows_from(cave) && building_grows_from(air), "growth starts from the highest building level")
-		// Three more storeys: the cave does not use up one of the four.
-		for (var/storey = 2 to 4)
+		// Five more storeys: the cave does not use up one of the six.
+		for (var/storey = 2 to 6)
 			var/target = world.maxz + 1
 			cave_assert(!world_z_budget.error(target, "roof"), "storey [storey] is within the roof limit")
 			cave_assert(building_allocate_level(target) && world.maxz == target, "storey [storey] is admitted")
 			cave_assert(building_levels_built() == storey, "storey [storey] is counted")
-		cave_assert(world.maxz == base + 5 && dug_underground_z() == cave, "five added levels, one of them the cave")
+		cave_assert(world.maxz == base + 7 && dug_underground_z() == cave, "seven added levels, one of them the cave")
 		var/second = air + 1 == cave ? air + 2 : air + 1
 		cave_assert(multiz_level_above(air) == second && multiz_level_below(second) == air, "the second storey stands on the first, over the cave")
 		cave_assert(multiz_level_below(world.maxz) == world.maxz - 1 && !multiz_level_above(world.maxz), "upper storeys stack plainly")
