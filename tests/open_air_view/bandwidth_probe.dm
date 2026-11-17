@@ -152,6 +152,50 @@ var/global/datum/open_air_bandwidth_probe/open_air_bandwidth_probe = new
 	if(!H.Move(next, walk_dir))
 		H.forceMove(next)
 
+/datum/open_air_bandwidth_probe/var/list/built = list()
+
+// direct: the turf below straight in the open-air cell's vis_contents.
+// copy: a nullspace object wearing a copy of the turf below's appearance only.
+// copy_movables: that copy, holding what stands on the turf below.
+/datum/open_air_bandwidth_probe/proc/build_views(mode, z)
+	clear_views()
+	for(var/turf/sky/building/T in block(locate(centre.x - OAB_STRIP - 14, centre.y - 11, z), locate(centre.x + OAB_STRIP + 14, centre.y + 11, z)))
+		if(T.open_air_view_floored())
+			continue
+		var/turf/below = locate(T.x, T.y, centre.z)
+		if(mode == "direct")
+			T.vis_contents += below
+		else
+			var/obj/effect/V = new
+			V.loc = null
+			V.appearance = below.appearance
+			V.plane = FLOOR_PLANE
+			V.layer = 1.95
+			V.color = list(0.6,0,0, 0,0.6,0, 0,0,0.64, 0.015,0.025,0.05)
+			V.appearance_flags = KEEP_TOGETHER
+			V.mouse_opacity = 0
+			if(mode == "copy_movables")
+				for(var/atom/movable/A in below)
+					if(A.vis_flags & VIS_HIDE)
+						continue
+					V.vis_contents += A
+			T.vis_contents += V
+			built += V
+		T.icon = null
+		built += T
+
+/datum/open_air_bandwidth_probe/proc/clear_views()
+	for(var/thing in built)
+		if(isturf(thing))
+			var/turf/T = thing
+			T.vis_contents.Cut()
+			T.icon = initial(T.icon)
+		else
+			var/obj/effect/V = thing
+			V.vis_contents.Cut()
+			qdel(V)
+	built.Cut()
+
 /datum/open_air_bandwidth_probe/proc/count_views(z)
 	var/n = 0
 	for(var/turf/sky/building/T in range(12, locate(H.x, H.y, z)))
@@ -231,6 +275,15 @@ var/global/datum/open_air_bandwidth_probe/open_air_bandwidth_probe = new
 		H.forceMove(locate(centre.x, centre.y, up))
 		stage("up1_still_no_view", FALSE)
 		stage("up1_walk_no_view", TRUE)
+		// Other ways of showing the level below, built by hand around the
+		// walkway with the scan paused, to see which part costs the bytes.
+		if(world.params["experiments"])
+			for(var/mode in list("direct", "copy", "copy_movables"))
+				build_views(mode, up)
+				H.forceMove(locate(centre.x, centre.y, up))
+				stage("up1_still_[mode]", FALSE)
+				stage("up1_walk_[mode]", TRUE)
+				clear_views()
 		P.enable()
 
 		H.forceMove(locate(centre.x, centre.y + 4, up2))

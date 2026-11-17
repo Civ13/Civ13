@@ -100,6 +100,7 @@ def main():
     parser.add_argument('--output', type=Path)
     parser.add_argument('--config-line', action='append', default=None, help='extra line for the run copy of config/config.txt (default: DAYNIGHT_CLIENT_TINT, as on live)')
     parser.add_argument('--max-ratio', type=float, default=0, help='fail when an upper-level stage sends more than this many times the matching ground stage')
+    parser.add_argument('--experiments', action='store_true', help='also measure other ways of showing the level below (probe-built, one level up)')
     parser.add_argument('--deadline', type=int, default=5400, help='seconds for the whole run')
     args = parser.parse_args()
     if sys.platform != 'win32':
@@ -140,7 +141,7 @@ def main():
                          'staged body fed and held warm', 'walkways staged by the probe', 'client connects through a counting proxy']}, indent=2), encoding='utf-8')
         with (output / 'daemon-output.log').open('w') as out:
             daemon = subprocess.Popen([str(args.byond_bin / 'dd.exe'), 'probe.dmb', str(port), '-trusted', '-ip', '127.0.0.1',
-                                       '-params', 'tested_commit=' + head, '-log', 'startup.log'], cwd=output, stdout=out, stderr=subprocess.STDOUT)
+                                       '-params', 'tested_commit=' + head + ('&experiments=1' if args.experiments else ''), '-log', 'startup.log'], cwd=output, stdout=out, stderr=subprocess.STDOUT)
         proxy = CountingProxy(proxy_port, port)
         print(f'Daemon PID {daemon.pid} on 127.0.0.1:{port}, proxy on {proxy_port}; evidence in {output}', flush=True)
         started = time.monotonic()
