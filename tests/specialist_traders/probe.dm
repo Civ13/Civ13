@@ -120,6 +120,20 @@ var/trader_runtime_error = FALSE
 	var/mob/living/human/specialist_trader_probe/H = new(locate(5, 5, 1))
 	var/obj/structure/specialist_trader/armourer/post = new(locate(5, 6, 1))
 	var/obj/structure/specialist_trader/armourer/second = new(locate(6, 6, 1))
+
+	// Closed while outside dealers are off: nothing is bought, sold or changed.
+	trader_check(!npc_traders_enabled, "outside dealers are off by default")
+	var/obj/item/clothing/head/helmet/ww2/kept = new(H)
+	H.r_hand = kept
+	trader_check(!post.sell(H, kept, FALSE) && !QDELETED(kept), "a closed post buys nothing")
+	trader_check(!post.buy(H, 1), "a closed post sells nothing")
+	trader_clear(get_turf(H), H)
+	var/obj/item/stack/money/coppercoin/shut = trader_give(H, /obj/item/stack/money/coppercoin, 100)
+	var/obj/structure/specialist_trader/jeweller/shut_post = new(locate(7, 6, 1))
+	trader_check(!shut_post.change_coins(H, shut, /obj/item/stack/money/silvercoin) && !QDELETED(shut), "a closed jeweller changes no coins")
+	trader_clear(get_turf(H), H)
+	qdel(shut_post)
+	npc_traders_enabled = TRUE // the rest checks the posts as they work when an admin opens them
 	trader_check(post.name == "armourer's post" && findtext(post.desc, "takes gold or silver coins"), "the post names its dealer's coins ([post.desc])")
 	armourer.restock_if_due()
 	var/helmet_index = 0

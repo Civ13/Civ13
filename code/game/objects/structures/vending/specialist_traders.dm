@@ -18,6 +18,11 @@
 #define SPECIALIST_TRADER_RESTOCK 36000 // one hour
 #define SPECIALIST_TRADER_BUY_RATE 0.5
 
+// Players trade only with other players: a dealer's purse and stock come from
+// nowhere, so every post stays closed and the posts cannot be built. Switching
+// this on reopens posts already standing, for an admin-run trading event.
+var/global/npc_traders_enabled = FALSE
+
 var/global/list/specialist_traders = null
 // type path => lowest price per unit any dealer sells it at
 var/global/list/specialist_trader_sell_floor = null
@@ -339,8 +344,18 @@ var/global/list/specialist_trader_sell_floor = null
 /obj/structure/specialist_trader/proc/can_deal(mob/living/human/H)
 	return istype(H) && H.stat == CONSCIOUS && !H.restrained() && Adjacent(H)
 
+// FALSE, with a note to the player, while outside dealers are off.
+/obj/structure/specialist_trader/proc/open_for_trade(mob/living/human/H)
+	if (npc_traders_enabled)
+		return TRUE
+	if (istype(H))
+		to_chat(H, "<span class='warning'>The post is closed. No outside dealer trades here; buy and sell with other players instead.</span>")
+	return FALSE
+
 /obj/structure/specialist_trader/attack_hand(mob/living/human/H)
 	if (!istype(H))
+		return
+	if (!open_for_trade(H))
 		return
 	show_stock(H)
 
@@ -388,7 +403,7 @@ var/global/list/specialist_trader_sell_floor = null
 
 /obj/structure/specialist_trader/ui_act(action, list/params, mob/user, datum/nanoui/ui)
 	var/mob/living/human/H = user
-	if (action != "buy" || !can_deal(H))
+	if (action != "buy" || !can_deal(H) || !open_for_trade(H))
 		return TRUE
 	var/datum/specialist_trader/T = trader()
 	if (!T || busy)
@@ -399,6 +414,8 @@ var/global/list/specialist_trader_sell_floor = null
 	return TRUE
 
 /obj/structure/specialist_trader/proc/buy(mob/living/human/H, index)
+	if (!open_for_trade(H))
+		return FALSE
 	var/datum/specialist_trader/T = trader()
 	T.restock_if_due()
 	if (!isnum(index) || index < 1 || index > T.catalogue.len)
@@ -470,6 +487,8 @@ var/global/list/specialist_trader_sell_floor = null
 	var/datum/specialist_trader/T = trader()
 	if (!T || !istype(H) || H.a_intent == I_HARM)
 		return ..()
+	if (!open_for_trade(H))
+		return
 	if (busy)
 		return
 	busy = TRUE
@@ -482,6 +501,8 @@ var/global/list/specialist_trader_sell_floor = null
 	busy = FALSE
 
 /obj/structure/specialist_trader/proc/sell(mob/living/human/H, obj/item/I, confirm = TRUE)
+	if (!open_for_trade(H))
+		return FALSE
 	var/datum/specialist_trader/T = trader()
 	T.restock_if_due()
 	var/offer = T.offer_for(I, H)
@@ -512,6 +533,8 @@ var/global/list/specialist_trader_sell_floor = null
 
 // The jeweller changes coins into another kind, keeping a twentieth.
 /obj/structure/specialist_trader/proc/change_coins(mob/living/human/H, obj/item/stack/money/M, target = null)
+	if (!open_for_trade(H))
+		return FALSE
 	var/root = specialist_trader_coin_root(M.type)
 	var/list/options = list()
 	for (var/path in list(/obj/item/stack/money/coppercoin, /obj/item/stack/money/silvercoin, /obj/item/stack/money/goldcoin))

@@ -93,7 +93,8 @@ class CraftGuardTest(unittest.TestCase):
                     fields = [f.strip() for f in line[7:].split(',')]
                     if len(fields) > 2 and 'well' in fields[1]:
                         titles.setdefault(fields[1], set()).add(fields[2])
-        self.assertEqual(titles["jeweller's post"], {'/obj/structure/specialist_trader/jeweller'})
+        # The jeweller's post is no longer buildable (players trade only with players).
+        self.assertNotIn("jeweller's post", titles)
         for title in ('well', 'sandstone well', 'timber well lining'):
             self.assertTrue(all(t.startswith('/obj/structure/sink/well') for t in titles[title]), title)
 

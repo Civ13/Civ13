@@ -6,6 +6,7 @@
 
 Production sources run in the shared resource-extraction constructor fixture with ordinary game startup disabled. The probe covers the specialist trading posts (`code/game/objects/structures/vending/specialist_traders.dm`):
 
+- **Closed by default:** players trade only with players, so `npc_traders_enabled` starts off and the posts have no crafting recipe. A closed post buys nothing, sells nothing and changes no coins. The probe then switches the flag on to check the posts as they work for an admin-run trading event.
 - **Research and prices:** Trade & Coinage research gates all five posts. Every catalogue price is a whole number of the dealer's smallest accepted coin, and every entry has an age range and stock. Every dealer buys back what it sells, and no dealer pays more than half of what any dealer sells an item for. The log prints the price table.
 - **Specialities:** bread goes to the provisioner, helmets to the armourer, gold bars and gems to the jeweller, and no dealer buys plain coins as goods. The armourer refuses a helmet at 20% condition.
 - **Paying:** copper buys nothing from the armourer and none is taken. Gold in hand and silver in a pocket buy a helmet at the exact price, with change. Two armourer's posts share one stock, and a sold-out item cannot be bought at the other post.
