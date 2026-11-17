@@ -222,6 +222,15 @@ lookup a hull, so empty hulls cost no deck walk. Nothing runs during a world
 save. The tiller saves the ledger inside its `hull_state` record
 (`"ledger": {"water", "holes", "patches", "grounded", "seams", "old_anchor", "fouling", "coppered"}`); nothing stores `world.time`.
 
+## Crossings and voyages
+
+A hull that leaves for a land across the sea or sets out on a voyage is packed
+into a record (`code/modules/naval/ship_crossing.dm`). The record carries
+`"ledger"`, the same list the tiller saves, and each mast entry carries how
+its sail is set and whether it is torn; `sea_crossing_build()` reads both back
+after she is commissioned. A record without them, from a ship already at sea
+when this was added, builds as before: dry, sound and under full sail.
+
 ## Tests
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/bilge_probe.dm 300

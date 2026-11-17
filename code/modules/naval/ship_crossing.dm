@@ -246,7 +246,8 @@
 					refused |= S.name
 					blocking |= S
 					continue
-				entries += list(list("s", "[S.type]", S.dir, S.sails ? 1 : 0, S.broken ? 1 : 0))
+				// How her sail is carried and whether it is torn go with her (hull_rigging.dm).
+				entries += list(list("s", "[S.type]", S.dir, S.sails ? 1 : 0, S.broken ? 1 : 0, S.canvas, S.torn ? 1 : 0))
 				continue
 			if (sea_crossing_bench_ok(M.type))
 				entries += list(list("o", "[M.type]", M.dir))
@@ -296,6 +297,9 @@
 		return "She carries too many animals, bodies and fittings to cross. Put some ashore."
 	var/list/record = list("v" = 1, "name" = B.hull_name, "dir" = B.dir, "from" = list(B.px, B.py, B.z),
 		"papers" = (C.register && C.register.party) ? C.register.register_state() : "", "tiles" = tiles, "helm" = "[tiller.type]")
+	// Her bilge, seams, patches and bottom cross with her (hull_ledger.dm).
+	if (C.ledger)
+		record["ledger"] = C.ledger.to_list()
 	if (length(json_encode(record)) > SEA_CROSSING_RECORD_MAX)
 		return "She is too big and too laden to cross. Put some of her cargo ashore."
 	return list("record" = record, "crew" = crew)
@@ -333,6 +337,13 @@ var/global/list/sea_crossing_marked = list()
 		return FALSE
 	if (!istext(R["papers"]) || length(R["papers"]) > 4000)
 		return FALSE
+	if (!isnull(R["ledger"]))
+		var/list/ledger = R["ledger"]
+		if (!islist(ledger) || ledger.len > 16)
+			return FALSE
+		for (var/key in ledger)
+			if (!istext(key) || !isnum(ledger[key]))
+				return FALSE
 	if (!isnull(R["helm"]) && (!istext(R["helm"]) || !sea_crossing_helm_ok(text2path(R["helm"]))))
 		return FALSE
 	var/list/from = R["from"]
@@ -371,7 +382,9 @@ var/global/list/sea_crossing_marked = list()
 						return FALSE
 					floors++
 				if ("s")
-					if (E.len != 5 || !sea_crossing_sail_ok(text2path(E[2])) || !(E[3] in alldirs + list(0)) || !(E[4] in list(0, 1)) || !(E[5] in list(0, 1)))
+					if ((E.len != 5 && E.len != 7) || !sea_crossing_sail_ok(text2path(E[2])) || !(E[3] in alldirs + list(0)) || !(E[4] in list(0, 1)) || !(E[5] in list(0, 1)))
+						return FALSE
+					if (E.len == 7 && (!(E[6] in list(0, 1, 2)) || !(E[7] in list(0, 1))))
 						return FALSE
 				if ("o")
 					if (E.len != 3 || !sea_crossing_bench_ok(text2path(E[2])) || !(E[3] in alldirs + list(0)))
@@ -436,6 +449,9 @@ var/global/list/sea_crossing_marked = list()
 					if (E[4])
 						S.sails = new /obj/item/sail(S)
 					S.broken = E[5] ? TRUE : FALSE
+					if (E.len >= 7)
+						S.canvas = E[6]
+						S.torn = E[7] ? TRUE : FALSE
 					S.update_icon()
 					made += S
 				if ("o")
@@ -490,6 +506,9 @@ var/global/list/sea_crossing_marked = list()
 	if (length(R["papers"]))
 		tiller.craft.register = craft_register_restore(R["papers"])
 	tiller.craft.fit_drives()
+	// She arrives as she left: wet, worn and foul, or dry, tight and clean.
+	if (islist(R["ledger"]) && tiller.craft.ledger)
+		tiller.craft.ledger.from_list(R["ledger"])
 	return tiller
 
 // Everything a record holds, put down at T when no ship can be built: her
