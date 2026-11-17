@@ -288,7 +288,7 @@ var/global/redirect_all_players = null
 			WWalert(src,"You're banned from playing.","Error")
 			return TRUE
 
-		if (!ticker.players_can_join || persistence_restart.startup_hold || persistence_restart.busy)
+		if (!ticker.players_can_join || persistence_join_held())
 			WWalert(src,"You can't join the game yet.","Error")
 			return TRUE
 
@@ -426,7 +426,7 @@ var/global/redirect_all_players = null
 
 // Native waits may return after disconnect, transfer or a restart hold.
 /mob/new_player/proc/lobby_join_admission_current()
-	return lobby_join_current() && ticker && ticker.current_state == GAME_STATE_PLAYING && ticker.players_can_join && map && !persistence_restart.startup_hold && !persistence_restart.busy && GLOB.enter_allowed && !client.quickBan_isbanned("Playing") && !get_trait_selection_error(client.prefs.traits)
+	return lobby_join_current() && ticker && ticker.current_state == GAME_STATE_PLAYING && ticker.players_can_join && map && !persistence_restart.startup_hold && !persistence_restart.busy && !persistence_import_held() && GLOB.enter_allowed && !client.quickBan_isbanned("Playing") && !get_trait_selection_error(client.prefs.traits)
 
 /mob/new_player/proc/lobby_join_input(message, title, default_value, list/choices)
 	if (!lobby_join_admission_current())
@@ -521,7 +521,7 @@ var/global/redirect_all_players = null
 			WWalert(src,"You're banned from playing.","Error")
 			return TRUE
 
-		if (!ticker.players_can_join || persistence_restart.startup_hold || persistence_restart.busy)
+		if (!ticker.players_can_join || persistence_join_held())
 			WWalert(src,"You can't join the game yet.","Error")
 			return TRUE
 
@@ -563,7 +563,7 @@ var/global/redirect_all_players = null
 			WWalert(src,"You're banned from playing.","Error")
 			return TRUE
 
-		if (!ticker.players_can_join || persistence_restart.startup_hold || persistence_restart.busy)
+		if (!ticker.players_can_join || persistence_join_held())
 			WWalert(src,"You can't join the game yet.","Error")
 			return TRUE
 
@@ -612,7 +612,7 @@ var/global/redirect_all_players = null
 			WWalert(src,"You're banned from playing.","Error")
 			return TRUE
 
-		if (!ticker.players_can_join || persistence_restart.startup_hold || persistence_restart.busy)
+		if (!ticker.players_can_join || persistence_join_held())
 			lobby_join_trace("nomads_denied", "join_hold")
 			WWalert(src,"You can't join the game yet.","Error")
 			return TRUE
@@ -693,7 +693,7 @@ var/global/redirect_all_players = null
 			WWalert(src,"You're banned from playing.","Error")
 			return TRUE
 
-		if (!ticker.players_can_join || persistence_restart.startup_hold || persistence_restart.busy)
+		if (!ticker.players_can_join || persistence_join_held())
 			WWalert(src,"You can't join the game yet.","Error")
 			return TRUE
 
@@ -752,7 +752,7 @@ var/global/redirect_all_players = null
 					WWalert(usr,"The game is currently only accepting approved players. Visit the Discord to get approved.", "Error")
 				return
 
-		if (!ticker.players_can_join || persistence_restart.startup_hold || persistence_restart.busy)
+		if (!ticker.players_can_join || persistence_join_held())
 			WWalert(src,"You can't join the game yet.","Error")
 			return TRUE
 
