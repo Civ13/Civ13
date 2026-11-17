@@ -1407,6 +1407,7 @@
 #include "code\modules\client\ping.dm"
 #include "code\modules\client\player_tutorial.dm"
 #include "code\modules\client\sound.dm"
+#include "code\modules\client\survival_hints.dm"
 #include "code\modules\client\ui_style.dm"
 #include "code\modules\client\preferencesSQLite\character_setup_ui.dm"
 #include "code\modules\client\preferencesSQLite\preferences.dm"
