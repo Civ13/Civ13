@@ -128,3 +128,17 @@ drawn by `tests/sprites/create_storage_racks.py`):
 All are crafted from wood, open the storage window, have Dump Out, count toward
 a tidy room and burn like other wooden stores. They take no lock. Food on a rack
 keeps no better than on the floor.
+
+## Stack counts on slots
+
+A stack of more than one thing that is held, worn or lying in a bag shows how
+many it holds in the top-right corner of its slot, in every HUD style and on
+the classic strip (`code/modules/storage_window/stack_count.dm`). A full stack
+shows its number in amber, one thing shows nothing, and counts of 10,000 or
+more are written short (12k, 1m). Handfuls of rounds show theirs too; anything
+else can join in by overriding `slot_count()`.
+
+The number is a shared object in the item's `vis_contents` (never saved), built
+from `icons/mob/screen/stack_count.dmi` (`tests/sprites/create_stack_count.py`).
+It follows equip, drop, storage and stack use at once, and anything else within
+one Life tick. Probe: `tests/stack_count`.
