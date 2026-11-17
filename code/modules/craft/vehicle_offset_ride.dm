@@ -164,6 +164,45 @@
 	offset_last_tick = world.time
 	return ticks
 
+// ---- Getting on a vehicle that stands off-centre ---------------------------
+// A vehicle keeps its offset when it stops, and boarding puts a person on the
+// middle of its tile. Whoever is aboard is seated at the vehicle's offset at
+// once, and whoever got off is let go, without waiting for the next stroke.
+
+/obj/structure/vehicle/proc/vehicle_offset_seat()
+	if (QDELETED(src) || !offset_mover || !isturf(loc))
+		return
+	var/datum/vehicle_offset/single/O = offset_mover
+	var/list/aboard = vehicle_offset_aboard()
+	for (var/atom/movable/A in O.carried)
+		if (A != src && !(A in aboard))
+			O.drop(A, TRUE)
+	if (!(src in O.footprint))
+		O.carry_at(src, 0, 0, TRUE)
+	for (var/atom/movable/A in aboard)
+		O.carry_at(A)
+	O.draw()
+
+/obj/structure/vehicle/MouseDrop_T(atom/A, mob/living/human/user)
+	. = ..()
+	vehicle_offset_seat()
+
+/obj/structure/vehicle/attack_hand(mob/living/human/user as mob)
+	. = ..()
+	vehicle_offset_seat()
+
+/obj/structure/vehicle/boat/MouseDrop_T(atom/A, mob/living/human/user)
+	. = ..()
+	vehicle_offset_seat()
+
+/obj/structure/vehicle/boat/attack_hand(mob/living/human/user as mob)
+	. = ..()
+	vehicle_offset_seat()
+
+/obj/structure/vehicle/bicycle/MouseDrop_T(atom/A, mob/living/human/user)
+	. = ..()
+	vehicle_offset_seat()
+
 // ---- Bicycles and running bikes ------------------------------------------
 // The pedal loop runs every tick while someone is near; do_move still pays
 // stamina and reads the ground once per tile, when the offset crosses half a
@@ -285,6 +324,10 @@
 			. += A
 	if (hitched_cart && isturf(hitched_cart.loc))
 		. += hitched_cart
+
+// The rig seats its own people, team and cart (vehicle_offset_sync on the next step).
+/obj/structure/vehicle/carriage/vehicle_offset_seat()
+	return
 
 /obj/structure/vehicle/carriage/updatepassdir()
 	if (dir != facing && offset_mover && (offset_mover.ox || offset_mover.oy))

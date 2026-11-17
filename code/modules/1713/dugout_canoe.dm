@@ -127,6 +127,15 @@
 /obj/structure/vehicle/raft/dugout/update_icon()
 	..()
 	icon_state = "dugout"
+	seat_paddlers()
+
+// A turn on the spot swings the hull at once, so the seats swing with it:
+// the next tile step (update_icon) may be most of a tile away.
+/obj/structure/vehicle/raft/dugout/updatepassdir()
+	..()
+	seat_paddlers()
+
+/obj/structure/vehicle/raft/dugout/proc/seat_paddlers()
 	var/offset = 6
 	for (var/mob/living/M in ontop)
 		if (M.loc != loc)
