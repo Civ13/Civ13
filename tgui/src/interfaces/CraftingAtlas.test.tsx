@@ -131,6 +131,12 @@ describe('Crafting Atlas navigation', () => {
     view.rerender(<CraftingAtlas {...ui({ hidden_count: 3, scope: '', recipes: [], resources: [], detail: null, recipe_count: 0, resource_count: 0 })} />);
     expect(screen.getByText(/No matching recipes on this map/)).toBeTruthy();
   });
+  it('shows the skill a recipe needs beside the reader\'s own level', () => {
+    const view = render(<CraftingAtlas {...ui({ detail: { ...recipe, kind: 'Material / global', skill: { name: 'Crafting', need: 170, have: 112, met: false } } })} />);
+    expect(view.container.querySelector('.atlas-requirements')!.textContent!).toContain('Skill: Crafting 170Yours is 112');
+    const plain = render(<CraftingAtlas {...ui({ detail: { ...recipe, kind: 'Material / global', skill: null } })} />);
+    expect(plain.container.querySelector('.atlas-requirements')!.textContent!).not.toContain('Skill:');
+  });
   it('shows research names and the reader\'s own progress without inferring it', () => {
     const view = render(<CraftingAtlas {...ui({ map_era: 3, detail: { ...recipe, kind: 'Material / global', maximum_era: 4, retired: false,
       conditions: 'Legacy research I/M/M: 0/0/0; maximum era ordinal 4; time 200 deciseconds; category none; one per turf 1; floor 1; supplied material null. Research-node and map gates also apply. Tools equipped or at your feet: chisel. Explicit research node: furriery.',

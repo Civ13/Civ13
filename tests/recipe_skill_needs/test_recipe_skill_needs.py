@@ -45,6 +45,13 @@ class RecipeSkillNeeds(unittest.TestCase):
         makeable = read('code/game/objects/items/stacks/stack_makeable.dm')
         self.assertIn('if (recipe_skill_refusal(H, R))\n\t\treturn FALSE', makeable)
 
+    def test_the_atlas_asks_the_table_by_title(self):
+        self.assertIn('return R ? recipe_skill_need_named(R.title, R.result_type) : null', TABLE)
+        atlas = read('code/game/mob/crafting_atlas_tgui.dm')
+        self.assertIn('"skill" = skill_data(viewer, recipe)', atlas)
+        self.assertIn('recipe_skill_need_named(recipe["name"], result_id)', atlas)
+        self.assertIn('{skill && <li>Skill: ', read('tgui/src/interfaces/CraftingAtlas.tsx'))
+
 
 if __name__ == '__main__':
     unittest.main()

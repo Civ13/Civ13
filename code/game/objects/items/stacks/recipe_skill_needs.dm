@@ -36,36 +36,46 @@ var/global/list/recipe_skill_table = list(
 	list("crafting", 2, list("monumental marble statue of venus", "monumental bronze statue of karl marx")))
 
 /proc/recipe_skill_entry_matches(list/entry, datum/stack_recipe/R)
+	return recipe_skill_entry_matches_named(entry, R.title, R.result_type)
+
+// The same match for a recipe known only by its title and result type (the Atlas).
+/proc/recipe_skill_entry_matches_named(list/entry, title, result_type)
 	if (entry.len >= 5 && entry[5] && map && map.ID == MAP_VOYAGE)
 		return FALSE
 	if (entry.len >= 4 && islist(entry[4]))
 		for (var/part in entry[4])
-			if (findtext(R.title, part))
+			if (findtext(title, part))
 				return FALSE
 	for (var/match in entry[3])
 		if (ispath(match))
 			// Wells come in several linings; everything else is one exact type.
-			if (R.result_type == match || (match == /obj/structure/sink/well && ispath(R.result_type, match)))
+			if (result_type == match || (match == /obj/structure/sink/well && ispath(result_type, match)))
 				return TRUE
 		else if (islist(match))
 			var/all = TRUE
 			for (var/part in match)
-				if (!findtext(R.title, part))
+				if (!findtext(title, part))
 					all = FALSE
 					break
 			if (all)
 				return TRUE
-		else if (findtext(R.title, match))
+		else if (findtext(title, match))
 			return TRUE
 	return FALSE
 
 // What skill a recipe needs: list(skill, level), or null when it needs none.
 /proc/recipe_skill_need(datum/stack_recipe/R)
-	if (!R || !istext(R.title))
+	return R ? recipe_skill_need_named(R.title, R.result_type) : null
+
+// The Atlas lists recipes by title and result path rather than by datum.
+/proc/recipe_skill_need_named(title, result_type)
+	if (!istext(title))
 		return null
+	if (istext(result_type)) // the Atlas names its results as text
+		result_type = text2path(result_type)
 	var/list/need = null
 	for (var/list/entry in recipe_skill_table)
-		if ((!need || entry[2] > need[2]) && recipe_skill_entry_matches(entry, R))
+		if ((!need || entry[2] > need[2]) && recipe_skill_entry_matches_named(entry, title, result_type))
 			need = list(entry[1], entry[2])
 	return need
 

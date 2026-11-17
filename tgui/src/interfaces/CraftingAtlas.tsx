@@ -102,6 +102,7 @@ function Recipe({ ui, recipe, choose, lead }: { ui: ScreenProps; recipe: Data; c
   const variants = list(recipe.variants);
   const familyVariants = list(recipe.family_variants);
   const research = list(recipe.research);
+  const skill = recipe.skill as Data | null | undefined;
   const site = str(recipe.site);
   const [how, base] = method(recipe.kind);
   const hint = str(recipe.kind) === 'Chemistry' ? reactionHints[site] ?? base : base;
@@ -137,6 +138,7 @@ function Recipe({ ui, recipe, choose, lead }: { ui: ScreenProps; recipe: Data; c
     <ul className="atlas-requirements">
       {hint && <li>{hint}</li>}
       {research.map((node, i) => <li key={i}>Research: <strong>{str(node.name)}</strong>{node.state === 'done' && <Pill tone="good" className="atlas-chip">Researched</Pill>}{node.state === 'needed' && <Pill tone="warn" className="atlas-chip">Not researched yet</Pill>}</li>)}
+      {skill && <li>Skill: <strong>{str(skill.name)} {Number(skill.need)}</strong>{skill.have !== null && skill.have !== undefined && (skill.met ? <Pill tone="good" className="atlas-chip">Yours is {Number(skill.have)}</Pill> : <Pill tone="warn" className="atlas-chip">Yours is {Number(skill.have)}</Pill>)}</li>}
       {facts.map((fact, i) => <li key={'f' + i}>{fact}</li>)}
       {Number.isFinite(until) && recipe.maximum_era !== null && recipe.maximum_era !== undefined && until < 8 && <li>Can be made until the end of the {eras[until]}</li>}
       {rest && <li>{rest}</li>}
