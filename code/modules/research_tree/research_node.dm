@@ -1624,7 +1624,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/storage/belt/gator_belt" = "fine_garments",
 		"/obj/item/weapon/storage/belt/lizard_belt" = "fine_garments",
 		"/obj/item/weapon/storage/briefcase" = "fine_garments",
-		// --- fortifications (27) ---
+		// --- fortifications (29) ---
 		"/obj/item/stack/material/barbwire" = "fortifications",
 		"/obj/item/weapon/barrier/sandbag/empty" = "fortifications",
 		"/obj/structure/barbwire" = "fortifications",
@@ -1647,6 +1647,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/castle_winch" = "fortifications",
 		"/obj/structure/murder_hole" = "fortifications",
 		"/obj/structure/castle_overhang" = "fortifications",
+		"/obj/structure/window/barrier/rock/parapet" = "fortifications",
+		"/obj/structure/window/barrier/sandstone/parapet" = "fortifications",
 		"/obj/item/castle_trapdoor_kit" = "fortifications",
 		"/obj/structure/castle_trap_lever" = "fortifications",
 		"/obj/structure/gate/sandstone" = "fortifications",

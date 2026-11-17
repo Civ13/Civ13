@@ -149,6 +149,7 @@ var/castle_defences_runtime = null
 	battlement_after_build(plain, builder)
 	castle_defences_assert(!plain.outward_dir, "plain_barricade_not_battlement")
 	castle_defences_pour_checks()
+	castle_defences_parapet_checks()
 	castle_defences_trap_checks()
 
 /proc/castle_defences_bucket(turf/T, id, amount, hot = FALSE)
@@ -290,6 +291,30 @@ var/castle_defences_runtime = null
 
 	// A ladder fork pushes a deployed siege ladder off the wall.
 	castle_defences_assert(ladder_pusher(new /obj/item/weapon/ladder_fork(locate(16, 11, 1))), "fork_pushes")
+
+// A parapet on the north edge of (11, 15): its tile (11, 15) is behind it.
+/proc/castle_defences_parapet_checks()
+	var/obj/structure/window/barrier/rock/parapet/PP = new(locate(11, 15, 1))
+	PP.set_dir(NORTH)
+	var/list/out = castle_defences_tally(PP, locate(11, 15, 1), 90, 100)
+	castle_defences_assert(out["1"] == 100, "parapet_out_passes")
+	var/list/back_shot = castle_defences_tally(PP, locate(11, 12, 1), 90, 100)
+	castle_defences_assert(back_shot["1"] == 100, "parapet_shot_from_further_back_passes")
+	var/list/inbound = castle_defences_tally(PP, locate(11, 16, 1), 270, 400)
+	castle_defences_assert(inbound["2"] >= 300 && inbound["1"] >= 20, "parapet_in_mostly_blocked")
+	var/list/side = castle_defences_tally(PP, locate(10, 15, 1), 0, 50)
+	castle_defences_assert(side["0"] == 50, "parapet_side_default")
+	var/mob/living/human/croucher = new(locate(11, 15, 1))
+	croucher.lying = TRUE
+	var/list/crouched = castle_defences_tally(PP, locate(11, 16, 1), 270, 100)
+	castle_defences_assert(crouched["2"] == 100, "parapet_crouch_full_cover")
+	var/obj/item/projectile/stray = castle_defences_shot(locate(10, 15, 1), 0)
+	castle_defences_assert(PP.CanPass(stray, locate(12, 15, 1)) && PP.CanPassOut(stray), "parapet_lets_side_shots_by")
+	qdel(stray)
+	var/obj/structure/window/barrier/sandstone/parapet/SP = new(locate(12, 15, 1))
+	SP.set_dir(NORTH)
+	castle_defences_assert(directional_cover_verdict(SP, castle_defences_shot(locate(12, 15, 1), 90)) == DIRECTIONAL_COVER_PASS, "sandstone_parapet_shared_rule")
+	castle_defences_assert(!PP.climbable && !SP.climbable, "parapet_not_vaulted")
 
 /world/New()
 	OpenPort("none")
