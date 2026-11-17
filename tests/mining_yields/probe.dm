@@ -30,7 +30,7 @@ var/list/yield_chances
 var/list/yield_observed
 var/yield_chance_index = 0
 var/yield_high = FALSE
-// Flint, gem pockets, volcanic obsidian and expedition lodes are independent
+// Flint, gem pockets, volcanic obsidian, expedition lodes, cinnabar and lode ore are independent
 // native rolls with their own probes; silence them so only the ore table runs.
 /turf/mining_flint_nodules(mob/living/human/H, area/area_above)
 	return 0
@@ -40,6 +40,12 @@ var/yield_high = FALSE
 	return 0
 /turf/mining_expedition_lode(mob/living/human/H)
 	return null
+// Cinnabar and lode ore (gold quartz, silver lode) roll with real prob() in
+// mercury.dm and lode.dm; tests/mercury and tests/lode cover them.
+/turf/mining_cinnabar(mob/living/human/H)
+	return 0
+/turf/mining_lode(mob/living/human/H)
+	return 0
 /proc/yield_prob(chance)
 	yield_observed += chance
 	yield_chance_index++

@@ -120,6 +120,10 @@ var/carriage_owners_about = FALSE
 	var/mob/living/simple_animal/horse/h1 = new(locate(19, 29, 1))
 	var/mob/living/simple_animal/horse/h2 = new(locate(20, 29, 1))
 	var/mob/living/simple_animal/cattle/cow/ox = new(locate(21, 29, 1))
+	// Bred horses roll a stamina that scales draft hunger (horse_breeding.dm);
+	// 50 is the even cost these checks measure.
+	h1.stamina = 50
+	h2.stamina = 50
 	carriage_check(isnull(C.hitch_refusal(h1)) && C.can_fit_lane(1), "a horse can go in harness")
 	C.hitch(h1)
 	carriage_check(findtext(C.hitch_refusal(ox), "Horses and oxen"), "an ox is not put in with horses")
@@ -149,6 +153,11 @@ var/carriage_owners_about = FALSE
 	carriage_check(h2.simplehunger == hunger - 0.5, "a harness halves it")
 	carriage_check(C.vehicle_m_delay < 3, "at a canter a step is quick ([C.vehicle_m_delay])")
 	qdel(tack)
+	h1.stamina = 80
+	h2.stamina = 20
+	carriage_check(h1.animal_draft_hunger_cost() < h2.animal_draft_hunger_cost(), "a hardier horse gets less hungry hauling")
+	h1.stamina = 50
+	h2.stamina = 50
 
 	// ---- What stops it ----
 	var/turf/wall_turf = locate(C.x + 1, C.y - 3, 1)
