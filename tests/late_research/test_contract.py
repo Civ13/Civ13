@@ -296,12 +296,25 @@ class SubjectPrototypes(unittest.TestCase):
         for guard in ("map.book_research_enabled()", "H.knows_research_prereqs(node_id)", "H.prototype_book(node_id)"):
             self.assertIn(guard, node)
         self.assertIn("SUBJECT_PROTO_MAX", proc(self.src, "/mob/living/human/proc/prototype_book"))
+        record = proc(self.src, "/proc/record_subject_prototype")
+        self.assertLess(record.index("B.prototypes_made(node_id) >= SUBJECT_PROTO_MAX"), record.index("B.add_prototype_made(node_id)"))
+    def test_working_from_a_book_is_slower_everywhere(self):
+        mult = proc(self.src, "/proc/reference_build_mult")
+        for guard in ("guided_work_node(H, result_path_string)", "subject_prototype_node(H, result_path_string)", "REFERENCE_SLOW_FLOOR"):
+            self.assertIn(guard, mult)
+        for path, count in (("code/game/objects/items/stacks/stack.dm", 1),
+                            ("code/game/objects/structures/blacksmithing/blacksmithing.dm", 2),
+                            ("code/game/objects/structures/blacksmithing/dedicated_workbenches.dm", 2),
+                            ("code/game/objects/structures/blacksmithing/component_workbench.dm", 1),
+                            ("code/modules/materials/lathes.dm", 1)):
+            with self.subTest(path=path):
+                self.assertEqual(read(path).count("reference_build_time(H, "), count)
         study = proc(self.src, "/mob/living/human/proc/study_in_field")
         for guard in ("held_writing_pen()", "do_reading(src, FIELD_STUDY_TIME, thing)", "commit_field_study(src, carrier, node_id, kind, thing.name)"):
             self.assertIn(guard, study)
     def test_a_refused_prototype_says_what_is_missing(self):
         refusal = proc(self.src, "/proc/subject_prototype_refusal")
-        for reason in ("until you know", "already holds the whole", "a third of it written", "all [SUBJECT_PROTO_MAX] prototypes", "early pieces", "points of <b>[N.name]</b> needed"):
+        for reason in ("until you know", "already holds the whole", "a third of it written", "early pieces", "points of <b>[N.name]</b> needed"):
             self.assertIn(reason, refusal)
         self.assertIn("subject_prototype_refusal(H, result_path_string)", read("code/modules/research_tree/recipe_gates.dm"))
         self.assertIn('to_chat(user, crafting_recipe_refusal(H, "[recipe.result_type]"))', read("code/game/objects/items/stacks/stack.dm"))

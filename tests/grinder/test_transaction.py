@@ -806,6 +806,7 @@ class AcquisitionProjection(Projection):
             material_prefix='/material/electronics/',
             map=Record(ordinal_age=5,is_node_done=lambda faction,node: node=='electricity',book_research_enabled=lambda: False),
             is_basic_crafting_recipe=lambda value: value in ('/obj/item/stack/material/rope','/obj/item/stack/material/stonebrick','/obj/structure/researchdesk'),
+            reference_build_time=lambda _actor, _path, time: time,  # no book reference (subject_prototypes.dm)
             crafting_recipe_allowed=lambda actor,path: bool(actor and self.globals['map'].is_node_done(actor.civilization,self.globals['recipe_node_requirements'][path])),
             get_recipe_node_req=lambda value: self.run('/proc/get_recipe_node_req', Record(), result_path_string=value),
             locate=lambda kind: kind, isfloor=lambda site: site.floor, usr=None,

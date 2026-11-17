@@ -175,7 +175,7 @@
 	cancelled = FALSE
 	assembler = H
 	var/made = 0
-	if (do_after(H, trade_time(H, assembly_time * count, "gunsmith"), src)) made = commit_fletching(H, choice, count, site, epoch)
+	if (do_after(H, reference_build_time(H, "[fletched_type(heads[1], shaft_type())]", trade_time(H, assembly_time * count, "gunsmith")), src)) made = commit_fletching(H, choice, count, site, epoch)
 	busy = FALSE
 	assembler = null
 	cancelled = FALSE
@@ -348,7 +348,7 @@
 	var/made = 0
 	// One wait per tool: cancelling keeps the tools already finished.
 	for (var/i in 1 to count)
-		if (!do_after(H, trade_time(H, assembly_time + 15 * R["metal"], "smith"), src)) break
+		if (!do_after(H, reference_build_time(H, "[R["result"]]", trade_time(H, assembly_time + 15 * R["metal"], "smith")), src)) break
 		if (!commit_tool(H, choice, site, epoch, metal_kind)) break
 		made++
 	busy = FALSE

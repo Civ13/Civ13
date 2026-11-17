@@ -488,7 +488,7 @@ class CraftingMovementContracts(unittest.TestCase):
         source = read(STACK)
         controls = (
             ('var/required = quantity*recipe.req_amount', 'var/required = recipe.req_amount'),
-            ('buildtime = round(buildtime)', 'buildtime = 1'),
+            ('buildtime = reference_build_time(H, "[recipe.result_type]", round(buildtime))', 'buildtime = 1'),
             ('buildtime /= H.getStatCoeff("strength")', 'buildtime *= H.getStatCoeff("strength")'),
             ('if (!do_after(user, buildtime) || !crafting_recipe_allowed(H, "[recipe.result_type]"))', 'if (do_after(user, buildtime))'),
             ('"[recipe.result_type]"))\n\t\t\tsecondary_refund(H)\n', '"[recipe.result_type]"))\n'),
