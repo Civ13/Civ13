@@ -412,4 +412,5 @@ var/storwin_runtime_error = FALSE
 	H.storage_click(S)
 	storwin_check(H.storage_click(S) == STORAGE_CLICK_IGNORE, "with no window, a double-click leaves the strip as the first click left it")
 	H.storage_click_last = null
+	storwin_check(hascall(other, "open_storage_window"), "every bag has the Open Storage Window right-click option")
 	qdel(other)
