@@ -96,6 +96,8 @@ var/global/list/crafting_purpose_cache = list()
 	var/list/detail
 	// Set for one push that must reuse the last snapshot instead of rebuilding every row.
 	var/keep_snapshot = FALSE
+	// Processing row id -> the Atlas page its "Open in Atlas" link may show.
+	var/list/processing_links
 
 /datum/crafting_window/New(mob/living/human/H, obj/item/stack/S)
 	viewer = H
@@ -236,7 +238,7 @@ var/global/list/crafting_purpose_cache = list()
 	return TRUE
 
 /datum/crafting_window/ui_actions(ui_key)
-	return list("make", "makeable_only", "images", "atlas", "pin", "source", "detail")
+	return list("make", "makeable_only", "images", "atlas", "pin", "source", "detail", "process_atlas")
 
 /datum/crafting_window/ui_action_fields(ui_key, action)
 	if (action == "make")
@@ -543,6 +545,8 @@ var/global/list/crafting_purpose_cache = list()
 					rows += list(row_data(srl.recipes[j], i, j, srl.title, budget, pinned, recent))
 		else if (istype(E, /datum/stack_recipe))
 			rows += list(row_data(E, 0, i, "General", budget, pinned, recent))
+	// Tool work, stations and soaking that turn this material into something else.
+	var/list/processing = type == /datum/crafting_window ? processing_data(S, budget) : list(list(), 0)
 	var/list/sources = list()
 	if (reach)
 		for (var/obj/item/stack/near in viewer.crafting_stacks_within_reach())
@@ -566,6 +570,8 @@ var/global/list/crafting_purpose_cache = list()
 		"makeable_only" = viewer.craft_makeable_only() ? 1 : 0,
 		"purposes" = islist(crafting_purpose_rules) && islist(crafting_purpose_rules["order"]) ? crafting_purpose_rules["order"] : list("Other"),
 		"rows" = rows,
+		"processing" = processing[1],
+		"processing_total" = processing[2],
 		"more_images" = budget[2] ? 1 : 0)
 
 /datum/crafting_window/Topic(href, href_list, state)
@@ -591,6 +597,12 @@ var/global/list/crafting_purpose_cache = list()
 		var/datum/stack_recipe/shown = find_recipe(href_list["atlas"])
 		if (shown && crafting_atlas_reference && crafting_atlas_reference.resource_exists("[shown.result_type]"))
 			crafting_atlas_reference.show(H, "[shown.result_type]", 1, "[shown.result_type]")
+		return FALSE
+	if (href_list["process_atlas"])
+		// Only a page this window listed for the material: never a client-chosen id.
+		var/page = islist(processing_links) ? processing_links["[href_list["process_atlas"]]"] : null
+		if (page && crafting_atlas_reference && crafting_atlas_reference.resource_exists(page))
+			crafting_atlas_reference.show(H, page, 1, page)
 		return FALSE
 	if (href_list["source"])
 		// Another material in reach: only ones the server can still see next to the player.

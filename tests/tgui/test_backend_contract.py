@@ -271,12 +271,23 @@ class BackendContract(unittest.TestCase):
         frontend = (ROOT / 'tgui/src/interfaces/CraftingWindow.tsx').read_text()
         topic = source.split('/datum/crafting_window/Topic', 1)[1]
         allowed = declared('code/game/objects/items/stacks/crafting_window.dm', 'datum/crafting_window')
-        self.assertEqual(allowed, {'make', 'makeable_only', 'images', 'atlas', 'pin', 'source', 'detail'})
+        self.assertEqual(allowed, {'make', 'makeable_only', 'images', 'atlas', 'pin', 'source', 'detail', 'process_atlas'})
         self.assertEqual(set(re.findall(r'href_list\["([^"\n]+)"\]', topic)), allowed | {'quantity', 'options'})
         self.assertEqual(set(re.findall(r"ui\.act\('([^'\n]+)'", frontend)), allowed)
         transport = DM.split('/datum/nanoui/tgui/Topic', 1)[1]
         self.assertEqual(declared_fields('code/game/objects/items/stacks/crafting_window.dm', 'datum/crafting_window'), {'make': ['quantity', 'options']})
         self.assertIn('var/list/fields = allowed_fields(action)\n\tif (islist(fields))\n\t\tkeys += fields', transport)
+
+    def test_crafting_window_processing_rows_are_read_only_atlas_routes(self):
+        source = (ROOT / 'code/game/objects/items/stacks/crafting_window_processing.dm').read_text()
+        topic = (ROOT / 'code/game/objects/items/stacks/crafting_window.dm').read_text().split('/datum/crafting_window/Topic', 1)[1]
+        # Rows come from the Atlas acquisition routes; the link opens only a page the server listed.
+        self.assertIn('catalog["acquisition"]', source)
+        branch = topic.split('if (href_list["process_atlas"])', 1)[1].split('if (href_list["source"])', 1)[0]
+        self.assertIn('processing_links["[href_list["process_atlas"]]"]', branch)
+        self.assertIn('resource_exists(page)', branch)
+        for action in ('.use(', 'new ', 'qdel(', 'attackby(', 'produce_recipe('):
+            self.assertNotIn(action, source)
 
     def test_crafting_window_requests_keep_server_admission(self):
         source = (ROOT / 'code/game/objects/items/stacks/crafting_window.dm').read_text()
