@@ -3,6 +3,8 @@
 // frame or wall frame). Builders are refused while the tile is taken; remove
 // a floor with a hammer first. Walls and floors may share a tile, and a door
 // or curtain may hang in a doorway or archway.
+// A plain floor cover (also the walkable face of a roof) is a subfloor: any
+// other floor can be laid straight over it and takes its place.
 
 /obj/covers/proc/is_floor_cover()
 	return !wall && layer < 2.1
@@ -19,6 +21,10 @@
 		var/obj/covers/C = path
 		return initial(C.wall)
 	return ispath(path, /obj/structure/simple_door) || ispath(path, /obj/structure/window_frame) || ispath(path, /obj/structure/wallframe)
+
+// A plain floor cover or upper floor, which a finished floor may replace.
+/obj/covers/proc/is_subfloor()
+	return type == /obj/covers/repairedfloor
 
 /proc/tile_floor_cover(turf/T)
 	if (!T)
@@ -60,13 +66,36 @@
 	var/obj/covers/C = A
 	return C.wall && !C.density && !C.incomplete
 
+// The subfloor that a floor of new_type would be laid over on T, or null.
+/proc/tile_subfloor_for(turf/T, new_type)
+	if (!T || !cover_type_is_floor(new_type) || new_type == /obj/covers/repairedfloor)
+		return null
+	var/obj/covers/floor = tile_floor_cover(T)
+	return floor && floor.is_subfloor() ? floor : null
+
+// Lay this floor over the subfloor on its tile. It takes over the subfloor's
+// link to the ceiling below, so the room underneath keeps its roof, and the
+// subfloor is used up. Call it after this floor is on the tile so nothing
+// standing there falls through.
+/obj/covers/proc/replace_subfloor(obj/covers/old)
+	if (!old || old == src || QDELETED(old) || old.loc != loc)
+		return FALSE
+	if (old.building_pair_id)
+		building_pair_id = old.building_pair_id
+		building_roof_z = old.building_roof_z
+		old.building_pair_id = null
+		old.building_roof_z = 0
+	old.amount = 0
+	qdel(old)
+	return TRUE
+
 // Why new_type cannot be built on T, or null when the tile is free for it.
 /proc/tile_build_refusal(turf/T, new_type)
 	if (!T || !new_type)
 		return null
 	if (cover_type_is_floor(new_type))
 		var/obj/covers/floor = tile_floor_cover(T)
-		if (floor)
+		if (floor && !tile_subfloor_for(T, new_type))
 			return "There is already \a [floor] here. Remove it with a hammer first."
 		return null
 	if (type_is_window_door(new_type))

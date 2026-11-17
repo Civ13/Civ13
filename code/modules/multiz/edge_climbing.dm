@@ -316,28 +316,29 @@
 	var/turf/here = user ? get_turf(user) : null
 	if (!here || user.loc != here)
 		return
-	// Where stairs can go underfoot, they still do.
-	var/underfoot = tile_build_refusal(here, stairs_type)
-	if (!underfoot)
-		return
 	var/problem
 	var/direction = user.dir
 	var/turf/well = (direction in list(NORTH, SOUTH, EAST, WEST)) ? get_step(here, direction) : null
 	var/level = well ? multiz_level_below(well.z) : 0
 	var/turf/lower = level ? locate(well.x, well.y, level) : null
-	if (!lower || !edge_open_air(well))
-		// On the ground the usual underfoot refusal stands.
-		if (!building_open_turf(here))
+	if (!lower || !edge_open_air(well) || edge_open_air(here))
+		// Not facing an opening: stairs go underfoot where they can. On an upper
+		// floor that can't take them, say how to build them down instead.
+		var/underfoot = tile_build_refusal(here, stairs_type)
+		if (!underfoot || !building_open_turf(here))
 			return
 		problem = "[underfoot] To build stairs down to the level below, stand beside an opening in the floor and face it."
 	else if (stairs_in(lower) || (locate(/obj/structure/multiz) in lower) || (locate(/obj/structure/multiz) in well))
 		problem = "There already are stairs or a ladder at that opening."
 	else
 		var/obj/covers/floor = tile_floor_cover(lower)
-		if (floor)
+		var/subfloor = floor && tile_subfloor_for(lower, stairs_type)
+		if (floor && !subfloor)
 			problem = "There is already \a [floor] below that opening. Take it up with a hammer from below first."
 		else if (lower.density || tile_wall_piece(lower))
 			problem = "Something solid fills the space below that opening."
+		else if (subfloor)
+			problem = null // The stairs are laid over it and take its place.
 		else if (building_open_turf(lower))
 			if (building_floor_error(lower))
 				problem = "The drop below that opening is more than one storey. Stairs need solid ground or a supported floor under them."

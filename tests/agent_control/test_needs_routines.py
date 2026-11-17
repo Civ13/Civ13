@@ -313,12 +313,69 @@ class ScriptTests(unittest.TestCase):
         self.assertEqual(scripts.from_text("Hunt a deer for meat"), "hunt")
         self.assertEqual(scripts.from_text("Make a flint axe"), "axe")
         self.assertEqual(scripts.from_text("Mine with a pickaxe"), "")
-        self.assertEqual(scripts.from_text("Make leaf bundles"), "")
+        self.assertEqual(scripts.from_text("Gather leaf bundles for thatch roofing"), "leaves")
+        self.assertEqual(scripts.from_text("Say hello to the traveller"), "")
         scheduler = routines.Routines()
-        self.assertEqual(scheduler.adopt_text_plan(json.dumps({"plan": ["Make leaf bundles", "Build a campfire"]})), "make campfire (30 more)")
+        self.assertEqual(scheduler.adopt_text_plan(json.dumps({"plan": ["Say hello", "Build a campfire"]})), "make campfire (30 more)")
         self.assertEqual(scheduler.order["script"], "campfire")
         # An explicit routine from the director wins over its sentences.
         self.assertEqual(scheduler.adopt_text_plan(json.dumps({"plan": ["Find water"], "routine": "none"})), "")
+
+    def test_leaves_script(self):
+        branch = {"ref": "[0xbr]", "name": "branch", "item": True, "branch": "leafy", "dx": 1, "dy": 0}
+        self.assertEqual(next_step(scripts.leaves, holding(), [TREE]), [{"do": "break_branch", "target": "[0xtree]"}])
+        self.assertEqual(next_step(scripts.leaves, holding(), [TREE, branch]), [{"do": "pick_leaves", "target": "[0xbr]"}])
+        self.assertEqual(next_step(scripts.leaves, holding(items=[{"name": "leaf bundles", "amount": 2}])), scripts.DONE)
+        self.assertEqual(scripts.gather(situation(observe(holding(), nearby=[TREE]))[0], "gather leaf bundles"),
+                         [{"do": "break_branch", "target": "[0xtree]"}])
+
+    def test_build_next_gathers_leaves_for_the_roof(self):
+        # Live Gaia: "roof ... cannot be built yet: gather leaf bundles" every turn, and nothing fetched them.
+        import blueprints
+        project = {"name": "hut", "x": 99, "y": 102, "z": 2, "tries": {}, "skipped": [], "unavailable": []}
+        names = {"wall": "log wall", "roof support": "roof support", "door": "rustic door"}
+        built = [{"ref": f"[0xb{i}]", "name": names[p["role"]], "dx": p["x"] - 100, "dy": p["y"] - 100,
+                  "dense": p["role"] in blueprints.DENSE_ROLES}
+                 for i, p in enumerate(blueprints.pieces(project)) if p["role"] in names]
+        tree = dict(TREE, dx=4, dy=4)
+        body = dict(holding("flint axe"), x=100, y=100, z=2)
+        sit = situation(observe(body, nearby=built + [tree]), box={"project": project})[0]
+        steps, piece, problem = blueprints.next_steps(json.loads(json.dumps(project)), sit.observation, [])
+        self.assertEqual((steps, piece["role"]), ([], "roof"))
+        self.assertIn("leaf", problem)
+        choice = routines.Routines().choose(sit)
+        self.assertEqual(choice.plan, [{"do": "break_branch", "target": len(built) + 1}])
+
+    def test_the_directors_sentence_beats_its_routine_key(self):
+        # Live Gaia: qwen3-8b sent "routine": build_next (failing) with the plan "Build campfire for warmth".
+        answer = json.dumps({"plan": ["Build campfire for warmth"], "routine": {"do": "build_next"}})
+        scheduler = routines.Routines()
+        scheduler.directed(answer)
+        self.assertEqual(scheduler.adopt_text_plan(answer), "make campfire (30 more)")
+        self.assertEqual(scheduler.order["script"], "campfire")
+        # A sentence that names no script leaves the routine key in charge.
+        answer = json.dumps({"plan": ["Say hello"], "routine": {"do": "build_next"}})
+        scheduler.directed(answer)
+        self.assertEqual(scheduler.adopt_text_plan(answer), "")
+        self.assertEqual(scheduler.order["do"], "build_next")
+
+    def test_a_stick_in_a_pocket_is_not_one_to_sharpen(self):
+        pocket = holding("sharpened flint")
+        pocket["carried"] = ["stick (pocket)"]
+        self.assertEqual(next_step(scripts.spear, pocket, [TREE]), [{"do": "break_branch", "target": "[0xtree]"}])
+        self.assertEqual(next_step(scripts.spear, holding("sharpened flint", "stick")), [{"do": "sharpen_stick", "target": 0}])
+
+    def test_freezing_with_nothing_to_burn_makes_a_campfire(self):
+        cold = dict(holding(), bodytemperature=265)
+        choice = quiet().choose(situation(observe(cold, nearby=[ROCK]))[0])
+        self.assertEqual((choice.name, choice.plan), ("warm up", [{"do": "find_flint", "target": 1}]))
+
+    def test_a_far_or_other_level_blueprint_is_dropped(self):
+        box = {"project": {"name": "hut", "x": 630, "y": 458, "z": 1}}
+        sit = situation(observe(dict(holding(), x=121, y=150, z=2)), box=box)[0]
+        scheduler = routines.Routines()
+        scheduler.choose(sit)
+        self.assertIsNone(box["project"])
 
     def test_ladder_order(self):
         rows = [ROCK, TREE]
@@ -451,6 +508,28 @@ class LoopTests(unittest.TestCase):
         self.assertEqual(model.calls, 1)
         chops = [actions for actions in game.queued if any(a.get("target") == "[0xtree]" for a in actions)]
         self.assertEqual(len(chops), 3)
+
+    def test_deep_sleep_uses_wake_up_then_plays(self):
+        # Live Gaia 2026-11-17: a restored Ada slept (inducedSSD) with no client to use Wake Up, so she never woke.
+        class Sleeper(FakeGame):
+            def __init__(self, observation):
+                super().__init__(observation)
+                self.woken = 0
+
+            def request(self, action, params=None):
+                if action == "character_act" and params.get("do") == "wake":
+                    self.woken += 1
+                    self.observation["self"].update(stat=0, asleep=False)
+                    return {"ok": True, "result": {"detail": "waking in 30 seconds"}}
+                return super().request(action, params)
+
+        game, model = Sleeper(observe(me(bladder=420, stat=1, asleep=True))), FakeModel(json.dumps({"plan": [{"do": "wait"}]}))
+        with mock.patch.object(autopilot, "load_tips", return_value=[]), mock.patch("builtins.print"), \
+                mock.patch.object(autopilot.time, "sleep"):
+            code = autopilot._run(game, run_args(steps=3), "[0xme]", None, model)
+        self.assertEqual(code, 0)
+        self.assertEqual(game.woken, 1)
+        self.assertTrue(any({"do": "verb", "name": "pee"} in actions for actions in game.queued))
 
     def test_no_routines_asks_the_model_every_turn(self):
         answer = json.dumps({"plan": [{"do": "wait", "ticks": 5}]})

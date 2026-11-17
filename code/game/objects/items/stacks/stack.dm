@@ -406,6 +406,10 @@
 			to_chat(user, SPAN_WARNING("Joinery needs its materials, research and equipped tools. Check the Crafting Atlas."))
 			return
 	var/needs_crafting_handle = FALSE
+	// The used handle's wood, quality and condition carry into the tool.
+	var/handle_material_name = null
+	var/handle_quality = 1
+	var/handle_condition = 1
 	var/obj/item/weapon/material/handle/crafting_handle = null
 	var/atom/handle_crafting_source_loc = null
 	var/guard_refusal = craft_guard_refusal(H, recipe, CRAFT_GUARD_START)
@@ -1844,7 +1848,9 @@
 		if (!stairs_now || stairs_now[1] != stairs_down[1] || stairs_now[2] != stairs_down[2])
 			to_chat(user, SPAN_WARNING(stairs_why.len && stairs_why[1] ? stairs_why[1] : "Stay facing the opening until the stairs are built."))
 			return
-	if (building_floor_recipe)
+	// A floor laid over a floor cover or upper floor replaces it (tile_occupancy.dm).
+	var/obj/covers/subfloor = building_floor_recipe ? tile_subfloor_for(get_turf(build_loc), recipe.result_type) : null
+	if (building_floor_recipe && !subfloor)
 		var/building_error = building_floor_error(get_turf(build_loc))
 		if (building_error)
 			to_chat(user, SPAN_WARNING(building_error))
@@ -1889,6 +1895,11 @@
 			if (H && recipe.time)
 				H.adaptStat("crafting", 1*recipe.req_amount, recipe.result_type)
 		if (needs_crafting_handle)
+			// The handle's wood carries into the tool (apply_tool_handle).
+			handle_material_name = crafting_handle.material ? crafting_handle.material.name : "wood"
+			handle_quality = crafting_handle.crafting_quality
+			if (crafting_handle.maxhealth > 0)
+				handle_condition = crafting_handle.health / crafting_handle.maxhealth
 			// No wait between revalidation and commit. Clear the actual equipment slot.
 			H.remove_from_mob(crafting_handle)
 			qdel(crafting_handle)
@@ -1912,8 +1923,12 @@
 
 		if (building_floor_recipe)
 			var/obj/covers/floor = O
-			floor.building_finish_floor()
+			if (!subfloor || !floor.replace_subfloor(subfloor))
+				floor.building_finish_floor()
 
+		// The handle's wood sets the tool's durability and speed (material_weapons.dm).
+		if (handle_material_name)
+			apply_tool_handle(O, handle_material_name, handle_quality, handle_condition)
 		// A tiki torch remembers its pole material so dismantling returns the same.
 		if (istype(O, /obj/item/flashlight/tiki_torch) && istype(src, /obj/item/stack/material))
 			var/obj/item/stack/material/pole_stack = src

@@ -255,7 +255,8 @@ branches harm intent can break off now; fallen branches add `branch` as
 `leafy` or `cleared`; loose items that can be picked up add `item`), and the messages the character saw or
 heard (after normal language scrambling) since the `since` id.
 `character_act` takes `do`: `move` and `face` (`dir`), `say` and `emote`
-(`text`), `click` (`target` ref the character can see, optional `modifier`),
+(`text`), `wake` (the Wake Up verb for a character in deep sleep, `asleep` in
+its state; it wakes after 30 seconds), `click` (`target` ref the character can see, optional `modifier`),
 `use` (the held item), `craft` (`recipe` from the held stack, optional
 `amount`), `equip` (the held item, as the quick-equip key does; `no_slot`
 when nothing can take it), `take` (`item`: a stowed item's name, into the

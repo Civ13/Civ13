@@ -212,6 +212,14 @@ var/list/edge_probe_log = list()
 	var/mob/living/human/GF = edge_probe_human(locate(1, 2, 1))
 	GF.dir = NORTH
 	edge_probe_check(!stairs_down_spot(GF, /obj/covers/wood/stairs, why) && !why.len, "ground_floor_no_down_spot")
+	// Standing on an upper floor that stairs could replace, facing an opening
+	// still builds down; a plain subfloor below is laid over.
+	new /obj/covers/repairedfloor(locate(6, 11, 2))
+	new /obj/covers/repairedfloor(locate(5, 11, 1))
+	var/mob/living/human/RB = edge_probe_human(locate(6, 11, 2))
+	RB.dir = WEST
+	var/list/over = stairs_down_spot(RB, /obj/covers/wood/stairs, why)
+	edge_probe_check(over && over[1] == locate(5, 11, 1) && over[2] == EAST, "stairs_down_from_subfloor_over_subfloor")
 	// Taking the stairs away takes the marker with them.
 	qdel(SD)
 	edge_probe_check(QDELETED(well_top) && !(locate(/obj/effect/stairwell_top) in locate(9, 11, 2)), "stairwell_top_goes_with_stairs")

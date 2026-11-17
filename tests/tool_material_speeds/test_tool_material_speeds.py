@@ -168,8 +168,8 @@ class ToolMaterialSpeeds(unittest.TestCase):
         weapons = WEAPONS.read_text(encoding='utf-8', errors='ignore')
         setter = weapons[weapons.index('/obj/item/weapon/material/proc/set_material'):]
         self.assertIn('apply_tool_material_speed()', setter[:setter.index('\n/obj/')])
-        self.assertIn('tool_material_speed(/obj/item/weapon/material/pickaxe, head_part.material.name)', weapons)
-        self.assertIn('tool_material_speed(/obj/item/weapon/material/shovel, head_part.material.name)', weapons)
+        self.assertIn('tool_material_speed(/obj/item/weapon/material/pickaxe, head_name)', weapons)
+        self.assertIn('tool_material_speed(/obj/item/weapon/material/shovel, head_name)', weapons)
         self.assertNotIn('head_part.material.hardness / iron.hardness', weapons)
 
     def test_plain_tools_name_their_material(self):

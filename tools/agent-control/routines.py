@@ -13,6 +13,7 @@ through the same parsing, expansion and execution as the model's plans: the same
 
 import json
 
+import blueprints
 import needs
 import scripts
 
@@ -186,7 +187,11 @@ def plan_warm(sit):
     if not isinstance(body, (int, float)) or body >= needs.COMFORT_LOW:
         return None  # too hot is the director's problem: shade and clothes need judgement
     step = sit.kit.cold_plan(sit.observation, sit.ignored, threshold=float("inf"))
-    return [step] if step else None
+    if step:
+        return [step]
+    # No clothes, fire or logs to hand: make what a campfire needs (flint, spear, axe, logs) rather than freeze.
+    plan = scripts.campfire(sit)
+    return None if plan == scripts.DONE else plan
 
 
 def plan_treat(sit):
@@ -283,6 +288,18 @@ def parse_order(raw):
     return order
 
 
+FAR_PROJECT = 40  # tiles: a building plan farther than this is from another life or land
+
+
+def _far_project(project, me):
+    try:
+        if project.get("z") is not None and me.get("z") is not None and int(project["z"]) != int(me["z"]):
+            return True
+        return max(abs(int(project["x"]) - int(me["x"])), abs(int(project["y"]) - int(me["y"]))) > FAR_PROJECT
+    except (KeyError, TypeError, ValueError):
+        return False
+
+
 def describe_order(order):
     if not order:
         return "none"
@@ -353,7 +370,11 @@ class Routines:
             data = json.loads(answer)
         except (TypeError, ValueError):
             return ""
-        if not isinstance(data, dict) or "routine" in data or not isinstance(data.get("plan"), list):
+        if not isinstance(data, dict) or not isinstance(data.get("plan"), list):
+            return ""
+        # Small models send a "routine" next to sentences that say what they actually mean; the sentence wins when it
+        # names a script, since the reply as a whole had no step that could run. An explicit "none" still pauses work.
+        if "routine" in data and parse_order(data.get("routine")) == "none":
             return ""
         for item in data["plan"]:
             if not isinstance(item, str):
@@ -417,7 +438,23 @@ class Routines:
             return name, step  # scripts.DONE once the product is in hand
         action = order.get("do")
         if action == "build_next":
-            return name, [{"do": "build_next"}] if sit.box.get("project") else None
+            project = sit.box.get("project")
+            if not project:
+                return name, None
+            if _far_project(project, sit.me):
+                # A plan from another level, land or life cannot be walked to: drop it rather than walk at it forever.
+                sit.box["project"] = None
+                return name, None
+            # A piece short of material gathers it (leaves for the roof, logs, stone) instead of failing every turn.
+            try:
+                steps, piece, problem = blueprints.next_steps(json.loads(json.dumps(project)), sit.observation, sit.box.get("structures", []))
+            except (KeyError, TypeError, ValueError):
+                steps, piece, problem = [], None, ""  # a project the planner cannot read: build_next reports it
+            if not steps and piece is not None and problem.startswith("gather"):
+                fetch = scripts.gather(sit, problem)
+                if fetch and fetch != scripts.DONE:
+                    return name, fetch
+            return name, [{"do": "build_next"}]
         if action == "leather_next":
             return name, [{"do": "leather_next", "make": order.get("make") or sit.box.get("leather") or "leather"}]
         if action == "explore":
