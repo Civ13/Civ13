@@ -21,5 +21,14 @@ Common wins when they overlap.
 The tech tree and the research book and bench windows show the band after a
 subject's era, for example "Stone Age - common knowledge".
 
+## Common knowledge
+
+A living character gains every common subject it lacks when a player takes the
+body (`/mob/living/human/Login()`, so a new character starts with them) and
+when a discovery advances the era (`knowledge_era_advanced()`). It brings the
+subjects only: no scholarship and no skill. What was gained is kept if the era
+later falls; characters made after the fall get the lower floor. Agent
+characters and the dead are skipped.
+
 Tests: `tests/knowledge_spread/` (offline suite `knowledge_spread`, native
 `probe.dm`).
