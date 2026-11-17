@@ -80,6 +80,18 @@ class TrainPlatformSourceTests(unittest.TestCase):
         self.assertIn('/obj/structure/trains/platform/ex_act(severity)\n\tblast_couplings(severity)\n', WARFARE)
         self.assertIn('RECIPE: /material/iron/,train coupling,/obj/item/train_coupling,4,80,0,0,trains,101,', RECIPES)
 
+    def test_steam_engines_have_a_boiler(self):
+        # Built filled and in steam, so saved engines and fixtures keep running.
+        self.assertIn('\tvar/water = 240 // in the tank\n\tvar/max_water = 240\n', TRAINS)
+        self.assertIn('\tvar/pressure = 100 // percent of working pressure\n', TRAINS)
+        self.assertIn('\tvar/injector = TRUE', TRAINS)
+        # Pressure limits speed and a helper's pull; neglect drops the plug, nothing explodes.
+        self.assertIn('* min(1, pull_ratio()) * steam_factor() * throttle / LOCO_NOTCHES', TRAINS)
+        self.assertIn('consist_power += L.haul * ((L == src) ? 1 : L.steam_factor())', TRAINS)
+        self.assertIn('/obj/structure/trains/locomotive/coal/proc/drop_plug()', TRAINS)
+        self.assertNotIn('explosion(', TRAINS)
+        self.assertIn('RECIPE: /material/lead/,fusible plug,/obj/item/fusible_plug,1,60,0,0,trains,101,', RECIPES)
+
     def test_heavy_locomotives_drive_like_the_one_tile_engines(self):
         dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
         self.assertEqual(dme.count('#include "code\\modules\\1713\\train_locomotives.dm"'), 1)

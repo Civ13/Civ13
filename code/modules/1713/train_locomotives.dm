@@ -383,6 +383,11 @@
 	max_fuel = 250
 	train_weight = 4.5 // with its three body sections the locomotive weighs 6
 	haul = 30
+	water = 600
+	max_water = 600
+	boiler_water = 100
+	max_boiler = 100
+	steam_time = 240
 
 /obj/structure/trains/locomotive/coal/heavy/ex_act(severity)
 	blast_couplings(severity)
@@ -446,6 +451,11 @@
 	max_fuel = 300
 	train_weight = 8.5 // 10 with its body sections
 	haul = 40
+	water = 600
+	max_water = 600
+	boiler_water = 100
+	max_boiler = 100
+	steam_time = 240
 
 /obj/structure/trains/locomotive/coal/armored/heavy/examine(mob/user)
 	..()
