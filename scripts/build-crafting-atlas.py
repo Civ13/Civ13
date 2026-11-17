@@ -381,10 +381,12 @@ light=uncomment(files.get(light_path,''))
 if light:
     handle_line=light[:light.index('/obj/item/weapon/material/handle/attackby')].count('\n')+1 if '/obj/item/weapon/material/handle/attackby' in light else 1
     oils=re.search(r'var/list/accepted = list\(([^)]*)\)',light)
-    if 'make_torch(user, TORCH_FAT_FUEL, W)' in light and oils and 'torch.handle_material = material.name' in light:
-        add('Torch from handle and animal fat','Light making',[('/obj/item/weapon/material/handle',1),('/obj/item/weapon/reagent_containers/food/snacks/animalfat',1)],[('/obj/item/flashlight/torch',1)],light_path,handle_line,'Use animal fat on a usable tool handle; the fat is consumed and the torch keeps the handle material. A burnt-out torch leaves its handle.','handle attackby animalfat make_torch')
-        for reagent in re.findall(r'"(\w+)" = \d+',oils[1]):
-            add('Torch from handle and '+reagent.replace('_',' '),'Light making',[('/obj/item/weapon/material/handle',1),('reagent:'+reagent,10)],[('/obj/item/flashlight/torch',1)],light_path,handle_line,'Use a container holding at least 10 units on a usable tool handle; 10 units are consumed. A burnt-out torch leaves its handle.','handle attackby reagent make_torch')
+    new_fuel=re.search(r'#define TORCH_NEW_FUEL (\d+)',light)
+    if 'make_torch(user, round(lard * accepted["lard"]), W)' in light and oils and new_fuel and 'torch.handle_material = material.name' in light:
+        add('Torch from handle and animal fat','Light making',[('/obj/item/weapon/material/handle',1),('/obj/item/weapon/reagent_containers/food/snacks/animalfat',1)],[('/obj/item/flashlight/torch',1)],light_path,handle_line,'Use animal fat on a usable tool handle; the piece is consumed and the torch keeps the handle material. A whole piece burns ten minutes. A burnt-out torch leaves its handle.','handle attackby animalfat make_torch')
+        for reagent,rate in re.findall(r'"(\w+)" = (\d+)',oils[1]):
+            units=int(new_fuel[1])//int(rate)
+            add('Torch from handle and '+reagent.replace('_',' '),'Light making',[('/obj/item/weapon/material/handle',1),('reagent:'+reagent,units)],[('/obj/item/flashlight/torch',1)],light_path,handle_line,f'Use a container holding at least {units} units on a usable tool handle; {units} units are consumed. A burnt-out torch leaves its handle.','handle attackby reagent make_torch')
     else:
         issues.append(dict(file=light_path,line=1,reason='Handle torch source contract changed; inspect light_fuel.dm',raw='make_torch'))
 woodwork_path='code/modules/1713/primitive_woodworking.dm'

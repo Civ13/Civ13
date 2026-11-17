@@ -1437,6 +1437,7 @@ RECIPE: /material/bone/,bone talisman,/obj/item/clothing/accessory/armband/talis
 RECIPE: /material/bone/,bone bead necklace,/obj/item/clothing/accessory/necklace/bead,1,50,0,1,none,0,0,0,8,null
 RECIPE: /material/bone/,bone beads,/obj/item/stack/barter_beads/bone,1,30,0,1,none,0,0,0,8,null
 RECIPE: /material/bone/,bone flute,/obj/item/stone_age_instrument/bone_flute,1,60,0,1,none,0,0,0,8,null
+RECIPE: /material/bone/,grease horn,/obj/item/weapon/reagent_containers/glass/grease_horn,2,60,0,1,none,0,0,0,8,null
 RECIPE: /material/bone/,skull mask,/obj/item/clothing/mask/skullmask,5,100,0,1,none,0,0,0,8,null
 RECIPE: /material/bone/,bone helmet,/obj/item/clothing/head/helmet/bone,10,100,0,1,none,0,0,0,8,null
 RECIPE: /material/bone/,bone armor,/obj/item/clothing/suit/storage/jacket/bonearmor,10,170,0,2,none,0,0,0,8,null
@@ -1468,6 +1469,7 @@ RECIPE: /material/bone/,bone gear set,/obj/item/machine_part/gear,4,150,0,1,mach
 RECIPE: /material/stone/,stone brazier,/obj/structure/brazier/stone,3,100,1,1,none,0,0,0,8,null
 RECIPE: /material/stone/,chimney,/obj/structure/chimney,6,120,1,1,construction,0,0,0,8,null
 RECIPE: /material/stone/,pendant hone,/obj/item/clothing/accessory/pendant_hone,1,40,0,1,none,0,0,0,8,null
+RECIPE: /material/stone/,stone fat lamp,/obj/item/flashlight/lantern/fat_lamp,1,60,0,1,none,0,0,0,8,null
 RECIPE: /material/stone/,stone drain,/obj/structure/sewer_piece/drain/stone,2,80,1,1,construction,0,0,0,8,null
 RECIPE: /material/stone/,floor drain,/obj/structure/sewer_piece/drain/floor,1,60,1,1,construction,0,0,0,8,null
 RECIPE: /material/stone/,stone plinth,/obj/structure/flood_platform/plinth,4,120,1,1,construction,0,0,0,8,null

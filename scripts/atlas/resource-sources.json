@@ -14614,7 +14614,7 @@
       "steps": [
         "Butcher an eligible dead mammal with fat using a sharp held tool. Collect any animal fat produced with the other corpse products."
       ],
-      "conditions": "Only animals with enough fat give any, up to two portions.",
+      "conditions": "Only animals with fat give any, and how much depends on the animal: a wolf gives one piece, a sheep or deer two, a cow or pig three, a bear or bison four, a mammoth eight.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"

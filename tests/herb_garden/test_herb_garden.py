@@ -102,7 +102,7 @@ class HerbGardenSourceTests(unittest.TestCase):
         torch = (ROOT / 'code/modules/1713/light_fuel.dm').read_text(encoding='utf-8')
         for oil in ('sunflower_oil', 'linseed_oil'):
             self.assertEqual(lantern.count(f'"{oil}" = '), 3)
-            self.assertIn(f'"{oil}" = 30', torch)
+            self.assertIn(f'"{oil}" = 120', torch)  # a torch soaked in oil: 5 units for ten minutes
 
 
 if __name__ == '__main__':

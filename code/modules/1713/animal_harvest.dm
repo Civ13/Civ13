@@ -315,6 +315,35 @@
 		return 1
 	return 0
 
+// Pieces of animal fat a carcass gives before the butcher's skill, by how fat
+// the living animal is: a wolf is lean, a pig or an autumn bear carries a thick
+// layer, a mammoth far more. Species not listed give one or two by body size.
+/mob/living/simple_animal/proc/harvest_fat_pieces(size)
+	if (!has_fat)
+		return 0
+	var/by_size = min(2, max(0, size - 2 + fat_extra - fat_penalty))
+	if (size < 4) // small animals and the young of big ones
+		return by_size
+	if (istype(src, /mob/living/simple_animal/hostile/wolf))
+		return 1
+	if (istype(src, /mob/living/simple_animal/pig_boar) || istype(src, /mob/living/simple_animal/pig_gilt))
+		return 3
+	if (size < 5) // half-grown
+		return by_size
+	if (istype(src, /mob/living/simple_animal/hostile/mammoth))
+		return 8
+	if (istype(src, /mob/living/simple_animal/hostile/groundsloth))
+		return 5
+	if (istype(src, /mob/living/simple_animal/hostile/bear/boar/polar) || istype(src, /mob/living/simple_animal/hostile/bear/sow/polar))
+		return 5
+	if (istype(src, /mob/living/simple_animal/hostile/bear))
+		return 4
+	if (istype(src, /mob/living/simple_animal/bisonbull) || istype(src, /mob/living/simple_animal/bison) || istype(src, /mob/living/simple_animal/hostile/buffalo) || istype(src, /mob/living/simple_animal/camel))
+		return 4
+	if (istype(src, /mob/living/simple_animal/cattle) || istype(src, /mob/living/simple_animal/deer/elk))
+		return 3
+	return by_size
+
 // Quick butchering hacks the skin apart: only half the hide survives as raw
 // hide. Skinning (grab intent) takes longer and keeps the whole hide.
 /mob/living/simple_animal/proc/harvest_skin_yield()
@@ -368,7 +397,7 @@
 		else if (size >= 3)
 			harvest_food(/obj/item/weapon/reagent_containers/food/snacks/meat/offal/stomach, site)
 		if (has_fat)
-			var/fat_portions = harvest_skill_amount(min(2, max(0, size-2+fat_extra-fat_penalty)), harvest_bonus)
+			var/fat_portions = harvest_skill_amount(harvest_fat_pieces(size), harvest_bonus)
 			for (var/i = 1, i <= fat_portions, i++)
 				harvest_food(/obj/item/weapon/reagent_containers/food/snacks/animalfat, site)
 	else if (chicken)

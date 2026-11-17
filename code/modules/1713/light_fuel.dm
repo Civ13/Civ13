@@ -3,8 +3,7 @@
 // take gasoline or alcohol, and electric lights (flashlights, smartphone
 // torches) take batteries. Map fixtures marked unlimited keep burning.
 
-#define TORCH_FAT_FUEL 300 // seconds of light from one piece of animal fat
-#define TORCH_OIL_UNITS 10 // units of oil that soak a new torch
+#define TORCH_NEW_FUEL 600 // seconds of light a new torch is soaked for: one whole piece of animal fat
 
 /////////////
 // BATTERY //
@@ -57,8 +56,27 @@
 			continue
 		var/reagent_name = R.name
 		C.reagents.remove_reagent(R.id, units)
+		light_fuel_fat_used(C)
 		return list(round(units * per_unit), reagent_name)
 	return null
+
+// A piece of animal fat is burnt as the lard in it, so a light takes only what
+// it has room for and the rest of the piece is kept. A used-up piece is gone.
+/proc/light_fuel_fat_used(obj/item/weapon/reagent_containers/food/snacks/animalfat/F)
+	if (!istype(F) || QDELETED(F))
+		return
+	if (F.reagents && F.reagents.get_reagent_amount("lard") >= 0.1)
+		return
+	if (ismob(F.loc))
+		var/mob/M = F.loc
+		M.drop_from_inventory(F)
+	qdel(F)
+
+/obj/item/weapon/reagent_containers/food/snacks/animalfat/examine(mob/user)
+	..()
+	var/left = reagents ? reagents.get_reagent_amount("lard") : 0
+	if (left > 0 && left < 10)
+		to_chat(user, "Part of it has been used. About [max(1, round(left * 10))]% is left.")
 
 // Human-readable list of what a light burns.
 /proc/light_fuel_names(list/accepted)
@@ -125,7 +143,10 @@
 		to_chat(user, "<span class='warning'>\The [src] burns [refuel_hint()]; \the [C] has none.</span>")
 		return 0
 	fuel = min(max_fuel, max(0, fuel) + result[1])
-	to_chat(user, "<span class='notice'>You refuel \the [src] with [lowertext(result[2])].</span>")
+	if (istype(C, /obj/item/weapon/reagent_containers/food/snacks/animalfat))
+		to_chat(user, "<span class='notice'>You work [QDELETED(C) ? "the fat" : "some of the fat"] into \the [src].</span>")
+	else
+		to_chat(user, "<span class='notice'>You refuel \the [src] with [lowertext(result[2])].</span>")
 	return result[1]
 
 // Called when the light runs dry while lit. Returns TRUE if the light was replaced.
@@ -167,34 +188,38 @@
 	return TRUE
 
 /obj/item/flashlight/torch/attackby(obj/item/W as obj, mob/user as mob)
+	// Takes only the fat the torch has room for; the rest of the piece is kept.
 	if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/animalfat))
 		if (unlimited || fuel >= max_fuel)
 			to_chat(user, "\The [src] is already well soaked.")
 			return TRUE
-		fuel = min(max_fuel, max(0, fuel) + TORCH_FAT_FUEL)
-		user.drop_from_inventory(W)
-		qdel(W)
-		to_chat(user, "<span class='notice'>You rub the fat into \the [src].</span>")
+		refuel_from_container(W, user)
 		return TRUE
 	return ..()
 
 // Wrapping a tool handle in animal fat, or soaking it in oil, makes a torch.
 /obj/item/weapon/material/handle/attackby(obj/item/W as obj, mob/user as mob)
+	var/list/accepted = list("fat_oil" = 120, "olive_oil" = 120, "cornoil" = 120, "sunflower_oil" = 120, "linseed_oil" = 120, "petroleum" = 120, "lard" = 60)
+	// A piece of fat, whole or part used, is wrapped on as it is.
 	if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/animalfat))
-		make_torch(user, TORCH_FAT_FUEL, W)
+		var/lard = W.reagents ? W.reagents.get_reagent_amount("lard") : 0
+		if (lard <= 0)
+			to_chat(user, "<span class='warning'>There is no fat left on \the [W].</span>")
+			return TRUE
+		make_torch(user, round(lard * accepted["lard"]), W)
 		return TRUE
 	if (istype(W, /obj/item/weapon/reagent_containers) && W.reagents && !istype(W, /obj/item/weapon/reagent_containers/food/snacks))
-		var/list/accepted = list("fat_oil" = 30, "olive_oil" = 30, "cornoil" = 30, "sunflower_oil" = 30, "linseed_oil" = 30, "petroleum" = 30)
-		var/units_needed = TORCH_OIL_UNITS
 		var/reagent_id
+		var/units_needed = 0
 		for (var/id in accepted)
+			units_needed = TORCH_NEW_FUEL / accepted[id]
 			if (W.reagents.get_reagent_amount(id) >= units_needed)
 				reagent_id = id
 				break
 		if (!reagent_id)
-			to_chat(user, "<span class='warning'>You need [units_needed] units of [light_fuel_names(accepted)] to soak a torch.</span>")
+			to_chat(user, "<span class='warning'>You need [TORCH_NEW_FUEL / accepted["fat_oil"]] units of oil or [TORCH_NEW_FUEL / accepted["lard"]] units of lard to soak a torch.</span>")
 			return TRUE
-		if (make_torch(user, units_needed * accepted[reagent_id]))
+		if (make_torch(user, TORCH_NEW_FUEL))
 			W.reagents.remove_reagent(reagent_id, units_needed)
 		return TRUE
 	return ..()
@@ -238,10 +263,7 @@
 		if (unlimited || fuel >= max_fuel)
 			to_chat(user, "\The [src] is already full.")
 			return TRUE
-		fuel = min(max_fuel, max(0, fuel) + TORCH_FAT_FUEL)
-		user.drop_from_inventory(W)
-		qdel(W)
-		to_chat(user, "<span class='notice'>You stuff the fat into \the [src].</span>")
+		refuel_from_container(W, user)
 		return TRUE
 	if (tiki_torch_dismantle_tool(W))
 		dismantle_tiki_torch(user)
@@ -389,5 +411,4 @@
 		visible_message("\The [src]'s flashlight flickers off as its battery dies.")
 		return PROCESS_KILL
 
-#undef TORCH_FAT_FUEL
-#undef TORCH_OIL_UNITS
+#undef TORCH_NEW_FUEL
