@@ -120,7 +120,18 @@ var/global/list/region_home_summoned = list()
 		switch(result["verdict"])
 			if("HOME")
 				// A colony start granted here (colony_charter.dm, faction_start.dm).
-				lobby.colony_start_grant = colony_parent_valid(result["colony_grant"]) ? result["colony_grant"] : null
+				var/grant = colony_parent_valid(result["colony_grant"]) ? result["colony_grant"] : null
+				// A home here with nothing left to play (the world was reset, or the
+				// character was lost before any death was recorded) goes back to the
+				// start region, so the next character starts there like everyone else.
+				if(wait && !grant && region_home_stranded(C.ckey) && region_home_ask(C.ckey, "release"))
+					log_game("Region home: [C.ckey] has no character or bed in [shard_group.region]; their home goes back to [shard_group.start_region].")
+					if(!told)
+						to_chat(lobby, SPAN_NOTICE("You have no character or bed here any more, so your next character starts in the start land..."))
+						told = TRUE
+					sleep(20)
+					continue
+				lobby.colony_start_grant = grant
 				return TRUE
 			if("ELSEWHERE")
 				region_home_tell(lobby, result["home"])
@@ -133,6 +144,20 @@ var/global/list/region_home_summoned = list()
 			to_chat(lobby, SPAN_NOTICE("Checking which land your character belongs to..."))
 			told = TRUE
 		sleep(20)
+
+// TRUE when the account's home is this land but nothing of theirs is here: no
+// living character and no bed. This land is not where new characters start (the
+// start region, or an OPEN land whose wilds they may choose), so a new character
+// belongs in the start region. A character still on its way here sends "arrive"
+// once it is built, which takes the home back.
+/proc/region_home_stranded(account)
+	var/start = shard_group.start_region
+	if(!istext(account) || !start || start == shard_group.region) return FALSE
+	// Lands across the sea and raid worlds keep their own home rules.
+	if(shard_group.kind in list("EXPEDITION", "RAID")) return FALSE
+	// Until the stage list is read, this land might be open to wild starts.
+	if(!land_stages_checked || land_stage(shard_group.region) == "OPEN") return FALSE
+	return !region_home_living_body(account) && !region_home_bed(account)
 
 // The login and restore paths take a saved body back only in the account's
 // home land. They must not wait; Join asks again (and waits) before

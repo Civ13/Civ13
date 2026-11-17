@@ -259,6 +259,30 @@ class HomeTests(unittest.TestCase):
         self.coordinator.homes_once()
         self.assertEqual('alpha', self.stores['beta'].start_region())
 
+    def test_a_home_with_nothing_left_in_it_goes_back_to_the_start_region(self):
+        # region_home_stranded(): a home in beta whose world lost the character
+        # (no living body, no bed) sends a release on Join, and the next
+        # character is sent to the start region; an arrival later takes it back.
+        self.coordinator.close()
+        self.coordinator = Coordinator(os.path.join(self.tmp.name, 'stranded.sqlite'), 'g', 'gamma', bootstrap_new_group=True,
+                                       start_region='gamma')
+        for name in self.stores:
+            self.coordinator.enroll(name, self.urls[name], TOKENS[name])
+        self.coordinator._set_home('val', 'beta')
+        self.coordinator.homes_once()
+        self.assertEqual('HOME', self.ask('beta', 'val'))
+        self.ask('beta', 'val', 'release')
+        self.assertEqual('PENDING', self.ask('beta', 'val'), 'Join keeps waiting while the release is queued')
+        self.coordinator.homes_once()
+        self.assertEqual('gamma', self.coordinator.home('val'))
+        self.assertEqual('ELSEWHERE', self.ask('beta', 'val'))
+        self.assertEqual('gamma', self.stores['beta'].account('val', 'claim')['home'])
+        self.assertEqual('HOME', self.ask('gamma', 'val'))
+        # A character that was still on its way to beta takes the home back once built.
+        self.ask('beta', 'val', 'arrive')
+        self.coordinator.homes_once()
+        self.assertEqual('beta', self.coordinator.home('val'))
+
     def test_an_older_coordinator_without_a_start_region_means_the_mainland(self):
         store = self.stores['beta']
         store.apply_homes('e1', 0, [], [], reset=True, mainland='alpha')
