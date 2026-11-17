@@ -79,6 +79,38 @@ class TanningAtlasTests(unittest.TestCase):
             self.assertIn('chicks give no hide', r['conditions'])
             self.assertIn('no mammalian organs', r['conditions'])
 
+    def test_whole_stack_washes_in_open_water_one_paid_wait_per_piece(self):
+        wash = self.recipe('Wash a stack of prepared hides in open water')
+        self.assertEqual([(x['id'], x['quantity']) for x in wash['inputs']],
+                         [('/material/hairlesshide', 'n pieces'),
+                          ('/turf/floor/beach/water', 'river, lake, shallows or puddle; not consumed')])
+        self.assertEqual([(x['id'], x['quantity']) for x in wash['outputs']], [('/material/wethide', 'n pieces')])
+        self.assertIn('30 ticks', wash['conditions'])
+        route = next(r for r in self.catalog['acquisition']['/material/wethide'] if r['name'] == wash['name'])
+        self.assertEqual(route['tools'], ['Open water or a puddle'])
+        text = (ROOT/tanning.LEATHER).read_text()
+        start = text.index('/obj/item/stack/material/hairlesshide/proc/wash_in_water(')
+        body = text[start:text.index('#undef HIDE_WASH_PUDDLE_COST')]
+        loop = body[body.index('while (water_wash_valid'):]
+        # Each piece waits, is rechecked, then pays one hide (and puddle water) before its output.
+        self.assertLess(loop.index('hide_wash_wait'), loop.index('use(1)'))
+        self.assertLess(loop.index('P.volume -= HIDE_WASH_PUDDLE_COST'), loop.index('use(1)'))
+        self.assertLess(loop.index('use(1)'), loop.index('water_wash_output'))
+        self.assertIn('#define HIDE_WASH_PUDDLE_COST 5', text)
+        valid = text[text.index('/obj/item/stack/material/hairlesshide/proc/water_wash_valid('):]
+        valid = valid[:valid.index('\n\n')]
+        for guard in ('hide_research_allowed()', 'hide_worker_can_reach(user, src)', 'loc == user',
+                      'item_is_in_hands(src)', 'user.Adjacent(water)', 'hide_wash_water(water)'):
+            self.assertIn(guard, valid)
+        water = text[text.index('/proc/hide_wash_water('):]
+        water = water[:water.index('\n\n')]
+        self.assertIn('is_open_water(A)', water)
+        self.assertIn('!P.heat_dried()', water)
+        self.assertIn('hole.open()', water)
+        # The crafting window can tell whether water is within reach.
+        window = (ROOT/'code/game/objects/items/stacks/crafting_window_processing.dm').read_text()
+        self.assertIn('if (hide_wash_water(A))', window)
+
     def test_rack_is_linked_to_construction_research_and_not_consumed(self):
         rack = self.recipe('Rack-dry washed hides')
         self.assertEqual(rack['processor'], 'tanning_rack')
