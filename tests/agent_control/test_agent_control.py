@@ -1309,6 +1309,8 @@ class AutopilotTests(unittest.TestCase):
             {"ref": "[0x5]", "kind": "spawned", "stat": 0},  # its run is still going
             {"ref": "[0x6]", "kind": "spawned", "stat": 0},  # its run failed a moment ago
             {"ref": "[0x7]", "kind": "spawned", "stat": 0},  # its run reached its step limit
+            {"ref": "[0x8]", "kind": "spawned", "stat": 1, "idle": autopilot.WATCH_ADOPT_IDLE},  # nobody drives it (watcher restarted)
+            {"ref": "[0xa]", "kind": "spawned", "stat": 0, "idle": 5},  # another run drives it right now
         ]
         runs = {
             "[0x5]": {"process": Proc(), "at": 0.0, "goal": "Build", "failed": False},
@@ -1320,10 +1322,10 @@ class AutopilotTests(unittest.TestCase):
         self.assertEqual(set(runs), {"[0x5]", "[0x6]"})  # finished on purpose or gone: forgotten
         self.assertTrue(runs["[0x6]"]["failed"])
         self.assertIsNone(runs["[0x6]"]["process"])  # the exited child was polled (reaped)
-        self.assertEqual([row["ref"] for row in autopilot.watch_targets(rows, runs, 1000.0)], ["[0x1]"])
+        self.assertEqual([row["ref"] for row in autopilot.watch_targets(rows, runs, 1000.0)], ["[0x1]", "[0x8]"])
         later = autopilot.watch_targets(rows, runs, 900.0 + autopilot.WATCH_RETRY)
-        self.assertEqual([(row["ref"], row["goal"]) for row in later], [("[0x1]", "Fish"), ("[0x6]", "Hunt")])  # the failed run keeps its goal
-        self.assertEqual([row["ref"] for row in autopilot.watch_targets(rows, runs, 900.0 + autopilot.WATCH_RETRY, retry_failed=False)], ["[0x1]"])
+        self.assertEqual([(row["ref"], row.get("goal")) for row in later], [("[0x1]", "Fish"), ("[0x6]", "Hunt"), ("[0x8]", None)])  # the failed run keeps its goal
+        self.assertEqual([row["ref"] for row in autopilot.watch_targets(rows, runs, 900.0 + autopilot.WATCH_RETRY, retry_failed=False)], ["[0x1]", "[0x8]"])
 
         args = autopilot.argparse.Namespace(goal="default", model="m", ollama_url="http://h:11434", player_help_config=None, num_ctx=8192, timeout=120.0, keep_alive="30m", memory="", catalog="", leather="", steps=autopilot.WATCH_STEPS, minutes=None, interval=2.0, release=False)
         command = autopilot.watch_command(args, rows[0])
