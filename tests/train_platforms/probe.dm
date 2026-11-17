@@ -4,7 +4,7 @@
 /world
 	hub = ""
 	hub_password = ""
-	maxx = 127
+	maxx = 141
 	maxy = 26
 	maxz = 1
 	turf = /turf/floor/dirt
@@ -895,6 +895,97 @@ var/global/platform_probe_runtime_error = FALSE
 	stepped = facing_forward(H, 12)
 	platform_check("facing/heavy_engine_comes_back", stepped == 12 && H.lead_factor == 0.5 && H.loc == platform_turf(118, 15) && H.dir == SOUTH && L1.loc == platform_turf(118, 20) && heavy_parts_placed(H) && platform_parts_placed(body))
 
+// Bogie stock: cars as long as their kind says (train_car_length()).
+/proc/platform_long_run()
+	for (var/y in 2 to 16)
+		platform_track(130, y, NORTH)
+	for (var/x in 131 to 139)
+		platform_track(x, 16, EAST)
+	var/obj/structure/train_car_kit/short_kit = new(platform_turf(130, 6))
+	short_kit.set_kind("coach")
+	var/short_fits = !short_kit.assembly_problem(NORTH)
+	short_kit.set_kind("bogie_coach")
+	platform_check("long/kit_needs_its_length", short_fits && short_kit.car_length() == 8 && short_kit.assembly_problem(NORTH) && short_kit.name == "bogie coach kit")
+	qdel(short_kit)
+
+	var/obj/structure/trains/platform/van = platform_car("boxcar", 130, 10, NORTH)
+	var/list/segs = platform_segments(van)
+	var/obj/structure/trains/platform/van_end = segs.len == 8 ? segs[8] : null
+	platform_check("long/eight_segments", train_car_length("boxcar") == 8 && train_car_length("coach") == 4 && train_car_length("loco_steam") == 4 && segs.len == 8 && van.loc == platform_turf(130, 10) && van_end && van_end.loc == platform_turf(130, 3) && platform_parts_placed(segs))
+	var/obj/structure/trains/platform/mid = segs[4]
+	platform_check("long/headstocks_at_the_ends", van.car_end_row() == "f" && van_end.car_end_row() == "b" && !mid.car_end_row() && van_end.seg_index == 8)
+	var/list/states = icon_states('icons/obj/vehicles/train_platforms.dmi')
+	var/missing = 0
+	for (var/state in list("edge_plank", "edge_freight_door", "edge_freight_door_open", "edge_side", "edge_drop_door", "edge_drop_door_open", "deck_center_boards", "deck_side_boards", "roof_boxcar_fl", "roof_boxcar_mc", "roof_boxcar_br"))
+		if (!(state in states))
+			missing++
+	platform_check("long/art_states", !missing)
+	var/obj/structure/train_part/edge/slider = null
+	var/sides = 0
+	for (var/obj/structure/train_part/edge/G in mid.deck_parts)
+		if (G.style == "freight_door")
+			slider = G
+	for (var/obj/structure/train_part/edge/G in van.deck_parts)
+		if (G.style == "plank" && G.density && !G.is_door())
+			sides++
+	var/was_shut = slider && slider.density && slider.is_door()
+	if (slider)
+		slider.set_open(TRUE)
+	platform_check("long/boxcar_doors_slide", was_shut && !slider.density && slider.icon_state == "edge_freight_door_open" && sides == 5)
+	platform_check("long/boxcar_roofed", van.roofed() && mid.roof_images && mid.roof_images.len == 3 && van.icon_state == "deck_center_boards")
+	var/weight = 0
+	for (var/obj/structure/trains/platform/S in segs)
+		weight += S.car_load_weight()
+	platform_check("long/weighs_double", weight == 4 && rail_warehouse_unit(mid).len == 8)
+
+	var/obj/structure/trains/locomotive/coal/L = new(platform_turf(130, 11))
+	L.dir = NORTH
+	L.fuel = 100
+	L.on = TRUE
+	var/mob/living/human/platform_rider/shunter = new(platform_turf(128, 3))
+	platform_check("long/couples_at_the_ends_only", !mid.couple_end(TRUE, shunter) && van.hitch_front(shunter) && L.connected == van && van_end.train_head() == L)
+	var/obj/structure/closet/crate/crate = new(platform_turf(129, 5))
+	platform_check("long/follows", platform_step(L, 3) == 3 && van.loc == platform_turf(130, 13) && van_end.loc == platform_turf(130, 6) && platform_parts_placed(segs) && crate.loc == platform_turf(129, 8))
+	var/curve = platform_step(L, 10)
+	platform_check("long/rounds_curve", curve == 10 && L.loc == platform_turf(138, 16) && van.loc == platform_turf(137, 16) && van.dir == EAST && van_end.loc == platform_turf(130, 16) && platform_parts_placed(segs))
+	platform_check("long/coupled_car_stays_whole", van.dismantle_problem())
+	L.connected = null
+	qdel(crate)
+	var/problem = van.dismantle_problem()
+	var/obj/structure/train_car_kit/packed = problem ? null : van.pack_car()
+	var/left = 0
+	for (var/obj/structure/trains/platform/S in world)
+		if (S.car_kind == "boxcar" && !QDELETED(S))
+			left++
+	platform_check("long/packs_into_its_kit", !problem && packed && packed.car_kind == "boxcar" && packed.car_length() == 8 && !left)
+
+	// A furnished bogie coach: a vestibule each end, six bays of seats.
+	for (var/y in 2 to 12)
+		platform_track(134, y, NORTH)
+	var/obj/structure/trains/platform/coach = platform_car("bogie_coach", 134, 10, NORTH)
+	var/list/coach_segs = platform_segments(coach)
+	var/seats = 0
+	var/doors = 0
+	for (var/obj/structure/trains/platform/S in coach_segs)
+		for (var/turf/T in train_platform_tiles(S.loc, S.dir))
+			for (var/obj/structure/bed/chair/C in T)
+				seats++
+		if (S.seg_index == 1 || S.seg_index == 8)
+			for (var/obj/structure/train_part/edge/G in S.deck_parts)
+				if (G.is_door())
+					doors++
+	platform_check("long/bogie_coach_fitted", coach_segs.len == 8 && seats == 12 && doors == 6 && coach.roofed())
+	var/obj/structure/trains/platform/wagon_probe = new(platform_turf(134, 12))
+	wagon_probe.car_kind = "open_wagon"
+	wagon_probe.seg_index = 4
+	wagon_probe.apply_layout()
+	var/drops = 0
+	for (var/obj/structure/train_part/edge/G in wagon_probe.deck_parts)
+		if (G.style == "drop_door" && G.is_door())
+			drops++
+	platform_check("long/open_wagon_drop_doors", drops == 2 && !wagon_probe.roofed() && train_car_length("open_wagon") == 8 && train_car_length("long_flatbed") == 8)
+	qdel(wagon_probe)
+
 /world/New()
 	OpenPort("none")
 	GLOB.all_observable_events = list()
@@ -912,6 +1003,7 @@ var/global/platform_probe_runtime_error = FALSE
 		platform_viewers_run()
 		platform_position_run()
 		platform_facing_run()
+		platform_long_run()
 	catch (var/exception/E)
 		platform_probe_runtime_error = TRUE
 		world.log << "Fixture aborted: [E] at [E.file]:[E.line]"

@@ -1,5 +1,6 @@
 // Walkable platform cars (docs/train-platforms.md). A car is three tiles wide
-// and TRAIN_CAR_LENGTH tiles long: one segment per rail tile, each a
+// and as long as its kind has segments (train_car_length()): four tiles for
+// the early four-wheel stock, eight for bogie stock. One segment per rail tile, each a
 // /obj/structure/trains on the track with a deck tile either side. Segments
 // are hitched to each other like ordinary wagons, so a car follows the track
 // round curves. Everything standing on a segment's three tiles (people,
@@ -9,7 +10,8 @@
 // They are never saved: a segment rebuilds them from its car kind, its place
 // in the car and its saved door state (open_doors).
 
-#define TRAIN_CAR_LENGTH 4
+#define TRAIN_CAR_LENGTH 4 // the four-wheel stock and the heavy locomotives
+#define TRAIN_LONG_CAR_LENGTH 8 // bogie stock
 #define TRAIN_LEFT -1
 #define TRAIN_RIGHT 1
 
@@ -204,8 +206,75 @@ var/global/train_step_plain = FALSE
 				list("edges" = rails),
 				list("edges" = rails),
 				list("edges" = rails, "fit" = list(/obj/structure/closet/crate, null, /obj/structure/closet/crate))))
+		// Bogie stock: twice the length on two bogies.
+		var/list/seats = list(/obj/structure/bed/chair/comfy/blue, null, /obj/structure/bed/chair/comfy/blue)
+		var/list/back_vestibule = list(list(TRAIN_LEFT, "out", "door"), list(TRAIN_RIGHT, "out", "door")) + back_end
+		layouts["bogie_coach"] = list(
+			"name" = "bogie coach", "desc" = "A long carriage on two bogies: a vestibule at each end and six bays of seats either side of a carpeted aisle.",
+			"center" = "carpet", "side" = "floor", "roof" = "coach",
+			"segments" = list(
+				list("edges" = vestibule),
+				list("edges" = windows, "fit" = seats),
+				list("edges" = windows, "fit" = seats),
+				list("edges" = windows, "fit" = seats),
+				list("edges" = windows, "fit" = seats),
+				list("edges" = windows, "fit" = seats),
+				list("edges" = windows, "fit" = seats),
+				list("edges" = back_vestibule)))
+		var/list/van_sides = list(list(TRAIN_LEFT, "out", "plank"), list(TRAIN_RIGHT, "out", "plank"))
+		var/list/van_doors = list(list(TRAIN_LEFT, "out", "freight_door"), list(TRAIN_RIGHT, "out", "freight_door"))
+		var/list/van_front = list(list(TRAIN_LEFT, "front", "plank"), list(0, "front", "plank"), list(TRAIN_RIGHT, "front", "plank"))
+		var/list/van_back = list(list(TRAIN_LEFT, "back", "plank"), list(0, "back", "plank"), list(TRAIN_RIGHT, "back", "plank"))
+		layouts["boxcar"] = list(
+			"name" = "boxcar", "desc" = "A long covered goods van on two bogies. Sliding doors in the middle of each side take crates and barrels; its ends are closed.",
+			"center" = "boards", "side" = "boards", "roof" = "boxcar",
+			"segments" = list(
+				list("edges" = van_sides + van_front),
+				list("edges" = van_sides),
+				list("edges" = van_sides),
+				list("edges" = van_doors),
+				list("edges" = van_doors),
+				list("edges" = van_sides),
+				list("edges" = van_sides),
+				list("edges" = van_sides + van_back)))
+		var/list/low_sides = list(list(TRAIN_LEFT, "out", "side"), list(TRAIN_RIGHT, "out", "side"))
+		var/list/drop_doors = list(list(TRAIN_LEFT, "out", "drop_door"), list(TRAIN_RIGHT, "out", "drop_door"))
+		var/list/low_front = list(list(TRAIN_LEFT, "front", "side"), list(0, "front", "side"), list(TRAIN_RIGHT, "front", "side"))
+		var/list/low_back = list(list(TRAIN_LEFT, "back", "side"), list(0, "back", "side"), list(TRAIN_RIGHT, "back", "side"))
+		layouts["open_wagon"] = list(
+			"name" = "open wagon", "desc" = "A long open goods wagon on two bogies with plank sides all round. The drop doors in the middle of each side let down for loading.",
+			"center" = "boards", "side" = "boards",
+			"segments" = list(
+				list("edges" = low_sides + low_front),
+				list("edges" = low_sides),
+				list("edges" = low_sides),
+				list("edges" = drop_doors),
+				list("edges" = drop_doors),
+				list("edges" = low_sides),
+				list("edges" = low_sides),
+				list("edges" = low_sides + low_back)))
+		layouts["long_flatbed"] = list(
+			"name" = "bogie flatcar", "desc" = "A long open flatcar on two bogies, for machines, vehicles and long loads.",
+			"center" = "wood", "side" = "wood",
+			"segments" = list(
+				list("edges" = rails),
+				list("edges" = list()),
+				list("edges" = list()),
+				list("edges" = list()),
+				list("edges" = list()),
+				list("edges" = list()),
+				list("edges" = list()),
+				list("edges" = rails)))
 		train_locomotive_layouts(layouts)
 	return layouts[kind]
+
+// How many tiles long a car of this kind is.
+/proc/train_car_length(kind)
+	var/list/L = train_car_layout(kind)
+	if (!L)
+		return TRAIN_CAR_LENGTH
+	var/list/segs = L["segments"]
+	return segs.len
 
 // The three tiles of a segment at T facing heading: left, centre, right.
 /proc/train_platform_tiles(turf/T, heading)
@@ -288,6 +357,9 @@ var/global/train_step_plain = FALSE
 /obj/structure/trains/platform/proc/layout()
 	return train_car_layout(car_kind)
 
+/obj/structure/trains/platform/proc/car_length()
+	return train_car_length(car_kind)
+
 /obj/structure/trains/platform/proc/segment_layout()
 	var/list/L = layout()
 	if (!L)
@@ -350,7 +422,7 @@ var/global/train_step_plain = FALSE
 		return null // a locomotive's buffer beams are part of its body art
 	if (seg_index == 1)
 		return "f"
-	if (seg_index == TRAIN_CAR_LENGTH)
+	if (seg_index == car_length())
 		return "b"
 	return null
 
@@ -478,7 +550,7 @@ var/global/train_step_plain = FALSE
 		return
 	// Each end section couples to what stands beyond it. The car's own front
 	// is the rear of its train's order when the car is coupled in back to front.
-	if (seg_index != 1 && seg_index != TRAIN_CAR_LENGTH)
+	if (seg_index != 1 && seg_index != car_length())
 		to_chat(usr, "Cars are coupled at their ends. Use the front or the rear of \the [src].")
 		return FALSE
 	if (couple_end((seg_index == 1) ? !reversed : reversed, usr))
@@ -488,7 +560,7 @@ var/global/train_step_plain = FALSE
 
 /obj/structure/trains/platform/examine(mob/user)
 	..()
-	to_chat(user, "This is section [seg_index] of [TRAIN_CAR_LENGTH]. A crowbar takes an empty, uncoupled car apart into a kit.")
+	to_chat(user, "This is section [seg_index] of [car_length()]. A crowbar takes an empty, uncoupled car apart into a kit.")
 	if (wrecked)
 		to_chat(user, SPAN_WARNING("It has been blown off the rails. Weld it back together before the train can move."))
 	else if (health < initial(health))
@@ -510,7 +582,7 @@ var/global/train_step_plain = FALSE
 
 /obj/structure/trains/platform/proc/car_segments()
 	var/list/segs = list()
-	for (var/obj/structure/trains/platform/P in range(TRAIN_CAR_LENGTH + 1, src))
+	for (var/obj/structure/trains/platform/P in range(car_length() + 1, src))
 		if (P.car_id == car_id && P.car_kind == car_kind)
 			segs += P
 	return segs
@@ -527,9 +599,9 @@ var/global/train_step_plain = FALSE
 			return "The car is moving."
 		if (P.seg_index == 1)
 			front = P
-		if (P.seg_index == TRAIN_CAR_LENGTH)
+		if (P.seg_index == car_length())
 			back = P
-	if (segs.len != TRAIN_CAR_LENGTH || !front || !back)
+	if (segs.len != car_length() || !front || !back)
 		return "The car is not whole."
 	for (var/obj/structure/trains/platform/P in list(front, back))
 		var/ahead = (P == front) ? !reversed : reversed
@@ -647,8 +719,10 @@ var/global/train_step_plain = FALSE
 	switch (style)
 		if ("window")
 			name = "[S.name] window"
-		if ("door", "inner_door", "armor_door")
+		if ("door", "inner_door", "armor_door", "freight_door", "drop_door")
 			name = "[S.name] door"
+		if ("plank", "side")
+			name = "[S.name] side"
 		if ("armor")
 			name = "[S.name] armor plate"
 		if ("rail")
@@ -657,7 +731,7 @@ var/global/train_step_plain = FALSE
 			name = "[S.name] wall"
 
 /obj/structure/train_part/edge/proc/is_door()
-	return style == "door" || style == "inner_door" || style == "armor_door"
+	return style == "door" || style == "inner_door" || style == "armor_door" || style == "freight_door" || style == "drop_door"
 
 /obj/structure/train_part/edge/proc/is_armor()
 	return style == "armor" || style == "armor_door"
@@ -785,7 +859,7 @@ var/global/train_step_plain = FALSE
 
 /obj/structure/train_car_kit
 	name = "platform car kit"
-	desc = "The frame, bogies and deck of a rail car, packed for assembly. Set it on straight track with three more straight tiles behind it, face the way the car should face, and use a hammer on it."
+	desc = "The frame, wheels and deck of a rail car, packed for assembly. Set it on straight track with room for the whole car behind it, face the way the car should face, and use a hammer on it."
 	icon = 'icons/obj/vehicles/train_platforms.dmi'
 	icon_state = "car_kit"
 	density = TRUE
@@ -801,6 +875,9 @@ var/global/train_step_plain = FALSE
 	car_kind = kind
 	name = "[L["name"]] kit"
 
+/obj/structure/train_car_kit/proc/car_length()
+	return train_car_length(car_kind)
+
 /obj/structure/train_car_kit/coach
 	name = "passenger coach kit"
 	car_kind = "coach"
@@ -813,9 +890,22 @@ var/global/train_step_plain = FALSE
 /obj/structure/train_car_kit/storage
 	name = "storage car kit"
 	car_kind = "storage"
+/obj/structure/train_car_kit/bogie_coach
+	name = "bogie coach kit"
+	car_kind = "bogie_coach"
+/obj/structure/train_car_kit/boxcar
+	name = "boxcar kit"
+	car_kind = "boxcar"
+/obj/structure/train_car_kit/open_wagon
+	name = "open wagon kit"
+	car_kind = "open_wagon"
+/obj/structure/train_car_kit/long_flatbed
+	name = "bogie flatcar kit"
+	car_kind = "long_flatbed"
 
 /obj/structure/train_car_kit/examine(mob/user)
 	..()
+	to_chat(user, "The car is [car_length()] tiles long and three wide.")
 	if (!furnished)
 		to_chat(user, "Its fittings were left behind when it was taken apart.")
 
@@ -843,7 +933,7 @@ var/global/train_step_plain = FALSE
 /obj/structure/train_car_kit/proc/car_turfs(heading)
 	var/list/turfs = list()
 	var/turf/T = get_turf(src)
-	for (var/i in 1 to TRAIN_CAR_LENGTH)
+	for (var/i in 1 to car_length())
 		if (!T)
 			return null
 		turfs += T
@@ -865,7 +955,7 @@ var/global/train_step_plain = FALSE
 				if (R.dir == heading || R.dir == OPPOSITE_DIR(heading))
 					straight = TRUE
 		if (!straight)
-			return "The car needs four tiles of straight track running the way you face, starting under the kit."
+			return "The car needs [car_length()] tiles of straight track running the way you face, starting under the kit."
 		for (var/obj/structure/trains/TR in T)
 			return "\The [TR] is in the way."
 		for (var/turf/S in train_platform_tiles(T, heading))
@@ -884,7 +974,7 @@ var/global/train_step_plain = FALSE
 	var/obj/structure/trains/front = null
 	var/obj/structure/trains/ahead = null
 	var/engine_type = train_car_layout(car_kind)["engine"]
-	for (var/i in 1 to TRAIN_CAR_LENGTH)
+	for (var/i in 1 to car_length())
 		// A locomotive kit: the engine itself is the front section.
 		if (i == 1 && engine_type)
 			var/obj/structure/trains/locomotive/E = new engine_type(turfs[1])
