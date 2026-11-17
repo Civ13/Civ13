@@ -11,7 +11,8 @@
 // A third is built on the ground, creeps, lifts off, lands, and sinks onto a
 // floor, a lone tree and a stand of trees; a pedal airship snags in a forest.
 // Aluminium, steel and wooden deck tiles and rubberised and skin cells are
-// weighed, holed, patched and set alight. Production code runs unchanged.
+// weighed, holed, patched and set alight. Gas works fill cells with hydrogen
+// and helium, and give oxygen. Production code runs unchanged.
 var/global/datum/air_hull_probe/air_hull_probe = new
 
 /mob/living/human/air_hull_actor/ssd_check()
@@ -110,6 +111,7 @@ var/global/datum/air_hull_probe/air_hull_probe = new
 	var/obj/item/airship_gas_cell/cell = new(B)
 	B.put_in_active_hand(cell)
 	cell.resolve_attackby(sky(start, 2, 1, sky_z), B)
+	fill(sky(start, 2, 1, sky_z))
 	expect(locate(/obj/structure/airship_gas_cell) in sky(start, 2, 1, sky_z), "no gas cell hung")
 	var/obj/item/airship_helm_kit/kit = new(B)
 	B.put_in_active_hand(kit)
@@ -133,6 +135,7 @@ var/global/datum/air_hull_probe/air_hull_probe = new
 	cell = new(B)
 	B.put_in_active_hand(cell)
 	cell.resolve_attackby(sky(start, 2, 2, sky_z), B)
+	fill(sky(start, 2, 2, sky_z))
 	expect(!body.lift_refusal(), "two cells still short: [body.lift_refusal()]")
 	// Cast off and fly two tiles east with the builder aboard.
 	C.set_anchor(FALSE)
@@ -337,6 +340,7 @@ var/global/datum/air_hull_probe/air_hull_probe = new
 	var/obj/item/airship_gas_cell/cell = new(B)
 	B.put_in_active_hand(cell)
 	cell.resolve_attackby(sky(start, 2, 1, high_z), B)
+	fill(sky(start, 2, 1, high_z))
 	var/obj/structure/airship_gas_cell/G = locate() in sky(start, 2, 1, high_z)
 	expect(G, "no high gas cell hung")
 	var/obj/item/airship_helm_kit/kit = new(B)
@@ -485,6 +489,7 @@ var/global/datum/air_hull_probe/air_hull_probe = new
 	var/obj/item/airship_gas_cell/cell = new(B)
 	B.put_in_active_hand(cell)
 	cell.resolve_attackby(sky(g, 2, 1, g.z), B)
+	fill(sky(g, 2, 1, g.z))
 	var/obj/structure/airship_gas_cell/G = locate() in sky(g, 2, 1, g.z)
 	expect(G, "no gas cell hung over the ground deck")
 	var/obj/item/airship_helm_kit/kit = new(B)
@@ -653,6 +658,8 @@ var/global/datum/air_hull_probe/air_hull_probe = new
 	B.forceMove(sky(g, 1, 0, g.z))
 	B.put_in_active_hand(R)
 	R.resolve_attackby(sky(g, 2, 0, g.z), B)
+	fill(sky(g, 1, 0, g.z))
+	fill(sky(g, 2, 0, g.z))
 	var/obj/structure/airship_gas_cell/skin/SG = locate() in sky(g, 1, 0, g.z)
 	var/obj/structure/airship_gas_cell/rubber/RG = locate() in sky(g, 2, 0, g.z)
 	expect(SG && SG.lift() == 15, "skin cell lifts [SG ? SG.lift() : "nothing"]")
@@ -696,6 +703,102 @@ var/global/datum/air_hull_probe/air_hull_probe = new
 	expect(wood && wood.onfire, "the wooden deck did not catch fire")
 	B.loc = null
 
+// The probe stands in for a cabled power grid.
+/obj/structure/gas_works/electrolysis_tank/probe/powered_now()
+	return TRUE
+
+/obj/structure/gas_compressor/probe/powered_now()
+	return TRUE
+
+// Fills the gas cell on T with hydrogen, as a gasbag would.
+/datum/air_hull_probe/proc/fill(turf/T)
+	var/obj/structure/airship_gas_cell/G = locate() in T
+	if(G)
+		G.gas = "hydrogen"
+		G.gas_amount = AIR_HULL_CELL_GAS
+		G.update_icon()
+
+// Hydrogen from acid and iron and from water, a gasbag to a hung cell, a gas
+// holder's hose topping it up, a compressor filling a cylinder, oxygen to the
+// breathless, helium that does not burn, and a water-gas retort.
+/datum/air_hull_probe/proc/gas_leg(turf/g)
+	var/mob/living/human/air_hull_actor/B = new(g)
+	B.a_intent = I_HELP
+	sleep(5)
+	var/obj/structure/gas_works/hydrogen_generator/gen = new(sky(g, 1, 1, g.z))
+	var/obj/item/weapon/reagent_containers/glass/beaker/large/acid = new(g)
+	acid.reagents.add_reagent("sacid", 60)
+	gen.attackby(acid, B)
+	var/obj/item/stack/material/iron/iron = new(g)
+	gen.attackby(iron, B)
+	expect(gen.acid == 60 && gen.metal == 20, "generator took acid [gen.acid], metal [gen.metal]")
+	for(var/i = 1 to 10)
+		gas_works_step()
+	expect(gen.reagents.get_reagent_amount("hydrogen") == 30 && gen.working, "generator made [gen.reagents.get_reagent_amount("hydrogen")] hydrogen")
+	notes["generator_icon"] = gen.icon_state
+	var/obj/item/weapon/reagent_containers/gas_vessel/bag = new(B)
+	B.put_in_active_hand(bag)
+	gen.attackby(bag, B)
+	expect(bag.reagents.get_reagent_amount("hydrogen") == 30 && bag.icon_state == "gasbag_full", "gasbag took [bag.reagents.get_reagent_amount("hydrogen")] from the generator")
+	B.drop_from_inventory(bag)
+	var/obj/item/weapon/reagent_containers/gas_vessel/cylinder/cyl = new(g)
+	gen.attackby(cyl, B)
+	expect(!cyl.reagents.total_volume, "a cylinder was filled by hand")
+	// A cell hangs empty and the bag fills it halfway.
+	var/obj/item/airship_planks/P = new(B)
+	B.put_in_active_hand(P)
+	P.resolve_attackby(sky(g, 1, 0, g.z), B)
+	var/obj/item/airship_gas_cell/folded = new(B)
+	B.put_in_active_hand(folded)
+	folded.resolve_attackby(sky(g, 1, 0, g.z), B)
+	var/obj/structure/airship_gas_cell/G = locate() in sky(g, 1, 0, g.z)
+	expect(G && !G.gas && G.lift() == 0 && G.icon_state == "gas_cell_empty", "a new cell did not hang empty")
+	if(!G)
+		return
+	G.attackby(bag, B)
+	expect(G.gas == "hydrogen" && G.gas_amount == 30 && G.lift() == 6, "half a bag gave [G.gas] [G.gas_amount], lift [G.lift()]")
+	// Water split into hydrogen and oxygen.
+	var/obj/structure/gas_works/electrolysis_tank/probe/tank = new(sky(g, 3, 1, g.z))
+	tank.water_store = 50
+	for(var/i = 1 to 5)
+		gas_works_step()
+	expect(tank.reagents.get_reagent_amount("hydrogen") == 10 && tank.reagents.get_reagent_amount("oxygen") == 5 && tank.water_store == 40, "electrolysis gave [tank.reagents.get_reagent_amount("hydrogen")] H, [tank.reagents.get_reagent_amount("oxygen")] O, water [tank.water_store]")
+	var/obj/item/weapon/reagent_containers/gas_vessel/ox = new(g)
+	ox.reagents.add_reagent("oxygen", 10)
+	tank.attackby(ox, B)
+	expect(ox.reagents.get_reagent_amount("oxygen") == 15 && !ox.reagents.get_reagent_amount("hydrogen"), "oxygen bag holds [ox.reagents.total_volume]")
+	B.adjustOxyLoss(40)
+	var/before = B.getOxyLoss()
+	ox.attack(B, B)
+	expect(B.getOxyLoss() < before && ox.reagents.get_reagent_amount("oxygen") == 5, "oxygen eased nothing: [before] -> [B.getOxyLoss()]")
+	// A gas holder's hose tops the cell up.
+	var/obj/structure/gas_holder/holder = new(sky(g, 5, 0, g.z))
+	holder.reagents.add_reagent("hydrogen", 100)
+	var/obj/item/gas_hose/hose = new(g)
+	holder.attackby(hose, B)
+	G.attackby(hose, B)
+	expect(G.gas_amount == AIR_HULL_CELL_GAS && G.lift() == 12 && holder.reagents.get_reagent_amount("hydrogen") == 70, "hose filled the cell to [G.gas_amount], holder left [holder.reagents.total_volume]")
+	holder.attackby(ox, B)
+	expect(ox.reagents.get_reagent_amount("oxygen") == 5, "the hydrogen holder took oxygen")
+	// A compressor packs the holder's gas into a cylinder.
+	var/obj/structure/gas_compressor/probe/comp = new(sky(g, 5, 1, g.z))
+	comp.attackby(cyl, B)
+	for(var/i = 1 to 3)
+		gas_compressors_step()
+	expect(cyl.loc == comp && cyl.reagents.get_reagent_amount("hydrogen") == 30 && cyl.icon_state == "cylinder_hydrogen", "compressor packed [cyl.reagents.total_volume] into the cylinder")
+	// Helium lifts a tenth less and never burns.
+	G.gas = "helium"
+	expect(abs(G.lift() - 10.8) < 0.01 && !G.flammable_gas(), "helium cell lifts [G.lift()], burns [G.flammable_gas()]")
+	// Water-gas from charcoal.
+	var/obj/structure/gas_works/water_gas_retort/retort = new(sky(g, 3, 3, g.z))
+	retort.water_store = 10
+	var/obj/item/stack/ore/charcoal/fuel = new(g)
+	retort.attackby(fuel, B)
+	gas_works_step()
+	expect(retort.reagents.get_reagent_amount("hydrogen") == 2 && retort.fuel == 14, "retort made [retort.reagents.get_reagent_amount("hydrogen")] hydrogen, fuel [retort.fuel]")
+	for(var/atom/movable/A in list(gen, tank, holder, comp, retort, G, B))
+		qdel(A)
+
 /datum/air_hull_probe/proc/run_probe()
 	var/failure = null
 	try
@@ -719,6 +822,7 @@ var/global/datum/air_hull_probe/air_hull_probe = new
 		ground_build(locate(start.x - 14, start.y + 6, start.z), sky_z)
 		pedal_snag(locate(start.x + 8, start.y + 10, start.z), sky_z)
 		materials(locate(start.x - 14, start.y + 12, start.z))
+		gas_leg(locate(start.x + 4, start.y - 14, start.z))
 		build_and_fly(start, sky_z)
 		high_flight(locate(start.x - 8, start.y - 8, start.z), sky_z)
 		if(problems.len)

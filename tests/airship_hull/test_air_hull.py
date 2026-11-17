@@ -18,6 +18,7 @@ from source_adapter import extract
 SOURCE = (ROOT / 'code/modules/naval/air_hull.dm').read_text()
 BUILT = (ROOT / 'code/modules/craft/built_body.dm').read_text()
 COMBAT = (ROOT / 'code/game/objects/structures/pedal_airship_combat.dm').read_text()
+GAS = (ROOT / 'code/modules/naval/gas_works.dm').read_text()
 BODY = '/datum/craft_body/built/air'
 
 
@@ -85,7 +86,7 @@ class Damage(unittest.TestCase):
         self.assertIn('air_hull_crafts', (ROOT / 'code/modules/projectiles/projectile_lob.dm').read_text())
 
     def test_holes_cut_lift_fire_burns_it_out(self):
-        self.assertIn('burnt ? 0 : max(0, max_lift - holes * hole_lift)',
+        self.assertIn('max(0, round(full - holes * hole_lift, 0.1))',
                       extract(SOURCE, '/obj/structure/airship_gas_cell/proc/lift'))
         struck = extract(SOURCE, '/datum/craft/air/proc/struck_by')
         self.assertIn('projectile_ignites_gas(P)', struck)
@@ -217,6 +218,49 @@ class Materials(unittest.TestCase):
         self.assertIn('new folded_type(T)', extract(SOURCE, '/obj/structure/airship_gas_cell/attackby'))
 
 
+class Gas(unittest.TestCase):
+    def test_cells_hang_empty_and_lift_by_their_gas(self):
+        hang = extract(SOURCE, '/obj/item/airship_gas_cell/resolve_attackby')
+        self.assertLess(hang.index('G.gas = null'), hang.index('G.update_icon()'))
+        lift = extract(SOURCE, '/obj/structure/airship_gas_cell/proc/lift')
+        self.assertIn('gas_amount / AIR_HULL_CELL_GAS', lift)
+        self.assertIn('gas == "helium" ? 0.9 : 1', lift)
+        self.assertIn('G.flammable_gas()', extract(SOURCE, '/datum/craft/air/proc/struck_by'))
+        self.assertIn('gas == "hydrogen"', extract(SOURCE, '/obj/structure/airship_gas_cell/proc/flammable_gas'))
+        fill = extract(GAS, '/obj/structure/airship_gas_cell/attackby')
+        self.assertIn('(id in lifting_gases)', fill)
+        self.assertIn('H.reaches(src)', fill)
+        self.assertIn('return ..()', fill)
+
+    def test_works_make_gas_and_pipes_carry_it(self):
+        self.assertIn('make("hydrogen", 3)', extract(GAS, '/obj/structure/gas_works/hydrogen_generator/work'))
+        split = extract(GAS, '/obj/structure/gas_works/electrolysis_tank/work')
+        self.assertLess(split.index('powered_now()'), split.index('make("oxygen", 1)'))
+        self.assertIn('make("hydrogen", 2)', split)
+        self.assertIn('station_has_water(1)', extract(GAS, '/obj/structure/gas_works/water_gas_retort/work'))
+        helium = extract(GAS, '/obj/structure/gas_works/helium_separator/work')
+        self.assertLess(helium.index('well()'), helium.index('make("helium", 1)'))
+        self.assertIn('W.has_source()', extract(GAS, '/obj/structure/gas_works/helium_separator/proc/well'))
+        self.assertIn('FLUID_TIER_SOURCE', extract(GAS, '/obj/structure/gas_works/fluid_supply_tier'))
+        self.assertIn('FLUID_TIER_BUFFER', extract(GAS, '/obj/structure/gas_holder/fluid_demand_tier'))
+        self.assertIn('FLUID_TIER_SINK', extract(GAS, '/obj/structure/gas_compressor/fluid_demand_tier'))
+        pipes = (ROOT / 'code/modules/1713/factory_pipes.dm').read_text()
+        self.assertIn('gas_works_step()\n\tgas_compressors_step()', extract(pipes, '/proc/factory_fluids_step'))
+
+    def test_only_a_compressor_fills_a_cylinder_and_oxygen_eases_breath(self):
+        self.assertIn('V.pressurised', extract(GAS, '/obj/structure/gas_works/attackby'))
+        self.assertIn('V.pressurised', extract(GAS, '/obj/structure/gas_holder/attackby'))
+        self.assertIn('M.adjustOxyLoss(-25)', extract(GAS, '/obj/item/weapon/reagent_containers/gas_vessel/attack'))
+        dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8-sig')
+        self.assertLess(dme.index('naval\\air_hull.dm"'), dme.index('naval\\gas_works.dm"'))
+
+    def test_gas_sprites_are_current(self):
+        for path, digest in {'icons/obj/gas_works.dmi': WORKS_SHA, 'icons/obj/gas_holder.dmi': HOLDER_SHA}.items():
+            self.assertEqual(hashlib.sha256((ROOT / path).read_bytes()).hexdigest(), digest, path)
+        if importlib.util.find_spec('PIL'):
+            subprocess.run([sys.executable, str(ROOT / 'tests/gas_works/gas_works_sprites.py'), '--check'], check=True)
+
+
 class Wiring(unittest.TestCase):
     def test_recipes_research_and_include(self):
         recipes = (ROOT / 'config/crafting/material_recipes_global.txt').read_text()
@@ -244,6 +288,8 @@ class Wiring(unittest.TestCase):
 
 HULL_SHA = 'ed7edae72e27c45242096ac66b84cdff2c93a782108946bc64e6d355d45561e9'
 CELL_SHA = '5a4c45b76e58bb7c0369edd7d2abeb92f2b8053b2e2b2820da863fb260dd48cd'
+WORKS_SHA = 'c7f25e50bae3088b453d5c519161c996cc2a0376ab6422634142da753b0a0ca1'
+HOLDER_SHA = 'be79e56eeac19f57206496a6e39c58107ae956cf4b43588ee13c3e44b4e54b5f'
 
 if __name__ == '__main__':
     unittest.main()
