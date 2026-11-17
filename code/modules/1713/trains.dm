@@ -271,7 +271,8 @@
 /obj/structure/trains/proc/check_connections()
 	if (!connected)
 		return FALSE
-	if (connected in range(2,src))
+	// Same test as "connected in range(2, src)" without listing the tiles.
+	if (isturf(loc) ? (isturf(connected.loc) && connected.z == z && get_dist(src, connected) <= 2) : (connected in range(2,src)))
 		return TRUE
 	else
 		connected = null
