@@ -155,25 +155,34 @@ var/machine_runtime_error = FALSE
 	A.next_swing = 0
 	A.arm_step()
 
+// Storage slots are counted with tools: single stacks of one material merge
+// inside a storage (storage_stack_merge.dm) and would never fill it.
+/proc/machine_item_count(atom/A, type)
+	var/total = 0
+	for (var/obj/item/I in A)
+		if (I.type == type)
+			total++
+	return total
+
 /proc/machine_wagon_checks()
 	var/obj/structure/closet/crate/source = belt_closed_crate(locate(1, 10, 1), 40)
 	for (var/i in 1 to 10)
-		new /obj/item/stack/material/steel(source, 1, FALSE)
+		new /obj/item/weapon/wrench(source)
 	var/obj/structure/trains/storage/closed/W = new(locate(3, 10, 1))
 	var/obj/structure/closet/crate/dest = belt_closed_crate(locate(5, 10, 1), 40)
 	var/obj/structure/factory_arm/load = machine_arm(2, 10)
 	var/obj/structure/factory_arm/unload = machine_arm(4, 10)
 	unload.on = FALSE
 	machine_swing(load)
-	machine_check(belt_count(W.storage, /obj/item/stack/material/steel) == 1, "an arm loads a train wagon")
+	machine_check(machine_item_count(W.storage, /obj/item/weapon/wrench) == 1, "an arm loads a train wagon")
 	for (var/i in 1 to 9)
 		machine_swing(load)
-	machine_check(W.storage.contents.len == W.max_storage && belt_count(source, /obj/item/stack/material/steel) == 2, "a wagon takes only what fits, as by hand")
-	var/obj/item/stack/material/steel/extra = locate() in source
+	machine_check(W.storage.contents.len == W.max_storage && machine_item_count(source, /obj/item/weapon/wrench) == 2, "a wagon takes only what fits, as by hand")
+	var/obj/item/weapon/wrench/extra = locate() in source
 	machine_check(!W.factory_accepts(extra), "a full wagon refuses more")
 	unload.on = TRUE
 	machine_swing(unload)
-	machine_check(belt_count(dest, /obj/item/stack/material/steel) == 1 && W.storage.contents.len == W.max_storage - 1, "an arm unloads a train wagon")
+	machine_check(machine_item_count(dest, /obj/item/weapon/wrench) == 1 && W.storage.contents.len == W.max_storage - 1, "an arm unloads a train wagon")
 	unload.filter_type = /obj/item/stack/material/copper
 	machine_check(!W.factory_offer(0, /obj/item/stack/material/copper), "a wagon offers only what a filter asks for")
 	var/obj/structure/trains/storage/tender/T = new(locate(3, 12, 1))
@@ -189,22 +198,22 @@ var/machine_runtime_error = FALSE
 /proc/machine_cargo_hold_checks()
 	var/obj/structure/closet/crate/source = belt_closed_crate(locate(1, 15, 1), 40)
 	for (var/i in 1 to 25)
-		new /obj/item/stack/material/steel(source, 1, FALSE)
+		new /obj/item/weapon/wrench(source)
 	var/obj/structure/cargo_hold/H = new(locate(3, 15, 1))
 	var/obj/structure/closet/crate/dest = belt_closed_crate(locate(5, 15, 1), 40)
 	var/obj/structure/factory_arm/load = machine_arm(2, 15)
 	var/obj/structure/factory_arm/unload = machine_arm(4, 15)
 	unload.on = FALSE
 	machine_swing(load)
-	machine_check(belt_count(H.storage, /obj/item/stack/material/steel) == 1, "an arm loads a cargo hold")
+	machine_check(machine_item_count(H.storage, /obj/item/weapon/wrench) == 1, "an arm loads a cargo hold")
 	for (var/i in 1 to 24)
 		machine_swing(load)
-	machine_check(H.storage.contents.len == H.max_storage && H.max_storage == 20 && belt_count(source, /obj/item/stack/material/steel) == 5, "a cargo hold takes twenty items and no more")
-	var/obj/item/stack/material/steel/extra = locate() in source
+	machine_check(H.storage.contents.len == H.max_storage && H.max_storage == 20 && machine_item_count(source, /obj/item/weapon/wrench) == 5, "a cargo hold takes twenty items and no more")
+	var/obj/item/weapon/wrench/extra = locate() in source
 	machine_check(!H.factory_accepts(extra), "a full cargo hold refuses more")
 	unload.on = TRUE
 	machine_swing(unload)
-	machine_check(belt_count(dest, /obj/item/stack/material/steel) == 1 && H.storage.contents.len == H.max_storage - 1, "an arm unloads a cargo hold")
+	machine_check(machine_item_count(dest, /obj/item/weapon/wrench) == 1 && H.storage.contents.len == H.max_storage - 1, "an arm unloads a cargo hold")
 	machine_check(!H.factory_offer(0, /obj/item/stack/material/copper), "a cargo hold offers only what a filter asks for")
 	var/obj/item/weapon/wrench/W = new(locate(3, 14, 1))
 	machine_check(!H.anchored, "a new cargo hold is loose")
