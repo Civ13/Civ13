@@ -517,7 +517,8 @@ var/global/chart_hazards_off = FALSE
 /datum/craft_body/proc/hazard_damage(amount)
 	return null
 
-// A built hull: one plank takes it, but is never broken through by it.
+// A built hull: one plank takes it. A sound plank is never broken through,
+// but one already battered down gives way and leaves a hole (naval/hull_ledger.dm).
 /datum/craft_body/built/hazard_damage(amount)
 	var/list/planks = list()
 	for (var/turf/T in cells())
@@ -530,4 +531,7 @@ var/global/chart_hazards_off = FALSE
 	var/least = max(1, round(hit.maxhealth * CHART_STRIKE_FLOOR))
 	if (hit.health > least)
 		hit.health = max(least, hit.health - amount)
+	else if (!hit.wall && craft && craft.ledger)
+		qdel(hit)
+		return null
 	return hit
