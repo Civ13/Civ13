@@ -126,13 +126,13 @@ var/trader_runtime_error = FALSE
 	var/obj/item/clothing/head/helmet/ww2/kept = new(H)
 	H.r_hand = kept
 	trader_check(!post.sell(H, kept, FALSE) && !QDELETED(kept), "a closed post buys nothing")
-	trader_check(!post.buy(H, 1), "a closed post sells nothing")
 	trader_clear(get_turf(H), H)
 	var/obj/item/stack/money/coppercoin/shut = trader_give(H, /obj/item/stack/money/coppercoin, 100)
 	var/obj/structure/specialist_trader/jeweller/shut_post = new(locate(7, 6, 1))
 	trader_check(!shut_post.change_coins(H, shut, /obj/item/stack/money/silvercoin) && !QDELETED(shut), "a closed jeweller changes no coins")
 	trader_clear(get_turf(H), H)
-	qdel(shut_post)
+	shut_post.after_load()
+	trader_check(QDELETED(shut_post), "a saved post is removed on load while the dealers are off")
 	npc_traders_enabled = TRUE // the rest checks the posts as they work when an admin opens them
 	trader_check(post.name == "armourer's post" && findtext(post.desc, "takes gold or silver coins"), "the post names its dealer's coins ([post.desc])")
 	armourer.restock_if_due()
@@ -150,6 +150,9 @@ var/trader_runtime_error = FALSE
 	trader_give(H, /obj/item/stack/money/goldcoin, 4, "l_hand")
 	trader_give(H, /obj/item/stack/money/silvercoin, 3, "r_store")
 	var/before_stock = armourer.stock_left[helmet_index]
+	npc_traders_enabled = FALSE
+	trader_check(!post.buy(H, helmet_index) && trader_coins_near(H, null) == 190 && armourer.stock_left[helmet_index] == before_stock, "a closed post sells nothing, even to a buyer who could pay, and takes no coin")
+	npc_traders_enabled = TRUE
 	trader_check(post.buy(H, helmet_index), "silver and gold buy the helmet ([price] copper)")
 	trader_check(trader_coins_near(H, null) == 190 - price, "the buyer pays exactly the price and gets change ([trader_coins_near(H, null)] left of 190)")
 	var/turf/HT = get_turf(H)

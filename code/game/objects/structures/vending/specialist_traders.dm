@@ -328,9 +328,14 @@ var/global/list/specialist_trader_sell_floor = null
 		overlays += primary
 		overlays += secondary
 
+// A saved post is removed when the world loads while the dealers are off, so
+// posts built before they closed do not stand idle in the world.
 /obj/structure/specialist_trader/after_load()
 	..()
 	busy = FALSE
+	if (!npc_traders_enabled)
+		log_game("Specialist trader: removed a closed [name] at [x],[y],[z] on load")
+		qdel(src)
 
 /proc/specialist_trader_coin_list_text(list/coins)
 	var/list/names = list()
@@ -514,7 +519,7 @@ var/global/list/specialist_trader_sell_floor = null
 		return FALSE
 	if (confirm)
 		var/choice = player_alert(H, "[T.dealer] offers [specialist_trader_price_text(offer, T.pays)] for [I].", T.title, list("Sell", "Keep"))
-		if (choice != "Sell" || !can_deal(H) || I.loc != H)
+		if (choice != "Sell" || !open_for_trade(H) || !can_deal(H) || I.loc != H)
 			return FALSE
 		T.restock_if_due()
 		if (T.offer_for(I, H) != offer || offer > T.purse)
@@ -542,7 +547,7 @@ var/global/list/specialist_trader_sell_floor = null
 			options[specialist_trader_coin_name(path)] = path
 	if (!target)
 		var/choice = player_input(H, "Change your [M] into which coins? The jeweller keeps a twentieth.", "Jeweller", null, "anything", options, TRUE)
-		if (!choice || !can_deal(H) || M.loc != H)
+		if (!choice || !open_for_trade(H) || !can_deal(H) || M.loc != H)
 			return FALSE
 		target = options[choice]
 	var/units = M.amount * specialist_trader_coin_units(M.type)
