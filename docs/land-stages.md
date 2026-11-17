@@ -207,3 +207,12 @@ member factions' assemblies with the registry when it reads it and reports a
 change (`assembly` op), so a burned or unroofed assembly lowers the cap within
 a few minutes. A lower cap removes no one; it only stops new members. Code:
 `code/game/mob/groups/nation.dm`.
+
+## New accounts start near people
+
+On a land with random starts, an account in its first two days starts 40 to 80
+tiles from the largest group of awake players standing outdoors on the
+starting level, on a tile that passes the usual safe-start checks
+(`newcomer_start.dm`). A faction station or a home bed still comes first. With
+nobody about, or no safe tile in the band, the ordinary random start applies.
+The newcomer is not put into any faction. Tests: `tests/newcomer_start`.
