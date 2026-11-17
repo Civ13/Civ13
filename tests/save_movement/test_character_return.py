@@ -172,6 +172,7 @@ class ReturnFixture:
                         PERSISTENCE_RETURN_SEARCH_RANGE=7)
         self.env['persistence_bed_return_enabled'] = self.proc('/proc/persistence_bed_return_enabled', '')
         self.env['persistence_sleep_transfer_blocked'] = lambda: self.blocked
+        self.env['death_legacy_now'] = lambda: 235000  # real hours (death_legacy.dm)
         self.env['persistence_character_floor_usable'] = self.proc('/proc/persistence_character_floor_usable', 'T')
         self.env['persistence_character_turf_safe'] = self.proc('/proc/persistence_character_turf_safe', 'T, H')
         self.wire_bed(self.bed)
@@ -212,6 +213,7 @@ class ReturnFixture:
                   'character_return_pending', 'reclaim_saved_player', 'find_restored_player',
                   'return_player_eligible', 'finish_character_return', 'restored_bodies_destroyed',
                   'dimension_recovery_required', 'dimension_budget_hold', 'persistence_bed_owner_ckey',
+                  'persistence_bed_assigned_at',
                   'note_character_return_hold', 'sleep_occupant', 'valid_sleep_bed', 'saved_sleep_bed',
                   'saved_bed_sleep_refusal', 'assigned_to_other')
         with patch.object(adapter, 'FIELDS', fields):
@@ -717,6 +719,12 @@ class CharacterReturnTests(unittest.TestCase):
         self.assertIsNone(old.persistence_bed_owner_ckey)
         self.assertTrue(f.body.inducedSSD)
         self.assertEqual(f.bed.persistence_bed_owner_ckey, 'account')
+        # Sleeping again in a bed already theirs keeps its claim date (death_legacy.dm).
+        self.assertFalse(hasattr(f.bed, 'persistence_bed_assigned_at'))
+        f.bed.persistence_bed_owner_ckey = None
+        f.body.inducedSSD = False
+        self.assertTrue(f.body.enter_saved_bed_sleep())
+        self.assertEqual(f.bed.persistence_bed_assigned_at, 235000)
 
     def test_assigned_bed_blocks_other_accounts_and_reports_previous_bed(self):
         f = ReturnFixture()

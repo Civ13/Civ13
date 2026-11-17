@@ -117,7 +117,7 @@ var/global/list/recruitment_stations = list() // every recruitment station, for 
 		options += "With [faction]"
 	options += abroad
 	options += wilds
-	var/answer = WWinput(src, "Where should your new character start?", "Starting place", FACTION_START_WILDS, options)
+	var/answer = WWinput(src, "Where should your new character start?[death_legacy_preview(choices, FACTION_START_WILDS)]", "Starting place", FACTION_START_WILDS, options)
 	if (!client || client.mob != src)
 		return FALSE
 	if (!istext(answer) || answer == FACTION_START_WILDS)

@@ -1482,6 +1482,7 @@ var/global/redirect_all_players = null
 	if(!map.fob_spawns)
 		job_master.relocate(character)
 		region_home_bed_spawn(character)
+		death_legacy_return(character)
 	if (map.ID == MAP_WIZARD_BOY && ishuman(character))
 		var/obj/map_metadata/wizard_boy/WB = map
 		WB.give_sticker_pack(character)

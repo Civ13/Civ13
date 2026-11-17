@@ -213,6 +213,7 @@ var/global/datum/controller/occupations/job_master
 	if (isturf(H.faction_start_turf))
 		var/turf/start = H.faction_start_turf
 		H.faction_start_turf = null
+		H.started_with_faction = TRUE // death_legacy.dm
 		H.forceMove(start)
 		return TRUE
 	// Gaia chose the destination before constructing the new body. EquipRank

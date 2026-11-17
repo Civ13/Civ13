@@ -290,6 +290,8 @@
 	if(transfer_capture) round_state["transfer"] = transfer_capture
 	var/list/visited = visited_capture()
 	if(visited) round_state["visited"] = visited
+	var/list/death_legacy = death_legacy_capture()
+	if(death_legacy) round_state["death_legacy"] = death_legacy
 	round_state["saved_at"] = persistence_save_stamp()
 	if(fexists("map_saves/round.json") && !fdel("map_saves/round.json"))
 		throw EXCEPTION("Could not replace round state")

@@ -155,6 +155,9 @@ bullet_act
 /mob/living/human/bullet_act(var/obj/item/projectile/P, var/def_zone)
 	if (P.damage == 0 && !istype(P, /obj/item/projectile/magic))
 		return // fix for strange bug, but allow magic projectiles
+	if (!P.death_weakened && death_weakness_scale(P.firer, src) != 1)
+		P.death_weakened = TRUE // once, however many people it passes through
+		P.damage *= death_weakness_scale(P.firer, src)
 	if (round_facts && P.firer && ishuman(P.firer))
 		round_facts.record_hit(src, P.firer, P.firedfrom ? P.firedfrom.name : null)
 	if (P.firer && ishuman(P.firer))
@@ -640,6 +643,7 @@ bullet_act
 	return hit_zone
 
 /mob/living/human/hit_with_weapon(obj/item/I, mob/living/user, var/effective_force, var/hit_zone)
+	effective_force *= death_weakness_scale(user, src)
 	var/obj/item/organ/external/affecting = get_organ(hit_zone)
 	if (!affecting)
 		return //should be prevented by attacked_with_item() but for sanity.

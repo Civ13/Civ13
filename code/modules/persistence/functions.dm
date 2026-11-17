@@ -1546,6 +1546,25 @@ var/global/world_save_notice_started = null
 /map_storage/proc/visited_loaded(list/round_state)
 	return
 
+// What dead characters knew (research_tree/death_legacy.dm); fixtures keep
+// these inert stubs and their saves carry no "death_legacy" record.
+/map_storage/proc/death_legacy_capture()
+	return null
+
+/map_storage/proc/death_legacy_loaded(list/round_state)
+	return
+
+// Shape only; death_legacy_clean() bounds each record's contents on load.
+/proc/valid_death_legacy_record(list/record)
+	if(!islist(record) || record.len != 2 || record["version"] != 1) return FALSE
+	var/list/accounts = record["accounts"]
+	if(!islist(accounts) || !accounts.len || accounts.len > 500) return FALSE
+	for(var/account in accounts)
+		if(!istext(account) || !length(account) || length(account) > 64) return FALSE
+		var/list/one = accounts[account]
+		if(!islist(one) || one.len > 20 || !isnum(one["at"]) || one["at"] <= 0) return FALSE
+	return TRUE
+
 // TRUE for a wild animal the save leaves out because no player has been near
 // its chunk (visited_areas.dm); fixtures keep every animal.
 /map_storage/proc/save_skips_wildlife(atom/movable/A)
@@ -1600,12 +1619,14 @@ var/global/world_save_notice_started = null
 	var/has_transfer = islist(state) && ("transfer" in state)
 	var/has_saved_at = islist(state) && ("saved_at" in state)
 	var/has_visited = islist(state) && ("visited" in state)
-	if(!islist(state) || state.len != (version == 2 ? 12 : 11) + has_elevation + has_level_links + has_debug_recovery + has_transfer + has_saved_at + has_visited || state["version"] != version || state["generation"] != marker || state["metadata"] != md5(file2text("map_saves/map.txt")) || state["map"] != map.ID || state["maxx"] != world.maxx || state["maxy"] != world.maxy || state["maxz"] != save_validation_maxz())
+	var/has_death_legacy = islist(state) && ("death_legacy" in state)
+	if(!islist(state) || state.len != (version == 2 ? 12 : 11) + has_elevation + has_level_links + has_debug_recovery + has_transfer + has_saved_at + has_visited + has_death_legacy || state["version"] != version || state["generation"] != marker || state["metadata"] != md5(file2text("map_saves/map.txt")) || state["map"] != map.ID || state["maxx"] != world.maxx || state["maxy"] != world.maxy || state["maxz"] != save_validation_maxz())
 		throw EXCEPTION("Round state does not match completed generation")
 	if(has_debug_recovery && !valid_debug_recovery_audit(state["debug_recovery"], marker)) throw EXCEPTION("Invalid debug recovery audit")
 	if(has_transfer && !valid_transfer_capture(state["transfer"])) throw EXCEPTION("Invalid transfer capture")
 	if(has_saved_at && !valid_persistence_save_stamp(state["saved_at"])) throw EXCEPTION("Invalid save time")
 	if(has_visited && !valid_visited_record(state["visited"], world.maxx, world.maxy, save_validation_maxz())) throw EXCEPTION("Invalid visited areas record")
+	if(has_death_legacy && !valid_death_legacy_record(state["death_legacy"])) throw EXCEPTION("Invalid death legacy record")
 	if(has_elevation)
 		elevation_profile_from_snapshot(state["elevation"], world.maxx, world.maxy, save_validation_maxz())
 	if(has_level_links) validate_level_link_rows(state["level_links"])

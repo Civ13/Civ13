@@ -1,6 +1,7 @@
 /mob/living/human/proc/handle_disease()
 	if (stat == DEAD)
 		return
+	handle_death_weakness()
 	if (handle_immunity())
 		return
 	if (droid || (disease_type in disease_immunity))
