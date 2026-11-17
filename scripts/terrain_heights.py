@@ -13,7 +13,7 @@ halves from 0 to 31.5: 0-9 then a-v write whole levels 0-31, and A-Z then
   to-png    write a greyscale PNG of a height file, one pixel per tile
   from-png  turn a painted greyscale PNG back into a height file
   check     validate a height file against a .dmm's size
-  bake-shading  write the slope shading and terrace line sprites (icons/turf/terrain_shade.dmi, terrain_terrace.dmi)
+  bake-shading  write the slope shading and terrace line sprites (icons/turf/terrain_shade.dmi, terrain_terrace.dmi, terrain_terrace_n.dmi)
 
 Needs numpy and Pillow.
 """
@@ -539,8 +539,21 @@ def terrace_states():
     return keys
 
 
-def terrace_pixels(np, key, size=32):
-    """RGBA pixels for one terrace state."""
+# Where the sun lights the hills (sun_hills.dm) the lines are lit from its side
+# of the compass. Two sprite sets cover all eight: the game turns the north-west
+# set by quarter turns for the other diagonals and the north set for the cardinals.
+TERRACE_NORTH_LIGHT = (0.0, -1.0)
+
+
+def terrace_turned_key(key, turns):
+    """The state the game shows, turned clockwise `turns` quarter turns, for a tile's key."""
+    for _ in range(turns % 4):
+        key = key[0] + key[2] + key[4] + key[1] + key[3]
+    return key
+
+
+def terrace_pixels(np, key, size=32, light=LIGHT[:2]):
+    """RGBA pixels for one terrace state, lit from `light` (x east, y south; the way to the light)."""
     rest = int(key[0]) / 2
     nw, ne, sw, se = (rest + int(c) / 2 for c in key[1:])
     m = TERRACE_MARGIN
@@ -549,7 +562,7 @@ def terrace_pixels(np, key, size=32):
     h = nw * (1 - tx) * (1 - ty) + ne * tx * (1 - ty) + sw * (1 - tx) * ty + se * tx * ty
     gx = ((ne - nw) * (1 - ty) + (se - sw) * ty) + 0 * tx
     gy = ((sw - nw) * (1 - tx) + (se - ne) * tx) + 0 * ty
-    facing = (gx + gy) / (np.sqrt(gx * gx + gy * gy) + 1e-9) / 2 ** 0.5   # > 0: the drop faces the north-west light
+    facing = (gx * -light[0] + gy * -light[1]) / (np.sqrt(gx * gx + gy * gy) + 1e-9) / (light[0] ** 2 + light[1] ** 2) ** 0.5   # > 0: the drop faces the light
     shadow = np.clip(0.5 - facing * 0.9, 0, 1)      # drops running along the light still show, at half strength
     lit = np.clip(facing * 1.3 - 0.1, 0, 1)
     q = np.floor(h + 0.25)
@@ -623,6 +636,8 @@ def cmd_bake_shading(args):
     np = load_numpy()
     write_dmi(np, args.out, shade_states(), shade_pixels, 25)
     write_dmi(np, args.terrace_out, terrace_states(), terrace_pixels, TERRACE_COLS)
+    write_dmi(np, args.terrace_north_out, terrace_states(),
+              lambda np, key: terrace_pixels(np, key, light=TERRACE_NORTH_LIGHT), TERRACE_COLS)
 
 
 def cmd_generate(args):
@@ -726,6 +741,7 @@ def main(argv=None):
     b = sub.add_parser('bake-shading')
     b.add_argument('--out', default='icons/turf/terrain_shade.dmi')
     b.add_argument('--terrace-out', default='icons/turf/terrain_terrace.dmi')
+    b.add_argument('--terrace-north-out', default='icons/turf/terrain_terrace_n.dmi')
     b.set_defaults(func=cmd_bake_shading)
     args = parser.parse_args(argv)
     args.func(args)

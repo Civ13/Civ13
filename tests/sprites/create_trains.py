@@ -2,7 +2,8 @@
 windows, doors, railings, headstocks with couplers, roofs), the goods stock
 (boxcar sides, sliding doors and roof, open wagon sides and drop doors), the car kit, the
 railway gun car's lever and outriggers, the wreck overlay, three 3x4
-locomotive bodies (steam, diesel, armoured) with their cab roofs, and the
+locomotive bodies (steam, diesel, armoured) with their cab roofs, the 3x6
+main-line engine with its three cab stations, the tender, and the
 railway gun on its turntable. Every pixel is placed by this script from a
 fixed palette (Pillow only); no external or generated artwork.
 
@@ -1115,6 +1116,138 @@ def loco_steam(c, with_roof=False):
         c.stamp(row_canvas(roof_loco_steam, c.tf), *row_offset(c, 2))
 
 
+def cab_stations(c, y0):
+    """The three stations of a steam cab whose floor starts at row y0: the
+    fireman's injector wheels and gauge glass on the left, the driver's
+    regulator, reverser wheel and brake handle on the right, a seat for each."""
+    # fireman's side: two injector wheels on their steam pipe, the gauge glass
+    c.rect(13, y0 + 3, 26, y0 + 4, COPPER[2])
+    c.rect(13, y0 + 3, 26, y0 + 3, COPPER[0])
+    for x in (15.5, 22.5):
+        c.disc(x, y0 + 7.5, 2.4, [BRASS[0], BRASS[1], BRASS[3]], outline=BRASS[4])
+        c.put(int(x), y0 + 7, RED[0])
+    c.rect(27, y0 + 2, 28, y0 + 9, GLASS[3])
+    c.rect(27, y0 + 5, 28, y0 + 8, GLASS[1])
+    c.put(27, y0 + 3, WHITE)
+    c.disc(17.5, y0 + 19.5, 3.0, [WALNUT[0], WALNUT[1], WALNUT[2]], outline=WALNUT[3])
+    # driver's stand: the regulator handle reaching back from the backhead,
+    # the reverser wheel on its pedestal and the brake handle
+    c.line(66, y0 + 3, 74, y0 + 9, STEEL_O)
+    c.line(66, y0 + 2, 74, y0 + 8, RED[0])
+    c.put(75, y0 + 9, BRASS[0])
+    c.bevel(77, y0 + 2, 83, y0 + 12, BLACK[1], BLACK[2], BLACK[4], outline=DARK)
+    c.disc(80.0, y0 + 7.0, 2.6, [STEEL[0], STEEL[1], STEEL[3]], outline=STEEL_O)
+    c.put(80, y0 + 7, BRASS[0])
+    c.rect(69, y0 + 13, 70, y0 + 17, BRASS[2])
+    c.rect(68, y0 + 12, 71, y0 + 12, BRASS[0])
+    c.disc(78.5, y0 + 19.5, 3.0, [WALNUT[0], WALNUT[1], WALNUT[2]], outline=WALNUT[3])
+
+
+def loco_mainline(c, with_roof=False):
+    """A six-coupled express engine, 96 x 192: smokebox and bogie, three
+    sections of boiler over the driving wheels, the wide firebox over the
+    trailing truck and the cab, open at the back to the tender."""
+    # bogie, driving wheels with their rods, trailing truck
+    for y in (9, 21):
+        for x in (7, 87):
+            wheel(c, x, y - 4, y + 4, x < 40)
+    for y in (58, 82, 106):
+        wheel(c, 5, y - 10, y + 10, True)
+        wheel(c, 88, y - 10, y + 10, False)
+    for x in (4, 91):
+        c.rect(x, 44, x, 116, STEEL[1])
+        c.rect(x, 40, x, 43, STEEL[3])
+        for y in (58, 82, 106):
+            c.put(x, y, BRASS[0])
+            c.put(x, y + 1, STEEL[4])
+    for x in (7, 87):
+        wheel(c, x, 136, 147, x < 40)
+    # footplate
+    c.rect(9, 3, 86, 158, DARK)
+    tread(c, 10, 4, 85, 157, face=BLACK[3], lit=BLACK[2], dark=BLACK[4], seams=False)
+    for x in (10, 85):
+        c.rect(x, 4, x, 157, RED[1])
+    # cylinders outside the frames, behind the bogie
+    for x0 in (3, 84):
+        c.cyl(x0, 26, x0 + 8, 42, BLACK, along=True)
+        c.rect(x0, 26, x0 + 8, 26, DARK)
+        c.rect(x0, 42, x0 + 8, 42, DARK)
+        c.rect(x0 + 1, 28, x0 + 7, 28, BRASS[2])
+        c.rect(x0 + 4, 43, x0 + 4, 47, STEEL[0])
+    beam(c, 0, 3)
+    for x in (30, 64):
+        c.rect(x, 4, x + 2, 6, DARK)
+        c.put(x + 1, 5, FIRE[0])
+    # splashers over the driving wheels, a nameplate on the middle pair
+    for y in (58, 82, 106):
+        for x0 in (12, 77):
+            c.bevel(x0, y - 9, x0 + 6, y + 9, GREEN[1], GREEN[2], GREEN[3], outline=GREEN[4])
+            c.rect(x0 + 1, y - 8, x0 + 5, y - 8, BRASS[1])
+    for x0 in (14, 79):
+        c.rect(x0, 77, x0 + 2, 87, BRASS[1])
+        c.rect(x0 + 1, 78, x0 + 1, 86, RED[1])
+    # smoke deflector plates either side of the smokebox
+    for x0 in (21, 72):
+        c.bevel(x0, 6, x0 + 2, 36, BLACK[1], BLACK[2], BLACK[4], outline=DARK)
+    # smokebox, boiler and firebox
+    c.shade(64, 8, 70, 158, 90)
+    c.cyl(31, 5, 64, 30, BLACK, along=True)
+    c.rect(31, 5, 64, 5, DARK)
+    c.cyl(32, 6, 63, 6, [BLACK[0], BLACK[0], BLACK[1], BLACK[2], BLACK[4]], along=True)
+    c.cyl(29, 31, 66, 128, GREEN, along=True)
+    for y in (31, 47, 63, 79, 95, 111):
+        c.cyl(29, y, 66, y, BRASS, along=True)
+        c.cyl(29, y + 1, 66, y + 1, [GREEN[2], GREEN[3], GREEN[3], GREEN[4], GREEN[4]], along=True)
+    c.bevel(25, 124, 70, 160, GREEN[1], GREEN[2], GREEN[3], outline=GREEN[4])
+    c.rect(27, 126, 68, 126, GREEN[0])
+    c.rect(27, 127, 27, 157, GREEN[0])
+    for y in (132, 142, 152):
+        for x in (29, 37, 58, 66):
+            c.rivet(x, y, BRASS[0], GREEN[4])
+    c.cyl(40, 128, 55, 156, [GREEN[0], GREEN[1], GREEN[2], GREEN[2], GREEN[3]], along=True)
+    # handrails along the boiler
+    for x in (27, 68):
+        c.rect(x, 8, x, 120, STEEL[0])
+        for y in range(10, 120, 12):
+            c.put(x, y, BRASS[1])
+    # double chimney with its copper cap
+    c.shade(46, 9, 58, 26, 60)
+    for cy in (13.5, 20.5):
+        c.disc(47.5, cy, 6.0, [COPPER[0], COPPER[1], COPPER[2], COPPER[3]], outline=DARK)
+    for cy in (13.5, 20.5):
+        c.disc(47.5, cy, 4.0, [BLACK[1], BLACK[2], BLACK[3]], outline=DARK)
+        c.disc(47.5, cy, 2.4, [(4, 4, 6), (10, 10, 12)], flat=True)
+    # feed dome, steam dome, safety valves and whistle
+    c.shade(46, 50, 56, 60, 70)
+    c.disc(47.5, 53.0, 4.6, [GREEN[0], GREEN[1], GREEN[2], GREEN[3]], outline=GREEN[4])
+    c.shade(46, 76, 58, 90, 70)
+    c.disc(47.5, 79.5, 7.0, [WHITE, BRASS[0], BRASS[1], BRASS[2], BRASS[3]], outline=BRASS[4])
+    for x in (44.5, 50.5):
+        c.disc(x, 119.0, 2.0, [BRASS[0], BRASS[1], BRASS[3]], outline=BRASS[4])
+    c.put(47, 137, BRASS[0])
+    c.put(48, 137, BRASS[0])
+    c.put(48, 138, BRASS[3])
+    # cab: spectacle plate, floor, side sheets and the three stations
+    planks(c, 11, 161, 84, 188, seed=6)
+    c.rect(8, 157, 87, 160, GREEN[4])
+    c.bands(9, 158, 86, 159, [GREEN[1], GREEN[3]], along=False)
+    for x0 in (12, 74):
+        c.rect(x0, 157, x0 + 9, 160, GLASS[3])
+        c.bands(x0 + 1, 158, x0 + 8, 159, [GLASS[0], GLASS[1]], along=False)
+        c.put(x0 + 2, 158, WHITE)
+    c.shade(11, 161, 84, 161, 80)
+    cab_walls(c, 161, 187, GREEN, thick=3, windows=((3, 13),))
+    backhead(c, 30, 65, 160)
+    cab_stations(c, 162)
+    for x in (9, 86):
+        c.put(x, 188, BRASS[0])
+        c.put(x, 189, BRASS[2])
+    # fall plate onto the tender
+    tread(c, 30, 185, 65, 188, face=STEEL[3], lit=STEEL[1], dark=STEEL[4], seams=False)
+    c.rect(30, 185, 65, 185, STEEL_O)
+    beam(c, 189, 191)
+
+
 def loco_tender(c, with_roof=False):
     """A separate tender: a shovelling plate at the front, the coal space
     between the tank's side sheets, and the tank top with its filler."""
@@ -1415,15 +1548,23 @@ def row_offset(c, seg, rows=4):
 
 LOCOS = {'steam': (loco_steam, roof_loco_steam), 'diesel': (loco_diesel, roof_loco_diesel),
          'armored': (loco_armored, roof_loco_armored)}
+# name -> (sections, the section under the cab roof); the others are 4 long
+LOCO_ROWS = {'mainline': (6, 5), 'diesel': (4, 0)}
+
+
+def loco_rows(name):
+    return LOCO_ROWS.get(name, (4, 2))
 
 
 def loco_states():
     out = {}
-    for name, (body, roof) in list(LOCOS.items()) + [('tender', (loco_tender, None))]:
-        imgs = directions(body, w=96, h=128, order=HEADING)
-        for seg in range(4):
+    for name, (body, roof) in list(LOCOS.items()) + [('tender', (loco_tender, None)),
+                                                     ('mainline', (loco_mainline, roof_loco_steam))]:
+        rows = loco_rows(name)[0]
+        imgs = directions(body, w=96, h=rows * 32, order=HEADING)
+        for seg in range(rows):
             for col, cn in ((-1, 'l'), (0, 'c'), (1, 'r')):
-                out['loco_%s_%d%s' % (name, seg + 1, cn)] = slice_car(imgs, 4, seg, col)
+                out['loco_%s_%d%s' % (name, seg + 1, cn)] = slice_car(imgs, rows, seg, col)
         if not roof:
             continue
         rimgs = directions(roof, w=96, h=32, order=HEADING)
@@ -1719,13 +1860,14 @@ def render_car(states, kind, heading, roof=False, open_doors=False, braced=False
 
 
 def render_loco(states, name, heading, roof=True):
-    size = (96, 128) if heading in 'NS' else (128, 96)
+    rows, cab = loco_rows(name)
+    size = (96, rows * 32) if heading in 'NS' else (rows * 32, 96)
     im = Image.new('RGBA', size, (0, 0, 0, 0))
-    for seg in range(4):
+    for seg in range(rows):
         for col, cn in ((L, 'l'), (0, 'c'), (R, 'r')):
-            x, y = tile_pos(heading, seg, col)
+            x, y = tile_pos(heading, seg, col, rows)
             im.alpha_composite(states['loco_%s_%d%s' % (name, seg + 1, cn)][DIR_INDEX[heading]], (x * 32, y * 32))
-            if roof and seg == (0 if name == 'diesel' else 2):
+            if roof and seg == cab:
                 im.alpha_composite(states['roof_loco_%s_%s' % (name, cn)][DIR_INDEX[heading]], (x * 32, y * 32))
     return im
 
@@ -1842,6 +1984,20 @@ def write_previews(out, states, gun):
     stop.alpha_composite(water['water_tower'][DIR_INDEX['S']], (stop.width - 96 - 128 - 112, 0))
     stop.alpha_composite(water['water_crane'][DIR_INDEX['N']], (stop.width - 80, 160))
     big(stop, 3).save(out / 'water-stop.png')
+
+    # the main-line engine: with its tender and a coach heading east, then
+    # heading north and south with the cab roof off and on
+    express = train_east(states, gun, [render_loco(states, 'mainline', 'E', roof=False),
+                                       render_loco(states, 'tender', 'E', roof=False),
+                                       render_car(states, 'bogie_coach', 'E', roof=True)])
+    im = Image.new('RGBA', (express.width, express.height + 208), (96, 120, 84, 255))
+    im.alpha_composite(express, (0, 0))
+    im.alpha_composite(ground(express.width, 208, seed=11), (0, express.height))
+    for i, (heading, roof) in enumerate((('N', False), ('N', True), ('S', False))):
+        im.alpha_composite(render_loco(states, 'mainline', heading, roof=roof), (16 + i * 112, express.height + 8))
+    cab = render_loco(states, 'mainline', 'N', roof=False).crop((0, 160, 96, 192))
+    im.alpha_composite(cab.resize((288, 96), Image.NEAREST), (16 + 3 * 112 + 16, express.height + 56))
+    big(im, 3).save(out / 'mainline.png')
 
     # couplings: made, free, broken and taken off, on a train heading east
     def with_couplers(kind, front, rear):

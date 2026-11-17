@@ -274,6 +274,8 @@ var/global/sun_shadows_busy = FALSE
 /proc/sun_shadows_phase(tod = time_of_day)
 	set waitfor = FALSE
 	var/list/angles = sun_angles(tod)
+	// The hills keep the last sun through the night (sun_hills.dm).
+	sun_hills_phase(angles, sun_next_tod(tod))
 	if (sun_same_angles(angles, sun_tree_angles))
 		return
 	sun_tree_angles = angles
@@ -281,6 +283,11 @@ var/global/sun_shadows_busy = FALSE
 	sun_tree_shadows_apply()
 	sun_ambient_shadow_refresh()
 	sun_shadows_busy = FALSE
+
+// The time of day after tod in this map's cycle.
+/proc/sun_next_tod(tod)
+	var/i = times_of_day.Find(tod)
+	return i ? times_of_day[i % times_of_day.len + 1] : null
 
 /proc/sun_same_angles(list/a, list/b)
 	if (!a || !b)

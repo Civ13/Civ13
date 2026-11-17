@@ -149,6 +149,33 @@ class Shading(unittest.TestCase):
             self.assertTrue(pixels[..., 3].any(), f'{key} draws nothing')
             numpy.testing.assert_array_equal(sheet[y * 32:(y + 1) * 32, x * 32:(x + 1) * 32], pixels, key)
 
+    def test_baked_north_terrace_sprites_match_the_tool(self):
+        import numpy
+        from PIL import Image
+        dmi = Image.open(ROOT / 'icons/turf/terrain_terrace_n.dmi')
+        states = re.findall(r'state = "(\w+)"', dmi.info['Description'])
+        self.assertEqual(states, tool.terrace_states())
+        sheet = numpy.asarray(dmi.convert('RGBA'))
+        for i, key in enumerate(states):
+            y, x = divmod(i, tool.TERRACE_COLS)
+            numpy.testing.assert_array_equal(sheet[y * 32:(y + 1) * 32, x * 32:(x + 1) * 32],
+                                             tool.terrace_pixels(numpy, key, light=tool.TERRACE_NORTH_LIGHT), key)
+
+    def test_turned_terrace_sprites_are_lit_from_the_suns_side(self):
+        import numpy
+        # The game shows the two baked sets turned by quarter turns (terrain_terrace_image):
+        # each turned sprite is exactly the tile's own lines lit from that side.
+        sides = ((tool.LIGHT[:2], ((1, -1), (1, 1), (-1, 1))), (tool.TERRACE_NORTH_LIGHT, ((1, 0), (0, 1), (-1, 0))))
+        for base, lights in sides:
+            for turns, light in enumerate(lights, 1):
+                for key in tool.terrace_states()[::61]:
+                    turned = numpy.rot90(tool.terrace_pixels(numpy, tool.terrace_turned_key(key, turns), light=base), -turns)
+                    numpy.testing.assert_array_equal(turned, tool.terrace_pixels(numpy, key, light=light), (key, light))
+        # Rising to the east: lit warm from the west, dark from the east.
+        self.assertTrue((tool.terrace_pixels(numpy, '00202', light=(1, 0))[..., :3].max(axis=2) <= max(tool.DARK_COLOUR)).all())
+        module = (ROOT / 'code/modules/1713/terrain_height.dm').read_text(encoding='utf-8')
+        self.assertIn('state = copytext(state, 1, 2) + copytext(state, 3, 4) + copytext(state, 5, 6) + copytext(state, 2, 3) + copytext(state, 4, 5)', module)
+
     def test_terrace_keys(self):
         import numpy
         # Flat ground and a rise that stays inside one level have no line.
