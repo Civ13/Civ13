@@ -222,6 +222,16 @@ lookup a hull, so empty hulls cost no deck walk. Nothing runs during a world
 save. The tiller saves the ledger inside its `hull_state` record
 (`"ledger": {"water", "holes", "patches", "grounded", "seams", "old_anchor", "fouling", "coppered"}`); nothing stores `world.time`.
 
+## A deck awash
+
+`code/modules/naval/hull_awash.dm`. While `depth()` is awash or worse,
+`show_awash()` lays one shared overlay (`icons/effects/hull_awash.dmi`, state
+`awash`, drawn by `scripts/draw_hull_awash.py`) on the floor plank of each of
+her lower deck tiles and remembers the planks in `awash_planks`. It runs when
+`add_water()` or `remove_water()` crosses the mark and again in every ledger
+step, which clears and lays it afresh. Nothing is saved; a hull asleep at
+awash is drawn the next time she steps.
+
 ## Crossings and voyages
 
 A hull that leaves for a land across the sea or sets out on a voyage is packed
