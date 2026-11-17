@@ -53,6 +53,15 @@ class SignalFireSourceTests(unittest.TestCase):
         watchers = self.source[self.source.index('proc/signal_fire_watchers'):self.source.index('proc/send_smoke_signal')]
         self.assertEqual(watchers.count('signal_fire_open_sky('), 2)
 
+    def test_the_fire_and_the_signal_say_how_it_works(self):
+        examine = self.source.split('/obj/structure/oven/fireplace/examine(mob/user)', 1)[1]
+        self.assertIn('. = ..()', examine)
+        self.assertIn('if (on && signal_fire_open_sky(src))', examine)
+        self.assertIn('Use leather or cloth on it to send a smoke signal.', examine)
+        send = self.source[self.source.index('proc/send_smoke_signal'):self.source.index('/client/var/signal_fire_hint_shown')]
+        self.assertIn('!H.client.signal_fire_hint_shown', send)
+        self.assertIn('answer with a signal of your own', send)
+
 
 if __name__ == '__main__':
     unittest.main()

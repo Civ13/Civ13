@@ -125,9 +125,25 @@
 	show_signal_plume()
 	player_activity.feature_used(user, "signal_fire")
 	var/turf/T = get_turf(src)
-	for (var/mob/living/human/H in signal_fire_watchers(user))
+	var/list/watchers = signal_fire_watchers(user)
+	for (var/mob/living/human/H in watchers)
 		to_chat(H, "<b>You see smoke signals rising [signal_fire_bearing(get_turf(H), T)]...</b>")
+		// Once per visit: what a signal means and how to answer it.
+		if (H.client && !H.client.signal_fire_hint_shown)
+			H.client.signal_fire_hint_shown = TRUE
+			to_chat(H, SPAN_NOTICE("Someone is calling from a fire. Walk that way to find them, or answer with a signal of your own: use leather or cloth on a lit campfire or fire pit under the open sky."))
+	to_chat(user, SPAN_NOTICE(watchers.len ? "Someone out there can see it." : "Nobody seems to be in sight of it right now. Anyone outdoors within a long walk would have seen it."))
 	return TRUE
+
+// Told once per connection what a smoke signal is (send_smoke_signal).
+/client/var/signal_fire_hint_shown = FALSE
+
+// A burning fire under the open sky says how to signal. An override, because
+// the examine in oven.dm is byte-pinned by other tests.
+/obj/structure/oven/fireplace/examine(mob/user)
+	. = ..()
+	if (on && signal_fire_open_sky(src))
+		to_chat(user, SPAN_NOTICE("Use leather or cloth on it to send a smoke signal. People outdoors a long way off will see which way to walk to find you."))
 
 // The visible column of smoke over the fire: a 32x96 icon whose bottom edge is
 // the fire's tile. It fades in, drifts up a little and thins away. It is a
