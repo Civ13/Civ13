@@ -4,7 +4,8 @@ Material weapons, shields and clothing each subtracted health and called their
 own check_health(), and only some went through electroplating. The helper keeps
 today's numbers: blows are softened by plating, work and hits are not. The
 ceiling only goes down: new wear calls apply_wear() instead of writing
-`health -= plating_wear(...)` by hand.
+`health -= plating_wear(...)` by hand. Repair (sharpening, honing, benches)
+goes through repair_wear(), which never breaks the item.
 """
 import importlib.util
 from pathlib import Path
@@ -67,11 +68,34 @@ class ItemWearTest(unittest.TestCase):
     def test_repair_strains_the_ceiling(self):
         repair = project('repair_wear', 'src, amount, strain')
         item = Item(health=50, maxhealth=100)
-        self.assertFalse(repair(item, 25, 1))
+        self.assertTrue(repair(item, 25, 1))
         self.assertEqual((item.health, item.maxhealth), (75, 99))
-        self.assertFalse(repair(item, 25, 1))
+        self.assertTrue(repair(item, 25, 1))
         self.assertEqual((item.health, item.maxhealth), (98, 98))
-        self.assertTrue(repair(Item(health=1, maxhealth=1), 25, 1))
+        worn = Item(health=1, maxhealth=1)
+        self.assertFalse(repair(worn, 25, 1))
+        self.assertEqual((worn.health, worn.maxhealth), (1, 1))
+
+    def test_sharpening_never_breaks_a_fragile_tool(self):
+        # A twine-bound flint axe has a ceiling of 2.5; the flint's strain of 4
+        # used to break it on the first sharpening (live report 2026-11-17).
+        repair = project('repair_wear', 'src, amount, strain')
+        axe = Item(health=0.4, maxhealth=2.5)
+        sharpened = 0
+        while repair(axe, 6, 4):
+            sharpened += 1
+            self.assertEqual(axe.health, axe.maxhealth)
+            self.assertGreaterEqual(axe.maxhealth, 1)
+        self.assertGreaterEqual(sharpened, 5)
+        self.assertGreater(axe.maxhealth, 0)
+        self.assertGreater(axe.health, 0)
+
+    def test_repair_callers_never_destroy_the_item(self):
+        for path in ('code/game/objects/structures/repairing.dm', 'code/game/objects/structures/rocks.dm', 'code/modules/1713/worn_tools.dm'):
+            text = (ROOT / path).read_text(encoding='utf-8')
+            self.assertNotIn('breaks from strain', text, path)
+            self.assertNotIn('breaks from the strain', text, path)
+            self.assertNotRegex(text, r'maxhealth\s*-=\s*(damageamount|4)\b', path)
 
     def test_breakable_items_override_the_shared_check(self):
         for path, override in BREAKABLE.items():

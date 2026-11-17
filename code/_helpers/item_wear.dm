@@ -36,9 +36,20 @@
 		return null
 	return health / maxhealth
 
-// Repair by amount; each repair costs `strain` of the most it can be repaired
-// to. Returns TRUE when the strain broke it (the caller says how).
+// Repair by amount (sharpening, honing, bench repair); each repair costs
+// `strain` of the most it can be repaired to, but never more than a tenth of
+// it, so a small fragile tool such as a twine-bound flint axe lasts as many
+// sharpenings as a sword. Repair never breaks an item: one too worn to take
+// the strain is refused and left as it is. Returns TRUE when it was repaired.
 /obj/item/proc/repair_wear(amount, strain = 0)
+	strain = min(strain, maxhealth * 0.1)
+	if (maxhealth - strain < 1)
+		return FALSE
 	maxhealth -= strain
 	health = min(health + amount, maxhealth)
-	return maxhealth <= 0 || health <= 0
+	return TRUE
+
+// TRUE when one more repair would leave less than 1 to repair to; check it
+// before the wait so nobody spends the time for nothing.
+/obj/item/proc/too_worn_to_repair(strain = 0)
+	return maxhealth - min(strain, maxhealth * 0.1) < 1

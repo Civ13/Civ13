@@ -53,17 +53,17 @@
 	if(istype(M, itemtype1) || istype(M, itemtype2) || istype(M, itemtype3) || istype(M, itemtype4) || istype(M, itemtype5) || istype(M, itemtype6) || istype(M, itemtype7) || istype(M, itemtype8) || istype(M, itemtype9) || istype(M, itemtype10) || istype(M, itemtype11))
 		if (!user || !user.may_do_after)
 			return
+		if (!repair_ready(M, user))
+			return
 		visible_message("<span class='notice'>[user] starts to [actiontext] the [M.name]...</span>")
 		icon_state = activesprite
 		playsound(src,noise,40,1)
 		if (do_after(user, delay, src))
-			var/broke = M.repair_wear(repairamount, damageamount)
 			icon_state = idlesprite
+			if (QDELETED(M) || !repair_ready(M, user))
+				return
+			M.repair_wear(repairamount, damageamount)
 			visible_message("<span class='notice'>[user] finishes [actiontext]ing the [M.name].</span>")
-			if(broke)
-				qdel(M)
-				playsound(src, "shatter", 70, TRUE)
-				visible_message("<span class='alert'>The [M.name] breaks from strain!</span>")
 		else
 			visible_message("<span class='notice'>[user] stops [actiontext]ing the [M.name].</span>")
 			icon_state = idlesprite
@@ -73,6 +73,20 @@
 	else
 		to_chat(user, "<span class='notice'>You cannot [actiontext] this with a [src.name]!</span>")
 		return
+
+// Repair maintains an item and never breaks it: refuse one that needs no work
+// or is worn down too far to take another repair.
+/obj/structure/repair/proc/repair_ready(obj/item/M, mob/user)
+	return item_ready_for_repair(M, user, damageamount, actiontext)
+
+/proc/item_ready_for_repair(obj/item/M, mob/user, strain, actiontext)
+	if (M.health >= M.maxhealth)
+		to_chat(user, "<span class='notice'>\The [M] is in good condition and needs no work.</span>")
+		return FALSE
+	if (M.too_worn_to_repair(strain))
+		to_chat(user, "<span class='warning'>\The [M] is worn down too far to [actiontext] again. Use it until it gives out, then make a new one.</span>")
+		return FALSE
+	return TRUE
 
 /obj/structure/repair/grindstone
 	name = "grindstone"
