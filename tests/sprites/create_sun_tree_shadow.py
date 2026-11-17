@@ -1,16 +1,22 @@
 #!/usr/bin/env python3
 """Draw the tree shadow blobs in icons/effects/sun_shadow.dmi (PROTOTYPE).
 
-Three single-direction 64x64 states, each the ground shadow of a tree lying
+Four single-direction 64x64 states. Three are the ground shadow of a tree lying
 straight up the sprite from its trunk base at the bottom centre (x 32, y 0):
 
   canopy  a short trunk and a lumpy round crown (broadleaf trees, palms)
   pine    a short trunk and a stepped cone
   bare    a trunk with a few limbs (dead, winter and destroyed trees, cacti)
 
+The fourth is the shade pooled around a trunk's foot under a high sun, when
+the cast shadow is short and hidden behind the tree:
+
+  pool    a soft flat ellipse about the sprite's centre (x 32, y 32)
+
 The game (code/modules/1713/sun_shadows.dm) stretches the sprite by the sun's
 height, turns it away from the sun and pins the bottom centre to the trunk, so
-one sprite serves every phase of the day.
+one sprite serves every phase of the day. The pool is only scaled and moved
+to the trunk.
 
 The shadow is a cool near-black. Its alpha comes from a 4x supersampled mask
 that is blurred, more toward the tip (a real shadow's edge softens with
@@ -79,7 +85,35 @@ def mask(shape):
     return im
 
 
+# The pool: half width, half height and how dark its middle is (alpha).
+POOL_RX, POOL_RY, POOL_PEAK = 29.0, 13.5, 150
+
+
+def draw_pool():
+    """A flat ellipse, darkest in the middle and fading smoothly to nothing."""
+    out = Image.new('RGBA', (SIZE, SIZE))
+    px = out.load()
+    for y in range(SIZE):
+        for x in range(SIZE):
+            cover = 0.0
+            for sy in range(SS):
+                for sx in range(SS):
+                    dx = (x + (sx + 0.5) / SS - SIZE / 2.0) / POOL_RX
+                    dy = (y + (sy + 0.5) / SS - SIZE / 2.0) / POOL_RY
+                    r = (dx * dx + dy * dy) ** 0.5
+                    if r < 1.0:
+                        # Full to 35% of the radius, then a smooth roll-off.
+                        u = max(0.0, (r - 0.35) / 0.65)
+                        cover += 1.0 - u * u * (3.0 - 2.0 * u)
+            a = int(round(POOL_PEAK * cover / (SS * SS)))
+            if a >= 3:
+                px[x, y] = COLOUR + (a,)
+    return out
+
+
 def draw(shape):
+    if shape == 'pool':
+        return draw_pool()
     m = mask(shape)
     near = m.filter(ImageFilter.GaussianBlur(1.1 * SS)).resize((SIZE, SIZE), Image.LANCZOS)
     far = m.filter(ImageFilter.GaussianBlur(2.6 * SS)).resize((SIZE, SIZE), Image.LANCZOS)
@@ -97,7 +131,7 @@ def draw(shape):
     return out
 
 
-STATES = ('canopy', 'pine', 'bare')
+STATES = ('canopy', 'pine', 'bare', 'pool')
 
 
 def sheet_bytes():

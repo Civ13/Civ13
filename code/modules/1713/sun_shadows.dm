@@ -86,21 +86,44 @@ var/global/list/sun_angles_cache = list()
 	return angles
 
 // ---- Daylight colour ----
-// Time of day -> list(red, green, blue) multipliers on the daylight term: low,
-// warm light at dawn and dusk, neutral at noon, a little cool moonlight at
-// night. Used by both daylight paths (lighting_overlay.dm on the server,
-// plane_master.dm on the client). Kept close to 1 so the ground stays readable.
-var/global/list/sun_phase_tint = list(
-	"Early Morning" = list(1.18, 1.00, 0.78),
-	"Morning" = list(1.04, 1.00, 0.93),
-	"Midday" = list(1.00, 1.00, 1.00),
-	"Afternoon" = list(1.05, 0.99, 0.90),
-	"Evening" = list(1.30, 0.97, 0.70),
-	"Night" = list(0.84, 0.93, 1.14))
+// list(red, green, blue) multipliers on the daylight term, used by both
+// daylight paths (lighting_overlay.dm on the server, plane_master.dm on the
+// client). The colour follows the sun's height, not the phase's name: a high
+// sun is neutral white and the light warms as the sun sinks, so dawn and dusk
+// glow, a winter noon is a little warmer than a summer one, and a daylight
+// phase with no sun (polar night) gets no warm cast. Kept close to 1 so the
+// ground and the water stay readable.
+// The sun is neutral from this many degrees up.
+#define SUN_TINT_NEUTRAL_ELEVATION 40
+// The warmest light, reached with the sun on the horizon.
+#define SUN_TINT_LOW_RED 1.18
+#define SUN_TINT_LOW_GREEN 1.00
+#define SUN_TINT_LOW_BLUE 0.78
+// A little cool moonlight at night.
+var/global/list/sun_night_tint = list(0.84, 0.93, 1.14)
+// Elevation -> its colour, so the same sun always hands out the same list.
+var/global/list/sun_tint_cache = list()
+
+/proc/sun_elevation_tint(elevation)
+	var/key = "[elevation]"
+	var/list/tint = sun_tint_cache[key]
+	if (!tint)
+		var/low = min(max((SUN_TINT_NEUTRAL_ELEVATION - elevation) / SUN_TINT_NEUTRAL_ELEVATION, 0), 1)
+		tint = list(
+			round(1 + (SUN_TINT_LOW_RED - 1) * low, 0.01),
+			round(1 + (SUN_TINT_LOW_GREEN - 1) * low, 0.01),
+			round(1 + (SUN_TINT_LOW_BLUE - 1) * low, 0.01))
+		sun_tint_cache[key] = tint
+	return tint
 
 // The daylight colour now, or null for the usual grey.
-/proc/sun_daylight_tint()
-	return sun_enabled() ? sun_phase_tint[time_of_day] : null
+/proc/sun_daylight_tint(tod = time_of_day)
+	if (!sun_enabled())
+		return null
+	if (tod == "Night")
+		return sun_night_tint
+	var/list/angles = sun_angles(tod)
+	return angles ? sun_elevation_tint(angles[2]) : null
 
 // ---- Tree shadows ----
 // Each tree wears one soft shadow sprite (icons/effects/sun_shadow.dmi, drawn
@@ -108,13 +131,21 @@ var/global/list/sun_phase_tint = list(
 // above the ground and its slope shading, below every object, never clickable.
 // The sprite lies straight up from its bottom centre; a matrix stretches it by
 // the sun's height, turns it away from the sun and pins the bottom centre to
-// the trunk base. Images are shared per (shape, size, trunk position, sun), so
-// a phase change is one overlay swap per tree.
+// the trunk base. Under a high sun that shadow is short and hides behind the
+// tree, so the image also carries a soft pool of shade around the trunk's foot
+// (the "pool" state), stronger the higher the sun, which the stretch and turn
+// leave alone. Images are shared per (shape, size, trunk position, sun), so a
+// phase change is one overlay swap per tree.
 #define SUN_TREE_SHADOW_LAYER 2.036
 // The shadow sprite's size in pixels.
 #define SUN_TREE_SHADOW_SPRITE 64
 // A shadow is never longer than this many times the tree's height.
 #define SUN_TREE_SHADOW_MAX 2.2
+// The pool's width is the tree's height times this, up to the cap in tiles.
+#define SUN_TREE_POOL_WIDTH 0.85
+#define SUN_TREE_POOL_MAX 1.7
+// The pool slides this many pixels away from the sun.
+#define SUN_TREE_POOL_SHIFT 3
 
 // The sun the trees' shadows show now, list(azimuth, elevation) or null.
 var/global/list/sun_tree_angles = null
@@ -153,6 +184,9 @@ var/global/sun_shadows_busy = FALSE
 	sun_shadow_shape = "canopy"
 	sun_shadow_size = 2.4
 
+// The pool of a leafless tree is this share of a leafy one's.
+#define SUN_TREE_POOL_BARE 0.45
+
 // Leafless sheets (autumn, winter, dead) cast the bare shadow.
 /obj/structure/wild/proc/sun_shadow_state()
 	if (sun_shadow_shape == "canopy")
@@ -180,8 +214,30 @@ var/global/sun_shadows_busy = FALSE
 		I.transform = M
 		// A low sun's long shadow is fainter than the short one under a high sun.
 		I.alpha = round(185 + 70 * sin(el))
+		I.overlays += sun_tree_pool_image(shape, size, base_x, base_y, angles)
 		sun_tree_shadow_images[key] = I
 	return I
+
+// The shade pooled at the trunk's foot: the "pool" sprite (a soft flat ellipse
+// about the sprite's centre) sized to the crown, centred on the trunk base and
+// nudged away from the sun. It rides on the shadow image as an overlay.
+/proc/sun_tree_pool_image(shape, size, base_x, base_y, list/angles)
+	var/width = min(size * SUN_TREE_POOL_WIDTH, SUN_TREE_POOL_MAX)
+	var/strength = 0.3 + 0.7 * sin(angles[2])
+	if (shape == "bare")
+		width *= 0.7
+		strength *= SUN_TREE_POOL_BARE
+	var/scale = width * world.icon_size / SUN_TREE_SHADOW_SPRITE
+	var/matrix/M = matrix()
+	M.Scale(scale, scale)
+	M.Translate(base_x - SUN_TREE_SHADOW_SPRITE / 2 - SUN_TREE_POOL_SHIFT * sin(angles[1]), base_y + 1 - SUN_TREE_SHADOW_SPRITE / 2 - SUN_TREE_POOL_SHIFT * cos(angles[1]))
+	var/image/P = image('icons/effects/sun_shadow.dmi', icon_state = "pool", layer = SUN_TREE_SHADOW_LAYER)
+	P.plane = FLOOR_PLANE
+	P.mouse_opacity = 0
+	P.appearance_flags = RESET_COLOR | RESET_ALPHA | RESET_TRANSFORM
+	P.transform = M
+	P.alpha = round(255 * strength)
+	return P
 
 // Gives this tree the shadow for the current sun. Returns TRUE when it changed.
 /obj/structure/wild/proc/sun_shadow_update()
@@ -246,3 +302,11 @@ var/global/sun_shadows_busy = FALSE
 #undef SUN_TREE_SHADOW_LAYER
 #undef SUN_TREE_SHADOW_SPRITE
 #undef SUN_TREE_SHADOW_MAX
+#undef SUN_TREE_POOL_WIDTH
+#undef SUN_TREE_POOL_MAX
+#undef SUN_TREE_POOL_SHIFT
+#undef SUN_TREE_POOL_BARE
+#undef SUN_TINT_NEUTRAL_ELEVATION
+#undef SUN_TINT_LOW_RED
+#undef SUN_TINT_LOW_GREEN
+#undef SUN_TINT_LOW_BLUE

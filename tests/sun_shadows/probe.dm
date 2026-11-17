@@ -100,6 +100,28 @@ var/list/sun_shadows_probe_latitudes = list(35, -20, 45, 50, 25, 2, 40)
 	season = SEASON_SPRING
 	sun_shadows_probe_assert(sun_angles("Midday") && !sun_angles("Night"), "night_no_sun")
 	sun_shadows_probe_assert(islist(sun_daylight_tint()), "tinted_daylight")
+	// The colour follows the sun's height: a low sun is warmer than a high one,
+	// a high sun is white, night is cool, and the same sun hands out one list.
+	var/list/low_tint = sun_elevation_tint(10)
+	var/list/mid_tint = sun_elevation_tint(25)
+	var/list/high_tint = sun_elevation_tint(60)
+	sun_shadows_probe_assert(low_tint[1] > mid_tint[1] && mid_tint[1] > 1 && low_tint[3] < mid_tint[3] && mid_tint[3] < 1, "low_sun_warmer")
+	sun_shadows_probe_assert(high_tint[1] == 1 && high_tint[2] == 1 && high_tint[3] == 1, "high_sun_white")
+	sun_shadows_probe_assert(low_tint[3] >= 0.78 && low_tint[1] <= 1.18, "warmth_bounded")
+	sun_shadows_probe_assert(sun_daylight_tint("Evening") == sun_daylight_tint("Evening") && sun_daylight_tint("Evening") == sun_daylight_tint("Early Morning"), "tint_list_stable")
+	var/list/evening_tint = sun_daylight_tint("Evening")
+	var/list/night_tint = sun_daylight_tint("Night")
+	sun_shadows_probe_assert(evening_tint[1] > 1 && evening_tint[3] < 1 && night_tint[3] > 1 && night_tint[1] < 1, "dusk_warm_night_cool")
+	// A winter noon is lower, so a little warmer, than a spring one.
+	var/list/spring_tint = sun_daylight_tint("Midday")
+	season = SEASON_WINTER
+	var/list/winter_tint = sun_daylight_tint("Midday")
+	sun_shadows_probe_assert(winter_tint[1] > spring_tint[1] && winter_tint[3] < spring_tint[3], "winter_noon_warmer")
+	// Polar night: a daylight phase with no sun gets no warm cast.
+	map.sun_latitude = 75
+	sun_shadows_probe_assert(!sun_angles("Midday") && !sun_daylight_tint("Midday"), "sunless_phase_no_cast")
+	map.sun_latitude = 45
+	season = SEASON_SPRING
 	sun_shadows_probe_assert(map.persistence_runtime_var("sun_latitude"), "latitude_not_saved")
 
 	// Trees: one shared image per sun, swapped on phase changes, gone at night.
@@ -109,7 +131,16 @@ var/list/sun_shadows_probe_latitudes = list(35, -20, 45, 50, 25, 2, 40)
 	sun_shadows_probe_phase("Morning")
 	sun_shadows_probe_assert(sun_shadows_probe_shadows(T1) == 1 && T1.sun_shadow_overlay && T1.sun_shadow_overlay == T2.sun_shadow_overlay, "morning_shared_shadow")
 	sun_shadows_probe_assert(T1.sun_shadow_overlay.mouse_opacity == 0 && T1.sun_shadow_overlay.plane == FLOOR_PLANE, "shadow_not_clickable")
+	// The shadow carries the pool of shade at the trunk's foot, which keeps its
+	// own shape (no stretch or turn) and darkens as the sun climbs.
 	var/image/morning = T1.sun_shadow_overlay
+	sun_shadows_probe_assert(morning.overlays.len == 1, "shadow_has_pool")
+	var/image/morning_pool = sun_tree_pool_image("canopy", 1.5, 16, 0, sun_tree_angles)
+	sun_shadows_probe_assert(morning_pool.icon_state == "pool" && (morning_pool.appearance_flags & RESET_TRANSFORM) && morning_pool.transform.b == 0 && morning_pool.transform.a == morning_pool.transform.e, "pool_keeps_shape")
+	var/image/high_pool = sun_tree_pool_image("canopy", 1.5, 16, 0, list(180, 68))
+	var/image/bare_pool = sun_tree_pool_image("bare", 1.5, 16, 0, list(180, 68))
+	sun_shadows_probe_assert(high_pool.alpha > morning_pool.alpha && bare_pool.alpha < high_pool.alpha, "pool_follows_sun")
+	sun_shadows_probe_assert(("pool" in icon_states('icons/effects/sun_shadow.dmi')), "pool_sprite_present")
 	sun_shadows_probe_phase("Evening")
 	sun_shadows_probe_assert(sun_shadows_probe_shadows(T1) == 1 && T1.sun_shadow_overlay != morning, "evening_swaps")
 	// A tree placed mid-day takes the current shadow at once.
