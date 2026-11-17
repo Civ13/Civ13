@@ -44,6 +44,7 @@ var/spread_runtime_error = FALSE
 		new /obj/map_metadata/spread_probe
 		build_research_tree()
 		spread_band_checks()
+		spread_common_checks()
 	catch(var/exception/e)
 		spread_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = spread_failures, "runtime_error" = spread_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")
@@ -92,3 +93,57 @@ var/spread_runtime_error = FALSE
 	map.book_research = FALSE
 	spread_check(knowledge_band(stone) == KNOWLEDGE_GUARDED, "nothing spreads off a book-research world")
 	map.book_research = TRUE
+
+/proc/spread_tester()
+	var/mob/living/human/H = new /mob/living/human/spread_tester(locate(5, 5, 1))
+	H.real_name = "Tester"
+	return H
+
+/proc/spread_common_checks()
+	var/stone = spread_node_of_tier(0)
+	var/classical = spread_node_of_tier(1)
+	var/medieval = spread_node_of_tier(2)
+	map.ordinal_age = 3
+	var/mob/living/human/early = spread_tester()
+	spread_check(knowledge_common_era() == -1 && !early.grant_common_knowledge() && !length(early.known_recipe_nodes), "nothing is common before the fourth era after the Stone Age")
+	map.ordinal_age = 4
+	var/stone_count = length(stone_age_node_ids())
+	var/mob/living/human/fresh = spread_tester()
+	spread_check(fresh.grant_common_knowledge() == stone_count && fresh.knows_recipe_node(stone) && !fresh.knows_recipe_node(classical), "a new character in an Industrial world starts with the [stone_count] Stone Age subjects and no more")
+	spread_check(!fresh.grant_common_knowledge(), "common knowledge is given once")
+	spread_check(!length(fresh.scholarship), "common knowledge brings no scholarship")
+	// A living character who already knows some of it gains the rest and keeps the others.
+	var/mob/living/human/old = spread_tester()
+	old.known_recipe_nodes = list(stone, medieval)
+	old.note_study_progress(classical, 0.5)
+	human_mob_list += old
+	map.ordinal_age = 5
+	var/reached = knowledge_era_advanced()
+	spread_check(reached >= 1 && old.knows_recipe_node(classical) && old.knows_recipe_node(medieval), "when the era advances the living gain what became common and keep the rest")
+	spread_check(!old.study_fraction(classical), "a half-read chapter that became common is finished")
+	// The era falls: nothing is taken back, and a new character gets the lower floor.
+	map.ordinal_age = 4
+	spread_check(old.knows_recipe_node(classical), "what was gained is kept when the era falls")
+	var/mob/living/human/later = spread_tester()
+	later.grant_common_knowledge()
+	spread_check(later.knows_recipe_node(stone) && !later.knows_recipe_node(classical), "a character made after the fall gets the lower floor")
+	// The dead learn nothing, and other worlds are untouched.
+	var/mob/living/human/corpse = spread_tester()
+	corpse.stat = DEAD
+	spread_check(!corpse.grant_common_knowledge() && !length(corpse.known_recipe_nodes), "the dead gain nothing")
+	map.book_research = FALSE
+	var/mob/living/human/elsewhere = spread_tester()
+	spread_check(!elsewhere.grant_common_knowledge(), "nothing is common off a book-research world")
+	map.book_research = TRUE
+	// Every common subject's groundwork is common too, so nothing is known without its footing.
+	map.ordinal_age = 9
+	var/list/common = knowledge_band_node_ids(KNOWLEDGE_COMMON)
+	var/gaps = 0
+	for (var/id in common)
+		var/datum/research_node/N = get_research_node(id)
+		for (var/req in N.prereqs)
+			var/datum/research_node/R = get_research_node(req)
+			if (R && !research_node_dormant(R) && R.mode != RESEARCH_MODE_BOOK && !(req in common))
+				gaps++
+	spread_check(!gaps, "every common subject's groundwork is common as well")
+	human_mob_list -= old

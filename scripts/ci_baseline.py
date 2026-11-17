@@ -2547,7 +2547,7 @@ SUITES = {
                   'code/game/mob/groups/faction_start.dm', 'code/modules/persistence/bed_return.dm')},
     'knowledge_spread': {'files': ('tests/knowledge_spread/test_knowledge_spread.py',),
         'paths': ('tests/knowledge_spread/', 'code/modules/research_tree/knowledge_spread.dm', 'code/modules/research_tree/tech_tree_view.dm',
-                  'code/modules/research_tree/book_interface.dm')},
+                  'code/modules/research_tree/book_interface.dm', 'code/modules/research_tree/book_research.dm', 'code/modules/research_tree/era_loss.dm')},
     'wild_herbs': {'files': ('tests/wild_herbs/test_wild_herbs.py',),
         'paths': ('tests/wild_herbs/', 'code/modules/ecology/wild_herbs.dm', 'icons/farming/humanity_wild_herbs.dmi',
                   'icons/obj/food/food.dmi')},
