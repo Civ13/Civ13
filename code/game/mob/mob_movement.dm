@@ -398,6 +398,10 @@
 
 	if (!mob)
 		return // Moved here to avoid nullrefs below
+	// A body left between whole pixels would refuse every input; snap it back.
+	if (ishuman(mob))
+		var/mob/living/human/fraction_actor = mob
+		fraction_actor.human_subtile_snap_fraction()
 	// Plain held keys slide freely when this body can; otherwise they take the
 	// ordinary tile path (pulling, driving, confusion, trench edges, legacy mode).
 	if (fine_step == FINE_STEP_FREE)
