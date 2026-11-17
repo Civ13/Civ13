@@ -2293,10 +2293,11 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/paper_bin/empty" = "public_health",
 		"/obj/item/weapon/storage/bag/trash" = "public_health",
 		"/obj/structure/closet/crate/dumpster" = "public_health",
-		// --- rail_steam (15) ---
+		// --- rail_steam (16) ---
 		"/obj/structure/workshop_machine/rolling_mill" = "rail_steam",
 		"/obj/structure/workshop_machine/steam_site/road_roller" = "rail_steam",
 		"/obj/structure/rail_warehouse" = "rail_steam",
+		"/obj/item/train_coupling" = "rail_steam",
 		"/obj/structure/train_car_kit" = "rail_steam",
 		"/obj/structure/train_car_kit/coach" = "rail_steam",
 		"/obj/structure/train_car_kit/long_flatbed" = "rail_steam",

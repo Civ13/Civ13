@@ -4,7 +4,7 @@
 /world
 	hub = ""
 	hub_password = ""
-	maxx = 141
+	maxx = 147
 	maxy = 26
 	maxz = 1
 	turf = /turf/floor/dirt
@@ -986,6 +986,80 @@ var/global/platform_probe_runtime_error = FALSE
 	platform_check("long/open_wagon_drop_doors", drops == 2 && !wagon_probe.roofed() && train_car_length("open_wagon") == 8 && train_car_length("long_flatbed") == 8)
 	qdel(wagon_probe)
 
+// Couplings as parts (train_couplings.dm): shown at every car end, worn,
+// broken, taken off and fitted, and the train parts where one breaks.
+/proc/platform_coupling_run()
+	var/obj/structure/trains/locomotive/coal/L = drive_train(144, 12, 3)
+	var/obj/structure/trains/W1 = L.connected
+	var/obj/structure/trains/W2 = W1.connected
+	var/obj/structure/trains/W3 = W2.connected
+	for (var/obj/structure/trains/car in list(L, W1, W2, W3))
+		car.update_couplers()
+	platform_check("coupling/shown_at_each_end", W1.coupler_f && W1.coupler_r && (W1.coupler_f in W1.vis_contents) && (W1.coupler_r in W1.vis_contents) && W1.coupler_f.icon_state == "coupler_f_linked" && W1.coupler_r.icon_state == "coupler_b_linked" && W3.coupler_r.icon_state == "coupler_b_free" && L.coupler_f.icon_state == "coupler_f_free" && L.coupler_r.icon_state == "coupler_b_linked")
+	platform_check("coupling/part_knows_its_end", W1.coupler_r.car == W1 && !W1.coupler_r.front && W1.coupler_f.front && W1.end_neighbour(FALSE) == W2 && W1.end_neighbour(TRUE) == L && W2.end_towards(W1) && !W2.end_towards(W3))
+	var/list/states = icon_states('icons/obj/vehicles/train_platforms.dmi')
+	var/missing = 0
+	for (var/kind in list("free", "linked", "broken", "none"))
+		for (var/end in list("f", "b"))
+			if (!("coupler_[end]_[kind]" in states))
+				missing++
+	platform_check("coupling/art_states", !missing && ("coupling_item" in states))
+
+	platform_check("coupling/wears", W2.damage_coupling(FALSE, 40) && W2.rear_coupling == 60 && W2.connected == W3 && W2.coupler_r.icon_state == "coupler_b_linked" && findtext(W2.coupling_text(FALSE), "60%"))
+	platform_check("coupling/breaks_and_parts_the_train", W2.damage_coupling(FALSE, 60) && W2.rear_coupling == 0 && !W2.connected && W3.train_head() == W3 && W2.train_head() == L && W2.coupler_r.icon_state == "coupler_b_broken" && W3.coupler_f.icon_state == "coupler_f_free" && !W2.damage_coupling(FALSE, 10))
+	var/mob/living/human/platform_rider/shunter = new(platform_turf(143, 10))
+	platform_check("coupling/broken_will_not_couple", !W3.hitch_front(shunter) && !W2.hitch_rear(shunter) && !W2.connected)
+	platform_check("coupling/hitched_one_stays_on", !W1.remove_coupling(FALSE) && W1.rear_coupling == 100)
+	var/obj/item/train_coupling/scrap = W2.remove_coupling(FALSE)
+	platform_check("coupling/taken_off", scrap && scrap.condition == 0 && scrap.name == "broken train coupling" && W2.rear_coupling == -1 && W2.coupler_r.icon_state == "coupler_b_none" && findtext(W2.coupling_text(FALSE), "missing") && !W3.hitch_front(shunter))
+	var/obj/item/train_coupling/spare = new(platform_turf(143, 10))
+	var/refused = !W1.fit_coupling(FALSE, spare)
+	platform_check("coupling/spare_fitted", refused && W2.fit_coupling(FALSE, spare) && W2.rear_coupling == 100 && QDELETED(spare) && W2.coupler_r.icon_state == "coupler_b_free")
+	platform_check("coupling/couples_again", W3.hitch_front(shunter) && W2.connected == W3 && W2.coupler_r.icon_state == "coupler_b_linked" && W3.coupler_f.icon_state == "coupler_f_linked" && W3.train_head() == L)
+
+	// By hand: a tight coupling stays made; a blow on harm intent wears it.
+	L.throttle = 1
+	L.driving = TRUE
+	var/tight = W1.train_under_power() && W1.coupler_use(shunter, FALSE) && W1.connected == W2
+	L.driving = FALSE
+	L.throttle = 0
+	platform_check("coupling/not_undone_under_power", tight && !W1.train_under_power())
+	var/obj/item/weapon/crowbar/bar = new(shunter)
+	shunter.put_in_active_hand(bar)
+	shunter.a_intent = I_HARM
+	var/far = !L.coupler_use(shunter, TRUE) && L.front_coupling == 100
+	W2.coupler_use(shunter, TRUE)
+	platform_check("coupling/struck_with_a_weapon", far && shunter.get_active_hand() == bar && W2.front_coupling == 100 - bar.force && W1.connected == W2)
+	qdel(bar)
+
+	W3.blast_couplings(2)
+	var/strained = W3.front_coupling == 40 && W3.rear_coupling == 40 && W2.connected == W3
+	W3.blast_couplings(1)
+	platform_check("coupling/blast_breaks", strained && W3.front_coupling == 0 && W3.rear_coupling == 0 && !W2.connected)
+	platform_check("coupling/train_runs_on_without_the_rest", platform_step(L, 2) == 2 && W2.loc == platform_turf(144, 12) && W3.loc == platform_turf(144, 9))
+	var/obj/effect/train_coupler/gone = W3.coupler_f
+	qdel(W3)
+	platform_check("coupling/cleared_with_the_car", gone && QDELETED(gone))
+
+	// Cars facing each other's way: each end still knows its neighbour.
+	for (var/y in 2 to 10)
+		platform_track(146, y, NORTH)
+	var/obj/structure/trains/transport/flatbed/A = new(platform_turf(146, 6))
+	A.dir = NORTH
+	var/obj/structure/trains/transport/flatbed/B = new(platform_turf(146, 5))
+	B.dir = SOUTH
+	var/mob/living/human/platform_rider/second = new(platform_turf(145, 6))
+	platform_check("coupling/back_to_back", A.hitch_rear(second) && A.end_neighbour(FALSE) == B && B.end_neighbour(FALSE) == A && !B.end_neighbour(TRUE) && B.coupler_r.icon_state == "coupler_b_linked" && B.coupler_f.icon_state == "coupler_f_free" && A.coupler_r.icon_state == "coupler_b_linked")
+	B.damage_coupling(FALSE, 100)
+	platform_check("coupling/back_to_back_parts", !A.end_neighbour(FALSE) && !B.end_neighbour(FALSE) && A.train_head() == A && B.train_head() == B && A.rear_coupling == 100)
+
+	// A car of several sections has a coupling at each end of the car only.
+	var/obj/structure/trains/platform/flat = platform_car("flatbed", 146, 10, NORTH)
+	var/list/segs = platform_segments(flat)
+	var/obj/structure/trains/platform/mid = segs[2]
+	var/obj/structure/trains/platform/last = segs[4]
+	platform_check("coupling/car_ends_only", flat.coupler_f && !flat.coupler_r && !mid.coupler_f && !mid.coupler_r && last.coupler_r && !last.coupler_f && !mid.damage_coupling(TRUE, 100) && mid.front_coupling == 100)
+
 /world/New()
 	OpenPort("none")
 	GLOB.all_observable_events = list()
@@ -1004,6 +1078,7 @@ var/global/platform_probe_runtime_error = FALSE
 		platform_position_run()
 		platform_facing_run()
 		platform_long_run()
+		platform_coupling_run()
 	catch (var/exception/E)
 		platform_probe_runtime_error = TRUE
 		world.log << "Fixture aborted: [E] at [E.file]:[E.line]"

@@ -67,6 +67,19 @@ class TrainPlatformSourceTests(unittest.TestCase):
             self.assertIn('"%s" = "%s"' % (path, node), NODES)
             self.assertRegex(LOCOS, r'/obj/structure/train_car_kit/%s\n\tname = "heavy [a-z]+ locomotive kit"\n\tcar_kind = "%s"' % (kit, kit))
 
+    def test_couplings_are_parts_at_each_car_end(self):
+        dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
+        self.assertEqual(dme.count('#include "code\\modules\\1713\\train_couplings.dm"'), 1)
+        couplings = (ROOT / 'code/modules/1713/train_couplings.dm').read_text(encoding='utf-8')
+        # Saved per car end, shown through vis_contents and never saved themselves.
+        self.assertIn('\tvar/front_coupling = TRAIN_COUPLING_HEALTH\n\tvar/rear_coupling = TRAIN_COUPLING_HEALTH\n', couplings)
+        self.assertIn('/obj/effect/train_coupler\n', couplings)
+        self.assertIn('\tshould_save = FALSE\n\tvis_flags = VIS_INHERIT_DIR\n', couplings)
+        # A link needs both couplings whole, and explosions strain them.
+        self.assertIn('if (coupling_at(coupling_end_ahead(ahead)) <= 0)', TRAINS)
+        self.assertIn('/obj/structure/trains/platform/ex_act(severity)\n\tblast_couplings(severity)\n', WARFARE)
+        self.assertIn('RECIPE: /material/iron/,train coupling,/obj/item/train_coupling,4,80,0,0,trains,101,', RECIPES)
+
     def test_heavy_locomotives_drive_like_the_one_tile_engines(self):
         dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
         self.assertEqual(dme.count('#include "code\\modules\\1713\\train_locomotives.dm"'), 1)

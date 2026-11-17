@@ -413,6 +413,7 @@ var/global/train_step_plain = FALSE
 		deck_parts += G
 	hang_roof_images()
 	place_parts(loc, dir)
+	update_couplers()
 
 // "f" on the car's front segment, "b" on its last one: where the headstock,
 // buffers and coupling are drawn.
@@ -552,6 +553,9 @@ var/global/train_step_plain = FALSE
 	// is the rear of its train's order when the car is coupled in back to front.
 	if (seg_index != 1 && seg_index != car_length())
 		to_chat(usr, "Cars are coupled at their ends. Use the front or the rear of \the [src].")
+		return FALSE
+	if (train_under_power())
+		to_chat(usr, SPAN_WARNING("The couplings are pulled tight. Shut the throttle first."))
 		return FALSE
 	if (couple_end((seg_index == 1) ? !reversed : reversed, usr))
 		return TRUE
