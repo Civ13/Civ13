@@ -127,10 +127,20 @@
 		qdel(D)
 	if (!body)
 		return 0
+	// The same walk weighs her load for the ledger (hull_load.dm).
+	var/weighs = ledger && ledger.carries_load()
+	var/weight = 0
+	var/rigged = 0
 	for (var/atom/movable/M in body.aboard())
 		var/datum/craft_drive/D = M.craft_drive()
 		if (D)
 			add_drive(D)
+			if (weighs && istype(D, /datum/craft_drive/fitted/sail) && D.ready())
+				rigged++
+		if (weighs)
+			weight += M.hull_load()
+	if (weighs)
+		ledger.set_load(weight, rigged)
 	return drives.len
 
 /datum/craft/max_speed()
