@@ -1380,6 +1380,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/connector/bus_tie" = "electricity",
 		"/obj/item/weapon/battery" = "electricity",
 		"/obj/item/connector/riser" = "electricity",
+		"/obj/structure/lift_drive/electric" = "electricity",
+		"/obj/structure/lift_call/button" = "electricity",
 		"/obj/item/stack/cable_coil/blue" = "electricity",
 		"/obj/item/stack/cable_coil/cyan" = "electricity",
 		"/obj/item/stack/cable_coil/green" = "electricity",
@@ -1790,6 +1792,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/washbasin/washstand" = "hygiene",
 		// --- imperial_architecture (48) ---
 		"/obj/structure/workshop_machine/shear_legs/crane" = "imperial_architecture",
+		"/obj/structure/lift_platform" = "imperial_architecture",
+		"/obj/structure/lift_call" = "imperial_architecture",
 		"/obj/structure/workshop_machine/pile_driver" = "imperial_architecture",
 		"/obj/structure/sewer_piece/drain/brick" = "imperial_architecture",
 		"/obj/item/weapon/bridge_span/timber" = "imperial_architecture",
@@ -2457,6 +2461,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/sewer_pump/steam" = "steam_power",
 		"/obj/structure/workshop_machine/steam_site/steam_shovel" = "steam_power",
 		"/obj/structure/workshop_machine/shear_legs/crane/steam" = "steam_power",
+		"/obj/structure/lift_platform/iron" = "steam_power",
+		"/obj/structure/lift_drive/steam" = "steam_power",
 		"/obj/structure/workshop_machine/trip_hammer/steam" = "steam_power",
 		"/obj/structure/engine/external/steam" = "steam_power",
 		// --- steel_blades (6) ---

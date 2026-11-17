@@ -1415,6 +1415,10 @@ SUITES = {
         'paths': ('tests/canals/',), 'shared_paths': (
             'code/modules/1713/canals.dm', 'code/modules/1713/trench.dm', 'icons/obj/canal_lock.dmi',
             'tests/sprites/create_canal_lock.py')},
+    # Lifts between storeys: source contracts and sprite check (native probe tests/lifts/probe.dm).
+    'lifts': {'files': ('tests/lifts/test_source.py',),
+        'paths': ('tests/lifts/',), 'shared_paths': (
+            'code/modules/multiz/lifts.dm', 'icons/obj/lifts.dmi', 'tests/sprites/create_lifts.py')},
     # Chimneys carrying heat upstairs: source contracts and sprite check (native probe tests/storey_chimney/probe.dm).
     'storey_chimney': {'files': ('tests/storey_chimney/test_source.py',),
         'paths': ('tests/storey_chimney/',), 'shared_paths': (
