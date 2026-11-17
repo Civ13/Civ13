@@ -147,3 +147,35 @@ var/hw_runtime_error = FALSE
 	H.water = 0
 	cup.standard_feed_mob(H, H)
 	hw_check(cup.reagents.get_reagent_amount("water") == 20, "a container will not drink at the chest")
+
+	// A mug of water washes any part but the mouth, on help intent.
+	var/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/mug/mug = new(locate(3, 2, 1))
+	mug.reagents.add_reagent("water", 20)
+	H.a_intent = I_HELP
+	H.targeted_organ = "chest"
+	hw_check(mug.washes_on_click(H, H), "a mug of water washes the chest on help intent")
+	H.targeted_organ = "mouth"
+	hw_check(!mug.washes_on_click(H, H), "a mug at the mouth drinks")
+	H.targeted_organ = "chest"
+	H.a_intent = I_HARM
+	hw_check(!mug.washes_on_click(H, H), "a mug off help intent does not wash")
+	H.a_intent = I_HELP
+
+	// Self-examine shows which parts need washing.
+	H.w_uniform = null
+	H.gloves = null
+	H.washed_parts = null
+	H.hygiene = 150
+	hw_check(H.part_dirt_status(leg) == "dirty" && H.part_dirt_status(chest) == "dirty", "below clean, unwashed parts show dirty")
+	H.wash_body_part("l_leg")
+	hw_check(H.part_dirt_status(leg) == "" && H.part_dirt_status(chest) == "dirty", "a washed leg shows clean while the chest stays dirty")
+	H.hygiene -= 30
+	hw_check(H.part_dirt_status(leg) == "dirty", "a washed part gets dirty again as cleanliness falls")
+	H.hygiene = 50
+	hw_check(H.part_dirt_status(chest) == "filthy", "very dirty parts show filthy")
+	H.hygiene = HYGIENE_LEVEL_NORMAL
+	hw_check(H.part_dirt_status(chest) == "", "clean people show no dirt")
+	H.hygiene = 150
+	H.dirty_hands = DIRTY_HANDS_WASTE
+	hw_check(H.part_dirt_status(hand) == "dirty", "dirty hands show on the hand")
+	H.dirty_hands = 0

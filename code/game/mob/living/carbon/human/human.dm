@@ -969,6 +969,9 @@ var/list/coefflist = list()
 				if (!org.is_usable())//it useless
 					status = "</b> USELESS!</b>"
 
+				var/dirt = H.part_dirt_status(org)
+				if (dirt)
+					status = status ? "[status] || [dirt]" : " [dirt]"
 				if (status == "")
 					status = " OK"
 

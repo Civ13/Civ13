@@ -27,6 +27,9 @@
 	attack(mob/M as mob, mob/user as mob, def_zone)
 		if (force && !(flags & NOBLUDGEON) && user.a_intent == I_HARM)
 			return ..()
+		// Help intent on any part but the mouth washes it (body_washing.dm).
+		if (washes_on_click(M, user))
+			return wash_with(M, user)
 		if (istype(M) && standard_feed_mob(user, M))
 			return TRUE
 		return FALSE
