@@ -600,6 +600,9 @@
 				var/turf/floor/beach/water/W = T
 				if (W.water_germ_level() > 0)
 					kind = "[T.name] (unclean)"
+			// Snow-covered ground looks like the bare kind but cannot be cut or gathered; list the nearest of each.
+			else if (T.has_snow_cover())
+				kind = "[T.name] (snow)"
 			var/list/best = nearest[kind]
 			if (!best || d < best["d"])
 				nearest[kind] = list("d" = d, "turf" = T)
@@ -608,6 +611,8 @@
 				break
 			var/turf/T = nearest[turf_name]["turf"]
 			var/list/row = list("ref" = "turf:[T.x],[T.y],[T.z]", "name" = T.name, "type" = "[T.type]", "dx" = T.x - here.x, "dy" = T.y - here.y)
+			if (T.has_snow_cover())
+				row["snow"] = TRUE
 			if (istype(T, /turf/floor/beach/water))
 				var/turf/floor/beach/water/W = T
 				row["sickness"] = W.water_germ_level()
