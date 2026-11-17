@@ -87,7 +87,10 @@
 	..()
 	var/turf/T = get_turf(src)
 	if (T)
-		origin_water_level = T.water_level
+		// A second update (New() runs one after whoever laid it) finds the
+		// water already drained by the first: keep the level it found then.
+		if (T.water_level || !origin_water_level)
+			origin_water_level = T.water_level
 		T.water_level = 0
 		T.move_delay = 0
 		// A floor over open air lights the cells around it (building_lighting.dm).
