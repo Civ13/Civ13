@@ -637,7 +637,7 @@ var/global/region_admin_send_running = FALSE
 		else
 			var/list/differs = region_admin_send_checks_diff(S["checks"], region_admin_send_checks(print))
 			exact = " WARNING: the character differs from what left[differs.len ? " ([english_list(differs)])" : ""]; compare with the snapshot in [P["from"]]'s data/transfer-snapshots."
-	region_admin_send_tell("[P["owner"]]'s character [H.real_name] arrived in [here] from [region_ooc_region_name(P["from"])] at [at.x],[at.y],[at.z][placed], sent by [S["by"]].[exact] Waiting for them to join.")
+	region_admin_send_tell("[P["owner"]]'s character [H.real_name] arrived in [here] from [region_ooc_region_name(P["from"])] at [at.x],[at.y],[at.z][placed], sent by [S["by"]].[exact] [region_travel_waiting_body(P["owner"]) == H ? "Waiting for them to join." : "They already have a living character here, so they keep playing that one and this body waits for an admin."]")
 
 // The parts whose checks differ, by name ("skills", "items:back"), or an empty
 // list when the sender sent none (an older sender).
