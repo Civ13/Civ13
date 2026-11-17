@@ -362,6 +362,8 @@ var/global/hull_ledger_timer_off = FALSE
 	check_founder()
 	// Unheld and crewed, she drifts (hull_anchors.dm).
 	step_drift()
+	// Her lookout calls what lies ahead (hull_watch.dm).
+	step_watch()
 
 /datum/hull_ledger/proc/status_text()
 	. = "She is a [class_name()]."

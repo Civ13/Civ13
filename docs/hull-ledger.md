@@ -153,6 +153,26 @@ the work survive a step of the hull.
 
 Masts fitted to a modular ship's frame are untouched.
 
+## Stations and the watch
+
+`code/modules/naval/hull_watch.dm`. Nothing forces a crew to man a station; the
+helm is told who is where, and a hand in the bow earns the crew a warning.
+
+- "Muster the watch" at the tiller prints `muster_text()`: everyone alive
+  aboard and their station from `station_of()` - at the helm (within a tile of
+  the tiller she is steered from), at an oar (buckled to a rowing bench), in
+  the bow keeping the lookout, at a mast, a pump or the anchor (within a tile),
+  or on deck. It needs no helm access.
+- The bow is her two foremost rows along her heading (`in_bow()`), on either
+  deck. `lookout()` is anyone alive, awake and on their feet there who is not
+  at the helm or an oar. Small craft keep no lookout.
+- `step_watch()` runs last in the ledger step. Under way with a lookout,
+  `sight_ahead()` plans her box up to twelve tiles along her heading and
+  returns the first distance that fails with the reason, coordinates cut off.
+  The crew is told when it is first sighted, when it is four tiles off or
+  less, and again if what is sighted is farther than before (a new course).
+  `sighted` is not saved.
+
 ## One-object craft: rafts, canoes, outriggers, inflatables
 
 These are single objects with no ledger (`code/modules/naval/small_craft_leaks.dm`).

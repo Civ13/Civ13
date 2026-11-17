@@ -794,6 +794,62 @@ var/naval_runtime_error = FALSE
 	map.winddirection = from_was
 	qdel(tiller)
 
+// Stations and the watch (hull_watch.dm).
+/proc/watch_checks()
+	var/obj/structure/hull_tiller/tiller = bilge_hull(52, 5, 54, 14, "Snow")
+	var/datum/craft/C = tiller.craft
+	var/datum/hull_ledger/L = C.ledger
+	L.seep_tiles = 0
+	naval_check(L.keeps_lookout() && L.helm() == tiller && L.bow_line() == 14, "a boat keeps a lookout, and her bow is her foremost row ([L.bow_line()])")
+	naval_check(L.in_bow(locate(53, 14, 2)) && L.in_bow(locate(52, 13, 2)) && !L.in_bow(locate(53, 12, 2)) && !L.in_bow(locate(53, 15, 2)), "her bow is her two foremost rows and nothing off her deck")
+	var/mob/living/human/naval_probe/helmsman = new(locate(53, 5, 2))
+	helmsman.name = "Helm Hand"
+	var/mob/living/human/naval_probe/hand = new(locate(53, 9, 2))
+	hand.name = "Deck Hand"
+	var/obj/structure/vehicleparts/movement/sail/mast = new(locate(53, 11, 2))
+	naval_check(!L.lookout(), "nobody in the bow is no lookout")
+	var/muster = L.muster_text()
+	naval_check(findtext(muster, "2 aboard") && findtext(muster, "Helm Hand: at the helm") && findtext(muster, "Deck Hand: on deck") && findtext(muster, "Nobody keeps a lookout"), "the muster names the helm and the idle hand and misses a lookout ([muster])")
+	hand.forceMove(locate(53, 10, 2))
+	naval_check(findtext(L.muster_text(), "Deck Hand: at a mast"), "beside a mast is at a mast")
+	hand.forceMove(locate(53, 14, 2))
+	muster = L.muster_text()
+	naval_check(L.lookout() == hand && findtext(muster, "Deck Hand: in the bow, keeping the lookout") && !findtext(muster, "Nobody keeps"), "on their feet in the bow they keep the lookout")
+	// Clear water: nothing to call.
+	naval_check(isnull(L.sight_ahead()) && !L.step_watch(), "clear water ahead and at anchor: nothing is called")
+	C.set_anchor(FALSE)
+	C.set_speed(VESSEL_SPEED_SLOW)
+	naval_check(!L.step_watch() && !L.sighted, "under way over clear water nothing is called")
+	// Something on her course.
+	hull_lay(53, 22)
+	var/list/seen = L.sight_ahead()
+	naval_check(seen && seen[1] == 8 && seen[2] == "a built floor in the way", "a floor eight tiles off her bow is seen, without coordinates ([seen ? "[seen[1]] [seen[2]]" : "nothing"])")
+	naval_check(L.step_watch() && L.sighted == 8, "the lookout calls it once")
+	naval_check(!L.step_watch(), "and does not call it again while it is far")
+	hull_lay(53, 18)
+	naval_check(L.step_watch() && L.sighted == 4, "close aboard it is called again")
+	naval_check(!L.step_watch(), "and then no more")
+	// No lookout, no call.
+	hand.forceMove(locate(53, 9, 2))
+	naval_check(!L.step_watch() && !L.sighted, "with nobody in the bow nothing is called")
+	hand.forceMove(locate(53, 14, 2))
+	hand.lying = TRUE
+	naval_check(!L.lookout() && findtext(L.muster_text(), "Deck Hand: laid out"), "a hand lying down keeps no lookout")
+	hand.lying = FALSE
+	// The helm keeps none either, and a small craft has none.
+	helmsman.forceMove(locate(52, 14, 2))
+	hand.forceMove(locate(53, 9, 2))
+	naval_check(L.lookout() == helmsman, "anyone on their feet in the bow will do")
+	C.set_speed(VESSEL_SPEED_STOP)
+	C.set_anchor(TRUE)
+	naval_check(!L.step_watch(), "at anchor nothing is called")
+	var/obj/structure/hull_tiller/skiff = bilge_hull(56, 5, 58, 8, "Gig")
+	var/datum/hull_ledger/S = skiff.craft.ledger
+	var/mob/living/human/naval_probe/rower = new(locate(57, 8, 2))
+	rower.name = "Gig Hand"
+	naval_check(!S.keeps_lookout() && !S.lookout() && findtext(S.muster_text(), "Gig Hand: on deck") && !findtext(S.muster_text(), "Nobody keeps"), "a small craft musters her hands and keeps no lookout")
+	mast.sails = FALSE
+
 /proc/naval_run()
 	try
 		naval_checks()
@@ -803,6 +859,7 @@ var/naval_runtime_error = FALSE
 		load_checks()
 		anchor_checks()
 		rigging_checks()
+		watch_checks()
 	catch(var/exception/e)
 		naval_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = naval_failures, "runtime_error" = naval_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")
