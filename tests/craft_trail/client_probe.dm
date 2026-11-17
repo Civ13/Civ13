@@ -1,5 +1,8 @@
-// Real-client check for a crewed airship in flight (2026-11-17 live report: a
-// black patch the shape of her deck stayed behind her over the sea).
+// Real-client check for what a moving craft leaves behind (2026-11-17 live
+// report: a black patch the shape of a ship's deck stayed behind her).
+// `-params mode=ship` sails a roofed sea hull with an upper deck at slow
+// ahead (her pixel-offset sailing, watched by the client); the default flies
+// a crewed airship.
 // Test-only: client_check.py appends it to a temporary copy of civ13.dme,
 // starts the daemon and connects one Dream Seeker client. The probe lays a
 // deck on the open air over open sea with the production airship code (a
@@ -24,6 +27,8 @@ var/global/datum/air_client_probe/air_client_probe = new
 	var/turf/centre
 	var/sky_z = 0
 	var/obj/structure/airship_helm/helm
+	var/obj/structure/hull_tiller/tiller
+	var/mode = "air"
 
 /datum/air_client_probe/New()
 	if(!all_species || !all_species.len)
@@ -129,7 +134,15 @@ var/global/datum/air_client_probe/air_client_probe = new
 					T.ChangeTurf(/turf/floor/beach/water/deep/saltwater)
 				if(level == sky_z && T.type != /turf/sky/building)
 					T.ChangeTurf(/turf/sky/building)
+	// As a world restore leaves them: open-air cells under her made anew
+	// (registered, with a lighting overlay) without the woken cell's corners.
+	if(world.params["restored"])
+		for(var/dx = -1 to 5)
+			for(var/dy = -1 to 6)
+				var/turf/T = locate(centre.x + dx, centre.y + dy, sky_z)
+				T.ChangeTurf(/turf/sky/building)
 	sleep(20)
+	metrics["restored"] = world.params["restored"] ? TRUE : FALSE
 	metrics["centre"] = "[centre.x],[centre.y],[centre.z] under [sky_z]"
 
 // Deck: 5 wide for rows 2-5 and 3 wide for the stern rows 0-1, bow north.
@@ -150,16 +163,16 @@ var/global/datum/air_client_probe/air_client_probe = new
 	top.loc = null
 	pass("airship_built", list("tiles" = helm.craft.body.tile_count()))
 
-/datum/air_client_probe/proc/take_body()
+/datum/air_client_probe/proc/take_body(level = 0)
 	if(headless)
-		H = new /mob/living/human/air_client_actor(at(2, 2))
+		H = new /mob/living/human/air_client_actor(at(2, 2, level))
 		sleep(10)
 	else
 		mark("waiting_for_client")
 		wait_for("client_connected", 18000, "No client connected within 30 minutes")
 		C = clients[1]
 		sleep(100)
-		H = new /mob/living/human(at(2, 2))
+		H = new /mob/living/human(at(2, 2, level))
 		H.ckey = C.ckey
 		sleep(50)
 		C = H.client
@@ -182,7 +195,7 @@ var/global/datum/air_client_probe/air_client_probe = new
 	for(var/turf/sky/building/T in before)
 		if(locate(/obj/covers) in T)
 			continue
-		rows += "[T.x],[T.y] view=[T.open_air_view ? 1 : 0] icon=[T.icon] lit=[T.lighting_overlay ? T.lighting_overlay.luminosity : "none"]"
+		rows += "[T.x],[T.y] view=[T.open_air_view ? 1 : 0] icon=[T.icon] lit=[T.lighting_overlay ? T.lighting_overlay.luminosity : "none"] corners=[!!T.corner_ne + !!T.corner_se + !!T.corner_sw + !!T.corner_nw]"
 	return rows
 
 /datum/air_client_probe/proc/hops(n)
@@ -215,6 +228,8 @@ var/global/datum/air_client_probe/air_client_probe = new
 	var/failure = null
 	var/failed_phase = null
 	headless = world.params["headless"] ? TRUE : FALSE
+	if(world.params["mode"] == "ship")
+		mode = "ship"
 	try
 		mark("startup")
 		wait_for("scheduler_ready", 9000, "Scheduler/ticker never became ready")
@@ -230,11 +245,18 @@ var/global/datum/air_client_probe/air_client_probe = new
 		set_daylight("Midday")
 		mark("sea")
 		stage_sea()
-		build_airship()
-		take_body()
-		sleep(50)
-		mark("flight")
-		fly()
+		if(mode == "ship")
+			build_ship()
+			take_body(centre.z)
+			sleep(50)
+			mark("sailing")
+			sail()
+		else
+			build_airship()
+			take_body()
+			sleep(50)
+			mark("flight")
+			fly()
 	catch(var/exception/e)
 		failure = "[e.name]"
 		failed_phase = phase
@@ -245,3 +267,63 @@ var/global/datum/air_client_probe/air_client_probe = new
 	world.log << (failure ? "FAIL: air client probe: [failure]" : "PASS: air client probe")
 	sleep(20)
 	del(world)
+
+// A sea hull of the same shape: a 5 x 4 bow roofed over (a floor above it, a
+// ladder up), a 3 x 2 open stern with her tiller. Bow north.
+/datum/air_client_probe/proc/build_ship()
+	for(var/dx = 0 to 4)
+		for(var/dy = 0 to 5)
+			if(dy < 2 && (dx == 0 || dx == 4))
+				continue
+			var/obj/covers/repairedfloor/ship/P = new(at(dx, dy, centre.z))
+			P.updateturf()
+	new /obj/structure/roof_support(at(2, 4, centre.z))
+	var/roofs = 0
+	for(var/dx = 0 to 4)
+		for(var/dy = 3 to 5)
+			if(building_construct_roof(at(dx, dy, centre.z), /obj/roof/wood, null))
+				roofs++
+	var/obj/structure/multiz/ladder/up/foot = new(at(1, 3, centre.z))
+	var/obj/structure/multiz/ladder/head = new(at(1, 3))
+	foot.find_target()
+	head.find_target()
+	tiller = new(at(2, 1, centre.z))
+	var/refusal = tiller.commission("Probe", NORTH)
+	require(isnull(refusal) && tiller.craft, "Hull not commissioned: [refusal]")
+	pass("ship_built", list("tiles" = tiller.craft.body.tile_count(), "roofs" = roofs, "upper" = tiller.craft.body:upper_tile_count()))
+
+/datum/air_client_probe/proc/sea_left(list/before)
+	var/list/rows = list()
+	for(var/turf/T in before)
+		if(locate(/obj/covers) in T)
+			continue
+		var/area/A = T.loc
+		rows += "[T.x],[T.y],[T.z] [A.type] wl=[T.water_level] lit=[T.lighting_overlay ? T.lighting_overlay.luminosity : "none"] a20=[T.lighting_overlay && islist(T.lighting_overlay.color) ? T.lighting_overlay.color[20] : "-"] wc=[T.window_coeff]"
+	return rows
+
+/datum/air_client_probe/proc/sail()
+	var/datum/craft/K = tiller.craft
+	var/list/left = K.body.cells()
+	var/turf/from = get_turf(tiller)
+	K.set_anchor(FALSE)
+	K.set_speed(VESSEL_SPEED_SLOW)
+	shot("1-built")
+	sleep(330)
+	shot("2-sailing")
+	sleep(330)
+	shot("3-sailing-more")
+	K.set_speed(VESSEL_SPEED_STOP)
+	sleep(50)
+	shot("4-stopped")
+	// Up the ladder to her upper deck.
+	var/turf/up = null
+	for(var/turf/T in K.body.cells())
+		var/obj/structure/multiz/ladder/up/L = locate() in T
+		if(L && L.target)
+			up = get_turf(L.target)
+	if(up)
+		H.forceMove(up)
+		sleep(30)
+	shot("5-upper-deck")
+	var/turf/now = get_turf(tiller)
+	pass("flown", list("from" = "[from.x],[from.y]", "to" = "[now.x],[now.y]", "left" = sea_left(left), "upper" = !!up))

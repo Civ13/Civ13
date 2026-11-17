@@ -1,6 +1,6 @@
 """Real-client check for a crewed airship in flight. Windows only.
 
-Builds a temporary copy of civ13.dme with tests/air_hull/client_probe.dm,
+Builds a temporary copy of civ13.dme with tests/craft_trail/client_probe.dm,
 starts the daemon on a loopback port from a fresh evidence directory, connects
 one Dream Seeker client, sizes its window to 1280x800 and records that window
 with ffmpeg (gdigrab) each time the probe asks for a clip, plus a still at the
@@ -24,7 +24,7 @@ import zlib
 
 REQUIRED_CHECKS = ('airship_built', 'flown')
 REQUIRED_CLIPS = ('1-built', '2-after-4-hops', '3-after-wait', '4-after-8-hops', '5-final')
-PROBE_INCLUDE = '\n#include "tests\\air_hull\\client_probe.dm"\n'
+PROBE_INCLUDE = '\n#include "tests\\craft_trail\\client_probe.dm"\n'
 
 
 def png(width, height, bgra):
@@ -158,6 +158,8 @@ def main():
     parser.add_argument('--output', type=Path)
     parser.add_argument('--port', type=int, default=0)
     parser.add_argument('--config-line', action='append', default=['DAYNIGHT_CLIENT_TINT'], help='extra line appended to the run copy of config/config.txt (live regions use DAYNIGHT_CLIENT_TINT)')
+    parser.add_argument('--mode', choices=('air', 'ship'), default='air', help='a crewed airship (air) or a roofed sea hull (ship)')
+    parser.add_argument('--restored', action='store_true', help='make the open-air cells under her anew first, as a world restore leaves them')
     parser.add_argument('--deadline', type=int, default=3600, help='seconds for the whole run')
     args = parser.parse_args()
     if sys.platform != 'win32':
@@ -199,7 +201,7 @@ def main():
             'config_lines': args.config_line, 'adapters': ['probe appended to a temporary civ13.dme', 'webhooks/ToRban off', 'round started via admin_started', 'weather worker paused, Midday lighting', 'a patch of deep sea with open air above it', 'a 5x6 airship deck with a 3-wide stern, four gas cells and a helm commissioned with the production code', 'hops stepped by the probe with sail_hop()', 'client window 1280x800, a still at the start of each 3 s clip']}, indent=2), encoding='utf-8')
         with (output / 'daemon-output.log').open('w') as out:
             daemon = subprocess.Popen([str(args.byond_bin / 'dd.exe'), 'probe.dmb', str(port), '-trusted', '-ip', '127.0.0.1',
-                                       '-params', 'tested_commit=' + head, '-log', 'startup.log'], cwd=output, stdout=out, stderr=subprocess.STDOUT)
+                                       '-params', 'tested_commit=' + head + ('&restored=1' if args.restored else '') + '&mode=' + args.mode, '-log', 'startup.log'], cwd=output, stdout=out, stderr=subprocess.STDOUT)
         print(f'Daemon PID {daemon.pid} on 127.0.0.1:{port}; evidence in {output}', flush=True)
         started = time.monotonic()
         last_phase = None
@@ -240,11 +242,13 @@ def main():
         if not result:
             raise RuntimeError(f'No result.json (daemon exit {daemon.poll()}); see {output}')
         passed = [row['check'] for row in result.get('checks', []) if row.get('passed')]
-        missing = [name for name in REQUIRED_CHECKS if name not in passed]
+        required = ('ship_built', 'flown') if args.mode == 'ship' else REQUIRED_CHECKS
+        missing = [name for name in required if name not in passed]
         def clip_ok(name):
             done = output / 'clips' / (name + '.done')
             return (output / 'clips' / (name + '.mp4')).exists() and done.exists() and done.read_text().strip() == '0'
-        missing_clips = [name for name in REQUIRED_CLIPS if not clip_ok(name)]
+        clips_needed = ('1-built', '2-sailing', '3-sailing-more', '4-stopped', '5-upper-deck') if args.mode == 'ship' else REQUIRED_CLIPS
+        missing_clips = [name for name in clips_needed if not clip_ok(name)]
         summary = {'passed': bool(result.get('passed')) and not missing and not missing_clips, 'failure': result.get('failure'),
                    'failed_phase': result.get('failed_phase'), 'missing_checks': missing, 'missing_clips': missing_clips,
                    'checks': result.get('checks'), 'tested_commit': head, 'output': str(output)}
