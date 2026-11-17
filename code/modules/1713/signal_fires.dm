@@ -133,6 +133,8 @@
 			H.client.signal_fire_hint_shown = TRUE
 			to_chat(H, SPAN_NOTICE("Someone is calling from a fire. Walk that way to find them, or answer with a signal of your own: use leather or cloth on a lit campfire or fire pit under the open sky."))
 	to_chat(user, SPAN_NOTICE(watchers.len ? "Someone out there can see it." : "Nobody seems to be in sight of it right now. Anyone outdoors within a long walk would have seen it."))
+	// On the mainland the signaller may invite newcomers (immigration_fires.dm).
+	addtimer(CALLBACK(src, PROC_REF(immigration_offer), user), 1)
 	return TRUE
 
 // Told once per connection what a smoke signal is (send_smoke_signal).

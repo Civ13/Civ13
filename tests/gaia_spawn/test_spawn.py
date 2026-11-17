@@ -67,6 +67,7 @@ class Fixture:
         self.bed = None
         self.region = False
         self.near_people = None
+        self.fire_turf = None
         self.env = dict(re.findall(r'^#define (START_\w+) (\d+)$', self.source, re.M))
         self.env = {key: int(value) for key, value in self.env.items()}
         self.env.update(new_player_start_z=2, istype=istype, list=lambda *args: DMList(args),
@@ -82,7 +83,8 @@ class Fixture:
                         IsGuestKey=lambda key: key.startswith('Guest'),
                         region_home_bed=lambda key: self.bed,
                         get_turf=lambda bed: bed.turf,
-                        pick_newcomer_ground=lambda client: self.near_people)
+                        pick_newcomer_ground=lambda client: self.near_people,
+                        immigration_start_turf=lambda lobby: self.fire_turf)
         for name, args in [('new_player_ground', 'T'), ('new_player_has_exit', 'start'),
                            ('pick_new_player_ground', ''), ('new_player_destination', 'lobby')]:
             body = adapter.extract(self.source.split('\n#undef START_SPAWN_ATTEMPTS')[0], BASE+name)
@@ -231,6 +233,10 @@ class GaiaSpawn(unittest.TestCase):
         self.assertIs(f.new_player_destination(lobby),bed_turf)
         f.near_people=None; f.region=False
         self.assertIs(f.new_player_destination(lobby),target)
+        # A chosen signal fire comes before the bed and the newcomer start.
+        fire=tile(z=2)
+        f.fire_turf=fire; f.near_people=near; f.region=True
+        self.assertIs(f.new_player_destination(lobby),fire)
 
     def test_new_body_selected_after_reclaim_before_creation_and_handoff(self):
         src=(ROOT/'code/game/mob/new_player/new_player.dm').read_text()

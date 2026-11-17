@@ -1933,6 +1933,7 @@
 #include "code\modules\1713\firefighting_hook.dm"
 #include "code\modules\1713\firefighting_pump.dm"
 #include "code\modules\1713\signal_fires.dm"
+#include "code\modules\1713\immigration_fires.dm"
 #include "code\modules\1713\herbalism.dm"
 #include "code\modules\1713\processing_recipes.dm"
 #include "code\modules\1713\preserves.dm"
