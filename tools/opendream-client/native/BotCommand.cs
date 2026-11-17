@@ -27,6 +27,28 @@ public static class BotCommand {
         throw new ArgumentException("Usage: --bot " + string.Join("|", Actions) + " [--root <absolute folder>]");
     }
 
+    // Civ13.exe --bot log-level [debug|info|notice|warning|error] [--root FOLDER]: shows or sets the profile's
+    // log_level, which the bot reads when it next starts. Kept apart from Actions so Parse stays unchanged.
+    public const string LogLevelAction = "log-level";
+    private static string LogLevelUsage => "Usage: --bot log-level [" + string.Join("|", LocalBot.LogLevels) + "] [--root <absolute folder>]";
+
+    public static (string? Level, string? Root) ParseLogLevel(string[] args) {
+        if (args.Length < 2 || args[0] != Option || args[1] != LogLevelAction) throw new ArgumentException(LogLevelUsage);
+        var rest = args[2..];
+        string? level = null, root = null;
+        if (rest.Length is 1 or 3 && LocalBot.LogLevels.Contains(rest[0])) { level = rest[0]; rest = rest[1..]; }
+        if (rest.Length == 2 && rest[0] == "--root") { root = LocalDreamDaemon.RequirePath(rest[1]); rest = []; }
+        if (rest.Length != 0) throw new ArgumentException(LogLevelUsage);
+        return (level, root);
+    }
+
+    public static int LogLevel(HostBot bot, string? level, TextWriter output) {
+        if (level == null) { output.WriteLine("Civilizationbot log level: " + LocalBot.ReadLogLevel(bot.Profile) + "."); return 0; }
+        LocalBot.WriteLogLevel(bot.Profile, level);
+        output.WriteLine($"Civilizationbot log level set to {level}; it is used from the bot's next start (--bot restart).");
+        return 0;
+    }
+
     public static HostBot Load(string root) {
         var host = LocalHosting.Load(root) ?? throw new IOException("No host.json in " + root + "; configure local hosting first.");
         return host.Bot ?? throw new IOException("host.json has no \"bot\" section.");

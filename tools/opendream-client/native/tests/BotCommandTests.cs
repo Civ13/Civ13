@@ -20,6 +20,18 @@ static class BotCommandTests {
             try { BotCommand.Parse(bad); throw new Exception("accepted " + string.Join(" ", bad)); } catch (Exception e) when (e is ArgumentException or IOException) { assertions++; }
         }
 
+        Require(BotCommand.ParseLogLevel(["--bot", "log-level"]) == (null, null), "show log level");
+        Require(BotCommand.ParseLogLevel(["--bot", "log-level", "error", "--root", dir]) == ("error", dir), "set log level with root");
+        Require(BotCommand.ParseLogLevel(["--bot", "log-level", "--root", dir]) == (null, dir), "show log level with root");
+        foreach (var bad in new[] { new[] { "--bot", "log-level", "verbose" }, ["--bot", "log-level", "info", "debug"], ["--bot", "log-level", "info", "--root"], ["--bot", "start", "info"] }) {
+            try { BotCommand.ParseLogLevel(bad); throw new Exception("accepted " + string.Join(" ", bad)); } catch (Exception e) when (e is ArgumentException or IOException) { assertions++; }
+        }
+        var levelBot = bot with { Profile = Path.Combine(dir, "level.json") };
+        File.WriteAllText(levelBot.Profile, "{\"schema\":\"civilizationbot.portable.v1\"}");
+        var levelOutput = new StringWriter();
+        Require(BotCommand.LogLevel(levelBot, null, levelOutput) == 0 && levelOutput.ToString().Contains("log level: info"), "default level shown");
+        Require(BotCommand.LogLevel(levelBot, "notice", levelOutput) == 0 && LocalBot.ReadLogLevel(levelBot.Profile) == "notice", "level set from the command line");
+
         var detach = BotCommand.DetachedStart(bot);
         Require(!detach.UseShellExecute && detach.CreateNoWindow && detach.RedirectStandardOutput && detach.ArgumentList.Last() == BotCommand.DetachScript, "detached start shape");
         Require(detach.Environment["CIV13_BOT_COMMAND"] == $"\"{bot.Php}\" \"scripts/windows/control.php\" start \"{bot.Profile}\"" &&

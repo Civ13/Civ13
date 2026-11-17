@@ -15,6 +15,8 @@ internal sealed partial class LauncherWindow {
     private StatusLine? botState;
     private TextBox? botLog;
     private ComboBox? botLogChoice;
+    private ComboBox? botLogLevel;
+    private bool botLogLevelLoading;
     private Button? botClearStop;
     private readonly List<Button> botButtons = [];
     private readonly List<Button> botForceButtons = [];
@@ -37,6 +39,17 @@ internal sealed partial class LauncherWindow {
         Row("Bot folder", bot.Root);
         Row("Profile", bot.Profile);
         Row("When the launcher closes", "A bot started here is stopped first; one started outside the launcher keeps running");
+        layout.Controls.Add(new Label { Text = "Log level", AutoSize = true, Font = new Font(Font, FontStyle.Bold), Margin = new Padding(0, 7, 12, 3) });
+        var levelRow = new FlowLayoutPanel { AutoSize = true, Margin = new Padding(0), WrapContents = false };
+        botLogLevel = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList, Width = 110, Margin = new Padding(0, 3, 8, 3) };
+        botLogLevel.Items.AddRange(LocalBot.LogLevels);
+        botLogLevelLoading = true;
+        botLogLevel.SelectedItem = LocalBot.ReadLogLevel(bot.Profile);
+        botLogLevelLoading = false;
+        botLogLevel.SelectedIndexChanged += async (_, _) => await SetBotLogLevel();
+        levelRow.Controls.Add(botLogLevel);
+        levelRow.Controls.Add(new Label { Text = "How much the bot writes to its logs (info by default; debug is the most). Used from its next start.", AutoSize = true, Margin = new Padding(0, 7, 0, 3) });
+        layout.Controls.Add(levelRow);
         botState = new StatusLine { Margin = new Padding(0, 10, 0, 6) };
         botState.Set(Tone.Idle, Glyph.Arc, "Checking", "");
         var buttons = new FlowLayoutPanel { AutoSize = true, Margin = new Padding(0) };
@@ -76,7 +89,7 @@ internal sealed partial class LauncherWindow {
         };
         layout.Controls.Add(botLog);
         layout.SetColumnSpan(botLog, 2);
-        for (var row = 0; row < 5; row++) layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+        for (var row = 0; row < 6; row++) layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
         layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
         page.Controls.Add(layout);
         // Status every few seconds while anything could change: the tab is open, or a bot here is running.
@@ -88,6 +101,36 @@ internal sealed partial class LauncherWindow {
         page.Enter += async (_, _) => { await RefreshBot(); RefreshBotLog(true); };
         _ = RefreshBot();
         return page;
+    }
+
+    // Saves the chosen level in the bot's profile. A running bot only reads it when it starts, so offer a restart.
+    private async Task SetBotLogLevel() {
+        if (botLogLevelLoading || botProfile is not { } bot || botLogLevel?.SelectedItem is not string level) return;
+        var current = LocalBot.ReadLogLevel(bot.Profile);
+        if (level == current) return;
+        try { LocalBot.WriteLogLevel(bot.Profile, level); }
+        catch (Exception e) when (e is IOException or UnauthorizedAccessException or InvalidDataException or System.Text.Json.JsonException) {
+            BotLine("Could not save the log level: " + e.Message);
+            botLogLevelLoading = true;
+            botLogLevel.SelectedItem = current;
+            botLogLevelLoading = false;
+            return;
+        }
+        await RefreshBot();
+        if (!(botStatus?.Running ?? false) || botBusy) {
+            BotLine($"Log level set to {level}; the bot uses it when it next starts.");
+            return;
+        }
+        if (MessageBox.Show(this, $"Log level set to {level}. Civilizationbot reads it when it starts. Restart it now?", "Civ13 Launcher",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) {
+            BotLine($"Log level set to {level}; the bot uses it when it next starts.");
+            return;
+        }
+        await WithBotBusy(async () => {
+            if (!await StopBotAndWait()) return;
+            botBusy = false;
+            await StartBot();
+        });
     }
 
     private async Task<(int Exit, string Output)> RunBot(string action) {

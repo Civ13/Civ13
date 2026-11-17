@@ -81,6 +81,27 @@ static class LocalBotTests {
         Require(kill.FileName.EndsWith("taskkill.exe", StringComparison.OrdinalIgnoreCase) && kill.CreateNoWindow && kill.ArgumentList.SequenceEqual(new[] { "/F", "/T", "/PID", "11" }), "kill argv");
         Require(LocalBot.ListPhpProcesses() is { CreateNoWindow: true, RedirectStandardOutput: true } list && list.ArgumentList.Last().Contains("Name='php.exe'"), "process listing");
         Console.WriteLine($"PASS local bot: {assertions} assertions; control.php argv per action, status/check-update parsing for old and new bots, shared server/bot update check, open-log tail.");
+        // Log level: info by default, saved in the profile with every other field kept, no BOM.
+        var levelProfile = Path.Combine(dir, "level-profile.json");
+        File.WriteAllText(levelProfile, "{\"schema\":\"civilizationbot.portable.v1\",\"root\":\"D:/Bot\",\"http_port\":25565,\"servers\":{\"test\":{\"name\":\"Gaia – é\"}}}");
+        Require(LocalBot.ReadLogLevel(levelProfile) == "info", "missing log_level reads as info");
+        Require(LocalBot.ReadLogLevel(Path.Combine(dir, "no-such-profile.json")) == "info", "unreadable profile reads as info");
+        LocalBot.WriteLogLevel(levelProfile, "warning");
+        Require(LocalBot.ReadLogLevel(levelProfile) == "warning", "log_level saved");
+        var saved = File.ReadAllBytes(levelProfile);
+        Require(saved.Length > 3 && !(saved[0] == 0xEF && saved[1] == 0xBB && saved[2] == 0xBF), "profile written without a BOM");
+        using (var reread = System.Text.Json.JsonDocument.Parse(saved)) {
+            var json = reread.RootElement;
+            Require(json.GetProperty("schema").GetString() == "civilizationbot.portable.v1" && json.GetProperty("http_port").GetInt32() == 25565 &&
+                json.GetProperty("servers").GetProperty("test").GetProperty("name").GetString() == "Gaia – é", "other profile fields kept");
+        }
+        Require(!File.Exists(levelProfile + ".tmp"), "temporary profile removed");
+        try { LocalBot.WriteLogLevel(levelProfile, "verbose"); throw new Exception("unknown level accepted"); } catch (ArgumentException) { assertions++; }
+        File.WriteAllText(levelProfile, "{\"log_level\":\"LOUD\"}");
+        Require(LocalBot.ReadLogLevel(levelProfile) == "info", "unknown log_level reads as info");
+        File.WriteAllText(levelProfile, "{\"log_level\":\" Debug \"}");
+        Require(LocalBot.ReadLogLevel(levelProfile) == "debug", "log_level case and spaces");
+
         return assertions;
     }
 }
