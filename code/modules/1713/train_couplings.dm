@@ -121,6 +121,10 @@
 	var/obj/structure/trains/other = end_neighbour(front)
 	if (!other)
 		return null
+	// A moving train that parts leaves cars rolling (train_rolling.dm).
+	var/list/motion = train_motion()
+	var/way = motion ? travel_way(motion) : null
+	var/other_way = motion ? other.travel_way(motion) : null
 	if (coupling_end_ahead(front))
 		other.connected = null
 	else
@@ -129,6 +133,7 @@
 	other.settle_train_order()
 	update_couplers()
 	other.update_couplers()
+	parted_rolls(other, motion, way, other_way)
 	return other
 
 // Wears a coupling down. At nothing it breaks, and the train parts there.

@@ -186,7 +186,9 @@
 	var/list/cars = train_consist_list(train_head())
 	if (hit in cars)
 		return FALSE
-	var/running = FALSE
+	// Running under an engine, or rolling free (train_rolling.dm).
+	var/obj/structure/trains/roll_head = cars[1]
+	var/running = roll_head.roll_speed > 0
 	for (var/obj/structure/trains/locomotive/L in cars)
 		if (L.rail_speed > 0)
 			running = TRUE
@@ -209,6 +211,7 @@
 		L.throttle = 0
 		L.braking = FALSE
 		L.automovement = FALSE
+	roll_head.stop_rolling()
 	automovement = FALSE
 
 	var/list/seen = list()

@@ -308,6 +308,11 @@
 	if (other)
 		if (car_id && other.car_id == car_id)
 			return FALSE
+		// Uncoupled as the train coasts, the part without the engine rolls on
+		// by itself (train_rolling.dm).
+		var/list/motion = train_motion()
+		var/way = motion ? travel_way(motion) : null
+		var/other_way = motion ? other.travel_way(motion) : null
 		if (ahead)
 			other.connected = null
 		else
@@ -318,6 +323,7 @@
 		other.settle_train_order()
 		update_couplers()
 		other.update_couplers()
+		parted_rolls(other, motion, way, other_way)
 		return TRUE
 	var/way = ahead ? train_heading() : OPPOSITE_DIR(train_heading())
 	for (var/obj/structure/trains/TR in get_step(src, way))
@@ -497,13 +503,17 @@ var/global/train_solo_move = FALSE
 		impact = collision_impact()
 	for (var/obj/structure/trains/TF in tgtt)
 		automovement = FALSE
+		// Cars that nothing holds roll away from the blow (train_rolling.dm).
+		var/list/strike = (TF.train_head() != train_head()) ? train_motion() : null
 		// At speed this is a wreck (train_crashes.dm).
 		if (train_crash(TF, impact, fdir))
+			TF.shoved(strike, fdir)
 			return TRUE
 		visible_message("<span class = 'warning'>\The [src] hits \the [TF]!</span>")
 		health -= round(5 * impact)
 		if (impact > 1)
 			TF.health -= round(5 * (impact - 1))
+		TF.shoved(strike, fdir)
 		return TRUE
 	for (var/obj/O in tgtt)
 		// Deck and body tiles are the clearance check's business (train_consist_obstacle):
@@ -870,7 +880,7 @@ var/global/train_solo_move = FALSE
 	if (station == "all" || station == "fire")
 		choices += on ? stop_text : start_text
 	if (station == "all" || station == "driver")
-		choices += list("Throttle up", "Throttle down", "Brake")
+		choices += list("Throttle up", "Throttle down", "Brake", "Sand the rails")
 		choices += (reverser > 0) ? "Reverser to backward" : "Reverser to forward"
 	if (station == "all" || station == "fireman")
 		choices += extra_controls()
@@ -919,6 +929,9 @@ var/global/train_solo_move = FALSE
 			throttle = 0
 			braking = TRUE
 			visible_message("[user] applies \the [src]'s brake.", "You apply the engine's brake. It holds the engine alone: a long train needs its handbrakes as well.")
+		if ("Sand the rails")
+			if (!sand_rails(user))
+				return
 		if ("Reverser to backward", "Reverser to forward")
 			if (rail_speed > 0)
 				to_chat(user, "<span class = 'warning'>Stop the train before you move the reverser.</span>")
@@ -935,7 +948,7 @@ var/global/train_solo_move = FALSE
 /obj/structure/trains/locomotive/proc/control_summary()
 	var/where = reverser > 0 ? "forward" : "backward"
 	var/pinned = train_handbrakes()
-	return "[state_text()] Throttle notch [throttle] of [LOCO_NOTCHES], reverser [where][braking ? ", engine brake on" : ""][pinned ? ", [pinned] handbrake\s on in the train" : ""]. [speed_text()]."
+	return "[state_text()] Throttle notch [throttle] of [LOCO_NOTCHES], reverser [where][braking ? ", engine brake on" : ""][pinned ? ", [pinned] handbrake\s on in the train" : ""]. [speed_text()]. [sand_text()]"
 
 /obj/structure/trains/locomotive/proc/state_text()
 	return "Engine [on ? "running" : "stopped"]."
@@ -1063,6 +1076,10 @@ var/global/train_solo_move = FALSE
 						L.stall()
 				L.tender_top_up()
 
+// The notch as a share of full throttle.
+/obj/structure/trains/locomotive/proc/throttle_share()
+	return throttle / LOCO_NOTCHES
+
 /obj/structure/trains/locomotive/proc/engine_disabled()
 	return broken_down
 
@@ -1099,12 +1116,21 @@ var/global/train_solo_move = FALSE
 			var/target = cruise_speed()
 			var/heft = max(1, consist_weight / 6)
 			if (rail_speed < target)
-				if (rail_speed <= 0 && pull_ratio() < 0.25)
-					visible_message("<span class = 'warning'>\The [src]'s wheels spin; [consist_braked > 0 ? "the handbrakes are holding the train" : "the train is too heavy to start"].</span>")
-					throttle = 0
-					break
-				rail_speed = min(target, max(rail_speed, 0.5) + 0.35 * min(2, pull_ratio()))
-				braking = FALSE
+				// Too much throttle for the grip (train_adhesion.dm): the wheels
+				// spin and the train gains nothing.
+				if (wheels_slip())
+					wheel_slip()
+					if (rail_speed <= 0)
+						sleep(10)
+						continue
+				else
+					slipping = 0
+					if (rail_speed <= 0 && pull_ratio() < 0.25)
+						visible_message("<span class = 'warning'>\The [src]'s wheels spin; [consist_braked > 0 ? "the handbrakes are holding the train" : "the train is too heavy to start"].</span>")
+						throttle = 0
+						break
+					rail_speed = min(target, max(rail_speed, 0.5) + 0.35 * min(2, pull_ratio()))
+					braking = FALSE
 			else if (rail_speed > target)
 				// Rolling resistance by the train's heft, and the brakes by the
 				// share of its weight they hold (train_brakes.dm).
@@ -1121,6 +1147,8 @@ var/global/train_solo_move = FALSE
 				break
 			steps++
 			since++
+			if (sanding > 0)
+				sanding--
 			if (steps % 8 == 0)
 				playsound(loc, 'sound/machines/train/moving.ogg', 100, TRUE)
 			sleep(clamp(10 / max(0.5, rail_speed), max_train_speed, 20))
