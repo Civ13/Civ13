@@ -120,7 +120,8 @@ class FactionMemberStartSource(unittest.TestCase):
         for name in ('/mob/new_player/proc/faction_start_apply(', '/mob/new_player/proc/faction_start_destination('):
             self.assertIn('map.colony_home_faction(colony_start_grant) == faction', run.proc_text(self.start, name))
         admit = run.proc_text(read('code/modules/persistence/region_home.dm'), '/proc/region_home_admit(')
-        self.assertIn('lobby.colony_start_grant = colony_parent_valid(result["colony_grant"])', admit)
+        self.assertIn('var/grant = colony_parent_valid(result["colony_grant"])', admit)
+        self.assertIn('lobby.colony_start_grant = grant', admit)
         relocate = run.proc_text(read('code/game/jobs/job_controller.dm'), '/datum/controller/occupations/proc/relocate(')
         self.assertLess(relocate.index('H.faction_start_turf'), relocate.index('uses_random_new_player_spawn'))
 

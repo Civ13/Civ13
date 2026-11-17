@@ -65,6 +65,17 @@ class RegionRaidTests(unittest.TestCase):
         self.assertLess(enabled.index('shard_group.kind in list("BARRACKS", "BATTLE"'),
                         enabled.index('return shard_group && shard_group.enabled'))
 
+    def test_a_home_with_nothing_left_here_goes_back_to_the_start_region(self):
+        # A home kept for a character the world no longer has (a reset world)
+        # must not make every new character start here instead of the start region.
+        stranded = proc(HOME, '/proc/region_home_stranded')
+        for need in ('start == shard_group.region', '"EXPEDITION", "RAID"', '!land_stages_checked',
+                     'land_stage(shard_group.region) == "OPEN"', '!region_home_living_body(account) && !region_home_bed(account)'):
+            self.assertIn(need, stranded)
+        admit = proc(HOME, '/proc/region_home_admit')
+        self.assertIn('wait && !grant && region_home_stranded(C.ckey) && region_home_ask(C.ckey, "release")', admit)
+        self.assertLess(admit.index('region_home_stranded(C.ckey)'), admit.index('lobby.colony_start_grant = grant'))
+
 
 if __name__ == '__main__':
     unittest.main()
