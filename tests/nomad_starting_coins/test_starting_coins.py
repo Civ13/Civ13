@@ -62,8 +62,11 @@ class StartingCopperTests(unittest.TestCase):
             self.assertEqual(inventory, [('existing item', 1), ((COIN, 20), 'right pocket')])
 
     def test_every_former_era_grant_uses_the_same_role_gate(self):
-        clothes = adapter.extract(self.source, '/mob/living/human/proc/give_clothes')
-        self.assertNotIn('/obj/item/stack/money/coppercoin', clothes)
+        dressing = adapter.extract(self.source, '/mob/living/human/proc/give_clothes')
+        # Maps without peoples dress by era alone (lands with peoples: spawn_outfits.dm).
+        clothes = adapter.extract(self.source, '/mob/living/human/proc/give_era_clothes')
+        self.assertIn('give_era_clothes()', dressing)
+        self.assertNotIn('/obj/item/stack/money/coppercoin', dressing + clothes)
         # Seven grant sites, covering eight eras (the final case covers 8 and 9).
         cases = re.split(r'^\t\tif \((\d(?:, \d)?)\)\n', clothes, flags=re.M)
         grants = {case: body.count('give_starting_copper_coins()')
@@ -71,7 +74,7 @@ class StartingCopperTests(unittest.TestCase):
         self.assertEqual(grants, {'0': 0, '1': 1, '2': 0, '3': 1, '4': 1,
                                   '5': 1, '6': 1, '7': 1, '8, 9': 1})
         self.assertEqual(self.source.count(GRANT), 1)
-        self.assertIn('if (map.chad_mode)', clothes)
+        self.assertIn('if (map.chad_mode)', dressing)
         # Map-specific NationsRP and persistence-beta exceptions stay in place.
         for name in ('MAP_NATIONSRP', 'MAP_NATIONSRP_COLDWAR', 'MAP_NOMADS_PERSISTENCE_BETA'):
             self.assertIn(name, clothes)
