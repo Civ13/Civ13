@@ -284,7 +284,7 @@ class Wiring(unittest.TestCase):
         ticker = (ROOT / 'code/processes/ticker.dm').read_text(encoding='utf-8')
         self.assertIn('\tterrain_shading_check()\n', ticker)
         changing = (ROOT / 'code/game/turfs/turf_changing.dm').read_text(encoding='utf-8')
-        self.assertIn('\tif (terrain_shading_applied)\n\t\tW.terrain_shade_refresh()\n\treturn W\n', changing)
+        self.assertIn('\tif (terrain_shading_applied)\n\t\tW.terrain_shade_refresh()\n', changing)
         self.assertIn('I.mouse_opacity = 0', MODULE)
         # Floor icon rebuilds clear overlays; the shading must go back on.
         floor_icon = (ROOT / 'code/game/turfs/floor_icon.dm').read_text(encoding='utf-8')

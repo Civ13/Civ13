@@ -71,6 +71,16 @@ Free slides (`terrain_free_slope_delay`) read the hill continuously:
   factor x the flat pace and carries the leftover part of a tick into the next
   step (`terrain_pace_carry`), so over a few steps the pace follows the curve
   exactly. Flat ground keeps exactly the flat pace.
+- the speed itself eases: a held slide's speed (share of the flat speed,
+  `terrain_pace_speed`) moves toward the speed the slope and momentum ask for
+  at `TERRAIN_PACE_RAMP` (0.04 flat speeds per decisecond), so setting off up
+  or down a hill starts at the flat speed and changes in a straight line. Each
+  step takes the eased speed at its midpoint; while easing, no step's whole
+  ticks go against the ramp (`terrain_pace_ticks`). Pausing or turning back
+  resets it to the flat speed.
+- whole-tick rounding (`human_subtile_held_pace` and the flat pace here)
+  treats a twentieth of a tick as float noise, so a hill pace meant as whole
+  ticks no longer costs a random extra tick.
 - no step gets faster than 0.45 x its delay.
 
 Average held pace compared with flat ground (tick 0.4 ds, walk 2.85 ds, run

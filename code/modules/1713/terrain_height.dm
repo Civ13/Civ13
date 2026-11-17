@@ -55,6 +55,12 @@ var/global/list/terrain_height_chars = terrain_height_char_table()
 #define TERRAIN_MOMENTUM_FLAT_GRADE 0.25
 // A pause longer than this (deciseconds) between free steps loses momentum.
 #define TERRAIN_MOMENTUM_KEEP 4
+// A held slide's speed (as a share of its flat speed) eases toward the speed
+// the slope and momentum ask for at this constant rate, per decisecond, so
+// setting off up or down a hill starts at the flat speed and changes in a
+// straight line instead of jumping. 0.04 takes about a second to slow to a
+// one-level climb's pace and about two to reach full speed running downhill.
+#define TERRAIN_PACE_RAMP 0.04
 // No slope or momentum makes a step faster than this share of its delay.
 #define TERRAIN_FASTEST_SHARE 0.45
 // A one-tile step never counts more than this many levels.
@@ -86,6 +92,10 @@ var/global/list/terrain_height_chars = terrain_height_char_table()
 /mob/living/human/var/tmp/terrain_momentum_at = -1
 /mob/living/human/var/tmp/terrain_momentum_dir = 0
 /mob/living/human/var/tmp/terrain_pace_carry = 0
+// Speed of the last held slide as a share of the flat speed (1 = flat pace).
+/mob/living/human/var/tmp/terrain_pace_speed = 1
+// Whole ticks the last held slide's hill pace took (0 = none yet).
+/mob/living/human/var/tmp/terrain_pace_ticks = 0
 
 /obj/map_metadata
 	// Project-relative height file, for example "maps/heights/nomads_gaia.txt".
@@ -430,6 +440,9 @@ var/global/list/terrain_height_chars = terrain_height_char_table()
 		if (world.time - M.terrain_momentum_at > max(TERRAIN_MOMENTUM_KEEP, step_delay * 2) || (M.terrain_momentum_dir && direct == reverse_dir[M.terrain_momentum_dir]))
 			momentum = 0
 			M.terrain_pace_carry = 0
+			// Setting off again starts at the flat speed.
+			M.terrain_pace_speed = 1
+			M.terrain_pace_ticks = 0
 		if (grade > TERRAIN_MOMENTUM_FLAT_GRADE)
 			// Speed carried into a climb pays part of it, and is spent doing so.
 			factor = 1 + (factor - 1) * (1 - momentum * TERRAIN_MOMENTUM_CLIMB_SHARE)
@@ -449,6 +462,30 @@ var/global/list/terrain_height_chars = terrain_height_char_table()
 		M.terrain_momentum_dir = direct
 	return max(TERRAIN_FASTEST_SHARE, factor)
 
+// Eases a held slide's speed toward the speed a slope factor asks for, at
+// TERRAIN_PACE_RAMP flat speeds per decisecond, and returns the factor to use
+// for this step. Speed is constant within a step, so each step takes the speed
+// at its own midpoint: the steps follow a straight line in speed over time
+// that starts at the speed the body set off with.
+/proc/terrain_pace_ramp(mob/living/human/M, factor, flat_pace)
+	var/target = 1 / factor
+	var/speed = M.terrain_pace_speed
+	if (!(speed > 0))
+		speed = 1
+	if (speed == target)
+		return factor
+	// How far the speed may change over this step, at the step's starting speed.
+	var/change = TERRAIN_PACE_RAMP * flat_pace / speed
+	var/step_speed
+	if (speed < target)
+		step_speed = min(target, speed + change / 2)
+		speed = min(target, speed + change)
+	else
+		step_speed = max(target, speed - change / 2)
+		speed = max(target, speed - change)
+	M.terrain_pace_speed = speed
+	return 1 / step_speed
+
 // Extra move delay for a free step. A held slide's pace is whole server ticks
 // plus one (human_subtile_held_pace), which used to swallow most of a gentle
 // slope. Held slides therefore aim at factor x the flat pace and carry the
@@ -460,11 +497,23 @@ var/global/list/terrain_height_chars = terrain_height_char_table()
 	if (!held)
 		return step_delay * (factor - 1)
 	var/tick = world.tick_lag
+	var/flat_pace = (max(1, ceil(step_delay / tick - 0.05)) + 1) * tick // as human_subtile_held_pace
+	var/speed_before = M.terrain_pace_speed
+	factor = terrain_pace_ramp(M, factor, flat_pace)
+	var/easing = M.terrain_pace_speed - speed_before
 	if (factor == 1 && !M.terrain_pace_carry)
+		M.terrain_pace_ticks = round(flat_pace / tick, 1) - 1
 		return 0
-	var/flat_pace = (max(1, ceil(round(step_delay / tick, 0.001))) + 1) * tick
 	var/want = flat_pace * factor - tick + M.terrain_pace_carry
 	var/ticks = max(1, round(want / tick, 1))
+	// While the speed is easing, no step is slower (speeding up) or faster
+	// (slowing down) than the last one, so the leftover tick never dents the ramp.
+	if (M.terrain_pace_ticks)
+		if (easing > 0)
+			ticks = min(ticks, M.terrain_pace_ticks)
+		else if (easing < 0)
+			ticks = max(ticks, M.terrain_pace_ticks)
+	M.terrain_pace_ticks = ticks
 	M.terrain_pace_carry = clamp(want - ticks * tick, -tick, tick)
 	return ticks * tick - step_delay
 
@@ -758,6 +807,7 @@ var/global/list/terrain_terrace_images = list()
 #undef TERRAIN_MOMENTUM_CLIMB_COST
 #undef TERRAIN_MOMENTUM_FLAT_GRADE
 #undef TERRAIN_MOMENTUM_KEEP
+#undef TERRAIN_PACE_RAMP
 #undef TERRAIN_FASTEST_SHARE
 #undef TERRAIN_TRIP_PER_LEVEL
 #undef TERRAIN_TRIP_MOMENTUM
