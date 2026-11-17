@@ -63,3 +63,10 @@ response are all paused while their host sleeps (`inducedSSD`: no offline
 catch-up), as before, so sleep neither worsens nor heals them; lying buckled
 and awake is what doubles the immune gain. Recovery is announced in large
 green text.
+
+## Flu knock-downs
+
+Flu no longer applies drowsiness (which could put a character to sleep or
+paralyse it for several ticks at random): `flu_haze` only blurs the eyes. The
+high fever floors a character at most once per illness, for 2 ticks
+(`flu_knockdown`, `FLU_MAX_DOWNS`, `FLU_DOWN_TIME`), and says so in chat.
