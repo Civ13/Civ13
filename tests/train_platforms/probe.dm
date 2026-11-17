@@ -600,20 +600,20 @@ var/global/platform_probe_runtime_error = FALSE
 	platform_check("viewers/near_is_watched", !train_tile_unwatched(near) && !train_tile_unwatched(edge) && !train_tile_unwatched(platform_turf(40, 21)))
 	platform_check("viewers/far_is_plain", train_tile_unwatched(far) && train_tile_unwatched(platform_turf(40, 22)))
 	// A train out of the viewer's reach still carries its parts and load.
-	for (var/y in 2 to 12)
-		platform_track(82, y, NORTH)
-	var/obj/structure/trains/platform/car = platform_car("coach", 82, 7, NORTH)
+	for (var/x in 68 to 84)
+		platform_track(x, 23, EAST)
+	var/obj/structure/trains/platform/car = platform_car("coach", 75, 23, EAST)
 	var/list/segs = platform_segments(car)
-	var/obj/structure/trains/locomotive/coal/L = new(platform_turf(82, 8))
-	L.dir = NORTH
+	var/obj/structure/trains/locomotive/coal/L = new(platform_turf(76, 23))
+	L.dir = EAST
 	L.fuel = 100
 	L.on = TRUE
 	L.connected = car
-	var/obj/structure/closet/crate/crate = new(platform_turf(81, 6))
-	var/obj/item/weapon/branch/stick = new(platform_turf(83, 5))
-	var/mob/living/human/platform_rider/rider = new(platform_turf(83, 6))
+	var/obj/structure/closet/crate/crate = new(platform_turf(74, 24))
+	var/obj/item/weapon/branch/stick = new(platform_turf(73, 22))
+	var/mob/living/human/platform_rider/rider = new(platform_turf(74, 22))
 	platform_check("viewers/unwatched_step", platform_step(L, 3) == 3 && train_tile_unwatched(car.loc) && platform_parts_placed(segs))
-	platform_check("viewers/unwatched_load_rides", crate.loc == platform_turf(81, 9) && stick.loc == platform_turf(83, 8) && rider.loc == platform_turf(83, 9))
+	platform_check("viewers/unwatched_load_rides", crate.loc == platform_turf(77, 24) && stick.loc == platform_turf(76, 22) && rider.loc == platform_turf(77, 22))
 	// Without a viewport there is nothing to cull by, and a save checks every move.
 	V.probe_radii = null
 	train_platform_reset_plan()
