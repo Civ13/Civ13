@@ -492,6 +492,8 @@ var/global/list/crafting_purpose_cache = list()
 		var/refusal = craft_guard_refusal(viewer, R, CRAFT_GUARD_MENU)
 		why = istext(refusal) ? trim(strip_html_properly(refusal)) : ""
 		if (!why)
+			why = recipe_skill_refusal(viewer, R) || ""
+		if (!why)
 			why = "Missing a tool, skill or second material"
 	var/cost = "[R.req_amount] [S.singular_name]\s"
 	if (recipe_needs_crafting_handle(R.title))

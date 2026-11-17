@@ -765,6 +765,10 @@ class BuildTurf(Record):
         return self.occupied and kind == CONSTRUCTED
 
 
+CIRCUIT_SKILL = float(re.search(r'list\("crafting", ([\d.]+), list\(/obj/item/stack/material/electronics\)\)',
+    (ROOT / 'code/game/objects/items/stacks/recipe_skill_needs.dm').read_text()).group(1))
+
+
 class AcquisitionProjection(Projection):
     """Execute real menu/build windows, not the unrelated 2,000-line recipe cases.
 
@@ -809,6 +813,8 @@ class AcquisitionProjection(Projection):
             reference_build_time=lambda _actor, _path, time: time,  # no book reference (subject_prototypes.dm)
             crafting_recipe_allowed=lambda actor,path: bool(actor and self.globals['map'].is_node_done(actor.civilization,self.globals['recipe_node_requirements'][path])),
             get_recipe_node_req=lambda value: self.run('/proc/get_recipe_node_req', Record(), result_path_string=value),
+            # The circuits' level now lives in the skill table (recipe_skill_needs.dm).
+            recipe_skill_short=lambda actor, _recipe: actor.getStatCoeff('crafting') < CIRCUIT_SKILL,
             locate=lambda kind: kind, isfloor=lambda site: site.floor, usr=None,
             exercise_can_build=lambda *_args: True, civ_telecom_can_build=lambda *_args: True,
             civ_generation_can_build=lambda *_args: True, car_workshop_build_refusal=lambda *_args: None,
@@ -946,7 +952,7 @@ class GrinderAcquisition(unittest.TestCase):
         for coefficient, accepted in ((2.19, False), (2.2, True), (3, True)):
             p = AcquisitionProjection()
             actor = Record(getStatCoeff=lambda _name: coefficient)
-            self.assertEqual(bool(p.run('/datum/acquisition/proc/circuit_skill', Record(), H=actor)), accepted)
+            self.assertEqual(bool(p.run('/datum/acquisition/proc/circuit_skill', Record(), H=actor, recipe=None)), accepted)
         self.assertIn('circuit_iron.use(quantity)', STACK_SOURCE)
         self.assertIn('else if (used >= 10)\n\t\t\t\tamount -= (used-2)', STACK_SOURCE)
 

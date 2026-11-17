@@ -21,6 +21,8 @@
 		return FALSE
 	if (!isnull(craft_guard_refusal(H, R, CRAFT_GUARD_MENU)))
 		return FALSE
+	if (recipe_skill_refusal(H, R))
+		return FALSE
 	if (stone_mold_type(R.result_type))
 		var/datum/stone_mold_carving/carving = new(src, H, R)
 		if (!carving.valid())

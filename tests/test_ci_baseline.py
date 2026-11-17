@@ -1085,6 +1085,7 @@ class BaselinePolicyTests(unittest.TestCase):
                              'config/crafting/material_recipes_global.txt',
                              'config/crafting/material_recipes_camp.txt',
                              'config/crafting/material_recipes_carib.txt',
+                             'code/game/objects/items/stacks/recipe_skill_needs.dm',
                              'code/game/objects/items/stacks/stack.dm'):
                 destination = root / relative
                 destination.parent.mkdir(parents=True, exist_ok=True)

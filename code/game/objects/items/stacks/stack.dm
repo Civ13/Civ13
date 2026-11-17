@@ -450,13 +450,11 @@
 		customdesc = chosen["desc"]
 
 	else if (findtext(recipe.title, "carriage"))
-		if (H.getStatCoeff("crafting") < 1.7)
-			to_chat(H, "<span class = 'danger'>This is too complex for your skill level.</span>")
+		if (recipe_skill_short(H, recipe))
 			return
 
 	else if (findtext(recipe.title, "faction") && findtext(recipe.title, "door"))
-		if (H.getStatCoeff("crafting") < 1)
-			to_chat(H, "<span class = 'danger'>This is too complex for your skill level.</span>")
+		if (recipe_skill_short(H, recipe))
 			return
 
 		if (!ishuman(user))
@@ -479,8 +477,7 @@
 				to_chat(user, "You cannot build this on the upper deck.")
 				return
 	else if (findtext(recipe.title, "locked") && findtext(recipe.title, "door") && !findtext(recipe.title, "unlocked"))
-		if (H.getStatCoeff("crafting") < 1)
-			to_chat(H, "<span class = 'danger'>This is too complex for your skill level.</span>")
+		if (recipe_skill_short(H, recipe))
 			return
 
 		if (!ishuman(user))
@@ -564,13 +561,11 @@
 			return
 
 	else if (recipe.result_type == /obj/item/weapon/book/language_book)
-		if (H.getStatCoeff("philosophy") < 1.35)
-			to_chat(H, "<span class = 'danger'>This is too complex for your skill level.</span>")
+		if (recipe_skill_short(H, recipe))
 			return
 
 	else if (findtext(recipe.title, "motorcycle frame") || findtext(recipe.title, "boat frame"))
-		if (H.getStatCoeff("crafting") < 1.35)
-			to_chat(H, "<span class = 'danger'>This is too complex for your skill level.</span>")
+		if (recipe_skill_short(H, recipe))
 			return
 		var/list/chosen = craft_product_options(user, recipe, options)
 		if (!chosen)
@@ -579,13 +574,11 @@
 		customcolor = chosen["color"]
 
 	else if (findtext(recipe.title, "locomotive"))
-		if (H.getStatCoeff("crafting") < 1.9)
-			to_chat(H, "<span class = 'danger'>This is too complex for your skill level.</span>")
+		if (recipe_skill_short(H, recipe))
 			return
 
 	else if (findtext(recipe.title, "fuel pump"))
-		if (H.getStatCoeff("crafting") < 1.35)
-			to_chat(H, "<span class = 'danger'>This is too complex for your skill level.</span>")
+		if (recipe_skill_short(H, recipe))
 			return
 
 		var/list/chosen = craft_product_options(user, recipe, options)
@@ -665,73 +658,59 @@
 			secondary_refund(H)
 			return
 	else if ((findtext(recipe.title, "wall") && !findtext(recipe.title, "wallet")) || craft_recipe_builds_well(recipe))
-		if (H.getStatCoeff("crafting") < 1.1 && map.ID != MAP_VOYAGE)
-			to_chat(H, "<span class = 'danger'>This is too complex for your skill level.</span>")
+		if (recipe_skill_short(H, recipe))
 			secondary_refund(H)
 			return
 	else if (findtext(recipe.title, "locked large stone double doors") || findtext(recipe.title, "locked large sandstone double doors") || findtext(recipe.title, "locked large lead double doors") || findtext(recipe.title, "locked large copper double doors") || findtext(recipe.title, "locked large bronze double doors") || findtext(recipe.title, "locked large silver double doors") || findtext(recipe.title, "locked large gold double doors") || findtext(recipe.title, "locked large bone double doors"))
-		if (H.getStatCoeff("crafting") < 1.1)
-			to_chat(H, "<span class = 'danger'>This is too complex for your skill level.</span>")
+		if (recipe_skill_short(H, recipe))
 			secondary_refund(H)
 			return
 	else if (findtext(recipe.title, "locked wooden privacy door"))
-		if (H.getStatCoeff("crafting") < 1.1)
-			to_chat(H, "<span class = 'danger'>This is too complex for your skill level.</span>")
+		if (recipe_skill_short(H, recipe))
 			secondary_refund(H)
 			return
 	else if (findtext(recipe.title, "unlocked iron door") || findtext(recipe.title, "unlocked large iron double doors"))
-		if (H.getStatCoeff("crafting") < 1.1)
-			to_chat(H, "<span class = 'danger'>This is too complex for your skill level.</span>")
+		if (recipe_skill_short(H, recipe))
 			secondary_refund(H)
 			return
 	else if (findtext(recipe.title, "arquebus") || findtext(recipe.title, "matchlock musket"))
-		if (H.getStatCoeff("crafting") < 1.55)
-			to_chat(H, "<span class = 'danger'>This is too complex for your skill level.</span>")
+		if (recipe_skill_short(H, recipe))
 			secondary_refund(H)
 			return
 	else if (findtext(recipe.title, "monumental stone pillar") || findtext(recipe.title, "monumental ominous statue of the deep-one") || findtext(recipe.title, "monumental ominous statue of the evil-one") || findtext(recipe.title, "monumental ominous statue of the outsider") || findtext(recipe.title, "monumental stone buddha") || findtext(recipe.title, "monumental saint statue"))
-		if (H.getStatCoeff("crafting") < 1.55)
-			to_chat(H, "<span class = 'danger'>This is too complex for your skill level.</span>")
+		if (recipe_skill_short(H, recipe))
 			secondary_refund(H)
 			return
 	else if (findtext(recipe.title, "locked reinforced large steel double doors"))
-		if (H.getStatCoeff("crafting") < 1.55)
-			to_chat(H, "<span class = 'danger'>This is too complex for your skill level.</span>")
+		if (recipe_skill_short(H, recipe))
 			secondary_refund(H)
 			return
 	else if (findtext(recipe.title, "fire lance"))
-		if (H.getStatCoeff("crafting") < 1.25)
-			to_chat(H, "<span class = 'danger'>This is too complex for your skill level.</span>")
+		if (recipe_skill_short(H, recipe))
 			secondary_refund(H)
 			return
 	else if (findtext(recipe.title, "moai") || findtext(recipe.title, "long moai") || findtext(recipe.title, "monumental sandstone obelisk") || findtext(recipe.title, "monumental stone megalith"))
-		if (H.getStatCoeff("crafting") < 1.25)
-			to_chat(H, "<span class = 'danger'>This is too complex for your skill level.</span>")
+		if (recipe_skill_short(H, recipe))
 			secondary_refund(H)
 			return
 	else if (findtext(recipe.title, "handcannon") || findtext(recipe.title, "dragoon helmet"))
-		if (H.getStatCoeff("crafting") < 1.35)
-			to_chat(H, "<span class = 'danger'>This is too complex for your skill level.</span>")
+		if (recipe_skill_short(H, recipe))
 			secondary_refund(H)
 			return
 	else if (findtext(recipe.title, "monumental crucero cross") || findtext(recipe.title, "stone statue") || findtext(recipe.title, "sandstone statue"))
-		if (H.getStatCoeff("crafting") < 1.35)
-			to_chat(H, "<span class = 'danger'>This is too complex for your skill level.</span>")
+		if (recipe_skill_short(H, recipe))
 			secondary_refund(H)
 			return
 	else if (findtext(recipe.title, "grandfather clock") || findtext(recipe.title, "standing clock"))
-		if (H.getStatCoeff("crafting") < 1.35)
-			to_chat(H, "<span class = 'danger'>This is too complex for your skill level.</span>")
+		if (recipe_skill_short(H, recipe))
 			secondary_refund(H)
 			return
 	else if (findtext(recipe.title, "locked iron door") || findtext(recipe.title, "locked large iron double doors"))
-		if (H.getStatCoeff("crafting") < 1.35)
-			to_chat(H, "<span class = 'danger'>This is too complex for your skill level.</span>")
+		if (recipe_skill_short(H, recipe))
 			secondary_refund(H)
 			return
 	else if (findtext(recipe.title, "reinforced large steel double doors"))
-		if (H.getStatCoeff("crafting") < 1.35)
-			to_chat(H, "<span class = 'danger'>This is too complex for your skill level.</span>")
+		if (recipe_skill_short(H, recipe))
 			secondary_refund(H)
 			return
 	else if (findtext(recipe.title, "fire lance"))
@@ -764,8 +743,7 @@
 		handle_crafting_source_loc = loc
 
 	if (recipe.result_type == /obj/item/stack/material/electronics)
-		if (H.getStatCoeff("crafting") < 2.2)
-			to_chat(H, SPAN_DANGER("This is too complex for your skill level."))
+		if (recipe_skill_short(H, recipe))
 			secondary_refund(H)
 			return
 		if (!electronics_construction_iron(H, quantity))
@@ -774,8 +752,7 @@
 			return
 
 	else if (recipe.result_type == /obj/structure/sawmill/powered)
-		if (H.getStatCoeff("crafting") < 2.2)
-			to_chat(H, SPAN_DANGER("This is too complex for your skill level."))
+		if (recipe_skill_short(H, recipe))
 			secondary_refund(H)
 			return
 		if (!istype(H.l_hand, /obj/item/stack/material/electronics) && !istype(H.r_hand, /obj/item/stack/material/electronics))
@@ -875,13 +852,11 @@
 			secondary_refund(H)
 			return
 	else if (findtext(recipe.title, "cannon") || findtext(recipe.title, "catapult") || findtext(recipe.title, "spadroon") || findtext(recipe.title, "arming sword") || findtext(recipe.title, "small sword"))
-		if (H.getStatCoeff("crafting") < 1.8 && !findtext(recipe.title, "catapult projectile"))
-			to_chat(H, "<span class = 'danger'>This is too complex for your skill level.</span>")
+		if (recipe_skill_short(H, recipe))
 			secondary_refund(H)
 			return
 	else if (findtext(recipe.title, "stormy sea") || findtext(recipe.title, "city street") || findtext(recipe.title, "sea sunset") || findtext(recipe.title, "valley") || findtext(recipe.title, "still life") || findtext(recipe.title, "bird and blossom") || findtext(recipe.title, "pine on the shore") || findtext(recipe.title, "temple by the river") || findtext(recipe.title, "desert camp") || findtext(recipe.title, "barque at sea"))
-		if (H.getStatCoeff("crafting") < 2)
-			to_chat(H, "<span class = 'danger'>This is too complex for your skill level.</span>")
+		if (recipe_skill_short(H, recipe))
 			secondary_refund(H)
 			return
 
@@ -892,8 +867,7 @@
 			return
 
 	else if (findtext(recipe.title, "monumental marble statue of venus") || findtext(recipe.title, "monumental bronze statue of karl marx"))
-		if (H.getStatCoeff("crafting") < 2)
-			to_chat(H, "<span class = 'danger'>This is too complex for your skill level.</span>")
+		if (recipe_skill_short(H, recipe))
 			secondary_refund(H)
 			return
 

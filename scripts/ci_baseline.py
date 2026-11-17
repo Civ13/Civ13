@@ -1073,6 +1073,9 @@ SUITES = {
     'craft_guards': {'files': ('tests/craft_guards/test_craft_guards.py',),
         'paths': ('tests/craft_guards/', 'code/game/objects/items/stacks/craft_guards.dm'),
         'shared_paths': ('code/modules/1713/dug_wells.dm',)},
+    'recipe_skill_needs': {'files': ('tests/recipe_skill_needs/test_recipe_skill_needs.py',),
+        'paths': ('tests/recipe_skill_needs/', 'code/game/objects/items/stacks/stack_makeable.dm'),
+        'shared_paths': ('code/game/objects/items/stacks/recipe_skill_needs.dm',)},
     'craft_products': {'files': ('tests/craft_products/test_craft_products.py',),
         'paths': ('tests/craft_products/', 'code/game/objects/items/stacks/craft_products.dm'), 'shared_paths': ()},
     # Tool quality declarations match the base paths is_tool() replaced, and
@@ -2070,6 +2073,7 @@ SUITES = {
             'code/game/objects/structures/kitchen/oven.dm',
             'code/modules/1713/wood_ash_compost.dm',
             'code/game/objects/structures.dm',
+            'code/game/objects/items/stacks/recipe_skill_needs.dm',
             'code/game/objects/items/stacks/civ_recipes.dm',
             'code/modules/research_tree/research_node.dm',
             'config/crafting/material_recipes_global.txt',
