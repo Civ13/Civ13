@@ -1,7 +1,10 @@
 # Cactus water
 
 Use an open reagent container in the active hand on an adjacent ordinary wild
-cactus with a non-harm intent. This immediately collects water reagent. The
+cactus with a non-harm intent, while holding something sharp in the other hand
+(any item with an edge or point, or a knife tool: knives, flint blades,
+machetes, hatchets). Without one the player is told what they need and nothing
+is collected. This immediately collects water reagent. The
 provisional tuning is 20 units per cactus and at most 5 units per click: 5 is
 the normal small reagent-container transfer, and 20 is less than the 30-unit
 capacity of a vial. These are gameplay defaults for later tuning, not
