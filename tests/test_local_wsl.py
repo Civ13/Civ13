@@ -39,6 +39,7 @@ class LocalWslTests(unittest.TestCase):
             for name in (*atlas, 'scripts/build-crafting-atlas.py',
                          'config/crafting/furniture_joinery.json',
                          'config/craft_needs.json',
+                         'code/game/objects/items/stacks/craft_needs.dm',
                          'code/modules/1713/rope_making.dm',
                          'code/modules/1713/dressmaking.dm',
                          'code/modules/1713/primitive_woodworking.dm',

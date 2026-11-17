@@ -167,7 +167,7 @@ class BackendContract(unittest.TestCase):
             templates.update(re.findall(r'open_tgui\(user, ui_key, "([^"]+)"', source))
             templates.update(re.findall(r'(?m)^\t+(?:var/)?template = "([^"]+\.tmpl)"', source))
             self.assertNotRegex(source, r'ui = new\(user, src, ui_key, "[^"\n]+\.tmpl"')
-        self.assertEqual(templates, {'appearance_changer.tmpl', 'book_reader.tmpl', 'character_flavor.tmpl', 'character_notes.tmpl', 'character_setup.tmpl', 'chem_disp.tmpl', 'crafting_atlas.tmpl', 'crafting_window.tmpl', 'crew_log.tmpl', 'faction_creation.tmpl', 'faction_list.tmpl', 'faction_symbol.tmpl', 'known_languages.tmpl', 'panel.tmpl', 'photo_viewer.tmpl', 'recruitment_station.tmpl', 'religion_list.tmpl', 'research_bench.tmpl', 'research_book.tmpl', 'ship_stocks.tmpl', 'spawn_menu.tmpl', 'storage_window.tmpl', 'vending_machine.tmpl', 'vending_machine2.tmpl', 'vending_machine_gulag.tmpl', 'vending_machine_taotd.tmpl', 'warehouse_book.tmpl'})
+        self.assertEqual(templates, {'appearance_changer.tmpl', 'book_reader.tmpl', 'character_flavor.tmpl', 'character_notes.tmpl', 'character_setup.tmpl', 'chem_disp.tmpl', 'crafting_atlas.tmpl', 'crafting_window.tmpl', 'crew_log.tmpl', 'faction_creation.tmpl', 'faction_list.tmpl', 'faction_symbol.tmpl', 'known_languages.tmpl', 'panel.tmpl', 'photo_viewer.tmpl', 'recruitment_station.tmpl', 'religion_list.tmpl', 'research_bench.tmpl', 'research_book.tmpl', 'ship_stocks.tmpl', 'spawn_menu.tmpl', 'storage_window.tmpl', 'tech_tree.tmpl', 'vending_machine.tmpl', 'vending_machine2.tmpl', 'vending_machine_gulag.tmpl', 'vending_machine_taotd.tmpl', 'warehouse_book.tmpl'})
 
     def test_plain_owners_open_through_one_helper(self):
         helper = DM.split('/datum/proc/open_tgui(', 1)[1].split('\n/', 1)[0]
@@ -271,7 +271,7 @@ class BackendContract(unittest.TestCase):
         frontend = (ROOT / 'tgui/src/interfaces/CraftingWindow.tsx').read_text()
         topic = source.split('/datum/crafting_window/Topic', 1)[1]
         allowed = declared('code/game/objects/items/stacks/crafting_window.dm', 'datum/crafting_window')
-        self.assertEqual(allowed, {'make', 'makeable_only', 'images', 'atlas', 'pin', 'source', 'detail', 'process_atlas'})
+        self.assertEqual(allowed, {'make', 'makeable_only', 'images', 'atlas', 'pin', 'source', 'detail', 'process_atlas', 'tech_tree'})
         self.assertEqual(set(re.findall(r'href_list\["([^"\n]+)"\]', topic)), allowed | {'quantity', 'options'})
         self.assertEqual(set(re.findall(r"ui\.act\('([^'\n]+)'", frontend)), allowed)
         transport = DM.split('/datum/nanoui/tgui/Topic', 1)[1]
@@ -474,6 +474,10 @@ class BackendContract(unittest.TestCase):
         assets = (ROOT / 'code/modules/client/asset_cache.dm').read_text()
         for name in ('civ13-tgui-bootstrap.js', 'civ13-tgui.js', 'civ13-tgui.css'):
             self.assertIn(f"'UI/tgui/{name}'", assets)
+        # Sent under content-versioned names so a reconnect to an updated
+        # world cannot reuse the browser's remembered copy of the old bundle.
+        self.assertIn('assets[civ13_tgui_versioned_name(name, civ13_tgui_assets_version)] = sources[name]', assets)
+        self.assertIn('digests += "[md5(sources[name])]"', assets)
 
 
 if __name__ == '__main__':

@@ -3,7 +3,8 @@ import { Button, Section, NoticeBox } from 'tgui-core/components';
 import type { Data, ScreenProps } from '../types';
 import { Action, list, str } from './common';
 import { Bar, Checks, FieldWork, FilterChips, RecipeTags, StateBadge, matches, minutes, nodeState, stateRank } from './researchShared';
-export function lockedAncestors(nodes: Data[], id: string): Set<string> {
+// The tech tree outlines every unknown step, not just the locked ones.
+export function lockedAncestors(nodes: Data[], id: string, missing = (node: Data) => node.status_text === 'Locked'): Set<string> {
   const byId = new Map(nodes.map(node => [String(node.id), node]));
   const visited = new Set<string>();
   const locked = new Set<string>();
@@ -12,7 +13,7 @@ export function lockedAncestors(nodes: Data[], id: string): Set<string> {
       if (!parent || visited.has(parent)) continue;
       const node = byId.get(parent);
       visited.add(parent);
-      if (node?.status_text === 'Locked') locked.add(parent);
+      if (node && missing(node)) locked.add(parent);
       if (node) visit(parent);
     }
   };
@@ -27,6 +28,7 @@ export function filterKey(node: Data): FilterKey {
 }
 const bookFilters: [FilterKey, string][] = [['all', 'All'], ['study', 'Ready to study'], ['ready', 'Can research'], ['progress', 'In progress'], ['known', 'Known'], ['locked', 'Not yet']];
 const factionFilters: [FilterKey, string][] = [['all', 'All'], ['ready', 'Available'], ['progress', 'In progress'], ['known', 'Done'], ['locked', 'Locked']];
+const knowledgeFilters: [FilterKey, string][] = [['all', 'All'], ['ready', 'Can learn now'], ['known', 'Known'], ['locked', 'Not yet']];
 function costLine(node: Data, book: boolean): string {
   if (node.mode_text === 'Book only') return 'Book only';
   if (book && node.state_label) return str(node.state_label);
@@ -109,10 +111,15 @@ export function Research(ui: ScreenProps) {
   const [query, setQuery] = useState('');
   const [filter, setFilter] = useState<FilterKey>('all');
   const [view, setView] = useState<'tree' | 'list'>('tree');
+  // The tech tree opened from a recipe: one character's own knowledge, read only.
+  const knowledge = !!data.tech_tree;
+  const [focused, setFocused] = useState<string | null>(null);
   const tree = trees.find(item => Number(item.idx) === active) ?? trees[0];
   const nodes = useMemo(() => trees.flatMap(t => list(t.layers).flatMap(layer => list(layer.nodes).map(node => ({ ...node, layer_name: layer.layer_name, tree_name: t.tree_name, tree_idx: t.idx })))), [data.trees]);
   const detail = nodes.find(node => String(node.id) === selected);
-  const ancestors = selected ? lockedAncestors(nodes, selected) : new Set();
+  const trail = selected ?? focused;
+  const ancestors = trail ? (knowledge ? lockedAncestors(nodes, trail, node => nodeState(node) !== 'known') : lockedAncestors(nodes, trail)) : new Set();
+  const focusNode = focused ? nodes.find(node => String(node.id) === focused) : undefined;
   const found = (node: Data) => matches(query, node.name, node.recipe_names, node.discipline, node.era_name, node.layer_name);
   const shown = (node: Data) => (filter === 'all' || filterKey(node) === filter) && found(node);
   const counts: Record<string, number> = { all: 0 };
@@ -125,7 +132,24 @@ export function Research(ui: ScreenProps) {
     setActive(Number(node.tree_idx) || 0);
     setSelected(id);
   };
+  // A recipe asked for this node: show its tree, clear anything that would hide
+  // it, and outline the groundwork still missing on the way to it.
+  useEffect(() => {
+    const id = str(data.focus);
+    const node = nodes.find(item => String(item.id) === id);
+    if (!node) return;
+    setQuery(''); setFilter('all'); setView('tree');
+    setActive(Number(node.tree_idx) || 0);
+    setSelected(null);
+    setFocused(id);
+  }, [data.focus_seq]);
   const graph = useRef<HTMLDivElement>(null);
+  useLayoutEffect(() => {
+    if (!focused || view !== 'tree') return;
+    const el = Array.from(graph.current?.querySelectorAll<HTMLElement>('[data-node]') ?? []).find(item => item.dataset.node === focused);
+    el?.scrollIntoView?.({ block: 'center', inline: 'center' });
+    el?.focus?.({ preventScroll: true });
+  }, [focused, active, view]);
   const [lines, setLines] = useState<{ paths: string[]; width: number; height: number }>({ paths: [], width: 0, height: 0 });
   useLayoutEffect(() => {
     const draw = () => {
@@ -166,12 +190,16 @@ export function Research(ui: ScreenProps) {
     return null;
   };
   return <>
-    {book ? <BookShelf ui={ui} open={open} /> : <BenchSummary ui={ui} />}
-    {!!data.owns_bench && (!!data.is_leader || !!data.is_director) && <Section title="Research staff">
+    {knowledge ? <Section title="Your knowledge">
+      {focusNode ? <p>Showing <strong>{str(focusNode.name)}</strong>: <StateBadge node={focusNode} long />{ancestors.size > 0 && ` Outlined in orange: the ${ancestors.size === 1 ? 'technology' : `${ancestors.size} technologies`} you need first.`} <Button onClick={() => setSelected(String(focusNode.id))}>Details</Button></p>
+        : <p>Every technology, marked for what you know.</p>}
+      <p className="rs-dim">{data.book_research ? 'Learn a technology by studying its chapter in a research book once you know its groundwork. A research bench writes new chapters.' : 'Learn a technology from its manual once your faction has researched it.'}</p>
+    </Section> : book ? <BookShelf ui={ui} open={open} /> : <BenchSummary ui={ui} />}
+    {!knowledge && !!data.owns_bench && (!!data.is_leader || !!data.is_director) && <Section title="Research staff">
       {!!data.is_leader && <>{data.has_director ? <><Action ui={ui} action="appoint_director">Reassign {str(data.director_title)}</Action><Action ui={ui} action="set_director_title">Rename role</Action><Action ui={ui} action="dismiss_director">Dismiss {str(data.director_title)}</Action></> : <Action ui={ui} action="appoint_director">Appoint a Research Director</Action>}</>}
       <Action ui={ui} action="appoint_researcher">Appoint a Researcher</Action><Action ui={ui} action="dismiss_researcher">Dismiss a Researcher</Action>
     </Section>}
-    {book ? <Assigned ui={ui} open={open} /> : <>
+    {knowledge ? null : book ? <Assigned ui={ui} open={open} /> : <>
       {!!data.assigned_name && <Section title={`Currently researching: ${str(data.assigned_name)}`}>{data.assigned_done ? 'Completed! Open any completed tech below to write research notes or a book on it.' : str(data.assigned_status_text)}</Section>}
       {!!list(data.queue_names).length && <Section title="Queued next">{list(data.queue_names).map((name, i) => <span className="tag" key={i}>{str(name)}</span>)}{!!data.can_queue && <Action ui={ui} action="clear_queue">Clear queue</Action>}</Section>}
     </>}
@@ -180,7 +208,7 @@ export function Research(ui: ScreenProps) {
         <label className="rs-search">Find technology <input type="search" value={query} placeholder="Name, recipe or discipline" onChange={event => setQuery(event.target.value)} /></label>
         <div role="group" aria-label="Layout"><Button selected={view === 'tree'} onClick={() => setView('tree')}>Tree</Button><Button selected={view === 'list'} onClick={() => setView('list')}>List</Button></div>
       </div>
-      <FilterChips options={book ? bookFilters : factionFilters} value={filter} counts={counts} onChange={setFilter} />
+      <FilterChips options={knowledge ? knowledgeFilters : book ? bookFilters : factionFilters} value={filter} counts={counts} onChange={setFilter} />
       {view === 'tree' ? <>
         <div role="tablist">{trees.map(item => {
           const inTree = hits.filter(node => node.tree_idx === item.idx).length;
@@ -191,8 +219,8 @@ export function Research(ui: ScreenProps) {
           {list(tree?.layers).map((layer, i) => <section key={i}><h3>{str(layer.layer_name)}</h3><div className="research-layer">{list(layer.nodes).map(node => {
             const state = nodeState(node);
             const percent = Number(node.progress_percent) || 0;
-            return <button key={node.id} type="button" data-node={node.id} data-prereqs={node.prereq_ids} className={`research-node rs-${state} ${state === 'known' ? 'done' : state === 'locked' ? 'locked' : ''} ${ancestors.has(String(node.id)) ? 'ancestor' : ''} ${selected === String(node.id) ? 'selected' : ''} ${shown({ ...node, layer_name: layer.layer_name }) ? '' : 'muted'}`} style={{ gridColumn: Math.max(1, Number(node.grid_col) || 1) }} onClick={() => setSelected(String(node.id))}>
-              <strong>{str(node.name)}{!!node.is_era_changing && <span title="Advances the era"> ★</span>}</strong><small>{costLine(node, book)}</small>
+            return <button key={node.id} type="button" data-node={node.id} data-prereqs={node.prereq_ids} className={`research-node rs-${state} ${state === 'known' ? 'done' : state === 'locked' ? 'locked' : ''} ${ancestors.has(String(node.id)) ? 'ancestor' : ''} ${selected === String(node.id) || focused === String(node.id) ? 'selected' : ''} ${focused === String(node.id) ? 'focused' : ''} ${shown({ ...node, layer_name: layer.layer_name }) ? '' : 'muted'}`} style={{ gridColumn: Math.max(1, Number(node.grid_col) || 1) }} onClick={() => setSelected(String(node.id))}>
+              <strong>{str(node.name)}{!!node.is_era_changing && <span title="Advances the era"> ★</span>}</strong><small>{costLine(node, book || knowledge)}</small>
               {Number(node.queue_pos) > 0 && <small className="rs-queued">Queued #{node.queue_pos}</small>}
               {String(node.id) === assignedId && <small className="rs-queued">Being researched</small>}
               {percent > 0 && percent < 100 && <Bar value={percent} />}
@@ -214,7 +242,12 @@ export function Research(ui: ScreenProps) {
     {detail && <div className="modal-backdrop" onClick={() => setSelected(null)}><section role="dialog" aria-modal="true" aria-label={str(detail.name)} className="detail-modal" onClick={event => event.stopPropagation()}>
       <Button onClick={() => setSelected(null)}>Close</Button><h2>{str(detail.name)}{!!detail.is_era_changing && ' ★'}</h2>
       <p>{str(detail.layer_name)} - {detail.era_name ? str(detail.era_name) : `era ${detail.era_tier}`}{detail.discipline ? ` - ${str(detail.discipline)}` : ''} - {str(detail.mode_text)}{!!detail.is_era_changing && ' - advances the era'}</p>
-      {book ? <>
+      {knowledge ? <>
+        <p><StateBadge node={detail} long /></p>
+        <h3>Groundwork</h3>
+        {list(detail.groundwork).length ? <ul className="rs-checks">{list(detail.groundwork).map(item => <li key={item.id} className={item.known ? 'rs-ok' : 'rs-missing'}>
+          <span aria-hidden="true">{item.known ? '✓' : '✗'}</span> <button type="button" className="rs-link" onClick={() => open(String(item.id))}>{str(item.name)}</button> <span className="rs-dim">{item.known ? 'known' : 'not known yet'}</span></li>)}</ul> : <p className="rs-dim">None.</p>}
+      </> : book ? <>
         <p><StateBadge node={detail} long /></p>
         <div className="rs-actions">
           {!!detail.can_study && <Action ui={ui} action="study" value={detail.id}>{Number(detail.read_percent) > 0 ? `Continue this chapter (${detail.read_percent}% read, about ${minutes(detail.study_minutes)} left)` : `Study this chapter (about ${minutes(detail.study_minutes)})`}</Action>}
@@ -244,7 +277,7 @@ export function Research(ui: ScreenProps) {
       })()}
       <h3>Unlocks {list(detail.recipe_names).length} recipes</h3>{list(detail.recipe_names).length ? <RecipeTags names={detail.recipe_names} /> : 'None yet'}
       {!!detail.effect && <><h3>Knowing it</h3><p>{str(detail.effect)}</p></>}
-      {!book && <div>{!!detail.assignable && <Action ui={ui} action="assign" value={detail.id}>Assign this bench</Action>}{!!detail.can_write_notes && <Action ui={ui} action="write_notes" value={detail.id}>Write Research Notes (quick, boosts a buyer)</Action>}{!!detail.can_write_book && <Action ui={ui} action="write_book" value={detail.id}>Write Research Book (slow, completes for a buyer)</Action>}{!!detail.queueable && <Action ui={ui} action="queue" value={detail.id}>Add to research queue</Action>}</div>}
+      {!book && !knowledge && <div>{!!detail.assignable && <Action ui={ui} action="assign" value={detail.id}>Assign this bench</Action>}{!!detail.can_write_notes && <Action ui={ui} action="write_notes" value={detail.id}>Write Research Notes (quick, boosts a buyer)</Action>}{!!detail.can_write_book && <Action ui={ui} action="write_book" value={detail.id}>Write Research Book (slow, completes for a buyer)</Action>}{!!detail.queueable && <Action ui={ui} action="queue" value={detail.id}>Add to research queue</Action>}</div>}
     </section></div>}
   </>;
 }

@@ -167,7 +167,7 @@ wall) on a natural tile. `terrain_smoothed()` covers all three, so these tiles
 have no slope cost and no shading. Covers refresh their tile's shading when
 they are laid (`updateturf`) and removed (`Destroy`).
 
-The stone rammer (`code/modules/1713/road_tamping.dm`, crafted from 2 stone
+The stone rammer (`code/modules/1713/road_tamping.dm`, crafted from 2 stone and a wood handle
 with no research) packs bare dirt into `/turf/floor/tamped_earth` in about
 3 seconds (faster with strength). Tamped earth is packed, not levelled: it
 keeps its height and shading, but a step uphill onto it costs half

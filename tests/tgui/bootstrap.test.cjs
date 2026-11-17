@@ -9,7 +9,7 @@ function boot(ua = 'Chrome/130.0', options = {}) {
   const window = { Promise: options.missingPromise ? undefined : Promise, Map, Set, Symbol, location: {},
     cef_to_byond: url => { messages.push(url); options.deliver?.(url); },
     setTimeout: (callback, delay) => (timers.push({ callback, delay }), timers.length), clearTimeout: id => cancelled.add(id) };
-  const document = { body: { getAttribute: key => ({ 'data-ref': '[0x123]', 'data-window': 'main[0x456]', 'data-generation': String(options.generation || 2) })[key] },
+  const document = { body: { getAttribute: key => ({ 'data-ref': '[0x123]', 'data-window': 'main[0x456]', 'data-generation': String(options.generation || 2), 'data-assets': options.assets })[key] },
     getElementById: id => id === 'tgui-loading' ? loading : id === 'tgui-initial' ? (options.initial === undefined ? null : { textContent: options.initial }) : button, createElement: tag => ({ tag }), head: { appendChild: x => nodes.push(x) } };
   vm.runInNewContext(source, { window, document, navigator: { userAgent: ua }, JSON, Object, Array, Number, String, encodeURIComponent });
   return { window, nodes, messages, timers, cancelled, button, loading, expire: () => { for (let i = 0; i < timers.length; i++) if (!cancelled.has(i + 1)) timers[i].callback(); } };
@@ -50,7 +50,13 @@ test('the snapshot carried in the page is queued first; an empty one is not', ()
   // The server builds it from the same snapshot as the ready push, hides data while disabled and escapes it for a script element.
   const proc = dm.split('/datum/nanoui/tgui/proc/initial_snapshot()', 2)[1].split('\n/datum', 1)[0];
   assert.match(proc, /get_send_data\(status == STATUS_DISABLED \? null : latest_data\)/); assert.match(proc, /replacetext\(json, "<", "\\\\u003c"\)/); assert.match(proc, /length\(json\) > TGUI_INLINE_SNAPSHOT_LIMIT/);
-  assert.match(dm, /<script type="application\/json" id="tgui-initial">\[initial_snapshot\(\)\]<\/script>\n<script src="civ13-tgui-bootstrap\.js"/);
+  assert.match(dm, /<script type="application\/json" id="tgui-initial">\[initial_snapshot\(\)\]<\/script>\n<script src="\[civ13_tgui_versioned_name\("civ13-tgui-bootstrap\.js", version\)\]"/);
+});
+test('versioned asset names come from the page, so a reconnect never reuses an old bundle', () => {
+  const v = boot('Chrome/130.0', { assets: '0123456789ab' });
+  assert.equal(v.nodes[0].href, 'civ13-tgui.0123456789ab.css'); assert.equal(v.nodes[1].src, 'civ13-tgui.0123456789ab.js');
+  for (const assets of [undefined, '', '../x', 'ABC<script>']) { const e = boot('Chrome/130.0', { assets }); assert.equal(e.nodes[1].src, 'civ13-tgui.js'); assert.equal(e.nodes[0].href, 'civ13-tgui.css'); }
+  assert.match(dm, /data-assets="\[version\]"/); assert.match(dm, /var\/version = civ13_tgui_version\(\)/);
 });
 test('asset/error/timeout fallback, bounded queue and throwing bridge', () => {
   for (const failure of ['script', 'css', 'timeout', 'error', 'rejection']) { const e = boot();

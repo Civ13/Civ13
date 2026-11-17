@@ -18,7 +18,7 @@ const sizes = {
   'chem_disp.tmpl': [390, 655], 'crafting_atlas.tmpl': [1000, 700], 'crafting_window.tmpl': [940, 680], 'crew_log.tmpl': [500, 520],
   'faction_creation.tmpl': [620, 900], 'faction_list.tmpl': [420, 520], 'faction_symbol.tmpl': [620, 760], 'known_languages.tmpl': [600, 480],
   'paper_editor.tmpl': [625, 650], 'panel.tmpl': [380, 420], 'photo_viewer.tmpl': [360, 400], 'prompt.tmpl': [420, 240], 'recruitment_station.tmpl': [520, 640],
-  'religion_list.tmpl': [450, 450], 'research_bench.tmpl': [900, 680], 'research_book.tmpl': [620, 660], 'ship_stocks.tmpl': [500, 520], 'spawn_menu.tmpl': [640, 640], 'storage_window.tmpl': [760, 600],
+  'religion_list.tmpl': [450, 450], 'research_bench.tmpl': [900, 680], 'research_book.tmpl': [620, 660], 'ship_stocks.tmpl': [500, 520], 'spawn_menu.tmpl': [640, 640], 'storage_window.tmpl': [760, 600], 'tech_tree.tmpl': [900, 680],
   'vending_machine.tmpl': [540, 600], 'vending_machine2.tmpl': [540, 600], 'vending_machine_gulag.tmpl': [540, 600], 'vending_machine_taotd.tmpl': [540, 600],
   'warehouse_book.tmpl': [400, 500],
 } satisfies Record<string, [number, number]>;
@@ -37,6 +37,14 @@ add('research', 'research_bench.tmpl', {
     { layer_name: 'Iron age', nodes: [node('iron', 'Iron working', 'Locked', { prereq_ids: 'bronze', is_era_changing: 1, cost_ticks: 240 }), node('masonry', 'Masonry', 'Locked', { grid_col: 3, prereq_ids: 'kiln' })] },
   ] }, { idx: 1, tree_name: 'Agriculture', layers: [] }],
 });
+const known = (id: string, name: string, state: string, label: string, extra: Data = {}) => node(id, name, ({ known: 'Done', ready: 'Available' } as Record<string, string>)[state] ?? 'Locked', { state, state_label: label, ...extra });
+add('tech-tree', 'tech_tree.tmpl', { tech_tree: 1, book_research: 1, focus: 'pillar', focus_seq: 1,
+  trees: [{ idx: 0, tree_name: 'Craft and industry', layers: [
+    { layer_name: 'Foundations', nodes: [known('stone', 'Stone tools', 'known', 'You know this'), known('clay', 'Pottery', 'ready', 'Ready to learn', { grid_col: 3 })] },
+    { layer_name: 'Building', nodes: [known('masonry', 'Stone masonry', 'ready', 'Ready to learn', { prereq_ids: 'stone', groundwork: [{ id: 'stone', name: 'Stone tools', known: 1 }] }), known('kiln', 'Advanced kilns', 'locked', 'Needs groundwork', { grid_col: 3, prereq_ids: 'clay' })] },
+    { layer_name: 'Monuments', nodes: [known('pillar', 'Pillars and columns', 'locked', 'Needs groundwork', { prereq_ids: 'masonry', recipe_names: ['stone pillar', 'monumental stone pillar'], groundwork: [{ id: 'masonry', name: 'Stone masonry', known: 0 }] })] },
+  ] }, { idx: 1, tree_name: 'Agriculture', layers: [] }],
+}, 'Tech tree');
 const grid = Array.from({ length: 1024 }, (_, i) => {
   const x = i % 32, y = Math.floor(i / 32);
   if (x < 2 || x > 29 || y < 2 || y > 29) return '#d8ae58';

@@ -238,7 +238,7 @@ var/global/list/crafting_purpose_cache = list()
 	return TRUE
 
 /datum/crafting_window/ui_actions(ui_key)
-	return list("make", "makeable_only", "images", "atlas", "pin", "source", "detail", "process_atlas")
+	return list("make", "makeable_only", "images", "atlas", "pin", "source", "detail", "process_atlas", "tech_tree")
 
 /datum/crafting_window/ui_action_fields(ui_key, action)
 	if (action == "make")
@@ -494,6 +494,8 @@ var/global/list/crafting_purpose_cache = list()
 		if (!why)
 			why = "Missing a tool, skill or second material"
 	var/cost = "[R.req_amount] [S.singular_name]\s"
+	if (recipe_needs_crafting_handle(R.title))
+		cost += " + wood handle"
 	var/tools = ""
 	var/list/joint_spec = furniture_joinery_spec(R)
 	if (stone_mold_type(R.result_type))
@@ -525,6 +527,7 @@ var/global/list/crafting_purpose_cache = list()
 		"makes" = R.res_amount,
 		"batches" = limit,
 		"atlas" = (crafting_atlas_reference && crafting_atlas_reference.resource_exists(result)) ? 1 : 0,
+		"tech_tree" = manual_hint ? 1 : 0,
 		"image" = product_image(R.result_type, budget))
 
 /datum/crafting_window/proc/build_data()
@@ -597,6 +600,12 @@ var/global/list/crafting_purpose_cache = list()
 		var/datum/stack_recipe/shown = find_recipe(href_list["atlas"])
 		if (shown && crafting_atlas_reference && crafting_atlas_reference.resource_exists("[shown.result_type]"))
 			crafting_atlas_reference.show(H, "[shown.result_type]", 1, "[shown.result_type]")
+		return FALSE
+	if (href_list["tech_tree"])
+		// Only the node a recipe of this material still needs: never a client-chosen node.
+		var/datum/stack_recipe/gated = find_recipe(href_list["tech_tree"])
+		if (gated && tech_tree_view && crafting_recipe_manual_hint(H, "[gated.result_type]"))
+			tech_tree_view.show(H, get_recipe_node_req("[gated.result_type]"))
 		return FALSE
 	if (href_list["process_atlas"])
 		// Only a page this window listed for the material: never a client-chosen id.

@@ -168,6 +168,7 @@
 			..()
 /obj/item/stack/ore/tin
 	name = "tin ore"
+	desc = "Cassiterite: heavy brown-black crystals with a glassy shine."
 	icon_state = "ore_tin"
 	flags = CONDUCT
 	attackby(var/obj/W as obj, var/mob/living/human/H as mob)
@@ -187,12 +188,11 @@
 						qdel(src)
 		else
 			..()
-// Calamine (zinc carbonate). Its tin-ore art is tinted pale so the two read apart.
+// Calamine (zinc carbonate): pale, rounded crusts with their own art (tests/sprites/create_tin_calamine.py).
 /obj/item/stack/ore/zinc
 	name = "calamine"
-	desc = "Zinc ore. Melt it with copper ore in a fired clay pot or jug to make brass, or alone to cast zinc ingots."
-	icon_state = "ore_tin"
-	color = "#c9c2a8"
+	desc = "Zinc ore: pale, rounded crusts, white to blue-green. Melt it with copper ore in a fired clay pot or jug to make brass, or alone to cast zinc ingots."
+	icon_state = "ore_calamine"
 	flags = CONDUCT
 	attackby(var/obj/W as obj, var/mob/living/human/H as mob)
 		if (istype(W, /obj/item/weapon/reagent_containers/glass/extraction_kit))

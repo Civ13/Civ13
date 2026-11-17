@@ -398,6 +398,10 @@
 
 	if (!mob)
 		return // Moved here to avoid nullrefs below
+	// A body left between whole pixels would refuse every input; snap it back.
+	if (ishuman(mob))
+		var/mob/living/human/fraction_actor = mob
+		fraction_actor.human_subtile_snap_fraction()
 	// Plain held keys slide freely when this body can; otherwise they take the
 	// ordinary tile path (pulling, driving, confusion, trench edges, legacy mode).
 	if (fine_step == FINE_STEP_FREE)
@@ -1184,6 +1188,24 @@
 	if (click_route)
 		click_route.steer()
 	return (movement_northsouth || 0) | (movement_eastwest || 0)
+
+// A bump chop or bump mine consumes the held movement key that walked into
+// the tree or rock: the player stops pushing that way (and cannot nudge out of
+// the work wait) until the key is released and pressed again. Other held axes
+// keep moving, so a diagonal walk slides along. Movement macros do not repeat.
+/mob/proc/halt_held_movement_toward(atom/A)
+	var/held = (movement_northsouth || 0) | (movement_eastwest || 0)
+	var/toward = held & get_dir(src, A)
+	if (!toward)
+		toward = held & dir
+	if (!toward)
+		toward = held
+	if (toward & (NORTH|SOUTH))
+		movement_northsouth = null
+	if (toward & (EAST|WEST))
+		movement_eastwest = null
+	if (!movement_northsouth && !movement_eastwest)
+		movement_fine = FALSE
 
 // The fine_step value the movementMachine passes for this mob's held keys.
 /mob/proc/held_fine_step()

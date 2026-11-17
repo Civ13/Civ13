@@ -198,6 +198,8 @@ var/interface_dark_after = 0 // the reader's light goes out once this many waits
 		interface_check(!bench.book_study_node(H, child), "a chapter no book holds can't be studied")
 		data = bench.bench_ui_data(H)
 		interface_check(interface_node(data, root)["state"] == "known" && interface_node(data, child)["state"] == "ready" && interface_node(data, child)["groundwork"][1]["known"], "the chapter is known and its follow-up opens")
+		var/list/tree = tech_tree_view.tree_data(H)
+		interface_check(tree && tree["tech_tree"] && interface_node(tree, root)["state"] == "known" && interface_node(tree, child)["state"] == "ready" && interface_node(tree, child)["groundwork"][1]["known"] && interface_node(tree, far)["state"] != "known", "the tech tree marks only the character's own knowledge")
 
 		// --- Queue ---
 		bench.book_queue_node(H, far)

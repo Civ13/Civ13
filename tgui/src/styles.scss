@@ -34,6 +34,7 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--civ-highlig
 .research-node.locked { color: var(--civ-faint); background: #28231c; }
 .research-node.ancestor { border-color: #ef9d5b; box-shadow: 0 0 0 2px var(--civ-warn-line); }
 .research-node.selected { outline: 2px solid #ffe3a6; }
+.research-node.focused { outline: 3px solid #ffe3a6; box-shadow: 0 0 12px 2px rgba(255, 227, 166, .55); }
 .research-node.muted { opacity: .4; }
 .research-lines { position: absolute; left: 0; top: 0; pointer-events: none; }
 .research-lines path { fill: none; stroke: var(--civ-accent-line); stroke-width: 1.5; opacity: .65; }

@@ -127,6 +127,7 @@ describe('standard screen parity', () => {
       'ship_stocks.tmpl',
       'spawn_menu.tmpl',
       'storage_window.tmpl',
+      'tech_tree.tmpl',
       'vending_machine.tmpl',
       'vending_machine2.tmpl',
       'vending_machine_gulag.tmpl',
