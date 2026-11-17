@@ -85,6 +85,14 @@ var/tree_climbing_probe_checks = 0
 	tree_climbing_probe_assert(H.tree_climb_pixel_x == T.pixel_x + 32 - 16 && H.tree_climb_pixel_y == max(0, T.pixel_y + tree_sprite_top(T.icon, T.icon_state) - 22), "pose_at_treetop")
 	tree_climbing_probe_assert(tree_sprite_top('icons/obj/flora/bigtrees.dmi', "tree_1") == 62 && tree_sprite_top('icons/obj/flora/palm.dmi', "palm1") == 54 && tree_sprite_top('icons/obj/flora/jungletreesmaller.dmi', "tree2") == 78, "canopy_top_from_sprite")
 	tree_climbing_probe_assert(H.pixel_x == H.tree_climb_pixel_x && H.pixel_y == H.tree_climb_pixel_y && H.layer < T.layer, "drawn_behind_canopy")
+	// Looking into the distance: movement keys turn the view, not climb down.
+	H.dir = SOUTH
+	tree_climbing_probe_assert(!H.tree_look_turn(EAST), "no_turn_unless_looking")
+	H.looking = TRUE
+	tree_climbing_probe_assert(H.tree_look_turn(EAST) && H.dir == EAST && H.climbed_tree == T, "look_turns_east")
+	tree_climbing_probe_assert(H.tree_look_turn(NORTHWEST) && H.dir == WEST, "look_diagonal_turns_sideways")
+	tree_climbing_probe_assert(!H.tree_look_turn(WEST), "look_same_way_no_turn")
+	H.looking = FALSE
 	H.pixel_y = 0
 	H.tree_climb_check()
 	tree_climbing_probe_assert(H.pixel_y == H.tree_climb_pixel_y, "pose_restored_each_life")

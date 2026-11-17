@@ -86,8 +86,10 @@ including historical boolean precedence, stay intact. Fossils, sandstone, marble
 and obsidian keep their unconditional availability and quantities. Geology
 rejection gives ordinary stone, including in sandy/icy terrain.
 
-Common ores share one 8-12 rubble batch, regardless of how many common ores
-succeed. Rare-only drops have no added rubble. On ordinary temperate Pangea at
+Every ore find shares one 8-12 rubble batch, regardless of how many ores
+succeed, and the miner is told that loose stone broke away with it. Rare-only
+drops (uranium, silver, gold, diamond, bauxite) gave no rubble until 2026-11-17,
+so the stone figures below predate that and are slightly low. On ordinary temperate Pangea at
 ages 2-7, expected stone rises from 11.70893 to 13.13146 units/wall (+12.15%);
 marble remains 6.636168% with a 16-24 batch. This small stone increase comes from
 the additional ore-free walls, partly offset by paying rubble once. Special
@@ -132,7 +134,7 @@ melts with copper ore in a fired clay pot or jug to make brass, mirroring bronze
 
 Bauxite (`/obj/item/stack/ore/bauxite`) is a thirteenth independent roll after
 diamonds: 6% per wall from age 4, 12% under jungle or savanna, batch 24-36,
-doubled in special caves, with no added rubble. Like calamine it joins the
+doubled in special caves (it shares the one rubble batch since 2026-11-17). Like calamine it joins the
 no-ore product, and the geology admission divides by that product, so the
 unconditional fossil/sandstone/marble budget is unchanged. The old jungle
 obsidian geology branch is gone; obsidian is an independent roll near lava
