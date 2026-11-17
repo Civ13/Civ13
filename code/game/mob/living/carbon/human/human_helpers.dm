@@ -474,6 +474,7 @@
 	if (bends)
 		bends_tick() // decompression sickness (scuba.dm)
 	var/turf/T = get_turf(src)
+	if (!T) return // nowhere to drown or redraw: a body between places (persistence_load_holds_life)
 	// A sealed diver walks the seabed (seabed.dm) and breathes from the bottle.
 	if (sea_layer_cell(T) && !T.iscovered() && seabed_diving_rating())
 		drowning = FALSE

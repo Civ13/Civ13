@@ -100,7 +100,7 @@ class LevelFreeze(unittest.TestCase):
         self.assertIn('!(persistence_frozen_levels.len && persistence_life_frozen(M))', mob)
         self.assertLess(mob.index('persistence_life_frozen(M)'), mob.index('\t\t\t\tM.Life()'))
         living = read('code/game/mob/living/living.dm')
-        self.assertIn('!persistence_life_frozen(src))\n\t\t\t\tLife()', living)
+        self.assertIn('!persistence_life_frozen(src) && !persistence_load_holds_life())\n\t\t\t\tLife()', living)
 
     def test_animals_hold_still_while_their_level_is_saved(self):
         # Val (2026-11-14): simple animals are held like players while their
@@ -160,3 +160,13 @@ class LevelFreeze(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+    def test_world_load_holds_life_until_it_ends(self):
+        # Gaia 2026-11-17: restored bodies are half-built while a save loads.
+        life = read('code/game/mob/living/life.dm')
+        helper = proc_body(life, '/proc/persistence_load_holds_life()')
+        self.assertIn('persistence_active_operation && persistence_active_operation.kind == "load"', helper)
+        living = read('code/game/mob/living/living.dm')
+        self.assertIn('!persistence_load_holds_life())\n\t\t\t\tLife()', living)
+        drowning = proc_body(read('code/game/mob/living/carbon/human/human_helpers.dm'), '/mob/living/human/proc/handle_drowning()')
+        self.assertLess(drowning.index('if (!T)'), drowning.index('sea_layer_cell(T)'))

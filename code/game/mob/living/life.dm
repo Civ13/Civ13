@@ -11,6 +11,14 @@
 	var/turf/T = get_turf(M)
 	return (T && persistence_frozen_levels["[T.z]"]) ? TRUE : FALSE
 
+// While a world save loads, restored bodies are half-built: no turf yet, and their
+// organs and contents arrive field by field across many ticks. Life() on such a body
+// can read a missing brain as 200 brain damage and kill it; logged-off players died
+// this way when Gaia reloaded after the underground migration (2026-11-17).
+// Nothing lives until the load ends.
+/proc/persistence_load_holds_life()
+	return persistence_active_operation && persistence_active_operation.kind == "load"
+
 /mob/living/Life()
 
 	..()
