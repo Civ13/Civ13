@@ -110,6 +110,22 @@ class MigrateUndergroundTests(unittest.TestCase):
         self.assertFalse((self.base / 'regions' / '.migration' / 'gaia').exists())
         self.assertFalse((self.region / 'map_saves.pre-underground').exists())
 
+    def test_a_migrated_save_that_lost_the_transfer_ledger_is_refused(self):
+        ledger = {'generation': 'round-v2:old', 'effects': [], 'ledger_seq': 10}
+        (self.saves / 'round.json').write_text(json.dumps({'transfer': ledger}))
+        inner = self.world()
+
+        def run(argv, folder, timeout):
+            if 'migrate_underground=1' in argv:
+                (folder / 'map_saves' / 'round.json').write_text(json.dumps({}))
+            return inner(argv, folder, timeout)
+        with self.assertRaisesRegex(migration.Refused, 'lost the transfer ledger'):
+            migration.migrate(shard_group, self.group, self.host, 'gaia', run=run, now=lambda: 0)
+        self.assertEqual('old cave', (self.saves / '1.sav').read_text())
+        # A migration that keeps it goes through.
+        self.assertTrue(migration.migrate(shard_group, self.group, self.host, 'gaia', run=inner, now=lambda: 60)['ok'])
+        self.assertEqual(ledger, json.loads((self.saves / 'round.json').read_text())['transfer'])
+
     def test_a_failed_migration_leaves_the_region_alone(self):
         with self.assertRaisesRegex(shard_group.Refused, 'boom'):
             self.migrate(migrate_ok=False)

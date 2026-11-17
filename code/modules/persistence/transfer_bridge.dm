@@ -26,6 +26,7 @@ var/global/datum/transfer_bridge/transfer_bridge = new
 	// reconciliation succeeds (no effect can happen in between).
 	var/list/loaded_capture = null
 	var/hold_reason = null
+	var/list/carried_capture = null // the loaded save's transfer state, kept by a world that runs without its agent
 	// world.time before which the admins are not reminded of the hold again.
 	var/hold_warned_until = 0
 	var/reconcile_pending = FALSE
@@ -157,7 +158,11 @@ var/global/datum/transfer_bridge/transfer_bridge = new
 // -- save and load hooks ---------------------------------------------------
 
 /datum/transfer_bridge/proc/capture(generation)
-	if(!enabled()) return null
+	// A world booted without its agent (the underground migration, a validator)
+	// applied no effect, so its save repeats the loaded save's transfer state.
+	// Dropping it would make the next real load look like a rollback to ledger 0
+	// and put the land on hold.
+	if(!enabled()) return carried_capture ? carried_capture.Copy() : null
 	if(isnull(ledger_base))
 		// Unreconciled: this save repeats the loaded save's transfer state.
 		return loaded_capture ? loaded_capture.Copy() : null
@@ -177,7 +182,10 @@ var/global/datum/transfer_bridge/transfer_bridge = new
 	applied -= capture["effects"]
 
 /datum/transfer_bridge/proc/loaded(list/round_state)
-	if(!enabled()) return
+	if(!enabled())
+		var/list/kept = islist(round_state) ? round_state["transfer"] : null
+		carried_capture = valid_transfer_capture(kept) ? kept.Copy() : null
+		return
 	ledger_base = null
 	applied = list()
 	var/list/capture = islist(round_state) ? round_state["transfer"] : null

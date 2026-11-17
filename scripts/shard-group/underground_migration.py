@@ -86,6 +86,15 @@ def prepare(this, group, region_id, folder):
     return generation, live
 
 
+def transfer_state(saves):
+    """The transfer capture a save's round state carries, or None."""
+    try:
+        state = json.loads((Path(saves) / 'round.json').read_text(encoding='utf-8'))
+    except (OSError, ValueError):
+        return None
+    return state.get('transfer') if isinstance(state, dict) else None
+
+
 def swap_in(saves, migrated, generation):
     """Replace saves with migrated, keeping the old files beside it until the swap is done."""
     old = saves.with_name('map_saves.pre-underground')
@@ -130,6 +139,11 @@ def migrate(this, group, host, region_id, run=run_world, now=time.time):
     saves = this.region_dir(group, region_id) / 'map_saves'
     if this.save_generation(saves) != generation:
         raise Refused('the region saved again during the migration; run it again')
+    # The migration world runs without the transfer agent. A migrated save that
+    # dropped or changed the transfer state would load as a rollback and put
+    # the region's travel on hold.
+    if transfer_state(folder / 'map_saves') != transfer_state(saves):
+        raise Refused('the migrated save lost the transfer ledger, region left as it was')
     swap_in(saves, folder / 'map_saves', generation)
     report['generation'] = new_generation
     report['ok'] = True

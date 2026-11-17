@@ -122,6 +122,20 @@ def payload_kinds(manifest):
 FAST_KINDS = ('character', 'freight', 'train')
 
 
+def character_owners(manifest):
+    """The account keys of the character payloads a manifest carries."""
+    owners = set()
+    items = json.loads(manifest).get('items', [])
+    for item in (items if isinstance(items, list) else []):
+        try:
+            value = json.loads(item) if isinstance(item, str) else None
+        except ValueError:
+            value = None
+        if isinstance(value, dict) and value.get('kind') == 'character' and account_key_valid(value.get('owner')):
+            owners.add(value['owner'])
+    return owners
+
+
 def _require_characters(payloads):
     """Only character, freight or validated train payloads can be journaled, one kind per
     transfer: the world can find and remove those again, but not an arbitrary
@@ -222,6 +236,7 @@ class RegionStore(TrainLeaseQueue):
         db.execute("INSERT OR IGNORE INTO meta VALUES ('homes_rev', '0')")
         db.execute("INSERT OR IGNORE INTO meta VALUES ('mainland', '')")
         db.execute("INSERT OR IGNORE INTO meta VALUES ('start_region', '')")
+        db.execute("INSERT OR IGNORE INTO meta VALUES ('travelling', '{}')")
         # Land stages: this region's copy of the coordinator's stage list, and
         # admin changes waiting for the coordinator's next pass.
         db.execute("INSERT OR IGNORE INTO meta VALUES ('lands', '{}')")
@@ -807,6 +822,12 @@ class RegionStore(TrainLeaseQueue):
             queued = [o for (o,) in self.db.execute('SELECT op FROM account_request WHERE ckey = ?', (ckey,))]
             home = self.home_of(ckey)
             if op == 'claim':
+                # A character of this account is still on its way here (in a
+                # source land's escrow, or received and not yet built by the
+                # world): starting a new one now would replace it. A living
+                # character already here (body) is played as usual.
+                if body is not True and self.travelling_here(ckey):
+                    return {'verdict': 'TRAVELLING', 'home': home, 'from': self.travelling_here(ckey)}
                 if not queued and home == self.region:
                     grant = self.db.execute('SELECT faction FROM colony_grant WHERE ckey = ?', (ckey,)).fetchone()
                     return {'verdict': 'HOME', 'home': home, 'colony_grant': grant[0] if grant else None}
@@ -826,6 +847,32 @@ class RegionStore(TrainLeaseQueue):
                             (ckey, op, target, self._meta('homes_epoch'), int(self._meta('homes_rev')), faction or ''))
         return {'verdict': 'PENDING', 'home': home}
 
+    def travelling_here(self, ckey):
+        """The land a character of ckey is travelling here from, or None. Known
+        from our own incoming transfers and from what the coordinator last
+        said other lands hold in escrow for us."""
+        for peer, manifest in self.db.execute(
+                'SELECT peer, manifest FROM active WHERE direction = ? AND phase IN (?, ?, ?)',
+                (IN, TRAIN_ADMISSION, PREPARED, COMMIT_RECEIVED)):
+            if ckey in character_owners(manifest):
+                return peer
+        try:
+            listed = json.loads(self._meta('travelling') or '{}')
+        except ValueError:
+            listed = {}
+        source = listed.get(ckey) if isinstance(listed, dict) else None
+        return source if isinstance(source, str) and source else None
+
+    def travelling_out(self):
+        """Characters this land holds in escrow for another: [{ckey, region}].
+        A trip being returned or aborted comes back here and is left out."""
+        found = []
+        for peer, manifest in self.db.execute(
+                'SELECT peer, manifest FROM active WHERE direction = ? AND phase IN (?, ?, ?) ORDER BY peer',
+                (OUT, REQUESTED, ESCROWED, COMMIT_DECIDED)):
+            found.extend({'ckey': owner, 'region': peer} for owner in sorted(character_owners(manifest)))
+        return found
+
     def start_region(self):
         """Where new characters start, as the coordinator last said: its start
         region, or the mainland from a coordinator that sends none."""
@@ -840,6 +887,7 @@ class RegionStore(TrainLeaseQueue):
         return {'requests': [dict(zip(('id', 'ckey', 'op', 'region', 'homes_epoch', 'home_rev', 'faction'), r)) for r in self.db.execute(
                     'SELECT id, ckey, op, region, homes_epoch, home_rev, faction FROM account_request ORDER BY id')],
                 'epoch': self._meta('homes_epoch'), 'rev': int(self._meta('homes_rev')),
+                'travelling': self.travelling_out(),
                 'store': self._meta('store_id'), 'train_history': self._meta('train_history') == '1', 'train_requests': self.train_lease_requests(),
                 'land_sample': json.loads(self._meta('land_sample') or 'null'),
                 'land_requests': [dict(zip(('id', 'region', 'stage', 'paused', 'admin'), (i, r, st, bool(p), a)))
@@ -853,7 +901,7 @@ class RegionStore(TrainLeaseQueue):
 
     def apply_homes(self, epoch, rev, rows, done, reset=False, mainland=None, train_locks=None, train_decisions=None,
                     lands=None, land_done=None, chart=None, chart_done=None, colony_grants=None,
-                    nations=None, nation_results=None, start_region=None):
+                    nations=None, nation_results=None, start_region=None, travelling=None):
         """The coordinator's answer: ledger rows newer than our copy (region
         None removes a home) and the request ids it has decided."""
         if not isinstance(epoch, str) or not epoch or not isinstance(rev, int) or rev < 0:
@@ -885,6 +933,12 @@ class RegionStore(TrainLeaseQueue):
                     self.db.execute('DELETE FROM train_home_wait WHERE ckey = ?', (owner,))
             self._set_meta('homes_epoch', epoch)
             self._set_meta('homes_rev', rev)
+            # Characters other lands hold in escrow for us (ckey: source land).
+            # An older coordinator sends none: keep nobody waiting on a stale list.
+            if travelling is not None and not (type(travelling) is dict and all(
+                    account_key_valid(k) and isinstance(v, str) and 0 < len(v) <= 64 for k, v in travelling.items())):
+                raise TransferError('invalid travelling list')
+            self._set_meta('travelling', json.dumps(travelling or {}, sort_keys=True))
             self._set_meta('mainland', mainland if isinstance(mainland, str) else '')
             self._set_meta('start_region', start_region if isinstance(start_region, str) else '')
             # An older coordinator sends no land list: keep the copy we have.
