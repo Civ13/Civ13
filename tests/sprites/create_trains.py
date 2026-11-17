@@ -508,6 +508,83 @@ def end_states():
     return out
 
 
+def coupler_body(c, ramp=STEEL):
+    c.bevel(13, 0, 18, 4, ramp[0], ramp[2], ramp[4], outline=STEEL_O)
+
+
+def coupler_free(c):
+    """A whole coupling at a free end (car heading north, its end at the top):
+    the draw hook with its link swung aside."""
+    coupler_body(c)
+    c.rect(15, 1, 16, 2, DARK)
+    c.rect(19, 2, 19, 3, STEEL[3])
+    c.ring(22.0, 3.5, 2.6, STEEL_O, width=2.4)
+    c.ring(22.0, 3.5, 2.4, STEEL[0], width=1.0)
+
+
+def coupler_linked(c):
+    """Half of a made coupling: the links run over the car's end onto the
+    next car's hook, drawn up tight by the brass screw between them."""
+    coupler_body(c)
+    c.rect(12, 0, 12, 3, STEEL_O)
+    c.rect(19, 0, 19, 3, STEEL_O)
+    c.rect(13, 0, 13, 2, STEEL[0])
+    c.rect(18, 0, 18, 2, STEEL[0])
+    c.rect(14, 0, 17, 1, BRASS[1])
+    c.put(14, 0, BRASS[0])
+    c.rect(15, 1, 16, 1, BRASS[3])
+
+
+def coupler_broken(c):
+    """A snapped coupling: a cracked, rusting stub and a link hanging loose."""
+    c.bevel(13, 1, 18, 4, BLACK[1], BLACK[2], BLACK[4], outline=STEEL_O)
+    for x in (13, 15, 18):
+        c.put(x, 0, STEEL_O)
+    c.line(14, 4, 17, 1, DARK)
+    c.put(16, 3, OXIDE[0])
+    c.put(14, 2, OXIDE[1])
+    c.line(19, 2, 22, 5, STEEL[3])
+    c.put(22, 5, STEEL[0])
+
+
+def coupler_none(c):
+    """The empty drawbar pocket of an end whose coupling was taken off."""
+    c.rect(13, 0, 18, 3, STEEL_O)
+    c.rect(14, 0, 17, 2, DARK)
+    c.put(14, 2, STEEL[4])
+    c.put(12, 1, STEEL_O)
+    c.put(19, 1, STEEL_O)
+
+
+def coupler_states():
+    """coupler_f_* sit at the end a car faces, coupler_b_* at its other end;
+    both turn with the car (train_couplings.dm)."""
+    out = {}
+    for kind, draw in (('free', coupler_free), ('linked', coupler_linked),
+                       ('broken', coupler_broken), ('none', coupler_none)):
+        front = directions(draw, order=HEADING)
+        out['coupler_f_' + kind] = front
+        out['coupler_b_' + kind] = [front[DIR_INDEX[OPPOSITE[h]]] for h in 'SNEW']
+    return out
+
+
+def coupling_item():
+    """A spare coupling on the ground: draw hook, screw and links."""
+    c = Canvas(32, 32)
+    c.shade(4, 21, 29, 23, 60)
+    c.bevel(3, 14, 12, 18, STEEL[1], STEEL[2], STEEL[4], outline=STEEL_O)
+    c.ring(15.0, 16.0, 4.2, STEEL_O, width=3.4)
+    c.ring(15.0, 16.0, 4.0, STEEL[1], width=1.6)
+    c.clear(11, 10, 14, 12)
+    for x in (22.0, 27.0):
+        c.ring(x, 16.0, 3.4, STEEL_O, width=2.6)
+        c.ring(x, 16.0, 3.2, STEEL[0], width=1.0)
+    c.rect(23, 15, 26, 17, BRASS[3])
+    c.rect(23, 15, 26, 16, BRASS[1])
+    c.put(23, 15, BRASS[0])
+    return [c.image()]
+
+
 def outrigger(c):
     """A lowered outrigger on the ground beside a braced gun car (car to the east)."""
     c.shade(7, 13, 17, 24, 60)
@@ -1371,6 +1448,8 @@ def platform_states():
     states['outrigger'] = directions(outrigger, order=EDGE)
     states.update(roof_states())
     states.update(loco_states())
+    states.update(coupler_states())
+    states['coupling_item'] = coupling_item()
     return states
 
 
@@ -1579,6 +1658,21 @@ def write_previews(out, states, gun):
     both.alpha_composite(goods, (0, 0))
     both.alpha_composite(express, (0, goods.height))
     big(both, 2).save(out / 'long-stock-trains.png')
+
+    # couplings: made, free, broken and taken off, on a train heading east
+    def with_couplers(kind, front, rear):
+        car = render_car(states, kind, 'E')
+        car.alpha_composite(states['coupler_f_' + front][DIR_INDEX['E']], (car.width - 32, 32))
+        car.alpha_composite(states['coupler_b_' + rear][DIR_INDEX['E']], (0, 32))
+        return car
+    made = train_east(states, gun, [with_couplers('flatbed', 'free', 'linked'), with_couplers('coach', 'linked', 'linked'),
+                                    with_couplers('flatbed', 'linked', 'broken')])
+    apart = train_east(states, gun, [with_couplers('flatbed', 'none', 'free')])
+    im = Image.new('RGBA', (made.width + apart.width, made.height), (96, 120, 84, 255))
+    im.alpha_composite(made, (apart.width, 0))
+    im.alpha_composite(apart, (0, 0))
+    im.alpha_composite(states['coupling_item'][0], (apart.width - 20, 150))
+    big(im, 3).save(out / 'couplings.png')
 
     im = ground(6 * 104 + 8 + 2 * 264, 264 + 16, seed=9)
     for i, (kind, roof) in enumerate((('bogie_coach', False), ('bogie_coach', True), ('boxcar', False),

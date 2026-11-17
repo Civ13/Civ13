@@ -20,6 +20,9 @@ heading, the rail tile and the tile right of it.
   first and last segment. `apply_layout()` adds them as overlays that follow
   their tile's own direction. `outrigger` is added either side of a braced
   gun car's end segments by `update_car_overlays()`.
+- `coupler_<f|b>_<free|linked|broken|none>` and `coupling_item`: the coupling
+  at a car's front or rear end in each condition, and the spare. They turn
+  with the car ([trains.md](trains.md#couplings)).
 - `edge_plank`, `edge_freight_door[_open]`, `edge_side`, `edge_drop_door[_open]`
   and the `boards` deck: the boxcar's boarded sides and sliding doors, the
   open wagon's plank sides and drop doors, and the worn floor of goods stock.

@@ -240,6 +240,9 @@
 
 	if (!istype(usr, /mob/living/human))
 		return
+	if (train_under_power())
+		to_chat(usr, SPAN_WARNING("The couplings are pulled tight. Shut the throttle first."))
+		return FALSE
 	if (hitch_front(usr) || hitch_rear(usr))
 		return TRUE
 	to_chat(usr, "There is no wagon to hitch \the [src] to.")
@@ -313,6 +316,8 @@
 		to_chat(user, "You unhitch \the [src] from \the [other].")
 		settle_train_order()
 		other.settle_train_order()
+		update_couplers()
+		other.update_couplers()
 		return TRUE
 	var/way = ahead ? train_heading() : OPPOSITE_DIR(train_heading())
 	for (var/obj/structure/trains/TR in get_step(src, way))
@@ -324,6 +329,13 @@
 			continue
 		if (TR.train_head() == train_head())
 			continue
+		// Both couplings must be there and whole (train_couplings.dm).
+		if (coupling_at(coupling_end_ahead(ahead)) <= 0)
+			to_chat(user, SPAN_WARNING("\The [src] has no working coupling at that end."))
+			return FALSE
+		if (TR.coupling_at(TR.coupling_end_ahead(their_front)) <= 0)
+			to_chat(user, SPAN_WARNING("\The [TR] has no working coupling at that end."))
+			return FALSE
 		var/mine_front = ahead
 		if (their_front == mine_front)
 			var/obj/structure/trains/turned = train_is_driving() ? TR : src
@@ -340,6 +352,8 @@
 		playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
 		to_chat(user, "You hitch \the [src] to \the [TR].")
 		settle_train_order()
+		update_couplers()
+		TR.update_couplers()
 		return TRUE
 	return FALSE
 
