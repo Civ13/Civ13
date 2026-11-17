@@ -384,6 +384,16 @@
 	catch(var/exception/e)
 		throw e
 
+var/global/list/persistence_removed_fields_logged = list()
+
+// Logs each removed field once per type, so an old save still loads after an update.
+/proc/persistence_note_removed_field(datum/object, field)
+	var/key = "[object.type]/[field]"
+	if(persistence_removed_fields_logged[key])
+		return
+	persistence_removed_fields_logged[key] = TRUE
+	log_world("Persistence: ignored saved field [field] on [object.type]; the current code no longer has it.")
+
 // Decodes one constructed entry's saved fields and contents.
 /map_storage/proc/load_entry_fields(savefile/savefile, ind, datum/object, entry_dir, format_version, nocontents, lag_fix)
 	try
@@ -401,6 +411,11 @@
 			switch(v)
 				if("type", "loc", "locs", "pixloc", "contents", "vars", "parent_type", "x", "y", "z", "vis_locs", "client", "key", "ckey")
 					continue
+			// A field the current code removed (a var dropped by a later
+			// update) is left behind instead of failing the whole import.
+			if(v != "content" && !persistence_type_vars(object)[v])
+				persistence_note_removed_field(object, v)
+				continue
 			if(v == "content")
 				if(nocontents != 2)
 					var/list/refs = saved_content_refs(savefile[v], format_version)
@@ -2367,7 +2382,9 @@ var/global/persistence_memory_probe_error
 	var/list/type_vars = persistence_type_vars(T)
 	for(var/v in fields)
 		if(T.persistence_runtime_var(v)) continue
-		if(!type_vars[v]) throw EXCEPTION("Plain cell field [v] is not a variable of [type]")
+		if(!type_vars[v])
+			persistence_note_removed_field(T, v)
+			continue
 		T.vars[v] = fields[v]
 	var/list/default_fields = T.persistence_field_allowlist()
 	for(var/v in default_fields)
