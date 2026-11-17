@@ -174,7 +174,7 @@
 	out["read_percent"] = state == "study" ? H.study_percent(node_id) : 0
 	var/list/supplies = cache["supplies"]
 	var/supplied = islist(supplies) ? (supplies[discipline] || 0) >= 1 : TRUE
-	var/pace = base_tick_rate * H.scholar_research_rate(node_id) * max(cache["tool_rate"], 1) * late_bench_rate(N) * (supplied ? 1 : SCHOLAR_UNSUPPLIED_RATE)
+	var/pace = base_tick_rate * H.scholar_research_rate(node_id) * max(cache["tool_rate"], 1) * late_bench_rate(N) * knowledge_rediscovery_rate(node_id) * (supplied ? 1 : SCHOLAR_UNSUPPLIED_RATE)
 	out["field_work"] = field_work_rows(H, node_id)
 	out["research_minutes"] = pace > 0 ? ui_minutes((N.cost_ticks - ticks) / pace * RESEARCH_TICK_INTERVAL) : 0
 	out["write_minutes"] = ui_minutes(BOOK_WRITE_TIME(N.era_tier) / max(cache["pen_rate"], 1) / desk)
@@ -221,6 +221,9 @@
 	var/late = late_bench_rate(N)
 	if (late != 1)
 		factors += list(list("label" = "Late subject", "effect" = "x[late]", "ok" = 1))
+	var/rediscovery = knowledge_rediscovery_rate(N.id)
+	if (rediscovery != 1)
+		factors += list(list("label" = "Spreading knowledge, already known in the world", "effect" = "x[rediscovery]", "ok" = 1))
 	if (rush_rate(N) != 1)
 		factors += list(list("label" = "Rushed", "effect" = "x[rush_rate(N)]", "ok" = 1))
 	return factors

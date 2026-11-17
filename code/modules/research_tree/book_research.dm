@@ -284,7 +284,7 @@
 	if (!is_big_science(assigned_node))
 		for (var/mob/living/human/helper in research_helpers(assigned_node, researcher))
 			helper.gain_scholarship(assigned_node, SCHOLAR_RESEARCH_GAIN * analysis_scale * 0.5)
-	if (B.add_research_work(assigned_node, round(base_tick_rate * analysis_scale * best_rate * late_bench_rate(N) * team_rate(assigned_node, researcher) * rush_rate(N) * library_rate(assigned_node) * use_research_supply(assigned_node, analysis_scale), 0.1), FALSE, researcher))
+	if (B.add_research_work(assigned_node, round(base_tick_rate * analysis_scale * best_rate * late_bench_rate(N) * knowledge_rediscovery_rate(assigned_node) * team_rate(assigned_node, researcher) * rush_rate(N) * library_rate(assigned_node) * use_research_supply(assigned_node, analysis_scale), 0.1), FALSE, researcher))
 		for (var/mob/living/human/H in viewers(world.view, src))
 			to_chat(H, SPAN_NOTICE("The chapter on <b>[N.name]</b> in [B] is finished. It can now be studied."))
 	else
