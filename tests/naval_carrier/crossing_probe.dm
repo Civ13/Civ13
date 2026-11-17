@@ -99,6 +99,15 @@ var/naval_runtime_error = FALSE
 	played.ckey = null
 	qdel(played)
 	qdel(rock)
+	// Her ledger and how her sail is carried cross with her (hull_ledger.dm, hull_rigging.dm).
+	var/datum/hull_ledger/ledger = tiller.craft.ledger
+	naval_check(!isnull(ledger), "she keeps a hull ledger")
+	if (ledger)
+		ledger.water = 3
+		ledger.seams = 0.5
+		ledger.old_anchor = FALSE
+	mast.canvas = SAIL_REEFED
+	mast.torn = TRUE
 	var/list/packed = sea_crossing_pack(tiller)
 	naval_check(islist(packed), "with it ashore she packs ([istext(packed) ? packed : "ok"])")
 	var/list/R = islist(packed) ? packed["record"] : list()
@@ -164,6 +173,15 @@ var/naval_runtime_error = FALSE
 	var/turf/mast_turf = locate(anchorage.x + 1, anchorage.y, 2)
 	var/obj/structure/vehicleparts/movement/sail/new_mast = locate() in mast_turf
 	naval_check(new_mast && new_mast.sails, "her mast stands rigged where it stood")
+	naval_check(new_mast && new_mast.canvas == SAIL_REEFED && new_mast.torn, "its sail is still reefed and still torn")
+	var/datum/hull_ledger/arrived = built && built.craft ? built.craft.ledger : null
+	naval_check(arrived && arrived.water == 3 && arrived.seams == 0.5 && !arrived.old_anchor, "her bilge water and her seams crossed with her ([arrived ? "[arrived.water] [arrived.seams]" : "no ledger"])")
+	var/list/old_record = json_decode(json_encode(R))
+	old_record -= "ledger"
+	naval_check(sea_crossing_record_ok(old_record), "a record from before ledgers crossed is still a valid record")
+	var/list/bad_ledger = json_decode(json_encode(R))
+	bad_ledger["ledger"] = list("water" = "lots")
+	naval_check(!sea_crossing_record_ok(bad_ledger), "a ledger that is not numbers is refused")
 	var/turf/chest_turf = locate(anchorage.x - 1, anchorage.y - 1, 2)
 	var/obj/structure/closet/crate/new_chest = locate() in chest_turf
 	var/obj/item/stack/material/wood/new_planks = new_chest ? locate() in new_chest : null

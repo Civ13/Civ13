@@ -52,6 +52,9 @@ GLOBAL_DATUM_INIT(moved_event, /decl/observ/moved, new)
 	. = ..()
 	if(. && !loc)
 		GLOB.moved_event.raise_event(src, old_loc, null)
+	// Views of the level below through open air (open_air_view.dm).
+	if(open_air_view_any && old_loc != loc)
+		open_air_view_moved(src, old_loc)
 
 /atom/movable/forceMove(atom/destination)
 	if (craft_glide_was)
@@ -60,3 +63,6 @@ GLOBAL_DATUM_INIT(moved_event, /decl/observ/moved, new)
 	. = ..()
 	if(. && !loc)
 		GLOB.moved_event.raise_event(src, old_loc, null)
+	// Views of the level below through open air (open_air_view.dm).
+	if(open_air_view_any && old_loc != loc)
+		open_air_view_moved(src, old_loc)

@@ -3,15 +3,24 @@
 // there, darker than their own level, and darker again for each level further
 // down.
 //
-// An open-air cell near a viewer holds a view object in its vis_contents; the
-// view object holds the turf below in its own vis_contents, so the client
-// draws that turf and everything on it live, with no copying on the server. If
-// the turf below is open air too, it holds its own view of the level under it,
-// and the shading multiplies: each level down is darker than the one above.
+// An open-air cell near a viewer holds a view object in its vis_contents. The
+// view object never holds the turf below itself: a turf shown through
+// vis_contents is sent to the client again and again (a real client measured
+// about 2.7 Mbps one level up, 4.8 two levels up, against 0.1 on the ground).
+// Instead the view holds a copy of the turf's look (the ground object) and the
+// movables standing on that turf, which cost what they cost on the ground. If
+// the turf below is open air too, the view holds that cell's own view, and the
+// shading multiplies: each level down is darker than the one above.
+//
+// Keeping the copy current: whatever moves with Move() or forceMove() is
+// added to or taken from the views of the turfs it leaves and enters at once,
+// and the scan (code/processes/open_air_view.dm) resyncs the views around each
+// viewer every second for the rest (new objects, raw loc changes, a changed
+// turf look).
 //
 // Cost: only open-air cells that a viewer has had in sight get a view object,
-// once; nothing is redrawn on the server when things move below. The views are
-// never saved (turf vis_contents are not recorded, the fields are tmp).
+// once. The views are never saved (turf vis_contents are not recorded, the
+// fields are tmp).
 //
 // Clicks: everything shown through open air counts as the open-air cell itself
 // (VIS_INHERIT_ID), so grabbing open air to climb down, building on it and
@@ -65,6 +74,104 @@
 	plane = FLOOR_PLANE
 	layer = OPEN_AIR_VIEW_LAYER
 	color = OPEN_AIR_VIEW_SHADE
+	// The turf this view shows, and the copy of its look.
+	var/tmp/turf/shows = null
+	var/tmp/obj/effect/open_air_view_ground/ground = null
+	var/tmp/ground_appearance = null
+
+// The look of the turf below, copied (never the turf itself, see above). It
+// takes the view's layer like the turf did, under floors built over open air.
+/obj/effect/open_air_view_ground
+	name = "the ground below"
+	anchored = TRUE
+	simulated = FALSE
+
+// Views showing this turf, so movables entering or leaving it update them.
+/turf/var/tmp/list/open_air_shown_by = null
+// Set once any view exists; until then a move costs one global read here.
+var/global/open_air_view_any = FALSE
+
+// Starts showing a turf: its look, what stands on it and, for open air, the
+// view under it.
+/obj/effect/open_air_view/proc/open_air_show(turf/below)
+	open_air_unshow()
+	open_air_view_any = TRUE
+	shows = below
+	ground = new
+	ground.loc = null
+	vis_contents += ground
+	open_air_view_sync()
+
+/obj/effect/open_air_view/proc/open_air_unshow()
+	if (shows && shows.open_air_shown_by)
+		shows.open_air_shown_by -= src
+		if (!shows.open_air_shown_by.len)
+			shows.open_air_shown_by = null
+	shows = null
+	vis_contents.Cut()
+	if (ground)
+		qdel(ground)
+		ground = null
+	ground_appearance = null
+
+/obj/effect/open_air_view/Destroy()
+	open_air_unshow()
+	return ..()
+
+/proc/open_air_view_shows_movable(atom/movable/A)
+	return !(A.vis_flags & VIS_HIDE) && !istype(A, /obj/effect/open_air_view)
+
+// Brings the copy in line with the turf below: its look, what stands on it,
+// and the view under open air.
+/obj/effect/open_air_view/proc/open_air_view_sync()
+	var/turf/below = shows
+	if (!below || !ground)
+		return
+	// A replaced turf (ChangeTurf) starts with fresh vars.
+	if (!below.open_air_shown_by)
+		below.open_air_shown_by = list(src)
+	else if (!(src in below.open_air_shown_by))
+		below.open_air_shown_by += src
+	if (ground_appearance != below.appearance)
+		ground_appearance = below.appearance
+		var/mutable_appearance/look = new(below)
+		look.plane = FLOAT_PLANE
+		look.layer = OPEN_AIR_VIEW_LAYER
+		look.vis_flags = VIS_INHERIT_PLANE | VIS_INHERIT_ID | VIS_INHERIT_LAYER
+		ground.appearance = look
+	var/list/want = list(ground)
+	for (var/atom/movable/A in below)
+		if (open_air_view_shows_movable(A))
+			want += A
+	var/turf/sky/building/next = below
+	if (istype(next) && next.open_air_view)
+		want += next.open_air_view
+	for (var/thing in vis_contents)
+		if (!(thing in want))
+			vis_contents -= thing
+	for (var/thing in want)
+		if (!(thing in vis_contents))
+			vis_contents += thing
+
+// Called after a movable moves with Move() or forceMove(): the views of the
+// turf it left drop it, the views of the turf it entered show it.
+/proc/open_air_view_moved(atom/movable/A, atom/old_loc)
+	var/turf/from = old_loc
+	if (isturf(from) && from.open_air_shown_by)
+		for (var/obj/effect/open_air_view/V in from.open_air_shown_by)
+			V.vis_contents -= A
+	var/turf/into = A.loc
+	if (isturf(into) && into.open_air_shown_by && open_air_view_shows_movable(A))
+		for (var/obj/effect/open_air_view/V in into.open_air_shown_by)
+			if (!(A in V.vis_contents))
+				V.vis_contents += A
+
+/atom/movable/Destroy()
+	var/turf/T = loc
+	if (isturf(T) && T.open_air_shown_by)
+		for (var/obj/effect/open_air_view/V in T.open_air_shown_by)
+			V.vis_contents -= src
+	return ..()
 
 /turf/sky/building/var/tmp/obj/effect/open_air_view/open_air_view = null
 
@@ -102,21 +209,25 @@
 		// Southern cells draw over northern ones, so a tall sprite below (a
 		// tree) overhangs the open air north of it instead of being cut off.
 		V.layer = OPEN_AIR_VIEW_LAYER + 0.009 * (world.maxy - y) / max(1, world.maxy)
-		V.vis_contents += below
 		open_air_view = V
 		vis_contents += V
 		// The sky sprite would hide the view (icon is not a saved turf field).
 		icon = null
+		V.open_air_show(below)
 	var/turf/sky/building/next = below
 	if (istype(next))
 		next.open_air_view_refresh(depth + 1, FALSE)
+	open_air_view.open_air_view_sync()
 
 /turf/sky/building/proc/open_air_view_clear()
 	if (!open_air_view)
 		return
 	vis_contents -= open_air_view
 	icon = initial(icon)
-	open_air_view.vis_contents.Cut()
+	// The view above this cell showed this view; it goes at once.
+	if (open_air_shown_by)
+		for (var/obj/effect/open_air_view/above in open_air_shown_by)
+			above.vis_contents -= open_air_view
 	qdel(open_air_view)
 	open_air_view = null
 
@@ -126,6 +237,9 @@
 
 /client/var/tmp/turf/open_air_view_centre = null
 /client/var/tmp/open_air_view_scanned_at = 0
+// Cells showing the level below at the last scan; while any are in sight the
+// scan resyncs them every time the process fires.
+/client/var/tmp/open_air_view_in_sight = 0
 
 // Links the open-air cells on and just beyond the client's screen. The eye may
 // be panned (Look into Distance), so the screen centre counts the pan.
@@ -136,7 +250,9 @@
 		return
 	var/pan_x = ceil(abs(pixel_x) / world.icon_size)
 	var/pan_y = ceil(abs(pixel_y) / world.icon_size)
-	if (centre == open_air_view_centre && !pan_x && !pan_y && world.time < open_air_view_scanned_at + OPEN_AIR_VIEW_RESCAN)
+	// Standing still on a level with no open air in sight: nothing to link or
+	// resync until the viewer moves or the rescan time comes.
+	if (centre == open_air_view_centre && !pan_x && !pan_y && !open_air_view_in_sight && world.time < open_air_view_scanned_at + OPEN_AIR_VIEW_RESCAN)
 		return
 	open_air_view_centre = centre
 	open_air_view_scanned_at = world.time
@@ -145,16 +261,28 @@
 	var/ry = round(size[2] / 2) + OPEN_AIR_VIEW_MARGIN + pan_y
 	var/cx = centre.x + round(pixel_x / world.icon_size)
 	var/cy = centre.y + round(pixel_y / world.icon_size)
-	open_air_view_link_around(centre.z, cx, cy, rx, ry)
+	open_air_view_in_sight = open_air_view_link_around(centre.z, cx, cy, rx, ry)
 
-// Links every open-air cell in the box around (cx, cy) on level z.
+// Links every open-air cell in the box around (cx, cy) on level z and resyncs
+// the views already there. Returns how many cells show the level below.
 /proc/open_air_view_link_around(z, cx, cy, rx, ry)
 	var/turf/low = locate(max(1, cx - rx), max(1, cy - ry), z)
 	var/turf/high = locate(min(world.maxx, cx + rx), min(world.maxy, cy + ry), z)
 	if (!low || !high)
-		return
+		return 0
+	. = 0
 	for (var/turf/sky/building/T in block(low, high))
 		T.open_air_view_refresh()
+		if (T.open_air_view)
+			.++
+
+// Views that no scan reaches (a murder hole's look at the tile under it),
+// resynced by the process every time it fires.
+var/global/list/open_air_views_fixed = list()
+
+/proc/open_air_view_sync_fixed()
+	for (var/obj/effect/open_air_view/V in open_air_views_fixed)
+		V.open_air_view_sync()
 
 /proc/open_air_view_busy()
 	return persistence_active_operation || persistence_save_in_progress || building_allocating_z

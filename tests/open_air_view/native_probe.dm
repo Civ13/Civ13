@@ -33,6 +33,14 @@ var/list/open_air_probe_log = list()
 /proc/open_air_probe_view(turf/sky/building/T)
 	return istype(T) ? T.open_air_view : null
 
+/proc/open_air_probe_turf_shown(atom/A, depth = 0)
+	if (depth > 8)
+		return FALSE
+	for (var/thing in A:vis_contents)
+		if (isturf(thing) || open_air_probe_turf_shown(thing, depth + 1))
+			return TRUE
+	return FALSE
+
 /proc/open_air_probe_run()
 	config = new
 	config.webhook_can_fire = FALSE
@@ -58,9 +66,37 @@ var/list/open_air_probe_log = list()
 	var/turf/middle = locate(5, 5, 2)
 	var/turf/ground = locate(5, 5, 1)
 	var/obj/effect/open_air_view/V = open_air_probe_view(top)
-	open_air_probe_check(V && (V in top.vis_contents) && (middle in V.vis_contents), "top_shows_middle")
 	var/obj/effect/open_air_view/W = open_air_probe_view(middle)
-	open_air_probe_check(W && (W in middle.vis_contents) && (ground in W.vis_contents), "middle_shows_ground")
+	open_air_probe_check(V && (V in top.vis_contents) && V.shows == middle && (W in V.vis_contents), "top_shows_middle")
+	open_air_probe_check(W && (W in middle.vis_contents) && W.shows == ground && (W.ground in W.vis_contents), "middle_shows_ground")
+	// No turf is ever shown through vis_contents: the client is sent such a
+	// turf again and again (about 2.7 Mbps one level up in a real client).
+	open_air_probe_check(!open_air_probe_turf_shown(V) && !open_air_probe_turf_shown(W), "no_turf_in_views")
+	open_air_probe_check(W.ground.icon == ground.icon && W.ground.icon_state == ground.icon_state && W.ground.layer == 1.95, "ground_copies_the_turf")
+	// Who walks below shows at once, and leaves the old tile's view at once.
+	var/obj/structure/walker = new /obj/structure(locate(5, 4, 1))
+	open_air_view_link_around(3, 6, 6, 3, 3)
+	var/obj/effect/open_air_view/S = open_air_probe_view(locate(5, 4, 2))
+	open_air_probe_check(S && (walker in S.vis_contents), "walker_shown")
+	walker.forceMove(ground)
+	open_air_probe_check(!(walker in S.vis_contents) && (walker in W.vis_contents), "walker_follows_moves")
+	// Something put down without Move() shows at the next resync; something
+	// deleted goes at once.
+	var/obj/item/rods = new /obj/item(ground)
+	open_air_probe_check(!(rods in W.vis_contents), "new_item_waits_for_sync")
+	open_air_view_link_around(3, 6, 6, 3, 3)
+	open_air_probe_check(rods in W.vis_contents, "new_item_after_sync")
+	qdel(rods)
+	open_air_probe_check(!(rods in W.vis_contents), "deleted_item_goes")
+	// A changed turf look is copied at the next resync.
+	ground.icon_state = "dirt"
+	open_air_view_link_around(3, 6, 6, 3, 3)
+	open_air_probe_check(W.ground.icon_state == "dirt", "turf_look_resynced")
+	// Open air under a floor on the middle level: floors over open air show.
+	var/obj/covers/C = locate() in locate(8, 8, 2)
+	var/obj/effect/open_air_view/OF = open_air_probe_view(locate(8, 8, 3))
+	open_air_probe_check(OF && (C in OF.vis_contents), "floor_below_shown")
+	qdel(walker)
 	open_air_probe_check(!length(ground.vis_contents), "ground_holds_nothing")
 	open_air_probe_check(V.color && W.color && V.mouse_opacity == 0 && (V.appearance_flags & KEEP_TOGETHER), "views_are_shaded")
 	open_air_probe_check(!V.loc && !W.loc, "views_are_not_map_atoms")
@@ -94,8 +130,8 @@ var/list/open_air_probe_log = list()
 	new /obj/covers/catwalk(grated)
 	open_air_view_link_around(3, 6, 6, 3, 3)
 	var/obj/effect/open_air_view/G = open_air_probe_view(gapped)
-	var/turf/under_gapped = locate(6, 4, 2)
-	open_air_probe_check(G && (G in gapped.vis_contents) && (under_gapped in G.vis_contents) && !gapped.icon, "gapped_floor_shows_below")
+	var/turf/sky/building/under_gapped = locate(6, 4, 2)
+	open_air_probe_check(G && (G in gapped.vis_contents) && G.shows == under_gapped && (under_gapped.open_air_view in G.vis_contents) && !gapped.icon, "gapped_floor_shows_below")
 	open_air_probe_check(G && G.layer < planks.layer, "view_under_gapped_floor")
 	open_air_probe_check(open_air_probe_view(grated) && !grated.icon, "catwalk_shows_below")
 	new /obj/covers/wood(gapped)
@@ -108,6 +144,13 @@ var/list/open_air_probe_log = list()
 	replaced.ChangeTurf(/turf/floor/grass)
 	var/turf/now = locate(4, 4, 3)
 	open_air_probe_check(!(R in now.vis_contents) && (R.gcDestroyed || R.gc_destroyed || !R.vis_contents.len), "replace_drops_view")
+	// Ground replaced under a view is resynced.
+	var/turf/regrown = locate(5, 5, 1)
+	regrown.ChangeTurf(/turf/floor/dirt)
+	// A floor now covers the top cell, so a viewer on the middle level resyncs it.
+	open_air_view_link_around(2, 6, 6, 3, 3)
+	regrown = locate(5, 5, 1)
+	open_air_probe_check((W in regrown.open_air_shown_by) && W.ground.icon_state == regrown.icon_state, "changed_turf_below_resynced")
 	// Refreshing again does not stack views.
 	open_air_view_link_around(3, 6, 6, 3, 3)
 	var/count = 0

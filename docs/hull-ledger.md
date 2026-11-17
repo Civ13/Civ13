@@ -153,6 +153,28 @@ the work survive a step of the hull.
 
 Masts fitted to a modular ship's frame are untouched.
 
+## Fouling, scraping and copper
+
+`code/modules/naval/hull_fouling.dm`. Boats and ships only; small craft never
+foul.
+
+- `fouling` runs from 0, clean, to 1, foul, and grows in `step_fouling()` in
+  the ledger step, so only while she is awake (crewed or under way) and not
+  sat on the bottom. A bare bottom takes 86400 seconds of use.
+- `foul_weight()` is nothing while she is clean (under a tenth) and then
+  `fouling x tiles x 0.4`, rounded; `craft.mass()` adds it with the water and
+  the load, so her drives push it.
+- Names: clean, slimed (0.1), weedy (0.4), foul (0.75). The crew is told at
+  weedy and at foul; the tiller always says.
+- Scraping (`hull_scrape()`): a shovel or a knife used, without harm intent,
+  on a plank of a hull that is at least slimed. She must lie still and not
+  over deep water. Each go of four seconds cleans three tiles.
+- Copper (`hull_sheathe()`): copper sheets on a plank of a wooden hull, under
+  the same conditions, with a clean bottom and a hammer in the other hand.
+  One sheet covers two tiles; `coppered` runs 0 to 1 and a full sheathing
+  stops nine tenths of the growth.
+- `fouling` and `coppered` are saved with the ledger.
+
 ## Stations and the watch
 
 `code/modules/naval/hull_watch.dm`. Nothing forces a crew to man a station; the
@@ -198,7 +220,16 @@ One looping timer (`hull_ledgers_tick`, every 30 seconds) steps the ledgers that
 are awake. Players are matched to hulls from the client list with one keyed
 lookup a hull, so empty hulls cost no deck walk. Nothing runs during a world
 save. The tiller saves the ledger inside its `hull_state` record
-(`"ledger": {"water", "holes", "patches", "grounded", "seams", "old_anchor"}`); nothing stores `world.time`.
+(`"ledger": {"water", "holes", "patches", "grounded", "seams", "old_anchor", "fouling", "coppered"}`); nothing stores `world.time`.
+
+## Crossings and voyages
+
+A hull that leaves for a land across the sea or sets out on a voyage is packed
+into a record (`code/modules/naval/ship_crossing.dm`). The record carries
+`"ledger"`, the same list the tiller saves, and each mast entry carries how
+its sail is set and whether it is torn; `sea_crossing_build()` reads both back
+after she is commissioned. A record without them, from a ship already at sea
+when this was added, builds as before: dry, sound and under full sail.
 
 ## Tests
 
