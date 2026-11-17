@@ -21,15 +21,17 @@ def body(source, header):
 
 
 class BuildingStoreyTests(unittest.TestCase):
-    def test_gaia_opts_into_four_levels_within_the_ceiling(self):
+    def test_gaia_opts_into_six_levels_within_the_ceiling(self):
         gaia = read('code/game/objects/map_metadata/nomads/nomads_gaia.dm')
-        self.assertIn('\tbuilding_levels = 4\n', gaia)
+        self.assertIn('\tbuilding_levels = 6\n', gaia)
         budget = read('code/modules/multiz/world_z_budget.dm')
-        self.assertIn('#define NEW_Z_ROOF_CEILING 4\n', budget)
+        self.assertIn('#define NEW_Z_ROOF_CEILING 6\n', budget)
+        # Gaia: compiled cave and surface, then six building levels.
+        self.assertLessEqual(500 * 350 * (2 + 6), 1400000)
 
     def test_admission_follows_the_map_cap_and_the_measured_cells(self):
         admission = read('code/modules/multiz/building_admission.dm')
-        self.assertIn('#define NEW_Z_BUILDING_MEASURED_CELLS 1050000\n', admission)
+        self.assertIn('#define NEW_Z_BUILDING_MEASURED_CELLS 1400000\n', admission)
         admitted = body(admission, '/datum/world_z_budget/building_admitted(target_z)')
         self.assertIn('target_z > building_base_maxz() + min(map.building_levels, NEW_Z_ROOF_CEILING)', admitted)
         self.assertIn('<= NEW_Z_BUILDING_MEASURED_CELLS', admitted)
@@ -38,37 +40,50 @@ class BuildingStoreyTests(unittest.TestCase):
     def test_a_large_one_level_map_grows_four_levels_over_its_cave(self):
         admission = read('code/modules/multiz/building_admission.dm')
         self.assertIn('#define NEW_Z_STANDING_MEASURED_CELLS 5300000\n', admission)
-        self.assertIn('/obj/map_metadata/var/building_levels = 4\n', admission)
+        self.assertIn('/obj/map_metadata/var/building_levels = 6\n', admission)
         admitted = body(admission, '/datum/world_z_budget/building_admitted(target_z)')
         self.assertIn('if (map.building_level_standing && building_base_maxz() == 1 && !pending && world.maxx * world.maxy * (target_z - cave) <= NEW_Z_STANDING_MEASURED_CELLS)', admitted)
         # The map cap is checked first, so the clause never admits a level a map did not ask for.
         self.assertLess(admitted.index('min(map.building_levels, NEW_Z_ROOF_CEILING)'), admitted.index('NEW_Z_STANDING_MEASURED_CELLS'))
-        # Both Americas: surface, cave and four open-air planes, the cave not charged.
+        # Both Americas stay at four for memory: surface, cave and four
+        # open-air planes, the cave not charged; a fifth plane would not fit.
         for width, height in ((1132, 920), (848, 1224)):
             self.assertLessEqual(width * height * 5, 5300000)
+            self.assertGreater(width * height * 6, 5300000)
         self.assertIn('#define NEW_Z_CELL_CEILING 5300000', read('code/modules/multiz/world_z_budget.dm'))
         americas = read('code/game/objects/map_metadata/nomads/nomads_americas.dm')
         self.assertEqual(americas.count('\tbuilding_levels = 4\n'), 2)
         self.assertEqual(americas.count('\tbuilding_level_standing = TRUE\n'), 2)
 
-    def test_the_smaller_lands_fit_four_levels_in_the_measured_cells(self):
+    def test_the_smaller_lands_fit_six_levels_in_the_measured_cells(self):
         # name: (width, height, compiled levels, dig-down cave). Every plane up
-        # to the fourth building level, and the cave where there is one, must
+        # to the sixth building level, and the cave where there is one, must
         # fit the measured cell count, or roofs would be refused part of the way
         # up. A dig-down land's two full planes must fit Gaia's.
         lands = {'asia': (490, 255, 1, 1), 'europe': (375, 447, 1, 1), 'jungle': (300, 300, 2, 0), 'desert': (225, 225, 2, 0)}
         for name, (width, height, base, cave) in lands.items():
             with self.subTest(name):
                 meta = read('code/game/objects/map_metadata/nomads/nomads_%s.dm' % name)
-                self.assertEqual(meta.count('\tbuilding_levels = 4\n'), 1)
+                self.assertEqual(meta.count('\tbuilding_levels = 6\n'), 1)
                 self.assertEqual(meta.count('\tbuilding_level_standing = TRUE\n'), 1)
                 self.assertEqual(meta.count('\tdig_down_underground = TRUE\n'), cave)
                 heights = read('maps/heights/nomads_%s.txt' % name).split('\n')
                 self.assertEqual(heights[1], 'size %d %d' % (width, height))
                 self.assertEqual(heights[2], 'z %d' % base)
-                self.assertLessEqual(width * height * (base + cave + 4), 1050000)
+                self.assertLessEqual(width * height * (base + cave + 6), 1400000)
                 if cave:
                     self.assertLessEqual(width * height * 2, 350000)
+
+    def test_concrete_walls_carry_six_storeys(self):
+        levels = read('code/game/objects/building_levels.dm')
+        tier = body(levels, '/obj/covers/cement_wall/building_support_tier()')
+        self.assertIn('return 6 + building_brace_tier_bonus(src)', tier)
+        self.assertIn('if (!wall || incomplete || health <= 0', tier)
+        walls = read('code/game/objects/covers_types/covers_buildable.dm')
+        self.assertIn('/obj/covers/cement_wall\n', walls)
+        # Six storeys need six levels on every land that is not memory-bound.
+        ceiling = re.search(r'#define NEW_Z_ROOF_CEILING (\d+)', read('code/modules/multiz/world_z_budget.dm'))
+        self.assertGreaterEqual(int(ceiling.group(1)), 6)
 
     def test_a_dug_cave_and_building_levels_coexist(self):
         admission = read('code/modules/multiz/building_admission.dm')
