@@ -39,6 +39,40 @@ Acceleration rises with spare pull. Coasting, engine braking and the brake
 each take a fixed amount of speed per tile, divided by the train's weight over
 six, so a long heavy train needs several times the distance to stop.
 
+## The boiler
+
+Steam engines (`/obj/structure/trains/locomotive/coal` and its subtypes) make
+their power in a boiler. `on` means the fire is lit; the menu says "Light the
+fire" and "Drop the fire".
+
+- `pressure` (0 to 100) is what the engine has to work with. `steam_factor()`
+  is 1 from 60 up, falls in line below that and is 0 under 15. It scales the
+  engine's top speed and what a helper engine adds to the train's pull. The
+  throttle will not open with no steam.
+- By the clock (`boiler_tick()`, caught up when the engine drives or someone
+  uses or examines it, so nothing ticks for a parked engine): a lit fire
+  raises pressure, from cold to full in `steam_time` seconds on a firebox at
+  least half full (120 s, heavy engines 240 s), and burns 0.02 fuel a second
+  standing. With the fire out the boiler cools in 20 minutes.
+- By the tile (`steam_use()`): the fire makes 1.1 on a firebox at least half
+  full, less on a thin fire, and the work takes notch / 3 times the load
+  (weight over `haul`, up to 1.5). A train at the engine's rated load holds
+  pressure at full throttle; a heavier one winds the engine and must be
+  driven on a lower notch.
+- Water: `boiler_water` (60, heavy 100) boils off at up to a unit a tile and
+  `water` is the tank (240, heavy 600). With the `injector` on, which is how
+  engines are built, each tile puts back what was used at a small cost in
+  steam. A quarter glass warns everyone nearby.
+- A lit fire over an empty boiler melts the fusible plug (`drop_plug()`):
+  the fire goes out, pressure is lost and the engine is dead until a new
+  `/obj/item/fusible_plug` (1 lead, Rail & Steam) is fitted with a ten second
+  job. Nothing explodes.
+- Water goes in from any open vessel of water. A cold boiler is filled
+  first, then the tank. Water towers come with the tender work.
+
+Engines are built filled and in steam, and engines saved before the boiler
+existed load the same way. Diesel engines are unchanged.
+
 ## Heavy locomotives
 
 Code: `code/modules/1713/train_locomotives.dm`. Tests: the `heavy/`, `diesel/`

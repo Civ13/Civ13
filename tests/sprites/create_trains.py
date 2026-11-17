@@ -585,6 +585,30 @@ def coupling_item():
     return [c.image()]
 
 
+def fusible_plug():
+    """The boiler's safety plug: a bronze hexagon head on a threaded shank,
+    with the grey lead core showing in its middle."""
+    c = Canvas(32, 32)
+    c.shade(10, 22, 22, 24, 60)
+    # threaded shank
+    c.bevel(13, 14, 18, 22, BRASS[1], BRASS[2], BRASS[4], outline=DARK)
+    for y in (16, 18, 20):
+        c.rect(14, y, 17, y, BRASS[4])
+    # hexagon head
+    c.rect(11, 9, 20, 14, DARK)
+    c.rect(12, 8, 19, 15, DARK)
+    c.rect(12, 9, 19, 14, BRASS[2])
+    c.rect(12, 9, 19, 10, BRASS[0])
+    c.rect(12, 14, 19, 14, BRASS[3])
+    c.rect(11, 10, 11, 13, BRASS[3])
+    c.rect(20, 10, 20, 13, BRASS[4])
+    # lead core
+    c.rect(14, 11, 17, 13, STEEL[3])
+    c.rect(14, 11, 16, 11, STEEL[0])
+    c.put(17, 13, STEEL[4])
+    return [c.image()]
+
+
 def outrigger(c):
     """A lowered outrigger on the ground beside a braced gun car (car to the east)."""
     c.shade(7, 13, 17, 24, 60)
@@ -1450,6 +1474,7 @@ def platform_states():
     states.update(loco_states())
     states.update(coupler_states())
     states['coupling_item'] = coupling_item()
+    states['fusible_plug'] = fusible_plug()
     return states
 
 
