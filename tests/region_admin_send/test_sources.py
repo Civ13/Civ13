@@ -54,6 +54,28 @@ class RegionAdminSendSeams(unittest.TestCase):
         self.assertIn('region_admin_send_arrived(H, P, incoming,', arrive)
         self.assertIn('region_admin_send_claimed(H)', body(TRAVEL, '/proc/region_travel_claim(mob/new_player/lobby, wait = TRUE)'))
 
+    def test_nothing_leaves_for_a_land_whose_agent_is_on_hold(self):
+        bridge = read('code/modules/persistence/transfer_bridge.dm')
+        group = read('code/modules/persistence/shard_group.dm')
+        # Every departure records its escrow here, so one check covers them all.
+        escrow = body(bridge, '/datum/transfer_bridge/proc/begin_escrow(peer, list/payloads, fast = FALSE)')
+        self.assertLess(escrow.index('if(shard_group.peer_transfers_held(peer)) return null'), escrow.index('begin_effect('))
+        # A held land says so, and its peers remember it.
+        self.assertIn('.["transfers_held"] = 1', body(group, '/datum/shard_group/proc/describe()'))
+        self.assertIn('peer["transfers_held"] = reply["transfers_held"] ? TRUE : FALSE', body(group, '/datum/shard_group/proc/record(id, answer, now)'))
+        self.assertIn('if(shard_group.peer_transfers_held(id)) return', body(SEND, '/proc/region_admin_send_destination_refusal(id, wake = TRUE)'))
+        self.assertIn('if(shard_group.peer_transfers_held(destination))', body(TRAVEL, '/obj/structure/region_gate/proc/closed_reason()'))
+        self.assertIn('shard_group.peer_transfers_held(id)', SHIP)
+        # The lobby warns before a second character replaces one still on its way.
+        home = read('code/modules/persistence/region_home.dm')
+        self.assertIn('transfer_bridge.held() && !lobby.transfer_hold_warned && !region_home_living_body(C.ckey)', home)
+        self.assertIn("seen.get('transfers_held')", HOST)
+
+    def test_a_shore_landing_looks_on_the_surface_level(self):
+        # Gaia's surface is level 2; the edge-crossing level defaults to 1.
+        self.assertIn('region_admin_send_shore(sea_crossing_sides(P["from"]), region_admin_send_surface_z())', SEND)
+        self.assertIn('if(istype(N) && N.new_player_start_z) return N.new_player_start_z', body(SEND, '/proc/region_admin_send_surface_z()'))
+
     def test_sends_use_the_gate_departure_one_at_a_time(self):
         one = body(SEND, '/proc/region_admin_send_one(mob/living/human/H, id, list/landing)')
         self.assertIn('. = gate.depart(H)', one)

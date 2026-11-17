@@ -100,6 +100,9 @@ var/global/list/region_home_summoned = list()
 // TRUE when this lobby's account may play here. With wait, a first-time
 // question waits up to REGION_HOME_WAIT for the coordinator; without it (the
 // login reclaim paths, which must not stall), anything but HOME refuses now.
+// Told once that travel into this land is paused (region_home_admit).
+/mob/new_player/var/tmp/transfer_hold_warned = FALSE
+
 /proc/region_home_admit(mob/new_player/lobby, wait = TRUE)
 	if(!region_home_enabled()) return TRUE
 	if(!lobby || !lobby.client) return FALSE
@@ -131,6 +134,15 @@ var/global/list/region_home_summoned = list()
 						told = TRUE
 					sleep(20)
 					continue
+				// While the agent here is on hold nobody can arrive: a character sent
+				// here waits in the land it left. Joining now would start a second
+				// character in its place, so the player is told first and Join must
+				// be pressed again to go ahead.
+				if(wait && transfer_bridge.held() && !lobby.transfer_hold_warned && !region_home_living_body(C.ckey))
+					lobby.transfer_hold_warned = TRUE
+					to_chat(lobby, SPAN_DANGER("Travel into this land is paused. If your character was travelling here, it is safe in the land it left and will arrive once an admin reopens the way: do not start a new character, ask an admin instead. If you are new here, press Join again to start."))
+					message_admins("[C.ckey] has no character in [shard_group.name] while travel into it is paused ([transfer_bridge.hold_reason]). If they were travelling here, their character is waiting in the land it left.")
+					return FALSE
 				lobby.colony_start_grant = grant
 				return TRUE
 			if("ELSEWHERE")

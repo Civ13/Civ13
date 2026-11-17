@@ -93,6 +93,7 @@ var/global/region_admin_send_running = FALSE
 	if(!transfer_bridge.ready()) return "The transfer agent is not ready here, so nobody can travel."
 	if(!(id in transfer_bridge.peers)) return "The transfer agent here has no route to [peer["name"]]."
 	if(peer["state"] == "STOPPED") return "[peer["name"]] is stopped. Start it from the launcher or host first."
+	if(shard_group.peer_transfers_held(id)) return "[peer["name"]]'s transfer agent is on hold, so it would refuse the arrival and the character would wait in limbo. An operator must clear the hold first."
 	if(peer["state"] != "UP" && !(wake && shard_group.peer_wakeable(id))) return "[peer["name"]] is not answering ([lowertext(peer["state"] || "unknown")])."
 	if(persistence_save_active()) return "This world is saving. Try again in a moment."
 	return null
@@ -549,10 +550,19 @@ var/global/region_admin_send_running = FALSE
 		var/list/at = S["at"]
 		T = region_admin_send_near(locate(at[1], at[2], at[3]))
 	else if(S["landing"] == ADMIN_SEND_SHORE)
-		T = region_admin_send_shore(sea_crossing_sides(P["from"]), map ? map.edge_crossing_z : 1)
+		T = region_admin_send_shore(sea_crossing_sides(P["from"]), region_admin_send_surface_z())
 	// Remembered for the arrival note (region_admin_send_arrived).
 	if(T) P["admin_placed"] = TRUE
 	return T
+
+// The level whose coasts a shore landing looks along: where new characters
+// start on this map (the surface of a land with levels below it), else the
+// level its map edges cross on.
+/proc/region_admin_send_surface_z()
+	if(!map) return 1
+	var/obj/map_metadata/nomads/N = map
+	if(istype(N) && N.new_player_start_z) return N.new_player_start_z
+	return map.edge_crossing_z
 
 // T when a character can stand there, else the nearest safe floor within
 // PERSISTENCE_RETURN_SEARCH_RANGE, else null.

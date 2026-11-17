@@ -193,6 +193,8 @@ var/global/list/air_crossing_planes = list()
 	var/list/peer = shard_group.peers[id]
 	if (!peer)
 		return "That land is not known here."
+	if (shard_group.peer_transfers_held(id))
+		return "No aircraft can land there for now: that land is closed to arrivals. Ask an admin."
 	if (peer["state"] != "UP")
 		var/woke = shard_group.wake_peer(id, pilot)
 		if (woke)

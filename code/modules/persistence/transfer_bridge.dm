@@ -26,6 +26,8 @@ var/global/datum/transfer_bridge/transfer_bridge = new
 	// reconciliation succeeds (no effect can happen in between).
 	var/list/loaded_capture = null
 	var/hold_reason = null
+	// world.time before which the admins are not reminded of the hold again.
+	var/hold_warned_until = 0
 	var/reconcile_pending = FALSE
 	// Regions this world may send goods to (config "peers"); the agent still
 	// refuses any peer the operator has not enrolled.
@@ -69,6 +71,20 @@ var/global/datum/transfer_bridge/transfer_bridge = new
 /datum/transfer_bridge/proc/ready()
 	return enabled() && !isnull(ledger_base) && !hold_reason
 
+// TRUE while this land's agent refuses transfers until an operator clears it
+// (a loaded save the store does not recognise). Other lands are told
+// (shard_group describe()), so they stop sending travellers here.
+/datum/transfer_bridge/proc/held()
+	return enabled() && hold_reason ? TRUE : FALSE
+
+// Tells the admins once when the hold starts, and again every half hour while
+// it lasts: a held land looks healthy from inside, and travellers cannot come.
+/datum/transfer_bridge/proc/warn_held()
+	if(!held() || world.time < hold_warned_until) return
+	hold_warned_until = world.time + 18000
+	message_admins("Travel into [shard_group.enabled ? shard_group.name : "this land"] is paused: its transfer agent is on hold ([hold_reason]). Nobody can arrive, and other lands will not send anyone, until an operator clears the hold.")
+	log_game("Transfer bridge: on hold ([hold_reason]).")
+
 // One request to the agent. Returns the decoded answer, or null when the agent
 // cannot be reached within five seconds.
 /datum/transfer_bridge/proc/request(path, list/body)
@@ -96,7 +112,9 @@ var/global/datum/transfer_bridge/transfer_bridge = new
 	catch
 		return null
 	if(!islist(answer)) return null
-	if(answer["held"]) hold_reason = answer["error"]
+	if(answer["held"])
+		hold_reason = answer["error"]
+		warn_held()
 	return answer
 
 // -- world effects ---------------------------------------------------------
@@ -105,6 +123,11 @@ var/global/datum/transfer_bridge/transfer_bridge = new
 // applied. Callers change the world only after a non-null result, and must
 // not sleep between the call and the world change.
 /datum/transfer_bridge/proc/begin_escrow(peer, list/payloads, fast = FALSE)
+	// A land whose own agent is on hold refuses everything sent to it, so what
+	// leaves here would wait in this land's escrow with nobody to tell. Every
+	// way of leaving (trail, ship, aircraft, train, admin send, trade) passes
+	// through here, so nothing sets off for a held land.
+	if(shard_group.peer_transfers_held(peer)) return null
 	return begin_effect("/escrow", list("peer" = peer, "payloads" = payloads, "fast" = fast ? 1 : 0))
 
 /datum/transfer_bridge/proc/begin_import(transfer_id, fast = FALSE)
@@ -202,6 +225,7 @@ var/global/datum/transfer_bridge/transfer_bridge = new
 			else
 				hold_reason = answer["error"] || "reconcile refused"
 				message_admins("Transfer agent refused the loaded save: [hold_reason]. Transfers stay paused until an operator resolves it.")
+				warn_held()
 			return
 		sleep(600)
 	reconcile_pending = FALSE

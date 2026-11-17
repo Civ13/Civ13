@@ -1131,6 +1131,17 @@ class ShardGroupTests(unittest.TestCase):
         status = shard_group.group_status(group, 'deep', view=answers.get, platform=self.machine)
         self.assertNotIn('battle_phase', status['regions']['deep']['region_view'])
 
+    def test_status_shows_a_held_transfer_agent(self):
+        group = self.write_group()
+        shard_group.setup(group, self.machine)
+        self.machine.up.add(1721)
+        answers = {1721: {'group': group['group'], 'region': 'deep', 'players': 0, 'map': 'Berlin', 'transfers_held': 1}}
+        status = shard_group.group_status(group, 'deep', view=answers.get, platform=self.machine)
+        self.assertIs(True, status['regions']['deep']['region_view']['transfers_held'])
+        del answers[1721]['transfers_held']
+        status = shard_group.group_status(group, 'deep', view=answers.get, platform=self.machine)
+        self.assertNotIn('transfers_held', status['regions']['deep']['region_view'])
+
     def test_sleep_settings_reach_every_region(self):
         self.refuse_config('freeze_idle_minutes', freeze_idle_minutes='soon')
         self.refuse_config('wake_ignore', wake_ignore=[1])

@@ -230,6 +230,12 @@ var/global/datum/shard_group/shard_group = new
 	world.log << "Region group: directory reloaded; the front door is [gate ? gate : mainland]."
 	return "reloaded"
 
+// TRUE when region id last said its transfer agent is on hold: it would
+// refuse anything sent, so nothing may leave for it (transfer_bridge.dm).
+/datum/shard_group/proc/peer_transfers_held(id)
+	var/list/peer = peers[id]
+	return islist(peer) && peer["transfers_held"] ? TRUE : FALSE
+
 // A region's display name: this one, a peer's, or the id when unknown.
 /datum/shard_group/proc/region_name(id)
 	if(id == region)
@@ -251,6 +257,10 @@ var/global/datum/shard_group/shard_group = new
 	if(map)
 		.["ordinal_age"] = map.ordinal_age
 	.["train_stations"] = train_route_advertisements()
+	// Nothing can arrive while the agent here is on hold (transfer_bridge.dm).
+	if(transfer_bridge && transfer_bridge.held())
+		.["transfers_held"] = 1
+		transfer_bridge.warn_held()
 	// Stations ask before sending a new party (party_train.dm).
 	if(kind == "RAILYARD")
 		.["free_berths"] = party_train_free_berths()
@@ -286,6 +296,10 @@ var/global/datum/shard_group/shard_group = new
 		peer["state"] = "DOWN"
 		peer["players"] = null
 		return FALSE
+	var/was_held = peer["transfers_held"]
+	peer["transfers_held"] = reply["transfers_held"] ? TRUE : FALSE
+	if(peer["transfers_held"] && !was_held)
+		message_admins("Travel to [peer["name"]] is paused: its transfer agent is on hold. Nobody will be sent there from here until an operator clears it.")
 	if(reply["group"] != group || reply["region"] != id)
 		peer["state"] = "MISMATCH"
 		peer["players"] = null
