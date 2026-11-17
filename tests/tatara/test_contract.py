@@ -23,6 +23,7 @@ DMI = ROOT / 'icons/obj/tatara.dmi'
 NODES = (ROOT / 'code/modules/research_tree/research_node.dm').read_text(encoding='utf-8')
 RECIPES = (ROOT / 'config/crafting/material_recipes_global.txt').read_text(encoding='utf-8')
 ANVIL = (ROOT / 'code/game/objects/structures/blacksmithing/blacksmithing.dm').read_text(encoding='utf-8')
+GATES = (ROOT / 'code/modules/research_tree/recipe_gates.dm').read_text(encoding='utf-8')
 ATLAS = json.loads((ROOT / 'scripts/atlas/resource-sources.json').read_text(encoding='utf-8'))
 SAND = '/obj/item/stack/ore/iron_sand'
 
@@ -97,6 +98,16 @@ class Tatara(unittest.TestCase):
         rows = [l for l in RECIPES.splitlines() if l.startswith('RECIPE: ') and ',/obj/structure/tatara,' in l]
         self.assertEqual(rows, ['RECIPE: /material/clay/,clay tatara furnace,/obj/structure/tatara,20,200,1,1,none,26,0,0,8,null'])
         self.assertIn('anvil_steel_face_nodes = list("steelmaking", "tatara_smelting")', ANVIL)
+
+    def test_steel_face_warning_names_both_chapters(self):
+        # The warning used to name only Steelmaking; it must offer Tatara Smelting too.
+        self.assertIn('crafting_nodes_allowed_or_warn(H, anvil_steel_face_nodes)', ANVIL)
+        self.assertNotIn('anvil_steel_face_nodes[1]', ANVIL)
+        self.assertIn('english_list(names, and_text = " or ")', GATES)
+        self.assertIn('Study the [joined] chapter first.', GATES)
+        # Repeated clicks within the delay do not repeat the same warning.
+        self.assertIn('#define RESEARCH_WALL_REPEAT_DELAY (3 SECONDS)', GATES)
+        self.assertIn('last[1] == text && world.time < last[2] + RESEARCH_WALL_REPEAT_DELAY', GATES)
 
     def test_sprites(self):
         states = dmi_states()
