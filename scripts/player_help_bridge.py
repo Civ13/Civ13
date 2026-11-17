@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = 'f70f74b96150280a6935d6aed2660260c2d6a6ff'
+WIKI_REVIEWED_REVISION = '2b684a6a2e5480e15aaac064a38bd668adc43940'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('19a2099a895672d6d6d77c383bcd167d5fd617d156f4245bceaad86fe273c303', 'character skills traits languages'),
@@ -100,8 +100,8 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Survival.md': ('d10258806571989ba1ef561be0653b673c5b3f63e169e448f0f1618efae3e868', 'survival winter cold warm freezing hypothermia shelter debris footwear boots snowshoes shoes ice mud rain wet umbrella raincoat cape storm storms lightning thunder blizzard sandstorm heat wave weather fire fires wildfire firefighting beater flapper smother burning bucket blanket extinguish smoke signal signals hook firebreak pump engine nozzle hose jet reel extinguisher'),
     'guides/Guide_to_Tanks.md': ('b900c1641222035e9a4940539ddf14501ec5d9133da22414333f7ca0c97578a6', 'tank driving crew ammunition'),
     'guides/Guide_to_Trains.md': ('d3989f8f25c1e27b7653024d80d8043783f4e24790f717a150a2084995c5bc25', 'train trains railway track locomotive station switcher rails wagon'),
-    'guides/Guide_to_Castles.md': ('2c2c9c61672cc8d98aeba434521e3bff44ef28f56f5ebc02f67910cac2c56b5c', 'castle castles defend defending siege gatehouse portcullis murder hole arrow slit battlement caltrops trapdoor'),
-    'guides/Guide_to_Trenches.md': ('60a03f0018caeb1c1e7dc6dff9e588ec8bd206a8275ac88568f7220a658d5d48', 'trench trenches fortification sandbag dig shovel'),
+    'guides/Guide_to_Castles.md': ('478f47a0fb7fc8060e7912b7eabc2d71a406058026b01278ae4fc4b69562e75f', 'castle castles defend defending siege gatehouse portcullis murder hole arrow slit battlement caltrops trapdoor'),
+    'guides/Guide_to_Trenches.md': ('e66a1030eab5bc320164c330140dbd6a94acbcd6fd121ab6979e9f468edcb5ad', 'trench trenches fortification sandbag dig shovel'),
     'guides/Guide_to_Weapons.md': ('a56dbe507d6b7b7a9838dbd1812d44f91fff9a197febf2bfa90dce689849c050', 'weapons gun reload ammunition'),
     'New_Player_Guide.md': ('c0d80da1236f7b15de5787584628898cc5dacddd6db97fadbe42dd5b685faee0', 'new player beginner start first round basics'),
     'Hotkeys.md': ('8087190f5b5332c54beb040e13274e54966d7aa4e865aaee8a3807445653ee6c', 'hotkeys hotkey keys keyboard controls key press'),
