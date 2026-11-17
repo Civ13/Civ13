@@ -743,3 +743,4 @@ frames is fitted.
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/depot_jobs_probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/built_hull_probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/hull_push_probe.dm 300
+    python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/bilge_probe.dm 300

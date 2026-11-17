@@ -155,6 +155,18 @@ or into land; she keeps her heading and her cargo and crew go with her.
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/hull_push_probe.dm 300
 
+## Bilge water (`bilge_probe.dm`)
+
+The hull ledger (`code/modules/naval/hull_ledger.dm`): a hull of up to twelve
+tiles is a small craft and stays dry; a wooden boat of thirty tiles holds 120
+bucketfuls, seeps 1.35 a minute under way and half that at anchor with a player
+aboard, and does not change at all asleep; the water weighs on her drives once
+it is past a damp bilge and stops at awash; an empty bucket bails from her own
+deck only; a refit keeps the water; the tiller saves and restores it; a steel
+hull has no seams; a struck hull leaves no ledger.
+
+    python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/bilge_probe.dm 300
+
 ## Upper decks on built hulls (`upper_deck_probe.dm`)
 
 A roofed-over built hull (`code/modules/craft/built_body.dm`): fifteen roofs
