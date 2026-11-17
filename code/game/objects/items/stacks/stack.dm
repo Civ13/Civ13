@@ -660,7 +660,7 @@
 			to_chat(H, "<span class = 'danger'>You can't make a [recipe.title] since you have no faction!</span>")
 			secondary_refund(H)
 			return
-	else if (findtext(recipe.title, "wall") || findtext(recipe.title, "well"))
+	else if ((findtext(recipe.title, "wall") && !findtext(recipe.title, "wallet")) || craft_recipe_builds_well(recipe))
 		if (H.getStatCoeff("crafting") < 1.1 && map.ID != MAP_VOYAGE)
 			to_chat(H, "<span class = 'danger'>This is too complex for your skill level.</span>")
 			secondary_refund(H)
@@ -866,7 +866,7 @@
 		customvar = chosen["company"]
 		customvar2 = recipe.title
 
-	if (findtext(recipe.title, "well") && !findtext(recipe.title, "oil well"))
+	if (craft_recipe_builds_well(recipe))
 		if (!well_build_site(get_turf(H)))
 			to_chat(H, "<span class = 'danger'>You need to build this over a puddle, or over a waterhole dug with a shovel.</span>")
 			secondary_refund(H)
