@@ -40,6 +40,14 @@ class TileOccupancySources(unittest.TestCase):
         replace = rule[rule.index('/obj/covers/proc/replace_subfloor('):]
         self.assertLess(replace.index('building_pair_id = old.building_pair_id'), replace.index('qdel(old)'))
 
+    def test_on_floor_recipes_accept_upper_storey_floors(self):
+        stack = read('code/game/objects/items/stacks/stack.dm')
+        body = stack[stack.index('/obj/item/stack/proc/produce_recipe('):]
+        self.assertIn('recipe.on_floor && !tile_has_floor(get_turf(user))', body)
+        self.assertNotIn('isfloor(user.loc)', body)
+        rule = read('code/game/objects/tile_occupancy.dm')
+        self.assertIn('return isfloor(T) || tile_floor_cover(T)', rule)
+
     def test_wall_foundations_checked(self):
         for path, count in (('code/game/objects/items/clay_items.dm', 7),
                             ('code/modules/1713/barriers/sandbag.dm', 2),

@@ -34,6 +34,11 @@
 			return C
 	return null
 
+// Footing for recipes built on the floor: the ground itself, or a floor cover
+// on any tile, which is how every upper storey stands over open air.
+/proc/tile_has_floor(turf/T)
+	return isfloor(T) || tile_floor_cover(T)
+
 /atom/proc/takes_wall_slot()
 	return FALSE
 
