@@ -924,6 +924,26 @@ var/naval_runtime_error = FALSE
 	S.step_fouling(86400)
 	naval_check(!S.fouls() && S.fouling == 0 && S.fouling_text() == "" && !S.foul_weight(), "a small craft never fouls")
 
+// The film of water over an awash deck (hull_awash.dm).
+/proc/awash_checks()
+	var/obj/structure/hull_tiller/tiller = bilge_hull(56, 18, 58, 27, "Ketch")
+	var/datum/hull_ledger/L = tiller.craft.ledger
+	L.seep_tiles = 0
+	var/obj/covers/plank = locate(/obj/covers) in locate(57, 20, 2)
+	var/bare = plank.overlays.len
+	naval_check(!L.deck_awash() && !L.awash_planks.len && !L.show_awash(), "a dry deck shows no water")
+	L.add_water(L.limit() * 0.4)
+	naval_check(L.depth() < HULL_DEPTH_AWASH && !L.awash_planks.len && plank.overlays.len == bare, "nor one knee deep ([L.depth()])")
+	L.add_water(L.limit())
+	naval_check(L.depth() >= HULL_DEPTH_AWASH && L.awash_planks.len == 30 && plank.overlays.len == bare + 1, "awash, water is drawn over every one of her thirty planks ([L.awash_planks.len])")
+	L.step_ledger(30)
+	naval_check(L.awash_planks.len == 30 && plank.overlays.len == bare + 1, "a step lays it again and never twice ([plank.overlays.len - bare])")
+	L.remove_water(L.limit() * 0.7)
+	naval_check(L.depth() < HULL_DEPTH_AWASH && !L.awash_planks.len && plank.overlays.len == bare, "bailed below awash, it is gone")
+	L.add_water(L.limit())
+	qdel(L)
+	naval_check(plank.overlays.len == bare, "and it goes with her ledger")
+
 /proc/naval_run()
 	try
 		naval_checks()
@@ -935,6 +955,7 @@ var/naval_runtime_error = FALSE
 		rigging_checks()
 		watch_checks()
 		fouling_checks()
+		awash_checks()
 	catch(var/exception/e)
 		naval_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = naval_failures, "runtime_error" = naval_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")

@@ -227,6 +227,10 @@ only lying still in the shallows, three tiles a go; fifteen sheets of copper
 sheathe a thirty-tile wooden boat and cut the growth to a tenth; the bottom is
 saved; a grounded hull and a small craft grow nothing.
 
+Deck awash (`code/modules/naval/hull_awash.dm`): no film on a dry or knee-deep
+deck; awash, every plank carries it once; a step never doubles it; bailing
+below awash and deleting the ledger both clear it.
+
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/bilge_probe.dm 300
 
 ## Upper decks on built hulls (`upper_deck_probe.dm`)
