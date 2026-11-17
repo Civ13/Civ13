@@ -458,12 +458,25 @@ var/global/building_assume_founded = FALSE
 	if (!building_open_turf(T))
 		return null // Ground-level finishes do not create ceilings underground.
 	var/below_z = multiz_level_below(T.z)
-	if (building_allocating_z || !below_z || (locate(/obj/covers) in T))
-		return "You cannot build another floor here."
+	if (building_allocating_z)
+		return "The upper building level is not ready. Try again shortly."
+	if (!below_z)
+		return "There is no level below this spot to hold a floor up."
+	if (locate(/obj/covers) in T)
+		return "There is already a floor here."
 	var/turf/below = locate(T.x, T.y, below_z)
+	// A roof already below with nothing above it takes the floor as its upper
+	// face, if what holds it up can carry one more storey.
+	var/obj/roof/existing = below && (locate(/obj/roof) in below)
+	if (existing)
+		if (existing.building_pair_id)
+			return "There is already a floor here."
+		if (!building_supported_height(below))
+			return "The roof under this spot is not held up well enough to carry a floor. Put grounded walls or pillars under it first."
+		return null
 	var/error = building_roof_error(below)
 	// The target open turf is checked above by the common roof preflight.
-	return error
+	return error ? "A floor here needs a roof under it, and that roof cannot be built: [error]" : null
 
 /proc/building_link(obj/roof/R, obj/covers/C)
 	if (!R || !C || R.x != C.x || R.y != C.y || !C.z || building_upper_z(R.z) != C.z)
@@ -498,15 +511,22 @@ var/global/building_assume_founded = FALSE
 	if (!above)
 		return R // Allocation was refused: the paid roof still provides shelter.
 	var/obj/covers/repairedfloor/C = new(above)
-	C.name = "upper floor"
-	C.desc = "The walkable upper face of the ceiling below. Removing either face removes both."
-	C.flammable = R.flammable
-	C.wood = R.flammable
-	if (!R.flammable)
-		C.material = "Stone"
-		C.amount = 0
+	C.building_take_upper_face(R)
 	building_link(R, C)
 	return R
+
+// A plain upper floor matches the roof it stands on: a stone or concrete slab
+// does not burn from above.
+/obj/covers/proc/building_take_upper_face(obj/roof/R)
+	name = "upper floor"
+	desc = "The walkable upper face of the ceiling below. Removing either face removes both."
+	if (!R)
+		return
+	flammable = R.flammable
+	wood = R.flammable
+	if (!R.flammable)
+		material = "Stone"
+		amount = 0
 
 /obj/covers/proc/building_finish_floor()
 	var/turf/T = get_turf(src)
@@ -516,8 +536,15 @@ var/global/building_assume_founded = FALSE
 		return TRUE
 	var/below_z = multiz_level_below(z)
 	var/turf/below = below_z ? locate(x, y, below_z) : null
-	if (!below || !building_supported_height(below) || (locate(/obj/roof) in below))
+	if (!below || !building_supported_height(below))
 		return FALSE
+	// A roof built before it could carry a floor (or while no level above
+	// could be added) takes this floor as its upper face.
+	var/obj/roof/existing = locate(/obj/roof) in below
+	if (existing)
+		if (existing.building_pair_id || QDELETED(existing))
+			return FALSE
+		return building_link(existing, src)
 	var/obj/roof/R = new /obj/roof/wood(below)
 	return building_link(R, src)
 
@@ -548,6 +575,7 @@ var/global/building_assume_founded = FALSE
 			T.Entered(A)
 		for (var/obj/roof/above in range(3, T))
 			above.collapse_check()
+		building_recheck_storeys_above(T)
 
 // Both source files define covers lifecycle procedures. This common call is
 // placed in the final definition so paired cleanup cannot be shadowed.
@@ -560,6 +588,39 @@ var/global/building_assume_founded = FALSE
 	unregister_seasonal_construction()
 	building_remove_floor()
 	return ..()
+
+// Storeys above rest on the supports below them (building_slab_info recurses
+// down), so losing a wall, pillar, door, brace or foundation floor must also
+// recheck the roofs over it on every building level above, not just its own.
+/proc/building_recheck_storeys_above(atom/A, radius = 3)
+	var/turf/T = get_turf(A)
+	if (!T)
+		return 0
+	. = 0
+	var/z = building_upper_z(T.z)
+	var/levels = 0
+	while (z && levels++ < 32)
+		var/turf/U = locate(T.x, T.y, z)
+		if (!U)
+			break
+		for (var/obj/roof/R in range(radius, U))
+			R.collapse_check()
+			.++
+		z = building_upper_z(z)
+
+// TRUE when removing this floor or roof opens a hole through a storey.
+/obj/covers/proc/building_slab_face()
+	return building_pair_id && building_roof()
+
+/obj/roof/proc/building_slab_face()
+	return building_pair_id && building_floor()
+
+// Ask before taking up a storey floor or the roof under one; FALSE stops.
+/proc/building_slab_removal_confirmed(mob/user, atom/A)
+	if (!user || !A)
+		return FALSE
+	var/question = istype(A, /obj/roof) ? "The floor of the storey above rests on \the [A]. Removing it removes that floor too, and anything on it falls. Remove it?" : "\The [A] is the ceiling of the room below. Removing it removes that ceiling too, and anything on this tile falls. Remove it?"
+	return WWinput(user, question, "Remove storey floor", "Stop", list("Remove", "Stop")) == "Remove"
 
 // Whatever was built on a floor that is gone falls: walls (and the floors'
 // other fixed covers) and the pillars and doors that held roofs up.

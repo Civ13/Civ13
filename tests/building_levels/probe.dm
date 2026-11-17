@@ -179,8 +179,16 @@
 		var/soft_error = building_roof_error(locate(9,3,3))
 		building_assert(soft_error, "soft ground carries two storeys")
 		building_assert(findtext(soft_error, "third storey") && findtext(soft_error, "Lay that floor first"), "an unfounded third storey names the foundation rule")
-		new /obj/covers/cobblestone(locate(9,3,1))
+		var/obj/covers/foundation = new /obj/covers/cobblestone(locate(9,3,1))
 		building_assert(!building_roof_error(locate(9,3,3)), "a stone floor under the ground support is a foundation")
+		// Taking the foundation away again rechecks every storey above it: the
+		// third storey falls, the two that soft ground carries stay.
+		var/obj/roof/founded_third = building_construct_roof(locate(9,3,3), /obj/roof/wood, null)
+		building_assert(founded_third, "founded third storey built")
+		building_probe_settle()
+		qdel(foundation)
+		building_probe_settle()
+		building_assert(QDELETED(founded_third) && (locate(/obj/roof) in locate(9,3,1)) && (locate(/obj/roof) in locate(9,3,2)), "removing a foundation rechecks the storeys above it")
 		// From the second storey up: no slab on one distant pillar, and supports stand over supports.
 		new /obj/structure/roof_support(locate(3,5,1))
 		for (var/x = 3 to 5)
@@ -201,8 +209,16 @@
 		var/obj/covers/wood/plank_floor = new(get_turf(plank_upper))
 		building_assert(plank_floor.replace_subfloor(plank_upper), "upper floor replaced")
 		building_assert(QDELETED(plank_upper) && !QDELETED(plank_roof) && plank_roof.building_floor() == plank_floor && plank_floor.building_roof() == plank_roof, "ceiling stays linked to the wood floor")
-		qdel(plank_floor)
-		building_assert(QDELETED(plank_roof), "removing the wood floor still removes the ceiling")
+		// Taking up a finished upper floor puts the plain upper floor back and
+		// keeps the ceiling; only removing that plain floor opens the hole.
+		var/obj/covers/plank_sub = plank_floor.revert_to_subfloor()
+		building_assert(plank_sub && QDELETED(plank_floor) && plank_sub.is_subfloor() && !QDELETED(plank_roof) && plank_roof.building_floor() == plank_sub && plank_sub.building_roof() == plank_roof, "taking up a finished upper floor keeps the ceiling")
+		building_assert(plank_sub.building_slab_face() && plank_roof.building_slab_face(), "both slab faces know they hold a storey")
+		// Beds upstairs: an upper floor holds a sleeper, bare open air does not.
+		building_assert(persistence_character_floor_usable(get_turf(plank_sub)), "an upper floor holds a sleeper")
+		building_assert(!persistence_character_floor_usable(locate(1,1,2)), "open air holds no sleeper")
+		qdel(plank_sub)
+		building_assert(QDELETED(plank_roof), "removing the plain upper floor removes the ceiling")
 		// Concrete walls cast from cement bricks carry six storeys, like concrete pillars.
 		var/obj/covers/cement_wall/cast = new(locate(10,1,1))
 		building_assert(cast.building_support_tier() == 6, "concrete wall tier")
@@ -210,6 +226,31 @@
 			building_assert(building_construct_roof(locate(10,1,level), /obj/roof/concrete, null), "concrete walls carry storey [level]")
 			new /obj/covers/cement_wall(locate(10,1,level + 1))
 		building_assert(building_roof_error(locate(10,1,7)), "concrete walls stop at six storeys")
+		// A finished floor laid over a concrete slab comes back up to a slab
+		// floor that does not burn.
+		var/obj/roof/cast_roof = locate(/obj/roof) in locate(10,1,1)
+		var/obj/covers/cast_upper = cast_roof.building_floor()
+		var/obj/covers/wood/cast_wood = new(get_turf(cast_upper))
+		building_assert(cast_wood.replace_subfloor(cast_upper), "wood floor over a concrete slab")
+		var/obj/covers/cast_back = cast_wood.revert_to_subfloor()
+		building_assert(cast_back && !cast_back.flammable && cast_back.material == "Stone" && cast_roof.building_floor() == cast_back, "a stone slab's floor stays stone when a finish comes up")
+		// A roof with nothing above it (built before the level could take a
+		// floor, or mapped) takes a floor from above instead of refusing.
+		new /obj/structure/roof_support(locate(7,3,1))
+		var/obj/roof/lone_roof = new /obj/roof/wood(locate(7,3,1))
+		var/turf/lone_top = locate(7,3,2)
+		building_assert(!building_floor_error(lone_top), "an unpaired supported roof takes a floor above it")
+		var/obj/covers/repairedfloor/lone_floor = new(lone_top)
+		building_assert(lone_floor.building_finish_floor() && lone_floor.building_roof() == lone_roof && lone_roof.building_floor() == lone_floor, "the floor links the existing roof")
+		building_assert(findtext(building_floor_error(lone_top), "already a floor"), "a second floor is refused by name")
+		// Fire burns a finished floor upstairs down to the slab, not through it.
+		var/obj/covers/wood/lone_wood = new(lone_top)
+		building_assert(lone_wood.replace_subfloor(lone_floor), "wood floor over the linked floor")
+		for (var/i in 1 to 400)
+			if (QDELETED(lone_wood))
+				break
+			lone_wood.fire_act(1000)
+		building_assert(QDELETED(lone_wood) && !QDELETED(lone_roof) && lone_roof.building_floor() && lone_roof.building_floor().is_subfloor(), "a burned finished floor leaves the slab")
 		text2file("PASS: linked building levels", "result.txt")
 	catch (var/exception/E)
 		world.log << "BUILDING exception: [E] at [E.file]:[E.line]"

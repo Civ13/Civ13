@@ -69,6 +69,7 @@
 		make_nomad()
 	else if (map.civilizations)
 		make_nation()
+	restore_faction_privilege_verbs()
 
 /mob/New()
 	..()
@@ -584,7 +585,7 @@
 				symbol_file = "flist_[ckey(relf)].png"
 				src << browse_rsc(symbol, symbol_file)
 			// Motto/flavour are already HTML-encoded by the existing creation flow.
-			entries += list(list("name" = html_encode("[relf]"), "motto" = map.faction_motto[relf], "flavour" = map.faction_flavour[relf], "members" = map.facl[relf], "symbol" = symbol_file, "renamed" = html_encode(map.faction_rename_notice(relf))))
+			entries += list(list("name" = html_encode("[relf]"), "motto" = map.faction_motto[relf], "flavour" = map.faction_flavour[relf], "members" = map.facl[relf], "symbol" = symbol_file, "renamed" = html_encode(map.faction_rename_notice(relf)), "calling" = immigration_faction_calling(relf) ? 1 : 0))
 	var/list/data = list("factions" = entries)
 	var/mob/user = src
 	var/ui_key = "faction_list"

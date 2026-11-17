@@ -570,6 +570,7 @@ SUITES = {
                          'code/game/objects/structures/pedal_airship_combat.dm',
                          'code/modules/projectiles/projectile.dm',
                          'code/modules/projectiles/projectile_lob.dm',
+                         'code/game/mob/living/carbon/carbon.dm',
                          'code/modules/research_tree/research_node.dm',
                          'config/crafting/material_recipes_global.txt')},
     'motorcycle_riding': {'files': ('tests/motorcycle_riding/test_sources.py',),
@@ -1101,6 +1102,13 @@ SUITES = {
         'paths': ('tests/survival_hints/', 'code/modules/client/survival_hints.dm'), 'shared_paths': ()},
     'newcomer_start': {'files': ('tests/newcomer_start/test_newcomer_start.py',),
         'paths': ('tests/newcomer_start/', 'code/game/objects/map_metadata/nomads/newcomer_start.dm'), 'shared_paths': ()},
+    'first_choices': {'files': ('tests/first_choices/test_first_choices.py',),
+        'paths': ('tests/first_choices/', 'code/modules/client/first_choices.dm', 'code/_onclick/hud/hover_name_bottom.dm'), 'shared_paths': ()},
+    'use_hints': {'files': ('tests/use_hints/test_use_hints.py',),
+        'paths': ('tests/use_hints/', 'code/game/objects/structures/use_hints.dm'), 'shared_paths': (
+            'code/game/objects/structures/wild.dm',)},
+    'immigration_fires': {'files': ('tests/immigration_fires/test_immigration_fires.py',),
+        'paths': ('tests/immigration_fires/', 'code/modules/1713/immigration_fires.dm'), 'shared_paths': ()},
     'craft_products': {'files': ('tests/craft_products/test_craft_products.py',),
         'paths': ('tests/craft_products/', 'code/game/objects/items/stacks/craft_products.dm'), 'shared_paths': ()},
     # Tool quality declarations match the base paths is_tool() replaced, and

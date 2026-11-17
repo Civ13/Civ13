@@ -1,3 +1,23 @@
+// Flu never puts a character to sleep or leaves them paralysed: its
+// drowsiness only blurs the eyes, and the fever drops them to the ground at
+// most FLU_MAX_DOWNS time(s) per illness, for a couple of seconds
+// (chat feedback 2026-11-17: sick players spent minutes unable to act).
+#define FLU_MAX_DOWNS 1
+#define FLU_DOWN_TIME 2
+
+/mob/living/human/var/tmp/flu_downs = 0
+
+/mob/living/human/proc/flu_haze(amount)
+	eye_blurry = max(eye_blurry, amount)
+
+/mob/living/human/proc/flu_knockdown()
+	if (flu_downs >= FLU_MAX_DOWNS)
+		return FALSE
+	flu_downs++
+	Weaken(FLU_DOWN_TIME)
+	to_chat(src, SPAN_WARNING("The fever drops you to the ground. You will be back on your feet in a moment; rest in a bed to get over the flu sooner."))
+	return TRUE
+
 /mob/living/human/proc/handle_disease()
 	if (stat == DEAD)
 		return
@@ -34,30 +54,31 @@
 			// first 2 minutes
 			if (disease_progression >= 25 && disease_progression - flu_step < 25)
 				to_chat(src, "You feel a little feverish.")
+				flu_downs = 0
 				disease_treatment = 0
-				apply_effect(10, DROWSY, FALSE)
+				flu_haze(10)
 				bodytemperature = 311.35
 			//4 more minutes
 			if (prob(1))
 				emote("sniff")
-				apply_effect(5, DROWSY, FALSE)
+				flu_haze(5)
 			else if (disease_progression >= 60 && disease_progression < 180 && bodytemperature < 312.15 && prob(10))
 				to_chat(src, "You feel like your fever is getting worse!")
 				apply_effect(5, AGONY, FALSE)
-				apply_effect(5, DROWSY, FALSE)
+				flu_haze(5)
 				emote(pick("cough","sneeze"))
 				bodytemperature = 312.15
 			else if (disease_progression >= 60 && disease_progression < 180 && bodytemperature < 313.15 && prob(1))
 				to_chat(src, "You feel your body burning up from fever!")
 				apply_effect(10, AGONY, FALSE)
-				apply_effect(5, DROWSY, FALSE)
+				flu_haze(5)
 				emote(pick("cough","sneeze"))
-				Weaken(5)
+				flu_knockdown()
 				bodytemperature = 313.15
 			// 2 more minutes
 			else if (disease_progression >= 180 && disease_progression < 240 && bodytemperature >= 313.15 && prob(8))
 				to_chat(src, "You feel your fever going down.")
-				apply_effect(5, DROWSY, FALSE)
+				flu_haze(5)
 				emote(pick("cough","sneeze"))
 				bodytemperature = 312.35
 			else if (disease_progression >= 180 && disease_progression < 240 && bodytemperature >= 312.15 && prob(2))
@@ -71,6 +92,7 @@
 				bodytemperature = 310.055
 				to_chat(src, "<big><font color='#3d9e3d'><b>You feel much better now! The illness is gone.</b></font></big>")
 				disease_treatment = 0
+				flu_downs = 0
 				disease_resistance["flu"] = 100 // Riding it out protects for a while.
 				if (prob(25))
 					disease_immunity += "flu"

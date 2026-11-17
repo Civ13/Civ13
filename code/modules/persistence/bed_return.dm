@@ -10,7 +10,8 @@
 
 // The floor itself can hold a character: solid, dry and outside the old sleep zone.
 /proc/persistence_character_floor_usable(turf/T)
-	if(!istype(T, /turf/floor) || T.density || is_protected_sleep_location(T)) return FALSE
+	// An upper storey is open air under a floor cover (tile_occupancy.dm).
+	if(!tile_has_floor(T) || T.density || is_protected_sleep_location(T)) return FALSE
 	if(istype(T, /turf/floor/beach/water) || istype(T, /turf/floor/lava)) return FALSE
 	return TRUE
 

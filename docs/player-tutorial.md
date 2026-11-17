@@ -45,3 +45,14 @@ never runs the tutorial. The tutorial only watches the character; it never
 changes it.
 
 Tests: [tests/player_tutorial](../tests/player_tutorial/README.md).
+
+## First-join choices
+
+`code/modules/client/first_choices.dm`: the first time an account plays a
+character (`prefs.first_choices_done`), three cancellable questions come
+before the tutorial: movement feel (Tap To Step), where the hover name is
+shown (pointer, bottom line or hidden) and HUD style. Existing accounts see
+it once with their current choices preselected. The bottom hover line is
+`code/_onclick/hud/hover_name_bottom.dm` (`prefs.hover_text_bottom`, also
+OOC > Hover Text Position and Settings > Controls and HUD). Tests:
+`tests/first_choices/`.

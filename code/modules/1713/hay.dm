@@ -52,7 +52,8 @@
 	return TRUE
 
 /proc/hay_bale_site_clear(turf/T, mob/ignored = null)
-	if (!istype(T, /turf/floor) || T.density)
+	// A floor upstairs (a hay loft) holds bales too (tile_occupancy.dm).
+	if (!isturf(T) || !tile_has_floor(T) || T.density)
 		return FALSE
 	for (var/atom/movable/AM in T)
 		if (AM != ignored && AM.density)

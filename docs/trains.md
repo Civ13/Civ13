@@ -39,6 +39,67 @@ Acceleration rises with spare pull. Coasting, engine braking and the brake
 each take a fixed amount of speed per tile, divided by the train's weight over
 six, so a long heavy train needs several times the distance to stop.
 
+## The boiler
+
+Steam engines (`/obj/structure/trains/locomotive/coal` and its subtypes) make
+their power in a boiler. `on` means the fire is lit; the menu says "Light the
+fire" and "Drop the fire".
+
+- `pressure` (0 to 100) is what the engine has to work with. `steam_factor()`
+  is 1 from 60 up, falls in line below that and is 0 under 15. It scales the
+  engine's top speed and what a helper engine adds to the train's pull. The
+  throttle will not open with no steam.
+- By the clock (`boiler_tick()`, caught up when the engine drives or someone
+  uses or examines it, so nothing ticks for a parked engine): a lit fire
+  raises pressure, from cold to full in `steam_time` seconds on a firebox at
+  least half full (120 s, heavy engines 240 s), and burns 0.02 fuel a second
+  standing. With the fire out the boiler cools in 20 minutes.
+- By the tile (`steam_use()`): the fire makes 1.1 on a firebox at least half
+  full, less on a thin fire, and the work takes notch / 3 times the load
+  (weight over `haul`, up to 1.5). A train at the engine's rated load holds
+  pressure at full throttle; a heavier one winds the engine and must be
+  driven on a lower notch.
+- Water: `boiler_water` (60, heavy 100) boils off at up to a unit a tile and
+  `water` is the tank (240, heavy 600). With the `injector` on, which is how
+  engines are built, each tile puts back what was used at a small cost in
+  steam. A quarter glass warns everyone nearby.
+- A lit fire over an empty boiler melts the fusible plug (`drop_plug()`):
+  the fire goes out, pressure is lost and the engine is dead until a new
+  `/obj/item/fusible_plug` (1 lead, Rail & Steam) is fitted with a ten second
+  job. Nothing explodes.
+- Water goes in from any open vessel of water, a water tower or a water
+  crane. A cold boiler is filled first, then the tank.
+
+Engines are built filled and in steam, and engines saved before the boiler
+existed load the same way. Diesel engines are unchanged.
+
+## Tenders and water stops
+
+`train_water.dm`. A tender is coupled directly to a steam engine, at either
+end (`engine_tenders()`). There are two:
+
+- the one-tile tender wagon: its fuel is the coal and wood in its storage,
+  and it carries 600 water;
+- the walkable tender, a platform car of kind `tender` built from a kit. It
+  is drawn and built in one piece like a locomotive body (layout key `body`,
+  no `engine`): a shovelling plate anyone can stand on and three solid
+  sections. Its front section holds `tender_fuel` (up to 1500) and
+  `tender_water` (up to 2400); `tender_store()` finds it from any section.
+  Click any section with coal, wood or a vessel of water to load it.
+
+Nothing feeds the firebox by itself any more. A fireman clicks the engine
+with a shovel (`shovel_coal()`): each stroke moves up to 30 fuel from the
+tender, once a second, and works on a moving train. Fuel can still be put in
+by hand. The tender's water runs to the engine's own tank whenever the
+train's weight is recounted (`tender_top_up()`).
+
+`/obj/structure/rail_water/tower` holds 6000 water. It is filled from
+vessels, or by its hand pump when fresh water lies within two tiles. Used
+with an empty hand it fills every steam engine and tender whose rail tile is
+within three tiles (`takers()`, `fill_takers()`). `/obj/structure/rail_water`
+is the water crane: the same, two tiles, drawing from the fullest tower
+within twelve. Region travel does not carry a tender's fuel and water.
+
 ## Heavy locomotives
 
 Code: `code/modules/1713/train_locomotives.dm`. Tests: the `heavy/`, `diesel/`
@@ -118,6 +179,38 @@ drops below half: coal, wood planks and branches, as many as fit.
 
 Fuel per tile is 0.25 at idle up to 1 at full throttle with a rated load, and
 up to 1.375 overloaded.
+
+## Couplings
+
+Every car end carries a coupling (`train_couplings.dm`): `front_coupling` at
+the end the car faces and `rear_coupling` at the other, each 100 when sound,
+0 when broken and -1 when taken off. They are saved with the car. A car of
+several sections has one at each end of the car only (`has_coupling_end()`),
+and a heavy locomotive has its rear one on its last body section.
+
+The link between two cars is still `connected`. It can be made only when
+both couplings that meet are whole, and it parts when either breaks
+(`damage_coupling()`): the cars beyond the break are left where they stand
+and the engine's part of the train runs on. Explosions strain the couplings
+of the cars they catch (`blast_couplings()`). Crash damage arrives with the
+crash work.
+
+Each end shows as a `/obj/effect/train_coupler` in the car's `vis_contents`,
+so it turns and moves with the car at no cost per step, is never saved, and
+is what players click (`coupler_use()`):
+
+- empty hand: couple, or uncouple after a short moment; refused while an
+  engine in the train is pulling (`train_under_power()`)
+- a weapon on harm intent: wears it by the weapon's force
+- welding tool: mends it, broken or not
+- wrench: takes it off a free end as a `/obj/item/train_coupling`, which
+  keeps its condition
+- a train coupling: fits it to an empty end
+
+The right-click Hitch verb still works and follows the same rules without
+the wait. Spares are crafted (4 iron, Rail & Steam). `update_couplers()`
+rebuilds the visible parts and is safe to call at any time. Region travel
+does not carry coupling wear: cars arrive with sound couplings.
 
 ## Reversing
 

@@ -65,6 +65,8 @@
 				qdel(src)
 			return
 	if (is_tool(W, TOOL_HAMMER))
+		if (building_slab_face() && !building_slab_removal_confirmed(user, src))
+			return
 		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
 		to_chat(user, "You start removing \the [src]...")
 		if (do_after(user, 60, src) && src)
@@ -694,6 +696,7 @@
 /obj/structure/roof_support/Destroy()
 	for(var/obj/roof/R in range(3,get_turf(src)))
 		R.collapse_check()
+	building_recheck_storeys_above(src)
 	..()
 
 /obj/structure/mine_support/Destroy()

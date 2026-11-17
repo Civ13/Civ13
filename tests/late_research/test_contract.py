@@ -497,10 +497,10 @@ class SubjectDeeds(unittest.TestCase):
         note = proc(self.src, "/proc/note_craft_practice")
         self.assertLess(note.index("note_deed_work(user, result_path_string)"), note.index("get_recipe_node_req(result_path_string)"))
         self.assertIn('findtext(result_path_string, "[path]/") != 1', proc(self.src, "/proc/note_deed_work"))
-    def test_ten_subjects(self):
+    def test_subject_count(self):
         import re
         block = self.src[self.src.index("var/global/list/subject_deeds = list("):self.src.index("var/global/list/deed_paths")]
-        self.assertEqual(len(re.findall(r'^\t"\w+" = list\($', block, re.M)), 10)
+        self.assertEqual(len(re.findall(r'^\t"\w+" = list\($', block, re.M)), 27)
 
 class SkillMastery(unittest.TestCase):
     def setUp(self):

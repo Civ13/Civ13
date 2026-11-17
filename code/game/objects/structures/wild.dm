@@ -648,8 +648,9 @@ var/list/seed_list_jungle
 	edible = FALSE
 	leaves = 0
 	max_leaves = 0
-	branches = 0
-	max_branches = 0
+	// Palm frond stems: on a beach palms are the only source of branches.
+	branches = 2
+	max_branches = 2
 
 /obj/structure/wild/palm/attackby(obj/item/W as obj, mob/user as mob)
 	if(is_tool(W, TOOL_KNIFE) && user.a_intent == I_HELP)
@@ -1416,6 +1417,9 @@ var/list/seed_list_jungle
 				to_chat(user, SPAN_WARNING("There are no useful branches in this tree."))
 				return
 		return
+	else if (user.a_intent == I_HARM && max_branches > 0)
+		// Said plainly: without this the click fell through to a punch.
+		to_chat(user, SPAN_WARNING("\The [src] has no branches left to break off. They grow back in time; try another tree."))
 	else
 		..()
 

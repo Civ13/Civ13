@@ -32,6 +32,9 @@
 	if (wall)
 		for (var/obj/roof/R in range(2, src))
 			R.collapse_check()
+	// A wall, or a foundation floor under one, also holds the storeys above.
+	if (wall || !building_open_turf(get_turf(src)))
+		building_recheck_storeys_above(src)
 	building_remove_roof()
 	check_relatives(0,1)
 	..()

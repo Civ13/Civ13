@@ -20,7 +20,17 @@ heading, the rail tile and the tile right of it.
   first and last segment. `apply_layout()` adds them as overlays that follow
   their tile's own direction. `outrigger` is added either side of a braced
   gun car's end segments by `update_car_overlays()`.
-- `roof_<coach|steel|armor>_<f|m|b><l|c|r>`: roofs for the enclosed cars
+- `loco_tender_<1-4><l|c|r>`: the walkable tender, cut like the locomotive
+  bodies. `icons/obj/vehicles/rail_water.dmi` (64 x 64, from the same script)
+  holds `water_tower` and `water_crane`, each turned four ways
+  ([trains.md](trains.md#tenders-and-water-stops)).
+- `coupler_<f|b>_<free|linked|broken|none>` and `coupling_item`: the coupling
+  at a car's front or rear end in each condition, and the spare. They turn
+  with the car ([trains.md](trains.md#couplings)).
+- `edge_plank`, `edge_freight_door[_open]`, `edge_side`, `edge_drop_door[_open]`
+  and the `boards` deck: the boxcar's boarded sides and sliding doors, the
+  open wagon's plank sides and drop doors, and the worn floor of goods stock.
+- `roof_<coach|steel|armor|boxcar>_<f|m|b><l|c|r>`: roofs for the enclosed cars
   (front row, middle rows, back row), each with a flat walkway down the rail
   tile. Not displayed yet: showing them belongs to the train roof riding work.
 - `loco_<steam|diesel|armored>_<1-4><l|c|r>` and `roof_loco_<variant>_<l|c|r>`:
@@ -30,8 +40,10 @@ heading, the rail tile and the tile right of it.
 
 ## Shape
 
-A platform car is three tiles wide and `TRAIN_CAR_LENGTH` (4) tiles long. Each
-of its four segments is an `/obj/structure/trains/platform` on one rail tile,
+A platform car is three tiles wide and as long as its kind has segments
+(`train_car_length()`): `TRAIN_CAR_LENGTH` (4) for the early four-wheel stock,
+`TRAIN_LONG_CAR_LENGTH` (8) for bogie stock. Each
+of its segments is an `/obj/structure/trains/platform` on one rail tile,
 hitched to the next exactly like the one-tile wagons, so a car bends round
 curves instead of needing straight track. Segments are not dense: players walk
 on the centre tile and on a deck tile either side of the track.
@@ -68,6 +80,13 @@ down when a furnished kit is assembled and the edges (side, which edge, style).
 | railgun | railway gun car | field_artillery | railway gun on the centre, outrigger lever, shell rack |
 | armored | armored wagon | automatic_weapons | armor plate with firing doors; emplaced machine guns are forged separately |
 | flak | flak car | automatic_weapons | low armor, ammunition crates; autocannons are forged separately |
+| long_flatbed | bogie flatcar | rail_steam | 8 tiles: open plank deck, railings at the ends |
+| open_wagon | open wagon | rail_steam | 8 tiles: plank sides all round, drop doors in the middle of each side |
+| boxcar | boxcar | rail_steam | 8 tiles: boarded sides and roof, sliding doors in the middle of each side, closed ends |
+| bogie_coach | bogie coach | assembly_line | 8 tiles: a vestibule each end, twelve seats, windows |
+
+An 8-tile car weighs 4 empty, twice a four-wheel car. The rail warehouse and
+the inter-region railway take cars of either length.
 
 ## Kits, assembly and dismantling
 
@@ -118,7 +137,7 @@ between them; the straight track running past it, `RAIL_WAREHOUSE_REACH` (6)
 tiles either way of the centre line, is the bay. Players build the walls and
 roof around it however they like; the track carries on through both ends.
 
-A unit is a platform car (its four segments) or a one-tile train object
+A unit is a platform car (all its segments) or a one-tile train object
 (locomotive, tender, wagon). The post puts away units with nothing hitched
 behind them, so a train standing in the bay is unloaded from the back, one
 car at a time or all at once. A unit must be wholly inside the bay, stopped,

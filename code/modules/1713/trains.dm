@@ -240,6 +240,9 @@
 
 	if (!istype(usr, /mob/living/human))
 		return
+	if (train_under_power())
+		to_chat(usr, SPAN_WARNING("The couplings are pulled tight. Shut the throttle first."))
+		return FALSE
 	if (hitch_front(usr) || hitch_rear(usr))
 		return TRUE
 	to_chat(usr, "There is no wagon to hitch \the [src] to.")
@@ -313,6 +316,8 @@
 		to_chat(user, "You unhitch \the [src] from \the [other].")
 		settle_train_order()
 		other.settle_train_order()
+		update_couplers()
+		other.update_couplers()
 		return TRUE
 	var/way = ahead ? train_heading() : OPPOSITE_DIR(train_heading())
 	for (var/obj/structure/trains/TR in get_step(src, way))
@@ -324,6 +329,13 @@
 			continue
 		if (TR.train_head() == train_head())
 			continue
+		// Both couplings must be there and whole (train_couplings.dm).
+		if (coupling_at(coupling_end_ahead(ahead)) <= 0)
+			to_chat(user, SPAN_WARNING("\The [src] has no working coupling at that end."))
+			return FALSE
+		if (TR.coupling_at(TR.coupling_end_ahead(their_front)) <= 0)
+			to_chat(user, SPAN_WARNING("\The [TR] has no working coupling at that end."))
+			return FALSE
 		var/mine_front = ahead
 		if (their_front == mine_front)
 			var/obj/structure/trains/turned = train_is_driving() ? TR : src
@@ -340,6 +352,8 @@
 		playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
 		to_chat(user, "You hitch \the [src] to \the [TR].")
 		settle_train_order()
+		update_couplers()
+		TR.update_couplers()
 		return TRUE
 	return FALSE
 
@@ -644,10 +658,6 @@ var/global/train_solo_move = FALSE
 		..()
 		storage.can_hold = list(/obj/item/stack/ore/coal, /obj/item/stack/material/wood, /obj/item/weapon/branch)
 
-/obj/structure/trains/storage/tender/examine(mob/user)
-	..()
-	to_chat(user, "Hitched behind a steam locomotive, its fireman tops up the firebox from here while the train runs.")
-
 /obj/structure/trains/storage/closed
 	name = "transport wagon"
 	desc = "A covered wagon with lots of internal space."
@@ -786,6 +796,11 @@ var/global/train_solo_move = FALSE
 // deciseconds at full throttle with a light train.
 
 #define LOCO_NOTCHES 3
+#define BOILER_WORKING_PRESSURE 60 // full power from here up
+#define BOILER_MIN_PRESSURE 15 // no power below this
+#define BOILER_INJECTOR_PRESSURE 20 // the injector needs steam to work
+#define BOILER_COOL_TIME 1200 // seconds for a full boiler to go cold
+#define BOILER_IDLE_FUEL 0.02 // fuel a standing fire burns each second
 
 /obj/structure/trains/locomotive
 	name = "locomotive"
@@ -799,6 +814,8 @@ var/global/train_solo_move = FALSE
 	var/max_fuel = 100
 	var/haul = 16 // train weight, itself included, pulled at full speed
 	var/fuel_store = "firebox"
+	var/start_text = "Start the engine"
+	var/stop_text = "Stop the engine"
 	var/tmp/throttle = 0 // notch, 0 to LOCO_NOTCHES
 	var/tmp/reverser = 1 // 1 forward, -1 backward
 	var/tmp/braking = FALSE
@@ -823,12 +840,19 @@ var/global/train_solo_move = FALSE
 		if (body_kind && istype(user, /mob/living))
 			to_chat(user, "The controls are in the cab.")
 		return
-	var/list/choices = list(on ? "Stop the engine" : "Start the engine")
+	boiler_tick()
+	var/list/choices = list(on ? stop_text : start_text)
 	choices += list("Throttle up", "Throttle down", "Brake")
 	choices += (reverser > 0) ? "Reverser to backward" : "Reverser to forward"
+	choices += extra_controls()
 	var/choice = player_input(user, "[control_summary()]", "[name]", null, "anything", choices, TRUE)
 	if (!choice || QDELETED(src) || !(user in range(1, spot)))
 		return
+	boiler_tick()
+	if (choice == start_text)
+		choice = "Start the engine"
+	else if (choice == stop_text)
+		choice = "Stop the engine"
 	switch (choice)
 		if ("Start the engine")
 			if (engine_disabled())
@@ -837,14 +861,21 @@ var/global/train_solo_move = FALSE
 			if (fuel <= 0 && max_fuel)
 				to_chat(user, "<span class = 'warning'>The [fuel_store] is empty.</span>")
 				return
+			var/problem = start_problem()
+			if (problem)
+				to_chat(user, "<span class = 'warning'>[problem]</span>")
+				return
 			on = TRUE
-			visible_message("[user] starts \the [src].", "You start \the [src].")
+			started(user)
 		if ("Stop the engine")
 			on = FALSE
-			visible_message("[user] stops \the [src]'s engine.", "You stop the engine. The train will roll on until it slows or you brake.")
+			stopped(user)
 		if ("Throttle up")
 			if (!on)
-				to_chat(user, "Start the engine first.")
+				to_chat(user, "[start_text] first.")
+				return
+			if (steam_factor() <= 0)
+				to_chat(user, "<span class = 'warning'>There is not enough steam yet. Wait for the pressure to rise.</span>")
 				return
 			throttle = min(LOCO_NOTCHES, throttle + 1)
 			braking = FALSE
@@ -862,14 +893,48 @@ var/global/train_solo_move = FALSE
 				return
 			reverser = -reverser
 			to_chat(user, "You set the reverser to [reverser > 0 ? "forward" : "backward"].")
+		else
+			if (!handle_control(choice, user))
+				return
 	playsound(loc, 'sound/effects/lever.ogg', 60, TRUE)
 	update_icon()
 	locomotive()
 
 /obj/structure/trains/locomotive/proc/control_summary()
 	var/where = reverser > 0 ? "forward" : "backward"
-	var/state = on ? "running" : "stopped"
-	return "Engine [state]. Throttle notch [throttle] of [LOCO_NOTCHES], reverser [where][braking ? ", brakes on" : ""]. [speed_text()]."
+	return "[state_text()] Throttle notch [throttle] of [LOCO_NOTCHES], reverser [where][braking ? ", brakes on" : ""]. [speed_text()]."
+
+/obj/structure/trains/locomotive/proc/state_text()
+	return "Engine [on ? "running" : "stopped"]."
+
+/obj/structure/trains/locomotive/proc/started(mob/user)
+	visible_message("[user] starts \the [src].", "You start \the [src].")
+
+/obj/structure/trains/locomotive/proc/stopped(mob/user)
+	visible_message("[user] stops \the [src]'s engine.", "You stop the engine. The train will roll on until it slows or you brake.")
+
+// Why the engine cannot be started just now, or null.
+/obj/structure/trains/locomotive/proc/start_problem()
+	return null
+
+// More choices for the controls menu, and what they do. handle_control()
+// returns TRUE when a control was worked.
+/obj/structure/trains/locomotive/proc/extra_controls()
+	return list()
+
+/obj/structure/trains/locomotive/proc/handle_control(choice, mob/user)
+	return FALSE
+
+// Steam engines (below): the share of its power the boiler can give, the
+// boiler's slow changes by the clock, and what each tile of work takes.
+/obj/structure/trains/locomotive/proc/steam_factor()
+	return 1
+
+/obj/structure/trains/locomotive/proc/boiler_tick()
+	return
+
+/obj/structure/trains/locomotive/proc/steam_use(notch, weight, tiles = 1)
+	return
 
 /obj/structure/trains/locomotive/proc/speed_text()
 	if (rail_speed <= 0)
@@ -942,23 +1007,20 @@ var/global/train_solo_move = FALSE
 	consist_weight = 0
 	consist_power = 0
 	consist_engines = 0
-	var/obj/structure/trains/storage/tender/tender = null
 	for (var/obj/structure/trains/car in cars)
 		consist_weight += car.car_load_weight()
-		if (!tender && istype(car, /obj/structure/trains/storage/tender))
-			tender = car
 		if (istype(car, /obj/structure/trains/locomotive))
 			var/obj/structure/trains/locomotive/L = car
 			if (L.on && (L.fuel > 0 || !L.max_fuel) && !L.engine_disabled())
-				consist_power += L.haul
+				consist_power += L.haul * ((L == src) ? 1 : L.steam_factor())
 				consist_engines++
 				// Helper engines burn their own fuel on the lead's beat.
 				if (L != src && steps_since > 0)
 					L.fuel = max(0, L.fuel - L.fuel_per_tile(throttle, consist_weight) * steps_since)
+					L.steam_use(throttle, consist_weight, steps_since)
 					if (L.fuel <= 0)
 						L.stall()
-	if (tender)
-		feed_from(tender)
+				L.tender_top_up()
 
 /obj/structure/trains/locomotive/proc/engine_disabled()
 	return broken_down
@@ -971,7 +1033,7 @@ var/global/train_solo_move = FALSE
 	if (!on || throttle <= 0 || engine_disabled())
 		return 0
 	var/top = 10 / max(0.5, max_train_speed)
-	return top * lead_factor * min(1, pull_ratio()) * throttle / LOCO_NOTCHES
+	return top * lead_factor * min(1, pull_ratio()) * steam_factor() * throttle / LOCO_NOTCHES
 
 /obj/structure/trains/locomotive/collision_impact()
 	if (rail_speed <= 0)
@@ -992,6 +1054,7 @@ var/global/train_solo_move = FALSE
 			if (since >= 6)
 				refresh_consist(since)
 				since = 0
+			boiler_tick()
 			var/target = cruise_speed()
 			var/heft = max(1, consist_weight / 6)
 			if (rail_speed < target)
@@ -1109,6 +1172,7 @@ var/global/train_solo_move = FALSE
 	if (!max_fuel)
 		return
 	fuel = max(0, fuel - fuel_per_tile(throttle, consist_weight))
+	steam_use(throttle, consist_weight)
 
 /obj/structure/trains/locomotive/proc/stall()
 	if (!on)
@@ -1122,45 +1186,35 @@ var/global/train_solo_move = FALSE
 /obj/structure/trains/locomotive/proc/fuel_value(obj/item/I)
 	return 0
 
-// The fireman shovels from a tender hitched into the train.
-/obj/structure/trains/locomotive/proc/feed_from(obj/structure/trains/storage/tender/T)
-	if (!T || !T.storage || !max_fuel || fuel > max_fuel / 2)
-		return FALSE
-	for (var/obj/item/I in T.storage.contents)
-		var/value = fuel_value(I)
-		if (!value)
-			continue
-		var/room = round((max_fuel - fuel) / value)
-		if (room < 1)
-			return FALSE
-		if (istype(I, /obj/item/stack))
-			var/obj/item/stack/S = I
-			var/units = min(S.amount, room)
-			fuel += units * value
-			S.use(units)
-		else
-			fuel += value
-			T.storage.remove_from_storage(I, null)
-			qdel(I)
-		T.update_icon()
-		return TRUE
-	return FALSE
-
 /obj/structure/trains/locomotive/proc/set_speed()
 	train_speed = rail_speed > 0 ? round(10 / rail_speed, 0.1) : max_train_speed
 	return train_speed
 
 /obj/structure/trains/locomotive/coal
 	name = "steam locomotive"
-	desc = "A steam-powered locomotive. Works with coal, wood, and so on. Use it to start the engine, set the throttle, brake or move the reverser."
+	desc = "A steam-powered locomotive. It burns coal or wood and boils water from its tank. Use it to light the fire, set the throttle, brake, move the reverser or work the injector."
 	icon_state = "locomotive"
 	train_speed = 2
 	max_fuel = 100
 	max_train_speed = 2
 	haul = 14
+	start_text = "Light the fire"
+	stop_text = "Drop the fire"
+	// The boiler (docs/trains.md). Engines are built filled and in steam.
+	var/water = 240 // in the tank
+	var/max_water = 240
+	var/boiler_water = 60 // in the boiler itself: a tile of hard work boils off one
+	var/max_boiler = 60
+	var/pressure = 100 // percent of working pressure
+	var/steam_time = 120 // seconds from cold to full pressure on a good fire
+	var/injector = TRUE // feeds the boiler from the tank as the engine works
+	var/plug_dropped = FALSE // the fusible plug melted: no fire until a new one is fitted
+	var/tmp/boiler_time = 0
+	var/tmp/water_warned = FALSE
 
 /obj/structure/trains/locomotive/examine(mob/user)
 	..()
+	boiler_tick()
 	if (max_fuel)
 		var/aprfuel = fuel/max_fuel
 		if (aprfuel >= 0.8)
@@ -1187,13 +1241,153 @@ var/global/train_solo_move = FALSE
 	return TRUE
 
 /obj/structure/trains/locomotive/coal/fuel_value(obj/item/I)
-	if (istype(I, /obj/item/stack/ore/coal))
-		return 15
-	if (istype(I, /obj/item/stack/material/wood) || istype(I, /obj/item/weapon/branch))
-		return 3
-	return 0
+	return steam_fuel_value(I)
+
+// How well the fire steams: a firebox under half full makes less.
+/obj/structure/trains/locomotive/coal/proc/fire_factor()
+	return max_fuel ? min(1, fuel / (0.5 * max_fuel)) : 1
+
+/obj/structure/trains/locomotive/coal/steam_factor()
+	if (plug_dropped || pressure < BOILER_MIN_PRESSURE)
+		return 0
+	return min(1, pressure / BOILER_WORKING_PRESSURE)
+
+// The boiler by the clock, caught up whenever someone looks at the engine
+// or it drives: a lit fire raises steam and burns a little standing; a dead
+// one lets the boiler cool.
+/obj/structure/trains/locomotive/coal/boiler_tick()
+	var/now = world.time
+	if (!boiler_time || boiler_time > now)
+		boiler_time = now
+		return
+	var/dt = min(3600, (now - boiler_time) / 10)
+	if (dt < 1)
+		return
+	boiler_time = now
+	if (on && fuel > 0)
+		if (boiler_water <= 0)
+			drop_plug()
+			return
+		pressure = min(100, pressure + dt * (100 / steam_time) * fire_factor())
+		fuel = max(0, fuel - BOILER_IDLE_FUEL * dt)
+		if (fuel <= 0)
+			stall()
+	else
+		pressure = max(0, pressure - dt * 100 / BOILER_COOL_TIME)
+
+// A tile of work: steam used against steam made, water boiled off, and the
+// injector putting tank water back at a small cost in steam.
+/obj/structure/trains/locomotive/coal/steam_use(notch, weight, tiles = 1)
+	if (!on || plug_dropped || tiles <= 0)
+		return
+	var/work = (notch / LOCO_NOTCHES) * min(1.5, weight / max(1, haul))
+	pressure = clamp(pressure + (1.1 * fire_factor() - work) * tiles, 0, 100)
+	boiler_water = max(0, boiler_water - (0.2 + 0.8 * work) * tiles)
+	if (injector && water > 0 && boiler_water < max_boiler && pressure >= BOILER_INJECTOR_PRESSURE)
+		var/fed = min(water, max_boiler - boiler_water, 3 * tiles)
+		water -= fed
+		boiler_water += fed
+		pressure = max(0, pressure - 0.2 * tiles)
+	if (boiler_water <= 0)
+		drop_plug()
+	else if (boiler_water < max_boiler / 4)
+		if (!water_warned)
+			water_warned = TRUE
+			visible_message("<span class = 'danger'>The water is low in \the [src]'s gauge glass!</span>")
+	else
+		water_warned = FALSE
+
+// The boiler ran dry over a lit fire: the fusible plug melts and the steam
+// puts the fire out. Nothing worse happens, but the engine is dead until a
+// new plug is fitted.
+/obj/structure/trains/locomotive/coal/proc/drop_plug()
+	if (plug_dropped)
+		return
+	plug_dropped = TRUE
+	on = FALSE
+	throttle = 0
+	pressure = 0
+	boiler_water = 0
+	visible_message("<span class = 'danger'>With a roar of steam \the [src]'s fusible plug lets go and puts the fire out!</span>")
+	playsound(loc, 'sound/machines/train/stopping.ogg', 100, TRUE)
+	update_icon()
+
+/obj/structure/trains/locomotive/coal/start_problem()
+	if (plug_dropped)
+		return "The fusible plug has melted. Fit a new one first."
+	if (boiler_water <= 0)
+		return "There is no water in the boiler. Fill it before you light the fire."
+	return null
+
+/obj/structure/trains/locomotive/coal/started(mob/user)
+	visible_message("[user] lights the fire in \the [src].", "You light the fire. [pressure < BOILER_WORKING_PRESSURE ? "It will take a while to raise steam." : "The boiler is in steam."]")
+
+/obj/structure/trains/locomotive/coal/stopped(mob/user)
+	visible_message("[user] drops \the [src]'s fire.", "You drop the fire. The boiler will slowly cool.")
+
+/obj/structure/trains/locomotive/coal/state_text()
+	var/glass = round(100 * boiler_water / max_boiler)
+	var/tank = round(100 * water / max_water)
+	if (plug_dropped)
+		return "The fusible plug has melted. Tank [tank]%."
+	return "Fire [on ? "lit" : "out"]. Pressure [round(pressure)]%. Water in the glass [glass]%, tank [tank]%, injector [injector ? "on" : "off"]."
+
+/obj/structure/trains/locomotive/coal/extra_controls()
+	return list(injector ? "Injector off" : "Injector on")
+
+/obj/structure/trains/locomotive/coal/handle_control(choice, mob/user)
+	if (choice != "Injector on" && choice != "Injector off")
+		return FALSE
+	injector = (choice == "Injector on")
+	to_chat(user, injector ? "You turn the injector on. It feeds the boiler from the tank while the engine works." : "You turn the injector off. Watch the gauge glass.")
+	return TRUE
+
+// Water goes in from a bucket or any open vessel: a cold boiler is filled
+// first, then the tank.
+/obj/structure/trains/locomotive/coal/proc/takes_water(obj/item/W)
+	return istype(W, /obj/item/weapon/reagent_containers) && W.reagents && W.is_open_container() && W.reagents.has_reagent("water")
+
+/obj/structure/trains/locomotive/coal/proc/add_water(amount)
+	var/used = 0
+	if (pressure < BOILER_INJECTOR_PRESSURE && !plug_dropped)
+		used = min(amount, max_boiler - boiler_water)
+		boiler_water += used
+	var/tanked = min(amount - used, max_water - water)
+	water += tanked
+	return used + tanked
+
+/obj/structure/trains/locomotive/coal/takes_fuel(obj/item/W)
+	return ..() || takes_water(W) || istype(W, /obj/item/fusible_plug) || is_tool(W, TOOL_SHOVEL)
 
 /obj/structure/trains/locomotive/coal/attackby(obj/item/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/fusible_plug))
+		boiler_tick()
+		if (!plug_dropped)
+			to_chat(user, "\The [src]'s fusible plug is sound.")
+			return
+		user.visible_message("[user] starts fitting a new fusible plug to \the [src]...", "You crawl into the cold firebox and start screwing in the new plug...")
+		if (!do_after(user, 100, src) || !plug_dropped || user.get_active_hand() != W)
+			return
+		user.drop_from_inventory(W)
+		qdel(W)
+		plug_dropped = FALSE
+		user.visible_message("[user] fits a new fusible plug to \the [src].", "You fit the new plug. Fill the boiler before you light the fire.")
+		return
+	if (is_tool(W, TOOL_SHOVEL))
+		boiler_tick()
+		shovel_coal(user)
+		return
+	if (takes_water(W))
+		boiler_tick()
+		var/have = W.reagents.get_reagent_amount("water")
+		var/poured = add_water(have)
+		if (poured <= 0)
+			to_chat(user, "<span class = 'notice'>\The [src]'s tank is full.</span>")
+			return
+		W.reagents.remove_reagent("water", poured)
+		playsound(loc, 'sound/effects/watersplash.ogg', 60, TRUE)
+		to_chat(user, "You pour water into \the [src]. [state_text()]")
+		return
 	var/value = fuel_value(W)
 	if (!value)
 		return ..()
@@ -1211,7 +1405,20 @@ var/global/train_solo_move = FALSE
 	qdel(W)
 	to_chat(user, "You refuel \the [src].")
 
+// A spare for the boiler's safety plug.
+/obj/item/fusible_plug
+	name = "fusible plug"
+	desc = "A bronze plug with a lead core, screwed into the crown of a locomotive's firebox. If the boiler runs dry the lead melts and steam puts the fire out."
+	icon = 'icons/obj/vehicles/train_platforms.dmi'
+	icon_state = "fusible_plug"
+	w_class = 1
+
 #undef LOCO_NOTCHES
+#undef BOILER_WORKING_PRESSURE
+#undef BOILER_MIN_PRESSURE
+#undef BOILER_INJECTOR_PRESSURE
+#undef BOILER_COOL_TIME
+#undef BOILER_IDLE_FUEL
 
 // A train at speed throws a person it hits; a crawl only shoves them aside.
 /proc/train_knock_down(mob/living/L, impact)

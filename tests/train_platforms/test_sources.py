@@ -20,7 +20,9 @@ NODES = (ROOT / 'code/modules/research_tree/research_node.dm').read_text(encodin
 KITS = ['/obj/structure/train_car_kit', '/obj/structure/train_car_kit/coach', '/obj/structure/train_car_kit/sleeper',
         '/obj/structure/train_car_kit/dining', '/obj/structure/train_car_kit/storage',
         '/obj/structure/train_car_kit/railgun', '/obj/structure/train_car_kit/armored',
-        '/obj/structure/train_car_kit/flak']
+        '/obj/structure/train_car_kit/flak', '/obj/structure/train_car_kit/long_flatbed',
+        '/obj/structure/train_car_kit/open_wagon', '/obj/structure/train_car_kit/boxcar',
+        '/obj/structure/train_car_kit/bogie_coach']
 
 
 def dmi_description(path):
@@ -65,6 +67,47 @@ class TrainPlatformSourceTests(unittest.TestCase):
             self.assertIn('"%s" = "%s"' % (path, node), NODES)
             self.assertRegex(LOCOS, r'/obj/structure/train_car_kit/%s\n\tname = "heavy [a-z]+ locomotive kit"\n\tcar_kind = "%s"' % (kit, kit))
 
+    def test_couplings_are_parts_at_each_car_end(self):
+        dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
+        self.assertEqual(dme.count('#include "code\\modules\\1713\\train_couplings.dm"'), 1)
+        couplings = (ROOT / 'code/modules/1713/train_couplings.dm').read_text(encoding='utf-8')
+        # Saved per car end, shown through vis_contents and never saved themselves.
+        self.assertIn('\tvar/front_coupling = TRAIN_COUPLING_HEALTH\n\tvar/rear_coupling = TRAIN_COUPLING_HEALTH\n', couplings)
+        self.assertIn('/obj/effect/train_coupler\n', couplings)
+        self.assertIn('\tshould_save = FALSE\n\tvis_flags = VIS_INHERIT_DIR\n', couplings)
+        # A link needs both couplings whole, and explosions strain them.
+        self.assertIn('if (coupling_at(coupling_end_ahead(ahead)) <= 0)', TRAINS)
+        self.assertIn('/obj/structure/trains/platform/ex_act(severity)\n\tblast_couplings(severity)\n', WARFARE)
+        self.assertIn('RECIPE: /material/iron/,train coupling,/obj/item/train_coupling,4,80,0,0,trains,101,', RECIPES)
+
+    def test_steam_engines_have_a_boiler(self):
+        # Built filled and in steam, so saved engines and fixtures keep running.
+        self.assertIn('\tvar/water = 240 // in the tank\n\tvar/max_water = 240\n', TRAINS)
+        self.assertIn('\tvar/pressure = 100 // percent of working pressure\n', TRAINS)
+        self.assertIn('\tvar/injector = TRUE', TRAINS)
+        # Pressure limits speed and a helper's pull; neglect drops the plug, nothing explodes.
+        self.assertIn('* min(1, pull_ratio()) * steam_factor() * throttle / LOCO_NOTCHES', TRAINS)
+        self.assertIn('consist_power += L.haul * ((L == src) ? 1 : L.steam_factor())', TRAINS)
+        self.assertIn('/obj/structure/trains/locomotive/coal/proc/drop_plug()', TRAINS)
+        self.assertNotIn('explosion(', TRAINS)
+        self.assertIn('RECIPE: /material/lead/,fusible plug,/obj/item/fusible_plug,1,60,0,0,trains,101,', RECIPES)
+
+    def test_tenders_are_shovelled_and_water_comes_from_towers(self):
+        dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
+        self.assertEqual(dme.count('#include "code\\modules\\1713\\train_water.dm"'), 1)
+        water = (ROOT / 'code/modules/1713/train_water.dm').read_text(encoding='utf-8')
+        # The firebox is fed by hand: the automatic tender feed is gone.
+        self.assertNotIn('feed_from', TRAINS)
+        self.assertIn('/obj/structure/trains/locomotive/coal/proc/shovel_coal(mob/user)', water)
+        self.assertIn('\tif (is_tool(W, TOOL_SHOVEL))\n\t\tboiler_tick()\n\t\tshovel_coal(user)\n', TRAINS)
+        # The walkable tender is a one-piece body without an engine.
+        self.assertIn('\tlayouts["tender"] = list(', LOCOS)
+        self.assertIn('/obj/structure/train_car_kit/tender\n\tname = "tender kit"\n\tcar_kind = "tender"\n', LOCOS)
+        for line in ('RECIPE: /material/iron/,tender kit,/obj/structure/train_car_kit/tender,24,400,1,1,trains,101,',
+                     'RECIPE: /material/iron/,water crane,/obj/structure/rail_water,8,200,1,1,trains,101,',
+                     'RECIPE: /material/wood/,water tower,/obj/structure/rail_water/tower,30,300,1,1,trains,101,'):
+            self.assertIn(line, RECIPES)
+
     def test_heavy_locomotives_drive_like_the_one_tile_engines(self):
         dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
         self.assertEqual(dme.count('#include "code\\modules\\1713\\train_locomotives.dm"'), 1)
@@ -83,16 +126,18 @@ class TrainPlatformSourceTests(unittest.TestCase):
         # Restored kits must not rename themselves in a constructor.
         self.assertNotIn('/obj/structure/train_car_kit/New(', SOURCE)
         self.assertNotIn('/obj/structure/train_car_kit/New(', WARFARE)
-        for kind in ('coach', 'sleeper', 'dining', 'storage', 'railgun', 'armored', 'flak'):
+        for kind in ('coach', 'sleeper', 'dining', 'storage', 'railgun', 'armored', 'flak', 'long_flatbed',
+                     'open_wagon', 'boxcar', 'bogie_coach'):
             self.assertRegex(SOURCE + WARFARE, r'/obj/structure/train_car_kit/%s\n\tname = "[a-z ]+ kit"\n\tcar_kind = "%s"' % (kind, kind))
 
     def test_icon_states_exist(self):
         desc = dmi_description(ROOT / 'icons/obj/vehicles/train_platforms.dmi')
         states = set(re.findall(r'state = "([^"]+)"', desc))
-        for kind in ('wood', 'floor', 'carpet', 'steel'):
+        for kind in ('wood', 'floor', 'carpet', 'steel', 'boards'):
             self.assertIn('deck_center_' + kind, states)
             self.assertIn('deck_side_' + kind, states)
-        for style in ('wall', 'window', 'door', 'door_open', 'inner_door', 'inner_door_open', 'partition', 'rail'):
+        for style in ('wall', 'window', 'door', 'door_open', 'inner_door', 'inner_door_open', 'partition', 'rail',
+                      'plank', 'freight_door', 'freight_door_open', 'side', 'drop_door', 'drop_door_open'):
             self.assertIn('edge_' + style, states)
         for state in ('car_kit', 'edge_armor', 'edge_armor_door', 'edge_armor_door_open', 'brace_up', 'brace_down',
                       'wreck', 'loco_armor'):

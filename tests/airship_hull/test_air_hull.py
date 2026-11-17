@@ -72,7 +72,8 @@ class Damage(unittest.TestCase):
         fire = extract(SOURCE, '/proc/air_hull_overhead_fire')
         self.assertIn('P.is_shrapnel', fire)
         self.assertIn('B.contains(get_turf(P.firer))', fire)
-        self.assertIn('prob(AIR_HULL_HIT_CHANCE)', fire)
+        self.assertIn('prob(AIR_HULL_HIT_CHANCE / (2 ** (levels - 1)))', fire)
+        self.assertIn('air_hull_levels_between(T, D)', fire)
         projectile = (ROOT / 'code/modules/projectiles/projectile.dm').read_text()
         self.assertIn('(airborne_aircraft.len || aloft_pedal_airships.len || air_hull_crafts.len) && T != starting', projectile)
         self.assertIn('air_hull_crafts', (ROOT / 'code/modules/projectiles/projectile_lob.dm').read_text())
@@ -100,8 +101,37 @@ class Damage(unittest.TestCase):
     def test_bomb_hatch_drops_onto_the_ground_below(self):
         drop = extract(SOURCE, '/obj/structure/airship_bomb_hatch/attack_hand')
         self.assertLess(drop.index('B.forceMove(G)'), drop.index('B.detonate()'))
-        self.assertIn('multiz_level_below', extract(SOURCE, '/obj/structure/airship_bomb_hatch/proc/drop_turf'))
+        self.assertIn('air_hull_solid_below(T)', extract(SOURCE, '/obj/structure/airship_bomb_hatch/proc/drop_turf'))
         self.assertIn('#define AIR_HULL_HATCH_BOMBS 2\n', SOURCE)
+
+
+class HighFlight(unittest.TestCase):
+    def test_open_air_is_seen_dropped_and_shot_through(self):
+        open_air = extract(SOURCE, '/proc/air_hull_open_air')
+        for blocker in ('/obj/covers', '/obj/roof', '/obj/structure/multiz'):
+            self.assertIn(blocker, open_air)
+        solid = extract(SOURCE, '/proc/air_hull_solid_below')
+        self.assertIn('if (!air_hull_open_air(at))', solid)
+        between = extract(SOURCE, '/proc/air_hull_levels_between')
+        self.assertLess(between.index('return steps'), between.index('if (!air_hull_open_air(at))'))
+
+    def test_views_and_wreck_reach_the_first_solid_level(self):
+        views = extract(SOURCE, '/datum/craft/air/proc/update_views')
+        self.assertIn('air_hull_solid_below(locate(min_x, min_y, B.z))', views)
+        self.assertIn('var/turf/G = air_hull_solid_below(air)', views)
+        crash = extract(SOURCE, '/datum/craft/air/proc/crash')
+        self.assertIn('var/turf/G = air_hull_solid_below(D)', crash)
+        self.assertIn('15 * (levels - 1)', crash)
+
+    def test_deck_shots_aim_through_open_air(self):
+        under = extract(COMBAT, '/proc/airborne_ground_under')
+        self.assertIn('air_hull_solid_below(get_turf(user))', under)
+        aim = extract(COMBAT, '/proc/airborne_aim_turf')
+        self.assertIn('air_hull_open_air(T)', aim)
+        projectile = (ROOT / 'code/modules/projectiles/projectile.dm').read_text()
+        self.assertLess(projectile.index('airborne_aim_turf(user, targloc)'), projectile.index('airborne_launch_turf(user, targloc)'))
+        carbon = (ROOT / 'code/game/mob/living/carbon/carbon.dm').read_text()
+        self.assertLess(carbon.index('airborne_aim_turf(src, target)'), carbon.index('airborne_launch_turf(src, target)'))
 
 
 class Wiring(unittest.TestCase):
