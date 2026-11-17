@@ -112,7 +112,9 @@
 		return
 	craft = new /datum/craft(B)
 	craft.anchored = state["anchored"] ? TRUE : FALSE
-	craft.fit_ledger(islist(state["ledger"]) ? state["ledger"] : null)
+	// A record with no ledger is from before there were any: an empty one
+	// still tells her she is an old hull (hull_anchors.dm).
+	craft.fit_ledger(islist(state["ledger"]) ? state["ledger"] : list())
 	if (register_state)
 		craft.register = craft_register_restore(register_state)
 	if (isnum(state["speed"]) && state["speed"] > 0)
