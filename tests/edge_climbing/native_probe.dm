@@ -164,6 +164,38 @@ var/list/edge_probe_log = list()
 	F.forceMove(locate(7, 7, 2))
 	edge_probe_check(F.z == 1, "plain_open_air_still_falls")
 
+	// Stairs built from an upper floor facing an opening go on the ground
+	// below it and climb back up to the builder.
+	new /obj/covers/wood(locate(10, 11, 2))
+	var/mob/living/human/B = edge_probe_human(locate(10, 11, 2))
+	B.dir = WEST
+	var/list/down = stairs_down_spot(B, /obj/covers/wood/stairs, why)
+	edge_probe_check(down && down[1] == locate(9, 11, 1) && down[2] == EAST, "stairs_down_spot")
+	var/obj/covers/wood/stairs/SD = new(down[1])
+	SD.dir = down[2]
+	// The builder stands on the landing; anyone else climbing lands there.
+	B.forceMove(locate(5, 6, 2))
+	edge_probe_check(stairs_destination(edge_probe_human(locate(2, 1, 1)), SD) == locate(10, 11, 2), "stairs_down_lead_back_up")
+	B.forceMove(locate(10, 11, 2))
+	edge_probe_check(!stairs_down_spot(B, /obj/covers/wood/stairs, why) && findtext(why[1], "already"), "stairs_down_twice_reason")
+	// Facing a floor, the builder is told to face an opening.
+	new /obj/covers/wood(locate(11, 11, 2))
+	B.dir = EAST
+	edge_probe_check(!stairs_down_spot(B, /obj/covers/wood/stairs, why) && findtext(why[1], "face it"), "stairs_down_face_opening_reason")
+	// A floor below the opening must come up first.
+	new /obj/covers/wood(locate(10, 10, 1))
+	B.dir = SOUTH
+	edge_probe_check(!stairs_down_spot(B, /obj/covers/wood/stairs, why) && findtext(why[1], "hammer"), "stairs_down_floor_below_reason")
+	// More than one storey down is refused.
+	new /obj/covers/wood(locate(11, 10, 2))
+	var/mob/living/human/B2 = edge_probe_human(locate(11, 10, 2))
+	B2.dir = SOUTH
+	new /turf/sky/building(locate(11, 9, 1))
+	edge_probe_check(!stairs_down_spot(B2, /obj/covers/wood/stairs, why) && findtext(why[1], "more than one storey"), "stairs_down_long_drop_reason")
+	// On bare ground, stairs are built underfoot as before.
+	var/mob/living/human/G = edge_probe_human(locate(1, 1, 1))
+	edge_probe_check(!stairs_down_spot(G, /obj/covers/wood/stairs, why) && !why.len, "stairs_underfoot_unchanged")
+
 /proc/edge_probe_check(ok, label)
 	edge_probe_log += label
 	if (!ok)

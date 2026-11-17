@@ -116,5 +116,20 @@ class UpDownButtons(unittest.TestCase):
         self.assertIn('floor_buttons.dm', dme)
 
 
+    def test_stairs_down_built_below_opening_and_revalidated(self):
+        source = proc('/proc/stairs_down_spot(mob/user, stairs_type, list/why)')
+        for guard in ('tile_build_refusal(here, stairs_type)', 'edge_open_air(well)', 'multiz_level_below(well.z)',
+                      'tile_floor_cover(lower)', 'building_floor_error(lower)', 'ledge_landing_clear(lower, TRUE)',
+                      'ledge_landing_clear(here, TRUE)', 'turn(direction, 180)'):
+            self.assertIn(guard, source)
+        stack = (ROOT / 'code/game/objects/items/stacks/stack.dm').read_text(encoding='utf-8-sig')
+        produce = stack.split('/obj/item/stack/proc/produce_recipe(', 1)[1].split('\n/obj/item/stack/proc/', 1)[0]
+        first = produce.index('stairs_down_spot(user, recipe.result_type, stairs_why)')
+        wait = produce.index('do_after(user, buildtime)')
+        second = produce.index('stairs_down_spot(user, recipe.result_type, stairs_why)', wait)
+        self.assertLess(first, wait)
+        self.assertLess(second, produce.index('new recipe.result_type(build_loc)'))
+        self.assertIn('O.set_dir(stairs_down ? stairs_down[2] : user.dir)', produce)
+
 if __name__ == '__main__':
     unittest.main()

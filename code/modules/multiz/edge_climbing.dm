@@ -7,7 +7,8 @@
 //   ground under open air, to stand a ladder between the two levels.
 // - Stairs: built stairs under open air lead to the level above. Walk onto
 //   them the way they were built (or click them) to go up; walk onto the open
-//   air above them to go down without falling.
+//   air above them to go down without falling. Built from an upper floor while
+//   facing an opening, they go on the floor below it (stairs_down_spot).
 
 #define EDGE_CLIMB_DOWN_TIME 30
 #define EDGE_LADDER_PLACE_TIME 40
@@ -296,6 +297,66 @@
 		if (C.stairs && !C.gc_destroyed && !C.gcDestroyed)
 			return C
 	return null
+
+/proc/cover_type_is_stairs(path)
+	if (!ispath(path, /obj/covers))
+		return FALSE
+	var/obj/covers/C = path
+	return initial(C.stairs)
+
+// Stairs built from an upper floor go down. Standing on a floor and facing an
+// opening in it (open air beside you), the stairs are laid on the ground or
+// supported floor below the opening and climb back up to where you stand.
+// Returns list(lower turf, stairs dir), or null. When null, why[1] says why
+// the stairs can't go down, or is empty when they are built underfoot as usual.
+/proc/stairs_down_spot(mob/user, stairs_type, list/why)
+	. = null
+	if (islist(why))
+		why.Cut()
+	var/turf/here = user ? get_turf(user) : null
+	if (!here || user.loc != here)
+		return
+	// Where stairs can go underfoot, they still do.
+	var/underfoot = tile_build_refusal(here, stairs_type)
+	if (!underfoot)
+		return
+	var/problem
+	var/direction = user.dir
+	var/turf/well = (direction in list(NORTH, SOUTH, EAST, WEST)) ? get_step(here, direction) : null
+	var/level = well ? multiz_level_below(well.z) : 0
+	var/turf/lower = level ? locate(well.x, well.y, level) : null
+	if (!lower || !edge_open_air(well))
+		if (building_open_turf(here))
+			problem = "[underfoot] To build stairs down to the level below, stand beside an opening in the floor and face it."
+	else if (stairs_in(lower) || (locate(/obj/structure/multiz) in lower) || (locate(/obj/structure/multiz) in well))
+		problem = "There already are stairs or a ladder at that opening."
+	else
+		var/obj/covers/floor = tile_floor_cover(lower)
+		if (floor)
+			problem = "There is already \a [floor] below that opening. Take it up with a hammer from below first."
+		else if (lower.density || tile_wall_piece(lower))
+			problem = "Something solid fills the space below that opening."
+		else if (building_open_turf(lower))
+			if (building_floor_error(lower))
+				problem = "The drop below that opening is more than one storey. Stairs need solid ground or a supported floor under them."
+		else if (!ledge_landing_clear(lower, TRUE))
+			problem = "The ground below that opening can't take stairs. It needs clear, solid footing."
+		if (!problem)
+			for (var/atom/movable/A in lower)
+				if (A.density && !isliving(A))
+					problem = "Something is in the way below that opening."
+					break
+		if (!problem && !ledge_landing_clear(here, TRUE))
+			problem = "The stairs need clear floor where you stand to come up onto."
+		if (!problem && (istype(get_area(lower), /area/caribbean/no_mans_land) || istype(get_area(well), /area/caribbean/no_mans_land)))
+			problem = "You can't build stairs here."
+		if (!problem && persistence_save_in_progress)
+			problem = "You can't build while the world is saving."
+	if (problem)
+		if (islist(why))
+			why += problem
+		return null
+	return list(lower, turn(direction, 180))
 
 // The upper turf stairs S take H to, or null with why[1] naming the reason.
 // The open air above the stairs is the stairwell; the top step lands on the

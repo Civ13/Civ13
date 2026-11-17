@@ -122,7 +122,7 @@ class Projection:
                             wood_chip_logs_per_batch=lambda: self.run('/proc/wood_chip_logs_per_batch', Record()),
                             round=math.floor, min=min, prob=lambda _chance: False,
                             qdel=lambda obj: (setattr(obj, 'gcDestroyed', True), setattr(obj, 'loc', None)),
-                            get_turf=lambda obj: obj.loc if getattr(obj.loc, 'turf', False) else None)
+                            get_turf=lambda obj: obj if getattr(obj, 'turf', False) else (obj.loc if getattr(obj.loc, 'turf', False) else None))
         return eval(compile(tree, '<DM scalar projection>', 'eval'), {'__builtins__': {}}, environment)
 
     def run(self, path, receiver, **arguments):
@@ -817,6 +817,8 @@ class AcquisitionProjection(Projection):
             isnull=lambda value: value is None,
             # One floor and one wall per tile: a machine takes neither slot.
             tile_build_refusal=lambda *_args: None,
+            # Stairs alone may be built down through an opening (edge_climbing.dm).
+            cover_type_is_stairs=lambda *_args: False,
             # Only a new lining on a dug well may replace what stands on the tile (dug_wells.dm).
             well_relining=lambda *_args: False,
             # Mirrors /proc/recipe_age_allowed: max era 8 (RECIPE_OPEN_ENDED_AGE) never retires a row.
@@ -829,7 +831,7 @@ class AcquisitionProjection(Projection):
         text = text.replace('/material/woolcloth', repr('/material/woolcloth'))
         text = text.replace('"[recipe.result_type]"', 'recipe.result_type')
         text = text.replace('"[type]/"', 'material_prefix').replace('(joinery || carving) ? null : H', 'H')
-        text = text.replace('new recipe.result_type(user.loc)', 'construct(recipe.result_type, user.loc)')
+        text = text.replace('new recipe.result_type(build_loc)', 'construct(recipe.result_type, build_loc)')
         return super().expression(text, receiver, local)
 
     def construct(self, kind, site):

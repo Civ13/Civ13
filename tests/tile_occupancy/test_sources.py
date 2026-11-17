@@ -21,9 +21,9 @@ class TileOccupancySources(unittest.TestCase):
     def test_crafting_checks_before_and_after_wait(self):
         stack = read('code/game/objects/items/stacks/stack.dm')
         body = stack[stack.index('/obj/item/stack/proc/produce_recipe('):]
-        first = body.index('tile_build_refusal(get_turf(user), recipe.result_type)')
+        first = body.index('tile_build_refusal(get_turf(build_loc), recipe.result_type)')
         wait = body.index('if (!do_after(user, buildtime)')
-        second = body.index('tile_build_refusal(get_turf(user), recipe.result_type)', first + 1)
+        second = body.index('tile_build_refusal(get_turf(build_loc), recipe.result_type)', first + 1)
         pay = body.index('if (use(required,')
         self.assertLess(first, wait)
         self.assertLess(wait, second)

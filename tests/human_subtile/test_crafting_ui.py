@@ -270,8 +270,8 @@ def verify_stack_contract(source):
     if len(re.findall(r'(?<![.A-Za-z0-9_])(?:src\.)?use\(', '\n'.join(line.split('//', 1)[0] for line in produce.splitlines()))) != 1:
         raise AssertionError('primary debit count changed')
     ordered(produce, 'if (!can_use(required))', CONTRACTS['stack_wait'],
-            debit, 'O = new recipe.result_type(user.loc, recipe.use_material)',
-            'O = new recipe.result_type(user.loc)', CONTRACTS['stack_refund'])
+            debit, 'O = new recipe.result_type(build_loc, recipe.use_material)',
+            'O = new recipe.result_type(build_loc)', CONTRACTS['stack_refund'])
     topic = section(source, '/obj/item/stack/Topic', '// The normal menu')
     if topic != CONTRACTS['stack_topic']:
         raise AssertionError('crafting admission/ownership/refresh changed')

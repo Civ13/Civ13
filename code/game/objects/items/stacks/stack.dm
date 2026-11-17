@@ -1621,8 +1621,22 @@
 		secondary_refund(H)
 		return
 
+	// Stairs from an upper floor go down: facing an opening, they are laid on
+	// the floor below it and climb back up to the builder (edge_climbing.dm).
+	var/atom/build_loc = user.loc
+	var/list/stairs_down = null
+	if (cover_type_is_stairs(recipe.result_type))
+		var/list/stairs_why = list()
+		stairs_down = stairs_down_spot(user, recipe.result_type, stairs_why)
+		if (stairs_down)
+			build_loc = stairs_down[1]
+		else if (stairs_why.len && stairs_why[1])
+			to_chat(user, SPAN_WARNING(stairs_why[1]))
+			secondary_refund(H)
+			return
+
 	// One floor and one wall per tile (tile_occupancy.dm).
-	var/tile_refusal = tile_build_refusal(get_turf(user), recipe.result_type)
+	var/tile_refusal = tile_build_refusal(get_turf(build_loc), recipe.result_type)
 	if (tile_refusal)
 		to_chat(user, SPAN_WARNING(tile_refusal))
 		secondary_refund(H)
@@ -1821,13 +1835,19 @@
 	if (ispath(recipe.result_type, /obj/covers))
 		var/obj/covers/floor_type = recipe.result_type
 		building_floor_recipe = !initial(floor_type.wall) && initial(floor_type.layer) < 2.1
+	if (stairs_down)
+		var/list/stairs_why = list()
+		var/list/stairs_now = stairs_down_spot(user, recipe.result_type, stairs_why)
+		if (!stairs_now || stairs_now[1] != stairs_down[1] || stairs_now[2] != stairs_down[2])
+			to_chat(user, SPAN_WARNING(stairs_why.len && stairs_why[1] ? stairs_why[1] : "Stay facing the opening until the stairs are built."))
+			return
 	if (building_floor_recipe)
-		var/building_error = building_floor_error(get_turf(user))
+		var/building_error = building_floor_error(get_turf(build_loc))
 		if (building_error)
 			to_chat(user, SPAN_WARNING(building_error))
 			return
 	// The tile may have gained a floor or wall during the wait.
-	tile_refusal = tile_build_refusal(get_turf(user), recipe.result_type)
+	tile_refusal = tile_build_refusal(get_turf(build_loc), recipe.result_type)
 	if (tile_refusal)
 		to_chat(user, SPAN_WARNING(tile_refusal))
 		return
@@ -1875,9 +1895,9 @@
 			return
 		var/atom/O
 		if (recipe && recipe.use_material && recipe.result_type)
-			O = new recipe.result_type(user.loc, recipe.use_material)
+			O = new recipe.result_type(build_loc, recipe.use_material)
 		else
-			O = new recipe.result_type(user.loc)
+			O = new recipe.result_type(build_loc)
 		if (offer_stone_hatchet)
 			offer_crafted_axe_to_active_hand(user, O)
 
@@ -2025,7 +2045,9 @@
 			O.desc = customdesc
 			var/obj/structure/sign/signpost/STR = O
 			STR.update_icon()
-		O.set_dir(user.dir)
+		O.set_dir(stairs_down ? stairs_down[2] : user.dir)
+		if (stairs_down)
+			user.visible_message(SPAN_NOTICE("[user] builds \a [O] down to the level below."), SPAN_NOTICE("You build \the [O] down through the opening. They climb back up to where you stand."))
 		if (istype(O, /obj/structure/vehicleparts/frame))
 			O.dir = 1
 		// A crenelated wall covers the side its builder faced (castle_defences.dm).
