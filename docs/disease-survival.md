@@ -57,6 +57,9 @@ acceptance of the balance.
 
 The Sleep verb no longer refuses a sick character. `resting_in_bed()` is true
 for a body buckled to a real bed and for one sleeping in a bed (the Sleep verb
-does not buckle), so sleeping through an illness halves an untreated flu and
-doubles the immune gain, exactly like lying buckled. (Worms are paused while
-their host sleeps, as before.) Recovery is announced in large green text.
+does not buckle), so an untreated flu passes at the bed-rest pace while its
+host sleeps there. Plague, typhus, malaria, cholera, worms and the immune
+response are all paused while their host sleeps (`inducedSSD`: no offline
+catch-up), as before, so sleep neither worsens nor heals them; lying buckled
+and awake is what doubles the immune gain. Recovery is announced in large
+green text.
