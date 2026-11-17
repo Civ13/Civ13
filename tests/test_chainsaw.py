@@ -53,8 +53,8 @@ class ChainsawTests(unittest.TestCase):
     def test_tree_chop_accepts_hatchet_subtypes(self):
         wild = source('code/game/objects/structures/wild.dm')
         attack = wild[wild.index('/obj/structure/wild/attackby('):]
-        gate = attack[:attack.index('\n', attack.index('if (istype(W,'))]
-        self.assertIn('istype(W,/obj/item/weapon/material/hatchet)', gate)
+        gate = attack[:attack.index('\n', attack.index('if (is_tool(W, TOOL_HATCHET)'))]
+        self.assertIn('is_tool(W, TOOL_HATCHET)', gate)
         self.assertIn('30*HT.chopping_speed', attack[:attack.index('/obj/structure/wild/on_break')])
 
     def test_heavy_two_handed_power_tool_like_jackhammer(self):
@@ -98,10 +98,11 @@ class TreeBumpChopping(unittest.TestCase):
 
     def test_bump_tool_list_matches_click_chop_gate(self):
         attack = self.wild[self.wild.index('/obj/structure/wild/attackby('):]
-        gate = attack[:attack.index('\n', attack.index('if (istype(W,'))]
+        gate = attack[:attack.index('\n', attack.index('if (is_tool(W, TOOL_HATCHET)'))]
+        bump_body = self.proc('/proc/tree_chopping_tool(')
         click = set(re.findall(r'istype\(W, ?(/[\w/]+)\)', gate))
-        bump = set(re.findall(r'istype\(W, ?(/[\w/]+)\)', self.proc('/proc/tree_chopping_tool(')))
-        self.assertIn('/obj/item/weapon/material/hatchet', bump)
+        bump = set(re.findall(r'istype\(W, ?(/[\w/]+)\)', bump_body))
+        self.assertIn('is_tool(W, TOOL_HATCHET)', bump_body)
         self.assertEqual(click, bump)
 
     def test_human_bump_dispatches_after_mining(self):
@@ -121,6 +122,20 @@ class TreeBumpChopping(unittest.TestCase):
         held = self.proc('/mob/living/human/proc/held_chopping_tool(')
         self.assertLess(held.index('get_active_hand()'), held.index('get_inactive_hand()'))
         self.assertNotIn('swap_hand(', body + held)
+
+    def test_bump_chop_consumes_held_movement_key(self):
+        body = self.proc('/mob/living/human/proc/try_bump_chopping(')
+        self.assertLess(body.index('bump_chop_target = A'), body.index('halt_held_movement_toward(A)'))
+        self.assertLess(body.index('halt_held_movement_toward(A)'), body.index('perform_bump_chop(A, HT)'))
+        halt = self.proc('/mob/living/human/proc/halt_held_movement_toward(')
+        self.assertIn('held & get_dir(src, A)', halt)
+        self.assertIn('movement_northsouth = null', halt)
+        self.assertIn('movement_eastwest = null', halt)
+        # Only a fresh key press restarts movement: the macro must not key-repeat.
+        skin = source('interface/skin.dmf')
+        for verb in ('startmovingup', 'startmovingdown', 'startmovingleft', 'startmovingright'):
+            for block in re.findall(r'elem\s*\n\s*name = "([^"]*)"\s*\n\s*command = "\.' + verb + '"', skin):
+                self.assertNotIn('+REP', block)
 
     def test_reservation_is_runtime_only(self):
         self.assertIn('/mob/living/human/var/tmp/obj/structure/wild/bump_chop_target', self.wild)
