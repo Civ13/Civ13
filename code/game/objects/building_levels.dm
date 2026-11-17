@@ -1,7 +1,7 @@
 // Ceilings with an available upper plane have two faces of one slab. Coordinates
 // and an ID, rather than cross-level references, survive per-level saves.
 #define BUILDING_MAX_Z 32
-#define BUILDING_EXTRA_LEVELS 8
+#define BUILDING_EXTRA_LEVELS 12
 #define BUILDING_MAX_LEVEL_CELLS 2000000
 
 var/building_allocating_z = 0

@@ -300,9 +300,9 @@ BUG_REPORT_GITHUB_LABELS bug
 
 LANGUAGE english
 # Dynamic z allocation: optional examples (defaults shown; all lines commented).
-# decimal integer 0..5300000 total native cells (inclusive)
-# NEW_Z_CELL_BUDGET 5300000
-# decimal integer 0..6 roof-added planes (at most the map's building_levels)
+# decimal integer 0..11500000 total native cells (inclusive)
+# NEW_Z_CELL_BUDGET 11500000
+# decimal integer 0..10 roof-added planes (at most the map's building_levels)
 # NEW_Z_ROOF_LEVELS 1
 # decimal integer 0..8 reserved whole planes
 # NEW_Z_INSTANCE_RESERVE 0

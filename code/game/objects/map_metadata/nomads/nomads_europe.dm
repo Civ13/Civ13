@@ -12,7 +12,7 @@
 	// Roofs may add up to four open-air levels beside the dug cave
 	// (building_admission.dm); the first stands from the start of the round so
 	// aircraft can fly.
-	building_levels = 6
+	building_levels = 10
 	building_level_standing = TRUE
 	// Walk on over the east edge into Asia (region_edge.dm).
 	edge_crossings = list("east" = "asia")
