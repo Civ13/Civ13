@@ -16622,6 +16622,30 @@
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
+      "name": "Butcher crabs, trilobites and beetles",
+      "file": "code/modules/1713/animal_harvest.dm",
+      "line": 422,
+      "source_commit": "335330940bda8f0fddd25ac9c47a5aac3b147c13",
+      "inputs": [
+        "/mob/living/simple_animal/crab",
+        "/mob/living/simple_animal/crab/small/trilobite",
+        "/mob/living/simple_animal/hostile/phosphor_beetle"
+      ],
+      "outputs": [
+        "/material/chitin"
+      ],
+      "tools": [
+        "/obj/item/weapon/material/kitchen/utensil/knife"
+      ],
+      "steps": [
+        "Use a sharp held tool on the dead animal and complete the harvesting action. Collect the chitin with the meat."
+      ],
+      "conditions": "A small crab or a beetle gives one chitin, a full-grown crab or a trilobite two. A skilled hunter cuts more.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
       "name": "Refine petroleum into plastic",
       "file": "code/modules/1713/modern_items.dm",
       "line": 715,
@@ -17202,8 +17226,8 @@
     {
       "name": "Burn stone to quicklime in a lime kiln",
       "file": "code/modules/1713/clay_lime_fire.dm",
-      "line": 327,
-      "source_commit": "b048d2349267d29f005441d5099d464fbf8ef72e",
+      "line": 419,
+      "source_commit": "335330940bda8f0fddd25ac9c47a5aac3b147c13",
       "inputs": [
         "/obj/item/stack/material/stone"
       ],
@@ -17217,7 +17241,30 @@
         "Build a lime kiln, then load stone or marble and fuel into it.",
         "Light the kiln by hand. When the burn ends, each stone or marble loaded has become one quicklime."
       ],
-      "conditions": "The kiln burns only stone or marble and cannot be loaded while it is burning.",
+      "conditions": "The kiln burns only stone, marble or crushed shell and cannot be loaded while it is burning.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "The lime kiln needs the Stone Masonry research.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Burn crushed shell to quicklime in a lime kiln",
+      "file": "code/modules/1713/clay_lime_fire.dm",
+      "line": 419,
+      "source_commit": "335330940bda8f0fddd25ac9c47a5aac3b147c13",
+      "inputs": [
+        "/obj/item/stack/crushed_shell"
+      ],
+      "outputs": [
+        "/obj/item/stack/ore/quicklime"
+      ],
+      "tools": [
+        "/obj/structure/furnace/lime_kiln"
+      ],
+      "steps": [
+        "Load crushed shell and fuel into a lime kiln, alone or with stone and marble.",
+        "Light the kiln by hand. Each handful of crushed shell becomes one quicklime."
+      ],
+      "conditions": "The kiln holds up to 20 stone and shell together and cannot be loaded while it is burning.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "The lime kiln needs the Stone Masonry research.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"

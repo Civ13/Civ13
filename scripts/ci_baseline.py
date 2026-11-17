@@ -2131,6 +2131,13 @@ SUITES = {
         'tests/crop_stage_step/', 'tests/plant_lifecycle/')},
     # Complete stacked-yield branch with fake construction/merge boundaries.
     # Keep farming.dm unmapped so its conservative all-suite fallback remains.
+    # Chitin sources, recipes, research gates, lime kiln and fertiliser wiring.
+    # Chitin sources, recipes, research gates, lime kiln and fertiliser wiring.
+    # Shared production files stay in shared_paths so their fallbacks remain.
+    'chitin_uses': {'files': ('tests/chitin_uses/test_chitin_uses.py',),
+        'paths': ('tests/chitin_uses/', 'code/modules/1713/chitin_uses.dm'),
+        'shared_paths': ('code/modules/1713/animal_harvest.dm', 'code/modules/1713/clay_lime_fire.dm',
+            'config/crafting/material_recipes_global.txt', 'config/crafting/material_recipes_crustacean.txt')},
     'stacked_crop_yields': {'files': ('tests/harvest_skills/test_stacked_crops.py',),
         'paths': ('tests/harvest_skills/',),
         'shared_paths': ('tests/save_movement/source_adapter.py',)},

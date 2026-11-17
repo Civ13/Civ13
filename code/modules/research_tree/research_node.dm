@@ -2402,6 +2402,7 @@ var/global/list/node_grid_col_cache = null
 		// --- resource_processing (10) ---
 		"/obj/structure/workshop_machine/mover/horse_gin" = "resource_processing",
 		"/obj/structure/compost" = "resource_processing",
+		"/obj/item/stack/crushed_shell" = "resource_processing",
 		"/obj/structure/converter/retting_trough" = "resource_processing",
 		"/obj/structure/flax_comb" = "resource_processing",
 		"/obj/structure/hemp_dressing_bench" = "resource_processing",
@@ -2441,6 +2442,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/feast_mat" = "ritual_worship",
 		"/obj/item/stack/barter_beads/stone" = "regalia",
 		"/obj/item/stack/barter_beads/bone" = "regalia",
+		"/obj/item/stack/barter_beads/chitin" = "regalia",
 		"/obj/structure/barter_mat" = "basic_tools",
 		"/obj/item/weighing_balance" = "basic_tools",
 		"/obj/item/stone_age_instrument/bone_flute" = "ritual_worship",
@@ -2540,6 +2542,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/material/javelin" = "stone_arms",
 		"/obj/item/weapon/legcuffs/bola" = "stone_arms",
 		"/obj/item/weapon/material/harpoon/bone" = "stone_arms",
+		"/obj/item/weapon/material/harpoon/chitin" = "stone_arms",
 		"/obj/structure/anvil/stone" = "stone_arms",
 		"/obj/structure/noose" = "stone_arms",
 		// --- stone_masonry (48) ---

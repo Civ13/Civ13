@@ -998,6 +998,9 @@ RECIPE: /material/chitin/,chitin armor,/obj/item/clothing/suit/armor/chitin,14,1
 
 RECIPE: /material/chitin/,chitin buckler,/obj/item/weapon/shield/chitin,7,180,0,1,none,0,0,0,8,null
 RECIPE: /material/chitin/,chitin shield,/obj/item/weapon/shield/chitin/large,10,180,0,1,none,0,0,0,8,null
+RECIPE: /material/chitin/,chitin harpoon,/obj/item/weapon/material/harpoon/chitin,3,90,0,1,none,0,0,0,1,chitin
+RECIPE: /material/chitin/,chitin beads,/obj/item/stack/barter_beads/chitin,1,30,0,1,none,0,0,0,8,null
+RECIPE: /material/chitin/,crushed shell,/obj/item/stack/crushed_shell,1,30,0,1,none,0,0,0,8,null
 
 //**************************************************************
 //*********************| BEARPELT |*****************************

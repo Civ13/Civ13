@@ -193,6 +193,9 @@
 					C.amount--
 					if (C.amount <= 0)
 						qdel(C)
+				else if (istype(C, /obj/item/stack))
+					var/obj/item/stack/FS = C
+					FS.use(1) // one handful of a pile, such as crushed shell
 				else
 					qdel(C)
 				if (ishuman(user))

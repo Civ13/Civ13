@@ -222,6 +222,13 @@
 	desc = "A barbed bone point on a wooden shaft. Throw it, or use it on shallow water to spear fish."
 	default_material = "bone"
 
+// ---------------------------------------------------------------- chitin harpoon
+/obj/item/weapon/material/harpoon/chitin
+	desc = "A barbed point cut from crab shell on a wooden shaft. Throw it, or use it on shallow water to spear fish."
+	default_material = "chitin"
+	icon_state = "harpoon_chitin"
+	applies_material_colour = FALSE
+
 // Spear fishing: barbed harpoons and flint spears take fish from shallow water without a line.
 /proc/spear_fishing_tool(obj/item/W)
 	return istype(W, /obj/item/weapon/material/harpoon) || istype(W, /obj/item/weapon/material/spear/flint)
