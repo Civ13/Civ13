@@ -37,7 +37,12 @@ class Sources(unittest.TestCase):
                 skip = depth; guards += 1; continue
             projected.append(row)
         self.assertGreaterEqual(guards, 5)
-        self.assertNotIn('mining_context', ''.join(projected))
+        # The survival hook receives the (null) context unchanged; that pass-through
+        # and the hook's own signature are the only unguarded mentions.
+        text = ''.join(projected)
+        text = text.replace('user.survival_action_started(target, mining_context)', 'user.survival_action_started(target)')
+        text = text.replace('/mob/proc/survival_action_started(atom/target, datum/pickaxe_mining_action/mining_context)', '/mob/proc/survival_action_started(atom/target)')
+        self.assertNotIn('mining_context', text)
 
     def test_exact_held_selection_and_single_canonical_completion(self):
         generated, _, _ = R.source()
@@ -50,6 +55,13 @@ class Sources(unittest.TestCase):
         production = (ROOT / 'code/game/turfs/floor_attackby.dm').read_text()
         self.assertIn('start_pickaxe_mining(H, C)', production)
         self.assertIn('spawn(0)\n\t\t\tM.perform()', production)
+
+    def test_bump_mining_consumes_held_movement_key_only_once_started(self):
+        generated, _, _ = R.source()
+        body = generated[generated.index('/mob/living/human/proc/try_bump_mining('):generated.index('/turf/proc/start_pickaxe_mining(')]
+        self.assertIn('if (!T.start_pickaxe_mining(src, P, TRUE))\n\t\treturn FALSE\n\thalt_held_movement_toward(T)', body)
+        movement = (ROOT / 'code/game/mob/mob_movement.dm').read_text()
+        self.assertIn('/mob/proc/halt_held_movement_toward(atom/A)', movement)
 
     def test_reservations_are_runtime_only_and_release_only_their_owners(self):
         generated, _, _ = R.source()

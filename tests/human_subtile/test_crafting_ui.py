@@ -65,6 +65,10 @@ def restore_crafting_projection(path, source):
              '\t\t\t\tnew/obj/structure/multiz/ladder/ww2/tunneltop(locate(user.x, user.y, user.z+1))\n\t\t\t\tnew/obj/structure/multiz/ladder/ww2/tunnelbottom(user.loc)\n'),
             ('\t\t\t\tnew/obj/structure/multiz/ladder/ww2/tunneltop/pit(user.loc)\n',
              '\t\t\t\tnew/obj/structure/multiz/ladder/ww2/tunneltop(user.loc)\n\t\t\t\tnew/obj/structure/multiz/ladder/ww2/tunnelbottom(locate(user.x, user.y, user.z-1))\n'),
+            # Bump mining consumes the held movement key once mining starts
+            # (tests/bump_mining).
+            ('\tif (!T.start_pickaxe_mining(src, P, TRUE))\n\t\treturn FALSE\n\thalt_held_movement_toward(T)\n\treturn TRUE\n',
+             '\treturn T.start_pickaxe_mining(src, P, TRUE)\n'),
         ):
             source = replace_reviewed_once(source, current, previous)
         # Mining balance is a separately checked production change. Invert only
