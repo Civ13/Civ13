@@ -145,7 +145,7 @@
 
 // ---- things on the floor --------------------------------------------
 // Floodwater ruins flour and gunpowder left on the floor (the flour sack falls
-// apart, a gunpowder pouch is left empty) and floats small light things toward deeper water. A table
+// apart, a gunpowder pouch is left empty), rots loose grain and seed and floats small light things toward deeper water. A table
 // keeps things above anything shallower than the waist. It runs for the tiles
 // a player can see (the drawing scan below), once per river tick per tile, so
 // unwatched land costs nothing.
@@ -155,6 +155,10 @@ var/global/flood_items_revision = -1
 
 /proc/flood_ruins(obj/item/I)
 	return istype(I, /obj/item/weapon/reagent_containers/food/condiment/flour) || istype(I, /obj/item/weapon/reagent_containers/food/drinks/gunpowder)
+
+// Harvested grain and seed rot once floodwater soaks them.
+/proc/flood_rots(obj/item/I)
+	return istype(I, /obj/item/stack/farming/seeds) || istype(I, /obj/item/weapon/reagent_containers/food/snacks/grown/wheat) || istype(I, /obj/item/weapon/reagent_containers/food/snacks/grown/rice) || istype(I, /obj/item/weapon/reagent_containers/food/snacks/grown/oat) || istype(I, /obj/item/weapon/reagent_containers/food/snacks/grown/barley) || istype(I, /obj/item/weapon/reagent_containers/food/snacks/grown/corn)
 
 /proc/flood_items_at(turf/T, band)
 	if (flood_items_revision != flood_draw_revision)
@@ -184,6 +188,10 @@ var/global/flood_items_revision = -1
 			// An emptied flour sack falls apart; a gunpowder pouch stays, empty.
 			I.visible_message(SPAN_WARNING("Floodwater soaks \the [I] and ruins what was inside."))
 			I.reagents.clear_reagents()
+		else if (flood_rots(I))
+			// Grain and seed left on the ground sour in floodwater; stores upstairs stay dry.
+			I.visible_message(SPAN_WARNING("Floodwater soaks \the [I] and it starts to rot."))
+			qdel(I)
 		else if (deeper && I.w_class <= ITEM_SIZE_SMALL)
 			I.Move(deeper)
 

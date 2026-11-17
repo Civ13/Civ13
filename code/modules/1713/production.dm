@@ -797,6 +797,10 @@
 
 // Refill can restore encoded inputs without going through attackby admission.
 // Leave unsafe inputs owned by the rack; never manufacture a fresh replacement.
+// Drying time each 15-second pass; a loft dries faster (storey_stores.dm).
+/obj/structure/dehydrator/proc/dry_step()
+	return 150
+
 /obj/structure/dehydrator/proc/drying_input_is_safe(obj/item/input)
 	if (!istype(input, /obj/item/weapon/reagent_containers/food))
 		return TRUE
@@ -838,7 +842,7 @@
 					if (!drying_input_is_safe(I))
 						continue
 					dry_timer = get_dry_timer(I)
-					dry_timer += 150
+					dry_timer += dry_step()
 					set_dry_timer(I, dry_timer)
 					if (dry_timer >= TIME_TO_DRY)
 						pos = split_size(text2num(copytext(I.name, findtext(I.name,"POS_")+4, findtext(I.name,"POS_")+5), 16))

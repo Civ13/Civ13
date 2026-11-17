@@ -1959,6 +1959,7 @@
 #include "code\modules\1713\canals.dm"
 #include "code\modules\1713\small_ancient.dm"
 #include "code\modules\1713\cool_cellars.dm"
+#include "code\modules\1713\storey_stores.dm"
 #include "code\modules\1713\rock_art.dm"
 #include "code\modules\1713\tribal_deeds.dm"
 #include "code\modules\1713\stone_age_rites.dm"

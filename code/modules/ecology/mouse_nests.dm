@@ -379,6 +379,8 @@ var/global/datum/ecology_species/mouse_burrow_habitat = null
 /proc/mouse_nest_site_error(turf/T)
 	if (!mouse_nest_floor_ok(T))
 		return "floor"
+	if (turf_is_above_ground(T)) // mice keep to the ground floor and cellars
+		return "upstairs"
 	if (locate(/obj/structure/mouse_nest) in T)
 		return "nest"
 	for (var/atom/movable/A in T)

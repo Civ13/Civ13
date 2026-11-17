@@ -1415,6 +1415,9 @@ SUITES = {
         'paths': ('tests/canals/',), 'shared_paths': (
             'code/modules/1713/canals.dm', 'code/modules/1713/trench.dm', 'icons/obj/canal_lock.dmi',
             'tests/sprites/create_canal_lock.py')},
+    # Storey stores (loft drying, upstairs mice, flood rot): source contracts (native probe tests/storey_stores/probe.dm).
+    'storey_stores': {'files': ('tests/storey_stores/test_source.py',),
+        'paths': ('tests/storey_stores/',), 'shared_paths': ('code/modules/1713/storey_stores.dm',)},
     # Cool cellars: source contracts (native probe tests/cool_cellars/probe.dm).
     'cool_cellars': {'files': ('tests/cool_cellars/test_source.py',),
         'paths': ('tests/cool_cellars/',), 'shared_paths': ('code/modules/1713/cool_cellars.dm',)},
