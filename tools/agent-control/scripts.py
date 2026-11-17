@@ -6,6 +6,8 @@ spear and sharpened flint), and return DONE once the product is in hand. Every s
 step ({"do": skill, "target": ref or 0}), so it runs through the same expansion and checks as the model's.
 """
 
+import re
+
 import water as water_steps
 
 DONE = "done"
@@ -282,6 +284,29 @@ def name_of(text):
     text = str(text or "").strip().lower().replace("-", "_")
     text = ALIASES.get(text, text)
     return text if text in SCRIPTS else ""
+
+
+# Words in a plain-sentence plan step ("Chop tree for wood logs") and the script that does it, most specific first.
+TEXT_SCRIPTS = (
+    (("trap", "snare", "deadfall"), "traps"),
+    (("water", "drink", "boil", "mug", "thirst"), "water"),
+    (("hunt", "meat", "prey", "butcher", "food"), "hunt"),
+    (("campfire", "fire"), "campfire"),
+    (("axe", "hatchet"), "axe"),
+    (("spear",), "spear"),
+    (("flint",), "flint"),
+    (("wood", "log", "chop", "tree", "lumber"), "wood"),
+    (("stick", "branch"), "stick"),
+)
+
+
+def from_text(text):
+    """The script a plain-sentence plan step asks for, or "" ("Find water" -> water, "Chop tree for wood logs" -> wood)."""
+    words = [word for word in re.findall(r"[a-z]+", str(text or "").lower()) if word != "pickaxe"]
+    for keys, script in TEXT_SCRIPTS:
+        if any(word.startswith(key) for word in words for key in keys):
+            return script
+    return ""
 
 
 def ladder(sit):

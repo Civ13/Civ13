@@ -306,6 +306,20 @@ class ScriptTests(unittest.TestCase):
         choice = quiet().choose(sit)
         self.assertEqual((choice.name, choice.plan), ("drink", [{"do": "find_flint", "target": 2}]))
 
+    def test_plain_sentences_name_scripts(self):
+        self.assertEqual(scripts.from_text("Chop tree for wood logs"), "wood")
+        self.assertEqual(scripts.from_text("Find water"), "water")
+        self.assertEqual(scripts.from_text("Craft wood mug"), "water")
+        self.assertEqual(scripts.from_text("Hunt a deer for meat"), "hunt")
+        self.assertEqual(scripts.from_text("Make a flint axe"), "axe")
+        self.assertEqual(scripts.from_text("Mine with a pickaxe"), "")
+        self.assertEqual(scripts.from_text("Make leaf bundles"), "")
+        scheduler = routines.Routines()
+        self.assertEqual(scheduler.adopt_text_plan(json.dumps({"plan": ["Make leaf bundles", "Build a campfire"]})), "make campfire (30 more)")
+        self.assertEqual(scheduler.order["script"], "campfire")
+        # An explicit routine from the director wins over its sentences.
+        self.assertEqual(scheduler.adopt_text_plan(json.dumps({"plan": ["Find water"], "routine": "none"})), "")
+
     def test_ladder_order(self):
         rows = [ROCK, TREE]
         self.assertEqual(scripts.ladder(situation(observe(holding(), nearby=rows))[0]), "flint")
@@ -427,6 +441,16 @@ class LoopTests(unittest.TestCase):
             code, game, model = self.run_loop(observe(me(water=140), terrain=[RIVER]), answer, steps=4)
         self.assertEqual(code, 0)
         self.assertEqual(model.calls, 2)
+
+    def test_plain_sentence_plan_becomes_a_routine(self):
+        # qwen3-8b on live Gaia answered every review with sentences like these; none of them used to run.
+        answer = json.dumps({"plan": ["Chop tree for wood logs", "Craft wood mug"], "note": "mug"})
+        armed = me(right_hand={"ref": "[0xaxe]", "name": "flint axe"})
+        code, game, model = self.run_loop(observe(armed, nearby=[TREE, FIRE]), answer, steps=4)  # the ladder is done: only the director gives work
+        self.assertEqual(code, 0)
+        self.assertEqual(model.calls, 1)
+        chops = [actions for actions in game.queued if any(a.get("target") == "[0xtree]" for a in actions)]
+        self.assertEqual(len(chops), 3)
 
     def test_no_routines_asks_the_model_every_turn(self):
         answer = json.dumps({"plan": [{"do": "wait", "ticks": 5}]})

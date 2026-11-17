@@ -346,6 +346,31 @@ class Routines:
                 notes.append("routine " + describe_order(order))
         return "; ".join(notes)
 
+    def adopt_text_plan(self, answer):
+        """A plan written as plain sentences ("Chop tree for wood logs") becomes the standing order for the first
+        sentence that names a script, so a small model's direction still runs. Returns the order's description or ""."""
+        try:
+            data = json.loads(answer)
+        except (TypeError, ValueError):
+            return ""
+        if not isinstance(data, dict) or "routine" in data or not isinstance(data.get("plan"), list):
+            return ""
+        for item in data["plan"]:
+            if not isinstance(item, str):
+                continue
+            words = item.lower().split()
+            if words and words[0] == "explore":
+                order = {"do": "explore", "times": 5, "dir": words[1] if len(words) > 1 and words[1] in DIRS else ""}
+            else:
+                script = scripts.from_text(item)
+                order = parse_order({"script": script}) if script else None
+            if order:
+                self.order = order
+                self.implicit = True
+                self.failures.pop("work", None)
+                return describe_order(order)
+        return ""
+
     def director_reason(self, sit, talk="", alarm="", prompted=False):
         """Why the model must decide this turn, or "" when routines may carry on."""
         if not self.enabled:
