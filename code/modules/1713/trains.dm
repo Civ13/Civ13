@@ -840,13 +840,33 @@ var/global/train_solo_move = FALSE
 		if (body_kind && istype(user, /mob/living))
 			to_chat(user, "The controls are in the cab.")
 		return
+	// A steam cab has three stations; each works its own controls.
+	var/station = cab_station(user)
+	if (!station)
+		to_chat(user, "Step into the cab: the driver's stand is on its right, the firebox door in the middle and the fireman's side on the left.")
+		return
 	boiler_tick()
-	var/list/choices = list(on ? stop_text : start_text)
-	choices += list("Throttle up", "Throttle down", "Brake")
-	choices += (reverser > 0) ? "Reverser to backward" : "Reverser to forward"
-	choices += extra_controls()
-	var/choice = player_input(user, "[control_summary()]", "[name]", null, "anything", choices, TRUE)
-	if (!choice || QDELETED(src) || !(user in range(1, spot)))
+	var/list/choices = station_controls(station)
+	var/choice = player_input(user, "[station_text(station)][control_summary()]", "[name]", null, "anything", choices, TRUE)
+	if (!choice || QDELETED(src) || !(user in range(1, spot)) || cab_station(user) != station)
+		return
+	work_control(choice, user)
+
+// The controls worked from a station: "all" on an engine with one place.
+/obj/structure/trains/locomotive/proc/station_controls(station)
+	var/list/choices = list()
+	if (station == "all" || station == "fire")
+		choices += on ? stop_text : start_text
+	if (station == "all" || station == "driver")
+		choices += list("Throttle up", "Throttle down", "Brake")
+		choices += (reverser > 0) ? "Reverser to backward" : "Reverser to forward"
+	if (station == "all" || station == "fireman")
+		choices += extra_controls()
+	return choices
+
+// Works one control for user, who stands at a station that has it.
+/obj/structure/trains/locomotive/proc/work_control(choice, mob/user)
+	if (!(choice in station_controls(cab_station(user))))
 		return
 	boiler_tick()
 	if (choice == start_text)
@@ -1372,6 +1392,10 @@ var/global/train_solo_move = FALSE
 		qdel(W)
 		plug_dropped = FALSE
 		user.visible_message("[user] fits a new fusible plug to \the [src].", "You fit the new plug. Fill the boiler before you light the fire.")
+		return
+	// Firing is done at the firebox door (train_locomotives.dm).
+	if ((is_tool(W, TOOL_SHOVEL) || fuel_value(W)) && !at_firebox(user))
+		to_chat(user, "Stand at the firebox door in the middle of the cab to fire \the [src].")
 		return
 	if (is_tool(W, TOOL_SHOVEL))
 		boiler_tick()
