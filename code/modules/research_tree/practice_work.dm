@@ -9,7 +9,7 @@
 //   Smithing tools you know (Basic Toolmaking) advances Iron Tools, and so on.
 //   Every early node with prerequisites gets one practice experiment per
 //   prerequisite, generated from the tree, so new nodes are covered too.
-// - Deeds: era tiers 0 to 3 have hand-written deeds per subject instead of a
+// - Deeds: era tiers 0 to 4 have hand-written deeds per subject instead of a
 //   counter (subject_deeds below).
 // - Gathering: a few first nodes with nothing before them advance by
 //   foraging or butchering.
@@ -206,7 +206,59 @@ var/global/list/subject_deeds = list(
 	"watermills" = list(
 		list("mill", list("/obj/structure/mill"), 1, 0.2, "Build a mill"),
 		list("sawmill", list("/obj/structure/sawmill"), 1, 0.15, "Build a primitive saw mill"),
-		list("gin", list("/obj/structure/workshop_machine/mover/horse_gin"), 1, 0.15, "Build a horse gin")))
+		list("gin", list("/obj/structure/workshop_machine/mover/horse_gin"), 1, 0.15, "Build a horse gin")),
+	// Era tier 4 (chat feedback, 2026-11-17).
+	"advanced_agriculture" = list(
+		list("plough", list("/obj/item/weapon/plough/iron"), 1, 0.2, "Make an iron plough"),
+		list("sickle", list("/obj/item/weapon/material/kitchen/utensil/knife/sickle"), 1, 0.15, "Make a sickle"),
+		list("basket", list("/obj/item/weapon/storage/produce_basket"), 1, 0.15, "Weave a produce basket")),
+	"factories" = list(
+		list("engine", list("/obj/structure/engine/external/steam"), 1, 0.2, "Build a steam engine"),
+		list("lathe", list("/obj/structure/workshop_machine/lathe/pole"), 1, 0.15, "Build a pole lathe"),
+		list("toolbox", list("/obj/item/weapon/storage/toolbox"), 1, 0.15, "Make a toolbox")),
+	"field_artillery" = list(
+		list("cannon", list("/obj/structure/cannon"), 1, 0.2, "Build a cannon"),
+		list("balls", list("/obj/item/cannon_ball"), 3, 0.15, "Cast 3 cannon balls"),
+		list("anvil", list("/obj/structure/anvil/steel"), 1, 0.15, "Build a steel anvil")),
+	"galvanic_cells" = list(
+		list("cells", list("/obj/structure/battery"), 2, 0.3, "Build 2 Baghdad-style jar cells"),
+		list("dish", list("/obj/structure/gilding_dish"), 1, 0.2, "Build a gilding dish")),
+	"industrial_milling" = list(
+		list("press", list("/obj/structure/workshop_machine/amalgam_press"), 1, 0.2, "Build an amalgam press"),
+		list("retort", list("/obj/structure/workshop_machine/mercury_retort"), 1, 0.15, "Build a mercury retort"),
+		list("hammer", list("/obj/structure/workshop_machine/trip_hammer/steam"), 1, 0.15, "Build a steam hammer")),
+	"machined_tools" = list(
+		list("drafting", list("/obj/item/weapon/drafting_set"), 1, 0.2, "Make a drafting set"),
+		list("saw", list("/obj/item/weapon/saw"), 1, 0.15, "Make a saw"),
+		list("screwdriver", list("/obj/item/weapon/screwdriver"), 1, 0.15, "Make a screwdriver")),
+	"manufactured_furniture" = list(
+		list("bookcase", list("/obj/structure/bookcase"), 1, 0.2, "Build a bookcase"),
+		list("clock", list("/obj/structure/TV/grandfather"), 1, 0.15, "Build a grandfather clock"),
+		list("chairs", list("/obj/structure/bed/chair/wood/red"), 2, 0.15, "Build 2 padded chairs")),
+	"rail_steam" = list(
+		list("engine", list("/obj/structure/engine/external/steam"), 1, 0.2, "Build a steam engine"),
+		list("depot", list("/obj/structure/berth/quay/depot"), 1, 0.15, "Build a freight depot"),
+		list("crane", list("/obj/structure/workshop_machine/shear_legs/crane/steam"), 1, 0.15, "Build a steam crane")),
+	"reinforced_concrete" = list(
+		list("bricks", list("/obj/item/weapon/clay/advclaybricks/cement"), 2, 0.2, "Shape unfired cement bricks twice"),
+		list("walls", list("/obj/covers/stone_wall/brick"), 3, 0.15, "Raise 3 stone brick walls"),
+		list("door", list("/obj/structure/simple_door/key_door/anyone/fire_door"), 1, 0.15, "Build an iron-clad fire door")),
+	"rifling" = list(
+		list("musket", list("/obj/item/weapon/gun/projectile/ancient/matchlock"), 1, 0.2, "Make a matchlock musket"),
+		list("bullets", list("/obj/item/stack/ammopart/bullet"), 3, 0.15, "Make iron bullets 3 times"),
+		list("anvil", list("/obj/structure/anvil/steel"), 1, 0.15, "Build a steel anvil")),
+	"steam_power" = list(
+		list("wheel", list("/obj/structure/workshop_machine/mover/mill_wheel"), 1, 0.2, "Build a mill wheel"),
+		list("hammer", list("/obj/structure/workshop_machine/trip_hammer"), 1, 0.15, "Build a trip hammer"),
+		list("windmill", list("/obj/structure/workshop_machine/mover/windmill"), 1, 0.15, "Build a windmill")),
+	"steelmaking" = list(
+		list("furnace", list("/obj/structure/furnace/blast_furnace"), 1, 0.2, "Build a blast furnace"),
+		list("anvil", list("/obj/structure/anvil"), 1, 0.15, "Build an iron anvil"),
+		list("tub", list("/obj/structure/quench_tub"), 1, 0.15, "Build a quench tub")),
+	"textile_mills" = list(
+		list("engine", list("/obj/structure/engine/external/steam"), 1, 0.2, "Build a steam engine"),
+		list("outfit", list("/obj/item/clothing/under/customren"), 1, 0.15, "Sew a renaissance outfit"),
+		list("turbans", list("/obj/item/clothing/head/turban"), 2, 0.15, "Wind 2 turbans")))
 
 // result path => list of deed activities it counts towards. Built with the experiments.
 var/global/list/deed_paths = list()
