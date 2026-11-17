@@ -74,9 +74,20 @@ warehouse, or sent over an inter-region railway.
 
 ## Several engines and the tender
 
-Only the front car of a train drives. Any other running engine hitched into the
-same train adds its `haul` and burns its own fuel (double heading); its own
-controls do not start it.
+One engine drives a train: the first to open its throttle, wherever it is
+hitched in (`locomotive()`, `train_head()`). At the front it pulls; behind cars
+it pushes the front car along (`process_rail_forward()`), burning its own fuel
+and hitting what is ahead with its own weight. Any other running engine in the
+train adds its `haul` and burns its own fuel (double heading, banking); its
+controls only take over once the driving engine has stopped.
+
+What leads the train limits its speed (`leading_factor()`): an engine running
+forward allows full speed, an engine running backward three quarters, and
+cars with no running engine at their head a half.
+
+Cars couple at either end with the Hitch verb: the front to the car ahead
+(`hitch_front()`), the rear to the car behind (`hitch_rear()`). The sections of
+one platform car or heavy locomotive stay hitched to each other.
 
 A coal tender anywhere in the train feeds the lead engine's firebox when it
 drops below half: coal, wood planks and branches, as many as fit.

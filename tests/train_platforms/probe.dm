@@ -4,7 +4,7 @@
 /world
 	hub = ""
 	hub_password = ""
-	maxx = 85
+	maxx = 110
 	maxy = 26
 	maxz = 1
 	turf = /turf/floor/dirt
@@ -436,9 +436,16 @@ var/global/platform_probe_runtime_error = FALSE
 	H.throttle = 3
 	H.refresh_consist()
 	platform_check("double_heading/power", H.consist_engines == 2 && H.cruise_speed() > heavy_cruise)
+	// The engine already driving sets the pace; the other one helps.
+	H.locomotive()
+	sleep(2)
 	helper.throttle = 3
 	helper.locomotive()
-	platform_check("double_heading/helper_follows", helper.lead_car() == rear && !helper.driving)
+	platform_check("double_heading/helper_follows", H.driving && helper.lead_car() == rear && !helper.driving)
+	H.throttle = 0
+	H.braking = TRUE
+	helper.throttle = 0
+	drive_wait(H)
 
 	// Tender: the fireman tops up a low firebox from a hitched tender.
 	var/obj/structure/trains/locomotive/coal/T = drive_train(52, 12, 0)
@@ -624,6 +631,130 @@ var/global/platform_probe_runtime_error = FALSE
 	platform_check("viewers/shift_both_ways", crate.train_shift(spot, FALSE) && crate.loc == spot && stick.train_shift(spot, TRUE) && stick.loc == spot && rider.train_shift(spot, TRUE) && rider.loc == spot)
 	train_platform_reset_plan()
 
+/proc/position_track(x)
+	for (var/y in 2 to 25)
+		platform_track(x, y, NORTH)
+
+/proc/position_wagon(x, y, wagon_type = /obj/structure/trains/transport/flatbed)
+	var/obj/structure/trains/W = new wagon_type(platform_turf(x, y))
+	W.dir = NORTH
+	return W
+
+// Engines anywhere in the train: pushing from the rear, driving from the
+// middle, and what leads the train setting how fast it may go.
+/proc/platform_position_run()
+	// A pusher: two wagons ahead of the engine.
+	position_track(90)
+	var/obj/structure/trains/W1 = position_wagon(90, 10)
+	var/obj/structure/trains/W2 = position_wagon(90, 9)
+	var/obj/structure/trains/locomotive/coal/P = position_wagon(90, 8, /obj/structure/trains/locomotive/coal)
+	W1.connected = W2
+	W2.connected = P
+	P.fuel = 100
+	P.on = TRUE
+	platform_check("position/train_head", P.train_head() == W1 && W2.train_head() == W1 && W1.train_head() == W1 && W2.lead_car() == W1)
+	P.throttle = 3
+	P.refresh_consist()
+	var/top = 10 / P.max_train_speed
+	platform_check("position/pushing_half_speed", P.drive_head == W1 && P.lead_factor == 0.5 && abs(P.cruise_speed() - top * 0.5) < 0.01)
+	P.throttle = 1
+	P.locomotive()
+	sleep(15)
+	platform_check("position/pusher_moves_train", P.driving && W1.y > 10 && W2.y == W1.y - 1 && P.y == W1.y - 2 && P.fuel < 100 && W1.connected == W2 && W2.connected == P)
+	P.throttle = 0
+	P.braking = TRUE
+	platform_check("position/pusher_stops", drive_wait(P) && !W1.automovement)
+	// Pushed cars hit what is ahead with the engine's weight and stop the train.
+	var/obj/structure/trains/buffer = position_wagon(90, W1.y + 1)
+	var/buffer_health = buffer.health
+	var/head_health = W1.health
+	P.rail_speed = 4
+	P.automovement = TRUE
+	P.refresh_consist()
+	platform_check("position/pushed_cars_collide", !P.process_rail_forward() && W1.y == buffer.y - 1 && W1.health < head_health && buffer.health <= buffer_health && !P.automovement)
+	P.rail_speed = 0
+	qdel(buffer)
+
+	// An engine in the middle drives both ways, cars leading either way.
+	position_track(94)
+	var/obj/structure/trains/M1 = position_wagon(94, 14)
+	var/obj/structure/trains/locomotive/coal/ME = position_wagon(94, 13, /obj/structure/trains/locomotive/coal)
+	var/obj/structure/trains/M3 = position_wagon(94, 12)
+	M1.connected = ME
+	ME.connected = M3
+	ME.fuel = 100
+	ME.on = TRUE
+	ME.throttle = 1
+	ME.locomotive()
+	sleep(15)
+	platform_check("position/middle_forward", ME.driving && M1.y > 14 && ME.y == M1.y - 1 && M3.y == M1.y - 2)
+	ME.throttle = 0
+	ME.braking = TRUE
+	drive_wait(ME)
+	var/back_from = M3.y
+	ME.reverser = -1
+	ME.throttle = 1
+	ME.locomotive()
+	sleep(15)
+	platform_check("position/middle_backward", ME.driving && ME.lead_factor == 0.5 && M3.y < back_from && ME.y == M3.y + 1 && M1.y == M3.y + 2)
+	ME.throttle = 0
+	ME.braking = TRUE
+	drive_wait(ME)
+
+	// Banking: with the front engine running but idle, the rear one drives the
+	// train, and both pull.
+	position_track(102)
+	var/obj/structure/trains/locomotive/coal/BH = position_wagon(102, 10, /obj/structure/trains/locomotive/coal)
+	var/obj/structure/trains/BW = position_wagon(102, 9)
+	var/obj/structure/trains/locomotive/coal/BR = position_wagon(102, 8, /obj/structure/trains/locomotive/coal)
+	BH.connected = BW
+	BW.connected = BR
+	for (var/obj/structure/trains/locomotive/E in list(BH, BR))
+		E.fuel = 100
+		E.on = TRUE
+	BR.throttle = 1
+	BR.locomotive()
+	sleep(15)
+	platform_check("banking/rear_engine_drives", BR.driving && !BH.driving && BR.drive_head == BH && BR.consist_engines == 2 && BH.y > 10 && BR.y == BH.y - 2 && BR.lead_factor == 1)
+	BR.throttle = 0
+	BR.braking = TRUE
+	drive_wait(BR)
+	BH.on = FALSE
+	BR.refresh_consist()
+	platform_check("banking/dead_front_engine_is_pushed", BR.lead_factor == 0.5 && BR.consist_engines == 1)
+
+	// What leads: the engine forward, the engine backward, or cars.
+	position_track(98)
+	var/obj/structure/trains/locomotive/coal/LE = position_wagon(98, 20, /obj/structure/trains/locomotive/coal)
+	var/obj/structure/trains/LW = position_wagon(98, 19)
+	platform_check("position/alone_forward_full", LE.leading_factor(list(LE)) == 1)
+	LE.reverser = -1
+	platform_check("position/alone_backward", LE.leading_factor(list(LE)) == 0.75)
+	LE.connected = LW
+	platform_check("position/backing_cars_lead", LE.leading_factor(train_consist_list(LE)) == 0.5)
+	LE.reverser = 1
+	platform_check("position/pulling_full", LE.leading_factor(train_consist_list(LE)) == 1)
+	LE.connected = null
+
+	// Coupling from the rear end of a car.
+	var/mob/living/human/platform_rider/shunter = new(platform_turf(97, 19))
+	platform_check("hitch/rear_couples", LE.hitch_rear(shunter) && LE.connected == LW)
+	platform_check("hitch/rear_uncouples", LE.hitch_rear(shunter) && !LE.connected)
+	var/obj/structure/trains/platform/car = platform_car("flatbed", 98, 10, NORTH)
+	var/list/segs = platform_segments(car)
+	var/obj/structure/trains/platform/last = segs[TRAIN_CAR_LENGTH]
+	var/obj/structure/trains/behind = position_wagon(98, 6)
+	platform_check("hitch/car_sections_stay", !car.hitch_rear(shunter) && car.connected == segs[2])
+	platform_check("hitch/car_rear_couples", last.hitch_rear(shunter) && last.connected == behind && behind.train_head() == car)
+	// A wagon already in another train is left alone.
+	var/obj/structure/trains/taken = position_wagon(98, 4)
+	var/obj/structure/trains/owner = position_wagon(98, 5)
+	behind.connected = null
+	behind.persistence_set_loc(platform_turf(98, 3))
+	owner.connected = taken
+	last.connected = null
+	platform_check("hitch/rear_leaves_other_trains", !owner.hitch_front(shunter) && !last.hitch_rear(shunter) && !last.connected)
+
 /world/New()
 	OpenPort("none")
 	GLOB.all_observable_events = list()
@@ -639,6 +770,7 @@ var/global/platform_probe_runtime_error = FALSE
 		platform_driving_run()
 		platform_heavy_run()
 		platform_viewers_run()
+		platform_position_run()
 	catch (var/exception/E)
 		platform_probe_runtime_error = TRUE
 		world.log << "Fixture aborted: [E] at [E.file]:[E.line]"

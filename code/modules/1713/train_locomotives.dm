@@ -122,6 +122,9 @@
 			return E
 	return null
 
+/obj/structure/trains/platform/unit_engine()
+	return car_engine()
+
 /obj/structure/trains/platform/attack_hand(mob/user)
 	var/obj/structure/trains/locomotive/E = car_engine()
 	if (E)

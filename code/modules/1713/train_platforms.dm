@@ -467,12 +467,19 @@ var/global/train_step_plain = FALSE
 /obj/structure/trains/platform/hitch()
 	set category = null
 	set name = "Hitch"
-	set desc = "Hitch or unhitch to the wagon ahead."
+	set desc = "Hitch or unhitch to the wagon ahead or behind."
 	set src in view(1)
-	if (seg_index != 1)
-		to_chat(usr, "Cars are coupled at their front end. Use the front of \the [src].")
+	if (!istype(usr, /mob/living/human))
+		return
+	// The front section couples to the car ahead, the rear one to the car behind.
+	var/rear_end = !connected || connected.car_id != car_id
+	if (seg_index != 1 && !rear_end)
+		to_chat(usr, "Cars are coupled at their ends. Use the front or the rear of \the [src].")
 		return FALSE
-	return ..()
+	if ((seg_index == 1 && hitch_front(usr)) || (rear_end && hitch_rear(usr)))
+		return TRUE
+	to_chat(usr, "There is no wagon to hitch \the [src] to.")
+	return FALSE
 
 /obj/structure/trains/platform/examine(mob/user)
 	..()
