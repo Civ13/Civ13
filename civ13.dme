@@ -1656,6 +1656,7 @@
 #include "code\modules\naval\hull_drives.dm"
 #include "code\modules\naval\hull_ledger.dm"
 #include "code\modules\naval\hull_caulking.dm"
+#include "code\modules\naval\hull_pumps.dm"
 #include "code\modules\naval\small_craft_leaks.dm"
 #include "code\modules\naval\hull_push.dm"
 #include "code\modules\naval\land_choices.dm"

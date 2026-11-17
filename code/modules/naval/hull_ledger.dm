@@ -353,6 +353,8 @@ var/global/hull_ledger_timer_off = FALSE
 		add_water(patches * HULL_PATCH_PER_MINUTE * seconds / 60)
 	if (holes > 0)
 		add_water(holes * HULL_HOLE_PER_MINUTE * seconds / 60, capacity())
+	// Her powered pumps answer the water (hull_pumps.dm).
+	pump_bilge(seconds)
 	check_founder()
 
 /datum/hull_ledger/proc/status_text()
@@ -368,6 +370,7 @@ var/global/hull_ledger_timer_off = FALSE
 		. += " <b>[holes] hole\s in her hull let[holes == 1 ? "s" : ""] the sea in:</b> use wood on the open water of a hole, hammer in the other hand, to patch it."
 	if (patches > 0)
 		. += " [patches] patch[patches == 1 ? "" : "es"] weep[patches == 1 ? "s" : ""] a little."
+	. += pumps_text()
 	if (grounded)
 		. += " <b>She sits on the bottom.</b> Patch every hole and bail her below awash to float her."
 	else if (sink_left > 0)

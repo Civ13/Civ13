@@ -498,11 +498,87 @@ var/naval_runtime_error = FALSE
 	naval_check(near(plated.craft.ledger.seams, 1 / 3), "nor seams to wear")
 	qdel(plated)
 
+// Bilge pumps (naval/hull_pumps.dm): cellar pumps on her deck pump her bilge.
+/proc/pump_checks()
+	var/obj/structure/hull_tiller/tiller = bilge_hull(65, 5, 67, 14, "Pink")
+	var/datum/hull_ledger/L = tiller.craft.ledger
+	// Her seams are left out of the sums below.
+	L.seep_tiles = 0
+	naval_check(!length(L.pumps()) && L.pumps_text() == "", "a hull with no pump says nothing of pumps")
+	var/obj/structure/cellar_pump/steam/ashore = new(locate(10, 10, 2))
+	ashore.on = TRUE
+	ashore.fuel = 10
+	naval_check(!hull_ledger_at(get_turf(ashore)) && !length(L.pumps()), "a pump ashore is no bilge pump")
+	// The steam pump.
+	var/obj/structure/cellar_pump/steam/engine = new(locate(66, 7, 2))
+	naval_check(hull_ledger_at(get_turf(engine)) == L && length(L.pumps()) == 1, "a pump on her deck is hers")
+	L.water = 100
+	L.step_ledger(60)
+	naval_check(L.water == 100 && !engine.running, "cold, it lifts nothing")
+	engine.fuel = 10
+	engine.on = TRUE
+	L.step_ledger(60)
+	naval_check(near(L.water, 20) && engine.running && engine.fuel == 9, "fired, a steam pump lifts 80 bucketfuls a minute and burns a minute of fuel ([L.water])")
+	naval_check(ashore.fuel == 10, "the pump ashore burned nothing")
+	naval_check(findtext(L.pumps_text(), "1 pump stands on her deck, 1 of them working"), "the tiller counts her pumps ([L.pumps_text()])")
+	engine.fuel = 0.5
+	L.water = 100
+	L.step_ledger(60)
+	naval_check(!engine.on && !engine.running && engine.fuel == 0 && near(L.water, 20), "its fire burns out at the end of the step")
+	L.step_ledger(60)
+	naval_check(near(L.water, 20), "and then it lifts nothing")
+	// A hole against a pump: 25 in, 80 out.
+	engine.fuel = 60
+	engine.on = TRUE
+	L.holes = 2
+	L.water = 60
+	L.step_ledger(60)
+	naval_check(near(L.water, 60 + 50 - 80), "one steam pump gets ahead of two holes ([L.water])")
+	L.holes = 0
+	engine.on = FALSE
+	qdel(ashore)
+	// The sump pump: a float switch and a battery.
+	var/obj/structure/cellar_pump/sump/sump = new(locate(66, 9, 2))
+	L.water = 0
+	L.step_ledger(60)
+	naval_check(!sump.running && sump.battery == 60, "on a dry bilge the float switch keeps the sump pump idle")
+	L.water = 50
+	L.step_ledger(60)
+	naval_check(sump.running && sump.battery == 59 && near(L.water, 10), "with water in her it lifts 40 bucketfuls a minute on its battery ([L.water])")
+	sump.on = FALSE
+	L.water = 50
+	L.step_ledger(60)
+	naval_check(!sump.running && L.water == 50, "switched off it lifts nothing")
+	sump.on = TRUE
+	sump.battery = 0
+	L.step_ledger(60)
+	naval_check(!sump.running && L.water == 50, "nor with a flat battery and no power")
+	// The lever pump is worked by hand.
+	var/obj/structure/cellar_pump/lever/lever = new(locate(66, 11, 2))
+	var/mob/living/human/naval_probe/H = new(locate(66, 12, 2))
+	naval_check(length(L.pumps()) == 3 && isnull(lever.bilge_refusal(H, L)), "a hand beside the lever pump can pump her out")
+	L.step_ledger(60)
+	naval_check(L.water == 50, "left alone a lever pump lifts nothing")
+	L.water = 0
+	naval_check(findtext(lever.bilge_refusal(H, L), "dry"), "a dry bilge needs no pumping")
+	L.water = 50
+	H.forceMove(locate(66, 14, 2))
+	naval_check(findtext(lever.bilge_refusal(H, L), "too far"), "nor can it be worked from afar")
+	var/obj/structure/cellar_pump/lever/cellar = new(locate(12, 12, 2))
+	naval_check(findtext(cellar.bilge_refusal(H, L), "too far") && !hull_ledger_at(get_turf(cellar)), "a lever pump ashore is a cellar pump still")
+	qdel(cellar)
+	qdel(lever)
+	qdel(sump)
+	qdel(engine)
+	naval_check(!length(L.pumps()), "pumps taken off her are hers no longer")
+	qdel(tiller)
+
 /proc/naval_run()
 	try
 		naval_checks()
 		small_craft_checks()
 		caulking_checks()
+		pump_checks()
 	catch(var/exception/e)
 		naval_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = naval_failures, "runtime_error" = naval_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")
