@@ -245,6 +245,28 @@ class MoonSkinTests(unittest.TestCase):
             text, _ = playable.build(folder, skin="moon")
         self.assertEqual(text, shipped.read_text(encoding="utf-8"))
 
+    def test_shipped_maps_have_an_unformed_compiled_underground(self):
+        # z 1 is the compiled underground (underground_compiled_z): unformed
+        # rock in the cave area, with only the map metadata kept on its cell.
+        cave = playable.UNFORMED + "," + playable.CAVE_AREA
+        for name, metadata in (("barren", playable.BARREN_METADATA), ("moon", playable.MOON_METADATA)):
+            text = (Path(__file__).resolve().parents[2] / "maps" / "space" / (name + ".dmm")).read_text(encoding="utf-8")
+            _, layout, _ = playable.parse_classic(text)
+            underground = [recipe for (x, y, z), recipe in layout.items() if z == 1]
+            kept = [r for r in underground if r != cave]
+            self.assertEqual(1, len(kept), name)
+            self.assertTrue(kept[0].startswith(metadata + "{"), name)
+            self.assertTrue(kept[0].endswith("}," + cave), name)
+
+    def test_shipped_barren_map_is_the_barren_0_world(self):
+        shipped = Path(__file__).resolve().parents[2] / "maps" / "space" / "barren.dmm"
+        with tempfile.TemporaryDirectory() as tmp:
+            folder = Path(tmp) / "barren"
+            folder.mkdir()
+            bundle(barren_surface_preset("barren-0"), folder)
+            text, _ = playable.build(folder, skin="barren")
+        self.assertEqual(text, shipped.read_text(encoding="utf-8"))
+
 
 if __name__ == "__main__":
     unittest.main()
