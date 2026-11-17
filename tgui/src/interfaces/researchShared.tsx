@@ -33,11 +33,21 @@ export function Bar({ value, label }: { value: unknown; label?: string }) {
 export function FieldWork({ rows }: { rows: unknown }) {
   const items = list(rows);
   if (!items.length) return null;
-  return <><h3>Field work</h3><p className="rs-dim">Optional. Someone who has done the work stands at the bench and it is written into the book.</p>
+  return <><h3>Without waiting</h3><p className="rs-dim">Optional. Do the work anywhere, then stand at the bench and it is written into the book at once.</p>
     <ul className="rs-checks">{items.map((row, i) => <li key={i} className={row.done ? 'rs-ok' : 'rs-dim'}>
       <span aria-hidden="true">{row.done ? '✓' : '○'}</span> {str(row.label)}: {row.percent}% of the work
       <span className="rs-dim"> ({row.done ? 'in the book' : `you have ${row.have} of ${row.needed}`})</span>
+      {!row.done && !!list(row.examples).length && <div className="rs-dim">Any of: {list(row.examples).map(name => str(name)).join(', ')}</div>}
     </li>)}</ul></>;
+}
+
+// What sets the bench's pace, one factor per line.
+export function Factors({ rows }: { rows: unknown }) {
+  const items = list(rows);
+  if (!items.length) return null;
+  return <><h3>Speed right now</h3><ul className="rs-checks">{items.map((row, i) => <li key={i} className={row.ok ? 'rs-dim' : 'rs-missing'}>
+    {str(row.label)}: <strong>{str(row.effect)}</strong>
+  </li>)}</ul></>;
 }
 
 export function Checks({ rows }: { rows: unknown }) {

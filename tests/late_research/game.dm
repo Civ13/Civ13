@@ -414,8 +414,18 @@ var/late_wait_result = TRUE
 	bench.tier = 8
 	var/obj/item/weapon/book/notes = new(bench)
 	bench.assigned_node = "workshops"
+	// The fixture has no craft lists, so name ten Bronze Working recipes by hand.
+	var/list/saved_names = recipe_names_by_node
+	recipe_names_by_node = list("bronze_working" = list("r1", "r2", "r3", "r4", "r5", "r6", "r7", "r8", "r9", "r10"))
 	var/list/rows = bench.field_work_rows(smith, "workshops")
+	recipe_names_by_node = saved_names
 	late_check(rows.len == 1 && rows[1]["percent"] == 50 && rows[1]["have"] == E[3], "the bench lists the practice and the smith's own count")
+	var/list/examples = rows[1]["examples"]
+	late_check(islist(examples) && examples.len == 9 && examples[1] == "r1" && examples[9] == "2 more", "the practice row names eight things that count and how many more")
+	var/list/pace = bench.book_pace_factors(IN, smith, 1, 0, 1.2)
+	late_check(pace.len >= 4 && pace[3]["effect"] == "half speed until some are set out" && !pace[3]["ok"] && pace[4]["effect"] == "20% faster", "the bench names what sets its speed: no supplies is half speed, a library is a bonus")
+	pace = bench.book_pace_factors(IN, smith, 1, 5, 1)
+	late_check(pace[3]["effect"] == "full speed" && pace[3]["ok"], "supplies are full speed, never a bonus")
 	var/expected = round(IN.cost_ticks * 0.5)
 	late_check(bench.credit_field_work() && notes.research_ticks("workshops") == expected && !bench.credit_field_work(), "the practice is written into the book once ([expected] of [IN.cost_ticks] points)")
 	qdel(bench)

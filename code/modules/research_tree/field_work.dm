@@ -80,6 +80,10 @@ var/global/list/field_experiments = list(
 #define FIELD_EXP_NEEDED 3
 #define FIELD_EXP_SHARE 4
 #define FIELD_EXP_TEXT 5
+// Subjects named in one "that counts" line.
+#define FIELD_COUNTED_SHOWN 3
+// Recipes named under a "make N things" row.
+#define FIELD_EXAMPLES_SHOWN 8
 
 /mob/living/human
 	var/list/field_work = null // activity id => amount done, capped at the most any experiment needs
@@ -135,16 +139,28 @@ var/global/list/field_activity_caps = null
 	if (!islist(H.field_work))
 		H.field_work = list()
 	H.field_work[activity] = after
+	// Things made by hand say each time that they counted, and towards what.
+	var/list/counted = list()
+	var/told = findtext(activity, "craft:") == 1 || findtext(activity, "deed:") == 1
 	// Tell the character when their experience becomes worth reporting.
 	for (var/id in field_experiments)
 		var/list/E = field_experiments[id]
-		if (E[FIELD_EXP_ACTIVITY] != activity || E[FIELD_EXP_NEEDED] <= before || E[FIELD_EXP_NEEDED] > after)
+		if (E[FIELD_EXP_ACTIVITY] != activity || E[FIELD_EXP_NEEDED] <= before)
+			continue
+		if (E[FIELD_EXP_NEEDED] > after)
+			var/datum/research_node/later = get_research_node(E[FIELD_EXP_NODE])
+			if (told && later && !H.knows_recipe_node(later.id) && H.knows_research_prereqs(later.id))
+				counted += "<b>[later.name]</b> ([after] of [E[FIELD_EXP_NEEDED]])"
 			continue
 		var/datum/research_node/N = get_research_node(E[FIELD_EXP_NODE])
 		// Only nodes this character could research now, so practice does not
 		// announce every node further down the tree.
 		if (N && !H.knows_recipe_node(N.id) && H.knows_research_prereqs(N.id))
 			to_chat(H, SPAN_NOTICE("Your experience would help a scholar researching <b>[N.name]</b>. Stand at their research bench to have it written into the book."))
+	if (counted.len)
+		var/more = counted.len > FIELD_COUNTED_SHOWN ? " and [counted.len - FIELD_COUNTED_SHOWN] more" : ""
+		counted.Cut(min(counted.len, FIELD_COUNTED_SHOWN) + 1)
+		to_chat(H, SPAN_NOTICE("That counts towards researching [english_list(counted)][more]. When you have enough, stand at a research bench working on it."))
 	return TRUE
 
 // A doctor's diagnosis counts once per patient in a row.
@@ -237,8 +253,18 @@ var/global/list/field_activity_caps = null
 	var/obj/item/weapon/book/B = placed_book()
 	for (var/id in node_field_experiments(node_id))
 		var/list/E = field_experiments[id]
+		// "Make N things taught by P" names what P teaches.
+		var/list/examples = list()
+		var/activity = E[FIELD_EXP_ACTIVITY]
+		if (findtext(activity, "craft:") == 1)
+			var/list/names = get_node_recipe_names(copytext(activity, 7))
+			if (islist(names))
+				examples = names.Copy(1, min(names.len, FIELD_EXAMPLES_SHOWN) + 1)
+				if (names.len > FIELD_EXAMPLES_SHOWN)
+					examples += "[names.len - FIELD_EXAMPLES_SHOWN] more"
 		rows += list(list(
 			"label" = E[FIELD_EXP_TEXT],
+			"examples" = examples,
 			"percent" = round(E[FIELD_EXP_SHARE] * 100),
 			"done" = (B && B.has_field_work(id)) ? 1 : 0,
 			"have" = H ? min(E[FIELD_EXP_NEEDED], H.field_work_amount(E[FIELD_EXP_ACTIVITY])) : 0,
@@ -250,5 +276,7 @@ var/global/list/field_activity_caps = null
 #undef FIELD_EXP_NEEDED
 #undef FIELD_EXP_SHARE
 #undef FIELD_EXP_TEXT
+#undef FIELD_COUNTED_SHOWN
+#undef FIELD_EXAMPLES_SHOWN
 #undef FIELD_WORK_MIN_TIER
 #undef LATE_BENCH_RATE
