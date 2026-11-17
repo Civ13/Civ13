@@ -24,9 +24,26 @@ and a refused move tells the player why in chat. Locked containers (through
 `/obj/structure/storage_container/proc/storage_access_allowed`) show no contents
 and no fill.
 
-Fallbacks: agent characters, a browser that can't run the window, and players
-who choose the **Storage Window** verb (OOC tab, saved in preferences) keep the
-old HUD strip.
+Opt-in: bags and containers open the classic HUD strip by default. Players
+switch to the window in Character Setup > Settings ("Bags and containers open
+in"), or with the **Storage Window** verb (OOC tab); the choice is the client
+preference `STORAGE_WINDOW`. Agent characters and browsers that can't run the
+window always use the strip. The first strip a player opens each connection
+tells them where the switch is.
+
+## The classic strip follows the same rules
+
+`code/modules/storage_window/storage_strip.dm` keeps the strip from skipping the
+window's rules:
+
+- Taking a thing out of a bag through the strip (click or drag) waits
+  `storage_window_move_time` to a hand.
+- Things the viewer hasn't seen show as "?" tiles (`icons/mob/screen/storage_unseen.dmi`,
+  states `unseen1`-`unseen5` by size class, drawn by `tests/sprites/create_storage_unseen.py`).
+  Opening the strip searches them top first at `storage_search_time` each while
+  the viewer stays put with it open. Worn gear is always known.
+- Opening a shut crate or closet tips its things out the classic way, so a strip
+  player first waits the total search time of the things they haven't seen.
 
 ## Searching
 
@@ -48,7 +65,7 @@ the search; moves carry on beside it.
   the find box or taken with Take all. Dump out is off until a container has
   been searched.
 
-The old HUD strip does not search.
+The classic strip searches the same way (see above).
 
 Design by Fable (mock-ups in the project files, `storage-window/`).
 

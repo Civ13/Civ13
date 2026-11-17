@@ -49,6 +49,7 @@ var/storwin_runtime_error = FALSE
 		storwin_fire_checks()
 		storwin_admin_checks()
 		storwin_rack_checks()
+		storwin_strip_checks()
 	catch(var/exception/e)
 		storwin_check(FALSE, "exception [e] [e.file]:[e.line] [e.desc]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = storwin_failures, "runtime_error" = storwin_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")
@@ -302,3 +303,44 @@ var/storwin_runtime_error = FALSE
 	storwin_check(!C.storage.can_be_inserted(axe, TRUE), "a clothes rail refuses a hatchet")
 	P.empty_out(locate(10, 12, 1))
 	storwin_check(hat.loc == locate(10, 12, 1) && !P.overlays.len, "emptied, the peg post is bare again")
+
+// The classic strip (the default) keeps the window's timing and searching.
+/proc/storwin_strip_checks()
+	var/datum/client_preference/storage_window/pref = new
+	storwin_check(pref.key == "STORAGE_WINDOW" && !pref.enabled_by_default, "the storage window is opt-in; the strip is the default")
+	var/turf/here = locate(2, 2, 1)
+	var/mob/living/human/storwin_probe/H = new(here)
+	var/mob/living/human/storwin_probe/other = new(locate(2, 3, 1))
+	storwin_check(!H.storage_window_wanted(), "with no choice made, bags open in the strip")
+	var/obj/structure/storage_container/basket/B = new(locate(3, 2, 1))
+	var/obj/item/weapon/storage/internal/IS = storage_window_structure_holder(B)
+	var/obj/item/knife = storwin_item(null, ITEM_SIZE_SMALL, "knife")
+	var/obj/item/axe = storwin_item(null, ITEM_SIZE_NORMAL, "axe")
+	usr = other
+	IS.handle_item_insertion(knife, TRUE)
+	IS.handle_item_insertion(axe, TRUE)
+	usr = null
+	var/list/unseen = storage_strip_unseen(H, IS)
+	storwin_check(unseen.len == 2, "someone else's basket shows the strip two unseen things")
+	storwin_check(!length(storage_strip_unseen(other, IS)), "the one who filled it sees everything")
+	storwin_check(storage_strip_take_time(H, knife) == storage_window_move_time(knife, FALSE, TRUE, FALSE), "taking out through the strip costs the window's move time to a hand")
+	var/datum/strip_search/SS = new(H)
+	H.strip_search = SS
+	H.s_active = IS
+	SS.begin(IS)
+	storwin_check(SS.looking == knife && SS.timer, "the strip searches top first")
+	SS.finish_look()
+	storwin_check(storage_item_seen(knife, H), "a finished look reveals the thing")
+	storwin_check(storage_strip_unseen(H, IS).len == 1, "and only the axe stays hidden")
+	SS.begin(IS)
+	SS.start_turf = locate(5, 2, 1) // as if the character had stepped off
+	SS.finish_look()
+	storwin_check(!storage_item_seen(axe, H) && !SS.holder, "walking away stops the strip's search")
+	H.s_active = null
+	qdel(SS)
+
+	var/obj/structure/closet/crate/C = new(locate(6, 2, 1))
+	var/obj/item/cloth = storwin_item(C, ITEM_SIZE_SMALL, "cloth")
+	storwin_check(storage_strip_closet_search_time(C, H) == storage_search_time(cloth), "a shut crate's unseen things cost their search time to open")
+	storage_mark_seen(cloth, H)
+	storwin_check(storage_strip_closet_search_time(C, H) == 0, "a searched crate opens at once")

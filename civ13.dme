@@ -1808,6 +1808,7 @@
 #include "code\modules\storage_window\storage_racks.dm"
 #include "code\modules\storage_window\storage_window.dm"
 #include "code\modules\storage_window\storage_search.dm"
+#include "code\modules\storage_window\storage_strip.dm"
 #include "code\modules\statpanel\statpanel.dm"
 #include "code\modules\submarine\damage_control.dm"
 #include "code\modules\submarine\enemy_types.dm"
