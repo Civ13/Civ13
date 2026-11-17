@@ -7,7 +7,7 @@
 /obj/structure/component_workbench/weapon
 	name = "weapon assembly workbench"
 	desc = "Select a weapon, insert its head and a handle, then assemble it. Inputs and finished weapons can be retrieved."
-	color = "#c8a27a"
+	icon_state = "weapon_bench"
 	selected_tool = "Spear"
 
 /obj/structure/component_workbench/weapon/tool_recipes()
@@ -32,7 +32,7 @@
 /obj/structure/component_workbench/fletching
 	name = "fletcher's bench"
 	desc = "Select arrows or crossbow bolts, load shafts and arrowheads or sharpened flint, then fletch them all at once. Finished ammunition is left beside the bench."
-	color = "#a7b88a"
+	icon_state = "fletcher_bench"
 	selected_tool = "Arrows"
 	assembly_time = FLETCHING_TICKS_PER_SHAFT
 
@@ -215,7 +215,7 @@
 /obj/structure/component_workbench/toolsmith
 	name = "toolsmith's bench"
 	desc = "Select a tool, load smelted metal and soft wood, and work beside an anvil to make finished tools in one step. Slower than smithing a head and fitting a handle; finished tools are left beside the bench."
-	color = "#9aa3ad"
+	icon_state = "toolsmith_bench"
 	selected_tool = "Hatchet"
 	assembly_time = 100 // per tool, plus 15 per metal sheet
 

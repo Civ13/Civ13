@@ -2,8 +2,8 @@
 /obj/structure/component_workbench
 	name = "tool assembly workbench"
 	desc = "Select a tool, insert its head and a handle, then assemble it. Inputs and finished tools can be retrieved."
-	icon = 'icons/obj/structures.dmi'
-	icon_state = "workbench"
+	icon = 'icons/obj/assembly_benches.dmi'
+	icon_state = "tool_bench"
 	density = TRUE
 	anchored = TRUE
 	not_disassemblable = TRUE
