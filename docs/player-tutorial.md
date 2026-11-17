@@ -17,6 +17,11 @@ seconds. A step that is not done is shown again after 3 and 6 minutes.
 | intent | the intent changed |
 | atlas | the Crafting Atlas verb was used |
 | eat | food or water rose between two 2-second checks |
+| branch | a branch was broken off a tree; survival steps only on maps where people settle (`civilizations` or `nomads`) |
+| twine | the character carries crude twine or sinew |
+| whittle | a stick was sharpened |
+| fire | the character stands within one tile of a lit open fire |
+| water | water rose between two 2-second checks |
 | chat | read |
 | research | a book was placed on a research bench or a chapter was studied; only on maps with `book_research_enabled()` |
 | help | read, or Ask for help was used |

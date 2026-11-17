@@ -167,6 +167,7 @@
 		if (do_after(user, 80, src))
 			if (src && !sharpened)
 				to_chat(user, "You finish sharpening the stick.")
+				tutorial_event_for(user, "whittle")
 				name = "sharpened stick"
 				desc = "A sharpened stick, to be used against bad apes."
 				icon_state = "sharpened_stick"

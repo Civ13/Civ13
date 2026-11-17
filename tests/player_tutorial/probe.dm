@@ -30,12 +30,23 @@ var/global/tutorial_probe_runtime_error = FALSE
 	if (!passed)
 		tutorial_probe_failed += label
 
+/obj/map_metadata/tutorial_probe_land
+	civilizations = TRUE
+/obj/map_metadata/tutorial_probe_land/New()
+	map = src
+
 /proc/tutorial_probe_run()
 	makeDatumRefLists()
 	if (!movementMachine)
 		movementMachine = new
 	var/list/steps = tutorial_active_steps()
-	tutorial_probe_check("steps/research_only_with_books", !("research" in steps) && steps.len == tutorial_step_ids().len - 1)
+	// No map here: the book step and the five survival steps are left out.
+	tutorial_probe_check("steps/research_only_with_books", !("research" in steps) && !("fire" in steps) && steps.len == tutorial_step_ids().len - 6)
+	var/obj/map_metadata/tutorial_probe_land/land = new
+	steps = tutorial_active_steps()
+	tutorial_probe_check("steps/survival_where_people_settle", steps.len == tutorial_step_ids().len - 1 && steps.Find("branch") == steps.Find("eat") + 1 && steps.Find("water") == steps.Find("chat") - 1)
+	map = null
+	qdel(land)
 	var/all_text = TRUE
 	for (var/id in tutorial_step_ids())
 		if (!length(tutorial_step_short(id)) || !length(tutorial_step_text(id, null)))
@@ -89,6 +100,35 @@ var/global/tutorial_probe_runtime_error = FALSE
 	tutorial_probe_check("eat/hunger_falling_pending", !T.step_done("eat"))
 	H.nutrition = 120
 	tutorial_probe_check("eat/done", T.step_done("eat"))
+
+	T.begin_step("branch")
+	tutorial_probe_check("branch/pending", !T.step_done("branch"))
+	T.note_event("branch")
+	tutorial_probe_check("branch/done", T.step_done("branch"))
+
+	T.begin_step("twine")
+	tutorial_probe_check("twine/pending", !T.step_done("twine"))
+	var/obj/item/stack/crude_twine/cord = new(H.loc, 1, FALSE)
+	H.put_in_active_hand(cord)
+	tutorial_probe_check("twine/done_when_carried", cord.loc == H && T.step_done("twine"))
+
+	var/obj/structure/oven/fireplace/fire = new(locate(H.x + 3, H.y, 1))
+	T.begin_step("fire")
+	tutorial_probe_check("fire/unlit_and_far_pending", !T.step_done("fire"))
+	fire.on = TRUE
+	tutorial_probe_check("fire/lit_but_far_pending", !T.step_done("fire"))
+	fire.forceMove(locate(H.x + 1, H.y, 1))
+	tutorial_probe_check("fire/done_beside_a_lit_fire", T.step_done("fire"))
+	fire.on = FALSE
+	tutorial_probe_check("fire/unlit_beside_pending", !T.step_done("fire"))
+
+	H.water = 100
+	H.nutrition = 100
+	T.begin_step("water")
+	H.nutrition = 200
+	tutorial_probe_check("water/food_alone_pending", !T.step_done("water"))
+	H.water = 130
+	tutorial_probe_check("water/done", T.step_done("water"))
 
 	T.begin_step("chat")
 	tutorial_probe_check("chat/reading_pending", !T.step_done("chat"))

@@ -1397,6 +1397,7 @@ var/list/seed_list_jungle
 		if (do_after(user, 80, src))
 			if (src && branches >= 1)
 				to_chat(user, SPAN_NOTICE("You break off a branch from \the [src]."))
+				tutorial_event_for(user, "branch")
 				if (icon == 'icons/obj/flora/deadtrees.dmi' || icon == 'icons/obj/flora/deadtrees_winter.dmi' || findtext(icon_state, "dead"))
 					new /obj/structure/branch/cleared(get_turf(src))
 				else
