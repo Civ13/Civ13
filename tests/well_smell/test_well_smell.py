@@ -93,13 +93,15 @@ class PlumbedToiletContract(unittest.TestCase):
         self.assertIn("if (T.is_plumbed())", scan)
         self.assertIn("if (!plumbed)\n\t\t\treturn TRUE", scan)
         # Where sewers apply (sewers.dm), sewage close by also counts.
-        self.assertTrue(scan.rstrip().endswith("return (sewers && sewer_fouls_near(src)) || well_river_seepage()"))
+        # A pit latrine or outhouse holding waste (latrine_waste.dm) counts too.
+        self.assertTrue(scan.rstrip().endswith("return (sewers && sewer_fouls_near(src)) || well_river_seepage() || latrine_fouls_near(src)"))
 
     def test_plumbed_toilet_flushes_waste(self):
         loo = WASTE.split("//Poo in the loo.", 1)[1].split("else if(w_uniform)", 1)[0]
         # flush_waste (sewers.dm) deletes it, or backs it up onto the floor.
         self.assertIn("if (!in_outhouse && T.is_plumbed())\n\t\t\tT.flush_waste(V)", loo)
-        self.assertIn("else if (!in_outhouse)\n\t\t\tV.forceMove(T)", loo)
+        # Pits and outhouses keep it until it is dug out (latrine_waste.dm).
+        self.assertIn("pit.take_night_soil(V)", loo)
 
     def test_outhouse_is_detected_by_location(self):
         # crap_inside is set only for mobs with a client and can go stale, and
