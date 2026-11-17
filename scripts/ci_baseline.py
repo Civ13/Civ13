@@ -1087,6 +1087,8 @@ SUITES = {
         'shared_paths': ('code/game/objects/items/stacks/recipe_skill_needs.dm',)},
     'skill_guide': {'files': ('tests/skill_guide/test_skill_guide.py',),
         'paths': ('tests/skill_guide/', 'code/modules/research_tree/skill_guide.dm'), 'shared_paths': ()},
+    'survival_hints': {'files': ('tests/survival_hints/test_survival_hints.py',),
+        'paths': ('tests/survival_hints/', 'code/modules/client/survival_hints.dm'), 'shared_paths': ()},
     'craft_products': {'files': ('tests/craft_products/test_craft_products.py',),
         'paths': ('tests/craft_products/', 'code/game/objects/items/stacks/craft_products.dm'), 'shared_paths': ()},
     # Tool quality declarations match the base paths is_tool() replaced, and
