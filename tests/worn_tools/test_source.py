@@ -49,6 +49,14 @@ class WornToolsSource(unittest.TestCase):
         suit = body(read('code/modules/1713/rain_gear.dm'), '/obj/item/clothing/suit\n')
         self.assertIn('"fitting"', suit)
 
+    def test_old_shoe_saves_still_load(self):
+        # The strict loader throws on a saved field the type no longer has
+        # (Gaia's save on 2026-11-16), so the retired knife fields are skipped.
+        skip = body(self.worn, '/obj/item/clothing/shoes/persistence_runtime_var(key)')
+        self.assertIn('"holding"', skip)
+        self.assertIn('"can_hold_knife"', skip)
+        self.assertIn('..()', skip)
+
     def test_attach_redraws_the_worn_slot(self):
         attach = body(read('code/game/objects/items/clothing/clothing_accessories.dm'), '/obj/item/clothing/attackby(')
         self.assertIn('update_clothing_icon()', attach)
