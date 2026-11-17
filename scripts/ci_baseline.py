@@ -1077,6 +1077,8 @@ SUITES = {
     'recipe_skill_needs': {'files': ('tests/recipe_skill_needs/test_recipe_skill_needs.py',),
         'paths': ('tests/recipe_skill_needs/', 'code/game/objects/items/stacks/stack_makeable.dm'),
         'shared_paths': ('code/game/objects/items/stacks/recipe_skill_needs.dm',)},
+    'skill_guide': {'files': ('tests/skill_guide/test_skill_guide.py',),
+        'paths': ('tests/skill_guide/', 'code/modules/research_tree/skill_guide.dm'), 'shared_paths': ()},
     'craft_products': {'files': ('tests/craft_products/test_craft_products.py',),
         'paths': ('tests/craft_products/', 'code/game/objects/items/stacks/craft_products.dm'), 'shared_paths': ()},
     # Tool quality declarations match the base paths is_tool() replaced, and

@@ -517,7 +517,7 @@ var/knowledge_failures = 0
 	var/text = ""
 	for (var/list/row in rows)
 		text += "[row[1]] [row[2]]|"
-	knowledge_check(rows.len == scholar_disciplines.len + 3 && findtext(text, "Medicine:</b> 100 / 100, research up to the Digital Age") && findtext(text, "Master of Medicine") && findtext(text, "Master:</b> Ada Lovelace"), "the Scholarship tab lists levels, reach, title and master")
+	knowledge_check(rows.len == scholar_disciplines.len + 5 && findtext(text, "Skills Guide") && findtext(text, "Medicine:</b> 100 / 100, research up to the Digital Age") && findtext(text, "Master of Medicine") && findtext(text, "Master:</b> Ada Lovelace"), "the Scholarship tab lists levels, reach, title and master")
 	qdel(H)
 
 // Printing (Val, 2026-11-10): a press prints a whole book, pages and
