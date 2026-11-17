@@ -16,7 +16,7 @@ const rows = () => [
   row('2:1:bbbbbbbb', '3x arrow shaft', 'ready', { category: 'weapons', purpose: 'Weapons', cost: '1 log', makes: 3, batches: 6, time: 40 }),
   row('0:2:cccccccc', 'travois', 'missing', { cost: '8 logs', why: 'Needs 8 logs, you have 6' }),
   row('3:1:dddddddd', 'hewn table (wooden pegs)', 'missing', { category: 'joinery', purpose: 'Furniture', batches: 1, why: 'Missing a tool, skill or second material', tools: 'Chisel and hammer/mallet equipped or at your feet.' }),
-  row('2:2:eeeeeeee', 'shortbow', 'locked', { category: 'weapons', purpose: 'Weapons', cost: '8 logs', why: 'Needs the Archery manual' }),
+  row('2:2:eeeeeeee', 'shortbow', 'locked', { category: 'weapons', purpose: 'Weapons', cost: '8 logs', why: 'Needs the Archery manual', tech_tree: 1 }),
 ];
 const ui = (data: Data = {}, interactive = true): ScreenProps => ({
   template: 'crafting_window.tmpl', interactive, act: vi.fn(),
@@ -69,6 +69,15 @@ describe('Crafting window', () => {
     fireEvent.change(screen.getByLabelText('Search recipes'), { target: { value: 'short' } });
     expect(screen.getByText('shortbow')).toBeTruthy();
     expect(screen.queryByText('campfire')).toBeNull();
+  });
+  it('opens the tech tree on the node an unlearned recipe needs', () => {
+    const props = ui(); render(<CraftingWindow {...props} />);
+    fireEvent.click(rowButton('campfire'));
+    expect(within(screen.getByLabelText('Selected recipe')).queryByText('View in tech tree')).toBeNull();
+    fireEvent.click(screen.getByText('Show'));
+    fireEvent.click(rowButton('shortbow'));
+    fireEvent.click(within(screen.getByLabelText('Selected recipe')).getByText('View in tech tree'));
+    expect(props.act).toHaveBeenLastCalledWith('tech_tree', { value: '2:2:eeeeeeee' });
   });
   it('offers a tab for each purpose this material has, with counts', () => {
     render(<CraftingWindow {...ui()} />);

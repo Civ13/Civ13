@@ -125,3 +125,38 @@ describe('research bench in book mode', () => {
     expect(ui.act).not.toHaveBeenCalled();
   });
 });
+describe('tech tree opened from a recipe', () => {
+  const tech = (extra: Record<string, unknown> = {}): ScreenProps => ({ template: 'tech_tree.tmpl', interactive: true, act: vi.fn(), data: { tech_tree: 1, book_research: 1,
+    trees: [
+      { idx: 0, tree_name: 'Main', layers: [{ layer_name: 'Industrial', nodes: [
+        node('tools', 'Basic Toolmaking', 'ready', { status_text: 'Available', state_label: 'Ready to learn' }),
+        node('masonry', 'Stone Masonry', 'locked', { status_text: 'Locked', state_label: 'Needs groundwork', prereq_ids: 'tools', groundwork: [{ id: 'tools', name: 'Basic Toolmaking', known: 0 }], recipe_names: ['stone pillar'] }),
+      ] }] },
+      { idx: 1, tree_name: 'Agriculture', layers: [{ layer_name: 'Agriculture', nodes: [node('farming', 'Basic Agriculture', 'known', { status_text: 'Done', state_label: 'You know this' })] }] },
+    ], ...extra } });
+  it('jumps to the asked-for node on its tree and outlines the groundwork', () => {
+    const ui = tech(); const view = render(<Research {...ui} />);
+    fireEvent.click(screen.getByText('Agriculture'));
+    fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'plough' } });
+    view.rerender(<Research {...tech({ focus: 'masonry', focus_seq: 1 })} />);
+    expect((screen.getByRole('searchbox') as HTMLInputElement).value).toBe('');
+    const focused = document.querySelector('.research-node.focused');
+    expect(focused?.textContent).toContain('Stone Masonry');
+    expect(document.querySelector('.research-node.ancestor')?.textContent).toContain('Basic Toolmaking');
+    expect(screen.getByText(/Outlined in orange: the technology you need first/)).toBeTruthy();
+    expect(screen.queryByRole('dialog')).toBeNull();
+    fireEvent.click(screen.getByText('Details'));
+    const dialog = within(screen.getByRole('dialog'));
+    expect(dialog.getByText('Basic Toolmaking')).toBeTruthy();
+    expect(dialog.getByText('stone pillar')).toBeTruthy();
+  });
+  it('shows no bench controls and sends nothing', () => {
+    const ui = tech({ focus: 'masonry', focus_seq: 1 }); render(<Research {...ui} />);
+    expect(screen.queryByText(/Research bench|Books on the bench|Assign/)).toBeNull();
+    const chips = screen.getByRole('group', { name: 'Show' });
+    expect(within(chips).getByText('Can learn now').textContent).toBe('Can learn now 1');
+    fireEvent.click(screen.getByText('List'));
+    fireEvent.click(document.querySelector('.rs-row-main') as HTMLElement);
+    expect(ui.act).not.toHaveBeenCalled();
+  });
+});
