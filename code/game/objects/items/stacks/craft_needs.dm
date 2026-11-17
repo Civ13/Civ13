@@ -36,10 +36,12 @@ var/global/list/craft_tool_qualities = list(
 var/global/list/craft_need_alternates = list(
 	/obj/item/stack/material/wood = list(/obj/item/stack/material/woodplank),
 	/obj/item/stack/hay = list(/obj/item/stack/material/straw),
+	/obj/item/stack/material/cloth = list(/obj/item/stack/material/woolcloth, /obj/item/stack/material/leather),
 )
 var/global/list/craft_need_input_names = list(
 	/obj/item/stack/material/wood = "wood (a log or a plank)",
 	/obj/item/stack/hay = "hay or straw",
+	/obj/item/stack/material/cloth = "cloth, wool cloth or leather",
 )
 
 /proc/craft_needs_for(result_type)

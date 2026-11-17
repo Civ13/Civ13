@@ -123,9 +123,10 @@ def needs_handle(title):
 records=[]; issues=[]; occurrence=[]
 def add(name,kind,inputs,outputs,path,line,conditions='',raw=''):
     for typepath,_ in outputs:
-        if typepath.startswith('/obj/structure/exercise'):
-            modern=typepath.startswith('/obj/structure/exercise/modern')
-            conditions+=f' Native crafting skill {105 if modern else 30}; completed research or existing faction baseline required at construction.'
+        if typepath.startswith(('/obj/item/weapon/lifting_weight', '/obj/structure/training_course')):
+            modern=typepath in ('/obj/item/weapon/lifting_weight/barbell', '/obj/structure/training_course/hurdle/steel')
+            skill=105 if modern else 0 if typepath == '/obj/item/weapon/lifting_weight' else 30
+            if skill:conditions+=f' Crafting skill {skill}.'
             if modern:conditions+=' Minimum era Modern (ordinal 8).'
         if typepath.startswith(('/obj/structure/telecom', '/obj/item/tv_camera')) or typepath == '/obj/item/weapon/telephone/landline':
             skill=100 if typepath.endswith('/landline') else 160 if typepath.startswith('/obj/item/tv_camera') or typepath in ('/obj/structure/telecom/tv','/obj/structure/telecom/station/tv','/obj/structure/telecom/terminal') else 105

@@ -98,7 +98,7 @@ var/recipe_ci_files = 0
 			var/material_path = text2path(copytext(row[1], 1, length(row[1])))
 			var/material/M = new material_path
 			map.ordinal_age = ispath(text2path(row[3]), /obj/item/weapon/gun_mount) ? 6 : (ispath(text2path(row[3]), /obj/item/blackpowder_part/stock) ? 3 : 0)
-			if (ispath(text2path(row[3]), /obj/structure/exercise/modern) || ispath(text2path(row[3]), /obj/structure/civ_generator) || ispath(text2path(row[3]), /obj/structure/reactor_fuel_processor) || civ_telecom_crafting_skill(text2path(row[3])))
+			if (exercise_modern_gear(text2path(row[3])) || ispath(text2path(row[3]), /obj/structure/civ_generator) || ispath(text2path(row[3]), /obj/structure/reactor_fuel_processor) || civ_telecom_crafting_skill(text2path(row[3])))
 				map.ordinal_age = 8
 			// The tablet press has a calendar-year gate in addition to its era.
 			var/original_year = map.age

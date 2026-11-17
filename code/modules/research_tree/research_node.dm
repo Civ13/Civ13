@@ -844,10 +844,16 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/props/piping/small/plastic/junction" = "utilities",
 		// weaving
 		"/obj/item/armor_component/carrier" = "weaving",
-		"/obj/structure/exercise" = "basic_tools",
-		"/obj/structure/exercise/course" = "primitive_construction",
-		"/obj/structure/exercise/modern" = "factories",
-		"/obj/structure/exercise/modern/course" = "factories",
+		"/obj/item/weapon/lifting_weight" = "basic_tools",
+		"/obj/item/weapon/lifting_weight/heavy" = "basic_tools",
+		"/obj/item/weapon/lifting_weight/great" = "basic_tools",
+		"/obj/item/weapon/lifting_weight/hand_weights" = "bronze_working",
+		"/obj/item/weapon/lifting_weight/barbell" = "factories",
+		"/obj/structure/training_course/post" = "primitive_construction",
+		"/obj/structure/training_course/post/finish" = "primitive_construction",
+		"/obj/structure/training_course/hurdle" = "primitive_construction",
+		"/obj/structure/training_course/balance_log" = "primitive_construction",
+		"/obj/structure/training_course/hurdle/steel" = "factories",
 		// --- alloys (1) ---
 		"/obj/item/clothing/shoes/weather/climbing_boots" = "alloys",
 		// --- anesthetic_surgery (2) ---

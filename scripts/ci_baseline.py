@@ -515,6 +515,12 @@ SUITES = {
             'code/game/objects/structures/tree_climbing.dm',
             'code/modules/projectiles/projectile.dm',
             'code/game/mob/living/carbon/human/human.dm')},
+    # Training gear and the obstacle course: recipes, gates, hooks, saved fields and art.
+    'active_training': {'files': ('tests/active_training/test_sources.py',),
+        'paths': ('tests/active_training/', 'code/modules/1713/active_training.dm',
+                  'code/modules/1713/training_gear.dm', 'code/modules/1713/training_course.dm',
+                  'tests/sprites/create_training_gear.py', 'icons/obj/training.dmi',
+                  'icons/mob/items/lefthand_training.dmi', 'icons/mob/items/righthand_training.dmi')},
     'tree_climbing': {'files': ('tests/tree_climbing/test_sources.py',),
         'paths': ('tests/tree_climbing/', 'code/game/objects/structures/tree_climbing.dm'), 'shared_paths': (
             'code/modules/visibility/los_terrain.dm',
