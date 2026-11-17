@@ -2304,7 +2304,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/paper_bin/empty" = "public_health",
 		"/obj/item/weapon/storage/bag/trash" = "public_health",
 		"/obj/structure/closet/crate/dumpster" = "public_health",
-		// --- rail_steam (21) ---
+		// --- rail_steam (23) ---
 		"/obj/structure/workshop_machine/rolling_mill" = "rail_steam",
 		"/obj/structure/workshop_machine/steam_site/road_roller" = "rail_steam",
 		"/obj/structure/rail_warehouse" = "rail_steam",
@@ -2318,6 +2318,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/train_car_kit/long_flatbed" = "rail_steam",
 		"/obj/structure/train_car_kit/open_wagon" = "rail_steam",
 		"/obj/structure/train_car_kit/boxcar" = "rail_steam",
+		"/obj/structure/train_car_kit/brake_van" = "rail_steam",
+		"/obj/structure/train_brake_wheel" = "rail_steam",
 		"/obj/structure/train_car_kit/loco_steam" = "rail_steam",
 		"/obj/structure/train_car_kit/loco_mainline" = "rail_steam",
 		"/obj/item/stack/rail_lengths" = "rail_steam",
@@ -2782,7 +2784,9 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/berth/quay/depot" = "wagons_ships",
 		"/obj/structure/berth/deck" = "wagons_ships",
 		"/obj/structure/hull_tiller" = "wagons_ships",
+		"/obj/structure/hull_anchor" = "wagons_ships",
 		"/obj/structure/hull_tiller/steering_oar" = "oared_ships",
+		"/obj/structure/hull_anchor/stone" = "oared_ships",
 		"/obj/structure/bed/chair/wood/rowing_bench" = "oared_ships",
 		"/obj/item/sail" = "wagons_ships",
 		"/obj/item/sail/wool" = "wagons_ships",

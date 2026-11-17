@@ -48,5 +48,13 @@ class FactionOfficesSource(unittest.TestCase):
         self.assertGreaterEqual(after.count('map.is_faction_leader(src, faction)'), 8)
 
 
+    def test_absent_leader_opens_the_leadership(self):
+        open_body = self.text.split('/obj/map_metadata/proc/office_leader_open(faction)', 1)[1].split('\n/', 1)[0]
+        self.assertIn('if (office_leader_away(faction))\n\t\treturn TRUE', open_body)
+        away = self.text.split('/obj/map_metadata/proc/office_leader_away(faction)', 1)[1].split('\n/', 1)[0]
+        self.assertIn('if (!L || L.client)\n\t\treturn FALSE', away)
+        self.assertIn('OFFICE_LEADER_AWAY_DAYS * OFFICE_DAY', away)
+        self.assertIn('#define OFFICE_LEADER_AWAY_DAYS 3', self.text)
+
 if __name__ == '__main__':
     unittest.main()

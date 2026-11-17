@@ -4,7 +4,7 @@
 /world
 	hub = ""
 	hub_password = ""
-	maxx = 176
+	maxx = 184
 	maxy = 26
 	maxz = 1
 	turf = /turf/floor/dirt
@@ -1409,6 +1409,86 @@ var/global/platform_probe_runtime_error = FALSE
 	var/obj/structure/trains/platform/C4 = C[4]
 	platform_check("crash/backing_rear_car_leads", C4.train_crash(stop, 1.5, SOUTH) && C4.wrecked && C3.wrecked && !C1.wrecked && P.rail_speed == 0 && !C4.train_crash(C1, 3, SOUTH))
 
+// Brakes (train_brakes.dm): the driver's brake holds the engine, every car
+// has a handbrake, and a guard at a brake van's wheel helps stop the train.
+/proc/platform_brake_run()
+	for (var/y in 2 to 25)
+		platform_track(180, y, NORTH)
+	var/obj/structure/trains/locomotive/coal/E = new(platform_turf(180, 10))
+	E.dir = NORTH
+	E.fuel = 100
+	E.on = TRUE
+	var/list/A = platform_segments(platform_car("flatbed", 180, 9, NORTH))
+	var/obj/structure/train_car_kit/brake_van/K = new(platform_turf(180, 5))
+	var/kit_named = K.name == "brake van kit" && K.car_kind == "brake_van" && K.car_length() == 4
+	var/list/van = platform_segments(K.assemble(NORTH))
+	var/obj/structure/trains/platform/A1 = A[1]
+	var/obj/structure/trains/platform/A4 = A[4]
+	var/obj/structure/trains/platform/V1 = van[1]
+	var/obj/structure/trains/platform/V3 = van[3]
+	var/obj/structure/trains/platform/V4 = van[4]
+	E.connected = A1
+	A4.connected = V1
+	var/obj/structure/train_brake_wheel/wheel = locate() in platform_turf(179, 3)
+	var/van_weight = 0
+	for (var/obj/structure/trains/platform/P in van)
+		van_weight += P.car_load_weight()
+	platform_check("brake_van/built_with_a_wheel", kit_named && van.len == 4 && V1.name == "brake van" && wheel && wheel.brake_car() == V3 && (locate(/obj/structure/bed/chair) in platform_turf(181, 3)) && abs(van_weight - 4.4) < 0.01 && V3.roofed() && platform_parts_placed(van))
+	platform_check("brakes/cars_have_handbrakes", !E.has_handbrake() && A1.has_handbrake() && V4.has_handbrake() && !E.set_handbrake(TRUE) && !E.handbrake)
+
+	var/wound = wheel.wind(null)
+	var/all_on = V1.handbrake && V3.handbrake && V4.handbrake && !A1.handbrake && wheel.icon_state == "brake_wheel_on" && E.train_handbrakes() == 1
+	var/too_soon = !wheel.wind(null) && V1.handbrake
+	wheel.next_use = 0
+	platform_check("brakes/wheel_winds_the_whole_car", wound && all_on && too_soon && wheel.wind(null) && !V1.handbrake && !V4.handbrake && wheel.icon_state == "brake_wheel" && E.train_handbrakes() == 0)
+
+	// By hand from beside a standing car only.
+	var/mob/living/human/platform_rider/guard = new(platform_turf(179, 8))
+	E.rail_speed = 1
+	var/refused = !A1.work_handbrake(guard) && !A1.handbrake && !E.work_handbrake(guard)
+	E.rail_speed = 0
+	platform_check("brakes/pinned_down_by_hand", refused && A4.set_handbrake(TRUE) && A1.handbrake && A4.handbrake && !V1.handbrake && E.train_handbrakes() == 1)
+
+	// The brakes slow the train by the share of its weight they hold.
+	E.refresh_consist()
+	var/total = E.consist_weight
+	var/hand_only = E.brake_decel()
+	E.braking = TRUE
+	var/with_engine = E.brake_decel()
+	wheel.next_use = 0
+	wheel.wind(null)
+	E.refresh_consist()
+	var/whole = E.brake_decel()
+	platform_check("brakes/share_of_the_weight", abs(total - 9.5) < 0.01 && E.consist_own == 3 && abs(hand_only - 1.2 * 2.1 / 9.5) < 0.01 && abs(with_engine - 1.2 * 5.1 / 9.5) < 0.01 && abs(whole - 1.2) < 0.01)
+	// Handbrakes left on drag while the engine pulls.
+	var/dragging = E.pull_ratio()
+	A1.set_handbrake(FALSE)
+	wheel.next_use = 0
+	wheel.wind(null)
+	E.braking = FALSE
+	E.refresh_consist()
+	platform_check("brakes/left_on_they_drag", E.brake_decel() == 0 && E.pull_ratio() >= 1 && dragging < 0.6 && abs(E.drag_weight() - 9.5) < 0.01)
+
+	// The guard shortens the stop: the same train from the same speed, first
+	// with the engine's brake alone, then with the van's wound on as it runs.
+	E.throttle = 0
+	E.braking = TRUE
+	E.rail_speed = 3
+	var/from = E.y
+	E.drive()
+	drive_wait(E)
+	var/alone = E.y - from
+	E.braking = TRUE
+	E.rail_speed = 3
+	from = E.y
+	E.drive()
+	sleep(1)
+	wheel.next_use = 0
+	var/on_the_move = E.driving && wheel.wind(null) && E.consist_braked > 4 && V1.handbrake
+	drive_wait(E)
+	var/helped = E.y - from
+	platform_check("brakes/guard_shortens_the_stop", on_the_move && alone >= 4 && helped >= 1 && helped < alone && V4.loc == platform_turf(180, 2 + alone + helped) && wheel.loc == platform_turf(179, 3 + alone + helped))
+
 /world/New()
 	OpenPort("none")
 	GLOB.all_observable_events = list()
@@ -1432,6 +1512,7 @@ var/global/platform_probe_runtime_error = FALSE
 		platform_tender_run()
 		platform_cab_run()
 		platform_crash_run()
+		platform_brake_run()
 	catch (var/exception/E)
 		platform_probe_runtime_error = TRUE
 		world.log << "Fixture aborted: [E] at [E.file]:[E.line]"

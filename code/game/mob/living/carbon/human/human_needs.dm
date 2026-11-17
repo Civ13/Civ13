@@ -17,7 +17,7 @@
 			if(MOOD_TIER_EXCELLENT)
 				msg = "Your mood is excellent!"
 		msg_hygiene = H.hygiene_feeling()
-		if (H.hygiene < HYGIENE_LEVEL_NORMAL)
+		if (H.next_dirty_zone())
 			msg_hygiene += " Examine yourself to see which parts need washing."
 		to_chat(H, "<span class='info'>*---------*</span>")
 		to_chat(H, "<span class='info'>[msg]</span>")
@@ -28,15 +28,28 @@
 		to_chat(H, "<span class='info'>*---------*</span>")
 		return
 
+// Below clean, this follows the parts self-examine marks (body_washing.dm):
+// once every part is washed it says so, and skin left under clothes is named.
 /mob/living/human/proc/hygiene_feeling()
-	switch(hygiene)
-		if(HYGIENE_LEVEL_CLEAN to INFINITY)
-			return "You feel very clean!"
-		if(HYGIENE_LEVEL_NORMAL to HYGIENE_LEVEL_CLEAN)
-			return "You feel clean."
-		if(HYGIENE_LEVEL_DIRTY to HYGIENE_LEVEL_NORMAL)
-			return "You feel a bit dirty."
-	return "You feel very dirty!"
+	if (hygiene >= HYGIENE_LEVEL_CLEAN)
+		return "You feel very clean!"
+	if (hygiene >= HYGIENE_LEVEL_NORMAL)
+		return "You feel clean."
+	var/bare_dirty = FALSE
+	var/covered_dirty = FALSE
+	for (var/obj/item/organ/external/E in organs)
+		if (part_dirt_status(E) == "")
+			continue
+		if (part_is_covered(E))
+			covered_dirty = TRUE
+		else
+			bare_dirty = TRUE
+	if (!bare_dirty && !covered_dirty)
+		return "You feel fairly clean; soap, a tub or a bath in running water would get you properly clean."
+	var/how = hygiene < HYGIENE_LEVEL_DIRTY ? "very dirty" : "a bit dirty"
+	if (!bare_dirty)
+		return "You feel [how] under your clothes; undress to wash there."
+	return hygiene < HYGIENE_LEVEL_DIRTY ? "You feel very dirty!" : "You feel a bit dirty."
 
 /mob/living/human/proc/flash_sadness(ptsd = 1)
 	if (ingested.has_reagent("citalopram", 5) || ingested.has_reagent("paroxetine", 3.33)) //antidepressives and anxiolytics block PTSD effects

@@ -112,7 +112,9 @@
 		return
 	craft = new /datum/craft(B)
 	craft.anchored = state["anchored"] ? TRUE : FALSE
-	craft.fit_ledger(islist(state["ledger"]) ? state["ledger"] : null)
+	// A record with no ledger is from before there were any: an empty one
+	// still tells her she is an old hull (hull_anchors.dm).
+	craft.fit_ledger(islist(state["ledger"]) ? state["ledger"] : list())
 	if (register_state)
 		craft.register = craft_register_restore(register_state)
 	if (isnum(state["speed"]) && state["speed"] > 0)
@@ -152,6 +154,9 @@
 		voyage_status_menu(H)
 		return
 	var/list/options = list("Sea chart", "Ship's papers", "Hail a ship", "Make for a berth")
+	// Who stands at which station (hull_watch.dm).
+	if (craft.ledger)
+		options.Insert(4, "Muster the watch")
 	if (open_sea_world())
 		options.Insert(2, "Open sea chart")
 	// Off the edge of the map she can cross to a land across the sea (ship_crossing.dm).
@@ -188,6 +193,10 @@
 		return
 	if (choice == "Hail a ship")
 		craft.hail_menu(H, src)
+		return
+	if (choice == "Muster the watch")
+		if (craft.ledger)
+			to_chat(H, SPAN_NOTICE(craft.ledger.muster_text()))
 		return
 	// A registered hull answers to her crew (ship_papers.dm).
 	switch (craft.helm_access(H))

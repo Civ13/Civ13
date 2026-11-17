@@ -38,7 +38,9 @@
 	map_storage_saved_vars = "volume;reagent_state"
 	
 /datum/reagent/proc/remove_self(var/amount) // Shortcut
-	holder.remove_reagent(id, amount)
+	// A reagent can outlive its holder for the rest of a tick (the container was deleted).
+	if (holder)
+		holder.remove_reagent(id, amount)
 
 // This doesn't apply to skin contact - this is for, e.g. extinguishers and sprays. The difference is that reagent is not directly on the mob's skin - it might just be on their clothing.
 /datum/reagent/proc/touch_mob(var/mob/M, var/amount)

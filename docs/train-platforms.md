@@ -27,6 +27,8 @@ heading, the rail tile and the tile right of it.
 - `coupler_<f|b>_<free|linked|broken|none>` and `coupling_item`: the coupling
   at a car's front or rear end in each condition, and the spare. They turn
   with the car ([trains.md](trains.md#couplings)).
+- `brake_wheel` and `brake_wheel_on`: the brake wheel of a brake van, wound
+  off and on ([trains.md](trains.md#brakes)).
 - `edge_plank`, `edge_freight_door[_open]`, `edge_side`, `edge_drop_door[_open]`
   and the `boards` deck: the boxcar's boarded sides and sliding doors, the
   open wagon's plank sides and drop doors, and the worn floor of goods stock.
@@ -88,6 +90,7 @@ down when a furnished kit is assembled and the edges (side, which edge, style).
 | open_wagon | open wagon | rail_steam | 8 tiles: plank sides all round, drop doors in the middle of each side |
 | boxcar | boxcar | rail_steam | 8 tiles: boarded sides and roof, sliding doors in the middle of each side, closed ends |
 | bogie_coach | bogie coach | assembly_line | 8 tiles: a vestibule each end, twelve seats, windows |
+| brake_van | brake van | rail_steam | a veranda, then a cabin with a brake wheel and a seat; weighs 4 ([trains.md](trains.md#brakes)) |
 
 An 8-tile car weighs 4 empty, twice a four-wheel car. The rail warehouse and
 the inter-region railway take cars of either length.

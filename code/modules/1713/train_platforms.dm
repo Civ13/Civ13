@@ -253,6 +253,16 @@ var/global/train_step_plain = FALSE
 				list("edges" = low_sides),
 				list("edges" = low_sides),
 				list("edges" = low_sides + low_back)))
+		// The guard's van: an open veranda, then a cabin with the brake wheel.
+		// Ballasted, so its brake holds twice the weight of an ordinary car.
+		layouts["brake_van"] = list(
+			"name" = "brake van", "desc" = "A heavy guard's van: a veranda at the front and a cabin with a brake wheel. Coupled at the back of a train, its guard helps the driver stop it.",
+			"center" = "boards", "side" = "boards", "roof" = "boxcar", "weight" = 1,
+			"segments" = list(
+				list("edges" = rails),
+				list("edges" = windows + list(list(TRAIN_LEFT, "front", "plank"), list(0, "front", "door"), list(TRAIN_RIGHT, "front", "plank"))),
+				list("edges" = van_sides, "fit" = list(/obj/structure/train_brake_wheel, null, /obj/structure/bed/chair/comfy/blue)),
+				list("edges" = windows + list(list(TRAIN_LEFT, "back", "plank"), list(0, "back", "door"), list(TRAIN_RIGHT, "back", "plank")))))
 		layouts["long_flatbed"] = list(
 			"name" = "bogie flatcar", "desc" = "A long open flatcar on two bogies, for machines, vehicles and long loads.",
 			"center" = "wood", "side" = "wood",
@@ -327,7 +337,8 @@ var/global/train_step_plain = FALSE
 
 // A deck's weight counts the people and furniture on its three tiles.
 /obj/structure/trains/platform/car_load_weight()
-	var/w = train_weight
+	var/list/L = layout()
+	var/w = (L && L["weight"]) ? L["weight"] : train_weight
 	for (var/turf/T in train_platform_tiles(loc, dir))
 		for (var/atom/movable/AM in T)
 			if (isliving(AM))
@@ -566,7 +577,7 @@ var/global/train_step_plain = FALSE
 	..()
 	to_chat(user, "This is section [seg_index] of [car_length()]. A crowbar takes an empty, uncoupled car apart into a kit.")
 	if (wrecked)
-		to_chat(user, SPAN_WARNING("It has been blown off the rails. Weld it back together before the train can move."))
+		to_chat(user, SPAN_WARNING("It is off the rails. Weld it back together before the train can move."))
 	else if (health < initial(health))
 		to_chat(user, "It is damaged ([round(100 * health / initial(health))]%). A welding tool repairs it.")
 	if (braced)
@@ -911,6 +922,9 @@ var/global/train_step_plain = FALSE
 /obj/structure/train_car_kit/long_flatbed
 	name = "bogie flatcar kit"
 	car_kind = "long_flatbed"
+/obj/structure/train_car_kit/brake_van
+	name = "brake van kit"
+	car_kind = "brake_van"
 
 /obj/structure/train_car_kit/examine(mob/user)
 	..()
