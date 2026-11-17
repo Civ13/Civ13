@@ -5,6 +5,10 @@
   var ref = body.getAttribute('data-ref');
   var windowId = body.getAttribute('data-window');
   var generation = body.getAttribute('data-generation');
+  // Versioned file names, so a reconnect to an updated world never reuses
+  // the browser's remembered copy of the old bundle.
+  var assets = body.getAttribute('data-assets');
+  var suffix = assets && /^[0-9a-f]{1,32}$/.test(assets) ? '.' + assets : '';
   var stopped = false;
   var ready = false;
   var snapshotReceived = false;
@@ -83,11 +87,11 @@
   timer = window.setTimeout(function () { if (!acknowledged) { fallback(); } }, 15000);
   var css = document.createElement('link');
   css.rel = 'stylesheet';
-  css.href = 'civ13-tgui.css';
+  css.href = 'civ13-tgui' + suffix + '.css';
   css.onerror = fallback;
   document.head.appendChild(css);
   var script = document.createElement('script');
-  script.src = 'civ13-tgui.js';
+  script.src = 'civ13-tgui' + suffix + '.js';
   script.onerror = fallback;
   document.head.appendChild(script);
 }());

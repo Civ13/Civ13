@@ -474,6 +474,10 @@ class BackendContract(unittest.TestCase):
         assets = (ROOT / 'code/modules/client/asset_cache.dm').read_text()
         for name in ('civ13-tgui-bootstrap.js', 'civ13-tgui.js', 'civ13-tgui.css'):
             self.assertIn(f"'UI/tgui/{name}'", assets)
+        # Sent under content-versioned names so a reconnect to an updated
+        # world cannot reuse the browser's remembered copy of the old bundle.
+        self.assertIn('assets[civ13_tgui_versioned_name(name, civ13_tgui_assets_version)] = sources[name]', assets)
+        self.assertIn('digests += "[md5(sources[name])]"', assets)
 
 
 if __name__ == '__main__':

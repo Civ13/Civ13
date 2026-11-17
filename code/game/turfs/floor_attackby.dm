@@ -739,7 +739,10 @@
 	if (!P)
 		return FALSE
 	var/turf/floor/dirt/underground/T = A
-	return T.start_pickaxe_mining(src, P, TRUE)
+	if (!T.start_pickaxe_mining(src, P, TRUE))
+		return FALSE
+	halt_held_movement_toward(T)
+	return TRUE
 
 // A free-moving body stands on the tile under its centre and may bump a wall
 // with its edge, so the wall need only be within a tile (get_dir follows pixel

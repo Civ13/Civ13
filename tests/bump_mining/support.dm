@@ -96,6 +96,8 @@
 	return
 /mob/living/human/proc/try_bump_chopping(atom/A)
 	return FALSE // Tree chopping lives in wild.dm; not part of this fixture.
+/mob/proc/halt_held_movement_toward(atom/A)
+	return // Held-key movement lives in mob_movement.dm; not part of this fixture.
 /mob/living/human/probe/bump_mining_authority()
 	return TRUE // Explicit headless client/movement ownership seam only.
 /obj/item/football
