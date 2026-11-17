@@ -108,6 +108,21 @@ var/signal_runtime_error = FALSE
 		qdel(M)
 	qdel(FP)
 	qdel(hut)
+	// A fire on a roof one storey up: seen 100 tiles further, and from the ground.
+	above_ground_level_cache["2"] = TRUE
+	var/obj/structure/oven/fireplace/roof = new(locate(10, 10, 2))
+	roof.on = TRUE
+	var/mob/living/human/ground = signal_tester(10, 40)
+	var/mob/living/human/far_ground = signal_tester(10, 390)
+	var/mob/living/human/on_roof = signal_tester(15, 15, 2)
+	var/list/roof_seen = roof.signal_fire_watchers(null)
+	signal_check(signal_fire_storeys(get_turf(roof)) == 1 && signal_fire_range(get_turf(roof)) == 400, "a fire one storey up reaches 400 tiles")
+	signal_check((ground in roof_seen) && (far_ground in roof_seen), "people on the ground see a rooftop fire, out to 380 tiles")
+	signal_check(on_roof in roof_seen, "people on the same level see it too")
+	above_ground_level_cache["2"] = FALSE
+	for (var/mob/M in list(ground, far_ground, on_roof))
+		qdel(M)
+	qdel(roof)
 
 /proc/signal_use_checks()
 	var/obj/structure/oven/fireplace/FP = new(locate(20, 20, 1))

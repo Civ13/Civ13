@@ -6,9 +6,10 @@ slide (below) when the body can slide (`human_subtile_fine_ready` and no trench
 edge ahead, `human_subtile_trench_near`), and into an ordinary tile step
 otherwise (driving, trench edges, linked or posture states, non-humans). The
 body stops where the key is released, with no tile snapping. There is no player
-toggle back to tile walking. Pulling slides too: `human_subtile_pull_follow`
-steps the pulled object onto the uncovered neighbouring tile nearest the body
-whenever a gap opens, so it trails round turns. Confusion picks a random
+toggle back to tile walking. Pulling follows tiles: `human_subtile_pull_follow`
+moves the pulled object into the tile the body last stood on (its centre tile)
+once the body has wholly left it, lined up and gliding at the body's pace, so it
+trails round turns like a tile pull. Confusion picks a random
 cardinal direction for 40% of slide steps instead of forcing a tile step.
 
 A blocked slide tries Graal-style sliding before it stops

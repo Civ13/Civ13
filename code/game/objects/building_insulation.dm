@@ -240,6 +240,9 @@ var/global/list/building_room_of = list()
 	if (istype(O, /obj/structure/engine))
 		var/obj/structure/engine/EN = O
 		return EN.on ? 1 : 0
+	if (istype(O, /obj/structure/chimney)) // the fire below, carried up (storey_chimney.dm)
+		var/obj/structure/chimney/CH = O
+		return CH.chimney_heat()
 	return 0
 
 /proc/building_room_heat(datum/building_room/R)

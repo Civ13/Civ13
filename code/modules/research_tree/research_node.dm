@@ -2188,6 +2188,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/grille/fence/picket" = "primitive_construction",
 		"/obj/structure/mine_support" = "primitive_construction",
 		"/obj/structure/roof_support" = "primitive_construction",
+		"/obj/structure/chimney" = "primitive_construction",
 		"/obj/structure/bollard" = "primitive_construction",
 		"/obj/structure/building_brace/corbel/wood" = "primitive_construction",
 		"/obj/structure/roof_support/bamboo" = "primitive_construction",
