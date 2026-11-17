@@ -46,6 +46,7 @@ var/spread_runtime_error = FALSE
 		spread_band_checks()
 		spread_common_checks()
 		spread_learning_checks()
+		spread_rediscovery_checks()
 	catch(var/exception/e)
 		spread_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = spread_failures, "runtime_error" = spread_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")
@@ -174,3 +175,18 @@ var/spread_runtime_error = FALSE
 	map.ordinal_age = 9
 	var/datum/research_node/M = get_research_node(modern)
 	spread_check(knowledge_study_mult(modern) == 1 && trade_learning_cap(M) == 0.5, "the newest two eras are untouched")
+
+/proc/spread_rediscovery_checks()
+	var/cold_war = spread_node_of_tier(7)
+	var/modern = spread_node_of_tier(8)
+	var/stone = spread_node_of_tier(0)
+	map.ordinal_age = 9
+	spread_check(knowledge_rediscovery_rate(cold_war) == 3, "bench work on a spreading subject counts three times")
+	spread_check(knowledge_rediscovery_rate(modern) == 1, "bench work on a guarded subject counts once")
+	spread_check(knowledge_rediscovery_rate(stone) == 1, "a common subject needs no research, so its rate is plain")
+	map.ordinal_age = 7
+	spread_check(knowledge_rediscovery_rate(cold_war) == 1, "the same subject at the frontier counts once")
+	map.ordinal_age = 9
+	map.book_research = FALSE
+	spread_check(knowledge_rediscovery_rate(cold_war) == 1, "no rediscovery rate off a book-research world")
+	map.book_research = TRUE
