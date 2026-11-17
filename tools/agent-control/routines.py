@@ -13,6 +13,7 @@ through the same parsing, expansion and execution as the model's plans: the same
 
 import json
 
+import blueprints
 import needs
 import scripts
 
@@ -283,6 +284,10 @@ def parse_order(raw):
     return order
 
 
+def _same_order(a, b):
+    return all(a.get(key) == b.get(key) for key in ("script", "do", "skill"))
+
+
 def describe_order(order):
     if not order:
         return "none"
@@ -308,6 +313,7 @@ class Routines:
         self.routine_steps = 0
         self.director_calls = 0
         self.implicit = True  # with no order, follow the active project or the early survival ladder
+        self.failed_order = None  # the last standing order dropped for failing; a director re-issuing it does not outrank its own sentences
 
     # The director -------------------------------------------------------------------------------------
 
@@ -353,8 +359,10 @@ class Routines:
             data = json.loads(answer)
         except (TypeError, ValueError):
             return ""
-        if not isinstance(data, dict) or "routine" in data or not isinstance(data.get("plan"), list):
+        if not isinstance(data, dict) or not isinstance(data.get("plan"), list):
             return ""
+        if "routine" in data and not (self.order and self.failed_order and _same_order(self.order, self.failed_order)):
+            return ""  # an explicit routine wins, unless it is the one that just kept failing
         for item in data["plan"]:
             if not isinstance(item, str):
                 continue
@@ -417,7 +425,19 @@ class Routines:
             return name, step  # scripts.DONE once the product is in hand
         action = order.get("do")
         if action == "build_next":
-            return name, [{"do": "build_next"}] if sit.box.get("project") else None
+            project = sit.box.get("project")
+            if not project:
+                return name, None
+            # A piece short of material gathers it (leaves for the roof, logs, stone) instead of failing every turn.
+            try:
+                steps, piece, problem = blueprints.next_steps(json.loads(json.dumps(project)), sit.observation, sit.box.get("structures", []))
+            except (KeyError, TypeError, ValueError):
+                steps, piece, problem = [], None, ""  # a project the planner cannot read: build_next reports it
+            if not steps and piece is not None and problem.startswith("gather"):
+                fetch = scripts.gather(sit, problem)
+                if fetch and fetch != scripts.DONE:
+                    return name, fetch
+            return name, [{"do": "build_next"}]
         if action == "leather_next":
             return name, [{"do": "leather_next", "make": order.get("make") or sit.box.get("leather") or "leather"}]
         if action == "explore":
@@ -496,6 +516,7 @@ class Routines:
         if self.failures[key] >= FAIL_LIMIT:
             self.problem = f"the {choice.name} routine failed {FAIL_LIMIT} times in a row ({summary[:120]})"
             if key == "work":
+                self.failed_order = dict(self.order) if self.order else {"do": "build_next"} if "build_next" in json.dumps(choice.plan) else None
                 self.order = None
         if choice.need == "work" and self.order and not failed:
             self.order["times"] = self.order.get("times", 1) - 1

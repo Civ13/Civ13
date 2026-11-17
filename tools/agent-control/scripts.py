@@ -143,6 +143,34 @@ def wood(sit, logs=4):
     return explore(sit)
 
 
+def leaves(sit, bundles=2):
+    """Leaf bundles (thatch roofing takes 2): pick up loose ones, pick the leaves off a leafy branch, or break a branch off a tree."""
+    if amount(sit.me, "leaf") >= bundles:
+        return DONE
+    loose = sit.nearest(lambda row: row.get("item") and "leaf" in _lower(row.get("name")) and not row.get("branch") and _distance(row) <= 4)
+    if loose:
+        return [{"do": "pick_up", "target": loose["ref"]}]
+    leafy = sit.nearest(lambda row: row.get("branch") == "leafy")
+    if leafy:
+        return [{"do": "pick_leaves", "target": leafy["ref"]}]
+    tree = sit.nearest(lambda row: row.get("branches") not in (None, 0, False))
+    if tree:
+        return [{"do": "break_branch", "target": tree["ref"]}]
+    return explore(sit)
+
+
+def gather(sit, problem):
+    """The step towards a blueprint piece's missing material ("gather leaf bundles ..."), or None when it is not one a script gathers."""
+    text = _lower(problem)
+    if "leaf" in text or "leaves" in text:
+        return leaves(sit, 99)
+    if "log" in text or "plank" in text or "wood" in text:
+        return wood(sit, 99)
+    if "stone" in text:
+        return [dict(SIFT_STONE)]
+    return None
+
+
 def _fire(sit):
     return sit.nearest(lambda row: not row.get("item") and any(word in _lower(row.get("name")) for word in sit.kit.fire_words))
 
@@ -269,6 +297,7 @@ SCRIPTS = {
     "spear": spear,
     "axe": axe,
     "wood": wood,
+    "leaves": leaves,
     "campfire": campfire,
     "water": water,
     "hunt": hunt,
@@ -276,7 +305,7 @@ SCRIPTS = {
 }
 ALIASES = {"sharpened flint": "flint", "make_flint": "flint", "make_spear": "spear", "sharpened stick": "spear",
            "make_axe": "axe", "flint axe": "axe", "gather_wood": "wood", "logs": "wood", "wood logs": "wood",
-           "fire": "campfire", "drink": "water", "boil_water": "water", "food": "hunt", "meat": "hunt",
+           "leaf": "leaves", "leaf bundles": "leaves", "thatch": "leaves", "fire": "campfire", "drink": "water", "boil_water": "water", "food": "hunt", "meat": "hunt",
            "trap": "traps", "snare": "traps", "snares": "traps", "deadfall": "traps", "trapping": "traps"}
 
 
@@ -295,6 +324,7 @@ TEXT_SCRIPTS = (
     (("axe", "hatchet"), "axe"),
     (("spear",), "spear"),
     (("flint",), "flint"),
+    (("leaf", "leaves", "thatch", "roof"), "leaves"),
     (("wood", "log", "chop", "tree", "lumber"), "wood"),
     (("stick", "branch"), "stick"),
 )
