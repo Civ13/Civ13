@@ -1037,6 +1037,7 @@
 #include "code\modules\1713\telegraph.dm"
 #include "code\modules\1713\telephone.dm"
 #include "code\modules\1713\terrain_height.dm"
+#include "code\modules\1713\sun_hills.dm"
 #include "code\modules\1713\sun_shadows.dm"
 #include "code\modules\1713\river_flood.dm"
 #include "code\modules\1713\flood_hollows.dm"
