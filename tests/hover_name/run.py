@@ -9,7 +9,7 @@ import tempfile
 
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--byond-bin', type=Path, required=True)
-parser.add_argument('--negative-control', choices=['identity', 'exit', 'stale', 'parent', 'storage-viewer', 'storage-origin'])
+parser.add_argument('--negative-control', choices=['identity', 'exit', 'stale', 'parent', 'storage-viewer', 'storage-origin', 'hud-tile'])
 parser.add_argument('--compile-only', action='store_true')
 args = parser.parse_args()
 repo = Path(__file__).resolve().parents[2]
@@ -51,6 +51,8 @@ elif args.negative_control == 'storage-viewer':
     storage_helper = storage_helper.replace(old, 'FALSE', 1)
 elif args.negative_control == 'storage-origin':
     mutate('if (hover_storage.resolve() != I.loc)', 'if (FALSE)')
+elif args.negative_control == 'hud-tile':
+    mutate('if (!(tile in C.screen) || !tile.screen_loc', 'if (!tile.screen_loc')
 
 # The unavailable network-client and LOS-read boundaries are adapted. Event,
 # widget and storage-admission decisions, native locations and weakrefs are DM.
@@ -100,7 +102,8 @@ with tempfile.TemporaryDirectory(prefix='civ13-hover-name-') as temp:
     if run.returncode or re.search(r'runtime error|bad ref|bad index', log, re.I):
         raise RuntimeError('Invalid native execution')
     expected = {'identity': 'masked identity', 'exit': 'late exit', 'stale': 'hidden target', 'parent': 'parent exclusion',
-                'storage-viewer': 'closed storage view clears hover', 'storage-origin': 'storage replacement clears hover'}
+                'storage-viewer': 'closed storage view clears hover', 'storage-origin': 'storage replacement clears hover',
+                'hud-tile': 'removed attachment tile clears hover'}
     if args.negative_control:
         if 'FAIL ' + expected[args.negative_control] not in log:
             raise RuntimeError('Negative control did not fail the intended assertion')

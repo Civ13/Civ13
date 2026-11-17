@@ -192,8 +192,16 @@ class PouchVisibility(unittest.TestCase):
         self.assertIn('if (QDELETED(I) || I.loc != user)\n\t\t\t\tbreak', loop)
         self.assertIn('refresh_attachment_strip(src)', body(acc, '/obj/item/clothing/proc/remove_accessory'))
         click = body(strip, '/obj/screen/attachment/Click')
-        self.assertLess(click.index('attachment_strip_valid(attachment, host, H)'), click.index('attachment.attackby(I, H)'))
-        self.assertIn('attachment.attack_hand(H)', click)
+        self.assertLess(click.index('attachment_strip_valid(attachment, host, H)'), click.index('attachment_strip_use(H, attachment, C)'))
+        use = body(strip, '/proc/attachment_strip_use')
+        self.assertIn('A.attackby(I, H)', use)
+        self.assertIn('A.attack_hand(H)', use)
+        # Plain accessories (necklaces) come off from an empty-hand click; storage opens.
+        self.assertLess(use.index('A.strip_click_removes'), use.index('C.remove_accessory(H, A)'))
+        # The hover tooltip names the drawn accessory only while the tile still shows it.
+        hover = body(strip, '/obj/screen/attachment/hover_item')
+        self.assertIn('(src in C.attachment_strip)', hover)
+        self.assertIn('attachment_strip_valid(attachment, host, viewer)', hover)
         # The tiles live on the client, so nothing about them is saved with the body.
         self.assertIn('/client/var/list/attachment_strip', strip)
         self.assertNotIn('/mob/living/human/var', strip)

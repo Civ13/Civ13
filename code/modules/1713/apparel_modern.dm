@@ -37,6 +37,7 @@
 // as such, more thing need to be properly distributed to apparel_coldwar.dm when time allows.
 
 /obj/item/clothing/accessory/armor/coldwar/plates
+	strip_click_removes = FALSE
 	var/slots = 2
 	var/obj/item/weapon/storage/internal/hold
 

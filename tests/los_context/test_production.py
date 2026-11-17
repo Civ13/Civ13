@@ -331,7 +331,8 @@ class InventoryHoverName(unittest.TestCase):
                 item=self.weak();return item if item and not item.deleted else None
         def atom(kind='/obj/item',**values):
             defaults=dict(type=kind,loc=None,name='item',screen_loc=None,mouse_opacity=1,alpha=255,
-                invisibility=0,x=1,y=1,z=1,deleted=False,gcDestroyed=False,gc_destroyed=False)
+                invisibility=0,x=1,y=1,z=1,deleted=False,gcDestroyed=False,gc_destroyed=False,
+                hover_item=lambda viewer:None)  # /obj/screen/proc/hover_item: plain HUD tiles draw no item
             defaults.update(values);return Node(**defaults)
         body=atom('/mob/living/human',see_invisible=25,HUDneed={},HUDinventory=[],slots={},s_active=None)
         C=Node(mob=body,prefs=None,screen=[],view=7,eye=body,mouse_screen_x=1,mouse_screen_y=1,mouse_screen_pixel_x=0,mouse_screen_pixel_y=0)
@@ -389,17 +390,17 @@ class InventoryHoverName(unittest.TestCase):
             text=re.sub(r'(?<=, )(/obj/[\w/]+)(?=\))',lambda m:repr(m[1]),text)
             return A.project(text,declaration,'self'+(', '+args if args else ''),env)
         fields=['hover_target','hover_origin','hover_storage','hover_inventory','hover_screen_loc','maptext','parentmob','clear_target',
-                'inventory_slot_visible','inventory_item_visible','inventory_target_current','pointer_target','target_visible','process',
+                'inventory_slot_visible','inventory_item_visible','inventory_target_current','pointer_target','target_visible','process','hud_tile_item_visible',
                 'hover_text','hover_text_width','hover_text_height','maptext_width','maptext_height','screen_loc',
                 'show_label','follow_pointer','update_backdrop','hover_font_px','hover_label_px',
                 'hover_measured','set_panel_size','measure_label','hover_checked_at']
-        for name,args in [('clear_target',''),('inventory_slot_visible','target'),('inventory_item_visible','target'),('inventory_target_current','target'),('pointer_target','origin'),
+        for name,args in [('clear_target',''),('inventory_slot_visible','target'),('inventory_item_visible','target'),('inventory_target_current','target'),('pointer_target','origin'),('hud_tile_item_visible','target'),
                           ('target_visible','target'),('set_target','origin'),('process',''),('persistence_runtime_var','key'),
                           ('show_label','text'),('follow_pointer',''),('set_panel_size','text_w, text_h')]:
             sig='/obj/screen/hover_name'+('/'+name if name=='process' else '/proc/'+name)
             if name=='persistence_runtime_var':sig='/obj/screen/hover_name/'+name
-            if name in ('show_label','follow_pointer','set_panel_size') and sig+'(' not in source:
-                continue  # the frozen top-left preimage has no pointer-following panel
+            if name in ('show_label','follow_pointer','set_panel_size','hud_tile_item_visible') and sig+'(' not in source:
+                continue  # the frozen top-left preimage has no pointer-following panel or HUD tile items
             f=method(source,sig,args,fields);setattr(W,name,lambda *a,_f=f:_f(W,*a))
         f=method(source,'/obj/screen/hover_name/Destroy','',fields);W.destroy=lambda _f=f:_f(W)
         for name,args in [('hover_name_widget',''),('update_hover_name','target'),('clear_hover_name','')]:

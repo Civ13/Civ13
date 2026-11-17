@@ -20,6 +20,19 @@
 	host = null
 	return ..()
 
+// The hover tooltip names the accessory this tile draws, only while the tile
+// is in its viewer's open strip and the accessory still hangs from that strip's
+// worn clothes.
+/obj/screen/attachment/hover_item(mob/viewer)
+	if (!viewer || !viewer.client)
+		return null
+	var/client/C = viewer.client
+	if (C.attachment_strip_host != host || !(src in C.attachment_strip) || !(src in C.screen))
+		return null
+	if (!attachment_strip_valid(attachment, host, viewer))
+		return null
+	return attachment
+
 // Screen positions for a strip of count tiles: one row, a row above where
 // storage windows open (tile_x, tile_y), moved by the same whole-tile shift.
 /proc/attachment_strip_locs(count, tile_x, tile_y, shift_x = 0, shift_y = 0)
@@ -106,13 +119,22 @@
 		H.hide_attachment_strip()
 		return TRUE
 	var/obj/item/clothing/C = host
-	var/obj/item/I = H.get_active_hand()
-	if (I)
-		attachment.attackby(I, H)
-	else
-		attachment.attack_hand(H)
+	attachment_strip_use(H, attachment, C)
 	H.refresh_attachment_strip(C)
 	return TRUE
+
+// One click on a strip tile: the held item goes to the attachment; an empty
+// hand opens an attachment that has its own use (a pouch, sheath or holster)
+// and takes any other one (a necklace, a badge) off into the hand, which
+// attached accessories otherwise refuse.
+/proc/attachment_strip_use(mob/living/human/H, obj/item/clothing/accessory/A, obj/item/clothing/C)
+	var/obj/item/I = H.get_active_hand()
+	if (I)
+		A.attackby(I, H)
+	else if (A.strip_click_removes)
+		C.remove_accessory(H, A)
+	else
+		A.attack_hand(H)
 
 /obj/item/clothing/dropped(mob/user)
 	. = ..()

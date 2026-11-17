@@ -1,4 +1,5 @@
 /obj/item/clothing/accessory/holster
+	strip_click_removes = FALSE
 	name = "shoulder holster"
 	desc = "A handgun holster."
 	icon_state = "holster"
