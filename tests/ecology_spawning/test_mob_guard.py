@@ -67,6 +67,8 @@ def run(source, kind='living', deleted=False, phase='active', saving=False):
         'persistence_life_frozen': lambda m: saving and m.kind == 'human',
         # A character kept out of play during an event (region_event.dm).
         'event_stash_holds': lambda m: m.phase == 'stashed',
+        # A body still waiting for its world load to hand players back (life.dm).
+        'persistence_restore_holds_life': lambda m: m.phase == 'restoring',
     }
     ADAPTER.project(source, '/process/mob/fire', '', env)()
     return events, None if mob is None else object.__getattribute__(mob, 'velocity')
@@ -120,6 +122,13 @@ class MobGuardTests(unittest.TestCase):
         self.assertNotIn('life', held)
         self.assertIn('zoom_add', held)
         self.assertIn('life', run(SOURCE, 'living', phase='stashed')[0])
+
+    def test_loading_body_waits_for_restoration(self):
+        # Gaia 2026-11-17: loaded bodies drowned with no turf before reclaim.
+        self.assertIn('!persistence_restore_holds_life(M)', SOURCE)
+        held, _ = run(SOURCE, 'human', phase='restoring')
+        self.assertNotIn('life', held)
+        self.assertIn('zoom_add', held)
 
 
 if __name__ == '__main__':

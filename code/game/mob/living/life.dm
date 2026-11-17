@@ -11,6 +11,17 @@
 	var/turf/T = get_turf(M)
 	return (T && persistence_frozen_levels["[T.z]"]) ? TRUE : FALSE
 
+// A body made by a world load waits, without hunger, breathing or drowning, until the load
+// hands players back (finish_player_restoration). While its fields are still being decoded it
+// has no turf, and running Life() then hurt or killed it before its owner could reclaim it.
+/proc/persistence_restore_holds_life(mob/living/M)
+	if (!ishuman(M))
+		return FALSE
+	var/mob/living/human/H = M
+	if (!H.persistence_restored)
+		return FALSE
+	return (!H.loc || !persistence_player_restore_ready) ? TRUE : FALSE
+
 /mob/living/Life()
 
 	..()

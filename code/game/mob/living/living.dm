@@ -1025,7 +1025,7 @@ default behaviour is:
 	if (src && stat != DEAD)
 		life_forced = TRUE
 		spawn(10)
-			if (world.realtime>=last_life_tick+9 && !persistence_life_frozen(src))
+			if (world.realtime>=last_life_tick+9 && !persistence_life_frozen(src) && !persistence_restore_holds_life(src))
 				Life()
 			forcelife()
 	else if (src)
