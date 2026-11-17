@@ -126,6 +126,11 @@ var/naval_runtime_error = FALSE
 	var/obj/covers/corner = hull_lay(30, 12)
 	var/turf/under = locate(30, 12, 2)
 	naval_check(under.water_level == 0 && corner.origin_water_level == shallow, "a plank keeps the water under it")
+	// The plank's own update a moment after it is laid finds the water gone
+	// already; it must keep the level it found first, or the sea stays drained
+	// where she was built once she sails (2026-11-17 report).
+	sleep(10)
+	naval_check(under.water_level == 0 && corner.origin_water_level == shallow, "a plank still keeps the water under it after its own update ([corner.origin_water_level])")
 	var/obj/structure/hull_tiller/tiller = new(locate(32, 10, 2))
 	naval_check(isnull(tiller.commission("Wren", EAST)) && tiller.craft, "the hull around the tiller is commissioned")
 	var/datum/craft/C = tiller.craft
