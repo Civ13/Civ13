@@ -47,12 +47,18 @@ A spreading subject still needs a book, a teacher or a bench, but is quicker to 
 
 Both lags are read from `config/config.txt` at server start, so a host can
 change them without a code change. Raising a lag never takes knowledge away
-from a living character; it only lowers what later characters start with.
+from a living character: subjects already gained as common knowledge are kept,
+and later characters start with less. It does move subjects back a band for
+everyone, though. With the spreading lag raised from 2 to 3, a subject two eras
+behind is guarded again, so its quicker reading, whole-subject teaching and
+cheaper research stop for living characters too.
 
-What to watch before changing them (player activity data, `node_learned` and
-`research_wall` events): how long a new character takes to learn its first
-guarded subject, and how often arrivals hit a "you don't know how" wall on
-spreading subjects. Tighter lags (1 and 3) help arrivals more and cut the
+What to watch before changing them, in the player activity data
+(`code/modules/player_activity/player_activity.dm`): `learn` events, which
+carry the subject in `node` and show how long a new character takes to learn
+its first guarded subject, and the `locked:<node_id>` counters in the `counts`
+lines, which show how often arrivals hit a "you don't know how" wall on a
+subject. Tighter lags (1 and 3) help arrivals more and cut the
 leading faction's exclusive edge to one era.
 
 The player guide is "How knowledge spreads" in the wiki's Books and Scholars.
