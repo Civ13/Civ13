@@ -1502,10 +1502,14 @@
 /mob/living/human/pulled_offset_claim()
 	human_subtile_offset_owned = !!(step_x || step_y)
 
-// Tap to step (OOC > Toggle Tap To Step): releasing a movement key finishes
-// the current tile instead of stopping where the body is.
+// Tap to step (the HUD button, Settings > Controls and HUD, or OOC > Toggle
+// Tap To Step): releasing a movement key finishes the current tile instead of
+// stopping where the body is. On unless the player turns it off: only a
+// choice that differs from the default is saved, so accounts that never chose
+// get it too, and are told once how to switch it off (tap_step_told).
 /datum/preferences
-	var/tap_step = FALSE
+	var/tap_step = TRUE
+	var/tap_step_told = FALSE
 
 /mob/living/human/proc/human_subtile_tap_step()
 	return client && client.prefs && client.prefs.tap_step
@@ -1515,9 +1519,58 @@
 	set category = "OOC"
 	set desc = "Choose whether a quick tap of a movement key moves you one whole tile."
 
-	prefs.tap_step = !prefs.tap_step
+	set_tap_step(!prefs.tap_step)
+
+// The one place the setting changes: the verb, the HUD button and Settings.
+/client/proc/set_tap_step(on)
+	prefs.tap_step = on ? TRUE : FALSE
+	prefs.tap_step_told = TRUE
 	prefs.save_preferences()
 	to_chat(src, SPAN_NOTICE("Tap to step [prefs.tap_step ? "on: a quick tap moves you one tile, and holding a key still slides freely" : "off: you stop exactly where you let go of the key"]."))
+	if (ishuman(mob))
+		var/mob/living/human/H = mob
+		var/obj/screen/tap_step/B = H.HUDneed["tap step"]
+		if (istype(B))
+			B.update_icon()
+
+// Told once per account, the first time they play a body with it on.
+/mob/living/human/proc/tap_step_first_notice()
+	if (!client || !client.prefs || client.prefs.tap_step_told || !client.prefs.tap_step)
+		return
+	client.prefs.tap_step_told = TRUE
+	client.prefs.save_preferences()
+	to_chat(src, SPAN_NOTICE("<b>Tap to step is on:</b> a quick tap of a movement key moves you exactly one tile, and holding the key still glides freely. Turn it off with the footprint button on your HUD, or in Settings under Controls and HUD."))
+
+// The HUD toggle: lit while tap to step is on.
+/obj/screen/tap_step
+	name = "tap step"
+	desc = "Tap to step: a quick tap of a movement key moves you one whole tile. Click to switch it on or off."
+	icon_state = "tap_step_on"
+	process_flag = TRUE
+
+/obj/screen/tap_step/New()
+	..()
+	update_icon()
+
+// The body may get its player after the HUD is built, so the look follows the setting.
+/obj/screen/tap_step/process()
+	update_icon()
+	var/mob/living/human/H = parentmob
+	if (istype(H))
+		H.tap_step_first_notice()
+
+/obj/screen/tap_step/update_icon()
+	var/mob/M = parentmob
+	var/on = M && M.client && M.client.prefs ? M.client.prefs.tap_step : TRUE
+	var/state = on ? "tap_step_on" : "tap_step_off"
+	if (icon_state != state)
+		icon_state = state
+
+/obj/screen/tap_step/Click()
+	if (usr != parentmob || !usr.client)
+		return TRUE
+	usr.client.set_tap_step(!usr.client.prefs.tap_step)
+	return TRUE
 
 // External separation owns the same native pulse gateway as walking but does
 // not borrow client input authority. Bounded, non-sleeping 2px sweeps preserve

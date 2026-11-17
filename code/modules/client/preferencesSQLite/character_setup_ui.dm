@@ -15,7 +15,7 @@
 	return STATUS_INTERACTIVE
 
 /datum/preferences/ui_actions(ui_key)
-	return list("name", "random_name", "always_random_name", "gender", "age", "blood", "skin_tone", "hair_style", "hair_color", "facial_style", "facial_color", "eye_color", "randomize", "always_random_body", "trait_add", "trait_swap", "trait_remove", "trait_random", "trait_clear", "ui_style", "cursor", "client_fps", "reset_tutorial", "toggle_on", "toggle_off")
+	return list("name", "random_name", "always_random_name", "gender", "age", "blood", "skin_tone", "hair_style", "hair_color", "facial_style", "facial_color", "eye_color", "randomize", "always_random_body", "trait_add", "trait_swap", "trait_remove", "trait_random", "trait_clear", "ui_style", "cursor", "client_fps", "reset_tutorial", "toggle_on", "toggle_off", "tap_step", "hover_text", "hover_text_scale", "hud_scale", "edit_hud_layout", "reset_hud_layout", "keybindings")
 
 /datum/preferences/ui_interact(mob/user, ui_key = "main", datum/nanoui/ui = null, force_open = TRUE)
 	if (!user || !user.client || user.client.prefs != src)
@@ -82,6 +82,9 @@
 	var/datum/species/S = setup_species()
 	data["locked"] = locked
 	data["notice"] = setup_notice
+	// The Game Menu's "Controls and HUD" entry opens straight on Settings.
+	if (setup_open_tab)
+		data["tab"] = setup_open_tab
 
 	var/list/character = list()
 	character["name"] = real_name
@@ -130,6 +133,20 @@
 	settings["fps_choices"] = client_fps_choices()
 	if (client)
 		settings["tutorial"] = client.tutorial_status_text()
+	// Controls and HUD: the same settings as the OOC verbs.
+	settings["tap_step"] = tap_step ? 1 : 0
+	settings["hover_text"] = hover_text_enabled ? 1 : 0
+	var/list/scales = list()
+	settings["hud_scale"] = "100%"
+	settings["hover_text_scale"] = "100%"
+	for (var/label in hud_scale_choices)
+		scales += label
+		if (hud_scale_choices[label] == hud_scale)
+			settings["hud_scale"] = label
+		if (hud_scale_choices[label] == hover_text_scale)
+			settings["hover_text_scale"] = label
+	settings["scales"] = scales
+	settings["hud_editing"] = (client && client.hud_edit_mode) ? 1 : 0
 	var/list/toggles = list()
 	for (var/cp in get_client_preferences())
 		var/datum/client_preference/client_pref = cp
@@ -367,9 +384,41 @@
 		if ("reset_tutorial")
 			user.client.reset_tutorial()
 			return TRUE
+		if ("tap_step")
+			user.client.set_tap_step(value ? TRUE : FALSE)
+			return TRUE
+		if ("hover_text")
+			if ((value ? TRUE : FALSE) != (hover_text_enabled ? TRUE : FALSE))
+				user.client.toggle_hover_text()
+			return TRUE
+		if ("hover_text_scale")
+			if (value in hud_scale_choices)
+				hover_text_scale = hud_scale_choices[value]
+				save_preferences()
+			return TRUE
+		if ("hud_scale")
+			if (value in hud_scale_choices)
+				hud_scale = hud_scale_choices[value]
+				save_preferences()
+				if (ishuman(user))
+					var/mob/living/human/H = user
+					H.apply_hud_layout()
+			return TRUE
+		if ("edit_hud_layout")
+			user.client.edit_hud_layout()
+			return TRUE
+		if ("reset_hud_layout")
+			user.client.reset_hud_layout()
+			return TRUE
+		if ("keybindings")
+			user.client.configure_action_keybindings()
+			return TRUE
 		if ("toggle_on", "toggle_off")
 			var/datum/client_preference/client_pref = istext(value) ? get_client_preference_by_key(value) : null
 			if (client_pref && client_pref.may_toggle(user))
 				user.set_preference(client_pref.key, action == "toggle_on")
 			return TRUE
 	return FALSE
+
+// The tab the next opened setup window starts on (escape_menu.dm).
+/datum/preferences/var/tmp/setup_open_tab = null

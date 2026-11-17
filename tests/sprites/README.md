@@ -168,6 +168,8 @@ listing was retained. These limits are not waived by a green workflow.
 
 `create_craft_button.py` owns the `craft` HUD button (hammer over an anvil) in `icons/mob/screen/1713Style.dmi`, `litewebStyle.dmi` and `FoFStyle.dmi`, drawn on each sheet's own blank button frame in that sheet's picture colours. Rerun `python3 tools/hud-skin/build_console_style.py` afterwards so `ConsoleStyle.dmi` follows. `--check` verifies the committed sheets, `--preview <png>` writes a review sheet. It leaves every other state in those sheets untouched.
 
+`create_tap_step_button.py` owns the `tap_step_on` and `tap_step_off` HUD toggle (a bare footprint inside a tile's corner marks) in the same three sheets, drawn the same way; the unlit state is greyed like the up and down arrows. Rerun `python3 tools/hud-skin/build_console_style.py` afterwards. `--check` verifies the committed sheets, `--preview <dir>` writes review sheets.
+
 `create_clay_lime_fire.py` owns `icons/obj/workshop_machines.dmi`: the potter's wheel, bellows, brick mould bench, lime kiln and quicklime. `--check` verifies the committed sheet, `--preview <png>` writes a review sheet on grass, stone, snow and night.
 
 `create_charcoal_clamp.py` owns `icons/obj/charcoal_clamp.dmi`: the empty charcoal clamp hearth, the hearth stacked with logs and the earth-covered clamp smouldering (four-frame smoke loop). `--check` verifies the committed sheet, `--preview <png>` writes a review sheet on grass and dark ground, `--gif <path>` writes the burning loop.

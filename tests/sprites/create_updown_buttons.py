@@ -134,7 +134,7 @@ def build(sheet_name):
 def matches(sheet_name, tiles):
     current = Dmi.from_file(str(SCREEN / sheet_name))
     names = [s.name for s in current.states]
-    if tuple(names[-len(STATES):]) != STATES:
+    if any(names.count(n) != 1 for n in STATES):
         return False
     return all(current.get_state(n).get_frame(0).convert('RGBA').tobytes() == tiles[n].tobytes() for n in STATES)
 

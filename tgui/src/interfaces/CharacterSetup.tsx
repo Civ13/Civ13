@@ -229,6 +229,16 @@ function Settings({ ui }: { ui: UI }) {
         <p className="kit-hint">30 or 60 may help slower computers.</p></Row>
       {s.tutorial != null && <Row label="New-player tutorial" buttons={<Action ui={ui} action="reset_tutorial">Reset progress</Action>}>{str(s.tutorial)}</Row>}
     </Rows></Section>
+    <Section title="Controls and HUD"><Rows>
+      <Row label="Step one tile per tap"><Choice ui={ui} action="tap_step" value={s.tap_step ? 1 : 0} label="Step one tile per tap" options={[[1, 'On'], [0, 'Off']]} />
+        <p className="kit-hint">On: a quick tap of a movement key moves you exactly one tile, and holding it still glides. Off: you stop where you let go. Your HUD has a footprint button for this too.</p></Row>
+      <Row label="Name under the mouse"><Choice ui={ui} action="hover_text" value={s.hover_text ? 1 : 0} label="Name under the mouse" options={[[1, 'Shown'], [0, 'Hidden']]} /></Row>
+      <Row label="Name size"><Choice ui={ui} action="hover_text_scale" value={s.hover_text_scale} label="Name size" options={same(s.scales)} /></Row>
+      <Row label="HUD size"><Choice ui={ui} action="hud_scale" value={s.hud_scale} label="HUD size" options={same(s.scales)} /></Row>
+      <Row label="HUD layout" buttons={<><Action ui={ui} action="edit_hud_layout">{s.hud_editing ? 'Save layout' : 'Edit layout'}</Action><Action ui={ui} action="reset_hud_layout">Reset</Action></>}>
+        Move, resize and lock the buttons on your screen. Needs a character in the world.</Row>
+      <Row label="Key bindings" buttons={<Action ui={ui} action="keybindings">Change keys</Action>}>Choose the keys for actions.</Row>
+    </Rows></Section>
     <Section title="Sound and chat"><Rows>{list(s.toggles).map(toggle => <Row key={str(toggle.key)} label={str(toggle.label)}>
       <span className="kit-choice" role="group" aria-label={str(toggle.label)}>
         <Action ui={ui} action="toggle_on" value={str(toggle.key)} selected={!!toggle.on}>{str(toggle.on_label)}</Action>
