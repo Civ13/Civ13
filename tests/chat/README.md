@@ -55,3 +55,10 @@ restored lines raise no unread badges, game links from the old world are
 disabled while web links stay, storage is capped per type and in total, stored
 markup is sanitized again, other ckeys see nothing, history older than a day
 is ignored and Clear Chat wipes it.
+
+`chat-repeat.browser.test.js` checks repeated lines. A message identical to
+the line just before it adds an x2, x3 counter to that line instead of a new
+line; a different message, a connection notice or Clear Chat in between starts
+a new line. It also checks that similar but different warnings stay separate,
+that a counted line keeps its type and raises unread counts on other tabs, and
+that the counter goes past ten. Set `CHAT_SCREENSHOT` to save a picture.
