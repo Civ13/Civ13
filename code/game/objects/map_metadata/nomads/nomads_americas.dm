@@ -20,9 +20,9 @@
 	// The isthmus runs off the south edge into the southern continent.
 	edge_crossings = list("south" = "southamerica")
 	new_player_start_z = 1
-	// The standing open-air level aircraft fly on, and three storeys above it (building_admission.dm).
-	// Kept at four: each of these million-cell planes adds about 130 MiB to a reload.
-	building_levels = 4
+	// The standing open-air level aircraft fly on, and nine storeys above it (building_admission.dm).
+	// Each of these million-cell planes adds about 130 MiB to a reload once built.
+	building_levels = 10
 	building_level_standing = TRUE
 	// Mined-out mountain floor keeps giving stone and regrowing ore seams (mountain_seams.dm).
 	mountain_seams = TRUE
@@ -39,9 +39,9 @@
 	wild_plant_cap = 650
 	edge_crossings = list("north" = "northamerica")
 	new_player_start_z = 1
-	// The standing open-air level aircraft fly on, and three storeys above it (building_admission.dm).
-	// Kept at four: each of these million-cell planes adds about 130 MiB to a reload.
-	building_levels = 4
+	// The standing open-air level aircraft fly on, and nine storeys above it (building_admission.dm).
+	// Each of these million-cell planes adds about 130 MiB to a reload once built.
+	building_levels = 10
 	building_level_standing = TRUE
 	// Mined-out mountain floor keeps giving stone and regrowing ore seams (mountain_seams.dm).
 	mountain_seams = TRUE

@@ -20,8 +20,8 @@ def arithmetic(source=None):
                             '(added if purpose == "instance" else 0)')
     source = source.replace('(purpose == "safehouse" ? added : 0)',
                             '(added if purpose == "safehouse" else 0)')
-    env = dict(NEW_Z_CELL_CEILING=ceiling, NEW_Z_ROOF_CEILING=6,
-               BUILDING_MAX_Z=32, BUILDING_EXTRA_LEVELS=8,
+    env = dict(NEW_Z_CELL_CEILING=ceiling, NEW_Z_ROOF_CEILING=10,
+               BUILDING_MAX_Z=32, BUILDING_EXTRA_LEVELS=12,
                isnum=lambda x: isinstance(x, (int, float)), round=round,
                list=lambda *x: list(x),
                divide=lambda a, b: struct.unpack('f', struct.pack('f', a / b))[0])
@@ -37,10 +37,10 @@ def arithmetic(source=None):
 class BudgetTests(unittest.TestCase):
     def test_an_unformed_cave_plane_is_not_charged(self):
         error = arithmetic()
-        # North America: surface, cave and four open-air planes under the ceiling.
-        self.assertIsNotNone(error(1132, 920, 5, 1, 6, 'restore', 5300000))
-        self.assertIsNone(error(1132, 920, 5, 1, 6, 'restore', 5300000, free_planes=1))
-        self.assertIsNotNone(error(1132, 920, 6, 1, 7, 'restore', 5300000, free_planes=1))
+        # North America: surface, cave and ten open-air planes under the ceiling.
+        self.assertIsNotNone(error(1132, 920, 11, 1, 12, 'restore', 11500000))
+        self.assertIsNone(error(1132, 920, 11, 1, 12, 'restore', 11500000, free_planes=1))
+        self.assertIsNotNone(error(1132, 920, 12, 1, 13, 'restore', 11500000, free_planes=1))
 
     def test_below_exact_and_single_cell_above_ceiling(self):
         error = arithmetic()
@@ -64,9 +64,9 @@ class BudgetTests(unittest.TestCase):
         self.assertIsNotNone(error(700000, 1, 1, 1, 2, cell_limit=1399999))
         self.assertIsNotNone(error(700000, 1, 1, 1, 2, instance_reserve=1))
         self.assertIsNotNone(error(10, 10, 1, 1, 3, 'roof'))
-        self.assertIsNotNone(error(10, 10, 1, 1, 10))
+        self.assertIsNotNone(error(10, 10, 1, 1, 14))
         self.assertIsNotNone(error(10, 10, 1, 1, 33))
-        self.assertIsNotNone(error(10, 10, 1, 1, 2, cell_limit=5300001))
+        self.assertIsNotNone(error(10, 10, 1, 1, 2, cell_limit=11500001))
         self.assertIsNotNone(error(10, 10, 1, 1, 2, 'instance'))
         self.assertIsNone(error(700001, 1, 2, 1, 2))  # existing world retained
 
@@ -77,7 +77,7 @@ class BudgetTests(unittest.TestCase):
         self.assertIn('return memory_admission_error(target_z, purpose)', source)
         self.assertIn('last_error = error(R.target_z, R.purpose, R)', source)
         self.assertIn('var/cell_limit = NEW_Z_CELL_CEILING', source)
-        self.assertIn('var/new_z_cell_budget = 5300000',
+        self.assertIn('var/new_z_cell_budget = 11500000',
                       (ROOT / 'code/datums/configuration.dm').read_text(encoding='utf-8'))
         # There is exactly one production native resize; every caller reaches
         # its reservation/claim boundary rather than writing world.maxz itself.

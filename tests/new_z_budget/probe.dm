@@ -97,8 +97,8 @@ var/z_budget_existing_plane = FALSE
 		var/datum/world_z_budget/fixture_admission/F = new
 		world_z_budget = F
 		world_z_budget.record_compiled_dimensions()
-		z_budget_assert(!world_z_budget.configure("new_z_cell_budget", "5300001"), "raising ceiling rejected")
-		z_budget_assert(!world_z_budget.configure("new_z_roof_levels", "7"), "raising roof allowance rejected")
+		z_budget_assert(!world_z_budget.configure("new_z_cell_budget", "11500001"), "raising ceiling rejected")
+		z_budget_assert(!world_z_budget.configure("new_z_roof_levels", "11"), "raising roof allowance rejected")
 		for (var/bad in list("-1", "1.5", "none", "600000x", "1e3", ""))
 			z_budget_assert(!world_z_budget.configure("new_z_cell_budget", bad), "malformed config rejected")
 		// Exercise the actual configuration switch, not a duplicate parser.

@@ -10,7 +10,7 @@
 	research_active = TRUE
 	// Roofs may add up to four open-air levels (building_admission.dm); the
 	// first stands from the start of the round so aircraft can fly.
-	building_levels = 6
+	building_levels = 10
 	building_level_standing = TRUE
 	// Walk on over the north edge into the Desert (region_edge.dm), on the
 	// surface level.
