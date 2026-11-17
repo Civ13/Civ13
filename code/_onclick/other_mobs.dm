@@ -13,6 +13,11 @@
 	if (!..())
 		return
 
+	// Both hands are busy holding it in (shit_piss.dm).
+	if (holding_it_in && A != src)
+		to_chat(src, SPAN_WARNING("Your hands are busy holding it in."))
+		return
+
 	// In a hole or under a ledge: grab the wall or rim to climb out (Climb Up).
 	if (grab_climb_ledge(A))
 		return

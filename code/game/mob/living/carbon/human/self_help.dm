@@ -145,6 +145,16 @@
 			best_zone = E.limb_name
 	return best_zone
 
+// Grab intent on yourself. Aimed at the groin while it isn't bleeding and you
+// are about to wet or soil yourself, you hold it in (shit_piss.dm); otherwise a
+// free hand presses on a wound or holds a broken bone.
+/mob/living/human/proc/self_grab(target_zone)
+	if (target_zone == "groin" && (holding_it_in || excrement_urgent()))
+		var/obj/item/organ/external/groin = get_organ("groin")
+		if (holding_it_in || !groin || !(groin.status & ORGAN_BLEEDING))
+			return try_hold_it_in()
+	return try_self_pressure(target_zone)
+
 // Grab intent on yourself with an empty hand: press on a bleeding wound.
 /mob/living/human/proc/try_self_pressure(target_zone)
 	if (stat || paralysis)

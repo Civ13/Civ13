@@ -61,6 +61,7 @@
 	if (shoes)
 		tally += shoes.slowdown
 	tally += wet_clothes_slowdown()
+	tally += hold_it_in_slowdown()
 	tally += armor_plate_slowdown()
 	if (istype(back, /obj/item/weapon/storage/backpack))
 		var/obj/item/weapon/storage/backpack/BP = back
