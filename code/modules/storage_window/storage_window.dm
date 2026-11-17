@@ -30,31 +30,73 @@
 
 /mob/living/human
 	var/tmp/datum/storage_window/storage_window
+	// The container last clicked open or shut through its strip, and when.
+	var/tmp/obj/item/weapon/storage/storage_click_last
+	var/tmp/storage_click_time = 0
+	// Set once a double-click has opened the window, so the rest of that
+	// double-click (BYOND may send a Click and a DblClick) does nothing more.
+	var/tmp/storage_click_doubled = FALSE
 
 /mob/living/human/persistence_runtime_var(key)
-	return key == "storage_window" || ..()
+	return key == "storage_window" || key == "storage_click_last" || key == "storage_click_time" || key == "storage_click_doubled" || ..()
 
-// By default bags open the classic HUD strip, and clicking the same container
-// again while its strip is showing opens the storage window. Turning this on
+// Strip clicks: one click opens a container's strip, a click on it while the
+// strip is showing closes it, and a second click within the double-click time
+// opens the storage window instead. Nothing waits for the double-click: the
+// first click acts at once and the second one turns it into the window.
+#define STORAGE_DOUBLE_CLICK_TIME 5 // deciseconds, about the usual system double-click time
+#define STORAGE_CLICK_OPEN "open"
+#define STORAGE_CLICK_CLOSE "close"
+#define STORAGE_CLICK_WINDOW "window"
+#define STORAGE_CLICK_IGNORE "ignore"
+
+/mob/living/human/proc/storage_click_recent(obj/item/weapon/storage/S)
+	return S && storage_click_last == S && world.time - storage_click_time <= STORAGE_DOUBLE_CLICK_TIME
+
+/mob/living/human/proc/storage_click(obj/item/weapon/storage/S)
+	if (storage_click_recent(S))
+		if (storage_click_doubled)
+			return STORAGE_CLICK_IGNORE
+		storage_click_doubled = TRUE
+		// Without a window, the second click of a double-click does nothing.
+		return storage_window_possible() ? STORAGE_CLICK_WINDOW : STORAGE_CLICK_IGNORE
+	storage_click_last = S
+	storage_click_time = world.time
+	storage_click_doubled = FALSE
+	return s_active == S ? STORAGE_CLICK_CLOSE : STORAGE_CLICK_OPEN
+
+// BYOND may report the second half of a double-click only as a DblClick on the
+// bag or on the structure holding it.
+/mob/living/human/DblClickOn(atom/A, params)
+	var/obj/item/weapon/storage/S = storage_click_last
+	if (!A || !S || QDELETED(S) || (A != S && S.loc != A) || !storage_click_recent(S))
+		return ..()
+	if (storage_window_wanted())
+		return
+	if (storage_click(S) == STORAGE_CLICK_WINDOW)
+		storage_window_show(src, S)
+
+// By default a click on a bag opens its classic HUD strip, a second click closes
+// it, and a quick double-click opens the storage window instead. Turning this on
 // (Character Setup > Settings, or the Storage Window verb) always opens the window.
 /datum/client_preference/storage_window
 	description = "Bags and containers open in"
 	key = "STORAGE_WINDOW"
 	enabled_by_default = FALSE
 	enabled_description = "Storage window"
-	disabled_description = "Strip, click again for the window"
+	disabled_description = "Strip, double-click for the window"
 
 /datum/client_preference/storage_window/toggled(mob/preference_mob, enabled)
 	var/mob/living/human/H = preference_mob
 	if (istype(H) && H.s_active)
 		H.s_active.close(H)
 	if (preference_mob)
-		to_chat(preference_mob, SPAN_NOTICE(enabled ? "Bags and containers now open the storage window." : "Bags and containers now open the classic storage strip. Click one again while its strip is showing to open the storage window."))
+		to_chat(preference_mob, SPAN_NOTICE(enabled ? "Bags and containers now open the storage window." : "Bags and containers now open the classic storage strip. Click one again to close it, or double-click it to open the storage window."))
 
 /client/verb/toggle_storage_window()
 	set name = "Storage Window"
 	set category = "OOC"
-	set desc = "Switch between always opening the storage window and the strip (click again for the window)."
+	set desc = "Switch between always opening the storage window and the strip (double-click for the window)."
 	if (!prefs)
 		return
 	set_preference("STORAGE_WINDOW", !is_preference_enabled("STORAGE_WINDOW"))
@@ -66,14 +108,27 @@
 /mob/living/human/proc/storage_window_wanted()
 	return storage_window_possible() && client.is_preference_enabled("STORAGE_WINDOW")
 
-// Called first by /obj/item/weapon/storage/open(). TRUE when the window took it.
+// Called first by /obj/item/weapon/storage/open(). TRUE when the window (or a
+// strip click) took it, FALSE to show the classic strip.
 /proc/storage_window_open(mob/user, obj/item/weapon/storage/S)
 	var/mob/living/human/H = user
 	if (!istype(H))
 		return FALSE
-	// Hybrid: a second click on a container whose strip is showing opens the window.
-	if (!H.storage_window_wanted() && !(S && H.s_active == S && H.storage_window_possible()))
+	if (H.storage_window_wanted())
+		return storage_window_show(H, S)
+	if (!S || !H.client)
 		return FALSE
+	switch (H.storage_click(S))
+		if (STORAGE_CLICK_CLOSE)
+			S.close(H)
+			return TRUE
+		if (STORAGE_CLICK_WINDOW)
+			return storage_window_show(H, S)
+		if (STORAGE_CLICK_IGNORE)
+			return TRUE
+	return FALSE
+
+/proc/storage_window_show(mob/living/human/H, obj/item/weapon/storage/S)
 	var/datum/storage_window/W = H.storage_window
 	if (!W)
 		W = new /datum/storage_window(H)

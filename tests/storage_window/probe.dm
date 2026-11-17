@@ -18,6 +18,9 @@
 	return
 /mob/living/human/storwin_probe/update_icons()
 	return
+/mob/living/human/storwin_probe/var/storwin_window_ok = FALSE
+/mob/living/human/storwin_probe/storage_window_possible()
+	return storwin_window_ok
 
 // A basket with a lock that never opens, standing in for the door thread's locks.
 /obj/structure/storage_container/basket/storwin_locked/storage_access_allowed(mob/user)
@@ -315,8 +318,9 @@ var/storwin_runtime_error = FALSE
 	storwin_check(!H.storage_window_wanted(), "with no choice made, bags open in the strip")
 	var/obj/item/weapon/storage/internal/shown = storage_window_structure_holder(new /obj/structure/storage_container/basket(locate(1, 2, 1)))
 	H.s_active = shown
-	storwin_check(!storage_window_open(H, shown), "a second click opens the window only for a player whose browser can run it")
+	storwin_check(!storage_window_open(H, shown), "a character with no player keeps the strip it clicks")
 	H.s_active = null
+	storwin_click_checks(H, shown)
 	var/obj/structure/storage_container/basket/B = new(locate(3, 2, 1))
 	var/obj/item/weapon/storage/internal/IS = storage_window_structure_holder(B)
 	var/obj/item/knife = storwin_item(null, ITEM_SIZE_SMALL, "knife")
@@ -387,3 +391,25 @@ var/storwin_runtime_error = FALSE
 	storage_mark_seen(hidden, H)
 	storwin_check(theirs.stack_merge_room(mine, H) == 9, "once seen, they can")
 	usr = null
+
+// One click opens the strip, the next click closes it, a double-click opens the window.
+/proc/storwin_click_checks(mob/living/human/storwin_probe/H, obj/item/weapon/storage/S)
+	H.storwin_window_ok = TRUE
+	H.storage_click_last = null
+	storwin_check(H.storage_click(S) == STORAGE_CLICK_OPEN, "a click on a shut bag opens its strip")
+	H.s_active = S
+	H.storage_click_time = world.time - STORAGE_DOUBLE_CLICK_TIME - 1
+	storwin_check(H.storage_click(S) == STORAGE_CLICK_CLOSE, "a later click on a showing strip closes it")
+	H.s_active = null
+	storwin_check(H.storage_click(S) == STORAGE_CLICK_WINDOW, "a quick second click opens the window")
+	storwin_check(H.storage_click(S) == STORAGE_CLICK_IGNORE, "the rest of that double-click does nothing more")
+	H.storage_click_time = world.time - STORAGE_DOUBLE_CLICK_TIME - 1
+	storwin_check(H.storage_click(S) == STORAGE_CLICK_OPEN, "after the double-click time a click opens the strip again")
+	var/obj/item/weapon/storage/internal/other = new
+	storwin_check(H.storage_click(other) == STORAGE_CLICK_OPEN, "a quick click on another bag is a new click, not a double-click")
+	H.storwin_window_ok = FALSE
+	H.storage_click_last = null
+	H.storage_click(S)
+	storwin_check(H.storage_click(S) == STORAGE_CLICK_IGNORE, "with no window, a double-click leaves the strip as the first click left it")
+	H.storage_click_last = null
+	qdel(other)
