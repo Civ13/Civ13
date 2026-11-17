@@ -181,6 +181,15 @@ a hulk and never break her up; moving swamps a hulk at ten bucketfuls and a
 swamped raft or canoe will not move, with her paddler still aboard; wood mends
 a raft and cloth an inflatable; land vehicles are untouched.
 
+Caulking (`code/modules/naval/hull_caulking.dm`): a new hull has sound seams;
+only time under way wears them, an hour a quarter of the way; her crew is told
+when they work loose and when they are open, and open seams let in twice the
+water; a coil of rope and ten units of pitch make three twists of tarred oakum;
+caulking needs a chisel or hammer in the other hand, her own deck, a hull lying
+still and a bilge not awash; one twist tightens three tiles; on deep water she
+comes back to sound and no better, in the shallows right down to tight; the
+tiller saves and restores her seams; plated hulls neither wear nor caulk.
+
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/bilge_probe.dm 300
 
 ## Upper decks on built hulls (`upper_deck_probe.dm`)
