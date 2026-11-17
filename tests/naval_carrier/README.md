@@ -190,6 +190,13 @@ still and a bilge not awash; one twist tightens three tiles; on deep water she
 comes back to sound and no better, in the shallows right down to tight; the
 tiller saves and restores her seams; plated hulls neither wear nor caulk.
 
+Bilge pumps (`code/modules/naval/hull_pumps.dm`): a cellar pump on her deck is
+hers and one ashore is not; a fired steam pump lifts 80 bucketfuls a minute,
+burns a minute of fuel and gets ahead of two holes; a sump pump idles on a dry
+bilge, lifts 40 a minute on its battery and nothing switched off or flat; a
+lever pump lifts nothing left alone and is worked from beside it; the tiller
+counts her pumps.
+
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/bilge_probe.dm 300
 
 ## Upper decks on built hulls (`upper_deck_probe.dm`)
