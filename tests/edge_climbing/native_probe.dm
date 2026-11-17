@@ -178,6 +178,17 @@ var/list/edge_probe_log = list()
 	edge_probe_check(stairs_destination(edge_probe_human(locate(2, 1, 1)), SD) == locate(10, 11, 2), "stairs_down_lead_back_up")
 	B.forceMove(locate(10, 11, 2))
 	edge_probe_check(!stairs_down_spot(B, /obj/covers/wood/stairs, why) && findtext(why[1], "already"), "stairs_down_twice_reason")
+	// The open air over the stairs shows the top of the stairs, turned the way
+	// they climb, and still walks down safely.
+	stairs_refresh_top(SD)
+	var/obj/effect/stairwell_top/well_top = locate() in locate(9, 11, 2)
+	edge_probe_check(well_top && well_top == SD.stairwell_top && well_top.dir == EAST && !well_top.should_save && !well_top.mouse_opacity, "stairwell_top_marker")
+	edge_probe_check(edge_open_air(locate(9, 11, 2)), "stairwell_top_is_still_open_air")
+	var/mob/living/human/TD = edge_probe_human(locate(10, 12, 1))
+	TD.forceMove(locate(10, 11, 2))
+	TD.forceMove(locate(9, 11, 2))
+	edge_probe_check(TD.loc == locate(9, 11, 1), "stairwell_top_walks_down")
+	TD.forceMove(locate(10, 12, 1))
 	// Facing a floor, the builder is told to face an opening.
 	new /obj/covers/wood(locate(11, 11, 2))
 	B.dir = EAST
@@ -195,6 +206,36 @@ var/list/edge_probe_log = list()
 	// On bare ground, stairs are built underfoot as before.
 	var/mob/living/human/G = edge_probe_human(locate(1, 1, 1))
 	edge_probe_check(!stairs_down_spot(G, /obj/covers/wood/stairs, why) && !why.len, "stairs_underfoot_unchanged")
+	// On a ground floor facing more floor, the usual underfoot refusal stands.
+	new /obj/covers/wood(locate(1, 2, 1))
+	new /obj/covers/wood(locate(1, 3, 1))
+	var/mob/living/human/GF = edge_probe_human(locate(1, 2, 1))
+	GF.dir = NORTH
+	edge_probe_check(!stairs_down_spot(GF, /obj/covers/wood/stairs, why) && !why.len, "ground_floor_no_down_spot")
+	// Taking the stairs away takes the marker with them.
+	qdel(SD)
+	edge_probe_check(QDELETED(well_top) && !(locate(/obj/effect/stairwell_top) in locate(9, 11, 2)), "stairwell_top_goes_with_stairs")
+
+	// Climbing down lands in shallow water you can wade in, not deep water,
+	// unless a floor is built over it.
+	new /obj/covers/wood(locate(2, 6, 2))
+	var/mob/living/human/K = edge_probe_human(locate(2, 6, 2))
+	new /turf/floor/beach/water(locate(3, 6, 1))
+	edge_probe_check(edge_descent_destination(K, EAST) == locate(3, 6, 1), "climb_down_into_shallow_water")
+	new /turf/floor/beach/water/deep(locate(3, 6, 1))
+	edge_probe_check(!edge_descent_destination(K, EAST, why) && findtext(why[1], "not clear"), "deep_water_refused")
+	new /obj/covers/wood(locate(3, 6, 1))
+	edge_probe_check(edge_descent_destination(K, EAST) == locate(3, 6, 1), "floor_over_deep_water_lands")
+	// Stairs built on shallow water: walking onto the stairwell from above
+	// steps down onto them instead of falling.
+	new /turf/floor/beach/water(locate(8, 4, 1))
+	var/obj/covers/wood/stairs/SW = new(locate(8, 4, 1))
+	SW.dir = NORTH
+	new /obj/covers/wood(locate(8, 5, 2))
+	var/mob/living/human/WD = edge_probe_human(locate(8, 5, 2))
+	var/water_before = WD.getBruteLoss()
+	WD.forceMove(locate(8, 4, 2))
+	edge_probe_check(WD.loc == locate(8, 4, 1) && WD.getBruteLoss() == water_before, "stairs_on_shallow_water_walk_down")
 
 /proc/edge_probe_check(ok, label)
 	edge_probe_log += label

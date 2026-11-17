@@ -326,8 +326,10 @@
 	var/level = well ? multiz_level_below(well.z) : 0
 	var/turf/lower = level ? locate(well.x, well.y, level) : null
 	if (!lower || !edge_open_air(well))
-		if (building_open_turf(here))
-			problem = "[underfoot] To build stairs down to the level below, stand beside an opening in the floor and face it."
+		// On the ground the usual underfoot refusal stands.
+		if (!building_open_turf(here))
+			return
+		problem = "[underfoot] To build stairs down to the level below, stand beside an opening in the floor and face it."
 	else if (stairs_in(lower) || (locate(/obj/structure/multiz) in lower) || (locate(/obj/structure/multiz) in well))
 		problem = "There already are stairs or a ladder at that opening."
 	else
@@ -419,6 +421,8 @@
 	if (pulledby)
 		pulledby.stop_pulling()
 	stairs_moved_at = world.time
+	if (!S.stairwell_top)
+		stairs_refresh_top(S)
 	if (trench_climb_place(src, destination))
 		to_chat(src, SPAN_NOTICE("You climb up the stairs."))
 		return TRUE
@@ -451,8 +455,13 @@
 // Walking off an upper floor onto the open air over stairs steps down onto
 // them instead of falling. Returns TRUE when it handled the move.
 /proc/stairs_soft_descent(atom/movable/A, turf/below)
-	if (!ishuman(A) || !below || !stairs_in(below) || !ledge_landing_clear(below, TRUE))
+	if (!ishuman(A) || !below || below.density || !stairs_in(below))
 		return FALSE
+	// The stairs are the footing, whatever they were built on (shallow water,
+	// a floor over open air); only something solid on them stops the step down.
+	for (var/atom/movable/M in below)
+		if (M.density && !isliving(M))
+			return FALSE
 	var/mob/living/human/H = A
 	if (!persistence_movement_allowed(H, below))
 		return FALSE
@@ -461,10 +470,84 @@
 	if (H.pulledby)
 		H.pulledby.stop_pulling()
 	H.stairs_moved_at = world.time
-	if (!trench_climb_place(H, below))
+	if (!trench_climb_place(H, below) && H.loc != below)
 		return FALSE
 	to_chat(H, SPAN_NOTICE("You walk down the stairs."))
 	return TRUE
+
+//////// The top of the stairs, seen from above ////////
+
+// The open air over stairs shows the top step and its rails, so from the floor
+// above the safe way down reads apart from a plain drop. It is drawn over the
+// view of the level below and under any floor or trapdoor laid over it, takes
+// no clicks and is never saved: the stairs put it back when they load.
+// Art: tests/sprites/create_stairwell_top.py.
+/obj/effect/stairwell_top
+	name = "top of the stairs"
+	desc = "The top of a flight of stairs. Walk onto it to go down."
+	icon = 'icons/obj/stairwell_top.dmi'
+	icon_state = "stairwell_top"
+	plane = FLOOR_PLANE
+	layer = 1.97
+	anchored = TRUE
+	mouse_opacity = 0
+	simulated = FALSE
+	should_save = FALSE
+	var/tmp/obj/covers/stairs = null
+
+/obj/effect/stairwell_top/Destroy()
+	if (stairs && stairs.stairwell_top == src)
+		stairs.stairwell_top = null
+	stairs = null
+	return ..()
+
+/obj/covers/var/tmp/obj/effect/stairwell_top/stairwell_top = null
+
+// Puts the marker over stairs S, turned the way they climb, or takes it away
+// when there is no level above them.
+/proc/stairs_refresh_top(obj/covers/S)
+	if (!S || !S.stairs)
+		return
+	var/turf/T = get_turf(S)
+	var/level = (T && !QDELETED(S)) ? multiz_level_above(T.z) : 0
+	var/turf/well = level ? locate(T.x, T.y, level) : null
+	var/obj/effect/stairwell_top/top = S.stairwell_top
+	if (!well)
+		if (top)
+			qdel(top)
+		return
+	if (top && top.loc != well)
+		qdel(top)
+		top = null
+	if (!top)
+		top = new(well)
+		top.stairs = S
+		S.stairwell_top = top
+	top.icon_state = lowertext(S.material) == "wood" ? "stairwell_top" : "stairwell_top_stone"
+	top.set_dir(S.dir)
+
+// After the stairs are placed and turned (a level above may load after them).
+/proc/stairs_refresh_top_later(obj/covers/S)
+	set waitfor = FALSE
+	sleep(1)
+	if (S && !QDELETED(S))
+		stairs_refresh_top(S)
+
+/obj/covers/New()
+	. = ..()
+	if (stairs)
+		stairs_refresh_top_later(src)
+
+/obj/covers/set_dir(new_dir)
+	. = ..()
+	if (stairs && stairwell_top)
+		stairs_refresh_top(src)
+
+/obj/covers/Destroy()
+	if (stairwell_top)
+		qdel(stairwell_top)
+		stairwell_top = null
+	return ..()
 
 #undef EDGE_CLIMB_DOWN_TIME
 #undef EDGE_LADDER_PLACE_TIME

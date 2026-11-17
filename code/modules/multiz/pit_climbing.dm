@@ -84,13 +84,16 @@
 		L.adjustBruteLoss(10)
 
 // A deliberately conservative landing test: do not bypass doors, border
-// barriers, occupied cells, liquid, unsupported air, or another dug shaft.
+// barriers, occupied cells, deep water or lava, unsupported air, or another
+// dug shaft. Shallow water you can wade in, and a floor built over any water,
+// are footing.
 /proc/ledge_landing_clear(turf/T, allow_occupants = FALSE)
-	if (!T || T.density || istype(T, /turf/floor/dirt/underground) || istype(T, /turf/floor/beach/water) || istype(T, /turf/floor/lava))
+	if (!T || T.density || istype(T, /turf/floor/dirt/underground) || istype(T, /turf/floor/lava))
 		return FALSE
 	if (locate(/obj/structure/multiz/ladder/ww2/tunneltop/pit) in T)
 		return FALSE
 	var/supported = !building_open_turf(T) || trapdoor_shut_at(T)
+	var/floored = FALSE
 	for (var/atom/movable/A in T)
 		if (allow_occupants && isliving(A))
 			continue // A victim at the bottom must not disable the pit.
@@ -101,6 +104,9 @@
 			if (C.wall || C.incomplete)
 				return FALSE
 			supported = TRUE
+			floored = TRUE
+	if (istype(T, /turf/floor/beach/water/deep) && !floored)
+		return FALSE
 	return supported
 
 /proc/ledge_climber_ready(mob/living/human/H)

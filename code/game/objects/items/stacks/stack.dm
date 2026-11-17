@@ -1835,6 +1835,9 @@
 	if (ispath(recipe.result_type, /obj/covers))
 		var/obj/covers/floor_type = recipe.result_type
 		building_floor_recipe = !initial(floor_type.wall) && initial(floor_type.layer) < 2.1
+	// Anything else is built where the builder stands now.
+	if (!stairs_down)
+		build_loc = user.loc
 	if (stairs_down)
 		var/list/stairs_why = list()
 		var/list/stairs_now = stairs_down_spot(user, recipe.result_type, stairs_why)
