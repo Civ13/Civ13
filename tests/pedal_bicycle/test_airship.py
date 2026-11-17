@@ -173,5 +173,26 @@ class GroundFire(unittest.TestCase):
         self.assertLess(dme.index('pedal_airship.dm"'), dme.index('pedal_airship_combat.dm"'))
 
 
+class Gondola(unittest.TestCase):
+    def test_shots_and_throws_at_the_ground_start_under_the_gondola(self):
+        launch = extract((ROOT / 'code/modules/projectiles/projectile.dm').read_text(), '/obj/item/projectile/proc/launch')
+        self.assertLess(launch.index('airborne_launch_turf(user, targloc)'), launch.index('starting = curloc'))
+        throw = extract((ROOT / 'code/game/mob/living/carbon/carbon.dm').read_text(), '/mob/living/human/throw_item')
+        self.assertLess(throw.index('airborne_launch_turf(src, target)'), throw.index('item.throw_at('))
+        plan = extract((ROOT / 'code/modules/projectiles/projectile_heights.dm').read_text(), '/obj/item/projectile/proc/height_plan')
+        self.assertIn('pedal_airship_rider_shot(firer, start)', plan)
+        turf = extract(COMBAT, '/proc/airborne_launch_turf')
+        self.assertIn('T.z != G.z', turf)
+        rider = extract(COMBAT, '/proc/aloft_airship_ridden_by')
+        self.assertIn('!S.aloft || !(user in S.ontop)', rider)
+
+    def test_dropped_bottles_burst(self):
+        fall = extract((ROOT / 'code/game/objects/building_levels.dm').read_text(), '/turf/sky/building/Entered')
+        self.assertLess(fall.index('falling_item_strike(A, below)'), fall.index('landed_from_fall(below)'))
+        burst = extract(COMBAT, '/obj/item/weapon/reagent_containers/food/drinks/bottle/landed_from_fall')
+        self.assertLess(burst.index('calculate_alcohol_power()'), burst.index('reagents.splash('))
+        self.assertIn('shatter(T, against, power)', burst)
+
+
 if __name__ == '__main__':
     unittest.main()

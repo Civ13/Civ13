@@ -346,6 +346,11 @@
 		playsound(src, 'sound/effects/throw.ogg', 50, TRUE)
 		remove_from_mob(item)
 		item.loc = loc
+		// Thrown down from an airship's gondola (pedal_airship_combat.dm).
+		if (aloft_pedal_airships.len)
+			var/turf/gondola = airborne_launch_turf(src, target)
+			if (gondola)
+				item.loc = gondola
 		src.visible_message(SPAN_WARNING("[src] throws \the [item]!"), SPAN_WARNING("You throw \the [item]!"))
 		if (istype(item, /obj/item/ammo_casing))
 			var/obj/item/ammo_casing/NI = item

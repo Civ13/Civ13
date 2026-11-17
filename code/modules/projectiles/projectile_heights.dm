@@ -99,7 +99,7 @@
 	if (!H || !H.rows_by_z["[start.z]"])
 		return
 	var/turf/target = get_turf(original)
-	if (!target || target.z != start.z || target == start || projectile_from_airborne_aircraft(start))
+	if (!target || target.z != start.z || target == start || projectile_from_airborne_aircraft(start) || (aloft_pedal_airships.len && pedal_airship_rider_shot(firer, start)))
 		return
 	var/muzzle = firer ? projectile_aim_height(firer) : PROJECTILE_MUZZLE_STANDING
 	var/aim = ismob(original) ? projectile_click_aim(original, p_y) : muzzle
