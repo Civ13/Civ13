@@ -47,7 +47,7 @@ closed crates next to the depot:
 | Infirmary | 20 wood, 10 cloth | 20 cloth, 10 glass | 10 steel, 20 glass | bandages or gauze; splints; trauma kits |
 | Kitchen | 20 wood, 20 stone | 10 iron, 20 stone | 10 steel, 10 glass | dried meat; hardtack; cured ham |
 | Still | 20 wood, 10 copper | 20 copper, 10 glass | 10 steel, 20 glass | beer; vodka; whiskey |
-| Contacts desk | 10 wood, 100 silver coins | 50 gold coins | 150 gold coins | 5% a level better specialist trader prices, both ways |
+| Contacts desk | 10 wood, 100 silver coins | 50 gold coins | 150 gold coins | 5% a level better specialist trader prices, both ways; offered only while `npc_traders_enabled` is on (off by default) |
 
 Work takes its inputs at once and is ready after a set number of real-time
 minutes (20 to 120), so it runs while everyone is offline; each room does one

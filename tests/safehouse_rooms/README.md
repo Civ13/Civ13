@@ -14,3 +14,5 @@ Production sources run in the shared resource-extraction constructor fixture wit
 - **Ownership:** a renamed party keeps its rooms, and a deleted depot's records move to another depot.
 
 Negative control: making `safehouse_consume()` take nothing fails 6 checks (the stash, kitchen, meat, second job and both contacts desk levels).
+
+The contacts desk is refused while `npc_traders_enabled` is off (the default) and its supplies are left untouched; the probe then switches the flag on for the desk's trader-terms checks.

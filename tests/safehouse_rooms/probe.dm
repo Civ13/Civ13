@@ -121,6 +121,12 @@ var/rooms_runtime_error = FALSE
 	var/plain_price = armourer.price_for(index, H)
 	var/obj/item/stack/money/goldcoin/gold = new(H, 200, FALSE)
 	H.r_hand = gold
+	var/obj/item/stack/material/wood/desk_wood = new(crate, 10, FALSE)
+	var/obj/item/stack/money/silvercoin/desk_silver = new(crate, 100, FALSE)
+	rooms_check(!npc_traders_enabled && safehouse_upgrade(depot, party, "contacts", H) == FALSE && !QDELETED(desk_silver), "the contacts desk is not built while the outside dealers are closed")
+	qdel(desk_wood)
+	qdel(desk_silver)
+	npc_traders_enabled = TRUE // the rest checks the desk as it works when an admin opens the dealers
 	rooms_check(safehouse_upgrade(depot, party, "contacts", H) == FALSE, "the contacts desk wants wood and silver, not gold")
 	gold.amount = 200
 	var/obj/item/stack/money/silvercoin/silver = new(crate, 100, FALSE)

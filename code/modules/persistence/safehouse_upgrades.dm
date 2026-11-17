@@ -8,7 +8,7 @@
 //   hands in the inputs, and the goods wait at the safe house once the time
 //   (real time, so it runs while everyone is away) has passed;
 // - the contacts desk gets the party better terms with the specialist traders
-//   (specialist_traders.dm).
+//   (specialist_traders.dm); it is offered only while those dealers are open.
 //
 // Each party's rooms and work are one JSON record in a depot's saved `rooms`
 // field, like its shipments; any depot of the land finds it.
@@ -211,9 +211,14 @@ var/global/list/safehouse_recipe_types = null
 	var/desc = ""
 	// One list(path = amount) per level, 1 to SAFEHOUSE_MAX_LEVEL.
 	var/list/costs = list()
+	// Only built while the outside dealers are open (npc_traders_enabled).
+	var/needs_npc_traders = FALSE
 
 /datum/safehouse_room/proc/level_text(level)
 	return "level [level]"
+
+/datum/safehouse_room/proc/offered()
+	return !needs_npc_traders || npc_traders_enabled
 
 /datum/safehouse_room/stash
 	id = "stash"
@@ -270,6 +275,7 @@ var/global/list/safehouse_recipe_types = null
 
 /datum/safehouse_room/contacts
 	id = "contacts"
+	needs_npc_traders = TRUE
 	name = "contacts desk"
 	desc = "Ledgers and letters of introduction: each level gets the party 5% better prices from the specialist traders, both ways."
 	costs = list(
@@ -496,7 +502,7 @@ var/global/list/safehouse_recipe_types = null
 	for (var/id in safehouse_rooms_list())
 		var/datum/safehouse_room/R = safehouse_room(id)
 		var/level = rooms[id] || 0
-		if (level < SAFEHOUSE_MAX_LEVEL)
+		if (level < SAFEHOUSE_MAX_LEVEL && R.offered())
 			options["Build the [R.name] to level [level + 1] ([safehouse_needs_text(R.costs[level + 1])])"] = "room:[id]"
 	for (var/id in safehouse_recipes_list())
 		var/datum/safehouse_recipe/W = safehouse_recipe(id)
@@ -512,7 +518,8 @@ var/global/list/safehouse_recipe_types = null
 	for (var/id in safehouse_rooms_list())
 		var/datum/safehouse_room/R = safehouse_room(id)
 		var/level = rooms[id] || 0
-		levels += level ? "[R.name] [level] ([R.level_text(level)])" : "no [R.name]"
+		if (level || R.offered())
+			levels += level ? "[R.name] [level] ([R.level_text(level)])" : "no [R.name]"
 	var/choice = WWinput(H, "[party_train_party_name(party)]'s safe house: [english_list(levels)]. Work under way: [safehouse_jobs_text(record)]. Supplies come from your hand and closed crates next to the depot.", "Safe house rooms", "Cancel", options + list("Cancel"))
 	if (!(choice in options))
 		return
@@ -533,7 +540,7 @@ var/global/list/safehouse_recipe_types = null
 	var/list/record = safehouse_record(party)
 	var/list/rooms = record["rooms"]
 	var/level = rooms[id] || 0
-	if (!R || level >= SAFEHOUSE_MAX_LEVEL)
+	if (!R || level >= SAFEHOUSE_MAX_LEVEL || !R.offered())
 		return FALSE
 	var/list/needs = R.costs[level + 1]
 	var/list/supplies = safehouse_supplies(D, H)
