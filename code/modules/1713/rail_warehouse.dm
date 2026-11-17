@@ -89,7 +89,7 @@
 	var/obj/structure/trains/platform/P = TR
 	var/list/segs = P.car_segments()
 	var/list/ordered = list()
-	for (var/i in 1 to TRAIN_CAR_LENGTH)
+	for (var/i in 1 to P.car_length())
 		for (var/obj/structure/trains/platform/S in segs)
 			if (S.seg_index == i)
 				ordered += S
@@ -145,7 +145,8 @@
 	for (var/obj/structure/trains/S in unit)
 		if (rail_warehouse_too_long(S))
 			return "A heavy locomotive is too long to put away."
-	if (istype(unit[1], /obj/structure/trains/platform) && unit.len != TRAIN_CAR_LENGTH)
+	var/obj/structure/trains/platform/whole = unit[1]
+	if (istype(whole) && unit.len != whole.car_length())
 		return "\The [unit[1]] is not whole."
 	for (var/turf/T in bay)
 		for (var/obj/structure/trains/TR in T)

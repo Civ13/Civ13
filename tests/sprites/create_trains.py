@@ -1,5 +1,6 @@
 """Hand-placed art for the railway: the walkable platform cars (decks, sides,
-windows, doors, railings, headstocks with couplers, roofs), the car kit, the
+windows, doors, railings, headstocks with couplers, roofs), the goods stock
+(boxcar sides, sliding doors and roof, open wagon sides and drop doors), the car kit, the
 railway gun car's lever and outriggers, the wreck overlay, three 3x4
 locomotive bodies (steam, diesel, armoured) with their cab roofs, and the
 railway gun on its turntable. Every pixel is placed by this script from a
@@ -55,6 +56,8 @@ PLANK = ((176, 128, 76), (150, 104, 58), (138, 94, 52), (160, 112, 64), (128, 86
 PLANK_SEAM = (82, 54, 30)
 OLD_PLANK = ((150, 126, 96), (126, 102, 76), (112, 90, 66), (134, 110, 82), (104, 84, 62))
 OLD_SEAM = (64, 50, 36)
+# freight oxide: the red-brown paint of goods stock
+OXIDE = ((190, 96, 64), (150, 66, 48), (110, 46, 38), (54, 22, 20))
 COAL = ((70, 70, 80), (40, 40, 48), (24, 24, 30), (12, 12, 16))
 FIRE = ((255, 240, 170), (255, 176, 60), (226, 96, 28))
 WHITE = (255, 255, 255)
@@ -164,6 +167,8 @@ SURFACES = {
     'floor': lambda c: lino(c, 0, 0, 31, 31),
     'carpet': lambda c: carpet(c, 0, 0, 31, 31),
     'steel': lambda c: tread(c, 0, 0, 31, 31),
+    # the worn grey floor boards of goods stock
+    'boards': lambda c: planks(c, 0, 0, 31, 31, tones=OLD_PLANK, seam=OLD_SEAM, seed=5),
 }
 
 
@@ -350,7 +355,110 @@ def edge_armor_door_open(c):
     c.disc(19, 10, 2.2, [STEEL[0], STEEL[2], STEEL[4]], outline=STEEL_O)
 
 
+def edge_plank(c):
+    """A boxcar's boarded side: oxide planks between iron posts."""
+    wall_run(c, 0, 31, OXIDE)
+    for y in range(3, 32, 4):
+        c.rect(1, y, 2, y, OXIDE[2])
+    for y in (7, 23):
+        c.rect(0, y, 3, y + 1, STEEL[4])
+        c.put(1, y, STEEL[1])
+        c.put(2, y + 1, STEEL[3])
+
+
+def freight_leaf(c, y0, y1):
+    lit = mix(OXIDE[0], WHITE, 0.2)
+    c.rect(0, y0, 3, y1, OXIDE[3])
+    c.bands(1, y0 + 1, 2, y1 - 1, [lit, OXIDE[1]], along=True)
+    for y in range(y0 + 4, y1, 4):
+        c.rect(1, y, 2, y, OXIDE[2])
+
+
+def edge_freight_door(c):
+    """The sliding door of a boxcar, shut: a wide leaf hung from a runner."""
+    wall_run(c, 0, 31, OXIDE)
+    freight_leaf(c, 2, 29)
+    # the runner along the outside and its two hangers
+    c.rect(0, 0, 0, 31, STEEL[4])
+    for y in (3, 28):
+        c.rect(0, y, 1, y, STEEL[1])
+    # hasp and handle on the inside face
+    c.rect(3, 14, 3, 17, STEEL[0])
+    c.put(4, 15, STEEL[2])
+    c.put(4, 16, STEEL[4])
+
+
+def edge_freight_door_open(c):
+    """The doorway clear, the leaf run back along the side past this tile."""
+    wall_run(c, 0, 2, OXIDE)
+    wall_run(c, 29, 31, OXIDE)
+    sill_plate(c, 3, 28)
+    c.rect(0, 0, 0, 31, STEEL[4])
+    # the end of the leaf, standing proud of the wall
+    c.rect(0, 0, 3, 2, OXIDE[3])
+    c.rect(1, 0, 2, 1, mix(OXIDE[0], WHITE, 0.2))
+    c.put(0, 1, STEEL[1])
+
+
+SIDE_WOOD = (PLANK[0], PLANK[1], PLANK[4], PLANK_SEAM)
+
+
+def low_run(c, y0, y1):
+    """An open wagon's plank side: lower than a wall, so it throws less shadow."""
+    c.rect(0, y0, 3, y1, SIDE_WOOD[3])
+    c.rect(1, y0, 1, y1, mix(SIDE_WOOD[0], WHITE, 0.22))
+    c.rect(2, y0, 2, y1, SIDE_WOOD[1])
+    c.shade(4, y0, 4, y1, 70)
+    c.shade(5, y0, 5, y1, 26)
+
+
+def stanchion(c, y):
+    c.rect(0, y, 3, y + 1, STEEL_O)
+    c.rect(1, y, 2, y, STEEL[0])
+    c.rect(1, y + 1, 2, y + 1, STEEL[2])
+    c.shade(4, y, 4, y + 1, 40)
+
+
+def edge_side(c):
+    low_run(c, 0, 31)
+    for y in range(5, 32, 6):
+        c.put(1, y, SIDE_WOOD[1])
+    for y in (0, 15, 30):
+        stanchion(c, y)
+
+
+def edge_drop_door(c):
+    """A drop door in an open wagon's side, up and pinned."""
+    low_run(c, 0, 31)
+    for y in (0, 30):
+        stanchion(c, y)
+    # the door between its posts, its strap hinges and the pins that hold it
+    c.rect(1, 3, 2, 28, mix(SIDE_WOOD[0], WHITE, 0.34))
+    c.rect(2, 3, 2, 28, SIDE_WOOD[0])
+    for y in (7, 15, 23):
+        c.rect(0, y, 4, y, STEEL[4])
+        c.rect(1, y, 2, y, STEEL[1])
+    for y in (3, 28):
+        c.rect(0, y, 3, y, STEEL_O)
+        c.put(4, y, BRASS[1])
+
+
+def edge_drop_door_open(c):
+    """The door let down outside the wagon: only its hinge line is left."""
+    low_run(c, 0, 2)
+    low_run(c, 29, 31)
+    for y in (0, 30):
+        stanchion(c, y)
+    c.rect(0, 3, 0, 28, STEEL[4])
+    for y in (7, 15, 23):
+        c.rect(0, y, 1, y, STEEL[1])
+    for y in (3, 28):
+        c.put(1, y, BRASS[1])
+
+
 EDGES = {
+    'edge_plank': edge_plank, 'edge_freight_door': edge_freight_door, 'edge_freight_door_open': edge_freight_door_open,
+    'edge_side': edge_side, 'edge_drop_door': edge_drop_door, 'edge_drop_door_open': edge_drop_door_open,
     'edge_wall': edge_wall, 'edge_window': edge_window, 'edge_armor': edge_armor,
     'edge_door': edge_door, 'edge_door_open': edge_door_open,
     'edge_inner_door': edge_inner_door, 'edge_inner_door_open': edge_inner_door_open,
@@ -398,6 +506,83 @@ def end_states():
         out['end_bl'][DIR_INDEX[left]] = piece[1][DIR_INDEX[back]]
         out['end_br'][DIR_INDEX[right]] = piece[-1][DIR_INDEX[back]]
     return out
+
+
+def coupler_body(c, ramp=STEEL):
+    c.bevel(13, 0, 18, 4, ramp[0], ramp[2], ramp[4], outline=STEEL_O)
+
+
+def coupler_free(c):
+    """A whole coupling at a free end (car heading north, its end at the top):
+    the draw hook with its link swung aside."""
+    coupler_body(c)
+    c.rect(15, 1, 16, 2, DARK)
+    c.rect(19, 2, 19, 3, STEEL[3])
+    c.ring(22.0, 3.5, 2.6, STEEL_O, width=2.4)
+    c.ring(22.0, 3.5, 2.4, STEEL[0], width=1.0)
+
+
+def coupler_linked(c):
+    """Half of a made coupling: the links run over the car's end onto the
+    next car's hook, drawn up tight by the brass screw between them."""
+    coupler_body(c)
+    c.rect(12, 0, 12, 3, STEEL_O)
+    c.rect(19, 0, 19, 3, STEEL_O)
+    c.rect(13, 0, 13, 2, STEEL[0])
+    c.rect(18, 0, 18, 2, STEEL[0])
+    c.rect(14, 0, 17, 1, BRASS[1])
+    c.put(14, 0, BRASS[0])
+    c.rect(15, 1, 16, 1, BRASS[3])
+
+
+def coupler_broken(c):
+    """A snapped coupling: a cracked, rusting stub and a link hanging loose."""
+    c.bevel(13, 1, 18, 4, BLACK[1], BLACK[2], BLACK[4], outline=STEEL_O)
+    for x in (13, 15, 18):
+        c.put(x, 0, STEEL_O)
+    c.line(14, 4, 17, 1, DARK)
+    c.put(16, 3, OXIDE[0])
+    c.put(14, 2, OXIDE[1])
+    c.line(19, 2, 22, 5, STEEL[3])
+    c.put(22, 5, STEEL[0])
+
+
+def coupler_none(c):
+    """The empty drawbar pocket of an end whose coupling was taken off."""
+    c.rect(13, 0, 18, 3, STEEL_O)
+    c.rect(14, 0, 17, 2, DARK)
+    c.put(14, 2, STEEL[4])
+    c.put(12, 1, STEEL_O)
+    c.put(19, 1, STEEL_O)
+
+
+def coupler_states():
+    """coupler_f_* sit at the end a car faces, coupler_b_* at its other end;
+    both turn with the car (train_couplings.dm)."""
+    out = {}
+    for kind, draw in (('free', coupler_free), ('linked', coupler_linked),
+                       ('broken', coupler_broken), ('none', coupler_none)):
+        front = directions(draw, order=HEADING)
+        out['coupler_f_' + kind] = front
+        out['coupler_b_' + kind] = [front[DIR_INDEX[OPPOSITE[h]]] for h in 'SNEW']
+    return out
+
+
+def coupling_item():
+    """A spare coupling on the ground: draw hook, screw and links."""
+    c = Canvas(32, 32)
+    c.shade(4, 21, 29, 23, 60)
+    c.bevel(3, 14, 12, 18, STEEL[1], STEEL[2], STEEL[4], outline=STEEL_O)
+    c.ring(15.0, 16.0, 4.2, STEEL_O, width=3.4)
+    c.ring(15.0, 16.0, 4.0, STEEL[1], width=1.6)
+    c.clear(11, 10, 14, 12)
+    for x in (22.0, 27.0):
+        c.ring(x, 16.0, 3.4, STEEL_O, width=2.6)
+        c.ring(x, 16.0, 3.2, STEEL[0], width=1.0)
+    c.rect(23, 15, 26, 17, BRASS[3])
+    c.rect(23, 15, 26, 16, BRASS[1])
+    c.put(23, 15, BRASS[0])
+    return [c.image()]
 
 
 def outrigger(c):
@@ -658,7 +843,49 @@ def roof_armor(c):
     camo(c, 0, 0, 95, 95)
 
 
-ROOFS = {'coach': roof_coach, 'steel': roof_steel, 'armor': roof_armor}
+def roof_boxcar(c):
+    """A boxcar's sheeted roof in freight oxide: seams across, a running
+    board down the middle, grab irons at the front and the brake wheel aft."""
+    prof = [(58, 24, 22), (122, 52, 40), (166, 78, 54), (184, 92, 62), (164, 76, 52),
+            (140, 60, 44), (114, 46, 38), (86, 34, 30), (52, 20, 20)]
+    c.bands(0, 0, 95, 95, across(prof), along=True)
+    for y in range(96):
+        # sheet seams, the same in every row so a long roof repeats cleanly
+        if y % 16 == 7:
+            c.rect(2, y, 93, y, WHITE, 44)
+        elif y % 16 == 8:
+            c.shade(2, y, 93, y, 84)
+        for x in range(96):
+            n = noise(x, y, 83)
+            if n < 0.06:
+                c.put(x, y, (26, 20, 20), 40)
+            elif n > 0.965:
+                c.put(x, y, (226, 150, 110), 34)
+    for y in (31, 63):
+        c.shade(0, y, 95, y, 60)
+    c.frame(0, 0, 95, 95, OXIDE[3])
+    for x in (1, 94):
+        c.rect(x, 1, x, 94, OXIDE[2])
+    c.rect(2, 1, 2, 94, mix(OXIDE[0], WHITE, 0.3), 120)
+    for y in (1, 94):
+        c.rect(1, y, 94, y, OXIDE[2])
+    walkway(c, 42, 53, 2, 93)
+    # grab irons at the front corner, by the ladder
+    for y in (5, 9):
+        c.rect(82, y, 90, y, STEEL[0])
+        c.shade(82, y + 1, 90, y + 1, 70)
+    c.rect(81, 4, 81, 11, STEEL_O)
+    c.rect(91, 4, 91, 11, STEEL_O)
+    # the brake wheel on its staff at the back
+    c.shade(13, 83, 23, 93, 50)
+    c.ring(17, 86, 5.2, STEEL_O)
+    c.ring(17, 86, 4.2, STEEL[1])
+    c.line(13, 86, 21, 86, STEEL[3])
+    c.line(17, 82, 17, 90, STEEL[3])
+    c.disc(17, 86, 1.6, [STEEL[0], STEEL[2], STEEL[4]], outline=STEEL_O)
+
+
+ROOFS = {'coach': roof_coach, 'steel': roof_steel, 'armor': roof_armor, 'boxcar': roof_boxcar}
 
 
 def roof_states():
@@ -1207,7 +1434,7 @@ def gun_states():
 
 def platform_states():
     states = {}
-    for kind in ('wood', 'floor', 'carpet', 'steel'):
+    for kind in ('wood', 'floor', 'carpet', 'steel', 'boards'):
         states['deck_center_' + kind] = deck_center(kind)
         states['deck_side_' + kind] = deck_side(kind)
     for name, draw in EDGES.items():
@@ -1221,6 +1448,8 @@ def platform_states():
     states['outrigger'] = directions(outrigger, order=EDGE)
     states.update(roof_states())
     states.update(loco_states())
+    states.update(coupler_states())
+    states['coupling_item'] = coupling_item()
     return states
 
 
@@ -1238,6 +1467,14 @@ _arm = [(L, 'out', 'armor'), (R, 'out', 'armor')]
 _armd = [(L, 'out', 'armor_door'), (R, 'out', 'armor_door'), (L, 'front', 'armor'), (0, 'front', 'armor_door'),
          (R, 'front', 'armor')]
 _armb = [(L, 'back', 'armor'), (0, 'back', 'armor_door'), (R, 'back', 'armor')]
+_van = [(L, 'out', 'plank'), (R, 'out', 'plank')]
+_van_d = [(L, 'out', 'freight_door'), (R, 'out', 'freight_door')]
+_van_f = [(L, 'front', 'plank'), (0, 'front', 'plank'), (R, 'front', 'plank')]
+_van_b = [(L, 'back', 'plank'), (0, 'back', 'plank'), (R, 'back', 'plank')]
+_low = [(L, 'out', 'side'), (R, 'out', 'side')]
+_low_d = [(L, 'out', 'drop_door'), (R, 'out', 'drop_door')]
+_low_f = [(L, 'front', 'side'), (0, 'front', 'side'), (R, 'front', 'side')]
+_low_b = [(L, 'back', 'side'), (0, 'back', 'side'), (R, 'back', 'side')]
 # mirrors train_car_layout() in code/modules/1713/train_platforms.dm
 CARS = {
     'flatbed': ('wood', 'wood', [_rails, [], [], _rails], None),
@@ -1248,6 +1485,10 @@ CARS = {
     'railgun': ('steel', 'steel', [_rails, _rails, _rails, _rails], None),
     'armored': ('steel', 'steel', [_armd, _arm, _arm, _arm + _armb], 'armor'),
     'flak': ('steel', 'steel', [_rails, _rails, _rails, _rails], None),
+    'bogie_coach': ('carpet', 'floor', [_vest] + [_win] * 6 + [[(L, 'out', 'door'), (R, 'out', 'door')] + _back], 'coach'),
+    'boxcar': ('boards', 'boards', [_van + _van_f, _van, _van, _van_d, _van_d, _van, _van, _van + _van_b], 'boxcar'),
+    'open_wagon': ('boards', 'boards', [_low + _low_f, _low, _low, _low_d, _low_d, _low, _low, _low + _low_b], None),
+    'long_flatbed': ('wood', 'wood', [_rails, [], [], [], [], [], [], _rails], None),
 }
 
 
@@ -1259,23 +1500,24 @@ def tile_pos(heading, seg, col, rows=4):
 def render_car(states, kind, heading, roof=False, open_doors=False, braced=False):
     """One car the way apply_layout() lays its parts out."""
     center, side, segs, roof_kind = CARS[kind]
-    size = (96, 128) if heading in 'NS' else (128, 96)
+    rows = len(segs)
+    size = (96, rows * 32) if heading in 'NS' else (rows * 32, 96)
     im = Image.new('RGBA', size, (0, 0, 0, 0))
     left, right = LEFT_OF[heading], OPPOSITE[LEFT_OF[heading]]
-    for seg in range(4):
+    for seg in range(rows):
         for col in (L, 0, R):
-            x, y = tile_pos(heading, seg, col)
+            x, y = tile_pos(heading, seg, col, rows)
             if col == 0:
                 tile = states['deck_center_' + center][DIR_INDEX[heading]]
             else:
                 tile = states['deck_side_' + side][DIR_INDEX[left if col == L else right]]
             im.alpha_composite(tile, (x * 32, y * 32))
-    for seg, row in ((0, 'f'), (3, 'b')):
+    for seg, row in ((0, 'f'), (rows - 1, 'b')):
         for col, cn in ((L, 'l'), (0, 'c'), (R, 'r')):
-            x, y = tile_pos(heading, seg, col)
+            x, y = tile_pos(heading, seg, col, rows)
             d = heading if col == 0 else (left if col == L else right)
             im.alpha_composite(states['end_' + row + cn][DIR_INDEX[d]], (x * 32, y * 32))
-    for seg in range(4):
+    for seg in range(rows):
         for col, edge, style in segs[seg]:
             if edge == 'front':
                 d = heading
@@ -1288,13 +1530,14 @@ def render_car(states, kind, heading, roof=False, open_doors=False, braced=False
             name = 'edge_' + style
             if open_doors and name + '_open' in states and (seg + col) % 2 == 0:
                 name += '_open'
-            x, y = tile_pos(heading, seg, col)
+            x, y = tile_pos(heading, seg, col, rows)
             im.alpha_composite(states[name][DIR_INDEX[d]], (x * 32, y * 32))
     if roof and roof_kind:
-        for seg in range(4):
+        for seg in range(rows):
             for col, cn in ((L, 'l'), (0, 'c'), (R, 'r')):
-                x, y = tile_pos(heading, seg, col)
-                im.alpha_composite(states['roof_%s_%s%s' % (roof_kind, 'fmmb'[seg], cn)][DIR_INDEX[heading]],
+                x, y = tile_pos(heading, seg, col, rows)
+                row = 'f' if seg == 0 else ('b' if seg == rows - 1 else 'm')
+                im.alpha_composite(states['roof_%s_%s%s' % (roof_kind, row, cn)][DIR_INDEX[heading]],
                                    (x * 32, y * 32))
     return im
 
@@ -1402,6 +1645,44 @@ def write_previews(out, states, gun):
         im.alpha_composite(gun['railway_gun'][DIR_INDEX[heading]], (8 + j * 104, 8))
         del tread_bg
     big(im, 4).save(out / 'railway-gun.png')
+
+    # the bogie stock: two trains heading east, then every car heading north
+    # with its roof off and on, and the goods stock facing south and west
+    goods = train_east(states, gun, [
+        render_loco(states, 'steam', 'E'), render_car(states, 'boxcar', 'E', roof=True),
+        render_car(states, 'open_wagon', 'E'), render_car(states, 'long_flatbed', 'E')])
+    express = train_east(states, gun, [
+        render_loco(states, 'diesel', 'E'), render_car(states, 'bogie_coach', 'E', open_doors=True),
+        render_car(states, 'bogie_coach', 'E', roof=True), render_car(states, 'boxcar', 'E', open_doors=True)])
+    both = Image.new('RGBA', (max(goods.width, express.width), goods.height + express.height), (96, 120, 84, 255))
+    both.alpha_composite(goods, (0, 0))
+    both.alpha_composite(express, (0, goods.height))
+    big(both, 2).save(out / 'long-stock-trains.png')
+
+    # couplings: made, free, broken and taken off, on a train heading east
+    def with_couplers(kind, front, rear):
+        car = render_car(states, kind, 'E')
+        car.alpha_composite(states['coupler_f_' + front][DIR_INDEX['E']], (car.width - 32, 32))
+        car.alpha_composite(states['coupler_b_' + rear][DIR_INDEX['E']], (0, 32))
+        return car
+    made = train_east(states, gun, [with_couplers('flatbed', 'free', 'linked'), with_couplers('coach', 'linked', 'linked'),
+                                    with_couplers('flatbed', 'linked', 'broken')])
+    apart = train_east(states, gun, [with_couplers('flatbed', 'none', 'free')])
+    im = Image.new('RGBA', (made.width + apart.width, made.height), (96, 120, 84, 255))
+    im.alpha_composite(made, (apart.width, 0))
+    im.alpha_composite(apart, (0, 0))
+    im.alpha_composite(states['coupling_item'][0], (apart.width - 20, 150))
+    big(im, 3).save(out / 'couplings.png')
+
+    im = ground(6 * 104 + 8 + 2 * 264, 264 + 16, seed=9)
+    for i, (kind, roof) in enumerate((('bogie_coach', False), ('bogie_coach', True), ('boxcar', False),
+                                      ('boxcar', True), ('open_wagon', False), ('long_flatbed', False))):
+        im.alpha_composite(render_car(states, kind, 'N', roof=roof, open_doors=(i == 2)), (8 + i * 104, 12))
+    im.alpha_composite(render_car(states, 'open_wagon', 'W', open_doors=True), (6 * 104 + 8, 24))
+    im.alpha_composite(render_car(states, 'boxcar', 'W', roof=True), (6 * 104 + 8, 152))
+    im.alpha_composite(render_car(states, 'boxcar', 'S'), (6 * 104 + 8 + 264 + 40, 12))
+    im.alpha_composite(render_car(states, 'open_wagon', 'S'), (6 * 104 + 8 + 264 + 144, 12))
+    big(im, 3).save(out / 'long-stock-cars.png')
 
     im = ground(2 * 104 + 8 + 136, 2 * 136 + 8, seed=7)
     for i, (kind, roof) in enumerate((('coach', False), ('coach', True))):

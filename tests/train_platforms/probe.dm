@@ -4,7 +4,7 @@
 /world
 	hub = ""
 	hub_password = ""
-	maxx = 127
+	maxx = 147
 	maxy = 26
 	maxz = 1
 	turf = /turf/floor/dirt
@@ -895,6 +895,171 @@ var/global/platform_probe_runtime_error = FALSE
 	stepped = facing_forward(H, 12)
 	platform_check("facing/heavy_engine_comes_back", stepped == 12 && H.lead_factor == 0.5 && H.loc == platform_turf(118, 15) && H.dir == SOUTH && L1.loc == platform_turf(118, 20) && heavy_parts_placed(H) && platform_parts_placed(body))
 
+// Bogie stock: cars as long as their kind says (train_car_length()).
+/proc/platform_long_run()
+	for (var/y in 2 to 16)
+		platform_track(130, y, NORTH)
+	for (var/x in 131 to 139)
+		platform_track(x, 16, EAST)
+	var/obj/structure/train_car_kit/short_kit = new(platform_turf(130, 6))
+	short_kit.set_kind("coach")
+	var/short_fits = !short_kit.assembly_problem(NORTH)
+	short_kit.set_kind("bogie_coach")
+	platform_check("long/kit_needs_its_length", short_fits && short_kit.car_length() == 8 && short_kit.assembly_problem(NORTH) && short_kit.name == "bogie coach kit")
+	qdel(short_kit)
+
+	var/obj/structure/trains/platform/van = platform_car("boxcar", 130, 10, NORTH)
+	var/list/segs = platform_segments(van)
+	var/obj/structure/trains/platform/van_end = segs.len == 8 ? segs[8] : null
+	platform_check("long/eight_segments", train_car_length("boxcar") == 8 && train_car_length("coach") == 4 && train_car_length("loco_steam") == 4 && segs.len == 8 && van.loc == platform_turf(130, 10) && van_end && van_end.loc == platform_turf(130, 3) && platform_parts_placed(segs))
+	var/obj/structure/trains/platform/mid = segs[4]
+	platform_check("long/headstocks_at_the_ends", van.car_end_row() == "f" && van_end.car_end_row() == "b" && !mid.car_end_row() && van_end.seg_index == 8)
+	var/list/states = icon_states('icons/obj/vehicles/train_platforms.dmi')
+	var/missing = 0
+	for (var/state in list("edge_plank", "edge_freight_door", "edge_freight_door_open", "edge_side", "edge_drop_door", "edge_drop_door_open", "deck_center_boards", "deck_side_boards", "roof_boxcar_fl", "roof_boxcar_mc", "roof_boxcar_br"))
+		if (!(state in states))
+			missing++
+	platform_check("long/art_states", !missing)
+	var/obj/structure/train_part/edge/slider = null
+	var/sides = 0
+	for (var/obj/structure/train_part/edge/G in mid.deck_parts)
+		if (G.style == "freight_door")
+			slider = G
+	for (var/obj/structure/train_part/edge/G in van.deck_parts)
+		if (G.style == "plank" && G.density && !G.is_door())
+			sides++
+	var/was_shut = slider && slider.density && slider.is_door()
+	if (slider)
+		slider.set_open(TRUE)
+	platform_check("long/boxcar_doors_slide", was_shut && !slider.density && slider.icon_state == "edge_freight_door_open" && sides == 5)
+	platform_check("long/boxcar_roofed", van.roofed() && mid.roof_images && mid.roof_images.len == 3 && van.icon_state == "deck_center_boards")
+	var/weight = 0
+	for (var/obj/structure/trains/platform/S in segs)
+		weight += S.car_load_weight()
+	platform_check("long/weighs_double", weight == 4 && rail_warehouse_unit(mid).len == 8)
+
+	var/obj/structure/trains/locomotive/coal/L = new(platform_turf(130, 11))
+	L.dir = NORTH
+	L.fuel = 100
+	L.on = TRUE
+	var/mob/living/human/platform_rider/shunter = new(platform_turf(128, 3))
+	platform_check("long/couples_at_the_ends_only", !mid.couple_end(TRUE, shunter) && van.hitch_front(shunter) && L.connected == van && van_end.train_head() == L)
+	var/obj/structure/closet/crate/crate = new(platform_turf(129, 5))
+	platform_check("long/follows", platform_step(L, 3) == 3 && van.loc == platform_turf(130, 13) && van_end.loc == platform_turf(130, 6) && platform_parts_placed(segs) && crate.loc == platform_turf(129, 8))
+	var/curve = platform_step(L, 10)
+	platform_check("long/rounds_curve", curve == 10 && L.loc == platform_turf(138, 16) && van.loc == platform_turf(137, 16) && van.dir == EAST && van_end.loc == platform_turf(130, 16) && platform_parts_placed(segs))
+	platform_check("long/coupled_car_stays_whole", van.dismantle_problem())
+	L.connected = null
+	qdel(crate)
+	var/problem = van.dismantle_problem()
+	var/obj/structure/train_car_kit/packed = problem ? null : van.pack_car()
+	var/left = 0
+	for (var/obj/structure/trains/platform/S in world)
+		if (S.car_kind == "boxcar" && !QDELETED(S))
+			left++
+	platform_check("long/packs_into_its_kit", !problem && packed && packed.car_kind == "boxcar" && packed.car_length() == 8 && !left)
+
+	// A furnished bogie coach: a vestibule each end, six bays of seats.
+	for (var/y in 2 to 12)
+		platform_track(134, y, NORTH)
+	var/obj/structure/trains/platform/coach = platform_car("bogie_coach", 134, 10, NORTH)
+	var/list/coach_segs = platform_segments(coach)
+	var/seats = 0
+	var/doors = 0
+	for (var/obj/structure/trains/platform/S in coach_segs)
+		for (var/turf/T in train_platform_tiles(S.loc, S.dir))
+			for (var/obj/structure/bed/chair/C in T)
+				seats++
+		if (S.seg_index == 1 || S.seg_index == 8)
+			for (var/obj/structure/train_part/edge/G in S.deck_parts)
+				if (G.is_door())
+					doors++
+	platform_check("long/bogie_coach_fitted", coach_segs.len == 8 && seats == 12 && doors == 6 && coach.roofed())
+	var/obj/structure/trains/platform/wagon_probe = new(platform_turf(134, 12))
+	wagon_probe.car_kind = "open_wagon"
+	wagon_probe.seg_index = 4
+	wagon_probe.apply_layout()
+	var/drops = 0
+	for (var/obj/structure/train_part/edge/G in wagon_probe.deck_parts)
+		if (G.style == "drop_door" && G.is_door())
+			drops++
+	platform_check("long/open_wagon_drop_doors", drops == 2 && !wagon_probe.roofed() && train_car_length("open_wagon") == 8 && train_car_length("long_flatbed") == 8)
+	qdel(wagon_probe)
+
+// Couplings as parts (train_couplings.dm): shown at every car end, worn,
+// broken, taken off and fitted, and the train parts where one breaks.
+/proc/platform_coupling_run()
+	var/obj/structure/trains/locomotive/coal/L = drive_train(144, 12, 3)
+	var/obj/structure/trains/W1 = L.connected
+	var/obj/structure/trains/W2 = W1.connected
+	var/obj/structure/trains/W3 = W2.connected
+	for (var/obj/structure/trains/car in list(L, W1, W2, W3))
+		car.update_couplers()
+	platform_check("coupling/shown_at_each_end", W1.coupler_f && W1.coupler_r && (W1.coupler_f in W1.vis_contents) && (W1.coupler_r in W1.vis_contents) && W1.coupler_f.icon_state == "coupler_f_linked" && W1.coupler_r.icon_state == "coupler_b_linked" && W3.coupler_r.icon_state == "coupler_b_free" && L.coupler_f.icon_state == "coupler_f_free" && L.coupler_r.icon_state == "coupler_b_linked")
+	platform_check("coupling/part_knows_its_end", W1.coupler_r.car == W1 && !W1.coupler_r.front && W1.coupler_f.front && W1.end_neighbour(FALSE) == W2 && W1.end_neighbour(TRUE) == L && W2.end_towards(W1) && !W2.end_towards(W3))
+	var/list/states = icon_states('icons/obj/vehicles/train_platforms.dmi')
+	var/missing = 0
+	for (var/kind in list("free", "linked", "broken", "none"))
+		for (var/end in list("f", "b"))
+			if (!("coupler_[end]_[kind]" in states))
+				missing++
+	platform_check("coupling/art_states", !missing && ("coupling_item" in states))
+
+	platform_check("coupling/wears", W2.damage_coupling(FALSE, 40) && W2.rear_coupling == 60 && W2.connected == W3 && W2.coupler_r.icon_state == "coupler_b_linked" && findtext(W2.coupling_text(FALSE), "60%"))
+	platform_check("coupling/breaks_and_parts_the_train", W2.damage_coupling(FALSE, 60) && W2.rear_coupling == 0 && !W2.connected && W3.train_head() == W3 && W2.train_head() == L && W2.coupler_r.icon_state == "coupler_b_broken" && W3.coupler_f.icon_state == "coupler_f_free" && !W2.damage_coupling(FALSE, 10))
+	var/mob/living/human/platform_rider/shunter = new(platform_turf(143, 10))
+	platform_check("coupling/broken_will_not_couple", !W3.hitch_front(shunter) && !W2.hitch_rear(shunter) && !W2.connected)
+	platform_check("coupling/hitched_one_stays_on", !W1.remove_coupling(FALSE) && W1.rear_coupling == 100)
+	var/obj/item/train_coupling/scrap = W2.remove_coupling(FALSE)
+	platform_check("coupling/taken_off", scrap && scrap.condition == 0 && scrap.name == "broken train coupling" && W2.rear_coupling == -1 && W2.coupler_r.icon_state == "coupler_b_none" && findtext(W2.coupling_text(FALSE), "missing") && !W3.hitch_front(shunter))
+	var/obj/item/train_coupling/spare = new(platform_turf(143, 10))
+	var/refused = !W1.fit_coupling(FALSE, spare)
+	platform_check("coupling/spare_fitted", refused && W2.fit_coupling(FALSE, spare) && W2.rear_coupling == 100 && QDELETED(spare) && W2.coupler_r.icon_state == "coupler_b_free")
+	platform_check("coupling/couples_again", W3.hitch_front(shunter) && W2.connected == W3 && W2.coupler_r.icon_state == "coupler_b_linked" && W3.coupler_f.icon_state == "coupler_f_linked" && W3.train_head() == L)
+
+	// By hand: a tight coupling stays made; a blow on harm intent wears it.
+	L.throttle = 1
+	L.driving = TRUE
+	var/tight = W1.train_under_power() && W1.coupler_use(shunter, FALSE) && W1.connected == W2
+	L.driving = FALSE
+	L.throttle = 0
+	platform_check("coupling/not_undone_under_power", tight && !W1.train_under_power())
+	var/obj/item/weapon/crowbar/bar = new(shunter)
+	shunter.put_in_active_hand(bar)
+	shunter.a_intent = I_HARM
+	var/far = !L.coupler_use(shunter, TRUE) && L.front_coupling == 100
+	W2.coupler_use(shunter, TRUE)
+	platform_check("coupling/struck_with_a_weapon", far && shunter.get_active_hand() == bar && W2.front_coupling == 100 - bar.force && W1.connected == W2)
+	qdel(bar)
+
+	W3.blast_couplings(2)
+	var/strained = W3.front_coupling == 40 && W3.rear_coupling == 40 && W2.connected == W3
+	W3.blast_couplings(1)
+	platform_check("coupling/blast_breaks", strained && W3.front_coupling == 0 && W3.rear_coupling == 0 && !W2.connected)
+	platform_check("coupling/train_runs_on_without_the_rest", platform_step(L, 2) == 2 && W2.loc == platform_turf(144, 12) && W3.loc == platform_turf(144, 9))
+	var/obj/effect/train_coupler/gone = W3.coupler_f
+	qdel(W3)
+	platform_check("coupling/cleared_with_the_car", gone && QDELETED(gone))
+
+	// Cars facing each other's way: each end still knows its neighbour.
+	for (var/y in 2 to 10)
+		platform_track(146, y, NORTH)
+	var/obj/structure/trains/transport/flatbed/A = new(platform_turf(146, 6))
+	A.dir = NORTH
+	var/obj/structure/trains/transport/flatbed/B = new(platform_turf(146, 5))
+	B.dir = SOUTH
+	var/mob/living/human/platform_rider/second = new(platform_turf(145, 6))
+	platform_check("coupling/back_to_back", A.hitch_rear(second) && A.end_neighbour(FALSE) == B && B.end_neighbour(FALSE) == A && !B.end_neighbour(TRUE) && B.coupler_r.icon_state == "coupler_b_linked" && B.coupler_f.icon_state == "coupler_f_free" && A.coupler_r.icon_state == "coupler_b_linked")
+	B.damage_coupling(FALSE, 100)
+	platform_check("coupling/back_to_back_parts", !A.end_neighbour(FALSE) && !B.end_neighbour(FALSE) && A.train_head() == A && B.train_head() == B && A.rear_coupling == 100)
+
+	// A car of several sections has a coupling at each end of the car only.
+	var/obj/structure/trains/platform/flat = platform_car("flatbed", 146, 10, NORTH)
+	var/list/segs = platform_segments(flat)
+	var/obj/structure/trains/platform/mid = segs[2]
+	var/obj/structure/trains/platform/last = segs[4]
+	platform_check("coupling/car_ends_only", flat.coupler_f && !flat.coupler_r && !mid.coupler_f && !mid.coupler_r && last.coupler_r && !last.coupler_f && !mid.damage_coupling(TRUE, 100) && mid.front_coupling == 100)
+
 /world/New()
 	OpenPort("none")
 	GLOB.all_observable_events = list()
@@ -912,6 +1077,8 @@ var/global/platform_probe_runtime_error = FALSE
 		platform_viewers_run()
 		platform_position_run()
 		platform_facing_run()
+		platform_long_run()
+		platform_coupling_run()
 	catch (var/exception/E)
 		platform_probe_runtime_error = TRUE
 		world.log << "Fixture aborted: [E] at [E.file]:[E.line]"

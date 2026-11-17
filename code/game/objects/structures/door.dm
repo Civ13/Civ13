@@ -286,6 +286,7 @@
 	processing_objects -= src
 	for (var/obj/roof/R in loc)
 		R.collapse_check()
+	building_recheck_storeys_above(src)
 	for (var/atom/movable/lighting_overlay/L in view(7*3, src))
 		L.update_overlay()
 	..()

@@ -416,7 +416,7 @@
 /mob/living/human/Login()
 	. = ..()
 	if (client)
-		client.tutorial_login(src)
+		client.first_choices_login(src) // asks the first-join choices when due, then tutorial_login
 
 /client/proc/tutorial_login(mob/living/human/H)
 	if (!prefs || !istype(H) || istype(H, /mob/living/human/practice))

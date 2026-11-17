@@ -569,7 +569,7 @@
 
 /obj/item/weapon/book/ui_actions(ui_key)
 	if (ui_key == "research_book")
-		return list("study", "write", "rip", "read")
+		return list("study", "write", "rip", "read", "aloud")
 	return ..()
 
 /obj/item/weapon/book/ui_interact(mob/user, ui_key = "research_book", var/datum/nanoui/ui = null, var/force_open = TRUE, var/datum/nanoui/master_ui = null, var/datum/topic_state/state = default_state)
@@ -581,7 +581,7 @@
 	open_tgui(user, ui_key, "research_book.tmpl", "Book", 620, 660, data, ui, force_open, research_book_state, keep_interaction = TRUE)
 
 /obj/item/weapon/book/Topic(href, href_list, var/datum/topic_state/state = default_state)
-	if (!href_list["study"] && !href_list["write"] && !href_list["rip"] && !href_list["read"])
+	if (!href_list["study"] && !href_list["write"] && !href_list["rip"] && !href_list["read"] && !href_list["aloud"])
 		return ..()
 	var/mob/living/human/H = usr
 	if (!istype(H) || research_book_state.can_use_topic(src, H) != STATUS_INTERACTIVE)
@@ -590,7 +590,9 @@
 		if (dat)
 			H.examinate(src)
 		return FALSE
-	if (href_list["study"])
+	if (href_list["aloud"])
+		read_chapter_aloud(H, href_list["aloud"])
+	else if (href_list["study"])
 		study_research_source(H, src, href_list["study"])
 	else if (href_list["write"])
 		var/obj/item/weapon/pen/pen = H.held_writing_pen()

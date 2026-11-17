@@ -209,6 +209,7 @@ var/global/wall_bulk_placement = FALSE
 /turf/wall/Del()
 	for (var/obj/roof/R in range(2, src))
 		R.collapse_check()
+	building_recheck_storeys_above(src)
 	return ..()
 
 /turf/wall/Destroy()

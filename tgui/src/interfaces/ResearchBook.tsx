@@ -48,7 +48,7 @@ export function ResearchBook(ui: ScreenProps) {
             <small>{str(row.era_name)} - {str(row.discipline)}{row.state === 'locked' && missing.length ? ` - first learn ${missing.map(item => str(item.name)).join(', ')}` : ''}{row.state === 'study' ? `${Number(row.read_percent) > 0 ? ` - ${row.read_percent}% read` : ''} - about ${minutes(row.study_minutes)}${Number(row.read_percent) > 0 ? ' left' : ''}${row.tutor ? ` with ${str(row.tutor)} tutoring` : ''}` : ''}</small>
           </button>
           <Pill tone={stateTone(row.state)}>{labels[row.state] ?? str(row.state)}</Pill>
-          <span className="rs-row-action">{row.state === 'study' && <Action ui={ui} action="study" value={row.id}>{Number(row.read_percent) > 0 ? 'Continue' : 'Study'}</Action>}</span>
+          <span className="rs-row-action">{row.state === 'study' && <Action ui={ui} action="study" value={row.id}>{Number(row.read_percent) > 0 ? 'Continue' : 'Study'}</Action>}{row.state === 'known' && !!data.held && <Action ui={ui} action="aloud" value={row.id} disabled={!!data.busy}>Read aloud</Action>}</span>
           {isOpen && <div className="rs-row-detail">
             <h3>Groundwork</h3>
             {list(row.groundwork).length ? <ul className="rs-checks">{list(row.groundwork).map(item => <li key={item.id} className={item.known ? 'rs-ok' : 'rs-missing'}><span aria-hidden="true">{item.known ? '✓' : '✗'}</span> {str(item.name)} <span className="rs-dim">{item.known ? 'known' : 'not known yet'}</span></li>)}</ul> : <p className="rs-dim">None. Anyone can study this.</p>}

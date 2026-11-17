@@ -119,6 +119,38 @@ drops below half: coal, wood planks and branches, as many as fit.
 Fuel per tile is 0.25 at idle up to 1 at full throttle with a rated load, and
 up to 1.375 overloaded.
 
+## Couplings
+
+Every car end carries a coupling (`train_couplings.dm`): `front_coupling` at
+the end the car faces and `rear_coupling` at the other, each 100 when sound,
+0 when broken and -1 when taken off. They are saved with the car. A car of
+several sections has one at each end of the car only (`has_coupling_end()`),
+and a heavy locomotive has its rear one on its last body section.
+
+The link between two cars is still `connected`. It can be made only when
+both couplings that meet are whole, and it parts when either breaks
+(`damage_coupling()`): the cars beyond the break are left where they stand
+and the engine's part of the train runs on. Explosions strain the couplings
+of the cars they catch (`blast_couplings()`). Crash damage arrives with the
+crash work.
+
+Each end shows as a `/obj/effect/train_coupler` in the car's `vis_contents`,
+so it turns and moves with the car at no cost per step, is never saved, and
+is what players click (`coupler_use()`):
+
+- empty hand: couple, or uncouple after a short moment; refused while an
+  engine in the train is pulling (`train_under_power()`)
+- a weapon on harm intent: wears it by the weapon's force
+- welding tool: mends it, broken or not
+- wrench: takes it off a free end as a `/obj/item/train_coupling`, which
+  keeps its condition
+- a train coupling: fits it to an empty end
+
+The right-click Hitch verb still works and follows the same rules without
+the wait. Spares are crafted (4 iron, Rail & Steam). `update_couplers()`
+rebuilds the visible parts and is safe to call at any time. Region travel
+does not carry coupling wear: cars arrive with sound couplings.
+
 ## Reversing
 
 With the reverser backward the rearmost car leads: it takes the next tile

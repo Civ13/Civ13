@@ -172,4 +172,5 @@
 	if (W)
 		for (var/obj/roof/R in range(3, W))
 			R.collapse_check()
+		building_recheck_storeys_above(W)
 	return ..()

@@ -212,8 +212,18 @@
 		return
 	if (is_tool(W, TOOL_HAMMER))
 		if (!wall)
+			// Upstairs a finished floor comes up to the plain upper floor and
+			// the ceiling below stays (tile_occupancy.dm). Only the plain floor
+			// itself opens a hole, and the player is asked first.
+			var/keeps_slab = building_slab_face() && !is_subfloor()
+			if (!keeps_slab && building_slab_face() && !building_slab_removal_confirmed(user, src))
+				return
 			to_chat(user, "You start removing \the [src]...")
-			if (do_after(user, 50, src))
+			if (do_after(user, 50, src) && !QDELETED(src))
+				if (keeps_slab && building_slab_face())
+					if (revert_to_subfloor())
+						to_chat(user, "You take up \the [src]. The plain upper floor under it stays.")
+					return
 				to_chat(user, "You removed \the [src] from the floor.")
 				qdel(src)
 				return

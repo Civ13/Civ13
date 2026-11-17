@@ -20,7 +20,9 @@ NODES = (ROOT / 'code/modules/research_tree/research_node.dm').read_text(encodin
 KITS = ['/obj/structure/train_car_kit', '/obj/structure/train_car_kit/coach', '/obj/structure/train_car_kit/sleeper',
         '/obj/structure/train_car_kit/dining', '/obj/structure/train_car_kit/storage',
         '/obj/structure/train_car_kit/railgun', '/obj/structure/train_car_kit/armored',
-        '/obj/structure/train_car_kit/flak']
+        '/obj/structure/train_car_kit/flak', '/obj/structure/train_car_kit/long_flatbed',
+        '/obj/structure/train_car_kit/open_wagon', '/obj/structure/train_car_kit/boxcar',
+        '/obj/structure/train_car_kit/bogie_coach']
 
 
 def dmi_description(path):
@@ -65,6 +67,19 @@ class TrainPlatformSourceTests(unittest.TestCase):
             self.assertIn('"%s" = "%s"' % (path, node), NODES)
             self.assertRegex(LOCOS, r'/obj/structure/train_car_kit/%s\n\tname = "heavy [a-z]+ locomotive kit"\n\tcar_kind = "%s"' % (kit, kit))
 
+    def test_couplings_are_parts_at_each_car_end(self):
+        dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
+        self.assertEqual(dme.count('#include "code\\modules\\1713\\train_couplings.dm"'), 1)
+        couplings = (ROOT / 'code/modules/1713/train_couplings.dm').read_text(encoding='utf-8')
+        # Saved per car end, shown through vis_contents and never saved themselves.
+        self.assertIn('\tvar/front_coupling = TRAIN_COUPLING_HEALTH\n\tvar/rear_coupling = TRAIN_COUPLING_HEALTH\n', couplings)
+        self.assertIn('/obj/effect/train_coupler\n', couplings)
+        self.assertIn('\tshould_save = FALSE\n\tvis_flags = VIS_INHERIT_DIR\n', couplings)
+        # A link needs both couplings whole, and explosions strain them.
+        self.assertIn('if (coupling_at(coupling_end_ahead(ahead)) <= 0)', TRAINS)
+        self.assertIn('/obj/structure/trains/platform/ex_act(severity)\n\tblast_couplings(severity)\n', WARFARE)
+        self.assertIn('RECIPE: /material/iron/,train coupling,/obj/item/train_coupling,4,80,0,0,trains,101,', RECIPES)
+
     def test_heavy_locomotives_drive_like_the_one_tile_engines(self):
         dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
         self.assertEqual(dme.count('#include "code\\modules\\1713\\train_locomotives.dm"'), 1)
@@ -83,16 +98,18 @@ class TrainPlatformSourceTests(unittest.TestCase):
         # Restored kits must not rename themselves in a constructor.
         self.assertNotIn('/obj/structure/train_car_kit/New(', SOURCE)
         self.assertNotIn('/obj/structure/train_car_kit/New(', WARFARE)
-        for kind in ('coach', 'sleeper', 'dining', 'storage', 'railgun', 'armored', 'flak'):
+        for kind in ('coach', 'sleeper', 'dining', 'storage', 'railgun', 'armored', 'flak', 'long_flatbed',
+                     'open_wagon', 'boxcar', 'bogie_coach'):
             self.assertRegex(SOURCE + WARFARE, r'/obj/structure/train_car_kit/%s\n\tname = "[a-z ]+ kit"\n\tcar_kind = "%s"' % (kind, kind))
 
     def test_icon_states_exist(self):
         desc = dmi_description(ROOT / 'icons/obj/vehicles/train_platforms.dmi')
         states = set(re.findall(r'state = "([^"]+)"', desc))
-        for kind in ('wood', 'floor', 'carpet', 'steel'):
+        for kind in ('wood', 'floor', 'carpet', 'steel', 'boards'):
             self.assertIn('deck_center_' + kind, states)
             self.assertIn('deck_side_' + kind, states)
-        for style in ('wall', 'window', 'door', 'door_open', 'inner_door', 'inner_door_open', 'partition', 'rail'):
+        for style in ('wall', 'window', 'door', 'door_open', 'inner_door', 'inner_door_open', 'partition', 'rail',
+                      'plank', 'freight_door', 'freight_door_open', 'side', 'drop_door', 'drop_door_open'):
             self.assertIn('edge_' + style, states)
         for state in ('car_kit', 'edge_armor', 'edge_armor_door', 'edge_armor_door_open', 'brace_up', 'brace_down',
                       'wreck', 'loco_armor'):

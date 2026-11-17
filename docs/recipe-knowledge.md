@@ -210,6 +210,20 @@ books and taking commissions need no new code: books are ordinary items that
 change hands through normal trade, and a commission is a chapter written from
 memory or copied at a bench.
 
+### Reading aloud
+
+`read_aloud.dm`: someone holding a book reads a chapter they know aloud
+(the book window's "Read aloud" button on a known chapter, or the book's
+"Read Chapter Aloud" verb). Every conscious, hearing person within 7 tiles
+who has the chapter's groundwork and does not know it yet gains study
+progress at half the pace of reading it themselves (`hear_chapter_read`), on
+the same record as reading (`study_progress.dm`), and can keep working while
+listening. Walls and rooms do not matter. A reader presenting at a broadcast
+station also reaches everyone beside a set tuned to it. The reader needs
+light, must stay put and stops after 30 seconds with nobody learning. Each
+listener who finishes gives the reader a quarter of the study skill gain.
+Tests: `check_read_aloud` in `tests/recipe_knowledge/game.dm`.
+
 ### Apprentices (profession 6)
 
 The IC verb **Take an apprentice** offers an apprenticeship to a player next

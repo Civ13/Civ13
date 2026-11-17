@@ -259,18 +259,19 @@
 		var/path = train_transfer_path(S["type"])
 		if(!path || !(S["dir"] in cardinal) || !train_transfer_number(S["health"], 1, 1500) || !(S["on"] in list(FALSE, TRUE)) || !train_transfer_number(S["fuel"], 0, 100)) return null
 		if(path == /obj/structure/trains/platform)
-			if(!train_car_layout(S["car_kind"]) || !train_transfer_string(S["car_id"]) || !train_transfer_number(S["seg_index"], 1, 4) || !train_transfer_number(S["open_doors"], 0, 65535)) return null
+			if(!train_car_layout(S["car_kind"]) || !train_transfer_string(S["car_id"]) || !train_transfer_number(S["seg_index"], 1, train_car_length(S["car_kind"])) || !train_transfer_number(S["open_doors"], 0, 65535)) return null
 		else if(S["car_kind"] != "" || S["car_id"] != "" || S["seg_index"] != 0 || S["open_doors"] != 0)
 			return null
-	// A platform is a complete four-segment car, never a truncated prefix.
+	// A platform is a complete car of its kind's length, never a truncated prefix.
 	for(var/i = 1, i <= segments.len, i++)
 		var/list/S = segments[i]
 		if(S["type"] != "/obj/structure/trains/platform") continue
-		if(S["seg_index"] != 1 || i + 3 > segments.len) return null
-		for(var/j = 1, j <= 4, j++)
+		var/car_len = train_car_length(S["car_kind"])
+		if(S["seg_index"] != 1 || i + car_len - 1 > segments.len) return null
+		for(var/j = 1, j <= car_len, j++)
 			var/list/part = segments[i + j - 1]
 			if(part["type"] != S["type"] || part["seg_index"] != j || part["car_id"] != S["car_id"] || part["car_kind"] != S["car_kind"]) return null
-		i += 3
+		i += car_len - 1
 	var/list/owners = list()
 	for(var/list/E in entities)
 		if(!islist(E) || !train_transfer_string(E["id"]) || (E["id"] in ids) || !train_transfer_number(E["segment"], 1, segments.len) || !train_transfer_number(E["slot"], 1, 3) || !(E["dir"] in cardinal) || !(E["anchored"] in list(FALSE, TRUE))) return null

@@ -385,6 +385,7 @@
 	haul = 30
 
 /obj/structure/trains/locomotive/coal/heavy/ex_act(severity)
+	blast_couplings(severity)
 	heavy_damage(severity == 1.0 ? 450 : (severity == 2.0 ? 220 : 80))
 
 /obj/structure/trains/locomotive/coal/heavy/attackby(obj/item/W as obj, mob/user as mob)
@@ -412,6 +413,7 @@
 	return W.reagents.has_reagent("diesel") || W.reagents.has_reagent("biodiesel")
 
 /obj/structure/trains/locomotive/heavy_diesel/ex_act(severity)
+	blast_couplings(severity)
 	heavy_damage(severity == 1.0 ? 450 : (severity == 2.0 ? 220 : 80))
 
 /obj/structure/trains/locomotive/heavy_diesel/attackby(obj/item/W as obj, mob/user as mob)
