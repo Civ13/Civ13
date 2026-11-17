@@ -284,6 +284,23 @@
 	var/low = vehicle_offset_riders[src] ? -32 : -16
 	return isturf(loc) && world.icon_size == 32 && bound_x == 0 && bound_y == 0 && bound_width == 32 && bound_height == 32 && isnum(step_x) && isnum(step_y) && step_x >= low && step_x < 32 && step_y >= low && step_y < 32 && step_x == round(step_x) && step_y == round(step_y)
 
+// Something can leave a body between whole pixels (pixloc 6240.5 was seen on
+// Gaia after walking into a tree). human_subtile_shape() then refuses every
+// input, so the player can never move again, even by reconnecting or jumping
+// by x/y. Round the offset back onto the pixel grid before input is judged.
+/mob/living/human/proc/human_subtile_snap_fraction()
+	if (!isturf(loc) || !isnum(step_x) || !isnum(step_y))
+		return FALSE
+	var/sx = round(step_x, 1)
+	var/sy = round(step_y, 1)
+	if (sx == step_x && sy == step_y)
+		return FALSE
+	step_x = sx
+	step_y = sy
+	human_subtile_anchor()
+	human_subtile_offset_owned = !!(step_x || step_y)
+	return TRUE
+
 // File the body under the tile beneath its centre. Returns TRUE if it moved.
 /mob/living/human/proc/human_subtile_anchor()
 	if (!isturf(loc) || bound_x || bound_y || bound_width != 32 || bound_height != 32 || !isnum(step_x) || !isnum(step_y))
