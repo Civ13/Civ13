@@ -16,6 +16,9 @@
 // Clicks: everything shown through open air counts as the open-air cell itself
 // (VIS_INHERIT_ID), so grabbing open air to climb down, building on it and
 // placing ladders work as before, and nothing below can be clicked from above.
+// Floors: a solid floor over open air hides the level below, so its cell holds
+// no view. A floor whose sprite has gaps (patched planks, a catwalk) keeps the
+// view, and the level below shows through the gaps instead of the sky.
 // Lighting: the lighting of the cell below is hidden and the open-air cell's
 // own lighting applies, so the view goes dark at night with the viewer's level.
 
@@ -65,12 +68,28 @@
 
 /turf/sky/building/var/tmp/obj/effect/open_air_view/open_air_view = null
 
-// Shows the level below through this cell, or stops if a floor now covers it.
+// TRUE for a floor whose sprite has see-through gaps between its boards or bars.
+/obj/covers/var/gaps_show_below = FALSE
+
+/obj/covers/repairedfloor
+	gaps_show_below = TRUE
+
+/obj/covers/catwalk
+	gaps_show_below = TRUE
+
+// TRUE when a floor here hides the level below entirely.
+/turf/sky/building/proc/open_air_view_floored()
+	for (var/obj/covers/C in src)
+		if (!C.gaps_show_below)
+			return TRUE
+	return FALSE
+
+// Shows the level below through this cell, or stops if a solid floor now covers it.
 // The turf below is shown whole; open air there shows the level under it.
 /turf/sky/building/proc/open_air_view_refresh(depth = 1, wake = TRUE)
 	var/below_z = multiz_level_below(z)
 	var/turf/below = below_z ? locate(x, y, below_z) : null
-	if (!below || depth > OPEN_AIR_VIEW_DEPTH || istype(src, /turf/sky/building/unformed) || (locate(/obj/covers) in src))
+	if (!below || depth > OPEN_AIR_VIEW_DEPTH || istype(src, /turf/sky/building/unformed) || open_air_view_floored())
 		open_air_view_clear()
 		return
 	if (!open_air_view)

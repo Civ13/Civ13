@@ -84,6 +84,23 @@ var/list/open_air_probe_log = list()
 	open_air_probe_check(!open_air_probe_view(top) && !(V in top.vis_contents), "new_floor_drops_view")
 	open_air_probe_check(top.icon == initial(top.icon), "sky_back_when_view_drops")
 	open_air_probe_check(open_air_probe_view(middle) == W, "chain_below_kept")
+	// A floor with gaps between its boards keeps the view, so the level below
+	// shows through the gaps instead of the sky; a solid floor laid over it
+	// drops the view.
+	var/turf/sky/building/gapped = locate(6, 4, 3)
+	var/obj/covers/repairedfloor/planks = new(gapped)
+	planks.name = "upper floor"
+	var/turf/sky/building/grated = locate(7, 4, 3)
+	new /obj/covers/catwalk(grated)
+	open_air_view_link_around(3, 6, 6, 3, 3)
+	var/obj/effect/open_air_view/G = open_air_probe_view(gapped)
+	var/turf/under_gapped = locate(6, 4, 2)
+	open_air_probe_check(G && (G in gapped.vis_contents) && (under_gapped in G.vis_contents) && !gapped.icon, "gapped_floor_shows_below")
+	open_air_probe_check(G && G.layer < planks.layer, "view_under_gapped_floor")
+	open_air_probe_check(open_air_probe_view(grated) && !grated.icon, "catwalk_shows_below")
+	new /obj/covers/wood(gapped)
+	open_air_view_link_around(3, 6, 6, 3, 3)
+	open_air_probe_check(!open_air_probe_view(gapped) && gapped.icon == initial(gapped.icon), "solid_floor_over_gaps_blocks")
 	// Replacing a cell drops its view.
 	var/turf/sky/building/replaced = locate(4, 4, 3)
 	var/obj/effect/open_air_view/R = open_air_probe_view(replaced)

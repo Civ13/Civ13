@@ -40,7 +40,13 @@ class OpenAirView(unittest.TestCase):
 
     def test_floors_stop_the_view_and_replacement_drops_it(self):
         refresh = proc('/turf/sky/building/proc/open_air_view_refresh(depth = 1, wake = TRUE)')
-        self.assertIn('(locate(/obj/covers) in src)', refresh)
+        self.assertIn('open_air_view_floored()', refresh)
+        # Floors with gaps in their sprite keep the view; solid floors drop it.
+        floored = proc('/turf/sky/building/proc/open_air_view_floored()')
+        self.assertIn('if (!C.gaps_show_below)', floored)
+        self.assertIn('/obj/covers/var/gaps_show_below = FALSE', SOURCE)
+        for gapped in ('/obj/covers/repairedfloor', '/obj/covers/catwalk'):
+            self.assertIn(gapped + '\n\tgaps_show_below = TRUE', SOURCE)
         self.assertIn('istype(src, /turf/sky/building/unformed)', refresh)
         self.assertIn('multiz_level_below(z)', refresh)
         # Only the cell in sight is woken; the cells under it are drawn through it.
