@@ -2496,6 +2496,8 @@ SUITES = {
                   'tests/sprites/create_firefighting.py')},
     'voice_chat': {'files': ('tests/voice_chat/test_voice_chat.py',),
         'paths': ('tests/voice_chat/', 'code/modules/voice/')},
+    'lobby_relay': {'files': ('tests/lobby_relay/test_lobby_relay.py',),
+        'paths': ('tests/lobby_relay/', 'code/modules/webhooks/', 'code/game/mob/new_player/new_player.dm')},
     'signal_fires': {'files': ('tests/signal_fires/test_signal_fires.py',),
         'paths': ('tests/signal_fires/', 'code/modules/1713/signal_fires.dm',
                   'icons/effects/signal_smoke.dmi', 'tests/sprites/create_signal_smoke.py')},

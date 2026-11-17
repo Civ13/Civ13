@@ -70,17 +70,14 @@ var/global/list/lobby_relay_waiting = list() // ckey = TRUE while announced and 
 	. = ..()
 	if (!webhook_enabled())
 		return
-	var/mob/new_player/P = src
-	spawn (LOBBY_RELAY_SETTLE)
-		lobby_relay_arrival(P)
+	addtimer(CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(lobby_relay_arrival), src), LOBBY_RELAY_SETTLE)
 
 /mob/new_player/Logout()
 	var/client/C = my_client
 	var/old_ckey = C ? C.ckey : null
 	. = ..()
 	if (old_ckey)
-		spawn (5)
-			lobby_relay_entered(old_ckey, C)
+		addtimer(CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(lobby_relay_entered), old_ckey, C), 5)
 
 #undef LOBBY_RELAY_SETTLE
 #undef LOBBY_RELAY_COOLDOWN
