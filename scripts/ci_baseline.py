@@ -1415,6 +1415,9 @@ SUITES = {
         'paths': ('tests/canals/',), 'shared_paths': (
             'code/modules/1713/canals.dm', 'code/modules/1713/trench.dm', 'icons/obj/canal_lock.dmi',
             'tests/sprites/create_canal_lock.py')},
+    # Cool cellars: source contracts (native probe tests/cool_cellars/probe.dm).
+    'cool_cellars': {'files': ('tests/cool_cellars/test_source.py',),
+        'paths': ('tests/cool_cellars/',), 'shared_paths': ('code/modules/1713/cool_cellars.dm',)},
     # Clay tablets, board games and the ice house: source contracts (native probe tests/small_ancient/probe.dm).
     'small_ancient': {'files': ('tests/small_ancient/test_source.py',),
         'paths': ('tests/small_ancient/',), 'shared_paths': (

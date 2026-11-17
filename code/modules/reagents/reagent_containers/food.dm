@@ -71,6 +71,7 @@
 					new/obj/item/weapon/reagent_containers/food/snacks/grown/greenpotato(src.loc)
 					qdel(src)
 					return
+		var/decay_before = decaytimer
 		if (istype(loc, /obj/structure/closet/fridge))
 			var/obj/structure/closet/fridge/F = loc
 			if (F.powersource && F.powersource.powered)
@@ -88,6 +89,7 @@
 			decaytimer += 600
 		else // Closed cans already returned above; opened cans age like ordinary storage.
 			decaytimer += 300
+		decaytimer = decay_before + cool_cellar_decay_step(src, decaytimer - decay_before) // a cellar keeps food cool (cool_cellars.dm)
 		if (decaytimer >= decay)
 			qdel(src)
 			return
