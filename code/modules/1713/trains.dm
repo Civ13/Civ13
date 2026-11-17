@@ -1066,6 +1066,7 @@ var/global/train_solo_move = FALSE
 /obj/structure/trains/locomotive/proc/refresh_consist(steps_since = 0)
 	drive_head = train_head()
 	var/list/cars = train_consist_list(drive_head)
+	drive_tail = cars.len ? cars[cars.len] : src
 	lead_factor = leading_factor(cars)
 	consist_weight = 0
 	consist_power = 0
@@ -1120,7 +1121,7 @@ var/global/train_solo_move = FALSE
 	if (!on || throttle <= 0 || engine_disabled())
 		return 0
 	var/top = 10 / max(0.5, max_train_speed)
-	return top * lead_factor * min(1, pull_ratio()) * steam_factor() * throttle / LOCO_NOTCHES
+	return top * lead_factor * snow_factor * min(1, pull_ratio()) * steam_factor() * throttle / LOCO_NOTCHES
 
 /obj/structure/trains/locomotive/collision_impact()
 	if (rail_speed <= 0)
@@ -1176,6 +1177,8 @@ var/global/train_solo_move = FALSE
 				break
 			steps++
 			since++
+			// Snow on the line (train_snow.dm).
+			meet_snow()
 			if (sanding > 0)
 				sanding--
 			if (steps % 8 == 0)
@@ -1189,6 +1192,7 @@ var/global/train_solo_move = FALSE
 		if (since > 0 && isturf(loc))
 			refresh_consist(since)
 		rail_speed = 0
+		snow_factor = 1
 		braking = FALSE
 		driving = FALSE
 		automovement = FALSE

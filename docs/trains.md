@@ -391,6 +391,24 @@ what stands within two tiles of them, like a water crane.
   (`load_sand()`) and fills the sandboxes of the engines within reach
   (2 seconds).
 
+## Snow
+
+`train_snow.dm`. Snow that falls and lies (`snowfall_ground.dm`:
+`weather_snow`, one or two units on a dirt or grass tile) drifts over the
+track. After each tile the driving engine looks at the tile its leading car
+entered (`meet_snow()`, `leading_end()`): snow there sets `snow_factor` to
+0.75 for one unit and 0.5 for two, a factor of `cruise_speed()`, until the
+leading car is on clear track again. Authored snow terrain does not count.
+
+A snowplough (`/obj/item/train_snowplough`, 10 iron) is a part of a car end:
+`front_plough` and `rear_plough`, saved. It is fitted and taken off at the
+coupling of a free end (`plough_use()` from `coupler_use()`: the plough to
+fit, a wrench to take it off, 6 seconds, train standing) and shows as an
+overlay on that coupling from `icons/obj/vehicles/train_plough.dmi` (96 x 96).
+When the end that leads the train carries one, `meet_snow()` clears the tile
+(`/turf/proc/plough_snow()`) and the train keeps its speed. Region travel and
+the warehouse do not carry ploughs yet.
+
 ## Reversing
 
 With the reverser backward the rearmost car leads: it takes the next tile
