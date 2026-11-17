@@ -278,6 +278,10 @@
 	if (world.time < user.next_load)
 		return
 
+	// Refuse a round that can never fit before the reload wait, not after it.
+	if (istype(A, /obj/item/ammo_casing) && !ammo_casing_fits(A, user))
+		return
+
 	if (load_delay && !do_after(user, load_delay, src, can_move = TRUE))
 		return
 	if (gun_work_busy) return FALSE
@@ -365,14 +369,7 @@
 
 	else if (istype(A, /obj/item/ammo_casing))
 		var/obj/item/ammo_casing/C = A
-		if (!(load_method & SINGLE_CASING))
-			to_chat(user, "<span class='warning'>You can't load \the [src] with a single casing!</span>")
-			return
-		if (caliber != C.caliber)
-			to_chat(user, "<span class='warning'>\The [C] is of the wrong caliber!</span>")
-			return //incompatible
-		if (loaded.len >= max_shells)
-			to_chat(user, "<span class='warning'>[src] is full.</span>")
+		if (!ammo_casing_fits(C, user))
 			return
 
 		user.remove_from_mob(C)
@@ -382,6 +379,28 @@
 		if (bulletinsert_sound) playsound(loc, bulletinsert_sound, 75, TRUE)
 
 	update_icon()
+
+/obj/item/weapon/gun/projectile/proc/ammo_casing_fits(obj/item/ammo_casing/C, mob/user)
+	if (!(load_method & SINGLE_CASING))
+		to_chat(user, "<span class='warning'>You can't load \the [src] with a single casing!</span>")
+		return FALSE
+	if (caliber != C.caliber)
+		to_chat(user, "<span class='warning'>\The [C] is of the wrong caliber!</span>")
+		return FALSE
+	if (loaded.len >= max_shells)
+		to_chat(user, "<span class='warning'>[src] is full.</span>")
+		return FALSE
+	return TRUE
+
+// Loose balls or shot that a cartridge is made from, offered to the gun they fit.
+/obj/item/weapon/gun/projectile/proc/loose_projectile_hint(obj/item/stack/ammopart/P, mob/user)
+	if (!P.resultpath || !ispath(P.resultpath, /obj/item/ammo_casing) || !(load_method & SINGLE_CASING))
+		return FALSE
+	var/obj/item/ammo_casing/R = P.resultpath
+	if (initial(R.caliber) != caliber)
+		return FALSE
+	to_chat(user, SPAN_WARNING("\The [src] loads paper cartridges, not loose balls. Hold a container of gunpowder in your other hand and use \the [P] in your hand to make a cartridge, then load the cartridge."))
+	return TRUE
 
 //attempts to unload  If allow_dump is set to FALSE, the speedloader unloading method will be disabled
 /obj/item/weapon/gun/projectile/proc/unload_ammo(mob/user, var/allow_dump=1)
@@ -437,6 +456,9 @@
 	if(launcher && (istype(A, /obj/item/weapon/grenade)))//load check it for it's type
 		playsound(src, 'sound/weapons/guns/interact/launcher_insertgrenade.ogg', 50, 1)
 		launcher.load(A, user)
+	if (istype(A, /obj/item/stack/ammopart))
+		loose_projectile_hint(A, user)
+		return
 	if (istype(A, /obj/item/ammo_magazine) || istype(A, /obj/item/ammo_casing))
 		if (istype(A, /obj/item/ammo_magazine) && !magazine_type)
 			return
