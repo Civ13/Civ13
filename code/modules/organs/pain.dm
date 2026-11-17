@@ -14,6 +14,11 @@
 /mob/var/last_pain_message = ""
 /mob/var/next_pain_time = FALSE
 
+// Pain only eases while a living body sleeps: no new pain, no rising shock and
+// no slow wounds from heat, cold or a sweaty coat until it wakes up.
+/mob/living/human/proc/sleep_pain_hold()
+	return stat != DEAD && (sleeping > 0 || inducedSSD)
+
 
 
 
