@@ -135,7 +135,7 @@
 		settings["tutorial"] = client.tutorial_status_text()
 	// Controls and HUD: the same settings as the OOC verbs.
 	settings["tap_step"] = tap_step ? 1 : 0
-	settings["hover_text"] = hover_text_enabled ? 1 : 0
+	settings["hover_text"] = hover_text_enabled ? (hover_text_bottom ? 2 : 1) : 0
 	var/list/scales = list()
 	settings["hud_scale"] = "100%"
 	settings["hover_text_scale"] = "100%"
@@ -388,8 +388,9 @@
 			user.client.set_tap_step(value ? TRUE : FALSE)
 			return TRUE
 		if ("hover_text")
-			if ((value ? TRUE : FALSE) != (hover_text_enabled ? TRUE : FALSE))
-				user.client.toggle_hover_text()
+			value = text2num("[value]")
+			if (value in list(0, 1, 2))
+				user.client.set_hover_text_mode(value)
 			return TRUE
 		if ("hover_text_scale")
 			if (value in hud_scale_choices)

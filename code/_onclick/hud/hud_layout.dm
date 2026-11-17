@@ -19,6 +19,9 @@ var/global/list/hud_scale_choices = list("50%" = 0.5, "75%" = 0.75, "100%" = 1, 
 	var/hover_text_scale = 1
 	// FALSE hides the hover name panel under the mouse (OOC > Toggle Hover Text).
 	var/hover_text_enabled = TRUE
+	// TRUE shows the hover name as a status line at the bottom of the screen
+	// instead of at the pointer (OOC > Hover Text Position).
+	var/hover_text_bottom = FALSE
 	// Entries "style~key~ax~ox~ay~oy~size~locked"; ax is "D" when the tile
 	// keeps its default position.
 	var/list/hud_layout = list()
@@ -832,6 +835,37 @@ var/global/list/hud_icon_px_cache = list()
 	if (!prefs.hover_text_enabled)
 		clear_hover_name()
 	to_chat(src, SPAN_NOTICE("Hover text [prefs.hover_text_enabled ? "shown" : "hidden"]. Use <b>Toggle Hover Text</b> again to [prefs.hover_text_enabled ? "hide" : "show"] it."))
+
+// mode: 0 hidden, 1 at the pointer, 2 at the bottom of the screen.
+/client/proc/set_hover_text_mode(mode)
+	if (!prefs)
+		return
+	prefs.hover_text_enabled = mode ? TRUE : FALSE
+	if (mode)
+		prefs.hover_text_bottom = mode == 2
+	prefs.save_preferences()
+	clear_hover_name()
+
+/client/proc/hover_text_mode()
+	if (!prefs || !prefs.hover_text_enabled)
+		return 0
+	return prefs.hover_text_bottom ? 2 : 1
+
+/client/verb/set_hover_text_position()
+	set name = "Hover Text Position"
+	set category = "OOC"
+	set desc = "Show names under your mouse or in a line at the bottom of the screen."
+
+	var/list/choices = list("Under the mouse" = 1, "At the bottom of the screen" = 2, "Hidden" = 0)
+	var/current = "Under the mouse"
+	for (var/label in choices)
+		if (choices[label] == hover_text_mode())
+			current = label
+	var/choice = player_input(src, "Where should the name of the thing under your mouse be shown?", "Hover Text Position", current, "anything", choices, TRUE)
+	if (!choice || !(choice in choices))
+		return
+	set_hover_text_mode(choices[choice])
+	to_chat(src, SPAN_NOTICE("Hover text: [lowertext(choice)]."))
 
 /client/verb/reset_hud_layout()
 	set name = "Reset HUD Layout"

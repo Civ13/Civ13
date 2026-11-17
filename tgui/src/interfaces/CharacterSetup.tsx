@@ -232,7 +232,7 @@ function Settings({ ui }: { ui: UI }) {
     <Section title="Controls and HUD"><Rows>
       <Row label="Step one tile per tap"><Choice ui={ui} action="tap_step" value={s.tap_step ? 1 : 0} label="Step one tile per tap" options={[[1, 'On'], [0, 'Off']]} />
         <p className="kit-hint">On: a quick tap of a movement key moves you exactly one tile, and holding it still glides. Off: you stop where you let go. Your HUD has a footprint button for this too.</p></Row>
-      <Row label="Name under the mouse"><Choice ui={ui} action="hover_text" value={s.hover_text ? 1 : 0} label="Name under the mouse" options={[[1, 'Shown'], [0, 'Hidden']]} /></Row>
+      <Row label="Name under the mouse"><Choice ui={ui} action="hover_text" value={Number(s.hover_text) || 0} label="Name under the mouse" options={[[1, 'At the pointer'], [2, 'Bottom of screen'], [0, 'Hidden']]} /></Row>
       <Row label="Name size"><Choice ui={ui} action="hover_text_scale" value={s.hover_text_scale} label="Name size" options={same(s.scales)} /></Row>
       <Row label="HUD size"><Choice ui={ui} action="hud_scale" value={s.hud_scale} label="HUD size" options={same(s.scales)} /></Row>
       <Row label="HUD layout" buttons={<><Action ui={ui} action="edit_hud_layout">{s.hud_editing ? 'Save layout' : 'Edit layout'}</Action><Action ui={ui} action="reset_hud_layout">Reset</Action></>}>
