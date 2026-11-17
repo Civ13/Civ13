@@ -316,6 +316,9 @@ var/const/enterloopsanity = 100
 			var/mob/living/human/H = M
 			// Walking onto stairs the way they climb goes up (edge_climbing.dm).
 			stairs_step_on(H, src, OL)
+			// Hauling a lifting stone or barbell is a workout (training_gear.dm).
+			if (H.l_hand || H.r_hand)
+				H.exercise_carry_step()
 			if (!istype(src, /turf/floor/beach/water) && !istype(src, /turf/floor/trench/flooded) && !H.on_fire)
 				if (H.overlays_standing[25])
 					H.overlays_standing[25] = null
