@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '4fa02f116af6e0ec65ea2eceabe98d4cabb3a782'
+WIKI_REVIEWED_REVISION = 'd3c46da2d7b3fa6023b897621ec9adc4430e594d'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('517b343000115473ef20f620eaddff20bd77414bd469a96fa8db57179074fffc', 'character skills traits languages'),
@@ -78,7 +78,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Chemistry.md': ('6516878aa6dcabb346ec50e75edf23f927eab0245db10d7abd9b1ebe116c55ae', 'chemistry chemicals reactions reagents'),
     'guides/Guide_to_Combat.md': ('006296f6e7501eeb36f4b486ee3a2b2a85567ecef74d0616dd2a04c2e42f53b2', 'combat fight fighting intent aim shoot melee grenade cover'),
     'guides/Guide_to_Communications.md': ('2bbf705f1e66f3ee37d2d70f46ffa9420587a9b7ae0d718f3e09d4ab9b7881e6', 'communications radio transmit'),
-    'guides/Guide_to_Construction.md': ('d001a7a3cc653076f283ffed1cbc4d77c218c5b2760822234e44975cf22439c8', 'construction build building walls roof floor'),
+    'guides/Guide_to_Construction.md': ('15c4e063bd9826fa9c4410f0000c747706f2d702401a53c994a211edde991293', 'construction build building walls roof floor'),
     'guides/Guide_to_Homes.md': ('26214a91bec63c00ed8ce03290e651bb306b0ef83eaec133f177f110b492e358', 'home house room comfort decorate limewash paint whitewash stain dye furniture well rested judge nudge pottery glaze vase amphora rug carpet tapestry weave loom'),
     'guides/Guide_to_Cooking.md': ('24b870c09bbebbf103a2d14ba1a5c149d11b55ae5603d48838ea357896f8f16b', 'cooking cook food meal ingredients'),
     'guides/Guide_to_Exercise.md': ('78978bc3f36321ef3ec2faac33df4f26aca6a519962b88fa5d8a474db8b01f19', 'exercise training strength weights running fatigue'),
@@ -103,7 +103,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Castles.md': ('478f47a0fb7fc8060e7912b7eabc2d71a406058026b01278ae4fc4b69562e75f', 'castle castles defend defending siege gatehouse portcullis murder hole arrow slit battlement caltrops trapdoor'),
     'guides/Guide_to_Trenches.md': ('e66a1030eab5bc320164c330140dbd6a94acbcd6fd121ab6979e9f468edcb5ad', 'trench trenches fortification sandbag dig shovel'),
     'guides/Guide_to_Weapons.md': ('fa29eb83656d6c44007e9fba62fc1609dd36844007fc2e96a934ec49e0a9994b', 'weapons gun reload ammunition'),
-    'New_Player_Guide.md': ('d44b39fc0229f169a91c06988e5ecf59e606daa4dceeb616c27f86d98a04d5f5', 'new player beginner start first round basics'),
+    'New_Player_Guide.md': ('fc23f954b4a8120e96ff5ca78be457261658aadf18490fe6401780851dd174fa', 'new player beginner start first round basics'),
     'Hotkeys.md': ('cdfc3d45160e026c877c7e96c5fdd5ad4964c823ba652ffb0946bf270b9f25fc', 'hotkeys hotkey keys keyboard controls key press'),
     'role_guides.md': ('4117070c23ff3cfd2581b612cd08ae70ee170637381972cffebdf9c0161d78d5', 'role roles job jobs responsibilities'),
     'Governor.md': ('131ef4f1f37d1bd38c1cd0c71bf6805cd677f308bef000c39ddb3cf0e7cd584d', 'governor role laws treasury colony'),
