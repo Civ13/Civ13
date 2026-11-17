@@ -493,6 +493,21 @@
       ]
     },
     {
+      "path": "code/modules/1713/siege/castle_defences.dm",
+      "declarations": [
+        {
+          "owner": "",
+          "declaration": "/obj/structure/window/barrier/rock/parapet/CanPass(atom/movable/mover, turf/target, height = 0, air_group = 0)",
+          "sha256_body": "8ee9ed2220a00ff0e8d7292347a7c19508f65e16487c90398168a158272c0b92"
+        },
+        {
+          "owner": "",
+          "declaration": "/obj/structure/window/barrier/sandstone/parapet/CanPass(atom/movable/mover, turf/target, height = 0, air_group = 0)",
+          "sha256_body": "b1a74d12f015c63d916da74c8119e15df67e34b39ec2d59da3ed52f1db2a0b1d"
+        }
+      ]
+    },
+    {
       "path": "code/modules/1713/siege/siege_engines.dm",
       "declarations": [
         {
