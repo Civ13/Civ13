@@ -18,6 +18,10 @@
 	update_icon()
 	..()
 
+// The extraction kit's wait. Each use purifies one ore from the stack.
+/obj/item/stack/ore/proc/kit_wait(mob/living/human/H, delay)
+	return do_after(H, delay)
+
 /obj/item/stack/ore/proc/process_radioactivity()
 	if (!src || !radioactive || radioactive_amt <= 0)
 		return
@@ -44,11 +48,11 @@
 				visible_message("<span class = 'notice'>[H] starts to purify \the [src] with \the [W.name]...</span>", "<span class = 'notice'>You start to purify \the [src] with \the [W.name].</span>")
 				playsound(src,'sound/effects/pickaxe.ogg',100,1)
 				var/timera = 110/(H.getStatCoeff("dexterity"))
-				if (do_after(H, timera))
-					if (ET.reagents.total_volume <= 0)
+				if (kit_wait(H, timera))
+					// One ore per use: the kit holds 5 units, so the rest of the stack stays.
+					if (ET.reagents.total_volume <= 0 && !QDELETED(src) && use(1))
 						ET.reagents.add_reagent("iron",5)
 						ET.update_icon()
-						qdel(src)
 		else
 			..()
 
@@ -67,11 +71,11 @@
 				visible_message("<span class = 'notice'>[H] starts to purify \the [src] with \the [W.name]...</span>", "<span class = 'notice'>You start to purify \the [src] with \the [W.name].</span>")
 				playsound(src,'sound/effects/pickaxe.ogg',100,1)
 				var/timera = 110/(H.getStatCoeff("dexterity"))
-				if (do_after(H, timera))
-					if (ET.reagents.total_volume <= 0)
+				if (kit_wait(H, timera))
+					// One ore per use: the kit holds 5 units, so the rest of the stack stays.
+					if (ET.reagents.total_volume <= 0 && !QDELETED(src) && use(1))
 						ET.reagents.add_reagent("iron",5)
 						ET.update_icon()
-						qdel(src)
 		else
 			..()
 /obj/item/stack/ore/iron_pig //slightly better iron from a blast furnace.
@@ -89,11 +93,11 @@
 				visible_message("<span class = 'notice'>[H] starts to purify \the [src] with \the [W.name]...</span>", "<span class = 'notice'>You start to purify \the [src] with \the [W.name].</span>")
 				playsound(src,'sound/effects/pickaxe.ogg',100,1)
 				var/timera = 110/(H.getStatCoeff("dexterity"))
-				if (do_after(H, timera))
-					if (ET.reagents.total_volume <= 0)
+				if (kit_wait(H, timera))
+					// One ore per use: the kit holds 5 units, so the rest of the stack stays.
+					if (ET.reagents.total_volume <= 0 && !QDELETED(src) && use(1))
 						ET.reagents.add_reagent("iron",5)
 						ET.update_icon()
-						qdel(src)
 		else
 			..()
 /obj/item/stack/ore/glass
@@ -116,11 +120,11 @@
 				visible_message("<span class = 'notice'>[H] starts to purify \the [src] with \the [W.name]...</span>", "<span class = 'notice'>You start to purify \the [src] with \the [W.name].</span>")
 				playsound(src,'sound/effects/pickaxe.ogg',100,1)
 				var/timera = 110/(H.getStatCoeff("dexterity"))
-				if (do_after(H, timera))
-					if (ET.reagents.total_volume <= 0)
+				if (kit_wait(H, timera))
+					// One ore per use: the kit holds 5 units, so the rest of the stack stays.
+					if (ET.reagents.total_volume <= 0 && !QDELETED(src) && use(1))
 						ET.reagents.add_reagent("silver",5)
 						ET.update_icon()
-						qdel(src)
 		else
 			..()
 /obj/item/stack/ore/gold
@@ -138,11 +142,11 @@
 				visible_message("<span class = 'notice'>[H] starts to purify \the [src] with \the [W.name]...</span>", "<span class = 'notice'>You start to purify \the [src] with \the [W.name].</span>")
 				playsound(src,'sound/effects/pickaxe.ogg',100,1)
 				var/timera = 110/(H.getStatCoeff("dexterity"))
-				if (do_after(H, timera))
-					if (ET.reagents.total_volume <= 0)
+				if (kit_wait(H, timera))
+					// One ore per use: the kit holds 5 units, so the rest of the stack stays.
+					if (ET.reagents.total_volume <= 0 && !QDELETED(src) && use(1))
 						ET.reagents.add_reagent("gold",5)
 						ET.update_icon()
-						qdel(src)
 		else
 			..()
 /obj/item/stack/ore/copper
@@ -159,11 +163,11 @@
 				visible_message("<span class = 'notice'>[H] starts to purify \the [src] with \the [W.name]...</span>", "<span class = 'notice'>You start to purify \the [src] with \the [W.name].</span>")
 				playsound(src,'sound/effects/pickaxe.ogg',100,1)
 				var/timera = 110/(H.getStatCoeff("dexterity"))
-				if (do_after(H, timera))
-					if (ET.reagents.total_volume <= 0)
+				if (kit_wait(H, timera))
+					// One ore per use: the kit holds 5 units, so the rest of the stack stays.
+					if (ET.reagents.total_volume <= 0 && !QDELETED(src) && use(1))
 						ET.reagents.add_reagent("copper",5)
 						ET.update_icon()
-						qdel(src)
 		else
 			..()
 /obj/item/stack/ore/tin
@@ -181,11 +185,11 @@
 				visible_message("<span class = 'notice'>[H] starts to purify \the [src] with \the [W.name]...</span>", "<span class = 'notice'>You start to purify \the [src] with \the [W.name].</span>")
 				playsound(src,'sound/effects/pickaxe.ogg',100,1)
 				var/timera = 110/(H.getStatCoeff("dexterity"))
-				if (do_after(H, timera))
-					if (ET.reagents.total_volume <= 0)
+				if (kit_wait(H, timera))
+					// One ore per use: the kit holds 5 units, so the rest of the stack stays.
+					if (ET.reagents.total_volume <= 0 && !QDELETED(src) && use(1))
 						ET.reagents.add_reagent("tin",5)
 						ET.update_icon()
-						qdel(src)
 		else
 			..()
 // Calamine (zinc carbonate): pale, rounded crusts with their own art (tests/sprites/create_tin_calamine.py).
@@ -204,11 +208,11 @@
 				visible_message("<span class = 'notice'>[H] starts to purify \the [src] with \the [W.name]...</span>", "<span class = 'notice'>You start to purify \the [src] with \the [W.name].</span>")
 				playsound(src,'sound/effects/pickaxe.ogg',100,1)
 				var/timera = 110/(H.getStatCoeff("dexterity"))
-				if (do_after(H, timera))
-					if (ET.reagents.total_volume <= 0)
+				if (kit_wait(H, timera))
+					// One ore per use: the kit holds 5 units, so the rest of the stack stays.
+					if (ET.reagents.total_volume <= 0 && !QDELETED(src) && use(1))
 						ET.reagents.add_reagent("zinc",5)
 						ET.update_icon()
-						qdel(src)
 		else
 			..()
 /obj/item/stack/ore/diamond
@@ -339,12 +343,12 @@
 				visible_message("<span class = 'notice'>[H] starts to purify \the [src] with \the [W.name]...</span>", "<span class = 'notice'>You start to purify \the [src] with \the [W.name].</span>")
 				playsound(src,'sound/effects/pickaxe.ogg',100,1)
 				var/timera = 110/(H.getStatCoeff("dexterity"))
-				if (do_after(H, timera))
-					if (ET.reagents.total_volume <= 0)
+				if (kit_wait(H, timera))
+					// One ore per use: the kit holds 5 units, so the rest of the stack stays.
+					if (ET.reagents.total_volume <= 0 && !QDELETED(src) && use(1))
 						ET.reagents.add_reagent("potassium",2.5)
 						ET.reagents.add_reagent("nitrogen",2.5)
 						ET.update_icon()
-						qdel(src)
 		else
 			..()
 /obj/item/stack/ore/coal
@@ -363,11 +367,11 @@
 				visible_message("<span class = 'notice'>[H] starts to purify \the [src] with \the [W.name]...</span>", "<span class = 'notice'>You start to purify \the [src] with \the [W.name].</span>")
 				playsound(src,'sound/effects/pickaxe.ogg',100,1)
 				var/timera = 110/(H.getStatCoeff("dexterity"))
-				if (do_after(H, timera))
-					if (ET.reagents.total_volume <= 0)
+				if (kit_wait(H, timera))
+					// One ore per use: the kit holds 5 units, so the rest of the stack stays.
+					if (ET.reagents.total_volume <= 0 && !QDELETED(src) && use(1))
 						ET.reagents.add_reagent("carbon",5)
 						ET.update_icon()
-						qdel(src)
 
 		else
 			..()
@@ -390,11 +394,11 @@
 				visible_message("<span class = 'notice'>[H] starts to crumble \the [src] into  \the [W.name]...</span>", "<span class = 'notice'>You start to crumble \the [src] into \the [W.name].</span>")
 				playsound(src,'sound/effects/pickaxe.ogg',100,1)
 				var/timera = 110/(H.getStatCoeff("dexterity"))
-				if (do_after(H, timera))
-					if (ET.reagents.total_volume <= 0)
+				if (kit_wait(H, timera))
+					// One ore per use: the kit holds 5 units, so the rest of the stack stays.
+					if (ET.reagents.total_volume <= 0 && !QDELETED(src) && use(1))
 						ET.reagents.add_reagent("charcoal",5)
 						ET.update_icon()
-						qdel(src)
 		else
 			..()
 /obj/item/stack/ore/sulphur
@@ -413,11 +417,11 @@
 				visible_message("<span class = 'notice'>[H] starts to purify \the [src] with \the [W.name]...</span>", "<span class = 'notice'>You start to purify \the [src] with \the [W.name].</span>")
 				playsound(src,'sound/effects/pickaxe.ogg',100,1)
 				var/timera = 110/(H.getStatCoeff("dexterity"))
-				if (do_after(H, timera))
-					if (ET.reagents.total_volume <= 0)
+				if (kit_wait(H, timera))
+					// One ore per use: the kit holds 5 units, so the rest of the stack stays.
+					if (ET.reagents.total_volume <= 0 && !QDELETED(src) && use(1))
 						ET.reagents.add_reagent("sulfur",5)
 						ET.update_icon()
-						qdel(src)
 		else
 			..()
 /obj/item/stack/ore/lead
@@ -437,11 +441,11 @@
 				visible_message("<span class = 'notice'>[H] starts to purify \the [src] with \the [W.name]...</span>", "<span class = 'notice'>You start to purify \the [src] with \the [W.name].</span>")
 				playsound(src,'sound/effects/pickaxe.ogg',100,1)
 				var/timera = 110/(H.getStatCoeff("dexterity"))
-				if (do_after(H, timera))
-					if (ET.reagents.total_volume <= 0)
+				if (kit_wait(H, timera))
+					// One ore per use: the kit holds 5 units, so the rest of the stack stays.
+					if (ET.reagents.total_volume <= 0 && !QDELETED(src) && use(1))
 						ET.reagents.add_reagent("lead",5)
 						ET.update_icon()
-						qdel(src)
 		else
 			..()
 /obj/item/stack/ore/mercury
