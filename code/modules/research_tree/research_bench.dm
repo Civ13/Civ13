@@ -4,16 +4,15 @@
 // Each bench is locked to ONE node and is a parallel research
 // slot: a faction with N benches can progress N nodes at once.
 // Benches generate analysis ticks passively (driven by
-// /process/research_tree). Higher-tier benches are required for
-// higher-tier nodes.
+// /process/research_tree). Higher-tier nodes need a higher bench
+// tier, and every bench works at the current era's tier for free
+// (bench_tier()); coins are no longer needed to raise it.
 //
 // Registered in a global list (no world scans). assigned_node,
-// tier, faction and tier_progress persist automatically via the map
-// object saver.
+// tier and faction persist automatically via the map object saver.
 //
 // Phase 0: placement, node assignment, passive ANALYSIS ticks.
-// Phase 3: tier upgrades (feed any valuable item to the bench),
-// the faction bench cap (see research_forge.dm to raise it), and
+// Phase 3: the faction bench cap (see research_forge.dm to raise it), and
 // the BOOK/PROTOTYPE completion paths (feed a matching research
 // book or prototype item instead of raw value).
 // ============================================================
@@ -30,10 +29,9 @@ var/global/list/research_benches = list()
 	not_movable = FALSE
 	not_disassemblable = FALSE
 	var/assigned_node = null   // node id this bench researches (persists)
-	var/tier = 0               // bench tier; gates high min_bench_tier nodes (persists)
+	var/tier = 0               // floor under the era tier (admin benches); read bench_tier() (persists)
 	var/faction = null         // owning faction, set on assignment (persists)
 	var/base_tick_rate = 1     // analysis ticks contributed per process fire
-	var/tier_progress = 0      // value fed toward the next tier (persists)
 	// Queue of node ids to auto-advance to as the current subject completes,
 	// stored as a ";"-delimited string so it persists via the map object saver
 	// like the other string vars (a list var wouldn't survive the save).
@@ -96,7 +94,7 @@ var/global/list/research_benches = list()
 	// discovered by a bench (no node currently uses this mode).
 	if (N.mode == RESEARCH_MODE_BOOK)
 		return
-	if (tier < N.min_bench_tier)
+	if (bench_tier() < N.min_bench_tier)
 		return
 	if (map.is_node_done(faction, assigned_node))
 		return
@@ -132,7 +130,7 @@ var/global/list/research_benches = list()
 	if (!map || !faction || faction == "none")
 		return FALSE
 	var/datum/research_node/N = get_research_node(node_id)
-	if (!N || N.min_bench_tier > tier || research_node_dormant(N))
+	if (!N || N.min_bench_tier > bench_tier() || research_node_dormant(N))
 		return FALSE
 	var/status = map.node_status(faction, node_id)
 	return status == RNODE_AVAILABLE || status == RNODE_IN_PROGRESS
@@ -379,14 +377,9 @@ var/global/list/research_benches = list()
 // Everything the bench screen shows H, or null without a map.
 /obj/structure/research_bench/proc/bench_ui_data(mob/living/human/H)
 	var/list/data = list()
-	data["bench_tier"] = tier
+	// The tier follows the current global era (see bench_tier()).
+	data["bench_tier"] = bench_tier()
 	data["max_tier"] = MAX_BENCH_TIER
-	// Upgrades are also capped at the current global era (see era_max_tier).
-	var/emax = era_max_tier()
-	data["era_max_tier"] = emax
-	data["era_capped"] = tier >= emax && tier < MAX_BENCH_TIER
-	data["tier_progress"] = tier_progress
-	data["tier_upgrade_cost"] = tier < emax ? BENCH_TIER_UPGRADE_COST(tier) : 0
 	data["bench_faction"] = faction
 	var/book_mode = book_mode()
 	data["book_mode"] = book_mode
@@ -704,8 +697,8 @@ var/global/list/research_benches = list()
 	to_chat(H, SPAN_NOTICE("You finish your [is_book ? "research book" : "research notes"] on <b>[N.name]</b>."))
 
 // Consuming items: research books (teach the matching node), matching
-// prototypes (complete a PROTOTYPE-mode node outright), or copper/silver/
-// gold coins (their value feeds this bench's tier-upgrade progress).
+// prototypes (complete a PROTOTYPE-mode node outright) and samples. Coins
+// are not taken: the bench tier follows the era (bench_tier()).
 /obj/structure/research_bench/attackby(obj/item/W as obj, mob/living/human/user as mob)
 	// Do not delegate tools from non-humans to the ungated structure handler.
 	if (!istype(W) || !ishuman(user))
@@ -724,12 +717,6 @@ var/global/list/research_benches = list()
 	if (user.a_intent == I_HARM && (istype(W, /obj/item/weapon/wrench) || istype(W, /obj/item/weapon/hammer)))
 		maintain_bench(W, user)
 		return TRUE
-	// Coins upgrade the bench and never depend on its subject, so take them
-	// before the subject check: a fresh tier-0 bench whose remaining nodes all
-	// need a higher tier could otherwise never be assigned OR upgraded.
-	if (!assigned_node && is_upgrade_coin(W))
-		try_feed_coins(W, user)
-		return
 	if (!assigned_node || !faction)
 		to_chat(user, SPAN_WARNING("Assign this bench a research subject first."))
 		return
@@ -779,8 +766,8 @@ var/global/list/research_benches = list()
 		if (!map.can_manage_faction_research(user, faction))
 			to_chat(user, SPAN_WARNING("Only your faction's research staff may submit a prototype here."))
 			return
-		if (tier < N.min_bench_tier)
-			to_chat(user, SPAN_WARNING("This bench isn't upgraded enough to complete this prototype."))
+		if (bench_tier() < N.min_bench_tier)
+			to_chat(user, SPAN_WARNING("This prototype belongs to a later era than your civilization has reached."))
 			return
 		if (map.is_node_done(faction, assigned_node))
 			to_chat(user, SPAN_WARNING("Already researched."))
@@ -837,8 +824,7 @@ var/global/list/research_benches = list()
 		try_advance_queue()
 		return
 
-	// Fallback: feeding coins counts toward the bench's tier upgrade.
-	try_feed_coins(W, user)
+	to_chat(user, SPAN_WARNING("\The [W] is no use to research on <b>[N.name]</b>."))
 
 // Match ordinary structure maintenance timings and salvage, but retain this
 // bench's ownership boundary across the wait. Research submission never enters
@@ -878,58 +864,17 @@ var/global/list/research_benches = list()
 		S.loc = get_turf(src)
 	qdel(src) // Destroy removes this bench from research_benches and frees its slot.
 
-// Only the three metal coin types (and their subtypes) -- NOT the money base,
-// which also covers rubles/francs/euros/pounds/etc -- matching the resource
-// forge's own coin check.
-/obj/structure/research_bench/proc/is_upgrade_coin(obj/item/W)
-	return istype(W, /obj/item/stack/money/coppercoin) || istype(W, /obj/item/stack/money/silvercoin) || istype(W, /obj/item/stack/money/goldcoin)
-
-// Feed coins toward the bench's next tier. Works with or without an assigned
-// subject (see attackby()).
-/obj/structure/research_bench/proc/try_feed_coins(obj/item/W, mob/living/human/user)
-	if (tier >= MAX_BENCH_TIER)
-		to_chat(user, SPAN_WARNING("This bench is already at maximum tier."))
-		return
-	if (tier >= era_max_tier())
-		to_chat(user, SPAN_WARNING("This bench can't be upgraded past tier [era_max_tier()] until your civilization advances to the next era."))
-		return
-	if (!is_upgrade_coin(W))
-		to_chat(user, SPAN_WARNING("This bench only accepts copper, silver or gold coins to upgrade."))
-		return
-	var/obj/item/stack/money/coins = W
-	// Let the player choose how much to melt, same as the resource forge:
-	// consuming the whole stack on one click turns a misclick into a wasted
-	// purse.
-	var/count = player_input(user, "How many coins do you want to feed the bench? (You are holding [coins.amount])", "Research Bench", coins.amount, "num", null, TRUE)
-	if (!count || count <= 0)
-		return
-	// Re-validate after the input pause: the stack may have been spent,
-	// dropped or deleted while the dialog was open.
-	if (QDELETED(coins) || !in_range(src, user))
-		return
-	count = min(round(count), coins.amount)
-	if (count <= 0)
-		return
-	var/coinname = coins.name
-	var/value = coins.value * count
-	coins.use(count)
-	if (!value)
-		to_chat(user, SPAN_WARNING("This has no value to contribute toward upgrading the bench."))
-		return
-	tier_progress += value
-	var/needed = BENCH_TIER_UPGRADE_COST(tier)
-	if (tier_progress >= needed)
-		tier_progress -= needed
-		tier++
-		to_chat(user, SPAN_NOTICE("You melt down [count] [coinname]. The bench has been upgraded to tier [tier]!"))
-	else
-		to_chat(user, SPAN_NOTICE("You melt down [count] [coinname]. Upgrade progress: [tier_progress]/[needed]."))
-
-// A bench can only be upgraded up to the current GLOBAL era: Stone Age (era 0)
-// caps at tier 0, Bronze Age (era 1) at tier 1, and so on -- never above the
-// absolute ceiling. As the world advances an era, the cap rises with it.
+// The tier the current GLOBAL era allows: Stone Age (era 0) is tier 0, Bronze
+// Age (era 1) tier 1, and so on -- never above the absolute ceiling.
 /obj/structure/research_bench/proc/era_max_tier()
 	return min(MAX_BENCH_TIER, map ? map.ordinal_age : 0)
+
+// The tier this bench works at. Every bench reaches the current era's tier on
+// its own, with no coins or other payment; `tier` only lifts a bench above
+// that (admin benches). The era and each subject's prerequisites still gate
+// what can be researched.
+/obj/structure/research_bench/proc/bench_tier()
+	return max(tier, era_max_tier())
 
 /obj/structure/research_bench/examine(mob/user, distance = -1)
 	..()
@@ -937,12 +882,7 @@ var/global/list/research_benches = list()
 		book_examine(user)
 		return
 	to_chat(user, "Use Help intent to submit research samples, including tools. Use Harm intent with a wrench to fasten or unfasten the bench, or with a hammer to dismantle it. Only members of the owning faction can maintain it.")
-	if (tier >= MAX_BENCH_TIER)
-		to_chat(user, "It is tier [tier] (maximum).")
-	else if (tier >= era_max_tier())
-		to_chat(user, "It is tier [tier], capped at the current era -- your civilization must reach the next era to upgrade it further.")
-	else
-		to_chat(user, "It is tier [tier] (upgrade progress: [tier_progress]/[BENCH_TIER_UPGRADE_COST(tier)]).")
+	to_chat(user, "It is tier [bench_tier()][bench_tier() < MAX_BENCH_TIER ? ", the highest the current era allows; it rises on its own when your civilization reaches the next era" : " (maximum)"].")
 	if (!assigned_node)
 		to_chat(user, "It has no research subject assigned.")
 		return

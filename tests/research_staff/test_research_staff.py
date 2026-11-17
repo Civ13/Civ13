@@ -101,40 +101,38 @@ class DirectorTitle(unittest.TestCase):
         self.assertIn('H.civilization == faction', body)
 
 
-class TierUpgradeWithoutSubject(unittest.TestCase):
-    """A fresh tier-0 bench must accept coins before it has a subject.
+class BenchTierFollowsEra(unittest.TestCase):
+    """Bench tiers rise with the era and never cost coins.
 
-    Once every tier-0 node is done (e.g. persistent Gaia with a high baseline
-    era), a new bench could not be assigned anything (tier too low) and coins
-    were refused with "Assign this bench a research subject first" -- a
-    softlock reported by Nomads players.
+    Coins once raised a bench's tier, but minting needs the faction's leader
+    and the trading posts are closed, so a faction could be stuck below its
+    own era. Every bench now works at the current era's tier on its own.
     """
+
+    FILES = ('research_bench.dm', 'book_research.dm', 'book_interface.dm',
+             '_research_tree_defines.dm')
 
     def setUp(self):
         self.text = BENCH.read_text(encoding='utf-8')
-        self.attackby = proc_body(
-            self.text, '/obj/structure/research_bench/attackby(')
+        self.sources = {name: (BENCH.parent / name).read_text(encoding='utf-8')
+                        for name in self.FILES}
 
-    def test_coins_are_taken_before_the_subject_check(self):
-        coin = self.attackby.index('if (!assigned_node && is_upgrade_coin(W))')
-        subject = self.attackby.index('Assign this bench a research subject first')
-        self.assertLess(coin, subject)
-        self.assertIn('try_feed_coins(W, user)', self.attackby[coin:subject])
+    def test_bench_tier_is_the_era_tier(self):
+        body = proc_body(self.text, '/obj/structure/research_bench/proc/bench_tier(')
+        self.assertIn('return max(tier, era_max_tier())', body)
 
-    def test_feed_coins_does_not_require_a_subject(self):
-        body = proc_body(
-            self.text, '/obj/structure/research_bench/proc/try_feed_coins(')
-        self.assertNotIn('assigned_node', body)
-        self.assertIn('era_max_tier()', body)
-        self.assertIn('is_upgrade_coin(W)', body)
-        self.assertIn('tier++', body)
+    def test_no_coin_upgrade_path_remains(self):
+        for name, text in self.sources.items():
+            for gone in ('try_feed_coins', 'is_upgrade_coin', 'BENCH_TIER_UPGRADE_COST',
+                         'tier_progress', '/obj/item/stack/money'):
+                self.assertNotIn(gone, text, (name, gone))
 
-    def test_only_metal_coins_upgrade(self):
-        body = proc_body(
-            self.text, '/obj/structure/research_bench/proc/is_upgrade_coin(')
-        for coin in ('coppercoin', 'silvercoin', 'goldcoin'):
-            self.assertIn(f'/obj/item/stack/money/{coin}', body)
-        self.assertNotIn('istype(W, /obj/item/stack/money)', body)
+    def test_tier_gates_read_the_era_tier(self):
+        for name, text in self.sources.items():
+            code = '\n'.join(line.split('//', 1)[0] for line in text.splitlines())
+            raw = re.findall(r'(?<![\w.])tier\s*[<>]=?\s*N\.min_bench_tier'
+                             r'|N\.min_bench_tier\s*[<>]=?\s*tier(?![\w(])', code)
+            self.assertEqual(raw, [], name)
 
 
 if __name__ == '__main__':

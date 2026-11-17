@@ -48,7 +48,7 @@ def istype(item, path='/obj/item'):
 
 FIELDS = ('assigned_node', 'faction', 'tier', 'studied_samples', 'not_movable',
           'not_disassemblable', 'powersource', 'anchored', 'contents', 'loc')
-METHODS = ('maintain_bench', 'is_upgrade_coin', 'try_feed_coins', 'try_advance_queue',
+METHODS = ('maintain_bench', 'bench_tier', 'era_max_tier', 'try_advance_queue',
            'anchor_changed', 'toggle_anchor', 'book_mode', 'book_attackby')
 
 
@@ -122,7 +122,7 @@ class Case:
         self.done = False
         self.prereqs = True
         self.prototype = False
-        self.map = NS(can_manage_faction_research=lambda *_: staff,
+        self.map = NS(ordinal_age=0, can_manage_faction_research=lambda *_: staff,
                       is_node_done=lambda *_: self.done,
                       node_prereqs_met=lambda *_: self.prereqs,
                       add_research_ticks=self.add_ticks,
@@ -151,10 +151,11 @@ class Case:
         self.destroy = project(source, BENCH + '/Destroy', 'src', self.env)
         self.count = project(FACTION, '/obj/map_metadata/proc/count_faction_benches',
                              'src, faction', self.env, fields=())
-        coin = project(source, BENCH + '/proc/is_upgrade_coin', 'src, W', self.env)
+        tier = project(source, BENCH + '/proc/bench_tier', 'src', self.env)
         self.bench.maintain_bench = lambda W, user: self.maintain(self.bench, W, user)
-        self.bench.is_upgrade_coin = lambda W: coin(self.bench, W)
-        self.bench.try_feed_coins = lambda *_: self.events.append(('coins',))
+        self.bench.bench_tier = lambda: tier(self.bench)
+        # Mirror of era_max_tier(): min(MAX_BENCH_TIER, map ? map.ordinal_age : 0).
+        self.bench.era_max_tier = lambda: min(8, self.env['map'].ordinal_age if self.env['map'] else 0)
         self.bench.try_advance_queue = lambda: self.events.append(('queue',))
         self.bench.anchor_changed = lambda: self.events.append(('anchor',))
         # Mirror of /obj/proc/toggle_anchor (code/_helpers/tools.dm): toggle, then anchor_changed().
@@ -232,7 +233,6 @@ class BenchMaintenance(unittest.TestCase):
             c.bench.tier = 100
             c.click()
             self.assertIn(('wait', 15 if kind == WRENCH else 25), c.events)
-            self.assertNotIn(('coins',), c.events)
 
     def test_non_harm_tools_keep_sample_submission_and_staff_gate(self):
         for kind in (WRENCH, HAMMER, WRENCH + '/pipe'):
@@ -298,7 +298,7 @@ class BenchMaintenance(unittest.TestCase):
         self.assertFalse(c.bench.anchored)
         self.assertNotIn(('anchor',), c.events)
 
-    def test_books_prototypes_and_idle_coins_keep_existing_dispatch(self):
+    def test_books_and_prototypes_keep_existing_dispatch(self):
         c = Case(kind=BOOK, intent='help')
         c.click()
         self.assertTrue(c.done)
@@ -308,10 +308,32 @@ class BenchMaintenance(unittest.TestCase):
         c.click()
         self.assertTrue(c.prototype)
         self.assertTrue(c.item.deleted)
-        c = Case(kind=COPPER, intent='help')
-        c.bench.assigned_node = None
+
+    def test_coins_are_never_taken(self):
+        for subject in ('tools', None):
+            c = Case(kind=COPPER, intent='help')
+            c.bench.assigned_node = subject
+            c.click()
+            self.assertEqual(c.events, [])
+            self.assertFalse(c.item.deleted)
+            self.assertEqual(c.bench.tier, 0)
+
+    def test_bench_tier_follows_the_era_without_payment(self):
+        for era, works in ((1, False), (2, True), (5, True)):
+            c = Case(kind=WRENCH, intent='help')
+            c.map.ordinal_age = era
+            c.node.mode, c.node.prototype_type = CONSTANTS['RESEARCH_MODE_PROTOTYPE'], WRENCH
+            c.node.min_bench_tier = 2
+            c.click()
+            self.assertEqual(c.prototype, works, era)
+            self.assertEqual(c.item.deleted, works, era)
+            self.assertEqual(c.bench.tier, 0)
+        c = Case(kind=WRENCH, intent='help')
+        c.bench.tier = 8  # admin benches keep their fixed tier above the era
+        c.node.mode, c.node.prototype_type = CONSTANTS['RESEARCH_MODE_PROTOTYPE'], WRENCH
+        c.node.min_bench_tier = 8
         c.click()
-        self.assertEqual(c.events, [('coins',)])
+        self.assertTrue(c.prototype)
 
     def test_duplicate_samples_and_prerequisite_completion_gates_remain(self):
         for fault in ('duplicate', 'prereqs', 'done', 'book_mode'):
