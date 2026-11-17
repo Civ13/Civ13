@@ -1004,7 +1004,9 @@ var/global/zombie_city_generating = FALSE
 					new /obj/structure/window_frame/metal(T)
 			if (props[i])
 				var/path = props[i]
-				new path(T)
+				// Park trees keep two tiles clear of every door (doors are planned last).
+				if (!tree_clearance_type(path) || !near_door(x, y, TREE_CLEARANCE))
+					new path(T)
 		TICK_CHECK
 
 /datum/zombie_city_generator/proc/place_markers()

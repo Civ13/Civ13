@@ -339,6 +339,36 @@ var/global/list/ecology_species_table = null
 		return null
 	return A.climate
 
+// Trees keep clear of rock and doors: no tree spawns, regrows or is generated
+// within TREE_CLEARANCE tiles of underground rock (solid cave rock, cave walls,
+// unformed rock) or of a door, so cave mouths and doorways stay open.
+#define TREE_CLEARANCE 2
+
+/proc/tree_clearance_type(path)
+	return ispath(path, /obj/structure/wild/tree) || ispath(path, /obj/structure/wild/palm) || ispath(path, /obj/structure/wild/jungle) || ispath(path, /obj/structure/wild/largejungle) || ispath(path, /obj/structure/wild/bamboo)
+
+/proc/tree_clearance_rock(turf/T)
+	if (istype(T, /turf/wall/rockwall) || istype(T, /turf/sky/building/unformed))
+		return TRUE
+	return istype(T, /turf/floor/dirt/underground) && T.density
+
+/proc/tree_clearance_door(obj/O)
+	if (istype(O, /obj/structure/simple_door) || istype(O, /obj/structure/gate) || istype(O, /obj/structure/grille/chainlinkfence/door))
+		return TRUE
+	return istype(O, /obj/covers) && findtext("[O.type]", "door")
+
+// TRUE when T is within TREE_CLEARANCE tiles of underground rock or a door.
+/proc/tree_site_crowded(turf/T)
+	if (!T)
+		return TRUE
+	for (var/atom/A in range(TREE_CLEARANCE, T))
+		if (isturf(A))
+			if (tree_clearance_rock(A))
+				return TRUE
+		else if (isobj(A) && tree_clearance_door(A))
+			return TRUE
+	return FALSE
+
 // A regrowing stump can ignore itself; all other occupants use the same rules.
 /proc/ecology_site_blocked(turf/T, atom/movable/ignored = null)
 	for (var/atom/movable/AM in T)

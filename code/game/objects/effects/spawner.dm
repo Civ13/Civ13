@@ -1060,6 +1060,18 @@
 		return TRUE
 	else
 		return FALSE
+// Tree spawners pick only tiles that keep clear of rock and doors.
+/obj/effect/spawner/objspawner/getEmptyTurf()
+	if (!tree_clearance_type(create_path))
+		return ..()
+	for (var/attempt = 1 to 8)
+		var/turf/T = ..()
+		if (!T)
+			return null
+		if (!tree_site_crowded(T))
+			return T
+	return null
+
 /obj/effect/spawner/objspawner/proc/spawnTarget()
 	var/turf/emptyTurf = getEmptyTurf()
 	if (emptyTurf)
