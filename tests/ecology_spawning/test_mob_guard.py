@@ -41,7 +41,7 @@ class Mob:
         self.events.append('hold')
 
 
-def run(source, kind='living', deleted=False, phase='active', saving=False):
+def run(source, kind='living', deleted=False, phase='active', saving=False, loading=False):
     events = []
     mob = None if kind == 'null' else Mob(events, kind, deleted, phase)
     source = source.replace('mob_list -= M', 'remove_mob(M)')
@@ -65,6 +65,7 @@ def run(source, kind='living', deleted=False, phase='active', saving=False):
         'world': SimpleNamespace(time=20),
         'persistence_frozen_levels': SimpleNamespace(len=1 if saving else 0),
         'persistence_life_frozen': lambda m: saving and m.kind == 'human',
+        'persistence_load_holds_life': lambda: loading,
         # A character kept out of play during an event (region_event.dm).
         'event_stash_holds': lambda m: m.phase == 'stashed',
     }
@@ -124,3 +125,17 @@ class MobGuardTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+    def test_world_load_holds_every_life(self):
+        # Gaia 2026-11-17: Life() ran on half-restored bodies during a save load
+        # and killed logged-off players. Nothing lives until the load ends.
+        for kind in ('living', 'human'):
+            with self.subTest(kind=kind):
+                held, _ = run(SOURCE, kind, loading=True)
+                self.assertNotIn('life', held)
+                live, _ = run(SOURCE, kind)
+                self.assertIn('life', live)
+        bad = SOURCE.replace('!persistence_load_holds_life() && ', '', 1)
+        self.assertNotEqual(bad, SOURCE)
+        held, _ = run(bad, 'human', loading=True)
+        self.assertIn('life', held)
