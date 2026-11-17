@@ -69,6 +69,7 @@
 		make_nomad()
 	else if (map.civilizations)
 		make_nation()
+	restore_faction_privilege_verbs()
 
 /mob/New()
 	..()
