@@ -13,42 +13,38 @@
 	flammable = TRUE
 	value = 0
 
-/obj/item/shamisen/proc/playnote(var/note as text)
-	//to_chat(world, "Note: [note]")
-	var/soundfile
-	/*BYOND loads resource files at compile time if they are ''. This means you can't really manipulate them dynamically.
-	Tried doing it dynamically at first but its more trouble than its worth. Would have saved many lines tho.*/
-	switch(note)
-		if ("A#2")	soundfile = 'sound/shamisen/shamisen A#2.ogg'
-		if ("A#3")	soundfile = 'sound/shamisen/shamisen A#3.ogg'
-		if ("A#4")	soundfile = 'sound/shamisen/shamisen A#4.ogg'
-		if ("A#6")	soundfile = 'sound/shamisen/shamisen A#6.ogg'
-		if ("A#8")	soundfile = 'sound/shamisen/shamisen A#8.ogg'
-		if ("Ab2")	soundfile = 'sound/shamisen/shamisen Ab2.ogg'
-		if ("B#2")	soundfile = 'sound/shamisen/shamisen B#2.ogg'
-		if ("C#2")	soundfile = 'sound/shamisen/shamisen C#2.ogg'
-		if ("C#4")	soundfile = 'sound/shamisen/shamisen C#4.ogg'
-		if ("C#5")	soundfile = 'sound/shamisen/shamisen C#5.ogg'
-		if ("Cb2")	soundfile = 'sound/shamisen/shamisen Cb2.ogg'
-		if ("Cb4")	soundfile = 'sound/shamisen/shamisen Cb4.ogg'
-		if ("Cb5")	soundfile = 'sound/shamisen/shamisen Cb5.ogg'
-		if ("D#3")	soundfile = 'sound/shamisen/shamisen D#3.ogg'
-		if ("D#5")	soundfile = 'sound/shamisen/shamisen D#5.ogg'
-		if ("D#8")	soundfile = 'sound/shamisen/shamisen D#8.ogg'
-		if ("Db2")	soundfile = 'sound/shamisen/shamisen Db2.ogg'
-		if ("Db4")	soundfile = 'sound/shamisen/shamisen Db4.ogg'
-		if ("Eb2")	soundfile = 'sound/shamisen/shamisen Eb2.ogg'
-		if ("En5")	soundfile = 'sound/shamisen/shamisen En5.ogg'
-		if ("En6")	soundfile = 'sound/shamisen/shamisen En6.ogg'
-		if ("En7")	soundfile = 'sound/shamisen/shamisen En7.ogg'
-		if ("F#2")	soundfile = 'sound/shamisen/shamisen F#2.ogg'
-		if ("F#4")	soundfile = 'sound/shamisen/shamisen F#4.ogg'
-		if ("F#6")	soundfile = 'sound/shamisen/shamisen F#6.ogg'
-		if ("Fb2")	soundfile = 'sound/shamisen/shamisen Fb2.ogg'
-		if ("Fb4")	soundfile = 'sound/shamisen/shamisen Fb4.ogg'
-		else		return
+// Note name to sample; notes without a sample play the nearest one, retuned.
+/obj/item/shamisen/var/static/list/samples = list(
+	"Cb2" = 'sound/shamisen/shamisen Cb2.ogg',
+	"C#2" = 'sound/shamisen/shamisen C#2.ogg',
+	"Db2" = 'sound/shamisen/shamisen Db2.ogg',
+	"Eb2" = 'sound/shamisen/shamisen Eb2.ogg',
+	"Fb2" = 'sound/shamisen/shamisen Fb2.ogg',
+	"F#2" = 'sound/shamisen/shamisen F#2.ogg',
+	"Ab2" = 'sound/shamisen/shamisen Ab2.ogg',
+	"A#2" = 'sound/shamisen/shamisen A#2.ogg',
+	"B#2" = 'sound/shamisen/shamisen B#2.ogg',
+	"D#3" = 'sound/shamisen/shamisen D#3.ogg',
+	"A#3" = 'sound/shamisen/shamisen A#3.ogg',
+	"Cb4" = 'sound/shamisen/shamisen Cb4.ogg',
+	"C#4" = 'sound/shamisen/shamisen C#4.ogg',
+	"Db4" = 'sound/shamisen/shamisen Db4.ogg',
+	"Fb4" = 'sound/shamisen/shamisen Fb4.ogg',
+	"F#4" = 'sound/shamisen/shamisen F#4.ogg',
+	"A#4" = 'sound/shamisen/shamisen A#4.ogg',
+	"Cb5" = 'sound/shamisen/shamisen Cb5.ogg',
+	"C#5" = 'sound/shamisen/shamisen C#5.ogg',
+	"D#5" = 'sound/shamisen/shamisen D#5.ogg',
+	"En5" = 'sound/shamisen/shamisen En5.ogg',
+	"En6" = 'sound/shamisen/shamisen En6.ogg',
+	"F#6" = 'sound/shamisen/shamisen F#6.ogg',
+	"A#6" = 'sound/shamisen/shamisen A#6.ogg',
+	"En7" = 'sound/shamisen/shamisen En7.ogg',
+	"D#8" = 'sound/shamisen/shamisen D#8.ogg',
+	"A#8" = 'sound/shamisen/shamisen A#8.ogg')
 
-	hearers(15, get_turf(src)) << sound(soundfile)
+/obj/item/shamisen/proc/playnote(note)
+	instrument_play_note(src, note, samples)
 
 /obj/item/shamisen/attack_self(mob/user as mob)
 	if (!isliving(user) || user.stat || user.restrained() || user.lying)	return
