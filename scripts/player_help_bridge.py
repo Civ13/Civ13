@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = 'c2f653c51746d0803b563f770a017e14fef2f39b'
+WIKI_REVIEWED_REVISION = 'f914a442b48151e437229a92e06dc6bcee279afb'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('517b343000115473ef20f620eaddff20bd77414bd469a96fa8db57179074fffc', 'character skills traits languages'),
@@ -99,7 +99,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Resource_Extraction.md': ('5b10b34e2192801895c5e15af3ab4c5a912f311e915dbc05b8e6ced0cefde853', 'resource extraction gathering oil petroleum well fracturing'),
     'guides/Guide_to_Survival.md': ('5212e01f76cb99e255fb877fba5638521a42c6b7a31f55f998d5354d4ad95735', 'survival winter cold warm freezing hypothermia shelter debris footwear boots snowshoes shoes ice mud rain wet umbrella raincoat cape storm storms lightning thunder blizzard sandstorm heat wave weather fire fires wildfire firefighting beater flapper smother burning bucket blanket extinguish smoke signal signals hook firebreak pump engine nozzle hose jet reel extinguisher'),
     'guides/Guide_to_Tanks.md': ('b900c1641222035e9a4940539ddf14501ec5d9133da22414333f7ca0c97578a6', 'tank driving crew ammunition'),
-    'guides/Guide_to_Trains.md': ('f6d1c35cba5efd96a97f0208d3b87de76330058ae7e24bf0e754a4c7c9b791f7', 'train trains railway track locomotive station switcher rails wagon'),
+    'guides/Guide_to_Trains.md': ('5a2f645424de244f8299da36e8a88c253409165c3a06f08d0b405430e9031382', 'train trains railway track locomotive station switcher rails wagon'),
     'guides/Guide_to_Castles.md': ('478f47a0fb7fc8060e7912b7eabc2d71a406058026b01278ae4fc4b69562e75f', 'castle castles defend defending siege gatehouse portcullis murder hole arrow slit battlement caltrops trapdoor'),
     'guides/Guide_to_Trenches.md': ('e66a1030eab5bc320164c330140dbd6a94acbcd6fd121ab6979e9f468edcb5ad', 'trench trenches fortification sandbag dig shovel'),
     'guides/Guide_to_Weapons.md': ('fa29eb83656d6c44007e9fba62fc1609dd36844007fc2e96a934ec49e0a9994b', 'weapons gun reload ammunition'),
