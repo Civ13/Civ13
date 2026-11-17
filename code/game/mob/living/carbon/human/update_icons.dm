@@ -189,6 +189,8 @@ Please contact me on #coderbus IRC. ~Carn x
 		// Images replaced while standing in water are new and unmasked.
 		if (drowning || water_overlay)
 			apply_water_mask()
+		else if (water_click_padded)
+			set_water_click_area(FALSE)
 		for (var/image/I in overlays_standing)
 			overlays += I
 		if (species.has_floating_eyes)
@@ -1540,6 +1542,45 @@ var/global/list/human_face_icon_cache = list()
 		if (plane==FLOOR_PLANE)
 			plane=GAME_PLANE
 	apply_footwear_water_mask(mask_icon)
+	set_water_click_area(mask_icon ? TRUE : FALSE)
+
+// The water mask filter also hides the submerged body from the mouse, so a
+// swimmer was missing from the right-click menu and hard to click. While masked,
+// the whole tile counts as the mob (mouse_opacity 2). Only an opacity of 1 is
+// changed, so a deliberately unclickable mob stays unclickable.
+/mob/living/human/var/tmp/water_click_padded = FALSE
+/mob/living/human/proc/set_water_click_area(var/padded)
+	if (padded)
+		if (!water_click_padded && mouse_opacity == 1)
+			mouse_opacity = 2
+			water_click_padded = TRUE
+	else if (water_click_padded)
+		water_click_padded = FALSE
+		if (mouse_opacity == 2)
+			mouse_opacity = 1
+
+// Highest icon-y (1 = bottom row) under the water line for each mask state.
+/mob/living/human/proc/water_click_line()
+	switch (water_mask_state())
+		if ("seashallow_over1")
+			return 8
+		if ("seashallow_over2")
+			return 14
+		if ("seashallow_over3")
+			return 21
+	return 0
+
+// A swimmer's own left-click on the water below their waterline acts on the
+// water, as it did before the padding, so filling or drinking from the tile
+// they stand in still works. Everyone else clicks the swimmer.
+/mob/living/human/Click(var/location, var/control, var/params)
+	if (water_click_padded && usr == src && !lying && isturf(loc))
+		var/list/P = params2list(params)
+		var/click_y = text2num(P["icon-y"])
+		if (click_y && click_y <= water_click_line())
+			var/turf/T = loc
+			return T.Click(T, control, params)
+	return ..()
 
 // The beach.dmi state that hides the submerged part of the body, or null on dry ground.
 /mob/living/human/proc/water_mask_state()

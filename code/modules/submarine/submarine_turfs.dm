@@ -408,6 +408,7 @@
 			edge_state = "flood_overlay2_edges"
 		var/image/water_overlay = image('icons/turf/beach.dmi', overlay_state)
 		water_overlay.layer = MOB_LAYER + 0.1
+		water_overlay.mouse_opacity = 0 // drawn over crew; clicks go to them
 		overlays += water_overlay
 
 		// Edge borders: where water meets dry floor or walls
@@ -426,6 +427,7 @@
 			if(has_edge)
 				var/image/edge_img = image('icons/turf/beach.dmi', edge_state, dir=dir)
 				edge_img.layer = MOB_LAYER + 0.2
+				edge_img.mouse_opacity = 0
 				overlays += edge_img
 
 		// Corner overlays where two edges meet
@@ -455,6 +457,7 @@
 			if(edge1 && edge2)
 				var/image/corner_img = image('icons/turf/beach.dmi', edge_state, dir=cdir)
 				corner_img.layer = MOB_LAYER + 0.3
+				corner_img.mouse_opacity = 0
 				overlays += corner_img
 
 // ============================================================
