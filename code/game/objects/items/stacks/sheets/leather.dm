@@ -43,7 +43,7 @@
 	if (!use(1))
 		return FALSE
 	new /obj/item/stack/material/hairlesshide(site, 1)
-	to_chat(user, SPAN_NOTICE("You scrape a hide clean. Wash it with water next."))
+	to_chat(user, SPAN_NOTICE("You scrape a hide clean. Wash it in open water or with a vessel of water next."))
 	return TRUE
 
 // Keep scraping piece after piece until the stack is done or the work stops.
@@ -96,7 +96,7 @@
 
 /obj/item/stack/material/hairlesshide/update_strings()
 	..()
-	desc = "A scraped hide. Apply an open liquid container with 5 water, or hold this hide and use it on a nearby accessible vessel, to wash one piece."
+	desc = "A scraped hide. Hold the stack and click a river, lake, shallows or puddle to wash every piece in turn, or wash one piece at a time with an open vessel holding 5 water."
 
 /obj/item/stack/material/wethide
 	name = "wet hide"
@@ -156,9 +156,85 @@
 	return ..()
 
 /obj/item/stack/material/hairlesshide/resolve_attackby(atom/A, mob/user, icon_x, icon_y)
+	if (hide_wash_water(A) || istype(A, /turf/floor/beach/water/ice))
+		wash_in_water(user, A)
+		return TRUE
 	if (isobj(A) && A.reagents)
 		return attackby(A, user) // Resolve before pot insertion, pouring or splashing.
 	return ..()
+
+// ---- Washing in open water ----
+// A river, lake, the sea shallows, a flooded trench, an ice hole or a puddle: hold the
+// stack and click the water to rinse it piece after piece. Open water is never
+// used up; a puddle pays 5 units for each hide, like a vessel would.
+#define HIDE_WASH_PUDDLE_COST 5
+
+/proc/hide_wash_water(atom/A)
+	if (istype(A, /obj/structure/sink/puddle))
+		var/obj/structure/sink/puddle/P = A
+		return !P.heat_dried() && P.volume >= HIDE_WASH_PUDDLE_COST
+	if (istype(A, /obj/structure/ice_hole))
+		var/obj/structure/ice_hole/hole = A
+		return hole.open()
+	if (istype(A, /turf/floor/beach/water/ice))
+		var/obj/structure/ice_hole/hole = locate() in A
+		return hole && hole.open()
+	return isturf(A) && is_open_water(A)
+
+/mob/proc/hide_wash_wait(atom/water)
+	return do_after(src, 30, water)
+
+/obj/item/stack/material/hairlesshide/proc/water_wash_valid(mob/living/user, atom/water)
+	return user.hide_research_allowed() && hide_worker_can_reach(user, src) && loc == user && user.item_is_in_hands(src) && amount >= 1 && !QDELETED(water) && user.Adjacent(water) && hide_wash_water(water)
+
+// The washed pieces gather in the free hand, so a river cannot carry them off.
+/obj/item/stack/material/hairlesshide/proc/water_wash_output(mob/living/user, turf/site)
+	var/obj/item/stack/material/wethide/held = user.get_inactive_hand()
+	if (istype(held) && held.amount < held.max_amount)
+		held.amount++
+		held.update_icon()
+		held.update_strings()
+		return
+	var/obj/item/stack/material/wethide/made = new /obj/item/stack/material/wethide(site, 1)
+	if (!QDELETED(made) && made.loc == site && !user.get_inactive_hand())
+		user.put_in_inactive_hand(made)
+
+/obj/item/stack/material/hairlesshide/proc/wash_in_water(mob/living/user, atom/water)
+	if (!istype(user) || !user.hide_research_allowed(TRUE))
+		return 0
+	if (istype(water, /turf/floor/beach/water/ice) && !hide_wash_water(water))
+		to_chat(user, SPAN_WARNING("The water is frozen. Cut a hole in the ice or find open water."))
+		return 0
+	if (preparing_hide)
+		return 0
+	if (!water_wash_valid(user, water))
+		to_chat(user, SPAN_WARNING("Hold the hides in your hand and stand beside open water or a puddle with water in it."))
+		return 0
+	preparing_hide = TRUE
+	user.visible_message(SPAN_NOTICE("[user] starts washing [src] in \the [water]."), SPAN_NOTICE("You start washing the hides in \the [water], one at a time."))
+	var/done = 0
+	// Every piece pays its own wait; nothing is batched for free. An ice
+	// hole that freezes over, or a puddle that runs dry, stops the work.
+	while (water_wash_valid(user, water))
+		if (!user.hide_wash_wait(water) || QDELETED(src) || !water_wash_valid(user, water))
+			break
+		var/turf/site = get_turf(user)
+		if (istype(water, /obj/structure/sink/puddle))
+			var/obj/structure/sink/puddle/P = water
+			P.volume -= HIDE_WASH_PUDDLE_COST
+			P.update_icon()
+		if (!use(1))
+			break
+		water_wash_output(user, site)
+		done++
+	if (!QDELETED(src))
+		preparing_hide = FALSE
+	if (done)
+		playsound(get_turf(user), 'sound/effects/slosh.ogg', 25, TRUE)
+		to_chat(user, SPAN_NOTICE("You wash [done] hide[done == 1 ? "" : "s"]. Dry them on a tanning rack next."))
+	return done
+
+#undef HIDE_WASH_PUDDLE_COST
 
 /obj/item/stack/material/dryhide/attackby(obj/W, mob/user)
 	if (W.reagents)

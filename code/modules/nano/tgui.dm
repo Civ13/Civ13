@@ -108,15 +108,16 @@
 
 // Always the modern shell; a window with a plain page overrides this.
 /datum/nanoui/tgui/get_html()
+	var/version = civ13_tgui_version()
 	return {"
 <!DOCTYPE html>
 <html><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>Civ13 Interface</title></head>
-<body style="background:#211c16;color:#eee5d3;font-family:sans-serif" data-ref="\ref[src]" data-window="[html_encode(window_id)]" data-generation="[render_generation]">
+<body style="background:#211c16;color:#eee5d3;font-family:sans-serif" data-ref="\ref[src]" data-window="[html_encode(window_id)]" data-generation="[render_generation]" data-assets="[version]">
 <div id="root"></div>
 <p id="tgui-loading">Loading interface...</p>
 <script type="application/json" id="tgui-initial">[initial_snapshot()]</script>
-<script src="civ13-tgui-bootstrap.js" onerror="document.getElementById('tgui-loading').textContent='This window could not load. Close it and open it again.'"></script>
+<script src="[civ13_tgui_versioned_name("civ13-tgui-bootstrap.js", version)]" onerror="document.getElementById('tgui-loading').textContent='This window could not load. Close it and open it again.'"></script>
 </body></html>
 "}
 

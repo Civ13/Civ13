@@ -88,6 +88,12 @@
 			return S
 	return null
 
+// Whether a recipe builds a well, which goes over a puddle or a dug waterhole.
+// Asked by result type, not by title: "jeweller's post" and "oil well" both
+// hold the word "well" without being one.
+/proc/craft_recipe_builds_well(datum/stack_recipe/R)
+	return R && ispath(R.result_type, /obj/structure/sink/well)
+
 // Whether a well may be built on this tile: over a puddle, or over a dug well
 // that takes a new lining.
 /proc/well_build_site(turf/T)

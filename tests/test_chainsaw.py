@@ -127,7 +127,9 @@ class TreeBumpChopping(unittest.TestCase):
         body = self.proc('/mob/living/human/proc/try_bump_chopping(')
         self.assertLess(body.index('bump_chop_target = A'), body.index('halt_held_movement_toward(A)'))
         self.assertLess(body.index('halt_held_movement_toward(A)'), body.index('perform_bump_chop(A, HT)'))
-        halt = self.proc('/mob/living/human/proc/halt_held_movement_toward(')
+        movement = source('code/game/mob/mob_movement.dm')
+        start = movement.index('/mob/proc/halt_held_movement_toward(')
+        halt = movement[start:movement.index('\n\n', start)]
         self.assertIn('held & get_dir(src, A)', halt)
         self.assertIn('movement_northsouth = null', halt)
         self.assertIn('movement_eastwest = null', halt)

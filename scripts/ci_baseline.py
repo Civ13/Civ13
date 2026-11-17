@@ -1060,7 +1060,8 @@ SUITES = {
     # Stack recipe build guards keep produce_recipe()'s old order and phases;
     # source scan of code/.
     'craft_guards': {'files': ('tests/craft_guards/test_craft_guards.py',),
-        'paths': ('tests/craft_guards/', 'code/game/objects/items/stacks/craft_guards.dm'), 'shared_paths': ()},
+        'paths': ('tests/craft_guards/', 'code/game/objects/items/stacks/craft_guards.dm'),
+        'shared_paths': ('code/modules/1713/dug_wells.dm',)},
     'craft_products': {'files': ('tests/craft_products/test_craft_products.py',),
         'paths': ('tests/craft_products/', 'code/game/objects/items/stacks/craft_products.dm'), 'shared_paths': ()},
     # Tool quality declarations match the base paths is_tool() replaced, and

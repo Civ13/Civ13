@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '6bdd7df80d66f420393cd4fb9ef815d9b581c6ad'
+WIKI_REVIEWED_REVISION = 'a04ea25c34a1975227574e3edc928875242d73cc'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('19a2099a895672d6d6d77c383bcd167d5fd617d156f4245bceaad86fe273c303', 'character skills traits languages'),
@@ -85,7 +85,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Factory_Automation.md': ('e49b07d8eea1fe3c785b450c486e4b412e9ab4e4d0df30c8e9dc1dc34f666be0', 'factory automation belt belts conveyor arm arms fabricator fabricators pipe pipes pump tank bottler monitor crusher stamp mill'),
     'guides/Guide_to_Farming.md': ('2de3e24d20d9ac1c154bb43bddad9b9a6bc2d1c1aa6f68e79cd7c5cc879c4fd0', 'farming farm plant crops soil water'),
     'guides/Guide_to_Fishing.md': ('b18020557849534d4465842bfbb5aa33b633e70d8532e52a806206b8349e2bb6', 'fishing fish rod bait'),
-    'guides/Guide_to_Hygiene.md': ('4b8173587991ef1364e88dd0f69909167c8263c75fd2c1a9e4a04d96898de4b6', 'hygiene clean washing soap detergent laundry'),
+    'guides/Guide_to_Hygiene.md': ('f907369b3a4d371d4777da810aa9c90610c775fd7b0e5fd100a76c8a6fb21545', 'hygiene clean washing soap detergent laundry'),
     'guides/Guide_to_Leadership.md': ('d8fa16a65959d1c7f632c782de1129a9c6dfade1614a9e55ebcdd92851e972df', 'leadership squad leader officer commander artillery coordinates'),
     'guides/Guide_to_Medical.md': ('834abb0cf8e022e429dcb2894283a52adf5a94ca1249502470e5a552d9506152', 'medical heal injury wound surgery'),
     'guides/Guide_to_Pollution.md': ('f084e6ca8e6592361aba0dbc37f37d58b3f09bd20686bd067fdecdd71543f7ef', 'pollution polluted soot smog smoke charcoal clean ground growth'),

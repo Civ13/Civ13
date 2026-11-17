@@ -89,6 +89,13 @@ def add_tanning(files, add, records, variants):
           LEATHER, '/obj/item/stack/material/hairlesshide/attackby(',
           ('Apply a held open liquid container containing at least 5 units of water to a nearby prepared hide.',
            'Or hold the hide and click a nearby open container or unlocked barrel. Each use consumes one hide and 5 water; saved hairless hides enter here.'), ['Accessible liquid container'])
+    route('Wash a stack of prepared hides in open water',
+          [(STACK+'hairlesshide', 'n pieces'), ('/turf/floor/beach/water', 'river, lake, shallows or puddle; not consumed')],
+          [(STACK+'wethide', 'n pieces')], LEATHER, '/obj/item/stack/material/hairlesshide/proc/wash_in_water(',
+          ('Hold a stack of prepared hides and click a nearby river, lake, sea shallows, flooded trench, open ice hole or puddle.',
+           'Each piece takes 30 ticks, normally 3 seconds, and washing carries on through the stack until it is done or you stop.',
+           'Washed hides gather in your free hand, or drop at your feet when that hand is full. Open water is never used up; a puddle loses 5 water per hide. On ice, cut a hole first.'),
+          ['Open water or a puddle'])
     route('Rack-dry washed hides', [(STACK+'wethide', 'n pieces'), (STATION, 'station; not consumed')],
           [(STACK+'dryhide', 'n pieces')], RACK, '/obj/structure/converter/tanning\n',
           ('Put a held wet-hide stack on an empty nearby tanning rack; drying takes 300 ticks, normally 30 seconds.',

@@ -16,15 +16,9 @@
 				msg = "Your mood is good."
 			if(MOOD_TIER_EXCELLENT)
 				msg = "Your mood is excellent!"
-		switch(hygiene)
-			if(HYGIENE_LEVEL_CLEAN to INFINITY)
-				msg_hygiene = "You feel very clean!"
-			if(HYGIENE_LEVEL_NORMAL to HYGIENE_LEVEL_CLEAN)
-				msg_hygiene = "You feel clean."
-			if(HYGIENE_LEVEL_DIRTY to HYGIENE_LEVEL_NORMAL)
-				msg_hygiene = "You feel a bit dirty."
-			if(0 to HYGIENE_LEVEL_DIRTY)
-				msg_hygiene = "You feel very dirty!"
+		msg_hygiene = H.hygiene_feeling()
+		if (H.hygiene < HYGIENE_LEVEL_NORMAL)
+			msg_hygiene += " Examine yourself to see which parts need washing."
 		to_chat(H, "<span class='info'>*---------*</span>")
 		to_chat(H, "<span class='info'>[msg]</span>")
 		H.print_mood_causes()
@@ -33,6 +27,16 @@
 		H.print_excrement()
 		to_chat(H, "<span class='info'>*---------*</span>")
 		return
+
+/mob/living/human/proc/hygiene_feeling()
+	switch(hygiene)
+		if(HYGIENE_LEVEL_CLEAN to INFINITY)
+			return "You feel very clean!"
+		if(HYGIENE_LEVEL_NORMAL to HYGIENE_LEVEL_CLEAN)
+			return "You feel clean."
+		if(HYGIENE_LEVEL_DIRTY to HYGIENE_LEVEL_NORMAL)
+			return "You feel a bit dirty."
+	return "You feel very dirty!"
 
 /mob/living/human/proc/flash_sadness(ptsd = 1)
 	if (ingested.has_reagent("citalopram", 5) || ingested.has_reagent("paroxetine", 3.33)) //antidepressives and anxiolytics block PTSD effects

@@ -1185,6 +1185,24 @@
 		click_route.steer()
 	return (movement_northsouth || 0) | (movement_eastwest || 0)
 
+// A bump chop or bump mine consumes the held movement key that walked into
+// the tree or rock: the player stops pushing that way (and cannot nudge out of
+// the work wait) until the key is released and pressed again. Other held axes
+// keep moving, so a diagonal walk slides along. Movement macros do not repeat.
+/mob/proc/halt_held_movement_toward(atom/A)
+	var/held = (movement_northsouth || 0) | (movement_eastwest || 0)
+	var/toward = held & get_dir(src, A)
+	if (!toward)
+		toward = held & dir
+	if (!toward)
+		toward = held
+	if (toward & (NORTH|SOUTH))
+		movement_northsouth = null
+	if (toward & (EAST|WEST))
+		movement_eastwest = null
+	if (!movement_northsouth && !movement_eastwest)
+		movement_fine = FALSE
+
 // The fine_step value the movementMachine passes for this mob's held keys.
 /mob/proc/held_fine_step()
 	if (movement_fine)

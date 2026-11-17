@@ -77,6 +77,26 @@ class CraftGuardTest(unittest.TestCase):
                                   {'Shamans', 'Priests', 'Monks', 'Clerics'}, {'Shamans', 'Priests', 'Cultists', 'Clerics'},
                                   {'Monks', 'Priests', 'Cultists', 'Clerics'}])
 
+    def test_only_well_recipes_need_a_puddle(self):
+        # "jeweller's post" holds the word "well"; it once had to go over a
+        # puddle and needed well-building skill. Wells are told by result type.
+        stack = (ROOT / 'code/game/objects/items/stacks/stack.dm').read_text()
+        self.assertNotIn('findtext(recipe.title, "well")', stack)
+        self.assertIn('if (craft_recipe_builds_well(recipe))', stack)
+        self.assertIn('!findtext(recipe.title, "wallet")', stack)
+        wells = (ROOT / 'code/modules/1713/dug_wells.dm').read_text()
+        self.assertIn('ispath(R.result_type, /obj/structure/sink/well)', wells)
+        titles = {}
+        for path in (ROOT / 'config/crafting').glob('*.txt'):
+            for line in path.read_text(encoding='utf-8', errors='replace').splitlines():
+                if line.startswith('RECIPE:'):
+                    fields = [f.strip() for f in line[7:].split(',')]
+                    if len(fields) > 2 and 'well' in fields[1]:
+                        titles.setdefault(fields[1], set()).add(fields[2])
+        self.assertEqual(titles["jeweller's post"], {'/obj/structure/specialist_trader/jeweller'})
+        for title in ('well', 'sandstone well', 'timber well lining'):
+            self.assertTrue(all(t.startswith('/obj/structure/sink/well') for t in titles[title]), title)
+
 
 if __name__ == '__main__':
     unittest.main()
