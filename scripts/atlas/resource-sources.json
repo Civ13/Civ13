@@ -15078,7 +15078,7 @@
       "steps": [
         "Use an empty extraction kit on the listed ore stack. Collect the resulting reagent in the kit."
       ],
-      "conditions": "Uses up the whole stack it is given, so split off a small stack first. The yield depends on the ore.",
+      "conditions": "Purifies one ore from the stack per use and leaves the rest. The yield depends on the ore.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -15100,7 +15100,7 @@
       "steps": [
         "Use an empty extraction kit on the listed ore stack. Collect the resulting reagent in the kit."
       ],
-      "conditions": "Uses up the whole stack it is given, so split off a small stack first. The yield depends on the ore.",
+      "conditions": "Purifies one ore from the stack per use and leaves the rest. The yield depends on the ore.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -15122,7 +15122,7 @@
       "steps": [
         "Use an empty extraction kit on the listed ore stack. Collect the resulting reagent in the kit."
       ],
-      "conditions": "Uses up the whole stack it is given, so split off a small stack first. The yield depends on the ore.",
+      "conditions": "Purifies one ore from the stack per use and leaves the rest. The yield depends on the ore.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -15144,7 +15144,7 @@
       "steps": [
         "Use an empty extraction kit on the listed ore stack. Collect the resulting reagent in the kit."
       ],
-      "conditions": "Uses up the whole stack it is given, so split off a small stack first. The yield depends on the ore.",
+      "conditions": "Purifies one ore from the stack per use and leaves the rest. The yield depends on the ore.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -15166,7 +15166,7 @@
       "steps": [
         "Use an empty extraction kit on the listed ore stack. Collect the resulting reagent in the kit."
       ],
-      "conditions": "Uses up the whole stack it is given, so split off a small stack first. The yield depends on the ore.",
+      "conditions": "Purifies one ore from the stack per use and leaves the rest. The yield depends on the ore.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -15188,7 +15188,7 @@
       "steps": [
         "Use an empty extraction kit on the listed ore stack. Collect the resulting reagent in the kit."
       ],
-      "conditions": "Uses up the whole stack it is given, so split off a small stack first. The yield depends on the ore.",
+      "conditions": "Purifies one ore from the stack per use and leaves the rest. The yield depends on the ore.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -15210,7 +15210,7 @@
       "steps": [
         "Use an empty extraction kit on the listed ore stack. Collect the resulting reagent in the kit."
       ],
-      "conditions": "Uses up the whole stack it is given, so split off a small stack first. The yield depends on the ore.",
+      "conditions": "Purifies one ore from the stack per use and leaves the rest. The yield depends on the ore.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -15232,7 +15232,7 @@
       "steps": [
         "Use an empty extraction kit on the listed ore stack. Collect the resulting reagent in the kit."
       ],
-      "conditions": "Uses up the whole stack it is given, so split off a small stack first. The yield depends on the ore.",
+      "conditions": "Purifies one ore from the stack per use and leaves the rest. The yield depends on the ore.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -15254,7 +15254,7 @@
       "steps": [
         "Use an empty extraction kit on the listed ore stack. Collect the resulting reagent in the kit."
       ],
-      "conditions": "Uses up the whole stack it is given, so split off a small stack first. The yield depends on the ore.",
+      "conditions": "Purifies one ore from the stack per use and leaves the rest. The yield depends on the ore.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -15276,7 +15276,7 @@
       "steps": [
         "Use an empty extraction kit on the listed ore stack. Collect the resulting reagent in the kit."
       ],
-      "conditions": "Uses up the whole stack it is given, so split off a small stack first. The yield depends on the ore.",
+      "conditions": "Purifies one ore from the stack per use and leaves the rest. The yield depends on the ore.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -15298,7 +15298,7 @@
       "steps": [
         "Use an empty extraction kit on the listed ore stack. Collect the resulting reagent in the kit."
       ],
-      "conditions": "Uses up the whole stack it is given, so split off a small stack first. The yield depends on the ore.",
+      "conditions": "Purifies one ore from the stack per use and leaves the rest. The yield depends on the ore.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -15320,7 +15320,7 @@
       "steps": [
         "Use an empty extraction kit on the listed ore stack. Collect the resulting reagent in the kit."
       ],
-      "conditions": "Uses up the whole stack it is given, so split off a small stack first. The yield depends on the ore.",
+      "conditions": "Purifies one ore from the stack per use and leaves the rest. The yield depends on the ore.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -15342,7 +15342,7 @@
       "steps": [
         "Use an empty extraction kit on the listed ore stack. Collect the resulting reagent in the kit."
       ],
-      "conditions": "Uses up the whole stack it is given, so split off a small stack first. The yield depends on the ore.",
+      "conditions": "Purifies one ore from the stack per use and leaves the rest. The yield depends on the ore.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -15364,7 +15364,7 @@
       "steps": [
         "Use an empty extraction kit on the listed ore stack. Collect the resulting reagent in the kit."
       ],
-      "conditions": "Uses up the whole stack it is given, so split off a small stack first. The yield depends on the ore.",
+      "conditions": "Purifies one ore from the stack per use and leaves the rest. The yield depends on the ore.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -15386,7 +15386,7 @@
       "steps": [
         "Use an empty extraction kit on the listed ore stack. Collect the resulting reagent in the kit."
       ],
-      "conditions": "Uses up the whole stack it is given, so split off a small stack first. The yield depends on the ore.",
+      "conditions": "Purifies one ore from the stack per use and leaves the rest. The yield depends on the ore.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
