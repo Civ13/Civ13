@@ -101,7 +101,7 @@ var/list/sun_shadows_probe_latitudes = list(35, -20, 45, 50, 25, 2, 40)
 	var/obj/structure/wild/sun_shadows_probe_tree/T2 = new(locate(5, 5, 1))
 	sun_shadows_probe_assert((T1 in sun_shadow_casters) && (T2 in sun_shadow_casters), "casters_registered")
 	sun_shadows_phase("Morning")
-	sun_shadows_probe_assert(sun_shadows_probe_shadows(T1) == 1 && T1.sun_shadow_overlay && T1.sun_shadow_overlay == T2.sun_shadow_overlay, "morning_shared_shadow")
+	sun_shadows_probe_assert(sun_shadows_probe_shadows(T1) == 1 && T1.sun_shadow_overlay && T1.sun_shadow_overlay == T2.sun_shadow_overlay, "morning_shared_shadow [sun_shadows_probe_shadows(T1)] [T1.sun_shadow_overlay] [T2.sun_shadow_overlay] [json_encode(sun_tree_angles)] [sun_shadow_casters.len]")
 	sun_shadows_probe_assert(T1.sun_shadow_overlay.mouse_opacity == 0 && T1.sun_shadow_overlay.plane == FLOOR_PLANE, "shadow_not_clickable")
 	var/image/morning = T1.sun_shadow_overlay
 	sun_shadows_phase("Evening")
