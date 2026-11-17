@@ -182,7 +182,7 @@ var/list/tile_probe_notes = list()
 	map.load_new_recipes(file("config/crafting/material_recipes_global.txt"))
 	crafted_refund_stack_cache.Cut()
 	crafted_refund_units_cache.Cut()
-	tile_probe_assert(craftlist_lists.len && crafted_refund_units(/obj/covers/wood) == 1 && crafted_refund_stack(/obj/covers/wood) == /obj/item/stack/material/wood, "wood floor refund cap is its one wood")
+	tile_probe_assert(craftlist_lists.len && crafted_refund_units(/obj/covers/wood) == 1 && ispath(crafted_refund_stack(/obj/covers/wood), /obj/item/stack/material), "wood floor refund cap is its one wood")
 	tile_probe_assert(!crafted_refund_stack(/obj/covers/wood_wall) && !crafted_refund_units(/obj/covers/wood_wall), "mapped wall has no recipe refund")
 	var/rx = 2
 	for (var/refund_path in list(/obj/covers/wood, /obj/covers/wood_wall, /obj/covers/wood_wall/log, /obj/covers/straw_wall, /obj/covers/thatch))
