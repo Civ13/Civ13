@@ -19,6 +19,7 @@ var/global/list/persistence_world_time_stamps = list(
 	"pumped_until" = list(/obj/structure/fluid_pump/hand),
 	"next_job_fill" = list(/obj/structure/berth/quay/depot),
 	"last_moved" = list(/obj/structure/trains/platform),
+	"next_use" = list(/obj/structure/train_brake_wheel),
 	"l_move_time" = list(/atom/movable),
 	"last_movement" = list(/mob),
 	"lastgib" = list(/mob),

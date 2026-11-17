@@ -4,9 +4,11 @@ Code: `code/modules/1713/trains.dm` (cars, rails, locomotives),
 `code/modules/1713/train_platforms.dm` (walkable cars and clearance) and
 `code/modules/1713/train_warfare.dm` (armored locomotive) and
 `code/modules/1713/train_locomotives.dm` (heavy 3x4 locomotives, cab stations
-and the 3x6 main-line engine), `code/modules/1713/train_crashes.dm` (wrecks).
+and the 3x6 main-line engine), `code/modules/1713/train_crashes.dm` (wrecks)
+and `code/modules/1713/train_brakes.dm` (handbrakes, brake wheel, brake van).
 Tests: `tests/train_platforms` (the `drive/`, `load/`, `brake/`,
-`double_heading/`, `tender/`, `collision/` and `crash/` checks) and `tests/train_collision`.
+`double_heading/`, `tender/`, `collision/`, `crash/`, `brakes/` and
+`brake_van/` checks) and `tests/train_collision`.
 Step cost by train length: [train-step-cost.md](train-step-cost.md).
 
 ## Controls
@@ -18,7 +20,8 @@ The heavy steam engines split these between three
 [cab stations](#cab-stations-and-the-main-line-engine).
 
 Stopping the engine or closing the throttle lets the train coast; the brake
-stops it faster. Neither stops it on the spot.
+stops it faster. Neither stops it on the spot, and the driver's brake holds
+the engine alone ([Brakes](#brakes)).
 
 ## Speed and load
 
@@ -38,9 +41,42 @@ The lead engine refreshes the train's weight and pull every six tiles
 (`refresh_consist()`); nothing is stored per step, and all the driving state
 is `tmp`, so a saved train comes back standing with the throttle closed.
 
-Acceleration rises with spare pull. Coasting, engine braking and the brake
-each take a fixed amount of speed per tile, divided by the train's weight over
-six, so a long heavy train needs several times the distance to stop.
+Acceleration rises with spare pull. Coasting and engine braking each take a
+fixed amount of speed per tile (0.2, or 0.6 against a lower notch), divided by
+the train's weight over six, so a long heavy train rolls a long way.
+
+## Brakes
+
+A train stops by the weight its brakes hold. Each step the drive loop takes
+`brake_decel()` off the speed on top of the rolling resistance above: 1.2
+tiles per second times the braked share of the train's weight, where the
+braked weight is
+
+- the engine itself with all its sections (`consist_own`) while the driver's
+  Brake is on, and
+- every car whose `handbrake` is on (`consist_braked`).
+
+So a lone engine stops as before, while an engine with a long train behind it
+needs many more tiles unless cars are braked too. `refresh_consist()` adds
+both up; `set_handbrake()` refreshes the driving engine at once.
+
+Every car that is not an engine has a handbrake (`has_handbrake()`), shared by
+all the sections of a platform car and saved with them.
+
+- The **Handbrake** verb pins it down or lets it off from beside the car in
+  two seconds, only while the train stands (`work_handbrake()`).
+- A **brake wheel** (`/obj/structure/train_brake_wheel`, iron, rail steam)
+  bolted to a platform car's deck winds that car's brake on or off at a click,
+  once a second, standing or on the move. A wrench unbolts it once the brake
+  is off.
+- The **brake van** (`brake_van` layout, kit in iron) is a four-tile guard's
+  van: an open veranda, then a cabin with a brake wheel and a seat. Its
+  sections weigh 1 each (`"weight"` in the layout), twice an ordinary car, so
+  its brake holds twice as much.
+
+A handbrake left on drags: `pull_ratio()` counts a braked car at four times
+its weight (`drag_weight()`), so the train is slower and may not start. Any
+handbrake in a train also holds it against being pushed by hand.
 
 ## The boiler
 

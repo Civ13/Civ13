@@ -386,6 +386,9 @@
 	var/turf/tgt = get_step(src,AM.dir)
 	if (!tgt)
 		return FALSE
+	// A handbrake anywhere in the train holds it against a push.
+	if (train_handbrakes())
+		return FALSE
 	if (isliving(AM))
 		var/mob/living/ML = AM
 		for (var/obj/structure/trains/TR in AM.loc)
@@ -915,7 +918,7 @@ var/global/train_solo_move = FALSE
 		if ("Brake")
 			throttle = 0
 			braking = TRUE
-			visible_message("[user] applies \the [src]'s brakes.", "You apply the brakes.")
+			visible_message("[user] applies \the [src]'s brake.", "You apply the engine's brake. It holds the engine alone: a long train needs its handbrakes as well.")
 		if ("Reverser to backward", "Reverser to forward")
 			if (rail_speed > 0)
 				to_chat(user, "<span class = 'warning'>Stop the train before you move the reverser.</span>")
@@ -931,7 +934,8 @@ var/global/train_solo_move = FALSE
 
 /obj/structure/trains/locomotive/proc/control_summary()
 	var/where = reverser > 0 ? "forward" : "backward"
-	return "[state_text()] Throttle notch [throttle] of [LOCO_NOTCHES], reverser [where][braking ? ", brakes on" : ""]. [speed_text()]."
+	var/pinned = train_handbrakes()
+	return "[state_text()] Throttle notch [throttle] of [LOCO_NOTCHES], reverser [where][braking ? ", engine brake on" : ""][pinned ? ", [pinned] handbrake\s on in the train" : ""]. [speed_text()]."
 
 /obj/structure/trains/locomotive/proc/state_text()
 	return "Engine [on ? "running" : "stopped"]."
@@ -1036,8 +1040,16 @@ var/global/train_solo_move = FALSE
 	consist_weight = 0
 	consist_power = 0
 	consist_engines = 0
+	consist_braked = 0
+	consist_own = 0
 	for (var/obj/structure/trains/car in cars)
-		consist_weight += car.car_load_weight()
+		var/car_weight = car.car_load_weight()
+		consist_weight += car_weight
+		// Brakes (train_brakes.dm): handbrakes on, and what the driver's brake holds.
+		if (car.handbrake)
+			consist_braked += car_weight
+		if (car == src || (car_id && car.car_id == car_id))
+			consist_own += car_weight
 		if (istype(car, /obj/structure/trains/locomotive))
 			var/obj/structure/trains/locomotive/L = car
 			if (L.on && (L.fuel > 0 || !L.max_fuel) && !L.engine_disabled())
@@ -1056,7 +1068,7 @@ var/global/train_solo_move = FALSE
 
 // 0 when the engine pulls its rated load or more; below 1 it is overloaded.
 /obj/structure/trains/locomotive/proc/pull_ratio()
-	return consist_power / max(1, consist_weight)
+	return consist_power / max(1, drag_weight())
 
 /obj/structure/trains/locomotive/proc/cruise_speed()
 	if (!on || throttle <= 0 || engine_disabled())
@@ -1088,14 +1100,16 @@ var/global/train_solo_move = FALSE
 			var/heft = max(1, consist_weight / 6)
 			if (rail_speed < target)
 				if (rail_speed <= 0 && pull_ratio() < 0.25)
-					visible_message("<span class = 'warning'>\The [src]'s wheels spin; the train is too heavy to start.</span>")
+					visible_message("<span class = 'warning'>\The [src]'s wheels spin; [consist_braked > 0 ? "the handbrakes are holding the train" : "the train is too heavy to start"].</span>")
 					throttle = 0
 					break
 				rail_speed = min(target, max(rail_speed, 0.5) + 0.35 * min(2, pull_ratio()))
 				braking = FALSE
 			else if (rail_speed > target)
-				var/drag = braking ? 1.2 : (target > 0 ? 0.6 : 0.2)
-				rail_speed = max(target, rail_speed - drag / heft)
+				// Rolling resistance by the train's heft, and the brakes by the
+				// share of its weight they hold (train_brakes.dm).
+				var/drag = (target > 0 ? 0.6 : 0.2) / heft + brake_decel()
+				rail_speed = max(target, rail_speed - drag)
 			if (rail_speed <= 0.25 && target <= 0)
 				break
 			automovement = TRUE

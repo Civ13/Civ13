@@ -22,7 +22,7 @@ KITS = ['/obj/structure/train_car_kit', '/obj/structure/train_car_kit/coach', '/
         '/obj/structure/train_car_kit/railgun', '/obj/structure/train_car_kit/armored',
         '/obj/structure/train_car_kit/flak', '/obj/structure/train_car_kit/long_flatbed',
         '/obj/structure/train_car_kit/open_wagon', '/obj/structure/train_car_kit/boxcar',
-        '/obj/structure/train_car_kit/bogie_coach']
+        '/obj/structure/train_car_kit/bogie_coach', '/obj/structure/train_car_kit/brake_van']
 
 
 def dmi_description(path):
@@ -216,6 +216,33 @@ class TrainPlatformSourceTests(unittest.TestCase):
         self.assertIn('/obj/structure/trains/platform/derail()', crashes)
         self.assertIn('\twrecked = TRUE\n\tapply_layout()', crashes)
         self.assertIn('\tbroken_down = TRUE\n', crashes)
+
+    def test_brakes_hold_a_share_of_the_train(self):
+        dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
+        self.assertEqual(dme.count('#include "code\\modules\\1713\\train_brakes.dm"'), 1)
+        brakes = (ROOT / 'code/modules/1713/train_brakes.dm').read_text(encoding='utf-8')
+        # Saved per car; the engine's own brake state stays tmp.
+        self.assertIn('/obj/structure/trains\n\tvar/handbrake = FALSE\n', brakes)
+        self.assertIn('var/tmp/braking = FALSE', TRAINS)
+        # The drive loop slows by the braked share, and handbrakes drag the pull.
+        drive = TRAINS[TRAINS.index('/obj/structure/trains/locomotive/proc/drive()'):]
+        self.assertIn('/ heft + brake_decel()', drive)
+        self.assertIn('return consist_power / max(1, drag_weight())', TRAINS)
+        self.assertIn('if (car.handbrake)\n\t\t\tconsist_braked += car_weight', TRAINS)
+        self.assertIn('return TRAIN_BRAKE_DECEL * min(1, held / max(1, consist_weight))', brakes)
+        # By hand only on a standing train; a push never moves a braked one.
+        hand = brakes[brakes.index('/obj/structure/trains/proc/work_handbrake('):]
+        self.assertLess(hand.index('if (train_rolling())'), hand.index('do_after('))
+        bumped = TRAINS[TRAINS.index('/obj/structure/trains/Bumped('):]
+        self.assertLess(bumped.index('if (train_handbrakes())'), bumped.index('if (rail_canmove(AM.dir))'))
+        # The brake van is ballasted and comes with its wheel.
+        self.assertIn('"roof" = "boxcar", "weight" = 1,', SOURCE)
+        self.assertIn('"fit" = list(/obj/structure/train_brake_wheel, null, /obj/structure/bed/chair/comfy/blue)', SOURCE)
+        self.assertRegex(RECIPES, r'(?m)^RECIPE: /material/iron/,brake wheel,/obj/structure/train_brake_wheel,')
+        self.assertIn('"/obj/structure/train_brake_wheel" = "rail_steam"', NODES)
+        states = dmi_description(ROOT / 'icons/obj/vehicles/train_platforms.dmi')
+        for state in ('brake_wheel', 'brake_wheel_on'):
+            self.assertIn('state = "%s"' % state, states)
 
     def test_railway_gun_sheet(self):
         gun = dmi_description(ROOT / 'icons/obj/vehicles/railway_gun.dmi')
