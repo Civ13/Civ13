@@ -348,6 +348,8 @@
 		item.loc = loc
 		// Thrown down from an airship's gondola (pedal_airship_combat.dm).
 		if (aloft_pedal_airships.len || air_hull_crafts.len)
+			if (isturf(target))
+				target = airborne_aim_turf(src, target)
 			var/turf/gondola = airborne_launch_turf(src, target)
 			if (gondola)
 				item.loc = gondola

@@ -155,7 +155,12 @@ deck goes through `air_hull_overhead_fire()` (from `airborne_overhead_hit()`):
 burns it out with fire arrows and incendiary shot, then `check_lift()` holds
 her in place when short of lift and calls `crash()` below half of it, which
 drops everyone and everything aboard to the ground. `/obj/structure/airship_bomb_hatch`
-drops aircraft bombs onto the ground below. Native probe:
+drops aircraft bombs onto the ground below. She can fly on any open-air level:
+her views, wreck and bombs reach the first solid level under her
+(`air_hull_solid_below()`), ground fire reaches her only through open air
+(`air_hull_levels_between()`, half the chance per extra level), and a click on
+open air from her deck aims at what is seen through it (`airborne_aim_turf()`).
+Native probe:
 `tests/pedal_bicycle/ride.py --probe air_hull_probe.dm`.
 
 ## Drives aboard

@@ -164,10 +164,17 @@
 	var/obj/structure/vehicle/bicycle/airship/S = aloft_airship_ridden_by(user)
 	if (S)
 		return S.ground_turf()
-	var/datum/craft/air/C = air_hull_under(user)
+	// An airship's deck: the first solid level under it, however high she flies.
+	return air_hull_under(user) ? air_hull_solid_below(get_turf(user)) : null
+
+// Open air clicked from a gondola or deck means what is seen through it: the
+// first solid turf under it. Anything else is aimed at as it is.
+/proc/airborne_aim_turf(mob/user, turf/T)
 	var/turf/here = get_turf(user)
-	var/ground = C ? C.ground_z() : 0
-	return ground ? locate(here.x, here.y, ground) : null
+	if (!T || !here || T.z != here.z || !air_hull_open_air(T) || !airborne_ground_under(user))
+		return T
+	var/turf/G = air_hull_solid_below(T)
+	return G ? G : T
 
 // Where a shot or throw by user at target starts: the ground under the
 // gondola or deck when target is on that ground.

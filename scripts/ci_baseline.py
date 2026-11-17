@@ -570,6 +570,7 @@ SUITES = {
                          'code/game/objects/structures/pedal_airship_combat.dm',
                          'code/modules/projectiles/projectile.dm',
                          'code/modules/projectiles/projectile_lob.dm',
+                         'code/game/mob/living/carbon/carbon.dm',
                          'code/modules/research_tree/research_node.dm',
                          'config/crafting/material_recipes_global.txt')},
     'motorcycle_riding': {'files': ('tests/motorcycle_riding/test_sources.py',),
