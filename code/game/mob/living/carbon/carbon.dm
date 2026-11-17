@@ -347,7 +347,7 @@
 		remove_from_mob(item)
 		item.loc = loc
 		// Thrown down from an airship's gondola (pedal_airship_combat.dm).
-		if (aloft_pedal_airships.len)
+		if (aloft_pedal_airships.len || air_hull_crafts.len)
 			var/turf/gondola = airborne_launch_turf(src, target)
 			if (gondola)
 				item.loc = gondola

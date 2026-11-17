@@ -1,7 +1,9 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.Encodings.Web;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace Civ13.Launcher;
 
@@ -56,6 +58,38 @@ public static class LocalBot {
             RedirectStandardInput = action != "start", RedirectStandardOutput = action != "start", RedirectStandardError = true };
         foreach (var argument in new[] { "scripts/windows/control.php", action, bot.Profile }) step.ArgumentList.Add(argument);
         return step;
+    }
+
+    // The bot's log level lives in its portable profile ("log_level"); the bot reads it when it starts and
+    // uses info when it is missing or unknown, so a bad value never stops it booting.
+    public static readonly string[] LogLevels = ["debug", "info", "notice", "warning", "error"];
+    public const string DefaultLogLevel = "info";
+
+    public static string NormalLogLevel(string? value) {
+        var name = value?.Trim().ToLowerInvariant();
+        return name != null && LogLevels.Contains(name) ? name : DefaultLogLevel;
+    }
+
+    // The level the bot will use at its next start. Anything unreadable reads as the default.
+    public static string ReadLogLevel(string profile) {
+        try {
+            if (JsonNode.Parse(File.ReadAllText(profile)) is JsonObject json && json["log_level"] is JsonValue value && value.TryGetValue<string>(out var level))
+                return NormalLogLevel(level);
+        } catch (Exception e) when (e is IOException or UnauthorizedAccessException or JsonException or InvalidOperationException) { }
+        return DefaultLogLevel;
+    }
+
+    // Sets "log_level" and keeps every other profile field. Written UTF-8 without a BOM (PHP's json_decode
+    // rejects one) through a temporary file, so a failed write leaves the old profile in place.
+    public static void WriteLogLevel(string profile, string level) {
+        if (!LogLevels.Contains(level)) throw new ArgumentException("Unknown log level: " + level, nameof(level));
+        var text = File.ReadAllText(profile);
+        if (JsonNode.Parse(text) is not JsonObject json) throw new InvalidDataException("The bot profile is not a JSON object.");
+        json["log_level"] = level;
+        var options = new JsonSerializerOptions { WriteIndented = true, Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
+        var temporary = profile + ".tmp";
+        File.WriteAllText(temporary, json.ToJsonString(options) + "\n", new UTF8Encoding(false));
+        File.Move(temporary, profile, true);
     }
 
     public static BotStatus ParseStatus(int exit, string output) {

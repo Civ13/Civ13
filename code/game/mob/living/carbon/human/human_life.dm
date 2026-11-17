@@ -320,6 +320,7 @@
 		death()
 
 	handle_disease()
+	handle_survival_hints()
 
 	//shitcode to fix the movement bug because byond hates me
 	if (grab_list.len)

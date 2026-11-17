@@ -24,6 +24,7 @@ public static class Program {
         output.WriteLine("      Join the verified local host; requires --root.");
         output.WriteLine("  --console                      Use the text menu instead of the launcher window.");
         output.WriteLine("  --bot status|check-update|start|stop|restart|update|repair [--root <absolute folder>]");
+        output.WriteLine("  --bot log-level [debug|info|notice|warning|error] [--root <absolute folder>]  (show or set; info by default, used from the next start)");
         output.WriteLine("      Manage host.json's Civilizationbot without the window; start leaves it running.");
         output.WriteLine("  --render-tabs <launcher data folder> <output folder>");
         output.WriteLine("      Draw the hosting tabs to PNG files for review, from that folder's host.json. Starts nothing.");
@@ -79,6 +80,11 @@ public static class Program {
                 throw new PlatformNotSupportedException("Civ13 requires Windows x64.");
             if (args.Length > 0 && args[0] == "--apply-update") return ApplyUpdate(args);
             if (args.Length > 0 && args[0] == BotCommand.Option) {
+                if (args.Length > 1 && args[1] == BotCommand.LogLevelAction) {
+                    var (level, levelRoot) = BotCommand.ParseLogLevel(args);
+                    var levelBot = BotCommand.Load(levelRoot ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Civ13"));
+                    return BotCommand.LogLevel(levelBot, level, Console.Out);
+                }
                 var (action, botRoot) = BotCommand.Parse(args);
                 var bot = BotCommand.Load(botRoot ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Civ13"));
                 return await BotCommand.Run(action, bot, Console.Out, BotCommand.System);

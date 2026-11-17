@@ -208,6 +208,7 @@ var/list/coefflist = list()
 					client.add_stat("<b>Military Research:</b>", "[map.custom_civs[civilization][2]]/[civmax_research[2]]")
 					client.add_stat("<b>Health Research:</b>", "[map.custom_civs[civilization][3]]/[civmax_research[3]]")
 			client.add_stat("<h3>Stats</h3>", "")
+			client.add_stat("<b>How to raise them:</b>", "IC tab, Skills Guide")
 
 			for (var/statname in stats)
 
