@@ -35,6 +35,9 @@
     "--allow-native-execution"
    ]
   },
+  "tests/train_step_bench/run.py": {
+   "serial": true
+  },
   "tests/wildlife_arrival/run.py": {
    "serial": true
   }
