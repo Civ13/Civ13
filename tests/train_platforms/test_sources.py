@@ -17,6 +17,7 @@ WAREHOUSE = (ROOT / 'code/modules/1713/rail_warehouse.dm').read_text(encoding='u
 TRAINS = (ROOT / 'code/modules/1713/trains.dm').read_text(encoding='utf-8')
 RECIPES = (ROOT / 'config/crafting/material_recipes_global.txt').read_text(encoding='utf-8')
 NODES = (ROOT / 'code/modules/research_tree/research_node.dm').read_text(encoding='utf-8')
+PLATFORMS = (ROOT / 'code/modules/1713/train_platforms.dm').read_text(encoding='utf-8')
 KITS = ['/obj/structure/train_car_kit', '/obj/structure/train_car_kit/coach', '/obj/structure/train_car_kit/sleeper',
         '/obj/structure/train_car_kit/dining', '/obj/structure/train_car_kit/storage',
         '/obj/structure/train_car_kit/railgun', '/obj/structure/train_car_kit/armored',
@@ -411,6 +412,38 @@ class TrainPlatformSourceTests(unittest.TestCase):
         for state in ('plough_f', 'plough_b'):
             self.assertIn('state = "%s"' % state, states)
         self.assertIn('state = "plough_item"', dmi_description(ROOT / 'icons/obj/vehicles/train_platforms.dmi'))
+
+    def test_bulk_freight_is_a_count_on_the_car(self):
+        dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
+        self.assertEqual(dme.count('#include "code\\modules\\1713\\train_freight.dm"'), 1)
+        freight = (ROOT / 'code/modules/1713/train_freight.dm').read_text(encoding='utf-8')
+        self.assertIn('\tvar/bulk_path = null', freight)
+        self.assertIn('\tvar/bulk_amount = 0', freight)
+        self.assertIn('"center" = "boards", "side" = "boards", "bulk" = 600,', PLATFORMS)
+        self.assertIn('"center" = "hopper", "side" = "hopper", "bulk" = 800, "hopper" = TRUE,', PLATFORMS)
+        # The load weighs on the car, shows on every section and keeps it from being packed.
+        self.assertIn('+ bulk_weight()\n', PLATFORMS)
+        self.assertIn('var/image/heap = bulk_overlay()', PLATFORMS)
+        self.assertIn('return "Unload the car first."', PLATFORMS)
+        attack = PLATFORMS[PLATFORMS.index('/obj/structure/trains/platform/attackby('):]
+        self.assertLess(attack.index('if (bulk_use(W, user))'), attack.index('car_engine()'))
+        # A section draws its heap from its own copy: no search while the train moves.
+        overlay = freight[freight.index('/obj/structure/trains/platform/proc/bulk_overlay('):]
+        overlay = overlay[:overlay.index('\n\n')]
+        self.assertNotIn('car_segments', overlay)
+        self.assertIsNone(re.search(r'(?<!\w)(spawn|addtimer|sleep) ?\(', freight))
+        for path, recipe in (('/obj/structure/train_car_kit/hopper', 'hopper wagon kit,/obj/structure/train_car_kit/hopper,28,'),
+                             ('/obj/structure/train_hopper_lever', 'hopper door lever,/obj/structure/train_hopper_lever,4,'),
+                             ('/obj/structure/rail_drop_pit', 'drop pit,/obj/structure/rail_drop_pit,8,')):
+            self.assertIn('RECIPE: /material/iron/,' + recipe, RECIPES)
+            self.assertIn('"%s" = "rail_steam"' % path, NODES)
+        states = dmi_description(ROOT / 'icons/obj/vehicles/train_platforms.dmi')
+        for state in ('edge_hopper', 'deck_center_hopper', 'deck_side_hopper', 'drop_pit', 'drop_pit_coal', 'drop_pit_ore', 'drop_pit_sand'):
+            self.assertIn('state = "%s"' % state, states)
+        loads = dmi_description(ROOT / 'icons/obj/vehicles/train_loads.dmi')
+        for tone in ('coal', 'ore', 'sand'):
+            for fill in (1, 2):
+                self.assertIn('state = "heap_%s_%d"' % (tone, fill), loads)
 
     def test_native_fixture_preparation(self):
         generated = run.sources()

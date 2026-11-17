@@ -4,7 +4,7 @@
 /world
 	hub = ""
 	hub_password = ""
-	maxx = 220
+	maxx = 226
 	maxy = 26
 	maxz = 1
 	turf = /turf/floor/dirt
@@ -1928,6 +1928,96 @@ var/global/platform_probe_runtime_error = FALSE
 	var/obj/item/train_snowplough/part = W2.remove_plough(FALSE, platform_turf(217, 11))
 	platform_check("snow/plough_is_a_part", istype(part) && part.loc == platform_turf(217, 11) && !W2.plough_at(FALSE) && !W2.remove_plough(FALSE) && !W2.coupler_r.overlays.len && !E.plough_use(fitter, TRUE, null) && ("plough_f" in icon_states('icons/obj/vehicles/train_plough.dmi')) && ("plough_b" in icon_states('icons/obj/vehicles/train_plough.dmi')) && ("plough_item" in icon_states('icons/obj/vehicles/train_platforms.dmi')))
 
+// Bulk freight (train_freight.dm): ore, coal and sand as a count on an open
+// wagon or a hopper, and the hopper's drop through its floor.
+/proc/platform_freight_run()
+	for (var/ty in 2 to 25)
+		platform_track(223, ty, NORTH)
+	var/obj/structure/trains/platform/wagon = platform_car("open_wagon", 223, 12, NORTH)
+	var/list/segs = wagon.car_segments()
+	var/obj/structure/trains/platform/store = wagon.bulk_store()
+	var/obj/structure/trains/platform/last = segs[segs.len]
+	var/base = 0
+	for (var/obj/structure/trains/platform/P in segs)
+		base += P.car_load_weight()
+	var/list/flat = train_car_layout("long_flatbed")
+	var/bare = segs.len == 8 && wagon.bulk_max() == 600 && store && store.seg_index == 1 && last.bulk_store() == store && !wagon.is_hopper() && findtext(wagon.bulk_text(), "is empty") && !flat["bulk"] && !wagon.bulk_overlay()
+	var/obj/item/stack/ore/coal/C = new(platform_turf(220, 12))
+	C.amount = 40
+	var/took = last.bulk_load(C)
+	var/shown = 0
+	var/weight = 0
+	for (var/obj/structure/trains/platform/P in segs)
+		weight += P.car_load_weight()
+		if (P.bulk_fill == 1 && P.bulk_path == "/obj/item/stack/ore/coal" && P.bulk_overlay())
+			shown++
+	platform_check("freight/bulk_is_a_count_on_the_car", bare && took == 40 && store.bulk_amount == 40 && last.bulk_amount == 0 && shown == 8 && abs(weight - base - 0.2) < 0.001 && train_bulk_tone(store.bulk_path) == "coal" && train_bulk_name(store.bulk_path) == "mineral coal" && findtext(wagon.bulk_text(), "40 of 600"))
+	// One kind at a time, and no more than the car holds.
+	var/obj/item/stack/ore/iron/I = new(platform_turf(220, 12))
+	I.amount = 30
+	var/other = !wagon.bulk_load(I) && I.amount == 30 && train_bulk_tone("[I.type]") == "ore"
+	store.bulk_amount = 590
+	var/obj/item/stack/ore/coal/more = new(platform_turf(220, 12))
+	more.amount = 30
+	var/topped = wagon.bulk_load(more) == 10 && more.amount == 20 && store.bulk_amount == 600 && last.bulk_fill == 2 && !wagon.bulk_load(more)
+	var/obj/item/stack/ore/uranium/U = new(platform_turf(220, 12))
+	platform_check("freight/one_kind_and_no_more_than_it_holds", other && topped && !train_bulk_item(U) && !train_bulk_item(null) && findtext(wagon.dismantle_problem(), "Unload"))
+	qdel(U)
+	// A shovel digs it out again, a stack at a time.
+	var/turf/heap = platform_turf(221, 10)
+	var/out = wagon.bulk_take(50, heap)
+	var/obj/item/stack/ore/coal/dug = locate() in heap
+	store.bulk_amount = 20
+	wagon.update_bulk()
+	var/rest = wagon.bulk_take(50, heap)
+	platform_check("freight/shovelled_out_by_the_stack", out == 50 && dug && dug.amount == 50 && rest == 20 && store.bulk_amount == 0 && isnull(store.bulk_path) && last.bulk_fill == 0 && isnull(last.bulk_path) && !wagon.bulk_take(50, heap) && !wagon.dismantle_problem())
+
+	// The hopper drops its whole load through the floor.
+	var/obj/structure/trains/platform/hopper = platform_car("hopper", 223, 22, NORTH)
+	var/list/bays = hopper.car_segments()
+	var/obj/structure/trains/platform/bin = hopper.bulk_store()
+	var/list/front = train_platform_tiles(hopper.loc, hopper.dir)
+	var/obj/structure/train_hopper_lever/lever = locate() in front[1]
+	var/built = bays.len == 6 && hopper.bulk_max() == 800 && hopper.is_hopper() && lever && lever.hopper() == hopper && !wagon.drop_load() && !hopper.drop_load() && !hopper.drop_pit()
+	hopper.bulk_load(I)
+	bin.bulk_amount = 120
+	hopper.update_bulk()
+	var/dropped = hopper.drop_load()
+	var/on_track = 0
+	var/stacks = 0
+	for (var/obj/structure/trains/platform/P in bays)
+		for (var/obj/item/stack/ore/iron/S in P.loc)
+			on_track += S.amount
+			stacks++
+	platform_check("freight/hopper_drops_on_the_track", built && QDELETED(I) && dropped == 120 && on_track == 120 && stacks == 3 && bin.bulk_amount == 0 && isnull(bin.bulk_path))
+	// Over a drop pit the load goes into the pit.
+	var/obj/structure/rail_drop_pit/pit = new(platform_turf(223, 19))
+	pit.update_icon()
+	bin.bulk_path = "/obj/item/stack/ore/coal"
+	bin.bulk_amount = 100
+	hopper.update_bulk()
+	var/over = hopper.drop_pit() == pit && pit.icon_state == "drop_pit" && pit.dir == NORTH && pit.room_for(bin.bulk_path)
+	var/binned = hopper.drop_load() == 100 && pit.bulk_amount == 100 && pit.bulk_path == "/obj/item/stack/ore/coal" && pit.icon_state == "drop_pit_coal" && bin.bulk_amount == 0
+	platform_check("freight/hopper_drops_into_a_pit", over && binned)
+	// The pit holds one kind, and what it has no room for stays in the car.
+	bin.bulk_path = "/obj/item/stack/ore/glass"
+	bin.bulk_amount = 50
+	hopper.update_bulk()
+	var/wrong = !pit.room_for(bin.bulk_path) && hopper.drop_load() == 0 && bin.bulk_amount == 50 && train_bulk_tone(bin.bulk_path) == "sand"
+	bin.bulk_path = "/obj/item/stack/ore/coal"
+	bin.bulk_amount = 30
+	pit.bulk_amount = 2990
+	hopper.update_bulk()
+	var/part = hopper.drop_load() == 10 && bin.bulk_amount == 20 && pit.bulk_amount == 3000 && !pit.room_for(bin.bulk_path)
+	var/turf/side = platform_turf(221, 19)
+	var/dug_out = pit.dig_out(50, side)
+	var/obj/item/stack/ore/coal/from_pit = locate() in side
+	pit.bulk_amount = 5
+	var/emptied = pit.dig_out(50, side) == 5 && pit.bulk_amount == 0 && isnull(pit.bulk_path) && pit.icon_state == "drop_pit" && !pit.dig_out(50, side)
+	var/list/sheet = icon_states('icons/obj/vehicles/train_loads.dmi')
+	var/list/states = icon_states('icons/obj/vehicles/train_platforms.dmi')
+	platform_check("freight/pit_holds_one_kind", wrong && part && dug_out == 50 && from_pit && from_pit.amount == 50 && emptied && ("heap_coal_1" in sheet) && ("heap_ore_2" in sheet) && ("heap_sand_2" in sheet) && ("drop_pit" in states) && ("drop_pit_sand" in states) && ("edge_hopper" in states) && ("deck_center_hopper" in states) && ("deck_side_hopper" in states))
+
 /world/New()
 	OpenPort("none")
 	GLOB.all_observable_events = list()
@@ -1958,6 +2048,7 @@ var/global/platform_probe_runtime_error = FALSE
 		platform_servicing_run()
 		platform_depot_run()
 		platform_snow_run()
+		platform_freight_run()
 	catch (var/exception/E)
 		platform_probe_runtime_error = TRUE
 		world.log << "Fixture aborted: [E] at [E.file]:[E.line]"

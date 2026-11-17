@@ -391,6 +391,34 @@ what stands within two tiles of them, like a water crane.
   (`load_sand()`) and fills the sandboxes of the engines within reach
   (2 seconds).
 
+## Bulk freight
+
+`train_freight.dm`. Ore, coal and sand travel as a kind and a count on the
+car, not as items on its deck, so a loaded train costs no more to move than
+an empty one.
+
+- A layout with `"bulk" = <units>` carries bulk: the open wagon 600, the
+  hopper 800. `bulk_amount` lives on the car's first section
+  (`bulk_store()`); `bulk_path` (the stack type as text) and `bulk_fill`
+  (0, 1 part, 2 from half) are copied to every section by `update_bulk()`,
+  so each draws its own heap (`bulk_overlay()`, `train_loads.dmi`) without
+  looking for the others.
+- `train_bulk_item()`: any `/obj/item/stack/ore` that is not radioactive. A
+  car carries one kind at a time. `bulk_use()` from the car's `attackby`:
+  a stack is tipped in (`bulk_load()`), a shovel takes up to 50 out in 2
+  seconds (`bulk_take()`).
+- 200 units weigh as much as one section (`bulk_weight()`, added in
+  `car_load_weight()` on the first section). A loaded car cannot be packed
+  into a kit.
+- The hopper (`"hopper" = TRUE`) is built with a
+  `/obj/structure/train_hopper_lever` on its first section. `drop_load()`
+  empties the car while it stands: into the `/obj/structure/rail_drop_pit`
+  under any of its sections (`take_in()`, 3000 units of one kind; what does
+  not fit stays in the car), otherwise as stacks on the track under it.
+  The pit is dug out with a shovel (`dig_out()`).
+
+Region travel does not carry bulk loads yet.
+
 ## Snow
 
 `train_snow.dm`. Snow that falls and lies (`snowfall_ground.dm`:

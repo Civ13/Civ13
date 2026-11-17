@@ -242,8 +242,8 @@ var/global/train_step_plain = FALSE
 		var/list/low_front = list(list(TRAIN_LEFT, "front", "side"), list(0, "front", "side"), list(TRAIN_RIGHT, "front", "side"))
 		var/list/low_back = list(list(TRAIN_LEFT, "back", "side"), list(0, "back", "side"), list(TRAIN_RIGHT, "back", "side"))
 		layouts["open_wagon"] = list(
-			"name" = "open wagon", "desc" = "A long open goods wagon on two bogies with plank sides all round. The drop doors in the middle of each side let down for loading.",
-			"center" = "boards", "side" = "boards",
+			"name" = "open wagon", "desc" = "A long open goods wagon on two bogies with plank sides all round. The drop doors in the middle of each side let down for loading. It takes ore, coal or sand in bulk.",
+			"center" = "boards", "side" = "boards", "bulk" = 600,
 			"segments" = list(
 				list("edges" = low_sides + low_front),
 				list("edges" = low_sides),
@@ -253,6 +253,21 @@ var/global/train_step_plain = FALSE
 				list("edges" = low_sides),
 				list("edges" = low_sides),
 				list("edges" = low_sides + low_back)))
+		// The hopper (train_freight.dm): steel sides all round, a floor of
+		// doors and the lever that drops the load.
+		var/list/bin_sides = list(list(TRAIN_LEFT, "out", "hopper"), list(TRAIN_RIGHT, "out", "hopper"))
+		var/list/bin_front = list(list(TRAIN_LEFT, "front", "hopper"), list(0, "front", "hopper"), list(TRAIN_RIGHT, "front", "hopper"))
+		var/list/bin_back = list(list(TRAIN_LEFT, "back", "hopper"), list(0, "back", "hopper"), list(TRAIN_RIGHT, "back", "hopper"))
+		layouts["hopper"] = list(
+			"name" = "hopper wagon", "desc" = "A steel bulk wagon on two bogies. Ore, coal or sand is tipped in over its sides, and its door lever drops the whole load through the floor.",
+			"center" = "hopper", "side" = "hopper", "bulk" = 800, "hopper" = TRUE,
+			"segments" = list(
+				list("edges" = bin_sides + bin_front, "fit" = list(/obj/structure/train_hopper_lever, null, null)),
+				list("edges" = bin_sides),
+				list("edges" = bin_sides),
+				list("edges" = bin_sides),
+				list("edges" = bin_sides),
+				list("edges" = bin_sides + bin_back)))
 		// The guard's van: an open veranda, then a cabin with the brake wheel.
 		// Ballasted, so its brake holds twice the weight of an ordinary car.
 		layouts["brake_van"] = list(
@@ -338,7 +353,7 @@ var/global/train_step_plain = FALSE
 // A deck's weight counts the people and furniture on its three tiles.
 /obj/structure/trains/platform/car_load_weight()
 	var/list/L = layout()
-	var/w = (L && L["weight"]) ? L["weight"] : train_weight
+	var/w = ((L && L["weight"]) ? L["weight"] : train_weight) + bulk_weight()
 	for (var/turf/T in train_platform_tiles(loc, dir))
 		for (var/atom/movable/AM in T)
 			if (isliving(AM))
@@ -446,6 +461,10 @@ var/global/train_step_plain = FALSE
 		overlays += image(icon, "wreck", layer = layer + 0.01)
 	if (!isturf(loc))
 		return
+	// A bulk load shows as a heap on every section (train_freight.dm).
+	var/image/heap = bulk_overlay()
+	if (heap)
+		overlays += heap
 	var/end_row = car_end_row()
 	if (!end_row)
 		return
@@ -585,9 +604,14 @@ var/global/train_step_plain = FALSE
 	var/tender = tender_text()
 	if (tender)
 		to_chat(user, tender)
+	var/bulk = bulk_text()
+	if (bulk)
+		to_chat(user, bulk)
 
 /obj/structure/trains/platform/attackby(obj/item/W as obj, mob/user as mob)
 	if (tender_load(W, user))
+		return
+	if (bulk_use(W, user))
 		return
 	var/obj/structure/trains/locomotive/E = car_engine()
 	if (E && (E.takes_fuel(W) || istype(W, /obj/item/stack/ore/glass) || (is_tool(W, TOOL_WELDER) && !wrecked && health >= initial(health))))
@@ -623,6 +647,8 @@ var/global/train_step_plain = FALSE
 			back = P
 	if (segs.len != car_length() || !front || !back)
 		return "The car is not whole."
+	if (front.bulk_amount > 0)
+		return "Unload the car first."
 	for (var/obj/structure/trains/platform/P in list(front, back))
 		var/ahead = (P == front) ? !reversed : reversed
 		if (ahead ? P.lead_car() : P.connected)
@@ -741,7 +767,7 @@ var/global/train_step_plain = FALSE
 			name = "[S.name] window"
 		if ("door", "inner_door", "armor_door", "freight_door", "drop_door")
 			name = "[S.name] door"
-		if ("plank", "side")
+		if ("plank", "side", "hopper")
 			name = "[S.name] side"
 		if ("armor")
 			name = "[S.name] armor plate"

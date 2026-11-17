@@ -37,6 +37,12 @@ heading, the rail tile and the tile right of it.
   `coal_stage_empty`, `coal_stage`, `coal_stage_full`, `sand_bin_empty` and
   `sand_bin`: the coaling stage and the sand bin
   ([trains.md](trains.md#the-depot)).
+- `edge_hopper`, `deck_center_hopper`, `deck_side_hopper`: the hopper's steel
+  side and its floor of doors. `drop_pit`, `drop_pit_coal`, `drop_pit_ore`
+  and `drop_pit_sand`: the drop pit, turned along its track.
+  `train_loads.dmi` (96 x 96, from the same script) holds
+  `heap_<coal|ore|sand>_<1|2>`: a bulk load across one section of a car, part
+  loaded and full ([trains.md](trains.md#bulk-freight)).
 - `plough_item`: a snowplough on the ground. `train_plough.dmi` (96 x 96,
   from the same script) holds `plough_f` and `plough_b`, the plough on a
   car's front or rear end ([trains.md](trains.md#snow)).
@@ -100,7 +106,8 @@ down when a furnished kit is assembled and the edges (side, which edge, style).
 | armored | armored wagon | automatic_weapons | armor plate with firing doors; emplaced machine guns are forged separately |
 | flak | flak car | automatic_weapons | low armor, ammunition crates; autocannons are forged separately |
 | long_flatbed | bogie flatcar | rail_steam | 8 tiles: open plank deck, railings at the ends |
-| open_wagon | open wagon | rail_steam | 8 tiles: plank sides all round, drop doors in the middle of each side |
+| open_wagon | open wagon | rail_steam | 8 tiles: plank sides all round, drop doors in the middle of each side; 600 units of bulk ([trains.md](trains.md#bulk-freight)) |
+| hopper | hopper wagon | rail_steam | 6 tiles: steel sides all round, a floor of doors and the door lever; 800 units of bulk ([trains.md](trains.md#bulk-freight)) |
 | boxcar | boxcar | rail_steam | 8 tiles: boarded sides and roof, sliding doors in the middle of each side, closed ends |
 | bogie_coach | bogie coach | assembly_line | 8 tiles: a vestibule each end, twelve seats, windows |
 | brake_van | brake van | rail_steam | a veranda, then a cabin with a brake wheel and a seat; weighs 4 ([trains.md](trains.md#brakes)) |
