@@ -755,35 +755,141 @@
 		. += list(vertical ? list(shift, 0) : list(0, shift))
 	return .
 
-// Free movement pulls like tile walking: the pulled thing waits until the
+// Small moves drag the pulled thing in pixels, like a rope: it slides toward
+// the body, keeping a small gap (PULL_ROPE_GAP), up to PULL_ROPE_STEP px per
+// pulse, under native collision, so it can be set down off the grid. It snags
+// on corners, walls, bodies and objects, sliding along an edge when only one
+// axis is blocked. Once the body gets PULL_ROPE_BREAK px away from a caught
+// thing (twice that from one still sliding), the pull ends.
+#define PULL_ROPE_GAP 2
+#define PULL_ROPE_STEP 4
+#define PULL_ROPE_BREAK 16
+#define PULL_ROPE_LAG 1
+#define PULL_WALK_MIN 5
+// Free movement pulls two ways. Walking on, the pulled thing waits until the
 // body has wholly left the tile it last stood on (its centre tile, see
 // human_subtile_anchor), then moves into that tile, lined up on it and gliding
-// at the body's pace. Blocked, it stays put, and the hold ends once the body
-// is a whole tile clear of it.
+// at the body's pace, as on tiles. Small moves that stay on one tile, or
+// starting to move after a pause, drag it in pixels instead
+// (human_subtile_pull_rope), so it can be eased into place off the grid.
+// Blocked, it stays put, and the hold ends once the body is clear of it.
 /mob/living/human/var/tmp/turf/human_pull_tile
 /mob/living/human/var/tmp/turf/human_pull_trail
 /mob/living/human/var/tmp/human_pull_ref
+// When the body last moved on to another tile (-1: not since the pull
+// began), and how long the tile before took, so a steady walk can be told from small moves.
+/mob/living/human/var/tmp/human_pull_tile_at = -1
+/mob/living/human/var/tmp/human_pull_tile_pace = 0
 /mob/living/human/proc/human_subtile_pull_follow()
 	var/atom/movable/M = pulling
 	if (!M || !isturf(M.loc) || M.anchored || M.z != z || !isturf(loc))
 		return FALSE
 	var/pull_ref = "\ref[M]"
 	if (human_pull_ref != pull_ref || !human_pull_tile || human_pull_tile.z != z)
-		// A new pull starts with no trail: nothing moves until the body
-		// has moved on to another tile.
+		// A new pull starts with no trail: until the body moves on to
+		// another tile, it only drags in pixels.
 		human_pull_ref = pull_ref
 		human_pull_tile = loc
 		human_pull_trail = null
+		human_pull_tile_at = -1
+		human_pull_tile_pace = 0
 	else if (loc != human_pull_tile)
 		human_pull_trail = human_pull_tile
 		human_pull_tile = loc
+		human_pull_tile_pace = (human_pull_tile_at >= 0) ? world.time - human_pull_tile_at : 0
+		human_pull_tile_at = world.time
 	var/turf/trail = human_pull_trail
+	if (trail && (trail.z != M.z || (M.loc == trail && !M.step_x && !M.step_y)))
+		// Already there (or gone): nothing is waiting to follow.
+		human_pull_trail = null
+		trail = null
+	if (trail)
+		// Walking on: wait for the body to leave the tile, then move in. A
+		// thing the body is standing over stays put, as on tiles, so walking
+		// back over a dragged item doesn't flick it to the far side.
+		var/moved = FALSE
+		if (!(trail in locs) && bounds_dist(M, trail) < 32 && !(M in obounds(src)))
+			moved = human_subtile_pull_into(M, trail)
+			if (moved)
+				human_pull_trail = null
+		if (pulling == M && bounds_dist(src, M) >= 32)
+			to_chat(src, SPAN_WARNING("You lose your hold on \the [M]."))
+			stop_pulling()
+		return moved
+	// In a steady walk the next tile comes within about one tile's time, so
+	// the pixel drag holds off and the tile follow above keeps its one-tile
+	// spacing. Small moves, or a fresh start after a pause, drag in pixels.
+	if (human_pull_tile_at >= 0 && world.time - human_pull_tile_at <= max(PULL_WALK_MIN, human_pull_tile_pace * 3 / 2))
+		return FALSE
+	if (M.bound_x || M.bound_y || M.bound_width != 32 || M.bound_height != 32)
+		return FALSE
+	return human_subtile_pull_rope(M)
+
+/mob/living/human/proc/human_subtile_pull_rope(atom/movable/M)
+	var/cx = x * 32 + step_x + bound_x + bound_width / 2
+	var/cy = y * 32 + step_y + bound_y + bound_height / 2
+	var/mx = M.x * 32 + M.step_x + 16
+	var/my = M.y * 32 + M.step_y + 16
+	var/ux = cx - mx
+	var/uy = cy - my
+	var/half_x = (bound_width + 32) / 2
+	var/half_y = (bound_height + 32) / 2
+	var/gap_x = abs(ux) - half_x
+	var/gap_y = abs(uy) - half_y
+	// The rope runs centre to centre, so a body moving past or round the
+	// pulled thing tugs it along the line between them on both axes at once,
+	// instead of waiting until the body has cleared it on one axis and then
+	// catching up in a rush.
+	var/rope = sqrt(ux * ux + uy * uy)
+	var/rest = min(half_x, half_y) + PULL_ROPE_GAP
+	var/dx = 0
+	var/dy = 0
+	if (rope > rest)
+		var/pull = min(PULL_ROPE_STEP, rope - rest)
+		dx = round(ux * pull / rope, 1)
+		dy = round(uy * pull / rope, 1)
+		// Never closer than the gap: once side by side, it only follows along,
+		// and at most PULL_ROPE_LAG px per pulse while it still overlaps the
+		// body along that axis. A body pulse covers more than that, so the thing
+		// drops back until it clears the body and then swings in behind it,
+		// instead of riding alongside for as long as the body keeps walking.
+		if (abs(ux - dx) - half_x < PULL_ROPE_GAP && abs(uy - dy) - half_y < PULL_ROPE_GAP)
+			if (gap_x >= gap_y)
+				dx = max(0, gap_x - PULL_ROPE_GAP) * ((ux > 0) ? 1 : -1)
+				if (gap_y < 0)
+					dy = clamp(dy, -PULL_ROPE_LAG, PULL_ROPE_LAG)
+			else
+				dy = max(0, gap_y - PULL_ROPE_GAP) * ((uy > 0) ? 1 : -1)
+				if (gap_x < 0)
+					dx = clamp(dx, -PULL_ROPE_LAG, PULL_ROPE_LAG)
+	// While dragged along one axis, it also eases into line behind the body,
+	// so it follows through doorways instead of catching on the frame.
+	if (dx && abs(dy) < 2 && uy && gap_x > PULL_ROPE_GAP)
+		dy = min(2, abs(uy)) * ((uy > 0) ? 1 : -1)
+	else if (dy && abs(dx) < 2 && ux && gap_y > PULL_ROPE_GAP)
+		dx = min(2, abs(ux)) * ((ux > 0) ? 1 : -1)
 	var/moved = FALSE
-	// A thing the body is standing over stays put, as on tiles, so walking
-	// back over a dragged item doesn't flick it to the far side.
-	if (trail && trail.z == M.z && !(trail in locs) && (M.loc != trail || M.step_x || M.step_y) && bounds_dist(M, trail) < 32 && !(M in obounds(src)))
-		moved = human_subtile_pull_into(M, trail)
-	if (pulling == M && bounds_dist(src, M) >= 32)
+	if (dx || dy)
+		if (glide_size > 0)
+			M.glide_size = glide_size
+		moved = human_subtile_pull_shift(M, dx, dy)
+		// Blocked on one axis: slide along the other (a wall, a door frame).
+		// It slides at the full rope pace toward the body's line, so it works
+		// round a wall end instead of creeping while the body walks away.
+		if (!moved && dx && dy)
+			var/slide_x = max(abs(dx), min(PULL_ROPE_STEP, abs(ux))) * ((dx > 0) ? 1 : -1)
+			var/slide_y = max(abs(dy), min(PULL_ROPE_STEP, abs(uy))) * ((dy > 0) ? 1 : -1)
+			moved = human_subtile_pull_shift(M, slide_x, 0) || human_subtile_pull_shift(M, 0, slide_y)
+		// Caught on a corner within 12px of the body's line: slip toward it,
+		// up to 4px. Further off the line it stays caught.
+		if (!moved && dx && !dy && cy != my && abs(cy - my) <= 12)
+			moved = human_subtile_pull_shift(M, 0, min(PULL_ROPE_STEP, abs(cy - my)) * ((cy > my) ? 1 : -1))
+		else if (!moved && dy && !dx && cx != mx && abs(cx - mx) <= 12)
+			moved = human_subtile_pull_shift(M, min(PULL_ROPE_STEP, abs(cx - mx)) * ((cx > mx) ? 1 : -1), 0)
+	// It breaks once it is caught that far behind, or at any rate twice that
+	// far (sliding along a wall while the body walks away from it).
+	var/slack = (pulling == M) ? bounds_dist(src, M) : 0
+	if (slack > PULL_ROPE_BREAK * 2 || (slack > PULL_ROPE_BREAK && !moved))
 		to_chat(src, SPAN_WARNING("You lose your hold on \the [M]."))
 		stop_pulling()
 	return moved
@@ -855,6 +961,12 @@
 		L.pulled_offset_claim()
 	return TRUE
 
+
+#undef PULL_ROPE_GAP
+#undef PULL_ROPE_STEP
+#undef PULL_ROPE_BREAK
+#undef PULL_ROPE_LAG
+#undef PULL_WALK_MIN
 
 // Walking through someone (help intent), drift 2px per pulse away from them,
 // or to your right when dead centre, until at least 2px apart. Walls still
