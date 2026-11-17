@@ -237,7 +237,7 @@
 			train_roof_segments |= src
 	place_body()
 
-/obj/structure/trains/locomotive/proc/place_body()
+/obj/structure/trains/locomotive/proc/place_body(plain = FALSE)
 	var/list/tiles = train_platform_tiles(loc, dir)
 	for (var/image/R in roof_images)
 		R.dir = dir
@@ -247,7 +247,7 @@
 			continue
 		P.dir = P.facing(dir)
 		if (P.loc != where)
-			P.persistence_set_loc(where)
+			P.train_shift(where, plain)
 
 // A heavy locomotive is too heavy to shove along the track by hand.
 /obj/structure/trains/locomotive/Bumped(atom/AM)
@@ -321,6 +321,7 @@
 	if (!.)
 		return
 	var/list/new_tiles = train_platform_tiles(loc, dir)
+	var/plain = train_tile_unwatched(loc)
 	var/turning = 0
 	if (dir == turn(old_dir, 90))
 		turning = 90
@@ -328,10 +329,10 @@
 		turning = -90
 	for (var/atom/movable/AM in cargo)
 		var/i = cargo[AM]
-		if (AM.loc == old_tiles[i] && new_tiles[i] && AM.persistence_set_loc(new_tiles[i]))
+		if (AM.loc == old_tiles[i] && new_tiles[i] && AM.train_shift(new_tiles[i], plain))
 			if (turning && isobj(AM))
 				AM.set_dir(turn(AM.dir, turning))
-	place_body()
+	place_body(plain)
 
 // Fuel this engine takes from the hand.
 /obj/structure/trains/locomotive/proc/takes_fuel(obj/item/W)

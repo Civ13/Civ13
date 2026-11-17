@@ -23,6 +23,79 @@ var/global/train_platform_plan_time = -1
 /proc/train_platform_reset_plan()
 	train_platform_plan = list()
 	train_platform_plan_time = world.time
+	train_step_viewers = null
+
+// A step moves every part and load of the train, hundreds of objects for a
+// long one. Line of sight only has to hear about those within reach of a
+// viewer, so each step lists the viewers on the level once, and a section out
+// of all their reach moves its parts and loads without telling anyone.
+// train_step_viewers: list(x, y, reach x, reach y) per viewer on train_step_viewers_z.
+var/global/list/train_step_viewers = null
+var/global/train_step_viewers_z = 0
+var/global/train_step_plain = FALSE
+
+// The reach of los_invalidate() (viewport plus 6), and 3 more: parts and
+// loads sit beside their section, and riders move with the train.
+#define TRAIN_VIEWER_MARGIN 9
+
+/proc/train_step_survey(z)
+	train_step_viewers = list()
+	train_step_viewers_z = z
+	// A save in progress checks every move (persistence_movement_allowed).
+	train_step_plain = !persistence_save_active()
+	if (!train_step_plain || !CIV13_GEOMETRIC_LOS_CORE || !los_active_contexts)
+		return
+	for (var/datum/los_context/V in los_active_contexts)
+		if (!V.owner || !V.body)
+			continue
+		var/turf/B = get_turf(V.body)
+		if (!B || B.z != z)
+			continue
+		var/list/radii = V.viewport_radii()
+		if (!radii)
+			// No viewport to cull by: every move is this viewer's business.
+			train_step_plain = FALSE
+			return
+		train_step_viewers += list(list(B.x, B.y, radii[1] + TRAIN_VIEWER_MARGIN, radii[2] + TRAIN_VIEWER_MARGIN))
+
+#undef TRAIN_VIEWER_MARGIN
+
+// TRUE when what stands around T moves out of every viewer's reach this step.
+/proc/train_tile_unwatched(turf/T)
+	if (!T)
+		return FALSE
+	if (isnull(train_step_viewers) || train_step_viewers_z != T.z)
+		train_step_survey(T.z)
+	if (!train_step_plain)
+		return FALSE
+	for (var/list/V in train_step_viewers)
+		if (abs(T.x - V[1]) <= V[3] && abs(T.y - V[2]) <= V[4])
+			return FALSE
+	return TRUE
+
+// One step of a train part or a load with its section. plain: the section is
+// unwatched, so the move is the bare change of place persistence_set_loc()
+// makes, without its line-of-sight calls, which reach nobody.
+/atom/movable/proc/train_shift(turf/dest, plain)
+	if (!plain || !(istype(src, /obj/structure) || istype(src, /obj/item)))
+		return persistence_set_loc(dest)
+	var/atom/origin = loc
+	loc = dest
+	paper_authoring_notify(src, "relocated")
+	item_pile_moved(src, origin, dest)
+	return TRUE
+
+/obj/structure/train_part/train_shift(turf/dest, plain)
+	if (!plain)
+		return persistence_set_loc(dest)
+	loc = dest
+	return TRUE
+
+/obj/structure/trains/train_shift(turf/dest, plain)
+	if (!plain)
+		return persistence_set_loc(dest)
+	loc = dest
+	return TRUE
 
 /proc/train_platform_plan_from(obj/structure/trains/platform/first)
 	var/list/claimed = list()
@@ -300,7 +373,7 @@ var/global/train_platform_plan_time = -1
 			leg.pixel_y = 2 * world.icon_size * ((out == NORTH) - (out == SOUTH))
 			overlays += leg
 
-/obj/structure/trains/platform/proc/place_parts(turf/T, heading)
+/obj/structure/trains/platform/proc/place_parts(turf/T, heading, plain = FALSE)
 	var/list/tiles = train_platform_tiles(T, heading)
 	for (var/image/R in roof_images)
 		R.dir = heading
@@ -310,7 +383,7 @@ var/global/train_platform_plan_time = -1
 			continue
 		P.dir = P.facing(heading)
 		if (P.loc != where)
-			P.persistence_set_loc(where)
+			P.train_shift(where, plain)
 
 // Spawns the kit's fittings on this segment's tiles.
 /obj/structure/trains/platform/proc/furnish()
@@ -355,7 +428,8 @@ var/global/train_platform_plan_time = -1
 	var/list/cargo = train_platform_plan[src]
 	train_platform_plan -= src
 	moving_train = TRUE
-	if (!persistence_set_loc(newloc))
+	var/plain = train_tile_unwatched(newloc)
+	if (!train_shift(newloc, plain))
 		moving_train = FALSE
 		return FALSE
 	last_moved = world.time
@@ -366,7 +440,7 @@ var/global/train_platform_plan_time = -1
 		turning = -90
 	dir = newdir
 	for (var/atom/movable/AM in cargo)
-		if (AM.loc == old_tiles[cargo[AM]] && new_tiles[cargo[AM]] && AM.persistence_set_loc(new_tiles[cargo[AM]]))
+		if (AM.loc == old_tiles[cargo[AM]] && new_tiles[cargo[AM]] && AM.train_shift(new_tiles[cargo[AM]], plain))
 			// Furniture turns with the car round a curve.
 			if (turning && isobj(AM))
 				AM.set_dir(turn(AM.dir, turning))
@@ -381,8 +455,8 @@ var/global/train_platform_plan_time = -1
 			if (cargo[AM] == 2 && AM.loc == newloc)
 				var/turf/aside = new_tiles[3] || new_tiles[1]
 				if (aside)
-					AM.persistence_set_loc(aside)
-	place_parts(newloc, newdir)
+					AM.train_shift(aside, plain)
+	place_parts(newloc, newdir, plain)
 	train_deck_clearance(cargo, OPPOSITE_DIR(newdir))
 	if (connected && !train_solo_move)
 		connected.Move(oldloc, newdir)

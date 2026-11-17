@@ -577,6 +577,53 @@ var/global/platform_probe_runtime_error = FALSE
 			solid_sides++
 	platform_check("heavy/steam_rounds_curve", steam_curve == 11 && CE.loc == platform_turf(84, 10) && CE.dir == EAST && heavy_parts_placed(CE) && solid_sides == 2)
 
+// A stand-in viewer: the step survey reads only its owner, body and reach.
+/datum/los_context/train_probe
+	var/list/probe_radii = list(10, 7)
+/datum/los_context/train_probe/viewport_radii()
+	return probe_radii
+
+/proc/platform_viewers_run()
+	var/turf/near = platform_turf(40, 12)
+	var/turf/edge = platform_turf(59, 12)
+	var/turf/far = platform_turf(60, 12)
+	train_platform_reset_plan()
+	platform_check("viewers/nobody_plain", train_tile_unwatched(near) && train_tile_unwatched(far))
+	var/mob/living/human/platform_rider/watcher = new(platform_turf(40, 5))
+	var/datum/los_context/train_probe/V = new(null)
+	V.vars["owner"] = V
+	V.body = watcher
+	los_active_contexts = list(V)
+	// Reach is the viewport radius plus 9 tiles: 19 across, 16 up and down.
+	platform_check("viewers/cached_for_the_step", train_tile_unwatched(near))
+	train_platform_reset_plan()
+	platform_check("viewers/near_is_watched", !train_tile_unwatched(near) && !train_tile_unwatched(edge) && !train_tile_unwatched(platform_turf(40, 21)))
+	platform_check("viewers/far_is_plain", train_tile_unwatched(far) && train_tile_unwatched(platform_turf(40, 22)))
+	// A train out of the viewer's reach still carries its parts and load.
+	for (var/x in 68 to 84)
+		platform_track(x, 23, EAST)
+	var/obj/structure/trains/platform/car = platform_car("coach", 75, 23, EAST)
+	var/list/segs = platform_segments(car)
+	var/obj/structure/trains/locomotive/coal/L = new(platform_turf(76, 23))
+	L.dir = EAST
+	L.fuel = 100
+	L.on = TRUE
+	L.connected = car
+	var/obj/structure/closet/crate/crate = new(platform_turf(74, 24))
+	var/obj/item/weapon/branch/stick = new(platform_turf(73, 22))
+	var/mob/living/human/platform_rider/rider = new(platform_turf(74, 22))
+	platform_check("viewers/unwatched_step", platform_step(L, 3) == 3 && train_tile_unwatched(car.loc) && platform_parts_placed(segs))
+	platform_check("viewers/unwatched_load_rides", crate.loc == platform_turf(77, 24) && stick.loc == platform_turf(76, 22) && rider.loc == platform_turf(77, 22))
+	// Without a viewport there is nothing to cull by, and a save checks every move.
+	V.probe_radii = null
+	train_platform_reset_plan()
+	platform_check("viewers/no_viewport_is_watched", !train_tile_unwatched(far))
+	los_active_contexts = null
+	// Both ways of moving put the object on the tile; a person always moves the full way.
+	var/turf/spot = platform_turf(45, 3)
+	platform_check("viewers/shift_both_ways", crate.train_shift(spot, FALSE) && crate.loc == spot && stick.train_shift(spot, TRUE) && stick.loc == spot && rider.train_shift(spot, TRUE) && rider.loc == spot)
+	train_platform_reset_plan()
+
 /world/New()
 	OpenPort("none")
 	GLOB.all_observable_events = list()
@@ -591,6 +638,7 @@ var/global/platform_probe_runtime_error = FALSE
 		platform_warehouse_run()
 		platform_driving_run()
 		platform_heavy_run()
+		platform_viewers_run()
 	catch (var/exception/E)
 		platform_probe_runtime_error = TRUE
 		world.log << "Fixture aborted: [E] at [E.file]:[E.line]"

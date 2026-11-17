@@ -62,12 +62,53 @@ wall, window and door objects; carried is furniture and people on the decks.
   a 120-section coach train costs about 80 ms of every second behind steam and
   about 130 ms behind a diesel.
 
+## After unwatched sections move plainly
+
+Same machine, 2026-11-17. The profiler put about 40% of a step in the
+line-of-sight and save bookkeeping `persistence_set_loc()` does for every
+object, which reaches nobody when no viewer is near. Each step now lists the
+viewers on the level once (`train_step_survey()`), and a section out of all
+their reach moves its parts and loads with `train_shift()`: the same change of
+place without those calls. People always move the full way. The link check
+between cars no longer lists the tiles around each car.
+
+| Train | Sections | Parts | Carried | Mean ms | Worst ms | Clearance ms |
+| --- | --- | --- | --- | --- | --- | --- |
+| flatbed x1 | 8 | 20 | 0 | 0.62 | 0.78 | 0.06 |
+| flatbed x3 | 16 | 44 | 0 | 1.07 | 1.37 | 0.13 |
+| flatbed x6 | 28 | 80 | 0 | 1.69 | 2.79 | 0.20 |
+| flatbed x12 | 52 | 152 | 0 | 2.76 | 4.77 | 0.41 |
+| flatbed x24 | 100 | 296 | 0 | 5.09 | 6.61 | 0.74 |
+| flatbed x29 | 120 | 356 | 0 | 6.24 | 7.99 | 0.86 |
+| coach x1 | 8 | 30 | 6 | 0.76 | 1.01 | 0.07 |
+| coach x3 | 16 | 74 | 18 | 1.53 | 2.83 | 0.13 |
+| coach x6 | 28 | 140 | 36 | 2.55 | 4.07 | 0.21 |
+| coach x12 | 52 | 272 | 72 | 4.17 | 6.22 | 0.37 |
+| coach x24 | 100 | 536 | 144 | 8.08 | 12.81 | 0.93 |
+| coach x29 | 120 | 646 | 174 | 10.28 | 15.58 | 1.05 |
+| coach x6 with 8 riders a car | 28 | 140 | 84 | 2.96 | 3.89 | 0.21 |
+| coach x12 with 8 riders a car | 52 | 272 | 168 | 5.60 | 7.31 | 0.38 |
+| coach x24 with 8 riders a car | 100 | 536 | 336 | 11.66 | 15.28 | 0.84 |
+| storage x12 | 52 | 416 | 72 | 4.93 | 6.17 | 0.37 |
+| sleeper x12 | 52 | 416 | 72 | 4.98 | 6.22 | 0.37 |
+| coach x12 backward | 52 | 272 | 72 | 4.09 | 5.19 | 0.00 |
+| one-tile wagons x12 | 13 | 0 | 0 | 0.96 | 3.04 | 0.04 |
+| one-tile wagons x48 | 49 | 0 | 0 | 2.54 | 3.27 | 0.11 |
+| coach x6 round a curve | 28 | 140 | 36 | 2.61 | 4.93 | 0.20 |
+
+The benchmark has no viewers, so every section is unwatched. Sections within a
+viewer's reach (viewport plus 9 tiles) cost what the baseline shows, and more
+on a busy server, where each of those calls loops over every viewer. A long
+train therefore costs most where people are riding or watching it.
+
+At 8 ms a step this carries about 95 sections of furnished coaches unwatched.
+
 ## Targets for the scale-up
 
-A 120-section train of furnished cars has to fit in 8 ms a step, which needs
-the cost of a section about halved, to 0.07 ms. The measurements say where:
-fewer objects per section (deck floors as overlays, walls only where they
-block) and cheaper moves, not a faster clearance check. Until then, train
-length stays bounded by locomotive pull as it is now. Rerun this benchmark
-with each change to the movement code and add the new table below the
-baseline.
+A 120-section train of furnished cars has to fit in 8 ms a step: about 0.07 ms
+a section, against 0.085 now for an unwatched coach. What is left is mostly
+the number of objects: deck floors as overlays would remove two moves a
+section, and the cargo scan (`train_platform_plan_from()`) is about a sixth of
+a step. Watched sections need their own pass. Until then, train length stays
+bounded by locomotive pull as it is now. Rerun this benchmark with each change
+to the movement code and add the new table here.
