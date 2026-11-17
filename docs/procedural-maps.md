@@ -177,8 +177,10 @@ python3 -m tools.procedural_maps playable data/procedural_maps/barren --skin bar
 
 Regolith has no breathable outside air and a -60 C ambient for the life-support
 work in later phases; until those land, the map plays like a cold, empty desert.
-The underground reserve plane and starts are unchanged, and the report records
-`"skin": "barren"`. The barren skin refuses OCEANIC and cavern bundles.
+The underground plane becomes unformed rock in the cave area
+(`/turf/sky/building/unformed`, docs/underground-level.md), which forms as it
+is dug; only the map metadata object keeps its cell. Starts are unchanged, and
+the report records `"skin": "barren"`. The barren skin refuses OCEANIC and cavern bundles.
 
 To run one as a region, add it to a shard group like any other generated map,
 with `kind` `OTHER`. Keep it out of the first position, which is the mainland.
