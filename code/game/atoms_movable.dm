@@ -226,6 +226,8 @@
 	#endif
 	paper_authoring_notify(src, "relocated")
 	item_pile_moved(src, origin, destination) // raw loc changes skip Entered/Exited (item_piles.dm)
+	if (open_air_view_any)
+		open_air_view_moved(src, origin)
 	return TRUE
 
 /atom/movable/proc/persistence_set_z(target_z)
