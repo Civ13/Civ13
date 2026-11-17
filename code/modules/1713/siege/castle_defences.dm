@@ -13,7 +13,7 @@
 
 #define SLIT_OUT_PASS 95		// % of shots from the slit's own inside tile that pass out
 #define SLIT_IN_BLOCK 95		// % of shots from outside that hit the slit's stone
-#define BATTLEMENT_IN_BLOCK 85	// % of shots from outside stopped by a battlement
+#define BATTLEMENT_IN_BLOCK 85	// % of shots from outside stopped by a battlement or parapet
 #define SLIT_CUT_TIME 150		// ds to cut a slit, before skill
 #define SLIT_FILL_TIME 50		// ds to fill one in again
 #define SLIT_HEALTH_CUT 0.2		// share of the wall's health lost to the opening
@@ -47,6 +47,8 @@
 		out = C.slit_dir
 		out_pass = SLIT_OUT_PASS
 		in_block = SLIT_IN_BLOCK
+	else if (istype(A, /obj/structure/window/barrier/rock/parapet) || istype(A, /obj/structure/window/barrier/sandstone/parapet))
+		return parapet_verdict(A, P)
 	else if (istype(A, /obj/structure/barricade))
 		var/obj/structure/barricade/B = A
 		if (!B.outward_dir || !B.density)
@@ -72,6 +74,22 @@
 					return DIRECTIONAL_COVER_BLOCK
 		return prob(in_block) ? DIRECTIONAL_COVER_BLOCK : DIRECTIONAL_COVER_PASS
 	return DIRECTIONAL_COVER_DEFAULT
+
+// A parapet runs along the outside edge of its own tile: whoever stands on that
+// tile is behind it. Shots going out across it pass; shots coming in across it
+// are mostly stopped, and always when someone lies down behind it.
+/proc/parapet_verdict(obj/structure/window/barrier/W, obj/item/projectile/P)
+	var/out = W.dir
+	var/travel = P.get_direction()
+	var/turf/behind = get_turf(W)
+	if ((travel & out) && !(travel & turn(out, 180)))
+		return DIRECTIONAL_COVER_PASS
+	if (!(travel & turn(out, 180)) || P.starting == behind)
+		return DIRECTIONAL_COVER_DEFAULT
+	for (var/mob/living/L in behind)
+		if (L.lying || L.prone)
+			return DIRECTIONAL_COVER_BLOCK
+	return prob(BATTLEMENT_IN_BLOCK) ? DIRECTIONAL_COVER_BLOCK : DIRECTIONAL_COVER_PASS
 
 // ---- arrow slits and gun loops -----------------------------------------------
 
@@ -248,6 +266,62 @@
 		if (slit_shut)
 			set_opacity(initial(opacity))
 		update_icon()
+
+// ---- parapets ----------------------------------------------------------------------
+// A crenelated low wall on the outside edge of a wall walk (or any tile), built
+// facing out like a sandbag wall. Unlike a battlement it takes no tile of its
+// own, so a one-tile wall walk keeps its walkway. It stops people walking or
+// climbing over the edge.
+
+/obj/structure/window/barrier/rock/parapet
+	name = "parapet"
+	desc = "A crenelated wall of dressed stone along the edge of a wall walk. Stand behind it to shoot out between the merlons; lie down behind it to be out of reach of arrows and bullets."
+	icon = 'icons/obj/castle_defences.dmi'
+	icon_state = "parapet"
+	climbable = FALSE
+	maxhealth = 900
+	health = 900
+
+/obj/structure/window/barrier/sandstone/parapet
+	name = "sandstone parapet"
+	desc = "A crenelated wall of sandstone along the edge of a wall walk. Stand behind it to shoot out between the merlons; lie down behind it to be out of reach of arrows and bullets."
+	icon = 'icons/obj/castle_defences.dmi'
+	icon_state = "parapet_sandstone"
+	climbable = FALSE
+	dismantlable = TRUE
+
+// Sideways shots and everything else the shared verdict leaves alone fly on.
+/obj/structure/window/barrier/rock/parapet/CanPass(atom/movable/mover, turf/target, height = 0, air_group = 0)
+	if (istype(mover, /obj/item/projectile))
+		return TRUE
+	return ..()
+
+/obj/structure/window/barrier/sandstone/parapet/CanPass(atom/movable/mover, turf/target, height = 0, air_group = 0)
+	if (istype(mover, /obj/item/projectile))
+		return TRUE
+	return ..()
+
+/obj/structure/window/barrier/rock/parapet/CanPassOut(obj/item/projectile/proj)
+	return TRUE
+
+/obj/structure/window/barrier/sandstone/parapet/CanPassOut(obj/item/projectile/proj)
+	return TRUE
+
+/obj/structure/window/barrier/sandstone/parapet/attack_hand(mob/user)
+	if (user.a_intent != I_HARM || !Adjacent(user))
+		return ..()
+	user.visible_message(SPAN_WARNING("[user] starts taking down \the [src]."), SPAN_WARNING("You start taking down \the [src]."))
+	if (do_after(user, 200, src) && !QDELETED(src))
+		new /obj/item/stack/material/sandstone(get_turf(src))
+		qdel(src)
+
+/obj/structure/window/barrier/rock/parapet/examine(mob/user)
+	..()
+	to_chat(user, SPAN_NOTICE("It faces [dir2text(dir)]: it covers whoever stands on its tile, and they can shoot out over it."))
+
+/obj/structure/window/barrier/sandstone/parapet/examine(mob/user)
+	..()
+	to_chat(user, SPAN_NOTICE("It faces [dir2text(dir)]: it covers whoever stands on its tile, and they can shoot out over it."))
 
 // ---- battlements ----------------------------------------------------------------
 

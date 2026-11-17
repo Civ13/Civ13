@@ -2768,6 +2768,8 @@ RECIPE: /material/wood/,portcullis,/obj/structure/castle_gate/portcullis,12,200,
 RECIPE: /material/wood/,drawbridge,/obj/structure/castle_gate/drawbridge,15,200,1,1,siege weapons,24,33,0,4,null
 RECIPE: /material/wood/,gate winch,/obj/structure/castle_winch,8,120,1,1,siege weapons,24,33,0,4,null
 RECIPE: /material/stone/,murder hole,/obj/structure/murder_hole,3,100,1,1,siege weapons,24,33,0,4,null
+RECIPE: /material/stone/,parapet,/obj/structure/window/barrier/rock/parapet,4,90,0,1,siege weapons,24,33,0,4,null
+RECIPE: /material/sandstone/,sandstone parapet,/obj/structure/window/barrier/sandstone/parapet,4,90,0,1,siege weapons,24,33,0,4,null
 RECIPE: /material/stone/,machicolation,/obj/structure/castle_overhang,8,150,1,1,siege weapons,24,33,0,4,null
 RECIPE: /material/wood/,hoarding,/obj/structure/castle_overhang/hoarding,12,150,1,1,siege weapons,24,33,0,4,null
 RECIPE: /material/wood/,drop trapdoor,/obj/item/castle_trapdoor_kit,6,120,0,1,siege weapons,24,33,0,8,null

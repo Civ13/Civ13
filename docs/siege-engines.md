@@ -70,6 +70,14 @@ Probe: `python3 tests/castle_defences/run.py --byond-bin <BYOND bin>`.
   shoots out over it freely; shots from outside are stopped 85% of the time,
   and always when the person behind it is lying down. Crenelated walls placed
   on maps keep the old two-way cover.
+- **Parapets** (4 stone or 4 sandstone, Fortifications) are the edge version of
+  a battlement for a wall walk: built facing out like a sandbag wall, they run
+  along the outside edge of the builder's own tile, so a one-tile walkway on top
+  of a wall keeps its walkway. The same rule applies (`parapet_verdict()`): shots
+  crossing it outward pass, shots crossing inward are stopped 85% of the time
+  and always when someone on its tile is lying down, and sideways shots ignore
+  it. Nobody walks or vaults over it, so it also keeps defenders from stepping
+  off the wall walk. Harm intent takes it down for the stone.
 
 ## Pouring and dropping
 

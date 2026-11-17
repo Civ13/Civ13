@@ -77,6 +77,17 @@ Gateway traps:
   ladder_fork (1 dir): a long pole with a two-pronged iron fork, butt at the
         lower left (item icon).
 
+Wall-walk parapets:
+
+  parapet (4 dirs): a low crenelated parapet of dressed grey stone along ONE
+        edge of a wall-walk tile, placed like the sandbag and rock barricade
+        edge barriers. The dir is the OUTSIDE edge. It fills rows 20-31 (S),
+        rows 0-11 (N), columns 24-31 (E) or 0-7 (W) and leaves the rest of
+        the tile clear for the defender standing on it; the crenels are clear
+        down to the sill. Merlons are 10px and crenels 6px on a 16px repeat,
+        so a run of tiles joins up.
+  parapet_sandstone (4 dirs): the same in the tones of the sandstone walls.
+
 pour_splash and oil_slick are light greys only (every pixel r = g = b, 150 or
 more) with soft half-transparent edges and no outline, because the game
 tints them per liquid with `color`; `--check` enforces that, the clear centre
@@ -94,7 +105,9 @@ darkened floor, the machicolation and hoarding on a stone wall-walk, every
 animation frame, and the splash and slick in six liquid colours.
 `--preview-traps <png>` writes a 6x and 1x review sheet of the gateway traps
 on stone, cobble, dirt and grass floors. `--preview-shutters <png>` writes
-the wall-opening sheet with each open facing next to its shuttered one. Released under Civ13 AGPL-3.0.
+the wall-opening sheet with each open facing next to its shuttered one.
+`--preview-parapet <png>` writes a 6x and 1x review sheet of both parapets on
+a stone floor, with a wall-walk mock and a figure-sized placeholder. Released under Civ13 AGPL-3.0.
 """
 import math
 import sys
@@ -1404,6 +1417,90 @@ def shutter_states():
     return out
 
 
+# ------------------------------------------------------------------ parapet
+
+# highlight, light, mid, dark, outline
+PARAPET_STONE = STONE + [OUT]
+# the tones of sandstone_brick_c in icons/turf/walls.dmi, with a lighter arris
+PARAPET_SAND = [(208, 180, 124), (188, 155, 92), (159, 126, 65), (128, 101, 52), (62, 46, 24)]
+PARAPET_ROWS = 12       # how far the SOUTH and NORTH pieces reach into the tile
+PARAPET_COLS = 8        # ... and the EAST and WEST ones
+
+
+def _merlon(i):
+    """Where along the edge pixel i falls: 0..9 across a merlon, or -1 in a
+    crenel. Half a merlon ends each tile, so a run of tiles joins up."""
+    m = (i + 5) % 16
+    return m if m < 10 else -1
+
+
+def parapet_face(pal, top, inside):
+    """The parapet seen side-on, along the south edge (outer face, top = 20)
+    or the north edge (inner face in its own shade, top = 0). Twelve rows:
+    the merlon top and its face, the sill of each crenel, a coping line, two
+    courses of blocks and the foot."""
+    f = Canvas()
+    face = (2, 2, 3) if inside else (1, 1, 2)
+    for x in range(32):
+        m = _merlon(x)
+        if m in (0, 9):                         # the merlon's cheeks
+            for y in range(7):
+                f.put(x, top + y, pal[4])
+        elif m > 0:
+            tones = (4, 0, 1, 3) + face
+            if m == 1:                          # the lit arris
+                tones = (4, 0, 0, 3, 0, 0, face[2] - 1)
+            elif m == 8:
+                tones = (4, 1, 2, 3, face[2], face[2], 3)
+            for y, t in enumerate(tones):
+                f.put(x, top + y, pal[t])
+        else:                                   # the crenel: clear above the sill
+            f.put(x, top + 5, pal[4])
+            f.put(x, top + 6, pal[0])
+        f.put(x, top + 7, pal[3])               # coping line
+        f.put(x, top + 8, pal[3] if x % 8 == 2 else pal[face[0]])
+        f.put(x, top + 9, pal[3] if x % 8 == 6 else pal[face[1]])
+        f.put(x, top + 10, pal[3])
+        f.put(x, top + 11, pal[4])
+    return f
+
+
+def parapet_plan(pal, left):
+    """The parapet down the east (left = 24) or west (left = 0) edge, seen
+    from above: each merlon shows its top and two rows of its south side over
+    the lower sill of the crenel south of it. Lit from the upper left on
+    both edges, so the west piece is this one moved, not mirrored."""
+    f = Canvas()
+    for y in range(32):
+        m = _merlon(y)
+        f.put(left, y, pal[4])
+        f.put(left + 7, y, pal[4])
+        for i in range(6):
+            if m == 0:
+                t = 0                                   # the far arris
+            elif 1 <= m <= 7:
+                t = (0, 1, 1, 1, 1, 2)[i]               # the merlon top
+                if m == 4 and 1 <= i <= 4:
+                    t = 2                               # a joint
+            elif m == 8:
+                t = 2 if i < 4 else 3                   # its south side
+            elif m == 9:
+                t = 3
+            else:                                       # the sill, a step down
+                s = (y + 5) % 16 - 10
+                t = 4 if s == 0 else (1, 2, 2, 2, 2, 3)[i]
+            f.put(left + 1 + i, y, pal[t])
+    return f
+
+
+def parapet(pal):
+    return [parapet_face(pal, 32 - PARAPET_ROWS, False), parapet_face(pal, 0, True),
+            parapet_plan(pal, 32 - PARAPET_COLS), parapet_plan(pal, 0)]
+
+
+PARAPETS = (('parapet', PARAPET_STONE), ('parapet_sandstone', PARAPET_SAND))
+
+
 # ------------------------------------------------------------------- sheet
 
 def states():
@@ -1457,6 +1554,7 @@ def all_states():
     out.append(('ladder_fork', {'dirs': 1, 'frames': 1}, [ladder_fork()]))
     # appended last, so every older state keeps its place in the sheet
     out += [(name, {'dirs': 4, 'frames': 1}, group) for name, group in shutter_states().items()]
+    out += [(name, {'dirs': 4, 'frames': 1}, parapet(pal)) for name, pal in PARAPETS]
     return out
 
 
@@ -1505,6 +1603,20 @@ def check_drawing(st):
     for name in ('pour_splash', 'falling_stone', 'trapdoor_dropping'):
         if by_name[name][0].get('loop') != 1:
             problems.append('%s must play once' % name)
+    r, c = PARAPET_ROWS, PARAPET_COLS
+    clear = (lambda x, y: y < 32 - r, lambda x, y: y >= r, lambda x, y: x < 32 - c, lambda x, y: x >= c)
+    for name, _ in PARAPETS:
+        for d, fr in enumerate(by_name[name][1]):
+            for (x, y), col in fr.px.items():
+                if clear[d](x, y):
+                    problems.append('%s %s: (%d,%d) must stay clear' % (name, DIRS[d], x, y))
+                elif len(col) == 4 and col[3] != 255:
+                    problems.append('%s %s: (%d,%d) is not opaque' % (name, DIRS[d], x, y))
+        for d in (0, 1):                # a crenel is open down to its sill
+            top = 0 if d else 32 - r
+            if any((x, top + y) in by_name[name][1][d].px
+                   for x in range(32) if _merlon(x) < 0 for y in range(5)):
+                problems.append('%s %s: a crenel is filled' % (name, DIRS[d]))
     return problems[:20]
 
 
@@ -1747,6 +1859,78 @@ def preview_traps(path, st, scale=6):
     layout(path, rows, scale)
 
 
+# ------------------------------------------------------------ parapet preview
+
+PERSON = [(226, 184, 150), (120, 74, 46), (92, 110, 150), (70, 62, 56), (40, 34, 32)]
+
+
+def placeholder():
+    """A figure-sized stand-in for a defender (not game art): head, hair,
+    tunic, legs and boots, about as tall and wide as a human mob sprite."""
+    im = Image.new('RGBA', (32, 32))
+    d = ImageDraw.Draw(im)
+    skin, hair, tunic, legs, boots = PERSON
+    d.rectangle((12, 2, 19, 9), fill=skin, outline=boots)
+    d.rectangle((12, 2, 19, 4), fill=hair)
+    d.rectangle((10, 10, 21, 20), fill=tunic, outline=boots)
+    d.rectangle((8, 11, 9, 19), fill=skin)
+    d.rectangle((22, 11, 23, 19), fill=skin)
+    d.rectangle((11, 21, 14, 28), fill=legs)
+    d.rectangle((17, 21, 20, 28), fill=legs)
+    d.rectangle((11, 29, 14, 30), fill=boots)
+    d.rectangle((17, 29, 20, 30), fill=boots)
+    return im
+
+
+def preview_parapet(path, st, scale=6):
+    by = {name: [fr.image() for fr in group] for name, keys, group in st}
+    floor = wall_frame(FLOORS, 'stone_bricks')
+    grass = wall_frame(FLOORS, 'grass0')
+    man = placeholder()
+    magenta = Image.new('RGBA', (32, 32), (255, 0, 255, 255))
+
+    def on(tile, *layers):
+        im = tile.copy()
+        for layer in layers:
+            im.alpha_composite(layer)
+        return im
+
+    rows, scenes = [], []
+    for name, _ in PARAPETS:
+        p = by[name]
+        cells = [('%s = outside' % DIRS[d], on(floor, p[d])) for d in range(4)]
+        # the defender stands behind the SOUTH piece and in front of the others
+        cells += [('SOUTH, defender', on(floor, man, p[0])), ('NORTH, defender', on(floor, p[1], man)),
+                  ('EAST, defender', on(floor, man, p[2])), ('WEST, defender', on(floor, man, p[3]))]
+        rows.append((name + ' (4 dirs) on a stone floor; the dir is the outside edge', cells))
+        clear = [('%s clear = magenta' % DIRS[d], on(magenta, p[d])) for d in range(4)]
+        run = scene(3, 1, floor)
+        for tx in range(3):
+            run.alpha_composite(p[0], (tx * 32, 0))
+        walk = scene(3, 3, floor)                   # a wall walk, parapet along the south
+        walk.alpha_composite(man, (32, 64))
+        for tx in range(3):
+            walk.alpha_composite(p[0], (tx * 32, 64))
+        top = scene(5, 5, grass)                    # a tower top, all four sides
+        for tx in range(1, 4):
+            for ty in range(1, 4):
+                top.paste(floor, (tx * 32, ty * 32))
+        for t in range(1, 4):
+            top.alpha_composite(p[3], (32, t * 32))
+            top.alpha_composite(p[2], (96, t * 32))
+        for tx in range(1, 4):
+            top.alpha_composite(p[1], (tx * 32, 32))
+        top.alpha_composite(man, (64, 96))
+        for tx in range(1, 4):
+            top.alpha_composite(p[0], (tx * 32, 96))
+        rows.append((name + ': the clear area and a SOUTH run', clear + [('SOUTH run of 3', run)]))
+        scenes.append(('%s, 3x3 wall walk' % name, walk))
+        scenes.append(('%s, tower top' % name, top))
+    rows.append(('a 3x3 wall walk with a parapet along the south and a defender behind it, and a 3x3 tower top',
+                 scenes))
+    layout(path, rows, scale)
+
+
 def layout(path, rows, scale=4):
     """Write a review sheet: titled rows of labelled cells, each at `scale`
     with the 1x game-scale tile under it."""
@@ -1793,3 +1977,5 @@ if __name__ == '__main__':
         preview_drop(option('--preview-drop'), st)
     if option('--preview-traps'):
         preview_traps(option('--preview-traps'), st)
+    if option('--preview-parapet'):
+        preview_parapet(option('--preview-parapet'), st)
