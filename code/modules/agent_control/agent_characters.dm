@@ -390,6 +390,7 @@
 		out["stamina"] = H.stats["stamina"][1]
 		out["max_stamina"] = H.stats["stamina"][2]
 		out["resting"] = H.resting ? TRUE : FALSE
+		out["asleep"] = H.inducedSSD ? TRUE : FALSE // deep sleep: only Wake Up (do "wake") ends it
 		out["nude"] = H.is_nude() ? TRUE : FALSE
 		var/list/carried = list()
 		for (var/obj/item/weapon/storage/S in H.get_equipped_items())
@@ -677,7 +678,7 @@
 
 // Actions a character can take, directly or from its queue.
 /proc/agent_character_actions()
-	return list("move", "face", "say", "emote", "click", "use", "craft", "equip", "take", "examine", "drop", "swap_hand", "intent", "resist", "board", "disembark", "drag", "verb", "throw", "ooc", "bug_report", "topic", "close_window", "stance", "drive", "screen", "walk_to")
+	return list("move", "face", "say", "emote", "click", "use", "craft", "equip", "take", "examine", "drop", "swap_hand", "intent", "resist", "board", "disembark", "drag", "verb", "throw", "ooc", "bug_report", "topic", "close_window", "stance", "drive", "screen", "walk_to", "wake")
 
 // Ticks until the character may take this action: the agent pacing plus the
 // mob's own click cooldown (next_move/next_click) and a speech spacing.
@@ -751,6 +752,20 @@
 			M.custom_emote(1, html_encode(message))
 			C.next_speech = world.time + AGENT_CHARACTER_SPEECH_DELAY
 			detail = message
+		if ("wake")
+			// The Wake Up verb needs a client, so an agent body in deep sleep (a restored
+			// sleeper, or one put to bed) would otherwise never wake. Same 30 seconds.
+			if (!ishuman(M))
+				agent_fail("bad_target", "only people sleep")
+			var/mob/living/human/sleeper = M
+			if (!sleeper.inducedSSD)
+				agent_fail("not_asleep", sleeper.sleeping ? "not deeply asleep: just wait" : "already awake")
+			if (persistence_sleep_transfer_blocked())
+				agent_fail("busy", "wait for the world save or load to finish")
+			spawn(300)
+				if (sleeper && !QDELETED(sleeper))
+					sleeper.finish_wake_up()
+			detail = "waking in 30 seconds"
 		if ("ooc")
 			// Reaches every player, the other regions and Discord, so it needs its own scope.
 			if (!A.has_scope("ooc"))

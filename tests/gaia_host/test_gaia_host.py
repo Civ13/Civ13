@@ -695,6 +695,29 @@ Active Connections
 
 
 
+class BackupCopyTests(unittest.TestCase):
+    def test_backup_copies_through_shared_handles(self):
+        # shutil.copy2 uses CopyFile2 on Windows, which denies writers on the source,
+        # so a standby loading the same .sav failed with errno 13 (South America,
+        # 2026-11-17). The copy must use ordinary open() handles and keep the times.
+        with tempfile.TemporaryDirectory() as tmp:
+            saves = Path(tmp) / 'map_saves'
+            saves.mkdir()
+            (saves / '1.sav').write_bytes(os.urandom(3 * 1024 * 1024 + 7))
+            (saves / 'round.json').write_text('{}', encoding='utf-8')
+            os.utime(saves / '1.sav', (1700000000, 1700000000))
+            real = gaia_host.shutil.copy2
+            gaia_host.shutil.copy2 = None  # any call fails the test
+            try:
+                receipt = gaia_host.copy_save(saves, Path(tmp) / 'backup')
+            finally:
+                gaia_host.shutil.copy2 = real
+            copied = Path(tmp) / 'backup' / '1.sav'
+            self.assertEqual((saves / '1.sav').read_bytes(), copied.read_bytes())
+            self.assertEqual(int(copied.stat().st_mtime), 1700000000)
+            self.assertEqual(hashlib.sha256(copied.read_bytes()).hexdigest(), receipt['1.sav'])
+
+
 class ListeningTests(unittest.TestCase):
     """2026-11-08: a refused loopback connect costs ~2 s on Windows, and the doorman's
     host_status asked it per cold region under its lock until it stopped answering."""

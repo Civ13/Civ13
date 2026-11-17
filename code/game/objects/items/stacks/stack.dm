@@ -1825,7 +1825,9 @@
 	if (ispath(recipe.result_type, /obj/covers))
 		var/obj/covers/floor_type = recipe.result_type
 		building_floor_recipe = !initial(floor_type.wall) && initial(floor_type.layer) < 2.1
-	if (building_floor_recipe)
+	// A floor laid over a floor cover or upper floor replaces it (tile_occupancy.dm).
+	var/obj/covers/subfloor = building_floor_recipe ? tile_subfloor_for(get_turf(user), recipe.result_type) : null
+	if (building_floor_recipe && !subfloor)
 		var/building_error = building_floor_error(get_turf(user))
 		if (building_error)
 			to_chat(user, SPAN_WARNING(building_error))
@@ -1898,7 +1900,8 @@
 
 		if (building_floor_recipe)
 			var/obj/covers/floor = O
-			floor.building_finish_floor()
+			if (!subfloor || !floor.replace_subfloor(subfloor))
+				floor.building_finish_floor()
 
 		// The handle's wood sets the tool's durability and speed (material_weapons.dm).
 		if (handle_material_name)

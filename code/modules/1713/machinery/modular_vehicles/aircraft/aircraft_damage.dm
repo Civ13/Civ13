@@ -6,8 +6,9 @@
 // frame instead of flying on. In low flight any weapon has a chance; at
 // cruise only heavy weapons (heavy machine guns, cannon) reach, so a rifle
 // cannot bring down a plane at height. Hits wear the airframe down and a
-// hit on the nose can kill the engine; enough damage breaks the plane up
-// in the air, which crash_land turns into a forced landing or a wreck.
+// hit on the engine section (a plane's nose, a helicopter's rotor mast) can
+// kill the engine; enough damage breaks the plane up in the air, which
+// crash_land turns into a forced landing or a wreck.
 
 #define AIRCRAFT_HIT_CHANCE_LOW 40
 #define AIRCRAFT_HIT_CHANCE_CRUISE 20
@@ -72,7 +73,8 @@
 		playsound(here, 'sound/effects/bang.ogg', 50, TRUE)
 	// Wheels and wall plating take their ordinary hit.
 	F.bullet_act(P, null)
-	if (istype(F, /obj/structure/vehicleparts/frame/car/aircraft/nose) && engine && engine.on && prob(AIRCRAFT_ENGINE_HIT_CHANCE))
+	var/obj/structure/vehicleparts/frame/car/aircraft/section = F
+	if (istype(section) && section.engine_section && engine && engine.on && prob(AIRCRAFT_ENGINE_HIT_CHANCE))
 		engine.on = FALSE
 		engine.update_icon()
 		F.visible_message(SPAN_DANGER("\The [engine] coughs and dies!"))

@@ -387,5 +387,5 @@ var/carriage_owners_about = FALSE
 		carriage_hitch_checks()
 	catch(var/exception/e)
 		carriage_check(FALSE, "exception [e] [e.file]:[e.line]")
-	text2file(json_encode(list("commit" = world.params["tested_commit"], "checks" = carriage_checks, "failures" = carriage_failures, "runtime_error" = carriage_runtime_error)), "result.json")
+	text2file(json_encode(list("commit" = world.params["tested_commit"], "checks" = carriage_checks, "failures" = carriage_failures, "runtime_error" = carriage_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")
 	del(world)

@@ -593,13 +593,27 @@ def recover_interrupted_save(repo, now=time.time):
     return generation, interrupted
 
 
+def copy_shared(source, target):
+    """Copy one file through ordinary open() handles, then its times.
+
+    A handover copies map_saves while the standby world loads them. On Windows
+    shutil.copy2 copies with CopyFile2, which opens the source denying writers, so
+    DreamDaemon's savefile open of the same file failed with errno 13 and the
+    standby refused the save ("Prospective saved world failed validation" at
+    zone_topology.dm, South America 2026-11-17). Python's own open() lets other
+    readers and writers in."""
+    with open(source, 'rb') as src, open(target, 'wb') as dst:
+        shutil.copyfileobj(src, dst, 1024 * 1024)
+    shutil.copystat(source, target)
+
+
 def copy_save(saves, destination):
     """Copy map_saves and check every file's SHA-256 against the original."""
     destination.mkdir(parents=True)
     receipt = {}
     for item in sorted(saves.iterdir()):
         if item.is_file():
-            shutil.copy2(item, destination / item.name)
+            copy_shared(item, destination / item.name)
             receipt[item.name] = sha256(item)
             if sha256(destination / item.name) != receipt[item.name]:
                 raise RuntimeError('backup copy of %s does not match' % item.name)

@@ -342,9 +342,17 @@ var/global/datum/persistence_area_startup/persistence_area_startup_token
 		TICK_CHECK
 	for(var/z = 1, z <= save_validation_maxz(), z++)
 		if(!fexists("map_saves/[z].sav")) throw EXCEPTION("Missing captured zone level")
-		var/savefile/F = new("map_saves/[z].sav")
-		F.cd = "/"
-		var/list/header_keys = F.dir.Copy()
+		var/savefile/F
+		var/list/header_keys
+		// Another process holding the file (a backup copy, another world) fails the
+		// open with only a BYOND error line, and the exception had no text.
+		try
+			F = new("map_saves/[z].sav")
+			F.cd = "/"
+			header_keys = F.dir.Copy()
+		catch
+			header_keys = null
+		if(!F || !islist(header_keys)) throw EXCEPTION("Could not open map_saves/[z].sav; another process may hold it")
 		for(var/key in list("format_version", "generation", "maxx", "maxy", "maxz"))
 			if(!(key in header_keys)) throw EXCEPTION("Missing zone capture header")
 		if(!(F["/format_version"] in list(2, 3, 4, 5)) || F["/generation"] != generation || F["/maxx"] != world.maxx || F["/maxy"] != world.maxy || F["/maxz"] != save_validation_maxz()) throw EXCEPTION("Zone capture header differs")
