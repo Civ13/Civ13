@@ -61,9 +61,10 @@ class ApplianceDismantlingTest(unittest.TestCase):
         cases = [('television', 'hammer/modern', 20, {'iron': 4, 'electronics': 3}),
                  ('television', 'hammer', 30, {'iron': 2, 'electronics': 1}),
                  ('television', 'hammer/tribalhammer', 30, {'iron': 2, 'electronics': 1}),
-                 ('grandfather', 'hammer/modern', 20, {'wood': 6, 'glass': 2}),
-                 ('grandfather', 'hammer', 30, {'wood': 3}),
-                 ('grandfather', 'hammer/tribalhammer', 30, {'wood': 3})]
+                 # Planks, never more than the 9 planks it cost (no glass).
+                 ('grandfather', 'hammer/modern', 20, {'woodplank': 6}),
+                 ('grandfather', 'hammer', 30, {'woodplank': 3}),
+                 ('grandfather', 'hammer/tribalhammer', 30, {'woodplank': 3})]
         for kind, tool, ticks, expected in cases:
             with self.subTest(kind=kind, tool=tool):
                 obj = self.run_tool(kind, tool)
@@ -85,7 +86,7 @@ class ApplianceDismantlingTest(unittest.TestCase):
         modern = '\telse if (istype(O,/obj/item/weapon/hammer/modern))'
         general = '\telse if (istype(O,/obj/item/weapon/hammer))'
         for kind, rough in (('television', ['iron', 'iron', 'electronics']),
-                            ('grandfather', ['wood', 'wood', 'wood'])):
+                            ('grandfather', ['woodplank', 'woodplank', 'woodplank'])):
             header = '/obj/structure/TV/' + kind + '/attackby('
             prefix, rest = self.source.split(header, 1)
             before, rest = rest.split(modern, 1)

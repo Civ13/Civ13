@@ -170,10 +170,9 @@
 		to_chat(user, "<span class='notice'>You begin dismantling \the [src].</span>")
 		if (do_after(user,20,src))
 			to_chat(user, "<span class='notice'>You carefully dismantle \the [src].</span>")
+			// 6 of the 9 planks it cost; its recipe charges no glass.
 			for (var/i=1, i<=6, i++)
-				new /obj/item/stack/material/wood(loc)
-			new /obj/item/stack/material/glass(loc)
-			new /obj/item/stack/material/glass(loc)
+				new /obj/item/stack/material/woodplank(loc)
 			qdel(src)
 	else if (istype(O,/obj/item/weapon/hammer))
 		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
@@ -181,7 +180,7 @@
 		if (do_after(user,30,src))
 			to_chat(user, "<span class='notice'>You roughly smash apart \the [src].</span>")
 			for (var/i=1, i<=3, i++)
-				new /obj/item/stack/material/wood(loc)
+				new /obj/item/stack/material/woodplank(loc)
 			qdel(src)
 
 /obj/structure/coolingfan

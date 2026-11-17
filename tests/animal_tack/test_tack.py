@@ -285,7 +285,7 @@ class TackTests(unittest.TestCase):
         ci=importlib.util.module_from_spec(spec);spec.loader.exec_module(ci)
         self.assertEqual(ci.SUITES['animal_tack']['files'],('tests/animal_tack/test_tack.py',))
         def selected(path):return {k for k,v in ci.impact([path])['suites'].items() if v['selected']}
-        self.assertEqual(selected(PATH),{'policy','bootstrap','progress','movement_save_inventory','animal_tack'})
+        self.assertEqual(selected(PATH),{'policy','bootstrap','progress','movement_save_inventory', 'dismantle_refunds','animal_tack'})
         current=ci.SUITES
         for path in current['animal_tack']['shared_paths']:
             actual=selected(path)

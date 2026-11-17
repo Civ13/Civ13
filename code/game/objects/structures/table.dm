@@ -586,6 +586,8 @@
 	desc = "A seedy table for seedy dealings in seedy places."
 	icon_state = "pokertable"
 	flipped_icon = "pokertable-flipped"
+	framestack = /obj/item/stack/material/woodplank // built from 7 planks
+	buildstack = /obj/item/stack/material/woodplank
 
 /obj/structure/table/wood/poker/flipped
 	icon_state = "pokertable-flipped"

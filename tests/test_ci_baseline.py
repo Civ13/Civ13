@@ -95,7 +95,7 @@ class BaselinePolicyTests(unittest.TestCase):
         self.assertEqual(suite['files'], ('tests/player_help/test_toxin_context.py',))
         self.assertEqual(suite['paths'], ())
         self.assertEqual(ci.TIMEOUT, 30)
-        self.assertEqual(self.selected(list(suite['files'])), {'policy','bootstrap','progress', 'movement_save_inventory',name})
+        self.assertEqual(self.selected(list(suite['files'])), {'policy','bootstrap','progress', 'movement_save_inventory', 'dismantle_refunds',name})
         self.assertNotIn(name,self.selected(['README.md']))
         self.assertIn('tests/player_help/test_bridge.py',suite['shared_paths'])
         self.assertIn('scripts/player_help_bridge.py',suite['shared_paths'])
@@ -128,7 +128,7 @@ class BaselinePolicyTests(unittest.TestCase):
         suite = ci.SUITES['crafting_ui_contracts']
         self.assertEqual(suite['files'], ('tests/human_subtile/test_crafting_ui.py',))
         self.assertEqual(self.selected(list(suite['files'])),
-                         {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'crafting_ui_contracts'})
+                         {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'dismantle_refunds', 'crafting_ui_contracts'})
         previous = {name: entry for name, entry in ci.SUITES.items()
                     if name != 'crafting_ui_contracts'}
         for path in suite['shared_paths'] + suite['paths']:
@@ -429,7 +429,7 @@ class BaselinePolicyTests(unittest.TestCase):
                                           'tests/crafting_loader/test_production_machines.py',
                                           'tests/crafting_loader/test_radio_headset.py'))
         self.assertEqual(self.selected(list(suite['files'])),
-            {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'crafting_loader'})
+            {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'dismantle_refunds', 'crafting_loader'})
         previous = {name: spec for name, spec in ci.SUITES.items() if name != 'crafting_loader'}
         for path in suite['shared_paths']:
             with patch.object(ci, 'SUITES', previous):
@@ -469,7 +469,7 @@ class BaselinePolicyTests(unittest.TestCase):
         self.assertEqual(suite['files'], ('tests/mount_lifecycle_native/test_prepare.py',
                                          'tests/mount_lifecycle_native/test_runner.py',
                                          'tests/mount_lifecycle_native/test_hosted_entry.py'))
-        expected = {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'mount_native_preparation'}
+        expected = {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'dismantle_refunds', 'mount_native_preparation'}
         self.assertEqual(self.selected(list(suite['files'])), expected)
         self.assertEqual(self.selected(['tests/mount_lifecycle_native/probe.dm']), expected)
         self.assertEqual(self.selected(['tests/mount_lifecycle_native/README.md']), expected)
@@ -485,12 +485,12 @@ class BaselinePolicyTests(unittest.TestCase):
             'tests/paper_documents/test_views.py', 'tests/paper_documents/test_mutations.py',
             'tests/paper_documents/test_copying.py', 'tests/paper_documents/test_authoring.py', 'tests/paper_documents/test_lifecycle.py', 'tests/paper_documents/test_editor.py', 'tests/paper_documents/test_study.py', 'tests/paper_documents/test_stamps.py', 'tests/paper_documents/test_forms.py'))
         self.assertEqual(self.selected(['tests/paper_documents/test_mutations.py']),
-            {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'paper_documents'})
+            {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'dismantle_refunds', 'paper_documents'})
 
     def test_stone_molds_registration_is_offline_and_preserves_shared_fallback(self):
         suite=ci.SUITES['stone_molds']
         self.assertEqual(suite['files'],('tests/stone_molds/test_source.py',))
-        self.assertEqual(self.selected(list(suite['files'])), {'policy','bootstrap','progress', 'movement_save_inventory','stone_molds'})
+        self.assertEqual(self.selected(list(suite['files'])), {'policy','bootstrap','progress', 'movement_save_inventory', 'dismantle_refunds','stone_molds'})
         self.assertIn('stone_molds',self.selected(['tests/save_movement/source_adapter.py']))
         for path in ('code/game/objects/structures/blacksmithing/molds.dm',
                      'scripts/build-crafting-atlas.py', 'scripts/player_help_bridge.py'):
@@ -501,7 +501,7 @@ class BaselinePolicyTests(unittest.TestCase):
     def test_rider_deletion_registration_preserves_shared_fallback(self):
         suite = ci.SUITES['rider_deletion']
         self.assertEqual(suite['files'], ('tests/rider_deletion/test_destroy.py',))
-        expected = {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'rider_deletion'}
+        expected = {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'dismantle_refunds', 'rider_deletion'}
         self.assertEqual(self.selected(list(suite['files'])), expected)
         self.assertEqual(self.selected(['tests/rider_deletion/fixtures/destroy_before.txt']), expected)
         self.assertEqual(self.selected(['tests/rider_deletion/README.md']), expected)
@@ -514,7 +514,7 @@ class BaselinePolicyTests(unittest.TestCase):
     def test_mount_deletion_registration_preserves_shared_fallback(self):
         suite = ci.SUITES['mount_deletion']
         self.assertEqual(suite['files'], ('tests/mount_deletion/test_destroy.py',))
-        expected = {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'mount_deletion'}
+        expected = {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'dismantle_refunds', 'mount_deletion'}
         self.assertEqual(self.selected(list(suite['files'])), expected)
         self.assertEqual(self.selected(['tests/mount_deletion/fixtures/destroy_before.txt']), expected)
         self.assertEqual(self.selected(['tests/mount_deletion/NATIVE_PLAN.md']), expected)
@@ -527,7 +527,7 @@ class BaselinePolicyTests(unittest.TestCase):
     def test_mount_distance_registration_preserves_shared_fallback(self):
         suite = ci.SUITES['mount_distance']
         self.assertEqual(suite['files'], ('tests/mount_distance/test_distance.py',))
-        expected = {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'mount_distance'}
+        expected = {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'dismantle_refunds', 'mount_distance'}
         self.assertEqual(self.selected(list(suite['files'])), expected)
         self.assertEqual(self.selected(['tests/mount_distance/fixtures/distance_before.txt']), expected)
         previous = {name: spec for name, spec in ci.SUITES.items() if name != 'mount_distance'}
@@ -539,7 +539,7 @@ class BaselinePolicyTests(unittest.TestCase):
     def test_mount_lifecycle_registration_preserves_shared_fallback(self):
         suite = ci.SUITES['mount_lifecycle']
         self.assertEqual(suite['files'], ('tests/mount_lifecycle/test_death.py',))
-        expected = {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'mount_lifecycle'}
+        expected = {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'dismantle_refunds', 'mount_lifecycle'}
         self.assertEqual(self.selected(list(suite['files'])), expected)
         self.assertEqual(self.selected(['tests/mount_lifecycle/fixtures/death_before.txt']), expected)
         previous = {name: spec for name, spec in ci.SUITES.items() if name != 'mount_lifecycle'}
@@ -551,7 +551,7 @@ class BaselinePolicyTests(unittest.TestCase):
     def test_ladder_cleanup_registration_preserves_shared_fallback(self):
         suite = ci.SUITES['ladder_cleanup']
         self.assertEqual(suite['files'], ('tests/ladder_cleanup/test_destroy.py',))
-        expected = {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'ladder_cleanup'}
+        expected = {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'dismantle_refunds', 'ladder_cleanup'}
         self.assertEqual(self.selected(list(suite['files'])), expected)
         self.assertEqual(self.selected(['tests/ladder_cleanup/fixtures/destroy_before.txt']), expected)
         previous = {name: spec for name, spec in ci.SUITES.items() if name != 'ladder_cleanup'}
@@ -563,7 +563,7 @@ class BaselinePolicyTests(unittest.TestCase):
     def test_telephone_recipients_are_bounded_and_keep_existing_dependency_coverage(self):
         suite = ci.SUITES['telephone_recipients']
         self.assertEqual(suite['files'], ('tests/telephone/test_recipients.py',))
-        expected = {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'telephone_recipients'}
+        expected = {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'dismantle_refunds', 'telephone_recipients'}
         self.assertEqual(self.selected(['tests/telephone/test_recipients.py']), expected)
         self.assertEqual(self.selected(['tests/telephone/fixtures/telephone_before.txt']), expected)
         prior = {name: spec for name, spec in ci.SUITES.items() if name != 'telephone_recipients'}
@@ -575,7 +575,7 @@ class BaselinePolicyTests(unittest.TestCase):
     def test_vehicle_hud_registration_is_bounded_and_preserves_shared_fallback(self):
         suite = ci.SUITES['vehicle_hud']
         self.assertEqual(suite['files'], ('tests/vehicle_hud/test_driver_axis.py',))
-        expected = {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'vehicle_hud'}
+        expected = {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'dismantle_refunds', 'vehicle_hud'}
         self.assertEqual(self.selected(['tests/vehicle_hud/test_driver_axis.py']), expected)
         self.assertEqual(self.selected(['tests/vehicle_hud/fixtures/axis_handlers_before.dm']), expected)
         previous_suites = {name: spec for name, spec in ci.SUITES.items() if name != 'vehicle_hud'}
@@ -589,7 +589,7 @@ class BaselinePolicyTests(unittest.TestCase):
         self.assertEqual(suite['files'], ('tests/test_tanning_rack_appearance.py',))
         self.assertEqual(suite['paths'], ())
         self.assertEqual(self.selected(list(suite['files'])),
-                         {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'tanning_rack_appearance'})
+                         {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'dismantle_refunds', 'tanning_rack_appearance'})
         self.assertEqual(ci.impact(list(suite['files']))['fallback_reasons'], [])
         for shared in suite['shared_paths']:
             self.assertEqual(self.selected([shared]), set(ci.SUITES))
@@ -666,7 +666,7 @@ class BaselinePolicyTests(unittest.TestCase):
         self.assertEqual(suite['files'], ('tests/test_resource_work_animation.py',))
         self.assertEqual(suite['paths'], suite['files'])
         self.assertEqual(self.selected(list(suite['files'])),
-                         {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'resource_work_animation'})
+                         {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'dismantle_refunds', 'resource_work_animation'})
         for path in suite['shared_paths']:
             with self.subTest(path=path):
                 self.assertEqual(self.selected([path]), set(ci.SUITES))
@@ -683,7 +683,7 @@ class BaselinePolicyTests(unittest.TestCase):
         self.assertEqual(suite['paths'], suite['files'])
         self.assertFalse(suite.get('always', False))
         self.assertEqual(self.selected(list(suite['files'])),
-                         {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'harvest_inputs'})
+                         {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'dismantle_refunds', 'harvest_inputs'})
         self.assertEqual(ci.impact(list(suite['files']))['fallback_reasons'], [])
         for path in suite['shared_paths']:
             candidate = path+'first.txt' if path.endswith('/') else path
@@ -700,7 +700,7 @@ class BaselinePolicyTests(unittest.TestCase):
         self.assertEqual(suite['paths'], suite['files'])
         self.assertFalse(suite.get('always', False))
         self.assertEqual(self.selected(list(suite['files'])),
-                         {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'action_admission'})
+                         {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'dismantle_refunds', 'action_admission'})
         self.assertEqual(ci.impact(list(suite['files']))['fallback_reasons'], [])
         for path in suite['shared_paths']:
             with self.subTest(path=path):
@@ -792,7 +792,7 @@ class BaselinePolicyTests(unittest.TestCase):
         self.assertEqual(set(suite['shared_paths']), {
             'code/game/mob/mob_movement.dm',
             'code/game/mob/living/carbon/human/subtile_movement.dm'})
-        self.assertEqual(self.selected(suite['files']), {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'destroyed_grab_preflight'})
+        self.assertEqual(self.selected(suite['files']), {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'dismantle_refunds', 'destroyed_grab_preflight'})
         for source in suite['shared_paths']:
             with self.subTest(source=source):
                 result = ci.impact([source])
@@ -811,7 +811,7 @@ class BaselinePolicyTests(unittest.TestCase):
         self.assertFalse(suite.get('always', False))
         for path in (*suite['files'], 'tests/character_traits/README.md'):
             with self.subTest(path=path):
-                self.assertEqual(self.selected([path]), {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'character_traits'})
+                self.assertEqual(self.selected([path]), {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'dismantle_refunds', 'character_traits'})
                 self.assertEqual(ci.impact([path])['fallback_reasons'], [])
         expected_sources = {
             'code/game/mob/living/carbon/human/traits.dm',
@@ -947,7 +947,7 @@ class BaselinePolicyTests(unittest.TestCase):
         suite = ci.SUITES[suite_name]
         self.assertEqual(suite['files'], ('tests/tablet_press/test_contract.py',))
         self.assertEqual(self.selected(list(suite['files'])),
-                         {'policy', 'bootstrap', 'progress', 'movement_save_inventory', suite_name})
+                         {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'dismantle_refunds', suite_name})
         self.assertEqual(self.selected(['code/modules/reagents/tablet_press.dm']), set(ci.SUITES))
         # Real registered child and execute()/aggregate() receipts on isolated
         # production inputs. Only unrelated mandatory children use inert adapters.
@@ -1041,7 +1041,7 @@ class BaselinePolicyTests(unittest.TestCase):
         self.assertFalse(suite.get('always', False))
         for path in ('tests/grinder/test_transaction.py', 'tests/grinder/historical-grinder.dm'):
             with self.subTest(path=path):
-                expected = {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'grinder'}
+                expected = {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'dismantle_refunds', 'grinder'}
                 if path == 'tests/grinder/test_transaction.py':
                     expected.add('furnace_manual')  # Its projection imports this adapter.
                 self.assertEqual(self.selected([path]), expected)
@@ -1060,7 +1060,7 @@ class BaselinePolicyTests(unittest.TestCase):
         suite = ci.SUITES['furnace_manual']
         self.assertEqual(suite['files'], ('tests/furnace_manual/test_transaction.py',))
         self.assertEqual(self.selected(['tests/furnace_manual/test_transaction.py']),
-                         {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'furnace_manual'})
+                         {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'dismantle_refunds', 'furnace_manual'})
         source = 'code/game/objects/structures/blacksmithing/refining.dm'
         self.assertIn(source, suite['shared_paths'])
         self.assertEqual(self.selected([source]), set(ci.SUITES))
@@ -1315,7 +1315,7 @@ class BaselinePolicyTests(unittest.TestCase):
 
     def test_docs_keep_small_mandatory_baseline_and_compile_optimization(self):
         self.assertEqual(self.selected(['AGENTS.md', 'docs/api/index.html']),
-                         {'policy', 'bootstrap', 'progress', 'movement_save_inventory'})
+                         {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'dismantle_refunds'})
         self.assertFalse(ci.documentation('docs/new.dm'))
         self.assertEqual(self.selected(['docs/new.dm']), set(ci.SUITES))
 
@@ -1324,7 +1324,7 @@ class BaselinePolicyTests(unittest.TestCase):
                      '.agents/skills/civ13/references/note.md', '.agents/skills/civ13/references/deep/note.md'):
             with self.subTest(path=path):
                 self.assertTrue(ci.documentation(path))
-                self.assertEqual(self.selected([path]), {'policy','bootstrap','progress', 'movement_save_inventory'})
+                self.assertEqual(self.selected([path]), {'policy','bootstrap','progress', 'movement_save_inventory', 'dismantle_refunds'})
                 self.assertEqual(self.selected([path],'unavailable'),set(ci.SUITES))
         for path in ('.agents/skills/civ13/scripts/run.py', '.agents/skills/civ13/references/run.sh',
                      '.agents/skills/civ13/references/config.yaml', '.agents/skills/civ13/references/config.json',
@@ -1356,7 +1356,7 @@ class BaselinePolicyTests(unittest.TestCase):
                 self.assertEqual(ci.skill_prose(path), expected)
                 self.assertEqual(selection.needs_game([path]), not expected)
                 self.assertEqual(self.selected([path]),
-                                 {'policy', 'bootstrap', 'progress', 'movement_save_inventory'}
+                                 {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'dismantle_refunds'}
                                  if expected else set(ci.SUITES))
 
         helper = 'scripts/ci_skill_prose.py'
@@ -1388,14 +1388,14 @@ class BaselinePolicyTests(unittest.TestCase):
                      'docs/images/example.png', 'docs/images/example.svg', 'docs/guide.pdf'):
             with self.subTest(path=path):
                 self.assertTrue(ci.documentation(path))
-                self.assertEqual(self.selected([path]), {'policy', 'bootstrap', 'progress', 'movement_save_inventory'})
+                self.assertEqual(self.selected([path]), {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'dismantle_refunds'})
                 self.assertEqual(ci.impact([path])['fallback_reasons'], [])
 
     def test_production_inputs_select_existing_affected_offline_tests(self):
         self.assertEqual(self.selected(['code/processes/research_tree.dm']),
-                         {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'research'})
+                         {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'dismantle_refunds', 'research'})
         self.assertEqual(self.selected(['code/processes/_process.dm']),
-                         {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'research', 'ping', 'time_of_day_progress', 'cleanables_scheduler', 'life_tick_pacing', 'object_interval_dispatch'})
+                         {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'dismantle_refunds', 'research', 'ping', 'time_of_day_progress', 'cleanables_scheduler', 'life_tick_pacing', 'object_interval_dispatch'})
         self.assertIn('year', self.selected(['code/setup.dm']))
 
     def test_ping_source_dependencies_match_its_actual_registered_test_reads(self):
@@ -1415,13 +1415,13 @@ class BaselinePolicyTests(unittest.TestCase):
         self.assertIn('ping', self.selected(['tests/ping_scheduler/historical-ping.txt']))
         self.assertIn('research', self.selected(['tests/research_scheduler/historical-research.txt']))
         self.assertEqual(self.selected(['code/processes/__processScheduler.dm']),
-                         {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'research', 'life_tick_pacing'})
+                         {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'dismantle_refunds', 'research', 'life_tick_pacing'})
 
     def test_hub_status_inputs_select_only_reviewed_offline_contracts(self):
         self.assertEqual(ci.SUITES['hub_status']['files'], ('tests/test_hub_status.py',))
         for path in ('code/world.dm', 'config/config.txt', 'tests/test_hub_status.py'):
             with self.subTest(path=path):
-                expected = {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'hub_status'}
+                expected = {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'dismantle_refunds', 'hub_status'}
                 if path == 'code/world.dm':
                     # The mocked irrigation runner checks global round initialization here.
                     expected.add('irrigation_ci_runner')
@@ -1519,7 +1519,7 @@ class BaselinePolicyTests(unittest.TestCase):
                      'tests/dictionary_era/corpus.json', 'code/__defines/_rust_g.dm'):
             with self.subTest(path=path):
                 self.assertEqual(self.selected([path]),
-                                 {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'dictionary'})
+                                 {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'dismantle_refunds', 'dictionary'})
                 self.assertEqual(ci.impact([path])['fallback_reasons'], [])
         registered = ci.SUITES['dictionary']['files']
         self.assertFalse(any(path.endswith(('probe.dm', 'prepare.py')) for path in registered))

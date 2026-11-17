@@ -65,7 +65,10 @@ def procedure(signature,env,hammer=False):
         else:line=expr(line,FIELDS)
         output.append('    '*depth+line)
     # Furniture has no part slots: handing back fitted machine parts does nothing here.
-    namespace=dict(env);namespace.setdefault('machine_drop_fitted_parts',lambda obj:None);exec(compile('\n'.join(output)+'\n','<production bedroll>','exec'),namespace)
+    # crafted_refund_stack (dismantle_refund.dm) reads the loaded recipe lists;
+    # these fixtures load none, so it returns its no-recipe fallback.
+    namespace=dict(env);namespace.setdefault('machine_drop_fitted_parts',lambda obj:None)
+    namespace.setdefault('crafted_refund_stack',lambda path,fallback=None:fallback);exec(compile('\n'.join(output)+'\n','<production bedroll>','exec'),namespace)
     return namespace['action']
 
 

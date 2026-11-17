@@ -90,7 +90,8 @@ class WoodenShelfContracts(unittest.TestCase):
         base=defaults(TABLE,'/obj/structure/table\n')
         self.assertEqual({k:base[k] for k in ('frame','framestack','buildstack','framestackamount','buildstackamount')},
                          dict(frame='/obj/structure/table_frame',framestack='/obj/item/stack/rods',buildstack='/obj/item/stack/material/iron',framestackamount=2,buildstackamount=True))
-        self.assertEqual(defaults(RACK,'/obj/structure/table/rack/shelf\n'),{})
+        # The steel shelf is built from steel, so it breaks back into steel.
+        self.assertEqual(defaults(RACK,'/obj/structure/table/rack/shelf\n'),dict(buildstack='/obj/item/stack/material/steel'))
         wooden=RefundFixture().model
         self.assertEqual(wooden.frame,'/obj/structure/table_frame/wood')
         self.assertEqual(wooden.framestack,wooden.buildstack)
