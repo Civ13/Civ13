@@ -212,6 +212,11 @@ bollard within two tiles is a mooring and one at three is not; a record from
 before anchors keeps an old anchor and a new record does not; a small craft
 needs none.
 
+Rigging (`code/modules/naval/hull_rigging.dm`): a mast starts with full sail;
+reefed it pushes six tenths and furled nothing; furled sails survive a gale and
+reefed ones a strong wind; a full sail in a strong wind tears, pushes little
+until mended and does not tear twice; at anchor nothing tears.
+
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/bilge_probe.dm 300
 
 ## Upper decks on built hulls (`upper_deck_probe.dm`)
