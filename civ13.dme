@@ -544,6 +544,7 @@
 #include "code\game\objects\items\stacks\recipe.dm"
 #include "code\game\objects\items\stacks\furniture_joinery.dm"
 #include "code\game\objects\items\stacks\rods.dm"
+#include "code\game\objects\items\stacks\recipe_skill_needs.dm"
 #include "code\game\objects\items\stacks\stack.dm"
 #include "code\game\objects\items\stacks\stack_spawn.dm"
 #include "code\game\objects\items\stacks\stack_makeable.dm"
