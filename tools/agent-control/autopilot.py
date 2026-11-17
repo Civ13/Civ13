@@ -2761,6 +2761,7 @@ def _run(client, args, character, token, model_pool):
         if talk:
             last_social = time.monotonic()
         situation = routines.Situation(observation, refs, kit, ignored, explore_dir, box, time.monotonic() - last_social, bool(alarm))
+        adopted = ""
         director_why = scheduler.director_reason(situation, talk, alarm, bool(unanswered))
         choice = None if director_why else scheduler.choose(situation)
         if choice is None and not director_why:
@@ -2824,6 +2825,10 @@ def _run(client, args, character, token, model_pool):
             print(f"  {timing_line(stats, time.monotonic() - asked_at)}")
             history.append({"role": "assistant", "content": answer})
             directed = scheduler.directed(answer) if scheduler.enabled else ""
+            if scheduler.enabled and not parse_plan(answer, refs):
+                adopted = scheduler.adopt_text_plan(answer)
+                if adopted:
+                    directed = (directed + "; " if directed else "") + f"plain-sentence plan read as routine {adopted}"
             if directed:
                 print(f"  director: {directed}")
             if reacted:
@@ -2948,8 +2953,13 @@ def _run(client, args, character, token, model_pool):
         feedback = ("\n" + built_note) if built_note else ""  # a blueprint note after a say that still ran
         if not plan:
             problem = plan_problem(answer, refs) or "your reply had no valid step"
-            print(f"step {step}: wait ({answer[:120]!r}) -> {problem}")
-            feedback = f"\nNothing happened: {problem}."
+            if adopted:
+                print(f"step {step}: plain-sentence plan -> routine {adopted}")
+                feedback = (f"\nYour plan was read as the routine {adopted}; it runs from the next turn. "
+                            'Next time write steps as objects like {"do": "find_flint", "target": 5}.')
+            else:
+                print(f"step {step}: wait ({answer[:120]!r}) -> {problem}")
+                feedback = f"\nNothing happened: {problem}."
             if choice is not None:
                 scheduler.record(choice, f"failed: {problem}")
         else:
