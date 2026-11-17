@@ -1,4 +1,4 @@
-// Manual woodworking uses existing flint/knife, wooden mallet and handle art.
+// Manual woodworking uses existing flint/knife and wooden mallet art; the wedge has its own.
 // One workable piece per log is a conservative abstraction, not quarter-log units.
 // Reuse the water/save owner's admitted-operation identity. No second constructor.
 
@@ -71,9 +71,13 @@
 /obj/item/weapon/material/wooden_wedge
 	name = "splitting wedge"
 	desc = "A whittled wooden wedge. Hold it in your other hand while using a wooden hammer on logs to split planks."
-	icon = 'icons/obj/old_weapons.dmi'
-	icon_state = "sharpened_stick"
-	item_state = "sharpened_stick"
+	icon = 'icons/obj/splitting_wedge.dmi'
+	icon_state = "splitting_wedge"
+	item_state = "splitting_wedge"
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/items/lefthand_splitting_wedge.dmi',
+		slot_r_hand_str = 'icons/mob/items/righthand_splitting_wedge.dmi',
+		)
 	default_material = "wood"
 	applies_material_colour = FALSE
 	sharp = FALSE

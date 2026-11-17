@@ -63,6 +63,6 @@ def add_woodworking(files, add, records, variants, audit_commit='uncommitted'):
                            map_notes='Logs and sharp tools must actually be obtained. Desert biome alone supplies no guarantee.'))
     variants[piece] = dict(type=piece,state='sheet-wood',name='small wood piece')
     variants[crude] = dict(type=crude,state='sheet-wood',name='crude plank (flatten before crafting)')
-    variants[wedge] = dict(type=wedge,state='sharpened_stick',name='wooden splitting wedge')
+    variants[wedge] = dict(type=wedge,state='splitting_wedge',name='wooden splitting wedge')
     variants[hammer] = dict(type=hammer,state='tribalhammer',name='simple wooden mallet')
     return routes
