@@ -56,6 +56,12 @@ var/sun_shadows_probe_checks = 0
 // The seven continents' latitudes as the maps set them.
 var/list/sun_shadows_probe_latitudes = list(35, -20, 45, 50, 25, 2, 40)
 
+// The phase change yields (CHECK_TICK); wait for it like the world would.
+/proc/sun_shadows_probe_phase(tod)
+	sun_shadows_phase(tod)
+	while (sun_shadows_busy)
+		sleep(1)
+
 /proc/sun_shadows_probe_run()
 	// Equinox at 45 north: due south at noon, 45 degrees up.
 	var/list/A = sun_position(45, 0, 0.5)
@@ -100,22 +106,22 @@ var/list/sun_shadows_probe_latitudes = list(35, -20, 45, 50, 25, 2, 40)
 	var/obj/structure/wild/sun_shadows_probe_tree/T1 = new(locate(2, 2, 1))
 	var/obj/structure/wild/sun_shadows_probe_tree/T2 = new(locate(5, 5, 1))
 	sun_shadows_probe_assert((T1 in sun_shadow_casters) && (T2 in sun_shadow_casters), "casters_registered")
-	sun_shadows_phase("Morning")
-	sun_shadows_probe_assert(sun_shadows_probe_shadows(T1) == 1 && T1.sun_shadow_overlay && T1.sun_shadow_overlay == T2.sun_shadow_overlay, "morning_shared_shadow [sun_shadows_probe_shadows(T1)] \ref[T1.sun_shadow_overlay] \ref[T2.sun_shadow_overlay] [T1.sun_shadow_overlay == T2.sun_shadow_overlay] [json_encode(sun_tree_angles)] [sun_shadow_casters.len]")
+	sun_shadows_probe_phase("Morning")
+	sun_shadows_probe_assert(sun_shadows_probe_shadows(T1) == 1 && T1.sun_shadow_overlay && T1.sun_shadow_overlay == T2.sun_shadow_overlay, "morning_shared_shadow")
 	sun_shadows_probe_assert(T1.sun_shadow_overlay.mouse_opacity == 0 && T1.sun_shadow_overlay.plane == FLOOR_PLANE, "shadow_not_clickable")
 	var/image/morning = T1.sun_shadow_overlay
-	sun_shadows_phase("Evening")
+	sun_shadows_probe_phase("Evening")
 	sun_shadows_probe_assert(sun_shadows_probe_shadows(T1) == 1 && T1.sun_shadow_overlay != morning, "evening_swaps")
 	// A tree placed mid-day takes the current shadow at once.
 	var/obj/structure/wild/sun_shadows_probe_tree/T3 = new(locate(7, 7, 1))
 	sun_shadows_probe_assert(T3.sun_shadow_overlay == T1.sun_shadow_overlay, "new_tree_current_shadow")
-	sun_shadows_phase("Night")
+	sun_shadows_probe_phase("Night")
 	sun_shadows_probe_assert(!sun_shadows_probe_shadows(T1) && !T1.sun_shadow_overlay && !sun_tree_angles, "night_clears")
 	// The season turning moves the sun on the next phase.
-	sun_shadows_phase("Midday")
+	sun_shadows_probe_phase("Midday")
 	var/list/spring_noon = sun_tree_angles
 	season = SEASON_WINTER
-	sun_shadows_phase("Midday")
+	sun_shadows_probe_phase("Midday")
 	sun_shadows_probe_assert(sun_tree_angles && sun_tree_angles[2] < spring_noon[2], "season_lowers_sun")
 	qdel(T3)
 	sun_shadows_probe_assert(!(T3 in sun_shadow_casters), "destroy_unregisters")
