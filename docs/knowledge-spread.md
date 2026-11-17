@@ -30,5 +30,14 @@ subjects only: no scholarship and no skill. What was gained is kept if the era
 later falls; characters made after the fall get the lower floor. Agent
 characters and the dead are skipped.
 
+## Spreading knowledge
+
+A spreading subject still needs a book or a teacher, but is quicker to learn:
+
+- Reading its chapter, or hearing it read aloud, takes half the time
+  (`KNOWLEDGE_SPREADING_STUDY`, applied in `scholar_study_time`).
+- Watching and guided work can teach the whole subject at any era
+  (`trade_learning_cap`); guarded subjects from WW1 on still stop at half.
+
 Tests: `tests/knowledge_spread/` (offline suite `knowledge_spread`, native
 `probe.dm`).
