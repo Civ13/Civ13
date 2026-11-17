@@ -113,8 +113,9 @@
 
 			if (I_GRAB)
 				if (M == src)
-					// Grabbing yourself presses a free hand on a bleeding wound.
-					return try_self_pressure(H.targeted_organ == "random" ? null : tgt)
+					// Grabbing yourself presses a free hand on a bleeding wound,
+					// or holds it in when aimed at the groin.
+					return self_grab(H.targeted_organ == "random" ? null : tgt)
 				if (anchored)
 					return FALSE
 				var/f1 = FALSE

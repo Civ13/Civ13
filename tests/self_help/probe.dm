@@ -43,6 +43,7 @@ var/probe_runtime_error = FALSE
 		tourniquet_checks()
 		bleeding_checks()
 		brace_checks()
+		hold_it_in_checks()
 	catch(var/exception/e)
 		probe_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("checks" = probe_checks, "failures" = probe_failures, "runtime_error" = probe_runtime_error)), "result.json")
@@ -220,3 +221,52 @@ var/probe_runtime_error = FALSE
 	probe_check(!F.self_brace_r, "a splint takes over from the hand")
 	F.set_stat(UNCONSCIOUS)
 	probe_check(LL.is_broken(), "an unconscious hand holds nothing")
+
+
+/proc/hold_it_in_checks()
+	var/mob/living/human/G = probe_body(14, "Gus")
+	G.bladder = 100
+	probe_check(!G.self_grab("groin") && !G.holding_it_in, "no holding it in before the urge is pressing")
+	G.bladder = 450
+	var/obj/item/weapon/flint/rock = new(G)
+	G.r_hand = rock
+	probe_check(!G.self_grab("groin") && !G.holding_it_in, "holding it in needs both hands free")
+	G.r_hand = null
+	probe_check(G.self_grab("groin") && G.holding_it_in > world.time, "grabbing your groin holds it in")
+	G.next_calculate_tally = -1
+	var/held_tally = G.movement_delay()
+	probe_check(G.hold_it_in_slowdown() > 0, "holding it in slows you down ([held_tally])")
+	var/mood = G.mood
+	var/bladder = G.bladder
+	for (var/i in 1 to 50)
+		G.handle_excrement()
+	probe_check(G.bladder == bladder, "no accident while holding it in")
+	probe_check(G.mood < mood, "holding it in wears on your mood")
+	G.r_hand = rock
+	G.check_hold_it_in()
+	probe_check(!G.holding_it_in, "filling a hand lets go")
+	G.r_hand = null
+	probe_check(!G.self_grab("groin"), "a short rest before clenching again")
+	G.next_hold_it_in = 0
+	probe_check(G.self_grab("groin") && G.holding_it_in, "grab again after the rest")
+	probe_check(G.self_grab("groin") && !G.holding_it_in, "grabbing again lets go")
+	G.next_hold_it_in = 0
+	G.self_grab("groin")
+	G.holding_it_in = world.time
+	G.check_hold_it_in()
+	probe_check(!G.holding_it_in && G.bladder > 450, "running out of time gives way and makes the urge worse")
+	G.next_hold_it_in = 0
+	G.bladder = 450
+	G.self_grab("groin")
+	G.bladder = 50
+	G.check_hold_it_in()
+	probe_check(!G.holding_it_in && !G.next_hold_it_in, "relief ends the hold with no wait")
+	G.bladder = 450
+	var/obj/item/organ/external/groin = probe_bleed(G, "groin")
+	probe_check(G.self_grab("groin") && groin.applied_pressure == G && !G.holding_it_in, "a bleeding groin is pressed on first")
+	groin.applied_pressure = null
+	groin.status &= ~ORGAN_BLEEDING
+	G.self_pressure_r = null
+	G.self_pressure_l = null
+	probe_check(G.self_grab("chest") == FALSE && !G.holding_it_in, "aiming elsewhere doesn't hold it in")
+	qdel(rock)

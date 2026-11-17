@@ -231,6 +231,14 @@
 	if(bladder <= 0)
 		bladder = 0
 
+	// Clutching your groin keeps it in for now, at a cost.
+	if(holding_it_in)
+		adjust_mood(-0.5, "holding it in")
+		return
+	if((bowels >= 450 || bladder >= 400) && client && world.time >= next_hold_it_in_hint)
+		next_hold_it_in_hint = world.time + 10 MINUTES
+		to_chat(src, SPAN_NOTICE("Grab your groin with both hands free to hold it in."))
+
 	if(bowels >= 250)
 		switch(bowels)
 			if(250 to 400)
@@ -280,6 +288,90 @@
 					bladder += 35
 			if(550 to INFINITY)
 				handle_piss()
+
+// Holding it in: grab intent on your own groin with both hands empty, once the
+// bladder or bowels are about to give out. It holds off an accident for a short
+// while; you waddle, it wears on your mood, and both hands stay busy. The hold
+// ends when you let go (grab again), a hand fills, you pass out, the urge passes
+// or time runs out. Running out strains you and makes the urge worse.
+#define HOLD_IT_IN_TIME (40 SECONDS)
+#define HOLD_IT_IN_COOLDOWN (20 SECONDS)
+#define HOLD_IT_IN_STRAIN 40
+
+/mob/living/human
+	var/tmp/holding_it_in = 0			// world.time the hold gives out, or 0
+	var/tmp/next_hold_it_in = 0			// world.time the next hold may start
+	var/tmp/next_hold_it_in_hint = 0	// world.time the hint may show again
+
+/mob/living/human/persistence_runtime_var(key)
+	if (key == "holding_it_in" || key == "next_hold_it_in" || key == "next_hold_it_in_hint")
+		return TRUE
+	return ..()
+
+/mob/living/human/proc/excrement_urgent()
+	return bladder >= 400 || bowels >= 450
+
+/mob/living/human/proc/hold_it_in_blocker()
+	if (stat || paralysis || sleeping)
+		return "You can't do that right now."
+	if (!excrement_urgent())
+		return "You can still hold it without that."
+	if (!self_hand_free("l_hand") || !self_hand_free("r_hand"))
+		return "You need both hands free to hold it in."
+	if (world.time < next_hold_it_in)
+		return "You can't clench again just yet."
+	return null
+
+// Grab intent on yourself aimed at the groin. A bleeding groin is pressed on
+// first; otherwise it starts or ends holding it in. FALSE means not handled.
+/mob/living/human/proc/try_hold_it_in()
+	if (holding_it_in)
+		release_hold_it_in(SPAN_NOTICE("You let go and try to relax."))
+		return TRUE
+	var/blocker = hold_it_in_blocker()
+	if (blocker)
+		to_chat(src, SPAN_WARNING(blocker))
+		return FALSE
+	holding_it_in = world.time + HOLD_IT_IN_TIME
+	next_calculate_tally = -1
+	var/their = gender == FEMALE ? "her" : gender == MALE ? "his" : "their"
+	visible_message(SPAN_NOTICE("[src] clutches [their] groin and squirms."), \
+					SPAN_NOTICE("You clutch your groin and clench. You can't hold it for long."))
+	addtimer(CALLBACK(src, PROC_REF(check_hold_it_in)), 10)
+	return TRUE
+
+/mob/living/human/proc/check_hold_it_in()
+	if (QDELETED(src) || !holding_it_in)
+		return
+	if (!excrement_urgent())
+		release_hold_it_in(SPAN_NOTICE("The urge eases off."), FALSE)
+		return
+	if (stat || paralysis || sleeping || !self_hand_free("l_hand") || !self_hand_free("r_hand"))
+		release_hold_it_in(SPAN_WARNING("You lose your grip on yourself."))
+		return
+	if (world.time >= holding_it_in)
+		if (bladder >= 400)
+			bladder += HOLD_IT_IN_STRAIN
+		if (bowels >= 450)
+			bowels += HOLD_IT_IN_STRAIN
+		release_hold_it_in(SPAN_DANGER("You can't hold it any longer!"))
+		return
+	addtimer(CALLBACK(src, PROC_REF(check_hold_it_in)), 10)
+
+/mob/living/human/proc/release_hold_it_in(message, cooldown = TRUE)
+	holding_it_in = 0
+	next_calculate_tally = -1
+	if (cooldown)
+		next_hold_it_in = world.time + HOLD_IT_IN_COOLDOWN
+	if (message)
+		to_chat(src, message)
+
+/mob/living/human/proc/hold_it_in_slowdown()
+	return holding_it_in ? 2 : 0
+
+#undef HOLD_IT_IN_TIME
+#undef HOLD_IT_IN_COOLDOWN
+#undef HOLD_IT_IN_STRAIN
 
 //Shitting
 /mob/living/human/proc/handle_shit()

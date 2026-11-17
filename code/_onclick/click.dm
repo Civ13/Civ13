@@ -162,7 +162,7 @@
 		if (canClick())
 			setClickCooldown(10)
 			if (a_intent == I_GRAB)
-				self_helper.try_self_pressure(self_helper.targeted_organ == "random" ? null : self_helper.targeted_organ)
+				self_helper.self_grab(self_helper.targeted_organ == "random" ? null : self_helper.targeted_organ)
 			else
 				self_helper.try_get_up()
 		return
