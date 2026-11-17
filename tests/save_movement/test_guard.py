@@ -110,6 +110,7 @@ class Fixture:
                         to_chat=lambda *args: None, SPAN_WARNING=lambda text: text,
                         paper_authoring_notify=lambda source, reason: self.paper_notifications.append((source, reason, source.loc)),
                         item_pile_moved=lambda source, origin, destination: None,
+                        open_air_view_any=False, open_air_view_moved=lambda source, origin: None,
                         record_save_outcome=self.save_results.append,
                         notify_world_save=lambda event, operation, success=False: None)
         self.area, self.admin = Area(), Area(True)

@@ -14,6 +14,7 @@
 	for (var/client/C in clients)
 		C.open_air_view_scan()
 		PROCESS_TICK_CHECK
+	open_air_view_sync_fixed()
 
 /process/open_air_view/reset_current_list()
 	return

@@ -490,7 +490,7 @@
 /obj/structure/murder_hole/Destroy()
 	if (below_view)
 		vis_contents -= below_view
-		below_view.vis_contents.Cut()
+		open_air_views_fixed -= below_view
 		qdel(below_view)
 		below_view = null
 	return ..()
@@ -507,7 +507,8 @@
 	V.loc = null
 	// Drawn as an underlay of the hole, so the rim stays on top.
 	V.vis_flags = VIS_INHERIT_PLANE | VIS_INHERIT_ID | VIS_UNDERLAY
-	V.vis_contents += below
+	V.open_air_show(below)
+	open_air_views_fixed += V
 	below_view = V
 	vis_contents += V
 

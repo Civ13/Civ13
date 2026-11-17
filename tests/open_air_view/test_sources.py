@@ -54,6 +54,22 @@ class OpenAirView(unittest.TestCase):
         change = proc('/turf/sky/building/ChangeTurf(var/path, var/tell_universe = 1, var/force_lighting_update = FALSE, datum/durable_nomads_event/nomads_event = null)')
         self.assertLess(change.index('open_air_view_clear()'), change.index('..()'))
 
+    def test_no_turf_is_shown_through_vis_contents(self):
+        # A turf in vis_contents is re-sent to the client constantly: a real
+        # client measured about 2.7 Mbps one level up (bandwidth_check.py).
+        self.assertNotIn('vis_contents += below', SOURCE)
+        castle = (ROOT / 'code/modules/1713/siege/siege_engines.dm').read_text(encoding='utf-8-sig')
+        self.assertNotIn('vis_contents += below', castle)
+        self.assertIn('V.open_air_show(below)', castle)
+        sync = proc('/obj/effect/open_air_view/proc/open_air_view_sync()')
+        self.assertIn('var/mutable_appearance/look = new(below)', sync)
+        self.assertIn('for (var/atom/movable/A in below)', sync)
+        # Movers update the views at once.
+        moved = (ROOT / 'code/datums/observation/moved.dm').read_text(encoding='utf-8-sig')
+        self.assertEqual(moved.count('open_air_view_moved(src, old_loc)'), 2)
+        movable = (ROOT / 'code/game/atoms_movable.dm').read_text(encoding='utf-8-sig')
+        self.assertIn('open_air_view_moved(src, origin)', movable)
+
     def test_scan_skips_saves(self):
         process = (ROOT / 'code/processes/open_air_view.dm').read_text()
         self.assertLess(process.index('open_air_view_busy()'), process.index('C.open_air_view_scan()'))
