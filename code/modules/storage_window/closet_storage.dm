@@ -65,7 +65,8 @@
 // Lid toggling for a window player. TRUE when handled here.
 /proc/closet_window_toggle(obj/structure/closet/C, mob/user)
 	if (!closet_window_user(C, user))
-		return FALSE
+		// Strip players search before the classic lid tips things out.
+		return !closet_strip_search(C, user)
 	C.keep_items = TRUE
 	if (C.opened)
 		C.toggle(user)

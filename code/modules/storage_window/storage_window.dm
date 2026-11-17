@@ -3,9 +3,10 @@
 // storage structures, bags on the floor and a body's bags next to them, plus
 // the loose things on the floor. Moving anything takes time (Project Zomboid
 // style): moves wait in a queue, walking away or being stopped cancels them.
-// Design by Fable (docs/storage-window.md). The old HUD strip stays for agent
-// characters, browsers that can't run the window, and players who pick it with
-// the Storage Window verb.
+// Design by Fable (docs/storage-window.md). The window is opt-in: the classic
+// HUD strip is the default, and also serves agent characters and browsers that
+// can't run the window. The strip keeps the same timing and searching rules
+// (storage_strip.dm).
 //
 // Server checks are authoritative: the window only ever names an item by the id
 // of the last snapshot, and every move re-checks reach, access and room when it
@@ -27,32 +28,40 @@
 	// "icon|state" -> picture file already sent to this client ("-" = none).
 	var/tmp/list/storage_icon_cache
 
-/datum/preferences
-	// The player asked for the old HUD strip instead of the storage window.
-	var/storage_classic = FALSE
-
 /mob/living/human
 	var/tmp/datum/storage_window/storage_window
 
 /mob/living/human/persistence_runtime_var(key)
 	return key == "storage_window" || ..()
 
+// The window is opt-in: bags open the classic HUD strip unless the player turns
+// this on (Character Setup > Settings, or the Storage Window verb).
+/datum/client_preference/storage_window
+	description = "Bags and containers open in"
+	key = "STORAGE_WINDOW"
+	enabled_by_default = FALSE
+	enabled_description = "Storage window"
+	disabled_description = "Classic strip"
+
+/datum/client_preference/storage_window/toggled(mob/preference_mob, enabled)
+	var/mob/living/human/H = preference_mob
+	if (istype(H) && H.s_active)
+		H.s_active.close(H)
+	if (preference_mob)
+		to_chat(preference_mob, SPAN_NOTICE(enabled ? "Bags and containers now open the storage window." : "Bags and containers now open the classic storage strip."))
+
 /client/verb/toggle_storage_window()
 	set name = "Storage Window"
 	set category = "OOC"
-	set desc = "Switch between the storage window and the old storage strip."
+	set desc = "Switch between the classic storage strip and the storage window."
 	if (!prefs)
 		return
-	prefs.storage_classic = !prefs.storage_classic
-	prefs.save_preferences()
-	to_chat(src, SPAN_NOTICE(prefs.storage_classic ? "Bags and containers now open the old storage strip." : "Bags and containers now open the storage window."))
+	set_preference("STORAGE_WINDOW", !is_preference_enabled("STORAGE_WINDOW"))
 
 /mob/living/human/proc/storage_window_wanted()
 	if (!client || client.storage_window_classic || client.modern_ui_failed)
 		return FALSE
-	if (client.prefs && client.prefs.storage_classic)
-		return FALSE
-	return TRUE
+	return client.is_preference_enabled("STORAGE_WINDOW")
 
 // Called first by /obj/item/weapon/storage/open(). TRUE when the window took it.
 /proc/storage_window_open(mob/user, obj/item/weapon/storage/S)

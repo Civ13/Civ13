@@ -64,7 +64,7 @@ class Actor:
 
 def install_storage(source=STORAGE):
     # The storage window hands bags to its own screen only for real players; these fixtures keep the strip.
-    env={'typed_iter':lambda xs,kind: xs,'playsound':lambda *args:None,'storage_window_open':lambda *args:False,
+    env={'typed_iter':lambda xs,kind: xs,'playsound':lambda *args:None,'storage_window_open':lambda *args:False,'ishuman':lambda *args:False,'storage_strip_hint':lambda *args:None,'storage_strip_apply':lambda *args:None,'storage_strip_closed':lambda *args:None,
          'new_screen':Control,'new_obj':Control,'list':DMList}
     source=source.replace('new /obj/screen/storage(  )','new_screen()')
     source=source.replace('new /obj/screen/close(  )','new_screen()')
