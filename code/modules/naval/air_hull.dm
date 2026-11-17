@@ -34,6 +34,9 @@
 #define AIR_HULL_HIT_CHANCE 50
 #define AIR_HULL_CREW_HIT_CHANCE 25
 #define AIR_HULL_PATCH_TIME 40
+// Plastic sheets to rubberise a cloth cell, and skin layers to line one.
+#define AIR_HULL_RUBBER_SHEETS 5
+#define AIR_HULL_SKIN_LAYERS 6
 #define AIR_HULL_HATCH_BOMBS 2
 // Open-air levels she can look, drop or be shot through, at most.
 #define AIR_HULL_MAX_DROP 8
@@ -50,6 +53,35 @@ var/global/list/air_hull_crafts = list()
 /obj/covers/airship_deck
 	name = "airship deck"
 	desc = "Light planks lashed into the gondola deck of an airship. It hangs in the open air: step off its edge and you fall."
+	// What one tile weighs against her gas cells' lift.
+	var/air_weight = 1
+	// Too stout a frame for branches to catch: she flattens the trees under it.
+	var/snag_proof = FALSE
+
+/obj/covers/airship_deck/aluminium
+	name = "aluminium airship deck"
+	desc = "Riveted aluminium plates on a light girder frame, half the weight of planks. It does not burn. It hangs in the open air: step off its edge and you fall."
+	icon = 'icons/obj/vehicles/airship_hull.dmi'
+	icon_state = "airship_deck_aluminium"
+	base_icon_state = "airship_deck_aluminium"
+	air_weight = 0.5
+	wood = FALSE
+	flammable = FALSE
+	material = "Aluminium"
+	buildstack = /obj/item/stack/material/aluminium
+
+/obj/covers/airship_deck/steel
+	name = "steel airship deck"
+	desc = "Riveted steel plates on a girder frame, twice the weight of planks. It does not burn, and treetops cannot catch it. It hangs in the open air: step off its edge and you fall."
+	icon = 'icons/obj/vehicles/airship_hull.dmi'
+	icon_state = "airship_deck_steel"
+	base_icon_state = "airship_deck_steel"
+	air_weight = 2
+	snag_proof = TRUE
+	wood = FALSE
+	flammable = FALSE
+	material = "Steel"
+	buildstack = /obj/item/stack/material/steel
 
 /obj/item/airship_planks
 	name = "airship planks"
@@ -59,6 +91,23 @@ var/global/list/air_hull_crafts = list()
 	w_class = ITEM_SIZE_LARGE
 	weight = 6
 	flammable = TRUE
+	var/deck_type = /obj/covers/airship_deck
+
+/obj/item/airship_planks/aluminium
+	name = "aluminium airship frame"
+	desc = "Aluminium girders and plates for one tile of airship deck: half the weight of planks, and fireproof. Lay it like airship planks."
+	icon_state = "aluminium_frame"
+	weight = 3
+	flammable = FALSE
+	deck_type = /obj/covers/airship_deck/aluminium
+
+/obj/item/airship_planks/steel
+	name = "steel airship frame"
+	desc = "Steel girders and plates for one tile of airship deck: twice the weight of planks, but fireproof and too stout for treetops to catch. Lay it like airship planks."
+	icon_state = "steel_frame"
+	weight = 12
+	flammable = FALSE
+	deck_type = /obj/covers/airship_deck/steel
 
 // Open air a plank can be laid on: nothing built or standing in it.
 /proc/air_deck_open(turf/T)
@@ -147,7 +196,7 @@ var/global/list/air_hull_crafts = list()
 	if (!do_after(user, AIR_HULL_LAY_TIME, T) || QDELETED(src) || user.get_active_hand() != src || air_deck_lay_refusal(T, user))
 		return TRUE
 	qdel(src)
-	new /obj/covers/airship_deck(T)
+	new deck_type(T)
 	to_chat(user, SPAN_NOTICE("You lay a tile of airship deck."))
 	return TRUE
 
@@ -155,12 +204,70 @@ var/global/list/air_hull_crafts = list()
 
 /obj/item/airship_gas_cell
 	name = "folded gas cell"
-	desc = "An oiled-cloth gas cell, rolled tight. Use it on an airship deck to hang it there. Each cell holds up 12 tiles of deck or people aboard."
+	desc = "An oiled-cloth gas cell, rolled tight. Use it on an airship deck to hang it there. Each cell holds up 12 tiles of wooden deck or people aboard, and loses a quarter of that for each hole. Coat it with 5 plastic sheets to rubberise it, or line it with 6 sausage casings of goldbeater's skin."
 	icon = 'icons/obj/vehicles/airship_hull.dmi'
 	icon_state = "gas_cell_folded"
 	w_class = ITEM_SIZE_LARGE
 	weight = 8
 	flammable = TRUE
+	var/cell_type = /obj/structure/airship_gas_cell
+	// Goldbeater's skin layers laid into a cloth cell so far.
+	var/skin_layers = 0
+
+/obj/item/airship_gas_cell/rubber
+	name = "folded rubberised gas cell"
+	desc = "A gas cell of rubberised cloth, rolled tight. Use it on an airship deck to hang it there. It holds up 12 tiles of wooden deck or people aboard and holds its gas better when holed than plain cloth. Patch it with cloth or plastic."
+	icon_state = "gas_cell_folded_rubber"
+	cell_type = /obj/structure/airship_gas_cell/rubber
+
+/obj/item/airship_gas_cell/skin
+	name = "folded goldbeater's skin cell"
+	desc = "A cloth gas cell lined with goldbeater's skin, rolled tight. Use it on an airship deck to hang it there. It holds up 15 tiles of wooden deck or people aboard, but every hole lets out a third of that."
+	icon_state = "gas_cell_folded_skin"
+	weight = 7
+	cell_type = /obj/structure/airship_gas_cell/skin
+
+// A cloth cell is rubberised with plastic sheeting or lined with skin.
+/obj/item/airship_gas_cell/attackby(obj/item/W, mob/user)
+	if (type != /obj/item/airship_gas_cell)
+		return ..()
+	if (istype(W, /obj/item/stack/material/plastic))
+		var/obj/item/stack/S = W
+		if (S.amount < AIR_HULL_RUBBER_SHEETS)
+			to_chat(user, SPAN_WARNING("You need [AIR_HULL_RUBBER_SHEETS] plastic sheets to coat the whole cell."))
+			return
+		to_chat(user, SPAN_NOTICE("You start coating \the [src] with rubber..."))
+		if (!do_after(user, AIR_HULL_CELL_TIME, src) || QDELETED(src) || !S.use(AIR_HULL_RUBBER_SHEETS))
+			return
+		become(/obj/item/airship_gas_cell/rubber, user)
+		to_chat(user, SPAN_NOTICE("The cloth is rubberised: it will hold its gas better when holed."))
+		return
+	if (istype(W, /obj/item/stack/sausagecasing))
+		var/obj/item/stack/S = W
+		if (!do_after(user, AIR_HULL_PATCH_TIME, src) || QDELETED(src) || !S.use(1))
+			return
+		skin_layers++
+		if (skin_layers < AIR_HULL_SKIN_LAYERS)
+			to_chat(user, SPAN_NOTICE("You glue a layer of goldbeater's skin into \the [src]. [AIR_HULL_SKIN_LAYERS - skin_layers] more to line it."))
+			return
+		become(/obj/item/airship_gas_cell/skin, user)
+		to_chat(user, SPAN_NOTICE("The cell is lined with goldbeater's skin: it lifts more, but tears worse when holed."))
+		return
+	return ..()
+
+/obj/item/airship_gas_cell/examine(mob/user, distance)
+	. = ..()
+	if (skin_layers)
+		to_chat(user, SPAN_NOTICE("It is lined with [skin_layers] of [AIR_HULL_SKIN_LAYERS] layers of goldbeater's skin."))
+
+/obj/item/airship_gas_cell/proc/become(new_type, mob/user)
+	var/held = (loc == user)
+	var/obj/item/N = new new_type(get_turf(src))
+	if (held)
+		user.drop_from_inventory(src)
+	qdel(src)
+	if (held)
+		user.put_in_hands(N)
 
 /obj/item/airship_gas_cell/resolve_attackby(atom/A, mob/user, icon_x, icon_y)
 	var/turf/T = get_turf(A)
@@ -175,7 +282,7 @@ var/global/list/air_hull_crafts = list()
 	if (!do_after(user, AIR_HULL_CELL_TIME, T) || QDELETED(src) || user.get_active_hand() != src || (locate(/obj/structure/airship_gas_cell) in T) || !(locate(/obj/covers/airship_deck) in T))
 		return TRUE
 	qdel(src)
-	new /obj/structure/airship_gas_cell(T)
+	new cell_type(T)
 	to_chat(user, SPAN_NOTICE("The gas cell fills and strains at its rigging."))
 	return TRUE
 
@@ -194,12 +301,38 @@ var/global/list/air_hull_crafts = list()
 	flammable = TRUE
 	var/holes = 0
 	var/burnt = FALSE
+	// What it holds up when whole, and what each hole costs.
+	var/max_lift = AIR_HULL_CELL_LIFT
+	var/hole_lift = AIR_HULL_HOLE_LIFT
+	var/base_state = "gas_cell"
+	var/folded_type = /obj/item/airship_gas_cell
+	var/list/patches = list(/obj/item/stack/material/cloth)
+	var/patch_text = "cloth"
+
+/obj/structure/airship_gas_cell/rubber
+	name = "rubberised gas cell"
+	desc = "A rubberised cloth gas cell rigged over an airship's deck. It holds its gas better than plain cloth when holed. Cloth or plastic patches its holes; a wrench takes it down."
+	icon_state = "gas_cell_rubber"
+	hole_lift = 2
+	base_state = "gas_cell_rubber"
+	folded_type = /obj/item/airship_gas_cell/rubber
+	patches = list(/obj/item/stack/material/cloth, /obj/item/stack/material/plastic)
+	patch_text = "cloth or plastic"
+
+/obj/structure/airship_gas_cell/skin
+	name = "goldbeater's skin cell"
+	desc = "A gas cell lined with goldbeater's skin, rigged over an airship's deck. It lifts more than cloth, but a hole lets out more. Cloth patches its holes; a wrench takes it down."
+	icon_state = "gas_cell_skin"
+	max_lift = 15
+	hole_lift = 5
+	base_state = "gas_cell_skin"
+	folded_type = /obj/item/airship_gas_cell/skin
 
 /obj/structure/airship_gas_cell/proc/lift()
-	return burnt ? 0 : max(0, AIR_HULL_CELL_LIFT - holes * AIR_HULL_HOLE_LIFT)
+	return burnt ? 0 : max(0, max_lift - holes * hole_lift)
 
 /obj/structure/airship_gas_cell/update_icon()
-	icon_state = burnt ? "gas_cell_burnt" : (holes ? "gas_cell_holed" : "gas_cell")
+	icon_state = burnt ? "gas_cell_burnt" : (holes ? "[base_state]_holed" : base_state)
 
 /obj/structure/airship_gas_cell/after_load()
 	..()
@@ -210,14 +343,14 @@ var/global/list/air_hull_crafts = list()
 	if (burnt)
 		to_chat(user, SPAN_DANGER("It has burnt out and lifts nothing. Take it down with a wrench and hang a new one."))
 	else if (holes)
-		to_chat(user, SPAN_WARNING("It is holed in [holes] place\s and lifts [lift()] instead of [AIR_HULL_CELL_LIFT]. Patch it with cloth."))
+		to_chat(user, SPAN_WARNING("It is holed in [holes] place\s and lifts [lift()] instead of [max_lift]. Patch it with [patch_text]."))
 
 /obj/structure/airship_gas_cell/attackby(obj/item/W, mob/user)
-	if (istype(W, /obj/item/stack/material/cloth) && holes && !burnt)
+	if (is_type_in_list(W, patches) && holes && !burnt)
 		to_chat(user, SPAN_NOTICE("You start stitching a patch over a hole in \the [src]..."))
 		if (!do_after(user, AIR_HULL_PATCH_TIME, src) || QDELETED(src) || burnt || !holes)
 			return
-		var/obj/item/stack/material/cloth/C = W
+		var/obj/item/stack/C = W
 		if (!C.use(1))
 			return
 		holes--
@@ -238,7 +371,7 @@ var/global/list/air_hull_crafts = list()
 		if (was_burnt)
 			to_chat(user, SPAN_NOTICE("You cut the charred rags of the gas cell away."))
 			return
-		new /obj/item/airship_gas_cell(T)
+		new folded_type(T)
 		to_chat(user, SPAN_NOTICE("You fold the gas cell up."))
 		return
 	return ..()
@@ -256,6 +389,7 @@ var/global/list/air_hull_crafts = list()
 	update_icon()
 	visible_message(SPAN_DANGER("\The [src] bursts into flame!"))
 	playsound(get_turf(src), 'sound/effects/bang.ogg', 60, TRUE)
+	air_deck_catch_fire(get_turf(src))
 	for (var/mob/living/L in get_turf(src))
 		L.fire_stacks = max(L.fire_stacks, 2)
 		L.IgniteMob()
@@ -331,8 +465,11 @@ var/global/list/air_hull_crafts = list()
 			. += G.lift()
 
 /datum/craft_body/built/air/proc/load()
-	. = offsets.len
+	. = 0
 	for (var/turf/T in cells())
+		var/obj/covers/airship_deck/K = locate() in T
+		if (K)
+			. += K.air_weight
 		for (var/mob/living/L in T)
 			if (L.loc == T)
 				.++
@@ -602,8 +739,19 @@ var/global/list/air_hull_crafts = list()
 			G.hole(P)
 		check_lift()
 		return T
-	D.visible_message(SPAN_WARNING("\The [P] thuds into the deck planks."))
+	if (projectile_ignites_gas(P) && prob(25))
+		air_deck_catch_fire(D)
+	D.visible_message(SPAN_WARNING("\The [P] thuds into the deck."))
 	return T
+
+// A wooden deck tile on T catches fire; metal decks do not burn.
+/proc/air_deck_catch_fire(turf/T)
+	var/obj/covers/airship_deck/D = locate() in T
+	if (!D || !D.wood || D.onfire)
+		return
+	D.onfire = TRUE
+	D.visible_message(SPAN_DANGER("\The [D] catches fire!"))
+	D.start_fire()
 
 // After a cell is holed or burnt: short of lift she sinks, and with less than
 // half the lift she needs she breaks up and falls.
@@ -675,7 +823,13 @@ var/global/list/air_hull_crafts = list()
 		crew_message(SPAN_WARNING("The [name] comes to rest against what lies below her at [blocked.x],[blocked.y]. She stays there until her cells hold her up again."))
 		return FALSE
 	if (trees.len)
-		if (trees.len * AIR_HULL_TREE_SHARE > deck.len)
+		// Steel frames are never caught: only trees under the rest count.
+		var/snaggers = 0
+		for (var/obj/structure/wild/W in trees)
+			var/obj/covers/airship_deck/K = locate() in trees[W]
+			if (!K || !K.snag_proof)
+				snaggers++
+		if (snaggers * AIR_HULL_TREE_SHARE > deck.len)
 			// Too much forest: she hangs in the canopy, torn.
 			for (var/obj/structure/wild/W in trees)
 				tear_on_tree(trees[W], W, FALSE)
@@ -1183,6 +1337,8 @@ var/global/list/air_hull_crafts = list()
 #undef AIR_HULL_HIT_CHANCE
 #undef AIR_HULL_CREW_HIT_CHANCE
 #undef AIR_HULL_PATCH_TIME
+#undef AIR_HULL_RUBBER_SHEETS
+#undef AIR_HULL_SKIN_LAYERS
 #undef AIR_HULL_HATCH_BOMBS
 #undef AIR_HULL_MAX_DROP
 #undef AIR_HULL_LEVEL_TIME
