@@ -18,6 +18,9 @@ def _flag(value):
     return type(value) in (bool, int) and value in (0, 1)
 
 
+LOCK_WAIT = 15.0  # seconds to wait for another thread's request on the same client
+
+
 class QueueClient:
     """One accepted queue per character. Ambiguous writes require operator reconciliation.
 
@@ -39,7 +42,8 @@ class QueueClient:
         return self.pause_file is not None and self.pause_file.exists()
 
     def request(self, action, args=None):
-        if not self.lock.acquire(blocking=False):
+        # The voice thread shares this client: wait briefly for its short request instead of failing the turn.
+        if not self.lock.acquire(timeout=LOCK_WAIT):
             raise ContractError("another request is pending")
         try:
             return self._request(action, dict(args or {}))
