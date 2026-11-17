@@ -57,6 +57,7 @@
 	desc = "A store shelf."
 	icon = 'icons/obj/junk.dmi'
 	icon_state = "shelf0"
+	buildstack = /obj/item/stack/material/steel // built from steel, not iron
 
 /obj/structure/table/rack/shelf/wooden
 	name = "shelf"

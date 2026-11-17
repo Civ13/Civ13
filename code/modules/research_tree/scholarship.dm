@@ -199,6 +199,7 @@ var/global/list/scholar_entry_tiers = null
 	var/apprentices = scholar_apprentice_count()
 	if (apprentices)
 		rows[++rows.len] = list("<b>Apprentices:</b>", "[apprentices] / [SCHOLAR_MAX_APPRENTICES]")
+	rows[++rows.len] = list("<b>How to raise them:</b>", "IC tab, Skills Guide")
 	return rows
 
 /mob/living/human/Stat()

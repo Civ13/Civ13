@@ -30,7 +30,7 @@
 
 // Every step in order. Ids are plain words: they are saved in the prefs list.
 /proc/tutorial_step_ids()
-	return list("move", "hud", "pick_up", "swap", "stow", "intent", "atlas", "eat", "chat", "research", "help")
+	return list("move", "hud", "pick_up", "swap", "stow", "intent", "atlas", "eat", "branch", "twine", "whittle", "fire", "water", "chat", "research", "help")
 
 // Steps that are read rather than done finish after TUTORIAL_READ_TIME.
 /proc/tutorial_reading_step(id)
@@ -38,11 +38,18 @@
 
 // Steps that finish only through tutorial_event() (or "Got it").
 /proc/tutorial_event_step(id)
-	return id in list("atlas", "research")
+	return id in list("atlas", "research", "branch", "whittle")
+
+// Survival steps (chat feedback, 2026-11-17): the first things a new settler
+// has to work out. Only where people live off the land.
+/proc/tutorial_survival_step(id)
+	return id in list("branch", "twine", "whittle", "fire", "water")
 
 /proc/tutorial_step_applies(id)
 	if (id == "research")
 		return map && map.book_research_enabled()
+	if (tutorial_survival_step(id))
+		return map && (map.civilizations || map.nomads)
 	return TRUE
 
 /proc/tutorial_active_steps()
@@ -71,6 +78,16 @@
 			return "Open the Crafting Atlas (IC tab) to see what you can make."
 		if ("eat")
 			return "Eat or drink something: click yourself with it (target the mouth to drink)."
+		if ("branch")
+			return "Break a branch off a tree: empty hand, Harm intent (4), click the tree."
+		if ("twine")
+			return "Twist twine: cut grass with a sharp flint, then use two cuttings in hand."
+		if ("whittle")
+			return "Sharpen a stick: strip a branch, then use a sharp flint or knife on it."
+		if ("fire")
+			return "Stand next to a lit fire: build a campfire from 4 logs and light it."
+		if ("water")
+			return "Drink: empty hand, Grab intent (3), click fresh water."
 		if ("chat")
 			return "Talk: T to speak in character, O for out-of-character."
 		if ("research")
@@ -100,6 +117,16 @@
 			return "Almost everything is made by hand. Use <b>Crafting Atlas</b> (IC tab) to search recipes, see what each one needs and where it is made, and look up raw materials."
 		if ("eat")
 			return "Hold some food and click yourself with it to eat, or hold a drink, target the mouth and click yourself to drink. Water can be drunk from rivers and wells with a container. Food spoils over time."
+		if ("branch")
+			return "Wood comes first. With an empty hand on <b>Harm intent</b> (press 4), click a tree and wait: a branch drops beside it. Click the branch on Grab intent (3) to pick off its leaves, then on Harm intent to clear the twigs and get a stick."
+		if ("twine")
+			return "Tools are tied together with a binding. Click a large rock on <b>Grab intent</b> to find a flint, then hold a stone or a second flint and use it on the flint to knap a <b>sharp flake</b>. Use the sharp flint on grass to cut it, then use two <b>grass cuttings</b> in your hand to twist <b>crude twine</b>."
+		if ("whittle")
+			return "Use the sharp flint (or any knife) on a stick to <b>sharpen</b> it. With twine in your pocket or at your feet, use the sharp flint on the sharpened stick to bind a <b>flint axe</b>, which chops trees into logs."
+		if ("fire")
+			return "Fire keeps you warm, cooks meat and gives light. Use 4 wood logs in your hand to build a <b>campfire</b>, then click it with an empty hand to light it. Stand next to a lit fire to finish this step. It burns one log every 8 minutes."
+		if ("water")
+			return "With an empty hand on <b>Grab intent</b> (press 3), click a river, lake or pond to drink. Clear running water is the safest; never drink salt water, and boil water in a pot when you can."
 		if ("chat")
 			return "Press <b>T</b> to speak in character and <b>O</b> for out-of-character chat. The tabs on the chat window (All, IC, Radio, OOC) filter messages; these tutorial steps appear under All."
 		if ("research")
@@ -256,6 +283,18 @@
 			last_nutrition = body.nutrition
 			last_water = body.water
 			return .
+		if ("twine")
+			// Any binding in hand or pocket counts: twine, or sinew from a kill.
+			return (locate(/obj/item/stack/crude_twine) in body) || (locate(/obj/item/stack/sinew) in body) ? TRUE : FALSE
+		if ("water")
+			. = body.water > last_water
+			last_water = body.water
+			return .
+		if ("fire")
+			for (var/obj/structure/oven/O in range(1, body))
+				if (O.on && O.open_flame)
+					return TRUE
+			return FALSE
 	return FALSE
 
 /datum/player_tutorial/proc/tick()

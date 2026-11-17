@@ -83,7 +83,7 @@
 	wall = TRUE
 	explosion_resistance = 0
 	buildstackamount = 8
-	buildstack = /obj/item/stack/material/wood
+	buildstack = /obj/item/stack/material/woodplank // built from 8 planks
 	opacity = 0
 	material = "Wood"
 	passable = FALSE

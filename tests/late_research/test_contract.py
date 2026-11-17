@@ -154,7 +154,7 @@ class TeamsAndRushing(unittest.TestCase):
             self.assertIn(facility, facilities)
     def test_a_lone_scholar_is_slowed_not_stopped(self):
         rate = proc(self.team, "/obj/structure/research_bench/proc/team_rate")
-        for part in ("N.era_tier < TEAM_MIN_TIER", "BIG_SCIENCE_SOLO_RATE", "BIG_SCIENCE_NO_FACILITY_RATE", "TEAM_SECOND_SCHOLAR_RATE"):
+        for part in ("N.era_tier < TEAM_MIN_TIER", "BIG_SCIENCE_SOLO_RATE", "BIG_SCIENCE_NO_FACILITY_RATE", "helper_bonus(node_id, lead)"):
             self.assertIn(part, rate)
         solo = float(re.search(r"#define BIG_SCIENCE_SOLO_RATE ([\d.]+)", self.team)[1])
         facility = float(re.search(r"#define BIG_SCIENCE_NO_FACILITY_RATE ([\d.]+)", self.team)[1])
@@ -163,6 +163,13 @@ class TeamsAndRushing(unittest.TestCase):
     def test_the_lead_is_never_their_own_helper(self):
         for path in ("/obj/structure/research_bench/proc/big_science_assistant", "/obj/structure/research_bench/proc/second_scholar"):
             self.assertIn("H != lead", proc(self.team, path))
+        self.assertIn("H == lead || !H.can_research_node_at(src, node_id)", proc(self.team, "/obj/structure/research_bench/proc/research_helpers"))
+    def test_helpers_count_in_every_age_and_cannot_more_than_double_the_pace(self):
+        # Chat feedback, 2026-11-17: tribes asked why helping at the bench did nothing before the fifth age.
+        share = float(re.search(r"#define TEAM_HELPER_SHARE ([\d.]+)", self.team)[1])
+        helpers = int(re.search(r"#define TEAM_MAX_HELPERS (\d+)", self.team)[1])
+        self.assertLessEqual(share * helpers, 1)
+        self.assertIn("TEAM_HELPER_SHARE * min(1, helpers[H] / lead_pace)", proc(self.team, "/obj/structure/research_bench/proc/helper_bonus"))
     def test_rushing_is_off_by_default_late_only_and_skill_lowers_the_risk(self):
         self.assertIn("var/rushed = FALSE", self.team)
         self.assertIn("rushed && node_can_be_rushed(N)", proc(self.team, "/obj/structure/research_bench/proc/rush_rate"))

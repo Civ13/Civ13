@@ -280,7 +280,11 @@
 	if (health <= 0)
 		visible_message("<span class='danger'>\The [src] is broken into pieces!</span>")
 		if (material == "Wood")
-			new /obj/item/stack/material/wood(get_turf(src))
+			// Splinters: one unit of the wood it was built from, never more
+			// than it cost. Carpets and other non-wood floors give none.
+			var/refund = crafted_refund_stack(type, /obj/item/stack/material/wood)
+			if (ispath(refund, /obj/item/stack/material/wood) || ispath(refund, /obj/item/stack/material/woodplank))
+				new refund(get_turf(src))
 		qdel(src)
 		return
 
