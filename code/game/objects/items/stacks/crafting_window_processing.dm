@@ -52,6 +52,12 @@
 	var/sharp = findtext(text, "sharp")
 	var/liquid = findtext(text, "liquid container")
 	var/hammerstone = text == "hammerstone"
+	// A river, lake, shallows or puddle within reach (leather.dm hide_wash_water).
+	if (findtext(text, "open water"))
+		for (var/atom/A in range(1, src))
+			if (hide_wash_water(A))
+				return list(1, A.name)
+		return list(0, "")
 	if (!typepath && !sharp && !liquid && !hammerstone)
 		if (!length(text) || length(text) > 24 || findtext(text, ",") || findtext(text, "(") || findtext(text, ";") || findtext(text, "/") || splittext(text, " ").len > 2)
 			return list(-1, "")
