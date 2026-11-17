@@ -111,7 +111,7 @@
 /mob/living/human/proc/scholar_study_time(tier, node_id = null)
 	var/mult = trait_study_time_mult()
 	if (node_id)
-		mult *= study_field_study_mult(node_discipline(node_id)) * autistic_study_mult(node_id)
+		mult *= study_field_study_mult(node_discipline(node_id)) * autistic_study_mult(node_id) * knowledge_study_mult(node_id)
 	return round(BOOK_STUDY_TIME(tier) * mult / (scholar_desk_rate() * recluse_rate()))
 
 // Research speed from a library: distinct chapters on the node's groundwork or

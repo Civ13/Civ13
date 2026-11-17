@@ -105,3 +105,5 @@
 #define KNOWLEDGE_GUARDED 0
 #define KNOWLEDGE_SPREADING 1
 #define KNOWLEDGE_COMMON 2
+// Reading or hearing a spreading subject's chapter takes this share of the usual time.
+#define KNOWLEDGE_SPREADING_STUDY 0.5
