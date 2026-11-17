@@ -13,13 +13,13 @@ Every crafted item below is limited to the Stone and Bronze Ages (recipe field 1
 | Slingstaff | 4 leather | Archery | Two-handed sling: stones gain 8 damage, fire delay 12. Reuses `slingstaff*` sprites in `bows.dmi`. |
 | Bola | 2 leather or 2 rope | Stone Arms | Thrown. A human hit is legcuffed (no running, 6 s Resist) and trips 40% of the time; animals are knocked down for 3. |
 | Javelin | 2 wood | Stone Arms | Light throwing spear, thrown about 32, melee 14. |
-| Stone-headed club | 3 stone | Stone Arms | Force 15, 25% knockdown, cooldown 12. |
+| Stone-headed club | 3 stone + 1 wood handle | Stone Arms | Force 15, 25% knockdown, cooldown 12. |
 | Bone harpoon | 4 bone | Stone Arms | Throwing spear. Harpoons and flint spears spear fish in shallow water (10 s, 35% in well-stocked water). |
 | Digging stick | 2 wood | Basic Toolmaking | A plough subtype at half speed, so ground can be broken before Bronze Age agriculture. It can't be hitched to cattle. |
 | Hand axe | Knapped from flint | Basic Toolmaking | A hatchet with slow chopping (4.5). It also butchers and cuts. |
 | Hide scraper | Knapped from flint | Basic Toolmaking | When it's in either hand during skinning, the pelt or rawhide stack gets +1. |
 | Bone needle and awl | 1 bone | Basic Toolmaking | Use it on worn clothing while holding sinew, leather, rawhide or pelt: +8 health up to the original, one unit used. |
-| Stone adze | 3 stone | Basic Toolmaking | On help intent it hews 2 logs into 2 finished planks in 14 s, where a hatchet makes 1. On harm intent it cuts like a hatchet. |
+| Stone adze | 3 stone + 1 wood handle | Basic Toolmaking | On help intent it hews 2 logs into 2 finished planks in 14 s, where a hatchet makes 1. On harm intent it cuts like a hatchet. |
 
 Knapping (hammerstone on flint) adds "Hand axe" (10 s, 30% fail) and "Hide scraper" (5 s, 15% fail)
 when the knapper's research allows them.

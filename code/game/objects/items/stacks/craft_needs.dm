@@ -171,6 +171,62 @@ var/global/list/craft_need_input_names = list(
 					H.drop_from_inventory(I)
 				qdel(I)
 
+// Hafted tools: the recipe also uses up one wood handle, held or worn in a
+// real equipment slot (never from a container or the floor). A title needs a
+// handle when it contains one of the words, or equals one of the titles, and
+// contains none of the exclusions. produce_recipe() takes the handle, the
+// guard below shows it in the Crafting window, and the Crafting Atlas reads
+// these three lists.
+var/global/list/crafting_handle_title_words = list("hatchet", "shovel", "pickaxe", "spear", "battle axe", "stone sledgehammer", "lead sledgehammer", "bronze sledgehammer", "iron sledgehammer", "steel sledgehammer", "uranium sledgehammer")
+var/global/list/crafting_handle_titles = list("stone rammer", "stone adze", "stone-headed club", "copper hammer", "bronze hammer", "steel hammer", "clawhammer", "copper hoe", "bronze hoe", "iron hoe", "steel hoe", "pitchfork", "fire hook")
+var/global/list/crafting_handle_title_exclusions = list("wood spear", "mold")
+
+/proc/recipe_needs_crafting_handle(title)
+	if (!title)
+		return FALSE
+	for (var/word in crafting_handle_title_exclusions)
+		if (findtext(title, word))
+			return FALSE
+	if (title in crafting_handle_titles)
+		return TRUE
+	for (var/word in crafting_handle_title_words)
+		if (findtext(title, word))
+			return TRUE
+	return FALSE
+
+/proc/crafting_handle_usable(mob/living/human/H, obj/item/weapon/material/handle/handle)
+	if (QDELETED(H) || QDELETED(handle) || handle.loc != H || handle.nodrop || handle.nodrop_special_check())
+		return FALSE
+	var/slot = H.get_inventory_slot(handle)
+	return slot && handle.mob_can_unequip(H, slot, TRUE)
+
+// Hands first, left before right, then the usual equipment order.
+/proc/crafting_handle_on(mob/living/human/H)
+	if (QDELETED(H))
+		return null
+	for (var/slot in (list(slot_l_hand, slot_r_hand) + slot_equipment_priority))
+		var/obj/item/weapon/material/handle/handle = H.get_equipped_item(slot)
+		if (istype(handle) && crafting_handle_usable(H, handle))
+			return handle
+	return null
+
+// Lists the handle in the Crafting window and keeps the recipe out of Ready
+// (and "Only what I can make") until a handle is held or worn. Only the menu
+// is judged here: produce_recipe() refuses a real build with its own message.
+/datum/craft_guard/handle
+	order = 94
+	hides_recipe = TRUE
+
+/datum/craft_guard/handle/refusal(mob/living/human/H, datum/stack_recipe/R, phase)
+	if (phase != CRAFT_GUARD_MENU || !R || !recipe_needs_crafting_handle(R.title) || crafting_handle_on(H))
+		return null
+	return "Needs a wood handle held or worn"
+
+/datum/craft_guard/handle/describe_lines(mob/living/human/H, datum/stack_recipe/R)
+	if (!R || !recipe_needs_crafting_handle(R.title))
+		return null
+	return list(list("kind" = "[type]", "label" = "A wood handle (held or worn)", "met" = crafting_handle_on(H) ? TRUE : FALSE))
+
 // Hides the recipe from "makeable only" lists and refuses at the start.
 // produce_recipe() rechecks with the real batch size before it pays.
 /datum/craft_guard/needs

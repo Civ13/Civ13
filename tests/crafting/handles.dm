@@ -204,10 +204,27 @@ var/handle_ci_retired = 0
 	C.craft()
 	handle_ci_expect(C.succeeded(), "nearby ground source stack remains eligible for direct callers")
 	// Every active global row in the unchanged shared title predicate.
-	for (var/title in list("bone hatchet", "battle axe", "bone shovel", "stone pickaxe", "stone hatchet", "bamboo spear", "trench shovel", "sandstone hatchet", "pickaxe"))
+	for (var/title in list("bone hatchet", "battle axe", "bone shovel", "stone pickaxe", "stone hatchet", "bamboo spear", "trench shovel", "sandstone hatchet", "pickaxe", "stone rammer", "stone adze", "stone-headed club", "copper hammer", "bronze hammer", "steel hammer", "clawhammer", "copper hoe", "bronze hoe", "iron hoe", "steel hoe", "pitchfork", "fire hook"))
 		C = new(title, slot_shoulder)
+		// Later-era tools (hoes, clawhammer, fire hook) need research a
+		// factionless actor lacks; recipe_ci has every node done.
+		C.actor.civilization = "recipe_ci"
+		handle_ci_expect(recipe_needs_crafting_handle(title) && isnull(craft_guard_refusal(C.actor, C.recipe, CRAFT_GUARD_MENU)), "catalog handle family listed while a handle is worn: [title]")
 		C.craft()
-		handle_ci_expect(C.succeeded(), "catalog handle family: [title]")
+		handle_ci_expect(C.succeeded(), "catalog handle family: [title]", list("stock_delta"=C.before_stock-C.stock.amount,"output_delta"=handle_ci_outputs(C.recipe.result_type)-C.before_output,"handle_deleted"=QDELETED(C.handle),"refusal"=craft_guard_refusal(C.actor, C.recipe, CRAFT_GUARD_START),"allowed"=crafting_recipe_allowed(C.actor, "[C.recipe.result_type]"),"node"=get_recipe_node_req("[C.recipe.result_type]")))
+	// The Crafting window lists the handle and keeps the recipe out of Ready
+	// until one is held or worn; a plain recipe is untouched.
+	C = new("stone pickaxe", slot_back)
+	var/datum/craft_guard/handle/handle_guard = locate() in craft_guard_list()
+	var/list/handle_lines = handle_guard.describe_lines(C.actor, C.recipe)
+	handle_ci_expect(handle_lines && handle_lines.len == 1 && handle_lines[1]["met"] && isnull(craft_guard_refusal(C.actor, C.recipe, CRAFT_GUARD_MENU)), "window shows a worn handle as met")
+	C.actor.back = null
+	C.handle.loc = T
+	handle_lines = handle_guard.describe_lines(C.actor, C.recipe)
+	handle_ci_expect(handle_lines && !handle_lines[1]["met"] && craft_guard_refusal(C.actor, C.recipe, CRAFT_GUARD_MENU) == "Needs a wood handle held or worn" && !C.stock.recipe_makeable_now(C.actor, C.recipe), "window keeps a handle recipe out of Ready without a handle")
+	var/datum/stack_recipe/plain_recipe = new("chisel", /obj/item/weapon/chisel, 8, 1, 1, 0, FALSE, TRUE, null)
+	handle_ci_expect(!recipe_needs_crafting_handle("chisel") && !handle_guard.describe_lines(C.actor, plain_recipe) && isnull(handle_guard.refusal(C.actor, plain_recipe, CRAFT_GUARD_MENU)), "plain recipe lists no handle")
+	handle_ci_expect(!recipe_needs_crafting_handle("wood spear") && !recipe_needs_crafting_handle("sandstone pickaxe mold") && !recipe_needs_crafting_handle("hammer") && !recipe_needs_crafting_handle("hoe"), "wooden tools and molds need no handle")
 	// The completed stone hatchet goes to the current active hand only when
 	// the last input stack has actually vacated that hand.
 	C = new("stone hatchet", slot_back)

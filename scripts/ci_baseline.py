@@ -2003,7 +2003,7 @@ SUITES = {
     'local_wsl': {'files': ('tests/test_local_wsl.py',),
         'paths': ('tests/test_local_wsl.py', 'scripts/local-wsl.py', 'scripts/local-wsl.ps1'),
         'shared_paths': ('scripts/build-crafting-atlas.py', 'scripts/atlas/',
-            'config/crafting/furniture_joinery.json', 'tools/byond/version.json',
+            'config/crafting/furniture_joinery.json', 'code/game/objects/items/stacks/craft_needs.dm', 'tools/byond/version.json',
             'scripts/byond_toolchain.py', 'code/modules/1713/production.dm',
             'code/modules/1713/rope_making.dm', 'code/modules/1713/primitive_woodworking.dm',
             'code/modules/1713/animal_harvest.dm',
