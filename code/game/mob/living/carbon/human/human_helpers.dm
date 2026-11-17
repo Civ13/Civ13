@@ -231,6 +231,26 @@
 			inducedSSD = FALSE
 			divine_rested()
 
+// The end of Wake Up after its 30 seconds, for agent characters, which have no
+// client to use the verb (agent_characters.dm "wake"). Mirrors mob_wakeup above.
+/mob/living/human/proc/finish_wake_up()
+	if (!inducedSSD || stat == DEAD)
+		return FALSE
+	if (persistence_sleep_transfer_blocked())
+		to_chat(src, SPAN_WARNING("Wait for the world save or load to finish, then retry Wake Up."))
+		return FALSE
+	// A body left in the old sleep zone goes back to where it slept.
+	if (is_protected_sleep_location(src))
+		var/turf/return_turf = locate(lastx,lasty,lastz)
+		if (isturf(loc) && persistence_character_turf_safe(return_turf, src) && release_protected_sleep_buckle())
+			forceMove(return_turf)
+		if (is_protected_sleep_location(src))
+			to_chat(src, SPAN_WARNING("You wake up somewhere strange. Ask an administrator to move you back."))
+	sleeping = 0
+	inducedSSD = FALSE
+	divine_rested()
+	return TRUE
+
 //to keep the character sleeping
 // One refresh loop per body: a restored body restarts it on reconnect, and a
 // second caller only tops up sleeping instead of starting another loop.

@@ -96,6 +96,7 @@ MAX_SCREEN_DATA = 600  # characters of a machine screen's data shown to the mode
 MAX_WINDOW_LINKS = 24
 MAX_WINDOW_TEXT = 400
 UNCONSCIOUS_POLL = 10  # seconds between checks while the character is out cold
+WAKE_RETRY = 120  # seconds between Wake Up attempts while she stays deeply asleep
 FOOD_WORDS = ("meat", "steak", "berr", "fruit", "apple", "fish", "bread", "mushroom", "egg", "potato", "carrot", "corn", "nut", "organ", "offal", "stew", "soup")
 FUEL_WORDS = ("plank", "log", "stick", "branch", "leaf", "leaves", "dung", "charcoal", "coal", "wood chips")
 FIRE_WORDS = ("campfire", "fireplace", "oven", "stove", "furnace")
@@ -1308,8 +1309,12 @@ def plan_problem(text, refs):
     for item in raw[:MAX_PLAN]:
         item = coerce_step(item)
         if isinstance(item, str):
-            return (f'could not read the text step "{item.strip()[:40]}": numbers must be whole integers like 5. '
-                    'Write steps as objects like {"do": "find_flint", "target": 5}')
+            if re.search(r"\d", item):
+                return (f'could not read the text step "{item.strip()[:40]}": numbers must be whole integers like 5. '
+                        'Write steps as objects like {"do": "find_flint", "target": 5}')
+            # A sentence with no list number ("Build campfire for warmth") is not a step at all.
+            return (f'could not read the text step "{item.strip()[:40]}": write steps as objects like '
+                    '{"do": "find_flint", "target": 5}, or name a whole job with "routine": {"script": "wood"}')
         if not isinstance(item, dict):
             return 'each plan step must be an object like {"do": "find_flint", "target": 5}, not text'
 
@@ -2680,7 +2685,16 @@ def _run(client, args, character, token, model_pool):
             if memory is not None:
                 memory.event("fell unconscious")
                 memory.save()
+            woke_at = None
             while self_state.get("stat") == 1 and not operator_paused(args) and not (deadline and time.monotonic() > deadline):
+                if self_state.get("asleep") and (woke_at is None or time.monotonic() - woke_at > WAKE_RETRY):
+                    # Deep sleep never ends by itself: use Wake Up, as a player would.
+                    woke_at = time.monotonic()
+                    try:
+                        answer = client.request("character_act", {"character": character, "do": "wake"})
+                    except (AgentError, OSError) as exc:
+                        answer = {"ok": False, "error": str(exc)}
+                    print(f"  asleep: wake -> {'ok' if answer.get('ok') else answer.get('error')} {answer.get('detail', '')}".rstrip())
                 time.sleep(UNCONSCIOUS_POLL)
                 reply = client.request("character_observe", {"character": character, "since": since})
                 if not reply.get("ok"):
