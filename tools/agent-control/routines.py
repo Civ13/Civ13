@@ -137,6 +137,9 @@ def plan_relieve(sit):
 
 def plan_drink(sit):
     step = sit.kit.thirst_plan(sit.observation, sit.explore_dir, sit.ignored, threshold=float("inf"))
+    if step and step.get("do") == "boil_water":
+        plan = scripts.water(sit)  # boiling, or fetching the mug, fire, stone or stick it still lacks
+        return None if plan == scripts.DONE else plan
     return [step] if step else None
 
 

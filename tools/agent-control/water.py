@@ -105,40 +105,46 @@ def boiled(mug):
 
 def next_steps(observation):
     """The next stage towards a mug of boiled water, or drinking it: (steps, note)."""
+    steps, note, _ = next_need(observation)
+    return steps, note
+
+
+def next_need(observation):
+    """next_steps plus what is missing when there is no step: "mug", "source", "fire", "fuel", "stone", "stick" or ""."""
     me = observation.get("self", {})
     mug = _mug(me)
     if mug is None:
         loose = next((row for row in observation.get("nearby", []) if row.get("item") and "mug" in str(row.get("name", "")).lower() and _distance(row) <= 3), None)
         if loose:
-            return [{"skill": "pick_up", "target": loose.get("ref")}], ""
+            return [{"skill": "pick_up", "target": loose.get("ref")}], "", ""
         if _has(me, "log"):
-            return [{"do": "craft", "recipe": "wood mug", "material": "wood log"}], ""
-        return [], "boiling water needs a wood mug: chop a tree for wood logs and craft one (1 wood log)"
+            return [{"do": "craft", "recipe": "wood mug", "material": "wood log"}], "", ""
+        return [], "boiling water needs a wood mug: chop a tree for wood logs and craft one (1 wood log)", "mug"
     name = str(mug.get("name", "wood mug"))
     water = _liquid(mug, "water")
     if water > 0 and _liquid(mug, "cholera") <= 0 and mug.get("liquids") is not None:
-        return [{"do": "drink_mug", "item": name}], ""
+        return [{"do": "drink_mug", "item": name}], "", ""
     if water <= 0:
         listed = sources(observation)
         if not listed:
-            return [], "your mug is empty and no water is listed: explore to find a river, lake or well"
-        return [{"skill": "fill_vessel", "target": listed[0].get("ref")}], ""
+            return [], "your mug is empty and no water is listed: explore to find a river, lake or well", "source"
+        return [{"skill": "fill_vessel", "target": listed[0].get("ref")}], "", ""
     fire = _fire(observation)
     if fire is None:
-        return [], "boiling needs a lit campfire next to you: build one from 4 wood logs, fuel_fire it and light_fire it"
+        return [], "boiling needs a lit campfire next to you: build one from 4 wood logs, fuel_fire it and light_fire it", "fire"
     if float(fire.get("fuel", 1) or 0) < 1:
         if _has(me, "log") or _has(me, "plank") or _has(me, "branch"):
-            return [{"skill": "fuel_fire", "target": fire.get("ref")}], ""
-        return [], "the campfire is out of fuel: bring wood logs and fuel_fire it"
+            return [{"skill": "fuel_fire", "target": fire.get("ref")}], "", ""
+        return [], "the campfire is out of fuel: bring wood logs and fuel_fire it", "fuel"
     if not fire.get("lit", True):
-        return [{"skill": "light_fire", "target": fire.get("ref")}], ""
+        return [{"skill": "light_fire", "target": fire.get("ref")}], "", ""
     if not _stone_on(observation, fire):
         if _has(me, STONE):
-            return [{"do": "place_stone", "target": fire.get("ref")}], ""
+            return [{"do": "place_stone", "target": fire.get("ref")}], "", ""
         return [], ("boiling needs a stone block on the campfire's tile: sift soil for one "
                     '({"do": "verb", "name": "Sift soil for resources", "choose": "Stone"} while standing on dirt or sand, 3 minutes), '
-                    "or mine underground rock")
+                    "or mine underground rock"), "stone"
     stick = _stick(me)
     if stick is None:
-        return [], "boiling needs a plain stick in your other hand to move the hot stone: break_branch a tree and make_stick"
-    return [{"do": "boil_mug", "item": name, "stick": stick, "fire": fire.get("ref")}], ""
+        return [], "boiling needs a plain stick in your other hand to move the hot stone: break_branch a tree and make_stick", "stick"
+    return [{"do": "boil_mug", "item": name, "stick": stick, "fire": fire.get("ref")}], "", ""
