@@ -2392,6 +2392,30 @@ def stop_watch_children(runs, clock=time.monotonic, sleep=time.sleep, timeout=12
     return 0
 
 
+WATCH_RECORD = "watcher.json"  # how this watcher was started, so the launcher can show and restart it
+WATCH_ENV = ("CIV13_AGENT_NAME", "CIV13_AGENT_TOKEN_FILE", "CIV13_HOST", "CIV13_PORT", "PYTHONDONTWRITEBYTECODE")
+
+
+def write_watch_record(log_dir, args, argv=None, environ=None):
+    """Record this watcher's command, folder and connection settings in log_dir/watcher.json.
+
+    Only the token file's path is kept, never a token: a watcher given CIV13_AGENT_TOKEN directly is marked so the
+    launcher asks for it to be started by hand instead."""
+    environ = os.environ if environ is None else environ
+    record = {"pid": os.getpid(), "python": sys.executable, "argv": [os.path.abspath(sys.argv[0])] + list(argv if argv is not None else sys.argv[1:]),
+              "cwd": os.getcwd(), "env": {key: environ[key] for key in WATCH_ENV if environ.get(key)},
+              "pause_file": getattr(args, "pause_file", ""), "started": int(time.time()),
+              "token_in_env": bool(environ.get("CIV13_AGENT_TOKEN"))}
+    try:
+        path = os.path.join(log_dir, WATCH_RECORD)
+        with open(path + ".tmp", "w", encoding="utf-8") as out:
+            json.dump(record, out, indent=1)
+        os.replace(path + ".tmp", path)
+    except OSError as exc:
+        print(f"could not write {WATCH_RECORD}: {exc}", file=sys.stderr)
+    return record
+
+
 def watch(client, args, clock=time.monotonic, sleep=time.sleep, popen=subprocess.Popen):
     """Play every character an admin spawns for this agent, each in its own autopilot run, until interrupted."""
     log_dir = args.log_dir or os.path.join(ROOT, "data", "agent-control")
@@ -2399,6 +2423,7 @@ def watch(client, args, clock=time.monotonic, sleep=time.sleep, popen=subprocess
     owned_pause = not getattr(args, "pause_file", "")
     if owned_pause:
         args.pause_file = os.path.abspath(os.path.join(log_dir, ".watch-pause-" + uuid.uuid4().hex))
+    write_watch_record(log_dir, args)
     runs = {}  # ref -> {"process", "at", "goal", "failed"}
     print(f"watching for characters spawned for agent {getattr(getattr(client, 'client', None), 'agent', '?')}; Ctrl+C stops")
     try:

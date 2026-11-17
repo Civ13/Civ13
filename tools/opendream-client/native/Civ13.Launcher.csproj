@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AssemblyName>Civ13</AssemblyName>
-    <Version>1.5.28</Version>
+    <Version>1.5.29</Version>
     <Company>Civ13</Company>
     <Product>Civ13 Launcher</Product>
     <Description>Portable Civ13 launcher with verified client and launcher updates</Description>
@@ -39,6 +39,7 @@
     <Compile Include="MagicWhitelist.cs" />
     <Compile Include="GroupPorts.cs" />
     <Compile Include="PlayerActivity.cs" />
+    <Compile Include="AgentRuns.cs" />
     <Compile Include="HostBoard.cs" />
     <Compile Include="HostSettings.cs" />
     <Compile Include="LocalBot.cs" />

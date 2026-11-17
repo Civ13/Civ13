@@ -299,6 +299,13 @@ internal sealed partial class LauncherWindow : Form {
                     dialog.ShowDialog(this);
                     return Task.CompletedTask;
                 }, null),
+                ("AI characters…", () => {
+                    // Ada and other autopilot runs on this host (AgentRuns, shard_group.py agents): status, logs, stop and restart.
+                    if (host?.Control is not { Group: not null } control) return Task.CompletedTask;
+                    using var dialog = new AgentRunsDialog(control);
+                    dialog.ShowDialog(this);
+                    return Task.CompletedTask;
+                }, null),
                 ("Player activity…", () => {
                     // Read-only host report for the whole group (PlayerActivity, shard_group.py activity): no host gate.
                     if (host?.Control is not { Group: not null } control) return Task.CompletedTask;

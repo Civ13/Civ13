@@ -3007,3 +3007,58 @@ class WorldRequestTests(unittest.TestCase):
         (data / 'host_request.json').write_text(json.dumps({'id': 'x', 'action': 'update-unsaved'}))
         host.serve_world()
         self.assertTrue((data / 'host_request.json').exists())
+
+
+class AgentRunsTests(unittest.TestCase):
+    """shard_group.py agents (agent_runs.py): the launcher's AI characters window."""
+
+    def setUp(self):
+        self.agent_runs = shard_group.agent_runs
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.logs = Path(self.tmp.name)
+        script = r'D:\GitHub\Civ13-ada-tools\tools\agent-control\autopilot.py'
+        self.watcher = {'pid': 100, 'ppid': 1, 'started': '', 'cmd': 'python.exe -u %s --watch --log-dir %s' % (script, self.logs)}
+        self.run = {'pid': 200, 'ppid': 100, 'started': '', 'cmd': 'python.exe -u %s --character [0x3000135] --goal Survive' % script}
+        self.other = {'pid': 300, 'ppid': 1, 'started': '', 'cmd': 'python.exe relay.py'}
+        (self.logs / 'Ada-0x3000135.log').write_text(
+            'step 33: routine work: make axe (score 0.25, NEEDS: safety 100, thirst 98 | priorities: x)\nstep 34: bind_axe\n')
+
+    def test_status_lists_watchers_runs_logs_and_stalls(self):
+        processes = [self.watcher, self.run, self.other]
+        result = self.agent_runs.status(processes, now=time.time() + 900)
+        watcher = result['watchers'][0]
+        self.assertEqual(watcher['pid'], 100)
+        self.assertFalse(watcher['restartable'])  # no watcher.json from this pid
+        run = watcher['runs'][0]
+        self.assertEqual((run['pid'], run['character']), (200, '[0x3000135]'))
+        self.assertTrue(run['stalled'])
+        self.assertEqual(run['needs'], 'safety 100, thirst 98')
+        self.assertIn('STALLED', result['text'])
+        self.assertEqual(self.agent_runs.status([], now=0)['text'].strip(), 'No AI character watcher is running on this host.')
+
+    def test_stop_run_kills_only_autopilot_runs(self):
+        killed = []
+        processes = [self.watcher, self.run, self.other]
+        self.assertFalse(self.agent_runs.stop_run(300, processes, killed.append)['ok'])
+        self.assertFalse(self.agent_runs.stop_run(100, processes, killed.append)['ok'])  # a watcher is not a run
+        self.assertTrue(self.agent_runs.stop_run(200, processes, killed.append)['ok'])
+        self.assertEqual(killed, [200])
+
+    def test_restart_needs_the_watchers_own_record_and_no_raw_token(self):
+        processes = [self.watcher, self.run]
+        self.assertFalse(self.agent_runs.restart_watcher(100, processes, launch=lambda r, d: 1)['ok'])
+        record = {'pid': 100, 'python': 'python.exe', 'argv': ['autopilot.py', '--watch'], 'cwd': '', 'env': {}, 'pause_file': '',
+                  'token_in_env': True}
+        (self.logs / 'watcher.json').write_text(json.dumps(record))
+        self.assertFalse(self.agent_runs.restart_watcher(100, processes, launch=lambda r, d: 1)['ok'])
+        record['token_in_env'] = False
+        (self.logs / 'watcher.json').write_text(json.dumps(record))
+        killed, launched = [], []
+        with mock.patch.object(self.agent_runs, 'alive', lambda pid, procs: pid in (100, 200) and pid not in killed):
+            result = self.agent_runs.restart_watcher(100, processes, killer=killed.append,
+                                                     launch=lambda r, d: launched.append((r['argv'], d)) or 555)
+        self.assertTrue(result['ok'])
+        self.assertEqual(killed, [200, 100])
+        self.assertEqual(result['pid'], 555)
+        self.assertEqual(launched[0][0], ['autopilot.py', '--watch'])

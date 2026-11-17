@@ -271,6 +271,21 @@ static class LocalHostingTests {
             && PlayerActivity.Describe(activity).StartsWith("Recording: gaia. Off: europe."), "player activity parse");
         Require(PlayerActivity.Describe(PlayerActivity.Parse(0, "{\"ok\": true, \"recording\": [], \"off\": [\"gaia\"], \"text\": \"\"}")).Contains("PLAYER_ACTIVITY 1"), "player activity off hint");
         Require(!PlayerActivity.Parse(1, "{\"ok\": false, \"refused\": \"player activity covers the whole group\"}").Ok && !PlayerActivity.Parse(1, "").Ok, "player activity refusal");
+        // AI characters window (AgentRuns, shard_group.py agents): status, stop one run, restart one watcher.
+        Require(AgentRuns.Step(host.Control!).ArgumentList.SequenceEqual(new[] { "-I", "-B", shard, "--config", groupConfig, "agents" }), "agents argv");
+        Require(AgentRuns.Step(host.Control!, stopRun: 156612).ArgumentList.TakeLast(2).SequenceEqual(new[] { "--stop-run", "156612" }), "agents stop argv");
+        Require(AgentRuns.Step(host.Control!, restartWatcher: 65704).ArgumentList.TakeLast(2).SequenceEqual(new[] { "--restart-watcher", "65704" }), "agents restart argv");
+        try { AgentRuns.Step(host.Control!, stopRun: 1, restartWatcher: 2); throw new Exception("two agent actions accepted"); } catch (ArgumentException) { assertions++; }
+        try { AgentRuns.Step(host.Control!, stopRun: 0); throw new Exception("pid 0 accepted"); } catch (ArgumentException) { assertions++; }
+        var agents = AgentRuns.Parse(0, "noise\n{\"ok\": true, \"watchers\": [{\"pid\": 65704, \"agent\": \"ada\", \"port\": \"1714\", \"restartable\": true, " +
+            "\"runs\": [{\"pid\": 156612, \"character\": \"[0x3000135]\", \"stalled\": true, \"idle_s\": 900, \"needs\": \"thirst 98\"}, {\"pid\": \"x\"}]}], " +
+            "\"text\": \"Watcher for agent ada\\n  STALLED\\u0007\"}");
+        Require(agents.Ok && agents.Watchers.Count == 1 && agents.Watchers[0].Restartable && agents.Watchers[0].Runs.Count == 1
+            && agents.Watchers[0].Runs[0] is { Pid: 156612, Stalled: true, IdleSeconds: 900, Needs: "thirst 98" }
+            && agents.Text == "Watcher for agent ada" + Environment.NewLine + "  STALLED"
+            && AgentRuns.Label(agents.Watchers[0], agents.Watchers[0].Runs[0]) == "ada [0x3000135] (pid 156612) - stalled", "agents parse");
+        var agentsRefused = AgentRuns.Parse(1, "{\"ok\": false, \"refused\": \"pid 5 is not an AI character run on this host\"}");
+        Require(!agentsRefused.Ok && agentsRefused.Error == "Refused: pid 5 is not an AI character run on this host" && !AgentRuns.Parse(1, "").Ok, "agents refusal");
         var groupStep = LocalHosting.GroupStep(host.Control!, "stop");
         Require(groupStep.FileName == python && groupStep.CreateNoWindow && !groupStep.UseShellExecute && groupStep.RedirectStandardInput &&
             groupStep.ArgumentList.SequenceEqual(new[] { "-I", "-B", shard, "--config", groupConfig, "stop" }), "group argv changed: " + string.Join(" ", groupStep.ArgumentList));
