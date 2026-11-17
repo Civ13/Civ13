@@ -592,9 +592,14 @@ SUITES = {
     'football_tackle': {'files': ('tests/football_tackle/test_target.py',),
         'paths': ('tests/football_tackle/',), 'shared_paths': (
             'code/modules/1713/football.dm', 'tests/save_movement/source_adapter.py')},
-    'trumpet_notes': {'files': ('tests/trumpet_notes/test_notes.py',),
-        'paths': ('tests/trumpet_notes/',), 'shared_paths': (
-            'code/game/objects/items/devices/trombone.dm', 'sound/trombone/')},
+    # Every piano, violin, shamisen and trumpet note resolves to a real .ogg
+    # sample, retuned from the nearest one when the note has none of its own.
+    'instrument_samples': {'files': ('tests/instrument_samples/test_instrument_samples.py',),
+        'paths': ('tests/instrument_samples/',), 'shared_paths': (
+            'code/game/objects/items/devices/instrument_song.dm', 'code/game/objects/items/devices/violin.dm',
+            'code/game/objects/items/devices/shamisen.dm', 'code/game/objects/items/devices/trombone.dm',
+            'code/game/objects/structures/piano.dm', 'sound/piano/', 'sound/violin/', 'sound/shamisen/',
+            'sound/trombone/')},
     'microscope_integrity': {'files': ('tests/microscope_integrity/test_integrity.py',),
         'paths': ('tests/microscope_integrity/',), 'shared_paths': (
             'code/modules/1713/forensics.dm', 'code/_helpers/mobs.dm')},

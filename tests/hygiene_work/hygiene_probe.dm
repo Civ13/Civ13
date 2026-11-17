@@ -192,3 +192,17 @@ var/hw_runtime_error = FALSE
 	H.organs = list(hand, leg, chest)
 	H.mark_bare_parts_washed()
 	hw_check(H.part_dirt_status(leg) == "" && H.part_dirt_status(chest) == "" && H.part_dirt_status(hand) == "", "a bath below clean shows bare parts clean")
+
+	// Washing moves on to the next bare part that needs it, head to feet.
+	H.washed_parts = null
+	H.hygiene = 150
+	hw_check(H.next_dirty_zone() == "chest", "washing starts with the first dirty part ([H.next_dirty_zone()])")
+	hw_check(H.next_dirty_zone(list("chest")) == "l_hand", "then moves to the next ([H.next_dirty_zone(list("chest"))])")
+	H.wash_body_part("l_hand")
+	hw_check(H.next_dirty_zone(list("chest")) == "l_leg", "washed parts are skipped ([H.next_dirty_zone(list("chest"))])")
+	H.hygiene = HYGIENE_LEVEL_NORMAL
+	hw_check(isnull(H.next_dirty_zone()), "a clean body leaves nothing to wash")
+	var/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/mug/mug2 = new(locate(3, 2, 1))
+	mug2.reagents.add_reagent("water", 12)
+	hw_check(mug2.wash_spend(H) && mug2.reagents.get_reagent_amount("water") == 7, "a mug pays 5 water a part")
+	hw_check(!mug2.wash_spend(H), "a mug stops when it cannot pay for another part")

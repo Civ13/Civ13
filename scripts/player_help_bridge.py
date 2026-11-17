@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '0b742318009e71153147454c77805a38817f023c'
+WIKI_REVIEWED_REVISION = '3019ae2e24c93f0471c1041d3c5112c939660698'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('b9fe10e216060f59678c6fa6f17e5dc1b67290ecc172017701e7da30362108e8', 'character skills traits languages'),
@@ -85,7 +85,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Factory_Automation.md': ('e49b07d8eea1fe3c785b450c486e4b412e9ab4e4d0df30c8e9dc1dc34f666be0', 'factory automation belt belts conveyor arm arms fabricator fabricators pipe pipes pump tank bottler monitor crusher stamp mill'),
     'guides/Guide_to_Farming.md': ('2de3e24d20d9ac1c154bb43bddad9b9a6bc2d1c1aa6f68e79cd7c5cc879c4fd0', 'farming farm plant crops soil water'),
     'guides/Guide_to_Fishing.md': ('b18020557849534d4465842bfbb5aa33b633e70d8532e52a806206b8349e2bb6', 'fishing fish rod bait'),
-    'guides/Guide_to_Hygiene.md': ('f907369b3a4d371d4777da810aa9c90610c775fd7b0e5fd100a76c8a6fb21545', 'hygiene clean washing soap detergent laundry'),
+    'guides/Guide_to_Hygiene.md': ('a505634dbd6b57699568ffa7f4b178c5a118897fcd8bcb65cebac7bbc2b4a27b', 'hygiene clean washing soap detergent laundry'),
     'guides/Guide_to_Leadership.md': ('d8fa16a65959d1c7f632c782de1129a9c6dfade1614a9e55ebcdd92851e972df', 'leadership squad leader officer commander artillery coordinates'),
     'guides/Guide_to_Medical.md': ('834abb0cf8e022e429dcb2894283a52adf5a94ca1249502470e5a552d9506152', 'medical heal injury wound surgery'),
     'guides/Guide_to_Pollution.md': ('f084e6ca8e6592361aba0dbc37f37d58b3f09bd20686bd067fdecdd71543f7ef', 'pollution polluted soot smog smoke charcoal clean ground growth'),
@@ -104,7 +104,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Trenches.md': ('e66a1030eab5bc320164c330140dbd6a94acbcd6fd121ab6979e9f468edcb5ad', 'trench trenches fortification sandbag dig shovel'),
     'guides/Guide_to_Weapons.md': ('fa29eb83656d6c44007e9fba62fc1609dd36844007fc2e96a934ec49e0a9994b', 'weapons gun reload ammunition'),
     'New_Player_Guide.md': ('c0d80da1236f7b15de5787584628898cc5dacddd6db97fadbe42dd5b685faee0', 'new player beginner start first round basics'),
-    'Hotkeys.md': ('b876ec2b8d9c32edda966bdc3422ffcc816114b064e98b148e16e5fe79d700f6', 'hotkeys hotkey keys keyboard controls key press'),
+    'Hotkeys.md': ('cdfc3d45160e026c877c7e96c5fdd5ad4964c823ba652ffb0946bf270b9f25fc', 'hotkeys hotkey keys keyboard controls key press'),
     'role_guides.md': ('4117070c23ff3cfd2581b612cd08ae70ee170637381972cffebdf9c0161d78d5', 'role roles job jobs responsibilities'),
     'Governor.md': ('131ef4f1f37d1bd38c1cd0c71bf6805cd677f308bef000c39ddb3cf0e7cd584d', 'governor role laws treasury colony'),
     'Merchant.md': ('9d9317e9e196b3e14f4b9237a68d6a41d3e2906d35e1b6cae529d389765eeebb', 'merchant role supplies export trade colony'),
@@ -118,18 +118,18 @@ WIKI_REVIEWED_GUIDES = {
     'gamemodes/Battle_Royale.md': ('18d1e4cf951f943bd7a0f5030c1825bd82a77427349b086842a309e492c4d841', 'battle royale battleroyale'),
     'gamemodes/Gladiators.md': ('36ac7d70edff2c99d78351585450428ad5cd02542b0cc3dfc5c178bca7d1ffb6', 'gladiator gladiators arena imperator custodes medicus'),
     'gamemodes/Prison_Roleplay.md': ('8da37041c99c23ab18012006e8afd8475acdd1485f8cb3eb48d23152f9cfb613', 'prison prisoner guard gulag nkvd'),
-    'guides/Guide_to_Boats.md': ('4c94faa0fa57e597fac2522d2aa556902df31fb3e71b19e56b9b2d5b61c96659', 'boat boats ship sailing sail raft canoe rowing oars anchor swim swimming drown drowning current currents lifejacket naval torpedo torpedoes degaussing minesweeping'),
+    'guides/Guide_to_Boats.md': ('069ef992d03d1b1109c3c03252363aec5e48c9d89bf3440fa720e3eb701bf6ba', 'boat boats ship sailing sail raft canoe rowing oars anchor swim swimming drown drowning current currents lifejacket naval torpedo torpedoes degaussing minesweeping'),
     'guides/Guide_to_Aircraft.md': ('6a27f8d8a70491315e9faef200b1bd8462840ecfdab8d1bafb4c5dc1e396de14', 'aircraft airplane plane planes flying fly flight runway hangar pilot takeoff landing'),
     'guides/Guide_to_Aircraft_Carriers.md': ('3402b1e488a635eb74b172c9d0c2d62038fe192efcd7d12e9b3f5d297c655ce4', 'carrier carriers aircraft carrier flight deck shipyard office arresting wires elevator bunkers'),
     'guides/Guide_to_Races.md': ('46ef1bf361c519e71acbd679119429e838348827e25dbcac27282f67bee51097', 'race races species human humans'),
     'guides/Guide_to_Slang.md': ('52f9f6370922d7dede523e51247ae6ea0723d24118cecd26e594c051278dfc3f', 'slang terms jargon abbreviation meaning mean word words'),
-    'guides/Guide_to_Books_and_Scholars.md': ('2e8e347267a9272394d7a4c35fe89cf83fcc13293ad1ebb62cbc7aca248d2541', 'books scholars scholarship study chapter research bench apprentice tutor library writing slate abacus'),
+    'guides/Guide_to_Books_and_Scholars.md': ('cc03d963d12086fad0c3abcd3b732486c0e490d48ad5b79e6261cc8f7d70cb0e', 'books scholars scholarship study chapter research bench apprentice tutor library writing slate abacus'),
     'guides/Guide_to_Your_First_Day.md': ('5aef5abe7a72e308f492da44c779d5cd1b07f26d1e4eb95ac8534a058245c02a', 'first day new character start starting survive survival research book study chapter food water shelter bag bags carry carrying basket travois storage chest jar pit window dump take all move moving container inventory search searching loot crate crates closet gather'),
     'guides/Guide_to_Paperwork.md': ('22f7fa453bd84ee5ec8e1182466e22ca34543bcb5dac3815f31540694058066f', 'paper paperwork writing write pen book sign signature stamp'),
     'Crafting_Skill_Level_Requirements.md': ('eae4e1c91ce28009f16ec79d0e942f76895d80262e618320eaf44d3a7c5808a9', 'crafting skill level levels requirement requirements unlock'),
     'Food_Decay_Times.md': ('c25a6eeb304bb3f8a5a3dd7e479da15a15fb34ecbb8d2127d9179881aefd7efe', 'food decay rot spoil spoils spoiled expire expires lasts preserve storage'),
     'Miscellaneous_Crafting.md': ('9015932974df193a9f59fb59c359040e7a38e541ad13e104ae2cacf8f33e08fc', 'miscellaneous crafting misc items dress dresses dressmaking tailoring tailor tailored sew sewing pattern patterns design clothes shirt gown cloak sleeves collar dye dyes wool linen fabric book hat hats headwear beret veil gloves boots shoes belt sash backpack satchel quiver bandolier restyle alteration alter candle candles'),
-    'maps/The_Americas.md': ('7dd9eac09b0f22704aa73713f085642f26323a48e19e309e1f31377c79d7d0ce', 'americas america north south isthmus mainland persistent persistence map world hills tamping grading rammer'),
+    'maps/The_Americas.md': ('ae4ac35c20a759093e372e1758ba0021c24361ae71d6485a004f201a3da4daef', 'americas america north south isthmus mainland persistent persistence map world hills tamping grading rammer'),
     'maps/Gaia.md': ('956e43002c3077b930f8b7b866d6276d6f7e617f348e7f7e83f6cd935265cbaa', 'gaia map world underground'),
     'maps/Nomads_Maps.md': ('9f71c98987cd40fc8b7d31a694d2984331fd23e84eb2c8248db595cd08ae18ab', 'nomads maps map terrain biome biomes'),
     'gamemodes/Voyage.md': ('9922f438d0253c6b4d812bc852422a54c37f428b4c3221b2a732397ef245ddfe', 'voyage expedition ship mode'),

@@ -84,6 +84,7 @@
 	H.update_inv_gloves()
 	playsound(H.loc, 'sound/effects/watersplash.ogg', 30, TRUE)
 	H.visible_message(SPAN_NOTICE("[H] washes their hands in \the [src]."), SPAN_NOTICE("You wash your hands."))
+	H.wash_on_after_hands(src) // body_washing.dm
 
 // ---- eating with dirty hands ------------------------------------------------
 
