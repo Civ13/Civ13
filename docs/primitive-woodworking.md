@@ -21,7 +21,7 @@ reuse is confirmed by Civ13 source, not by the video.
    have their own stack/material identity and cannot merge into logs or planks.
 3. Use the shaping tool on a wood-piece stack and select a wooden wedge or
    simple wooden mallet. The mallet reuses the existing item and art. The wedge
-   reuses sharpened-stick art, but has its own minimal tool type so it cannot
+   has its own art and its own minimal tool type, so it cannot
    silently become a flint-axe shaft or hot-stone stick. Existing five-log hammer
    crafting also remains available.
 4. Hold a wooden hammer/mallet actively and the wooden wedge in the other hand;

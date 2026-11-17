@@ -455,7 +455,7 @@ class WoodworkingContracts(unittest.TestCase):
                 atlas.reviewed_source_revision(TEXT,broken)
 
     def test_reused_art_states_exist_in_actual_png_metadata(self):
-        for path,state in [('icons/obj/materials.dmi','sheet-wood'),('icons/obj/old_weapons.dmi','sharpened_stick'),('icons/misc/tribal.dmi','tribalhammer')]:
+        for path,state in [('icons/obj/materials.dmi','sheet-wood'),('icons/obj/splitting_wedge.dmi','splitting_wedge'),('icons/misc/tribal.dmi','tribalhammer')]:
             raw=(ROOT/path).read_bytes()
             self.assertEqual(raw[:8],b'\x89PNG\r\n\x1a\n')
             offset=8
