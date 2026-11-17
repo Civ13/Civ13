@@ -52,3 +52,11 @@ oral herb use, harvest output and reaction holders in an isolated world.
 Accelerated procedure calls establish tick counts and contracts; they do not
 measure full-game scheduler load, multiplayer access to supplies, or player
 acceptance of the balance.
+
+## Sleep and bed rest
+
+The Sleep verb no longer refuses a sick character. `resting_in_bed()` is true
+for a body buckled to a real bed and for one sleeping in a bed (the Sleep verb
+does not buckle), so sleeping through an illness halves an untreated flu and
+doubles the immune gain, exactly like lying buckled. (Worms are paused while
+their host sleeps, as before.) Recovery is announced in large green text.

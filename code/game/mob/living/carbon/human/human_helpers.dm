@@ -119,9 +119,8 @@
 		WWalert("You cannot use this function on this map.","Disabled",src)
 		return
 
-	if (disease)
-		to_chat(src, SPAN_RED("You toss and turn but you are too unwell to sleep."))
-		return
+	// The sick may sleep: rest is what an illness needs (resting_in_bed()), and
+	// refusing left a sick character unable to assign a bed or log off safely.
 
 	for (var/obj/item/clothing/C in list(wear_suit,w_uniform,shoes))
 		if (C.fleas == TRUE)

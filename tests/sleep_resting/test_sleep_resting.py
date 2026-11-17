@@ -223,12 +223,17 @@ class RestingSleep(unittest.TestCase):
         self.assertFalse(CURRENT(actor,DEFAULT));self.assertTrue(Harness(actor).run())
         actor=Actor(True);actor.lying=False
         self.assertTrue(CURRENT(actor,DEFAULT));self.assertFalse(CURRENT(actor,SLEEP_FLAGS))
-    def test_disease_fleas_hygiene_and_missing_bed_refuse_before_wait(self):
-        for reason in ('disease','fleas','hygiene','bed','already_sleeping'):
+    def test_the_sick_may_sleep(self):
+        actor=Actor(True);actor.disease=True
+        h=Harness(actor);self.assertTrue(h.run());self.assertEqual(len(h.wait_calls),1)
+        legacy=Harness(actor,legacy_prefix=True);self.assertFalse(legacy.run())
+        rest=(ROOT/'code/game/mob/living/carbon/human/severe_disease.dm').read_text(encoding='utf-8')
+        self.assertIn('return (inducedSSD && isturf(loc) && (locate(/obj/structure/bed) in loc)) ? TRUE : FALSE',rest)
+    def test_fleas_hygiene_and_missing_bed_refuse_before_wait(self):
+        for reason in ('fleas','hygiene','bed','already_sleeping'):
             with self.subTest(reason=reason):
                 actor=Actor(True)
-                if reason=='disease':actor.disease=True
-                elif reason=='fleas':actor.wear_suit.fleas=True
+                if reason=='fleas':actor.wear_suit.fleas=True
                 elif reason=='hygiene':actor.hygiene=80
                 elif reason=='bed':actor.loc.beds=[]
                 else:actor.sleeping=1
