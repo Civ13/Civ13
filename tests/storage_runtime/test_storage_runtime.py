@@ -126,7 +126,7 @@ class StorageRuntime(unittest.TestCase):
         source = '/fixture(W, stop_messages)\n'+admission+'\n'
         env = {'usr':None, 'StorageType':StorageType, 'typed_iter':lambda xs,kind:xs,
                'istype':lambda item,kind=StoredItem:isinstance(item,kind),
-               'to_chat':lambda *args:None}
+               'to_chat':lambda *args:None, 'storage_stack_fits':lambda *args:False}
         accept = A.project(source, '/fixture', 'src,W,stop_messages', env, method=True)
         removed, remaining = StoredItem(beer_size), StoredItem(beer_size)
         booze = Bag(booze_limit, [remaining])

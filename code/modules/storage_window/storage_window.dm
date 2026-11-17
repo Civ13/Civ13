@@ -635,7 +635,12 @@
 	var/obj/item/weapon/storage/S = holder
 	if (!istype(S) || QDELETED(S) || !lists_holder(S) || !storage_window_access(H, S))
 		return FALSE
-	if (!S.can_be_inserted(I, FALSE))
+	if (!S.can_be_inserted(I, TRUE))
+		// No room for the whole stack: still top up the stacks inside.
+		if (S.stack_merge_room(I, H) > 0)
+			S.merge_stack_in(I, H)
+			return TRUE
+		S.can_be_inserted(I, FALSE) // says why
 		return FALSE
 	if (!detach(I))
 		return FALSE

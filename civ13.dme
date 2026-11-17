@@ -1808,6 +1808,7 @@
 #include "code\modules\storage_window\storage_racks.dm"
 #include "code\modules\storage_window\storage_window.dm"
 #include "code\modules\storage_window\storage_search.dm"
+#include "code\modules\storage_window\storage_stack_merge.dm"
 #include "code\modules\storage_window\storage_strip.dm"
 #include "code\modules\storage_window\stack_count.dm"
 #include "code\modules\statpanel\statpanel.dm"
