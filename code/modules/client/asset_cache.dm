@@ -244,8 +244,37 @@ var/decl/asset_cache/asset_cache = new()
 
 // Modern resources are sent only when opening an adapted UI.
 /datum/asset/simple/civ13_tgui
-	assets = list(
+	var/list/sources = list(
 		"civ13-tgui-bootstrap.js" = 'UI/tgui/civ13-tgui-bootstrap.js',
 		"civ13-tgui.js" = 'UI/tgui/civ13-tgui.js',
 		"civ13-tgui.css" = 'UI/tgui/civ13-tgui.css'
 	)
+
+// Short digest of the three modern screen files, set when they are registered.
+var/global/civ13_tgui_assets_version = ""
+
+// The page loads the files under names that carry their digest. A client that
+// reconnects to an updated world keeps its browser's memory of the old files
+// by name, so plain names gave it the old bundle against new data: a blank
+// window until the game was restarted.
+/proc/civ13_tgui_versioned_name(name, version)
+	if (!version)
+		return name
+	var/dot = findlasttext(name, ".")
+	return dot ? "[copytext(name, 1, dot)].[version][copytext(name, dot)]" : "[name].[version]"
+
+/proc/civ13_tgui_version()
+	get_asset_datum(/datum/asset/simple/civ13_tgui)
+	return civ13_tgui_assets_version
+
+/datum/asset/simple/civ13_tgui/register()
+	var/digests = ""
+	for (var/name in sources)
+		register_asset(name, sources[name])
+		digests += "[md5(sources[name])]"
+	civ13_tgui_assets_version = copytext(md5(digests), 1, 13)
+	// Only the versioned copies are sent; the plain names stay registered.
+	assets = list()
+	for (var/name in sources)
+		assets[civ13_tgui_versioned_name(name, civ13_tgui_assets_version)] = sources[name]
+	..()
