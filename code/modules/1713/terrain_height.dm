@@ -196,6 +196,7 @@ var/global/list/terrain_height_chars = terrain_height_char_table()
 			var/first = max(0, x - 3) + 1
 			var/old = lights[cy + 1]
 			lights[cy + 1] = copytext(old, 1, first) + jointext(chars, "") + copytext(old, first + chars.len)
+	sun_heights_changed(x, y, z)
 	// Line of sight caches terrain answers per eye position (los_terrain.dm).
 	los_terrain_heights_changed(locate(x, y, z))
 	return TRUE
@@ -614,7 +615,8 @@ var/global/terrain_shading_applied = FALSE
 
 // Sprite key for a tile: corner lights nw, ne, sw, se; "cccc" means flat.
 /datum/terrain_heights/proc/shade_key(x, y, z)
-	var/list/lights = light_rows(z)
+	// Lit by the sun where there is one (sun_hills.dm), else from the north-west.
+	var/list/lights = sun_hill_rows(z) || light_rows(z)
 	if (!lights || x < 1 || x > maxx || y < 1 || y > maxy)
 		return null
 	var/row = maxy - y + 1
@@ -760,6 +762,8 @@ var/global/list/terrain_terrace_images = list()
 	set waitfor = FALSE
 	var/started = REALTIMEOFDAY
 	var/count = terrain_shading_apply()
+	// The hills take the sun now up, if the day already has one (sun_hills.dm).
+	sun_hills_phase(sun_tree_angles, sun_next_tod(time_of_day))
 	log_game("Terrain shading placed on [count] tiles of [map ? map.title : "no map"] in [(REALTIMEOFDAY - started) / 10] s.")
 
 // Admin view: the height number on every tile in view, until toggled off.

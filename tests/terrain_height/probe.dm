@@ -437,6 +437,41 @@ var/terrain_height_probe_checks = 0
 	high.terrain_grade_apply()
 	qdel(rammer)
 
+	// Hills lit by the sun (sun_hills.dm). The north half rises eastward, so a
+	// low western sun lights its slope and a low eastern one leaves it in the
+	// shadow of the higher ground east of it.
+	var/list/east_sun = list(90, 10)
+	var/list/west_sun = list(270, 10)
+	var/list/sun_e = fixture.sun_light_rows(1, east_sun)
+	var/list/sun_w = fixture.sun_light_rows(1, west_sun)
+	terrain_height_probe_assert(text2ascii(sun_e[4], 6) == 97 && text2ascii(sun_w[4], 6) > 99, "sun_lights_slope_by_direction")
+	terrain_height_probe_assert(text2ascii(sun_e[10], 6) == 99 && text2ascii(sun_w[10], 6) == 99, "sun_flat_ground_plain")
+	// Every corner of a table matches the single-corner rule used for patches.
+	var/sun_top_level = fixture.sun_top(1)
+	var/sun_rule_ok = TRUE
+	for (var/cy in 0 to fixture.maxy)
+		for (var/cx in 0 to fixture.maxx)
+			if (fixture.sun_corner_char(fixture.rows_by_z["1"], cy, cx, east_sun, sun_top_level) != ascii2text(text2ascii(sun_e[cy + 1], cx + 1)))
+				sun_rule_ok = FALSE
+	terrain_height_probe_assert(sun_rule_ok, "sun_corner_rule_matches_table")
+	// A pillar raised on the flat half casts a long shadow west under the
+	// eastern sun, and the patched tables match a full recompute.
+	fixture.set_level(10, 3, 1, 6)
+	sun_e = fixture.sun_rows_by_key[sun_hill_key(1, east_sun)]
+	terrain_height_probe_assert(text2ascii(sun_e[10], 6) == 97 && text2ascii(sun_e[10], 12) != 97, "pillar_shadow_points_away_from_sun")
+	var/sun_patched = jointext(sun_e, "|") + "/" + jointext(fixture.sun_rows_by_key[sun_hill_key(1, west_sun)], "|")
+	fixture.sun_rows_by_key = list()
+	terrain_height_probe_assert(sun_patched == jointext(fixture.sun_light_rows(1, east_sun), "|") + "/" + jointext(fixture.sun_light_rows(1, west_sun), "|"), "sun_patch_matches_full_pass")
+	// The shading follows the hills' sun, and goes back to the north-west light without one.
+	sun_hill_angles = east_sun
+	sun_hills_reshade_box(1, 1, 1, 12, 12)
+	terrain_height_probe_assert(terrain_height_probe_shade(locate(6, 3, 1)) == "aaaa" && fixture.shade_key(6, 3, 1) == "aaaa", "sun_shadow_drawn")
+	fixture.set_level(10, 3, 1, fixture.base_at(10, 3, 1))
+	terrain_height_probe_assert(!terrain_height_probe_shade(locate(6, 3, 1)), "sun_shadow_gone_when_pillar_cut")
+	sun_hill_angles = null
+	sun_hills_reshade_box(1, 1, 1, 12, 12)
+	terrain_height_probe_assert((terrain_height_probe_shade(locate(5, 9, 1)) || "cccc") == fixture.shade_key(5, 9, 1) && fixture.shade_key(5, 9, 1) == copytext(fixture.light_rows(1)[4], 5, 7) + copytext(fixture.light_rows(1)[5], 5, 7), "north_west_light_back")
+
 	var/obj/map_metadata/terrain_height_probe/broken = new
 	broken.terrain_height_file = "tests/terrain_height/missing.txt"
 	map = broken
