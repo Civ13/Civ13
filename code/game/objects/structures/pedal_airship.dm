@@ -151,7 +151,7 @@ var/global/list/aloft_pedal_airships = list()
 	return TRUE
 
 /obj/structure/vehicle/bicycle/airship/proc/descend(mob/living/human/H)
-	if (changing_height || !aloft || !rider_ready())
+	if (changing_height || !aloft || !rider_ready() || snagged)
 		return FALSE
 	var/turf/G = ground_turf()
 	var/hit = landing_block(G)
@@ -173,7 +173,7 @@ var/global/list/aloft_pedal_airships = list()
 // airship coming apart. Straight down where that is clear, else the nearest
 // clear ground, else straight down anyway. Nobody is hurt.
 /obj/structure/vehicle/bicycle/airship/proc/set_down()
-	if (!aloft)
+	if (!aloft || snagged)
 		return FALSE
 	stopmovementloop()
 	var/turf/G = ground_turf()
@@ -186,6 +186,11 @@ var/global/list/aloft_pedal_airships = list()
 				if (!landing_block(T))
 					best = T
 					break
+	// Over a forest with no clear ground near: it snags in the tree below.
+	var/obj/structure/wild/tree = (!best && G) ? air_hull_tree(G) : null
+	if (tree)
+		snag_in_tree(G, tree)
+		return FALSE
 	if (!best)
 		best = G
 	set_aloft(FALSE)
@@ -205,7 +210,7 @@ var/global/list/aloft_pedal_airships = list()
 
 // The propeller only pulls it through the air.
 /obj/structure/vehicle/bicycle/airship/startmovementloop()
-	if (changing_height)
+	if (changing_height || snagged)
 		return
 	if (!aloft)
 		if (driver)

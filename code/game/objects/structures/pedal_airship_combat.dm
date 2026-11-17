@@ -192,6 +192,41 @@
 	var/turf/G = airborne_ground_under(firer)
 	return G && G == start
 
+// ---- Snagged in a tree ----
+
+/obj/structure/vehicle/bicycle/airship/var/tmp/snagged = FALSE
+
+// Forced down over a forest: the bag tears on the branches, the rider is
+// thrown down beside the trunk, and the airship hangs in the tree until the
+// tree comes down.
+/obj/structure/vehicle/bicycle/airship/proc/snag_in_tree(turf/G, obj/structure/wild/tree)
+	snagged = TRUE
+	stopmovementloop()
+	bag_holes += 2
+	visible_message(SPAN_DANGER("\The [src] snags in \the [tree] and its gas bag tears on the branches!"))
+	var/turf/beside = air_hull_beside(G)
+	for (var/mob/living/M in ontop.Copy())
+		unbuckle_mob()
+		M.forceMove(beside)
+		to_chat(M, SPAN_DANGER("You are thrown out through the branches!"))
+		M.adjustBruteLoss(rand(10, 20))
+		M.Weaken(2)
+	tree.health -= 15
+	tree.try_destroy()
+
+// A tree came down: an airship snagged in it falls with it.
+/proc/pedal_airship_tree_gone(turf/T)
+	for (var/obj/structure/vehicle/bicycle/airship/S in aloft_pedal_airships)
+		if (S.snagged && S.ground_turf() == T)
+			S.snagged = FALSE
+			S.set_down()
+
+/obj/structure/wild/Destroy()
+	var/turf/T = get_turf(src)
+	. = ..()
+	if (T && aloft_pedal_airships.len)
+		pedal_airship_tree_gone(T)
+
 // A bottle that falls a storey or more bursts; a lit firebomb sets the ground alight.
 /obj/item/weapon/reagent_containers/food/drinks/bottle/landed_from_fall(turf/T)
 	if (!isGlass || !T)
