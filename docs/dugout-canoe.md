@@ -24,8 +24,10 @@ log becomes a canoe. Finishing counts as crafting practice for the log's node.
 The canoe is a raft subtype, so boarding, leaving, river drift, boathouses and agent boats treat
 it like a raft.
 
-- Two people (`mobcapacity` 2) and one crate (`storagecapacity` 1). The second person sits behind
-  the first along the hull (6 px offsets).
+- Two people (`mobcapacity` 2) and one crate (`storagecapacity` 1). One person sits amidships; two
+  sit fore and aft along the hull (6 px each way), lifted 5 px while it lies east or west.
+  `seat_paddlers()` runs on every turn (`updatepassdir`) and tile step, and
+  `vehicle_offset_seat()` puts whoever gets on at the hull's own pixel offset.
 - Step delay 14, or 8 while the steerer holds a paddle in either hand (a raft is 12).
 - Refuses deep salt water (open sea), and any salt water while the wind there is 3 or more
   (`weather_wind_at`). Fresh water is always fine. It cannot be dismantled.

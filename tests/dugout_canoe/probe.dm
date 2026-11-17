@@ -93,3 +93,33 @@ var/canoe_runtime_error = FALSE
 	C.ontop += P
 	C.update_icon()
 	canoe_check(H.pixel_y == -P.pixel_y && H.pixel_y != 0, "the two sit one behind the other")
+	// A turn on the spot: the seats swing with the hull at once, for every facing.
+	for (var/d in list(EAST, SOUTH, WEST, NORTH))
+		H.dir = d
+		C.dir = d
+		C.updatepassdir()
+		var/along_x = (d == EAST ? 6 : (d == WEST ? -6 : 0))
+		var/along_y = (d == NORTH ? 6 : (d == SOUTH ? -6 : 0))
+		var/lift = (d & (EAST|WEST)) ? 5 : 0
+		canoe_check(H.pixel_x == along_x && H.pixel_y == along_y + lift && P.pixel_x == -along_x && P.pixel_y == -along_y + lift, "turned [dir2text(d)], both sit along the hull ([H.pixel_x],[H.pixel_y] / [P.pixel_x],[P.pixel_y])")
+	// A canoe left standing off-centre: whoever gets on sits at its offset at once.
+	var/datum/vehicle_offset/single/O = C.vehicle_offset_mover()
+	C.vehicle_offset_sync()
+	O.ox = -11
+	O.oy = 7
+	O.draw()
+	C.ontop -= P
+	C.update_icon()
+	canoe_check(H.pixel_x == 0 && H.pixel_y == 0, "alone, the paddler sits amidships ([H.pixel_x],[H.pixel_y])")
+	C.vehicle_offset_seat()
+	canoe_check(!(P in O.carried) && P.step_x == -11 && P.step_y == 7, "someone who got off is let go where the canoe stands")
+	P.step_x = 0
+	P.step_y = 0
+	C.ontop += P
+	C.vehicle_offset_seat()
+	canoe_check(P.step_x == C.step_x && P.step_y == C.step_y && C.step_x == -11 && C.step_y == 7, "getting on an off-centre canoe sits at its offset ([P.step_x],[P.step_y])")
+	canoe_check(H.step_x == C.step_x && H.step_y == C.step_y, "the steerer stays seated with it")
+	var/obj/structure/closet/crate/K = new(C.loc)
+	C.ontop_o += K
+	C.vehicle_offset_seat()
+	canoe_check(K.step_x == C.step_x && K.step_y == C.step_y, "a crate loaded on an off-centre canoe rides at its offset")
