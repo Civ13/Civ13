@@ -299,6 +299,7 @@ var/knowledge_failures = 0
 	check_scholar_supplies(scholar)
 	check_scholar_instruments(scholar)
 	check_scholar_tutoring()
+	check_read_aloud()
 	check_scholar_apprentices()
 	check_scholar_titles()
 	check_scholar_practice()
@@ -426,6 +427,44 @@ var/knowledge_failures = 0
 	knowledge_check(SCHOLAR_TUTOR_RATE > 1 && SCHOLAR_TUTOR_GAIN_MULT > 1, "tutoring speeds study and raises skill more")
 	qdel(teacher)
 	qdel(student)
+
+// Reading aloud (Val, 2026-11-17): everyone within hearing of a reader who
+// knows the chapter takes it in at half pace, on the same progress record
+// as reading it themselves.
+/proc/check_read_aloud()
+	var/mob/living/human/knowledge_fixture/reader = new(locate(2,5,1))
+	var/mob/living/human/knowledge_fixture/near = new(locate(5,5,1))
+	var/mob/living/human/knowledge_fixture/deaf = new(locate(3,5,1))
+	var/mob/living/human/knowledge_fixture/knower = new(locate(2,4,1))
+	reader.learn_recipe_node("basic_tools")
+	knower.learn_recipe_node("basic_tools")
+	deaf.sdisabilities |= DEAF
+	var/list/audience = reader.read_aloud_audience("basic_tools")
+	knowledge_check((near in audience) && !(reader in audience) && !(deaf in audience) && !(knower in audience), "the audience is everyone in hearing who can still learn the chapter, never the reader")
+	knowledge_check(!reader.read_aloud_audience("iron_tools").len, "listeners need the chapter's groundwork")
+	near.sleeping = 5
+	knowledge_check(!(near in reader.read_aloud_audience("basic_tools")), "a sleeper hears nothing")
+	near.sleeping = 0
+	var/total = near.scholar_study_time(get_research_node("basic_tools").era_tier, "basic_tools")
+	knowledge_check(!near.hear_chapter_read("basic_tools", 50, reader) && abs(near.study_fraction("basic_tools") - 25 / total) < 0.002, "listening credits half the time heard")
+	near.note_study_progress("basic_tools", 0.4)
+	near.hear_chapter_read("basic_tools", 50, reader)
+	knowledge_check(near.study_fraction("basic_tools") > 0.4, "listening carries on from a chapter read part-way")
+	near.note_study_progress("basic_tools", 0.99)
+	knowledge_check(near.hear_chapter_read("basic_tools", total, reader) && near.knows_recipe_node("basic_tools") && !near.study_fraction("basic_tools"), "hearing the rest teaches the chapter")
+	knowledge_check(!(near in reader.read_aloud_audience("basic_tools")), "a listener who has learned it leaves the audience")
+	var/obj/item/weapon/book/tome = new(locate(2,5,1))
+	tome.research_chapters = "basic_tools"
+	knowledge_check(findtext(tome.read_aloud_problem(reader, "basic_tools"), "Hold the book"), "the reader must hold the book")
+	tome.loc = deaf
+	knowledge_check(findtext(tome.read_aloud_problem(deaf, "basic_tools"), "already know"), "only someone who knows the chapter can read it aloud")
+	knowledge_check(findtext(tome.read_aloud_problem(reader, "iron_tools"), "not in this book"), "the chapter must be in the book")
+	knowledge_check(("aloud" in tome.ui_actions("research_book")), "the book window can start a reading")
+	qdel(tome)
+	qdel(reader)
+	qdel(near)
+	qdel(deaf)
+	qdel(knower)
 
 // Apprentices (Val, 2026-11-10): an apprentice learns faster researching
 // beside their master, and learns by watching the master research.
