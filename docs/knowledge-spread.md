@@ -43,5 +43,19 @@ A spreading subject still needs a book, a teacher or a bench, but is quicker to 
   Samples, field work, prototypes and compared notes keep their usual shares.
   The bench window lists it among what sets the pace.
 
+## Tuning
+
+Both lags are read from `config/config.txt` at server start, so a host can
+change them without a code change. Raising a lag never takes knowledge away
+from a living character; it only lowers what later characters start with.
+
+What to watch before changing them (player activity data, `node_learned` and
+`research_wall` events): how long a new character takes to learn its first
+guarded subject, and how often arrivals hit a "you don't know how" wall on
+spreading subjects. Tighter lags (1 and 3) help arrivals more and cut the
+leading faction's exclusive edge to one era.
+
+The player guide is "How knowledge spreads" in the wiki's Books and Scholars.
+
 Tests: `tests/knowledge_spread/` (offline suite `knowledge_spread`, native
 `probe.dm`).
