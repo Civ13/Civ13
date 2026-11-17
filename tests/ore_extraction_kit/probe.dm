@@ -66,6 +66,13 @@ var/ore_kit_waits = 0
 	last.attackby(K, H)
 	ore_kit_check(last.amount == 0 && K.reagents.get_reagent_amount("iron") == 5, "a single ore is used up for its 5 units ([last.amount], [K.reagents.total_volume])")
 	qdel(I)
+	// The pile sprite follows the smaller stack.
+	K.reagents.clear_reagents()
+	var/obj/item/stack/ore/iron/pile = ore_kit_stack(/obj/item/stack/ore/iron, 13, locate(7, 5, 1))
+	var/big_state = pile.icon_state
+	pile.attackby(K, H)
+	ore_kit_check(pile.amount == 12 && pile.icon_state == "ore_iron[pile_suffix(12, list(13, 25, 37))]" && pile.icon_state != big_state, "the pile sprite shrinks with the stack ([big_state] -> [pile.icon_state])")
+	qdel(pile)
 	// Every ore the kit purifies keeps the rest of its stack.
 	var/list/kinds = list(
 		/obj/item/stack/ore/iron_sponge = "iron", /obj/item/stack/ore/iron_pig = "iron",

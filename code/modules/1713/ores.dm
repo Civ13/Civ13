@@ -53,6 +53,8 @@
 					if (ET.reagents.total_volume <= 0 && !QDELETED(src) && use(1))
 						ET.reagents.add_reagent("iron",5)
 						ET.update_icon()
+						if (!QDELETED(src))
+							update_icon()
 		else
 			..()
 
@@ -76,6 +78,8 @@
 					if (ET.reagents.total_volume <= 0 && !QDELETED(src) && use(1))
 						ET.reagents.add_reagent("iron",5)
 						ET.update_icon()
+						if (!QDELETED(src))
+							update_icon()
 		else
 			..()
 /obj/item/stack/ore/iron_pig //slightly better iron from a blast furnace.
@@ -98,6 +102,8 @@
 					if (ET.reagents.total_volume <= 0 && !QDELETED(src) && use(1))
 						ET.reagents.add_reagent("iron",5)
 						ET.update_icon()
+						if (!QDELETED(src))
+							update_icon()
 		else
 			..()
 /obj/item/stack/ore/glass
@@ -125,6 +131,8 @@
 					if (ET.reagents.total_volume <= 0 && !QDELETED(src) && use(1))
 						ET.reagents.add_reagent("silver",5)
 						ET.update_icon()
+						if (!QDELETED(src))
+							update_icon()
 		else
 			..()
 /obj/item/stack/ore/gold
@@ -147,6 +155,8 @@
 					if (ET.reagents.total_volume <= 0 && !QDELETED(src) && use(1))
 						ET.reagents.add_reagent("gold",5)
 						ET.update_icon()
+						if (!QDELETED(src))
+							update_icon()
 		else
 			..()
 /obj/item/stack/ore/copper
@@ -168,6 +178,8 @@
 					if (ET.reagents.total_volume <= 0 && !QDELETED(src) && use(1))
 						ET.reagents.add_reagent("copper",5)
 						ET.update_icon()
+						if (!QDELETED(src))
+							update_icon()
 		else
 			..()
 /obj/item/stack/ore/tin
@@ -190,6 +202,8 @@
 					if (ET.reagents.total_volume <= 0 && !QDELETED(src) && use(1))
 						ET.reagents.add_reagent("tin",5)
 						ET.update_icon()
+						if (!QDELETED(src))
+							update_icon()
 		else
 			..()
 // Calamine (zinc carbonate): pale, rounded crusts with their own art (tests/sprites/create_tin_calamine.py).
@@ -213,6 +227,8 @@
 					if (ET.reagents.total_volume <= 0 && !QDELETED(src) && use(1))
 						ET.reagents.add_reagent("zinc",5)
 						ET.update_icon()
+						if (!QDELETED(src))
+							update_icon()
 		else
 			..()
 /obj/item/stack/ore/diamond
@@ -272,6 +288,8 @@
 						if (use(1))
 							ET.reagents.add_reagent("uranium",5)
 							ET.update_icon()
+							if (!QDELETED(src))
+								update_icon()
 				uranium_extracting = FALSE
 		else
 			..()
@@ -349,6 +367,8 @@
 						ET.reagents.add_reagent("potassium",2.5)
 						ET.reagents.add_reagent("nitrogen",2.5)
 						ET.update_icon()
+						if (!QDELETED(src))
+							update_icon()
 		else
 			..()
 /obj/item/stack/ore/coal
@@ -372,6 +392,8 @@
 					if (ET.reagents.total_volume <= 0 && !QDELETED(src) && use(1))
 						ET.reagents.add_reagent("carbon",5)
 						ET.update_icon()
+						if (!QDELETED(src))
+							update_icon()
 
 		else
 			..()
@@ -399,6 +421,8 @@
 					if (ET.reagents.total_volume <= 0 && !QDELETED(src) && use(1))
 						ET.reagents.add_reagent("charcoal",5)
 						ET.update_icon()
+						if (!QDELETED(src))
+							update_icon()
 		else
 			..()
 /obj/item/stack/ore/sulphur
@@ -422,6 +446,8 @@
 					if (ET.reagents.total_volume <= 0 && !QDELETED(src) && use(1))
 						ET.reagents.add_reagent("sulfur",5)
 						ET.update_icon()
+						if (!QDELETED(src))
+							update_icon()
 		else
 			..()
 /obj/item/stack/ore/lead
@@ -446,6 +472,8 @@
 					if (ET.reagents.total_volume <= 0 && !QDELETED(src) && use(1))
 						ET.reagents.add_reagent("lead",5)
 						ET.update_icon()
+						if (!QDELETED(src))
+							update_icon()
 		else
 			..()
 /obj/item/stack/ore/mercury

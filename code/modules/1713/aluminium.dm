@@ -74,6 +74,8 @@
 			if (kit_wait(H, 110 / H.getStatCoeff("dexterity")) && ET.reagents.total_volume <= 0 && !QDELETED(src) && use(1))
 				ET.reagents.add_reagent("aluminum", 5)
 				ET.update_icon()
+				if (!QDELETED(src))
+					update_icon()
 		return
 	return ..()
 
