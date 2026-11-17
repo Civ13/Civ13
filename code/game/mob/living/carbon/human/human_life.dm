@@ -788,7 +788,8 @@
 			handle_dreams()
 			if (mind)
 				//Are they SSD? If so we'll keep them asleep but work off some of that sleep var in case of stoxin or similar.
-				if (client || sleeping > 3)
+				//Agent-driven bodies have no client but are not SSD, so they wake like a player.
+				if (client || !ssd_check() || sleeping > 3)
 					AdjustSleeping(-1)
 			if ( prob(2) && health)
 				spawn(0)
