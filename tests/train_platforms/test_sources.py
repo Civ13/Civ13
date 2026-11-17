@@ -115,12 +115,36 @@ class TrainPlatformSourceTests(unittest.TestCase):
         for path in ('locomotive/coal/heavy', 'locomotive/heavy_diesel', 'locomotive/coal/armored/heavy'):
             self.assertIn('/obj/structure/trains/%s\n\tname = "heavy ' % path, LOCOS)
         self.assertNotIn('proc/drive(', LOCOS)
-        self.assertNotIn('max_train_speed', LOCOS)
+        # Only the main-line engine has a speed of its own.
+        self.assertEqual(LOCOS.count('max_train_speed'), 1)
+        self.assertIn('\ttrain_speed = 1.4\n\tmax_train_speed = 1.4\n', LOCOS)
         # Body tiles are rebuilt, never saved, and the clearance check covers the engine's side tiles.
         self.assertIn('var/tmp/list/body_parts', LOCOS)
         self.assertRegex(LOCOS, r'/obj/structure/trains/locomotive/after_load\(\)\n\t\.\.\(\)\n\tif \(body_kind\)\n\t\tbuild_body\(\)')
         self.assertEqual(SOURCE.count('if (car.wide_body())'), 3)
         self.assertRegex(RECIPES, r'(?m)^RECIPE: /material/steel/,armored locomotive,/obj/structure/trains/locomotive/coal/armored,')
+
+    def test_steam_cabs_have_three_stations_and_the_main_line_engine_a_tender(self):
+        # Driver's stand, firebox door and fireman's side: one to each cab tile.
+        self.assertIn('\treturn i ? list("fireman", "fire", "driver")[i] : null\n', LOCOS)
+        for kind in ('steam', 'armored', 'mainline'):
+            layout = LOCOS[LOCOS.index('layouts["loco_%s"]' % kind):]
+            self.assertIn('"stations" = TRUE', layout[:layout.index('"segments"')])
+        diesel = LOCOS[LOCOS.index('layouts["loco_diesel"]'):]
+        self.assertNotIn('"stations"', diesel[:diesel.index('"segments"')])
+        # The menu and each control are checked against where the user stands.
+        self.assertIn('\tvar/list/choices = station_controls(station)\n', TRAINS)
+        self.assertIn('\tif (!(choice in station_controls(cab_station(user))))\n\t\treturn\n', TRAINS)
+        self.assertIn('\tif ((is_tool(W, TOOL_SHOVEL) || fuel_value(W)) && !at_firebox(user))\n', TRAINS)
+        # Six sections with the cab last; coal and water ride in the tender.
+        mainline = LOCOS[LOCOS.index('layouts["loco_mainline"]'):LOCOS.index('layouts["tender"]')]
+        self.assertIn('"cab" = 6', mainline)
+        self.assertEqual(mainline.count('"solid" = 2'), 5)
+        self.assertIn('/obj/structure/trains/locomotive/coal/mainline\n\tname = "main-line steam locomotive"\n\tbody_kind = "mainline"\n', LOCOS)
+        self.assertIn('/obj/structure/train_car_kit/loco_mainline\n\tname = "main-line steam locomotive kit"\n\tcar_kind = "loco_mainline"\n', LOCOS)
+        self.assertIn('RECIPE: /material/steel/,main-line steam locomotive kit,/obj/structure/train_car_kit/loco_mainline,90,600,1,1,trains,101,', RECIPES)
+        self.assertIn('"/obj/structure/train_car_kit/loco_mainline" = "rail_steam"', NODES)
+        self.assertNotIn('range(4, src)', LOCOS)
 
     def test_kit_names_are_compiled_defaults(self):
         # Restored kits must not rename themselves in a constructor.

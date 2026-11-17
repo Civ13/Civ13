@@ -5,7 +5,9 @@
 // sections behind it are platform segments of a "loco_*" car kind, hitched to
 // it and to each other, so the body follows curves and reverses with the
 // train. The cab is the one section people stand in; the controls work from
-// there, and fuel goes in from anywhere beside the engine.
+// there. A steam cab has three stations (cab_station()), and its fire is fed
+// at the firebox door; water goes in from anywhere beside the engine. The
+// main-line engine is the same thing six sections long, with a tender.
 //
 // Side tiles are 1 (left of the heading) and 3 (right), as in
 // train_platform_tiles(); sides are -1 and 1 as on train_part.
@@ -36,7 +38,7 @@
 	var/list/armor_cab = list(list(-1, "out", "armor_door"), list(1, "out", "armor_door"))
 	layouts["loco_steam"] = list(
 		"name" = "heavy steam locomotive", "desc" = "A main-line steam locomotive with its own coal bunker. Drive it from the cab; it burns coal, wood and branches.",
-		"body" = "steam", "cab" = 3, "roof" = "loco_steam", "engine" = /obj/structure/trains/locomotive/coal/heavy,
+		"body" = "steam", "cab" = 3, "stations" = TRUE, "roof" = "loco_steam", "engine" = /obj/structure/trains/locomotive/coal/heavy,
 		"segments" = list(
 			list("edges" = list(), "solid" = 2),
 			list("edges" = list(), "solid" = 2),
@@ -52,12 +54,24 @@
 			list("edges" = list(), "solid" = 1)))
 	layouts["loco_armored"] = list(
 		"name" = "heavy armored locomotive", "desc" = "A steam locomotive under riveted plate from buffer to bunker. Its cab doors stop bullets from outside.",
-		"body" = "armored", "cab" = 3, "roof" = "loco_armored", "armored" = TRUE, "engine" = /obj/structure/trains/locomotive/coal/armored/heavy,
+		"body" = "armored", "cab" = 3, "stations" = TRUE, "roof" = "loco_armored", "armored" = TRUE, "engine" = /obj/structure/trains/locomotive/coal/armored/heavy,
 		"segments" = list(
 			list("edges" = list(), "solid" = 2),
 			list("edges" = list(), "solid" = 2),
 			list("edges" = armor_cab, "solid" = 0),
 			list("edges" = list(), "solid" = 2)))
+	// The main-line engine: six sections, the cab last, and no bunker or tank
+	// of its own. It runs with a tender coupled behind the cab.
+	layouts["loco_mainline"] = list(
+		"name" = "main-line steam locomotive", "desc" = "A big express engine with six coupled wheels. It carries no coal or water of its own: couple a tender behind its cab. The driver's stand is on the right of the cab, the firebox door in the middle and the fireman's side on the left.",
+		"body" = "mainline", "cab" = 6, "stations" = TRUE, "roof" = "loco_mainline", "engine" = /obj/structure/trains/locomotive/coal/mainline,
+		"segments" = list(
+			list("edges" = list(), "solid" = 2),
+			list("edges" = list(), "solid" = 2),
+			list("edges" = list(), "solid" = 2),
+			list("edges" = list(), "solid" = 2),
+			list("edges" = list(), "solid" = 2),
+			list("edges" = list(), "solid" = 0)))
 	// Not an engine: a tender is drawn and built the same way, in one piece.
 	layouts["tender"] = list(
 		"name" = "tender", "desc" = "A locomotive tender: a coal bunker and a water tank on wheels, with a shovelling plate at the front. Couple it next to a steam locomotive.",
@@ -126,7 +140,7 @@
 	var/list/L = layout()
 	if (!L || !L["body"] || !car_id)
 		return null
-	for (var/obj/structure/trains/locomotive/E in range(4, src))
+	for (var/obj/structure/trains/locomotive/E in range(car_length(), src))
 		if (E.car_id == car_id)
 			return E
 	return null
@@ -177,10 +191,48 @@
 	var/list/L = body_layout()
 	if (!L || L["cab"] == 1)
 		return src
-	for (var/obj/structure/trains/platform/P in range(4, src))
+	for (var/obj/structure/trains/platform/P in range(body_length(), src))
 		if (P.car_id == car_id && P.seg_index == L["cab"])
 			return P
 	return null
+
+/obj/structure/trains/locomotive/proc/body_length()
+	return body_kind ? train_car_length("loco_[body_kind]") : 1
+
+// Cab stations. A steam cab has three, one to each of its tiles, so a full
+// crew is a driver and a fireman: the driver's stand on the right (throttle,
+// brake and reverser), the firebox door in the middle (the fire, the shovel
+// and fuel by hand) and the fireman's side on the left (the injector).
+/obj/structure/trains/locomotive/proc/has_stations()
+	var/list/L = body_layout()
+	return L && L["stations"]
+
+// The station user stands at: "driver", "fire" or "fireman"; "all" for an
+// engine worked from one place; null in a cab with stations when user is not
+// on one of its tiles.
+/obj/structure/trains/locomotive/proc/cab_station(mob/user)
+	if (!has_stations())
+		return "all"
+	var/obj/structure/trains/spot = control_spot()
+	if (!spot || !user || !isturf(user.loc) || !isturf(spot.loc))
+		return null
+	var/list/tiles = train_platform_tiles(spot.loc, spot.dir)
+	var/i = tiles.Find(user.loc)
+	return i ? list("fireman", "fire", "driver")[i] : null
+
+/obj/structure/trains/locomotive/proc/at_firebox(mob/user)
+	var/station = cab_station(user)
+	return station == "all" || station == "fire"
+
+/obj/structure/trains/locomotive/proc/station_text(station)
+	switch (station)
+		if ("driver")
+			return "Driver's stand. "
+		if ("fire")
+			return "Firebox door. "
+		if ("fireman")
+			return "Fireman's side. "
+	return ""
 
 /obj/structure/trains/locomotive/on_runtime_spawn()
 	..()
@@ -270,7 +322,7 @@
 	// On a tight curve a cab side tile is also a tile of a section behind;
 	// what stands there stays with that section.
 	var/list/behind = list()
-	for (var/obj/structure/trains/platform/P in range(4, src))
+	for (var/obj/structure/trains/platform/P in range(body_length(), src))
 		if (P.car_id == car_id)
 			behind += train_platform_tiles(P.loc, P.dir)
 	for (var/i in 1 to 3)
@@ -379,7 +431,7 @@
 		to_chat(user, SPAN_WARNING("It is wrecked. A welding tool will get it running again."))
 	else if (health < initial(health))
 		to_chat(user, "It is damaged ([round(100 * health / initial(health))]%). A welding tool repairs it.")
-	to_chat(user, "It is driven from its cab.")
+	to_chat(user, has_stations() ? "It is worked from its cab: the driver's stand on the right, the firebox door in the middle, the fireman's side on the left." : "It is driven from its cab.")
 
 /////////////////////////////////////////////////////////////////////////////
 // The three engines. Speeds are the locomotive rows of docs/vehicle-speeds.md;
@@ -468,7 +520,40 @@
 
 /obj/structure/trains/locomotive/coal/armored/heavy/examine(mob/user)
 	..()
-	to_chat(user, "It is driven from its cab.")
+	to_chat(user, has_stations() ? "It is worked from its cab: the driver's stand on the right, the firebox door in the middle, the fireman's side on the left." : "It is driven from its cab.")
+
+// The main-line engine: twice the train of the heavy engine and faster, on a
+// bigger fire. Its feed tank is only what the pipes hold; the water and the
+// coal ride in the tender behind the cab.
+/obj/structure/trains/locomotive/coal/mainline
+	name = "main-line steam locomotive"
+	body_kind = "mainline"
+	health = 4000
+	max_fuel = 400
+	train_weight = 7.5 // 10 with its five body sections
+	haul = 60
+	train_speed = 1.4
+	max_train_speed = 1.4
+	water = 100
+	max_water = 100
+	boiler_water = 160
+	max_boiler = 160
+	steam_time = 360
+
+/obj/structure/trains/locomotive/coal/mainline/ex_act(severity)
+	blast_couplings(severity)
+	heavy_damage(severity == 1.0 ? 450 : (severity == 2.0 ? 220 : 80))
+
+/obj/structure/trains/locomotive/coal/mainline/attackby(obj/item/W as obj, mob/user as mob)
+	if (heavy_weld(W, user))
+		return
+	return ..()
+
+/obj/structure/trains/locomotive/coal/mainline/examine(mob/user)
+	..()
+	heavy_examine(user)
+	if (!engine_tenders().len)
+		to_chat(user, "<span class = 'warning'>It has no tender coupled next to it.</span>")
 
 /////////////////////////////////////////////////////////////////////////////
 // Kits
@@ -479,6 +564,9 @@
 /obj/structure/train_car_kit/loco_steam
 	name = "heavy steam locomotive kit"
 	car_kind = "loco_steam"
+/obj/structure/train_car_kit/loco_mainline
+	name = "main-line steam locomotive kit"
+	car_kind = "loco_mainline"
 /obj/structure/train_car_kit/loco_diesel
 	name = "heavy diesel locomotive kit"
 	car_kind = "loco_diesel"
