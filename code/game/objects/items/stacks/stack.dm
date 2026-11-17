@@ -534,11 +534,11 @@
 		customdesc = chosen["desc"]
 
 	else if (recipe.result_type == /obj/structure/research_bench)
-		if (!H || !H.civilization || H.civilization == "none")
-			to_chat(user, "Only members of a faction can build a research bench.")
-			return
-		if (map && map.count_faction_benches(H.civilization) >= map.get_bench_cap(H.civilization))
-			to_chat(user, "Your faction already has as many research benches as it can support ([map.get_bench_cap(H.civilization)]). Build a resource forge to raise the cap.")
+		// Anyone may build one; only a bench a faction will own counts
+		// toward that faction's cap (bench_owner_faction()).
+		var/bench_faction = map ? map.bench_owner_faction(H) : null
+		if (bench_faction && map.count_faction_benches(bench_faction) >= map.get_bench_cap(bench_faction))
+			to_chat(user, "Your faction already has as many research benches as it can support ([map.get_bench_cap(bench_faction)]). Build a resource forge to raise the cap.")
 			return
 
 	else if (recipe.result_type == /obj/structure/researchdesk)
@@ -2096,7 +2096,9 @@
 			FB.color1 = map.custom_civs[H.civilization][7]
 			FB.color2 = map.custom_civs[H.civilization][8]
 		else if (istype(O, /obj/structure/research_bench))
-			// The bench belongs to the faction that built it (Phase 4.1).
+			// The bench belongs to the faction that built it (Phase 4.1);
+			// a factionless builder, or any builder under book research,
+			// makes an unowned bench (bench_owner_faction()).
 			// Re-check the cap HERE, not just pre-build: the earlier check
 			// passed ~25s ago and several members can build in parallel
 			// (time-of-check/time-of-use), so validate again now that the
@@ -2104,15 +2106,16 @@
 			// count_faction_benches() only counts assigned benches, so the
 			// count is still accurate at this point.
 			var/obj/structure/research_bench/RBN = O
-			if (H.civilization && H.civilization != "none")
-				if (map && map.count_faction_benches(H.civilization) >= map.get_bench_cap(H.civilization))
+			var/owner_faction = map ? map.bench_owner_faction(H) : null
+			if (owner_faction)
+				if (map.count_faction_benches(owner_faction) >= map.get_bench_cap(owner_faction))
 					to_chat(H, SPAN_WARNING("Your faction hit its research bench cap while this one was being built - it falls apart, and you recover the materials."))
 					// Refund: the materials were already consumed by use() above.
 					if (required > 0)
 						new type(get_turf(H), required)
 					qdel(O)
 					return
-				RBN.faction = H.civilization
+				RBN.faction = owner_faction
 		else if (istype(O, /obj/structure/altar))
 			var/obj/structure/altar/P = O
 			P.religion = H.religion
