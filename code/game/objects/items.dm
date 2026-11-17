@@ -172,6 +172,9 @@
 	if (istype(user, /mob/living/human))
 		var/mob/living/human/HM = user
 		if (HM.werewolf && HM.body_build.name != "Default") return
+	// Out of a bag through the storage strip: the storage window's move time.
+	if (istype(loc, /obj/item/weapon/storage) && !storage_strip_take_wait(user, src))
+		return
 	if (do_after(user,equiptimer, src, can_move = equiptimer))
 		if (src in range(1,user))
 			if (hasorgans(user))

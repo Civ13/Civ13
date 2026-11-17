@@ -177,6 +177,7 @@
 		user.client.screen += storage_end
 	user.s_active = src
 	is_seeing |= user
+	storage_strip_apply(user, src)
 	return
 
 /obj/item/weapon/storage/proc/hide_from(mob/user as mob)
@@ -189,6 +190,7 @@
 		user.client.screen -= storage_end
 		user.client.screen -= closer
 		user.client.screen -= contents
+	storage_strip_closed(user, src)
 	if (user.s_active == src)
 		user.s_active = null
 	is_seeing -= user
@@ -196,6 +198,8 @@
 /obj/item/weapon/storage/proc/open(mob/user as mob)
 	if (storage_window_open(user, src))
 		return
+	if (ishuman(user))
+		storage_strip_hint(user)
 	if (use_sound)
 		playsound(loc, use_sound, 50, TRUE, -5)
 

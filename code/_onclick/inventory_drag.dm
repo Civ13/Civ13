@@ -67,6 +67,9 @@
 	// An item inside storage can only be dragged out of the storage window being shown.
 	if (istype(loc, /obj/item/weapon/storage) && H.s_active != loc)
 		return FALSE
+	// Taking it out of the bag takes the storage window's move time.
+	if (istype(loc, /obj/item/weapon/storage) && !storage_strip_take_wait(H, src))
+		return FALSE
 
 	if (istype(over, /obj/screen/inventory))
 		var/obj/screen/inventory/slot = over
