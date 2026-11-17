@@ -200,7 +200,8 @@ class ReceiptTests(unittest.TestCase):
         self.assertEqual(len(self.world.calls), 1)
         self.client.lock.acquire()
         try:
-            with self.assertRaises(ContractError):
+            # A busy client is refused after LOCK_WAIT; keep the replay from sitting out the real 15s.
+            with patch("action_contract.LOCK_WAIT", 0.05), self.assertRaises(ContractError):
                 self.client.request("character_queue", self.args)
         finally:
             self.client.lock.release()
