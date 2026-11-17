@@ -154,22 +154,32 @@
 		return null
 	return S
 
-// Where a shot or throw by user at target starts: the ground under the
-// gondola when user rides an airship aloft and target is on that ground.
-/proc/airborne_launch_turf(mob/user, atom/target)
+// The ground turf under user when user rides an airship aloft or stands on
+// a crewed airship's deck (air_hull.dm), else null.
+/proc/airborne_ground_under(mob/user)
 	var/obj/structure/vehicle/bicycle/airship/S = aloft_airship_ridden_by(user)
+	if (S)
+		return S.ground_turf()
+	var/datum/craft/air/C = air_hull_under(user)
+	var/turf/here = get_turf(user)
+	var/ground = C ? C.ground_z() : 0
+	return ground ? locate(here.x, here.y, ground) : null
+
+// Where a shot or throw by user at target starts: the ground under the
+// gondola or deck when target is on that ground.
+/proc/airborne_launch_turf(mob/user, atom/target)
 	var/turf/T = get_turf(target)
-	if (!S || !T)
+	if (!T)
 		return null
-	var/turf/G = S.ground_turf()
+	var/turf/G = airborne_ground_under(user)
 	if (!G || T.z != G.z)
 		return null
 	return G
 
-// TRUE when firer shoots from the gondola of an airship over start.
+// TRUE when firer shoots from a gondola or deck over start.
 /proc/pedal_airship_rider_shot(mob/firer, turf/start)
-	var/obj/structure/vehicle/bicycle/airship/S = aloft_airship_ridden_by(firer)
-	return S && S.ground_turf() == start
+	var/turf/G = airborne_ground_under(firer)
+	return G && G == start
 
 // A bottle that falls a storey or more bursts; a lit firebomb sets the ground alight.
 /obj/item/weapon/reagent_containers/food/drinks/bottle/landed_from_fall(turf/T)

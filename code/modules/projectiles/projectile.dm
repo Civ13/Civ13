@@ -196,7 +196,7 @@
 		return TRUE
 
 	// Fired down from an airship's gondola at the ground below (pedal_airship_combat.dm).
-	if (aloft_pedal_airships.len)
+	if (aloft_pedal_airships.len || air_hull_crafts.len)
 		var/turf/gondola = airborne_launch_turf(user, targloc)
 		if (gondola)
 			curloc = gondola

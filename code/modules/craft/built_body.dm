@@ -298,7 +298,12 @@
 					continue
 				if (istype(M, /atom/movable/lighting_overlay) || istype(M, /atom/movable/lighting_fullbright) || istype(M, /obj/effect/vessel_path) || M.craft_left_behind())
 					continue
-				riders += M
+				// Floors first, so nobody reaches a tile before the floor
+				// under them does (an airship's deck hangs over open air).
+				if (istype(M, /obj/covers))
+					riders.Insert(1, M)
+				else
+					riders += M
 			cargo += list(riders)
 			water[S] = true_water_level(S)
 		for (var/turf/D in dest)
