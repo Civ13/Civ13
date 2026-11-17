@@ -84,6 +84,13 @@ class FieldWork(unittest.TestCase):
                 ("code/modules/ecology/foraging.dm", 'note_field_work(src, "forage")'),
                 ("code/modules/1713/animal_harvest.dm", 'note_field_work(H, "butchering")')):
             self.assertIn(call, read(path), path)
+    def test_a_recorded_prototype_says_what_is_left(self):
+        protos = read("code/modules/research_tree/subject_prototypes.dm")
+        record = proc(protos, "/proc/record_subject_prototype")
+        self.assertIn('The chapter is [written]% written.', record)
+        self.assertIn('needs work at a research bench or other field work', record)
+        self.assertIn('"protos_made" = prototype_progress(node_id)[1]', read("code/modules/research_tree/book_interface.dm"))
+
     def test_philosophy_grows_from_a_scholars_work(self):
         # On book-research worlds nothing raised Philosophy, which gates language and holy books.
         for path, call in (("code/modules/research_tree/book_research.dm", "H.philosophy_from_study(node_id)"),

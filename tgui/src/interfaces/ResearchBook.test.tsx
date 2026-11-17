@@ -55,6 +55,11 @@ describe('research book window', () => {
     expect(screen.getByText(/30% \(30\/100\) - working copper pickaxe still needed/)).toBeTruthy();
     expect(screen.getByRole('progressbar', { name: 'Stone Masonry progress' }).getAttribute('aria-valuenow')).toBe('30');
   });
+  it('counts the prototypes a book has recorded for an unfinished chapter', () => {
+    const ui = book();
+    render(<ResearchBook {...ui} data={{ ...ui.data, unfinished: [{ id: 'bronze', name: 'Bronze Working', percent: 45, ticks: 45, cost: 100, protos_made: 3, protos_max: 5 }] }} />);
+    expect(screen.getByText(/45% \(45\/100\) - prototypes made 3 of 5/)).toBeTruthy();
+  });
   it('writes a known chapter only with a pen, a sheet and the stamina for it', () => {
     const ui = book(); const view = render(<ResearchBook {...ui} />);
     fireEvent.click(screen.getByText('Write'));

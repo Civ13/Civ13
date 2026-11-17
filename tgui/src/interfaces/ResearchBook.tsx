@@ -60,7 +60,7 @@ export function ResearchBook(ui: ScreenProps) {
       })}</div>
     </Section>
     {!!unfinished.length && <Section title="Unfinished research">
-      {unfinished.map(row => <div key={row.id} className="rs-unfinished"><strong>{str(row.name)}</strong> <span className="rs-dim">{row.percent}% ({row.ticks}/{row.cost}){row.prototype ? ` - working ${str(row.prototype)} ${row.prototype_done ? 'recorded' : 'still needed'}` : ''}</span><Bar value={row.percent} label={`${str(row.name)} progress`} /></div>)}
+      {unfinished.map(row => <div key={row.id} className="rs-unfinished"><strong>{str(row.name)}</strong> <span className="rs-dim">{row.percent}% ({row.ticks}/{row.cost}){row.prototype ? ` - working ${str(row.prototype)} ${row.prototype_done ? 'recorded' : 'still needed'}` : ''}{Number(row.protos_made) > 0 ? ` - prototypes made ${row.protos_made} of ${row.protos_max}` : ''}</span><Bar value={row.percent} label={`${str(row.name)} progress`} /></div>)}
       <p className="rs-dim">Place the book on a research bench and choose the subject to carry on.</p>
     </Section>}
     <Section title="Write a chapter from memory">

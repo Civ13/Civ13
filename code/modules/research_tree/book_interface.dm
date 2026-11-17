@@ -544,7 +544,7 @@
 		var/list/entry = progress[node_id]
 		if (!N)
 			continue
-		unfinished += list(list("id" = node_id, "name" = N.name, "percent" = round(entry[1] / N.cost_ticks * 100), "ticks" = entry[1], "cost" = N.cost_ticks, "prototype" = N.mode == RESEARCH_MODE_PROTOTYPE ? (node_needs_demonstration(node_id) ? "demonstration" : N.prototype_display_name()) : null, "prototype_done" = entry[2] ? 1 : 0))
+		unfinished += list(list("id" = node_id, "name" = N.name, "percent" = round(entry[1] / N.cost_ticks * 100), "ticks" = entry[1], "cost" = N.cost_ticks, "prototype" = N.mode == RESEARCH_MODE_PROTOTYPE ? (node_needs_demonstration(node_id) ? "demonstration" : N.prototype_display_name()) : null, "prototype_done" = entry[2] ? 1 : 0, "protos_made" = prototype_progress(node_id)[1], "protos_max" = prototype_progress(node_id)[2]))
 	data["unfinished"] = unfinished
 	var/list/writable = list()
 	if (!H.recipe_knowledge_exempt())

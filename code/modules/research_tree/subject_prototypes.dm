@@ -176,7 +176,18 @@
 	var/finished = B.add_research_work(node_id, points, FALSE, H)
 	H.gain_active_scholarship(node_id, points, "prototype:[node_id]:[B.prototypes_made(node_id)]")
 	to_chat(H, SPAN_NOTICE("You note how the prototype came out in [B]: <b>[N.name]</b> advances by [points] points[finished ? " and the chapter is finished" : ""]. ([B.prototypes_made(node_id)] of [SUBJECT_PROTO_MAX] prototypes for this book.)"))
+	// Say what is left, so a recorded prototype is not mistaken for the whole subject.
+	if (finished)
+		to_chat(H, SPAN_NOTICE("Read the finished chapter in [B] to learn <b>[N.name]</b>."))
+	else
+		var/written = round(B.research_ticks(node_id) / N.cost_ticks * 100)
+		var/left = SUBJECT_PROTO_MAX - B.prototypes_made(node_id)
+		to_chat(H, SPAN_NOTICE("The chapter is [written]% written. [left > 0 ? "[left] more prototype\s can add to it; the rest" : "Prototypes can add no more; the rest"] needs work at a research bench or other field work."))
 	return points
+
+// Prototypes a book has recorded for a subject, and the most that count.
+/obj/item/weapon/book/proc/prototype_progress(node_id)
+	return list(prototypes_made(node_id), SUBJECT_PROTO_MAX)
 
 // H carries a book that is working on node_id: its recipes stay listed in the
 // crafting menu, so a refused prototype says why instead of vanishing.
