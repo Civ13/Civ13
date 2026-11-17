@@ -157,6 +157,9 @@ class ReturnFixture:
                         isturf=lambda value: isinstance(value, Turf),
                         get_turf=lambda value: value if isinstance(value, Turf) else getattr(value, 'loc', None),
                         is_protected_sleep_location=lambda value: getattr(value, 'loc', value).protected,
+                        # Mirrors tile_has_floor: a floor turf, or a floor cover (upper storeys).
+                        tile_has_floor=lambda T: T is not None and (getattr(T, 'kind', '').startswith('/turf/floor') or any(
+                            getattr(A, 'kind', '').startswith('/obj/covers') and not getattr(A, 'wall', False) for A in T)),
                         IsGuestKey=lambda key: key.startswith('Guest'), DEAD=2,
                         typed_iter=lambda values, kind: [v for v in values if
                             (getattr(v, 'kind', '').startswith(('/obj', '/mob')) if kind == '/atom/movable'
@@ -823,6 +826,14 @@ class CharacterReturnTests(unittest.TestCase):
             self.assertFalse(safe(Turf(kind=kind), f.body))
         f.home.append(NS(kind='/obj/wall', density=True))
         self.assertFalse(safe(f.home, f.body))
+
+    def test_upper_storey_floor_holds_a_character(self):
+        f = ReturnFixture()
+        safe = f.env['persistence_character_turf_safe']
+        sky = Turf(kind='/turf/sky/building')
+        self.assertFalse(safe(sky, f.body))
+        sky.append(NS(kind='/obj/covers/repairedfloor', density=False, wall=False))
+        self.assertTrue(safe(sky, f.body))
 
     def test_admission_and_sleep_source_paths_are_wired_before_creation(self):
         join = adapter.read('code/game/mob/new_player/new_player.dm')
