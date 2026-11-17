@@ -29,9 +29,8 @@
 /obj/item/stack/tarred_oakum
 	name = "tarred oakum"
 	desc = "Old rope picked apart and soaked in pitch. Use it on a plank of a wooden hull, with a chisel or a hammer in your other hand, to caulk her seams."
-	icon = 'icons/obj/materials.dmi'
-	icon_state = "hemp"
-	color = "#5a4028"
+	icon = 'icons/obj/hull_gear.dmi'
+	icon_state = "tarred_oakum"
 	singular_name = "twist of tarred oakum"
 	max_amount = 30
 	w_class = ITEM_SIZE_SMALL
