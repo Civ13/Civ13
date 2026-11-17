@@ -69,7 +69,10 @@ Every bare hand wash (open water, sinks, taps, basins) marks both hands, and
 Bathe or a sponge bath marks every bare part, even when it stops below 200. Skin
 under clothes shows "(covered)", because washing there cleans the clothes.
 Each wash says how clean you now feel, and the mood check points a dirty
-player to self-examine.
+player to self-examine. Below 200 that feeling follows the marked parts: with
+every part washed it says "fairly clean" (water alone stops at 175; soap, a tub
+or a river with a current reach clean), and with only covered skin left it
+says to undress. Clothes hold no dirt of their own, only blood and fleas.
 
 Bathing in foul water rolls the illness of drinking it at half the chance.
 On Persistence maps a tub or shower holds a tank (`station_water.dm`): turning

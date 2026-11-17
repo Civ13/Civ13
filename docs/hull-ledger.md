@@ -115,6 +115,44 @@ is read.
 
 Small craft are left out. Nothing here is saved.
 
+## Anchors, mooring and drift
+
+`code/modules/naval/hull_anchors.dm`. A boat or ship needs something to lie to
+when her anchor is called down at the helm:
+
+- anchors built on her deck (`/obj/structure/hull_anchor`): a killick holds 40
+  tiles of hull, an iron anchor 100; together they must cover her tiles;
+- or a mooring post (`/obj/structure/berth/quay`) or bollard within two tiles
+  of her bounding box.
+
+The helm order is never refused, so arrivals that call `set_anchor(TRUE)` still
+stop her; the crew is told when nothing holds. `held()` is false with the
+anchor up or nothing to hold, and `step_drift()` then moves an awake, crewed
+hull one tile a ledger step: with `river_current_direction()` at her origin if
+there is a current, otherwise downwind in wind 2 or more. An empty hull never
+drifts. Small craft and grounded hulls are always held.
+
+A hull whose saved record has no `"old_anchor"` key was afloat before anchors
+were things and keeps one that holds all of her (`old_anchor`, saved). Hulls
+commissioned from now on save `"old_anchor": 0`.
+
+## Rigging and sail handling
+
+`code/modules/naval/hull_rigging.dm`. A mast standing free on a built hull has
+`canvas` (furled 0, reefed 1, full 2, the default) and `torn`. Clicking a
+rigged mast offers set, reef and furl, four seconds each; `hull_wait()` lets
+the work survive a step of the hull.
+
+- The sail drive is not `ready()` when furled; `push()` is times 0.6 reefed and
+  times 0.3 torn.
+- `step_rigging()` runs in the ledger step for boats and ships under way: in
+  wind 3 and up a full sail has 15 chances in 100 a half minute to tear, and in
+  wind 4 a reefed one has 5. It reads her drives; there is no deck walk.
+- Two pieces of cloth used on the mast mend a torn sail in six seconds.
+- The tiller lists how her sails are carried once any is not plainly full.
+
+Masts fitted to a modular ship's frame are untouched.
+
 ## One-object craft: rafts, canoes, outriggers, inflatables
 
 These are single objects with no ledger (`code/modules/naval/small_craft_leaks.dm`).
@@ -140,7 +178,7 @@ One looping timer (`hull_ledgers_tick`, every 30 seconds) steps the ledgers that
 are awake. Players are matched to hulls from the client list with one keyed
 lookup a hull, so empty hulls cost no deck walk. Nothing runs during a world
 save. The tiller saves the ledger inside its `hull_state` record
-(`"ledger": {"water", "holes", "patches", "grounded", "seams"}`); nothing stores `world.time`.
+(`"ledger": {"water", "holes", "patches", "grounded", "seams", "old_anchor"}`); nothing stores `world.time`.
 
 ## Tests
 

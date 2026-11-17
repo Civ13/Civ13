@@ -206,3 +206,24 @@ var/hw_runtime_error = FALSE
 	mug2.reagents.add_reagent("water", 12)
 	hw_check(mug2.wash_spend(H) && mug2.reagents.get_reagent_amount("water") == 7, "a mug pays 5 water a part")
 	hw_check(!mug2.wash_spend(H), "a mug stops when it cannot pay for another part")
+
+	// The hygiene feeling follows the parts self-examine marks.
+	H.w_uniform = null
+	H.gloves = null
+	H.dirty_hands = 0
+	H.washed_parts = null
+	H.hygiene = 150
+	hw_check(H.hygiene_feeling() == "You feel a bit dirty.", "unwashed parts feel a bit dirty ([H.hygiene_feeling()])")
+	H.wash_body_part("l_hand")
+	H.wash_body_part("l_leg")
+	H.wash_body_part("chest")
+	hw_check(H.hygiene < HYGIENE_LEVEL_NORMAL && findtext(H.hygiene_feeling(), "fairly clean"), "washing every part with water no longer feels a bit dirty ([H.hygiene], [H.hygiene_feeling()])")
+	H.washed_parts = null
+	var/obj/item/clothing/under/shirt = new(H)
+	shirt.body_parts_covered = UPPER_TORSO
+	H.w_uniform = shirt
+	H.wash_body_part("l_hand")
+	H.wash_body_part("l_leg")
+	hw_check(findtext(H.hygiene_feeling(), "under your clothes"), "only covered skin left unwashed says to undress ([H.hygiene_feeling()])")
+	H.w_uniform = null
+	hw_check(H.hygiene_feeling() == "You feel a bit dirty.", "undressed, the unwashed chest feels a bit dirty again")

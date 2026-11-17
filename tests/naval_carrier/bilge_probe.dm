@@ -666,6 +666,134 @@ var/naval_runtime_error = FALSE
 	qdel(heap)
 	qdel(skiff)
 
+// Anchors, mooring and drift (naval/hull_anchors.dm).
+/proc/anchor_checks()
+	var/wind_was = map.windspeedvar
+	var/from_was = map.winddirection
+	map.windspeedvar = 2
+	map.winddirection = "West"
+	var/obj/structure/hull_tiller/tiller = bilge_hull(40, 45, 42, 54, "Dhow")
+	var/datum/craft/C = tiller.craft
+	var/datum/hull_ledger/L = C.ledger
+	var/turf/start = C.body.origin()
+	naval_check(L.needs_anchor() && !L.old_anchor && L.holding() == 0 && C.anchored, "a new boat has no anchor, though her helm says anchor down")
+	naval_check(!L.held() && findtext(L.hold_text(), "nothing to hold her"), "so nothing holds her ([L.hold_text()])")
+	naval_check(L.drift_dir() == EAST, "a wind of 2 from the west would set her east")
+	naval_check(!L.step_drift() && C.body.origin() == start, "with nobody aboard she stays where she was left")
+	L.crewed = TRUE
+	naval_check(L.step_drift() && C.body.origin():x == start.x + 1 && L.drift_told, "with someone aboard she drifts a tile downwind and her crew is told")
+	map.windspeedvar = 1
+	naval_check(!L.drift_dir() && !L.step_drift(), "in a light wind with no current she lies quiet")
+	map.windspeedvar = 2
+	// A killick holds forty tiles.
+	var/turf/O = C.body.origin()
+	var/obj/structure/hull_anchor/stone/killick = new(locate(O.x + 1, O.y + 2, 2))
+	naval_check(L.holding() == 40 && L.held() && findtext(L.hold_text(), "lies to her anchor"), "a killick on her deck holds her ([L.holding()], [L.hold_text()])")
+	naval_check(!L.step_drift() && !L.drift_told, "held, she does not drift")
+	C.set_anchor(FALSE)
+	naval_check(!L.held() && L.step_drift(), "with her anchor up and no way on she drifts again")
+	C.set_anchor(TRUE)
+	naval_check(L.held(), "called down again it holds")
+	qdel(killick)
+	naval_check(!L.held(), "her anchor gone, nothing holds her")
+	// A bollard within two tiles is a mooring.
+	O = C.body.origin()
+	var/obj/structure/bollard/post = new(locate(O.x + 4, O.y + 3, 2))
+	naval_check(L.mooring() == post && L.held() && findtext(L.hold_text(), "made fast"), "a bollard two tiles off her side is a mooring ([L.hold_text()])")
+	post.forceMove(locate(O.x + 5, O.y + 3, 2))
+	naval_check(!L.mooring() && !L.held(), "three tiles off it is out of reach")
+	qdel(post)
+	// Saved: a new hull has no old anchor, a record from before has one.
+	var/list/fresh = L.to_list()
+	naval_check(fresh["old_anchor"] == 0, "a new hull is saved without an old anchor")
+	L.from_list(list("water" = 0))
+	naval_check(L.old_anchor && L.holding() == 30 && L.held(), "a record from before anchors keeps the anchor she always had")
+	L.from_list(fresh)
+	naval_check(!L.old_anchor && !L.held(), "and a new record does not")
+	qdel(tiller)
+	// A ship wants more than a killick.
+	var/obj/structure/hull_tiller/big = bilge_hull(22, 12, 26, 21, "Nao")
+	var/datum/hull_ledger/B = big.craft.ledger
+	var/obj/structure/hull_anchor/stone/small = new(locate(24, 14, 2))
+	naval_check(B.holding() == 40 && !B.held(), "one killick will not hold fifty tiles ([B.holding()], [B.tiles], [B.held()])")
+	var/obj/structure/hull_anchor/bower = new(locate(24, 16, 2))
+	naval_check(B.holding() == 140 && B.held() && near(bower.hull_load(), 1) && near(small.hull_load(), 0.4), "an iron anchor will, and anchors weigh on her")
+	qdel(small)
+	qdel(bower)
+	qdel(big)
+	// A small craft needs none.
+	var/obj/structure/hull_tiller/skiff = bilge_hull(22, 25, 24, 28, "Cock")
+	var/datum/hull_ledger/S = skiff.craft.ledger
+	S.crewed = TRUE
+	naval_check(!S.needs_anchor() && S.held() && !S.step_drift(), "a small craft needs no anchor and does not drift")
+	qdel(skiff)
+	map.windspeedvar = wind_was
+	map.winddirection = from_was
+
+// Rigging and sail handling (naval/hull_rigging.dm).
+/proc/rigging_checks()
+	var/wind_was = map.windspeedvar
+	var/from_was = map.winddirection
+	map.windspeedvar = 1
+	map.winddirection = "West"
+	var/obj/structure/hull_tiller/tiller = bilge_hull(46, 46, 48, 55, "Brig")
+	var/datum/craft/C = tiller.craft
+	var/datum/hull_ledger/L = C.ledger
+	L.seep_tiles = 0
+	var/obj/structure/vehicleparts/movement/sail/fore = new(locate(47, 48, 2))
+	fore.sails = TRUE
+	var/obj/structure/vehicleparts/movement/sail/main = new(locate(47, 52, 2))
+	main.sails = TRUE
+	C.set_anchor(FALSE)
+	C.set_speed(VESSEL_SPEED_SLOW)
+	var/full_push = C.thrust()
+	naval_check(fore.canvas == SAIL_FULL && !fore.torn && full_push > 0 && L.rigging_text() == "", "a mast starts with full sail and the tiller says nothing new (push [full_push])")
+	naval_check(fore.handled_here() && fore.canvas_name() == "set full", "a rigged mast on her deck can be handled")
+	// Reefed and furled.
+	fore.set_canvas(SAIL_REEFED)
+	naval_check(C.thrust() == round(full_push / 2) + round(full_push / 2 * 0.6), "a reefed sail pushes six tenths ([C.thrust()] of [full_push])")
+	fore.set_canvas(SAIL_FURLED)
+	naval_check(C.thrust() == round(full_push / 2) && L.masts == 1, "a furled sail pushes nothing and is no rigged mast to ballast ([C.thrust()])")
+	naval_check(findtext(L.rigging_text(), "1 set full") && findtext(L.rigging_text(), "1 furled"), "the tiller says how her sails are carried ([L.rigging_text()])")
+	main.set_canvas(SAIL_FURLED)
+	naval_check(C.thrust() == 0 && !L.under_sail(), "all furled, no sail drives her")
+	// The tearing table.
+	naval_check(!sail_tear_chance(SAIL_FULL, 2) && sail_tear_chance(SAIL_FULL, 3) == 15 && !sail_tear_chance(SAIL_REEFED, 3) && sail_tear_chance(SAIL_REEFED, 4) == 5 && !sail_tear_chance(SAIL_FURLED, 4), "full sail tears from wind 3, reefed only in a gale, furled never")
+	// Furled in a gale: safe.
+	map.windspeedvar = 4
+	var/torn_count = 0
+	for (var/i = 1, i <= 100, i++)
+		torn_count += L.step_rigging(30)
+	naval_check(!torn_count && !fore.torn && !main.torn && !L.gale_told, "a hundred half minutes of gale tear no furled sail")
+	// Reefed in a strong wind: safe.
+	map.windspeedvar = 3
+	fore.set_canvas(SAIL_REEFED)
+	main.set_canvas(SAIL_REEFED)
+	for (var/i = 1, i <= 100, i++)
+		torn_count += L.step_rigging(30)
+	naval_check(!torn_count && !L.gale_told, "nor does a strong wind tear a reefed one")
+	// Full in a strong wind: sooner or later.
+	main.set_canvas(SAIL_FULL)
+	var/before = C.thrust()
+	for (var/i = 1, i <= 200 && !main.torn, i++)
+		torn_count += L.step_rigging(30)
+	naval_check(main.torn && torn_count == 1 && !fore.torn && L.gale_told, "a full sail in a strong wind tears, and her crew was warned")
+	naval_check(C.thrust() < before && findtext(L.rigging_text(), "1 torn"), "torn, it pushes little ([C.thrust()] of [before])")
+	naval_check(!L.step_rigging(30) || fore.torn, "a torn sail does not tear twice")
+	main.mend_sail()
+	naval_check(!main.torn && C.thrust() == before, "mended, it pushes as before")
+	// At anchor nothing tears.
+	C.set_speed(VESSEL_SPEED_STOP)
+	C.set_anchor(TRUE)
+	fore.set_canvas(SAIL_FULL)
+	torn_count = 0
+	for (var/i = 1, i <= 100, i++)
+		torn_count += L.step_rigging(30)
+	naval_check(!torn_count, "at anchor the wind tears nothing")
+	map.windspeedvar = wind_was
+	map.winddirection = from_was
+	qdel(tiller)
+
 /proc/naval_run()
 	try
 		naval_checks()
@@ -673,6 +801,8 @@ var/naval_runtime_error = FALSE
 		caulking_checks()
 		pump_checks()
 		load_checks()
+		anchor_checks()
+		rigging_checks()
 	catch(var/exception/e)
 		naval_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = naval_failures, "runtime_error" = naval_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")

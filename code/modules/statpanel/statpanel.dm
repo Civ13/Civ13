@@ -100,6 +100,12 @@
 /client/proc/add_stat(name, value = "")
 	statpanel_data += list(list("name" = name, "value" = value))
 
+// Extra Status lines from mob Stat() overrides go through this and add_stat.
+// The panel is a web page, and Stat() is also called from Topic, where the
+// built-in stat() and statpanel() runtime with "unexpected stat".
+/client/proc/shows_status_tab()
+	return status_tabs && statpanel_tab == "Status"
+
 /client/proc/add_stat_tab(tab)
 	if (!(tab in statpanel_tabs))
 		statpanel_tabs += tab

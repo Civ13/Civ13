@@ -99,7 +99,7 @@ var/global/datum/region_raid_reset/region_raid_reset = new
 
 /mob/living/human/Stat()
 	. = ..()
-	if(region_raid_reset.deadline && statpanel("Status"))
-		stat("Zone collapse in:", "[region_raid_reset.minutes_left()] min")
+	if(. && region_raid_reset.deadline && client.shows_status_tab())
+		client.add_stat("<b>Zone collapse in:</b>", "[region_raid_reset.minutes_left()] min")
 
 #undef RAID_RESET_NOTE_TRIES

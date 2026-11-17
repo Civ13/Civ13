@@ -2418,6 +2418,7 @@ RECIPE: /material/wood/soft/,tiller,/obj/structure/hull_tiller,10,100,1,1,vehicl
 RECIPE: /material/wood/soft/,steering oar,/obj/structure/hull_tiller/steering_oar,6,80,1,1,vehicle parts,14,0,0,8,null
 RECIPE: /material/wood/soft/,rowing bench,/obj/structure/bed/chair/wood/rowing_bench,6,80,1,1,vehicle parts,14,0,0,8,null
 RECIPE: /material/wood/soft/,mooring post,/obj/structure/berth/quay,6,80,1,1,vehicle parts,41,0,0,8,null
+RECIPE: /material/wood/soft/,killick,/obj/structure/hull_anchor/stone,8,80,1,1,vehicle parts,14,0,0,8,null
 RECIPE: /material/wood/soft/,boat davit,/obj/structure/berth/deck,10,80,1,1,vehicle parts,41,0,0,8,null
 RECIPE: /material/wood/soft/,freight depot,/obj/structure/berth/quay/depot,8,80,1,1,vehicle parts,41,0,0,8,null
 
@@ -3055,6 +3056,7 @@ RECIPE: /material/iron/,spring door closer,/obj/item/door_fitting/spring_closer,
 RECIPE: /material/iron/,spring door hinges,/obj/item/door_fitting/spring_hinge,2,80,0,1,construction,0,0,0,8,null
 RECIPE: /material/iron/,steam pumping engine,/obj/structure/sewer_pump/steam,12,250,1,1,construction,0,0,0,8,null
 RECIPE: /material/iron/,lever pump,/obj/structure/cellar_pump/lever,6,120,1,1,construction,0,0,0,8,null
+RECIPE: /material/iron/,anchor,/obj/structure/hull_anchor,8,120,1,1,vehicle parts,41,0,0,8,null
 RECIPE: /material/iron/,steam mine pump,/obj/structure/cellar_pump/steam,12,250,1,1,construction,0,0,0,8,null
 RECIPE: /material/iron/,cast iron hand pump,/obj/structure/well_fitting/pump,6,180,1,1,construction,0,0,0,8,null
 RECIPE: /material/iron/,faction door,/obj/structure/simple_door/key_door/faction_door,15,180,1,1,construction,28,0,0,8,null

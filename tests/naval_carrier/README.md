@@ -204,6 +204,19 @@ under way, up to awash and not at anchor; a fifty-tile ship with two rigged
 masts and no ballast is crank and ships water under sail in a strong wind only,
 and two hundred stone cure it; a small craft is not weighed.
 
+Anchors and drift (`code/modules/naval/hull_anchors.dm`): a new boat has no
+anchor and nothing holds her; empty she stays put, crewed she drifts a tile
+downwind in a wind of 2 and lies quiet in a light one; a killick holds forty
+tiles and an iron anchor a hundred; with her anchor up she drifts again; a
+bollard within two tiles is a mooring and one at three is not; a record from
+before anchors keeps an old anchor and a new record does not; a small craft
+needs none.
+
+Rigging (`code/modules/naval/hull_rigging.dm`): a mast starts with full sail;
+reefed it pushes six tenths and furled nothing; furled sails survive a gale and
+reefed ones a strong wind; a full sail in a strong wind tears, pushes little
+until mended and does not tear twice; at anchor nothing tears.
+
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/bilge_probe.dm 300
 
 ## Upper decks on built hulls (`upper_deck_probe.dm`)
