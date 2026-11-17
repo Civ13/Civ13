@@ -121,14 +121,15 @@ class InputTrace(unittest.TestCase):
                              '\t\t\tH.visible_message("<span class = \'notice\'>[H] stops looking [H.laddervision_direction()] the ladder.</span>")\n')
         self.assertEqual(prior.count(approved_ladder), 1, 'approved ladder stop block')
         prior = prior.replace(approved_ladder, historical_ladder)
-        # #4686 lets a knocked-down human grab or help themselves before the incapacitated return.
+        # #4686 lets a knocked-down human grab or help themselves before the incapacitated return;
+        # #5896 routes the grab through self_grab so a groin grab can hold it in.
         approved_self_help = ('\tif (weakened && A == src && ishuman(src) && !stat && !paralysis && !stunned && (a_intent == I_GRAB || a_intent == I_HELP))\n'
                               '\t\t// Knocked down: grab yourself to press on a wound, or help yourself up.\n'
                               '\t\tvar/mob/living/human/self_helper = src\n'
                               '\t\tif (canClick())\n'
                               '\t\t\tsetClickCooldown(10)\n'
                               '\t\t\tif (a_intent == I_GRAB)\n'
-                              '\t\t\t\tself_helper.try_self_pressure(self_helper.targeted_organ == "random" ? null : self_helper.targeted_organ)\n'
+                              '\t\t\t\tself_helper.self_grab(self_helper.targeted_organ == "random" ? null : self_helper.targeted_organ)\n'
                               '\t\t\telse\n'
                               '\t\t\t\tself_helper.try_get_up()\n'
                               '\t\treturn\n')
