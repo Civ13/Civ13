@@ -31,6 +31,8 @@ const script = String.raw`
     const restored = () => document.querySelectorAll('.connection-restored').length;
     let pings = 0, answer = true;
     window.chatSendPing = function () { pings++; if (answer) setTimeout(window.chatPong, 5); };
+    let readies = 0;
+    window.chatSendReady = function () { readies++; };
     try {
         check(window.__chatTestReady, 'chat initialization');
         await delay(150);
@@ -40,6 +42,7 @@ const script = String.raw`
         await delay(400);
         check(pings > 5, 'pings every tick [' + pings + ']');
         check(lost() === 0, 'answered pings raise no warning');
+        check(readies === 0, 'no ready announce while connected [' + readies + ']');
 
         answer = false;
         await delay(300);
@@ -62,6 +65,7 @@ const script = String.raw`
         await delay(100);
         check(restored() === 1, 'answer after loss reports restored [' + restored() + ']');
         check(lost() === 1, 'no new warning after recovery');
+        check(readies === 1, 'recovery announces ready to the answering world [' + readies + ']');
 
         // Any game message also counts as an answer.
         answer = false;
@@ -69,6 +73,7 @@ const script = String.raw`
         check(lost() === 2, 'second loss warns again [' + lost() + ']');
         window.receiveMessage(encodeURIComponent('You pick up the axe.'));
         check(restored() === 2, 'a game message also reports restored [' + restored() + ']');
+        check(readies === 2, 'each recovery announces ready once [' + readies + ']');
         window.__shot && await window.__shot();
 
         // Ticks further apart than the timeout (a throttled hidden window)

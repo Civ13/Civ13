@@ -32,4 +32,10 @@ assert.ok(read('code/modules/client/client_procs.dm').includes('browser_chat:cha
 assert.ok(chat.includes('window.chatPong = heardFromServer;') && chat.includes("'byond://?chat_ping='"), 'page ping bridge');
 assert.ok(backend.includes('browser_chat:setChatIdentity') && chat.includes('window.setChatIdentity = setChatIdentity;'), 'server names the ckey for chat history');
 assert.ok(chat.includes("const HISTORY_KEY_PREFIX = 'civ13-chat-history-v1:';"), 'chat history key');
+const clientProcs = read('code/modules/client/client_procs.dm');
+const mobCheck = clientProcs.indexOf('if (!usr || usr != mob)');
+assert.ok(mobCheck > 0 && clientProcs.indexOf('href_list["chat_ready"]') > 0 && clientProcs.indexOf('href_list["chat_ready"]') < mobCheck, 'chat_ready is handled before the mob check');
+assert.ok(/href_list\["chat_ping"\][\s\S]{0,600}if \(chat && !chat\.is_ready\)\s+chat\.on_ready\(\)/.test(clientProcs), 'a ping from a page this world never heard ready flushes the queue');
+assert.ok(chat.includes('window.chatSendReady = chatSendReady;') && chat.includes("'byond://?chat_ready=1&again=1'"), 'page re-announces ready after a lost connection');
+assert.ok(clientProcs.includes('watch_browser_panels()') && read('code/modules/statpanel/statpanel.dm').includes('/client/proc/watch_browser_panels()'), 'unanswered side panels are resent');
 console.log('PASS chat workflow and delivery contracts');

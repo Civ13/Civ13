@@ -41,7 +41,8 @@ starts it from `on_ready()` and answers each `chat_ping` with `chatPong`. The
 test captures pings instead of sending them and checks that nothing pings
 before the start, that answered pings never warn, that unanswered pings warn
 once with a "Connection lost" notice shown on every tab, that an answer or any
-game message reports "Connection restored", and that timer ticks further apart
+game message reports "Connection restored" and announces `chat_ready` again
+(the answering world may be a new one after a handover), and that timer ticks further apart
 than the timeout (a throttled hidden window) do not raise a false alarm.
 
 `chat-history.browser.test.js` checks the history kept across a reconnect,

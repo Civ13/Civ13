@@ -1365,11 +1365,24 @@
             scrollToTail();
         }
 
+        // Tells the server this page is ready again. After a lost connection
+        // the answering world may be a new one (a handover or reboot keeps the
+        // client connected but not the page's ready state), and a world that
+        // never heard chat_ready holds every message in its queue.
+        function chatSendReady() {
+            window.location.href = 'byond://?chat_ready=1&again=1';
+        }
+
         function heardFromServer() {
             pingSentAt = 0;
             if (!connectionLost) return;
             connectionLost = false;
             connectionNotice('connection-restored', 'Connection restored: the server is answering again.');
+            try {
+                window.chatSendReady();
+            } catch (e) {
+                console.warn('Chat: ready announce failed', e);
+            }
         }
 
         function heartbeatTick() {
@@ -1399,6 +1412,7 @@
         }
 
         window.chatSendPing = chatSendPing;
+        window.chatSendReady = chatSendReady;
         window.chatPong = heardFromServer;
         window.startChatHeartbeat = startHeartbeat;
 

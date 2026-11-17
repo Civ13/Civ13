@@ -75,6 +75,28 @@
 	src << browse_rsc('interface/fonts/Alegreya-Black.ttf', "Alegreya-Black.ttf")
 	show_browse(src, 'interface/info/info.html', "window=browser_info")
 
+// Both side panels are web pages that say when they are ready. A page sent
+// while the client is still settling (a handover or reboot reconnect pulling
+// the new resources) can stay blank or never answer, which leaves the stat
+// panel white and the chat holding every new line. Resend each panel that has
+// not answered, a few times, then stop.
+#define BROWSER_PANEL_RETRIES 3
+#define BROWSER_PANEL_RETRY_DELAY 100
+
+/client/proc/watch_browser_panels()
+	set waitfor = FALSE
+	for (var/attempt in 1 to BROWSER_PANEL_RETRIES)
+		sleep(BROWSER_PANEL_RETRY_DELAY)
+		if (statpanel_ready && (!chat || chat.is_ready))
+			return
+		if (!statpanel_ready)
+			init_statpanel()
+		if (chat && !chat.is_ready)
+			chat.load()
+
+#undef BROWSER_PANEL_RETRIES
+#undef BROWSER_PANEL_RETRY_DELAY
+
 /client/proc/add_stat(name, value = "")
 	statpanel_data += list(list("name" = name, "value" = value))
 
