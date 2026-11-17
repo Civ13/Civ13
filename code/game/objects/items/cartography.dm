@@ -18,7 +18,7 @@
 
 /obj/item/weapon/cartography_map
 	name = "blank map"
-	desc = "A sheet of paper ruled for map-making. Stop and use it in hand to sketch the land you can see; read it with Read Map."
+	desc = "A sheet of paper ruled for map-making. Stop and use it in hand to sketch the land you can see; read it with Read Map. Use a pen on it to draw and write notes, or a blank map on it to copy it."
 	icon = 'icons/obj/decals.dmi'
 	icon_state = "portable_areamap"
 	item_state = "map"
@@ -134,6 +134,9 @@
 	for (var/i = 1 to chart_rows)
 		rows += row_text
 	chart = jointext(rows, "")
+	// Drawing and notes sit on the old grid; a new chart starts clean.
+	chart_ink = ""
+	chart_notes = null
 	chart_land = cartography_land_key(T)
 	chart_label = cartography_land_label(T)
 	if (name == initial(name))
@@ -192,6 +195,10 @@
 		to_chat(user, "It is still blank.")
 	else
 		to_chat(user, "It charts [chart_label]; about [explored_percent()]% of it is drawn in.")
+	if (chart_ink)
+		to_chat(user, "Someone has drawn on it in ink.")
+	if (length(chart_notes))
+		to_chat(user, "It has [length(chart_notes)] note\s written on it.")
 
 // Using the map in hand sketches what the holder can see, then shows it.
 /obj/item/weapon/cartography_map/attack_self(mob/user)
@@ -236,7 +243,16 @@
 	read_map(usr)
 
 /obj/item/weapon/cartography_map/attackby(obj/item/I, mob/user)
-	if (istype(I, /obj/item/weapon/pen))
+	if (istype(I, /obj/item/weapon/cartography_map))
+		hand_copy_into(I, user)
+		return
+	if (istype(I, /obj/item/weapon/pen) || istype(I, /obj/item/pigment))
+		var/choice = WWinput(user, "What would you like to do with the map?", "Map", "Cancel", istype(I, /obj/item/weapon/pen) ? list("Draw and write notes", "Title", "Cancel") : list("Draw and write notes", "Cancel"))
+		if (choice == "Draw and write notes")
+			open_editor(user)
+			return
+		if (choice != "Title" || QDELETED(src) || !user.Adjacent(src))
+			return
 		var/title = player_input(user, "What should this map be called?", "Title the map", name, "text", null, TRUE)
 		title = sanitize(title, MAX_NAME_LEN)
 		if (!title || QDELETED(src) || !user.Adjacent(src))
@@ -252,12 +268,12 @@
 	if (!chart_valid())
 		to_chat(user, SPAN_NOTICE("The map is still blank. Stop somewhere with a view and use it in hand to sketch."))
 		return
-	show_browse(user, map_html(get_turf(user)), "window=cartography_map;size=[min(900, chart_cols * map_scale() + 60)]x[min(900, chart_rows * map_scale() + 190)]")
+	show_browse(user, map_html(get_turf(user)), "window=cartography_map;size=[min(900, chart_cols * map_scale() + 60)]x[min(900, chart_rows * map_scale() + 190 + 20 * length(chart_notes))]")
 
 /obj/item/weapon/cartography_map/proc/map_scale()
 	return clamp(round(640 / max(chart_cols, chart_rows)), 2, 8)
 
-/obj/item/weapon/cartography_map/proc/map_html(turf/T)
+/obj/item/weapon/cartography_map/proc/map_html(turf/T, editing = FALSE)
 	var/px = 0
 	var/py = 0
 	var/here = "You cannot place yourself on this map."
@@ -270,19 +286,21 @@
 	html += "body{background:#3b2f22;color:#e8dcc0;font-family:Georgia,serif;margin:12px}canvas{border:3px solid #6b4f2e;image-rendering:pixelated;display:block}"
 	html += ".k{display:inline-block;width:10px;height:10px;margin:0 3px 0 8px;border:1px solid #222}</style></head><body>"
 	html += "<b>[html_encode(name)]</b> - [html_encode(chart_label)], [explored_percent()]% drawn. [here] North is up.<br><br>"
+	if (editing)
+		html += map_toolbar_html()
 	html += "<canvas id='m' width='[chart_cols * scale]' height='[chart_rows * scale]'></canvas><div style='margin-top:8px;font-size:12px'>"
 	var/list/legend = list("g" = "grass", "f" = "woods", "d" = "bare earth", "s" = "sand", "n" = "snow", "w" = "water", "W" = "deep water", "i" = "ice", "m" = "rock", "l" = "lava", "r" = "road", "b" = "buildings")
 	var/list/colors = cartography_colors()
 	for (var/c in legend)
 		html += "<span class='k' style='background:[colors[c]]'></span>[legend[c]]"
-	html += "</div><script>"
+	html += "</div>"
+	html += map_notes_html(editing)
+	html += "<script>"
 	var/list/js_colors = list()
 	for (var/c in colors)
 		js_colors += "'[c]':'[colors[c]]'"
 	html += "var C={[jointext(js_colors, ",")]},s='[chart]',w=[chart_cols],h=[chart_rows],k=[scale],px=[px],py=[py];"
-	html += "var g=document.getElementById('m').getContext('2d');"
-	html += "for(var y=0;y<h;y++){for(var x=0;x<w;x++){g.fillStyle=C\[s.charAt(y*w+x)\]||C\['0'\];g.fillRect(x*k,(h-1-y)*k,k,k);}}"
-	html += "if(px>0){g.fillStyle='#d0202a';g.fillRect((px-1)*k-k,(h-py)*k-k,k*3,k*3);g.fillStyle='#fff';g.fillRect((px-1)*k,(h-py)*k,k,k);}"
+	html += map_marks_js(editing)
 	html += "</script></body></html>"
 	return jointext(html, "")
 

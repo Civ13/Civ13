@@ -621,6 +621,14 @@ SUITES = {
             'code/modules/1713/production.dm',
             'code/modules/persistence/region_travel.dm',
             'code/game/objects/structures/vending/specialist_traders.dm')},
+    # Maps copy like books (by hand onto a blank map, or on the press) and
+    # carry their ink drawing and written notes with them.
+    'map_copying': {'files': ('tests/map_copying/test_contract.py',),
+        'paths': ('tests/map_copying/',), 'shared_paths': (
+            'code/game/objects/items/cartography.dm',
+            'code/game/objects/items/cartography_notes.dm',
+            'code/modules/1713/production.dm', 'code/modules/1713/book.dm',
+            'code/modules/research_tree/book_printing.dm')},
     'television': {'files': ('tests/television/test_contract.py',),
         'paths': ('tests/television/',), 'shared_paths': (
             'code/modules/1713/television.dm', 'code/modules/1713/modern_telecom.dm',
@@ -1091,6 +1099,8 @@ SUITES = {
         'paths': ('tests/skill_guide/', 'code/modules/research_tree/skill_guide.dm'), 'shared_paths': ()},
     'survival_hints': {'files': ('tests/survival_hints/test_survival_hints.py',),
         'paths': ('tests/survival_hints/', 'code/modules/client/survival_hints.dm'), 'shared_paths': ()},
+    'newcomer_start': {'files': ('tests/newcomer_start/test_newcomer_start.py',),
+        'paths': ('tests/newcomer_start/', 'code/game/objects/map_metadata/nomads/newcomer_start.dm'), 'shared_paths': ()},
     'craft_products': {'files': ('tests/craft_products/test_craft_products.py',),
         'paths': ('tests/craft_products/', 'code/game/objects/items/stacks/craft_products.dm'), 'shared_paths': ()},
     # Tool quality declarations match the base paths is_tool() replaced, and

@@ -164,6 +164,13 @@ class TeamsAndRushing(unittest.TestCase):
         for path in ("/obj/structure/research_bench/proc/big_science_assistant", "/obj/structure/research_bench/proc/second_scholar"):
             self.assertIn("H != lead", proc(self.team, path))
         self.assertIn("H == lead || !H.can_research_node_at(src, node_id)", proc(self.team, "/obj/structure/research_bench/proc/research_helpers"))
+    def test_the_lead_may_work_near_the_bench_but_helpers_stay_at_it(self):
+        book = (ROOT / "code/modules/research_tree/book_research.dm").read_text(encoding="utf-8")
+        self.assertIn("#define BOOK_RESEARCH_NEAR 3", book)
+        self.assertIn("#define BOOK_RESEARCH_AWAY_RATE 0.75", book)
+        self.assertIn("distance > (as_lead ? BOOK_RESEARCH_NEAR : BOOK_RESEARCH_REACH)", book)
+        self.assertEqual(book.count("can_research_node_at(src, assigned_node, TRUE)"), 1)
+        self.assertNotIn(", TRUE)", proc(self.team, "/obj/structure/research_bench/proc/research_helpers"))
     def test_helpers_count_in_every_age_and_cannot_more_than_double_the_pace(self):
         # Chat feedback, 2026-11-17: tribes asked why helping at the bench did nothing before the fifth age.
         share = float(re.search(r"#define TEAM_HELPER_SHARE ([\d.]+)", self.team)[1])
