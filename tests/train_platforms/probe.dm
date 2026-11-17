@@ -715,10 +715,13 @@ var/global/platform_probe_runtime_error = FALSE
 	BR.throttle = 1
 	BR.locomotive()
 	sleep(15)
-	platform_check("banking/rear_engine_drives", BR.driving && !BH.driving && BR.drive_head == BH && BR.consist_engines == 2 && BH.y > 10 && BR.y == BH.y - 2 && BR.lead_factor == 0.5)
+	platform_check("banking/rear_engine_drives", BR.driving && !BH.driving && BR.drive_head == BH && BR.consist_engines == 2 && BH.y > 10 && BR.y == BH.y - 2 && BR.lead_factor == 1)
 	BR.throttle = 0
 	BR.braking = TRUE
 	drive_wait(BR)
+	BH.on = FALSE
+	BR.refresh_consist()
+	platform_check("banking/dead_front_engine_is_pushed", BR.lead_factor == 0.5 && BR.consist_engines == 1)
 
 	// What leads: the engine forward, the engine backward, or cars.
 	position_track(98)

@@ -846,13 +846,15 @@ var/global/train_solo_move = FALSE
 /obj/structure/trains/proc/unit_engine()
 	return null
 
-// What leads the train decides how fast it may go: the engine running
-// forward, the engine running bunker first, or cars pushed ahead of it.
+// What leads the train decides how fast it may go: an engine running
+// forward, an engine running bunker first, or cars pushed with nobody at the
+// front to see the line. A running helper engine at the front counts.
 /obj/structure/trains/locomotive/proc/leading_factor(list/cars)
 	if (!cars || !cars.len)
 		return 1
 	var/obj/structure/trains/lead = (reverser > 0) ? cars[1] : cars[cars.len]
-	if (lead == src || lead.unit_engine() == src)
+	var/obj/structure/trains/locomotive/E = istype(lead, /obj/structure/trains/locomotive) ? lead : lead.unit_engine()
+	if (E && (E == src || (E.on && !E.engine_disabled())))
 		return (reverser > 0) ? 1 : 0.75
 	return 0.5
 
