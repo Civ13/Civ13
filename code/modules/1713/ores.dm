@@ -422,7 +422,7 @@
 			..()
 /obj/item/stack/ore/lead
 	name = "lead ore"
-	desc = "A rock of very dense lead ore."
+	desc = "Galena: grey cubes with a metallic shine. A very dense lead ore."
 	icon_state = "ore_lead"
 	singular_name = "rock"
 	flags = CONDUCT
@@ -446,7 +446,7 @@
 			..()
 /obj/item/stack/ore/mercury
 	name = "cinnabar ore"
-	desc = "A brick-red rock of mercury sulfide. Roasted over a fire it sweats out quicksilver, and poisonous fumes with it; a retort with a condenser catches far more of it. Ground fine it is vermilion paint."
+	desc = "A bright red rock of mercury sulfide. Roasted over a fire it sweats out quicksilver, and poisonous fumes with it; a retort with a condenser catches far more of it. Ground fine it is vermilion paint."
 	icon_state = "ore_mercury"
 	singular_name = "rock"
 	flammable = FALSE
