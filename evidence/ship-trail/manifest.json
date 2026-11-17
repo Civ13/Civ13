@@ -1,0 +1,18 @@
+{
+  "tested_commit": "3e023ce4c44663892b56717e1c2e8acc71ec8db5",
+  "working_tree_status": "",
+  "port": 61151,
+  "config_lines": [
+    "DAYNIGHT_CLIENT_TINT"
+  ],
+  "adapters": [
+    "probe appended to a temporary civ13.dme",
+    "webhooks/ToRban off",
+    "round started via admin_started",
+    "weather worker paused, Midday lighting",
+    "a patch of deep sea with open air above it",
+    "a 5x6 airship deck with a 3-wide stern, four gas cells and a helm commissioned with the production code",
+    "hops stepped by the probe with sail_hop()",
+    "client window 1280x800, a still at the start of each 3 s clip"
+  ]
+}

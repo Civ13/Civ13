@@ -1,0 +1,54 @@
+{
+  "passed": true,
+  "failure": null,
+  "failed_phase": null,
+  "missing_checks": [],
+  "missing_clips": [],
+  "checks": [
+    {
+      "check": "ship_built",
+      "passed": 1,
+      "details": {
+        "tiles": 26,
+        "roofs": 15,
+        "upper": 15
+      }
+    },
+    {
+      "check": "flown",
+      "passed": 1,
+      "details": {
+        "from": "252,176",
+        "to": "252,181",
+        "left": [
+          "252,176,2 /area/caribbean/sea/sea wl=0 lit=1 a20=1 wc=1",
+          "252,177,2 /area/caribbean/sea/sea wl=0 lit=1 a20=1 wc=1",
+          "252,175,2 /area/caribbean/sea/sea wl=0 lit=1 a20=1 wc=1",
+          "253,176,2 /area/caribbean/sea/sea wl=0 lit=1 a20=1 wc=1",
+          "251,176,2 /area/caribbean/sea/sea wl=0 lit=1 a20=1 wc=1",
+          "252,178,2 /area/caribbean/sea/sea wl=0 lit=1 a20=1 wc=1",
+          "253,177,2 /area/caribbean/sea/sea wl=0 lit=1 a20=1 wc=1",
+          "251,177,2 /area/caribbean/sea/sea wl=0 lit=1 a20=1 wc=1",
+          "253,175,2 /area/caribbean/sea/sea wl=0 lit=1 a20=1 wc=1",
+          "251,175,2 /area/caribbean/sea/sea wl=0 lit=1 a20=1 wc=1",
+          "252,179,2 /area/caribbean/sea/sea wl=0 lit=1 a20=1 wc=1",
+          "253,178,2 /area/caribbean/sea/sea wl=0 lit=1 a20=1 wc=1",
+          "251,178,2 /area/caribbean/sea/sea wl=0 lit=1 a20=1 wc=1",
+          "254,177,2 /area/caribbean/sea/sea wl=0 lit=1 a20=1 wc=1",
+          "250,177,2 /area/caribbean/sea/sea wl=0 lit=1 a20=1 wc=1",
+          "253,179,2 /area/caribbean/sea/sea wl=0 lit=1 a20=1 wc=1",
+          "251,179,2 /area/caribbean/sea/sea wl=0 lit=1 a20=1 wc=1",
+          "254,178,2 /area/caribbean/sea/sea wl=0 lit=1 a20=1 wc=1",
+          "250,178,2 /area/caribbean/sea/sea wl=0 lit=1 a20=1 wc=1",
+          "254,179,2 /area/caribbean/sea/sea wl=0 lit=1 a20=1 wc=1",
+          "250,179,2 /area/caribbean/sea/sea wl=0 lit=1 a20=1 wc=1",
+          "254,180,2 /area/caribbean/sea/sea wl=0 lit=1 a20=1 wc=1",
+          "250,180,2 /area/caribbean/sea/sea wl=0 lit=1 a20=1 wc=1"
+        ],
+        "upper": 1
+      }
+    }
+  ],
+  "tested_commit": "3e023ce4c44663892b56717e1c2e8acc71ec8db5",
+  "output": "D:\\GitHub\\ship-trail-evidence"
+}
