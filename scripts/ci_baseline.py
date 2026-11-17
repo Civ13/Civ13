@@ -1313,6 +1313,10 @@ SUITES = {
             'code/game/objects/items/clothing/clothing.dm', 'code/modules/1713/rain_gear.dm',
             'code/game/objects/items/clothing/clothing_accessories.dm',
             'config/crafting/material_recipes_global.txt', 'code/modules/research_tree/research_node.dm')},
+    # Inlaying diamonds into crowns; tests/crown_inlay/probe.dm is the native probe.
+    'crown_inlay': {'files': ('tests/crown_inlay/test_source.py',),
+        'paths': ('tests/crown_inlay/',), 'shared_paths': (
+            'code/modules/1713/apparel_medieval.dm', 'code/modules/1713/gemstones.dm')},
     'obsidian': {'files': ('tests/obsidian/test_source.py',),
         'paths': ('tests/obsidian/',), 'shared_paths': (
             'code/modules/1713/obsidian.dm', 'code/game/turfs/floor_attackby.dm',
