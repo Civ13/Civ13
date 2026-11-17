@@ -119,6 +119,14 @@ class BodyWashingTest(unittest.TestCase):
                       read("code/modules/1713/bathing.dm"))
         self.assertIn("HT.clean_blood()\n\t\t\t\tHT.mark_bare_parts_washed()", read("code/modules/reagents/reagent_containers.dm"))
 
+    def test_washing_carries_on_to_the_next_part(self):
+        wash = read("code/modules/1713/body_washing.dm")
+        self.assertIn("zone = target.next_dirty_zone(done)", wash)
+        self.assertIn("if (source && !source.wash_spend(src))", wash)
+        self.assertIn("H.wash_on_after_hands(src)", SOURCE)
+        self.assertIn("WH.wash_on_after_hands(src)", read("code/game/objects/structures/watercloset.dm"))
+        self.assertIn("H.wash_on_after_hands(src)", read("code/modules/1713/wash_places.dm"))
+
     def test_loads_after_the_procs_it_extends(self):
         dme = read("civ13.dme").splitlines()
         def at(name):

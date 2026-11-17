@@ -69,7 +69,8 @@
 	var/zone = H.targeted_organ
 	var/washed = FALSE
 	if (source_washes_zone(zone))
-		washed = H.wash_part_of(H, zone, "\the [src]")
+		H.wash_part_of(H, zone, "\the [src]", src) // pays per part (wash_spend)
+		update_icon()
 	else
 		to_chat(H, SPAN_NOTICE("You start washing your hands in \the [src]."))
 		if (do_after(H, 20, src))
@@ -82,6 +83,19 @@
 	if (washed)
 		station_take_water(H)
 		update_icon()
+		busy = TRUE
+		H.wash_on_after_hands(src)
+		busy = FALSE
+		update_icon()
+
+/obj/structure/washbasin/wash_ready()
+	return station_has_water()
+
+/obj/structure/washbasin/wash_spend(mob/living/human/user)
+	if (!station_take_water(user))
+		return FALSE
+	update_icon()
+	return station_has_water()
 
 // ---- making a basin ---------------------------------------------------------
 

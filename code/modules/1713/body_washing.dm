@@ -11,6 +11,9 @@
 // Washing any other part cleans the blood off what is worn over it, or, on
 // bare skin, raises cleanliness a little (10 a wash, up to a sponge bath's
 // 175; 20 up to 250 with soap).
+// After each part, washing moves on by itself to the next bare part that
+// still needs washing (head down to feet), until none is left, the water runs
+// out, or the washer moves.
 // Self-examine marks each part that needs washing: hands with work dirt or
 // blood, and, while cleanliness is below clean, the skin of every part not
 // washed since. A part washed stays marked clean until cleanliness falls 25
@@ -156,8 +159,54 @@
 		return r_hand
 	return null
 
-// Who washes whom, after the wait. Returns TRUE when it happened.
-/mob/living/human/proc/wash_part_of(mob/living/human/target, zone, source_name)
+// The order washing moves through the body.
+var/global/list/wash_zone_order = list("head", "chest", "groin", "l_arm", "r_arm", "l_hand", "r_hand", "l_leg", "r_leg", "l_foot", "r_foot")
+
+// The next bare part that still needs washing, skipping the zones in `done`.
+/mob/living/human/proc/next_dirty_zone(list/done)
+	for (var/zone in wash_zone_order)
+		if (done && (zone in done))
+			continue
+		var/obj/item/organ/external/E = get_organ(zone)
+		if (!E || E.is_stump() || part_is_covered(E))
+			continue
+		if (part_dirt_status(E) != "")
+			return zone
+	return null
+
+// Pays for one part's wash from `source`. TRUE while it can pay for another.
+// Open water never runs out.
+/atom/proc/wash_spend(mob/living/human/user)
+	return TRUE
+
+// TRUE while `source` has water for another part's wash.
+/atom/proc/wash_ready()
+	return TRUE
+
+// After a plain hand wash, carries on with the next bare part that still
+// needs washing.
+/mob/living/human/proc/wash_on_after_hands(atom/source)
+	if (!source || !source.wash_ready() || !Adjacent(source))
+		return
+	wash_part_of(src, next_dirty_zone(list("l_hand", "r_hand")), "\the [source]", source)
+
+// Who washes whom, after the wait. Returns TRUE when at least one part was
+// washed. After each part it moves on by itself to the next bare part that
+// still needs washing, until none is left, the water runs out, or the washer
+// moves or does something else.
+/mob/living/human/proc/wash_part_of(mob/living/human/target, zone, source_name, atom/source)
+	. = FALSE
+	var/list/done = list()
+	while (zone)
+		if (!wash_one_part_of(target, zone, source_name))
+			return
+		. = TRUE
+		done += zone
+		if (source && !source.wash_spend(src))
+			return
+		zone = target.next_dirty_zone(done)
+
+/mob/living/human/proc/wash_one_part_of(mob/living/human/target, zone, source_name)
 	var/part = wash_zone_name(zone)
 	var/obj/item/organ/external/E = target.get_organ(zone)
 	if (!E || E.is_stump())
@@ -207,10 +256,15 @@
 	if (reagents.has_reagent("food_poisoning"))
 		to_chat(user, SPAN_WARNING("The water in \the [src] smells foul. It would only make you dirtier."))
 		return TRUE
-	if (user.wash_part_of(M, user.targeted_organ, "\the [src]") && reagents)
-		reagents.remove_reagent("water", WASH_PART_WATER)
-		update_icon()
+	user.wash_part_of(M, user.targeted_organ, "\the [src]", src)
 	return TRUE
+
+/obj/item/weapon/reagent_containers/wash_spend(mob/living/human/user)
+	if (!reagents)
+		return FALSE
+	reagents.remove_reagent("water", WASH_PART_WATER)
+	update_icon()
+	return reagents.get_reagent_amount("water") >= WASH_PART_WATER
 
 /obj/item/weapon/reagent_containers/glass/attack(mob/living/M, mob/living/user, target_zone)
 	if (!washes_on_click(M, user))
@@ -230,8 +284,14 @@
 		to_chat(H, SPAN_WARNING("Someone's already washing here."))
 		return
 	busy = H
-	H.wash_part_of(H, H.targeted_organ, "\the [src]")
+	H.wash_part_of(H, H.targeted_organ, "\the [src]", src)
 	busy = FALSE
+
+/obj/structure/sink/wash_spend(mob/living/human/user)
+	return volume > 0 && !heat_dried()
+
+/obj/structure/sink/wash_ready()
+	return volume > 0 && !heat_dried()
 
 /obj/structure/water_tap/attack_hand(mob/living/user)
 	var/mob/living/human/H = user
@@ -241,9 +301,14 @@
 		to_chat(H, SPAN_WARNING("\The [src] has no clean water to wash with."))
 		return
 	busy = TRUE
-	if (H.wash_part_of(H, H.targeted_organ, "\the [src]") && reagents)
-		reagents.remove_reagent("water", WASH_PART_WATER)
+	H.wash_part_of(H, H.targeted_organ, "\the [src]", src)
 	busy = FALSE
+
+/obj/structure/water_tap/wash_spend(mob/living/human/user)
+	if (!reagents)
+		return FALSE
+	reagents.remove_reagent("water", WASH_PART_WATER)
+	return reagents.get_reagent_amount("water") >= WASH_PART_WATER
 
 /turf/floor/beach/water/attack_hand(mob/living/human/H)
 	if (!ishuman(H) || H.a_intent != I_HELP || salty || !Adjacent(H) || istype(src, /turf/floor/beach/water/ice) || !source_washes_zone(H.targeted_organ))
