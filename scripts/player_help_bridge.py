@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '627dc76ee1a01ca9a0abac772015f4c98a83b875'
+WIKI_REVIEWED_REVISION = '6bdd7df80d66f420393cd4fb9ef815d9b581c6ad'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('19a2099a895672d6d6d77c383bcd167d5fd617d156f4245bceaad86fe273c303', 'character skills traits languages'),
@@ -80,11 +80,11 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Communications.md': ('2bbf705f1e66f3ee37d2d70f46ffa9420587a9b7ae0d718f3e09d4ab9b7881e6', 'communications radio transmit'),
     'guides/Guide_to_Construction.md': ('5d3d6a8da3367384e83ad1de7fc88304ae772585642c678718e37b680179f93f', 'construction build building walls roof floor'),
     'guides/Guide_to_Homes.md': ('0287248f8b0857043f7557f8eac8e5a2360d5eafc95b5144dbf693979ccd6234', 'home house room comfort decorate limewash paint whitewash stain dye furniture well rested judge nudge pottery glaze vase amphora rug carpet tapestry weave loom'),
-    'guides/Guide_to_Cooking.md': ('dc0ccb29b636c8b546ad740d3611ee885e030db58078216d31055eef84d99ac4', 'cooking cook food meal ingredients'),
+    'guides/Guide_to_Cooking.md': ('3fc67036c2579bbf1387ddffb18d1bd4c9e8a8c889558f884bd9e5f2989b048b', 'cooking cook food meal ingredients'),
     'guides/Guide_to_Exercise.md': ('cd6d6e48f3ae664458e935bb88954a0c6d2232f00b6058e92fb520f5c7c76a09', 'exercise training strength weights running fatigue'),
     'guides/Guide_to_Factory_Automation.md': ('e49b07d8eea1fe3c785b450c486e4b412e9ab4e4d0df30c8e9dc1dc34f666be0', 'factory automation belt belts conveyor arm arms fabricator fabricators pipe pipes pump tank bottler monitor crusher stamp mill'),
     'guides/Guide_to_Farming.md': ('2de3e24d20d9ac1c154bb43bddad9b9a6bc2d1c1aa6f68e79cd7c5cc879c4fd0', 'farming farm plant crops soil water'),
-    'guides/Guide_to_Fishing.md': ('aef17fa1c8019e470c40d79baae65ebe8c88258766a590844c873b7cc9cf25fd', 'fishing fish rod bait'),
+    'guides/Guide_to_Fishing.md': ('b18020557849534d4465842bfbb5aa33b633e70d8532e52a806206b8349e2bb6', 'fishing fish rod bait'),
     'guides/Guide_to_Hygiene.md': ('4b8173587991ef1364e88dd0f69909167c8263c75fd2c1a9e4a04d96898de4b6', 'hygiene clean washing soap detergent laundry'),
     'guides/Guide_to_Leadership.md': ('d8fa16a65959d1c7f632c782de1129a9c6dfade1614a9e55ebcdd92851e972df', 'leadership squad leader officer commander artillery coordinates'),
     'guides/Guide_to_Medical.md': ('834abb0cf8e022e429dcb2894283a52adf5a94ca1249502470e5a552d9506152', 'medical heal injury wound surgery'),
@@ -93,7 +93,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Radiation.md': ('6b6295a3bb2bf0eb54d559e32a49eb18d512a50bec9366757df81b049e0e8d00', 'radiation radioactive exposure'),
     'guides/Guide_to_Ranching.md': ('1f31196cdb772a358d9ba2680a152f371390e16fe4d6b4d9069cd7345df54d46', 'ranching livestock animal breeding'),
     'guides/Guide_to_Beekeeping.md': ('b977db7511ce86997466d4f929d03099d7f7f8e03c7336356534f5d6c5e7c8f6', 'bees bee beekeeping hive hives honey honeycomb beeswax wax candle swarm sting stings smoker extractor pollination mead sealing veil'),
-    'guides/Guide_to_Mice.md': ('36eab758066c93d9b68f2c49129de9f5633d8c544701627e3b6b18de864f8e4c', 'mice mouse nest nests rats pests vermin mousetrap poison bait fleas plague cats wildcat'),
+    'guides/Guide_to_Mice.md': ('18b8ed4f130a29daf928942ad7e4ac59248a09a8e437e4a8b1dffec894b0d511', 'mice mouse nest nests rats pests vermin mousetrap poison bait fleas plague cats wildcat'),
     'guides/Guide_to_Religion.md': ('8f2cba3283be55c895860478ffd6969b9ee7ad70ec90ecde479cd0ef622e9943', 'religion worship clergy shrine'),
     'guides/Guide_to_Research.md': ('9a249f72384db7d800bfbde0373ce1174b5fbe6a923c8826a4250a679e9614a2', 'research unlock study technology research bench'),
     'guides/Guide_to_Resource_Extraction.md': ('5b10b34e2192801895c5e15af3ab4c5a912f311e915dbc05b8e6ced0cefde853', 'resource extraction gathering oil petroleum well fracturing'),
