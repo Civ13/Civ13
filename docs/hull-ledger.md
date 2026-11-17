@@ -136,6 +136,23 @@ A hull whose saved record has no `"old_anchor"` key was afloat before anchors
 were things and keeps one that holds all of her (`old_anchor`, saved). Hulls
 commissioned from now on save `"old_anchor": 0`.
 
+## Rigging and sail handling
+
+`code/modules/naval/hull_rigging.dm`. A mast standing free on a built hull has
+`canvas` (furled 0, reefed 1, full 2, the default) and `torn`. Clicking a
+rigged mast offers set, reef and furl, four seconds each; `hull_wait()` lets
+the work survive a step of the hull.
+
+- The sail drive is not `ready()` when furled; `push()` is times 0.6 reefed and
+  times 0.3 torn.
+- `step_rigging()` runs in the ledger step for boats and ships under way: in
+  wind 3 and up a full sail has 15 chances in 100 a half minute to tear, and in
+  wind 4 a reefed one has 5. It reads her drives; there is no deck walk.
+- Two pieces of cloth used on the mast mend a torn sail in six seconds.
+- The tiller lists how her sails are carried once any is not plainly full.
+
+Masts fitted to a modular ship's frame are untouched.
+
 ## One-object craft: rafts, canoes, outriggers, inflatables
 
 These are single objects with no ledger (`code/modules/naval/small_craft_leaks.dm`).

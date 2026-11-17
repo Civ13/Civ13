@@ -730,6 +730,70 @@ var/naval_runtime_error = FALSE
 	map.windspeedvar = wind_was
 	map.winddirection = from_was
 
+// Rigging and sail handling (naval/hull_rigging.dm).
+/proc/rigging_checks()
+	var/wind_was = map.windspeedvar
+	var/from_was = map.winddirection
+	map.windspeedvar = 1
+	map.winddirection = "West"
+	var/obj/structure/hull_tiller/tiller = bilge_hull(46, 46, 48, 55, "Brig")
+	var/datum/craft/C = tiller.craft
+	var/datum/hull_ledger/L = C.ledger
+	L.seep_tiles = 0
+	var/obj/structure/vehicleparts/movement/sail/fore = new(locate(47, 48, 2))
+	fore.sails = TRUE
+	var/obj/structure/vehicleparts/movement/sail/main = new(locate(47, 52, 2))
+	main.sails = TRUE
+	C.set_anchor(FALSE)
+	C.set_speed(VESSEL_SPEED_SLOW)
+	var/full_push = C.thrust()
+	naval_check(fore.canvas == SAIL_FULL && !fore.torn && full_push > 0 && L.rigging_text() == "", "a mast starts with full sail and the tiller says nothing new (push [full_push])")
+	naval_check(fore.handled_here() && fore.canvas_name() == "set full", "a rigged mast on her deck can be handled")
+	// Reefed and furled.
+	fore.set_canvas(SAIL_REEFED)
+	naval_check(C.thrust() == round(full_push / 2) + round(full_push / 2 * 0.6), "a reefed sail pushes six tenths ([C.thrust()] of [full_push])")
+	fore.set_canvas(SAIL_FURLED)
+	naval_check(C.thrust() == round(full_push / 2) && L.masts == 1, "a furled sail pushes nothing and is no rigged mast to ballast ([C.thrust()])")
+	naval_check(findtext(L.rigging_text(), "1 set full") && findtext(L.rigging_text(), "1 furled"), "the tiller says how her sails are carried ([L.rigging_text()])")
+	main.set_canvas(SAIL_FURLED)
+	naval_check(C.thrust() == 0 && !L.under_sail(), "all furled, no sail drives her")
+	// The tearing table.
+	naval_check(!sail_tear_chance(SAIL_FULL, 2) && sail_tear_chance(SAIL_FULL, 3) == 15 && !sail_tear_chance(SAIL_REEFED, 3) && sail_tear_chance(SAIL_REEFED, 4) == 5 && !sail_tear_chance(SAIL_FURLED, 4), "full sail tears from wind 3, reefed only in a gale, furled never")
+	// Furled in a gale: safe.
+	map.windspeedvar = 4
+	var/torn_count = 0
+	for (var/i = 1, i <= 100, i++)
+		torn_count += L.step_rigging(30)
+	naval_check(!torn_count && !fore.torn && !main.torn && !L.gale_told, "a hundred half minutes of gale tear no furled sail")
+	// Reefed in a strong wind: safe.
+	map.windspeedvar = 3
+	fore.set_canvas(SAIL_REEFED)
+	main.set_canvas(SAIL_REEFED)
+	for (var/i = 1, i <= 100, i++)
+		torn_count += L.step_rigging(30)
+	naval_check(!torn_count && !L.gale_told, "nor does a strong wind tear a reefed one")
+	// Full in a strong wind: sooner or later.
+	main.set_canvas(SAIL_FULL)
+	var/before = C.thrust()
+	for (var/i = 1, i <= 200 && !main.torn, i++)
+		torn_count += L.step_rigging(30)
+	naval_check(main.torn && torn_count == 1 && !fore.torn && L.gale_told, "a full sail in a strong wind tears, and her crew was warned")
+	naval_check(C.thrust() < before && findtext(L.rigging_text(), "1 torn"), "torn, it pushes little ([C.thrust()] of [before])")
+	naval_check(!L.step_rigging(30) || fore.torn, "a torn sail does not tear twice")
+	main.mend_sail()
+	naval_check(!main.torn && C.thrust() == before, "mended, it pushes as before")
+	// At anchor nothing tears.
+	C.set_speed(VESSEL_SPEED_STOP)
+	C.set_anchor(TRUE)
+	fore.set_canvas(SAIL_FULL)
+	torn_count = 0
+	for (var/i = 1, i <= 100, i++)
+		torn_count += L.step_rigging(30)
+	naval_check(!torn_count, "at anchor the wind tears nothing")
+	map.windspeedvar = wind_was
+	map.winddirection = from_was
+	qdel(tiller)
+
 /proc/naval_run()
 	try
 		naval_checks()
@@ -738,6 +802,7 @@ var/naval_runtime_error = FALSE
 		pump_checks()
 		load_checks()
 		anchor_checks()
+		rigging_checks()
 	catch(var/exception/e)
 		naval_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = naval_failures, "runtime_error" = naval_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")

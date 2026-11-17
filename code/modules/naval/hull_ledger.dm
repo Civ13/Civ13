@@ -353,6 +353,8 @@ var/global/hull_ledger_timer_off = FALSE
 		add_water(patches * HULL_PATCH_PER_MINUTE * seconds / 60)
 	if (holes > 0)
 		add_water(holes * HULL_HOLE_PER_MINUTE * seconds / 60, capacity())
+	// What the wind does to her sails (hull_rigging.dm).
+	step_rigging(seconds)
 	// What her load lets over the side (hull_load.dm).
 	step_load(seconds)
 	// Her powered pumps answer the water (hull_pumps.dm).
@@ -378,6 +380,7 @@ var/global/hull_ledger_timer_off = FALSE
 	if (!under_way())
 		survey_load()
 	. += load_text()
+	. += rigging_text()
 	. += pumps_text()
 	if (grounded)
 		. += " <b>She sits on the bottom.</b> Patch every hole and bail her below awash to float her."
