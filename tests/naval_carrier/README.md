@@ -217,6 +217,10 @@ reefed it pushes six tenths and furled nothing; furled sails survive a gale and
 reefed ones a strong wind; a full sail in a strong wind tears, pushes little
 until mended and does not tear twice; at anchor nothing tears.
 
+Watch (`code/modules/naval/hull_watch.dm`): the muster names who is at the
+helm, at a mast, on deck and in the bow; a lookout calls a floor eight tiles
+ahead once and again at four, never at anchor and never from a small craft.
+
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/bilge_probe.dm 300
 
 ## Upper decks on built hulls (`upper_deck_probe.dm`)
