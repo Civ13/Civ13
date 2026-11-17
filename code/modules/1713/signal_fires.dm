@@ -5,7 +5,8 @@
 // the next one. Smoke only gets away from a fire under the open sky, and only
 // people under the open sky can see it: a roof stops it both ways. Everyone
 // awake, outdoors and on the same level within SIGNAL_FIRE_RANGE tiles is
-// told which way the smoke is and roughly how far.
+// told which way the smoke is and roughly how far. A fire on a roof is seen
+// further, and from the ground below as well.
 
 #define SIGNAL_FIRE_RANGE 300
 #define SIGNAL_FIRE_COOLDOWN 300 // deciseconds
@@ -30,11 +31,44 @@
 	var/area/AR = get_area(T)
 	return AR && AR.location == AREA_OUTSIDE
 
+// A fire on a roof, a storey or more above the ground, is seen further and
+// from the ground below too.
+#define SIGNAL_FIRE_STOREY_RANGE 100 // extra tiles per storey above the ground
+#define SIGNAL_FIRE_MAX_STOREYS 4
+
+/proc/signal_fire_flat_dist(atom/A, atom/B)
+	return max(abs(A.x - B.x), abs(A.y - B.y))
+
+// Storeys T stands above the ground: 0 on the ground.
+/proc/signal_fire_storeys(turf/T)
+	. = 0
+	while (T && . < SIGNAL_FIRE_MAX_STOREYS && turf_is_above_ground(T))
+		.++
+		var/below = multiz_level_below(T.z)
+		T = below ? locate(T.x, T.y, below) : null
+
+/proc/signal_fire_range(turf/fire_turf)
+	return SIGNAL_FIRE_RANGE + SIGNAL_FIRE_STOREY_RANGE * signal_fire_storeys(fire_turf)
+
+// Whether someone on level z can see smoke rising from fire_turf: the same
+// level, or any level below a rooftop fire.
+/proc/signal_fire_level_sees(z, turf/fire_turf)
+	if (z == fire_turf.z)
+		return TRUE
+	var/level = fire_turf.z
+	for (var/i = 1 to signal_fire_storeys(fire_turf))
+		level = multiz_level_below(level)
+		if (!level)
+			return FALSE
+		if (level == z)
+			return TRUE
+	return FALSE
+
 // "to the north-west, far off" as seen from viewer_turf: one of eight compass
 // points by the true bearing, plus a vague distance. get_dir would call a fire
 // 200 tiles north and 1 east "northeast".
 /proc/signal_fire_bearing(turf/viewer_turf, turf/fire_turf)
-	var/dist = get_dist(viewer_turf, fire_turf)
+	var/dist = signal_fire_flat_dist(viewer_turf, fire_turf)
 	if (dist <= 1)
 		return "right beside you"
 	var/how_far = "very far off"
@@ -67,7 +101,7 @@
 		return
 	// The whole human list, not range(): a turf scan this wide would be slow.
 	for (var/mob/living/human/H in human_mob_list)
-		if (H == signaller || H.z != T.z || get_dist(H, T) > SIGNAL_FIRE_RANGE || !signal_fire_can_see(H))
+		if (H == signaller || !signal_fire_level_sees(H.z, T) || signal_fire_flat_dist(H, T) > signal_fire_range(T) || !signal_fire_can_see(H))
 			continue
 		if (!signal_fire_open_sky(H))
 			continue
@@ -129,3 +163,5 @@
 #undef SIGNAL_FIRE_NEAR
 #undef SIGNAL_FIRE_MIDDLE
 #undef SIGNAL_FIRE_FAR
+#undef SIGNAL_FIRE_STOREY_RANGE
+#undef SIGNAL_FIRE_MAX_STOREYS

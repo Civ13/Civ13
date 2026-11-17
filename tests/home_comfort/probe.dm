@@ -166,7 +166,7 @@ var/hc_runtime_error = FALSE
 	for (var/obj/covers/hc_wall/W in walls)
 		W.hc_finished = TRUE
 	judged = hc_judge()
-	hc_check(judged["points"] == 9 && judged["tier"] == 4 && length(judged["missing"]) == 2, "finished walls make it splendid")
+	hc_check(judged["points"] == 9 && judged["tier"] == 4 && length(judged["missing"]) == 3, "finished walls make it splendid")
 
 	// A place to wash (wash_places.dm): a basin counts only with water in it.
 	var/obj/structure/washbasin/basin = new(locate(6, 6, 1))
@@ -174,11 +174,11 @@ var/hc_runtime_error = FALSE
 	hc_check(judged["points"] == 9 && ("a place to wash" in judged["missing"]), "a dry basin is no place to wash")
 	basin.water_store = 30
 	judged = hc_judge()
-	hc_check(judged["points"] == 10 && length(judged["missing"]) == 1 && (home_comfort_categories["tidy"] in judged["missing"]), "a basin of water is ([judged["points"]])")
+	hc_check(judged["points"] == 10 && length(judged["missing"]) == 2 && (home_comfort_categories["tidy"] in judged["missing"]), "a basin of water is ([judged["points"]])")
 	// A tidy room: a chest or basket, and few loose things on the floor.
 	var/obj/structure/storage_container/basket/hc_basket = new(locate(7, 6, 1))
 	judged = hc_judge()
-	hc_check(judged["points"] == 11 && !length(judged["missing"]), "a basket makes it tidy ([judged["points"]])")
+	hc_check(judged["points"] == 11 && length(judged["missing"]) == 1 && (home_comfort_categories["upstairs"] in judged["missing"]), "a basket makes it tidy; a ground-floor room is not upstairs ([judged["points"]])")
 	var/list/strewn = list()
 	for (var/i = 1, i <= 6, i++)
 		strewn += new /obj/item/stack/rods(locate(5, 6, 1))

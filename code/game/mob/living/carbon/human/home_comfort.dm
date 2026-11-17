@@ -34,7 +34,8 @@ var/list/home_comfort_categories = list(
 	"wash" = "a place to wash",
 	"clean" = "a clean room",
 	"tidy" = "a tidy room (a chest or basket, and no more than 5 things on the floor)",
-	"sound" = "sound walls")
+	"sound" = "sound walls",
+	"upstairs" = "a quiet bedroom upstairs (no stove or workbench in it)")
 
 /proc/home_tier_for(points)
 	if (points >= 9)
@@ -171,6 +172,12 @@ var/list/home_comfort_categories = list(
 	return istype(A, /obj/structure/sign/custom) && A.name != "sign"
 
 // Judges the room around a tile: list("points", "tier", "have", "missing", "tiles").
+// A stove, forge or workbench: it belongs in the kitchen or the workshop, not the bedroom.
+/proc/home_is_work_station(atom/movable/A)
+	if (istype(A, /obj/structure/oven))
+		return !istype(A, /obj/structure/oven/fireplace)
+	return istype(A, /obj/structure/anvil) || istype(A, /obj/structure/loom) || istype(A, /obj/structure/furnace) || istype(A, /obj/structure/dehydrator) || istype(A, /obj/structure/repair/workbench) || istype(A, /obj/structure/component_workbench)
+
 /proc/home_comfort_judge(turf/start)
 	var/list/room = home_room_survey(start)
 	var/list/turfs = room["turfs"]
@@ -185,6 +192,7 @@ var/list/home_comfort_categories = list(
 		var/table = FALSE
 		var/container = FALSE
 		var/loose = 0
+		var/work = FALSE
 		for (var/turf/T in turfs)
 			if (home_floor_covered(T))
 				covered++
@@ -215,10 +223,15 @@ var/list/home_comfort_categories = list(
 					have["wash"] = TRUE
 				if (home_is_foul(A))
 					foul = TRUE
+				if (home_is_work_station(A))
+					work = TRUE
 		if (covered >= turfs.len * HOME_FLOOR_SHARE)
 			have["floor"] = TRUE
 		if (bed && seat && table)
 			have["furniture"] = TRUE
+		// A bedroom on a storey of its own, away from the kitchen and the workshop.
+		if (bed && !work && turf_is_above_ground(start))
+			have["upstairs"] = TRUE
 		if (mess <= HOME_MESS_ALLOWED && !foul)
 			have["clean"] = TRUE
 		if (container && loose <= HOME_TIDY_LOOSE)
