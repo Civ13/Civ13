@@ -433,7 +433,8 @@ class SelectionTests(unittest.TestCase):
                      'tests/agent_control/test_visibility.py',
                      'tests/agent_control/test_action_contract.py',
                      'tests/agent_control/test_navigation_replay.py',
-                     'tests/agent_control/test_needs_routines.py'):
+                     'tests/agent_control/test_needs_routines.py',
+                     'tests/agent_control/test_voice.py'):
             with self.subTest(path=path), patch.object(selection.subprocess, 'check_output', return_value=(path + '\0').encode()):
                 self.assertEqual(selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request'), [])
         for path in ('tests/agent_control/new_native_probe.dm',

@@ -14,6 +14,7 @@ come from the environment exactly as for civ13_agent.py.
 
 import argparse
 import concurrent.futures
+import faulthandler
 import json
 import os
 import re
@@ -36,6 +37,7 @@ import needs  # noqa: E402
 import routines  # noqa: E402
 from action_contract import QueueClient, DecisionSlot, ModelWorker, targets_current  # noqa: E402
 from memory import CharacterMemory  # noqa: E402
+from voice import Voice  # noqa: E402
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 SKILLS = {
@@ -97,6 +99,7 @@ MAX_WINDOW_LINKS = 24
 MAX_WINDOW_TEXT = 400
 UNCONSCIOUS_POLL = 10  # seconds between checks while the character is out cold
 WAKE_RETRY = 120  # seconds between Wake Up attempts while she stays deeply asleep
+STALL_LIMIT = 600  # seconds a turn may take before the run dumps its stack and exits (the watcher restarts it)
 FOOD_WORDS = ("meat", "steak", "berr", "fruit", "apple", "fish", "bread", "mushroom", "egg", "potato", "carrot", "corn", "nut", "organ", "offal", "stew", "soup")
 FUEL_WORDS = ("plank", "log", "stick", "branch", "leaf", "leaves", "dung", "charcoal", "coal", "wood chips")
 FIRE_WORDS = ("campfire", "fireplace", "oven", "stove", "furnace")
@@ -116,6 +119,7 @@ HOT_NEED = 316
 WARM_CLOTHES = ("coat", "cloak", "jacket", "parka", "poncho", "robe", "sweater", "fur", "hood", "cape", "mittens", "gloves", "boots", "hat")
 REFLEX_POLL = 0.7  # seconds between threat checks while the model thinks
 SPEECH_GAP = 10.0  # seconds between replies to the same speaker
+VOICE_TIMEOUT = 60.0  # seconds to wait for the voice thread's one line
 TIP_WORDS = ("drink", "water", "wood", "plank", "log", "flint", "knife", "stick", "craft", "food", "cook", "meat", "skill", "rope", "bandage")
 
 SYSTEM = """You control one character in Civ13, a multiplayer survival and civilization game. Play it like a real player.
@@ -2228,6 +2232,8 @@ def main(argv=None):
     parser.add_argument("--stay", action="store_true", help="with --job: start at the --spawn target rather than the job's spawn point")
     parser.add_argument("--pause-file", default="", help="stop safely when this operator-controlled file exists; remove it and restart to resume")
     parser.add_argument("--no-routines", dest="routines", action="store_false", help="ask the model every turn instead of running need-driven routines between its decisions")
+    parser.add_argument("--no-voice", dest="voice", action="store_false", help="answer players only on the main loop's turns, not also from the voice thread while a turn is busy")
+    parser.add_argument("--stall-limit", type=float, default=STALL_LIMIT, help="seconds one turn may take before the run dumps every stack to stderr and exits; 0 turns this off (default %(default)s)")
     parser.add_argument("--director-every", type=int, default=DIRECTOR_EVERY, help="routine turns in a row before the model reviews them (default %(default)s)")
     parser.add_argument("--no-follow", dest="follow", action="store_false", help="stop when the character travels to another region instead of following her there")
     parser.add_argument("--release", action="store_true", help="release (and delete a spawned) character at the end")
@@ -2613,7 +2619,38 @@ def load_tree(path):
         return None
 
 
+def arm_watchdog(args):
+    """Restart the clock on a hung turn: past it, every thread's stack goes to stderr (the run log) and the run exits.
+
+    A busy loop holds the run without failing, so nothing else would end it; the watcher then plays her again."""
+    limit = getattr(args, "stall_limit", 0)
+    if limit and limit > 0:
+        limit = max(limit, 3 * float(getattr(args, "timeout", 0) or 0))  # a slow model turn is not a hang
+        try:
+            faulthandler.dump_traceback_later(limit, exit=True, file=sys.stderr)
+        except (ValueError, OSError, AttributeError, RuntimeError):
+            pass  # stderr without a file descriptor (tests): no watchdog
+
+
 def _run(client, args, character, token, model_pool):
+    voice = None
+    if getattr(args, "voice", False):
+        # Speech has its own path, so a busy turn, a slow model or a hung script never leaves a player unanswered.
+        voice = Voice(getattr(client, "client", client), character,
+                      lambda messages: ask_ollama(args.ollama_url, args.model, messages, token, timeout=VOICE_TIMEOUT,
+                                                  num_ctx=args.num_ctx, think=args.think,
+                                                  keep_alive=getattr(args, "keep_alive", DEFAULT_KEEP_ALIVE)),
+                      args.goal, speech_lines, {}, SPEECH_GAP).start()
+    try:
+        return _play(client, args, character, token, model_pool, voice)
+    finally:
+        if voice is not None:
+            voice.stop()
+        if getattr(args, "stall_limit", 0):
+            faulthandler.cancel_dump_traceback_later()
+
+
+def _play(client, args, character, token, model_pool, voice=None):
     system = SYSTEM + f"\nYour goal: {args.goal}"
     tips = load_tips()
     if tips:
@@ -2634,7 +2671,7 @@ def _run(client, args, character, token, model_pool):
     last_names = []
     seen_lines = {}  # message text -> steps it showed up in; ones that keep coming back (heat, weather) are muted
     muted = set()
-    replied = {}  # speaker -> monotonic time of the last answer to them
+    replied = voice.replied if voice is not None else {}  # speaker -> monotonic time of the last answer to them
     greeted = {}  # speaker ("*" for anyone) -> monotonic time of the last greeting
     offered = {}  # hurt person -> monotonic time help was last offered to them
     made_recent = []  # (step, recipe) for recent successful crafts and builds
@@ -2650,6 +2687,10 @@ def _run(client, args, character, token, model_pool):
     kit = routine_kit()
     last_social = time.monotonic()  # when she last spoke with or heard someone
     for step in range(1, args.steps + 1):
+        arm_watchdog(args)
+        step_started = time.monotonic()
+        if voice is not None:
+            voice.beat(since=since)
         if operator_paused(args):
             print("operator pause requested; stopping")
             break
@@ -2697,6 +2738,9 @@ def _run(client, args, character, token, model_pool):
                         answer = {"ok": False, "error": str(exc)}
                     print(f"  asleep: wake -> {'ok' if answer.get('ok') else answer.get('error')} {answer.get('detail', '')}".rstrip())
                 time.sleep(UNCONSCIOUS_POLL)
+                arm_watchdog(args)  # waiting for her to come round is progress, not a hang
+                if voice is not None:
+                    voice.beat(since=since)
                 reply = client.request("character_observe", {"character": character, "since": since})
                 if not reply.get("ok"):
                     print(f"observe failed: {reply.get('error')} {reply.get('detail', '')}", file=sys.stderr)
@@ -2761,7 +2805,8 @@ def _run(client, args, character, token, model_pool):
         if is_repeating(signatures):
             feedback += "\nYou keep repeating the same action in the same place without progress. Do something different."
         text, refs = summarize(observation, note, ignored, muted)
-        talk, speakers = speech_prompt(speech_lines(observation.get("messages", []), self_state.get("name")), replied, time.monotonic())
+        heard_speech = voice.unanswered(observation.get("messages", [])) if voice is not None else observation.get("messages", [])
+        talk, speakers = speech_prompt(speech_lines(heard_speech, self_state.get("name")), replied, time.monotonic())
         goal, after = current_goal(observation)
         if box_for_goal(memory, local_project).get("leather") and not goal.startswith(SURVIVAL_GOALS):
             product = box_for_goal(memory, local_project)["leather"]
@@ -2999,6 +3044,8 @@ def _run(client, args, character, token, model_pool):
                     scheduler.record(choice, f"not possible: {error}")
                 time.sleep(args.interval)
                 continue
+            if voice is not None and voice.answered_after(speakers, step_started):
+                steps = [item for item in steps if item.get("do") != "say"]  # the voice already answered them
             summary, queue_since = execute(client, character, steps, queue_since)
             if "go failed" in summary:
                 # A target she cannot walk to (behind water, walls or cliffs) is hidden for a while instead of retried.

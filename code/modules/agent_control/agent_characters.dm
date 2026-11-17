@@ -706,7 +706,8 @@
 	var/wait = (action in agent_character_actions()) ? C.wait_for(action) : 0
 	if (wait)
 		agent_fail("cooldown", "wait [wait] ticks")
-	C.queue_guard = null // manual actions invalidate an earlier autopilot observation
+	if (action != "say") // speech changes nothing an observation guards, and the voice thread speaks between turns
+		C.queue_guard = null // manual actions invalidate an earlier autopilot observation
 	return perform_step(A, C, req)
 
 // One character action. Callers check wait_for() first. Clicks, use and

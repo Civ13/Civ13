@@ -295,11 +295,26 @@ class ScriptTests(unittest.TestCase):
         # Water in the mug but no campfire: the campfire chain.
         mug = thirsty("flint axe", items=[{"name": "wood mug", "liquids": {"water": 20, "cholera": 1}}])
         self.assertEqual(scripts.water(sit(mug, [TREE])), [{"do": "chop", "target": "[0xtree]"}])
-        # A lit fire but no stone block: sift soil for one.
+        # A lit fire but no stone block: sift soil for one, standing on dirt.
         lit = dict(FIRE, lit=True)
-        self.assertEqual(scripts.water(sit(mug, [lit])), [scripts.SIFT_STONE])
+        on_dirt = situation(dict(observe(mug, nearby=[lit], terrain=unclean), here={"turf": "dirt", "type": "/turf/floor/dirt"}))[0]
+        self.assertEqual(scripts.water(on_dirt), [scripts.SIFT_STONE])
         self.assertEqual(scripts.water(sit(dict(holding(), water=340))), scripts.DONE)
         self.assertEqual(scripts.name_of("drink"), "water")
+
+    def test_sifting_walks_onto_dirt_or_sand_first(self):
+        # Sifting on grass only says "Stand on uncovered, non-mineable dirt or sand": she looped on it until she starved.
+        grass = {"turf": "grass", "type": "/turf/floor/grass"}
+        far = {"ref": "turf:14,10,2", "name": "dirt", "type": "/turf/floor/dirt", "dx": 4, "dy": 0}
+        next_to = {"ref": "turf:9,11,2", "name": "sand", "type": "/turf/floor/beach/sand", "dx": -1, "dy": 1}
+        snowy = {"ref": "turf:10,11,2", "name": "dirt", "type": "/turf/floor/dirt", "dx": 0, "dy": 1, "snow": True}
+        cave = {"ref": "turf:11,10,2", "name": "dirt", "type": "/turf/floor/dirt/underground", "dx": 1, "dy": 0}
+        sit = lambda here, terrain: situation(dict(observe(me(), terrain=terrain), here=here))[0]
+        self.assertEqual(scripts.sift_stone(sit({"type": "/turf/floor/beach/sand"}, [])), [scripts.SIFT_STONE])
+        self.assertEqual(scripts.sift_stone(sit(grass, [far, snowy, cave])), [{"do": "go", "target": "turf:14,10,2"}])
+        self.assertEqual(scripts.sift_stone(sit(grass, [far, next_to])), [{"do": "move", "dir": "northwest"}])
+        self.assertEqual(scripts.sift_stone(sit(grass, [snowy, cave])), [{"do": "explore", "dir": "north"}])
+        self.assertEqual(scripts.gather(sit(grass, [far]), "gather stone blocks"), [{"do": "go", "target": "turf:14,10,2"}])
 
     def test_drink_routine_uses_the_water_script(self):
         sit, _ = situation(observe(dict(holding(), water=140), nearby=[ROCK], terrain=[RIVER]))

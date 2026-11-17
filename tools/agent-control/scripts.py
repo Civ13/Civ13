@@ -177,7 +177,7 @@ def gather(sit, problem):
     if "log" in text or "plank" in text or "wood" in text:
         return wood(sit, 99)
     if "stone" in text:
-        return [dict(SIFT_STONE)]
+        return sift_stone(sit)
     return None
 
 
@@ -199,6 +199,36 @@ QUENCHED = 90  # thirst level at which a water order is done
 SIFT_STONE = {"do": "verb", "name": "Sift soil for resources", "choose": "Stone"}
 
 
+SIFT_TURFS = ("/turf/floor/dirt", "/turf/floor/beach/sand")  # the game sifts only uncovered dirt or sand
+STEP_DIRS = {(0, 1): "north", (0, -1): "south", (1, 0): "east", (-1, 0): "west",
+             (1, 1): "northeast", (-1, 1): "northwest", (1, -1): "southeast", (-1, -1): "southwest"}
+
+
+def _siftable(row):
+    kind = str((row or {}).get("type", ""))
+    return kind.startswith(SIFT_TURFS) and not kind.startswith("/turf/floor/dirt/underground") and not row.get("snow")
+
+
+def _sign(value):
+    return (value > 0) - (value < 0)
+
+
+def sift_stone(sit):
+    """Sift a stone where she stands on dirt or sand; otherwise walk onto the nearest such tile first.
+
+    Sifting anywhere else only says "Stand on uncovered, non-mineable dirt or sand", so asking again changes nothing."""
+    if _siftable(sit.observation.get("here")):
+        return [dict(SIFT_STONE)]
+    rows = [row for row in sit.observation.get("terrain") or [] if isinstance(row, dict) and _siftable(row)
+            and row.get("ref") not in sit.ignored]
+    if not rows:
+        return explore(sit)
+    row = min(rows, key=_distance)
+    if _distance(row) <= 1:
+        return [{"do": "move", "dir": STEP_DIRS[(_sign(int(row["dx"])), _sign(int(row["dy"])))]}]
+    return [{"do": "go", "target": row["ref"]}]
+
+
 def water(sit):
     """A drink of boiled water: the boil_water steps while they can run, else the chain that supplies what they lack
     (wood for a mug or fuel, a campfire, a stone block, a stick, or water in view), so thirst never waits on the model."""
@@ -214,7 +244,7 @@ def water(sit):
     elif missing == "stick":
         need = stick(sit)
     elif missing == "stone":
-        return [dict(SIFT_STONE)]
+        return sift_stone(sit)
     else:
         return explore(sit)
     return [{"do": "boil_water"}] if need == DONE else need

@@ -74,6 +74,7 @@ AGENT_CONTROL_OFFLINE_TESTS = frozenset({
     'tests/agent_control/test_action_contract.py',
     'tests/agent_control/test_navigation_replay.py',
     'tests/agent_control/test_needs_routines.py',
+    'tests/agent_control/test_voice.py',
 })
 # Explicitly opt-in source-bound fixture; do not admit its native runner to CI.
 AGENT_CONTROL_MANUAL_NATIVE = frozenset({

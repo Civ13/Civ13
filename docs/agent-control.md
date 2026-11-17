@@ -610,6 +610,15 @@ which the watcher passes on to each run. A run that ends on purpose (its
 watcher has listed that agent's characters in the last minute, the verb warns
 the admin that the character will stand still until one starts.
 
+Each run answers players on two paths. On a normal turn the main loop replies
+itself. When no turn has finished for 20 seconds (a slow model, a long action
+or a hung script), a voice thread reads her messages, asks the model for one
+short line and says it with `character_act`; the main loop then skips what the
+voice answered. `--no-voice` turns the thread off. A `say` does not spend the
+queue guard. A turn that runs past `--stall-limit` seconds (default 600, and
+never less than three model timeouts) writes every thread's stack to the run
+log and exits, so the watcher can play the character again.
+
 A spawned character joins as `--job` (default `Nomad`). The model gets a short
 survival primer (including the stone-age start: flint from rocks on grab
 intent, sharpening, branches, sticks and leaves), matching lines from
