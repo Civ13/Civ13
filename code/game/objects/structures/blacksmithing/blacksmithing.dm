@@ -479,13 +479,8 @@ var/global/list/anvil_steel_face_nodes = list("steelmaking", "tatara_smelting")
 /obj/structure/anvil/proc/forge_steel_face(obj/item/stack/material/steel/S, mob/living/human/H)
 	if (in_use || !istype(S) || !istype(H))
 		return FALSE
-	var/known = FALSE
-	for (var/node_id in anvil_steel_face_nodes)
-		if (crafting_node_allowed(H, node_id))
-			known = TRUE
-			break
-	if (!known)
-		crafting_node_allowed_or_warn(H, anvil_steel_face_nodes[1]) // says what is missing
+	// Names every chapter that would do, e.g. Steelmaking or Tatara Smelting.
+	if (!crafting_nodes_allowed_or_warn(H, anvil_steel_face_nodes))
 		return FALSE
 	if (S.amount < ANVIL_STEEL_FACE_COST)
 		to_chat(H, SPAN_WARNING("You need [ANVIL_STEEL_FACE_COST] steel sheets to forge-weld a steel face onto this iron anvil."))

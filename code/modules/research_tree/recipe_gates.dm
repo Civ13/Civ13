@@ -31,14 +31,47 @@ var/global/list/basic_crafting_recipes = list("/obj/structure/oven/fireplace")
 /proc/crafting_node_allowed_or_warn(mob/living/human/H, node_id)
 	if (crafting_node_allowed(H, node_id))
 		return TRUE
-	var/datum/research_node/N = istext(node_id) ? get_research_node(node_id) : null
-	if (istype(H) && N)
+	return crafting_nodes_allowed_or_warn(H, list(node_id))
+
+// Seconds before the same missing-knowledge warning is shown to a player again,
+// so repeated clicks on the same thing do not flood the chat.
+#define RESEARCH_WALL_REPEAT_DELAY (3 SECONDS)
+// "\ref[H]" -> list(warning text, world.time it was last shown).
+var/global/list/research_wall_last_warning = list()
+
+// Any one of several nodes allows the action. The warning names every chapter
+// that would do, e.g. "Study the Steelmaking or Tatara Smelting chapter first."
+/proc/crafting_nodes_allowed_or_warn(mob/living/human/H, list/node_ids)
+	if (!istype(H) || !islist(node_ids))
+		return FALSE
+	var/list/names = list()
+	for (var/node_id in node_ids)
+		if (crafting_node_allowed(H, node_id))
+			return TRUE
+		var/datum/research_node/N = istext(node_id) ? get_research_node(node_id) : null
+		if (N)
+			names += "<b>[N.name]</b>"
+	if (!names.len)
+		return FALSE
+	var/joined = english_list(names, and_text = " or ")
+	var/text
+	if (map && map.book_research_enabled())
+		text = "You don't know how to do this yet. Study the [joined] chapter first."
+	else
+		text = "You don't know how to do this yet. It needs [joined]."
+	var/key = "\ref[H]"
+	var/list/last = research_wall_last_warning[key]
+	if (islist(last) && last[1] == text && world.time < last[2] + RESEARCH_WALL_REPEAT_DELAY)
+		return FALSE
+	if (research_wall_last_warning.len > 500)
+		research_wall_last_warning.Cut()
+	research_wall_last_warning[key] = list(text, world.time)
+	for (var/node_id in node_ids)
 		player_activity.research_wall(H, node_id)
-		if (map && map.book_research_enabled())
-			to_chat(H, SPAN_WARNING("You don't know how to do this yet. Study the <b>[N.name]</b> chapter first."))
-		else
-			to_chat(H, SPAN_WARNING("You don't know how to do this yet. It needs <b>[N.name]</b>."))
+	to_chat(H, SPAN_WARNING(text))
 	return FALSE
+
+#undef RESEARCH_WALL_REPEAT_DELAY
 
 // Planks: on a book research world anyone may turn logs into planks (with an
 // axe or saw, or by hand with flint, wedge and mallet), because the free
