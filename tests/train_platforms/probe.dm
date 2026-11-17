@@ -4,7 +4,7 @@
 /world
 	hub = ""
 	hub_password = ""
-	maxx = 208
+	maxx = 216
 	maxy = 26
 	maxz = 1
 	turf = /turf/floor/dirt
@@ -1760,6 +1760,127 @@ var/global/platform_probe_runtime_error = FALSE
 	var/list/states = icon_states('icons/obj/vehicles/train_platforms.dmi')
 	platform_check("servicing/ash_pit_dug_out", full && out == 3 && heaps == 3 && pit.ash == 0 && pit.icon_state == "ash_pit" && !pit.dig_out() && ("ash_pit" in states) && ("ash_pit_ash" in states) && ("ash_pit_full" in states) && ("fire_rake" in states))
 
+// Deeper servicing (train_servicing.dm): brake shoes, boiler scale and the
+// overhaul; and the depot (train_depot.dm): coaling stage and sand bin.
+/proc/platform_depot_run()
+	var/obj/structure/trains/locomotive/coal/E = drive_train(212, 12, 2)
+	var/obj/structure/trains/W1 = E.connected
+	var/obj/structure/trains/W2 = W1.connected
+	var/mob/living/human/platform_rider/fitter = new(platform_turf(211, 12))
+	E.refresh_consist()
+	var/sound = W1.brake_shoes == 300 && W1.brake_hold() == 1 && !W1.shoe_text()
+	// A brake that is on wears its shoes: a handbrake, and the driver's brake.
+	W1.handbrake = TRUE
+	E.refresh_consist(6)
+	var/pinned = W1.brake_shoes == 294 && W2.brake_shoes == 300 && E.brake_shoes == 300 && E.consist_braked == W1.car_load_weight()
+	E.braking = TRUE
+	E.refresh_consist(6)
+	platform_check("depot/brake_on_wears_the_shoes", sound && pinned && W1.brake_shoes == 288 && E.brake_shoes == 294 && W2.brake_shoes == 300)
+	// Worn out, the brake barely holds.
+	W1.brake_shoes = 40
+	var/thin = findtext(W1.shoe_text(), "worn thin") && W1.brake_hold() == 1
+	W1.brake_shoes = 4
+	E.brake_shoes = 2
+	E.refresh_consist(6)
+	platform_check("depot/worn_shoes_barely_hold", thin && W1.brake_shoes == 0 && E.brake_shoes == 0 && abs(W1.brake_hold() - 0.3) < 0.01 && abs(E.consist_braked - 0.3 * W1.car_load_weight()) < 0.01 && abs(E.consist_own - 0.3 * E.car_load_weight()) < 0.01 && findtext(W1.shoe_text(), "worn out"))
+	E.braking = FALSE
+	// A train that rolls free wears them too.
+	W2.handbrake = TRUE
+	W2.brake_shoes = 3
+	W2.roll_since = 6
+	W2.roll_refresh()
+	var/rolled = W2.brake_shoes == 0 && abs(W2.roll_braked - 0.3 * W2.car_load_weight()) < 0.01
+	W2.stop_rolling()
+	W2.handbrake = FALSE
+	W1.handbrake = FALSE
+	// A new set makes the brake whole; sound shoes are left alone.
+	var/obj/item/train_brake_shoes/shoes = new(platform_turf(211, 12))
+	W1.fit_shoes()
+	E.refresh_consist()
+	platform_check("depot/new_shoes_fitted", rolled && W1.brake_shoes == 300 && W1.brake_hold() == 1 && E.consist_braked == 0 && W1.service_use(shoes, fitter) && !QDELETED(shoes) && W2.brake_shoes == 0)
+
+	// The boiler: boiled water leaves scale, and a scaled boiler steams worse.
+	E.fuel = 100
+	E.boiler_water = 60
+	var/clean = E.scale == 0 && E.scale_factor() == 1 && !E.washout_due() && !("Wash out the boiler" in E.extra_controls())
+	E.steam_use(3, E.haul, 10)
+	var/scaled = abs(E.scale - 10 * 100 / (12 * 240)) < 0.001
+	E.scale = 70
+	var/poor = abs(E.scale_factor() - 0.8) < 0.01 && abs(E.fire_factor() - 0.8) < 0.01 && findtext(E.state_text(), "scaling up") && E.washout_due() && ("Wash out the boiler" in E.extra_controls())
+	E.scale = 100
+	platform_check("depot/scale_spoils_the_boiler", clean && scaled && poor && abs(E.fire_factor() - 0.6) < 0.01 && findtext(E.state_text(), "thick with scale"))
+	// It is washed out cold, with water from a tower within reach.
+	var/lit = !E.washout_water() && !E.wash_out_by(fitter) && E.scale == 100
+	E.on = FALSE
+	E.pressure = 80
+	var/obj/structure/rail_water/tower/TW = new(platform_turf(215, 12))
+	TW.water = 200
+	var/dry = !E.washout_water()
+	TW.water = 1000
+	var/hot = E.washout_water() == TW && !E.wash_out_by(fitter) && E.scale == 100 && TW.water == 1000
+	E.boiler_water = 5
+	E.wash_out(TW)
+	platform_check("depot/boiler_washed_out_cold", lit && dry && hot && E.scale == 0 && TW.water == 700 && E.boiler_water == E.max_boiler && E.pressure == 0 && E.fire_factor() == 1)
+
+	// The engine wears with the distance it works and pulls less for it.
+	E.on = TRUE
+	var/counted = E.mileage == 18
+	E.mileage = 0
+	E.refresh_consist()
+	var/fresh = counted && E.mileage == 0 && E.wear_factor() == 1 && E.consist_power == E.haul && !E.overhaul_text()
+	E.mileage = 4997
+	E.refresh_consist(6)
+	var/due = E.mileage == 5003 && findtext(E.overhaul_text(), "due for an overhaul")
+	E.mileage = 7500
+	E.refresh_consist()
+	var/weak = abs(E.wear_factor() - 0.85) < 0.001 && abs(E.consist_power - 0.85 * E.haul) < 0.001
+	E.mileage = 20000
+	platform_check("depot/worn_engine_pulls_less", fresh && due && weak && abs(E.wear_factor() - 0.7) < 0.001)
+	// The overhaul is shed work, with iron or steel for the parts.
+	var/outside = !E.engine_shed() && !E.overhaul_by(fitter)
+	var/obj/structure/rail_warehouse/shed = new(platform_turf(210, 12))
+	shed.dir = EAST
+	var/obj/item/stack/material/iron/bars = new(platform_turf(211, 12))
+	bars.amount = 9
+	var/few = !train_overhaul_parts(bars)
+	bars.amount = 12
+	var/obj/item/stack/material/wood/planks = new(platform_turf(211, 12))
+	planks.amount = 20
+	var/parts = train_overhaul_parts(bars) && !train_overhaul_parts(planks) && !train_overhaul_parts(null)
+	var/running = !E.overhaul_by(fitter) && E.mileage == 20000
+	E.overhaul()
+	E.refresh_consist()
+	platform_check("depot/overhauled_in_the_shed", outside && E.engine_shed() == shed && few && parts && running && E.mileage == 0 && E.wear_factor() == 1 && E.consist_power == E.haul)
+
+	// The coaling stage fills fireboxes and bunkers from its heap.
+	var/obj/structure/rail_depot/coal_stage/stage = new(platform_turf(210, 13))
+	var/obj/item/stack/ore/coal/C = new(platform_turf(211, 12))
+	C.amount = 10
+	var/empty = stage.icon_state == "coal_stage_empty" && !stage.fill_takers()
+	var/loaded = stage.load_fuel(C) == 10 && stage.fuel == 150 && stage.icon_state == "coal_stage" && !stage.load_fuel(shoes)
+	var/list/near = stage.takers()
+	E.fuel = 20
+	platform_check("depot/coaling_stage_fills_the_firebox", empty && loaded && near.len == 1 && near[1] == E && stage.fill_takers() == 80 && E.fuel == 100 && stage.fuel == 70 && stage.fill_takers() == 0)
+	var/obj/structure/trains/platform/tender = platform_car("tender", 212, 22, NORTH)
+	var/obj/structure/trains/platform/store = tender.tender_store()
+	var/obj/structure/rail_depot/coal_stage/second = new(platform_turf(210, 21))
+	store.tender_fuel = 1400
+	second.fuel = 3000
+	second.update_icon()
+	var/high = second.icon_state == "coal_stage_full"
+	var/list/by = second.takers()
+	platform_check("depot/coaling_stage_fills_the_tender", high && by.len == 1 && by[1] == store && second.fill_takers() == 100 && store.tender_fuel == 1500 && second.fuel == 2900 && second.fill_takers() == 0)
+
+	// The sand bin fills sandboxes.
+	var/obj/structure/rail_depot/sand_bin/bin = new(platform_turf(214, 13))
+	var/obj/item/stack/ore/glass/pile = new(platform_turf(211, 12))
+	pile.amount = 30
+	var/bare = bin.icon_state == "sand_bin_empty" && !bin.fill_takers()
+	var/binned = bin.load_sand(pile) == 30 && bin.sand == 30 && bin.icon_state == "sand_bin" && !bin.load_sand(C)
+	E.sand = 5
+	var/list/sheet = icon_states('icons/obj/vehicles/rail_water.dmi')
+	platform_check("depot/sand_bin_fills_the_sandbox", bare && binned && E.sand_room() == 15 && bin.fill_takers() == 15 && E.sand == 20 && bin.sand == 15 && bin.fill_takers() == 0 && ("coal_stage" in sheet) && ("coal_stage_empty" in sheet) && ("coal_stage_full" in sheet) && ("sand_bin" in sheet) && ("sand_bin_empty" in sheet) && ("brake_shoes" in icon_states('icons/obj/vehicles/train_platforms.dmi')))
+
 /world/New()
 	OpenPort("none")
 	GLOB.all_observable_events = list()
@@ -1788,6 +1909,7 @@ var/global/platform_probe_runtime_error = FALSE
 		platform_adhesion_run()
 		platform_shunting_run()
 		platform_servicing_run()
+		platform_depot_run()
 	catch (var/exception/E)
 		platform_probe_runtime_error = TRUE
 		world.log << "Fixture aborted: [E] at [E.file]:[E.line]"

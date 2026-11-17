@@ -695,6 +695,104 @@ def fire_rake():
     return [c.image()]
 
 
+SAND = ((240, 222, 168), (214, 190, 132), (178, 152, 100), (122, 100, 62))
+
+
+def brake_shoes():
+    """A set of cast iron brake shoes: two curved blocks, face to face."""
+    c = Canvas(32, 32)
+    c.shade(8, 22, 26, 25, 60)
+    for cx, lean in ((12.5, -1), (21.5, 1)):
+        for y in range(8, 23):
+            bow = round(2.2 * math.cos((y - 15) / 7.5 * math.pi / 2))
+            x0 = int(cx - 2 + lean * (bow - 2))
+            c.rect(x0 - 1, y, x0 + 4, y, STEEL_O)
+            c.rect(x0, y, x0 + 3, y, BLACK[2])
+            c.put(x0 if lean < 0 else x0 + 3, y, BLACK[0])
+            c.put(x0 + 3 if lean < 0 else x0, y, mix(COPPER[2], BLACK[3], 0.5))
+        # the lug the hanger pin goes through
+        lx = int(cx + lean * 3)
+        c.rect(lx - 1, 13, lx + 1, 17, STEEL_O)
+        c.put(lx, 15, STEEL[1])
+    return [c.image()]
+
+
+def coal_heap(c, cx, cy, r, seed):
+    for y in range(int(cy - r - 1), int(cy + r + 2)):
+        for x in range(int(cx - r - 1), int(cx + r + 2)):
+            d = math.hypot(x - cx, (y - cy) * 1.15) + noise(x, y, seed) * 2.2
+            if d > r:
+                continue
+            n = noise(x // 2, y // 2, seed + 1)
+            lit = (cx - x) + (cy - y)
+            tone = COAL[0] if (n > 0.8 and lit > -2) else (COAL[1] if n > 0.45 else (COAL[2] if n > 0.15 else COAL[3]))
+            c.put(x, y, tone)
+            if d > r - 1.2:
+                c.put(x, y, COAL[3])
+
+
+def coal_stage(fill):
+    """A coaling stage, 64 x 64 and centred on its tile: a timber deck on
+    trestle legs with kerb boards, a heap of coal on it and a barrow run.
+    fill 0 is swept bare, 1 has a small heap, 2 is piled high."""
+    c = Canvas(64, 64)
+    c.shade(12, 14, 57, 59, 70)
+    # trestle legs at the corners, then the deck
+    for x, y in ((7, 7), (52, 7), (7, 52), (52, 52)):
+        c.bevel(x, y, x + 4, y + 4, WALNUT[1], WALNUT[2], WALNUT[3], outline=DARK)
+    c.rect(8, 8, 55, 55, OLD_SEAM)
+    planks(c, 9, 9, 54, 54, tones=OLD_PLANK, seam=OLD_SEAM, seed=61)
+    # kerb boards round three sides; the south side is the barrow run
+    for x0, y0, x1, y1 in ((8, 8, 55, 10), (8, 8, 10, 55), (53, 8, 55, 55)):
+        c.bevel(x0, y0, x1, y1, WALNUT[0], WALNUT[1], WALNUT[2], outline=WALNUT[3])
+    c.rect(11, 53, 52, 55, WALNUT[2])
+    c.rect(11, 53, 52, 53, WALNUT[0])
+    # coal dust ground into the boards
+    c.speckle(11, 11, 52, 52, COAL[2], 0.10 if fill == 0 else 0.22, seed=62)
+    if fill == 1:
+        coal_heap(c, 30, 28, 10, 63)
+    elif fill == 2:
+        coal_heap(c, 31, 30, 19, 64)
+        coal_heap(c, 28, 26, 9, 65)
+    # a shovel left standing in the corner
+    c.line(46, 49, 50, 40, WALNUT[3])
+    c.line(45, 49, 49, 40, TAN[1])
+    c.bevel(43, 48, 47, 52, STEEL[1], STEEL[2], STEEL[4], outline=STEEL_O)
+    return [c.image()]
+
+
+def sand_bin(full):
+    """A sand bin, 64 x 64 and centred on its tile: a boarded bin with a tin
+    lid hinged back over half of it, dry sand (or bare boards) in the open half."""
+    c = Canvas(64, 64)
+    c.shade(18, 20, 49, 51, 70)
+    c.rect(15, 15, 48, 48, DARK)
+    c.bevel(16, 16, 47, 47, WALNUT[0], WALNUT[1], WALNUT[2], outline=WALNUT[3])
+    # the open half
+    c.rect(19, 31, 44, 44, WALNUT[3])
+    if full:
+        c.rect(20, 32, 44, 44, SAND[1])
+        c.speckle(20, 32, 44, 44, SAND[0], 0.30, seed=71)
+        c.speckle(20, 32, 44, 44, SAND[2], 0.22, seed=72)
+        c.rect(20, 32, 44, 32, SAND[3])
+        c.rect(20, 32, 20, 44, SAND[3])
+        # the scoop
+        c.bevel(36, 36, 41, 40, STEEL[0], STEEL[1], STEEL[3], outline=STEEL_O)
+        c.line(41, 41, 44, 44, WALNUT[3])
+    else:
+        planks(c, 20, 32, 44, 44, tones=OLD_PLANK, seam=OLD_SEAM, seed=73)
+        c.shade(20, 32, 44, 44, 110)
+        c.speckle(20, 40, 44, 44, SAND[2], 0.18, seed=74)
+    # the lid over the other half: ribbed tin with two strap hinges
+    c.bevel(17, 17, 46, 30, ROOF_TIN[0], ROOF_TIN[1], ROOF_TIN[3], outline=ROOF_TIN[4])
+    for x in range(21, 45, 5):
+        c.rect(x, 18, x, 29, ROOF_TIN[2])
+    for x in (24, 38):
+        c.rect(x, 28, x + 2, 32, STEEL_O)
+        c.put(x + 1, 30, STEEL[1])
+    return [c.image()]
+
+
 def coupling_item():
     """A spare coupling on the ground: draw hook, screw and links."""
     c = Canvas(32, 32)
@@ -1910,6 +2008,11 @@ def water_states():
         im = spout.image()
         im.alpha_composite(tower.image())
         out['water_tower'].append(im)
+    out['coal_stage_empty'] = coal_stage(0)
+    out['coal_stage'] = coal_stage(1)
+    out['coal_stage_full'] = coal_stage(2)
+    out['sand_bin_empty'] = sand_bin(False)
+    out['sand_bin'] = sand_bin(True)
     return out
 
 
@@ -1937,6 +2040,7 @@ def platform_states():
     states['ash_pit_ash'] = ash_pit(1)
     states['ash_pit_full'] = ash_pit(2)
     states['fire_rake'] = fire_rake()
+    states['brake_shoes'] = brake_shoes()
     states['fusible_plug'] = fusible_plug()
     states['brake_wheel'] = brake_wheel(False)
     states['brake_wheel_on'] = brake_wheel(True)
@@ -2211,6 +2315,19 @@ def write_previews(out, states, gun):
     im.alpha_composite(engine, (16 + 4 * 48, 64))
     im.alpha_composite(states['fire_rake'][0], (16 + 48, 150))
     big(im, 3).save(out / 'servicing.png')
+
+    # the depot: coaling stage bare, in use and piled high, the sand bin empty
+    # and filled, a tender coaling up, and a set of brake shoes
+    engine = render_loco(states, 'steam', 'E')
+    im = ground(max(5 * 72 + 16, engine.width + 96), 96 + 96 + 80, seed=17)
+    lay_track(im, y_tile=5)
+    for i, name in enumerate(('coal_stage_empty', 'coal_stage', 'coal_stage_full', 'sand_bin_empty', 'sand_bin')):
+        im.alpha_composite(water[name][0], (8 + i * 72, 8))
+    im.alpha_composite(states['brake_shoes'][0], (8 + 3 * 72 + 16, 72))
+    im.alpha_composite(engine, (16, 128))
+    im.alpha_composite(water['coal_stage_full'][0], (16 + 64, 80))
+    im.alpha_composite(water['sand_bin'][0], (16 + 160, 80))
+    big(im, 3).save(out / 'depot.png')
 
     im = ground(6 * 104 + 8 + 2 * 264, 264 + 16, seed=9)
     for i, (kind, roof) in enumerate((('bogie_coach', False), ('bogie_coach', True), ('boxcar', False),

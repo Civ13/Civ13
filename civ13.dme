@@ -1062,6 +1062,7 @@
 #include "code\modules\1713\train_brakes.dm"
 #include "code\modules\1713\train_couplings.dm"
 #include "code\modules\1713\train_crashes.dm"
+#include "code\modules\1713\train_depot.dm"
 #include "code\modules\1713\train_locomotives.dm"
 #include "code\modules\1713\train_platforms.dm"
 #include "code\modules\1713\train_rolling.dm"
