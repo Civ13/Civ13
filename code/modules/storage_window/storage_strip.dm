@@ -219,4 +219,4 @@
 	if (!C || C.storage_strip_hint_shown || C.storage_window_classic || C.modern_ui_failed)
 		return
 	C.storage_strip_hint_shown = TRUE
-	to_chat(user, SPAN_NOTICE("Bags open in the classic strip. Click the bag again while its strip is showing to open the storage window, or pick the window for every bag in Character Setup > Settings."))
+	to_chat(user, SPAN_NOTICE("Bags open in the classic strip. Click the bag again to close it, or double-click it to open the storage window. To open the window for every bag, pick it in Character Setup > Settings."))

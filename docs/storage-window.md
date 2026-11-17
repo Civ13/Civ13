@@ -24,9 +24,12 @@ and a refused move tells the player why in chat. Locked containers (through
 `/obj/structure/storage_container/proc/storage_access_allowed`) show no contents
 and no fill.
 
-Hybrid by default: bags and containers open the classic HUD strip, and clicking
-the same container again while its strip is showing opens the window
-(`storage_window_open` checks `s_active == S`). Players who want the window
+Hybrid by default: a click on a bag or container opens its classic HUD strip,
+another click closes it, and a quick double-click (within half a second) opens
+the window. Nothing waits for the double-click: the first click acts at once and
+the second one turns it into the window (`/mob/living/human/proc/storage_click`;
+`DblClickOn` covers a double-click BYOND reports only as a DblClick). Without a
+working window, the second click of a double-click does nothing. Players who want the window
 every time pick it in Character Setup > Settings ("Bags and containers open
 in"), or with the **Storage Window** verb (OOC tab); the choice is the client
 preference `STORAGE_WINDOW`. Agent characters and browsers that can't run the
