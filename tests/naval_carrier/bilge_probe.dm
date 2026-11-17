@@ -850,6 +850,80 @@ var/naval_runtime_error = FALSE
 	naval_check(!S.keeps_lookout() && !S.lookout() && findtext(S.muster_text(), "Gig Hand: on deck") && !findtext(S.muster_text(), "Nobody keeps"), "a small craft musters her hands and keeps no lookout")
 	mast.sails = FALSE
 
+// Fouling, scraping and copper (hull_fouling.dm).
+/proc/fouling_checks()
+	var/obj/structure/hull_tiller/tiller = bilge_hull(52, 45, 54, 54, "Bark")
+	var/datum/craft/C = tiller.craft
+	var/datum/hull_ledger/L = C.ledger
+	naval_check(L.fouls() && L.fouling == 0 && L.fouling_name() == "clean" && L.foul_weight() == 0, "a boat starts with a clean bottom that drags nothing")
+	var/mass_was = C.mass()
+	naval_check(findtext(L.status_text(), "Her bottom is clean."), "the tiller says so ([L.fouling_text()])")
+	// A day of use fouls her.
+	L.step_fouling(4320)
+	naval_check(L.fouling_name() == "clean" && L.foul_weight() == 0 && C.mass() == mass_was, "an hour or so leaves her clean and no slower")
+	L.step_fouling(4320)
+	naval_check(near(L.fouling, 0.1) && L.fouling_name() == "slimed", "a tenth of the way she is slimed ([L.fouling])")
+	L.step_fouling(34560)
+	naval_check(near(L.fouling, 0.5) && L.fouling_name() == "weedy" && L.foul_weight() == 6 && L.fouling_told == 1, "half way she is weedy and drags like six tiles of her thirty ([L.foul_weight()])")
+	naval_check(C.mass() == mass_was + 6, "her drives push that much more ([C.mass()] from [mass_was])")
+	L.step_fouling(86400)
+	naval_check(L.fouling == 1 && L.fouling_name() == "foul" && L.foul_weight() == 12 && L.fouling_told == 2, "after a day she is foul and drags four tenths of her tiles")
+	naval_check(findtext(L.status_text(), "Her bottom is foul, dragging like 12 more tiles of hull"), "the tiller says so ([L.fouling_text()])")
+	// Saved and loaded.
+	var/list/saved = L.to_list()
+	naval_check(saved["fouling"] == 1 && saved["coppered"] == 0, "her bottom is saved")
+	// Out of reach on deep water.
+	var/mob/living/human/naval_probe/H = new(locate(53, 50, 2))
+	var/obj/covers/plank = locate(/obj/covers) in locate(53, 51, 2)
+	naval_check(findtext(hull_bottom_refusal(H, plank), "shallows"), "on deep water her bottom is out of reach ([hull_bottom_refusal(H, plank)])")
+	// Laid in the shallows.
+	for (var/x = 51, x <= 55, x++)
+		for (var/y = 44, y <= 55, y++)
+			var/turf/W = locate(x, y, 2)
+			W.ChangeTurf(/turf/floor/beach/water)
+	naval_check(!L.over_deep() && isnull(hull_bottom_refusal(H, plank)), "in the shallows she can be scraped ([hull_bottom_refusal(H, plank)])")
+	C.set_anchor(FALSE)
+	C.set_speed(VESSEL_SPEED_SLOW)
+	naval_check(findtext(hull_bottom_refusal(H, plank), "lie still"), "but not under way")
+	C.set_speed(VESSEL_SPEED_STOP)
+	C.set_anchor(TRUE)
+	naval_check(near(L.scrape_go(), 0.1) && near(L.fouling, 0.9), "one go scrapes three tiles of thirty")
+	naval_check(findtext(hull_sheathe_refusal(H, plank), "scrape her bottom clean"), "copper wants a clean bottom")
+	for (var/i = 1, i <= 9, i++)
+		L.scrape_go()
+	naval_check(L.fouling == 0 && L.fouling_told == 0 && C.mass() == mass_was, "ten goes clean her and her drag is gone")
+	// Copper.
+	naval_check(findtext(hull_sheathe_refusal(H, plank), "hammer"), "sheathing wants a hammer in the other hand ([hull_sheathe_refusal(H, plank)])")
+	L.seep_tiles = 0
+	naval_check(!L.takes_copper(), "a plated hull takes no copper")
+	L.seep_tiles = 30
+	naval_check(L.takes_copper() && L.copper_wanted() == 15, "a wooden boat of thirty tiles wants fifteen sheets ([L.copper_wanted()])")
+	L.copper_sheet()
+	naval_check(near(L.coppered, 2 / 30) && L.copper_wanted() == 14, "one sheet covers two tiles")
+	for (var/i = 1, i <= 14, i++)
+		L.copper_sheet()
+	naval_check(L.coppered == 1 && L.copper_wanted() == 0 && findtext(L.fouling_text(), "sheathed in copper"), "fifteen sheathe her from stem to stern ([L.fouling_text()])")
+	L.step_fouling(86400)
+	naval_check(near(L.fouling, 0.1), "coppered, a day fouls her a tenth as much ([L.fouling])")
+	// Loaded back.
+	var/datum/hull_ledger/N = new
+	N.craft = C
+	N.tiles = 30
+	N.from_list(list("water" = 0, "fouling" = 0.8, "coppered" = 0.5))
+	naval_check(near(N.fouling, 0.8) && near(N.coppered, 0.5) && N.fouling_told == 2, "a saved bottom loads as it was, and is not told again")
+	N.craft = null
+	qdel(N)
+	// Grounded she grows nothing, and a small craft never fouls.
+	L.fouling = 0
+	L.grounded = TRUE
+	L.step_fouling(86400)
+	naval_check(L.fouling == 0, "sat on the bottom she grows nothing")
+	L.grounded = FALSE
+	var/obj/structure/hull_tiller/skiff = bilge_hull(56, 12, 58, 15, "Yawl")
+	var/datum/hull_ledger/S = skiff.craft.ledger
+	S.step_fouling(86400)
+	naval_check(!S.fouls() && S.fouling == 0 && S.fouling_text() == "" && !S.foul_weight(), "a small craft never fouls")
+
 /proc/naval_run()
 	try
 		naval_checks()
@@ -860,6 +934,7 @@ var/naval_runtime_error = FALSE
 		anchor_checks()
 		rigging_checks()
 		watch_checks()
+		fouling_checks()
 	catch(var/exception/e)
 		naval_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = naval_failures, "runtime_error" = naval_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")
