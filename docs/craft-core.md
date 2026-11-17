@@ -170,6 +170,11 @@ the cells over them) and snags in more (`tear_on_tree()`). A wreck over a tree
 drops people beside its trunk (`air_hull_beside()`), and a pedal airship forced
 down over a forest snags in the tree below until it comes down
 (`snag_in_tree()`, `pedal_airship_tree_gone()`).
+Deck tiles weigh by `air_weight` (wood 1, aluminium 0.5, steel 2) in `load()`;
+only wood catches fire (`air_deck_catch_fire()`), and trees under `snag_proof`
+steel tiles never snag her. Gas cells set `max_lift` and `hole_lift`: cloth
+12/3, rubberised (5 plastic sheets on a cloth cell) 12/2, goldbeater's skin (6
+sausage casings) 15/5.
 Native probe:
 `tests/pedal_bicycle/ride.py --probe air_hull_probe.dm`.
 
