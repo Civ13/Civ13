@@ -95,6 +95,26 @@ run, and burn fuel or battery, only while the hull is awake. Their own
 `cellar_minute()` runs only on a flood cellar level and never aboard. The
 tiller counts the pumps on her deck.
 
+## Load and ballast
+
+`code/modules/naval/hull_load.dm`. Everything on the deck of a boat or ship has
+a weight in tiles of hull (`/atom/movable/proc/hull_load()`): a person 0.2, a
+dense structure 0.5, a crate 0.5 plus its contents, a cannon 1.5, an engine 1,
+a mast 0.5, a wall built aboard 0.3, an item 0.02 (0.1 if large), a stack 0.02
+a piece. `fit_drives()` adds it up in the deck walk it already makes before
+every hop; a hull lying still is counted in her ledger step and when the tiller
+is read.
+
+- Burden: half a tile of weight a tile of hull, carried for nothing.
+- Deep laden, past her burden: each tile over it is one more tile in `mass()`.
+- Overladen, past twice her burden: under way she ships a bucketful a minute
+  for each tile over that mark, up to awash.
+- Crank: a ship (41 tiles and up) wants a twentieth of her tiles in weight for
+  each rigged mast. Short of it, under sail in wind 3 or more she ships ten
+  bucketfuls a minute, up to awash.
+
+Small craft are left out. Nothing here is saved.
+
 ## One-object craft: rafts, canoes, outriggers, inflatables
 
 These are single objects with no ledger (`code/modules/naval/small_craft_leaks.dm`).

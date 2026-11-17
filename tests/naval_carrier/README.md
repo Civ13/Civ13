@@ -197,6 +197,13 @@ bilge, lifts 40 a minute on its battery and nothing switched off or flat; a
 lever pump lifts nothing left alone and is worked from beside it; the tiller
 counts her pumps.
 
+Load and ballast (`code/modules/naval/hull_load.dm`): a thirty-tile boat has a
+burden of fifteen; stone, crates and hands are weighed in the deck walk; past
+her burden the extra is hull to push and past twice her burden she ships water
+under way, up to awash and not at anchor; a fifty-tile ship with two rigged
+masts and no ballast is crank and ships water under sail in a strong wind only,
+and two hundred stone cure it; a small craft is not weighed.
+
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/bilge_probe.dm 300
 
 ## Upper decks on built hulls (`upper_deck_probe.dm`)

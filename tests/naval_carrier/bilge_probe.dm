@@ -573,12 +573,106 @@ var/naval_runtime_error = FALSE
 	naval_check(!length(L.pumps()), "pumps taken off her are hers no longer")
 	qdel(tiller)
 
+// Load and ballast (naval/hull_load.dm).
+/proc/load_checks()
+	var/obj/structure/hull_tiller/tiller = bilge_hull(65, 20, 67, 29, "Hulk")
+	var/datum/craft/C = tiller.craft
+	var/datum/hull_ledger/L = C.ledger
+	L.seep_tiles = 0
+	naval_check(L.carries_load() && L.burden() == 15, "a boat of thirty tiles has a burden of fifteen")
+	L.survey_load()
+	naval_check(near(L.load, 0.5) && L.laden() == HULL_LADEN_LIGHT && L.load_weight() == 0 && C.mass() == 30, "with only her tiller aboard she is light ([L.load])")
+	// Weights.
+	var/obj/item/stack/material/stone/stone = new(locate(66, 22, 2))
+	stone.amount = 50
+	var/obj/structure/closet/crate/crate = new(locate(66, 23, 2))
+	var/mob/living/human/naval_probe/H = new(locate(66, 24, 2))
+	naval_check(near(stone.hull_load(), 1) && near(crate.hull_load(), 0.5) && near(H.hull_load(), 0.2), "fifty stone weigh a tile, a crate half and a hand a fifth")
+	var/obj/covers/floor = locate(/obj/covers) in locate(66, 25, 2)
+	naval_check(floor.hull_load() == 0, "her own floors weigh nothing more")
+	L.survey_load()
+	naval_check(near(L.load, 2.2), "the deck walk adds them up ([L.load])")
+	// Deep laden: past her burden the weight is hull to push.
+	stone.amount = 50 * 18
+	L.survey_load()
+	naval_check(near(L.load, 19.2) && L.laden() == HULL_LADEN_DEEP && L.laden_told == HULL_LADEN_DEEP, "past her burden she is deep laden and her crew is told ([L.load])")
+	naval_check(L.load_weight() == 4 && C.mass() == 34, "four tiles over her burden are four more tiles to push ([C.mass()])")
+	naval_check(findtext(tiller.status_text(), "deep laden"), "the tiller says so")
+	C.set_anchor(FALSE)
+	C.set_speed(VESSEL_SPEED_SLOW)
+	naval_check(near(L.load, 19.2), "getting under way counts her load in the same walk as her drives ([L.load])")
+	L.water = 0
+	L.step_ledger(600)
+	naval_check(L.water == 0, "deep laden she ships no water")
+	// Overladen: past twice her burden the sea slops in, up to awash.
+	stone.amount = 50 * 34
+	C.fit_drives()
+	naval_check(near(L.load, 35.2) && L.laden() == HULL_LADEN_OVER && L.laden_told == HULL_LADEN_OVER, "past twice her burden she is overladen ([L.load])")
+	L.step_ledger(60)
+	naval_check(near(L.water, 5.2), "under way an overladen hull ships a bucketful a minute for each tile over the mark ([L.water])")
+	L.step_ledger(3600)
+	naval_check(near(L.water, L.limit()), "and stops at awash ([L.water])")
+	C.set_speed(VESSEL_SPEED_STOP)
+	C.set_anchor(TRUE)
+	L.water = 0
+	L.step_ledger(600)
+	naval_check(L.water == 0, "lying still she ships none")
+	stone.amount = 50
+	L.step_ledger(30)
+	naval_check(L.laden() == HULL_LADEN_LIGHT && L.laden_told == HULL_LADEN_LIGHT, "lightened at anchor, the next step finds her light again")
+	naval_check(!L.crank() && L.ballast_wanted() == 0, "a boat is never crank")
+	qdel(stone)
+	qdel(crate)
+	qdel(tiller)
+	// A ship with masts and too little weight low in her is crank.
+	var/obj/structure/hull_tiller/ship_tiller = bilge_hull(30, 45, 34, 54, "Carrack")
+	var/datum/craft/K = ship_tiller.craft
+	var/datum/hull_ledger/R = K.ledger
+	R.seep_tiles = 0
+	var/obj/structure/vehicleparts/movement/sail/fore = new(locate(32, 47, 2))
+	fore.sails = TRUE
+	var/obj/structure/vehicleparts/movement/sail/main = new(locate(32, 51, 2))
+	main.sails = TRUE
+	K.set_anchor(FALSE)
+	K.set_speed(VESSEL_SPEED_SLOW)
+	naval_check(R.hull_class() == HULL_CLASS_SHIP && R.masts == 2 && near(R.ballast_wanted(), 5), "a ship of fifty tiles with two rigged masts wants five tiles of weight ([R.ballast_wanted()])")
+	naval_check(near(R.load, 1.5) && R.crank() && R.under_sail(), "with only her masts and tiller aboard she is crank ([R.load])")
+	naval_check(findtext(ship_tiller.status_text(), "crank"), "the tiller says so")
+	var/wind_was = map.windspeedvar
+	map.windspeedvar = 1
+	R.step_ledger(60)
+	naval_check(R.water == 0 && !R.crank_told, "in a light wind a crank ship sails dry")
+	map.windspeedvar = 3
+	R.step_ledger(60)
+	naval_check(near(R.water, 10) && R.crank_told, "in a strong wind she heels and ships ten bucketfuls a minute, and her crew is told ([R.water])")
+	var/obj/item/stack/material/stone/ballast = new(locate(32, 49, 2))
+	ballast.amount = 200
+	K.fit_drives()
+	naval_check(near(R.load, 5.5) && !R.crank(), "two hundred stone ballast her ([R.load])")
+	R.water = 0
+	R.step_ledger(60)
+	naval_check(R.water == 0 && !R.crank_told, "ballasted she stands up to the same wind")
+	map.windspeedvar = wind_was
+	qdel(ballast)
+	qdel(ship_tiller)
+	// A small craft carries what she likes.
+	var/obj/structure/hull_tiller/skiff = bilge_hull(65, 32, 67, 35, "Wherry")
+	var/datum/hull_ledger/S = skiff.craft.ledger
+	var/obj/item/stack/material/stone/heap = new(locate(66, 33, 2))
+	heap.amount = 5000
+	S.survey_load()
+	skiff.craft.fit_drives()
+	naval_check(!S.carries_load() && S.load_weight() == 0 && skiff.craft.mass() == 12 && S.load_text() == "", "load is not counted on a small craft")
+	qdel(heap)
+	qdel(skiff)
+
 /proc/naval_run()
 	try
 		naval_checks()
 		small_craft_checks()
 		caulking_checks()
 		pump_checks()
+		load_checks()
 	catch(var/exception/e)
 		naval_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = naval_failures, "runtime_error" = naval_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")
