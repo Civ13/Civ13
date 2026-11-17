@@ -534,11 +534,14 @@
 	if (!is_trench && launch_from_trench && !overcoming_trench)
 		overcoming_trench = TRUE
 
-	// Fire aimed at an aircraft's shadow may hit the aircraft above instead.
-	if (airborne_aircraft.len && T != starting && aircraft_overhead_fire(src, T))
-		on_impact(T)
-		qdel(src)
-		return FALSE
+	// Fire aimed at an aircraft's or airship's shadow may hit it instead
+	// (aircraft_damage.dm, pedal_airship_combat.dm).
+	if ((airborne_aircraft.len || aloft_pedal_airships.len) && T != starting)
+		var/atom/overhead = airborne_overhead_hit(src, T)
+		if (overhead)
+			on_impact(overhead)
+			qdel(src)
+			return FALSE
 
 	// Hills: ground above the shot's line stops it, and a line above a roof
 	// passes over the building (projectile_heights.dm).

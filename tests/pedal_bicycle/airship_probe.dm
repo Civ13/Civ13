@@ -3,7 +3,8 @@
 // airship, finds the propeller useless on the ground, rises, pedals across the
 // open air, hovers, is refused a dismount and a descent onto water, sinks back
 // to dry ground and gets off. Further legs cover the lift limit, an upper
-// storey in the way, loose things on its tile and a forced set-down.
+// storey in the way, loose things on its tile, a forced set-down, and ground
+// fire holing, sinking and burning it (pedal_airship_combat.dm).
 // Production code runs unchanged; this file only drives it and records.
 var/global/datum/pedal_airship_probe/pedal_airship_probe = new
 
@@ -253,6 +254,69 @@ var/global/datum/pedal_airship_probe/pedal_airship_probe = new
 	expect(R.z == start.z && R.getBruteLoss() == 0 && !R.buckled, "rider of a destroyed airship at z [R.z], brute [R.getBruteLoss()]")
 	R.loc = null
 
+// Shoots at it from the ground until something counts, at most tries times.
+/datum/pedal_airship_probe/proc/shoot(obj/structure/vehicle/bicycle/airship/V, path, mob/firer, tries = 60)
+	var/turf/G = V.ground_turf()
+	for(var/i = 1 to tries)
+		var/obj/item/projectile/P = new path(null)
+		P.firer = firer
+		var/atom/hit = pedal_airship_overhead_fire(P, G)
+		qdel(P)
+		if(hit)
+			return hit
+	return null
+
+/datum/pedal_airship_probe/proc/combat(turf/start, sky_z)
+	var/obj/structure/vehicle/bicycle/airship/V = board(start)
+	var/mob/living/human/R = V.driver
+	var/obj/item/vehicleparts/wheel/handle/bicycle/airship/tiller = R.get_active_hand()
+	tiller.secondary_attack_self(R)
+	expect(V.aloft, "combat: did not rise")
+	// Its own rider's shots never strike it.
+	expect(!shoot(V, /obj/item/projectile/bullet/rifle/musketball, R, 40), "the rider's own shot hit the airship")
+	// Ground fire holes the bag; at four holes it sinks, nobody hurt.
+	var/shots = 0
+	while(V.aloft && shots < 200)
+		shots++
+		shoot(V, /obj/item/projectile/bullet/rifle/musketball, null, 1)
+	notes["shots_to_sink"] = shots
+	expect(!V.aloft && V.z == start.z && R.z == start.z && V.bag_holes == 4, "holed: aloft [V.aloft], holes [V.bag_holes] after [shots] shots")
+	expect(R.getBruteLoss() == 0, "sinking from holes hurt the rider")
+	// Too holed to rise; cloth patches it, one hole a stitch.
+	tiller.secondary_attack_self(R)
+	expect(!V.aloft, "rose with four holes")
+	var/obj/item/stack/material/cloth/C = new(start)
+	C.amount = 4
+	for(var/i = 1 to 4)
+		V.attackby(C, R)
+	expect(V.bag_holes == 0, "patching left [V.bag_holes] holes")
+	tiller.secondary_attack_self(R)
+	expect(V.aloft, "did not rise once patched")
+	// The ordinary projectile path reaches it: a shot crossing the shadow's tile.
+	var/turf/G = V.ground_turf()
+	var/turf/W = locate(G.x - 3, G.y, G.z)
+	var/reached = FALSE
+	for(var/i = 1 to 60)
+		var/obj/item/projectile/bullet/rifle/musketball/P = new(W)
+		P.starting = W
+		P.original = locate(G.x + 3, G.y, G.z)
+		if(!P.handleTurf(G) && QDELETED(P))
+			reached = V.bag_holes || V.aloft == FALSE
+		else
+			qdel(P)
+		if(reached || V.bag_holes)
+			break
+	expect(V.bag_holes == 1, "a projectile crossing the shadow never holed the bag: holes [V.bag_holes]")
+	// A fire arrow sets it alight: it falls and the rider is hurt.
+	var/atom/hit = null
+	for(var/i = 1 to 60)
+		hit = shoot(V, /obj/item/projectile/arrow/arrow/fire, null, 1)
+		if(hit && hit != R)
+			break
+	expect(!V.aloft && V.z == start.z && R.z == start.z && V.bag_holes >= 6, "burnt: aloft [V.aloft], z [V.z], holes [V.bag_holes]")
+	expect(R.getBruteLoss() > 0 && R.getBurnLoss() > 0, "the burning fall did not hurt the rider: brute [R.getBruteLoss()] burn [R.getBurnLoss()]")
+	discard(V)
+
 /datum/pedal_airship_probe/proc/run_probe()
 	var/failure = null
 	try
@@ -278,6 +342,7 @@ var/global/datum/pedal_airship_probe/pedal_airship_probe = new
 		overloaded(start, sky_z)
 		blocked(start, sky_z)
 		forced(start, sky_z)
+		combat(start, sky_z)
 		if(problems.len)
 			notes["problems"] = problems
 			throw EXCEPTION(jointext(problems, "; "))
