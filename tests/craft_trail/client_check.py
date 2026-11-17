@@ -198,7 +198,7 @@ def main():
             extra.write('\n' + '\n'.join(args.config_line) + '\n')
         (output / 'manifest.json').write_text(json.dumps({
             'tested_commit': head, 'working_tree_status': status, 'port': port,
-            'config_lines': args.config_line, 'adapters': ['probe appended to a temporary civ13.dme', 'webhooks/ToRban off', 'round started via admin_started', 'weather worker paused, Midday lighting', 'a patch of deep sea with open air above it', 'a 5x6 airship deck with a 3-wide stern, four gas cells and a helm commissioned with the production code', 'hops stepped by the probe with sail_hop()', 'client window 1280x800, a still at the start of each 3 s clip']}, indent=2), encoding='utf-8')
+            'config_lines': args.config_line, 'adapters': ['probe appended to a temporary civ13.dme', 'webhooks/ToRban off', 'round started via admin_started', 'weather worker paused, Midday lighting', 'a patch of deep sea with open air above it (map terrain heights are left as they are, so former hills there still hide what lies behind them)', ('a roofed 5x6 sea hull (upper deck, ladder, tiller) sailing at slow ahead' if args.mode == 'ship' else 'a 5x6 airship deck with a 3-wide stern, four gas cells and a helm, hops stepped by sail_hop()'), 'client window 1280x800, a still at the start of each 3 s clip']}, indent=2), encoding='utf-8')
         with (output / 'daemon-output.log').open('w') as out:
             daemon = subprocess.Popen([str(args.byond_bin / 'dd.exe'), 'probe.dmb', str(port), '-trusted', '-ip', '127.0.0.1',
                                        '-params', 'tested_commit=' + head + ('&restored=1' if args.restored else '') + '&mode=' + args.mode, '-log', 'startup.log'], cwd=output, stdout=out, stderr=subprocess.STDOUT)
