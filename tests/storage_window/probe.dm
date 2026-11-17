@@ -312,6 +312,10 @@ var/storwin_runtime_error = FALSE
 	var/mob/living/human/storwin_probe/H = new(here)
 	var/mob/living/human/storwin_probe/other = new(locate(2, 3, 1))
 	storwin_check(!H.storage_window_wanted(), "with no choice made, bags open in the strip")
+	var/obj/item/weapon/storage/internal/shown = storage_window_structure_holder(new /obj/structure/storage_container/basket(locate(1, 2, 1)))
+	H.s_active = shown
+	storwin_check(!storage_window_open(H, shown), "a second click opens the window only for a player whose browser can run it")
+	H.s_active = null
 	var/obj/structure/storage_container/basket/B = new(locate(3, 2, 1))
 	var/obj/item/weapon/storage/internal/IS = storage_window_structure_holder(B)
 	var/obj/item/knife = storwin_item(null, ITEM_SIZE_SMALL, "knife")

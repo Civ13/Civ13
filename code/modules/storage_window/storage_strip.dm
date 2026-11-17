@@ -1,4 +1,5 @@
-// The classic storage strip (the default; the storage window is opt-in) keeps
+// The classic storage strip (the default; a second click or the Settings choice
+// opens the storage window) keeps
 // the storage window's rules, so picking it never skips them:
 // - Taking a thing out of a bag takes the window's move time
 //   (storage_window_move_time, to your hands).
@@ -218,4 +219,4 @@
 	if (!C || C.storage_strip_hint_shown || C.storage_window_classic || C.modern_ui_failed)
 		return
 	C.storage_strip_hint_shown = TRUE
-	to_chat(user, SPAN_NOTICE("Bags open in the classic strip. To use the storage window instead, pick it in Character Setup > Settings or use OOC > Storage Window."))
+	to_chat(user, SPAN_NOTICE("Bags open in the classic strip. Click the bag again while its strip is showing to open the storage window, or pick the window for every bag in Character Setup > Settings."))
