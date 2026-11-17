@@ -130,7 +130,7 @@
 	if (!target || istype(target, /turf/wall) || istype(target, /turf/floor/beach/water/deep/saltwater))
 		to_chat(user, SPAN_WARNING("You cannot build a floor here."))
 		return
-	var/error = building_floor_error(target)
+	var/error = building_floor_error(target) || tile_build_refusal(target, /obj/covers/repairedfloor)
 	if (error)
 		to_chat(user, SPAN_WARNING(error))
 		return
@@ -143,7 +143,7 @@
 		return
 	if (get_turf(user) != start || !do_after(user, covers_time, start) || !building_item_usable(src, user) || get_turf(user) != start)
 		return
-	error = building_floor_error(target)
+	error = building_floor_error(target) || tile_build_refusal(target, /obj/covers/repairedfloor)
 	if (error)
 		to_chat(user, SPAN_WARNING(error))
 		return
@@ -151,6 +151,8 @@
 	if (!C.building_finish_floor())
 		qdel(C)
 		return
+	if (building_open_turf(target))
+		C.building_take_upper_face(C.building_roof())
 	visible_message(SPAN_NOTICE("[user] finishes placing the floor."))
 	if (ishuman(user))
 		var/mob/living/human/H = user
@@ -185,6 +187,10 @@
 /obj/covers/fire_act(temperature)
 	if (prob(20) && flammable)
 		visible_message("<span class = 'warning'>\The [src] is burned away.</span>")
+		// A finished floor upstairs burns down to the slab under it; only a
+		// burning plain upper floor opens the hole (a stone slab does not burn).
+		if (!wall && !is_subfloor() && building_slab_face() && revert_to_subfloor())
+			return
 		qdel(src)
 
 /obj/covers/CanPass(var/atom/movable/mover)
