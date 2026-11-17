@@ -83,7 +83,7 @@ class VehicleDeckSources(unittest.TestCase):
         life = read('code/game/mob/living/carbon/human/human_life.dm')
         self.assertIn('process_train_roofs()', life)
         trains = read('code/modules/1713/train_platforms.dm')
-        self.assertIn('train_deck_clearance(cargo, OPPOSITE_DIR(newdir))', trains)
+        self.assertIn('train_deck_clearance(cargo, OPPOSITE_DIR(way))', trains)
         self.assertIn('hang_roof_images()', trains)
         self.assertIn('train_deck_segment(D)', proc(DECKS, '/proc/vehicle_deck_walkable('))
 

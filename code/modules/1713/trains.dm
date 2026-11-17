@@ -227,6 +227,7 @@
 	var/list/transporting = list()
 	var/on = FALSE
 	var/obj/structure/trains/connected = null
+	var/reversed = FALSE // coupled in back to front: runs tail first (train_heading())
 	var/tmp/moving_train = FALSE
 	var/train_weight = 1 // empty weight of this car, in loaded-wagon units
 
@@ -244,40 +245,102 @@
 	to_chat(usr, "There is no wagon to hitch \the [src] to.")
 	return FALSE
 
-// Couples or uncouples this car and the one ahead of it.
+// Couples or uncouples this car and the one ahead of it in its train.
 /obj/structure/trains/proc/hitch_front(mob/user)
-	for (var/obj/structure/trains/TR in get_step(src, dir))
-		if (TR.connected && TR.connected == src)
-			playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
-			to_chat(user, "You unhitch \the [src] from \the [TR].")
-			TR.connected = null
+	return couple_end(TRUE, user)
+
+// The same from the rear end, for the car behind.
+/obj/structure/trains/proc/hitch_rear(mob/user)
+	return couple_end(FALSE, user)
+
+// The way this car travels when its train runs forward. A car stands facing
+// its own front (dir); one coupled in back to front is reversed and runs
+// tail first.
+/obj/structure/trains/proc/train_heading()
+	return reversed ? OPPOSITE_DIR(dir) : dir
+
+/obj/structure/trains/proc/train_is_driving()
+	for (var/obj/structure/trains/locomotive/L in train_consist_list(train_head()))
+		if (L.driving)
 			return TRUE
-		else if (!TR.connected)
-			if ((dir == TR.dir || dir == OPPOSITE_DIR(TR.dir)) && can_connect_to(TR))
-				playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
-				to_chat(user, "You hitch \the [src] to \the [TR].")
-				TR.connected = src
-				return TRUE
 	return FALSE
 
-// The same from the rear end, for the car behind. The sections of one car or
-// engine stay hitched to each other.
-/obj/structure/trains/proc/hitch_rear(mob/user)
-	if (connected)
-		if (car_id && connected.car_id == car_id)
+// Turns the train's order round without moving anything: its last car becomes
+// its front, and every car now runs the other way. Cars keep facing as they do.
+/obj/structure/trains/proc/reverse_train()
+	var/list/cars = train_consist_list(train_head())
+	for (var/i in 1 to cars.len)
+		var/obj/structure/trains/car = cars[i]
+		car.connected = (i > 1) ? cars[i - 1] : null
+		car.reversed = !car.reversed
+
+// Keeps the train's order the way most of its engines face, or most of its
+// cars when the engines do not settle it: a train whose cars mostly run tail
+// first is the same train counted from its other end.
+/obj/structure/trains/proc/settle_train_order()
+	var/list/cars = train_consist_list(train_head())
+	var/turned = 0
+	var/engines = 0
+	var/engines_turned = 0
+	for (var/obj/structure/trains/car in cars)
+		if (car.reversed)
+			turned++
+		if (istype(car, /obj/structure/trains/locomotive))
+			var/obj/structure/trains/locomotive/L = car
+			if (L.driving)
+				L.refresh_consist()
+				return
+			engines++
+			if (L.reversed)
+				engines_turned++
+	if (engines_turned * 2 != engines ? engines_turned * 2 > engines : turned * 2 > cars.len)
+		reverse_train()
+
+// Couples or uncouples at one end of this car: ahead is the end towards the
+// front of its train. Any two ends couple, whichever way the cars face; when
+// two fronts or two rears meet, one train is counted from its other end. The
+// sections of one car or engine stay hitched to each other.
+/obj/structure/trains/proc/couple_end(ahead, mob/user)
+	var/obj/structure/trains/other = ahead ? lead_car() : connected
+	if (other)
+		if (car_id && other.car_id == car_id)
 			return FALSE
+		if (ahead)
+			other.connected = null
+		else
+			connected = null
 		playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
-		to_chat(user, "You unhitch \the [connected] from \the [src].")
-		connected = null
+		to_chat(user, "You unhitch \the [src] from \the [other].")
+		settle_train_order()
+		other.settle_train_order()
 		return TRUE
-	for (var/obj/structure/trains/TR in get_step(src, OPPOSITE_DIR(dir)))
-		if (TR == src || TR.lead_car())
+	var/way = ahead ? train_heading() : OPPOSITE_DIR(train_heading())
+	for (var/obj/structure/trains/TR in get_step(src, way))
+		if (TR == src || (TR.dir != dir && TR.dir != OPPOSITE_DIR(dir)))
 			continue
-		if (dir == TR.dir && TR.can_connect_to(src))
-			playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
-			to_chat(user, "You hitch \the [TR] to \the [src].")
+		// The end of TR that faces this car, and whether it is free.
+		var/their_front = (TR.train_heading() == OPPOSITE_DIR(way))
+		if (their_front ? TR.lead_car() : TR.connected)
+			continue
+		if (TR.train_head() == train_head())
+			continue
+		var/mine_front = ahead
+		if (their_front == mine_front)
+			var/obj/structure/trains/turned = train_is_driving() ? TR : src
+			if (turned.train_is_driving())
+				to_chat(user, SPAN_WARNING("Stop the trains before you couple them."))
+				return TRUE
+			turned.reverse_train()
+			if (turned == src)
+				mine_front = !mine_front
+		if (mine_front)
+			TR.connected = src
+		else
 			connected = TR
-			return TRUE
+		playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
+		to_chat(user, "You hitch \the [src] to \the [TR].")
+		settle_train_order()
+		return TRUE
 	return FALSE
 
 // Connections point to the following wagon. Reject both a new cycle and an
@@ -322,9 +385,12 @@
 			return FALSE
 	if (rail_canmove(AM.dir))
 		return src.Move(tgt)
-/obj/structure/trains/Move(var/turf/newloc, var/fdir = dir)
+// fdir: the way the car heads after the step (train_heading()).
+/obj/structure/trains/Move(var/turf/newloc, var/fdir = null)
 	if (moving_train || !isturf(loc) || !newloc)
 		return FALSE
+	if (!fdir)
+		fdir = train_heading()
 	check_connections()
 	if (buckled_mob && map.check_caribbean_block(buckled_mob, newloc))
 		return FALSE
@@ -338,7 +404,7 @@
 	if (!moved || loc == oldloc || !isturf(loc))
 		moving_train = FALSE
 		return FALSE
-	dir = fdir
+	dir = reversed ? OPPOSITE_DIR(fdir) : fdir
 	if (buckled_mob)
 		if (buckled_mob.buckled == src)
 			buckled_mob.persistence_set_loc(loc)
@@ -350,7 +416,7 @@
 		if (O.anchored && (O in transporting))
 			O.persistence_set_loc(loc)
 	if (connected && !train_solo_move)
-		connected.Move(oldloc, dir)
+		connected.Move(oldloc, fdir)
 
 	for (var/obj/O in transporting)
 		if (get_dist(O, src) >= 2)
@@ -389,6 +455,11 @@ var/global/train_solo_move = FALSE
 		else if (RT.dir == OPPOSITE_DIR(mdir))
 			fdir = OPPOSITE_DIR(RT.turn_dir)
 		tgtt = get_step(RT, fdir)
+		// A car that stopped on the curve while its train backed already heads
+		// out along one of the curve's legs: it runs straight on.
+		if (fdir != mdir && !rail_canmove(fdir) && rail_canmove(mdir))
+			fdir = mdir
+			tgtt = get_step(RT, mdir)
 	if (!rail_canmove(fdir))
 		return null
 	return list(tgtt, fdir)
@@ -466,7 +537,7 @@ var/global/train_solo_move = FALSE
 /obj/structure/trains/proc/process_rail_movement(impact = null, driven = FALSE)
 	if (!automovement)
 		return FALSE
-	var/list/route = rail_target(dir)
+	var/list/route = rail_target(train_heading())
 	if (!route)
 		automovement = FALSE
 		set_light(0)
@@ -846,16 +917,22 @@ var/global/train_solo_move = FALSE
 /obj/structure/trains/proc/unit_engine()
 	return null
 
+// The reverser is the engine's own: forward is the way the engine faces. This
+// is the way the train then runs: 1 towards its front car, -1 towards its last.
+/obj/structure/trains/locomotive/proc/train_way()
+	return reversed ? -reverser : reverser
+
 // What leads the train decides how fast it may go: an engine running
 // forward, an engine running bunker first, or cars pushed with nobody at the
 // front to see the line. A running helper engine at the front counts.
 /obj/structure/trains/locomotive/proc/leading_factor(list/cars)
 	if (!cars || !cars.len)
 		return 1
-	var/obj/structure/trains/lead = (reverser > 0) ? cars[1] : cars[cars.len]
+	var/way = train_way()
+	var/obj/structure/trains/lead = (way > 0) ? cars[1] : cars[cars.len]
 	var/obj/structure/trains/locomotive/E = istype(lead, /obj/structure/trains/locomotive) ? lead : lead.unit_engine()
 	if (E && (E == src || (E.on && !E.engine_disabled())))
-		return (reverser > 0) ? 1 : 0.75
+		return ((way > 0) != !!E.reversed) ? 1 : 0.75
 	return 0.5
 
 /obj/structure/trains/locomotive/proc/refresh_consist(steps_since = 0)
@@ -930,7 +1007,7 @@ var/global/train_solo_move = FALSE
 			if (rail_speed <= 0.25 && target <= 0)
 				break
 			automovement = TRUE
-			var/moved = (reverser > 0) ? process_rail_forward() : process_rail_reverse()
+			var/moved = (train_way() > 0) ? process_rail_forward() : process_rail_reverse()
 			if (QDELETED(src))
 				return
 			if (!moved)
@@ -976,7 +1053,7 @@ var/global/train_solo_move = FALSE
 		return FALSE
 	var/list/cars = train_consist_list((drive_head && !QDELETED(drive_head)) ? drive_head : src)
 	var/obj/structure/trains/tail = cars[cars.len]
-	var/list/route = tail.rail_target(OPPOSITE_DIR(tail.dir))
+	var/list/route = tail.rail_target(OPPOSITE_DIR(tail.train_heading()))
 	if (!route)
 		automovement = FALSE
 		return FALSE
@@ -1013,7 +1090,7 @@ var/global/train_solo_move = FALSE
 		var/turf/dest = (i == cars.len) ? tgtt : old[i + 1]
 		var/face = get_dir(dest, old[i])
 		if (!(face in cardinal))
-			face = car.dir
+			face = car.train_heading()
 		if (!car.Move(dest, face))
 			. = FALSE
 			break
@@ -1106,7 +1183,7 @@ var/global/train_solo_move = FALSE
 		if (lead_factor <= 0.5)
 			to_chat(user, "It is pushing cars ahead of it and keeps to half speed.")
 		else if (lead_factor < 1)
-			to_chat(user, "It is running backward and keeps to three quarters of its speed.")
+			to_chat(user, "The engine in front runs backward, so the train keeps to three quarters of its speed.")
 	return TRUE
 
 /obj/structure/trains/locomotive/coal/fuel_value(obj/item/I)
