@@ -101,7 +101,7 @@
 	if (updated >= IMMUNITY_FULL)
 		clear_disease()
 		bodytemperature = min(bodytemperature, species.body_temperature)
-		to_chat(src, SPAN_NOTICE("Your body has fought off the illness. You feel much better, and it won't take hold again for a while."))
+		to_chat(src, "<big><font color='#3d9e3d'><b>Your body has fought off the illness.</b> You feel much better, and it won't take hold again for a while.</font></big>")
 		return TRUE
 	return FALSE
 

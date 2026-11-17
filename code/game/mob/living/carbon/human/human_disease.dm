@@ -68,7 +68,7 @@
 				disease_type = "none"
 				disease_progression = 0
 				bodytemperature = 310.055
-				to_chat(src, "You feel much better now! The disease is finally gone!")
+				to_chat(src, "<big><font color='#3d9e3d'><b>You feel much better now! The illness is gone.</b></font></big>")
 				disease_treatment = 0
 				disease_resistance["flu"] = 100 // Riding it out protects for a while.
 				if (prob(25))
@@ -82,7 +82,7 @@
 				disease_type = "none"
 				disease_progression = 0
 				bodytemperature = 310.055
-				to_chat(src, "You feel much better now! The disease is finally gone!")
+				to_chat(src, "<big><font color='#3d9e3d'><b>You feel much better now! The illness is gone.</b></font></big>")
 				disease_treatment = 0
 
 			if (disease_progression == 25)

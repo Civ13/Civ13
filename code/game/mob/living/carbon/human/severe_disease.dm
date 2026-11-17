@@ -147,10 +147,11 @@ var/global/list/swallowed_germs = list("cholera", "typhus", "plague", "worm_eggs
 	for (var/germ in germ_reagent_disease)
 		del_reagent(germ)
 
-// Lying buckled in a real bed (not a chair) speeds recovery.
+// Lying buckled in a real bed (not a chair) speeds recovery, and so does
+// sleeping in one (the Sleep verb needs a bed but does not buckle).
 /mob/living/human/proc/resting_in_bed()
 	if (!buckled)
-		return FALSE
+		return (inducedSSD && isturf(loc) && (locate(/obj/structure/bed) in loc)) ? TRUE : FALSE
 	if (istype(buckled, /obj/structure/bed/chair))
 		return FALSE
 	return istype(buckled, /obj/structure/bed) || istype(buckled, /obj/structure/medicalbed) || istype(buckled, /obj/structure/optable)
