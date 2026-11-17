@@ -28,6 +28,12 @@
 	var/list/query = list("ckey" = ckey, "message" = message)
 	webhook_send("oocmessage", query)
 
+// Join-screen chat (new_player Say) for CivilizationBot's lobby channel. The
+// bot adds the time and "LOBBY" tag itself.
+/proc/webhook_send_lobby(ckey, message)
+	var/list/query = list("ckey" = ckey, "message" = message)
+	webhook_send("lobbymessage", query)
+
 /proc/webhook_send_ic(ckey, message)
     var/list/query = list("ckey" = ckey, "message" = message)
     webhook_send("icmessage", query)
