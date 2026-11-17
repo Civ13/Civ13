@@ -81,6 +81,10 @@
 #define HULL_PATCH_TIME 60
 // Half minutes between foundering on deep water and going down.
 #define HULL_SINK_WARNINGS 4
+// How foul her bottom is where its name changes (hull_fouling.dm).
+#define HULL_FOUL_SLIMED 0.1
+#define HULL_FOUL_WEEDY 0.4
+#define HULL_FOUL_FOUL 0.75
 
 // How deep the bilge is, for messages: the share of her capacity each begins at.
 #define HULL_DEPTH_DRY 0
@@ -362,6 +366,8 @@ var/global/hull_ledger_timer_off = FALSE
 	check_founder()
 	// Unheld and crewed, she drifts (hull_anchors.dm).
 	step_drift()
+	// Weed and shell grow on her bottom (hull_fouling.dm).
+	step_fouling(seconds)
 	// Her lookout calls what lies ahead (hull_watch.dm).
 	step_watch()
 
@@ -382,6 +388,7 @@ var/global/hull_ledger_timer_off = FALSE
 	if (!under_way())
 		survey_load()
 	. += load_text()
+	. += fouling_text()
 	. += rigging_text()
 	. += pumps_text()
 	if (grounded)

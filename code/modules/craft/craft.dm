@@ -94,7 +94,7 @@ var/global/list/crafts = list()
 /datum/craft/proc/mass()
 	. = body ? max(1, body.tile_count()) : 1
 	if (ledger)
-		. += ledger.water_weight() + ledger.load_weight()
+		. += ledger.water_weight() + ledger.load_weight() + ledger.foul_weight()
 
 // Push from every drive that is switched on and has fuel.
 /datum/craft/proc/thrust()
