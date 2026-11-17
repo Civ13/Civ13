@@ -226,7 +226,7 @@ save. The tiller saves the ledger inside its `hull_state` record
 
 `code/modules/naval/hull_awash.dm`. While `depth()` is awash or worse,
 `show_awash()` lays one shared overlay (`icons/effects/hull_awash.dmi`, state
-`awash`, drawn by `scripts/draw_hull_awash.py`) on the floor plank of each of
+`awash`, cut from the sea sprite by `scripts/draw_hull_awash.py`) on the floor plank of each of
 her lower deck tiles and remembers the planks in `awash_planks`. It runs when
 `add_water()` or `remove_water()` crosses the mark and again in every ledger
 step, which clears and lays it afresh. Nothing is saved; a hull asleep at

@@ -42,7 +42,8 @@ var/global/list/hull_anchors = list()
 /obj/structure/hull_anchor/stone
 	name = "killick"
 	desc = "A wooden anchor weighted with a stone, on a rope cable. Built on her deck it holds 40 tiles of hull when her anchor is called down at the helm."
-	color = "#b0a890"
+	icon = 'icons/obj/hull_gear.dmi'
+	icon_state = "killick"
 	holds = 40
 
 /obj/structure/hull_anchor/New()
