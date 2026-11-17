@@ -51,6 +51,12 @@ RECRUITMENT_COOLDOWN_MINUTES 5
 FACTION_MEMBER_LIMIT 50
 FACTION_ROSTER_IDLE_DAYS 14
 
+## Knowledge spreads with a lag on book-research worlds: how many eras behind
+## the world's era a subject must be to be quicker to learn (spreading) and
+## to be known by everyone (common). 1-10 each; 10 never happens.
+KNOWLEDGE_SPREADING_ERAS 2
+KNOWLEDGE_COMMON_ERAS 4
+
 ## log OOC channel
 LOG_OOC
 
