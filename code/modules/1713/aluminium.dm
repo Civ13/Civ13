@@ -70,10 +70,12 @@
 		if (istype(H))
 			visible_message(SPAN_NOTICE("[H] starts to purify \the [src] with \the [W.name]..."), SPAN_NOTICE("You start to purify \the [src] with \the [W.name]."))
 			playsound(src, 'sound/effects/pickaxe.ogg', 100, 1)
-			if (do_after(H, 110 / H.getStatCoeff("dexterity")) && ET.reagents.total_volume <= 0)
+			// One ore per use: the kit holds 5 units, so the rest of the stack stays.
+			if (kit_wait(H, 110 / H.getStatCoeff("dexterity")) && ET.reagents.total_volume <= 0 && !QDELETED(src) && use(1))
 				ET.reagents.add_reagent("aluminum", 5)
 				ET.update_icon()
-				qdel(src)
+				if (!QDELETED(src))
+					update_icon()
 		return
 	return ..()
 
