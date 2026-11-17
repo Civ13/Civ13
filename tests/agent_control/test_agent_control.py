@@ -227,6 +227,14 @@ class GistIdeaTests(unittest.TestCase):
         self.assertIn("M.ear_deaf > 0", hear)
         self.assertIn("T.z != source.z", hear)
 
+    def test_agent_bodies_wake_from_ordinary_sleep(self):
+        # Without a client the SSD rule held sleeping at 3, so an agent body stayed unconscious forever.
+        life = (ROOT / "code/game/mob/living/carbon/human/human_life.dm").read_text(encoding="utf-8")
+        status = re.search(r"/mob/living/human/handle_regular_status_updates\(\).*?(?=\n/)", life, re.S).group(0)
+        self.assertIn("if (client || !ssd_check() || sleeping > 3)", status)
+        helpers = (ROOT / "code/game/mob/mob_helpers.dm").read_text(encoding="utf-8")
+        self.assertIn("!agent_character_for(src)", re.search(r"/mob/proc/ssd_check\(\).*?(?=\n/)", helpers, re.S).group(0))
+
     def test_queue_steps_repeat_until_and_check_names(self):
         chars = dm_source("agent_characters.dm")
         check = re.search(r"/datum/agent_control/proc/check_step\(.*?(?=\n/)", chars, re.S).group(0)
