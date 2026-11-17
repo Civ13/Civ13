@@ -184,7 +184,7 @@ var/global/list/frame_hives = list()
 		return
 	user.visible_message(SPAN_NOTICE("\The [user] takes \the [src] apart."), SPAN_NOTICE("You take \the [src] apart."))
 	for (var/i = 1, i <= 6, i++)
-		new /obj/item/stack/material/wood(loc)
+		new /obj/item/stack/material/woodplank(loc) // 6 of the 8 planks it cost
 	var/drawn = drawn_frames
 	for (var/i = 1, i <= frames, i++)
 		if (honeycombs >= 100)

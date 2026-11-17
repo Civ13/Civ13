@@ -2068,6 +2068,10 @@ SUITES = {
     'bootstrap': {'files': ('tests/test_byond_bootstrap.py', 'tests/test_byond_toolchain.py',
                             'tests/test_byond_runtime.py', 'tests/test_sprite_toolchain.py'), 'always': True, 'paths': ()},
     'progress': {'files': ('tests/world_save/test_progress_sources.py', 'tests/world_save/test_import_hold.py'), 'always': True, 'paths': ()},
+    # Build cost vs dismantle/smash refund across every recipe list. It scans
+    # all production DM and every recipe file, so it runs on every PR.
+    'dismantle_refunds': {'files': ('tests/dismantle_refunds/test_refunds.py',),
+                          'always': True, 'paths': (), 'timeout': 120},
     # Source-only inventories the native moving-save lane pins (collision overrides,
     # animal save hooks). They scan all production DM, so they run on every PR: the
     # PR that edits a listed file refreshes the inventory, not the next save PR.

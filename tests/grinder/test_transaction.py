@@ -973,7 +973,7 @@ class GrinderAcquisition(unittest.TestCase):
         self.assertFalse(p.expression(guard, product, dict(O=item)))
         product.not_disassemblable = False
         self.assertTrue(p.expression(guard, product, dict(O=item)))
-        self.assertIn('new /obj/item/stack/material/wood(get_turf(src))', STRUCTURE_SOURCE)
+        self.assertIn('crafted_refund_stack(type, /obj/item/stack/material/wood)', STRUCTURE_SOURCE)
 
     def test_missing_payment_and_wrong_discount_mutations_fail_paid_oracle(self):
         # Mutate generated projections, never the checkout. Constructor execution

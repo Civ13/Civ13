@@ -58,7 +58,10 @@
 					to_chat(user, SPAN_NOTICE("The padding cannot be recovered intact."))
 					return
 			to_chat(user, SPAN_NOTICE("You dismantle \the [src]."))
-			new /obj/item/stack/material/wood(get_turf(src))
+			// One unit of what it was built from, never more than it cost.
+			var/refund = crafted_refund_stack(type, /obj/item/stack/material/wood)
+			if (refund)
+				new refund(get_turf(src))
 			machine_drop_fitted_parts(src)
 			for (var/obj/item/weapon/book/b in contents)
 				b.loc = (get_turf(src))

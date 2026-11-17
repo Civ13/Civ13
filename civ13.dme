@@ -431,6 +431,7 @@
 #include "code\game\objects\storey_chimney.dm"
 #include "code\game\objects\tile_occupancy.dm"
 #include "code\modules\multiz\world_z_budget.dm"
+#include "code\game\objects\dismantle_refund.dm"
 #include "code\game\objects\structures.dm"
 #include "code\game\objects\weapons.dm"
 #include "code\game\objects\covers_types\cover_floortypes.dm"

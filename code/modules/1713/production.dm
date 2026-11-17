@@ -336,7 +336,7 @@
 		wrench_action(H)
 		return
 	if (is_tool(W, TOOL_HAMMER))
-		hammer_action(H, W, 150, list("/obj/item/stack/material/wood"), list(6))
+		hammer_action(H, W, 150, list("/obj/item/stack/material/woodplank"), list(6))
 		return
 	..(W, H)
 
@@ -535,7 +535,7 @@
 		wrench_action(H)
 		return
 	if (is_tool(W, TOOL_HAMMER))
-		hammer_action(H, W, 90, list("/obj/item/stack/material/wood"), list(3))
+		hammer_action(H, W, 90, list("/obj/item/stack/material/woodplank"), list(3))
 		return
 	..(W, H)
 
@@ -1687,7 +1687,7 @@
 			to_chat(user, "<span class='warning'>There is already a connected [work_barrel].</span>")
 		return
 	if (is_tool(W, TOOL_HAMMER))
-		hammer_action(user, W, 270, list("/obj/item/stack/material/wood"), list(30))
+		hammer_action(user, W, 270, list("/obj/item/stack/material/woodplank"), list(30))
 		return
 	..(W, user)
 
@@ -1828,7 +1828,7 @@
 		if (do_after(user,60,src))
 			to_chat(user, "<span class='notice'>You dismantle \the [src].</span>")
 			for (var/i=1, i<=5, i++)
-				new /obj/item/stack/material/wood(loc) //5 out of 12 to craft
+				new /obj/item/stack/material/woodplank(loc) //5 out of 12 planks to craft
 			machine_drop_fitted_parts(src)
 			qdel(src)
 
@@ -2258,7 +2258,7 @@
 		wrench_action(H)
 		return TRUE
 	if (is_tool(W, TOOL_HAMMER))
-		hammer_action(H, W, 150, list("/obj/item/stack/material/wood"), list(7))
+		hammer_action(H, W, 150, list("/obj/item/stack/material/woodplank"), list(7))
 		return TRUE
 	to_chat(H, "<span class='warning'>\the [W] is not suitable for compost.</span>")
 
