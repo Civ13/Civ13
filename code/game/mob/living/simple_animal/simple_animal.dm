@@ -122,6 +122,10 @@
 	var/food_distraction_time = 200 // ds a starving predator spends going after thrown meat instead of a person
 	var/tmp/obj/item/weapon/reagent_containers/food/snacks/distracted_by // thrown meat it left a person for
 	var/tmp/distracted_until = 0
+	var/predator_hunting_hunger = 500 // natural predators only hunt animal prey when their hunger is below this
+	var/predator_sated_hunger = 950 // a predator eating its kill stops once its hunger reaches this
+	var/predator_feed_bite = 150 // hunger each bite of a kill restores
+	var/tmp/mob/living/feeding_on // the kill it is eating
 
 // Invalidate deferred work at the mutation, even if the link later returns to
 // its old value between worker checks. Save restoration has no pending worker.

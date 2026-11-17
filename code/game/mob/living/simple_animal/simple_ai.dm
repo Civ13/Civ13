@@ -25,7 +25,7 @@
 		return
 
 	// Going for thrown meat comes before any fight or forage.
-	if (food_distraction_tick())
+	if (food_distraction_tick() || predator_feeding_tick())
 		return
 
 	// An adjacent fight runs every Life tick and the bite cooldown sets the

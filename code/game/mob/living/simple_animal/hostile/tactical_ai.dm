@@ -143,7 +143,7 @@
 	if (stat == DEAD || stat == UNCONSCIOUS)
 		return FALSE
 	a_intent = I_HARM
-	if (food_distraction_tick())
+	if (food_distraction_tick() || predator_feeding_tick())
 		return t_behaviour
 
 	if (t_behaviour == "hunt" || (t_behaviour == "defends" && target_mob))
@@ -322,6 +322,8 @@
 				if (istype(L, /mob/living/simple_animal/civilian) && istype(src, /mob/living/simple_animal/hostile/human/redmenian_ng)) continue
 				if (L in friends) continue
 				if (map.ID == MAP_VOYAGE) continue
+				// A fed predator lets other animals graze in peace.
+				if (!predator_will_hunt_prey(L)) continue
 
 			// Not seen behind a ridge (los_terrain.dm).
 			if (los_terrain_ray_blocked(src, L)) continue
@@ -596,6 +598,9 @@
 		src.do_movement(target_mob) // Use do_movement for consistent pathfinding
 
 /mob/living/simple_animal/proc/AttackTarget()
+	// Its prey is down: a predator stops to eat instead of looking for the next one.
+	if (isliving(target_mob) && target_mob.stat == DEAD && get_dist(src, target_mob) <= 1 && start_feeding(target_mob))
+		return FALSE
 	if (!target_mob || !SA_attackable(target_mob) || !can_reach_tree_climber(target_mob))
 		LoseTarget()
 		return FALSE
@@ -668,10 +673,15 @@
 		if (observed_attack && player_help_service && (lost_limb || H.getBruteLoss() + H.getBurnLoss() > previous_damage))
 			player_help_service.record_animal_injury(observing_client, H, src, injury_limb, lost_limb)
 		do_attack_animation(H)
+		if (H.stat == DEAD)
+			start_feeding(H)
 	else if (isliving(target_mob))
 		var/mob/living/L = target_mob
 		L.adjustBruteLoss(damage)
 		do_attack_animation(L)
+		if (L.stat == DEAD)
+			start_feeding(L)
+			return L
 		if (istype(target_mob, /mob/living/simple_animal))
 			var/mob/living/simple_animal/SA = target_mob
 			if (SA.behaviour == "defends" || SA.behaviour == "hunt")
@@ -722,6 +732,7 @@
 			return FALSE
 	provoked_by = attacker
 	end_food_distraction()
+	stop_feeding()
 	if (!target_mob || target_mob.stat == DEAD || get_dist(src, target_mob) > 1)
 		npc_set_combat_target(attacker)
 	stance = HOSTILE_STANCE_ATTACK
@@ -808,6 +819,97 @@
 	if (!moving || target_obj != F)
 		do_movement(F)
 	return TRUE
+
+// Natural predators only hunt other animals when hungry. One that is eating, going
+// for thrown meat or fed leaves them alone, unless the animal hurt it or is after it.
+/mob/living/simple_animal/proc/predator_will_hunt_prey(mob/living/L)
+	if (!is_natural_predator() || !starves || L == provoked_by)
+		return TRUE
+	if (feeding_on || is_food_distracted())
+		return FALSE
+	if (istype(L, /mob/living/simple_animal))
+		var/mob/living/simple_animal/SA = L
+		if (SA.target_mob == src)
+			return TRUE
+	return simplehunger < predator_hunting_hunger
+
+// How much hunger a whole carcass can restore before only bones are left.
+/mob/living/simple_animal/proc/carcass_food_value(mob/living/C)
+	if (ishuman(C))
+		return 600
+	return butcher_yield(C) * 200
+
+// A natural predator that brings its prey down stays with the kill and eats.
+/mob/living/simple_animal/proc/start_feeding(mob/living/C)
+	if (!istype(C) || C.stat != DEAD || C == src || !isturf(C.loc))
+		return FALSE
+	if (feeding_on == C)
+		return TRUE
+	if (client || stat != CONSCIOUS || !is_natural_predator() || !starves || simplehunger >= predator_sated_hunger)
+		return FALSE
+	if (C.carcass_eaten >= carcass_food_value(C))
+		return FALSE
+	LoseTarget()
+	end_food_distraction()
+	feeding_on = C
+	set_dir(get_dir(src, C))
+	visible_message("<span class='notice'>\The [src] stands over \the [C] and starts to eat.</span>")
+	return TRUE
+
+/mob/living/simple_animal/proc/stop_feeding()
+	if (!feeding_on)
+		return
+	if (target_obj == feeding_on)
+		target_obj = null
+		found_path = list()
+		move_gen++
+		moving = FALSE
+	feeding_on = null
+
+// Each AI tick while eating a kill: one bite per bite cooldown until it is full
+// or only bones are left. TRUE while busy, so it does not hunt in the meantime.
+/mob/living/simple_animal/proc/predator_feeding_tick()
+	if (!feeding_on)
+		return FALSE
+	var/mob/living/C = feeding_on
+	if (QDELETED(C) || C.stat != DEAD || !isturf(C.loc) || stat != CONSCIOUS || client || simplehunger >= predator_sated_hunger || get_dist(src, C) > 7)
+		stop_feeding()
+		return FALSE
+	if (get_dist(src, C) > 1)
+		if (!moving || target_obj != C)
+			do_movement(C)
+		return TRUE
+	if (world.time < next_melee_attack)
+		return TRUE
+	next_melee_attack = world.time + melee_attack_cooldown()
+	npc_subtile_stop_continuous_walk()
+	set_dir(get_dir(src, C))
+	var/value = carcass_food_value(C)
+	var/gain = min(predator_feed_bite, value - C.carcass_eaten)
+	if (gain > 0)
+		C.carcass_eaten += gain
+		finish_eating(gain)
+	if (C.carcass_eaten >= value)
+		stop_feeding()
+		finish_carcass(C)
+	else if (simplehunger >= predator_sated_hunger)
+		stop_feeding()
+		visible_message("<span class='notice'>\The [src] has eaten its fill and leaves the rest of \the [C].</span>")
+	return TRUE
+
+// Only bones are left of an eaten animal. A person's body is never removed.
+/mob/living/simple_animal/proc/finish_carcass(mob/living/C)
+	if (ishuman(C))
+		visible_message("<span class='notice'>\The [src] leaves what is left of \the [C].</span>")
+		return
+	var/turf/T = get_turf(C)
+	visible_message("<span class='notice'>\The [src] finishes \the [C], leaving only bones.</span>")
+	var/bones = butcher_yield(C) - 2
+	if (bones >= 1 && T)
+		var/obj/item/stack/material/bone/B = new/obj/item/stack/material/bone(T)
+		B.name = "[C.name] bone"
+		B.amount = bones
+	qdel(C)
 
 /mob/living/simple_animal/proc/LoseTarget()
 	if (npc_subtile_pursuit_enabled)

@@ -104,7 +104,19 @@ the generic `AttackTarget` path) only go for a person who comes within
 `predator_encroach_range` (3 tiles), who hurt them, or when their hunger is
 below `predator_starving_hunger` (150). A fed predator gives up an unprovoking
 person who backs off past `predator_chase_range` (6 tiles); its attacker
-(`provoked_by`, not saved) is never given up. Animal prey is unaffected.
+(`provoked_by`, not saved) is never given up.
+
+Other animals are prey only while the predator's hunger is below
+`predator_hunting_hunger` (500), or when that animal hurt it or is after it
+(`predator_will_hunt_prey`). When its prey dies, a predator stops and eats the
+kill (`start_feeding`, `predator_feeding_tick`): one bite per bite cooldown,
+each restoring `predator_feed_bite` (150) hunger, until it reaches
+`predator_sated_hunger` (950) and walks away, or the carcass is used up. A
+carcass holds `butcher_yield` x 200 hunger (600 for a person); what is eaten is
+kept on the body (`carcass_eaten`), so a later predator finishes the rest. An
+eaten-out animal leaves only a bone pile; a person's body is never removed.
+While eating it hunts nothing, and hurting it ends the meal. `feeding_on` and
+`carcass_eaten` are not saved.
 
 Every generic-path animal bites at most once per cooldown: `melee_attack_delay`,
 or `move_to_delay` seconds clamped to 2-4 s. Adjacent fights run every Life tick,
