@@ -628,6 +628,7 @@ var/global/building_assume_founded = FALSE
 	for (var/obj/covers/C in T)
 		if (QDELETED(C) || !C.wall)
 			continue
+		C.amount = 0 // the fall's rubble is its salvage
 		C.building_fall(C.material, C.building_wall_salvage())
 	for (var/obj/structure/S in T)
 		if (QDELETED(S) || !S.building_support_tier())

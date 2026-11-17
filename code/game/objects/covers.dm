@@ -97,6 +97,23 @@
 				call(wake)(T)
 	return TRUE
 
+// A cover taken down or destroyed gives back its material on its tile, never
+// more than its cheapest recipe cost (dismantle_refund.dm). Mapped covers with
+// no recipe give nothing, and nothing is made while the world is being saved,
+// loaded or recovered. Paths that already salvage it set amount to 0 first.
+/obj/covers/proc/drop_dismantle_refund()
+	if (amount <= 0)
+		return null
+	var/units = min(amount, crafted_refund_units(type))
+	amount = 0
+	if (persistence_save_in_progress || persistence_active_operation || persistence_load_recovery_required)
+		return null
+	var/turf/drop_turf = get_turf(src)
+	var/refund = crafted_refund_stack(type, null)
+	if (!drop_turf || !ispath(refund, /obj/item/stack) || units <= 0)
+		return null
+	return new refund(drop_turf, units)
+
 /obj/covers/Destroy()			
 	unregister_seasonal_construction()
 	var/area/caribbean/CURRENTAREA = get_area(src)
@@ -108,9 +125,7 @@
 		if (T)
 			T.water_level = origin_water_level
 			T.move_delay = initial(T.move_delay)
-	if (amount > 0)
-		var/obj/item/stack/material/wood/wooddrop = new /obj/item/stack/material/wood
-		wooddrop.amount = amount
+	drop_dismantle_refund()
 	if (wall == TRUE)
 		for(var/obj/roof/R in range(2,src))
 			R.collapse_check()
@@ -295,7 +310,8 @@
 /obj/covers/proc/try_destroy()
 	if (health <= 0)
 		visible_message("<span class='danger'>\The [src] is broken into pieces!</span>")
-		if (material == "Wood")
+		// A wall with a refund gives it on deletion instead (Destroy above).
+		if (material == "Wood" && amount <= 0)
 			// Splinters: one unit of the wood it was built from, never more
 			// than it cost. Carpets and other non-wood floors give none.
 			var/refund = crafted_refund_stack(type, /obj/item/stack/material/wood)

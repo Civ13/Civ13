@@ -177,6 +177,33 @@ var/list/tile_probe_notes = list()
 	more.attack_self(F)
 	tile_probe_assert(!QDELETED(more) && tile_probe_walls(get_turf(F)) == 1, "second_foundation_refused")
 
+	// Taking a cover down gives back its material on its tile, capped at its
+	// cheapest recipe cost; a mapped cover with no recipe gives nothing.
+	map.load_new_recipes(file("config/crafting/material_recipes_global.txt"))
+	crafted_refund_stack_cache.Cut()
+	crafted_refund_units_cache.Cut()
+	tile_probe_assert(crafted_refund_units(/obj/covers/wood_wall/log) == 6 && crafted_refund_units(/obj/covers/wood) == 1, "refund caps from recipes")
+	var/list/refund_cases = list(
+		list(/obj/covers/wood_wall/log, 4),
+		list(/obj/covers/wood, 1),
+		list(/obj/covers/straw_wall, 1),
+		list(/obj/covers/wood_wall, 0))
+	var/rx = 2
+	for (var/list/refund_case in refund_cases)
+		var/turf/RT = locate(rx, 17, 1)
+		rx += 2
+		var/obj/covers/RC = new refund_case[1](RT)
+		qdel(RC)
+		var/got = 0
+		for (var/obj/item/stack/material/wood/W in RT)
+			got += W.amount
+		tile_probe_assert(got == refund_case[2], "refund [refund_case[1]] gave [got]")
+	persistence_save_in_progress = TRUE
+	var/turf/ST2 = locate(18, 17, 1)
+	qdel(new /obj/covers/wood(ST2))
+	persistence_save_in_progress = FALSE
+	tile_probe_assert(!(locate(/obj/item/stack/material/wood) in ST2), "no refund while saving")
+
 /world/New()
 	OpenPort("none")
 	var/error = null
