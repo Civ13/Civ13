@@ -34,39 +34,45 @@
 /mob/living/human/persistence_runtime_var(key)
 	return key == "storage_window" || ..()
 
-// The window is opt-in: bags open the classic HUD strip unless the player turns
-// this on (Character Setup > Settings, or the Storage Window verb).
+// By default bags open the classic HUD strip, and clicking the same container
+// again while its strip is showing opens the storage window. Turning this on
+// (Character Setup > Settings, or the Storage Window verb) always opens the window.
 /datum/client_preference/storage_window
 	description = "Bags and containers open in"
 	key = "STORAGE_WINDOW"
 	enabled_by_default = FALSE
 	enabled_description = "Storage window"
-	disabled_description = "Classic strip"
+	disabled_description = "Strip, click again for the window"
 
 /datum/client_preference/storage_window/toggled(mob/preference_mob, enabled)
 	var/mob/living/human/H = preference_mob
 	if (istype(H) && H.s_active)
 		H.s_active.close(H)
 	if (preference_mob)
-		to_chat(preference_mob, SPAN_NOTICE(enabled ? "Bags and containers now open the storage window." : "Bags and containers now open the classic storage strip."))
+		to_chat(preference_mob, SPAN_NOTICE(enabled ? "Bags and containers now open the storage window." : "Bags and containers now open the classic storage strip. Click one again while its strip is showing to open the storage window."))
 
 /client/verb/toggle_storage_window()
 	set name = "Storage Window"
 	set category = "OOC"
-	set desc = "Switch between the classic storage strip and the storage window."
+	set desc = "Switch between always opening the storage window and the strip (click again for the window)."
 	if (!prefs)
 		return
 	set_preference("STORAGE_WINDOW", !is_preference_enabled("STORAGE_WINDOW"))
 
+// The window can run for this player at all (agents and failed browsers can't).
+/mob/living/human/proc/storage_window_possible()
+	return client && !client.storage_window_classic && !client.modern_ui_failed
+
 /mob/living/human/proc/storage_window_wanted()
-	if (!client || client.storage_window_classic || client.modern_ui_failed)
-		return FALSE
-	return client.is_preference_enabled("STORAGE_WINDOW")
+	return storage_window_possible() && client.is_preference_enabled("STORAGE_WINDOW")
 
 // Called first by /obj/item/weapon/storage/open(). TRUE when the window took it.
 /proc/storage_window_open(mob/user, obj/item/weapon/storage/S)
 	var/mob/living/human/H = user
-	if (!istype(H) || !H.storage_window_wanted())
+	if (!istype(H))
+		return FALSE
+	// Hybrid: a second click on a container whose strip is showing opens the window.
+	if (!H.storage_window_wanted() && !(S && H.s_active == S && H.storage_window_possible()))
 		return FALSE
 	var/datum/storage_window/W = H.storage_window
 	if (!W)

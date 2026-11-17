@@ -24,8 +24,10 @@ and a refused move tells the player why in chat. Locked containers (through
 `/obj/structure/storage_container/proc/storage_access_allowed`) show no contents
 and no fill.
 
-Opt-in: bags and containers open the classic HUD strip by default. Players
-switch to the window in Character Setup > Settings ("Bags and containers open
+Hybrid by default: bags and containers open the classic HUD strip, and clicking
+the same container again while its strip is showing opens the window
+(`storage_window_open` checks `s_active == S`). Players who want the window
+every time pick it in Character Setup > Settings ("Bags and containers open
 in"), or with the **Storage Window** verb (OOC tab); the choice is the client
 preference `STORAGE_WINDOW`. Agent characters and browsers that can't run the
 window always use the strip. The first strip a player opens each connection
