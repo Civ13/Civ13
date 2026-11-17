@@ -621,6 +621,14 @@ SUITES = {
             'code/modules/1713/production.dm',
             'code/modules/persistence/region_travel.dm',
             'code/game/objects/structures/vending/specialist_traders.dm')},
+    # Maps copy like books (by hand onto a blank map, or on the press) and
+    # carry their ink drawing and written notes with them.
+    'map_copying': {'files': ('tests/map_copying/test_contract.py',),
+        'paths': ('tests/map_copying/',), 'shared_paths': (
+            'code/game/objects/items/cartography.dm',
+            'code/game/objects/items/cartography_notes.dm',
+            'code/modules/1713/production.dm', 'code/modules/1713/book.dm',
+            'code/modules/research_tree/book_printing.dm')},
     'television': {'files': ('tests/television/test_contract.py',),
         'paths': ('tests/television/',), 'shared_paths': (
             'code/modules/1713/television.dm', 'code/modules/1713/modern_telecom.dm',
