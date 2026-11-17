@@ -1549,6 +1549,8 @@ Note that amputating the affected organ does in fact remove the infection from t
 	if(!can_feel_pain())
 		pain = 0
 		return
+	if(owner && owner.sleep_pain_hold())
+		return 0
 	update_health()
 	var/last_pain = pain
 	pain = max(0,min(max_damage,pain+amount))

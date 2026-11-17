@@ -562,7 +562,8 @@
 				loc_temp = 22
 				break
 
-	if (loc_temp > 18 && istype(wear_suit, /obj/item/clothing/suit/storage/coat) && map && (map.civilizations || map.ID == MAP_GULAG13 || map.ID == MAP_COLONY) && mob_area.location == AREA_INSIDE)
+	var/pain_held = sleep_pain_hold()
+	if (!pain_held && loc_temp > 18 && istype(wear_suit, /obj/item/clothing/suit/storage/coat) && map && (map.civilizations || map.ID == MAP_GULAG13 || map.ID == MAP_COLONY) && mob_area.location == AREA_INSIDE)
 		heatDamageFromClothingTimer++
 
 		if (heatDamageFromClothingTimer == 5)
@@ -615,7 +616,8 @@
 
 
 
-	species.get_environment_discomfort(src)
+	if (!pain_held)
+		species.get_environment_discomfort(src)
 
 /mob/living/human/proc/get_wetness_description()
 	if (cold_wetness <= 0)
@@ -1201,7 +1203,7 @@
 		return
 
 	var/traumatic_shock = updateshock()
-	if (traumatic_shock >= 80 && shock_stage < 160)
+	if (traumatic_shock >= 80 && shock_stage < 160 && !sleep_pain_hold())
 		shock_stage += 1
 	else
 		shock_stage = min(shock_stage, 160)
