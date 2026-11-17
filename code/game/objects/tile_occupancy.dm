@@ -94,6 +94,18 @@
 	qdel(old)
 	return TRUE
 
+// Take up a finished floor that is a storey's floor: a plain upper floor goes
+// back under it and keeps the link to the ceiling below. Returns the new floor.
+/obj/covers/proc/revert_to_subfloor()
+	var/turf/T = get_turf(src)
+	if (!T || !building_pair_id || is_subfloor() || !is_floor_cover())
+		return null
+	var/obj/covers/repairedfloor/sub = new(T)
+	if (!sub.replace_subfloor(src))
+		qdel(sub)
+		return null
+	return sub
+
 // Why new_type cannot be built on T, or null when the tile is free for it.
 /proc/tile_build_refusal(turf/T, new_type)
 	if (!T || !new_type)

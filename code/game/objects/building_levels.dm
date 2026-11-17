@@ -548,6 +548,7 @@ var/global/building_assume_founded = FALSE
 			T.Entered(A)
 		for (var/obj/roof/above in range(3, T))
 			above.collapse_check()
+		building_recheck_storeys_above(T)
 
 // Both source files define covers lifecycle procedures. This common call is
 // placed in the final definition so paired cleanup cannot be shadowed.
@@ -560,6 +561,39 @@ var/global/building_assume_founded = FALSE
 	unregister_seasonal_construction()
 	building_remove_floor()
 	return ..()
+
+// Storeys above rest on the supports below them (building_slab_info recurses
+// down), so losing a wall, pillar, door, brace or foundation floor must also
+// recheck the roofs over it on every building level above, not just its own.
+/proc/building_recheck_storeys_above(atom/A, radius = 3)
+	var/turf/T = get_turf(A)
+	if (!T)
+		return 0
+	. = 0
+	var/z = building_upper_z(T.z)
+	var/levels = 0
+	while (z && levels++ < 32)
+		var/turf/U = locate(T.x, T.y, z)
+		if (!U)
+			break
+		for (var/obj/roof/R in range(radius, U))
+			R.collapse_check()
+			.++
+		z = building_upper_z(z)
+
+// TRUE when removing this floor or roof opens a hole through a storey.
+/obj/covers/proc/building_slab_face()
+	return building_pair_id && building_roof()
+
+/obj/roof/proc/building_slab_face()
+	return building_pair_id && building_floor()
+
+// Ask before taking up a storey floor or the roof under one; FALSE stops.
+/proc/building_slab_removal_confirmed(mob/user, atom/A)
+	if (!user || !A)
+		return FALSE
+	var/question = istype(A, /obj/roof) ? "The floor of the storey above rests on \the [A]. Removing it removes that floor too, and anything on it falls. Remove it?" : "\The [A] is the ceiling of the room below. Removing it removes that ceiling too, and anything on this tile falls. Remove it?"
+	return WWinput(user, question, "Remove storey floor", "Stop", list("Remove", "Stop")) == "Remove"
 
 // Whatever was built on a floor that is gone falls: walls (and the floors'
 // other fixed covers) and the pillars and doors that held roofs up.

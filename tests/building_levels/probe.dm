@@ -179,8 +179,16 @@
 		var/soft_error = building_roof_error(locate(9,3,3))
 		building_assert(soft_error, "soft ground carries two storeys")
 		building_assert(findtext(soft_error, "third storey") && findtext(soft_error, "Lay that floor first"), "an unfounded third storey names the foundation rule")
-		new /obj/covers/cobblestone(locate(9,3,1))
+		var/obj/covers/foundation = new /obj/covers/cobblestone(locate(9,3,1))
 		building_assert(!building_roof_error(locate(9,3,3)), "a stone floor under the ground support is a foundation")
+		// Taking the foundation away again rechecks every storey above it: the
+		// third storey falls, the two that soft ground carries stay.
+		var/obj/roof/founded_third = building_construct_roof(locate(9,3,3), /obj/roof/wood, null)
+		building_assert(founded_third, "founded third storey built")
+		building_probe_settle()
+		qdel(foundation)
+		building_probe_settle()
+		building_assert(QDELETED(founded_third) && (locate(/obj/roof) in locate(9,3,1)) && (locate(/obj/roof) in locate(9,3,2)), "removing a foundation rechecks the storeys above it")
 		// From the second storey up: no slab on one distant pillar, and supports stand over supports.
 		new /obj/structure/roof_support(locate(3,5,1))
 		for (var/x = 3 to 5)
@@ -201,8 +209,16 @@
 		var/obj/covers/wood/plank_floor = new(get_turf(plank_upper))
 		building_assert(plank_floor.replace_subfloor(plank_upper), "upper floor replaced")
 		building_assert(QDELETED(plank_upper) && !QDELETED(plank_roof) && plank_roof.building_floor() == plank_floor && plank_floor.building_roof() == plank_roof, "ceiling stays linked to the wood floor")
-		qdel(plank_floor)
-		building_assert(QDELETED(plank_roof), "removing the wood floor still removes the ceiling")
+		// Taking up a finished upper floor puts the plain upper floor back and
+		// keeps the ceiling; only removing that plain floor opens the hole.
+		var/obj/covers/plank_sub = plank_floor.revert_to_subfloor()
+		building_assert(plank_sub && QDELETED(plank_floor) && plank_sub.is_subfloor() && !QDELETED(plank_roof) && plank_roof.building_floor() == plank_sub && plank_sub.building_roof() == plank_roof, "taking up a finished upper floor keeps the ceiling")
+		building_assert(plank_sub.building_slab_face() && plank_roof.building_slab_face(), "both slab faces know they hold a storey")
+		// Beds upstairs: an upper floor holds a sleeper, bare open air does not.
+		building_assert(persistence_character_floor_usable(get_turf(plank_sub)), "an upper floor holds a sleeper")
+		building_assert(!persistence_character_floor_usable(locate(1,1,2)), "open air holds no sleeper")
+		qdel(plank_sub)
+		building_assert(QDELETED(plank_roof), "removing the plain upper floor removes the ceiling")
 		// Concrete walls cast from cement bricks carry six storeys, like concrete pillars.
 		var/obj/covers/cement_wall/cast = new(locate(10,1,1))
 		building_assert(cast.building_support_tier() == 6, "concrete wall tier")
