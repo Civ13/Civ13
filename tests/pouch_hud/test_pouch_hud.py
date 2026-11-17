@@ -191,8 +191,24 @@ class PouchVisibility(unittest.TestCase):
         self.assertIn('A.attackby(I, user)', loop)
         self.assertIn('if (QDELETED(I) || I.loc != user)\n\t\t\t\tbreak', loop)
         self.assertIn('refresh_attachment_strip(src)', body(acc, '/obj/item/clothing/proc/remove_accessory'))
+        usable = body(strip, '/obj/screen/attachment/proc/usable_attachment')
+        self.assertIn('attachment_strip_valid(attachment, host, H)', usable)
         click = body(strip, '/obj/screen/attachment/Click')
-        self.assertLess(click.index('attachment_strip_valid(attachment, host, H)'), click.index('attachment_strip_use(H, attachment, C)'))
+        self.assertLess(click.index('usable_attachment(usr)'), click.index('attachment_strip_use(H, A, C)'))
+        # Shift-click examines a tile's attachment instead of using it.
+        self.assertLess(click.index('modifiers["shift"]'), click.index('attachment_strip_use(H, A, C)'))
+        self.assertIn('attachment_strip_examine(H, A)', click)
+        # Drag to a hand or the floor, and the right-click menu, take it off.
+        drop = body(strip, '/obj/screen/attachment/MouseDrop')
+        self.assertIn('usable_attachment(usr)', drop)
+        self.assertIn('attachment_strip_take_off(H, A, C, hand_tile.slot_id)', drop)
+        self.assertIn('attachment_strip_set_down(H, A, C, T)', drop)
+        for verb in ('examine_attachment', 'take_off_attachment'):
+            text = body(strip, '/obj/screen/attachment/verb/' + verb)
+            self.assertIn('set src in usr.client.screen', text)
+            self.assertIn('usable_attachment(usr)', text)
+        # The first strip a client opens says how to examine and take things off.
+        self.assertIn('attachment_strip_hint_shown', body(strip, '/mob/living/human/proc/show_attachment_strip'))
         use = body(strip, '/proc/attachment_strip_use')
         self.assertIn('A.attackby(I, H)', use)
         self.assertIn('A.attack_hand(H)', use)

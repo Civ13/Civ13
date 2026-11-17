@@ -69,6 +69,8 @@ var/ea_runtime_error = FALSE
 	return
 /mob/living/human/ea_probe/update_action_buttons()
 	return
+/mob/living/human/ea_probe/update_icons()
+	return
 
 /proc/ea_checks()
 	var/turf/T = locate(2, 2, 1)
@@ -119,6 +121,39 @@ var/ea_runtime_error = FALSE
 	cord.loc = T
 	attachment_strip_use(H, first, shirt)
 	ea_check((first in shirt.accessories) && first.has_suit == shirt, "an empty-hand click leaves the pouch attached")
+
+	// Examining a strip attachment reads it without taking it off.
+	attachment_strip_examine(H, first)
+	ea_check((first in shirt.accessories) && first.has_suit == shirt, "examining a pouch from the strip leaves it attached")
+
+	// Dragging a pouch tile to a chosen hand takes it into that hand, even when
+	// the other hand is the active one; a full hand refuses it.
+	var/obj/item/clothing/accessory/storage/belt_pouch/spare = new(T)
+	shirt.accessories += spare
+	spare.on_attached(shirt, H)
+	H.l_hand = null
+	H.r_hand = null
+	H.hand = TRUE
+	ea_check(attachment_strip_take_off(H, spare, shirt, slot_r_hand), "a pouch dragged to the right hand comes off")
+	ea_check(H.r_hand == spare && !H.l_hand && !(spare in shirt.accessories) && !spare.has_suit, "it lands in the right hand, not the active left one")
+	ea_check(H.hand == TRUE, "the active hand is unchanged")
+	H.r_hand = null
+	spare.loc = T
+	shirt.accessories += spare
+	spare.on_attached(shirt, H)
+	var/obj/item/weapon/flint/held = new(H)
+	H.r_hand = held
+	ea_check(!attachment_strip_take_off(H, spare, shirt, slot_r_hand) && (spare in shirt.accessories) && spare.has_suit == shirt, "a full hand refuses it and the pouch stays on")
+	H.r_hand = null
+	held.loc = T
+
+	// Dragging a tile to the floor sets the attachment down there, but only on
+	// the wearer's tile or one next to it.
+	var/turf/far = locate(6, 2, 1)
+	ea_check(!attachment_strip_set_down(H, spare, shirt, far) && (spare in shirt.accessories), "a far tile is refused")
+	var/turf/next = locate(3, 2, 1)
+	ea_check(attachment_strip_set_down(H, spare, shirt, next), "a pouch dragged to the next tile comes off")
+	ea_check(spare.loc == next && !H.l_hand && !H.r_hand && !(spare in shirt.accessories), "it lies on that tile, not in a hand")
 
 	// The belt stays on when the clothes come off.
 	var/obj/item/clothing/pouch_belt/belt = new(H)

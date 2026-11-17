@@ -6,6 +6,8 @@
 
 /client/var/list/attachment_strip
 /client/var/obj/item/clothing/attachment_strip_host
+// The how-to line is shown the first time a strip opens for this client.
+/client/var/attachment_strip_hint_shown = FALSE
 
 /obj/screen/attachment
 	name = "attachment"
@@ -87,6 +89,9 @@
 	client.attachment_strip = tiles
 	client.attachment_strip_host = C
 	client.screen += tiles
+	if (!client.attachment_strip_hint_shown)
+		client.attachment_strip_hint_shown = TRUE
+		to_chat(src, SPAN_NOTICE("Shift-click an attachment to examine it. Drag it to a hand or the floor, or right-click it and choose Take Off, to take it off."))
 
 // Opens the strip for C, or closes it when it already shows C.
 /mob/living/human/proc/toggle_attachment_strip(obj/item/clothing/C)
@@ -104,23 +109,117 @@
 	else
 		hide_attachment_strip()
 
-/obj/screen/attachment/Click()
-	var/mob/living/human/H = usr
+// The tile's attachment when this mob may act on it now, else null. A strip
+// left behind by a body change or by clothes coming off is closed.
+/obj/screen/attachment/proc/usable_attachment(mob/user)
+	var/mob/living/human/H = user
 	if (!istype(H))
 		// The strip outlived the body it was opened on.
-		if (usr && usr.client)
-			usr.client.hide_attachment_strip()
-		return TRUE
-	if (!H.canClick())
-		return TRUE
+		if (user && user.client)
+			user.client.hide_attachment_strip()
+		return null
+	if (!H.client || !(src in H.client.screen))
+		return null
 	if (H.stat || H.paralysis || H.stunned || H.weakened || H.restrained())
-		return TRUE
+		return null
 	if (!attachment_strip_valid(attachment, host, H))
 		H.hide_attachment_strip()
+		return null
+	return attachment
+
+/obj/screen/attachment/Click(location, control, params)
+	var/mob/living/human/H = usr
+	if (istype(H) && !H.canClick())
+		return TRUE
+	var/obj/item/clothing/accessory/A = usable_attachment(usr)
+	if (!A)
 		return TRUE
 	var/obj/item/clothing/C = host
-	attachment_strip_use(H, attachment, C)
+	// Shift-click examines, as it does any other carried item.
+	var/list/modifiers = params2list(params)
+	if (modifiers["shift"])
+		attachment_strip_examine(H, A)
+		return TRUE
+	attachment_strip_use(H, A, C)
 	H.refresh_attachment_strip(C)
+	return TRUE
+
+// Dragging a tile onto a hand takes the attachment into that hand; onto the
+// floor next to the wearer, it is taken off and set down there.
+/obj/screen/attachment/MouseDrop(over_object, src_location, over_location, src_control, over_control, params)
+	var/obj/item/clothing/accessory/A = usable_attachment(usr)
+	if (!A || over_object == src)
+		return
+	var/mob/living/human/H = usr
+	var/obj/item/clothing/C = host
+	if (istype(over_object, /obj/screen/inventory/hand))
+		var/obj/screen/inventory/hand/hand_tile = over_object
+		attachment_strip_take_off(H, A, C, hand_tile.slot_id)
+	else
+		var/turf/T = get_turf(over_object)
+		if (T && !istype(over_object, /obj/screen))
+			attachment_strip_set_down(H, A, C, T)
+
+// Right-click menu entries for a strip tile.
+/obj/screen/attachment/verb/examine_attachment()
+	set name = "Examine Attachment"
+	set category = null
+	set src in usr.client.screen
+	var/obj/item/clothing/accessory/A = usable_attachment(usr)
+	if (A)
+		attachment_strip_examine(usr, A)
+
+/obj/screen/attachment/verb/take_off_attachment()
+	set name = "Take Off"
+	set category = null
+	set src in usr.client.screen
+	var/obj/item/clothing/accessory/A = usable_attachment(usr)
+	if (A)
+		attachment_strip_take_off(usr, A, host)
+
+// Examines an attachment on the viewer's own worn clothes. It hangs off the
+// wearer rather than on a turf, so the world sight read does not apply.
+/proc/attachment_strip_examine(mob/living/human/H, obj/item/clothing/accessory/A)
+	if (is_blind(H))
+		to_chat(H, SPAN_NOTICE("You feel \a [A] hanging there."))
+		return
+	A.examine(H)
+	if (A && !QDELETED(A))
+		crafting_atlas_reference.examine_link(H, A)
+
+// Takes an attachment off into a hand: hand_slot (slot_l_hand or slot_r_hand)
+// when given, else the active hand, then the other one. With both hands full
+// it lands at the wearer's feet, as any item put in full hands does.
+/proc/attachment_strip_take_off(mob/living/human/H, obj/item/clothing/accessory/A, obj/item/clothing/C, hand_slot = null)
+	if (!attachment_strip_valid(A, C, H))
+		return FALSE
+	if (hand_slot == slot_l_hand || hand_slot == slot_r_hand)
+		if (H.get_equipped_item(hand_slot))
+			to_chat(H, SPAN_WARNING("That hand is full."))
+			return FALSE
+		// The removal puts the item in the active hand; aim it at the chosen one.
+		var/was_left = H.hand
+		H.hand = (hand_slot == slot_l_hand)
+		C.remove_accessory(H, A)
+		H.hand = was_left
+	else
+		C.remove_accessory(H, A)
+	return !(A in C.accessories)
+
+// Takes an attachment off and sets it down on T, the wearer's tile or one
+// next to it.
+/proc/attachment_strip_set_down(mob/living/human/H, obj/item/clothing/accessory/A, obj/item/clothing/C, turf/T)
+	if (!T || !attachment_strip_valid(A, C, H))
+		return FALSE
+	var/turf/here = get_turf(H)
+	if (T != here && !H.Adjacent(T))
+		return FALSE
+	if (!attachment_strip_take_off(H, A, C))
+		return FALSE
+	if (A.loc == H)
+		H.drop_from_inventory(A, T)
+	else if (get_turf(A) != T)
+		A.forceMove(T)
 	return TRUE
 
 // One click on a strip tile: the held item goes to the attachment; an empty
