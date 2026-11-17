@@ -158,14 +158,16 @@ var/naval_runtime_error = FALSE
 	var/datum/craft/W = tiller.craft
 	var/obj/covers/hit = W.body.hazard_damage(100000)
 	naval_check(istype(hit) && hit.health == max(1, round(hit.maxhealth * CHART_STRIKE_FLOOR)) && !QDELETED(hit), "a strike batters one plank of a built hull down to a quarter and no further ([hit ? hit.health : "none"] of [hit ? hit.maxhealth : 0])")
-	var/was = hit ? hit.health : 0
-	for (var/i = 1, i <= 30, i++)
+	naval_check(W.ledger && W.ledger.holes == 0, "one strike on sound planks holes nothing")
+	// A plank already battered down gives way to the next strike on it
+	// (naval/hull_ledger.dm): eleven strikes on ten planks must find one twice.
+	for (var/i = 1, i <= 10, i++)
 		W.body.hazard_damage(100000)
 	var/holed = 0
 	for (var/turf/P in W.body.cells())
 		if (!hull_planks(P))
 			holed++
-	naval_check(hit.health == was && !holed && W.body.tile_count() == 10, "thirty more strikes hole nothing")
+	naval_check(holed >= 1 && W.ledger.holes == holed && W.body.tile_count() == 10, "ten more strikes break through battered planks and her ledger counts the holes ([holed])")
 
 	// ---- Storms ----
 	var/datum/chart_hazard/storm/squall = new
