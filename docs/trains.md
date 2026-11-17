@@ -89,6 +89,30 @@ Cars couple at either end with the Hitch verb: the front to the car ahead
 (`hitch_front()`), the rear to the car behind (`hitch_rear()`). The sections of
 one platform car or heavy locomotive stay hitched to each other.
 
+## Cars facing either way
+
+Any two ends couple, whichever way the cars face (`couple_end()`). A car's
+`dir` is the way it faces, and that never changes when it is coupled. A car
+whose front points at the rear of its train is `reversed`: it runs tail first,
+and `train_heading()` gives the way it travels. Movement passes headings
+(`Move(newloc, fdir)`, `rail_target()`); art, deck sides, doors and fittings go
+by `dir`. When two fronts or two rears meet, `reverse_train()` turns the order
+of one train round without moving anything: its links flip and every car's
+`reversed` toggles. `settle_train_order()` then keeps the order the way most
+engines face, else most cars, and it runs again after uncoupling, so a train
+alone is never all reversed.
+
+An engine's reverser is its own: forward is the way the engine faces
+(`train_way()`). An engine at the rear that faces out runs the train back at
+full speed, so a train with an engine at each end needs no turning. An engine
+that leads bunker first still keeps to three quarters.
+
+A car goes into a rail warehouse front first and comes out facing the way its
+train heads. An inter-region railway refuses a train with reversed cars.
+
+A car that stops on a curve while its train backs heads out along one leg of
+the curve already; `rail_target()` lets it run straight on from there.
+
 A coal tender anywhere in the train feeds the lead engine's firebox when it
 drops below half: coal, wood planks and branches, as many as fit.
 

@@ -4,7 +4,7 @@
 /world
 	hub = ""
 	hub_password = ""
-	maxx = 110
+	maxx = 127
 	maxy = 26
 	maxz = 1
 	turf = /turf/floor/dirt
@@ -755,6 +755,146 @@ var/global/platform_probe_runtime_error = FALSE
 	last.connected = null
 	platform_check("hitch/rear_leaves_other_trains", !owner.hitch_front(shunter) && !last.hitch_rear(shunter) && !last.connected)
 
+/proc/facing_back(obj/structure/trains/locomotive/L, count)
+	for (var/i in 1 to count)
+		L.automovement = TRUE
+		if (!L.process_rail_reverse())
+			return i - 1
+	return count
+
+/proc/facing_forward(obj/structure/trains/locomotive/L, count)
+	for (var/i in 1 to count)
+		L.automovement = TRUE
+		if (!L.process_rail_forward())
+			return i - 1
+	return count
+
+// Cars and engines coupled in facing either way: a car keeps the way it
+// faces (dir) and runs tail first (reversed) when that is not the way its
+// train heads.
+/proc/platform_facing_run()
+	var/mob/living/human/platform_rider/shunter = new(platform_turf(104, 3))
+	// A coach built facing south behind an engine that faces north.
+	position_track(106)
+	var/obj/structure/trains/locomotive/coal/E = position_wagon(106, 14, /obj/structure/trains/locomotive/coal)
+	var/obj/structure/trains/platform/car = platform_car("coach", 106, 10, SOUTH)
+	var/list/segs = platform_segments(car)
+	var/obj/structure/trains/platform/far = segs[TRAIN_CAR_LENGTH]
+	var/turned = 0
+	var/coupled = far.couple_end(FALSE, shunter)
+	for (var/obj/structure/trains/platform/S in segs)
+		if (S.reversed && S.dir == SOUTH && S.train_heading() == NORTH && S.train_head() == E)
+			turned++
+	platform_check("facing/back_to_front_couples", coupled && E.connected == far && far.connected == segs[3] && !car.connected && turned == TRAIN_CAR_LENGTH && !E.reversed)
+	platform_check("facing/coupled_car_not_dismantled", car.dismantle_problem() == "Uncouple the car from the one ahead first.")
+	for (var/obj/structure/trains/platform/S in segs)
+		for (var/turf/T in train_platform_tiles(S.loc, S.dir))
+			for (var/obj/structure/bed/B in T)
+				qdel(B)
+	var/obj/structure/closet/crate/crate = new(platform_turf(107, 11))
+	var/mob/living/human/platform_rider/rider = new(platform_turf(106, 12))
+	E.fuel = 100
+	E.on = TRUE
+	turned = 0
+	var/stepped = platform_step(E, 3)
+	for (var/obj/structure/trains/platform/S in segs)
+		if (S.reversed && S.dir == SOUTH)
+			turned++
+	platform_check("facing/turned_car_follows", stepped == 3 && E.loc == platform_turf(106, 17) && far.loc == platform_turf(106, 16) && car.loc == platform_turf(106, 13) && turned == TRAIN_CAR_LENGTH && platform_parts_placed(segs))
+	platform_check("facing/turned_car_carries", crate.loc == platform_turf(107, 14) && rider.loc == platform_turf(106, 15))
+	E.reverser = -1
+	E.refresh_consist()
+	stepped = facing_back(E, 2)
+	platform_check("facing/turned_car_backs", stepped == 2 && E.loc == platform_turf(106, 15) && car.loc == platform_turf(106, 11) && car.dir == SOUTH && platform_parts_placed(segs) && crate.loc == platform_turf(107, 12))
+	E.reverser = 1
+	// Uncoupled, the car is its own train again, front first.
+	turned = 0
+	coupled = far.couple_end(TRUE, shunter)
+	for (var/obj/structure/trains/platform/S in segs)
+		if (S.reversed || S.dir != SOUTH)
+			turned++
+	platform_check("facing/uncoupled_car_settles", coupled && !E.connected && !turned && car.connected == segs[2] && !far.connected && far.train_head() == car)
+
+	// Top and tail: an engine at each end, each facing out.
+	position_track(110)
+	var/obj/structure/trains/locomotive/coal/E1 = position_wagon(110, 12, /obj/structure/trains/locomotive/coal)
+	var/obj/structure/trains/W = position_wagon(110, 11)
+	var/obj/structure/trains/locomotive/coal/E2 = position_wagon(110, 10, /obj/structure/trains/locomotive/coal)
+	E2.dir = SOUTH
+	E1.connected = W
+	platform_check("facing/engine_couples_facing_away", E2.hitch_rear(shunter) && W.connected == E2 && E2.reversed && E2.dir == SOUTH && !E1.reversed && E2.train_head() == E1 && E2.train_way() == -1)
+	for (var/obj/structure/trains/locomotive/L in list(E1, E2))
+		L.fuel = 100
+	// The rear engine runs the train its own way at full speed.
+	E2.on = TRUE
+	E2.throttle = 1
+	E2.locomotive()
+	sleep(15)
+	platform_check("facing/rear_engine_leads_forward", E2.driving && E2.lead_factor == 1 && E2.y < 10 && E2.dir == SOUTH && W.y == E2.y + 1 && E1.y == E2.y + 2 && E1.dir == NORTH)
+	E2.throttle = 0
+	E2.braking = TRUE
+	drive_wait(E2)
+	// Backing from the front engine: a dead engine at the rear is only pushed.
+	E2.on = FALSE
+	E1.on = TRUE
+	E1.reverser = -1
+	E1.refresh_consist()
+	var/pushed = E1.lead_factor
+	E2.on = TRUE
+	E1.refresh_consist()
+	platform_check("facing/running_rear_engine_sees_the_line", pushed == 0.5 && E1.lead_factor == 1)
+	E1.reverser = 1
+	E1.refresh_consist()
+	platform_check("facing/front_engine_forward", E1.lead_factor == 1 && E1.train_way() == 1)
+	E1.on = FALSE
+	E2.on = FALSE
+	var/alone_from = E2.y
+	platform_check("facing/uncoupled_engine_settles", E2.hitch_front(shunter) && !W.connected && !E2.reversed && E2.dir == SOUTH)
+	E2.on = TRUE
+	platform_check("facing/uncoupled_engine_runs_its_way", platform_step(E2, 1) == 1 && E2.y == alone_from - 1 && E2.dir == SOUTH)
+
+	// A car put away in a rail warehouse comes out facing its train's way.
+	position_track(114)
+	var/obj/structure/rail_warehouse/depot = new(platform_turf(112, 13))
+	depot.dir = EAST
+	var/obj/structure/trains/puller = position_wagon(114, 16, /obj/structure/trains/locomotive/coal)
+	var/obj/structure/trains/platform/stock = platform_car("flatbed", 114, 12, SOUTH)
+	var/list/stock_segs = platform_segments(stock)
+	var/obj/structure/trains/platform/stock_far = stock_segs[TRAIN_CAR_LENGTH]
+	stock_far.couple_end(FALSE, shunter)
+	var/list/rear = depot.rear_units()
+	platform_check("facing/warehouse_rear_unit", puller.connected == stock_far && stock.reversed && rear.len == 1 && rear[1][1] == stock)
+	platform_check("facing/warehouse_stores_turned_car", rear.len == 1 && depot.put_away(null, rear[1], FALSE) == 1 && !isturf(stock.loc) && !puller.connected && !stock.reversed && stock.connected == stock_segs[2])
+	var/obj/structure/rail_stored_unit/kept = null
+	for (var/obj/structure/rail_stored_unit/U in depot.stored_units())
+		kept = U
+	platform_check("facing/warehouse_returns_car", kept && depot.retrieve_unit(kept) == stock && puller.connected == stock && stock.loc == platform_turf(114, 15) && stock.dir == NORTH && !stock.reversed && stock_far.loc == platform_turf(114, 12) && platform_parts_placed(stock_segs))
+
+	// A heavy engine at the rear, facing out, leads the train round a curve
+	// and comes back.
+	for (var/y in 8 to 25)
+		platform_track(118, y, NORTH)
+	for (var/x in 119 to 126)
+		platform_track(x, 8, EAST)
+	var/obj/structure/trains/locomotive/coal/L1 = position_wagon(118, 20, /obj/structure/trains/locomotive/coal)
+	var/obj/structure/trains/locomotive/coal/L2 = position_wagon(118, 19, /obj/structure/trains/locomotive/coal)
+	L1.connected = L2
+	var/obj/structure/trains/locomotive/coal/heavy/H = platform_car("loco_steam", 118, 15, SOUTH)
+	var/list/body = platform_segments(H.connected)
+	var/obj/structure/trains/platform/bunker = body[body.len]
+	var/obj/structure/trains/platform/cab = body[2]
+	coupled = bunker.couple_end(FALSE, shunter)
+	platform_check("facing/heavy_engine_faces_out", coupled && L2.connected == bunker && cab.connected == body[1] && body[1].connected == H && !H.connected && H.reversed && H.dir == SOUTH && H.control_spot() == cab && cab.car_engine() == H && H.train_head() == L1)
+	H.fuel = 100
+	H.on = TRUE
+	H.refresh_consist()
+	stepped = facing_back(H, 12)
+	platform_check("facing/heavy_engine_leads_round_curve", stepped == 12 && H.lead_factor == 1 && H.loc == platform_turf(123, 8) && H.dir == EAST && bunker.dir == EAST && L1.loc == platform_turf(118, 8) && heavy_parts_placed(H) && platform_parts_placed(body))
+	H.reverser = -1
+	H.refresh_consist()
+	stepped = facing_forward(H, 12)
+	platform_check("facing/heavy_engine_comes_back", stepped == 12 && H.lead_factor == 0.5 && H.loc == platform_turf(118, 15) && H.dir == SOUTH && L1.loc == platform_turf(118, 20) && heavy_parts_placed(H) && platform_parts_placed(body))
+
 /world/New()
 	OpenPort("none")
 	GLOB.all_observable_events = list()
@@ -771,6 +911,7 @@ var/global/platform_probe_runtime_error = FALSE
 		platform_heavy_run()
 		platform_viewers_run()
 		platform_position_run()
+		platform_facing_run()
 	catch (var/exception/E)
 		platform_probe_runtime_error = TRUE
 		world.log << "Fixture aborted: [E] at [E.file]:[E.line]"

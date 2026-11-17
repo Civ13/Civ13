@@ -168,12 +168,9 @@
 	var/list/L = body_layout()
 	if (!L || L["cab"] == 1)
 		return src
-	var/obj/structure/trains/car = src
-	for (var/i in 2 to L["cab"])
-		car = car ? car.connected : null
-	var/obj/structure/trains/platform/P = car
-	if (istype(P) && P.car_id == car_id)
-		return P
+	for (var/obj/structure/trains/platform/P in range(4, src))
+		if (P.car_id == car_id && P.seg_index == L["cab"])
+			return P
 	return null
 
 /obj/structure/trains/locomotive/on_runtime_spawn()
@@ -264,12 +261,9 @@
 	// On a tight curve a cab side tile is also a tile of a section behind;
 	// what stands there stays with that section.
 	var/list/behind = list()
-	var/obj/structure/trains/car = connected
-	for (var/n in 1 to 3)
-		if (!istype(car, /obj/structure/trains/platform))
-			break
-		behind += train_platform_tiles(car.loc, car.dir)
-		car = car.connected
+	for (var/obj/structure/trains/platform/P in range(4, src))
+		if (P.car_id == car_id)
+			behind += train_platform_tiles(P.loc, P.dir)
 	for (var/i in 1 to 3)
 		var/turf/T = tiles[i]
 		if (!T || (i != 2 && ((T in behind) || train_centre_of_other(T, src))))
@@ -301,11 +295,13 @@
 				M.persistence_set_loc(clear)
 			train_knock_down(M, impact)
 
-/obj/structure/trains/locomotive/Move(var/turf/newloc, var/fdir = dir)
+/obj/structure/trains/locomotive/Move(var/turf/newloc, var/fdir = null)
 	if (!body_kind || !body_parts)
 		return ..()
 	if (moving_train || !isturf(loc) || !newloc)
 		return FALSE
+	if (!fdir)
+		fdir = train_heading()
 	var/list/old_tiles = train_platform_tiles(loc, dir)
 	var/list/cargo = density ? null : cab_cargo(old_tiles)
 	if (!train_solo_move)

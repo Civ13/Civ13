@@ -412,14 +412,19 @@ var/global/train_step_plain = FALSE
 // Segments are moved by the wagon ahead and never by walking into a tile, so
 // the move skips turf entry checks: the car's own walls and doors would refuse
 // it. train_consist_obstacle() has already checked the way is clear.
-/obj/structure/trains/platform/Move(var/turf/newloc, var/fdir = dir)
+/obj/structure/trains/platform/Move(var/turf/newloc, var/fdir = null)
 	if (moving_train || !isturf(loc) || !isturf(newloc))
 		return FALSE
+	if (!fdir)
+		fdir = train_heading()
 	if (train_platform_plan_time != world.time)
 		train_platform_reset_plan()
 	check_connections()
 	var/turf/oldloc = loc
-	var/newdir = heading_for(newloc, fdir)
+	// way: where the car heads; newdir: where it faces, the other way for a
+	// car coupled in back to front. Sides and deck slots go by its facing.
+	var/way = heading_for(newloc, fdir)
+	var/newdir = reversed ? OPPOSITE_DIR(way) : way
 	var/list/old_tiles = train_platform_tiles(oldloc, dir)
 	var/list/new_tiles = train_platform_tiles(newloc, newdir)
 	// Carry the deck's load before followers move into these tiles.
@@ -457,9 +462,9 @@ var/global/train_step_plain = FALSE
 				if (aside)
 					AM.train_shift(aside, plain)
 	place_parts(newloc, newdir, plain)
-	train_deck_clearance(cargo, OPPOSITE_DIR(newdir))
+	train_deck_clearance(cargo, OPPOSITE_DIR(way))
 	if (connected && !train_solo_move)
-		connected.Move(oldloc, newdir)
+		connected.Move(oldloc, way)
 	moving_train = FALSE
 	return TRUE
 
@@ -471,12 +476,12 @@ var/global/train_step_plain = FALSE
 	set src in view(1)
 	if (!istype(usr, /mob/living/human))
 		return
-	// The front section couples to the car ahead, the rear one to the car behind.
-	var/rear_end = !connected || connected.car_id != car_id
-	if (seg_index != 1 && !rear_end)
+	// Each end section couples to what stands beyond it. The car's own front
+	// is the rear of its train's order when the car is coupled in back to front.
+	if (seg_index != 1 && seg_index != TRAIN_CAR_LENGTH)
 		to_chat(usr, "Cars are coupled at their ends. Use the front or the rear of \the [src].")
 		return FALSE
-	if ((seg_index == 1 && hitch_front(usr)) || (rear_end && hitch_rear(usr)))
+	if (couple_end((seg_index == 1) ? !reversed : reversed, usr))
 		return TRUE
 	to_chat(usr, "There is no wagon to hitch \the [src] to.")
 	return FALSE
@@ -526,11 +531,10 @@ var/global/train_step_plain = FALSE
 			back = P
 	if (segs.len != TRAIN_CAR_LENGTH || !front || !back)
 		return "The car is not whole."
-	if (back.connected)
-		return "Uncouple the car behind first."
-	for (var/obj/structure/trains/TR in range(2, front))
-		if (TR.connected == front)
-			return "Uncouple the car from the one ahead first."
+	for (var/obj/structure/trains/platform/P in list(front, back))
+		var/ahead = (P == front) ? !reversed : reversed
+		if (ahead ? P.lead_car() : P.connected)
+			return ahead ? "Uncouple the car from the one ahead first." : "Uncouple the car behind first."
 	for (var/obj/structure/trains/platform/P in segs)
 		for (var/turf/T in train_platform_tiles(P.loc, P.dir))
 			for (var/atom/movable/AM in T)
@@ -770,9 +774,9 @@ var/global/train_step_plain = FALSE
 		if (car_loc && next_loc && car_loc != next_loc)
 			next_dir = get_dir(car_loc, next_loc)
 			if (!(next_dir in cardinal))
-				next_dir = car.dir
+				next_dir = car.train_heading()
 		else
-			next_dir = car.dir
+			next_dir = car.train_heading()
 		next_loc = car_loc
 	return null
 

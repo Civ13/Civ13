@@ -110,13 +110,16 @@
 	var/obj/structure/trains/front = unit[1]
 	return "[front.name]"
 
+// The unit's section nearest the front of its train, or nearest the rear. A
+// car coupled in back to front (reversed) leads with its own last section.
+/proc/rail_warehouse_end(list/unit, ahead)
+	var/obj/structure/trains/front = unit[1]
+	return (ahead == !front.reversed) ? front : unit[unit.len]
+
 // The wagon pulling the unit, if any.
 /proc/rail_warehouse_leader(list/unit)
-	var/obj/structure/trains/front = unit[1]
-	for (var/obj/structure/trains/TR in range(2, front))
-		if (TR.connected == front)
-			return TR
-	return null
+	var/obj/structure/trains/front = rail_warehouse_end(unit, TRUE)
+	return front.lead_car()
 
 // The units in the bay that can come off now: nothing is hitched behind them.
 /obj/structure/rail_warehouse/proc/rear_units()
@@ -130,7 +133,7 @@
 			var/list/unit = rail_warehouse_unit(TR)
 			for (var/obj/structure/trains/S in unit)
 				seen[S] = TRUE
-			var/obj/structure/trains/rear = unit[unit.len]
+			var/obj/structure/trains/rear = rail_warehouse_end(unit, FALSE)
 			if (!rear.connected)
 				units += list(unit)
 	return units
@@ -180,6 +183,11 @@
 	if (leader)
 		leader.connected = null
 	var/obj/structure/trains/front = unit[1]
+	// A car is put away front first, whichever way it stood in its train.
+	for (var/i in 1 to unit.len)
+		var/obj/structure/trains/S = unit[i]
+		S.reversed = FALSE
+		S.connected = (i < unit.len) ? unit[i + 1] : null
 	var/obj/structure/rail_stored_unit/U = new(src)
 	U.unit_name = rail_warehouse_unit_name(unit)
 	U.heading = front.dir
@@ -209,10 +217,10 @@
 /obj/structure/rail_warehouse/proc/retrieve_place(obj/structure/rail_stored_unit/U)
 	var/list/bay = bay()
 	for (var/list/unit in rear_units())
-		var/obj/structure/trains/rear = unit[unit.len]
-		var/turf/behind = get_step(rear, OPPOSITE_DIR(rear.dir))
+		var/obj/structure/trains/rear = rail_warehouse_end(unit, FALSE)
+		var/turf/behind = get_step(rear, OPPOSITE_DIR(rear.train_heading()))
 		if (behind in bay)
-			return list(behind, rear.dir, rear)
+			return list(behind, rear.train_heading(), rear)
 	var/heading = U.heading
 	if (heading != axis() && heading != OPPOSITE_DIR(axis()))
 		heading = axis()

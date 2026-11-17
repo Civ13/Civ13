@@ -149,6 +149,7 @@
 		if(car in cars || cars.len >= TRAIN_TRANSFER_SEGMENTS) return list("error" = "The consist is cyclic or too long.")
 		if(!train_transfer_path("[car.type]") || !isturf(car.loc) || length(car.contents)) return list("error" = "This car or its contained load cannot travel yet.")
 		if(car.health <= 0) return list("error" = "Repair the train before travelling.")
+		if(car.reversed) return list("error" = "Every car must face the front of the train to travel between regions.")
 		if(istype(car, /obj/structure/trains/platform))
 			var/obj/structure/trains/platform/P = car
 			if(P.braced || P.wrecked) return list("error" = "Unbrace and repair the train first.")
