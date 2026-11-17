@@ -137,6 +137,9 @@
 		return
 	if (multiplier > 0)
 		multiplier *= trait_skill_gain_mult(statname) * skill_variety_mult(statname, variety_key) * skill_master_mult(statname)
+		var/gain_cap = skill_gain_cap(statname)
+		if (gain_cap)
+			multiplier = min(multiplier, gain_cap)
 
 	var/increase_multiple = 0.001 // 1 / 1000, to prevent crazy ugly decimals
 	var/before_value = stats[statname][1]

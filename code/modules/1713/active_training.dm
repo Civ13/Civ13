@@ -1,23 +1,45 @@
-// Finite, manually completed sets. No autonomous training or damage targets.
+// Training by doing: shared fatigue, rewards and crafting gates for the lifting
+// weights (training_gear.dm), the obstacle course (training_course.dm) and the
+// floor exercises (cmss13_field.dm). Nothing here trains a character who is
+// only waiting.
+#define EXERCISE_SET_WINDOW 300
+
 /proc/exercise_time()
 	return world.time
 
+// Modern gear: the iron barbell and the steel hurdle.
+/proc/exercise_modern_gear(result_type)
+	return ispath(result_type, /obj/item/weapon/lifting_weight/barbell) || ispath(result_type, /obj/structure/training_course/hurdle/steel)
+
+/proc/exercise_gear(result_type)
+	return ispath(result_type, /obj/item/weapon/lifting_weight) || ispath(result_type, /obj/structure/training_course)
+
 /proc/exercise_recipe_era(result_type)
-	return !ispath(result_type, /obj/structure/exercise/modern) || (map && map.ordinal_age >= 8)
+	return !exercise_modern_gear(result_type) || (map && map.ordinal_age >= 8)
+
+// Crafting skill a piece of training gear asks of its builder.
+/proc/exercise_build_skill(result_type)
+	if (exercise_modern_gear(result_type))
+		return 105
+	if (result_type == /obj/item/weapon/lifting_weight)
+		return 0
+	return 30
 
 /proc/exercise_can_build(mob/living/human/H, result_type)
-	if (!ispath(result_type, /obj/structure/exercise))
+	if (!exercise_gear(result_type))
 		return TRUE
-	var/skill = ispath(result_type, /obj/structure/exercise/modern) ? 105 : 30
-	return H && H.stat == CONSCIOUS && exercise_recipe_era(result_type) && H.getStat("crafting") >= skill && map && crafting_node_allowed(H, get_recipe_node_req("[result_type]"))
+	return H && H.stat == CONSCIOUS && exercise_recipe_era(result_type) && H.getStat("crafting") >= exercise_build_skill(result_type) && map && crafting_node_allowed(H, get_recipe_node_req("[result_type]"))
 
 /mob/living/human
 	var/exercise_fatigue = 0
 	var/tmp/exercise_rest_epoch = -1
-	var/tmp/obj/structure/exercise/exercise_equipment
+	// The weight mid-set or the course run under way; anything else is idle.
+	var/tmp/datum/exercise_equipment
+	var/tmp/exercise_token = 0
+	var/tmp/course_vault_at = 0
 
 /mob/living/human/persistence_runtime_var(key)
-	return (key in list("exercise_rest_epoch", "exercise_equipment", "survival_rest_since", "survival_actions", "survival_workload")) || ..()
+	return (key in list("exercise_rest_epoch", "exercise_equipment", "survival_rest_since", "survival_actions", "survival_workload", "exercise_token", "course_vault_at")) || ..()
 
 /mob/living/human/proc/recover_exercise()
 	var/now = exercise_time()
@@ -30,229 +52,118 @@
 	exercise_fatigue = clamp(exercise_fatigue, 0, 6)
 
 /mob/living/human/proc/cancel_exercise()
-	var/obj/structure/exercise/E = exercise_equipment
+	var/datum/E = exercise_equipment
 	exercise_equipment = null
-	if (E && E.actor == src)
-		E.actor = null
-		E.repetition = 0
-		E.busy = FALSE
-		E.origin = null
-		E.epoch++
+	exercise_token++
+	if (istype(E, /obj/item/weapon/lifting_weight))
+		var/obj/item/weapon/lifting_weight/W = E
+		W.end_set()
+	else if (istype(E, /datum/course_run))
+		var/datum/course_run/R = E
+		R.end_run()
+
+// Hold a set or a run open for `window`, then let it lapse by itself.
+/mob/living/human/proc/hold_exercise(datum/E, window = EXERCISE_SET_WINDOW)
+	exercise_equipment = E
+	exercise_token++
+	addtimer(CALLBACK(src, PROC_REF(lapse_exercise), exercise_token), window)
+
+/mob/living/human/proc/lapse_exercise(token)
+	if (token != exercise_token || !exercise_equipment)
+		return
+	var/was_run = istype(exercise_equipment, /datum/course_run)
+	cancel_exercise()
+	to_chat(src, "<span class='notice'>[was_run ? "Your course run has lapsed." : "You have rested too long; your set starts over."]</span>")
 
 /mob/living/human/verb/stop_exercise()
 	set name = "Stop Exercise"
 	set category = "IC"
+	if (!exercise_equipment)
+		to_chat(src, "You are not in the middle of a set or a course run.")
+		return
 	cancel_exercise()
-	to_chat(src, "You stop your unfinished exercise set.")
+	to_chat(src, "You stop your exercise.")
 
+// Whether the body can gain from training now, with the reason when it cannot.
+/mob/living/human/proc/exercise_refusal()
+	recover_exercise()
+	if (exercise_fatigue >= 6)
+		return "You are too fatigued to gain anything more. Rest; one fatigue point recovers each minute."
+	if (nutrition < 50)
+		return "You are too hungry to train."
+	if (water < 50)
+		return "You are too thirsty to train."
+	return null
+
+// One finished set or run: the hunger, thirst and fatigue it costs.
+/mob/living/human/proc/exercise_spend(fatigue = 2)
+	exercise_fatigue = min(6, exercise_fatigue + fatigue)
+	nutrition = max(0, nutrition - 2 * fatigue)
+	water = max(0, water - 3 * fatigue)
+
+// Pay one skill. `rate` is the fractional gain before fatigue; gains halve at
+// 1.0 and stop at `cap`. Returns FALSE when the skill is already at the cap.
+/mob/living/human/proc/exercise_reward(skill, rate, cap, scale = 1)
+	var/list/values = stats[skill]
+	if (!islist(values) || values[1] < 10 || values[1] >= cap || values[2] >= cap)
+		return FALSE
+	var/paid = rate * scale * (1 - exercise_fatigue / 8) * (values[2] >= 100 ? 0.5 : 1)
+	// adaptStat rounds to 0.1%. Quantize here and stay clear of a binary float
+	// that lands just under the step after its division.
+	var/steps = max(1, round(paid * 1000 + 0.00001))
+	adaptStat(skill, (steps + 0.001) * (skill == "dexterity" ? 0.1 : 0.15))
+	values[1] = min(cap, values[1])
+	values[2] = min(cap, values[2])
+	return TRUE
+
+// Stack recipe guard: training gear needs its era, research and skill.
+/datum/craft_guard/skill_gate/exercise
+	order = 20
+	message = "This training gear requires its era, completed research and crafting skill."
+
+/datum/craft_guard/skill_gate/exercise/allowed(mob/living/human/H, result_type)
+	return exercise_can_build(H, result_type)
+
+// Fixtures placed before the redesign (click-and-wait weights and the square
+// course marker) turn into the new gear where they stand.
 /obj/structure/exercise
-	name = "stone lifting weights"
-	desc = "Crafted stone weights. With an empty active hand, click for each of three fifteen-second repetitions. Stay still to finish each repetition; interruption or cancelling loses the unfinished set. Stone weights train strength below 125; fatigue can require a rest."
-	icon = 'icons/obj/materials.dmi'
-	icon_state = "sheet-stone"
+	name = "old training equipment"
+	desc = "Worn-out training equipment. Touch it to clear it away for something better."
+	icon = 'icons/obj/training.dmi'
+	icon_state = "lifting_stone_heavy"
 	anchored = TRUE
 	density = FALSE
 	var/skill_cap = 125
 	var/reward_rate = 0.005
 	var/course = FALSE
-	var/tmp/mob/living/human/actor
-	var/tmp/turf/origin
-	var/tmp/repetition = 0
-	var/tmp/busy = FALSE
-	var/tmp/epoch = 0
-	var/tmp/expiry = 0
+	var/replacement = /obj/item/weapon/lifting_weight/heavy
 
 /obj/structure/exercise/course
-	name = "agility and endurance course marker"
-	desc = "A manually walked square course: start on this tile, then visit three tiles east, three north, three west and back south to the start. Use Exercise Step at each corner for a timed repetition."
-	icon = 'icons/obj/flags.dmi'
-	icon_state = "flagpole_blank"
-	course = TRUE
-	reward_rate = 0.003
+	icon_state = "course_start"
+	replacement = /obj/structure/training_course/post
 
 /obj/structure/exercise/modern
-	name = "gym lifting weights"
-	desc = "Machined lifting weights. With an empty active hand, click for each of three fifteen-second repetitions. Stay still to finish each repetition. These weights train strength below 150; fatigue can require a rest."
-	icon_state = "sheet-iron"
-	skill_cap = 150
-	reward_rate = 0.006
+	icon_state = "barbell"
+	replacement = /obj/item/weapon/lifting_weight/barbell
 
 /obj/structure/exercise/modern/course
-	name = "gym circuit marker"
-	desc = "A Modern agility and endurance circuit. Walk the four corners of its three-tile square and complete Exercise Step at each corner."
-	icon = 'icons/obj/flags.dmi'
-	icon_state = "flagpole_blank"
-	course = TRUE
-	reward_rate = 0.004
+	icon_state = "course_start"
+	replacement = /obj/structure/training_course/post
 
 /obj/structure/exercise/persistence_runtime_var(key)
 	return (key in list("actor", "origin", "repetition", "busy", "epoch", "expiry")) || ..()
 
-/obj/structure/exercise/proc/clear_exercise()
-	if (actor)
-		actor.cancel_exercise()
-
-/obj/structure/exercise/Destroy()
-	clear_exercise()
-	return ..()
-/obj/structure/exercise/Del()
-	clear_exercise()
-	..()
-/obj/structure/exercise/Move()
-	var/atom/previous = loc
+/obj/structure/exercise/after_load()
 	. = ..()
-	if (. && previous != loc)
-		clear_exercise()
-/obj/structure/exercise/forceMove(atom/destination, special_event)
-	var/atom/previous = loc
-	. = ..()
-	if (. && previous != loc)
-		clear_exercise()
+	addtimer(CALLBACK(src, PROC_REF(replace_legacy)), 10)
 
-/obj/structure/exercise/proc/eligible(mob/living/human/H, feedback = FALSE)
-	if (!istype(H))
-		return FALSE
-	if (H.stat != CONSCIOUS || !H.can_use_hands() || H.lying)
-		if (feedback)
-			to_chat(H, "You must be conscious, standing and able to use your hands to exercise.")
-		return FALSE
-	if (!isturf(H.loc) || !anchored || !isturf(loc) || H.z != z)
-		if (feedback)
-			to_chat(H, "Use anchored training equipment while standing on the same level's floor.")
-		return FALSE
-	if (!exercise_recipe_era(type))
-		if (feedback)
-			to_chat(H, "This training equipment requires the Modern era.")
-		return FALSE
-	H.recover_exercise()
-	if (H.exercise_fatigue >= 6)
-		if (feedback)
-			to_chat(H, "You are too fatigued to exercise. Rest; one fatigue point recovers per running-server minute.")
-		return FALSE
-	var/list/skills = course ? list("dexterity", "stamina") : list("strength")
-	for (var/skill in skills)
-		if (H.stats[skill][1] < 10)
-			if (feedback)
-				to_chat(H, "Your current [skill] is too low to train here.")
-			return FALSE
-		if (H.stats[skill][1] >= skill_cap || H.stats[skill][2] >= skill_cap)
-			if (feedback)
-				to_chat(H, "Your [skill] has reached this equipment's [skill_cap] training limit.")
-			return FALSE
-	return TRUE
+/obj/structure/exercise/attack_hand(mob/user)
+	replace_legacy()
 
-/obj/structure/exercise/proc/goal()
-	if (!origin || !course)
-		return origin
-	var/list/xs = list(3,3,0,0)
-	var/list/ys = list(0,3,3,0)
-	return locate(origin.x + xs[repetition+1], origin.y + ys[repetition+1], origin.z)
-
-/obj/structure/exercise/proc/exercise_wait(mob/living/human/H, duration)
-	return do_after(H, duration, H.loc)
-
-/obj/structure/exercise/attackby(obj/item/W, mob/user, icon_x, icon_y)
-	// Preserve parent tool actions if a subtype enables moving or dismantling.
-	if (!not_movable || !not_disassemblable)
-		return ..()
-	if (!ishuman(user) || user.z != z || get_dist(user, src) > 1)
-		return ..()
-	to_chat(user, "Use an empty active hand to exercise. Switch hands or put away the held item, then click again.")
-	return TRUE
-
-/obj/structure/exercise/attack_hand(mob/living/human/H)
-	if (actor && exercise_time() >= expiry)
-		clear_exercise()
-	if (!eligible(H, TRUE))
+/obj/structure/exercise/proc/replace_legacy()
+	if (QDELETED(src) || !isturf(loc))
 		return
-	if (H.z != z || get_dist(H, src) > 1)
-		to_chat(H, "Stand next to the training equipment to exercise.")
-		return
-	if (busy)
-		to_chat(H, "A repetition is already in progress. Wait for it to finish.")
-		return
-	if (actor && actor != H)
-		to_chat(H, "Someone else is using this training equipment.")
-		return
-	if (H.exercise_equipment && H.exercise_equipment != src)
-		to_chat(H, "Finish your other exercise set or use Stop Exercise before starting here.")
-		return
-	if (!actor)
-		if (course && (H.loc != loc || !locate(x+3,y+3,z)))
-			to_chat(H, "Start on the marker with room for a three-tile square to the northeast.")
-			return
-		actor = H
-		H.exercise_equipment = src
-		origin = H.loc
-		repetition = 0
-		epoch++
-		expiry = exercise_time() + 1200
-	if (course)
-		tell_goal(H)
-	else
-		complete_repetition(H, TRUE)
+	new replacement(loc)
+	qdel(src)
 
-/obj/structure/exercise/proc/tell_goal(mob/living/human/H)
-	var/turf/T = goal()
-	to_chat(H, "Walk to ([T.x], [T.y]) on this level, then use Exercise Step. Completed: [repetition]/4. Stop Exercise cancels the set.")
-
-/mob/living/human/verb/exercise_step()
-	set name = "Exercise Step"
-	set category = "IC"
-	if (exercise_equipment && exercise_equipment.course)
-		exercise_equipment.complete_repetition(src, TRUE)
-
-/obj/structure/exercise/proc/complete_repetition(mob/living/human/H, feedback = FALSE)
-	if (!istype(H) || busy || actor != H || H.exercise_equipment != src)
-		if (feedback && istype(H))
-			to_chat(H, "No repetition can start now. Wait for the current repetition or start a new set.")
-		return FALSE
-	if (!eligible(H) || exercise_time() >= expiry || loc != get_turf(src) || (course ? H.loc != goal() : H.loc != origin))
-		H.cancel_exercise()
-		if (feedback)
-			to_chat(H, "Your unfinished exercise set ended. Return to the starting position and click to start again.")
-		return FALSE
-	var/token = epoch
-	var/turf/start = H.loc
-	busy = TRUE
-	if (feedback)
-		to_chat(H, "You begin [course ? "course leg" : "lifting repetition"] [repetition+1]/[course ? 4 : 3]. Stay still for [course ? 11.25 : 15] seconds; Stop Exercise cancels the set.")
-	var/success = exercise_wait(H, course ? 112.5 : 150)
-	if (epoch != token || actor != H || H.exercise_equipment != src)
-		return FALSE
-	busy = FALSE
-	if (!success || !eligible(H) || H.loc != start || !anchored || !isturf(loc) || exercise_time() >= expiry)
-		H.cancel_exercise()
-		if (feedback)
-			to_chat(H, "Your exercise was interrupted. The unfinished set gives no partial training; click to start again.")
-		return FALSE
-	repetition++
-	var/total = course ? 4 : 3
-	if (repetition < total)
-		if (course)
-			tell_goal(H)
-		else
-			to_chat(H, "Repetition [repetition]/3 complete. Click again to continue; stopping earns no partial XP.")
-		return TRUE
-	var/list/skills = course ? list("dexterity", "stamina") : list("strength")
-	for (var/skill in skills)
-		var/list/values = H.stats[skill]
-		var/rate = reward_rate * (1 - H.exercise_fatigue / 8) * (values[2] >= 100 ? 0.5 : 1)
-		// Native adaptStat floors to 0.001. Quantize deliberately and avoid a
-		// binary float just below the intended floor boundary after division.
-		var/steps = max(1, round(rate * 1000 + 0.00001))
-		H.adaptStat(skill, (steps + 0.001) * (skill == "dexterity" ? 0.1 : 0.15))
-		values[1] = min(skill_cap, values[1])
-		values[2] = min(skill_cap, values[2])
-	H.exercise_fatigue = min(6, H.exercise_fatigue + 2)
-	H.cancel_exercise()
-	to_chat(H, "Set complete. Fatigue: [H.exercise_fatigue]/6; one point recovers per running-server minute. Gains diminish with fatigue and at 100 trained skill.")
-	return TRUE
-
-// Stack recipe guard: training equipment needs its era, research and skill.
-/datum/craft_guard/skill_gate/exercise
-	order = 20
-	message = "This training equipment requires its era, completed research and crafting skill."
-
-/datum/craft_guard/skill_gate/exercise/allowed(mob/living/human/H, result_type)
-	return exercise_can_build(H, result_type)
+#undef EXERCISE_SET_WINDOW

@@ -9,7 +9,7 @@
 // takes ice directly. With local iron and sand, the 3D printer prints the
 // spares and module kits listed in config/crafting/factory_recipes.txt, so
 // a settlement stops depending on mainland cargo.
-// Reuses existing sprites; no new art.
+// Reuses existing sprites, except the ice (tests/sprites/create_ore_redraws.py).
 // ============================================================
 
 #define SURFACE_ICE_WATER 20 // units of water per piece of ice
@@ -18,8 +18,7 @@
 /obj/item/stack/ore/ice
 	name = "water ice"
 	desc = "Dirty, rock-hard ice cut from under the regolith. Melt it for water."
-	icon_state = "ore_glass"
-	color = "#d8ecff"
+	icon_state = "ore_ice"
 
 // The ore a drill brings up on this ground, or null for the drill's own.
 /turf/proc/drill_ore_table()

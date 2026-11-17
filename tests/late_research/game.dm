@@ -940,14 +940,22 @@ var/late_wait_result = TRUE
 	hand.stats["medical"] = list(149.4, 149.4)
 	hand.adaptStat("medical", 1)
 	late_check(hand.stats["medical"][1] >= 150 && hand.scholar_level("medicine") == 4, "the milestone is paid as the skill grows")
-	// Krunes 2026-11-15: one big crafting gain jumped past every milestone and paid them all at the cap.
+	// Val 2026-11-17: one craft teaches at most about 2% crafting, however big the recipe.
 	hand.stats["crafting"] = list(140, 140)
 	hand.adaptStat("crafting", 500)
-	late_check(hand.stats["crafting"][1] == 150 && hand.stats["crafting"][2] == 150 && hand.scholar_level("engineering") == 4, "a big crafting gain stops at skilled and pays only that milestone")
-	hand.adaptStat("crafting", 500)
-	late_check(hand.stats["crafting"][1] == 200 && hand.scholar_level("engineering") == 12, "the next big gain stops at expert and pays it")
-	hand.adaptStat("crafting", 500)
-	late_check(hand.stats["crafting"][1] == 250 && hand.scholar_level("engineering") == 24, "and the next reaches master")
+	late_check(round(hand.stats["crafting"][1], 0.01) == 142.8 && !hand.scholar_level("engineering"), "one huge craft teaches only about 2% crafting")
+	hand.adaptStat("crafting", 1, "/obj/item/late_cap_probe")
+	var/small = hand.stats["crafting"][1] - 142.8
+	late_check(small > 142.8 * 0.009 && small < 142.8 * 0.021, "a small first try still gets its first-time bonus under the cap ([small])")
+	// Krunes 2026-11-15: one big gain jumped past every milestone and paid them all at the cap.
+	hand.stats["swimming"] = list(140, 140)
+	hand.adaptStat("swimming", 500)
+	late_check(hand.stats["swimming"][1] == 150 && hand.stats["swimming"][2] == 150 && hand.scholar_level("natural_science") == 4, "a big gain stops at skilled and pays only that milestone")
+	hand.adaptStat("swimming", 500)
+	late_check(hand.stats["swimming"][1] == 200 && hand.scholar_level("natural_science") == 12, "the next big gain stops at expert and pays it")
+	hand.adaptStat("swimming", 500)
+	late_check(hand.stats["swimming"][1] == 250 && hand.scholar_level("natural_science") == 24, "and the next reaches master")
+	hand.stats["crafting"] = list(250, 250)
 	hand.adaptStat("crafting", -50)
 	late_check(hand.stats["crafting"][1] < 250 && hand.stats["crafting"][1] > 200, "losing skill is not held back by milestones")
 	hand.scholarship["engineering"] = 0
@@ -969,6 +977,9 @@ var/late_wait_result = TRUE
 	other.stats["swords"] = list(140, 140)
 	other.adaptStat("swords", 500)
 	late_check(other.stats["swords"][1] > 200, "gains are not held at milestones where book research is off")
+	other.stats["crafting"] = list(100, 100)
+	other.adaptStat("crafting", 500)
+	late_check(other.stats["crafting"][1] == 200, "crafting gains are not capped where book research is off")
 	map.book_research = TRUE
 /proc/late_test_compare_notes()
 	var/obj/structure/research_bench/late_fixture/bench = new(locate(7,3,1))
