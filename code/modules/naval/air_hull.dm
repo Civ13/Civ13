@@ -10,8 +10,9 @@
 // Engines running aboard drive her faster (naval/hull_drives.dm); sails and
 // oars do nothing up here.
 //
-// The crew sees the ground below through the open air around her, and the
-// ground sees her shadow. Both views live in nullspace and are drawn through
+// She can fly on any open-air level, however high. The crew sees the first
+// solid level under the open air around her (the ground, or a roof or floor
+// built in between), and that level sees her shadow. Both views live in nullspace and are drawn through
 // turf vis_contents, like the planes' (aircraft_view.dm), so no save records
 // them. People aboard shoot and throw at the ground below from the deck
 // (pedal_airship_combat.dm, airborne_launch_turf).
@@ -33,6 +34,8 @@
 #define AIR_HULL_CREW_HIT_CHANCE 25
 #define AIR_HULL_PATCH_TIME 40
 #define AIR_HULL_HATCH_BOMBS 2
+// Open-air levels she can look, drop or be shot through, at most.
+#define AIR_HULL_MAX_DROP 8
 
 var/global/list/air_hull_crafts = list()
 
@@ -362,7 +365,7 @@ var/global/list/air_hull_crafts = list()
 	if (!shadow)
 		shadow = new
 		shadow.loc = null
-	var/turf/corner = locate(min_x, min_y, ground)
+	var/turf/corner = air_hull_solid_below(locate(min_x, min_y, B.z))
 	if (shadow_anchor != corner)
 		if (shadow_anchor)
 			shadow_anchor.vis_contents -= shadow
@@ -378,7 +381,7 @@ var/global/list/air_hull_crafts = list()
 	for (var/turf/air in block(locate(max(1, min_x - AIR_HULL_VIEW_FAR), max(1, min_y - AIR_HULL_VIEW_FAR), B.z), locate(min(world.maxx, max_x + AIR_HULL_VIEW_FAR), min(world.maxy, max_y + AIR_HULL_VIEW_FAR), B.z)))
 		if (!istype(air, /turf/sky/building) || (locate(/obj/covers) in air))
 			continue
-		var/turf/G = locate(air.x, air.y, ground)
+		var/turf/G = air_hull_solid_below(air)
 		if (!G)
 			continue
 		var/dx = max(0, min_x - air.x, air.x - max_x)
@@ -431,24 +434,65 @@ var/global/list/air_hull_crafts = list()
 	ground_view = null
 	ground_view_far = null
 
+// ---- Seeing, dropping and shooting through open air ----
+
+// Open air nothing stands in the way of: no floor, roof or ladder.
+/proc/air_hull_open_air(turf/T)
+	return istype(T, /turf/sky/building) && !(locate(/obj/covers) in T) && !(locate(/obj/roof) in T) && !(locate(/obj/structure/multiz) in T)
+
+// The first solid turf straight under T, through any levels of open air.
+/proc/air_hull_solid_below(turf/T)
+	if (!T)
+		return null
+	var/turf/at = T
+	for (var/i = 1 to AIR_HULL_MAX_DROP)
+		var/z = multiz_level_below(at.z)
+		var/turf/next = z ? locate(at.x, at.y, z) : null
+		if (!next)
+			return at == T ? null : at
+		at = next
+		if (!air_hull_open_air(at))
+			return at
+	return at
+
+// How many levels high lies over low, counting only open air in between;
+// 0 when something solid is in the way or high is not over low.
+/proc/air_hull_levels_between(turf/low, turf/high)
+	if (!low || !high || low.x != high.x || low.y != high.y)
+		return 0
+	var/turf/at = high
+	for (var/steps = 1 to AIR_HULL_MAX_DROP)
+		var/z = multiz_level_below(at.z)
+		at = z ? locate(at.x, at.y, z) : null
+		if (!at)
+			return 0
+		if (at.z == low.z)
+			return steps
+		if (!air_hull_open_air(at))
+			return 0
+	return 0
+
 // ---- Fire from below ----
 
-// Called by the projectile code for every ground turf a projectile crosses
-// while an airship flies. Returns what it struck (someone on her deck, or the
-// ground turf T under her), else null. Her own crew's shots go down, not up.
+// Called by the projectile code for every turf a projectile crosses while an
+// airship flies. A shot under her deck with only open air above it may strike
+// her: half the time one level below her, half that again for each level
+// further down. Returns what it struck (someone on her deck, or the turf T
+// under her), else null. Her own crew's shots go down, not up.
 /proc/air_hull_overhead_fire(obj/item/projectile/P, turf/T)
 	if (!P || !T || P.is_shrapnel)
 		return null
 	for (var/datum/craft/air/C in air_hull_crafts)
 		var/datum/craft_body/built/air/B = C.body
-		if (!istype(B) || !B.placed() || T.z != C.ground_z())
+		if (!istype(B) || !B.placed() || T.z == B.z)
 			continue
 		var/turf/D = locate(T.x, T.y, B.z)
 		if (!D || !B.contains(D))
 			continue
 		if (P.firer && B.contains(get_turf(P.firer)))
 			continue
-		if (!prob(AIR_HULL_HIT_CHANCE))
+		var/levels = air_hull_levels_between(T, D)
+		if (!levels || !prob(AIR_HULL_HIT_CHANCE / (2 ** (levels - 1))))
 			continue
 		return C.struck_by(P, D, T)
 	return null
@@ -504,7 +548,9 @@ var/global/list/air_hull_crafts = list()
 	clear_views()
 	var/list/wreck = list()
 	for (var/turf/D in deck)
-		var/turf/G = locate(D.x, D.y, ground)
+		var/turf/G = air_hull_solid_below(D)
+		// A longer fall hurts more.
+		var/levels = max(1, air_hull_levels_between(G, D))
 		for (var/atom/movable/M in D.contents.Copy())
 			if (M.loc != D || QDELETED(M) || istype(M, /atom/movable/lighting_overlay) || istype(M, /atom/movable/lighting_fullbright))
 				continue
@@ -517,7 +563,7 @@ var/global/list/air_hull_crafts = list()
 			if (isliving(M))
 				var/mob/living/L = M
 				to_chat(L, SPAN_DANGER("The deck breaks up beneath you and you fall!"))
-				L.adjustBruteLoss(rand(15, 35))
+				L.adjustBruteLoss(rand(15, 35) + 15 * (levels - 1))
 				L.Weaken(3)
 			else if (isitem(M))
 				falling_item_strike(M, G)
@@ -587,8 +633,7 @@ var/global/list/air_hull_crafts = list()
 	var/turf/T = get_turf(src)
 	if (!istype(T, /turf/sky/building))
 		return null
-	var/below = multiz_level_below(T.z)
-	return below ? locate(T.x, T.y, below) : null
+	return air_hull_solid_below(T)
 
 /obj/structure/airship_bomb_hatch/attack_hand(mob/living/user)
 	if (!isliving(user) || get_dist(user, src) > 1)
@@ -844,3 +889,4 @@ var/global/list/air_hull_crafts = list()
 #undef AIR_HULL_CREW_HIT_CHANCE
 #undef AIR_HULL_PATCH_TIME
 #undef AIR_HULL_HATCH_BOMBS
+#undef AIR_HULL_MAX_DROP
