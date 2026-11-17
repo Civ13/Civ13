@@ -11,6 +11,13 @@ activation still apply to those actions. Missing native, graphical or
 save/load evidence belongs in the report and never blocks a source fix.
 Do not turn an evidence limitation into a new approval requirement.
 
+<!-- 2026-11-17: Civilizationbot log level -->
+Val asked (2026-11-17) for the bot's logger level in the launcher, info by default instead of debug. The
+Civilizationbot tab's **Log level** list (Gui/BotPage.cs, launcher 1.5.30) and `Civ13.exe --bot log-level [LEVEL]`
+write `log_level` into the bot's portable profile (LocalBot.WriteLogLevel keeps every other field, no BOM, via a
+temporary file). The bot reads it at start (Civilizationbot LogLevelSetting); a missing or unknown value is info
+and never blocks boot. A running bot is offered a restart.
+
 <!-- 2026-11-17: AI characters window -->
 Val asked (2026-11-17) for Ada's controls in the launcher. All regions > More > **AI characters…**
 (Gui/AgentRunsDialog.cs, AgentRuns.cs, launcher 1.5.29) runs `shard_group.py agents` (agent_runs.py), which
