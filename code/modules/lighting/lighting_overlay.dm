@@ -156,6 +156,11 @@
 	// daylight times alpha: full outside, half indoors. BYOND folds the alpha
 	// var into a colour matrix, so the coefficient is written into the matrix.
 	var/TOD_lum = client_tint ? 0 : daylight_lum(T.get_window_coeff())
+	// Sun prototype (sun_shadows.dm): daylight takes the phase's colour.
+	var/list/sun_tint = sun_shadows_enabled ? sun_phase_tint[time_of_day] : null
+	var/TOD_r = sun_tint ? TOD_lum * sun_tint[1] : TOD_lum
+	var/TOD_g = sun_tint ? TOD_lum * sun_tint[2] : TOD_lum
+	var/TOD_b = sun_tint ? TOD_lum * sun_tint[3] : TOD_lum
 	#ifdef OPENDREAM
 	blend_mode = BLEND_ADD
 	#endif
@@ -177,9 +182,9 @@
 			continue
 		var/i = 0
 
-		var/adjusted_r = C.lum_r + TOD_lum
-		var/adjusted_g = C.lum_g + TOD_lum
-		var/adjusted_b = C.lum_b + TOD_lum
+		var/adjusted_r = C.lum_r + TOD_r
+		var/adjusted_g = C.lum_g + TOD_g
+		var/adjusted_b = C.lum_b + TOD_b
 
 		// Huge switch to determine i based on D.
 		switch(turn(C.master_direction(T), 180))

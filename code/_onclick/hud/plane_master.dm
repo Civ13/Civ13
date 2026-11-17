@@ -16,7 +16,7 @@
 /obj/screen/plane_master/game_world/backdrop(mob/mymob)
 	filters = list()
 	if(istype(mymob) && mymob.client && mymob.client.ambient_occlusion_enabled())
-		filters += filter(type="drop_shadow", x=0, y=-2, size=4, color="#04080FAA")
+		filters += filter(type="drop_shadow", x=sun_ambient_shadow_x(), y=-2, size=4, color="#04080FAA")
 
 // Default on; preferences that are not loaded yet keep the usual look.
 /client/proc/ambient_occlusion_enabled()
@@ -73,6 +73,7 @@
 	mouse_opacity = 0
 	var/tmp/last_lighting_bypass
 	var/tmp/last_daylight
+	var/tmp/list/last_sun_tint
 
 /obj/screen/plane_master/light_mask/backdrop(mob/mymob)
 	#if LIGHTING_COMPOSITION_V2
@@ -81,13 +82,19 @@
 	// With daylight on the client (lighting_overlay.dm) the mask's alpha is the
 	// cell's window coefficient, so the alpha column adds daylight times it.
 	var/daylight = daylight_on_client() ? daylight_lum() : 0
-	if(!isnull(last_lighting_bypass) && last_lighting_bypass == bypass && last_daylight == daylight)
+	// Sun prototype (sun_shadows.dm): daylight takes the phase's colour.
+	var/list/sun_tint = sun_daylight_tint()
+	if(!isnull(last_lighting_bypass) && last_lighting_bypass == bypass && last_daylight == daylight && last_sun_tint == sun_tint)
 		return
 	last_lighting_bypass = bypass
 	last_daylight = daylight
+	last_sun_tint = sun_tint
+	var/day_r = sun_tint ? daylight * sun_tint[1] : daylight
+	var/day_g = sun_tint ? daylight * sun_tint[2] : daylight
+	var/day_b = sun_tint ? daylight * sun_tint[3] : daylight
 	// Explicit white coverage marks intentionally mask-free visible tiles.
 	// Only uncovered pixels on this light-only plane are made black.
-	color = bypass ? list(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1) : list(1,0,0,0,0,1,0,0,0,0,1,0,daylight,daylight,daylight,0,0,0,0,1)
+	color = bypass ? list(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1) : list(1,0,0,0,0,1,0,0,0,0,1,0,day_r,day_g,day_b,0,0,0,0,1)
 	#endif
 	#endif
 

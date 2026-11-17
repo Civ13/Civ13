@@ -91,6 +91,9 @@ var/list/seed_list_jungle
 	spawn(15)
 		if (map && map.ID == MAP_LIGHTS_OUT)
 			opacity = FALSE
+	// Sun prototype (sun_shadows.dm): a tree placed mid-round takes the current shadow.
+	if (sun_shadows_enabled && sun_tree_phase)
+		sun_shadow_update()
 
 /obj/structure/wild/proc/grow_branch()
 	if (max_branches <= 0)
@@ -501,6 +504,9 @@ var/list/seed_list_jungle
 	..()
 	// A sapling that matures resets its offset, then changes season.
 	fit_trunk_bounds()
+	if (sun_shadows_enabled && sun_tree_phase)
+		spawn(0)
+			sun_shadow_update()
 	if (radiation >= 15)
 		icon = deadicon
 		icon_state = deadicon_state
