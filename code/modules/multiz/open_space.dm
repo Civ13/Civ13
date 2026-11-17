@@ -65,6 +65,15 @@ var/process/open_space/OS_controller = null
 
 var/list/sky_drop_map = list()
 
+// Clicking open air beside you with a floor cover lays a floor there, as using
+// it in hand while facing that spot does (covers.dm).
+/turf/sky/attackby(obj/item/W, mob/user)
+	if (istype(W, /obj/item/weapon/covers) && user && user.z == z && get_dist(user, src) == 1 && (get_dir(user, src) in cardinal))
+		user.set_dir(get_dir(user, src))
+		W.attack_self(user)
+		return TRUE
+	return ..()
+
 /turf/sky/Entered(var/atom/movable/mover)
 #ifdef CIV13_ZONE_PERSISTENCE
 	if(persistence_area_registry_blocked()) return

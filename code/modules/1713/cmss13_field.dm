@@ -108,7 +108,7 @@
 		if (feedback)
 			to_chat(src, "You must be conscious, free and able to use your hands to exercise.")
 		return FALSE
-	if (!istype(loc, /turf/floor) || istype(loc, /turf/floor/beach/water))
+	if (!isturf(loc) || !tile_has_floor(loc) || istype(loc, /turf/floor/beach/water))
 		if (feedback)
 			to_chat(src, "You need dry floor or ground to exercise on.")
 		return FALSE

@@ -226,6 +226,31 @@
 			building_assert(building_construct_roof(locate(10,1,level), /obj/roof/concrete, null), "concrete walls carry storey [level]")
 			new /obj/covers/cement_wall(locate(10,1,level + 1))
 		building_assert(building_roof_error(locate(10,1,7)), "concrete walls stop at six storeys")
+		// A finished floor laid over a concrete slab comes back up to a slab
+		// floor that does not burn.
+		var/obj/roof/cast_roof = locate(/obj/roof) in locate(10,1,1)
+		var/obj/covers/cast_upper = cast_roof.building_floor()
+		var/obj/covers/wood/cast_wood = new(get_turf(cast_upper))
+		building_assert(cast_wood.replace_subfloor(cast_upper), "wood floor over a concrete slab")
+		var/obj/covers/cast_back = cast_wood.revert_to_subfloor()
+		building_assert(cast_back && !cast_back.flammable && cast_back.material == "Stone" && cast_roof.building_floor() == cast_back, "a stone slab's floor stays stone when a finish comes up")
+		// A roof with nothing above it (built before the level could take a
+		// floor, or mapped) takes a floor from above instead of refusing.
+		new /obj/structure/roof_support(locate(7,3,1))
+		var/obj/roof/lone_roof = new /obj/roof/wood(locate(7,3,1))
+		var/turf/lone_top = locate(7,3,2)
+		building_assert(!building_floor_error(lone_top), "an unpaired supported roof takes a floor above it")
+		var/obj/covers/repairedfloor/lone_floor = new(lone_top)
+		building_assert(lone_floor.building_finish_floor() && lone_floor.building_roof() == lone_roof && lone_roof.building_floor() == lone_floor, "the floor links the existing roof")
+		building_assert(findtext(building_floor_error(lone_top), "already a floor"), "a second floor is refused by name")
+		// Fire burns a finished floor upstairs down to the slab, not through it.
+		var/obj/covers/wood/lone_wood = new(lone_top)
+		building_assert(lone_wood.replace_subfloor(lone_floor), "wood floor over the linked floor")
+		for (var/i in 1 to 400)
+			if (QDELETED(lone_wood))
+				break
+			lone_wood.fire_act(1000)
+		building_assert(QDELETED(lone_wood) && !QDELETED(lone_roof) && lone_roof.building_floor() && lone_roof.building_floor().is_subfloor(), "a burned finished floor leaves the slab")
 		text2file("PASS: linked building levels", "result.txt")
 	catch (var/exception/E)
 		world.log << "BUILDING exception: [E] at [E.file]:[E.line]"

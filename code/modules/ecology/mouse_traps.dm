@@ -136,7 +136,8 @@
 /obj/item/weapon/trap_kit/deadfall/target_ok(turf/T)
 	if (trap_ground_ok(T))
 		return TRUE
-	if (!istype(T, /turf/floor) || T.density)
+	// Indoors includes upper storeys, whose floors stand over open air.
+	if (!isturf(T) || !tile_has_floor(T) || T.density)
 		return FALSE
 	var/area/A = get_area(T)
 	return A && A.location != AREA_OUTSIDE
