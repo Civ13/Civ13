@@ -55,6 +55,12 @@ below the first infection level; soap disinfects the wounds. An infection that
 has set in still needs medicine. Water with food poisoning in it is refused.
 Off help intent, the drink hint says to switch to help intent to wash instead.
 
+After each part (and after a plain hand wash at open water, a sink or a
+basin), washing moves on by itself to the next bare part that still needs it,
+head to feet (`next_dirty_zone()`), until none is left, the source cannot pay
+for another part (`wash_spend()`, 5 water from a container or tap), or the
+washer moves.
+
 Self-examine marks the parts that need washing. Hands show dirty or bloody
 from work and blood. Below 200 cleanliness, every part not washed since shows
 dirty (filthy below 75); a part washed bare stays clean until cleanliness

@@ -809,6 +809,11 @@
 		user:update_inv_gloves()
 	for (var/mob/V in viewers(src, null))
 		V.show_message("<span class='notice'>[user] washes their hands using \the [src].</span>")
+	if (ishuman(user))
+		var/mob/living/human/WH = user
+		busy = user
+		WH.wash_on_after_hands(src) // body_washing.dm
+		busy = FALSE
 
 /obj/structure/sink/attackby(obj/item/O as obj, mob/living/user as mob)
 	if (busy && busy != user)

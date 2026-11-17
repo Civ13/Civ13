@@ -61,7 +61,7 @@ class StationWaterTest(unittest.TestCase):
     def test_wash_places(self):
         wash = read("code/modules/1713/wash_places.dm")
         self.assertIn("water_per_use = 5", wash)
-        self.assertIn("washed = H.wash_part_of(H, zone", wash)
+        self.assertRegex(wash, r'H\.wash_part_of\(H, zone, "\\the \[src\]", src\)')
         comfort = read("code/game/mob/living/carbon/human/home_comfort.dm")
         self.assertIn('"wash" = "a place to wash"', comfort)
         self.assertIn("if (mess <= HOME_MESS_ALLOWED && !foul)", comfort)
