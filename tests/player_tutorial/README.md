@@ -12,6 +12,6 @@ python3 tests/player_tutorial/run.py --byond-bin <pinned bin> --evidence-dir <fr
 `isolated_startup` adapter and runs `probe.dm` on a 20x20 world: every step has
 text, the book step only appears where research lives in books, and each
 watched step is pending and then done from the state its action leaves (moving,
-picking up, swapping hands, stowing, intents, the atlas event, eating, a reading
-step's timer). No client joins: chat links, the screen line, the Game Menu and
+picking up, swapping hands, stowing, intents, the atlas event, eating, breaking a branch,
+standing by a lit fire, drinking, a reading step's timer). No client joins: chat links, the screen line, the Game Menu and
 preference saving are not driven.

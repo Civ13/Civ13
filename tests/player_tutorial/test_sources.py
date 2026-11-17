@@ -48,6 +48,14 @@ class PlayerTutorialSourceTests(unittest.TestCase):
         self.assertIn('tutorial_event("help")', read('code/game/mob/player_help.dm'))
         self.assertEqual(read('code/modules/research_tree/book_research.dm').count('tutorial_event_for('), 2)
 
+    def test_survival_steps_are_hooked_where_the_player_does_them(self):
+        self.assertIn('tutorial_event_for(user, "branch")', read('code/game/objects/structures/wild.dm'))
+        # animal_harvest.dm is pinned by the atlas tanning contracts, so twine is seen by what the body carries.
+        self.assertIn('locate(/obj/item/stack/crude_twine) in body', read(TUTORIAL))
+        self.assertIn('tutorial_event_for(user, "whittle")', read('code/game/objects/items/weapons/material/ooga_booga_weapons.dm'))
+        source = read(TUTORIAL)
+        self.assertIn('return map && (map.civilizations || map.nomads)', source)
+
     def test_practice_body_is_skipped(self):
         source = read(TUTORIAL)
         login = source[source.index('/client/proc/tutorial_login('):]
