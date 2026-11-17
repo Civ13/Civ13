@@ -19,12 +19,16 @@
 	// engine on its tile runs, or null.
 	var/prop_state = null
 	var/prop_spin_state = null
+	// The sheet the sections draw from: the light plane's, or a helicopter's (helicopter.dm).
+	var/hull_icon = 'icons/obj/vehicles/lightplane.dmi'
+	// A hit on an engine section can stop the engine (aircraft_damage.dm).
+	var/engine_section = FALSE
 
 /obj/structure/vehicleparts/frame/car/aircraft/update_icon()
 	overlays.Cut()
 	if (!axis)
 		dir = 1
-	icon = 'icons/obj/vehicles/lightplane.dmi'
+	icon = hull_icon
 	if (noroof)
 		// A wing is the same from inside and out.
 		icon_state = hull_state
@@ -44,6 +48,8 @@
 				break
 		overlays += image(icon=icon, icon_state=spinning ? prop_spin_state : prop_state, layer=11.2, dir=dir)
 
+/obj/structure/vehicleparts/frame/car/aircraft/nose
+	engine_section = TRUE
 /obj/structure/vehicleparts/frame/car/aircraft/nose/right
 	hull_state = "nose_right"
 	w_front = list("c_armoredfront",FALSE,TRUE,0,0.1,FALSE,FALSE)
@@ -230,7 +236,7 @@ var/global/list/aircraft_light_plane_layout = list(
 	A.link_fuel_tanks()
 	for (var/obj/structure/vehicleparts/movement/W in parts)
 		var/obj/structure/vehicleparts/frame/F = locate() in W.loc
-		W.MouseDrop(F)
+		A.mount_wheel(W, F)
 	for (var/dx = 0, dx < size, dx++)
 		for (var/dy = 0, dy < size, dy++)
 			var/turf/T = locate(origin.x + dx, origin.y + dy, origin.z)
@@ -245,6 +251,10 @@ var/global/list/aircraft_light_plane_layout = list(
 	for (var/obj/O in parts)
 		O.update_icon()
 	return A
+
+// Planes take their wheels on the four corner sections, as cars do.
+/obj/structure/vehicleparts/axis/aircraft/proc/mount_wheel(obj/structure/vehicleparts/movement/W, obj/structure/vehicleparts/frame/F)
+	W.MouseDrop(F)
 
 /proc/build_light_plane(turf/origin)
 	return build_aircraft(origin, /obj/structure/vehicleparts/axis/aircraft/light_plane, aircraft_light_plane_layout, 3, 4)

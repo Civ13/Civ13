@@ -137,7 +137,8 @@ var/storage_runtime_error = FALSE
 	// Planes go into the hangar the same way.
 	storage_floor(13, 3, 16, 6)
 	var/obj/structure/car_workshop/hangar/hangar = new(locate(12, 2, 1))
-	hangar.stock = list("steel" = 60, "glass" = 10, "cloth" = 10, "cable" = 10, "wheels" = 4)
+	// The light plane is a wooden airframe: 40 wood on top of the steel.
+	hangar.stock = list("steel" = 60, "wood" = 45, "glass" = 10, "cloth" = 10, "cable" = 10, "wheels" = 4)
 	var/obj/structure/vehicleparts/axis/aircraft/plane = hangar.complete_assembly("Light plane")
 	storage_check(istype(plane), "the hangar builds a light plane")
 	if (!istype(plane))

@@ -213,18 +213,40 @@ var/eco_runtime_error = FALSE
 	eco_check(ecology_ground(T) == ECO_SAND, "desert sand is sand ground")
 	T.ChangeTurf(/turf/floor/grass, FALSE, FALSE)
 
+// ecology_observer_near reads the observer grid (#5051), so the probe sets the
+// turfs and buckets them the same way ecology_refresh_observers does.
+/proc/eco_set_observers(list/turfs)
+	ecology_observer_turfs = turfs
+	var/list/cells = list()
+	if (turfs.len)
+		cells.len = world.maxz
+		var/rows = ecology_cell_rows()
+		ecology_observer_columns = ecology_cell_columns()
+		ecology_observer_rows = rows
+		for (var/turf/T in turfs)
+			var/list/z_cells = cells[T.z]
+			if (!z_cells)
+				z_cells = new /list(ecology_observer_columns * rows)
+				cells[T.z] = z_cells
+			var/index = ecology_cell_index(T.x, T.y, rows)
+			if (!z_cells[index])
+				z_cells[index] = list()
+			var/list/cell = z_cells[index]
+			cell += T
+	ecology_observer_cells = cells
+
 /proc/eco_rest_checks()
 	var/mob/living/simple_animal/deer/eco_probe/D = new(locate(5, 5, 1))
-	ecology_observer_turfs = list()
+	eco_set_observers(list())
 	var/rests = 0
 	for (var/i = 1, i <= 8, i++)
 		ecology_rest_phase = i % 4
 		if (ecology_animal_resting(D))
 			rests++
 	eco_check(rests == 6, "an unobserved animal runs one Life in four")
-	ecology_observer_turfs = list(locate(30, 30, 1))
+	eco_set_observers(list(locate(30, 30, 1)))
 	eco_check(!ecology_animal_resting(D), "an animal near a player runs every second")
-	ecology_observer_turfs = list()
+	eco_set_observers(list())
 	D.stance = HOSTILE_STANCE_ATTACK
 	eco_check(!ecology_animal_resting(D), "a fighting animal never rests")
 	D.stance = HOSTILE_STANCE_IDLE
