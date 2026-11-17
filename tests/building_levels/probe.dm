@@ -193,6 +193,16 @@
 		building_assert(column_error && findtext(column_error, "beneath"), "upper support needs a support beneath it")
 		new /obj/structure/roof_support(locate(5,5,1))
 		building_assert(building_construct_roof(locate(5,5,2), /obj/roof/wood, null), "designed second storey allowed")
+		// A wood floor laid over an upper floor takes over its ceiling link.
+		var/obj/roof/plank_roof = locate(/obj/roof) in locate(4,5,1)
+		var/obj/covers/plank_upper = plank_roof && plank_roof.building_floor()
+		building_assert(plank_upper && plank_upper.is_subfloor(), "upper floor is a subfloor")
+		building_assert(tile_subfloor_for(get_turf(plank_upper), /obj/covers/wood) == plank_upper && !tile_build_refusal(get_turf(plank_upper), /obj/covers/wood), "wood floor may go over an upper floor")
+		var/obj/covers/wood/plank_floor = new(get_turf(plank_upper))
+		building_assert(plank_floor.replace_subfloor(plank_upper), "upper floor replaced")
+		building_assert(QDELETED(plank_upper) && !QDELETED(plank_roof) && plank_roof.building_floor() == plank_floor && plank_floor.building_roof() == plank_roof, "ceiling stays linked to the wood floor")
+		qdel(plank_floor)
+		building_assert(QDELETED(plank_roof), "removing the wood floor still removes the ceiling")
 		text2file("PASS: linked building levels", "result.txt")
 	catch (var/exception/E)
 		world.log << "BUILDING exception: [E] at [E.file]:[E.line]"

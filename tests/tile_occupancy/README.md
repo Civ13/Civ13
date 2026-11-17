@@ -3,7 +3,9 @@
 A tile holds at most one floor cover and one wall piece (wall cover, door,
 window frame or wall frame). Builders are refused while the tile is taken and
 pay nothing; a floor comes up with a hammer. A wall may stand on a floor, and a
-door may hang once in a doorway or archway. The rule lives in
+door may hang once in a doorway or archway. A plain floor cover or upper floor
+is a subfloor: another floor laid over it replaces it and keeps its link to
+the ceiling below. The rule lives in
 `code/game/objects/tile_occupancy.dm`.
 
 ```

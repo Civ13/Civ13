@@ -114,6 +114,17 @@ var/list/tile_probe_notes = list()
 	tile_probe_assert(tile_probe_build(H, /obj/item/stack/material/stone, "concrete floor", /obj/covers/concretefloor) == 49, "concrete_after_removal")
 	tile_probe_assert(tile_probe_floors(T) == 1 && tile_probe_count(T, /obj/covers/concretefloor) == 1, "concrete_alone")
 
+	// A floor cover is a subfloor: a wood floor is laid over it and replaces it,
+	// but another floor cover is refused.
+	var/mob/living/human/S = tile_probe_builder(5, 8)
+	var/turf/ST = get_turf(S)
+	var/obj/covers/repairedfloor/sub = new(ST)
+	tile_probe_assert(sub.is_subfloor() && tile_subfloor_for(ST, /obj/covers/wood) == sub, "floor_cover_is_subfloor")
+	tile_probe_assert(tile_build_refusal(ST, /obj/covers/repairedfloor), "cover_over_cover_refused")
+	tile_probe_assert(tile_probe_build(S, /obj/item/stack/material/wood, "wood floor", /obj/covers/wood) == 49, "wood_over_cover_built")
+	tile_probe_assert(QDELETED(sub) && tile_probe_floors(ST) == 1 && tile_probe_count(ST, /obj/covers/wood) == 1, "cover_replaced_by_wood")
+	tile_probe_assert(tile_probe_build(S, /obj/item/stack/material/stone, "concrete floor", /obj/covers/concretefloor) == 50, "finished_floor_not_subfloor")
+
 	// A wall may stand on that floor, but only one wall.
 	tile_probe_assert(tile_probe_build(H, /obj/item/stack/material/wood, "wood wall", /obj/covers/wood_wall/adjustable) == 49, "wall_on_floor_built")
 	tile_probe_assert(tile_probe_build(H, /obj/item/stack/material/wood, "wood wall", /obj/covers/wood_wall/adjustable) == 50, "second_wall_refused")

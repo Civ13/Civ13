@@ -29,6 +29,17 @@ class TileOccupancySources(unittest.TestCase):
         self.assertLess(wait, second)
         self.assertLess(second, pay)
 
+    def test_floor_over_subfloor_keeps_ceiling(self):
+        stack = read('code/game/objects/items/stacks/stack.dm')
+        body = stack[stack.index('/obj/item/stack/proc/produce_recipe('):]
+        subfloor = body.index('tile_subfloor_for(get_turf(user), recipe.result_type)')
+        self.assertLess(body.index('if (!do_after(user, buildtime)'), subfloor)
+        self.assertLess(subfloor, body.index('building_floor_error(get_turf(user))'))
+        self.assertIn('floor.replace_subfloor(subfloor)', body)
+        rule = read('code/game/objects/tile_occupancy.dm')
+        replace = rule[rule.index('/obj/covers/proc/replace_subfloor('):]
+        self.assertLess(replace.index('building_pair_id = old.building_pair_id'), replace.index('qdel(old)'))
+
     def test_wall_foundations_checked(self):
         for path, count in (('code/game/objects/items/clay_items.dm', 7),
                             ('code/modules/1713/barriers/sandbag.dm', 2),
