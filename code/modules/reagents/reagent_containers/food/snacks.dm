@@ -439,7 +439,7 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 	nutriment_amt = 3
 	nutriment_desc = list("meat" = 1, "jaw tension" = 2)
 	non_vegetarian = TRUE
-	satisfaction = 2
+	satisfaction = 0 // Plain preserved staple: it fills you up but gives no mood lift, so a table meal skips it too.
 	biteamount = 3
 	decay = 250*600
 
