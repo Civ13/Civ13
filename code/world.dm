@@ -652,6 +652,21 @@ var/global/persistence_reboot_due = FALSE
 			fdel(F)
 			to_chat(F, "")
 
+		var/L = file("SQL/discord2lobby.txt")
+		if (fexists(L))
+			var/list/messages_read = splittext(file2text(L), "\n")
+			for(var/msg in messages_read)
+				var/list/tempmsg = splittext(msg, ":::")
+				if (tempmsg.len == 2)
+					// Discord lobby channel (lobby_relay.dm): escaped like Discord OOC, shown on the join screen only.
+					var/lsender = sanitize(copytext_char(tempmsg[1], 1, 46), 0)
+					var/ltext = sanitize(copytext_char(tempmsg[2], 1, 1025), 0)
+					if (!lsender || !ltext)
+						continue
+					discord_lobby_show(lsender, ltext)
+			fdel(L)
+			to_chat(L, "")
+
 		var/G = file("SQL/discord2admin.txt")
 		if (fexists(G))
 			var/list/messages_read = splittext(file2text(G), "\n")
