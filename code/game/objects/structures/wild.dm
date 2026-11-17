@@ -336,8 +336,27 @@ var/list/seed_list_jungle
 		return FALSE
 	bump_chop_target = A
 	next_click = world.time + 1
+	halt_held_movement_toward(A)
 	perform_bump_chop(A, HT)
 	return TRUE
+
+// A bump chop consumes the held movement key that walked into the tree: the
+// player stops pushing that way (and cannot nudge out of the chop wait) until
+// the key is released and pressed again. Other held axes keep moving, so a
+// diagonal walk slides along the tree. Movement macros do not key-repeat.
+/mob/living/human/proc/halt_held_movement_toward(atom/A)
+	var/held = (movement_northsouth || 0) | (movement_eastwest || 0)
+	var/toward = held & get_dir(src, A)
+	if (!toward)
+		toward = held & dir
+	if (!toward)
+		toward = held
+	if (toward & (NORTH|SOUTH))
+		movement_northsouth = null
+	if (toward & (EAST|WEST))
+		movement_eastwest = null
+	if (!movement_northsouth && !movement_eastwest)
+		movement_fine = FALSE
 
 // Returns to Bump at the chop's first sleep; the reservation is held until the
 // click chop finishes or fails.
