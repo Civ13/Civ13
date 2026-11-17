@@ -74,6 +74,7 @@
 /obj/item/weapon/gun/projectile/flintlock/load_ammo(var/obj/item/A, mob/user)
 //	var/mob/living/human/H = user
 	if (cocked)
+		to_chat(user, SPAN_WARNING("Uncock \the [src] before loading it."))
 		return
 	..()
 

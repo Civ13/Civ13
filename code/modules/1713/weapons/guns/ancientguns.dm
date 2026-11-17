@@ -146,60 +146,59 @@ obj/item/weapon/gun/projectile/ancient/tanegashima
 						else
 							to_chat(user, "<span class = 'notice'>You need enough gunpowder in a gunpowder container in your hands to fill \the [src].</span>")
 							return
-	else if (istype(W, /obj/item/stack/ammopart/stoneball))
-		var/obj/item/stack/ammopart/stoneball/ST = W
+	else if (istype(W, /obj/item/ammo_casing/musketball))
+		// A paper cartridge holds the charge and the ball: tear it, pour, ram.
+		if (gunpowder || bullet)
+			to_chat(user, "<span class='notice'>\The [src] is already charged.</span>")
+			return
+		to_chat(user, "<span class='notice'>You begin loading \the [src] with \the [W]...</span>")
+		if (!do_after(user, ancient_load_delay(user), src, can_move = TRUE) || QDELETED(W) || W.loc != user || gunpowder || bullet)
+			return
+		gunpowder = TRUE
+		ancient_chamber(new /obj/item/ammo_casing/musketball, user)
+		qdel(W)
+	else if (ancient_ball_casing(W))
+		var/obj/item/stack/ammopart/ST = W
 		if (!gunpowder)
 			to_chat(user, "<span class='notice'>You need to put in the gunpowder first.</span>")
-		else if (bullet)
+			return
+		if (bullet)
 			to_chat(user, "<span class='notice'>There is already a projectile inside.</span>")
 			return
-		else if (!bullet && gunpowder)
-			to_chat(user, "<span class='notice'>You begin loading \the [src] with \the [W]...</span>")
-			if (ishuman(user))
-				var/mob/living/human/H = user
-				if (do_after(user, (100 / H.getStatCoeff(stat)), src, can_move = TRUE))
-					if (!bullet)
-						to_chat(user, "<span class='notice'>You load \the [src].</span>")
-						bullet = TRUE
-						var/obj/item/ammo_casing/stoneball/SBL = new/obj/item/ammo_casing/stoneball
-						loaded += SBL
-						if (istype(src, /obj/item/weapon/gun/projectile/ancient/firelance))
-							icon_state = "firelance1"
-						if (istype(src, /obj/item/weapon/gun/projectile/ancient/matchlock))
-							icon_state = "matchlock_cocked"
-						if (istype(src, /obj/item/weapon/gun/projectile/ancient/tanegashima))
-							icon_state = "tanegashima_cocked"
-							lighted = TRUE
-						if (ST.amount == 1)
-							qdel(W)
-						else
-							ST.amount -= 1
-						return
-				else
-					return
-			else
-				if (do_after(user, 100, src, can_move = TRUE))
-					if (!bullet)
-						to_chat(user, "<span class='notice'>You load \the [src].</span>")
-						bullet = TRUE
-						var/obj/item/ammo_casing/stoneball/SBL = new/obj/item/ammo_casing/stoneball
-						loaded += SBL
-						if (istype(src, /obj/item/weapon/gun/projectile/ancient/firelance))
-							icon_state = "firelance1"
-						if (istype(src, /obj/item/weapon/gun/projectile/ancient/matchlock))
-							icon_state = "matchlock_cocked"
-						if (istype(src, /obj/item/weapon/gun/projectile/ancient/tanegashima))
-							icon_state = "tanegashima_cocked"
-							lighted = TRUE
-						if (ST.amount == 1)
-							qdel(W)
-						else
-							ST.amount -= 1
-						return
-				else
-					return
+		to_chat(user, "<span class='notice'>You begin loading \the [src] with \the [W]...</span>")
+		if (!do_after(user, ancient_load_delay(user), src, can_move = TRUE) || QDELETED(ST) || ST.loc != user || bullet)
+			return
+		var/casing_type = ancient_ball_casing(ST)
+		ancient_chamber(new casing_type, user)
+		ST.use(1)
 	else
 		..()
+
+// The round a loose ball loads as: stone shot, or a lead musket ball.
+/obj/item/weapon/gun/projectile/ancient/proc/ancient_ball_casing(obj/item/W)
+	if (istype(W, /obj/item/stack/ammopart/stoneball))
+		return /obj/item/ammo_casing/stoneball
+	if (istype(W, /obj/item/stack/ammopart/musketball))
+		return /obj/item/ammo_casing/musketball
+	return null
+
+/obj/item/weapon/gun/projectile/ancient/proc/ancient_load_delay(mob/user)
+	if (ishuman(user))
+		var/mob/living/human/H = user
+		return 100 / H.getStatCoeff(stat)
+	return 100
+
+/obj/item/weapon/gun/projectile/ancient/proc/ancient_chamber(obj/item/ammo_casing/C, mob/user)
+	to_chat(user, "<span class='notice'>You load \the [src].</span>")
+	bullet = TRUE
+	loaded += C
+	if (istype(src, /obj/item/weapon/gun/projectile/ancient/firelance))
+		icon_state = "firelance1"
+	if (istype(src, /obj/item/weapon/gun/projectile/ancient/matchlock))
+		icon_state = "matchlock_cocked"
+	if (istype(src, /obj/item/weapon/gun/projectile/ancient/tanegashima))
+		icon_state = "tanegashima_cocked"
+		lighted = TRUE
 
 /obj/item/weapon/gun/projectile/ancient/special_check(mob/user)
 	if (ishuman(user))
