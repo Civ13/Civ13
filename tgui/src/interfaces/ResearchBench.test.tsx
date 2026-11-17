@@ -100,7 +100,7 @@ describe('research bench in book mode', () => {
     render(<Research {...ui} />);
     expect(screen.getByRole('progressbar', { name: 'Research progress' }).getAttribute('aria-valuenow')).toBe('40');
     expect(screen.getByText(/about 10 minutes left at this pace/)).toBeTruthy();
-    expect(screen.getByText(/half speed/)).toBeTruthy();
+    expect(screen.getByText(/Half speed until some are used/)).toBeTruthy();
     expect(screen.getByText(/20% faster/)).toBeTruthy();
     expect(document.querySelector('.rs-checks .rs-missing')?.textContent).toContain('Light to work by');
     expect(screen.getByText('Being researched')).toBeTruthy();
@@ -110,6 +110,21 @@ describe('research bench in book mode', () => {
     expect(ui.act).toHaveBeenLastCalledWith('unqueue', { value: 'bronze' });
     fireEvent.click(screen.getByText('Clear queue'));
     expect(ui.act).toHaveBeenLastCalledWith('clear_queue', { value: 1 });
+  });
+  it('names what sets the speed and what counts as practice', () => {
+    const ui = bench({ assigned: { id: 'masonry', name: 'Stone Masonry', percent: 40, ticks: 40, cost: 100, working: 1, supply: 5, supply_cap: 200, supply_text: 'Engineering supplies', library_bonus: 20, checks: [],
+      factors: [{ label: "Ada's scholarship", effect: 'x1.2', ok: 1 }, { label: 'Supplies on the bench', effect: 'half speed until some are set out', ok: 0 }],
+      field_work: [{ label: 'Make 12 things taught by Basic Toolmaking', percent: 25, done: 0, have: 3, needed: 12, examples: ['flint axe', 'stone hammer', '4 more'] }] } });
+    render(<Research {...ui} />);
+    expect(screen.getByText('Speed right now')).toBeTruthy();
+    expect(screen.getByText('x1.2')).toBeTruthy();
+    expect(document.querySelector('.rs-checks .rs-missing')?.textContent).toContain('half speed until some are set out');
+    expect(screen.getByText('Without waiting')).toBeTruthy();
+    expect(screen.getByText(/you have 3 of 12/)).toBeTruthy();
+    expect(screen.getByText('Any of: flint axe, stone hammer, 4 more')).toBeTruthy();
+    expect(screen.getByText(/Full speed while they last/)).toBeTruthy();
+    expect(screen.queryByText(/Library nearby/)).toBeNull();
+    expect(screen.getByText(/between two benches/)).toBeTruthy();
   });
   it('warns when the scholar holds no writing tool or sheets', () => {
     render(<Research {...bench()} />);

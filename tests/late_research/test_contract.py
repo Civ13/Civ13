@@ -84,6 +84,20 @@ class FieldWork(unittest.TestCase):
                 ("code/modules/ecology/foraging.dm", 'note_field_work(src, "forage")'),
                 ("code/modules/1713/animal_harvest.dm", 'note_field_work(H, "butchering")')):
             self.assertIn(call, read(path), path)
+    def test_a_craft_that_counts_says_so_and_the_bench_names_its_speed(self):
+        # Players made the wrong things for a subject and saw nothing happen.
+        note = proc(self.field, "/proc/note_field_work")
+        self.assertIn('findtext(activity, "craft:") == 1 || findtext(activity, "deed:") == 1', note)
+        self.assertIn('That counts towards researching', note)
+        self.assertIn('([after] of [E[FIELD_EXP_NEEDED]])', note)
+        rows = proc(self.field, "/obj/structure/research_bench/proc/field_work_rows")
+        self.assertIn('get_node_recipe_names(copytext(activity, 7))', rows)
+        interface = read("code/modules/research_tree/book_interface.dm")
+        self.assertIn('out["factors"] = book_pace_factors(N, researcher, worker[2], supply, library)', interface)
+        shared = read("tgui/src/interfaces/researchShared.tsx")
+        self.assertIn('<h3>Without waiting</h3>', shared)
+        self.assertIn('<h3>Speed right now</h3>', shared)
+
     def test_counting_needs_book_research_and_is_capped(self):
         note = proc(self.field, "/proc/note_field_work")
         for guard in ("map.book_research_enabled()", "field_activity_cap(activity)", "before >= cap", "min(cap, before + amount)"):
@@ -98,7 +112,7 @@ class FieldWork(unittest.TestCase):
         self.assertLess(tick.index("research_lit()"), tick.index("credit_field_work()"))
         self.assertLess(tick.index("credit_field_work()"), tick.index("var/mob/living/human/researcher"))
         self.assertIn("late_bench_rate(N)", tick)
-        self.assertEqual(self.interface.count("late_bench_rate(N)"), 2)
+        self.assertEqual(self.interface.count("late_bench_rate(N)"), 3)  # both pace estimates and the speed line
         self.assertIn("N.era_tier >= FIELD_WORK_MIN_TIER", proc(self.field, "/proc/late_bench_rate"))
     def test_windows_list_field_work(self):
         self.assertEqual(self.interface.count('out["field_work"] = field_work_rows(H, '), 2)

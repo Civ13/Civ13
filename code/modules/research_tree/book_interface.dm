@@ -201,6 +201,26 @@
 			best_rate = rate
 	return researcher ? list(researcher, best_rate) : null
 
+// What sets the pace right now, one line each, for the bench window. Each is
+// list(label, effect, 1 good / 0 holding the work back).
+/obj/structure/research_bench/proc/book_pace_factors(datum/research_node/N, mob/living/human/researcher, lead_rate, supply, library)
+	var/list/factors = list()
+	var/tool = researcher.research_tool_rate()
+	var/skill = researcher.scholar_research_rate(N.id)
+	factors += list(list("label" = "[researcher.name]'s scholarship", "effect" = "x[round(skill, 0.01)]", "ok" = skill >= 1 ? 1 : 0))
+	factors += list(list("label" = "Writing tool in hand", "effect" = "x[round(tool, 0.01)]", "ok" = 1))
+	factors += list(list("label" = "Supplies on the bench", "effect" = supply >= 1 ? "full speed" : "half speed until some are set out", "ok" = supply >= 1 ? 1 : 0))
+	factors += list(list("label" = "Related chapters shelved within 3 tiles", "effect" = library > 1 ? "[round((library - 1) * 100)]% faster" : "none, no change", "ok" = 1))
+	var/team = team_rate(N.id, researcher)
+	if (team != 1)
+		factors += list(list("label" = team > 1 ? "A second scholar is helping" : "Too few hands or no facility", "effect" = "x[round(team, 0.01)]", "ok" = team > 1 ? 1 : 0))
+	var/late = late_bench_rate(N)
+	if (late != 1)
+		factors += list(list("label" = "Late subject", "effect" = "x[late]", "ok" = 1))
+	if (rush_rate(N) != 1)
+		factors += list(list("label" = "Rushed", "effect" = "x[rush_rate(N)]", "ok" = 1))
+	return factors
+
 // The "Currently researching" panel: progress, pace and a checklist of what
 // the work needs, each line marked met or not.
 /obj/structure/research_bench/proc/book_assigned_ui(mob/living/human/H)
@@ -254,6 +274,7 @@
 	var/working = researcher && B && lit && instrument_ok && tier >= N.min_bench_tier
 	out["working"] = working ? 1 : 0
 	if (working)
+		out["factors"] = book_pace_factors(N, researcher, worker[2], supply, library)
 		var/per_tick = round(base_tick_rate * worker[2] * late_bench_rate(N) * team_rate(assigned_node, researcher) * rush_rate(N) * library * (supply >= 1 ? 1 : SCHOLAR_UNSUPPLIED_RATE), 0.1)
 		out["pace"] = per_tick
 		if (per_tick > 0 && ticks < N.cost_ticks)
