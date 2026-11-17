@@ -34,6 +34,8 @@
 #define AIR_HULL_HIT_CHANCE 50
 #define AIR_HULL_CREW_HIT_CHANCE 25
 #define AIR_HULL_PATCH_TIME 40
+// Units of gas that fill one cell (naval/gas_works.dm).
+#define AIR_HULL_CELL_GAS 60
 // Plastic sheets to rubberise a cloth cell, and skin layers to line one.
 #define AIR_HULL_RUBBER_SHEETS 5
 #define AIR_HULL_SKIN_LAYERS 6
@@ -282,8 +284,11 @@ var/global/list/air_hull_crafts = list()
 	if (!do_after(user, AIR_HULL_CELL_TIME, T) || QDELETED(src) || user.get_active_hand() != src || (locate(/obj/structure/airship_gas_cell) in T) || !(locate(/obj/covers/airship_deck) in T))
 		return TRUE
 	qdel(src)
-	new cell_type(T)
-	to_chat(user, SPAN_NOTICE("The gas cell fills and strains at its rigging."))
+	var/obj/structure/airship_gas_cell/G = new cell_type(T)
+	G.gas = null
+	G.gas_amount = 0
+	G.update_icon()
+	to_chat(user, SPAN_NOTICE("You hang the gas cell, empty. Fill it with hydrogen or helium from a gasbag, a gas cylinder or a gas holder's hose."))
 	return TRUE
 
 /obj/structure/airship_gas_cell
@@ -308,6 +313,11 @@ var/global/list/air_hull_crafts = list()
 	var/folded_type = /obj/item/airship_gas_cell
 	var/list/patches = list(/obj/item/stack/material/cloth)
 	var/patch_text = "cloth"
+	// The lifting gas in it, and how much: hydrogen burns, helium lifts a
+	// tenth less. A cell hangs empty and is filled from a gasbag, a cylinder
+	// or a gas holder's hose (gas_works.dm).
+	var/gas = "hydrogen"
+	var/gas_amount = AIR_HULL_CELL_GAS
 
 /obj/structure/airship_gas_cell/rubber
 	name = "rubberised gas cell"
@@ -329,10 +339,17 @@ var/global/list/air_hull_crafts = list()
 	folded_type = /obj/item/airship_gas_cell/skin
 
 /obj/structure/airship_gas_cell/proc/lift()
-	return burnt ? 0 : max(0, max_lift - holes * hole_lift)
+	if (burnt || !gas || gas_amount <= 0)
+		return 0
+	var/full = max_lift * min(1, gas_amount / AIR_HULL_CELL_GAS) * (gas == "helium" ? 0.9 : 1)
+	return max(0, round(full - holes * hole_lift, 0.1))
 
 /obj/structure/airship_gas_cell/update_icon()
-	icon_state = burnt ? "gas_cell_burnt" : (holes ? "[base_state]_holed" : base_state)
+	icon_state = burnt ? "gas_cell_burnt" : (gas_amount <= 0 ? "[base_state]_empty" : (holes ? "[base_state]_holed" : base_state))
+
+// Only hydrogen catches fire.
+/obj/structure/airship_gas_cell/proc/flammable_gas()
+	return gas == "hydrogen" && gas_amount > 0
 
 /obj/structure/airship_gas_cell/after_load()
 	..()
@@ -340,6 +357,8 @@ var/global/list/air_hull_crafts = list()
 
 /obj/structure/airship_gas_cell/examine(mob/user, distance)
 	. = ..()
+	if (!burnt)
+		to_chat(user, SPAN_NOTICE(gas_amount > 0 && gas ? "It holds [round(gas_amount)] of [AIR_HULL_CELL_GAS] units of [gas]." : "It hangs empty. Fill it with hydrogen or helium."))
 	if (burnt)
 		to_chat(user, SPAN_DANGER("It has burnt out and lifts nothing. Take it down with a wrench and hang a new one."))
 	else if (holes)
@@ -733,7 +752,7 @@ var/global/list/air_hull_crafts = list()
 		return L
 	var/obj/structure/airship_gas_cell/G = locate() in D
 	if (G && !G.burnt)
-		if (projectile_ignites_gas(P))
+		if (projectile_ignites_gas(P) && G.flammable_gas())
 			G.ignite()
 		else
 			G.hole(P)

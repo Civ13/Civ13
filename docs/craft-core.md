@@ -175,6 +175,16 @@ only wood catches fire (`air_deck_catch_fire()`), and trees under `snag_proof`
 steel tiles never snag her. Gas cells set `max_lift` and `hole_lift`: cloth
 12/3, rubberised (5 plastic sheets on a cloth cell) 12/2, goldbeater's skin (6
 sausage casings) 15/5.
+Cells hang empty and lift in proportion to their `gas_amount` (60 fills one)
+of hydrogen, or helium at nine tenths, and only hydrogen burns
+(`flammable_gas()`). `naval/gas_works.dm` makes and keeps the gas as the
+ordinary hydrogen, helium and oxygen reagents: `/obj/structure/gas_works`
+(hydrogen generator, powered electrolysis tank giving hydrogen and oxygen,
+water-gas retort, powered helium separator beside a working oil well) are pipe
+sources stepped from `factory_fluids_step()`; the gas holder is a pipe buffer
+and feeds cells through a gas hose; gasbags carry it by hand, and steel
+cylinders are filled only by a powered gas compressor (a pipe sink). Oxygen
+from a bag or cylinder eases someone short of breath.
 Native probe:
 `tests/pedal_bicycle/ride.py --probe air_hull_probe.dm`.
 
