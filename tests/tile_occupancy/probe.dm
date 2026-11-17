@@ -182,27 +182,21 @@ var/list/tile_probe_notes = list()
 	map.load_new_recipes(file("config/crafting/material_recipes_global.txt"))
 	crafted_refund_stack_cache.Cut()
 	crafted_refund_units_cache.Cut()
-	tile_probe_notes["recipe_lists"] = craftlist_lists.len
-	tile_probe_notes["log_wall_units"] = crafted_refund_units(/obj/covers/wood_wall/log)
-	tile_probe_notes["log_wall_stack"] = "[crafted_refund_stack(/obj/covers/wood_wall/log)]"
-	tile_probe_notes["wood_floor_units"] = crafted_refund_units(/obj/covers/wood)
-	tile_probe_assert(crafted_refund_units(/obj/covers/wood_wall/log) == 6 && crafted_refund_units(/obj/covers/wood) == 1, "refund caps from recipes")
-	var/list/refund_cases = list(
-		list(/obj/covers/wood_wall/log, 4),
-		list(/obj/covers/wood, 1),
-		list(/obj/covers/straw_wall, 1),
-		list(/obj/covers/wood_wall, 0))
+	tile_probe_assert(craftlist_lists.len && crafted_refund_units(/obj/covers/wood) == 1 && crafted_refund_stack(/obj/covers/wood) == /obj/item/stack/material/wood, "wood floor refund cap is its one wood")
+	tile_probe_assert(!crafted_refund_stack(/obj/covers/wood_wall) && !crafted_refund_units(/obj/covers/wood_wall), "mapped wall has no recipe refund")
 	var/rx = 2
-	for (var/list/refund_case in refund_cases)
+	for (var/refund_path in list(/obj/covers/wood, /obj/covers/wood_wall, /obj/covers/wood_wall/log, /obj/covers/straw_wall, /obj/covers/thatch))
 		var/turf/RT = locate(rx, 17, 1)
 		rx += 2
-		var/refund_path = refund_case[1]
 		var/obj/covers/RC = new refund_path(RT)
+		var/expected = min(RC.amount, crafted_refund_units(refund_path))
 		qdel(RC)
 		var/got = 0
-		for (var/obj/item/stack/material/wood/W in RT)
-			got += W.amount
-		tile_probe_assert(got == refund_case[2], "refund [refund_case[1]] gave [got]")
+		for (var/obj/item/stack/material/M in RT)
+			got += M.amount
+		tile_probe_notes["refund [refund_path]"] = got
+		tile_probe_assert(got == expected, "refund [refund_path] gave [got], expected [expected]")
+	tile_probe_assert(tile_probe_notes["refund /obj/covers/wood"] == 1 && tile_probe_notes["refund /obj/covers/wood_wall"] == 0, "wood floor gives one wood back, mapped wall nothing")
 	persistence_save_in_progress = TRUE
 	var/turf/ST2 = locate(18, 17, 1)
 	qdel(new /obj/covers/wood(ST2))
