@@ -365,7 +365,10 @@
 				//STONE AGE WOODEN BATHTUB//
 
 /obj/structure/shower/bathtub/proc/add_water_overlays()
-	overlays += image('icons/obj/bathtub.dmi', src, "full_bathtub_overlay_2_2", MOB_LAYER + 1, dir)
+	// The water drawn over a bather must not take clicks meant for them.
+	var/image/top = image('icons/obj/bathtub.dmi', src, "full_bathtub_overlay_2_2", MOB_LAYER + 1, dir)
+	top.mouse_opacity = 0
+	overlays += top
 	overlays += image('icons/obj/bathtub.dmi', src, "full_bathtub_overlay_2", MOB_LAYER - 1, dir)
 
 /obj/structure/shower/bathtub/attack_hand(var/mob/living/user)
@@ -419,7 +422,9 @@
 	cleanliness = 80
 
 /obj/structure/shower/bathtub/big/add_water_overlays()
-	overlays += image('icons/obj/bathtub_big.dmi', src, "full_bathtub_overlay_2_2_b", MOB_LAYER + 1, dir)
+	var/image/top = image('icons/obj/bathtub_big.dmi', src, "full_bathtub_overlay_2_2_b", MOB_LAYER + 1, dir)
+	top.mouse_opacity = 0
+	overlays += top
 
 			//BIG BATHTUB FRAMEWORK 1
 			// LATE DARK AGE
