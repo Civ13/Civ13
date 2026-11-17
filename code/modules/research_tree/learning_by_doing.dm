@@ -34,6 +34,12 @@
 #define SKILL_MASTER_REACH 2
 #define SKILL_MASTER_LEAD 1.25
 #define SKILL_MASTER_GAIN 2
+// The most one action may teach crafting, as an adaptStat multiplier: about
+// 2% of the skill. Stack recipes teach by material used, five times over for
+// a first try, so a few first crafts of big things (a well, a bed, a bench)
+// once took crafting from 100 to the 250 cap and paid every mastery milestone
+// (Val, 2026-11-17).
+#define SKILL_CRAFTING_GAIN_CAP 10
 
 // Body skills a master can pass on by example.
 var/global/list/skill_master_stats = list("crafting", "medical", "farming", "hunting", "throwing", "swords", "bows", "rifle", "pistol", "machinegun", "philosophy", "swimming")
@@ -120,6 +126,13 @@ var/global/list/skill_master_stats = list("crafting", "medical", "farming", "hun
 	if (before < SKILL_VARIETY_TIRED_UNTIL)
 		skill_variety[key] = before + 1
 	return skill_variety_factor(before)
+
+// The most one gain may teach statname, as an adaptStat multiplier, or null
+// for no limit. Applied after variety, masters and traits.
+/mob/living/human/proc/skill_gain_cap(statname)
+	if (statname == "crafting" && learning_by_doing_enabled())
+		return SKILL_CRAFTING_GAIN_CAP
+	return null
 
 // Someone nearby, awake and clearly better at statname.
 /mob/living/human/proc/skill_master_nearby(statname)
@@ -246,3 +259,4 @@ var/global/list/skill_mastery_milestones = list(
 #undef SKILL_MASTER_REACH
 #undef SKILL_MASTER_LEAD
 #undef SKILL_MASTER_GAIN
+#undef SKILL_CRAFTING_GAIN_CAP

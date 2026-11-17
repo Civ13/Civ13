@@ -458,6 +458,14 @@ class SkillMastery(unittest.TestCase):
         self.assertLess(adapt.index("skill_mastery_ceiling(statname, before_value)"), adapt.index("note_skill_mastery(statname)"))
         ceiling = proc(self.src, "/mob/living/human/proc/skill_mastery_ceiling")
         self.assertIn("learning_by_doing_enabled()", ceiling)
+    def test_crafting_gain_capped_per_action(self):
+        stats = read("code/game/mob/living/carbon/human/human_stats.dm")
+        adapt = proc(stats, "/mob/living/human/proc/adaptStat")
+        self.assertIn("skill_gain_cap(statname)", adapt)
+        self.assertLess(adapt.index("skill_variety_mult(statname, variety_key)"), adapt.index("skill_gain_cap(statname)"))
+        cap = proc(self.src, "/mob/living/human/proc/skill_gain_cap")
+        self.assertIn("learning_by_doing_enabled()", cap)
+        self.assertIn("#define SKILL_CRAFTING_GAIN_CAP 10", self.src)
     def test_paid_once_per_discipline(self):
         note = proc(self.src, "/mob/living/human/proc/note_skill_mastery")
         for guard in ("learning_by_doing_enabled()", "skill_mastery_key(discipline, M[1])", "if (key in skill_mastery)", "SCHOLAR_MAX_LEVEL"):
