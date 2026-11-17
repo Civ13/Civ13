@@ -36,7 +36,7 @@ var/list/open_air_probe_log = list()
 /proc/open_air_probe_turf_shown(atom/A, depth = 0)
 	if (depth > 8)
 		return FALSE
-	for (var/thing in A.vis_contents)
+	for (var/thing in A:vis_contents)
 		if (isturf(thing) || open_air_probe_turf_shown(thing, depth + 1))
 			return TRUE
 	return FALSE
