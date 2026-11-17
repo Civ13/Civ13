@@ -2016,7 +2016,7 @@ SUITES = {
     'policy': {'files': POLICY_FILES, 'always': True, 'paths': (), 'timeout': 120},
     'bootstrap': {'files': ('tests/test_byond_bootstrap.py', 'tests/test_byond_toolchain.py',
                             'tests/test_byond_runtime.py', 'tests/test_sprite_toolchain.py'), 'always': True, 'paths': ()},
-    'progress': {'files': ('tests/world_save/test_progress_sources.py',), 'always': True, 'paths': ()},
+    'progress': {'files': ('tests/world_save/test_progress_sources.py', 'tests/world_save/test_import_hold.py'), 'always': True, 'paths': ()},
     # Source-only inventories the native moving-save lane pins (collision overrides,
     # animal save hooks). They scan all production DM, so they run on every PR: the
     # PR that edits a listed file refreshes the inventory, not the next save PR.

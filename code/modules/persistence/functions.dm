@@ -824,6 +824,18 @@ var/global/persistence_startup_recovery_status
 // operation completes before a waiting gameplay action wakes.
 var/global/datum/persistence_admission_identity
 
+// A world with a save on disk that it did not load ("unresolved": the import
+// failed, or the save is for another map or incomplete) stays closed to
+// players and never saves, so a fresh map cannot overwrite the real save. An
+// admin Load Map that succeeds clears it (Val, 2026-11-17: "It should stay
+// down until it can be loaded").
+/proc/persistence_import_held()
+	return persistence_startup_recovery_status == "unresolved"
+
+// Lobby joins wait for a restart handover and for a save that did not load.
+/proc/persistence_join_held()
+	return persistence_restart.startup_hold || persistence_restart.busy || persistence_import_held()
+
 /proc/persistence_admission_blocked()
 	return persistence_save_in_progress || persistence_active_operation || persistence_load_recovery_required
 
@@ -1248,6 +1260,11 @@ var/global/world_save_notice_started = null
 	// A standby world that has not loaded the save must never write over it.
 	if(persistence_restart && persistence_restart.standby && persistence_restart.startup_hold)
 		world.log << "World save refused: this standby world has not loaded the save yet."
+		return FALSE
+	// Nor may a world whose save failed to load (persistence_import_held).
+	if(persistence_import_held())
+		map_storage.last_error = "World save refused: the saved world did not load; it is kept as it was until it can be loaded."
+		world.log << map_storage.last_error
 		return FALSE
 	map_storage.wait_for_durable_world_settle()
 	map_storage.save_animal_failure = null
