@@ -48,6 +48,25 @@ class TileOccupancySources(unittest.TestCase):
         rule = read('code/game/objects/tile_occupancy.dm')
         self.assertIn('return isfloor(T) || tile_floor_cover(T)', rule)
 
+    def test_storey_floor_removal_keeps_or_asks(self):
+        covers = read('code/game/objects/covers.dm')
+        hammer = covers[covers.index('if (is_tool(W, TOOL_HAMMER))'):]
+        self.assertLess(hammer.index('building_slab_removal_confirmed(user, src)'), hammer.index('do_after(user, 50, src)'))
+        self.assertIn('revert_to_subfloor()', hammer[:hammer.index('qdel(src)')])
+        roof = read('code/game/objects/roof_stuff.dm')
+        roof_hammer = roof[roof.index('/obj/roof/attackby('):]
+        roof_hammer = roof_hammer[roof_hammer.index('is_tool(W, TOOL_HAMMER)'):]
+        self.assertLess(roof_hammer.index('building_slab_removal_confirmed(user, src)'), roof_hammer.index('do_after(user, 60, src)'))
+
+    def test_lost_supports_recheck_storeys_above(self):
+        for path in ('code/game/objects/covers_types/cover_walltypes.dm', 'code/game/objects/roof_stuff.dm',
+                     'code/game/objects/structures/door.dm', 'code/game/objects/building_buttresses.dm',
+                     'code/game/turfs/walls.dm', 'code/game/objects/building_levels.dm'):
+            self.assertIn('building_recheck_storeys_above(', read(path), path)
+
+    def test_beds_accept_upper_floors(self):
+        self.assertIn('if(!tile_has_floor(T) || T.density', read('code/modules/persistence/bed_return.dm'))
+
     def test_wall_foundations_checked(self):
         for path, count in (('code/game/objects/items/clay_items.dm', 7),
                             ('code/modules/1713/barriers/sandbag.dm', 2),
