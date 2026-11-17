@@ -114,14 +114,16 @@ deck. People beside the track are not hit by a deck; they end up standing on it.
 Platform segments then move with `persistence_set_loc()` rather than turf
 entry, so their own walls never block them.
 
-Wrecked and braced cars also stop their train (see below).
+Wrecked and braced cars also stop their train (see below). At speed a blocked
+step is a crash ([trains.md](trains.md#crashes)).
 
 ## Wartime cars
 
 Explosions damage platform segments (`ex_act`, 450/220/80 by severity, 40% on
 armored layouts). A segment at zero health is wrecked: it shows a wreck overlay
 and its train cannot move. A welding tool repairs 300 health per pass and the
-car is back on the rails at half health.
+car is back on the rails at half health. A crash derails the leading cars into
+the same state at 40% health, so one pass per section re-rails them.
 
 The railway gun (`/obj/structure/cannon/modern/railway`) only fires while its car
 is braced. The outrigger lever braces every segment of the car once it has stood

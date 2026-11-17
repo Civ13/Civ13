@@ -4,9 +4,9 @@ Code: `code/modules/1713/trains.dm` (cars, rails, locomotives),
 `code/modules/1713/train_platforms.dm` (walkable cars and clearance) and
 `code/modules/1713/train_warfare.dm` (armored locomotive) and
 `code/modules/1713/train_locomotives.dm` (heavy 3x4 locomotives, cab stations
-and the 3x6 main-line engine).
+and the 3x6 main-line engine), `code/modules/1713/train_crashes.dm` (wrecks).
 Tests: `tests/train_platforms` (the `drive/`, `load/`, `brake/`,
-`double_heading/`, `tender/` and `collision/` checks) and `tests/train_collision`.
+`double_heading/`, `tender/`, `collision/` and `crash/` checks) and `tests/train_collision`.
 Step cost by train length: [train-step-cost.md](train-step-cost.md).
 
 ## Controls
@@ -262,4 +262,36 @@ speed / 4 tiles per second, times up to 2 for a heavy train. Below 0.5 (a
 crawl) a train shoves a person off the rails with 5 damage and stops in front
 of furniture without breaking it. Faster, it deals up to 250 damage, knocks the
 person down beside the track and keeps going from 1 up; damage to objects and
-to both trains in a train-on-train crash scales the same way.
+to both trains in a train-on-train bump scales the same way.
+
+## Crashes
+
+`rail_hit()` and the clearance check call `train_crash()` where a train is
+stopped dead by another train, a deck or something solid. It is a crash when
+the impact is 0.75 or more and an engine in the train is running
+(`rail_speed > 0`): a light train from about 3 tiles a second, a heavy one
+from half that. Stock moved by hand and a train that has only just started
+still bump as above.
+
+The blow falls off down the train: the car that hit takes the whole impact,
+the next car half, the third a third. For each car, counted as whole cars and
+engines (`train_crash_units()`):
+
+- hull damage of 80 x impact to its leading section, and 60 x impact to the
+  car that was hit;
+- the leading cars leave the rails (`train_crash_derailed()`): one from
+  impact 1.25, two from 2, three from 3. The half of a car nearest the blow
+  is `wrecked` at 40% health, a heavy engine is `broken_down` at 40%, a
+  one-tile engine only loses its fire. One welding pass on each wrecked
+  section, or on the engine, puts it back. The car that was hit derails the
+  same way from impact 2;
+- the coupling behind it takes 45 x impact wear and parts the train when it
+  breaks ([Couplings](#couplings)); both couplings of the car that was hit
+  take half that;
+- riders take 12 x impact brute (60 at most), fall and are thrown up to three
+  tiles forward; walls, doors and furniture hold them
+  (`train_crash_can_slide()`). A buckled rider takes half and stays seated.
+  Unanchored cargo slides the same way, and cargo chained to a transport
+  wagon breaks loose from impact 1.
+
+Every engine in the train is left stopped with its throttle shut.

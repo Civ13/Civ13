@@ -197,6 +197,26 @@ class TrainPlatformSourceTests(unittest.TestCase):
                                 capture_output=True, text=True)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
+    def test_fast_trains_crash_instead_of_bumping(self):
+        dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
+        self.assertEqual(dme.count('#include "code\\modules\\1713\\train_crashes.dm"'), 1)
+        crashes = (ROOT / 'code/modules/1713/train_crashes.dm').read_text(encoding='utf-8')
+        hit = TRAINS[TRAINS.index('/obj/structure/trains/proc/rail_hit('):TRAINS.index('/obj/structure/trains/proc/car_load_weight()')]
+        # Another train, a solid object and a blocked deck all end in train_crash().
+        self.assertEqual(hit.count('train_crash('), 4)
+        self.assertLess(hit.index('if (train_crash(TF, impact, fdir))'), hit.index('hits \\the [TF]!'))
+        self.assertIn('tail.train_crash(clearance, impact, fdir)', TRAINS)
+        # Only a running train crashes, and never into its own cars.
+        crash = crashes[crashes.index('/obj/structure/trains/proc/train_crash('):]
+        self.assertLess(crash.index('if (impact < TRAIN_CRASH_IMPACT)'), crash.index('if (hit in cars)'))
+        self.assertLess(crash.index('if (hit in cars)'), crash.index('if (L.rail_speed > 0)'))
+        self.assertLess(crash.index('if (!running)'), crash.index('visible_message('))
+        self.assertIn('#define TRAIN_CRASH_IMPACT 0.75', crashes)
+        # Derailed stock reuses the wrecked and broken down states a welder mends.
+        self.assertIn('/obj/structure/trains/platform/derail()', crashes)
+        self.assertIn('\twrecked = TRUE\n\tapply_layout()', crashes)
+        self.assertIn('\tbroken_down = TRUE\n', crashes)
+
     def test_railway_gun_sheet(self):
         gun = dmi_description(ROOT / 'icons/obj/vehicles/railway_gun.dmi')
         self.assertIn('state = "railway_gun"', gun)
