@@ -49,7 +49,11 @@
 	if (airborne_aircraft.len && aircraft_overhead_fire(P, T))
 		return T
 	if (aloft_pedal_airships.len)
-		return pedal_airship_overhead_fire(P, T)
+		. = pedal_airship_overhead_fire(P, T)
+		if (.)
+			return
+	if (air_hull_crafts.len)
+		return air_hull_overhead_fire(P, T)
 	return null
 
 /proc/pedal_airship_overhead_fire(obj/item/projectile/P, turf/T)

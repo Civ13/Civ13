@@ -1,7 +1,7 @@
 """Crewed airships (code/modules/naval/air_hull.dm): wiring the native probe relies on.
 
-Offline source checks only; building, lifting, flying, turning, firing down and
-save/restore run natively in tests/pedal_bicycle/ride.py --probe air_hull_probe.dm.
+Offline source checks only; building, lifting, flying, turning, firing down,
+save/restore, holed and burnt gas cells, the bomb hatch and the wreck run natively in tests/pedal_bicycle/ride.py --probe air_hull_probe.dm.
 """
 import hashlib
 import importlib.util
@@ -65,16 +65,57 @@ class Flight(unittest.TestCase):
             self.assertIn('(aloft_pedal_airships.len || air_hull_crafts.len)', (ROOT / path).read_text(), path)
 
 
+class Damage(unittest.TestCase):
+    def test_ground_fire_reaches_her_cells(self):
+        hook = extract(COMBAT, '/proc/airborne_overhead_hit')
+        self.assertIn('air_hull_overhead_fire(P, T)', hook)
+        fire = extract(SOURCE, '/proc/air_hull_overhead_fire')
+        self.assertIn('P.is_shrapnel', fire)
+        self.assertIn('B.contains(get_turf(P.firer))', fire)
+        self.assertIn('prob(AIR_HULL_HIT_CHANCE)', fire)
+        projectile = (ROOT / 'code/modules/projectiles/projectile.dm').read_text()
+        self.assertIn('(airborne_aircraft.len || aloft_pedal_airships.len || air_hull_crafts.len) && T != starting', projectile)
+        self.assertIn('air_hull_crafts', (ROOT / 'code/modules/projectiles/projectile_lob.dm').read_text())
+
+    def test_holes_cut_lift_fire_burns_it_out(self):
+        self.assertIn('burnt ? 0 : max(0, AIR_HULL_CELL_LIFT - holes * AIR_HULL_HOLE_LIFT)',
+                      extract(SOURCE, '/obj/structure/airship_gas_cell/proc/lift'))
+        struck = extract(SOURCE, '/datum/craft/air/proc/struck_by')
+        self.assertIn('projectile_ignites_gas(P)', struck)
+        self.assertLess(struck.index('G.hole(P)'), struck.index('check_lift()'))
+        patch = extract(SOURCE, '/obj/structure/airship_gas_cell/attackby')
+        self.assertIn('/obj/item/stack/material/cloth', patch)
+        self.assertIn('holes--', patch)
+
+    def test_short_of_lift_she_stops_and_half_short_she_falls(self):
+        check = extract(SOURCE, '/datum/craft/air/proc/check_lift')
+        self.assertLess(check.index('have * 2 < need'), check.index('crash()'))
+        self.assertIn('set_anchor(TRUE)', check)
+        crash = extract(SOURCE, '/datum/craft/air/proc/crash')
+        self.assertIn('L.adjustBruteLoss(', crash)
+        self.assertIn('falling_item_strike(M, G)', crash)
+        # The helm goes last, since destroying it ends the craft.
+        self.assertLess(crash.index('qdel(M)'), crash.index('qdel(helm)'))
+
+    def test_bomb_hatch_drops_onto_the_ground_below(self):
+        drop = extract(SOURCE, '/obj/structure/airship_bomb_hatch/attack_hand')
+        self.assertLess(drop.index('B.forceMove(G)'), drop.index('B.detonate()'))
+        self.assertIn('multiz_level_below', extract(SOURCE, '/obj/structure/airship_bomb_hatch/proc/drop_turf'))
+        self.assertIn('#define AIR_HULL_HATCH_BOMBS 2\n', SOURCE)
+
+
 class Wiring(unittest.TestCase):
     def test_recipes_research_and_include(self):
         recipes = (ROOT / 'config/crafting/material_recipes_global.txt').read_text()
         for line in ('RECIPE: /material/wood/,airship planks,/obj/item/airship_planks,3,40,0,1,vehicle parts,126,0,0,8,null',
                      'RECIPE: /material/cloth/,airship gas cell,/obj/item/airship_gas_cell,20,200,0,1,vehicle parts,126,0,0,8,null',
-                     'RECIPE: /material/wood/,airship helm,/obj/item/airship_helm_kit,10,150,0,1,vehicle parts,126,0,0,8,null'):
+                     'RECIPE: /material/wood/,airship helm,/obj/item/airship_helm_kit,10,150,0,1,vehicle parts,126,0,0,8,null',
+                     'RECIPE: /material/steel/,airship bomb hatch,/obj/structure/airship_bomb_hatch,6,100,1,1,vehicle parts,126,0,0,8,null'):
             self.assertIn(line, recipes)
         research = (ROOT / 'code/modules/research_tree/research_node.dm').read_text()
         for path in ('airship_planks', 'airship_gas_cell', 'airship_helm_kit'):
             self.assertIn('"/obj/item/' + path + '" = "powered_flight"', research)
+        self.assertIn('"/obj/structure/airship_bomb_hatch" = "powered_flight"', research)
         dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8-sig')
         self.assertLess(dme.index('naval\\built_hull.dm"'), dme.index('naval\\air_hull.dm"'))
 
@@ -86,7 +127,7 @@ class Wiring(unittest.TestCase):
             subprocess.run([sys.executable, str(ROOT / 'tests/airship_hull/airship_hull_sprites.py'), '--check'], check=True)
 
 
-HULL_SHA = '5ea80a55a08e75bc4f6a0d84742d00d7dae686e748a2120c9f858d8679f41704'
+HULL_SHA = '05536a6122859b869f775d8f1d4037bee9ea5aef181258ca8f9de47342dac134'
 CELL_SHA = 'b4c94b9e3cc32b146c4fa9bd4eb9ddc3200948336dd8aa8a38ba8acb494c0df5'
 
 if __name__ == '__main__':

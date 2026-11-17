@@ -964,6 +964,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/airship_planks" = "powered_flight",
 		"/obj/item/airship_gas_cell" = "powered_flight",
 		"/obj/item/airship_helm_kit" = "powered_flight",
+		"/obj/structure/airship_bomb_hatch" = "powered_flight",
 		"/obj/structure/vehicle_garage" = "automobiles",
 		"/obj/item/vehicleparts/frame/bike" = "automobiles",
 		"/obj/item/vehicleparts/frame/boat/rhib" = "automobiles",

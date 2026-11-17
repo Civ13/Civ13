@@ -143,7 +143,7 @@ class ArtAndWiring(unittest.TestCase):
 class GroundFire(unittest.TestCase):
     def test_projectiles_crossing_the_shadow_can_strike_it(self):
         handle = extract((ROOT / 'code/modules/projectiles/projectile.dm').read_text(), '/obj/item/projectile/proc/handleTurf')
-        self.assertIn('(airborne_aircraft.len || aloft_pedal_airships.len) && T != starting', handle)
+        self.assertIn('(airborne_aircraft.len || aloft_pedal_airships.len || air_hull_crafts.len) && T != starting', handle)
         self.assertLess(handle.index('airborne_overhead_hit(src, T)'), handle.index('height_enter(T)'))
         lob = extract((ROOT / 'code/modules/projectiles/projectile_lob.dm').read_text(), '/obj/item/projectile/proc/lob_enter')
         self.assertLess(lob.index('pedal_airship_overhead_fire(src, T)'), lob.index('lob_land(T)'))

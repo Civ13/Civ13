@@ -25,6 +25,14 @@
 #define AIR_HULL_VIEW_FAR 10
 #define AIR_HULL_LAY_TIME 20
 #define AIR_HULL_CELL_TIME 30
+// Lift a gas cell loses for each hole.
+#define AIR_HULL_HOLE_LIFT 3
+// Ground fire under her deck: the chance a shot crossing the tile under a
+// deck tile strikes her, and the share of those that hit someone standing there.
+#define AIR_HULL_HIT_CHANCE 50
+#define AIR_HULL_CREW_HIT_CHANCE 25
+#define AIR_HULL_PATCH_TIME 40
+#define AIR_HULL_HATCH_BOMBS 2
 
 var/global/list/air_hull_crafts = list()
 
@@ -123,7 +131,7 @@ var/global/list/air_hull_crafts = list()
 
 /obj/structure/airship_gas_cell
 	name = "gas cell"
-	desc = "A gas cell rigged over an airship's deck. It holds up tiles of deck and the people aboard. A wrench takes it down."
+	desc = "A gas cell rigged over an airship's deck. It holds up tiles of deck and the people aboard. Cloth patches its holes; a wrench takes it down."
 	icon = 'icons/obj/vehicles/airship_gas_cell.dmi'
 	icon_state = "gas_cell"
 	pixel_x = -16
@@ -134,11 +142,38 @@ var/global/list/air_hull_crafts = list()
 	density = FALSE
 	not_movable = TRUE
 	flammable = TRUE
+	var/holes = 0
+	var/burnt = FALSE
 
 /obj/structure/airship_gas_cell/proc/lift()
-	return AIR_HULL_CELL_LIFT
+	return burnt ? 0 : max(0, AIR_HULL_CELL_LIFT - holes * AIR_HULL_HOLE_LIFT)
+
+/obj/structure/airship_gas_cell/update_icon()
+	icon_state = burnt ? "gas_cell_burnt" : (holes ? "gas_cell_holed" : "gas_cell")
+
+/obj/structure/airship_gas_cell/after_load()
+	..()
+	update_icon()
+
+/obj/structure/airship_gas_cell/examine(mob/user, distance)
+	. = ..()
+	if (burnt)
+		to_chat(user, SPAN_DANGER("It has burnt out and lifts nothing. Take it down with a wrench and hang a new one."))
+	else if (holes)
+		to_chat(user, SPAN_WARNING("It is holed in [holes] place\s and lifts [lift()] instead of [AIR_HULL_CELL_LIFT]. Patch it with cloth."))
 
 /obj/structure/airship_gas_cell/attackby(obj/item/W, mob/user)
+	if (istype(W, /obj/item/stack/material/cloth) && holes && !burnt)
+		to_chat(user, SPAN_NOTICE("You start stitching a patch over a hole in \the [src]..."))
+		if (!do_after(user, AIR_HULL_PATCH_TIME, src) || QDELETED(src) || burnt || !holes)
+			return
+		var/obj/item/stack/material/cloth/C = W
+		if (!C.use(1))
+			return
+		holes--
+		update_icon()
+		to_chat(user, SPAN_NOTICE(holes ? "You patch a hole. [holes] more to go." : "You patch the last hole. The gas cell is taut again."))
+		return
 	if (is_tool(W, TOOL_WRENCH))
 		var/datum/craft/C = craft_at(get_turf(src))
 		if (C && !C.anchored)
@@ -148,11 +183,33 @@ var/global/list/air_hull_crafts = list()
 		if (!do_after(user, AIR_HULL_CELL_TIME, src) || QDELETED(src))
 			return
 		var/turf/T = get_turf(src)
+		var/was_burnt = burnt
 		qdel(src)
+		if (was_burnt)
+			to_chat(user, SPAN_NOTICE("You cut the charred rags of the gas cell away."))
+			return
 		new /obj/item/airship_gas_cell(T)
 		to_chat(user, SPAN_NOTICE("You fold the gas cell up."))
 		return
 	return ..()
+
+// A shot from below rips through it.
+/obj/structure/airship_gas_cell/proc/hole(obj/item/projectile/P)
+	holes++
+	update_icon()
+	visible_message(SPAN_DANGER("\The [P] rips through \the [src]!"))
+	playsound(get_turf(src), 'sound/effects/bang.ogg', 30, TRUE)
+
+// The gas catches: it burns out, and whoever stands under it is set alight.
+/obj/structure/airship_gas_cell/proc/ignite()
+	burnt = TRUE
+	update_icon()
+	visible_message(SPAN_DANGER("\The [src] bursts into flame!"))
+	playsound(get_turf(src), 'sound/effects/bang.ogg', 60, TRUE)
+	for (var/mob/living/L in get_turf(src))
+		L.fire_stacks = max(L.fire_stacks, 2)
+		L.IgniteMob()
+		L.adjustBurnLoss(rand(5, 15))
 
 // ---- The body ----
 
@@ -373,6 +430,183 @@ var/global/list/air_hull_crafts = list()
 		qdel(ground_view_far)
 	ground_view = null
 	ground_view_far = null
+
+// ---- Fire from below ----
+
+// Called by the projectile code for every ground turf a projectile crosses
+// while an airship flies. Returns what it struck (someone on her deck, or the
+// ground turf T under her), else null. Her own crew's shots go down, not up.
+/proc/air_hull_overhead_fire(obj/item/projectile/P, turf/T)
+	if (!P || !T || P.is_shrapnel)
+		return null
+	for (var/datum/craft/air/C in air_hull_crafts)
+		var/datum/craft_body/built/air/B = C.body
+		if (!istype(B) || !B.placed() || T.z != C.ground_z())
+			continue
+		var/turf/D = locate(T.x, T.y, B.z)
+		if (!D || !B.contains(D))
+			continue
+		if (P.firer && B.contains(get_turf(P.firer)))
+			continue
+		if (!prob(AIR_HULL_HIT_CHANCE))
+			continue
+		return C.struck_by(P, D, T)
+	return null
+
+/datum/craft/air/proc/struck_by(obj/item/projectile/P, turf/D, turf/T)
+	var/list/people = list()
+	for (var/mob/living/L in D)
+		if (L.loc == D)
+			people += L
+	if (people.len && prob(AIR_HULL_CREW_HIT_CHANCE))
+		var/mob/living/L = pick(people)
+		L.visible_message(SPAN_DANGER("\The [P] punches up through the deck into [L]!"))
+		P.def_zone = pickweight(list("l_leg" = 3, "r_leg" = 3, "groin" = 2, "chest" = 1))
+		P.attack_mob(L, 1)
+		return L
+	var/obj/structure/airship_gas_cell/G = locate() in D
+	if (G && !G.burnt)
+		if (projectile_ignites_gas(P))
+			G.ignite()
+		else
+			G.hole(P)
+		check_lift()
+		return T
+	D.visible_message(SPAN_WARNING("\The [P] thuds into the deck planks."))
+	return T
+
+// After a cell is holed or burnt: short of lift she can no longer fly, and
+// with less than half the lift she needs she breaks up and falls.
+/datum/craft/air/proc/check_lift()
+	var/datum/craft_body/built/air/B = body
+	if (!istype(B) || !B.placed())
+		return
+	var/have = B.lift()
+	var/need = B.load()
+	if (have * 2 < need)
+		crash()
+		return
+	if (have < need)
+		crew_message(SPAN_DANGER("The [name] is losing lift: her gas cells hold up [have] of her [need]. She hangs where she is until the cells are patched or she is lightened."))
+		speed = VESSEL_SPEED_STOP
+		set_anchor(TRUE)
+
+// She breaks up: everyone and everything aboard falls to the ground below,
+// and her deck, cells and helm are wrecked.
+/datum/craft/air/proc/crash()
+	var/datum/craft_body/built/air/B = body
+	var/ground = ground_z()
+	if (!istype(B) || !ground)
+		return FALSE
+	var/list/deck = B.cells()
+	crew_message(SPAN_DANGER("The [name] breaks up and falls!"))
+	stop_sailing()
+	clear_views()
+	var/list/wreck = list()
+	for (var/turf/D in deck)
+		var/turf/G = locate(D.x, D.y, ground)
+		for (var/atom/movable/M in D.contents.Copy())
+			if (M.loc != D || QDELETED(M) || istype(M, /atom/movable/lighting_overlay) || istype(M, /atom/movable/lighting_fullbright))
+				continue
+			if (istype(M, /obj/covers/airship_deck) || istype(M, /obj/structure/airship_gas_cell) || istype(M, /obj/structure/airship_helm) || istype(M, /obj/structure/airship_bomb_hatch))
+				wreck += M
+				continue
+			if (!G)
+				continue
+			M.forceMove(G)
+			if (isliving(M))
+				var/mob/living/L = M
+				to_chat(L, SPAN_DANGER("The deck breaks up beneath you and you fall!"))
+				L.adjustBruteLoss(rand(15, 35))
+				L.Weaken(3)
+			else if (isitem(M))
+				falling_item_strike(M, G)
+		if (G && prob(40))
+			var/obj/item/stack/material/wood/W = new(G)
+			W.amount = rand(1, 3)
+		if (G)
+			G.visible_message(SPAN_DANGER("Wreckage of the [name] crashes down!"))
+	// The helm goes last: destroying it ends the craft.
+	var/obj/structure/airship_helm/helm = null
+	for (var/atom/movable/M in wreck)
+		if (istype(M, /obj/structure/airship_helm))
+			helm = M
+			continue
+		qdel(M)
+	if (helm)
+		qdel(helm)
+	else
+		qdel(src)
+	return TRUE
+
+// ---- Bomb hatch ----
+
+/obj/structure/airship_bomb_hatch
+	name = "bomb hatch"
+	desc = "A trapdoor in an airship's deck with a cradle for two aircraft bombs. Load bombs into it, then pull the ring to drop one onto the ground below. A wrench takes a bomb back out."
+	icon = 'icons/obj/vehicles/airship_hull.dmi'
+	icon_state = "bomb_hatch"
+	layer = 2.0
+	anchored = TRUE
+	density = FALSE
+	not_movable = TRUE
+
+/obj/structure/airship_bomb_hatch/proc/bombs()
+	. = list()
+	for (var/obj/item/weapon/aircraft_bomb/B in contents)
+		. += B
+
+/obj/structure/airship_bomb_hatch/examine(mob/user, distance)
+	. = ..()
+	var/n = length(bombs())
+	to_chat(user, n ? "[n] bomb\s sit\s in its cradle." : "Its cradle is empty.")
+
+/obj/structure/airship_bomb_hatch/attackby(obj/item/W, mob/user)
+	if (istype(W, /obj/item/weapon/aircraft_bomb))
+		if (length(bombs()) >= AIR_HULL_HATCH_BOMBS)
+			to_chat(user, SPAN_WARNING("The cradle is full."))
+			return
+		if (!user.unEquip(W))
+			return
+		W.forceMove(src)
+		to_chat(user, SPAN_NOTICE("You set \the [W] in the hatch's cradle."))
+		return
+	if (is_tool(W, TOOL_WRENCH))
+		var/list/held = bombs()
+		if (!held.len)
+			return
+		var/obj/item/weapon/aircraft_bomb/B = held[1]
+		B.forceMove(get_turf(user))
+		user.put_in_hands(B)
+		to_chat(user, SPAN_NOTICE("You lift \the [B] out of the cradle."))
+		return
+	return ..()
+
+// The ground straight under the hatch when it hangs in the open air.
+/obj/structure/airship_bomb_hatch/proc/drop_turf()
+	var/turf/T = get_turf(src)
+	if (!istype(T, /turf/sky/building))
+		return null
+	var/below = multiz_level_below(T.z)
+	return below ? locate(T.x, T.y, below) : null
+
+/obj/structure/airship_bomb_hatch/attack_hand(mob/living/user)
+	if (!isliving(user) || get_dist(user, src) > 1)
+		return
+	var/list/held = bombs()
+	if (!held.len)
+		to_chat(user, SPAN_WARNING("There is no bomb in the cradle."))
+		return
+	var/turf/G = drop_turf()
+	if (!G)
+		to_chat(user, SPAN_WARNING("There is only deck under the hatch here: fly over open ground first."))
+		return
+	var/obj/item/weapon/aircraft_bomb/B = held[1]
+	flick("bomb_hatch_open", src)
+	visible_message(SPAN_WARNING("\The [src] swings open and a bomb falls away!"))
+	log_game("[key_name(user)] dropped a bomb from an airship onto [G.x],[G.y],[G.z].")
+	B.forceMove(G)
+	B.detonate()
 
 // The airship whose deck user stands on, or null.
 /proc/air_hull_under(mob/user)
@@ -605,3 +839,8 @@ var/global/list/air_hull_crafts = list()
 #undef AIR_HULL_VIEW_FAR
 #undef AIR_HULL_LAY_TIME
 #undef AIR_HULL_CELL_TIME
+#undef AIR_HULL_HOLE_LIFT
+#undef AIR_HULL_HIT_CHANCE
+#undef AIR_HULL_CREW_HIT_CHANCE
+#undef AIR_HULL_PATCH_TIME
+#undef AIR_HULL_HATCH_BOMBS

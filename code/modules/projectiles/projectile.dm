@@ -542,7 +542,7 @@
 
 	// Fire aimed at an aircraft's or airship's shadow may hit it instead
 	// (aircraft_damage.dm, pedal_airship_combat.dm).
-	if ((airborne_aircraft.len || aloft_pedal_airships.len) && T != starting)
+	if ((airborne_aircraft.len || aloft_pedal_airships.len || air_hull_crafts.len) && T != starting)
 		var/atom/overhead = airborne_overhead_hit(src, T)
 		if (overhead)
 			on_impact(overhead)
