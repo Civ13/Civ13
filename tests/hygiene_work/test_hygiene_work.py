@@ -97,6 +97,14 @@ class BodyWashingTest(unittest.TestCase):
         self.assertIn("Examine yourself to see which parts need washing.", read("code/game/mob/living/carbon/human/human_needs.dm"))
         self.assertIn("LAZYSET(washed_parts, E.limb_name, hygiene)", self.WASH)
 
+    def test_feeling_follows_washed_parts(self):
+        needs = read("code/game/mob/living/carbon/human/human_needs.dm")
+        feeling = needs.split("/mob/living/human/proc/hygiene_feeling()", 1)[1].split("\n\n", 1)[0]
+        self.assertIn("part_dirt_status(E)", feeling)
+        self.assertIn("fairly clean", feeling)
+        self.assertIn("under your clothes", feeling)
+        self.assertIn("if (H.next_dirty_zone())", needs)
+
     def test_scripted_drinkers_target_the_mouth(self):
         self.assertIn('{"do": "click", "target": me, "zone": "mouth"}', read("tools/agent-control/autopilot.py"))
         self.assertIn("select the mouth on the body doll", read("code/modules/1713/practice_rooms.dm"))
