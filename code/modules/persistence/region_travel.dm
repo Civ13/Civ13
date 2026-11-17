@@ -752,6 +752,9 @@ var/global/list/region_travel_carry_types = list(
 	// so plainly and the admins hear someone is waiting at the trail.
 	if(peer && peer["state"] == "STOPPED")
 		return "[destination_name()] is closed for now: its land is not running, so the trail cannot take anyone there. It opens again once the land is back."
+	// A land whose transfer agent is on hold would refuse the traveller.
+	if(shard_group.peer_transfers_held(destination))
+		return "[destination_name()] is closed for now: nobody can arrive there until its keepers reopen the way. Ask an admin."
 	if(!peer || peer["state"] != "UP" && !shard_group.peer_wakeable(destination))
 		return "Nobody seems to be coming back from [destination_name()] right now."
 	if(busy || persistence_save_active())

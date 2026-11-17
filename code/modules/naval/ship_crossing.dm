@@ -642,6 +642,8 @@ var/global/list/sea_crossing_marked = list()
 	var/list/peer = shard_group.peers[id]
 	if (!peer)
 		return "That land is not known here."
+	if (shard_group.peer_transfers_held(id))
+		return "No ship can make landfall there for now: that land is closed to arrivals. Ask an admin."
 	if (peer["state"] != "UP")
 		var/woke = shard_group.wake_peer(id, notify)
 		if (woke)

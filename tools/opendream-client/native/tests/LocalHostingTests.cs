@@ -49,6 +49,8 @@ static class LocalHostingTests {
             Require(LocalHosting.RegionDetails(mainlandLand.RootElement) == ", port 1714", "no land stage on the mainland: " + LocalHosting.RegionDetails(mainlandLand.RootElement));
         using (var awayCard = JsonDocument.Parse("{\"state\":\"awake\",\"region_view\":{\"event_away\":1}}"))
             Require(HostBoard.Card("gaia", "Gaia", true, awayCard.RootElement, 0).Notes.Contains("1 player away at an event"), "event away count on the board card");
+        using (var heldCard = JsonDocument.Parse("{\"state\":\"awake\",\"region_view\":{\"transfers_held\":true}}"))
+            Require(HostBoard.Card("gaia", "Gaia", true, heldCard.RootElement, 0).Problem?.Contains("Travel in is on hold") == true, "a held transfer agent is a problem on the board card");
         using (var down = JsonDocument.Parse("{\"port\":1714,\"listening\":false,\"watchdog\":{\"last_refusal\":\"the save still has BYOND lock files\"}}"))
             Require(LocalHosting.RegionDetails(down.RootElement).Contains("watchdog could not restart it"), "refusal on a stopped region");
         using (var up = JsonDocument.Parse("{\"port\":1714,\"listening\":true,\"watchdog\":{\"last_refusal\":\"the save still has BYOND lock files\"}}"))

@@ -3040,6 +3040,9 @@ def group_status(group, only=None, view=region_view, platform=None):
                 # A TDM pair: what the battle is doing (pregame, playing, finished, rotating, ...).
                 if type(seen.get('battle_phase')) is str:
                     entry['region_view']['battle_phase'] = seen['battle_phase'][:16]
+                # The land's transfer agent is on hold: nobody can arrive until it is cleared.
+                if seen.get('transfers_held'):
+                    entry['region_view']['transfers_held'] = True
                 # Characters kept here while their players are at an event region.
                 if type(seen.get('event_away')) is int and seen['event_away'] >= 0:
                     entry['region_view']['event_away'] = seen['event_away']

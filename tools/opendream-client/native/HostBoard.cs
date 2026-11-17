@@ -147,6 +147,8 @@ public static class HostBoard {
                     notes.Insert(0, "epoch " + LocalHosting.EpochNames[index]);
                 if (Str(view, "battle_phase") is { Length: > 0 } battle) notes.Insert(0, "battle " + LocalHosting.BattlePhase(battle));
                 if (LocalHosting.EventAway(view) is > 0 and var away) notes.Add(LocalHosting.AwayText(away));
+                // The land's transfer agent refuses every arrival until an operator clears its hold.
+                if (view.TryGetProperty("transfers_held", out var held) && held.ValueKind == JsonValueKind.True) problems.Add("Travel in is on hold: nobody can arrive");
             }
         }
         if (Str(entry, "kind") == "EVENT") notes.Insert(0, "event region");
