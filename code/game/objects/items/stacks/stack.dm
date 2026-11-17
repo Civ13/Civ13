@@ -749,16 +749,15 @@
 				build_override_firelance.throwforce = round(H.r_hand.throwforce*0.65)
 				qdelHandReturn(H.r_hand, H)
 	//Handle Craftin.
-	if (!findtext(recipe.title, "wood spear") && !findtext(recipe.title, "mold"))
-		if (findtext(recipe.title, "hatchet") || findtext(recipe.title, "shovel") || findtext(recipe.title, "pickaxe") || findtext(recipe.title, "spear") || findtext(recipe.title, "battle axe") || findtext(recipe.title, "stone sledgehammer") || findtext(recipe.title, "lead sledgehammer") || findtext(recipe.title, "bronze sledgehammer")|| findtext(recipe.title, "iron sledgehammer")|| findtext(recipe.title, "steel sledgehammer")|| findtext(recipe.title, "uranium sledgehammer"))
-			needs_crafting_handle = TRUE
-			crafting_handle = find_crafting_handle(H)
-			if (!crafting_stack_accessible(H) || !crafting_handle)
-				to_chat(user, SPAN_WARNING("You need an accessible wood handle in your hands or equipment to make this."))
-				secondary_refund(H)
-				return
-			// Keep this exact item through the wait; cancellation must not recreate it.
-			handle_crafting_source_loc = loc
+	if (recipe_needs_crafting_handle(recipe.title))
+		needs_crafting_handle = TRUE
+		crafting_handle = find_crafting_handle(H)
+		if (!crafting_stack_accessible(H) || !crafting_handle)
+			to_chat(user, SPAN_WARNING("You need an accessible wood handle in your hands or equipment to make this."))
+			secondary_refund(H)
+			return
+		// Keep this exact item through the wait; cancellation must not recreate it.
+		handle_crafting_source_loc = loc
 
 	if (recipe.result_type == /obj/item/stack/material/electronics)
 		if (H.getStatCoeff("crafting") < 2.2)
@@ -2307,20 +2306,10 @@
 // Consume only removable equipment owned directly by the actor. Do not recurse
 // into storage: return_inv/get_contents do not enforce container accessibility.
 /obj/item/stack/proc/crafting_handle_available(mob/living/human/H, obj/item/weapon/material/handle/handle)
-	if (QDELETED(H) || QDELETED(handle) || handle.loc != H || handle.nodrop || handle.nodrop_special_check())
-		return FALSE
-	var/slot = H.get_inventory_slot(handle)
-	return slot && handle.mob_can_unequip(H, slot, TRUE)
+	return crafting_handle_usable(H, handle)
 
 /obj/item/stack/proc/find_crafting_handle(mob/living/human/H)
-	if (QDELETED(H))
-		return null
-	// Preserve left/right hand preference, then use the existing equipment order.
-	for (var/slot in (list(slot_l_hand, slot_r_hand) + slot_equipment_priority))
-		var/obj/item/weapon/material/handle/handle = H.get_equipped_item(slot)
-		if (istype(handle) && crafting_handle_available(H, handle))
-			return handle
-	return null
+	return crafting_handle_on(H)
 
 // Circuit batches pay one iron per circuit, only after both inputs survive the wait.
 /obj/item/stack/proc/electronics_construction_iron(mob/living/human/H, quantity)

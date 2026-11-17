@@ -19,24 +19,20 @@ callers retain access to nearby ground material stacks; transfer or nesting of t
 source stack during the wait cancels that attempt. Full hands do not prevent use
 of an equipped handle; the existing recipe output remains on the floor.
 
-The existing title predicate is unchanged. At base cc03b199, it matches 74 active
-rows across the material recipe catalogs and these ten distinct global titles:
+The predicate lives in `code/game/objects/items/stacks/craft_needs.dm`:
+`crafting_handle_title_words` (substrings: hatchet, shovel, pickaxe, spear,
+battle axe and the sledgehammer names), `crafting_handle_titles` (exact titles)
+and `crafting_handle_title_exclusions` (wood spear, mold). The Crafting window
+lists the handle through `/datum/craft_guard/handle`, and the Crafting Atlas
+reads the same three lists, so a new hafted tool is added in one place.
 
-| Title | Global catalog line | Consumed material |
-| --- | ---: | --- |
-| bone hatchet | 1262 | bone |
-| battle axe | 1263 | bone |
-| bone pickaxe | 1265 | bone |
-| bone shovel | 1266 | bone |
-| stone pickaxe | 1302 | stone |
-| stone hatchet | 1303 | stone |
-| bamboo spear | 2323 | bamboo |
-| trench shovel | 2374 | iron |
-| sandstone hatchet | 2543 | sandstone |
-| pickaxe | 2545 | sandstone |
+The exact titles are the hafted tools that used to cost only their head
+material: stone rammer, stone adze, stone-headed club, copper, bronze and steel
+hammer, clawhammer, copper, bronze, iron and steel hoe, pitchfork and fire hook.
+Wooden versions (hammer, hoe, spade, digging stick) stay handle-free, and the
+metal sickles already pay their wood through `config/craft_needs.json`.
 
-The predicate also contains legacy sledgehammer names, with no active catalog rows
-at this base. Wood spears and molds keep their existing exclusions. This change
+The sledgehammer names have no active catalog rows. Wood spears and molds keep their existing exclusions. This change
 does not alter forging/held-tool requirements, other ingredient families, or the
 explicit held-item attackby/insertion interactions in parts.assemble_work_tool and
 component_workbench. Those interactions receive the item the player is actively
@@ -49,7 +45,7 @@ and HUD painting are adapters; equipment fields are arranged directly, so this i
 not connected-client equip/menu acceptance. Catalog time is shortened to four
 ticks for waiting cases; costs, material/output types and the floor gate remain.
 
-Checks cover all ten global titles, both hands/back/shoulder/belt cleanup, full
+Checks cover every global title in both lists, both hands/back/shoulder/belt cleanup, full
 hands, hand preference with a spare, insufficient materials, removal restrictions,
 foreign/ground/loose/nested handles, cancellation with retained quality, material
 debit failure, moved/deleted inputs, and concurrent attempts using one handle.

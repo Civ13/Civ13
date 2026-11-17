@@ -26,6 +26,7 @@ EXPECTED = {
     'well_fitting': (75, True, False),
     'deep_water': (80, False, False),
     'religious_work': (90, False, False),
+    'handle': (94, False, True),
     'needs': (95, False, True),
     'tribe_knowledge': (100, False, False),
 }

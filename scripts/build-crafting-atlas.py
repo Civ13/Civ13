@@ -110,6 +110,16 @@ def processing_only_material(typepath):
     return False
 joinery=json.loads((ROOT/"config/crafting/furniture_joinery.json").read_text())
 craft_needs=json.loads((ROOT/"config/craft_needs.json").read_text())
+# Hafted tools also use up a wood handle; the title lists live in craft_needs.dm.
+_handle_src=(ROOT/"code/game/objects/items/stacks/craft_needs.dm").read_text()
+def _handle_list(name):
+    m=re.search(r'^var/global/list/'+name+r' = list\(([^\n]*)\)$',_handle_src,re.M)
+    if not m:raise ValueError('Crafting handle list missing: '+name)
+    return re.findall(r'"([^"]+)"',m[1])
+handle_words,handle_titles,handle_exclusions=(_handle_list(n) for n in ('crafting_handle_title_words','crafting_handle_titles','crafting_handle_title_exclusions'))
+def needs_handle(title):
+    if any(w in title for w in handle_exclusions):return False
+    return title in handle_titles or any(w in title for w in handle_words)
 records=[]; issues=[]; occurrence=[]
 def add(name,kind,inputs,outputs,path,line,conditions='',raw=''):
     for typepath,_ in outputs:
@@ -166,6 +176,9 @@ for p,s in files.items():
                 tool_notes=' Tools equipped or at your feet: '+' and '.join(roles[role] for role in joint['tools'])+'.'
                 if joint['component_type']:tool_notes+=' Hold dowels in the other hand.'
                 tool_notes+=' Tools reused; checked at end.'
+            if needs_handle(n):
+                ingredients.append(('/obj/item/weapon/material/handle',1))
+                tool_notes+=' Uses up one wood handle held or worn.'
             need=craft_needs.get(canon(b))
             if need:
                 ingredients+=[(stack,amount) for stack,amount in need['inputs'].items()]

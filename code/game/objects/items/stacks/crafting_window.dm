@@ -494,6 +494,8 @@ var/global/list/crafting_purpose_cache = list()
 		if (!why)
 			why = "Missing a tool, skill or second material"
 	var/cost = "[R.req_amount] [S.singular_name]\s"
+	if (recipe_needs_crafting_handle(R.title))
+		cost += " + wood handle"
 	var/tools = ""
 	var/list/joint_spec = furniture_joinery_spec(R)
 	if (stone_mold_type(R.result_type))
