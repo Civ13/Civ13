@@ -342,26 +342,35 @@
 		if (TR.coupling_at(TR.coupling_end_ahead(their_front)) <= 0)
 			to_chat(user, SPAN_WARNING("\The [TR] has no working coupling at that end."))
 			return FALSE
-		var/mine_front = ahead
-		if (their_front == mine_front)
-			var/obj/structure/trains/turned = train_is_driving() ? TR : src
-			if (turned.train_is_driving())
-				to_chat(user, SPAN_WARNING("Stop the trains before you couple them."))
-				return TRUE
-			turned.reverse_train()
-			if (turned == src)
-				mine_front = !mine_front
-		if (mine_front)
-			TR.connected = src
-		else
-			connected = TR
+		if (!join_trains(ahead, TR, their_front))
+			to_chat(user, SPAN_WARNING("Stop the trains before you couple them."))
+			return TRUE
 		playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
 		to_chat(user, "You hitch \the [src] to \the [TR].")
-		settle_train_order()
-		update_couplers()
-		TR.update_couplers()
 		return TRUE
 	return FALSE
+
+// Makes the link between this car's end (ahead: the one towards the front of
+// its train) and the free end of TR that meets it (their_front likewise).
+// When two fronts or two rears meet, the train that is not being driven is
+// counted from its other end. FALSE when both are being driven.
+/obj/structure/trains/proc/join_trains(ahead, obj/structure/trains/TR, their_front)
+	var/mine_front = ahead
+	if (their_front == mine_front)
+		var/obj/structure/trains/turned = train_is_driving() ? TR : src
+		if (turned.train_is_driving())
+			return FALSE
+		turned.reverse_train()
+		if (turned == src)
+			mine_front = !mine_front
+	if (mine_front)
+		TR.connected = src
+	else
+		connected = TR
+	settle_train_order()
+	update_couplers()
+	TR.update_couplers()
+	return TRUE
 
 // Connections point to the following wagon. Reject both a new cycle and an
 // already malformed chain before attaching it to another car.
@@ -508,6 +517,10 @@ var/global/train_solo_move = FALSE
 		// At speed this is a wreck (train_crashes.dm).
 		if (train_crash(TF, impact, fdir))
 			TF.shoved(strike, fdir)
+			return TRUE
+		// A slow approach buffers up, and automatic couplers lock
+		// (train_shunting.dm).
+		if (buffer_up(TF, strike))
 			return TRUE
 		visible_message("<span class = 'warning'>\The [src] hits \the [TF]!</span>")
 		health -= round(5 * impact)

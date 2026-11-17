@@ -885,7 +885,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/ammo_casing/atlatl_dart/stone" = "archery",
 		"/obj/item/weapon/gun/projectile/dartgun/blowgun" = "archery",
 		"/obj/item/weapon/storage/backpack/quiver" = "archery",
-		// --- assembly_line (23) ---
+		// --- assembly_line (24) ---
+		"/obj/item/train_coupling/automatic" = "assembly_line",
 		"/obj/structure/train_car_kit/bogie_coach" = "assembly_line",
 		"/obj/structure/train_car_kit/dining" = "assembly_line",
 		"/obj/structure/train_car_kit/sleeper" = "assembly_line",

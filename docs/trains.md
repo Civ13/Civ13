@@ -285,6 +285,34 @@ the wait. Spares are crafted (4 iron, Rail & Steam). `update_couplers()`
 rebuilds the visible parts and is safe to call at any time. Region travel
 does not carry coupling wear: cars arrive with sound couplings.
 
+## Shunting
+
+`train_shunting.dm`. A train that comes up to standing cars at 1 tile a
+second or less buffers up to them (`buffer_up()`, called by `rail_hit()` for
+a contact that is not a crash): it stops against them and neither is marked.
+Faster than that it is a bump as before, and from 1.5 tiles a second the
+cars are knocked rolling ([Runaways](#runaways)).
+
+An end may carry an automatic coupler in place of the hook and screw link:
+`front_auto` / `rear_auto`, saved with the car, and
+`/obj/item/train_coupling/automatic` as the part (6 steel, Assembly Line).
+It wears, breaks, welds and comes off like any coupling, and used on an end
+that has the other kind it changes places with it. It shows as `knuckle_*`
+states.
+
+- **Coupling by contact**: when two automatic couplers meet at up to 1.5
+  tiles a second, whole and free (`auto_couplers_meet()`), they lock and the
+  train stops there. This holds for a driven train and for cars that roll
+  free: a car let go down a siding couples to the cars it rolls onto.
+  `join_trains()` makes the link for this and for coupling by hand.
+- **The uncoupling lever**: between two automatic couplers
+  (`lever_uncouples()`) a click lets go at once, without the wait. It is
+  still refused while an engine pulls. On a coasting train the cars that
+  are let go roll on by themselves.
+
+A hook and screw link and an automatic coupler couple to each other by hand
+only. Region travel and the warehouse do not carry the kind of coupling yet.
+
 ## Reversing
 
 With the reverser backward the rearmost car leads: it takes the next tile

@@ -4,7 +4,7 @@
 /world
 	hub = ""
 	hub_password = ""
-	maxx = 200
+	maxx = 208
 	maxy = 26
 	maxz = 1
 	turf = /turf/floor/dirt
@@ -1597,6 +1597,80 @@ var/global/platform_probe_runtime_error = FALSE
 	var/list/controls = H.station_controls("all")
 	platform_check("adhesion/sandbox_is_filled_with_sand", empty && H.sand == 20 && pile.amount == 5 && ("Sand the rails" in controls) && findtext(H.control_summary(), "Sandbox: 20 of 20"))
 
+// Shunting (train_shunting.dm): a slow approach buffers up, automatic
+// couplers lock by themselves and let go by their lever.
+/proc/platform_shunting_run()
+	var/obj/structure/trains/locomotive/coal/E = drive_train(204, 6, 1)
+	var/obj/structure/trains/transport/flatbed/S = new(platform_turf(204, 10))
+	S.dir = NORTH
+	var/mob/living/human/platform_rider/shunter = new(platform_turf(203, 9))
+	// An automatic coupler is a part like any coupling.
+	var/obj/item/train_coupling/plain = S.remove_coupling(FALSE)
+	var/obj/item/train_coupling/automatic/knuckle = new(platform_turf(203, 10))
+	var/fitted = plain && !plain.automatic && S.fit_coupling(FALSE, knuckle) && S.rear_auto && !S.front_auto && S.rear_coupling == 100 && S.coupler_r.icon_state == "knuckle_b_free" && S.coupler_f.icon_state == "coupler_f_free" && S.coupler_r.name == "automatic coupler"
+	S.damage_coupling(FALSE, 30)
+	var/obj/item/train_coupling/back = S.remove_coupling(FALSE)
+	platform_check("shunting/automatic_coupler_fitted", fitted && findtext(S.coupling_text(FALSE), "missing") && istype(back, /obj/item/train_coupling/automatic) && back.condition == 70 && !S.rear_auto && S.coupler_r.icon_state == "coupler_b_none" && S.fit_coupling(FALSE, back) && S.rear_auto && findtext(S.coupling_text(FALSE), "automatic coupler is damaged (70%)"))
+	var/list/states = icon_states('icons/obj/vehicles/train_platforms.dmi')
+	var/missing = 0
+	for (var/kind in list("free", "linked", "broken"))
+		for (var/end in list("f", "b"))
+			if (!("knuckle_[end]_[kind]" in states))
+				missing++
+	platform_check("shunting/art_states", !missing && ("knuckle_item" in states))
+
+	// A slow approach stops against standing cars and marks nothing.
+	E.refresh_consist()
+	E.driving = TRUE
+	E.rail_speed = 0.8
+	var/hp = E.health
+	var/shp = S.health
+	var/ran = platform_step(E, 10)
+	platform_check("shunting/slow_approach_buffers_up", ran == 3 && E.y == 9 && E.health == hp && S.health == shp && S.y == 10 && S.train_head() == S && !S.roll_speed)
+	// Brisker, it is a bump again; one automatic coupler alone does not lock.
+	E.rail_speed = 1.3
+	ran = platform_step(E, 2)
+	platform_check("shunting/brisk_bump_still_marks", ran == 0 && E.health < hp && !E.auto_couplers_meet(S) && S.train_head() == S)
+	// Two automatic couplers pushed together lock.
+	hp = E.health
+	E.front_auto = TRUE
+	E.update_couplers()
+	var/meet = E.auto_couplers_meet(S) && S.auto_couplers_meet(E) && E.end_facing(S) && S.end_facing(E) == FALSE && isnull(E.end_facing(shunter))
+	ran = platform_step(E, 2)
+	platform_check("shunting/automatic_couplers_lock", meet && ran == 0 && E.y == 9 && E.health == hp && S.connected == E && E.train_head() == S && E.coupler_f.icon_state == "knuckle_f_linked" && S.coupler_r.icon_state == "knuckle_b_linked" && !E.auto_couplers_meet(S))
+
+	// The lever lets go at once, but not while the engine pulls.
+	E.throttle = 1
+	var/tight = E.lever_uncouples(TRUE) && !E.lever_uncouples(FALSE) && E.coupler_use(shunter, TRUE) && S.connected == E
+	E.throttle = 0
+	platform_check("shunting/lever_not_under_power", tight)
+	// Let go as the train coasts, the car in front rolls on by itself.
+	E.rail_speed = 3
+	var/let_go = E.coupler_use(shunter, TRUE)
+	platform_check("shunting/lever_lets_go_on_the_move", let_go && !S.connected && S.train_head() == S && S.roll_speed == 3 && !E.roll_speed && E.coupler_f.icon_state == "knuckle_f_free")
+	S.stop_rolling()
+	E.rail_speed = 0
+	E.driving = FALSE
+
+	// A car that rolls gently onto another locks to it and comes to a stand.
+	var/obj/structure/trains/transport/flatbed/T = new(platform_turf(204, 13))
+	T.dir = NORTH
+	T.rear_auto = TRUE
+	S.front_auto = TRUE
+	var/rolling = S.start_rolling(1.4, NORTH)
+	var/rolled = platform_roll(S)
+	platform_check("shunting/rolling_car_couples", rolling && rolled == 2 && S.y == 12 && S.roll_speed == 0 && T.connected == S && S.train_head() == T && !T.roll_speed && T.health == initial(T.health))
+
+	// Too fast, the couplers do not catch: the cars are knocked away.
+	E.refresh_consist()
+	E.driving = TRUE
+	E.rail_speed = 2.4
+	ran = platform_step(E, 6)
+	platform_check("shunting/too_fast_knocks_away", ran == 2 && E.y == 11 && !S.end_neighbour(FALSE) && E.train_head() == E && T.roll_speed > 1 && T.connected == S)
+	T.stop_rolling()
+	E.rail_speed = 0
+	E.driving = FALSE
+
 /world/New()
 	OpenPort("none")
 	GLOB.all_observable_events = list()
@@ -1623,6 +1697,7 @@ var/global/platform_probe_runtime_error = FALSE
 		platform_brake_run()
 		platform_rolling_run()
 		platform_adhesion_run()
+		platform_shunting_run()
 	catch (var/exception/E)
 		platform_probe_runtime_error = TRUE
 		world.log << "Fixture aborted: [E] at [E.file]:[E.line]"

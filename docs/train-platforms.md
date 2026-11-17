@@ -27,6 +27,8 @@ heading, the rail tile and the tile right of it.
 - `coupler_<f|b>_<free|linked|broken|none>` and `coupling_item`: the coupling
   at a car's front or rear end in each condition, and the spare. They turn
   with the car ([trains.md](trains.md#couplings)).
+- `knuckle_<f|b>_<free|linked|broken>` and `knuckle_item`: the same for an
+  automatic coupler ([trains.md](trains.md#shunting)).
 - `brake_wheel` and `brake_wheel_on`: the brake wheel of a brake van, wound
   off and on ([trains.md](trains.md#brakes)).
 - `edge_plank`, `edge_freight_door[_open]`, `edge_side`, `edge_drop_door[_open]`
