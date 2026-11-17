@@ -573,6 +573,7 @@
 
 		M.append_attack_log("\[[time_stamp()]\] [M]/[M.ckey]</b> shot themselves in the mouth (tried to commit suicide)")
 
+		M.died_by_own_hand = TRUE
 		in_chamber.on_hit(M)
 		if (in_chamber.damage_type != HALLOSS)
 

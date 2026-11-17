@@ -50,6 +50,7 @@ var/global/list/persistence_world_time_stamps = list(
 	"swim_kind_lessons" = list(/mob/living/human),
 	"swim_grace_until" = list(/mob/living/human),
 	"swim_grace_next" = list(/mob/living/human),
+	"death_weakness_checked" = list(/mob/living/human),
 	"last_revive_notification" = list(/mob/observer/ghost),
 	"last_use" = list(/obj/structure/barracks/kit_locker),
 	"last_build" = list(/obj/structure/barracks/vehicle_bay),

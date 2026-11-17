@@ -101,6 +101,7 @@
 	// No prompt/wait or inventory drop between admission and scalar claim changes.
 	for(var/obj/structure/bed/B in world)
 		if(B != bed && B.persistence_bed_owner_ckey == client.ckey) B.persistence_bed_owner_ckey = null
+	if(bed.persistence_bed_owner_ckey != client.ckey) bed.persistence_bed_assigned_at = death_legacy_now()
 	bed.persistence_bed_owner_ckey = client.ckey
 	record_persistence_owner()
 	lastx = x
