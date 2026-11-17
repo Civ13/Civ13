@@ -41,6 +41,8 @@ var/datum/map_stub/map = new
 /obj/structure/trains/locomotive/proc/burn_fuel()
 /obj/structure/trains/locomotive/proc/stall()
 /proc/train_knock_down(mob/living/L, impact)
+/obj/structure/trains/proc/train_crash(atom/hit, impact, fdir)
+	return FALSE
 /proc/train_consist_obstacle(obj/structure/trains/head, turf/target, heading, list/cars = null)
 	return null
 /atom/movable/proc/persistence_set_loc(atom/destination)

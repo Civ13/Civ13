@@ -493,8 +493,11 @@ var/global/train_solo_move = FALSE
 	if (isnull(impact))
 		impact = collision_impact()
 	for (var/obj/structure/trains/TF in tgtt)
-		visible_message("<span class = 'warning'>\The [src] hits \the [TF]!</span>")
 		automovement = FALSE
+		// At speed this is a wreck (train_crashes.dm).
+		if (train_crash(TF, impact, fdir))
+			return TRUE
+		visible_message("<span class = 'warning'>\The [src] hits \the [TF]!</span>")
 		health -= round(5 * impact)
 		if (impact > 1)
 			TF.health -= round(5 * (impact - 1))
@@ -513,15 +516,20 @@ var/global/train_solo_move = FALSE
 					visible_message("<span class = 'danger'>\The [src] smashes through \the [O]!</span>")
 					continue
 				automovement = FALSE
-				visible_message("<span class = 'warning'>\The [src] crashes into \the [O]!</span>")
+				if (!train_crash(O, impact, fdir))
+					visible_message("<span class = 'warning'>\The [src] crashes into \the [O]!</span>")
 				return TRUE
 			automovement = FALSE
 			if (impact < 0.5)
 				visible_message("<span class = 'warning'>\The [src] bumps into \the [O] and stops.</span>")
 				return TRUE
-			visible_message("<span class = 'warning'>\The [src] hits \the [O]!</span>")
+			// A wreck does its own damage to the train (train_crashes.dm).
+			var/wreck = train_crash(O, impact, fdir)
+			if (!wreck)
+				visible_message("<span class = 'warning'>\The [src] hits \the [O]!</span>")
 			O.ex_act(impact >= 1.5 ? 1.0 : 2.0)
-			health -= round(15 * O.w_class * impact)
+			if (!wreck)
+				health -= round(15 * O.w_class * impact)
 			return TRUE
 	for (var/mob/living/L in tgtt)
 		// A crawl shoves a person off the line; speed hurts in proportion.
@@ -570,7 +578,8 @@ var/global/train_solo_move = FALSE
 	// Platform cars need room for their decks (train_platforms.dm).
 	var/atom/clearance = train_consist_obstacle(src, tgtt, fdir)
 	if (clearance)
-		visible_message("<span class = 'warning'>\The [src] grinds to a halt against \the [clearance]!</span>")
+		if (!train_crash(clearance, isnull(impact) ? collision_impact() : impact, fdir))
+			visible_message("<span class = 'warning'>\The [src] grinds to a halt against \the [clearance]!</span>")
 		automovement = FALSE
 		set_light(0)
 		return FALSE
@@ -1156,7 +1165,8 @@ var/global/train_solo_move = FALSE
 		rear_first += cars[i]
 	var/atom/clearance = train_consist_obstacle(tail, tgtt, fdir, rear_first)
 	if (clearance)
-		visible_message("<span class = 'warning'>\The [tail] grinds to a halt against \the [clearance]!</span>")
+		if (!tail.train_crash(clearance, impact, fdir))
+			visible_message("<span class = 'warning'>\The [tail] grinds to a halt against \the [clearance]!</span>")
 		automovement = FALSE
 		return FALSE
 	var/list/old = list()

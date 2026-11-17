@@ -31,7 +31,7 @@
 	health = max(0, health - amount)
 	if (health <= 0 && !wrecked)
 		wrecked = TRUE
-		visible_message(SPAN_DANGER("\The [src] is blown off the rails!"))
+		visible_message(SPAN_DANGER("\The [src] is wrecked and thrown off the rails!"))
 		apply_layout()
 
 /obj/structure/trains/platform/proc/weld_repair(mob/user)

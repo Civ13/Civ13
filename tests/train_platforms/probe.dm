@@ -4,7 +4,7 @@
 /world
 	hub = ""
 	hub_password = ""
-	maxx = 166
+	maxx = 176
 	maxy = 26
 	maxz = 1
 	turf = /turf/floor/dirt
@@ -1304,6 +1304,111 @@ var/global/platform_probe_runtime_error = FALSE
 	var/list/armored = train_car_layout("loco_armored")
 	platform_check("cab/small_engines_have_one_place", !small.has_stations() && small.cab_station(guest) == "all" && small.at_firebox(guest) && all.len == 6 && !diesel["stations"] && steam["stations"] && armored["stations"])
 
+// Crashes (train_crashes.dm): a running train that hits something at speed
+// derails its leading cars, breaks couplings, throws riders and spills cargo.
+/obj/structure/platform_buffer
+	name = "buffer stop"
+	density = TRUE
+	anchored = TRUE
+/obj/structure/platform_buffer/ex_act(severity)
+	return
+
+/proc/platform_crash_run()
+	for (var/y in 2 to 25)
+		platform_track(169, y, NORTH)
+		platform_track(173, y, NORTH)
+	var/list/struck = platform_segments(platform_car("flatbed", 169, 22, NORTH))
+	var/obj/structure/trains/locomotive/coal/E = new(platform_turf(169, 18))
+	E.dir = NORTH
+	E.fuel = 100
+	var/list/A = platform_segments(platform_car("flatbed", 169, 17, NORTH))
+	var/list/B = platform_segments(platform_car("flatbed", 169, 13, NORTH))
+	var/obj/structure/trains/platform/A1 = A[1]
+	var/obj/structure/trains/platform/A2 = A[2]
+	var/obj/structure/trains/platform/A3 = A[3]
+	var/obj/structure/trains/platform/A4 = A[4]
+	var/obj/structure/trains/platform/B1 = B[1]
+	var/obj/structure/trains/platform/S1 = struck[1]
+	var/obj/structure/trains/platform/S3 = struck[3]
+	var/obj/structure/trains/platform/S4 = struck[4]
+	E.connected = A1
+	A4.connected = B1
+	var/mob/living/simple_animal/train_probe_dummy/rider = new(platform_turf(169, 15))
+	var/mob/living/simple_animal/train_probe_dummy/bystander = new(platform_turf(169, 20))
+	var/obj/structure/closet/crate/box = new(platform_turf(170, 11))
+	var/turf/ahead = platform_turf(169, 19)
+
+	// A crawl, and stock moved with no engine running, only bump.
+	E.refresh_consist()
+	E.rail_speed = 1
+	var/hp = E.health
+	var/bumped = E.rail_hit(ahead, NORTH) && hp - E.health <= 5
+	E.rail_speed = 0
+	bumped = bumped && E.rail_hit(ahead, NORTH, 3) && hp - E.health <= 20
+	platform_check("crash/slow_is_a_bump", bumped && !A1.wrecked && !S4.wrecked && E.rear_coupling == 100 && rider.loc == platform_turf(169, 15) && rider.health == 400 && box.loc == platform_turf(170, 11))
+
+	E.health = 1000
+	S4.health = 1500
+	E.on = TRUE
+	E.throttle = 2
+	E.rail_speed = 5
+	var/crashed = E.rail_hit(ahead, NORTH, 2.4)
+	platform_check("crash/stops_the_train", crashed && E.rail_speed == 0 && E.throttle == 0 && !E.on && !E.automovement && E.health == 1000 - 192)
+	platform_check("crash/lead_cars_derailed", A1.wrecked && A2.wrecked && !A3.wrecked && !B1.wrecked && A1.health == 600 && A2.health == 600 && A1.name == "wrecked platform car" && train_crash_derailed(1.2) == 0 && train_crash_derailed(1.25) == 1 && train_crash_derailed(3.5) == 3)
+	platform_check("crash/struck_car_takes_it", S4.wrecked && S3.wrecked && !S1.wrecked && S4.health == 600 && S1.front_coupling == 46 && S4.rear_coupling == 46)
+	platform_check("crash/couplings_break", E.rear_coupling == 0 && !E.connected && A1.train_head() == A1 && A4.rear_coupling == 46 && A4.connected == B1)
+	platform_check("crash/riders_thrown_and_hurt", rider.loc == platform_turf(169, 17) && rider.health == 400 - 14 && bystander.loc == platform_turf(169, 22) && bystander.health == 400 - 14)
+	platform_check("crash/loose_cargo_slides", box.loc == platform_turf(170, 12) && !box.anchored)
+	A1.repair_by(300)
+	platform_check("crash/welded_back_on", !A1.wrecked && A1.health == 900 && A2.wrecked && train_consist_obstacle(A1, platform_turf(169, 18), NORTH) == A2)
+
+	// Chained cargo breaks loose in a hard crash; a seated rider is held.
+	var/obj/structure/trains/transport/flatbed/W = new(platform_turf(165, 5))
+	W.dir = NORTH
+	var/obj/structure/closet/crate/chained = new(W.loc)
+	chained.anchored = TRUE
+	W.transporting += chained
+	W.crash_jolt(NORTH, 0.9, list())
+	var/held = chained.anchored && chained.loc == W.loc
+	W.crash_jolt(NORTH, 1.2, list())
+	platform_check("crash/chained_cargo_breaks_loose", held && !chained.anchored && !(chained in W.transporting) && chained.loc == platform_turf(165, 7))
+
+	// A heavy engine driven into a buffer stop at full speed comes off the
+	// rails and dies; one weld gets it running again.
+	var/obj/structure/trains/locomotive/coal/heavy/H = platform_car("loco_steam", 173, 8, NORTH)
+	var/list/body = platform_segments(H.connected)
+	var/obj/structure/trains/platform/cab = body[2]
+	var/obj/structure/platform_buffer/stop = new(platform_turf(173, 24))
+	var/mob/living/simple_animal/train_probe_dummy/driver = new(platform_turf(174, 6))
+	var/mob/living/simple_animal/train_probe_dummy/seated = new(platform_turf(172, 6))
+	var/obj/structure/bed/chair/seat = new(platform_turf(172, 6))
+	seated.buckled = seat
+	H.fuel = 200
+	H.on = TRUE
+	H.throttle = 3
+	H.drive()
+	var/top = 0
+	var/limit = 400
+	while (H.driving && limit > 0)
+		top = max(top, H.rail_speed)
+		sleep(1)
+		limit--
+	platform_check("crash/driven_into_a_buffer_stop", !H.driving && top >= 4 && H.loc == platform_turf(173, 23) && !QDELETED(stop) && H.broken_down && !H.on && H.throttle == 0 && H.health == 0.4 * initial(H.health) && !cab.wrecked && H.engine_disabled())
+	platform_check("crash/seat_holds_its_rider", seated.loc == seat.loc && seat.loc == platform_turf(172, cab.y) && driver.loc == platform_turf(174, cab.y) && driver.health < seated.health && seated.health < 400)
+	H.health = min(initial(H.health), H.health + 600)
+	platform_check("crash/engine_welds_in_one_pass", H.health >= initial(H.health) / 2)
+
+	// Backing into something: the rear car leads and comes off first.
+	var/list/C = platform_segments(platform_car("coach", 169, 8, NORTH))
+	var/obj/structure/trains/locomotive/coal/P = new(platform_turf(169, 9))
+	P.dir = NORTH
+	P.connected = C[1]
+	P.rail_speed = 4
+	var/obj/structure/trains/platform/C1 = C[1]
+	var/obj/structure/trains/platform/C3 = C[3]
+	var/obj/structure/trains/platform/C4 = C[4]
+	platform_check("crash/backing_rear_car_leads", C4.train_crash(stop, 1.5, SOUTH) && C4.wrecked && C3.wrecked && !C1.wrecked && P.rail_speed == 0 && !C4.train_crash(C1, 3, SOUTH))
+
 /world/New()
 	OpenPort("none")
 	GLOB.all_observable_events = list()
@@ -1326,6 +1431,7 @@ var/global/platform_probe_runtime_error = FALSE
 		platform_boiler_run()
 		platform_tender_run()
 		platform_cab_run()
+		platform_crash_run()
 	catch (var/exception/E)
 		platform_probe_runtime_error = TRUE
 		world.log << "Fixture aborted: [E] at [E.file]:[E.line]"
