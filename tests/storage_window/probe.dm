@@ -370,6 +370,11 @@ var/storwin_runtime_error = FALSE
 	var/obj/item/stack/storwin_bones/inside = new(here, 4)
 	usr = H
 	storwin_check(bag.handle_item_insertion(inside, TRUE) && inside.loc == bag, "a first stack of bones goes in")
+	// Examine says how full a bag is (storage_fullness.dm).
+	storwin_check(bag.fullness() == 1 && storage_fullness_text(1) == "It is full.", "a bag with every slot taken reads as full")
+	bag.storage_slots = 4
+	storwin_check(bag.fullness() == 0.25 && storage_fullness_text(0.25) == "It has plenty of room left." && storage_fullness_text(0) == "It is empty." && storage_fullness_text(0.9) == "It is nearly full.", "fullness follows the slots used")
+	bag.storage_slots = 1
 	var/obj/item/stack/storwin_bones/more = new(here, 3)
 	storwin_check(bag.can_be_inserted(more, TRUE), "a full bag still takes bones that fit onto its stack")
 	storwin_check(bag.handle_item_insertion(more, TRUE) && inside.amount == 7 && QDELETED(more), "the new bones join the stack inside")

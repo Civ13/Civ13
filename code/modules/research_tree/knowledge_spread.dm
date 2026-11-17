@@ -128,3 +128,9 @@
 
 /proc/knowledge_study_mult(node_id)
 	return knowledge_band(node_id) == KNOWLEDGE_SPREADING ? KNOWLEDGE_SPREADING_STUDY : 1
+
+// Researching a spreading subject again is cheaper: the world already knows
+// it can be done. Bench work on it counts KNOWLEDGE_REDISCOVERY_RATE times;
+// samples, field work and prototypes keep their usual shares.
+/proc/knowledge_rediscovery_rate(node_id)
+	return knowledge_band(node_id) == KNOWLEDGE_SPREADING ? KNOWLEDGE_REDISCOVERY_RATE : 1

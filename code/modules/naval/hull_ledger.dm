@@ -61,6 +61,13 @@
 #define HULL_SEEP_PER_TILE_MINUTE 0.045
 // Lying still she works her seams less.
 #define HULL_SEEP_AT_REST 0.5
+// Seam wear runs from 0, freshly caulked, to 1, open. A hull starts sound, at
+// a third, where she seeps at the rate above; tight she seeps half that and
+// open twice. HULL_SEAM_LIFE seconds under way wear her from tight to open.
+#define HULL_SEAMS_FAIR (1 / 3)
+#define HULL_SEAMS_WORKING 0.6
+#define HULL_SEAMS_OPEN 0.9
+#define HULL_SEAM_LIFE 14400
 // Deciseconds between steps of the ledgers, and to bail one bucketful.
 #define HULL_LEDGER_STEP 300
 #define HULL_BAIL_TIME 30
@@ -99,6 +106,9 @@ var/global/hull_ledger_timer_off = FALSE
 	// Tiles of hull, and how many of them are wood, as last surveyed.
 	var/tiles = 1
 	var/seep_tiles = 0
+	// How worn the caulking of her seams is: 0 tight, 1 open (hull_caulking.dm).
+	var/seams = HULL_SEAMS_FAIR
+	var/tmp/seams_told = 0
 	// Tiles of her hull with no floor left, and tiles floored with a patch.
 	var/holes = 0
 	var/patches = 0
@@ -249,7 +259,39 @@ var/global/hull_ledger_timer_off = FALSE
 /datum/hull_ledger/proc/seep_rate()
 	if (hull_class() == HULL_CLASS_SMALL)
 		return 0
-	return seep_tiles * HULL_SEEP_PER_TILE_MINUTE
+	return seep_tiles * HULL_SEEP_PER_TILE_MINUTE * seam_factor()
+
+// How much faster or slower than fair seams hers let water in.
+/datum/hull_ledger/proc/seam_factor()
+	return 0.5 + 1.5 * clamp(seams, 0, 1)
+
+// TRUE when she has seams that wear and can be caulked.
+/datum/hull_ledger/proc/has_seams()
+	return seep_tiles > 0 && hull_class() != HULL_CLASS_SMALL
+
+/datum/hull_ledger/proc/seam_name()
+	if (seams >= HULL_SEAMS_OPEN)
+		return "open"
+	if (seams >= HULL_SEAMS_WORKING)
+		return "working loose"
+	if (seams > HULL_SEAMS_FAIR + 0.01)
+		return "fair"
+	if (seams > 0.1)
+		return "sound"
+	return "tight"
+
+// Sailing works the caulking out of her seams.
+/datum/hull_ledger/proc/wear_seams(seconds)
+	if (!has_seams() || seams >= 1)
+		return
+	seams = min(1, seams + seconds / HULL_SEAM_LIFE)
+	var/now = seams >= HULL_SEAMS_OPEN ? 2 : (seams >= HULL_SEAMS_WORKING ? 1 : 0)
+	if (now > seams_told && craft)
+		if (now == 2)
+			craft.crew_message(SPAN_DANGER("The seams of the [craft.name] are open: she takes water twice as fast as she should. She needs caulking with tarred oakum."))
+		else
+			craft.crew_message(SPAN_WARNING("The caulking of the [craft.name] is working loose and she seeps faster. Tarred oakum driven into her seams would tighten her."))
+	seams_told = now
 
 /datum/hull_ledger/proc/under_way()
 	return craft && craft.speed > 0 && !craft.anchored
@@ -305,10 +347,14 @@ var/global/hull_ledger_timer_off = FALSE
 	var/rate = seep_rate()
 	if (rate > 0)
 		add_water(rate * (under_way() ? 1 : HULL_SEEP_AT_REST) * seconds / 60)
+	if (under_way())
+		wear_seams(seconds)
 	if (patches > 0)
 		add_water(patches * HULL_PATCH_PER_MINUTE * seconds / 60)
 	if (holes > 0)
 		add_water(holes * HULL_HOLE_PER_MINUTE * seconds / 60, capacity())
+	// Her powered pumps answer the water (hull_pumps.dm).
+	pump_bilge(seconds)
 	check_founder()
 
 /datum/hull_ledger/proc/status_text()
@@ -324,6 +370,7 @@ var/global/hull_ledger_timer_off = FALSE
 		. += " <b>[holes] hole\s in her hull let[holes == 1 ? "s" : ""] the sea in:</b> use wood on the open water of a hole, hammer in the other hand, to patch it."
 	if (patches > 0)
 		. += " [patches] patch[patches == 1 ? "" : "es"] weep[patches == 1 ? "s" : ""] a little."
+	. += pumps_text()
 	if (grounded)
 		. += " <b>She sits on the bottom.</b> Patch every hole and bail her below awash to float her."
 	else if (sink_left > 0)
@@ -331,11 +378,13 @@ var/global/hull_ledger_timer_off = FALSE
 	if (seep_rate() <= 0)
 		. += hull_class() == HULL_CLASS_SMALL ? " A hull this small keeps the sea out by herself." : " Her plating lets nothing through."
 	else
-		. += " Her seams seep while she works: bail her now and then."
+		. += " Her seams are [seam_name()] and seep while she works: bail her now and then."
+		if (seams > HULL_SEAMS_FAIR + 0.01)
+			. += " Tarred oakum used on her planks, with a chisel or hammer in the other hand, caulks her."
 
 // The ledger as plain numbers for a saved field, and back.
 /datum/hull_ledger/proc/to_list()
-	return list("water" = round(water, 0.01), "holes" = holes, "patches" = patches, "grounded" = grounded ? 1 : 0)
+	return list("water" = round(water, 0.01), "holes" = holes, "patches" = patches, "grounded" = grounded ? 1 : 0, "seams" = round(seams, 0.001))
 
 /datum/hull_ledger/proc/from_list(list/state)
 	if (!islist(state))
@@ -348,6 +397,9 @@ var/global/hull_ledger_timer_off = FALSE
 	if (isnum(state["patches"]))
 		patches = clamp(round(state["patches"]), 0, tiles)
 	grounded = state["grounded"] ? TRUE : FALSE
+	if (isnum(state["seams"]))
+		seams = clamp(state["seams"], 0, 1)
+	seams_told = seams >= HULL_SEAMS_OPEN ? 2 : (seams >= HULL_SEAMS_WORKING ? 1 : 0)
 	depth_told = depth()
 
 // ---- The craft's side ----
@@ -687,4 +739,5 @@ var/global/hull_ledger_timer_off = FALSE
 #undef HULL_SLACK_WATER
 #undef HULL_SEEP_PER_TILE_MINUTE
 #undef HULL_SEEP_AT_REST
+#undef HULL_SEAM_LIFE
 #undef HULL_BAIL_TIME

@@ -209,6 +209,18 @@ class MedicalCare(unittest.TestCase):
         self.assertIn("owner.nutrition >= 150 && owner.water >= 150", regen)
         self.assertEqual(regen.count("B.volume += 0.1"), 2)
 
+    def test_bleeding_and_wrong_blood_are_explained(self):
+        # A bleeding body does not rebuild blood; it is told so, at most every
+        # two minutes and only while short of blood.
+        handle = BLOOD[BLOOD.index("/mob/living/human/handle_blood()"):BLOOD.index("#define BLEEDING_HINT_GAP")]
+        self.assertIn("drip(bloodloss)\n\t\tbleeding_hint()", handle)
+        hint = BLOOD[BLOOD.index("/mob/living/human/proc/bleeding_hint()"):BLOOD.index("//Makes a blood drop")]
+        self.assertIn("world.time < bleeding_hint_at", hint)
+        self.assertIn("species.blood_volume * 0.9", hint)
+        self.assertIn("#define BLEEDING_HINT_GAP (2 MINUTES)", BLOOD)
+        wrong = BLOOD[BLOOD.index('reagents.add_reagent("toxin",amount * 0.5)'):BLOOD.index("//Gets human's own blood.")]
+        self.assertIn("That blood does not match your own", wrong)
+
     def test_every_era_has_an_antibiotic(self):
         self.assertNotIn('get_reagent_amount("penicillin")', ORGAN + BASE_ORGAN)
         self.assertEqual((ORGAN + BASE_ORGAN).count("owner.get_antibiotic_dose()"), 4)

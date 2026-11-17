@@ -59,6 +59,42 @@ they put the bucket away. A step of the hull does not stop them.
 - Full over mostly shallow water she is grounded: no speed, no turn. She floats
   again when no hole is open and she is bailed below awash.
 
+## Seams and caulking
+
+`code/modules/naval/hull_caulking.dm`. The ledger carries `seams`, the wear of
+her caulking from 0 (tight) to 1 (open). A hull starts sound at one third,
+where she seeps at the plain rate; the rate is times `0.5 + 1.5 * seams`, so
+tight seams seep half and open seams twice. Only time under way wears them:
+four hours take her from tight to open. Her crew is told when they work loose
+(0.6) and when they are open (0.9), and the tiller names their state.
+
+- Tarred oakum (`/obj/item/stack/tarred_oakum`): rope used on an open container
+  holding pitch from a tar kiln. One coil and ten units make three twists.
+- Caulking: oakum used on one of her planks from her own deck, a chisel or a
+  hammer in the other hand, while she lies still and is not awash. One twist
+  takes four seconds and tightens three tiles of hull.
+- On deep water caulking stops at sound (one third). Lying mostly over shallow
+  water she is caulked down to tight.
+- Small craft and plated hulls have no seams: nothing wears and nothing can be
+  caulked. `seams` is saved with the rest of the ledger.
+
+## Bilge pumps
+
+`code/modules/naval/hull_pumps.dm`. The cellar pumps of
+`code/modules/1713/flood_pumps.dm` pump the bilge of the hull whose deck they
+stand on (`hull_ledger_at()`, either deck). Ashore they are unchanged.
+
+| Pump | Aboard a hull |
+| --- | --- |
+| Lever pump | worked by hand: two bucketfuls a three-second stroke, until dry |
+| Steam mine pump | 80 bucketfuls a minute while on and fuelled |
+| Sump pump | 40 a minute on cable power or battery, only while there is water |
+
+`step_ledger()` calls `pump_bilge()` after the water comes in, so powered pumps
+run, and burn fuel or battery, only while the hull is awake. Their own
+`cellar_minute()` runs only on a flood cellar level and never aboard. The
+tiller counts the pumps on her deck.
+
 ## One-object craft: rafts, canoes, outriggers, inflatables
 
 These are single objects with no ledger (`code/modules/naval/small_craft_leaks.dm`).
@@ -84,7 +120,7 @@ One looping timer (`hull_ledgers_tick`, every 30 seconds) steps the ledgers that
 are awake. Players are matched to hulls from the client list with one keyed
 lookup a hull, so empty hulls cost no deck walk. Nothing runs during a world
 save. The tiller saves the ledger inside its `hull_state` record
-(`"ledger": {"water", "holes", "patches", "grounded"}`); nothing stores `world.time`.
+(`"ledger": {"water", "holes", "patches", "grounded", "seams"}`); nothing stores `world.time`.
 
 ## Tests
 

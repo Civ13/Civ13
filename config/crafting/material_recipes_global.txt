@@ -726,6 +726,15 @@ RECIPE: /material/steel/,steel airship frame,/obj/item/airship_planks/steel,3,60
 RECIPE: /material/cloth/,airship gas cell,/obj/item/airship_gas_cell,20,200,0,1,vehicle parts,126,0,0,8,null
 RECIPE: /material/wood/,airship helm,/obj/item/airship_helm_kit,10,150,0,1,vehicle parts,126,0,0,8,null
 RECIPE: /material/steel/,airship bomb hatch,/obj/structure/airship_bomb_hatch,6,100,1,1,vehicle parts,126,0,0,8,null
+RECIPE: /material/leather/,gasbag,/obj/item/weapon/reagent_containers/gas_vessel,4,60,0,1,production,126,0,0,8,null
+RECIPE: /material/leather/,gas hose,/obj/item/gas_hose,3,60,0,1,production,126,0,0,8,null
+RECIPE: /material/steel/,gas cylinder,/obj/item/weapon/reagent_containers/gas_vessel/cylinder,4,80,0,1,production,126,0,0,8,null
+RECIPE: /material/wood/,hydrogen generator,/obj/structure/gas_works/hydrogen_generator,10,150,1,1,production,126,0,0,8,null
+RECIPE: /material/steel/,electrolysis tank,/obj/structure/gas_works/electrolysis_tank,10,200,1,1,production,126,0,0,8,null
+RECIPE: /material/steel/,water-gas retort,/obj/structure/gas_works/water_gas_retort,15,200,1,1,production,126,0,0,8,null
+RECIPE: /material/steel/,helium separator,/obj/structure/gas_works/helium_separator,20,250,1,1,production,126,0,0,8,null
+RECIPE: /material/steel/,gas compressor,/obj/structure/gas_compressor,15,200,1,1,production,126,0,0,8,null
+RECIPE: /material/steel/,gas holder,/obj/structure/gas_holder,40,400,1,1,production,126,0,0,8,null
 RECIPE: /material/cloth/,cigarette pack,/obj/item/weapon/storage/fancy/cigarettes,1,20,0,1,none,90,0,0,8,null
 RECIPE: /material/cloth/,sandbag,/obj/item/weapon/barrier/sandbag/empty,1,105,0,1,none,0,0,90,8,null
 RECIPE: /material/cloth/,cashbag,/obj/item/weapon/storage/bag/cash,1,105,0,1,none,0,0,90,8,null
@@ -2930,6 +2939,7 @@ RECIPE: /material/steel/,railway gun car kit,/obj/structure/train_car_kit/railgu
 RECIPE: /material/steel/,armored wagon kit,/obj/structure/train_car_kit/armored,40,400,1,1,trains,101,125,0,8,null
 RECIPE: /material/steel/,flak car kit,/obj/structure/train_car_kit/flak,45,450,1,1,trains,101,125,0,8,null
 RECIPE: /material/steel/,heavy steam locomotive kit,/obj/structure/train_car_kit/loco_steam,45,500,1,1,trains,101,0,0,8,null
+RECIPE: /material/steel/,main-line steam locomotive kit,/obj/structure/train_car_kit/loco_mainline,90,600,1,1,trains,101,0,0,8,null
 RECIPE: /material/steel/,heavy diesel locomotive kit,/obj/structure/train_car_kit/loco_diesel,50,500,1,1,trains,115,0,0,8,null
 RECIPE: /material/steel/,heavy armored locomotive kit,/obj/structure/train_car_kit/loco_armored,80,600,1,1,trains,101,109,0,8,null
 

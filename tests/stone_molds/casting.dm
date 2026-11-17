@@ -159,6 +159,21 @@ var/list/stone_casting_ci_sprites = list()
 		V.attackby(clay, H)
 		stone_casting_ci_expect(stone.capacity == 0 && clay.capacity == 0 && isnull(stone.current_material) && isnull(clay.current_material) && V.capacity == 14 && V.current_material == "copper", "sprite charges returned by real pouring without loss: [shape]")
 	stone_casting_ci_expect(ore.amount + V.capacity + 3 * stone_casting_ci_heads(T) == 25, "all copper conserved across ore, vessel and two cast outputs")
+	// An alloy takes equal parts; the copper left over stays in the jug
+	// (it used to vanish) and melts on the next firing.
+	var/obj/item/weapon/clay/mold/clayjug/fired/AJ = new(T)
+	var/obj/item/stack/ore/copper/alloy_copper = new(T, 5, FALSE)
+	var/obj/item/stack/ore/tin/alloy_tin = new(T, 2, FALSE)
+	AJ.attackby(alloy_copper, H)
+	AJ.attackby(alloy_tin, H)
+	K.attackby(AJ, H)
+	K.process()
+	stone_casting_ci_expect(AJ.capacity == 2 && AJ.current_material == "bronze" && AJ.contents_materials.len == 1 && AJ.contents_materials["copper"] == 3, "uneven bronze charge keeps the spare copper in the jug")
+	AJ.capacity = 0
+	AJ.current_material = null
+	K.attackby(AJ, H)
+	K.process()
+	stone_casting_ci_expect(AJ.capacity == 3 && AJ.current_material == "copper" && !AJ.contents_materials.len, "the spare copper melts on the next firing")
 	stone_casting_ci_expect(G.capacity + gold_mold.capacity == 6, "all gold preserved after rejected casting")
 
 /proc/run_stone_casting_checks()

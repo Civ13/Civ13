@@ -243,7 +243,7 @@ var/global/list/tree_canopy_tops = list()
 	W.tree_climber = src
 	tree_climb_pose(W)
 	tree_climb_apply_pose(4)
-	visible_message(SPAN_NOTICE("[src] climbs up \the [W]."), SPAN_NOTICE("You climb up \the [W]. You can see far from up here; Look into Distance reaches further. Move or grab the tree again to climb down."))
+	visible_message(SPAN_NOTICE("[src] climbs up \the [W]."), SPAN_NOTICE("You climb up \the [W]. You see over walls and hills from up here. Press Space (Look into Distance) to see 8 tiles further, and use the movement keys to look another way; press Space again before you climb down. Move or grab the tree again to climb down."))
 	tree_climb_refresh_sight()
 	player_activity.feature_used(src, "tree_climb")
 	return TRUE
@@ -287,6 +287,29 @@ var/global/list/tree_canopy_tops = list()
 	if (looking)
 		look_into_distance(src, FALSE)
 	tree_climb_refresh_sight()
+
+// While looking into the distance from a tree, a movement key turns the
+// climber and swings the view that way instead of climbing down.
+/mob/living/human/proc/tree_look_turn(direct)
+	if (!climbed_tree || !looking)
+		return FALSE
+	// Diagonals look east or west.
+	if (direct & (EAST|WEST))
+		direct &= (EAST|WEST)
+	if (!(direct in list(NORTH, SOUTH, EAST, WEST)) || direct == dir)
+		return FALSE
+	set_dir(direct)
+	if (!client)
+		return TRUE
+	var/widen = look_amount > world.view ? round((look_amount - world.view) / 2, TRUE) : 0
+	var/reach = (look_amount - widen) * world.icon_size
+	var/px = direct == EAST ? reach : (direct == WEST ? -reach : 0)
+	var/py = direct == NORTH ? reach : (direct == SOUTH ? -reach : 0)
+	client.los_prepare_camera_pan(px, py, 3, client.view)
+	animate(client, pixel_x = px, pixel_y = py, time = 3, easing = SINE_EASING)
+	client.pixel_x = px
+	client.pixel_y = py
+	return TRUE
 
 /mob/living/human/proc/tree_climb_refresh_sight()
 	if (client && CIV13_GEOMETRIC_LOS_CORE)

@@ -4,7 +4,7 @@
 /world
 	hub = ""
 	hub_password = ""
-	maxx = 156
+	maxx = 166
 	maxy = 26
 	maxz = 1
 	turf = /turf/floor/dirt
@@ -504,8 +504,15 @@ var/global/platform_probe_runtime_error = FALSE
 	platform_check("heavy/cab_roof_only", cab.roofed() && cab.roof_images && cab.roof_images.len == 3 && !boiler.roofed())
 	platform_check("heavy/one_piece", findtext(boiler.dismantle_problem(), "one piece") && rail_warehouse_too_long(E) && rail_warehouse_too_long(bunker))
 	var/mob/living/human/platform_rider/driver = new(platform_turf(61, 10))
-	bunker.attackby(new /obj/item/stack/ore/coal(platform_turf(61, 10)), driver)
-	platform_check("heavy/fuel_from_any_section", E.fuel == 15)
+	// The fire is fed at the firebox door in the middle of the cab, not from
+	// the fireman's side where the driver stands here.
+	var/obj/item/stack/ore/coal/lump = new(platform_turf(61, 10))
+	bunker.attackby(lump, driver)
+	var/refused = E.fuel == 0 && !QDELETED(lump) && E.cab_station(driver) == "fireman"
+	driver.loc = platform_turf(62, 10)
+	bunker.attackby(lump, driver)
+	platform_check("heavy/fired_at_the_firebox_door", refused && E.fuel == 15 && QDELETED(lump) && E.cab_station(driver) == "fire")
+	driver.loc = platform_turf(61, 10)
 	E.fuel = 100
 	E.on = TRUE
 	E.refresh_consist()
@@ -1218,6 +1225,85 @@ var/global/platform_probe_runtime_error = FALSE
 	var/list/sheet = icon_states('icons/obj/vehicles/rail_water.dmi')
 	platform_check("water/crane_needs_a_tower", !crane.source() && crane.fill_takers() == 0 && lone.water == 0 && ("water_tower" in sheet) && ("water_crane" in sheet))
 
+// Cab stations and the main-line engine with its tender.
+/proc/platform_cab_run()
+	for (var/y in 2 to 25)
+		platform_track(160, y, NORTH)
+	var/obj/structure/train_car_kit/K = new(platform_turf(160, 4))
+	K.set_kind("loco_mainline")
+	var/long_kit = K.car_length() == 6 && K.assembly_problem(NORTH)
+	qdel(K)
+	var/obj/structure/trains/locomotive/coal/mainline/E = platform_car("loco_mainline", 160, 16, NORTH)
+	var/list/body = istype(E) ? platform_segments(E.connected) : list()
+	var/obj/structure/trains/platform/cab = body.len == 5 ? body[5] : null
+	var/obj/structure/trains/platform/firebox = body.len == 5 ? body[4] : null
+	platform_check("mainline/six_sections", long_kit && cab && E.body_length() == 6 && cab.seg_index == 6 && cab.loc == platform_turf(160, 11) && !cab.density && firebox.density && E.density && E.control_spot() == cab && cab.car_engine() == E)
+	var/list/states = icon_states('icons/obj/vehicles/train_platforms.dmi')
+	platform_check("mainline/art", E.icon_state == "loco_mainline_1c" && cab.icon_state == "loco_mainline_6c" && ("loco_mainline_1l" in states) && ("loco_mainline_6r" in states) && ("roof_loco_mainline_c" in states) && cab.roofed() && !firebox.roofed() && heavy_parts_placed(E) && platform_parts_placed(body))
+	var/obj/structure/trains/platform/tender = platform_car("tender", 160, 10, NORTH)
+	cab.connected = tender
+	tender.tender_fuel = 300
+	tender.tender_water = 500
+	E.water = 0
+	E.fuel = 100
+	var/list/found = E.engine_tenders()
+	E.tender_top_up()
+	platform_check("mainline/runs_from_its_tender", found.len == 1 && found[1] == tender && E.max_water == 100 && E.water == 100 && tender.tender_water == 400 && E.has_coupling_end(TRUE) && cab.has_coupling_end(FALSE))
+
+	var/mob/living/human/platform_rider/driver = new(platform_turf(161, 11))
+	var/mob/living/human/platform_rider/stoker = new(platform_turf(160, 11))
+	var/mob/living/human/platform_rider/fireman = new(platform_turf(159, 11))
+	var/mob/living/human/platform_rider/guest = new(platform_turf(160, 10))
+	platform_check("cab/stations_by_tile", E.has_stations() && E.cab_station(driver) == "driver" && E.cab_station(stoker) == "fire" && E.cab_station(fireman) == "fireman" && !E.cab_station(guest))
+	guest.loc = platform_turf(164, 20)
+	var/list/stand = E.station_controls("driver")
+	var/list/door = E.station_controls("fire")
+	var/list/side = E.station_controls("fireman")
+	platform_check("cab/each_station_has_its_controls", stand.len == 4 && ("Throttle up" in stand) && ("Brake" in stand) && !("Light the fire" in stand) && door.len == 1 && door[1] == "Light the fire" && side.len == 1 && side[1] == "Injector off")
+	E.work_control("Light the fire", driver)
+	var/not_lit = !E.on
+	E.work_control("Light the fire", stoker)
+	var/lit = E.on
+	E.work_control("Drop the fire", fireman)
+	platform_check("cab/fire_worked_at_the_door", not_lit && lit && E.on)
+	E.work_control("Reverser to backward", stoker)
+	var/kept = E.reverser == 1
+	E.work_control("Reverser to backward", driver)
+	var/turned = E.reverser == -1
+	E.work_control("Reverser to forward", driver)
+	E.work_control("Throttle up", fireman)
+	platform_check("cab/driver_has_the_regulator", kept && turned && E.reverser == 1 && E.throttle == 0)
+	E.work_control("Injector off", driver)
+	var/still_on = E.injector
+	E.work_control("Injector off", fireman)
+	var/off = !E.injector
+	E.work_control("Injector on", fireman)
+	platform_check("cab/injector_on_the_firemans_side", still_on && off && E.injector)
+
+	var/obj/item/stack/ore/coal/lump = new(platform_turf(161, 11))
+	cab.attackby(lump, driver)
+	var/obj/item/weapon/material/shovel/spade = new(platform_turf(159, 11))
+	cab.attackby(spade, fireman)
+	var/refused = E.fuel == 100 && !QDELETED(lump) && tender.tender_fuel == 300
+	cab.attackby(lump, stoker)
+	cab.attackby(spade, stoker)
+	platform_check("cab/firing_needs_the_door", refused && QDELETED(lump) && E.fuel == 145 && tender.tender_fuel == 270)
+
+	E.refresh_consist()
+	E.throttle = 3
+	var/top = E.cruise_speed()
+	E.throttle = 0
+	platform_check("mainline/pulls_more_and_faster", E.haul == 60 && E.consist_weight >= 12 && E.consist_weight < 20 && E.pull_ratio() >= 1 && abs(top - 10 / 1.4) < 0.01)
+	platform_check("mainline/steps_with_its_crew", platform_step(E, 3) == 3 && E.loc == platform_turf(160, 19) && cab.loc == platform_turf(160, 14) && tender.loc == platform_turf(160, 13) && driver.loc == platform_turf(161, 14) && stoker.loc == platform_turf(160, 14) && fireman.loc == platform_turf(159, 14) && E.cab_station(driver) == "driver" && heavy_parts_placed(E) && platform_parts_placed(body))
+
+	// One-tile engines and the diesel are worked from one place.
+	var/obj/structure/trains/locomotive/coal/small = new(platform_turf(164, 22))
+	var/list/all = small.station_controls(small.cab_station(guest))
+	var/list/diesel = train_car_layout("loco_diesel")
+	var/list/steam = train_car_layout("loco_steam")
+	var/list/armored = train_car_layout("loco_armored")
+	platform_check("cab/small_engines_have_one_place", !small.has_stations() && small.cab_station(guest) == "all" && small.at_firebox(guest) && all.len == 6 && !diesel["stations"] && steam["stations"] && armored["stations"])
+
 /world/New()
 	OpenPort("none")
 	GLOB.all_observable_events = list()
@@ -1239,6 +1325,7 @@ var/global/platform_probe_runtime_error = FALSE
 		platform_coupling_run()
 		platform_boiler_run()
 		platform_tender_run()
+		platform_cab_run()
 	catch (var/exception/E)
 		platform_probe_runtime_error = TRUE
 		world.log << "Fixture aborted: [E] at [E.file]:[E.line]"

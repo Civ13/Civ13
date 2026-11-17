@@ -235,6 +235,8 @@ var/global/fluid_step_serial = 0
 			continue
 		V.vessel_step()
 	factory_presses_step()
+	gas_works_step()
+	gas_compressors_step()
 	for (var/datum/fluid_network/N in fluid_networks)
 		if (N.idle_steps && N.idle_steps % FLUID_IDLE_RECHECK)
 			N.idle_steps++

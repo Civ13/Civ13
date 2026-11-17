@@ -37,6 +37,10 @@ heading, the rail tile and the tile right of it.
   3x4 locomotive bodies and their cab roofs (steam and armoured cab on
   segment 3, diesel cab on segment 1), used by the heavy locomotives
   ([trains.md](trains.md#heavy-locomotives)).
+- `loco_mainline_<1-6><l|c|r>` and `roof_loco_mainline_<l|c|r>`: the 3x6
+  main-line engine, cab on segment 6 with the driver's stand, firebox door
+  and fireman's injector drawn in it
+  ([trains.md](trains.md#cab-stations-and-the-main-line-engine)).
 
 ## Shape
 

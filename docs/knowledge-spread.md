@@ -32,12 +32,36 @@ characters and the dead are skipped.
 
 ## Spreading knowledge
 
-A spreading subject still needs a book or a teacher, but is quicker to learn:
+A spreading subject still needs a book, a teacher or a bench, but is quicker to learn:
 
 - Reading its chapter, or hearing it read aloud, takes half the time
   (`KNOWLEDGE_SPREADING_STUDY`, applied in `scholar_study_time`).
 - Watching and guided work can teach the whole subject at any era
   (`trade_learning_cap`); guarded subjects from WW1 on still stop at half.
+- Researching it again costs a third: bench work on it counts three times
+  (`KNOWLEDGE_REDISCOVERY_RATE`, in the bench tick of `book_research.dm`).
+  Samples, field work, prototypes and compared notes keep their usual shares.
+  The bench window lists it among what sets the pace.
+
+## Tuning
+
+Both lags are read from `config/config.txt` at server start, so a host can
+change them without a code change. Raising a lag never takes knowledge away
+from a living character: subjects already gained as common knowledge are kept,
+and later characters start with less. It does move subjects back a band for
+everyone, though. With the spreading lag raised from 2 to 3, a subject two eras
+behind is guarded again, so its quicker reading, whole-subject teaching and
+cheaper research stop for living characters too.
+
+What to watch before changing them, in the player activity data
+(`code/modules/player_activity/player_activity.dm`): `learn` events, which
+carry the subject in `node` and show how long a new character takes to learn
+its first guarded subject, and the `locked:<node_id>` counters in the `counts`
+lines, which show how often arrivals hit a "you don't know how" wall on a
+subject. Tighter lags (1 and 3) help arrivals more and cut the
+leading faction's exclusive edge to one era.
+
+The player guide is "How knowledge spreads" in the wiki's Books and Scholars.
 
 Tests: `tests/knowledge_spread/` (offline suite `knowledge_spread`, native
 `probe.dm`).
