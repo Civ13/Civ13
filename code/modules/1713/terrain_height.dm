@@ -626,6 +626,7 @@ var/global/terrain_shading_applied = FALSE
 // too). The faint slope tint alone reads as lighting, so every whole height
 // level also gets a soft lip line, dark where the drop faces away from the
 // light and warm where it faces it; lines close together mean steep ground.
+// The light is the north-west one, or the sun's side where the sun lights the hills.
 // A tile shows the sprite for its four corner heights rounded to half levels,
 // so the lines join across tiles. Same slot rules as the shading.
 #define TERRAIN_TERRACE_CAP 6
@@ -634,13 +635,26 @@ var/global/list/terrain_terrace_images = list()
 
 /turf/var/tmp/image/terrain_terrace_overlay = null
 
+// The sprites are baked for a light from the north-west and, in a second file,
+// from the north. The sun's other six sides (sun_terrace_octant, sun_hills.dm)
+// are the same sprites turned by quarter turns: the tile's corners are read a
+// quarter turn back for each, and the sprite is turned forward again.
 /proc/terrain_terrace_image(key, snow = FALSE)
-	var/cache_key = snow ? "[key]s" : key
+	var/cache_key = "[key][snow ? "s" : ""][sun_terrace_octant]"
 	var/image/I = terrain_terrace_images[cache_key]
 	if (!I)
-		I = image('icons/turf/terrain_terrace.dmi', icon_state = key, layer = TERRAIN_SHADE_LAYER)
+		var/turns = (sun_terrace_octant % 2 ? (sun_terrace_octant + 1) / 2 : sun_terrace_octant / 2) % 4
+		var/state = key
+		for (var/i in 1 to turns)
+			// nw, ne, sw, se <- ne, se, nw, sw
+			state = copytext(state, 1, 2) + copytext(state, 3, 4) + copytext(state, 5, 6) + copytext(state, 2, 3) + copytext(state, 4, 5)
+		I = image(sun_terrace_octant % 2 ? 'icons/turf/terrain_terrace.dmi' : 'icons/turf/terrain_terrace_n.dmi', icon_state = state, layer = TERRAIN_SHADE_LAYER)
 		I.plane = FLOOR_PLANE
 		I.mouse_opacity = 0
+		if (turns)
+			var/matrix/M = matrix()
+			M.Turn(90 * turns)
+			I.transform = M
 		if (snow)
 			I.color = TERRAIN_SNOW_COLOUR
 		terrain_terrace_images[cache_key] = I

@@ -158,6 +158,12 @@ line near an edge spills softly into the next tile. Lines are wide and soft
 (10 pixels, fading out) so they sit quietly on grass. The 2,194 sprites are in
 `icons/turf/terrain_terrace.dmi`, a second shared overlay beside the tint
 (`terrain_terrace_overlay`), placed, refreshed and restored with it.
+Where the sun lights the hills ([sun and shadows](sun-and-shadows.md)) the lines
+are lit from the sun's side of the compass, one of eight. Two baked sets cover
+them: the north-west set above, turned by quarter turns, gives the four
+diagonals, and `icons/turf/terrain_terrace_n.dmi` (lit from the north) gives the
+four cardinals the same way (`terrain_terrace_image`; a test checks that every
+turned sprite equals the tile's own lines lit from that side).
 Snow turfs (`/turf/floor/winter`) wear the same tint and line sprites through a
 colour matrix (`TERRAIN_SNOW_COLOUR`) that turns the warm highlight near-white
 and the shadow blue; a straw highlight on snow looked like stains.
@@ -242,6 +248,7 @@ cave rock, rubble and tunnel shafts (docs/underground-excavation.md).
   pixel per tile, level x 8) so heights can be painted by hand.
 - `check --heights FILE [--map FILE.dmm]` validates a file.
 - `bake-shading [--out icons/turf/terrain_shade.dmi] [--terrace-out icons/turf/terrain_terrace.dmi]`
+  `[--terrace-north-out icons/turf/terrain_terrace_n.dmi]`
   writes the shading and terrace line sprites.
 
 ## Line of sight
