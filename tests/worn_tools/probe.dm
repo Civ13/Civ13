@@ -163,6 +163,8 @@ var/wt_runtime_error = FALSE
 	var/obj/item/weapon/material/kitchen/utensil/knife/stale = new(old)
 	old.after_load()
 	wt_check(stale.loc == T, "an old hidden boot knife drops beside the shoe on load")
+	wt_check(old.persistence_runtime_var("holding") && old.persistence_runtime_var("can_hold_knife"), "an old shoe's retired knife fields are skipped on load")
+	wt_check(!old.persistence_runtime_var("name"), "a shoe's live fields still load")
 
 	// Fire pouch: a flint inside lights a held candle against the worn pouch.
 	var/mob/living/human/wt_probe/F = new

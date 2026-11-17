@@ -153,6 +153,11 @@
 		if (istype(I, /obj/item/weapon/material/kitchen/utensil) || istype(I, /obj/item/weapon/material/shard) || istype(I, /obj/item/weapon/attachment/bayonet) || istype(I, /obj/item/weapon/gun/projectile/revolver/derringer))
 			I.forceMove(T)
 
+// Those saves also hold the retired `holding` and `can_hold_knife` fields. The
+// loader rejects a field the type no longer has, so skip them on import.
+/obj/item/clothing/shoes/persistence_runtime_var(key)
+	return key == "holding" || key == "can_hold_knife" || ..()
+
 // ---------------------------------------------------------------- Stone Age kits
 // Sprites: icons/obj/worn_tools.dmi and icons/mob/worn_tools.dmi (Fable).
 
