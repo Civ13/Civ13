@@ -89,9 +89,12 @@ var/global/list/crafts = list()
 /datum/craft/proc/party()
 	return register ? register.party : null
 
-// Tiles of hull: what the drives have to push.
+// Tiles of hull: what the drives have to push. Water in her bilge weighs
+// like more of them (naval/hull_ledger.dm).
 /datum/craft/proc/mass()
-	return body ? max(1, body.tile_count()) : 1
+	. = body ? max(1, body.tile_count()) : 1
+	if (ledger)
+		. += ledger.water_weight()
 
 // Push from every drive that is switched on and has fuel.
 /datum/craft/proc/thrust()
