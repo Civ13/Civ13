@@ -1620,8 +1620,9 @@
 		secondary_refund(H)
 		return
 
-	if (recipe.on_floor && !isfloor(user.loc))
-		to_chat(user, "<span class='warning'>\The [recipe.title] must be constructed on the floor!</span>")
+	// Upper storeys are open air under a floor cover (tile_occupancy.dm).
+	if (recipe.on_floor && !tile_has_floor(get_turf(user)))
+		to_chat(user, "<span class='warning'>\The [recipe.title] must be constructed on the floor! Stand on the ground or a floor to build it.</span>")
 		secondary_refund(H)
 		return
 

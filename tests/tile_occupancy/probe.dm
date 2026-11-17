@@ -57,13 +57,13 @@ var/list/tile_probe_notes = list()
 	return H
 
 // Build through the real crafting menu path with a stack in the active hand.
-/proc/tile_probe_build(mob/living/human/H, stack_type, title, result_type)
+/proc/tile_probe_build(mob/living/human/H, stack_type, title, result_type, on_floor = FALSE)
 	var/obj/item/stack/S = new stack_type(H, 50, FALSE)
 	H.r_hand = S
 	H.hand = FALSE
 	// A refusal must come from the tile, never from a research gate.
 	tile_probe_assert(crafting_recipe_allowed(H, "[result_type]"), "recipe_allowed [result_type]")
-	var/datum/stack_recipe/R = new(title, result_type, 1, 1, 1, 0)
+	var/datum/stack_recipe/R = new(title, result_type, 1, 1, 1, 0, on_floor, on_floor)
 	S.produce_recipe(R, 1, H)
 	. = S.amount
 	H.r_hand = null
@@ -103,10 +103,10 @@ var/list/tile_probe_notes = list()
 	// Concrete over wood: refused, through the crafting path, for both orders.
 	var/mob/living/human/H = tile_probe_builder(5, 5)
 	var/turf/T = get_turf(H)
-	tile_probe_assert(tile_probe_build(H, /obj/item/stack/material/wood, "wood floor", /obj/covers/wood) == 49, "first_floor_built")
+	tile_probe_assert(tile_probe_build(H, /obj/item/stack/material/wood, "wood floor", /obj/covers/wood, TRUE) == 49, "first_floor_built")
 	tile_probe_assert(tile_probe_floors(T) == 1, "one_wood_floor")
 	tile_probe_assert(tile_probe_build(H, /obj/item/stack/material/stone, "concrete floor", /obj/covers/concretefloor) == 50, "concrete_over_wood_refused_unpaid")
-	tile_probe_assert(tile_probe_build(H, /obj/item/stack/material/wood, "wood floor", /obj/covers/wood) == 50, "wood_over_wood_refused_unpaid")
+	tile_probe_assert(tile_probe_build(H, /obj/item/stack/material/wood, "wood floor", /obj/covers/wood, TRUE) == 50, "wood_over_wood_refused_unpaid")
 	tile_probe_assert(tile_probe_floors(T) == 1 && tile_probe_count(T, /obj/covers/concretefloor) == 0, "still_one_floor")
 	// Removing the old floor frees the tile.
 	for (var/obj/covers/C in T)
@@ -121,9 +121,27 @@ var/list/tile_probe_notes = list()
 	var/obj/covers/repairedfloor/sub = new(ST)
 	tile_probe_assert(sub.is_subfloor() && tile_subfloor_for(ST, /obj/covers/wood) == sub, "floor_cover_is_subfloor")
 	tile_probe_assert(tile_build_refusal(ST, /obj/covers/repairedfloor), "cover_over_cover_refused")
-	tile_probe_assert(tile_probe_build(S, /obj/item/stack/material/wood, "wood floor", /obj/covers/wood) == 49, "wood_over_cover_built")
+	tile_probe_assert(tile_probe_build(S, /obj/item/stack/material/wood, "wood floor", /obj/covers/wood, TRUE) == 49, "wood_over_cover_built")
 	tile_probe_assert(QDELETED(sub) && tile_probe_floors(ST) == 1 && tile_probe_count(ST, /obj/covers/wood) == 1, "cover_replaced_by_wood")
 	tile_probe_assert(tile_probe_build(S, /obj/item/stack/material/stone, "concrete floor", /obj/covers/concretefloor) == 50, "finished_floor_not_subfloor")
+
+	// Upper storeys are open air: a floor recipe is built standing on the
+	// storey's floor cover, and refused only on bare open air.
+	var/turf/UT = locate(5, 11, 1)
+	UT.ChangeTurf(/turf/sky)
+	UT = locate(5, 11, 1)
+	tile_probe_assert(istype(UT, /turf/sky) && !isfloor(UT), "upper_storey_is_open_air")
+	var/obj/covers/repairedfloor/upper = new(UT)
+	var/mob/living/human/U = tile_probe_builder(5, 11)
+	tile_probe_assert(tile_has_floor(UT), "upper_cover_is_footing")
+	tile_probe_assert(tile_probe_build(U, /obj/item/stack/material/wood, "wood floor", /obj/covers/wood, TRUE) == 49, "wood_floor_upstairs_built")
+	tile_probe_assert(QDELETED(upper) && tile_probe_count(UT, /obj/covers/wood) == 1 && tile_probe_floors(UT) == 1, "upstairs_cover_replaced_by_wood")
+	var/turf/AT = locate(5, 14, 1)
+	AT.ChangeTurf(/turf/sky)
+	AT = locate(5, 14, 1)
+	var/mob/living/human/A = tile_probe_builder(5, 14)
+	tile_probe_assert(!tile_has_floor(AT), "bare_air_no_footing")
+	tile_probe_assert(tile_probe_build(A, /obj/item/stack/material/wood, "wood floor", /obj/covers/wood, TRUE) == 50, "bare_air_refused_unpaid")
 
 	// A wall may stand on that floor, but only one wall.
 	tile_probe_assert(tile_probe_build(H, /obj/item/stack/material/wood, "wood wall", /obj/covers/wood_wall/adjustable) == 49, "wall_on_floor_built")

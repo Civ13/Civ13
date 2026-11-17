@@ -816,6 +816,8 @@ class AcquisitionProjection(Projection):
             # The circuits' level now lives in the skill table (recipe_skill_needs.dm).
             recipe_skill_short=lambda actor, _recipe: actor.getStatCoeff('crafting') < CIRCUIT_SKILL,
             locate=lambda kind: kind, isfloor=lambda site: site.floor, usr=None,
+            # Footing: the ground or a floor cover on an upper storey (tile_occupancy.dm).
+            tile_has_floor=lambda site: bool(site and site.floor),
             exercise_can_build=lambda *_args: True, civ_telecom_can_build=lambda *_args: True,
             civ_generation_can_build=lambda *_args: True, car_workshop_build_refusal=lambda *_args: None,
             waterwheel_build_refusal=lambda *_args: None, offshore_rig_build_refusal=lambda *_args: None,
