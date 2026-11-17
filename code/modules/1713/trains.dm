@@ -1102,7 +1102,11 @@ var/global/train_solo_move = FALSE
 		if (ratio < 1)
 			to_chat(user, "<span class = 'warning'>The train is heavier than its engines can pull at full speed.</span>")
 		if (consist_engines > 1)
-			to_chat(user, "[consist_engines] engines are pulling this train.")
+			to_chat(user, "[consist_engines] engines are working this train.")
+		if (lead_factor <= 0.5)
+			to_chat(user, "It is pushing cars ahead of it and keeps to half speed.")
+		else if (lead_factor < 1)
+			to_chat(user, "It is running backward and keeps to three quarters of its speed.")
 	return TRUE
 
 /obj/structure/trains/locomotive/coal/fuel_value(obj/item/I)
