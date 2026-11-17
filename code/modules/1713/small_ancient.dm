@@ -1,9 +1,15 @@
 // Small things for the early ages (docs/small-ancient.md): clay tablets and a
-// reed stylus, board games and the ice house.
+// reed stylus, board games, the ice house and ice blocks cut from frozen water.
 
 #define BOARD_GAME_TIME 200
 #define ICE_HOUSE_SNOW 60 // minutes of cold per snow pile
-#define ICE_HOUSE_CAP 600
+#define ICE_HOUSE_ICE 180 // minutes of cold per block of cut ice
+#define ICE_HOUSE_CAP 1200
+// Below ground the earth stays cool: an ice house there melts a minute of
+// cold every four minutes instead of every minute.
+#define ICE_HOUSE_MELT_SECONDS 60
+#define ICE_HOUSE_MELT_SECONDS_UNDERGROUND 240
+#define ICE_BLOCK_WARM_MINUTES 40 // minutes above freezing before a loose block melts
 
 // ---- clay tablets ----------------------------------------------------------------
 
@@ -110,7 +116,7 @@
 // worth at a time unless it is freezing out.
 /obj/structure/closet/ice_house
 	name = "ice house"
-	desc = "A thick-walled box packed with straw. Pack snow into it and food kept inside stays fresh far longer, until the snow melts."
+	desc = "A thick-walled box packed with straw. Pack snow or blocks of cut ice into it and food kept inside stays fresh far longer, until it melts. Built underground, where the earth stays cool, it melts far more slowly."
 	icon = 'icons/obj/small_ancient.dmi'
 	icon_state = "ice_house"
 	icon_closed = "ice_house"
@@ -140,22 +146,40 @@
 	return cold > 0
 
 /obj/structure/closet/ice_house/attackby(obj/item/W, mob/user)
+	var/added = 0
 	if (istype(W, /obj/item/weapon/snowwall))
-		if (cold + ICE_HOUSE_SNOW > ICE_HOUSE_CAP)
-			to_chat(user, SPAN_NOTICE("\The [src] is packed full of snow."))
+		added = ICE_HOUSE_SNOW
+	else if (istype(W, /obj/item/weapon/ice_block))
+		added = ICE_HOUSE_ICE
+	if (added)
+		if (cold + added > ICE_HOUSE_CAP)
+			to_chat(user, SPAN_NOTICE("\The [src] is packed full."))
 			return
 		user.drop_from_inventory(W)
 		qdel(W)
-		cold += ICE_HOUSE_SNOW
+		cold += added
 		start_melting()
-		to_chat(user, SPAN_NOTICE("You pack the snow into \the [src]."))
+		to_chat(user, SPAN_NOTICE("You pack \the [W] into \the [src]."))
 		return
 	return ..()
+
+// Underground, on the cave level or in the caves, the earth keeps it cool.
+/obj/structure/closet/ice_house/proc/underground()
+	var/turf/T = get_turf(src)
+	if (!T)
+		return FALSE
+	if (istype(get_area(T), /area/caribbean/void/caves))
+		return TRUE
+	var/under_z = underground_level_z()
+	return under_z && T.z == under_z
 
 /obj/structure/closet/ice_house/examine(mob/user)
 	..()
 	if (get_dist(user, src) <= 1)
-		to_chat(user, cold > 0 ? SPAN_NOTICE("It holds snow for about [cold] minutes.") : SPAN_WARNING("The snow in it has all melted."))
+		var/slow = underground()
+		to_chat(user, cold > 0 ? SPAN_NOTICE("It holds enough cold for about [slow ? cold * (ICE_HOUSE_MELT_SECONDS_UNDERGROUND / ICE_HOUSE_MELT_SECONDS) : cold] minutes of warm weather.") : SPAN_WARNING("The snow and ice in it have all melted."))
+		if (slow)
+			to_chat(user, SPAN_NOTICE("Down here in the cool earth it melts slowly."))
 
 /obj/structure/closet/ice_house/process_interval(configured_seconds = 2)
 	if (QDELETED(src) || cold <= 0)
@@ -163,13 +187,70 @@
 		return PROCESS_KILL
 	melt_seconds += min(2, max(0, configured_seconds), max(0, (world.time - last_tick) / 10))
 	last_tick = world.time
-	if (melt_seconds < 60)
+	if (melt_seconds < ICE_HOUSE_MELT_SECONDS)
 		return
-	melt_seconds -= 60
+	var/melt_after = underground() ? ICE_HOUSE_MELT_SECONDS_UNDERGROUND : ICE_HOUSE_MELT_SECONDS
+	if (melt_seconds < melt_after)
+		return
+	melt_seconds -= melt_after
 	if (get_temp(src) <= 0)
 		return
 	cold = max(0, cold - 1)
 
+// ---- cut ice -----------------------------------------------------------------------
+
+// Cut from the edge of an ice hole with a pick, hatchet or chisel (ice_fishing.dm).
+// Packed into an ice house it holds three snow piles' worth of cold. Left out
+// above freezing it melts away.
+/obj/item/weapon/ice_block
+	name = "block of ice"
+	desc = "A heavy block of lake ice. Pack it into an ice house before it melts."
+	icon = 'icons/obj/small_ancient.dmi'
+	icon_state = "ice_block"
+	w_class = ITEM_SIZE_LARGE
+	flammable = FALSE
+	value = 1
+	var/warm_minutes = ICE_BLOCK_WARM_MINUTES
+	var/tmp/melt_epoch = 0
+
+/obj/item/weapon/ice_block/persistence_runtime_var(key)
+	return key == "melt_epoch" || ..()
+
+/obj/item/weapon/ice_block/New()
+	..()
+	schedule_melt()
+
+/obj/item/weapon/ice_block/after_load()
+	..()
+	schedule_melt()
+
+/obj/item/weapon/ice_block/proc/schedule_melt()
+	melt_epoch++
+	addtimer(CALLBACK(src, PROC_REF(melt_check), melt_epoch), 1 MINUTE)
+
+/obj/item/weapon/ice_block/proc/melt_check(epoch)
+	if (QDELETED(src) || epoch != melt_epoch)
+		return FALSE
+	if (get_temp(src) > 0)
+		warm_minutes--
+		if (warm_minutes <= 0)
+			var/turf/T = get_turf(src)
+			if (T)
+				T.visible_message(SPAN_NOTICE("\The [src] melts away."))
+			qdel(src)
+			return TRUE
+	schedule_melt()
+	return TRUE
+
+/obj/item/weapon/ice_block/examine(mob/user)
+	..()
+	if (warm_minutes < ICE_BLOCK_WARM_MINUTES / 2)
+		to_chat(user, SPAN_WARNING("It is dripping and half melted."))
+
 #undef BOARD_GAME_TIME
 #undef ICE_HOUSE_SNOW
+#undef ICE_HOUSE_ICE
 #undef ICE_HOUSE_CAP
+#undef ICE_HOUSE_MELT_SECONDS
+#undef ICE_HOUSE_MELT_SECONDS_UNDERGROUND
+#undef ICE_BLOCK_WARM_MINUTES

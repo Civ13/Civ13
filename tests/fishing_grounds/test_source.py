@@ -119,7 +119,7 @@ class FishingGrounds(unittest.TestCase):
         self.assertLess(fish.index('do_after('), fish.index('fish_land('))
         # The hole closes by a saved wall-clock time, and its timer token is not saved.
         self.assertIn('cut_at = trap_minutes_text(trap_now_minutes())', ice)
-        self.assertIn('return key == "check_epoch" || ..()', ice)
+        self.assertIn('return key == "check_epoch" || key == "cutting" || ..()', ice)
         self.assertTrue((ROOT / 'icons/obj/fishing_gear.dmi').is_file())
 
     def test_new_species_are_raw_fish_with_their_own_sheet(self):
