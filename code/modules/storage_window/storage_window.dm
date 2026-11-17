@@ -128,6 +128,33 @@
 			return TRUE
 	return FALSE
 
+// Right-click > Open Storage Window: the window for one container, whatever
+// the player's setting, without the double-click.
+/proc/storage_window_verb_open(mob/user, obj/item/weapon/storage/S)
+	var/mob/living/human/H = user
+	if (!istype(H) || !S || H.incapacitated())
+		return
+	if (!H.storage_window_possible())
+		to_chat(H, SPAN_WARNING("The storage window can't open here; use the strip instead."))
+		return
+	if (!storage_window_show(H, S))
+		to_chat(H, SPAN_WARNING("You can't reach \the [S]."))
+
+/obj/item/weapon/storage/verb/open_storage_window()
+	set name = "Open Storage Window"
+	set category = null
+	set src in view(1)
+	storage_window_verb_open(usr, src)
+
+/obj/structure/storage_container/verb/open_storage_window()
+	set name = "Open Storage Window"
+	set category = null
+	set src in view(1)
+	if (!usr || !usr.Adjacent(src) || !storage_access_allowed(usr))
+		return
+	ensure_storage()
+	storage_window_verb_open(usr, storage)
+
 /proc/storage_window_show(mob/living/human/H, obj/item/weapon/storage/S)
 	var/datum/storage_window/W = H.storage_window
 	if (!W)
