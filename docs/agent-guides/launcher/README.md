@@ -11,6 +11,13 @@ activation still apply to those actions. Missing native, graphical or
 save/load evidence belongs in the report and never blocks a source fix.
 Do not turn an evidence limitation into a new approval requirement.
 
+<!-- 2026-11-17: AI characters window -->
+Val asked (2026-11-17) for Ada's controls in the launcher. All regions > More > **AI characters…**
+(Gui/AgentRunsDialog.cs, AgentRuns.cs, launcher 1.5.29) runs `shard_group.py agents` (agent_runs.py), which
+finds autopilot watchers (`--watch`) and runs (`--character`) by command line and shows each run's latest
+needs and log tail, refreshing every 15 s. **Stop run** kills only an autopilot run (its watcher plays the
+character again); **Restart watcher** needs the watcher.json that watcher wrote at start and never a raw token.
+
 <!-- 2026-11-16: Player activity window -->
 Val asked (2026-11-15) for player metadata: who is active and what they do. All regions > More > **Player
 activity…** (Gui/PlayerActivityDialog.cs, PlayerActivity.cs, launcher 1.5.27) runs `shard_group.py activity`,

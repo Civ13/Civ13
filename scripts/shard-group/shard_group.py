@@ -66,6 +66,7 @@ sys.path.insert(0, str(HERE))
 import expedition_slots  # noqa: E402
 import fresh_world  # noqa: E402
 import group_fresh_world  # noqa: E402
+import agent_runs  # noqa: E402
 import group_ports  # noqa: E402
 import underground_migration  # noqa: E402
 from shard_map_selection import select_map_block  # noqa: E402
@@ -74,7 +75,7 @@ GROUP_ACTIONS = ('setup', 'status', 'start', 'stop', 'restart', 'update', 'freez
                  'kill', 'force-restart', 'stage', 'enrol', 'help-status', 'help-start', 'help-stop', 'unlock', 'force-unlock',
                  'config-apply', 'config-migrate', 'handover', 'epoch', 'fresh-world', 'group-fresh-world', 'update-offline',
                  'update-unsaved', 'expedition-land', 'expedition-archive', 'expedition-status', 'expedition-open',
-                 'players', 'send-players', 'magic-whitelist', 'activity', 'ports', 'set-gate', 'set-port',
+                 'players', 'send-players', 'magic-whitelist', 'activity', 'agents', 'ports', 'set-gate', 'set-port',
                  'migrate-underground')
 # send-players landings (region_admin_send.dm): the nearest dry shore facing the source,
 # exact coordinates, or the destination's normal arrival point.
@@ -3261,6 +3262,8 @@ def main(argv=None):
     parser.add_argument('--ship', action='store_true', help='send-players: send the ship the first player is aboard, with everyone aboard')
     parser.add_argument('--send', action='store_true', help='send-players: really send (without it, only the dry run)')
     parser.add_argument('--add', help='magic-whitelist: player keys to add, comma separated')
+    parser.add_argument('--stop-run', type=int, help='agents: stop this AI character run (its watcher plays the character again)')
+    parser.add_argument('--restart-watcher', type=int, help='agents: restart this AI character watcher as it was started')
     parser.add_argument('--remove', help='magic-whitelist: player keys to remove, comma separated')
     parser.add_argument('--port', type=int, help='set-port: the game port')
     parser.add_argument('--transfer-port', type=int, help='set-port: the transfer agent port')
@@ -3345,6 +3348,18 @@ def main(argv=None):
             if args.region:
                 raise Refused('the magic whitelist is shared by the whole group; leave out --region')
             result = magic_whitelist(group, args.add, args.remove)
+        elif args.action == 'agents':
+            # AI characters on this host (agent_runs.py): autopilot watchers, their runs and logs.
+            if args.region:
+                raise Refused('AI characters cover the whole host; leave out --region')
+            if args.stop_run:
+                result = agent_runs.stop_run(args.stop_run)
+            elif args.restart_watcher:
+                result = agent_runs.restart_watcher(args.restart_watcher)
+            else:
+                result = agent_runs.status()
+            if result.get('ok') is False:
+                raise Refused(result['refused'])
         elif args.action == 'activity':
             if args.region:
                 raise Refused('player activity covers the whole group; leave out --region')
