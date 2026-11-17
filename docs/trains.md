@@ -6,6 +6,7 @@ Code: `code/modules/1713/trains.dm` (cars, rails, locomotives),
 `code/modules/1713/train_locomotives.dm` (heavy 3x4 locomotives).
 Tests: `tests/train_platforms` (the `drive/`, `load/`, `brake/`,
 `double_heading/`, `tender/` and `collision/` checks) and `tests/train_collision`.
+Step cost by train length: [train-step-cost.md](train-step-cost.md).
 
 ## Controls
 

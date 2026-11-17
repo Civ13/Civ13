@@ -308,7 +308,16 @@
 	if (!train_solo_move)
 		sweep_sides(newloc, fdir)
 	var/old_dir = dir
+	// On a curve the next rail tile is one of the engine's own side tiles: a
+	// solid boiler or bunker there must not stop the engine itself.
+	var/list/solid_parts = null
+	for (var/obj/structure/train_part/P in body_parts)
+		if (P.density && P.loc == newloc)
+			P.density = FALSE
+			LAZYADD(solid_parts, P)
 	. = ..()
+	for (var/obj/structure/train_part/P in solid_parts)
+		P.density = TRUE
 	if (!.)
 		return
 	var/list/new_tiles = train_platform_tiles(loc, dir)

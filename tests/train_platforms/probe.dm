@@ -561,6 +561,22 @@ var/global/platform_probe_runtime_error = FALSE
 	AL.ex_act(1.0)
 	platform_check("armored_heavy/plated", istype(AL) && AL.overlays.len == 0 && doors == 2 && AL.health == 5700 && !AL.disabled && AL.haul == 40)
 
+	// A steam engine's solid boiler side lies on the next rail tile of a curve
+	// and must not stop the engine itself.
+	for (var/y in 2 to 10)
+		platform_track(77, y, NORTH)
+	for (var/x in 78 to 84)
+		platform_track(x, 10, EAST)
+	var/obj/structure/trains/locomotive/coal/heavy/CE = platform_car("loco_steam", 77, 6, NORTH)
+	CE.fuel = 100
+	CE.on = TRUE
+	var/steam_curve = platform_step(CE, 20)
+	var/solid_sides = 0
+	for (var/obj/structure/train_part/deck/body/B in CE.body_parts)
+		if (B.density)
+			solid_sides++
+	platform_check("heavy/steam_rounds_curve", steam_curve == 11 && CE.loc == platform_turf(84, 10) && CE.dir == EAST && heavy_parts_placed(CE) && solid_sides == 2)
+
 /world/New()
 	OpenPort("none")
 	GLOB.all_observable_events = list()
