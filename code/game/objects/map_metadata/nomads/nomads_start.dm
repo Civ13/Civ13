@@ -80,6 +80,10 @@
 		var/obj/structure/bed/B = region_home_bed(lobby.client.ckey)
 		if (B && B.valid_character_bed(null))
 			return get_turf(B)
+	// An account in its first two days starts near people (newcomer_start.dm).
+	var/turf/near_people = pick_newcomer_ground(lobby.client)
+	if (near_people)
+		return near_people
 	return pick_new_player_ground()
 
 #undef START_SPAWN_ATTEMPTS
