@@ -140,8 +140,8 @@ only her own deck packs for the crossing.
 ### Airships
 
 `naval/air_hull.dm`: `/datum/craft_body/built/air` is a built hull laid as
-`/obj/covers/airship_deck` planks on the open-air level, started beside a ladder
-top and grown edge to edge (`air_deck_lay_refusal()`), at most 60 tiles. Its
+`/obj/covers/airship_deck` planks on the ground or the open-air level, started
+anywhere clear on the ground or beside a ladder top and grown edge to edge (`air_deck_lay_refusal()`), at most 60 tiles. Its
 `tile_refusal()` takes only clear open air, it has no upper deck, and `plan()`
 refuses any move while her gas cells (`/obj/structure/airship_gas_cell`, 12
 each) hold up less than her tiles plus the people aboard. `move_to()` carries
@@ -160,6 +160,16 @@ her views, wreck and bombs reach the first solid level under her
 (`air_hull_solid_below()`), ground fire reaches her only through open air
 (`air_hull_levels_between()`, half the chance per extra level), and a click on
 open air from her deck aims at what is seen through it (`airborne_aim_turf()`).
+A deck can also be laid on clear, level ground (`air_ground_open()`); while
+`landed()` she creeps only over such ground. `lift_off()` raises her a level
+when she has the lift and nothing overhead, and `land()` lowers her a level at
+a time onto clear ground with no tree below (`land_refusal()`, rechecked each
+level). Short of lift, `check_lift()` starts `sink()`: she comes to rest on
+floors and roofs, flattens trees under at most a quarter of her tiles (holing
+the cells over them) and snags in more (`tear_on_tree()`). A wreck over a tree
+drops people beside its trunk (`air_hull_beside()`), and a pedal airship forced
+down over a forest snags in the tree below until it comes down
+(`snag_in_tree()`, `pedal_airship_tree_gone()`).
 Native probe:
 `tests/pedal_bicycle/ride.py --probe air_hull_probe.dm`.
 

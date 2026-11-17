@@ -1,6 +1,7 @@
 """Crewed airships (code/modules/naval/air_hull.dm): wiring the native probe relies on.
 
-Offline source checks only; building, lifting, flying, turning, firing down,
+Offline source checks only; building in the air and on the ground, lifting
+off, landing, sinking onto trees, flying, turning, firing down,
 save/restore, holed and burnt gas cells, the bomb hatch and the wreck run natively in tests/pedal_bicycle/ride.py --probe air_hull_probe.dm.
 """
 import hashlib
@@ -132,6 +133,52 @@ class HighFlight(unittest.TestCase):
         self.assertLess(projectile.index('airborne_aim_turf(user, targloc)'), projectile.index('airborne_launch_turf(user, targloc)'))
         carbon = (ROOT / 'code/game/mob/living/carbon/carbon.dm').read_text()
         self.assertLess(carbon.index('airborne_aim_turf(src, target)'), carbon.index('airborne_launch_turf(src, target)'))
+
+
+class Ground(unittest.TestCase):
+    def test_decks_are_laid_on_clear_ground_or_beside_a_ladder_top(self):
+        lay = extract(SOURCE, '/proc/air_deck_lay_refusal')
+        self.assertIn('var/aloft = istype(T, /turf/sky)', lay)
+        self.assertIn('air_ground_open(T)', lay)
+        self.assertIn('aloft && (locate(/obj/structure/multiz) in N)', lay)
+        ground = extract(SOURCE, '/proc/air_ground_open')
+        for blocker in ('/obj/covers', '/obj/roof', '/obj/structure/multiz', 'aircraft_rough_ground()'):
+            self.assertIn(blocker, ground)
+        refusal = extract(SOURCE, BODY + '/tile_refusal')
+        self.assertLess(refusal.index('air_ground_open(D)'), refusal.index('air_deck_open(D)'))
+
+    def test_lift_off_needs_lift_and_open_sky_and_landing_clear_ground(self):
+        lift = extract(SOURCE, '/datum/craft/air/proc/lift_off_refusal')
+        self.assertIn('B.lift_refusal()', lift)
+        self.assertIn('air_deck_open(U)', lift)
+        self.assertIn('/obj/roof', lift)
+        land = extract(SOURCE, '/datum/craft/air/proc/land_refusal')
+        self.assertLess(land.index('air_hull_tree(G)'), land.index('air_ground_open(G)'))
+        self.assertIn('G.z != ground', land)
+        descend = extract(SOURCE, '/datum/craft/air/proc/descend_to_ground')
+        self.assertLess(descend.index('land_refusal()'), descend.index('B.shift_level('))
+        self.assertIn('#define AIR_HULL_LEVEL_TIME 30\n', SOURCE)
+
+    def test_short_of_lift_she_sinks_flattens_a_few_trees_and_snags_in_many(self):
+        check = extract(SOURCE, '/datum/craft/air/proc/check_lift')
+        self.assertIn('B.landed()', check)
+        self.assertLess(check.index('set_anchor(TRUE)'), check.index('sink()'))
+        step = extract(SOURCE, '/datum/craft/air/proc/sink_step')
+        self.assertIn('trees.len * AIR_HULL_TREE_SHARE > deck.len', step)
+        self.assertLess(step.index('tear_on_tree(trees[W], W, FALSE)'), step.index('tear_on_tree(trees[W], W, TRUE)'))
+        self.assertIn('#define AIR_HULL_TREE_SHARE 4\n', SOURCE)
+        tear = extract(SOURCE, '/datum/craft/air/proc/tear_on_tree')
+        self.assertIn('G.holes++', tear)
+        self.assertIn('W.try_destroy()', tear)
+
+    def test_falling_onto_a_tree_lands_beside_the_trunk(self):
+        crash = extract(SOURCE, '/datum/craft/air/proc/crash')
+        self.assertLess(crash.index('G = air_hull_beside(G)'), crash.index('L.adjustBruteLoss('))
+        self.assertIn('max(5, rand(15, 35) + 15 * (levels - 1) - cushion)', crash)
+        pedal = (ROOT / 'code/game/objects/structures/pedal_airship.dm').read_text()
+        set_down = extract(pedal, '/obj/structure/vehicle/bicycle/airship/proc/set_down')
+        self.assertLess(set_down.index('snag_in_tree(G, tree)'), set_down.index('set_aloft(FALSE)'))
+        self.assertIn('pedal_airship_tree_gone(T)', extract(COMBAT, '/obj/structure/wild/Destroy'))
 
 
 class Wiring(unittest.TestCase):
