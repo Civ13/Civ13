@@ -187,7 +187,11 @@ def plan_warm(sit):
     if not isinstance(body, (int, float)) or body >= needs.COMFORT_LOW:
         return None  # too hot is the director's problem: shade and clothes need judgement
     step = sit.kit.cold_plan(sit.observation, sit.ignored, threshold=float("inf"))
-    return [step] if step else None
+    if step:
+        return [step]
+    # No clothes, fire or logs to hand: make what a campfire needs (flint, spear, axe, logs) rather than freeze.
+    plan = scripts.campfire(sit)
+    return None if plan == scripts.DONE else plan
 
 
 def plan_treat(sit):
@@ -284,8 +288,16 @@ def parse_order(raw):
     return order
 
 
-def _same_order(a, b):
-    return all(a.get(key) == b.get(key) for key in ("script", "do", "skill"))
+FAR_PROJECT = 40  # tiles: a building plan farther than this is from another life or land
+
+
+def _far_project(project, me):
+    try:
+        if project.get("z") is not None and me.get("z") is not None and int(project["z"]) != int(me["z"]):
+            return True
+        return max(abs(int(project["x"]) - int(me["x"])), abs(int(project["y"]) - int(me["y"]))) > FAR_PROJECT
+    except (KeyError, TypeError, ValueError):
+        return False
 
 
 def describe_order(order):
@@ -313,7 +325,6 @@ class Routines:
         self.routine_steps = 0
         self.director_calls = 0
         self.implicit = True  # with no order, follow the active project or the early survival ladder
-        self.failed_order = None  # the last standing order dropped for failing; a director re-issuing it does not outrank its own sentences
 
     # The director -------------------------------------------------------------------------------------
 
@@ -361,8 +372,10 @@ class Routines:
             return ""
         if not isinstance(data, dict) or not isinstance(data.get("plan"), list):
             return ""
-        if "routine" in data and not (self.order and self.failed_order and _same_order(self.order, self.failed_order)):
-            return ""  # an explicit routine wins, unless it is the one that just kept failing
+        # Small models send a "routine" next to sentences that say what they actually mean; the sentence wins when it
+        # names a script, since the reply as a whole had no step that could run. An explicit "none" still pauses work.
+        if "routine" in data and parse_order(data.get("routine")) == "none":
+            return ""
         for item in data["plan"]:
             if not isinstance(item, str):
                 continue
@@ -427,6 +440,10 @@ class Routines:
         if action == "build_next":
             project = sit.box.get("project")
             if not project:
+                return name, None
+            if _far_project(project, sit.me):
+                # A plan from another level, land or life cannot be walked to: drop it rather than walk at it forever.
+                sit.box["project"] = None
                 return name, None
             # A piece short of material gathers it (leaves for the roof, logs, stone) instead of failing every turn.
             try:
@@ -516,7 +533,6 @@ class Routines:
         if self.failures[key] >= FAIL_LIMIT:
             self.problem = f"the {choice.name} routine failed {FAIL_LIMIT} times in a row ({summary[:120]})"
             if key == "work":
-                self.failed_order = dict(self.order) if self.order else {"do": "build_next"} if "build_next" in json.dumps(choice.plan) else None
                 self.order = None
         if choice.need == "work" and self.order and not failed:
             self.order["times"] = self.order.get("times", 1) - 1

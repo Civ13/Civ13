@@ -346,21 +346,36 @@ class ScriptTests(unittest.TestCase):
         choice = routines.Routines().choose(sit)
         self.assertEqual(choice.plan, [{"do": "break_branch", "target": len(built) + 1}])
 
-    def test_a_failed_routine_reissued_loses_to_the_directors_sentence(self):
-        # Live Gaia: the director kept re-ordering build_next (roof short of leaves) while writing "Build campfire for warmth".
-        scheduler = routines.Routines()
-        scheduler.directed(json.dumps({"routine": {"do": "build_next"}}))
-        choice = routines.Choice("work: build_next", [{"do": "build_next"}], 0.25, "work")
-        scheduler.record(choice, "failed: no leaves")
-        scheduler.record(choice, "failed: no leaves")
-        self.assertIsNone(scheduler.order)
+    def test_the_directors_sentence_beats_its_routine_key(self):
+        # Live Gaia: qwen3-8b sent "routine": build_next (failing) with the plan "Build campfire for warmth".
         answer = json.dumps({"plan": ["Build campfire for warmth"], "routine": {"do": "build_next"}})
+        scheduler = routines.Routines()
         scheduler.directed(answer)
         self.assertEqual(scheduler.adopt_text_plan(answer), "make campfire (30 more)")
-        # A routine that has not failed still wins over the sentences.
-        fresh = routines.Routines()
-        fresh.directed(answer)
-        self.assertEqual(fresh.adopt_text_plan(answer), "")
+        self.assertEqual(scheduler.order["script"], "campfire")
+        # A sentence that names no script leaves the routine key in charge.
+        answer = json.dumps({"plan": ["Say hello"], "routine": {"do": "build_next"}})
+        scheduler.directed(answer)
+        self.assertEqual(scheduler.adopt_text_plan(answer), "")
+        self.assertEqual(scheduler.order["do"], "build_next")
+
+    def test_a_stick_in_a_pocket_is_not_one_to_sharpen(self):
+        pocket = holding("sharpened flint")
+        pocket["carried"] = ["stick (pocket)"]
+        self.assertEqual(next_step(scripts.spear, pocket, [TREE]), [{"do": "break_branch", "target": "[0xtree]"}])
+        self.assertEqual(next_step(scripts.spear, holding("sharpened flint", "stick")), [{"do": "sharpen_stick", "target": 0}])
+
+    def test_freezing_with_nothing_to_burn_makes_a_campfire(self):
+        cold = dict(holding(), bodytemperature=265)
+        choice = quiet().choose(situation(observe(cold, nearby=[ROCK]))[0])
+        self.assertEqual((choice.name, choice.plan), ("warm up", [{"do": "find_flint", "target": 1}]))
+
+    def test_a_far_or_other_level_blueprint_is_dropped(self):
+        box = {"project": {"name": "hut", "x": 630, "y": 458, "z": 1}}
+        sit = situation(observe(dict(holding(), x=121, y=150, z=2)), box=box)[0]
+        scheduler = routines.Routines()
+        scheduler.choose(sit)
+        self.assertIsNone(box["project"])
 
     def test_ladder_order(self):
         rows = [ROCK, TREE]

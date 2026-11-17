@@ -497,7 +497,6 @@
 		if ("Wet Season")
 			loc_temp = 30
 
-
 	switch (time_of_day)
 		if ("Midday")
 			loc_temp *= 1.05
@@ -511,6 +510,18 @@
 			loc_temp *= 0.96
 		if ("Night")
 			loc_temp *= 0.92
+
+	// Underground the earth holds a steady cool temperature: no weather
+	// reaches it, and the season only moves it a little.
+	if (turf_in_cool_cellar(A))
+		loc_temp = cool_cellar_temperature(loc_temp)
+		var/datum/building_room/cellar_room = building_room_at(get_turf(A))
+		if (cellar_room && cellar_room.heat > 0)
+			loc_temp = round(loc_temp + (22 - loc_temp) * cellar_room.heat)
+		var/mob/living/human/cellar_human = A
+		if (istype(cellar_human) ? cellar_human.life_nearby_heat() : nearby_heat_source(A))
+			loc_temp = max(loc_temp, 22)
+		return loc_temp
 
 	// The weather on this tile: a storm overhead or pinned zone weather.
 	var/local_weather = weather_at(A)

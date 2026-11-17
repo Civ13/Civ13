@@ -174,25 +174,80 @@
 
 /obj/item/weapon/material/proc/record_tool_components(obj/item/weapon/material/part/head_part, obj/item/weapon/material/handle/HANDLE)
 	tool_head_material = head_part.material.name
-	tool_handle_material = HANDLE.material.name
 	tool_head_quality = max(0.5, min(2, head_part.crafting_quality))
-	tool_handle_quality = max(0.5, min(2, HANDLE.crafting_quality))
 	tool_head_condition = max(0, min(1, head_part.health / head_part.maxhealth))
-	tool_handle_condition = max(0, min(1, HANDLE.health / HANDLE.maxhealth))
-	crafting_quality = min(tool_head_quality, tool_handle_quality)
-	update_force()
-	var/material/wood = get_material_by_name("wood")
-	var/handle_capacity = max(0.5, min(1.5, HANDLE.material.integrity / wood.integrity))
-	maxhealth = max(1, round(maxhealth * handle_capacity))
-	health = maxhealth * min(tool_head_condition, tool_handle_condition)
-	var/handle_speed = max(0.75, min(1.25, wood.weight / max(1, HANDLE.material.weight)))
-	// The head sets the family speed (tool_speeds.dm); the handle scales it.
-	if (istype(src, /obj/item/weapon/material/pickaxe))
-		var/obj/item/weapon/material/pickaxe/P = src
-		var/head_speed = tool_material_speed(/obj/item/weapon/material/pickaxe, head_part.material.name) || initial(P.usespeed)
-		P.usespeed = max(1, min(3, head_speed * handle_speed))
-	else if (istype(src, /obj/item/weapon/material/shovel))
-		var/obj/item/weapon/material/shovel/S = src
-		var/head_speed = tool_material_speed(/obj/item/weapon/material/shovel, head_part.material.name) || initial(S.usespeed)
-		S.usespeed = head_speed * handle_speed
+	apply_tool_handle(src, HANDLE.material.name, HANDLE.crafting_quality, HANDLE.health / HANDLE.maxhealth)
 
+// How a handle of this material changes a tool against a plain wood handle:
+// list(durability multiplier, work speed multiplier). Tougher wood lasts
+// longer; lighter wood swings faster.
+/proc/tool_handle_effects(handle_material_name)
+	var/material/wood = get_material_by_name("wood")
+	var/material/M = get_material_by_name(handle_material_name)
+	if (!wood || !M)
+		return list(1, 1)
+	return list(max(0.5, min(1.5, M.integrity / wood.integrity)), max(0.75, min(1.25, wood.weight / max(1, M.weight))))
+
+// "lasts 50% longer and works 25% faster than with a wood handle", for examine
+// text and the Crafting window.
+/proc/tool_handle_effect_text(handle_material_name)
+	var/list/effects = tool_handle_effects(handle_material_name)
+	var/list/parts = list()
+	var/durability = round((effects[1] - 1) * 100, 1)
+	var/speed = round((effects[2] - 1) * 100, 1)
+	if (durability)
+		parts += durability > 0 ? "lasts [durability]% longer" : "has [-durability]% less durability"
+	if (speed)
+		parts += "works [abs(speed)]% [speed > 0 ? "faster" : "slower"]"
+	return parts.len ? "[jointext(parts, " and ")] than with a wood handle" : "works the same as with a wood handle"
+
+// Fit a handle to a finished tool, whether a head was put on it by hand or the
+// tool was crafted from a stack recipe that used the handle up. The handle
+// scales durability, and the work speed of pickaxes, shovels and hoes.
+/proc/apply_tool_handle(obj/item/I, handle_material_name, handle_quality = 1, handle_condition = 1)
+	if (!istype(I) || !handle_material_name)
+		return
+	var/list/effects = tool_handle_effects(handle_material_name)
+	handle_quality = max(0.5, min(2, handle_quality))
+	handle_condition = max(0, min(1, handle_condition))
+	var/head_condition = 1
+	var/head_name = null
+	if (istype(I, /obj/item/weapon/material))
+		var/obj/item/weapon/material/T = I
+		if (!T.tool_head_material && T.material)
+			T.tool_head_material = T.material.name
+			T.tool_head_quality = max(0.5, min(2, T.crafting_quality))
+			T.tool_head_condition = 1
+		T.tool_handle_material = handle_material_name
+		T.tool_handle_quality = handle_quality
+		T.tool_handle_condition = handle_condition
+		T.crafting_quality = min(T.tool_head_quality, handle_quality)
+		T.update_force()
+		head_condition = T.tool_head_condition
+		head_name = T.tool_head_material
+	if (I.maxhealth > 0)
+		I.maxhealth = max(1, round(I.maxhealth * effects[1]))
+		I.health = I.maxhealth * min(head_condition, handle_condition)
+	I.apply_handle_speed(effects[2], head_name)
+
+// The head sets the family speed (tool_speeds.dm); the handle scales it. Only
+// tools with a work speed take part.
+/obj/item/proc/apply_handle_speed(multiplier, head_name)
+	return
+
+/obj/item/weapon/material/pickaxe/apply_handle_speed(multiplier, head_name)
+	var/head_speed = tool_material_speed(/obj/item/weapon/material/pickaxe, head_name) || initial(usespeed)
+	usespeed = max(1, min(3, head_speed * multiplier))
+
+/obj/item/weapon/material/shovel/apply_handle_speed(multiplier, head_name)
+	var/head_speed = tool_material_speed(/obj/item/weapon/material/shovel, head_name) || initial(usespeed)
+	usespeed = head_speed * multiplier
+
+/obj/item/weapon/plough/hoe/apply_handle_speed(multiplier, head_name)
+	usespeed *= multiplier
+
+// Says what this handle does for a tool built on it.
+/obj/item/weapon/material/handle/examine(mob/user)
+	..()
+	if (material)
+		to_chat(user, "<b>As a tool handle:</b> a tool built on it [tool_handle_effect_text(material.name)].")

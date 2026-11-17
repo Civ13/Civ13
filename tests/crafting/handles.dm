@@ -224,7 +224,28 @@ var/handle_ci_retired = 0
 	handle_ci_expect(handle_lines && !handle_lines[1]["met"] && craft_guard_refusal(C.actor, C.recipe, CRAFT_GUARD_MENU) == "Needs a wood handle held or worn" && !C.stock.recipe_makeable_now(C.actor, C.recipe), "window keeps a handle recipe out of Ready without a handle")
 	var/datum/stack_recipe/plain_recipe = new("chisel", /obj/item/weapon/chisel, 8, 1, 1, 0, FALSE, TRUE, null)
 	handle_ci_expect(!recipe_needs_crafting_handle("chisel") && !handle_guard.describe_lines(C.actor, plain_recipe) && isnull(handle_guard.refusal(C.actor, plain_recipe, CRAFT_GUARD_MENU)), "plain recipe lists no handle")
-	handle_ci_expect(!recipe_needs_crafting_handle("wood spear") && !recipe_needs_crafting_handle("sandstone pickaxe mold") && !recipe_needs_crafting_handle("hammer") && !recipe_needs_crafting_handle("hoe"), "wooden tools and molds need no handle")
+	handle_ci_expect(!recipe_needs_crafting_handle("wood spear") && !recipe_needs_crafting_handle("sandstone pickaxe mold") && !recipe_needs_crafting_handle("hammer") && !recipe_needs_crafting_handle("hoe") && !recipe_needs_crafting_handle("steam shovel"), "wooden tools, molds and the steam shovel need no handle")
+	// The handle's wood carries into a recipe-crafted tool: a plank handle
+	// lasts longer and works faster than a wood one, the same as fitting a
+	// head by hand.
+	handle_ci_expect(tool_handle_effect_text("woodplank") == "lasts 50% longer and works 25% faster than with a wood handle" && tool_handle_effect_text("iron") == "lasts 50% longer and works 18% slower than with a wood handle" && tool_handle_effect_text("wood") == "works the same as with a wood handle", "handle effect text matches the Atlas notes", list("woodplank"=tool_handle_effect_text("woodplank"),"iron"=tool_handle_effect_text("iron"),"wood"=tool_handle_effect_text("wood")))
+	var/list/handle_tools = list()
+	for (var/handle_wood in list("wood", "woodplank"))
+		C = new("stone pickaxe", slot_back)
+		C.handle.set_material(handle_wood)
+		C.craft()
+		var/obj/item/weapon/material/pickaxe/made_pick = null
+		for (var/obj/item/weapon/material/pickaxe/candidate in locate(1,1,1))
+			if (candidate.type == C.recipe.result_type && candidate.tool_handle_material == handle_wood)
+				made_pick = candidate
+		handle_ci_expect(C.succeeded() && made_pick && made_pick.tool_head_material == "stone", "recipe tool records its handle: [handle_wood]", made_pick ? list("handle"=made_pick.tool_handle_material,"head"=made_pick.tool_head_material) : null)
+		handle_tools[handle_wood] = made_pick
+		if (made_pick)
+			made_pick.loc = null
+	var/obj/item/weapon/material/pickaxe/wood_pick = handle_tools["wood"]
+	var/obj/item/weapon/material/pickaxe/plank_pick = handle_tools["woodplank"]
+	if (wood_pick && plank_pick)
+		handle_ci_expect(plank_pick.maxhealth == round(wood_pick.maxhealth * 1.5) && plank_pick.usespeed > wood_pick.usespeed && plank_pick.health == plank_pick.maxhealth, "plank handle makes a sturdier, faster stone pickaxe", list("wood_max"=wood_pick.maxhealth,"plank_max"=plank_pick.maxhealth,"wood_speed"=wood_pick.usespeed,"plank_speed"=plank_pick.usespeed))
 	// The completed stone hatchet goes to the current active hand only when
 	// the last input stack has actually vacated that hand.
 	C = new("stone hatchet", slot_back)
