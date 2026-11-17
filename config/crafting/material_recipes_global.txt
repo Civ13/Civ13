@@ -90,8 +90,8 @@
 //**| POPPY |**
 //*************
 
-//**| BONE |**|FOSSILS|**
-//***********************
+//**| BONE |**| CHITIN |**|FOSSILS|**
+//*************************************
 
 //**| STONE |**| STONE SUPPORTS |**| STONE RESEARCH & TOOLS |**| STONE FLOORS |**| (STONE) RAW MARBLE FLOORS |**| (STONE) MARBLE FLOORS |**| (STONE) DECORATIVE MARBLE FLOORS #1 |****************
 //************************************************************************************************************************************************************************************************
@@ -1461,6 +1461,19 @@ RECIPE: /material/bone/,dice,/obj/item/weapon/dice,2,90,0,1,none,15,0,0,8,null
 RECIPE: /material/bone/,tomahawk,/obj/item/weapon/material/thrown/tomahawk,4,30,0,1,none,25,0,0,4,bone
 RECIPE: /material/bone/,bone dart,/obj/item/ammo_casing/chemdart/bone,2,30,0,1,none,9,14,12,5,bone
 RECIPE: /material/bone/,bone gear set,/obj/item/machine_part/gear,4,150,0,1,machine parts,0,0,0,8,bone
+
+//*************************************************************
+//*********************| CHITIN |******************************
+//*************************************************************
+
+RECIPE: /material/chitin/,chitin mask,/obj/item/clothing/mask/chitinmask,4,65,0,1,none,0,0,0,8,null
+RECIPE: /material/chitin/,chitin helmet,/obj/item/clothing/head/helmet/chitin,7,115,0,1,none,0,0,0,8,null
+RECIPE: /material/chitin/,chitin armor,/obj/item/clothing/suit/armor/chitin,14,180,0,1,none,0,0,0,8,null
+RECIPE: /material/chitin/,chitin buckler,/obj/item/weapon/shield/chitin,7,180,0,1,none,0,0,0,8,null
+RECIPE: /material/chitin/,chitin shield,/obj/item/weapon/shield/chitin/large,10,180,0,1,none,0,0,0,8,null
+RECIPE: /material/chitin/,chitin harpoon,/obj/item/weapon/material/harpoon/chitin,3,90,0,1,none,0,0,0,1,chitin
+RECIPE: /material/chitin/,chitin beads,/obj/item/stack/barter_beads/chitin,1,30,0,1,none,0,0,0,8,null
+RECIPE: /material/chitin/,crushed shell,/obj/item/stack/crushed_shell,1,30,0,1,none,0,0,0,8,null
 
 
 //*********************| FOSSILS |***********************

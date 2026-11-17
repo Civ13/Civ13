@@ -1015,7 +1015,7 @@
 
 /obj/item/stack/material/chitin
 	name = "chitin"
-	desc = "The armor of Trilobites...and Ants"
+	desc = "Hard shell plates from crabs, trilobites and beetles. Worked into armor, shields, beads and harpoon points, or pounded into crushed shell."
 	icon_state = "chitin_material"
 	default_type = "chitin"
 	flammable = TRUE

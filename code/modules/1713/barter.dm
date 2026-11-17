@@ -33,6 +33,13 @@
 	singular_name = "string of bone beads"
 	value = 1
 
+/obj/item/stack/barter_beads/chitin
+	name = "chitin beads"
+	desc = "Strings of small polished crab-shell beads, worth trading."
+	icon_state = "beads_chitin"
+	singular_name = "string of chitin beads"
+	value = 1
+
 /obj/structure/barter_mat
 	name = "barter mat"
 	desc = "A mat with a line down the middle. Two traders each lay their offer on their side, and when both agree the offers change hands."

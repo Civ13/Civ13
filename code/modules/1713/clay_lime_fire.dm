@@ -350,23 +350,24 @@ var/global/list/brick_bench_batches = list(
 
 /obj/structure/furnace/lime_kiln
 	name = "lime kiln"
-	desc = "A dry-stone shaft kiln. Load stone or marble and fuel, then light it by hand to burn the charge to quicklime."
+	desc = "A dry-stone shaft kiln. Load stone, marble or crushed shell and fuel, then light it by hand to burn the charge to quicklime."
 	icon = 'icons/obj/workshop_machines.dmi'
 	icon_state = "lime_kiln"
 	base_state = "lime_kiln"
 	smelt_time = 400
 	var/stone_charge = 0
 	var/marble_charge = 0
+	var/shell_charge = 0
 
 /obj/structure/furnace/lime_kiln/factory_port_ready()
 	return FALSE
 
 /obj/structure/furnace/lime_kiln/proc/charge()
-	return stone_charge + marble_charge
+	return stone_charge + marble_charge + shell_charge
 
 /obj/structure/furnace/lime_kiln/examine(mob/user, distance)
 	..(user, distance)
-	to_chat(user, SPAN_NOTICE("It holds [charge()] of [LIME_KILN_LIMIT] stone and [fuel] fuel."))
+	to_chat(user, SPAN_NOTICE("It holds [charge()] of [LIME_KILN_LIMIT] stone or shell and [fuel] fuel."))
 
 /obj/structure/furnace/lime_kiln/attackby(obj/item/I, mob/living/human/H)
 	if (!I || !I.loc || !istype(H))
@@ -387,8 +388,9 @@ var/global/list/brick_bench_batches = list(
 		qdel(S)
 		return
 	var/is_marble = S.type == /obj/item/stack/material/marble
-	if (S.type != /obj/item/stack/material/stone && !is_marble)
-		to_chat(H, SPAN_WARNING("\The [src] burns only stone or marble."))
+	var/is_shell = istype(S, /obj/item/stack/crushed_shell)
+	if (S.type != /obj/item/stack/material/stone && !is_marble && !is_shell)
+		to_chat(H, SPAN_WARNING("\The [src] burns only stone, marble or crushed shell."))
 		return
 	if (on)
 		to_chat(H, SPAN_WARNING("\The [src] is burning. Wait for it to finish."))
@@ -399,16 +401,18 @@ var/global/list/brick_bench_batches = list(
 		return
 	if (is_marble)
 		marble_charge += moved
+	else if (is_shell)
+		shell_charge += moved
 	else
 		stone_charge += moved
 	S.use(moved)
-	visible_message(SPAN_NOTICE("[H] loads [moved] [is_marble ? "marble" : "stone"] into \the [src]."))
+	visible_message(SPAN_NOTICE("[H] loads [moved] [is_marble ? "marble" : (is_shell ? "crushed shell" : "stone")] into \the [src]."))
 
 /obj/structure/furnace/lime_kiln/attack_hand(mob/living/human/H)
 	if (on)
 		return
 	if (charge() <= 0)
-		to_chat(H, SPAN_WARNING("\The [src] is empty. Load stone or marble first."))
+		to_chat(H, SPAN_WARNING("\The [src] is empty. Load stone, marble or crushed shell first."))
 		return
 	return ..()
 
@@ -418,6 +422,7 @@ var/global/list/brick_bench_batches = list(
 		return
 	stone_charge = 0
 	marble_charge = 0
+	shell_charge = 0
 	var/obj/item/stack/ore/quicklime/Q = new(get_turf(src))
 	Q.amount = burnt
 
@@ -435,6 +440,9 @@ var/global/list/brick_bench_batches = list(
 		var/obj/item/stack/material/marble/M = new(get_turf(src))
 		M.amount = marble_charge
 		marble_charge = 0
+	if (shell_charge > 0)
+		new /obj/item/stack/crushed_shell(get_turf(src), shell_charge)
+		shell_charge = 0
 
 #undef POTTERS_WHEEL_SPEED
 #undef BRICK_BENCH_BATCH

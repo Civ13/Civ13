@@ -195,6 +195,17 @@
 		return TRUE
 	return istype(src, /mob/living/simple_animal/hostile/alligator) || istype(src, /mob/living/simple_animal/hostile/dinosaur) || istype(src, /mob/living/simple_animal/pachy) || istype(src, /mob/living/simple_animal/hostile/poison/snake/constrictor)
 
+// Shell plates: crabs, trilobites and beetles have a hard shell instead of
+// bone. A small crab gives one plate, a full-grown crab or trilobite two.
+/mob/living/simple_animal/proc/harvest_chitin_pieces()
+	if (istype(src, /mob/living/simple_animal/crab/small/trilobite))
+		return 2
+	if (istype(src, /mob/living/simple_animal/crab))
+		return mob_size >= MOB_SMALL ? 2 : 1
+	if (istype(src, /mob/living/simple_animal/hostile/phosphor_beetle))
+		return 1
+	return 0
+
 // Tendons come from every animal with usable bone that is at least small sized.
 /mob/living/simple_animal/proc/harvest_sinew()
 	return harvest_bones()
@@ -406,6 +417,9 @@
 		new /obj/item/stack/sinew(site, min(4, max(1, size-2)))
 	if (harvest_bones())
 		new /obj/item/stack/material/bone(site, max(1, size-2))
+	var/chitin_pieces = harvest_skill_amount(harvest_chitin_pieces(), harvest_bonus)
+	if (chitin_pieces > 0)
+		new /obj/item/stack/material/chitin(site, chitin_pieces)
 	if (skin)
 		harvest_hide(site)
 	else
