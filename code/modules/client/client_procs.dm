@@ -25,6 +25,19 @@
 	// before anything else so a client between mobs still gets its reply.
 	if (href_list["chat_ping"])
 		src << output("1", "browser_chat:chatPong")
+		// A page that pings is loaded and listening. When this world never
+		// heard its chat_ready (the page outlived a handover or reboot, or the
+		// ready link was lost), deliver the held messages now instead of
+		// queueing every new line forever.
+		if (chat && !chat.is_ready)
+			chat.on_ready()
+		return
+	// Also ahead of the mob check: it only flushes this client's own chat, and
+	// a client still between mobs (a reconnect into a restored world) must not
+	// lose it.
+	if (href_list["chat_ready"])
+		if (chat)
+			chat.on_ready()
 		return
 
 	if (!usr || usr != mob)	//stops us calling Topic for somebody else's client. Also helps prevent usr=null
@@ -82,11 +95,6 @@
 					for (var/client/C in clients)
 						if (C.ckey == ckey)
 							to_chat(C, "<span class = 'good'>href_list["Your ban has been lifted."]</span>")
-	if (href_list["chat_ready"])
-		if (chat)
-			chat.on_ready()
-		return
-
 	//Logs all hrefs
 	if (config && config.log_hrefs && href_logfile)
 		href_logfile << "<small>[time2text(world.timeofday,"hh:mm")] [src] (usr:[usr])</small> || [hsrc ? "[hsrc] " : ""][href]<br>"
@@ -271,6 +279,7 @@
 	chat.load()
 	
 	init_statpanel()
+	watch_browser_panels()
 	winset(src, "mainwindow", "macro=macro")
 	apply_action_keybindings()
 

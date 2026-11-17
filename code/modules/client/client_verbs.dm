@@ -10,6 +10,9 @@
 /client/verb/reload_chat()
 	set category = "OOC"
 	set name = "Reload Chat"
+	// Reloads the stat panel too: after a broken reconnect it can be blank,
+	// and typing Reload-Chat is then the only way to reach this verb.
+	init_statpanel()
 	if (chat)
 		chat.load()
 		to_chat(src, "<span class = 'good'>Chat reloaded!</span>")
