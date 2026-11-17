@@ -74,7 +74,7 @@ var/list/open_air_probe_log = list()
 	open_air_probe_check(!open_air_probe_turf_shown(V) && !open_air_probe_turf_shown(W), "no_turf_in_views")
 	open_air_probe_check(W.ground.icon == ground.icon && W.ground.icon_state == ground.icon_state && W.ground.layer == 1.95, "ground_copies_the_turf")
 	// Who walks below shows at once, and leaves the old tile's view at once.
-	var/mob/living/human/open_air_probe_actor/walker = new(locate(5, 4, 1))
+	var/obj/structure/walker = new /obj/structure(locate(5, 4, 1))
 	open_air_view_link_around(3, 6, 6, 3, 3)
 	var/obj/effect/open_air_view/S = open_air_probe_view(locate(5, 4, 2))
 	open_air_probe_check(S && (walker in S.vis_contents), "walker_shown")
