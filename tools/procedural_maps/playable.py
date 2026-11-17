@@ -99,6 +99,10 @@ BARREN_GROUND = "/turf/floor/dirt/dust/regolith"
 BARREN_CHANNEL = "/turf/floor/dirt/dust/regolith/crater"
 BARREN_ICE = "/turf/floor/beach/water/ice"
 BARREN_METADATA = "/obj/map_metadata/nomads/barren"
+# Barren-family worlds ship their cave level as unformed rock, which forms
+# around the cells players dig open (code/modules/multiz/dug_underground.dm).
+UNFORMED_ROCK = "/turf/sky/building/unformed"
+UNFORMED_CELL = UNFORMED_ROCK + ",/area/caribbean/void/caves"
 BARREN_SOURCES = {
     BARREN_METADATA: "code/modules/space/barren_world.dm",
     BARREN_AREA: "code/modules/space/barren_world.dm",
@@ -106,6 +110,7 @@ BARREN_SOURCES = {
     BARREN_CHANNEL: "code/modules/space/barren_world.dm",
     BARREN_ICE: "code/game/turfs/floor_types.dm",
     ROCK: "code/game/objects/structures/rocks.dm",
+    UNFORMED_ROCK: "code/modules/multiz/dug_underground.dm",
 }
 # The Moon skin: the barren skin with the Moon's ground, area and map settings.
 MOON_AREA = "/area/caribbean/nomads/barren/moon"
@@ -119,6 +124,7 @@ MOON_SOURCES = {
     MOON_CHANNEL: "code/modules/space/moon_world.dm",
     BARREN_ICE: "code/game/turfs/floor_types.dm",
     ROCK: "code/game/objects/structures/rocks.dm",
+    UNFORMED_ROCK: "code/modules/multiz/dug_underground.dm",
 }
 # Per barren-family skin: (area, ground, channel, ice, metadata, sources).
 BARREN_FAMILY = {
@@ -252,6 +258,10 @@ def playable_layout(doc, skin="native"):
                     counts["open cave floor"] = counts.get("open cave floor", 0) + 1
                 if skin in BARREN_FAMILY and layer == "SURFACE":
                     layout[key] = ",".join(barren_cell(c, layout[key].split(","), skin))
+                elif skin in BARREN_FAMILY and layer == "UNDERGROUND":
+                    # Keep the map metadata marker; the rock and its turf become unformed.
+                    kept = [a for a in layout[key].split(",") if a == METADATA]
+                    layout[key] = ",".join(kept + [UNFORMED_CELL])
                 pair = portals.get((x, y, layer))
                 if pair is not None:
                     # One area id per pair, so each top ladder finds exactly its own bottom.

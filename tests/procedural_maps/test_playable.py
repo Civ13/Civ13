@@ -243,7 +243,10 @@ class MoonSkinTests(unittest.TestCase):
             folder.mkdir()
             bundle(barren_surface_preset("moon-0"), folder)
             text, _ = playable.build(folder, skin="moon")
-        self.assertEqual(text, shipped.read_text(encoding="utf-8"))
+        # The shipped map drops the generator's header comment.
+        header, _, body = text.partition("\n")
+        self.assertTrue(header.startswith("// Generated playable layout"))
+        self.assertEqual(body, shipped.read_text(encoding="utf-8"))
 
 
 if __name__ == "__main__":
