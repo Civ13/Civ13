@@ -165,6 +165,22 @@ it is past a damp bilge and stops at awash; an empty bucket bails from her own
 deck only; a refit keeps the water; the tiller saves and restores it; a steel
 hull has no seams; a struck hull leaves no ledger.
 
+Holes and foundering: a floor shot away is a hole and a wall knocked down is
+not; a hole lets in 25 bucketfuls a minute while she is awake and takes her past
+awash; three quarters full she lists and makes slow ahead at best; a patch takes
+two pieces of wood and a hammer, closes the hole and weeps; a holed hull cannot
+be refitted; full on deep water she founders, a crew that gets ahead of the
+water stops the count, and four half minutes later her floors, tiller and
+fittings are lost while her crew, loose things and chests are left in the
+water; full in the shallows she settles on the bottom, neither sails nor turns,
+and floats again once she is patched and bailed below awash.
+
+One-object craft (`code/modules/naval/small_craft_leaks.dm`): a sound raft
+never leaks; below half her strength she leaks, the more the worse; blows leave
+a hulk and never break her up; moving swamps a hulk at ten bucketfuls and a
+swamped raft or canoe will not move, with her paddler still aboard; wood mends
+a raft and cloth an inflatable; land vehicles are untouched.
+
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/bilge_probe.dm 300
 
 ## Upper decks on built hulls (`upper_deck_probe.dm`)

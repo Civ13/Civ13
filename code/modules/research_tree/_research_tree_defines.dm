@@ -27,11 +27,6 @@
 // Phase 3: bench tiers, faction bench cap, resource forge.
 #define MAX_BENCH_TIER 8 // matches the highest min_bench_tier used in the tree
 
-// Silver-equivalent coin value (copper 0.1 / silver 1 / gold 4, summed across
-// coins fed in) needed to push a bench from tier T to tier T+1. Escalates so
-// late tiers are a real investment.
-#define BENCH_TIER_UPGRADE_COST(T) (120 * (T + 1))
-
 // Base number of benches a faction may own, before any forge upgrades, at
 // a given ordinal_age. +1 per era reached.
 #define BASE_BENCH_CAP(era) (1 + era)
@@ -105,3 +100,10 @@
 #define SCHOLAR_PRACTICE_STAMINA 10
 #define SCHOLAR_PRACTICE_CAP 24
 #define SCHOLAR_PRACTICE_INSTRUMENT_RATE 1.5
+
+// How widely a subject is known (knowledge_spread.dm).
+#define KNOWLEDGE_GUARDED 0
+#define KNOWLEDGE_SPREADING 1
+#define KNOWLEDGE_COMMON 2
+// Reading or hearing a spreading subject's chapter takes this share of the usual time.
+#define KNOWLEDGE_SPREADING_STUDY 0.5

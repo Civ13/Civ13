@@ -1313,6 +1313,10 @@ SUITES = {
             'code/game/objects/items/clothing/clothing.dm', 'code/modules/1713/rain_gear.dm',
             'code/game/objects/items/clothing/clothing_accessories.dm',
             'config/crafting/material_recipes_global.txt', 'code/modules/research_tree/research_node.dm')},
+    # Inlaying diamonds into crowns; tests/crown_inlay/probe.dm is the native probe.
+    'crown_inlay': {'files': ('tests/crown_inlay/test_source.py',),
+        'paths': ('tests/crown_inlay/',), 'shared_paths': (
+            'code/modules/1713/apparel_medieval.dm', 'code/modules/1713/gemstones.dm')},
     'obsidian': {'files': ('tests/obsidian/test_source.py',),
         'paths': ('tests/obsidian/',), 'shared_paths': (
             'code/modules/1713/obsidian.dm', 'code/game/turfs/floor_attackby.dm',
@@ -2545,6 +2549,11 @@ SUITES = {
     'death_legacy': {'files': ('tests/death_legacy/test_death_legacy.py',),
         'paths': ('tests/death_legacy/', 'code/modules/research_tree/death_legacy.dm', 'code/game/mob/living/carbon/human/death.dm',
                   'code/game/mob/groups/faction_start.dm', 'code/modules/persistence/bed_return.dm')},
+    'knowledge_spread': {'files': ('tests/knowledge_spread/test_knowledge_spread.py',),
+        'paths': ('tests/knowledge_spread/', 'code/modules/research_tree/knowledge_spread.dm', 'code/modules/research_tree/tech_tree_view.dm',
+                  'code/modules/research_tree/book_interface.dm', 'code/modules/research_tree/book_research.dm', 'code/modules/research_tree/era_loss.dm',
+                  'code/modules/research_tree/scholar_tools.dm', 'code/modules/research_tree/trade_learning.dm',
+                  'code/modules/research_tree/_research_tree_defines.dm')},
     'wild_herbs': {'files': ('tests/wild_herbs/test_wild_herbs.py',),
         'paths': ('tests/wild_herbs/', 'code/modules/ecology/wild_herbs.dm', 'icons/farming/humanity_wild_herbs.dmi',
                   'icons/obj/food/food.dmi')},
@@ -2585,6 +2594,11 @@ SUITES = {
             'code/modules/persistence/region_travel.dm',
             'code/game/mob/language/earth.dm', 'code/_helpers/global_lists.dm',
             'code/game/mob/living/carbon/human/species/species.dm')},
+    # Starting clothes on lands with peoples follow the people and the era.
+    'spawn_outfits': {'files': ('tests/spawn_outfits/test_spawn_outfits.py',),
+        'paths': ('tests/spawn_outfits/', 'code/modules/1713/jobs/spawn_outfits.dm'),
+        'shared_paths': ('code/modules/1713/jobs/nomads.dm', 'code/game/mob/living/carbon/human/origins.dm',
+            'code/_helpers/era.dm', 'code/modules/1713/apparel_stoneage.dm')},
     # Research chapters carry a language: recording, reading, translation.
     'book_language': {'files': ('tests/book_language/test_book_language.py',),
         'paths': ('tests/book_language/', 'code/modules/research_tree/book_language.dm'),

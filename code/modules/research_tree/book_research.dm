@@ -145,6 +145,7 @@
 		to_chat(world, "<big><font color='#c98a1d'><b>[N.name]</b> is written down again, and the world returns to the <b>[ordinal_age_name(N.era_tier)]</b>!</font></big>")
 	else
 		to_chat(world, "<big><font color='#c98a1d'>The discovery of <b>[N.name]</b> sends the world into the <b>[ordinal_age_name(N.era_tier)]</b>!</font></big>")
+	knowledge_era_advanced()
 
 // ------------------------------------------------------------
 // Personal knowledge rules in book mode
@@ -256,7 +257,7 @@
 	if (!B || !assigned_node)
 		return
 	var/datum/research_node/N = get_research_node(assigned_node)
-	if (!N || N.mode == RESEARCH_MODE_BOOK || tier < N.min_bench_tier || B.has_research_chapter(assigned_node))
+	if (!N || N.mode == RESEARCH_MODE_BOOK || bench_tier() < N.min_bench_tier || B.has_research_chapter(assigned_node))
 		return
 	if (!research_lit())
 		return
@@ -297,7 +298,7 @@
 /obj/structure/research_bench/proc/book_can_assign_node(node_id)
 	var/obj/item/weapon/book/B = placed_book()
 	var/datum/research_node/N = get_research_node(node_id)
-	return B && N && N.min_bench_tier <= tier && N.mode != RESEARCH_MODE_BOOK && !B.has_research_chapter(node_id)
+	return B && N && N.min_bench_tier <= bench_tier() && N.mode != RESEARCH_MODE_BOOK && !B.has_research_chapter(node_id)
 
 /obj/structure/research_bench/proc/book_try_assign_node(mob/living/human/H, node_id)
 	if (!placed_book())
@@ -367,9 +368,6 @@
 	if (istype(W, /obj/item/weapon/book) && !istype(W, /obj/item/weapon/book/research/tree_book))
 		book_place(W, user)
 		return
-	if (is_upgrade_coin(W))
-		try_feed_coins(W, user)
-		return
 	// Demonstration notes for a capstone (demonstrations.dm).
 	if (istype(W, /obj/item/weapon/paper) && take_demonstration_notes(W, user))
 		return
@@ -407,8 +405,8 @@
 		if (node_needs_demonstration(assigned_node))
 			to_chat(user, SPAN_WARNING("<b>[N.name]</b> needs a working demonstration: [demonstration_text(assigned_node)]. Record it with Record a Demonstration on paper or in a book."))
 			return
-		if (tier < N.min_bench_tier)
-			to_chat(user, SPAN_WARNING("This bench isn't upgraded enough to complete this prototype."))
+		if (bench_tier() < N.min_bench_tier)
+			to_chat(user, SPAN_WARNING("This prototype belongs to a later era than your civilization has reached."))
 			return
 		if (B.research_prototype_installed(assigned_node))
 			to_chat(user, SPAN_WARNING("A working prototype has already been recorded for <b>[N.name]</b>."))
@@ -664,12 +662,9 @@
 
 /obj/structure/research_bench/proc/book_examine(mob/user)
 	to_chat(user, "Anyone can use this bench. Place a book on it and choose a subject; research done here is written into that book. Researchers need a pencil, pen or writing slate in hand, and better tools work faster. Bookcases within 3 tiles holding related chapters speed research up. Research needs light, and supplies for its discipline used on the bench keep it at full speed. From the Imperial Age, a subject needs its discipline's instrument on or next to the bench. Use Harm intent with a wrench to fasten or unfasten it, or with a hammer to dismantle it.")
-	to_chat(user, "It is tier [tier][tier < era_max_tier() ? " (upgrade progress: [tier_progress]/[BENCH_TIER_UPGRADE_COST(tier)])" : ""].")
-	if (tier < MAX_BENCH_TIER)
-		if (tier >= era_max_tier())
-			to_chat(user, "That is the highest tier the current era allows. Finishing the next era's discovery (such as Bronze Working) lets benches be upgraded again.")
-		else
-			to_chat(user, "Use copper, silver or gold coins on it to raise its tier.")
+	to_chat(user, "It is tier [bench_tier()].")
+	if (bench_tier() < MAX_BENCH_TIER)
+		to_chat(user, "That is the highest tier the current era allows. Finishing the next era's discovery (such as Bronze Working) raises every bench to the next tier on its own.")
 	var/obj/item/weapon/book/B = placed_book()
 	if (!B)
 		to_chat(user, "There is no book on it.")

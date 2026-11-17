@@ -66,7 +66,7 @@ class BronzeRetrievalTests(unittest.TestCase):
         prompt = self.prompt('How can I unlock Bronze Working?')
         for text in ('name = "unfired clay axehead mold"',
                      'istype(W, N.prototype_type)', 'map.can_manage_faction_research',
-                     'tier < N.min_bench_tier', 'map.node_prereqs_met',
+                     'bench_tier() < N.min_bench_tier', 'map.node_prereqs_met',
                      'pentry[RNODE_ENTRY_TICKS] >= N.cost_ticks',
                      'REQUIREMENT alongside the full study'):
             self.assertIn(text, prompt)

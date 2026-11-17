@@ -717,33 +717,50 @@
 	item_state = "silver_crown_diamond"
 	armor = list(melee = 25, arrow = 20, gun = 10, energy = 25, bomb = 20, bio = 15, rad = FALSE)
 
-/obj/item/clothing/head/helmet/silver_crown/attackby(obj/item/W as obj, mob/user as mob)
-	if (!istype(W)) return
-	if (istype(W, /obj/item/stack/material/diamond))
-		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
-		to_chat(user, "<span class='notice'>You place the diamond in the crown.</span>")
-		if(W.amount <= 1)
-			qdel(src)
-			qdel(W)
-			new/obj/item/clothing/head/helmet/silver_crown_diamond(user.loc)
-		else
-			qdel(src)
-			W.amount = W.amount - 1
-			new/obj/item/clothing/head/helmet/silver_crown_diamond(user.loc)
+// Plain crowns take a diamond: a cut diamond, or a refined diamond sheet.
+// Anything else falls through to clothing, so chisel gem setting still works.
+/obj/item/clothing/head/helmet/silver_crown
+	var/inlaid_type = /obj/item/clothing/head/helmet/silver_crown_diamond
 
-/obj/item/clothing/head/helmet/gold_crown/attackby(obj/item/W as obj, mob/user as mob)
-	if (!istype(W)) return
-	if (istype(W, /obj/item/stack/material/diamond))
-		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
-		to_chat(user, "<span class='notice'>You place the diamond in the crown.</span>")
-		if(W.amount <= 1)
-			qdel(src)
-			qdel(W)
-			new/obj/item/clothing/head/helmet/gold_crown_diamond(user.loc)
-		else
-			qdel(src)
-			W.amount = W.amount - 1
-			new/obj/item/clothing/head/helmet/gold_crown_diamond(user.loc)
+/obj/item/clothing/head/helmet/gold_crown
+	var/inlaid_type = /obj/item/clothing/head/helmet/gold_crown_diamond
+
+/obj/item/clothing/head/helmet/silver_crown/attackby(obj/item/W, mob/user)
+	if (inlay_crown_diamond(src, inlaid_type, W, user))
+		return TRUE
+	return ..()
+
+/obj/item/clothing/head/helmet/gold_crown/attackby(obj/item/W, mob/user)
+	if (inlay_crown_diamond(src, inlaid_type, W, user))
+		return TRUE
+	return ..()
+
+// Returns TRUE when W was a diamond and the click was handled.
+/proc/inlay_crown_diamond(obj/item/clothing/crown, inlaid_type, obj/item/W, mob/user)
+	if (!crown || !inlaid_type || !user)
+		return FALSE
+	if (istype(W, /obj/item/stack/ore/diamond))
+		to_chat(user, SPAN_WARNING("\The [W] is still rough. Cut it with a chisel and hammer first."))
+		return TRUE
+	if (!istype(W, /obj/item/stack/gemstone/diamond) && !istype(W, /obj/item/stack/material/diamond))
+		return FALSE
+	var/obj/item/stack/S = W
+	if (crown.set_gem)
+		to_chat(user, SPAN_WARNING("\The [crown] is already set with \a [crown.set_gem]."))
+		return TRUE
+	var/held = crown.loc == user
+	var/turf/T = get_turf(crown)
+	if (!T || !S.use(1))
+		return TRUE
+	playsound(T, 'sound/machines/click.ogg', 75, TRUE)
+	var/obj/item/clothing/inlaid = new inlaid_type(T)
+	if (held)
+		user.drop_from_inventory(crown)
+	qdel(crown)
+	if (held)
+		user.put_in_hands(inlaid)
+	to_chat(user, SPAN_NOTICE("You set the diamond into the crown."))
+	return TRUE
 //continue
 
 /* Medieval Helmets*/

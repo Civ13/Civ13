@@ -7,7 +7,11 @@
 // ground, saves and restores her, has a cell holed
 // from the ground and patched, drops a bomb through the hatch, and is wrecked
 // when both cells burn. A second airship is built two levels up, over an
-// open level, and flies, sees, shoots, is shot, bombs and falls from there. Production code runs unchanged.
+// open level, and flies, sees, shoots, is shot, bombs and falls from there.
+// A third is built on the ground, creeps, lifts off, lands, and sinks onto a
+// floor, a lone tree and a stand of trees; a pedal airship snags in a forest.
+// Aluminium, steel and wooden deck tiles and rubberised and skin cells are
+// weighed, holed, patched and set alight. Production code runs unchanged.
 var/global/datum/air_hull_probe/air_hull_probe = new
 
 /mob/living/human/air_hull_actor/ssd_check()
@@ -460,6 +464,238 @@ var/global/datum/air_hull_probe/air_hull_probe = new
 		qdel(F)
 	B.loc = null
 
+// Built on the ground: she creeps over clear ground, lifts off when nothing is
+// overhead, lands only where nothing stands below, and sinks when holed - to
+// rest on what is below, flatten a lone tree or snag in a stand of them.
+/datum/air_hull_probe/proc/ground_build(turf/g, sky_z)
+	var/mob/living/human/air_hull_actor/B = new(g)
+	B.a_intent = I_HELP
+	sleep(5)
+	expect(air_deck_lay_refusal(sky(g, 3, 3, g.z), B), "a ground plank out of reach was allowed")
+	// A 3x2 deck on the grass, one cell and a helm.
+	for(var/dx = 1 to 3)
+		for(var/dy = 0 to 1)
+			var/turf/T = sky(g, dx, dy, g.z)
+			for(var/turf/S in range(1, T))
+				if(S != T && (S == g || (locate(/obj/covers/airship_deck) in S)))
+					B.forceMove(S)
+					break
+			expect(lay(B, T), "no ground deck laid at +[dx],+[dy]: [air_deck_lay_refusal(T, B)]")
+	B.forceMove(sky(g, 1, 0, g.z))
+	var/obj/item/airship_gas_cell/cell = new(B)
+	B.put_in_active_hand(cell)
+	cell.resolve_attackby(sky(g, 2, 1, g.z), B)
+	var/obj/structure/airship_gas_cell/G = locate() in sky(g, 2, 1, g.z)
+	expect(G, "no gas cell hung over the ground deck")
+	var/obj/item/airship_helm_kit/kit = new(B)
+	B.put_in_active_hand(kit)
+	B.dir = EAST
+	kit.resolve_attackby(sky(g, 2, 0, g.z), B)
+	var/obj/structure/airship_helm/H = locate() in sky(g, 2, 0, g.z)
+	expect(H, "no helm set up on the ground deck")
+	if(!H || !G)
+		return
+	var/problem = H.commission("ground ship", EAST)
+	expect(!problem, "ground commission refused: [problem]")
+	var/datum/craft/air/C = H.craft
+	if(!C)
+		return
+	var/datum/craft_body/built/air/body = C.body
+	expect(body.landed() && body.z == g.z && body.tile_count() == 6, "ground body: landed [body.landed()], z [body.z], [body.tile_count()] tiles")
+	// She creeps a tile east over the grass, and a tree stops her.
+	B.forceMove(sky(g, 1, 1, g.z))
+	C.set_anchor(FALSE)
+	C.speed = VESSEL_SPEED_SLOW
+	C.stop_sailing()
+	var/turf/was = body.origin()
+	expect(C.sail_hop(), "ground creep refused: [C.last_refusal]")
+	var/turf/now = body.origin()
+	expect(now.x == was.x + 1 && now.z == g.z && body.landed(), "ground creep went to [now.x],[now.y],[now.z]")
+	var/obj/structure/wild/tree/anchored/ahead = new(sky(g, 5, 0, g.z))
+	expect(!C.sail_hop() && findtext(C.last_refusal, "tree"), "a tree ahead did not stop her on the ground: [C.last_refusal]")
+	qdel(ahead)
+	C.set_anchor(TRUE)
+	// Deck now +2..+4; cell at +3,+1, helm at +3,+0, builder at +2,+1.
+	var/obj/covers/repairedfloor/over = new(sky(g, 3, 0, sky_z))
+	expect(!C.lift_off() && findtext(C.last_refusal, "overhead"), "lifted off under a floor: [C.last_refusal]")
+	over.loc = null
+	expect(C.lift_off(), "lift off refused: [C.last_refusal]")
+	expect(body.z == sky_z && !body.landed() && B.z == sky_z, "lift off left her on z [body.z], builder on z [B.z]")
+	expect(C.shadow_anchor && C.shadow_anchor.z == g.z, "no shadow on the ground after lift off")
+	// Landing: refused over a tree, gentle on clear ground.
+	var/obj/structure/wild/tree/anchored/under = new(sky(g, 4, 1, g.z))
+	expect(!C.land() && findtext(C.last_refusal, "tree"), "landed over a tree: [C.last_refusal]")
+	qdel(under)
+	var/brute = B.getBruteLoss()
+	expect(C.land(), "landing refused: [C.last_refusal]")
+	sleep(45)
+	expect(body.landed() && body.z == g.z && B.z == g.z && B.getBruteLoss() == brute, "landing: landed [body.landed()], z [body.z], builder z [B.z]")
+	// Holed in the air, she sinks and rests on what is below.
+	expect(C.lift_off(), "second lift off refused: [C.last_refusal]")
+	var/obj/covers/repairedfloor/rest = new(sky(g, 4, 0, g.z))
+	G.holes = 2
+	G.update_icon()
+	C.check_lift()
+	sleep(45)
+	expect(body.z == sky_z && !C.changing_level, "she did not rest on a floor below: z [body.z]")
+	rest.loc = null
+	// A lone tree under one of six tiles: she flattens it and lands.
+	var/obj/structure/wild/tree/anchored/lone = new(sky(g, 4, 0, g.z))
+	C.check_lift()
+	sleep(45)
+	expect(QDELETED(lone), "a lone tree under her was not flattened")
+	expect(body.landed() && B.z == g.z, "she did not settle after flattening a tree: z [body.z]")
+	notes["flatten_cell_holes"] = G.holes
+	// Two trees under six tiles: she snags in them and hangs there.
+	G.holes = 0
+	G.update_icon()
+	expect(C.lift_off(), "third lift off refused: [C.last_refusal]")
+	var/obj/structure/wild/tree/anchored/t1 = new(sky(g, 2, 0, g.z))
+	var/obj/structure/wild/tree/anchored/t2 = new(sky(g, 4, 0, g.z))
+	G.holes = 2
+	G.update_icon()
+	C.check_lift()
+	sleep(45)
+	expect(body.z == sky_z && !QDELETED(t1) && !QDELETED(t2) && t1.health < t1.maxhealth, "she did not snag in two trees: z [body.z]")
+	notes["snag_tree_health"] = t1.health
+	// Wrecked over a tree, the builder lands beside its trunk, cushioned.
+	B.forceMove(sky(g, 4, 0, sky_z))
+	brute = B.getBruteLoss()
+	var/tree_health = t2.health
+	G.holes = 4
+	G.update_icon()
+	C.check_lift()
+	sleep(5)
+	notes["tree_crash_brute"] = B.getBruteLoss() - brute
+	expect(QDELETED(C), "the wrecked airship did not break up")
+	expect(B.z == g.z && get_turf(B) != get_turf(t2) && get_dist(B, t2) <= 1, "builder not beside the trunk: [B.x],[B.y],[B.z]")
+	expect(B.getBruteLoss() - brute >= 5 && B.getBruteLoss() - brute <= 25, "tree fall brute [B.getBruteLoss() - brute]")
+	expect(QDELETED(t2) || t2.health < tree_health, "the tree was not battered by the fall")
+	for(var/obj/structure/wild/W in list(t1, t2))
+		if(!QDELETED(W))
+			qdel(W)
+	B.loc = null
+
+// A pedal airship forced down over a forest snags in the tree below, throws
+// its rider out beside the trunk and falls when the tree comes down.
+/datum/air_hull_probe/proc/pedal_snag(turf/G, sky_z)
+	var/obj/structure/vehicle/bicycle/airship/V = new(G)
+	V.dir = EAST
+	var/mob/living/human/air_hull_actor/R = new(G)
+	R.a_intent = I_HELP
+	R.dir = EAST
+	sleep(5)
+	V.MouseDrop_T(R, R)
+	expect(V.driver == R, "rider did not take the pedal airship's tiller")
+	if(V.driver != R)
+		return
+	V.ascend(R)
+	sleep(5)
+	expect(V.aloft && V.z == sky_z, "pedal airship did not rise: z [V.z]")
+	if(!V.aloft)
+		return
+	var/list/trees = list()
+	for(var/turf/T in range(7, G))
+		trees += new /obj/structure/wild/tree/anchored(T)
+	var/brute = R.getBruteLoss()
+	V.set_down()
+	expect(V.snagged && V.aloft, "pedal airship did not snag in the forest")
+	expect(R.z == G.z && get_dist(R, G) <= 1 && R.getBruteLoss() > brute, "rider not thrown down by the trunk: [R.x],[R.y],[R.z], [R.getBruteLoss() - brute] brute")
+	expect(V.bag_holes >= 2, "branches did not tear the bag")
+	var/obj/structure/wild/W = air_hull_tree(G)
+	qdel(W)
+	sleep(5)
+	expect(!V.aloft && V.z == G.z, "pedal airship still hangs after its tree came down: z [V.z]")
+	for(var/obj/structure/wild/T in trees)
+		if(!QDELETED(T))
+			qdel(T)
+	qdel(V)
+	R.loc = null
+	sleep(5)
+
+// Deck frames weigh what they are made of, cells lift and tear by theirs, and
+// only a wooden deck catches fire.
+/datum/air_hull_probe/proc/materials(turf/g)
+	var/mob/living/human/air_hull_actor/B = new(g)
+	B.a_intent = I_HELP
+	sleep(5)
+	var/list/kinds = list(/obj/item/airship_planks/aluminium, /obj/item/airship_planks/steel, /obj/item/airship_planks)
+	for(var/i = 1 to kinds.len)
+		var/turf/T = sky(g, i, 0, g.z)
+		B.forceMove(sky(g, i - 1, 0, g.z))
+		var/kind = kinds[i]
+		var/obj/item/airship_planks/P = new kind(B)
+		B.put_in_active_hand(P)
+		var/deck = P.deck_type
+		P.resolve_attackby(T, B)
+		expect(locate(deck) in T, "no [deck] laid at +[i]")
+	expect(istype(locate(/obj/covers/airship_deck) in sky(g, 2, 0, g.z), /obj/covers/airship_deck/steel), "the steel frame laid the wrong deck")
+	// A cloth cell rubberised with plastic, another lined with skin.
+	var/obj/item/airship_gas_cell/cloth = new(B)
+	B.put_in_active_hand(cloth)
+	var/obj/item/stack/material/plastic/sheets = new(g)
+	sheets.amount = 5
+	cloth.attackby(sheets, B)
+	var/obj/item/airship_gas_cell/rubber/R = B.get_active_hand()
+	expect(istype(R) && QDELETED(cloth), "plastic did not rubberise the cell: [B.get_active_hand()]")
+	B.drop_from_inventory(R)
+	cloth = new(B)
+	B.put_in_active_hand(cloth)
+	var/obj/item/stack/sausagecasing/casings = new(g, 6)
+	for(var/i = 1 to 6)
+		if(!QDELETED(cloth))
+			cloth.attackby(casings, B)
+	var/obj/item/airship_gas_cell/skin/S = B.get_active_hand()
+	expect(istype(S), "six casings did not line the cell with skin: [B.get_active_hand()]")
+	// Hang them: skin over aluminium, rubber over steel.
+	B.forceMove(g)
+	S.resolve_attackby(sky(g, 1, 0, g.z), B)
+	B.forceMove(sky(g, 1, 0, g.z))
+	B.put_in_active_hand(R)
+	R.resolve_attackby(sky(g, 2, 0, g.z), B)
+	var/obj/structure/airship_gas_cell/skin/SG = locate() in sky(g, 1, 0, g.z)
+	var/obj/structure/airship_gas_cell/rubber/RG = locate() in sky(g, 2, 0, g.z)
+	expect(SG && SG.lift() == 15, "skin cell lifts [SG ? SG.lift() : "nothing"]")
+	expect(RG && RG.lift() == 12, "rubber cell lifts [RG ? RG.lift() : "nothing"]")
+	if(SG && RG)
+		SG.holes = 1
+		RG.holes = 1
+		expect(SG.lift() == 10 && RG.lift() == 10, "one hole: skin [SG.lift()], rubber [RG.lift()]")
+		RG.update_icon()
+		expect(RG.icon_state == "gas_cell_rubber_holed", "rubber cell shows [RG.icon_state]")
+		var/obj/item/stack/material/plastic/patch = new(g)
+		B.forceMove(g)
+		RG.attackby(patch, B)
+		expect(!RG.holes, "plastic did not patch the rubber cell")
+		SG.holes = 0
+	// The helm, and her weight: aluminium half, steel two, wood one.
+	B.forceMove(g)
+	var/obj/item/airship_helm_kit/kit = new(B)
+	B.put_in_active_hand(kit)
+	B.dir = EAST
+	B.forceMove(sky(g, 2, 0, g.z))
+	kit.resolve_attackby(sky(g, 3, 0, g.z), B)
+	var/obj/structure/airship_helm/H = locate() in sky(g, 3, 0, g.z)
+	B.forceMove(g)
+	expect(H, "no helm on the mixed deck")
+	if(H)
+		var/problem = H.commission("mixed ship", EAST)
+		expect(!problem, "mixed commission refused: [problem]")
+		var/datum/craft/air/C = H.craft
+		if(C)
+			var/datum/craft_body/built/air/body = C.body
+			notes["mixed_load"] = body.load()
+			expect(body.load() == 3.5, "mixed deck weighs [body.load()], not 3.5")
+			H.decommission()
+	// Only the wooden tile catches fire.
+	air_deck_catch_fire(sky(g, 2, 0, g.z))
+	air_deck_catch_fire(sky(g, 3, 0, g.z))
+	var/obj/covers/airship_deck/steel = locate() in sky(g, 2, 0, g.z)
+	var/obj/covers/airship_deck/wood = locate() in sky(g, 3, 0, g.z)
+	expect(steel && !steel.onfire, "the steel deck caught fire")
+	expect(wood && wood.onfire, "the wooden deck did not catch fire")
+	B.loc = null
+
 /datum/air_hull_probe/proc/run_probe()
 	var/failure = null
 	try
@@ -480,6 +716,9 @@ var/global/datum/air_hull_probe/air_hull_probe = new
 		if(!start || !prepare(start, sky_z))
 			throw EXCEPTION("no ground with open sky above found")
 		notes["start"] = "[start.x],[start.y],[start.z] under [sky_z]"
+		ground_build(locate(start.x - 14, start.y + 6, start.z), sky_z)
+		pedal_snag(locate(start.x + 8, start.y + 10, start.z), sky_z)
+		materials(locate(start.x - 14, start.y + 12, start.z))
 		build_and_fly(start, sky_z)
 		high_flight(locate(start.x - 8, start.y - 8, start.z), sky_z)
 		if(problems.len)

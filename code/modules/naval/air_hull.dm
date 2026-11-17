@@ -1,10 +1,11 @@
 // ============================================================
 // Crewed airships: built hulls in the open air (docs/craft-core.md)
 // ------------------------------------------------------------
-// Stand a ladder up from the ground into the open air, then lay airship planks
-// on the open air beside its top. Every plank joined to the first is one deck.
+// Lay airship planks on clear, level ground (or on the open air beside the top
+// of a ladder). Every plank joined to the first is one deck.
 // Gas cells hung over the deck hold it up; an airship helm set on the deck
-// commissions it, like a tiller commissions a hull on the water. She then
+// commissions it, like a tiller commissions a hull on the water. Built on the
+// ground she creeps over clear ground until she lifts off; in the air she
 // flies like a built hull sails (craft/built_body.dm, craft/under_way.dm):
 // over open air only, stopped by upper storeys, ladders and the map edge.
 // Engines running aboard drive her faster (naval/hull_drives.dm); sails and
@@ -33,9 +34,17 @@
 #define AIR_HULL_HIT_CHANCE 50
 #define AIR_HULL_CREW_HIT_CHANCE 25
 #define AIR_HULL_PATCH_TIME 40
+// Plastic sheets to rubberise a cloth cell, and skin layers to line one.
+#define AIR_HULL_RUBBER_SHEETS 5
+#define AIR_HULL_SKIN_LAYERS 6
 #define AIR_HULL_HATCH_BOMBS 2
 // Open-air levels she can look, drop or be shot through, at most.
 #define AIR_HULL_MAX_DROP 8
+// Deciseconds she takes to sink, lift or land one level.
+#define AIR_HULL_LEVEL_TIME 30
+// Over trees under more than one in this many of her tiles she snags in the
+// canopy; under fewer, her weight flattens them.
+#define AIR_HULL_TREE_SHARE 4
 
 var/global/list/air_hull_crafts = list()
 
@@ -44,15 +53,61 @@ var/global/list/air_hull_crafts = list()
 /obj/covers/airship_deck
 	name = "airship deck"
 	desc = "Light planks lashed into the gondola deck of an airship. It hangs in the open air: step off its edge and you fall."
+	// What one tile weighs against her gas cells' lift.
+	var/air_weight = 1
+	// Too stout a frame for branches to catch: she flattens the trees under it.
+	var/snag_proof = FALSE
+
+/obj/covers/airship_deck/aluminium
+	name = "aluminium airship deck"
+	desc = "Riveted aluminium plates on a light girder frame, half the weight of planks. It does not burn. It hangs in the open air: step off its edge and you fall."
+	icon = 'icons/obj/vehicles/airship_hull.dmi'
+	icon_state = "airship_deck_aluminium"
+	base_icon_state = "airship_deck_aluminium"
+	air_weight = 0.5
+	wood = FALSE
+	flammable = FALSE
+	material = "Aluminium"
+	buildstack = /obj/item/stack/material/aluminium
+
+/obj/covers/airship_deck/steel
+	name = "steel airship deck"
+	desc = "Riveted steel plates on a girder frame, twice the weight of planks. It does not burn, and treetops cannot catch it. It hangs in the open air: step off its edge and you fall."
+	icon = 'icons/obj/vehicles/airship_hull.dmi'
+	icon_state = "airship_deck_steel"
+	base_icon_state = "airship_deck_steel"
+	air_weight = 2
+	snag_proof = TRUE
+	wood = FALSE
+	flammable = FALSE
+	material = "Steel"
+	buildstack = /obj/item/stack/material/steel
 
 /obj/item/airship_planks
 	name = "airship planks"
-	desc = "A lashed bundle of light planks for an airship's gondola deck. Use it on the open air beside the top of a ladder, or beside a deck already laid, to lay one tile of deck."
+	desc = "A lashed bundle of light planks for an airship's gondola deck. Use it on clear, level ground, on the open air beside the top of a ladder, or beside a deck already laid, to lay one tile of deck."
 	icon = 'icons/obj/vehicles/airship_hull.dmi'
 	icon_state = "airship_planks"
 	w_class = ITEM_SIZE_LARGE
 	weight = 6
 	flammable = TRUE
+	var/deck_type = /obj/covers/airship_deck
+
+/obj/item/airship_planks/aluminium
+	name = "aluminium airship frame"
+	desc = "Aluminium girders and plates for one tile of airship deck: half the weight of planks, and fireproof. Lay it like airship planks."
+	icon_state = "aluminium_frame"
+	weight = 3
+	flammable = FALSE
+	deck_type = /obj/covers/airship_deck/aluminium
+
+/obj/item/airship_planks/steel
+	name = "steel airship frame"
+	desc = "Steel girders and plates for one tile of airship deck: twice the weight of planks, but fireproof and too stout for treetops to catch. Lay it like airship planks."
+	icon_state = "steel_frame"
+	weight = 12
+	flammable = FALSE
+	deck_type = /obj/covers/airship_deck/steel
 
 // Open air a plank can be laid on: nothing built or standing in it.
 /proc/air_deck_open(turf/T)
@@ -65,14 +120,53 @@ var/global/list/air_hull_crafts = list()
 			return FALSE
 	return TRUE
 
-// Why a plank cannot go on T for user, or null. The deck starts from the top
-// of a ladder standing in the open air and grows edge to edge.
+// Ground an airship can be built on, creep over or land on: dry, level, solid
+// floor with nothing built or standing on it.
+/proc/air_ground_open(turf/T)
+	if (!istype(T, /turf/floor) || istype(T, /turf/sky) || istype(T, /turf/floor/broken_floor) || !T.aircraft_rough_ground())
+		return FALSE
+	for (var/atom/movable/A in T)
+		if (A.loc != T)
+			continue
+		if (istype(A, /obj/covers) || istype(A, /obj/roof) || istype(A, /obj/structure/multiz) || (A.density && !istype(A, /atom/movable/lighting_overlay)))
+			return FALSE
+	return TRUE
+
+// The tree standing on T, or null.
+/proc/air_hull_tree(turf/T)
+	if (!T)
+		return null
+	for (var/obj/structure/wild/W in T)
+		if (bump_choppable_tree(W))
+			return W
+	return null
+
+// Somewhere clear beside T for someone falling onto a tree there.
+/proc/air_hull_beside(turf/T)
+	if (!T)
+		return null
+	for (var/turf/N in orange(1, T))
+		if (N.z != T.z || N.density || air_hull_tree(N))
+			continue
+		var/blocked = FALSE
+		for (var/atom/movable/A in N)
+			if (A.density && !ismob(A))
+				blocked = TRUE
+				break
+		if (!blocked)
+			return N
+	return T
+
+// Why a plank cannot go on T for user, or null. On the ground a deck starts
+// anywhere clear and level; in the open air it starts from the top of a
+// ladder. Either way it grows edge to edge.
 /proc/air_deck_lay_refusal(turf/T, mob/user)
 	var/turf/here = get_turf(user)
 	if (!T || !here || T.z != here.z || get_dist(here, T) > 1)
-		return "Lay the planks on the open air right beside you."
-	if (!air_deck_open(T))
-		return "Airship planks are laid on clear open air, above the ground."
+		return "Lay the planks right beside you."
+	var/aloft = istype(T, /turf/sky)
+	if (aloft ? !air_deck_open(T) : !air_ground_open(T))
+		return aloft ? "Airship planks are laid on clear open air." : "Airship planks are laid on clear, dry, level ground with nothing on it."
 	if (persistence_save_in_progress)
 		return "You can't build while the world is saving."
 	for (var/d in cardinal)
@@ -84,23 +178,25 @@ var/global/list/air_hull_crafts = list()
 			if (C && !C.anchored)
 				return "Hold the airship in place at her helm before adding to her deck."
 			return null
-		if (locate(/obj/structure/multiz) in N)
+		if (aloft && (locate(/obj/structure/multiz) in N))
 			return null
-	return "Start the deck beside the top of a ladder standing in the open air, and grow it edge to edge."
+	if (!aloft)
+		return null
+	return "Start the deck on the ground, or beside the top of a ladder standing in the open air, and grow it edge to edge."
 
 /obj/item/airship_planks/resolve_attackby(atom/A, mob/user, icon_x, icon_y)
 	var/turf/T = isturf(A) ? A : null
-	if (!istype(T, /turf/sky/building))
+	if (!istype(T, /turf/sky/building) && !istype(T, /turf/floor))
 		return ..()
 	var/why = air_deck_lay_refusal(T, user)
 	if (why)
 		to_chat(user, SPAN_WARNING(why))
 		return TRUE
-	user.visible_message(SPAN_NOTICE("[user] starts lashing planks into the open air."), SPAN_NOTICE("You start lashing the planks into place..."))
+	user.visible_message(SPAN_NOTICE("[user] starts lashing planks into an airship deck."), SPAN_NOTICE("You start lashing the planks into place..."))
 	if (!do_after(user, AIR_HULL_LAY_TIME, T) || QDELETED(src) || user.get_active_hand() != src || air_deck_lay_refusal(T, user))
 		return TRUE
 	qdel(src)
-	new /obj/covers/airship_deck(T)
+	new deck_type(T)
 	to_chat(user, SPAN_NOTICE("You lay a tile of airship deck."))
 	return TRUE
 
@@ -108,12 +204,70 @@ var/global/list/air_hull_crafts = list()
 
 /obj/item/airship_gas_cell
 	name = "folded gas cell"
-	desc = "An oiled-cloth gas cell, rolled tight. Use it on an airship deck to hang it there. Each cell holds up 12 tiles of deck or people aboard."
+	desc = "An oiled-cloth gas cell, rolled tight. Use it on an airship deck to hang it there. Each cell holds up 12 tiles of wooden deck or people aboard, and loses a quarter of that for each hole. Coat it with 5 plastic sheets to rubberise it, or line it with 6 sausage casings of goldbeater's skin."
 	icon = 'icons/obj/vehicles/airship_hull.dmi'
 	icon_state = "gas_cell_folded"
 	w_class = ITEM_SIZE_LARGE
 	weight = 8
 	flammable = TRUE
+	var/cell_type = /obj/structure/airship_gas_cell
+	// Goldbeater's skin layers laid into a cloth cell so far.
+	var/skin_layers = 0
+
+/obj/item/airship_gas_cell/rubber
+	name = "folded rubberised gas cell"
+	desc = "A gas cell of rubberised cloth, rolled tight. Use it on an airship deck to hang it there. It holds up 12 tiles of wooden deck or people aboard and holds its gas better when holed than plain cloth. Patch it with cloth or plastic."
+	icon_state = "gas_cell_folded_rubber"
+	cell_type = /obj/structure/airship_gas_cell/rubber
+
+/obj/item/airship_gas_cell/skin
+	name = "folded goldbeater's skin cell"
+	desc = "A cloth gas cell lined with goldbeater's skin, rolled tight. Use it on an airship deck to hang it there. It holds up 15 tiles of wooden deck or people aboard, but every hole lets out a third of that."
+	icon_state = "gas_cell_folded_skin"
+	weight = 7
+	cell_type = /obj/structure/airship_gas_cell/skin
+
+// A cloth cell is rubberised with plastic sheeting or lined with skin.
+/obj/item/airship_gas_cell/attackby(obj/item/W, mob/user)
+	if (type != /obj/item/airship_gas_cell)
+		return ..()
+	if (istype(W, /obj/item/stack/material/plastic))
+		var/obj/item/stack/S = W
+		if (S.amount < AIR_HULL_RUBBER_SHEETS)
+			to_chat(user, SPAN_WARNING("You need [AIR_HULL_RUBBER_SHEETS] plastic sheets to coat the whole cell."))
+			return
+		to_chat(user, SPAN_NOTICE("You start coating \the [src] with rubber..."))
+		if (!do_after(user, AIR_HULL_CELL_TIME, src) || QDELETED(src) || !S.use(AIR_HULL_RUBBER_SHEETS))
+			return
+		become(/obj/item/airship_gas_cell/rubber, user)
+		to_chat(user, SPAN_NOTICE("The cloth is rubberised: it will hold its gas better when holed."))
+		return
+	if (istype(W, /obj/item/stack/sausagecasing))
+		var/obj/item/stack/S = W
+		if (!do_after(user, AIR_HULL_PATCH_TIME, src) || QDELETED(src) || !S.use(1))
+			return
+		skin_layers++
+		if (skin_layers < AIR_HULL_SKIN_LAYERS)
+			to_chat(user, SPAN_NOTICE("You glue a layer of goldbeater's skin into \the [src]. [AIR_HULL_SKIN_LAYERS - skin_layers] more to line it."))
+			return
+		become(/obj/item/airship_gas_cell/skin, user)
+		to_chat(user, SPAN_NOTICE("The cell is lined with goldbeater's skin: it lifts more, but tears worse when holed."))
+		return
+	return ..()
+
+/obj/item/airship_gas_cell/examine(mob/user, distance)
+	. = ..()
+	if (skin_layers)
+		to_chat(user, SPAN_NOTICE("It is lined with [skin_layers] of [AIR_HULL_SKIN_LAYERS] layers of goldbeater's skin."))
+
+/obj/item/airship_gas_cell/proc/become(new_type, mob/user)
+	var/held = (loc == user)
+	var/obj/item/N = new new_type(get_turf(src))
+	if (held)
+		user.drop_from_inventory(src)
+	qdel(src)
+	if (held)
+		user.put_in_hands(N)
 
 /obj/item/airship_gas_cell/resolve_attackby(atom/A, mob/user, icon_x, icon_y)
 	var/turf/T = get_turf(A)
@@ -128,7 +282,7 @@ var/global/list/air_hull_crafts = list()
 	if (!do_after(user, AIR_HULL_CELL_TIME, T) || QDELETED(src) || user.get_active_hand() != src || (locate(/obj/structure/airship_gas_cell) in T) || !(locate(/obj/covers/airship_deck) in T))
 		return TRUE
 	qdel(src)
-	new /obj/structure/airship_gas_cell(T)
+	new cell_type(T)
 	to_chat(user, SPAN_NOTICE("The gas cell fills and strains at its rigging."))
 	return TRUE
 
@@ -147,12 +301,38 @@ var/global/list/air_hull_crafts = list()
 	flammable = TRUE
 	var/holes = 0
 	var/burnt = FALSE
+	// What it holds up when whole, and what each hole costs.
+	var/max_lift = AIR_HULL_CELL_LIFT
+	var/hole_lift = AIR_HULL_HOLE_LIFT
+	var/base_state = "gas_cell"
+	var/folded_type = /obj/item/airship_gas_cell
+	var/list/patches = list(/obj/item/stack/material/cloth)
+	var/patch_text = "cloth"
+
+/obj/structure/airship_gas_cell/rubber
+	name = "rubberised gas cell"
+	desc = "A rubberised cloth gas cell rigged over an airship's deck. It holds its gas better than plain cloth when holed. Cloth or plastic patches its holes; a wrench takes it down."
+	icon_state = "gas_cell_rubber"
+	hole_lift = 2
+	base_state = "gas_cell_rubber"
+	folded_type = /obj/item/airship_gas_cell/rubber
+	patches = list(/obj/item/stack/material/cloth, /obj/item/stack/material/plastic)
+	patch_text = "cloth or plastic"
+
+/obj/structure/airship_gas_cell/skin
+	name = "goldbeater's skin cell"
+	desc = "A gas cell lined with goldbeater's skin, rigged over an airship's deck. It lifts more than cloth, but a hole lets out more. Cloth patches its holes; a wrench takes it down."
+	icon_state = "gas_cell_skin"
+	max_lift = 15
+	hole_lift = 5
+	base_state = "gas_cell_skin"
+	folded_type = /obj/item/airship_gas_cell/skin
 
 /obj/structure/airship_gas_cell/proc/lift()
-	return burnt ? 0 : max(0, AIR_HULL_CELL_LIFT - holes * AIR_HULL_HOLE_LIFT)
+	return burnt ? 0 : max(0, max_lift - holes * hole_lift)
 
 /obj/structure/airship_gas_cell/update_icon()
-	icon_state = burnt ? "gas_cell_burnt" : (holes ? "gas_cell_holed" : "gas_cell")
+	icon_state = burnt ? "gas_cell_burnt" : (holes ? "[base_state]_holed" : base_state)
 
 /obj/structure/airship_gas_cell/after_load()
 	..()
@@ -163,14 +343,14 @@ var/global/list/air_hull_crafts = list()
 	if (burnt)
 		to_chat(user, SPAN_DANGER("It has burnt out and lifts nothing. Take it down with a wrench and hang a new one."))
 	else if (holes)
-		to_chat(user, SPAN_WARNING("It is holed in [holes] place\s and lifts [lift()] instead of [AIR_HULL_CELL_LIFT]. Patch it with cloth."))
+		to_chat(user, SPAN_WARNING("It is holed in [holes] place\s and lifts [lift()] instead of [max_lift]. Patch it with [patch_text]."))
 
 /obj/structure/airship_gas_cell/attackby(obj/item/W, mob/user)
-	if (istype(W, /obj/item/stack/material/cloth) && holes && !burnt)
+	if (is_type_in_list(W, patches) && holes && !burnt)
 		to_chat(user, SPAN_NOTICE("You start stitching a patch over a hole in \the [src]..."))
 		if (!do_after(user, AIR_HULL_PATCH_TIME, src) || QDELETED(src) || burnt || !holes)
 			return
-		var/obj/item/stack/material/cloth/C = W
+		var/obj/item/stack/C = W
 		if (!C.use(1))
 			return
 		holes--
@@ -191,7 +371,7 @@ var/global/list/air_hull_crafts = list()
 		if (was_burnt)
 			to_chat(user, SPAN_NOTICE("You cut the charred rags of the gas cell away."))
 			return
-		new /obj/item/airship_gas_cell(T)
+		new folded_type(T)
 		to_chat(user, SPAN_NOTICE("You fold the gas cell up."))
 		return
 	return ..()
@@ -209,6 +389,7 @@ var/global/list/air_hull_crafts = list()
 	update_icon()
 	visible_message(SPAN_DANGER("\The [src] bursts into flame!"))
 	playsound(get_turf(src), 'sound/effects/bang.ogg', 60, TRUE)
+	air_deck_catch_fire(get_turf(src))
 	for (var/mob/living/L in get_turf(src))
 		L.fire_stacks = max(L.fire_stacks, 2)
 		L.IgniteMob()
@@ -223,7 +404,18 @@ var/global/list/air_hull_crafts = list()
 /datum/craft_body/built/air/upper_z()
 	return 0
 
+// TRUE while she stands on the ground rather than hanging in the open air.
+/datum/craft_body/built/air/proc/landed()
+	if (!placed())
+		return FALSE
+	var/list/C = cells()
+	return C.len && !istype(C[1], /turf/sky)
+
 /datum/craft_body/built/air/tile_refusal(turf/D)
+	if (landed())
+		if (air_ground_open(D))
+			return null
+		return "[air_hull_tree(D) ? "a tree" : "rough ground or something in the way"] at [D.x],[D.y]: she can only creep over clear, level ground"
 	if (!air_deck_open(D))
 		for (var/obj/covers/C in D)
 			if (C.loc == D)
@@ -237,6 +429,34 @@ var/global/list/air_hull_crafts = list()
 		return "[D.name] ahead at [D.x],[D.y]"
 	return null
 
+// Moves her, and everything aboard, straight up or down to level new_z.
+/datum/craft_body/built/air/proc/shift_level(new_z)
+	if (moving || persistence_save_in_progress || !placed() || !new_z)
+		return FALSE
+	var/list/old = cells()
+	var/list/cargo = list()
+	for (var/turf/S in old)
+		var/list/riders = list()
+		for (var/atom/movable/M in S)
+			if (M.loc != S || QDELETED(M) || istype(M, /atom/movable/lighting_overlay) || istype(M, /atom/movable/lighting_fullbright) || istype(M, /obj/effect/vessel_path) || M.craft_left_behind())
+				continue
+			// Floors first, so nobody reaches open air before the deck does.
+			if (istype(M, /obj/covers))
+				riders.Insert(1, M)
+			else
+				riders += M
+		cargo += list(riders)
+	moving = TRUE
+	z = new_z
+	for (var/i = 1, i <= old.len, i++)
+		var/turf/S = old[i]
+		var/turf/D = locate(S.x, S.y, new_z)
+		for (var/atom/movable/M in cargo[i])
+			if (!QDELETED(M))
+				M.forceMove(D)
+	moving = FALSE
+	return TRUE
+
 // What her gas cells hold up, and what they must.
 /datum/craft_body/built/air/proc/lift()
 	. = 0
@@ -245,8 +465,11 @@ var/global/list/air_hull_crafts = list()
 			. += G.lift()
 
 /datum/craft_body/built/air/proc/load()
-	. = offsets.len
+	. = 0
 	for (var/turf/T in cells())
+		var/obj/covers/airship_deck/K = locate() in T
+		if (K)
+			. += K.air_weight
 		for (var/mob/living/L in T)
 			if (L.loc == T)
 				.++
@@ -268,8 +491,8 @@ var/global/list/air_hull_crafts = list()
 // The deck around start: every tile of airship deck joined to it edge to edge.
 // Returns the list of turfs, or a text saying why this is not an airship.
 /proc/air_hull_survey(turf/start, datum/craft/refitting = null)
-	if (!istype(start, /turf/sky/building) || !(locate(/obj/covers/airship_deck) in start))
-		return "The helm must stand on an airship deck laid in the open air."
+	if (!start || !(locate(/obj/covers/airship_deck) in start))
+		return "The helm must stand on an airship deck."
 	var/list/found = list(start)
 	var/list/queue = list(start)
 	while (queue.len)
@@ -332,7 +555,7 @@ var/global/list/air_hull_crafts = list()
 
 /datum/craft/air/proc/ground_z()
 	var/datum/craft_body/built/air/B = body
-	return (istype(B) && B.placed()) ? multiz_level_below(B.z) : 0
+	return (istype(B) && B.placed() && !B.landed()) ? multiz_level_below(B.z) : 0
 
 // The silhouette of her deck, gas cells and crew on the ground below.
 /obj/effect/air_hull_shadow
@@ -458,7 +681,7 @@ var/global/list/air_hull_crafts = list()
 // How many levels high lies over low, counting only open air in between;
 // 0 when something solid is in the way or high is not over low.
 /proc/air_hull_levels_between(turf/low, turf/high)
-	if (!low || !high || low.x != high.x || low.y != high.y)
+	if (!low || !high || low.x != high.x || low.y != high.y || !istype(high, /turf/sky))
 		return 0
 	var/turf/at = high
 	for (var/steps = 1 to AIR_HULL_MAX_DROP)
@@ -516,14 +739,25 @@ var/global/list/air_hull_crafts = list()
 			G.hole(P)
 		check_lift()
 		return T
-	D.visible_message(SPAN_WARNING("\The [P] thuds into the deck planks."))
+	if (projectile_ignites_gas(P) && prob(25))
+		air_deck_catch_fire(D)
+	D.visible_message(SPAN_WARNING("\The [P] thuds into the deck."))
 	return T
 
-// After a cell is holed or burnt: short of lift she can no longer fly, and
-// with less than half the lift she needs she breaks up and falls.
+// A wooden deck tile on T catches fire; metal decks do not burn.
+/proc/air_deck_catch_fire(turf/T)
+	var/obj/covers/airship_deck/D = locate() in T
+	if (!D || !D.wood || D.onfire)
+		return
+	D.onfire = TRUE
+	D.visible_message(SPAN_DANGER("\The [D] catches fire!"))
+	D.start_fire()
+
+// After a cell is holed or burnt: short of lift she sinks, and with less than
+// half the lift she needs she breaks up and falls.
 /datum/craft/air/proc/check_lift()
 	var/datum/craft_body/built/air/B = body
-	if (!istype(B) || !B.placed())
+	if (!istype(B) || !B.placed() || B.landed())
 		return
 	var/have = B.lift()
 	var/need = B.load()
@@ -531,9 +765,204 @@ var/global/list/air_hull_crafts = list()
 		crash()
 		return
 	if (have < need)
-		crew_message(SPAN_DANGER("The [name] is losing lift: her gas cells hold up [have] of her [need]. She hangs where she is until the cells are patched or she is lightened."))
+		crew_message(SPAN_DANGER("The [name] is losing lift: her gas cells hold up [have] of her [need]. She sinks until the cells are patched, she is lightened or she comes to rest."))
 		speed = VESSEL_SPEED_STOP
 		set_anchor(TRUE)
+		sink()
+
+/datum/craft/air/var/tmp/changing_level = FALSE
+
+// Sinks a level at a time while she is short of lift.
+/datum/craft/air/proc/sink()
+	set waitfor = FALSE
+	if (changing_level)
+		return
+	changing_level = TRUE
+	while (!QDELETED(src))
+		sleep(AIR_HULL_LEVEL_TIME)
+		var/datum/craft_body/built/air/B = body
+		if (QDELETED(src) || !istype(B) || !B.placed() || B.landed())
+			break
+		var/have = B.lift()
+		var/need = B.load()
+		if (have * 2 < need)
+			changing_level = FALSE
+			crash()
+			return
+		if (have >= need)
+			crew_message(SPAN_NOTICE("The [name] steadies: her gas cells hold her up again."))
+			break
+		if (!sink_step())
+			break
+	changing_level = FALSE
+
+// One level down while sinking. Returns TRUE when she can sink further.
+/datum/craft/air/proc/sink_step()
+	var/datum/craft_body/built/air/B = body
+	var/next = multiz_level_below(B.z)
+	if (!next)
+		return FALSE
+	var/list/deck = B.cells()
+	var/list/trees = list()
+	var/turf/blocked = null
+	for (var/turf/D in deck)
+		var/turf/N = locate(D.x, D.y, next)
+		if (!N)
+			blocked = D
+			break
+		if (istype(N, /turf/sky))
+			if (!air_deck_open(N))
+				blocked = N
+			continue
+		var/obj/structure/wild/W = air_hull_tree(N)
+		if (W)
+			trees[W] = D
+		else if (!air_ground_open(N))
+			blocked = N
+	if (blocked)
+		crew_message(SPAN_WARNING("The [name] comes to rest against what lies below her at [blocked.x],[blocked.y]. She stays there until her cells hold her up again."))
+		return FALSE
+	if (trees.len)
+		// Steel frames are never caught: only trees under the rest count.
+		var/snaggers = 0
+		for (var/obj/structure/wild/W in trees)
+			var/obj/covers/airship_deck/K = locate() in trees[W]
+			if (!K || !K.snag_proof)
+				snaggers++
+		if (snaggers * AIR_HULL_TREE_SHARE > deck.len)
+			// Too much forest: she hangs in the canopy, torn.
+			for (var/obj/structure/wild/W in trees)
+				tear_on_tree(trees[W], W, FALSE)
+			crew_message(SPAN_DANGER("The [name] snags in the treetops! The branches tear at her gas cells. She hangs there until her cells hold her up again."))
+			check_lift()
+			return FALSE
+		// A few trees: her weight flattens them.
+		for (var/obj/structure/wild/W in trees)
+			tear_on_tree(trees[W], W, TRUE)
+		crew_message(SPAN_DANGER("The [name] settles onto the trees under her and flattens them, tearing her gas cells."))
+		if (B.lift() * 2 < B.load())
+			crash()
+			return FALSE
+		for (var/turf/D in deck)
+			var/turf/N = locate(D.x, D.y, next)
+			if (!air_ground_open(N))
+				crew_message(SPAN_WARNING("The [name] comes to rest on the broken trees."))
+				return FALSE
+	B.shift_level(next)
+	update_views()
+	if (B.landed())
+		crew_message(SPAN_NOTICE("The [name] settles onto the ground."))
+		return FALSE
+	crew_message(SPAN_WARNING("The [name] sinks lower."))
+	return TRUE
+
+// A tree under her deck tile D: the branches hole the cell over it and hurt
+// whoever stands there; it is flattened, or only damaged when she snags.
+/datum/craft/air/proc/tear_on_tree(turf/D, obj/structure/wild/W, flatten)
+	var/obj/structure/airship_gas_cell/G = locate() in D
+	if (G && !G.burnt)
+		G.holes++
+		G.update_icon()
+	for (var/mob/living/L in D)
+		if (L.loc == D)
+			to_chat(L, SPAN_DANGER("Branches whip up through the deck!"))
+			L.adjustBruteLoss(rand(3, 8))
+	if (QDELETED(W))
+		return
+	W.health = flatten ? 0 : W.health - 25
+	W.try_destroy()
+
+// ---- Lifting off and landing ----
+
+// Why she cannot lift off now, or null.
+/datum/craft/air/proc/lift_off_refusal()
+	var/datum/craft_body/built/air/B = body
+	if (!istype(B) || !B.landed())
+		return "she is not on the ground"
+	if (changing_level)
+		return "she is already rising or sinking"
+	if (!anchored)
+		return "hold position first"
+	var/short = B.lift_refusal()
+	if (short)
+		return short
+	var/up = multiz_level_above(B.z)
+	if (!up)
+		return "there is no open sky above this place"
+	for (var/turf/D in B.cells())
+		var/turf/U = locate(D.x, D.y, up)
+		if ((locate(/obj/roof) in D) || !air_deck_open(U))
+			return "a roof or something overhead at [D.x],[D.y]: walk her out into the open first"
+	return null
+
+/datum/craft/air/proc/lift_off()
+	var/why = lift_off_refusal()
+	if (why)
+		last_refusal = why
+		return FALSE
+	var/datum/craft_body/built/air/B = body
+	B.shift_level(multiz_level_above(B.z))
+	update_views()
+	crew_message(SPAN_NOTICE("The [name] lifts off the ground and hangs in the open air."))
+	return TRUE
+
+// Why she cannot land straight down from here, or null. Every tile under her
+// must be clear, dry, level ground on one level, with only open air between.
+/datum/craft/air/proc/land_refusal()
+	var/datum/craft_body/built/air/B = body
+	if (!istype(B) || !B.placed() || B.landed())
+		return "she is already on the ground"
+	if (changing_level)
+		return "she is already rising or sinking"
+	if (!anchored)
+		return "hold position first"
+	var/ground = 0
+	for (var/turf/D in B.cells())
+		var/turf/G = air_hull_solid_below(D)
+		if (!G)
+			return "there is no ground under her"
+		if (istype(G, /turf/sky))
+			return "a floor or roof under her at [G.x],[G.y]"
+		if (ground && G.z != ground)
+			return "uneven ground under her"
+		ground = G.z
+		if (air_hull_tree(G))
+			return "a tree under her at [G.x],[G.y]"
+		if (!air_ground_open(G))
+			return "[G.density ? "\the [G]" : "rough ground or something in the way"] under her at [G.x],[G.y]"
+	return null
+
+// Brings her down a level at a time to the ground below.
+/datum/craft/air/proc/land()
+	var/why = land_refusal()
+	if (why)
+		last_refusal = why
+		return FALSE
+	crew_message(SPAN_NOTICE("The [name] vents gas and starts down."))
+	descend_to_ground()
+	return TRUE
+
+/datum/craft/air/proc/descend_to_ground()
+	set waitfor = FALSE
+	changing_level = TRUE
+	while (!QDELETED(src))
+		sleep(AIR_HULL_LEVEL_TIME)
+		var/datum/craft_body/built/air/B = body
+		if (QDELETED(src) || !istype(B) || !B.placed() || B.landed())
+			break
+		// Whatever came under her on the way down stops her.
+		changing_level = FALSE
+		var/why = land_refusal()
+		changing_level = TRUE
+		if (why)
+			crew_message(SPAN_WARNING("The [name] stops her descent: [why]."))
+			break
+		B.shift_level(multiz_level_below(B.z))
+		update_views()
+		if (B.landed())
+			crew_message(SPAN_NOTICE("The [name] settles gently onto the ground."))
+			break
+	changing_level = FALSE
 
 // She breaks up: everyone and everything aboard falls to the ground below,
 // and her deck, cells and helm are wrecked.
@@ -551,6 +980,15 @@ var/global/list/air_hull_crafts = list()
 		var/turf/G = air_hull_solid_below(D)
 		// A longer fall hurts more.
 		var/levels = max(1, air_hull_levels_between(G, D))
+		// Whoever falls onto a tree comes down beside its trunk, the branches
+		// breaking the fall a little, and the tree is battered.
+		var/obj/structure/wild/tree = air_hull_tree(G)
+		var/cushion = 0
+		if (tree)
+			G = air_hull_beside(G)
+			cushion = 10
+			tree.health -= 20
+			tree.try_destroy()
 		for (var/atom/movable/M in D.contents.Copy())
 			if (M.loc != D || QDELETED(M) || istype(M, /atom/movable/lighting_overlay) || istype(M, /atom/movable/lighting_fullbright))
 				continue
@@ -563,7 +1001,7 @@ var/global/list/air_hull_crafts = list()
 			if (isliving(M))
 				var/mob/living/L = M
 				to_chat(L, SPAN_DANGER("The deck breaks up beneath you and you fall!"))
-				L.adjustBruteLoss(rand(15, 35) + 15 * (levels - 1))
+				L.adjustBruteLoss(max(5, rand(15, 35) + 15 * (levels - 1) - cushion))
 				L.Weaken(3)
 			else if (isitem(M))
 				falling_item_strike(M, G)
@@ -780,14 +1218,14 @@ var/global/list/air_hull_crafts = list()
 
 /obj/structure/airship_helm/proc/status_text()
 	if (!craft)
-		return "The helm is not commissioned. It must stand on an airship deck laid in the open air."
+		return "The helm is not commissioned. It must stand on an airship deck."
 	var/datum/craft_body/built/air/B = craft.body
 	var/list/speeds = list("all stop", "slow ahead", "half ahead", "full ahead")
 	var/engines = 0
 	for (var/datum/craft_drive/D in craft.drives)
 		if (D.ready())
 			engines++
-	return "[capitalize(craft.name)]: [B.tile_count()] tiles of deck, gas cells holding up [B.lift()] of her [B.load()], [speeds[craft.speed + 1]], bow to the [dir2text(B.dir)], [craft.anchored ? "holding position" : "cast off"]. [engines ? "[engines] engine[engines == 1 ? "" : "s"] running." : "No engine is running: she drifts along at slow ahead."]"
+	return "[capitalize(craft.name)]: [B.tile_count()] tiles of deck, gas cells holding up [B.lift()] of her [B.load()], [speeds[craft.speed + 1]], bow to the [dir2text(B.dir)], [B.landed() ? "on the ground, " : ""][craft.changing_level ? "changing height" : (craft.anchored ? "holding position" : "cast off")]. [engines ? "[engines] engine[engines == 1 ? "" : "s"] running." : "No engine is running: she drifts along at slow ahead."]"
 
 /obj/structure/airship_helm/examine(mob/user)
 	..()
@@ -806,7 +1244,10 @@ var/global/list/air_hull_crafts = list()
 		options += "Full ahead"
 	if (best >= VESSEL_SPEED_HALF)
 		options += "Half ahead"
-	options += list("Slow ahead", "All stop", "Head north", "Head east", "Head south", "Head west", craft.anchored ? "Cast off" : "Hold position", "Refit the deck", "Strike the airship", "Cancel")
+	options += list("Slow ahead", "All stop", "Head north", "Head east", "Head south", "Head west", craft.anchored ? "Cast off" : "Hold position")
+	var/datum/craft_body/built/air/AB = craft.body
+	options += AB.landed() ? "Lift off" : "Land"
+	options += list("Refit the deck", "Strike the airship", "Cancel")
 	var/choice = WWinput(H, status_text(), name, "Cancel", options)
 	if (!choice || choice == "Cancel" || !craft || get_dist(H, src) > 1)
 		return
@@ -823,6 +1264,14 @@ var/global/list/air_hull_crafts = list()
 				return
 			craft.set_anchor(FALSE)
 		if ("Hold position") craft.set_anchor(TRUE)
+		if ("Lift off")
+			if (!craft.lift_off())
+				to_chat(H, SPAN_WARNING("She cannot lift off: [craft.last_refusal]."))
+				return
+		if ("Land")
+			if (!craft.land())
+				to_chat(H, SPAN_WARNING("She cannot land here: [craft.last_refusal]."))
+				return
 		if ("Head north", "Head east", "Head south", "Head west")
 			var/heading = text2dir(copytext(choice, 6))
 			if (craft.anchored)
@@ -846,7 +1295,7 @@ var/global/list/air_hull_crafts = list()
 			if (!craft.anchored)
 				to_chat(H, SPAN_WARNING("Hold position before striking her."))
 				return
-			if (WWinput(H, "Strike the [craft.name]? Her deck stays where it is, hanging in the air, but she no longer flies.", name, "No", list("Yes", "No")) != "Yes" || !craft || get_dist(H, src) > 1)
+			if (WWinput(H, "Strike the [craft.name]? Her deck stays where it is, but she no longer flies.", name, "No", list("Yes", "No")) != "Yes" || !craft || get_dist(H, src) > 1)
 				return
 			log_game("[key_name(H)] struck the airship [craft.name] at [x],[y],[z].")
 			craft.crew_message(SPAN_NOTICE("[H] strikes the [craft.name]."))
@@ -888,5 +1337,9 @@ var/global/list/air_hull_crafts = list()
 #undef AIR_HULL_HIT_CHANCE
 #undef AIR_HULL_CREW_HIT_CHANCE
 #undef AIR_HULL_PATCH_TIME
+#undef AIR_HULL_RUBBER_SHEETS
+#undef AIR_HULL_SKIN_LAYERS
 #undef AIR_HULL_HATCH_BOMBS
 #undef AIR_HULL_MAX_DROP
+#undef AIR_HULL_LEVEL_TIME
+#undef AIR_HULL_TREE_SHARE

@@ -9,6 +9,16 @@
 // them. tests/dismantle_refunds mirrors these rules.
 
 var/global/list/crafted_refund_stack_cache = list()
+// path -> how many units of that refund stack the cheapest recipe cost.
+var/global/list/crafted_refund_units_cache = list()
+
+// The most of crafted_refund_stack(path) that taking it apart may give back:
+// the cheapest recipe's cost in that stack, or 0 with no safe refund.
+/proc/crafted_refund_units(path)
+	var/key = "[path]"
+	if (!(key in crafted_refund_stack_cache))
+		crafted_refund_stack(path)
+	return crafted_refund_units_cache[key] || 0
 
 /proc/crafted_refund_stack(path, fallback = null)
 	var/key = "[path]"
@@ -70,6 +80,10 @@ var/global/list/crafted_refund_stack_cache = list()
 	else if (found)
 		result = null
 	crafted_refund_stack_cache[key] = result
+	var/units = 0
+	if (ispath(result, /obj/item/stack))
+		units = round(result == /obj/item/stack/material/wood ? cheapest / 4 : cheapest)
+	crafted_refund_units_cache[key] = units
 	if (result == "none")
 		return fallback
 	return result

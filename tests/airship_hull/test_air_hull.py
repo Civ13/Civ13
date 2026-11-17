@@ -1,6 +1,7 @@
 """Crewed airships (code/modules/naval/air_hull.dm): wiring the native probe relies on.
 
-Offline source checks only; building, lifting, flying, turning, firing down,
+Offline source checks only; building in the air and on the ground, lifting
+off, landing, sinking onto trees, flying, turning, firing down,
 save/restore, holed and burnt gas cells, the bomb hatch and the wreck run natively in tests/pedal_bicycle/ride.py --probe air_hull_probe.dm.
 """
 import hashlib
@@ -18,6 +19,11 @@ SOURCE = (ROOT / 'code/modules/naval/air_hull.dm').read_text()
 BUILT = (ROOT / 'code/modules/craft/built_body.dm').read_text()
 COMBAT = (ROOT / 'code/game/objects/structures/pedal_airship_combat.dm').read_text()
 BODY = '/datum/craft_body/built/air'
+
+
+def type_block(path):
+    start = SOURCE.index('\n' + path + '\n') + 1
+    return SOURCE[start:SOURCE.index('\n\n', start)]
 
 
 class Deck(unittest.TestCase):
@@ -79,13 +85,13 @@ class Damage(unittest.TestCase):
         self.assertIn('air_hull_crafts', (ROOT / 'code/modules/projectiles/projectile_lob.dm').read_text())
 
     def test_holes_cut_lift_fire_burns_it_out(self):
-        self.assertIn('burnt ? 0 : max(0, AIR_HULL_CELL_LIFT - holes * AIR_HULL_HOLE_LIFT)',
+        self.assertIn('burnt ? 0 : max(0, max_lift - holes * hole_lift)',
                       extract(SOURCE, '/obj/structure/airship_gas_cell/proc/lift'))
         struck = extract(SOURCE, '/datum/craft/air/proc/struck_by')
         self.assertIn('projectile_ignites_gas(P)', struck)
         self.assertLess(struck.index('G.hole(P)'), struck.index('check_lift()'))
         patch = extract(SOURCE, '/obj/structure/airship_gas_cell/attackby')
-        self.assertIn('/obj/item/stack/material/cloth', patch)
+        self.assertIn('is_type_in_list(W, patches)', patch)
         self.assertIn('holes--', patch)
 
     def test_short_of_lift_she_stops_and_half_short_she_falls(self):
@@ -134,16 +140,95 @@ class HighFlight(unittest.TestCase):
         self.assertLess(carbon.index('airborne_aim_turf(src, target)'), carbon.index('airborne_launch_turf(src, target)'))
 
 
+class Ground(unittest.TestCase):
+    def test_decks_are_laid_on_clear_ground_or_beside_a_ladder_top(self):
+        lay = extract(SOURCE, '/proc/air_deck_lay_refusal')
+        self.assertIn('var/aloft = istype(T, /turf/sky)', lay)
+        self.assertIn('air_ground_open(T)', lay)
+        self.assertIn('aloft && (locate(/obj/structure/multiz) in N)', lay)
+        ground = extract(SOURCE, '/proc/air_ground_open')
+        for blocker in ('/obj/covers', '/obj/roof', '/obj/structure/multiz', 'aircraft_rough_ground()'):
+            self.assertIn(blocker, ground)
+        refusal = extract(SOURCE, BODY + '/tile_refusal')
+        self.assertLess(refusal.index('air_ground_open(D)'), refusal.index('air_deck_open(D)'))
+
+    def test_lift_off_needs_lift_and_open_sky_and_landing_clear_ground(self):
+        lift = extract(SOURCE, '/datum/craft/air/proc/lift_off_refusal')
+        self.assertIn('B.lift_refusal()', lift)
+        self.assertIn('air_deck_open(U)', lift)
+        self.assertIn('/obj/roof', lift)
+        land = extract(SOURCE, '/datum/craft/air/proc/land_refusal')
+        self.assertLess(land.index('air_hull_tree(G)'), land.index('air_ground_open(G)'))
+        self.assertIn('G.z != ground', land)
+        descend = extract(SOURCE, '/datum/craft/air/proc/descend_to_ground')
+        self.assertLess(descend.index('land_refusal()'), descend.index('B.shift_level('))
+        self.assertIn('#define AIR_HULL_LEVEL_TIME 30\n', SOURCE)
+
+    def test_short_of_lift_she_sinks_flattens_a_few_trees_and_snags_in_many(self):
+        check = extract(SOURCE, '/datum/craft/air/proc/check_lift')
+        self.assertIn('B.landed()', check)
+        self.assertLess(check.index('set_anchor(TRUE)'), check.index('sink()'))
+        step = extract(SOURCE, '/datum/craft/air/proc/sink_step')
+        self.assertIn('snaggers * AIR_HULL_TREE_SHARE > deck.len', step)
+        self.assertLess(step.index('tear_on_tree(trees[W], W, FALSE)'), step.index('tear_on_tree(trees[W], W, TRUE)'))
+        self.assertIn('#define AIR_HULL_TREE_SHARE 4\n', SOURCE)
+        tear = extract(SOURCE, '/datum/craft/air/proc/tear_on_tree')
+        self.assertIn('G.holes++', tear)
+        self.assertIn('W.try_destroy()', tear)
+
+    def test_falling_onto_a_tree_lands_beside_the_trunk(self):
+        crash = extract(SOURCE, '/datum/craft/air/proc/crash')
+        self.assertLess(crash.index('G = air_hull_beside(G)'), crash.index('L.adjustBruteLoss('))
+        self.assertIn('max(5, rand(15, 35) + 15 * (levels - 1) - cushion)', crash)
+        pedal = (ROOT / 'code/game/objects/structures/pedal_airship.dm').read_text()
+        set_down = extract(pedal, '/obj/structure/vehicle/bicycle/airship/proc/set_down')
+        self.assertLess(set_down.index('snag_in_tree(G, tree)'), set_down.index('set_aloft(FALSE)'))
+        self.assertIn('pedal_airship_tree_gone(T)', extract(COMBAT, '/obj/structure/wild/Destroy'))
+
+
+class Materials(unittest.TestCase):
+    def test_deck_frames_weigh_burn_and_snag_by_material(self):
+        load = extract(SOURCE, BODY + '/proc/load')
+        self.assertIn('. += K.air_weight', load)
+        for path, weight in (('/obj/covers/airship_deck/aluminium', 'air_weight = 0.5'), ('/obj/covers/airship_deck/steel', 'air_weight = 2')):
+            block = type_block(path)
+            self.assertIn(weight, block)
+            self.assertIn('wood = FALSE', block)
+            self.assertIn('flammable = FALSE', block)
+        self.assertIn('snag_proof = TRUE', type_block('/obj/covers/airship_deck/steel'))
+        step = extract(SOURCE, '/datum/craft/air/proc/sink_step')
+        self.assertIn('snaggers * AIR_HULL_TREE_SHARE > deck.len', step)
+        self.assertIn('new deck_type(T)', extract(SOURCE, '/obj/item/airship_planks/resolve_attackby'))
+        fire = extract(SOURCE, '/proc/air_deck_catch_fire')
+        self.assertIn('!D.wood', fire)
+        self.assertIn('air_deck_catch_fire(get_turf(src))', extract(SOURCE, '/obj/structure/airship_gas_cell/proc/ignite'))
+
+    def test_cells_lift_and_tear_by_material(self):
+        rubber = type_block('/obj/structure/airship_gas_cell/rubber')
+        self.assertIn('hole_lift = 2', rubber)
+        self.assertIn('/obj/item/stack/material/plastic', rubber)
+        skin = type_block('/obj/structure/airship_gas_cell/skin')
+        self.assertIn('max_lift = 15', skin)
+        self.assertIn('hole_lift = 5', skin)
+        convert = extract(SOURCE, '/obj/item/airship_gas_cell/attackby')
+        self.assertIn('S.use(AIR_HULL_RUBBER_SHEETS)', convert)
+        self.assertIn('/obj/item/stack/sausagecasing', convert)
+        self.assertIn('#define AIR_HULL_SKIN_LAYERS 6\n', SOURCE)
+        self.assertIn('new folded_type(T)', extract(SOURCE, '/obj/structure/airship_gas_cell/attackby'))
+
+
 class Wiring(unittest.TestCase):
     def test_recipes_research_and_include(self):
         recipes = (ROOT / 'config/crafting/material_recipes_global.txt').read_text()
         for line in ('RECIPE: /material/wood/,airship planks,/obj/item/airship_planks,3,40,0,1,vehicle parts,126,0,0,8,null',
                      'RECIPE: /material/cloth/,airship gas cell,/obj/item/airship_gas_cell,20,200,0,1,vehicle parts,126,0,0,8,null',
                      'RECIPE: /material/wood/,airship helm,/obj/item/airship_helm_kit,10,150,0,1,vehicle parts,126,0,0,8,null',
+                     'RECIPE: /material/aluminium/,aluminium airship frame,/obj/item/airship_planks/aluminium,3,60,0,1,vehicle parts,126,0,0,8,null',
+                     'RECIPE: /material/steel/,steel airship frame,/obj/item/airship_planks/steel,3,60,0,1,vehicle parts,126,0,0,8,null',
                      'RECIPE: /material/steel/,airship bomb hatch,/obj/structure/airship_bomb_hatch,6,100,1,1,vehicle parts,126,0,0,8,null'):
             self.assertIn(line, recipes)
         research = (ROOT / 'code/modules/research_tree/research_node.dm').read_text()
-        for path in ('airship_planks', 'airship_gas_cell', 'airship_helm_kit'):
+        for path in ('airship_planks', 'airship_planks/aluminium', 'airship_planks/steel', 'airship_gas_cell', 'airship_helm_kit'):
             self.assertIn('"/obj/item/' + path + '" = "powered_flight"', research)
         self.assertIn('"/obj/structure/airship_bomb_hatch" = "powered_flight"', research)
         dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8-sig')
@@ -157,8 +242,8 @@ class Wiring(unittest.TestCase):
             subprocess.run([sys.executable, str(ROOT / 'tests/airship_hull/airship_hull_sprites.py'), '--check'], check=True)
 
 
-HULL_SHA = '05536a6122859b869f775d8f1d4037bee9ea5aef181258ca8f9de47342dac134'
-CELL_SHA = 'b4c94b9e3cc32b146c4fa9bd4eb9ddc3200948336dd8aa8a38ba8acb494c0df5'
+HULL_SHA = 'ed7edae72e27c45242096ac66b84cdff2c93a782108946bc64e6d355d45561e9'
+CELL_SHA = '5a4c45b76e58bb7c0369edd7d2abeb92f2b8053b2e2b2820da863fb260dd48cd'
 
 if __name__ == '__main__':
     unittest.main()

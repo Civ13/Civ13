@@ -58,6 +58,11 @@ var/naval_runtime_error = FALSE
 	C.updateturf()
 	return C
 
+/proc/hull_planks(turf/T)
+	. = 0
+	for (var/obj/covers/C in T)
+		.++
+
 /proc/steel_lay(x, y)
 	var/turf/T = locate(x, y, 2)
 	var/obj/covers/steelplating/C = new(T)
@@ -193,6 +198,127 @@ var/naval_runtime_error = FALSE
 	naval_check(T.water == 0 && findtext(T.status_text(), "plating"), "and stays dry under way")
 	steamer.craft.set_speed(VESSEL_SPEED_STOP)
 
+	// ---- Holes ----
+	var/obj/structure/hull_tiller/cog_tiller = bilge_hull(25, 30, 27, 39, "Cog")
+	var/datum/craft/G = cog_tiller.craft
+	var/datum/hull_ledger/H = G.ledger
+	var/turf/hole = locate(26, 34, 2)
+	var/obj/covers/shot = locate(/obj/covers) in hole
+	qdel(shot)
+	naval_check(H.holes == 1 && H.hole_at(hole) && G.body.tile_count() == 30, "a floor shot away leaves a hole in her hull and she keeps her shape")
+	naval_check(findtext(H.status_text(), "1 hole in her hull lets the sea in"), "the tiller reports the hole ([H.status_text()])")
+	naval_check(findtext(cog_tiller.commission(), "Patch the hole"), "she cannot be surveyed again while she is holed")
+	// A wall built aboard is no part of her bottom.
+	var/obj/covers/wood_wall/wall = new(locate(25, 31, 2))
+	wall.afloat = TRUE
+	qdel(wall)
+	naval_check(H.holes == 1, "a wall knocked down aboard is no hole")
+	// Asleep she takes nothing; awake the hole outruns one bailer.
+	naval_check(hull_ledgers_tick() == 0 && H.water == 0, "holed but asleep, she takes no water")
+	H.crewed = TRUE
+	H.step_ledger(60)
+	naval_check(near(H.water, 25 + 0.675), "awake, the hole lets in 25 bucketfuls a minute on top of her seams ([H.water])")
+	H.step_ledger(120)
+	naval_check(H.water > H.limit() && H.depth() == HULL_DEPTH_AWASH, "a hole takes her past awash ([H.water])")
+	H.water = 95
+	H.depth_told = HULL_DEPTH_AWASH
+	H.step_ledger(1)
+	naval_check(H.depth() == HULL_DEPTH_LISTING && H.depth_told == HULL_DEPTH_LISTING, "three quarters full she lists and her crew is told")
+	var/obj/structure/vehicleparts/movement/sail/cog_mast = new(locate(26, 31, 2))
+	cog_mast.sails = TRUE
+	var/obj/structure/vehicleparts/movement/sail/cog_mast2 = new(locate(26, 38, 2))
+	cog_mast2.sails = TRUE
+	G.fit_drives()
+	naval_check(G.thrust() / G.mass() >= 1 && G.max_speed() == VESSEL_SPEED_SLOW, "listing, two masts that could make half ahead make slow ahead at best (push [G.thrust()] on [G.mass()])")
+
+	// ---- Patching ----
+	var/mob/living/human/naval_probe/carpenter = new(locate(26, 33, 2))
+	var/obj/item/stack/material/wood/timber = new(locate(26, 33, 2))
+	timber.amount = 5
+	naval_check(findtext(hull_patch_refusal(carpenter, timber, hole), "hammer"), "a patch needs a hammer in the other hand ([hull_patch_refusal(carpenter, timber, hole)])")
+	naval_check(findtext(hull_patch_refusal(carpenter, timber, locate(26, 35, 2)), "no hole"), "sound planks need no patch")
+	naval_check(findtext(hull_patch_refusal(carpenter, timber, locate(40, 40, 2)), "no hole"), "nor does the open sea")
+	var/obj/covers/patch = hull_patch_lay(G, timber, hole)
+	naval_check(istype(patch, /obj/covers/repairedfloor/ship/patch) && patch.afloat && timber.amount == 3, "the patch is a floor of her hull and takes two pieces of wood")
+	naval_check(H.holes == 0 && H.patches == 1 && !H.hole_at(hole), "the hole is closed and counted as a patch")
+	H.water = 0
+	H.depth_told = HULL_DEPTH_DRY
+	H.step_ledger(60)
+	naval_check(near(H.water, 30 * 0.045 * 0.5 + 1), "a patch weeps a bucketful a minute on top of her seams ([H.water])")
+	naval_check(isnull(cog_tiller.commission()) && H.patches == 1 && H.holes == 0 && H.seep_tiles == 29, "patched, she is surveyed again and the patch is found")
+	// Water a hole let in past awash stays until it is bailed.
+	H.water = 100
+	H.step_ledger(600)
+	naval_check(H.water == 100, "with the hole patched the water neither rises nor drains by itself")
+	qdel(patch)
+	naval_check(H.holes == 1 && H.patches == 0, "a patch torn out is a hole again")
+
+	// ---- Foundering on deep water ----
+	H.water = 119
+	H.step_ledger(60)
+	naval_check(H.water == 120 && H.depth() == HULL_DEPTH_FULL && H.sink_left == HULL_SINK_WARNINGS && !H.grounded, "full on deep water she founders and the count begins")
+	naval_check(!H.sink_tick() && H.sink_left == HULL_SINK_WARNINGS - 1, "half a minute on she is still afloat")
+	H.remove_water(10)
+	naval_check(!H.sink_tick() && H.sink_left == 0, "a crew that gets ahead of the water stops the count")
+	H.step_ledger(60)
+	naval_check(H.sink_left == HULL_SINK_WARNINGS, "the open hole fills her again and the count starts over")
+	var/mob/living/human/naval_probe/mate = new(locate(25, 36, 2))
+	var/obj/item/weapon/reagent_containers/glass/bucket/pail = new(locate(27, 36, 2))
+	var/obj/structure/closet/crate/chest = new(locate(27, 37, 2))
+	var/obj/structure/probe_gun/gun = new(locate(25, 37, 2))
+	var/went = FALSE
+	for (var/i = 1, i <= HULL_SINK_WARNINGS, i++)
+		went = H.sink_tick()
+	naval_check(went, "four half minutes later she goes down")
+	var/left = 0
+	for (var/x = 25, x <= 27, x++)
+		for (var/y = 30, y <= 39, y++)
+			left += hull_planks(locate(x, y, 2))
+	naval_check(left == 0 && QDELETED(cog_tiller) && QDELETED(cog_mast) && QDELETED(gun), "her floors, tiller, masts and gun are lost")
+	naval_check(!QDELETED(mate) && mate.z == 2 && mate.x == 25 && !QDELETED(carpenter) && !QDELETED(pail) && !QDELETED(chest) && !QDELETED(timber), "her crew, a bucket, a chest and loose wood are left in the water")
+	var/turf/was_deck = locate(26, 36, 2)
+	naval_check(was_deck.water_level > 0 && !craft_at(was_deck) && !(H in hull_ledgers), "the sea closes over where she was and no ledger is left")
+
+	// ---- Grounding in the shallows ----
+	for (var/x = 50, x <= 56, x++)
+		for (var/y = 30, y <= 45, y++)
+			var/turf/W = locate(x, y, 2)
+			W.ChangeTurf(/turf/floor/beach/water)
+	var/obj/structure/hull_tiller/punt_tiller = bilge_hull(52, 32, 54, 41, "Punt")
+	var/datum/craft/P = punt_tiller.craft
+	var/datum/hull_ledger/N = P.ledger
+	var/turf/gap = locate(53, 36, 2)
+	qdel(locate(/obj/covers) in gap)
+	N.crewed = TRUE
+	N.water = 119
+	N.step_ledger(60)
+	naval_check(N.grounded && N.sink_left == 0 && N.water == 120, "full in the shallows she settles on the bottom and does not sink")
+	P.set_anchor(FALSE)
+	P.set_speed(VESSEL_SPEED_SLOW)
+	naval_check(P.speed == VESSEL_SPEED_STOP && !P.order_turn(EAST) && findtext(P.last_refusal, "bottom"), "on the bottom she neither sails nor comes about")
+	N.remove_water(100)
+	N.step_ledger(1)
+	naval_check(N.grounded, "bailed but still holed she stays down")
+	var/obj/item/stack/material/wood/more = new(locate(53, 35, 2))
+	more.amount = 2
+	hull_patch_lay(P, more, gap)
+	N.water = 70
+	N.step_ledger(1)
+	naval_check(N.grounded, "patched but still over awash she stays down")
+	N.remove_water(30)
+	N.step_ledger(1)
+	naval_check(!N.grounded, "patched and bailed below awash she floats again")
+	P.set_speed(VESSEL_SPEED_SLOW)
+	naval_check(P.speed == VESSEL_SPEED_SLOW, "and answers her tiller")
+	P.set_speed(VESSEL_SPEED_STOP)
+	P.set_anchor(TRUE)
+	// The grounding is saved.
+	N.grounded = TRUE
+	punt_tiller.before_save()
+	var/list/punt_saved = json_decode(punt_tiller.hull_state)
+	naval_check(punt_saved["ledger"]["grounded"] == 1 && punt_saved["ledger"]["patches"] == 1 && punt_saved["ledger"]["holes"] == 0, "the tiller saves her holes, patches and grounding")
+	qdel(punt_tiller)
+
 	// ---- Striking a hull ----
 	var/count = hull_ledgers.len
 	skiff.decommission()
@@ -201,9 +327,81 @@ var/naval_runtime_error = FALSE
 	qdel(tiller)
 	naval_check(!hull_ledgers.len, "no ledger outlives its tiller")
 
+// Small craft (naval/small_craft_leaks.dm): a raft or canoe stove in below
+// half her strength ships water as she moves, and lies swamped at ten.
+/proc/small_craft_checks()
+	// A vehicle's own move registers glide listeners.
+	if (!GLOB.global_listen_count)
+		GLOB.global_listen_count = list()
+	if (!GLOB.event_sources_count)
+		GLOB.event_sources_count = list()
+	if (!GLOB.event_listen_count)
+		GLOB.event_listen_count = list()
+	var/obj/structure/vehicle/raft/R = new(locate(25, 40, 2))
+	var/mob/living/human/naval_probe/H = new(locate(25, 40, 2))
+	R.driver = H
+	R.ontop += H
+	H.dir = NORTH
+	naval_check(R.takes_water() && !R.leaky() && !R.leak_chance(), "a sound raft does not leak")
+	naval_check(R.do_vehicle_check(), "a sound raft answers her paddle")
+	var/obj/structure/vehicle/motorcycle/M = new(locate(5, 40, 2))
+	naval_check(!M.takes_water() && !M.small_craft_damage(50) && !M.ship_water(), "a land vehicle is none of this")
+	qdel(M)
+	R.small_craft_damage(20)
+	naval_check(R.health == 30 && !R.leaky(), "a knock above half her strength leaves her tight")
+	naval_check(findtext(R.small_craft_text(), "still tight"), "a look says she is damaged but tight")
+	R.small_craft_damage(10)
+	naval_check(R.health == 20 && R.leaky() && R.leak_chance() == 44, "below half she leaks, the more the worse ([R.leak_chance()])")
+	R.small_craft_damage(500)
+	naval_check(R.health == 1 && !QDELETED(R) && R.leak_chance() == 97, "blows leave a hulk and never break her up ([R.leak_chance()])")
+	// A hulk ships water on nearly every move; a sound raft on none.
+	var/obj/structure/vehicle/raft/sound = new(locate(27, 40, 2))
+	for (var/i = 1, i <= 60, i++)
+		R.do_move(NORTH)
+		sound.do_move(NORTH)
+		if (R.swamped())
+			break
+	naval_check(R.swamped() && R.bilge == 10 && R.y > 40, "moving swamps a hulk (after [R.y - 40] tiles)")
+	naval_check(sound.bilge == 0 && sound.y > 40, "the sound raft beside her stays dry")
+	qdel(sound)
+	H.forceMove(R.loc)
+	naval_check(!R.do_vehicle_check(), "a swamped raft will not move")
+	naval_check(!R.ship_water() && R.bilge == 10, "a swamped raft holds no more")
+	naval_check((H in R.ontop) && R.driver == H && !QDELETED(R), "nobody is thrown out and nothing is lost")
+	naval_check(findtext(R.small_craft_text(), "swamped") && findtext(R.small_craft_text(), "hulk"), "a look says she is a swamped hulk")
+	R.bilge = 4
+	naval_check(R.do_vehicle_check(), "bailed below the brim she moves again")
+	naval_check(findtext(R.small_craft_text(), "4 bucketfuls"), "a look counts the water in her")
+	// What mends and what harms.
+	var/obj/item/stack/material/wood/logs = new(locate(25, 40, 2))
+	var/obj/item/stack/material/cloth/cloth = new(locate(25, 40, 2))
+	naval_check(R.mends_with(logs) && !R.mends_with(cloth), "wood mends a raft, cloth does not")
+	var/obj/structure/vehicle/boat/rhib/rib = new(locate(30, 40, 2))
+	naval_check(rib.takes_water() && rib.mends_with(cloth) && !rib.mends_with(logs), "cloth mends an inflatable")
+	rib.small_craft_damage(160)
+	naval_check(rib.health == 140 && rib.leaky(), "an inflatable holed below half leaks too")
+	qdel(rib)
+	var/obj/structure/vehicle/raft/dugout/C = new(locate(32, 40, 2))
+	naval_check(C.takes_water() && !C.leaky(), "a canoe is a small craft")
+	C.small_craft_damage(41)
+	naval_check(C.leaky(), "a canoe below half her strength leaks")
+	C.bilge = 10
+	C.driver = H
+	naval_check(!C.do_vehicle_check(), "a swamped canoe will not move")
+	C.driver = null
+	qdel(C)
+	naval_check(!R.small_craft_work_refusal(H), "her paddler can work on her")
+	H.forceMove(locate(40, 60, 2))
+	naval_check(R.small_craft_work_refusal(H), "nobody bails or mends from afar")
+	R.driver = null
+	R.ontop -= H
+	qdel(R)
+	qdel(H)
+
 /proc/naval_run()
 	try
 		naval_checks()
+		small_craft_checks()
 	catch(var/exception/e)
 		naval_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = naval_failures, "runtime_error" = naval_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")

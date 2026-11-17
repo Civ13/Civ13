@@ -2,10 +2,15 @@
 
 icons/obj/vehicles/airship_hull.dmi, 32x32: "helm" (4 directions, the wheel
 faces the bow), the inventory items "gas_cell_folded", "airship_planks"
-and "helm_kit", and the deck fittings "bomb_hatch" and "bomb_hatch_open".
+and "helm_kit", the deck fittings "bomb_hatch" and "bomb_hatch_open", the metal
+framing bundles "aluminium_frame" and "steel_frame", the metal deck floors
+"airship_deck_aluminium" and "airship_deck_steel", and the folded cells of
+the other two fabrics, "gas_cell_folded_rubber" and "gas_cell_folded_skin".
 
-icons/obj/vehicles/airship_gas_cell.dmi, 64x64: "gas_cell", "gas_cell_holed"
-and "gas_cell_burnt". The game draws the cell with pixel_x = -16 and
+icons/obj/vehicles/airship_gas_cell.dmi, 64x64: "gas_cell", "gas_cell_holed",
+"gas_cell_burnt" and "gas_cell_empty", then the same full, holed and empty
+states for rubberised cloth ("gas_cell_rubber...") and goldbeater's skin
+("gas_cell_skin..."); a burnt cell of any fabric is "gas_cell_burnt". The game draws the cell with pixel_x = -16 and
 pixel_y = 12, so its deck tile is under the bottom middle of the sheet and
 the rigging lines meet there.
 
@@ -16,6 +21,8 @@ the parts sit beside the pedal airship.
     python3 tests/airship_hull/airship_hull_sprites.py --check    # fail when one is stale
     python3 tests/airship_hull/airship_hull_sprites.py --preview out.png
     python3 tests/airship_hull/airship_hull_sprites.py --hatch-preview out.png
+
+tests/gas_works/gas_works_sprites.py --preview shows the material states.
 """
 from pathlib import Path
 import sys
@@ -221,6 +228,169 @@ def helm_kit():
     d.line((17, 22, 19, 25), fill=ROPE)
     return im
 
+
+# --- fabrics ----------------------------------------------------------------
+
+# Rubberised cloth: brown-black with a dull sheen. Goldbeater's skin: a thin
+# pale yellow-cream membrane. Both are the cloth drawing with its colours
+# swapped, so the three fabrics share one silhouette.
+RUBBER = (54, 44, 40, 255)
+RUBBER_LIGHT = (96, 84, 78, 255)
+RUBBER_SHADE = (40, 33, 31, 255)
+RUBBER_DARK = (28, 23, 23, 255)
+RUBBER_LINE = (16, 13, 14, 255)
+RUBBER_GLINT = (156, 146, 138, 255)
+RUBBER_HOLE = (6, 5, 8, 255)
+SKIN = (246, 230, 156, 255)
+SKIN_LIGHT = (255, 246, 204, 255)
+SKIN_SHADE = (232, 206, 124, 255)
+SKIN_DARK = (210, 178, 96, 255)
+SKIN_LINE = (168, 138, 80, 255)
+SKIN_VEIN = (218, 190, 110, 255)
+FABRIC = {
+    'rubber': {CANVAS: RUBBER, CANVAS_LIGHT: RUBBER_LIGHT, CANVAS_SHADE: RUBBER_SHADE,
+               CANVAS_DARK: RUBBER_DARK, CANVAS_LINE: RUBBER_LINE, HOLE: RUBBER_HOLE},
+    'skin': {CANVAS: SKIN, CANVAS_LIGHT: SKIN_LIGHT, CANVAS_SHADE: SKIN_SHADE,
+             CANVAS_DARK: SKIN_DARK, CANVAS_LINE: SKIN_LINE},
+}
+# How much of the deck shows through the membrane of a rigged skin cell.
+SKIN_ALPHA = 196
+
+
+def recolour(im, mapping, alpha=None):
+    """Swap exact colours; with alpha, also thin every swapped pixel but the outline."""
+    px = im.load()
+    for y in range(im.height):
+        for x in range(im.width):
+            to = mapping.get(px[x, y])
+            if to:
+                if alpha and to != mapping[CANVAS_LINE]:
+                    to = to[:3] + (alpha,)
+                px[x, y] = to
+    return im
+
+
+def glints(im, body, marks):
+    """Specular streaks, only where the fabric's plain body colour is."""
+    px = im.load()
+    for x0, y, n in marks:
+        for x in range(x0, x0 + n):
+            if px[x, y] == body:
+                px[x, y] = RUBBER_GLINT
+    return im
+
+
+def veins(im, body, marks):
+    """Faint overlapping-patch edges of goldbeater's skin."""
+    px = im.load()
+    for x, y, dx, dy, n in marks:
+        for i in range(n):
+            at = (x + dx * i, y + dy * i)
+            if px[at][:3] == body[:3]:
+                px[at] = SKIN_VEIN[:3] + (px[at][3],)
+    return im
+
+
+def gas_cell_folded_fabric(fabric):
+    im = recolour(gas_cell_folded(), FABRIC[fabric])
+    if fabric == 'rubber':
+        glints(im, RUBBER, ((6, 13, 2), (10, 13, 5), (18, 13, 2), (10, 14, 3)))
+        glints(im, RUBBER_SHADE, ((22, 11, 2), (21, 12, 1)))
+    else:
+        veins(im, SKIN, ((6, 14, 1, 0, 2), (11, 15, 1, 0, 4), (18, 14, 1, 0, 2), (10, 18, 1, 0, 5), (18, 18, 1, 0, 3)))
+    return im
+
+
+# --- metal framing ----------------------------------------------------------
+
+ALU = (196, 202, 208, 255)
+ALU_LIGHT = (232, 236, 240, 255)
+ALU_SHADE = (158, 166, 174, 255)
+ALU_DARK = (124, 132, 142, 255)
+ALU_LINE = (86, 94, 106, 255)
+GIRDER = (104, 108, 116, 255)
+GIRDER_LIGHT = (146, 150, 158, 255)
+GIRDER_SHADE = (78, 82, 90, 255)
+GIRDER_DARK = (58, 61, 68, 255)
+GIRDER_LINE = (34, 36, 42, 255)
+METAL = {
+    'aluminium': (ALU, ALU_LIGHT, ALU_SHADE, ALU_DARK, ALU_LINE),
+    'steel': (GIRDER, GIRDER_LIGHT, GIRDER_SHADE, GIRDER_DARK, GIRDER_LINE),
+}
+
+
+def frame_bundle(metal):
+    """A roped bundle of riveted I-girders, laid like the plank bundle."""
+    face, light, shade, dark, line = METAL[metal]
+    im = blank(32)
+    d = ImageDraw.Draw(im)
+    # Top flanges of two girders side by side.
+    d.rectangle((3, 10, 28, 17), fill=face, outline=line)
+    d.line((4, 11, 27, 11), fill=light)
+    d.line((4, 13, 27, 13), fill=shade)
+    d.line((4, 14, 27, 14), fill=line)
+    d.line((4, 15, 27, 15), fill=light)
+    # The near girder's web between its two flanges, with lightening holes.
+    d.rectangle((3, 17, 28, 23), fill=shade, outline=line)
+    d.line((4, 18, 27, 18), fill=face)
+    d.line((4, 22, 27, 22), fill=dark)
+    for x in (5, 11, 17, 23):
+        d.rectangle((x, 19, x + 2, 21), fill=line)
+        d.point((x, 19), fill=dark)
+        d.point((x + 2, 21), fill=dark)
+        d.point((x + 3, 20), fill=face)
+    # Rivet heads along the flanges.
+    for x in range(5, 28, 3):
+        d.point((x, 12), fill=shade)
+        d.point((x + 1, 16), fill=shade)
+        d.point((x, 18), fill=light)
+    # Uneven ends, showing the I section.
+    d.rectangle((28, 11, 30, 13), fill=face, outline=line)
+    d.point((29, 12), fill=light)
+    d.rectangle((1, 17, 3, 23), fill=shade, outline=line)
+    d.line((2, 19, 2, 21), fill=line)
+    d.point((2, 18), fill=light)
+    rope_band(d, 8, 10, 23)
+    rope_band(d, 22, 10, 23)
+    d.line((9, 9, 22, 9), fill=ROPE)
+    d.rectangle((14, 8, 16, 10), fill=ROPE_LIGHT, outline=ROPE)
+    d.line((17, 8, 19, 6), fill=ROPE)
+    return im
+
+
+def metal_deck(metal):
+    """Full-tile floor: four riveted plates lapped over the girders that run
+    under every seam, so the rivet rows trace the frame beneath."""
+    face, light, shade, dark, line = METAL[metal]
+    seam = dark if metal == 'aluminium' else line
+    im = Image.new('RGBA', (32, 32), face)
+    px = im.load()
+    # A few brushed streaks, the same on every tile so the floor tiles cleanly.
+    seed = 11
+    for _ in range(14):
+        seed = (seed * 73 + 41) % 1021
+        x, y, n = seed % 32, (seed // 32) % 32, 3 + seed % 4
+        if y % 16 in (5, 6, 7, 8, 9, 10):
+            for i in range(n):
+                if 4 <= (x + i) % 16 <= 11:
+                    px[(x + i) % 32, y] = light if seed % 2 else shade
+    for top in (0, 16):
+        for x in range(32):
+            px[x, top] = light
+            px[x, top + 14] = shade
+            px[x, top + 15] = seam
+        for left in (0, 16):
+            for y in range(top, top + 15):
+                px[left, y] = light
+                px[left + 14, y] = shade
+                px[left + 15, y] = seam
+            px[left + 15, top + 15] = seam
+            # Rivets along all four edges of the plate.
+            for i in (2, 5, 8, 11):
+                for x, y in ((left + i, top + 2), (left + i + 1, top + 12), (left + 2, top + i + 1), (left + 12, top + i)):
+                    px[x, y] = light
+                    px[x, y + 1] = dark
+    return im
 
 # --- bomb hatch -------------------------------------------------------------
 
@@ -478,32 +648,128 @@ def gas_cell_burnt():
     return im
 
 
+def cloth_mask_outline(skin, mask):
+    """Cut a painted cloth layer to a mask and give it the seam-colour outline."""
+    out = Image.new('RGBA', skin.size, CLEAR)
+    out.paste(skin, (0, 0), mask)
+    px = mask.load()
+    edge = out.load()
+    w, h = skin.size
+    for y in range(h):
+        for x in range(w):
+            if px[x, y] and any(not (0 <= x + dx < w and 0 <= y + dy < h) or not px[x + dx, y + dy]
+                                for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1))):
+                edge[x, y] = CANVAS_LINE
+    return out
+
+
+def gas_cell_empty():
+    """No gas left: the cell slumps in a heap of folds over its own rigging."""
+    im = blank(64)
+    d = ImageDraw.Draw(im)
+    # The three lines lie slack on the deck.
+    d.line((11, 55, 17, 62), fill=ROPE)
+    d.line((17, 62, 30, 63), fill=ROPE)
+    d.line((52, 56, 46, 62), fill=ROPE)
+    d.line((46, 62, 32, 63), fill=ROPE)
+    heap = ((8, 55), (7, 50), (10, 46), (15, 45), (19, 40), (25, 42), (30, 37), (34, 37), (38, 41),
+            (43, 39), (47, 43), (52, 45), (56, 50), (55, 55), (51, 59), (44, 57), (38, 61),
+            (31, 58), (24, 61), (17, 58), (12, 59))
+    mask = Image.new('L', (64, 64), 0)
+    ImageDraw.Draw(mask).polygon(heap, fill=255)
+    skin = Image.new('RGBA', (64, 64), CANVAS)
+    s = ImageDraw.Draw(skin)
+    # Lit crowns of the three humps, shade pooling toward the hem.
+    s.polygon(((17, 46), (20, 42), (25, 44), (23, 48)), fill=CANVAS_LIGHT)
+    s.polygon(((27, 43), (31, 39), (34, 39), (36, 43), (31, 46)), fill=CANVAS_LIGHT)
+    s.polygon(((40, 44), (43, 41), (46, 44), (44, 47)), fill=CANVAS_LIGHT)
+    s.polygon(((7, 53), (16, 54), (24, 57), (31, 54), (38, 57), (45, 53), (56, 52), (56, 63), (7, 63)),
+              fill=CANVAS_SHADE)
+    s.polygon(((14, 58), (24, 60), (31, 57), (38, 60), (50, 57), (50, 63), (14, 63)), fill=CANVAS_DARK)
+    # Folds running down from each hump, each with a lit lip.
+    for x0, y0, x1, y1, x2, y2 in ((19, 42, 16, 50, 18, 57), (25, 43, 26, 51, 24, 59), (31, 39, 31, 48, 32, 57),
+                                   (37, 42, 39, 50, 38, 59), (43, 41, 46, 49, 45, 56), (12, 47, 11, 53, 13, 57),
+                                   (51, 46, 52, 52, 50, 57)):
+        s.line((x0, y0, x1, y1), fill=CANVAS_LINE)
+        s.line((x1, y1, x2, y2), fill=CANVAS_LINE)
+        s.line((x0 + 1, y0 + 1, x1 + 1, y1), fill=CANVAS_LIGHT)
+    # What shows of the stitched seams, broken by the folds.
+    for x in range(9, 55):
+        if x % 3 != 2 and x % 9 < 6:
+            s.point((x, 51 + (x % 4 == 0)), fill=CANVAS_LINE)
+    for x0w, y0w, x1w, y1w in ((21, 46, 23, 49), (28, 47, 29, 52), (34, 45, 35, 50), (41, 46, 42, 51), (48, 48, 49, 52)):
+        s.line((x0w, y0w, x1w, y1w), fill=CANVAS_SHADE)
+    im.alpha_composite(cloth_mask_outline(skin, mask))
+    d = ImageDraw.Draw(im)
+    # Rope patches, and the middle line lying across the heap.
+    for x, y in ((12, 54), (51, 55)):
+        d.line((x - 1, y, x + 1, y), fill=ROPE)
+        d.point((x, y - 1), fill=ROPE_LIGHT)
+    d.line((31, 50, 33, 55), fill=ROPE)
+    d.line((33, 55, 31, 60), fill=ROPE)
+    d.line((30, 49, 32, 49), fill=ROPE)
+    d.point((31, 48), fill=ROPE_LIGHT)
+    d.line((31, 60, 31, 63), fill=ROPE)
+    return im
+
+
+def gas_cell_fabric(fabric, state):
+    """state is 'full', 'holed' or 'empty'."""
+    im = gas_cell_empty() if state == 'empty' else gas_cell(holed=state == 'holed')
+    recolour(im, FABRIC[fabric], SKIN_ALPHA if fabric == 'skin' else None)
+    if fabric == 'rubber':
+        if state == 'empty':
+            glints(im, RUBBER, ((20, 45, 3), (29, 42, 4), (41, 45, 3), (14, 49, 2), (47, 48, 2)))
+        else:
+            top = 9 if state == 'holed' else 7
+            glints(im, RUBBER_LIGHT, ((14, top + 1, 9), (27, top, 9), (40, top + 1, 8), (16, top + 2, 5)))
+            glints(im, RUBBER, ((6, 18, 3), (27, 20 + (state == 'holed'), 8), (52, 18, 3)))
+    elif state != 'empty':
+        body = SKIN[:3] + (SKIN_ALPHA,)
+        veins(im, body, ((6, 17, 1, 0, 5), (16, 15, 1, 1, 4), (20, 26, 1, 0, 4), (28, 15, 1, 0, 6),
+                         (30, 27, 1, -1, 4), (41, 17, 1, 1, 4), (44, 26, 1, 0, 4), (53, 17, 1, 0, 4),
+                         (8, 25, 1, 0, 3), (34, 18, 0, 1, 3), (19, 18, 0, 1, 3), (47, 16, 0, 1, 3)))
+    return im
+
+
 # --- sheets -----------------------------------------------------------------
+
+HULL_STATES = (('helm', 4), ('gas_cell_folded', 1), ('airship_planks', 1), ('helm_kit', 1),
+               ('bomb_hatch', 1), ('bomb_hatch_open', 1), ('aluminium_frame', 1), ('steel_frame', 1),
+               ('airship_deck_aluminium', 1), ('airship_deck_steel', 1),
+               ('gas_cell_folded_rubber', 1), ('gas_cell_folded_skin', 1))
+CELL_STATES = ('gas_cell', 'gas_cell_holed', 'gas_cell_burnt', 'gas_cell_empty',
+               'gas_cell_rubber', 'gas_cell_rubber_holed', 'gas_cell_rubber_empty',
+               'gas_cell_skin', 'gas_cell_skin_holed', 'gas_cell_skin_empty')
+HULL_COLUMNS = 4
+CELL_COLUMNS = 5
+
+
+def description(size, states):
+    text = '# BEGIN DMI\nversion = 4.0\n\twidth = %d\n\theight = %d\n' % (size, size)
+    for name, dirs in states:
+        text += 'state = "%s"\n\tdirs = %d\n\tframes = 1\n' % (name, dirs)
+    return text + '# END DMI\n'
+
+
+def sheet_of(frames, size, columns):
+    sheet = Image.new('RGBA', (size * columns, size * -(-len(frames) // columns)), CLEAR)
+    for i, frame in enumerate(frames):
+        sheet.paste(frame, ((i % columns) * size, (i // columns) * size))
+    return sheet
+
 
 def sheets():
     # BYOND stores four-direction states as south, north, east, west.
     hull = [helm_front(False), mirrored(helm_front(True)), helm_side(False), mirrored(helm_side(True)),
-            gas_cell_folded(), airship_planks(), helm_kit(), bomb_hatch(), bomb_hatch_open()]
-    hull_sheet = Image.new('RGBA', (32 * 4, 32 * 3), CLEAR)
-    for i, frame in enumerate(hull):
-        hull_sheet.paste(frame, ((i % 4) * 32, (i // 4) * 32))
-    hull_description = ('# BEGIN DMI\nversion = 4.0\n\twidth = 32\n\theight = 32\n'
-                        'state = "helm"\n\tdirs = 4\n\tframes = 1\n'
-                        'state = "gas_cell_folded"\n\tdirs = 1\n\tframes = 1\n'
-                        'state = "airship_planks"\n\tdirs = 1\n\tframes = 1\n'
-                        'state = "helm_kit"\n\tdirs = 1\n\tframes = 1\n'
-                        'state = "bomb_hatch"\n\tdirs = 1\n\tframes = 1\n'
-                        'state = "bomb_hatch_open"\n\tdirs = 1\n\tframes = 1\n'
-                        '# END DMI\n')
-    cell_sheet = Image.new('RGBA', (64 * 3, 64), CLEAR)
-    for i, frame in enumerate((gas_cell(), gas_cell(holed=True), gas_cell_burnt())):
-        cell_sheet.paste(frame, (i * 64, 0))
-    cell_description = ('# BEGIN DMI\nversion = 4.0\n\twidth = 64\n\theight = 64\n'
-                        'state = "gas_cell"\n\tdirs = 1\n\tframes = 1\n'
-                        'state = "gas_cell_holed"\n\tdirs = 1\n\tframes = 1\n'
-                        'state = "gas_cell_burnt"\n\tdirs = 1\n\tframes = 1\n'
-                        '# END DMI\n')
-    return ((HULL, hull_sheet, hull_description), (CELL, cell_sheet, cell_description))
+            gas_cell_folded(), airship_planks(), helm_kit(), bomb_hatch(), bomb_hatch_open(),
+            frame_bundle('aluminium'), frame_bundle('steel'), metal_deck('aluminium'), metal_deck('steel'),
+            gas_cell_folded_fabric('rubber'), gas_cell_folded_fabric('skin')]
+    cells = [gas_cell(), gas_cell(holed=True), gas_cell_burnt(), gas_cell_empty()]
+    for fabric in ('rubber', 'skin'):
+        cells += [gas_cell_fabric(fabric, state) for state in ('full', 'holed', 'empty')]
+    return ((HULL, sheet_of(hull, 32, HULL_COLUMNS), description(32, HULL_STATES)),
+            (CELL, sheet_of(cells, 64, CELL_COLUMNS), description(64, [(name, 1) for name in CELL_STATES])))
 
 
 def turf(state, sheet='icons/turf/floors.dmi'):
