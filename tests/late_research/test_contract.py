@@ -84,6 +84,17 @@ class FieldWork(unittest.TestCase):
                 ("code/modules/ecology/foraging.dm", 'note_field_work(src, "forage")'),
                 ("code/modules/1713/animal_harvest.dm", 'note_field_work(H, "butchering")')):
             self.assertIn(call, read(path), path)
+    def test_philosophy_grows_from_a_scholars_work(self):
+        # On book-research worlds nothing raised Philosophy, which gates language and holy books.
+        for path, call in (("code/modules/research_tree/book_research.dm", "H.philosophy_from_study(node_id)"),
+                           ("code/modules/research_tree/book_research.dm", "tutor.philosophy_from_tutoring(node_id, H)"),
+                           ("code/modules/research_tree/book_pages.dm", "H.philosophy_from_writing(node_id)"),
+                           ("code/modules/research_tree/compare_notes.dm", "partner.philosophy_from_comparing(node_id, H)")):
+            self.assertIn(call, read(path), path)
+        doing = read("code/modules/research_tree/learning_by_doing.dm")
+        self.assertIn('adaptStat("philosophy", amount, what)', doing)
+        self.assertIn('if (!learning_by_doing_enabled() || amount <= 0 || stat == DEAD)', doing)
+
     def test_a_craft_that_counts_says_so_and_the_bench_names_its_speed(self):
         # Players made the wrong things for a subject and saw nothing happen.
         note = proc(self.field, "/proc/note_field_work")

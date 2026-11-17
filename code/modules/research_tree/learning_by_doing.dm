@@ -52,6 +52,25 @@ var/global/list/skill_master_stats = list("crafting", "medical", "farming", "hun
 /proc/learning_by_doing_enabled()
 	return map && map.book_research_enabled()
 
+// ---------- Philosophy from learning and teaching ----------
+
+// Philosophy gates language books and holy books, but on book-research worlds
+// nothing raised it: its only gains were in the old research desk and
+// bookcase. It now grows from the life of a scholar. `what` names the exact
+// thing done, so the variety rules apply: each new chapter studied, taught,
+// written or compared teaches five times what a repeat does, and rote
+// repeats teach almost nothing.
+#define PHILOSOPHY_STUDY 1
+#define PHILOSOPHY_TUTOR 0.5
+#define PHILOSOPHY_WRITE 0.6
+#define PHILOSOPHY_COMPARE 0.6
+
+/mob/living/human/proc/gain_philosophy(amount, what)
+	if (!learning_by_doing_enabled() || amount <= 0 || stat == DEAD)
+		return FALSE
+	adaptStat("philosophy", amount, what)
+	return TRUE
+
 // ---------- Scholarship from active work ----------
 
 // Teaches the scholarship of `points` chapter points written by active work
@@ -247,6 +266,22 @@ var/global/list/skill_mastery_milestones = list(
 	..()
 	scholar_lessons = list()
 
+/mob/living/human/proc/philosophy_from_study(node_id)
+	return gain_philosophy(PHILOSOPHY_STUDY, "study:[node_id]")
+
+/mob/living/human/proc/philosophy_from_tutoring(node_id, mob/living/human/student)
+	return gain_philosophy(PHILOSOPHY_TUTOR, "tutor:[node_id]:[student ? student.scholar_identity() : ""]")
+
+/mob/living/human/proc/philosophy_from_writing(node_id)
+	return gain_philosophy(PHILOSOPHY_WRITE, "write:[node_id]")
+
+/mob/living/human/proc/philosophy_from_comparing(node_id, mob/living/human/partner)
+	return gain_philosophy(PHILOSOPHY_COMPARE, "compare:[node_id]:[partner ? partner.scholar_identity() : ""]")
+
+#undef PHILOSOPHY_STUDY
+#undef PHILOSOPHY_TUTOR
+#undef PHILOSOPHY_WRITE
+#undef PHILOSOPHY_COMPARE
 #undef SCHOLAR_ACTIVE_GAIN_RATE
 #undef SCHOLAR_DEMONSTRATION_SHARE
 #undef SCHOLAR_LESSON_LIMIT

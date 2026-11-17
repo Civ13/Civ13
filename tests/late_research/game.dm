@@ -737,6 +737,28 @@ var/late_wait_result = TRUE
 	var/list/clean = clean_skill_variety(dirty)
 	late_check(clean.len == 2 && clean["a"] == 3 && clean["b"] == 10, "saved variety counts are cleaned")
 	late_check(length(clean_scholar_lessons(list("x", "x", 7, ""))) == 1 && !length(clean_scholar_lessons("junk")), "saved lessons are cleaned")
+// Philosophy grows from studying, teaching, writing and comparing (learning_by_doing.dm).
+/proc/late_test_philosophy()
+	var/mob/living/human/late_fixture/thinker = new(locate(6,6,1))
+	var/mob/living/human/late_fixture/pupil = new(locate(6,7,1))
+	pupil.name = "Pupil"
+	thinker.stats["philosophy"] = list(100, 100)
+	late_check(thinker.philosophy_from_study("basic_tools") && abs(thinker.stats["philosophy"][1] - 105) < 0.01, "a first chapter studied raises Philosophy from 100 to 105")
+	thinker.philosophy_from_study("pottery")
+	late_check(abs(thinker.stats["philosophy"][1] - 110.25) < 0.01, "each new chapter teaches as much again")
+	var/before = thinker.stats["philosophy"][1]
+	thinker.philosophy_from_writing("pottery")
+	late_check(abs(thinker.stats["philosophy"][1] / before - 1.03) < 0.0005, "writing a chapter out for the first time teaches too")
+	before = thinker.stats["philosophy"][1]
+	thinker.philosophy_from_writing("pottery")
+	late_check(abs(thinker.stats["philosophy"][1] / before - 1.006) < 0.0005, "writing the same chapter again teaches a fifth as much")
+	before = thinker.stats["philosophy"][1]
+	late_check(thinker.philosophy_from_tutoring("pottery", pupil) && thinker.philosophy_from_comparing("pottery", pupil) && thinker.stats["philosophy"][1] > before, "tutoring and comparing notes teach the scholar")
+	map.book_research = FALSE
+	before = thinker.stats["philosophy"][1]
+	late_check(!thinker.philosophy_from_study("weaving") && thinker.stats["philosophy"][1] == before, "nothing changes where book research is off")
+	map.book_research = TRUE
+
 /proc/late_test_trial_and_error()
 	var/item_path = null
 	for(var/path in recipe_node_requirements)
@@ -1088,6 +1110,7 @@ var/late_wait_result = TRUE
 		late_test_subject_prototypes()
 		late_test_learning_by_doing()
 		late_test_trial_and_error()
+		late_test_philosophy()
 		late_test_trade_learning()
 		late_test_compare_notes()
 		late_test_naturalist_finds()
