@@ -302,8 +302,9 @@
 			reagents.trans_to(V, rand(1,5))
 		if (!in_outhouse && T.is_plumbed())
 			T.flush_waste(V) // Flushed down the drain (sewers.dm), so it cannot be fished back out of the cistern.
-		else if (!in_outhouse)
-			V.forceMove(T)
+		else
+			var/obj/structure/toilet/pit = in_outhouse ? loc : T
+			pit.take_night_soil(V) // Kept in the pit until it is dug out (latrine_waste.dm).
 
 	else if(w_uniform)
 		message = "<B>[src]</B> shits \his pants."
@@ -359,10 +360,14 @@
 	else if(T && T.open)//In the toilet.
 		message = "<B>[src]</B> urinates into \the [T]."
 		reagents.remove_any(rand(5,10))
+		if (T.keeps_waste())
+			T.take_urine(rand(5,10))
 
 	else if (in_outhouse) //Into the hole inside the outhouse.
 		message = "<B>[src]</B> urinates into the hole."
 		reagents.remove_any(rand(5,10))
+		var/obj/structure/toilet/outhouse/O = loc
+		O.take_urine(rand(5,10))
 
 	else if(RC && (istype(RC, /obj/item/weapon/reagent_containers/food/drinks) || istype(RC, /obj/item/weapon/reagent_containers/glass)) && RC.is_open_container())
 		//Inside a beaker, glass, drink, etc.
