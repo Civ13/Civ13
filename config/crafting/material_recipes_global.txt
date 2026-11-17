@@ -239,6 +239,7 @@ RECIPE: /material/clay/,unfired small clay pot,/obj/item/weapon/clay/smallclaypo
 RECIPE: /material/clay/,unfired medium clay pot,/obj/item/weapon/clay/claypot,2,50,0,1,kitchen,0,0,0,8,null
 RECIPE: /material/clay/,unfired large clay pot,/obj/item/weapon/clay/bigclaypot,3,60,0,1,kitchen,0,0,0,8,null
 RECIPE: /material/clay/,unfired clay storage jar,/obj/item/weapon/clay/storage_jar,3,60,0,1,kitchen,0,0,0,8,null
+RECIPE: /material/clay/,unfired zeer pot,/obj/item/weapon/clay/storage_jar/zeer_pot,4,80,0,1,kitchen,0,0,0,8,null
 RECIPE: /material/clay/,unfired clay crock,/obj/item/weapon/clay/crock,3,60,0,1,kitchen,0,0,0,8,null
 RECIPE: /material/clay/,unfired clay pitcher,/obj/item/weapon/clay/claypitcher,2,50,0,1,kitchen,0,0,0,8,null
 RECIPE: /material/clay/,unfired large clay pitcher,/obj/item/weapon/clay/largeclaypitcher,3,60,0,1,kitchen,0,0,0,8,null

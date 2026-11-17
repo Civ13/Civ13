@@ -5,6 +5,7 @@
 //   clay storage jar (Pottery)          small things only, keeps food longest
 //   hewn log chest (Basic Furniture)    takes large tools and weapons
 //   storage pit (Primitive Construction) biggest, fixed in the ground, cool
+//   zeer pot (Pottery)                  kept wet, cools food by evaporation
 // Every one has Dump Out, which tips its contents onto the floor.
 // Sprites: icons/obj/stone_age_storage.dmi, drawn by
 // tests/sprites/create_stone_age_storage.py. See docs/stone-age-storage.md.
@@ -180,8 +181,12 @@
 /proc/storage_food_decay_step(obj/item/weapon/storage/internal/holder)
 	var/obj/structure/storage_container/C = holder.master_item
 	if (istype(C))
-		return C.food_decay_step
+		return C.food_keeping_step()
 	return 300
+
+// The keeping speed right now; a container whose keeping changes overrides it.
+/obj/structure/storage_container/proc/food_keeping_step()
+	return food_decay_step
 
 // The holder's window changes never call back into the owner, so refresh it.
 /obj/item/weapon/storage/internal/update_icon()
@@ -247,6 +252,123 @@
 	food_decay_step = 150
 	dump_time = 15
 	flammable = FALSE
+
+/////////////////////////////////////////////////////////////////// zeer pot
+
+// A pot-in-pot cooler: wet sand between two fired pots draws heat out of the
+// inner one as the water evaporates. Pour water into it and it keeps food far
+// longer until the sand dries out; it works best in dry heat, where the water
+// evaporates fastest. Dry, it keeps food like the jar it still is.
+#define ZEER_WATER_MAX 60 // units of water the sand holds
+#define ZEER_STEP_WET 100 // decay step while the sand is wet
+#define ZEER_STEP_ARID 75 // ...in dry climates
+#define ZEER_STEP_HUMID 125 // ...in wet climates, where little evaporates
+
+/obj/item/weapon/clay/storage_jar/zeer_pot
+	name = "unfired zeer pot"
+	desc = "A wide pot of wet clay nested inside a bigger one. Fire it in a kiln or oven to make a zeer pot, a cooler kept wet with sand and water."
+	icon_state = "zeer_pot_unfired"
+	result = /obj/structure/storage_container/storage_jar/zeer_pot
+
+/obj/structure/storage_container/storage_jar/zeer_pot
+	name = "zeer pot"
+	desc = "One fired pot nested in another with sand packed between them and a cloth over the top. Pour water into the sand: as it evaporates it keeps the inner pot cool, and food in it lasts far longer than in a plain jar. It works best where the air is hot and dry."
+	icon_state = "zeer_pot"
+	base_state = "zeer_pot"
+	slots = 5
+	max_space = 10
+	var/water = 0 // units in the sand
+	var/tmp/water_tick = 0 // world.time the water was last brought up to date
+
+/obj/structure/storage_container/storage_jar/zeer_pot/persistence_runtime_var(key)
+	return key == "water_tick" || ..()
+
+/obj/structure/storage_container/storage_jar/zeer_pot/update_icon()
+	var/full = storage && storage.contents.len
+	icon_state = "[base_state][water > 0 ? "_wet" : ""][full ? "_full" : ""]"
+
+// Water lost per minute: none when freezing, fastest in dry heat.
+/obj/structure/storage_container/storage_jar/zeer_pot/proc/evaporation_rate()
+	var/temp = get_temp(src)
+	if (temp <= 0)
+		return 0
+	var/rate = temp >= 25 ? 0.5 : 0.33
+	if (zeer_arid_climate(src))
+		rate *= 1.25
+	return rate
+
+// Brings the water down to now. Time before the first check after a load or
+// a restart does not count, the same as the ice house and food decay.
+/obj/structure/storage_container/storage_jar/zeer_pot/proc/settle_water()
+	if (!water_tick || water_tick > world.time)
+		water_tick = world.time
+		return water
+	var/minutes = (world.time - water_tick) / 600
+	if (minutes <= 0)
+		return water
+	water_tick = world.time
+	if (water > 0)
+		water = max(0, water - minutes * evaporation_rate())
+		if (water <= 0)
+			water = 0
+			update_icon()
+	return water
+
+/obj/structure/storage_container/storage_jar/zeer_pot/food_keeping_step()
+	if (settle_water() <= 0)
+		return food_decay_step
+	if (zeer_arid_climate(src))
+		return ZEER_STEP_ARID
+	if (zeer_humid_climate(src))
+		return ZEER_STEP_HUMID
+	return ZEER_STEP_WET
+
+/proc/zeer_arid_climate(atom/A)
+	var/area/AR = get_area(A)
+	return AR && (AR.climate in list("desert", "semiarid", "savanna"))
+
+/proc/zeer_humid_climate(atom/A)
+	var/area/AR = get_area(A)
+	return AR && (AR.climate in list("jungle", "sea"))
+
+/obj/structure/storage_container/storage_jar/zeer_pot/attackby(obj/item/W, mob/user)
+	var/obj/item/weapon/reagent_containers/RC = W
+	if (istype(RC) && RC.reagents && RC.is_open_container() && RC.reagents.has_reagent("water"))
+		if (pour_water(RC, user))
+			return
+	return ..()
+
+/obj/structure/storage_container/storage_jar/zeer_pot/proc/pour_water(obj/item/weapon/reagent_containers/RC, mob/user)
+	settle_water()
+	var/room = ZEER_WATER_MAX - water
+	if (room < 1)
+		return FALSE // soaked through: a full vessel goes in like anything else
+	var/amount = min(room, RC.reagents.get_reagent_amount("water"))
+	if (amount <= 0)
+		return FALSE
+	RC.reagents.remove_reagent("water", amount)
+	water = min(ZEER_WATER_MAX, water + amount)
+	water_tick = world.time
+	update_icon()
+	user.visible_message(SPAN_NOTICE("[user] pours water into the sand of \the [src]."), SPAN_NOTICE("You soak the sand of \the [src] with [amount] units of water."))
+	return TRUE
+
+/obj/structure/storage_container/storage_jar/zeer_pot/examine(mob/user, distance = -1)
+	..()
+	settle_water()
+	if (water <= 0)
+		to_chat(user, SPAN_WARNING("The sand is dry. Pour water into it to cool the pot."))
+		return
+	var/rate = evaporation_rate()
+	if (rate <= 0)
+		to_chat(user, SPAN_NOTICE("The sand is damp, and nothing evaporates in this cold."))
+		return
+	to_chat(user, SPAN_NOTICE("The sand is wet and will stay damp for about [round(water / rate)] more minutes."))
+
+#undef ZEER_WATER_MAX
+#undef ZEER_STEP_WET
+#undef ZEER_STEP_ARID
+#undef ZEER_STEP_HUMID
 
 ///////////////////////////////////////////////////////////// hewn log chest
 

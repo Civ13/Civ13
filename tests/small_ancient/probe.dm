@@ -82,3 +82,32 @@ var/sa_runtime_error = FALSE
 	IH.last_tick = world.time - 20
 	IH.process_interval(2)
 	sa_check(IH.cold == 0 || get_temp(IH) <= 0, "the snow melts away unless it freezes")
+
+	// Cut ice packs in three snow piles' worth of cold.
+	var/obj/item/weapon/ice_block/ICE = new(locate(8, 4, 1))
+	IH.cold = 0
+	IH.attackby(ICE, A)
+	sa_check(IH.cold == 180 && QDELETED(ICE), "a block of ice packs in three hours of cold")
+	sa_check(!IH.underground(), "an ice house on the surface is not underground")
+
+	// Underground it melts a minute of cold every four minutes.
+	var/area/caribbean/void/caves/cave = new
+	cave.contents += locate(2, 6, 1)
+	var/obj/structure/closet/ice_house/deep = new(locate(2, 6, 1))
+	deep.cold = 10
+	sa_check(deep.underground(), "an ice house in the caves is underground")
+	deep.melt_seconds = 61
+	deep.last_tick = world.time
+	deep.process_interval(2)
+	sa_check(deep.cold == 10, "underground a minute of warmth does not melt it")
+	deep.melt_seconds = 239
+	deep.last_tick = world.time - 20
+	deep.process_interval(2)
+	sa_check(deep.cold == 9 || get_temp(deep) <= 0, "four minutes of warmth melt one minute of cold")
+
+	// A loose block melts away in the warm.
+	var/obj/item/weapon/ice_block/LOOSE = new(locate(3, 3, 1))
+	LOOSE.warm_minutes = 1
+	LOOSE.melt_check(LOOSE.melt_epoch)
+	sa_check(QDELETED(LOOSE) || get_temp(locate(3, 3, 1)) <= 0, "a loose block melts away above freezing")
+	sa_check("ice_block" in icon_states('icons/obj/small_ancient.dmi'), "the ice block has its sprite")

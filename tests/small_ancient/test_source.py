@@ -22,7 +22,7 @@ def dmi_states(path):
 class SmallAncientSource(unittest.TestCase):
     def test_states(self):
         self.assertTrue({'clay_tablet', 'clay_tablet_words', 'clay_tablet_fired', 'clay_tablet_fired_words',
-                         'stylus', 'senet', 'chess', 'ice_house', 'ice_house_open'} <= dmi_states('icons/obj/small_ancient.dmi'))
+                         'stylus', 'senet', 'chess', 'ice_house', 'ice_house_open', 'ice_block'} <= dmi_states('icons/obj/small_ancient.dmi'))
 
     def test_kiln_and_ice_house_hooks(self):
         self.assertIn('CT.fire_tablet()', read('code/game/objects/structures/kitchen/oven.dm'))

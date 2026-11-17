@@ -10,6 +10,7 @@ of sweeping up its tile like a crate. Code: `code/modules/1713/stone_age_storage
 | Clay storage jar | Pottery & Cookware | 3 clay, then fired in a kiln or oven | 6 | Small | Twice as long |
 | Hewn log chest | Basic Furniture | 6 logs | 10 | Large | Like any container |
 | Storage pit | Primitive Construction | Pit lining (4 leaves or 2 leather), dug with a shovel or digging stick | 14 | Normal | 1.5 times as long |
+| Zeer pot | Pottery & Cookware | 4 clay, then fired in a kiln or oven | 5 | Small | Twice as long dry; wet, 3 times (4 in dry climates, 2.4 in jungle/sea) |
 
 - Put things in by clicking the container with them, or open the window and
   drag them in. Take them out from the window.
@@ -18,6 +19,10 @@ of sweeping up its tile like a crate. Code: `code/modules/1713/stone_age_storage
 - The jar does not burn. The pit is fixed in place; filling it in with a
   shovel removes it and spills its contents.
 - A fired jar is too big for the oven and is set down on an open tile beside it.
+- The zeer pot is a pot-in-pot cooler. Pour water into it from any open
+  vessel (up to 60 units). The sand loses a third of a unit a minute, half a
+  unit at 25 C or more, a quarter more again in desert, semiarid and savanna,
+  and nothing while freezing; dry, it keeps food like a storage jar.
 - Food keeping: stored food reads `food_decay_step` from the container that owns
   its holder (`storage_food_decay_step()`), so the rate is set per container.
 

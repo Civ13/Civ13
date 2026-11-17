@@ -11,9 +11,13 @@ from `tests/sprites/create_small_ancient.py`. Probe: `tests/small_ancient/probe.
   Arts & Leisure): use one with another player beside the board. After 20 s
   one of you wins and both get +5 mood.
 - **Ice house** (10 wood, Cooperage & Containers): a closet. Each snow pile
-  packed in gives an hour of cold, up to ten; it melts a minute a minute while
-  the air is above freezing. While cold, food inside decays at the freezer
-  rate (`food_decay` in `food.dm`).
+  packed in gives an hour of cold and each block of cut ice three hours, up to
+  twenty; it melts a minute a minute while the air is above freezing, and a
+  minute every four minutes on the underground level or in the caves. While
+  cold, food inside decays at the freezer rate (`food_decay` in `food.dm`).
+- **Block of ice**: a pick, hatchet or chisel on an open ice hole
+  (`ice_fishing.dm`) cuts a block from its edge, four to a hole. Left loose it
+  melts away after 40 minutes above freezing.
 
 Wax seals already exist (`code/modules/paperwork/stamps.dm`) and telescopes are
 already craftable (Optics & Instruments), so neither was added. Terraces were

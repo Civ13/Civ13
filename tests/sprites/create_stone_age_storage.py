@@ -1,6 +1,7 @@
 """Hand-placed 32px Stone Age storage: the coiled grass basket, the fired clay
 storage jar and its unfired blank, the hollowed log chest, the grass-lined
-storage pit and the rolled bundle of pit lining. Every pixel is placed by this
+storage pit, the rolled bundle of pit lining and the pot-in-pot zeer cooler
+(dry and wet, empty and full, and unfired). Every pixel is placed by this
 script from a fixed palette (Pillow only); no external or generated artwork.
 The outline, wood, cord, stone and earth tones are the ones
 create_stone_age_traps.py uses for icons/obj/stone_age_traps.dmi and the straw
@@ -302,6 +303,153 @@ def jar(pal, stopper=False, wet=False):
     return f
 
 
+# ----------------------------------------------------------------- zeer pot
+
+# dry and damp sand packed between the two pots
+SAND = [(240, 222, 172), (216, 194, 140), (184, 160, 108), (148, 124, 80)]
+WSAND = [(172, 142, 98), (142, 114, 76), (112, 88, 58), (84, 64, 42)]
+# terracotta dark with the water soaking through it, and the beads standing on it
+WTC = [(168, 100, 80), (138, 76, 62), (108, 58, 50), (82, 44, 40), (58, 32, 30)]
+BEAD = [(236, 244, 246), (176, 204, 216)]
+# a damp woven cloth
+CL = [(226, 222, 204), (192, 190, 172), (154, 154, 140), (116, 118, 108), (82, 84, 78)]
+
+ZEER = ((13, 13.0), (15, 13.8), (18, 14.0), (21, 13.4), (24, 11.8), (27, 9.4), (29, 7.4))
+ZO = (16.0, 13.0, 13.4, 5.5)        # the outer pot's mouth
+ZI = (16.0, 11.5, 8.2, 3.1)         # the inner pot's mouth
+
+
+def zeer_hw(y):
+    for (y0, w0), (y1, w1) in zip(ZEER, ZEER[1:]):
+        if y0 <= y <= y1:
+            return w0 + (w1 - w0) * (y - y0) / (y1 - y0)
+    return 0.0
+
+
+def ell(x, y, e, dy=0.0):
+    cx, cy, rx, ry = e
+    return math.hypot((x + 0.5 - cx) / rx, (y + 0.5 - cy - dy) / ry)
+
+
+def zeer(pal, sand=None, cover=False, full=False, wet=False, raw=False):
+    """The pot-in-pot cooler: a wide, low pot with a smaller one nested in its
+    mouth. `sand` packs the gap between the rims, `cover` lays a damp cloth
+    over half the inner mouth, `full` shows the food under it, `wet` soaks the
+    outer pot and `raw` is the unfired blank with an empty gap."""
+    f = Frame()
+    # the outer pot's wall
+    for y in range(13, 30):
+        hw = zeer_hw(y)
+        for x in range(32):
+            dx = x + 0.5 - 16.0
+            if abs(dx) > hw:
+                continue
+            s = dx / hw + (noise(x, y, 51) - 0.5) * 0.12
+            i = 2 if s < -0.84 else 1 if s < -0.56 else 0 if s < -0.24 else 1 if s < 0.24 else 2 if s < 0.6 else 3 if s < 0.87 else 4
+            if y >= 28 or ell(x, y, ZO, 1.2) <= 1.0:
+                i += 1                                                           # the foot, and under the rim
+            sag = int(round(1.6 * (1.0 - (dx / 13.9) ** 2)))
+            if y - sag in (21, 23):
+                i += 2                                                           # two incised lines round the belly
+            i = min(i, 4)
+            c = pal[i]
+            if wet:
+                # the water comes through from the sand: dark below a ragged line, drier at the rim
+                tide = 15.0 + 2.6 * noise(x // 3, 0, 52) + (1.5 if abs(dx) > 9 else 0)
+                if y > tide and not (noise(x // 3, y // 2, 53) > 0.9 and y < 21):
+                    c = WTC[i]
+                elif y > tide - 1.0:
+                    c = pal[min(i + 1, 4)]
+            f.put(x, y, c)
+    if wet:
+        f.pts(BEAD[0], (8, 22), (13, 25), (19, 21), (24, 24))                    # beads of water on the outside
+        f.pts(BEAD[1], (8, 23), (13, 26), (19, 22), (24, 25), (17, 27), (5, 23), (11, 21))
+    if raw:
+        f.pts((218, 208, 190), (7, 20), (7, 21), (8, 24), (9, 26))               # a wet shine on the raw clay
+        f.pts(pal[3], (20, 25), (22, 20), (19, 27), (23, 24))                    # finger drags
+    # the outer mouth: its rim, and the sand (or the empty gap) inside
+    fill = sand
+    for y in range(7, 19):
+        for x in range(32):
+            r = ell(x, y, ZO)
+            if r > 1.0:
+                continue
+            dx = x + 0.5 - 16.0
+            if r > 0.82:
+                i = (0 if y >= 14 else 1) + (1 if dx > 5.5 else 0) + (1 if dx > 10.5 else 0) + (1 if dx < -11.0 else 0)
+                f.put(x, y, clamp(i, pal))
+            elif fill is None:
+                f.put(x, y, pal[4] if y <= 9 else PD[0] if noise(x, y, 54) > 0.25 else PD[1])
+            elif ell(x, y, ZO, -1.0) > 0.82 and y < 13:
+                f.put(x, y, pal[4])          # the shade of the far rim on the sand
+            else:
+                n = noise(x, y, 55)
+                i = (0 if n > 0.72 else 2 if n < 0.2 else 1) + (1 if dx > 8.0 else 0)
+                f.put(x, y, clamp(i, fill))
+    # the inner pot: a short stretch of its wall standing out of the sand, then its rim and its dark inside
+    for y in range(7, 19):
+        for x in range(32):
+            dx = x + 0.5 - 16.0
+            if ell(x, y, ZI) > 1.0 and ell(x, y, ZI, 1.0) <= 1.0:
+                f.put(x, y, pal[2] if dx < 3.0 else pal[3])
+            elif ell(x, y, ZI) > 1.0 and ell(x, y, ZI, 2.0) <= 1.0 and fill is not None:
+                f.put(x, y, fill[3] if wet else fill[2])                         # its shadow on the sand
+    inside = set()
+    for y in range(7, 16):
+        for x in range(32):
+            r = ell(x, y, ZI)
+            if r > 1.0:
+                continue
+            dx = x + 0.5 - 16.0
+            if r > 0.76:
+                i = (0 if y >= 12 else 1) + (1 if dx > 3.5 else 0) + (1 if dx > 7.0 else 0)
+                f.put(x, y, clamp(i, pal))
+            else:
+                inside.add((x, y))
+                f.put(x, y, pal[3] if y <= 9 else pal[4] if y == 10 and x % 3 else PD[0] if noise(x, y, 56) > 0.2 else PD[1])
+    f.outline()
+    if full:
+        # a gourd, greens and a root sitting in the open half
+        g = Frame()
+        blob(g, 12.0, 9.6, 3.0, 2.9, GOURD)
+        g.pts(BK[2], (12, 5), (12, 6)); g.pts(BK[1], (13, 5))
+        g.pts(LF[0], (8, 9), (9, 8), (16, 8)); g.pts(LF[1], (8, 10), (9, 9), (9, 10), (10, 11), (16, 9), (17, 9))
+        g.pts(LF[2], (9, 11), (10, 12), (17, 10), (16, 10))
+        g.pts(GRAIN[0], (14, 12), (15, 12)); g.pts(GRAIN[1], (13, 12), (15, 11), (16, 11), (16, 12)); g.pts(GRAIN[2], (14, 13), (15, 13))
+        keep = {k: v for k, v in g.px.items() if k in inside or (k[1] <= 9 and ell(k[0], k[1], ZI) <= 1.25)}
+        g.px = keep
+        g.outline()
+        g.px = {k: v for k, v in g.px.items() if k in keep or k[1] <= 9 or k in inside}
+        f.over(g)
+    if cover:
+        # the cloth: laid over the right half of the mouth, its hem hanging onto the sand
+        c = Frame()
+        for y in range(5, 19):
+            for x in range(32):
+                dx = x + 0.5 - 16.0
+                edge = 0.2 + (y - 11) * 0.3                                      # the folded-back edge, slanting
+                r = ell(x, y, (17.2, 10.9, 8.0, 3.5))
+                hem = dx > 6.0 and r > 1.0 and ell(x, y, (17.2, 10.9, 8.0, 3.5), 1.0 + (x % 3 == 0)) <= 1.0
+                if dx < edge or (r > 1.0 and not hem):
+                    continue
+                d = math.hypot((dx - 2.0) / 8.0, (y + 0.5 - 9.0) / 4.0)
+                i = (0 if d < 0.45 else 1 if d < 0.95 else 2) + (1 if hem else 0)
+                col = clamp(i, CL[:4])
+                if int(dx - edge) in (3, 6):
+                    col = clamp(i + 1, HD[1:])                                    # dyed stripes in the weave
+                if dx < edge + 1.0:
+                    col = CL[0]                                                   # the rolled edge catches the light
+                c.put(x, y, col)
+        c.pts(CL[2], (22, 10), (23, 11))                       # creases
+        c.outline()
+        f.over(c)
+        for (x, y) in list(c.px):                                                 # its shadow on the open mouth
+            if c.px[(x, y)][:3] == OUT and (x - 1, y) in inside and (x - 1, y) not in c.px and not full:
+                f.put(x - 1, y, PD[2])
+    f.under(shadow([(x, 30) for x in range(11, 25)] + [(x, 29) for x in range(23, 28)] + [(27, 28), (28, 28), (28, 27), (29, 27)]))
+    return f
+
+
 # ---------------------------------------------------------------- log chest
 
 def log_top(x, y, grow=0.0):
@@ -560,6 +708,11 @@ STATES = {
     'storage_pit': storage_pit(),
     'storage_pit_full': storage_pit_full(),
     'pit_lining': pit_lining(),
+    'zeer_pot_unfired': zeer(UC, raw=True),
+    'zeer_pot': zeer(TC, sand=SAND, cover=True),
+    'zeer_pot_full': zeer(TC, sand=SAND, cover=True, full=True),
+    'zeer_pot_wet': zeer(TC, sand=WSAND, cover=True, wet=True),
+    'zeer_pot_wet_full': zeer(TC, sand=WSAND, cover=True, full=True, wet=True),
 }
 COLUMNS = 4
 

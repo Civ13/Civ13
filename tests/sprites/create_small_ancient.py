@@ -3,7 +3,7 @@
   icons/obj/small_ancient.dmi (32x32): the wet and the fired clay tablet, each
       blank and with pressed wedge marks, the cut reed stylus, the senet board
       and the chessboard with a few pieces on them, and the straw-packed ice
-      house, shut and open.
+      house, shut and open, and a block of lake ice cut for it.
 
 Every pixel is placed by this script from the fixed palettes below (Pillow
 only); no external or generated artwork. The wet tablet uses the unfired greys
@@ -402,6 +402,56 @@ def ice_house(opened=False):
     return outline(im, WOOD[8])
 
 
+# --------------------------------------------------------------- ice block --
+
+DEEP = [(74, 110, 156), (52, 82, 128)]      # the dark of thick ice, and its outline
+SNOW = (255, 255, 255)
+
+
+def ice_block():
+    """A block chopped from a frozen lake: the snow-dusted top, then the sawn
+    near face going dark blue toward the middle, cracked and bubbled."""
+    im = new()
+    # the top, cut a little out of square, lit from the upper left
+    top = {8: (9, 23), 9: (8, 24), 10: (7, 24), 11: (7, 24), 12: (7, 24), 13: (7, 25), 14: (7, 25)}
+    for y, (x0, x1) in top.items():
+        for x in range(x0, x1 + 1):
+            n = noise(x, y, 61)
+            put(im, x, y, ICE[0] if n < 70 else ICE[1] if n < 215 else ICE[2])
+        put(im, x1, y, ICE[2])
+    for x, y in ((10, 9), (11, 9), (12, 9), (13, 10), (11, 10), (17, 9), (18, 9), (19, 10), (20, 10), (21, 11),
+                 (9, 12), (10, 12), (15, 12), (16, 12), (16, 11), (22, 13), (12, 13)):
+        put(im, x, y, SNOW)                                 # snow dust
+    for x, y in ((14, 11), (15, 10), (19, 12), (20, 13)):   # a crack running across the top
+        put(im, x, y, ICE[3])
+    # the sawn face below it
+    for y in range(15, 26):
+        x0, x1 = (7, 25) if y < 24 else (8, 25) if y == 24 else (9, 24)
+        for x in range(x0, x1 + 1):
+            d = max(abs(x - 16) / 9.0, abs(y - 20.5) / 5.5)                 # 0 in the middle, 1 at the edge
+            i = 5 if d < 0.28 and (x + y) % 3 else 4 if d < 0.66 else 3 if d < 0.9 else 2
+            if x >= 23:
+                i += 1                                                      # the shaded right edge
+            if noise(x, y // 2, 62) < 28:
+                i -= 1
+            put(im, x, y, step(ICE, i) if i < 5 else DEEP[0])
+    rect(im, 7, 15, 25, 15, ICE[0])                         # the sharp top edge
+    put(im, 25, 15, ICE[1])
+    for y in range(16, 24):                                 # the lit left edge
+        put(im, 7, y, ICE[1])
+    for x, y in ((10, 16), (11, 17), (11, 18), (12, 19), (12, 20), (13, 21), (13, 22), (12, 23),
+                 (20, 16), (20, 17), (19, 18), (19, 19), (20, 20)):         # cracks, pale in the ice
+        put(im, x, y, ICE[1])
+    for x in (11, 15, 19, 22):                              # saw marks
+        put(im, x, 24, ICE[4])
+    for x, y in ((9, 21), (16, 17), (17, 18), (22, 22), (15, 23), (22, 18)):  # bubbles
+        put(im, x, y, ICE[0])
+    put(im, 9, 17, SNOW)                                    # glints
+    put(im, 9, 18, SNOW)
+    put(im, 8, 9, SNOW)
+    return outline(im, DEEP[1])
+
+
 # ------------------------------------------------------------------ sheets --
 
 def small_ancient_states():
@@ -416,6 +466,7 @@ def small_ancient_states():
         ('chess', chess()),
         ('ice_house', ice_house()),
         ('ice_house_open', ice_house(opened=True)),
+        ('ice_block', ice_block()),
     ]
 
 

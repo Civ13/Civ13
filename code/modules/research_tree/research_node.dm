@@ -2093,6 +2093,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/clay/claycup" = "pottery_storage",
 		"/obj/item/weapon/clay/crock" = "pottery_storage",
 		"/obj/item/weapon/clay/storage_jar" = "pottery_storage",
+		"/obj/item/weapon/clay/storage_jar/zeer_pot" = "pottery_storage",
 		"/obj/item/weapon/clay/clayjug" = "pottery_storage",
 		"/obj/item/weapon/clay/claypitcher" = "pottery_storage",
 		"/obj/item/weapon/clay/claypot" = "pottery_storage",
