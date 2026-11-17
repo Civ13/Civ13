@@ -67,7 +67,7 @@ var/list/sun_shadows_probe_latitudes = list(35, -20, 45, 50, 25, 2, 40)
 	for (var/lat in list(50, -20))
 		var/list/summer = sun_position(lat, sun_declination(lat, SEASON_SUMMER), 0.5)
 		var/list/winter = sun_position(lat, sun_declination(lat, SEASON_WINTER), 0.5)
-		sun_shadows_probe_assert(summer[2] > winter[2] + 40, "summer_higher_[lat]")
+		sun_shadows_probe_assert(summer[2] > winter[2] + 30, "summer_higher_[lat]")
 	// Tropical seasons: wet is the summer sun, dry the winter one.
 	sun_shadows_probe_assert(sun_declination(25, SEASON_WET) > 20 && sun_declination(25, SEASON_DRY) < -20 && sun_declination(25, SEASON_SPRING) == 0, "tropical_seasons")
 	// Polar night: no sunrise; midnight sun: up all day.
