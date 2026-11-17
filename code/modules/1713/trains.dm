@@ -1079,17 +1079,23 @@ var/global/train_solo_move = FALSE
 		// Axle boxes (train_servicing.dm): a seized axle holds like a brake,
 		// a hot box drags.
 		car.wear_axles(steps_since)
-		// Brakes (train_brakes.dm): handbrakes on, and what the driver's brake holds.
+		// Brakes (train_brakes.dm): handbrakes on, and what the driver's brake
+		// holds. A brake that is on wears its shoes, and worn shoes hold less.
+		var/own = (car == src || (car_id && car.car_id == car_id))
+		if (car.handbrake || (own && braking))
+			car.wear_shoes(steps_since)
 		if (car.handbrake || car.axle_seized)
-			consist_braked += car_weight
+			consist_braked += car_weight * car.brake_hold()
 		else if (car.axle_oil <= 0)
 			consist_hot += car_weight
-		if (car == src || (car_id && car.car_id == car_id))
-			consist_own += car_weight
+		if (own)
+			consist_own += car_weight * car.brake_hold()
 		if (istype(car, /obj/structure/trains/locomotive))
 			var/obj/structure/trains/locomotive/L = car
 			if (L.on && (L.fuel > 0 || !L.max_fuel) && !L.engine_disabled())
-				consist_power += L.haul * ((L == src) ? 1 : L.steam_factor())
+				// A worn engine pulls less until it is overhauled.
+				L.wear_engine(steps_since)
+				consist_power += L.haul * L.wear_factor() * ((L == src) ? 1 : L.steam_factor())
 				consist_engines++
 				// Helper engines burn their own fuel on the lead's beat.
 				if (L != src && steps_since > 0)
@@ -1179,6 +1185,9 @@ var/global/train_solo_move = FALSE
 			return
 		if (rail_speed > 0 || steps)
 			playsound(loc, 'sound/machines/train/stopping.ogg', 100, TRUE)
+		// The last few tiles count for wear as well.
+		if (since > 0 && isturf(loc))
+			refresh_consist(since)
 		rail_speed = 0
 		braking = FALSE
 		driving = FALSE
@@ -1323,6 +1332,9 @@ var/global/train_solo_move = FALSE
 		else
 			to_chat(user, "The combustion chamber seems to be almost empty!")
 	to_chat(user, control_summary())
+	var/worn = overhaul_text()
+	if (worn)
+		to_chat(user, SPAN_WARNING(worn))
 	if (driving && consist_weight)
 		var/ratio = pull_ratio()
 		if (ratio < 1)
@@ -1340,7 +1352,7 @@ var/global/train_solo_move = FALSE
 
 // How well the fire steams: a firebox under half full makes less.
 /obj/structure/trains/locomotive/coal/proc/fire_factor()
-	return (max_fuel ? min(1, fuel / (0.5 * max_fuel)) : 1) * clinker_factor()
+	return (max_fuel ? min(1, fuel / (0.5 * max_fuel)) : 1) * clinker_factor() * scale_factor()
 
 /obj/structure/trains/locomotive/coal/steam_factor()
 	if (plug_dropped || pressure < BOILER_MIN_PRESSURE)
@@ -1378,7 +1390,9 @@ var/global/train_solo_move = FALSE
 	var/work = (notch / LOCO_NOTCHES) * min(1.5, weight / max(1, haul))
 	make_clinker(notch, weight, tiles)
 	pressure = clamp(pressure + (1.1 * fire_factor() - work) * tiles, 0, 100)
-	boiler_water = max(0, boiler_water - (0.2 + 0.8 * work) * tiles)
+	var/boiled = min(boiler_water, (0.2 + 0.8 * work) * tiles)
+	make_scale(boiled)
+	boiler_water -= boiled
 	if (injector && water > 0 && boiler_water < max_boiler && pressure >= BOILER_INJECTOR_PRESSURE)
 		var/fed = min(water, max_boiler - boiler_water, 3 * tiles)
 		water -= fed
@@ -1426,12 +1440,17 @@ var/global/train_solo_move = FALSE
 	var/tank = round(100 * water / max_water)
 	if (plug_dropped)
 		return "The fusible plug has melted. Tank [tank]%."
-	return "Fire [on ? "lit" : "out"]. Pressure [round(pressure)]%. Water in the glass [glass]%, tank [tank]%, injector [injector ? "on" : "off"].[clinker_text()]"
+	return "Fire [on ? "lit" : "out"]. Pressure [round(pressure)]%. Water in the glass [glass]%, tank [tank]%, injector [injector ? "on" : "off"].[clinker_text()][scale_text()]"
 
 /obj/structure/trains/locomotive/coal/extra_controls()
-	return list(injector ? "Injector off" : "Injector on")
+	var/list/choices = list(injector ? "Injector off" : "Injector on")
+	if (washout_due())
+		choices += "Wash out the boiler"
+	return choices
 
 /obj/structure/trains/locomotive/coal/handle_control(choice, mob/user)
+	if (choice == "Wash out the boiler")
+		return wash_out_by(user)
 	if (choice != "Injector on" && choice != "Injector off")
 		return FALSE
 	injector = (choice == "Injector on")

@@ -349,7 +349,47 @@ on a track tile): 8 seconds, the clinker goes to 0 and a fifth of the fire
 goes with it. A pit takes ten fires (`ash`), then a shovel digs it out
 (`dig_out()`), which leaves up to three heaps of ashes.
 
-Region travel and the warehouse do not carry axle oil or clinker yet.
+**Brake shoes.** Every car and engine has `brake_shoes`, the tiles its
+shoes last with the brake on: 300 for a new set, saved. `wear_shoes()` takes
+the tiles run with a handbrake on, or with the driver's brake on for the
+engine. Under 50 the examine text says they are thin. At 0 `brake_hold()` is
+0.3 in place of 1: the car counts for three tenths of its weight in
+`consist_braked`, `consist_own` and `roll_braked`. A set of brake shoes
+(`/obj/item/train_brake_shoes`, 3 iron) used on a standing car with its
+handbrake off fits a new set (`fit_shoes()`, 10 seconds).
+
+**Scale.** A steam engine has `scale`, 0 to 100, saved. `make_scale()` (from
+`steam_use()`) adds to it with the water boiled: twelve tanks fill it. Up to
+40 it does nothing; above that `scale_factor()` takes from `fire_factor()`,
+down to six tenths at 100, so steam is slower to raise and harder to keep.
+From 20 the fireman's controls offer "Wash out the boiler" (`wash_out_by()`):
+the fire out, pressure at 25% or less, the train standing, and a water crane
+or tower within reach whose tower holds 300 units (`washout_water()`). It
+takes 30 seconds and leaves the boiler clean, cold and full (`wash_out()`).
+
+**Overhaul.** An engine has `mileage`, the tiles it has worked since its last
+overhaul, saved; `wear_engine()` counts it while the engine is running.
+After 5000 `wear_factor()` takes from the pull the engine adds to
+`consist_power`, down to seven tenths at 10000, and examine says it is due.
+A wrench on an engine at half that distance or more starts the overhaul
+(`overhaul_by()`): the engine stopped, standing in the bay of a rail
+warehouse (`engine_shed()`), 10 iron or steel in the other hand, 60 seconds.
+
+Region travel and the warehouse do not carry axle oil, clinker, brake shoes,
+scale or mileage yet.
+
+## The depot
+
+`train_depot.dm`. Two structures beside the track, loaded by hand, that serve
+what stands within two tiles of them, like a water crane.
+
+- `/obj/structure/rail_depot/coal_stage` (20 wood) holds 6000 units of fuel:
+  coal counts 15 a piece and wood 3 (`load_fuel()`). Used with an empty hand
+  (4 seconds) it fills the bunkers of the walkable tenders and the fireboxes
+  of the steam engines within reach (`fill_takers()`).
+- `/obj/structure/rail_depot/sand_bin` (8 wood) holds 200 charges of sand
+  (`load_sand()`) and fills the sandboxes of the engines within reach
+  (2 seconds).
 
 ## Reversing
 

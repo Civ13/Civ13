@@ -64,6 +64,10 @@
 	to_chat(user, "You fill \the [src]'s sandbox. It holds [sand] of [TRAIN_SAND_MAX].")
 	return TRUE
 
+// Charges the sandbox still takes (train_depot.dm).
+/obj/structure/trains/locomotive/proc/sand_room()
+	return max(0, TRAIN_SAND_MAX - sand)
+
 /obj/structure/trains/locomotive/attackby(obj/item/W as obj, mob/user as mob)
 	if (fill_sand(W, user))
 		return

@@ -76,15 +76,18 @@
 		var/weight = car.car_load_weight()
 		roll_weight += weight
 		car.wear_axles(roll_since)
+		if (car.handbrake)
+			car.wear_shoes(roll_since)
 		if (car.handbrake || car.axle_seized)
-			roll_braked += weight
+			roll_braked += weight * car.brake_hold()
 		if (istype(car, /obj/structure/trains/locomotive))
 			var/obj/structure/trains/locomotive/L = car
 			if (L.driving)
 				stop_rolling()
 				return FALSE
 			if (L.braking)
-				roll_braked += weight
+				L.wear_shoes(roll_since)
+				roll_braked += weight * L.brake_hold()
 	roll_since = 0
 	return TRUE
 
