@@ -446,15 +446,6 @@ var/global/platform_probe_runtime_error = FALSE
 	H.braking = TRUE
 	helper.throttle = 0
 	drive_wait(H)
-	// Banking: with the front engine idle, the rear one drives the same train.
-	helper.throttle = 1
-	var/bank_from = H.y
-	helper.locomotive()
-	sleep(15)
-	platform_check("banking/rear_engine_drives", helper.driving && !H.driving && helper.drive_head == H && helper.consist_engines == 2 && H.y > bank_from && helper.lead_factor == 0.5)
-	helper.throttle = 0
-	helper.braking = TRUE
-	drive_wait(helper)
 
 	// Tender: the fireman tops up a low firebox from a hitched tender.
 	var/obj/structure/trains/locomotive/coal/T = drive_train(52, 12, 0)
@@ -709,6 +700,25 @@ var/global/platform_probe_runtime_error = FALSE
 	ME.throttle = 0
 	ME.braking = TRUE
 	drive_wait(ME)
+
+	// Banking: with the front engine running but idle, the rear one drives the
+	// train, and both pull.
+	position_track(102)
+	var/obj/structure/trains/locomotive/coal/BH = position_wagon(102, 10, /obj/structure/trains/locomotive/coal)
+	var/obj/structure/trains/BW = position_wagon(102, 9)
+	var/obj/structure/trains/locomotive/coal/BR = position_wagon(102, 8, /obj/structure/trains/locomotive/coal)
+	BH.connected = BW
+	BW.connected = BR
+	for (var/obj/structure/trains/locomotive/E in list(BH, BR))
+		E.fuel = 100
+		E.on = TRUE
+	BR.throttle = 1
+	BR.locomotive()
+	sleep(15)
+	platform_check("banking/rear_engine_drives", BR.driving && !BH.driving && BR.drive_head == BH && BR.consist_engines == 2 && BH.y > 10 && BR.y == BH.y - 2 && BR.lead_factor == 0.5)
+	BR.throttle = 0
+	BR.braking = TRUE
+	drive_wait(BR)
 
 	// What leads: the engine forward, the engine backward, or cars.
 	position_track(98)
