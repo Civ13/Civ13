@@ -182,6 +182,10 @@ var/list/tile_probe_notes = list()
 	map.load_new_recipes(file("config/crafting/material_recipes_global.txt"))
 	crafted_refund_stack_cache.Cut()
 	crafted_refund_units_cache.Cut()
+	tile_probe_notes["recipe_lists"] = craftlist_lists.len
+	tile_probe_notes["log_wall_units"] = crafted_refund_units(/obj/covers/wood_wall/log)
+	tile_probe_notes["log_wall_stack"] = "[crafted_refund_stack(/obj/covers/wood_wall/log)]"
+	tile_probe_notes["wood_floor_units"] = crafted_refund_units(/obj/covers/wood)
 	tile_probe_assert(crafted_refund_units(/obj/covers/wood_wall/log) == 6 && crafted_refund_units(/obj/covers/wood) == 1, "refund caps from recipes")
 	var/list/refund_cases = list(
 		list(/obj/covers/wood_wall/log, 4),
