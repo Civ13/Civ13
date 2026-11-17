@@ -637,6 +637,64 @@ def knuckle_item():
     return [c.image()]
 
 
+BRICK = ((176, 96, 72), (142, 70, 54), (104, 48, 40), (58, 26, 24))
+ASH = ((196, 194, 188), (150, 148, 144), (104, 102, 100), (62, 60, 60))
+
+
+def ash_pit(fill):
+    """An ash pit between the rails of a track running north (train_servicing.dm):
+    a brick-lined trough under the sleepers, drawn over them. fill 0 is swept
+    out, 1 has ash on its floor with a few live embers, 2 is heaped to the rim."""
+    def draw(c):
+        # brick lining, lit from the upper left
+        c.rect(11, 0, 23, 31, BRICK[3])
+        for y in range(0, 32, 4):
+            c.rect(11, y, 12, y + 2, BRICK[0] if (y // 4) % 2 else BRICK[1])
+            c.rect(22, y, 23, y + 2, BRICK[2])
+        # the pit itself
+        c.rect(13, 0, 21, 31, DARK)
+        c.rect(13, 0, 13, 31, (30, 26, 28))
+        if fill == 0:
+            c.speckle(14, 0, 21, 31, ASH[3], 0.10, seed=41)
+        elif fill == 1:
+            c.rect(14, 0, 21, 31, ASH[3])
+            c.speckle(14, 0, 21, 31, ASH[2], 0.45, seed=42)
+            c.speckle(14, 0, 21, 31, ASH[1], 0.12, seed=43)
+            for x, y in ((16, 6), (19, 15), (15, 24)):
+                c.put(x, y, FIRE[1])
+                c.put(x + 1, y, FIRE[2])
+        else:
+            c.rect(13, 0, 21, 31, ASH[2])
+            c.speckle(13, 0, 21, 31, ASH[1], 0.45, seed=44)
+            c.speckle(13, 0, 21, 31, ASH[0], 0.14, seed=45)
+            c.speckle(13, 0, 21, 31, ASH[3], 0.16, seed=46)
+            for x, y in ((15, 4), (18, 11), (16, 19), (19, 27)):
+                c.put(x, y, COAL[1])
+        # the rails' cross ties are cut away over a pit: two iron bearers stay
+        for y in (7, 23):
+            c.rect(11, y, 23, y + 1, STEEL_O)
+            c.rect(11, y, 23, y, STEEL[2])
+    return directions(draw, order=HEADING)
+
+
+def fire_rake():
+    """A fireman's rake: a long iron shaft with a ring handle and a toothed
+    head, lying across the tile."""
+    c = Canvas(32, 32)
+    c.shade(5, 24, 27, 26, 60)
+    c.line(6, 23, 24, 9, STEEL_O)
+    c.line(6, 22, 24, 8, STEEL[2])
+    c.line(7, 22, 25, 8, STEEL_O)
+    c.ring(5.0, 24.0, 2.6, STEEL_O, width=2.2)
+    c.ring(5.0, 24.0, 2.4, STEEL[1], width=0.9)
+    # the head, square to the shaft, with four teeth
+    c.line(21, 4, 29, 12, STEEL_O)
+    c.line(22, 4, 29, 11, BLACK[1])
+    for x, y in ((22, 6), (24, 8), (26, 10), (28, 12)):
+        c.line(x, y, x - 2, y + 2, STEEL_O)
+    return [c.image()]
+
+
 def coupling_item():
     """A spare coupling on the ground: draw hook, screw and links."""
     c = Canvas(32, 32)
@@ -1875,6 +1933,10 @@ def platform_states():
     states['coupling_item'] = coupling_item()
     states.update(knuckle_states())
     states['knuckle_item'] = knuckle_item()
+    states['ash_pit'] = ash_pit(0)
+    states['ash_pit_ash'] = ash_pit(1)
+    states['ash_pit_full'] = ash_pit(2)
+    states['fire_rake'] = fire_rake()
     states['fusible_plug'] = fusible_plug()
     states['brake_wheel'] = brake_wheel(False)
     states['brake_wheel_on'] = brake_wheel(True)
@@ -2138,6 +2200,17 @@ def write_previews(out, states, gun):
     im.alpha_composite(apart, (0, 0))
     im.alpha_composite(states['knuckle_item'][0], (apart.width - 20, 150))
     big(im, 3).save(out / 'automatic-couplers.png')
+
+    # servicing: an engine over an ash pit, the pit empty, in use and full, the rake
+    engine = render_loco(states, 'steam', 'E')
+    im = ground(engine.width + 7 * 32, 96 + 128, seed=13)
+    lay_track(im, y_tile=3)
+    for i, name in enumerate(('ash_pit', 'ash_pit_ash', 'ash_pit_full')):
+        im.alpha_composite(states[name][DIR_INDEX['E']], (16 + i * 48, 96))
+    im.alpha_composite(states['ash_pit_ash'][DIR_INDEX['E']], (16 + 4 * 48 + engine.width - 64, 96))
+    im.alpha_composite(engine, (16 + 4 * 48, 64))
+    im.alpha_composite(states['fire_rake'][0], (16 + 48, 150))
+    big(im, 3).save(out / 'servicing.png')
 
     im = ground(6 * 104 + 8 + 2 * 264, 264 + 16, seed=9)
     for i, (kind, roof) in enumerate((('bogie_coach', False), ('bogie_coach', True), ('boxcar', False),

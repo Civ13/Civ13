@@ -1671,6 +1671,95 @@ var/global/platform_probe_runtime_error = FALSE
 	E.rail_speed = 0
 	E.driving = FALSE
 
+// Servicing (train_servicing.dm): axle boxes run on oil, and a steam engine's
+// fire fills with clinker until it is cleaned over an ash pit.
+/proc/platform_servicing_run()
+	var/obj/structure/trains/locomotive/coal/E = drive_train(206, 6, 2)
+	var/obj/structure/trains/W1 = E.connected
+	var/obj/structure/trains/W2 = W1.connected
+	var/mob/living/human/platform_rider/fitter = new(platform_turf(205, 5))
+	E.refresh_consist()
+	var/fresh = W1.axle_oil == 600 && W1.axle_state() == "oiled" && !W1.axle_text() && !E.consist_hot
+	E.refresh_consist(6)
+	platform_check("servicing/axles_wear_as_the_train_runs", fresh && W1.axle_oil == 594 && W2.axle_oil == 594 && E.axle_oil == 594 && !E.consist_hot)
+
+	// Run dry, a box runs hot and drags.
+	var/base = E.drag_weight()
+	W1.axle_oil = 50
+	var/dry = W1.axle_state() == "dry" && findtext(W1.axle_text(), "running dry")
+	W1.axle_oil = 3
+	E.refresh_consist(6)
+	platform_check("servicing/hot_box_drags", dry && W1.axle_oil == -3 && W1.axle_state() == "hot" && E.consist_hot == W1.car_load_weight() && E.drag_weight() == base + E.consist_hot && E.consist_braked == 0 && findtext(W1.axle_text(), "running hot"))
+	// Run hot for long, the axle seizes and holds the car like a brake.
+	W1.axle_oil = -148
+	E.refresh_consist(6)
+	var/seized = W1.axle_seized && W1.axle_state() == "seized" && E.consist_braked == W1.car_load_weight() && E.consist_hot == 0 && E.brake_decel() > 0 && !W2.shoved(list(4, 5, TRUE), NORTH)
+	E.refresh_consist(6)
+	platform_check("servicing/dry_axle_seizes", seized && W1.axle_oil == -154)
+	W2.roll_since = 6
+	W2.roll_refresh()
+	platform_check("servicing/rolling_cars_wear_too", W2.axle_oil == 570 && W2.roll_since == 0 && W2.roll_weight == W2.car_load_weight())
+	W2.stop_rolling()
+
+	// Oil will not free a seized axle: the bearing is changed, then it is oiled.
+	var/obj/item/weapon/reagent_containers/glass/bucket/can = new(platform_turf(205, 5))
+	can.reagents.clear_reagents()
+	can.reagents.add_reagent("water", 20)
+	var/not_oil = !train_oil_in(can) && !W1.service_use(can, fitter)
+	can.reagents.clear_reagents()
+	can.reagents.add_reagent("fat_oil", 12)
+	var/refused = train_oil_in(can) == "fat_oil" && W1.service_use(can, fitter) && W1.axle_seized && can.reagents.get_reagent_amount("fat_oil") == 12
+	W1.change_bearing()
+	var/freed = !W1.axle_seized && W1.axle_oil == 0 && W1.axle_state() == "hot"
+	W1.oil_axles()
+	E.refresh_consist()
+	platform_check("servicing/bearing_changed_then_oiled", not_oil && refused && freed && W1.axle_oil == 600 && W1.axle_state() == "oiled" && E.consist_hot == 0 && E.consist_braked == 0 && W1.service_use(can, fitter) && can.reagents.get_reagent_amount("fat_oil") == 12)
+	// A long car is oiled as one.
+	var/obj/structure/trains/platform/flat = platform_car("long_flatbed", 206, 22, NORTH)
+	var/list/segs = flat.car_segments()
+	for (var/obj/structure/trains/platform/P in segs)
+		P.axle_oil = 10
+	var/obj/structure/trains/platform/last = segs[segs.len]
+	last.oil_axles()
+	var/oiled = 0
+	var/speakers = 0
+	for (var/obj/structure/trains/platform/P in segs)
+		if (P.axle_oil == 600)
+			oiled++
+		if (P.axle_speaker())
+			speakers++
+	platform_check("servicing/long_car_oiled_as_one", segs.len == 8 && oiled == 8 && speakers == 1 && flat.service_sections().len == 8)
+
+	// The fire fills with clinker as it works and steams worse for it.
+	E.fuel = 100
+	var/clean = E.clinker == 0 && E.clinker_factor() == 1 && E.fire_factor() == 1
+	E.steam_use(3, E.haul, 20)
+	var/dirty = abs(E.clinker - 5) < 0.01 && E.clinker_factor() == 1
+	E.clinker = 70
+	var/half = abs(E.clinker_factor() - 0.75) < 0.01 && abs(E.fire_factor() - 0.75) < 0.01 && findtext(E.state_text(), "dirty with clinker")
+	E.clinker = 100
+	platform_check("servicing/clinker_chokes_the_fire", clean && dirty && half && abs(E.fire_factor() - 0.5) < 0.01 && findtext(E.state_text(), "choked with clinker"))
+	// It is cleaned with a rake at the firebox, over an ash pit.
+	var/mob/living/human/platform_rider/fireman = new(platform_turf(205, 6))
+	var/obj/item/train_fire_rake/rake = new(platform_turf(205, 6))
+	var/no_pit = !E.ash_pit() && !E.clean_fire(fireman) && E.clinker == 100 && E.service_use(rake, fireman)
+	var/obj/structure/rail_ash_pit/pit = new(platform_turf(206, 6))
+	pit.update_icon()
+	E.fuel = 50
+	E.clean_fire_into(E.ash_pit())
+	platform_check("servicing/fire_cleaned_over_an_ash_pit", no_pit && E.ash_pit() == pit && E.clinker == 0 && E.fuel == 40 && pit.ash == 1 && pit.icon_state == "ash_pit_ash" && pit.dir == NORTH && abs(E.fire_factor() - 0.8) < 0.01)
+	// A full pit takes no more until it is dug out.
+	pit.ash = 10
+	pit.update_icon()
+	E.clinker = 60
+	var/full = pit.icon_state == "ash_pit_full" && !E.clean_fire(fireman) && E.clinker == 60
+	var/out = pit.dig_out(platform_turf(205, 7))
+	var/heaps = 0
+	for (var/obj/item/wood_ash/A in platform_turf(205, 7))
+		heaps++
+	var/list/states = icon_states('icons/obj/vehicles/train_platforms.dmi')
+	platform_check("servicing/ash_pit_dug_out", full && out == 3 && heaps == 3 && pit.ash == 0 && pit.icon_state == "ash_pit" && !pit.dig_out() && ("ash_pit" in states) && ("ash_pit_ash" in states) && ("ash_pit_full" in states) && ("fire_rake" in states))
+
 /world/New()
 	OpenPort("none")
 	GLOB.all_observable_events = list()
@@ -1698,6 +1787,7 @@ var/global/platform_probe_runtime_error = FALSE
 		platform_rolling_run()
 		platform_adhesion_run()
 		platform_shunting_run()
+		platform_servicing_run()
 	catch (var/exception/E)
 		platform_probe_runtime_error = TRUE
 		world.log << "Fixture aborted: [E] at [E.file]:[E.line]"

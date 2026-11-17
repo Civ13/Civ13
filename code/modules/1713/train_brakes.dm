@@ -50,9 +50,10 @@
 /obj/structure/trains/locomotive/proc/brake_decel()
 	return train_brake_decel(consist_braked + (braking ? consist_own : 0), consist_weight)
 
-// The weight the engine drags, braked cars counted heavier.
+// The weight the engine drags, braked cars counted heavier and a car with a
+// hot axle box (train_servicing.dm) twice.
 /obj/structure/trains/locomotive/proc/drag_weight()
-	return consist_weight + TRAIN_BRAKE_DRAG * consist_braked
+	return consist_weight + TRAIN_BRAKE_DRAG * consist_braked + consist_hot
 
 /obj/structure/trains/proc/train_rolling()
 	var/obj/structure/trains/head = train_head()

@@ -19,6 +19,7 @@
 	var/tmp/roll_steps = 0 // tiles until the train's weight is added up again
 	var/tmp/roll_weight = 0
 	var/tmp/roll_braked = 0
+	var/tmp/roll_since = 0 // tiles rolled since the weight was added up
 
 // The speed and weight of the train this car is part of, as a list, or null
 // when it stands: an engine driving it, or the train rolling free.
@@ -74,7 +75,8 @@
 	for (var/obj/structure/trains/car in train_consist_list(src))
 		var/weight = car.car_load_weight()
 		roll_weight += weight
-		if (car.handbrake)
+		car.wear_axles(roll_since)
+		if (car.handbrake || car.axle_seized)
 			roll_braked += weight
 		if (istype(car, /obj/structure/trains/locomotive))
 			var/obj/structure/trains/locomotive/L = car
@@ -83,6 +85,7 @@
 				return FALSE
 			if (L.braking)
 				roll_braked += weight
+	roll_since = 0
 	return TRUE
 
 // A rolling train hits by its own speed and weight.
@@ -113,6 +116,7 @@
 	if (roll_steps <= 0 && !roll_refresh())
 		return 0
 	roll_steps--
+	roll_since++
 	roll_speed -= TRAIN_ROLL_DRAG / max(1, roll_weight / 6) + train_brake_decel(roll_braked, roll_weight)
 	if (roll_speed <= TRAIN_ROLL_MIN)
 		return stop_rolling()
@@ -153,7 +157,7 @@
 			return FALSE
 	var/weight = 0
 	for (var/obj/structure/trains/car in cars)
-		if (car.handbrake)
+		if (car.handbrake || car.axle_seized)
 			return FALSE
 		if (istype(car, /obj/structure/trains/platform))
 			var/obj/structure/trains/platform/P = car

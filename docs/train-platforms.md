@@ -29,6 +29,9 @@ heading, the rail tile and the tile right of it.
   with the car ([trains.md](trains.md#couplings)).
 - `knuckle_<f|b>_<free|linked|broken>` and `knuckle_item`: the same for an
   automatic coupler ([trains.md](trains.md#shunting)).
+- `ash_pit`, `ash_pit_ash`, `ash_pit_full` and `fire_rake`: the ash pit
+  between the rails, turned along its track, and the fireman's rake
+  ([trains.md](trains.md#servicing)).
 - `brake_wheel` and `brake_wheel_on`: the brake wheel of a brake van, wound
   off and on ([trains.md](trains.md#brakes)).
 - `edge_plank`, `edge_freight_door[_open]`, `edge_side`, `edge_drop_door[_open]`
