@@ -658,10 +658,6 @@ var/global/train_solo_move = FALSE
 		..()
 		storage.can_hold = list(/obj/item/stack/ore/coal, /obj/item/stack/material/wood, /obj/item/weapon/branch)
 
-/obj/structure/trains/storage/tender/examine(mob/user)
-	..()
-	to_chat(user, "Hitched behind a steam locomotive, its fireman tops up the firebox from here while the train runs.")
-
 /obj/structure/trains/storage/closed
 	name = "transport wagon"
 	desc = "A covered wagon with lots of internal space."
@@ -1011,11 +1007,8 @@ var/global/train_solo_move = FALSE
 	consist_weight = 0
 	consist_power = 0
 	consist_engines = 0
-	var/obj/structure/trains/storage/tender/tender = null
 	for (var/obj/structure/trains/car in cars)
 		consist_weight += car.car_load_weight()
-		if (!tender && istype(car, /obj/structure/trains/storage/tender))
-			tender = car
 		if (istype(car, /obj/structure/trains/locomotive))
 			var/obj/structure/trains/locomotive/L = car
 			if (L.on && (L.fuel > 0 || !L.max_fuel) && !L.engine_disabled())
@@ -1027,8 +1020,7 @@ var/global/train_solo_move = FALSE
 					L.steam_use(throttle, consist_weight, steps_since)
 					if (L.fuel <= 0)
 						L.stall()
-	if (tender)
-		feed_from(tender)
+				L.tender_top_up()
 
 /obj/structure/trains/locomotive/proc/engine_disabled()
 	return broken_down
@@ -1194,30 +1186,6 @@ var/global/train_solo_move = FALSE
 /obj/structure/trains/locomotive/proc/fuel_value(obj/item/I)
 	return 0
 
-// The fireman shovels from a tender hitched into the train.
-/obj/structure/trains/locomotive/proc/feed_from(obj/structure/trains/storage/tender/T)
-	if (!T || !T.storage || !max_fuel || fuel > max_fuel / 2)
-		return FALSE
-	for (var/obj/item/I in T.storage.contents)
-		var/value = fuel_value(I)
-		if (!value)
-			continue
-		var/room = round((max_fuel - fuel) / value)
-		if (room < 1)
-			return FALSE
-		if (istype(I, /obj/item/stack))
-			var/obj/item/stack/S = I
-			var/units = min(S.amount, room)
-			fuel += units * value
-			S.use(units)
-		else
-			fuel += value
-			T.storage.remove_from_storage(I, null)
-			qdel(I)
-		T.update_icon()
-		return TRUE
-	return FALSE
-
 /obj/structure/trains/locomotive/proc/set_speed()
 	train_speed = rail_speed > 0 ? round(10 / rail_speed, 0.1) : max_train_speed
 	return train_speed
@@ -1273,11 +1241,7 @@ var/global/train_solo_move = FALSE
 	return TRUE
 
 /obj/structure/trains/locomotive/coal/fuel_value(obj/item/I)
-	if (istype(I, /obj/item/stack/ore/coal))
-		return 15
-	if (istype(I, /obj/item/stack/material/wood) || istype(I, /obj/item/weapon/branch))
-		return 3
-	return 0
+	return steam_fuel_value(I)
 
 // How well the fire steams: a firebox under half full makes less.
 /obj/structure/trains/locomotive/coal/proc/fire_factor()
@@ -1393,7 +1357,7 @@ var/global/train_solo_move = FALSE
 	return used + tanked
 
 /obj/structure/trains/locomotive/coal/takes_fuel(obj/item/W)
-	return ..() || takes_water(W) || istype(W, /obj/item/fusible_plug)
+	return ..() || takes_water(W) || istype(W, /obj/item/fusible_plug) || is_tool(W, TOOL_SHOVEL)
 
 /obj/structure/trains/locomotive/coal/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/fusible_plug))
@@ -1408,6 +1372,10 @@ var/global/train_solo_move = FALSE
 		qdel(W)
 		plug_dropped = FALSE
 		user.visible_message("[user] fits a new fusible plug to \the [src].", "You fit the new plug. Fill the boiler before you light the fire.")
+		return
+	if (is_tool(W, TOOL_SHOVEL))
+		boiler_tick()
+		shovel_coal(user)
 		return
 	if (takes_water(W))
 		boiler_tick()

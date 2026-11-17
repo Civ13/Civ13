@@ -571,8 +571,13 @@ var/global/train_step_plain = FALSE
 		to_chat(user, "It is damaged ([round(100 * health / initial(health))]%). A welding tool repairs it.")
 	if (braced)
 		to_chat(user, "Its outriggers are down: the car is braced and cannot move.")
+	var/tender = tender_text()
+	if (tender)
+		to_chat(user, tender)
 
 /obj/structure/trains/platform/attackby(obj/item/W as obj, mob/user as mob)
+	if (tender_load(W, user))
+		return
 	var/obj/structure/trains/locomotive/E = car_engine()
 	if (E && (E.takes_fuel(W) || (is_tool(W, TOOL_WELDER) && !wrecked && health >= initial(health))))
 		return E.attackby(W, user)
@@ -594,7 +599,7 @@ var/global/train_step_plain = FALSE
 /obj/structure/trains/platform/proc/dismantle_problem()
 	var/list/L = layout()
 	if (L && L["body"])
-		return "A locomotive is built in one piece and cannot be packed into a kit."
+		return "It is built in one piece and cannot be packed into a kit."
 	var/list/segs = car_segments()
 	var/obj/structure/trains/platform/front = null
 	var/obj/structure/trains/platform/back = null

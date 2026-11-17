@@ -20,6 +20,10 @@ heading, the rail tile and the tile right of it.
   first and last segment. `apply_layout()` adds them as overlays that follow
   their tile's own direction. `outrigger` is added either side of a braced
   gun car's end segments by `update_car_overlays()`.
+- `loco_tender_<1-4><l|c|r>`: the walkable tender, cut like the locomotive
+  bodies. `icons/obj/vehicles/rail_water.dmi` (64 x 64, from the same script)
+  holds `water_tower` and `water_crane`, each turned four ways
+  ([trains.md](trains.md#tenders-and-water-stops)).
 - `coupler_<f|b>_<free|linked|broken|none>` and `coupling_item`: the coupling
   at a car's front or rear end in each condition, and the spare. They turn
   with the car ([trains.md](trains.md#couplings)).

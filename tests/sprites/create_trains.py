@@ -32,6 +32,7 @@ from trainkit import (Canvas, EDGE, HEADING, directions, mix, noise, ramp_at,  #
 ROOT = Path(__file__).resolve().parents[2]
 PLATFORMS = ROOT / 'icons/obj/vehicles/train_platforms.dmi'
 GUN = ROOT / 'icons/obj/vehicles/railway_gun.dmi'
+WATER = ROOT / 'icons/obj/vehicles/rail_water.dmi'
 RAILS = ROOT / 'icons/obj/vehicles/trains.dmi'
 
 # ramps: lit, face, shade, outline
@@ -1114,6 +1115,64 @@ def loco_steam(c, with_roof=False):
         c.stamp(row_canvas(roof_loco_steam, c.tf), *row_offset(c, 2))
 
 
+def loco_tender(c, with_roof=False):
+    """A separate tender: a shovelling plate at the front, the coal space
+    between the tank's side sheets, and the tank top with its filler."""
+    for y in (22, 64, 106):
+        wheel(c, 5, y - 6, y + 5, True)
+        wheel(c, 88, y - 6, y + 5, False)
+    for x in (4, 91):
+        c.rect(x, 14, x, 114, STEEL[1])
+        for y in (22, 64, 106):
+            c.put(x, y, BRASS[0])
+            c.put(x, y + 1, STEEL[4])
+    # frame and shovelling plate
+    c.rect(9, 3, 86, 124, DARK)
+    tread(c, 10, 4, 85, 31, face=STEEL[3], lit=STEEL[1], dark=STEEL[4], seams=False)
+    beam(c, 0, 3)
+    for x in (10, 85):
+        c.rect(x, 4, x, 30, STEEL[0])
+        for y in (6, 16, 26):
+            c.put(x, y, BRASS[1])
+    # hand brake and tool rack on the plate
+    c.disc(17.5, 10.5, 3.0, [WALNUT[0], WALNUT[1], WALNUT[2]], outline=WALNUT[3])
+    c.put(17, 10, BRASS[0])
+    c.bevel(70, 7, 82, 10, PLANK[0], PLANK[2], PLANK[4], outline=PLANK_SEAM)
+    c.put(76, 8, BRASS[0])
+    # tank
+    c.shade(9, 123, 88, 124, 60)
+    c.bevel(8, 30, 87, 123, GREEN[1], GREEN[2], GREEN[3], outline=GREEN[4])
+    c.frame(10, 32, 85, 121, BRASS[2])
+    c.rect(12, 33, 83, 120, GREEN[3])
+    for y in range(36, 120, 9):
+        for x in (13, 82):
+            c.rivet(x, y, GREEN[0], GREEN[4])
+    # coal space, open to the plate through the coal door
+    c.rect(19, 30, 76, 94, GREEN[4])
+    coal(c, 20, 30, 75, 93, seed=131)
+    c.rect(19, 94, 76, 94, GREEN[0])
+    c.rect(36, 28, 59, 31, DARK)
+    coal(c, 37, 27, 58, 31, seed=137)
+    for x, y in ((33, 25), (41, 24), (55, 25), (62, 26)):
+        c.put(x, y, COAL[1])
+        c.put(x + 1, y, COAL[2])
+    # tank top: filler, vents and the tool boxes
+    for y in (99, 117):
+        for x in range(16, 82, 11):
+            c.rivet(x, y, GREEN[0], GREEN[4])
+    c.shade(41, 102, 57, 116, 60)
+    c.disc(47.5, 107.5, 6.6, [WHITE, BRASS[0], BRASS[1], BRASS[2], BRASS[3]], outline=BRASS[4])
+    c.disc(47.5, 107.5, 3.2, [STEEL[1], STEEL[3], STEEL[4]], outline=STEEL_O)
+    c.put(46, 106, WHITE)
+    for x in (24.0, 71.0):
+        c.disc(x, 107.5, 1.9, [BRASS[0], BRASS[1], BRASS[3]], outline=BRASS[4])
+    c.bevel(14, 111, 30, 118, PLANK[0], PLANK[2], PLANK[4], outline=PLANK_SEAM)
+    c.put(22, 114, BRASS[0])
+    c.bevel(65, 111, 81, 118, STEEL[1], STEEL[3], STEEL[4], outline=STEEL_O)
+    c.put(73, 114, STEEL[0])
+    beam(c, 125, 127)
+
+
 def hood(c, x0, y0, x1, y1, ramp, chamfer=3):
     n = x1 - x0 + 1
     cols = [ramp[4]] + [ramp[1]] * chamfer + [ramp[2]] * (n - 2 - chamfer * 2) + [ramp[3]] * chamfer + [ramp[4]]
@@ -1360,11 +1419,13 @@ LOCOS = {'steam': (loco_steam, roof_loco_steam), 'diesel': (loco_diesel, roof_lo
 
 def loco_states():
     out = {}
-    for name, (body, roof) in LOCOS.items():
+    for name, (body, roof) in list(LOCOS.items()) + [('tender', (loco_tender, None))]:
         imgs = directions(body, w=96, h=128, order=HEADING)
         for seg in range(4):
             for col, cn in ((-1, 'l'), (0, 'c'), (1, 'r')):
                 out['loco_%s_%d%s' % (name, seg + 1, cn)] = slice_car(imgs, 4, seg, col)
+        if not roof:
+            continue
         rimgs = directions(roof, w=96, h=32, order=HEADING)
         for col, cn in ((-1, 'l'), (0, 'c'), (1, 'r')):
             out['roof_loco_%s_%s' % (name, cn)] = slice_car(rimgs, 1, 0, col)
@@ -1455,6 +1516,96 @@ def gun_states():
 
 
 # ---------------------------------------------------------------------------
+
+# ---------------------------------------------------------------------------
+# Water tower and water crane: 64 x 64, centred on their tile
+
+ROOF_TIN = ((150, 96, 78), (122, 70, 58), (94, 50, 44), (66, 34, 32), (40, 20, 20))
+
+
+def tower_body():
+    """A round stave tank under a conical tin roof, seen from straight above."""
+    c = Canvas(64, 64)
+    cx = cy = 31.5
+    for y in range(64):
+        for x in range(64):
+            if math.hypot(x - cx - 4, y - cy - 5) <= 25.5:
+                c.shade(x, y, x, y, 80)
+    # the trestle legs show at the corners
+    for x, y in ((9, 9), (51, 9), (9, 51), (51, 51)):
+        c.bevel(x, y, x + 3, y + 3, WALNUT[0], WALNUT[1], WALNUT[2], outline=WALNUT[3])
+    # tank rim: staves and the top iron band
+    for y in range(64):
+        for x in range(64):
+            d = math.hypot(x - cx, y - cy)
+            if d > 25.2:
+                continue
+            ang = math.atan2(y - cy, x - cx)
+            lit = (-math.cos(ang) - math.sin(ang)) / 1.42  # 1 towards the upper left
+            if d > 24.0:
+                c.put(x, y, DARK)
+            elif d > 22.6:
+                c.put(x, y, STEEL[1] if lit > 0.3 else (STEEL[3] if lit > -0.4 else STEEL[4]))
+            elif d > 20.4:
+                stave = int((ang + math.pi) * 14) % 2
+                base = TAN[1] if lit > 0.2 else (TAN[2] if lit > -0.5 else TAN[3])
+                c.put(x, y, mix(base, TAN[3], 0.35) if stave else base)
+            else:
+                # the roof: a cone, brighter on the side that faces the light
+                tone = ROOF_TIN[0] if lit > 0.6 else (ROOF_TIN[1] if lit > 0.1 else (ROOF_TIN[2] if lit > -0.5 else ROOF_TIN[3]))
+                if int(d) % 5 == 4:
+                    tone = mix(tone, ROOF_TIN[4], 0.45)
+                seam = abs(((ang + math.pi) * 6 / math.pi) % 1.0 - 0.5) > 0.46 and d > 3
+                c.put(x, y, mix(tone, ROOF_TIN[4], 0.5) if seam else tone)
+    c.ring(cx, cy, 20.6, ROOF_TIN[4], width=1.0)
+    c.disc(cx, cy, 2.6, [BRASS[0], BRASS[1], BRASS[3]], outline=BRASS[4])
+    c.put(31, 30, WHITE)
+    return c
+
+
+def tower_spout(c):
+    """The spout, swung out towards the north of its 64 x 64 tile."""
+    c.shade(31, 1, 36, 8, 70)
+    c.bevel(29, 0, 34, 9, STEEL[1], STEEL[2], STEEL[4], outline=STEEL_O)
+    c.rect(30, 0, 33, 1, DARK)
+    c.rect(31, 2, 31, 8, STEEL[0])
+    c.line(27, 9, 30, 4, STEEL[3])
+    c.line(36, 9, 33, 4, STEEL[3])
+
+
+def water_crane(c):
+    """A standpipe beside the track, its arm swung out to the north."""
+    c.shade(28, 30, 40, 40, 70)
+    c.bevel(26, 26, 37, 37, STEEL[1], STEEL[3], STEEL[4], outline=STEEL_O)
+    for x, y in ((27, 27), (36, 27), (27, 36), (36, 36)):
+        c.put(x, y, STEEL[0])
+    # the arm, its stay and the leather bag at the end
+    c.shade(33, 6, 36, 26, 60)
+    c.bevel(30, 5, 33, 28, GREEN[1], GREEN[2], GREEN[3], outline=GREEN[4])
+    c.rect(31, 6, 31, 27, GREEN[0])
+    c.line(27, 28, 30, 16, STEEL[1])
+    c.line(36, 28, 33, 16, STEEL[1])
+    c.bevel(29, 0, 34, 6, WALNUT[0], WALNUT[1], WALNUT[2], outline=WALNUT[3])
+    c.rect(30, 0, 33, 0, DARK)
+    c.rect(29, 3, 34, 3, BRASS[1])
+    # the column with its brass cap and valve wheel
+    c.disc(31.5, 31.5, 5.2, [GREEN[0], GREEN[1], GREEN[2], GREEN[3]], outline=GREEN[4])
+    c.disc(31.5, 31.5, 2.4, [WHITE, BRASS[0], BRASS[1], BRASS[3]], outline=BRASS[4])
+    c.disc(38.5, 34.5, 2.6, [RED[0], RED[1], RED[2]], outline=RED[3])
+    c.put(38, 34, DARK)
+
+
+def water_states():
+    out = {'water_tower': [], 'water_crane': directions(water_crane, w=64, h=64, order=HEADING)}
+    for tf in HEADING:
+        tower = tower_body()
+        spout = Canvas(64, 64, tf)
+        tower_spout(spout)
+        im = spout.image()
+        im.alpha_composite(tower.image())
+        out['water_tower'].append(im)
+    return out
+
 
 def platform_states():
     states = {}
@@ -1684,6 +1835,14 @@ def write_previews(out, states, gun):
     both.alpha_composite(express, (0, goods.height))
     big(both, 2).save(out / 'long-stock-trains.png')
 
+    # a water stop: engine and tender under the tower's spout, a crane further on
+    water = water_states()
+    stop = train_east(states, gun, [render_loco(states, 'steam', 'E'), render_loco(states, 'tender', 'E', roof=False),
+                                    render_car(states, 'open_wagon', 'E')], pad=3)
+    stop.alpha_composite(water['water_tower'][DIR_INDEX['S']], (stop.width - 96 - 128 - 112, 0))
+    stop.alpha_composite(water['water_crane'][DIR_INDEX['N']], (stop.width - 80, 160))
+    big(stop, 3).save(out / 'water-stop.png')
+
     # couplings: made, free, broken and taken off, on a train heading east
     def with_couplers(kind, front, rear):
         car = render_car(states, kind, 'E')
@@ -1732,16 +1891,19 @@ def same(path, states, size, cols):
 def main(argv):
     states = platform_states()
     gun = gun_states()
+    water = water_states()
     if '--check' in argv:
-        bad = [str(p.relative_to(ROOT)) for p, s, size, cols in ((PLATFORMS, states, (32, 32), 16), (GUN, gun, (96, 96), 2))
+        bad = [str(p.relative_to(ROOT)) for p, s, size, cols in ((PLATFORMS, states, (32, 32), 16), (GUN, gun, (96, 96), 2),
+                                                                 (WATER, water, (64, 64), 4))
                if not same(p, s, size, cols)]
         if bad:
             print('out of date: ' + ', '.join(bad))
             return 1
-        print('train sheets match (%d + %d states)' % (len(states), len(gun)))
+        print('train sheets match (%d + %d + %d states)' % (len(states), len(gun), len(water)))
         return 0
     write_dmi(PLATFORMS, states, cols=16)
     write_dmi(GUN, gun, size=(96, 96), cols=2)
+    write_dmi(WATER, water, size=(64, 64), cols=4)
     print('wrote %d platform states and the railway gun' % len(states))
     if '--preview' in argv:
         write_previews(Path(argv[argv.index('--preview') + 1]), states, gun)

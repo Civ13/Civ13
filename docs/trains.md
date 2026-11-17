@@ -67,11 +67,38 @@ fire" and "Drop the fire".
   the fire goes out, pressure is lost and the engine is dead until a new
   `/obj/item/fusible_plug` (1 lead, Rail & Steam) is fitted with a ten second
   job. Nothing explodes.
-- Water goes in from any open vessel of water. A cold boiler is filled
-  first, then the tank. Water towers come with the tender work.
+- Water goes in from any open vessel of water, a water tower or a water
+  crane. A cold boiler is filled first, then the tank.
 
 Engines are built filled and in steam, and engines saved before the boiler
 existed load the same way. Diesel engines are unchanged.
+
+## Tenders and water stops
+
+`train_water.dm`. A tender is coupled directly to a steam engine, at either
+end (`engine_tenders()`). There are two:
+
+- the one-tile tender wagon: its fuel is the coal and wood in its storage,
+  and it carries 600 water;
+- the walkable tender, a platform car of kind `tender` built from a kit. It
+  is drawn and built in one piece like a locomotive body (layout key `body`,
+  no `engine`): a shovelling plate anyone can stand on and three solid
+  sections. Its front section holds `tender_fuel` (up to 1500) and
+  `tender_water` (up to 2400); `tender_store()` finds it from any section.
+  Click any section with coal, wood or a vessel of water to load it.
+
+Nothing feeds the firebox by itself any more. A fireman clicks the engine
+with a shovel (`shovel_coal()`): each stroke moves up to 30 fuel from the
+tender, once a second, and works on a moving train. Fuel can still be put in
+by hand. The tender's water runs to the engine's own tank whenever the
+train's weight is recounted (`tender_top_up()`).
+
+`/obj/structure/rail_water/tower` holds 6000 water. It is filled from
+vessels, or by its hand pump when fresh water lies within two tiles. Used
+with an empty hand it fills every steam engine and tender whose rail tile is
+within three tiles (`takers()`, `fill_takers()`). `/obj/structure/rail_water`
+is the water crane: the same, two tiles, drawing from the fullest tower
+within twelve. Region travel does not carry a tender's fuel and water.
 
 ## Heavy locomotives
 
