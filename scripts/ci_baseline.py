@@ -2585,6 +2585,11 @@ SUITES = {
             'code/modules/persistence/region_travel.dm',
             'code/game/mob/language/earth.dm', 'code/_helpers/global_lists.dm',
             'code/game/mob/living/carbon/human/species/species.dm')},
+    # Starting clothes on lands with peoples follow the people and the era.
+    'spawn_outfits': {'files': ('tests/spawn_outfits/test_spawn_outfits.py',),
+        'paths': ('tests/spawn_outfits/', 'code/modules/1713/jobs/spawn_outfits.dm'),
+        'shared_paths': ('code/modules/1713/jobs/nomads.dm', 'code/game/mob/living/carbon/human/origins.dm',
+            'code/_helpers/era.dm', 'code/modules/1713/apparel_stoneage.dm')},
     # Research chapters carry a language: recording, reading, translation.
     'book_language': {'files': ('tests/book_language/test_book_language.py',),
         'paths': ('tests/book_language/', 'code/modules/research_tree/book_language.dm'),

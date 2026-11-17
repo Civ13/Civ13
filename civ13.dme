@@ -1169,6 +1169,7 @@
 #include "code\modules\1713\jobs\skyrim.dm"
 #include "code\modules\1713\jobs\sovafghan.dm"
 #include "code\modules\1713\jobs\spanish.dm"
+#include "code\modules\1713\jobs\spawn_outfits.dm"
 #include "code\modules\1713\jobs\starwars.dm"
 #include "code\modules\1713\jobs\submarine.dm"
 #include "code\modules\1713\jobs\tribes.dm"
