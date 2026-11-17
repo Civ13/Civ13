@@ -1754,7 +1754,7 @@
 ////////////////////PRINTING/PRESS///////////////////////////
 /obj/structure/printingpress
 	name = "printing press"
-	desc = "Used to copy books and papers."
+	desc = "Used to copy books, papers and maps."
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "printingpress0"
 	anchored = TRUE
@@ -1784,7 +1784,7 @@
 			return
 	if (istype(W, /obj/item/weapon/paper))
 		return insert_copy_paper(W, user)
-	if (istype(W, /obj/item/weapon/book) || istype(W, /obj/item/weapon/paper))
+	if (istype(W, /obj/item/weapon/book) || istype(W, /obj/item/weapon/paper) || istype(W, /obj/item/weapon/cartography_map))
 		var/tolist = list("Cancel")
 		if (isemptylist(copy) && isemptylist(base))
 			tolist = list("Original","Copy","Cancel")
@@ -1799,6 +1799,11 @@
 		if (input == "Cancel" || QDELETED(W) || W.loc != user)
 			return
 		else if (input == "Original")
+			if (istype(W, /obj/item/weapon/cartography_map))
+				var/obj/item/weapon/cartography_map/M = W
+				if (!M.map_has_content())
+					to_chat(user, SPAN_WARNING("There is nothing on [M] to print."))
+					return
 			if (istype(W, /obj/item/weapon/book/language_book))
 				var/obj/item/weapon/book/language_book/LB = W
 				if (!LB.written)
@@ -1810,6 +1815,11 @@
 			return
 
 		else if (input == "Copy")
+			if (istype(W, /obj/item/weapon/cartography_map))
+				var/obj/item/weapon/cartography_map/M = W
+				if (!M.map_copy_blank())
+					to_chat(user, SPAN_WARNING("The copy must be a blank map."))
+					return
 			if (istype(W, /obj/item/weapon/book/language_book))
 				var/obj/item/weapon/book/language_book/LB = W
 				if (LB.written)
@@ -1869,6 +1879,8 @@
 		else
 			if (istype(base[1], /obj/item/weapon/paper))
 				return copy_paper_document(H)
+			if (istype(base[1], /obj/item/weapon/cartography_map))
+				return print_map(H)
 			if (press_prints_whole_book(base[1]))
 				return print_whole_book(H)
 			var/spawntimer = 90
