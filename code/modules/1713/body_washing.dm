@@ -97,6 +97,20 @@
 	update_icons()
 	return TRUE
 
+// Marks one bare part washed at the current cleanliness. Every hand wash
+// (sinks, taps, open water, baths) does this through wash_hands().
+/mob/living/human/proc/mark_part_washed(zone)
+	var/obj/item/organ/external/E = get_organ(zone)
+	if (E && !E.is_stump())
+		LAZYSET(washed_parts, E.limb_name, hygiene)
+
+// A whole-body wash (Bathe, a sponge bath) cleans every bare part, even when
+// it leaves cleanliness short of clean.
+/mob/living/human/proc/mark_bare_parts_washed()
+	for (var/obj/item/organ/external/E in organs)
+		if (!E.is_stump() && !part_is_covered(E))
+			LAZYSET(washed_parts, E.limb_name, hygiene)
+
 // Is this part's clothing covering it?
 /mob/living/human/proc/part_is_covered(obj/item/organ/external/E)
 	for (var/obj/item/clothing/C in get_equipped_items())

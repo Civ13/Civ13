@@ -58,7 +58,9 @@ Off help intent, the drink hint says to switch to help intent to wash instead.
 Self-examine marks the parts that need washing. Hands show dirty or bloody
 from work and blood. Below 200 cleanliness, every part not washed since shows
 dirty (filthy below 75); a part washed bare stays clean until cleanliness
-falls 25 below what it was after that wash (`washed_parts`, not saved). Skin
+falls 25 below what it was after that wash (`washed_parts`, not saved).
+Every bare hand wash (open water, sinks, taps, basins) marks both hands, and
+Bathe or a sponge bath marks every bare part, even when it stops below 200. Skin
 under clothes shows "(covered)", because washing there cleans the clothes.
 Each wash says how clean you now feel, and the mood check points a dirty
 player to self-examine.

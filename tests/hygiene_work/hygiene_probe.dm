@@ -179,3 +179,16 @@ var/hw_runtime_error = FALSE
 	H.dirty_hands = DIRTY_HANDS_WASTE
 	hw_check(H.part_dirt_status(hand) == "dirty", "dirty hands show on the hand")
 	H.dirty_hands = 0
+
+	// Every hand wash (open water, sinks, taps) leaves bare hands clean on
+	// self-examine, even while the rest of the body is below clean.
+	H.washed_parts = null
+	H.hygiene = 150
+	H.dirty_hands = DIRTY_HANDS_WASTE
+	H.clean_blood()
+	hw_check(!H.dirty_hands && H.part_dirt_status(hand) == "" && H.part_dirt_status(chest) == "dirty", "a hand wash shows the hand clean on self-examine")
+	// A whole-body wash that stops short of clean still cleans every bare part.
+	H.washed_parts = null
+	H.organs = list(hand, leg, chest)
+	H.mark_bare_parts_washed()
+	hw_check(H.part_dirt_status(leg) == "" && H.part_dirt_status(chest) == "" && H.part_dirt_status(hand) == "", "a bath below clean shows bare parts clean")
