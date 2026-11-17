@@ -288,6 +288,16 @@
 // Bench cap + resource forge (Phase 3)
 // ------------------------------------------------------------
 
+// The faction a bench H builds will belong to, or null for an unowned bench.
+// Anyone may build a bench. Book-research benches belong to nobody (anyone
+// can use them), so they never count toward a faction's cap; otherwise a
+// faction member's bench is their faction's, and a factionless builder's
+// bench stands unclaimed until a faction claims it (try_claim, under the cap).
+/obj/map_metadata/proc/bench_owner_faction(mob/living/human/H)
+	if (!istype(H) || !H.civilization || H.civilization == "none" || book_research_enabled())
+		return null
+	return H.civilization
+
 // How many benches faction is allowed to own right now.
 /obj/map_metadata/proc/get_bench_cap(faction)
 	var/bonus = faction_bench_cap_bonus[faction]

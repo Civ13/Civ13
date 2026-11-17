@@ -135,5 +135,52 @@ class BenchTierFollowsEra(unittest.TestCase):
             self.assertEqual(raw, [], name)
 
 
+class AnyoneBuildsBench(unittest.TestCase):
+    """Anyone may build a research bench (Val, 2026-11-17).
+
+    A faction member's bench belongs to their faction and counts toward its
+    cap; a factionless builder, or anyone under book research (where benches
+    belong to nobody), builds an unowned bench that counts toward no cap.
+    """
+
+    def setUp(self):
+        self.stack = (ROOT / 'code/game/objects/items/stacks/stack.dm').read_text(encoding='utf-8')
+        faction = FACTION.read_text(encoding='utf-8')
+        body = proc_body(faction, '/obj/map_metadata/proc/bench_owner_faction(mob/living/human/H)\n')
+        code = [line.strip() for line in body.splitlines() if line.strip()]
+        self.assertEqual(code, [
+            'if (!istype(H) || !H.civilization || H.civilization == "none" || book_research_enabled())',
+            'return null',
+            'return H.civilization'])
+
+    @staticmethod
+    def owner(civilization, book, human=True):
+        # Direct evaluation of the three lines asserted in setUp.
+        if not human or not civilization or civilization == 'none' or book:
+            return None
+        return civilization
+
+    def test_owner_rules(self):
+        self.assertEqual(self.owner('Rome', False), 'Rome')
+        for civ in (None, '', 'none'):
+            self.assertIsNone(self.owner(civ, False))
+        self.assertIsNone(self.owner('Rome', True))
+        self.assertIsNone(self.owner('Rome', False, human=False))
+
+    def test_build_has_no_faction_refusal(self):
+        self.assertNotIn('Only members of a faction can build a research bench', self.stack)
+        start = self.stack.index('else if (recipe.result_type == /obj/structure/research_bench)')
+        pre = self.stack[start:self.stack.index('\n\telse if', start + 10)]
+        self.assertIn('map.bench_owner_faction(H)', pre)
+        self.assertNotIn('H.civilization', pre)
+
+    def test_only_owned_benches_meet_the_cap(self):
+        start = self.stack.index('else if (istype(O, /obj/structure/research_bench))')
+        post = self.stack[start:self.stack.index('RBN.faction = owner_faction', start)]
+        self.assertIn('var/owner_faction = map ? map.bench_owner_faction(H) : null', post)
+        self.assertIn('if (owner_faction)', post)
+        self.assertIn('map.count_faction_benches(owner_faction) >= map.get_bench_cap(owner_faction)', post)
+
+
 if __name__ == '__main__':
     unittest.main()
