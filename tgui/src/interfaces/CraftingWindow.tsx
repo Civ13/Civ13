@@ -141,6 +141,7 @@ function Card({ ui, row, working }: { ui: ScreenProps; row: Row; working: Data |
     <p className="craft-links">
       <button type="button" className="craft-link" aria-pressed={!!row.pinned} disabled={!ui.interactive || busy} onClick={() => ui.act('pin', { value: row.id })}>{row.pinned ? 'Unpin' : 'Pin this recipe'}</button>
       {row.atlas ? <button type="button" className="craft-link" disabled={!ui.interactive} onClick={() => ui.act('atlas', { value: row.id })}>Open in Atlas</button> : null}
+      {row.state === 'locked' && row.tech_tree ? <button type="button" className="craft-link" disabled={!ui.interactive} onClick={() => ui.act('tech_tree', { value: row.id })}>View in tech tree</button> : null}
     </p>
     {mine && <div className="craft-progress" role="status">
       <p>Making {str(working?.name)}...</p>

@@ -29,6 +29,7 @@ export const interfaces: Record<string, ComponentType<ScreenProps>> = {
   'faction_symbol.tmpl': Faction,
   'research_bench.tmpl': Research,
   'research_book.tmpl': ResearchBook,
+  'tech_tree.tmpl': Research,
   'vending_machine.tmpl': Vending,
   'vending_machine2.tmpl': Vending,
   'vending_machine_gulag.tmpl': Vending,
