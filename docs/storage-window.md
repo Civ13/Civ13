@@ -31,7 +31,9 @@ the second one turns it into the window (`/mob/living/human/proc/storage_click`;
 `DblClickOn` covers a double-click BYOND reports only as a DblClick). Without a
 working window, the second click of a double-click does nothing.
 Right-click a bag or storage container and pick **Open Storage Window** to open
-the window for it without double-clicking (`storage_window_verb_open`). Players who want the window
+the window for it without double-clicking (`storage_window_verb_open`). **Open Storage Window Here** (IC tab, or
+right-click yourself) opens it with no bag at all, for the floor, hands and
+pockets (`storage_window_show(H, null)`). Players who want the window
 every time pick it in Character Setup > Settings ("Bags and containers open
 in"), or with the **Storage Window** verb (OOC tab); the choice is the client
 preference `STORAGE_WINDOW`. Agent characters and browsers that can't run the
