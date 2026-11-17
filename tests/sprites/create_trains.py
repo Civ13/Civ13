@@ -570,6 +570,73 @@ def coupler_states():
     return out
 
 
+def knuckle_head(c, ramp=STEEL):
+    """The cast head of an automatic coupler on its shank."""
+    c.bevel(14, 2, 17, 4, ramp[1], ramp[2], ramp[4], outline=STEEL_O)
+    c.rect(11, 0, 20, 2, STEEL_O)
+    c.rect(12, 0, 19, 1, ramp[2])
+    c.rect(12, 0, 15, 0, ramp[0])
+
+
+def knuckle_free(c):
+    """An automatic coupler at a free end: the knuckle stands open, with the
+    uncoupling lever's rod running off to the side of the car."""
+    knuckle_head(c)
+    c.rect(17, 0, 19, 0, DARK)
+    c.put(20, 0, STEEL[0])
+    c.rect(21, 3, 25, 3, STEEL_O)
+    c.rect(21, 3, 24, 3, STEEL[3])
+    c.put(25, 2, BRASS[1])
+
+
+def knuckle_linked(c):
+    """Half of a pair of locked knuckles: the head closed on its mate across
+    the car's end, the lock pin showing as a brass dot."""
+    knuckle_head(c)
+    c.rect(12, 0, 19, 0, STEEL[3])
+    c.rect(15, 0, 16, 1, DARK)
+    c.put(18, 1, BRASS[0])
+    c.rect(21, 3, 25, 3, STEEL_O)
+    c.rect(21, 3, 24, 3, STEEL[3])
+    c.put(25, 2, BRASS[1])
+
+
+def knuckle_broken(c):
+    """A cracked head with the knuckle torn out of it."""
+    knuckle_head(c, BLACK)
+    c.clear(17, 0, 20, 1)
+    c.put(17, 1, STEEL_O)
+    c.line(13, 0, 15, 2, DARK)
+    c.put(16, 3, OXIDE[0])
+    c.put(13, 1, OXIDE[1])
+    c.line(21, 3, 23, 5, STEEL[3])
+
+
+def knuckle_states():
+    """knuckle_f_* / knuckle_b_*: an automatic coupler in place of the hook
+    and screw link (train_shunting.dm)."""
+    out = {}
+    for kind, draw in (('free', knuckle_free), ('linked', knuckle_linked), ('broken', knuckle_broken)):
+        front = directions(draw, order=HEADING)
+        out['knuckle_f_' + kind] = front
+        out['knuckle_b_' + kind] = [front[DIR_INDEX[OPPOSITE[h]]] for h in 'SNEW']
+    return out
+
+
+def knuckle_item():
+    """A spare automatic coupler on the ground: shank, head and open knuckle."""
+    c = Canvas(32, 32)
+    c.shade(4, 21, 28, 23, 60)
+    c.bevel(4, 14, 17, 18, STEEL[1], STEEL[2], STEEL[4], outline=STEEL_O)
+    c.rect(6, 15, 8, 17, DARK)
+    c.bevel(17, 10, 24, 21, STEEL[0], STEEL[2], STEEL[4], outline=STEEL_O)
+    c.rect(22, 13, 24, 18, DARK)
+    c.bevel(24, 9, 27, 13, STEEL[0], STEEL[1], STEEL[3], outline=STEEL_O)
+    c.put(20, 12, BRASS[0])
+    c.put(20, 13, BRASS[2])
+    return [c.image()]
+
+
 def coupling_item():
     """A spare coupling on the ground: draw hook, screw and links."""
     c = Canvas(32, 32)
@@ -1806,6 +1873,8 @@ def platform_states():
     states.update(loco_states())
     states.update(coupler_states())
     states['coupling_item'] = coupling_item()
+    states.update(knuckle_states())
+    states['knuckle_item'] = knuckle_item()
     states['fusible_plug'] = fusible_plug()
     states['brake_wheel'] = brake_wheel(False)
     states['brake_wheel_on'] = brake_wheel(True)
@@ -2045,10 +2114,10 @@ def write_previews(out, states, gun):
     big(im, 3).save(out / 'mainline.png')
 
     # couplings: made, free, broken and taken off, on a train heading east
-    def with_couplers(kind, front, rear):
+    def with_couplers(kind, front, rear, part='coupler'):
         car = render_car(states, kind, 'E')
-        car.alpha_composite(states['coupler_f_' + front][DIR_INDEX['E']], (car.width - 32, 32))
-        car.alpha_composite(states['coupler_b_' + rear][DIR_INDEX['E']], (0, 32))
+        car.alpha_composite(states[part + '_f_' + front][DIR_INDEX['E']], (car.width - 32, 32))
+        car.alpha_composite(states[part + '_b_' + rear][DIR_INDEX['E']], (0, 32))
         return car
     made = train_east(states, gun, [with_couplers('flatbed', 'free', 'linked'), with_couplers('coach', 'linked', 'linked'),
                                     with_couplers('flatbed', 'linked', 'broken')])
@@ -2058,6 +2127,17 @@ def write_previews(out, states, gun):
     im.alpha_composite(apart, (0, 0))
     im.alpha_composite(states['coupling_item'][0], (apart.width - 20, 150))
     big(im, 3).save(out / 'couplings.png')
+
+    # automatic couplers: locked, free and broken, and a spare
+    made = train_east(states, gun, [with_couplers('flatbed', 'free', 'linked', 'knuckle'),
+                                    with_couplers('coach', 'linked', 'linked', 'knuckle'),
+                                    with_couplers('flatbed', 'linked', 'broken', 'knuckle')])
+    apart = train_east(states, gun, [with_couplers('flatbed', 'free', 'free', 'knuckle')])
+    im = Image.new('RGBA', (made.width + apart.width, made.height), (96, 120, 84, 255))
+    im.alpha_composite(made, (apart.width, 0))
+    im.alpha_composite(apart, (0, 0))
+    im.alpha_composite(states['knuckle_item'][0], (apart.width - 20, 150))
+    big(im, 3).save(out / 'automatic-couplers.png')
 
     im = ground(6 * 104 + 8 + 2 * 264, 264 + 16, seed=9)
     for i, (kind, roof) in enumerate((('bogie_coach', False), ('bogie_coach', True), ('boxcar', False),

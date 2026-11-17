@@ -114,7 +114,9 @@
 				coupler_f = C
 			else
 				coupler_r = C
-		C.icon_state = "coupler_[front ? "f" : "b"]_[coupling_state(front)]"
+		var/state = coupling_state(front)
+		C.name = coupling_noun(front)
+		C.icon_state = "[(coupling_auto(front) && state != "none") ? "knuckle" : "coupler"]_[front ? "f" : "b"]_[state]"
 
 // Unhitches at that end without a word. Returns the car that was there.
 /obj/structure/trains/proc/part_at(front)
@@ -160,14 +162,23 @@
 	var/v = coupling_at(front)
 	if (!has_coupling_end(front) || v == TRAIN_COUPLING_NONE || end_neighbour(front))
 		return null
-	var/obj/item/train_coupling/I = new(where || get_turf(src))
+	var/kind = coupling_auto(front) ? /obj/item/train_coupling/automatic : /obj/item/train_coupling
+	var/obj/item/train_coupling/I = new kind(where || get_turf(src))
 	I.set_condition(v)
+	if (front)
+		front_auto = FALSE
+	else
+		rear_auto = FALSE
 	set_coupling(front, TRAIN_COUPLING_NONE)
 	return I
 
 /obj/structure/trains/proc/fit_coupling(front, obj/item/train_coupling/I)
 	if (!has_coupling_end(front) || coupling_at(front) != TRAIN_COUPLING_NONE || !istype(I))
 		return FALSE
+	if (front)
+		front_auto = I.automatic
+	else
+		rear_auto = I.automatic
 	set_coupling(front, I.condition)
 	qdel(I)
 	return TRUE
@@ -184,11 +195,12 @@
 	var/end = front ? "front" : "rear"
 	if (v == TRAIN_COUPLING_NONE)
 		return "The [end] coupling is missing. Fit a spare one."
+	var/noun = coupling_noun(front)
 	if (v <= 0)
-		return "The [end] coupling is broken. Weld it, or take it off with a wrench and fit a spare."
+		return "The [end] [noun] is broken. Weld it, or take it off with a wrench and fit a spare."
 	var/obj/structure/trains/other = end_neighbour(front)
 	var/wear = (v >= TRAIN_COUPLING_HEALTH) ? "sound" : "damaged ([round(100 * v / TRAIN_COUPLING_HEALTH)]%)"
-	return "The [end] coupling is [wear][other ? " and hitched to \the [other]" : " and hangs free"]."
+	return "The [end] [noun] is [wear][other ? " and hitched to \the [other]" : " and hangs free"]."
 
 /obj/structure/trains/examine(mob/user)
 	..()
@@ -216,16 +228,24 @@
 	var/v = coupling_at(front)
 	var/obj/structure/trains/other = end_neighbour(front)
 	if (istype(W, /obj/item/train_coupling))
+		var/obj/item/train_coupling/spare = W
 		if (v != TRAIN_COUPLING_NONE)
-			to_chat(user, "\The [src] has a coupling here already. A wrench takes it off.")
+			// The other kind of coupling changes places with the one fitted.
+			if (spare.automatic == coupling_auto(front))
+				to_chat(user, "\The [src] has \a [coupling_noun(front)] here already. A wrench takes it off.")
+				return TRUE
+			if (other)
+				to_chat(user, SPAN_WARNING("Uncouple \the [src] from \the [other] first."))
+				return TRUE
+		user.visible_message("[user] starts fitting \a [W] to \the [src]...", "You start fitting \the [W] to \the [src]...")
+		if (!do_after(user, TRAIN_COUPLING_FIT_TIME, src) || user.get_active_hand() != W || coupling_at(front) != v || end_neighbour(front))
 			return TRUE
-		user.visible_message("[user] starts fitting a coupling to \the [src]...", "You start fitting the coupling to \the [src]...")
-		if (!do_after(user, TRAIN_COUPLING_FIT_TIME, src) || user.get_active_hand() != W || coupling_at(front) != TRAIN_COUPLING_NONE)
+		if (v != TRAIN_COUPLING_NONE && !remove_coupling(front, get_turf(user)))
 			return TRUE
 		user.drop_from_inventory(W)
 		fit_coupling(front, W)
 		playsound(loc, 'sound/effects/lever.ogg', 100, TRUE)
-		user.visible_message("[user] fits a coupling to \the [src].", "You fit the coupling to \the [src].")
+		user.visible_message("[user] fits \a [coupling_noun(front)] to \the [src].", "You fit the [coupling_noun(front)] to \the [src].")
 		return TRUE
 	if (v == TRAIN_COUPLING_NONE)
 		to_chat(user, coupling_text(front))
@@ -268,9 +288,13 @@
 		if (train_under_power())
 			to_chat(user, SPAN_WARNING("The coupling is pulled tight. Shut the throttle first."))
 			return TRUE
-		user.visible_message("[user] starts uncoupling \the [src] from \the [other]...", "You start uncoupling \the [src] from \the [other]...")
-		if (!do_after(user, TRAIN_COUPLING_UNCOUPLE_TIME, src) || end_neighbour(front) != other || train_under_power())
-			return TRUE
+		// Two automatic couplers let go at once by the lever (train_shunting.dm).
+		if (lever_uncouples(front))
+			user.visible_message("[user] lifts the uncoupling lever of \the [src].", "You lift the uncoupling lever.")
+		else
+			user.visible_message("[user] starts uncoupling \the [src] from \the [other]...", "You start uncoupling \the [src] from \the [other]...")
+			if (!do_after(user, TRAIN_COUPLING_UNCOUPLE_TIME, src) || end_neighbour(front) != other || train_under_power())
+				return TRUE
 		couple_end(coupling_end_ahead(front), user)
 		return TRUE
 	if (!couple_end(coupling_end_ahead(front), user))
@@ -309,6 +333,8 @@
 	if (!car)
 		return
 	to_chat(user, car.coupling_text(front))
+	if (car.coupling_auto(front) && car.coupling_at(front) > 0)
+		to_chat(user, "It locks by itself onto another automatic coupler when the cars are pushed together slowly, and its lever lets go at once.")
 	to_chat(user, "Click it to couple or uncouple. Harm intent with a weapon strikes it.")
 
 /obj/effect/train_coupler/ex_act(severity)

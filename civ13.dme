@@ -1065,6 +1065,7 @@
 #include "code\modules\1713\train_locomotives.dm"
 #include "code\modules\1713\train_platforms.dm"
 #include "code\modules\1713\train_rolling.dm"
+#include "code\modules\1713\train_shunting.dm"
 #include "code\modules\1713\train_warfare.dm"
 #include "code\modules\1713\train_water.dm"
 #include "code\modules\1713\rail_warehouse.dm"

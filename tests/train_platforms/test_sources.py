@@ -299,6 +299,31 @@ class TrainPlatformSourceTests(unittest.TestCase):
         layout = SOURCE[SOURCE.index('/obj/structure/trains/platform/proc/apply_layout()'):]
         self.assertLess(layout.index('if (!isturf(loc))'), layout.index('deck_parts = list()'))
 
+    def test_shunting_buffers_up_and_automatic_couplers_lock(self):
+        dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
+        self.assertEqual(dme.count('#include "code\\modules\\1713\\train_shunting.dm"'), 1)
+        shunting = (ROOT / 'code/modules/1713/train_shunting.dm').read_text(encoding='utf-8')
+        couplings = (ROOT / 'code/modules/1713/train_couplings.dm').read_text(encoding='utf-8')
+        # Which ends carry an automatic coupler is saved with the car.
+        self.assertIn('\tvar/front_auto = FALSE', shunting)
+        self.assertIn('\tvar/rear_auto = FALSE', shunting)
+        # A contact that is not a crash may buffer up before anything is marked.
+        hit = TRAINS[TRAINS.index('/obj/structure/trains/proc/rail_hit('):]
+        self.assertLess(hit.index('if (train_crash(TF, impact, fdir))'), hit.index('if (buffer_up(TF, strike))'))
+        self.assertLess(hit.index('if (buffer_up(TF, strike))'), hit.index('health -= round(5 * impact)'))
+        # Coupling by hand and by contact make the link the same way.
+        self.assertIn('if (!join_trains(ahead, TR, their_front))', TRAINS)
+        self.assertIn('join_trains(coupling_end_ahead(mine), TF,', shunting)
+        # The lever skips the wait, never the rule about a tight coupling.
+        use = couplings[couplings.index('/obj/structure/trains/proc/coupler_use('):]
+        self.assertLess(use.index('if (train_under_power())'), use.index('if (lever_uncouples(front))'))
+        self.assertIn('RECIPE: /material/steel/,automatic coupler,/obj/item/train_coupling/automatic,6,120,0,0,trains,140,', RECIPES)
+        self.assertIn('"/obj/item/train_coupling/automatic" = "assembly_line"', NODES)
+        states = dmi_description(ROOT / 'icons/obj/vehicles/train_platforms.dmi')
+        for state in ('knuckle_f_free', 'knuckle_b_free', 'knuckle_f_linked', 'knuckle_b_linked',
+                      'knuckle_f_broken', 'knuckle_b_broken', 'knuckle_item'):
+            self.assertIn('state = "%s"' % state, states)
+
     def test_native_fixture_preparation(self):
         generated = run.sources()
         self.assertIn('#include "tests/train_platforms/probe.dm"', generated[run.PREFIX + '.dme'])
