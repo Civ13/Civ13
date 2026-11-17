@@ -19,7 +19,8 @@ remembers the tree, full-health deletion and bushes leave none, clearing a
 stump gives two logs from its roots once, stumps do not
 regrow in winter or under a built object and otherwise grow back; and the save
 fields, after_load re-registration and runtime-only worker state.
-It also covers fair bounded withering and palm extraction's pot, cooldown and
+It also checks that trees keep two tiles clear of underground rock and doors
+(map seeding and stump regrowth). It also covers fair bounded withering and palm extraction's pot, cooldown and
 persistence revalidation. Offline source contracts run through the
 `flora_regressions` CI baseline suite.
 

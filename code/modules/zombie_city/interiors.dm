@@ -119,6 +119,14 @@
 				return TRUE
 	return FALSE
 
+// Within range tiles of a door in any direction, diagonals included.
+/datum/zombie_city_generator/proc/near_door(x, y, range)
+	for (var/dx = -range to range)
+		for (var/dy = -range to range)
+			if (is_door(cell(x + dx, y + dy)))
+				return TRUE
+	return FALSE
+
 /datum/zombie_city_generator/proc/add_door(datum/zombie_city_building/D, x, y, code)
 	set_cell(x, y, code)
 	door_cells += index(x, y)

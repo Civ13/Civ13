@@ -342,6 +342,9 @@ var/global/list/regrowing_stump_list = list()
 	if (ecology_visible_to_players(T, FLORA_VIEW_MARGIN))
 		return null
 	var/path = ispath(S.regrow_type, /obj/structure/wild) ? S.regrow_type : /obj/structure/wild/tree/live_tree
+	// A stump next to rock or a door stays a stump: the tree would block the way.
+	if (tree_clearance_type(path) && tree_site_crowded(T))
+		return null
 	qdel(S)
 	var/obj/structure/wild/W = new path(T)
 	if (istype(W, /obj/structure/wild/tree/live_tree))

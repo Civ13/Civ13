@@ -243,7 +243,8 @@ var/global/list/open_sea_sites = list()   // every /datum/chart_site/sea of this
 		if (keep_clear(T.x - cx, T.y - cy))
 			continue
 		if (dice.chance(9))
-			new /obj/structure/wild/tree/live_tree(T)
+			if (!tree_site_crowded(T))
+				new /obj/structure/wild/tree/live_tree(T)
 		else if (dice.chance(2))
 			new /obj/structure/wild/rock(T)
 		else if (dice.chance(2))
@@ -254,7 +255,8 @@ var/global/list/open_sea_sites = list()   // every /datum/chart_site/sea of this
 		if (keep_clear(T.x - cx, T.y - cy))
 			continue
 		if (dice.chance(4))
-			new /obj/structure/wild/palm(T)
+			if (!tree_site_crowded(T))
+				new /obj/structure/wild/palm(T)
 		else if (dice.chance(1))
 			new /obj/structure/wild/rock(T)
 	// Game: a flock on any island with room, and one more for every wide
