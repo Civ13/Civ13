@@ -192,7 +192,8 @@ var/list/tile_probe_notes = list()
 	for (var/list/refund_case in refund_cases)
 		var/turf/RT = locate(rx, 17, 1)
 		rx += 2
-		var/obj/covers/RC = new refund_case[1](RT)
+		var/refund_path = refund_case[1]
+		var/obj/covers/RC = new refund_path(RT)
 		qdel(RC)
 		var/got = 0
 		for (var/obj/item/stack/material/wood/W in RT)
