@@ -8,7 +8,9 @@ proxy counts what the server sends during each stage's measure window.
 
 Prints and saves kilobits per second per stage. With --max-ratio the run fails
 when a stage on an upper level sends more than that many times the ground stage
-of the same kind (still or walking): the regression check.
+of the same kind (still or walking): the regression check (default 5). The
+optional --experiments stages include the old way (direct), which always
+exceeds it, so they are left out of the ratio check.
 
 Nothing here touches a live server: its own ports, its own folder, versioned
 sample config plus DAYNIGHT_CLIENT_TINT as on live regions. Generated sources
@@ -99,7 +101,7 @@ def main():
     parser.add_argument('--byond-bin', type=Path, required=True)
     parser.add_argument('--output', type=Path)
     parser.add_argument('--config-line', action='append', default=None, help='extra line for the run copy of config/config.txt (default: DAYNIGHT_CLIENT_TINT, as on live)')
-    parser.add_argument('--max-ratio', type=float, default=0, help='fail when an upper-level stage sends more than this many times the matching ground stage')
+    parser.add_argument('--max-ratio', type=float, default=5, help='fail when an upper-level stage sends more than this many times the matching ground stage (0 turns it off; before the fix one level up was 330x standing, after 1.0-4.0x)')
     parser.add_argument('--experiments', action='store_true', help='also measure other ways of showing the level below (probe-built, one level up)')
     parser.add_argument('--deadline', type=int, default=5400, help='seconds for the whole run')
     args = parser.parse_args()
@@ -176,7 +178,7 @@ def main():
                                   settle_bytes_down=settle)
         ratios = {}
         for name, row in measured.items():
-            if name.startswith('ground_'):
+            if name.startswith('ground_') or name.endswith(('_direct', '_copy', '_copy_movables', '_no_view')):
                 continue
             ground = measured.get('ground_walk' if 'walk' in name else 'ground_still')
             if ground:
