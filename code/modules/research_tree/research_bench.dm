@@ -871,6 +871,11 @@ var/global/list/research_benches = list()
 	new /obj/item/stack/material/wood(get_turf(src))
 	for (var/obj/item/weapon/book/B in contents)
 		B.loc = get_turf(src)
+	// A writing tool resting on the bench (book_research.dm) comes out too.
+	for (var/obj/item/weapon/pen/P in contents)
+		P.loc = get_turf(src)
+	for (var/obj/item/weapon/writing_slate/S in contents)
+		S.loc = get_turf(src)
 	qdel(src) // Destroy removes this bench from research_benches and frees its slot.
 
 // Only the three metal coin types (and their subtypes) -- NOT the money base,

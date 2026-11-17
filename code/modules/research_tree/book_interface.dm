@@ -192,10 +192,10 @@
 /obj/structure/research_bench/proc/book_working_researcher(node_id)
 	var/mob/living/human/researcher = null
 	var/best_rate = 0
-	for (var/mob/living/human/H in range(BOOK_RESEARCH_REACH, src))
-		if (!H.can_research_node_at(src, node_id))
+	for (var/mob/living/human/H in range(BOOK_RESEARCH_NEAR, src))
+		if (!H.can_research_node_at(src, node_id, TRUE))
 			continue
-		var/rate = H.scholar_research_rate(node_id) * H.research_tool_rate()
+		var/rate = lead_pace(H, node_id)
 		if (rate > best_rate)
 			researcher = H
 			best_rate = rate
@@ -205,12 +205,14 @@
 // list(label, effect, 1 good / 0 holding the work back).
 /obj/structure/research_bench/proc/book_pace_factors(datum/research_node/N, mob/living/human/researcher, lead_rate, supply, library)
 	var/list/factors = list()
-	var/tool = researcher.research_tool_rate()
+	var/tool = lead_tool_rate(researcher)
 	var/skill = researcher.scholar_research_rate(N.id)
 	factors += list(list("label" = "[researcher.name]'s scholarship", "effect" = "x[round(skill, 0.01)]", "ok" = skill >= 1 ? 1 : 0))
-	factors += list(list("label" = "Writing tool in hand", "effect" = "x[round(tool, 0.01)]", "ok" = 1))
+	factors += list(list("label" = researcher.research_tool_rate() >= tool ? "Writing tool in hand" : "Writing tool resting on the bench", "effect" = "x[round(tool, 0.01)]", "ok" = 1))
 	factors += list(list("label" = "Supplies on the bench", "effect" = supply >= 1 ? "full speed" : "half speed until some are set out", "ok" = supply >= 1 ? 1 : 0))
 	factors += list(list("label" = "Related chapters shelved within 3 tiles", "effect" = library > 1 ? "[round((library - 1) * 100)]% faster" : "none, no change", "ok" = 1))
+	var/away = get_dist(researcher, src) > BOOK_RESEARCH_REACH
+	factors += list(list("label" = away ? "Working near the bench, not at it" : "Standing at the bench", "effect" = away ? "x[BOOK_RESEARCH_AWAY_RATE]" : "full speed; x[BOOK_RESEARCH_AWAY_RATE] up to [BOOK_RESEARCH_NEAR] tiles off", "ok" = 1))
 	var/team = team_rate(N.id, researcher)
 	if (team != 1)
 		factors += list(list("label" = team > 1 ? "Other scholars helping" : "Too few hands or no facility", "effect" = "x[round(team, 0.01)]", "ok" = team > 1 ? 1 : 0))
@@ -251,10 +253,10 @@
 	if (researcher)
 		checks += list(list("label" = "[researcher == H ? "You are" : "[researcher.name] is"] working on it", "ok" = 1))
 	else
-		checks += list(list("label" = "A scholar standing at the bench", "ok" = 0))
+		checks += list(list("label" = "A scholar within [BOOK_RESEARCH_NEAR] tiles and in sight of the bench", "ok" = 0))
 		checks += list(list("label" = "You know its groundwork", "ok" = H.knows_research_prereqs(assigned_node) ? 1 : 0))
 		checks += node_scholar_rows(H, assigned_node)
-		checks += list(list("label" = "A pencil, pen or writing slate in your hand", "ok" = H.research_tool_rate() > 0 ? 1 : 0))
+		checks += list(list("label" = "A pencil, pen or writing slate in your hand or resting on the bench", "ok" = lead_tool_rate(H) > 0 ? 1 : 0))
 	if (N.min_bench_tier > 0)
 		checks += list(list("label" = "Bench tier [N.min_bench_tier] (this bench is tier [tier])", "ok" = tier >= N.min_bench_tier ? 1 : 0))
 	checks += list(list("label" = "Light to work by", "ok" = lit ? 1 : 0))
