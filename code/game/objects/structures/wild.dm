@@ -91,6 +91,8 @@ var/list/seed_list_jungle
 	spawn(15)
 		if (map && map.ID == MAP_LIGHTS_OUT)
 			opacity = FALSE
+	// Trees cast a ground shadow away from the sun (sun_shadows.dm).
+	sun_shadow_register()
 
 /obj/structure/wild/proc/grow_branch()
 	if (max_branches <= 0)
@@ -179,6 +181,8 @@ var/list/seed_list_jungle
 		return pick_seed_by_biome(A.climate)
 
 /obj/structure/wild/Destroy()
+	if (sun_shadow_shape)
+		sun_shadow_casters -= src
 	#if CIV13_ROOT_TREE_PRESENTATION
 	root_tree_invalidate(src)
 	#endif
@@ -504,9 +508,11 @@ var/list/seed_list_jungle
 	if (radiation >= 15)
 		icon = deadicon
 		icon_state = deadicon_state
-		return
 	else
 		icon = current_icon
+	// The new sheet (leafy, bare, dead) picks the sun shadow's shape (sun_shadows.dm).
+	if (sun_tree_angles && sun_shadow_shape)
+		sun_shadow_update()
 
 /obj/structure/wild/tree/live_tree/proc/change_season()
 	if (radiation >= 15)
