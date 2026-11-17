@@ -505,15 +505,14 @@ var/list/seed_list_jungle
 	..()
 	// A sapling that matures resets its offset, then changes season.
 	fit_trunk_bounds()
-	if (sun_tree_angles && sun_shadow_shape)
-		spawn(0)
-			sun_shadow_update()
 	if (radiation >= 15)
 		icon = deadicon
 		icon_state = deadicon_state
-		return
 	else
 		icon = current_icon
+	// The new sheet (leafy, bare, dead) picks the sun shadow's shape (sun_shadows.dm).
+	if (sun_tree_angles && sun_shadow_shape)
+		sun_shadow_update()
 
 /obj/structure/wild/tree/live_tree/proc/change_season()
 	if (radiation >= 15)
