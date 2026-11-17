@@ -69,10 +69,20 @@ def _has_spear(sit):
     return sit.carrying(lambda n: "sharpened stick" in n or "spear" in n)
 
 
+def _in_hand(sit, test):
+    for hand in ("left_hand", "right_hand"):
+        item = sit.me.get(hand)
+        name = item.get("name") if isinstance(item, dict) else item
+        if name and name != "empty" and test(_lower(name)):
+            return True
+    return False
+
+
 def stick(sit):
-    """A plain stick in hand: break a branch off a tree, take its leaves, strip it, pick the stick up."""
+    """A plain stick in hand (sharpening takes one from a hand, not a pocket): break a branch off a tree, take its
+    leaves, strip it, pick the stick up."""
     kit = sit.kit
-    if sit.carrying(kit.is_plain_stick):
+    if _in_hand(sit, kit.is_plain_stick):
         return DONE
     loose = sit.nearest(lambda row: row.get("item") and kit.is_plain_stick(row.get("name")))
     if loose:
