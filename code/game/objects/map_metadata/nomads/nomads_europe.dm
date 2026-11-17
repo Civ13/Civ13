@@ -1,6 +1,8 @@
 
 /obj/map_metadata/nomads/europe
 	ID = MAP_NOMADS_EUROPE
+	// The sun's path (sun_shadows.dm): degrees north.
+	sun_latitude = 50
 	// Cinnabar on an old mercury belt: twice as common (mercury.dm).
 	cinnabar_rich = TRUE
 	title = "Nomads (Europe)"

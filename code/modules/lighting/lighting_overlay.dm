@@ -156,8 +156,8 @@
 	// daylight times alpha: full outside, half indoors. BYOND folds the alpha
 	// var into a colour matrix, so the coefficient is written into the matrix.
 	var/TOD_lum = client_tint ? 0 : daylight_lum(T.get_window_coeff())
-	// Sun prototype (sun_shadows.dm): daylight takes the phase's colour.
-	var/list/sun_tint = sun_shadows_enabled ? sun_phase_tint[time_of_day] : null
+	// Daylight takes the sun's colour (sun_shadows.dm) on maps with a sun.
+	var/list/sun_tint = sun_daylight_tint()
 	var/TOD_r = sun_tint ? TOD_lum * sun_tint[1] : TOD_lum
 	var/TOD_g = sun_tint ? TOD_lum * sun_tint[2] : TOD_lum
 	var/TOD_b = sun_tint ? TOD_lum * sun_tint[3] : TOD_lum

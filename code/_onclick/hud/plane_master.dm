@@ -82,7 +82,7 @@
 	// With daylight on the client (lighting_overlay.dm) the mask's alpha is the
 	// cell's window coefficient, so the alpha column adds daylight times it.
 	var/daylight = daylight_on_client() ? daylight_lum() : 0
-	// Sun prototype (sun_shadows.dm): daylight takes the phase's colour.
+	// Daylight takes the sun's colour (sun_shadows.dm) on maps with a sun.
 	var/list/sun_tint = sun_daylight_tint()
 	if(!isnull(last_lighting_bypass) && last_lighting_bypass == bypass && last_daylight == daylight && last_sun_tint == sun_tint)
 		return

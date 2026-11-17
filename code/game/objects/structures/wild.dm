@@ -91,9 +91,8 @@ var/list/seed_list_jungle
 	spawn(15)
 		if (map && map.ID == MAP_LIGHTS_OUT)
 			opacity = FALSE
-	// Sun prototype (sun_shadows.dm): a tree placed mid-round takes the current shadow.
-	if (sun_shadows_enabled && sun_tree_phase)
-		sun_shadow_update()
+	// Trees cast a ground shadow away from the sun (sun_shadows.dm).
+	sun_shadow_register()
 
 /obj/structure/wild/proc/grow_branch()
 	if (max_branches <= 0)
@@ -182,6 +181,8 @@ var/list/seed_list_jungle
 		return pick_seed_by_biome(A.climate)
 
 /obj/structure/wild/Destroy()
+	if (sun_shadow_shape)
+		sun_shadow_casters -= src
 	#if CIV13_ROOT_TREE_PRESENTATION
 	root_tree_invalidate(src)
 	#endif
@@ -504,7 +505,7 @@ var/list/seed_list_jungle
 	..()
 	// A sapling that matures resets its offset, then changes season.
 	fit_trunk_bounds()
-	if (sun_shadows_enabled && sun_tree_phase)
+	if (sun_tree_angles && sun_shadow_shape)
 		spawn(0)
 			sun_shadow_update()
 	if (radiation >= 15)

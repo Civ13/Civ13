@@ -6,6 +6,8 @@
 // (dug_underground.dm), under the standing open-air level's slot.
 /obj/map_metadata/nomads/americas_north
 	ID = MAP_NOMADS_AMERICAS_NORTH
+	// The sun's path (sun_shadows.dm): degrees north.
+	sun_latitude = 35
 	// Cinnabar on an old mercury belt: twice as common (mercury.dm).
 	cinnabar_rich = TRUE
 	title = "Nomads (Northern Americas)"
@@ -29,6 +31,8 @@
 
 /obj/map_metadata/nomads/americas_south
 	ID = MAP_NOMADS_AMERICAS_SOUTH
+	// The sun's path (sun_shadows.dm): degrees south, so the noon sun stands in the north.
+	sun_latitude = -20
 	// Cinnabar on an old mercury belt: twice as common (mercury.dm).
 	cinnabar_rich = TRUE
 	title = "Nomads (Southern Americas)"
