@@ -62,6 +62,13 @@ breath (`swim_hold_breath`) and can still reach the shallows, a boat or a
 lifejacket; only when the breath runs out does the drowning damage start.
 Anyone unconscious drowns at once, as before.
 
+A dropped connection does not drown a swimmer. A player's body with no
+client (`swim_player_away()`: it has a `persistence_owner_ckey`) treads water
+without tiring for two minutes from its first life tick in deep water, then
+`swim_wash_ashore()` moves it to the nearest shallows or shore within 60 tiles,
+spent. The grace comes at most once every ten minutes; unconscious bodies and
+bodies nobody owns get none.
+
 Swimming is a body skill (`stats["swimming"]`, 100 to 250, added through
 `ensure_late_stats`). `swimming_skill()` reads it without mood, clamped, so
 thresholds never flicker. Skill divides the tiredness a tick (50 s afloat at

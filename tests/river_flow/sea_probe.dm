@@ -95,6 +95,44 @@ var/sea_runtime_error = FALSE
 	sea_check(H.swim_tiredness == 0 && !H.swim_under && H.swim_breath < 0, "a rested swimmer is fresh again, breath and all")
 	H.adjustOxyLoss(-200)
 
+	// A dropped connection: the body treads water, then is washed ashore.
+	agent_characters -= H
+	H.persistence_owner_ckey = "seaprobe"
+	sea_check(!H.can_swim_deep() && !calm.CanPass(H), "an absent player's body on land keeps out of deep water")
+	H.loc = calm
+	H.handle_drowning()
+	sea_check(!H.drowning && H.swim_tiredness == 0 && H.swim_grace_until == world.time + 1200 && H.can_swim_deep(), "a swimmer whose player dropped treads water without tiring")
+	for (var/i = 1, i <= 80, i++)
+		H.handle_drowning()
+	sea_check(!H.drowning && !H.swim_under && H.swim_tiredness == 0 && !H.getOxyLoss() && H.loc == calm, "eighty seconds on, still afloat and fresh")
+	H.swim_grace_until = world.time - 1
+	H.handle_drowning()
+	var/turf/washed = get_turf(H)
+	sea_check(!istype(washed, /turf/floor/beach/water/deep) && washed.x == 10 && washed.y == 31 && H.swim_tiredness == 99 && !H.getOxyLoss(), "when the grace ends the sea carries them to the nearest shore, spent ([washed.x],[washed.y])")
+	H.handle_drowning()
+	sea_check(!H.drowning, "washed ashore, they rest")
+	H.loc = calm
+	H.handle_drowning()
+	sea_check(H.drowning && !H.swim_grace_until, "the grace does not come twice within ten minutes")
+	H.swim_under = FALSE
+	H.swim_breath = -1
+	H.swim_tiredness = 0
+	H.swim_grace_next = 0
+	H.stat = UNCONSCIOUS
+	H.handle_drowning()
+	sea_check(H.drowning && !H.swim_grace_until, "an unconscious body gets no grace")
+	H.stat = CONSCIOUS
+	H.persistence_owner_ckey = null
+	H.handle_drowning()
+	sea_check(H.drowning && !H.swim_grace_until, "a body nobody owns gets none either")
+	H.loc = shore
+	H.drowning = FALSE
+	H.swim_under = FALSE
+	H.swim_breath = -1
+	H.swim_tiredness = 0
+	H.adjustOxyLoss(-200)
+	agent_characters[H] = new /datum/agent_character
+
 	// The swimming skill: endurance, speed, breath and recovery.
 	sea_check(H.swimming_skill() == 100 && H.swim_breath_max() == 10, "a new swimmer has skill 100 and 10 seconds of breath ([H.swimming_skill()] [json_encode(H.stats["swimming"])] [H.water_step_delay(calm)])")
 	sea_check(H.water_step_delay(calm) == 20 && H.water_step_delay(shore) == 0, "an unskilled swimmer pays 20 ds a deep-water step")

@@ -17,6 +17,11 @@
 // on the spot or paddling back and forth over the same few tiles teaches
 // nothing. Mastering it pays Natural Science (learning_by_doing.dm).
 //
+// A dropped connection does not drown a swimmer: a player's body that lost
+// its client treads water without tiring for two minutes, and is then washed
+// up on the nearest shallows or shore, spent, instead of going under. At most
+// once every ten minutes, and it also covers a body loaded into deep water.
+//
 // Only on the open-world maps (map.nomads): battle maps use deep water as
 // their edge and keep it closed. People with nobody behind them keep out of
 // deep water as before, so nobody walks into the sea on their own.
@@ -44,6 +49,11 @@
 #define SWIM_BREATH_REFILL 3
 // Extra effort a second for each point of a heavy suit's slowdown.
 #define SWIM_SUIT_EFFORT 0.5
+// A player's body with no client: how long it treads water, how often, and
+// how far the sea carries it to the shallows afterwards.
+#define SWIM_GRACE (2 MINUTES)
+#define SWIM_GRACE_EVERY (10 MINUTES)
+#define SWIM_WASH_RANGE 60
 
 /mob/living/human
 	var/tmp/swim_tiredness = 0
@@ -53,6 +63,8 @@
 	var/tmp/swim_new_tiles = 0
 	var/tmp/list/swim_kind_lessons = null // kind of water => world.time of its last first-swim lesson
 	var/tmp/free_diving = FALSE // down on the seabed on a held breath (free_diving.dm)
+	var/tmp/swim_grace_until = 0 // treading water for a lost connection until this world.time
+	var/tmp/swim_grace_next = 0 // no new grace before this world.time
 
 // Breath, the spent state and the training record start fresh after a load:
 // swim_recent holds turfs, and none of it is worth keeping.
@@ -63,7 +75,54 @@
 /mob/living/human/proc/can_swim_deep()
 	if (!map || !map.nomads)
 		return FALSE
-	return client || agent_characters[src] ? TRUE : FALSE
+	// A body treading water for a lost connection (below) stays afloat; asking
+	// here never starts that grace, so an absent player's body on land keeps out.
+	return client || agent_characters[src] || (swim_grace_until && world.time < swim_grace_until && swim_player_away()) ? TRUE : FALSE
+
+// TRUE for a player's character whose player is not connected right now.
+/mob/living/human/proc/swim_player_away()
+	return !client && !agent_characters[src] && istext(persistence_owner_ckey) && length(persistence_owner_ckey)
+
+// TRUE while this body treads water for a player who lost their connection.
+// The grace starts on the first life tick such a body spends in deep water
+// (swim_step), so it covers a logout, a crash and a body loaded there alike.
+/mob/living/human/proc/swim_grace_step()
+	if (client)
+		swim_grace_until = 0
+		return FALSE
+	if (stat || !swim_player_away())
+		return FALSE
+	if (!swim_grace_until && world.time >= swim_grace_next)
+		swim_grace_until = world.time + SWIM_GRACE
+		swim_grace_next = world.time + SWIM_GRACE_EVERY
+	return swim_grace_until && world.time < swim_grace_until
+
+// The grace ran out with the player still away: the sea carries the body to
+// the nearest shallows or shore, spent. Returns TRUE when it found one.
+/mob/living/human/proc/swim_wash_ashore()
+	var/turf/here = get_turf(src)
+	if (!here)
+		return FALSE
+	var/turf/best = null
+	var/best_dist = INFINITY
+	for (var/turf/floor/F in range(SWIM_WASH_RANGE, here))
+		// Straight-line distance: get_dist would call a far corner as near as the beach ahead.
+		var/d = (F.x - here.x) ** 2 + (F.y - here.y) ** 2
+		if (d >= best_dist || F.density || istype(F, /turf/floor/beach/water/deep) || sea_layer_cell(F))
+			continue
+		if (flood_band_at(F) == FLOOD_BAND_DEEP || is_blocked_turf(F))
+			continue
+		best = F
+		best_dist = d
+	if (!best)
+		return FALSE
+	if (buckled)
+		buckled.unbuckle_mob()
+	forceMove(best)
+	swim_tiredness = SWIM_LIMIT - 1
+	swim_under = FALSE
+	log_game("Swimming: [persistence_owner_ckey]'s character [real_name] was washed ashore at ([best.x],[best.y],[best.z]) after their player lost connection in deep water.")
+	return TRUE
 
 // The swimming skill without mood, 100 to 250: thresholds never flicker.
 /mob/living/human/proc/swimming_skill()
@@ -151,6 +210,15 @@
 // One life tick in open deep water without anything to float on. Returns
 // TRUE while the swimmer is still afloat.
 /mob/living/human/proc/swim_step(turf/T)
+	if (!stat && swim_player_away())
+		// Treading water for a lost connection costs nothing and teaches nothing.
+		if (swim_grace_step())
+			return TRUE
+		// The grace has just run out: washed ashore rather than drowned.
+		if (swim_grace_until)
+			swim_grace_until = 0
+			if (swim_wash_ashore())
+				return TRUE
 	if (stat || !can_swim_deep())
 		return FALSE
 	if (swim_under)
@@ -211,3 +279,6 @@
 #undef SWIM_BREATH_BASE
 #undef SWIM_BREATH_REFILL
 #undef SWIM_SUIT_EFFORT
+#undef SWIM_GRACE
+#undef SWIM_GRACE_EVERY
+#undef SWIM_WASH_RANGE
