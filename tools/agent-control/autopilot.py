@@ -2299,6 +2299,7 @@ CONTRACT_EXIT = 2  # an ambiguous action is held, never automatically restarted
 WATCH_POLL = 10  # seconds between character_list polls in --watch mode
 WATCH_STEPS = 1000000  # a watched character plays until it dies or the run is stopped
 WATCH_RETRY = 300  # seconds after a failed run starts before its character is tried again
+WATCH_ADOPT_IDLE = 120  # seconds a living spawned character may go undriven before the watcher takes it over
 # Flags a watched run passes on to each character's own run.
 WATCH_PASSTHROUGH = ("ollama_url", "model", "player_help_config", "num_ctx", "timeout", "keep_alive", "memory", "catalog", "leather", "steps", "minutes", "interval", "pause_file", "director_every")
 
@@ -2329,15 +2330,20 @@ def reap_runs(runs, rows=None):
 
 def watch_targets(rows, runs, now, retry_failed=True):
     """Characters to start a run for: spawned and alive, waiting for a driver or whose last run failed, not being
-    run now, and (after a failure) not tried in the last WATCH_RETRY seconds. Rows carry the goal to play."""
+    run now, and (after a failure) not tried in the last WATCH_RETRY seconds. Rows carry the goal to play.
+
+    A character nobody has driven for WATCH_ADOPT_IDLE seconds (the game's "idle") is adopted too: one whose
+    watcher restarted, or whose run ended while it still lives, must not stand still forever."""
     out = []
     for row in rows:
         ref = row.get("ref")
         if not ref or row.get("kind") != "spawned" or row.get("stat") == 2:
             continue
         entry = runs.get(ref)
+        idle = row.get("idle")
+        abandoned = isinstance(idle, (int, float)) and not isinstance(idle, bool) and idle >= WATCH_ADOPT_IDLE
         if entry is None:
-            if row.get("waiting"):
+            if row.get("waiting") or abandoned:
                 out.append(row)
             continue
         if entry.get("held") or entry.get("process") is not None or now - entry.get("at", 0) < WATCH_RETRY:

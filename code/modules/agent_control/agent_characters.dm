@@ -40,6 +40,7 @@
 	var/list/queue_active // a running game proc may sleep after leaving queue
 	var/awaiting_driver = FALSE // spawned by an admin verb; no autopilot has looked through its eyes yet
 	var/requested_goal // what the admin asked the character to do
+	var/last_driven = 0 // world.time an agent last addressed this character (character_arg); a watcher adopts one left idle
 	var/list/prompts = list() // prompts the game raised that no step answered (docs/agent-control.md#prompts)
 	var/prompt_serial = 0
 	var/list/sounds = list() // sounds the character heard (docs/agent-control.md#sounds)
@@ -170,6 +171,7 @@
 	var/datum/agent_character/C = agent_characters[M]
 	if (!C || !C.can_drive(A))
 		agent_fail("forbidden", "that character is not under this agent's control")
+	C.last_driven = world.time
 	return C
 
 /proc/agent_dir(text)
@@ -323,6 +325,10 @@
 		if (C.awaiting_driver)
 			row["waiting"] = TRUE
 			row["goal"] = C.requested_goal
+		else if (!C.handover_ckey)
+			row["idle"] = round((world.time - C.last_driven) / 10) // seconds since any run addressed it
+			if (C.requested_goal)
+				row["goal"] = C.requested_goal
 		out += list(row)
 	last_watch[A.name] = world.time
 	audit_read(A, "character_list")
