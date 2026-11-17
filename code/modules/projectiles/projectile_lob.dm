@@ -107,6 +107,17 @@
 	if (lob_heights && lob_ground(T) > (landing ? lob_land_height : lob_height_at(d)))
 		T.visible_message(SPAN_WARNING("\The [name] strikes the hillside."))
 		return lob_stop(T)
+	// An airship's gas bag hangs in the arc's way (pedal_airship_combat.dm).
+	if (aloft_pedal_airships.len)
+		var/atom/overhead = pedal_airship_overhead_fire(src, T)
+		if (overhead)
+			if (overhead != T)
+				bumped = TRUE
+				loc = null
+				on_impact(overhead, FALSE)
+				qdel(src)
+				return FALSE
+			return lob_stop(T)
 	if (landing)
 		return lob_land(T)
 	forceMove(T)

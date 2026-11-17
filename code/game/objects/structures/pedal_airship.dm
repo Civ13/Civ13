@@ -125,8 +125,11 @@ var/global/list/aloft_pedal_airships = list()
 	if ((locate(/obj/roof) in loc) || !pedal_airship_open_air(sky))
 		to_chat(H, SPAN_WARNING("Something overhead is in the way. Rise from open ground."))
 		return FALSE
-	if (!pedal_airship_can_lift(bicycle_load_ratio(bicycle_carried_weight(H), H.getStatCoeff("strength"))))
-		to_chat(H, SPAN_WARNING("The airship strains but cannot lift you. Carry less."))
+	if (bag_too_holed())
+		to_chat(H, SPAN_WARNING("The gas bag is too badly holed to lift anything. Patch it with cloth."))
+		return FALSE
+	if (!pedal_airship_can_lift(bicycle_load_ratio(bicycle_carried_weight(H), H.getStatCoeff("strength")) / max(0.01, bag_lift())))
+		to_chat(H, SPAN_WARNING("The airship strains but cannot lift you. Carry less[bag_holes ? ", or patch the gas bag" : ""]."))
 		return FALSE
 	if (H.getStat("stamina") < PEDAL_AIRSHIP_RISE_COST)
 		to_chat(H, SPAN_WARNING("You are too tired to pedal it off the ground."))
@@ -138,7 +141,7 @@ var/global/list/aloft_pedal_airships = list()
 	// The rider, the load and the sky may all have changed during the climb.
 	if (!done || aloft || !rider_ready() || multiz_level_above(z) != up || (locate(/obj/roof) in loc) || !pedal_airship_open_air(sky))
 		return FALSE
-	if (!pedal_airship_can_lift(bicycle_load_ratio(bicycle_carried_weight(H), H.getStatCoeff("strength"))) || H.getStat("stamina") < PEDAL_AIRSHIP_RISE_COST)
+	if (bag_too_holed() || !pedal_airship_can_lift(bicycle_load_ratio(bicycle_carried_weight(H), H.getStatCoeff("strength")) / max(0.01, bag_lift())) || H.getStat("stamina") < PEDAL_AIRSHIP_RISE_COST)
 		return FALSE
 	H.stats["stamina"][1] = max(0, H.stats["stamina"][1] - PEDAL_AIRSHIP_RISE_COST)
 	visible_message(SPAN_NOTICE("\The [src] floats up and away."))
@@ -237,6 +240,8 @@ var/global/list/aloft_pedal_airships = list()
 	..()
 
 /obj/structure/vehicle/bicycle/airship/attackby(obj/item/weapon/W, mob/living/human/user)
+	if (istype(W, /obj/item/stack/material/cloth) && bag_holes && patch_bag(W, user))
+		return
 	if (aloft && (user in ontop) && istype(W, /obj/item/vehicleparts/wheel))
 		to_chat(user, SPAN_WARNING("You cannot get off up here. Stop, then use the tiller's secondary action to sink to the ground."))
 		return

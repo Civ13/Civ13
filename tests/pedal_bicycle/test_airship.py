@@ -20,6 +20,7 @@ from test_bicycle import math_procs
 SOURCE = (ROOT / 'code/game/objects/structures/pedal_airship.dm').read_text()
 BICYCLE = (ROOT / 'code/game/objects/structures/bicycle.dm').read_text()
 AIRCRAFT = (ROOT / 'code/modules/1713/machinery/modular_vehicles/aircraft/aircraft.dm').read_text()
+COMBAT = (ROOT / 'code/game/objects/structures/pedal_airship_combat.dm').read_text()
 BASE = '/obj/structure/vehicle/bicycle/airship'
 
 
@@ -137,6 +138,39 @@ class ArtAndWiring(unittest.TestCase):
         control = extract(SOURCE, BASE + '/secondary_control')
         self.assertLess(control.index('if (moving)'), control.index('descend(H)'))
         self.assertIn('ascend(H)', control)
+
+
+class GroundFire(unittest.TestCase):
+    def test_projectiles_crossing_the_shadow_can_strike_it(self):
+        handle = extract((ROOT / 'code/modules/projectiles/projectile.dm').read_text(), '/obj/item/projectile/proc/handleTurf')
+        self.assertIn('(airborne_aircraft.len || aloft_pedal_airships.len) && T != starting', handle)
+        self.assertLess(handle.index('airborne_overhead_hit(src, T)'), handle.index('height_enter(T)'))
+        lob = extract((ROOT / 'code/modules/projectiles/projectile_lob.dm').read_text(), '/obj/item/projectile/proc/lob_enter')
+        self.assertLess(lob.index('pedal_airship_overhead_fire(src, T)'), lob.index('lob_land(T)'))
+        fire = extract(COMBAT, '/proc/pedal_airship_overhead_fire')
+        for check in ('P.is_shrapnel', 'S.ground_turf() != T', '(P.firer in S.ontop)', 'prob(PEDAL_AIRSHIP_HIT_CHANCE)'):
+            self.assertIn(check, fire)
+
+    def test_holes_cost_lift_and_bring_it_down(self):
+        self.assertIn('#define PEDAL_AIRSHIP_SINK_HOLES 4\n', COMBAT)
+        self.assertIn('#define PEDAL_AIRSHIP_HOLE_LIFT 0.2\n', COMBAT)
+        rise = extract(SOURCE, BASE + '/proc/ascend')
+        wait = rise.index('do_after(H, PEDAL_AIRSHIP_RISE_TIME, src)')
+        for part in (rise[:wait], rise[wait:]):
+            self.assertIn('bag_too_holed()', part)
+            self.assertIn('/ max(0.01, bag_lift())', part)
+        self.assertIn('set_down()', extract(COMBAT, BASE + '/proc/hole_bag'))
+        burn = extract(COMBAT, BASE + '/proc/ignite_bag')
+        self.assertLess(burn.index('set_down()'), burn.index('adjustBruteLoss'))
+        self.assertIn('IgniteMob()', burn)
+
+    def test_cloth_patches_on_the_ground_only(self):
+        patch = extract(COMBAT, BASE + '/proc/patch_bag')
+        self.assertLess(patch.index('if (aloft)'), patch.index('do_after('))
+        self.assertIn('C.use(1)', patch[patch.index('do_after('):])
+        self.assertIn('patch_bag(W, user)', extract(SOURCE, BASE + '/attackby'))
+        dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8-sig')
+        self.assertLess(dme.index('pedal_airship.dm"'), dme.index('pedal_airship_combat.dm"'))
 
 
 if __name__ == '__main__':
