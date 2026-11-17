@@ -44,7 +44,8 @@ hands.
 Washing one part (`body_washing.dm`): the targeted part says what you mean.
 Drinking from a container, or feeding someone, needs the mouth targeted
 (`standard_feed_mob`). On help intent any other part washes: click yourself or
-someone beside you with an open container holding at least 5 clean water, or
+someone beside you with an open container holding at least 5 clean water (a
+bucket, pot, mug, cup or glass), or
 target the part and click a sink, tap, fountain or fresh water to wash it on
 yourself (a hand there keeps the hand wash). A hand clears dirty and bloody
 hands; another part cleans the blood off the clothes over it, or on bare skin
@@ -52,6 +53,15 @@ adds 10 cleanliness up to 175 (20 up to 250 with soap in your other hand).
 Water halves the germs in that part's open wounds, and in the part while it is
 below the first infection level; soap disinfects the wounds. An infection that
 has set in still needs medicine. Water with food poisoning in it is refused.
+Off help intent, the drink hint says to switch to help intent to wash instead.
+
+Self-examine marks the parts that need washing. Hands show dirty or bloody
+from work and blood. Below 200 cleanliness, every part not washed since shows
+dirty (filthy below 75); a part washed bare stays clean until cleanliness
+falls 25 below what it was after that wash (`washed_parts`, not saved). Skin
+under clothes shows "(covered)", because washing there cleans the clothes.
+Each wash says how clean you now feel, and the mood check points a dirty
+player to self-examine.
 
 Bathing in foul water rolls the illness of drinking it at half the chance.
 On Persistence maps a tub or shower holds a tank (`station_water.dm`): turning

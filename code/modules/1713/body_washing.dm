@@ -4,13 +4,18 @@
 // feeding someone, needs the mouth targeted (standard_feed_mob). On help
 // intent, any other part washes:
 // - Click yourself or someone beside you with an open container holding clean
-//   water (a bucket, pot or cup): it uses 5 units.
+//   water (a bucket, pot, mug, cup or glass): it uses 5 units.
 // - Click a sink, tap or fountain, or fresh water, to wash that part of
 //   yourself. Targeting a hand there gives the usual hand wash.
 // Washing a hand clears dirty hands and the blood on it (or on the glove).
 // Washing any other part cleans the blood off what is worn over it, or, on
 // bare skin, raises cleanliness a little (10 a wash, up to a sponge bath's
 // 175; 20 up to 250 with soap).
+// Self-examine marks each part that needs washing: hands with work dirt or
+// blood, and, while cleanliness is below clean, the skin of every part not
+// washed since. A part washed stays marked clean until cleanliness falls 25
+// below what it was after that wash. Skin under clothes shows as covered,
+// since washing there cleans the clothes; undress to wash it.
 // Wounds: water halves the germs in the part's open wounds and in the part
 // itself while it is not yet infected. Soap in the washer's other hand
 // disinfects the wounds and clears those germs. An infection already set in
@@ -20,6 +25,10 @@
 #define WASH_PART_HYGIENE 10
 #define WASH_PART_TIME 20
 #define WASH_PART_SOAP_HYGIENE 20
+#define WASHED_PART_MARGIN 25
+
+// limb_name -> cleanliness right after that part was last washed bare.
+/mob/living/human/var/tmp/list/washed_parts
 
 // Zones a container washes on help intent: all but the mouth.
 /proc/container_washes_zone(zone)
@@ -84,8 +93,35 @@
 			raise_hygiene(min(hygiene + WASH_PART_SOAP_HYGIENE, HYGIENE_LEVEL_CLEAN))
 		else if (hygiene < SPONGE_BATH_MAX)
 			raise_hygiene(min(hygiene + WASH_PART_HYGIENE, SPONGE_BATH_MAX))
+		LAZYSET(washed_parts, E.limb_name, hygiene)
 	update_icons()
 	return TRUE
+
+// Is this part's clothing covering it?
+/mob/living/human/proc/part_is_covered(obj/item/organ/external/E)
+	for (var/obj/item/clothing/C in get_equipped_items())
+		if (C.body_parts_covered & E.body_part)
+			return TRUE
+	return FALSE
+
+// What self-examine says about a part's dirt: "" when it needs no washing.
+/mob/living/human/proc/part_dirt_status(obj/item/organ/external/E)
+	if (!E || E.is_stump())
+		return ""
+	if (E.limb_name == "l_hand" || E.limb_name == "r_hand")
+		if (gloves)
+			return gloves.blood_DNA ? "bloody gloves" : ""
+		if (bloody_hands)
+			return "bloody"
+		if (dirty_hands)
+			return "dirty"
+	if (hygiene >= HYGIENE_LEVEL_NORMAL)
+		return ""
+	var/washed_at = LAZYACCESS(washed_parts, E.limb_name)
+	if (!isnull(washed_at) && hygiene >= washed_at - WASHED_PART_MARGIN)
+		return ""
+	var/dirt = hygiene < HYGIENE_LEVEL_DIRTY ? "filthy" : "dirty"
+	return part_is_covered(E) ? "[dirt] (covered)" : dirt
 
 // Water halves the germs in a part's open wounds; soap disinfects them.
 /mob/living/human/proc/rinse_wounds(obj/item/organ/external/E, soap = FALSE)
@@ -131,32 +167,41 @@
 			S.update_icon()
 	playsound(target.loc, 'sound/effects/slosh.ogg', 25, TRUE)
 	if (target == src)
-		to_chat(src, SPAN_NOTICE("You wash your [part]."))
+		to_chat(src, SPAN_NOTICE("You wash your [part]. [hygiene_feeling()]"))
 	else
 		to_chat(src, SPAN_NOTICE("You wash [target]'s [part]."))
 		to_chat(target, SPAN_NOTICE("[src] washes your [part]."))
 	return TRUE
 
 // ---- with a container -------------------------------------------------------
+// Buckets, pots and other glass containers, and drinks (mugs, cups, glasses).
 
-/obj/item/weapon/reagent_containers/glass/attack(mob/living/M, mob/living/user, target_zone)
-	var/mob/living/human/H = user
-	var/zone = user ? user.targeted_organ : null
-	if (!ishuman(H) || !ishuman(M) || user.a_intent != I_HELP || !is_open_container() || !reagents || !container_washes_zone(zone))
-		return ..()
-	var/water = reagents.get_reagent_amount("water")
-	if (water <= 0)
-		return ..()
-	if (water < WASH_PART_WATER)
+// TRUE when this click should wash rather than drink: help intent, a part
+// other than the mouth, and an open container with water in it.
+/obj/item/weapon/reagent_containers/proc/washes_on_click(mob/living/M, mob/living/user)
+	if (!ishuman(user) || !ishuman(M) || user.a_intent != I_HELP || !is_open_container() || !reagents)
+		return FALSE
+	if (!container_washes_zone(user.targeted_organ))
+		return FALSE
+	return reagents.get_reagent_amount("water") > 0
+
+// Washes the targeted part of M with this container's water.
+/obj/item/weapon/reagent_containers/proc/wash_with(mob/living/human/M, mob/living/human/user)
+	if (reagents.get_reagent_amount("water") < WASH_PART_WATER)
 		to_chat(user, SPAN_WARNING("There is not enough water in \the [src] to wash with."))
 		return TRUE
 	if (reagents.has_reagent("food_poisoning"))
 		to_chat(user, SPAN_WARNING("The water in \the [src] smells foul. It would only make you dirtier."))
 		return TRUE
-	if (H.wash_part_of(M, zone, "\the [src]") && reagents)
+	if (user.wash_part_of(M, user.targeted_organ, "\the [src]") && reagents)
 		reagents.remove_reagent("water", WASH_PART_WATER)
 		update_icon()
 	return TRUE
+
+/obj/item/weapon/reagent_containers/glass/attack(mob/living/M, mob/living/user, target_zone)
+	if (!washes_on_click(M, user))
+		return ..()
+	return wash_with(M, user)
 
 // ---- at a water source ------------------------------------------------------
 
@@ -195,3 +240,4 @@
 #undef WASH_PART_HYGIENE
 #undef WASH_PART_TIME
 #undef WASH_PART_SOAP_HYGIENE
+#undef WASHED_PART_MARGIN

@@ -216,7 +216,10 @@
 		return TRUE
 	// The targeted part says what the user means: drinking takes the mouth (body_washing.dm).
 	if (ishuman(user) && user.targeted_organ != "mouth")
-		to_chat(user, SPAN_NOTICE("Target the mouth to [target == user ? "drink from" : "feed [target]"] \the [src]."))
+		var/hint = "Target the mouth to [target == user ? "drink from" : "feed [target]"] \the [src]."
+		if (is_open_container() && reagents.get_reagent_amount("water") > 0 && container_washes_zone(user.targeted_organ))
+			hint += " To wash [target == user ? "your" : "their"] [wash_zone_name(user.targeted_organ)] instead, switch to help intent."
+		to_chat(user, SPAN_NOTICE(hint))
 		return TRUE
 	if (ishuman(target))
 		var/mob/living/human/H = target

@@ -85,6 +85,18 @@ class BodyWashingTest(unittest.TestCase):
         feed = read("code/modules/reagents/reagent_containers.dm")
         self.assertIn('if (ishuman(user) && user.targeted_organ != "mouth")', feed)
 
+    def test_mugs_and_cups_wash_too(self):
+        drinks = read("code/modules/reagents/reagent_containers/food/drinks.dm")
+        self.assertIn("if (washes_on_click(M, user))\n\t\t\treturn wash_with(M, user)", drinks)
+        self.assertIn("/obj/item/weapon/reagent_containers/proc/washes_on_click(mob/living/M, mob/living/user)", self.WASH)
+        feed = read("code/modules/reagents/reagent_containers.dm")
+        self.assertIn("instead, switch to help intent.", feed)
+
+    def test_self_examine_shows_dirty_parts(self):
+        self.assertIn("var/dirt = H.part_dirt_status(org)", read("code/game/mob/living/carbon/human/human.dm"))
+        self.assertIn("Examine yourself to see which parts need washing.", read("code/game/mob/living/carbon/human/human_needs.dm"))
+        self.assertIn("LAZYSET(washed_parts, E.limb_name, hygiene)", self.WASH)
+
     def test_scripted_drinkers_target_the_mouth(self):
         self.assertIn('{"do": "click", "target": me, "zone": "mouth"}', read("tools/agent-control/autopilot.py"))
         self.assertIn("select the mouth on the body doll", read("code/modules/1713/practice_rooms.dm"))
