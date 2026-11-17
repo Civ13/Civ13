@@ -13,7 +13,7 @@ class BridgeMiningIntegration(unittest.TestCase):
         signature = wait.splitlines()[0]
         self.assertIn('datum/pickaxe_mining_action/mining_context = null, datum/gameplay_action_lease/gameplay_context = null)', signature)
         reject = wait.index('if (!isnull(gameplay_context) && !isnull(mining_context))')
-        for claim in ('claim_gather_wait(user, target)', 'mining_context.claim(user, target)', 'user.survival_action_started()'):
+        for claim in ('claim_gather_wait(user, target)', 'mining_context.claim(user, target)', 'user.survival_action_started(target, mining_context)'):
             self.assertLess(reject, wait.index(claim))
         self.assertIn('mining_context.progressbar = null', wait)
         self.assertIn('mining_context.wait_started = FALSE', wait)
