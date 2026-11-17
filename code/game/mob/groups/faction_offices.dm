@@ -14,8 +14,10 @@
 // Registrar (registry).
 //
 // Elections: the leader can call an election for the leadership or for an
-// office. A leader may also set a term; when it has run out, or the leadership
-// is vacant, any member may call a leader election. For ELECTION_TIME members
+// office. A leader may also set a term; when it has run out, the leadership
+// is vacant, or the leader has been away for OFFICE_LEADER_AWAY_DAYS (Val,
+// 2026-11-17: an absent leader must not lock the faction out of its mint,
+// offices and elections), any member may call a leader election. For ELECTION_TIME members
 // may stand as candidates and vote, one vote per account. The most votes wins
 // (a tie goes to whoever stood first); an elected leader takes the leadership
 // through change_faction_leader(), an elected officer is appointed for the
@@ -36,6 +38,7 @@
 #define OFFICE_DAY 864000
 #define ELECTION_TIME 18000 // 30 minutes
 #define ELECTION_LEADER "Leader"
+#define OFFICE_LEADER_AWAY_DAYS 3
 
 var/global/list/faction_power_labels = list(
 	"treasury" = "keep the treasury",
@@ -216,13 +219,35 @@ var/global/list/faction_power_labels = list(
 		R["leader"] = row
 	return row[2]
 
-// TRUE when any member may call a leader election: the seat is empty, or the
-// leader's term has run out.
+// TRUE when any member may call a leader election: the seat is empty, the
+// leader's term has run out, or the leader has been away too long.
 /obj/map_metadata/proc/office_leader_open(faction)
 	if (!office_leader_mob(faction))
 		return TRUE
+	if (office_leader_away(faction))
+		return TRUE
 	var/list/R = office_record(faction)
 	return R["term"] > 0 && recruitment_now() - office_leader_since(faction) > R["term"] * OFFICE_DAY
+
+// TRUE when the leader is not playing and has not played for
+// OFFICE_LEADER_AWAY_DAYS. Last played is the account's roster row
+// (faction_roster.dm, touched on every login); without one, it is when the
+// leadership began. A leader who is connected is never away.
+/obj/map_metadata/proc/office_leader_away(faction)
+	var/mob/living/human/L = office_leader_mob(faction)
+	if (!L || L.client)
+		return FALSE
+	var/seen = 0
+	var/account = faction_roster_account(L)
+	var/list/rosters = faction_rosters()
+	var/list/roster = rosters[faction]
+	if (account && islist(roster))
+		var/list/row = roster[account]
+		if (islist(row) && row.len == 2 && isnum(row[2]))
+			seen = row[2]
+	if (!seen)
+		seen = office_leader_since(faction)
+	return recruitment_now() - seen > OFFICE_LEADER_AWAY_DAYS * OFFICE_DAY
 
 // --- Elections -------------------------------------------------------------------------
 
@@ -336,7 +361,7 @@ var/global/list/faction_power_labels = list(
 	var/list/R = map.office_record(faction)
 	var/list/lines = list("<b>Offices of [faction]</b>")
 	var/mob/living/human/L = office_leader_mob(faction)
-	lines += "Leader: [L ? L.real_name : "vacant"][R["term"] ? ", elected for [R["term"]] days at a time" : ""]."
+	lines += "Leader: [L ? L.real_name : "vacant"][R["term"] ? ", elected for [R["term"]] days at a time" : ""][map.office_leader_away(faction) ? ", away for over [OFFICE_LEADER_AWAY_DAYS] days, so any member may call a leader election" : ""]."
 	for (var/office in R["offices"])
 		var/list/powers = list()
 		for (var/p in R["offices"][office])
@@ -514,3 +539,4 @@ var/global/list/faction_power_labels = list(
 #undef OFFICE_DAY
 #undef ELECTION_TIME
 #undef ELECTION_LEADER
+#undef OFFICE_LEADER_AWAY_DAYS

@@ -96,6 +96,18 @@ var/office_p_runtime_error = FALSE
 	N.probe_hand = null
 
 	office_p_check(!map.office_leader_open("Eagles"), "members cannot call a leader election while the leader serves with no term")
+	map.faction_roster_add("Eagles", "adareeve")
+	var/list/lrow = map.faction_rosters()["Eagles"]["adareeve"]
+	lrow[2] = recruitment_now() - 864000 * 2
+	office_p_check(!map.office_leader_open("Eagles"), "a leader away for two days still serves")
+	lrow[2] = recruitment_now() - 864000 * 4
+	office_p_check(map.office_leader_away("Eagles") && map.office_leader_open("Eagles"), "members can call a leader election once the leader has been away over three days")
+	map.faction_rosters()["Eagles"] -= "adareeve"
+	map.office_leader_since("Eagles")
+	R["leader"][2] = recruitment_now() - 864000 * 4
+	office_p_check(map.office_leader_open("Eagles"), "without a roster row, away counts from when the leadership began")
+	R["leader"][2] = recruitment_now()
+	office_p_check(!map.office_leader_open("Eagles"), "a new leader is not away")
 	R["term"] = 1
 	map.office_leader_since("Eagles")
 	R["leader"][2] = recruitment_now() - 864000 * 2
