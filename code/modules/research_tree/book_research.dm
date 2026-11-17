@@ -21,6 +21,12 @@
 	return recipe_knowledge_enabled() && book_research
 
 #define BOOK_RESEARCH_REACH 1
+// Work while the bench runs (chat feedback, 2026-11-17): the scholar leading
+// the work counts while within this many tiles and in sight of the bench, at
+// full pace beside it and BOOK_RESEARCH_AWAY_RATE further off, so they can
+// craft, cook or build nearby. Their writing tool may rest on the bench.
+#define BOOK_RESEARCH_NEAR 3
+#define BOOK_RESEARCH_AWAY_RATE 0.75
 // Taking a sample apart at a bench: the first kinds of thing per subject are
 // worth this share of it; later kinds the usual sample share.
 #define BOOK_SAMPLE_FIRST_KINDS 2
@@ -169,12 +175,59 @@
 /mob/living/human/proc/research_presence()
 	return client || agent_character_for(src)
 
-/mob/living/human/proc/can_research_node_at(obj/structure/research_bench/B, node_id)
+// as_lead: the one setting the pace, who may stand off and use a resting tool.
+/mob/living/human/proc/can_research_node_at(obj/structure/research_bench/B, node_id, as_lead = FALSE)
 	if (stat != CONSCIOUS || incapacitated() || !research_presence())
 		return FALSE
-	if (get_dist(src, B) > BOOK_RESEARCH_REACH || !isturf(loc) || loc.z != B.z)
+	if (!isturf(loc) || loc.z != B.z)
 		return FALSE
-	return research_tool_rate() > 0 && knows_research_prereqs(node_id) && meets_scholar_requirement(node_id)
+	var/distance = get_dist(src, B)
+	if (distance > (as_lead ? BOOK_RESEARCH_NEAR : BOOK_RESEARCH_REACH))
+		return FALSE
+	if (distance > BOOK_RESEARCH_REACH && !(src in dview(BOOK_RESEARCH_NEAR, get_turf(B))))
+		return FALSE
+	var/tool = as_lead ? B.lead_tool_rate(src) : research_tool_rate()
+	return tool > 0 && knows_research_prereqs(node_id) && meets_scholar_requirement(node_id)
+
+// A writing tool left on the bench for whoever leads the work.
+/obj/structure/research_bench/proc/resting_tool()
+	for (var/obj/item/I in contents)
+		if (scholar_tool_rate(I) > 0)
+			return I
+	return null
+
+/obj/structure/research_bench/proc/lead_tool_rate(mob/living/human/H)
+	return max(H ? H.research_tool_rate() : 0, scholar_tool_rate(resting_tool()))
+
+// How fast H would lead node_id here: skill, tool and how close they stand.
+/obj/structure/research_bench/proc/lead_pace(mob/living/human/H, node_id)
+	return H.scholar_research_rate(node_id) * lead_tool_rate(H) * (get_dist(H, src) > BOOK_RESEARCH_REACH ? BOOK_RESEARCH_AWAY_RATE : 1)
+
+/obj/structure/research_bench/proc/rest_writing_tool(obj/item/W, mob/living/human/user)
+	if (resting_tool())
+		to_chat(user, SPAN_WARNING("A writing tool already rests on \the [src]. Right-click the bench and choose Take Writing Tool to pick it up."))
+		return FALSE
+	user.remove_from_mob(W)
+	W.forceMove(src)
+	to_chat(user, SPAN_NOTICE("You rest \the [W] on \the [src]. Whoever leads the research can now work with both hands free, within [BOOK_RESEARCH_NEAR] tiles and in sight of the bench."))
+	book_refresh_ui()
+	return TRUE
+
+/obj/structure/research_bench/verb/take_writing_tool()
+	set name = "Take Writing Tool"
+	set category = null
+	set src in oview(1)
+	var/mob/living/human/H = usr
+	if (!istype(H) || H.stat != CONSCIOUS || H.incapacitated() || !Adjacent(H))
+		return
+	var/obj/item/I = resting_tool()
+	if (!I)
+		to_chat(H, SPAN_WARNING("No writing tool rests on \the [src]."))
+		return
+	I.forceMove(get_turf(H))
+	H.put_in_hands(I)
+	to_chat(H, SPAN_NOTICE("You take \the [I] from \the [src]."))
+	book_refresh_ui()
 
 // ------------------------------------------------------------
 // Bench behaviour in book mode
@@ -215,10 +268,10 @@
 	// The most skilled scholar at the bench, with the best tool, sets the pace.
 	var/mob/living/human/researcher = null
 	var/best_rate = 0
-	for (var/mob/living/human/H in range(BOOK_RESEARCH_REACH, src))
-		if (!H.can_research_node_at(src, assigned_node))
+	for (var/mob/living/human/H in range(BOOK_RESEARCH_NEAR, src))
+		if (!H.can_research_node_at(src, assigned_node, TRUE))
 			continue
-		var/rate = H.scholar_research_rate(assigned_node) * H.research_tool_rate()
+		var/rate = lead_pace(H, assigned_node)
 		if (rate > best_rate)
 			researcher = H
 			best_rate = rate
@@ -326,6 +379,17 @@
 	// Naturalist's notes (naturalist_finds.dm).
 	if (istype(W, /obj/item/weapon/paper) && take_find_notes(W, user))
 		return
+	// A writing tool that is not a sample for this subject rests on the bench.
+	if (scholar_tool_rate(W) > 0)
+		var/sample = FALSE
+		if (assigned_node)
+			for (var/stype in get_node_recipe_paths(assigned_node))
+				if (istype(W, stype))
+					sample = TRUE
+					break
+		if (!sample)
+			rest_writing_tool(W, user)
+			return
 	var/obj/item/weapon/book/B = placed_book()
 	if (!B || !assigned_node)
 		to_chat(user, SPAN_WARNING("Place a book on the bench and choose a subject first."))
@@ -577,15 +641,15 @@
 		data["assigned_done"] = TRUE
 		return
 	var/ticks = B ? B.research_ticks(assigned_node) : 0
-	var/text = "Written into the book: [round((ticks / AN.cost_ticks) * 100)]% ([ticks]/[AN.cost_ticks]). Work only goes on while someone who knows the groundwork stands at the bench with a pencil, pen or writing slate in hand."
+	var/text = "Written into the book: [round((ticks / AN.cost_ticks) * 100)]% ([ticks]/[AN.cost_ticks]). Work only goes on while someone who knows the groundwork stays within [BOOK_RESEARCH_NEAR] tiles and in sight of the bench, with a pencil, pen or writing slate in hand or resting on the bench."
 	if (AN.mode == RESEARCH_MODE_PROTOTYPE)
 		text += " It also needs [lowertext(copytext(prototype_need_label(AN), 1, 2))][copytext(prototype_need_label(AN), 2)][B && B.research_prototype_installed(assigned_node) ? " (recorded)" : ""]."
 	if (!H.knows_research_prereqs(assigned_node))
 		text += " You don't know its groundwork yet."
 	if (!H.meets_scholar_requirement(assigned_node))
 		text += " [H.scholar_requirement_text(assigned_node)]; you aren't skilled enough yet."
-	if (H.research_tool_rate() <= 0)
-		text += " You need a pencil, pen or writing slate in hand to work on it."
+	if (lead_tool_rate(H) <= 0)
+		text += " You need a pencil, pen or writing slate in hand, or resting on the bench, to work on it."
 	var/discipline = node_discipline(assigned_node)
 	var/supply = supply_points(discipline)
 	text += " Supplies for [scholar_disciplines[discipline]] ([scholar_supply_text(discipline)]): [supply]/[SCHOLAR_SUPPLY_CAP][supply < 1 ? ", so research runs at half speed" : ""]."

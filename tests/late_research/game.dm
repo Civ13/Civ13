@@ -490,6 +490,40 @@ var/late_wait_result = TRUE
 	var/before = B.research_ticks(node_id)
 	bench.book_analysis_tick()
 	return B.research_ticks(node_id) - before
+/mob/living/human/late_fixture/scholar/empty_handed/research_tool_rate()
+	return 0
+// Work while the bench runs (chat feedback, 2026-11-17).
+/proc/late_test_working_nearby()
+	var/obj/structure/research_bench/late_fixture/bench = new(locate(2,2,1))
+	bench.tier = 8
+	var/obj/item/weapon/book/B = new(bench)
+	var/mob/living/human/late_fixture/scholar/lead = new(locate(2,3,1))
+	lead.prepare("iron_tools", 100)
+	bench.assigned_node = "iron_tools"
+	var/beside = late_tick_gain(bench, B, "iron_tools")
+	lead.loc = locate(2,5,1)
+	var/near = late_tick_gain(bench, B, "iron_tools")
+	late_check(beside > 0 && abs(near - beside * 0.75) <= 0.11, "a scholar three tiles off and in sight keeps the bench going at three quarters pace ([beside] beside, [near] near)")
+	var/list/worker = bench.book_working_researcher("iron_tools")
+	late_check(worker && worker[1] == lead, "the bench window names the scholar working nearby")
+	var/turf/between = locate(2,4,1)
+	between.opacity = TRUE
+	late_check(late_tick_gain(bench, B, "iron_tools") == 0, "a scholar who cannot see the bench does not count")
+	between.opacity = FALSE
+	lead.loc = locate(2,6,1)
+	late_check(late_tick_gain(bench, B, "iron_tools") == 0, "four tiles off is too far")
+	lead.loc = locate(2,5,1)
+	late_check(!lead.can_research_node_at(bench, "iron_tools") && lead.can_research_node_at(bench, "iron_tools", TRUE), "only the lead may stand off; helpers stay at the bench")
+	qdel(lead)
+	var/mob/living/human/late_fixture/scholar/empty_handed/bare = new(locate(2,3,1))
+	bare.prepare("iron_tools", 100)
+	late_check(late_tick_gain(bench, B, "iron_tools") == 0 && !bench.resting_tool(), "with no writing tool anywhere the bench stands still")
+	var/obj/item/weapon/pen/pencil/pencil = new(bench)
+	late_check(bench.resting_tool() == pencil && abs(late_tick_gain(bench, B, "iron_tools") - beside) <= 0.11, "a pencil resting on the bench serves the lead scholar")
+	late_check(bench.placed_books().len == 1, "a resting tool is not mistaken for a book")
+	qdel(bare)
+	qdel(bench)
+
 /proc/late_test_teams()
 	var/obj/structure/research_bench/late_fixture/bench = new(locate(5,5,1))
 	bench.tier = 8
@@ -1132,6 +1166,7 @@ var/late_wait_result = TRUE
 		late_test_subject_deeds()
 		late_test_skill_mastery()
 		late_test_teams()
+		late_test_working_nearby()
 		late_test_ciphers()
 		late_test_late_lines()
 	catch(var/exception/e)
