@@ -510,5 +510,13 @@
     "path": "code/game/mob/living/simple_animal/simple_animal.dm",
     "policy": "runtime",
     "reason": "Declared tmp: thrown meat a starving predator is walking to is a seconds-long AI errand that ends on load."
+  },
+  {
+    "owner": "/mob/living/simple_animal",
+    "field": "feeding_on",
+    "type": "/mob/living",
+    "path": "code/game/mob/living/simple_animal/simple_animal.dm",
+    "policy": "runtime",
+    "reason": "Declared tmp: the kill a predator is eating is a short AI errand that ends on load; the eaten amount stays on the body for the session only."
   }
 ]

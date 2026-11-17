@@ -6,6 +6,7 @@
 	L.simplehunger = 1000
 	L.provoked_by = null
 	L.end_food_distraction()
+	L.stop_feeding()
 	L.next_melee_attack = 0
 	L.stance = HOSTILE_STANCE_IDLE
 	L.forceMove(locate(lx, 4, 1))
@@ -42,11 +43,57 @@
 	predator_reset(L, H, 6, 1)
 	L.simplehunger = L.predator_starving_hunger - 1
 	combat_assert(L.FindTarget() == H, "Starving predator ignored a person")
-	// Other animals are still prey whatever the hunger.
+	// Other animals are prey only while the predator is hungry.
 	var/mob/living/simple_animal/deer/D = new(locate(8, 8, 1))
 	predator_reset(L, H, 6, 1)
 	combat_assert(L.predator_will_hunt(D), "Temperament rule touched animal prey")
-	qdel(D)
+	combat_assert(!L.predator_will_hunt_prey(D) && !L.FindTarget(), "Fed predator hunted a grazing animal")
+	predator_reset(L, H, 6, 1)
+	L.simplehunger = L.predator_hunting_hunger - 1
+	combat_assert(L.predator_will_hunt_prey(D) && L.FindTarget() == D, "Hungry predator ignored animal prey")
+
+	// Once its prey is down it stops and eats instead of hunting the next one.
+	predator_reset(L, H, 6, 1)
+	L.simplehunger = 300
+	D.forceMove(locate(7, 4, 1))
+	L.npc_set_combat_target(D)
+	L.stance = HOSTILE_STANCE_ATTACK
+	D.adjustBruteLoss(D.maxHealth * 2)
+	combat_assert(D.stat == DEAD, "Fixture deer did not die")
+	L.AttackTarget()
+	combat_assert(L.feeding_on == D && !L.target_mob && L.stance == HOSTILE_STANCE_IDLE, "Predator did not stop to eat its kill")
+	var/mob/living/simple_animal/deer/D2 = new(locate(8, 8, 1))
+	combat_assert(!L.predator_will_hunt_prey(D2) && L.FindTarget() != D2, "Eating predator went after another animal")
+	combat_assert(L.do_behaviour() && L.feeding_on == D, "Hunting behaviour pulled a predator off its kill")
+	for (var/i = 1, i <= 20 && L.feeding_on, i++)
+		L.next_melee_attack = 0
+		L.predator_feeding_tick()
+	combat_assert(!L.feeding_on && L.simplehunger >= L.predator_sated_hunger, "Predator stopped eating before it was full")
+	combat_assert(!QDELETED(D) && D.carcass_eaten > 0 && D.carcass_eaten < L.carcass_food_value(D), "Full predator did not leave the rest of its kill")
+	combat_assert(!L.predator_will_hunt_prey(D2) && !L.FindTarget(), "Fed predator went straight back to hunting")
+
+	// A hungry predator finishes the remains down to the bones.
+	predator_reset(L, H, 6, 1)
+	L.simplehunger = 300
+	combat_assert(L.start_feeding(D), "Hungry predator would not eat a carcass beside it")
+	for (var/i = 1, i <= 20 && L.feeding_on, i++)
+		L.next_melee_attack = 0
+		L.predator_feeding_tick()
+	combat_assert(QDELETED(D) && !L.feeding_on && (locate(/obj/item/stack/material/bone) in locate(7, 4, 1)), "Eaten carcass did not leave bones")
+	combat_assert(L.simplehunger < L.predator_sated_hunger && !L.start_feeding(D), "Eaten-out carcass still fed the predator")
+
+	// Hurting an eating predator ends the meal; a person's body is never removed.
+	var/mob/living/simple_animal/deer/D3 = new(locate(7, 4, 1))
+	D3.adjustBruteLoss(D3.maxHealth * 2)
+	predator_reset(L, H, 6, 1)
+	L.simplehunger = 300
+	L.start_feeding(D3)
+	L.animal_provoked(H)
+	combat_assert(!L.feeding_on && L.target_mob == H, "Hurt predator kept eating")
+	L.finish_carcass(H)
+	combat_assert(!QDELETED(H) && H.loc, "Predator removed a person's body")
+	qdel(D2)
+	qdel(D3)
 
 	// An unprovoked, fed predator gives up a person who backs away...
 	predator_reset(L, H, 8, 1)

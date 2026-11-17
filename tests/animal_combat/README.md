@@ -48,7 +48,11 @@ damage across the whole range, and break bone on a heavy bite only with
 `bite_fracture_chance`. Thrown meat draws a starving, unhurt predator off the
 person it is after until it eats the meat; a predator the thrower hurt, a fed
 predator and plant food are not affected, and hurting a distracted predator ends
-the distraction. Reverting the hunger gate makes it fail with
+the distraction. Animal prey is hunted only below `predator_hunting_hunger`; a
+predator that kills stops to eat until sated, hunts nothing meanwhile, leaves
+the rest of the carcass for later, leaves bones when it is eaten out, never
+removes a person's body, and stops eating when hurt. Reverting the prey gate
+fails with "Fed predator hunted a grazing animal". Reverting the hunger gate makes it fail with
 "Hungry predator foraged instead of biting".
 
 `piranha.dm` drives the jungle river swarms on a real human: a 2 damage warning

@@ -5,6 +5,7 @@
 	//Health and life related vars
 	var/maxHealth = 100 //Maximum health that should be possible.
 	var/health = 100 	//A mob's health
+	var/tmp/carcass_eaten = 0 // hunger a predator has already eaten from this body (predator_feeding_tick)
 
 	var/inventory_shown = TRUE
 
