@@ -144,11 +144,11 @@ var/list/open_air_probe_log = list()
 	replaced.ChangeTurf(/turf/floor/grass)
 	var/turf/now = locate(4, 4, 3)
 	open_air_probe_check(!(R in now.vis_contents) && (R.gcDestroyed || R.gc_destroyed || !R.vis_contents.len), "replace_drops_view")
-	// The view of the replaced cell's level below is gone from the view above
-	// nothing; the replaced ground under a view is resynced.
+	// Ground replaced under a view is resynced.
 	var/turf/regrown = locate(5, 5, 1)
 	regrown.ChangeTurf(/turf/floor/dirt)
-	open_air_view_link_around(3, 6, 6, 3, 3)
+	// A floor now covers the top cell, so a viewer on the middle level resyncs it.
+	open_air_view_link_around(2, 6, 6, 3, 3)
 	regrown = locate(5, 5, 1)
 	open_air_probe_check((W in regrown.open_air_shown_by) && W.ground.icon_state == regrown.icon_state, "changed_turf_below_resynced")
 	// Refreshing again does not stack views.
