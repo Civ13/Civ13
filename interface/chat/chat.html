@@ -609,6 +609,31 @@
             cursor: default;
         }
 
+        /* x2, x3 counter on a line that repeated (see receiveMessage). */
+        .chat-repeat {
+            display: inline-block;
+            margin-left: 5px;
+            padding: 0 5px;
+            border-radius: 7px;
+            background-color: #CD4C6C;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            font-size: 10px;
+            font-weight: bold;
+            font-style: normal;
+            line-height: 14px;
+            vertical-align: 1px;
+        }
+
+        .chat-repeat.bump {
+            animation: chat-repeat-bump 0.25s ease-out;
+        }
+
+        @keyframes chat-repeat-bump {
+            from { transform: scale(1.35); }
+            to { transform: scale(1); }
+        }
+
         .chat-history-divider {
             border-bottom: 1px solid #392611;
             font-style: italic;
@@ -979,7 +1004,10 @@
             const newlySeen = !seenTypes[type];
             seenTypes[type] = true;
             if (!tabShows(activeTab, type)) div.classList.add('filtered');
-            let badgeChanged = newlySeen;
+            noteUnread(type, newlySeen);
+        }
+
+        function noteUnread(type, badgeChanged) {
             for (let i = 0; i < chatTabs.length; i++) {
                 if (i !== activeTab && tabShows(i, type)) {
                     unread[i] = (unread[i] || 0) + 1;
@@ -1246,6 +1274,32 @@
         let lastMessage = '';
         let lastMessageTime = 0;
 
+        // Repeated lines. A message identical to the line just before it adds
+        // an x2, x3 counter to that line instead of a new one, until any other
+        // line (a different message, a connection notice or Clear Chat) comes
+        // between. Same idea as the combined messages in tgstation's tgui chat
+        // panel (https://github.com/tgstation/tgstation, AGPL-3.0); this is
+        // Civ13's own code. Compared on the HTML the server sent, before the
+        // counter was added to the line.
+        let lastLine = null;
+        let lastLineHtml = '';
+
+        function bumpRepeat(div) {
+            const count = (Number(div.getAttribute('data-repeat')) || 1) + 1;
+            div.setAttribute('data-repeat', String(count));
+            let badge = div.lastElementChild;
+            if (!badge || !badge.classList.contains('chat-repeat')) {
+                badge = document.createElement('span');
+                badge.className = 'chat-repeat';
+                div.appendChild(badge);
+            }
+            badge.textContent = 'x' + count;
+            badge.classList.remove('bump');
+            void badge.offsetWidth; // restart the bump animation
+            badge.classList.add('bump');
+            noteUnread(div.getAttribute('data-chat-type'), false);
+        }
+
         function receiveMessage(data, skip_purify = false) {
             try {
                 if (!data) return;
@@ -1286,6 +1340,13 @@
                 lastMessage = messageHtml;
                 lastMessageTime = Date.now();
 
+                if (lastLine && lastLineHtml === messageHtml && messagesContainer.lastElementChild === lastLine) {
+                    bumpRepeat(lastLine);
+                    scheduleHistorySave();
+                    scrollToTail();
+                    return;
+                }
+
                 const messageDiv = document.createElement('div');
                 messageDiv.className = 'message';
 
@@ -1307,6 +1368,8 @@
                 const chatType = classifyMessage(messageDiv);
                 noteMessageType(messageDiv, chatType);
                 messagesContainer.appendChild(messageDiv);
+                lastLine = messageDiv;
+                lastLineHtml = messageHtml;
 
                 // Keep memory usage in check by trimming old messages per
                 // type. When reading above the tail, keep a surviving visible
