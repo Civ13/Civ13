@@ -590,7 +590,7 @@ var/global/train_step_plain = FALSE
 	if (tender_load(W, user))
 		return
 	var/obj/structure/trains/locomotive/E = car_engine()
-	if (E && (E.takes_fuel(W) || (is_tool(W, TOOL_WELDER) && !wrecked && health >= initial(health))))
+	if (E && (E.takes_fuel(W) || istype(W, /obj/item/stack/ore/glass) || (is_tool(W, TOOL_WELDER) && !wrecked && health >= initial(health))))
 		return E.attackby(W, user)
 	if (is_tool(W, TOOL_CROWBAR))
 		dismantle_car(user)

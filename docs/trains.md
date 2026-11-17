@@ -5,17 +5,19 @@ Code: `code/modules/1713/trains.dm` (cars, rails, locomotives),
 `code/modules/1713/train_warfare.dm` (armored locomotive) and
 `code/modules/1713/train_locomotives.dm` (heavy 3x4 locomotives, cab stations
 and the 3x6 main-line engine), `code/modules/1713/train_crashes.dm` (wrecks)
-and `code/modules/1713/train_brakes.dm` (handbrakes, brake wheel, brake van).
+and `code/modules/1713/train_brakes.dm` (handbrakes, brake wheel, brake van),
+`code/modules/1713/train_rolling.dm` (cars that roll free) and
+`code/modules/1713/train_adhesion.dm` (wheel slip and sand).
 Tests: `tests/train_platforms` (the `drive/`, `load/`, `brake/`,
-`double_heading/`, `tender/`, `collision/`, `crash/`, `brakes/` and
-`brake_van/` checks) and `tests/train_collision`.
+`double_heading/`, `tender/`, `collision/`, `crash/`, `brakes/`,
+`brake_van/`, `rolling/` and `adhesion/` checks) and `tests/train_collision`.
 Step cost by train length: [train-step-cost.md](train-step-cost.md).
 
 ## Controls
 
 Using a locomotive opens its controls: start or stop the engine, throttle up
-or down (notches 0 to 3), brake, and the reverser (forward or backward, only
-while the train stands). Examine shows the notch, reverser, speed and load.
+or down (notches 0 to 3), brake, sand the rails, and the reverser (forward or
+backward, only while the train stands). Examine shows the notch, reverser, speed and load.
 The heavy steam engines split these between three
 [cab stations](#cab-stations-and-the-main-line-engine).
 
@@ -299,6 +301,42 @@ crawl) a train shoves a person off the rails with 5 damage and stops in front
 of furniture without breaking it. Faster, it deals up to 250 damage, knocks the
 person down beside the track and keeps going from 1 up; damage to objects and
 to both trains in a train-on-train bump scales the same way.
+
+## Wheel slip and sand
+
+An engine pulls only as hard as its wheels grip. Below 1.5 tiles a second,
+`wheels_slip()` is true when the notch's share of full throttle is more than
+0.8 x grip x `pull_ratio()`: grip is 1 on dry rails and 0.6 where
+`weather_at()` is wet or extreme. While they slip the train gains no speed
+(from a stand it does not move at all) and each spin burns a tile's worth of
+fuel and steam. So a train at its rated load starts on notch 2 and takes
+notch 3 once it is rolling, a train at half its engine's pull, or any heavy
+train in the rain, starts on notch 1, and a light engine never slips.
+
+**Sand the rails** at the driver's station spends one of the sandbox's 20
+charges (`sand`, saved) and stops all slipping for the next 8 tiles. Sand
+(`/obj/item/stack/ore/glass`) used on the engine fills the sandbox.
+
+## Runaways
+
+Cars keep their momentum. The head car of a train that rolls free carries
+`roll_speed`; `roll_step()` moves it a tile and `roll_loop()` repeats that on
+a timer. Each tile takes 0.2 off the speed, divided by the train's weight
+over six, plus `train_brake_decel()` for any handbrake on aboard (and a dead
+engine's own brake); under 0.25 the train stands. A rolling train hits what
+is in its way by `roll_impact()`, crashes included.
+
+- **A moving train parts** (`part_at()` when a coupling breaks, `couple_end()`
+  by hand as the train coasts): `train_motion()` is read before the link
+  goes, and `parted_rolls()` sets the part no engine drives rolling the way
+  it was going.
+- **A train runs into standing cars** (`rail_hit()`): at 1.5 tiles a second
+  or more, `shoved()` sends the train that was hit rolling away from the blow
+  at the striking speed x 1.2 x its share of the two weights. A handbrake, an
+  engine's brake, a braced or wrecked car, or a blow that is not on the end
+  of the train holds it.
+- By hand, a handbrake cannot be worked on a rolling train
+  (`train_rolling()`); a brake wheel aboard can.
 
 ## Crashes
 

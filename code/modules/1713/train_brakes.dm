@@ -40,19 +40,25 @@
 /obj/structure/trains/platform/brake_sections()
 	return car_segments()
 
-// Speed lost each step to the brakes, for the engine that drives the train.
-/obj/structure/trains/locomotive/proc/brake_decel()
-	var/held = consist_braked + (braking ? consist_own : 0)
+// Speed lost each step with `held` of a train's `weight` braked.
+/proc/train_brake_decel(held, weight)
 	if (held <= 0)
 		return 0
-	return TRAIN_BRAKE_DECEL * min(1, held / max(1, consist_weight))
+	return TRAIN_BRAKE_DECEL * min(1, held / max(1, weight))
+
+// Speed lost each step to the brakes, for the engine that drives the train.
+/obj/structure/trains/locomotive/proc/brake_decel()
+	return train_brake_decel(consist_braked + (braking ? consist_own : 0), consist_weight)
 
 // The weight the engine drags, braked cars counted heavier.
 /obj/structure/trains/locomotive/proc/drag_weight()
 	return consist_weight + TRAIN_BRAKE_DRAG * consist_braked
 
 /obj/structure/trains/proc/train_rolling()
-	for (var/obj/structure/trains/locomotive/L in train_consist_list(train_head()))
+	var/obj/structure/trains/head = train_head()
+	if (head.roll_speed > 0)
+		return TRUE
+	for (var/obj/structure/trains/locomotive/L in train_consist_list(head))
 		if (L.rail_speed > 0)
 			return TRUE
 	return FALSE
@@ -82,8 +88,11 @@
 				W.update_icon()
 	if (isturf(loc))
 		playsound(loc, 'sound/effects/lever.ogg', 60, TRUE)
-	// The engine driving the train feels it at once.
-	for (var/obj/structure/trains/locomotive/L in train_consist_list(train_head()))
+	// The engine driving the train feels it at once, and so does a train
+	// that rolls free (train_rolling.dm).
+	var/obj/structure/trains/head = train_head()
+	head.roll_steps = 0
+	for (var/obj/structure/trains/locomotive/L in train_consist_list(head))
 		if (L.driving)
 			L.refresh_consist()
 	return TRUE

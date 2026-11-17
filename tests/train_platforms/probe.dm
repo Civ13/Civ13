@@ -4,7 +4,7 @@
 /world
 	hub = ""
 	hub_password = ""
-	maxx = 184
+	maxx = 200
 	maxy = 26
 	maxz = 1
 	turf = /turf/floor/dirt
@@ -1259,7 +1259,7 @@ var/global/platform_probe_runtime_error = FALSE
 	var/list/stand = E.station_controls("driver")
 	var/list/door = E.station_controls("fire")
 	var/list/side = E.station_controls("fireman")
-	platform_check("cab/each_station_has_its_controls", stand.len == 4 && ("Throttle up" in stand) && ("Brake" in stand) && !("Light the fire" in stand) && door.len == 1 && door[1] == "Light the fire" && side.len == 1 && side[1] == "Injector off")
+	platform_check("cab/each_station_has_its_controls", stand.len == 5 && ("Throttle up" in stand) && ("Brake" in stand) && ("Sand the rails" in stand) && !("Light the fire" in stand) && door.len == 1 && door[1] == "Light the fire" && side.len == 1 && side[1] == "Injector off")
 	E.work_control("Light the fire", driver)
 	var/not_lit = !E.on
 	E.work_control("Light the fire", stoker)
@@ -1302,7 +1302,7 @@ var/global/platform_probe_runtime_error = FALSE
 	var/list/diesel = train_car_layout("loco_diesel")
 	var/list/steam = train_car_layout("loco_steam")
 	var/list/armored = train_car_layout("loco_armored")
-	platform_check("cab/small_engines_have_one_place", !small.has_stations() && small.cab_station(guest) == "all" && small.at_firebox(guest) && all.len == 6 && !diesel["stations"] && steam["stations"] && armored["stations"])
+	platform_check("cab/small_engines_have_one_place", !small.has_stations() && small.cab_station(guest) == "all" && small.at_firebox(guest) && all.len == 7 && !diesel["stations"] && steam["stations"] && armored["stations"])
 
 // Crashes (train_crashes.dm): a running train that hits something at speed
 // derails its leading cars, breaks couplings, throws riders and spills cargo.
@@ -1489,6 +1489,114 @@ var/global/platform_probe_runtime_error = FALSE
 	var/helped = E.y - from
 	platform_check("brakes/guard_shortens_the_stop", on_the_move && alone >= 4 && helped >= 1 && helped < alone && V4.loc == platform_turf(180, 2 + alone + helped) && wheel.loc == platform_turf(179, 3 + alone + helped))
 
+// Rolling stock (train_rolling.dm): cars keep their momentum when a moving
+// train parts or when something runs into them.
+/proc/platform_roll(obj/structure/trains/head, limit = 60)
+	var/steps = 0
+	while (steps < limit && head.roll_step() > 0)
+		steps++
+	return steps
+
+/proc/platform_rolling_run()
+	var/obj/structure/trains/locomotive/coal/E = drive_train(188, 6, 3)
+	var/obj/structure/trains/W1 = E.connected
+	var/obj/structure/trains/W2 = W1.connected
+	var/obj/structure/trains/W3 = W2.connected
+	var/mob/living/human/platform_rider/guard = new(platform_turf(187, 3))
+	// The train runs north at speed and the coupling behind the first wagon breaks.
+	E.refresh_consist()
+	E.driving = TRUE
+	E.rail_speed = 4
+	var/list/motion = W3.train_motion()
+	var/moving = motion && motion[1] == 4 && motion[2] == 6 && motion[3] && W3.travel_way(motion) == NORTH
+	W1.damage_coupling(FALSE, 100)
+	platform_check("rolling/parted_cars_roll_on", moving && !W1.connected && W2.train_head() == W2 && W2.roll_speed == 4 && W2.roll_weight == 2 && !E.roll_speed && W1.train_head() == E && W3.train_rolling() && !W3.work_handbrake(guard))
+	E.driving = FALSE
+	E.rail_speed = 0
+	platform_step(E, 14)
+	var/rolled = platform_roll(W2, 3)
+	platform_check("rolling/slows_by_its_weight", rolled == 3 && W2.y == 7 && W3.y == 6 && abs(W2.roll_speed - 3.4) < 0.01 && W2.roll_impact() > 0.8)
+	// A handbrake wound on aboard stops the runaway.
+	W3.set_handbrake(TRUE)
+	rolled = platform_roll(W2)
+	platform_check("rolling/handbrake_stops_a_runaway", rolled == 3 && W2.y == 10 && W2.roll_speed == 0 && !W2.automovement && !W3.train_rolling())
+	W3.set_handbrake(FALSE)
+
+	// A runaway hits what is in its way, and the cars it hits roll off.
+	var/started = W3.start_rolling(5, NORTH) && W2.roll_speed == 5
+	var/hp = W1.health
+	rolled = platform_roll(W2)
+	platform_check("rolling/runaway_crashes", started && rolled == 8 && W2.y == 18 && W2.roll_speed == 0 && W1.health < hp && E.roll_speed > 1 && E.train_head() == E)
+	rolled = platform_roll(E)
+	platform_check("rolling/struck_cars_roll_away", rolled >= 3 && E.y == 20 + rolled && W1.y == E.y - 1 && E.roll_speed == 0)
+
+	// Uncoupled by hand as they roll, both parts keep going.
+	W2.start_rolling(3, NORTH)
+	var/slipped = W2.couple_end(FALSE, guard)
+	platform_check("rolling/slipped_car_rolls_on", slipped && !W2.connected && W2.roll_speed == 3 && W3.roll_speed == 3 && W3.train_head() == W3)
+	W2.stop_rolling()
+	W3.stop_rolling()
+
+	// Standing cars: a handbrake or a gentle touch leaves them where they are.
+	W3.set_handbrake(TRUE)
+	var/held = !W3.shoved(list(4, 5, TRUE), NORTH)
+	W3.set_handbrake(FALSE)
+	var/gentle = !W3.shoved(list(1, 5, TRUE), NORTH) && !W3.roll_speed
+	platform_check("rolling/brakes_hold_against_a_blow", held && gentle && W3.shoved(list(4, 5, TRUE), NORTH) && W3.roll_speed == 4 && W3.train_heading() == NORTH)
+	W3.stop_rolling()
+	// Hit on its front end, a train rolls away tail first.
+	W2.connected = W3
+	platform_check("rolling/rolls_away_from_the_blow", W2.shoved(list(3, 2, TRUE), SOUTH) && W3.train_head() == W3 && W3.roll_speed > 1 && W3.train_heading() == SOUTH && W2.train_heading() == SOUTH && W3.connected == W2)
+	W3.stop_rolling()
+
+// Adhesion (train_adhesion.dm): too much throttle on a heavy start spins the
+// wheels until the driver eases off or sands the rails.
+/proc/platform_adhesion_run()
+	var/obj/structure/trains/locomotive/coal/H = drive_train(196, 16, 14, /obj/structure/trains/storage/closed)
+	var/obj/structure/trains/locomotive/coal/light = new(platform_turf(198, 22))
+	light.on = TRUE
+	light.fuel = 100
+	light.refresh_consist()
+	light.throttle = 3
+	H.refresh_consist()
+	var/ratio = H.pull_ratio()
+	H.throttle = 3
+	var/full = H.wheels_slip(1)
+	H.rail_speed = 2
+	var/at_speed = H.wheels_slip(1)
+	H.rail_speed = 0
+	H.throttle = 0
+	platform_check("adhesion/full_throttle_slips_a_heavy_start", ratio < 1 && full && !at_speed && !H.wheels_slip(1) && !light.wheels_slip(1) && !light.wheels_slip(0.6) && H.rail_grip() == 1 && abs(H.throttle_share()) < 0.01)
+	// A train at its rated load starts on notch 2 in the dry, not in the wet.
+	var/power = H.consist_power
+	H.consist_power = H.drag_weight()
+	H.throttle = 2
+	platform_check("adhesion/wet_rails_grip_less", H.pull_ratio() == 1 && !H.wheels_slip(1) && H.wheels_slip(0.6))
+	H.consist_power = power
+
+	// Driven: full throttle from a stand gets nowhere until the rails are sanded.
+	H.throttle = 3
+	var/from = H.y
+	H.locomotive()
+	sleep(25)
+	var/spinning = H.driving && H.y == from && H.slipping >= 2 && H.rail_speed == 0 && H.fuel < 100
+	var/sanded = H.sand_rails(null) && H.sand == 19 && H.sanding == 8 && !H.wheels_slip(1)
+	sleep(30)
+	var/away = H.y > from && H.slipping == 0 && H.sanding < 8
+	H.throttle = 0
+	H.braking = TRUE
+	drive_wait(H, 300)
+	platform_check("adhesion/sand_gets_a_heavy_train_away", spinning && sanded && away && !H.driving)
+
+	var/mob/living/human/platform_rider/fireman = new(platform_turf(195, H.y))
+	H.sand = 0
+	var/empty = !H.sand_rails(null) && H.sanding < 8
+	var/obj/item/stack/ore/glass/pile = new(platform_turf(195, H.y))
+	pile.amount = 25
+	H.attackby(pile, fireman)
+	var/list/controls = H.station_controls("all")
+	platform_check("adhesion/sandbox_is_filled_with_sand", empty && H.sand == 20 && pile.amount == 5 && ("Sand the rails" in controls) && findtext(H.control_summary(), "Sandbox: 20 of 20"))
+
 /world/New()
 	OpenPort("none")
 	GLOB.all_observable_events = list()
@@ -1513,6 +1621,8 @@ var/global/platform_probe_runtime_error = FALSE
 		platform_cab_run()
 		platform_crash_run()
 		platform_brake_run()
+		platform_rolling_run()
+		platform_adhesion_run()
 	catch (var/exception/E)
 		platform_probe_runtime_error = TRUE
 		world.log << "Fixture aborted: [E] at [E.file]:[E.line]"

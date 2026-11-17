@@ -229,7 +229,7 @@ class TrainPlatformSourceTests(unittest.TestCase):
         self.assertIn('/ heft + brake_decel()', drive)
         self.assertIn('return consist_power / max(1, drag_weight())', TRAINS)
         self.assertIn('if (car.handbrake)\n\t\t\tconsist_braked += car_weight', TRAINS)
-        self.assertIn('return TRAIN_BRAKE_DECEL * min(1, held / max(1, consist_weight))', brakes)
+        self.assertIn('return TRAIN_BRAKE_DECEL * min(1, held / max(1, weight))', brakes)
         # By hand only on a standing train; a push never moves a braked one.
         hand = brakes[brakes.index('/obj/structure/trains/proc/work_handbrake('):]
         self.assertLess(hand.index('if (train_rolling())'), hand.index('do_after('))
@@ -243,6 +243,39 @@ class TrainPlatformSourceTests(unittest.TestCase):
         states = dmi_description(ROOT / 'icons/obj/vehicles/train_platforms.dmi')
         for state in ('brake_wheel', 'brake_wheel_on'):
             self.assertIn('state = "%s"' % state, states)
+
+    def test_parted_and_struck_cars_roll_on(self):
+        dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
+        self.assertEqual(dme.count('#include "code\\modules\\1713\\train_rolling.dm"'), 1)
+        rolling = (ROOT / 'code/modules/1713/train_rolling.dm').read_text(encoding='utf-8')
+        couplings = (ROOT / 'code/modules/1713/train_couplings.dm').read_text(encoding='utf-8')
+        # The motion is read before the link goes, by a break and by hand.
+        for source, start in ((couplings, '/obj/structure/trains/proc/part_at('), (TRAINS, '/obj/structure/trains/proc/couple_end(')):
+            body = source[source.index(start):]
+            self.assertLess(body.index('var/list/motion = train_motion()'), body.index('connected = null'))
+            self.assertLess(body.index('settle_train_order()'), body.index('parted_rolls(other, motion, way, other_way)'))
+        # Rolling state never reaches a save, and the loop runs on a timer.
+        self.assertIn('\tvar/tmp/roll_speed = 0', rolling)
+        self.assertIn('addtimer(CALLBACK(src, PROC_REF(roll_loop)), delay)', rolling)
+        self.assertNotIn('spawn(', rolling)
+        # A crash counts a rolling train as running, and stops it.
+        crashes = (ROOT / 'code/modules/1713/train_crashes.dm').read_text(encoding='utf-8')
+        self.assertIn('var/running = roll_head.roll_speed > 0', crashes)
+        self.assertIn('roll_head.stop_rolling()', crashes)
+        hit = TRAINS[TRAINS.index('/obj/structure/trains/proc/rail_hit('):]
+        self.assertEqual(hit[:hit.index('for (var/obj/O in tgtt)')].count('TF.shoved(strike, fdir)'), 2)
+
+    def test_wheels_slip_without_grip(self):
+        dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
+        self.assertEqual(dme.count('#include "code\\modules\\1713\\train_adhesion.dm"'), 1)
+        adhesion = (ROOT / 'code/modules/1713/train_adhesion.dm').read_text(encoding='utf-8')
+        self.assertIn('return throttle_share() > TRAIN_ADHESION * grip * pull_ratio()', adhesion)
+        # The sandbox is saved; what is falling under the wheels is not.
+        self.assertIn('\tvar/sand = TRAIN_SAND_MAX', adhesion)
+        self.assertIn('\tvar/tmp/sanding = 0', adhesion)
+        drive = TRAINS[TRAINS.index('/obj/structure/trains/locomotive/proc/drive()'):]
+        self.assertLess(drive.index('if (wheels_slip())'), drive.index('rail_speed = min(target, max(rail_speed, 0.5)'))
+        self.assertIn('choices += list("Throttle up", "Throttle down", "Brake", "Sand the rails")', TRAINS)
 
     def test_railway_gun_sheet(self):
         gun = dmi_description(ROOT / 'icons/obj/vehicles/railway_gun.dmi')
