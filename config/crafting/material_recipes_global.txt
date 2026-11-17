@@ -720,6 +720,9 @@ RECIPE: /material/cloth/,tapestry warp,/obj/item/canvas/woven/tapestry,2,40,0,1,
 RECIPE: /material/cloth/,bath mat,/obj/item/bath_mat,2,30,0,1,none,0,0,0,8,null
 RECIPE: /material/cloth/,wide tapestry warp,/obj/item/canvas/woven/tapestry/wide,3,50,0,1,none,0,0,0,8,null
 RECIPE: /material/cloth/,pedal airship,/obj/structure/vehicle/bicycle/airship,30,300,1,1,vehicle parts,95,0,0,8,null
+RECIPE: /material/wood/,airship planks,/obj/item/airship_planks,3,40,0,1,vehicle parts,126,0,0,8,null
+RECIPE: /material/cloth/,airship gas cell,/obj/item/airship_gas_cell,20,200,0,1,vehicle parts,126,0,0,8,null
+RECIPE: /material/wood/,airship helm,/obj/item/airship_helm_kit,10,150,0,1,vehicle parts,126,0,0,8,null
 RECIPE: /material/cloth/,cigarette pack,/obj/item/weapon/storage/fancy/cigarettes,1,20,0,1,none,90,0,0,8,null
 RECIPE: /material/cloth/,sandbag,/obj/item/weapon/barrier/sandbag/empty,1,105,0,1,none,0,0,90,8,null
 RECIPE: /material/cloth/,cashbag,/obj/item/weapon/storage/bag/cash,1,105,0,1,none,0,0,90,8,null

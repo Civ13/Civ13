@@ -137,6 +137,21 @@ and ten buckets aboard takes about 16 ms (a bare 200-tile hull about 10 ms).
 A hull with an upper deck cannot cross the sea or set out on a voyage yet, since
 only her own deck packs for the crossing.
 
+### Airships
+
+`naval/air_hull.dm`: `/datum/craft_body/built/air` is a built hull laid as
+`/obj/covers/airship_deck` planks on the open-air level, started beside a ladder
+top and grown edge to edge (`air_deck_lay_refusal()`), at most 60 tiles. Its
+`tile_refusal()` takes only clear open air, it has no upper deck, and `plan()`
+refuses any move while her gas cells (`/obj/structure/airship_gas_cell`, 12
+each) hold up less than her tiles plus the people aboard. `move_to()` carries
+floors before anything else on a tile, so nobody reaches open air without the
+deck under them. `/datum/craft/air` never creeps by pixels, keeps only engine
+drives, and redraws a ground view for the crew and a shadow for the ground on
+every hop. `/obj/structure/airship_helm` commissions, steers and saves her;
+a restored airship holds her position. Native probe:
+`tests/pedal_bicycle/ride.py --probe air_hull_probe.dm`.
+
 ## Drives aboard
 
 `naval/hull_drives.dm`: anything standing on a craft can be a drive by
