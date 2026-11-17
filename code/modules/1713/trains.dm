@@ -233,27 +233,51 @@
 /obj/structure/trains/verb/hitch()
 	set category = null
 	set name = "Hitch"
-	set desc = "Hitch or unhitch to the wagon ahead."
+	set desc = "Hitch or unhitch to the wagon ahead or behind."
 
 	set src in view(1)
 
 	if (!istype(usr, /mob/living/human))
 		return
+	if (hitch_front(usr) || hitch_rear(usr))
+		return TRUE
+	to_chat(usr, "There is no wagon to hitch \the [src] to.")
+	return FALSE
 
-
+// Couples or uncouples this car and the one ahead of it.
+/obj/structure/trains/proc/hitch_front(mob/user)
 	for (var/obj/structure/trains/TR in get_step(src, dir))
 		if (TR.connected && TR.connected == src)
 			playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
-			to_chat(usr, "You unhitch \the [src] from \the [TR].")
+			to_chat(user, "You unhitch \the [src] from \the [TR].")
 			TR.connected = null
 			return TRUE
 		else if (!TR.connected)
 			if ((dir == TR.dir || dir == OPPOSITE_DIR(TR.dir)) && can_connect_to(TR))
 				playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
-				to_chat(usr, "You hitch \the [src] to \the [TR].")
+				to_chat(user, "You hitch \the [src] to \the [TR].")
 				TR.connected = src
 				return TRUE
-	to_chat(usr, "There is no wagon to hitch \the [src] to.")
+	return FALSE
+
+// The same from the rear end, for the car behind. The sections of one car or
+// engine stay hitched to each other.
+/obj/structure/trains/proc/hitch_rear(mob/user)
+	if (connected)
+		if (car_id && connected.car_id == car_id)
+			return FALSE
+		playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
+		to_chat(user, "You unhitch \the [connected] from \the [src].")
+		connected = null
+		return TRUE
+	for (var/obj/structure/trains/TR in get_step(src, OPPOSITE_DIR(dir)))
+		if (TR == src || TR.lead_car())
+			continue
+		if (dir == TR.dir && TR.can_connect_to(src))
+			playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
+			to_chat(user, "You hitch \the [TR] to \the [src].")
+			connected = TR
+			return TRUE
 	return FALSE
 
 // Connections point to the following wagon. Reject both a new cycle and an
@@ -437,7 +461,9 @@ var/global/train_solo_move = FALSE
 			return TRUE
 	return FALSE
 
-/obj/structure/trains/proc/process_rail_movement()
+// impact, driven: set by an engine further back that pushes this car at the
+// head of its train; the engine burns its own fuel and lends its weight.
+/obj/structure/trains/proc/process_rail_movement(impact = null, driven = FALSE)
 	if (!automovement)
 		return FALSE
 	var/list/route = rail_target(dir)
@@ -447,14 +473,14 @@ var/global/train_solo_move = FALSE
 		return FALSE
 	var/turf/tgtt = route[1]
 	var/fdir = route[2]
-	if (istype(src, /obj/structure/trains/locomotive))
+	if (!driven && istype(src, /obj/structure/trains/locomotive))
 		var/obj/structure/trains/locomotive/L = src
 		if (L.fuel <= 0 && L.on)
 			L.stall()
 		else if (L.on)
 			L.burn_fuel()
 	//push (or hit) wtv is in front...
-	if (rail_hit(tgtt, fdir))
+	if (rail_hit(tgtt, fdir, impact))
 		return FALSE
 	// Platform cars need room for their decks (train_platforms.dm).
 	var/atom/clearance = train_consist_obstacle(src, tgtt, fdir)
@@ -710,6 +736,8 @@ var/global/train_solo_move = FALSE
 	var/tmp/consist_weight = 0
 	var/tmp/consist_power = 0
 	var/tmp/consist_engines = 0
+	var/tmp/obj/structure/trains/drive_head = null // front car of the train while this engine drives it
+	var/tmp/lead_factor = 1 // share of top speed allowed by what leads the train
 
 /obj/structure/trains/locomotive/Destroy()
 	clear_body()
@@ -781,22 +809,57 @@ var/global/train_solo_move = FALSE
 /obj/structure/trains/locomotive/proc/locomotive()
 	if (driving || (!on || throttle <= 0) && rail_speed <= 0)
 		return
-	var/obj/structure/trains/leader = lead_car()
-	if (leader)
-		if (on)
-			visible_message("\The [src] works as a helper engine; the lead engine of the train sets the pace.")
-		return
+	// One engine drives a train, from wherever it is hitched in: the first to
+	// open its throttle. Any other running engine helps it.
+	for (var/obj/structure/trains/locomotive/L in train_consist_list(train_head()))
+		if (L != src && L.driving)
+			if (on)
+				visible_message("\The [src] works as a helper engine; \the [L] sets the pace.")
+			return
 	drive()
 
-// The car hitched in front of this one, if any.
-/obj/structure/trains/locomotive/proc/lead_car()
+// The car hitched in front of this one, if any. It is nearly always on the
+// next tile; a link may stretch to two tiles.
+/obj/structure/trains/proc/lead_car()
+	for (var/d in cardinal)
+		for (var/obj/structure/trains/TR in get_step(src, d))
+			if (TR.connected == src)
+				return TR
 	for (var/obj/structure/trains/TR in range(2, src))
 		if (TR.connected == src)
 			return TR
 	return null
 
+// The front car of the train this car is hitched into.
+/obj/structure/trains/proc/train_head()
+	var/obj/structure/trains/car = src
+	var/list/seen = list(src)
+	while (seen.len < 200)
+		var/obj/structure/trains/ahead = car.lead_car()
+		if (!ahead || (ahead in seen))
+			break
+		seen += ahead
+		car = ahead
+	return car
+
+// The engine this car is a section of, if any (train_locomotives.dm).
+/obj/structure/trains/proc/unit_engine()
+	return null
+
+// What leads the train decides how fast it may go: the engine running
+// forward, the engine running bunker first, or cars pushed ahead of it.
+/obj/structure/trains/locomotive/proc/leading_factor(list/cars)
+	if (!cars || !cars.len)
+		return 1
+	var/obj/structure/trains/lead = (reverser > 0) ? cars[1] : cars[cars.len]
+	if (lead == src || lead.unit_engine() == src)
+		return (reverser > 0) ? 1 : 0.75
+	return 0.5
+
 /obj/structure/trains/locomotive/proc/refresh_consist(steps_since = 0)
-	var/list/cars = train_consist_list(src)
+	drive_head = train_head()
+	var/list/cars = train_consist_list(drive_head)
+	lead_factor = leading_factor(cars)
 	consist_weight = 0
 	consist_power = 0
 	consist_engines = 0
@@ -829,7 +892,7 @@ var/global/train_solo_move = FALSE
 	if (!on || throttle <= 0 || engine_disabled())
 		return 0
 	var/top = 10 / max(0.5, max_train_speed)
-	return top * min(1, pull_ratio()) * throttle / LOCO_NOTCHES
+	return top * lead_factor * min(1, pull_ratio()) * throttle / LOCO_NOTCHES
 
 /obj/structure/trains/locomotive/collision_impact()
 	if (rail_speed <= 0)
@@ -865,7 +928,7 @@ var/global/train_solo_move = FALSE
 			if (rail_speed <= 0.25 && target <= 0)
 				break
 			automovement = TRUE
-			var/moved = (reverser > 0) ? process_rail_movement() : process_rail_reverse()
+			var/moved = (reverser > 0) ? process_rail_forward() : process_rail_reverse()
 			if (QDELETED(src))
 				return
 			if (!moved)
@@ -886,12 +949,30 @@ var/global/train_solo_move = FALSE
 		automovement = FALSE
 		set_light(0)
 
+// Forward: the front car of the train leads. When that is not this engine,
+// the engine pushes it, burning its own fuel.
+/obj/structure/trains/locomotive/proc/process_rail_forward()
+	var/obj/structure/trains/head = drive_head
+	if (!head || head == src || QDELETED(head) || !isturf(head.loc))
+		return process_rail_movement()
+	if (!automovement)
+		return FALSE
+	if (fuel <= 0 && on)
+		stall()
+	else if (on)
+		burn_fuel()
+	head.automovement = TRUE
+	. = head.process_rail_movement(collision_impact(), TRUE)
+	head.automovement = FALSE
+	if (!.)
+		automovement = FALSE
+
 // Backing up: the rearmost car leads and each car takes the place of the one
 // behind it, the same way a forward step works from the front.
 /obj/structure/trains/locomotive/proc/process_rail_reverse()
 	if (!automovement)
 		return FALSE
-	var/list/cars = train_consist_list(src)
+	var/list/cars = train_consist_list((drive_head && !QDELETED(drive_head)) ? drive_head : src)
 	var/obj/structure/trains/tail = cars[cars.len]
 	var/list/route = tail.rail_target(OPPOSITE_DIR(tail.dir))
 	if (!route)
