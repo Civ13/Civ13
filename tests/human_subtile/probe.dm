@@ -449,6 +449,26 @@ var/human_subtile_fixture_deer_watched = FALSE
 	PF.pulling = null
 	pull_crate.pulledby = null
 	qdel(pull_crate)
+	// Small moves on one tile drag it in pixels, so it can be eased off the
+	// grid; in a steady walk the pixel drag holds off for the tile follow.
+	human_subtile_fixture_phase = "headless pull offset drag"
+	var/mob/living/human/subtile_fixture/PD = human_subtile_fixture_actor(12, 4)
+	PD.set_human_subtile(TRUE)
+	var/obj/structure/drag_crate = new(locate(11, 4, 1))
+	drag_crate.anchored = FALSE
+	drag_crate.density = TRUE
+	PD.pulling = drag_crate
+	drag_crate.pulledby = PD
+	PD.human_subtile_pull_follow()
+	human_subtile_fixture_glide_centre(PD, 12 * 32 + 8, 4 * 32)
+	human_subtile_fixture_assert(PD.x == 12 && PD.human_subtile_pull_follow() && drag_crate.x == 11 && drag_crate.step_x == 4 && !drag_crate.step_y && PD.pulling == drag_crate, "pull_small_moves_drag_in_pixels")
+	human_subtile_fixture_glide_centre(PD, 13 * 32, 4 * 32)
+	var/drag_snapped = PD.human_subtile_pull_follow() && drag_crate.loc == locate(12, 4, 1) && !drag_crate.step_x
+	human_subtile_fixture_glide_centre(PD, 13 * 32 + 8, 4 * 32)
+	human_subtile_fixture_assert(drag_snapped && !PD.human_subtile_pull_follow() && drag_crate.loc == locate(12, 4, 1) && !drag_crate.step_x && PD.pulling == drag_crate, "pull_walk_keeps_tile_spacing")
+	PD.pulling = null
+	drag_crate.pulledby = null
+	qdel(drag_crate)
 	// Something filling the last tile blocks it, and the hold ends.
 	human_subtile_fixture_phase = "headless pull blocked"
 	var/mob/living/human/subtile_fixture/PS = human_subtile_fixture_actor(16, 9)

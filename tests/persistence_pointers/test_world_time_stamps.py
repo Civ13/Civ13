@@ -54,6 +54,8 @@ REVIEWED = {
     'hold_started': 'var/tmp brace stamp of a hand holding a car door (vehicle_door_hold.dm), never saved',
     'strain_time': 'var/tmp strain clock of a hand holding a car door (vehicle_door_hold.dm), never saved',
     'last_hair_growth_time': 'var/tmp last hair-growth tick on humans (human_life.dm), never saved',
+    'human_pull_tile_at': 'var/tmp walk-pace stamp of free-movement pulling on humans (subtile_movement.dm), never saved',
+    'human_pull_tile_pace': 'var/tmp tile duration (a world.time difference) of free-movement pulling on humans, never saved',
 }
 
 # An optional [key] catches stamps kept in a keyed list, such as next_emote["normal"].
