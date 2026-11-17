@@ -7,6 +7,13 @@
 //   until the bearing is changed.
 // - The fire: a steam engine's fire fills with clinker as it burns. A dirty
 //   fire steams poorly until it is cleaned with a fire rake over an ash pit.
+// - Brake shoes (`brake_shoes`, in tiles run with the brake on) wear thin;
+//   worn out, the brake barely holds until a new set is fitted.
+// - The boiler: the water a steam engine boils leaves scale (`scale`). A
+//   scaled boiler steams poorly until it is washed out, cold, beside a water
+//   crane or tower.
+// - The engine itself (`mileage`): after a long distance it pulls less until
+//   it is overhauled in an engine shed, the bay of a rail warehouse.
 //
 // Wear is counted where the train is already added up: refresh_consist()
 // for a driven train and roll_refresh() for one that rolls free, every few
@@ -23,16 +30,31 @@
 #define TRAIN_CLINKER_CLEAN 40 // percent of clinker a fire carries without harm
 #define TRAIN_CLINKER_TIME 80
 #define TRAIN_ASH_PIT_MAX 10 // fires an ash pit takes before it is dug out
+#define TRAIN_SHOES_FULL 300 // tiles a set of brake shoes lasts with the brake on
+#define TRAIN_SHOES_THIN 50
+#define TRAIN_SHOES_WORN 0.3 // share of its weight a car on worn-out shoes still holds
+#define TRAIN_SHOES_TIME 100
+#define TRAIN_SCALE_TANKS 12 // tanks of water boiled that scale a boiler up
+#define TRAIN_SCALE_CLEAN 40 // percent of scale a boiler carries without harm
+#define TRAIN_WASHOUT_WATER 300
+#define TRAIN_WASHOUT_PRESSURE 25 // the boiler has to be this cold
+#define TRAIN_WASHOUT_TIME 300
+#define TRAIN_OVERHAUL_DUE 5000 // tiles an engine works between overhauls
+#define TRAIN_OVERHAUL_PARTS 10 // iron or steel for the new parts
+#define TRAIN_OVERHAUL_TIME 600
 
 /obj/structure/trains
 	var/axle_oil = TRAIN_OIL_FULL
 	var/axle_seized = FALSE
+	var/brake_shoes = TRAIN_SHOES_FULL
 
 /obj/structure/trains/locomotive
 	var/tmp/consist_hot = 0 // weight of the cars with a hot box
+	var/mileage = 0 // tiles worked since the last overhaul
 
 /obj/structure/trains/locomotive/coal
 	var/clinker = 0 // percent
+	var/scale = 0 // percent
 
 // Oils that will do for an axle box.
 var/global/list/train_axle_oils = list("fat_oil", "olive_oil", "cornoil", "lard", "petroleum", "lube")
@@ -101,9 +123,9 @@ var/global/list/train_axle_oils = list("fat_oil", "olive_oil", "cornoil", "lard"
 
 /obj/structure/trains/examine(mob/user)
 	..()
-	var/text = axle_text()
-	if (text)
-		to_chat(user, SPAN_WARNING(text))
+	for (var/text in list(axle_text(), shoe_text()))
+		if (text)
+			to_chat(user, SPAN_WARNING(text))
 
 /obj/structure/trains/proc/oil_axles()
 	for (var/obj/structure/trains/S in service_sections())
@@ -168,6 +190,25 @@ var/global/list/train_axle_oils = list("fat_oil", "olive_oil", "cornoil", "lard"
 		playsound(loc, 'sound/effects/lever.ogg', 100, TRUE)
 		user.visible_message("[user] changes a bearing on \the [src].", "You fit the new bearing. Oil the axle boxes before the car runs.")
 		return TRUE
+	if (istype(W, /obj/item/train_brake_shoes))
+		if (train_rolling())
+			to_chat(user, SPAN_WARNING("The train is moving."))
+			return TRUE
+		if (brake_shoes >= TRAIN_SHOES_FULL - 10)
+			to_chat(user, "The brake shoes of \the [src] are sound.")
+			return TRUE
+		if (handbrake)
+			to_chat(user, SPAN_WARNING("Let the handbrake off first."))
+			return TRUE
+		user.visible_message("[user] starts fitting new brake shoes to \the [src]...", "You knock out the cotters and start changing the brake shoes of \the [src]...")
+		if (!do_after(user, TRAIN_SHOES_TIME, src) || user.get_active_hand() != W || train_rolling() || handbrake)
+			return TRUE
+		user.drop_from_inventory(W)
+		qdel(W)
+		fit_shoes()
+		playsound(loc, 'sound/effects/lever.ogg', 100, TRUE)
+		user.visible_message("[user] fits new brake shoes to \the [src].", "You fit the new brake shoes.")
+		return TRUE
 	return FALSE
 
 /obj/structure/trains/platform/service_use(obj/item/W, mob/living/user)
@@ -180,6 +221,182 @@ var/global/list/train_axle_oils = list("fat_oil", "olive_oil", "cornoil", "lard"
 	if (service_use(W, user))
 		return TRUE
 	return ..()
+
+/////////////////////////////////////////////////////////////////////////////
+// Brake shoes
+
+// The car has run this many tiles with its brake on.
+/obj/structure/trains/proc/wear_shoes(tiles)
+	if (tiles <= 0 || brake_shoes <= 0)
+		return
+	brake_shoes = max(0, brake_shoes - tiles)
+	if (brake_shoes <= 0 && axle_speaker() && isturf(loc))
+		visible_message(SPAN_WARNING("The brake of \the [src] grinds metal on metal: its shoes are worn out."))
+
+// The share of its weight this car's brake holds.
+/obj/structure/trains/proc/brake_hold()
+	return (brake_shoes > 0 || axle_seized) ? 1 : TRAIN_SHOES_WORN
+
+/obj/structure/trains/proc/shoe_text()
+	if (brake_shoes <= 0)
+		return "Its brake shoes are worn out and the brake barely holds. It needs a new set."
+	if (brake_shoes < TRAIN_SHOES_THIN)
+		return "Its brake shoes are worn thin."
+	return null
+
+/obj/structure/trains/proc/fit_shoes()
+	for (var/obj/structure/trains/S in service_sections())
+		S.brake_shoes = TRAIN_SHOES_FULL
+	train_weights_changed()
+
+/obj/item/train_brake_shoes
+	name = "set of brake shoes"
+	desc = "Cast iron brake shoes for a railway car or engine. Use them on a standing car whose shoes are worn."
+	icon = 'icons/obj/vehicles/train_platforms.dmi'
+	icon_state = "brake_shoes"
+	w_class = 3
+	force = 8
+	throwforce = 6
+
+/////////////////////////////////////////////////////////////////////////////
+// Overhaul
+
+// The engine has worked this many tiles.
+/obj/structure/trains/locomotive/proc/wear_engine(tiles)
+	if (tiles <= 0)
+		return
+	var/before = mileage
+	mileage += tiles
+	if (before < TRAIN_OVERHAUL_DUE && mileage >= TRAIN_OVERHAUL_DUE && isturf(loc))
+		visible_message(SPAN_WARNING("\The [src] knocks and blows at every stroke. It is due for an overhaul."))
+
+// The share of its pull a worn engine still has: all of it until an overhaul
+// is due, falling to seven tenths at twice the distance.
+/obj/structure/trains/locomotive/proc/wear_factor()
+	if (mileage <= TRAIN_OVERHAUL_DUE)
+		return 1
+	return max(0.7, 1 - 0.3 * (mileage - TRAIN_OVERHAUL_DUE) / TRAIN_OVERHAUL_DUE)
+
+/obj/structure/trains/locomotive/proc/overhaul_text()
+	if (mileage >= TRAIN_OVERHAUL_DUE)
+		return "It is worn and pulls less than it should. It is due for an overhaul in an engine shed."
+	return null
+
+// The rail warehouse whose bay the engine stands in: its shed.
+/obj/structure/trains/locomotive/proc/engine_shed()
+	var/list/sections = service_sections()
+	for (var/obj/structure/rail_warehouse/W in range(14, src))
+		var/list/bay = W.bay()
+		for (var/obj/structure/trains/S in sections)
+			if (S.loc in bay)
+				return W
+	return null
+
+/proc/train_overhaul_parts(obj/item/stack/material/M)
+	return (istype(M, /obj/item/stack/material/iron) || istype(M, /obj/item/stack/material/steel)) && M.amount >= TRAIN_OVERHAUL_PARTS
+
+/obj/structure/trains/locomotive/proc/overhaul()
+	mileage = 0
+	train_weights_changed()
+
+// A fitter with a wrench, and iron or steel for the parts in the other hand.
+/obj/structure/trains/locomotive/proc/overhaul_by(mob/living/user)
+	if (train_rolling())
+		to_chat(user, SPAN_WARNING("The train is moving."))
+		return FALSE
+	if (on)
+		to_chat(user, SPAN_WARNING("[stop_text] first."))
+		return FALSE
+	if (!engine_shed())
+		to_chat(user, SPAN_WARNING("An overhaul is shed work. Stand \the [src] in the bay of a rail warehouse."))
+		return FALSE
+	var/obj/item/stack/material/parts = user.get_inactive_hand()
+	if (!train_overhaul_parts(parts))
+		to_chat(user, SPAN_WARNING("The new parts take [TRAIN_OVERHAUL_PARTS] iron or steel. Hold it in your other hand."))
+		return FALSE
+	user.visible_message("[user] starts stripping down \the [src] for an overhaul...", "You start on the overhaul: rods off, valves out, bearings and rings to be made new...")
+	if (!do_after(user, TRAIN_OVERHAUL_TIME, src) || train_rolling() || on || !engine_shed() || user.get_inactive_hand() != parts || !train_overhaul_parts(parts))
+		return FALSE
+	parts.use(TRAIN_OVERHAUL_PARTS)
+	overhaul()
+	playsound(loc, 'sound/effects/lever.ogg', 100, TRUE)
+	user.visible_message("[user] finishes the overhaul of \the [src].", "You put \the [src] back together. It runs like new.")
+	return TRUE
+
+/obj/structure/trains/locomotive/service_use(obj/item/W, mob/living/user)
+	if (istype(user) && !axle_seized && mileage >= TRAIN_OVERHAUL_DUE / 2 && is_tool(W, TOOL_WRENCH))
+		overhaul_by(user)
+		return TRUE
+	return ..()
+
+/////////////////////////////////////////////////////////////////////////////
+// The boiler
+
+// How well a scaled boiler takes the fire's heat: all of it up to
+// TRAIN_SCALE_CLEAN, six tenths when it is thick with scale.
+/obj/structure/trains/locomotive/coal/proc/scale_factor()
+	if (scale <= TRAIN_SCALE_CLEAN)
+		return 1
+	return 1 - 0.4 * (min(100, scale) - TRAIN_SCALE_CLEAN) / (100 - TRAIN_SCALE_CLEAN)
+
+// The water that boils off leaves its scale behind (steam_use()).
+/obj/structure/trains/locomotive/coal/proc/make_scale(boiled)
+	if (max_water && boiled > 0)
+		scale = min(100, scale + boiled * 100 / (TRAIN_SCALE_TANKS * max_water))
+
+/obj/structure/trains/locomotive/coal/proc/scale_text()
+	if (scale >= 80)
+		return " The boiler is thick with scale."
+	if (scale > TRAIN_SCALE_CLEAN)
+		return " The boiler is scaling up."
+	return ""
+
+// Worth the work from half the scale a boiler carries without harm.
+/obj/structure/trains/locomotive/coal/proc/washout_due()
+	return scale > TRAIN_SCALE_CLEAN / 2
+
+// The water tower whose hose reaches the engine and holds enough for a
+// washout, or null.
+/obj/structure/trains/locomotive/coal/proc/washout_water()
+	for (var/obj/structure/trains/S in service_sections())
+		for (var/obj/structure/rail_water/W in range(3, S))
+			if (!(src in W.takers()))
+				continue
+			var/obj/structure/rail_water/tower/T = W.source()
+			if (T && T.water >= TRAIN_WASHOUT_WATER)
+				return T
+	return null
+
+// The plugs come out, the scale is hosed out and the boiler is filled again.
+/obj/structure/trains/locomotive/coal/proc/wash_out(obj/structure/rail_water/tower/T)
+	if (T)
+		T.water = max(0, T.water - TRAIN_WASHOUT_WATER)
+	scale = 0
+	pressure = 0
+	boiler_water = max_boiler
+
+/obj/structure/trains/locomotive/coal/proc/wash_out_by(mob/living/user)
+	boiler_tick()
+	if (train_rolling())
+		to_chat(user, SPAN_WARNING("Stop the train first."))
+		return FALSE
+	if (on)
+		to_chat(user, SPAN_WARNING("Drop the fire first. A boiler is washed out cold."))
+		return FALSE
+	if (pressure > TRAIN_WASHOUT_PRESSURE)
+		to_chat(user, SPAN_WARNING("The boiler is still too hot at [round(pressure)]% pressure. Let it cool below [TRAIN_WASHOUT_PRESSURE]%."))
+		return FALSE
+	var/obj/structure/rail_water/tower/T = washout_water()
+	if (!T)
+		to_chat(user, SPAN_WARNING("A washout takes a hose and [TRAIN_WASHOUT_WATER] units of water. Stand \the [src] beside a water crane or water tower that holds as much."))
+		return FALSE
+	user.visible_message("[user] starts washing out \the [src]'s boiler...", "You take out the washout plugs and start hosing the scale out of the boiler...")
+	if (!do_after(user, TRAIN_WASHOUT_TIME, src) || train_rolling() || on || washout_water() != T)
+		return FALSE
+	wash_out(T)
+	playsound(loc, 'sound/effects/watersplash.ogg', 80, TRUE)
+	user.visible_message("[user] washes out \the [src]'s boiler.", "Mud and scale run out on the ground. You put the plugs back and fill the boiler again.")
+	return TRUE
 
 /////////////////////////////////////////////////////////////////////////////
 // The fire
@@ -335,3 +552,15 @@ var/global/list/train_axle_oils = list("fat_oil", "olive_oil", "cornoil", "lard"
 #undef TRAIN_CLINKER_CLEAN
 #undef TRAIN_CLINKER_TIME
 #undef TRAIN_ASH_PIT_MAX
+#undef TRAIN_SHOES_FULL
+#undef TRAIN_SHOES_THIN
+#undef TRAIN_SHOES_WORN
+#undef TRAIN_SHOES_TIME
+#undef TRAIN_SCALE_TANKS
+#undef TRAIN_SCALE_CLEAN
+#undef TRAIN_WASHOUT_WATER
+#undef TRAIN_WASHOUT_PRESSURE
+#undef TRAIN_WASHOUT_TIME
+#undef TRAIN_OVERHAUL_DUE
+#undef TRAIN_OVERHAUL_PARTS
+#undef TRAIN_OVERHAUL_TIME

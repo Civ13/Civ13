@@ -2935,6 +2935,9 @@ RECIPE: /material/iron/,brake van kit,/obj/structure/train_car_kit/brake_van,24,
 RECIPE: /material/iron/,brake wheel,/obj/structure/train_brake_wheel,6,150,1,1,trains,101,0,0,8,null
 RECIPE: /material/iron/,fire rake,/obj/item/train_fire_rake,2,80,0,0,trains,101,0,0,8,null
 RECIPE: /material/iron/,ash pit,/obj/structure/rail_ash_pit,6,200,1,1,trains,101,0,0,8,null
+RECIPE: /material/iron/,set of brake shoes,/obj/item/train_brake_shoes,3,80,0,0,trains,101,0,0,8,null
+RECIPE: /material/wood/,coaling stage,/obj/structure/rail_depot/coal_stage,20,300,1,1,trains,101,0,0,8,null
+RECIPE: /material/wood/,sand bin,/obj/structure/rail_depot/sand_bin,8,200,1,1,trains,101,0,0,8,null
 RECIPE: /material/steel/,automatic coupler,/obj/item/train_coupling/automatic,6,120,0,0,trains,140,0,0,8,null
 RECIPE: /material/steel/,bogie coach kit,/obj/structure/train_car_kit/bogie_coach,26,500,1,1,trains,140,0,0,8,null
 RECIPE: /material/steel/,sleeper car kit,/obj/structure/train_car_kit/sleeper,20,350,1,1,trains,140,0,0,8,null

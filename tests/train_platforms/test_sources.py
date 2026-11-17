@@ -87,7 +87,7 @@ class TrainPlatformSourceTests(unittest.TestCase):
         self.assertIn('\tvar/injector = TRUE', TRAINS)
         # Pressure limits speed and a helper's pull; neglect drops the plug, nothing explodes.
         self.assertIn('* min(1, pull_ratio()) * steam_factor() * throttle / LOCO_NOTCHES', TRAINS)
-        self.assertIn('consist_power += L.haul * ((L == src) ? 1 : L.steam_factor())', TRAINS)
+        self.assertIn('consist_power += L.haul * L.wear_factor() * ((L == src) ? 1 : L.steam_factor())', TRAINS)
         self.assertIn('/obj/structure/trains/locomotive/coal/proc/drop_plug()', TRAINS)
         self.assertNotIn('explosion(', TRAINS)
         self.assertIn('RECIPE: /material/lead/,fusible plug,/obj/item/fusible_plug,1,60,0,0,trains,101,', RECIPES)
@@ -350,6 +350,44 @@ class TrainPlatformSourceTests(unittest.TestCase):
         states = dmi_description(ROOT / 'icons/obj/vehicles/train_platforms.dmi')
         for state in ('ash_pit', 'ash_pit_ash', 'ash_pit_full', 'fire_rake'):
             self.assertIn('state = "%s"' % state, states)
+
+    def test_deeper_servicing_and_the_depot(self):
+        dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
+        self.assertEqual(dme.count('#include "code\\modules\\1713\\train_depot.dm"'), 1)
+        servicing = (ROOT / 'code/modules/1713/train_servicing.dm').read_text(encoding='utf-8')
+        depot = (ROOT / 'code/modules/1713/train_depot.dm').read_text(encoding='utf-8')
+        rolling = (ROOT / 'code/modules/1713/train_rolling.dm').read_text(encoding='utf-8')
+        # Saved with the car or engine.
+        self.assertIn('\tvar/brake_shoes = TRAIN_SHOES_FULL\n', servicing)
+        self.assertIn('\tvar/mileage = 0', servicing)
+        self.assertIn('\tvar/scale = 0', servicing)
+        # Counted where the train is added up; worn shoes hold less.
+        refresh = TRAINS[TRAINS.index('/obj/structure/trains/locomotive/proc/refresh_consist('):]
+        self.assertLess(refresh.index('car.wear_shoes(steps_since)'), refresh.index('consist_braked += car_weight * car.brake_hold()'))
+        self.assertIn('consist_own += car_weight * car.brake_hold()', refresh)
+        self.assertIn('L.wear_engine(steps_since)', refresh)
+        self.assertIn('car.wear_shoes(roll_since)', rolling)
+        self.assertIn('roll_braked += weight * car.brake_hold()', rolling)
+        # The last tiles of a run count as well.
+        drive = TRAINS[TRAINS.index('/obj/structure/trains/locomotive/proc/drive()'):]
+        self.assertLess(drive.index('refresh_consist(since)\n\t\trail_speed = 0'), drive.index('driving = FALSE'))
+        # Scale comes with the water boiled and takes from the fire.
+        self.assertIn('* clinker_factor() * scale_factor()', TRAINS)
+        self.assertIn('\tmake_scale(boiled)\n', TRAINS)
+        self.assertIn('choices += "Wash out the boiler"', TRAINS)
+        # No override of a proc trains.dm defines on the same type, and nothing ticks.
+        self.assertNotIn('/obj/structure/trains/locomotive/examine(', servicing)
+        for text in (depot, servicing):
+            self.assertIsNone(re.search(r'(?<!\w)(spawn|addtimer|sleep|while) ?\(', text))
+        for path, recipe in (('/obj/item/train_brake_shoes', '/material/iron/,set of brake shoes,/obj/item/train_brake_shoes,3,'),
+                             ('/obj/structure/rail_depot/coal_stage', '/material/wood/,coaling stage,/obj/structure/rail_depot/coal_stage,20,'),
+                             ('/obj/structure/rail_depot/sand_bin', '/material/wood/,sand bin,/obj/structure/rail_depot/sand_bin,8,')):
+            self.assertIn('RECIPE: ' + recipe, RECIPES)
+            self.assertIn('"%s" = "rail_steam"' % path, NODES)
+        self.assertIn('state = "brake_shoes"', dmi_description(ROOT / 'icons/obj/vehicles/train_platforms.dmi'))
+        water = dmi_description(ROOT / 'icons/obj/vehicles/rail_water.dmi')
+        for state in ('coal_stage_empty', 'coal_stage', 'coal_stage_full', 'sand_bin_empty', 'sand_bin'):
+            self.assertIn('state = "%s"' % state, water)
 
     def test_native_fixture_preparation(self):
         generated = run.sources()
