@@ -50,6 +50,39 @@ function Need({ met, children }: { met: boolean; children: React.ReactNode }) {
   </li>;
 }
 
+// Work done in the world rather than from this menu: a tool used on the
+// material, a station it goes into. The card says how and whether the player
+// has the tool; there is no Craft button because the game does it on use.
+export function processMatches(row: Data, words: string[], readyOnly: boolean) {
+  if (readyOnly && row.state !== 'ready') return false;
+  const hay = (str(row.name) + ' ' + list(row.makes).map(str).join(' ') + ' ' + list(row.tools).map(tool => str(tool.name)).join(' ')).toLowerCase();
+  return words.every(word => hay.includes(word));
+}
+function ProcessCard({ ui, row, material }: { ui: ScreenProps; row: Data; material: string }) {
+  const tools = list(row.tools);
+  return <section className="craft-card" aria-label="Selected process">
+    <div className="craft-card-top">
+      <div className="craft-pic"><Sprite image={row.image} large /></div>
+      <div>
+        <h2>{str(row.name)}</h2>
+        <p className="craft-meta">Makes {list(row.makes).map(str).join(', ') || 'something new'}</p>
+      </div>
+    </div>
+    {tools.length > 0 && <>
+      <h3>Tools</h3>
+      <ul className="craft-needs">
+        {tools.map((tool, i) => Number(tool.have) < 0
+          ? <li key={i} className="craft-need"><span className="craft-mark" aria-hidden="true">•</span><span>{str(tool.name)}</span></li>
+          : <Need key={i} met={Number(tool.have) > 0}>{str(tool.name)}{Number(tool.have) > 0 && tool.found ? <small> - {str(tool.found)}</small> : null}</Need>)}
+      </ul>
+    </>}
+    <h3>How</h3>
+    <ul className="craft-steps">{list(row.steps).map((step, i) => <li key={i}>{str(step)}</li>)}</ul>
+    <p className="craft-place">Not made from this menu: do it in the world with the {str(material) || 'material'} and the tool.</p>
+    {row.atlas ? <p className="craft-links"><button type="button" className="craft-link" disabled={!ui.interactive} onClick={() => ui.act('process_atlas', { value: str(row.id) })}>Open in Atlas</button></p> : null}
+  </section>;
+}
+
 function Card({ ui, row, working }: { ui: ScreenProps; row: Row; working: Data | null }) {
   const { data } = ui;
   const batches = Math.max(0, Number(row.batches) || 0);
@@ -162,6 +195,10 @@ export function CraftingWindow(ui: ScreenProps) {
   const chip = (row: Row) => <button key={row.id} type="button" className={'craft-chip' + (row.id === selected ? ' craft-chip-selected' : '')}
     title={str(row.name)} onClick={() => setSelected(row.id)}><Sprite image={row.image} /><span>{str(row.name)}</span></button>;
   const chosen = rows.find(row => row.id === selected) ?? null;
+  const processing = list(data.processing);
+  const shownProcesses = useMemo(() => processing.filter(row => processMatches(row, words, readyOnly)), [data.processing, words, readyOnly]);
+  const process = chosen ? null : processing.find(row => str(row.id) === selected) ?? null;
+  const moreProcesses = Math.max(0, (Number(data.processing_total) || 0) - processing.length);
   const toggleReady = (next: boolean) => { setReadyOnly(next); ui.act('makeable_only', { value: next ? 1 : 0 }); };
   const quick = (row: Row) => { if (ui.interactive && row.state === 'ready' && !working) ui.act('make', { value: row.id, quantity: 1 }); };
   return <div className="craft">
@@ -197,6 +234,8 @@ export function CraftingWindow(ui: ScreenProps) {
           {GROUPS.map(([state, title, tone]) => {
             const group = visible.filter(row => row.state === state);
             if (readyOnly && state !== 'ready') return null;
+            // A material with no menu recipes, only tool work, skips the empty headings.
+            if (!rows.length && processing.length) return null;
             // The old categories stay as sub-headings wherever a group mixes several.
             const mixed = new Set(group.map(row => str(row.category))).size > 1;
             const folded = state === 'locked' && !showLocked && !words.length && group.length > 0;
@@ -214,11 +253,24 @@ export function CraftingWindow(ui: ScreenProps) {
               </li>)}</ul>}
             </div>;
           })}
-          {visible.length === 0 && <p className="craft-empty">No matching recipes. Try another name, another tab or untick Only what I can make.</p>}
+          {shownProcesses.length > 0 && <div className="craft-group">
+            <h3 className="craft-process">Use a tool or station on it <small>{shownProcesses.length} {shownProcesses.length === 1 ? 'way' : 'ways'}</small></h3>
+            <ul>{shownProcesses.map(row => <li key={str(row.id)}>
+              <button type="button" className={'craft-row craft-row-' + str(row.state) + (str(row.id) === selected ? ' craft-row-selected' : '')}
+                aria-pressed={str(row.id) === selected} onClick={() => setSelected(str(row.id))}>
+                <Sprite image={row.image} />
+                <span className="craft-row-text"><strong>{str(row.name)}</strong>
+                  <small className="craft-row-tools">{list(row.tools).map(tool => (Number(tool.have) === 0 ? 'needs ' : '') + str(tool.name)).join(', ')}</small></span>
+              </button>
+            </li>)}</ul>
+            {moreProcesses > 0 && !words.length && <p className="craft-hint">{moreProcesses} more in the Atlas.</p>}
+          </div>}
+          {visible.length === 0 && shownProcesses.length === 0 && <p className="craft-empty">No matching recipes. Try another name, another tab or untick Only what I can make.</p>}
         </div>
       </div>
       <div className="craft-right">
         {chosen ? <Card ui={ui} row={chosen} working={working} />
+          : process ? <ProcessCard ui={ui} row={process} material={str(data.material)} />
           : <section className="craft-card craft-card-empty"><p>Pick a recipe to see what it needs. Nothing is spent until you press Craft.</p>
             <p className="craft-hint">Double-click a ready recipe to make one straight away.</p>
             {working && <p role="status">Making {str(working.name)}...</p>}</section>}

@@ -2,7 +2,7 @@ import React from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { cleanup, fireEvent, screen, within } from '@testing-library/react';
 import { render } from '../testing';
-import { CraftingWindow, matches, seconds, startingAnswers } from './CraftingWindow';
+import { CraftingWindow, matches, processMatches, seconds, startingAnswers } from './CraftingWindow';
 import type { Data, ScreenProps } from '../types';
 
 afterEach(cleanup);
@@ -257,6 +257,44 @@ describe('Crafting window', () => {
     const view = render(<CraftingWindow {...ui({ rows: data, image: '../x.png' })} />);
     expect(view.container.querySelectorAll('img').length).toBe(0);
     expect(screen.getByText('a <b> shaft')).toBeTruthy();
+  });
+});
+describe('Tool and station work', () => {
+  const scrape = (have: number): Data => ({ id: 'p1', name: 'Scrape raw hide into a prepared hide', state: have ? 'ready' : 'missing', makes: ['prepared hairless hide'],
+    tools: [{ name: 'sharp tool', have, found: have ? 'flint knife' : '' }], steps: ['Apply a held sharp tool to a nearby raw hide.', 'One piece becomes one prepared hide.'], atlas: 1, image: '' });
+  const hide = (have: number, extra: Data = {}) => ui({ material: 'raw hide piece', rows: [], processing: [scrape(have)], processing_total: 1, ...extra });
+  it('lists what a tool turns a material with no recipes into', () => {
+    const props = hide(1); render(<CraftingWindow {...props} />);
+    expect(screen.queryByText(/No matching recipes/)).toBeNull();
+    expect(screen.queryByText('Ready')).toBeNull();
+    fireEvent.click(rowButton('Scrape raw hide into a prepared hide'));
+    const card = within(screen.getByLabelText('Selected process'));
+    expect(card.getByText(/Makes prepared hairless hide/)).toBeTruthy();
+    expect(card.getByText('Met:', { exact: false }).parentElement?.textContent).toContain('sharp tool - flint knife');
+    expect(card.queryByText('Craft')).toBeNull();
+    expect(props.act).not.toHaveBeenCalled();
+    fireEvent.click(card.getByText('Open in Atlas'));
+    expect(props.act).toHaveBeenLastCalledWith('process_atlas', { value: 'p1' });
+  });
+  it('says when the tool is missing and hides it under Only what I can make', () => {
+    render(<CraftingWindow {...hide(0)} />);
+    expect(screen.getByText('needs sharp tool')).toBeTruthy();
+    fireEvent.click(rowButton('Scrape raw hide into a prepared hide'));
+    expect(within(screen.getByLabelText('Selected process')).getByText('Missing:', { exact: false })).toBeTruthy();
+    cleanup();
+    render(<CraftingWindow {...hide(0, { makeable_only: 1 })} />);
+    expect(screen.queryByText('Scrape raw hide into a prepared hide')).toBeNull();
+  });
+  it('sits under the recipes and says how many more the Atlas has', () => {
+    render(<CraftingWindow {...ui({ processing: [scrape(1)], processing_total: 31 })} />);
+    expect(screen.getByText('Ready')).toBeTruthy();
+    expect(screen.getByText('30 more in the Atlas.')).toBeTruthy();
+  });
+  it('matches search words against name, products and tools', () => {
+    expect(processMatches(scrape(1), ['scrape', 'sharp'], false)).toBe(true);
+    expect(processMatches(scrape(1), ['hairless'], false)).toBe(true);
+    expect(processMatches(scrape(1), ['saw'], false)).toBe(false);
+    expect(processMatches(scrape(0), [], true)).toBe(false);
   });
 });
 describe('helpers', () => {

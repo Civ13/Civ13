@@ -207,6 +207,10 @@ button.rs-row-main { cursor: pointer; }
 .craft-group h3 { position: sticky; top: 0; z-index: 1; display: flex; align-items: baseline; gap: 8px; padding: 8px 4px 5px; background: var(--civ-panel); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; }
 .craft-group h3 small { color: var(--civ-faint); font-weight: normal; letter-spacing: 0; text-transform: none; }
 .craft-ok { color: #a8d57a; } .craft-miss { color: var(--civ-missing); } .craft-lock { color: var(--civ-dim); }
+.craft-process { color: #d9b36c; }
+.craft-row-tools { color: var(--civ-dim) !important; }
+.craft-row-missing .craft-row-tools { color: var(--civ-missing) !important; }
+.craft-steps { margin: 4px 0 0; padding-left: 18px; } .craft-steps li { padding: 2px 0; }
 .craft-row { display: flex; align-items: center; gap: 8px; width: 100%; padding: 3px 6px; font: inherit; text-align: left; color: inherit; background: transparent; border: 1px solid transparent; border-left: 3px solid transparent; border-radius: 3px; cursor: pointer; }
 .craft-row:hover { background: var(--civ-raised); }
 .craft-row:focus-visible, .craft select:focus-visible { outline: 2px solid var(--civ-highlight); outline-offset: 1px; }
