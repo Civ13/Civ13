@@ -52,7 +52,7 @@ class TrainPlatformSourceTests(unittest.TestCase):
         self.assertRegex(SOURCE, r'/obj/structure/trains/platform/after_load\(\)\n\t\.\.\(\)\n\tapply_layout\(\)')
 
     def test_locomotive_checks_clearance_before_moving(self):
-        body = TRAINS[TRAINS.index('/obj/structure/trains/proc/process_rail_movement()'):]
+        body = TRAINS[TRAINS.index('/obj/structure/trains/proc/process_rail_movement('):]
         self.assertLess(body.index('train_consist_obstacle(src, tgtt, fdir)'), body.index('if (!src.Move(tgtt, fdir))'))
 
     def test_every_kit_is_craftable_and_researched(self):
