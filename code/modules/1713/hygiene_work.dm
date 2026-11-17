@@ -32,6 +32,9 @@
 
 /mob/living/human/proc/wash_hands()
 	dirty_hands = 0
+	if (!gloves) // bare hands also show clean on self-examine (body_washing.dm)
+		mark_part_washed("l_hand")
+		mark_part_washed("r_hand")
 
 // Every hand wash in the game cleans the blood off: sinks, taps, baths.
 /mob/living/human/clean_blood()

@@ -53,6 +53,7 @@
 	clean_blood()
 	update_inv_gloves()
 	raise_hygiene(river_current_direction(W) ? BATHE_RUNNING : BATHE_STILL)
+	mark_bare_parts_washed()
 	playsound(loc, 'sound/effects/watersplash.ogg', 40, TRUE)
 	to_chat(src, SPAN_NOTICE("You finish bathing. [hygiene >= HYGIENE_LEVEL_NORMAL ? "You feel clean." : "The water was too still to get properly clean; soap would help."]"))
 

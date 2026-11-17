@@ -113,6 +113,12 @@ class BodyWashingTest(unittest.TestCase):
                      "/turf/floor/beach/water/attack_hand(mob/living/human/H)"):
             self.assertIn(proc, self.WASH)
 
+    def test_hand_and_whole_body_washes_mark_parts(self):
+        self.assertRegex(SOURCE, r"proc/wash_hands\(\)\n\tdirty_hands = 0\n\tif \(!gloves\)[^\n]*\n\t\tmark_part_washed\(\"l_hand\"\)\n\t\tmark_part_washed\(\"r_hand\"\)")
+        self.assertIn("raise_hygiene(river_current_direction(W) ? BATHE_RUNNING : BATHE_STILL)\n\tmark_bare_parts_washed()",
+                      read("code/modules/1713/bathing.dm"))
+        self.assertIn("HT.clean_blood()\n\t\t\t\tHT.mark_bare_parts_washed()", read("code/modules/reagents/reagent_containers.dm"))
+
     def test_loads_after_the_procs_it_extends(self):
         dme = read("civ13.dme").splitlines()
         def at(name):
