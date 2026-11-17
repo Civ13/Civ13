@@ -16,6 +16,7 @@
 /obj/structure/component_workbench/armor
 	name = "armor assembly workbench"
 	desc = "Select a recipe, insert its listed materials or components, and assemble. Retrieve returns all stored inputs or the finished item."
+	icon_state = "armor_bench"
 	selected_tool = "Armor carrier"
 	assembly_time = 100
 
