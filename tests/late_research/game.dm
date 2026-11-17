@@ -503,15 +503,30 @@ var/late_wait_result = TRUE
 	late_check(lead.can_research_node_at(bench, "selfloading_firearms") && bench.team_rate("selfloading_firearms", lead) == 1 && !bench.team_rows("selfloading_firearms", lead).len, "a lone scholar works an ordinary late subject at the usual speed")
 	var/alone = late_tick_gain(bench, B, "selfloading_firearms")
 	second.loc = locate(6,5,1)
-	late_check(bench.team_rate("selfloading_firearms", lead) == 1.25 && bench.team_rows("selfloading_firearms", lead).len == 1, "a second able scholar makes it a quarter faster")
+	late_check(abs(bench.team_rate("selfloading_firearms", lead) - 1.5) < 0.001 && bench.team_rows("selfloading_firearms", lead).len == 1, "a second scholar as able as the lead adds half")
 	var/together = late_tick_gain(bench, B, "selfloading_firearms")
-	late_check(alone > 0 && abs(together - alone * 1.25) <= 0.11, "the bench tick writes the faster pace into the book ([alone] alone, [together] together)")
+	late_check(alone > 0 && abs(together - alone * 1.5) <= 0.11, "the bench tick writes the faster pace into the book ([alone] alone, [together] together)")
+	var/mob/living/human/late_fixture/scholar/third = new(locate(6,4,1))
+	var/mob/living/human/late_fixture/scholar/fourth = new(locate(6,3,1))
+	third.prepare("selfloading_firearms", 100)
+	fourth.prepare("selfloading_firearms", 100)
+	late_check(abs(bench.team_rate("selfloading_firearms", lead) - 2) < 0.001 && bench.research_helpers("selfloading_firearms", lead).len == 2, "only two helpers count, so the pace at most doubles")
+	qdel(third)
+	qdel(fourth)
 	second.scholarship = list()
 	late_check(bench.team_rate("selfloading_firearms", lead) == 1, "a bystander without the skill is no second scholar")
 	// Early subjects are unchanged.
 	lead.teach("basic_tools")
 	second.prepare("iron_tools", 100)
-	late_check(bench.team_rate("iron_tools", lead) == 1, "early subjects gain nothing from a second scholar")
+	lead.prepare("iron_tools", 100)
+	late_check(abs(bench.team_rate("iron_tools", lead) - 1.5) < 0.001, "helpers count on early subjects too")
+	var/helper_need = node_scholar_requirement("iron_tools")
+	second.prepare("iron_tools", helper_need)
+	bench.assigned_node = "iron_tools"
+	for (var/i in 1 to 20)
+		bench.book_analysis_tick()
+	late_check(second.can_research_node_at(bench, "iron_tools") && second.scholar_level(node_discipline("iron_tools")) > helper_need, "the helper learns from the work too ([second.scholar_level(node_discipline("iron_tools"))] from [helper_need])")
+	bench.assigned_node = "selfloading_firearms"
 	// Big science: a second discipline and a facility.
 	lead.prepare("nuclear_power", 100)
 	bench.assigned_node = "nuclear_power"
