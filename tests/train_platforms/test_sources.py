@@ -228,7 +228,7 @@ class TrainPlatformSourceTests(unittest.TestCase):
         drive = TRAINS[TRAINS.index('/obj/structure/trains/locomotive/proc/drive()'):]
         self.assertIn('/ heft + brake_decel()', drive)
         self.assertIn('return consist_power / max(1, drag_weight())', TRAINS)
-        self.assertIn('if (car.handbrake)\n\t\t\tconsist_braked += car_weight', TRAINS)
+        self.assertIn('if (car.handbrake || car.axle_seized)\n\t\t\tconsist_braked += car_weight', TRAINS)
         self.assertIn('return TRAIN_BRAKE_DECEL * min(1, held / max(1, weight))', brakes)
         # By hand only on a standing train; a push never moves a braked one.
         hand = brakes[brakes.index('/obj/structure/trains/proc/work_handbrake('):]
@@ -322,6 +322,33 @@ class TrainPlatformSourceTests(unittest.TestCase):
         states = dmi_description(ROOT / 'icons/obj/vehicles/train_platforms.dmi')
         for state in ('knuckle_f_free', 'knuckle_b_free', 'knuckle_f_linked', 'knuckle_b_linked',
                       'knuckle_f_broken', 'knuckle_b_broken', 'knuckle_item'):
+            self.assertIn('state = "%s"' % state, states)
+
+    def test_servicing_wears_with_distance_and_never_ticks(self):
+        dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
+        self.assertEqual(dme.count('#include "code\\modules\\1713\\train_servicing.dm"'), 1)
+        servicing = (ROOT / 'code/modules/1713/train_servicing.dm').read_text(encoding='utf-8')
+        rolling = (ROOT / 'code/modules/1713/train_rolling.dm').read_text(encoding='utf-8')
+        # Wear is saved with the car and counted where the train is added up.
+        self.assertIn('\tvar/axle_oil = TRAIN_OIL_FULL\n\tvar/axle_seized = FALSE\n', servicing)
+        self.assertIn('\tvar/clinker = 0', servicing)
+        refresh = TRAINS[TRAINS.index('/obj/structure/trains/locomotive/proc/refresh_consist('):]
+        self.assertLess(refresh.index('car.wear_axles(steps_since)'), refresh.index('if (car.handbrake || car.axle_seized)'))
+        self.assertIn('car.wear_axles(roll_since)', rolling)
+        self.assertIsNone(re.search(r'(?<!\w)(spawn|addtimer|sleep|while) ?\(', servicing))
+        # A weapon-typed oil vessel must not be taken for a blow on a wagon.
+        for kind in ('storage', 'transport'):
+            body = TRAINS[TRAINS.index('/obj/structure/trains/%s/attackby(' % kind):]
+            self.assertLess(body.index('if (service_use(W, user))'), body.index('..()'))
+        # The fire: clinker comes with the work and takes from the fire.
+        self.assertIn('* clinker_factor()', TRAINS)
+        self.assertIn('\tmake_clinker(notch, weight, tiles)\n', TRAINS)
+        for path, cost in (('/obj/item/train_fire_rake', 'fire rake,/obj/item/train_fire_rake,2,'),
+                           ('/obj/structure/rail_ash_pit', 'ash pit,/obj/structure/rail_ash_pit,6,')):
+            self.assertIn('RECIPE: /material/iron/,' + cost, RECIPES)
+            self.assertIn('"%s" = "rail_steam"' % path, NODES)
+        states = dmi_description(ROOT / 'icons/obj/vehicles/train_platforms.dmi')
+        for state in ('ash_pit', 'ash_pit_ash', 'ash_pit_full', 'fire_rake'):
             self.assertIn('state = "%s"' % state, states)
 
     def test_native_fixture_preparation(self):

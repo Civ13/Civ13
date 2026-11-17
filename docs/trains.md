@@ -313,6 +313,44 @@ states.
 A hook and screw link and an automatic coupler couple to each other by hand
 only. Region travel and the warehouse do not carry the kind of coupling yet.
 
+## Servicing
+
+`train_servicing.dm`. Wear is counted by distance where the train is already
+added up, `refresh_consist()` for a driven train and `roll_refresh()` for
+one that rolls free, so nothing ticks by itself.
+
+**Axle boxes.** Every car and engine has `axle_oil`, the tiles its oil will
+last: 600 when oiled, saved with the car. `wear_axles()` takes the tiles run
+off it. `axle_state()`:
+
+| State | When | Effect |
+| --- | --- | --- |
+| oiled | 100 or more left | none |
+| dry | under 100 | a line on examine |
+| hot | 0 or less | smoke every 30 tiles; the car counts twice in `drag_weight()` (`consist_hot`) |
+| seized | 150 tiles run hot (`axle_seized`) | held like a handbrake: `consist_braked`, `roll_braked`, and `shoved()` will not move it |
+
+`service_use()` is the work by hand, on a standing train: an open vessel
+with 5 units of oil (`train_axle_oils`: fat oil, olive oil, corn oil, lard,
+petroleum) oils the whole car (`service_sections()`, `oil_axles()`); a
+wrench changes a seized bearing (`change_bearing()`, 15 seconds), after
+which the car is dry and must be oiled. `/obj/structure/trains/attackby`
+calls it; the storage and transport wagons call it first, because a reagent
+vessel is a weapon to them.
+
+**The fire.** A steam engine has `clinker`, 0 to 100, saved.
+`make_clinker()` (from `steam_use()`) adds to it with the fuel each tile
+takes: four fireboxes of fuel fill it. Up to 40 it does nothing; above that
+`clinker_factor()` takes from `fire_factor()`, down to half at 100, and the
+controls say the fire is dirty or choked. `clean_fire()` is a fire rake
+(`/obj/item/train_fire_rake`, 2 iron) used at the firebox door of a
+standing engine over an ash pit (`/obj/structure/rail_ash_pit`, 6 iron, laid
+on a track tile): 8 seconds, the clinker goes to 0 and a fifth of the fire
+goes with it. A pit takes ten fires (`ash`), then a shovel digs it out
+(`dig_out()`), which leaves up to three heaps of ashes.
+
+Region travel and the warehouse do not carry axle oil or clinker yet.
+
 ## Reversing
 
 With the reverser backward the rearmost car leads: it takes the next tile

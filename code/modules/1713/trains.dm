@@ -672,6 +672,8 @@ var/global/train_solo_move = FALSE
 		update_icon()
 
 /obj/structure/trains/storage/attackby(obj/item/W as obj, mob/user as mob)
+	if (service_use(W, user))
+		return
 	..()
 	storage.attackby(W, user)
 	update_icon()
@@ -741,6 +743,8 @@ var/global/train_solo_move = FALSE
 			M.forceMove(src.loc)
 		return
 /obj/structure/trains/transport/attackby(obj/item/W as obj, mob/user as mob)
+	if (service_use(W, user))
+		return
 	if (istype(W, /obj/item/weapon/grab))
 		var/obj/item/weapon/grab/G = W
 		var/mob/living/affecting = G.affecting
@@ -1068,12 +1072,18 @@ var/global/train_solo_move = FALSE
 	consist_engines = 0
 	consist_braked = 0
 	consist_own = 0
+	consist_hot = 0
 	for (var/obj/structure/trains/car in cars)
 		var/car_weight = car.car_load_weight()
 		consist_weight += car_weight
+		// Axle boxes (train_servicing.dm): a seized axle holds like a brake,
+		// a hot box drags.
+		car.wear_axles(steps_since)
 		// Brakes (train_brakes.dm): handbrakes on, and what the driver's brake holds.
-		if (car.handbrake)
+		if (car.handbrake || car.axle_seized)
 			consist_braked += car_weight
+		else if (car.axle_oil <= 0)
+			consist_hot += car_weight
 		if (car == src || (car_id && car.car_id == car_id))
 			consist_own += car_weight
 		if (istype(car, /obj/structure/trains/locomotive))
@@ -1330,7 +1340,7 @@ var/global/train_solo_move = FALSE
 
 // How well the fire steams: a firebox under half full makes less.
 /obj/structure/trains/locomotive/coal/proc/fire_factor()
-	return max_fuel ? min(1, fuel / (0.5 * max_fuel)) : 1
+	return (max_fuel ? min(1, fuel / (0.5 * max_fuel)) : 1) * clinker_factor()
 
 /obj/structure/trains/locomotive/coal/steam_factor()
 	if (plug_dropped || pressure < BOILER_MIN_PRESSURE)
@@ -1366,6 +1376,7 @@ var/global/train_solo_move = FALSE
 	if (!on || plug_dropped || tiles <= 0)
 		return
 	var/work = (notch / LOCO_NOTCHES) * min(1.5, weight / max(1, haul))
+	make_clinker(notch, weight, tiles)
 	pressure = clamp(pressure + (1.1 * fire_factor() - work) * tiles, 0, 100)
 	boiler_water = max(0, boiler_water - (0.2 + 0.8 * work) * tiles)
 	if (injector && water > 0 && boiler_water < max_boiler && pressure >= BOILER_INJECTOR_PRESSURE)
@@ -1415,7 +1426,7 @@ var/global/train_solo_move = FALSE
 	var/tank = round(100 * water / max_water)
 	if (plug_dropped)
 		return "The fusible plug has melted. Tank [tank]%."
-	return "Fire [on ? "lit" : "out"]. Pressure [round(pressure)]%. Water in the glass [glass]%, tank [tank]%, injector [injector ? "on" : "off"]."
+	return "Fire [on ? "lit" : "out"]. Pressure [round(pressure)]%. Water in the glass [glass]%, tank [tank]%, injector [injector ? "on" : "off"].[clinker_text()]"
 
 /obj/structure/trains/locomotive/coal/extra_controls()
 	return list(injector ? "Injector off" : "Injector on")
