@@ -155,6 +155,14 @@ class RegionAdminSendSeams(unittest.TestCase):
         self.assertIn('<Compile Include="RegionPlayers.cs" />', PROJECT)
         self.assertIn('new PlayersDialog(control, chosen.Id, chosen.Name, HostLine)', LAUNCHER)
 
+    def test_an_arrival_never_takes_an_account_already_playing_here(self):
+        # A handover passed an admin through the lobby and gave them the body
+        # they had sent over, in place of the character they were playing.
+        waiting = body(TRAVEL, '/proc/region_travel_waiting_body(account)')
+        self.assertIn('other != found && other.persistence_owner_ckey == account && other.stat != DEAD', waiting)
+        self.assertIn('!other.region_arrival_pending) return null', waiting)
+        self.assertIn('this body waits for an admin', SEND)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -638,6 +638,11 @@ var/global/list/region_travel_carry_types = list(
 		if(found) return null
 		found = H
 	if(!found || found.client || found.key || found.stat == DEAD || !get_turf(found)) return null
+	// An account that already has a living character here keeps playing it: a
+	// second body (an admin send) waits for an admin and never takes the client
+	// when a restart or reconnect passes it through the lobby.
+	for(var/mob/living/human/other in human_mob_list)
+		if(other != found && other.persistence_owner_ckey == account && other.stat != DEAD && !QDELETED(other) && !other.region_arrival_pending) return null
 	return found
 
 // Hands a waiting body to its player if they are already in the lobby.
