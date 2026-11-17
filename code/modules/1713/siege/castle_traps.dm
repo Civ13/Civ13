@@ -153,6 +153,9 @@
 /proc/castle_trapdoor_holds(turf/T, atom/movable/A)
 	if (istype(A, /obj/structure/castle_trapdoor))
 		return TRUE
+	// A lift platform standing in its shaft is floor too (lifts.dm).
+	if (istype(A, /obj/structure/lift_platform) || (locate(/obj/structure/lift_platform) in T))
+		return TRUE
 	for (var/obj/structure/castle_trapdoor/D in T)
 		if (!D.open)
 			return TRUE

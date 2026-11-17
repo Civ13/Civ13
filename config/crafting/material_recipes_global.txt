@@ -2435,6 +2435,12 @@ RECIPE: /material/wood/,windmill,/obj/structure/workshop_machine/mover/windmill,
 RECIPE: /material/wood/,treadwheel crane,/obj/structure/workshop_machine/shear_legs/crane,16,200,1,1,economy & production,70,0,0,8,null
 RECIPE: /material/iron/,steam crane,/obj/structure/workshop_machine/shear_legs/crane/steam,20,250,1,1,economy & production,0,0,0,8,null
 RECIPE: /material/steel/,tower crane,/obj/structure/workshop_machine/shear_legs/crane/steam/tower,30,300,1,1,economy & production,0,0,0,8,null
+RECIPE: /material/wood/,wooden lift,/obj/structure/lift_platform,12,150,1,1,construction,70,0,0,8,null
+RECIPE: /material/wood/,lift bell,/obj/structure/lift_call,2,40,1,1,construction,70,0,0,8,null
+RECIPE: /material/iron/,lift car,/obj/structure/lift_platform/iron,12,200,1,1,construction,0,0,0,8,null
+RECIPE: /material/iron/,steam lift engine,/obj/structure/lift_drive/steam,15,250,1,1,construction,0,0,0,8,null
+RECIPE: /material/steel/,electric lift motor,/obj/structure/lift_drive/electric,10,250,1,1,construction,0,0,0,8,null
+RECIPE: /material/copper/,lift call button,/obj/structure/lift_call/button,2,40,1,1,construction,0,0,0,8,null
 RECIPE: /material/iron/,steam roller,/obj/structure/workshop_machine/steam_site/road_roller,20,250,1,1,economy & production,0,0,0,8,null
 RECIPE: /material/iron/,steam shovel,/obj/structure/workshop_machine/steam_site/steam_shovel,20,250,1,1,economy & production,0,0,0,8,null
 RECIPE: /material/wood/,wire drawing bench,/obj/structure/workshop_machine/wire_bench,8,150,1,1,economy & production,0,0,0,8,null
