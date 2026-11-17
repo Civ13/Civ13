@@ -358,6 +358,8 @@ var/global/hull_ledger_timer_off = FALSE
 	// Her powered pumps answer the water (hull_pumps.dm).
 	pump_bilge(seconds)
 	check_founder()
+	// Unheld and crewed, she drifts (hull_anchors.dm).
+	step_drift()
 
 /datum/hull_ledger/proc/status_text()
 	. = "She is a [class_name()]."
@@ -372,6 +374,7 @@ var/global/hull_ledger_timer_off = FALSE
 		. += " <b>[holes] hole\s in her hull let[holes == 1 ? "s" : ""] the sea in:</b> use wood on the open water of a hole, hammer in the other hand, to patch it."
 	if (patches > 0)
 		. += " [patches] patch[patches == 1 ? "" : "es"] weep[patches == 1 ? "s" : ""] a little."
+	. += " [capitalize(hold_text())]"
 	if (!under_way())
 		survey_load()
 	. += load_text()
@@ -389,7 +392,7 @@ var/global/hull_ledger_timer_off = FALSE
 
 // The ledger as plain numbers for a saved field, and back.
 /datum/hull_ledger/proc/to_list()
-	return list("water" = round(water, 0.01), "holes" = holes, "patches" = patches, "grounded" = grounded ? 1 : 0, "seams" = round(seams, 0.001))
+	return list("water" = round(water, 0.01), "holes" = holes, "patches" = patches, "grounded" = grounded ? 1 : 0, "seams" = round(seams, 0.001), "old_anchor" = old_anchor ? 1 : 0)
 
 /datum/hull_ledger/proc/from_list(list/state)
 	if (!islist(state))
@@ -402,6 +405,8 @@ var/global/hull_ledger_timer_off = FALSE
 	if (isnum(state["patches"]))
 		patches = clamp(round(state["patches"]), 0, tiles)
 	grounded = state["grounded"] ? TRUE : FALSE
+	// A record from before anchors were things: she keeps the one she had.
+	old_anchor = (isnull(state["old_anchor"]) || state["old_anchor"]) ? TRUE : FALSE
 	if (isnum(state["seams"]))
 		seams = clamp(state["seams"], 0, 1)
 	seams_told = seams >= HULL_SEAMS_OPEN ? 2 : (seams >= HULL_SEAMS_WORKING ? 1 : 0)
@@ -418,7 +423,7 @@ var/global/hull_ledger_timer_off = FALSE
 	if (!ledger)
 		ledger = new /datum/hull_ledger(src)
 	ledger.survey()
-	if (state)
+	if (islist(state))
 		ledger.from_list(state)
 	return ledger
 
