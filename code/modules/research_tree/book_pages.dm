@@ -211,6 +211,7 @@ var/global/list/book_research_writing_supplies = list(
 	qdel(sheet)
 	add_research_chapter(node_id, FALSE, H)
 	H.gain_scholarship(node_id, BOOK_WRITE_SKILL_GAIN)
+	H.philosophy_from_writing(node_id)
 	return TRUE
 
 // ------------------------------------------------------------

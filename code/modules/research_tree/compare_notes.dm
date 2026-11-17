@@ -84,6 +84,8 @@
 	// Each pairing of scholars on a subject teaches both, once (learning_by_doing.dm).
 	H.gain_active_scholarship(node_id, points, "compared:[node_id]:[partner.scholar_identity()]")
 	partner.gain_active_scholarship(node_id, points, "compared:[node_id]:[H.scholar_identity()]")
+	H.philosophy_from_comparing(node_id, partner)
+	partner.philosophy_from_comparing(node_id, H)
 	for (var/mob/living/human/V in viewers(world.view, src))
 		to_chat(V, SPAN_NOTICE("[V == H ? "You and [partner]" : "[H] and [partner]"] compare the notes on <b>[N.name]</b> in [fuller] and [lesser]: [fuller] gains [points] points[finished ? " and the chapter is finished. It can now be studied" : ""]."))
 	if (finished && assigned_node == node_id && placed_book() == fuller)

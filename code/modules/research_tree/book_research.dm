@@ -507,9 +507,11 @@
 		if (tutor && tutor.still_tutoring(H, node_id))
 			H.gain_scholarship(node_id, SCHOLAR_STUDY_GAIN * SCHOLAR_TUTOR_GAIN_MULT)
 			tutor.gain_scholarship(node_id, SCHOLAR_STUDY_GAIN)
+			tutor.philosophy_from_tutoring(node_id, H)
 			to_chat(tutor, SPAN_NOTICE("[H] has learned [N.name] from you."))
 		else
 			H.gain_scholarship(node_id, SCHOLAR_STUDY_GAIN)
+		H.philosophy_from_study(node_id)
 		to_chat(H, SPAN_NOTICE("You have learned <b>[N.name]</b>. [source] can be used again."))
 		tutorial_event_for(H, "research")
 		return TRUE
