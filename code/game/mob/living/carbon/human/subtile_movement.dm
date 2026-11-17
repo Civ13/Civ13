@@ -683,8 +683,11 @@
 // A held key used to wait for the deadline tick and then one more scan tick
 // before its next step. Chained held steps keep that pace, so smooth walking
 // and running are no faster than before; only the stop at tile centres is gone.
+// Whole ticks are rounded up, but world.time is a float: a duration meant as
+// a whole number of ticks (the hill pace) can come back a hair over it, which
+// cost a whole extra tick now and then. A twentieth of a tick counts as noise.
 /mob/living/human/proc/human_subtile_held_pace(duration)
-	var/ticks = -round(-round(duration / world.tick_lag, 0.001))
+	var/ticks = ceil(duration / world.tick_lag - 0.05)
 	return (max(1, ticks) + 1) * world.tick_lag
 
 /mob/living/human/proc/human_subtile_deadline(raw_deadline, now, ordinal = FALSE)

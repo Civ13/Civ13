@@ -190,10 +190,59 @@ var/terrain_height_probe_checks = 0
 	var/tick = world.tick_lag
 	var/flat_pace = (ceil(2.85 / tick) + 1) * tick
 	var/total = 0
+	F.terrain_pace_speed = 1 / 1.5 // already eased into the climb
 	for (var/i in 1 to 20)
 		var/delay = 2.85 + terrain_free_slope_delay(F, locate(6, 9, 1), EAST, 2.85)
-		total += (max(1, ceil(round(delay / tick, 0.001))) + 1) * tick
+		total += (max(1, ceil(delay / tick - 0.05)) + 1) * tick
 	terrain_height_probe_assert(abs(total / 20 - flat_pace * 1.5) <= tick / 20 + 0.0001, "climb_pace_follows_curve")
+	// Setting off up or down a hill from standing starts at the flat speed and
+	// eases to the slope's speed in a straight line: each step changes speed by
+	// TERRAIN_PACE_RAMP per decisecond of the step, never jumping.
+	var/list/ramp_rows = list()
+	for (var/run in list("climb", "descent"))
+		F.loc = (run == "climb") ? locate(5, 9, 1) : locate(8, 9, 1)
+		var/run_dir = (run == "climb") ? EAST : WEST
+		var/turf/run_to = get_step(F.loc, run_dir)
+		F.terrain_momentum = 0
+		F.terrain_momentum_at = world.time - 50
+		F.terrain_pace_carry = 0
+		var/run_time = 0
+		var/last_speed = 1
+		var/last_tile_speed = 0
+		var/steady = 0
+		var/ramp_ok = TRUE
+		for (var/i in 1 to 14)
+			var/step_start = F.terrain_pace_speed
+			if (i == 1)
+				step_start = 1
+			var/delay = 2.85 + terrain_free_slope_delay(F, run_to, run_dir, 2.85)
+			var/duration = (max(1, ceil(delay / tick - 0.05)) + 1) * tick
+			var/speed = flat_pace / duration
+			ramp_rows += "[run] [run_time] [run_time + duration] [speed] [F.terrain_pace_speed]"
+			run_time += duration
+			// The eased speed moves at most the ramp's rate over a step.
+			if (abs(F.terrain_pace_speed - step_start) > 0.04 * flat_pace / step_start + 0.0001)
+				ramp_ok = FALSE
+			if (i == 1 && abs(F.terrain_pace_speed - 1) > 0.04 * flat_pace + 0.0001)
+				ramp_ok = FALSE
+			if ((run == "climb" && F.terrain_pace_speed > last_speed + 0.0001) || (run == "descent" && F.terrain_pace_speed < last_speed - 0.0001))
+				ramp_ok = FALSE
+			// The tiles' own speeds never step against the ramp while it eases.
+			if (abs(F.terrain_pace_speed - last_speed) >= 0.0001 && last_tile_speed && ((run == "climb" && speed > last_tile_speed + 0.0001) || (run == "descent" && speed < last_tile_speed - 0.0001)))
+				ramp_ok = FALSE
+			last_tile_speed = speed
+			if (abs(F.terrain_pace_speed - last_speed) < 0.0001)
+				steady++
+			last_speed = F.terrain_pace_speed
+		terrain_height_probe_assert(ramp_ok, "[run]_from_rest_eases_linearly")
+		terrain_height_probe_assert(steady >= 2, "[run]_settles_on_slope_speed")
+	terrain_height_probe_assert(terrain_height_probe_close(F.terrain_pace_speed, 1.45 / 0.8), "descent_reaches_full_momentum_speed")
+	text2file(jointext(ramp_rows, "\n"), "ramp.txt")
+	// Already at the slope's speed, the ramp leaves the factor alone.
+	F.terrain_pace_speed = 1 / 1.5
+	terrain_height_probe_assert(terrain_pace_ramp(F, 1.5, flat_pace) == 1.5, "steady_slope_unchanged")
+	F.terrain_pace_speed = 1
+	terrain_height_probe_assert(terrain_pace_ramp(F, 1, flat_pace) == 1, "flat_start_unchanged")
 	// A straight slide along a level row ignores the hillside beside it, even
 	// with the body a quarter tile off the row's centre line.
 	F.loc = locate(5, 6, 1)

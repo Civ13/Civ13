@@ -30,7 +30,7 @@ def proc_body(text, header):
 
 
 def held_pace(duration):
-    ticks = -int(-round(duration / TICK, 3) // 1)
+    ticks = math.ceil(duration / TICK - 0.05)
     return (max(1, ticks) + 1) * TICK
 
 
@@ -114,7 +114,7 @@ class Sources(unittest.TestCase):
 
     def test_held_pace_adds_one_scan_tick(self):
         body = proc_body(SUBTILE, '/mob/living/human/proc/human_subtile_held_pace(')
-        self.assertIn('-round(-round(duration / world.tick_lag, 0.001))', body)
+        self.assertIn('ceil(duration / world.tick_lag - 0.05)', body)
         self.assertIn('(max(1, ticks) + 1) * world.tick_lag', body)
 
 
