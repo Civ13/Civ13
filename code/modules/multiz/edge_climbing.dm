@@ -7,7 +7,8 @@
 //   ground under open air, to stand a ladder between the two levels.
 // - Stairs: built stairs under open air lead to the level above. Walk onto
 //   them the way they were built (or click them) to go up; walk onto the open
-//   air above them to go down without falling.
+//   air above them to go down without falling. Built from an upper floor while
+//   facing an opening, they go on the floor below it (stairs_down_spot).
 
 #define EDGE_CLIMB_DOWN_TIME 30
 #define EDGE_LADDER_PLACE_TIME 40
@@ -297,6 +298,69 @@
 			return C
 	return null
 
+/proc/cover_type_is_stairs(path)
+	if (!ispath(path, /obj/covers))
+		return FALSE
+	var/obj/covers/C = path
+	return initial(C.stairs)
+
+// Stairs built from an upper floor go down. Standing on a floor and facing an
+// opening in it (open air beside you), the stairs are laid on the ground or
+// supported floor below the opening and climb back up to where you stand.
+// Returns list(lower turf, stairs dir), or null. When null, why[1] says why
+// the stairs can't go down, or is empty when they are built underfoot as usual.
+/proc/stairs_down_spot(mob/user, stairs_type, list/why)
+	. = null
+	if (islist(why))
+		why.Cut()
+	var/turf/here = user ? get_turf(user) : null
+	if (!here || user.loc != here)
+		return
+	var/problem
+	var/direction = user.dir
+	var/turf/well = (direction in list(NORTH, SOUTH, EAST, WEST)) ? get_step(here, direction) : null
+	var/level = well ? multiz_level_below(well.z) : 0
+	var/turf/lower = level ? locate(well.x, well.y, level) : null
+	if (!lower || !edge_open_air(well) || edge_open_air(here))
+		// Not facing an opening: stairs go underfoot where they can. On an upper
+		// floor that can't take them, say how to build them down instead.
+		var/underfoot = tile_build_refusal(here, stairs_type)
+		if (!underfoot || !building_open_turf(here))
+			return
+		problem = "[underfoot] To build stairs down to the level below, stand beside an opening in the floor and face it."
+	else if (stairs_in(lower) || (locate(/obj/structure/multiz) in lower) || (locate(/obj/structure/multiz) in well))
+		problem = "There already are stairs or a ladder at that opening."
+	else
+		var/obj/covers/floor = tile_floor_cover(lower)
+		var/subfloor = floor && tile_subfloor_for(lower, stairs_type)
+		if (floor && !subfloor)
+			problem = "There is already \a [floor] below that opening. Take it up with a hammer from below first."
+		else if (lower.density || tile_wall_piece(lower))
+			problem = "Something solid fills the space below that opening."
+		else if (subfloor)
+			problem = null // The stairs are laid over it and take its place.
+		else if (building_open_turf(lower))
+			if (building_floor_error(lower))
+				problem = "The drop below that opening is more than one storey. Stairs need solid ground or a supported floor under them."
+		else if (!ledge_landing_clear(lower, TRUE))
+			problem = "The ground below that opening can't take stairs. It needs clear, solid footing."
+		if (!problem)
+			for (var/atom/movable/A in lower)
+				if (A.density && !isliving(A))
+					problem = "Something is in the way below that opening."
+					break
+		if (!problem && !ledge_landing_clear(here, TRUE))
+			problem = "The stairs need clear floor where you stand to come up onto."
+		if (!problem && (istype(get_area(lower), /area/caribbean/no_mans_land) || istype(get_area(well), /area/caribbean/no_mans_land)))
+			problem = "You can't build stairs here."
+		if (!problem && persistence_save_in_progress)
+			problem = "You can't build while the world is saving."
+	if (problem)
+		if (islist(why))
+			why += problem
+		return null
+	return list(lower, turn(direction, 180))
+
 // The upper turf stairs S take H to, or null with why[1] naming the reason.
 // The open air above the stairs is the stairwell; the top step lands on the
 // floor beyond it, the way the stairs were built first.
@@ -358,6 +422,8 @@
 	if (pulledby)
 		pulledby.stop_pulling()
 	stairs_moved_at = world.time
+	if (!S.stairwell_top)
+		stairs_refresh_top(S)
 	if (trench_climb_place(src, destination))
 		to_chat(src, SPAN_NOTICE("You climb up the stairs."))
 		return TRUE
@@ -390,8 +456,13 @@
 // Walking off an upper floor onto the open air over stairs steps down onto
 // them instead of falling. Returns TRUE when it handled the move.
 /proc/stairs_soft_descent(atom/movable/A, turf/below)
-	if (!ishuman(A) || !below || !stairs_in(below) || !ledge_landing_clear(below, TRUE))
+	if (!ishuman(A) || !below || below.density || !stairs_in(below))
 		return FALSE
+	// The stairs are the footing, whatever they were built on (shallow water,
+	// a floor over open air); only something solid on them stops the step down.
+	for (var/atom/movable/M in below)
+		if (M.density && !isliving(M))
+			return FALSE
 	var/mob/living/human/H = A
 	if (!persistence_movement_allowed(H, below))
 		return FALSE
@@ -400,10 +471,84 @@
 	if (H.pulledby)
 		H.pulledby.stop_pulling()
 	H.stairs_moved_at = world.time
-	if (!trench_climb_place(H, below))
+	if (!trench_climb_place(H, below) && H.loc != below)
 		return FALSE
 	to_chat(H, SPAN_NOTICE("You walk down the stairs."))
 	return TRUE
+
+//////// The top of the stairs, seen from above ////////
+
+// The open air over stairs shows the top step and its rails, so from the floor
+// above the safe way down reads apart from a plain drop. It is drawn over the
+// view of the level below and under any floor or trapdoor laid over it, takes
+// no clicks and is never saved: the stairs put it back when they load.
+// Art: tests/sprites/create_stairwell_top.py.
+/obj/effect/stairwell_top
+	name = "top of the stairs"
+	desc = "The top of a flight of stairs. Walk onto it to go down."
+	icon = 'icons/obj/stairwell_top.dmi'
+	icon_state = "stairwell_top"
+	plane = FLOOR_PLANE
+	layer = 1.97
+	anchored = TRUE
+	mouse_opacity = 0
+	simulated = FALSE
+	should_save = FALSE
+	var/tmp/obj/covers/stairs = null
+
+/obj/effect/stairwell_top/Destroy()
+	if (stairs && stairs.stairwell_top == src)
+		stairs.stairwell_top = null
+	stairs = null
+	return ..()
+
+/obj/covers/var/tmp/obj/effect/stairwell_top/stairwell_top = null
+
+// Puts the marker over stairs S, turned the way they climb, or takes it away
+// when there is no level above them.
+/proc/stairs_refresh_top(obj/covers/S)
+	if (!S || !S.stairs)
+		return
+	var/turf/T = get_turf(S)
+	var/level = (T && !QDELETED(S)) ? multiz_level_above(T.z) : 0
+	var/turf/well = level ? locate(T.x, T.y, level) : null
+	var/obj/effect/stairwell_top/top = S.stairwell_top
+	if (!well)
+		if (top)
+			qdel(top)
+		return
+	if (top && top.loc != well)
+		qdel(top)
+		top = null
+	if (!top)
+		top = new(well)
+		top.stairs = S
+		S.stairwell_top = top
+	top.icon_state = lowertext(S.material) == "wood" ? "stairwell_top" : "stairwell_top_stone"
+	top.set_dir(S.dir)
+
+// After the stairs are placed and turned (a level above may load after them).
+/proc/stairs_refresh_top_later(obj/covers/S)
+	set waitfor = FALSE
+	sleep(1)
+	if (S && !QDELETED(S))
+		stairs_refresh_top(S)
+
+/obj/covers/New()
+	. = ..()
+	if (stairs)
+		stairs_refresh_top_later(src)
+
+/obj/covers/set_dir(new_dir)
+	. = ..()
+	if (stairs && stairwell_top)
+		stairs_refresh_top(src)
+
+/obj/covers/Destroy()
+	if (stairwell_top)
+		qdel(stairwell_top)
+		stairwell_top = null
+	return ..()
 
 #undef EDGE_CLIMB_DOWN_TIME
 #undef EDGE_LADDER_PLACE_TIME

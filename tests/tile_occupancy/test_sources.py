@@ -21,9 +21,9 @@ class TileOccupancySources(unittest.TestCase):
     def test_crafting_checks_before_and_after_wait(self):
         stack = read('code/game/objects/items/stacks/stack.dm')
         body = stack[stack.index('/obj/item/stack/proc/produce_recipe('):]
-        first = body.index('tile_build_refusal(get_turf(user), recipe.result_type)')
+        first = body.index('tile_build_refusal(get_turf(build_loc), recipe.result_type)')
         wait = body.index('if (!do_after(user, buildtime)')
-        second = body.index('tile_build_refusal(get_turf(user), recipe.result_type)', first + 1)
+        second = body.index('tile_build_refusal(get_turf(build_loc), recipe.result_type)', first + 1)
         pay = body.index('if (use(required,')
         self.assertLess(first, wait)
         self.assertLess(wait, second)
@@ -32,9 +32,9 @@ class TileOccupancySources(unittest.TestCase):
     def test_floor_over_subfloor_keeps_ceiling(self):
         stack = read('code/game/objects/items/stacks/stack.dm')
         body = stack[stack.index('/obj/item/stack/proc/produce_recipe('):]
-        subfloor = body.index('tile_subfloor_for(get_turf(user), recipe.result_type)')
+        subfloor = body.index('tile_subfloor_for(get_turf(build_loc), recipe.result_type)')
         self.assertLess(body.index('if (!do_after(user, buildtime)'), subfloor)
-        self.assertLess(subfloor, body.index('building_floor_error(get_turf(user))'))
+        self.assertLess(subfloor, body.index('building_floor_error(get_turf(build_loc))'))
         self.assertIn('floor.replace_subfloor(subfloor)', body)
         rule = read('code/game/objects/tile_occupancy.dm')
         replace = rule[rule.index('/obj/covers/proc/replace_subfloor('):]

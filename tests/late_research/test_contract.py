@@ -349,7 +349,7 @@ class TrialAndError(unittest.TestCase):
     def test_materials_are_spent_before_the_attempt_is_judged(self):
         stack = read("code/game/objects/items/stacks/stack.dm")
         self.assertLess(stack.index("if (use(required, (joinery || carving) ? null : H))"), stack.index("trial_craft_ruined(user"))
-        self.assertLess(stack.index("trial_craft_ruined(user"), stack.index("O = new recipe.result_type(user.loc, recipe.use_material)"))
+        self.assertLess(stack.index("trial_craft_ruined(user"), stack.index("O = new recipe.result_type(build_loc, recipe.use_material)"))
     def test_gates(self):
         book = proc(self.src, "/mob/living/human/proc/prototype_book")
         for guard in ("B.trial_subject == node_id", "trial_count(node_id) < TRIAL_CHARACTER_MAX", "SUBJECT_PROTO_SHARE"):
