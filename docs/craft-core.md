@@ -149,7 +149,13 @@ floors before anything else on a tile, so nobody reaches open air without the
 deck under them. `/datum/craft/air` never creeps by pixels, keeps only engine
 drives, and redraws a ground view for the crew and a shadow for the ground on
 every hop. `/obj/structure/airship_helm` commissions, steers and saves her;
-a restored airship holds her position. Native probe:
+a restored airship holds her position. Ground fire crossing a tile under her
+deck goes through `air_hull_overhead_fire()` (from `airborne_overhead_hit()`):
+`struck_by()` hits someone aboard, holes a cell (3 lift each, cloth patches) or
+burns it out with fire arrows and incendiary shot, then `check_lift()` holds
+her in place when short of lift and calls `crash()` below half of it, which
+drops everyone and everything aboard to the ground. `/obj/structure/airship_bomb_hatch`
+drops aircraft bombs onto the ground below. Native probe:
 `tests/pedal_bicycle/ride.py --probe air_hull_probe.dm`.
 
 ## Drives aboard

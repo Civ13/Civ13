@@ -4,7 +4,9 @@
 // its top, hangs gas cells and sets up a helm, commissions her, finds one cell
 // too few to cast off, adds another, flies her two tiles with the builder
 // aboard, comes about, is stopped by an upper storey, fires down at the
-// ground, and saves and restores her. Production code runs unchanged.
+// ground, saves and restores her, has a cell holed
+// from the ground and patched, drops a bomb through the hatch, and is wrecked
+// when both cells burn. Production code runs unchanged.
 var/global/datum/air_hull_probe/air_hull_probe = new
 
 /mob/living/human/air_hull_actor/ssd_check()
@@ -178,13 +180,115 @@ var/global/datum/air_hull_probe/air_hull_probe = new
 	H.before_save()
 	expect(length(H.hull_state), "nothing saved")
 	H.decommission()
-	expect(!H.craft && !(locate(/obj/structure/airship_gas_cell) in null), "decommission left her")
+	expect(!H.craft, "decommission left her")
+	expect(locate(/obj/covers/airship_deck) in get_turf(H), "struck deck vanished")
 	H.after_load()
 	expect(H.craft && H.craft.body.tile_count() == tiles && H.craft.anchored, "restore: [H.craft ? H.craft.body.tile_count() : "none"]")
 	notes["restored_tiles"] = H.craft ? H.craft.body.tile_count() : 0
-	H.decommission()
-	expect(locate(/obj/covers/airship_deck) in get_turf(H), "struck deck vanished")
+	if(H.craft)
+		fight(H, B, start.z)
 	B.loc = null
+
+// Ground fire holes a cell, cloth patches it, a bomb drops through the hatch,
+// one burnt cell holds her in place and a second wrecks her.
+/datum/air_hull_probe/proc/fight(obj/structure/airship_helm/H, mob/living/human/air_hull_actor/B, ground_z)
+	var/datum/craft/air/C = H.craft
+	var/datum/craft_body/built/air/body = C.body
+	var/list/gas = list()
+	var/turf/free = null
+	for(var/turf/D in body.cells())
+		var/obj/structure/airship_gas_cell/G = locate() in D
+		if(G)
+			gas += G
+		else if(!free && !(locate(/obj/structure/airship_helm) in D))
+			free = D
+	expect(gas.len == 2, "[gas.len] gas cells after restore")
+	if(gas.len != 2 || !free)
+		return
+	var/obj/structure/airship_gas_cell/G1 = gas[1]
+	var/obj/structure/airship_gas_cell/G2 = gas[2]
+	B.forceMove(free)
+	sleep(2)
+	// A rifleman on the ground shoots along the row under the first cell.
+	var/mob/living/human/air_hull_actor/S = new(locate(G1.x - 3, G1.y, ground_z))
+	var/mob/living/human/air_hull_actor/mark = new(locate(G1.x + 3, G1.y, ground_z))
+	S.a_intent = I_HARM
+	var/obj/item/weapon/gun/projectile/revolver/nagant_revolver/gun = new(S)
+	S.put_in_active_hand(gun)
+	gun.safetyon = FALSE
+	var/shots = 0
+	while(!G1.holes && !G2.holes && shots < 12)
+		if(!gun.loaded.len)
+			for(var/i = 1 to 3)
+				gun.loaded += new gun.ammo_type(gun)
+		S.last_movement = world.time - 100
+		gun.Fire(mark, S)
+		shots++
+		sleep(10)
+	notes["shots_to_hole"] = shots
+	// The row under the first cell may pass under the second as well.
+	var/obj/structure/airship_gas_cell/holed = G1.holes ? G1 : G2
+	expect(holed.holes > 0, "[shots] shots from the ground never holed a cell overhead")
+	expect(holed.lift() < 12 && holed.icon_state == "gas_cell_holed", "a holed cell still lifts [holed.lift()]")
+	expect(!QDELETED(C) && !body.lift_refusal(), "one hole grounded her: [body.lift_refusal()]")
+	S.loc = null
+	mark.loc = null
+	gun.loc = null
+	// Patched with cloth from the deck.
+	var/holes = holed.holes
+	var/obj/item/stack/material/cloth/rag = new(B)
+	rag.amount = 5
+	B.put_in_active_hand(rag)
+	holed.attackby(rag, B)
+	expect(holed.holes == holes - 1, "cloth did not patch a hole: [holed.holes] of [holes]")
+	for(var/obj/structure/airship_gas_cell/G in gas)
+		G.holes = 0
+		G.update_icon()
+	// The bomb hatch drops a filled bomb onto the ground below.
+	var/obj/structure/airship_bomb_hatch/hatch = new(free)
+	var/obj/item/weapon/aircraft_bomb/bomb = new(B)
+	bomb.filled = TRUE
+	B.drop_from_inventory(rag)
+	rag.loc = null
+	B.put_in_active_hand(bomb)
+	hatch.attackby(bomb, B)
+	expect(bomb.loc == hatch, "the hatch did not take the bomb")
+	var/mob/living/human/air_hull_actor/V = new(locate(free.x, free.y, ground_z))
+	sleep(2)
+	hatch.attack_hand(B)
+	sleep(10)
+	notes["bomb_victim_brute"] = V.getBruteLoss()
+	expect(!length(hatch.bombs()), "the bomb stayed in the cradle")
+	expect(QDELETED(bomb) || bomb.z == ground_z, "the bomb did not fall: [bomb.x],[bomb.y],[bomb.z]")
+	expect(V.getBruteLoss() > 0 || V.stat == DEAD || QDELETED(V), "the bomb hurt no one below")
+	expect(!QDELETED(C) && B.z == body.z, "the bomb blast reached the deck")
+	if(!QDELETED(V))
+		V.loc = null
+	// A fire arrow burns one cell out: she hangs where she is.
+	var/turf/D1 = get_turf(G1)
+	var/obj/item/projectile/arrow/arrow/fire/F = new(locate(D1.x, D1.y, ground_z))
+	C.set_anchor(FALSE)
+	C.struck_by(F, D1, F.loc)
+	notes["one_cell_burnt"] = "lift [body.lift()] load [body.load()]"
+	expect(G1.burnt && G1.lift() == 0, "a fire arrow did not burn the cell")
+	expect(!QDELETED(C) && C.anchored && C.speed == VESSEL_SPEED_STOP, "half her lift gone and she kept flying")
+	expect(B.z == body.z, "builder fell when one cell burned")
+	// Burning the second wrecks her: the builder falls hurt, deck and helm go.
+	var/brute = B.getBruteLoss()
+	var/turf/D2 = get_turf(G2)
+	var/obj/item/projectile/arrow/arrow/fire/F2 = new(locate(D2.x, D2.y, ground_z))
+	C.struck_by(F2, D2, F2.loc)
+	sleep(5)
+	notes["crash_brute"] = B.getBruteLoss() - brute
+	expect(QDELETED(C) && !(C in air_hull_crafts), "she did not break up with no lift")
+	expect(QDELETED(H), "the helm survived the wreck")
+	expect(B.z == ground_z && B.getBruteLoss() > brute, "builder not thrown down hurt: z [B.z]")
+	expect(!(locate(/obj/covers/airship_deck) in D2) && !(locate(/obj/structure/airship_gas_cell) in D2), "wreck left deck in the air")
+	expect(QDELETED(hatch), "the bomb hatch stayed in the air")
+	if(!QDELETED(F))
+		qdel(F)
+	if(!QDELETED(F2))
+		qdel(F2)
 
 /datum/air_hull_probe/proc/run_probe()
 	var/failure = null

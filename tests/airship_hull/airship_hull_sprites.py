@@ -1,8 +1,8 @@
 """Draw the buildable airship's sprites (original pixel art, no generated images).
 
 icons/obj/vehicles/airship_hull.dmi, 32x32: "helm" (4 directions, the wheel
-faces the bow), and the inventory items "gas_cell_folded", "airship_planks"
-and "helm_kit".
+faces the bow), the inventory items "gas_cell_folded", "airship_planks"
+and "helm_kit", and the deck fittings "bomb_hatch" and "bomb_hatch_open".
 
 icons/obj/vehicles/airship_gas_cell.dmi, 64x64: "gas_cell", "gas_cell_holed"
 and "gas_cell_burnt". The game draws the cell with pixel_x = -16 and
@@ -15,6 +15,7 @@ the parts sit beside the pedal airship.
     python3 tests/airship_hull/airship_hull_sprites.py            # rewrite both DMIs
     python3 tests/airship_hull/airship_hull_sprites.py --check    # fail when one is stale
     python3 tests/airship_hull/airship_hull_sprites.py --preview out.png
+    python3 tests/airship_hull/airship_hull_sprites.py --hatch-preview out.png
 """
 from pathlib import Path
 import sys
@@ -221,6 +222,145 @@ def helm_kit():
     return im
 
 
+# --- bomb hatch -------------------------------------------------------------
+
+# The dark plank colours of icons/turf/flooring/wood.dmi "wood": a four-pixel
+# course is a lit edge, the face, the shaded edge and the gap to the next.
+DECK_LIT = (81, 43, 15, 255)
+DECK_FACE = (71, 33, 6, 255)
+DECK_SHADE = (60, 26, 4, 255)
+DECK_GAP = (49, 17, 2, 255)
+DECK_COURSE = (DECK_LIT, DECK_FACE, DECK_SHADE, DECK_GAP)
+HATCH_EDGE = (30, 10, 2, 255)
+IRON = (104, 106, 112, 255)
+IRON_LIGHT = (150, 152, 158, 255)
+IRON_DARK = (52, 54, 60, 255)
+STENCIL = (206, 194, 160, 255)
+STENCIL_WORN = (150, 128, 96, 255)
+DROP = (14, 13, 18, 255)
+DROP_WALL = (36, 16, 6, 255)
+HAZE = (96, 124, 142, 255)
+HAZE_DARK = (62, 84, 100, 255)
+FIELD = (70, 98, 58, 255)
+FIELD_DARK = (50, 74, 46, 255)
+FIELD_TAN = (128, 112, 74, 255)
+RIVER = (120, 152, 168, 255)
+CLOUD = (176, 190, 196, 255)
+
+# The stencilled bomb, nose down: fins, neck, body.
+BOMB_MARK = ('XX..XX',
+             '.XXXX.',
+             '..XX..',
+             '.XXXX.',
+             'XXXXXX',
+             'XXXXXX',
+             'XXXXXX',
+             'XXXXXX',
+             '.XXXX.',
+             '..XX..')
+
+
+def hatch_frame(d):
+    """Coaming around the 26x26 opening; the deck tile shows outside it."""
+    d.rectangle((3, 3, 28, 28), outline=HATCH_EDGE)
+    d.rectangle((4, 4, 27, 27), outline=DECK_SHADE)
+    d.line((4, 4, 27, 4), fill=DECK_LIT)
+    d.line((4, 5, 4, 27), fill=DECK_FACE)
+
+
+def hinge(d, x, strap_to):
+    """Iron strap hinge on the north edge; (x) is the strap's left pixel."""
+    d.rectangle((x, 4, x + 2, strap_to), fill=IRON, outline=IRON_DARK)
+    d.line((x + 1, 5, x + 1, strap_to - 1), fill=IRON)
+    d.rectangle((x - 1, 2, x + 3, 4), fill=IRON_DARK)
+    d.line((x, 3, x + 2, 3), fill=IRON_LIGHT)
+    d.point((x + 1, 6), fill=IRON_LIGHT)
+    if strap_to > 8:
+        d.point((x + 1, strap_to - 2), fill=IRON_LIGHT)
+
+
+def bomb_hatch():
+    im = blank(32)
+    d = ImageDraw.Draw(im)
+    hatch_frame(d)
+    # The lid: unbroken courses in step with the deck planks around it.
+    for y in range(5, 27):
+        d.line((5, y, 26, y), fill=DECK_COURSE[y % 4])
+    d.line((5, 26, 26, 26), fill=DECK_GAP)
+    d.line((26, 5, 26, 26), fill=DECK_GAP)
+    # Two battens holding the lid's planks together.
+    for x in (6, 24):
+        d.line((x, 6, x, 25), fill=DECK_SHADE)
+        d.line((x + 1, 6, x + 1, 25), fill=DECK_LIT)
+        for y in (7, 15, 23):
+            d.point((x, y), fill=IRON_DARK)
+    hinge(d, 9, 11)
+    hinge(d, 20, 11)
+    # Stencilled bomb, worn where the paint crosses a seam.
+    for row, line in enumerate(BOMB_MARK):
+        for col, mark in enumerate(line):
+            if mark == 'X':
+                y = 9 + row
+                d.point((13 + col, y), fill=STENCIL_WORN if y % 4 == 3 else STENCIL)
+    # Pull ring lying flat on its staple, with its shadow.
+    d.ellipse((13, 21, 18, 25), outline=IRON_DARK)
+    d.arc((13, 21, 18, 25), 180, 360, fill=IRON_LIGHT)
+    d.line((14, 25, 17, 25), fill=IRON)
+    d.rectangle((15, 20, 16, 21), fill=IRON, outline=None)
+    d.point((15, 20), fill=IRON_LIGHT)
+    d.line((14, 26, 18, 26), fill=HATCH_EDGE)
+    return im
+
+
+def bomb_hatch_open():
+    im = blank(32)
+    d = ImageDraw.Draw(im)
+    hatch_frame(d)
+    # The drop: plank thickness under the north and west coaming, then dark.
+    d.rectangle((5, 5, 26, 26), fill=DROP)
+    d.line((5, 5, 26, 5), fill=DROP_WALL)
+    d.line((5, 6, 26, 6), fill=DROP_WALL)
+    d.line((5, 7, 5, 26), fill=DROP_WALL)
+    d.line((6, 7, 26, 7), fill=HATCH_EDGE)
+    # Far below: haze, a patchwork of fields, a river and a wisp of cloud.
+    d.rectangle((8, 10, 24, 24), fill=HAZE_DARK)
+    d.rectangle((9, 11, 23, 23), fill=HAZE)
+    d.polygon(((9, 15), (14, 13), (17, 17), (12, 21), (9, 20)), fill=FIELD)
+    d.polygon(((16, 12), (23, 11), (23, 16), (19, 17)), fill=FIELD_TAN)
+    d.polygon(((14, 21), (19, 18), (23, 19), (23, 23), (15, 23)), fill=FIELD_DARK)
+    d.line((18, 11, 16, 15), fill=RIVER)
+    d.line((16, 15, 18, 19), fill=RIVER)
+    d.line((18, 19, 17, 23), fill=RIVER)
+    d.line((10, 17, 13, 16), fill=FIELD_DARK)
+    d.line((20, 13, 22, 14), fill=FIELD)
+    d.line((10, 12, 13, 12), fill=CLOUD)
+    d.line((11, 11, 12, 11), fill=CLOUD)
+    d.line((20, 21, 22, 21), fill=CLOUD)
+    # The lid folded back flat on the deck to the north, underside up.
+    d.rectangle((4, 0, 27, 3), fill=DECK_SHADE, outline=HATCH_EDGE)
+    d.line((5, 1, 26, 1), fill=DECK_FACE)
+    for x in (10, 16, 22):
+        d.point((x, 1), fill=DECK_GAP)
+        d.point((x, 2), fill=DECK_GAP)
+    for x in (9, 20):
+        d.rectangle((x - 1, 2, x + 3, 4), fill=IRON_DARK)
+        d.line((x, 3, x + 2, 3), fill=IRON_LIGHT)
+    # Bomb cradle: two short rails hung from the hinge side, a tie and hooks.
+    for x in (12, 19):
+        d.line((x, 5, x, 16), fill=IRON)
+        d.line((x + 1, 5, x + 1, 16), fill=IRON_DARK)
+        d.point((x, 5), fill=IRON_LIGHT)
+        d.point((x, 17), fill=IRON_DARK)
+    d.line((12, 9, 20, 9), fill=IRON_DARK)
+    d.line((13, 8, 19, 8), fill=IRON)
+    d.line((13, 15, 14, 17), fill=IRON_LIGHT)
+    d.line((18, 15, 17, 17), fill=IRON_LIGHT)
+    # The ring hangs under the open lid's far edge.
+    d.point((15, 0), fill=IRON)
+    d.point((16, 0), fill=IRON)
+    return im
+
+
 # --- gas cell ---------------------------------------------------------------
 
 def rigging(d, anchors):
@@ -343,8 +483,8 @@ def gas_cell_burnt():
 def sheets():
     # BYOND stores four-direction states as south, north, east, west.
     hull = [helm_front(False), mirrored(helm_front(True)), helm_side(False), mirrored(helm_side(True)),
-            gas_cell_folded(), airship_planks(), helm_kit()]
-    hull_sheet = Image.new('RGBA', (32 * 4, 32 * 2), CLEAR)
+            gas_cell_folded(), airship_planks(), helm_kit(), bomb_hatch(), bomb_hatch_open()]
+    hull_sheet = Image.new('RGBA', (32 * 4, 32 * 3), CLEAR)
     for i, frame in enumerate(hull):
         hull_sheet.paste(frame, ((i % 4) * 32, (i // 4) * 32))
     hull_description = ('# BEGIN DMI\nversion = 4.0\n\twidth = 32\n\theight = 32\n'
@@ -352,6 +492,8 @@ def sheets():
                         'state = "gas_cell_folded"\n\tdirs = 1\n\tframes = 1\n'
                         'state = "airship_planks"\n\tdirs = 1\n\tframes = 1\n'
                         'state = "helm_kit"\n\tdirs = 1\n\tframes = 1\n'
+                        'state = "bomb_hatch"\n\tdirs = 1\n\tframes = 1\n'
+                        'state = "bomb_hatch_open"\n\tdirs = 1\n\tframes = 1\n'
                         '# END DMI\n')
     cell_sheet = Image.new('RGBA', (64 * 3, 64), CLEAR)
     for i, frame in enumerate((gas_cell(), gas_cell(holed=True), gas_cell_burnt())):
@@ -364,9 +506,9 @@ def sheets():
     return ((HULL, hull_sheet, hull_description), (CELL, cell_sheet, cell_description))
 
 
-def turf(state):
-    """One 32x32 tile from icons/turf/floors.dmi, for the preview only."""
-    im = Image.open(ROOT / 'icons/turf/floors.dmi')
+def turf(state, sheet='icons/turf/floors.dmi'):
+    """One 32x32 tile from a turf sheet, for the preview only."""
+    im = Image.open(ROOT / sheet)
     index = 0
     name = None
     for line in im.info['Description'].splitlines():
@@ -446,7 +588,38 @@ def preview(path):
     big.convert('RGB').save(path)
 
 
+def hatch_preview(path):
+    """Both hatch states at 4x on the dark wood deck, beside the helm and a gas cell."""
+    scale = 4
+    (_, hull, _), (_, cell, _) = sheets()
+    wood = turf('wood', 'icons/turf/flooring/wood.dmi')
+    scene = Image.new('RGBA', (8 * 32, 4 * 32))
+    for tx in range(8):
+        for ty in range(4):
+            scene.alpha_composite(wood, (tx * 32, ty * 32))
+
+    def hull_frame(i):
+        return hull.crop(((i % 4) * 32, (i // 4) * 32, (i % 4) * 32 + 32, (i // 4) * 32 + 32))
+
+    scene.alpha_composite(hull_frame(2), (0, 2 * 32))
+    scene.alpha_composite(hull_frame(7), (2 * 32, 2 * 32))
+    scene.alpha_composite(hull_frame(8), (4 * 32, 2 * 32))
+    scene.alpha_composite(cell.crop((0, 0, 64, 64)), (6 * 32 - 16, 2 * 32 + 32 - 12 - 64))
+    big = scene.resize((scene.width * scale, scene.height * scale), Image.NEAREST)
+    d = ImageDraw.Draw(big)
+    for tx, text in ((0, 'helm E'), (2, 'bomb_hatch'), (4, 'bomb_hatch_open'), (6, 'gas_cell')):
+        x, y = int(tx * 32 * scale) + 4, 3 * 32 * scale + 8
+        box = d.textbbox((x, y), text)
+        d.rectangle((box[0] - 3, box[1] - 3, box[2] + 3, box[3] + 3), fill=(24, 24, 28, 255))
+        d.text((x, y), text, fill=(240, 240, 240, 255))
+    Path(path).parent.mkdir(parents=True, exist_ok=True)
+    big.convert('RGB').save(path)
+
+
 def main():
+    if '--hatch-preview' in sys.argv:
+        hatch_preview(sys.argv[sys.argv.index('--hatch-preview') + 1])
+        return
     if '--preview' in sys.argv:
         preview(sys.argv[sys.argv.index('--preview') + 1])
         return
