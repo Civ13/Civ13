@@ -179,7 +179,9 @@ for p,s in files.items():
                 tool_notes+=' Tools reused; checked at end.'
             if needs_handle(n):
                 ingredients.append(('/obj/item/weapon/material/handle',1))
-                tool_notes+=' Uses up one wood handle held or worn.'
+                tool_notes+=' Uses up one wood handle held or worn; its wood sets durability and speed.'
+            if b == '/obj/item/weapon/material/handle':
+                tool_notes+={'wood handle':' Tools built on it: the usual durability and speed.','plank handle':' Tools built on it last 50% longer and work 25% faster.','reinforced handle':' Tools built on it last 50% longer but work 18% slower.'}.get(n,'')
             need=craft_needs.get(canon(b))
             if need:
                 ingredients+=[(stack,amount) for stack,amount in need['inputs'].items()]

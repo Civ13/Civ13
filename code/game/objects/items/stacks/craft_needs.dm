@@ -181,7 +181,7 @@ var/global/list/craft_need_input_names = list(
 // these three lists.
 var/global/list/crafting_handle_title_words = list("hatchet", "shovel", "pickaxe", "spear", "battle axe", "stone sledgehammer", "lead sledgehammer", "bronze sledgehammer", "iron sledgehammer", "steel sledgehammer", "uranium sledgehammer")
 var/global/list/crafting_handle_titles = list("stone rammer", "stone adze", "stone-headed club", "copper hammer", "bronze hammer", "steel hammer", "clawhammer", "copper hoe", "bronze hoe", "iron hoe", "steel hoe", "pitchfork", "fire hook")
-var/global/list/crafting_handle_title_exclusions = list("wood spear", "mold")
+var/global/list/crafting_handle_title_exclusions = list("wood spear", "mold", "steam shovel")
 
 /proc/recipe_needs_crafting_handle(title)
 	if (!title)
@@ -227,7 +227,11 @@ var/global/list/crafting_handle_title_exclusions = list("wood spear", "mold")
 /datum/craft_guard/handle/describe_lines(mob/living/human/H, datum/stack_recipe/R)
 	if (!R || !recipe_needs_crafting_handle(R.title))
 		return null
-	return list(list("kind" = "[type]", "label" = "A wood handle (held or worn)", "met" = crafting_handle_on(H) ? TRUE : FALSE))
+	var/obj/item/weapon/material/handle/handle = crafting_handle_on(H)
+	var/label = "A wood handle (held or worn)"
+	if (handle && handle.material && handle.material.name != "wood")
+		label += ": your [handle.material.display_name] handle [tool_handle_effect_text(handle.material.name)]"
+	return list(list("kind" = "[type]", "label" = label, "met" = handle ? TRUE : FALSE))
 
 // Hides the recipe from "makeable only" lists and refuses at the start.
 // produce_recipe() rechecks with the real batch size before it pays.

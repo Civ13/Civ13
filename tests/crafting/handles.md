@@ -22,7 +22,7 @@ of an equipped handle; the existing recipe output remains on the floor.
 The predicate lives in `code/game/objects/items/stacks/craft_needs.dm`:
 `crafting_handle_title_words` (substrings: hatchet, shovel, pickaxe, spear,
 battle axe and the sledgehammer names), `crafting_handle_titles` (exact titles)
-and `crafting_handle_title_exclusions` (wood spear, mold). The Crafting window
+and `crafting_handle_title_exclusions` (wood spear, mold, steam shovel - a machine, not a hafted tool). The Crafting window
 lists the handle through `/datum/craft_guard/handle`, and the Crafting Atlas
 reads the same three lists, so a new hafted tool is added in one place.
 
@@ -31,6 +31,14 @@ material: stone rammer, stone adze, stone-headed club, copper, bronze and steel
 hammer, clawhammer, copper, bronze, iron and steel hoe, pitchfork and fire hook.
 Wooden versions (hammer, hoe, spade, digging stick) stay handle-free, and the
 metal sickles already pay their wood through `config/craft_needs.json`.
+
+The handle's material carries into the finished tool through
+`apply_tool_handle()` (material_weapons.dm), the same proc a head fitted by hand
+uses: durability scales by the handle's integrity against wood (0.5-1.5x), and
+pickaxe, shovel and hoe work speed by its weight against wood (0.75-1.25x). A
+plank handle lasts 50% longer and works 25% faster; a reinforced (iron) handle
+lasts 50% longer and works 18% slower. Tools without durability or a work speed
+(rammer, hammers, fire hook, club) only use the handle up.
 
 The sledgehammer names have no active catalog rows. Wood spears and molds keep their existing exclusions. This change
 does not alter forging/held-tool requirements, other ingredient families, or the
