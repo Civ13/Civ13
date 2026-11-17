@@ -1432,6 +1432,11 @@ SUITES = {
     # Cool cellars: source contracts (native probe tests/cool_cellars/probe.dm).
     'cool_cellars': {'files': ('tests/cool_cellars/test_source.py',),
         'paths': ('tests/cool_cellars/',), 'shared_paths': ('code/modules/1713/cool_cellars.dm',)},
+    # Animal fat as light fuel, the grease horn and the stone fat lamp: source contracts (native probe tests/fat_lights/probe.dm).
+    'fat_lights': {'files': ('tests/fat_lights/test_source.py',),
+        'paths': ('tests/fat_lights/',), 'shared_paths': (
+            'code/modules/1713/fat_lights.dm', 'code/modules/1713/light_fuel.dm', 'code/modules/1713/lantern.dm',
+            'code/modules/1713/animal_harvest.dm', 'icons/obj/fat_lights.dmi', 'tests/sprites/create_fat_lights.py')},
     # Clay tablets, board games and the ice house: source contracts (native probe tests/small_ancient/probe.dm).
     'small_ancient': {'files': ('tests/small_ancient/test_source.py',),
         'paths': ('tests/small_ancient/',), 'shared_paths': (
