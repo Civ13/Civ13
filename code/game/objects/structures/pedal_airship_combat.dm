@@ -137,6 +137,60 @@
 	else if (bag_holes)
 		to_chat(user, SPAN_WARNING("Its gas bag is holed in [bag_holes] place\s, so it lifts less. Patch it with cloth."))
 
+// ---- Fighting from the gondola ----
+//
+// The rider sees the ground below through the airship's ground view and can
+// shoot or throw at it: the shot or throw starts on the ground under the
+// gondola, above the hills, and goes on from there as on the ground. Things
+// dropped over the side fall onto whoever is below (building_levels.dm);
+// glass bottles burst where they land, so a lit firebomb sets the ground alight.
+
+// The airship user rides aloft, or null.
+/proc/aloft_airship_ridden_by(mob/user)
+	if (!user)
+		return null
+	var/obj/structure/vehicle/bicycle/airship/S = user.buckled
+	if (!istype(S) || !S.aloft || !(user in S.ontop))
+		return null
+	return S
+
+// Where a shot or throw by user at target starts: the ground under the
+// gondola when user rides an airship aloft and target is on that ground.
+/proc/airborne_launch_turf(mob/user, atom/target)
+	var/obj/structure/vehicle/bicycle/airship/S = aloft_airship_ridden_by(user)
+	var/turf/T = get_turf(target)
+	if (!S || !T)
+		return null
+	var/turf/G = S.ground_turf()
+	if (!G || T.z != G.z)
+		return null
+	return G
+
+// TRUE when firer shoots from the gondola of an airship over start.
+/proc/pedal_airship_rider_shot(mob/firer, turf/start)
+	var/obj/structure/vehicle/bicycle/airship/S = aloft_airship_ridden_by(firer)
+	return S && S.ground_turf() == start
+
+// A bottle that falls a storey or more bursts; a lit firebomb sets the ground alight.
+/obj/item/weapon/reagent_containers/food/drinks/bottle/landed_from_fall(turf/T)
+	if (!isGlass || !T)
+		return
+	var/power = calculate_alcohol_power()
+	var/atom/against = T
+	for (var/mob/living/L in T)
+		if (!L.lying)
+			against = L
+			break
+	if (reagents && reagents.total_volume > 0)
+		against.visible_message(SPAN_WARNING("\The [src] bursts and splashes its contents over \the [against]!"))
+		reagents.splash(against, reagents.total_volume)
+	else
+		against.visible_message(SPAN_WARNING("\The [src] smashes on \the [T]!"))
+	shatter(T, against, power)
+
+/obj/item/proc/landed_from_fall(turf/T)
+	return
+
 #undef PEDAL_AIRSHIP_HIT_CHANCE
 #undef PEDAL_AIRSHIP_RIDER_HIT_CHANCE
 #undef PEDAL_AIRSHIP_HOLE_LIFT

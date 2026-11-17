@@ -317,6 +317,55 @@ var/global/datum/pedal_airship_probe/pedal_airship_probe = new
 	expect(R.getBruteLoss() > 0 && R.getBurnLoss() > 0, "the burning fall did not hurt the rider: brute [R.getBruteLoss()] burn [R.getBurnLoss()]")
 	discard(V)
 
+// The rider fights from the gondola: a shot and a throw at the ground below
+// start under the gondola and carry on along the ground; a bottle dropped over
+// the side bursts where it lands.
+/datum/pedal_airship_probe/proc/gondola(turf/start, sky_z)
+	var/obj/structure/vehicle/bicycle/airship/V = board(start)
+	var/mob/living/human/R = V.driver
+	var/obj/item/vehicleparts/wheel/handle/bicycle/airship/tiller = R.get_active_hand()
+	tiller.secondary_attack_self(R)
+	expect(V.aloft, "gondola: did not rise")
+	var/turf/G = V.ground_turf()
+	var/turf/aim = locate(G.x + 2, G.y, G.z)
+	expect(airborne_launch_turf(R, aim) == G, "a shot at the ground does not start under the gondola")
+	expect(!airborne_launch_turf(R, locate(G.x + 2, G.y, sky_z)), "a shot across the open air starts on the ground")
+	// A gun fired at someone below hits them.
+	var/mob/living/human/pedal_airship_actor/T = new(aim)
+	sleep(5)
+	var/obj/item/weapon/gun/projectile/revolver/nagant_revolver/gun = new(R)
+	R.put_in_inactive_hand(gun)
+	gun.safetyon = FALSE
+	for(var/i = 1 to 3)
+		gun.loaded += new gun.ammo_type(gun)
+	R.last_movement = world.time - 100
+	gun.Fire(T, R)
+	sleep(20)
+	notes["gondola_shot_brute"] = T.getBruteLoss()
+	expect(T.getBruteLoss() > 0, "the shot from the gondola missed the person below")
+	expect(V.bag_holes == 0 && V.aloft, "the rider's own shot holed the airship")
+	R.drop_from_inventory(gun)
+	gun.loc = null
+	T.loc = null
+	// A throw lands on the ground near the aim.
+	var/obj/item/weapon/wrench/stone = new(R)
+	R.put_in_inactive_hand(stone)
+	R.swap_hand()
+	usr = R // throw_item checks the clicking mob
+	R.throw_item(aim)
+	sleep(20)
+	notes["gondola_throw"] = "[stone.x],[stone.y],[stone.z]"
+	expect(stone.z == G.z && get_dist(stone, aim) <= 1, "the throw landed at [stone.x],[stone.y],[stone.z]")
+	stone.loc = null
+	R.swap_hand()
+	// A glass bottle dropped over the side bursts on the ground.
+	var/obj/item/weapon/reagent_containers/food/drinks/bottle/B = new /obj/item/weapon/reagent_containers/food/drinks/bottle/molotov/vodka(null)
+	B.forceMove(V.loc)
+	sleep(5)
+	expect(QDELETED(B) || B.loc != G, "a dropped bottle did not burst on the ground")
+	expect(locate(/obj/item/weapon/broken_bottle) in G, "no broken bottle where it landed")
+	discard(V)
+
 /datum/pedal_airship_probe/proc/run_probe()
 	var/failure = null
 	try
@@ -343,6 +392,7 @@ var/global/datum/pedal_airship_probe/pedal_airship_probe = new
 		blocked(start, sky_z)
 		forced(start, sky_z)
 		combat(start, sky_z)
+		gondola(start, sky_z)
 		if(problems.len)
 			notes["problems"] = problems
 			throw EXCEPTION(jointext(problems, "; "))
