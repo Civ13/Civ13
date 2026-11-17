@@ -264,10 +264,10 @@
 /mob/living/human/Stat()
 	. = ..()
 	var/obj/item/clothing/suit/pressure_suit/S = wear_suit
-	if (!istype(S) || !statpanel("Status"))
+	if (!. || !istype(S) || !client.shows_status_tab())
 		return
 	var/obj/item/pressure_tank/A = back
-	stat("Suit integrity:", "[round(S.integrity)]%")
+	client.add_stat("<b>Suit integrity:</b>", "[round(S.integrity)]%")
 	if (S.has_heater)
-		stat("Suit heater:", "[round(100 * S.heater_charge / SUIT_HEATER_SECONDS)]%")
-	stat("Suit air:", istype(A) ? "[round(A.air_seconds / 60)] min" : "no tank")
+		client.add_stat("<b>Suit heater:</b>", "[round(100 * S.heater_charge / SUIT_HEATER_SECONDS)]%")
+	client.add_stat("<b>Suit air:</b>", istype(A) ? "[round(A.air_seconds / 60)] min" : "no tank")
