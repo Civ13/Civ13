@@ -1103,6 +1103,9 @@ SUITES = {
         'paths': ('tests/newcomer_start/', 'code/game/objects/map_metadata/nomads/newcomer_start.dm'), 'shared_paths': ()},
     'first_choices': {'files': ('tests/first_choices/test_first_choices.py',),
         'paths': ('tests/first_choices/', 'code/modules/client/first_choices.dm', 'code/_onclick/hud/hover_name_bottom.dm'), 'shared_paths': ()},
+    'use_hints': {'files': ('tests/use_hints/test_use_hints.py',),
+        'paths': ('tests/use_hints/', 'code/game/objects/structures/use_hints.dm'), 'shared_paths': (
+            'code/game/objects/structures/wild.dm',)},
     'immigration_fires': {'files': ('tests/immigration_fires/test_immigration_fires.py',),
         'paths': ('tests/immigration_fires/', 'code/modules/1713/immigration_fires.dm'), 'shared_paths': ()},
     'craft_products': {'files': ('tests/craft_products/test_craft_products.py',),
