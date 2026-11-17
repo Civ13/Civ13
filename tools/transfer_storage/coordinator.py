@@ -186,6 +186,10 @@ class Coordinator(TrainCustody):
             ckey TEXT PRIMARY KEY, region TEXT NOT NULL, faction TEXT NOT NULL)''')
         # Requests already decided but not yet acknowledged by their agent, so a
         # lost acknowledgement never replays an old request over newer ones.
+        # Characters a land holds in escrow for another, as each source last
+        # reported them: a source that is down keeps its rows.
+        self.db.execute('''CREATE TABLE IF NOT EXISTS travelling(
+            source TEXT NOT NULL, ckey TEXT NOT NULL, region TEXT NOT NULL, PRIMARY KEY (source, ckey))''')
         self.db.execute('''CREATE TABLE IF NOT EXISTS decided(
             store TEXT NOT NULL, id INTEGER NOT NULL, PRIMARY KEY(store, id))''')
         self.db.execute("INSERT OR IGNORE INTO ledger VALUES ('epoch', ?)", (secrets.token_hex(8),))
@@ -395,6 +399,8 @@ class Coordinator(TrainCustody):
             # A recorded trip delivered the character here; custody already decided.
             if home != source:
                 self._set_home(ckey, source)
+            # It is there now, whatever a source that has since gone quiet last said.
+            self.db.execute('DELETE FROM travelling WHERE ckey = ? AND region = ?', (ckey, source))
         elif op == 'depart' and home in (None, source) and region != source:
             self._set_home(ckey, region)
         elif op == 'release' and home == source:
@@ -529,6 +535,12 @@ class Coordinator(TrainCustody):
         try:
             lease_decisions = {name: [self.decide_train_lease(name, r) for r in a.get('train_requests', [])]
                                for name, a in asked.items()}
+            for name, a in asked.items():
+                self.db.execute('DELETE FROM travelling WHERE source = ?', (name,))
+                for row in a.get('travelling') or []:
+                    if type(row) is dict and isinstance(row.get('ckey'), str) and isinstance(row.get('region'), str) \
+                            and row['ckey'] and row['region'] and row['region'] != name:
+                        self.db.execute('INSERT OR REPLACE INTO travelling VALUES (?, ?, ?)', (name, row['ckey'], row['region']))
             queue = []
             for name, a in asked.items():
                 store, ids = str(a.get('store') or ''), [r['id'] for r in a.get('requests', [])]
@@ -615,6 +627,8 @@ class Coordinator(TrainCustody):
                     'nations': nations, 'nation_results': nation_results.get(name, []),
                     'colony_grants': [{'ckey': c, 'faction': f} for c, f in self.db.execute(
                         'SELECT ckey, faction FROM colony_grant WHERE region = ? ORDER BY ckey', (name,))],
+                    'travelling': dict(self.db.execute(
+                        'SELECT ckey, source FROM travelling WHERE region = ? ORDER BY source', (name,))),
                     'done': [r['id'] for r in answer.get('requests', [])]}
             # The chart only goes to an agent whose copy is older.
             if answer.get('chart_rev') != chart_rev:

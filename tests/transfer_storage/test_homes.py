@@ -81,6 +81,32 @@ class HomeTests(unittest.TestCase):
         self.assertEqual('HOME', self.ask('beta', 'val'))
         self.assertEqual({'val': 'beta'}, self.coordinator.homes())
 
+    def test_no_new_character_while_one_is_travelling_here(self):
+        import json
+        self.ask('alpha', 'val')
+        self.coordinator.homes_once()
+        body = json.dumps({'v': 1, 'kind': 'character', 'owner': 'val', 'name': 'Pepijn'})
+        # beta cannot take the trip yet (held or down): it waits in alpha's escrow.
+        self.stores['alpha'].enroll('beta', 'out')
+        self.stores['alpha'].begin_escrow('beta', [body], fast=True)
+        self.assertEqual([{'ckey': 'val', 'region': 'beta'}], self.stores['alpha'].account_requests()['travelling'])
+        self.ask('alpha', 'val', 'depart', 'beta')
+        self.coordinator.homes_once()
+        # Home moved at departure, but beta's lobby must not offer a new character.
+        self.assertEqual({'val': 'beta'}, self.coordinator.homes())
+        answer = call(self.urls['beta'], TOKENS['beta'], '/account', {'ckey': 'val', 'op': 'claim'})['result']
+        self.assertEqual(('TRAVELLING', 'alpha'), (answer['verdict'], answer['from']))
+        self.assertEqual('HOME', self.ask('beta', 'val', body_here=True), 'a living character already there is still played')
+        # alpha goes quiet; beta still knows on the next pass.
+        self.stop('alpha')
+        del self.servers['alpha']
+        self.coordinator.homes_once()
+        self.assertEqual('TRAVELLING', self.ask('beta', 'val'))
+        # The character is built in beta: the arrival ends the wait even though alpha never reported again.
+        self.ask('beta', 'val', 'arrive')
+        self.coordinator.homes_once()
+        self.assertEqual('HOME', self.ask('beta', 'val'))
+
     def test_a_refused_trip_comes_home(self):
         self.ask('alpha', 'val')
         self.coordinator.homes_once()

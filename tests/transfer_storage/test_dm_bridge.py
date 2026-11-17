@@ -93,6 +93,14 @@ class Bridge(unittest.TestCase):
         self.assertIn('var/payload = length(body) ? json_encode(body) : "{}"', request)
         self.assertNotIn('json_encode(body || list())', request)
 
+    def test_a_world_without_its_agent_carries_the_saved_capture_through(self):
+        # The underground migration boots without the agent's token. Its save must
+        # keep the loaded transfer state, or the next real load is a rollback hold.
+        capture = proc(BRIDGE, '/datum/transfer_bridge/proc/capture')
+        self.assertIn('if(!enabled()) return carried_capture ? carried_capture.Copy() : null', capture)
+        loaded = proc(BRIDGE, '/datum/transfer_bridge/proc/loaded')
+        self.assertLess(loaded.index('carried_capture = valid_transfer_capture(kept) ? kept.Copy() : null'), loaded.index('ledger_base = null'))
+
     def test_effects_refused_during_saves_and_before_reconcile(self):
         body = proc(BRIDGE, '/datum/transfer_bridge/proc/begin_effect')
         self.assertIn('if(!ready() || persistence_save_active() || length(applied) >= TRANSFER_CAPTURE_MAX / 2) return null', body)

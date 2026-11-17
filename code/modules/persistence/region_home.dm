@@ -148,6 +148,13 @@ var/global/list/region_home_summoned = list()
 			if("ELSEWHERE")
 				region_home_tell(lobby, result["home"])
 				return FALSE
+			if("TRAVELLING")
+				// Their character is in another land's escrow or about to be built
+				// here; a new character now would take its place.
+				if(wait)
+					var/list/from = istext(result["from"]) ? shard_group.peers[result["from"]] : null
+					to_chat(lobby, SPAN_NOTICE("Your character is still on its way here[from ? " from [html_encode(from["name"])]" : ""]. It is safe, and you take it over as soon as it arrives: press Join again in a moment.[transfer_bridge.held() ? " Travel into this land is paused right now, so ask an admin to reopen the way." : ""]"))
+				return FALSE
 		if(!wait) return FALSE
 		if(world.time >= deadline)
 			to_chat(lobby, SPAN_WARNING("The world directory has not answered yet. Try Join again in a moment."))
