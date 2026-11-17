@@ -1415,6 +1415,10 @@ SUITES = {
         'paths': ('tests/canals/',), 'shared_paths': (
             'code/modules/1713/canals.dm', 'code/modules/1713/trench.dm', 'icons/obj/canal_lock.dmi',
             'tests/sprites/create_canal_lock.py')},
+    # Chimneys carrying heat upstairs: source contracts and sprite check (native probe tests/storey_chimney/probe.dm).
+    'storey_chimney': {'files': ('tests/storey_chimney/test_source.py',),
+        'paths': ('tests/storey_chimney/',), 'shared_paths': (
+            'code/game/objects/storey_chimney.dm', 'icons/obj/storey_fittings.dmi', 'tests/sprites/create_storey_fittings.py')},
     # Shooting down from an upper storey: source contracts (native probe tests/storey_fire/probe.dm).
     'storey_fire': {'files': ('tests/storey_fire/test_source.py',),
         'paths': ('tests/storey_fire/',), 'shared_paths': ('code/modules/projectiles/storey_fire.dm',)},
