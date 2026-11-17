@@ -9,7 +9,8 @@ Run on Linux with the pinned compiler:
 
 Checks: where the attachment strip tiles sit and that they follow a moved
 storage window, that a held item clicked onto clothes with two pouches goes
-into the first pouch only, that removed pouches and dropped clothes stop being
+into the first pouch only, that an empty-hand click on a necklace tile takes
+the necklace off into the hand while a pouch tile only opens the pouch, that removed pouches and dropped clothes stop being
 strip targets, that the belt stays on when the clothes come off, the belt's
 attachment points (two pouches, one sheath or holster, one tool loop), what
 the tool loop holds, and the shoulder belt carrying one sword beside a pouch.

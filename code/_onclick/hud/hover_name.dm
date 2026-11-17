@@ -250,11 +250,22 @@
 		return FALSE
 	return I.screen_loc == hover_screen_loc
 
+// A HUD tile that draws an item it does not hold (an attachment strip tile
+// shows an accessory hanging from worn clothes) names that item here, or null.
+// The tile itself decides whether the item is still this viewer's to show.
+/obj/screen/proc/hover_item(mob/viewer)
+	return null
+
 // Slot art can receive the mouse hit around a transparent item sprite. Resolve
 // only this body's current, visible slot and its actual displayed owned item.
 // Never use screen.master, a container search, or another body's equipment.
 /obj/screen/hover_name/proc/pointer_target(atom/origin)
 	if(!istype(origin, /obj/screen/inventory))
+		if(istype(origin, /obj/screen))
+			var/obj/screen/tile = origin
+			var/atom/shown = tile.hover_item(parentmob)
+			if(shown)
+				return shown
 		return origin
 	if(!inventory_slot_visible(origin))
 		return null
@@ -265,6 +276,8 @@
 	return I
 
 /obj/screen/hover_name/proc/target_visible(atom/target)
+	if (hud_tile_item_visible(target))
+		return TRUE
 	if (!los_read_allowed(parentmob, target, "hover"))
 		return FALSE
 	if (!target || !parentmob || !parentmob.client || !target.mouse_opacity || !target.alpha || istype(target, /obj/screen))
@@ -286,6 +299,22 @@
 	if (los_tree_canopy_readable(target))
 		return target in range(C.view, C.eye)
 	return (isturf(target) || isturf(target.loc)) && (target in view(C.view, C.eye))
+
+// TRUE while the pointer's HUD tile is on this body's screen and still vouches
+// for target. Off-turf accessories never pass the world LOS read, so this is
+// checked first, as own inventory slots are.
+/obj/screen/hover_name/proc/hud_tile_item_visible(atom/target)
+	if (!target || !parentmob || !parentmob.client)
+		return FALSE
+	var/obj/screen/tile = hover_origin?.resolve()
+	if (!istype(tile, /obj/screen) || istype(tile, /obj/screen/inventory))
+		return FALSE
+	var/client/C = parentmob.client
+	if (C.mob != parentmob || parentmob.HUDneed["hover name"] != src || !(src in C.screen))
+		return FALSE
+	if (!(tile in C.screen) || !tile.screen_loc || !tile.mouse_opacity || !tile.alpha || tile.invisibility > parentmob.see_invisible)
+		return FALSE
+	return tile.hover_item(parentmob) == target && target.invisibility <= parentmob.see_invisible
 
 /obj/screen/hover_name/proc/set_target(atom/origin)
 	// A move across the current pointer target only refreshes: process() still

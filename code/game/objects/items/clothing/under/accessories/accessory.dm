@@ -1,4 +1,7 @@
 /obj/item/clothing/accessory
+	// An empty-hand click on its attachment strip tile takes it off into the
+	// hand. Accessories with their own use when attached (storage) open instead.
+	var/strip_click_removes = TRUE
 	name = "tie"
 	desc = "A neosilk clip-on tie."
 	icon = 'icons/obj/clothing/ties.dmi'

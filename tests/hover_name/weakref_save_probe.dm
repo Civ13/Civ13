@@ -30,7 +30,7 @@
 /mob/proc/get_equipped_item(slot)
 	return null
 /mob/living/human
-	var/real_name = "unknown"
+	real_name = "unknown" // declared on /mob by tests/world_save/stubs.dm
 	var/obj/wear_mask
 	var/obj/head
 	var/werewolf = FALSE

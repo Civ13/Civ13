@@ -106,6 +106,20 @@ var/ea_runtime_error = FALSE
 	ea_check(!attachment_strip_valid(second, shirt, H), "a removed pouch is no longer a strip target")
 	ea_check(attachment_strip_valid(first, shirt, H), "the remaining pouch still is")
 
+	// An empty hand on a necklace tile takes the necklace off into the hand;
+	// on a pouch tile it opens the pouch and leaves it attached.
+	var/obj/item/clothing/accessory/necklace/cord = new(T)
+	shirt.accessories += cord
+	cord.on_attached(shirt, H)
+	ea_check(cord.strip_click_removes && !first.strip_click_removes, "necklaces come off from the strip; pouches open")
+	H.l_hand = null
+	attachment_strip_use(H, cord, shirt)
+	ea_check(!(cord in shirt.accessories) && !cord.has_suit && H.get_active_hand() == cord, "an empty-hand click takes the necklace into the hand")
+	H.l_hand = null
+	cord.loc = T
+	attachment_strip_use(H, first, shirt)
+	ea_check((first in shirt.accessories) && first.has_suit == shirt, "an empty-hand click leaves the pouch attached")
+
 	// The belt stays on when the clothes come off.
 	var/obj/item/clothing/pouch_belt/belt = new(H)
 	H.belt = belt

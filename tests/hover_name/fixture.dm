@@ -48,6 +48,12 @@
 	var/process_flag = FALSE
 /obj/screen/proc/process()
 	return
+// Stands in for an attachment strip tile: it always names the item it draws,
+// so the widget's own screen check is what clears a removed tile.
+/obj/screen/probe_tile
+	var/atom/shown
+/obj/screen/probe_tile/hover_item(mob/viewer)
+	return shown
 /mob
 	var/datum/hover_client/hover_client
 	var/obj/item/weapon/storage/s_active
@@ -281,6 +287,26 @@
 	check(!L.maptext, "storage replacement clears hover")
 	C.screen -= B
 	viewer.s_active = null
+	// A HUD tile drawing an off-turf accessory names it while it vouches for it.
+	var/obj/item/necklace = new(storage)
+	necklace.name = "gold necklace"
+	var/obj/screen/probe_tile/tile = new
+	tile.screen_loc = "6,6"
+	tile.shown = necklace
+	C.screen += tile
+	C.MouseEntered(tile, null, "map", "")
+	check(findtext(L.maptext, "gold necklace") && L.hover_target?.resolve() == necklace, "attachment tile hover")
+	C.screen -= tile
+	L.process()
+	check(!L.maptext && !L.hover_target, "removed attachment tile clears hover")
+	C.screen += tile
+	C.MouseEntered(tile, null, "map", "")
+	tile.shown = null
+	L.process()
+	check(!L.maptext && !L.hover_target, "detached accessory clears hover")
+	C.MouseEntered(tile, null, "map", "")
+	check(!L.maptext, "empty HUD tile names nothing")
+	C.screen -= tile
 	check_own_hover(C, viewer, L)
 	B.loc = locate(9,8,1)
 	C.MouseEntered(B, null, "map", "")
