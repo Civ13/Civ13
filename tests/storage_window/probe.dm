@@ -50,6 +50,7 @@ var/storwin_runtime_error = FALSE
 		storwin_admin_checks()
 		storwin_rack_checks()
 		storwin_strip_checks()
+		storwin_merge_checks()
 	catch(var/exception/e)
 		storwin_check(FALSE, "exception [e] [e.file]:[e.line] [e.desc]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = storwin_failures, "runtime_error" = storwin_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")
@@ -348,3 +349,41 @@ var/storwin_runtime_error = FALSE
 	storwin_check(storage_strip_closet_search_time(C, H) == storage_search_time(cloth), "a shut crate's unseen things cost their search time to open")
 	storage_mark_seen(cloth, H)
 	storwin_check(storage_strip_closet_search_time(C, H) == 0, "a searched crate opens at once")
+
+/obj/item/stack/storwin_bones
+	name = "bones"
+	max_amount = 10
+	w_class = ITEM_SIZE_SMALL
+
+// A stack put into a bag tops up the same stack already inside.
+/proc/storwin_merge_checks()
+	var/turf/here = locate(10, 2, 1)
+	var/mob/living/human/storwin_probe/H = new(here)
+	var/mob/living/human/storwin_probe/other = new(locate(10, 3, 1))
+	var/obj/item/weapon/storage/backpack/bag = new(here)
+	bag.storage_slots = 1
+	bag.max_storage_space = 100
+	var/obj/item/stack/storwin_bones/inside = new(here, 4)
+	usr = H
+	storwin_check(bag.handle_item_insertion(inside, TRUE) && inside.loc == bag, "a first stack of bones goes in")
+	var/obj/item/stack/storwin_bones/more = new(here, 3)
+	storwin_check(bag.can_be_inserted(more, TRUE), "a full bag still takes bones that fit onto its stack")
+	storwin_check(bag.handle_item_insertion(more, TRUE) && inside.amount == 7 && QDELETED(more), "the new bones join the stack inside")
+	var/obj/item/stack/storwin_bones/big = new(here, 6)
+	storwin_check(!bag.can_be_inserted(big, TRUE) && bag.stack_merge_room(big, H) == 3, "a stack too big to join whole is refused by a full bag, but 3 would fit")
+	bag.merge_stack_in(big, H, TRUE)
+	storwin_check(inside.amount == 10 && big.amount == 3 && big.loc == here, "topping up fills the stack inside and leaves the rest out")
+	var/obj/item/stack/storwin_bones/fresh = new(here, 2)
+	storwin_check(!bag.stack_merge_room(fresh, H), "a full stack takes no more")
+	usr = null
+	// Someone else's unsearched bag: no merging into what you haven't seen.
+	var/obj/item/weapon/storage/backpack/theirs = new(here)
+	var/obj/item/stack/storwin_bones/hidden = new(here, 1)
+	usr = other
+	theirs.handle_item_insertion(hidden, TRUE)
+	usr = H
+	var/obj/item/stack/storwin_bones/mine = new(here, 1)
+	storwin_check(!theirs.stack_merge_room(mine, H), "bones never join a stack you haven't seen")
+	storage_mark_seen(hidden, H)
+	storwin_check(theirs.stack_merge_room(mine, H) == 9, "once seen, they can")
+	usr = null

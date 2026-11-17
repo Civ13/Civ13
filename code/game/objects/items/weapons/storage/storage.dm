@@ -417,6 +417,10 @@
 	if (loc == W)
 		return FALSE //Means the item is already in the storage item
 
+	// A stack that tops up stacks already inside needs no room of its own.
+	if (storage_stack_fits(src, W, usr))
+		return TRUE
+
 	if (storage_slots != null && contents.len >= storage_slots)
 		if (!stop_messages)
 			to_chat(usr, "<span class='notice'>[src] is full, make some space.</span>")
@@ -469,6 +473,8 @@
 	if (!istype(W)) return FALSE
 	if (W.extraction_surface_source) return FALSE
 	if (!persistence_movement_allowed(W, src)) return FALSE
+	if (merge_stack_in(W, usr, prevent_warning)) return TRUE
+	if (QDELETED(W)) return FALSE
 	if (usr)
 		usr.remove_from_mob(W)
 		usr.update_icons()	//update our overlays
@@ -546,7 +552,12 @@
 /obj/item/weapon/storage/attackby(obj/item/W as obj, mob/user as mob)
 	..()
 
-	if (!can_be_inserted(W))
+	if (!can_be_inserted(W, TRUE))
+		// No room for the whole stack: still top up the stacks inside.
+		if (stack_merge_room(W, user) > 0)
+			merge_stack_in(W, user)
+			return TRUE
+		can_be_inserted(W) // says why
 		return
 
 	if (istype(W, /obj/item/weapon/tray))
