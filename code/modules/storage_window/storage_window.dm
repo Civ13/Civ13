@@ -155,19 +155,32 @@
 	ensure_storage()
 	storage_window_verb_open(usr, storage)
 
+// IC > Open Storage Window Here: the window with no bag in focus, for the
+// hands, pockets, worn gear, containers nearby and the loose things on the floor.
+/mob/living/human/verb/open_storage_window_here()
+	set name = "Open Storage Window Here"
+	set category = "IC"
+	if (incapacitated())
+		return
+	if (!storage_window_possible())
+		to_chat(src, SPAN_WARNING("The storage window can't open here; use the strip instead."))
+		return
+	storage_window_show(src, null)
+
+// S may be null: the window then opens with nothing in focus.
 /proc/storage_window_show(mob/living/human/H, obj/item/weapon/storage/S)
 	var/datum/storage_window/W = H.storage_window
 	if (!W)
 		W = new /datum/storage_window(H)
 		H.storage_window = W
-	if (!W.lists_holder(S))
+	if (S && !W.lists_holder(S))
 		return FALSE
 	if (H.s_active)
 		H.s_active.close(H)
 	W.focus = S
 	W.focus_seq++
 	for (var/list/entry in W.holders())
-		if (entry[2] == S && !storage_window_kind_known(entry[1]))
+		if (S && entry[2] == S && !storage_window_kind_known(entry[1]))
 			W.begin_search(S)
 			break
 	W.ui_interact(H)
