@@ -83,7 +83,7 @@
 /proc/tutorial_step_text(id, client/C)
 	switch (id)
 		if ("move")
-			return "Hold <b>W, A, S or D</b> (or the arrow keys) to walk. You glide freely while a key is held; the <b>Toggle Tap To Step</b> verb (OOC tab) makes a quick tap move exactly one tile. Press <b>M</b> to switch between walking and running."
+			return "Hold <b>W, A, S or D</b> (or the arrow keys) to walk. A quick tap moves you exactly one tile, and you glide freely while a key is held. The footprint button on your HUD turns the one-tile tap off or on. Press <b>M</b> to switch between walking and running."
 		if ("hud")
 			if (C && C.prefs && C.prefs.UI_style == "ConsoleStyle")
 				return "The console at the bottom of the screen holds your hands and carried items. Its three bars show <b>food, water and stamina</b>: running and fighting use stamina, and you must eat and drink to keep going. The figure beside it shows your health."

@@ -64,6 +64,7 @@ export type CharacterSetupData = {
   };
   settings?: {
     ui_style?: string; ui_styles?: string[]; cursor?: string; cursors?: string[]; client_fps?: number; fps_choices?: number[]; tutorial?: string;
+    tap_step?: Flag; hover_text?: Flag; hover_text_scale?: string; hud_scale?: string; scales?: string[]; hud_editing?: Flag;
     toggles?: { key?: string; label?: string; on?: Flag; on_label?: string; off_label?: string }[];
   };
 };

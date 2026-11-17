@@ -21,6 +21,7 @@
 	L["fullscreen"] = list(owner.fullscreen ? "Leave fullscreen" : "Fullscreen", "Also on F11.")
 	L["fit"] = list("Fit viewport", "Resize the map to fill the window.")
 	L["settings"] = list("Character and settings", "Character setup and game preferences.")
+	L["controls"] = list("Controls and HUD", "Tap to step, hover text, HUD size and layout, key bindings.")
 	L["hotkeys"] = list("Hotkeys", "List the default keys.")
 	L["tutorial"] = list("Tutorial", "Show, start or reset the new-player tutorial.")
 	L["changelog"] = list("What's new", "Recent changes in this version of the game.")
@@ -51,7 +52,7 @@
 	return "<html><head><title>Menu</title></head><body style='font-family:Verdana;font-size:12px;background:#1b1b1b;color:#ddd;margin:8px'>[note][jointext(rows, "")]</body></html>"
 
 /datum/escape_menu/proc/show()
-	show_browse(owner, html(), "window=escape_menu;size=300x610;can_resize=0")
+	show_browse(owner, html(), "window=escape_menu;size=300x655;can_resize=0")
 
 /datum/escape_menu/proc/hide()
 	show_browse(owner, null, "window=escape_menu")
@@ -71,6 +72,12 @@
 		if ("fit")
 			owner.fit_viewport()
 		if ("settings")
+			if (owner.prefs)
+				owner.prefs.setup_open_tab = null
+			owner.character_setup()
+		if ("controls")
+			if (owner.prefs)
+				owner.prefs.setup_open_tab = "settings"
 			owner.character_setup()
 		if ("hotkeys")
 			owner.hotkeys_help()
