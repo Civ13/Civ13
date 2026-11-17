@@ -474,6 +474,10 @@
 	// Up a tree: a movement key climbs down (tree_climbing.dm).
 	if (mob.climbed_tree && ishuman(mob))
 		var/mob/living/human/tree_climber = mob
+		// While looking into the distance the keys turn the view instead.
+		if (tree_climber.looking)
+			tree_climber.tree_look_turn(direct)
+			return
 		tree_climber.start_climb_down()
 		return
 

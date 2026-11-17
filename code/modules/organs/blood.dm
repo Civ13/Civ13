@@ -82,12 +82,28 @@ var/const/BLOOD_VOLUME_SURVIVE = 20
 
 	if (bloodloss) // we're bleeding
 		drip(bloodloss)
+		bleeding_hint()
 	else // we're not bleeding, regenerate some blood (experimental) - Kachnov
 		for (var/datum/reagent/r in vessel.reagent_list)
 			if (istype(r, /datum/reagent/blood))
 				if (r.volume >= species.blood_volume)
 					return // we're full on blood.
 		vessel.add_reagent("blood", 1.00)
+
+// Blood only builds back once every wound has stopped bleeding, and nothing
+// said so: a deep cut bleeds until it is bandaged. Told at most every
+// BLEEDING_HINT_GAP while the body is short of blood.
+#define BLEEDING_HINT_GAP (2 MINUTES)
+/mob/living/human/var/tmp/bleeding_hint_at = 0
+
+/mob/living/human/proc/bleeding_hint()
+	if (!client || stat || world.time < bleeding_hint_at || !species || !species.blood_volume)
+		return FALSE
+	if (vessel.get_reagent_amount("blood") >= species.blood_volume * 0.9)
+		return FALSE
+	bleeding_hint_at = world.time + BLEEDING_HINT_GAP
+	to_chat(src, SPAN_WARNING("You are still bleeding, so your blood cannot build back. Bandage every wound; deep cuts do not close on their own."))
+	return TRUE
 
 //Makes a blood drop, leaking amt units of blood from the mob
 /mob/living/human/proc/drip(var/amt as num)
@@ -230,6 +246,8 @@ var/const/BLOOD_VOLUME_SURVIVE = 20
 	if (blood_incompatible(injected.data["blood_type"],our.data["blood_type"],injected.data["species"],our.data["species"]) )
 		reagents.add_reagent("toxin",amount * 0.5)
 		reagents.update_total()
+		if (client && !stat)
+			to_chat(src, SPAN_DANGER("That blood does not match your own. It sickens you instead of helping."))
 	else
 		vessel.add_reagent("blood", amount, injected.data)
 		vessel.update_total()

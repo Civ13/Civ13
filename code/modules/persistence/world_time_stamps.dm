@@ -40,6 +40,7 @@ var/global/list/persistence_world_time_stamps = list(
 	"announcement_cooldown" = list(/mob/living/human),
 	"soap_cooldown" = list(/mob/living/human),
 	"last_flu_sneeze" = list(/mob/living/human),
+	"bleeding_hint_at" = list(/mob/living/human),
 	"frostbitten" = list(/mob/living/human),
 	"next_calculate_run_delay" = list(/mob/living/human),
 	"next_calculate_tally" = list(/mob/living/human),

@@ -166,8 +166,7 @@ var/yield_high = FALSE
 							if (eligible)
 								solo[types[index]] = amount
 								mixed[types[index]] = amount
-								if (index <= 8)
-									solo[/obj/item/stack/material/stone] = high ? 12 : 8
+								solo[/obj/item/stack/material/stone] = high ? 12 : 8
 							else
 								solo[/obj/item/stack/material/stone] = (high ? 24 : 16) * multiplier
 							yield_case(era,"single roll[index]",yield_mask(index),solo,map_id = map_id,special = special)
