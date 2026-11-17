@@ -377,6 +377,14 @@ class ScriptTests(unittest.TestCase):
         scheduler.choose(sit)
         self.assertIsNone(box["project"])
 
+    def test_snowy_grass_is_not_cut(self):
+        # Live Gaia: she clicked snow-covered grass 88 times while freezing; the game gives nothing under snow.
+        kit = ("sharpened flint", "sharpened stick")
+        snowy = {"ref": "turf:1,1,1", "name": "grass", "type": "/turf/floor/grass", "dx": 0, "dy": 1, "snow": True}
+        self.assertEqual(next_step(scripts.axe, holding(*kit), [snowy]), [{"do": "explore", "dir": "north"}])
+        bare = dict(snowy, ref="turf:2,2,1", snow=None)
+        self.assertEqual(next_step(scripts.axe, holding(*kit), [snowy, bare]), [{"do": "cut_grass", "target": "turf:2,2,1"}])
+
     def test_ladder_order(self):
         rows = [ROCK, TREE]
         self.assertEqual(scripts.ladder(situation(observe(holding(), nearby=rows))[0]), "flint")
