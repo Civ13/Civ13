@@ -2,7 +2,11 @@
 Longitudes count east (so all of them here are negative)."""
 
 GREENLAND = {
-    'path': 'maps/earth_drafts/earth_greenland.dmm',
+    'path': 'maps/nomads/nomads_earth_greenland.dmm',
+    # A playable region (docs/earth-continents.md): the map carries this
+    # metadata and has height, current and flood files beside the other maps.
+    'metadata': '/obj/map_metadata/nomads/earth_greenland',
+    'heights': 'maps/heights/nomads_earth_greenland',
     'seed': 982,
     'size': (760, 816),
     'design_width': 800,

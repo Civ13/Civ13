@@ -83,7 +83,7 @@ var/global/list/farmers_almanac_seed_cache = null
 // Mirrors the map list in /obj/structure/farming/plant/growth(): elsewhere
 // crops ignore climate and season entirely.
 /proc/farmers_almanac_climate_matters()
-	return map && (map.ID in list(MAP_NOMADS_CONTINENTAL, MAP_NOMADS_PANGEA, MAP_NOMADS_NEW_WORLD, MAP_NOMADS_MEDITERRANEAN, MAP_NOMADS_EUROPE, MAP_NOMADS_GAIA, MAP_NOMADS_AMERICAS_NORTH, MAP_NOMADS_AMERICAS_SOUTH, MAP_NOMADS_ASIA, MAP_NOMADS_EARTH_EUROPE, MAP_NOMADS_EARTH_AFRICA, MAP_NOMADS_EARTH_ASIA))
+	return map && (map.ID in list(MAP_NOMADS_CONTINENTAL, MAP_NOMADS_PANGEA, MAP_NOMADS_NEW_WORLD, MAP_NOMADS_MEDITERRANEAN, MAP_NOMADS_EUROPE, MAP_NOMADS_GAIA, MAP_NOMADS_AMERICAS_NORTH, MAP_NOMADS_AMERICAS_SOUTH, MAP_NOMADS_ASIA, MAP_NOMADS_EARTH_EUROPE, MAP_NOMADS_EARTH_AFRICA, MAP_NOMADS_EARTH_ASIA, MAP_NOMADS_EARTH_OCEANIA, MAP_NOMADS_EARTH_GREENLAND, MAP_NOMADS_EARTH_ANTARCTICA))
 
 // Same eligibility as crop growth: the climate must suit the crop, and the
 // season must too unless the climate is tropical. Saplings always need both.

@@ -26,6 +26,9 @@ var/global/list/continent_layout = list(
 	"europe" = list(11, 9, list("S", "W"), TRUE),
 	"desert" = list(12, 4, list("N"), TRUE),
 	"africa" = list(12, 3, list("W", "S", "E"), TRUE),
+	"oceania" = list(21, 1, list("N", "S", "W", "E"), TRUE),
+	"greenland" = list(6, 11, list("E", "S", "N"), TRUE),
+	"antarctica" = list(10, -5, list("N", "E", "S", "W"), TRUE),
 	"jungle" = list(13, 1, list("W"), TRUE),
 	"asia" = list(18, 8, list("E", "S", "W"), TRUE))
 

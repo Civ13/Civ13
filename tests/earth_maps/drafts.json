@@ -20,8 +20,20 @@
   ]
  },
  "antarctica": {
-  "path": "maps/earth_drafts/earth_antarctica.dmm",
-  "sha256": "f348a51befe7d1c09acab0c48931b607b53197d13448a29506620da0da2abe0a",
+  "flood": {
+   "path": "maps/heights/nomads_earth_antarctica.flood.txt",
+   "sha256": "5fc54991748fffd1d40819a74b4ba85a164ab7a725fb7c8ec3005f0e674984de"
+  },
+  "flow": {
+   "path": "maps/heights/nomads_earth_antarctica.flow.txt",
+   "sha256": "9d7b7e8b27bdedba29da33ae353bf82ab9b1f32ebc329ab8e04c98888731add4"
+  },
+  "heights": {
+   "path": "maps/heights/nomads_earth_antarctica.txt",
+   "sha256": "8214f38428c2708f93c15c8143027f416b5377ee08d920e086e61002ed0d274e"
+  },
+  "path": "maps/nomads/nomads_earth_antarctica.dmm",
+  "sha256": "cd221c4059adb374e5409f8db59fcfb566a8ee900827f1f041cfb35da633c579",
   "size": [
    1024,
    1024
@@ -68,16 +80,40 @@
   ]
  },
  "greenland": {
-  "path": "maps/earth_drafts/earth_greenland.dmm",
-  "sha256": "ea956db2ac8edc16cfe80b39b7bf7d726a95a398e248e9c23af6a922d6736ac3",
+  "flood": {
+   "path": "maps/heights/nomads_earth_greenland.flood.txt",
+   "sha256": "31dcf49b3c1dae96da83fb7a2f9c0c3f35deeb65dbe4676a04b12db5205de25b"
+  },
+  "flow": {
+   "path": "maps/heights/nomads_earth_greenland.flow.txt",
+   "sha256": "18d6575dfff9a25d9a5ea878c4c9e8fb655d48ba7c37fac2cc74b8b3f2a6740f"
+  },
+  "heights": {
+   "path": "maps/heights/nomads_earth_greenland.txt",
+   "sha256": "b5ee2939c5f51eaf9dfff7f7c7f84bc3cfebdd6e16db691cba8caa10b0dbd53e"
+  },
+  "path": "maps/nomads/nomads_earth_greenland.dmm",
+  "sha256": "bd493e321697ec345acf86640663a21fa8c2a7e1243966ac10dfd732c546c806",
   "size": [
    760,
    816
   ]
  },
  "oceania": {
-  "path": "maps/earth_drafts/earth_oceania.dmm",
-  "sha256": "cd6ab0f8e11ea3c5a339e34932de18b5eb312fb5cab6ae815c6d0dd66adcb475",
+  "flood": {
+   "path": "maps/heights/nomads_earth_oceania.flood.txt",
+   "sha256": "dc911766d441c4f2c1c36ea2024452fde431b41756bb2b61560f82613da2cac6"
+  },
+  "flow": {
+   "path": "maps/heights/nomads_earth_oceania.flow.txt",
+   "sha256": "cbbd173667e964887c95e8e6845f8daed211f9d029a7b3a2ab09047311dfb020"
+  },
+  "heights": {
+   "path": "maps/heights/nomads_earth_oceania.txt",
+   "sha256": "066ec7f32e58f0e70a1a3ab9fdccee7cbd80a6be0b6a374a2b4636b23df5addb"
+  },
+  "path": "maps/nomads/nomads_earth_oceania.dmm",
+  "sha256": "2eac1ffcc45582873207f30414dde476635e1a2dda1ef5c4afc003e775c7f12f",
   "size": [
    1212,
    864

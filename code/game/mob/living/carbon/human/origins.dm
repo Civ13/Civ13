@@ -289,6 +289,8 @@ var/global/list/origins_by_id = null
 			"jungle" = "tupi", "savanna" = "tupi",
 			"sea" = "caribs",
 			"default" = "inca")
+		var/list/greenland = list(
+			"default" = "inuit")
 		var/list/jungle = list(
 			"sea" = "caribs",
 			"default" = "maya")
@@ -303,6 +305,7 @@ var/global/list/origins_by_id = null
 			MAP_NOMADS_EARTH_EUROPE = europe,
 			MAP_NOMADS_EARTH_AFRICA = africa,
 			MAP_NOMADS_EARTH_ASIA = asia,
+			MAP_NOMADS_EARTH_GREENLAND = greenland,
 			MAP_NOMADS_AFRICA = africa,
 			MAP_NOMADS_ASIA = asia,
 			MAP_NOMADS_AMERICAS_NORTH = americas_north,

@@ -3,8 +3,8 @@
 Offline: reads the committed maps and the repository's region files. It checks
 that each land is the map its design last wrote, that it is well formed and
 within the measured size of the Americas regions. A draft must stay a draft:
-nothing a server builds or loads may name it. A playable land (Europe,
-Africa, Asia; docs/earth-continents.md) carries its metadata, has the height,
+nothing a server builds or loads may name it. A playable land (all six
+now; docs/earth-continents.md) carries its metadata, has the height,
 current and flood files written with it, is registered in source and runs on
 over its crossing edges.
 """
@@ -21,7 +21,7 @@ sys.path.insert(0, str(HERE))
 
 DRAFTS = json.loads((HERE / 'drafts.json').read_text(encoding='utf-8'))
 NAMES = ('africa', 'antarctica', 'asia', 'europe', 'greenland', 'oceania')
-PLAYABLE = ('africa', 'asia', 'europe')
+PLAYABLE = NAMES   # every land is a region now; the draft checks stay for a new one
 DRAFT_NAMES = tuple(name for name in NAMES if name not in PLAYABLE)
 MEASURED_CELLS = 1050000   # the size the Americas regions were measured at (tests/americas_maps)
 FRESH_ICE = '/turf/floor/beach/water/ice'
@@ -99,7 +99,7 @@ class EarthDrafts(unittest.TestCase):
         for name in DRAFT_NAMES:
             keys, _ = self.maps[name]
             self.assertFalse(any('map_metadata' in value for value in keys.values()), name)
-        named = re.compile(r'earth_drafts|earth_(%s)' % '|'.join(DRAFT_NAMES))
+        named = re.compile(r'earth_drafts' + (r'|earth_(%s)' % '|'.join(DRAFT_NAMES) if DRAFT_NAMES else ''))
         watched = [ROOT / 'civ13.dme', ROOT / 'code/processes/mapswap.dm']
         watched += sorted((ROOT / 'scripts' / 'shard-group').glob('*.json'))
         watched += sorted((ROOT / 'scripts' / 'windows' / 'host').glob('*.json'))
@@ -172,7 +172,8 @@ class EarthRegions(unittest.TestCase):
                 for x in range(0, width, 7):
                     wet = 'water' in self.turf_of(keys, rows[y][2 * x:2 * x + 2])
                     self.assertEqual(levels[y][x] == 0, wet, (name, x, y))
-            self.assertGreaterEqual(max(max(r) for r in levels), 12, name)
+            # Mountains reach high levels; the island continent is the flattest land.
+            self.assertGreaterEqual(max(max(r) for r in levels), 10 if name == 'oceania' else 12, name)
             self.assertIn('terrain_height_file = "%s"' % entry['heights']['path'], self.block(name))
 
     def test_registered_in_source(self):
@@ -220,7 +221,14 @@ class EarthRegions(unittest.TestCase):
         self.assertIn('sea_coasts = list("W", "N")', self.block('europe'))
         self.assertIn('sea_coasts = list("W", "S", "E")', self.block('africa'))
         self.assertIn('sea_coasts = list("E", "S", "N")', self.block('asia'))
-        for name, sides in (('europe', 'WN'), ('africa', 'WSE'), ('asia', 'ESN')):
+        self.assertIn('sea_coasts = list("N", "S", "W", "E")', self.block('oceania'))
+        self.assertIn('sea_coasts = list("E", "S", "N")', self.block('greenland'))
+        self.assertIn('sea_coasts = list("N", "E", "S", "W")', self.block('antarctica'))
+        for land in ('oceania', 'greenland', 'antarctica'):
+            self.assertIn('"%s" = list(' % land, lanes)
+            self.assertNotIn('edge_crossings', self.block(land))
+        for name, sides in (('europe', 'WN'), ('africa', 'WSE'), ('asia', 'ESN'), ('oceania', 'NSWE'),
+                            ('greenland', 'ESN'), ('antarctica', 'NESW')):
             keys, rows = self.maps[name]
             sea = {k for k, v in keys.items() if 'saltwater' in v or 'ice/salty' in v}
             edge = {'N': [rows[0][i:i + 2] for i in range(0, len(rows[0]), 2)],
@@ -237,11 +245,36 @@ class EarthRegions(unittest.TestCase):
         climates, salt = inventory.load_inheritance()
         for name in PLAYABLE:
             report = inventory.audit('earth_' + name, climates, salt)
-            self.assertGreaterEqual(len(report['farm_ground_by_climate']), 4, name)
-            for climate, ground in report['farm_ground_by_climate'].items():
+            bushes = report['bush_seeding_ground_by_climate']
+            if name == 'antarctica':
+                # The ice continent grows nothing near fresh water (it is all
+                # frozen); only its fringe seeds forage. Food comes by sea
+                # (docs/earth-continents.md).
+                self.assertGreaterEqual(sum(bushes.values()), 500)
+                continue
+            # A land's main climates: those with real room to forage in. A small
+            # patch of another climate on a coast or a peak is not one.
+            main = [c for c, ground in bushes.items() if ground >= 5000]
+            self.assertGreaterEqual(len(main), 2 if name == 'greenland' else 4, name)
+            if name == 'greenland':
+                # Most of the ice island's farmable ground is snow on the tundra
+                # coasts, cleared with a spade; its fjord forests are steep.
+                ground = report['farm_ground_by_climate']['tundra']
+                self.assertGreaterEqual(ground['ploughable_near_water'] + ground['clearable_near_water'], 1000)
+                continue
+            for climate in main:
+                ground = report['farm_ground_by_climate'].get(climate, {'ploughable_near_water': 0, 'clearable_near_water': 0})
                 with self.subTest(map=name, climate=climate):
-                    self.assertGreaterEqual(report['bush_seeding_ground_by_climate'].get(climate, 0), 500)
                     self.assertGreaterEqual(ground['ploughable_near_water'] + ground['clearable_near_water'], 100)
+
+    def test_berry_bushes_never_spin_on_a_land_with_little_grass(self):
+        # Greenland hung at boot: each berry kind was placed until it reached a
+        # count from the map's size, picking grass tiles until enough were
+        # empty, and the ice island has far fewer than that.
+        source = (ROOT / 'code/game/objects/map_metadata/_map_metadata.dm').read_text(encoding='utf-8')
+        self.assertNotIn('for (var/v=1, v<=amt_to_create)', source)
+        self.assertIn('amt_to_create = min(amt_to_create, round(grass_turf_list.len / 16))', source)
+        self.assertIn('for (var/tries = 1, placed < amt_to_create && tries <= amt_to_create * 20, tries++)', source)
 
 
 if __name__ == '__main__':

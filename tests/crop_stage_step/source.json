@@ -6,6 +6,6 @@
   "reconciled_master_ref": "8b4c3f5ca76e4ed78927819e9b4c50873ec9b19e",
   "scope": "Historical baseline pin; integration checked in a full checkout. Offline projection only; no game runtime acceptance.",
   "gameplay_activation": false,
-  "reviewed_farming_projection_blob": "8fe797ad6bb2022e71359559abacd61b3211c462",
+  "reviewed_farming_projection_blob": "4534722bd24d13d5a09030f6d8cc5b66a1c2db1c",
   "reviewed_farming_projection_note": "2026-11-09: preserve the historical growth baseline and include the reviewed stacked-harvest yield fix for #4206 in the full-file projection. 2026-11-14: water_proc calls flood_plant_step() (river floods, flood_effects.dm) before rain and irrigation. The plump-helmet climate list outside the growth proc also names the two Americas maps."
 }

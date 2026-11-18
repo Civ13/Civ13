@@ -2,7 +2,11 @@
 island chains of the warm seas. Longitudes count east."""
 
 OCEANIA = {
-    'path': 'maps/earth_drafts/earth_oceania.dmm',
+    'path': 'maps/nomads/nomads_earth_oceania.dmm',
+    # A playable region (docs/earth-continents.md): the map carries this
+    # metadata and has height, current and flood files beside the other maps.
+    'metadata': '/obj/map_metadata/nomads/earth_oceania',
+    'heights': 'maps/heights/nomads_earth_oceania',
     'seed': 1770,
     'size': (1212, 864),
     'design_width': 800,
