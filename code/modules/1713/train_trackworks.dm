@@ -63,7 +63,7 @@
 
 /obj/structure/train_buffer_stop/examine(mob/user)
 	..()
-	to_chat(user, "It ends a line running [dir2text(dir)]. [(locate(/obj/structure/rails) in loc) ? "It is bolted to the rails." : "It stands on bare ground: set it on the last tile of rails."] A wrench turns it.")
+	to_chat(user, "It ends a line running [dir2text(dir)]. [(isturf(loc) && rail_at(loc)) ? "It is bolted to the rails." : "It stands on bare ground: set it on the last tile of rails."] A wrench turns it.")
 	if (hits)
 		to_chat(user, "Its beam is scarred by [hits] hard blow\s.")
 

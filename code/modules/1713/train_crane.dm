@@ -89,7 +89,7 @@
 				deck = T
 				deck_dist = d
 				deck_name = P.name
-		else if (!(locate(/obj/structure/rails) in T) && (!ground || d < ground_dist))
+		else if (!rail_at(T) && (!ground || d < ground_dist))
 			ground = T
 			ground_dist = d
 	if (deck)

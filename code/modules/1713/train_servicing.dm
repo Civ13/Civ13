@@ -503,11 +503,9 @@ var/global/list/train_axle_oils = list("fat_oil", "olive_oil", "cornoil", "lard"
 
 // It lies along the track it is dug under.
 /obj/structure/rail_ash_pit/update_icon()
-	if (isturf(loc))
-		for (var/obj/structure/rails/R in loc)
-			if (R.dir in cardinal)
-				dir = R.dir
-			break
+	var/along = isturf(loc) ? rail_dir_at(loc) : null
+	if (along)
+		dir = along
 	icon_state = ash >= TRAIN_ASH_PIT_MAX ? "ash_pit_full" : (ash > 0 ? "ash_pit_ash" : "ash_pit")
 
 /obj/structure/rail_ash_pit/examine(mob/user)

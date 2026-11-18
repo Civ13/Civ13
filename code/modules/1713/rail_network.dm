@@ -3,23 +3,22 @@
 // branches all count, so a line may bend and fork. A network is found by a
 // breadth-first walk from any of its rails; nothing about it is saved.
 //
-// Every rail laid or removed bumps rail_network_serial, so callers can keep a
-// result until the track changes (party_train.dm's station check does).
+// Every rail laid or removed bumps rail_network_serial (rails/New and Destroy
+// in trains.dm), so callers can keep a result until the track changes
+// (party_train.dm's station check does).
 
 #define RAIL_NETWORK_VISIT_LIMIT 50000 // rails walked at most in one search
 
 var/global/rail_network_serial = 0
 
-/obj/structure/rails/New()
-	..()
-	rail_network_serial++
-
-/obj/structure/rails/Destroy()
-	rail_network_serial++
-	return ..()
-
 /proc/rail_at(turf/T)
 	return T && (locate(/obj/structure/rails) in T)
+
+// The way the track on T runs (a cardinal), or null: fixtures dug under the
+// line, such as ash and drop pits, lie along it.
+/proc/rail_dir_at(turf/T)
+	var/obj/structure/rails/R = rail_at(T)
+	return (R && (R.dir in cardinal)) ? R.dir : null
 
 /proc/rail_turf_on_map_edge(turf/T)
 	return T && (T.x == 1 || T.y == 1 || T.x == world.maxx || T.y == world.maxy)
