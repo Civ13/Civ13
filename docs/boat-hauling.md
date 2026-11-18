@@ -21,4 +21,4 @@ heavy she is (0 for vehicles that are not boats, which drag as before).
   onto water, or come out with the Take Out Rollers verb.
 - A look at a beached boat says how she drags (`haul_text()`, appended to `small_craft_text()`).
 
-Not built: wear from use (lashings, soaking, torn sails), and anything for hulls built tile by tile.
+Wear from use is in [small-boat-upkeep.md](small-boat-upkeep.md). Not built: anything for hulls built tile by tile.

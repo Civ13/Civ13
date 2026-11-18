@@ -80,7 +80,13 @@
 			puller.stop_pulling()
 			return FALSE
 	var/turf/old = loc
+	var/was_afloat = afloat()
 	. = ..()
+	if (loc != old && was_afloat != afloat())
+		if (was_afloat)
+			came_ashore() // naval/small_boat_upkeep.dm
+		else
+			took_water()
 	if (on_rollers && loc != old && afloat())
 		shed_rollers(old)
 		if (puller)

@@ -112,13 +112,10 @@
 /obj/structure/vehicle/raft/dugout/proc/paddling()
 	return driver && (istype(driver.l_hand, /obj/item/weapon/paddle) || istype(driver.r_hand, /obj/item/weapon/paddle))
 
-// Tenths of a second her next tile takes, heading m_dir.
-/obj/structure/vehicle/raft/dugout/proc/step_delay(m_dir)
-	return paddling() ? paddle_delay : initial(vehicle_m_delay)
-
-/obj/structure/vehicle/raft/dugout/processmove(m_dir = null)
-	vehicle_m_delay = step_delay(m_dir)
-	return ..()
+// Tenths of a second her next tile takes, heading m_dir (the raft's
+// processmove asks, naval/small_boat_upkeep.dm).
+/obj/structure/vehicle/raft/dugout/step_delay(m_dir)
+	return (paddling() ? paddle_delay : initial(vehicle_m_delay)) + wear_delay()
 
 /obj/structure/vehicle/raft/dugout/do_vehicle_check()
 	if (!driver)

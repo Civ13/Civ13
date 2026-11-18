@@ -42,6 +42,7 @@
 	seat_lift = 0
 	var/mast = FALSE              // A mast is stepped and a sail bent on.
 	var/sail_set = FALSE
+	var/sail_torn = FALSE         // A torn sail drives nothing (naval/small_boat_upkeep.dm).
 	var/sail_path = null          // Text path of the sail that was fitted, to give back.
 	var/tmp/motor_on = FALSE
 	var/tmp/under_power = FALSE       // The engine set the pace of the move in hand.
@@ -52,7 +53,8 @@
 
 /obj/structure/vehicle/raft/dugout/outrigger/dress_hull()
 	icon_state = engine ? "outrigger_motor" : "outrigger"
-	var/look = mast ? "[sail_set ? "mast_set" : "mast_furled"][dir]" : null
+	var/sail_state = !sail_set ? "mast_furled" : (sail_torn ? "mast_torn" : "mast_set")
+	var/look = mast ? "[sail_state][dir]" : null
 	if (look == sail_look)
 		return
 	if (sail_image)
@@ -60,7 +62,7 @@
 		sail_image = null
 	sail_look = look
 	if (look)
-		sail_image = image(icon, sail_set ? "mast_set" : "mast_furled", dir = dir)
+		sail_image = image(icon, sail_state, dir = dir)
 		sail_image.layer = MOB_LAYER + 2.11
 		overlays += sail_image
 
@@ -181,6 +183,8 @@
 	var/obj/structure/vehicle/raft/dugout/outrigger/C = new(get_turf(src))
 	C.dir = dir
 	C.bilge = bilge
+	C.soak = soak
+	C.dressing = dressing
 	C.update_icon()
 	user.visible_message(SPAN_NOTICE("[user] finishes \a [C]."), SPAN_NOTICE("The lashings are tight: you have made \a [C]."))
 	note_craft_practice(user, "/obj/structure/dugout_log")
@@ -253,6 +257,7 @@
 	new path(T)
 	mast = FALSE
 	sail_set = FALSE
+	sail_torn = FALSE
 	sail_path = null
 
 /obj/structure/vehicle/raft/dugout/outrigger/proc/drop_outboard(turf/T)
@@ -323,6 +328,9 @@
 	if (!mast)
 		to_chat(H, SPAN_WARNING("\The [src] carries no mast."))
 		return
+	if (sail_torn)
+		to_chat(H, SPAN_WARNING("The sail is torn. Mend it with cloth before you roll it up."))
+		return
 	if (canoe_refuse(H, "strike the mast of"))
 		return
 	if (do_after(H, OUTRIGGER_RIG_TIME, src) && mast && !canoe_work_refusal())
@@ -377,7 +385,7 @@
 // The quickest of paddle, sail and engine sets her pace.
 /obj/structure/vehicle/raft/dugout/outrigger/step_delay(m_dir)
 	. = ..()
-	if (mast && sail_set && m_dir)
+	if (mast && sail_set && !sail_torn && m_dir)
 		. = min(., sail_step_time(src, m_dir))
 	under_power = FALSE
 	if (!motor_on)

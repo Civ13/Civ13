@@ -115,8 +115,10 @@
 /obj/structure/vehicle/raft/do_move(m_dir = null, interval = null)
 	var/turf/was = loc
 	. = ..()
-	if (loc != was && prob(leak_chance()))
-		ship_water()
+	if (loc != was)
+		boat_wear() // naval/small_boat_upkeep.dm
+		if (prob(leak_chance()))
+			ship_water()
 
 /obj/structure/vehicle/boat/do_move(m_dir = null, interval = null)
 	var/turf/was = loc
@@ -228,6 +230,8 @@
 	return FALSE
 
 /obj/structure/vehicle/raft/attackby(obj/item/O as obj, mob/user as mob)
+	if (ishuman(user) && O && upkeep_work(O, user)) // naval/small_boat_upkeep.dm
+		return TRUE
 	if (small_craft_attackby(O, user))
 		return TRUE
 	return ..()
@@ -265,6 +269,9 @@
 	var/text = small_craft_text()
 	if (text)
 		to_chat(user, SPAN_WARNING(text))
+	text = upkeep_text() // naval/small_boat_upkeep.dm
+	if (text)
+		to_chat(user, SPAN_NOTICE(text))
 
 /obj/structure/vehicle/boat/examine(mob/user, distance)
 	. = ..()
