@@ -36,6 +36,9 @@
 		MAP_NOMADS_EARTH_EUROPE = list("coal", "zinc"),
 		MAP_NOMADS_EARTH_AFRICA = list("sulphur", "tin"), // Africa replaces the Desert and the Jungle
 		MAP_NOMADS_EARTH_ASIA = list("saltpeter", "silver", "gems", "diamond"),
+		MAP_NOMADS_EARTH_OCEANIA = list("bauxite", "uranium", "gems"), // reached only by sea and air
+		MAP_NOMADS_EARTH_GREENLAND = list("zinc", "lead", "gold"),
+		MAP_NOMADS_EARTH_ANTARCTICA = list("coal"), // a hard-won frontier seam
 	)
 	return homes
 
